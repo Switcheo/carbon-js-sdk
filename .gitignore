@@ -1,0 +1,7 @@
+/node_modules
+/lib
+index.js
+.DS_Store
+.env
+yarn-error.log
+proto-ts.tar.gz
