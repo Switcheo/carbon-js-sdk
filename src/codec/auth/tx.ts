@@ -2,7 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 
-export const protobufPackage = "Switcheo.tradehubcosmos.autodeleverage";
+export const protobufPackage = "Switcheo.carbon.auth";
 
 /** Msg defines the Msg service. */
 export interface Msg {}

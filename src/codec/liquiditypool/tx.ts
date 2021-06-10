@@ -2,7 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 
-export const protobufPackage = "Switcheo.tradehubcosmos.liquiditypool";
+export const protobufPackage = "Switcheo.carbon.liquiditypool";
 
 /** this line is used by starport scaffolding # proto/tx/message */
 export interface MsgCreatePool {
@@ -249,7 +249,7 @@ export class MsgClientImpl implements Msg {
   CreatePool(request: MsgCreatePool): Promise<MsgCreatePoolResponse> {
     const data = MsgCreatePool.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.tradehubcosmos.liquiditypool.Msg",
+      "Switcheo.carbon.liquiditypool.Msg",
       "CreatePool",
       data
     );

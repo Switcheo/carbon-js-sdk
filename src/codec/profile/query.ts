@@ -7,7 +7,7 @@ import {
   PageResponse,
 } from "../cosmos/base/query/v1beta1/pagination";
 
-export const protobufPackage = "Switcheo.tradehubcosmos.profile";
+export const protobufPackage = "Switcheo.carbon.profile";
 
 /** this line is used by starport scaffolding # 3 */
 export interface QueryGetProfileRequest {
@@ -346,7 +346,7 @@ export class QueryClientImpl implements Query {
   Profile(request: QueryGetProfileRequest): Promise<QueryGetProfileResponse> {
     const data = QueryGetProfileRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.tradehubcosmos.profile.Query",
+      "Switcheo.carbon.profile.Query",
       "Profile",
       data
     );
@@ -360,7 +360,7 @@ export class QueryClientImpl implements Query {
   ): Promise<QueryAllProfileResponse> {
     const data = QueryAllProfileRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.tradehubcosmos.profile.Query",
+      "Switcheo.carbon.profile.Query",
       "ProfileAll",
       data
     );

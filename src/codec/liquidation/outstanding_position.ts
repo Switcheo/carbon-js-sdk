@@ -3,7 +3,7 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Timestamp } from "../google/protobuf/timestamp";
 
-export const protobufPackage = "Switcheo.tradehubcosmos.liquidation";
+export const protobufPackage = "Switcheo.carbon.liquidation";
 
 export interface OutstandingPosition {
   liquidationOrderId: string;

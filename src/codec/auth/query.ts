@@ -2,12 +2,12 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 
-export const protobufPackage = "Switcheo.tradehubcosmos.tradehubcosmos";
+export const protobufPackage = "Switcheo.carbon.auth";
 
-/** Msg defines the Msg service. */
-export interface Msg {}
+/** Query defines the gRPC querier service. */
+export interface Query {}
 
-export class MsgClientImpl implements Msg {
+export class QueryClientImpl implements Query {
   private readonly rpc: Rpc;
   constructor(rpc: Rpc) {
     this.rpc = rpc;

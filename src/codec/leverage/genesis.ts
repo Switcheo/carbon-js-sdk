@@ -3,7 +3,7 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { MarketLeverageWithKey } from "../leverage/leverage";
 
-export const protobufPackage = "Switcheo.tradehubcosmos.leverage";
+export const protobufPackage = "Switcheo.carbon.leverage";
 
 /** GenesisState defines the leverage module's genesis state. */
 export interface GenesisState {

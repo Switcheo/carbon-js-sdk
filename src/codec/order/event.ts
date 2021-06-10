@@ -4,7 +4,7 @@ import _m0 from "protobufjs/minimal";
 import { Order } from "../order/order";
 import { Timestamp } from "../google/protobuf/timestamp";
 
-export const protobufPackage = "Switcheo.tradehubcosmos.order";
+export const protobufPackage = "Switcheo.carbon.order";
 
 export interface OrderEvent {
   order?: Order;

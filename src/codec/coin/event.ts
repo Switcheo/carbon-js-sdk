@@ -3,7 +3,7 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Token } from "../coin/token";
 
-export const protobufPackage = "Switcheo.tradehubcosmos.coin";
+export const protobufPackage = "Switcheo.carbon.coin";
 
 export interface NewTokenEvent {
   token?: Token;

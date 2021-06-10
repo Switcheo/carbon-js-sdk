@@ -2,7 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 
-export const protobufPackage = "Switcheo.tradehubcosmos.subaccount";
+export const protobufPackage = "Switcheo.carbon.subaccount";
 
 /** this line is used by starport scaffolding # proto/tx/message */
 export interface MsgCreateSubAccount {
@@ -449,7 +449,7 @@ export class MsgClientImpl implements Msg {
   ): Promise<MsgCreateSubAccountResponse> {
     const data = MsgCreateSubAccount.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.tradehubcosmos.subaccount.Msg",
+      "Switcheo.carbon.subaccount.Msg",
       "CreateSubAccount",
       data
     );
@@ -463,7 +463,7 @@ export class MsgClientImpl implements Msg {
   ): Promise<MsgActivateSubAccountResponse> {
     const data = MsgActivateSubAccount.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.tradehubcosmos.subaccount.Msg",
+      "Switcheo.carbon.subaccount.Msg",
       "ActivateSubAccount",
       data
     );
@@ -477,7 +477,7 @@ export class MsgClientImpl implements Msg {
   ): Promise<MsgRemoveSubAccountResponse> {
     const data = MsgRemoveSubAccount.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.tradehubcosmos.subaccount.Msg",
+      "Switcheo.carbon.subaccount.Msg",
       "RemoveSubAccount",
       data
     );

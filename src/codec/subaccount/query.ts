@@ -7,7 +7,7 @@ import {
   PageResponse,
 } from "../cosmos/base/query/v1beta1/pagination";
 
-export const protobufPackage = "Switcheo.tradehubcosmos.subaccount";
+export const protobufPackage = "Switcheo.carbon.subaccount";
 
 /** this line is used by starport scaffolding # 3 */
 export interface QueryGetSubAccountRequest {
@@ -364,7 +364,7 @@ export class QueryClientImpl implements Query {
   ): Promise<QueryGetSubAccountResponse> {
     const data = QueryGetSubAccountRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.tradehubcosmos.subaccount.Query",
+      "Switcheo.carbon.subaccount.Query",
       "SubAccount",
       data
     );
@@ -378,7 +378,7 @@ export class QueryClientImpl implements Query {
   ): Promise<QueryAllSubAccountResponse> {
     const data = QueryAllSubAccountRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.tradehubcosmos.subaccount.Query",
+      "Switcheo.carbon.subaccount.Query",
       "SubAccountAll",
       data
     );

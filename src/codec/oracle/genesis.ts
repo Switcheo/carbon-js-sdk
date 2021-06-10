@@ -3,7 +3,7 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Oracle, Result, Vote } from "../oracle/oracle";
 
-export const protobufPackage = "Switcheo.tradehubcosmos.oracle";
+export const protobufPackage = "Switcheo.carbon.oracle";
 
 /** GenesisState defines the oracle module's genesis state. */
 export interface GenesisState {

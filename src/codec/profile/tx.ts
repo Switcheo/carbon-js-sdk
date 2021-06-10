@@ -2,7 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 
-export const protobufPackage = "Switcheo.tradehubcosmos.profile";
+export const protobufPackage = "Switcheo.carbon.profile";
 
 /** this line is used by starport scaffolding # proto/tx/message */
 export interface MsgUpdateProfile {
@@ -172,7 +172,7 @@ export class MsgClientImpl implements Msg {
   UpdateProfile(request: MsgUpdateProfile): Promise<MsgUpdateProfileResponse> {
     const data = MsgUpdateProfile.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.tradehubcosmos.profile.Msg",
+      "Switcheo.carbon.profile.Msg",
       "UpdateProfile",
       data
     );

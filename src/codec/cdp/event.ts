@@ -1,10 +1,9 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { VaultType } from "../collateralizeddebtposition/vault";
+import { VaultType } from "../cdp/vault";
 
-export const protobufPackage =
-  "Switcheo.tradehubcosmos.collateralizeddebtposition";
+export const protobufPackage = "Switcheo.carbon.cdp";
 
 export interface VaultTypeEvent {
   vaultType?: VaultType;

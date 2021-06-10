@@ -2,8 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 
-export const protobufPackage =
-  "Switcheo.tradehubcosmos.collateralizeddebtposition";
+export const protobufPackage = "Switcheo.carbon.cdp";
 
 export interface MsgAddCollateral {
   creator: string;
@@ -834,7 +833,7 @@ export class MsgClientImpl implements Msg {
   ): Promise<MsgAddCollateralResponse> {
     const data = MsgAddCollateral.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.tradehubcosmos.collateralizeddebtposition.Msg",
+      "Switcheo.carbon.cdp.Msg",
       "HandleMsgAddCollateral",
       data
     );
@@ -848,7 +847,7 @@ export class MsgClientImpl implements Msg {
   ): Promise<MsgRemoveCollateralResponse> {
     const data = MsgRemoveCollateral.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.tradehubcosmos.collateralizeddebtposition.Msg",
+      "Switcheo.carbon.cdp.Msg",
       "HandleMsgRemoveCollateral",
       data
     );
@@ -860,7 +859,7 @@ export class MsgClientImpl implements Msg {
   HandleMsgAddDebt(request: MsgAddDebt): Promise<MsgAddDebtResponse> {
     const data = MsgAddDebt.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.tradehubcosmos.collateralizeddebtposition.Msg",
+      "Switcheo.carbon.cdp.Msg",
       "HandleMsgAddDebt",
       data
     );
@@ -872,7 +871,7 @@ export class MsgClientImpl implements Msg {
   HandleMsgRemoveDebt(request: MsgRemoveDebt): Promise<MsgRemoveDebtResponse> {
     const data = MsgRemoveDebt.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.tradehubcosmos.collateralizeddebtposition.Msg",
+      "Switcheo.carbon.cdp.Msg",
       "HandleMsgRemoveDebt",
       data
     );
@@ -886,7 +885,7 @@ export class MsgClientImpl implements Msg {
   ): Promise<MsgCreateVaultTypeResponse> {
     const data = MsgCreateVaultType.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.tradehubcosmos.collateralizeddebtposition.Msg",
+      "Switcheo.carbon.cdp.Msg",
       "HandleMsgCreateVaultType",
       data
     );

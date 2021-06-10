@@ -1,14 +1,13 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Vault, VaultType } from "../collateralizeddebtposition/vault";
+import { Vault, VaultType } from "../cdp/vault";
 import {
   PageRequest,
   PageResponse,
 } from "../cosmos/base/query/v1beta1/pagination";
 
-export const protobufPackage =
-  "Switcheo.tradehubcosmos.collateralizeddebtposition";
+export const protobufPackage = "Switcheo.carbon.cdp";
 
 /** this line is used by starport scaffolding # 3 */
 export interface QueryGetVaultRequest {
@@ -689,7 +688,7 @@ export class QueryClientImpl implements Query {
   Vault(request: QueryGetVaultRequest): Promise<QueryGetVaultResponse> {
     const data = QueryGetVaultRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.tradehubcosmos.collateralizeddebtposition.Query",
+      "Switcheo.carbon.cdp.Query",
       "Vault",
       data
     );
@@ -701,7 +700,7 @@ export class QueryClientImpl implements Query {
   VaultAll(request: QueryAllVaultRequest): Promise<QueryAllVaultResponse> {
     const data = QueryAllVaultRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.tradehubcosmos.collateralizeddebtposition.Query",
+      "Switcheo.carbon.cdp.Query",
       "VaultAll",
       data
     );
@@ -715,7 +714,7 @@ export class QueryClientImpl implements Query {
   ): Promise<QueryGetVaultTypeResponse> {
     const data = QueryGetVaultTypeRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.tradehubcosmos.collateralizeddebtposition.Query",
+      "Switcheo.carbon.cdp.Query",
       "VaultType",
       data
     );
@@ -729,7 +728,7 @@ export class QueryClientImpl implements Query {
   ): Promise<QueryAllVaultTypeResponse> {
     const data = QueryAllVaultTypeRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.tradehubcosmos.collateralizeddebtposition.Query",
+      "Switcheo.carbon.cdp.Query",
       "VaultTypeAll",
       data
     );

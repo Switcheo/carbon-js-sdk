@@ -2,7 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 
-export const protobufPackage = "Switcheo.carbon.inflation";
+export const protobufPackage = "Switcheo.carbon.adl";
 
 /** Msg defines the Msg service. */
 export interface Msg {}

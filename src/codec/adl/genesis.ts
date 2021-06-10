@@ -2,9 +2,9 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 
-export const protobufPackage = "Switcheo.tradehubcosmos.autodeleverage";
+export const protobufPackage = "Switcheo.carbon.adl";
 
-/** GenesisState defines the autodeleverage module's genesis state. */
+/** GenesisState defines the adl module's genesis state. */
 export interface GenesisState {}
 
 const baseGenesisState: object = {};

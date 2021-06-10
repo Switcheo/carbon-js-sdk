@@ -2,7 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 
-export const protobufPackage = "Switcheo.tradehubcosmos.oracle";
+export const protobufPackage = "Switcheo.carbon.oracle";
 
 export interface Oracle {
   creator: string;

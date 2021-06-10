@@ -3,7 +3,7 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { MintData } from "../inflation/inflation";
 
-export const protobufPackage = "Switcheo.tradehubcosmos.inflation";
+export const protobufPackage = "Switcheo.carbon.inflation";
 
 /** GenesisState defines the inflation module's genesis state. */
 export interface GenesisState {

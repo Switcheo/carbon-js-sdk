@@ -2,7 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 
-export const protobufPackage = "Switcheo.tradehubcosmos.profile";
+export const protobufPackage = "Switcheo.carbon.profile";
 
 export interface Profile {
   address: string;

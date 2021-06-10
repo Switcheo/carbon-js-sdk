@@ -3,7 +3,7 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { MsgSetFee } from "../fee/tx";
 
-export const protobufPackage = "Switcheo.tradehubcosmos.fee";
+export const protobufPackage = "Switcheo.carbon.fee";
 
 export interface SetMsgFeeProposal {
   title: string;

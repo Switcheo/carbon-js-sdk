@@ -2,7 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 
-export const protobufPackage = "Switcheo.tradehubcosmos.fee";
+export const protobufPackage = "Switcheo.carbon.fee";
 
 /** this line is used by starport scaffolding # proto/tx/message */
 export interface MsgSetFee {
@@ -161,7 +161,7 @@ export class MsgClientImpl implements Msg {
   SetMsgFee(request: MsgSetFee): Promise<MsgSetFeeResponse> {
     const data = MsgSetFee.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.tradehubcosmos.fee.Msg",
+      "Switcheo.carbon.fee.Msg",
       "SetMsgFee",
       data
     );

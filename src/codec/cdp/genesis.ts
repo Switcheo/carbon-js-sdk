@@ -1,12 +1,11 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Vault, VaultType } from "../collateralizeddebtposition/vault";
+import { Vault, VaultType } from "../cdp/vault";
 
-export const protobufPackage =
-  "Switcheo.tradehubcosmos.collateralizeddebtposition";
+export const protobufPackage = "Switcheo.carbon.cdp";
 
-/** GenesisState defines the collateralizeddebtposition module's genesis state. */
+/** GenesisState defines the cdp module's genesis state. */
 export interface GenesisState {
   /** this line is used by starport scaffolding # genesis/proto/state */
   vaults: Vault[];

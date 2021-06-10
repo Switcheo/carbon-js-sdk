@@ -7,7 +7,7 @@ import {
   PositionPoolCoinsWithKey,
 } from "../coin/token";
 
-export const protobufPackage = "Switcheo.tradehubcosmos.coin";
+export const protobufPackage = "Switcheo.carbon.coin";
 
 /** GenesisState defines the coin module's genesis state. */
 export interface GenesisState {

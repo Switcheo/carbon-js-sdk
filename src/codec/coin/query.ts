@@ -7,7 +7,7 @@ import {
   PageResponse,
 } from "../cosmos/base/query/v1beta1/pagination";
 
-export const protobufPackage = "Switcheo.tradehubcosmos.coin";
+export const protobufPackage = "Switcheo.carbon.coin";
 
 /** this line is used by starport scaffolding # 3 */
 export interface QueryGetTokenRequest {
@@ -326,7 +326,7 @@ export class QueryClientImpl implements Query {
   Token(request: QueryGetTokenRequest): Promise<QueryGetTokenResponse> {
     const data = QueryGetTokenRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.tradehubcosmos.coin.Query",
+      "Switcheo.carbon.coin.Query",
       "Token",
       data
     );
@@ -338,7 +338,7 @@ export class QueryClientImpl implements Query {
   TokenAll(request: QueryAllTokenRequest): Promise<QueryAllTokenResponse> {
     const data = QueryAllTokenRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.tradehubcosmos.coin.Query",
+      "Switcheo.carbon.coin.Query",
       "TokenAll",
       data
     );

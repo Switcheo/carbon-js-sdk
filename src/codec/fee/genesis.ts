@@ -3,7 +3,7 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { MsgFee } from "../fee/fee";
 
-export const protobufPackage = "Switcheo.tradehubcosmos.fee";
+export const protobufPackage = "Switcheo.carbon.fee";
 
 /** GenesisState defines the fee module's genesis state. */
 export interface GenesisState {

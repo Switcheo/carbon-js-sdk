@@ -3,8 +3,7 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Coin } from "../cosmos/base/v1beta1/coin";
 
-export const protobufPackage =
-  "Switcheo.tradehubcosmos.collateralizeddebtposition";
+export const protobufPackage = "Switcheo.carbon.cdp";
 
 export interface Vault {
   vaultTypeId: Long;

@@ -3,7 +3,7 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Profile } from "../profile/profile";
 
-export const protobufPackage = "Switcheo.tradehubcosmos.profile";
+export const protobufPackage = "Switcheo.carbon.profile";
 
 /** GenesisState defines the profile module's genesis state. */
 export interface GenesisState {

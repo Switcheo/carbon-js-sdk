@@ -2,7 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 
-export const protobufPackage = "Switcheo.tradehubcosmos.liquiditypool";
+export const protobufPackage = "Switcheo.carbon.liquiditypool";
 
 export interface Pool {
   creator: string;

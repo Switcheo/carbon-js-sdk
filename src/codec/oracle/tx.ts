@@ -2,7 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 
-export const protobufPackage = "Switcheo.tradehubcosmos.oracle";
+export const protobufPackage = "Switcheo.carbon.oracle";
 
 /** this line is used by starport scaffolding # proto/tx/message */
 export interface MsgCreateOracle {
@@ -495,7 +495,7 @@ export class MsgClientImpl implements Msg {
   CreateOracle(request: MsgCreateOracle): Promise<MsgCreateOracleResponse> {
     const data = MsgCreateOracle.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.tradehubcosmos.oracle.Msg",
+      "Switcheo.carbon.oracle.Msg",
       "CreateOracle",
       data
     );
@@ -507,7 +507,7 @@ export class MsgClientImpl implements Msg {
   CreateVote(request: MsgCreateVote): Promise<MsgCreateVoteResponse> {
     const data = MsgCreateVote.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.tradehubcosmos.oracle.Msg",
+      "Switcheo.carbon.oracle.Msg",
       "CreateVote",
       data
     );
