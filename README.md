@@ -54,5 +54,22 @@ This assumes that a packaged `./proto-ts.tar.gz` is available in the project dir
   yarn run sync-proto
 ```
 
+To generate the tar ball on Carbon chain project:
+
+Install `buf` if you have not:
+```bash
+  brew tap bufbuild/buf
+  brew install buf
+```
+
+Run script to generate codec:
+```bash
+  make gen-proto
+```
+
+The tar file will be generated at `<Carbon Project>/gen/proto-ts.tar.gz`. You can copy that file to `<Carbon SDK Project>/proto-ts.tar.gz` and proceed with above `sync-proto` step.
+
+Eventually the `proto-ts.tar.gz` will be packaged as a release file in `Carbon` repository. A script will be added automatically download the latest released codecs and update the SDK.
+
 # Contributing to Carbon SDK
 {wip}
