@@ -1,7 +1,6 @@
 import { registry } from "@carbon-sdk/codec";
 import { DEFAULT_FEE, DEFAULT_NETWORK, Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
-import { AddressUtils, GenericUtils } from "@carbon-sdk/util";
-import { CarbonTx, DEFAULT_SIGN_OPTS } from "@carbon-sdk/util/tx";
+import { AddressUtils, CarbonTx, GenericUtils } from "@carbon-sdk/util";
 import { StdSignature } from "@cosmjs/amino";
 import { AccountData, DirectSignResponse, EncodeObject, OfflineDirectSigner } from "@cosmjs/proto-signing";
 import { BroadcastTxResponse, isBroadcastTxFailure, SigningStargateClient } from "@cosmjs/stargate";
@@ -126,7 +125,7 @@ export class CarbonWallet implements OfflineDirectSigner {
     return response;
   }
 
-  async sendTx(msg: EncodeObject, opts: CarbonTx.SignTxOpts = DEFAULT_SIGN_OPTS): Promise<BroadcastTxResponse> {
+  async sendTx(msg: EncodeObject, opts: CarbonTx.SignTxOpts = CarbonTx.DEFAULT_SIGN_OPTS): Promise<BroadcastTxResponse> {
     return this.sendTxs([msg], opts);
   }
 

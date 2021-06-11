@@ -3,7 +3,7 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { MsgCreateOracle } from "../oracle/tx";
 
-export const protobufPackage = "Switcheo.tradehubcosmos.oracle";
+export const protobufPackage = "Switcheo.carbon.oracle";
 
 export interface CreateOracleProposal {
   title: string;

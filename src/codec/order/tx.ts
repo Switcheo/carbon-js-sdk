@@ -2,7 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 
-export const protobufPackage = "Switcheo.tradehubcosmos.order";
+export const protobufPackage = "Switcheo.carbon.order";
 
 /** this line is used by starport scaffolding # proto/tx/message */
 export interface MsgSetTradingFlag {
@@ -929,7 +929,7 @@ export class MsgClientImpl implements Msg {
   ): Promise<MsgSetTradingFlagResponse> {
     const data = MsgSetTradingFlag.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.tradehubcosmos.order.Msg",
+      "Switcheo.carbon.order.Msg",
       "SetTradingFlag",
       data
     );
@@ -941,7 +941,7 @@ export class MsgClientImpl implements Msg {
   CreateOrder(request: MsgCreateOrder): Promise<MsgCreateOrderResponse> {
     const data = MsgCreateOrder.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.tradehubcosmos.order.Msg",
+      "Switcheo.carbon.order.Msg",
       "CreateOrder",
       data
     );
@@ -953,7 +953,7 @@ export class MsgClientImpl implements Msg {
   EditOrder(request: MsgEditOrder): Promise<MsgEditOrderResponse> {
     const data = MsgEditOrder.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.tradehubcosmos.order.Msg",
+      "Switcheo.carbon.order.Msg",
       "EditOrder",
       data
     );
@@ -965,7 +965,7 @@ export class MsgClientImpl implements Msg {
   CancelOrder(request: MsgCancelOrder): Promise<MsgCancelOrderResponse> {
     const data = MsgCancelOrder.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.tradehubcosmos.order.Msg",
+      "Switcheo.carbon.order.Msg",
       "CancelOrder",
       data
     );
@@ -977,7 +977,7 @@ export class MsgClientImpl implements Msg {
   CancelAll(request: MsgCancelAll): Promise<MsgCancelAllResponse> {
     const data = MsgCancelAll.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.tradehubcosmos.order.Msg",
+      "Switcheo.carbon.order.Msg",
       "CancelAll",
       data
     );

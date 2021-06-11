@@ -3,7 +3,7 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { OrderIDs, Order } from "../order/order";
 
-export const protobufPackage = "Switcheo.tradehubcosmos.order";
+export const protobufPackage = "Switcheo.carbon.order";
 
 /** GenesisState defines the order module's genesis state. */
 export interface GenesisState {

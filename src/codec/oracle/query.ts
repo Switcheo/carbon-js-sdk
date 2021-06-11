@@ -7,7 +7,7 @@ import {
   PageResponse,
 } from "../cosmos/base/query/v1beta1/pagination";
 
-export const protobufPackage = "Switcheo.tradehubcosmos.oracle";
+export const protobufPackage = "Switcheo.carbon.oracle";
 
 /** this line is used by starport scaffolding # 3 */
 export interface QueryGetOracleRequest {
@@ -332,7 +332,7 @@ export class QueryClientImpl implements Query {
   Oracle(request: QueryGetOracleRequest): Promise<QueryGetOracleResponse> {
     const data = QueryGetOracleRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.tradehubcosmos.oracle.Query",
+      "Switcheo.carbon.oracle.Query",
       "Oracle",
       data
     );
@@ -344,7 +344,7 @@ export class QueryClientImpl implements Query {
   OracleAll(request: QueryAllOracleRequest): Promise<QueryAllOracleResponse> {
     const data = QueryAllOracleRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.tradehubcosmos.oracle.Query",
+      "Switcheo.carbon.oracle.Query",
       "OracleAll",
       data
     );

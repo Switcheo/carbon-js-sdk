@@ -3,7 +3,7 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { MsgCreateMarket, MsgUpdateMarket } from "../market/tx";
 
-export const protobufPackage = "Switcheo.tradehubcosmos.market";
+export const protobufPackage = "Switcheo.carbon.market";
 
 export interface CreateMarketProposal {
   title: string;

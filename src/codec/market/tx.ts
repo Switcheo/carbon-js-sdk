@@ -4,7 +4,7 @@ import _m0 from "protobufjs/minimal";
 import { Duration } from "../google/protobuf/duration";
 import { Timestamp } from "../google/protobuf/timestamp";
 
-export const protobufPackage = "Switcheo.tradehubcosmos.market";
+export const protobufPackage = "Switcheo.carbon.market";
 
 /** this line is used by starport scaffolding # proto/tx/message */
 export interface MsgCreateMarket {
@@ -1129,7 +1129,7 @@ export class MsgClientImpl implements Msg {
   CreateMarket(request: MsgCreateMarket): Promise<MsgCreateMarketResponse> {
     const data = MsgCreateMarket.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.tradehubcosmos.market.Msg",
+      "Switcheo.carbon.market.Msg",
       "CreateMarket",
       data
     );
@@ -1141,7 +1141,7 @@ export class MsgClientImpl implements Msg {
   UpdateMarket(request: MsgUpdateMarket): Promise<MsgUpdateMarketResponse> {
     const data = MsgUpdateMarket.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.tradehubcosmos.market.Msg",
+      "Switcheo.carbon.market.Msg",
       "UpdateMarket",
       data
     );

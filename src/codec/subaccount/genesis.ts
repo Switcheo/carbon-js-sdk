@@ -3,7 +3,7 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { GenesisSubAccount } from "../subaccount/subaccount";
 
-export const protobufPackage = "Switcheo.tradehubcosmos.subaccount";
+export const protobufPackage = "Switcheo.carbon.subaccount";
 
 /** GenesisState defines the subaccount module's genesis state. */
 export interface GenesisState {

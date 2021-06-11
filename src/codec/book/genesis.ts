@@ -3,7 +3,7 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { OrderBook, StopBook } from "../book/book";
 
-export const protobufPackage = "Switcheo.tradehubcosmos.book";
+export const protobufPackage = "Switcheo.carbon.book";
 
 /** GenesisState defines the book module's genesis state. */
 export interface GenesisState {

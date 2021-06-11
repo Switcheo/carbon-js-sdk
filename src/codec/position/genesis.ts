@@ -3,7 +3,7 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Position } from "../position/position";
 
-export const protobufPackage = "Switcheo.tradehubcosmos.position";
+export const protobufPackage = "Switcheo.carbon.position";
 
 /** GenesisState defines the position module's genesis state. */
 export interface GenesisState {

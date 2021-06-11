@@ -3,7 +3,7 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { FundByMarket } from "../insurance/fund";
 
-export const protobufPackage = "Switcheo.tradehubcosmos.insurance";
+export const protobufPackage = "Switcheo.carbon.insurance";
 
 /** GenesisState defines the insurance module's genesis state. */
 export interface GenesisState {

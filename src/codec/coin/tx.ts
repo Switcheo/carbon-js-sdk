@@ -2,7 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 
-export const protobufPackage = "Switcheo.tradehubcosmos.coin";
+export const protobufPackage = "Switcheo.carbon.coin";
 
 /** this line is used by starport scaffolding # proto/tx/message */
 export interface MsgCreateToken {
@@ -372,7 +372,7 @@ export class MsgClientImpl implements Msg {
   CreateToken(request: MsgCreateToken): Promise<MsgCreateTokenResponse> {
     const data = MsgCreateToken.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.tradehubcosmos.coin.Msg",
+      "Switcheo.carbon.coin.Msg",
       "CreateToken",
       data
     );

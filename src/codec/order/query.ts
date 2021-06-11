@@ -7,7 +7,7 @@ import {
   PageResponse,
 } from "../cosmos/base/query/v1beta1/pagination";
 
-export const protobufPackage = "Switcheo.tradehubcosmos.order";
+export const protobufPackage = "Switcheo.carbon.order";
 
 /** this line is used by starport scaffolding # 3 */
 export interface QueryGetOrderRequest {
@@ -326,7 +326,7 @@ export class QueryClientImpl implements Query {
   Order(request: QueryGetOrderRequest): Promise<QueryGetOrderResponse> {
     const data = QueryGetOrderRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.tradehubcosmos.order.Query",
+      "Switcheo.carbon.order.Query",
       "Order",
       data
     );
@@ -338,7 +338,7 @@ export class QueryClientImpl implements Query {
   OrderAll(request: QueryAllOrderRequest): Promise<QueryAllOrderResponse> {
     const data = QueryAllOrderRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.tradehubcosmos.order.Query",
+      "Switcheo.carbon.order.Query",
       "OrderAll",
       data
     );

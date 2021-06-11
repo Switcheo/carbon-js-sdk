@@ -5,6 +5,9 @@ import CarbonQueryClient from "./CarbonQueryClient";
 import { ModOrder } from "./modules";
 import { CarbonSigner, CarbonWallet } from "./wallet";
 
+export { CarbonTx } from "@carbon-sdk/util";
+export { CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletInitOpts } from "@carbon-sdk/wallet";
+
 export interface CarbonSDKOpts {
   network: Network;
   tmClient: Tendermint34Client;

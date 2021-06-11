@@ -2,12 +2,12 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 
-export const protobufPackage = "Switcheo.tradehubcosmos.autodeleverage";
+export const protobufPackage = "Switcheo.carbon.carbon";
 
-/** Query defines the gRPC querier service. */
-export interface Query {}
+/** Msg defines the Msg service. */
+export interface Msg {}
 
-export class QueryClientImpl implements Query {
+export class MsgClientImpl implements Msg {
   private readonly rpc: Rpc;
   constructor(rpc: Rpc) {
     this.rpc = rpc;

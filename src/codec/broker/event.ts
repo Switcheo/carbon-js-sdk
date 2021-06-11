@@ -3,7 +3,7 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Timestamp } from "../google/protobuf/timestamp";
 
-export const protobufPackage = "Switcheo.tradehubcosmos.broker";
+export const protobufPackage = "Switcheo.carbon.broker";
 
 export interface TradeEvent {
   blockHeight: Long;

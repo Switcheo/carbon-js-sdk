@@ -3,7 +3,7 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Coin } from "../cosmos/base/v1beta1/coin";
 
-export const protobufPackage = "Switcheo.tradehubcosmos.position";
+export const protobufPackage = "Switcheo.carbon.position";
 
 export interface Position {
   market: string;

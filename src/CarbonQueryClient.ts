@@ -1,8 +1,8 @@
-import { QueryClientImpl as ADLQueryClient } from "@carbon-sdk/codec/autodeleverage/query";
+import { QueryClientImpl as ADLQueryClient } from "@carbon-sdk/codec/adl/query";
 import { QueryClientImpl as BookQueryClient } from "@carbon-sdk/codec/book/query";
 import { QueryClientImpl as BrokerQueryClient } from "@carbon-sdk/codec/broker/query";
 import { QueryClientImpl as CoinQueryClient } from "@carbon-sdk/codec/coin/query";
-import { QueryClientImpl as CDPQueryClient } from "@carbon-sdk/codec/collateralizeddebtposition/query";
+import { QueryClientImpl as CDPQueryClient } from "@carbon-sdk/codec/cdp/query";
 import { QueryClientImpl as FeeQueryClient } from "@carbon-sdk/codec/fee/query";
 import { QueryClientImpl as InflationQueryClient } from "@carbon-sdk/codec/inflation/query";
 import { QueryClientImpl as InsuranceQueryClient } from "@carbon-sdk/codec/insurance/query";

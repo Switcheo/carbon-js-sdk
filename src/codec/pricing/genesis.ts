@@ -3,7 +3,7 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Prices } from "../pricing/pricing";
 
-export const protobufPackage = "Switcheo.tradehubcosmos.pricing";
+export const protobufPackage = "Switcheo.carbon.pricing";
 
 /** GenesisState defines the pricing module's genesis state. */
 export interface GenesisState {

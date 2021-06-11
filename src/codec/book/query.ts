@@ -7,7 +7,7 @@ import {
   PageResponse,
 } from "../cosmos/base/query/v1beta1/pagination";
 
-export const protobufPackage = "Switcheo.tradehubcosmos.book";
+export const protobufPackage = "Switcheo.carbon.book";
 
 /** this line is used by starport scaffolding # 3 */
 export interface QueryGetBookRequest {
@@ -316,7 +316,7 @@ export class QueryClientImpl implements Query {
   Book(request: QueryGetBookRequest): Promise<QueryGetBookResponse> {
     const data = QueryGetBookRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.tradehubcosmos.book.Query",
+      "Switcheo.carbon.book.Query",
       "Book",
       data
     );
@@ -328,7 +328,7 @@ export class QueryClientImpl implements Query {
   BookAll(request: QueryAllBookRequest): Promise<QueryAllBookResponse> {
     const data = QueryAllBookRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.tradehubcosmos.book.Query",
+      "Switcheo.carbon.book.Query",
       "BookAll",
       data
     );

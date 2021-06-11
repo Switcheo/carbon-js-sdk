@@ -1,19 +1,29 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
+import { Amm } from "../broker/amm";
 
-export const protobufPackage = "Switcheo.tradehubcosmos.broker";
+export const protobufPackage = "Switcheo.carbon.broker";
 
 /** GenesisState defines the broker module's genesis state. */
-export interface GenesisState {}
+export interface GenesisState {
+  /**
+   * this line is used by starport scaffolding # genesis/proto/state
+   * this line is used by starport scaffolding # ibc/genesis/proto
+   */
+  amms: Amm[];
+}
 
 const baseGenesisState: object = {};
 
 export const GenesisState = {
   encode(
-    _: GenesisState,
+    message: GenesisState,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
+    for (const v of message.amms) {
+      Amm.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -21,9 +31,13 @@ export const GenesisState = {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseGenesisState } as GenesisState;
+    message.amms = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.amms.push(Amm.decode(reader, reader.uint32()));
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -32,18 +46,35 @@ export const GenesisState = {
     return message;
   },
 
-  fromJSON(_: any): GenesisState {
+  fromJSON(object: any): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
+    message.amms = [];
+    if (object.amms !== undefined && object.amms !== null) {
+      for (const e of object.amms) {
+        message.amms.push(Amm.fromJSON(e));
+      }
+    }
     return message;
   },
 
-  toJSON(_: GenesisState): unknown {
+  toJSON(message: GenesisState): unknown {
     const obj: any = {};
+    if (message.amms) {
+      obj.amms = message.amms.map((e) => (e ? Amm.toJSON(e) : undefined));
+    } else {
+      obj.amms = [];
+    }
     return obj;
   },
 
-  fromPartial(_: DeepPartial<GenesisState>): GenesisState {
+  fromPartial(object: DeepPartial<GenesisState>): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
+    message.amms = [];
+    if (object.amms !== undefined && object.amms !== null) {
+      for (const e of object.amms) {
+        message.amms.push(Amm.fromPartial(e));
+      }
+    }
     return message;
   },
 };

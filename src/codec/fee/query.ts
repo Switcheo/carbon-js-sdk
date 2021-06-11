@@ -7,7 +7,7 @@ import {
   PageResponse,
 } from "../cosmos/base/query/v1beta1/pagination";
 
-export const protobufPackage = "Switcheo.tradehubcosmos.fee";
+export const protobufPackage = "Switcheo.carbon.fee";
 
 /** this line is used by starport scaffolding # 3 */
 export interface QueryGetMsgFeeRequest {
@@ -332,7 +332,7 @@ export class QueryClientImpl implements Query {
   MsgFee(request: QueryGetMsgFeeRequest): Promise<QueryGetMsgFeeResponse> {
     const data = QueryGetMsgFeeRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.tradehubcosmos.fee.Query",
+      "Switcheo.carbon.fee.Query",
       "MsgFee",
       data
     );
@@ -344,7 +344,7 @@ export class QueryClientImpl implements Query {
   MsgFeeAll(request: QueryAllMsgFeeRequest): Promise<QueryAllMsgFeeResponse> {
     const data = QueryAllMsgFeeRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.tradehubcosmos.fee.Query",
+      "Switcheo.carbon.fee.Query",
       "MsgFeeAll",
       data
     );

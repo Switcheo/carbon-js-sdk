@@ -2,7 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 
-export const protobufPackage = "Switcheo.tradehubcosmos.book";
+export const protobufPackage = "Switcheo.carbon.book";
 
 export interface OrderBookEvent {
   type: string;
