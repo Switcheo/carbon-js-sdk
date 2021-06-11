@@ -1,7 +1,6 @@
 import { TxTypes } from "@carbon-sdk/codec";
 import { DEFAULT_FEE } from "@carbon-sdk/constant";
 import { StdFee } from "@cosmjs/amino";
-import { GeneratedType } from "@cosmjs/proto-signing";
 
 export namespace CarbonTx {
   export interface SignTxOpts {
@@ -32,9 +31,9 @@ export namespace CarbonTx {
   }
 
   export const Types = TxTypes;
-}
 
-export const DEFAULT_SIGN_OPTS: CarbonTx.SignTxOpts = {
-  fee: DEFAULT_FEE,
-  memo: "",
+  export const DEFAULT_SIGN_OPTS: CarbonTx.SignTxOpts = {
+    fee: DEFAULT_FEE,
+    memo: "",
+  }
 }

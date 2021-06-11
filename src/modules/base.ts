@@ -1,5 +1,5 @@
 import CarbonQueryClient from "@carbon-sdk/CarbonQueryClient";
-import { CarbonTx } from "@carbon-sdk/util/tx";
+import { CarbonTx } from "@carbon-sdk/util";
 import { CarbonWallet } from "@carbon-sdk/wallet";
 import { EncodeObject } from "@cosmjs/proto-signing";
 
