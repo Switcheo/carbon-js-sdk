@@ -1,33 +1,25 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
+import { Params } from "../fee/fee";
 
 export const protobufPackage = "Switcheo.carbon.fee";
 
-/** this line is used by starport scaffolding # proto/tx/message */
 export interface MsgSetFee {
-  creator: string;
-  msgType: string;
-  fee: string;
+  params?: Params;
 }
 
 export interface MsgSetFeeResponse {}
 
-const baseMsgSetFee: object = { creator: "", msgType: "", fee: "" };
+const baseMsgSetFee: object = {};
 
 export const MsgSetFee = {
   encode(
     message: MsgSetFee,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.creator !== "") {
-      writer.uint32(10).string(message.creator);
-    }
-    if (message.msgType !== "") {
-      writer.uint32(18).string(message.msgType);
-    }
-    if (message.fee !== "") {
-      writer.uint32(26).string(message.fee);
+    if (message.params !== undefined) {
+      Params.encode(message.params, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -40,13 +32,7 @@ export const MsgSetFee = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.creator = reader.string();
-          break;
-        case 2:
-          message.msgType = reader.string();
-          break;
-        case 3:
-          message.fee = reader.string();
+          message.params = Params.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -58,48 +44,27 @@ export const MsgSetFee = {
 
   fromJSON(object: any): MsgSetFee {
     const message = { ...baseMsgSetFee } as MsgSetFee;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
+    if (object.params !== undefined && object.params !== null) {
+      message.params = Params.fromJSON(object.params);
     } else {
-      message.creator = "";
-    }
-    if (object.msgType !== undefined && object.msgType !== null) {
-      message.msgType = String(object.msgType);
-    } else {
-      message.msgType = "";
-    }
-    if (object.fee !== undefined && object.fee !== null) {
-      message.fee = String(object.fee);
-    } else {
-      message.fee = "";
+      message.params = undefined;
     }
     return message;
   },
 
   toJSON(message: MsgSetFee): unknown {
     const obj: any = {};
-    message.creator !== undefined && (obj.creator = message.creator);
-    message.msgType !== undefined && (obj.msgType = message.msgType);
-    message.fee !== undefined && (obj.fee = message.fee);
+    message.params !== undefined &&
+      (obj.params = message.params ? Params.toJSON(message.params) : undefined);
     return obj;
   },
 
   fromPartial(object: DeepPartial<MsgSetFee>): MsgSetFee {
     const message = { ...baseMsgSetFee } as MsgSetFee;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
+    if (object.params !== undefined && object.params !== null) {
+      message.params = Params.fromPartial(object.params);
     } else {
-      message.creator = "";
-    }
-    if (object.msgType !== undefined && object.msgType !== null) {
-      message.msgType = object.msgType;
-    } else {
-      message.msgType = "";
-    }
-    if (object.fee !== undefined && object.fee !== null) {
-      message.fee = object.fee;
-    } else {
-      message.fee = "";
+      message.params = undefined;
     }
     return message;
   },

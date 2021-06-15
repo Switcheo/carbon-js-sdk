@@ -24,6 +24,22 @@ export interface MsgCreateTokenResponse {
   denom: string;
 }
 
+export interface MsgSyncToken {
+  syncer: string;
+  denom: string;
+}
+
+export interface MsgSyncTokenResponse {}
+
+export interface MsgMintToken {
+  creator: string;
+  denom: string;
+  amount: string;
+  to: string;
+}
+
+export interface MsgMintTokenResponse {}
+
 const baseMsgCreateToken: object = {
   creator: "",
   name: "",
@@ -357,10 +373,284 @@ export const MsgCreateTokenResponse = {
   },
 };
 
+const baseMsgSyncToken: object = { syncer: "", denom: "" };
+
+export const MsgSyncToken = {
+  encode(
+    message: MsgSyncToken,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.syncer !== "") {
+      writer.uint32(10).string(message.syncer);
+    }
+    if (message.denom !== "") {
+      writer.uint32(18).string(message.denom);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgSyncToken {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgSyncToken } as MsgSyncToken;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.syncer = reader.string();
+          break;
+        case 2:
+          message.denom = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgSyncToken {
+    const message = { ...baseMsgSyncToken } as MsgSyncToken;
+    if (object.syncer !== undefined && object.syncer !== null) {
+      message.syncer = String(object.syncer);
+    } else {
+      message.syncer = "";
+    }
+    if (object.denom !== undefined && object.denom !== null) {
+      message.denom = String(object.denom);
+    } else {
+      message.denom = "";
+    }
+    return message;
+  },
+
+  toJSON(message: MsgSyncToken): unknown {
+    const obj: any = {};
+    message.syncer !== undefined && (obj.syncer = message.syncer);
+    message.denom !== undefined && (obj.denom = message.denom);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgSyncToken>): MsgSyncToken {
+    const message = { ...baseMsgSyncToken } as MsgSyncToken;
+    if (object.syncer !== undefined && object.syncer !== null) {
+      message.syncer = object.syncer;
+    } else {
+      message.syncer = "";
+    }
+    if (object.denom !== undefined && object.denom !== null) {
+      message.denom = object.denom;
+    } else {
+      message.denom = "";
+    }
+    return message;
+  },
+};
+
+const baseMsgSyncTokenResponse: object = {};
+
+export const MsgSyncTokenResponse = {
+  encode(
+    _: MsgSyncTokenResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgSyncTokenResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgSyncTokenResponse } as MsgSyncTokenResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgSyncTokenResponse {
+    const message = { ...baseMsgSyncTokenResponse } as MsgSyncTokenResponse;
+    return message;
+  },
+
+  toJSON(_: MsgSyncTokenResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(_: DeepPartial<MsgSyncTokenResponse>): MsgSyncTokenResponse {
+    const message = { ...baseMsgSyncTokenResponse } as MsgSyncTokenResponse;
+    return message;
+  },
+};
+
+const baseMsgMintToken: object = { creator: "", denom: "", amount: "", to: "" };
+
+export const MsgMintToken = {
+  encode(
+    message: MsgMintToken,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.denom !== "") {
+      writer.uint32(18).string(message.denom);
+    }
+    if (message.amount !== "") {
+      writer.uint32(26).string(message.amount);
+    }
+    if (message.to !== "") {
+      writer.uint32(34).string(message.to);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgMintToken {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgMintToken } as MsgMintToken;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.denom = reader.string();
+          break;
+        case 3:
+          message.amount = reader.string();
+          break;
+        case 4:
+          message.to = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgMintToken {
+    const message = { ...baseMsgMintToken } as MsgMintToken;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = String(object.creator);
+    } else {
+      message.creator = "";
+    }
+    if (object.denom !== undefined && object.denom !== null) {
+      message.denom = String(object.denom);
+    } else {
+      message.denom = "";
+    }
+    if (object.amount !== undefined && object.amount !== null) {
+      message.amount = String(object.amount);
+    } else {
+      message.amount = "";
+    }
+    if (object.to !== undefined && object.to !== null) {
+      message.to = String(object.to);
+    } else {
+      message.to = "";
+    }
+    return message;
+  },
+
+  toJSON(message: MsgMintToken): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.denom !== undefined && (obj.denom = message.denom);
+    message.amount !== undefined && (obj.amount = message.amount);
+    message.to !== undefined && (obj.to = message.to);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgMintToken>): MsgMintToken {
+    const message = { ...baseMsgMintToken } as MsgMintToken;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = object.creator;
+    } else {
+      message.creator = "";
+    }
+    if (object.denom !== undefined && object.denom !== null) {
+      message.denom = object.denom;
+    } else {
+      message.denom = "";
+    }
+    if (object.amount !== undefined && object.amount !== null) {
+      message.amount = object.amount;
+    } else {
+      message.amount = "";
+    }
+    if (object.to !== undefined && object.to !== null) {
+      message.to = object.to;
+    } else {
+      message.to = "";
+    }
+    return message;
+  },
+};
+
+const baseMsgMintTokenResponse: object = {};
+
+export const MsgMintTokenResponse = {
+  encode(
+    _: MsgMintTokenResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgMintTokenResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgMintTokenResponse } as MsgMintTokenResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgMintTokenResponse {
+    const message = { ...baseMsgMintTokenResponse } as MsgMintTokenResponse;
+    return message;
+  },
+
+  toJSON(_: MsgMintTokenResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(_: DeepPartial<MsgMintTokenResponse>): MsgMintTokenResponse {
+    const message = { ...baseMsgMintTokenResponse } as MsgMintTokenResponse;
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
   /** this line is used by starport scaffolding # proto/tx/rpc */
   CreateToken(request: MsgCreateToken): Promise<MsgCreateTokenResponse>;
+  SyncToken(request: MsgSyncToken): Promise<MsgSyncTokenResponse>;
+  MintToken(request: MsgMintToken): Promise<MsgMintTokenResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -368,6 +658,8 @@ export class MsgClientImpl implements Msg {
   constructor(rpc: Rpc) {
     this.rpc = rpc;
     this.CreateToken = this.CreateToken.bind(this);
+    this.SyncToken = this.SyncToken.bind(this);
+    this.MintToken = this.MintToken.bind(this);
   }
   CreateToken(request: MsgCreateToken): Promise<MsgCreateTokenResponse> {
     const data = MsgCreateToken.encode(request).finish();
@@ -378,6 +670,30 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgCreateTokenResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  SyncToken(request: MsgSyncToken): Promise<MsgSyncTokenResponse> {
+    const data = MsgSyncToken.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.coin.Msg",
+      "SyncToken",
+      data
+    );
+    return promise.then((data) =>
+      MsgSyncTokenResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  MintToken(request: MsgMintToken): Promise<MsgMintTokenResponse> {
+    const data = MsgMintToken.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.coin.Msg",
+      "MintToken",
+      data
+    );
+    return promise.then((data) =>
+      MsgMintTokenResponse.decode(new _m0.Reader(data))
     );
   }
 }

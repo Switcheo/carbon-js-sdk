@@ -2,7 +2,7 @@
 import { Registry } from "@cosmjs/proto-signing";
 import { MsgInitiateLiquidation, MsgInitiateLiquidationResponse } from "./broker/tx";
 import { MsgAddCollateral, MsgAddCollateralResponse, MsgRemoveCollateral, MsgRemoveCollateralResponse, MsgAddDebt, MsgAddDebtResponse, MsgRemoveDebt, MsgRemoveDebtResponse, MsgCreateVaultType, MsgCreateVaultTypeResponse } from "./cdp/tx";
-import { MsgCreateToken, MsgCreateTokenResponse } from "./coin/tx";
+import { MsgCreateToken, MsgCreateTokenResponse, MsgSyncToken, MsgSyncTokenResponse, MsgMintToken, MsgMintTokenResponse } from "./coin/tx";
 import { MsgSetFee, MsgSetFeeResponse } from "./fee/tx";
 import { MsgCreatePool, MsgCreatePoolResponse } from "./liquiditypool/tx";
 import { MsgCreateMarket, MsgCreateMarketResponse, MsgUpdateMarket, MsgUpdateMarketResponse } from "./market/tx";
@@ -29,6 +29,10 @@ registry.register("/Switcheo.carbon.cdp.MsgCreateVaultTypeResponse", MsgCreateVa
 
 registry.register("/Switcheo.carbon.coin.MsgCreateToken", MsgCreateToken);
 registry.register("/Switcheo.carbon.coin.MsgCreateTokenResponse", MsgCreateTokenResponse);
+registry.register("/Switcheo.carbon.coin.MsgSyncToken", MsgSyncToken);
+registry.register("/Switcheo.carbon.coin.MsgSyncTokenResponse", MsgSyncTokenResponse);
+registry.register("/Switcheo.carbon.coin.MsgMintToken", MsgMintToken);
+registry.register("/Switcheo.carbon.coin.MsgMintTokenResponse", MsgMintTokenResponse);
 
 registry.register("/Switcheo.carbon.fee.MsgSetFee", MsgSetFee);
 registry.register("/Switcheo.carbon.fee.MsgSetFeeResponse", MsgSetFeeResponse);
@@ -82,6 +86,10 @@ export const TxTypes = {
   "MsgCreateVaultTypeResponse": "/Switcheo.carbon.cdp.MsgCreateVaultTypeResponse",
   "MsgCreateToken": "/Switcheo.carbon.coin.MsgCreateToken",
   "MsgCreateTokenResponse": "/Switcheo.carbon.coin.MsgCreateTokenResponse",
+  "MsgSyncToken": "/Switcheo.carbon.coin.MsgSyncToken",
+  "MsgSyncTokenResponse": "/Switcheo.carbon.coin.MsgSyncTokenResponse",
+  "MsgMintToken": "/Switcheo.carbon.coin.MsgMintToken",
+  "MsgMintTokenResponse": "/Switcheo.carbon.coin.MsgMintTokenResponse",
   "MsgSetFee": "/Switcheo.carbon.fee.MsgSetFee",
   "MsgSetFeeResponse": "/Switcheo.carbon.fee.MsgSetFeeResponse",
   "MsgCreatePool": "/Switcheo.carbon.liquiditypool.MsgCreatePool",

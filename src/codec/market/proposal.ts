@@ -1,20 +1,20 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { MsgCreateMarket, MsgUpdateMarket } from "../market/tx";
+import { MarketParams } from "../market/market";
 
 export const protobufPackage = "Switcheo.carbon.market";
 
 export interface CreateMarketProposal {
   title: string;
   description: string;
-  market?: MsgCreateMarket;
+  marketParams?: MarketParams;
 }
 
 export interface UpdateMarketProposal {
   title: string;
   description: string;
-  market?: MsgUpdateMarket;
+  marketParams?: MarketParams;
 }
 
 const baseCreateMarketProposal: object = { title: "", description: "" };
@@ -30,8 +30,11 @@ export const CreateMarketProposal = {
     if (message.description !== "") {
       writer.uint32(18).string(message.description);
     }
-    if (message.market !== undefined) {
-      MsgCreateMarket.encode(message.market, writer.uint32(26).fork()).ldelim();
+    if (message.marketParams !== undefined) {
+      MarketParams.encode(
+        message.marketParams,
+        writer.uint32(26).fork()
+      ).ldelim();
     }
     return writer;
   },
@@ -53,7 +56,7 @@ export const CreateMarketProposal = {
           message.description = reader.string();
           break;
         case 3:
-          message.market = MsgCreateMarket.decode(reader, reader.uint32());
+          message.marketParams = MarketParams.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -75,10 +78,10 @@ export const CreateMarketProposal = {
     } else {
       message.description = "";
     }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = MsgCreateMarket.fromJSON(object.market);
+    if (object.marketParams !== undefined && object.marketParams !== null) {
+      message.marketParams = MarketParams.fromJSON(object.marketParams);
     } else {
-      message.market = undefined;
+      message.marketParams = undefined;
     }
     return message;
   },
@@ -88,9 +91,9 @@ export const CreateMarketProposal = {
     message.title !== undefined && (obj.title = message.title);
     message.description !== undefined &&
       (obj.description = message.description);
-    message.market !== undefined &&
-      (obj.market = message.market
-        ? MsgCreateMarket.toJSON(message.market)
+    message.marketParams !== undefined &&
+      (obj.marketParams = message.marketParams
+        ? MarketParams.toJSON(message.marketParams)
         : undefined);
     return obj;
   },
@@ -107,10 +110,10 @@ export const CreateMarketProposal = {
     } else {
       message.description = "";
     }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = MsgCreateMarket.fromPartial(object.market);
+    if (object.marketParams !== undefined && object.marketParams !== null) {
+      message.marketParams = MarketParams.fromPartial(object.marketParams);
     } else {
-      message.market = undefined;
+      message.marketParams = undefined;
     }
     return message;
   },
@@ -129,8 +132,11 @@ export const UpdateMarketProposal = {
     if (message.description !== "") {
       writer.uint32(18).string(message.description);
     }
-    if (message.market !== undefined) {
-      MsgUpdateMarket.encode(message.market, writer.uint32(26).fork()).ldelim();
+    if (message.marketParams !== undefined) {
+      MarketParams.encode(
+        message.marketParams,
+        writer.uint32(26).fork()
+      ).ldelim();
     }
     return writer;
   },
@@ -152,7 +158,7 @@ export const UpdateMarketProposal = {
           message.description = reader.string();
           break;
         case 3:
-          message.market = MsgUpdateMarket.decode(reader, reader.uint32());
+          message.marketParams = MarketParams.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -174,10 +180,10 @@ export const UpdateMarketProposal = {
     } else {
       message.description = "";
     }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = MsgUpdateMarket.fromJSON(object.market);
+    if (object.marketParams !== undefined && object.marketParams !== null) {
+      message.marketParams = MarketParams.fromJSON(object.marketParams);
     } else {
-      message.market = undefined;
+      message.marketParams = undefined;
     }
     return message;
   },
@@ -187,9 +193,9 @@ export const UpdateMarketProposal = {
     message.title !== undefined && (obj.title = message.title);
     message.description !== undefined &&
       (obj.description = message.description);
-    message.market !== undefined &&
-      (obj.market = message.market
-        ? MsgUpdateMarket.toJSON(message.market)
+    message.marketParams !== undefined &&
+      (obj.marketParams = message.marketParams
+        ? MarketParams.toJSON(message.marketParams)
         : undefined);
     return obj;
   },
@@ -206,10 +212,10 @@ export const UpdateMarketProposal = {
     } else {
       message.description = "";
     }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = MsgUpdateMarket.fromPartial(object.market);
+    if (object.marketParams !== undefined && object.marketParams !== null) {
+      message.marketParams = MarketParams.fromPartial(object.marketParams);
     } else {
-      message.market = undefined;
+      message.marketParams = undefined;
     }
     return message;
   },

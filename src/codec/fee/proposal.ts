@@ -1,14 +1,14 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { MsgSetFee } from "../fee/tx";
+import { Params } from "../fee/fee";
 
 export const protobufPackage = "Switcheo.carbon.fee";
 
 export interface SetMsgFeeProposal {
   title: string;
   description: string;
-  msg?: MsgSetFee;
+  params?: Params;
 }
 
 const baseSetMsgFeeProposal: object = { title: "", description: "" };
@@ -24,8 +24,8 @@ export const SetMsgFeeProposal = {
     if (message.description !== "") {
       writer.uint32(18).string(message.description);
     }
-    if (message.msg !== undefined) {
-      MsgSetFee.encode(message.msg, writer.uint32(26).fork()).ldelim();
+    if (message.params !== undefined) {
+      Params.encode(message.params, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
@@ -44,7 +44,7 @@ export const SetMsgFeeProposal = {
           message.description = reader.string();
           break;
         case 3:
-          message.msg = MsgSetFee.decode(reader, reader.uint32());
+          message.params = Params.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -66,10 +66,10 @@ export const SetMsgFeeProposal = {
     } else {
       message.description = "";
     }
-    if (object.msg !== undefined && object.msg !== null) {
-      message.msg = MsgSetFee.fromJSON(object.msg);
+    if (object.params !== undefined && object.params !== null) {
+      message.params = Params.fromJSON(object.params);
     } else {
-      message.msg = undefined;
+      message.params = undefined;
     }
     return message;
   },
@@ -79,8 +79,8 @@ export const SetMsgFeeProposal = {
     message.title !== undefined && (obj.title = message.title);
     message.description !== undefined &&
       (obj.description = message.description);
-    message.msg !== undefined &&
-      (obj.msg = message.msg ? MsgSetFee.toJSON(message.msg) : undefined);
+    message.params !== undefined &&
+      (obj.params = message.params ? Params.toJSON(message.params) : undefined);
     return obj;
   },
 
@@ -96,10 +96,10 @@ export const SetMsgFeeProposal = {
     } else {
       message.description = "";
     }
-    if (object.msg !== undefined && object.msg !== null) {
-      message.msg = MsgSetFee.fromPartial(object.msg);
+    if (object.params !== undefined && object.params !== null) {
+      message.params = Params.fromPartial(object.params);
     } else {
-      message.msg = undefined;
+      message.params = undefined;
     }
     return message;
   },

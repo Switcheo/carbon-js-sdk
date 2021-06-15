@@ -10,6 +10,10 @@ export interface NewTokenEvent {
   type: string;
 }
 
+export interface SyncTokenEvent {
+  token?: Token;
+}
+
 const baseNewTokenEvent: object = { type: "" };
 
 export const NewTokenEvent = {
@@ -81,6 +85,65 @@ export const NewTokenEvent = {
       message.type = object.type;
     } else {
       message.type = "";
+    }
+    return message;
+  },
+};
+
+const baseSyncTokenEvent: object = {};
+
+export const SyncTokenEvent = {
+  encode(
+    message: SyncTokenEvent,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.token !== undefined) {
+      Token.encode(message.token, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): SyncTokenEvent {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseSyncTokenEvent } as SyncTokenEvent;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.token = Token.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SyncTokenEvent {
+    const message = { ...baseSyncTokenEvent } as SyncTokenEvent;
+    if (object.token !== undefined && object.token !== null) {
+      message.token = Token.fromJSON(object.token);
+    } else {
+      message.token = undefined;
+    }
+    return message;
+  },
+
+  toJSON(message: SyncTokenEvent): unknown {
+    const obj: any = {};
+    message.token !== undefined &&
+      (obj.token = message.token ? Token.toJSON(message.token) : undefined);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<SyncTokenEvent>): SyncTokenEvent {
+    const message = { ...baseSyncTokenEvent } as SyncTokenEvent;
+    if (object.token !== undefined && object.token !== null) {
+      message.token = Token.fromPartial(object.token);
+    } else {
+      message.token = undefined;
     }
     return message;
   },
