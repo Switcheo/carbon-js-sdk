@@ -3,5 +3,5 @@ import { coins } from "@cosmjs/proto-signing";
 
 export const DEFAULT_FEE: StdFee = {
   amount: coins(100000000, "swth"),
-  gas: "100000",
+  gas: "5000000",
 };
