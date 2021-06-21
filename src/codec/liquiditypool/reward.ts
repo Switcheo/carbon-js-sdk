@@ -46,6 +46,42 @@ export interface RewardHistory {
   totalCommitment: string;
 }
 
+export interface CommitmentResponse {
+  denom: string;
+  amount: string;
+  startTime?: Date;
+  endTime?: Date;
+  duration: Long;
+  isLocked: boolean;
+  commitmentPower: string;
+  boostFactor: string;
+}
+
+export interface CommitmentExpiryIndex {
+  commitmentKeys: Uint8Array[];
+  key: Uint8Array;
+}
+
+export interface CommitmentWithKey {
+  commitment?: Commitment;
+  key: Uint8Array;
+}
+
+export interface CommitmentTotalWithKey {
+  commitmentTotal: string;
+  key: Uint8Array;
+}
+
+export interface RewardHistoryWithKey {
+  rewardHistory?: RewardHistory;
+  key: Uint8Array;
+}
+
+export interface LastClaimedWithKey {
+  height: Long;
+  key: Uint8Array;
+}
+
 export interface CommitmentKeys {
   commitmentKeys: Uint8Array[];
 }
@@ -762,6 +798,640 @@ export const RewardHistory = {
   },
 };
 
+const baseCommitmentResponse: object = {
+  denom: "",
+  amount: "",
+  duration: Long.UZERO,
+  isLocked: false,
+  commitmentPower: "",
+  boostFactor: "",
+};
+
+export const CommitmentResponse = {
+  encode(
+    message: CommitmentResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.denom !== "") {
+      writer.uint32(10).string(message.denom);
+    }
+    if (message.amount !== "") {
+      writer.uint32(18).string(message.amount);
+    }
+    if (message.startTime !== undefined) {
+      Timestamp.encode(
+        toTimestamp(message.startTime),
+        writer.uint32(26).fork()
+      ).ldelim();
+    }
+    if (message.endTime !== undefined) {
+      Timestamp.encode(
+        toTimestamp(message.endTime),
+        writer.uint32(34).fork()
+      ).ldelim();
+    }
+    if (!message.duration.isZero()) {
+      writer.uint32(40).uint64(message.duration);
+    }
+    if (message.isLocked === true) {
+      writer.uint32(48).bool(message.isLocked);
+    }
+    if (message.commitmentPower !== "") {
+      writer.uint32(58).string(message.commitmentPower);
+    }
+    if (message.boostFactor !== "") {
+      writer.uint32(66).string(message.boostFactor);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): CommitmentResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseCommitmentResponse } as CommitmentResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.denom = reader.string();
+          break;
+        case 2:
+          message.amount = reader.string();
+          break;
+        case 3:
+          message.startTime = fromTimestamp(
+            Timestamp.decode(reader, reader.uint32())
+          );
+          break;
+        case 4:
+          message.endTime = fromTimestamp(
+            Timestamp.decode(reader, reader.uint32())
+          );
+          break;
+        case 5:
+          message.duration = reader.uint64() as Long;
+          break;
+        case 6:
+          message.isLocked = reader.bool();
+          break;
+        case 7:
+          message.commitmentPower = reader.string();
+          break;
+        case 8:
+          message.boostFactor = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CommitmentResponse {
+    const message = { ...baseCommitmentResponse } as CommitmentResponse;
+    if (object.denom !== undefined && object.denom !== null) {
+      message.denom = String(object.denom);
+    } else {
+      message.denom = "";
+    }
+    if (object.amount !== undefined && object.amount !== null) {
+      message.amount = String(object.amount);
+    } else {
+      message.amount = "";
+    }
+    if (object.startTime !== undefined && object.startTime !== null) {
+      message.startTime = fromJsonTimestamp(object.startTime);
+    } else {
+      message.startTime = undefined;
+    }
+    if (object.endTime !== undefined && object.endTime !== null) {
+      message.endTime = fromJsonTimestamp(object.endTime);
+    } else {
+      message.endTime = undefined;
+    }
+    if (object.duration !== undefined && object.duration !== null) {
+      message.duration = Long.fromString(object.duration);
+    } else {
+      message.duration = Long.UZERO;
+    }
+    if (object.isLocked !== undefined && object.isLocked !== null) {
+      message.isLocked = Boolean(object.isLocked);
+    } else {
+      message.isLocked = false;
+    }
+    if (
+      object.commitmentPower !== undefined &&
+      object.commitmentPower !== null
+    ) {
+      message.commitmentPower = String(object.commitmentPower);
+    } else {
+      message.commitmentPower = "";
+    }
+    if (object.boostFactor !== undefined && object.boostFactor !== null) {
+      message.boostFactor = String(object.boostFactor);
+    } else {
+      message.boostFactor = "";
+    }
+    return message;
+  },
+
+  toJSON(message: CommitmentResponse): unknown {
+    const obj: any = {};
+    message.denom !== undefined && (obj.denom = message.denom);
+    message.amount !== undefined && (obj.amount = message.amount);
+    message.startTime !== undefined &&
+      (obj.startTime = message.startTime.toISOString());
+    message.endTime !== undefined &&
+      (obj.endTime = message.endTime.toISOString());
+    message.duration !== undefined &&
+      (obj.duration = (message.duration || Long.UZERO).toString());
+    message.isLocked !== undefined && (obj.isLocked = message.isLocked);
+    message.commitmentPower !== undefined &&
+      (obj.commitmentPower = message.commitmentPower);
+    message.boostFactor !== undefined &&
+      (obj.boostFactor = message.boostFactor);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<CommitmentResponse>): CommitmentResponse {
+    const message = { ...baseCommitmentResponse } as CommitmentResponse;
+    if (object.denom !== undefined && object.denom !== null) {
+      message.denom = object.denom;
+    } else {
+      message.denom = "";
+    }
+    if (object.amount !== undefined && object.amount !== null) {
+      message.amount = object.amount;
+    } else {
+      message.amount = "";
+    }
+    if (object.startTime !== undefined && object.startTime !== null) {
+      message.startTime = object.startTime;
+    } else {
+      message.startTime = undefined;
+    }
+    if (object.endTime !== undefined && object.endTime !== null) {
+      message.endTime = object.endTime;
+    } else {
+      message.endTime = undefined;
+    }
+    if (object.duration !== undefined && object.duration !== null) {
+      message.duration = object.duration as Long;
+    } else {
+      message.duration = Long.UZERO;
+    }
+    if (object.isLocked !== undefined && object.isLocked !== null) {
+      message.isLocked = object.isLocked;
+    } else {
+      message.isLocked = false;
+    }
+    if (
+      object.commitmentPower !== undefined &&
+      object.commitmentPower !== null
+    ) {
+      message.commitmentPower = object.commitmentPower;
+    } else {
+      message.commitmentPower = "";
+    }
+    if (object.boostFactor !== undefined && object.boostFactor !== null) {
+      message.boostFactor = object.boostFactor;
+    } else {
+      message.boostFactor = "";
+    }
+    return message;
+  },
+};
+
+const baseCommitmentExpiryIndex: object = {};
+
+export const CommitmentExpiryIndex = {
+  encode(
+    message: CommitmentExpiryIndex,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.commitmentKeys) {
+      writer.uint32(10).bytes(v!);
+    }
+    if (message.key.length !== 0) {
+      writer.uint32(18).bytes(message.key);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): CommitmentExpiryIndex {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseCommitmentExpiryIndex } as CommitmentExpiryIndex;
+    message.commitmentKeys = [];
+    message.key = new Uint8Array();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.commitmentKeys.push(reader.bytes());
+          break;
+        case 2:
+          message.key = reader.bytes();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CommitmentExpiryIndex {
+    const message = { ...baseCommitmentExpiryIndex } as CommitmentExpiryIndex;
+    message.commitmentKeys = [];
+    message.key = new Uint8Array();
+    if (object.commitmentKeys !== undefined && object.commitmentKeys !== null) {
+      for (const e of object.commitmentKeys) {
+        message.commitmentKeys.push(bytesFromBase64(e));
+      }
+    }
+    if (object.key !== undefined && object.key !== null) {
+      message.key = bytesFromBase64(object.key);
+    }
+    return message;
+  },
+
+  toJSON(message: CommitmentExpiryIndex): unknown {
+    const obj: any = {};
+    if (message.commitmentKeys) {
+      obj.commitmentKeys = message.commitmentKeys.map((e) =>
+        base64FromBytes(e !== undefined ? e : new Uint8Array())
+      );
+    } else {
+      obj.commitmentKeys = [];
+    }
+    message.key !== undefined &&
+      (obj.key = base64FromBytes(
+        message.key !== undefined ? message.key : new Uint8Array()
+      ));
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<CommitmentExpiryIndex>
+  ): CommitmentExpiryIndex {
+    const message = { ...baseCommitmentExpiryIndex } as CommitmentExpiryIndex;
+    message.commitmentKeys = [];
+    if (object.commitmentKeys !== undefined && object.commitmentKeys !== null) {
+      for (const e of object.commitmentKeys) {
+        message.commitmentKeys.push(e);
+      }
+    }
+    if (object.key !== undefined && object.key !== null) {
+      message.key = object.key;
+    } else {
+      message.key = new Uint8Array();
+    }
+    return message;
+  },
+};
+
+const baseCommitmentWithKey: object = {};
+
+export const CommitmentWithKey = {
+  encode(
+    message: CommitmentWithKey,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.commitment !== undefined) {
+      Commitment.encode(message.commitment, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.key.length !== 0) {
+      writer.uint32(18).bytes(message.key);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): CommitmentWithKey {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseCommitmentWithKey } as CommitmentWithKey;
+    message.key = new Uint8Array();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.commitment = Commitment.decode(reader, reader.uint32());
+          break;
+        case 2:
+          message.key = reader.bytes();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CommitmentWithKey {
+    const message = { ...baseCommitmentWithKey } as CommitmentWithKey;
+    message.key = new Uint8Array();
+    if (object.commitment !== undefined && object.commitment !== null) {
+      message.commitment = Commitment.fromJSON(object.commitment);
+    } else {
+      message.commitment = undefined;
+    }
+    if (object.key !== undefined && object.key !== null) {
+      message.key = bytesFromBase64(object.key);
+    }
+    return message;
+  },
+
+  toJSON(message: CommitmentWithKey): unknown {
+    const obj: any = {};
+    message.commitment !== undefined &&
+      (obj.commitment = message.commitment
+        ? Commitment.toJSON(message.commitment)
+        : undefined);
+    message.key !== undefined &&
+      (obj.key = base64FromBytes(
+        message.key !== undefined ? message.key : new Uint8Array()
+      ));
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<CommitmentWithKey>): CommitmentWithKey {
+    const message = { ...baseCommitmentWithKey } as CommitmentWithKey;
+    if (object.commitment !== undefined && object.commitment !== null) {
+      message.commitment = Commitment.fromPartial(object.commitment);
+    } else {
+      message.commitment = undefined;
+    }
+    if (object.key !== undefined && object.key !== null) {
+      message.key = object.key;
+    } else {
+      message.key = new Uint8Array();
+    }
+    return message;
+  },
+};
+
+const baseCommitmentTotalWithKey: object = { commitmentTotal: "" };
+
+export const CommitmentTotalWithKey = {
+  encode(
+    message: CommitmentTotalWithKey,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.commitmentTotal !== "") {
+      writer.uint32(10).string(message.commitmentTotal);
+    }
+    if (message.key.length !== 0) {
+      writer.uint32(18).bytes(message.key);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): CommitmentTotalWithKey {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseCommitmentTotalWithKey } as CommitmentTotalWithKey;
+    message.key = new Uint8Array();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.commitmentTotal = reader.string();
+          break;
+        case 2:
+          message.key = reader.bytes();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CommitmentTotalWithKey {
+    const message = { ...baseCommitmentTotalWithKey } as CommitmentTotalWithKey;
+    message.key = new Uint8Array();
+    if (
+      object.commitmentTotal !== undefined &&
+      object.commitmentTotal !== null
+    ) {
+      message.commitmentTotal = String(object.commitmentTotal);
+    } else {
+      message.commitmentTotal = "";
+    }
+    if (object.key !== undefined && object.key !== null) {
+      message.key = bytesFromBase64(object.key);
+    }
+    return message;
+  },
+
+  toJSON(message: CommitmentTotalWithKey): unknown {
+    const obj: any = {};
+    message.commitmentTotal !== undefined &&
+      (obj.commitmentTotal = message.commitmentTotal);
+    message.key !== undefined &&
+      (obj.key = base64FromBytes(
+        message.key !== undefined ? message.key : new Uint8Array()
+      ));
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<CommitmentTotalWithKey>
+  ): CommitmentTotalWithKey {
+    const message = { ...baseCommitmentTotalWithKey } as CommitmentTotalWithKey;
+    if (
+      object.commitmentTotal !== undefined &&
+      object.commitmentTotal !== null
+    ) {
+      message.commitmentTotal = object.commitmentTotal;
+    } else {
+      message.commitmentTotal = "";
+    }
+    if (object.key !== undefined && object.key !== null) {
+      message.key = object.key;
+    } else {
+      message.key = new Uint8Array();
+    }
+    return message;
+  },
+};
+
+const baseRewardHistoryWithKey: object = {};
+
+export const RewardHistoryWithKey = {
+  encode(
+    message: RewardHistoryWithKey,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.rewardHistory !== undefined) {
+      RewardHistory.encode(
+        message.rewardHistory,
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    if (message.key.length !== 0) {
+      writer.uint32(18).bytes(message.key);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): RewardHistoryWithKey {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseRewardHistoryWithKey } as RewardHistoryWithKey;
+    message.key = new Uint8Array();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.rewardHistory = RewardHistory.decode(reader, reader.uint32());
+          break;
+        case 2:
+          message.key = reader.bytes();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): RewardHistoryWithKey {
+    const message = { ...baseRewardHistoryWithKey } as RewardHistoryWithKey;
+    message.key = new Uint8Array();
+    if (object.rewardHistory !== undefined && object.rewardHistory !== null) {
+      message.rewardHistory = RewardHistory.fromJSON(object.rewardHistory);
+    } else {
+      message.rewardHistory = undefined;
+    }
+    if (object.key !== undefined && object.key !== null) {
+      message.key = bytesFromBase64(object.key);
+    }
+    return message;
+  },
+
+  toJSON(message: RewardHistoryWithKey): unknown {
+    const obj: any = {};
+    message.rewardHistory !== undefined &&
+      (obj.rewardHistory = message.rewardHistory
+        ? RewardHistory.toJSON(message.rewardHistory)
+        : undefined);
+    message.key !== undefined &&
+      (obj.key = base64FromBytes(
+        message.key !== undefined ? message.key : new Uint8Array()
+      ));
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<RewardHistoryWithKey>): RewardHistoryWithKey {
+    const message = { ...baseRewardHistoryWithKey } as RewardHistoryWithKey;
+    if (object.rewardHistory !== undefined && object.rewardHistory !== null) {
+      message.rewardHistory = RewardHistory.fromPartial(object.rewardHistory);
+    } else {
+      message.rewardHistory = undefined;
+    }
+    if (object.key !== undefined && object.key !== null) {
+      message.key = object.key;
+    } else {
+      message.key = new Uint8Array();
+    }
+    return message;
+  },
+};
+
+const baseLastClaimedWithKey: object = { height: Long.UZERO };
+
+export const LastClaimedWithKey = {
+  encode(
+    message: LastClaimedWithKey,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (!message.height.isZero()) {
+      writer.uint32(8).uint64(message.height);
+    }
+    if (message.key.length !== 0) {
+      writer.uint32(18).bytes(message.key);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): LastClaimedWithKey {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseLastClaimedWithKey } as LastClaimedWithKey;
+    message.key = new Uint8Array();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.height = reader.uint64() as Long;
+          break;
+        case 2:
+          message.key = reader.bytes();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): LastClaimedWithKey {
+    const message = { ...baseLastClaimedWithKey } as LastClaimedWithKey;
+    message.key = new Uint8Array();
+    if (object.height !== undefined && object.height !== null) {
+      message.height = Long.fromString(object.height);
+    } else {
+      message.height = Long.UZERO;
+    }
+    if (object.key !== undefined && object.key !== null) {
+      message.key = bytesFromBase64(object.key);
+    }
+    return message;
+  },
+
+  toJSON(message: LastClaimedWithKey): unknown {
+    const obj: any = {};
+    message.height !== undefined &&
+      (obj.height = (message.height || Long.UZERO).toString());
+    message.key !== undefined &&
+      (obj.key = base64FromBytes(
+        message.key !== undefined ? message.key : new Uint8Array()
+      ));
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<LastClaimedWithKey>): LastClaimedWithKey {
+    const message = { ...baseLastClaimedWithKey } as LastClaimedWithKey;
+    if (object.height !== undefined && object.height !== null) {
+      message.height = object.height as Long;
+    } else {
+      message.height = Long.UZERO;
+    }
+    if (object.key !== undefined && object.key !== null) {
+      message.key = object.key;
+    } else {
+      message.key = new Uint8Array();
+    }
+    return message;
+  },
+};
+
 const baseCommitmentKeys: object = {};
 
 export const CommitmentKeys = {
@@ -923,8 +1593,8 @@ const btoa: (bin: string) => string =
   ((bin) => globalThis.Buffer.from(bin, "binary").toString("base64"));
 function base64FromBytes(arr: Uint8Array): string {
   const bin: string[] = [];
-  for (let i = 0; i < arr.byteLength; ++i) {
-    bin.push(String.fromCharCode(arr[i]));
+  for (const byte of arr) {
+    bin.push(String.fromCharCode(byte));
   }
   return btoa(bin.join(""));
 }

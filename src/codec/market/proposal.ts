@@ -1,14 +1,14 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { MarketParams } from "../market/market";
+import { Market, MarketParams } from "../market/market";
 
 export const protobufPackage = "Switcheo.carbon.market";
 
 export interface CreateMarketProposal {
   title: string;
   description: string;
-  marketParams?: MarketParams;
+  market?: Market;
 }
 
 export interface UpdateMarketProposal {
@@ -30,11 +30,8 @@ export const CreateMarketProposal = {
     if (message.description !== "") {
       writer.uint32(18).string(message.description);
     }
-    if (message.marketParams !== undefined) {
-      MarketParams.encode(
-        message.marketParams,
-        writer.uint32(26).fork()
-      ).ldelim();
+    if (message.market !== undefined) {
+      Market.encode(message.market, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
@@ -56,7 +53,7 @@ export const CreateMarketProposal = {
           message.description = reader.string();
           break;
         case 3:
-          message.marketParams = MarketParams.decode(reader, reader.uint32());
+          message.market = Market.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -78,10 +75,10 @@ export const CreateMarketProposal = {
     } else {
       message.description = "";
     }
-    if (object.marketParams !== undefined && object.marketParams !== null) {
-      message.marketParams = MarketParams.fromJSON(object.marketParams);
+    if (object.market !== undefined && object.market !== null) {
+      message.market = Market.fromJSON(object.market);
     } else {
-      message.marketParams = undefined;
+      message.market = undefined;
     }
     return message;
   },
@@ -91,10 +88,8 @@ export const CreateMarketProposal = {
     message.title !== undefined && (obj.title = message.title);
     message.description !== undefined &&
       (obj.description = message.description);
-    message.marketParams !== undefined &&
-      (obj.marketParams = message.marketParams
-        ? MarketParams.toJSON(message.marketParams)
-        : undefined);
+    message.market !== undefined &&
+      (obj.market = message.market ? Market.toJSON(message.market) : undefined);
     return obj;
   },
 
@@ -110,10 +105,10 @@ export const CreateMarketProposal = {
     } else {
       message.description = "";
     }
-    if (object.marketParams !== undefined && object.marketParams !== null) {
-      message.marketParams = MarketParams.fromPartial(object.marketParams);
+    if (object.market !== undefined && object.market !== null) {
+      message.market = Market.fromPartial(object.market);
     } else {
-      message.marketParams = undefined;
+      message.market = undefined;
     }
     return message;
   },

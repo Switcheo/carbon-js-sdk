@@ -40,6 +40,14 @@ export interface MsgMintToken {
 
 export interface MsgMintTokenResponse {}
 
+export interface MsgBindToken {
+  creator: string;
+  sourceDenom: string;
+  wrappedDenom: string;
+}
+
+export interface MsgBindTokenResponse {}
+
 const baseMsgCreateToken: object = {
   creator: "",
   name: "",
@@ -645,12 +653,155 @@ export const MsgMintTokenResponse = {
   },
 };
 
+const baseMsgBindToken: object = {
+  creator: "",
+  sourceDenom: "",
+  wrappedDenom: "",
+};
+
+export const MsgBindToken = {
+  encode(
+    message: MsgBindToken,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.sourceDenom !== "") {
+      writer.uint32(18).string(message.sourceDenom);
+    }
+    if (message.wrappedDenom !== "") {
+      writer.uint32(26).string(message.wrappedDenom);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgBindToken {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgBindToken } as MsgBindToken;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.sourceDenom = reader.string();
+          break;
+        case 3:
+          message.wrappedDenom = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgBindToken {
+    const message = { ...baseMsgBindToken } as MsgBindToken;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = String(object.creator);
+    } else {
+      message.creator = "";
+    }
+    if (object.sourceDenom !== undefined && object.sourceDenom !== null) {
+      message.sourceDenom = String(object.sourceDenom);
+    } else {
+      message.sourceDenom = "";
+    }
+    if (object.wrappedDenom !== undefined && object.wrappedDenom !== null) {
+      message.wrappedDenom = String(object.wrappedDenom);
+    } else {
+      message.wrappedDenom = "";
+    }
+    return message;
+  },
+
+  toJSON(message: MsgBindToken): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.sourceDenom !== undefined &&
+      (obj.sourceDenom = message.sourceDenom);
+    message.wrappedDenom !== undefined &&
+      (obj.wrappedDenom = message.wrappedDenom);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgBindToken>): MsgBindToken {
+    const message = { ...baseMsgBindToken } as MsgBindToken;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = object.creator;
+    } else {
+      message.creator = "";
+    }
+    if (object.sourceDenom !== undefined && object.sourceDenom !== null) {
+      message.sourceDenom = object.sourceDenom;
+    } else {
+      message.sourceDenom = "";
+    }
+    if (object.wrappedDenom !== undefined && object.wrappedDenom !== null) {
+      message.wrappedDenom = object.wrappedDenom;
+    } else {
+      message.wrappedDenom = "";
+    }
+    return message;
+  },
+};
+
+const baseMsgBindTokenResponse: object = {};
+
+export const MsgBindTokenResponse = {
+  encode(
+    _: MsgBindTokenResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgBindTokenResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgBindTokenResponse } as MsgBindTokenResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgBindTokenResponse {
+    const message = { ...baseMsgBindTokenResponse } as MsgBindTokenResponse;
+    return message;
+  },
+
+  toJSON(_: MsgBindTokenResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(_: DeepPartial<MsgBindTokenResponse>): MsgBindTokenResponse {
+    const message = { ...baseMsgBindTokenResponse } as MsgBindTokenResponse;
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
   /** this line is used by starport scaffolding # proto/tx/rpc */
   CreateToken(request: MsgCreateToken): Promise<MsgCreateTokenResponse>;
   SyncToken(request: MsgSyncToken): Promise<MsgSyncTokenResponse>;
   MintToken(request: MsgMintToken): Promise<MsgMintTokenResponse>;
+  BindToken(request: MsgBindToken): Promise<MsgBindTokenResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -660,6 +811,7 @@ export class MsgClientImpl implements Msg {
     this.CreateToken = this.CreateToken.bind(this);
     this.SyncToken = this.SyncToken.bind(this);
     this.MintToken = this.MintToken.bind(this);
+    this.BindToken = this.BindToken.bind(this);
   }
   CreateToken(request: MsgCreateToken): Promise<MsgCreateTokenResponse> {
     const data = MsgCreateToken.encode(request).finish();
@@ -694,6 +846,18 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgMintTokenResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  BindToken(request: MsgBindToken): Promise<MsgBindTokenResponse> {
+    const data = MsgBindToken.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.coin.Msg",
+      "BindToken",
+      data
+    );
+    return promise.then((data) =>
+      MsgBindTokenResponse.decode(new _m0.Reader(data))
     );
   }
 }

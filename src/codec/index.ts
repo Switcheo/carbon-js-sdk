@@ -2,9 +2,9 @@
 import { Registry } from "@cosmjs/proto-signing";
 import { MsgInitiateLiquidation, MsgInitiateLiquidationResponse } from "./broker/tx";
 import { MsgAddCollateral, MsgAddCollateralResponse, MsgRemoveCollateral, MsgRemoveCollateralResponse, MsgAddDebt, MsgAddDebtResponse, MsgRemoveDebt, MsgRemoveDebtResponse, MsgCreateVaultType, MsgCreateVaultTypeResponse } from "./cdp/tx";
-import { MsgCreateToken, MsgCreateTokenResponse, MsgSyncToken, MsgSyncTokenResponse, MsgMintToken, MsgMintTokenResponse } from "./coin/tx";
+import { MsgCreateToken, MsgCreateTokenResponse, MsgSyncToken, MsgSyncTokenResponse, MsgMintToken, MsgMintTokenResponse, MsgBindToken, MsgBindTokenResponse } from "./coin/tx";
 import { MsgSetFee, MsgSetFeeResponse } from "./fee/tx";
-import { MsgCreatePool, MsgCreatePoolResponse } from "./liquiditypool/tx";
+import { MsgCreatePool, MsgCreatePoolResponse, MsgCreatePoolWithLiquidity, MsgCreatePoolWithLiquidityResponse, MsgAddLiquidity, MsgAddLiquidityResponse, MsgRemoveLiquidity, MsgRemoveLiquidityResponse, MsgLinkPool, MsgLinkPoolResponse, MsgUnlinkPool, MsgUnlinkPoolResponse, MsgSetRewardsWeights, MsgSetRewardsWeightsResponse, MsgStakePoolToken, MsgStakePoolTokenResponse, MsgUnstakePoolToken, MsgUnstakePoolTokenResponse, MsgClaimPoolRewards, MsgClaimPoolRewardsResponse, MsgSetRewardCurve, MsgSetRewardCurveResponse, MsgChangeSwapFee, MsgChangeSwapFeeResponse, MsgSetCommitmentCurve, MsgSetCommitmentCurveResponse, MsgChangeNumQuotes, MsgChangeNumQuotesResponse } from "./liquiditypool/tx";
 import { MsgCreateMarket, MsgCreateMarketResponse, MsgUpdateMarket, MsgUpdateMarketResponse } from "./market/tx";
 import { MsgCreateOracle, MsgCreateOracleResponse, MsgCreateVote, MsgCreateVoteResponse } from "./oracle/tx";
 import { MsgSetTradingFlag, MsgSetTradingFlagResponse, MsgCreateOrder, MsgCreateOrderResponse, MsgEditOrder, MsgEditOrderResponse, MsgCancelOrder, MsgCancelOrderResponse, MsgCancelAll, MsgCancelAllResponse } from "./order/tx";
@@ -33,12 +33,40 @@ registry.register("/Switcheo.carbon.coin.MsgSyncToken", MsgSyncToken);
 registry.register("/Switcheo.carbon.coin.MsgSyncTokenResponse", MsgSyncTokenResponse);
 registry.register("/Switcheo.carbon.coin.MsgMintToken", MsgMintToken);
 registry.register("/Switcheo.carbon.coin.MsgMintTokenResponse", MsgMintTokenResponse);
+registry.register("/Switcheo.carbon.coin.MsgBindToken", MsgBindToken);
+registry.register("/Switcheo.carbon.coin.MsgBindTokenResponse", MsgBindTokenResponse);
 
 registry.register("/Switcheo.carbon.fee.MsgSetFee", MsgSetFee);
 registry.register("/Switcheo.carbon.fee.MsgSetFeeResponse", MsgSetFeeResponse);
 
 registry.register("/Switcheo.carbon.liquiditypool.MsgCreatePool", MsgCreatePool);
 registry.register("/Switcheo.carbon.liquiditypool.MsgCreatePoolResponse", MsgCreatePoolResponse);
+registry.register("/Switcheo.carbon.liquiditypool.MsgCreatePoolWithLiquidity", MsgCreatePoolWithLiquidity);
+registry.register("/Switcheo.carbon.liquiditypool.MsgCreatePoolWithLiquidityResponse", MsgCreatePoolWithLiquidityResponse);
+registry.register("/Switcheo.carbon.liquiditypool.MsgAddLiquidity", MsgAddLiquidity);
+registry.register("/Switcheo.carbon.liquiditypool.MsgAddLiquidityResponse", MsgAddLiquidityResponse);
+registry.register("/Switcheo.carbon.liquiditypool.MsgRemoveLiquidity", MsgRemoveLiquidity);
+registry.register("/Switcheo.carbon.liquiditypool.MsgRemoveLiquidityResponse", MsgRemoveLiquidityResponse);
+registry.register("/Switcheo.carbon.liquiditypool.MsgLinkPool", MsgLinkPool);
+registry.register("/Switcheo.carbon.liquiditypool.MsgLinkPoolResponse", MsgLinkPoolResponse);
+registry.register("/Switcheo.carbon.liquiditypool.MsgUnlinkPool", MsgUnlinkPool);
+registry.register("/Switcheo.carbon.liquiditypool.MsgUnlinkPoolResponse", MsgUnlinkPoolResponse);
+registry.register("/Switcheo.carbon.liquiditypool.MsgSetRewardsWeights", MsgSetRewardsWeights);
+registry.register("/Switcheo.carbon.liquiditypool.MsgSetRewardsWeightsResponse", MsgSetRewardsWeightsResponse);
+registry.register("/Switcheo.carbon.liquiditypool.MsgStakePoolToken", MsgStakePoolToken);
+registry.register("/Switcheo.carbon.liquiditypool.MsgStakePoolTokenResponse", MsgStakePoolTokenResponse);
+registry.register("/Switcheo.carbon.liquiditypool.MsgUnstakePoolToken", MsgUnstakePoolToken);
+registry.register("/Switcheo.carbon.liquiditypool.MsgUnstakePoolTokenResponse", MsgUnstakePoolTokenResponse);
+registry.register("/Switcheo.carbon.liquiditypool.MsgClaimPoolRewards", MsgClaimPoolRewards);
+registry.register("/Switcheo.carbon.liquiditypool.MsgClaimPoolRewardsResponse", MsgClaimPoolRewardsResponse);
+registry.register("/Switcheo.carbon.liquiditypool.MsgSetRewardCurve", MsgSetRewardCurve);
+registry.register("/Switcheo.carbon.liquiditypool.MsgSetRewardCurveResponse", MsgSetRewardCurveResponse);
+registry.register("/Switcheo.carbon.liquiditypool.MsgChangeSwapFee", MsgChangeSwapFee);
+registry.register("/Switcheo.carbon.liquiditypool.MsgChangeSwapFeeResponse", MsgChangeSwapFeeResponse);
+registry.register("/Switcheo.carbon.liquiditypool.MsgSetCommitmentCurve", MsgSetCommitmentCurve);
+registry.register("/Switcheo.carbon.liquiditypool.MsgSetCommitmentCurveResponse", MsgSetCommitmentCurveResponse);
+registry.register("/Switcheo.carbon.liquiditypool.MsgChangeNumQuotes", MsgChangeNumQuotes);
+registry.register("/Switcheo.carbon.liquiditypool.MsgChangeNumQuotesResponse", MsgChangeNumQuotesResponse);
 
 registry.register("/Switcheo.carbon.market.MsgCreateMarket", MsgCreateMarket);
 registry.register("/Switcheo.carbon.market.MsgCreateMarketResponse", MsgCreateMarketResponse);
@@ -90,10 +118,38 @@ export const TxTypes = {
   "MsgSyncTokenResponse": "/Switcheo.carbon.coin.MsgSyncTokenResponse",
   "MsgMintToken": "/Switcheo.carbon.coin.MsgMintToken",
   "MsgMintTokenResponse": "/Switcheo.carbon.coin.MsgMintTokenResponse",
+  "MsgBindToken": "/Switcheo.carbon.coin.MsgBindToken",
+  "MsgBindTokenResponse": "/Switcheo.carbon.coin.MsgBindTokenResponse",
   "MsgSetFee": "/Switcheo.carbon.fee.MsgSetFee",
   "MsgSetFeeResponse": "/Switcheo.carbon.fee.MsgSetFeeResponse",
   "MsgCreatePool": "/Switcheo.carbon.liquiditypool.MsgCreatePool",
   "MsgCreatePoolResponse": "/Switcheo.carbon.liquiditypool.MsgCreatePoolResponse",
+  "MsgCreatePoolWithLiquidity": "/Switcheo.carbon.liquiditypool.MsgCreatePoolWithLiquidity",
+  "MsgCreatePoolWithLiquidityResponse": "/Switcheo.carbon.liquiditypool.MsgCreatePoolWithLiquidityResponse",
+  "MsgAddLiquidity": "/Switcheo.carbon.liquiditypool.MsgAddLiquidity",
+  "MsgAddLiquidityResponse": "/Switcheo.carbon.liquiditypool.MsgAddLiquidityResponse",
+  "MsgRemoveLiquidity": "/Switcheo.carbon.liquiditypool.MsgRemoveLiquidity",
+  "MsgRemoveLiquidityResponse": "/Switcheo.carbon.liquiditypool.MsgRemoveLiquidityResponse",
+  "MsgLinkPool": "/Switcheo.carbon.liquiditypool.MsgLinkPool",
+  "MsgLinkPoolResponse": "/Switcheo.carbon.liquiditypool.MsgLinkPoolResponse",
+  "MsgUnlinkPool": "/Switcheo.carbon.liquiditypool.MsgUnlinkPool",
+  "MsgUnlinkPoolResponse": "/Switcheo.carbon.liquiditypool.MsgUnlinkPoolResponse",
+  "MsgSetRewardsWeights": "/Switcheo.carbon.liquiditypool.MsgSetRewardsWeights",
+  "MsgSetRewardsWeightsResponse": "/Switcheo.carbon.liquiditypool.MsgSetRewardsWeightsResponse",
+  "MsgStakePoolToken": "/Switcheo.carbon.liquiditypool.MsgStakePoolToken",
+  "MsgStakePoolTokenResponse": "/Switcheo.carbon.liquiditypool.MsgStakePoolTokenResponse",
+  "MsgUnstakePoolToken": "/Switcheo.carbon.liquiditypool.MsgUnstakePoolToken",
+  "MsgUnstakePoolTokenResponse": "/Switcheo.carbon.liquiditypool.MsgUnstakePoolTokenResponse",
+  "MsgClaimPoolRewards": "/Switcheo.carbon.liquiditypool.MsgClaimPoolRewards",
+  "MsgClaimPoolRewardsResponse": "/Switcheo.carbon.liquiditypool.MsgClaimPoolRewardsResponse",
+  "MsgSetRewardCurve": "/Switcheo.carbon.liquiditypool.MsgSetRewardCurve",
+  "MsgSetRewardCurveResponse": "/Switcheo.carbon.liquiditypool.MsgSetRewardCurveResponse",
+  "MsgChangeSwapFee": "/Switcheo.carbon.liquiditypool.MsgChangeSwapFee",
+  "MsgChangeSwapFeeResponse": "/Switcheo.carbon.liquiditypool.MsgChangeSwapFeeResponse",
+  "MsgSetCommitmentCurve": "/Switcheo.carbon.liquiditypool.MsgSetCommitmentCurve",
+  "MsgSetCommitmentCurveResponse": "/Switcheo.carbon.liquiditypool.MsgSetCommitmentCurveResponse",
+  "MsgChangeNumQuotes": "/Switcheo.carbon.liquiditypool.MsgChangeNumQuotes",
+  "MsgChangeNumQuotesResponse": "/Switcheo.carbon.liquiditypool.MsgChangeNumQuotesResponse",
   "MsgCreateMarket": "/Switcheo.carbon.market.MsgCreateMarket",
   "MsgCreateMarketResponse": "/Switcheo.carbon.market.MsgCreateMarketResponse",
   "MsgUpdateMarket": "/Switcheo.carbon.market.MsgUpdateMarket",

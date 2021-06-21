@@ -14,6 +14,11 @@ export interface SyncTokenEvent {
   token?: Token;
 }
 
+export interface BindTokenEvent {
+  sourceDenom: string;
+  wrappedDenom: string;
+}
+
 const baseNewTokenEvent: object = { type: "" };
 
 export const NewTokenEvent = {
@@ -144,6 +149,83 @@ export const SyncTokenEvent = {
       message.token = Token.fromPartial(object.token);
     } else {
       message.token = undefined;
+    }
+    return message;
+  },
+};
+
+const baseBindTokenEvent: object = { sourceDenom: "", wrappedDenom: "" };
+
+export const BindTokenEvent = {
+  encode(
+    message: BindTokenEvent,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.sourceDenom !== "") {
+      writer.uint32(10).string(message.sourceDenom);
+    }
+    if (message.wrappedDenom !== "") {
+      writer.uint32(18).string(message.wrappedDenom);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): BindTokenEvent {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseBindTokenEvent } as BindTokenEvent;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.sourceDenom = reader.string();
+          break;
+        case 2:
+          message.wrappedDenom = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): BindTokenEvent {
+    const message = { ...baseBindTokenEvent } as BindTokenEvent;
+    if (object.sourceDenom !== undefined && object.sourceDenom !== null) {
+      message.sourceDenom = String(object.sourceDenom);
+    } else {
+      message.sourceDenom = "";
+    }
+    if (object.wrappedDenom !== undefined && object.wrappedDenom !== null) {
+      message.wrappedDenom = String(object.wrappedDenom);
+    } else {
+      message.wrappedDenom = "";
+    }
+    return message;
+  },
+
+  toJSON(message: BindTokenEvent): unknown {
+    const obj: any = {};
+    message.sourceDenom !== undefined &&
+      (obj.sourceDenom = message.sourceDenom);
+    message.wrappedDenom !== undefined &&
+      (obj.wrappedDenom = message.wrappedDenom);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<BindTokenEvent>): BindTokenEvent {
+    const message = { ...baseBindTokenEvent } as BindTokenEvent;
+    if (object.sourceDenom !== undefined && object.sourceDenom !== null) {
+      message.sourceDenom = object.sourceDenom;
+    } else {
+      message.sourceDenom = "";
+    }
+    if (object.wrappedDenom !== undefined && object.wrappedDenom !== null) {
+      message.wrappedDenom = object.wrappedDenom;
+    } else {
+      message.wrappedDenom = "";
     }
     return message;
   },

@@ -1,14 +1,14 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { MarketParams } from "../market/market";
+import { Market, MarketParams } from "../market/market";
 
 export const protobufPackage = "Switcheo.carbon.market";
 
 /** this line is used by starport scaffolding # proto/tx/message */
 export interface MsgCreateMarket {
   creator: string;
-  marketParams?: MarketParams;
+  market?: Market;
 }
 
 export interface MsgCreateMarketResponse {
@@ -16,7 +16,7 @@ export interface MsgCreateMarketResponse {
 }
 
 export interface MsgUpdateMarket {
-  creator: string;
+  updater: string;
   marketParams?: MarketParams;
 }
 
@@ -32,11 +32,8 @@ export const MsgCreateMarket = {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
-    if (message.marketParams !== undefined) {
-      MarketParams.encode(
-        message.marketParams,
-        writer.uint32(18).fork()
-      ).ldelim();
+    if (message.market !== undefined) {
+      Market.encode(message.market, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
@@ -52,7 +49,7 @@ export const MsgCreateMarket = {
           message.creator = reader.string();
           break;
         case 2:
-          message.marketParams = MarketParams.decode(reader, reader.uint32());
+          message.market = Market.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -69,10 +66,10 @@ export const MsgCreateMarket = {
     } else {
       message.creator = "";
     }
-    if (object.marketParams !== undefined && object.marketParams !== null) {
-      message.marketParams = MarketParams.fromJSON(object.marketParams);
+    if (object.market !== undefined && object.market !== null) {
+      message.market = Market.fromJSON(object.market);
     } else {
-      message.marketParams = undefined;
+      message.market = undefined;
     }
     return message;
   },
@@ -80,10 +77,8 @@ export const MsgCreateMarket = {
   toJSON(message: MsgCreateMarket): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.marketParams !== undefined &&
-      (obj.marketParams = message.marketParams
-        ? MarketParams.toJSON(message.marketParams)
-        : undefined);
+    message.market !== undefined &&
+      (obj.market = message.market ? Market.toJSON(message.market) : undefined);
     return obj;
   },
 
@@ -94,10 +89,10 @@ export const MsgCreateMarket = {
     } else {
       message.creator = "";
     }
-    if (object.marketParams !== undefined && object.marketParams !== null) {
-      message.marketParams = MarketParams.fromPartial(object.marketParams);
+    if (object.market !== undefined && object.market !== null) {
+      message.market = Market.fromPartial(object.market);
     } else {
-      message.marketParams = undefined;
+      message.market = undefined;
     }
     return message;
   },
@@ -172,15 +167,15 @@ export const MsgCreateMarketResponse = {
   },
 };
 
-const baseMsgUpdateMarket: object = { creator: "" };
+const baseMsgUpdateMarket: object = { updater: "" };
 
 export const MsgUpdateMarket = {
   encode(
     message: MsgUpdateMarket,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.creator !== "") {
-      writer.uint32(10).string(message.creator);
+    if (message.updater !== "") {
+      writer.uint32(10).string(message.updater);
     }
     if (message.marketParams !== undefined) {
       MarketParams.encode(
@@ -199,7 +194,7 @@ export const MsgUpdateMarket = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.creator = reader.string();
+          message.updater = reader.string();
           break;
         case 2:
           message.marketParams = MarketParams.decode(reader, reader.uint32());
@@ -214,10 +209,10 @@ export const MsgUpdateMarket = {
 
   fromJSON(object: any): MsgUpdateMarket {
     const message = { ...baseMsgUpdateMarket } as MsgUpdateMarket;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
+    if (object.updater !== undefined && object.updater !== null) {
+      message.updater = String(object.updater);
     } else {
-      message.creator = "";
+      message.updater = "";
     }
     if (object.marketParams !== undefined && object.marketParams !== null) {
       message.marketParams = MarketParams.fromJSON(object.marketParams);
@@ -229,7 +224,7 @@ export const MsgUpdateMarket = {
 
   toJSON(message: MsgUpdateMarket): unknown {
     const obj: any = {};
-    message.creator !== undefined && (obj.creator = message.creator);
+    message.updater !== undefined && (obj.updater = message.updater);
     message.marketParams !== undefined &&
       (obj.marketParams = message.marketParams
         ? MarketParams.toJSON(message.marketParams)
@@ -239,10 +234,10 @@ export const MsgUpdateMarket = {
 
   fromPartial(object: DeepPartial<MsgUpdateMarket>): MsgUpdateMarket {
     const message = { ...baseMsgUpdateMarket } as MsgUpdateMarket;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
+    if (object.updater !== undefined && object.updater !== null) {
+      message.updater = object.updater;
     } else {
-      message.creator = "";
+      message.updater = "";
     }
     if (object.marketParams !== undefined && object.marketParams !== null) {
       message.marketParams = MarketParams.fromPartial(object.marketParams);

@@ -47,6 +47,11 @@ export interface RemoveLiquidities {
   removeLiquidity: RemoveLiquidity[];
 }
 
+export interface PoolWithKey {
+  pool?: Pool;
+  key: Uint8Array;
+}
+
 const basePool: object = {
   creator: "",
   id: Long.UZERO,
@@ -772,6 +777,118 @@ export const RemoveLiquidities = {
     return message;
   },
 };
+
+const basePoolWithKey: object = {};
+
+export const PoolWithKey = {
+  encode(
+    message: PoolWithKey,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.pool !== undefined) {
+      Pool.encode(message.pool, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.key.length !== 0) {
+      writer.uint32(18).bytes(message.key);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): PoolWithKey {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...basePoolWithKey } as PoolWithKey;
+    message.key = new Uint8Array();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.pool = Pool.decode(reader, reader.uint32());
+          break;
+        case 2:
+          message.key = reader.bytes();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): PoolWithKey {
+    const message = { ...basePoolWithKey } as PoolWithKey;
+    message.key = new Uint8Array();
+    if (object.pool !== undefined && object.pool !== null) {
+      message.pool = Pool.fromJSON(object.pool);
+    } else {
+      message.pool = undefined;
+    }
+    if (object.key !== undefined && object.key !== null) {
+      message.key = bytesFromBase64(object.key);
+    }
+    return message;
+  },
+
+  toJSON(message: PoolWithKey): unknown {
+    const obj: any = {};
+    message.pool !== undefined &&
+      (obj.pool = message.pool ? Pool.toJSON(message.pool) : undefined);
+    message.key !== undefined &&
+      (obj.key = base64FromBytes(
+        message.key !== undefined ? message.key : new Uint8Array()
+      ));
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<PoolWithKey>): PoolWithKey {
+    const message = { ...basePoolWithKey } as PoolWithKey;
+    if (object.pool !== undefined && object.pool !== null) {
+      message.pool = Pool.fromPartial(object.pool);
+    } else {
+      message.pool = undefined;
+    }
+    if (object.key !== undefined && object.key !== null) {
+      message.key = object.key;
+    } else {
+      message.key = new Uint8Array();
+    }
+    return message;
+  },
+};
+
+declare var self: any | undefined;
+declare var window: any | undefined;
+var globalThis: any = (() => {
+  if (typeof globalThis !== "undefined") return globalThis;
+  if (typeof self !== "undefined") return self;
+  if (typeof window !== "undefined") return window;
+  if (typeof global !== "undefined") return global;
+  throw "Unable to locate global object";
+})();
+
+const atob: (b64: string) => string =
+  globalThis.atob ||
+  ((b64) => globalThis.Buffer.from(b64, "base64").toString("binary"));
+function bytesFromBase64(b64: string): Uint8Array {
+  const bin = atob(b64);
+  const arr = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; ++i) {
+    arr[i] = bin.charCodeAt(i);
+  }
+  return arr;
+}
+
+const btoa: (bin: string) => string =
+  globalThis.btoa ||
+  ((bin) => globalThis.Buffer.from(bin, "binary").toString("base64"));
+function base64FromBytes(arr: Uint8Array): string {
+  const bin: string[] = [];
+  for (const byte of arr) {
+    bin.push(String.fromCharCode(byte));
+  }
+  return btoa(bin.join(""));
+}
 
 type Builtin =
   | Date
