@@ -3,9 +3,9 @@ import { CarbonTx } from "@carbon-sdk/util/tx";
 import BaseModule from "./base";
 import { BigNumber } from "bignumber.js";
 
-export class ModOrder extends BaseModule {
+export class OrderModule extends BaseModule {
 
-  public async create(params: ModOrder.CreateOrderParams) {
+  public async create(params: OrderModule.CreateOrderParams) {
     const wallet = this.getWallet();
 
     const value = MsgCreateOrder.fromPartial({
@@ -28,10 +28,10 @@ export class ModOrder extends BaseModule {
     });
   }
 
-  public async createOrders(orderParams: ModOrder.CreateOrderParams[]) {
+  public async createOrders(orderParams: OrderModule.CreateOrderParams[]) {
     const wallet = this.getWallet();
 
-    Promise.all(orderParams.map(async params => {
+    const msgs = orderParams.map(params => {
       const value = MsgCreateOrder.fromPartial({
         creator: wallet.bech32Address,
         isPostOnly: params.isPostOnly,
@@ -46,11 +46,13 @@ export class ModOrder extends BaseModule {
         triggerType: params.triggerType,
       })
 
-      return await wallet.sendTx({
+      return {
         typeUrl: CarbonTx.Types.MsgCreateOrder,
         value,
-      });
-    }))
+      }
+    });
+    
+    return await wallet.sendTxs(msgs, CarbonTx.DEFAULT_SIGN_OPTS);
   }
 
   public async cancel(orderId: string) {
@@ -68,7 +70,7 @@ export class ModOrder extends BaseModule {
   }
 }
 
-export namespace ModOrder {
+export namespace OrderModule {
   export interface CreateOrderParams {
     market: string
 
