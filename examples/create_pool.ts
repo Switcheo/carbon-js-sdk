@@ -22,9 +22,9 @@ const TRPC_ENDPOINT = process.env.TRPC_ENDPOINT ?? "http://localhost:26657";
   const result = await connectedSDK.liquiditypool.create({
     tokenADenom: "swth",
     tokenBDenom: "eth",
-    tokenAWeight: new BigNumber(2.00),
-    tokenBWeight: new BigNumber(5.01),
-    swapFee: new BigNumber(2),
+    tokenAWeight: new BigNumber(0.5),
+    tokenBWeight: new BigNumber(0.5),
+    swapFee: new BigNumber(0.002),
     numQuotes: new Long(5),
   })
   console.log(result)

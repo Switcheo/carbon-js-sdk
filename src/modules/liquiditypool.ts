@@ -12,9 +12,9 @@ export class LiquidityPoolOrder extends BaseModule {
       creator: wallet.bech32Address,
         tokenADenom: params.tokenADenom,
         tokenBDenom: params.tokenBDenom,
-        tokenAWeight: params.tokenAWeight.toString(10),
-        tokenBWeight: params.tokenBWeight.toString(10),
-        swapFee: params.swapFee.toString(10),
+        tokenAWeight: params.tokenAWeight.shiftedBy(18).toString(10),
+        tokenBWeight: params.tokenBWeight.shiftedBy(18).toString(10),
+        swapFee: params.swapFee.shiftedBy(18).toString(10),
         numQuotes: params.numQuotes,
     })
 
