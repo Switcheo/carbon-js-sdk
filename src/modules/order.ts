@@ -28,6 +28,31 @@ export class ModOrder extends BaseModule {
     });
   }
 
+  public async createOrders(orderParams: ModOrder.CreateOrderParams[]) {
+    const wallet = this.getWallet();
+
+    Promise.all(orderParams.map(async params => {
+      const value = MsgCreateOrder.fromPartial({
+        creator: wallet.bech32Address,
+        isPostOnly: params.isPostOnly,
+        isReduceOnly: params.isReduceOnly,
+        market: params.market,
+        orderType: params.orderType,
+        price: params.price.toString(10),
+        quantity: params.quantity.toString(10),
+        side: params.side,
+        stopPrice: params.stopPrice?.toString(10),
+        timeInForce: params.timeInForce,
+        triggerType: params.triggerType,
+      })
+
+      return await wallet.sendTx({
+        typeUrl: CarbonTx.Types.MsgCreateOrder,
+        value,
+      });
+    }))
+  }
+
   public async cancel(orderId: string) {
     const wallet = this.getWallet();
     
