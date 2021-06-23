@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { SubAccount } from "../subaccount/subaccount";
+import { SubAccount, GenesisSubAccount } from "../subaccount/subaccount";
 import {
   PageRequest,
   PageResponse,
@@ -23,7 +23,7 @@ export interface QueryAllSubAccountRequest {
 }
 
 export interface QueryAllSubAccountResponse {
-  SubAccount: SubAccount[];
+  subAccounts: GenesisSubAccount[];
   pagination?: PageResponse;
 }
 
@@ -264,8 +264,8 @@ export const QueryAllSubAccountResponse = {
     message: QueryAllSubAccountResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    for (const v of message.SubAccount) {
-      SubAccount.encode(v!, writer.uint32(10).fork()).ldelim();
+    for (const v of message.subAccounts) {
+      GenesisSubAccount.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.pagination !== undefined) {
       PageResponse.encode(
@@ -285,12 +285,14 @@ export const QueryAllSubAccountResponse = {
     const message = {
       ...baseQueryAllSubAccountResponse,
     } as QueryAllSubAccountResponse;
-    message.SubAccount = [];
+    message.subAccounts = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.SubAccount.push(SubAccount.decode(reader, reader.uint32()));
+          message.subAccounts.push(
+            GenesisSubAccount.decode(reader, reader.uint32())
+          );
           break;
         case 2:
           message.pagination = PageResponse.decode(reader, reader.uint32());
@@ -307,10 +309,10 @@ export const QueryAllSubAccountResponse = {
     const message = {
       ...baseQueryAllSubAccountResponse,
     } as QueryAllSubAccountResponse;
-    message.SubAccount = [];
-    if (object.SubAccount !== undefined && object.SubAccount !== null) {
-      for (const e of object.SubAccount) {
-        message.SubAccount.push(SubAccount.fromJSON(e));
+    message.subAccounts = [];
+    if (object.subAccounts !== undefined && object.subAccounts !== null) {
+      for (const e of object.subAccounts) {
+        message.subAccounts.push(GenesisSubAccount.fromJSON(e));
       }
     }
     if (object.pagination !== undefined && object.pagination !== null) {
@@ -323,12 +325,12 @@ export const QueryAllSubAccountResponse = {
 
   toJSON(message: QueryAllSubAccountResponse): unknown {
     const obj: any = {};
-    if (message.SubAccount) {
-      obj.SubAccount = message.SubAccount.map((e) =>
-        e ? SubAccount.toJSON(e) : undefined
+    if (message.subAccounts) {
+      obj.subAccounts = message.subAccounts.map((e) =>
+        e ? GenesisSubAccount.toJSON(e) : undefined
       );
     } else {
-      obj.SubAccount = [];
+      obj.subAccounts = [];
     }
     message.pagination !== undefined &&
       (obj.pagination = message.pagination
@@ -343,10 +345,10 @@ export const QueryAllSubAccountResponse = {
     const message = {
       ...baseQueryAllSubAccountResponse,
     } as QueryAllSubAccountResponse;
-    message.SubAccount = [];
-    if (object.SubAccount !== undefined && object.SubAccount !== null) {
-      for (const e of object.SubAccount) {
-        message.SubAccount.push(SubAccount.fromPartial(e));
+    message.subAccounts = [];
+    if (object.subAccounts !== undefined && object.subAccounts !== null) {
+      for (const e of object.subAccounts) {
+        message.subAccounts.push(GenesisSubAccount.fromPartial(e));
       }
     }
     if (object.pagination !== undefined && object.pagination !== null) {

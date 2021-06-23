@@ -23,7 +23,7 @@ export interface QueryOracleListRequest {
 }
 
 export interface QueryOracleListResponse {
-  Oracle: Oracle[];
+  oracles: Oracle[];
   pagination?: PageResponse;
 }
 
@@ -259,7 +259,7 @@ export const QueryOracleListResponse = {
     message: QueryOracleListResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    for (const v of message.Oracle) {
+    for (const v of message.oracles) {
       Oracle.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.pagination !== undefined) {
@@ -280,12 +280,12 @@ export const QueryOracleListResponse = {
     const message = {
       ...baseQueryOracleListResponse,
     } as QueryOracleListResponse;
-    message.Oracle = [];
+    message.oracles = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.Oracle.push(Oracle.decode(reader, reader.uint32()));
+          message.oracles.push(Oracle.decode(reader, reader.uint32()));
           break;
         case 2:
           message.pagination = PageResponse.decode(reader, reader.uint32());
@@ -302,10 +302,10 @@ export const QueryOracleListResponse = {
     const message = {
       ...baseQueryOracleListResponse,
     } as QueryOracleListResponse;
-    message.Oracle = [];
-    if (object.Oracle !== undefined && object.Oracle !== null) {
-      for (const e of object.Oracle) {
-        message.Oracle.push(Oracle.fromJSON(e));
+    message.oracles = [];
+    if (object.oracles !== undefined && object.oracles !== null) {
+      for (const e of object.oracles) {
+        message.oracles.push(Oracle.fromJSON(e));
       }
     }
     if (object.pagination !== undefined && object.pagination !== null) {
@@ -318,12 +318,12 @@ export const QueryOracleListResponse = {
 
   toJSON(message: QueryOracleListResponse): unknown {
     const obj: any = {};
-    if (message.Oracle) {
-      obj.Oracle = message.Oracle.map((e) =>
+    if (message.oracles) {
+      obj.oracles = message.oracles.map((e) =>
         e ? Oracle.toJSON(e) : undefined
       );
     } else {
-      obj.Oracle = [];
+      obj.oracles = [];
     }
     message.pagination !== undefined &&
       (obj.pagination = message.pagination
@@ -338,10 +338,10 @@ export const QueryOracleListResponse = {
     const message = {
       ...baseQueryOracleListResponse,
     } as QueryOracleListResponse;
-    message.Oracle = [];
-    if (object.Oracle !== undefined && object.Oracle !== null) {
-      for (const e of object.Oracle) {
-        message.Oracle.push(Oracle.fromPartial(e));
+    message.oracles = [];
+    if (object.oracles !== undefined && object.oracles !== null) {
+      for (const e of object.oracles) {
+        message.oracles.push(Oracle.fromPartial(e));
       }
     }
     if (object.pagination !== undefined && object.pagination !== null) {
