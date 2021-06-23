@@ -2,7 +2,7 @@ import { DEFAULT_NETWORK, Network, Network as _Network, NetworkConfig, NetworkCo
 import { GenericUtils, NetworkUtils } from "@carbon-sdk/util";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import CarbonQueryClient from "./CarbonQueryClient";
-import { ModOrder, LiquidityPoolOrder } from "./modules";
+import { OrderModule, LiquidityPoolModule, SubAccountModule, ProfileModule, CdpModule } from "./modules";
 import { CarbonSigner, CarbonWallet } from "./wallet";
 
 export { CarbonTx } from "@carbon-sdk/util";
@@ -43,8 +43,11 @@ class CarbonSDK {
   tmClient: Tendermint34Client;
 
 
-  order: ModOrder;
-  liquiditypool: LiquidityPoolOrder
+  order: OrderModule;
+  lp: LiquidityPoolModule;
+  subaccount: SubAccountModule;
+  profile: ProfileModule;
+  cdp: CdpModule;
 
   constructor(opts: CarbonSDKOpts) {
     this.network = opts.network ?? DEFAULT_NETWORK;
@@ -54,8 +57,11 @@ class CarbonSDK {
     this.tmClient = opts.tmClient;
     this.query = new CarbonQueryClient(opts.tmClient);
 
-    this.order = new ModOrder(this);
-    this.liquiditypool = new LiquidityPoolOrder(this);
+    this.order = new OrderModule(this);
+    this.lp = new LiquidityPoolModule(this);
+    this.subaccount = new SubAccountModule(this);
+    this.profile = new ProfileModule(this)
+    this.cdp = new CdpModule(this)
   }
 
   public static async instance(opts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS) {
