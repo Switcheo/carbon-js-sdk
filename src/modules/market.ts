@@ -24,6 +24,8 @@ export class MarketModule extends BaseModule {
           maintenanceMarginRatio: params.maintenanceMarginRatio.shiftedBy(18).toString(10),
           maxLiquidationOrderTicket: params.maxLiquidationOrderTicket.toString(10),
           maxLiquidationOrderDuration: params.maxLiquidationOrderDuration,
+          impactSize: params.impactSize.toString(10),
+          markPriceBand: params.markPriceBand,
           lastPriceProtectedBand: params.lastPriceProtectedBand,
           isActive: params.isActive,
       },
@@ -51,7 +53,9 @@ export namespace MarketModule {
     maintenanceMarginRatio: BigNumber;
     maxLiquidationOrderTicket: BigNumber;
     maxLiquidationOrderDuration: Duration;
-    lastPriceProtectedBand?: number;
+    impactSize: BigNumber;
+    markPriceBand: number;
+    lastPriceProtectedBand: number;
     isActive: boolean;
   }
 
