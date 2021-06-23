@@ -19,11 +19,13 @@ const TRPC_ENDPOINT = process.env.TRPC_ENDPOINT ?? "http://localhost:26657";
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
 
-  const result = await connectedSDK.lp.create({
+  const result = await connectedSDK.lp.createWithLiquidity({
     tokenADenom: "swth",
     tokenBDenom: "eth",
     tokenAWeight: new BigNumber(0.5),
     tokenBWeight: new BigNumber(0.5),
+    amountA: new BigNumber(100),
+    amountB: new BigNumber(100),
     swapFee: new BigNumber(0.002),
     numQuotes: new Long(5),
   })
