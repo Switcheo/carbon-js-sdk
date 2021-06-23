@@ -4,3 +4,4 @@ export * from "./subaccount";
 export * from "./profile";
 export * from "./cdp";
 export * from "./leverage"
+export * from "./market";
