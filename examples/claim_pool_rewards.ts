@@ -1,7 +1,5 @@
 import * as BIP39 from "bip39";
 import { CarbonSDK } from "./_sdk";
-import { BigNumber } from "bignumber.js";
-import Long from "long";
 import "./_setup";
 
 const TRPC_ENDPOINT = process.env.TRPC_ENDPOINT ?? "http://localhost:26657";
@@ -18,11 +16,9 @@ const TRPC_ENDPOINT = process.env.TRPC_ENDPOINT ?? "http://localhost:26657";
   });
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
-
-  // stake pool token
   
   const result = await connectedSDK.lp.claimPoolRewards({
-    poolId: new Long(1),
+    poolId: 1,
   })
   console.log(result)
 })().catch(console.error).finally(() => process.exit(0));

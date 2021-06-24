@@ -1,7 +1,6 @@
 import * as BIP39 from "bip39";
 import { CarbonSDK } from "./_sdk";
 import { BigNumber } from "bignumber.js";
-import Long from "long";
 import "./_setup";
 
 const TRPC_ENDPOINT = process.env.TRPC_ENDPOINT ?? "http://localhost:26657";
@@ -21,7 +20,7 @@ const TRPC_ENDPOINT = process.env.TRPC_ENDPOINT ?? "http://localhost:26657";
 
   const result = await connectedSDK.leverage.set({
     market: "btc_z29",
-    leverage: new BigNumber(10)
+    leverage: new BigNumber(10),
   })
   console.log(result)
 })().catch(console.error).finally(() => process.exit(0));

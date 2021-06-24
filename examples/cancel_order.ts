@@ -17,7 +17,7 @@ const TRPC_ENDPOINT = process.env.TRPC_ENDPOINT ?? "http://localhost:26657";
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
 
-  const orderID = "";
+  const orderID = "1";
 
   const result = await connectedSDK.order.cancel(orderID);
   console.log(result)

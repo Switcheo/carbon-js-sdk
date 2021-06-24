@@ -21,7 +21,7 @@ const TRPC_ENDPOINT = process.env.TRPC_ENDPOINT ?? "http://localhost:26657";
   const result = await connectedSDK.coin.createWithdrawal({
     toAddress: "tswth1phsut994s4e9apdc25vdln02g9rz7exzw7j4nk",
     denom: "eth",
-    amount: new BigNumber(1000),
+    amount: new BigNumber(1000), // human
     feeAmount: new BigNumber(10),
     feeAddress: "tswth1mw90en8tcqnvdjhp64qmyhuq4qasvhy2s6st4t",
   })

@@ -1,6 +1,5 @@
 import * as BIP39 from "bip39";
 import { CarbonSDK } from "./_sdk";
-import Long from "long";
 import "./_setup";
 
 const TRPC_ENDPOINT = process.env.TRPC_ENDPOINT ?? "http://localhost:26657";
@@ -20,7 +19,7 @@ const TRPC_ENDPOINT = process.env.TRPC_ENDPOINT ?? "http://localhost:26657";
 
   const result = await connectedSDK.oracle.createVote({
     oracleId: "DXBT2",
-    timestamp: new Long(100),
+    timestamp: 100,
     data: "Demex XBT Index",
   })
   console.log(result)

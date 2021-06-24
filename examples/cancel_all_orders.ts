@@ -25,8 +25,8 @@ const TRPC_ENDPOINT = process.env.TRPC_ENDPOINT ?? "http://localhost:26657";
   }
   const [market] = marketsResult.Market
 
-  // const result = await connectedSDK.order.cancelAll({
-  //     market: market.name
-  // });
-  // console.log(result)
+  const result = await connectedSDK.order.cancelAll({
+      market: market.name
+  });
+  console.log(result)
 })().catch(console.error).finally(() => process.exit(0));

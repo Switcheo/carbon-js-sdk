@@ -1,7 +1,6 @@
 import * as BIP39 from "bip39";
 import { CarbonSDK } from "./_sdk";
 import { BigNumber } from "bignumber.js";
-import Long from "long";
 import "./_setup";
 
 const TRPC_ENDPOINT = process.env.TRPC_ENDPOINT ?? "http://localhost:26657";
@@ -25,7 +24,7 @@ const TRPC_ENDPOINT = process.env.TRPC_ENDPOINT ?? "http://localhost:26657";
   const result = await connectedSDK.lp.stakePoolToken({
     denom: "swth-50-eth-50-lp1",
     amount: new BigNumber(100),
-    duration: new Long(10),
+    duration: 10,
   })
   console.log(result)
 })().catch(console.error).finally(() => process.exit(0));

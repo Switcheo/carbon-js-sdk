@@ -1,7 +1,5 @@
 import * as BIP39 from "bip39";
 import { CarbonSDK } from "./_sdk";
-import { BigNumber } from "bignumber.js";
-import Long from "long";
 import "./_setup";
 
 const TRPC_ENDPOINT = process.env.TRPC_ENDPOINT ?? "http://localhost:26657";

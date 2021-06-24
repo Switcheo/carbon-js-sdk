@@ -3,6 +3,7 @@ import { CarbonSDK } from "./_sdk";
 import { BigNumber } from "bignumber.js";
 import Long from "long";
 import "./_setup";
+import { Duration } from "../lib/codec/google/protobuf/duration";
 
 const TRPC_ENDPOINT = process.env.TRPC_ENDPOINT ?? "http://localhost:26657";
 
@@ -31,9 +32,9 @@ const TRPC_ENDPOINT = process.env.TRPC_ENDPOINT ?? "http://localhost:26657";
     initialMarginStep: new BigNumber(0.001),
     maintenanceMarginRatio: new BigNumber(0.001),
     maxLiquidationOrderTicket: new BigNumber(1000000000),
-    maxLiquidationOrderDuration: {
-      seconds: new Long(30)
-    },
+    maxLiquidationOrderDuration: Duration.fromPartial({
+      seconds: Long.fromNumber(30),
+    }),
     impactSize: new BigNumber(1000000000),
     markPriceBand: 1000,
     lastPriceProtectedBand: 1000,

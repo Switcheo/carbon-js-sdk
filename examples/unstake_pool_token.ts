@@ -18,12 +18,10 @@ const TRPC_ENDPOINT = process.env.TRPC_ENDPOINT ?? "http://localhost:26657";
   });
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
-
-  // stake pool token
   
   const result = await connectedSDK.lp.unstakePoolToken({
     denom: "swth-50-eth-50-lp1",
-    amount: new BigNumber(100),
+    amount: new BigNumber(100), // human
   })
   console.log(result)
 })().catch(console.error).finally(() => process.exit(0));

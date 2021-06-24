@@ -4,9 +4,9 @@ import BaseModule from "./base";
 import { BigNumber } from "bignumber.js";
 import Long from "long";
 
-export class CdpModule extends BaseModule {
+export class CDPModule extends BaseModule {
 
-  public async addCollateral(params: CdpModule.AddCollateralParams) {
+  public async addCollateral(params: CDPModule.AddCollateralParams) {
     const wallet = this.getWallet();
 
     const value = MsgAddCollateral.fromPartial({
@@ -21,7 +21,7 @@ export class CdpModule extends BaseModule {
     });
   }
 
-  public async removeCollateral(params: CdpModule.RemoveCollateralParams) {
+  public async removeCollateral(params: CDPModule.RemoveCollateralParams) {
     const wallet = this.getWallet();
 
     const value = MsgRemoveCollateral.fromPartial({
@@ -36,7 +36,7 @@ export class CdpModule extends BaseModule {
     });
   }
 
-  public async addDebt(params: CdpModule.AddDebtParams) {
+  public async addDebt(params: CDPModule.AddDebtParams) {
     const wallet = this.getWallet();
 
     const value = MsgAddDebt.fromPartial({
@@ -51,7 +51,7 @@ export class CdpModule extends BaseModule {
     });
   }
 
-  public async removeDebt(params: CdpModule.RemoveDebtParams) {
+  public async removeDebt(params: CDPModule.RemoveDebtParams) {
     const wallet = this.getWallet();
 
     const value = MsgRemoveDebt.fromPartial({
@@ -67,7 +67,7 @@ export class CdpModule extends BaseModule {
   }
 }
 
-export namespace CdpModule {
+export namespace CDPModule {
   export interface AddCollateralParams {
     vaultTypeId: number
     amount: BigNumber

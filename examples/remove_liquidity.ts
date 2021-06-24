@@ -19,11 +19,9 @@ const TRPC_ENDPOINT = process.env.TRPC_ENDPOINT ?? "http://localhost:26657";
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
 
-  // create lp token
-
   const result = await connectedSDK.lp.removeLiquidity({
-    poolId: new Long(1),
-    shares: new BigNumber(10),
+    poolId: 1,
+    shares: new BigNumber(10), // human
   })
   console.log(result)
 })().catch(console.error).finally(() => process.exit(0));
