@@ -1,6 +1,7 @@
 import { MsgCreateVote } from "@carbon-sdk/codec/oracle/tx";
 import { CarbonTx } from "@carbon-sdk/util/tx";
 import BaseModule from "./base";
+import Long from "long";
 
 export class OracleModule extends BaseModule {
 
@@ -10,7 +11,7 @@ export class OracleModule extends BaseModule {
     const value = MsgCreateVote.fromPartial({
       creator: wallet.bech32Address,
       oracleId: params.oracleId,
-      timestamp: params.timestamp,
+      timestamp: new Long(params.timestamp),
       data: params.data,
     })
 
@@ -24,7 +25,7 @@ export class OracleModule extends BaseModule {
 export namespace OracleModule {
   export interface CreateVoteParams {
     oracleId: string
-    timestamp: Long,
+    timestamp: number,
     data: string,
   }
 };

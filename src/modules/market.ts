@@ -2,6 +2,7 @@ import { MsgUpdateMarket } from "@carbon-sdk/codec/market/tx";
 import { CarbonTx } from "@carbon-sdk/util/tx";
 import BaseModule from "./base";
 import { BigNumber } from "bignumber.js";
+import {Duration} from "@carbon-sdk/codec/google/protobuf/duration";
 
 export class MarketModule extends BaseModule {
 
@@ -59,8 +60,8 @@ export namespace MarketModule {
     isActive: boolean;
   }
 
-  interface Duration {
-    seconds?: Long
-    nanos?: number
-  }
+  // interface Duration {
+  //   seconds?: Long
+  //   nanos?: number
+  // }
 };

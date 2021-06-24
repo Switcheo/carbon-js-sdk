@@ -2,6 +2,7 @@ import { MsgAddCollateral, MsgAddDebt, MsgRemoveCollateral, MsgRemoveDebt } from
 import { CarbonTx } from "@carbon-sdk/util/tx";
 import BaseModule from "./base";
 import { BigNumber } from "bignumber.js";
+import Long from "long";
 
 export class CdpModule extends BaseModule {
 
@@ -10,7 +11,7 @@ export class CdpModule extends BaseModule {
 
     const value = MsgAddCollateral.fromPartial({
       creator: wallet.bech32Address,
-      vaultTypeId: params.vaultTypeId,
+      vaultTypeId: new Long(params.vaultTypeId),
       amount: params.amount.shiftedBy(18).toString(10),
     })
 
@@ -25,7 +26,7 @@ export class CdpModule extends BaseModule {
 
     const value = MsgRemoveCollateral.fromPartial({
       creator: wallet.bech32Address,
-      vaultTypeId: params.vaultTypeId,
+      vaultTypeId: new Long(params.vaultTypeId),
       amount: params.amount.shiftedBy(18).toString(10),
     })
 
@@ -40,7 +41,7 @@ export class CdpModule extends BaseModule {
 
     const value = MsgAddDebt.fromPartial({
       creator: wallet.bech32Address,
-      vaultTypeId: params.vaultTypeId,
+      vaultTypeId: new Long(params.vaultTypeId),
       amount: params.amount.shiftedBy(18).toString(10),
     })
 
@@ -55,7 +56,7 @@ export class CdpModule extends BaseModule {
 
     const value = MsgRemoveDebt.fromPartial({
       creator: wallet.bech32Address,
-      vaultTypeId: params.vaultTypeId,
+      vaultTypeId: new Long(params.vaultTypeId),
       amount: params.amount.shiftedBy(18).toString(10),
     })
 
@@ -68,22 +69,22 @@ export class CdpModule extends BaseModule {
 
 export namespace CdpModule {
   export interface AddCollateralParams {
-    vaultTypeId: Long
+    vaultTypeId: number
     amount: BigNumber
   }
 
   export interface RemoveCollateralParams {
-    vaultTypeId: Long
+    vaultTypeId: number
     amount: BigNumber
   }
 
   export interface AddDebtParams {
-    vaultTypeId: Long
+    vaultTypeId: number
     amount: BigNumber
   }
 
   export interface RemoveDebtParams {
-    vaultTypeId: Long
+    vaultTypeId: number
     amount: BigNumber
   }
 };

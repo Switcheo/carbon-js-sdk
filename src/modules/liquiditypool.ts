@@ -2,6 +2,7 @@ import { MsgAddLiquidity, MsgClaimPoolRewards, MsgCreatePool, MsgCreatePoolWithL
 import { CarbonTx } from "@carbon-sdk/util/tx";
 import BaseModule from "./base";
 import { BigNumber } from "bignumber.js";
+import Long from "long";
 
 export class LiquidityPoolModule extends BaseModule {
 
@@ -15,7 +16,7 @@ export class LiquidityPoolModule extends BaseModule {
       tokenAWeight: params.tokenAWeight.shiftedBy(18).toString(10),
       tokenBWeight: params.tokenBWeight.shiftedBy(18).toString(10),
       swapFee: params.swapFee.shiftedBy(18).toString(10),
-      numQuotes: params.numQuotes,
+      numQuotes: new Long(params.numQuotes),
     })
 
     return await wallet.sendTx({
@@ -36,7 +37,7 @@ export class LiquidityPoolModule extends BaseModule {
       amountA: params.amountA.shiftedBy(18).toString(10),
       amountB: params.amountB.shiftedBy(18).toString(10),
       swapFee: params.swapFee.shiftedBy(18).toString(10),
-      numQuotes: params.numQuotes,
+      numQuotes: new Long(params.numQuotes),
     })
 
     return await wallet.sendTx({
@@ -50,7 +51,7 @@ export class LiquidityPoolModule extends BaseModule {
 
     const value = MsgAddLiquidity.fromPartial({
       creator: wallet.bech32Address,
-      poolId: params.poolId,
+      poolId: new Long(params.poolId),
       amountA: params.amountA.shiftedBy(18).toString(10),
       amountB: params.amountB.shiftedBy(18).toString(10),
       minShares: params.minShares.shiftedBy(18).toString(10),
@@ -67,7 +68,7 @@ export class LiquidityPoolModule extends BaseModule {
 
     const value = MsgRemoveLiquidity.fromPartial({
       creator: wallet.bech32Address,
-      poolId: params.poolId,
+      poolId: new Long(params.poolId),
       shares: params.shares.shiftedBy(18).toString(10),
     })
 
@@ -84,7 +85,7 @@ export class LiquidityPoolModule extends BaseModule {
       creator: wallet.bech32Address,
       denom: params.denom,
       amount: params.amount.shiftedBy(18).toString(10),
-      duration: params.duration
+      duration: new Long(params.duration)
     })
 
     return await wallet.sendTx({
@@ -113,7 +114,7 @@ export class LiquidityPoolModule extends BaseModule {
 
     const value = MsgClaimPoolRewards.fromPartial({
       creator: wallet.bech32Address,
-      poolId: params.poolId,
+      poolId: new Long(params.poolId),
     })
 
     return await wallet.sendTx({
@@ -130,7 +131,7 @@ export namespace LiquidityPoolModule {
     tokenAWeight: BigNumber
     tokenBWeight: BigNumber
     swapFee: BigNumber
-    numQuotes: Long
+    numQuotes: number
   }
 
   export interface CreatePoolWithLiquidityParams {
@@ -141,25 +142,25 @@ export namespace LiquidityPoolModule {
     amountA: BigNumber
     amountB: BigNumber
     swapFee: BigNumber
-    numQuotes: Long
+    numQuotes: number
   }
 
   export interface AddLiquidityParams {
-    poolId: Long
+    poolId: number
     amountA: BigNumber
     amountB: BigNumber
     minShares: BigNumber
   }
 
   export interface RemoveLiquidityParams {
-    poolId: Long
+    poolId: number
     shares: BigNumber
   }
 
   export interface StakePoolTokenParams {
     denom: string
     amount: BigNumber
-    duration: Long
+    duration: number
   }
 
   export interface UnstakePoolTokenParams {
@@ -168,6 +169,6 @@ export namespace LiquidityPoolModule {
   }
 
   export interface ClaimPoolRewardsParams {
-    poolId: Long
+    poolId: number
   }
 };
