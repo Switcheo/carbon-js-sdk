@@ -8,6 +8,8 @@ tar -zxvf proto-ts.tar.gz --directory ./src/codec
 
 # Remove unnecessary codec files
 rm -rf \
+  src/codec/collateralizeddebtposition/ \
+  src/codec/autodeleverage/ \
   src/codec/cosmos_proto/ \
   src/codec/gogoproto/ \
   src/codec/google/api/ \

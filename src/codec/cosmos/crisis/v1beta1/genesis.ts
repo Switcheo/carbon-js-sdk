@@ -1,19 +1,29 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
+import { Coin } from "../../../cosmos/base/v1beta1/coin";
 
-export const protobufPackage = "Switcheo.carbon.auth";
+export const protobufPackage = "cosmos.crisis.v1beta1";
 
-/** GenesisState defines the auth module's genesis state. */
-export interface GenesisState {}
+/** GenesisState defines the crisis module's genesis state. */
+export interface GenesisState {
+  /**
+   * constant_fee is the fee used to verify the invariant in the crisis
+   * module.
+   */
+  constantFee?: Coin;
+}
 
 const baseGenesisState: object = {};
 
 export const GenesisState = {
   encode(
-    _: GenesisState,
+    message: GenesisState,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
+    if (message.constantFee !== undefined) {
+      Coin.encode(message.constantFee, writer.uint32(26).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -24,6 +34,9 @@ export const GenesisState = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 3:
+          message.constantFee = Coin.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -32,18 +45,32 @@ export const GenesisState = {
     return message;
   },
 
-  fromJSON(_: any): GenesisState {
+  fromJSON(object: any): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
+    if (object.constantFee !== undefined && object.constantFee !== null) {
+      message.constantFee = Coin.fromJSON(object.constantFee);
+    } else {
+      message.constantFee = undefined;
+    }
     return message;
   },
 
-  toJSON(_: GenesisState): unknown {
+  toJSON(message: GenesisState): unknown {
     const obj: any = {};
+    message.constantFee !== undefined &&
+      (obj.constantFee = message.constantFee
+        ? Coin.toJSON(message.constantFee)
+        : undefined);
     return obj;
   },
 
-  fromPartial(_: DeepPartial<GenesisState>): GenesisState {
+  fromPartial(object: DeepPartial<GenesisState>): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
+    if (object.constantFee !== undefined && object.constantFee !== null) {
+      message.constantFee = Coin.fromPartial(object.constantFee);
+    } else {
+      message.constantFee = undefined;
+    }
     return message;
   },
 };
