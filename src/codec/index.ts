@@ -2,12 +2,15 @@
 import { Registry } from "@cosmjs/proto-signing";
 import { MsgInitiateLiquidation, MsgInitiateLiquidationResponse } from "./broker/tx";
 import { MsgAddCollateral, MsgAddCollateralResponse, MsgRemoveCollateral, MsgRemoveCollateralResponse, MsgAddDebt, MsgAddDebtResponse, MsgRemoveDebt, MsgRemoveDebtResponse, MsgCreateVaultType, MsgCreateVaultTypeResponse } from "./cdp/tx";
-import { MsgCreateToken, MsgCreateTokenResponse, MsgSyncToken, MsgSyncTokenResponse, MsgMintToken, MsgMintTokenResponse, MsgBindToken, MsgBindTokenResponse } from "./coin/tx";
+import { MsgCreateToken, MsgCreateTokenResponse, MsgSyncToken, MsgSyncTokenResponse, MsgMintToken, MsgMintTokenResponse, MsgBindToken, MsgBindTokenResponse, MsgLinkToken, MsgLinkTokenResponse, MsgWithdraw, MsgWithdrawResponse } from "./coin/tx";
 import { MsgSetFee, MsgSetFeeResponse } from "./fee/tx";
+import { MsgEnableInflation, MsgEnableInflationResponse } from "./inflation/tx";
+import { MsgSetLeverage, MsgSetLeverageResponse } from "./leverage/tx";
 import { MsgCreatePool, MsgCreatePoolResponse, MsgCreatePoolWithLiquidity, MsgCreatePoolWithLiquidityResponse, MsgAddLiquidity, MsgAddLiquidityResponse, MsgRemoveLiquidity, MsgRemoveLiquidityResponse, MsgLinkPool, MsgLinkPoolResponse, MsgUnlinkPool, MsgUnlinkPoolResponse, MsgSetRewardsWeights, MsgSetRewardsWeightsResponse, MsgStakePoolToken, MsgStakePoolTokenResponse, MsgUnstakePoolToken, MsgUnstakePoolTokenResponse, MsgClaimPoolRewards, MsgClaimPoolRewardsResponse, MsgSetRewardCurve, MsgSetRewardCurveResponse, MsgChangeSwapFee, MsgChangeSwapFeeResponse, MsgSetCommitmentCurve, MsgSetCommitmentCurveResponse, MsgChangeNumQuotes, MsgChangeNumQuotesResponse } from "./liquiditypool/tx";
 import { MsgCreateMarket, MsgCreateMarketResponse, MsgUpdateMarket, MsgUpdateMarketResponse } from "./market/tx";
 import { MsgCreateOracle, MsgCreateOracleResponse, MsgCreateVote, MsgCreateVoteResponse } from "./oracle/tx";
 import { MsgSetTradingFlag, MsgSetTradingFlagResponse, MsgCreateOrder, MsgCreateOrderResponse, MsgEditOrder, MsgEditOrderResponse, MsgCancelOrder, MsgCancelOrderResponse, MsgCancelAll, MsgCancelAllResponse } from "./order/tx";
+import { MsgSetMargin, MsgSetMarginResponse } from "./position/tx";
 import { MsgUpdateProfile, MsgUpdateProfileResponse } from "./profile/tx";
 import { MsgCreateSubAccount, MsgCreateSubAccountResponse, MsgActivateSubAccount, MsgActivateSubAccountResponse, MsgRemoveSubAccount, MsgRemoveSubAccountResponse } from "./subaccount/tx";
 
@@ -35,9 +38,19 @@ registry.register("/Switcheo.carbon.coin.MsgMintToken", MsgMintToken);
 registry.register("/Switcheo.carbon.coin.MsgMintTokenResponse", MsgMintTokenResponse);
 registry.register("/Switcheo.carbon.coin.MsgBindToken", MsgBindToken);
 registry.register("/Switcheo.carbon.coin.MsgBindTokenResponse", MsgBindTokenResponse);
+registry.register("/Switcheo.carbon.coin.MsgLinkToken", MsgLinkToken);
+registry.register("/Switcheo.carbon.coin.MsgLinkTokenResponse", MsgLinkTokenResponse);
+registry.register("/Switcheo.carbon.coin.MsgWithdraw", MsgWithdraw);
+registry.register("/Switcheo.carbon.coin.MsgWithdrawResponse", MsgWithdrawResponse);
 
 registry.register("/Switcheo.carbon.fee.MsgSetFee", MsgSetFee);
 registry.register("/Switcheo.carbon.fee.MsgSetFeeResponse", MsgSetFeeResponse);
+
+registry.register("/Switcheo.carbon.inflation.MsgEnableInflation", MsgEnableInflation);
+registry.register("/Switcheo.carbon.inflation.MsgEnableInflationResponse", MsgEnableInflationResponse);
+
+registry.register("/Switcheo.carbon.leverage.MsgSetLeverage", MsgSetLeverage);
+registry.register("/Switcheo.carbon.leverage.MsgSetLeverageResponse", MsgSetLeverageResponse);
 
 registry.register("/Switcheo.carbon.liquiditypool.MsgCreatePool", MsgCreatePool);
 registry.register("/Switcheo.carbon.liquiditypool.MsgCreatePoolResponse", MsgCreatePoolResponse);
@@ -89,6 +102,9 @@ registry.register("/Switcheo.carbon.order.MsgCancelOrderResponse", MsgCancelOrde
 registry.register("/Switcheo.carbon.order.MsgCancelAll", MsgCancelAll);
 registry.register("/Switcheo.carbon.order.MsgCancelAllResponse", MsgCancelAllResponse);
 
+registry.register("/Switcheo.carbon.position.MsgSetMargin", MsgSetMargin);
+registry.register("/Switcheo.carbon.position.MsgSetMarginResponse", MsgSetMarginResponse);
+
 registry.register("/Switcheo.carbon.profile.MsgUpdateProfile", MsgUpdateProfile);
 registry.register("/Switcheo.carbon.profile.MsgUpdateProfileResponse", MsgUpdateProfileResponse);
 
@@ -120,8 +136,16 @@ export const TxTypes = {
   "MsgMintTokenResponse": "/Switcheo.carbon.coin.MsgMintTokenResponse",
   "MsgBindToken": "/Switcheo.carbon.coin.MsgBindToken",
   "MsgBindTokenResponse": "/Switcheo.carbon.coin.MsgBindTokenResponse",
+  "MsgLinkToken": "/Switcheo.carbon.coin.MsgLinkToken",
+  "MsgLinkTokenResponse": "/Switcheo.carbon.coin.MsgLinkTokenResponse",
+  "MsgWithdraw": "/Switcheo.carbon.coin.MsgWithdraw",
+  "MsgWithdrawResponse": "/Switcheo.carbon.coin.MsgWithdrawResponse",
   "MsgSetFee": "/Switcheo.carbon.fee.MsgSetFee",
   "MsgSetFeeResponse": "/Switcheo.carbon.fee.MsgSetFeeResponse",
+  "MsgEnableInflation": "/Switcheo.carbon.inflation.MsgEnableInflation",
+  "MsgEnableInflationResponse": "/Switcheo.carbon.inflation.MsgEnableInflationResponse",
+  "MsgSetLeverage": "/Switcheo.carbon.leverage.MsgSetLeverage",
+  "MsgSetLeverageResponse": "/Switcheo.carbon.leverage.MsgSetLeverageResponse",
   "MsgCreatePool": "/Switcheo.carbon.liquiditypool.MsgCreatePool",
   "MsgCreatePoolResponse": "/Switcheo.carbon.liquiditypool.MsgCreatePoolResponse",
   "MsgCreatePoolWithLiquidity": "/Switcheo.carbon.liquiditypool.MsgCreatePoolWithLiquidity",
@@ -168,6 +192,8 @@ export const TxTypes = {
   "MsgCancelOrderResponse": "/Switcheo.carbon.order.MsgCancelOrderResponse",
   "MsgCancelAll": "/Switcheo.carbon.order.MsgCancelAll",
   "MsgCancelAllResponse": "/Switcheo.carbon.order.MsgCancelAllResponse",
+  "MsgSetMargin": "/Switcheo.carbon.position.MsgSetMargin",
+  "MsgSetMarginResponse": "/Switcheo.carbon.position.MsgSetMarginResponse",
   "MsgUpdateProfile": "/Switcheo.carbon.profile.MsgUpdateProfile",
   "MsgUpdateProfileResponse": "/Switcheo.carbon.profile.MsgUpdateProfileResponse",
   "MsgCreateSubAccount": "/Switcheo.carbon.subaccount.MsgCreateSubAccount",

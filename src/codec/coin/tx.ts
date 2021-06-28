@@ -48,6 +48,25 @@ export interface MsgBindToken {
 
 export interface MsgBindTokenResponse {}
 
+export interface MsgLinkToken {
+  creator: string;
+  denom: string;
+  lockProxyHash: string;
+}
+
+export interface MsgLinkTokenResponse {}
+
+export interface MsgWithdraw {
+  creator: string;
+  toAddress: string;
+  denom: string;
+  amount: string;
+  feeAmount: string;
+  feeAddress: string;
+}
+
+export interface MsgWithdrawResponse {}
+
 const baseMsgCreateToken: object = {
   creator: "",
   name: "",
@@ -795,6 +814,334 @@ export const MsgBindTokenResponse = {
   },
 };
 
+const baseMsgLinkToken: object = { creator: "", denom: "", lockProxyHash: "" };
+
+export const MsgLinkToken = {
+  encode(
+    message: MsgLinkToken,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.denom !== "") {
+      writer.uint32(18).string(message.denom);
+    }
+    if (message.lockProxyHash !== "") {
+      writer.uint32(26).string(message.lockProxyHash);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgLinkToken {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgLinkToken } as MsgLinkToken;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.denom = reader.string();
+          break;
+        case 3:
+          message.lockProxyHash = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgLinkToken {
+    const message = { ...baseMsgLinkToken } as MsgLinkToken;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = String(object.creator);
+    } else {
+      message.creator = "";
+    }
+    if (object.denom !== undefined && object.denom !== null) {
+      message.denom = String(object.denom);
+    } else {
+      message.denom = "";
+    }
+    if (object.lockProxyHash !== undefined && object.lockProxyHash !== null) {
+      message.lockProxyHash = String(object.lockProxyHash);
+    } else {
+      message.lockProxyHash = "";
+    }
+    return message;
+  },
+
+  toJSON(message: MsgLinkToken): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.denom !== undefined && (obj.denom = message.denom);
+    message.lockProxyHash !== undefined &&
+      (obj.lockProxyHash = message.lockProxyHash);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgLinkToken>): MsgLinkToken {
+    const message = { ...baseMsgLinkToken } as MsgLinkToken;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = object.creator;
+    } else {
+      message.creator = "";
+    }
+    if (object.denom !== undefined && object.denom !== null) {
+      message.denom = object.denom;
+    } else {
+      message.denom = "";
+    }
+    if (object.lockProxyHash !== undefined && object.lockProxyHash !== null) {
+      message.lockProxyHash = object.lockProxyHash;
+    } else {
+      message.lockProxyHash = "";
+    }
+    return message;
+  },
+};
+
+const baseMsgLinkTokenResponse: object = {};
+
+export const MsgLinkTokenResponse = {
+  encode(
+    _: MsgLinkTokenResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgLinkTokenResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgLinkTokenResponse } as MsgLinkTokenResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgLinkTokenResponse {
+    const message = { ...baseMsgLinkTokenResponse } as MsgLinkTokenResponse;
+    return message;
+  },
+
+  toJSON(_: MsgLinkTokenResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(_: DeepPartial<MsgLinkTokenResponse>): MsgLinkTokenResponse {
+    const message = { ...baseMsgLinkTokenResponse } as MsgLinkTokenResponse;
+    return message;
+  },
+};
+
+const baseMsgWithdraw: object = {
+  creator: "",
+  toAddress: "",
+  denom: "",
+  amount: "",
+  feeAmount: "",
+  feeAddress: "",
+};
+
+export const MsgWithdraw = {
+  encode(
+    message: MsgWithdraw,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.toAddress !== "") {
+      writer.uint32(18).string(message.toAddress);
+    }
+    if (message.denom !== "") {
+      writer.uint32(26).string(message.denom);
+    }
+    if (message.amount !== "") {
+      writer.uint32(34).string(message.amount);
+    }
+    if (message.feeAmount !== "") {
+      writer.uint32(42).string(message.feeAmount);
+    }
+    if (message.feeAddress !== "") {
+      writer.uint32(50).string(message.feeAddress);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgWithdraw {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgWithdraw } as MsgWithdraw;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.toAddress = reader.string();
+          break;
+        case 3:
+          message.denom = reader.string();
+          break;
+        case 4:
+          message.amount = reader.string();
+          break;
+        case 5:
+          message.feeAmount = reader.string();
+          break;
+        case 6:
+          message.feeAddress = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgWithdraw {
+    const message = { ...baseMsgWithdraw } as MsgWithdraw;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = String(object.creator);
+    } else {
+      message.creator = "";
+    }
+    if (object.toAddress !== undefined && object.toAddress !== null) {
+      message.toAddress = String(object.toAddress);
+    } else {
+      message.toAddress = "";
+    }
+    if (object.denom !== undefined && object.denom !== null) {
+      message.denom = String(object.denom);
+    } else {
+      message.denom = "";
+    }
+    if (object.amount !== undefined && object.amount !== null) {
+      message.amount = String(object.amount);
+    } else {
+      message.amount = "";
+    }
+    if (object.feeAmount !== undefined && object.feeAmount !== null) {
+      message.feeAmount = String(object.feeAmount);
+    } else {
+      message.feeAmount = "";
+    }
+    if (object.feeAddress !== undefined && object.feeAddress !== null) {
+      message.feeAddress = String(object.feeAddress);
+    } else {
+      message.feeAddress = "";
+    }
+    return message;
+  },
+
+  toJSON(message: MsgWithdraw): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.toAddress !== undefined && (obj.toAddress = message.toAddress);
+    message.denom !== undefined && (obj.denom = message.denom);
+    message.amount !== undefined && (obj.amount = message.amount);
+    message.feeAmount !== undefined && (obj.feeAmount = message.feeAmount);
+    message.feeAddress !== undefined && (obj.feeAddress = message.feeAddress);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgWithdraw>): MsgWithdraw {
+    const message = { ...baseMsgWithdraw } as MsgWithdraw;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = object.creator;
+    } else {
+      message.creator = "";
+    }
+    if (object.toAddress !== undefined && object.toAddress !== null) {
+      message.toAddress = object.toAddress;
+    } else {
+      message.toAddress = "";
+    }
+    if (object.denom !== undefined && object.denom !== null) {
+      message.denom = object.denom;
+    } else {
+      message.denom = "";
+    }
+    if (object.amount !== undefined && object.amount !== null) {
+      message.amount = object.amount;
+    } else {
+      message.amount = "";
+    }
+    if (object.feeAmount !== undefined && object.feeAmount !== null) {
+      message.feeAmount = object.feeAmount;
+    } else {
+      message.feeAmount = "";
+    }
+    if (object.feeAddress !== undefined && object.feeAddress !== null) {
+      message.feeAddress = object.feeAddress;
+    } else {
+      message.feeAddress = "";
+    }
+    return message;
+  },
+};
+
+const baseMsgWithdrawResponse: object = {};
+
+export const MsgWithdrawResponse = {
+  encode(
+    _: MsgWithdrawResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgWithdrawResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgWithdrawResponse } as MsgWithdrawResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgWithdrawResponse {
+    const message = { ...baseMsgWithdrawResponse } as MsgWithdrawResponse;
+    return message;
+  },
+
+  toJSON(_: MsgWithdrawResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(_: DeepPartial<MsgWithdrawResponse>): MsgWithdrawResponse {
+    const message = { ...baseMsgWithdrawResponse } as MsgWithdrawResponse;
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
   /** this line is used by starport scaffolding # proto/tx/rpc */
@@ -802,6 +1149,8 @@ export interface Msg {
   SyncToken(request: MsgSyncToken): Promise<MsgSyncTokenResponse>;
   MintToken(request: MsgMintToken): Promise<MsgMintTokenResponse>;
   BindToken(request: MsgBindToken): Promise<MsgBindTokenResponse>;
+  LinkToken(request: MsgLinkToken): Promise<MsgLinkTokenResponse>;
+  Withdraw(request: MsgWithdraw): Promise<MsgWithdrawResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -812,6 +1161,8 @@ export class MsgClientImpl implements Msg {
     this.SyncToken = this.SyncToken.bind(this);
     this.MintToken = this.MintToken.bind(this);
     this.BindToken = this.BindToken.bind(this);
+    this.LinkToken = this.LinkToken.bind(this);
+    this.Withdraw = this.Withdraw.bind(this);
   }
   CreateToken(request: MsgCreateToken): Promise<MsgCreateTokenResponse> {
     const data = MsgCreateToken.encode(request).finish();
@@ -858,6 +1209,30 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgBindTokenResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  LinkToken(request: MsgLinkToken): Promise<MsgLinkTokenResponse> {
+    const data = MsgLinkToken.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.coin.Msg",
+      "LinkToken",
+      data
+    );
+    return promise.then((data) =>
+      MsgLinkTokenResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  Withdraw(request: MsgWithdraw): Promise<MsgWithdrawResponse> {
+    const data = MsgWithdraw.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.coin.Msg",
+      "Withdraw",
+      data
+    );
+    return promise.then((data) =>
+      MsgWithdrawResponse.decode(new _m0.Reader(data))
     );
   }
 }

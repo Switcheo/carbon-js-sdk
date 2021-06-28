@@ -19,6 +19,11 @@ export interface BindTokenEvent {
   wrappedDenom: string;
 }
 
+export interface LinkTokenEvent {
+  token?: Token;
+  type: string;
+}
+
 const baseNewTokenEvent: object = { type: "" };
 
 export const NewTokenEvent = {
@@ -226,6 +231,82 @@ export const BindTokenEvent = {
       message.wrappedDenom = object.wrappedDenom;
     } else {
       message.wrappedDenom = "";
+    }
+    return message;
+  },
+};
+
+const baseLinkTokenEvent: object = { type: "" };
+
+export const LinkTokenEvent = {
+  encode(
+    message: LinkTokenEvent,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.token !== undefined) {
+      Token.encode(message.token, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.type !== "") {
+      writer.uint32(18).string(message.type);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): LinkTokenEvent {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseLinkTokenEvent } as LinkTokenEvent;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.token = Token.decode(reader, reader.uint32());
+          break;
+        case 2:
+          message.type = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): LinkTokenEvent {
+    const message = { ...baseLinkTokenEvent } as LinkTokenEvent;
+    if (object.token !== undefined && object.token !== null) {
+      message.token = Token.fromJSON(object.token);
+    } else {
+      message.token = undefined;
+    }
+    if (object.type !== undefined && object.type !== null) {
+      message.type = String(object.type);
+    } else {
+      message.type = "";
+    }
+    return message;
+  },
+
+  toJSON(message: LinkTokenEvent): unknown {
+    const obj: any = {};
+    message.token !== undefined &&
+      (obj.token = message.token ? Token.toJSON(message.token) : undefined);
+    message.type !== undefined && (obj.type = message.type);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<LinkTokenEvent>): LinkTokenEvent {
+    const message = { ...baseLinkTokenEvent } as LinkTokenEvent;
+    if (object.token !== undefined && object.token !== null) {
+      message.token = Token.fromPartial(object.token);
+    } else {
+      message.token = undefined;
+    }
+    if (object.type !== undefined && object.type !== null) {
+      message.type = object.type;
+    } else {
+      message.type = "";
     }
     return message;
   },
