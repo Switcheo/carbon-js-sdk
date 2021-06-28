@@ -10,9 +10,8 @@ export class MarketModule extends BaseModule {
     const wallet = this.getWallet();
 
     const value = MsgUpdateMarket.fromPartial({
-      creator: wallet.bech32Address,
+      updater: wallet.bech32Address,
       marketParams: {
-          creator: wallet.bech32Address,
           name: params.name,
           displayName: params.displayName,
           description: params.description,

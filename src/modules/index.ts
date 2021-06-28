@@ -9,3 +9,4 @@ export * from "./broker";
 export * from "./position"
 export * from "./coin";
 export * from "./oracle";
+export * from "./gov";
