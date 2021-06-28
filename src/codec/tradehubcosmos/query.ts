@@ -2,7 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 
-export const protobufPackage = "Switcheo.carbon.auth";
+export const protobufPackage = "Switcheo.tradehubcosmos.tradehubcosmos";
 
 /** Query defines the gRPC querier service. */
 export interface Query {}
