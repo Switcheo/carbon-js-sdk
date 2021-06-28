@@ -11,13 +11,11 @@ export { CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletInitOpts } f
 export interface CarbonSDKOpts {
   network: Network;
   tmClient: Tendermint34Client;
-  restNetwork: any;
   config?: Partial<NetworkConfig>;
 }
 export interface CarbonSDKInitOpts {
   network: Network;
   tmClient?: Tendermint34Client;
-
   config?: Partial<NetworkConfig>;
 }
 
@@ -41,7 +39,7 @@ class CarbonSDK {
   configOverride: Partial<NetworkConfig>;
   networkConfig: NetworkConfig;
   tmClient: Tendermint34Client;
-  restClient: any;
+  restClient?: any;
 
 
   order: ModOrder;
@@ -53,7 +51,7 @@ class CarbonSDK {
 
     this.tmClient = opts.tmClient;
     this.query = new CarbonQueryClient(opts.tmClient);
-    this.restClient = opts.restNetwork;
+    this.restClient = opts.config?.restURL;
 
     this.order = new ModOrder(this);
   }
