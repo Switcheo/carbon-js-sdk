@@ -4,8 +4,12 @@ import { ChangeNumQuotesProposal, ChangeSwapFeeProposal, LinkPoolProposal, SetCo
 import { CreateMarketProposal, UpdateMarketProposal } from "@carbon-sdk/codec/market/proposal";
 import { CreateOracleProposal } from "@carbon-sdk/codec/oracle/proposal";
 import { SettlementPriceProposal } from "@carbon-sdk/codec/pricing/proposal";
+import { coins } from "@cosmjs/amino";
 import { Coin } from "@cosmjs/stargate/build/codec/cosmos/base/v1beta1/coin";
+import { MsgDeposit, MsgVote } from "cosmjs-types/cosmos/gov/v1beta1/tx";
 import BaseModule from "./base";
+import Long from "long";
+import { VoteOption } from "cosmjs-types/cosmos/gov/v1beta1/gov";
 
 export class GovModule extends BaseModule {
 
@@ -15,6 +19,36 @@ export class GovModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: "/cosmos.gov.v1beta1.MsgSubmitProposal",
       value: params,
+    });
+  }
+
+  public async deposit(params: GovModule.DepositParams) {
+    const wallet = this.getWallet();
+
+    const value = MsgDeposit.fromPartial({
+      proposalId: new Long(params.proposalId),
+      depositor: wallet.bech32Address,
+      amount: coins(params.amount, params.denom)
+    })
+
+    return await wallet.sendTx({
+      typeUrl: "/cosmos.gov.v1beta1.MsgDeposit",
+      value,
+    });
+  }
+
+  public async vote(params: GovModule.VoteParams) {
+    const wallet = this.getWallet();
+
+    const value = MsgVote.fromPartial({
+      proposalId: new Long(params.proposalId),
+      voter: wallet.bech32Address,
+      option: params.option,
+    })
+
+    return await wallet.sendTx({
+      typeUrl: "/cosmos.gov.v1beta1.MsgVote",
+      value,
     });
   }
 }
@@ -28,7 +62,19 @@ export namespace GovModule {
     initialDeposit: Coin[]
     proposer: string
   }
-  export type ProposalTypes = CreateTokenProposal | SetMsgFeeProposal | LinkPoolProposal | UnlinkPoolProposal |
+
+  export interface DepositParams {
+    proposalId: number
+    amount: number
+    denom: string
+  }
+
+  export interface VoteParams {
+    proposalId: number,
+    option: VoteOption,
+  }
+
+  type ProposalTypes = CreateTokenProposal | SetMsgFeeProposal | LinkPoolProposal | UnlinkPoolProposal |
     SetRewardCurveProposal | SetCommitmentCurveProposal | SetRewardsWeightsProposal | ChangeSwapFeeProposal |
     ChangeNumQuotesProposal | CreateMarketProposal | UpdateMarketProposal | CreateOracleProposal | SettlementPriceProposal;
 };
