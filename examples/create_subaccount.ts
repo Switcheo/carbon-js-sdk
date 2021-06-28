@@ -17,8 +17,8 @@ const TRPC_ENDPOINT = process.env.TRPC_ENDPOINT ?? "http://localhost:26657";
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
 
-  const orderID = "1";
-
-  const result = await connectedSDK.order.cancel(orderID);
+  const result = await connectedSDK.subaccount.create({
+    subAddress: "tswth1m9h80cfhqn08x7hull0n7pwhlu9k0vp7n92p6y",
+  })
   console.log(result)
 })().catch(console.error).finally(() => process.exit(0));

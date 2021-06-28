@@ -1,5 +1,7 @@
 import * as BIP39 from "bip39";
 import { CarbonSDK } from "./_sdk";
+import { BigNumber } from "bignumber.js";
+import Long from "long";
 import "./_setup";
 
 const TRPC_ENDPOINT = process.env.TRPC_ENDPOINT ?? "http://localhost:26657";
@@ -17,8 +19,9 @@ const TRPC_ENDPOINT = process.env.TRPC_ENDPOINT ?? "http://localhost:26657";
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
 
-  const orderID = "1";
-
-  const result = await connectedSDK.order.cancel(orderID);
+  const result = await connectedSDK.lp.removeLiquidity({
+    poolId: 1,
+    shares: new BigNumber(10), // human
+  })
   console.log(result)
 })().catch(console.error).finally(() => process.exit(0));

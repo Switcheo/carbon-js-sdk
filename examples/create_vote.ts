@@ -17,8 +17,10 @@ const TRPC_ENDPOINT = process.env.TRPC_ENDPOINT ?? "http://localhost:26657";
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
 
-  const orderID = "1";
-
-  const result = await connectedSDK.order.cancel(orderID);
+  const result = await connectedSDK.oracle.createVote({
+    oracleId: "DXBT2",
+    timestamp: 100,
+    data: "Demex XBT Index",
+  })
   console.log(result)
 })().catch(console.error).finally(() => process.exit(0));

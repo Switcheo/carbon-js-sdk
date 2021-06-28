@@ -1,3 +1,4 @@
+import {BigNumber} from "bignumber.js";
 import * as BIP39 from "bip39";
 import { CarbonSDK } from "./_sdk";
 import "./_setup";
@@ -17,8 +18,12 @@ const TRPC_ENDPOINT = process.env.TRPC_ENDPOINT ?? "http://localhost:26657";
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
 
-  const orderID = "1";
-
-  const result = await connectedSDK.order.cancel(orderID);
+  const result = await connectedSDK.coin.createWithdrawal({
+    toAddress: "tswth1phsut994s4e9apdc25vdln02g9rz7exzw7j4nk",
+    denom: "eth",
+    amount: new BigNumber(1000), // human
+    feeAmount: new BigNumber(10),
+    feeAddress: "tswth1mw90en8tcqnvdjhp64qmyhuq4qasvhy2s6st4t",
+  })
   console.log(result)
 })().catch(console.error).finally(() => process.exit(0));

@@ -6,6 +6,7 @@ import { AccountData, DirectSignResponse, EncodeObject, OfflineDirectSigner } fr
 import { BroadcastTxResponse, isBroadcastTxFailure, SigningStargateClient } from "@cosmjs/stargate";
 import { SignDoc } from "@cosmjs/stargate/build/codec/cosmos/tx/v1beta1/tx";
 import { CarbonPrivateKeySigner, CarbonSigner } from "./CarbonSigner";
+import { MsgDeposit, MsgSubmitProposal, MsgVote } from "cosmjs-types/cosmos/gov/v1beta1/tx"
 
 export type CarbonWalletInitOpts = {
   network?: Network;
@@ -105,6 +106,9 @@ export class CarbonWallet implements OfflineDirectSigner {
 
   async sendTxs(msgs: EncodeObject[], opts: CarbonTx.SignTxOpts): Promise<BroadcastTxResponse> {
     const endpoint = this.networkConfig.rpcURL;
+    registry.register("/cosmos.gov.v1beta1.MsgSubmitProposal", MsgSubmitProposal)
+    registry.register("/cosmos.gov.v1beta1.MsgDeposit", MsgDeposit)
+    registry.register("/cosmos.gov.v1beta1.MsgVote", MsgVote)
     const signingClient = await SigningStargateClient.connectWithSigner(endpoint, this, {
       registry,
     });

@@ -17,8 +17,10 @@ const TRPC_ENDPOINT = process.env.TRPC_ENDPOINT ?? "http://localhost:26657";
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
 
-  const orderID = "1";
-
-  const result = await connectedSDK.order.cancel(orderID);
+  const result = await connectedSDK.gov.deposit({
+    proposalId: 1,
+    amount: 1000,
+    denom: "swth",
+  })
   console.log(result)
 })().catch(console.error).finally(() => process.exit(0));

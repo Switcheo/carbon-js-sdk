@@ -17,8 +17,11 @@ const TRPC_ENDPOINT = process.env.TRPC_ENDPOINT ?? "http://localhost:26657";
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
 
-  const orderID = "1";
-
-  const result = await connectedSDK.order.cancel(orderID);
+  const result = await connectedSDK.bank.sendTokens({
+    fromAddress: connectedSDK.wallet.bech32Address,
+    toAddress: "tswth1mw90en8tcqnvdjhp64qmyhuq4qasvhy2s6st4t",
+    amount: 1000,
+    denom: "swth",
+  })
   console.log(result)
 })().catch(console.error).finally(() => process.exit(0));

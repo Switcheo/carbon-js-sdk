@@ -1,3 +1,4 @@
+import {BigNumber} from "bignumber.js";
 import * as BIP39 from "bip39";
 import { CarbonSDK } from "./_sdk";
 import "./_setup";
@@ -17,8 +18,9 @@ const TRPC_ENDPOINT = process.env.TRPC_ENDPOINT ?? "http://localhost:26657";
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
 
-  const orderID = "1";
-
-  const result = await connectedSDK.order.cancel(orderID);
+  const result = await connectedSDK.position.editMargin({
+    market: "btc_z19",
+    margin: new BigNumber(100)
+  })
   console.log(result)
 })().catch(console.error).finally(() => process.exit(0));

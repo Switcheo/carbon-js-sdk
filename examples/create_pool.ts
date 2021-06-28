@@ -1,5 +1,6 @@
 import * as BIP39 from "bip39";
 import { CarbonSDK } from "./_sdk";
+import { BigNumber } from "bignumber.js";
 import "./_setup";
 
 const TRPC_ENDPOINT = process.env.TRPC_ENDPOINT ?? "http://localhost:26657";
@@ -17,8 +18,13 @@ const TRPC_ENDPOINT = process.env.TRPC_ENDPOINT ?? "http://localhost:26657";
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
 
-  const orderID = "1";
-
-  const result = await connectedSDK.order.cancel(orderID);
+  const result = await connectedSDK.lp.create({
+    tokenADenom: "swth",
+    tokenBDenom: "eth",
+    tokenAWeight: new BigNumber(0.5), // human
+    tokenBWeight: new BigNumber(0.5), // human
+    swapFee: new BigNumber(0.002),
+    numQuotes: 5,
+  })
   console.log(result)
 })().catch(console.error).finally(() => process.exit(0));

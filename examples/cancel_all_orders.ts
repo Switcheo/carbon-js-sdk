@@ -17,8 +17,16 @@ const TRPC_ENDPOINT = process.env.TRPC_ENDPOINT ?? "http://localhost:26657";
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
 
-  const orderID = "1";
+  const marketsResult = await sdk.query.market.MarketAll({})
+  console.log("markets", marketsResult.Market);
 
-  const result = await connectedSDK.order.cancel(orderID);
+  if (!marketsResult.Market.length) {
+    throw new Error("no markets found, create a market first");
+  }
+  const [market] = marketsResult.Market
+
+  const result = await connectedSDK.order.cancelAll({
+      market: market.name
+  });
   console.log(result)
 })().catch(console.error).finally(() => process.exit(0));
