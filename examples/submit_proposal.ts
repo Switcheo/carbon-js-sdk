@@ -22,17 +22,19 @@ const TRPC_ENDPOINT = process.env.TRPC_ENDPOINT ?? "http://localhost:26657";
     content: {
       typeUrl: "/Switcheo.carbon.fee.SetMsgFeeProposal",
       value: {
-        title: "proposal title",
-        description: "proposal desc",
+        title: "asd",
+        description: "wewe",
         params: {
-          msgType: 'test1',
           creator: connectedSDK.wallet.bech32Address,
-          fee: "10",
-        },
+          msgType: "test1",
+          fee: "2"
+        }
       }
     },
     initialDeposit: coins(100000000, "swth"),
     proposer: connectedSDK.wallet.bech32Address,
   })
+
   console.log(result)
+  
 })().catch(console.error).finally(() => process.exit(0));

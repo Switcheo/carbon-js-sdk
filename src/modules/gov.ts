@@ -6,18 +6,23 @@ import { CreateOracleProposal } from "@carbon-sdk/codec/oracle/proposal";
 import { SettlementPriceProposal } from "@carbon-sdk/codec/pricing/proposal";
 import { coins } from "@cosmjs/amino";
 import { Coin } from "@cosmjs/stargate/build/codec/cosmos/base/v1beta1/coin";
-import { MsgDeposit, MsgVote } from "cosmjs-types/cosmos/gov/v1beta1/tx";
 import BaseModule from "./base";
 import Long from "long";
-import { VoteOption } from "cosmjs-types/cosmos/gov/v1beta1/gov";
+import { CarbonTx } from "@carbon-sdk/util";
+import { MsgDeposit, MsgVote } from "@carbon-sdk/codec/cosmos/gov/v1beta1/tx";
+import { VoteOption } from "@carbon-sdk/codec/cosmos/gov/v1beta1/gov";
+import _m0 from "protobufjs/minimal";
 
 export class GovModule extends BaseModule {
 
   public async submit(params: GovModule.SubmitProposalParams) {
     const wallet = this.getWallet();
 
+    const {typeUrl, value} = params.content;
+    params.content.value = this.encode(typeUrl, value)
+
     return await wallet.sendTx({
-      typeUrl: "/cosmos.gov.v1beta1.MsgSubmitProposal",
+      typeUrl: CarbonTx.Types.MsgSubmitProposal,
       value: params,
     });
   }
@@ -32,7 +37,7 @@ export class GovModule extends BaseModule {
     })
 
     return await wallet.sendTx({
-      typeUrl: "/cosmos.gov.v1beta1.MsgDeposit",
+      typeUrl: CarbonTx.Types.MsgDeposit,
       value,
     });
   }
@@ -47,9 +52,42 @@ export class GovModule extends BaseModule {
     })
 
     return await wallet.sendTx({
-      typeUrl: "/cosmos.gov.v1beta1.MsgVote",
+      typeUrl: CarbonTx.Types.MsgVote,
       value,
     });
+  }
+
+  public encode(proposalUrl: string, object: any): Uint8Array {
+    switch(proposalUrl.split(".").pop()) {
+      case "CreateTokenProposal": 
+        return CreateTokenProposal.encode(object).finish()
+      case "SetMsgFeeProposal":
+        return SetMsgFeeProposal.encode(object).finish()
+      case "LinkPoolProposal":
+        return LinkPoolProposal.encode(object).finish()
+      case "UnlinkPoolProposal":
+        return UnlinkPoolProposal.encode(object).finish()
+      case "SetRewardCurveProposal": 
+        return SetRewardCurveProposal.encode(object).finish()
+      case "SetCommitmentCurveProposal": 
+        return SetCommitmentCurveProposal.encode(object).finish()
+      case "SetRewardsWeightsProposal": 
+        return SetRewardsWeightsProposal.encode(object).finish()
+      case "ChangeSwapFeeProposal":
+        return ChangeSwapFeeProposal.encode(object).finish()
+      case "ChangeNumQuotesProposal": 
+        return ChangeNumQuotesProposal.encode(object).finish()
+      case "CreateMarketProposal": 
+        return CreateMarketProposal.encode(object).finish()
+      case "UpdateMarketProposal": 
+        return UpdateMarketProposal.encode(object).finish()
+      case "CreateOracleProposal": 
+        return CreateOracleProposal.encode(object).finish()
+      case "SettlementPriceProposal":
+        return SettlementPriceProposal.encode(object).finish()
+      default:
+        return new Uint8Array()
+    }
   }
 }
 
@@ -57,7 +95,7 @@ export namespace GovModule {
   export interface SubmitProposalParams {
     content: {
       typeUrl: string
-      value: ProposalTypes
+      value: ProposalTypes | Uint8Array
     }
     initialDeposit: Coin[]
     proposer: string
@@ -74,7 +112,8 @@ export namespace GovModule {
     option: VoteOption,
   }
 
-  type ProposalTypes = CreateTokenProposal | SetMsgFeeProposal | LinkPoolProposal | UnlinkPoolProposal |
+  export type ProposalTypes = CreateTokenProposal | SetMsgFeeProposal | LinkPoolProposal | UnlinkPoolProposal |
     SetRewardCurveProposal | SetCommitmentCurveProposal | SetRewardsWeightsProposal | ChangeSwapFeeProposal |
     ChangeNumQuotesProposal | CreateMarketProposal | UpdateMarketProposal | CreateOracleProposal | SettlementPriceProposal;
+
 };
