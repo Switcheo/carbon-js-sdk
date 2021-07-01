@@ -16,17 +16,7 @@ export class AdminModule extends BaseModule {
   public async createOracle(params: AdminModule.CreateOracleParams) {
     const wallet = this.getWallet();
 
-    const value = MsgCreateOracle.fromPartial({
-        creator: wallet.bech32Address,
-        id: params.id,
-        description: params.description,
-        minTurnoutPercentage: new Long(params.minTurnoutPercentage),
-        maxResultAge: new Long(params.maxResultAge),
-        securityType: params.securityType,
-        resultStrategy: params.resultStrategy,
-        resolution: new Long(params.resolution),
-        spec: params.spec,
-    })
+    const value = MsgCreateOracle.fromPartial(this.transfromCreateOracleParams(params))
 
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgCreateOracle,
@@ -37,20 +27,7 @@ export class AdminModule extends BaseModule {
   public async createToken(params: AdminModule.CreateTokenParams) {
     const wallet = this.getWallet();
 
-    const value = MsgCreateToken.fromPartial({
-        creator: wallet.bech32Address,
-        name: params.name,
-        symbol: params.symbol,
-        denom: params.denom,
-        decimals: new Long(params.decimals),
-        nativeDecimals: new Long(params.nativeDecimals),
-        blockchain: params.blockchain,
-        chainId: new Long(params.chainId),
-        assetId: params.assetId,
-        isCollateral: params.isCollateral,
-        lockProxyHash: params.lockProxyHash,
-        delegatedSupply: params.delegatedSupply.toString(),
-    })
+    const value = MsgCreateToken.fromPartial(this.transfromCreateTokenParams(params))
 
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgCreateToken,
@@ -62,20 +39,7 @@ export class AdminModule extends BaseModule {
     const wallet = this.getWallet();
 
     const msgs = params.map(param => {
-      const value = MsgCreateToken.fromPartial({
-        creator: wallet.bech32Address,
-        name: param.name,
-        symbol: param.symbol,
-        denom: param.denom,
-        decimals: new Long(param.decimals),
-        nativeDecimals: new Long(param.nativeDecimals),
-        blockchain: param.blockchain,
-        chainId: new Long(param.chainId),
-        assetId: param.assetId,
-        isCollateral: param.isCollateral,
-        lockProxyHash: param.lockProxyHash,
-        delegatedSupply: param.delegatedSupply.toString(),
-      })
+      const value = MsgCreateToken.fromPartial(this.transfromCreateTokenParams(param))
 
       return {
         typeUrl: CarbonTx.Types.MsgCreateToken,
@@ -89,10 +53,7 @@ export class AdminModule extends BaseModule {
   public async syncToken(params: AdminModule.SyncTokenParams) {
     const wallet = this.getWallet();
 
-    const value = MsgSyncToken.fromPartial({
-        syncer: wallet.bech32Address,
-        denom: params.denom,
-    })
+    const value = MsgSyncToken.fromPartial(this.transfromSyncTokenParams(params))
 
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgSyncToken,
@@ -105,30 +66,7 @@ export class AdminModule extends BaseModule {
 
     const value = MsgCreateMarket.fromPartial({
         creator: wallet.bech32Address,
-        market: {
-          name: params.name,
-          displayName: params.displayName,
-          description: params.description,
-          marketType: params.marketType,
-          base: params.base,
-          quote: params.quote,
-          lotSize: params.lotSize.toString(),
-          tickSize: params.tickSize.shiftedBy(18).toString(),
-          minQuantity: params.minQuantity.toString(),
-          makerFee: params.makerFee.shiftedBy(18).toString(),
-          takerFee: params.takerFee.shiftedBy(18).toString(),
-          riskStepSize: params.riskStepSize.toString(),
-          initialMarginBase: params.initialMarginBase.shiftedBy(18).toString(),
-          initialMarginStep: params.initialMarginStep.shiftedBy(18).toString(),
-          maintenanceMarginRatio: params.maintenanceMarginRatio.shiftedBy(18).toString(),
-          maxLiquidationOrderTicket: params.maxLiquidationOrderTicket.toString(),
-          maxLiquidationOrderDuration: params.maxLiquidationOrderDuration,
-          impactSize: params.impactSize.toString(),
-          markPriceBand: params.markPriceBand,
-          lastPriceProtectedBand: params.lastPriceProtectedBand,
-          indexOracleId: params.indexOracleId,
-          expiryTime: params.expiryTime,
-        },
+        market: this.transformCreateMarketParams(params)
     })
 
     return await wallet.sendTx({
@@ -143,30 +81,7 @@ export class AdminModule extends BaseModule {
     const msgs = params.map(param => {
       const value = MsgCreateMarket.fromPartial({
           creator: wallet.bech32Address,
-          market: {
-            name: param.name,
-            displayName: param.displayName,
-            description: param.description,
-            marketType: param.marketType,
-            base: param.base,
-            quote: param.quote,
-            lotSize: param.lotSize.toString(),
-            tickSize: param.tickSize.shiftedBy(18).toString(),
-            minQuantity: param.minQuantity.toString(),
-            makerFee: param.makerFee.shiftedBy(18).toString(),
-            takerFee: param.takerFee.shiftedBy(18).toString(),
-            riskStepSize: param.riskStepSize.toString(),
-            initialMarginBase: param.initialMarginBase.shiftedBy(18).toString(),
-            initialMarginStep: param.initialMarginStep.shiftedBy(18).toString(),
-            maintenanceMarginRatio: param.maintenanceMarginRatio.shiftedBy(18).toString(),
-            maxLiquidationOrderTicket: param.maxLiquidationOrderTicket.toString(),
-            maxLiquidationOrderDuration: param.maxLiquidationOrderDuration,
-            impactSize: param.impactSize.toString(),
-            markPriceBand: param.markPriceBand,
-            lastPriceProtectedBand: param.lastPriceProtectedBand,
-            indexOracleId: param.indexOracleId,
-            expiryTime: param.expiryTime,
-          },
+          market: this.transformCreateMarketParams(param)
       })
 
       return {
@@ -181,12 +96,7 @@ export class AdminModule extends BaseModule {
   public async createVaultType(params: AdminModule.CreateVaultTypeParams) {
     const wallet = this.getWallet();
 
-    const value = MsgCreateVaultType.fromPartial({
-        creator: wallet.bech32Address,
-        collateralDenom: params.collateralDenom,
-        debtDenom: params.debtDenom,
-        collateralizationRatio: params.collateralizationRatio.shiftedBy(18).toString(),
-    })
+    const value = MsgCreateVaultType.fromPartial(this.transfromCreateVaultTypeParams(params))
 
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgCreateVaultType,
@@ -199,11 +109,7 @@ export class AdminModule extends BaseModule {
 
     const value = MsgLinkPool.fromPartial({
         creator: wallet.bech32Address,
-        linkPoolParams: {
-          creator: wallet.bech32Address,
-          poolId: new Long(params.poolId),
-          market: params.market,
-        },
+        linkPoolParams: this.transfromLinkPoolParams(params)
     })
 
     return await wallet.sendTx({
@@ -217,10 +123,7 @@ export class AdminModule extends BaseModule {
 
     const value = MsgUnlinkPool.fromPartial({
         creator: wallet.bech32Address,
-        unlinkPoolParams: {
-          creator: wallet.bech32Address,
-          poolId: new Long(params.poolId),
-        },
+        unlinkPoolParams: this.transfromUnlinkPoolParams(params)
     })
 
     return await wallet.sendTx({
@@ -234,11 +137,7 @@ export class AdminModule extends BaseModule {
 
     const value = MsgChangeSwapFee.fromPartial({
         creator: wallet.bech32Address,
-        changeSwapFeeParams: {
-          creator: wallet.bech32Address,
-          poolId: new Long(params.poolId),
-          swapFee: params.swapFee.shiftedBy(18).toString(),
-        },
+        changeSwapFeeParams:this.transfromChangeSwapFeeParams(params)
     })
 
     return await wallet.sendTx({
@@ -247,22 +146,12 @@ export class AdminModule extends BaseModule {
     });
   }
 
-  public async setRewardsWeights(params: AdminModule.SetRewardsWeightParams[]) {
+  public async setRewardsWeights(params: AdminModule.SetRewardsWeightsParams[]) {
     const wallet = this.getWallet();
-
-    const weights = params.map(param => {
-      return {
-        poolId: new Long(param.poolId),
-        weight: param.weight.toString()
-      }
-    })
 
     const value = MsgSetRewardsWeights.fromPartial({
         creator: wallet.bech32Address,
-        setRewardsWeightsParams: {
-          creator: wallet.bech32Address,
-          weights: weights
-        },
+        setRewardsWeightsParams: this.transfromSetRewardsWeightsParams(params)
     })
 
     return await wallet.sendTx({
@@ -276,15 +165,7 @@ export class AdminModule extends BaseModule {
 
     const value = MsgSetRewardCurve.fromPartial({
         creator: wallet.bech32Address,
-        setRewardCurveParams: {
-          creator: wallet.bech32Address,
-          startTime: params.startTime,
-          initialRewardBps: params.initialRewardBps,
-          reductionMultiplierBps: params.reductionMultiplierBps,
-          reductionIntervalSeconds: new Long(params.reductionIntervalSeconds),
-          reductions: params.reductions,
-          finalRewardBps: params.finalRewardBps,
-        },
+        setRewardCurveParams: this.transfromSetRewardCurveParams(params)
     })
 
     return await wallet.sendTx({
@@ -298,11 +179,7 @@ export class AdminModule extends BaseModule {
 
     const value = MsgSetCommitmentCurve.fromPartial({
         creator: wallet.bech32Address,
-        setCommitmentCurveParams: {
-          creator: wallet.bech32Address,
-          maxDuration: new Long(params.maxDuration),
-          maxRewardMultiplier: params.maxRewardMultiplier,
-        },
+        setCommitmentCurveParams: this.transfromSetCommitmentCurveParams(params)
     })
 
     return await wallet.sendTx({
@@ -314,11 +191,7 @@ export class AdminModule extends BaseModule {
   public async setTradingFlag(params: AdminModule.SetTradingFlagParams) {
     const wallet = this.getWallet();
 
-    const value = MsgSetTradingFlag.fromPartial({
-        creator: wallet.bech32Address,
-        isEnabled: params.isEnabled,
-        blockchain: params.blockchain
-    })
+    const value = MsgSetTradingFlag.fromPartial(this.transfromSetTradingFlagParams(params))
 
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgSetTradingFlag,
@@ -330,11 +203,7 @@ export class AdminModule extends BaseModule {
     const wallet = this.getWallet();
 
     const value = MsgSetFee.fromPartial({
-        params: {
-          creator: wallet.bech32Address,
-          msgType: params.msgType,
-          fee: params.fee.toString(),
-        },
+        params: this.transfromSetMsgFeeParams(params)
     })
 
     return await wallet.sendTx({
@@ -343,6 +212,166 @@ export class AdminModule extends BaseModule {
     });
   }
 
+  public transfromCreateOracleParams(msg: AdminModule.CreateOracleParams) {
+    const wallet = this.getWallet();
+    return {
+      creator: wallet.bech32Address,
+      id: msg.id,
+      description: msg.description,
+      minTurnoutPercentage: new Long(msg.minTurnoutPercentage),
+      maxResultAge: new Long(msg.maxResultAge),
+      securityType: msg.securityType,
+      resultStrategy: msg.resultStrategy,
+      resolution: new Long(msg.resolution),
+      spec: msg.spec,
+    }
+  }
+
+  public transfromCreateTokenParams(msg: AdminModule.CreateTokenParams) {
+    const wallet = this.getWallet();
+    return {
+      creator: wallet.bech32Address,
+      name: msg.name,
+      symbol: msg.symbol,
+      denom: msg.denom,
+      decimals: new Long(msg.decimals),
+      nativeDecimals: new Long(msg.nativeDecimals),
+      blockchain: msg.blockchain,
+      chainId: new Long(msg.chainId),
+      assetId: msg.assetId,
+      isCollateral: msg.isCollateral,
+      lockProxyHash: msg.lockProxyHash,
+      delegatedSupply: msg.delegatedSupply.toString(),
+    }
+  }
+
+  public transfromSyncTokenParams(msg: AdminModule.SyncTokenParams) {
+    const wallet = this.getWallet();
+    return {
+      syncer: wallet.bech32Address,
+      denom: msg.denom,
+    }
+  }
+
+  public transformCreateMarketParams(msg: AdminModule.CreateMarketParams) {
+    const wallet = this.getWallet();
+    return {
+      name: msg.name,
+      displayName: msg.displayName,
+      description: msg.description,
+      marketType: msg.marketType,
+      base: msg.base,
+      quote: msg.quote,
+      lotSize: msg.lotSize.toString(),
+      tickSize: msg.tickSize.shiftedBy(18).toString(),
+      minQuantity: msg.minQuantity.toString(),
+      makerFee: msg.makerFee.shiftedBy(18).toString(),
+      takerFee: msg.takerFee.shiftedBy(18).toString(),
+      riskStepSize: msg.riskStepSize.toString(),
+      initialMarginBase: msg.initialMarginBase.shiftedBy(18).toString(),
+      initialMarginStep: msg.initialMarginStep.shiftedBy(18).toString(),
+      maintenanceMarginRatio: msg.maintenanceMarginRatio.shiftedBy(18).toString(),
+      maxLiquidationOrderTicket: msg.maxLiquidationOrderTicket.toString(),
+      maxLiquidationOrderDuration: msg.maxLiquidationOrderDuration,
+      impactSize: msg.impactSize.toString(),
+      markPriceBand: msg.markPriceBand,
+      lastPriceProtectedBand: msg.lastPriceProtectedBand,
+      indexOracleId: msg.indexOracleId,
+      expiryTime: msg.expiryTime,
+    }
+  }
+
+  public transfromCreateVaultTypeParams(msg: AdminModule.CreateVaultTypeParams) {
+    const wallet = this.getWallet();
+    return {
+      creator: wallet.bech32Address,
+      collateralDenom: msg.collateralDenom,
+      debtDenom: msg.debtDenom,
+      collateralizationRatio: msg.collateralizationRatio.shiftedBy(18).toString(),
+    }
+  }
+
+  public transfromLinkPoolParams(msg: AdminModule.LinkPoolParams) {
+    const wallet = this.getWallet();
+    return {
+      creator: wallet.bech32Address,
+      poolId: new Long(msg.poolId),
+      market: msg.market,
+    }
+  }
+
+  public transfromUnlinkPoolParams(msg: AdminModule.UnlinkPoolParams) {
+    const wallet = this.getWallet();
+    return {
+      creator: wallet.bech32Address,
+      poolId: new Long(msg.poolId),
+    }
+  }
+
+  public transfromChangeSwapFeeParams(msg: AdminModule.ChangeSwapFeeParams) {
+    const wallet = this.getWallet();
+    return {
+      creator: wallet.bech32Address,
+      poolId: new Long(msg.poolId),
+      swapFee: msg.swapFee.shiftedBy(18).toString(),
+    }
+  }
+
+  public transfromSetRewardsWeightsParams(msg: AdminModule.SetRewardsWeightsParams[]) {
+    const wallet = this.getWallet();
+    
+    const weights = msg.map(param => {
+      return {
+        poolId: new Long(param.poolId),
+        weight: param.weight.toString()
+      }
+    })
+
+    return {
+      creator: wallet.bech32Address,
+      weights: weights
+    }
+  }
+
+  public transfromSetRewardCurveParams(msg: AdminModule.SetRewardCurveParams) {
+    const wallet = this.getWallet();
+    return {
+      creator: wallet.bech32Address,
+      startTime: msg.startTime,
+      initialRewardBps: msg.initialRewardBps,
+      reductionMultiplierBps: msg.reductionMultiplierBps,
+      reductionIntervalSeconds: new Long(msg.reductionIntervalSeconds),
+      reductions: msg.reductions,
+      finalRewardBps: msg.finalRewardBps,
+    }
+  }
+
+  public transfromSetCommitmentCurveParams(msg: AdminModule.SetCommitmentCurveParams) {
+    const wallet = this.getWallet();
+    return {
+      creator: wallet.bech32Address,
+      maxDuration: new Long(msg.maxDuration),
+      maxRewardMultiplier: msg.maxRewardMultiplier,
+    }
+  }
+
+  public transfromSetTradingFlagParams(msg: AdminModule.SetTradingFlagParams) {
+    const wallet = this.getWallet();
+    return {
+      creator: wallet.bech32Address,
+      isEnabled: msg.isEnabled,
+      blockchain: msg.blockchain
+    }
+  }
+
+  public transfromSetMsgFeeParams(msg: AdminModule.SetMsgFeeParams) {
+    const wallet = this.getWallet();
+    return {
+      creator: wallet.bech32Address,
+      msgType: msg.msgType,
+      fee: msg.fee.toString(),
+    }
+  }
 }
 
 export namespace AdminModule {
@@ -420,7 +449,7 @@ export namespace AdminModule {
     swapFee: BigNumber
   }
 
-  export interface SetRewardsWeightParams {
+  export interface SetRewardsWeightsParams {
     poolId: number
     weight: number
   }
