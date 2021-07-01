@@ -19,7 +19,7 @@ const TRPC_ENDPOINT = process.env.TRPC_ENDPOINT ?? "http://localhost:26657";
   console.log("connected sdk");
   
   const result = await connectedSDK.admin.changeSwapFee({
-	poolId: 1,
+	  poolId: 1,
     swapFee: new BigNumber(0.001),
   })
   console.log(result)
