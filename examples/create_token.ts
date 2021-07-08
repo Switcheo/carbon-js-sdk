@@ -20,7 +20,7 @@ const TRPC_ENDPOINT = process.env.TRPC_ENDPOINT ?? "http://localhost:26657";
   
   const result = await connectedSDK.admin.createToken({
     name: "asd",
-	symbol: "asd",
+	  symbol: "asd",
     denom: "asd",
     decimals: 8,
     nativeDecimals: 8,

@@ -23,7 +23,6 @@ import { MsgSetLeverage, MsgSetLeverageResponse } from "./leverage/tx";
 import { MsgUpdateProfile, MsgUpdateProfileResponse } from "./profile/tx";
 import { MsgCreateSubAccount, MsgCreateSubAccountResponse, MsgActivateSubAccount, MsgActivateSubAccountResponse, MsgRemoveSubAccount, MsgRemoveSubAccountResponse } from "./subaccount/tx";
 import { MsgCreateMarket, MsgCreateMarketResponse, MsgUpdateMarket, MsgUpdateMarketResponse } from "./market/tx";
-import { MsgEnableInflation, MsgEnableInflationResponse } from "./inflation/tx";
 import { MsgCreatePool, MsgCreatePoolResponse, MsgCreatePoolWithLiquidity, MsgCreatePoolWithLiquidityResponse, MsgAddLiquidity, MsgAddLiquidityResponse, MsgRemoveLiquidity, MsgRemoveLiquidityResponse, MsgLinkPool, MsgLinkPoolResponse, MsgUnlinkPool, MsgUnlinkPoolResponse, MsgSetRewardsWeights, MsgSetRewardsWeightsResponse, MsgStakePoolToken, MsgStakePoolTokenResponse, MsgUnstakePoolToken, MsgUnstakePoolTokenResponse, MsgClaimPoolRewards, MsgClaimPoolRewardsResponse, MsgSetRewardCurve, MsgSetRewardCurveResponse, MsgChangeSwapFee, MsgChangeSwapFeeResponse, MsgSetCommitmentCurve, MsgSetCommitmentCurveResponse, MsgChangeNumQuotes, MsgChangeNumQuotesResponse } from "./liquiditypool/tx";
 
 export const registry = new Registry();
@@ -180,9 +179,6 @@ registry.register("/Switcheo.carbon.market.MsgCreateMarket", MsgCreateMarket);
 registry.register("/Switcheo.carbon.market.MsgCreateMarketResponse", MsgCreateMarketResponse);
 registry.register("/Switcheo.carbon.market.MsgUpdateMarket", MsgUpdateMarket);
 registry.register("/Switcheo.carbon.market.MsgUpdateMarketResponse", MsgUpdateMarketResponse);
-
-registry.register("/Switcheo.carbon.inflation.MsgEnableInflation", MsgEnableInflation);
-registry.register("/Switcheo.carbon.inflation.MsgEnableInflationResponse", MsgEnableInflationResponse);
 
 registry.register("/Switcheo.carbon.liquiditypool.MsgCreatePool", MsgCreatePool);
 registry.register("/Switcheo.carbon.liquiditypool.MsgCreatePoolResponse", MsgCreatePoolResponse);
@@ -344,8 +340,6 @@ export const TxTypes = {
   "MsgCreateMarketResponse": "/Switcheo.carbon.market.MsgCreateMarketResponse",
   "MsgUpdateMarket": "/Switcheo.carbon.market.MsgUpdateMarket",
   "MsgUpdateMarketResponse": "/Switcheo.carbon.market.MsgUpdateMarketResponse",
-  "MsgEnableInflation": "/Switcheo.carbon.inflation.MsgEnableInflation",
-  "MsgEnableInflationResponse": "/Switcheo.carbon.inflation.MsgEnableInflationResponse",
   "MsgCreatePool": "/Switcheo.carbon.liquiditypool.MsgCreatePool",
   "MsgCreatePoolResponse": "/Switcheo.carbon.liquiditypool.MsgCreatePoolResponse",
   "MsgCreatePoolWithLiquidity": "/Switcheo.carbon.liquiditypool.MsgCreatePoolWithLiquidity",

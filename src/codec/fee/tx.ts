@@ -1,25 +1,29 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Params } from "../fee/fee";
+import { MsgFee } from "../fee/fee";
 
 export const protobufPackage = "Switcheo.carbon.fee";
 
 export interface MsgSetFee {
-  params?: Params;
+  creator: string;
+  setFeeParams?: MsgFee;
 }
 
 export interface MsgSetFeeResponse {}
 
-const baseMsgSetFee: object = {};
+const baseMsgSetFee: object = { creator: "" };
 
 export const MsgSetFee = {
   encode(
     message: MsgSetFee,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.params !== undefined) {
-      Params.encode(message.params, writer.uint32(10).fork()).ldelim();
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.setFeeParams !== undefined) {
+      MsgFee.encode(message.setFeeParams, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
@@ -32,7 +36,10 @@ export const MsgSetFee = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.params = Params.decode(reader, reader.uint32());
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.setFeeParams = MsgFee.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -44,27 +51,40 @@ export const MsgSetFee = {
 
   fromJSON(object: any): MsgSetFee {
     const message = { ...baseMsgSetFee } as MsgSetFee;
-    if (object.params !== undefined && object.params !== null) {
-      message.params = Params.fromJSON(object.params);
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = String(object.creator);
     } else {
-      message.params = undefined;
+      message.creator = "";
+    }
+    if (object.setFeeParams !== undefined && object.setFeeParams !== null) {
+      message.setFeeParams = MsgFee.fromJSON(object.setFeeParams);
+    } else {
+      message.setFeeParams = undefined;
     }
     return message;
   },
 
   toJSON(message: MsgSetFee): unknown {
     const obj: any = {};
-    message.params !== undefined &&
-      (obj.params = message.params ? Params.toJSON(message.params) : undefined);
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.setFeeParams !== undefined &&
+      (obj.setFeeParams = message.setFeeParams
+        ? MsgFee.toJSON(message.setFeeParams)
+        : undefined);
     return obj;
   },
 
   fromPartial(object: DeepPartial<MsgSetFee>): MsgSetFee {
     const message = { ...baseMsgSetFee } as MsgSetFee;
-    if (object.params !== undefined && object.params !== null) {
-      message.params = Params.fromPartial(object.params);
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = object.creator;
     } else {
-      message.params = undefined;
+      message.creator = "";
+    }
+    if (object.setFeeParams !== undefined && object.setFeeParams !== null) {
+      message.setFeeParams = MsgFee.fromPartial(object.setFeeParams);
+    } else {
+      message.setFeeParams = undefined;
     }
     return message;
   },

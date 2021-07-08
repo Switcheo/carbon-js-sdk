@@ -23,7 +23,7 @@ export interface QueryAllBookRequest {
 }
 
 export interface QueryAllBookResponse {
-  book: OrderBook[];
+  books: OrderBook[];
   pagination?: PageResponse;
 }
 
@@ -215,7 +215,7 @@ export const QueryAllBookResponse = {
     message: QueryAllBookResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    for (const v of message.book) {
+    for (const v of message.books) {
       OrderBook.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.pagination !== undefined) {
@@ -234,12 +234,12 @@ export const QueryAllBookResponse = {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseQueryAllBookResponse } as QueryAllBookResponse;
-    message.book = [];
+    message.books = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.book.push(OrderBook.decode(reader, reader.uint32()));
+          message.books.push(OrderBook.decode(reader, reader.uint32()));
           break;
         case 2:
           message.pagination = PageResponse.decode(reader, reader.uint32());
@@ -254,10 +254,10 @@ export const QueryAllBookResponse = {
 
   fromJSON(object: any): QueryAllBookResponse {
     const message = { ...baseQueryAllBookResponse } as QueryAllBookResponse;
-    message.book = [];
-    if (object.book !== undefined && object.book !== null) {
-      for (const e of object.book) {
-        message.book.push(OrderBook.fromJSON(e));
+    message.books = [];
+    if (object.books !== undefined && object.books !== null) {
+      for (const e of object.books) {
+        message.books.push(OrderBook.fromJSON(e));
       }
     }
     if (object.pagination !== undefined && object.pagination !== null) {
@@ -270,10 +270,12 @@ export const QueryAllBookResponse = {
 
   toJSON(message: QueryAllBookResponse): unknown {
     const obj: any = {};
-    if (message.book) {
-      obj.book = message.book.map((e) => (e ? OrderBook.toJSON(e) : undefined));
+    if (message.books) {
+      obj.books = message.books.map((e) =>
+        e ? OrderBook.toJSON(e) : undefined
+      );
     } else {
-      obj.book = [];
+      obj.books = [];
     }
     message.pagination !== undefined &&
       (obj.pagination = message.pagination
@@ -284,10 +286,10 @@ export const QueryAllBookResponse = {
 
   fromPartial(object: DeepPartial<QueryAllBookResponse>): QueryAllBookResponse {
     const message = { ...baseQueryAllBookResponse } as QueryAllBookResponse;
-    message.book = [];
-    if (object.book !== undefined && object.book !== null) {
-      for (const e of object.book) {
-        message.book.push(OrderBook.fromPartial(e));
+    message.books = [];
+    if (object.books !== undefined && object.books !== null) {
+      for (const e of object.books) {
+        message.books.push(OrderBook.fromPartial(e));
       }
     }
     if (object.pagination !== undefined && object.pagination !== null) {

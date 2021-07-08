@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Vote } from "../oracle/oracle";
+import { Vote, Result } from "../oracle/oracle";
 
 export const protobufPackage = "Switcheo.carbon.oracle";
 
@@ -16,6 +16,12 @@ export interface RecordVoteEvent {
 export interface VoteEvent {
   vote?: Vote;
   voteId: string;
+  type: string;
+}
+
+export interface ResultEvent {
+  result?: Result;
+  resultId: string;
   type: string;
 }
 
@@ -220,6 +226,99 @@ export const VoteEvent = {
       message.voteId = object.voteId;
     } else {
       message.voteId = "";
+    }
+    if (object.type !== undefined && object.type !== null) {
+      message.type = object.type;
+    } else {
+      message.type = "";
+    }
+    return message;
+  },
+};
+
+const baseResultEvent: object = { resultId: "", type: "" };
+
+export const ResultEvent = {
+  encode(
+    message: ResultEvent,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.result !== undefined) {
+      Result.encode(message.result, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.resultId !== "") {
+      writer.uint32(18).string(message.resultId);
+    }
+    if (message.type !== "") {
+      writer.uint32(26).string(message.type);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ResultEvent {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseResultEvent } as ResultEvent;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.result = Result.decode(reader, reader.uint32());
+          break;
+        case 2:
+          message.resultId = reader.string();
+          break;
+        case 3:
+          message.type = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ResultEvent {
+    const message = { ...baseResultEvent } as ResultEvent;
+    if (object.result !== undefined && object.result !== null) {
+      message.result = Result.fromJSON(object.result);
+    } else {
+      message.result = undefined;
+    }
+    if (object.resultId !== undefined && object.resultId !== null) {
+      message.resultId = String(object.resultId);
+    } else {
+      message.resultId = "";
+    }
+    if (object.type !== undefined && object.type !== null) {
+      message.type = String(object.type);
+    } else {
+      message.type = "";
+    }
+    return message;
+  },
+
+  toJSON(message: ResultEvent): unknown {
+    const obj: any = {};
+    message.result !== undefined &&
+      (obj.result = message.result ? Result.toJSON(message.result) : undefined);
+    message.resultId !== undefined && (obj.resultId = message.resultId);
+    message.type !== undefined && (obj.type = message.type);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<ResultEvent>): ResultEvent {
+    const message = { ...baseResultEvent } as ResultEvent;
+    if (object.result !== undefined && object.result !== null) {
+      message.result = Result.fromPartial(object.result);
+    } else {
+      message.result = undefined;
+    }
+    if (object.resultId !== undefined && object.resultId !== null) {
+      message.resultId = object.resultId;
+    } else {
+      message.resultId = "";
     }
     if (object.type !== undefined && object.type !== null) {
       message.type = object.type;

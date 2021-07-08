@@ -7,6 +7,11 @@ export const protobufPackage = "Switcheo.carbon.coin";
 /** this line is used by starport scaffolding # proto/tx/message */
 export interface MsgCreateToken {
   creator: string;
+  createTokenParams?: CreateTokenParams;
+}
+
+export interface CreateTokenParams {
+  creator: string;
   name: string;
   symbol: string;
   denom: string;
@@ -67,7 +72,101 @@ export interface MsgWithdraw {
 
 export interface MsgWithdrawResponse {}
 
-const baseMsgCreateToken: object = {
+const baseMsgCreateToken: object = { creator: "" };
+
+export const MsgCreateToken = {
+  encode(
+    message: MsgCreateToken,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.createTokenParams !== undefined) {
+      CreateTokenParams.encode(
+        message.createTokenParams,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreateToken {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgCreateToken } as MsgCreateToken;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.createTokenParams = CreateTokenParams.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgCreateToken {
+    const message = { ...baseMsgCreateToken } as MsgCreateToken;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = String(object.creator);
+    } else {
+      message.creator = "";
+    }
+    if (
+      object.createTokenParams !== undefined &&
+      object.createTokenParams !== null
+    ) {
+      message.createTokenParams = CreateTokenParams.fromJSON(
+        object.createTokenParams
+      );
+    } else {
+      message.createTokenParams = undefined;
+    }
+    return message;
+  },
+
+  toJSON(message: MsgCreateToken): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.createTokenParams !== undefined &&
+      (obj.createTokenParams = message.createTokenParams
+        ? CreateTokenParams.toJSON(message.createTokenParams)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgCreateToken>): MsgCreateToken {
+    const message = { ...baseMsgCreateToken } as MsgCreateToken;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = object.creator;
+    } else {
+      message.creator = "";
+    }
+    if (
+      object.createTokenParams !== undefined &&
+      object.createTokenParams !== null
+    ) {
+      message.createTokenParams = CreateTokenParams.fromPartial(
+        object.createTokenParams
+      );
+    } else {
+      message.createTokenParams = undefined;
+    }
+    return message;
+  },
+};
+
+const baseCreateTokenParams: object = {
   creator: "",
   name: "",
   symbol: "",
@@ -82,9 +181,9 @@ const baseMsgCreateToken: object = {
   delegatedSupply: "",
 };
 
-export const MsgCreateToken = {
+export const CreateTokenParams = {
   encode(
-    message: MsgCreateToken,
+    message: CreateTokenParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.creator !== "") {
@@ -126,10 +225,10 @@ export const MsgCreateToken = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreateToken {
+  decode(input: _m0.Reader | Uint8Array, length?: number): CreateTokenParams {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgCreateToken } as MsgCreateToken;
+    const message = { ...baseCreateTokenParams } as CreateTokenParams;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -177,8 +276,8 @@ export const MsgCreateToken = {
     return message;
   },
 
-  fromJSON(object: any): MsgCreateToken {
-    const message = { ...baseMsgCreateToken } as MsgCreateToken;
+  fromJSON(object: any): CreateTokenParams {
+    const message = { ...baseCreateTokenParams } as CreateTokenParams;
     if (object.creator !== undefined && object.creator !== null) {
       message.creator = String(object.creator);
     } else {
@@ -245,7 +344,7 @@ export const MsgCreateToken = {
     return message;
   },
 
-  toJSON(message: MsgCreateToken): unknown {
+  toJSON(message: CreateTokenParams): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
     message.name !== undefined && (obj.name = message.name);
@@ -268,8 +367,8 @@ export const MsgCreateToken = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<MsgCreateToken>): MsgCreateToken {
-    const message = { ...baseMsgCreateToken } as MsgCreateToken;
+  fromPartial(object: DeepPartial<CreateTokenParams>): CreateTokenParams {
+    const message = { ...baseCreateTokenParams } as CreateTokenParams;
     if (object.creator !== undefined && object.creator !== null) {
       message.creator = object.creator;
     } else {

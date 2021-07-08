@@ -16,7 +16,10 @@ export class AdminModule extends BaseModule {
   public async createOracle(params: AdminModule.CreateOracleParams) {
     const wallet = this.getWallet();
 
-    const value = MsgCreateOracle.fromPartial(transfromCreateOracleParams(params, wallet.bech32Address))
+    const value = MsgCreateOracle.fromPartial({
+      creator: wallet.bech32Address,
+      createOracleParams: transfromCreateOracleParams(params, wallet.bech32Address),
+    })
 
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgCreateOracle,
@@ -27,7 +30,10 @@ export class AdminModule extends BaseModule {
   public async createToken(params: AdminModule.CreateTokenParams) {
     const wallet = this.getWallet();
 
-    const value = MsgCreateToken.fromPartial(transfromCreateTokenParams(params, wallet.bech32Address))
+    const value = MsgCreateToken.fromPartial({
+      creator: wallet.bech32Address,
+      createTokenParams: transfromCreateTokenParams(params, wallet.bech32Address),
+    })
 
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgCreateToken,
@@ -39,7 +45,10 @@ export class AdminModule extends BaseModule {
     const wallet = this.getWallet();
 
     const msgs = params.map(param => {
-      const value = MsgCreateToken.fromPartial(transfromCreateTokenParams(param, wallet.bech32Address))
+      const value = MsgCreateToken.fromPartial({
+        creator: wallet.bech32Address,
+        createTokenParams: transfromCreateTokenParams(param, wallet.bech32Address),
+      })
 
       return {
         typeUrl: CarbonTx.Types.MsgCreateToken,
@@ -109,7 +118,7 @@ export class AdminModule extends BaseModule {
 
     const value = MsgLinkPool.fromPartial({
         creator: wallet.bech32Address,
-        linkPoolParams: transfromLinkPoolParams(params, wallet.bech32Address)
+        linkPoolParams: transfromLinkPoolParams(params)
     })
 
     return await wallet.sendTx({
@@ -123,7 +132,7 @@ export class AdminModule extends BaseModule {
 
     const value = MsgUnlinkPool.fromPartial({
         creator: wallet.bech32Address,
-        unlinkPoolParams: transfromUnlinkPoolParams(params, wallet.bech32Address)
+        unlinkPoolParams: transfromUnlinkPoolParams(params)
     })
 
     return await wallet.sendTx({
@@ -137,7 +146,7 @@ export class AdminModule extends BaseModule {
 
     const value = MsgChangeSwapFee.fromPartial({
         creator: wallet.bech32Address,
-        changeSwapFeeParams: transfromChangeSwapFeeParams(params, wallet.bech32Address)
+        changeSwapFeeParams: transfromChangeSwapFeeParams(params)
     })
 
     return await wallet.sendTx({
@@ -151,7 +160,7 @@ export class AdminModule extends BaseModule {
 
     const value = MsgSetRewardsWeights.fromPartial({
         creator: wallet.bech32Address,
-        setRewardsWeightsParams: transfromSetRewardsWeightsParams(params, wallet.bech32Address)
+        setRewardsWeightsParams: transfromSetRewardsWeightsParams(params)
     })
 
     return await wallet.sendTx({
@@ -165,7 +174,7 @@ export class AdminModule extends BaseModule {
 
     const value = MsgSetRewardCurve.fromPartial({
         creator: wallet.bech32Address,
-        setRewardCurveParams: transfromSetRewardCurveParams(params, wallet.bech32Address)
+        setRewardCurveParams: transfromSetRewardCurveParams(params)
     })
 
     return await wallet.sendTx({
@@ -179,7 +188,7 @@ export class AdminModule extends BaseModule {
 
     const value = MsgSetCommitmentCurve.fromPartial({
         creator: wallet.bech32Address,
-        setCommitmentCurveParams: transfromSetCommitmentCurveParams(params, wallet.bech32Address)
+        setCommitmentCurveParams: transfromSetCommitmentCurveParams(params)
     })
 
     return await wallet.sendTx({
@@ -193,7 +202,7 @@ export class AdminModule extends BaseModule {
 
     const value = MsgChangeNumQuotes.fromPartial({
       creator: wallet.bech32Address,
-      changeNumQuotesParams: transfromChangNumQuotesParams(params, wallet.bech32Address),
+      changeNumQuotesParams: transfromChangNumQuotesParams(params),
     })
 
     return await wallet.sendTx({
@@ -217,7 +226,8 @@ export class AdminModule extends BaseModule {
     const wallet = this.getWallet();
 
     const value = MsgSetFee.fromPartial({
-        params: transfromSetMsgFeeParams(params, wallet.bech32Address)
+      creator: wallet.bech32Address,
+      setFeeParams: transfromSetMsgFeeParams(params)
     })
 
     return await wallet.sendTx({
@@ -424,30 +434,27 @@ export function transfromCreateVaultTypeParams(msg: AdminModule.CreateVaultTypeP
   }
 }
 
-export function transfromLinkPoolParams(msg: AdminModule.LinkPoolParams, address: string) {
+export function transfromLinkPoolParams(msg: AdminModule.LinkPoolParams) {
   return {
-    creator: address,
     poolId: new Long(msg.poolId),
     market: msg.market,
   }
 }
 
-export function transfromUnlinkPoolParams(msg: AdminModule.UnlinkPoolParams, address: string) {
+export function transfromUnlinkPoolParams(msg: AdminModule.UnlinkPoolParams) {
   return {
-    creator: address,
     poolId: new Long(msg.poolId),
   }
 }
 
-export function transfromChangeSwapFeeParams(msg: AdminModule.ChangeSwapFeeParams, address: string) {
+export function transfromChangeSwapFeeParams(msg: AdminModule.ChangeSwapFeeParams) {
   return {
-    creator: address,
     poolId: new Long(msg.poolId),
     swapFee: msg.swapFee.shiftedBy(18).toString(),
   }
 }
 
-export function transfromSetRewardsWeightsParams(msg: AdminModule.SetRewardsWeightsParams[], address: string) {  
+export function transfromSetRewardsWeightsParams(msg: AdminModule.SetRewardsWeightsParams[]) {  
   const weights = msg.map(param => {
     return {
       poolId: new Long(param.poolId),
@@ -456,14 +463,12 @@ export function transfromSetRewardsWeightsParams(msg: AdminModule.SetRewardsWeig
   })
 
   return {
-    creator: address,
     weights: weights
   }
 }
 
-export function transfromSetRewardCurveParams(msg: AdminModule.SetRewardCurveParams, address: string) {
+export function transfromSetRewardCurveParams(msg: AdminModule.SetRewardCurveParams) {
   return {
-    creator: address,
     startTime: msg.startTime,
     initialRewardBps: msg.initialRewardBps,
     reductionMultiplierBps: msg.reductionMultiplierBps,
@@ -473,17 +478,15 @@ export function transfromSetRewardCurveParams(msg: AdminModule.SetRewardCurvePar
   }
 }
 
-export function transfromSetCommitmentCurveParams(msg: AdminModule.SetCommitmentCurveParams, address: string) {
+export function transfromSetCommitmentCurveParams(msg: AdminModule.SetCommitmentCurveParams) {
   return {
-    creator: address,
     maxDuration: new Long(msg.maxDuration),
     maxRewardMultiplier: msg.maxRewardMultiplier,
   }
 }
 
-export function transfromChangNumQuotesParams(msg: AdminModule.ChangeNumQuotesParams, address: string) {
+export function transfromChangNumQuotesParams(msg: AdminModule.ChangeNumQuotesParams) {
   return {
-    creator: address,
     poolId: new Long(msg.poolId),
     numQuotes: new Long(msg.numQuotes),
   }
@@ -497,9 +500,8 @@ export function transfromSetTradingFlagParams(msg: AdminModule.SetTradingFlagPar
   }
 }
 
-export function transfromSetMsgFeeParams(msg: AdminModule.SetMsgFeeParams, address: string) {
+export function transfromSetMsgFeeParams(msg: AdminModule.SetMsgFeeParams) {
   return {
-    creator: address,
     msgType: msg.msgType,
     fee: msg.fee.toString(),
   }

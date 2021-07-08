@@ -3,7 +3,7 @@ import { SetMsgFeeProposal } from "@carbon-sdk/codec/fee/proposal";
 import { ChangeNumQuotesProposal, ChangeSwapFeeProposal, LinkPoolProposal, SetCommitmentCurveProposal, SetRewardCurveProposal, SetRewardsWeightsProposal, UnlinkPoolProposal } from "@carbon-sdk/codec/liquiditypool/proposal";
 import { CreateMarketProposal, UpdateMarketProposal } from "@carbon-sdk/codec/market/proposal";
 import { CreateOracleProposal } from "@carbon-sdk/codec/oracle/proposal";
-import { SettlementPriceProposal } from "@carbon-sdk/codec/pricing/proposal";
+import { SettlementPriceParams, SettlementPriceProposal } from "@carbon-sdk/codec/pricing/proposal";
 import { coins } from "@cosmjs/amino";
 import { Coin } from "@cosmjs/stargate/build/codec/cosmos/base/v1beta1/coin";
 import BaseModule from "./base";
@@ -24,8 +24,9 @@ import {
   transformCreateMarketParams,
   transfromCreateOracleParams,
   transfromChangNumQuotesParams,
+  AdminModule,
 } from "./admin";
-import { transfromUpdateMarketParams } from "./market";
+import { MarketModule, transfromUpdateMarketParams } from "./market";
 
 export class GovModule extends BaseModule {
 
@@ -71,92 +72,93 @@ export class GovModule extends BaseModule {
     });
   }
 
-  public encode(proposalUrl: string, msg: any): Uint8Array {
+  public encode(proposalUrl: string, proposalMsg: any): Uint8Array {
     const wallet = this.getWallet();
+    const {title, description, msg} = proposalMsg;
 
     switch(proposalUrl.split(".").pop()) {
       case "CreateTokenProposal": 
         const createTokenMsg = {
-          title : msg.title,
-          description: msg.description,
-          token: transfromCreateTokenParams(msg.token, msg.token.creator)
+          title : title,
+          description: description,
+          msg: transfromCreateTokenParams(msg, wallet.bech32Address)
         }
         return CreateTokenProposal.encode(createTokenMsg).finish()
       case "SetMsgFeeProposal":
         const setMsgFeeMsg = {
-          title : msg.title,
-          description: msg.description,
-          params: transfromSetMsgFeeParams(msg.params, msg.params.creator)
+          title : title,
+          description: description,
+          msg: transfromSetMsgFeeParams(msg)
         }
         return SetMsgFeeProposal.encode(setMsgFeeMsg).finish()
       case "LinkPoolProposal":
         const linkPoolMsg = {
-          title : msg.title,
-          description: msg.description,
-          linkPoolParams: transfromLinkPoolParams(msg.linkPoolParams, msg.linkPoolParams.creator)
+          title : title,
+          description: description,
+          msg: transfromLinkPoolParams(msg)
         }
         return LinkPoolProposal.encode(linkPoolMsg).finish()
       case "UnlinkPoolProposal":
         const unlinkPoolMsg = {
-          title : msg.title,
-          description: msg.description,
-          unlinkPoolParams: transfromUnlinkPoolParams(msg.unlinkPoolParams, msg.unlinkPoolParams.creator)
+          title : title,
+          description: description,
+          msg: transfromUnlinkPoolParams(msg)
         }
         return UnlinkPoolProposal.encode(unlinkPoolMsg).finish()
       case "SetRewardCurveProposal":
         const setRewardCurveMsg = {
-          title : msg.title,
-          description: msg.description,
-          setRewardCurveParams: transfromSetRewardCurveParams(msg.setRewardCurveParams, msg.setRewardCurveParams.creator)
+          title : title,
+          description: description,
+          msg: transfromSetRewardCurveParams(msg)
         } 
         return SetRewardCurveProposal.encode(setRewardCurveMsg).finish()
       case "SetCommitmentCurveProposal": 
         const setCommitmentCurveMsg = {
-          title : msg.title,
-          description: msg.description,
-          setCommitmentCurveParams: transfromSetCommitmentCurveParams(msg.setCommitmentCurveParams, msg.setCommitmentCurveParams.creator)
+          title : title,
+          description: description,
+          msg: transfromSetCommitmentCurveParams(msg)
         }
         return SetCommitmentCurveProposal.encode(setCommitmentCurveMsg).finish()
       case "SetRewardsWeightsProposal": 
         const setRewardsWeightsMsg = {
-          title : msg.title,
-          description: msg.description,
-          setRewardsWeightsParams: transfromSetRewardsWeightsParams(msg.setRewardsWeightsParams, wallet.bech32Address)
+          title : title,
+          description: description,
+          msg: transfromSetRewardsWeightsParams(msg)
         }
         return SetRewardsWeightsProposal.encode(setRewardsWeightsMsg).finish()
       case "ChangeSwapFeeProposal":
         const changeSwapFeeMsg = {
-          title : msg.title,
-          description: msg.description,
-          changeSwapFeeParams: transfromChangeSwapFeeParams(msg.changeSwapFeeParams, msg.changeSwapFeeParams.creator)
+          title : title,
+          description: description,
+          msg: transfromChangeSwapFeeParams(msg)
         }
         return ChangeSwapFeeProposal.encode(changeSwapFeeMsg).finish()
       case "ChangeNumQuotesProposal": 
         const changeNumQuotesProposalMsg = {
-          title : msg.title,
-          description: msg.description,
-          changeNumQuotesParams: transfromChangNumQuotesParams(msg.changeNumQuotesParams, msg.changeNumQuotesParams.creator)
+          title : title,
+          description: description,
+          msg: transfromChangNumQuotesParams(msg)
         }
         return ChangeNumQuotesProposal.encode(changeNumQuotesProposalMsg).finish()
       case "CreateMarketProposal": 
         const createMarketProposalMsg = {
-          title : msg.title,
-          description: msg.description,
-          market: transformCreateMarketParams(msg.market)
+          title : title,
+          description: description,
+          msg: transformCreateMarketParams(msg)
         }
         return CreateMarketProposal.encode(createMarketProposalMsg).finish()
       case "UpdateMarketProposal": 
         const updateMarketProposalMsg = {
-          title : msg.title,
-          description: msg.description,
-          marketParams: transfromUpdateMarketParams(msg.marketParams)
+          title : title,
+          description: description,
+          msg: transfromUpdateMarketParams(msg)
         }
         return UpdateMarketProposal.encode(updateMarketProposalMsg).finish()
       case "CreateOracleProposal": 
         const createOracleProposalMsg = {
-          title : msg.title,
-          description: msg.description,
-          oracle: transfromCreateOracleParams(msg.oracle, msg.oracle.creator)
+          title : title,
+          description: description,
+          msg: transfromCreateOracleParams(msg, wallet.bech32Address)
         }
         return CreateOracleProposal.encode(createOracleProposalMsg).finish()
       case "SettlementPriceProposal":
@@ -171,10 +173,16 @@ export namespace GovModule {
   export interface SubmitProposalParams {
     content: {
       typeUrl: string
-      value: ProposalTypes | Uint8Array
+      value: ProposalMsg | Uint8Array
     }
     initialDeposit: Coin[]
     proposer: string
+  }
+
+  export interface ProposalMsg {
+    title: string,
+    description: string,
+    msg: ProposalTypes 
   }
 
   export interface DepositParams {
@@ -188,8 +196,20 @@ export namespace GovModule {
     option: VoteOption,
   }
 
-  export type ProposalTypes = CreateTokenProposal | SetMsgFeeProposal | LinkPoolProposal | UnlinkPoolProposal |
-    SetRewardCurveProposal | SetCommitmentCurveProposal | SetRewardsWeightsProposal | ChangeSwapFeeProposal |
-    ChangeNumQuotesProposal | CreateMarketProposal | UpdateMarketProposal | CreateOracleProposal | SettlementPriceProposal;
+  export type ProposalTypes =
+    AdminModule.CreateTokenParams |
+    AdminModule.SetMsgFeeParams |
+    AdminModule.LinkPoolParams |
+    AdminModule.UnlinkPoolParams |
+    AdminModule.SetRewardCurveParams |
+    AdminModule.SetCommitmentCurveParams |
+    AdminModule.SetRewardsWeightsParams |
+    AdminModule.ChangeSwapFeeParams |
+    AdminModule.ChangeNumQuotesParams |
+    AdminModule.CreateMarketParams |
+    MarketModule.UpdateMarketParams |
+    AdminModule.CreateOracleParams |
+    SettlementPriceParams
+  ;
 
 };

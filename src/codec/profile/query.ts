@@ -23,7 +23,7 @@ export interface QueryAllProfileRequest {
 }
 
 export interface QueryAllProfileResponse {
-  Profile: Profile[];
+  profiles: Profile[];
   pagination?: PageResponse;
 }
 
@@ -235,7 +235,7 @@ export const QueryAllProfileResponse = {
     message: QueryAllProfileResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    for (const v of message.Profile) {
+    for (const v of message.profiles) {
       Profile.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.pagination !== undefined) {
@@ -256,12 +256,12 @@ export const QueryAllProfileResponse = {
     const message = {
       ...baseQueryAllProfileResponse,
     } as QueryAllProfileResponse;
-    message.Profile = [];
+    message.profiles = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.Profile.push(Profile.decode(reader, reader.uint32()));
+          message.profiles.push(Profile.decode(reader, reader.uint32()));
           break;
         case 2:
           message.pagination = PageResponse.decode(reader, reader.uint32());
@@ -278,10 +278,10 @@ export const QueryAllProfileResponse = {
     const message = {
       ...baseQueryAllProfileResponse,
     } as QueryAllProfileResponse;
-    message.Profile = [];
-    if (object.Profile !== undefined && object.Profile !== null) {
-      for (const e of object.Profile) {
-        message.Profile.push(Profile.fromJSON(e));
+    message.profiles = [];
+    if (object.profiles !== undefined && object.profiles !== null) {
+      for (const e of object.profiles) {
+        message.profiles.push(Profile.fromJSON(e));
       }
     }
     if (object.pagination !== undefined && object.pagination !== null) {
@@ -294,12 +294,12 @@ export const QueryAllProfileResponse = {
 
   toJSON(message: QueryAllProfileResponse): unknown {
     const obj: any = {};
-    if (message.Profile) {
-      obj.Profile = message.Profile.map((e) =>
+    if (message.profiles) {
+      obj.profiles = message.profiles.map((e) =>
         e ? Profile.toJSON(e) : undefined
       );
     } else {
-      obj.Profile = [];
+      obj.profiles = [];
     }
     message.pagination !== undefined &&
       (obj.pagination = message.pagination
@@ -314,10 +314,10 @@ export const QueryAllProfileResponse = {
     const message = {
       ...baseQueryAllProfileResponse,
     } as QueryAllProfileResponse;
-    message.Profile = [];
-    if (object.Profile !== undefined && object.Profile !== null) {
-      for (const e of object.Profile) {
-        message.Profile.push(Profile.fromPartial(e));
+    message.profiles = [];
+    if (object.profiles !== undefined && object.profiles !== null) {
+      for (const e of object.profiles) {
+        message.profiles.push(Profile.fromPartial(e));
       }
     }
     if (object.pagination !== undefined && object.pagination !== null) {

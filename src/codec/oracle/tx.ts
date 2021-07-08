@@ -7,6 +7,11 @@ export const protobufPackage = "Switcheo.carbon.oracle";
 /** this line is used by starport scaffolding # proto/tx/message */
 export interface MsgCreateOracle {
   creator: string;
+  createOracleParams?: CreateOracleParams;
+}
+
+export interface CreateOracleParams {
+  creator: string;
   id: string;
   description: string;
   minTurnoutPercentage: Long;
@@ -30,7 +35,101 @@ export interface MsgCreateVote {
 
 export interface MsgCreateVoteResponse {}
 
-const baseMsgCreateOracle: object = {
+const baseMsgCreateOracle: object = { creator: "" };
+
+export const MsgCreateOracle = {
+  encode(
+    message: MsgCreateOracle,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.createOracleParams !== undefined) {
+      CreateOracleParams.encode(
+        message.createOracleParams,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreateOracle {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgCreateOracle } as MsgCreateOracle;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.createOracleParams = CreateOracleParams.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgCreateOracle {
+    const message = { ...baseMsgCreateOracle } as MsgCreateOracle;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = String(object.creator);
+    } else {
+      message.creator = "";
+    }
+    if (
+      object.createOracleParams !== undefined &&
+      object.createOracleParams !== null
+    ) {
+      message.createOracleParams = CreateOracleParams.fromJSON(
+        object.createOracleParams
+      );
+    } else {
+      message.createOracleParams = undefined;
+    }
+    return message;
+  },
+
+  toJSON(message: MsgCreateOracle): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.createOracleParams !== undefined &&
+      (obj.createOracleParams = message.createOracleParams
+        ? CreateOracleParams.toJSON(message.createOracleParams)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgCreateOracle>): MsgCreateOracle {
+    const message = { ...baseMsgCreateOracle } as MsgCreateOracle;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = object.creator;
+    } else {
+      message.creator = "";
+    }
+    if (
+      object.createOracleParams !== undefined &&
+      object.createOracleParams !== null
+    ) {
+      message.createOracleParams = CreateOracleParams.fromPartial(
+        object.createOracleParams
+      );
+    } else {
+      message.createOracleParams = undefined;
+    }
+    return message;
+  },
+};
+
+const baseCreateOracleParams: object = {
   creator: "",
   id: "",
   description: "",
@@ -42,9 +141,9 @@ const baseMsgCreateOracle: object = {
   spec: "",
 };
 
-export const MsgCreateOracle = {
+export const CreateOracleParams = {
   encode(
-    message: MsgCreateOracle,
+    message: CreateOracleParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.creator !== "") {
@@ -77,10 +176,10 @@ export const MsgCreateOracle = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreateOracle {
+  decode(input: _m0.Reader | Uint8Array, length?: number): CreateOracleParams {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgCreateOracle } as MsgCreateOracle;
+    const message = { ...baseCreateOracleParams } as CreateOracleParams;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -119,8 +218,8 @@ export const MsgCreateOracle = {
     return message;
   },
 
-  fromJSON(object: any): MsgCreateOracle {
-    const message = { ...baseMsgCreateOracle } as MsgCreateOracle;
+  fromJSON(object: any): CreateOracleParams {
+    const message = { ...baseCreateOracleParams } as CreateOracleParams;
     if (object.creator !== undefined && object.creator !== null) {
       message.creator = String(object.creator);
     } else {
@@ -174,7 +273,7 @@ export const MsgCreateOracle = {
     return message;
   },
 
-  toJSON(message: MsgCreateOracle): unknown {
+  toJSON(message: CreateOracleParams): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
     message.id !== undefined && (obj.id = message.id);
@@ -196,8 +295,8 @@ export const MsgCreateOracle = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<MsgCreateOracle>): MsgCreateOracle {
-    const message = { ...baseMsgCreateOracle } as MsgCreateOracle;
+  fromPartial(object: DeepPartial<CreateOracleParams>): CreateOracleParams {
+    const message = { ...baseCreateOracleParams } as CreateOracleParams;
     if (object.creator !== undefined && object.creator !== null) {
       message.creator = object.creator;
     } else {

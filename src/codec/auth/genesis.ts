@@ -2,9 +2,9 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 
-export const protobufPackage = "Switcheo.tradehubcosmos.tradehubcosmos";
+export const protobufPackage = "Switcheo.carbon.auth";
 
-/** GenesisState defines the capability module's genesis state. */
+/** GenesisState defines the auth module's genesis state. */
 export interface GenesisState {}
 
 const baseGenesisState: object = {};

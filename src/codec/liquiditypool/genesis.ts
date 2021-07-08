@@ -22,10 +22,10 @@ export interface GenesisState {
   rewardCurve?: RewardCurve;
   commitmentCurve?: CommitmentCurve;
   commitmentExpiries: CommitmentExpiryIndex[];
-  commitmentWithKey: CommitmentWithKey[];
-  commitmentTotalsWithKey: CommitmentTotalWithKey[];
-  rewardHistoriesWithKey: RewardHistoryWithKey[];
-  allLastClaimedWithKey: LastClaimedWithKey[];
+  commitmentWithKeys: CommitmentWithKey[];
+  commitmentTotalsWithKeys: CommitmentTotalWithKey[];
+  rewardHistoriesWithKeys: RewardHistoryWithKey[];
+  allLastClaimedWithKeys: LastClaimedWithKey[];
   totalAllocated: DecCoin[];
   rewardWeights?: WrappedRewardWeights;
 }
@@ -55,16 +55,16 @@ export const GenesisState = {
     for (const v of message.commitmentExpiries) {
       CommitmentExpiryIndex.encode(v!, writer.uint32(34).fork()).ldelim();
     }
-    for (const v of message.commitmentWithKey) {
+    for (const v of message.commitmentWithKeys) {
       CommitmentWithKey.encode(v!, writer.uint32(42).fork()).ldelim();
     }
-    for (const v of message.commitmentTotalsWithKey) {
+    for (const v of message.commitmentTotalsWithKeys) {
       CommitmentTotalWithKey.encode(v!, writer.uint32(50).fork()).ldelim();
     }
-    for (const v of message.rewardHistoriesWithKey) {
+    for (const v of message.rewardHistoriesWithKeys) {
       RewardHistoryWithKey.encode(v!, writer.uint32(58).fork()).ldelim();
     }
-    for (const v of message.allLastClaimedWithKey) {
+    for (const v of message.allLastClaimedWithKeys) {
       LastClaimedWithKey.encode(v!, writer.uint32(66).fork()).ldelim();
     }
     for (const v of message.totalAllocated) {
@@ -85,10 +85,10 @@ export const GenesisState = {
     const message = { ...baseGenesisState } as GenesisState;
     message.pools = [];
     message.commitmentExpiries = [];
-    message.commitmentWithKey = [];
-    message.commitmentTotalsWithKey = [];
-    message.rewardHistoriesWithKey = [];
-    message.allLastClaimedWithKey = [];
+    message.commitmentWithKeys = [];
+    message.commitmentTotalsWithKeys = [];
+    message.rewardHistoriesWithKeys = [];
+    message.allLastClaimedWithKeys = [];
     message.totalAllocated = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
@@ -111,22 +111,22 @@ export const GenesisState = {
           );
           break;
         case 5:
-          message.commitmentWithKey.push(
+          message.commitmentWithKeys.push(
             CommitmentWithKey.decode(reader, reader.uint32())
           );
           break;
         case 6:
-          message.commitmentTotalsWithKey.push(
+          message.commitmentTotalsWithKeys.push(
             CommitmentTotalWithKey.decode(reader, reader.uint32())
           );
           break;
         case 7:
-          message.rewardHistoriesWithKey.push(
+          message.rewardHistoriesWithKeys.push(
             RewardHistoryWithKey.decode(reader, reader.uint32())
           );
           break;
         case 8:
-          message.allLastClaimedWithKey.push(
+          message.allLastClaimedWithKeys.push(
             LastClaimedWithKey.decode(reader, reader.uint32())
           );
           break;
@@ -151,10 +151,10 @@ export const GenesisState = {
     const message = { ...baseGenesisState } as GenesisState;
     message.pools = [];
     message.commitmentExpiries = [];
-    message.commitmentWithKey = [];
-    message.commitmentTotalsWithKey = [];
-    message.rewardHistoriesWithKey = [];
-    message.allLastClaimedWithKey = [];
+    message.commitmentWithKeys = [];
+    message.commitmentTotalsWithKeys = [];
+    message.rewardHistoriesWithKeys = [];
+    message.allLastClaimedWithKeys = [];
     message.totalAllocated = [];
     if (object.pools !== undefined && object.pools !== null) {
       for (const e of object.pools) {
@@ -185,37 +185,37 @@ export const GenesisState = {
       }
     }
     if (
-      object.commitmentWithKey !== undefined &&
-      object.commitmentWithKey !== null
+      object.commitmentWithKeys !== undefined &&
+      object.commitmentWithKeys !== null
     ) {
-      for (const e of object.commitmentWithKey) {
-        message.commitmentWithKey.push(CommitmentWithKey.fromJSON(e));
+      for (const e of object.commitmentWithKeys) {
+        message.commitmentWithKeys.push(CommitmentWithKey.fromJSON(e));
       }
     }
     if (
-      object.commitmentTotalsWithKey !== undefined &&
-      object.commitmentTotalsWithKey !== null
+      object.commitmentTotalsWithKeys !== undefined &&
+      object.commitmentTotalsWithKeys !== null
     ) {
-      for (const e of object.commitmentTotalsWithKey) {
-        message.commitmentTotalsWithKey.push(
+      for (const e of object.commitmentTotalsWithKeys) {
+        message.commitmentTotalsWithKeys.push(
           CommitmentTotalWithKey.fromJSON(e)
         );
       }
     }
     if (
-      object.rewardHistoriesWithKey !== undefined &&
-      object.rewardHistoriesWithKey !== null
+      object.rewardHistoriesWithKeys !== undefined &&
+      object.rewardHistoriesWithKeys !== null
     ) {
-      for (const e of object.rewardHistoriesWithKey) {
-        message.rewardHistoriesWithKey.push(RewardHistoryWithKey.fromJSON(e));
+      for (const e of object.rewardHistoriesWithKeys) {
+        message.rewardHistoriesWithKeys.push(RewardHistoryWithKey.fromJSON(e));
       }
     }
     if (
-      object.allLastClaimedWithKey !== undefined &&
-      object.allLastClaimedWithKey !== null
+      object.allLastClaimedWithKeys !== undefined &&
+      object.allLastClaimedWithKeys !== null
     ) {
-      for (const e of object.allLastClaimedWithKey) {
-        message.allLastClaimedWithKey.push(LastClaimedWithKey.fromJSON(e));
+      for (const e of object.allLastClaimedWithKeys) {
+        message.allLastClaimedWithKeys.push(LastClaimedWithKey.fromJSON(e));
       }
     }
     if (object.totalAllocated !== undefined && object.totalAllocated !== null) {
@@ -255,33 +255,33 @@ export const GenesisState = {
     } else {
       obj.commitmentExpiries = [];
     }
-    if (message.commitmentWithKey) {
-      obj.commitmentWithKey = message.commitmentWithKey.map((e) =>
+    if (message.commitmentWithKeys) {
+      obj.commitmentWithKeys = message.commitmentWithKeys.map((e) =>
         e ? CommitmentWithKey.toJSON(e) : undefined
       );
     } else {
-      obj.commitmentWithKey = [];
+      obj.commitmentWithKeys = [];
     }
-    if (message.commitmentTotalsWithKey) {
-      obj.commitmentTotalsWithKey = message.commitmentTotalsWithKey.map((e) =>
+    if (message.commitmentTotalsWithKeys) {
+      obj.commitmentTotalsWithKeys = message.commitmentTotalsWithKeys.map((e) =>
         e ? CommitmentTotalWithKey.toJSON(e) : undefined
       );
     } else {
-      obj.commitmentTotalsWithKey = [];
+      obj.commitmentTotalsWithKeys = [];
     }
-    if (message.rewardHistoriesWithKey) {
-      obj.rewardHistoriesWithKey = message.rewardHistoriesWithKey.map((e) =>
+    if (message.rewardHistoriesWithKeys) {
+      obj.rewardHistoriesWithKeys = message.rewardHistoriesWithKeys.map((e) =>
         e ? RewardHistoryWithKey.toJSON(e) : undefined
       );
     } else {
-      obj.rewardHistoriesWithKey = [];
+      obj.rewardHistoriesWithKeys = [];
     }
-    if (message.allLastClaimedWithKey) {
-      obj.allLastClaimedWithKey = message.allLastClaimedWithKey.map((e) =>
+    if (message.allLastClaimedWithKeys) {
+      obj.allLastClaimedWithKeys = message.allLastClaimedWithKeys.map((e) =>
         e ? LastClaimedWithKey.toJSON(e) : undefined
       );
     } else {
-      obj.allLastClaimedWithKey = [];
+      obj.allLastClaimedWithKeys = [];
     }
     if (message.totalAllocated) {
       obj.totalAllocated = message.totalAllocated.map((e) =>
@@ -301,10 +301,10 @@ export const GenesisState = {
     const message = { ...baseGenesisState } as GenesisState;
     message.pools = [];
     message.commitmentExpiries = [];
-    message.commitmentWithKey = [];
-    message.commitmentTotalsWithKey = [];
-    message.rewardHistoriesWithKey = [];
-    message.allLastClaimedWithKey = [];
+    message.commitmentWithKeys = [];
+    message.commitmentTotalsWithKeys = [];
+    message.rewardHistoriesWithKeys = [];
+    message.allLastClaimedWithKeys = [];
     message.totalAllocated = [];
     if (object.pools !== undefined && object.pools !== null) {
       for (const e of object.pools) {
@@ -335,39 +335,39 @@ export const GenesisState = {
       }
     }
     if (
-      object.commitmentWithKey !== undefined &&
-      object.commitmentWithKey !== null
+      object.commitmentWithKeys !== undefined &&
+      object.commitmentWithKeys !== null
     ) {
-      for (const e of object.commitmentWithKey) {
-        message.commitmentWithKey.push(CommitmentWithKey.fromPartial(e));
+      for (const e of object.commitmentWithKeys) {
+        message.commitmentWithKeys.push(CommitmentWithKey.fromPartial(e));
       }
     }
     if (
-      object.commitmentTotalsWithKey !== undefined &&
-      object.commitmentTotalsWithKey !== null
+      object.commitmentTotalsWithKeys !== undefined &&
+      object.commitmentTotalsWithKeys !== null
     ) {
-      for (const e of object.commitmentTotalsWithKey) {
-        message.commitmentTotalsWithKey.push(
+      for (const e of object.commitmentTotalsWithKeys) {
+        message.commitmentTotalsWithKeys.push(
           CommitmentTotalWithKey.fromPartial(e)
         );
       }
     }
     if (
-      object.rewardHistoriesWithKey !== undefined &&
-      object.rewardHistoriesWithKey !== null
+      object.rewardHistoriesWithKeys !== undefined &&
+      object.rewardHistoriesWithKeys !== null
     ) {
-      for (const e of object.rewardHistoriesWithKey) {
-        message.rewardHistoriesWithKey.push(
+      for (const e of object.rewardHistoriesWithKeys) {
+        message.rewardHistoriesWithKeys.push(
           RewardHistoryWithKey.fromPartial(e)
         );
       }
     }
     if (
-      object.allLastClaimedWithKey !== undefined &&
-      object.allLastClaimedWithKey !== null
+      object.allLastClaimedWithKeys !== undefined &&
+      object.allLastClaimedWithKeys !== null
     ) {
-      for (const e of object.allLastClaimedWithKey) {
-        message.allLastClaimedWithKey.push(LastClaimedWithKey.fromPartial(e));
+      for (const e of object.allLastClaimedWithKeys) {
+        message.allLastClaimedWithKeys.push(LastClaimedWithKey.fromPartial(e));
       }
     }
     if (object.totalAllocated !== undefined && object.totalAllocated !== null) {

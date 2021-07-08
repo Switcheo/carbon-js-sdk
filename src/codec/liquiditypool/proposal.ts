@@ -16,43 +16,43 @@ export const protobufPackage = "Switcheo.carbon.liquiditypool";
 export interface LinkPoolProposal {
   title: string;
   description: string;
-  linkPoolParams?: LinkPoolParams;
+  msg?: LinkPoolParams;
 }
 
 export interface UnlinkPoolProposal {
   title: string;
   description: string;
-  unlinkPoolParams?: UnlinkPoolParams;
+  msg?: UnlinkPoolParams;
 }
 
 export interface SetRewardCurveProposal {
   title: string;
   description: string;
-  setRewardCurveParams?: SetRewardCurveParams;
+  msg?: SetRewardCurveParams;
 }
 
 export interface SetCommitmentCurveProposal {
   title: string;
   description: string;
-  setCommitmentCurveParams?: SetCommitmentCurveParams;
+  msg?: SetCommitmentCurveParams;
 }
 
 export interface SetRewardsWeightsProposal {
   title: string;
   description: string;
-  setRewardsWeightsParams?: SetRewardsWeightsParams;
+  msg?: SetRewardsWeightsParams;
 }
 
 export interface ChangeSwapFeeProposal {
   title: string;
   description: string;
-  changeSwapFeeParams?: ChangeSwapFeeParams;
+  msg?: ChangeSwapFeeParams;
 }
 
 export interface ChangeNumQuotesProposal {
   title: string;
   description: string;
-  changeNumQuotesParams?: ChangeNumQuotesParams;
+  msg?: ChangeNumQuotesParams;
 }
 
 const baseLinkPoolProposal: object = { title: "", description: "" };
@@ -68,11 +68,8 @@ export const LinkPoolProposal = {
     if (message.description !== "") {
       writer.uint32(18).string(message.description);
     }
-    if (message.linkPoolParams !== undefined) {
-      LinkPoolParams.encode(
-        message.linkPoolParams,
-        writer.uint32(26).fork()
-      ).ldelim();
+    if (message.msg !== undefined) {
+      LinkPoolParams.encode(message.msg, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
@@ -91,10 +88,7 @@ export const LinkPoolProposal = {
           message.description = reader.string();
           break;
         case 3:
-          message.linkPoolParams = LinkPoolParams.decode(
-            reader,
-            reader.uint32()
-          );
+          message.msg = LinkPoolParams.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -116,10 +110,10 @@ export const LinkPoolProposal = {
     } else {
       message.description = "";
     }
-    if (object.linkPoolParams !== undefined && object.linkPoolParams !== null) {
-      message.linkPoolParams = LinkPoolParams.fromJSON(object.linkPoolParams);
+    if (object.msg !== undefined && object.msg !== null) {
+      message.msg = LinkPoolParams.fromJSON(object.msg);
     } else {
-      message.linkPoolParams = undefined;
+      message.msg = undefined;
     }
     return message;
   },
@@ -129,10 +123,8 @@ export const LinkPoolProposal = {
     message.title !== undefined && (obj.title = message.title);
     message.description !== undefined &&
       (obj.description = message.description);
-    message.linkPoolParams !== undefined &&
-      (obj.linkPoolParams = message.linkPoolParams
-        ? LinkPoolParams.toJSON(message.linkPoolParams)
-        : undefined);
+    message.msg !== undefined &&
+      (obj.msg = message.msg ? LinkPoolParams.toJSON(message.msg) : undefined);
     return obj;
   },
 
@@ -148,12 +140,10 @@ export const LinkPoolProposal = {
     } else {
       message.description = "";
     }
-    if (object.linkPoolParams !== undefined && object.linkPoolParams !== null) {
-      message.linkPoolParams = LinkPoolParams.fromPartial(
-        object.linkPoolParams
-      );
+    if (object.msg !== undefined && object.msg !== null) {
+      message.msg = LinkPoolParams.fromPartial(object.msg);
     } else {
-      message.linkPoolParams = undefined;
+      message.msg = undefined;
     }
     return message;
   },
@@ -172,11 +162,8 @@ export const UnlinkPoolProposal = {
     if (message.description !== "") {
       writer.uint32(18).string(message.description);
     }
-    if (message.unlinkPoolParams !== undefined) {
-      UnlinkPoolParams.encode(
-        message.unlinkPoolParams,
-        writer.uint32(26).fork()
-      ).ldelim();
+    if (message.msg !== undefined) {
+      UnlinkPoolParams.encode(message.msg, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
@@ -195,10 +182,7 @@ export const UnlinkPoolProposal = {
           message.description = reader.string();
           break;
         case 3:
-          message.unlinkPoolParams = UnlinkPoolParams.decode(
-            reader,
-            reader.uint32()
-          );
+          message.msg = UnlinkPoolParams.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -220,15 +204,10 @@ export const UnlinkPoolProposal = {
     } else {
       message.description = "";
     }
-    if (
-      object.unlinkPoolParams !== undefined &&
-      object.unlinkPoolParams !== null
-    ) {
-      message.unlinkPoolParams = UnlinkPoolParams.fromJSON(
-        object.unlinkPoolParams
-      );
+    if (object.msg !== undefined && object.msg !== null) {
+      message.msg = UnlinkPoolParams.fromJSON(object.msg);
     } else {
-      message.unlinkPoolParams = undefined;
+      message.msg = undefined;
     }
     return message;
   },
@@ -238,9 +217,9 @@ export const UnlinkPoolProposal = {
     message.title !== undefined && (obj.title = message.title);
     message.description !== undefined &&
       (obj.description = message.description);
-    message.unlinkPoolParams !== undefined &&
-      (obj.unlinkPoolParams = message.unlinkPoolParams
-        ? UnlinkPoolParams.toJSON(message.unlinkPoolParams)
+    message.msg !== undefined &&
+      (obj.msg = message.msg
+        ? UnlinkPoolParams.toJSON(message.msg)
         : undefined);
     return obj;
   },
@@ -257,15 +236,10 @@ export const UnlinkPoolProposal = {
     } else {
       message.description = "";
     }
-    if (
-      object.unlinkPoolParams !== undefined &&
-      object.unlinkPoolParams !== null
-    ) {
-      message.unlinkPoolParams = UnlinkPoolParams.fromPartial(
-        object.unlinkPoolParams
-      );
+    if (object.msg !== undefined && object.msg !== null) {
+      message.msg = UnlinkPoolParams.fromPartial(object.msg);
     } else {
-      message.unlinkPoolParams = undefined;
+      message.msg = undefined;
     }
     return message;
   },
@@ -284,9 +258,9 @@ export const SetRewardCurveProposal = {
     if (message.description !== "") {
       writer.uint32(18).string(message.description);
     }
-    if (message.setRewardCurveParams !== undefined) {
+    if (message.msg !== undefined) {
       SetRewardCurveParams.encode(
-        message.setRewardCurveParams,
+        message.msg,
         writer.uint32(26).fork()
       ).ldelim();
     }
@@ -310,10 +284,7 @@ export const SetRewardCurveProposal = {
           message.description = reader.string();
           break;
         case 3:
-          message.setRewardCurveParams = SetRewardCurveParams.decode(
-            reader,
-            reader.uint32()
-          );
+          message.msg = SetRewardCurveParams.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -335,15 +306,10 @@ export const SetRewardCurveProposal = {
     } else {
       message.description = "";
     }
-    if (
-      object.setRewardCurveParams !== undefined &&
-      object.setRewardCurveParams !== null
-    ) {
-      message.setRewardCurveParams = SetRewardCurveParams.fromJSON(
-        object.setRewardCurveParams
-      );
+    if (object.msg !== undefined && object.msg !== null) {
+      message.msg = SetRewardCurveParams.fromJSON(object.msg);
     } else {
-      message.setRewardCurveParams = undefined;
+      message.msg = undefined;
     }
     return message;
   },
@@ -353,9 +319,9 @@ export const SetRewardCurveProposal = {
     message.title !== undefined && (obj.title = message.title);
     message.description !== undefined &&
       (obj.description = message.description);
-    message.setRewardCurveParams !== undefined &&
-      (obj.setRewardCurveParams = message.setRewardCurveParams
-        ? SetRewardCurveParams.toJSON(message.setRewardCurveParams)
+    message.msg !== undefined &&
+      (obj.msg = message.msg
+        ? SetRewardCurveParams.toJSON(message.msg)
         : undefined);
     return obj;
   },
@@ -374,15 +340,10 @@ export const SetRewardCurveProposal = {
     } else {
       message.description = "";
     }
-    if (
-      object.setRewardCurveParams !== undefined &&
-      object.setRewardCurveParams !== null
-    ) {
-      message.setRewardCurveParams = SetRewardCurveParams.fromPartial(
-        object.setRewardCurveParams
-      );
+    if (object.msg !== undefined && object.msg !== null) {
+      message.msg = SetRewardCurveParams.fromPartial(object.msg);
     } else {
-      message.setRewardCurveParams = undefined;
+      message.msg = undefined;
     }
     return message;
   },
@@ -401,9 +362,9 @@ export const SetCommitmentCurveProposal = {
     if (message.description !== "") {
       writer.uint32(18).string(message.description);
     }
-    if (message.setCommitmentCurveParams !== undefined) {
+    if (message.msg !== undefined) {
       SetCommitmentCurveParams.encode(
-        message.setCommitmentCurveParams,
+        message.msg,
         writer.uint32(26).fork()
       ).ldelim();
     }
@@ -429,7 +390,7 @@ export const SetCommitmentCurveProposal = {
           message.description = reader.string();
           break;
         case 3:
-          message.setCommitmentCurveParams = SetCommitmentCurveParams.decode(
+          message.msg = SetCommitmentCurveParams.decode(
             reader,
             reader.uint32()
           );
@@ -456,15 +417,10 @@ export const SetCommitmentCurveProposal = {
     } else {
       message.description = "";
     }
-    if (
-      object.setCommitmentCurveParams !== undefined &&
-      object.setCommitmentCurveParams !== null
-    ) {
-      message.setCommitmentCurveParams = SetCommitmentCurveParams.fromJSON(
-        object.setCommitmentCurveParams
-      );
+    if (object.msg !== undefined && object.msg !== null) {
+      message.msg = SetCommitmentCurveParams.fromJSON(object.msg);
     } else {
-      message.setCommitmentCurveParams = undefined;
+      message.msg = undefined;
     }
     return message;
   },
@@ -474,9 +430,9 @@ export const SetCommitmentCurveProposal = {
     message.title !== undefined && (obj.title = message.title);
     message.description !== undefined &&
       (obj.description = message.description);
-    message.setCommitmentCurveParams !== undefined &&
-      (obj.setCommitmentCurveParams = message.setCommitmentCurveParams
-        ? SetCommitmentCurveParams.toJSON(message.setCommitmentCurveParams)
+    message.msg !== undefined &&
+      (obj.msg = message.msg
+        ? SetCommitmentCurveParams.toJSON(message.msg)
         : undefined);
     return obj;
   },
@@ -497,15 +453,10 @@ export const SetCommitmentCurveProposal = {
     } else {
       message.description = "";
     }
-    if (
-      object.setCommitmentCurveParams !== undefined &&
-      object.setCommitmentCurveParams !== null
-    ) {
-      message.setCommitmentCurveParams = SetCommitmentCurveParams.fromPartial(
-        object.setCommitmentCurveParams
-      );
+    if (object.msg !== undefined && object.msg !== null) {
+      message.msg = SetCommitmentCurveParams.fromPartial(object.msg);
     } else {
-      message.setCommitmentCurveParams = undefined;
+      message.msg = undefined;
     }
     return message;
   },
@@ -524,9 +475,9 @@ export const SetRewardsWeightsProposal = {
     if (message.description !== "") {
       writer.uint32(18).string(message.description);
     }
-    if (message.setRewardsWeightsParams !== undefined) {
+    if (message.msg !== undefined) {
       SetRewardsWeightsParams.encode(
-        message.setRewardsWeightsParams,
+        message.msg,
         writer.uint32(26).fork()
       ).ldelim();
     }
@@ -552,10 +503,7 @@ export const SetRewardsWeightsProposal = {
           message.description = reader.string();
           break;
         case 3:
-          message.setRewardsWeightsParams = SetRewardsWeightsParams.decode(
-            reader,
-            reader.uint32()
-          );
+          message.msg = SetRewardsWeightsParams.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -579,15 +527,10 @@ export const SetRewardsWeightsProposal = {
     } else {
       message.description = "";
     }
-    if (
-      object.setRewardsWeightsParams !== undefined &&
-      object.setRewardsWeightsParams !== null
-    ) {
-      message.setRewardsWeightsParams = SetRewardsWeightsParams.fromJSON(
-        object.setRewardsWeightsParams
-      );
+    if (object.msg !== undefined && object.msg !== null) {
+      message.msg = SetRewardsWeightsParams.fromJSON(object.msg);
     } else {
-      message.setRewardsWeightsParams = undefined;
+      message.msg = undefined;
     }
     return message;
   },
@@ -597,9 +540,9 @@ export const SetRewardsWeightsProposal = {
     message.title !== undefined && (obj.title = message.title);
     message.description !== undefined &&
       (obj.description = message.description);
-    message.setRewardsWeightsParams !== undefined &&
-      (obj.setRewardsWeightsParams = message.setRewardsWeightsParams
-        ? SetRewardsWeightsParams.toJSON(message.setRewardsWeightsParams)
+    message.msg !== undefined &&
+      (obj.msg = message.msg
+        ? SetRewardsWeightsParams.toJSON(message.msg)
         : undefined);
     return obj;
   },
@@ -620,15 +563,10 @@ export const SetRewardsWeightsProposal = {
     } else {
       message.description = "";
     }
-    if (
-      object.setRewardsWeightsParams !== undefined &&
-      object.setRewardsWeightsParams !== null
-    ) {
-      message.setRewardsWeightsParams = SetRewardsWeightsParams.fromPartial(
-        object.setRewardsWeightsParams
-      );
+    if (object.msg !== undefined && object.msg !== null) {
+      message.msg = SetRewardsWeightsParams.fromPartial(object.msg);
     } else {
-      message.setRewardsWeightsParams = undefined;
+      message.msg = undefined;
     }
     return message;
   },
@@ -647,9 +585,9 @@ export const ChangeSwapFeeProposal = {
     if (message.description !== "") {
       writer.uint32(18).string(message.description);
     }
-    if (message.changeSwapFeeParams !== undefined) {
+    if (message.msg !== undefined) {
       ChangeSwapFeeParams.encode(
-        message.changeSwapFeeParams,
+        message.msg,
         writer.uint32(26).fork()
       ).ldelim();
     }
@@ -673,10 +611,7 @@ export const ChangeSwapFeeProposal = {
           message.description = reader.string();
           break;
         case 3:
-          message.changeSwapFeeParams = ChangeSwapFeeParams.decode(
-            reader,
-            reader.uint32()
-          );
+          message.msg = ChangeSwapFeeParams.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -698,15 +633,10 @@ export const ChangeSwapFeeProposal = {
     } else {
       message.description = "";
     }
-    if (
-      object.changeSwapFeeParams !== undefined &&
-      object.changeSwapFeeParams !== null
-    ) {
-      message.changeSwapFeeParams = ChangeSwapFeeParams.fromJSON(
-        object.changeSwapFeeParams
-      );
+    if (object.msg !== undefined && object.msg !== null) {
+      message.msg = ChangeSwapFeeParams.fromJSON(object.msg);
     } else {
-      message.changeSwapFeeParams = undefined;
+      message.msg = undefined;
     }
     return message;
   },
@@ -716,9 +646,9 @@ export const ChangeSwapFeeProposal = {
     message.title !== undefined && (obj.title = message.title);
     message.description !== undefined &&
       (obj.description = message.description);
-    message.changeSwapFeeParams !== undefined &&
-      (obj.changeSwapFeeParams = message.changeSwapFeeParams
-        ? ChangeSwapFeeParams.toJSON(message.changeSwapFeeParams)
+    message.msg !== undefined &&
+      (obj.msg = message.msg
+        ? ChangeSwapFeeParams.toJSON(message.msg)
         : undefined);
     return obj;
   },
@@ -737,15 +667,10 @@ export const ChangeSwapFeeProposal = {
     } else {
       message.description = "";
     }
-    if (
-      object.changeSwapFeeParams !== undefined &&
-      object.changeSwapFeeParams !== null
-    ) {
-      message.changeSwapFeeParams = ChangeSwapFeeParams.fromPartial(
-        object.changeSwapFeeParams
-      );
+    if (object.msg !== undefined && object.msg !== null) {
+      message.msg = ChangeSwapFeeParams.fromPartial(object.msg);
     } else {
-      message.changeSwapFeeParams = undefined;
+      message.msg = undefined;
     }
     return message;
   },
@@ -764,9 +689,9 @@ export const ChangeNumQuotesProposal = {
     if (message.description !== "") {
       writer.uint32(18).string(message.description);
     }
-    if (message.changeNumQuotesParams !== undefined) {
+    if (message.msg !== undefined) {
       ChangeNumQuotesParams.encode(
-        message.changeNumQuotesParams,
+        message.msg,
         writer.uint32(26).fork()
       ).ldelim();
     }
@@ -792,10 +717,7 @@ export const ChangeNumQuotesProposal = {
           message.description = reader.string();
           break;
         case 3:
-          message.changeNumQuotesParams = ChangeNumQuotesParams.decode(
-            reader,
-            reader.uint32()
-          );
+          message.msg = ChangeNumQuotesParams.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -819,15 +741,10 @@ export const ChangeNumQuotesProposal = {
     } else {
       message.description = "";
     }
-    if (
-      object.changeNumQuotesParams !== undefined &&
-      object.changeNumQuotesParams !== null
-    ) {
-      message.changeNumQuotesParams = ChangeNumQuotesParams.fromJSON(
-        object.changeNumQuotesParams
-      );
+    if (object.msg !== undefined && object.msg !== null) {
+      message.msg = ChangeNumQuotesParams.fromJSON(object.msg);
     } else {
-      message.changeNumQuotesParams = undefined;
+      message.msg = undefined;
     }
     return message;
   },
@@ -837,9 +754,9 @@ export const ChangeNumQuotesProposal = {
     message.title !== undefined && (obj.title = message.title);
     message.description !== undefined &&
       (obj.description = message.description);
-    message.changeNumQuotesParams !== undefined &&
-      (obj.changeNumQuotesParams = message.changeNumQuotesParams
-        ? ChangeNumQuotesParams.toJSON(message.changeNumQuotesParams)
+    message.msg !== undefined &&
+      (obj.msg = message.msg
+        ? ChangeNumQuotesParams.toJSON(message.msg)
         : undefined);
     return obj;
   },
@@ -860,15 +777,10 @@ export const ChangeNumQuotesProposal = {
     } else {
       message.description = "";
     }
-    if (
-      object.changeNumQuotesParams !== undefined &&
-      object.changeNumQuotesParams !== null
-    ) {
-      message.changeNumQuotesParams = ChangeNumQuotesParams.fromPartial(
-        object.changeNumQuotesParams
-      );
+    if (object.msg !== undefined && object.msg !== null) {
+      message.msg = ChangeNumQuotesParams.fromPartial(object.msg);
     } else {
-      message.changeNumQuotesParams = undefined;
+      message.msg = undefined;
     }
     return message;
   },

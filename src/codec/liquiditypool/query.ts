@@ -29,7 +29,7 @@ export interface QueryAllPoolRequest {
 }
 
 export interface QueryAllPoolResponse {
-  Pool: Pool[];
+  pools: Pool[];
   pagination?: PageResponse;
 }
 
@@ -269,7 +269,7 @@ export const QueryAllPoolResponse = {
     message: QueryAllPoolResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    for (const v of message.Pool) {
+    for (const v of message.pools) {
       Pool.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.pagination !== undefined) {
@@ -288,12 +288,12 @@ export const QueryAllPoolResponse = {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseQueryAllPoolResponse } as QueryAllPoolResponse;
-    message.Pool = [];
+    message.pools = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.Pool.push(Pool.decode(reader, reader.uint32()));
+          message.pools.push(Pool.decode(reader, reader.uint32()));
           break;
         case 2:
           message.pagination = PageResponse.decode(reader, reader.uint32());
@@ -308,10 +308,10 @@ export const QueryAllPoolResponse = {
 
   fromJSON(object: any): QueryAllPoolResponse {
     const message = { ...baseQueryAllPoolResponse } as QueryAllPoolResponse;
-    message.Pool = [];
-    if (object.Pool !== undefined && object.Pool !== null) {
-      for (const e of object.Pool) {
-        message.Pool.push(Pool.fromJSON(e));
+    message.pools = [];
+    if (object.pools !== undefined && object.pools !== null) {
+      for (const e of object.pools) {
+        message.pools.push(Pool.fromJSON(e));
       }
     }
     if (object.pagination !== undefined && object.pagination !== null) {
@@ -324,10 +324,10 @@ export const QueryAllPoolResponse = {
 
   toJSON(message: QueryAllPoolResponse): unknown {
     const obj: any = {};
-    if (message.Pool) {
-      obj.Pool = message.Pool.map((e) => (e ? Pool.toJSON(e) : undefined));
+    if (message.pools) {
+      obj.pools = message.pools.map((e) => (e ? Pool.toJSON(e) : undefined));
     } else {
-      obj.Pool = [];
+      obj.pools = [];
     }
     message.pagination !== undefined &&
       (obj.pagination = message.pagination
@@ -338,10 +338,10 @@ export const QueryAllPoolResponse = {
 
   fromPartial(object: DeepPartial<QueryAllPoolResponse>): QueryAllPoolResponse {
     const message = { ...baseQueryAllPoolResponse } as QueryAllPoolResponse;
-    message.Pool = [];
-    if (object.Pool !== undefined && object.Pool !== null) {
-      for (const e of object.Pool) {
-        message.Pool.push(Pool.fromPartial(e));
+    message.pools = [];
+    if (object.pools !== undefined && object.pools !== null) {
+      for (const e of object.pools) {
+        message.pools.push(Pool.fromPartial(e));
       }
     }
     if (object.pagination !== undefined && object.pagination !== null) {

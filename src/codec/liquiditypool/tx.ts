@@ -58,7 +58,6 @@ export interface MsgLinkPool {
 }
 
 export interface LinkPoolParams {
-  creator: string;
   poolId: Long;
   market: string;
 }
@@ -71,7 +70,6 @@ export interface MsgUnlinkPool {
 }
 
 export interface UnlinkPoolParams {
-  creator: string;
   poolId: Long;
 }
 
@@ -83,7 +81,6 @@ export interface MsgSetRewardsWeights {
 }
 
 export interface SetRewardsWeightsParams {
-  creator: string;
   weights: RewardsWeightSetter[];
 }
 
@@ -124,7 +121,6 @@ export interface MsgSetRewardCurve {
 }
 
 export interface SetRewardCurveParams {
-  creator: string;
   startTime?: Date;
   initialRewardBps: number;
   reductionMultiplierBps: number;
@@ -141,7 +137,6 @@ export interface MsgChangeSwapFee {
 }
 
 export interface ChangeSwapFeeParams {
-  creator: string;
   poolId: Long;
   swapFee: string;
 }
@@ -154,7 +149,6 @@ export interface MsgSetCommitmentCurve {
 }
 
 export interface SetCommitmentCurveParams {
-  creator: string;
   maxDuration: Long;
   maxRewardMultiplier: number;
 }
@@ -167,7 +161,6 @@ export interface MsgChangeNumQuotes {
 }
 
 export interface ChangeNumQuotesParams {
-  creator: string;
   poolId: Long;
   numQuotes: Long;
 }
@@ -1103,25 +1096,18 @@ export const MsgLinkPool = {
   },
 };
 
-const baseLinkPoolParams: object = {
-  creator: "",
-  poolId: Long.UZERO,
-  market: "",
-};
+const baseLinkPoolParams: object = { poolId: Long.UZERO, market: "" };
 
 export const LinkPoolParams = {
   encode(
     message: LinkPoolParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.creator !== "") {
-      writer.uint32(10).string(message.creator);
-    }
     if (!message.poolId.isZero()) {
-      writer.uint32(16).uint64(message.poolId);
+      writer.uint32(8).uint64(message.poolId);
     }
     if (message.market !== "") {
-      writer.uint32(26).string(message.market);
+      writer.uint32(18).string(message.market);
     }
     return writer;
   },
@@ -1134,12 +1120,9 @@ export const LinkPoolParams = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.creator = reader.string();
-          break;
-        case 2:
           message.poolId = reader.uint64() as Long;
           break;
-        case 3:
+        case 2:
           message.market = reader.string();
           break;
         default:
@@ -1152,11 +1135,6 @@ export const LinkPoolParams = {
 
   fromJSON(object: any): LinkPoolParams {
     const message = { ...baseLinkPoolParams } as LinkPoolParams;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
     if (object.poolId !== undefined && object.poolId !== null) {
       message.poolId = Long.fromString(object.poolId);
     } else {
@@ -1172,7 +1150,6 @@ export const LinkPoolParams = {
 
   toJSON(message: LinkPoolParams): unknown {
     const obj: any = {};
-    message.creator !== undefined && (obj.creator = message.creator);
     message.poolId !== undefined &&
       (obj.poolId = (message.poolId || Long.UZERO).toString());
     message.market !== undefined && (obj.market = message.market);
@@ -1181,11 +1158,6 @@ export const LinkPoolParams = {
 
   fromPartial(object: DeepPartial<LinkPoolParams>): LinkPoolParams {
     const message = { ...baseLinkPoolParams } as LinkPoolParams;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
     if (object.poolId !== undefined && object.poolId !== null) {
       message.poolId = object.poolId as Long;
     } else {
@@ -1335,18 +1307,15 @@ export const MsgUnlinkPool = {
   },
 };
 
-const baseUnlinkPoolParams: object = { creator: "", poolId: Long.UZERO };
+const baseUnlinkPoolParams: object = { poolId: Long.UZERO };
 
 export const UnlinkPoolParams = {
   encode(
     message: UnlinkPoolParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.creator !== "") {
-      writer.uint32(10).string(message.creator);
-    }
     if (!message.poolId.isZero()) {
-      writer.uint32(16).uint64(message.poolId);
+      writer.uint32(8).uint64(message.poolId);
     }
     return writer;
   },
@@ -1359,9 +1328,6 @@ export const UnlinkPoolParams = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.creator = reader.string();
-          break;
-        case 2:
           message.poolId = reader.uint64() as Long;
           break;
         default:
@@ -1374,11 +1340,6 @@ export const UnlinkPoolParams = {
 
   fromJSON(object: any): UnlinkPoolParams {
     const message = { ...baseUnlinkPoolParams } as UnlinkPoolParams;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
     if (object.poolId !== undefined && object.poolId !== null) {
       message.poolId = Long.fromString(object.poolId);
     } else {
@@ -1389,7 +1350,6 @@ export const UnlinkPoolParams = {
 
   toJSON(message: UnlinkPoolParams): unknown {
     const obj: any = {};
-    message.creator !== undefined && (obj.creator = message.creator);
     message.poolId !== undefined &&
       (obj.poolId = (message.poolId || Long.UZERO).toString());
     return obj;
@@ -1397,11 +1357,6 @@ export const UnlinkPoolParams = {
 
   fromPartial(object: DeepPartial<UnlinkPoolParams>): UnlinkPoolParams {
     const message = { ...baseUnlinkPoolParams } as UnlinkPoolParams;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
     if (object.poolId !== undefined && object.poolId !== null) {
       message.poolId = object.poolId as Long;
     } else {
@@ -1552,18 +1507,15 @@ export const MsgSetRewardsWeights = {
   },
 };
 
-const baseSetRewardsWeightsParams: object = { creator: "" };
+const baseSetRewardsWeightsParams: object = {};
 
 export const SetRewardsWeightsParams = {
   encode(
     message: SetRewardsWeightsParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.creator !== "") {
-      writer.uint32(10).string(message.creator);
-    }
     for (const v of message.weights) {
-      RewardsWeightSetter.encode(v!, writer.uint32(18).fork()).ldelim();
+      RewardsWeightSetter.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -1582,9 +1534,6 @@ export const SetRewardsWeightsParams = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.creator = reader.string();
-          break;
-        case 2:
           message.weights.push(
             RewardsWeightSetter.decode(reader, reader.uint32())
           );
@@ -1602,11 +1551,6 @@ export const SetRewardsWeightsParams = {
       ...baseSetRewardsWeightsParams,
     } as SetRewardsWeightsParams;
     message.weights = [];
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
     if (object.weights !== undefined && object.weights !== null) {
       for (const e of object.weights) {
         message.weights.push(RewardsWeightSetter.fromJSON(e));
@@ -1617,7 +1561,6 @@ export const SetRewardsWeightsParams = {
 
   toJSON(message: SetRewardsWeightsParams): unknown {
     const obj: any = {};
-    message.creator !== undefined && (obj.creator = message.creator);
     if (message.weights) {
       obj.weights = message.weights.map((e) =>
         e ? RewardsWeightSetter.toJSON(e) : undefined
@@ -1635,11 +1578,6 @@ export const SetRewardsWeightsParams = {
       ...baseSetRewardsWeightsParams,
     } as SetRewardsWeightsParams;
     message.weights = [];
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
     if (object.weights !== undefined && object.weights !== null) {
       for (const e of object.weights) {
         message.weights.push(RewardsWeightSetter.fromPartial(e));
@@ -2311,7 +2249,6 @@ export const MsgSetRewardCurve = {
 };
 
 const baseSetRewardCurveParams: object = {
-  creator: "",
   initialRewardBps: 0,
   reductionMultiplierBps: 0,
   reductionIntervalSeconds: Long.UZERO,
@@ -2324,29 +2261,26 @@ export const SetRewardCurveParams = {
     message: SetRewardCurveParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.creator !== "") {
-      writer.uint32(10).string(message.creator);
-    }
     if (message.startTime !== undefined) {
       Timestamp.encode(
         toTimestamp(message.startTime),
-        writer.uint32(18).fork()
+        writer.uint32(10).fork()
       ).ldelim();
     }
     if (message.initialRewardBps !== 0) {
-      writer.uint32(24).uint32(message.initialRewardBps);
+      writer.uint32(16).uint32(message.initialRewardBps);
     }
     if (message.reductionMultiplierBps !== 0) {
-      writer.uint32(32).uint32(message.reductionMultiplierBps);
+      writer.uint32(24).uint32(message.reductionMultiplierBps);
     }
     if (!message.reductionIntervalSeconds.isZero()) {
-      writer.uint32(40).uint64(message.reductionIntervalSeconds);
+      writer.uint32(32).uint64(message.reductionIntervalSeconds);
     }
     if (message.reductions !== 0) {
-      writer.uint32(48).uint32(message.reductions);
+      writer.uint32(40).uint32(message.reductions);
     }
     if (message.finalRewardBps !== 0) {
-      writer.uint32(56).uint32(message.finalRewardBps);
+      writer.uint32(48).uint32(message.finalRewardBps);
     }
     return writer;
   },
@@ -2362,26 +2296,23 @@ export const SetRewardCurveParams = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.creator = reader.string();
-          break;
-        case 2:
           message.startTime = fromTimestamp(
             Timestamp.decode(reader, reader.uint32())
           );
           break;
-        case 3:
+        case 2:
           message.initialRewardBps = reader.uint32();
           break;
-        case 4:
+        case 3:
           message.reductionMultiplierBps = reader.uint32();
           break;
-        case 5:
+        case 4:
           message.reductionIntervalSeconds = reader.uint64() as Long;
           break;
-        case 6:
+        case 5:
           message.reductions = reader.uint32();
           break;
-        case 7:
+        case 6:
           message.finalRewardBps = reader.uint32();
           break;
         default:
@@ -2394,11 +2325,6 @@ export const SetRewardCurveParams = {
 
   fromJSON(object: any): SetRewardCurveParams {
     const message = { ...baseSetRewardCurveParams } as SetRewardCurveParams;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
     if (object.startTime !== undefined && object.startTime !== null) {
       message.startTime = fromJsonTimestamp(object.startTime);
     } else {
@@ -2445,7 +2371,6 @@ export const SetRewardCurveParams = {
 
   toJSON(message: SetRewardCurveParams): unknown {
     const obj: any = {};
-    message.creator !== undefined && (obj.creator = message.creator);
     message.startTime !== undefined &&
       (obj.startTime = message.startTime.toISOString());
     message.initialRewardBps !== undefined &&
@@ -2464,11 +2389,6 @@ export const SetRewardCurveParams = {
 
   fromPartial(object: DeepPartial<SetRewardCurveParams>): SetRewardCurveParams {
     const message = { ...baseSetRewardCurveParams } as SetRewardCurveParams;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
     if (object.startTime !== undefined && object.startTime !== null) {
       message.startTime = object.startTime;
     } else {
@@ -2659,25 +2579,18 @@ export const MsgChangeSwapFee = {
   },
 };
 
-const baseChangeSwapFeeParams: object = {
-  creator: "",
-  poolId: Long.UZERO,
-  swapFee: "",
-};
+const baseChangeSwapFeeParams: object = { poolId: Long.UZERO, swapFee: "" };
 
 export const ChangeSwapFeeParams = {
   encode(
     message: ChangeSwapFeeParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.creator !== "") {
-      writer.uint32(10).string(message.creator);
-    }
     if (!message.poolId.isZero()) {
-      writer.uint32(16).uint64(message.poolId);
+      writer.uint32(8).uint64(message.poolId);
     }
     if (message.swapFee !== "") {
-      writer.uint32(26).string(message.swapFee);
+      writer.uint32(18).string(message.swapFee);
     }
     return writer;
   },
@@ -2690,12 +2603,9 @@ export const ChangeSwapFeeParams = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.creator = reader.string();
-          break;
-        case 2:
           message.poolId = reader.uint64() as Long;
           break;
-        case 3:
+        case 2:
           message.swapFee = reader.string();
           break;
         default:
@@ -2708,11 +2618,6 @@ export const ChangeSwapFeeParams = {
 
   fromJSON(object: any): ChangeSwapFeeParams {
     const message = { ...baseChangeSwapFeeParams } as ChangeSwapFeeParams;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
     if (object.poolId !== undefined && object.poolId !== null) {
       message.poolId = Long.fromString(object.poolId);
     } else {
@@ -2728,7 +2633,6 @@ export const ChangeSwapFeeParams = {
 
   toJSON(message: ChangeSwapFeeParams): unknown {
     const obj: any = {};
-    message.creator !== undefined && (obj.creator = message.creator);
     message.poolId !== undefined &&
       (obj.poolId = (message.poolId || Long.UZERO).toString());
     message.swapFee !== undefined && (obj.swapFee = message.swapFee);
@@ -2737,11 +2641,6 @@ export const ChangeSwapFeeParams = {
 
   fromPartial(object: DeepPartial<ChangeSwapFeeParams>): ChangeSwapFeeParams {
     const message = { ...baseChangeSwapFeeParams } as ChangeSwapFeeParams;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
     if (object.poolId !== undefined && object.poolId !== null) {
       message.poolId = object.poolId as Long;
     } else {
@@ -2908,7 +2807,6 @@ export const MsgSetCommitmentCurve = {
 };
 
 const baseSetCommitmentCurveParams: object = {
-  creator: "",
   maxDuration: Long.UZERO,
   maxRewardMultiplier: 0,
 };
@@ -2918,14 +2816,11 @@ export const SetCommitmentCurveParams = {
     message: SetCommitmentCurveParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.creator !== "") {
-      writer.uint32(10).string(message.creator);
-    }
     if (!message.maxDuration.isZero()) {
-      writer.uint32(16).uint64(message.maxDuration);
+      writer.uint32(8).uint64(message.maxDuration);
     }
     if (message.maxRewardMultiplier !== 0) {
-      writer.uint32(24).uint32(message.maxRewardMultiplier);
+      writer.uint32(16).uint32(message.maxRewardMultiplier);
     }
     return writer;
   },
@@ -2943,12 +2838,9 @@ export const SetCommitmentCurveParams = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.creator = reader.string();
-          break;
-        case 2:
           message.maxDuration = reader.uint64() as Long;
           break;
-        case 3:
+        case 2:
           message.maxRewardMultiplier = reader.uint32();
           break;
         default:
@@ -2963,11 +2855,6 @@ export const SetCommitmentCurveParams = {
     const message = {
       ...baseSetCommitmentCurveParams,
     } as SetCommitmentCurveParams;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
     if (object.maxDuration !== undefined && object.maxDuration !== null) {
       message.maxDuration = Long.fromString(object.maxDuration);
     } else {
@@ -2986,7 +2873,6 @@ export const SetCommitmentCurveParams = {
 
   toJSON(message: SetCommitmentCurveParams): unknown {
     const obj: any = {};
-    message.creator !== undefined && (obj.creator = message.creator);
     message.maxDuration !== undefined &&
       (obj.maxDuration = (message.maxDuration || Long.UZERO).toString());
     message.maxRewardMultiplier !== undefined &&
@@ -3000,11 +2886,6 @@ export const SetCommitmentCurveParams = {
     const message = {
       ...baseSetCommitmentCurveParams,
     } as SetCommitmentCurveParams;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
     if (object.maxDuration !== undefined && object.maxDuration !== null) {
       message.maxDuration = object.maxDuration as Long;
     } else {
@@ -3169,7 +3050,6 @@ export const MsgChangeNumQuotes = {
 };
 
 const baseChangeNumQuotesParams: object = {
-  creator: "",
   poolId: Long.UZERO,
   numQuotes: Long.ZERO,
 };
@@ -3179,14 +3059,11 @@ export const ChangeNumQuotesParams = {
     message: ChangeNumQuotesParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.creator !== "") {
-      writer.uint32(10).string(message.creator);
-    }
     if (!message.poolId.isZero()) {
-      writer.uint32(16).uint64(message.poolId);
+      writer.uint32(8).uint64(message.poolId);
     }
     if (!message.numQuotes.isZero()) {
-      writer.uint32(24).int64(message.numQuotes);
+      writer.uint32(16).int64(message.numQuotes);
     }
     return writer;
   },
@@ -3202,12 +3079,9 @@ export const ChangeNumQuotesParams = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.creator = reader.string();
-          break;
-        case 2:
           message.poolId = reader.uint64() as Long;
           break;
-        case 3:
+        case 2:
           message.numQuotes = reader.int64() as Long;
           break;
         default:
@@ -3220,11 +3094,6 @@ export const ChangeNumQuotesParams = {
 
   fromJSON(object: any): ChangeNumQuotesParams {
     const message = { ...baseChangeNumQuotesParams } as ChangeNumQuotesParams;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
     if (object.poolId !== undefined && object.poolId !== null) {
       message.poolId = Long.fromString(object.poolId);
     } else {
@@ -3240,7 +3109,6 @@ export const ChangeNumQuotesParams = {
 
   toJSON(message: ChangeNumQuotesParams): unknown {
     const obj: any = {};
-    message.creator !== undefined && (obj.creator = message.creator);
     message.poolId !== undefined &&
       (obj.poolId = (message.poolId || Long.UZERO).toString());
     message.numQuotes !== undefined &&
@@ -3252,11 +3120,6 @@ export const ChangeNumQuotesParams = {
     object: DeepPartial<ChangeNumQuotesParams>
   ): ChangeNumQuotesParams {
     const message = { ...baseChangeNumQuotesParams } as ChangeNumQuotesParams;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
     if (object.poolId !== undefined && object.poolId !== null) {
       message.poolId = object.poolId as Long;
     } else {
