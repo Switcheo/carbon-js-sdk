@@ -28,11 +28,12 @@ export class CarbonSocketWrapper {
   }
 
   private onMessage(e: MessageEvent) {
-    this.subscriptions.find((o: Subscription, i: number) => {
-      if (o.channel === e?.data?.result?.channel) {
-        this.subscriptions[i].onMessage(e)
-      }
-    })
+    const existingSubscription = this.subscriptions.find((o: Subscription) => 
+      o.channel === e?.data?.result?.channel
+    )
+    if (existingSubscription) {
+      existingSubscription.onMessage(e)
+    }
   }
 
   public subscribeToRecentTrades(market: string, onMessage: (e: MessageEvent) => void): void {
