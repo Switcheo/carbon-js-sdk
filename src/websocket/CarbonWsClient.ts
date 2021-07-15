@@ -1,17 +1,21 @@
+import { CarbonWsChannels } from "./CarbonWsChannels"
+
 interface Subscription {
   channel: string
   onMessage: (e: MessageEvent) => void
 }
 
-export class CarbonSocketWrapper {
+export class CarbonWsClient {
   url: string | null
   socket: WebSocket | null
   subscriptions: Array<Subscription>
+  channels: CarbonWsChannels
 
   constructor() {
     this.url = null
     this.socket = null
     this.subscriptions = []
+    this.channels = new CarbonWsChannels(this.subscribe)
   }
 
   public connect(url: string) {
@@ -34,16 +38,6 @@ export class CarbonSocketWrapper {
     if (existingSubscription) {
       existingSubscription.onMessage(e)
     }
-  }
-
-  public subscribeToRecentTrades(market: string, onMessage: (e: MessageEvent) => void): void {
-    const channel = `recent_trades.${market}`
-    this.subscribe(channel, onMessage)
-  }
-
-  public unsubscribeFromRecentTrades(market: string, onMessage: (e: MessageEvent) => void): void {
-    const channel = `recent_trades.${market}`
-    this.subscribe(channel, onMessage)
   }
 
 
