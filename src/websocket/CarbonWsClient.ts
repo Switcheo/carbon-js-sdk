@@ -32,7 +32,7 @@ export class CarbonWsClient {
   }
 
   private onMessage(e: MessageEvent) {
-    const existingSubscription = this.subscriptions.find((o: Subscription) => 
+    const existingSubscription = this.subscriptions.find((o: Subscription) =>
       o.channel === e?.data?.result?.channel
     )
     if (existingSubscription) {
@@ -68,10 +68,12 @@ export class CarbonWsClient {
       })
 
       this.socket.send(msg)
-      this.subscriptions.push({
-        channel: channel,
-        onMessage
-      })
+
+      const index = this.subscriptions.findIndex((o: Subscription) => o.channel === channel)
+      if (index) {
+        this.subscriptions.splice(index, 1)
+      }
+
     } catch (e) { console.log(e.message) }
   }
 }
