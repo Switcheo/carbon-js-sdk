@@ -23,7 +23,7 @@ export interface QueryAllMsgFeeRequest {
 }
 
 export interface QueryAllMsgFeeResponse {
-  MsgFee: MsgFee[];
+  msgFees: MsgFee[];
   pagination?: PageResponse;
 }
 
@@ -227,7 +227,7 @@ export const QueryAllMsgFeeResponse = {
     message: QueryAllMsgFeeResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    for (const v of message.MsgFee) {
+    for (const v of message.msgFees) {
       MsgFee.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.pagination !== undefined) {
@@ -246,12 +246,12 @@ export const QueryAllMsgFeeResponse = {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseQueryAllMsgFeeResponse } as QueryAllMsgFeeResponse;
-    message.MsgFee = [];
+    message.msgFees = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.MsgFee.push(MsgFee.decode(reader, reader.uint32()));
+          message.msgFees.push(MsgFee.decode(reader, reader.uint32()));
           break;
         case 2:
           message.pagination = PageResponse.decode(reader, reader.uint32());
@@ -266,10 +266,10 @@ export const QueryAllMsgFeeResponse = {
 
   fromJSON(object: any): QueryAllMsgFeeResponse {
     const message = { ...baseQueryAllMsgFeeResponse } as QueryAllMsgFeeResponse;
-    message.MsgFee = [];
-    if (object.MsgFee !== undefined && object.MsgFee !== null) {
-      for (const e of object.MsgFee) {
-        message.MsgFee.push(MsgFee.fromJSON(e));
+    message.msgFees = [];
+    if (object.msgFees !== undefined && object.msgFees !== null) {
+      for (const e of object.msgFees) {
+        message.msgFees.push(MsgFee.fromJSON(e));
       }
     }
     if (object.pagination !== undefined && object.pagination !== null) {
@@ -282,12 +282,12 @@ export const QueryAllMsgFeeResponse = {
 
   toJSON(message: QueryAllMsgFeeResponse): unknown {
     const obj: any = {};
-    if (message.MsgFee) {
-      obj.MsgFee = message.MsgFee.map((e) =>
+    if (message.msgFees) {
+      obj.msgFees = message.msgFees.map((e) =>
         e ? MsgFee.toJSON(e) : undefined
       );
     } else {
-      obj.MsgFee = [];
+      obj.msgFees = [];
     }
     message.pagination !== undefined &&
       (obj.pagination = message.pagination
@@ -300,10 +300,10 @@ export const QueryAllMsgFeeResponse = {
     object: DeepPartial<QueryAllMsgFeeResponse>
   ): QueryAllMsgFeeResponse {
     const message = { ...baseQueryAllMsgFeeResponse } as QueryAllMsgFeeResponse;
-    message.MsgFee = [];
-    if (object.MsgFee !== undefined && object.MsgFee !== null) {
-      for (const e of object.MsgFee) {
-        message.MsgFee.push(MsgFee.fromPartial(e));
+    message.msgFees = [];
+    if (object.msgFees !== undefined && object.msgFees !== null) {
+      for (const e of object.msgFees) {
+        message.msgFees.push(MsgFee.fromPartial(e));
       }
     }
     if (object.pagination !== undefined && object.pagination !== null) {

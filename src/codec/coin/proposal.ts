@@ -1,14 +1,14 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { MsgCreateToken } from "../coin/tx";
+import { CreateTokenParams } from "../coin/tx";
 
 export const protobufPackage = "Switcheo.carbon.coin";
 
 export interface CreateTokenProposal {
   title: string;
   description: string;
-  token?: MsgCreateToken;
+  msg?: CreateTokenParams;
 }
 
 const baseCreateTokenProposal: object = { title: "", description: "" };
@@ -24,8 +24,8 @@ export const CreateTokenProposal = {
     if (message.description !== "") {
       writer.uint32(18).string(message.description);
     }
-    if (message.token !== undefined) {
-      MsgCreateToken.encode(message.token, writer.uint32(26).fork()).ldelim();
+    if (message.msg !== undefined) {
+      CreateTokenParams.encode(message.msg, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
@@ -44,7 +44,7 @@ export const CreateTokenProposal = {
           message.description = reader.string();
           break;
         case 3:
-          message.token = MsgCreateToken.decode(reader, reader.uint32());
+          message.msg = CreateTokenParams.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -66,10 +66,10 @@ export const CreateTokenProposal = {
     } else {
       message.description = "";
     }
-    if (object.token !== undefined && object.token !== null) {
-      message.token = MsgCreateToken.fromJSON(object.token);
+    if (object.msg !== undefined && object.msg !== null) {
+      message.msg = CreateTokenParams.fromJSON(object.msg);
     } else {
-      message.token = undefined;
+      message.msg = undefined;
     }
     return message;
   },
@@ -79,9 +79,9 @@ export const CreateTokenProposal = {
     message.title !== undefined && (obj.title = message.title);
     message.description !== undefined &&
       (obj.description = message.description);
-    message.token !== undefined &&
-      (obj.token = message.token
-        ? MsgCreateToken.toJSON(message.token)
+    message.msg !== undefined &&
+      (obj.msg = message.msg
+        ? CreateTokenParams.toJSON(message.msg)
         : undefined);
     return obj;
   },
@@ -98,10 +98,10 @@ export const CreateTokenProposal = {
     } else {
       message.description = "";
     }
-    if (object.token !== undefined && object.token !== null) {
-      message.token = MsgCreateToken.fromPartial(object.token);
+    if (object.msg !== undefined && object.msg !== null) {
+      message.msg = CreateTokenParams.fromPartial(object.msg);
     } else {
-      message.token = undefined;
+      message.msg = undefined;
     }
     return message;
   },

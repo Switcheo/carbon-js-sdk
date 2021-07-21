@@ -13,7 +13,6 @@ export interface Position {
   realizedPnl: string;
   allocatedMargin?: Coin;
   openedBlockHeight: Long;
-  orderId: string;
 }
 
 const basePosition: object = {
@@ -23,7 +22,6 @@ const basePosition: object = {
   entryPrice: "",
   realizedPnl: "",
   openedBlockHeight: Long.UZERO,
-  orderId: "",
 };
 
 export const Position = {
@@ -51,9 +49,6 @@ export const Position = {
     }
     if (!message.openedBlockHeight.isZero()) {
       writer.uint32(56).uint64(message.openedBlockHeight);
-    }
-    if (message.orderId !== "") {
-      writer.uint32(66).string(message.orderId);
     }
     return writer;
   },
@@ -85,9 +80,6 @@ export const Position = {
           break;
         case 7:
           message.openedBlockHeight = reader.uint64() as Long;
-          break;
-        case 8:
-          message.orderId = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -140,11 +132,6 @@ export const Position = {
     } else {
       message.openedBlockHeight = Long.UZERO;
     }
-    if (object.orderId !== undefined && object.orderId !== null) {
-      message.orderId = String(object.orderId);
-    } else {
-      message.orderId = "";
-    }
     return message;
   },
 
@@ -164,7 +151,6 @@ export const Position = {
       (obj.openedBlockHeight = (
         message.openedBlockHeight || Long.UZERO
       ).toString());
-    message.orderId !== undefined && (obj.orderId = message.orderId);
     return obj;
   },
 
@@ -210,11 +196,6 @@ export const Position = {
       message.openedBlockHeight = object.openedBlockHeight as Long;
     } else {
       message.openedBlockHeight = Long.UZERO;
-    }
-    if (object.orderId !== undefined && object.orderId !== null) {
-      message.orderId = object.orderId;
-    } else {
-      message.orderId = "";
     }
     return message;
   },

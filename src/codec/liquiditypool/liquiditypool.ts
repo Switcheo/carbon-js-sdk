@@ -34,7 +34,7 @@ export interface AddLiquidity {
 }
 
 export interface AddLiquidities {
-  addLiquidity: AddLiquidity[];
+  addLiquidities: AddLiquidity[];
 }
 
 export interface RemoveLiquidity {
@@ -44,7 +44,7 @@ export interface RemoveLiquidity {
 }
 
 export interface RemoveLiquidities {
-  removeLiquidity: RemoveLiquidity[];
+  removeLiquidities: RemoveLiquidity[];
 }
 
 export interface PoolWithKey {
@@ -548,7 +548,7 @@ export const AddLiquidities = {
     message: AddLiquidities,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    for (const v of message.addLiquidity) {
+    for (const v of message.addLiquidities) {
       AddLiquidity.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     return writer;
@@ -558,12 +558,12 @@ export const AddLiquidities = {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseAddLiquidities } as AddLiquidities;
-    message.addLiquidity = [];
+    message.addLiquidities = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.addLiquidity.push(
+          message.addLiquidities.push(
             AddLiquidity.decode(reader, reader.uint32())
           );
           break;
@@ -577,10 +577,10 @@ export const AddLiquidities = {
 
   fromJSON(object: any): AddLiquidities {
     const message = { ...baseAddLiquidities } as AddLiquidities;
-    message.addLiquidity = [];
-    if (object.addLiquidity !== undefined && object.addLiquidity !== null) {
-      for (const e of object.addLiquidity) {
-        message.addLiquidity.push(AddLiquidity.fromJSON(e));
+    message.addLiquidities = [];
+    if (object.addLiquidities !== undefined && object.addLiquidities !== null) {
+      for (const e of object.addLiquidities) {
+        message.addLiquidities.push(AddLiquidity.fromJSON(e));
       }
     }
     return message;
@@ -588,22 +588,22 @@ export const AddLiquidities = {
 
   toJSON(message: AddLiquidities): unknown {
     const obj: any = {};
-    if (message.addLiquidity) {
-      obj.addLiquidity = message.addLiquidity.map((e) =>
+    if (message.addLiquidities) {
+      obj.addLiquidities = message.addLiquidities.map((e) =>
         e ? AddLiquidity.toJSON(e) : undefined
       );
     } else {
-      obj.addLiquidity = [];
+      obj.addLiquidities = [];
     }
     return obj;
   },
 
   fromPartial(object: DeepPartial<AddLiquidities>): AddLiquidities {
     const message = { ...baseAddLiquidities } as AddLiquidities;
-    message.addLiquidity = [];
-    if (object.addLiquidity !== undefined && object.addLiquidity !== null) {
-      for (const e of object.addLiquidity) {
-        message.addLiquidity.push(AddLiquidity.fromPartial(e));
+    message.addLiquidities = [];
+    if (object.addLiquidities !== undefined && object.addLiquidities !== null) {
+      for (const e of object.addLiquidities) {
+        message.addLiquidities.push(AddLiquidity.fromPartial(e));
       }
     }
     return message;
@@ -710,7 +710,7 @@ export const RemoveLiquidities = {
     message: RemoveLiquidities,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    for (const v of message.removeLiquidity) {
+    for (const v of message.removeLiquidities) {
       RemoveLiquidity.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     return writer;
@@ -720,12 +720,12 @@ export const RemoveLiquidities = {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseRemoveLiquidities } as RemoveLiquidities;
-    message.removeLiquidity = [];
+    message.removeLiquidities = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.removeLiquidity.push(
+          message.removeLiquidities.push(
             RemoveLiquidity.decode(reader, reader.uint32())
           );
           break;
@@ -739,13 +739,13 @@ export const RemoveLiquidities = {
 
   fromJSON(object: any): RemoveLiquidities {
     const message = { ...baseRemoveLiquidities } as RemoveLiquidities;
-    message.removeLiquidity = [];
+    message.removeLiquidities = [];
     if (
-      object.removeLiquidity !== undefined &&
-      object.removeLiquidity !== null
+      object.removeLiquidities !== undefined &&
+      object.removeLiquidities !== null
     ) {
-      for (const e of object.removeLiquidity) {
-        message.removeLiquidity.push(RemoveLiquidity.fromJSON(e));
+      for (const e of object.removeLiquidities) {
+        message.removeLiquidities.push(RemoveLiquidity.fromJSON(e));
       }
     }
     return message;
@@ -753,25 +753,25 @@ export const RemoveLiquidities = {
 
   toJSON(message: RemoveLiquidities): unknown {
     const obj: any = {};
-    if (message.removeLiquidity) {
-      obj.removeLiquidity = message.removeLiquidity.map((e) =>
+    if (message.removeLiquidities) {
+      obj.removeLiquidities = message.removeLiquidities.map((e) =>
         e ? RemoveLiquidity.toJSON(e) : undefined
       );
     } else {
-      obj.removeLiquidity = [];
+      obj.removeLiquidities = [];
     }
     return obj;
   },
 
   fromPartial(object: DeepPartial<RemoveLiquidities>): RemoveLiquidities {
     const message = { ...baseRemoveLiquidities } as RemoveLiquidities;
-    message.removeLiquidity = [];
+    message.removeLiquidities = [];
     if (
-      object.removeLiquidity !== undefined &&
-      object.removeLiquidity !== null
+      object.removeLiquidities !== undefined &&
+      object.removeLiquidities !== null
     ) {
-      for (const e of object.removeLiquidity) {
-        message.removeLiquidity.push(RemoveLiquidity.fromPartial(e));
+      for (const e of object.removeLiquidities) {
+        message.removeLiquidities.push(RemoveLiquidity.fromPartial(e));
       }
     }
     return message;

@@ -23,7 +23,7 @@ export interface QueryAllMarketRequest {
 }
 
 export interface QueryAllMarketResponse {
-  Market: Market[];
+  markets: Market[];
   pagination?: PageResponse;
 }
 
@@ -227,7 +227,7 @@ export const QueryAllMarketResponse = {
     message: QueryAllMarketResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    for (const v of message.Market) {
+    for (const v of message.markets) {
       Market.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.pagination !== undefined) {
@@ -246,12 +246,12 @@ export const QueryAllMarketResponse = {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseQueryAllMarketResponse } as QueryAllMarketResponse;
-    message.Market = [];
+    message.markets = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.Market.push(Market.decode(reader, reader.uint32()));
+          message.markets.push(Market.decode(reader, reader.uint32()));
           break;
         case 2:
           message.pagination = PageResponse.decode(reader, reader.uint32());
@@ -266,10 +266,10 @@ export const QueryAllMarketResponse = {
 
   fromJSON(object: any): QueryAllMarketResponse {
     const message = { ...baseQueryAllMarketResponse } as QueryAllMarketResponse;
-    message.Market = [];
-    if (object.Market !== undefined && object.Market !== null) {
-      for (const e of object.Market) {
-        message.Market.push(Market.fromJSON(e));
+    message.markets = [];
+    if (object.markets !== undefined && object.markets !== null) {
+      for (const e of object.markets) {
+        message.markets.push(Market.fromJSON(e));
       }
     }
     if (object.pagination !== undefined && object.pagination !== null) {
@@ -282,12 +282,12 @@ export const QueryAllMarketResponse = {
 
   toJSON(message: QueryAllMarketResponse): unknown {
     const obj: any = {};
-    if (message.Market) {
-      obj.Market = message.Market.map((e) =>
+    if (message.markets) {
+      obj.markets = message.markets.map((e) =>
         e ? Market.toJSON(e) : undefined
       );
     } else {
-      obj.Market = [];
+      obj.markets = [];
     }
     message.pagination !== undefined &&
       (obj.pagination = message.pagination
@@ -300,10 +300,10 @@ export const QueryAllMarketResponse = {
     object: DeepPartial<QueryAllMarketResponse>
   ): QueryAllMarketResponse {
     const message = { ...baseQueryAllMarketResponse } as QueryAllMarketResponse;
-    message.Market = [];
-    if (object.Market !== undefined && object.Market !== null) {
-      for (const e of object.Market) {
-        message.Market.push(Market.fromPartial(e));
+    message.markets = [];
+    if (object.markets !== undefined && object.markets !== null) {
+      for (const e of object.markets) {
+        message.markets.push(Market.fromPartial(e));
       }
     }
     if (object.pagination !== undefined && object.pagination !== null) {

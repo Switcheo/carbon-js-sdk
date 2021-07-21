@@ -23,7 +23,7 @@ export interface QueryAllTokenRequest {
 }
 
 export interface QueryAllTokenResponse {
-  Token: Token[];
+  tokens: Token[];
   pagination?: PageResponse;
 }
 
@@ -33,7 +33,7 @@ export interface QueryGetLockedCoinsRequest {
 }
 
 export interface QueryGetLockedCoinsResponse {
-  LockedCoins: LockedCoins[];
+  lockedCoins: LockedCoins[];
   pagination?: PageResponse;
 }
 
@@ -247,7 +247,7 @@ export const QueryAllTokenResponse = {
     message: QueryAllTokenResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    for (const v of message.Token) {
+    for (const v of message.tokens) {
       Token.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.pagination !== undefined) {
@@ -266,12 +266,12 @@ export const QueryAllTokenResponse = {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseQueryAllTokenResponse } as QueryAllTokenResponse;
-    message.Token = [];
+    message.tokens = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.Token.push(Token.decode(reader, reader.uint32()));
+          message.tokens.push(Token.decode(reader, reader.uint32()));
           break;
         case 2:
           message.pagination = PageResponse.decode(reader, reader.uint32());
@@ -286,10 +286,10 @@ export const QueryAllTokenResponse = {
 
   fromJSON(object: any): QueryAllTokenResponse {
     const message = { ...baseQueryAllTokenResponse } as QueryAllTokenResponse;
-    message.Token = [];
-    if (object.Token !== undefined && object.Token !== null) {
-      for (const e of object.Token) {
-        message.Token.push(Token.fromJSON(e));
+    message.tokens = [];
+    if (object.tokens !== undefined && object.tokens !== null) {
+      for (const e of object.tokens) {
+        message.tokens.push(Token.fromJSON(e));
       }
     }
     if (object.pagination !== undefined && object.pagination !== null) {
@@ -302,10 +302,10 @@ export const QueryAllTokenResponse = {
 
   toJSON(message: QueryAllTokenResponse): unknown {
     const obj: any = {};
-    if (message.Token) {
-      obj.Token = message.Token.map((e) => (e ? Token.toJSON(e) : undefined));
+    if (message.tokens) {
+      obj.tokens = message.tokens.map((e) => (e ? Token.toJSON(e) : undefined));
     } else {
-      obj.Token = [];
+      obj.tokens = [];
     }
     message.pagination !== undefined &&
       (obj.pagination = message.pagination
@@ -318,10 +318,10 @@ export const QueryAllTokenResponse = {
     object: DeepPartial<QueryAllTokenResponse>
   ): QueryAllTokenResponse {
     const message = { ...baseQueryAllTokenResponse } as QueryAllTokenResponse;
-    message.Token = [];
-    if (object.Token !== undefined && object.Token !== null) {
-      for (const e of object.Token) {
-        message.Token.push(Token.fromPartial(e));
+    message.tokens = [];
+    if (object.tokens !== undefined && object.tokens !== null) {
+      for (const e of object.tokens) {
+        message.tokens.push(Token.fromPartial(e));
       }
     }
     if (object.pagination !== undefined && object.pagination !== null) {
@@ -429,7 +429,7 @@ export const QueryGetLockedCoinsResponse = {
     message: QueryGetLockedCoinsResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    for (const v of message.LockedCoins) {
+    for (const v of message.lockedCoins) {
       LockedCoins.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.pagination !== undefined) {
@@ -450,12 +450,12 @@ export const QueryGetLockedCoinsResponse = {
     const message = {
       ...baseQueryGetLockedCoinsResponse,
     } as QueryGetLockedCoinsResponse;
-    message.LockedCoins = [];
+    message.lockedCoins = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.LockedCoins.push(LockedCoins.decode(reader, reader.uint32()));
+          message.lockedCoins.push(LockedCoins.decode(reader, reader.uint32()));
           break;
         case 2:
           message.pagination = PageResponse.decode(reader, reader.uint32());
@@ -472,10 +472,10 @@ export const QueryGetLockedCoinsResponse = {
     const message = {
       ...baseQueryGetLockedCoinsResponse,
     } as QueryGetLockedCoinsResponse;
-    message.LockedCoins = [];
-    if (object.LockedCoins !== undefined && object.LockedCoins !== null) {
-      for (const e of object.LockedCoins) {
-        message.LockedCoins.push(LockedCoins.fromJSON(e));
+    message.lockedCoins = [];
+    if (object.lockedCoins !== undefined && object.lockedCoins !== null) {
+      for (const e of object.lockedCoins) {
+        message.lockedCoins.push(LockedCoins.fromJSON(e));
       }
     }
     if (object.pagination !== undefined && object.pagination !== null) {
@@ -488,12 +488,12 @@ export const QueryGetLockedCoinsResponse = {
 
   toJSON(message: QueryGetLockedCoinsResponse): unknown {
     const obj: any = {};
-    if (message.LockedCoins) {
-      obj.LockedCoins = message.LockedCoins.map((e) =>
+    if (message.lockedCoins) {
+      obj.lockedCoins = message.lockedCoins.map((e) =>
         e ? LockedCoins.toJSON(e) : undefined
       );
     } else {
-      obj.LockedCoins = [];
+      obj.lockedCoins = [];
     }
     message.pagination !== undefined &&
       (obj.pagination = message.pagination
@@ -508,10 +508,10 @@ export const QueryGetLockedCoinsResponse = {
     const message = {
       ...baseQueryGetLockedCoinsResponse,
     } as QueryGetLockedCoinsResponse;
-    message.LockedCoins = [];
-    if (object.LockedCoins !== undefined && object.LockedCoins !== null) {
-      for (const e of object.LockedCoins) {
-        message.LockedCoins.push(LockedCoins.fromPartial(e));
+    message.lockedCoins = [];
+    if (object.lockedCoins !== undefined && object.lockedCoins !== null) {
+      for (const e of object.lockedCoins) {
+        message.lockedCoins.push(LockedCoins.fromPartial(e));
       }
     }
     if (object.pagination !== undefined && object.pagination !== null) {

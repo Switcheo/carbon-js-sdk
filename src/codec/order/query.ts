@@ -23,7 +23,7 @@ export interface QueryAllOrderRequest {
 }
 
 export interface QueryAllOrderResponse {
-  Order: Order[];
+  orders: Order[];
   pagination?: PageResponse;
 }
 
@@ -33,7 +33,7 @@ export interface QueryAccountOpenOrdersRequest {
 }
 
 export interface QueryAccountOpenOrdersResponse {
-  Order: Order[];
+  orders: Order[];
 }
 
 const baseQueryGetOrderRequest: object = { id: "" };
@@ -232,7 +232,7 @@ export const QueryAllOrderResponse = {
     message: QueryAllOrderResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    for (const v of message.Order) {
+    for (const v of message.orders) {
       Order.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.pagination !== undefined) {
@@ -251,12 +251,12 @@ export const QueryAllOrderResponse = {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseQueryAllOrderResponse } as QueryAllOrderResponse;
-    message.Order = [];
+    message.orders = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.Order.push(Order.decode(reader, reader.uint32()));
+          message.orders.push(Order.decode(reader, reader.uint32()));
           break;
         case 2:
           message.pagination = PageResponse.decode(reader, reader.uint32());
@@ -271,10 +271,10 @@ export const QueryAllOrderResponse = {
 
   fromJSON(object: any): QueryAllOrderResponse {
     const message = { ...baseQueryAllOrderResponse } as QueryAllOrderResponse;
-    message.Order = [];
-    if (object.Order !== undefined && object.Order !== null) {
-      for (const e of object.Order) {
-        message.Order.push(Order.fromJSON(e));
+    message.orders = [];
+    if (object.orders !== undefined && object.orders !== null) {
+      for (const e of object.orders) {
+        message.orders.push(Order.fromJSON(e));
       }
     }
     if (object.pagination !== undefined && object.pagination !== null) {
@@ -287,10 +287,10 @@ export const QueryAllOrderResponse = {
 
   toJSON(message: QueryAllOrderResponse): unknown {
     const obj: any = {};
-    if (message.Order) {
-      obj.Order = message.Order.map((e) => (e ? Order.toJSON(e) : undefined));
+    if (message.orders) {
+      obj.orders = message.orders.map((e) => (e ? Order.toJSON(e) : undefined));
     } else {
-      obj.Order = [];
+      obj.orders = [];
     }
     message.pagination !== undefined &&
       (obj.pagination = message.pagination
@@ -303,10 +303,10 @@ export const QueryAllOrderResponse = {
     object: DeepPartial<QueryAllOrderResponse>
   ): QueryAllOrderResponse {
     const message = { ...baseQueryAllOrderResponse } as QueryAllOrderResponse;
-    message.Order = [];
-    if (object.Order !== undefined && object.Order !== null) {
-      for (const e of object.Order) {
-        message.Order.push(Order.fromPartial(e));
+    message.orders = [];
+    if (object.orders !== undefined && object.orders !== null) {
+      for (const e of object.orders) {
+        message.orders.push(Order.fromPartial(e));
       }
     }
     if (object.pagination !== undefined && object.pagination !== null) {
@@ -411,7 +411,7 @@ export const QueryAccountOpenOrdersResponse = {
     message: QueryAccountOpenOrdersResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    for (const v of message.Order) {
+    for (const v of message.orders) {
       Order.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     return writer;
@@ -426,12 +426,12 @@ export const QueryAccountOpenOrdersResponse = {
     const message = {
       ...baseQueryAccountOpenOrdersResponse,
     } as QueryAccountOpenOrdersResponse;
-    message.Order = [];
+    message.orders = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.Order.push(Order.decode(reader, reader.uint32()));
+          message.orders.push(Order.decode(reader, reader.uint32()));
           break;
         default:
           reader.skipType(tag & 7);
@@ -445,10 +445,10 @@ export const QueryAccountOpenOrdersResponse = {
     const message = {
       ...baseQueryAccountOpenOrdersResponse,
     } as QueryAccountOpenOrdersResponse;
-    message.Order = [];
-    if (object.Order !== undefined && object.Order !== null) {
-      for (const e of object.Order) {
-        message.Order.push(Order.fromJSON(e));
+    message.orders = [];
+    if (object.orders !== undefined && object.orders !== null) {
+      for (const e of object.orders) {
+        message.orders.push(Order.fromJSON(e));
       }
     }
     return message;
@@ -456,10 +456,10 @@ export const QueryAccountOpenOrdersResponse = {
 
   toJSON(message: QueryAccountOpenOrdersResponse): unknown {
     const obj: any = {};
-    if (message.Order) {
-      obj.Order = message.Order.map((e) => (e ? Order.toJSON(e) : undefined));
+    if (message.orders) {
+      obj.orders = message.orders.map((e) => (e ? Order.toJSON(e) : undefined));
     } else {
-      obj.Order = [];
+      obj.orders = [];
     }
     return obj;
   },
@@ -470,10 +470,10 @@ export const QueryAccountOpenOrdersResponse = {
     const message = {
       ...baseQueryAccountOpenOrdersResponse,
     } as QueryAccountOpenOrdersResponse;
-    message.Order = [];
-    if (object.Order !== undefined && object.Order !== null) {
-      for (const e of object.Order) {
-        message.Order.push(Order.fromPartial(e));
+    message.orders = [];
+    if (object.orders !== undefined && object.orders !== null) {
+      for (const e of object.orders) {
+        message.orders.push(Order.fromPartial(e));
       }
     }
     return message;

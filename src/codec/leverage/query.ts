@@ -1,16 +1,395 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
+import { MarketLeverage } from "../leverage/leverage";
 
 export const protobufPackage = "Switcheo.carbon.leverage";
 
+/** this line is used by starport scaffolding # 3 */
+export interface QueryGetLeverageRequest {
+  address: string;
+  market: string;
+}
+
+export interface QueryGetLeverageResponse {
+  MarketLeverage?: MarketLeverage;
+}
+
+export interface QueryAllLeverageRequest {
+  address: string;
+}
+
+export interface QueryAllLeverageResponse {
+  marketLeverages: MarketLeverage[];
+}
+
+const baseQueryGetLeverageRequest: object = { address: "", market: "" };
+
+export const QueryGetLeverageRequest = {
+  encode(
+    message: QueryGetLeverageRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.address !== "") {
+      writer.uint32(10).string(message.address);
+    }
+    if (message.market !== "") {
+      writer.uint32(18).string(message.market);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryGetLeverageRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryGetLeverageRequest,
+    } as QueryGetLeverageRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.address = reader.string();
+          break;
+        case 2:
+          message.market = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryGetLeverageRequest {
+    const message = {
+      ...baseQueryGetLeverageRequest,
+    } as QueryGetLeverageRequest;
+    if (object.address !== undefined && object.address !== null) {
+      message.address = String(object.address);
+    } else {
+      message.address = "";
+    }
+    if (object.market !== undefined && object.market !== null) {
+      message.market = String(object.market);
+    } else {
+      message.market = "";
+    }
+    return message;
+  },
+
+  toJSON(message: QueryGetLeverageRequest): unknown {
+    const obj: any = {};
+    message.address !== undefined && (obj.address = message.address);
+    message.market !== undefined && (obj.market = message.market);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryGetLeverageRequest>
+  ): QueryGetLeverageRequest {
+    const message = {
+      ...baseQueryGetLeverageRequest,
+    } as QueryGetLeverageRequest;
+    if (object.address !== undefined && object.address !== null) {
+      message.address = object.address;
+    } else {
+      message.address = "";
+    }
+    if (object.market !== undefined && object.market !== null) {
+      message.market = object.market;
+    } else {
+      message.market = "";
+    }
+    return message;
+  },
+};
+
+const baseQueryGetLeverageResponse: object = {};
+
+export const QueryGetLeverageResponse = {
+  encode(
+    message: QueryGetLeverageResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.MarketLeverage !== undefined) {
+      MarketLeverage.encode(
+        message.MarketLeverage,
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryGetLeverageResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryGetLeverageResponse,
+    } as QueryGetLeverageResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.MarketLeverage = MarketLeverage.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryGetLeverageResponse {
+    const message = {
+      ...baseQueryGetLeverageResponse,
+    } as QueryGetLeverageResponse;
+    if (object.MarketLeverage !== undefined && object.MarketLeverage !== null) {
+      message.MarketLeverage = MarketLeverage.fromJSON(object.MarketLeverage);
+    } else {
+      message.MarketLeverage = undefined;
+    }
+    return message;
+  },
+
+  toJSON(message: QueryGetLeverageResponse): unknown {
+    const obj: any = {};
+    message.MarketLeverage !== undefined &&
+      (obj.MarketLeverage = message.MarketLeverage
+        ? MarketLeverage.toJSON(message.MarketLeverage)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryGetLeverageResponse>
+  ): QueryGetLeverageResponse {
+    const message = {
+      ...baseQueryGetLeverageResponse,
+    } as QueryGetLeverageResponse;
+    if (object.MarketLeverage !== undefined && object.MarketLeverage !== null) {
+      message.MarketLeverage = MarketLeverage.fromPartial(
+        object.MarketLeverage
+      );
+    } else {
+      message.MarketLeverage = undefined;
+    }
+    return message;
+  },
+};
+
+const baseQueryAllLeverageRequest: object = { address: "" };
+
+export const QueryAllLeverageRequest = {
+  encode(
+    message: QueryAllLeverageRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.address !== "") {
+      writer.uint32(10).string(message.address);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAllLeverageRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAllLeverageRequest,
+    } as QueryAllLeverageRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.address = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllLeverageRequest {
+    const message = {
+      ...baseQueryAllLeverageRequest,
+    } as QueryAllLeverageRequest;
+    if (object.address !== undefined && object.address !== null) {
+      message.address = String(object.address);
+    } else {
+      message.address = "";
+    }
+    return message;
+  },
+
+  toJSON(message: QueryAllLeverageRequest): unknown {
+    const obj: any = {};
+    message.address !== undefined && (obj.address = message.address);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAllLeverageRequest>
+  ): QueryAllLeverageRequest {
+    const message = {
+      ...baseQueryAllLeverageRequest,
+    } as QueryAllLeverageRequest;
+    if (object.address !== undefined && object.address !== null) {
+      message.address = object.address;
+    } else {
+      message.address = "";
+    }
+    return message;
+  },
+};
+
+const baseQueryAllLeverageResponse: object = {};
+
+export const QueryAllLeverageResponse = {
+  encode(
+    message: QueryAllLeverageResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.marketLeverages) {
+      MarketLeverage.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAllLeverageResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAllLeverageResponse,
+    } as QueryAllLeverageResponse;
+    message.marketLeverages = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.marketLeverages.push(
+            MarketLeverage.decode(reader, reader.uint32())
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllLeverageResponse {
+    const message = {
+      ...baseQueryAllLeverageResponse,
+    } as QueryAllLeverageResponse;
+    message.marketLeverages = [];
+    if (
+      object.marketLeverages !== undefined &&
+      object.marketLeverages !== null
+    ) {
+      for (const e of object.marketLeverages) {
+        message.marketLeverages.push(MarketLeverage.fromJSON(e));
+      }
+    }
+    return message;
+  },
+
+  toJSON(message: QueryAllLeverageResponse): unknown {
+    const obj: any = {};
+    if (message.marketLeverages) {
+      obj.marketLeverages = message.marketLeverages.map((e) =>
+        e ? MarketLeverage.toJSON(e) : undefined
+      );
+    } else {
+      obj.marketLeverages = [];
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAllLeverageResponse>
+  ): QueryAllLeverageResponse {
+    const message = {
+      ...baseQueryAllLeverageResponse,
+    } as QueryAllLeverageResponse;
+    message.marketLeverages = [];
+    if (
+      object.marketLeverages !== undefined &&
+      object.marketLeverages !== null
+    ) {
+      for (const e of object.marketLeverages) {
+        message.marketLeverages.push(MarketLeverage.fromPartial(e));
+      }
+    }
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
-export interface Query {}
+export interface Query {
+  /**
+   * this line is used by starport scaffolding # 2
+   * Leverage returns the leverage which corresponds to the address and market
+   */
+  Leverage(request: QueryGetLeverageRequest): Promise<QueryGetLeverageResponse>;
+  /** LeverageAll returns all leverages for an address, defaults to 1 */
+  LeverageAll(
+    request: QueryAllLeverageRequest
+  ): Promise<QueryAllLeverageResponse>;
+}
 
 export class QueryClientImpl implements Query {
   private readonly rpc: Rpc;
   constructor(rpc: Rpc) {
     this.rpc = rpc;
+    this.Leverage = this.Leverage.bind(this);
+    this.LeverageAll = this.LeverageAll.bind(this);
+  }
+  Leverage(
+    request: QueryGetLeverageRequest
+  ): Promise<QueryGetLeverageResponse> {
+    const data = QueryGetLeverageRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.leverage.Query",
+      "Leverage",
+      data
+    );
+    return promise.then((data) =>
+      QueryGetLeverageResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  LeverageAll(
+    request: QueryAllLeverageRequest
+  ): Promise<QueryAllLeverageResponse> {
+    const data = QueryAllLeverageRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.leverage.Query",
+      "LeverageAll",
+      data
+    );
+    return promise.then((data) =>
+      QueryAllLeverageResponse.decode(new _m0.Reader(data))
+    );
   }
 }
 
@@ -21,6 +400,25 @@ interface Rpc {
     data: Uint8Array
   ): Promise<Uint8Array>;
 }
+
+type Builtin =
+  | Date
+  | Function
+  | Uint8Array
+  | string
+  | number
+  | boolean
+  | undefined
+  | Long;
+export type DeepPartial<T> = T extends Builtin
+  ? T
+  : T extends Array<infer U>
+  ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U>
+  ? ReadonlyArray<DeepPartial<U>>
+  : T extends {}
+  ? { [K in keyof T]?: DeepPartial<T[K]> }
+  : Partial<T>;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

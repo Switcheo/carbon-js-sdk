@@ -1,14 +1,14 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { MsgCreateOracle } from "../oracle/tx";
+import { CreateOracleParams } from "../oracle/tx";
 
 export const protobufPackage = "Switcheo.carbon.oracle";
 
 export interface CreateOracleProposal {
   title: string;
   description: string;
-  oracle?: MsgCreateOracle;
+  msg?: CreateOracleParams;
 }
 
 const baseCreateOracleProposal: object = { title: "", description: "" };
@@ -24,8 +24,8 @@ export const CreateOracleProposal = {
     if (message.description !== "") {
       writer.uint32(18).string(message.description);
     }
-    if (message.oracle !== undefined) {
-      MsgCreateOracle.encode(message.oracle, writer.uint32(26).fork()).ldelim();
+    if (message.msg !== undefined) {
+      CreateOracleParams.encode(message.msg, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
@@ -47,7 +47,7 @@ export const CreateOracleProposal = {
           message.description = reader.string();
           break;
         case 3:
-          message.oracle = MsgCreateOracle.decode(reader, reader.uint32());
+          message.msg = CreateOracleParams.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -69,10 +69,10 @@ export const CreateOracleProposal = {
     } else {
       message.description = "";
     }
-    if (object.oracle !== undefined && object.oracle !== null) {
-      message.oracle = MsgCreateOracle.fromJSON(object.oracle);
+    if (object.msg !== undefined && object.msg !== null) {
+      message.msg = CreateOracleParams.fromJSON(object.msg);
     } else {
-      message.oracle = undefined;
+      message.msg = undefined;
     }
     return message;
   },
@@ -82,9 +82,9 @@ export const CreateOracleProposal = {
     message.title !== undefined && (obj.title = message.title);
     message.description !== undefined &&
       (obj.description = message.description);
-    message.oracle !== undefined &&
-      (obj.oracle = message.oracle
-        ? MsgCreateOracle.toJSON(message.oracle)
+    message.msg !== undefined &&
+      (obj.msg = message.msg
+        ? CreateOracleParams.toJSON(message.msg)
         : undefined);
     return obj;
   },
@@ -101,10 +101,10 @@ export const CreateOracleProposal = {
     } else {
       message.description = "";
     }
-    if (object.oracle !== undefined && object.oracle !== null) {
-      message.oracle = MsgCreateOracle.fromPartial(object.oracle);
+    if (object.msg !== undefined && object.msg !== null) {
+      message.msg = CreateOracleParams.fromPartial(object.msg);
     } else {
-      message.oracle = undefined;
+      message.msg = undefined;
     }
     return message;
   },

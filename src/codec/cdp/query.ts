@@ -24,7 +24,7 @@ export interface QueryAllVaultRequest {
 }
 
 export interface QueryAllVaultResponse {
-  Vault: Vault[];
+  vaults: Vault[];
   pagination?: PageResponse;
 }
 
@@ -41,7 +41,7 @@ export interface QueryAllVaultTypeRequest {
 }
 
 export interface QueryAllVaultTypeResponse {
-  VaultType: VaultType[];
+  vaultTypes: VaultType[];
   pagination?: PageResponse;
 }
 
@@ -262,7 +262,7 @@ export const QueryAllVaultResponse = {
     message: QueryAllVaultResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    for (const v of message.Vault) {
+    for (const v of message.vaults) {
       Vault.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.pagination !== undefined) {
@@ -281,12 +281,12 @@ export const QueryAllVaultResponse = {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseQueryAllVaultResponse } as QueryAllVaultResponse;
-    message.Vault = [];
+    message.vaults = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.Vault.push(Vault.decode(reader, reader.uint32()));
+          message.vaults.push(Vault.decode(reader, reader.uint32()));
           break;
         case 2:
           message.pagination = PageResponse.decode(reader, reader.uint32());
@@ -301,10 +301,10 @@ export const QueryAllVaultResponse = {
 
   fromJSON(object: any): QueryAllVaultResponse {
     const message = { ...baseQueryAllVaultResponse } as QueryAllVaultResponse;
-    message.Vault = [];
-    if (object.Vault !== undefined && object.Vault !== null) {
-      for (const e of object.Vault) {
-        message.Vault.push(Vault.fromJSON(e));
+    message.vaults = [];
+    if (object.vaults !== undefined && object.vaults !== null) {
+      for (const e of object.vaults) {
+        message.vaults.push(Vault.fromJSON(e));
       }
     }
     if (object.pagination !== undefined && object.pagination !== null) {
@@ -317,10 +317,10 @@ export const QueryAllVaultResponse = {
 
   toJSON(message: QueryAllVaultResponse): unknown {
     const obj: any = {};
-    if (message.Vault) {
-      obj.Vault = message.Vault.map((e) => (e ? Vault.toJSON(e) : undefined));
+    if (message.vaults) {
+      obj.vaults = message.vaults.map((e) => (e ? Vault.toJSON(e) : undefined));
     } else {
-      obj.Vault = [];
+      obj.vaults = [];
     }
     message.pagination !== undefined &&
       (obj.pagination = message.pagination
@@ -333,10 +333,10 @@ export const QueryAllVaultResponse = {
     object: DeepPartial<QueryAllVaultResponse>
   ): QueryAllVaultResponse {
     const message = { ...baseQueryAllVaultResponse } as QueryAllVaultResponse;
-    message.Vault = [];
-    if (object.Vault !== undefined && object.Vault !== null) {
-      for (const e of object.Vault) {
-        message.Vault.push(Vault.fromPartial(e));
+    message.vaults = [];
+    if (object.vaults !== undefined && object.vaults !== null) {
+      for (const e of object.vaults) {
+        message.vaults.push(Vault.fromPartial(e));
       }
     }
     if (object.pagination !== undefined && object.pagination !== null) {
@@ -569,7 +569,7 @@ export const QueryAllVaultTypeResponse = {
     message: QueryAllVaultTypeResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    for (const v of message.VaultType) {
+    for (const v of message.vaultTypes) {
       VaultType.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.pagination !== undefined) {
@@ -590,12 +590,12 @@ export const QueryAllVaultTypeResponse = {
     const message = {
       ...baseQueryAllVaultTypeResponse,
     } as QueryAllVaultTypeResponse;
-    message.VaultType = [];
+    message.vaultTypes = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.VaultType.push(VaultType.decode(reader, reader.uint32()));
+          message.vaultTypes.push(VaultType.decode(reader, reader.uint32()));
           break;
         case 2:
           message.pagination = PageResponse.decode(reader, reader.uint32());
@@ -612,10 +612,10 @@ export const QueryAllVaultTypeResponse = {
     const message = {
       ...baseQueryAllVaultTypeResponse,
     } as QueryAllVaultTypeResponse;
-    message.VaultType = [];
-    if (object.VaultType !== undefined && object.VaultType !== null) {
-      for (const e of object.VaultType) {
-        message.VaultType.push(VaultType.fromJSON(e));
+    message.vaultTypes = [];
+    if (object.vaultTypes !== undefined && object.vaultTypes !== null) {
+      for (const e of object.vaultTypes) {
+        message.vaultTypes.push(VaultType.fromJSON(e));
       }
     }
     if (object.pagination !== undefined && object.pagination !== null) {
@@ -628,12 +628,12 @@ export const QueryAllVaultTypeResponse = {
 
   toJSON(message: QueryAllVaultTypeResponse): unknown {
     const obj: any = {};
-    if (message.VaultType) {
-      obj.VaultType = message.VaultType.map((e) =>
+    if (message.vaultTypes) {
+      obj.vaultTypes = message.vaultTypes.map((e) =>
         e ? VaultType.toJSON(e) : undefined
       );
     } else {
-      obj.VaultType = [];
+      obj.vaultTypes = [];
     }
     message.pagination !== undefined &&
       (obj.pagination = message.pagination
@@ -648,10 +648,10 @@ export const QueryAllVaultTypeResponse = {
     const message = {
       ...baseQueryAllVaultTypeResponse,
     } as QueryAllVaultTypeResponse;
-    message.VaultType = [];
-    if (object.VaultType !== undefined && object.VaultType !== null) {
-      for (const e of object.VaultType) {
-        message.VaultType.push(VaultType.fromPartial(e));
+    message.vaultTypes = [];
+    if (object.vaultTypes !== undefined && object.vaultTypes !== null) {
+      for (const e of object.vaultTypes) {
+        message.vaultTypes.push(VaultType.fromPartial(e));
       }
     }
     if (object.pagination !== undefined && object.pagination !== null) {

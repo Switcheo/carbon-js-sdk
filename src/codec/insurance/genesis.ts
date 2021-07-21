@@ -11,8 +11,8 @@ export interface GenesisState {
    * this line is used by starport scaffolding # genesis/proto/state
    * this line is used by starport scaffolding # ibc/genesis/proto
    */
-  FundInByMarkets: FundByMarket[];
-  FundOutByMarkets: FundByMarket[];
+  fundInByMarkets: FundByMarket[];
+  fundOutByMarkets: FundByMarket[];
 }
 
 const baseGenesisState: object = {};
@@ -22,10 +22,10 @@ export const GenesisState = {
     message: GenesisState,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    for (const v of message.FundInByMarkets) {
+    for (const v of message.fundInByMarkets) {
       FundByMarket.encode(v!, writer.uint32(10).fork()).ldelim();
     }
-    for (const v of message.FundOutByMarkets) {
+    for (const v of message.fundOutByMarkets) {
       FundByMarket.encode(v!, writer.uint32(18).fork()).ldelim();
     }
     return writer;
@@ -35,18 +35,18 @@ export const GenesisState = {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseGenesisState } as GenesisState;
-    message.FundInByMarkets = [];
-    message.FundOutByMarkets = [];
+    message.fundInByMarkets = [];
+    message.fundOutByMarkets = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.FundInByMarkets.push(
+          message.fundInByMarkets.push(
             FundByMarket.decode(reader, reader.uint32())
           );
           break;
         case 2:
-          message.FundOutByMarkets.push(
+          message.fundOutByMarkets.push(
             FundByMarket.decode(reader, reader.uint32())
           );
           break;
@@ -60,22 +60,22 @@ export const GenesisState = {
 
   fromJSON(object: any): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
-    message.FundInByMarkets = [];
-    message.FundOutByMarkets = [];
+    message.fundInByMarkets = [];
+    message.fundOutByMarkets = [];
     if (
-      object.FundInByMarkets !== undefined &&
-      object.FundInByMarkets !== null
+      object.fundInByMarkets !== undefined &&
+      object.fundInByMarkets !== null
     ) {
-      for (const e of object.FundInByMarkets) {
-        message.FundInByMarkets.push(FundByMarket.fromJSON(e));
+      for (const e of object.fundInByMarkets) {
+        message.fundInByMarkets.push(FundByMarket.fromJSON(e));
       }
     }
     if (
-      object.FundOutByMarkets !== undefined &&
-      object.FundOutByMarkets !== null
+      object.fundOutByMarkets !== undefined &&
+      object.fundOutByMarkets !== null
     ) {
-      for (const e of object.FundOutByMarkets) {
-        message.FundOutByMarkets.push(FundByMarket.fromJSON(e));
+      for (const e of object.fundOutByMarkets) {
+        message.fundOutByMarkets.push(FundByMarket.fromJSON(e));
       }
     }
     return message;
@@ -83,41 +83,41 @@ export const GenesisState = {
 
   toJSON(message: GenesisState): unknown {
     const obj: any = {};
-    if (message.FundInByMarkets) {
-      obj.FundInByMarkets = message.FundInByMarkets.map((e) =>
+    if (message.fundInByMarkets) {
+      obj.fundInByMarkets = message.fundInByMarkets.map((e) =>
         e ? FundByMarket.toJSON(e) : undefined
       );
     } else {
-      obj.FundInByMarkets = [];
+      obj.fundInByMarkets = [];
     }
-    if (message.FundOutByMarkets) {
-      obj.FundOutByMarkets = message.FundOutByMarkets.map((e) =>
+    if (message.fundOutByMarkets) {
+      obj.fundOutByMarkets = message.fundOutByMarkets.map((e) =>
         e ? FundByMarket.toJSON(e) : undefined
       );
     } else {
-      obj.FundOutByMarkets = [];
+      obj.fundOutByMarkets = [];
     }
     return obj;
   },
 
   fromPartial(object: DeepPartial<GenesisState>): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
-    message.FundInByMarkets = [];
-    message.FundOutByMarkets = [];
+    message.fundInByMarkets = [];
+    message.fundOutByMarkets = [];
     if (
-      object.FundInByMarkets !== undefined &&
-      object.FundInByMarkets !== null
+      object.fundInByMarkets !== undefined &&
+      object.fundInByMarkets !== null
     ) {
-      for (const e of object.FundInByMarkets) {
-        message.FundInByMarkets.push(FundByMarket.fromPartial(e));
+      for (const e of object.fundInByMarkets) {
+        message.fundInByMarkets.push(FundByMarket.fromPartial(e));
       }
     }
     if (
-      object.FundOutByMarkets !== undefined &&
-      object.FundOutByMarkets !== null
+      object.fundOutByMarkets !== undefined &&
+      object.fundOutByMarkets !== null
     ) {
-      for (const e of object.FundOutByMarkets) {
-        message.FundOutByMarkets.push(FundByMarket.fromPartial(e));
+      for (const e of object.fundOutByMarkets) {
+        message.fundOutByMarkets.push(FundByMarket.fromPartial(e));
       }
     }
     return message;

@@ -32,7 +32,7 @@ export interface QueryResultListRequest {
 }
 
 export interface QueryResultListResponse {
-  Result: Result[];
+  results: Result[];
   pagination?: PageResponse;
 }
 
@@ -41,7 +41,7 @@ export interface QueryVoteListRequest {
 }
 
 export interface QueryVoteListResponse {
-  Vote: Vote[];
+  votes: Vote[];
   pagination?: PageResponse;
 }
 
@@ -426,7 +426,7 @@ export const QueryResultListResponse = {
     message: QueryResultListResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    for (const v of message.Result) {
+    for (const v of message.results) {
       Result.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.pagination !== undefined) {
@@ -447,12 +447,12 @@ export const QueryResultListResponse = {
     const message = {
       ...baseQueryResultListResponse,
     } as QueryResultListResponse;
-    message.Result = [];
+    message.results = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.Result.push(Result.decode(reader, reader.uint32()));
+          message.results.push(Result.decode(reader, reader.uint32()));
           break;
         case 2:
           message.pagination = PageResponse.decode(reader, reader.uint32());
@@ -469,10 +469,10 @@ export const QueryResultListResponse = {
     const message = {
       ...baseQueryResultListResponse,
     } as QueryResultListResponse;
-    message.Result = [];
-    if (object.Result !== undefined && object.Result !== null) {
-      for (const e of object.Result) {
-        message.Result.push(Result.fromJSON(e));
+    message.results = [];
+    if (object.results !== undefined && object.results !== null) {
+      for (const e of object.results) {
+        message.results.push(Result.fromJSON(e));
       }
     }
     if (object.pagination !== undefined && object.pagination !== null) {
@@ -485,12 +485,12 @@ export const QueryResultListResponse = {
 
   toJSON(message: QueryResultListResponse): unknown {
     const obj: any = {};
-    if (message.Result) {
-      obj.Result = message.Result.map((e) =>
+    if (message.results) {
+      obj.results = message.results.map((e) =>
         e ? Result.toJSON(e) : undefined
       );
     } else {
-      obj.Result = [];
+      obj.results = [];
     }
     message.pagination !== undefined &&
       (obj.pagination = message.pagination
@@ -505,10 +505,10 @@ export const QueryResultListResponse = {
     const message = {
       ...baseQueryResultListResponse,
     } as QueryResultListResponse;
-    message.Result = [];
-    if (object.Result !== undefined && object.Result !== null) {
-      for (const e of object.Result) {
-        message.Result.push(Result.fromPartial(e));
+    message.results = [];
+    if (object.results !== undefined && object.results !== null) {
+      for (const e of object.results) {
+        message.results.push(Result.fromPartial(e));
       }
     }
     if (object.pagination !== undefined && object.pagination !== null) {
@@ -591,7 +591,7 @@ export const QueryVoteListResponse = {
     message: QueryVoteListResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    for (const v of message.Vote) {
+    for (const v of message.votes) {
       Vote.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.pagination !== undefined) {
@@ -610,12 +610,12 @@ export const QueryVoteListResponse = {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseQueryVoteListResponse } as QueryVoteListResponse;
-    message.Vote = [];
+    message.votes = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.Vote.push(Vote.decode(reader, reader.uint32()));
+          message.votes.push(Vote.decode(reader, reader.uint32()));
           break;
         case 2:
           message.pagination = PageResponse.decode(reader, reader.uint32());
@@ -630,10 +630,10 @@ export const QueryVoteListResponse = {
 
   fromJSON(object: any): QueryVoteListResponse {
     const message = { ...baseQueryVoteListResponse } as QueryVoteListResponse;
-    message.Vote = [];
-    if (object.Vote !== undefined && object.Vote !== null) {
-      for (const e of object.Vote) {
-        message.Vote.push(Vote.fromJSON(e));
+    message.votes = [];
+    if (object.votes !== undefined && object.votes !== null) {
+      for (const e of object.votes) {
+        message.votes.push(Vote.fromJSON(e));
       }
     }
     if (object.pagination !== undefined && object.pagination !== null) {
@@ -646,10 +646,10 @@ export const QueryVoteListResponse = {
 
   toJSON(message: QueryVoteListResponse): unknown {
     const obj: any = {};
-    if (message.Vote) {
-      obj.Vote = message.Vote.map((e) => (e ? Vote.toJSON(e) : undefined));
+    if (message.votes) {
+      obj.votes = message.votes.map((e) => (e ? Vote.toJSON(e) : undefined));
     } else {
-      obj.Vote = [];
+      obj.votes = [];
     }
     message.pagination !== undefined &&
       (obj.pagination = message.pagination
@@ -662,10 +662,10 @@ export const QueryVoteListResponse = {
     object: DeepPartial<QueryVoteListResponse>
   ): QueryVoteListResponse {
     const message = { ...baseQueryVoteListResponse } as QueryVoteListResponse;
-    message.Vote = [];
-    if (object.Vote !== undefined && object.Vote !== null) {
-      for (const e of object.Vote) {
-        message.Vote.push(Vote.fromPartial(e));
+    message.votes = [];
+    if (object.votes !== undefined && object.votes !== null) {
+      for (const e of object.votes) {
+        message.votes.push(Vote.fromPartial(e));
       }
     }
     if (object.pagination !== undefined && object.pagination !== null) {
