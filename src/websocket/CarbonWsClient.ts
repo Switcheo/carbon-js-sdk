@@ -37,33 +37,86 @@ export enum WSChannel {
 }
 
 export class CarbonWsClient {
-  url: string | null
+  url: string
   socket: WebSocket | null
   subscriptions: Array<Subscription>
+  keepSocketAlive: boolean
+  socketTimeout: NodeJS.Timeout | null
 
   constructor(options: ConstructorArgs) {
     const { url } = options
-    this.url = url
-    this.socket = new WebSocket(url)
-    this.socket.onmessage = this.onMessage
     this.subscriptions = []
+    this.keepSocketAlive = false
+    this.socket = null
+    this.socketTimeout = null
+    this.url = url
+    this.connectSocket()
+  }
+
+  private connectSocket() {
+    this.socket = new WebSocket(this.url)
+    this.socket.addEventListener('open', (event) => this.onOpen(event))
+    this.socket.addEventListener('message', (event) => this.onMessage(event))
+    this.socket.addEventListener('close', (event) => this.onClose(event))
+    this.socket.addEventListener('error', (event) => this.onError(event))
+  }
+
+  private onOpen(e: Event) {
+    this.startHeartBeat()
+  }
+
+  private onMessage(e: MessageEvent) {
+    if (e.data === 'pong') {
+      this.pong()
+      return
+    }
+
+    const existingSubscription = this.subscriptions.find((o: Subscription) =>
+      o.channel === e?.data?.result?.channel
+    )
+
+    if (existingSubscription) {
+      existingSubscription.onMessageHandler(e)
+    }
+  }
+
+  private onClose(e: CloseEvent) {
+    if (!this.keepSocketAlive) {
+      this.connectSocket()
+    }
+  }
+
+  private onError(e: Event) {
+    if (this.socket) this.socket.close()
   }
 
   public disconnect() {
     if (this.socket) {
       this.socket.close()
       this.socket = null
+      this.keepSocketAlive = true
     }
   }
 
-  private onMessage(e: MessageEvent) {
-    const existingSubscription = this.subscriptions.find((o: Subscription) =>
-      o.channel === e?.data?.result?.channel
-    )
-    if (existingSubscription) {
-      existingSubscription.onMessageHandler(e)
-    }
+  private startHeartBeat() {
+    setInterval(() => this.ping, 3000);
   }
+
+  private ping() {
+    if (!this.socket) return
+    if (this.socket.readyState !== 1) return
+
+    this.socket.send("ping")
+
+    this.socketTimeout = setTimeout(() => {
+      if (this.socket) this.socket.close()
+    }, 5000)
+  }
+
+  private pong() {
+    if (this.socketTimeout) clearTimeout(this.socketTimeout);
+  }
+
 
   public subscribe(channel: string, onMessageHandler: (e: MessageEvent) => void): void {
     if (this.subscriptions.find((s: Subscription) => s.channel === channel)) {
@@ -100,7 +153,7 @@ export class CarbonWsClient {
   }
 
   private getSocket() {
-    if (this.socket?.readyState !== WebSocket.OPEN) {
+    if (this.socket?.readyState !== 1) {
       throw new Error('WebSocket not connected')
     }
 
