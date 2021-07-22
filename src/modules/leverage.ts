@@ -10,10 +10,9 @@ export class LeverageModule extends BaseModule {
 
     const value = MsgSetLeverage.fromPartial({
       creator: wallet.bech32Address,
-      marketLeverage: {
-          market: params.market,
-          leverage: params.leverage.shiftedBy(18).toString(10),
-      },
+      market: params.market,
+      leverage: params.leverage.shiftedBy(18).toString(10),
+
     })
 
     return await wallet.sendTx({
@@ -28,10 +27,8 @@ export class LeverageModule extends BaseModule {
     const msgs = params.map(param => {
       const value = MsgSetLeverage.fromPartial({
         creator: wallet.bech32Address,
-        marketLeverage: {
-            market: param.market,
-            leverage: param.leverage.shiftedBy(18).toString(10),
-        },
+        market: param.market,
+        leverage: param.leverage.shiftedBy(18).toString(10),
       })
 
       return {
