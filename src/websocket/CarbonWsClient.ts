@@ -42,6 +42,7 @@ export class CarbonWsClient {
   subscriptions: Array<Subscription>
   keepSocketAlive: boolean
   socketTimeout: NodeJS.Timeout | null
+  heartbeatInterval: NodeJS.Timeout | null
 
   constructor(options: ConstructorArgs) {
     const { url } = options
@@ -49,6 +50,7 @@ export class CarbonWsClient {
     this.keepSocketAlive = true
     this.socket = null
     this.socketTimeout = null
+    this.heartbeatInterval = null
     this.url = url
     this.connectSocket()
   }
@@ -81,6 +83,8 @@ export class CarbonWsClient {
   }
 
   private onClose(e: CloseEvent) {
+    this.stopHeartBeat()
+
     if (this.keepSocketAlive) {
       this.connectSocket()
     }
@@ -92,14 +96,20 @@ export class CarbonWsClient {
 
   public disconnect() {
     if (this.socket) {
+      this.keepSocketAlive = false
       this.socket.close()
       this.socket = null
-      this.keepSocketAlive = false
     }
   }
 
   private startHeartBeat() {
-    setInterval(() => this.ping, 3000);
+    this.heartbeatInterval = setInterval(() => this.ping, 3000);
+  }
+
+  private stopHeartBeat() {
+    if (this.heartbeatInterval) {
+      clearInterval(this.heartbeatInterval)
+    }
   }
 
   private ping() {
