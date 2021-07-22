@@ -1,19 +1,19 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { MarketLeverage } from "../leverage/leverage";
 
 export const protobufPackage = "Switcheo.carbon.leverage";
 
 /** this line is used by starport scaffolding # proto/tx/message */
 export interface MsgSetLeverage {
   creator: string;
-  marketLeverage?: MarketLeverage;
+  market: string;
+  leverage: string;
 }
 
 export interface MsgSetLeverageResponse {}
 
-const baseMsgSetLeverage: object = { creator: "" };
+const baseMsgSetLeverage: object = { creator: "", market: "", leverage: "" };
 
 export const MsgSetLeverage = {
   encode(
@@ -23,11 +23,11 @@ export const MsgSetLeverage = {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
-    if (message.marketLeverage !== undefined) {
-      MarketLeverage.encode(
-        message.marketLeverage,
-        writer.uint32(18).fork()
-      ).ldelim();
+    if (message.market !== "") {
+      writer.uint32(18).string(message.market);
+    }
+    if (message.leverage !== "") {
+      writer.uint32(26).string(message.leverage);
     }
     return writer;
   },
@@ -43,10 +43,10 @@ export const MsgSetLeverage = {
           message.creator = reader.string();
           break;
         case 2:
-          message.marketLeverage = MarketLeverage.decode(
-            reader,
-            reader.uint32()
-          );
+          message.market = reader.string();
+          break;
+        case 3:
+          message.leverage = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -63,10 +63,15 @@ export const MsgSetLeverage = {
     } else {
       message.creator = "";
     }
-    if (object.marketLeverage !== undefined && object.marketLeverage !== null) {
-      message.marketLeverage = MarketLeverage.fromJSON(object.marketLeverage);
+    if (object.market !== undefined && object.market !== null) {
+      message.market = String(object.market);
     } else {
-      message.marketLeverage = undefined;
+      message.market = "";
+    }
+    if (object.leverage !== undefined && object.leverage !== null) {
+      message.leverage = String(object.leverage);
+    } else {
+      message.leverage = "";
     }
     return message;
   },
@@ -74,10 +79,8 @@ export const MsgSetLeverage = {
   toJSON(message: MsgSetLeverage): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.marketLeverage !== undefined &&
-      (obj.marketLeverage = message.marketLeverage
-        ? MarketLeverage.toJSON(message.marketLeverage)
-        : undefined);
+    message.market !== undefined && (obj.market = message.market);
+    message.leverage !== undefined && (obj.leverage = message.leverage);
     return obj;
   },
 
@@ -88,12 +91,15 @@ export const MsgSetLeverage = {
     } else {
       message.creator = "";
     }
-    if (object.marketLeverage !== undefined && object.marketLeverage !== null) {
-      message.marketLeverage = MarketLeverage.fromPartial(
-        object.marketLeverage
-      );
+    if (object.market !== undefined && object.market !== null) {
+      message.market = object.market;
     } else {
-      message.marketLeverage = undefined;
+      message.market = "";
+    }
+    if (object.leverage !== undefined && object.leverage !== null) {
+      message.leverage = object.leverage;
+    } else {
+      message.leverage = "";
     }
     return message;
   },
