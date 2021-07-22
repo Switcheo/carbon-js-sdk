@@ -1,27 +1,52 @@
-import { CarbonWsChannels } from "./CarbonWsChannels"
-
 interface Subscription {
   channel: string
-  onMessage: (e: MessageEvent) => void
+  onMessageHandler: (e: MessageEvent) => void
+}
+
+export interface WSStatusChangeListener {
+  (connected: boolean): void
+}
+
+export interface ConstructorArgs {
+  url: string
+}
+
+export interface WSResult<T = unknown> {
+  requestId?: string
+  channel?: string
+  outOfSequence: boolean
+  timestamp: Date
+  data: T
+}
+
+export enum WSChannel {
+  candlesticks = 'candlesticks',
+  books = 'books',
+  recent_trades = 'recent_trades',
+  orders = 'orders',
+  orders_by_market = 'orders_by_market',
+  balances = 'balances',
+  account_trades = 'account_trades',
+  account_trades_by_market = 'account_trades_by_market',
+  market_stats = 'market_stats',
+  market_stats_by_market = 'market_stats_by_market',
+  leverages = 'leverages',
+  leverages_by_market = 'leverages_by_market',
+  positions = 'positions',
+  positions_by_market = 'positions_by_market',
 }
 
 export class CarbonWsClient {
   url: string | null
   socket: WebSocket | null
   subscriptions: Array<Subscription>
-  channels: CarbonWsChannels
 
-  constructor() {
-    this.url = null
-    this.socket = null
-    this.subscriptions = []
-    this.channels = new CarbonWsChannels(this.subscribe)
-  }
-
-  public connect(url: string) {
+  constructor(options: ConstructorArgs) {
+    const { url } = options
     this.url = url
     this.socket = new WebSocket(url)
     this.socket.onmessage = this.onMessage
+    this.subscriptions = []
   }
 
   public disconnect() {
@@ -36,44 +61,219 @@ export class CarbonWsClient {
       o.channel === e?.data?.result?.channel
     )
     if (existingSubscription) {
-      existingSubscription.onMessage(e)
+      existingSubscription.onMessageHandler(e)
     }
   }
 
+  public subscribe(channel: string, onMessageHandler: (e: MessageEvent) => void): void {
+    if (this.subscriptions.find((s: Subscription) => s.channel === channel)) {
+      throw new Error('Already subscribed')
+    }
 
-  public subscribe(channel: string, onMessage: (e: MessageEvent) => void): void {
-    if (!this.socket) return
-
-    const msg = JSON.stringify({
+    const msg: string = JSON.stringify({
       id: channel,
       method: 'subscribe',
       params: { "channels": [...channel] }
     })
 
-    this.socket.send(msg)
+    this.sendMessage(msg)
     this.subscriptions.push({
       channel: channel,
-      onMessage
+      onMessageHandler
     })
   }
 
-  public unsubscribe(channel: string, onMessage: (e: MessageEvent) => void): void {
-    try {
-      if (!this.socket) return
+  public unsubscribe(channel: string): void {
+    const msg = JSON.stringify({
+      id: channel,
+      method: 'unsubscribe',
+      params: { "channels": [...channel] }
+    })
 
-      const msg = JSON.stringify({
-        id: channel,
-        method: 'unsubscribe',
-        params: { "channels": [...channel] }
-      })
+    this.sendMessage(msg)
 
-      this.socket.send(msg)
+    const index = this.subscriptions.findIndex((o: Subscription) => o.channel === channel)
 
-      const index = this.subscriptions.findIndex((o: Subscription) => o.channel === channel)
-      if (index) {
-        this.subscriptions.splice(index, 1)
-      }
+    if (index) {
+      this.subscriptions.splice(index, 1)
+    }
+  }
 
-    } catch (e) { console.log(e.message) }
+  private getSocket() {
+    if (this.socket?.readyState !== WebSocket.OPEN) {
+      throw new Error('WebSocket not connected')
+    }
+
+    return this.socket
+  }
+
+  private sendMessage(data: string | Buffer) {
+    const socket = this.getSocket()
+
+    this.debugLog('WSConnector.sendMessage', data)
+    socket?.send(data)
+  }
+
+  private debugLog(...args: any[]) {
+    // if (!this.debugMode) return
+
+    console.log(...args);
+  }
+
+
+  /* Subscription and unsubscription methods */
+
+  /* Candlesticks */
+  public subscribeToCandleSticks(market: string, resolution: string, onMessage: (e: MessageEvent) => void): void {
+    const channel = `${WSChannel.candlesticks}.${market}.${resolution}`
+    this.subscribe(channel, onMessage)
+  }
+
+  public unsubscribeFromCandleSticks(market: string, resolution: string): void {
+    const channel = `${WSChannel.candlesticks}.${market}.${resolution}`
+    this.unsubscribe(channel)
+  }
+
+  /* Books */
+  public subscribeToBooks(market: string, onMessage: (e: MessageEvent) => void): void {
+    const channel = `${WSChannel.books}.${market}`
+    this.subscribe(channel, onMessage)
+  }
+
+  public unsubscribeFromBooks(market: string): void {
+    const channel = `${WSChannel.books}.${market}`
+    this.unsubscribe(channel)
+  }
+
+  /* RecentTrades */
+  public subscribeToRecentTrades(market: string, onMessage: (e: MessageEvent) => void): void {
+    const channel = `${WSChannel.recent_trades}.${market}`
+    this.subscribe(channel, onMessage)
+  }
+
+  public unsubscribeFromRecentTrades(market: string): void {
+    const channel = `${WSChannel.recent_trades}.${market}`
+    this.unsubscribe(channel)
+  }
+
+  /* Orders */
+  public subscribeToOrders(address: string, onMessage: (e: MessageEvent) => void): void {
+    const channel = `${WSChannel.orders}.${address}`
+    this.subscribe(channel, onMessage)
+  }
+
+  public unsubscribeFromOrders(address: string): void {
+    const channel = `${WSChannel.orders_by_market}.${address}`
+    this.unsubscribe(channel)
+  }
+
+  /* Orders by market */
+  public subscribeToOrdersByMarket(market: string, address: string, onMessage: (e: MessageEvent) => void): void {
+    const channel = `${WSChannel.orders_by_market}.${market}.${address}`
+    this.subscribe(channel, onMessage)
+  }
+
+  public unsubscribeFromOrdersByMarket(market: string, address: string): void {
+    const channel = `${WSChannel.orders_by_market}.${market}.${address}`
+    this.unsubscribe(channel)
+  }
+
+  /* Balances */
+  public subscribeToBalances(address: string, onMessage: (e: MessageEvent) => void): void {
+    const channel = `${WSChannel.balances}.${address}`
+    this.subscribe(channel, onMessage)
+  }
+
+  public unsubscribeFromBalances(address: string): void {
+    const channel = `${WSChannel.balances}.${address}`
+    this.unsubscribe(channel)
+  }
+
+  /* Account trades */
+  public subscribeToAccountTrades(address: string, onMessage: (e: MessageEvent) => void): void {
+    const channel = `${WSChannel.account_trades}.${address}`
+    this.subscribe(channel, onMessage)
+  }
+
+  public unsubscribeFromAccountTrades(address: string): void {
+    const channel = `${WSChannel.account_trades}.${address}`
+    this.unsubscribe(channel)
+  }
+
+  /* Account trades by market */
+  public subscribeToAccountTradesByMarket(market: string, address: string, onMessage: (e: MessageEvent) => void): void {
+    const channel = `${WSChannel.account_trades_by_market}.${market}.${address}`
+    this.subscribe(channel, onMessage)
+  }
+
+  public unsubscribeFromAccountTradesByMarket(market: string, address: string): void {
+    const channel = `${WSChannel.account_trades_by_market}.${market}.${address}`
+    this.unsubscribe(channel)
+  }
+
+  /* Market Stats*/
+  public subscribeToMarketStats(onMessage: (e: MessageEvent) => void): void {
+    const channel = `${WSChannel.market_stats}`
+    this.subscribe(channel, onMessage)
+  }
+
+  public unsubscribeFromMarketStats(): void {
+    const channel = `${WSChannel.market_stats}`
+    this.unsubscribe(channel)
+  }
+
+  /* Market Stats by market */
+  public subscribeToMarketStatsByMarket(market: string, onMessage: (e: MessageEvent) => void): void {
+    const channel = `${WSChannel.market_stats_by_market}.${market}`
+    this.subscribe(channel, onMessage)
+  }
+
+  public unsubscribeFromMarketStatsByMarket(market: string): void {
+    const channel = `${WSChannel.market_stats_by_market}.${market}`
+    this.unsubscribe(channel)
+  }
+
+  /* Leverages */
+  public subscribeToLeverages(address: string, onMessage: (e: MessageEvent) => void): void {
+    const channel = `${WSChannel.leverages}.${address}`
+    this.subscribe(channel, onMessage)
+  }
+
+  public unsubscribeFromLeverages(address: string): void {
+    const channel = `${WSChannel.leverages}.${address}`
+    this.unsubscribe(channel)
+  }
+
+  /* Leverages by market*/
+  public subscribeToLeveragesByMarket(market: string, address: string, onMessage: (e: MessageEvent) => void): void {
+    const channel = `${WSChannel.leverages}.${market}.${address}`
+    this.subscribe(channel, onMessage)
+  }
+
+  public unsubscribeFromLeveragesByMarket(market: string, address: string): void {
+    const channel = `${WSChannel.leverages}.${market}.${address}`
+    this.unsubscribe(channel)
+  }
+
+  /* Positions */
+  public subscribeToPositions(address: string, onMessage: (e: MessageEvent) => void): void {
+    const channel = `${WSChannel.positions}.${address}`
+    this.subscribe(channel, onMessage)
+  }
+
+  public unsubscribeFromPositions(address: string): void {
+    const channel = `${WSChannel.positions}.${address}`
+    this.unsubscribe(channel)
+  }
+
+  /* Positions by market*/
+  public subscribeToPositionsByMarket(market: string, address: string, onMessage: (e: MessageEvent) => void): void {
+    const channel = `${WSChannel.positions_by_market}.${market}.${address}`
+    this.subscribe(channel, onMessage)
+  }
+
+  public unsubscribeFromPositionsByMarket(market: string, address: string): void {
+    const channel = `${WSChannel.positions_by_market}.${market}.${address}`
+    this.unsubscribe(channel)
   }
 }
