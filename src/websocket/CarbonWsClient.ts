@@ -46,7 +46,7 @@ export class CarbonWsClient {
   constructor(options: ConstructorArgs) {
     const { url } = options
     this.subscriptions = []
-    this.keepSocketAlive = false
+    this.keepSocketAlive = true
     this.socket = null
     this.socketTimeout = null
     this.url = url
@@ -81,7 +81,7 @@ export class CarbonWsClient {
   }
 
   private onClose(e: CloseEvent) {
-    if (!this.keepSocketAlive) {
+    if (this.keepSocketAlive) {
       this.connectSocket()
     }
   }
@@ -94,7 +94,7 @@ export class CarbonWsClient {
     if (this.socket) {
       this.socket.close()
       this.socket = null
-      this.keepSocketAlive = true
+      this.keepSocketAlive = false
     }
   }
 
