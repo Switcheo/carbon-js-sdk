@@ -36,10 +36,21 @@ export enum WSChannel {
   positions_by_market = 'positions_by_market',
 }
 
+/**
+ * This is a wrapper class to manage websocket connections with the server.
+ * 
+ * You can either make use of the subscribe/unsubscribe method or preferably
+ * the wrapper functions @see {CarbonWsClient.subscribeToCandleSticks}
+ * 
+ * Subscriptions are managed internally. Just provide a callback function when you subscribe.
+ * 
+ * Multiple subscriptions to the same channel is not supported
+ */
+
 export class CarbonWsClient {
   url: string
   socket: WebSocket | null
-  subscriptions: Array<Subscription>
+  subscriptions: Array<Subscription> // Stores subscriptions and their handlers
   keepSocketAlive: boolean
   socketTimeout: NodeJS.Timeout | null
   heartbeatInterval: NodeJS.Timeout | null
@@ -55,6 +66,14 @@ export class CarbonWsClient {
     this.connectSocket()
   }
 
+  public disconnect() {
+    if (this.socket) {
+      this.keepSocketAlive = false
+      this.socket.close()
+      this.socket = null
+    }
+  }
+  
   private connectSocket() {
     this.socket = new WebSocket(this.url)
     this.socket.addEventListener('open', (event) => this.onOpen(event))
@@ -94,14 +113,6 @@ export class CarbonWsClient {
     if (this.socket) this.socket.close()
   }
 
-  public disconnect() {
-    if (this.socket) {
-      this.keepSocketAlive = false
-      this.socket.close()
-      this.socket = null
-    }
-  }
-
   private startHeartBeat() {
     this.heartbeatInterval = setInterval(() => this.ping, 3000);
   }
@@ -127,6 +138,26 @@ export class CarbonWsClient {
     if (this.socketTimeout) clearTimeout(this.socketTimeout);
   }
 
+  private getSocket() {
+    if (this.socket?.readyState !== 1) {
+      throw new Error('WebSocket not connected')
+    }
+
+    return this.socket
+  }
+
+  private sendMessage(data: string | Buffer) {
+    const socket = this.getSocket()
+
+    this.debugLog('WSConnector.sendMessage', data)
+    socket?.send(data)
+  }
+
+  private debugLog(...args: any[]) {
+    // if (!this.debugMode) return
+
+    console.log(...args);
+  }
 
   public subscribe(channel: string, onMessageHandler: (e: MessageEvent) => void): void {
     if (this.subscriptions.find((s: Subscription) => s.channel === channel)) {
@@ -162,29 +193,7 @@ export class CarbonWsClient {
     }
   }
 
-  private getSocket() {
-    if (this.socket?.readyState !== 1) {
-      throw new Error('WebSocket not connected')
-    }
-
-    return this.socket
-  }
-
-  private sendMessage(data: string | Buffer) {
-    const socket = this.getSocket()
-
-    this.debugLog('WSConnector.sendMessage', data)
-    socket?.send(data)
-  }
-
-  private debugLog(...args: any[]) {
-    // if (!this.debugMode) return
-
-    console.log(...args);
-  }
-
-
-  /* Subscription and unsubscription methods */
+  /* Subscription and unsubscription wrapper methods */
 
   /* Candlesticks */
   public subscribeToCandleSticks(market: string, resolution: string, onMessage: (e: MessageEvent) => void): void {
