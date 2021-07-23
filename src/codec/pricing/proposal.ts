@@ -7,16 +7,15 @@ export const protobufPackage = "Switcheo.carbon.pricing";
 export interface SettlementPriceProposal {
   title: string;
   description: string;
+  msg?: SettlementPriceParams;
+}
+
+export interface SettlementPriceParams {
   market: string;
   settlementPrice: string;
 }
 
-const baseSettlementPriceProposal: object = {
-  title: "",
-  description: "",
-  market: "",
-  settlementPrice: "",
-};
+const baseSettlementPriceProposal: object = { title: "", description: "" };
 
 export const SettlementPriceProposal = {
   encode(
@@ -29,11 +28,11 @@ export const SettlementPriceProposal = {
     if (message.description !== "") {
       writer.uint32(18).string(message.description);
     }
-    if (message.market !== "") {
-      writer.uint32(26).string(message.market);
-    }
-    if (message.settlementPrice !== "") {
-      writer.uint32(34).string(message.settlementPrice);
+    if (message.msg !== undefined) {
+      SettlementPriceParams.encode(
+        message.msg,
+        writer.uint32(26).fork()
+      ).ldelim();
     }
     return writer;
   },
@@ -57,10 +56,7 @@ export const SettlementPriceProposal = {
           message.description = reader.string();
           break;
         case 3:
-          message.market = reader.string();
-          break;
-        case 4:
-          message.settlementPrice = reader.string();
+          message.msg = SettlementPriceParams.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -84,18 +80,10 @@ export const SettlementPriceProposal = {
     } else {
       message.description = "";
     }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = String(object.market);
+    if (object.msg !== undefined && object.msg !== null) {
+      message.msg = SettlementPriceParams.fromJSON(object.msg);
     } else {
-      message.market = "";
-    }
-    if (
-      object.settlementPrice !== undefined &&
-      object.settlementPrice !== null
-    ) {
-      message.settlementPrice = String(object.settlementPrice);
-    } else {
-      message.settlementPrice = "";
+      message.msg = undefined;
     }
     return message;
   },
@@ -105,9 +93,10 @@ export const SettlementPriceProposal = {
     message.title !== undefined && (obj.title = message.title);
     message.description !== undefined &&
       (obj.description = message.description);
-    message.market !== undefined && (obj.market = message.market);
-    message.settlementPrice !== undefined &&
-      (obj.settlementPrice = message.settlementPrice);
+    message.msg !== undefined &&
+      (obj.msg = message.msg
+        ? SettlementPriceParams.toJSON(message.msg)
+        : undefined);
     return obj;
   },
 
@@ -127,6 +116,85 @@ export const SettlementPriceProposal = {
     } else {
       message.description = "";
     }
+    if (object.msg !== undefined && object.msg !== null) {
+      message.msg = SettlementPriceParams.fromPartial(object.msg);
+    } else {
+      message.msg = undefined;
+    }
+    return message;
+  },
+};
+
+const baseSettlementPriceParams: object = { market: "", settlementPrice: "" };
+
+export const SettlementPriceParams = {
+  encode(
+    message: SettlementPriceParams,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.market !== "") {
+      writer.uint32(26).string(message.market);
+    }
+    if (message.settlementPrice !== "") {
+      writer.uint32(34).string(message.settlementPrice);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): SettlementPriceParams {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseSettlementPriceParams } as SettlementPriceParams;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 3:
+          message.market = reader.string();
+          break;
+        case 4:
+          message.settlementPrice = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SettlementPriceParams {
+    const message = { ...baseSettlementPriceParams } as SettlementPriceParams;
+    if (object.market !== undefined && object.market !== null) {
+      message.market = String(object.market);
+    } else {
+      message.market = "";
+    }
+    if (
+      object.settlementPrice !== undefined &&
+      object.settlementPrice !== null
+    ) {
+      message.settlementPrice = String(object.settlementPrice);
+    } else {
+      message.settlementPrice = "";
+    }
+    return message;
+  },
+
+  toJSON(message: SettlementPriceParams): unknown {
+    const obj: any = {};
+    message.market !== undefined && (obj.market = message.market);
+    message.settlementPrice !== undefined &&
+      (obj.settlementPrice = message.settlementPrice);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<SettlementPriceParams>
+  ): SettlementPriceParams {
+    const message = { ...baseSettlementPriceParams } as SettlementPriceParams;
     if (object.market !== undefined && object.market !== null) {
       message.market = object.market;
     } else {

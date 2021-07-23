@@ -29,6 +29,7 @@ export interface Order {
   isPostOnly: boolean;
   isReduceOnly: boolean;
   poolId: Long;
+  avgFilledPrice: string;
 }
 
 export interface OrdersForMarket {
@@ -70,6 +71,7 @@ const baseOrder: object = {
   isPostOnly: false,
   isReduceOnly: false,
   poolId: Long.UZERO,
+  avgFilledPrice: "",
 };
 
 export const Order = {
@@ -142,6 +144,9 @@ export const Order = {
     }
     if (!message.poolId.isZero()) {
       writer.uint32(176).uint64(message.poolId);
+    }
+    if (message.avgFilledPrice !== "") {
+      writer.uint32(186).string(message.avgFilledPrice);
     }
     return writer;
   },
@@ -220,6 +225,9 @@ export const Order = {
           break;
         case 22:
           message.poolId = reader.uint64() as Long;
+          break;
+        case 23:
+          message.avgFilledPrice = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -349,6 +357,11 @@ export const Order = {
     } else {
       message.poolId = Long.UZERO;
     }
+    if (object.avgFilledPrice !== undefined && object.avgFilledPrice !== null) {
+      message.avgFilledPrice = String(object.avgFilledPrice);
+    } else {
+      message.avgFilledPrice = "";
+    }
     return message;
   },
 
@@ -389,6 +402,8 @@ export const Order = {
       (obj.isReduceOnly = message.isReduceOnly);
     message.poolId !== undefined &&
       (obj.poolId = (message.poolId || Long.UZERO).toString());
+    message.avgFilledPrice !== undefined &&
+      (obj.avgFilledPrice = message.avgFilledPrice);
     return obj;
   },
 
@@ -509,6 +524,11 @@ export const Order = {
       message.poolId = object.poolId as Long;
     } else {
       message.poolId = Long.UZERO;
+    }
+    if (object.avgFilledPrice !== undefined && object.avgFilledPrice !== null) {
+      message.avgFilledPrice = object.avgFilledPrice;
+    } else {
+      message.avgFilledPrice = "";
     }
     return message;
   },

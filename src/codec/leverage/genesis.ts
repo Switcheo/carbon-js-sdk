@@ -11,7 +11,7 @@ export interface GenesisState {
    * this line is used by starport scaffolding # genesis/proto/state
    * this line is used by starport scaffolding # ibc/genesis/proto
    */
-  marketLeveragesWithKey: MarketLeverageWithKey[];
+  marketLeveragesWithKeys: MarketLeverageWithKey[];
 }
 
 const baseGenesisState: object = {};
@@ -21,7 +21,7 @@ export const GenesisState = {
     message: GenesisState,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    for (const v of message.marketLeveragesWithKey) {
+    for (const v of message.marketLeveragesWithKeys) {
       MarketLeverageWithKey.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     return writer;
@@ -31,12 +31,12 @@ export const GenesisState = {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseGenesisState } as GenesisState;
-    message.marketLeveragesWithKey = [];
+    message.marketLeveragesWithKeys = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.marketLeveragesWithKey.push(
+          message.marketLeveragesWithKeys.push(
             MarketLeverageWithKey.decode(reader, reader.uint32())
           );
           break;
@@ -50,13 +50,13 @@ export const GenesisState = {
 
   fromJSON(object: any): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
-    message.marketLeveragesWithKey = [];
+    message.marketLeveragesWithKeys = [];
     if (
-      object.marketLeveragesWithKey !== undefined &&
-      object.marketLeveragesWithKey !== null
+      object.marketLeveragesWithKeys !== undefined &&
+      object.marketLeveragesWithKeys !== null
     ) {
-      for (const e of object.marketLeveragesWithKey) {
-        message.marketLeveragesWithKey.push(MarketLeverageWithKey.fromJSON(e));
+      for (const e of object.marketLeveragesWithKeys) {
+        message.marketLeveragesWithKeys.push(MarketLeverageWithKey.fromJSON(e));
       }
     }
     return message;
@@ -64,25 +64,25 @@ export const GenesisState = {
 
   toJSON(message: GenesisState): unknown {
     const obj: any = {};
-    if (message.marketLeveragesWithKey) {
-      obj.marketLeveragesWithKey = message.marketLeveragesWithKey.map((e) =>
+    if (message.marketLeveragesWithKeys) {
+      obj.marketLeveragesWithKeys = message.marketLeveragesWithKeys.map((e) =>
         e ? MarketLeverageWithKey.toJSON(e) : undefined
       );
     } else {
-      obj.marketLeveragesWithKey = [];
+      obj.marketLeveragesWithKeys = [];
     }
     return obj;
   },
 
   fromPartial(object: DeepPartial<GenesisState>): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
-    message.marketLeveragesWithKey = [];
+    message.marketLeveragesWithKeys = [];
     if (
-      object.marketLeveragesWithKey !== undefined &&
-      object.marketLeveragesWithKey !== null
+      object.marketLeveragesWithKeys !== undefined &&
+      object.marketLeveragesWithKeys !== null
     ) {
-      for (const e of object.marketLeveragesWithKey) {
-        message.marketLeveragesWithKey.push(
+      for (const e of object.marketLeveragesWithKeys) {
+        message.marketLeveragesWithKeys.push(
           MarketLeverageWithKey.fromPartial(e)
         );
       }

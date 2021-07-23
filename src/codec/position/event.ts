@@ -10,12 +10,18 @@ export interface PositionEvent {
   type: string;
   allocatedMarginDenom: string;
   allocatedMarginAmount: string;
+  updatedBlockHeight: Long;
+  orderId: string;
+  counterpartyOrderId: string;
 }
 
 const basePositionEvent: object = {
   type: "",
   allocatedMarginDenom: "",
   allocatedMarginAmount: "",
+  updatedBlockHeight: Long.UZERO,
+  orderId: "",
+  counterpartyOrderId: "",
 };
 
 export const PositionEvent = {
@@ -34,6 +40,15 @@ export const PositionEvent = {
     }
     if (message.allocatedMarginAmount !== "") {
       writer.uint32(34).string(message.allocatedMarginAmount);
+    }
+    if (!message.updatedBlockHeight.isZero()) {
+      writer.uint32(40).uint64(message.updatedBlockHeight);
+    }
+    if (message.orderId !== "") {
+      writer.uint32(50).string(message.orderId);
+    }
+    if (message.counterpartyOrderId !== "") {
+      writer.uint32(58).string(message.counterpartyOrderId);
     }
     return writer;
   },
@@ -56,6 +71,15 @@ export const PositionEvent = {
           break;
         case 4:
           message.allocatedMarginAmount = reader.string();
+          break;
+        case 5:
+          message.updatedBlockHeight = reader.uint64() as Long;
+          break;
+        case 6:
+          message.orderId = reader.string();
+          break;
+        case 7:
+          message.counterpartyOrderId = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -93,6 +117,27 @@ export const PositionEvent = {
     } else {
       message.allocatedMarginAmount = "";
     }
+    if (
+      object.updatedBlockHeight !== undefined &&
+      object.updatedBlockHeight !== null
+    ) {
+      message.updatedBlockHeight = Long.fromString(object.updatedBlockHeight);
+    } else {
+      message.updatedBlockHeight = Long.UZERO;
+    }
+    if (object.orderId !== undefined && object.orderId !== null) {
+      message.orderId = String(object.orderId);
+    } else {
+      message.orderId = "";
+    }
+    if (
+      object.counterpartyOrderId !== undefined &&
+      object.counterpartyOrderId !== null
+    ) {
+      message.counterpartyOrderId = String(object.counterpartyOrderId);
+    } else {
+      message.counterpartyOrderId = "";
+    }
     return message;
   },
 
@@ -107,6 +152,13 @@ export const PositionEvent = {
       (obj.allocatedMarginDenom = message.allocatedMarginDenom);
     message.allocatedMarginAmount !== undefined &&
       (obj.allocatedMarginAmount = message.allocatedMarginAmount);
+    message.updatedBlockHeight !== undefined &&
+      (obj.updatedBlockHeight = (
+        message.updatedBlockHeight || Long.UZERO
+      ).toString());
+    message.orderId !== undefined && (obj.orderId = message.orderId);
+    message.counterpartyOrderId !== undefined &&
+      (obj.counterpartyOrderId = message.counterpartyOrderId);
     return obj;
   },
 
@@ -137,6 +189,27 @@ export const PositionEvent = {
       message.allocatedMarginAmount = object.allocatedMarginAmount;
     } else {
       message.allocatedMarginAmount = "";
+    }
+    if (
+      object.updatedBlockHeight !== undefined &&
+      object.updatedBlockHeight !== null
+    ) {
+      message.updatedBlockHeight = object.updatedBlockHeight as Long;
+    } else {
+      message.updatedBlockHeight = Long.UZERO;
+    }
+    if (object.orderId !== undefined && object.orderId !== null) {
+      message.orderId = object.orderId;
+    } else {
+      message.orderId = "";
+    }
+    if (
+      object.counterpartyOrderId !== undefined &&
+      object.counterpartyOrderId !== null
+    ) {
+      message.counterpartyOrderId = object.counterpartyOrderId;
+    } else {
+      message.counterpartyOrderId = "";
     }
     return message;
   },
