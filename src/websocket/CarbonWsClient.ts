@@ -36,24 +36,42 @@ export enum WSChannel {
   positions_by_market = 'positions_by_market',
 }
 
+export enum WsRequestMethod {
+  order_history = 'get_order_history',
+  recent_trades = 'get_recent_trades',
+  candlesticks = 'get_candlesticks',
+  open_orders = 'get_open_orders',
+  account_trades = 'get_account_trades',
+  market_stats = 'get_market_stats',
+  leverages = 'get_leverages',
+  open_positions = 'get_open_positions',
+  closed_positions = 'get_closed_positions',
+}
+
 /**
  * This is a wrapper class to manage websocket connections with the server.
  * 
  * You can either make use of the subscribe/unsubscribe method or preferably
- * the wrapper functions @see {CarbonWsClient.subscribeToCandleSticks}
+ * the wrapper functions @see {CarbonWsClient.subscribeToCandleSticks}.
  * 
  * Subscriptions are managed internally. Just provide a callback function when you subscribe.
  * 
- * Multiple subscriptions to the same channel is not supported
+ * Multiple subscriptions to the same channel is not supported.
  */
 
 export class CarbonWsClient {
   url: string
   socket: WebSocket | null
-  subscriptions: Array<Subscription> // Stores subscriptions and their handlers
+  subscriptions: Array<Subscription> // Stores subscriptions and their handlers.
   keepSocketAlive: boolean
   socketTimeout: NodeJS.Timeout | null
   heartbeatInterval: NodeJS.Timeout | null
+
+  // Tracks ws message sequence.
+  // For some cases a out of sequence message is invalid and request has to be resent.
+  sequenceNumberCache: {
+    [index: string]: number
+  } = {}
 
   constructor(options: ConstructorArgs) {
     const { url } = options
@@ -73,7 +91,7 @@ export class CarbonWsClient {
       this.socket = null
     }
   }
-  
+
   private connectSocket() {
     this.socket = new WebSocket(this.url)
     this.socket.addEventListener('open', (event) => this.onOpen(event))
@@ -159,6 +177,24 @@ export class CarbonWsClient {
     console.log(...args);
   }
 
+  public request(method: string, onMessageHandler: (e: MessageEvent) => void, params: any): void {
+    if (this.subscriptions.find((s: Subscription) => s.channel === method)) {
+      throw new Error('Already subscribed')
+    }
+
+    const msg: string = JSON.stringify({
+      id: method,
+      method,
+      params,
+    })
+
+    this.sendMessage(msg)
+    this.subscriptions.push({
+      channel: method,
+      onMessageHandler
+    })
+  }
+
   public subscribe(channel: string, onMessageHandler: (e: MessageEvent) => void): void {
     if (this.subscriptions.find((s: Subscription) => s.channel === channel)) {
       throw new Error('Already subscribed')
@@ -196,6 +232,11 @@ export class CarbonWsClient {
   /* Subscription and unsubscription wrapper methods */
 
   /* Candlesticks */
+  public getCandlesticks(market: string, resolution: string, from: string, to: string, onMessageHandler: (e: MessageEvent) => void) {
+    const params = { market, resolution, from, to }
+    this.request(WsRequestMethod.candlesticks, onMessageHandler, params)
+  }
+
   public subscribeToCandleSticks(market: string, resolution: string, onMessage: (e: MessageEvent) => void): void {
     const channel = `${WSChannel.candlesticks}.${market}.${resolution}`
     this.subscribe(channel, onMessage)
@@ -206,7 +247,12 @@ export class CarbonWsClient {
     this.unsubscribe(channel)
   }
 
-  /* Books */
+  /**
+   * Orderbooks
+   * This does not require a request before subscribing 
+   * The first subscription message will return you the book 
+   * */
+
   public subscribeToBooks(market: string, onMessage: (e: MessageEvent) => void): void {
     const channel = `${WSChannel.books}.${market}`
     this.subscribe(channel, onMessage)
@@ -218,6 +264,11 @@ export class CarbonWsClient {
   }
 
   /* RecentTrades */
+  public getRecentTrades(market: string, onMessageHandler: (e: MessageEvent) => void) {
+    const params = { market }
+    this.request(WsRequestMethod.recent_trades, onMessageHandler, params)
+  }
+
   public subscribeToRecentTrades(market: string, onMessage: (e: MessageEvent) => void): void {
     const channel = `${WSChannel.recent_trades}.${market}`
     this.subscribe(channel, onMessage)
@@ -229,6 +280,17 @@ export class CarbonWsClient {
   }
 
   /* Orders */
+
+  public getOrderHistory(address: string, onMessageHandler: (e: MessageEvent) => void) {
+    const params = { address }
+    this.request(WsRequestMethod.order_history, onMessageHandler, params)
+  }
+
+  public getOpenOrders(market: string, address: string, onMessageHandler: (e: MessageEvent) => void) {
+    const params = { market, address }
+    this.request(WsRequestMethod.order_history, onMessageHandler, params)
+  }
+
   public subscribeToOrders(address: string, onMessage: (e: MessageEvent) => void): void {
     const channel = `${WSChannel.orders}.${address}`
     this.subscribe(channel, onMessage)
@@ -240,6 +302,11 @@ export class CarbonWsClient {
   }
 
   /* Orders by market */
+  public getOrderHistoryByMarket(market: string, address: string, onMessageHandler: (e: MessageEvent) => void) {
+    const params = { market, address }
+    this.request(WsRequestMethod.order_history, onMessageHandler, params)
+  }
+
   public subscribeToOrdersByMarket(market: string, address: string, onMessage: (e: MessageEvent) => void): void {
     const channel = `${WSChannel.orders_by_market}.${market}.${address}`
     this.subscribe(channel, onMessage)
@@ -262,6 +329,11 @@ export class CarbonWsClient {
   }
 
   /* Account trades */
+  public getAccountTrades(address: string, onMessageHandler: (e: MessageEvent) => void) {
+    const params = { address }
+    this.request(WsRequestMethod.account_trades, onMessageHandler, params)
+  }
+
   public subscribeToAccountTrades(address: string, onMessage: (e: MessageEvent) => void): void {
     const channel = `${WSChannel.account_trades}.${address}`
     this.subscribe(channel, onMessage)
@@ -273,6 +345,10 @@ export class CarbonWsClient {
   }
 
   /* Account trades by market */
+  public getAccountTradesByMarket(market: string, address: string, onMessageHandler: (e: MessageEvent) => void) {
+    const params = { market, address }
+    this.request(WsRequestMethod.account_trades, onMessageHandler, params)
+  }
   public subscribeToAccountTradesByMarket(market: string, address: string, onMessage: (e: MessageEvent) => void): void {
     const channel = `${WSChannel.account_trades_by_market}.${market}.${address}`
     this.subscribe(channel, onMessage)
@@ -284,6 +360,11 @@ export class CarbonWsClient {
   }
 
   /* Market Stats*/
+  public getMarketStats(onMessageHandler: (e: MessageEvent) => void) {
+    const params = {}
+    this.request(WsRequestMethod.market_stats, onMessageHandler, params)
+  }
+
   public subscribeToMarketStats(onMessage: (e: MessageEvent) => void): void {
     const channel = `${WSChannel.market_stats}`
     this.subscribe(channel, onMessage)
@@ -295,6 +376,11 @@ export class CarbonWsClient {
   }
 
   /* Market Stats by market */
+  public getMarketStatsByMarket(market: string, onMessageHandler: (e: MessageEvent) => void) {
+    const params = { market }
+    this.request(WsRequestMethod.order_history, onMessageHandler, params)
+  }
+
   public subscribeToMarketStatsByMarket(market: string, onMessage: (e: MessageEvent) => void): void {
     const channel = `${WSChannel.market_stats_by_market}.${market}`
     this.subscribe(channel, onMessage)
@@ -306,6 +392,11 @@ export class CarbonWsClient {
   }
 
   /* Leverages */
+  public getLeverages(address: string, onMessageHandler: (e: MessageEvent) => void) {
+    const params = { address }
+    this.request(WsRequestMethod.leverages, onMessageHandler, params)
+  }
+
   public subscribeToLeverages(address: string, onMessage: (e: MessageEvent) => void): void {
     const channel = `${WSChannel.leverages}.${address}`
     this.subscribe(channel, onMessage)
@@ -317,6 +408,11 @@ export class CarbonWsClient {
   }
 
   /* Leverages by market*/
+  public getLeveragesByMarket(address: string, market: string, onMessageHandler: (e: MessageEvent) => void) {
+    const params = { address, market }
+    this.request(WsRequestMethod.leverages, onMessageHandler, params)
+  }
+
   public subscribeToLeveragesByMarket(market: string, address: string, onMessage: (e: MessageEvent) => void): void {
     const channel = `${WSChannel.leverages}.${market}.${address}`
     this.subscribe(channel, onMessage)
@@ -328,6 +424,16 @@ export class CarbonWsClient {
   }
 
   /* Positions */
+  public getOpenPositions(address: string, onMessageHandler: (e: MessageEvent) => void) {
+    const params = { address }
+    this.request(WsRequestMethod.open_positions, onMessageHandler, params)
+  }
+
+  public getClosedPositions(address: string, onMessageHandler: (e: MessageEvent) => void) {
+    const params = { address }
+    this.request(WsRequestMethod.closed_positions, onMessageHandler, params)
+  }
+
   public subscribeToPositions(address: string, onMessage: (e: MessageEvent) => void): void {
     const channel = `${WSChannel.positions}.${address}`
     this.subscribe(channel, onMessage)
@@ -339,6 +445,16 @@ export class CarbonWsClient {
   }
 
   /* Positions by market*/
+  public getOpenPositionsByMarket(address: string, market: string, onMessageHandler: (e: MessageEvent) => void) {
+    const params = { address, market }
+    this.request(WsRequestMethod.open_positions, onMessageHandler, params)
+  }
+
+  public getClosedPositionsByMarket(address: string, market: string, onMessageHandler: (e: MessageEvent) => void) {
+    const params = { address, market }
+    this.request(WsRequestMethod.closed_positions, onMessageHandler, params)
+  }
+
   public subscribeToPositionsByMarket(market: string, address: string, onMessage: (e: MessageEvent) => void): void {
     const channel = `${WSChannel.positions_by_market}.${market}.${address}`
     this.subscribe(channel, onMessage)
