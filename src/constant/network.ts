@@ -29,8 +29,8 @@ export const NetworkConfigs: {
   },
 
   [Network.DevNet]: {
-    rpcURL: "http://localhost:26657",
-    restURL: "http://localhost:1317",
+    rpcURL: "https://dev-tm-api.carbon.network",
+    restURL: "https://dev-api.carbon.network",
     Bech32Prefix: "swth",
   },
 
