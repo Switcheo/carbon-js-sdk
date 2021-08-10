@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Token, LockedCoins } from "../coin/token";
+import { Token, LockedCoins, TokenBalance } from "../coin/token";
 import {
   PageRequest,
   PageResponse,
@@ -49,6 +49,14 @@ export interface QueryAllWrapperMappingsResponse {
 export interface QueryAllWrapperMappingsResponse_WrapperMappingsEntry {
   key: string;
   value: string;
+}
+
+export interface QueryGetBalancesRequest {
+  address: string;
+}
+
+export interface QueryGetBalancesResponse {
+  tokenBalances: TokenBalance[];
 }
 
 const baseQueryGetTokenRequest: object = { denom: "" };
@@ -804,6 +812,155 @@ export const QueryAllWrapperMappingsResponse_WrapperMappingsEntry = {
   },
 };
 
+const baseQueryGetBalancesRequest: object = { address: "" };
+
+export const QueryGetBalancesRequest = {
+  encode(
+    message: QueryGetBalancesRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.address !== "") {
+      writer.uint32(10).string(message.address);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryGetBalancesRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryGetBalancesRequest,
+    } as QueryGetBalancesRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.address = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryGetBalancesRequest {
+    const message = {
+      ...baseQueryGetBalancesRequest,
+    } as QueryGetBalancesRequest;
+    if (object.address !== undefined && object.address !== null) {
+      message.address = String(object.address);
+    } else {
+      message.address = "";
+    }
+    return message;
+  },
+
+  toJSON(message: QueryGetBalancesRequest): unknown {
+    const obj: any = {};
+    message.address !== undefined && (obj.address = message.address);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryGetBalancesRequest>
+  ): QueryGetBalancesRequest {
+    const message = {
+      ...baseQueryGetBalancesRequest,
+    } as QueryGetBalancesRequest;
+    if (object.address !== undefined && object.address !== null) {
+      message.address = object.address;
+    } else {
+      message.address = "";
+    }
+    return message;
+  },
+};
+
+const baseQueryGetBalancesResponse: object = {};
+
+export const QueryGetBalancesResponse = {
+  encode(
+    message: QueryGetBalancesResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.tokenBalances) {
+      TokenBalance.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryGetBalancesResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryGetBalancesResponse,
+    } as QueryGetBalancesResponse;
+    message.tokenBalances = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.tokenBalances.push(
+            TokenBalance.decode(reader, reader.uint32())
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryGetBalancesResponse {
+    const message = {
+      ...baseQueryGetBalancesResponse,
+    } as QueryGetBalancesResponse;
+    message.tokenBalances = [];
+    if (object.tokenBalances !== undefined && object.tokenBalances !== null) {
+      for (const e of object.tokenBalances) {
+        message.tokenBalances.push(TokenBalance.fromJSON(e));
+      }
+    }
+    return message;
+  },
+
+  toJSON(message: QueryGetBalancesResponse): unknown {
+    const obj: any = {};
+    if (message.tokenBalances) {
+      obj.tokenBalances = message.tokenBalances.map((e) =>
+        e ? TokenBalance.toJSON(e) : undefined
+      );
+    } else {
+      obj.tokenBalances = [];
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryGetBalancesResponse>
+  ): QueryGetBalancesResponse {
+    const message = {
+      ...baseQueryGetBalancesResponse,
+    } as QueryGetBalancesResponse;
+    message.tokenBalances = [];
+    if (object.tokenBalances !== undefined && object.tokenBalances !== null) {
+      for (const e of object.tokenBalances) {
+        message.tokenBalances.push(TokenBalance.fromPartial(e));
+      }
+    }
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** this line is used by starport scaffolding # 2 */
@@ -815,6 +972,7 @@ export interface Query {
   WrapperMappings(
     request: QueryAllWrapperMappingsRequest
   ): Promise<QueryAllWrapperMappingsResponse>;
+  Balances(request: QueryGetBalancesRequest): Promise<QueryGetBalancesResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -825,6 +983,7 @@ export class QueryClientImpl implements Query {
     this.TokenAll = this.TokenAll.bind(this);
     this.LockedCoins = this.LockedCoins.bind(this);
     this.WrapperMappings = this.WrapperMappings.bind(this);
+    this.Balances = this.Balances.bind(this);
   }
   Token(request: QueryGetTokenRequest): Promise<QueryGetTokenResponse> {
     const data = QueryGetTokenRequest.encode(request).finish();
@@ -875,6 +1034,20 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryAllWrapperMappingsResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  Balances(
+    request: QueryGetBalancesRequest
+  ): Promise<QueryGetBalancesResponse> {
+    const data = QueryGetBalancesRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.coin.Query",
+      "Balances",
+      data
+    );
+    return promise.then((data) =>
+      QueryGetBalancesResponse.decode(new _m0.Reader(data))
     );
   }
 }

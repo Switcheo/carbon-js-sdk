@@ -46,6 +46,13 @@ export interface PositionPoolCoinsWithKey {
   key: Uint8Array;
 }
 
+export interface TokenBalance {
+  available: string;
+  order: string;
+  position: string;
+  denom: string;
+}
+
 const baseToken: object = {
   creator: "",
   name: "",
@@ -766,6 +773,120 @@ export const PositionPoolCoinsWithKey = {
       message.key = object.key;
     } else {
       message.key = new Uint8Array();
+    }
+    return message;
+  },
+};
+
+const baseTokenBalance: object = {
+  available: "",
+  order: "",
+  position: "",
+  denom: "",
+};
+
+export const TokenBalance = {
+  encode(
+    message: TokenBalance,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.available !== "") {
+      writer.uint32(10).string(message.available);
+    }
+    if (message.order !== "") {
+      writer.uint32(18).string(message.order);
+    }
+    if (message.position !== "") {
+      writer.uint32(26).string(message.position);
+    }
+    if (message.denom !== "") {
+      writer.uint32(34).string(message.denom);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): TokenBalance {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseTokenBalance } as TokenBalance;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.available = reader.string();
+          break;
+        case 2:
+          message.order = reader.string();
+          break;
+        case 3:
+          message.position = reader.string();
+          break;
+        case 4:
+          message.denom = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): TokenBalance {
+    const message = { ...baseTokenBalance } as TokenBalance;
+    if (object.available !== undefined && object.available !== null) {
+      message.available = String(object.available);
+    } else {
+      message.available = "";
+    }
+    if (object.order !== undefined && object.order !== null) {
+      message.order = String(object.order);
+    } else {
+      message.order = "";
+    }
+    if (object.position !== undefined && object.position !== null) {
+      message.position = String(object.position);
+    } else {
+      message.position = "";
+    }
+    if (object.denom !== undefined && object.denom !== null) {
+      message.denom = String(object.denom);
+    } else {
+      message.denom = "";
+    }
+    return message;
+  },
+
+  toJSON(message: TokenBalance): unknown {
+    const obj: any = {};
+    message.available !== undefined && (obj.available = message.available);
+    message.order !== undefined && (obj.order = message.order);
+    message.position !== undefined && (obj.position = message.position);
+    message.denom !== undefined && (obj.denom = message.denom);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<TokenBalance>): TokenBalance {
+    const message = { ...baseTokenBalance } as TokenBalance;
+    if (object.available !== undefined && object.available !== null) {
+      message.available = object.available;
+    } else {
+      message.available = "";
+    }
+    if (object.order !== undefined && object.order !== null) {
+      message.order = object.order;
+    } else {
+      message.order = "";
+    }
+    if (object.position !== undefined && object.position !== null) {
+      message.position = object.position;
+    } else {
+      message.position = "";
+    }
+    if (object.denom !== undefined && object.denom !== null) {
+      message.denom = object.denom;
+    } else {
+      message.denom = "";
     }
     return message;
   },
