@@ -4,7 +4,7 @@ set -eo pipefail
 
 echo "Generating registry…"
 
-TX_FILES=$(find src/codec -path -prune -o -name 'tx.ts')
+TX_FILES=$(find src/codec -path -prune -o -name '*.ts')
 echo $TX_FILES
 REGISTRY_FILE=src/codec/index.ts
 

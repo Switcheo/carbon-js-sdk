@@ -38,3 +38,33 @@ for (const packageName in modules) {
 
 console.log("");
 console.log(`export const TxTypes = ${JSON.stringify(typeMap, null, 2)}\n`);
+
+console.log("");
+console.log('// Exported for convenience');
+for (const moduleFile of files) {
+  const directoryBlacklist = ['cosmos', 'ibc', 'tendermint']
+  const fileNameBlacklist = ['genesis.ts', 'keys.ts']
+  const modelBlacklist = ['MsgClientImpl', 'protobufPackage', 'GenesisState', 'QueryClientImpl']
+
+  const file = moduleFile.split("/")
+  const fileName = file[file.length - 1]
+  const firstDirectory = file[2]
+  
+  if (directoryBlacklist.includes(firstDirectory) || fileNameBlacklist.includes(fileName)) continue
+
+  const codecModule = require(`${pwd}/${moduleFile}`);
+  
+  const messages = Object.keys(codecModule).filter((key) =>
+    !modelBlacklist.includes(key)
+  );
+
+  if (messages.length) {
+    modules[codecModule.protobufPackage] = messages;
+    const relativePath = path.relative(registryFile, moduleFile)
+      .replace(/^\.\.\//, "./")
+      .replace(/\.ts$/, "");
+
+
+    console.log(`export { ${messages.join(", ")} } from "${relativePath}";`)
+  }
+}
