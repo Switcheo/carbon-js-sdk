@@ -29,6 +29,9 @@ import { MsgCreatePool, MsgCreatePoolResponse, MsgCreatePoolWithLiquidity, MsgCr
 
 export const registry = new Registry();
 
+registry.register("/Switcheo.carbon.fee.MsgSetFee", MsgSetFee);
+registry.register("/Switcheo.carbon.fee.MsgSetFeeResponse", MsgSetFeeResponse);
+
 registry.register("/Switcheo.carbon.order.MsgSetTradingFlag", MsgSetTradingFlag);
 registry.register("/Switcheo.carbon.order.MsgSetTradingFlagResponse", MsgSetTradingFlagResponse);
 registry.register("/Switcheo.carbon.order.MsgCreateOrder", MsgCreateOrder);
@@ -213,6 +216,8 @@ registry.register("/Switcheo.carbon.liquiditypool.MsgChangeNumQuotes", MsgChange
 registry.register("/Switcheo.carbon.liquiditypool.MsgChangeNumQuotesResponse", MsgChangeNumQuotesResponse);
 
 export const TxTypes = {
+  "MsgSetFee": "/Switcheo.carbon.fee.MsgSetFee",
+  "MsgSetFeeResponse": "/Switcheo.carbon.fee.MsgSetFeeResponse",
   "MsgSetTradingFlag": "/Switcheo.carbon.order.MsgSetTradingFlag",
   "MsgSetTradingFlagResponse": "/Switcheo.carbon.order.MsgSetTradingFlagResponse",
   "MsgCreateOrder": "/Switcheo.carbon.order.MsgCreateOrder",
