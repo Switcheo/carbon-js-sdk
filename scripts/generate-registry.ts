@@ -11,6 +11,10 @@ console.log(`import { Registry } from "@cosmjs/proto-signing";`);
 
 const modules: { [name: string]: string[] } = {};
 for (const moduleFile of files) {
+  if (!moduleFile.endsWith("/tx.ts")) {
+    continue
+  }
+
   const codecModule = require(`${pwd}/${moduleFile}`);
   const messages = Object.keys(codecModule).filter((key) => key.startsWith("Msg") && key !== "MsgClientImpl");
 
