@@ -2,6 +2,7 @@ import * as BIP39 from "bip39";
 import { CarbonSDK } from "./_sdk";
 import "./_setup";
 import { coins } from "@cosmjs/amino";
+import BigNumber from "bignumber.js";
 
 const TRPC_ENDPOINT = process.env.TRPC_ENDPOINT ?? "http://localhost:26657";
 
@@ -18,21 +19,45 @@ const TRPC_ENDPOINT = process.env.TRPC_ENDPOINT ?? "http://localhost:26657";
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
 
-  const result = await connectedSDK.gov.submit({
+  const FeeProposalresult = await connectedSDK.gov.submit({
     content: {
       typeUrl: "/Switcheo.carbon.fee.SetMsgFeeProposal",
       value: {
         title: "proposal title",
         description: "proposal desc",
-        params: {
-          msgType: 'test1',
-          creator: connectedSDK.wallet.bech32Address,
-          fee: "10",
-        },
+        msg: {
+          msgType: "test1",
+          fee: new BigNumber(2)
+        }
       }
     },
     initialDeposit: coins(100000000, "swth"),
     proposer: connectedSDK.wallet.bech32Address,
   })
-  console.log(result)
+
+  const OracleProposalresult = await connectedSDK.gov.submit({
+    content: {
+      typeUrl: "/Switcheo.carbon.oracle.CreateOracleProposal",
+      value: {
+        title: "proposal title",
+        description: "proposal desc",
+        msg: {
+          id: "DXBT4",
+        description: "Demex XBT Index",
+        minTurnoutPercentage: 67,
+        maxResultAge: 100,
+        securityType: "SecuredByValidators",
+        resultStrategy: "median",
+        resolution: 1,
+        spec: "{}",
+        }
+      }
+    },
+    initialDeposit: coins(100000000, "swth"),
+    proposer: connectedSDK.wallet.bech32Address,
+  })
+
+  console.log(FeeProposalresult)
+  console.log(OracleProposalresult)
+  
 })().catch(console.error).finally(() => process.exit(0));

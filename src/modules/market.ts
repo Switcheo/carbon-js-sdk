@@ -11,24 +11,7 @@ export class MarketModule extends BaseModule {
 
     const value = MsgUpdateMarket.fromPartial({
       updater: wallet.bech32Address,
-      marketParams: {
-          name: params.name,
-          displayName: params.displayName,
-          description: params.description,
-          minQuantity: params.minQuantity.toString(10),
-          makerFee: params.makerFee.shiftedBy(18).toString(10),
-          takerFee: params.takerFee.shiftedBy(18).toString(10),
-          riskStepSize: params.riskStepSize.toString(10),
-          initialMarginBase: params.initialMarginBase.shiftedBy(18).toString(10),
-          initialMarginStep: params.initialMarginStep.shiftedBy(18).toString(10),
-          maintenanceMarginRatio: params.maintenanceMarginRatio.shiftedBy(18).toString(10),
-          maxLiquidationOrderTicket: params.maxLiquidationOrderTicket.toString(10),
-          maxLiquidationOrderDuration: params.maxLiquidationOrderDuration,
-          impactSize: params.impactSize.toString(10),
-          markPriceBand: params.markPriceBand,
-          lastPriceProtectedBand: params.lastPriceProtectedBand,
-          isActive: params.isActive,
-      },
+      marketParams: transfromUpdateMarketParams(params)
     })
 
     return await wallet.sendTx({
@@ -58,9 +41,25 @@ export namespace MarketModule {
     lastPriceProtectedBand: number;
     isActive: boolean;
   }
-
-  // interface Duration {
-  //   seconds?: Long
-  //   nanos?: number
-  // }
 };
+
+export function transfromUpdateMarketParams(msg: MarketModule.UpdateMarketParams) {
+  return {
+    name: msg.name,
+    displayName: msg.displayName,
+    description: msg.description,
+    minQuantity: msg.minQuantity.toString(10),
+    makerFee: msg.makerFee.shiftedBy(18).toString(10),
+    takerFee: msg.takerFee.shiftedBy(18).toString(10),
+    riskStepSize: msg.riskStepSize.toString(10),
+    initialMarginBase: msg.initialMarginBase.shiftedBy(18).toString(10),
+    initialMarginStep: msg.initialMarginStep.shiftedBy(18).toString(10),
+    maintenanceMarginRatio: msg.maintenanceMarginRatio.shiftedBy(18).toString(10),
+    maxLiquidationOrderTicket: msg.maxLiquidationOrderTicket.toString(10),
+    maxLiquidationOrderDuration: msg.maxLiquidationOrderDuration,
+    impactSize: msg.impactSize.toString(10),
+    markPriceBand: msg.markPriceBand,
+    lastPriceProtectedBand: msg.lastPriceProtectedBand,
+    isActive: msg.isActive,
+  }
+}
