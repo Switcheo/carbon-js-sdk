@@ -8,6 +8,7 @@ export namespace CarbonTx {
     fee?: StdFee;
     memo?: string;
     explicitSignerData?: SignerData;
+    mode?: BroadcastTxMode;
   }
 
   export interface TxLog {
@@ -37,5 +38,11 @@ export namespace CarbonTx {
   export const DEFAULT_SIGN_OPTS: CarbonTx.SignTxOpts = {
     fee: DEFAULT_FEE,
     memo: "",
+  }
+
+  export enum BroadcastTxMode {
+    BroadcastTxAsync = 'async',
+    BroadcastTxSync = 'sync',
+    BroadcastTxBlock = 'block',
   }
 }

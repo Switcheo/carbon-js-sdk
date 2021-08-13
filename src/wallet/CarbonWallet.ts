@@ -1,10 +1,13 @@
 import { registry } from "@carbon-sdk/codec";
+import { toHex } from "@cosmjs/encoding";
 import { DEFAULT_FEE, DEFAULT_NETWORK, Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
 import { AddressUtils, CarbonTx, GenericUtils } from "@carbon-sdk/util";
 import { StdSignature } from "@cosmjs/amino";
 import { AccountData, DirectSignResponse, EncodeObject, OfflineDirectSigner } from "@cosmjs/proto-signing";
-import { BroadcastTxResponse, isBroadcastTxFailure, SignerData, SigningStargateClient, StdFee } from "@cosmjs/stargate";
+import { BroadcastTxResponse as BroadcastTxBlockResponse, isBroadcastTxFailure, SignerData, SigningStargateClient, StdFee } from "@cosmjs/stargate";
 import { SignDoc, TxRaw } from "@cosmjs/stargate/build/codec/cosmos/tx/v1beta1/tx";
+import { BroadcastTxAsyncResponse, BroadcastTxSyncResponse } from "@cosmjs/tendermint-rpc/build/tendermint34/responses";
+import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import { CarbonPrivateKeySigner, CarbonSigner } from "./CarbonSigner";
 
 export type CarbonWalletInitOpts = {
@@ -33,6 +36,8 @@ export type CarbonWalletInitOpts = {
       publicKeyBase64: string;
     }
   );
+
+export type BroadcastTxResponse = BroadcastTxAsyncResponse | BroadcastTxSyncResponse | BroadcastTxBlockResponse
 
 export class CarbonWallet implements OfflineDirectSigner {
   network: Network;
@@ -103,38 +108,55 @@ export class CarbonWallet implements OfflineDirectSigner {
     return this;
   }
 
+  async broadcastTx(
+    signingClient: SigningStargateClient,
+    tx: Uint8Array,
+    timeoutMs = 60_000,
+    pollIntervalMs = 3_000,
+    mode: CarbonTx.BroadcastTxMode,
+  ): Promise<BroadcastTxResponse> {
+    switch (mode) {
+      case CarbonTx.BroadcastTxMode.BroadcastTxAsync: {
+        const tmClient = await Tendermint34Client.connect(this.networkConfig.rpcURL);
+        return tmClient.broadcastTxAsync({ tx })
+      }
+      case CarbonTx.BroadcastTxMode.BroadcastTxSync: {
+        const tmClient = await Tendermint34Client.connect(this.networkConfig.rpcURL);
+        return tmClient.broadcastTxSync({ tx })
+      }
+      case CarbonTx.BroadcastTxMode.BroadcastTxBlock:
+        const response = await signingClient.broadcastTx(tx, timeoutMs, pollIntervalMs)
+        if (isBroadcastTxFailure(response)) {
+          // tx failed
+          console.error(response);
+          throw new Error(`[${response.code}] ${response.rawLog}`);
+        }
+        return response;
+      default:
+        throw new Error(`unsupported BroadcastTxMode: ${mode}`)
+    }
+  }
+
   async signAndBroadcast(
     signerAddress: string,
     messages: readonly EncodeObject[],
-    fee: StdFee,
-    memo = "",
-    explicitSignerData?: SignerData,
+    opts: CarbonTx.SignTxOpts,
   ): Promise<BroadcastTxResponse> {
+    const fee = opts.fee ?? DEFAULT_FEE
+    const memo = opts.memo ?? ""
+    const explicitSignerData = opts.explicitSignerData
+    const mode = opts.mode ?? CarbonTx.BroadcastTxMode.BroadcastTxBlock
     const endpoint = this.networkConfig.rpcURL;
     const signingClient = await SigningStargateClient.connectWithSigner(endpoint, this, {
       registry,
     });
     const txRaw = await signingClient.sign(signerAddress, messages, fee, memo, explicitSignerData);
     const txBytes = TxRaw.encode(txRaw).finish();
-    return signingClient.broadcastTx(txBytes, signingClient.broadcastTimeoutMs, signingClient.broadcastPollIntervalMs);
+    return this.broadcastTx(signingClient, txBytes, signingClient.broadcastTimeoutMs, signingClient.broadcastPollIntervalMs, mode);
   }
 
   async sendTxs(msgs: EncodeObject[], opts: CarbonTx.SignTxOpts): Promise<BroadcastTxResponse> {
-    const response = await this.signAndBroadcast(
-      this.bech32Address,
-      msgs,
-      opts.fee ?? DEFAULT_FEE,
-      opts.memo ?? "",
-      opts.explicitSignerData,
-    );
-
-    if (isBroadcastTxFailure(response)) {
-      // tx failed
-      console.error(response);
-      throw new Error(`[${response.code}] ${response.rawLog}`);
-    }
-
-    return response;
+    return this.signAndBroadcast(this.bech32Address, msgs, opts);
   }
 
   async sendTx(msg: EncodeObject, opts: CarbonTx.SignTxOpts = CarbonTx.DEFAULT_SIGN_OPTS): Promise<BroadcastTxResponse> {
