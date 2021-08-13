@@ -3,8 +3,8 @@ import { DEFAULT_FEE, DEFAULT_NETWORK, Network, NetworkConfig, NetworkConfigs } 
 import { AddressUtils, CarbonTx, GenericUtils } from "@carbon-sdk/util";
 import { StdSignature } from "@cosmjs/amino";
 import { AccountData, DirectSignResponse, EncodeObject, OfflineDirectSigner } from "@cosmjs/proto-signing";
-import { BroadcastTxResponse, isBroadcastTxFailure, SigningStargateClient } from "@cosmjs/stargate";
-import { SignDoc } from "@cosmjs/stargate/build/codec/cosmos/tx/v1beta1/tx";
+import { BroadcastTxResponse, isBroadcastTxFailure, SignerData, SigningStargateClient, StdFee } from "@cosmjs/stargate";
+import { SignDoc, TxRaw } from "@cosmjs/stargate/build/codec/cosmos/tx/v1beta1/tx";
 import { CarbonPrivateKeySigner, CarbonSigner } from "./CarbonSigner";
 
 export type CarbonWalletInitOpts = {
@@ -103,17 +103,29 @@ export class CarbonWallet implements OfflineDirectSigner {
     return this;
   }
 
-  async sendTxs(msgs: EncodeObject[], opts: CarbonTx.SignTxOpts): Promise<BroadcastTxResponse> {
+  async signAndBroadcast(
+    signerAddress: string,
+    messages: readonly EncodeObject[],
+    fee: StdFee,
+    memo = "",
+    explicitSignerData?: SignerData,
+  ): Promise<BroadcastTxResponse> {
     const endpoint = this.networkConfig.rpcURL;
     const signingClient = await SigningStargateClient.connectWithSigner(endpoint, this, {
       registry,
     });
+    const txRaw = await signingClient.sign(signerAddress, messages, fee, memo, explicitSignerData);
+    const txBytes = TxRaw.encode(txRaw).finish();
+    return signingClient.broadcastTx(txBytes, signingClient.broadcastTimeoutMs, signingClient.broadcastPollIntervalMs);
+  }
 
-    const response = await signingClient.signAndBroadcast(
+  async sendTxs(msgs: EncodeObject[], opts: CarbonTx.SignTxOpts): Promise<BroadcastTxResponse> {
+    const response = await this.signAndBroadcast(
       this.bech32Address,
       msgs,
       opts.fee ?? DEFAULT_FEE,
       opts.memo ?? "",
+      opts.explicitSignerData,
     );
 
     if (isBroadcastTxFailure(response)) {

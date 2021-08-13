@@ -1,11 +1,13 @@
 import { TxTypes } from "@carbon-sdk/codec";
 import { DEFAULT_FEE } from "@carbon-sdk/constant";
 import { StdFee } from "@cosmjs/amino";
+import { SignerData } from "@cosmjs/stargate";
 
 export namespace CarbonTx {
   export interface SignTxOpts {
     fee?: StdFee;
     memo?: string;
+    explicitSignerData?: SignerData;
   }
 
   export interface TxLog {
