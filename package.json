@@ -8,6 +8,7 @@
   "author": "Switcheo <engineering@switcheo.network>",
   "license": "MIT",
   "scripts": {
+    "watch": "nodemon yarn build",
     "build": "tsc && tsc-alias",
     "sync-proto": "sh scripts/update-proto.sh",
     "test": "tsc && node lib/test.js",
@@ -19,6 +20,14 @@
     "version": "yarn run format && git add -A src",
     "postversion": "git push && git push --tags",
     "ws": "^7.4.6"
+  },
+  "nodemonConfig": {
+    "delay": 500,
+    "ext": "ts, css, js, json",
+    "watch": [
+      "./src",
+      "./package.json"
+    ]
   },
   "files": [
     "lib/**/*",
@@ -46,6 +55,7 @@
     "@types/secp256k1": "^4.0.2",
     "@types/wif": "^2.0.2",
     "dotenv": "^10.0.0",
+    "nodemon": "^2.0.12",
     "ts-proto": "^1.81.1"
   }
 }
