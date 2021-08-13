@@ -37,7 +37,7 @@ export type CarbonWalletInitOpts = {
     }
   );
 
-export type BroadcastTxResponse = BroadcastTxAsyncResponse | BroadcastTxSyncResponse | BroadcastTxBlockResponse
+export type BroadcastTxResponse = BroadcastTxSyncResponse | BroadcastTxBlockResponse
 
 export class CarbonWallet implements OfflineDirectSigner {
   network: Network;
@@ -116,14 +116,9 @@ export class CarbonWallet implements OfflineDirectSigner {
     mode: CarbonTx.BroadcastTxMode,
   ): Promise<BroadcastTxResponse> {
     switch (mode) {
-      case CarbonTx.BroadcastTxMode.BroadcastTxAsync: {
-        const tmClient = await Tendermint34Client.connect(this.networkConfig.rpcURL);
-        return tmClient.broadcastTxAsync({ tx })
-      }
-      case CarbonTx.BroadcastTxMode.BroadcastTxSync: {
+      case CarbonTx.BroadcastTxMode.BroadcastTxSync:
         const tmClient = await Tendermint34Client.connect(this.networkConfig.rpcURL);
         return tmClient.broadcastTxSync({ tx })
-      }
       case CarbonTx.BroadcastTxMode.BroadcastTxBlock:
         const response = await signingClient.broadcastTx(tx, timeoutMs, pollIntervalMs)
         if (isBroadcastTxFailure(response)) {

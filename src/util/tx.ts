@@ -41,7 +41,6 @@ export namespace CarbonTx {
   }
 
   export enum BroadcastTxMode {
-    BroadcastTxAsync = 'async',
     BroadcastTxSync = 'sync',
     BroadcastTxBlock = 'block',
   }
