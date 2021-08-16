@@ -144,15 +144,15 @@ export namespace OrderModule {
   export interface CreateOrderParams {
     market: string
 
-    side: "buy" | "sell"
-    orderType: "limit" | "market" | "stop-limit" | "stop-market" | "liquidation"
+    side: OrderSide.Buy | OrderSide.Sell
+    orderType: OrderType.Limit | OrderType.Market | OrderType.StopLimit | OrderType.StopMarket | OrderType.Liquidation
 
     price: BigNumber
     quantity: BigNumber
     stopPrice?: BigNumber
 
     timeInForce?: "gtc" | "fok" | "ioc"
-    triggerType?: "last_price" | "mark_price" | "index_price"
+    triggerType?: TriggerType.LastPrice | TriggerType.MarkPrice | TriggerType.IndexPrice
 
     isPostOnly?: boolean
     isReduceOnly?: boolean
@@ -167,5 +167,24 @@ export namespace OrderModule {
 
   export interface CancelAllParams {
     market: string
+  }
+
+  export enum OrderType {
+    Limit = "limit",
+    Market = "market",
+    StopLimit = "stop-limit",
+    StopMarket = "stop-market",
+    Liquidation = "liquidation",
+  }
+
+  export enum OrderSide {
+    Buy = "buy",
+    Sell = "sell",
+  }
+
+  export enum TriggerType {
+    LastPrice = "last_price",
+    MarkPrice = "mark_price",
+    IndexPrice = "index_price",
   }
 };
