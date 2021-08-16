@@ -25,7 +25,7 @@ import { MsgCreateSubAccount, MsgCreateSubAccountResponse, MsgActivateSubAccount
 import { MsgCreateMarket, MsgCreateMarketResponse, MsgUpdateMarket, MsgUpdateMarketResponse } from "./market/tx";
 import { MsgCreatePool, MsgCreatePoolResponse, MsgCreatePoolWithLiquidity, MsgCreatePoolWithLiquidityResponse, MsgAddLiquidity, MsgAddLiquidityResponse, MsgRemoveLiquidity, MsgRemoveLiquidityResponse, MsgLinkPool, MsgLinkPoolResponse, MsgUnlinkPool, MsgUnlinkPoolResponse, MsgSetRewardsWeights, MsgSetRewardsWeightsResponse, MsgStakePoolToken, MsgStakePoolTokenResponse, MsgUnstakePoolToken, MsgUnstakePoolTokenResponse, MsgClaimPoolRewards, MsgClaimPoolRewardsResponse, MsgSetRewardCurve, MsgSetRewardCurveResponse, MsgChangeSwapFee, MsgChangeSwapFeeResponse, MsgSetCommitmentCurve, MsgSetCommitmentCurveResponse, MsgChangeNumQuotes, MsgChangeNumQuotesResponse } from "./liquiditypool/tx";
 
-export * as Cosmos from './cosmos-models'
+export * from './cosmos-models'
 
 export const registry = new Registry();
 

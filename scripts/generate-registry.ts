@@ -31,7 +31,7 @@ for (const moduleFile of codecFiles) {
 
 console.log("");
 const cosmosModelsImportPath = path.relative(registryFile, cosmosModelsFile)
-console.log(`export * as Cosmos from '${cosmosModelsImportPath.replace(/^\.\./i, '.').replace(/\.ts$/i, '')}'`);
+console.log(`export * from '${cosmosModelsImportPath.replace(/^\.\./i, '.').replace(/\.ts$/i, '')}'`);
 
 console.log("");
 console.log("export const registry = new Registry();");
