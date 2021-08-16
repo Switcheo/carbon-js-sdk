@@ -1,16 +1,18 @@
 
 import path from "path";
+import fs from "fs";
 
 const files = process.argv;
 const cmd = files.shift()
 const thisFile = files.shift()
 
-const [pwd, registryFile] = files.splice(files.length - 2, 2);
+const [pwd, registryFile, cosmosModelsFile] = files.slice(-3);
+const codecFiles = files.slice(1, files.length - 3);
 
 console.log(`import { Registry } from "@cosmjs/proto-signing";`);
 
 const modules: { [name: string]: string[] } = {};
-for (const moduleFile of files) {
+for (const moduleFile of codecFiles) {
   if (!moduleFile.endsWith("/tx.ts")) {
     continue
   }
@@ -26,6 +28,10 @@ for (const moduleFile of files) {
     console.log(`import { ${messages.join(", ")} } from "${relativePath}";`)
   }
 }
+
+console.log("");
+const cosmosModelsImportPath = path.relative(registryFile, cosmosModelsFile)
+console.log(`export * as Cosmos from '${cosmosModelsImportPath.replace(/^\.\./i, '.').replace(/\.ts$/i, '')}'`);
 
 console.log("");
 console.log("export const registry = new Registry();");
@@ -45,19 +51,23 @@ console.log(`export const TxTypes = ${JSON.stringify(typeMap, null, 2)}\n`);
 
 console.log("");
 console.log('// Exported for convenience');
-for (const moduleFile of files) {
-  const directoryBlacklist = ['cosmos', 'ibc', 'tendermint']
-  const fileNameBlacklist = ['genesis.ts', 'keys.ts']
-  const modelBlacklist = ['MsgClientImpl', 'protobufPackage', 'GenesisState', 'QueryClientImpl']
+const directoryBlacklist = ['cosmos', 'ibc', 'tendermint']
+const fileNameBlacklist = ['genesis.ts', 'keys.ts']
+const modelBlacklist = ['MsgClientImpl', 'protobufPackage', 'GenesisState', 'QueryClientImpl']
+
+for (const moduleFile of codecFiles) {
+  if (!moduleFile.endsWith(".ts")) {
+    continue
+  }
 
   const file = moduleFile.split("/")
   const fileName = file[file.length - 1]
   const firstDirectory = file[2]
-  
+
   if (directoryBlacklist.includes(firstDirectory) || fileNameBlacklist.includes(fileName)) continue
 
-  const codecModule = require(`${pwd}/${moduleFile}`);
-  
+  const codecModule = require(`${pwd}/${moduleFile.replace(/\.ts$/i, '')}`);
+
   const messages = Object.keys(codecModule).filter((key) =>
     !modelBlacklist.includes(key)
   );

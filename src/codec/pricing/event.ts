@@ -7,10 +7,9 @@ export const protobufPackage = "Switcheo.carbon.pricing";
 
 export interface PriceUpdateEvent {
   prices?: Prices;
-  market: string;
 }
 
-const basePriceUpdateEvent: object = { market: "" };
+const basePriceUpdateEvent: object = {};
 
 export const PriceUpdateEvent = {
   encode(
@@ -19,9 +18,6 @@ export const PriceUpdateEvent = {
   ): _m0.Writer {
     if (message.prices !== undefined) {
       Prices.encode(message.prices, writer.uint32(10).fork()).ldelim();
-    }
-    if (message.market !== "") {
-      writer.uint32(18).string(message.market);
     }
     return writer;
   },
@@ -35,9 +31,6 @@ export const PriceUpdateEvent = {
       switch (tag >>> 3) {
         case 1:
           message.prices = Prices.decode(reader, reader.uint32());
-          break;
-        case 2:
-          message.market = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -54,11 +47,6 @@ export const PriceUpdateEvent = {
     } else {
       message.prices = undefined;
     }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = String(object.market);
-    } else {
-      message.market = "";
-    }
     return message;
   },
 
@@ -66,7 +54,6 @@ export const PriceUpdateEvent = {
     const obj: any = {};
     message.prices !== undefined &&
       (obj.prices = message.prices ? Prices.toJSON(message.prices) : undefined);
-    message.market !== undefined && (obj.market = message.market);
     return obj;
   },
 
@@ -76,11 +63,6 @@ export const PriceUpdateEvent = {
       message.prices = Prices.fromPartial(object.prices);
     } else {
       message.prices = undefined;
-    }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = object.market;
-    } else {
-      message.market = "";
     }
     return message;
   },

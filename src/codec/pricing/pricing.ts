@@ -13,6 +13,7 @@ export interface Prices {
   markAvg: string;
   settlement: string;
   fairIndexDeltaAvg: string;
+  market: string;
   markingStrategy: string;
   indexUpdatedAt?: Date;
   settlementCounter: string;
@@ -26,6 +27,7 @@ const basePrices: object = {
   markAvg: "",
   settlement: "",
   fairIndexDeltaAvg: "",
+  market: "",
   markingStrategy: "",
   settlementCounter: "",
 };
@@ -56,17 +58,20 @@ export const Prices = {
     if (message.fairIndexDeltaAvg !== "") {
       writer.uint32(58).string(message.fairIndexDeltaAvg);
     }
+    if (message.market !== "") {
+      writer.uint32(66).string(message.market);
+    }
     if (message.markingStrategy !== "") {
-      writer.uint32(66).string(message.markingStrategy);
+      writer.uint32(74).string(message.markingStrategy);
     }
     if (message.indexUpdatedAt !== undefined) {
       Timestamp.encode(
         toTimestamp(message.indexUpdatedAt),
-        writer.uint32(74).fork()
+        writer.uint32(82).fork()
       ).ldelim();
     }
     if (message.settlementCounter !== "") {
-      writer.uint32(82).string(message.settlementCounter);
+      writer.uint32(98).string(message.settlementCounter);
     }
     return writer;
   },
@@ -100,14 +105,17 @@ export const Prices = {
           message.fairIndexDeltaAvg = reader.string();
           break;
         case 8:
-          message.markingStrategy = reader.string();
+          message.market = reader.string();
           break;
         case 9:
+          message.markingStrategy = reader.string();
+          break;
+        case 10:
           message.indexUpdatedAt = fromTimestamp(
             Timestamp.decode(reader, reader.uint32())
           );
           break;
-        case 10:
+        case 12:
           message.settlementCounter = reader.string();
           break;
         default:
@@ -158,6 +166,11 @@ export const Prices = {
     } else {
       message.fairIndexDeltaAvg = "";
     }
+    if (object.market !== undefined && object.market !== null) {
+      message.market = String(object.market);
+    } else {
+      message.market = "";
+    }
     if (
       object.markingStrategy !== undefined &&
       object.markingStrategy !== null
@@ -192,6 +205,7 @@ export const Prices = {
     message.settlement !== undefined && (obj.settlement = message.settlement);
     message.fairIndexDeltaAvg !== undefined &&
       (obj.fairIndexDeltaAvg = message.fairIndexDeltaAvg);
+    message.market !== undefined && (obj.market = message.market);
     message.markingStrategy !== undefined &&
       (obj.markingStrategy = message.markingStrategy);
     message.indexUpdatedAt !== undefined &&
@@ -240,6 +254,11 @@ export const Prices = {
       message.fairIndexDeltaAvg = object.fairIndexDeltaAvg;
     } else {
       message.fairIndexDeltaAvg = "";
+    }
+    if (object.market !== undefined && object.market !== null) {
+      message.market = object.market;
+    } else {
+      message.market = "";
     }
     if (
       object.markingStrategy !== undefined &&

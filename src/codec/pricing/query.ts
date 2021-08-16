@@ -2,6 +2,10 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Prices } from "../pricing/pricing";
+import {
+  PageRequest,
+  PageResponse,
+} from "../cosmos/base/query/v1beta1/pagination";
 
 export const protobufPackage = "Switcheo.carbon.pricing";
 
@@ -11,6 +15,15 @@ export interface QueryPriceRequest {
 
 export interface QueryPriceResponse {
   prices?: Prices;
+}
+
+export interface QueryAllPriceRequest {
+  pagination?: PageRequest;
+}
+
+export interface QueryAllPriceResponse {
+  pricess: Prices[];
+  pagination?: PageResponse;
 }
 
 export interface QueryRateRequest {
@@ -134,6 +147,165 @@ export const QueryPriceResponse = {
       message.prices = Prices.fromPartial(object.prices);
     } else {
       message.prices = undefined;
+    }
+    return message;
+  },
+};
+
+const baseQueryAllPriceRequest: object = {};
+
+export const QueryAllPriceRequest = {
+  encode(
+    message: QueryAllPriceRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAllPriceRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseQueryAllPriceRequest } as QueryAllPriceRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllPriceRequest {
+    const message = { ...baseQueryAllPriceRequest } as QueryAllPriceRequest;
+    if (object.pagination !== undefined && object.pagination !== null) {
+      message.pagination = PageRequest.fromJSON(object.pagination);
+    } else {
+      message.pagination = undefined;
+    }
+    return message;
+  },
+
+  toJSON(message: QueryAllPriceRequest): unknown {
+    const obj: any = {};
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<QueryAllPriceRequest>): QueryAllPriceRequest {
+    const message = { ...baseQueryAllPriceRequest } as QueryAllPriceRequest;
+    if (object.pagination !== undefined && object.pagination !== null) {
+      message.pagination = PageRequest.fromPartial(object.pagination);
+    } else {
+      message.pagination = undefined;
+    }
+    return message;
+  },
+};
+
+const baseQueryAllPriceResponse: object = {};
+
+export const QueryAllPriceResponse = {
+  encode(
+    message: QueryAllPriceResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.pricess) {
+      Prices.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAllPriceResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseQueryAllPriceResponse } as QueryAllPriceResponse;
+    message.pricess = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.pricess.push(Prices.decode(reader, reader.uint32()));
+          break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllPriceResponse {
+    const message = { ...baseQueryAllPriceResponse } as QueryAllPriceResponse;
+    message.pricess = [];
+    if (object.pricess !== undefined && object.pricess !== null) {
+      for (const e of object.pricess) {
+        message.pricess.push(Prices.fromJSON(e));
+      }
+    }
+    if (object.pagination !== undefined && object.pagination !== null) {
+      message.pagination = PageResponse.fromJSON(object.pagination);
+    } else {
+      message.pagination = undefined;
+    }
+    return message;
+  },
+
+  toJSON(message: QueryAllPriceResponse): unknown {
+    const obj: any = {};
+    if (message.pricess) {
+      obj.pricess = message.pricess.map((e) =>
+        e ? Prices.toJSON(e) : undefined
+      );
+    } else {
+      obj.pricess = [];
+    }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAllPriceResponse>
+  ): QueryAllPriceResponse {
+    const message = { ...baseQueryAllPriceResponse } as QueryAllPriceResponse;
+    message.pricess = [];
+    if (object.pricess !== undefined && object.pricess !== null) {
+      for (const e of object.pricess) {
+        message.pricess.push(Prices.fromPartial(e));
+      }
+    }
+    if (object.pagination !== undefined && object.pagination !== null) {
+      message.pagination = PageResponse.fromPartial(object.pagination);
+    } else {
+      message.pagination = undefined;
     }
     return message;
   },
@@ -277,6 +449,7 @@ export const QueryRateResponse = {
 export interface Query {
   /** this line is used by starport scaffolding # 2 */
   Price(request: QueryPriceRequest): Promise<QueryPriceResponse>;
+  PriceAll(request: QueryAllPriceRequest): Promise<QueryAllPriceResponse>;
   Rate(request: QueryRateRequest): Promise<QueryRateResponse>;
 }
 
@@ -285,6 +458,7 @@ export class QueryClientImpl implements Query {
   constructor(rpc: Rpc) {
     this.rpc = rpc;
     this.Price = this.Price.bind(this);
+    this.PriceAll = this.PriceAll.bind(this);
     this.Rate = this.Rate.bind(this);
   }
   Price(request: QueryPriceRequest): Promise<QueryPriceResponse> {
@@ -296,6 +470,18 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryPriceResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  PriceAll(request: QueryAllPriceRequest): Promise<QueryAllPriceResponse> {
+    const data = QueryAllPriceRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.pricing.Query",
+      "PriceAll",
+      data
+    );
+    return promise.then((data) =>
+      QueryAllPriceResponse.decode(new _m0.Reader(data))
     );
   }
 

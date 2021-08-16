@@ -4,7 +4,6 @@ import { MsgSetTradingFlag, MsgSetTradingFlagResponse, MsgCreateOrder, MsgCreate
 import { MsgAddCollateral, MsgAddCollateralResponse, MsgRemoveCollateral, MsgRemoveCollateralResponse, MsgAddDebt, MsgAddDebtResponse, MsgRemoveDebt, MsgRemoveDebtResponse, MsgCreateVaultType, MsgCreateVaultTypeResponse } from "./cdp/tx";
 import { MsgInitiateLiquidation, MsgInitiateLiquidationResponse } from "./broker/tx";
 import { MsgSetFee, MsgSetFeeResponse } from "./fee/tx";
-import { MsgFee } from "./fee/fee";
 import { MsgSetMargin, MsgSetMarginResponse } from "./position/tx";
 import { MsgCreateOracle, MsgCreateOracleResponse, MsgCreateVote, MsgCreateVoteResponse } from "./oracle/tx";
 import { MsgSubmitEvidence, MsgSubmitEvidenceResponse } from "./cosmos/evidence/v1beta1/tx";
@@ -14,7 +13,6 @@ import { MsgVerifyInvariant, MsgVerifyInvariantResponse } from "./cosmos/crisis/
 import { MsgCreateVestingAccount, MsgCreateVestingAccountResponse } from "./cosmos/vesting/v1beta1/tx";
 import { MsgCreateValidator, MsgCreateValidatorResponse, MsgEditValidator, MsgEditValidatorResponse, MsgDelegate, MsgDelegateResponse, MsgBeginRedelegate, MsgBeginRedelegateResponse, MsgUndelegate, MsgUndelegateResponse } from "./cosmos/staking/v1beta1/tx";
 import { MsgUnjail, MsgUnjailResponse } from "./cosmos/slashing/v1beta1/tx";
-import { MsgData } from "./cosmos/base/abci/v1beta1/abci";
 import { MsgSubmitProposal, MsgSubmitProposalResponse, MsgVote, MsgVoteResponse, MsgDeposit, MsgDepositResponse } from "./cosmos/gov/v1beta1/tx";
 import { MsgConnectionOpenInit, MsgConnectionOpenInitResponse, MsgConnectionOpenTry, MsgConnectionOpenTryResponse, MsgConnectionOpenAck, MsgConnectionOpenAckResponse, MsgConnectionOpenConfirm, MsgConnectionOpenConfirmResponse } from "./ibc/core/connection/v1/tx";
 import { MsgChannelOpenInit, MsgChannelOpenInitResponse, MsgChannelOpenTry, MsgChannelOpenTryResponse, MsgChannelOpenAck, MsgChannelOpenAckResponse, MsgChannelOpenConfirm, MsgChannelOpenConfirmResponse, MsgChannelCloseInit, MsgChannelCloseInitResponse, MsgChannelCloseConfirm, MsgChannelCloseConfirmResponse, MsgRecvPacket, MsgRecvPacketResponse, MsgTimeout, MsgTimeoutResponse, MsgTimeoutOnClose, MsgTimeoutOnCloseResponse, MsgAcknowledgement, MsgAcknowledgementResponse } from "./ibc/core/channel/v1/tx";
@@ -27,10 +25,9 @@ import { MsgCreateSubAccount, MsgCreateSubAccountResponse, MsgActivateSubAccount
 import { MsgCreateMarket, MsgCreateMarketResponse, MsgUpdateMarket, MsgUpdateMarketResponse } from "./market/tx";
 import { MsgCreatePool, MsgCreatePoolResponse, MsgCreatePoolWithLiquidity, MsgCreatePoolWithLiquidityResponse, MsgAddLiquidity, MsgAddLiquidityResponse, MsgRemoveLiquidity, MsgRemoveLiquidityResponse, MsgLinkPool, MsgLinkPoolResponse, MsgUnlinkPool, MsgUnlinkPoolResponse, MsgSetRewardsWeights, MsgSetRewardsWeightsResponse, MsgStakePoolToken, MsgStakePoolTokenResponse, MsgUnstakePoolToken, MsgUnstakePoolTokenResponse, MsgClaimPoolRewards, MsgClaimPoolRewardsResponse, MsgSetRewardCurve, MsgSetRewardCurveResponse, MsgChangeSwapFee, MsgChangeSwapFeeResponse, MsgSetCommitmentCurve, MsgSetCommitmentCurveResponse, MsgChangeNumQuotes, MsgChangeNumQuotesResponse } from "./liquiditypool/tx";
 
-export const registry = new Registry();
+export * as Cosmos from './cosmos-models'
 
-registry.register("/Switcheo.carbon.fee.MsgSetFee", MsgSetFee);
-registry.register("/Switcheo.carbon.fee.MsgSetFeeResponse", MsgSetFeeResponse);
+export const registry = new Registry();
 
 registry.register("/Switcheo.carbon.order.MsgSetTradingFlag", MsgSetTradingFlag);
 registry.register("/Switcheo.carbon.order.MsgSetTradingFlagResponse", MsgSetTradingFlagResponse);
@@ -57,7 +54,8 @@ registry.register("/Switcheo.carbon.cdp.MsgCreateVaultTypeResponse", MsgCreateVa
 registry.register("/Switcheo.carbon.broker.MsgInitiateLiquidation", MsgInitiateLiquidation);
 registry.register("/Switcheo.carbon.broker.MsgInitiateLiquidationResponse", MsgInitiateLiquidationResponse);
 
-registry.register("/Switcheo.carbon.fee.MsgFee", MsgFee);
+registry.register("/Switcheo.carbon.fee.MsgSetFee", MsgSetFee);
+registry.register("/Switcheo.carbon.fee.MsgSetFeeResponse", MsgSetFeeResponse);
 
 registry.register("/Switcheo.carbon.position.MsgSetMargin", MsgSetMargin);
 registry.register("/Switcheo.carbon.position.MsgSetMarginResponse", MsgSetMarginResponse);
@@ -103,8 +101,6 @@ registry.register("/cosmos.staking.v1beta1.MsgUndelegateResponse", MsgUndelegate
 
 registry.register("/cosmos.slashing.v1beta1.MsgUnjail", MsgUnjail);
 registry.register("/cosmos.slashing.v1beta1.MsgUnjailResponse", MsgUnjailResponse);
-
-registry.register("/cosmos.base.abci.v1beta1.MsgData", MsgData);
 
 registry.register("/cosmos.gov.v1beta1.MsgSubmitProposal", MsgSubmitProposal);
 registry.register("/cosmos.gov.v1beta1.MsgSubmitProposalResponse", MsgSubmitProposalResponse);
@@ -216,8 +212,6 @@ registry.register("/Switcheo.carbon.liquiditypool.MsgChangeNumQuotes", MsgChange
 registry.register("/Switcheo.carbon.liquiditypool.MsgChangeNumQuotesResponse", MsgChangeNumQuotesResponse);
 
 export const TxTypes = {
-  "MsgSetFee": "/Switcheo.carbon.fee.MsgSetFee",
-  "MsgSetFeeResponse": "/Switcheo.carbon.fee.MsgSetFeeResponse",
   "MsgSetTradingFlag": "/Switcheo.carbon.order.MsgSetTradingFlag",
   "MsgSetTradingFlagResponse": "/Switcheo.carbon.order.MsgSetTradingFlagResponse",
   "MsgCreateOrder": "/Switcheo.carbon.order.MsgCreateOrder",
@@ -240,7 +234,8 @@ export const TxTypes = {
   "MsgCreateVaultTypeResponse": "/Switcheo.carbon.cdp.MsgCreateVaultTypeResponse",
   "MsgInitiateLiquidation": "/Switcheo.carbon.broker.MsgInitiateLiquidation",
   "MsgInitiateLiquidationResponse": "/Switcheo.carbon.broker.MsgInitiateLiquidationResponse",
-  "MsgFee": "/Switcheo.carbon.fee.MsgFee",
+  "MsgSetFee": "/Switcheo.carbon.fee.MsgSetFee",
+  "MsgSetFeeResponse": "/Switcheo.carbon.fee.MsgSetFeeResponse",
   "MsgSetMargin": "/Switcheo.carbon.position.MsgSetMargin",
   "MsgSetMarginResponse": "/Switcheo.carbon.position.MsgSetMarginResponse",
   "MsgCreateOracle": "/Switcheo.carbon.oracle.MsgCreateOracle",
@@ -277,7 +272,6 @@ export const TxTypes = {
   "MsgUndelegateResponse": "/cosmos.staking.v1beta1.MsgUndelegateResponse",
   "MsgUnjail": "/cosmos.slashing.v1beta1.MsgUnjail",
   "MsgUnjailResponse": "/cosmos.slashing.v1beta1.MsgUnjailResponse",
-  "MsgData": "/cosmos.base.abci.v1beta1.MsgData",
   "MsgSubmitProposal": "/cosmos.gov.v1beta1.MsgSubmitProposal",
   "MsgSubmitProposalResponse": "/cosmos.gov.v1beta1.MsgSubmitProposalResponse",
   "MsgVote": "/cosmos.gov.v1beta1.MsgVote",
@@ -450,5 +444,5 @@ export { EventDataInsuranceFundTransfer } from "./insurance/event";
 export { FundByMarket, Fund } from "./insurance/fund";
 export { Prices } from "./pricing/pricing";
 export { SettlementPriceProposal, SettlementPriceParams } from "./pricing/proposal";
-export { QueryPriceRequest, QueryPriceResponse, QueryRateRequest, QueryRateResponse } from "./pricing/query";
+export { QueryPriceRequest, QueryPriceResponse, QueryAllPriceRequest, QueryAllPriceResponse, QueryRateRequest, QueryRateResponse } from "./pricing/query";
 export { PriceUpdateEvent } from "./pricing/event";
