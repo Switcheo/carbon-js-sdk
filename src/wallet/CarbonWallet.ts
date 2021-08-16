@@ -111,10 +111,14 @@ export class CarbonWallet implements OfflineDirectSigner {
   async broadcastTx(
     signingClient: SigningStargateClient,
     tx: Uint8Array,
-    timeoutMs = 60_000,
-    pollIntervalMs = 3_000,
-    mode: CarbonTx.BroadcastTxMode,
+    opts: CarbonTx.BroadcastTxOpts,
   ): Promise<BroadcastTxResponse> {
+    const {
+      mode = CarbonTx.BroadcastTxMode.BroadcastTxBlock,
+      pollIntervalMs = 3_000,
+      timeoutMs = 60_000,
+    } = opts;
+
     switch (mode) {
       case CarbonTx.BroadcastTxMode.BroadcastTxSync:
         const tmClient = await Tendermint34Client.connect(this.networkConfig.rpcURL);
@@ -135,19 +139,27 @@ export class CarbonWallet implements OfflineDirectSigner {
   async signAndBroadcast(
     signerAddress: string,
     messages: readonly EncodeObject[],
-    opts: CarbonTx.SignTxOpts,
+    opts: CarbonTx.SignAndBroadcastOpts,
   ): Promise<BroadcastTxResponse> {
-    const fee = opts.fee ?? DEFAULT_FEE
-    const memo = opts.memo ?? ""
-    const explicitSignerData = opts.explicitSignerData
-    const mode = opts.mode ?? CarbonTx.BroadcastTxMode.BroadcastTxBlock
+    const {
+      fee = DEFAULT_FEE,
+      memo = "",
+      explicitSignerData,
+      ...broadcastOpts
+    } = opts;
+
     const endpoint = this.networkConfig.rpcURL;
     const signingClient = await SigningStargateClient.connectWithSigner(endpoint, this, {
       registry,
     });
     const txRaw = await signingClient.sign(signerAddress, messages, fee, memo, explicitSignerData);
     const txBytes = TxRaw.encode(txRaw).finish();
-    return this.broadcastTx(signingClient, txBytes, signingClient.broadcastTimeoutMs, signingClient.broadcastPollIntervalMs, mode);
+
+    return this.broadcastTx(signingClient, txBytes, {
+      mode: broadcastOpts.mode,
+      pollIntervalMs: broadcastOpts.pollIntervalMs ?? signingClient.broadcastPollIntervalMs,
+      timeoutMs: broadcastOpts.pollIntervalMs ?? signingClient.broadcastTimeoutMs,
+    });
   }
 
   async sendTxs(msgs: EncodeObject[], opts: CarbonTx.SignTxOpts): Promise<BroadcastTxResponse> {

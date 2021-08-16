@@ -4,12 +4,24 @@ import { StdFee } from "@cosmjs/amino";
 import { SignerData } from "@cosmjs/stargate";
 
 export namespace CarbonTx {
+
+  export enum BroadcastTxMode {
+    BroadcastTxSync = 'sync',
+    BroadcastTxBlock = 'block',
+  }
   export interface SignTxOpts {
     fee?: StdFee;
     memo?: string;
     explicitSignerData?: SignerData;
+  }
+
+  export interface BroadcastTxOpts {
+    timeoutMs?: number
+    pollIntervalMs?: number
     mode?: BroadcastTxMode;
   }
+
+  export type SignAndBroadcastOpts = Partial<SignTxOpts & BroadcastTxOpts>
 
   export interface TxLog {
     msg_index: number;
@@ -38,10 +50,5 @@ export namespace CarbonTx {
   export const DEFAULT_SIGN_OPTS: CarbonTx.SignTxOpts = {
     fee: DEFAULT_FEE,
     memo: "",
-  }
-
-  export enum BroadcastTxMode {
-    BroadcastTxSync = 'sync',
-    BroadcastTxBlock = 'block',
   }
 }
