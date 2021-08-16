@@ -144,15 +144,15 @@ export namespace OrderModule {
   export interface CreateOrderParams {
     market: string
 
-    side: OrderSide.Buy | OrderSide.Sell
-    orderType: OrderType.Limit | OrderType.Market | OrderType.StopLimit | OrderType.StopMarket | OrderType.Liquidation
+    side: OrderSideOpts
+    orderType: OrderTypeOpts
 
     price: BigNumber
     quantity: BigNumber
     stopPrice?: BigNumber
 
     timeInForce?: "gtc" | "fok" | "ioc"
-    triggerType?: TriggerType.LastPrice | TriggerType.MarkPrice | TriggerType.IndexPrice
+    triggerType?: TriggerTypeOpts
 
     isPostOnly?: boolean
     isReduceOnly?: boolean
@@ -187,4 +187,23 @@ export namespace OrderModule {
     MarkPrice = "mark_price",
     IndexPrice = "index_price",
   }
+
+  export type OrderTypeOpts =
+    OrderType.Limit |
+    OrderType.Market |
+    OrderType.StopLimit |
+    OrderType.StopMarket |
+    OrderType.Liquidation
+  ;
+
+  export type OrderSideOpts =
+    OrderSide.Buy |
+    OrderSide.Sell
+  ;
+
+  export type TriggerTypeOpts =
+    TriggerType.LastPrice |
+    TriggerType.MarkPrice |
+    TriggerType.IndexPrice
+  ;
 };
