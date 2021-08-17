@@ -1,12 +1,11 @@
 import { registry } from "@carbon-sdk/codec";
-import { toHex } from "@cosmjs/encoding";
 import { DEFAULT_FEE, DEFAULT_NETWORK, Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
 import { AddressUtils, CarbonTx, GenericUtils } from "@carbon-sdk/util";
 import { StdSignature } from "@cosmjs/amino";
 import { AccountData, DirectSignResponse, EncodeObject, OfflineDirectSigner } from "@cosmjs/proto-signing";
 import { BroadcastTxResponse as BroadcastTxBlockResponse, isBroadcastTxFailure, SignerData, SigningStargateClient, StdFee } from "@cosmjs/stargate";
 import { SignDoc, TxRaw } from "@cosmjs/stargate/build/codec/cosmos/tx/v1beta1/tx";
-import { BroadcastTxAsyncResponse, BroadcastTxSyncResponse } from "@cosmjs/tendermint-rpc/build/tendermint34/responses";
+import { BroadcastTxSyncResponse } from "@cosmjs/tendermint-rpc/build/tendermint34/responses";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import { CarbonPrivateKeySigner, CarbonSigner } from "./CarbonSigner";
 
@@ -121,7 +120,7 @@ export class CarbonWallet implements OfflineDirectSigner {
 
     switch (mode) {
       case CarbonTx.BroadcastTxMode.BroadcastTxSync:
-        const tmClient = await Tendermint34Client.connect(this.networkConfig.rpcURL);
+        const tmClient = await Tendermint34Client.connect(this.networkConfig.rpcUrl);
         return tmClient.broadcastTxSync({ tx })
       case CarbonTx.BroadcastTxMode.BroadcastTxBlock:
         const response = await signingClient.broadcastTx(tx, timeoutMs, pollIntervalMs)
@@ -148,7 +147,7 @@ export class CarbonWallet implements OfflineDirectSigner {
       ...broadcastOpts
     } = opts;
 
-    const endpoint = this.networkConfig.rpcURL;
+    const endpoint = this.networkConfig.rpcUrl;
     const signingClient = await SigningStargateClient.connectWithSigner(endpoint, this, {
       registry,
     });
