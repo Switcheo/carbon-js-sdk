@@ -66,12 +66,12 @@ class CarbonTokenClient {
     return this.usdValues[commonDenom];
   }
 
-  public getHuman(denom: string, unitlessAmt: BigNumber): BigNumber {
+  public toHuman(denom: string, unitlessAmt: BigNumber): BigNumber {
     const decimals = this.getDecimals(denom);
     return decimals ? unitlessAmt.shiftedBy(-decimals) : unitlessAmt;
   }
 
-  public getUnitless(denom: string, humanAmt: BigNumber): BigNumber {
+  public toUnitless(denom: string, humanAmt: BigNumber): BigNumber {
     const decimals = this.getDecimals(denom);
     return decimals ? humanAmt.shiftedBy(decimals) : humanAmt;
   }
