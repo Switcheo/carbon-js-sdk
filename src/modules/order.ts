@@ -14,7 +14,7 @@ export class OrderModule extends BaseModule {
       isReduceOnly: params.isReduceOnly,
       market: params.market,
       orderType: params.orderType,
-      price: params.price.shiftedBy(18).toString(10),
+      price: params.price?.shiftedBy(18).toString(10),
       quantity: params.quantity.shiftedBy(18).toString(10),
       side: params.side,
       stopPrice: params.stopPrice?.shiftedBy(18).toString(10),
@@ -38,7 +38,7 @@ export class OrderModule extends BaseModule {
         isReduceOnly: params.isReduceOnly,
         market: params.market,
         orderType: params.orderType,
-        price: params.price.shiftedBy(18).toString(10),
+        price: params.price?.shiftedBy(18).toString(10),
         quantity: params.quantity.shiftedBy(18).toString(10),
         side: params.side,
         stopPrice: params.stopPrice?.shiftedBy(18).toString(10),
@@ -144,15 +144,15 @@ export namespace OrderModule {
   export interface CreateOrderParams {
     market: string
 
-    side: "buy" | "sell"
-    orderType: "limit" | "market" | "stop-limit" | "stop-market" | "liquidation"
+    side: OrderSide
+    orderType: OrderType
 
-    price: BigNumber
+    price?: BigNumber
     quantity: BigNumber
     stopPrice?: BigNumber
 
     timeInForce?: "gtc" | "fok" | "ioc"
-    triggerType?: "last_price" | "mark_price" | "index_price"
+    triggerType?: TriggerType
 
     isPostOnly?: boolean
     isReduceOnly?: boolean
@@ -167,5 +167,24 @@ export namespace OrderModule {
 
   export interface CancelAllParams {
     market: string
+  }
+
+  export enum OrderType {
+    Limit = "limit",
+    Market = "market",
+    StopLimit = "stop-limit",
+    StopMarket = "stop-market",
+    Liquidation = "liquidation",
+  }
+
+  export enum OrderSide {
+    Buy = "buy",
+    Sell = "sell",
+  }
+
+  export enum TriggerType {
+    LastPrice = "last_price",
+    MarkPrice = "mark_price",
+    IndexPrice = "index_price",
   }
 };
