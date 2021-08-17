@@ -2,6 +2,7 @@ import { DEFAULT_NETWORK, Network, Network as _Network, NetworkConfig, NetworkCo
 import { GenericUtils, NetworkUtils } from "@carbon-sdk/util";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import CarbonQueryClient from "./CarbonQueryClient";
+import CarbonTokenClient from "./CarbonTokenClient";
 import { OrderModule, LiquidityPoolModule, SubAccountModule, ProfileModule, CDPModule, LeverageModule, MarketModule, BrokerModule, PositionModule, CoinModule, OracleModule, GovModule, BankModule, AdminModule } from "./modules";
 import { CarbonSigner, CarbonWallet } from "./wallet";
 
@@ -40,6 +41,7 @@ class CarbonSDK {
   networkConfig: NetworkConfig;
   tmClient: Tendermint34Client;
   restClient?: any;
+  token: CarbonTokenClient;
 
   admin: AdminModule;
   order: OrderModule;
@@ -64,6 +66,7 @@ class CarbonSDK {
     this.tmClient = opts.tmClient;
     this.query = new CarbonQueryClient(opts.tmClient);
     this.restClient = opts.config?.restURL;
+    this.token = CarbonTokenClient.instance(this.query);
 
     this.admin = new AdminModule(this);
     this.order = new OrderModule(this);
@@ -89,6 +92,8 @@ class CarbonSDK {
     const tmClient = await Tendermint34Client.connect(networkConfig.rpcURL);
 
     const sdk = new CarbonSDK({ network, config: configOverride, tmClient });
+
+    await sdk.token.initialize();
 
     return sdk;
   }

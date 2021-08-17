@@ -1,5 +1,5 @@
 import { MsgAddCollateral, MsgAddDebt, MsgRemoveCollateral, MsgRemoveDebt } from "@carbon-sdk/codec/cdp/tx";
-import { CarbonTx } from "@carbon-sdk/util/tx";
+import { CarbonTx } from "@carbon-sdk/util";
 import BaseModule from "./base";
 import { BigNumber } from "bignumber.js";
 import Long from "long";

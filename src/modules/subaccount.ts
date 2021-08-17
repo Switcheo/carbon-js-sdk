@@ -1,5 +1,5 @@
 import { MsgActivateSubAccount, MsgCreateSubAccount } from "@carbon-sdk/codec/subaccount/tx";
-import { CarbonTx } from "@carbon-sdk/util/tx";
+import { CarbonTx } from "@carbon-sdk/util";
 import BaseModule from "./base";
 
 export class SubAccountModule extends BaseModule {

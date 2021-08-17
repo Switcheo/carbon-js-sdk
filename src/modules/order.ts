@@ -1,5 +1,5 @@
 import { MsgCancelAll, MsgCancelOrder, MsgCreateOrder, MsgEditOrder } from "@carbon-sdk/codec/order/tx";
-import { CarbonTx } from "@carbon-sdk/util/tx";
+import { CarbonTx } from "@carbon-sdk/util";
 import BaseModule from "./base";
 import { BigNumber } from "bignumber.js";
 

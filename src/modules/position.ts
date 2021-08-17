@@ -1,5 +1,5 @@
 import { MsgSetMargin } from "@carbon-sdk/codec/position/tx";
-import { CarbonTx } from "@carbon-sdk/util/tx";
+import { CarbonTx } from "@carbon-sdk/util";
 import { BigNumber } from "bignumber.js";
 import BaseModule from "./base";
 

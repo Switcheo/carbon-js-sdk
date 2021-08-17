@@ -1,5 +1,5 @@
 import { MsgCreateVote } from "@carbon-sdk/codec/oracle/tx";
-import { CarbonTx } from "@carbon-sdk/util/tx";
+import { CarbonTx } from "@carbon-sdk/util";
 import BaseModule from "./base";
 import Long from "long";
 
