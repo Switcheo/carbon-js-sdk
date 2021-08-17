@@ -51,16 +51,29 @@ class CarbonTokenClient {
   public getCommonDenom(denom: string): string {
     return CommonAssetName[denom] ?? denom;
   }
+
   public getDecimals(denom: string): number | undefined {
     return (this.tokens[denom] ?? this.poolTokens[denom])?.decimals.toNumber();
   }
+
   public getSymbol(denom: string): string {
     const commonDenom = this.getCommonDenom(denom);
     return this.symbols[commonDenom] ?? commonDenom.toUpperCase();
   }
+
   public getUSDValue(denom: string): BigNumber | undefined {
     const commonDenom = this.getCommonDenom(denom);
     return this.usdValues[commonDenom];
+  }
+
+  public getHuman(denom: string, unitlessAmt: BigNumber): BigNumber {
+    const decimals = this.getDecimals(denom);
+    return decimals ? unitlessAmt.shiftedBy(-decimals) : unitlessAmt;
+  }
+
+  public getUnitless(denom: string, humanAmt: BigNumber): BigNumber {
+    const decimals = this.getDecimals(denom);
+    return decimals ? humanAmt.shiftedBy(decimals) : humanAmt;
   }
 
   public getTokenName(denom: string, overrideMap?: TypeUtils.SimpleMap<string>): string {
