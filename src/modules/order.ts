@@ -14,7 +14,7 @@ export class OrderModule extends BaseModule {
       isReduceOnly: params.isReduceOnly,
       market: params.market,
       orderType: params.orderType,
-      price: params.price.shiftedBy(18).toString(10),
+      price: params.price?.shiftedBy(18).toString(10),
       quantity: params.quantity.shiftedBy(18).toString(10),
       side: params.side,
       stopPrice: params.stopPrice?.shiftedBy(18).toString(10),
@@ -38,7 +38,7 @@ export class OrderModule extends BaseModule {
         isReduceOnly: params.isReduceOnly,
         market: params.market,
         orderType: params.orderType,
-        price: params.price.shiftedBy(18).toString(10),
+        price: params.price?.shiftedBy(18).toString(10),
         quantity: params.quantity.shiftedBy(18).toString(10),
         side: params.side,
         stopPrice: params.stopPrice?.shiftedBy(18).toString(10),
@@ -147,7 +147,7 @@ export namespace OrderModule {
     side: OrderSide
     orderType: OrderType
 
-    price: BigNumber
+    price?: BigNumber
     quantity: BigNumber
     stopPrice?: BigNumber
 
