@@ -1,5 +1,7 @@
 import BigNumber from "bignumber.js";
-import { BN_ZERO } from "../constant";
+
+export const BN_ONE = new BigNumber(1);
+export const BN_ZERO = new BigNumber(0);
 
 export const parseBN = (input?: string | BigNumber | number, defaultValue?: BigNumber) => {
   if (!input && input !== 0) return defaultValue;
