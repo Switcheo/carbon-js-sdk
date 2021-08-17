@@ -44,6 +44,7 @@
     "bip39": "^3.0.4",
     "dayjs": "^1.10.5",
     "ethers": "^5.3.0",
+    "node-fetch": "^2.6.1",
     "secp256k1": "^4.0.2",
     "secp256r1": "^0.0.3",
     "tsc-alias": "^1.2.11",
@@ -52,6 +53,7 @@
   },
   "devDependencies": {
     "@types/node": "^15.6.2",
+    "@types/node-fetch": "^2.5.12",
     "@types/secp256k1": "^4.0.2",
     "@types/wif": "^2.0.2",
     "dotenv": "^10.0.0",
