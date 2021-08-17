@@ -2,19 +2,21 @@ import Long from "long";
 import { CarbonSDK } from "./_sdk";
 import "./_setup";
 
-const TRPC_ENDPOINT = process.env.TRPC_ENDPOINT ?? "http://localhost:26657";
-
 (async () => {
   const sdk = await CarbonSDK.instance({
     network: CarbonSDK.Network.LocalHost,
     config: {
-      rpcURL: TRPC_ENDPOINT,
+      rpcUrl: process.env.TRPC_ENDPOINT,
     },
   });
 
   // query all tokens
   const tokens = await sdk.query.coin.TokenAll({})
   console.log("tokens", tokens);
+
+  // query all token mappings
+  const mappings = await sdk.query.coin.WrapperMappings({})
+  console.log("mappings", mappings);
 
   // query all markets
   const markets = await sdk.query.market.MarketAll({})

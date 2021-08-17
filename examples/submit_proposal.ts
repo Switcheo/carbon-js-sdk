@@ -4,8 +4,6 @@ import "./_setup";
 import { coins } from "@cosmjs/amino";
 import BigNumber from "bignumber.js";
 
-const TRPC_ENDPOINT = process.env.TRPC_ENDPOINT ?? "http://localhost:26657";
-
 (async () => {
   const mnemonics = process.env.MNEMONICS ?? BIP39.generateMnemonic();
   console.log("mnemonics", mnemonics);
@@ -13,7 +11,7 @@ const TRPC_ENDPOINT = process.env.TRPC_ENDPOINT ?? "http://localhost:26657";
   const sdk = await CarbonSDK.instance({
     network: CarbonSDK.Network.LocalHost,
     config: {
-      rpcURL: TRPC_ENDPOINT,
+      rpcUrl: process.env.TRPC_ENDPOINT,
     },
   });
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
