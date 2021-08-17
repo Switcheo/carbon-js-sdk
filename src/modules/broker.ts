@@ -1,5 +1,5 @@
 import { MsgInitiateLiquidation } from "@carbon-sdk/codec/broker/tx";
-import { CarbonTx } from "@carbon-sdk/util/tx";
+import { CarbonTx } from "@carbon-sdk/util";
 import BaseModule from "./base";
 
 export class BrokerModule extends BaseModule {

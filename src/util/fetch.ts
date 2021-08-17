@@ -1,6 +1,6 @@
 import nodeFetch from 'node-fetch';
 
-export default function fetch(
+export function fetch(
   url: string,
   init?: RequestInit,
 ): Promise<Response> {

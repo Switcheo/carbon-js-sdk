@@ -1,5 +1,5 @@
 import { MsgUpdateMarket } from "@carbon-sdk/codec/market/tx";
-import { CarbonTx } from "@carbon-sdk/util/tx";
+import { CarbonTx } from "@carbon-sdk/util";
 import BaseModule from "./base";
 import { BigNumber } from "bignumber.js";
 import {Duration} from "@carbon-sdk/codec/google/protobuf/duration";

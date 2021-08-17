@@ -1,7 +1,7 @@
 import { BigNumber } from "bignumber.js";
 import * as BIP39 from "bip39";
 import { MsgCreateOrder } from "../lib/codec/order/tx";
-import { CarbonTx } from "../lib/util/tx";
+import { CarbonTx } from "../lib/util";
 import { CarbonSDK } from "./_sdk";
 import "./_setup";
 

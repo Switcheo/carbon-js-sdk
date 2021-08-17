@@ -1,5 +1,5 @@
 import { MsgWithdraw } from "@carbon-sdk/codec/coin/tx";
-import { CarbonTx } from "@carbon-sdk/util/tx";
+import { CarbonTx } from "@carbon-sdk/util";
 import BigNumber from "bignumber.js";
 import BaseModule from "./base";
 

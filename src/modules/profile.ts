@@ -1,5 +1,5 @@
 import { MsgUpdateProfile } from "@carbon-sdk/codec/profile/tx";
-import { CarbonTx } from "@carbon-sdk/util/tx";
+import { CarbonTx } from "@carbon-sdk/util";
 import BaseModule from "./base";
 
 export class ProfileModule extends BaseModule {

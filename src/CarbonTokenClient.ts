@@ -2,8 +2,7 @@ import BigNumber from "bignumber.js";
 import CarbonQueryClient from "./CarbonQueryClient";
 import { Token } from "./codec";
 import { CoinGeckoTokenNames, CommonAssetName } from "./constant";
-import { Blockchain, bnOrZero, SimpleMap } from "./util";
-import fetch from "./util/fetch";
+import { BlockChainUtils, FetchUtils, NumberUtils, TypeUtils } from "./util";
 
 const SYMBOL_OVERRIDE: {
   [symbol: string]: string
@@ -19,13 +18,13 @@ const SYMBOL_OVERRIDE: {
 };
 
 class CarbonTokenClient {
-  public readonly tokens: SimpleMap<Token> = {};
-  public readonly wrapperMap: SimpleMap<string> = {};
-  public readonly poolTokens: SimpleMap<Token> = {};
-  public readonly symbols: SimpleMap<string> = {};
-  public readonly usdValues: SimpleMap<BigNumber> = {};
+  public readonly tokens: TypeUtils.SimpleMap<Token> = {};
+  public readonly wrapperMap: TypeUtils.SimpleMap<string> = {};
+  public readonly poolTokens: TypeUtils.SimpleMap<Token> = {};
+  public readonly symbols: TypeUtils.SimpleMap<string> = {};
+  public readonly usdValues: TypeUtils.SimpleMap<BigNumber> = {};
 
-  private additionalGeckoDenoms: SimpleMap<string> = {};
+  private additionalGeckoDenoms: TypeUtils.SimpleMap<string> = {};
 
   private constructor(
     public readonly query: CarbonQueryClient,
@@ -42,7 +41,7 @@ class CarbonTokenClient {
     await this.reloadUSDValues();
   }
 
-  public registerGeckoIdMap(map: SimpleMap<string>) {
+  public registerGeckoIdMap(map: TypeUtils.SimpleMap<string>) {
     this.additionalGeckoDenoms = {
       ...this.additionalGeckoDenoms,
       ...map,
@@ -64,7 +63,7 @@ class CarbonTokenClient {
     return this.usdValues[commonDenom];
   }
 
-  public getTokenName(denom: string, overrideMap?: SimpleMap<string>): string {
+  public getTokenName(denom: string, overrideMap?: TypeUtils.SimpleMap<string>): string {
     if (typeof denom !== 'string') return '';
     denom = denom.toLowerCase();
 
@@ -121,7 +120,7 @@ class CarbonTokenClient {
     return denom.match(/^([a-z\d.-]+)-(\d+)-([a-z\d.-]+)-(\d+)-lp\d+$/i) !== null;
   }
 
-  public getWrappedToken(denom: string, blockchain?: Blockchain): Token | null {
+  public getWrappedToken(denom: string, blockchain?: BlockChainUtils.Blockchain): Token | null {
     // check if denom is wrapped token
     if (this.wrapperMap[denom]) {
       return this.tokens[denom];
@@ -161,7 +160,7 @@ class CarbonTokenClient {
     return null;
   }
 
-  public async reloadTokens(): Promise<SimpleMap<Token>> {
+  public async reloadTokens(): Promise<TypeUtils.SimpleMap<Token>> {
     const tokenResponse = await this.query.coin.TokenAll({});
 
     for (const token of tokenResponse.tokens) {
@@ -180,13 +179,13 @@ class CarbonTokenClient {
     return this.tokens;
   }
 
-  public async reloadWrapperMap(): Promise<SimpleMap<string>> {
+  public async reloadWrapperMap(): Promise<TypeUtils.SimpleMap<string>> {
     const mappingResponse = await this.query.coin.WrapperMappings({});
     Object.assign(this.wrapperMap, mappingResponse.WrapperMappings ?? {});
     return this.wrapperMap;
   }
 
-  public async reloadUSDValues(denoms: string[] = Object.keys(this.tokens)): Promise<SimpleMap<BigNumber>> {
+  public async reloadUSDValues(denoms: string[] = Object.keys(this.tokens)): Promise<TypeUtils.SimpleMap<BigNumber>> {
     // flatten duplicate denoms
     const commonDenoms = denoms.reduce((accum, denom) => {
       if (CarbonTokenClient.isPoolToken(denom)) {
@@ -200,15 +199,15 @@ class CarbonTokenClient {
       }
 
       return accum;
-    }, {} as SimpleMap);
+    }, {} as TypeUtils.SimpleMap);
     const coinIds = Object.keys(commonDenoms).map((denom) => CoinGeckoTokenNames[denom] ?? denom);
 
-    const request = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${coinIds.join(',')}&vs_currencies=usd`);
+    const request = await FetchUtils.fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${coinIds.join(',')}&vs_currencies=usd`);
     const response = await request.json();
 
     for (const denom in commonDenoms) {
       const coinId = CoinGeckoTokenNames[denom];
-      const price = bnOrZero(response?.[coinId]?.usd);
+      const price = NumberUtils.bnOrZero(response?.[coinId]?.usd);
       if (price?.gt(0)) {
         this.usdValues[denom] = price!;
       }

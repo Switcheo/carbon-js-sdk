@@ -1,5 +1,5 @@
 import { MsgAddLiquidity, MsgClaimPoolRewards, MsgCreatePool, MsgCreatePoolWithLiquidity, MsgRemoveLiquidity, MsgStakePoolToken, MsgUnstakePoolToken } from "@carbon-sdk/codec/liquiditypool/tx";
-import { CarbonTx } from "@carbon-sdk/util/tx";
+import { CarbonTx } from "@carbon-sdk/util";
 import BaseModule from "./base";
 import { BigNumber } from "bignumber.js";
 import Long from "long";
