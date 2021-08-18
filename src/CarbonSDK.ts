@@ -40,7 +40,6 @@ class CarbonSDK {
   configOverride: Partial<NetworkConfig>;
   networkConfig: NetworkConfig;
   tmClient: Tendermint34Client;
-  restClient?: any;
   token: CarbonTokenClient;
 
   admin: AdminModule;
@@ -65,7 +64,6 @@ class CarbonSDK {
 
     this.tmClient = opts.tmClient;
     this.query = new CarbonQueryClient(opts.tmClient);
-    this.restClient = opts.config?.restURL;
     this.token = CarbonTokenClient.instance(this.query);
 
     this.admin = new AdminModule(this);

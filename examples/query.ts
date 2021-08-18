@@ -40,25 +40,31 @@ import "./_setup";
   console.log("profiles", profiles);
 
   // Tendermint Queries
-  console.log('connect stargate')
-  // TODO: refactor stargate client init, add to CarbonSDK
-  const stargateClient: StargateClient = new (StargateClient as any)(sdk.tmClient)
+  // Note: sdk.query.chain is an instance of BlockchainClient
+  // BlockchainClient is a wrapper of StargateClient
+  // StargateClient is a wrapper of Tendermint34Client
 
   // query latest block
-  const block = await stargateClient.getBlock();
+  const block = await sdk.query.chain.getBlock();
   console.log("block", block)
   console.log("block tx hashes", block.txs.map(GenericUtils.computeTxHash))
 
+  const txHash = GenericUtils.computeTxHash(block.txs[0])!;
+
   // get tx
-  const result = await sdk.tmClient.txSearchAll({
-    query: "tx.height=" + block.header.height
+  const txs = await sdk.query.chain.searchTx({
+    tags: [{
+      key: "tx.hash",
+      value: txHash,
+    }]
   })
-  console.log("tx", result.txs[0])
-  console.log("tx events", result.txs[0].result.events)
-  console.log("tx hash", GenericUtils.toTxHash(result.txs[0].hash))
+  const [tx] = txs; 
+  console.log("tx", tx)
+  console.log("tx hash", tx.hash)
+  console.log("tx events", JSON.parse(tx.rawLog))
 
   // decode tx
-  const decodedTx = CarbonTx.decode(result.txs[0].tx)
+  const decodedTx = CarbonTx.decode(tx.tx)
   console.log("tx decoded", JSON.stringify(decodedTx))
   console.log("tx msgs", decodedTx?.body?.messages)
 })().catch(console.error).finally(() => process.exit(0));

@@ -26,8 +26,9 @@ import { QueryClientImpl as ParamsQueryClient } from "@carbon-sdk/codec/cosmos/p
 import { QueryClientImpl as SlashingQueryClient } from "@carbon-sdk/codec/cosmos/slashing/v1beta1/query";
 import { QueryClientImpl as StakingQueryClient } from "@carbon-sdk/codec/cosmos/staking/v1beta1/query";
 import { QueryClientImpl as UpgradeQueryClient } from "@carbon-sdk/codec/cosmos/upgrade/v1beta1/query";
-import { createProtobufRpcClient, QueryClient } from "@cosmjs/stargate";
+import { createProtobufRpcClient, QueryClient, StargateClient } from "@cosmjs/stargate";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
+import { BlockchainClient } from "./clients";
 
 class CarbonQueryClient {
   adl: ADLQueryClient;
@@ -60,6 +61,8 @@ class CarbonQueryClient {
   staking: StakingQueryClient;
   upgrade: UpgradeQueryClient;
 
+  chain: BlockchainClient;
+
   private baseClient: QueryClient;
 
   constructor(
@@ -67,6 +70,8 @@ class CarbonQueryClient {
   ) {
     this.baseClient = new QueryClient(this.tmClient);
     const rpcClient = createProtobufRpcClient(this.baseClient);
+
+    this.chain = BlockchainClient.connectWithTm(this.tmClient);
 
     this.adl = new ADLQueryClient(rpcClient);
     this.book = new BookQueryClient(rpcClient);
