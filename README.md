@@ -58,6 +58,7 @@ To generate the tar ball on Carbon chain project:
 
 Install `buf` if you have not:
 ```bash
+  # https://docs.buf.build/installation
   brew tap bufbuild/buf
   brew install buf
 ```
