@@ -6,8 +6,8 @@ Try out the [examples](./examples/). The project has to be built before you can 
 
 ```bash
 
-# install ts-node
-npm i -g ts-node
+# install ts-node, typescript
+npm i -g ts-node typescript
 
 # build the SDK
 yarn build

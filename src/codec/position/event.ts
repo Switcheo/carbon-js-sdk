@@ -7,21 +7,23 @@ export const protobufPackage = "Switcheo.carbon.position";
 
 export interface PositionEvent {
   position?: Position;
+  id: Long;
   type: string;
   allocatedMarginDenom: string;
   allocatedMarginAmount: string;
   updatedBlockHeight: Long;
-  orderId: string;
-  counterpartyOrderId: string;
+  tradeId: Long;
+  updateReason: Long;
 }
 
 const basePositionEvent: object = {
+  id: Long.UZERO,
   type: "",
   allocatedMarginDenom: "",
   allocatedMarginAmount: "",
   updatedBlockHeight: Long.UZERO,
-  orderId: "",
-  counterpartyOrderId: "",
+  tradeId: Long.UZERO,
+  updateReason: Long.UZERO,
 };
 
 export const PositionEvent = {
@@ -32,23 +34,26 @@ export const PositionEvent = {
     if (message.position !== undefined) {
       Position.encode(message.position, writer.uint32(10).fork()).ldelim();
     }
+    if (!message.id.isZero()) {
+      writer.uint32(16).uint64(message.id);
+    }
     if (message.type !== "") {
-      writer.uint32(18).string(message.type);
+      writer.uint32(26).string(message.type);
     }
     if (message.allocatedMarginDenom !== "") {
-      writer.uint32(26).string(message.allocatedMarginDenom);
+      writer.uint32(34).string(message.allocatedMarginDenom);
     }
     if (message.allocatedMarginAmount !== "") {
-      writer.uint32(34).string(message.allocatedMarginAmount);
+      writer.uint32(42).string(message.allocatedMarginAmount);
     }
     if (!message.updatedBlockHeight.isZero()) {
-      writer.uint32(40).uint64(message.updatedBlockHeight);
+      writer.uint32(48).uint64(message.updatedBlockHeight);
     }
-    if (message.orderId !== "") {
-      writer.uint32(50).string(message.orderId);
+    if (!message.tradeId.isZero()) {
+      writer.uint32(56).uint64(message.tradeId);
     }
-    if (message.counterpartyOrderId !== "") {
-      writer.uint32(58).string(message.counterpartyOrderId);
+    if (!message.updateReason.isZero()) {
+      writer.uint32(64).uint64(message.updateReason);
     }
     return writer;
   },
@@ -64,22 +69,25 @@ export const PositionEvent = {
           message.position = Position.decode(reader, reader.uint32());
           break;
         case 2:
-          message.type = reader.string();
+          message.id = reader.uint64() as Long;
           break;
         case 3:
-          message.allocatedMarginDenom = reader.string();
+          message.type = reader.string();
           break;
         case 4:
-          message.allocatedMarginAmount = reader.string();
+          message.allocatedMarginDenom = reader.string();
           break;
         case 5:
-          message.updatedBlockHeight = reader.uint64() as Long;
+          message.allocatedMarginAmount = reader.string();
           break;
         case 6:
-          message.orderId = reader.string();
+          message.updatedBlockHeight = reader.uint64() as Long;
           break;
         case 7:
-          message.counterpartyOrderId = reader.string();
+          message.tradeId = reader.uint64() as Long;
+          break;
+        case 8:
+          message.updateReason = reader.uint64() as Long;
           break;
         default:
           reader.skipType(tag & 7);
@@ -95,6 +103,11 @@ export const PositionEvent = {
       message.position = Position.fromJSON(object.position);
     } else {
       message.position = undefined;
+    }
+    if (object.id !== undefined && object.id !== null) {
+      message.id = Long.fromString(object.id);
+    } else {
+      message.id = Long.UZERO;
     }
     if (object.type !== undefined && object.type !== null) {
       message.type = String(object.type);
@@ -125,18 +138,15 @@ export const PositionEvent = {
     } else {
       message.updatedBlockHeight = Long.UZERO;
     }
-    if (object.orderId !== undefined && object.orderId !== null) {
-      message.orderId = String(object.orderId);
+    if (object.tradeId !== undefined && object.tradeId !== null) {
+      message.tradeId = Long.fromString(object.tradeId);
     } else {
-      message.orderId = "";
+      message.tradeId = Long.UZERO;
     }
-    if (
-      object.counterpartyOrderId !== undefined &&
-      object.counterpartyOrderId !== null
-    ) {
-      message.counterpartyOrderId = String(object.counterpartyOrderId);
+    if (object.updateReason !== undefined && object.updateReason !== null) {
+      message.updateReason = Long.fromString(object.updateReason);
     } else {
-      message.counterpartyOrderId = "";
+      message.updateReason = Long.UZERO;
     }
     return message;
   },
@@ -147,6 +157,8 @@ export const PositionEvent = {
       (obj.position = message.position
         ? Position.toJSON(message.position)
         : undefined);
+    message.id !== undefined &&
+      (obj.id = (message.id || Long.UZERO).toString());
     message.type !== undefined && (obj.type = message.type);
     message.allocatedMarginDenom !== undefined &&
       (obj.allocatedMarginDenom = message.allocatedMarginDenom);
@@ -156,9 +168,10 @@ export const PositionEvent = {
       (obj.updatedBlockHeight = (
         message.updatedBlockHeight || Long.UZERO
       ).toString());
-    message.orderId !== undefined && (obj.orderId = message.orderId);
-    message.counterpartyOrderId !== undefined &&
-      (obj.counterpartyOrderId = message.counterpartyOrderId);
+    message.tradeId !== undefined &&
+      (obj.tradeId = (message.tradeId || Long.UZERO).toString());
+    message.updateReason !== undefined &&
+      (obj.updateReason = (message.updateReason || Long.UZERO).toString());
     return obj;
   },
 
@@ -168,6 +181,11 @@ export const PositionEvent = {
       message.position = Position.fromPartial(object.position);
     } else {
       message.position = undefined;
+    }
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id as Long;
+    } else {
+      message.id = Long.UZERO;
     }
     if (object.type !== undefined && object.type !== null) {
       message.type = object.type;
@@ -198,18 +216,15 @@ export const PositionEvent = {
     } else {
       message.updatedBlockHeight = Long.UZERO;
     }
-    if (object.orderId !== undefined && object.orderId !== null) {
-      message.orderId = object.orderId;
+    if (object.tradeId !== undefined && object.tradeId !== null) {
+      message.tradeId = object.tradeId as Long;
     } else {
-      message.orderId = "";
+      message.tradeId = Long.UZERO;
     }
-    if (
-      object.counterpartyOrderId !== undefined &&
-      object.counterpartyOrderId !== null
-    ) {
-      message.counterpartyOrderId = object.counterpartyOrderId;
+    if (object.updateReason !== undefined && object.updateReason !== null) {
+      message.updateReason = object.updateReason as Long;
     } else {
-      message.counterpartyOrderId = "";
+      message.updateReason = Long.UZERO;
     }
     return message;
   },

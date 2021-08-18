@@ -22,6 +22,7 @@ export interface TradeEvent {
   price: string;
   quantity: string;
   liquidation: string;
+  id: Long;
 }
 
 const baseTradeEvent: object = {
@@ -40,6 +41,7 @@ const baseTradeEvent: object = {
   price: "",
   quantity: "",
   liquidation: "",
+  id: Long.UZERO,
 };
 
 export const TradeEvent = {
@@ -97,6 +99,9 @@ export const TradeEvent = {
     }
     if (message.liquidation !== "") {
       writer.uint32(130).string(message.liquidation);
+    }
+    if (!message.id.isZero()) {
+      writer.uint32(136).uint64(message.id);
     }
     return writer;
   },
@@ -157,6 +162,9 @@ export const TradeEvent = {
           break;
         case 16:
           message.liquidation = reader.string();
+          break;
+        case 17:
+          message.id = reader.uint64() as Long;
           break;
         default:
           reader.skipType(tag & 7);
@@ -248,6 +256,11 @@ export const TradeEvent = {
     } else {
       message.liquidation = "";
     }
+    if (object.id !== undefined && object.id !== null) {
+      message.id = Long.fromString(object.id);
+    } else {
+      message.id = Long.UZERO;
+    }
     return message;
   },
 
@@ -278,6 +291,8 @@ export const TradeEvent = {
     message.quantity !== undefined && (obj.quantity = message.quantity);
     message.liquidation !== undefined &&
       (obj.liquidation = message.liquidation);
+    message.id !== undefined &&
+      (obj.id = (message.id || Long.UZERO).toString());
     return obj;
   },
 
@@ -362,6 +377,11 @@ export const TradeEvent = {
       message.liquidation = object.liquidation;
     } else {
       message.liquidation = "";
+    }
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id as Long;
+    } else {
+      message.id = Long.UZERO;
     }
     return message;
   },

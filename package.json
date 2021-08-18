@@ -10,6 +10,7 @@
   "scripts": {
     "watch": "nodemon yarn build",
     "build": "tsc && tsc-alias",
+    "cp-proto": "cp ~/go/src/github.com/Switcheo/carbon/gen/proto-ts.tar.gz .",
     "sync-proto": "sh scripts/update-proto.sh",
     "test": "tsc && node lib/test.js",
     "format": "prettier --write \"src/**/*.ts\"",

@@ -12,9 +12,10 @@ export interface GenesisState {
    * this line is used by starport scaffolding # ibc/genesis/proto
    */
   openPositions: Position[];
+  positionSequence: Long;
 }
 
-const baseGenesisState: object = {};
+const baseGenesisState: object = { positionSequence: Long.UZERO };
 
 export const GenesisState = {
   encode(
@@ -23,6 +24,9 @@ export const GenesisState = {
   ): _m0.Writer {
     for (const v of message.openPositions) {
       Position.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (!message.positionSequence.isZero()) {
+      writer.uint32(16).uint64(message.positionSequence);
     }
     return writer;
   },
@@ -37,6 +41,9 @@ export const GenesisState = {
       switch (tag >>> 3) {
         case 1:
           message.openPositions.push(Position.decode(reader, reader.uint32()));
+          break;
+        case 2:
+          message.positionSequence = reader.uint64() as Long;
           break;
         default:
           reader.skipType(tag & 7);
@@ -54,6 +61,14 @@ export const GenesisState = {
         message.openPositions.push(Position.fromJSON(e));
       }
     }
+    if (
+      object.positionSequence !== undefined &&
+      object.positionSequence !== null
+    ) {
+      message.positionSequence = Long.fromString(object.positionSequence);
+    } else {
+      message.positionSequence = Long.UZERO;
+    }
     return message;
   },
 
@@ -66,6 +81,10 @@ export const GenesisState = {
     } else {
       obj.openPositions = [];
     }
+    message.positionSequence !== undefined &&
+      (obj.positionSequence = (
+        message.positionSequence || Long.UZERO
+      ).toString());
     return obj;
   },
 
@@ -76,6 +95,14 @@ export const GenesisState = {
       for (const e of object.openPositions) {
         message.openPositions.push(Position.fromPartial(e));
       }
+    }
+    if (
+      object.positionSequence !== undefined &&
+      object.positionSequence !== null
+    ) {
+      message.positionSequence = object.positionSequence as Long;
+    } else {
+      message.positionSequence = Long.UZERO;
     }
     return message;
   },
