@@ -1,4 +1,3 @@
-import { StargateClient } from "@cosmjs/stargate";
 import Long from "long";
 import { CarbonSDK, CarbonTx, GenericUtils } from "./_sdk";
 import "./_setup";
