@@ -27,10 +27,10 @@ export class CoinModule extends BaseModule {
     const wallet = this.getWallet();
 
     const value = MsgMintToken.fromPartial({
-      creator: wallet.bech32Address,
+      creator: params.creator ?? wallet.bech32Address,
       denom: params.denom,
       amount: params.amount.toString(10),
-      to: wallet.bech32Address,
+      to: params.to ?? wallet.bech32Address,
     })
 
     return await wallet.sendTx({
@@ -50,9 +50,9 @@ export namespace CoinModule {
   }
 
   export interface MintTokenParams {
-    creator: string,
+    creator?: string,
     denom: string,
     amount: BigNumber,
-    to: string,
+    to?: string,
   }
 };
