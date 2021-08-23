@@ -151,7 +151,7 @@ export namespace OrderModule {
     quantity: BigNumber
     stopPrice?: BigNumber
 
-    timeInForce?: "gtc" | "fok" | "ioc"
+    timeInForce?: TimeInForce
     triggerType?: TriggerType
 
     isPostOnly?: boolean
@@ -186,5 +186,11 @@ export namespace OrderModule {
     LastPrice = "last_price",
     MarkPrice = "mark_price",
     IndexPrice = "index_price",
+  }
+
+  export enum TimeInForce {
+    Gtc = "gtc",
+    Fok = "fok",
+    Ioc = "ioc",
   }
 };
