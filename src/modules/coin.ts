@@ -1,4 +1,4 @@
-import { MsgWithdraw } from "@carbon-sdk/codec/coin/tx";
+import { MsgMintToken, MsgWithdraw } from "@carbon-sdk/codec/coin/tx";
 import { CarbonTx } from "@carbon-sdk/util";
 import BigNumber from "bignumber.js";
 import BaseModule from "./base";
@@ -22,6 +22,22 @@ export class CoinModule extends BaseModule {
       value,
     });
   }
+
+  public async mintToken(params: CoinModule.MintTokenParams) {
+    const wallet = this.getWallet();
+
+    const value = MsgMintToken.fromPartial({
+      creator: params.creator ?? wallet.bech32Address,
+      denom: params.denom,
+      amount: params.amount.toString(10),
+      to: params.to ?? wallet.bech32Address,
+    })
+
+    return await wallet.sendTx({
+      typeUrl: CarbonTx.Types.MsgMintToken,
+      value,
+    })
+  }
 }
 
 export namespace CoinModule {
@@ -31,5 +47,12 @@ export namespace CoinModule {
     amount: BigNumber,
     feeAmount: BigNumber,
     feeAddress: string,
+  }
+
+  export interface MintTokenParams {
+    creator?: string,
+    denom: string,
+    amount: BigNumber,
+    to?: string,
   }
 };
