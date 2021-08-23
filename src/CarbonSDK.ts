@@ -105,7 +105,9 @@ class CarbonSDK {
   }
 
   public async connect(wallet: CarbonWallet) {
-    return new ConnectedCarbonSDK(wallet, this.generateOpts())
+    const connectedSDK = new ConnectedCarbonSDK(wallet, this.generateOpts());
+    await connectedSDK.token.initialize();
+    return connectedSDK;
   }
 
   public async connectWithPrivateKey(privateKey: string | Buffer) {
