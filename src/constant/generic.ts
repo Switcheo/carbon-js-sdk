@@ -8,6 +8,6 @@ export const DEFAULT_GAS_PRICE = new BigNumber(10);
 export const DEFAULT_GAS = new BigNumber(10000000);
 
 export const DEFAULT_FEE: StdFee = {
-  amount: coins(DEFAULT_GAS_PRICE.toNumber(), "swth"),
+  amount: coins(DEFAULT_GAS_PRICE.times(DEFAULT_GAS).toNumber(), "swth"),
   gas: DEFAULT_GAS.toString(10),
 };
