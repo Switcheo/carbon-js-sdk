@@ -1,4 +1,4 @@
-import CarbonQueryClient from "@carbon-sdk/CarbonQueryClient";
+import { CarbonQueryClient } from "@carbon-sdk/clients";
 import { NetworkConfig } from "@carbon-sdk/constant/network";
 import { CarbonWallet } from "@carbon-sdk/wallet/CarbonWallet";
 

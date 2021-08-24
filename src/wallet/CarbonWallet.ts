@@ -1,4 +1,4 @@
-import CarbonQueryClient from "@carbon-sdk/CarbonQueryClient";
+import { CarbonQueryClient } from "@carbon-sdk/clients";
 import { MsgFee, registry } from "@carbon-sdk/codec";
 import { DEFAULT_GAS, DEFAULT_NETWORK, Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
 import { CosmosLedger } from "@carbon-sdk/provider";

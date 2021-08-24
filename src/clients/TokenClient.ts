@@ -1,8 +1,8 @@
+import { Token } from "@carbon-sdk/codec";
+import { CoinGeckoTokenNames, CommonAssetName } from "@carbon-sdk/constant";
+import { BlockChainUtils, FetchUtils, NumberUtils, TypeUtils } from "@carbon-sdk/util";
 import BigNumber from "bignumber.js";
 import CarbonQueryClient from "./CarbonQueryClient";
-import { Token } from "./codec";
-import { CoinGeckoTokenNames, CommonAssetName } from "./constant";
-import { BlockChainUtils, FetchUtils, NumberUtils, TypeUtils } from "./util";
 
 const SYMBOL_OVERRIDE: {
   [symbol: string]: string
@@ -17,7 +17,7 @@ const SYMBOL_OVERRIDE: {
   DBC2: 'DBC',
 };
 
-class CarbonTokenClient {
+class TokenClient {
   public readonly tokens: TypeUtils.SimpleMap<Token> = {};
   public readonly wrapperMap: TypeUtils.SimpleMap<string> = {};
   public readonly poolTokens: TypeUtils.SimpleMap<Token> = {};
@@ -32,7 +32,7 @@ class CarbonTokenClient {
   }
 
   public static instance(query: CarbonQueryClient) {
-    return new CarbonTokenClient(query);
+    return new TokenClient(query);
   }
 
   public async initialize(): Promise<void> {
@@ -81,7 +81,7 @@ class CarbonTokenClient {
     denom = denom.toLowerCase();
 
     const symbol = this.getSymbol(denom);
-    if (CarbonTokenClient.isPoolToken(denom)) {
+    if (TokenClient.isPoolToken(denom)) {
       const match = symbol.match(/^([a-z\d.-]+)-(\d+)-([a-z\d.-]+)-(\d+)-lp\d+$/i);
       // inconsistent implementation of isPoolToken, exit
       if (match === null) return symbol;
@@ -110,7 +110,7 @@ class CarbonTokenClient {
     if (typeof denom !== 'string') return '';
     denom = denom.toLowerCase();
 
-    if (CarbonTokenClient.isPoolToken(denom)) {
+    if (TokenClient.isPoolToken(denom)) {
       const match = denom.match(/^([a-z\d.-]+)-(\d+)-([a-z\d.-]+)-(\d+)-lp\d+$/i);
       // inconsistent implementation of isPoolToken, exit
       if (match === null) return this.getSymbol(denom);
@@ -177,7 +177,7 @@ class CarbonTokenClient {
     const tokenResponse = await this.query.coin.TokenAll({});
 
     for (const token of tokenResponse.tokens) {
-      if (CarbonTokenClient.isPoolToken(token.denom)) {
+      if (TokenClient.isPoolToken(token.denom)) {
         this.poolTokens[token.denom] = token;
       } else {
         this.tokens[token.denom] = token;
@@ -201,7 +201,7 @@ class CarbonTokenClient {
   public async reloadUSDValues(denoms: string[] = Object.keys(this.tokens)): Promise<TypeUtils.SimpleMap<BigNumber>> {
     // flatten duplicate denoms
     const commonDenoms = denoms.reduce((accum, denom) => {
-      if (CarbonTokenClient.isPoolToken(denom)) {
+      if (TokenClient.isPoolToken(denom)) {
         return accum;
       }
 
@@ -230,4 +230,4 @@ class CarbonTokenClient {
   }
 }
 
-export default CarbonTokenClient;
+export default TokenClient;

@@ -1,9 +1,9 @@
 import { DEFAULT_NETWORK, Network, Network as _Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
 import { GenericUtils, NetworkUtils } from "@carbon-sdk/util";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
-import CarbonQueryClient from "./CarbonQueryClient";
-import CarbonTokenClient from "./CarbonTokenClient";
+import { CarbonQueryClient, TokenClient } from "./clients";
 import { AdminModule, BankModule, BrokerModule, CDPModule, CoinModule, GovModule, LeverageModule, LiquidityPoolModule, MarketModule, OracleModule, OrderModule, PositionModule, ProfileModule, SubAccountModule } from "./modules";
+import { StakingModule } from "./modules/staking";
 import { CosmosLedger } from "./provider";
 import { CarbonSigner, CarbonWallet, CarbonWalletGenericOpts } from "./wallet";
 
@@ -44,7 +44,7 @@ class CarbonSDK {
   configOverride: Partial<NetworkConfig>;
   networkConfig: NetworkConfig;
   tmClient: Tendermint34Client;
-  token: CarbonTokenClient;
+  token: TokenClient;
 
   admin: AdminModule;
   order: OrderModule;
@@ -59,6 +59,7 @@ class CarbonSDK {
   coin: CoinModule;
   oracle: OracleModule;
   gov: GovModule;
+  staking: StakingModule;
   bank: BankModule;
 
   constructor(opts: CarbonSDKOpts) {
@@ -68,7 +69,7 @@ class CarbonSDK {
 
     this.tmClient = opts.tmClient;
     this.query = new CarbonQueryClient(opts.tmClient);
-    this.token = CarbonTokenClient.instance(this.query);
+    this.token = TokenClient.instance(this.query);
 
     this.admin = new AdminModule(this);
     this.order = new OrderModule(this);
@@ -83,6 +84,7 @@ class CarbonSDK {
     this.coin = new CoinModule(this);
     this.oracle = new OracleModule(this);
     this.gov = new GovModule(this);
+    this.staking = new StakingModule(this);
     this.bank = new BankModule(this);
   }
 
@@ -197,7 +199,7 @@ class ConnectedCarbonSDK extends CarbonSDK {
 
   constructor(wallet: CarbonWallet, opts: CarbonSDKOpts) {
     super(opts);
-    this.wallet = wallet
+    this.wallet = wallet;
   }
 }
 
