@@ -1,5 +1,4 @@
 import { sha256 } from "@cosmjs/crypto";
-import { Models } from "..";
 
 export const overrideConfig = <T = unknown>(defaults: T, override?: Partial<T>) => {
   const result: T = { ...defaults };

@@ -5,6 +5,8 @@ import { stripHexPrefix } from '@carbon-sdk/util/generic';
 export enum CarbonSignerTypes {
   Ledger,
   PrivateKey,
+  BrowserInjected,
+  PublicKey,
 }
 
 export interface CarbonSigner {
@@ -28,4 +30,12 @@ export class CarbonPrivateKeySigner implements CarbonSigner {
   constructor(
     readonly privateKey: Buffer
   ) { }
+}
+
+export class CarbonNonSigner implements CarbonSigner {
+  type = CarbonSignerTypes.PublicKey
+
+  sign(): Buffer {
+    throw new Error("signing not available");
+  }
 }

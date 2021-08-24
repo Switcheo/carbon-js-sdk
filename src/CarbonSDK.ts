@@ -134,6 +134,10 @@ class CarbonSDK {
     return this.connect(wallet)
   }
 
+  public getConfig(): NetworkConfig {
+    return this.networkConfig;
+  }
+
   public getConnectedWallet(): CarbonWallet {
     return this.checkWallet();
   }

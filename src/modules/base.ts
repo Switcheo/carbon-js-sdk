@@ -1,13 +1,7 @@
-import CarbonQueryClient from "@carbon-sdk/CarbonQueryClient";
+import { SDKProvider } from "@carbon-sdk/provider";
 import { CarbonTx } from "@carbon-sdk/util";
 import { CarbonWallet } from "@carbon-sdk/wallet";
 import { EncodeObject } from "@cosmjs/proto-signing";
-
-export interface SDKProvider {
-  query: CarbonQueryClient;
-  log: (...args: any[]) => void;
-  getConnectedWallet: () => CarbonWallet;
-}
 
 class BaseModule {
   constructor(

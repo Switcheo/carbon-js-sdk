@@ -7,7 +7,7 @@ import { BroadcastTxResponse as BroadcastTxBlockResponse, isBroadcastTxFailure, 
 import { SignDoc, TxRaw } from "@cosmjs/stargate/build/codec/cosmos/tx/v1beta1/tx";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import { BroadcastTxSyncResponse } from "@cosmjs/tendermint-rpc/build/tendermint34/responses";
-import { CarbonPrivateKeySigner, CarbonSigner } from "./CarbonSigner";
+import { CarbonNonSigner, CarbonPrivateKeySigner, CarbonSigner, CarbonSignerTypes } from "./CarbonSigner";
 
 export type CarbonWalletInitOpts = {
   network?: Network;
@@ -19,6 +19,7 @@ export type CarbonWalletInitOpts = {
       privateKey?: string | Buffer;
       signer?: CarbonSigner;
       publicKeyBase64?: string;
+      bech32Address?: string;
     }
     | {
       // connect with private key
@@ -26,6 +27,7 @@ export type CarbonWalletInitOpts = {
       privateKey: string | Buffer;
       signer?: CarbonSigner;
       publicKeyBase64?: string;
+      bech32Address?: string;
     }
     | {
       // connect with custom signer
@@ -33,6 +35,15 @@ export type CarbonWalletInitOpts = {
       privateKey?: string | Buffer;
       signer: CarbonSigner;
       publicKeyBase64: string;
+      bech32Address?: string;
+    }
+    | {
+      // connect with address (view only)
+      mnemonic?: string;
+      privateKey?: string | Buffer;
+      signer?: CarbonSigner;
+      publicKeyBase64?: string;
+      bech32Address: string;
     }
   );
 
@@ -51,10 +62,11 @@ export class CarbonWallet implements OfflineDirectSigner {
   publicKey: Buffer;
 
   constructor(opts: CarbonWalletInitOpts) {
-    this.network = opts.network ?? DEFAULT_NETWORK;
-    this.networkConfig = NetworkConfigs[this.network];
+    const network = opts.network ?? DEFAULT_NETWORK;
+    this.network = network
+    this.networkConfig = NetworkConfigs[network];
     this.configOverride = opts.config ?? {};
-    this.updateNetwork(this.network);
+    this.updateNetwork(network);
 
     this.mnemonic = opts.mnemonic;
     if (this.mnemonic) {
@@ -66,16 +78,21 @@ export class CarbonWallet implements OfflineDirectSigner {
     if (opts.signer) {
       this.signer = opts.signer;
       this.publicKey = Buffer.from(opts.publicKeyBase64!, "base64");
+
+      this.bech32Address = AddressUtils.SWTHAddress.publicKeyToAddress(this.publicKey, { network });
     } else if (this.privateKey) {
       this.signer = new CarbonPrivateKeySigner(this.privateKey);
       this.publicKey = AddressUtils.SWTHAddress.privateToPublicKey(this.privateKey);
+
+      this.bech32Address = AddressUtils.SWTHAddress.publicKeyToAddress(this.publicKey, { network });
+    } else if (opts.bech32Address) {
+      // read-only wallet, without private/public keys
+      this.signer = new CarbonNonSigner();
+      this.publicKey = Buffer.from([]);
+      this.bech32Address = opts.bech32Address;
     } else {
       throw new Error("cannot instantiate wallet signer");
     }
-
-    this.bech32Address = AddressUtils.SWTHAddress.publicKeyToAddress(this.publicKey, {
-      network: this.network,
-    });
   }
 
   public static withPrivateKey(privateKey: string | Buffer, opts: Omit<CarbonWalletInitOpts, "privateKey"> = {}) {
@@ -198,5 +215,21 @@ export class CarbonWallet implements OfflineDirectSigner {
       signature: stdSignature,
       signed: signDoc,
     });
+  }
+
+  isSigner(signerType: CarbonSignerTypes) {
+    return this.signer.type === signerType;
+  }
+
+  isLedgerSigner() {
+    return this.isSigner(CarbonSignerTypes.Ledger);
+  }
+
+  isPrivateKeySigner() {
+    return this.isSigner(CarbonSignerTypes.PrivateKey);
+  }
+
+  isBrowserInjectedSigner() {
+    return this.isSigner(CarbonSignerTypes.BrowserInjected);
   }
 }

@@ -14,6 +14,8 @@ export interface NetworkConfig {
   faucetUrl: string;
   Bech32Prefix: string;
 
+  network: Network;
+
   /** @deprecated use rpcUrl */
   rpcURL: string;
   /** @deprecated use restUrl */
@@ -24,6 +26,8 @@ export const NetworkConfigs: {
   [key in Network]: NetworkConfig;
 } = {
   [Network.MainNet]: {
+    network: Network.MainNet,
+
     rpcUrl: "https://dev-tm-api.carbon.network",
     restUrl: "https://dev-api.carbon.network",
     wsUrl: "wss://dev-ws-api.carbon.network/ws",
@@ -38,6 +42,8 @@ export const NetworkConfigs: {
   },
 
   [Network.TestNet]: {
+    network: Network.TestNet,
+
     rpcUrl: "https://dev-tm-api.carbon.network",
     restUrl: "https://dev-api.carbon.network",
     wsUrl: "wss://dev-ws-api.carbon.network/ws",
@@ -52,6 +58,8 @@ export const NetworkConfigs: {
   },
 
   [Network.DevNet]: {
+    network: Network.DevNet,
+
     rpcUrl: "https://dev-tm-api.carbon.network",
     restUrl: "https://dev-api.carbon.network",
     wsUrl: "wss://dev-ws-api.carbon.network/ws",
@@ -66,6 +74,8 @@ export const NetworkConfigs: {
   },
 
   [Network.LocalHost]: {
+    network: Network.LocalHost,
+
     rpcUrl: "http://localhost:26657",
     restUrl: "http://localhost:1317",
     wsUrl: "ws://localhost:5000/ws",
