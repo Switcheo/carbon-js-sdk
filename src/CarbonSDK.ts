@@ -1,15 +1,11 @@
 import { DEFAULT_NETWORK, Network, Network as _Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
 import { GenericUtils, NetworkUtils } from "@carbon-sdk/util";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
-import BigNumber from "bignumber.js";
 import CarbonQueryClient from "./CarbonQueryClient";
 import CarbonTokenClient from "./CarbonTokenClient";
 import { AdminModule, BankModule, BrokerModule, CDPModule, CoinModule, GovModule, LeverageModule, LiquidityPoolModule, MarketModule, OracleModule, OrderModule, PositionModule, ProfileModule, SubAccountModule } from "./modules";
 import { CosmosLedger } from "./provider";
-import { bnOrZero, BN_ZERO } from "./util/number";
-import { TxFeeTypeDefaultKey, TxFeeTypeMap } from "./util/tx";
-import { SimpleMap } from "./util/type";
-import { CarbonSigner, CarbonWallet, CarbonWalletGenericOpts, CarbonWalletInitOpts } from "./wallet";
+import { CarbonSigner, CarbonWallet, CarbonWalletGenericOpts } from "./wallet";
 
 export { CarbonTx } from "@carbon-sdk/util";
 export { CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletInitOpts } from "@carbon-sdk/wallet";

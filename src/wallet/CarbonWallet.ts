@@ -1,14 +1,14 @@
 import CarbonQueryClient from "@carbon-sdk/CarbonQueryClient";
 import { MsgFee, registry } from "@carbon-sdk/codec";
-import { DEFAULT_FEE, DEFAULT_GAS, DEFAULT_NETWORK, Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
-import { CosmosLedger, SDKProvider } from "@carbon-sdk/provider";
+import { DEFAULT_GAS, DEFAULT_NETWORK, Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
+import { CosmosLedger } from "@carbon-sdk/provider";
 import { AddressUtils, CarbonTx, GenericUtils } from "@carbon-sdk/util";
 import { bnOrZero, BN_ZERO } from "@carbon-sdk/util/number";
 import { TxFeeTypeDefaultKey, TxFeeTypeMap } from "@carbon-sdk/util/tx";
 import { SimpleMap } from "@carbon-sdk/util/type";
 import { StdSignature } from "@cosmjs/amino";
 import { AccountData, DirectSignResponse, EncodeObject, OfflineDirectSigner } from "@cosmjs/proto-signing";
-import { BroadcastTxResponse as BroadcastTxBlockResponse, isBroadcastTxFailure, SigningStargateClient, StdFee } from "@cosmjs/stargate";
+import { BroadcastTxResponse as BroadcastTxBlockResponse, isBroadcastTxFailure, SigningStargateClient } from "@cosmjs/stargate";
 import { SignDoc, TxRaw } from "@cosmjs/stargate/build/codec/cosmos/tx/v1beta1/tx";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import { BroadcastTxSyncResponse } from "@cosmjs/tendermint-rpc/build/tendermint34/responses";
