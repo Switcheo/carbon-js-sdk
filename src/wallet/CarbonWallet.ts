@@ -1,5 +1,6 @@
 import { registry } from "@carbon-sdk/codec";
 import { DEFAULT_FEE, DEFAULT_NETWORK, Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
+import { CosmosLedger } from "@carbon-sdk/provider";
 import { AddressUtils, CarbonTx, GenericUtils } from "@carbon-sdk/util";
 import { StdSignature } from "@cosmjs/amino";
 import { AccountData, DirectSignResponse, EncodeObject, OfflineDirectSigner } from "@cosmjs/proto-signing";
@@ -7,45 +8,59 @@ import { BroadcastTxResponse as BroadcastTxBlockResponse, isBroadcastTxFailure, 
 import { SignDoc, TxRaw } from "@cosmjs/stargate/build/codec/cosmos/tx/v1beta1/tx";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import { BroadcastTxSyncResponse } from "@cosmjs/tendermint-rpc/build/tendermint34/responses";
-import { CarbonNonSigner, CarbonPrivateKeySigner, CarbonSigner, CarbonSignerTypes } from "./CarbonSigner";
+import { CarbonLedgerSigner, CarbonNonSigner, CarbonPrivateKeySigner, CarbonSigner, CarbonSignerTypes } from "./CarbonSigner";
 
-export type CarbonWalletInitOpts = {
+
+export interface CarbonWalletGenericOpts {
   network?: Network;
   config?: Partial<NetworkConfig>;
-} & (
-    | {
-      // connect with mnemonic
-      mnemonic: string;
-      privateKey?: string | Buffer;
-      signer?: CarbonSigner;
-      publicKeyBase64?: string;
-      bech32Address?: string;
-    }
-    | {
-      // connect with private key
-      mnemonic?: string;
-      privateKey: string | Buffer;
-      signer?: CarbonSigner;
-      publicKeyBase64?: string;
-      bech32Address?: string;
-    }
-    | {
-      // connect with custom signer
-      mnemonic?: string;
-      privateKey?: string | Buffer;
-      signer: CarbonSigner;
-      publicKeyBase64: string;
-      bech32Address?: string;
-    }
-    | {
-      // connect with address (view only)
-      mnemonic?: string;
-      privateKey?: string | Buffer;
-      signer?: CarbonSigner;
-      publicKeyBase64?: string;
-      bech32Address: string;
-    }
-  );
+  providerAgent?: string;
+
+  /**
+   * Optional callback that will be called before signing is requested/executed.
+   */
+  onRequestSign?: CarbonWallet.OnRequestSignCallback;
+
+  /**
+   * Optional callback that will be called when signing is complete.
+   */
+  onSignComplete?: CarbonWallet.OnSignCompleteCallback;
+}
+
+export type CarbonWalletInitOpts = CarbonWalletGenericOpts & (
+  | {
+    // connect with mnemonic
+    mnemonic: string;
+    privateKey?: string | Buffer;
+    signer?: CarbonSigner;
+    publicKeyBase64?: string;
+    bech32Address?: string;
+  }
+  | {
+    // connect with private key
+    mnemonic?: string;
+    privateKey: string | Buffer;
+    signer?: CarbonSigner;
+    publicKeyBase64?: string;
+    bech32Address?: string;
+  }
+  | {
+    // connect with custom signer
+    mnemonic?: string;
+    privateKey?: string | Buffer;
+    signer: CarbonSigner;
+    publicKeyBase64: string;
+    bech32Address?: string;
+  }
+  | {
+    // connect with address (view only)
+    mnemonic?: string;
+    privateKey?: string | Buffer;
+    signer?: CarbonSigner;
+    publicKeyBase64?: string;
+    bech32Address: string;
+  }
+);
 
 export type BroadcastTxResponse = BroadcastTxSyncResponse | BroadcastTxBlockResponse
 
@@ -54,6 +69,9 @@ export class CarbonWallet implements OfflineDirectSigner {
 
   configOverride: Partial<NetworkConfig>;
   networkConfig: NetworkConfig;
+
+  onRequestSign?: CarbonWallet.OnRequestSignCallback
+  onSignComplete?: CarbonWallet.OnSignCompleteCallback
 
   mnemonic?: string;
   privateKey?: Buffer;
@@ -67,6 +85,9 @@ export class CarbonWallet implements OfflineDirectSigner {
     this.networkConfig = NetworkConfigs[network];
     this.configOverride = opts.config ?? {};
     this.updateNetwork(network);
+
+    this.onRequestSign = opts.onRequestSign;
+    this.onSignComplete = opts.onSignComplete;
 
     this.mnemonic = opts.mnemonic;
     if (this.mnemonic) {
@@ -95,21 +116,41 @@ export class CarbonWallet implements OfflineDirectSigner {
     }
   }
 
-  public static withPrivateKey(privateKey: string | Buffer, opts: Omit<CarbonWalletInitOpts, "privateKey"> = {}) {
+  public static withPrivateKey(
+    privateKey: string | Buffer,
+    opts: Omit<CarbonWalletInitOpts, "privateKey"> = {},
+  ) {
     return new CarbonWallet({
       ...opts,
       privateKey,
     });
   }
 
-  public static withMnemonic(mnemonic: string, opts: Omit<CarbonWalletInitOpts, "mnemonic"> = {}) {
+  public static withMnemonic(
+    mnemonic: string,
+    opts: Omit<CarbonWalletInitOpts, "mnemonic"> = {},
+  ) {
     return new CarbonWallet({
       ...opts,
       mnemonic,
     });
   }
 
-  public static withSigner(signer: CarbonSigner, publicKeyBase64: string, opts: Omit<CarbonWalletInitOpts, "signer"> = {}) {
+  public static withLedger(
+    cosmosLedger: CosmosLedger,
+    publicKeyBase64: string,
+    opts: Omit<CarbonWalletInitOpts, "signer"> = {},
+  ) {
+    const signer = new CarbonLedgerSigner(cosmosLedger);
+    const wallet = CarbonWallet.withSigner(signer, publicKeyBase64, opts);
+    return wallet;
+  }
+
+  public static withSigner(
+    signer: CarbonSigner,
+    publicKeyBase64: string,
+    opts: Omit<CarbonWalletInitOpts, "signer"> = {},
+  ) {
     return new CarbonWallet({
       ...opts,
       signer,
@@ -186,8 +227,8 @@ export class CarbonWallet implements OfflineDirectSigner {
     return this.sendTxs([msg], opts);
   }
 
-  sign(data: Buffer): StdSignature {
-    const signatureBuffer = this.signer.sign(data);
+  async sign(data: SignDoc): Promise<StdSignature> {
+    const signatureBuffer = await this.signer.sign(data);
     const signature: StdSignature = {
       pub_key: {
         type: "tendermint/PubKeySecp256k1",
@@ -198,6 +239,34 @@ export class CarbonWallet implements OfflineDirectSigner {
     return signature;
   }
 
+  async signDirect(_: string, signDoc: SignDoc): Promise<DirectSignResponse> {
+    try {
+      await this.onRequestSign?.(signDoc)
+    } catch (error) {
+      console.error("sign request callback error")
+      console.error(error)
+    }
+
+    let stdSignature: StdSignature | null = null
+    try {
+      stdSignature = await this.sign(signDoc);
+
+      return {
+        signature: stdSignature,
+        signed: signDoc,
+      };
+    } finally {
+
+      try {
+        await this.onSignComplete?.(stdSignature)
+      } catch (error) {
+        console.error("sign complete callback error")
+        console.error(error)
+      }
+
+    }
+  }
+
   getAccounts(): Promise<AccountData[]> {
     return Promise.resolve([
       {
@@ -206,15 +275,6 @@ export class CarbonWallet implements OfflineDirectSigner {
         pubkey: this.publicKey,
       },
     ]);
-  }
-
-  signDirect(_: string, signDoc: SignDoc): Promise<DirectSignResponse> {
-    const signBytes = SignDoc.encode(signDoc).finish();
-    const stdSignature = this.sign(Buffer.from(signBytes));
-    return Promise.resolve({
-      signature: stdSignature,
-      signed: signDoc,
-    });
   }
 
   isSigner(signerType: CarbonSignerTypes) {
@@ -232,4 +292,9 @@ export class CarbonWallet implements OfflineDirectSigner {
   isBrowserInjectedSigner() {
     return this.isSigner(CarbonSignerTypes.BrowserInjected);
   }
+}
+
+export namespace CarbonWallet {
+  export type OnRequestSignCallback = (doc: SignDoc) => void | Promise<void>
+  export type OnSignCompleteCallback = (signature: StdSignature | null) => void | Promise<void>
 }

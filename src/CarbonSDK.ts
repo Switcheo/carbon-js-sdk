@@ -3,11 +3,13 @@ import { GenericUtils, NetworkUtils } from "@carbon-sdk/util";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import CarbonQueryClient from "./CarbonQueryClient";
 import CarbonTokenClient from "./CarbonTokenClient";
-import { OrderModule, LiquidityPoolModule, SubAccountModule, ProfileModule, CDPModule, LeverageModule, MarketModule, BrokerModule, PositionModule, CoinModule, OracleModule, GovModule, BankModule, AdminModule } from "./modules";
-import { CarbonSigner, CarbonWallet } from "./wallet";
+import { AdminModule, BankModule, BrokerModule, CDPModule, CoinModule, GovModule, LeverageModule, LiquidityPoolModule, MarketModule, OracleModule, OrderModule, PositionModule, ProfileModule, SubAccountModule } from "./modules";
+import { CosmosLedger } from "./provider";
+import { CarbonSigner, CarbonWallet, CarbonWalletGenericOpts, CarbonWalletInitOpts } from "./wallet";
 
 export { CarbonTx } from "@carbon-sdk/util";
 export { CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletInitOpts } from "@carbon-sdk/wallet";
+
 
 export interface CarbonSDKOpts {
   network: Network;
@@ -126,8 +128,28 @@ class CarbonSDK {
     return this.connect(wallet)
   }
 
-  public async connectWithSigner(signer: CarbonSigner, bech32Address: string) {
-    const wallet = CarbonWallet.withSigner(signer, bech32Address, {
+  public async connectWithSigner(
+    signer: CarbonSigner,
+    publicKeyBase64: string,
+    opts?: CarbonWalletGenericOpts,
+  ) {
+    const wallet = CarbonWallet.withSigner(signer, publicKeyBase64, {
+      ...opts,
+      network: this.network,
+      config: this.configOverride,
+    })
+    return this.connect(wallet)
+  }
+
+  public async connectWithLedger(
+    ledger: CosmosLedger,
+    opts?: CarbonWalletGenericOpts,
+  ) {
+    const publicKeyBuffer = await ledger.getPubKey();
+    const publicKeyBase64 = publicKeyBuffer.toString("base64");
+
+    const wallet = CarbonWallet.withLedger(ledger, publicKeyBase64, {
+      ...opts,
       network: this.network,
       config: this.configOverride,
     })
