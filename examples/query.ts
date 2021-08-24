@@ -11,6 +11,11 @@ import "./_setup";
   });
 
   // GRPC Queries
+
+  // query txn fees
+  const fees = await sdk.query.fee.MsgFeeAll({})
+  console.log("fees", fees);
+
   // query all tokens
   const tokens = await sdk.query.coin.TokenAll({});
   console.log("tokens", tokens);

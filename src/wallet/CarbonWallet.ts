@@ -1,13 +1,18 @@
-import { registry } from "@carbon-sdk/codec";
-import { DEFAULT_FEE, DEFAULT_NETWORK, Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
-import { CosmosLedger } from "@carbon-sdk/provider";
+import CarbonQueryClient from "@carbon-sdk/CarbonQueryClient";
+import { MsgFee, registry } from "@carbon-sdk/codec";
+import { DEFAULT_FEE, DEFAULT_GAS, DEFAULT_NETWORK, Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
+import { CosmosLedger, SDKProvider } from "@carbon-sdk/provider";
 import { AddressUtils, CarbonTx, GenericUtils } from "@carbon-sdk/util";
+import { bnOrZero, BN_ZERO } from "@carbon-sdk/util/number";
+import { TxFeeTypeDefaultKey, TxFeeTypeMap } from "@carbon-sdk/util/tx";
+import { SimpleMap } from "@carbon-sdk/util/type";
 import { StdSignature } from "@cosmjs/amino";
 import { AccountData, DirectSignResponse, EncodeObject, OfflineDirectSigner } from "@cosmjs/proto-signing";
-import { BroadcastTxResponse as BroadcastTxBlockResponse, isBroadcastTxFailure, SigningStargateClient } from "@cosmjs/stargate";
+import { BroadcastTxResponse as BroadcastTxBlockResponse, isBroadcastTxFailure, SigningStargateClient, StdFee } from "@cosmjs/stargate";
 import { SignDoc, TxRaw } from "@cosmjs/stargate/build/codec/cosmos/tx/v1beta1/tx";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import { BroadcastTxSyncResponse } from "@cosmjs/tendermint-rpc/build/tendermint34/responses";
+import BigNumber from "bignumber.js";
 import { CarbonLedgerSigner, CarbonNonSigner, CarbonPrivateKeySigner, CarbonSigner, CarbonSignerTypes } from "./CarbonSigner";
 
 
@@ -78,6 +83,9 @@ export class CarbonWallet implements OfflineDirectSigner {
   signer: CarbonSigner;
   bech32Address: string;
   publicKey: Buffer;
+  query?: CarbonQueryClient;
+
+  txFees?: SimpleMap<BigNumber>
 
   constructor(opts: CarbonWalletInitOpts) {
     const network = opts.network ?? DEFAULT_NETWORK;
@@ -158,6 +166,14 @@ export class CarbonWallet implements OfflineDirectSigner {
     });
   }
 
+  public async initialize(queryClient: CarbonQueryClient): Promise<CarbonWallet> {
+    this.query = queryClient;
+
+    await this.reloadTxFees();
+
+    return this;
+  }
+
   public updateNetwork(network: Network): CarbonWallet {
     this.network = network;
     this.networkConfig = GenericUtils.overrideConfig(NetworkConfigs[network], this.configOverride);
@@ -196,14 +212,31 @@ export class CarbonWallet implements OfflineDirectSigner {
   async signAndBroadcast(
     signerAddress: string,
     messages: readonly EncodeObject[],
-    opts: CarbonTx.SignAndBroadcastOpts,
+    opts?: CarbonTx.SignAndBroadcastOpts,
   ): Promise<BroadcastTxResponse> {
     const {
-      fee = DEFAULT_FEE,
       memo = "",
       explicitSignerData,
       ...broadcastOpts
-    } = opts;
+    } = opts ?? {};
+
+    let fee = opts?.fee;
+
+    if (!fee) {
+      // compute required fee
+      const totalFeeCost = messages.reduce((totalFee, message) => {
+        const msgFee = this.getFee(message.typeUrl);
+        return msgFee.gt(0) ? totalFee.plus(msgFee) : totalFee;
+      }, BN_ZERO);
+      fee = {
+        amount: [{
+          amount: totalFeeCost.toString(10),
+          denom: "swth",
+        }],
+        gas: DEFAULT_GAS.times(messages.length).toString(10),
+      };
+    }
+
 
     const endpoint = this.networkConfig.rpcUrl;
     const signingClient = await SigningStargateClient.connectWithSigner(endpoint, this, {
@@ -219,11 +252,11 @@ export class CarbonWallet implements OfflineDirectSigner {
     });
   }
 
-  async sendTxs(msgs: EncodeObject[], opts: CarbonTx.SignTxOpts): Promise<BroadcastTxResponse> {
+  async sendTxs(msgs: EncodeObject[], opts?: CarbonTx.SignTxOpts): Promise<BroadcastTxResponse> {
     return this.signAndBroadcast(this.bech32Address, msgs, opts);
   }
 
-  async sendTx(msg: EncodeObject, opts: CarbonTx.SignTxOpts = CarbonTx.DEFAULT_SIGN_OPTS): Promise<BroadcastTxResponse> {
+  async sendTx(msg: EncodeObject, opts?: CarbonTx.SignTxOpts): Promise<BroadcastTxResponse> {
     return this.sendTxs([msg], opts);
   }
 
@@ -256,14 +289,12 @@ export class CarbonWallet implements OfflineDirectSigner {
         signed: signDoc,
       };
     } finally {
-
       try {
         await this.onSignComplete?.(stdSignature)
       } catch (error) {
         console.error("sign complete callback error")
         console.error(error)
       }
-
     }
   }
 
@@ -291,6 +322,37 @@ export class CarbonWallet implements OfflineDirectSigner {
 
   isBrowserInjectedSigner() {
     return this.isSigner(CarbonSignerTypes.BrowserInjected);
+  }
+
+  public getFee(msgTypeUrl: string): BigNumber {
+    if (!this.txFees) {
+      console.warn("tx fees not initialized");
+    }
+
+    const feeKey = TxFeeTypeMap[msgTypeUrl];
+
+    return this.txFees?.[feeKey] ?? this.txFees?.[TxFeeTypeDefaultKey] ?? BN_ZERO;
+  }
+
+  public updateTxFees(msgFees: MsgFee[]) {
+    const feesMap: SimpleMap<BigNumber> = msgFees.reduce((accum, fee) => {
+      accum[fee.msgType] = bnOrZero(fee.fee);
+      return accum;
+    }, {} as SimpleMap<BigNumber>);
+
+    this.txFees = feesMap;
+  }
+
+  public async reloadTxFees() {
+    const queryClient = this.getQueryClient();
+    const response = await queryClient.fee.MsgFeeAll({});
+    this.updateTxFees(response.msgFees);
+  }
+
+  private getQueryClient(): CarbonQueryClient {
+    if (!this.query)
+      throw new Error("wallet not initialized");
+    return this.query
   }
 }
 

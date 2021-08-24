@@ -1,10 +1,14 @@
 import { DEFAULT_NETWORK, Network, Network as _Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
 import { GenericUtils, NetworkUtils } from "@carbon-sdk/util";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
+import BigNumber from "bignumber.js";
 import CarbonQueryClient from "./CarbonQueryClient";
 import CarbonTokenClient from "./CarbonTokenClient";
 import { AdminModule, BankModule, BrokerModule, CDPModule, CoinModule, GovModule, LeverageModule, LiquidityPoolModule, MarketModule, OracleModule, OrderModule, PositionModule, ProfileModule, SubAccountModule } from "./modules";
 import { CosmosLedger } from "./provider";
+import { bnOrZero, BN_ZERO } from "./util/number";
+import { TxFeeTypeDefaultKey, TxFeeTypeMap } from "./util/tx";
+import { SimpleMap } from "./util/type";
 import { CarbonSigner, CarbonWallet, CarbonWalletGenericOpts, CarbonWalletInitOpts } from "./wallet";
 
 export { CarbonTx } from "@carbon-sdk/util";
@@ -20,6 +24,8 @@ export interface CarbonSDKInitOpts {
   network: Network;
   tmClient?: Tendermint34Client;
   config?: Partial<NetworkConfig>;
+
+  skipInit?: boolean
 }
 
 const DEFAULT_SDK_INIT_OPTS: CarbonSDKInitOpts = {
@@ -93,9 +99,20 @@ class CarbonSDK {
 
     const sdk = new CarbonSDK({ network, config: configOverride, tmClient });
 
-    await sdk.token.initialize();
+    if (opts.skipInit !== true) {
+      await sdk.initialize();
+    }
 
     return sdk;
+  }
+
+  public async initialize(): Promise<CarbonSDK> {
+    await this.token.initialize();
+    if (this.wallet) {
+      await this.wallet.initialize(this.query)
+    }
+
+    return this;
   }
 
   public generateOpts(): CarbonSDKOpts {
@@ -108,7 +125,7 @@ class CarbonSDK {
 
   public async connect(wallet: CarbonWallet) {
     const connectedSDK = new ConnectedCarbonSDK(wallet, this.generateOpts());
-    await connectedSDK.token.initialize();
+    await connectedSDK.initialize();
     return connectedSDK;
   }
 
