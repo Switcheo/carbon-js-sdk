@@ -73,14 +73,13 @@ export class StakingModule extends BaseModule {
 
   public async withdrawAllDelegatorRewards(params: StakingModule.WithdrawAllDelegatorRewardsParams) {
     const wallet = this.getWallet();
-    const messages = params.validatorAddresses.map((address: string) => (
-        {
-          typeUrl: TxTypes.MsgWithdrawDelegatorReward,
-          value: MsgWithdrawDelegatorReward.fromPartial({
-            delegatorAddress: params.delegatorAddress ?? wallet.bech32Address,
-            validatorAddress: address,
-          })
-        }))
+    const messages = params.validatorAddresses.map((address: string) => ({
+      typeUrl: TxTypes.MsgWithdrawDelegatorReward,
+      value: MsgWithdrawDelegatorReward.fromPartial({
+        delegatorAddress: params.delegatorAddress ?? wallet.bech32Address,
+        validatorAddress: address,
+      })
+    }))
 
     return wallet.sendTxs(messages)
   }
