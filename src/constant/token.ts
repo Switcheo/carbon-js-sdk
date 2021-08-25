@@ -217,8 +217,3 @@ export const CoinGeckoTokenNames: SimpleMap<string> = {
   math: 'math',
   lkt: 'locklet',
 };
-
-export const FuturesDenomOverride: SimpleMap<string> = {
-  WBTC: 'BTC',
-  USDC: 'USD',
-};
