@@ -71,16 +71,16 @@ export class StakingModule extends BaseModule {
     });
   }
 
-  public async withdrawAllDelegatorRewards(msg: StakingModule.WithdrawAllDelegatorRewardsParams) {
-    const { validatorAddresses, delegatorAddress } = msg
+  public async withdrawAllDelegatorRewards(params: StakingModule.WithdrawAllDelegatorRewardsParams) {
     const wallet = this.getWallet();
-    const messages: StakingModule.TxMsg[] =
-      validatorAddresses.map((address: string) => (
+    const messages = params.validatorAddresses.map((address: string) => (
         {
           typeUrl: TxTypes.MsgWithdrawDelegatorReward,
-          value: { validatorAddress: address, delegatorAddress: delegatorAddress }
-        }
-      ))
+          value: MsgWithdrawDelegatorReward.fromPartial({
+            delegatorAddress: params.delegatorAddress ?? wallet.bech32Address,
+            validatorAddress: address,
+          })
+        }))
 
     return wallet.sendTxs(messages)
   }
@@ -98,7 +98,7 @@ export namespace StakingModule {
     amount: BigNumber,
   }
   export interface RedelegateTokensParams {
-    delegatorAddress: string,
+    delegatorAddress?: string,
     validatorSrcAddress: string,
     validatorDstAddress: string,
     amount: BigNumber,
@@ -108,12 +108,7 @@ export namespace StakingModule {
     validatorAddress: string,
   }
   export interface WithdrawAllDelegatorRewardsParams {
-    delegatorAddress: string,
+    delegatorAddress?: string,
     validatorAddresses: string[],
-  }
-  export interface TxMsgValue { }
-  export interface TxMsg<T extends TxMsgValue = TxMsgValue> {
-    typeUrl: string
-    value: T
   }
 };
