@@ -113,7 +113,7 @@ class CarbonSDK {
     wallet: CarbonWallet,
     sdkOpts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS,
   ) {
-    const sdk = await CarbonSDK.instance(sdkOpts)
+    const sdk = await CarbonSDK.instance(sdkOpts);
     return sdk.connect(wallet);
   }
 
@@ -122,8 +122,8 @@ class CarbonSDK {
     sdkOpts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS,
     walletOpts?: CarbonWalletGenericOpts,
   ) {
-    const sdk = await CarbonSDK.instance(sdkOpts)
-    return sdk.connectWithPrivateKey(privateKey, walletOpts)
+    const sdk = await CarbonSDK.instance(sdkOpts);
+    return sdk.connectWithPrivateKey(privateKey, walletOpts);
   }
 
   public static async instanceWithMnemonic(
@@ -131,8 +131,8 @@ class CarbonSDK {
     sdkOpts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS,
     walletOpts?: CarbonWalletGenericOpts,
   ) {
-    const sdk = await CarbonSDK.instance(sdkOpts)
-    return sdk.connectWithMnemonic(mnemonic, walletOpts)
+    const sdk = await CarbonSDK.instance(sdkOpts);
+    return sdk.connectWithMnemonic(mnemonic, walletOpts);
   }
 
   public static async instanceWithSigner(
@@ -141,8 +141,8 @@ class CarbonSDK {
     sdkOpts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS,
     walletOpts?: CarbonWalletGenericOpts,
   ) {
-    const sdk = await CarbonSDK.instance(sdkOpts)
-    return sdk.connectWithSigner(signer, publicKeyBase64, walletOpts)
+    const sdk = await CarbonSDK.instance(sdkOpts);
+    return sdk.connectWithSigner(signer, publicKeyBase64, walletOpts);
   }
 
   public static async instanceWithLedger(
@@ -150,14 +150,23 @@ class CarbonSDK {
     sdkOpts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS,
     walletOpts?: CarbonWalletGenericOpts,
   ) {
-    const sdk = await CarbonSDK.instance(sdkOpts)
-    return sdk.connectWithLedger(ledger, walletOpts)
+    const sdk = await CarbonSDK.instance(sdkOpts);
+    return sdk.connectWithLedger(ledger, walletOpts);
+  }
+
+  public static async instanceViewOnly(
+    bech32Address: string,
+    sdkOpts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS,
+    walletOpts?: CarbonWalletGenericOpts,
+  ) {
+    const sdk = await CarbonSDK.instance(sdkOpts);
+    return sdk.connectViewOnly(bech32Address, walletOpts);
   }
 
   public async initialize(): Promise<CarbonSDK> {
     await this.token.initialize();
     if (this.wallet) {
-      await this.wallet.initialize(this.query)
+      await this.wallet.initialize(this.query);
     }
 
     return this;
@@ -222,6 +231,19 @@ class CarbonSDK {
     const publicKeyBase64 = publicKeyBuffer.toString("base64");
 
     const wallet = CarbonWallet.withLedger(ledger, publicKeyBase64, {
+      ...opts,
+      network: this.network,
+      config: this.configOverride,
+    })
+    return this.connect(wallet)
+  }
+
+  public async connectViewOnly(
+    bech32Address: string,
+    opts?: CarbonWalletGenericOpts,
+  ) {
+
+    const wallet = CarbonWallet.withAddress(bech32Address, {
       ...opts,
       network: this.network,
       config: this.configOverride,

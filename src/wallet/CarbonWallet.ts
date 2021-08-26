@@ -166,6 +166,16 @@ export class CarbonWallet implements OfflineDirectSigner {
     });
   }
 
+  public static withAddress(
+    bech32Address: string,
+    opts: Partial<CarbonWalletInitOpts> = {}
+  ) {
+    return new CarbonWallet({
+      ...opts,
+      bech32Address,
+    })
+  }
+
   public async initialize(queryClient: CarbonQueryClient): Promise<CarbonWallet> {
     this.query = queryClient;
 
