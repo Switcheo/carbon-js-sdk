@@ -1,6 +1,7 @@
 import { Token } from "@carbon-sdk/codec";
 import { CoinGeckoTokenNames, CommonAssetName } from "@carbon-sdk/constant";
 import { BlockChainUtils, FetchUtils, NumberUtils, TypeUtils } from "@carbon-sdk/util";
+import { BN_ZERO } from "@carbon-sdk/util/number";
 import BigNumber from "bignumber.js";
 import CarbonQueryClient from "./CarbonQueryClient";
 
@@ -68,12 +69,12 @@ class TokenClient {
 
   public toHuman(denom: string, unitlessAmt: BigNumber): BigNumber {
     const decimals = this.getDecimals(denom);
-    return decimals ? unitlessAmt.shiftedBy(-decimals) : unitlessAmt;
+    return NumberUtils.toHuman(unitlessAmt, decimals) ?? BN_ZERO;
   }
 
   public toUnitless(denom: string, humanAmt: BigNumber): BigNumber {
     const decimals = this.getDecimals(denom);
-    return decimals ? humanAmt.shiftedBy(decimals) : humanAmt;
+    return NumberUtils.toUnitless(humanAmt, decimals) ?? BN_ZERO;
   }
 
   public getTokenName(denom: string, overrideMap?: TypeUtils.SimpleMap<string>): string {
