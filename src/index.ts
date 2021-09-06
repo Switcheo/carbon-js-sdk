@@ -5,3 +5,4 @@ export * from "./util";
 export * from "./websocket";
 export { SDKProvider, KeplrAccount, KeplrWindow, CosmosLedger, Keplr, ChainInfo } from "./provider";
 export { default as CarbonSDK } from "./CarbonSDK";
+export { ProviderAgent } from "./constant";
