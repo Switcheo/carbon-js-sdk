@@ -1,6 +1,7 @@
 import { CarbonQueryClient } from "@carbon-sdk/clients";
 import { MsgFee, registry } from "@carbon-sdk/codec";
 import { DEFAULT_GAS, DEFAULT_NETWORK, Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
+import { ProviderAgent } from "@carbon-sdk/constant/walletProvider";
 import { CosmosLedger } from "@carbon-sdk/provider";
 import { AddressUtils, CarbonTx, GenericUtils } from "@carbon-sdk/util";
 import { bnOrZero, BN_ZERO } from "@carbon-sdk/util/number";
@@ -19,7 +20,7 @@ import { CarbonLedgerSigner, CarbonNonSigner, CarbonPrivateKeySigner, CarbonSign
 export interface CarbonWalletGenericOpts {
   network?: Network;
   config?: Partial<NetworkConfig>;
-  providerAgent?: string;
+  providerAgent?: ProviderAgent | string;
 
   /**
    * Optional callback that will be called before signing is requested/executed.
@@ -87,11 +88,15 @@ export class CarbonWallet implements OfflineDirectSigner {
 
   txFees?: SimpleMap<BigNumber>
 
+  // for analytics
+  providerAgent?: ProviderAgent | string
+
   constructor(opts: CarbonWalletInitOpts) {
     const network = opts.network ?? DEFAULT_NETWORK;
     this.network = network
     this.networkConfig = NetworkConfigs[network];
     this.configOverride = opts.config ?? {};
+    this.providerAgent = opts.providerAgent;
     this.updateNetwork(network);
 
     this.onRequestSign = opts.onRequestSign;
