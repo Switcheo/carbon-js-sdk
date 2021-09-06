@@ -87,11 +87,15 @@ export class CarbonWallet implements OfflineDirectSigner {
 
   txFees?: SimpleMap<BigNumber>
 
+  // for analytics
+  providerAgent?: string
+
   constructor(opts: CarbonWalletInitOpts) {
     const network = opts.network ?? DEFAULT_NETWORK;
     this.network = network
     this.networkConfig = NetworkConfigs[network];
     this.configOverride = opts.config ?? {};
+    this.providerAgent = opts.providerAgent;
     this.updateNetwork(network);
 
     this.onRequestSign = opts.onRequestSign;
