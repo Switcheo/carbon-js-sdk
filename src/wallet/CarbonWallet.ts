@@ -20,7 +20,7 @@ import { CarbonLedgerSigner, CarbonNonSigner, CarbonPrivateKeySigner, CarbonSign
 export interface CarbonWalletGenericOpts {
   network?: Network;
   config?: Partial<NetworkConfig>;
-  providerAgent?: ProviderAgent;
+  providerAgent?: ProviderAgent | string;
 
   /**
    * Optional callback that will be called before signing is requested/executed.
@@ -89,7 +89,7 @@ export class CarbonWallet implements OfflineDirectSigner {
   txFees?: SimpleMap<BigNumber>
 
   // for analytics
-  providerAgent?: ProviderAgent
+  providerAgent?: ProviderAgent | string
 
   constructor(opts: CarbonWalletInitOpts) {
     const network = opts.network ?? DEFAULT_NETWORK;
