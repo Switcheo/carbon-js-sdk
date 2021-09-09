@@ -251,17 +251,16 @@ export namespace AdminModule {
   }
 
   export interface CreateTokenParams {
-    name: string
-    symbol: string
-    denom: string
-    decimals: number
-    nativeDecimals: number
-    blockchain: string
-    chainId: number
-    assetId: string
-    isCollateral: boolean
-    lockProxyHash: string
-    delegatedSupply: BigNumber
+    creator: string;
+    denom: string;
+    name: string;
+    symbol: string;
+    decimals: number;
+    chainId: number;
+    bridgeId: number;
+    bridgeAddress: string;
+    tokenAddress: string;
+    isCollateral: boolean;
   }
 
   export interface SyncTokenParams {
@@ -371,17 +370,15 @@ export function transfromCreateOracleParams(msg: AdminModule.CreateOracleParams,
 export function transfromCreateTokenParams(msg: AdminModule.CreateTokenParams, address: string) {
   return {
     creator: address,
+    denom: msg.denom,
     name: msg.name,
     symbol: msg.symbol,
-    denom: msg.denom,
     decimals: new Long(msg.decimals),
-    nativeDecimals: new Long(msg.nativeDecimals),
-    blockchain: msg.blockchain,
     chainId: new Long(msg.chainId),
-    assetId: msg.assetId,
+    bridgeId: new Long(msg.bridgeId),
+    bridgeAddress: msg.bridgeAddress,
+    tokenAddress: msg.bridgeAddress,
     isCollateral: msg.isCollateral,
-    lockProxyHash: msg.lockProxyHash,
-    delegatedSupply: msg.delegatedSupply.toString(),
   }
 }
 

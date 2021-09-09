@@ -24,8 +24,10 @@ export class MarketModule extends BaseModule {
 export namespace MarketModule {
   export interface UpdateMarketParams {
     name: string;
-    displayName: string;
-    description: string;
+    displayName?: string;
+    description?: string;
+    lotSize: BigNumber;
+    tickSize: BigNumber;
     minQuantity: BigNumber;
     makerFee: BigNumber;
     takerFee: BigNumber;
@@ -35,11 +37,11 @@ export namespace MarketModule {
     initialMarginStep: BigNumber;
     maintenanceMarginRatio: BigNumber;
     maxLiquidationOrderTicket: BigNumber;
-    maxLiquidationOrderDuration: Duration;
+    maxLiquidationOrderDuration?: Duration;
     impactSize: BigNumber;
-    markPriceBand: number;
-    lastPriceProtectedBand: number;
-    isActive: boolean;
+    markPriceBand?: number;
+    lastPriceProtectedBand?: number;
+    isActive?: boolean;
   }
 };
 
@@ -48,6 +50,8 @@ export function transfromUpdateMarketParams(msg: MarketModule.UpdateMarketParams
     name: msg.name,
     displayName: msg.displayName,
     description: msg.description,
+    lotSize: msg.lotSize.shiftedBy(18).toString(10),
+    tickSize: msg.tickSize.shiftedBy(18).toString(10),
     minQuantity: msg.minQuantity.toString(10),
     makerFee: msg.makerFee.shiftedBy(18).toString(10),
     takerFee: msg.takerFee.shiftedBy(18).toString(10),
