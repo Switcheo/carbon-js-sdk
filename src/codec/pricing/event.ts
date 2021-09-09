@@ -1,12 +1,12 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Prices } from "../pricing/pricing";
+import { PriceSet } from "../pricing/pricing";
 
 export const protobufPackage = "Switcheo.carbon.pricing";
 
 export interface PriceUpdateEvent {
-  prices?: Prices;
+  priceSet?: PriceSet;
 }
 
 const basePriceUpdateEvent: object = {};
@@ -16,8 +16,8 @@ export const PriceUpdateEvent = {
     message: PriceUpdateEvent,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.prices !== undefined) {
-      Prices.encode(message.prices, writer.uint32(10).fork()).ldelim();
+    if (message.priceSet !== undefined) {
+      PriceSet.encode(message.priceSet, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -30,7 +30,7 @@ export const PriceUpdateEvent = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.prices = Prices.decode(reader, reader.uint32());
+          message.priceSet = PriceSet.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -42,27 +42,29 @@ export const PriceUpdateEvent = {
 
   fromJSON(object: any): PriceUpdateEvent {
     const message = { ...basePriceUpdateEvent } as PriceUpdateEvent;
-    if (object.prices !== undefined && object.prices !== null) {
-      message.prices = Prices.fromJSON(object.prices);
+    if (object.priceSet !== undefined && object.priceSet !== null) {
+      message.priceSet = PriceSet.fromJSON(object.priceSet);
     } else {
-      message.prices = undefined;
+      message.priceSet = undefined;
     }
     return message;
   },
 
   toJSON(message: PriceUpdateEvent): unknown {
     const obj: any = {};
-    message.prices !== undefined &&
-      (obj.prices = message.prices ? Prices.toJSON(message.prices) : undefined);
+    message.priceSet !== undefined &&
+      (obj.priceSet = message.priceSet
+        ? PriceSet.toJSON(message.priceSet)
+        : undefined);
     return obj;
   },
 
   fromPartial(object: DeepPartial<PriceUpdateEvent>): PriceUpdateEvent {
     const message = { ...basePriceUpdateEvent } as PriceUpdateEvent;
-    if (object.prices !== undefined && object.prices !== null) {
-      message.prices = Prices.fromPartial(object.prices);
+    if (object.priceSet !== undefined && object.priceSet !== null) {
+      message.priceSet = PriceSet.fromPartial(object.priceSet);
     } else {
-      message.prices = undefined;
+      message.priceSet = undefined;
     }
     return message;
   },

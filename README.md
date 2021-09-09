@@ -70,6 +70,12 @@ Run script to generate codec:
 
 The tar file will be generated at `<Carbon Project>/gen/proto-ts.tar.gz`. You can copy that file to `<Carbon SDK Project>/proto-ts.tar.gz` and proceed with above `sync-proto` step.
 
+Or run this in this project directory
+```bash
+# runs `cp ~/go/src/github.com/Switcheo/carbon/gen/proto-ts.tar.gz .`
+yarn run cp-proto
+```
+
 Eventually the `proto-ts.tar.gz` will be packaged as a release file in `Carbon` repository. A script will be added automatically download the latest released codecs and update the SDK.
 
 # Contributing to Carbon SDK

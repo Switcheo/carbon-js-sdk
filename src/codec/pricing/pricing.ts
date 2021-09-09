@@ -5,7 +5,7 @@ import { Timestamp } from "../google/protobuf/timestamp";
 
 export const protobufPackage = "Switcheo.carbon.pricing";
 
-export interface Prices {
+export interface PriceSet {
   last: string;
   index: string;
   fair: string;
@@ -19,7 +19,7 @@ export interface Prices {
   settlementCounter: string;
 }
 
-const basePrices: object = {
+const basePriceSet: object = {
   last: "",
   index: "",
   fair: "",
@@ -32,9 +32,9 @@ const basePrices: object = {
   settlementCounter: "",
 };
 
-export const Prices = {
+export const PriceSet = {
   encode(
-    message: Prices,
+    message: PriceSet,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.last !== "") {
@@ -76,10 +76,10 @@ export const Prices = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): Prices {
+  decode(input: _m0.Reader | Uint8Array, length?: number): PriceSet {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...basePrices } as Prices;
+    const message = { ...basePriceSet } as PriceSet;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -126,8 +126,8 @@ export const Prices = {
     return message;
   },
 
-  fromJSON(object: any): Prices {
-    const message = { ...basePrices } as Prices;
+  fromJSON(object: any): PriceSet {
+    const message = { ...basePriceSet } as PriceSet;
     if (object.last !== undefined && object.last !== null) {
       message.last = String(object.last);
     } else {
@@ -195,7 +195,7 @@ export const Prices = {
     return message;
   },
 
-  toJSON(message: Prices): unknown {
+  toJSON(message: PriceSet): unknown {
     const obj: any = {};
     message.last !== undefined && (obj.last = message.last);
     message.index !== undefined && (obj.index = message.index);
@@ -215,8 +215,8 @@ export const Prices = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<Prices>): Prices {
-    const message = { ...basePrices } as Prices;
+  fromPartial(object: DeepPartial<PriceSet>): PriceSet {
+    const message = { ...basePriceSet } as PriceSet;
     if (object.last !== undefined && object.last !== null) {
       message.last = object.last;
     } else {

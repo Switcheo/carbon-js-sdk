@@ -4,6 +4,7 @@ import _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "Switcheo.carbon.inflation";
 
+/** MintData represents the parameters by the inflation module. */
 export interface MintData {
   firstBlockTime: Long;
   prevBlockTime: Long;

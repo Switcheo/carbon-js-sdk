@@ -2,6 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Candlestick } from "../broker/candlestick";
+import { TradeEvent } from "../broker/event";
 
 export const protobufPackage = "Switcheo.carbon.broker";
 
@@ -25,6 +26,22 @@ export interface QueryCandlesticksRequest {
 
 export interface QueryCandlesticksResponse {
   candlesticks: Candlestick[];
+}
+
+export interface QueryTradesRequest {
+  address: string;
+  market: string;
+  limit: Long;
+  beforeId: Long;
+  afterId: Long;
+  orderBy: string;
+  orderId: string;
+  afterBlock: Long;
+  beforeBlock: Long;
+}
+
+export interface QueryTradesResponse {
+  trades: TradeEvent[];
 }
 
 const baseQueryInsuranceBalanceRequest: object = {};
@@ -451,6 +468,282 @@ export const QueryCandlesticksResponse = {
   },
 };
 
+const baseQueryTradesRequest: object = {
+  address: "",
+  market: "",
+  limit: Long.UZERO,
+  beforeId: Long.UZERO,
+  afterId: Long.UZERO,
+  orderBy: "",
+  orderId: "",
+  afterBlock: Long.UZERO,
+  beforeBlock: Long.UZERO,
+};
+
+export const QueryTradesRequest = {
+  encode(
+    message: QueryTradesRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.address !== "") {
+      writer.uint32(10).string(message.address);
+    }
+    if (message.market !== "") {
+      writer.uint32(18).string(message.market);
+    }
+    if (!message.limit.isZero()) {
+      writer.uint32(24).uint64(message.limit);
+    }
+    if (!message.beforeId.isZero()) {
+      writer.uint32(32).uint64(message.beforeId);
+    }
+    if (!message.afterId.isZero()) {
+      writer.uint32(40).uint64(message.afterId);
+    }
+    if (message.orderBy !== "") {
+      writer.uint32(50).string(message.orderBy);
+    }
+    if (message.orderId !== "") {
+      writer.uint32(58).string(message.orderId);
+    }
+    if (!message.afterBlock.isZero()) {
+      writer.uint32(64).uint64(message.afterBlock);
+    }
+    if (!message.beforeBlock.isZero()) {
+      writer.uint32(72).uint64(message.beforeBlock);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryTradesRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseQueryTradesRequest } as QueryTradesRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.address = reader.string();
+          break;
+        case 2:
+          message.market = reader.string();
+          break;
+        case 3:
+          message.limit = reader.uint64() as Long;
+          break;
+        case 4:
+          message.beforeId = reader.uint64() as Long;
+          break;
+        case 5:
+          message.afterId = reader.uint64() as Long;
+          break;
+        case 6:
+          message.orderBy = reader.string();
+          break;
+        case 7:
+          message.orderId = reader.string();
+          break;
+        case 8:
+          message.afterBlock = reader.uint64() as Long;
+          break;
+        case 9:
+          message.beforeBlock = reader.uint64() as Long;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryTradesRequest {
+    const message = { ...baseQueryTradesRequest } as QueryTradesRequest;
+    if (object.address !== undefined && object.address !== null) {
+      message.address = String(object.address);
+    } else {
+      message.address = "";
+    }
+    if (object.market !== undefined && object.market !== null) {
+      message.market = String(object.market);
+    } else {
+      message.market = "";
+    }
+    if (object.limit !== undefined && object.limit !== null) {
+      message.limit = Long.fromString(object.limit);
+    } else {
+      message.limit = Long.UZERO;
+    }
+    if (object.beforeId !== undefined && object.beforeId !== null) {
+      message.beforeId = Long.fromString(object.beforeId);
+    } else {
+      message.beforeId = Long.UZERO;
+    }
+    if (object.afterId !== undefined && object.afterId !== null) {
+      message.afterId = Long.fromString(object.afterId);
+    } else {
+      message.afterId = Long.UZERO;
+    }
+    if (object.orderBy !== undefined && object.orderBy !== null) {
+      message.orderBy = String(object.orderBy);
+    } else {
+      message.orderBy = "";
+    }
+    if (object.orderId !== undefined && object.orderId !== null) {
+      message.orderId = String(object.orderId);
+    } else {
+      message.orderId = "";
+    }
+    if (object.afterBlock !== undefined && object.afterBlock !== null) {
+      message.afterBlock = Long.fromString(object.afterBlock);
+    } else {
+      message.afterBlock = Long.UZERO;
+    }
+    if (object.beforeBlock !== undefined && object.beforeBlock !== null) {
+      message.beforeBlock = Long.fromString(object.beforeBlock);
+    } else {
+      message.beforeBlock = Long.UZERO;
+    }
+    return message;
+  },
+
+  toJSON(message: QueryTradesRequest): unknown {
+    const obj: any = {};
+    message.address !== undefined && (obj.address = message.address);
+    message.market !== undefined && (obj.market = message.market);
+    message.limit !== undefined &&
+      (obj.limit = (message.limit || Long.UZERO).toString());
+    message.beforeId !== undefined &&
+      (obj.beforeId = (message.beforeId || Long.UZERO).toString());
+    message.afterId !== undefined &&
+      (obj.afterId = (message.afterId || Long.UZERO).toString());
+    message.orderBy !== undefined && (obj.orderBy = message.orderBy);
+    message.orderId !== undefined && (obj.orderId = message.orderId);
+    message.afterBlock !== undefined &&
+      (obj.afterBlock = (message.afterBlock || Long.UZERO).toString());
+    message.beforeBlock !== undefined &&
+      (obj.beforeBlock = (message.beforeBlock || Long.UZERO).toString());
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<QueryTradesRequest>): QueryTradesRequest {
+    const message = { ...baseQueryTradesRequest } as QueryTradesRequest;
+    if (object.address !== undefined && object.address !== null) {
+      message.address = object.address;
+    } else {
+      message.address = "";
+    }
+    if (object.market !== undefined && object.market !== null) {
+      message.market = object.market;
+    } else {
+      message.market = "";
+    }
+    if (object.limit !== undefined && object.limit !== null) {
+      message.limit = object.limit as Long;
+    } else {
+      message.limit = Long.UZERO;
+    }
+    if (object.beforeId !== undefined && object.beforeId !== null) {
+      message.beforeId = object.beforeId as Long;
+    } else {
+      message.beforeId = Long.UZERO;
+    }
+    if (object.afterId !== undefined && object.afterId !== null) {
+      message.afterId = object.afterId as Long;
+    } else {
+      message.afterId = Long.UZERO;
+    }
+    if (object.orderBy !== undefined && object.orderBy !== null) {
+      message.orderBy = object.orderBy;
+    } else {
+      message.orderBy = "";
+    }
+    if (object.orderId !== undefined && object.orderId !== null) {
+      message.orderId = object.orderId;
+    } else {
+      message.orderId = "";
+    }
+    if (object.afterBlock !== undefined && object.afterBlock !== null) {
+      message.afterBlock = object.afterBlock as Long;
+    } else {
+      message.afterBlock = Long.UZERO;
+    }
+    if (object.beforeBlock !== undefined && object.beforeBlock !== null) {
+      message.beforeBlock = object.beforeBlock as Long;
+    } else {
+      message.beforeBlock = Long.UZERO;
+    }
+    return message;
+  },
+};
+
+const baseQueryTradesResponse: object = {};
+
+export const QueryTradesResponse = {
+  encode(
+    message: QueryTradesResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.trades) {
+      TradeEvent.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryTradesResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseQueryTradesResponse } as QueryTradesResponse;
+    message.trades = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.trades.push(TradeEvent.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryTradesResponse {
+    const message = { ...baseQueryTradesResponse } as QueryTradesResponse;
+    message.trades = [];
+    if (object.trades !== undefined && object.trades !== null) {
+      for (const e of object.trades) {
+        message.trades.push(TradeEvent.fromJSON(e));
+      }
+    }
+    return message;
+  },
+
+  toJSON(message: QueryTradesResponse): unknown {
+    const obj: any = {};
+    if (message.trades) {
+      obj.trades = message.trades.map((e) =>
+        e ? TradeEvent.toJSON(e) : undefined
+      );
+    } else {
+      obj.trades = [];
+    }
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<QueryTradesResponse>): QueryTradesResponse {
+    const message = { ...baseQueryTradesResponse } as QueryTradesResponse;
+    message.trades = [];
+    if (object.trades !== undefined && object.trades !== null) {
+      for (const e of object.trades) {
+        message.trades.push(TradeEvent.fromPartial(e));
+      }
+    }
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** this line is used by starport scaffolding # 2 */
@@ -460,6 +753,7 @@ export interface Query {
   Candlesticks(
     request: QueryCandlesticksRequest
   ): Promise<QueryCandlesticksResponse>;
+  Trades(request: QueryTradesRequest): Promise<QueryTradesResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -468,6 +762,7 @@ export class QueryClientImpl implements Query {
     this.rpc = rpc;
     this.InsuranceBalance = this.InsuranceBalance.bind(this);
     this.Candlesticks = this.Candlesticks.bind(this);
+    this.Trades = this.Trades.bind(this);
   }
   InsuranceBalance(
     request: QueryInsuranceBalanceRequest
@@ -494,6 +789,18 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryCandlesticksResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  Trades(request: QueryTradesRequest): Promise<QueryTradesResponse> {
+    const data = QueryTradesRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.broker.Query",
+      "Trades",
+      data
+    );
+    return promise.then((data) =>
+      QueryTradesResponse.decode(new _m0.Reader(data))
     );
   }
 }

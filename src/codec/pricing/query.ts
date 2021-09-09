@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Prices } from "../pricing/pricing";
+import { PriceSet } from "../pricing/pricing";
 import {
   PageRequest,
   PageResponse,
@@ -14,15 +14,15 @@ export interface QueryPriceRequest {
 }
 
 export interface QueryPriceResponse {
-  prices?: Prices;
+  prices?: PriceSet;
 }
 
-export interface QueryAllPriceRequest {
+export interface QueryAllPriceSetRequest {
   pagination?: PageRequest;
 }
 
-export interface QueryAllPriceResponse {
-  pricess: Prices[];
+export interface QueryAllPriceSetResponse {
+  prices: PriceSet[];
   pagination?: PageResponse;
 }
 
@@ -101,7 +101,7 @@ export const QueryPriceResponse = {
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.prices !== undefined) {
-      Prices.encode(message.prices, writer.uint32(10).fork()).ldelim();
+      PriceSet.encode(message.prices, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -114,7 +114,7 @@ export const QueryPriceResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.prices = Prices.decode(reader, reader.uint32());
+          message.prices = PriceSet.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -127,7 +127,7 @@ export const QueryPriceResponse = {
   fromJSON(object: any): QueryPriceResponse {
     const message = { ...baseQueryPriceResponse } as QueryPriceResponse;
     if (object.prices !== undefined && object.prices !== null) {
-      message.prices = Prices.fromJSON(object.prices);
+      message.prices = PriceSet.fromJSON(object.prices);
     } else {
       message.prices = undefined;
     }
@@ -137,14 +137,16 @@ export const QueryPriceResponse = {
   toJSON(message: QueryPriceResponse): unknown {
     const obj: any = {};
     message.prices !== undefined &&
-      (obj.prices = message.prices ? Prices.toJSON(message.prices) : undefined);
+      (obj.prices = message.prices
+        ? PriceSet.toJSON(message.prices)
+        : undefined);
     return obj;
   },
 
   fromPartial(object: DeepPartial<QueryPriceResponse>): QueryPriceResponse {
     const message = { ...baseQueryPriceResponse } as QueryPriceResponse;
     if (object.prices !== undefined && object.prices !== null) {
-      message.prices = Prices.fromPartial(object.prices);
+      message.prices = PriceSet.fromPartial(object.prices);
     } else {
       message.prices = undefined;
     }
@@ -152,11 +154,11 @@ export const QueryPriceResponse = {
   },
 };
 
-const baseQueryAllPriceRequest: object = {};
+const baseQueryAllPriceSetRequest: object = {};
 
-export const QueryAllPriceRequest = {
+export const QueryAllPriceSetRequest = {
   encode(
-    message: QueryAllPriceRequest,
+    message: QueryAllPriceSetRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.pagination !== undefined) {
@@ -168,10 +170,12 @@ export const QueryAllPriceRequest = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): QueryAllPriceRequest {
+  ): QueryAllPriceSetRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryAllPriceRequest } as QueryAllPriceRequest;
+    const message = {
+      ...baseQueryAllPriceSetRequest,
+    } as QueryAllPriceSetRequest;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -186,8 +190,10 @@ export const QueryAllPriceRequest = {
     return message;
   },
 
-  fromJSON(object: any): QueryAllPriceRequest {
-    const message = { ...baseQueryAllPriceRequest } as QueryAllPriceRequest;
+  fromJSON(object: any): QueryAllPriceSetRequest {
+    const message = {
+      ...baseQueryAllPriceSetRequest,
+    } as QueryAllPriceSetRequest;
     if (object.pagination !== undefined && object.pagination !== null) {
       message.pagination = PageRequest.fromJSON(object.pagination);
     } else {
@@ -196,7 +202,7 @@ export const QueryAllPriceRequest = {
     return message;
   },
 
-  toJSON(message: QueryAllPriceRequest): unknown {
+  toJSON(message: QueryAllPriceSetRequest): unknown {
     const obj: any = {};
     message.pagination !== undefined &&
       (obj.pagination = message.pagination
@@ -205,8 +211,12 @@ export const QueryAllPriceRequest = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<QueryAllPriceRequest>): QueryAllPriceRequest {
-    const message = { ...baseQueryAllPriceRequest } as QueryAllPriceRequest;
+  fromPartial(
+    object: DeepPartial<QueryAllPriceSetRequest>
+  ): QueryAllPriceSetRequest {
+    const message = {
+      ...baseQueryAllPriceSetRequest,
+    } as QueryAllPriceSetRequest;
     if (object.pagination !== undefined && object.pagination !== null) {
       message.pagination = PageRequest.fromPartial(object.pagination);
     } else {
@@ -216,15 +226,15 @@ export const QueryAllPriceRequest = {
   },
 };
 
-const baseQueryAllPriceResponse: object = {};
+const baseQueryAllPriceSetResponse: object = {};
 
-export const QueryAllPriceResponse = {
+export const QueryAllPriceSetResponse = {
   encode(
-    message: QueryAllPriceResponse,
+    message: QueryAllPriceSetResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    for (const v of message.pricess) {
-      Prices.encode(v!, writer.uint32(10).fork()).ldelim();
+    for (const v of message.prices) {
+      PriceSet.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.pagination !== undefined) {
       PageResponse.encode(
@@ -238,16 +248,18 @@ export const QueryAllPriceResponse = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): QueryAllPriceResponse {
+  ): QueryAllPriceSetResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryAllPriceResponse } as QueryAllPriceResponse;
-    message.pricess = [];
+    const message = {
+      ...baseQueryAllPriceSetResponse,
+    } as QueryAllPriceSetResponse;
+    message.prices = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.pricess.push(Prices.decode(reader, reader.uint32()));
+          message.prices.push(PriceSet.decode(reader, reader.uint32()));
           break;
         case 2:
           message.pagination = PageResponse.decode(reader, reader.uint32());
@@ -260,12 +272,14 @@ export const QueryAllPriceResponse = {
     return message;
   },
 
-  fromJSON(object: any): QueryAllPriceResponse {
-    const message = { ...baseQueryAllPriceResponse } as QueryAllPriceResponse;
-    message.pricess = [];
-    if (object.pricess !== undefined && object.pricess !== null) {
-      for (const e of object.pricess) {
-        message.pricess.push(Prices.fromJSON(e));
+  fromJSON(object: any): QueryAllPriceSetResponse {
+    const message = {
+      ...baseQueryAllPriceSetResponse,
+    } as QueryAllPriceSetResponse;
+    message.prices = [];
+    if (object.prices !== undefined && object.prices !== null) {
+      for (const e of object.prices) {
+        message.prices.push(PriceSet.fromJSON(e));
       }
     }
     if (object.pagination !== undefined && object.pagination !== null) {
@@ -276,14 +290,14 @@ export const QueryAllPriceResponse = {
     return message;
   },
 
-  toJSON(message: QueryAllPriceResponse): unknown {
+  toJSON(message: QueryAllPriceSetResponse): unknown {
     const obj: any = {};
-    if (message.pricess) {
-      obj.pricess = message.pricess.map((e) =>
-        e ? Prices.toJSON(e) : undefined
+    if (message.prices) {
+      obj.prices = message.prices.map((e) =>
+        e ? PriceSet.toJSON(e) : undefined
       );
     } else {
-      obj.pricess = [];
+      obj.prices = [];
     }
     message.pagination !== undefined &&
       (obj.pagination = message.pagination
@@ -293,13 +307,15 @@ export const QueryAllPriceResponse = {
   },
 
   fromPartial(
-    object: DeepPartial<QueryAllPriceResponse>
-  ): QueryAllPriceResponse {
-    const message = { ...baseQueryAllPriceResponse } as QueryAllPriceResponse;
-    message.pricess = [];
-    if (object.pricess !== undefined && object.pricess !== null) {
-      for (const e of object.pricess) {
-        message.pricess.push(Prices.fromPartial(e));
+    object: DeepPartial<QueryAllPriceSetResponse>
+  ): QueryAllPriceSetResponse {
+    const message = {
+      ...baseQueryAllPriceSetResponse,
+    } as QueryAllPriceSetResponse;
+    message.prices = [];
+    if (object.prices !== undefined && object.prices !== null) {
+      for (const e of object.prices) {
+        message.prices.push(PriceSet.fromPartial(e));
       }
     }
     if (object.pagination !== undefined && object.pagination !== null) {
@@ -448,8 +464,10 @@ export const QueryRateResponse = {
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** this line is used by starport scaffolding # 2 */
-  Price(request: QueryPriceRequest): Promise<QueryPriceResponse>;
-  PriceAll(request: QueryAllPriceRequest): Promise<QueryAllPriceResponse>;
+  PriceSet(request: QueryPriceRequest): Promise<QueryPriceResponse>;
+  PriceSetAll(
+    request: QueryAllPriceSetRequest
+  ): Promise<QueryAllPriceSetResponse>;
   Rate(request: QueryRateRequest): Promise<QueryRateResponse>;
 }
 
@@ -457,15 +475,15 @@ export class QueryClientImpl implements Query {
   private readonly rpc: Rpc;
   constructor(rpc: Rpc) {
     this.rpc = rpc;
-    this.Price = this.Price.bind(this);
-    this.PriceAll = this.PriceAll.bind(this);
+    this.PriceSet = this.PriceSet.bind(this);
+    this.PriceSetAll = this.PriceSetAll.bind(this);
     this.Rate = this.Rate.bind(this);
   }
-  Price(request: QueryPriceRequest): Promise<QueryPriceResponse> {
+  PriceSet(request: QueryPriceRequest): Promise<QueryPriceResponse> {
     const data = QueryPriceRequest.encode(request).finish();
     const promise = this.rpc.request(
       "Switcheo.carbon.pricing.Query",
-      "Price",
+      "PriceSet",
       data
     );
     return promise.then((data) =>
@@ -473,15 +491,17 @@ export class QueryClientImpl implements Query {
     );
   }
 
-  PriceAll(request: QueryAllPriceRequest): Promise<QueryAllPriceResponse> {
-    const data = QueryAllPriceRequest.encode(request).finish();
+  PriceSetAll(
+    request: QueryAllPriceSetRequest
+  ): Promise<QueryAllPriceSetResponse> {
+    const data = QueryAllPriceSetRequest.encode(request).finish();
     const promise = this.rpc.request(
       "Switcheo.carbon.pricing.Query",
-      "PriceAll",
+      "PriceSetAll",
       data
     );
     return promise.then((data) =>
-      QueryAllPriceResponse.decode(new _m0.Reader(data))
+      QueryAllPriceSetResponse.decode(new _m0.Reader(data))
     );
   }
 

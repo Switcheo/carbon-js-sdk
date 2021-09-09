@@ -15,6 +15,19 @@ export interface QueryGetPositionResponse {
   position?: Position;
 }
 
+export interface QueryAllPositionRequest {
+  address: string;
+  beforeId: Long;
+  afterId: Long;
+  orderBy: string;
+  limits: Long;
+  status: string;
+}
+
+export interface QueryAllPositionResponse {
+  positions: Position[];
+}
+
 const baseQueryGetPositionRequest: object = { address: "", market: "" };
 
 export const QueryGetPositionRequest = {
@@ -173,10 +186,255 @@ export const QueryGetPositionResponse = {
   },
 };
 
+const baseQueryAllPositionRequest: object = {
+  address: "",
+  beforeId: Long.UZERO,
+  afterId: Long.UZERO,
+  orderBy: "",
+  limits: Long.UZERO,
+  status: "",
+};
+
+export const QueryAllPositionRequest = {
+  encode(
+    message: QueryAllPositionRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.address !== "") {
+      writer.uint32(10).string(message.address);
+    }
+    if (!message.beforeId.isZero()) {
+      writer.uint32(16).uint64(message.beforeId);
+    }
+    if (!message.afterId.isZero()) {
+      writer.uint32(24).uint64(message.afterId);
+    }
+    if (message.orderBy !== "") {
+      writer.uint32(34).string(message.orderBy);
+    }
+    if (!message.limits.isZero()) {
+      writer.uint32(40).uint64(message.limits);
+    }
+    if (message.status !== "") {
+      writer.uint32(50).string(message.status);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAllPositionRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAllPositionRequest,
+    } as QueryAllPositionRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.address = reader.string();
+          break;
+        case 2:
+          message.beforeId = reader.uint64() as Long;
+          break;
+        case 3:
+          message.afterId = reader.uint64() as Long;
+          break;
+        case 4:
+          message.orderBy = reader.string();
+          break;
+        case 5:
+          message.limits = reader.uint64() as Long;
+          break;
+        case 6:
+          message.status = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllPositionRequest {
+    const message = {
+      ...baseQueryAllPositionRequest,
+    } as QueryAllPositionRequest;
+    if (object.address !== undefined && object.address !== null) {
+      message.address = String(object.address);
+    } else {
+      message.address = "";
+    }
+    if (object.beforeId !== undefined && object.beforeId !== null) {
+      message.beforeId = Long.fromString(object.beforeId);
+    } else {
+      message.beforeId = Long.UZERO;
+    }
+    if (object.afterId !== undefined && object.afterId !== null) {
+      message.afterId = Long.fromString(object.afterId);
+    } else {
+      message.afterId = Long.UZERO;
+    }
+    if (object.orderBy !== undefined && object.orderBy !== null) {
+      message.orderBy = String(object.orderBy);
+    } else {
+      message.orderBy = "";
+    }
+    if (object.limits !== undefined && object.limits !== null) {
+      message.limits = Long.fromString(object.limits);
+    } else {
+      message.limits = Long.UZERO;
+    }
+    if (object.status !== undefined && object.status !== null) {
+      message.status = String(object.status);
+    } else {
+      message.status = "";
+    }
+    return message;
+  },
+
+  toJSON(message: QueryAllPositionRequest): unknown {
+    const obj: any = {};
+    message.address !== undefined && (obj.address = message.address);
+    message.beforeId !== undefined &&
+      (obj.beforeId = (message.beforeId || Long.UZERO).toString());
+    message.afterId !== undefined &&
+      (obj.afterId = (message.afterId || Long.UZERO).toString());
+    message.orderBy !== undefined && (obj.orderBy = message.orderBy);
+    message.limits !== undefined &&
+      (obj.limits = (message.limits || Long.UZERO).toString());
+    message.status !== undefined && (obj.status = message.status);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAllPositionRequest>
+  ): QueryAllPositionRequest {
+    const message = {
+      ...baseQueryAllPositionRequest,
+    } as QueryAllPositionRequest;
+    if (object.address !== undefined && object.address !== null) {
+      message.address = object.address;
+    } else {
+      message.address = "";
+    }
+    if (object.beforeId !== undefined && object.beforeId !== null) {
+      message.beforeId = object.beforeId as Long;
+    } else {
+      message.beforeId = Long.UZERO;
+    }
+    if (object.afterId !== undefined && object.afterId !== null) {
+      message.afterId = object.afterId as Long;
+    } else {
+      message.afterId = Long.UZERO;
+    }
+    if (object.orderBy !== undefined && object.orderBy !== null) {
+      message.orderBy = object.orderBy;
+    } else {
+      message.orderBy = "";
+    }
+    if (object.limits !== undefined && object.limits !== null) {
+      message.limits = object.limits as Long;
+    } else {
+      message.limits = Long.UZERO;
+    }
+    if (object.status !== undefined && object.status !== null) {
+      message.status = object.status;
+    } else {
+      message.status = "";
+    }
+    return message;
+  },
+};
+
+const baseQueryAllPositionResponse: object = {};
+
+export const QueryAllPositionResponse = {
+  encode(
+    message: QueryAllPositionResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.positions) {
+      Position.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAllPositionResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAllPositionResponse,
+    } as QueryAllPositionResponse;
+    message.positions = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.positions.push(Position.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllPositionResponse {
+    const message = {
+      ...baseQueryAllPositionResponse,
+    } as QueryAllPositionResponse;
+    message.positions = [];
+    if (object.positions !== undefined && object.positions !== null) {
+      for (const e of object.positions) {
+        message.positions.push(Position.fromJSON(e));
+      }
+    }
+    return message;
+  },
+
+  toJSON(message: QueryAllPositionResponse): unknown {
+    const obj: any = {};
+    if (message.positions) {
+      obj.positions = message.positions.map((e) =>
+        e ? Position.toJSON(e) : undefined
+      );
+    } else {
+      obj.positions = [];
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAllPositionResponse>
+  ): QueryAllPositionResponse {
+    const message = {
+      ...baseQueryAllPositionResponse,
+    } as QueryAllPositionResponse;
+    message.positions = [];
+    if (object.positions !== undefined && object.positions !== null) {
+      for (const e of object.positions) {
+        message.positions.push(Position.fromPartial(e));
+      }
+    }
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** this line is used by starport scaffolding # 2 */
   Position(request: QueryGetPositionRequest): Promise<QueryGetPositionResponse>;
+  PositionAll(
+    request: QueryAllPositionRequest
+  ): Promise<QueryAllPositionResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -184,6 +442,7 @@ export class QueryClientImpl implements Query {
   constructor(rpc: Rpc) {
     this.rpc = rpc;
     this.Position = this.Position.bind(this);
+    this.PositionAll = this.PositionAll.bind(this);
   }
   Position(
     request: QueryGetPositionRequest
@@ -196,6 +455,20 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryGetPositionResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  PositionAll(
+    request: QueryAllPositionRequest
+  ): Promise<QueryAllPositionResponse> {
+    const data = QueryAllPositionRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.position.Query",
+      "PositionAll",
+      data
+    );
+    return promise.then((data) =>
+      QueryAllPositionResponse.decode(new _m0.Reader(data))
     );
   }
 }

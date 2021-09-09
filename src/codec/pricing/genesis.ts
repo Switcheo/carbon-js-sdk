@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Prices } from "../pricing/pricing";
+import { PriceSet } from "../pricing/pricing";
 
 export const protobufPackage = "Switcheo.carbon.pricing";
 
@@ -11,7 +11,7 @@ export interface GenesisState {
    * this line is used by starport scaffolding # genesis/proto/state
    * this line is used by starport scaffolding # ibc/genesis/proto
    */
-  prices: Prices[];
+  prices: PriceSet[];
 }
 
 const baseGenesisState: object = {};
@@ -22,7 +22,7 @@ export const GenesisState = {
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     for (const v of message.prices) {
-      Prices.encode(v!, writer.uint32(10).fork()).ldelim();
+      PriceSet.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -36,7 +36,7 @@ export const GenesisState = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.prices.push(Prices.decode(reader, reader.uint32()));
+          message.prices.push(PriceSet.decode(reader, reader.uint32()));
           break;
         default:
           reader.skipType(tag & 7);
@@ -51,7 +51,7 @@ export const GenesisState = {
     message.prices = [];
     if (object.prices !== undefined && object.prices !== null) {
       for (const e of object.prices) {
-        message.prices.push(Prices.fromJSON(e));
+        message.prices.push(PriceSet.fromJSON(e));
       }
     }
     return message;
@@ -61,7 +61,7 @@ export const GenesisState = {
     const obj: any = {};
     if (message.prices) {
       obj.prices = message.prices.map((e) =>
-        e ? Prices.toJSON(e) : undefined
+        e ? PriceSet.toJSON(e) : undefined
       );
     } else {
       obj.prices = [];
@@ -74,7 +74,7 @@ export const GenesisState = {
     message.prices = [];
     if (object.prices !== undefined && object.prices !== null) {
       for (const e of object.prices) {
-        message.prices.push(Prices.fromPartial(e));
+        message.prices.push(PriceSet.fromPartial(e));
       }
     }
     return message;

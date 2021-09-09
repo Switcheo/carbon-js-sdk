@@ -26,7 +26,6 @@ export interface Vote {
 
 export interface Result {
   oracleId: string;
-  blockHeight: Long;
   timestamp: Long;
   data: string;
 }
@@ -386,12 +385,7 @@ export const Vote = {
   },
 };
 
-const baseResult: object = {
-  oracleId: "",
-  blockHeight: Long.ZERO,
-  timestamp: Long.ZERO,
-  data: "",
-};
+const baseResult: object = { oracleId: "", timestamp: Long.ZERO, data: "" };
 
 export const Result = {
   encode(
@@ -400,9 +394,6 @@ export const Result = {
   ): _m0.Writer {
     if (message.oracleId !== "") {
       writer.uint32(10).string(message.oracleId);
-    }
-    if (!message.blockHeight.isZero()) {
-      writer.uint32(16).int64(message.blockHeight);
     }
     if (!message.timestamp.isZero()) {
       writer.uint32(24).int64(message.timestamp);
@@ -422,9 +413,6 @@ export const Result = {
       switch (tag >>> 3) {
         case 1:
           message.oracleId = reader.string();
-          break;
-        case 2:
-          message.blockHeight = reader.int64() as Long;
           break;
         case 3:
           message.timestamp = reader.int64() as Long;
@@ -447,11 +435,6 @@ export const Result = {
     } else {
       message.oracleId = "";
     }
-    if (object.blockHeight !== undefined && object.blockHeight !== null) {
-      message.blockHeight = Long.fromString(object.blockHeight);
-    } else {
-      message.blockHeight = Long.ZERO;
-    }
     if (object.timestamp !== undefined && object.timestamp !== null) {
       message.timestamp = Long.fromString(object.timestamp);
     } else {
@@ -468,8 +451,6 @@ export const Result = {
   toJSON(message: Result): unknown {
     const obj: any = {};
     message.oracleId !== undefined && (obj.oracleId = message.oracleId);
-    message.blockHeight !== undefined &&
-      (obj.blockHeight = (message.blockHeight || Long.ZERO).toString());
     message.timestamp !== undefined &&
       (obj.timestamp = (message.timestamp || Long.ZERO).toString());
     message.data !== undefined && (obj.data = message.data);
@@ -482,11 +463,6 @@ export const Result = {
       message.oracleId = object.oracleId;
     } else {
       message.oracleId = "";
-    }
-    if (object.blockHeight !== undefined && object.blockHeight !== null) {
-      message.blockHeight = object.blockHeight as Long;
-    } else {
-      message.blockHeight = Long.ZERO;
     }
     if (object.timestamp !== undefined && object.timestamp !== null) {
       message.timestamp = object.timestamp as Long;

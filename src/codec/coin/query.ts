@@ -6,6 +6,7 @@ import {
   PageRequest,
   PageResponse,
 } from "../cosmos/base/query/v1beta1/pagination";
+import { ExternalTransfer } from "../coin/extevents";
 
 export const protobufPackage = "Switcheo.carbon.coin";
 
@@ -57,6 +58,20 @@ export interface QueryGetBalancesRequest {
 
 export interface QueryGetBalancesResponse {
   tokenBalances: TokenBalance[];
+}
+
+export interface QueryGetExternalTransfersRequest {
+  address: string;
+  blockchain: string;
+  transferType: string;
+  denom: string;
+  status: string;
+  limit: Long;
+  orderBy: string;
+}
+
+export interface QueryGetExternalTransfersResponse {
+  externalTransfers: ExternalTransfer[];
 }
 
 const baseQueryGetTokenRequest: object = { denom: "" };
@@ -961,6 +976,273 @@ export const QueryGetBalancesResponse = {
   },
 };
 
+const baseQueryGetExternalTransfersRequest: object = {
+  address: "",
+  blockchain: "",
+  transferType: "",
+  denom: "",
+  status: "",
+  limit: Long.UZERO,
+  orderBy: "",
+};
+
+export const QueryGetExternalTransfersRequest = {
+  encode(
+    message: QueryGetExternalTransfersRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.address !== "") {
+      writer.uint32(10).string(message.address);
+    }
+    if (message.blockchain !== "") {
+      writer.uint32(18).string(message.blockchain);
+    }
+    if (message.transferType !== "") {
+      writer.uint32(26).string(message.transferType);
+    }
+    if (message.denom !== "") {
+      writer.uint32(34).string(message.denom);
+    }
+    if (message.status !== "") {
+      writer.uint32(42).string(message.status);
+    }
+    if (!message.limit.isZero()) {
+      writer.uint32(48).uint64(message.limit);
+    }
+    if (message.orderBy !== "") {
+      writer.uint32(58).string(message.orderBy);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryGetExternalTransfersRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryGetExternalTransfersRequest,
+    } as QueryGetExternalTransfersRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.address = reader.string();
+          break;
+        case 2:
+          message.blockchain = reader.string();
+          break;
+        case 3:
+          message.transferType = reader.string();
+          break;
+        case 4:
+          message.denom = reader.string();
+          break;
+        case 5:
+          message.status = reader.string();
+          break;
+        case 6:
+          message.limit = reader.uint64() as Long;
+          break;
+        case 7:
+          message.orderBy = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryGetExternalTransfersRequest {
+    const message = {
+      ...baseQueryGetExternalTransfersRequest,
+    } as QueryGetExternalTransfersRequest;
+    if (object.address !== undefined && object.address !== null) {
+      message.address = String(object.address);
+    } else {
+      message.address = "";
+    }
+    if (object.blockchain !== undefined && object.blockchain !== null) {
+      message.blockchain = String(object.blockchain);
+    } else {
+      message.blockchain = "";
+    }
+    if (object.transferType !== undefined && object.transferType !== null) {
+      message.transferType = String(object.transferType);
+    } else {
+      message.transferType = "";
+    }
+    if (object.denom !== undefined && object.denom !== null) {
+      message.denom = String(object.denom);
+    } else {
+      message.denom = "";
+    }
+    if (object.status !== undefined && object.status !== null) {
+      message.status = String(object.status);
+    } else {
+      message.status = "";
+    }
+    if (object.limit !== undefined && object.limit !== null) {
+      message.limit = Long.fromString(object.limit);
+    } else {
+      message.limit = Long.UZERO;
+    }
+    if (object.orderBy !== undefined && object.orderBy !== null) {
+      message.orderBy = String(object.orderBy);
+    } else {
+      message.orderBy = "";
+    }
+    return message;
+  },
+
+  toJSON(message: QueryGetExternalTransfersRequest): unknown {
+    const obj: any = {};
+    message.address !== undefined && (obj.address = message.address);
+    message.blockchain !== undefined && (obj.blockchain = message.blockchain);
+    message.transferType !== undefined &&
+      (obj.transferType = message.transferType);
+    message.denom !== undefined && (obj.denom = message.denom);
+    message.status !== undefined && (obj.status = message.status);
+    message.limit !== undefined &&
+      (obj.limit = (message.limit || Long.UZERO).toString());
+    message.orderBy !== undefined && (obj.orderBy = message.orderBy);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryGetExternalTransfersRequest>
+  ): QueryGetExternalTransfersRequest {
+    const message = {
+      ...baseQueryGetExternalTransfersRequest,
+    } as QueryGetExternalTransfersRequest;
+    if (object.address !== undefined && object.address !== null) {
+      message.address = object.address;
+    } else {
+      message.address = "";
+    }
+    if (object.blockchain !== undefined && object.blockchain !== null) {
+      message.blockchain = object.blockchain;
+    } else {
+      message.blockchain = "";
+    }
+    if (object.transferType !== undefined && object.transferType !== null) {
+      message.transferType = object.transferType;
+    } else {
+      message.transferType = "";
+    }
+    if (object.denom !== undefined && object.denom !== null) {
+      message.denom = object.denom;
+    } else {
+      message.denom = "";
+    }
+    if (object.status !== undefined && object.status !== null) {
+      message.status = object.status;
+    } else {
+      message.status = "";
+    }
+    if (object.limit !== undefined && object.limit !== null) {
+      message.limit = object.limit as Long;
+    } else {
+      message.limit = Long.UZERO;
+    }
+    if (object.orderBy !== undefined && object.orderBy !== null) {
+      message.orderBy = object.orderBy;
+    } else {
+      message.orderBy = "";
+    }
+    return message;
+  },
+};
+
+const baseQueryGetExternalTransfersResponse: object = {};
+
+export const QueryGetExternalTransfersResponse = {
+  encode(
+    message: QueryGetExternalTransfersResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.externalTransfers) {
+      ExternalTransfer.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryGetExternalTransfersResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryGetExternalTransfersResponse,
+    } as QueryGetExternalTransfersResponse;
+    message.externalTransfers = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.externalTransfers.push(
+            ExternalTransfer.decode(reader, reader.uint32())
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryGetExternalTransfersResponse {
+    const message = {
+      ...baseQueryGetExternalTransfersResponse,
+    } as QueryGetExternalTransfersResponse;
+    message.externalTransfers = [];
+    if (
+      object.externalTransfers !== undefined &&
+      object.externalTransfers !== null
+    ) {
+      for (const e of object.externalTransfers) {
+        message.externalTransfers.push(ExternalTransfer.fromJSON(e));
+      }
+    }
+    return message;
+  },
+
+  toJSON(message: QueryGetExternalTransfersResponse): unknown {
+    const obj: any = {};
+    if (message.externalTransfers) {
+      obj.externalTransfers = message.externalTransfers.map((e) =>
+        e ? ExternalTransfer.toJSON(e) : undefined
+      );
+    } else {
+      obj.externalTransfers = [];
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryGetExternalTransfersResponse>
+  ): QueryGetExternalTransfersResponse {
+    const message = {
+      ...baseQueryGetExternalTransfersResponse,
+    } as QueryGetExternalTransfersResponse;
+    message.externalTransfers = [];
+    if (
+      object.externalTransfers !== undefined &&
+      object.externalTransfers !== null
+    ) {
+      for (const e of object.externalTransfers) {
+        message.externalTransfers.push(ExternalTransfer.fromPartial(e));
+      }
+    }
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** this line is used by starport scaffolding # 2 */
@@ -973,6 +1255,9 @@ export interface Query {
     request: QueryAllWrapperMappingsRequest
   ): Promise<QueryAllWrapperMappingsResponse>;
   Balances(request: QueryGetBalancesRequest): Promise<QueryGetBalancesResponse>;
+  ExternalTransfers(
+    request: QueryGetExternalTransfersRequest
+  ): Promise<QueryGetExternalTransfersResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -984,6 +1269,7 @@ export class QueryClientImpl implements Query {
     this.LockedCoins = this.LockedCoins.bind(this);
     this.WrapperMappings = this.WrapperMappings.bind(this);
     this.Balances = this.Balances.bind(this);
+    this.ExternalTransfers = this.ExternalTransfers.bind(this);
   }
   Token(request: QueryGetTokenRequest): Promise<QueryGetTokenResponse> {
     const data = QueryGetTokenRequest.encode(request).finish();
@@ -1048,6 +1334,20 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryGetBalancesResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  ExternalTransfers(
+    request: QueryGetExternalTransfersRequest
+  ): Promise<QueryGetExternalTransfersResponse> {
+    const data = QueryGetExternalTransfersRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.coin.Query",
+      "ExternalTransfers",
+      data
+    );
+    return promise.then((data) =>
+      QueryGetExternalTransfersResponse.decode(new _m0.Reader(data))
     );
   }
 }

@@ -47,18 +47,8 @@ export interface MarketParams {
   name: string;
   displayName?: string;
   description?: string;
-  /**
-   * string lot_size = 10 [
-   *   (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-   *   (gogoproto.moretags) = "yaml:\"lot_size\"",
-   *   (gogoproto.nullable) = true
-   * ];
-   * string tick_size = 11 [
-   *   (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-   *   (gogoproto.moretags) = "yaml:\"tick_size\"",
-   *   (gogoproto.nullable) = true
-   * ];
-   */
+  lotSize: string;
+  tickSize: string;
   minQuantity: string;
   makerFee: string;
   takerFee: string;
@@ -709,6 +699,8 @@ export const Market = {
 
 const baseMarketParams: object = {
   name: "",
+  lotSize: "",
+  tickSize: "",
   minQuantity: "",
   makerFee: "",
   takerFee: "",
@@ -739,6 +731,12 @@ export const MarketParams = {
         { value: message.description! },
         writer.uint32(26).fork()
       ).ldelim();
+    }
+    if (message.lotSize !== "") {
+      writer.uint32(82).string(message.lotSize);
+    }
+    if (message.tickSize !== "") {
+      writer.uint32(90).string(message.tickSize);
     }
     if (message.minQuantity !== "") {
       writer.uint32(98).string(message.minQuantity);
@@ -816,6 +814,12 @@ export const MarketParams = {
             reader.uint32()
           ).value;
           break;
+        case 10:
+          message.lotSize = reader.string();
+          break;
+        case 11:
+          message.tickSize = reader.string();
+          break;
         case 12:
           message.minQuantity = reader.string();
           break;
@@ -888,6 +892,16 @@ export const MarketParams = {
       message.description = String(object.description);
     } else {
       message.description = undefined;
+    }
+    if (object.lotSize !== undefined && object.lotSize !== null) {
+      message.lotSize = String(object.lotSize);
+    } else {
+      message.lotSize = "";
+    }
+    if (object.tickSize !== undefined && object.tickSize !== null) {
+      message.tickSize = String(object.tickSize);
+    } else {
+      message.tickSize = "";
     }
     if (object.minQuantity !== undefined && object.minQuantity !== null) {
       message.minQuantity = String(object.minQuantity);
@@ -986,6 +1000,8 @@ export const MarketParams = {
       (obj.displayName = message.displayName);
     message.description !== undefined &&
       (obj.description = message.description);
+    message.lotSize !== undefined && (obj.lotSize = message.lotSize);
+    message.tickSize !== undefined && (obj.tickSize = message.tickSize);
     message.minQuantity !== undefined &&
       (obj.minQuantity = message.minQuantity);
     message.makerFee !== undefined && (obj.makerFee = message.makerFee);
@@ -1029,6 +1045,16 @@ export const MarketParams = {
       message.description = object.description;
     } else {
       message.description = undefined;
+    }
+    if (object.lotSize !== undefined && object.lotSize !== null) {
+      message.lotSize = object.lotSize;
+    } else {
+      message.lotSize = "";
+    }
+    if (object.tickSize !== undefined && object.tickSize !== null) {
+      message.tickSize = object.tickSize;
+    } else {
+      message.tickSize = "";
     }
     if (object.minQuantity !== undefined && object.minQuantity !== null) {
       message.minQuantity = object.minQuantity;

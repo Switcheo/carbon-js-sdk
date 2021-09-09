@@ -12,17 +12,15 @@ export interface MsgCreateToken {
 
 export interface CreateTokenParams {
   creator: string;
+  denom: string;
   name: string;
   symbol: string;
-  denom: string;
   decimals: Long;
-  nativeDecimals: Long;
-  blockchain: string;
   chainId: Long;
-  assetId: string;
+  bridgeId: Long;
+  bridgeAddress: string;
+  tokenAddress: string;
   isCollateral: boolean;
-  lockProxyHash: string;
-  delegatedSupply: string;
 }
 
 export interface MsgCreateTokenResponse {
@@ -56,7 +54,7 @@ export interface MsgBindTokenResponse {}
 export interface MsgLinkToken {
   creator: string;
   denom: string;
-  lockProxyHash: string;
+  bridgeAddress: string;
 }
 
 export interface MsgLinkTokenResponse {}
@@ -168,17 +166,15 @@ export const MsgCreateToken = {
 
 const baseCreateTokenParams: object = {
   creator: "",
+  denom: "",
   name: "",
   symbol: "",
-  denom: "",
   decimals: Long.ZERO,
-  nativeDecimals: Long.ZERO,
-  blockchain: "",
   chainId: Long.UZERO,
-  assetId: "",
+  bridgeId: Long.UZERO,
+  bridgeAddress: "",
+  tokenAddress: "",
   isCollateral: false,
-  lockProxyHash: "",
-  delegatedSupply: "",
 };
 
 export const CreateTokenParams = {
@@ -189,38 +185,32 @@ export const CreateTokenParams = {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
+    if (message.denom !== "") {
+      writer.uint32(18).string(message.denom);
+    }
     if (message.name !== "") {
-      writer.uint32(18).string(message.name);
+      writer.uint32(26).string(message.name);
     }
     if (message.symbol !== "") {
-      writer.uint32(26).string(message.symbol);
-    }
-    if (message.denom !== "") {
-      writer.uint32(34).string(message.denom);
+      writer.uint32(34).string(message.symbol);
     }
     if (!message.decimals.isZero()) {
       writer.uint32(40).int64(message.decimals);
     }
-    if (!message.nativeDecimals.isZero()) {
-      writer.uint32(48).int64(message.nativeDecimals);
-    }
-    if (message.blockchain !== "") {
-      writer.uint32(58).string(message.blockchain);
-    }
     if (!message.chainId.isZero()) {
-      writer.uint32(64).uint64(message.chainId);
+      writer.uint32(48).uint64(message.chainId);
     }
-    if (message.assetId !== "") {
-      writer.uint32(74).string(message.assetId);
+    if (!message.bridgeId.isZero()) {
+      writer.uint32(56).uint64(message.bridgeId);
+    }
+    if (message.bridgeAddress !== "") {
+      writer.uint32(66).string(message.bridgeAddress);
+    }
+    if (message.tokenAddress !== "") {
+      writer.uint32(74).string(message.tokenAddress);
     }
     if (message.isCollateral === true) {
       writer.uint32(80).bool(message.isCollateral);
-    }
-    if (message.lockProxyHash !== "") {
-      writer.uint32(90).string(message.lockProxyHash);
-    }
-    if (message.delegatedSupply !== "") {
-      writer.uint32(98).string(message.delegatedSupply);
     }
     return writer;
   },
@@ -236,37 +226,31 @@ export const CreateTokenParams = {
           message.creator = reader.string();
           break;
         case 2:
-          message.name = reader.string();
+          message.denom = reader.string();
           break;
         case 3:
-          message.symbol = reader.string();
+          message.name = reader.string();
           break;
         case 4:
-          message.denom = reader.string();
+          message.symbol = reader.string();
           break;
         case 5:
           message.decimals = reader.int64() as Long;
           break;
         case 6:
-          message.nativeDecimals = reader.int64() as Long;
-          break;
-        case 7:
-          message.blockchain = reader.string();
-          break;
-        case 8:
           message.chainId = reader.uint64() as Long;
           break;
+        case 7:
+          message.bridgeId = reader.uint64() as Long;
+          break;
+        case 8:
+          message.bridgeAddress = reader.string();
+          break;
         case 9:
-          message.assetId = reader.string();
+          message.tokenAddress = reader.string();
           break;
         case 10:
           message.isCollateral = reader.bool();
-          break;
-        case 11:
-          message.lockProxyHash = reader.string();
-          break;
-        case 12:
-          message.delegatedSupply = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -283,6 +267,11 @@ export const CreateTokenParams = {
     } else {
       message.creator = "";
     }
+    if (object.denom !== undefined && object.denom !== null) {
+      message.denom = String(object.denom);
+    } else {
+      message.denom = "";
+    }
     if (object.name !== undefined && object.name !== null) {
       message.name = String(object.name);
     } else {
@@ -293,53 +282,35 @@ export const CreateTokenParams = {
     } else {
       message.symbol = "";
     }
-    if (object.denom !== undefined && object.denom !== null) {
-      message.denom = String(object.denom);
-    } else {
-      message.denom = "";
-    }
     if (object.decimals !== undefined && object.decimals !== null) {
       message.decimals = Long.fromString(object.decimals);
     } else {
       message.decimals = Long.ZERO;
-    }
-    if (object.nativeDecimals !== undefined && object.nativeDecimals !== null) {
-      message.nativeDecimals = Long.fromString(object.nativeDecimals);
-    } else {
-      message.nativeDecimals = Long.ZERO;
-    }
-    if (object.blockchain !== undefined && object.blockchain !== null) {
-      message.blockchain = String(object.blockchain);
-    } else {
-      message.blockchain = "";
     }
     if (object.chainId !== undefined && object.chainId !== null) {
       message.chainId = Long.fromString(object.chainId);
     } else {
       message.chainId = Long.UZERO;
     }
-    if (object.assetId !== undefined && object.assetId !== null) {
-      message.assetId = String(object.assetId);
+    if (object.bridgeId !== undefined && object.bridgeId !== null) {
+      message.bridgeId = Long.fromString(object.bridgeId);
     } else {
-      message.assetId = "";
+      message.bridgeId = Long.UZERO;
+    }
+    if (object.bridgeAddress !== undefined && object.bridgeAddress !== null) {
+      message.bridgeAddress = String(object.bridgeAddress);
+    } else {
+      message.bridgeAddress = "";
+    }
+    if (object.tokenAddress !== undefined && object.tokenAddress !== null) {
+      message.tokenAddress = String(object.tokenAddress);
+    } else {
+      message.tokenAddress = "";
     }
     if (object.isCollateral !== undefined && object.isCollateral !== null) {
       message.isCollateral = Boolean(object.isCollateral);
     } else {
       message.isCollateral = false;
-    }
-    if (object.lockProxyHash !== undefined && object.lockProxyHash !== null) {
-      message.lockProxyHash = String(object.lockProxyHash);
-    } else {
-      message.lockProxyHash = "";
-    }
-    if (
-      object.delegatedSupply !== undefined &&
-      object.delegatedSupply !== null
-    ) {
-      message.delegatedSupply = String(object.delegatedSupply);
-    } else {
-      message.delegatedSupply = "";
     }
     return message;
   },
@@ -347,23 +318,21 @@ export const CreateTokenParams = {
   toJSON(message: CreateTokenParams): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
+    message.denom !== undefined && (obj.denom = message.denom);
     message.name !== undefined && (obj.name = message.name);
     message.symbol !== undefined && (obj.symbol = message.symbol);
-    message.denom !== undefined && (obj.denom = message.denom);
     message.decimals !== undefined &&
       (obj.decimals = (message.decimals || Long.ZERO).toString());
-    message.nativeDecimals !== undefined &&
-      (obj.nativeDecimals = (message.nativeDecimals || Long.ZERO).toString());
-    message.blockchain !== undefined && (obj.blockchain = message.blockchain);
     message.chainId !== undefined &&
       (obj.chainId = (message.chainId || Long.UZERO).toString());
-    message.assetId !== undefined && (obj.assetId = message.assetId);
+    message.bridgeId !== undefined &&
+      (obj.bridgeId = (message.bridgeId || Long.UZERO).toString());
+    message.bridgeAddress !== undefined &&
+      (obj.bridgeAddress = message.bridgeAddress);
+    message.tokenAddress !== undefined &&
+      (obj.tokenAddress = message.tokenAddress);
     message.isCollateral !== undefined &&
       (obj.isCollateral = message.isCollateral);
-    message.lockProxyHash !== undefined &&
-      (obj.lockProxyHash = message.lockProxyHash);
-    message.delegatedSupply !== undefined &&
-      (obj.delegatedSupply = message.delegatedSupply);
     return obj;
   },
 
@@ -373,6 +342,11 @@ export const CreateTokenParams = {
       message.creator = object.creator;
     } else {
       message.creator = "";
+    }
+    if (object.denom !== undefined && object.denom !== null) {
+      message.denom = object.denom;
+    } else {
+      message.denom = "";
     }
     if (object.name !== undefined && object.name !== null) {
       message.name = object.name;
@@ -384,53 +358,35 @@ export const CreateTokenParams = {
     } else {
       message.symbol = "";
     }
-    if (object.denom !== undefined && object.denom !== null) {
-      message.denom = object.denom;
-    } else {
-      message.denom = "";
-    }
     if (object.decimals !== undefined && object.decimals !== null) {
       message.decimals = object.decimals as Long;
     } else {
       message.decimals = Long.ZERO;
-    }
-    if (object.nativeDecimals !== undefined && object.nativeDecimals !== null) {
-      message.nativeDecimals = object.nativeDecimals as Long;
-    } else {
-      message.nativeDecimals = Long.ZERO;
-    }
-    if (object.blockchain !== undefined && object.blockchain !== null) {
-      message.blockchain = object.blockchain;
-    } else {
-      message.blockchain = "";
     }
     if (object.chainId !== undefined && object.chainId !== null) {
       message.chainId = object.chainId as Long;
     } else {
       message.chainId = Long.UZERO;
     }
-    if (object.assetId !== undefined && object.assetId !== null) {
-      message.assetId = object.assetId;
+    if (object.bridgeId !== undefined && object.bridgeId !== null) {
+      message.bridgeId = object.bridgeId as Long;
     } else {
-      message.assetId = "";
+      message.bridgeId = Long.UZERO;
+    }
+    if (object.bridgeAddress !== undefined && object.bridgeAddress !== null) {
+      message.bridgeAddress = object.bridgeAddress;
+    } else {
+      message.bridgeAddress = "";
+    }
+    if (object.tokenAddress !== undefined && object.tokenAddress !== null) {
+      message.tokenAddress = object.tokenAddress;
+    } else {
+      message.tokenAddress = "";
     }
     if (object.isCollateral !== undefined && object.isCollateral !== null) {
       message.isCollateral = object.isCollateral;
     } else {
       message.isCollateral = false;
-    }
-    if (object.lockProxyHash !== undefined && object.lockProxyHash !== null) {
-      message.lockProxyHash = object.lockProxyHash;
-    } else {
-      message.lockProxyHash = "";
-    }
-    if (
-      object.delegatedSupply !== undefined &&
-      object.delegatedSupply !== null
-    ) {
-      message.delegatedSupply = object.delegatedSupply;
-    } else {
-      message.delegatedSupply = "";
     }
     return message;
   },
@@ -913,7 +869,7 @@ export const MsgBindTokenResponse = {
   },
 };
 
-const baseMsgLinkToken: object = { creator: "", denom: "", lockProxyHash: "" };
+const baseMsgLinkToken: object = { creator: "", denom: "", bridgeAddress: "" };
 
 export const MsgLinkToken = {
   encode(
@@ -926,8 +882,8 @@ export const MsgLinkToken = {
     if (message.denom !== "") {
       writer.uint32(18).string(message.denom);
     }
-    if (message.lockProxyHash !== "") {
-      writer.uint32(26).string(message.lockProxyHash);
+    if (message.bridgeAddress !== "") {
+      writer.uint32(26).string(message.bridgeAddress);
     }
     return writer;
   },
@@ -946,7 +902,7 @@ export const MsgLinkToken = {
           message.denom = reader.string();
           break;
         case 3:
-          message.lockProxyHash = reader.string();
+          message.bridgeAddress = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -968,10 +924,10 @@ export const MsgLinkToken = {
     } else {
       message.denom = "";
     }
-    if (object.lockProxyHash !== undefined && object.lockProxyHash !== null) {
-      message.lockProxyHash = String(object.lockProxyHash);
+    if (object.bridgeAddress !== undefined && object.bridgeAddress !== null) {
+      message.bridgeAddress = String(object.bridgeAddress);
     } else {
-      message.lockProxyHash = "";
+      message.bridgeAddress = "";
     }
     return message;
   },
@@ -980,8 +936,8 @@ export const MsgLinkToken = {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
     message.denom !== undefined && (obj.denom = message.denom);
-    message.lockProxyHash !== undefined &&
-      (obj.lockProxyHash = message.lockProxyHash);
+    message.bridgeAddress !== undefined &&
+      (obj.bridgeAddress = message.bridgeAddress);
     return obj;
   },
 
@@ -997,10 +953,10 @@ export const MsgLinkToken = {
     } else {
       message.denom = "";
     }
-    if (object.lockProxyHash !== undefined && object.lockProxyHash !== null) {
-      message.lockProxyHash = object.lockProxyHash;
+    if (object.bridgeAddress !== undefined && object.bridgeAddress !== null) {
+      message.bridgeAddress = object.bridgeAddress;
     } else {
-      message.lockProxyHash = "";
+      message.bridgeAddress = "";
     }
     return message;
   },

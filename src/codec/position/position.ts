@@ -15,6 +15,10 @@ export interface Position {
   openedBlockHeight: Long;
 }
 
+export interface Positions {
+  positions: Position[];
+}
+
 const basePosition: object = {
   market: "",
   address: "",
@@ -196,6 +200,73 @@ export const Position = {
       message.openedBlockHeight = object.openedBlockHeight as Long;
     } else {
       message.openedBlockHeight = Long.UZERO;
+    }
+    return message;
+  },
+};
+
+const basePositions: object = {};
+
+export const Positions = {
+  encode(
+    message: Positions,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.positions) {
+      Position.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): Positions {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...basePositions } as Positions;
+    message.positions = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.positions.push(Position.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Positions {
+    const message = { ...basePositions } as Positions;
+    message.positions = [];
+    if (object.positions !== undefined && object.positions !== null) {
+      for (const e of object.positions) {
+        message.positions.push(Position.fromJSON(e));
+      }
+    }
+    return message;
+  },
+
+  toJSON(message: Positions): unknown {
+    const obj: any = {};
+    if (message.positions) {
+      obj.positions = message.positions.map((e) =>
+        e ? Position.toJSON(e) : undefined
+      );
+    } else {
+      obj.positions = [];
+    }
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<Positions>): Positions {
+    const message = { ...basePositions } as Positions;
+    message.positions = [];
+    if (object.positions !== undefined && object.positions !== null) {
+      for (const e of object.positions) {
+        message.positions.push(Position.fromPartial(e));
+      }
     }
     return message;
   },
