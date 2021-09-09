@@ -1,6 +1,7 @@
 import NodeWebSocket from 'ws'
 import { generateChannelId, parseChannelId } from './channel'
 import * as WSConnectorTypes from './types'
+import * as WSModels from './models'
 
 // delay between pings.
 // see WSConnector.intervalHeartbeat
@@ -16,6 +17,7 @@ const DEFAULT_TIMEOUT_CONNECT = 2000
 
 export const { WSChannel } = WSConnectorTypes
 export { WSConnectorTypes }
+export { WSModels }
 
 export interface WSStatusChangeListener {
   (connected: boolean): void
