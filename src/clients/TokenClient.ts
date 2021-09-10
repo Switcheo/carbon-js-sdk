@@ -1,9 +1,9 @@
 import { Token } from "@carbon-sdk/codec";
 import { CoinGeckoTokenNames, CommonAssetName } from "@carbon-sdk/constant";
 import { BlockChainUtils, FetchUtils, NumberUtils, TypeUtils } from "@carbon-sdk/util";
+import { CHAIN_IDS, getChainFromID } from "@carbon-sdk/util/blockchain";
 import { BN_ZERO } from "@carbon-sdk/util/number";
 import BigNumber from "bignumber.js";
-import Long from "long";
 import CarbonQueryClient from "./CarbonQueryClient";
 
 const SYMBOL_OVERRIDE: {
@@ -135,7 +135,7 @@ class TokenClient {
     return denom.match(/^([a-z\d.-]+)-(\d+)-([a-z\d.-]+)-(\d+)-lp\d+$/i) !== null;
   }
 
-  public getWrappedToken(denom: string, chainId?: number, bridgeId?: number): Token | null {
+  public getWrappedToken(denom: string, blockchain?: BlockChainUtils.Blockchain): Token | null {
     // check if denom is wrapped token
     if (this.wrapperMap[denom]) {
       return this.tokens[denom];
@@ -151,10 +151,8 @@ class TokenClient {
 
         // check if wrapped denom is of correct blockchain
         const token = this.tokens[wrappedDenom];
-        const isCorrectBlockchain = !chainId || token?.chainId === new Long(chainId)
-        const isCorrectBridge = !bridgeId || token?.bridgeId === new Long(bridgeId)
-
-        if (isCorrectBlockchain && isCorrectBridge) {
+        const tokenChain = getChainFromID(token.chainId.toNumber())
+        if (!blockchain || !tokenChain || tokenChain === blockchain) {
           return token;
         }
       }
