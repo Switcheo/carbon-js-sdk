@@ -1,6 +1,7 @@
 import { Token } from "@carbon-sdk/codec";
 import { CoinGeckoTokenNames, CommonAssetName } from "@carbon-sdk/constant";
 import { BlockChainUtils, FetchUtils, NumberUtils, TypeUtils } from "@carbon-sdk/util";
+import { CHAIN_IDS, getChainFromID } from "@carbon-sdk/util/blockchain";
 import { BN_ZERO } from "@carbon-sdk/util/number";
 import BigNumber from "bignumber.js";
 import CarbonQueryClient from "./CarbonQueryClient";
@@ -150,7 +151,8 @@ class TokenClient {
 
         // check if wrapped denom is of correct blockchain
         const token = this.tokens[wrappedDenom];
-        if (!blockchain || token?.blockchain === blockchain) {
+        const tokenChain = getChainFromID(token.chainId.toNumber())
+        if (!blockchain || !tokenChain || tokenChain === blockchain) {
           return token;
         }
       }
