@@ -15,19 +15,19 @@ import "./_setup";
   });
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
-  
+
   const result = await connectedSDK.admin.createToken({
-    name: "asd",
-	  symbol: "asd",
-    denom: "asd",
+    creator: sdk?.wallet?.bech32Address || '',
+    denom: "luna",
+    name: "luna",
+    symbol: "LUNA",
     decimals: 8,
-    nativeDecimals: 8,
-    blockchain: "asd",
-    chainId: 8,
-    assetId: "8",
+    chainId: 1,
+    bridgeId: 1,
+    bridgeAddress: '',
+    tokenAddress: '',
     isCollateral: true,
-    lockProxyHash: "",
-    delegatedSupply: new BigNumber(0),
+
   })
   console.log(result)
 })().catch(console.error).finally(() => process.exit(0));
