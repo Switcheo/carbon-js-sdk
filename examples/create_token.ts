@@ -18,9 +18,9 @@ import "./_setup";
 
   const result = await connectedSDK.admin.createToken({
     creator: sdk?.wallet?.bech32Address || '',
-    denom: "asd",
-    name: "asd",
-    symbol: "asd",
+    denom: "luna",
+    name: "luna",
+    symbol: "LUNA",
     decimals: 8,
     chainId: 1,
     bridgeId: 1,
