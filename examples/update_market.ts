@@ -21,6 +21,8 @@ import { Duration } from "../lib/codec/google/protobuf/duration";
   const result = await connectedSDK.market.update({
     name: "btc_z29",
     displayName: "BTCFUTURES",
+    lotSize: new BigNumber(200),
+    tickSize: new BigNumber(100),
     description: "futures market btc usd",
     minQuantity: new BigNumber(100000),
     makerFee: new BigNumber(0.002),

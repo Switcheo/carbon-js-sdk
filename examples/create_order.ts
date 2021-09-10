@@ -1,5 +1,6 @@
 import { BigNumber } from "bignumber.js";
 import * as BIP39 from "bip39";
+import { OrderModule } from "../lib";
 import { MsgCreateOrder } from "../lib/codec/order/tx";
 import { CarbonTx } from "../lib/util";
 import { CarbonSDK } from "./_sdk";
@@ -20,12 +21,12 @@ import "./_setup";
 
   // retrieve market to use for order creation
   const marketsResult = await sdk.query.market.MarketAll({})
-  console.log("markets", marketsResult.Market);
+  console.log("markets", marketsResult.markets);
 
-  if (!marketsResult.Market.length) {
+  if (!marketsResult.markets.length) {
     throw new Error("no markets found, create a market first");
   }
-  const [market] = marketsResult.Market
+  const [market] = marketsResult.markets
 
   // create an order using generic
   // CarbonWallet.sendTx, no type checking
@@ -53,10 +54,10 @@ import "./_setup";
   // for better input type checking
   const moduleCallResult = await connectedSDK.order.create({
     market: market.name,
-    orderType: "limit",
+    orderType: OrderModule.OrderType.Limit,
     price: new BigNumber(100),
     quantity: new BigNumber(market.minQuantity),
-    side: "buy",
+    side: OrderModule.OrderSide.Buy,
   });
   console.log("call from module", moduleCallResult);
 })().catch(console.error).finally(() => process.exit(0));
