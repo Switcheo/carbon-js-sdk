@@ -46,6 +46,7 @@
     "@types/w3c-web-hid": "^1.0.2",
     "@types/w3c-web-usb": "^1.0.5",
     "@types/ws": "^7.4.7",
+    "async": "^3.2.1",
     "base58check": "^2.0.0",
     "bignumber.js": "^9.0.1",
     "bip32": "^2.0.6",
