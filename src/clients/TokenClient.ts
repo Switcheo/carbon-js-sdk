@@ -1,7 +1,6 @@
 import { Token } from "@carbon-sdk/codec";
 import { CoinGeckoTokenNames, CommonAssetName } from "@carbon-sdk/constant";
 import { BlockChainUtils, FetchUtils, NumberUtils, TypeUtils } from "@carbon-sdk/util";
-import { CHAIN_IDS, getChainFromID } from "@carbon-sdk/util/blockchain";
 import { BN_ZERO } from "@carbon-sdk/util/number";
 import BigNumber from "bignumber.js";
 import CarbonQueryClient from "./CarbonQueryClient";
@@ -56,6 +55,18 @@ class TokenClient {
 
   public getDecimals(denom: string): number | undefined {
     return (this.tokens[denom] ?? this.poolTokens[denom])?.decimals.toNumber();
+  }
+
+  public getBlockchain(denom: string, overrideMap?: BlockChainUtils.ChainIds): BlockChainUtils.Blockchain | undefined {
+    // chainId defaults to 3 so that blockchain will be undefined
+    let chainId = this.tokens[denom]?.chainId?.toNumber() ?? 3;
+    if (TokenClient.isPoolToken(denom)) {
+      // pool tokens are on the Native blockchain, hence 0
+      chainId = 0;
+    }
+    const blockchain = BlockChainUtils.getChainFromID(chainId, overrideMap);
+
+    return blockchain as BlockChainUtils.Blockchain | undefined;
   }
 
   public getSymbol(denom: string): string {
@@ -158,7 +169,7 @@ class TokenClient {
 
         // check if wrapped denom is of correct blockchain
         const token = this.tokens[wrappedDenom];
-        const tokenChain = getChainFromID(token.chainId.toNumber())
+        const tokenChain = BlockChainUtils.getChainFromID(token.chainId.toNumber())
         if (!blockchain || !tokenChain || tokenChain === blockchain) {
           return token;
         }

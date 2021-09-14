@@ -1,3 +1,5 @@
+import { SimpleMap } from './type';
+
 export enum Blockchain {
   Neo = 'neo',
   Ethereum = 'eth',
@@ -11,9 +13,7 @@ export const BRIDGE_IDS = {
   'polynetwork': 1
 };
 
-type ChainIds = {
-  [id: string]: number
-}
+export type ChainIds = SimpleMap<number>;
 
 export const ChainNames = {
   1: 'MainNet',
