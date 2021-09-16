@@ -1,9 +1,10 @@
-import { ETHClient } from '@carbon-sdk/clients/eth'
-import { Network } from '@carbon-sdk/constant'
+
+import { Network, NetworkConfigs } from '@carbon-sdk/constant'
 import { ABIs } from '@carbon-sdk/eth'
 import { Blockchain, blockchainForChainId, ChainNames, getChainFromID } from '@carbon-sdk/util/blockchain'
 import { ethers } from 'ethers'
 import * as ethSignUtils from 'eth-sig-util'
+import { ETHClient } from '@carbon-sdk/clients/ETHClient'
 
 const CONTRACT_HASH = {
   [Blockchain.Ethereum]: {
@@ -189,7 +190,9 @@ export class MetaMask {
   private checkProvider(blockchain: Blockchain = this.blockchain): ethers.providers.Provider {
     const ethClient = ETHClient.instance({
       blockchain: blockchain,
-      network: this.network,
+      configProvider: {
+        getConfig: () => NetworkConfigs[this.network],
+      },
     })
 
     const provider = ethClient.getProvider()

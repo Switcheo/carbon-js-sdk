@@ -51,5 +51,7 @@ export const blockchainForChainId = (chainId?: number) => {
       return Blockchain.BinanceSmartChain
     case 9:
       return Blockchain.Zilliqa
+    default:
+      return undefined
   }
 }
