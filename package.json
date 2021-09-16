@@ -59,7 +59,8 @@
     "secp256r1": "^0.0.3",
     "tsc-alias": "^1.2.11",
     "typescript": "^4.3.5",
-    "wif": "^2.0.6"
+    "wif": "^2.0.6",
+    "eth-sig-util": "^3.0.0"
   },
   "devDependencies": {
     "@types/node": "^15.6.2",

@@ -7,3 +7,4 @@ export * as BlockChainUtils from "./blockchain";
 export * as NumberUtils from "./number";
 export * as FetchUtils from "./fetch";
 export * as TokenUtils from "./token";
+export * as ExternalUtils from "./external";
