@@ -33,11 +33,11 @@ export const CHAIN_IDS: ChainIds = {
   'zil': 9,
 };
 
-export function getChainFromID(id: number) {
+export function getChainFromID(id: number): string | undefined {
   return Object.keys(CHAIN_IDS).find((key) => CHAIN_IDS[key] === id)
 }
 
-export const blockchainForChainId = (chainId?: number) => {
+export const blockchainForChainId = (chainId?: number): Blockchain | undefined => {
   switch (chainId) {
     case 0:
       return Blockchain.Native
