@@ -57,16 +57,15 @@ class TokenClient {
     return (this.tokens[denom] ?? this.poolTokens[denom])?.decimals.toNumber();
   }
 
-  public getBlockchain(denom: string, overrideMap?: BlockChainUtils.ChainIds): BlockChainUtils.Blockchain | undefined {
+  public getBlockchain(denom: string): BlockChainUtils.Blockchain | undefined {
     // chainId defaults to 3 so that blockchain will be undefined
     let chainId = this.tokens[denom]?.chainId?.toNumber() ?? 3;
     if (TokenClient.isPoolToken(denom)) {
       // pool tokens are on the Native blockchain, hence 0
       chainId = 0;
     }
-    const blockchain = BlockChainUtils.getChainFromID(chainId, overrideMap);
-
-    return blockchain as BlockChainUtils.Blockchain | undefined;
+    const blockchain = BlockChainUtils.blockchainForChainId(chainId);
+    return blockchain;
   }
 
   public getSymbol(denom: string): string {
