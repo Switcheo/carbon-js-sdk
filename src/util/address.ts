@@ -1,4 +1,4 @@
-import { Bech32AddrType, Network, NetworkConfigs } from "@carbon-sdk/constant";
+import { Bech32AddrType, Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
 import * as Base58Check from "base58check";
 import * as bech32 from "bech32";
 import * as BIP32 from "bip32";
@@ -52,7 +52,7 @@ export class BIP44Path {
     public account: number = 0,
     public change: number = 0,
     public index: number = 0
-  ) {}
+  ) { }
 
   static generateBIP44String(index: number = 0, change: number = 0, account: number = 0, coinType: number = 0, purpose: number = 0) {
     return `m/${purpose}'/${coinType}'/${account}'/${change}/${index}`;
@@ -87,7 +87,7 @@ export const wifEncodePrivateKey = (privateKey: string | Buffer, iter: number = 
   return wif.encode(iter, privateKeyBuf, true);
 };
 
-export interface AddressOptions {}
+export interface AddressOptions { }
 
 export interface AddressBuilder<T extends AddressOptions> {
   /**
@@ -120,11 +120,12 @@ export interface AddressBuilder<T extends AddressOptions> {
 
 export interface SWTHAddressOptions extends AddressOptions {
   network?: Network;
+  bech32Prefix?: string;
   type?: Bech32AddrType;
 }
 
 type SWTHAddressType = AddressBuilder<SWTHAddressOptions> & {
-  getBech32Prefix(net?: Network, type?: Bech32AddrType): string;
+  getBech32Prefix(net?: Network, bech32Prefix?: string, type?: Bech32AddrType): string;
   addrPrefix: { [index: string]: string };
   getAddressBytes(bech32Address: string, networkConfig: Network): Uint8Array;
 };
@@ -145,7 +146,7 @@ export const SWTHAddress: SWTHAddressType = {
   publicKeyToAddress: (publicKey: string | Buffer, opts?: SWTHAddressOptions): string => {
     const scriptHash = SWTHAddress.publicKeyToScriptHash(publicKey);
     const words = bech32.toWords(Buffer.from(scriptHash, "hex"));
-    const addressPrefix = SWTHAddress.getBech32Prefix(opts?.network, opts?.type);
+    const addressPrefix = SWTHAddress.getBech32Prefix(opts?.network, opts?.bech32Prefix, opts?.type);
     const addressBech32 = bech32.encode(addressPrefix, words);
 
     return addressBech32;
@@ -188,8 +189,7 @@ export const SWTHAddress: SWTHAddressType = {
     return address;
   },
 
-  getBech32Prefix(net: Network = Network.MainNet, type: Bech32AddrType = "main") {
-    const mainPrefix = NetworkConfigs[net].Bech32Prefix;
+  getBech32Prefix(net: Network = Network.MainNet, mainPrefix: string = NetworkConfigs[net].Bech32Prefix, type: Bech32AddrType = "main") {
     const addrPrefix = SWTHAddress.addrPrefix;
     switch (type) {
       case "main":

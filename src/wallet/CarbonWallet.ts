@@ -109,16 +109,23 @@ export class CarbonWallet implements OfflineDirectSigner {
       this.privateKey = AddressUtils.stringOrBufferToBuffer(opts.privateKey)!;
     }
 
+    const addressOpts: AddressUtils.SWTHAddressOptions = {
+      network,
+      ...this.configOverride.Bech32Prefix && {
+        bech32Prefix: this.configOverride.Bech32Prefix,
+      },
+    };
+
     if (opts.signer) {
       this.signer = opts.signer;
       this.publicKey = Buffer.from(opts.publicKeyBase64!, "base64");
 
-      this.bech32Address = AddressUtils.SWTHAddress.publicKeyToAddress(this.publicKey, { network });
+      this.bech32Address = AddressUtils.SWTHAddress.publicKeyToAddress(this.publicKey, addressOpts);
     } else if (this.privateKey) {
       this.signer = new CarbonPrivateKeySigner(this.privateKey);
       this.publicKey = AddressUtils.SWTHAddress.privateToPublicKey(this.privateKey);
 
-      this.bech32Address = AddressUtils.SWTHAddress.publicKeyToAddress(this.publicKey, { network });
+      this.bech32Address = AddressUtils.SWTHAddress.publicKeyToAddress(this.publicKey, addressOpts);
     } else if (opts.bech32Address) {
       // read-only wallet, without private/public keys
       this.signer = new CarbonNonSigner();
