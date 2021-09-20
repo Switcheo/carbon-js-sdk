@@ -1,1 +1,1 @@
-export * from './MetaMask'
+export { MetaMaskChangeNetworkParam, CallContractArgs, MetaMaskSyncResult, MetaMask } from './MetaMask'

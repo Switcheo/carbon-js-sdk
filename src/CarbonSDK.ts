@@ -36,6 +36,7 @@ const DEFAULT_SDK_INIT_OPTS: CarbonSDKInitOpts = {
  */
 class CarbonSDK {
   public static DEFAULT_NETWORK = DEFAULT_NETWORK;
+  public static TokenClient = TokenClient
 
   public readonly query: CarbonQueryClient;
 
