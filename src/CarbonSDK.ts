@@ -173,6 +173,10 @@ class CarbonSDK {
     return this;
   }
 
+  public clone(): CarbonSDK {
+    return new CarbonSDK(this.generateOpts());
+  }
+
   public generateOpts(): CarbonSDKOpts {
     return {
       network: this.network,
@@ -182,7 +186,8 @@ class CarbonSDK {
   }
 
   public async connect(wallet: CarbonWallet): Promise<ConnectedCarbonSDK> {
-    await wallet.initialize(this.query);
+    if (!wallet.initialized)
+      await wallet.initialize(this.query);
     this.wallet = wallet;
     return this as ConnectedCarbonSDK;
   }
@@ -281,6 +286,10 @@ class ConnectedCarbonSDK extends CarbonSDK {
   constructor(wallet: CarbonWallet, opts: CarbonSDKOpts) {
     super(opts);
     this.wallet = wallet;
+  }
+
+  public clone(): ConnectedCarbonSDK {
+    return new ConnectedCarbonSDK(this.wallet, this.generateOpts());
   }
 }
 

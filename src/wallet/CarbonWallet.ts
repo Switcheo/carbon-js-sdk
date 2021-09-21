@@ -86,7 +86,8 @@ export class CarbonWallet implements OfflineDirectSigner {
   publicKey: Buffer;
   query?: CarbonQueryClient;
 
-  txFees?: SimpleMap<BigNumber>
+  txFees?: SimpleMap<BigNumber>;
+  initialized: boolean = false;
 
   // for analytics
   providerAgent?: ProviderAgent | string
@@ -193,6 +194,7 @@ export class CarbonWallet implements OfflineDirectSigner {
 
     await this.reloadTxFees();
 
+    this.initialized = true;
     return this;
   }
 
