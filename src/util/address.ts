@@ -214,7 +214,7 @@ export const SWTHAddress: SWTHAddressType = {
   },
 
   getAddressBytes: (bech32Address: string, net: Network): Uint8Array => {
-    const prefix = SWTHAddress.getBech32Prefix(net, "main");
+    const prefix = SWTHAddress.getBech32Prefix(net, undefined, "main");
     const { prefix: b32Prefix, words } = bech32.decode(bech32Address);
     if (b32Prefix !== prefix) {
       throw new Error("Prefix doesn't match");
