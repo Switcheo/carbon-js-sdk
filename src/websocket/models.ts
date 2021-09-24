@@ -44,6 +44,13 @@ export interface HistoryOrder {
   username: string;
 }
 
+// This is added to account for the updated HistoryOrder model
+export interface BaseHistoryOrder {
+  allocated_margin_amount: string;
+  allocated_margin_denom: string;
+  order: BaseHistoryOrder;
+}
+
 export interface Candlestick {
   time: any
   close: string
