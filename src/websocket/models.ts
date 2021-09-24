@@ -44,7 +44,8 @@ export interface HistoryOrder {
   username: string;
 }
 
-// This is added to account for the updated HistoryOrder model
+// This is added to account for the updated data model
+// Use this for order history websocket queries
 export interface BaseHistoryOrder {
   allocated_margin_amount: string;
   allocated_margin_denom: string;
