@@ -49,7 +49,7 @@ export interface HistoryOrder {
 export interface BaseHistoryOrder {
   allocated_margin_amount: string;
   allocated_margin_denom: string;
-  order: BaseHistoryOrder;
+  order: HistoryOrder;
 }
 
 export interface Candlestick {
