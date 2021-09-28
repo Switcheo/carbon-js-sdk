@@ -1,5 +1,6 @@
 import CarbonSDK from "@carbon-sdk/CarbonSDK"
 import { NeoNetworkConfig, NetworkConfig, NetworkConfigProvider } from "@carbon-sdk/constant"
+import { NeoLedgerAccount } from "@carbon-sdk/provider/account"
 import { SWTHAddress } from "@carbon-sdk/util/address"
 import { Blockchain, blockchainForChainId } from "@carbon-sdk/util/blockchain"
 import { TokenInitInfo, TokensWithExternalBalance } from "@carbon-sdk/util/external"
@@ -20,6 +21,15 @@ import { Models } from ".."
 export interface NEOClientOpts {
   configProvider: NetworkConfigProvider,
   blockchain?: Blockchain,
+}
+
+export interface LockLedgerDepositParams {
+  feeAmount: BigNumber
+  amount: BigNumber
+  address: Uint8Array
+  token: TokensWithExternalBalance
+  ledger: NeoLedgerAccount
+  signCompleteCallback?: () => void
 }
 
 interface ScriptResult {
@@ -159,6 +169,93 @@ export class NEOClient {
       gas: 0,
       fees: 0
     })
+  }
+
+  public async lockLedgerDeposit(params: LockLedgerDepositParams) {
+    const {
+      feeAmount, address, amount, token, ledger, signCompleteCallback,
+    } = params
+    const compressedPublicKey = neonWallet.getPublicKeyEncoded(ledger.publicKey)
+  
+    const networkConfig = this.getNetworkConfig()
+    const scriptHash = u.reverseHex(token.bridgeAddress)
+
+    const fromAssetHash = token.tokenAddress
+    const fromAddress = ledger.scriptHash
+    const targetProxyHash = this.getTargetProxyHash(token)
+    const toAssetHash = u.str2hexstring(token.denom)
+    const toAddress = stripHexPrefix(ethers.utils.hexlify(address))
+  
+    const feeAddress = networkConfig.feeAddress
+    const nonce = Math.floor(Math.random() * 1000000)
+  
+    if (amount.lt(feeAmount)) {
+      throw new Error("Invalid amount")
+    }
+  
+    const sb = Neon.create.scriptBuilder()
+    const data = [
+      fromAssetHash,
+      fromAddress,
+      targetProxyHash,
+      toAssetHash,
+      toAddress,
+      amount.toNumber(),
+      feeAmount.toNumber(),
+      feeAddress,
+      nonce,
+    ]
+    sb.emitAppCall(scriptHash, "lock", data)
+  
+    const rpcUrl = await this.getProviderUrl()
+    const apiProvider = networkConfig.network === CarbonSDK.Network.MainNet
+      ? new api.neonDB.instance("https://api.switcheo.network")
+      : new api.neoCli.instance(rpcUrl)
+  
+    let invokeTxConfig: any = {
+      account: {
+        // zombie account provided because config requires an account, and makes use
+        // of the address and public key properties during the signing process, even
+        // when signingFunction override is provided.
+        ...Neon.create.account(""),
+  
+        // overwrite the address and public key to values provided by the ledger.
+        address: ledger.displayAddress,
+        publicKey: compressedPublicKey,
+      } as neonWallet.Account,
+  
+      signingFunction: async (tx: string, publicKey: string) => {
+        const signature = await ledger.sign(tx)
+        const witness = neonTx.Witness.fromSignature(signature, publicKey)
+        return witness.serialize()
+      },
+  
+      api: apiProvider,
+      url: rpcUrl,
+      script: sb.str,
+      gas: 0,
+      fees: 0,
+    }
+  
+    // similar to Neon.doInvoke(invokeTxConfig), but
+    // separates out sendTx to broadcast to several nodes
+    invokeTxConfig = await api.fillBalance(invokeTxConfig)
+    invokeTxConfig = await api.createInvocationTx(invokeTxConfig)
+    invokeTxConfig = await api.modifyTransactionForEmptyTransaction(invokeTxConfig)
+    invokeTxConfig = await api.signTx(invokeTxConfig)
+  
+    // provide notification to caller that signature is
+    // done and proceeding to broadcasting tx
+    if (signCompleteCallback) {
+      signCompleteCallback()
+    }
+
+    await api.sendTx({
+      ...invokeTxConfig,
+      rpcUrl,
+    })
+  
+    return invokeTxConfig.tx?.hash
   }
 
   public async retrieveNEP5Info(scriptHash: string): Promise<TokenInitInfo> {
