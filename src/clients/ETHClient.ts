@@ -367,3 +367,5 @@ export class ETHClient {
     return this.getConfig().byteCodeHash;
   }
 }
+
+export default ETHClient;
