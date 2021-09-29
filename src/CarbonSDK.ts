@@ -1,10 +1,11 @@
 import { DEFAULT_NETWORK, Network, Network as _Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
 import { GenericUtils, NetworkUtils } from "@carbon-sdk/util";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
-import { CarbonQueryClient, TokenClient } from "./clients";
+import { CarbonQueryClient, ETHClient, NEOClient, TokenClient, ZILClient } from "./clients";
 import { AdminModule, BankModule, BrokerModule, CDPModule, CoinModule, GovModule, LeverageModule, LiquidityPoolModule, MarketModule, OracleModule, OrderModule, PositionModule, ProfileModule, SubAccountModule } from "./modules";
 import { StakingModule } from "./modules/staking";
 import { CosmosLedger } from "./provider";
+import { Blockchain } from "./util/blockchain";
 import { CarbonSigner, CarbonWallet, CarbonWalletGenericOpts } from "./wallet";
 
 export { CarbonTx } from "@carbon-sdk/util";
@@ -64,6 +65,11 @@ class CarbonSDK {
   staking: StakingModule;
   bank: BankModule;
 
+  neo: NEOClient;
+  eth: ETHClient;
+  bsc: ETHClient;
+  zil: ZILClient;
+
   constructor(opts: CarbonSDKOpts) {
     this.network = opts.network ?? DEFAULT_NETWORK;
     this.configOverride = opts.config ?? {};
@@ -88,6 +94,26 @@ class CarbonSDK {
     this.gov = new GovModule(this);
     this.staking = new StakingModule(this);
     this.bank = new BankModule(this);
+
+    this.neo = NEOClient.instance({
+      configProvider: this,
+      blockchain: Blockchain.Neo,
+    });
+
+    this.eth = ETHClient.instance({
+      configProvider: this,
+      blockchain: Blockchain.Ethereum,
+    });
+
+    this.bsc = ETHClient.instance({
+      configProvider: this,
+      blockchain: Blockchain.BinanceSmartChain,
+    });
+
+    this.zil = ZILClient.instance({
+      configProvider: this,
+      blockchain: Blockchain.Zilliqa,
+    })
   }
 
   public static async instance(opts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS) {
