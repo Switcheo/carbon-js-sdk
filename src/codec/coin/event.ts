@@ -19,6 +19,10 @@ export interface BindTokenEvent {
   wrappedDenom: string;
 }
 
+export interface UnbindTokenEvent {
+  wrappedDenom: string;
+}
+
 export interface LinkTokenEvent {
   token?: Token;
   type: string;
@@ -227,6 +231,65 @@ export const BindTokenEvent = {
     } else {
       message.sourceDenom = "";
     }
+    if (object.wrappedDenom !== undefined && object.wrappedDenom !== null) {
+      message.wrappedDenom = object.wrappedDenom;
+    } else {
+      message.wrappedDenom = "";
+    }
+    return message;
+  },
+};
+
+const baseUnbindTokenEvent: object = { wrappedDenom: "" };
+
+export const UnbindTokenEvent = {
+  encode(
+    message: UnbindTokenEvent,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.wrappedDenom !== "") {
+      writer.uint32(10).string(message.wrappedDenom);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): UnbindTokenEvent {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseUnbindTokenEvent } as UnbindTokenEvent;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.wrappedDenom = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UnbindTokenEvent {
+    const message = { ...baseUnbindTokenEvent } as UnbindTokenEvent;
+    if (object.wrappedDenom !== undefined && object.wrappedDenom !== null) {
+      message.wrappedDenom = String(object.wrappedDenom);
+    } else {
+      message.wrappedDenom = "";
+    }
+    return message;
+  },
+
+  toJSON(message: UnbindTokenEvent): unknown {
+    const obj: any = {};
+    message.wrappedDenom !== undefined &&
+      (obj.wrappedDenom = message.wrappedDenom);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<UnbindTokenEvent>): UnbindTokenEvent {
+    const message = { ...baseUnbindTokenEvent } as UnbindTokenEvent;
     if (object.wrappedDenom !== undefined && object.wrappedDenom !== null) {
       message.wrappedDenom = object.wrappedDenom;
     } else {

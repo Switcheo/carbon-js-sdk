@@ -1,11 +1,8 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import {
-  Token,
-  LockedCoinsWithKey,
-  PositionPoolCoinsWithKey,
-} from "../coin/token";
+import { Token, LockedCoinsRecord, PositionPool } from "../coin/token";
+import { Bridge } from "../coin/bridge";
 
 export const protobufPackage = "Switcheo.carbon.coin";
 
@@ -14,9 +11,10 @@ export interface GenesisState {
   /** this line is used by starport scaffolding # genesis/proto/state */
   tokens: Token[];
   wrapperMappings: { [key: string]: string };
-  lockedCoins: LockedCoinsWithKey[];
+  lockedCoins: LockedCoinsRecord[];
+  positionPools: PositionPool[];
   /** this line is used by starport scaffolding # ibc/genesis/proto */
-  positionPoolCoins: PositionPoolCoinsWithKey[];
+  bridges: Bridge[];
 }
 
 export interface GenesisState_WrapperMappingsEntry {
@@ -41,10 +39,13 @@ export const GenesisState = {
       ).ldelim();
     });
     for (const v of message.lockedCoins) {
-      LockedCoinsWithKey.encode(v!, writer.uint32(26).fork()).ldelim();
+      LockedCoinsRecord.encode(v!, writer.uint32(26).fork()).ldelim();
     }
-    for (const v of message.positionPoolCoins) {
-      PositionPoolCoinsWithKey.encode(v!, writer.uint32(34).fork()).ldelim();
+    for (const v of message.positionPools) {
+      PositionPool.encode(v!, writer.uint32(34).fork()).ldelim();
+    }
+    for (const v of message.bridges) {
+      Bridge.encode(v!, writer.uint32(42).fork()).ldelim();
     }
     return writer;
   },
@@ -56,7 +57,8 @@ export const GenesisState = {
     message.tokens = [];
     message.wrapperMappings = {};
     message.lockedCoins = [];
-    message.positionPoolCoins = [];
+    message.positionPools = [];
+    message.bridges = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -74,13 +76,16 @@ export const GenesisState = {
           break;
         case 3:
           message.lockedCoins.push(
-            LockedCoinsWithKey.decode(reader, reader.uint32())
+            LockedCoinsRecord.decode(reader, reader.uint32())
           );
           break;
         case 4:
-          message.positionPoolCoins.push(
-            PositionPoolCoinsWithKey.decode(reader, reader.uint32())
+          message.positionPools.push(
+            PositionPool.decode(reader, reader.uint32())
           );
+          break;
+        case 5:
+          message.bridges.push(Bridge.decode(reader, reader.uint32()));
           break;
         default:
           reader.skipType(tag & 7);
@@ -95,7 +100,8 @@ export const GenesisState = {
     message.tokens = [];
     message.wrapperMappings = {};
     message.lockedCoins = [];
-    message.positionPoolCoins = [];
+    message.positionPools = [];
+    message.bridges = [];
     if (object.tokens !== undefined && object.tokens !== null) {
       for (const e of object.tokens) {
         message.tokens.push(Token.fromJSON(e));
@@ -111,15 +117,17 @@ export const GenesisState = {
     }
     if (object.lockedCoins !== undefined && object.lockedCoins !== null) {
       for (const e of object.lockedCoins) {
-        message.lockedCoins.push(LockedCoinsWithKey.fromJSON(e));
+        message.lockedCoins.push(LockedCoinsRecord.fromJSON(e));
       }
     }
-    if (
-      object.positionPoolCoins !== undefined &&
-      object.positionPoolCoins !== null
-    ) {
-      for (const e of object.positionPoolCoins) {
-        message.positionPoolCoins.push(PositionPoolCoinsWithKey.fromJSON(e));
+    if (object.positionPools !== undefined && object.positionPools !== null) {
+      for (const e of object.positionPools) {
+        message.positionPools.push(PositionPool.fromJSON(e));
+      }
+    }
+    if (object.bridges !== undefined && object.bridges !== null) {
+      for (const e of object.bridges) {
+        message.bridges.push(Bridge.fromJSON(e));
       }
     }
     return message;
@@ -140,17 +148,24 @@ export const GenesisState = {
     }
     if (message.lockedCoins) {
       obj.lockedCoins = message.lockedCoins.map((e) =>
-        e ? LockedCoinsWithKey.toJSON(e) : undefined
+        e ? LockedCoinsRecord.toJSON(e) : undefined
       );
     } else {
       obj.lockedCoins = [];
     }
-    if (message.positionPoolCoins) {
-      obj.positionPoolCoins = message.positionPoolCoins.map((e) =>
-        e ? PositionPoolCoinsWithKey.toJSON(e) : undefined
+    if (message.positionPools) {
+      obj.positionPools = message.positionPools.map((e) =>
+        e ? PositionPool.toJSON(e) : undefined
       );
     } else {
-      obj.positionPoolCoins = [];
+      obj.positionPools = [];
+    }
+    if (message.bridges) {
+      obj.bridges = message.bridges.map((e) =>
+        e ? Bridge.toJSON(e) : undefined
+      );
+    } else {
+      obj.bridges = [];
     }
     return obj;
   },
@@ -160,7 +175,8 @@ export const GenesisState = {
     message.tokens = [];
     message.wrapperMappings = {};
     message.lockedCoins = [];
-    message.positionPoolCoins = [];
+    message.positionPools = [];
+    message.bridges = [];
     if (object.tokens !== undefined && object.tokens !== null) {
       for (const e of object.tokens) {
         message.tokens.push(Token.fromPartial(e));
@@ -178,15 +194,17 @@ export const GenesisState = {
     }
     if (object.lockedCoins !== undefined && object.lockedCoins !== null) {
       for (const e of object.lockedCoins) {
-        message.lockedCoins.push(LockedCoinsWithKey.fromPartial(e));
+        message.lockedCoins.push(LockedCoinsRecord.fromPartial(e));
       }
     }
-    if (
-      object.positionPoolCoins !== undefined &&
-      object.positionPoolCoins !== null
-    ) {
-      for (const e of object.positionPoolCoins) {
-        message.positionPoolCoins.push(PositionPoolCoinsWithKey.fromPartial(e));
+    if (object.positionPools !== undefined && object.positionPools !== null) {
+      for (const e of object.positionPools) {
+        message.positionPools.push(PositionPool.fromPartial(e));
+      }
+    }
+    if (object.bridges !== undefined && object.bridges !== null) {
+      for (const e of object.bridges) {
+        message.bridges.push(Bridge.fromPartial(e));
       }
     }
     return message;

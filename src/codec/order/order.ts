@@ -32,6 +32,13 @@ export interface Order {
   avgFilledPrice: string;
 }
 
+export interface DBOrder {
+  order?: Order;
+  allocatedMarginDenom: string;
+  allocatedMarginAmount: string;
+  username: string;
+}
+
 export interface OrdersForMarket {
   marketId: string;
   orders: Order[];
@@ -529,6 +536,134 @@ export const Order = {
       message.avgFilledPrice = object.avgFilledPrice;
     } else {
       message.avgFilledPrice = "";
+    }
+    return message;
+  },
+};
+
+const baseDBOrder: object = {
+  allocatedMarginDenom: "",
+  allocatedMarginAmount: "",
+  username: "",
+};
+
+export const DBOrder = {
+  encode(
+    message: DBOrder,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.order !== undefined) {
+      Order.encode(message.order, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.allocatedMarginDenom !== "") {
+      writer.uint32(18).string(message.allocatedMarginDenom);
+    }
+    if (message.allocatedMarginAmount !== "") {
+      writer.uint32(26).string(message.allocatedMarginAmount);
+    }
+    if (message.username !== "") {
+      writer.uint32(34).string(message.username);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DBOrder {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseDBOrder } as DBOrder;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.order = Order.decode(reader, reader.uint32());
+          break;
+        case 2:
+          message.allocatedMarginDenom = reader.string();
+          break;
+        case 3:
+          message.allocatedMarginAmount = reader.string();
+          break;
+        case 4:
+          message.username = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): DBOrder {
+    const message = { ...baseDBOrder } as DBOrder;
+    if (object.order !== undefined && object.order !== null) {
+      message.order = Order.fromJSON(object.order);
+    } else {
+      message.order = undefined;
+    }
+    if (
+      object.allocatedMarginDenom !== undefined &&
+      object.allocatedMarginDenom !== null
+    ) {
+      message.allocatedMarginDenom = String(object.allocatedMarginDenom);
+    } else {
+      message.allocatedMarginDenom = "";
+    }
+    if (
+      object.allocatedMarginAmount !== undefined &&
+      object.allocatedMarginAmount !== null
+    ) {
+      message.allocatedMarginAmount = String(object.allocatedMarginAmount);
+    } else {
+      message.allocatedMarginAmount = "";
+    }
+    if (object.username !== undefined && object.username !== null) {
+      message.username = String(object.username);
+    } else {
+      message.username = "";
+    }
+    return message;
+  },
+
+  toJSON(message: DBOrder): unknown {
+    const obj: any = {};
+    message.order !== undefined &&
+      (obj.order = message.order ? Order.toJSON(message.order) : undefined);
+    message.allocatedMarginDenom !== undefined &&
+      (obj.allocatedMarginDenom = message.allocatedMarginDenom);
+    message.allocatedMarginAmount !== undefined &&
+      (obj.allocatedMarginAmount = message.allocatedMarginAmount);
+    message.username !== undefined && (obj.username = message.username);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<DBOrder>): DBOrder {
+    const message = { ...baseDBOrder } as DBOrder;
+    if (object.order !== undefined && object.order !== null) {
+      message.order = Order.fromPartial(object.order);
+    } else {
+      message.order = undefined;
+    }
+    if (
+      object.allocatedMarginDenom !== undefined &&
+      object.allocatedMarginDenom !== null
+    ) {
+      message.allocatedMarginDenom = object.allocatedMarginDenom;
+    } else {
+      message.allocatedMarginDenom = "";
+    }
+    if (
+      object.allocatedMarginAmount !== undefined &&
+      object.allocatedMarginAmount !== null
+    ) {
+      message.allocatedMarginAmount = object.allocatedMarginAmount;
+    } else {
+      message.allocatedMarginAmount = "";
+    }
+    if (object.username !== undefined && object.username !== null) {
+      message.username = object.username;
+    } else {
+      message.username = "";
     }
     return message;
   },

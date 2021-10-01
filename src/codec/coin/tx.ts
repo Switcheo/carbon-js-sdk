@@ -1,6 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
+import { Bridge } from "../coin/bridge";
 
 export const protobufPackage = "Switcheo.carbon.coin";
 
@@ -12,7 +13,6 @@ export interface MsgCreateToken {
 
 export interface CreateTokenParams {
   creator: string;
-  denom: string;
   name: string;
   symbol: string;
   decimals: Long;
@@ -20,7 +20,6 @@ export interface CreateTokenParams {
   bridgeId: Long;
   bridgeAddress: string;
   tokenAddress: string;
-  isCollateral: boolean;
 }
 
 export interface MsgCreateTokenResponse {
@@ -51,6 +50,13 @@ export interface MsgBindToken {
 
 export interface MsgBindTokenResponse {}
 
+export interface MsgUnbindToken {
+  creator: string;
+  wrappedDenom: string;
+}
+
+export interface MsgUnbindTokenResponse {}
+
 export interface MsgLinkToken {
   creator: string;
   denom: string;
@@ -69,6 +75,29 @@ export interface MsgWithdraw {
 }
 
 export interface MsgWithdrawResponse {}
+
+export interface MsgAuthorizeBridge {
+  creator: string;
+  bridgeId: Long;
+  chainId: Long;
+  chainName: string;
+}
+
+export interface MsgAuthorizeBridgeResponse {
+  id: string;
+  bridge?: Bridge;
+}
+
+export interface MsgDeauthorizeBridge {
+  initiator: string;
+  bridgeId: Long;
+  chainId: Long;
+}
+
+export interface MsgDeauthorizeBridgeResponse {
+  id: string;
+  bridge?: Bridge;
+}
 
 const baseMsgCreateToken: object = { creator: "" };
 
@@ -166,7 +195,6 @@ export const MsgCreateToken = {
 
 const baseCreateTokenParams: object = {
   creator: "",
-  denom: "",
   name: "",
   symbol: "",
   decimals: Long.ZERO,
@@ -174,7 +202,6 @@ const baseCreateTokenParams: object = {
   bridgeId: Long.UZERO,
   bridgeAddress: "",
   tokenAddress: "",
-  isCollateral: false,
 };
 
 export const CreateTokenParams = {
@@ -185,32 +212,26 @@ export const CreateTokenParams = {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
-    if (message.denom !== "") {
-      writer.uint32(18).string(message.denom);
-    }
     if (message.name !== "") {
-      writer.uint32(26).string(message.name);
+      writer.uint32(18).string(message.name);
     }
     if (message.symbol !== "") {
-      writer.uint32(34).string(message.symbol);
+      writer.uint32(26).string(message.symbol);
     }
     if (!message.decimals.isZero()) {
-      writer.uint32(40).int64(message.decimals);
+      writer.uint32(32).int64(message.decimals);
     }
     if (!message.chainId.isZero()) {
-      writer.uint32(48).uint64(message.chainId);
+      writer.uint32(40).uint64(message.chainId);
     }
     if (!message.bridgeId.isZero()) {
-      writer.uint32(56).uint64(message.bridgeId);
+      writer.uint32(48).uint64(message.bridgeId);
     }
     if (message.bridgeAddress !== "") {
-      writer.uint32(66).string(message.bridgeAddress);
+      writer.uint32(58).string(message.bridgeAddress);
     }
     if (message.tokenAddress !== "") {
-      writer.uint32(74).string(message.tokenAddress);
-    }
-    if (message.isCollateral === true) {
-      writer.uint32(80).bool(message.isCollateral);
+      writer.uint32(66).string(message.tokenAddress);
     }
     return writer;
   },
@@ -226,31 +247,25 @@ export const CreateTokenParams = {
           message.creator = reader.string();
           break;
         case 2:
-          message.denom = reader.string();
-          break;
-        case 3:
           message.name = reader.string();
           break;
-        case 4:
+        case 3:
           message.symbol = reader.string();
           break;
-        case 5:
+        case 4:
           message.decimals = reader.int64() as Long;
           break;
-        case 6:
+        case 5:
           message.chainId = reader.uint64() as Long;
           break;
-        case 7:
+        case 6:
           message.bridgeId = reader.uint64() as Long;
           break;
-        case 8:
+        case 7:
           message.bridgeAddress = reader.string();
           break;
-        case 9:
+        case 8:
           message.tokenAddress = reader.string();
-          break;
-        case 10:
-          message.isCollateral = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -266,11 +281,6 @@ export const CreateTokenParams = {
       message.creator = String(object.creator);
     } else {
       message.creator = "";
-    }
-    if (object.denom !== undefined && object.denom !== null) {
-      message.denom = String(object.denom);
-    } else {
-      message.denom = "";
     }
     if (object.name !== undefined && object.name !== null) {
       message.name = String(object.name);
@@ -307,18 +317,12 @@ export const CreateTokenParams = {
     } else {
       message.tokenAddress = "";
     }
-    if (object.isCollateral !== undefined && object.isCollateral !== null) {
-      message.isCollateral = Boolean(object.isCollateral);
-    } else {
-      message.isCollateral = false;
-    }
     return message;
   },
 
   toJSON(message: CreateTokenParams): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.denom !== undefined && (obj.denom = message.denom);
     message.name !== undefined && (obj.name = message.name);
     message.symbol !== undefined && (obj.symbol = message.symbol);
     message.decimals !== undefined &&
@@ -331,8 +335,6 @@ export const CreateTokenParams = {
       (obj.bridgeAddress = message.bridgeAddress);
     message.tokenAddress !== undefined &&
       (obj.tokenAddress = message.tokenAddress);
-    message.isCollateral !== undefined &&
-      (obj.isCollateral = message.isCollateral);
     return obj;
   },
 
@@ -342,11 +344,6 @@ export const CreateTokenParams = {
       message.creator = object.creator;
     } else {
       message.creator = "";
-    }
-    if (object.denom !== undefined && object.denom !== null) {
-      message.denom = object.denom;
-    } else {
-      message.denom = "";
     }
     if (object.name !== undefined && object.name !== null) {
       message.name = object.name;
@@ -382,11 +379,6 @@ export const CreateTokenParams = {
       message.tokenAddress = object.tokenAddress;
     } else {
       message.tokenAddress = "";
-    }
-    if (object.isCollateral !== undefined && object.isCollateral !== null) {
-      message.isCollateral = object.isCollateral;
-    } else {
-      message.isCollateral = false;
     }
     return message;
   },
@@ -869,6 +861,126 @@ export const MsgBindTokenResponse = {
   },
 };
 
+const baseMsgUnbindToken: object = { creator: "", wrappedDenom: "" };
+
+export const MsgUnbindToken = {
+  encode(
+    message: MsgUnbindToken,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.wrappedDenom !== "") {
+      writer.uint32(18).string(message.wrappedDenom);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUnbindToken {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgUnbindToken } as MsgUnbindToken;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.wrappedDenom = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUnbindToken {
+    const message = { ...baseMsgUnbindToken } as MsgUnbindToken;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = String(object.creator);
+    } else {
+      message.creator = "";
+    }
+    if (object.wrappedDenom !== undefined && object.wrappedDenom !== null) {
+      message.wrappedDenom = String(object.wrappedDenom);
+    } else {
+      message.wrappedDenom = "";
+    }
+    return message;
+  },
+
+  toJSON(message: MsgUnbindToken): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.wrappedDenom !== undefined &&
+      (obj.wrappedDenom = message.wrappedDenom);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgUnbindToken>): MsgUnbindToken {
+    const message = { ...baseMsgUnbindToken } as MsgUnbindToken;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = object.creator;
+    } else {
+      message.creator = "";
+    }
+    if (object.wrappedDenom !== undefined && object.wrappedDenom !== null) {
+      message.wrappedDenom = object.wrappedDenom;
+    } else {
+      message.wrappedDenom = "";
+    }
+    return message;
+  },
+};
+
+const baseMsgUnbindTokenResponse: object = {};
+
+export const MsgUnbindTokenResponse = {
+  encode(
+    _: MsgUnbindTokenResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUnbindTokenResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgUnbindTokenResponse } as MsgUnbindTokenResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgUnbindTokenResponse {
+    const message = { ...baseMsgUnbindTokenResponse } as MsgUnbindTokenResponse;
+    return message;
+  },
+
+  toJSON(_: MsgUnbindTokenResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(_: DeepPartial<MsgUnbindTokenResponse>): MsgUnbindTokenResponse {
+    const message = { ...baseMsgUnbindTokenResponse } as MsgUnbindTokenResponse;
+    return message;
+  },
+};
+
 const baseMsgLinkToken: object = { creator: "", denom: "", bridgeAddress: "" };
 
 export const MsgLinkToken = {
@@ -1197,6 +1309,397 @@ export const MsgWithdrawResponse = {
   },
 };
 
+const baseMsgAuthorizeBridge: object = {
+  creator: "",
+  bridgeId: Long.UZERO,
+  chainId: Long.UZERO,
+  chainName: "",
+};
+
+export const MsgAuthorizeBridge = {
+  encode(
+    message: MsgAuthorizeBridge,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (!message.bridgeId.isZero()) {
+      writer.uint32(16).uint64(message.bridgeId);
+    }
+    if (!message.chainId.isZero()) {
+      writer.uint32(24).uint64(message.chainId);
+    }
+    if (message.chainName !== "") {
+      writer.uint32(34).string(message.chainName);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgAuthorizeBridge {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgAuthorizeBridge } as MsgAuthorizeBridge;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.bridgeId = reader.uint64() as Long;
+          break;
+        case 3:
+          message.chainId = reader.uint64() as Long;
+          break;
+        case 4:
+          message.chainName = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgAuthorizeBridge {
+    const message = { ...baseMsgAuthorizeBridge } as MsgAuthorizeBridge;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = String(object.creator);
+    } else {
+      message.creator = "";
+    }
+    if (object.bridgeId !== undefined && object.bridgeId !== null) {
+      message.bridgeId = Long.fromString(object.bridgeId);
+    } else {
+      message.bridgeId = Long.UZERO;
+    }
+    if (object.chainId !== undefined && object.chainId !== null) {
+      message.chainId = Long.fromString(object.chainId);
+    } else {
+      message.chainId = Long.UZERO;
+    }
+    if (object.chainName !== undefined && object.chainName !== null) {
+      message.chainName = String(object.chainName);
+    } else {
+      message.chainName = "";
+    }
+    return message;
+  },
+
+  toJSON(message: MsgAuthorizeBridge): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.bridgeId !== undefined &&
+      (obj.bridgeId = (message.bridgeId || Long.UZERO).toString());
+    message.chainId !== undefined &&
+      (obj.chainId = (message.chainId || Long.UZERO).toString());
+    message.chainName !== undefined && (obj.chainName = message.chainName);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgAuthorizeBridge>): MsgAuthorizeBridge {
+    const message = { ...baseMsgAuthorizeBridge } as MsgAuthorizeBridge;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = object.creator;
+    } else {
+      message.creator = "";
+    }
+    if (object.bridgeId !== undefined && object.bridgeId !== null) {
+      message.bridgeId = object.bridgeId as Long;
+    } else {
+      message.bridgeId = Long.UZERO;
+    }
+    if (object.chainId !== undefined && object.chainId !== null) {
+      message.chainId = object.chainId as Long;
+    } else {
+      message.chainId = Long.UZERO;
+    }
+    if (object.chainName !== undefined && object.chainName !== null) {
+      message.chainName = object.chainName;
+    } else {
+      message.chainName = "";
+    }
+    return message;
+  },
+};
+
+const baseMsgAuthorizeBridgeResponse: object = { id: "" };
+
+export const MsgAuthorizeBridgeResponse = {
+  encode(
+    message: MsgAuthorizeBridgeResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.bridge !== undefined) {
+      Bridge.encode(message.bridge, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgAuthorizeBridgeResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgAuthorizeBridgeResponse,
+    } as MsgAuthorizeBridgeResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        case 2:
+          message.bridge = Bridge.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgAuthorizeBridgeResponse {
+    const message = {
+      ...baseMsgAuthorizeBridgeResponse,
+    } as MsgAuthorizeBridgeResponse;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
+    } else {
+      message.id = "";
+    }
+    if (object.bridge !== undefined && object.bridge !== null) {
+      message.bridge = Bridge.fromJSON(object.bridge);
+    } else {
+      message.bridge = undefined;
+    }
+    return message;
+  },
+
+  toJSON(message: MsgAuthorizeBridgeResponse): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    message.bridge !== undefined &&
+      (obj.bridge = message.bridge ? Bridge.toJSON(message.bridge) : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgAuthorizeBridgeResponse>
+  ): MsgAuthorizeBridgeResponse {
+    const message = {
+      ...baseMsgAuthorizeBridgeResponse,
+    } as MsgAuthorizeBridgeResponse;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = "";
+    }
+    if (object.bridge !== undefined && object.bridge !== null) {
+      message.bridge = Bridge.fromPartial(object.bridge);
+    } else {
+      message.bridge = undefined;
+    }
+    return message;
+  },
+};
+
+const baseMsgDeauthorizeBridge: object = {
+  initiator: "",
+  bridgeId: Long.UZERO,
+  chainId: Long.UZERO,
+};
+
+export const MsgDeauthorizeBridge = {
+  encode(
+    message: MsgDeauthorizeBridge,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.initiator !== "") {
+      writer.uint32(10).string(message.initiator);
+    }
+    if (!message.bridgeId.isZero()) {
+      writer.uint32(16).uint64(message.bridgeId);
+    }
+    if (!message.chainId.isZero()) {
+      writer.uint32(24).uint64(message.chainId);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgDeauthorizeBridge {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgDeauthorizeBridge } as MsgDeauthorizeBridge;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.initiator = reader.string();
+          break;
+        case 2:
+          message.bridgeId = reader.uint64() as Long;
+          break;
+        case 3:
+          message.chainId = reader.uint64() as Long;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgDeauthorizeBridge {
+    const message = { ...baseMsgDeauthorizeBridge } as MsgDeauthorizeBridge;
+    if (object.initiator !== undefined && object.initiator !== null) {
+      message.initiator = String(object.initiator);
+    } else {
+      message.initiator = "";
+    }
+    if (object.bridgeId !== undefined && object.bridgeId !== null) {
+      message.bridgeId = Long.fromString(object.bridgeId);
+    } else {
+      message.bridgeId = Long.UZERO;
+    }
+    if (object.chainId !== undefined && object.chainId !== null) {
+      message.chainId = Long.fromString(object.chainId);
+    } else {
+      message.chainId = Long.UZERO;
+    }
+    return message;
+  },
+
+  toJSON(message: MsgDeauthorizeBridge): unknown {
+    const obj: any = {};
+    message.initiator !== undefined && (obj.initiator = message.initiator);
+    message.bridgeId !== undefined &&
+      (obj.bridgeId = (message.bridgeId || Long.UZERO).toString());
+    message.chainId !== undefined &&
+      (obj.chainId = (message.chainId || Long.UZERO).toString());
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgDeauthorizeBridge>): MsgDeauthorizeBridge {
+    const message = { ...baseMsgDeauthorizeBridge } as MsgDeauthorizeBridge;
+    if (object.initiator !== undefined && object.initiator !== null) {
+      message.initiator = object.initiator;
+    } else {
+      message.initiator = "";
+    }
+    if (object.bridgeId !== undefined && object.bridgeId !== null) {
+      message.bridgeId = object.bridgeId as Long;
+    } else {
+      message.bridgeId = Long.UZERO;
+    }
+    if (object.chainId !== undefined && object.chainId !== null) {
+      message.chainId = object.chainId as Long;
+    } else {
+      message.chainId = Long.UZERO;
+    }
+    return message;
+  },
+};
+
+const baseMsgDeauthorizeBridgeResponse: object = { id: "" };
+
+export const MsgDeauthorizeBridgeResponse = {
+  encode(
+    message: MsgDeauthorizeBridgeResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.bridge !== undefined) {
+      Bridge.encode(message.bridge, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgDeauthorizeBridgeResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgDeauthorizeBridgeResponse,
+    } as MsgDeauthorizeBridgeResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        case 2:
+          message.bridge = Bridge.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgDeauthorizeBridgeResponse {
+    const message = {
+      ...baseMsgDeauthorizeBridgeResponse,
+    } as MsgDeauthorizeBridgeResponse;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
+    } else {
+      message.id = "";
+    }
+    if (object.bridge !== undefined && object.bridge !== null) {
+      message.bridge = Bridge.fromJSON(object.bridge);
+    } else {
+      message.bridge = undefined;
+    }
+    return message;
+  },
+
+  toJSON(message: MsgDeauthorizeBridgeResponse): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    message.bridge !== undefined &&
+      (obj.bridge = message.bridge ? Bridge.toJSON(message.bridge) : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgDeauthorizeBridgeResponse>
+  ): MsgDeauthorizeBridgeResponse {
+    const message = {
+      ...baseMsgDeauthorizeBridgeResponse,
+    } as MsgDeauthorizeBridgeResponse;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = "";
+    }
+    if (object.bridge !== undefined && object.bridge !== null) {
+      message.bridge = Bridge.fromPartial(object.bridge);
+    } else {
+      message.bridge = undefined;
+    }
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
   /** this line is used by starport scaffolding # proto/tx/rpc */
@@ -1204,8 +1707,15 @@ export interface Msg {
   SyncToken(request: MsgSyncToken): Promise<MsgSyncTokenResponse>;
   MintToken(request: MsgMintToken): Promise<MsgMintTokenResponse>;
   BindToken(request: MsgBindToken): Promise<MsgBindTokenResponse>;
+  UnbindToken(request: MsgUnbindToken): Promise<MsgUnbindTokenResponse>;
   LinkToken(request: MsgLinkToken): Promise<MsgLinkTokenResponse>;
   Withdraw(request: MsgWithdraw): Promise<MsgWithdrawResponse>;
+  AuthorizeBridge(
+    request: MsgAuthorizeBridge
+  ): Promise<MsgAuthorizeBridgeResponse>;
+  DeauthorizeBridge(
+    request: MsgDeauthorizeBridge
+  ): Promise<MsgDeauthorizeBridgeResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -1216,8 +1726,11 @@ export class MsgClientImpl implements Msg {
     this.SyncToken = this.SyncToken.bind(this);
     this.MintToken = this.MintToken.bind(this);
     this.BindToken = this.BindToken.bind(this);
+    this.UnbindToken = this.UnbindToken.bind(this);
     this.LinkToken = this.LinkToken.bind(this);
     this.Withdraw = this.Withdraw.bind(this);
+    this.AuthorizeBridge = this.AuthorizeBridge.bind(this);
+    this.DeauthorizeBridge = this.DeauthorizeBridge.bind(this);
   }
   CreateToken(request: MsgCreateToken): Promise<MsgCreateTokenResponse> {
     const data = MsgCreateToken.encode(request).finish();
@@ -1267,6 +1780,18 @@ export class MsgClientImpl implements Msg {
     );
   }
 
+  UnbindToken(request: MsgUnbindToken): Promise<MsgUnbindTokenResponse> {
+    const data = MsgUnbindToken.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.coin.Msg",
+      "UnbindToken",
+      data
+    );
+    return promise.then((data) =>
+      MsgUnbindTokenResponse.decode(new _m0.Reader(data))
+    );
+  }
+
   LinkToken(request: MsgLinkToken): Promise<MsgLinkTokenResponse> {
     const data = MsgLinkToken.encode(request).finish();
     const promise = this.rpc.request(
@@ -1288,6 +1813,34 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgWithdrawResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  AuthorizeBridge(
+    request: MsgAuthorizeBridge
+  ): Promise<MsgAuthorizeBridgeResponse> {
+    const data = MsgAuthorizeBridge.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.coin.Msg",
+      "AuthorizeBridge",
+      data
+    );
+    return promise.then((data) =>
+      MsgAuthorizeBridgeResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  DeauthorizeBridge(
+    request: MsgDeauthorizeBridge
+  ): Promise<MsgDeauthorizeBridgeResponse> {
+    const data = MsgDeauthorizeBridge.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.coin.Msg",
+      "DeauthorizeBridge",
+      data
+    );
+    return promise.then((data) =>
+      MsgDeauthorizeBridgeResponse.decode(new _m0.Reader(data))
     );
   }
 }

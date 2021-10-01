@@ -214,7 +214,7 @@ class TokenClient {
 
   public async reloadWrapperMap(): Promise<TypeUtils.SimpleMap<string>> {
     const mappingResponse = await this.query.coin.WrapperMappings({});
-    Object.assign(this.wrapperMap, mappingResponse.WrapperMappings ?? {});
+    Object.assign(this.wrapperMap, mappingResponse.wrapperMappings ?? {});
     return this.wrapperMap;
   }
 

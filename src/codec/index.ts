@@ -18,7 +18,7 @@ import { MsgConnectionOpenInit, MsgConnectionOpenInitResponse, MsgConnectionOpen
 import { MsgChannelOpenInit, MsgChannelOpenInitResponse, MsgChannelOpenTry, MsgChannelOpenTryResponse, MsgChannelOpenAck, MsgChannelOpenAckResponse, MsgChannelOpenConfirm, MsgChannelOpenConfirmResponse, MsgChannelCloseInit, MsgChannelCloseInitResponse, MsgChannelCloseConfirm, MsgChannelCloseConfirmResponse, MsgRecvPacket, MsgRecvPacketResponse, MsgTimeout, MsgTimeoutResponse, MsgTimeoutOnClose, MsgTimeoutOnCloseResponse, MsgAcknowledgement, MsgAcknowledgementResponse } from "./ibc/core/channel/v1/tx";
 import { MsgCreateClient, MsgCreateClientResponse, MsgUpdateClient, MsgUpdateClientResponse, MsgUpgradeClient, MsgUpgradeClientResponse, MsgSubmitMisbehaviour, MsgSubmitMisbehaviourResponse } from "./ibc/core/client/v1/tx";
 import { MsgTransfer, MsgTransferResponse } from "./ibc/applications/transfer/v1/tx";
-import { MsgCreateToken, MsgCreateTokenResponse, MsgSyncToken, MsgSyncTokenResponse, MsgMintToken, MsgMintTokenResponse, MsgBindToken, MsgBindTokenResponse, MsgLinkToken, MsgLinkTokenResponse, MsgWithdraw, MsgWithdrawResponse } from "./coin/tx";
+import { MsgCreateToken, MsgCreateTokenResponse, MsgSyncToken, MsgSyncTokenResponse, MsgMintToken, MsgMintTokenResponse, MsgBindToken, MsgBindTokenResponse, MsgUnbindToken, MsgUnbindTokenResponse, MsgLinkToken, MsgLinkTokenResponse, MsgWithdraw, MsgWithdrawResponse, MsgAuthorizeBridge, MsgAuthorizeBridgeResponse, MsgDeauthorizeBridge, MsgDeauthorizeBridgeResponse } from "./coin/tx";
 import { MsgSetLeverage, MsgSetLeverageResponse } from "./leverage/tx";
 import { MsgUpdateProfile, MsgUpdateProfileResponse } from "./profile/tx";
 import { MsgCreateSubAccount, MsgCreateSubAccountResponse, MsgActivateSubAccount, MsgActivateSubAccountResponse, MsgRemoveSubAccount, MsgRemoveSubAccountResponse } from "./subaccount/tx";
@@ -159,10 +159,16 @@ registry.register("/Switcheo.carbon.coin.MsgMintToken", MsgMintToken);
 registry.register("/Switcheo.carbon.coin.MsgMintTokenResponse", MsgMintTokenResponse);
 registry.register("/Switcheo.carbon.coin.MsgBindToken", MsgBindToken);
 registry.register("/Switcheo.carbon.coin.MsgBindTokenResponse", MsgBindTokenResponse);
+registry.register("/Switcheo.carbon.coin.MsgUnbindToken", MsgUnbindToken);
+registry.register("/Switcheo.carbon.coin.MsgUnbindTokenResponse", MsgUnbindTokenResponse);
 registry.register("/Switcheo.carbon.coin.MsgLinkToken", MsgLinkToken);
 registry.register("/Switcheo.carbon.coin.MsgLinkTokenResponse", MsgLinkTokenResponse);
 registry.register("/Switcheo.carbon.coin.MsgWithdraw", MsgWithdraw);
 registry.register("/Switcheo.carbon.coin.MsgWithdrawResponse", MsgWithdrawResponse);
+registry.register("/Switcheo.carbon.coin.MsgAuthorizeBridge", MsgAuthorizeBridge);
+registry.register("/Switcheo.carbon.coin.MsgAuthorizeBridgeResponse", MsgAuthorizeBridgeResponse);
+registry.register("/Switcheo.carbon.coin.MsgDeauthorizeBridge", MsgDeauthorizeBridge);
+registry.register("/Switcheo.carbon.coin.MsgDeauthorizeBridgeResponse", MsgDeauthorizeBridgeResponse);
 
 registry.register("/Switcheo.carbon.leverage.MsgSetLeverage", MsgSetLeverage);
 registry.register("/Switcheo.carbon.leverage.MsgSetLeverageResponse", MsgSetLeverageResponse);
@@ -324,10 +330,16 @@ export const TxTypes = {
   "MsgMintTokenResponse": "/Switcheo.carbon.coin.MsgMintTokenResponse",
   "MsgBindToken": "/Switcheo.carbon.coin.MsgBindToken",
   "MsgBindTokenResponse": "/Switcheo.carbon.coin.MsgBindTokenResponse",
+  "MsgUnbindToken": "/Switcheo.carbon.coin.MsgUnbindToken",
+  "MsgUnbindTokenResponse": "/Switcheo.carbon.coin.MsgUnbindTokenResponse",
   "MsgLinkToken": "/Switcheo.carbon.coin.MsgLinkToken",
   "MsgLinkTokenResponse": "/Switcheo.carbon.coin.MsgLinkTokenResponse",
   "MsgWithdraw": "/Switcheo.carbon.coin.MsgWithdraw",
   "MsgWithdrawResponse": "/Switcheo.carbon.coin.MsgWithdrawResponse",
+  "MsgAuthorizeBridge": "/Switcheo.carbon.coin.MsgAuthorizeBridge",
+  "MsgAuthorizeBridgeResponse": "/Switcheo.carbon.coin.MsgAuthorizeBridgeResponse",
+  "MsgDeauthorizeBridge": "/Switcheo.carbon.coin.MsgDeauthorizeBridge",
+  "MsgDeauthorizeBridgeResponse": "/Switcheo.carbon.coin.MsgDeauthorizeBridgeResponse",
   "MsgSetLeverage": "/Switcheo.carbon.leverage.MsgSetLeverage",
   "MsgSetLeverageResponse": "/Switcheo.carbon.leverage.MsgSetLeverageResponse",
   "MsgUpdateProfile": "/Switcheo.carbon.profile.MsgUpdateProfile",
@@ -374,8 +386,11 @@ export const TxTypes = {
 
 
 // Exported for convenience
+export { MessageType } from "./misc/message_type";
+export { Transaction } from "./misc/transaction";
+export { QuerySearchRequest, QuerySearchResponse } from "./misc/query";
 export { MsgSetTradingFlag, MsgSetTradingFlagResponse, MsgCreateOrder, MsgCreateOrderResponse, MsgEditOrder, MsgEditOrderResponse, MsgCancelOrder, MsgCancelOrderResponse, MsgCancelAll, MsgCancelAllResponse } from "./order/tx";
-export { Order, OrdersForMarket, OrderIDsForMarket, OrderIDs, Orders } from "./order/order";
+export { Order, DBOrder, OrdersForMarket, OrderIDsForMarket, OrderIDs, Orders } from "./order/order";
 export { QueryGetOrderRequest, QueryGetOrderResponse, QueryAllOrderRequest, QueryAllOrderResponse, QueryAccountOpenOrdersRequest, QueryAccountOpenOrdersResponse } from "./order/query";
 export { OrderEvent } from "./order/event";
 export { MsgAddCollateral, MsgAddCollateralResponse, MsgRemoveCollateral, MsgRemoveCollateralResponse, MsgAddDebt, MsgAddDebtResponse, MsgRemoveDebt, MsgRemoveDebtResponse, MsgCreateVaultType, MsgCreateVaultTypeResponse } from "./cdp/tx";
@@ -411,12 +426,13 @@ export { Oracle, Vote, Result, Mark } from "./oracle/oracle";
 export { CreateOracleProposal } from "./oracle/proposal";
 export { QueryOracleInfoRequest, QueryOracleInfoResponse, QueryOracleListRequest, QueryOracleListResponse, QueryResultListRequest, QueryResultListResponse, QueryVoteListRequest, QueryVoteListResponse, QueryVoterPowerRequest, QueryVoterPowerResponse } from "./oracle/query";
 export { NewVoteEvent, RecordVoteEvent, VoteEvent, ResultEvent } from "./oracle/event";
-export { MsgCreateToken, CreateTokenParams, MsgCreateTokenResponse, MsgSyncToken, MsgSyncTokenResponse, MsgMintToken, MsgMintTokenResponse, MsgBindToken, MsgBindTokenResponse, MsgLinkToken, MsgLinkTokenResponse, MsgWithdraw, MsgWithdrawResponse } from "./coin/tx";
+export { MsgCreateToken, CreateTokenParams, MsgCreateTokenResponse, MsgSyncToken, MsgSyncTokenResponse, MsgMintToken, MsgMintTokenResponse, MsgBindToken, MsgBindTokenResponse, MsgUnbindToken, MsgUnbindTokenResponse, MsgLinkToken, MsgLinkTokenResponse, MsgWithdraw, MsgWithdrawResponse, MsgAuthorizeBridge, MsgAuthorizeBridgeResponse, MsgDeauthorizeBridge, MsgDeauthorizeBridgeResponse } from "./coin/tx";
 export { ExternalTransfer } from "./coin/extevents";
 export { CreateTokenProposal } from "./coin/proposal";
-export { QueryGetTokenRequest, QueryGetTokenResponse, QueryAllTokenRequest, QueryAllTokenResponse, QueryGetLockedCoinsRequest, QueryGetLockedCoinsResponse, QueryAllWrapperMappingsRequest, QueryAllWrapperMappingsResponse, QueryAllWrapperMappingsResponse_WrapperMappingsEntry, QueryGetBalancesRequest, QueryGetBalancesResponse, QueryGetExternalTransfersRequest, QueryGetExternalTransfersResponse } from "./coin/query";
-export { Token, BalanceChange, LockedCoins, LockedCoinsWithKey, PositionPoolCoinsWithKey, TokenBalance } from "./coin/token";
-export { NewTokenEvent, SyncTokenEvent, BindTokenEvent, LinkTokenEvent } from "./coin/event";
+export { Bridge } from "./coin/bridge";
+export { QueryGetTokenRequest, QueryGetTokenResponse, QueryAllTokenRequest, QueryAllTokenResponse, QueryGetLockedCoinsRequest, QueryGetLockedCoinsResponse, QueryAllWrapperMappingsRequest, QueryAllWrapperMappingsResponse, QueryAllWrapperMappingsResponse_WrapperMappingsEntry, QueryGetBalancesRequest, QueryGetBalancesResponse, QueryGetExternalTransfersRequest, QueryGetExternalTransfersResponse, QueryGetBridgeRequest, QueryGetBridgeResponse, QueryAllBridgeRequest, QueryAllBridgeResponse } from "./coin/query";
+export { Token, BalanceChange, LockedCoins, LockedCoinsRecord, PositionPool, TokenBalance } from "./coin/token";
+export { NewTokenEvent, SyncTokenEvent, BindTokenEvent, UnbindTokenEvent, LinkTokenEvent } from "./coin/event";
 export { MarketLeverage, MarketLeverageWithKey } from "./leverage/leverage";
 export { MsgSetLeverage, MsgSetLeverageResponse } from "./leverage/tx";
 export { QueryGetLeverageRequest, QueryGetLeverageResponse, QueryAllLeverageRequest, QueryAllLeverageResponse } from "./leverage/query";
@@ -440,10 +456,10 @@ export { MarketEvent } from "./market/event";
 export { MintData } from "./inflation/inflation";
 export { QueryMintDataRequest, QueryMintDataResponse } from "./inflation/query";
 export { MsgCreatePool, MsgCreatePoolResponse, MsgCreatePoolWithLiquidity, MsgCreatePoolWithLiquidityResponse, MsgAddLiquidity, MsgAddLiquidityResponse, MsgRemoveLiquidity, MsgRemoveLiquidityResponse, MsgLinkPool, LinkPoolParams, MsgLinkPoolResponse, MsgUnlinkPool, UnlinkPoolParams, MsgUnlinkPoolResponse, MsgSetRewardsWeights, SetRewardsWeightsParams, RewardsWeightSetter, MsgSetRewardsWeightsResponse, MsgStakePoolToken, MsgStakePoolTokenResponse, MsgUnstakePoolToken, MsgUnstakePoolTokenResponse, MsgClaimPoolRewards, MsgClaimPoolRewardsResponse, MsgSetRewardCurve, SetRewardCurveParams, MsgSetRewardCurveResponse, MsgChangeSwapFee, ChangeSwapFeeParams, MsgChangeSwapFeeResponse, MsgSetCommitmentCurve, SetCommitmentCurveParams, MsgSetCommitmentCurveResponse, MsgChangeNumQuotes, ChangeNumQuotesParams, MsgChangeNumQuotesResponse } from "./liquiditypool/tx";
-export { Commitment, TotalCommitmentShares, RewardCurve, CommitmentCurve, WrappedRewardWeight, WrappedRewardWeights, RewardHistory, CommitmentResponse, CommitmentExpiryIndex, CommitmentWithKey, CommitmentTotalWithKey, RewardHistoryWithKey, LastClaimedWithKey, CommitmentKeys, AllocatedRewards } from "./liquiditypool/reward";
-export { Pool, Pools, AddLiquidity, AddLiquidities, RemoveLiquidity, RemoveLiquidities, PoolWithKey } from "./liquiditypool/liquiditypool";
+export { Commitment, TotalCommitmentShares, RewardCurve, CommitmentCurve, WrappedRewardWeight, WrappedRewardWeights, RewardHistory, CommitmentResponse, CommitmentExpiryIndex, CommitmentWithKey, CommitmentTotalWithKey, RewardHistoryWithKey, LastClaimedWithKey, CommitmentKeys, AllocatedRewards, TotalCommitment } from "./liquiditypool/reward";
+export { Pool, Pools, AddLiquidity, AddLiquidities, RemoveLiquidity, RemoveLiquidities } from "./liquiditypool/liquiditypool";
 export { LinkPoolProposal, UnlinkPoolProposal, SetRewardCurveProposal, SetCommitmentCurveProposal, SetRewardsWeightsProposal, ChangeSwapFeeProposal, ChangeNumQuotesProposal } from "./liquiditypool/proposal";
-export { QueryGetPoolRequest, QueryGetPoolResponse, QueryAllPoolRequest, QueryAllPoolResponse, QueryRewardHistoryRequest, QueryRewardHistoryResponse, QuerierRewardHistory, QueryCommitmentRequest, QueryCommitmentResponse, QueryLastClaimRequest, QueryLastClaimResponse, QueryCommitmentCurveRequest, QueryCommitmentCurveResponse, QueryRewardCurveRequest, QueryRewardCurveResponse } from "./liquiditypool/query";
+export { QueryGetPoolRequest, QueryGetPoolResponse, QueryAllPoolRequest, QueryAllPoolResponse, QueryRewardHistoryRequest, QueryRewardHistoryResponse, QuerierRewardHistory, QueryCommitmentRequest, QueryCommitmentResponse, QueryLastClaimRequest, QueryLastClaimResponse, QueryCommitmentCurveRequest, QueryCommitmentCurveResponse, QueryRewardCurveRequest, QueryRewardCurveResponse, QueryTotalCommitmentRequest, QueryTotalCommitmentResponse, QueryAllTotalCommitmentRequest, QueryAllTotalCommitmentResponse, QueryClaimableRewardsRequest, QueryClaimableRewardsResponse } from "./liquiditypool/query";
 export { PoolEvent, TotalCommitmentChangeEvent, RewardsWeightChangeEvent } from "./liquiditypool/event";
 export { EventDataInsuranceFundTransfer } from "./insurance/event";
 export { FundByMarket, Fund } from "./insurance/fund";

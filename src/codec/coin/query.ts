@@ -6,6 +6,7 @@ import {
   PageRequest,
   PageResponse,
 } from "../cosmos/base/query/v1beta1/pagination";
+import { Bridge } from "../coin/bridge";
 import { ExternalTransfer } from "../coin/extevents";
 
 export const protobufPackage = "Switcheo.carbon.coin";
@@ -16,7 +17,7 @@ export interface QueryGetTokenRequest {
 }
 
 export interface QueryGetTokenResponse {
-  Token?: Token;
+  token?: Token;
 }
 
 export interface QueryAllTokenRequest {
@@ -43,7 +44,7 @@ export interface QueryAllWrapperMappingsRequest {
 }
 
 export interface QueryAllWrapperMappingsResponse {
-  WrapperMappings: { [key: string]: string };
+  wrapperMappings: { [key: string]: string };
   pagination?: PageResponse;
 }
 
@@ -72,6 +73,24 @@ export interface QueryGetExternalTransfersRequest {
 
 export interface QueryGetExternalTransfersResponse {
   externalTransfers: ExternalTransfer[];
+}
+
+export interface QueryGetBridgeRequest {
+  bridgeId: Long;
+  chainId: Long;
+}
+
+export interface QueryGetBridgeResponse {
+  bridge?: Bridge;
+}
+
+export interface QueryAllBridgeRequest {
+  pagination?: PageRequest;
+}
+
+export interface QueryAllBridgeResponse {
+  bridges: Bridge[];
+  pagination?: PageResponse;
 }
 
 const baseQueryGetTokenRequest: object = { denom: "" };
@@ -142,8 +161,8 @@ export const QueryGetTokenResponse = {
     message: QueryGetTokenResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.Token !== undefined) {
-      Token.encode(message.Token, writer.uint32(10).fork()).ldelim();
+    if (message.token !== undefined) {
+      Token.encode(message.token, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -159,7 +178,7 @@ export const QueryGetTokenResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.Token = Token.decode(reader, reader.uint32());
+          message.token = Token.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -171,18 +190,18 @@ export const QueryGetTokenResponse = {
 
   fromJSON(object: any): QueryGetTokenResponse {
     const message = { ...baseQueryGetTokenResponse } as QueryGetTokenResponse;
-    if (object.Token !== undefined && object.Token !== null) {
-      message.Token = Token.fromJSON(object.Token);
+    if (object.token !== undefined && object.token !== null) {
+      message.token = Token.fromJSON(object.token);
     } else {
-      message.Token = undefined;
+      message.token = undefined;
     }
     return message;
   },
 
   toJSON(message: QueryGetTokenResponse): unknown {
     const obj: any = {};
-    message.Token !== undefined &&
-      (obj.Token = message.Token ? Token.toJSON(message.Token) : undefined);
+    message.token !== undefined &&
+      (obj.token = message.token ? Token.toJSON(message.token) : undefined);
     return obj;
   },
 
@@ -190,10 +209,10 @@ export const QueryGetTokenResponse = {
     object: DeepPartial<QueryGetTokenResponse>
   ): QueryGetTokenResponse {
     const message = { ...baseQueryGetTokenResponse } as QueryGetTokenResponse;
-    if (object.Token !== undefined && object.Token !== null) {
-      message.Token = Token.fromPartial(object.Token);
+    if (object.token !== undefined && object.token !== null) {
+      message.token = Token.fromPartial(object.token);
     } else {
-      message.Token = undefined;
+      message.token = undefined;
     }
     return message;
   },
@@ -625,7 +644,7 @@ export const QueryAllWrapperMappingsResponse = {
     message: QueryAllWrapperMappingsResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    Object.entries(message.WrapperMappings).forEach(([key, value]) => {
+    Object.entries(message.wrapperMappings).forEach(([key, value]) => {
       QueryAllWrapperMappingsResponse_WrapperMappingsEntry.encode(
         { key: key as any, value },
         writer.uint32(10).fork()
@@ -649,7 +668,7 @@ export const QueryAllWrapperMappingsResponse = {
     const message = {
       ...baseQueryAllWrapperMappingsResponse,
     } as QueryAllWrapperMappingsResponse;
-    message.WrapperMappings = {};
+    message.wrapperMappings = {};
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -660,7 +679,7 @@ export const QueryAllWrapperMappingsResponse = {
               reader.uint32()
             );
           if (entry1.value !== undefined) {
-            message.WrapperMappings[entry1.key] = entry1.value;
+            message.wrapperMappings[entry1.key] = entry1.value;
           }
           break;
         case 2:
@@ -678,13 +697,13 @@ export const QueryAllWrapperMappingsResponse = {
     const message = {
       ...baseQueryAllWrapperMappingsResponse,
     } as QueryAllWrapperMappingsResponse;
-    message.WrapperMappings = {};
+    message.wrapperMappings = {};
     if (
-      object.WrapperMappings !== undefined &&
-      object.WrapperMappings !== null
+      object.wrapperMappings !== undefined &&
+      object.wrapperMappings !== null
     ) {
-      Object.entries(object.WrapperMappings).forEach(([key, value]) => {
-        message.WrapperMappings[key] = String(value);
+      Object.entries(object.wrapperMappings).forEach(([key, value]) => {
+        message.wrapperMappings[key] = String(value);
       });
     }
     if (object.pagination !== undefined && object.pagination !== null) {
@@ -697,10 +716,10 @@ export const QueryAllWrapperMappingsResponse = {
 
   toJSON(message: QueryAllWrapperMappingsResponse): unknown {
     const obj: any = {};
-    obj.WrapperMappings = {};
-    if (message.WrapperMappings) {
-      Object.entries(message.WrapperMappings).forEach(([k, v]) => {
-        obj.WrapperMappings[k] = v;
+    obj.wrapperMappings = {};
+    if (message.wrapperMappings) {
+      Object.entries(message.wrapperMappings).forEach(([k, v]) => {
+        obj.wrapperMappings[k] = v;
       });
     }
     message.pagination !== undefined &&
@@ -716,14 +735,14 @@ export const QueryAllWrapperMappingsResponse = {
     const message = {
       ...baseQueryAllWrapperMappingsResponse,
     } as QueryAllWrapperMappingsResponse;
-    message.WrapperMappings = {};
+    message.wrapperMappings = {};
     if (
-      object.WrapperMappings !== undefined &&
-      object.WrapperMappings !== null
+      object.wrapperMappings !== undefined &&
+      object.wrapperMappings !== null
     ) {
-      Object.entries(object.WrapperMappings).forEach(([key, value]) => {
+      Object.entries(object.wrapperMappings).forEach(([key, value]) => {
         if (value !== undefined) {
-          message.WrapperMappings[key] = String(value);
+          message.wrapperMappings[key] = String(value);
         }
       });
     }
@@ -1243,6 +1262,316 @@ export const QueryGetExternalTransfersResponse = {
   },
 };
 
+const baseQueryGetBridgeRequest: object = {
+  bridgeId: Long.UZERO,
+  chainId: Long.UZERO,
+};
+
+export const QueryGetBridgeRequest = {
+  encode(
+    message: QueryGetBridgeRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (!message.bridgeId.isZero()) {
+      writer.uint32(8).uint64(message.bridgeId);
+    }
+    if (!message.chainId.isZero()) {
+      writer.uint32(16).uint64(message.chainId);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryGetBridgeRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseQueryGetBridgeRequest } as QueryGetBridgeRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.bridgeId = reader.uint64() as Long;
+          break;
+        case 2:
+          message.chainId = reader.uint64() as Long;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryGetBridgeRequest {
+    const message = { ...baseQueryGetBridgeRequest } as QueryGetBridgeRequest;
+    if (object.bridgeId !== undefined && object.bridgeId !== null) {
+      message.bridgeId = Long.fromString(object.bridgeId);
+    } else {
+      message.bridgeId = Long.UZERO;
+    }
+    if (object.chainId !== undefined && object.chainId !== null) {
+      message.chainId = Long.fromString(object.chainId);
+    } else {
+      message.chainId = Long.UZERO;
+    }
+    return message;
+  },
+
+  toJSON(message: QueryGetBridgeRequest): unknown {
+    const obj: any = {};
+    message.bridgeId !== undefined &&
+      (obj.bridgeId = (message.bridgeId || Long.UZERO).toString());
+    message.chainId !== undefined &&
+      (obj.chainId = (message.chainId || Long.UZERO).toString());
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryGetBridgeRequest>
+  ): QueryGetBridgeRequest {
+    const message = { ...baseQueryGetBridgeRequest } as QueryGetBridgeRequest;
+    if (object.bridgeId !== undefined && object.bridgeId !== null) {
+      message.bridgeId = object.bridgeId as Long;
+    } else {
+      message.bridgeId = Long.UZERO;
+    }
+    if (object.chainId !== undefined && object.chainId !== null) {
+      message.chainId = object.chainId as Long;
+    } else {
+      message.chainId = Long.UZERO;
+    }
+    return message;
+  },
+};
+
+const baseQueryGetBridgeResponse: object = {};
+
+export const QueryGetBridgeResponse = {
+  encode(
+    message: QueryGetBridgeResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.bridge !== undefined) {
+      Bridge.encode(message.bridge, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryGetBridgeResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseQueryGetBridgeResponse } as QueryGetBridgeResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.bridge = Bridge.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryGetBridgeResponse {
+    const message = { ...baseQueryGetBridgeResponse } as QueryGetBridgeResponse;
+    if (object.bridge !== undefined && object.bridge !== null) {
+      message.bridge = Bridge.fromJSON(object.bridge);
+    } else {
+      message.bridge = undefined;
+    }
+    return message;
+  },
+
+  toJSON(message: QueryGetBridgeResponse): unknown {
+    const obj: any = {};
+    message.bridge !== undefined &&
+      (obj.bridge = message.bridge ? Bridge.toJSON(message.bridge) : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryGetBridgeResponse>
+  ): QueryGetBridgeResponse {
+    const message = { ...baseQueryGetBridgeResponse } as QueryGetBridgeResponse;
+    if (object.bridge !== undefined && object.bridge !== null) {
+      message.bridge = Bridge.fromPartial(object.bridge);
+    } else {
+      message.bridge = undefined;
+    }
+    return message;
+  },
+};
+
+const baseQueryAllBridgeRequest: object = {};
+
+export const QueryAllBridgeRequest = {
+  encode(
+    message: QueryAllBridgeRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAllBridgeRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseQueryAllBridgeRequest } as QueryAllBridgeRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllBridgeRequest {
+    const message = { ...baseQueryAllBridgeRequest } as QueryAllBridgeRequest;
+    if (object.pagination !== undefined && object.pagination !== null) {
+      message.pagination = PageRequest.fromJSON(object.pagination);
+    } else {
+      message.pagination = undefined;
+    }
+    return message;
+  },
+
+  toJSON(message: QueryAllBridgeRequest): unknown {
+    const obj: any = {};
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAllBridgeRequest>
+  ): QueryAllBridgeRequest {
+    const message = { ...baseQueryAllBridgeRequest } as QueryAllBridgeRequest;
+    if (object.pagination !== undefined && object.pagination !== null) {
+      message.pagination = PageRequest.fromPartial(object.pagination);
+    } else {
+      message.pagination = undefined;
+    }
+    return message;
+  },
+};
+
+const baseQueryAllBridgeResponse: object = {};
+
+export const QueryAllBridgeResponse = {
+  encode(
+    message: QueryAllBridgeResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.bridges) {
+      Bridge.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAllBridgeResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseQueryAllBridgeResponse } as QueryAllBridgeResponse;
+    message.bridges = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.bridges.push(Bridge.decode(reader, reader.uint32()));
+          break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllBridgeResponse {
+    const message = { ...baseQueryAllBridgeResponse } as QueryAllBridgeResponse;
+    message.bridges = [];
+    if (object.bridges !== undefined && object.bridges !== null) {
+      for (const e of object.bridges) {
+        message.bridges.push(Bridge.fromJSON(e));
+      }
+    }
+    if (object.pagination !== undefined && object.pagination !== null) {
+      message.pagination = PageResponse.fromJSON(object.pagination);
+    } else {
+      message.pagination = undefined;
+    }
+    return message;
+  },
+
+  toJSON(message: QueryAllBridgeResponse): unknown {
+    const obj: any = {};
+    if (message.bridges) {
+      obj.bridges = message.bridges.map((e) =>
+        e ? Bridge.toJSON(e) : undefined
+      );
+    } else {
+      obj.bridges = [];
+    }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAllBridgeResponse>
+  ): QueryAllBridgeResponse {
+    const message = { ...baseQueryAllBridgeResponse } as QueryAllBridgeResponse;
+    message.bridges = [];
+    if (object.bridges !== undefined && object.bridges !== null) {
+      for (const e of object.bridges) {
+        message.bridges.push(Bridge.fromPartial(e));
+      }
+    }
+    if (object.pagination !== undefined && object.pagination !== null) {
+      message.pagination = PageResponse.fromPartial(object.pagination);
+    } else {
+      message.pagination = undefined;
+    }
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** this line is used by starport scaffolding # 2 */
@@ -1258,6 +1587,8 @@ export interface Query {
   ExternalTransfers(
     request: QueryGetExternalTransfersRequest
   ): Promise<QueryGetExternalTransfersResponse>;
+  Bridge(request: QueryGetBridgeRequest): Promise<QueryGetBridgeResponse>;
+  BridgeAll(request: QueryAllBridgeRequest): Promise<QueryAllBridgeResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -1270,6 +1601,8 @@ export class QueryClientImpl implements Query {
     this.WrapperMappings = this.WrapperMappings.bind(this);
     this.Balances = this.Balances.bind(this);
     this.ExternalTransfers = this.ExternalTransfers.bind(this);
+    this.Bridge = this.Bridge.bind(this);
+    this.BridgeAll = this.BridgeAll.bind(this);
   }
   Token(request: QueryGetTokenRequest): Promise<QueryGetTokenResponse> {
     const data = QueryGetTokenRequest.encode(request).finish();
@@ -1348,6 +1681,30 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryGetExternalTransfersResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  Bridge(request: QueryGetBridgeRequest): Promise<QueryGetBridgeResponse> {
+    const data = QueryGetBridgeRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.coin.Query",
+      "Bridge",
+      data
+    );
+    return promise.then((data) =>
+      QueryGetBridgeResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  BridgeAll(request: QueryAllBridgeRequest): Promise<QueryAllBridgeResponse> {
+    const data = QueryAllBridgeRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.coin.Query",
+      "BridgeAll",
+      data
+    );
+    return promise.then((data) =>
+      QueryAllBridgeResponse.decode(new _m0.Reader(data))
     );
   }
 }

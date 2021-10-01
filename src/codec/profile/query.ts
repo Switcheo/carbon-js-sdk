@@ -20,6 +20,7 @@ export interface QueryGetProfileResponse {
 
 export interface QueryAllProfileRequest {
   pagination?: PageRequest;
+  username: string;
 }
 
 export interface QueryAllProfileResponse {
@@ -162,7 +163,7 @@ export const QueryGetProfileResponse = {
   },
 };
 
-const baseQueryAllProfileRequest: object = {};
+const baseQueryAllProfileRequest: object = { username: "" };
 
 export const QueryAllProfileRequest = {
   encode(
@@ -171,6 +172,9 @@ export const QueryAllProfileRequest = {
   ): _m0.Writer {
     if (message.pagination !== undefined) {
       PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.username !== "") {
+      writer.uint32(18).string(message.username);
     }
     return writer;
   },
@@ -188,6 +192,9 @@ export const QueryAllProfileRequest = {
         case 1:
           message.pagination = PageRequest.decode(reader, reader.uint32());
           break;
+        case 2:
+          message.username = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -203,6 +210,11 @@ export const QueryAllProfileRequest = {
     } else {
       message.pagination = undefined;
     }
+    if (object.username !== undefined && object.username !== null) {
+      message.username = String(object.username);
+    } else {
+      message.username = "";
+    }
     return message;
   },
 
@@ -212,6 +224,7 @@ export const QueryAllProfileRequest = {
       (obj.pagination = message.pagination
         ? PageRequest.toJSON(message.pagination)
         : undefined);
+    message.username !== undefined && (obj.username = message.username);
     return obj;
   },
 
@@ -223,6 +236,11 @@ export const QueryAllProfileRequest = {
       message.pagination = PageRequest.fromPartial(object.pagination);
     } else {
       message.pagination = undefined;
+    }
+    if (object.username !== undefined && object.username !== null) {
+      message.username = object.username;
+    } else {
+      message.username = "";
     }
     return message;
   },

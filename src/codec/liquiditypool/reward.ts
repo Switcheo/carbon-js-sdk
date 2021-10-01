@@ -90,6 +90,11 @@ export interface AllocatedRewards {
   outstanding: DecCoin[];
 }
 
+export interface TotalCommitment {
+  poolId: Long;
+  totalCommitment: string;
+}
+
 const baseCommitment: object = { duration: Long.UZERO };
 
 export const Commitment = {
@@ -1566,8 +1571,92 @@ export const AllocatedRewards = {
   },
 };
 
+const baseTotalCommitment: object = { poolId: Long.UZERO, totalCommitment: "" };
+
+export const TotalCommitment = {
+  encode(
+    message: TotalCommitment,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (!message.poolId.isZero()) {
+      writer.uint32(8).uint64(message.poolId);
+    }
+    if (message.totalCommitment !== "") {
+      writer.uint32(18).string(message.totalCommitment);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): TotalCommitment {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseTotalCommitment } as TotalCommitment;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.poolId = reader.uint64() as Long;
+          break;
+        case 2:
+          message.totalCommitment = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): TotalCommitment {
+    const message = { ...baseTotalCommitment } as TotalCommitment;
+    if (object.poolId !== undefined && object.poolId !== null) {
+      message.poolId = Long.fromString(object.poolId);
+    } else {
+      message.poolId = Long.UZERO;
+    }
+    if (
+      object.totalCommitment !== undefined &&
+      object.totalCommitment !== null
+    ) {
+      message.totalCommitment = String(object.totalCommitment);
+    } else {
+      message.totalCommitment = "";
+    }
+    return message;
+  },
+
+  toJSON(message: TotalCommitment): unknown {
+    const obj: any = {};
+    message.poolId !== undefined &&
+      (obj.poolId = (message.poolId || Long.UZERO).toString());
+    message.totalCommitment !== undefined &&
+      (obj.totalCommitment = message.totalCommitment);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<TotalCommitment>): TotalCommitment {
+    const message = { ...baseTotalCommitment } as TotalCommitment;
+    if (object.poolId !== undefined && object.poolId !== null) {
+      message.poolId = object.poolId as Long;
+    } else {
+      message.poolId = Long.UZERO;
+    }
+    if (
+      object.totalCommitment !== undefined &&
+      object.totalCommitment !== null
+    ) {
+      message.totalCommitment = object.totalCommitment;
+    } else {
+      message.totalCommitment = "";
+    }
+    return message;
+  },
+};
+
 declare var self: any | undefined;
 declare var window: any | undefined;
+declare var global: any | undefined;
 var globalThis: any = (() => {
   if (typeof globalThis !== "undefined") return globalThis;
   if (typeof self !== "undefined") return self;

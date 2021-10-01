@@ -1,10 +1,12 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
+import { Coin } from "../cosmos/base/v1beta1/coin";
 
 export const protobufPackage = "Switcheo.carbon.coin";
 
 export interface Token {
+  id: string;
   creator: string;
   denom: string;
   name: string;
@@ -34,14 +36,15 @@ export interface LockedCoins {
   collateral: string;
 }
 
-export interface LockedCoinsWithKey {
+export interface LockedCoinsRecord {
+  address: string;
+  market: string;
   lockedCoins?: LockedCoins;
-  key: Uint8Array;
 }
 
-export interface PositionPoolCoinsWithKey {
-  amount: string;
-  key: Uint8Array;
+export interface PositionPool {
+  market: string;
+  coins: Coin[];
 }
 
 export interface TokenBalance {
@@ -52,6 +55,7 @@ export interface TokenBalance {
 }
 
 const baseToken: object = {
+  id: "",
   creator: "",
   denom: "",
   name: "",
@@ -67,38 +71,41 @@ const baseToken: object = {
 
 export const Token = {
   encode(message: Token, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
     if (message.creator !== "") {
-      writer.uint32(10).string(message.creator);
+      writer.uint32(18).string(message.creator);
     }
     if (message.denom !== "") {
-      writer.uint32(18).string(message.denom);
+      writer.uint32(26).string(message.denom);
     }
     if (message.name !== "") {
-      writer.uint32(26).string(message.name);
+      writer.uint32(34).string(message.name);
     }
     if (message.symbol !== "") {
-      writer.uint32(34).string(message.symbol);
+      writer.uint32(42).string(message.symbol);
     }
     if (!message.decimals.isZero()) {
-      writer.uint32(40).int64(message.decimals);
+      writer.uint32(48).int64(message.decimals);
     }
     if (!message.bridgeId.isZero()) {
-      writer.uint32(48).uint64(message.bridgeId);
+      writer.uint32(56).uint64(message.bridgeId);
     }
     if (!message.chainId.isZero()) {
-      writer.uint32(56).uint64(message.chainId);
+      writer.uint32(64).uint64(message.chainId);
     }
     if (message.tokenAddress !== "") {
-      writer.uint32(66).string(message.tokenAddress);
+      writer.uint32(74).string(message.tokenAddress);
     }
     if (message.bridgeAddress !== "") {
-      writer.uint32(74).string(message.bridgeAddress);
+      writer.uint32(82).string(message.bridgeAddress);
     }
     if (message.isActive === true) {
-      writer.uint32(80).bool(message.isActive);
+      writer.uint32(88).bool(message.isActive);
     }
     if (message.isCollateral === true) {
-      writer.uint32(88).bool(message.isCollateral);
+      writer.uint32(96).bool(message.isCollateral);
     }
     return writer;
   },
@@ -111,36 +118,39 @@ export const Token = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.creator = reader.string();
+          message.id = reader.string();
           break;
         case 2:
-          message.denom = reader.string();
+          message.creator = reader.string();
           break;
         case 3:
-          message.name = reader.string();
+          message.denom = reader.string();
           break;
         case 4:
-          message.symbol = reader.string();
+          message.name = reader.string();
           break;
         case 5:
-          message.decimals = reader.int64() as Long;
+          message.symbol = reader.string();
           break;
         case 6:
-          message.bridgeId = reader.uint64() as Long;
+          message.decimals = reader.int64() as Long;
           break;
         case 7:
-          message.chainId = reader.uint64() as Long;
+          message.bridgeId = reader.uint64() as Long;
           break;
         case 8:
-          message.tokenAddress = reader.string();
+          message.chainId = reader.uint64() as Long;
           break;
         case 9:
-          message.bridgeAddress = reader.string();
+          message.tokenAddress = reader.string();
           break;
         case 10:
-          message.isActive = reader.bool();
+          message.bridgeAddress = reader.string();
           break;
         case 11:
+          message.isActive = reader.bool();
+          break;
+        case 12:
           message.isCollateral = reader.bool();
           break;
         default:
@@ -153,6 +163,11 @@ export const Token = {
 
   fromJSON(object: any): Token {
     const message = { ...baseToken } as Token;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
+    } else {
+      message.id = "";
+    }
     if (object.creator !== undefined && object.creator !== null) {
       message.creator = String(object.creator);
     } else {
@@ -213,6 +228,7 @@ export const Token = {
 
   toJSON(message: Token): unknown {
     const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
     message.creator !== undefined && (obj.creator = message.creator);
     message.denom !== undefined && (obj.denom = message.denom);
     message.name !== undefined && (obj.name = message.name);
@@ -235,6 +251,11 @@ export const Token = {
 
   fromPartial(object: DeepPartial<Token>): Token {
     const message = { ...baseToken } as Token;
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = "";
+    }
     if (object.creator !== undefined && object.creator !== null) {
       message.creator = object.creator;
     } else {
@@ -561,38 +582,43 @@ export const LockedCoins = {
   },
 };
 
-const baseLockedCoinsWithKey: object = {};
+const baseLockedCoinsRecord: object = { address: "", market: "" };
 
-export const LockedCoinsWithKey = {
+export const LockedCoinsRecord = {
   encode(
-    message: LockedCoinsWithKey,
+    message: LockedCoinsRecord,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
+    if (message.address !== "") {
+      writer.uint32(10).string(message.address);
+    }
+    if (message.market !== "") {
+      writer.uint32(18).string(message.market);
+    }
     if (message.lockedCoins !== undefined) {
       LockedCoins.encode(
         message.lockedCoins,
-        writer.uint32(10).fork()
+        writer.uint32(26).fork()
       ).ldelim();
-    }
-    if (message.key.length !== 0) {
-      writer.uint32(18).bytes(message.key);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): LockedCoinsWithKey {
+  decode(input: _m0.Reader | Uint8Array, length?: number): LockedCoinsRecord {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseLockedCoinsWithKey } as LockedCoinsWithKey;
-    message.key = new Uint8Array();
+    const message = { ...baseLockedCoinsRecord } as LockedCoinsRecord;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.lockedCoins = LockedCoins.decode(reader, reader.uint32());
+          message.address = reader.string();
           break;
         case 2:
-          message.key = reader.bytes();
+          message.market = reader.string();
+          break;
+        case 3:
+          message.lockedCoins = LockedCoins.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -602,83 +628,87 @@ export const LockedCoinsWithKey = {
     return message;
   },
 
-  fromJSON(object: any): LockedCoinsWithKey {
-    const message = { ...baseLockedCoinsWithKey } as LockedCoinsWithKey;
-    message.key = new Uint8Array();
+  fromJSON(object: any): LockedCoinsRecord {
+    const message = { ...baseLockedCoinsRecord } as LockedCoinsRecord;
+    if (object.address !== undefined && object.address !== null) {
+      message.address = String(object.address);
+    } else {
+      message.address = "";
+    }
+    if (object.market !== undefined && object.market !== null) {
+      message.market = String(object.market);
+    } else {
+      message.market = "";
+    }
     if (object.lockedCoins !== undefined && object.lockedCoins !== null) {
       message.lockedCoins = LockedCoins.fromJSON(object.lockedCoins);
     } else {
       message.lockedCoins = undefined;
     }
-    if (object.key !== undefined && object.key !== null) {
-      message.key = bytesFromBase64(object.key);
-    }
     return message;
   },
 
-  toJSON(message: LockedCoinsWithKey): unknown {
+  toJSON(message: LockedCoinsRecord): unknown {
     const obj: any = {};
+    message.address !== undefined && (obj.address = message.address);
+    message.market !== undefined && (obj.market = message.market);
     message.lockedCoins !== undefined &&
       (obj.lockedCoins = message.lockedCoins
         ? LockedCoins.toJSON(message.lockedCoins)
         : undefined);
-    message.key !== undefined &&
-      (obj.key = base64FromBytes(
-        message.key !== undefined ? message.key : new Uint8Array()
-      ));
     return obj;
   },
 
-  fromPartial(object: DeepPartial<LockedCoinsWithKey>): LockedCoinsWithKey {
-    const message = { ...baseLockedCoinsWithKey } as LockedCoinsWithKey;
+  fromPartial(object: DeepPartial<LockedCoinsRecord>): LockedCoinsRecord {
+    const message = { ...baseLockedCoinsRecord } as LockedCoinsRecord;
+    if (object.address !== undefined && object.address !== null) {
+      message.address = object.address;
+    } else {
+      message.address = "";
+    }
+    if (object.market !== undefined && object.market !== null) {
+      message.market = object.market;
+    } else {
+      message.market = "";
+    }
     if (object.lockedCoins !== undefined && object.lockedCoins !== null) {
       message.lockedCoins = LockedCoins.fromPartial(object.lockedCoins);
     } else {
       message.lockedCoins = undefined;
     }
-    if (object.key !== undefined && object.key !== null) {
-      message.key = object.key;
-    } else {
-      message.key = new Uint8Array();
-    }
     return message;
   },
 };
 
-const basePositionPoolCoinsWithKey: object = { amount: "" };
+const basePositionPool: object = { market: "" };
 
-export const PositionPoolCoinsWithKey = {
+export const PositionPool = {
   encode(
-    message: PositionPoolCoinsWithKey,
+    message: PositionPool,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.amount !== "") {
-      writer.uint32(10).string(message.amount);
+    if (message.market !== "") {
+      writer.uint32(10).string(message.market);
     }
-    if (message.key.length !== 0) {
-      writer.uint32(18).bytes(message.key);
+    for (const v of message.coins) {
+      Coin.encode(v!, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): PositionPoolCoinsWithKey {
+  decode(input: _m0.Reader | Uint8Array, length?: number): PositionPool {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...basePositionPoolCoinsWithKey,
-    } as PositionPoolCoinsWithKey;
-    message.key = new Uint8Array();
+    const message = { ...basePositionPool } as PositionPool;
+    message.coins = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.amount = reader.string();
+          message.market = reader.string();
           break;
         case 2:
-          message.key = reader.bytes();
+          message.coins.push(Coin.decode(reader, reader.uint32()));
           break;
         default:
           reader.skipType(tag & 7);
@@ -688,47 +718,45 @@ export const PositionPoolCoinsWithKey = {
     return message;
   },
 
-  fromJSON(object: any): PositionPoolCoinsWithKey {
-    const message = {
-      ...basePositionPoolCoinsWithKey,
-    } as PositionPoolCoinsWithKey;
-    message.key = new Uint8Array();
-    if (object.amount !== undefined && object.amount !== null) {
-      message.amount = String(object.amount);
+  fromJSON(object: any): PositionPool {
+    const message = { ...basePositionPool } as PositionPool;
+    message.coins = [];
+    if (object.market !== undefined && object.market !== null) {
+      message.market = String(object.market);
     } else {
-      message.amount = "";
+      message.market = "";
     }
-    if (object.key !== undefined && object.key !== null) {
-      message.key = bytesFromBase64(object.key);
+    if (object.coins !== undefined && object.coins !== null) {
+      for (const e of object.coins) {
+        message.coins.push(Coin.fromJSON(e));
+      }
     }
     return message;
   },
 
-  toJSON(message: PositionPoolCoinsWithKey): unknown {
+  toJSON(message: PositionPool): unknown {
     const obj: any = {};
-    message.amount !== undefined && (obj.amount = message.amount);
-    message.key !== undefined &&
-      (obj.key = base64FromBytes(
-        message.key !== undefined ? message.key : new Uint8Array()
-      ));
+    message.market !== undefined && (obj.market = message.market);
+    if (message.coins) {
+      obj.coins = message.coins.map((e) => (e ? Coin.toJSON(e) : undefined));
+    } else {
+      obj.coins = [];
+    }
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<PositionPoolCoinsWithKey>
-  ): PositionPoolCoinsWithKey {
-    const message = {
-      ...basePositionPoolCoinsWithKey,
-    } as PositionPoolCoinsWithKey;
-    if (object.amount !== undefined && object.amount !== null) {
-      message.amount = object.amount;
+  fromPartial(object: DeepPartial<PositionPool>): PositionPool {
+    const message = { ...basePositionPool } as PositionPool;
+    message.coins = [];
+    if (object.market !== undefined && object.market !== null) {
+      message.market = object.market;
     } else {
-      message.amount = "";
+      message.market = "";
     }
-    if (object.key !== undefined && object.key !== null) {
-      message.key = object.key;
-    } else {
-      message.key = new Uint8Array();
+    if (object.coins !== undefined && object.coins !== null) {
+      for (const e of object.coins) {
+        message.coins.push(Coin.fromPartial(e));
+      }
     }
     return message;
   },
@@ -847,39 +875,6 @@ export const TokenBalance = {
     return message;
   },
 };
-
-declare var self: any | undefined;
-declare var window: any | undefined;
-var globalThis: any = (() => {
-  if (typeof globalThis !== "undefined") return globalThis;
-  if (typeof self !== "undefined") return self;
-  if (typeof window !== "undefined") return window;
-  if (typeof global !== "undefined") return global;
-  throw "Unable to locate global object";
-})();
-
-const atob: (b64: string) => string =
-  globalThis.atob ||
-  ((b64) => globalThis.Buffer.from(b64, "base64").toString("binary"));
-function bytesFromBase64(b64: string): Uint8Array {
-  const bin = atob(b64);
-  const arr = new Uint8Array(bin.length);
-  for (let i = 0; i < bin.length; ++i) {
-    arr[i] = bin.charCodeAt(i);
-  }
-  return arr;
-}
-
-const btoa: (bin: string) => string =
-  globalThis.btoa ||
-  ((bin) => globalThis.Buffer.from(bin, "binary").toString("base64"));
-function base64FromBytes(arr: Uint8Array): string {
-  const bin: string[] = [];
-  for (const byte of arr) {
-    bin.push(String.fromCharCode(byte));
-  }
-  return btoa(bin.join(""));
-}
 
 type Builtin =
   | Date
