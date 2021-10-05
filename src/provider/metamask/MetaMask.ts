@@ -1,7 +1,7 @@
 
 import { Network, NetworkConfigs } from '@carbon-sdk/constant'
 import { ABIs } from '@carbon-sdk/eth'
-import { Blockchain, blockchainForChainId, ChainNames, getChainFromID } from '@carbon-sdk/util/blockchain'
+import { Blockchain, getBlockchainFromChain, ChainNames } from '@carbon-sdk/util/blockchain'
 import { ethers } from 'ethers'
 import * as ethSignUtils from 'eth-sig-util'
 import { ETHClient } from '@carbon-sdk/clients/ETHClient'
@@ -211,7 +211,7 @@ export class MetaMask {
   async syncBlockchain(): Promise<MetaMaskSyncResult> {
     const chainIdHex = await this.getAPI()?.request({ method: 'eth_chainId' }) as string
     const chainId = !!chainIdHex ? parseInt(chainIdHex, 16) : undefined
-    const blockchain = blockchainForChainId(chainId)
+    const blockchain = getBlockchainFromChain(chainId)
     this.blockchain = blockchain!
 
     return { chainId, blockchain }
@@ -396,6 +396,11 @@ export class MetaMask {
     if (currentChainId === 97) {
       this.blockchain = Blockchain.BinanceSmartChain
       return currentChainId
+    }
+
+    // Deal with cases where users are logging in to devnet using mainnet chains
+    if (currentChainId === 56) {
+      return 97
     }
     return 3
   }
