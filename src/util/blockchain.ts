@@ -37,6 +37,21 @@ export function getChainFromID(id: number): string | undefined {
   return Object.keys(CHAIN_IDS).find((key) => CHAIN_IDS[key] === id)
 }
 
+export const getBlockchainFromChain = (chainId?: number) => {
+  switch (chainId) {
+    case 1:
+    case 3:
+      return Blockchain.Ethereum
+    case 56:
+    case 97:
+      return Blockchain.BinanceSmartChain
+    case 110:
+    case 111:
+      return Blockchain.Zilliqa
+  }
+  return undefined
+}
+
 export const blockchainForChainId = (chainId?: number): Blockchain | undefined => {
   switch (chainId) {
     case 0:
