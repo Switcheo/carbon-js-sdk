@@ -83,11 +83,11 @@ export const DEFAULT_SIGN_OPTS: SignTxOpts = {
 
 export const TxFeeTypeDefaultKey = "default_fee";
 export const TxFeeTypeMap = {
-  [TxTypes.MsgClaimPoolRewards]: "ClaimPoolRewards",
-  [TxTypes.MsgCreateVote]: "CreateOracleVote",
-  [TxTypes.MsgCreateOrder]: "CreateOrder",
-  [TxTypes.MsgCreatePool]: "CreatePool",
-  [TxTypes.MsgCreatePoolWithLiquidity]: "CreatePool",
-  [TxTypes.MsgStakePoolToken]: "StakePoolToken",
-  [TxTypes.MsgUnstakePoolToken]: "UnstakePoolToken",
+  [TxTypes.MsgClaimPoolRewards]: "claim_pool_rewards",
+  [TxTypes.MsgCreateVote]: "create_oracle_vote",
+  [TxTypes.MsgCreateOrder]: "create_order",
+  [TxTypes.MsgCreatePool]: "create_pool",
+  [TxTypes.MsgCreatePoolWithLiquidity]: "create_pool",
+  [TxTypes.MsgStakePoolToken]: "stake_pool_token",
+  [TxTypes.MsgUnstakePoolToken]: "unstake_pool_token",
 }
