@@ -18,8 +18,10 @@ import "./_setup";
   const result = await connectedSDK.bank.sendTokens({
     fromAddress: connectedSDK.wallet.bech32Address,
     toAddress: "tswth1mw90en8tcqnvdjhp64qmyhuq4qasvhy2s6st4t",
-    amount: 1000,
-    denom: "swth",
+    amount: [{
+      amount: '1000',
+      denom: "swth",
+    }],
   })
   console.log(result)
 })().catch(console.error).finally(() => process.exit(0));
