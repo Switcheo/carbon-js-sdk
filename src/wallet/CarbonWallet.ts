@@ -10,12 +10,11 @@ import { SimpleMap } from "@carbon-sdk/util/type";
 import { StdSignature } from "@cosmjs/amino";
 import { AccountData, DirectSignResponse, EncodeObject, OfflineDirectSigner } from "@cosmjs/proto-signing";
 import { BroadcastTxResponse, isBroadcastTxFailure, SigningStargateClient } from "@cosmjs/stargate";
-import { SignDoc, TxRaw } from "@cosmjs/stargate/build/codec/cosmos/tx/v1beta1/tx";
+import { SignDoc, TxRaw as StargateTxRaw } from "@cosmjs/stargate/build/codec/cosmos/tx/v1beta1/tx";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import { BroadcastTxSyncResponse } from "@cosmjs/tendermint-rpc/build/tendermint34/responses";
 import BigNumber from "bignumber.js";
 import { CarbonLedgerSigner, CarbonNonSigner, CarbonPrivateKeySigner, CarbonSigner, CarbonSignerTypes } from "./CarbonSigner";
-
 
 export interface CarbonWalletGenericOpts {
   network?: Network;
@@ -201,6 +200,7 @@ export class CarbonWallet implements OfflineDirectSigner {
   public updateNetwork(network: Network): CarbonWallet {
     this.network = network;
     this.networkConfig = GenericUtils.overrideConfig(NetworkConfigs[network], this.configOverride);
+    delete this.signingClient;
 
     return this;
   }
@@ -210,16 +210,16 @@ export class CarbonWallet implements OfflineDirectSigner {
    * 
    */
   async broadcastTx(
-    txRaw: TxRaw,
+    txRaw: CarbonWallet.TxRaw,
     opts: CarbonTx.BroadcastTxOpts = {},
-  ): Promise<BroadcastTxResponse> {
+  ): Promise<CarbonWallet.SendTxResponse> {
     const {
       pollIntervalMs = 3_000,
       timeoutMs = 60_000,
     } = opts;
 
     const signingClient = await this.getSigningClient();
-    const tx = TxRaw.encode(txRaw).finish();
+    const tx = StargateTxRaw.encode(txRaw).finish();
     const response = await signingClient.broadcastTx(tx, timeoutMs, pollIntervalMs)
     if (isBroadcastTxFailure(response)) {
       // tx failed
@@ -233,8 +233,8 @@ export class CarbonWallet implements OfflineDirectSigner {
    * broadcast TX to mempool but doesnt wait for block confirmation
    * 
    */
-  async broadcastTxWithoutConfirm(txRaw: TxRaw): Promise<BroadcastTxSyncResponse> {
-    const tx = TxRaw.encode(txRaw).finish();
+  async broadcastTxWithoutConfirm(txRaw: CarbonWallet.TxRaw): Promise<CarbonWallet.SendTxWithoutConfirmResponse> {
+    const tx = CarbonWallet.TxRaw.encode(txRaw).finish();
     const tmClient = await Tendermint34Client.connect(this.networkConfig.rpcUrl);
     return tmClient.broadcastTxSync({ tx });
   };
@@ -243,7 +243,7 @@ export class CarbonWallet implements OfflineDirectSigner {
     signerAddress: string,
     messages: readonly EncodeObject[],
     opts: CarbonTx.SignTxOpts = {},
-  ): Promise<TxRaw> {
+  ): Promise<CarbonWallet.TxRaw> {
     const {
       memo = "",
       explicitSignerData,
@@ -271,17 +271,17 @@ export class CarbonWallet implements OfflineDirectSigner {
     return txRaw;
   }
 
-  async sendTxs(msgs: EncodeObject[], opts?: CarbonTx.SignTxOpts): Promise<BroadcastTxResponse> {
+  async sendTxs(msgs: EncodeObject[], opts?: CarbonTx.SignTxOpts): Promise<CarbonWallet.SendTxResponse> {
     const signedTx = await this.getSignedTx(this.bech32Address, msgs, opts);
     return this.broadcastTx(signedTx);
   }
 
-  async sendTxsWithoutConfirm(msgs: EncodeObject[], opts?: CarbonTx.SignTxOpts): Promise<BroadcastTxSyncResponse> {
+  async sendTxsWithoutConfirm(msgs: EncodeObject[], opts?: CarbonTx.SignTxOpts): Promise<CarbonWallet.SendTxWithoutConfirmResponse> {
     const signedTx = await this.getSignedTx(this.bech32Address, msgs, opts);
     return this.broadcastTxWithoutConfirm(signedTx);
   }
 
-  async sendTx(msg: EncodeObject, opts?: CarbonTx.SignTxOpts): Promise<BroadcastTxResponse> {
+  async sendTx(msg: EncodeObject, opts?: CarbonTx.SignTxOpts): Promise<CarbonWallet.SendTxResponse> {
     return this.sendTxs([msg], opts);
   }
 
@@ -391,6 +391,12 @@ export class CarbonWallet implements OfflineDirectSigner {
 }
 
 export namespace CarbonWallet {
-  export type OnRequestSignCallback = (doc: SignDoc) => void | Promise<void>
-  export type OnSignCompleteCallback = (signature: StdSignature | null) => void | Promise<void>
+  export type SendTxResponse = BroadcastTxResponse;
+  export type SendTxWithoutConfirmResponse = BroadcastTxSyncResponse;
+  export type OnRequestSignCallback = (doc: SignDoc) => void | Promise<void>;
+  export type OnSignCompleteCallback = (signature: StdSignature | null) => void | Promise<void>;
+
+  // workaround to re-export interface mixed const type
+  export interface TxRaw extends StargateTxRaw {};
+  export const TxRaw: typeof StargateTxRaw = { ...StargateTxRaw };
 }
