@@ -1,5 +1,5 @@
 import { MsgSend } from "@cosmjs/stargate/build/codec/cosmos/bank/v1beta1/tx";
-import { Coin, coins } from "@cosmjs/amino";
+import { Coin } from "@cosmjs/amino";
 import BaseModule from "./base";
 
 export class BankModule extends BaseModule {
