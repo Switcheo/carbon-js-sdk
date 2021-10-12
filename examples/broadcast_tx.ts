@@ -1,7 +1,6 @@
 import { coins } from "@cosmjs/amino";
 import { MsgSend } from "@cosmjs/stargate/build/codec/cosmos/bank/v1beta1/tx";
 import * as BIP39 from "bip39";
-import { values } from "lodash";
 import { CarbonWallet } from "../lib";
 import { CarbonSDK } from "./_sdk";
 import "./_setup";
