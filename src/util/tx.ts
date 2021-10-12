@@ -48,7 +48,6 @@ export interface SignTxOpts {
 export interface BroadcastTxOpts {
   timeoutMs?: number
   pollIntervalMs?: number
-  mode?: BroadcastTxMode;
 }
 
 export type SignAndBroadcastOpts = Partial<SignTxOpts & BroadcastTxOpts>

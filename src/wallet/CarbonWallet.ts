@@ -9,7 +9,7 @@ import { TxFeeTypeDefaultKey, TxFeeTypeMap } from "@carbon-sdk/util/tx";
 import { SimpleMap } from "@carbon-sdk/util/type";
 import { StdSignature } from "@cosmjs/amino";
 import { AccountData, DirectSignResponse, EncodeObject, OfflineDirectSigner } from "@cosmjs/proto-signing";
-import { BroadcastTxResponse as BroadcastTxBlockResponse, isBroadcastTxFailure, SigningStargateClient } from "@cosmjs/stargate";
+import { BroadcastTxResponse, isBroadcastTxFailure, SigningStargateClient } from "@cosmjs/stargate";
 import { SignDoc, TxRaw } from "@cosmjs/stargate/build/codec/cosmos/tx/v1beta1/tx";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import { BroadcastTxSyncResponse } from "@cosmjs/tendermint-rpc/build/tendermint34/responses";
@@ -68,8 +68,6 @@ export type CarbonWalletInitOpts = CarbonWalletGenericOpts & (
   }
 );
 
-export type BroadcastTxResponse = BroadcastTxSyncResponse | BroadcastTxBlockResponse
-
 export class CarbonWallet implements OfflineDirectSigner {
   network: Network;
 
@@ -91,6 +89,8 @@ export class CarbonWallet implements OfflineDirectSigner {
 
   // for analytics
   providerAgent?: ProviderAgent | string
+
+  private signingClient?: SigningStargateClient;
 
   constructor(opts: CarbonWalletInitOpts) {
     const network = opts.network ?? DEFAULT_NETWORK;
@@ -205,44 +205,49 @@ export class CarbonWallet implements OfflineDirectSigner {
     return this;
   }
 
+  /**
+   * broadcast TX and wait for block confirmation
+   * 
+   */
   async broadcastTx(
-    signingClient: SigningStargateClient,
-    tx: Uint8Array,
-    opts: CarbonTx.BroadcastTxOpts,
+    txRaw: TxRaw,
+    opts: CarbonTx.BroadcastTxOpts = {},
   ): Promise<BroadcastTxResponse> {
     const {
-      mode = CarbonTx.BroadcastTxMode.BroadcastTxBlock,
       pollIntervalMs = 3_000,
       timeoutMs = 60_000,
     } = opts;
 
-    switch (mode) {
-      case CarbonTx.BroadcastTxMode.BroadcastTxSync:
-        const tmClient = await Tendermint34Client.connect(this.networkConfig.rpcUrl);
-        return tmClient.broadcastTxSync({ tx })
-      case CarbonTx.BroadcastTxMode.BroadcastTxBlock:
-        const response = await signingClient.broadcastTx(tx, timeoutMs, pollIntervalMs)
-        if (isBroadcastTxFailure(response)) {
-          // tx failed
-          console.error(response);
-          throw new Error(`[${response.code}] ${response.rawLog}`);
-        }
-        return response;
-      default:
-        throw new Error(`unsupported BroadcastTxMode: ${mode}`)
+    const signingClient = await this.getSigningClient();
+    const tx = TxRaw.encode(txRaw).finish();
+    const response = await signingClient.broadcastTx(tx, timeoutMs, pollIntervalMs)
+    if (isBroadcastTxFailure(response)) {
+      // tx failed
+      console.error(response);
+      throw new Error(`[${response.code}] ${response.rawLog}`);
     }
+    return response;
   }
 
-  async signAndBroadcast(
+  /**
+   * broadcast TX to mempool but doesnt wait for block confirmation
+   * 
+   */
+  async broadcastTxWithoutConfirm(txRaw: TxRaw): Promise<BroadcastTxSyncResponse> {
+    const tx = TxRaw.encode(txRaw).finish();
+    const tmClient = await Tendermint34Client.connect(this.networkConfig.rpcUrl);
+    return tmClient.broadcastTxSync({ tx });
+  };
+
+  async getSignedTx(
     signerAddress: string,
     messages: readonly EncodeObject[],
-    opts?: CarbonTx.SignAndBroadcastOpts,
-  ): Promise<BroadcastTxResponse> {
+    opts: CarbonTx.SignTxOpts = {},
+  ): Promise<TxRaw> {
     const {
       memo = "",
       explicitSignerData,
-      ...broadcastOpts
-    } = opts ?? {};
+    } = opts;
 
     let fee = opts?.fee;
 
@@ -261,28 +266,33 @@ export class CarbonWallet implements OfflineDirectSigner {
       };
     }
 
-
-    const endpoint = this.networkConfig.rpcUrl;
-    const signingClient = await SigningStargateClient.connectWithSigner(endpoint, this, {
-      registry,
-    });
+    const signingClient = await this.getSigningClient();
     const txRaw = await signingClient.sign(signerAddress, messages, fee, memo, explicitSignerData);
-    const txBytes = TxRaw.encode(txRaw).finish();
-
-    return this.broadcastTx(signingClient, txBytes, {
-      mode: broadcastOpts.mode,
-      pollIntervalMs: broadcastOpts.pollIntervalMs ?? signingClient.broadcastPollIntervalMs,
-      timeoutMs: broadcastOpts.pollIntervalMs ?? signingClient.broadcastTimeoutMs,
-    });
+    return txRaw;
   }
 
   async sendTxs(msgs: EncodeObject[], opts?: CarbonTx.SignTxOpts): Promise<BroadcastTxResponse> {
-    return this.signAndBroadcast(this.bech32Address, msgs, opts);
+    const signedTx = await this.getSignedTx(this.bech32Address, msgs, opts);
+    return this.broadcastTx(signedTx);
+  }
+
+  async sendTxsWithoutConfirm(msgs: EncodeObject[], opts?: CarbonTx.SignTxOpts): Promise<BroadcastTxSyncResponse> {
+    const signedTx = await this.getSignedTx(this.bech32Address, msgs, opts);
+    return this.broadcastTxWithoutConfirm(signedTx);
   }
 
   async sendTx(msg: EncodeObject, opts?: CarbonTx.SignTxOpts): Promise<BroadcastTxResponse> {
     return this.sendTxs([msg], opts);
   }
+
+  async getSigningClient(): Promise<SigningStargateClient> {
+    if (!this.signingClient) {
+      this.signingClient = await SigningStargateClient.connectWithSigner(this.networkConfig.rpcUrl, this, {
+        registry,
+      });
+    }
+    return this.signingClient;
+  };
 
   async sign(data: SignDoc): Promise<StdSignature> {
     const signatureBuffer = await this.signer.sign(data);
