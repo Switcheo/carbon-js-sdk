@@ -4,7 +4,7 @@ import BaseModule from "./base";
 
 export class BankModule extends BaseModule {
 
-  public async sendTokens(params: BankModule.SendTokensParams, memo?: string) {
+  public async sendTokens(params: BankModule.SendTokensParams) {
     const wallet = this.getWallet();
 
     const value = MsgSend.fromPartial({
@@ -16,7 +16,7 @@ export class BankModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: "/cosmos.bank.v1beta1.MsgSend",
       value,
-    }, {memo});
+    }, { memo: params.memo });
   }
 
 }
