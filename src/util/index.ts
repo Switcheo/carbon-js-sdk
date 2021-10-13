@@ -3,7 +3,7 @@ export * as GenericUtils from "./generic";
 export * as AddressUtils from "./address";
 export * as TypeUtils from "./type";
 export * as CarbonTx from "./tx";
-export * as BlockChainUtils from "./blockchain";
+export * as BlockchainUtils from "./blockchain";
 export * as NumberUtils from "./number";
 export * as FetchUtils from "./fetch";
 export * as TokenUtils from "./token";
