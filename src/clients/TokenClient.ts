@@ -152,6 +152,31 @@ class TokenClient {
     return Object.values(this.wrapperMap).includes(denom ?? "");
   }
 
+  public getWrappedTokens(denom: string): Token[] {
+    const result: Token[] = [];
+
+    if (!this.tokens) return result;
+
+    // check if denom is source token
+    if (Object.values(this.wrapperMap).includes(denom)) {
+      for (const [wrappedDenom, sourceDenom] of Object.entries(this.wrapperMap)) {
+        // if mapping is not relevant to current source denom, skip.
+        if (sourceDenom !== denom) {
+          continue;
+        }
+
+        // add wrapped to result list
+        const token = this.tokens[wrappedDenom];
+
+        if (token) {
+          result.push(token);
+        }
+      }
+    }
+
+    return result;
+  }
+
   public getWrappedToken(denom: string, blockchain?: BlockChainUtils.Blockchain): Token | null {
     // check if denom is wrapped token
     if (this.wrapperMap[denom]) {
