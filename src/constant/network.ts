@@ -109,10 +109,10 @@ export const NetworkConfigs: {
   [Network.TestNet]: {
     network: Network.TestNet,
 
-    rpcUrl: "https://dev-tm-api.carbon.network",
-    restUrl: "https://dev-api.carbon.network",
-    wsUrl: "wss://dev-ws-api.carbon.network/ws",
-    faucetUrl: "https://dev-faucet.carbon.network",
+    rpcUrl: "https://test-tm-api.carbon.network",
+    restUrl: "https://test-api.carbon.network",
+    wsUrl: "wss://test-ws-api.carbon.network",
+    faucetUrl: "https://test-faucet.carbon.network",
 
     Bech32Prefix: "tswth",
 
@@ -120,9 +120,9 @@ export const NetworkConfigs: {
     feeAddress: '989761fb0c0eb0c05605e849cae77d239f98ac7f',
 
     /** @deprecated use rpcUrl */
-    rpcURL: "https://dev-tm-api.carbon.network",
+    rpcURL: "https://test-tm-api.carbon.network",
     /** @deprecated use restUrl */
-    restURL: "https://dev-api.carbon.network",
+    restURL: "https://test-api.carbon.network",
 
     eth: {
       rpcURL: 'https://eth-mainnet.alchemyapi.io/v2/5J5-HepOkCigvEkfL3Latf2aWJwNDe3e',
