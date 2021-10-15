@@ -12,3 +12,4 @@ export * from "./order";
 export * from "./position";
 export * from "./profile";
 export * from "./subaccount";
+export * from "./fee";

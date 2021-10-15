@@ -1,6 +1,5 @@
 import { MsgMintToken, MsgWithdraw } from "@carbon-sdk/codec/coin/tx";
 import { CarbonTx } from "@carbon-sdk/util";
-import { FeeResult } from "@carbon-sdk/util/transferfees";
 import BigNumber from "bignumber.js";
 import BaseModule from "./base";
 
@@ -38,14 +37,6 @@ export class CoinModule extends BaseModule {
       typeUrl: CarbonTx.Types.MsgMintToken,
       value,
     })
-  }
-
-  public async getFees(denom: string) {
-    const networkConfig = this.sdkProvider.getConfig();
-    const url = `${networkConfig.feeURL}/fees?denom=${denom}`
-    const result = await fetch(url).then(res => res.json()) as FeeResult
-
-    return result
   }
 }
 

@@ -2,7 +2,7 @@ import { DEFAULT_NETWORK, Network, Network as _Network, NetworkConfig, NetworkCo
 import { GenericUtils, NetworkUtils } from "@carbon-sdk/util";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import { CarbonQueryClient, ETHClient, NEOClient, TokenClient, ZILClient } from "./clients";
-import { AdminModule, BankModule, BrokerModule, CDPModule, CoinModule, GovModule, LeverageModule, LiquidityPoolModule, MarketModule, OracleModule, OrderModule, PositionModule, ProfileModule, SubAccountModule } from "./modules";
+import { AdminModule, BankModule, BrokerModule, CDPModule, CoinModule, FeeModule, GovModule, LeverageModule, LiquidityPoolModule, MarketModule, OracleModule, OrderModule, PositionModule, ProfileModule, SubAccountModule } from "./modules";
 import { StakingModule } from "./modules/staking";
 import { CosmosLedger } from "./provider";
 import { Blockchain } from "./util/blockchain";
@@ -64,6 +64,7 @@ class CarbonSDK {
   gov: GovModule;
   staking: StakingModule;
   bank: BankModule;
+  fee: FeeModule;
 
   neo: NEOClient;
   eth: ETHClient;
@@ -94,6 +95,7 @@ class CarbonSDK {
     this.gov = new GovModule(this);
     this.staking = new StakingModule(this);
     this.bank = new BankModule(this);
+    this.fee = new FeeModule(this);
 
     this.neo = NEOClient.instance({
       configProvider: this,
