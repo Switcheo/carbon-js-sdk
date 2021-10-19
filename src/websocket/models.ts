@@ -79,29 +79,25 @@ export interface AccountTrade {
   side: string;
 }
 
-export interface OpenPosition {
+export interface Position {
+  AllocatedMarginAmount: string; // string representation of number
+  AllocatedMarginDenom: string;
+  ClosedBlockHeight: number;
+  Id: number;
+  TradeId: number | null;
+  UpdateReason: number;
+  UpdatedBlockHeight: number;
   address: string;
-  allocated_margin: string;
-  closed_block_height: string;
-  closed_block_time: string;
-  created_block_height: string;
-  entry_price: string;
-  lots: string;
+  allocated_margin: {
+    amount: string; // string representation of number
+    denom?: string;
+  };
+  entry_price: string; // string representation of number
+  id: string;
+  lots: string; // string representation of number
   market: string;
-  realized_pnl: string;
-  type: string;
-  updated_block_height: string;
-  username: string;
-}
-
-export interface ClosedPosition {
-  address: string;
-  closed_block_height: string;
-  closed_block_time: string;
-  entry_price: string;
-  lots: string;
-  market: string;
-  realized_pnl: string;
+  opened_block_height: number;
+  realized_pnl: string; // string representation of number
 }
 
 export interface MarketStat {
