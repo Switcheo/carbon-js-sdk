@@ -124,3 +124,24 @@ export interface Leverage {
   leverage: string // string representation of number
   originator?: string
 }
+
+export interface Pool {
+  pool: {
+    creator: string
+    id: number
+    name: string
+    denom: string
+    denom_a: string
+    amount_a: string // string representation of number
+    weight_a: string  // string representation of number
+    denom_b: string 
+    amount_b: string // string representation of number
+    weight_b: string // string representation of number
+    swap_fee: string // string representation of number
+    num_quotes: number
+    shares_amount: string // string representation of number
+    market: string
+  },
+  rewards_weight: string // string representation of number
+  total_commitment: string // string representation of number
+}
