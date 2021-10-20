@@ -15,7 +15,7 @@ const DEFAULT_TIMEOUT_HEARTBEAT = 6100
 // see WSConnector.timeoutConnect
 const DEFAULT_TIMEOUT_CONNECT = 2000
 
-export const { WSChannel } = WSConnectorTypes
+export const { WSChannel, WSRequest } = WSConnectorTypes
 export { WSConnectorTypes }
 export { WSModels }
 

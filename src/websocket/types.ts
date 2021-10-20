@@ -13,6 +13,23 @@ export enum WSChannel {
   leverages_by_market = 'leverages_by_market',
   positions = 'positions',
   positions_by_market = 'positions_by_market',
+  pools = 'pools',
+  pools_by_id = 'pools_by_id',
+}
+
+export enum WSRequest {
+  MarketStats = 'get_market_stats',
+  OrderHistory = 'get_order_history',
+  RecentTrades = 'get_recent_trades',
+  Candlesticks = 'get_candlesticks',
+  OpenOrders = 'get_open_orders',
+  AccountTrades = 'get_account_trades',
+  Leverages = 'get_leverages',
+  OpenPositions = 'get_open_positions',
+  ClosedPosition = 'get_closed_positions',
+  Balances = 'get_balances',
+  OrderBook = 'get_orderbook',
+  Pools = 'get_pools',
 }
 
 export interface WsGetRecentTradesParams {
@@ -106,6 +123,10 @@ export interface WsUnsubscribeCandlesticksParams extends WsSubscribeParams {
   resolution: string
 }
 
+export interface WsSubscribePoolsParams extends WsSubscribeParams {
+  id?: string
+}
+
 export type WsSubscriptionParams =
   | WsSubscribeCandlesticksParams
   | WsSubscribeRecentTradesParams
@@ -117,3 +138,4 @@ export type WsSubscriptionParams =
   | WsSubscribeLeveragesParams
   | WsSubscribePositionsParams
   | WsUnsubscribeCandlesticksParams
+  | WsSubscribePoolsParams

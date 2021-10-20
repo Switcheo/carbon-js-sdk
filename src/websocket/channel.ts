@@ -2,7 +2,7 @@ import {
   WSChannel, WsSubscribeAccountTradesParams, WsSubscribeBooksParams,
   WsSubscribeCandlesticksParams,
   WsSubscribeLeveragesParams,
-  WsSubscribeMarketStatsParams, WsSubscribeOrdersParams,
+  WsSubscribeMarketStatsParams, WsSubscribeOrdersParams, WsSubscribePoolsParams,
   WsSubscribePositionsParams, WsSubscribeRecentTradesParams,
   WsSubscribeWalletBalanceParams, WsSubscriptionParams,
 } from './types'
@@ -65,13 +65,21 @@ export const generateChannelId = (params: WsSubscriptionParams): string => {
       const { channel, market, address } = params as WsSubscribePositionsParams
       return [channel, market, address].join('.')
     }
+    case WSChannel.pools: {
+      const { channel } = params as WsSubscribePoolsParams
+      return [channel].join('.')
+    }
+    case WSChannel.pools_by_id: {
+      const { channel, id } = params as WsSubscribePoolsParams
+      return [channel, id].join('.')
+    }
     default:
       throw new Error(`invalid subscription channel: ${params.channel}`)
   }
 }
 
 export const parseChannelId = (rawChannelId: string): WsSubscriptionParams => {
-  const [channel, market, resolution, address] = rawChannelId.split('.')
+  const [channel, market, resolution, address, id] = rawChannelId.split('.')
   switch (channel) {
     case WSChannel.candlesticks:
       return {
@@ -147,6 +155,15 @@ export const parseChannelId = (rawChannelId: string): WsSubscriptionParams => {
         market,
         address,
       } as WsSubscribePositionsParams
+    case WSChannel.pools:
+      return {
+        channel,
+      } as WsSubscribePoolsParams
+    case WSChannel.pools_by_id:
+      return {
+        channel,
+        id,
+      } as WsSubscribePoolsParams
     default:
       throw new Error('Error parsing channelId')
   }
