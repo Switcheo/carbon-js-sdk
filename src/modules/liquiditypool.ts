@@ -1,8 +1,10 @@
 import { MsgAddLiquidity, MsgClaimPoolRewards, MsgCreatePool, MsgCreatePoolWithLiquidity, MsgRemoveLiquidity, MsgStakePoolToken, MsgUnstakePoolToken } from "@carbon-sdk/codec/liquiditypool/tx";
-import { CarbonTx } from "@carbon-sdk/util";
+import { CarbonTx, NumberUtils } from "@carbon-sdk/util";
 import BaseModule from "./base";
 import { BigNumber } from "bignumber.js";
 import Long from "long";
+import { Models } from "..";
+import dayjs from "dayjs";
 
 export class LiquidityPoolModule extends BaseModule {
 
@@ -122,6 +124,128 @@ export class LiquidityPoolModule extends BaseModule {
       value,
     });
   }
+
+
+  public async getWeeklyRewards(): Promise<BigNumber> {
+    const startTime = await (await this.getInflationStartTime()).mintData
+    const WEEKLY_DECAY = new BigNumber(0.9835)
+    const MIN_RATE = new BigNumber(0.0003)
+    const INITIAL_SUPPLY = new BigNumber(1000000000)
+    const SECONDS_IN_A_WEEK = new BigNumber(604800)
+
+    const difference = new BigNumber(dayjs().diff(dayjs(startTime?.firstBlockTime.toString()), 'second'))
+    const currentWeek = difference.div(SECONDS_IN_A_WEEK).dp(0, BigNumber.ROUND_DOWN)
+
+    let inflationRate = WEEKLY_DECAY.pow(currentWeek)
+    if (inflationRate.lt(MIN_RATE)) {
+      inflationRate = MIN_RATE
+    }
+    return INITIAL_SUPPLY.div(52).times(inflationRate)
+  }
+
+  public async getInflationStartTime(): Promise<Models.QueryMintDataResponse> {
+    // const request = this.apiManager.path('staking/get_inflation_start_time') // TODO: Remove when tested
+    const response = (await this.sdkProvider.query.inflation.MintData) as Models.QueryMintDataResponse
+    return response
+  }
+
+  public async claimMultiPoolRewards(params: LiquidityPoolModule.ClaimMultiPoolRewards) {
+    const wallet = this.getWallet();
+
+    if (!params.creator)
+      params.creator = wallet.bech32Address;
+
+    return await wallet.sendTxs(params.pools.map((poolId) => ({
+      typeUrl: CarbonTx.Types.MsgClaimPoolRewards,
+      value: {
+        poolId: poolId,
+        creator: params.creator,
+      },
+    })));
+  }
+
+  public async estimateUnclaimedRewards(params: LiquidityPoolModule.EstimateUnclaimedRewardsMsg): Promise<LiquidityPoolModule.UnclaimedRewards> {
+    const sdk = this.sdkProvider;
+    const accruedRewards: LiquidityPoolModule.UnclaimedRewards = {};
+    const lastClaimed = await sdk.query.liquiditypool.LastClaim(params);
+    let lastHeight = lastClaimed.lastClaim;
+
+    const allocation = await sdk.query.liquiditypool.RewardHistory({
+      poolId: params.poolId,
+      startBlockHeight: new BigNumber(lastClaimed.lastClaim.toString() || '0').plus(1).toString()
+    });
+
+    // get current share
+    const shares = await sdk.query.liquiditypool.Commitment({
+      poolId: params.poolId,
+      address: params.address,
+    });
+
+    const commitmentPower = new BigNumber(shares.commitmentResponse?.commitmentPower || '0');
+
+    // calculate accrued rewards based on history
+    if (!commitmentPower.isZero() && allocation && allocation.querierRewardHistories) {
+      allocation.querierRewardHistories.forEach((period) => {
+        lastHeight = period.blockHeight;
+        const totalCommit = new BigNumber(period.totalCommitment);
+        const ratio = commitmentPower.div(totalCommit);
+        period.rewards?.forEach((reward) => {
+          const rewardCut = new BigNumber(reward.amount).times(ratio).integerValue(BigNumber.ROUND_DOWN);
+          if (reward.denom in accruedRewards) {
+            accruedRewards[reward.denom] = accruedRewards[reward.denom].plus(rewardCut);
+          } else {
+            accruedRewards[reward.denom] = rewardCut;
+          }
+        });
+      });
+    }
+    // Estimate rewards from last allocated rewards
+    // the current logic will under estimate the rewards as the current weekly reward rate is used across the full period
+    // instead of deriving the reward rate for each week since the last reward allocation
+
+    if (!commitmentPower.isZero()) {
+      const weeklyRewards = await this.getWeeklyRewards();
+      const pools = await sdk.query.liquiditypool.PoolAll({});
+      const pool = pools.extendedPools.find((pool: Models.ExtendedPool) => pool.pool?.id.toString() === params.poolId);
+      if (!pool) {
+        return {};
+      }
+
+      const totalCommitment = await sdk.query.liquiditypool.TotalCommitment({
+        poolId: pool.pool?.id ?? Long.UZERO,
+      })
+      const totalCommitBN = new BigNumber(totalCommitment.totalCommitment ?? NumberUtils.BN_ZERO)
+      const poolWeight = new BigNumber(pool?.rewardsWeight || '0');
+      let totalWeight = NumberUtils.BN_ZERO;
+      pools.extendedPools.forEach((pool: Models.ExtendedPool) => {
+        const rewardWght = pool?.rewardsWeight || '0'
+        totalWeight = totalWeight.plus(rewardWght);
+      });
+      const poolWeekRewards = poolWeight.dividedBy(totalWeight).times(weeklyRewards);
+
+      // get time from last height
+      const blockInfo = await sdk.query.chain.getBlock(lastHeight.toNumber());
+
+      const estimatedStart = dayjs(blockInfo.header.time);
+
+      const now = dayjs();
+      const WEEKS_IN_SECONDS = 604800;
+      const diff = now.diff(estimatedStart, 'second');
+
+      const estimatedRewards = totalCommitBN.isZero()
+        ? NumberUtils.BN_ZERO
+        : new BigNumber(diff / WEEKS_IN_SECONDS).times(poolWeekRewards)
+          .times(commitmentPower).div(totalCommitBN)
+          .shiftedBy(8).integerValue(BigNumber.ROUND_DOWN);
+
+      if ('swth' in accruedRewards) {
+        accruedRewards['swth'] = accruedRewards['swth'].plus(estimatedRewards);
+      } else {
+        accruedRewards['swth'] = estimatedRewards;
+      }
+    }
+    return accruedRewards;
+  }
 }
 
 export namespace LiquidityPoolModule {
@@ -170,5 +294,19 @@ export namespace LiquidityPoolModule {
 
   export interface ClaimPoolRewardsParams {
     poolId: number
+  }
+
+  export interface ClaimMultiPoolRewards {
+    pools: string[],
+    creator?: string,
+  }
+
+  export interface UnclaimedRewards {
+    [key: string]: BigNumber
+  }
+
+  export interface EstimateUnclaimedRewardsMsg {
+    poolId: string
+    address: string
   }
 };
