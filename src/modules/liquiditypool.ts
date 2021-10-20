@@ -1,4 +1,3 @@
-import { MsgAddLiquidity, MsgClaimPoolRewards, MsgCreatePool, MsgCreatePoolWithLiquidity, MsgRemoveLiquidity, MsgStakePoolToken, MsgUnstakePoolToken } from "@carbon-sdk/codec/liquiditypool/tx";
 import { CarbonTx, NumberUtils } from "@carbon-sdk/util";
 import BaseModule from "./base";
 import { BigNumber } from "bignumber.js";
@@ -11,7 +10,7 @@ export class LiquidityPoolModule extends BaseModule {
   public async create(params: LiquidityPoolModule.CreatePoolParams) {
     const wallet = this.getWallet();
 
-    const value = MsgCreatePool.fromPartial({
+    const value = Models.MsgCreatePool.fromPartial({
       creator: wallet.bech32Address,
       tokenADenom: params.tokenADenom,
       tokenBDenom: params.tokenBDenom,
@@ -30,7 +29,7 @@ export class LiquidityPoolModule extends BaseModule {
   public async createWithLiquidity(params: LiquidityPoolModule.CreatePoolWithLiquidityParams) {
     const wallet = this.getWallet();
 
-    const value = MsgCreatePoolWithLiquidity.fromPartial({
+    const value = Models.MsgCreatePoolWithLiquidity.fromPartial({
       creator: wallet.bech32Address,
       tokenADenom: params.tokenADenom,
       tokenBDenom: params.tokenBDenom,
@@ -51,7 +50,7 @@ export class LiquidityPoolModule extends BaseModule {
   public async addLiquidity(params: LiquidityPoolModule.AddLiquidityParams) {
     const wallet = this.getWallet();
 
-    const value = MsgAddLiquidity.fromPartial({
+    const value = Models.MsgAddLiquidity.fromPartial({
       creator: wallet.bech32Address,
       poolId: new Long(params.poolId),
       amountA: params.amountA.shiftedBy(18).toString(10),
@@ -68,7 +67,7 @@ export class LiquidityPoolModule extends BaseModule {
   public async removeLiquidity(params: LiquidityPoolModule.RemoveLiquidityParams) {
     const wallet = this.getWallet();
 
-    const value = MsgRemoveLiquidity.fromPartial({
+    const value = Models.MsgRemoveLiquidity.fromPartial({
       creator: wallet.bech32Address,
       poolId: new Long(params.poolId),
       shares: params.shares.shiftedBy(18).toString(10),
@@ -83,7 +82,7 @@ export class LiquidityPoolModule extends BaseModule {
   public async stakePoolToken(params: LiquidityPoolModule.StakePoolTokenParams) {
     const wallet = this.getWallet();
 
-    const value = MsgStakePoolToken.fromPartial({
+    const value = Models.MsgStakePoolToken.fromPartial({
       creator: wallet.bech32Address,
       denom: params.denom,
       amount: params.amount.shiftedBy(18).toString(10),
@@ -99,7 +98,7 @@ export class LiquidityPoolModule extends BaseModule {
   public async unstakePoolToken(params: LiquidityPoolModule.UnstakePoolTokenParams) {
     const wallet = this.getWallet();
 
-    const value = MsgUnstakePoolToken.fromPartial({
+    const value = Models.MsgUnstakePoolToken.fromPartial({
       creator: wallet.bech32Address,
       denom: params.denom,
       amount: params.amount.shiftedBy(18).toString(10),
@@ -114,7 +113,7 @@ export class LiquidityPoolModule extends BaseModule {
   public async claimPoolRewards(params: LiquidityPoolModule.ClaimPoolRewardsParams) {
     const wallet = this.getWallet();
 
-    const value = MsgClaimPoolRewards.fromPartial({
+    const value = Models.MsgClaimPoolRewards.fromPartial({
       creator: wallet.bech32Address,
       poolId: new Long(params.poolId),
     })
