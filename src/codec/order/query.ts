@@ -1,11 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Order } from "../order/order";
-import {
-  PageRequest,
-  PageResponse,
-} from "../cosmos/base/query/v1beta1/pagination";
+import { Order, DBOrder } from "../order/order";
 
 export const protobufPackage = "Switcheo.carbon.order";
 
@@ -19,12 +15,14 @@ export interface QueryGetOrderResponse {
 }
 
 export interface QueryAllOrderRequest {
-  pagination?: PageRequest;
+  address: string;
+  market: string;
+  orderType: string;
+  orderStatus: string;
 }
 
 export interface QueryAllOrderResponse {
-  orders: Order[];
-  pagination?: PageResponse;
+  orders: DBOrder[];
 }
 
 export interface QueryAccountOpenOrdersRequest {
@@ -161,15 +159,29 @@ export const QueryGetOrderResponse = {
   },
 };
 
-const baseQueryAllOrderRequest: object = {};
+const baseQueryAllOrderRequest: object = {
+  address: "",
+  market: "",
+  orderType: "",
+  orderStatus: "",
+};
 
 export const QueryAllOrderRequest = {
   encode(
     message: QueryAllOrderRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.pagination !== undefined) {
-      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
+    if (message.address !== "") {
+      writer.uint32(10).string(message.address);
+    }
+    if (message.market !== "") {
+      writer.uint32(18).string(message.market);
+    }
+    if (message.orderType !== "") {
+      writer.uint32(26).string(message.orderType);
+    }
+    if (message.orderStatus !== "") {
+      writer.uint32(34).string(message.orderStatus);
     }
     return writer;
   },
@@ -185,7 +197,16 @@ export const QueryAllOrderRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.pagination = PageRequest.decode(reader, reader.uint32());
+          message.address = reader.string();
+          break;
+        case 2:
+          message.market = reader.string();
+          break;
+        case 3:
+          message.orderType = reader.string();
+          break;
+        case 4:
+          message.orderStatus = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -197,29 +218,60 @@ export const QueryAllOrderRequest = {
 
   fromJSON(object: any): QueryAllOrderRequest {
     const message = { ...baseQueryAllOrderRequest } as QueryAllOrderRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromJSON(object.pagination);
+    if (object.address !== undefined && object.address !== null) {
+      message.address = String(object.address);
     } else {
-      message.pagination = undefined;
+      message.address = "";
+    }
+    if (object.market !== undefined && object.market !== null) {
+      message.market = String(object.market);
+    } else {
+      message.market = "";
+    }
+    if (object.orderType !== undefined && object.orderType !== null) {
+      message.orderType = String(object.orderType);
+    } else {
+      message.orderType = "";
+    }
+    if (object.orderStatus !== undefined && object.orderStatus !== null) {
+      message.orderStatus = String(object.orderStatus);
+    } else {
+      message.orderStatus = "";
     }
     return message;
   },
 
   toJSON(message: QueryAllOrderRequest): unknown {
     const obj: any = {};
-    message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageRequest.toJSON(message.pagination)
-        : undefined);
+    message.address !== undefined && (obj.address = message.address);
+    message.market !== undefined && (obj.market = message.market);
+    message.orderType !== undefined && (obj.orderType = message.orderType);
+    message.orderStatus !== undefined &&
+      (obj.orderStatus = message.orderStatus);
     return obj;
   },
 
   fromPartial(object: DeepPartial<QueryAllOrderRequest>): QueryAllOrderRequest {
     const message = { ...baseQueryAllOrderRequest } as QueryAllOrderRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromPartial(object.pagination);
+    if (object.address !== undefined && object.address !== null) {
+      message.address = object.address;
     } else {
-      message.pagination = undefined;
+      message.address = "";
+    }
+    if (object.market !== undefined && object.market !== null) {
+      message.market = object.market;
+    } else {
+      message.market = "";
+    }
+    if (object.orderType !== undefined && object.orderType !== null) {
+      message.orderType = object.orderType;
+    } else {
+      message.orderType = "";
+    }
+    if (object.orderStatus !== undefined && object.orderStatus !== null) {
+      message.orderStatus = object.orderStatus;
+    } else {
+      message.orderStatus = "";
     }
     return message;
   },
@@ -233,13 +285,7 @@ export const QueryAllOrderResponse = {
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     for (const v of message.orders) {
-      Order.encode(v!, writer.uint32(10).fork()).ldelim();
-    }
-    if (message.pagination !== undefined) {
-      PageResponse.encode(
-        message.pagination,
-        writer.uint32(18).fork()
-      ).ldelim();
+      DBOrder.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -256,10 +302,7 @@ export const QueryAllOrderResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.orders.push(Order.decode(reader, reader.uint32()));
-          break;
-        case 2:
-          message.pagination = PageResponse.decode(reader, reader.uint32());
+          message.orders.push(DBOrder.decode(reader, reader.uint32()));
           break;
         default:
           reader.skipType(tag & 7);
@@ -274,13 +317,8 @@ export const QueryAllOrderResponse = {
     message.orders = [];
     if (object.orders !== undefined && object.orders !== null) {
       for (const e of object.orders) {
-        message.orders.push(Order.fromJSON(e));
+        message.orders.push(DBOrder.fromJSON(e));
       }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
     }
     return message;
   },
@@ -288,14 +326,12 @@ export const QueryAllOrderResponse = {
   toJSON(message: QueryAllOrderResponse): unknown {
     const obj: any = {};
     if (message.orders) {
-      obj.orders = message.orders.map((e) => (e ? Order.toJSON(e) : undefined));
+      obj.orders = message.orders.map((e) =>
+        e ? DBOrder.toJSON(e) : undefined
+      );
     } else {
       obj.orders = [];
     }
-    message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageResponse.toJSON(message.pagination)
-        : undefined);
     return obj;
   },
 
@@ -306,13 +342,8 @@ export const QueryAllOrderResponse = {
     message.orders = [];
     if (object.orders !== undefined && object.orders !== null) {
       for (const e of object.orders) {
-        message.orders.push(Order.fromPartial(e));
+        message.orders.push(DBOrder.fromPartial(e));
       }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
     }
     return message;
   },
