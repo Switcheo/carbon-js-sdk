@@ -461,7 +461,7 @@ export { Commitment, TotalCommitmentShares, RewardCurve, CommitmentCurve, Wrappe
 export { Pool, Pools, AddLiquidity, AddLiquidities, RemoveLiquidity, RemoveLiquidities } from "./liquiditypool/liquiditypool";
 export { LinkPoolProposal, UnlinkPoolProposal, SetRewardCurveProposal, SetCommitmentCurveProposal, SetRewardsWeightsProposal, ChangeSwapFeeProposal, ChangeNumQuotesProposal } from "./liquiditypool/proposal";
 export { QueryGetPoolRequest, QueryGetPoolResponse, QueryAllPoolRequest, QueryAllPoolResponse, QueryRewardHistoryRequest, ExtendedPool, QueryRewardHistoryResponse, QuerierRewardHistory, QueryCommitmentRequest, QueryCommitmentResponse, QueryLastClaimRequest, QueryLastClaimResponse, QueryCommitmentCurveRequest, QueryCommitmentCurveResponse, QueryRewardCurveRequest, QueryRewardCurveResponse, QueryTotalCommitmentRequest, QueryTotalCommitmentResponse, QueryAllTotalCommitmentRequest, QueryAllTotalCommitmentResponse, QueryClaimableRewardsRequest, QueryClaimableRewardsResponse } from "./liquiditypool/query";
-export { PoolEvent, TotalCommitmentChangeEvent, RewardsWeightChangeEvent } from "./liquiditypool/event";
+export { PoolEvent, TotalCommitmentChangeEvent, RewardsWeightChangeEvent, CommitmentCurveEvent, CommitmentEvent } from "./liquiditypool/event";
 export { EventDataInsuranceFundTransfer } from "./insurance/event";
 export { FundByMarket, Fund } from "./insurance/fund";
 export { PriceSet } from "./pricing/pricing";

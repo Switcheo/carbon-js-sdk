@@ -2,6 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Pool } from "../liquiditypool/liquiditypool";
+import { CommitmentCurve, Commitment } from "../liquiditypool/reward";
 
 export const protobufPackage = "Switcheo.carbon.liquiditypool";
 
@@ -21,6 +22,16 @@ export interface TotalCommitmentChangeEvent {
 export interface RewardsWeightChangeEvent {
   poolId: Long;
   rewardsWeight: string;
+}
+
+export interface CommitmentCurveEvent {
+  commitmentCurve?: CommitmentCurve;
+}
+
+export interface CommitmentEvent {
+  poolId: Long;
+  address: string;
+  commitment?: Commitment;
 }
 
 const basePoolEvent: object = {
@@ -340,6 +351,182 @@ export const RewardsWeightChangeEvent = {
       message.rewardsWeight = object.rewardsWeight;
     } else {
       message.rewardsWeight = "";
+    }
+    return message;
+  },
+};
+
+const baseCommitmentCurveEvent: object = {};
+
+export const CommitmentCurveEvent = {
+  encode(
+    message: CommitmentCurveEvent,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.commitmentCurve !== undefined) {
+      CommitmentCurve.encode(
+        message.commitmentCurve,
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): CommitmentCurveEvent {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseCommitmentCurveEvent } as CommitmentCurveEvent;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.commitmentCurve = CommitmentCurve.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CommitmentCurveEvent {
+    const message = { ...baseCommitmentCurveEvent } as CommitmentCurveEvent;
+    if (
+      object.commitmentCurve !== undefined &&
+      object.commitmentCurve !== null
+    ) {
+      message.commitmentCurve = CommitmentCurve.fromJSON(
+        object.commitmentCurve
+      );
+    } else {
+      message.commitmentCurve = undefined;
+    }
+    return message;
+  },
+
+  toJSON(message: CommitmentCurveEvent): unknown {
+    const obj: any = {};
+    message.commitmentCurve !== undefined &&
+      (obj.commitmentCurve = message.commitmentCurve
+        ? CommitmentCurve.toJSON(message.commitmentCurve)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<CommitmentCurveEvent>): CommitmentCurveEvent {
+    const message = { ...baseCommitmentCurveEvent } as CommitmentCurveEvent;
+    if (
+      object.commitmentCurve !== undefined &&
+      object.commitmentCurve !== null
+    ) {
+      message.commitmentCurve = CommitmentCurve.fromPartial(
+        object.commitmentCurve
+      );
+    } else {
+      message.commitmentCurve = undefined;
+    }
+    return message;
+  },
+};
+
+const baseCommitmentEvent: object = { poolId: Long.UZERO, address: "" };
+
+export const CommitmentEvent = {
+  encode(
+    message: CommitmentEvent,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (!message.poolId.isZero()) {
+      writer.uint32(8).uint64(message.poolId);
+    }
+    if (message.address !== "") {
+      writer.uint32(18).string(message.address);
+    }
+    if (message.commitment !== undefined) {
+      Commitment.encode(message.commitment, writer.uint32(26).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): CommitmentEvent {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseCommitmentEvent } as CommitmentEvent;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.poolId = reader.uint64() as Long;
+          break;
+        case 2:
+          message.address = reader.string();
+          break;
+        case 3:
+          message.commitment = Commitment.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CommitmentEvent {
+    const message = { ...baseCommitmentEvent } as CommitmentEvent;
+    if (object.poolId !== undefined && object.poolId !== null) {
+      message.poolId = Long.fromString(object.poolId);
+    } else {
+      message.poolId = Long.UZERO;
+    }
+    if (object.address !== undefined && object.address !== null) {
+      message.address = String(object.address);
+    } else {
+      message.address = "";
+    }
+    if (object.commitment !== undefined && object.commitment !== null) {
+      message.commitment = Commitment.fromJSON(object.commitment);
+    } else {
+      message.commitment = undefined;
+    }
+    return message;
+  },
+
+  toJSON(message: CommitmentEvent): unknown {
+    const obj: any = {};
+    message.poolId !== undefined &&
+      (obj.poolId = (message.poolId || Long.UZERO).toString());
+    message.address !== undefined && (obj.address = message.address);
+    message.commitment !== undefined &&
+      (obj.commitment = message.commitment
+        ? Commitment.toJSON(message.commitment)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<CommitmentEvent>): CommitmentEvent {
+    const message = { ...baseCommitmentEvent } as CommitmentEvent;
+    if (object.poolId !== undefined && object.poolId !== null) {
+      message.poolId = object.poolId as Long;
+    } else {
+      message.poolId = Long.UZERO;
+    }
+    if (object.address !== undefined && object.address !== null) {
+      message.address = object.address;
+    } else {
+      message.address = "";
+    }
+    if (object.commitment !== undefined && object.commitment !== null) {
+      message.commitment = Commitment.fromPartial(object.commitment);
+    } else {
+      message.commitment = undefined;
     }
     return message;
   },
