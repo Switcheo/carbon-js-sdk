@@ -68,7 +68,7 @@ export class ETHClient {
     const tokens = tokenQueryResults.tokens.filter(token =>
       blockchainForChainId(token.chainId.toNumber()) == this.blockchain &&
       token.tokenAddress.length == 40 &&
-      // TODO: Check if bridgeAddress corresponds to tradehub token lock_proxy_hash
+      // TODO: Check if bridgeAddress corresponds to carbon token lock_proxy_hash
       token.bridgeAddress.toLowerCase() == stripHexPrefix(lockProxyAddress) &&
       (!whitelistDenoms || whitelistDenoms.includes(token.denom))
     )
@@ -99,7 +99,7 @@ export class ETHClient {
 
     const nonce = await rpcProvider.getTransactionCount(ethAddress)
     const approveResultTx = await contract.connect(signer).approve(
-      // TODO: Check if bridgeAddress corresponds to tradehub token lock_proxy_hash
+      // TODO: Check if bridgeAddress corresponds to carbon token lock_proxy_hash
       token.bridgeAddress,
       ethers.constants.MaxUint256,
       {

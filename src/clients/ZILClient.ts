@@ -225,7 +225,7 @@ export class ZILClient {
       {
         vname: 'spender',
         type: 'ByStr20',
-        // TODO: Check if bridgeAddress corresponds to tradehub token lock_proxy_hash
+        // TODO: Check if bridgeAddress corresponds to carbon token lock_proxy_hash
         value: appendHexPrefix(token.bridgeAddress),
       },
       {
@@ -268,7 +268,7 @@ export class ZILClient {
     const feeAddress = appendHexPrefix(networkConfig.feeAddress);
     const toAssetHash = ethers.utils.hexlify(ethers.utils.toUtf8Bytes(token.denom))
     const swthAddress = ethers.utils.hexlify(address)
-    // TODO: Check if bridgeAddress corresponds to tradehub token lock_proxy_hash
+    // TODO: Check if bridgeAddress corresponds to carbon token lock_proxy_hash
     const contractAddress = appendHexPrefix(token.bridgeAddress)
 
     let zilliqa;

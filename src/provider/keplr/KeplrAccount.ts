@@ -37,7 +37,7 @@ class KeplrAccount {
       stakeCurrency: KeplrAccount.SWTH_CURRENCY,
       rest: config.restUrl,
       rpc: config.rpcUrl,
-      chainName: config.network === Network.MainNet ? `Switcheo TradeHub` : `Switcheo TradeHub (${config.network})`,
+      chainName: config.network === Network.MainNet ? `Carbon` : `Carbon (${config.network})`,
       chainId: chainId,
       bech32Config: {
         bech32PrefixAccAddr: `${bech32Prefix}`,

@@ -73,7 +73,7 @@ export class NEOClient {
     const tokens = tokenQueryResults.tokens.filter(token =>
       blockchainForChainId(token.chainId.toNumber()) == this.blockchain &&
       token.tokenAddress.length == 40 &&
-      // TODO: Check if bridgeAddress corresponds to tradehub token lock_proxy_hash
+      // TODO: Check if bridgeAddress corresponds to carbon token lock_proxy_hash
       token.bridgeAddress.length == 40
     )
 
@@ -127,7 +127,7 @@ export class NEOClient {
     const account = Neon.create.account(neoPrivateKey)
 
     const networkConfig = this.getNetworkConfig()
-    // TODO: Check if bridgeAddress corresponds to tradehub token lock_proxy_hash
+    // TODO: Check if bridgeAddress corresponds to carbon token lock_proxy_hash
     const scriptHash = u.reverseHex(token.bridgeAddress)
 
     const fromAssetHash = token.tokenAddress
@@ -180,7 +180,7 @@ export class NEOClient {
     const compressedPublicKey = neonWallet.getPublicKeyEncoded(ledger.publicKey)
   
     const networkConfig = this.getNetworkConfig()
-    // TODO: Check if bridgeAddress corresponds to tradehub token lock_proxy_hash
+    // TODO: Check if bridgeAddress corresponds to carbon token lock_proxy_hash
     const scriptHash = u.reverseHex(token.bridgeAddress)
 
     const fromAssetHash = token.tokenAddress
