@@ -111,7 +111,7 @@ export const NetworkConfigs: {
 
     rpcUrl: "https://test-tm-api.carbon.network",
     restUrl: "https://test-api.carbon.network",
-    wsUrl: "wss://test-ws-api.carbon.network",
+    wsUrl: "wss://test-ws-api.carbon.network/ws",
     faucetUrl: "https://test-faucet.carbon.network",
 
     Bech32Prefix: "tswth",
