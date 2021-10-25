@@ -47,6 +47,7 @@ class KeplrAccount {
         bech32PrefixConsAddr: `${bech32Prefix}valcons`,
         bech32PrefixConsPub: `${bech32Prefix}valconspub`,
       },
+      features: ["stargate"],
     }
   }
 }
