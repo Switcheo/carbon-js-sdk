@@ -74,6 +74,16 @@ export class BIP44Path {
     return this;
   }
 
+  toArray(): number[] {
+    return [
+      this.purpose,
+      this.coinType,
+      this.account,
+      this.change,
+      this.index,
+    ]
+  }
+
   generate(): string {
     return BIP44Path.generateBIP44String(this.index, this.change, this.account, this.coinType, this.purpose);
   }
@@ -128,11 +138,17 @@ type SWTHAddressType = AddressBuilder<SWTHAddressOptions> & {
   getBech32Prefix(net?: Network, bech32Prefix?: string, type?: Bech32AddrType): string;
   addrPrefix: { [index: string]: string };
   getAddressBytes(bech32Address: string, networkConfig: Network): Uint8Array;
+  keyDerivationPath(index?: number, change?: number, account?: number): number[];
 };
 
 export const SWTHAddress: SWTHAddressType = {
   coinType: (): number => {
     return SWTH_COIN_TYPE;
+  },
+
+  keyDerivationPath: (index: number = 0, change: number = 0, account: number = 0): number[] => {
+    const coinType = SWTHAddress.coinType()
+    return new BIP44Path(BIP44_PURPOSE, coinType).update(index, change, account).toArray();
   },
 
   publicKeyToScriptHash: (publicKey: string | Buffer): string => {
