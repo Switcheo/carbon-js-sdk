@@ -37,3 +37,7 @@ export const toUnitless = (value?: null | BigNumber | string | number, decimals?
 
   return valueBN.shiftedBy(decimalsBN.toNumber());
 }
+
+export const generateNonce = (): number => {
+  return Math.floor(Math.random() * 100000)
+}

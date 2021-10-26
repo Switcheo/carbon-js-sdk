@@ -1,6 +1,7 @@
 import { CosmosLedger } from '@carbon-sdk/provider';
 import { stripHexPrefix } from '@carbon-sdk/util/generic';
-import { SignDoc } from '@cosmjs/stargate/build/codec/cosmos/tx/v1beta1/tx';
+import { BlockchainUtils, GenericUtils, NumberUtils, CarbonTx } from "@carbon-sdk/util";
+import { SignDoc } from "@cosmjs/stargate/build/codec/cosmos/tx/v1beta1/tx";
 import { ethers } from 'ethers';
 import secp256k1 from 'secp256k1';
 
@@ -47,8 +48,16 @@ export class CarbonLedgerSigner implements CarbonSigner {
   type = CarbonSignerTypes.Ledger
 
   async sign(doc: SignDoc): Promise<Buffer> {
-    const json = JSON.stringify(SignDoc.toJSON(doc));
-    const signBytes = await this.ledger.sign(json);
+    const jsonDoc: CarbonTx.StdSignDoc = new CarbonTx.StdSignDoc(
+      doc.accountNumber.toNumber(), // account_number
+      0, // sequence
+      doc.chainId, // chain_id
+      [{
+        type: "nonce",
+        value: NumberUtils.generateNonce(),
+      }], // msgs
+    );
+    const signBytes = await this.ledger.sign(jsonDoc.sortedJson());
     return Buffer.from(signBytes.buffer);
   }
 
