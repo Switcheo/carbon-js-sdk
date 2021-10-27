@@ -125,10 +125,10 @@ export const NetworkConfigs: {
     restURL: "https://test-api.carbon.network",
 
     eth: {
-      rpcURL: 'https://eth-mainnet.alchemyapi.io/v2/5J5-HepOkCigvEkfL3Latf2aWJwNDe3e',
+      rpcURL: 'https://eth-ropsten.alchemyapi.io/v2/2KD9F3mFPNMfflSqZsPuTKmK_w7fFfut',
       wsURL: 'wss://ropsten.dagger.matic.network',
-      payerURL: `http://54.255.42.175:7001`,
-      lockProxyAddr: '0x86edf4748efeded37f4932b7de93a575909cc892',
+      payerURL: `http://13.251.218.38:7001`,
+      lockProxyAddr: '0x91f453851e297524749a740d53cf54a89231487c',
       balanceReader: '0xa74c81866c5bfff6684aa8edf35a5de8c3b9f173',
       byteCodeHash: '0xc77e5709a69e94d310a6dfb700801758c4caed0385b25bdf82bbdf954e4dd0c3',
     },
