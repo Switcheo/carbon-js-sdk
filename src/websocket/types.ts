@@ -15,6 +15,7 @@ export enum WSChannel {
   positions_by_market = 'positions_by_market',
   pools = 'pools',
   pools_by_id = 'pools_by_id',
+  commitments = 'commitments',
 }
 
 export enum WSRequest {
@@ -30,6 +31,7 @@ export enum WSRequest {
   Balances = 'get_balances',
   OrderBook = 'get_orderbook',
   Pools = 'get_pools',
+  Commitments = 'get_commitments',
 }
 
 export interface WsGetRecentTradesParams {
@@ -69,6 +71,10 @@ export interface WsGetLeveragesParams {
 
 export interface WsGetPositionsParams {
   market: string
+  address: string
+}
+
+export interface WsGetCommitmentsParams {
   address: string
 }
 
@@ -127,6 +133,10 @@ export interface WsSubscribePoolsParams extends WsSubscribeParams {
   id?: string
 }
 
+export interface WsSubscribeCommitmentParams extends WsSubscribeParams {
+  address: string
+}
+
 export type WsSubscriptionParams =
   | WsSubscribeCandlesticksParams
   | WsSubscribeRecentTradesParams
@@ -139,3 +149,4 @@ export type WsSubscriptionParams =
   | WsSubscribePositionsParams
   | WsUnsubscribeCandlesticksParams
   | WsSubscribePoolsParams
+  | WsSubscribeCommitmentParams
