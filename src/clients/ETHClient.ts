@@ -131,9 +131,8 @@ export class ETHClient {
 
     const assetId = appendHexPrefix(token.tokenAddress);
     const targetProxyHash = appendHexPrefix(this.getTargetProxyHash(token));
-    // const feeAddress = appendHexPrefix(networkConfig.FeeAddress);
     const feeAddress = appendHexPrefix(networkConfig.feeAddress);
-    const toAssetHash = ethers.utils.hexlify(ethers.utils.toUtf8Bytes(token.denom))
+    const toAssetHash = ethers.utils.hexlify(ethers.utils.toUtf8Bytes(token.id))
 
     const swthAddress = ethers.utils.hexlify(address)
     const contractAddress = this.getLockProxyAddress()
