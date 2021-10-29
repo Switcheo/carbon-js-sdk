@@ -139,6 +139,7 @@ type SWTHAddressType = AddressBuilder<SWTHAddressOptions> & {
   addrPrefix: { [index: string]: string };
   getAddressBytes(bech32Address: string, networkConfig: Network): Uint8Array;
   keyDerivationPath(index?: number, change?: number, account?: number): number[];
+  addressHashToAddress(hash: string, opts?: SWTHAddressOptions): string;
 };
 
 export const SWTHAddress: SWTHAddressType = {
@@ -197,6 +198,12 @@ export const SWTHAddress: SWTHAddressType = {
     const address = SWTHAddress.publicKeyToAddress(publicKey, opts);
 
     return address;
+  },
+
+  addressHashToAddress: (hash: string, opts?: SWTHAddressOptions): string => {
+    const words = bech32.toWords(Buffer.from(hash, 'hex').slice(0, 20));
+    const addressPrefix = SWTHAddress.getBech32Prefix(opts?.network, opts?.bech32Prefix, opts?.type);
+    return bech32.encode(addressPrefix, words);
   },
 
   generateAddress: (mnemonic: string, account: number = 0, opts?: SWTHAddressOptions) => {
