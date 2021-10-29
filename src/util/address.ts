@@ -162,7 +162,7 @@ export const SWTHAddress: SWTHAddressType = {
 
   publicKeyToAddress: (publicKey: string | Buffer, opts?: SWTHAddressOptions): string => {
     const scriptHash = SWTHAddress.publicKeyToScriptHash(publicKey);
-    const address = SWTHAddress.encode(scriptHash);
+    const address = SWTHAddress.encode(scriptHash, opts);
     return address;
   },
 
