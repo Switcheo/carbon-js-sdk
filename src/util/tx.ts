@@ -7,6 +7,7 @@ import * as CosmosModels from "@carbon-sdk/codec/cosmos-models";
 import { sortObject } from "@carbon-sdk/util/generic";
 import { BN_ONE } from "@carbon-sdk/util/number";
 import BigNumber from "bignumber.js";
+import { SWTHAddress, SWTHAddressOptions } from "./address";
 
 export interface TxBody extends Omit<CosmosModels.Tx.TxBody, "messages"> {
   messages: unknown[]
@@ -74,6 +75,15 @@ export const decode = (bytes?: Uint8Array | Buffer): Tx | undefined => {
   }
 
   return carbonTx;
+}
+
+export const getSender = (decodedTx: Tx, opts?: SWTHAddressOptions): string => {
+  const publicKey = decodedTx.authInfo?.signerInfos?.[0].publicKey?.value
+  if (!publicKey) {
+    throw new Error(`could not get signer public key`)
+  }
+  const keyBuffer = Buffer.from(publicKey).slice(2)
+  return SWTHAddress.publicKeyToAddress(keyBuffer, opts)
 }
 
 export enum BroadcastTxMode {
