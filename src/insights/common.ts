@@ -26,6 +26,29 @@ export const InsightsEndpoints = {
 
 export type Interval = "millisecond" | "second" | "minute" | "hour" | "day" | "month" | "quarter"
 
+export interface QueryByTimeRequest {
+  interval?: Interval
+  from?: string
+  until?: string
+}
+
+export interface QueryByPageRequest {
+  limit?: number
+  offset?: number
+}
+
 export interface InsightsQueryResponse<T> {
   result: T
+}
+
+export interface TimeMeta {
+  from: string
+  until: string
+  interval: Interval
+}
+
+export interface PageMeta {
+  count: number
+  limit: number
+  offset: number
 }

@@ -1,0 +1,31 @@
+import { PageMeta, QueryByPageRequest } from ".";
+
+export interface Block {
+  id: string
+  height: number
+  time: string
+  proposerAddress: string
+}
+
+export interface QueryGetBlocksRequest extends QueryByPageRequest { }
+
+export interface QueryGetBlocksResponse {
+  models: Block[]
+  meta: PageMeta
+}
+
+export interface QueryGetBlockRequest {
+  height: number
+}
+
+export interface QueryGetBlockAtUnixRequest {
+  unix: number
+}
+
+export interface QueryGetBlockResponse {
+  model: Block
+}
+
+export interface QueryGetBlockTimeResponse {
+  data: number
+}

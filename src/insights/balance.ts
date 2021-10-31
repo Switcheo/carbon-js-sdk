@@ -1,4 +1,11 @@
+import { PageMeta, QueryByPageRequest } from ".";
+
 export interface Balance {
+  denom: string
+  balance: string
+}
+
+export interface BalanceDetails {
   id: string
   denom: string
   address: string
@@ -7,19 +14,17 @@ export interface Balance {
   lastSyncHeight: number
 }
 
-export interface QueryGetRichListRequest {
+export interface QueryGetTotalBalancesResponse {
+  entries: Balance[]
+}
+
+export interface QueryGetRichListRequest extends QueryByPageRequest {
   denom?: string
   location?: string
   address?: string
-  limit?: number
-  offset?: number
 }
 
 export interface QueryGetRichListResponse {
-  models: Balance[]
-  meta: {
-    count: number
-    limit: number
-    offset: number
-  }
+  models: BalanceDetails[]
+  meta: PageMeta
 }

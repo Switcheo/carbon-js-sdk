@@ -1,4 +1,16 @@
-import { Interval } from ".";
+import { PageMeta, QueryByPageRequest, QueryByTimeRequest, TimeMeta } from ".";
+
+export interface Pool {
+  id: string
+  poolId: number
+  name: string
+  denom: string
+  denomA: string
+  denomB: string
+  address: string
+  creatorAddress: string
+  market: string | null
+}
 
 export interface PoolVolume {
   poolId: number
@@ -7,18 +19,18 @@ export interface PoolVolume {
   volume: string
 }
 
-export interface QueryGetPoolVolumeRequest {
+export interface QueryGetPoolsRequest extends QueryByPageRequest { }
+
+export interface QueryGetPoolsResponse {
+  models: Pool[]
+  meta: PageMeta
+}
+
+export interface QueryGetPoolVolumeRequest extends QueryByTimeRequest {
   poolId: number
-  interval?: Interval
-  from?: string
-  until?: string
 }
 
 export interface QueryGetPoolVolumeResponse {
   entries: PoolVolume[]
-  meta: {
-    from: string
-    until: string
-    interval: Interval
-  }
+  meta: TimeMeta
 }
