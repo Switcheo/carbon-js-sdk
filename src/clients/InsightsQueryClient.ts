@@ -1,3 +1,4 @@
+import { NetworkConfig } from '@carbon-sdk/constant';
 import { APIUtils } from '@carbon-sdk/util';
 import { Insights } from '..';
 
@@ -5,10 +6,10 @@ class InsightsQueryClient {
   public readonly apiManager: APIUtils.APIManager<typeof Insights.InsightsEndpoints>
 
   constructor(
-    insightsRestUrl: string,
+    config: NetworkConfig
   ) {
     const responseParser: APIUtils.ResponseParser = this.parseResponse.bind(this);
-    this.apiManager = new APIUtils.APIManager(insightsRestUrl, Insights.InsightsEndpoints, responseParser)
+    this.apiManager = new APIUtils.APIManager(config.insightsUrl, Insights.InsightsEndpoints, responseParser)
   }
 
   async parseResponse(response: Response): Promise<APIUtils.RequestResult> {
@@ -31,20 +32,20 @@ class InsightsQueryClient {
   }
 
   // User api
-  async getActiveAccounts(req: Insights.QueryGetActiveAccountsRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetActiveAccountsResponse>> {
+  async ActiveAccounts(req: Insights.QueryGetActiveAccountsRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetActiveAccountsResponse>> {
     const request = this.apiManager.path('user/active', {}, req)
     const response = await request.get()
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetActiveAccountsResponse>
   }
 
   // Pool api
-  async getPools(req: Insights.QueryGetPoolsRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetPoolsResponse>> {
+  async Pools(req: Insights.QueryGetPoolsRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetPoolsResponse>> {
     const request = this.apiManager.path('pool/list', {}, req)
     const response = await request.get()
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetPoolsResponse>
   }
 
-  async getPoolVolume(req: Insights.QueryGetPoolVolumeRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetPoolVolumeResponse>> {
+  async PoolVolume(req: Insights.QueryGetPoolVolumeRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetPoolVolumeResponse>> {
     const routeParams = { poolId: req.poolId }
     const queryParams = {
       interval: req.interval,
@@ -57,57 +58,57 @@ class InsightsQueryClient {
   }
 
   // Block api
-  async getBlocks(req: Insights.QueryGetBlocksRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetBlocksResponse>> {
+  async Blocks(req: Insights.QueryGetBlocksRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetBlocksResponse>> {
     const request = this.apiManager.path('block/list', {}, req)
     const response = await request.get()
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetBlocksResponse>
   }
 
-  async getBlock(req: Insights.QueryGetBlockRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetBlockResponse>> {
+  async Block(req: Insights.QueryGetBlockRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetBlockResponse>> {
     const request = this.apiManager.path('block/list', req)
     const response = await request.get()
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetBlockResponse>
   }
 
-  async getBlockAtUnix(req: Insights.QueryGetBlockAtUnixRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetBlockResponse>> {
+  async BlockAtUnix(req: Insights.QueryGetBlockAtUnixRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetBlockResponse>> {
     const request = this.apiManager.path('block/unix', req)
     const response = await request.get()
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetBlockResponse>
   }
 
-  async getBlockTime(): Promise<Insights.InsightsQueryResponse<Insights.QueryGetBlockTimeResponse>> {
+  async BlockTime(): Promise<Insights.InsightsQueryResponse<Insights.QueryGetBlockTimeResponse>> {
     const request = this.apiManager.path('block/time')
     const response = await request.get()
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetBlockTimeResponse>
   }
 
   // Transaction api
-  async getTransactions(req: Insights.QueryGetTransactionsRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetTransactionsResponse>> {
+  async Txs(req: Insights.QueryGetTransactionsRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetTransactionsResponse>> {
     const request = this.apiManager.path('tx/list', {}, req)
     const response = await request.get()
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetTransactionsResponse>
   }
 
-  async getTransactionTypes(): Promise<Insights.InsightsQueryResponse<Insights.QueryGetTransactionTypesResponse>> {
+  async TxTypes(): Promise<Insights.InsightsQueryResponse<Insights.QueryGetTransactionTypesResponse>> {
     const request = this.apiManager.path('tx/types')
     const response = await request.get()
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetTransactionTypesResponse>
   }
 
-  async getTransactionActivity(req: Insights.QueryGetTransactionActivityRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetTransactionActivityResponse>> {
+  async TxActivity(req: Insights.QueryGetTransactionActivityRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetTransactionActivityResponse>> {
     const request = this.apiManager.path('tx/activity', {}, req)
     const response = await request.get()
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetTransactionActivityResponse>
   }
 
   // Balance api
-  async getTotalBalances(): Promise<Insights.InsightsQueryResponse<Insights.QueryGetTotalBalancesResponse>> {
+  async BalanceTotal(): Promise<Insights.InsightsQueryResponse<Insights.QueryGetTotalBalancesResponse>> {
     const request = this.apiManager.path('balance/total')
     const response = await request.get()
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetTotalBalancesResponse>
   }
 
-  async getRichList(req: Insights.QueryGetRichListRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetRichListResponse>> {
+  async BalanceList(req: Insights.QueryGetRichListRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetRichListResponse>> {
     const request = this.apiManager.path('balance/list', {}, req)
     const response = await request.get()
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetRichListResponse>

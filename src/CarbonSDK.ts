@@ -79,7 +79,7 @@ class CarbonSDK {
 
     this.tmClient = opts.tmClient;
     this.query = new CarbonQueryClient(opts.tmClient);
-    this.insights = new InsightsQueryClient(NetworkConfigs[this.network].insightsUrl);
+    this.insights = new InsightsQueryClient(this.networkConfig);
     this.token = TokenClient.instance(this.query);
 
     this.admin = new AdminModule(this);
