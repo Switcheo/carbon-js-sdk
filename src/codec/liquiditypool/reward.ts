@@ -7,6 +7,7 @@ import { Timestamp } from "../google/protobuf/timestamp";
 export const protobufPackage = "Switcheo.carbon.liquiditypool";
 
 export interface Commitment {
+  poolId: Long;
   liquidity?: Coin;
   startTime?: Date;
   duration: Long;
@@ -95,24 +96,27 @@ export interface TotalCommitment {
   totalCommitment: string;
 }
 
-const baseCommitment: object = { duration: Long.UZERO };
+const baseCommitment: object = { poolId: Long.UZERO, duration: Long.UZERO };
 
 export const Commitment = {
   encode(
     message: Commitment,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
+    if (!message.poolId.isZero()) {
+      writer.uint32(8).uint64(message.poolId);
+    }
     if (message.liquidity !== undefined) {
-      Coin.encode(message.liquidity, writer.uint32(10).fork()).ldelim();
+      Coin.encode(message.liquidity, writer.uint32(18).fork()).ldelim();
     }
     if (message.startTime !== undefined) {
       Timestamp.encode(
         toTimestamp(message.startTime),
-        writer.uint32(18).fork()
+        writer.uint32(26).fork()
       ).ldelim();
     }
     if (!message.duration.isZero()) {
-      writer.uint32(24).uint64(message.duration);
+      writer.uint32(32).uint64(message.duration);
     }
     return writer;
   },
@@ -125,14 +129,17 @@ export const Commitment = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.liquidity = Coin.decode(reader, reader.uint32());
+          message.poolId = reader.uint64() as Long;
           break;
         case 2:
+          message.liquidity = Coin.decode(reader, reader.uint32());
+          break;
+        case 3:
           message.startTime = fromTimestamp(
             Timestamp.decode(reader, reader.uint32())
           );
           break;
-        case 3:
+        case 4:
           message.duration = reader.uint64() as Long;
           break;
         default:
@@ -145,6 +152,11 @@ export const Commitment = {
 
   fromJSON(object: any): Commitment {
     const message = { ...baseCommitment } as Commitment;
+    if (object.poolId !== undefined && object.poolId !== null) {
+      message.poolId = Long.fromString(object.poolId);
+    } else {
+      message.poolId = Long.UZERO;
+    }
     if (object.liquidity !== undefined && object.liquidity !== null) {
       message.liquidity = Coin.fromJSON(object.liquidity);
     } else {
@@ -165,6 +177,8 @@ export const Commitment = {
 
   toJSON(message: Commitment): unknown {
     const obj: any = {};
+    message.poolId !== undefined &&
+      (obj.poolId = (message.poolId || Long.UZERO).toString());
     message.liquidity !== undefined &&
       (obj.liquidity = message.liquidity
         ? Coin.toJSON(message.liquidity)
@@ -178,6 +192,11 @@ export const Commitment = {
 
   fromPartial(object: DeepPartial<Commitment>): Commitment {
     const message = { ...baseCommitment } as Commitment;
+    if (object.poolId !== undefined && object.poolId !== null) {
+      message.poolId = object.poolId as Long;
+    } else {
+      message.poolId = Long.UZERO;
+    }
     if (object.liquidity !== undefined && object.liquidity !== null) {
       message.liquidity = Coin.fromPartial(object.liquidity);
     } else {

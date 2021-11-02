@@ -32,6 +32,7 @@ export interface CommitmentEvent {
   poolId: Long;
   address: string;
   commitment?: Commitment;
+  type: string;
 }
 
 const basePoolEvent: object = {
@@ -436,7 +437,11 @@ export const CommitmentCurveEvent = {
   },
 };
 
-const baseCommitmentEvent: object = { poolId: Long.UZERO, address: "" };
+const baseCommitmentEvent: object = {
+  poolId: Long.UZERO,
+  address: "",
+  type: "",
+};
 
 export const CommitmentEvent = {
   encode(
@@ -451,6 +456,9 @@ export const CommitmentEvent = {
     }
     if (message.commitment !== undefined) {
       Commitment.encode(message.commitment, writer.uint32(26).fork()).ldelim();
+    }
+    if (message.type !== "") {
+      writer.uint32(34).string(message.type);
     }
     return writer;
   },
@@ -470,6 +478,9 @@ export const CommitmentEvent = {
           break;
         case 3:
           message.commitment = Commitment.decode(reader, reader.uint32());
+          break;
+        case 4:
+          message.type = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -496,6 +507,11 @@ export const CommitmentEvent = {
     } else {
       message.commitment = undefined;
     }
+    if (object.type !== undefined && object.type !== null) {
+      message.type = String(object.type);
+    } else {
+      message.type = "";
+    }
     return message;
   },
 
@@ -508,6 +524,7 @@ export const CommitmentEvent = {
       (obj.commitment = message.commitment
         ? Commitment.toJSON(message.commitment)
         : undefined);
+    message.type !== undefined && (obj.type = message.type);
     return obj;
   },
 
@@ -527,6 +544,11 @@ export const CommitmentEvent = {
       message.commitment = Commitment.fromPartial(object.commitment);
     } else {
       message.commitment = undefined;
+    }
+    if (object.type !== undefined && object.type !== null) {
+      message.type = object.type;
+    } else {
+      message.type = "";
     }
     return message;
   },
