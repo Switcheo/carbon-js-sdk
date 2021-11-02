@@ -30,6 +30,7 @@ export interface ZilNetworkConfig {
 export interface NetworkConfig {
   rpcUrl: string;
   restUrl: string;
+  insightsUrl: string;
   wsUrl: string;
   faucetUrl: string;
   Bech32Prefix: string;
@@ -63,6 +64,7 @@ export const NetworkConfigs: {
 
     rpcUrl: "https://dev-tm-api.carbon.network",
     restUrl: "https://dev-api.carbon.network",
+    insightsUrl: "https://dev-api-insights.carbon.network",
     wsUrl: "wss://dev-ws-api.carbon.network/ws",
     faucetUrl: "https://dev-faucet.carbon.network",
 
@@ -111,6 +113,7 @@ export const NetworkConfigs: {
 
     rpcUrl: "https://test-tm-api.carbon.network",
     restUrl: "https://test-api.carbon.network",
+    insightsUrl: "https://test-api-insights.carbon.network",
     wsUrl: "wss://test-ws-api.carbon.network/ws",
     faucetUrl: "https://test-faucet.carbon.network",
 
@@ -159,6 +162,7 @@ export const NetworkConfigs: {
 
     rpcUrl: "https://dev-tm-api.carbon.network",
     restUrl: "https://dev-api.carbon.network",
+    insightsUrl: "https://dev-api-insights.carbon.network",
     wsUrl: "wss://dev-ws-api.carbon.network/ws",
     faucetUrl: "https://dev-faucet.carbon.network",
 
@@ -207,6 +211,7 @@ export const NetworkConfigs: {
 
     rpcUrl: "http://localhost:26657",
     restUrl: "http://localhost:1317",
+    insightsUrl: "https://dev-api-insights.carbon.network",
     wsUrl: "ws://localhost:5000/ws",
     faucetUrl: "http://localhost:4500",
 
