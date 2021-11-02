@@ -58,7 +58,7 @@ export type CarbonWalletInitOpts = CarbonWalletGenericOpts & (
     signer: CarbonSigner;
     publicKeyBase64: string;
     bech32Address?: string;
-    customSigner?: OfflineSigner & OfflineDirectSigner;
+    customSigner?: OfflineSigner & OfflineDirectSigner; // to allow adding of keplr offline signer
   }
   | {
     // connect with address (view only)
@@ -86,6 +86,9 @@ export class CarbonWallet implements OfflineDirectSigner {
   bech32Address: string;
   publicKey: Buffer;
   query?: CarbonQueryClient;
+
+  // Add custom signer option
+  // Keplr txs work when signer is generated and passed in from the frontend
   customSigner?: OfflineSigner & OfflineDirectSigner;
 
   txFees?: SimpleMap<BigNumber>;
