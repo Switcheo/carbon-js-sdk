@@ -10,6 +10,7 @@ import {
   CommitmentResponse,
   CommitmentCurve,
   RewardCurve,
+  Commitment,
   TotalCommitment,
 } from "../liquiditypool/reward";
 import { DecCoin } from "../cosmos/base/v1beta1/coin";
@@ -64,6 +65,16 @@ export interface QueryCommitmentRequest {
 
 export interface QueryCommitmentResponse {
   commitmentResponse?: CommitmentResponse;
+}
+
+export interface QueryAllCommitmentRequest {
+  address: string;
+  pagination?: PageRequest;
+}
+
+export interface QueryAllCommitmentResponse {
+  commitments: Commitment[];
+  pagination?: PageResponse;
 }
 
 export interface QueryLastClaimRequest {
@@ -1006,6 +1017,196 @@ export const QueryCommitmentResponse = {
   },
 };
 
+const baseQueryAllCommitmentRequest: object = { address: "" };
+
+export const QueryAllCommitmentRequest = {
+  encode(
+    message: QueryAllCommitmentRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.address !== "") {
+      writer.uint32(10).string(message.address);
+    }
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAllCommitmentRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAllCommitmentRequest,
+    } as QueryAllCommitmentRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.address = reader.string();
+          break;
+        case 2:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllCommitmentRequest {
+    const message = {
+      ...baseQueryAllCommitmentRequest,
+    } as QueryAllCommitmentRequest;
+    if (object.address !== undefined && object.address !== null) {
+      message.address = String(object.address);
+    } else {
+      message.address = "";
+    }
+    if (object.pagination !== undefined && object.pagination !== null) {
+      message.pagination = PageRequest.fromJSON(object.pagination);
+    } else {
+      message.pagination = undefined;
+    }
+    return message;
+  },
+
+  toJSON(message: QueryAllCommitmentRequest): unknown {
+    const obj: any = {};
+    message.address !== undefined && (obj.address = message.address);
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAllCommitmentRequest>
+  ): QueryAllCommitmentRequest {
+    const message = {
+      ...baseQueryAllCommitmentRequest,
+    } as QueryAllCommitmentRequest;
+    if (object.address !== undefined && object.address !== null) {
+      message.address = object.address;
+    } else {
+      message.address = "";
+    }
+    if (object.pagination !== undefined && object.pagination !== null) {
+      message.pagination = PageRequest.fromPartial(object.pagination);
+    } else {
+      message.pagination = undefined;
+    }
+    return message;
+  },
+};
+
+const baseQueryAllCommitmentResponse: object = {};
+
+export const QueryAllCommitmentResponse = {
+  encode(
+    message: QueryAllCommitmentResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.commitments) {
+      Commitment.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAllCommitmentResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAllCommitmentResponse,
+    } as QueryAllCommitmentResponse;
+    message.commitments = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.commitments.push(Commitment.decode(reader, reader.uint32()));
+          break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllCommitmentResponse {
+    const message = {
+      ...baseQueryAllCommitmentResponse,
+    } as QueryAllCommitmentResponse;
+    message.commitments = [];
+    if (object.commitments !== undefined && object.commitments !== null) {
+      for (const e of object.commitments) {
+        message.commitments.push(Commitment.fromJSON(e));
+      }
+    }
+    if (object.pagination !== undefined && object.pagination !== null) {
+      message.pagination = PageResponse.fromJSON(object.pagination);
+    } else {
+      message.pagination = undefined;
+    }
+    return message;
+  },
+
+  toJSON(message: QueryAllCommitmentResponse): unknown {
+    const obj: any = {};
+    if (message.commitments) {
+      obj.commitments = message.commitments.map((e) =>
+        e ? Commitment.toJSON(e) : undefined
+      );
+    } else {
+      obj.commitments = [];
+    }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAllCommitmentResponse>
+  ): QueryAllCommitmentResponse {
+    const message = {
+      ...baseQueryAllCommitmentResponse,
+    } as QueryAllCommitmentResponse;
+    message.commitments = [];
+    if (object.commitments !== undefined && object.commitments !== null) {
+      for (const e of object.commitments) {
+        message.commitments.push(Commitment.fromPartial(e));
+      }
+    }
+    if (object.pagination !== undefined && object.pagination !== null) {
+      message.pagination = PageResponse.fromPartial(object.pagination);
+    } else {
+      message.pagination = undefined;
+    }
+    return message;
+  },
+};
+
 const baseQueryLastClaimRequest: object = { poolId: "", address: "" };
 
 export const QueryLastClaimRequest = {
@@ -1921,6 +2122,9 @@ export interface Query {
     request: QueryRewardHistoryRequest
   ): Promise<QueryRewardHistoryResponse>;
   Commitment(request: QueryCommitmentRequest): Promise<QueryCommitmentResponse>;
+  CommitmentAll(
+    request: QueryAllCommitmentRequest
+  ): Promise<QueryAllCommitmentResponse>;
   LastClaim(request: QueryLastClaimRequest): Promise<QueryLastClaimResponse>;
   CommitmentCurve(
     request: QueryCommitmentCurveRequest
@@ -1947,6 +2151,7 @@ export class QueryClientImpl implements Query {
     this.PoolAll = this.PoolAll.bind(this);
     this.RewardHistory = this.RewardHistory.bind(this);
     this.Commitment = this.Commitment.bind(this);
+    this.CommitmentAll = this.CommitmentAll.bind(this);
     this.LastClaim = this.LastClaim.bind(this);
     this.CommitmentCurve = this.CommitmentCurve.bind(this);
     this.RewardCurve = this.RewardCurve.bind(this);
@@ -2003,6 +2208,20 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryCommitmentResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  CommitmentAll(
+    request: QueryAllCommitmentRequest
+  ): Promise<QueryAllCommitmentResponse> {
+    const data = QueryAllCommitmentRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.liquiditypool.Query",
+      "CommitmentAll",
+      data
+    );
+    return promise.then((data) =>
+      QueryAllCommitmentResponse.decode(new _m0.Reader(data))
     );
   }
 

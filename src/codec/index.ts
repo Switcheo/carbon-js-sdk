@@ -400,7 +400,6 @@ export { VaultTypeEvent, VaultEvent } from "./cdp/event";
 export { LiquidatorPosition, MsgInitiateLiquidation, MsgInitiateLiquidationResponse } from "./broker/tx";
 export { IncomingLiquidations } from "./broker/incoming_liquidations";
 export { Candlestick } from "./broker/candlestick";
-export { TradeVolume } from "./broker/volume";
 export { Amm } from "./broker/amm";
 export { QueryInsuranceBalanceRequest, QueryInsuranceBalanceResponse, InsuranceFundBalance, QueryCandlesticksRequest, QueryCandlesticksResponse, QueryTradesRequest, QueryTradesResponse } from "./broker/query";
 export { TradeEvent } from "./broker/event";
@@ -460,7 +459,7 @@ export { MsgCreatePool, MsgCreatePoolResponse, MsgCreatePoolWithLiquidity, MsgCr
 export { Commitment, TotalCommitmentShares, RewardCurve, CommitmentCurve, WrappedRewardWeight, WrappedRewardWeights, RewardHistory, CommitmentResponse, CommitmentExpiryIndex, CommitmentWithKey, CommitmentTotalWithKey, RewardHistoryWithKey, LastClaimedWithKey, CommitmentKeys, AllocatedRewards, TotalCommitment } from "./liquiditypool/reward";
 export { Pool, Pools, AddLiquidity, AddLiquidities, RemoveLiquidity, RemoveLiquidities } from "./liquiditypool/liquiditypool";
 export { LinkPoolProposal, UnlinkPoolProposal, SetRewardCurveProposal, SetCommitmentCurveProposal, SetRewardsWeightsProposal, ChangeSwapFeeProposal, ChangeNumQuotesProposal } from "./liquiditypool/proposal";
-export { QueryGetPoolRequest, QueryGetPoolResponse, QueryAllPoolRequest, QueryAllPoolResponse, QueryRewardHistoryRequest, ExtendedPool, QueryRewardHistoryResponse, QuerierRewardHistory, QueryCommitmentRequest, QueryCommitmentResponse, QueryLastClaimRequest, QueryLastClaimResponse, QueryCommitmentCurveRequest, QueryCommitmentCurveResponse, QueryRewardCurveRequest, QueryRewardCurveResponse, QueryTotalCommitmentRequest, QueryTotalCommitmentResponse, QueryAllTotalCommitmentRequest, QueryAllTotalCommitmentResponse, QueryClaimableRewardsRequest, QueryClaimableRewardsResponse } from "./liquiditypool/query";
+export { QueryGetPoolRequest, QueryGetPoolResponse, QueryAllPoolRequest, QueryAllPoolResponse, QueryRewardHistoryRequest, ExtendedPool, QueryRewardHistoryResponse, QuerierRewardHistory, QueryCommitmentRequest, QueryCommitmentResponse, QueryAllCommitmentRequest, QueryAllCommitmentResponse, QueryLastClaimRequest, QueryLastClaimResponse, QueryCommitmentCurveRequest, QueryCommitmentCurveResponse, QueryRewardCurveRequest, QueryRewardCurveResponse, QueryTotalCommitmentRequest, QueryTotalCommitmentResponse, QueryAllTotalCommitmentRequest, QueryAllTotalCommitmentResponse, QueryClaimableRewardsRequest, QueryClaimableRewardsResponse } from "./liquiditypool/query";
 export { PoolEvent, TotalCommitmentChangeEvent, RewardsWeightChangeEvent, CommitmentCurveEvent, CommitmentEvent } from "./liquiditypool/event";
 export { EventDataInsuranceFundTransfer } from "./insurance/event";
 export { FundByMarket, Fund } from "./insurance/fund";
