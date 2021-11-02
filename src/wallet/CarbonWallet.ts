@@ -8,7 +8,7 @@ import { bnOrZero, BN_ZERO } from "@carbon-sdk/util/number";
 import { TxFeeTypeDefaultKey, TxFeeTypeMap } from "@carbon-sdk/util/tx";
 import { SimpleMap } from "@carbon-sdk/util/type";
 import { StdSignature } from "@cosmjs/amino";
-import { AccountData, DirectSignResponse, EncodeObject, OfflineDirectSigner } from "@cosmjs/proto-signing";
+import { AccountData, DirectSignResponse, EncodeObject, OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
 import { BroadcastTxResponse, isBroadcastTxFailure, SigningStargateClient } from "@cosmjs/stargate";
 import { SignDoc, TxRaw as StargateTxRaw } from "@cosmjs/stargate/build/codec/cosmos/tx/v1beta1/tx";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
@@ -40,6 +40,7 @@ export type CarbonWalletInitOpts = CarbonWalletGenericOpts & (
     signer?: CarbonSigner;
     publicKeyBase64?: string;
     bech32Address?: string;
+    customSigner?: OfflineSigner & OfflineDirectSigner;
   }
   | {
     // connect with private key
@@ -48,6 +49,7 @@ export type CarbonWalletInitOpts = CarbonWalletGenericOpts & (
     signer?: CarbonSigner;
     publicKeyBase64?: string;
     bech32Address?: string;
+    customSigner?: OfflineSigner & OfflineDirectSigner;
   }
   | {
     // connect with custom signer
@@ -56,6 +58,7 @@ export type CarbonWalletInitOpts = CarbonWalletGenericOpts & (
     signer: CarbonSigner;
     publicKeyBase64: string;
     bech32Address?: string;
+    customSigner?: OfflineSigner & OfflineDirectSigner;
   }
   | {
     // connect with address (view only)
@@ -64,6 +67,7 @@ export type CarbonWalletInitOpts = CarbonWalletGenericOpts & (
     signer?: CarbonSigner;
     publicKeyBase64?: string;
     bech32Address: string;
+    customSigner?: OfflineSigner & OfflineDirectSigner;
   }
 );
 
@@ -82,6 +86,7 @@ export class CarbonWallet implements OfflineDirectSigner {
   bech32Address: string;
   publicKey: Buffer;
   query?: CarbonQueryClient;
+  customSigner?: OfflineSigner & OfflineDirectSigner;
 
   txFees?: SimpleMap<BigNumber>;
   initialized: boolean = false;
@@ -119,6 +124,9 @@ export class CarbonWallet implements OfflineDirectSigner {
     if (opts.signer) {
       this.signer = opts.signer;
       this.publicKey = Buffer.from(opts.publicKeyBase64!, "base64");
+      if (opts.customSigner) {
+        this.customSigner = opts.customSigner;
+      }
 
       this.bech32Address = AddressUtils.SWTHAddress.publicKeyToAddress(this.publicKey, addressOpts);
     } else if (this.privateKey) {
@@ -175,6 +183,7 @@ export class CarbonWallet implements OfflineDirectSigner {
       ...opts,
       signer,
       publicKeyBase64,
+      customSigner: opts.customSigner,
     });
   }
 
@@ -287,9 +296,11 @@ export class CarbonWallet implements OfflineDirectSigner {
 
   async getSigningClient(): Promise<SigningStargateClient> {
     if (!this.signingClient) {
-      this.signingClient = await SigningStargateClient.connectWithSigner(this.networkConfig.rpcUrl, this, {
-        registry,
-      });
+      this.signingClient = await SigningStargateClient.connectWithSigner(
+        this.networkConfig.rpcUrl,
+        this.customSigner ?? this,
+        { registry }
+      );
     }
     return this.signingClient;
   };

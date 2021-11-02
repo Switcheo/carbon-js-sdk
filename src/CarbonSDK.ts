@@ -1,5 +1,6 @@
 import { DEFAULT_NETWORK, Network, Network as _Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
 import { GenericUtils, NetworkUtils } from "@carbon-sdk/util";
+import { OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import { CarbonQueryClient, ETHClient, InsightsQueryClient, NEOClient, TokenClient, ZILClient } from "./clients";
 import { AdminModule, BankModule, BrokerModule, CDPModule, CoinModule, FeeModule, GovModule, LeverageModule, LiquidityPoolModule, MarketModule, OracleModule, OrderModule, PositionModule, ProfileModule, SubAccountModule } from "./modules";
@@ -171,9 +172,10 @@ class CarbonSDK {
     publicKeyBase64: string,
     sdkOpts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS,
     walletOpts?: CarbonWalletGenericOpts,
+    customSigner?: OfflineSigner & OfflineDirectSigner,
   ) {
     const sdk = await CarbonSDK.instance(sdkOpts);
-    return sdk.connectWithSigner(signer, publicKeyBase64, walletOpts);
+    return sdk.connectWithSigner(signer, publicKeyBase64, walletOpts, customSigner);
   }
 
   public static async instanceWithLedger(
@@ -250,11 +252,13 @@ class CarbonSDK {
     signer: CarbonSigner,
     publicKeyBase64: string,
     opts?: CarbonWalletGenericOpts,
+    customSigner?: OfflineSigner & OfflineDirectSigner,
   ) {
     const wallet = CarbonWallet.withSigner(signer, publicKeyBase64, {
       ...opts,
       network: this.network,
       config: this.configOverride,
+      customSigner,
     })
     return this.connect(wallet)
   }
