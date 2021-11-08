@@ -75,7 +75,7 @@ export const generateChannelId = (params: WsSubscriptionParams): string => {
     }
     case WSChannel.commitments: {
       const { channel, address } = params as WsSubscribeCommitmentParams
-      return [channel, address].join(':') 
+      return [channel, address].join(':')
     }
     default:
       throw new Error(`invalid subscription channel: ${params.channel}`)
