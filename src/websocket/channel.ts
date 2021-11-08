@@ -11,71 +11,71 @@ export const generateChannelId = (params: WsSubscriptionParams): string => {
   switch (params.channel) {
     case WSChannel.candlesticks: {
       const { channel, market, resolution } = params as WsSubscribeCandlesticksParams
-      return [channel, market, resolution].join('.')
+      return [channel, market, resolution].join(':')
     }
     case WSChannel.books: {
       const { channel, market } = params as WsSubscribeBooksParams
-      return [channel, market].join('.')
+      return [channel, market].join(':')
     }
     case WSChannel.recent_trades: {
       const { channel, market } = params as WsSubscribeRecentTradesParams
-      return [channel, market].join('.')
+      return [channel, market].join(':')
     }
     case WSChannel.orders: {
       const { channel, address } = params as WsSubscribeOrdersParams
-      return [channel, address].join('.')
+      return [channel, address].join(':')
     }
     case WSChannel.orders_by_market: {
       const { channel, market, address } = params as WsSubscribeOrdersParams
-      return [channel, market, address].join('.')
+      return [channel, market, address].join(':')
     }
     case WSChannel.balances: {
       const { channel, address } = params as WsSubscribeWalletBalanceParams
-      return [channel, address].join('.')
+      return [channel, address].join(':')
     }
     case WSChannel.account_trades: {
       const { channel, address } = params as WsSubscribeAccountTradesParams
-      return [channel, address].join('.')
+      return [channel, address].join(':')
     }
     case WSChannel.account_trades_by_market: {
       const { channel, market, address } = params as WsSubscribeAccountTradesParams
-      return [channel, market, address].join('.')
+      return [channel, market, address].join(':')
     }
     case WSChannel.market_stats: {
       const { channel } = params as WsSubscribeMarketStatsParams
-      return [channel].join('.')
+      return [channel].join(':')
     }
     case WSChannel.market_stats_by_market: {
       const { channel, market } = params as WsSubscribeMarketStatsParams
-      return [channel, market].join('.')
+      return [channel, market].join(':')
     }
     case WSChannel.leverages: {
       const { channel, address } = params as WsSubscribeWalletBalanceParams
-      return [channel, address].join('.')
+      return [channel, address].join(':')
     }
     case WSChannel.leverages_by_market: {
       const { channel, market, address } = params as WsSubscribeOrdersParams
-      return [channel, market, address].join('.')
+      return [channel, market, address].join(':')
     }
     case WSChannel.positions: {
       const { channel, address } = params as WsSubscribePositionsParams
-      return [channel, address].join('.')
+      return [channel, address].join(':')
     }
     case WSChannel.positions_by_market: {
       const { channel, market, address } = params as WsSubscribePositionsParams
-      return [channel, market, address].join('.')
+      return [channel, market, address].join(':')
     }
     case WSChannel.pools: {
       const { channel } = params as WsSubscribePoolsParams
-      return [channel].join('.')
+      return [channel].join(':')
     }
     case WSChannel.pools_by_id: {
       const { channel, id } = params as WsSubscribePoolsParams
-      return [channel, id].join('.')
+      return [channel, id].join(':')
     }
     case WSChannel.commitments: {
       const { channel, address } = params as WsSubscribeCommitmentParams
-      return [channel, address].join('.') 
+      return [channel, address].join(':') 
     }
     default:
       throw new Error(`invalid subscription channel: ${params.channel}`)
@@ -83,7 +83,7 @@ export const generateChannelId = (params: WsSubscriptionParams): string => {
 }
 
 export const parseChannelId = (rawChannelId: string): WsSubscriptionParams => {
-  const [channel, market, resolution, address, id] = rawChannelId.split('.')
+  const [channel, market, resolution, address, id] = rawChannelId.split(':')
   switch (channel) {
     case WSChannel.candlesticks:
       return {
