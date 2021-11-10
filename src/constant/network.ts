@@ -211,7 +211,7 @@ export const NetworkConfigs: {
 
     rpcUrl: "http://localhost:26657",
     restUrl: "http://localhost:1317",
-    insightsUrl: "https://dev-api-insights.carbon.network",
+    insightsUrl: "http://localhost:8181",
     wsUrl: "ws://localhost:5000/ws",
     faucetUrl: "http://localhost:4500",
 
