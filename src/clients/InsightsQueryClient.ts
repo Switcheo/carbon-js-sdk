@@ -113,6 +113,13 @@ class InsightsQueryClient {
     const response = await request.get()
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetRichListResponse>
   }
+
+  // Positions api
+  async Leaderboard(req: Insights.QueryGetLeaderboardRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetLeaderboardResponse>> {
+    const request = this.apiManager.path('position/leaderboard', {}, req)
+    const response = await request.get()
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetLeaderboardResponse>
+  }
 }
 
 export default InsightsQueryClient

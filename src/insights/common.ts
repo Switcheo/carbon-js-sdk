@@ -22,6 +22,9 @@ export const InsightsEndpoints = {
   'balance/list': '/balance/list',
   'balance/change': '/balance/:address/change',
   'balance/history': '/balance/:address/:denom/history',
+
+  // Position api
+  'position/leaderboard': '/position/:fromUnix/:toUnix/leaderboard',
 }
 
 export type Interval = "millisecond" | "second" | "minute" | "hour" | "day" | "month" | "quarter"
