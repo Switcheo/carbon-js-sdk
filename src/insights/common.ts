@@ -22,6 +22,7 @@ export const InsightsEndpoints = {
   'balance/list': '/balance/list',
   'balance/change': '/balance/:address/change',
   'balance/history': '/balance/:address/:denom/history',
+  'balance/supply': '/balance/supply',
 
   // Position api
   'position/leaderboard': '/position/:fromUnix/:toUnix/leaderboard',

@@ -7,6 +7,12 @@ export interface Transaction {
   creator: string
 }
 
+export interface TxActivity {
+  t: string
+  height: number
+  txs: string
+}
+
 export interface QueryGetTransactionsRequest extends QueryByPageRequest {
   typeUrl?: string
   height?: number
@@ -24,8 +30,7 @@ export interface QueryGetTransactionTypesResponse {
 
 export interface QueryGetTransactionActivityRequest extends QueryByTimeRequest { }
 
-// TODO: Add type for transaction activity
 export interface QueryGetTransactionActivityResponse {
-  entries: any[]
+  entries: TxActivity[]
   meta: TimeMeta
 }
