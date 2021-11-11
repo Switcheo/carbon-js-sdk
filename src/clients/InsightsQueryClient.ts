@@ -102,16 +102,42 @@ class InsightsQueryClient {
   }
 
   // Balance api
-  async BalanceTotal(): Promise<Insights.InsightsQueryResponse<Insights.QueryGetTotalBalancesResponse>> {
-    const request = this.apiManager.path('balance/total')
+  async BalanceTotal(req: Insights.QueryGetTotalBalanceRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetTotalBalanceResponse>> {
+    const request = this.apiManager.path('balance/total', {}, req)
     const response = await request.get()
-    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetTotalBalancesResponse>
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetTotalBalanceResponse>
   }
 
-  async BalanceList(req: Insights.QueryGetRichListRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetRichListResponse>> {
+  async BalanceList(req: Insights.QueryGetBalanceListRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetBalanceListResponse>> {
     const request = this.apiManager.path('balance/list', {}, req)
     const response = await request.get()
-    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetRichListResponse>
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetBalanceListResponse>
+  }
+
+  async BalanceChange(req: Insights.QueryGetBalanceChangeRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetBalanceChangeResponse>> {
+    const request = this.apiManager.path('balance/change', req)
+    const response = await request.get()
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetBalanceChangeResponse>
+  }
+
+  async BalanceHistory(req: Insights.QueryGetBalanceHistoryRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetBalanceHistoryResponse>> {
+    const routeParams = {
+      address: req.address,
+      denom: req.denom,
+    }
+    const queryParams = {
+      interval: req.interval,
+      limit: req.limit,
+    }
+    const request = this.apiManager.path('balance/history', routeParams, queryParams)
+    const response = await request.get()
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetBalanceHistoryResponse>
+  }
+
+  async BalanceSupply(): Promise<Insights.InsightsQueryResponse<Insights.QueryGetBalanceSupplyResponse>> {
+    const request = this.apiManager.path('balance/supply')
+    const response = await request.get()
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetBalanceSupplyResponse>
   }
 
   // Positions api
