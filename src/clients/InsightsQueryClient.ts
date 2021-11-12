@@ -57,6 +57,13 @@ class InsightsQueryClient {
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetPoolVolumeResponse>
   }
 
+  // Node api
+  async Nodes(req: Insights.QueryGetNodesRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetNodesResponse>> {
+    const request = this.apiManager.path('node/list', {}, req)
+    const response = await request.get()
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetNodesResponse>
+  }
+
   // Block api
   async Blocks(req: Insights.QueryGetBlocksRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetBlocksResponse>> {
     const request = this.apiManager.path('block/list', {}, req)
@@ -65,7 +72,7 @@ class InsightsQueryClient {
   }
 
   async Block(req: Insights.QueryGetBlockRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetBlockResponse>> {
-    const request = this.apiManager.path('block/list', req)
+    const request = this.apiManager.path('block/details', req)
     const response = await request.get()
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetBlockResponse>
   }
