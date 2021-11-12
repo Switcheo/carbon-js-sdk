@@ -6,6 +6,9 @@ export const InsightsEndpoints = {
   'pool/list': '/pool/list',
   'pool/volume': '/pool/:poolId/volume',
 
+  // Node api
+  'node/list': '/node/list',
+
   // Block api
   'block/list': '/chain/block/list',
   'block/details': '/chain/block/:height/detail',

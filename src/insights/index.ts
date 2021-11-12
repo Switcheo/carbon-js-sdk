@@ -1,6 +1,7 @@
 export * from "./balance"
 export * from "./block"
 export * from "./common"
+export * from "./node"
 export * from "./pool"
 export * from "./position"
 export * from "./transaction"
