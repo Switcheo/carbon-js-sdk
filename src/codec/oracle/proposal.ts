@@ -91,16 +91,8 @@ export const CreateOracleProposal = {
 
   fromPartial(object: DeepPartial<CreateOracleProposal>): CreateOracleProposal {
     const message = { ...baseCreateOracleProposal } as CreateOracleProposal;
-    if (object.title !== undefined && object.title !== null) {
-      message.title = object.title;
-    } else {
-      message.title = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = object.description;
-    } else {
-      message.description = "";
-    }
+    message.title = object.title ?? "";
+    message.description = object.description ?? "";
     if (object.msg !== undefined && object.msg !== null) {
       message.msg = CreateOracleParams.fromPartial(object.msg);
     } else {

@@ -101,26 +101,10 @@ export const LeverageEvent = {
 
   fromPartial(object: DeepPartial<LeverageEvent>): LeverageEvent {
     const message = { ...baseLeverageEvent } as LeverageEvent;
-    if (object.leverage !== undefined && object.leverage !== null) {
-      message.leverage = object.leverage;
-    } else {
-      message.leverage = "";
-    }
-    if (object.type !== undefined && object.type !== null) {
-      message.type = object.type;
-    } else {
-      message.type = "";
-    }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = object.market;
-    } else {
-      message.market = "";
-    }
-    if (object.address !== undefined && object.address !== null) {
-      message.address = object.address;
-    } else {
-      message.address = "";
-    }
+    message.leverage = object.leverage ?? "";
+    message.type = object.type ?? "";
+    message.market = object.market ?? "";
+    message.address = object.address ?? "";
     return message;
   },
 };

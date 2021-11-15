@@ -182,11 +182,7 @@ export const GenesisState_OutstandingPositionsEntry = {
     const message = {
       ...baseGenesisState_OutstandingPositionsEntry,
     } as GenesisState_OutstandingPositionsEntry;
-    if (object.key !== undefined && object.key !== null) {
-      message.key = object.key;
-    } else {
-      message.key = "";
-    }
+    message.key = object.key ?? "";
     if (object.value !== undefined && object.value !== null) {
       message.value = OutstandingPositions.fromPartial(object.value);
     } else {

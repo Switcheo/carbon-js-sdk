@@ -10,6 +10,7 @@ export interface Params {
   communityTax: string;
   baseProposerReward: string;
   bonusProposerReward: string;
+  liquidityProviderReward: string;
   withdrawAddrEnabled: boolean;
 }
 
@@ -76,7 +77,10 @@ export interface ValidatorSlashEvents {
 
 /** FeePool is the global fee pool for distribution. */
 export interface FeePool {
+  /** pool for dev fund yet to be distributed */
   communityPool: DecCoin[];
+  /** pool for lps yet to be distributed */
+  liquidityProviderPool: DecCoin[];
 }
 
 /**
@@ -130,6 +134,7 @@ const baseParams: object = {
   communityTax: "",
   baseProposerReward: "",
   bonusProposerReward: "",
+  liquidityProviderReward: "",
   withdrawAddrEnabled: false,
 };
 
@@ -146,6 +151,9 @@ export const Params = {
     }
     if (message.bonusProposerReward !== "") {
       writer.uint32(26).string(message.bonusProposerReward);
+    }
+    if (message.liquidityProviderReward !== "") {
+      writer.uint32(42).string(message.liquidityProviderReward);
     }
     if (message.withdrawAddrEnabled === true) {
       writer.uint32(32).bool(message.withdrawAddrEnabled);
@@ -168,6 +176,9 @@ export const Params = {
           break;
         case 3:
           message.bonusProposerReward = reader.string();
+          break;
+        case 5:
+          message.liquidityProviderReward = reader.string();
           break;
         case 4:
           message.withdrawAddrEnabled = reader.bool();
@@ -204,6 +215,14 @@ export const Params = {
       message.bonusProposerReward = "";
     }
     if (
+      object.liquidityProviderReward !== undefined &&
+      object.liquidityProviderReward !== null
+    ) {
+      message.liquidityProviderReward = String(object.liquidityProviderReward);
+    } else {
+      message.liquidityProviderReward = "";
+    }
+    if (
       object.withdrawAddrEnabled !== undefined &&
       object.withdrawAddrEnabled !== null
     ) {
@@ -222,6 +241,8 @@ export const Params = {
       (obj.baseProposerReward = message.baseProposerReward);
     message.bonusProposerReward !== undefined &&
       (obj.bonusProposerReward = message.bonusProposerReward);
+    message.liquidityProviderReward !== undefined &&
+      (obj.liquidityProviderReward = message.liquidityProviderReward);
     message.withdrawAddrEnabled !== undefined &&
       (obj.withdrawAddrEnabled = message.withdrawAddrEnabled);
     return obj;
@@ -229,35 +250,11 @@ export const Params = {
 
   fromPartial(object: DeepPartial<Params>): Params {
     const message = { ...baseParams } as Params;
-    if (object.communityTax !== undefined && object.communityTax !== null) {
-      message.communityTax = object.communityTax;
-    } else {
-      message.communityTax = "";
-    }
-    if (
-      object.baseProposerReward !== undefined &&
-      object.baseProposerReward !== null
-    ) {
-      message.baseProposerReward = object.baseProposerReward;
-    } else {
-      message.baseProposerReward = "";
-    }
-    if (
-      object.bonusProposerReward !== undefined &&
-      object.bonusProposerReward !== null
-    ) {
-      message.bonusProposerReward = object.bonusProposerReward;
-    } else {
-      message.bonusProposerReward = "";
-    }
-    if (
-      object.withdrawAddrEnabled !== undefined &&
-      object.withdrawAddrEnabled !== null
-    ) {
-      message.withdrawAddrEnabled = object.withdrawAddrEnabled;
-    } else {
-      message.withdrawAddrEnabled = false;
-    }
+    message.communityTax = object.communityTax ?? "";
+    message.baseProposerReward = object.baseProposerReward ?? "";
+    message.bonusProposerReward = object.bonusProposerReward ?? "";
+    message.liquidityProviderReward = object.liquidityProviderReward ?? "";
+    message.withdrawAddrEnabled = object.withdrawAddrEnabled ?? false;
     return message;
   },
 };
@@ -357,11 +354,7 @@ export const ValidatorHistoricalRewards = {
         message.cumulativeRewardRatio.push(DecCoin.fromPartial(e));
       }
     }
-    if (object.referenceCount !== undefined && object.referenceCount !== null) {
-      message.referenceCount = object.referenceCount;
-    } else {
-      message.referenceCount = 0;
-    }
+    message.referenceCount = object.referenceCount ?? 0;
     return message;
   },
 };
@@ -696,11 +689,7 @@ export const ValidatorSlashEvent = {
     } else {
       message.validatorPeriod = Long.UZERO;
     }
-    if (object.fraction !== undefined && object.fraction !== null) {
-      message.fraction = object.fraction;
-    } else {
-      message.fraction = "";
-    }
+    message.fraction = object.fraction ?? "";
     return message;
   },
 };
@@ -793,6 +782,9 @@ export const FeePool = {
     for (const v of message.communityPool) {
       DecCoin.encode(v!, writer.uint32(10).fork()).ldelim();
     }
+    for (const v of message.liquidityProviderPool) {
+      DecCoin.encode(v!, writer.uint32(18).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -801,11 +793,17 @@ export const FeePool = {
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseFeePool } as FeePool;
     message.communityPool = [];
+    message.liquidityProviderPool = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
           message.communityPool.push(DecCoin.decode(reader, reader.uint32()));
+          break;
+        case 2:
+          message.liquidityProviderPool.push(
+            DecCoin.decode(reader, reader.uint32())
+          );
           break;
         default:
           reader.skipType(tag & 7);
@@ -818,9 +816,18 @@ export const FeePool = {
   fromJSON(object: any): FeePool {
     const message = { ...baseFeePool } as FeePool;
     message.communityPool = [];
+    message.liquidityProviderPool = [];
     if (object.communityPool !== undefined && object.communityPool !== null) {
       for (const e of object.communityPool) {
         message.communityPool.push(DecCoin.fromJSON(e));
+      }
+    }
+    if (
+      object.liquidityProviderPool !== undefined &&
+      object.liquidityProviderPool !== null
+    ) {
+      for (const e of object.liquidityProviderPool) {
+        message.liquidityProviderPool.push(DecCoin.fromJSON(e));
       }
     }
     return message;
@@ -835,6 +842,13 @@ export const FeePool = {
     } else {
       obj.communityPool = [];
     }
+    if (message.liquidityProviderPool) {
+      obj.liquidityProviderPool = message.liquidityProviderPool.map((e) =>
+        e ? DecCoin.toJSON(e) : undefined
+      );
+    } else {
+      obj.liquidityProviderPool = [];
+    }
     return obj;
   },
 
@@ -844,6 +858,15 @@ export const FeePool = {
     if (object.communityPool !== undefined && object.communityPool !== null) {
       for (const e of object.communityPool) {
         message.communityPool.push(DecCoin.fromPartial(e));
+      }
+    }
+    message.liquidityProviderPool = [];
+    if (
+      object.liquidityProviderPool !== undefined &&
+      object.liquidityProviderPool !== null
+    ) {
+      for (const e of object.liquidityProviderPool) {
+        message.liquidityProviderPool.push(DecCoin.fromPartial(e));
       }
     }
     return message;
@@ -957,22 +980,10 @@ export const CommunityPoolSpendProposal = {
     const message = {
       ...baseCommunityPoolSpendProposal,
     } as CommunityPoolSpendProposal;
+    message.title = object.title ?? "";
+    message.description = object.description ?? "";
+    message.recipient = object.recipient ?? "";
     message.amount = [];
-    if (object.title !== undefined && object.title !== null) {
-      message.title = object.title;
-    } else {
-      message.title = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = object.description;
-    } else {
-      message.description = "";
-    }
-    if (object.recipient !== undefined && object.recipient !== null) {
-      message.recipient = object.recipient;
-    } else {
-      message.recipient = "";
-    }
     if (object.amount !== undefined && object.amount !== null) {
       for (const e of object.amount) {
         message.amount.push(Coin.fromPartial(e));
@@ -1071,11 +1082,7 @@ export const DelegatorStartingInfo = {
     } else {
       message.previousPeriod = Long.UZERO;
     }
-    if (object.stake !== undefined && object.stake !== null) {
-      message.stake = object.stake;
-    } else {
-      message.stake = "";
-    }
+    message.stake = object.stake ?? "";
     if (object.height !== undefined && object.height !== null) {
       message.height = object.height as Long;
     } else {
@@ -1169,15 +1176,8 @@ export const DelegationDelegatorReward = {
     const message = {
       ...baseDelegationDelegatorReward,
     } as DelegationDelegatorReward;
+    message.validatorAddress = object.validatorAddress ?? "";
     message.reward = [];
-    if (
-      object.validatorAddress !== undefined &&
-      object.validatorAddress !== null
-    ) {
-      message.validatorAddress = object.validatorAddress;
-    } else {
-      message.validatorAddress = "";
-    }
     if (object.reward !== undefined && object.reward !== null) {
       for (const e of object.reward) {
         message.reward.push(DecCoin.fromPartial(e));
@@ -1302,31 +1302,11 @@ export const CommunityPoolSpendProposalWithDeposit = {
     const message = {
       ...baseCommunityPoolSpendProposalWithDeposit,
     } as CommunityPoolSpendProposalWithDeposit;
-    if (object.title !== undefined && object.title !== null) {
-      message.title = object.title;
-    } else {
-      message.title = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = object.description;
-    } else {
-      message.description = "";
-    }
-    if (object.recipient !== undefined && object.recipient !== null) {
-      message.recipient = object.recipient;
-    } else {
-      message.recipient = "";
-    }
-    if (object.amount !== undefined && object.amount !== null) {
-      message.amount = object.amount;
-    } else {
-      message.amount = "";
-    }
-    if (object.deposit !== undefined && object.deposit !== null) {
-      message.deposit = object.deposit;
-    } else {
-      message.deposit = "";
-    }
+    message.title = object.title ?? "";
+    message.description = object.description ?? "";
+    message.recipient = object.recipient ?? "";
+    message.amount = object.amount ?? "";
+    message.deposit = object.deposit ?? "";
     return message;
   },
 };

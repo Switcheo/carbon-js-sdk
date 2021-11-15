@@ -104,11 +104,7 @@ export const QueryGetSubAccountRequest = {
     const message = {
       ...baseQueryGetSubAccountRequest,
     } as QueryGetSubAccountRequest;
-    if (object.subAccount !== undefined && object.subAccount !== null) {
-      message.subAccount = object.subAccount;
-    } else {
-      message.subAccount = "";
-    }
+    message.subAccount = object.subAccount ?? "";
     return message;
   },
 };
@@ -436,16 +432,8 @@ export const QuerySubAccountStatusRequest = {
     const message = {
       ...baseQuerySubAccountStatusRequest,
     } as QuerySubAccountStatusRequest;
-    if (object.mainAddress !== undefined && object.mainAddress !== null) {
-      message.mainAddress = object.mainAddress;
-    } else {
-      message.mainAddress = "";
-    }
-    if (object.subAddress !== undefined && object.subAddress !== null) {
-      message.subAddress = object.subAddress;
-    } else {
-      message.subAddress = "";
-    }
+    message.mainAddress = object.mainAddress ?? "";
+    message.subAddress = object.subAddress ?? "";
     return message;
   },
 };
@@ -510,11 +498,7 @@ export const QuerySubAccountStatusResponse = {
     const message = {
       ...baseQuerySubAccountStatusResponse,
     } as QuerySubAccountStatusResponse;
-    if (object.status !== undefined && object.status !== null) {
-      message.status = object.status;
-    } else {
-      message.status = "";
-    }
+    message.status = object.status ?? "";
     return message;
   },
 };
@@ -579,11 +563,7 @@ export const QuerySubAccountPowerRequest = {
     const message = {
       ...baseQuerySubAccountPowerRequest,
     } as QuerySubAccountPowerRequest;
-    if (object.subAddress !== undefined && object.subAddress !== null) {
-      message.subAddress = object.subAddress;
-    } else {
-      message.subAddress = "";
-    }
+    message.subAddress = object.subAddress ?? "";
     return message;
   },
 };
@@ -648,11 +628,7 @@ export const QuerySubAccountPowerResponse = {
     const message = {
       ...baseQuerySubAccountPowerResponse,
     } as QuerySubAccountPowerResponse;
-    if (object.power !== undefined && object.power !== null) {
-      message.power = object.power;
-    } else {
-      message.power = "";
-    }
+    message.power = object.power ?? "";
     return message;
   },
 };

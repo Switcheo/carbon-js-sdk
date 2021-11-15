@@ -219,11 +219,7 @@ export const ListImplementationsRequest = {
     const message = {
       ...baseListImplementationsRequest,
     } as ListImplementationsRequest;
-    if (object.interfaceName !== undefined && object.interfaceName !== null) {
-      message.interfaceName = object.interfaceName;
-    } else {
-      message.interfaceName = "";
-    }
+    message.interfaceName = object.interfaceName ?? "";
     return message;
   },
 };

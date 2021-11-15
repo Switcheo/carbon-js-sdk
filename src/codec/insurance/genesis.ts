@@ -103,7 +103,6 @@ export const GenesisState = {
   fromPartial(object: DeepPartial<GenesisState>): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
     message.fundInByMarkets = [];
-    message.fundOutByMarkets = [];
     if (
       object.fundInByMarkets !== undefined &&
       object.fundInByMarkets !== null
@@ -112,6 +111,7 @@ export const GenesisState = {
         message.fundInByMarkets.push(FundByMarket.fromPartial(e));
       }
     }
+    message.fundOutByMarkets = [];
     if (
       object.fundOutByMarkets !== undefined &&
       object.fundOutByMarkets !== null

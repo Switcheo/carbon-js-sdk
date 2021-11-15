@@ -246,16 +246,8 @@ export const InsuranceFundBalance = {
 
   fromPartial(object: DeepPartial<InsuranceFundBalance>): InsuranceFundBalance {
     const message = { ...baseInsuranceFundBalance } as InsuranceFundBalance;
-    if (object.amount !== undefined && object.amount !== null) {
-      message.amount = object.amount;
-    } else {
-      message.amount = "";
-    }
-    if (object.denom !== undefined && object.denom !== null) {
-      message.denom = object.denom;
-    } else {
-      message.denom = "";
-    }
+    message.amount = object.amount ?? "";
+    message.denom = object.denom ?? "";
     return message;
   },
 };
@@ -364,11 +356,7 @@ export const QueryCandlesticksRequest = {
     const message = {
       ...baseQueryCandlesticksRequest,
     } as QueryCandlesticksRequest;
-    if (object.market !== undefined && object.market !== null) {
-      message.market = object.market;
-    } else {
-      message.market = "";
-    }
+    message.market = object.market ?? "";
     if (object.resolution !== undefined && object.resolution !== null) {
       message.resolution = object.resolution as Long;
     } else {
@@ -628,16 +616,8 @@ export const QueryTradesRequest = {
 
   fromPartial(object: DeepPartial<QueryTradesRequest>): QueryTradesRequest {
     const message = { ...baseQueryTradesRequest } as QueryTradesRequest;
-    if (object.address !== undefined && object.address !== null) {
-      message.address = object.address;
-    } else {
-      message.address = "";
-    }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = object.market;
-    } else {
-      message.market = "";
-    }
+    message.address = object.address ?? "";
+    message.market = object.market ?? "";
     if (object.limit !== undefined && object.limit !== null) {
       message.limit = object.limit as Long;
     } else {
@@ -653,16 +633,8 @@ export const QueryTradesRequest = {
     } else {
       message.afterId = Long.UZERO;
     }
-    if (object.orderBy !== undefined && object.orderBy !== null) {
-      message.orderBy = object.orderBy;
-    } else {
-      message.orderBy = "";
-    }
-    if (object.orderId !== undefined && object.orderId !== null) {
-      message.orderId = object.orderId;
-    } else {
-      message.orderId = "";
-    }
+    message.orderBy = object.orderBy ?? "";
+    message.orderId = object.orderId ?? "";
     if (object.afterBlock !== undefined && object.afterBlock !== null) {
       message.afterBlock = object.afterBlock as Long;
     } else {

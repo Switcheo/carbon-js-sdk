@@ -87,11 +87,7 @@ export const VaultTypeEvent = {
     } else {
       message.vaultType = undefined;
     }
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
+    message.creator = object.creator ?? "";
     return message;
   },
 };
@@ -204,34 +200,15 @@ export const VaultEvent = {
 
   fromPartial(object: DeepPartial<VaultEvent>): VaultEvent {
     const message = { ...baseVaultEvent } as VaultEvent;
-    if (object.type !== undefined && object.type !== null) {
-      message.type = object.type;
-    } else {
-      message.type = "";
-    }
+    message.type = object.type ?? "";
     if (object.vaultTypeId !== undefined && object.vaultTypeId !== null) {
       message.vaultTypeId = object.vaultTypeId as Long;
     } else {
       message.vaultTypeId = Long.UZERO;
     }
-    if (
-      object.collateralAmount !== undefined &&
-      object.collateralAmount !== null
-    ) {
-      message.collateralAmount = object.collateralAmount;
-    } else {
-      message.collateralAmount = "";
-    }
-    if (object.debtAmount !== undefined && object.debtAmount !== null) {
-      message.debtAmount = object.debtAmount;
-    } else {
-      message.debtAmount = "";
-    }
-    if (object.address !== undefined && object.address !== null) {
-      message.address = object.address;
-    } else {
-      message.address = "";
-    }
+    message.collateralAmount = object.collateralAmount ?? "";
+    message.debtAmount = object.debtAmount ?? "";
+    message.address = object.address ?? "";
     return message;
   },
 };

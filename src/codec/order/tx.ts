@@ -130,21 +130,9 @@ export const MsgSetTradingFlag = {
 
   fromPartial(object: DeepPartial<MsgSetTradingFlag>): MsgSetTradingFlag {
     const message = { ...baseMsgSetTradingFlag } as MsgSetTradingFlag;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
-    if (object.isEnabled !== undefined && object.isEnabled !== null) {
-      message.isEnabled = object.isEnabled;
-    } else {
-      message.isEnabled = false;
-    }
-    if (object.blockchain !== undefined && object.blockchain !== null) {
-      message.blockchain = object.blockchain;
-    } else {
-      message.blockchain = "";
-    }
+    message.creator = object.creator ?? "";
+    message.isEnabled = object.isEnabled ?? false;
+    message.blockchain = object.blockchain ?? "";
     return message;
   },
 };
@@ -385,61 +373,17 @@ export const MsgCreateOrder = {
 
   fromPartial(object: DeepPartial<MsgCreateOrder>): MsgCreateOrder {
     const message = { ...baseMsgCreateOrder } as MsgCreateOrder;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = object.market;
-    } else {
-      message.market = "";
-    }
-    if (object.side !== undefined && object.side !== null) {
-      message.side = object.side;
-    } else {
-      message.side = "";
-    }
-    if (object.quantity !== undefined && object.quantity !== null) {
-      message.quantity = object.quantity;
-    } else {
-      message.quantity = "";
-    }
-    if (object.orderType !== undefined && object.orderType !== null) {
-      message.orderType = object.orderType;
-    } else {
-      message.orderType = "";
-    }
-    if (object.price !== undefined && object.price !== null) {
-      message.price = object.price;
-    } else {
-      message.price = "";
-    }
-    if (object.stopPrice !== undefined && object.stopPrice !== null) {
-      message.stopPrice = object.stopPrice;
-    } else {
-      message.stopPrice = "";
-    }
-    if (object.timeInForce !== undefined && object.timeInForce !== null) {
-      message.timeInForce = object.timeInForce;
-    } else {
-      message.timeInForce = "";
-    }
-    if (object.triggerType !== undefined && object.triggerType !== null) {
-      message.triggerType = object.triggerType;
-    } else {
-      message.triggerType = "";
-    }
-    if (object.isPostOnly !== undefined && object.isPostOnly !== null) {
-      message.isPostOnly = object.isPostOnly;
-    } else {
-      message.isPostOnly = false;
-    }
-    if (object.isReduceOnly !== undefined && object.isReduceOnly !== null) {
-      message.isReduceOnly = object.isReduceOnly;
-    } else {
-      message.isReduceOnly = false;
-    }
+    message.creator = object.creator ?? "";
+    message.market = object.market ?? "";
+    message.side = object.side ?? "";
+    message.quantity = object.quantity ?? "";
+    message.orderType = object.orderType ?? "";
+    message.price = object.price ?? "";
+    message.stopPrice = object.stopPrice ?? "";
+    message.timeInForce = object.timeInForce ?? "";
+    message.triggerType = object.triggerType ?? "";
+    message.isPostOnly = object.isPostOnly ?? false;
+    message.isReduceOnly = object.isReduceOnly ?? false;
     return message;
   },
 };
@@ -591,31 +535,11 @@ export const MsgEditOrder = {
 
   fromPartial(object: DeepPartial<MsgEditOrder>): MsgEditOrder {
     const message = { ...baseMsgEditOrder } as MsgEditOrder;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
-    if (object.id !== undefined && object.id !== null) {
-      message.id = object.id;
-    } else {
-      message.id = "";
-    }
-    if (object.quantity !== undefined && object.quantity !== null) {
-      message.quantity = object.quantity;
-    } else {
-      message.quantity = "";
-    }
-    if (object.price !== undefined && object.price !== null) {
-      message.price = object.price;
-    } else {
-      message.price = "";
-    }
-    if (object.stopPrice !== undefined && object.stopPrice !== null) {
-      message.stopPrice = object.stopPrice;
-    } else {
-      message.stopPrice = "";
-    }
+    message.creator = object.creator ?? "";
+    message.id = object.id ?? "";
+    message.quantity = object.quantity ?? "";
+    message.price = object.price ?? "";
+    message.stopPrice = object.stopPrice ?? "";
     return message;
   },
 };
@@ -725,16 +649,8 @@ export const MsgCancelOrder = {
 
   fromPartial(object: DeepPartial<MsgCancelOrder>): MsgCancelOrder {
     const message = { ...baseMsgCancelOrder } as MsgCancelOrder;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
-    if (object.id !== undefined && object.id !== null) {
-      message.id = object.id;
-    } else {
-      message.id = "";
-    }
+    message.creator = object.creator ?? "";
+    message.id = object.id ?? "";
     return message;
   },
 };
@@ -844,16 +760,8 @@ export const MsgCancelAll = {
 
   fromPartial(object: DeepPartial<MsgCancelAll>): MsgCancelAll {
     const message = { ...baseMsgCancelAll } as MsgCancelAll;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = object.market;
-    } else {
-      message.market = "";
-    }
+    message.creator = object.creator ?? "";
+    message.market = object.market ?? "";
     return message;
   },
 };

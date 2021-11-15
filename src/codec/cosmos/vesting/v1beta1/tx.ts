@@ -141,17 +141,9 @@ export const MsgCreateVestingAccount = {
     const message = {
       ...baseMsgCreateVestingAccount,
     } as MsgCreateVestingAccount;
+    message.fromAddress = object.fromAddress ?? "";
+    message.toAddress = object.toAddress ?? "";
     message.amount = [];
-    if (object.fromAddress !== undefined && object.fromAddress !== null) {
-      message.fromAddress = object.fromAddress;
-    } else {
-      message.fromAddress = "";
-    }
-    if (object.toAddress !== undefined && object.toAddress !== null) {
-      message.toAddress = object.toAddress;
-    } else {
-      message.toAddress = "";
-    }
     if (object.amount !== undefined && object.amount !== null) {
       for (const e of object.amount) {
         message.amount.push(Coin.fromPartial(e));
@@ -162,11 +154,7 @@ export const MsgCreateVestingAccount = {
     } else {
       message.endTime = Long.ZERO;
     }
-    if (object.delayed !== undefined && object.delayed !== null) {
-      message.delayed = object.delayed;
-    } else {
-      message.delayed = false;
-    }
+    message.delayed = object.delayed ?? false;
     return message;
   },
 };

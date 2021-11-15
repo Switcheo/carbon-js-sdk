@@ -81,11 +81,7 @@ export const QueryGetMsgFeeRequest = {
     object: DeepPartial<QueryGetMsgFeeRequest>
   ): QueryGetMsgFeeRequest {
     const message = { ...baseQueryGetMsgFeeRequest } as QueryGetMsgFeeRequest;
-    if (object.msgType !== undefined && object.msgType !== null) {
-      message.msgType = object.msgType;
-    } else {
-      message.msgType = "";
-    }
+    message.msgType = object.msgType ?? "";
     return message;
   },
 };

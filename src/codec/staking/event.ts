@@ -96,21 +96,9 @@ export const CreateValidator = {
 
   fromPartial(object: DeepPartial<CreateValidator>): CreateValidator {
     const message = { ...baseCreateValidator } as CreateValidator;
-    if (object.validator !== undefined && object.validator !== null) {
-      message.validator = object.validator;
-    } else {
-      message.validator = "";
-    }
-    if (object.amount !== undefined && object.amount !== null) {
-      message.amount = object.amount;
-    } else {
-      message.amount = "";
-    }
-    if (object.sender !== undefined && object.sender !== null) {
-      message.sender = object.sender;
-    } else {
-      message.sender = "";
-    }
+    message.validator = object.validator ?? "";
+    message.amount = object.amount ?? "";
+    message.sender = object.sender ?? "";
     return message;
   },
 };
@@ -200,16 +188,8 @@ export const CompleteUnbonding = {
         message.amount.push(Coin.fromPartial(e));
       }
     }
-    if (object.validator !== undefined && object.validator !== null) {
-      message.validator = object.validator;
-    } else {
-      message.validator = "";
-    }
-    if (object.delegator !== undefined && object.delegator !== null) {
-      message.delegator = object.delegator;
-    } else {
-      message.delegator = "";
-    }
+    message.validator = object.validator ?? "";
+    message.delegator = object.delegator ?? "";
     return message;
   },
 };
@@ -287,21 +267,9 @@ export const Delegate = {
 
   fromPartial(object: DeepPartial<Delegate>): Delegate {
     const message = { ...baseDelegate } as Delegate;
-    if (object.validator !== undefined && object.validator !== null) {
-      message.validator = object.validator;
-    } else {
-      message.validator = "";
-    }
-    if (object.amount !== undefined && object.amount !== null) {
-      message.amount = object.amount;
-    } else {
-      message.amount = "";
-    }
-    if (object.sender !== undefined && object.sender !== null) {
-      message.sender = object.sender;
-    } else {
-      message.sender = "";
-    }
+    message.validator = object.validator ?? "";
+    message.amount = object.amount ?? "";
+    message.sender = object.sender ?? "";
     return message;
   },
 };

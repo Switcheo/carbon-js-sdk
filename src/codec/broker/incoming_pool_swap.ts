@@ -155,43 +155,11 @@ export const IncomingPoolSwap = {
     } else {
       message.poolId = Long.UZERO;
     }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = object.market;
-    } else {
-      message.market = "";
-    }
-    if (
-      object.tokenATotalInput !== undefined &&
-      object.tokenATotalInput !== null
-    ) {
-      message.tokenATotalInput = object.tokenATotalInput;
-    } else {
-      message.tokenATotalInput = "";
-    }
-    if (
-      object.tokenATotalExpectedOutput !== undefined &&
-      object.tokenATotalExpectedOutput !== null
-    ) {
-      message.tokenATotalExpectedOutput = object.tokenATotalExpectedOutput;
-    } else {
-      message.tokenATotalExpectedOutput = "";
-    }
-    if (
-      object.tokenBTotalInput !== undefined &&
-      object.tokenBTotalInput !== null
-    ) {
-      message.tokenBTotalInput = object.tokenBTotalInput;
-    } else {
-      message.tokenBTotalInput = "";
-    }
-    if (
-      object.tokenBTotalExpectedOutput !== undefined &&
-      object.tokenBTotalExpectedOutput !== null
-    ) {
-      message.tokenBTotalExpectedOutput = object.tokenBTotalExpectedOutput;
-    } else {
-      message.tokenBTotalExpectedOutput = "";
-    }
+    message.market = object.market ?? "";
+    message.tokenATotalInput = object.tokenATotalInput ?? "";
+    message.tokenATotalExpectedOutput = object.tokenATotalExpectedOutput ?? "";
+    message.tokenBTotalInput = object.tokenBTotalInput ?? "";
+    message.tokenBTotalExpectedOutput = object.tokenBTotalExpectedOutput ?? "";
     return message;
   },
 };

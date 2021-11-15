@@ -86,21 +86,9 @@ export const MsgUpdateProfile = {
 
   fromPartial(object: DeepPartial<MsgUpdateProfile>): MsgUpdateProfile {
     const message = { ...baseMsgUpdateProfile } as MsgUpdateProfile;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
-    if (object.username !== undefined && object.username !== null) {
-      message.username = object.username;
-    } else {
-      message.username = "";
-    }
-    if (object.twitter !== undefined && object.twitter !== null) {
-      message.twitter = object.twitter;
-    } else {
-      message.twitter = "";
-    }
+    message.creator = object.creator ?? "";
+    message.username = object.username ?? "";
+    message.twitter = object.twitter ?? "";
     return message;
   },
 };

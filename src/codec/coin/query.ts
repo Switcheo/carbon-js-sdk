@@ -145,11 +145,7 @@ export const QueryGetTokenRequest = {
 
   fromPartial(object: DeepPartial<QueryGetTokenRequest>): QueryGetTokenRequest {
     const message = { ...baseQueryGetTokenRequest } as QueryGetTokenRequest;
-    if (object.denom !== undefined && object.denom !== null) {
-      message.denom = object.denom;
-    } else {
-      message.denom = "";
-    }
+    message.denom = object.denom ?? "";
     return message;
   },
 };
@@ -450,11 +446,7 @@ export const QueryGetLockedCoinsRequest = {
     const message = {
       ...baseQueryGetLockedCoinsRequest,
     } as QueryGetLockedCoinsRequest;
-    if (object.address !== undefined && object.address !== null) {
-      message.address = object.address;
-    } else {
-      message.address = "";
-    }
+    message.address = object.address ?? "";
     if (object.pagination !== undefined && object.pagination !== null) {
       message.pagination = PageRequest.fromPartial(object.pagination);
     } else {
@@ -832,16 +824,8 @@ export const QueryAllWrapperMappingsResponse_WrapperMappingsEntry = {
     const message = {
       ...baseQueryAllWrapperMappingsResponse_WrapperMappingsEntry,
     } as QueryAllWrapperMappingsResponse_WrapperMappingsEntry;
-    if (object.key !== undefined && object.key !== null) {
-      message.key = object.key;
-    } else {
-      message.key = "";
-    }
-    if (object.value !== undefined && object.value !== null) {
-      message.value = object.value;
-    } else {
-      message.value = "";
-    }
+    message.key = object.key ?? "";
+    message.value = object.value ?? "";
     return message;
   },
 };
@@ -906,11 +890,7 @@ export const QueryGetBalancesRequest = {
     const message = {
       ...baseQueryGetBalancesRequest,
     } as QueryGetBalancesRequest;
-    if (object.address !== undefined && object.address !== null) {
-      message.address = object.address;
-    } else {
-      message.address = "";
-    }
+    message.address = object.address ?? "";
     return message;
   },
 };
@@ -1137,41 +1117,17 @@ export const QueryGetExternalTransfersRequest = {
     const message = {
       ...baseQueryGetExternalTransfersRequest,
     } as QueryGetExternalTransfersRequest;
-    if (object.address !== undefined && object.address !== null) {
-      message.address = object.address;
-    } else {
-      message.address = "";
-    }
-    if (object.blockchain !== undefined && object.blockchain !== null) {
-      message.blockchain = object.blockchain;
-    } else {
-      message.blockchain = "";
-    }
-    if (object.transferType !== undefined && object.transferType !== null) {
-      message.transferType = object.transferType;
-    } else {
-      message.transferType = "";
-    }
-    if (object.denom !== undefined && object.denom !== null) {
-      message.denom = object.denom;
-    } else {
-      message.denom = "";
-    }
-    if (object.status !== undefined && object.status !== null) {
-      message.status = object.status;
-    } else {
-      message.status = "";
-    }
+    message.address = object.address ?? "";
+    message.blockchain = object.blockchain ?? "";
+    message.transferType = object.transferType ?? "";
+    message.denom = object.denom ?? "";
+    message.status = object.status ?? "";
     if (object.limit !== undefined && object.limit !== null) {
       message.limit = object.limit as Long;
     } else {
       message.limit = Long.UZERO;
     }
-    if (object.orderBy !== undefined && object.orderBy !== null) {
-      message.orderBy = object.orderBy;
-    } else {
-      message.orderBy = "";
-    }
+    message.orderBy = object.orderBy ?? "";
     return message;
   },
 };

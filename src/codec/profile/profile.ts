@@ -83,21 +83,9 @@ export const Profile = {
 
   fromPartial(object: DeepPartial<Profile>): Profile {
     const message = { ...baseProfile } as Profile;
-    if (object.address !== undefined && object.address !== null) {
-      message.address = object.address;
-    } else {
-      message.address = "";
-    }
-    if (object.username !== undefined && object.username !== null) {
-      message.username = object.username;
-    } else {
-      message.username = "";
-    }
-    if (object.twitter !== undefined && object.twitter !== null) {
-      message.twitter = object.twitter;
-    } else {
-      message.twitter = "";
-    }
+    message.address = object.address ?? "";
+    message.username = object.username ?? "";
+    message.twitter = object.twitter ?? "";
     return message;
   },
 };

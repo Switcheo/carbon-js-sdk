@@ -217,11 +217,7 @@ export const QuerySigningInfoRequest = {
     const message = {
       ...baseQuerySigningInfoRequest,
     } as QuerySigningInfoRequest;
-    if (object.consAddress !== undefined && object.consAddress !== null) {
-      message.consAddress = object.consAddress;
-    } else {
-      message.consAddress = "";
-    }
+    message.consAddress = object.consAddress ?? "";
     return message;
   },
 };

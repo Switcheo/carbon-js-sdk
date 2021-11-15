@@ -115,31 +115,11 @@ export const OrderBookEvent = {
 
   fromPartial(object: DeepPartial<OrderBookEvent>): OrderBookEvent {
     const message = { ...baseOrderBookEvent } as OrderBookEvent;
-    if (object.type !== undefined && object.type !== null) {
-      message.type = object.type;
-    } else {
-      message.type = "";
-    }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = object.market;
-    } else {
-      message.market = "";
-    }
-    if (object.side !== undefined && object.side !== null) {
-      message.side = object.side;
-    } else {
-      message.side = "";
-    }
-    if (object.price !== undefined && object.price !== null) {
-      message.price = object.price;
-    } else {
-      message.price = "";
-    }
-    if (object.quantity !== undefined && object.quantity !== null) {
-      message.quantity = object.quantity;
-    } else {
-      message.quantity = "";
-    }
+    message.type = object.type ?? "";
+    message.market = object.market ?? "";
+    message.side = object.side ?? "";
+    message.price = object.price ?? "";
+    message.quantity = object.quantity ?? "";
     return message;
   },
 };

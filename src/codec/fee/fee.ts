@@ -70,16 +70,8 @@ export const MsgFee = {
 
   fromPartial(object: DeepPartial<MsgFee>): MsgFee {
     const message = { ...baseMsgFee } as MsgFee;
-    if (object.msgType !== undefined && object.msgType !== null) {
-      message.msgType = object.msgType;
-    } else {
-      message.msgType = "";
-    }
-    if (object.fee !== undefined && object.fee !== null) {
-      message.fee = object.fee;
-    } else {
-      message.fee = "";
-    }
+    message.msgType = object.msgType ?? "";
+    message.fee = object.fee ?? "";
     return message;
   },
 };

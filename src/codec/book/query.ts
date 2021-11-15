@@ -76,11 +76,7 @@ export const QueryGetBookRequest = {
 
   fromPartial(object: DeepPartial<QueryGetBookRequest>): QueryGetBookRequest {
     const message = { ...baseQueryGetBookRequest } as QueryGetBookRequest;
-    if (object.market !== undefined && object.market !== null) {
-      message.market = object.market;
-    } else {
-      message.market = "";
-    }
+    message.market = object.market ?? "";
     return message;
   },
 };

@@ -76,11 +76,7 @@ export const MsgSetFee = {
 
   fromPartial(object: DeepPartial<MsgSetFee>): MsgSetFee {
     const message = { ...baseMsgSetFee } as MsgSetFee;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
+    message.creator = object.creator ?? "";
     if (object.setFeeParams !== undefined && object.setFeeParams !== null) {
       message.setFeeParams = MsgFee.fromPartial(object.setFeeParams);
     } else {

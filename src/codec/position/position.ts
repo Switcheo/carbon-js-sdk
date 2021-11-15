@@ -160,31 +160,11 @@ export const Position = {
 
   fromPartial(object: DeepPartial<Position>): Position {
     const message = { ...basePosition } as Position;
-    if (object.market !== undefined && object.market !== null) {
-      message.market = object.market;
-    } else {
-      message.market = "";
-    }
-    if (object.address !== undefined && object.address !== null) {
-      message.address = object.address;
-    } else {
-      message.address = "";
-    }
-    if (object.lots !== undefined && object.lots !== null) {
-      message.lots = object.lots;
-    } else {
-      message.lots = "";
-    }
-    if (object.entryPrice !== undefined && object.entryPrice !== null) {
-      message.entryPrice = object.entryPrice;
-    } else {
-      message.entryPrice = "";
-    }
-    if (object.realizedPnl !== undefined && object.realizedPnl !== null) {
-      message.realizedPnl = object.realizedPnl;
-    } else {
-      message.realizedPnl = "";
-    }
+    message.market = object.market ?? "";
+    message.address = object.address ?? "";
+    message.lots = object.lots ?? "";
+    message.entryPrice = object.entryPrice ?? "";
+    message.realizedPnl = object.realizedPnl ?? "";
     if (
       object.allocatedMargin !== undefined &&
       object.allocatedMargin !== null

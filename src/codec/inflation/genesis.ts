@@ -88,14 +88,7 @@ export const GenesisState = {
     } else {
       message.mintData = undefined;
     }
-    if (
-      object.inflationEnabled !== undefined &&
-      object.inflationEnabled !== null
-    ) {
-      message.inflationEnabled = object.inflationEnabled;
-    } else {
-      message.inflationEnabled = false;
-    }
+    message.inflationEnabled = object.inflationEnabled ?? false;
     return message;
   },
 };

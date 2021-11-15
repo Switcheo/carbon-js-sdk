@@ -145,18 +145,18 @@ export const GenesisState = {
 
   fromPartial(object: DeepPartial<GenesisState>): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
-    message.signingInfos = [];
-    message.missedBlocks = [];
     if (object.params !== undefined && object.params !== null) {
       message.params = Params.fromPartial(object.params);
     } else {
       message.params = undefined;
     }
+    message.signingInfos = [];
     if (object.signingInfos !== undefined && object.signingInfos !== null) {
       for (const e of object.signingInfos) {
         message.signingInfos.push(SigningInfo.fromPartial(e));
       }
     }
+    message.missedBlocks = [];
     if (object.missedBlocks !== undefined && object.missedBlocks !== null) {
       for (const e of object.missedBlocks) {
         message.missedBlocks.push(ValidatorMissedBlocks.fromPartial(e));
@@ -241,11 +241,7 @@ export const SigningInfo = {
 
   fromPartial(object: DeepPartial<SigningInfo>): SigningInfo {
     const message = { ...baseSigningInfo } as SigningInfo;
-    if (object.address !== undefined && object.address !== null) {
-      message.address = object.address;
-    } else {
-      message.address = "";
-    }
+    message.address = object.address ?? "";
     if (
       object.validatorSigningInfo !== undefined &&
       object.validatorSigningInfo !== null
@@ -336,12 +332,8 @@ export const ValidatorMissedBlocks = {
     object: DeepPartial<ValidatorMissedBlocks>
   ): ValidatorMissedBlocks {
     const message = { ...baseValidatorMissedBlocks } as ValidatorMissedBlocks;
+    message.address = object.address ?? "";
     message.missedBlocks = [];
-    if (object.address !== undefined && object.address !== null) {
-      message.address = object.address;
-    } else {
-      message.address = "";
-    }
     if (object.missedBlocks !== undefined && object.missedBlocks !== null) {
       for (const e of object.missedBlocks) {
         message.missedBlocks.push(MissedBlock.fromPartial(e));
@@ -418,11 +410,7 @@ export const MissedBlock = {
     } else {
       message.index = Long.ZERO;
     }
-    if (object.missed !== undefined && object.missed !== null) {
-      message.missed = object.missed;
-    } else {
-      message.missed = false;
-    }
+    message.missed = object.missed ?? false;
     return message;
   },
 };

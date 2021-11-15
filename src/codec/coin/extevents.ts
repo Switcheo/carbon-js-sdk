@@ -254,79 +254,20 @@ export const ExternalTransfer = {
 
   fromPartial(object: DeepPartial<ExternalTransfer>): ExternalTransfer {
     const message = { ...baseExternalTransfer } as ExternalTransfer;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = object.id;
-    } else {
-      message.id = "";
-    }
-    if (object.blockchain !== undefined && object.blockchain !== null) {
-      message.blockchain = object.blockchain;
-    } else {
-      message.blockchain = "";
-    }
-    if (object.blockHeight !== undefined && object.blockHeight !== null) {
-      message.blockHeight = object.blockHeight;
-    } else {
-      message.blockHeight = "";
-    }
-    if (
-      object.transactionHash !== undefined &&
-      object.transactionHash !== null
-    ) {
-      message.transactionHash = object.transactionHash;
-    } else {
-      message.transactionHash = "";
-    }
-    if (object.contractHash !== undefined && object.contractHash !== null) {
-      message.contractHash = object.contractHash;
-    } else {
-      message.contractHash = "";
-    }
-    if (object.transferType !== undefined && object.transferType !== null) {
-      message.transferType = object.transferType;
-    } else {
-      message.transferType = "";
-    }
-    if (object.address !== undefined && object.address !== null) {
-      message.address = object.address;
-    } else {
-      message.address = "";
-    }
-    if (object.denom !== undefined && object.denom !== null) {
-      message.denom = object.denom;
-    } else {
-      message.denom = "";
-    }
-    if (object.amount !== undefined && object.amount !== null) {
-      message.amount = object.amount;
-    } else {
-      message.amount = "";
-    }
-    if (object.feeAmount !== undefined && object.feeAmount !== null) {
-      message.feeAmount = object.feeAmount;
-    } else {
-      message.feeAmount = "";
-    }
-    if (object.status !== undefined && object.status !== null) {
-      message.status = object.status;
-    } else {
-      message.status = "";
-    }
-    if (object.timestamp !== undefined && object.timestamp !== null) {
-      message.timestamp = object.timestamp;
-    } else {
-      message.timestamp = undefined;
-    }
-    if (object.paramsHash !== undefined && object.paramsHash !== null) {
-      message.paramsHash = object.paramsHash;
-    } else {
-      message.paramsHash = "";
-    }
-    if (object.feeAddress !== undefined && object.feeAddress !== null) {
-      message.feeAddress = object.feeAddress;
-    } else {
-      message.feeAddress = "";
-    }
+    message.id = object.id ?? "";
+    message.blockchain = object.blockchain ?? "";
+    message.blockHeight = object.blockHeight ?? "";
+    message.transactionHash = object.transactionHash ?? "";
+    message.contractHash = object.contractHash ?? "";
+    message.transferType = object.transferType ?? "";
+    message.address = object.address ?? "";
+    message.denom = object.denom ?? "";
+    message.amount = object.amount ?? "";
+    message.feeAmount = object.feeAmount ?? "";
+    message.status = object.status ?? "";
+    message.timestamp = object.timestamp ?? undefined;
+    message.paramsHash = object.paramsHash ?? "";
+    message.feeAddress = object.feeAddress ?? "";
     return message;
   },
 };

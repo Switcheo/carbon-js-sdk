@@ -173,15 +173,12 @@ export const GenesisState = {
   fromPartial(object: DeepPartial<GenesisState>): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
     message.tokens = [];
-    message.wrapperMappings = {};
-    message.lockedCoins = [];
-    message.positionPools = [];
-    message.bridges = [];
     if (object.tokens !== undefined && object.tokens !== null) {
       for (const e of object.tokens) {
         message.tokens.push(Token.fromPartial(e));
       }
     }
+    message.wrapperMappings = {};
     if (
       object.wrapperMappings !== undefined &&
       object.wrapperMappings !== null
@@ -192,16 +189,19 @@ export const GenesisState = {
         }
       });
     }
+    message.lockedCoins = [];
     if (object.lockedCoins !== undefined && object.lockedCoins !== null) {
       for (const e of object.lockedCoins) {
         message.lockedCoins.push(LockedCoinsRecord.fromPartial(e));
       }
     }
+    message.positionPools = [];
     if (object.positionPools !== undefined && object.positionPools !== null) {
       for (const e of object.positionPools) {
         message.positionPools.push(PositionPool.fromPartial(e));
       }
     }
+    message.bridges = [];
     if (object.bridges !== undefined && object.bridges !== null) {
       for (const e of object.bridges) {
         message.bridges.push(Bridge.fromPartial(e));
@@ -283,16 +283,8 @@ export const GenesisState_WrapperMappingsEntry = {
     const message = {
       ...baseGenesisState_WrapperMappingsEntry,
     } as GenesisState_WrapperMappingsEntry;
-    if (object.key !== undefined && object.key !== null) {
-      message.key = object.key;
-    } else {
-      message.key = "";
-    }
-    if (object.value !== undefined && object.value !== null) {
-      message.value = object.value;
-    } else {
-      message.value = "";
-    }
+    message.key = object.key ?? "";
+    message.value = object.value ?? "";
     return message;
   },
 };

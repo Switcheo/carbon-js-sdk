@@ -111,11 +111,7 @@ export const Vault = {
     } else {
       message.vaultTypeId = Long.UZERO;
     }
-    if (object.address !== undefined && object.address !== null) {
-      message.address = object.address;
-    } else {
-      message.address = "";
-    }
+    message.address = object.address ?? "";
     if (object.collateral !== undefined && object.collateral !== null) {
       message.collateral = Coin.fromPartial(object.collateral);
     } else {
@@ -234,27 +230,9 @@ export const VaultType = {
     } else {
       message.vaultTypeId = Long.UZERO;
     }
-    if (
-      object.collateralDenom !== undefined &&
-      object.collateralDenom !== null
-    ) {
-      message.collateralDenom = object.collateralDenom;
-    } else {
-      message.collateralDenom = "";
-    }
-    if (
-      object.collateralizationRatio !== undefined &&
-      object.collateralizationRatio !== null
-    ) {
-      message.collateralizationRatio = object.collateralizationRatio;
-    } else {
-      message.collateralizationRatio = "";
-    }
-    if (object.debtDenom !== undefined && object.debtDenom !== null) {
-      message.debtDenom = object.debtDenom;
-    } else {
-      message.debtDenom = "";
-    }
+    message.collateralDenom = object.collateralDenom ?? "";
+    message.collateralizationRatio = object.collateralizationRatio ?? "";
+    message.debtDenom = object.debtDenom ?? "";
     return message;
   },
 };

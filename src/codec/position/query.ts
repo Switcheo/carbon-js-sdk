@@ -100,16 +100,8 @@ export const QueryGetPositionRequest = {
     const message = {
       ...baseQueryGetPositionRequest,
     } as QueryGetPositionRequest;
-    if (object.address !== undefined && object.address !== null) {
-      message.address = object.address;
-    } else {
-      message.address = "";
-    }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = object.market;
-    } else {
-      message.market = "";
-    }
+    message.address = object.address ?? "";
+    message.market = object.market ?? "";
     return message;
   },
 };
@@ -316,11 +308,7 @@ export const QueryAllPositionRequest = {
     const message = {
       ...baseQueryAllPositionRequest,
     } as QueryAllPositionRequest;
-    if (object.address !== undefined && object.address !== null) {
-      message.address = object.address;
-    } else {
-      message.address = "";
-    }
+    message.address = object.address ?? "";
     if (object.beforeId !== undefined && object.beforeId !== null) {
       message.beforeId = object.beforeId as Long;
     } else {
@@ -331,21 +319,13 @@ export const QueryAllPositionRequest = {
     } else {
       message.afterId = Long.UZERO;
     }
-    if (object.orderBy !== undefined && object.orderBy !== null) {
-      message.orderBy = object.orderBy;
-    } else {
-      message.orderBy = "";
-    }
+    message.orderBy = object.orderBy ?? "";
     if (object.limits !== undefined && object.limits !== null) {
       message.limits = object.limits as Long;
     } else {
       message.limits = Long.UZERO;
     }
-    if (object.status !== undefined && object.status !== null) {
-      message.status = object.status;
-    } else {
-      message.status = "";
-    }
+    message.status = object.status ?? "";
     return message;
   },
 };

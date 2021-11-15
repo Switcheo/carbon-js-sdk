@@ -72,11 +72,7 @@ export const PubKey = {
 
   fromPartial(object: DeepPartial<PubKey>): PubKey {
     const message = { ...basePubKey } as PubKey;
-    if (object.key !== undefined && object.key !== null) {
-      message.key = object.key;
-    } else {
-      message.key = new Uint8Array();
-    }
+    message.key = object.key ?? new Uint8Array();
     return message;
   },
 };
@@ -133,11 +129,7 @@ export const PrivKey = {
 
   fromPartial(object: DeepPartial<PrivKey>): PrivKey {
     const message = { ...basePrivKey } as PrivKey;
-    if (object.key !== undefined && object.key !== null) {
-      message.key = object.key;
-    } else {
-      message.key = new Uint8Array();
-    }
+    message.key = object.key ?? new Uint8Array();
     return message;
   },
 };

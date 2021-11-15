@@ -217,70 +217,17 @@ export const PriceSet = {
 
   fromPartial(object: DeepPartial<PriceSet>): PriceSet {
     const message = { ...basePriceSet } as PriceSet;
-    if (object.last !== undefined && object.last !== null) {
-      message.last = object.last;
-    } else {
-      message.last = "";
-    }
-    if (object.index !== undefined && object.index !== null) {
-      message.index = object.index;
-    } else {
-      message.index = "";
-    }
-    if (object.fair !== undefined && object.fair !== null) {
-      message.fair = object.fair;
-    } else {
-      message.fair = "";
-    }
-    if (object.mark !== undefined && object.mark !== null) {
-      message.mark = object.mark;
-    } else {
-      message.mark = "";
-    }
-    if (object.markAvg !== undefined && object.markAvg !== null) {
-      message.markAvg = object.markAvg;
-    } else {
-      message.markAvg = "";
-    }
-    if (object.settlement !== undefined && object.settlement !== null) {
-      message.settlement = object.settlement;
-    } else {
-      message.settlement = "";
-    }
-    if (
-      object.fairIndexDeltaAvg !== undefined &&
-      object.fairIndexDeltaAvg !== null
-    ) {
-      message.fairIndexDeltaAvg = object.fairIndexDeltaAvg;
-    } else {
-      message.fairIndexDeltaAvg = "";
-    }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = object.market;
-    } else {
-      message.market = "";
-    }
-    if (
-      object.markingStrategy !== undefined &&
-      object.markingStrategy !== null
-    ) {
-      message.markingStrategy = object.markingStrategy;
-    } else {
-      message.markingStrategy = "";
-    }
-    if (object.indexUpdatedAt !== undefined && object.indexUpdatedAt !== null) {
-      message.indexUpdatedAt = object.indexUpdatedAt;
-    } else {
-      message.indexUpdatedAt = undefined;
-    }
-    if (
-      object.settlementCounter !== undefined &&
-      object.settlementCounter !== null
-    ) {
-      message.settlementCounter = object.settlementCounter;
-    } else {
-      message.settlementCounter = "";
-    }
+    message.last = object.last ?? "";
+    message.index = object.index ?? "";
+    message.fair = object.fair ?? "";
+    message.mark = object.mark ?? "";
+    message.markAvg = object.markAvg ?? "";
+    message.settlement = object.settlement ?? "";
+    message.fairIndexDeltaAvg = object.fairIndexDeltaAvg ?? "";
+    message.market = object.market ?? "";
+    message.markingStrategy = object.markingStrategy ?? "";
+    message.indexUpdatedAt = object.indexUpdatedAt ?? undefined;
+    message.settlementCounter = object.settlementCounter ?? "";
     return message;
   },
 };

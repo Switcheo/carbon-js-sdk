@@ -95,16 +95,8 @@ export const QueryGetLeverageRequest = {
     const message = {
       ...baseQueryGetLeverageRequest,
     } as QueryGetLeverageRequest;
-    if (object.address !== undefined && object.address !== null) {
-      message.address = object.address;
-    } else {
-      message.address = "";
-    }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = object.market;
-    } else {
-      message.market = "";
-    }
+    message.address = object.address ?? "";
+    message.market = object.market ?? "";
     return message;
   },
 };
@@ -249,11 +241,7 @@ export const QueryAllLeverageRequest = {
     const message = {
       ...baseQueryAllLeverageRequest,
     } as QueryAllLeverageRequest;
-    if (object.address !== undefined && object.address !== null) {
-      message.address = object.address;
-    } else {
-      message.address = "";
-    }
+    message.address = object.address ?? "";
     return message;
   },
 };

@@ -300,12 +300,6 @@ export const GenesisState = {
   fromPartial(object: DeepPartial<GenesisState>): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
     message.pools = [];
-    message.commitmentExpiries = [];
-    message.commitmentWithKeys = [];
-    message.commitmentTotalsWithKeys = [];
-    message.rewardHistoriesWithKeys = [];
-    message.allLastClaimedWithKeys = [];
-    message.totalAllocated = [];
     if (object.pools !== undefined && object.pools !== null) {
       for (const e of object.pools) {
         message.pools.push(Pool.fromPartial(e));
@@ -326,6 +320,7 @@ export const GenesisState = {
     } else {
       message.commitmentCurve = undefined;
     }
+    message.commitmentExpiries = [];
     if (
       object.commitmentExpiries !== undefined &&
       object.commitmentExpiries !== null
@@ -334,6 +329,7 @@ export const GenesisState = {
         message.commitmentExpiries.push(CommitmentExpiryIndex.fromPartial(e));
       }
     }
+    message.commitmentWithKeys = [];
     if (
       object.commitmentWithKeys !== undefined &&
       object.commitmentWithKeys !== null
@@ -342,6 +338,7 @@ export const GenesisState = {
         message.commitmentWithKeys.push(CommitmentWithKey.fromPartial(e));
       }
     }
+    message.commitmentTotalsWithKeys = [];
     if (
       object.commitmentTotalsWithKeys !== undefined &&
       object.commitmentTotalsWithKeys !== null
@@ -352,6 +349,7 @@ export const GenesisState = {
         );
       }
     }
+    message.rewardHistoriesWithKeys = [];
     if (
       object.rewardHistoriesWithKeys !== undefined &&
       object.rewardHistoriesWithKeys !== null
@@ -362,6 +360,7 @@ export const GenesisState = {
         );
       }
     }
+    message.allLastClaimedWithKeys = [];
     if (
       object.allLastClaimedWithKeys !== undefined &&
       object.allLastClaimedWithKeys !== null
@@ -370,6 +369,7 @@ export const GenesisState = {
         message.allLastClaimedWithKeys.push(LastClaimedWithKey.fromPartial(e));
       }
     }
+    message.totalAllocated = [];
     if (object.totalAllocated !== undefined && object.totalAllocated !== null) {
       for (const e of object.totalAllocated) {
         message.totalAllocated.push(DecCoin.fromPartial(e));

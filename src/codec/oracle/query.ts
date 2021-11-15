@@ -107,11 +107,7 @@ export const QueryOracleInfoRequest = {
     object: DeepPartial<QueryOracleInfoRequest>
   ): QueryOracleInfoRequest {
     const message = { ...baseQueryOracleInfoRequest } as QueryOracleInfoRequest;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = object.id;
-    } else {
-      message.id = "";
-    }
+    message.id = object.id ?? "";
     return message;
   },
 };
@@ -731,11 +727,7 @@ export const QueryVoterPowerRequest = {
     object: DeepPartial<QueryVoterPowerRequest>
   ): QueryVoterPowerRequest {
     const message = { ...baseQueryVoterPowerRequest } as QueryVoterPowerRequest;
-    if (object.address !== undefined && object.address !== null) {
-      message.address = object.address;
-    } else {
-      message.address = "";
-    }
+    message.address = object.address ?? "";
     return message;
   },
 };
@@ -800,11 +792,7 @@ export const QueryVoterPowerResponse = {
     const message = {
       ...baseQueryVoterPowerResponse,
     } as QueryVoterPowerResponse;
-    if (object.Power !== undefined && object.Power !== null) {
-      message.Power = object.Power;
-    } else {
-      message.Power = "";
-    }
+    message.Power = object.Power ?? "";
     return message;
   },
 };

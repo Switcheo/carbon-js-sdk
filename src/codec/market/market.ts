@@ -527,36 +527,12 @@ export const Market = {
 
   fromPartial(object: DeepPartial<Market>): Market {
     const message = { ...baseMarket } as Market;
-    if (object.name !== undefined && object.name !== null) {
-      message.name = object.name;
-    } else {
-      message.name = "";
-    }
-    if (object.displayName !== undefined && object.displayName !== null) {
-      message.displayName = object.displayName;
-    } else {
-      message.displayName = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = object.description;
-    } else {
-      message.description = "";
-    }
-    if (object.marketType !== undefined && object.marketType !== null) {
-      message.marketType = object.marketType;
-    } else {
-      message.marketType = "";
-    }
-    if (object.base !== undefined && object.base !== null) {
-      message.base = object.base;
-    } else {
-      message.base = "";
-    }
-    if (object.quote !== undefined && object.quote !== null) {
-      message.quote = object.quote;
-    } else {
-      message.quote = "";
-    }
+    message.name = object.name ?? "";
+    message.displayName = object.displayName ?? "";
+    message.description = object.description ?? "";
+    message.marketType = object.marketType ?? "";
+    message.base = object.base ?? "";
+    message.quote = object.quote ?? "";
     if (object.basePrecision !== undefined && object.basePrecision !== null) {
       message.basePrecision = object.basePrecision as Long;
     } else {
@@ -567,31 +543,11 @@ export const Market = {
     } else {
       message.quotePrecision = Long.ZERO;
     }
-    if (object.lotSize !== undefined && object.lotSize !== null) {
-      message.lotSize = object.lotSize;
-    } else {
-      message.lotSize = "";
-    }
-    if (object.tickSize !== undefined && object.tickSize !== null) {
-      message.tickSize = object.tickSize;
-    } else {
-      message.tickSize = "";
-    }
-    if (object.minQuantity !== undefined && object.minQuantity !== null) {
-      message.minQuantity = object.minQuantity;
-    } else {
-      message.minQuantity = "";
-    }
-    if (object.makerFee !== undefined && object.makerFee !== null) {
-      message.makerFee = object.makerFee;
-    } else {
-      message.makerFee = "";
-    }
-    if (object.takerFee !== undefined && object.takerFee !== null) {
-      message.takerFee = object.takerFee;
-    } else {
-      message.takerFee = "";
-    }
+    message.lotSize = object.lotSize ?? "";
+    message.tickSize = object.tickSize ?? "";
+    message.minQuantity = object.minQuantity ?? "";
+    message.makerFee = object.makerFee ?? "";
+    message.takerFee = object.takerFee ?? "";
     if (
       object.createdBlockHeight !== undefined &&
       object.createdBlockHeight !== null
@@ -600,43 +556,11 @@ export const Market = {
     } else {
       message.createdBlockHeight = Long.UZERO;
     }
-    if (object.riskStepSize !== undefined && object.riskStepSize !== null) {
-      message.riskStepSize = object.riskStepSize;
-    } else {
-      message.riskStepSize = "";
-    }
-    if (
-      object.initialMarginBase !== undefined &&
-      object.initialMarginBase !== null
-    ) {
-      message.initialMarginBase = object.initialMarginBase;
-    } else {
-      message.initialMarginBase = "";
-    }
-    if (
-      object.initialMarginStep !== undefined &&
-      object.initialMarginStep !== null
-    ) {
-      message.initialMarginStep = object.initialMarginStep;
-    } else {
-      message.initialMarginStep = "";
-    }
-    if (
-      object.maintenanceMarginRatio !== undefined &&
-      object.maintenanceMarginRatio !== null
-    ) {
-      message.maintenanceMarginRatio = object.maintenanceMarginRatio;
-    } else {
-      message.maintenanceMarginRatio = "";
-    }
-    if (
-      object.maxLiquidationOrderTicket !== undefined &&
-      object.maxLiquidationOrderTicket !== null
-    ) {
-      message.maxLiquidationOrderTicket = object.maxLiquidationOrderTicket;
-    } else {
-      message.maxLiquidationOrderTicket = "";
-    }
+    message.riskStepSize = object.riskStepSize ?? "";
+    message.initialMarginBase = object.initialMarginBase ?? "";
+    message.initialMarginStep = object.initialMarginStep ?? "";
+    message.maintenanceMarginRatio = object.maintenanceMarginRatio ?? "";
+    message.maxLiquidationOrderTicket = object.maxLiquidationOrderTicket ?? "";
     if (
       object.maxLiquidationOrderDuration !== undefined &&
       object.maxLiquidationOrderDuration !== null
@@ -647,44 +571,13 @@ export const Market = {
     } else {
       message.maxLiquidationOrderDuration = undefined;
     }
-    if (object.impactSize !== undefined && object.impactSize !== null) {
-      message.impactSize = object.impactSize;
-    } else {
-      message.impactSize = "";
-    }
-    if (object.markPriceBand !== undefined && object.markPriceBand !== null) {
-      message.markPriceBand = object.markPriceBand;
-    } else {
-      message.markPriceBand = 0;
-    }
-    if (
-      object.lastPriceProtectedBand !== undefined &&
-      object.lastPriceProtectedBand !== null
-    ) {
-      message.lastPriceProtectedBand = object.lastPriceProtectedBand;
-    } else {
-      message.lastPriceProtectedBand = 0;
-    }
-    if (object.indexOracleId !== undefined && object.indexOracleId !== null) {
-      message.indexOracleId = object.indexOracleId;
-    } else {
-      message.indexOracleId = "";
-    }
-    if (object.expiryTime !== undefined && object.expiryTime !== null) {
-      message.expiryTime = object.expiryTime;
-    } else {
-      message.expiryTime = undefined;
-    }
-    if (object.isActive !== undefined && object.isActive !== null) {
-      message.isActive = object.isActive;
-    } else {
-      message.isActive = false;
-    }
-    if (object.isSettled !== undefined && object.isSettled !== null) {
-      message.isSettled = object.isSettled;
-    } else {
-      message.isSettled = false;
-    }
+    message.impactSize = object.impactSize ?? "";
+    message.markPriceBand = object.markPriceBand ?? 0;
+    message.lastPriceProtectedBand = object.lastPriceProtectedBand ?? 0;
+    message.indexOracleId = object.indexOracleId ?? "";
+    message.expiryTime = object.expiryTime ?? undefined;
+    message.isActive = object.isActive ?? false;
+    message.isSettled = object.isSettled ?? false;
     if (
       object.closedBlockHeight !== undefined &&
       object.closedBlockHeight !== null
@@ -1031,83 +924,19 @@ export const MarketParams = {
 
   fromPartial(object: DeepPartial<MarketParams>): MarketParams {
     const message = { ...baseMarketParams } as MarketParams;
-    if (object.name !== undefined && object.name !== null) {
-      message.name = object.name;
-    } else {
-      message.name = "";
-    }
-    if (object.displayName !== undefined && object.displayName !== null) {
-      message.displayName = object.displayName;
-    } else {
-      message.displayName = undefined;
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = object.description;
-    } else {
-      message.description = undefined;
-    }
-    if (object.lotSize !== undefined && object.lotSize !== null) {
-      message.lotSize = object.lotSize;
-    } else {
-      message.lotSize = "";
-    }
-    if (object.tickSize !== undefined && object.tickSize !== null) {
-      message.tickSize = object.tickSize;
-    } else {
-      message.tickSize = "";
-    }
-    if (object.minQuantity !== undefined && object.minQuantity !== null) {
-      message.minQuantity = object.minQuantity;
-    } else {
-      message.minQuantity = "";
-    }
-    if (object.makerFee !== undefined && object.makerFee !== null) {
-      message.makerFee = object.makerFee;
-    } else {
-      message.makerFee = "";
-    }
-    if (object.takerFee !== undefined && object.takerFee !== null) {
-      message.takerFee = object.takerFee;
-    } else {
-      message.takerFee = "";
-    }
-    if (object.riskStepSize !== undefined && object.riskStepSize !== null) {
-      message.riskStepSize = object.riskStepSize;
-    } else {
-      message.riskStepSize = "";
-    }
-    if (
-      object.initialMarginBase !== undefined &&
-      object.initialMarginBase !== null
-    ) {
-      message.initialMarginBase = object.initialMarginBase;
-    } else {
-      message.initialMarginBase = "";
-    }
-    if (
-      object.initialMarginStep !== undefined &&
-      object.initialMarginStep !== null
-    ) {
-      message.initialMarginStep = object.initialMarginStep;
-    } else {
-      message.initialMarginStep = "";
-    }
-    if (
-      object.maintenanceMarginRatio !== undefined &&
-      object.maintenanceMarginRatio !== null
-    ) {
-      message.maintenanceMarginRatio = object.maintenanceMarginRatio;
-    } else {
-      message.maintenanceMarginRatio = "";
-    }
-    if (
-      object.maxLiquidationOrderTicket !== undefined &&
-      object.maxLiquidationOrderTicket !== null
-    ) {
-      message.maxLiquidationOrderTicket = object.maxLiquidationOrderTicket;
-    } else {
-      message.maxLiquidationOrderTicket = "";
-    }
+    message.name = object.name ?? "";
+    message.displayName = object.displayName ?? undefined;
+    message.description = object.description ?? undefined;
+    message.lotSize = object.lotSize ?? "";
+    message.tickSize = object.tickSize ?? "";
+    message.minQuantity = object.minQuantity ?? "";
+    message.makerFee = object.makerFee ?? "";
+    message.takerFee = object.takerFee ?? "";
+    message.riskStepSize = object.riskStepSize ?? "";
+    message.initialMarginBase = object.initialMarginBase ?? "";
+    message.initialMarginStep = object.initialMarginStep ?? "";
+    message.maintenanceMarginRatio = object.maintenanceMarginRatio ?? "";
+    message.maxLiquidationOrderTicket = object.maxLiquidationOrderTicket ?? "";
     if (
       object.maxLiquidationOrderDuration !== undefined &&
       object.maxLiquidationOrderDuration !== null
@@ -1118,29 +947,10 @@ export const MarketParams = {
     } else {
       message.maxLiquidationOrderDuration = undefined;
     }
-    if (object.impactSize !== undefined && object.impactSize !== null) {
-      message.impactSize = object.impactSize;
-    } else {
-      message.impactSize = "";
-    }
-    if (object.markPriceBand !== undefined && object.markPriceBand !== null) {
-      message.markPriceBand = object.markPriceBand;
-    } else {
-      message.markPriceBand = undefined;
-    }
-    if (
-      object.lastPriceProtectedBand !== undefined &&
-      object.lastPriceProtectedBand !== null
-    ) {
-      message.lastPriceProtectedBand = object.lastPriceProtectedBand;
-    } else {
-      message.lastPriceProtectedBand = undefined;
-    }
-    if (object.isActive !== undefined && object.isActive !== null) {
-      message.isActive = object.isActive;
-    } else {
-      message.isActive = undefined;
-    }
+    message.impactSize = object.impactSize ?? "";
+    message.markPriceBand = object.markPriceBand ?? undefined;
+    message.lastPriceProtectedBand = object.lastPriceProtectedBand ?? undefined;
+    message.isActive = object.isActive ?? undefined;
     return message;
   },
 };

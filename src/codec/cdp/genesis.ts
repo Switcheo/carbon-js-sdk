@@ -89,12 +89,12 @@ export const GenesisState = {
   fromPartial(object: DeepPartial<GenesisState>): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
     message.vaults = [];
-    message.vaultTypes = [];
     if (object.vaults !== undefined && object.vaults !== null) {
       for (const e of object.vaults) {
         message.vaults.push(Vault.fromPartial(e));
       }
     }
+    message.vaultTypes = [];
     if (object.vaultTypes !== undefined && object.vaultTypes !== null) {
       for (const e of object.vaultTypes) {
         message.vaultTypes.push(VaultType.fromPartial(e));

@@ -159,14 +159,12 @@ export const GenesisState = {
   fromPartial(object: DeepPartial<GenesisState>): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
     message.orders = [];
-    message.accountOrderIds = [];
-    message.accountSequences = [];
-    message.flags = [];
     if (object.orders !== undefined && object.orders !== null) {
       for (const e of object.orders) {
         message.orders.push(Order.fromPartial(e));
       }
     }
+    message.accountOrderIds = [];
     if (
       object.accountOrderIds !== undefined &&
       object.accountOrderIds !== null
@@ -175,6 +173,7 @@ export const GenesisState = {
         message.accountOrderIds.push(GenesisAccountOrderIDs.fromPartial(e));
       }
     }
+    message.accountSequences = [];
     if (
       object.accountSequences !== undefined &&
       object.accountSequences !== null
@@ -183,6 +182,7 @@ export const GenesisState = {
         message.accountSequences.push(GenesisAccountSequence.fromPartial(e));
       }
     }
+    message.flags = [];
     if (object.flags !== undefined && object.flags !== null) {
       for (const e of object.flags) {
         message.flags.push(GenesisFlag.fromPartial(e));
@@ -273,16 +273,8 @@ export const GenesisAccountOrderIDs = {
     object: DeepPartial<GenesisAccountOrderIDs>
   ): GenesisAccountOrderIDs {
     const message = { ...baseGenesisAccountOrderIDs } as GenesisAccountOrderIDs;
-    if (object.address !== undefined && object.address !== null) {
-      message.address = object.address;
-    } else {
-      message.address = "";
-    }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = object.market;
-    } else {
-      message.market = "";
-    }
+    message.address = object.address ?? "";
+    message.market = object.market ?? "";
     if (object.openOrderIds !== undefined && object.openOrderIds !== null) {
       message.openOrderIds = OrderIDs.fromPartial(object.openOrderIds);
     } else {
@@ -362,11 +354,7 @@ export const GenesisAccountSequence = {
     object: DeepPartial<GenesisAccountSequence>
   ): GenesisAccountSequence {
     const message = { ...baseGenesisAccountSequence } as GenesisAccountSequence;
-    if (object.address !== undefined && object.address !== null) {
-      message.address = object.address;
-    } else {
-      message.address = "";
-    }
+    message.address = object.address ?? "";
     if (object.sequenceNumber !== undefined && object.sequenceNumber !== null) {
       message.sequenceNumber = object.sequenceNumber as Long;
     } else {
@@ -441,19 +429,8 @@ export const GenesisFlag = {
 
   fromPartial(object: DeepPartial<GenesisFlag>): GenesisFlag {
     const message = { ...baseGenesisFlag } as GenesisFlag;
-    if (object.blockchain !== undefined && object.blockchain !== null) {
-      message.blockchain = object.blockchain;
-    } else {
-      message.blockchain = "";
-    }
-    if (
-      object.isTradingEnabled !== undefined &&
-      object.isTradingEnabled !== null
-    ) {
-      message.isTradingEnabled = object.isTradingEnabled;
-    } else {
-      message.isTradingEnabled = false;
-    }
+    message.blockchain = object.blockchain ?? "";
+    message.isTradingEnabled = object.isTradingEnabled ?? false;
     return message;
   },
 };

@@ -113,11 +113,7 @@ export const QueryGetVaultRequest = {
 
   fromPartial(object: DeepPartial<QueryGetVaultRequest>): QueryGetVaultRequest {
     const message = { ...baseQueryGetVaultRequest } as QueryGetVaultRequest;
-    if (object.address !== undefined && object.address !== null) {
-      message.address = object.address;
-    } else {
-      message.address = "";
-    }
+    message.address = object.address ?? "";
     if (object.vaultTypeId !== undefined && object.vaultTypeId !== null) {
       message.vaultTypeId = object.vaultTypeId as Long;
     } else {

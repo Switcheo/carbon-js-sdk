@@ -81,11 +81,7 @@ export const QueryGetMarketRequest = {
     object: DeepPartial<QueryGetMarketRequest>
   ): QueryGetMarketRequest {
     const message = { ...baseQueryGetMarketRequest } as QueryGetMarketRequest;
-    if (object.name !== undefined && object.name !== null) {
-      message.name = object.name;
-    } else {
-      message.name = "";
-    }
+    message.name = object.name ?? "";
     return message;
   },
 };

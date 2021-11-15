@@ -178,51 +178,19 @@ export const Candlestick = {
 
   fromPartial(object: DeepPartial<Candlestick>): Candlestick {
     const message = { ...baseCandlestick } as Candlestick;
-    if (object.market !== undefined && object.market !== null) {
-      message.market = object.market;
-    } else {
-      message.market = "";
-    }
-    if (object.time !== undefined && object.time !== null) {
-      message.time = object.time;
-    } else {
-      message.time = undefined;
-    }
+    message.market = object.market ?? "";
+    message.time = object.time ?? undefined;
     if (object.resolution !== undefined && object.resolution !== null) {
       message.resolution = object.resolution as Long;
     } else {
       message.resolution = Long.UZERO;
     }
-    if (object.open !== undefined && object.open !== null) {
-      message.open = object.open;
-    } else {
-      message.open = "";
-    }
-    if (object.close !== undefined && object.close !== null) {
-      message.close = object.close;
-    } else {
-      message.close = "";
-    }
-    if (object.high !== undefined && object.high !== null) {
-      message.high = object.high;
-    } else {
-      message.high = "";
-    }
-    if (object.low !== undefined && object.low !== null) {
-      message.low = object.low;
-    } else {
-      message.low = "";
-    }
-    if (object.volume !== undefined && object.volume !== null) {
-      message.volume = object.volume;
-    } else {
-      message.volume = "";
-    }
-    if (object.quoteVolume !== undefined && object.quoteVolume !== null) {
-      message.quoteVolume = object.quoteVolume;
-    } else {
-      message.quoteVolume = "";
-    }
+    message.open = object.open ?? "";
+    message.close = object.close ?? "";
+    message.high = object.high ?? "";
+    message.low = object.low ?? "";
+    message.volume = object.volume ?? "";
+    message.quoteVolume = object.quoteVolume ?? "";
     return message;
   },
 };

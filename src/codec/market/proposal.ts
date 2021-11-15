@@ -95,16 +95,8 @@ export const CreateMarketProposal = {
 
   fromPartial(object: DeepPartial<CreateMarketProposal>): CreateMarketProposal {
     const message = { ...baseCreateMarketProposal } as CreateMarketProposal;
-    if (object.title !== undefined && object.title !== null) {
-      message.title = object.title;
-    } else {
-      message.title = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = object.description;
-    } else {
-      message.description = "";
-    }
+    message.title = object.title ?? "";
+    message.description = object.description ?? "";
     if (object.msg !== undefined && object.msg !== null) {
       message.msg = Market.fromPartial(object.msg);
     } else {
@@ -192,16 +184,8 @@ export const UpdateMarketProposal = {
 
   fromPartial(object: DeepPartial<UpdateMarketProposal>): UpdateMarketProposal {
     const message = { ...baseUpdateMarketProposal } as UpdateMarketProposal;
-    if (object.title !== undefined && object.title !== null) {
-      message.title = object.title;
-    } else {
-      message.title = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = object.description;
-    } else {
-      message.description = "";
-    }
+    message.title = object.title ?? "";
+    message.description = object.description ?? "";
     if (object.msg !== undefined && object.msg !== null) {
       message.msg = MarketParams.fromPartial(object.msg);
     } else {

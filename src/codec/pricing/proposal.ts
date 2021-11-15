@@ -106,16 +106,8 @@ export const SettlementPriceProposal = {
     const message = {
       ...baseSettlementPriceProposal,
     } as SettlementPriceProposal;
-    if (object.title !== undefined && object.title !== null) {
-      message.title = object.title;
-    } else {
-      message.title = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = object.description;
-    } else {
-      message.description = "";
-    }
+    message.title = object.title ?? "";
+    message.description = object.description ?? "";
     if (object.msg !== undefined && object.msg !== null) {
       message.msg = SettlementPriceParams.fromPartial(object.msg);
     } else {
@@ -195,19 +187,8 @@ export const SettlementPriceParams = {
     object: DeepPartial<SettlementPriceParams>
   ): SettlementPriceParams {
     const message = { ...baseSettlementPriceParams } as SettlementPriceParams;
-    if (object.market !== undefined && object.market !== null) {
-      message.market = object.market;
-    } else {
-      message.market = "";
-    }
-    if (
-      object.settlementPrice !== undefined &&
-      object.settlementPrice !== null
-    ) {
-      message.settlementPrice = object.settlementPrice;
-    } else {
-      message.settlementPrice = "";
-    }
+    message.market = object.market ?? "";
+    message.settlementPrice = object.settlementPrice ?? "";
     return message;
   },
 };

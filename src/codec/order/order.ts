@@ -416,21 +416,13 @@ export const Order = {
 
   fromPartial(object: DeepPartial<Order>): Order {
     const message = { ...baseOrder } as Order;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = object.id;
-    } else {
-      message.id = "";
-    }
+    message.id = object.id ?? "";
     if (object.blockHeight !== undefined && object.blockHeight !== null) {
       message.blockHeight = object.blockHeight as Long;
     } else {
       message.blockHeight = Long.ZERO;
     }
-    if (object.blockCreatedAt !== undefined && object.blockCreatedAt !== null) {
-      message.blockCreatedAt = object.blockCreatedAt;
-    } else {
-      message.blockCreatedAt = undefined;
-    }
+    message.blockCreatedAt = object.blockCreatedAt ?? undefined;
     if (
       object.triggeredBlockHeight !== undefined &&
       object.triggeredBlockHeight !== null
@@ -439,71 +431,19 @@ export const Order = {
     } else {
       message.triggeredBlockHeight = Long.ZERO;
     }
-    if (object.address !== undefined && object.address !== null) {
-      message.address = object.address;
-    } else {
-      message.address = "";
-    }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = object.market;
-    } else {
-      message.market = "";
-    }
-    if (object.side !== undefined && object.side !== null) {
-      message.side = object.side;
-    } else {
-      message.side = "";
-    }
-    if (object.price !== undefined && object.price !== null) {
-      message.price = object.price;
-    } else {
-      message.price = "";
-    }
-    if (object.quantity !== undefined && object.quantity !== null) {
-      message.quantity = object.quantity;
-    } else {
-      message.quantity = "";
-    }
-    if (object.available !== undefined && object.available !== null) {
-      message.available = object.available;
-    } else {
-      message.available = "";
-    }
-    if (object.filled !== undefined && object.filled !== null) {
-      message.filled = object.filled;
-    } else {
-      message.filled = "";
-    }
-    if (object.status !== undefined && object.status !== null) {
-      message.status = object.status;
-    } else {
-      message.status = "";
-    }
-    if (object.orderType !== undefined && object.orderType !== null) {
-      message.orderType = object.orderType;
-    } else {
-      message.orderType = "";
-    }
-    if (object.initiator !== undefined && object.initiator !== null) {
-      message.initiator = object.initiator;
-    } else {
-      message.initiator = "";
-    }
-    if (object.timeInForce !== undefined && object.timeInForce !== null) {
-      message.timeInForce = object.timeInForce;
-    } else {
-      message.timeInForce = "";
-    }
-    if (object.stopPrice !== undefined && object.stopPrice !== null) {
-      message.stopPrice = object.stopPrice;
-    } else {
-      message.stopPrice = "";
-    }
-    if (object.triggerType !== undefined && object.triggerType !== null) {
-      message.triggerType = object.triggerType;
-    } else {
-      message.triggerType = "";
-    }
+    message.address = object.address ?? "";
+    message.market = object.market ?? "";
+    message.side = object.side ?? "";
+    message.price = object.price ?? "";
+    message.quantity = object.quantity ?? "";
+    message.available = object.available ?? "";
+    message.filled = object.filled ?? "";
+    message.status = object.status ?? "";
+    message.orderType = object.orderType ?? "";
+    message.initiator = object.initiator ?? "";
+    message.timeInForce = object.timeInForce ?? "";
+    message.stopPrice = object.stopPrice ?? "";
+    message.triggerType = object.triggerType ?? "";
     if (
       object.allocatedMargin !== undefined &&
       object.allocatedMargin !== null
@@ -512,31 +452,15 @@ export const Order = {
     } else {
       message.allocatedMargin = undefined;
     }
-    if (object.isLiquidation !== undefined && object.isLiquidation !== null) {
-      message.isLiquidation = object.isLiquidation;
-    } else {
-      message.isLiquidation = false;
-    }
-    if (object.isPostOnly !== undefined && object.isPostOnly !== null) {
-      message.isPostOnly = object.isPostOnly;
-    } else {
-      message.isPostOnly = false;
-    }
-    if (object.isReduceOnly !== undefined && object.isReduceOnly !== null) {
-      message.isReduceOnly = object.isReduceOnly;
-    } else {
-      message.isReduceOnly = false;
-    }
+    message.isLiquidation = object.isLiquidation ?? false;
+    message.isPostOnly = object.isPostOnly ?? false;
+    message.isReduceOnly = object.isReduceOnly ?? false;
     if (object.poolId !== undefined && object.poolId !== null) {
       message.poolId = object.poolId as Long;
     } else {
       message.poolId = Long.UZERO;
     }
-    if (object.avgFilledPrice !== undefined && object.avgFilledPrice !== null) {
-      message.avgFilledPrice = object.avgFilledPrice;
-    } else {
-      message.avgFilledPrice = "";
-    }
+    message.avgFilledPrice = object.avgFilledPrice ?? "";
     return message;
   },
 };
@@ -644,27 +568,9 @@ export const DBOrder = {
     } else {
       message.order = undefined;
     }
-    if (
-      object.allocatedMarginDenom !== undefined &&
-      object.allocatedMarginDenom !== null
-    ) {
-      message.allocatedMarginDenom = object.allocatedMarginDenom;
-    } else {
-      message.allocatedMarginDenom = "";
-    }
-    if (
-      object.allocatedMarginAmount !== undefined &&
-      object.allocatedMarginAmount !== null
-    ) {
-      message.allocatedMarginAmount = object.allocatedMarginAmount;
-    } else {
-      message.allocatedMarginAmount = "";
-    }
-    if (object.username !== undefined && object.username !== null) {
-      message.username = object.username;
-    } else {
-      message.username = "";
-    }
+    message.allocatedMarginDenom = object.allocatedMarginDenom ?? "";
+    message.allocatedMarginAmount = object.allocatedMarginAmount ?? "";
+    message.username = object.username ?? "";
     return message;
   },
 };
@@ -736,12 +642,8 @@ export const OrdersForMarket = {
 
   fromPartial(object: DeepPartial<OrdersForMarket>): OrdersForMarket {
     const message = { ...baseOrdersForMarket } as OrdersForMarket;
+    message.marketId = object.marketId ?? "";
     message.orders = [];
-    if (object.marketId !== undefined && object.marketId !== null) {
-      message.marketId = object.marketId;
-    } else {
-      message.marketId = "";
-    }
     if (object.orders !== undefined && object.orders !== null) {
       for (const e of object.orders) {
         message.orders.push(Order.fromPartial(e));
@@ -818,12 +720,8 @@ export const OrderIDsForMarket = {
 
   fromPartial(object: DeepPartial<OrderIDsForMarket>): OrderIDsForMarket {
     const message = { ...baseOrderIDsForMarket } as OrderIDsForMarket;
+    message.marketId = object.marketId ?? "";
     message.orderIds = [];
-    if (object.marketId !== undefined && object.marketId !== null) {
-      message.marketId = object.marketId;
-    } else {
-      message.marketId = "";
-    }
     if (object.orderIds !== undefined && object.orderIds !== null) {
       for (const e of object.orderIds) {
         message.orderIds.push(e);

@@ -77,16 +77,8 @@ export const FundByMarket = {
 
   fromPartial(object: DeepPartial<FundByMarket>): FundByMarket {
     const message = { ...baseFundByMarket } as FundByMarket;
-    if (object.amount !== undefined && object.amount !== null) {
-      message.amount = object.amount;
-    } else {
-      message.amount = "";
-    }
-    if (object.key !== undefined && object.key !== null) {
-      message.key = object.key;
-    } else {
-      message.key = new Uint8Array();
-    }
+    message.amount = object.amount ?? "";
+    message.key = object.key ?? new Uint8Array();
     return message;
   },
 };
@@ -137,11 +129,7 @@ export const Fund = {
 
   fromPartial(object: DeepPartial<Fund>): Fund {
     const message = { ...baseFund } as Fund;
-    if (object.amount !== undefined && object.amount !== null) {
-      message.amount = object.amount;
-    } else {
-      message.amount = "";
-    }
+    message.amount = object.amount ?? "";
     return message;
   },
 };

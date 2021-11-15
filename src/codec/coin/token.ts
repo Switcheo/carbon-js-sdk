@@ -251,31 +251,11 @@ export const Token = {
 
   fromPartial(object: DeepPartial<Token>): Token {
     const message = { ...baseToken } as Token;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = object.id;
-    } else {
-      message.id = "";
-    }
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
-    if (object.denom !== undefined && object.denom !== null) {
-      message.denom = object.denom;
-    } else {
-      message.denom = "";
-    }
-    if (object.name !== undefined && object.name !== null) {
-      message.name = object.name;
-    } else {
-      message.name = "";
-    }
-    if (object.symbol !== undefined && object.symbol !== null) {
-      message.symbol = object.symbol;
-    } else {
-      message.symbol = "";
-    }
+    message.id = object.id ?? "";
+    message.creator = object.creator ?? "";
+    message.denom = object.denom ?? "";
+    message.name = object.name ?? "";
+    message.symbol = object.symbol ?? "";
     if (object.decimals !== undefined && object.decimals !== null) {
       message.decimals = object.decimals as Long;
     } else {
@@ -291,26 +271,10 @@ export const Token = {
     } else {
       message.chainId = Long.UZERO;
     }
-    if (object.tokenAddress !== undefined && object.tokenAddress !== null) {
-      message.tokenAddress = object.tokenAddress;
-    } else {
-      message.tokenAddress = "";
-    }
-    if (object.bridgeAddress !== undefined && object.bridgeAddress !== null) {
-      message.bridgeAddress = object.bridgeAddress;
-    } else {
-      message.bridgeAddress = "";
-    }
-    if (object.isActive !== undefined && object.isActive !== null) {
-      message.isActive = object.isActive;
-    } else {
-      message.isActive = false;
-    }
-    if (object.isCollateral !== undefined && object.isCollateral !== null) {
-      message.isCollateral = object.isCollateral;
-    } else {
-      message.isCollateral = false;
-    }
+    message.tokenAddress = object.tokenAddress ?? "";
+    message.bridgeAddress = object.bridgeAddress ?? "";
+    message.isActive = object.isActive ?? false;
+    message.isCollateral = object.isCollateral ?? false;
     return message;
   },
 };
@@ -432,36 +396,16 @@ export const BalanceChange = {
 
   fromPartial(object: DeepPartial<BalanceChange>): BalanceChange {
     const message = { ...baseBalanceChange } as BalanceChange;
-    if (object.address !== undefined && object.address !== null) {
-      message.address = object.address;
-    } else {
-      message.address = "";
-    }
+    message.address = object.address ?? "";
     if (object.blockHeight !== undefined && object.blockHeight !== null) {
       message.blockHeight = object.blockHeight as Long;
     } else {
       message.blockHeight = Long.UZERO;
     }
-    if (object.denom !== undefined && object.denom !== null) {
-      message.denom = object.denom;
-    } else {
-      message.denom = "";
-    }
-    if (object.amount !== undefined && object.amount !== null) {
-      message.amount = object.amount;
-    } else {
-      message.amount = "";
-    }
-    if (object.type !== undefined && object.type !== null) {
-      message.type = object.type;
-    } else {
-      message.type = "";
-    }
-    if (object.location !== undefined && object.location !== null) {
-      message.location = object.location;
-    } else {
-      message.location = "";
-    }
+    message.denom = object.denom ?? "";
+    message.amount = object.amount ?? "";
+    message.type = object.type ?? "";
+    message.location = object.location ?? "";
     return message;
   },
 };
@@ -558,26 +502,10 @@ export const LockedCoins = {
 
   fromPartial(object: DeepPartial<LockedCoins>): LockedCoins {
     const message = { ...baseLockedCoins } as LockedCoins;
-    if (object.denom !== undefined && object.denom !== null) {
-      message.denom = object.denom;
-    } else {
-      message.denom = "";
-    }
-    if (object.orderMargin !== undefined && object.orderMargin !== null) {
-      message.orderMargin = object.orderMargin;
-    } else {
-      message.orderMargin = "";
-    }
-    if (object.positionMargin !== undefined && object.positionMargin !== null) {
-      message.positionMargin = object.positionMargin;
-    } else {
-      message.positionMargin = "";
-    }
-    if (object.collateral !== undefined && object.collateral !== null) {
-      message.collateral = object.collateral;
-    } else {
-      message.collateral = "";
-    }
+    message.denom = object.denom ?? "";
+    message.orderMargin = object.orderMargin ?? "";
+    message.positionMargin = object.positionMargin ?? "";
+    message.collateral = object.collateral ?? "";
     return message;
   },
 };
@@ -661,16 +589,8 @@ export const LockedCoinsRecord = {
 
   fromPartial(object: DeepPartial<LockedCoinsRecord>): LockedCoinsRecord {
     const message = { ...baseLockedCoinsRecord } as LockedCoinsRecord;
-    if (object.address !== undefined && object.address !== null) {
-      message.address = object.address;
-    } else {
-      message.address = "";
-    }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = object.market;
-    } else {
-      message.market = "";
-    }
+    message.address = object.address ?? "";
+    message.market = object.market ?? "";
     if (object.lockedCoins !== undefined && object.lockedCoins !== null) {
       message.lockedCoins = LockedCoins.fromPartial(object.lockedCoins);
     } else {
@@ -747,12 +667,8 @@ export const PositionPool = {
 
   fromPartial(object: DeepPartial<PositionPool>): PositionPool {
     const message = { ...basePositionPool } as PositionPool;
+    message.market = object.market ?? "";
     message.coins = [];
-    if (object.market !== undefined && object.market !== null) {
-      message.market = object.market;
-    } else {
-      message.market = "";
-    }
     if (object.coins !== undefined && object.coins !== null) {
       for (const e of object.coins) {
         message.coins.push(Coin.fromPartial(e));
@@ -852,26 +768,10 @@ export const TokenBalance = {
 
   fromPartial(object: DeepPartial<TokenBalance>): TokenBalance {
     const message = { ...baseTokenBalance } as TokenBalance;
-    if (object.available !== undefined && object.available !== null) {
-      message.available = object.available;
-    } else {
-      message.available = "";
-    }
-    if (object.order !== undefined && object.order !== null) {
-      message.order = object.order;
-    } else {
-      message.order = "";
-    }
-    if (object.position !== undefined && object.position !== null) {
-      message.position = object.position;
-    } else {
-      message.position = "";
-    }
-    if (object.denom !== undefined && object.denom !== null) {
-      message.denom = object.denom;
-    } else {
-      message.denom = "";
-    }
+    message.available = object.available ?? "";
+    message.order = object.order ?? "";
+    message.position = object.position ?? "";
+    message.denom = object.denom ?? "";
     return message;
   },
 };

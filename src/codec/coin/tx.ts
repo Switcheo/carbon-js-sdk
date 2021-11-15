@@ -174,11 +174,7 @@ export const MsgCreateToken = {
 
   fromPartial(object: DeepPartial<MsgCreateToken>): MsgCreateToken {
     const message = { ...baseMsgCreateToken } as MsgCreateToken;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
+    message.creator = object.creator ?? "";
     if (
       object.createTokenParams !== undefined &&
       object.createTokenParams !== null
@@ -340,21 +336,9 @@ export const CreateTokenParams = {
 
   fromPartial(object: DeepPartial<CreateTokenParams>): CreateTokenParams {
     const message = { ...baseCreateTokenParams } as CreateTokenParams;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
-    if (object.name !== undefined && object.name !== null) {
-      message.name = object.name;
-    } else {
-      message.name = "";
-    }
-    if (object.symbol !== undefined && object.symbol !== null) {
-      message.symbol = object.symbol;
-    } else {
-      message.symbol = "";
-    }
+    message.creator = object.creator ?? "";
+    message.name = object.name ?? "";
+    message.symbol = object.symbol ?? "";
     if (object.decimals !== undefined && object.decimals !== null) {
       message.decimals = object.decimals as Long;
     } else {
@@ -370,16 +354,8 @@ export const CreateTokenParams = {
     } else {
       message.bridgeId = Long.UZERO;
     }
-    if (object.bridgeAddress !== undefined && object.bridgeAddress !== null) {
-      message.bridgeAddress = object.bridgeAddress;
-    } else {
-      message.bridgeAddress = "";
-    }
-    if (object.tokenAddress !== undefined && object.tokenAddress !== null) {
-      message.tokenAddress = object.tokenAddress;
-    } else {
-      message.tokenAddress = "";
-    }
+    message.bridgeAddress = object.bridgeAddress ?? "";
+    message.tokenAddress = object.tokenAddress ?? "";
     return message;
   },
 };
@@ -438,11 +414,7 @@ export const MsgCreateTokenResponse = {
     object: DeepPartial<MsgCreateTokenResponse>
   ): MsgCreateTokenResponse {
     const message = { ...baseMsgCreateTokenResponse } as MsgCreateTokenResponse;
-    if (object.denom !== undefined && object.denom !== null) {
-      message.denom = object.denom;
-    } else {
-      message.denom = "";
-    }
+    message.denom = object.denom ?? "";
     return message;
   },
 };
@@ -508,16 +480,8 @@ export const MsgSyncToken = {
 
   fromPartial(object: DeepPartial<MsgSyncToken>): MsgSyncToken {
     const message = { ...baseMsgSyncToken } as MsgSyncToken;
-    if (object.syncer !== undefined && object.syncer !== null) {
-      message.syncer = object.syncer;
-    } else {
-      message.syncer = "";
-    }
-    if (object.denom !== undefined && object.denom !== null) {
-      message.denom = object.denom;
-    } else {
-      message.denom = "";
-    }
+    message.syncer = object.syncer ?? "";
+    message.denom = object.denom ?? "";
     return message;
   },
 };
@@ -651,26 +615,10 @@ export const MsgMintToken = {
 
   fromPartial(object: DeepPartial<MsgMintToken>): MsgMintToken {
     const message = { ...baseMsgMintToken } as MsgMintToken;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
-    if (object.denom !== undefined && object.denom !== null) {
-      message.denom = object.denom;
-    } else {
-      message.denom = "";
-    }
-    if (object.amount !== undefined && object.amount !== null) {
-      message.amount = object.amount;
-    } else {
-      message.amount = "";
-    }
-    if (object.to !== undefined && object.to !== null) {
-      message.to = object.to;
-    } else {
-      message.to = "";
-    }
+    message.creator = object.creator ?? "";
+    message.denom = object.denom ?? "";
+    message.amount = object.amount ?? "";
+    message.to = object.to ?? "";
     return message;
   },
 };
@@ -798,21 +746,9 @@ export const MsgBindToken = {
 
   fromPartial(object: DeepPartial<MsgBindToken>): MsgBindToken {
     const message = { ...baseMsgBindToken } as MsgBindToken;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
-    if (object.sourceDenom !== undefined && object.sourceDenom !== null) {
-      message.sourceDenom = object.sourceDenom;
-    } else {
-      message.sourceDenom = "";
-    }
-    if (object.wrappedDenom !== undefined && object.wrappedDenom !== null) {
-      message.wrappedDenom = object.wrappedDenom;
-    } else {
-      message.wrappedDenom = "";
-    }
+    message.creator = object.creator ?? "";
+    message.sourceDenom = object.sourceDenom ?? "";
+    message.wrappedDenom = object.wrappedDenom ?? "";
     return message;
   },
 };
@@ -923,16 +859,8 @@ export const MsgUnbindToken = {
 
   fromPartial(object: DeepPartial<MsgUnbindToken>): MsgUnbindToken {
     const message = { ...baseMsgUnbindToken } as MsgUnbindToken;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
-    if (object.wrappedDenom !== undefined && object.wrappedDenom !== null) {
-      message.wrappedDenom = object.wrappedDenom;
-    } else {
-      message.wrappedDenom = "";
-    }
+    message.creator = object.creator ?? "";
+    message.wrappedDenom = object.wrappedDenom ?? "";
     return message;
   },
 };
@@ -1055,21 +983,9 @@ export const MsgLinkToken = {
 
   fromPartial(object: DeepPartial<MsgLinkToken>): MsgLinkToken {
     const message = { ...baseMsgLinkToken } as MsgLinkToken;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
-    if (object.denom !== undefined && object.denom !== null) {
-      message.denom = object.denom;
-    } else {
-      message.denom = "";
-    }
-    if (object.bridgeAddress !== undefined && object.bridgeAddress !== null) {
-      message.bridgeAddress = object.bridgeAddress;
-    } else {
-      message.bridgeAddress = "";
-    }
+    message.creator = object.creator ?? "";
+    message.denom = object.denom ?? "";
+    message.bridgeAddress = object.bridgeAddress ?? "";
     return message;
   },
 };
@@ -1234,36 +1150,12 @@ export const MsgWithdraw = {
 
   fromPartial(object: DeepPartial<MsgWithdraw>): MsgWithdraw {
     const message = { ...baseMsgWithdraw } as MsgWithdraw;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
-    if (object.toAddress !== undefined && object.toAddress !== null) {
-      message.toAddress = object.toAddress;
-    } else {
-      message.toAddress = "";
-    }
-    if (object.denom !== undefined && object.denom !== null) {
-      message.denom = object.denom;
-    } else {
-      message.denom = "";
-    }
-    if (object.amount !== undefined && object.amount !== null) {
-      message.amount = object.amount;
-    } else {
-      message.amount = "";
-    }
-    if (object.feeAmount !== undefined && object.feeAmount !== null) {
-      message.feeAmount = object.feeAmount;
-    } else {
-      message.feeAmount = "";
-    }
-    if (object.feeAddress !== undefined && object.feeAddress !== null) {
-      message.feeAddress = object.feeAddress;
-    } else {
-      message.feeAddress = "";
-    }
+    message.creator = object.creator ?? "";
+    message.toAddress = object.toAddress ?? "";
+    message.denom = object.denom ?? "";
+    message.amount = object.amount ?? "";
+    message.feeAmount = object.feeAmount ?? "";
+    message.feeAddress = object.feeAddress ?? "";
     return message;
   },
 };
@@ -1401,11 +1293,7 @@ export const MsgAuthorizeBridge = {
 
   fromPartial(object: DeepPartial<MsgAuthorizeBridge>): MsgAuthorizeBridge {
     const message = { ...baseMsgAuthorizeBridge } as MsgAuthorizeBridge;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
+    message.creator = object.creator ?? "";
     if (object.bridgeId !== undefined && object.bridgeId !== null) {
       message.bridgeId = object.bridgeId as Long;
     } else {
@@ -1416,11 +1304,7 @@ export const MsgAuthorizeBridge = {
     } else {
       message.chainId = Long.UZERO;
     }
-    if (object.chainName !== undefined && object.chainName !== null) {
-      message.chainName = object.chainName;
-    } else {
-      message.chainName = "";
-    }
+    message.chainName = object.chainName ?? "";
     return message;
   },
 };
@@ -1498,11 +1382,7 @@ export const MsgAuthorizeBridgeResponse = {
     const message = {
       ...baseMsgAuthorizeBridgeResponse,
     } as MsgAuthorizeBridgeResponse;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = object.id;
-    } else {
-      message.id = "";
-    }
+    message.id = object.id ?? "";
     if (object.bridge !== undefined && object.bridge !== null) {
       message.bridge = Bridge.fromPartial(object.bridge);
     } else {
@@ -1594,11 +1474,7 @@ export const MsgDeauthorizeBridge = {
 
   fromPartial(object: DeepPartial<MsgDeauthorizeBridge>): MsgDeauthorizeBridge {
     const message = { ...baseMsgDeauthorizeBridge } as MsgDeauthorizeBridge;
-    if (object.initiator !== undefined && object.initiator !== null) {
-      message.initiator = object.initiator;
-    } else {
-      message.initiator = "";
-    }
+    message.initiator = object.initiator ?? "";
     if (object.bridgeId !== undefined && object.bridgeId !== null) {
       message.bridgeId = object.bridgeId as Long;
     } else {
@@ -1686,11 +1562,7 @@ export const MsgDeauthorizeBridgeResponse = {
     const message = {
       ...baseMsgDeauthorizeBridgeResponse,
     } as MsgDeauthorizeBridgeResponse;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = object.id;
-    } else {
-      message.id = "";
-    }
+    message.id = object.id ?? "";
     if (object.bridge !== undefined && object.bridge !== null) {
       message.bridge = Bridge.fromPartial(object.bridge);
     } else {

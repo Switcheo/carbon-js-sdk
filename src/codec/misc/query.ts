@@ -78,11 +78,7 @@ export const QuerySearchRequest = {
 
   fromPartial(object: DeepPartial<QuerySearchRequest>): QuerySearchRequest {
     const message = { ...baseQuerySearchRequest } as QuerySearchRequest;
-    if (object.keyword !== undefined && object.keyword !== null) {
-      message.keyword = object.keyword;
-    } else {
-      message.keyword = "";
-    }
+    message.keyword = object.keyword ?? "";
     if (object.limit !== undefined && object.limit !== null) {
       message.limit = object.limit as Long;
     } else {
@@ -172,12 +168,12 @@ export const QuerySearchResponse = {
   fromPartial(object: DeepPartial<QuerySearchResponse>): QuerySearchResponse {
     const message = { ...baseQuerySearchResponse } as QuerySearchResponse;
     message.transactions = [];
-    message.orders = [];
     if (object.transactions !== undefined && object.transactions !== null) {
       for (const e of object.transactions) {
         message.transactions.push(Transaction.fromPartial(e));
       }
     }
+    message.orders = [];
     if (object.orders !== undefined && object.orders !== null) {
       for (const e of object.orders) {
         message.orders.push(DBOrder.fromPartial(e));

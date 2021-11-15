@@ -102,17 +102,9 @@ export const OrderBookLevel = {
 
   fromPartial(object: DeepPartial<OrderBookLevel>): OrderBookLevel {
     const message = { ...baseOrderBookLevel } as OrderBookLevel;
+    message.price = object.price ?? "";
+    message.totalQuantity = object.totalQuantity ?? "";
     message.orders = [];
-    if (object.price !== undefined && object.price !== null) {
-      message.price = object.price;
-    } else {
-      message.price = "";
-    }
-    if (object.totalQuantity !== undefined && object.totalQuantity !== null) {
-      message.totalQuantity = object.totalQuantity;
-    } else {
-      message.totalQuantity = "";
-    }
     if (object.orders !== undefined && object.orders !== null) {
       for (const e of object.orders) {
         message.orders.push(e);
@@ -211,18 +203,14 @@ export const OrderBook = {
 
   fromPartial(object: DeepPartial<OrderBook>): OrderBook {
     const message = { ...baseOrderBook } as OrderBook;
+    message.market = object.market ?? "";
     message.asks = [];
-    message.bids = [];
-    if (object.market !== undefined && object.market !== null) {
-      message.market = object.market;
-    } else {
-      message.market = "";
-    }
     if (object.asks !== undefined && object.asks !== null) {
       for (const e of object.asks) {
         message.asks.push(OrderBookLevel.fromPartial(e));
       }
     }
+    message.bids = [];
     if (object.bids !== undefined && object.bids !== null) {
       for (const e of object.bids) {
         message.bids.push(OrderBookLevel.fromPartial(e));
@@ -317,18 +305,14 @@ export const StopBook = {
 
   fromPartial(object: DeepPartial<StopBook>): StopBook {
     const message = { ...baseStopBook } as StopBook;
+    message.market = object.market ?? "";
     message.asks = [];
-    message.bids = [];
-    if (object.market !== undefined && object.market !== null) {
-      message.market = object.market;
-    } else {
-      message.market = "";
-    }
     if (object.asks !== undefined && object.asks !== null) {
       for (const e of object.asks) {
         message.asks.push(e);
       }
     }
+    message.bids = [];
     if (object.bids !== undefined && object.bids !== null) {
       for (const e of object.bids) {
         message.bids.push(e);

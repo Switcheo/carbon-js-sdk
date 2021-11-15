@@ -303,81 +303,21 @@ export const TradeEvent = {
     } else {
       message.blockHeight = Long.ZERO;
     }
-    if (object.blockCreatedAt !== undefined && object.blockCreatedAt !== null) {
-      message.blockCreatedAt = object.blockCreatedAt;
-    } else {
-      message.blockCreatedAt = undefined;
-    }
-    if (object.takerId !== undefined && object.takerId !== null) {
-      message.takerId = object.takerId;
-    } else {
-      message.takerId = "";
-    }
-    if (object.takerAddress !== undefined && object.takerAddress !== null) {
-      message.takerAddress = object.takerAddress;
-    } else {
-      message.takerAddress = "";
-    }
-    if (object.takerFeeAmount !== undefined && object.takerFeeAmount !== null) {
-      message.takerFeeAmount = object.takerFeeAmount;
-    } else {
-      message.takerFeeAmount = "";
-    }
-    if (object.takerFeeDenom !== undefined && object.takerFeeDenom !== null) {
-      message.takerFeeDenom = object.takerFeeDenom;
-    } else {
-      message.takerFeeDenom = "";
-    }
-    if (object.takerSide !== undefined && object.takerSide !== null) {
-      message.takerSide = object.takerSide;
-    } else {
-      message.takerSide = "";
-    }
-    if (object.makerId !== undefined && object.makerId !== null) {
-      message.makerId = object.makerId;
-    } else {
-      message.makerId = "";
-    }
-    if (object.makerAddress !== undefined && object.makerAddress !== null) {
-      message.makerAddress = object.makerAddress;
-    } else {
-      message.makerAddress = "";
-    }
-    if (object.makerFeeAmount !== undefined && object.makerFeeAmount !== null) {
-      message.makerFeeAmount = object.makerFeeAmount;
-    } else {
-      message.makerFeeAmount = "";
-    }
-    if (object.makerFeeDenom !== undefined && object.makerFeeDenom !== null) {
-      message.makerFeeDenom = object.makerFeeDenom;
-    } else {
-      message.makerFeeDenom = "";
-    }
-    if (object.makerSide !== undefined && object.makerSide !== null) {
-      message.makerSide = object.makerSide;
-    } else {
-      message.makerSide = "";
-    }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = object.market;
-    } else {
-      message.market = "";
-    }
-    if (object.price !== undefined && object.price !== null) {
-      message.price = object.price;
-    } else {
-      message.price = "";
-    }
-    if (object.quantity !== undefined && object.quantity !== null) {
-      message.quantity = object.quantity;
-    } else {
-      message.quantity = "";
-    }
-    if (object.liquidation !== undefined && object.liquidation !== null) {
-      message.liquidation = object.liquidation;
-    } else {
-      message.liquidation = "";
-    }
+    message.blockCreatedAt = object.blockCreatedAt ?? undefined;
+    message.takerId = object.takerId ?? "";
+    message.takerAddress = object.takerAddress ?? "";
+    message.takerFeeAmount = object.takerFeeAmount ?? "";
+    message.takerFeeDenom = object.takerFeeDenom ?? "";
+    message.takerSide = object.takerSide ?? "";
+    message.makerId = object.makerId ?? "";
+    message.makerAddress = object.makerAddress ?? "";
+    message.makerFeeAmount = object.makerFeeAmount ?? "";
+    message.makerFeeDenom = object.makerFeeDenom ?? "";
+    message.makerSide = object.makerSide ?? "";
+    message.market = object.market ?? "";
+    message.price = object.price ?? "";
+    message.quantity = object.quantity ?? "";
+    message.liquidation = object.liquidation ?? "";
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id as Long;
     } else {

@@ -197,56 +197,20 @@ export const AccountTradeHistoryRow = {
     object: DeepPartial<AccountTradeHistoryRow>
   ): AccountTradeHistoryRow {
     const message = { ...baseAccountTradeHistoryRow } as AccountTradeHistoryRow;
-    if (object.orderId !== undefined && object.orderId !== null) {
-      message.orderId = object.orderId;
-    } else {
-      message.orderId = "";
-    }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = object.market;
-    } else {
-      message.market = "";
-    }
-    if (object.side !== undefined && object.side !== null) {
-      message.side = object.side;
-    } else {
-      message.side = "";
-    }
-    if (object.quantity !== undefined && object.quantity !== null) {
-      message.quantity = object.quantity;
-    } else {
-      message.quantity = "";
-    }
-    if (object.price !== undefined && object.price !== null) {
-      message.price = object.price;
-    } else {
-      message.price = "";
-    }
-    if (object.feeAmount !== undefined && object.feeAmount !== null) {
-      message.feeAmount = object.feeAmount;
-    } else {
-      message.feeAmount = "";
-    }
-    if (object.feeDenom !== undefined && object.feeDenom !== null) {
-      message.feeDenom = object.feeDenom;
-    } else {
-      message.feeDenom = "";
-    }
-    if (object.address !== undefined && object.address !== null) {
-      message.address = object.address;
-    } else {
-      message.address = "";
-    }
+    message.orderId = object.orderId ?? "";
+    message.market = object.market ?? "";
+    message.side = object.side ?? "";
+    message.quantity = object.quantity ?? "";
+    message.price = object.price ?? "";
+    message.feeAmount = object.feeAmount ?? "";
+    message.feeDenom = object.feeDenom ?? "";
+    message.address = object.address ?? "";
     if (object.blockHeight !== undefined && object.blockHeight !== null) {
       message.blockHeight = object.blockHeight as Long;
     } else {
       message.blockHeight = Long.ZERO;
     }
-    if (object.blockCreatedAt !== undefined && object.blockCreatedAt !== null) {
-      message.blockCreatedAt = object.blockCreatedAt;
-    } else {
-      message.blockCreatedAt = undefined;
-    }
+    message.blockCreatedAt = object.blockCreatedAt ?? undefined;
     return message;
   },
 };

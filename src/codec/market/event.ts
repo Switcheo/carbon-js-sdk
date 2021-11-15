@@ -77,11 +77,7 @@ export const MarketEvent = {
     } else {
       message.market = undefined;
     }
-    if (object.type !== undefined && object.type !== null) {
-      message.type = object.type;
-    } else {
-      message.type = "";
-    }
+    message.type = object.type ?? "";
     return message;
   },
 };

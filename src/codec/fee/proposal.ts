@@ -86,16 +86,8 @@ export const SetMsgFeeProposal = {
 
   fromPartial(object: DeepPartial<SetMsgFeeProposal>): SetMsgFeeProposal {
     const message = { ...baseSetMsgFeeProposal } as SetMsgFeeProposal;
-    if (object.title !== undefined && object.title !== null) {
-      message.title = object.title;
-    } else {
-      message.title = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = object.description;
-    } else {
-      message.description = "";
-    }
+    message.title = object.title ?? "";
+    message.description = object.description ?? "";
     if (object.msg !== undefined && object.msg !== null) {
       message.msg = MsgFee.fromPartial(object.msg);
     } else {

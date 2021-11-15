@@ -79,11 +79,7 @@ export const UpdateProfileEvent = {
     } else {
       message.profile = undefined;
     }
-    if (object.type !== undefined && object.type !== null) {
-      message.type = object.type;
-    } else {
-      message.type = "";
-    }
+    message.type = object.type ?? "";
     return message;
   },
 };

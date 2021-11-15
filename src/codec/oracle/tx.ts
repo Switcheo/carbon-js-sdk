@@ -110,11 +110,7 @@ export const MsgCreateOracle = {
 
   fromPartial(object: DeepPartial<MsgCreateOracle>): MsgCreateOracle {
     const message = { ...baseMsgCreateOracle } as MsgCreateOracle;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
+    message.creator = object.creator ?? "";
     if (
       object.createOracleParams !== undefined &&
       object.createOracleParams !== null
@@ -297,21 +293,9 @@ export const CreateOracleParams = {
 
   fromPartial(object: DeepPartial<CreateOracleParams>): CreateOracleParams {
     const message = { ...baseCreateOracleParams } as CreateOracleParams;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
-    if (object.id !== undefined && object.id !== null) {
-      message.id = object.id;
-    } else {
-      message.id = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = object.description;
-    } else {
-      message.description = "";
-    }
+    message.creator = object.creator ?? "";
+    message.id = object.id ?? "";
+    message.description = object.description ?? "";
     if (
       object.minTurnoutPercentage !== undefined &&
       object.minTurnoutPercentage !== null
@@ -325,26 +309,14 @@ export const CreateOracleParams = {
     } else {
       message.maxResultAge = Long.ZERO;
     }
-    if (object.securityType !== undefined && object.securityType !== null) {
-      message.securityType = object.securityType;
-    } else {
-      message.securityType = "";
-    }
-    if (object.resultStrategy !== undefined && object.resultStrategy !== null) {
-      message.resultStrategy = object.resultStrategy;
-    } else {
-      message.resultStrategy = "";
-    }
+    message.securityType = object.securityType ?? "";
+    message.resultStrategy = object.resultStrategy ?? "";
     if (object.resolution !== undefined && object.resolution !== null) {
       message.resolution = object.resolution as Long;
     } else {
       message.resolution = Long.ZERO;
     }
-    if (object.spec !== undefined && object.spec !== null) {
-      message.spec = object.spec;
-    } else {
-      message.spec = "";
-    }
+    message.spec = object.spec ?? "";
     return message;
   },
 };
@@ -409,11 +381,7 @@ export const MsgCreateOracleResponse = {
     const message = {
       ...baseMsgCreateOracleResponse,
     } as MsgCreateOracleResponse;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = object.id;
-    } else {
-      message.id = "";
-    }
+    message.id = object.id ?? "";
     return message;
   },
 };
@@ -509,26 +477,14 @@ export const MsgCreateVote = {
 
   fromPartial(object: DeepPartial<MsgCreateVote>): MsgCreateVote {
     const message = { ...baseMsgCreateVote } as MsgCreateVote;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
-    if (object.oracleId !== undefined && object.oracleId !== null) {
-      message.oracleId = object.oracleId;
-    } else {
-      message.oracleId = "";
-    }
+    message.creator = object.creator ?? "";
+    message.oracleId = object.oracleId ?? "";
     if (object.timestamp !== undefined && object.timestamp !== null) {
       message.timestamp = object.timestamp as Long;
     } else {
       message.timestamp = Long.ZERO;
     }
-    if (object.data !== undefined && object.data !== null) {
-      message.data = object.data;
-    } else {
-      message.data = "";
-    }
+    message.data = object.data ?? "";
     return message;
   },
 };

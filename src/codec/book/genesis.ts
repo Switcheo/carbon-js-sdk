@@ -93,12 +93,12 @@ export const GenesisState = {
   fromPartial(object: DeepPartial<GenesisState>): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
     message.orderBooks = [];
-    message.stopBooks = [];
     if (object.orderBooks !== undefined && object.orderBooks !== null) {
       for (const e of object.orderBooks) {
         message.orderBooks.push(OrderBook.fromPartial(e));
       }
     }
+    message.stopBooks = [];
     if (object.stopBooks !== undefined && object.stopBooks !== null) {
       for (const e of object.stopBooks) {
         message.stopBooks.push(StopBook.fromPartial(e));

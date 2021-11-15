@@ -75,16 +75,8 @@ export const MarketLeverage = {
 
   fromPartial(object: DeepPartial<MarketLeverage>): MarketLeverage {
     const message = { ...baseMarketLeverage } as MarketLeverage;
-    if (object.market !== undefined && object.market !== null) {
-      message.market = object.market;
-    } else {
-      message.market = "";
-    }
-    if (object.leverage !== undefined && object.leverage !== null) {
-      message.leverage = object.leverage;
-    } else {
-      message.leverage = "";
-    }
+    message.market = object.market ?? "";
+    message.leverage = object.leverage ?? "";
     return message;
   },
 };
@@ -174,11 +166,7 @@ export const MarketLeverageWithKey = {
     } else {
       message.marketLeverage = undefined;
     }
-    if (object.key !== undefined && object.key !== null) {
-      message.key = object.key;
-    } else {
-      message.key = new Uint8Array();
-    }
+    message.key = object.key ?? new Uint8Array();
     return message;
   },
 };

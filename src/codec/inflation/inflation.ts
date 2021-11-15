@@ -101,11 +101,7 @@ export const MintData = {
     } else {
       message.prevBlockTime = Long.ZERO;
     }
-    if (object.currentSupply !== undefined && object.currentSupply !== null) {
-      message.currentSupply = object.currentSupply;
-    } else {
-      message.currentSupply = "";
-    }
+    message.currentSupply = object.currentSupply ?? "";
     return message;
   },
 };

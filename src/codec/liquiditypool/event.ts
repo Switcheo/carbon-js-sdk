@@ -140,31 +140,19 @@ export const PoolEvent = {
 
   fromPartial(object: DeepPartial<PoolEvent>): PoolEvent {
     const message = { ...basePoolEvent } as PoolEvent;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
+    message.creator = object.creator ?? "";
     if (object.pool !== undefined && object.pool !== null) {
       message.pool = Pool.fromPartial(object.pool);
     } else {
       message.pool = undefined;
     }
-    if (object.type !== undefined && object.type !== null) {
-      message.type = object.type;
-    } else {
-      message.type = "";
-    }
+    message.type = object.type ?? "";
     if (object.id !== undefined && object.id !== null) {
       message.id = object.id as Long;
     } else {
       message.id = Long.UZERO;
     }
-    if (object.poolAddress !== undefined && object.poolAddress !== null) {
-      message.poolAddress = object.poolAddress;
-    } else {
-      message.poolAddress = "";
-    }
+    message.poolAddress = object.poolAddress ?? "";
     return message;
   },
 };
@@ -254,14 +242,7 @@ export const TotalCommitmentChangeEvent = {
     } else {
       message.poolId = Long.UZERO;
     }
-    if (
-      object.totalCommitment !== undefined &&
-      object.totalCommitment !== null
-    ) {
-      message.totalCommitment = object.totalCommitment;
-    } else {
-      message.totalCommitment = "";
-    }
+    message.totalCommitment = object.totalCommitment ?? "";
     return message;
   },
 };
@@ -348,11 +329,7 @@ export const RewardsWeightChangeEvent = {
     } else {
       message.poolId = Long.UZERO;
     }
-    if (object.rewardsWeight !== undefined && object.rewardsWeight !== null) {
-      message.rewardsWeight = object.rewardsWeight;
-    } else {
-      message.rewardsWeight = "";
-    }
+    message.rewardsWeight = object.rewardsWeight ?? "";
     return message;
   },
 };
@@ -535,21 +512,13 @@ export const CommitmentEvent = {
     } else {
       message.poolId = Long.UZERO;
     }
-    if (object.address !== undefined && object.address !== null) {
-      message.address = object.address;
-    } else {
-      message.address = "";
-    }
+    message.address = object.address ?? "";
     if (object.commitment !== undefined && object.commitment !== null) {
       message.commitment = Commitment.fromPartial(object.commitment);
     } else {
       message.commitment = undefined;
     }
-    if (object.type !== undefined && object.type !== null) {
-      message.type = object.type;
-    } else {
-      message.type = "";
-    }
+    message.type = object.type ?? "";
     return message;
   },
 };

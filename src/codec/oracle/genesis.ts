@@ -110,18 +110,18 @@ export const GenesisState = {
   fromPartial(object: DeepPartial<GenesisState>): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
     message.oracles = [];
-    message.results = [];
-    message.votes = [];
     if (object.oracles !== undefined && object.oracles !== null) {
       for (const e of object.oracles) {
         message.oracles.push(Oracle.fromPartial(e));
       }
     }
+    message.results = [];
     if (object.results !== undefined && object.results !== null) {
       for (const e of object.results) {
         message.results.push(Result.fromPartial(e));
       }
     }
+    message.votes = [];
     if (object.votes !== undefined && object.votes !== null) {
       for (const e of object.votes) {
         message.votes.push(Vote.fromPartial(e));

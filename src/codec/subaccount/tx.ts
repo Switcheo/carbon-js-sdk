@@ -87,16 +87,8 @@ export const MsgCreateSubAccount = {
 
   fromPartial(object: DeepPartial<MsgCreateSubAccount>): MsgCreateSubAccount {
     const message = { ...baseMsgCreateSubAccount } as MsgCreateSubAccount;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
-    if (object.subAddress !== undefined && object.subAddress !== null) {
-      message.subAddress = object.subAddress;
-    } else {
-      message.subAddress = "";
-    }
+    message.creator = object.creator ?? "";
+    message.subAddress = object.subAddress ?? "";
     return message;
   },
 };
@@ -226,19 +218,8 @@ export const MsgActivateSubAccount = {
     object: DeepPartial<MsgActivateSubAccount>
   ): MsgActivateSubAccount {
     const message = { ...baseMsgActivateSubAccount } as MsgActivateSubAccount;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
-    if (
-      object.expectedMainAccount !== undefined &&
-      object.expectedMainAccount !== null
-    ) {
-      message.expectedMainAccount = object.expectedMainAccount;
-    } else {
-      message.expectedMainAccount = "";
-    }
+    message.creator = object.creator ?? "";
+    message.expectedMainAccount = object.expectedMainAccount ?? "";
     return message;
   },
 };
@@ -356,16 +337,8 @@ export const MsgRemoveSubAccount = {
 
   fromPartial(object: DeepPartial<MsgRemoveSubAccount>): MsgRemoveSubAccount {
     const message = { ...baseMsgRemoveSubAccount } as MsgRemoveSubAccount;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
-    if (object.subAddress !== undefined && object.subAddress !== null) {
-      message.subAddress = object.subAddress;
-    } else {
-      message.subAddress = "";
-    }
+    message.creator = object.creator ?? "";
+    message.subAddress = object.subAddress ?? "";
     return message;
   },
 };

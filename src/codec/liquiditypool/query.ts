@@ -500,19 +500,8 @@ export const QueryRewardHistoryRequest = {
     const message = {
       ...baseQueryRewardHistoryRequest,
     } as QueryRewardHistoryRequest;
-    if (object.poolId !== undefined && object.poolId !== null) {
-      message.poolId = object.poolId;
-    } else {
-      message.poolId = "";
-    }
-    if (
-      object.startBlockHeight !== undefined &&
-      object.startBlockHeight !== null
-    ) {
-      message.startBlockHeight = object.startBlockHeight;
-    } else {
-      message.startBlockHeight = "";
-    }
+    message.poolId = object.poolId ?? "";
+    message.startBlockHeight = object.startBlockHeight ?? "";
     if (object.pagination !== undefined && object.pagination !== null) {
       message.pagination = PageRequest.fromPartial(object.pagination);
     } else {
@@ -606,19 +595,8 @@ export const ExtendedPool = {
     } else {
       message.pool = undefined;
     }
-    if (object.rewardsWeight !== undefined && object.rewardsWeight !== null) {
-      message.rewardsWeight = object.rewardsWeight;
-    } else {
-      message.rewardsWeight = "";
-    }
-    if (
-      object.totalCommitment !== undefined &&
-      object.totalCommitment !== null
-    ) {
-      message.totalCommitment = object.totalCommitment;
-    } else {
-      message.totalCommitment = "";
-    }
+    message.rewardsWeight = object.rewardsWeight ?? "";
+    message.totalCommitment = object.totalCommitment ?? "";
     return message;
   },
 };
@@ -826,25 +804,18 @@ export const QuerierRewardHistory = {
 
   fromPartial(object: DeepPartial<QuerierRewardHistory>): QuerierRewardHistory {
     const message = { ...baseQuerierRewardHistory } as QuerierRewardHistory;
-    message.rewards = [];
     if (object.blockHeight !== undefined && object.blockHeight !== null) {
       message.blockHeight = object.blockHeight as Long;
     } else {
       message.blockHeight = Long.UZERO;
     }
+    message.rewards = [];
     if (object.rewards !== undefined && object.rewards !== null) {
       for (const e of object.rewards) {
         message.rewards.push(DecCoin.fromPartial(e));
       }
     }
-    if (
-      object.totalCommitment !== undefined &&
-      object.totalCommitment !== null
-    ) {
-      message.totalCommitment = object.totalCommitment;
-    } else {
-      message.totalCommitment = "";
-    }
+    message.totalCommitment = object.totalCommitment ?? "";
     return message;
   },
 };
@@ -915,16 +886,8 @@ export const QueryCommitmentRequest = {
     object: DeepPartial<QueryCommitmentRequest>
   ): QueryCommitmentRequest {
     const message = { ...baseQueryCommitmentRequest } as QueryCommitmentRequest;
-    if (object.poolId !== undefined && object.poolId !== null) {
-      message.poolId = object.poolId;
-    } else {
-      message.poolId = "";
-    }
-    if (object.address !== undefined && object.address !== null) {
-      message.address = object.address;
-    } else {
-      message.address = "";
-    }
+    message.poolId = object.poolId ?? "";
+    message.address = object.address ?? "";
     return message;
   },
 };
@@ -1092,11 +1055,7 @@ export const QueryAllCommitmentRequest = {
     const message = {
       ...baseQueryAllCommitmentRequest,
     } as QueryAllCommitmentRequest;
-    if (object.address !== undefined && object.address !== null) {
-      message.address = object.address;
-    } else {
-      message.address = "";
-    }
+    message.address = object.address ?? "";
     if (object.pagination !== undefined && object.pagination !== null) {
       message.pagination = PageRequest.fromPartial(object.pagination);
     } else {
@@ -1273,16 +1232,8 @@ export const QueryLastClaimRequest = {
     object: DeepPartial<QueryLastClaimRequest>
   ): QueryLastClaimRequest {
     const message = { ...baseQueryLastClaimRequest } as QueryLastClaimRequest;
-    if (object.poolId !== undefined && object.poolId !== null) {
-      message.poolId = object.poolId;
-    } else {
-      message.poolId = "";
-    }
-    if (object.address !== undefined && object.address !== null) {
-      message.address = object.address;
-    } else {
-      message.address = "";
-    }
+    message.poolId = object.poolId ?? "";
+    message.address = object.address ?? "";
     return message;
   },
 };
@@ -1752,14 +1703,7 @@ export const QueryTotalCommitmentResponse = {
     const message = {
       ...baseQueryTotalCommitmentResponse,
     } as QueryTotalCommitmentResponse;
-    if (
-      object.totalCommitment !== undefined &&
-      object.totalCommitment !== null
-    ) {
-      message.totalCommitment = object.totalCommitment;
-    } else {
-      message.totalCommitment = "";
-    }
+    message.totalCommitment = object.totalCommitment ?? "";
     return message;
   },
 };
@@ -2026,11 +1970,7 @@ export const QueryClaimableRewardsRequest = {
     } else {
       message.poolId = Long.UZERO;
     }
-    if (object.address !== undefined && object.address !== null) {
-      message.address = object.address;
-    } else {
-      message.address = "";
-    }
+    message.address = object.address ?? "";
     return message;
   },
 };

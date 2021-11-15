@@ -95,11 +95,7 @@ export const NewTokenEvent = {
     } else {
       message.token = undefined;
     }
-    if (object.type !== undefined && object.type !== null) {
-      message.type = object.type;
-    } else {
-      message.type = "";
-    }
+    message.type = object.type ?? "";
     return message;
   },
 };
@@ -226,16 +222,8 @@ export const BindTokenEvent = {
 
   fromPartial(object: DeepPartial<BindTokenEvent>): BindTokenEvent {
     const message = { ...baseBindTokenEvent } as BindTokenEvent;
-    if (object.sourceDenom !== undefined && object.sourceDenom !== null) {
-      message.sourceDenom = object.sourceDenom;
-    } else {
-      message.sourceDenom = "";
-    }
-    if (object.wrappedDenom !== undefined && object.wrappedDenom !== null) {
-      message.wrappedDenom = object.wrappedDenom;
-    } else {
-      message.wrappedDenom = "";
-    }
+    message.sourceDenom = object.sourceDenom ?? "";
+    message.wrappedDenom = object.wrappedDenom ?? "";
     return message;
   },
 };
@@ -290,11 +278,7 @@ export const UnbindTokenEvent = {
 
   fromPartial(object: DeepPartial<UnbindTokenEvent>): UnbindTokenEvent {
     const message = { ...baseUnbindTokenEvent } as UnbindTokenEvent;
-    if (object.wrappedDenom !== undefined && object.wrappedDenom !== null) {
-      message.wrappedDenom = object.wrappedDenom;
-    } else {
-      message.wrappedDenom = "";
-    }
+    message.wrappedDenom = object.wrappedDenom ?? "";
     return message;
   },
 };
@@ -366,11 +350,7 @@ export const LinkTokenEvent = {
     } else {
       message.token = undefined;
     }
-    if (object.type !== undefined && object.type !== null) {
-      message.type = object.type;
-    } else {
-      message.type = "";
-    }
+    message.type = object.type ?? "";
     return message;
   },
 };

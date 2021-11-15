@@ -135,32 +135,10 @@ export const OrderEvent = {
     } else {
       message.order = undefined;
     }
-    if (object.type !== undefined && object.type !== null) {
-      message.type = object.type;
-    } else {
-      message.type = "";
-    }
-    if (
-      object.allocatedMarginDenom !== undefined &&
-      object.allocatedMarginDenom !== null
-    ) {
-      message.allocatedMarginDenom = object.allocatedMarginDenom;
-    } else {
-      message.allocatedMarginDenom = "";
-    }
-    if (
-      object.allocatedMarginAmount !== undefined &&
-      object.allocatedMarginAmount !== null
-    ) {
-      message.allocatedMarginAmount = object.allocatedMarginAmount;
-    } else {
-      message.allocatedMarginAmount = "";
-    }
-    if (object.blockCreatedAt !== undefined && object.blockCreatedAt !== null) {
-      message.blockCreatedAt = object.blockCreatedAt;
-    } else {
-      message.blockCreatedAt = undefined;
-    }
+    message.type = object.type ?? "";
+    message.allocatedMarginDenom = object.allocatedMarginDenom ?? "";
+    message.allocatedMarginAmount = object.allocatedMarginAmount ?? "";
+    message.blockCreatedAt = object.blockCreatedAt ?? undefined;
     return message;
   },
 };

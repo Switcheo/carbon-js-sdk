@@ -171,16 +171,8 @@ export const QueryBalanceRequest = {
 
   fromPartial(object: DeepPartial<QueryBalanceRequest>): QueryBalanceRequest {
     const message = { ...baseQueryBalanceRequest } as QueryBalanceRequest;
-    if (object.address !== undefined && object.address !== null) {
-      message.address = object.address;
-    } else {
-      message.address = "";
-    }
-    if (object.denom !== undefined && object.denom !== null) {
-      message.denom = object.denom;
-    } else {
-      message.denom = "";
-    }
+    message.address = object.address ?? "";
+    message.denom = object.denom ?? "";
     return message;
   },
 };
@@ -324,11 +316,7 @@ export const QueryAllBalancesRequest = {
     const message = {
       ...baseQueryAllBalancesRequest,
     } as QueryAllBalancesRequest;
-    if (object.address !== undefined && object.address !== null) {
-      message.address = object.address;
-    } else {
-      message.address = "";
-    }
+    message.address = object.address ?? "";
     if (object.pagination !== undefined && object.pagination !== null) {
       message.pagination = PageRequest.fromPartial(object.pagination);
     } else {
@@ -619,11 +607,7 @@ export const QuerySupplyOfRequest = {
 
   fromPartial(object: DeepPartial<QuerySupplyOfRequest>): QuerySupplyOfRequest {
     const message = { ...baseQuerySupplyOfRequest } as QuerySupplyOfRequest;
-    if (object.denom !== undefined && object.denom !== null) {
-      message.denom = object.denom;
-    } else {
-      message.denom = "";
-    }
+    message.denom = object.denom ?? "";
     return message;
   },
 };
@@ -1025,11 +1009,7 @@ export const QueryDenomMetadataRequest = {
     const message = {
       ...baseQueryDenomMetadataRequest,
     } as QueryDenomMetadataRequest;
-    if (object.denom !== undefined && object.denom !== null) {
-      message.denom = object.denom;
-    } else {
-      message.denom = "";
-    }
+    message.denom = object.denom ?? "";
     return message;
   },
 };

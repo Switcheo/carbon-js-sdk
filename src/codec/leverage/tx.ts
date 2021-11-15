@@ -86,21 +86,9 @@ export const MsgSetLeverage = {
 
   fromPartial(object: DeepPartial<MsgSetLeverage>): MsgSetLeverage {
     const message = { ...baseMsgSetLeverage } as MsgSetLeverage;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = object.market;
-    } else {
-      message.market = "";
-    }
-    if (object.leverage !== undefined && object.leverage !== null) {
-      message.leverage = object.leverage;
-    } else {
-      message.leverage = "";
-    }
+    message.creator = object.creator ?? "";
+    message.market = object.market ?? "";
+    message.leverage = object.leverage ?? "";
     return message;
   },
 };

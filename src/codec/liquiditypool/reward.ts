@@ -202,11 +202,7 @@ export const Commitment = {
     } else {
       message.liquidity = undefined;
     }
-    if (object.startTime !== undefined && object.startTime !== null) {
-      message.startTime = object.startTime;
-    } else {
-      message.startTime = undefined;
-    }
+    message.startTime = object.startTime ?? undefined;
     if (object.duration !== undefined && object.duration !== null) {
       message.duration = object.duration as Long;
     } else {
@@ -270,11 +266,7 @@ export const TotalCommitmentShares = {
     object: DeepPartial<TotalCommitmentShares>
   ): TotalCommitmentShares {
     const message = { ...baseTotalCommitmentShares } as TotalCommitmentShares;
-    if (object.total !== undefined && object.total !== null) {
-      message.total = object.total;
-    } else {
-      message.total = "";
-    }
+    message.total = object.total ?? "";
     return message;
   },
 };
@@ -421,44 +413,17 @@ export const RewardCurve = {
 
   fromPartial(object: DeepPartial<RewardCurve>): RewardCurve {
     const message = { ...baseRewardCurve } as RewardCurve;
-    if (object.startTime !== undefined && object.startTime !== null) {
-      message.startTime = object.startTime;
-    } else {
-      message.startTime = undefined;
-    }
-    if (object.initialReward !== undefined && object.initialReward !== null) {
-      message.initialReward = object.initialReward;
-    } else {
-      message.initialReward = 0;
-    }
+    message.startTime = object.startTime ?? undefined;
+    message.initialReward = object.initialReward ?? 0;
     if (object.interval !== undefined && object.interval !== null) {
       message.interval = object.interval as Long;
     } else {
       message.interval = Long.UZERO;
     }
-    if (
-      object.numberOfReductions !== undefined &&
-      object.numberOfReductions !== null
-    ) {
-      message.numberOfReductions = object.numberOfReductions;
-    } else {
-      message.numberOfReductions = 0;
-    }
-    if (object.reduction !== undefined && object.reduction !== null) {
-      message.reduction = object.reduction;
-    } else {
-      message.reduction = 0;
-    }
-    if (object.finalReward !== undefined && object.finalReward !== null) {
-      message.finalReward = object.finalReward;
-    } else {
-      message.finalReward = 0;
-    }
-    if (object.reductionsMade !== undefined && object.reductionsMade !== null) {
-      message.reductionsMade = object.reductionsMade;
-    } else {
-      message.reductionsMade = 0;
-    }
+    message.numberOfReductions = object.numberOfReductions ?? 0;
+    message.reduction = object.reduction ?? 0;
+    message.finalReward = object.finalReward ?? 0;
+    message.reductionsMade = object.reductionsMade ?? 0;
     return message;
   },
 };
@@ -547,14 +512,7 @@ export const CommitmentCurve = {
     } else {
       message.maxCommitmentDuration = Long.UZERO;
     }
-    if (
-      object.maxRewardMultiplier !== undefined &&
-      object.maxRewardMultiplier !== null
-    ) {
-      message.maxRewardMultiplier = object.maxRewardMultiplier;
-    } else {
-      message.maxRewardMultiplier = 0;
-    }
+    message.maxRewardMultiplier = object.maxRewardMultiplier ?? 0;
     return message;
   },
 };
@@ -626,11 +584,7 @@ export const WrappedRewardWeight = {
     } else {
       message.poolId = Long.UZERO;
     }
-    if (object.weight !== undefined && object.weight !== null) {
-      message.weight = object.weight;
-    } else {
-      message.weight = "";
-    }
+    message.weight = object.weight ?? "";
     return message;
   },
 };
@@ -799,25 +753,18 @@ export const RewardHistory = {
 
   fromPartial(object: DeepPartial<RewardHistory>): RewardHistory {
     const message = { ...baseRewardHistory } as RewardHistory;
-    message.rewards = [];
     if (object.poolId !== undefined && object.poolId !== null) {
       message.poolId = object.poolId as Long;
     } else {
       message.poolId = Long.UZERO;
     }
+    message.rewards = [];
     if (object.rewards !== undefined && object.rewards !== null) {
       for (const e of object.rewards) {
         message.rewards.push(DecCoin.fromPartial(e));
       }
     }
-    if (
-      object.totalCommitment !== undefined &&
-      object.totalCommitment !== null
-    ) {
-      message.totalCommitment = object.totalCommitment;
-    } else {
-      message.totalCommitment = "";
-    }
+    message.totalCommitment = object.totalCommitment ?? "";
     return message;
   },
 };
@@ -980,49 +927,18 @@ export const CommitmentResponse = {
 
   fromPartial(object: DeepPartial<CommitmentResponse>): CommitmentResponse {
     const message = { ...baseCommitmentResponse } as CommitmentResponse;
-    if (object.denom !== undefined && object.denom !== null) {
-      message.denom = object.denom;
-    } else {
-      message.denom = "";
-    }
-    if (object.amount !== undefined && object.amount !== null) {
-      message.amount = object.amount;
-    } else {
-      message.amount = "";
-    }
-    if (object.startTime !== undefined && object.startTime !== null) {
-      message.startTime = object.startTime;
-    } else {
-      message.startTime = undefined;
-    }
-    if (object.endTime !== undefined && object.endTime !== null) {
-      message.endTime = object.endTime;
-    } else {
-      message.endTime = undefined;
-    }
+    message.denom = object.denom ?? "";
+    message.amount = object.amount ?? "";
+    message.startTime = object.startTime ?? undefined;
+    message.endTime = object.endTime ?? undefined;
     if (object.duration !== undefined && object.duration !== null) {
       message.duration = object.duration as Long;
     } else {
       message.duration = Long.UZERO;
     }
-    if (object.isLocked !== undefined && object.isLocked !== null) {
-      message.isLocked = object.isLocked;
-    } else {
-      message.isLocked = false;
-    }
-    if (
-      object.commitmentPower !== undefined &&
-      object.commitmentPower !== null
-    ) {
-      message.commitmentPower = object.commitmentPower;
-    } else {
-      message.commitmentPower = "";
-    }
-    if (object.boostFactor !== undefined && object.boostFactor !== null) {
-      message.boostFactor = object.boostFactor;
-    } else {
-      message.boostFactor = "";
-    }
+    message.isLocked = object.isLocked ?? false;
+    message.commitmentPower = object.commitmentPower ?? "";
+    message.boostFactor = object.boostFactor ?? "";
     return message;
   },
 };
@@ -1110,11 +1026,7 @@ export const CommitmentExpiryIndex = {
         message.commitmentKeys.push(e);
       }
     }
-    if (object.key !== undefined && object.key !== null) {
-      message.key = object.key;
-    } else {
-      message.key = new Uint8Array();
-    }
+    message.key = object.key ?? new Uint8Array();
     return message;
   },
 };
@@ -1191,11 +1103,7 @@ export const CommitmentWithKey = {
     } else {
       message.commitment = undefined;
     }
-    if (object.key !== undefined && object.key !== null) {
-      message.key = object.key;
-    } else {
-      message.key = new Uint8Array();
-    }
+    message.key = object.key ?? new Uint8Array();
     return message;
   },
 };
@@ -1273,19 +1181,8 @@ export const CommitmentTotalWithKey = {
     object: DeepPartial<CommitmentTotalWithKey>
   ): CommitmentTotalWithKey {
     const message = { ...baseCommitmentTotalWithKey } as CommitmentTotalWithKey;
-    if (
-      object.commitmentTotal !== undefined &&
-      object.commitmentTotal !== null
-    ) {
-      message.commitmentTotal = object.commitmentTotal;
-    } else {
-      message.commitmentTotal = "";
-    }
-    if (object.key !== undefined && object.key !== null) {
-      message.key = object.key;
-    } else {
-      message.key = new Uint8Array();
-    }
+    message.commitmentTotal = object.commitmentTotal ?? "";
+    message.key = object.key ?? new Uint8Array();
     return message;
   },
 };
@@ -1368,11 +1265,7 @@ export const RewardHistoryWithKey = {
     } else {
       message.rewardHistory = undefined;
     }
-    if (object.key !== undefined && object.key !== null) {
-      message.key = object.key;
-    } else {
-      message.key = new Uint8Array();
-    }
+    message.key = object.key ?? new Uint8Array();
     return message;
   },
 };
@@ -1447,11 +1340,7 @@ export const LastClaimedWithKey = {
     } else {
       message.height = Long.UZERO;
     }
-    if (object.key !== undefined && object.key !== null) {
-      message.key = object.key;
-    } else {
-      message.key = new Uint8Array();
-    }
+    message.key = object.key ?? new Uint8Array();
     return message;
   },
 };
@@ -1661,14 +1550,7 @@ export const TotalCommitment = {
     } else {
       message.poolId = Long.UZERO;
     }
-    if (
-      object.totalCommitment !== undefined &&
-      object.totalCommitment !== null
-    ) {
-      message.totalCommitment = object.totalCommitment;
-    } else {
-      message.totalCommitment = "";
-    }
+    message.totalCommitment = object.totalCommitment ?? "";
     return message;
   },
 };

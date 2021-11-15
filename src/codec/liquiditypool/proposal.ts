@@ -130,16 +130,8 @@ export const LinkPoolProposal = {
 
   fromPartial(object: DeepPartial<LinkPoolProposal>): LinkPoolProposal {
     const message = { ...baseLinkPoolProposal } as LinkPoolProposal;
-    if (object.title !== undefined && object.title !== null) {
-      message.title = object.title;
-    } else {
-      message.title = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = object.description;
-    } else {
-      message.description = "";
-    }
+    message.title = object.title ?? "";
+    message.description = object.description ?? "";
     if (object.msg !== undefined && object.msg !== null) {
       message.msg = LinkPoolParams.fromPartial(object.msg);
     } else {
@@ -226,16 +218,8 @@ export const UnlinkPoolProposal = {
 
   fromPartial(object: DeepPartial<UnlinkPoolProposal>): UnlinkPoolProposal {
     const message = { ...baseUnlinkPoolProposal } as UnlinkPoolProposal;
-    if (object.title !== undefined && object.title !== null) {
-      message.title = object.title;
-    } else {
-      message.title = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = object.description;
-    } else {
-      message.description = "";
-    }
+    message.title = object.title ?? "";
+    message.description = object.description ?? "";
     if (object.msg !== undefined && object.msg !== null) {
       message.msg = UnlinkPoolParams.fromPartial(object.msg);
     } else {
@@ -330,16 +314,8 @@ export const SetRewardCurveProposal = {
     object: DeepPartial<SetRewardCurveProposal>
   ): SetRewardCurveProposal {
     const message = { ...baseSetRewardCurveProposal } as SetRewardCurveProposal;
-    if (object.title !== undefined && object.title !== null) {
-      message.title = object.title;
-    } else {
-      message.title = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = object.description;
-    } else {
-      message.description = "";
-    }
+    message.title = object.title ?? "";
+    message.description = object.description ?? "";
     if (object.msg !== undefined && object.msg !== null) {
       message.msg = SetRewardCurveParams.fromPartial(object.msg);
     } else {
@@ -443,16 +419,8 @@ export const SetCommitmentCurveProposal = {
     const message = {
       ...baseSetCommitmentCurveProposal,
     } as SetCommitmentCurveProposal;
-    if (object.title !== undefined && object.title !== null) {
-      message.title = object.title;
-    } else {
-      message.title = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = object.description;
-    } else {
-      message.description = "";
-    }
+    message.title = object.title ?? "";
+    message.description = object.description ?? "";
     if (object.msg !== undefined && object.msg !== null) {
       message.msg = SetCommitmentCurveParams.fromPartial(object.msg);
     } else {
@@ -553,16 +521,8 @@ export const SetRewardsWeightsProposal = {
     const message = {
       ...baseSetRewardsWeightsProposal,
     } as SetRewardsWeightsProposal;
-    if (object.title !== undefined && object.title !== null) {
-      message.title = object.title;
-    } else {
-      message.title = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = object.description;
-    } else {
-      message.description = "";
-    }
+    message.title = object.title ?? "";
+    message.description = object.description ?? "";
     if (object.msg !== undefined && object.msg !== null) {
       message.msg = SetRewardsWeightsParams.fromPartial(object.msg);
     } else {
@@ -657,16 +617,8 @@ export const ChangeSwapFeeProposal = {
     object: DeepPartial<ChangeSwapFeeProposal>
   ): ChangeSwapFeeProposal {
     const message = { ...baseChangeSwapFeeProposal } as ChangeSwapFeeProposal;
-    if (object.title !== undefined && object.title !== null) {
-      message.title = object.title;
-    } else {
-      message.title = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = object.description;
-    } else {
-      message.description = "";
-    }
+    message.title = object.title ?? "";
+    message.description = object.description ?? "";
     if (object.msg !== undefined && object.msg !== null) {
       message.msg = ChangeSwapFeeParams.fromPartial(object.msg);
     } else {
@@ -767,16 +719,8 @@ export const ChangeNumQuotesProposal = {
     const message = {
       ...baseChangeNumQuotesProposal,
     } as ChangeNumQuotesProposal;
-    if (object.title !== undefined && object.title !== null) {
-      message.title = object.title;
-    } else {
-      message.title = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = object.description;
-    } else {
-      message.description = "";
-    }
+    message.title = object.title ?? "";
+    message.description = object.description ?? "";
     if (object.msg !== undefined && object.msg !== null) {
       message.msg = ChangeNumQuotesParams.fromPartial(object.msg);
     } else {

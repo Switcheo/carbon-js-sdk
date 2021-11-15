@@ -123,21 +123,13 @@ export const MsgAddCollateral = {
 
   fromPartial(object: DeepPartial<MsgAddCollateral>): MsgAddCollateral {
     const message = { ...baseMsgAddCollateral } as MsgAddCollateral;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
+    message.creator = object.creator ?? "";
     if (object.vaultTypeId !== undefined && object.vaultTypeId !== null) {
       message.vaultTypeId = object.vaultTypeId as Long;
     } else {
       message.vaultTypeId = Long.UZERO;
     }
-    if (object.amount !== undefined && object.amount !== null) {
-      message.amount = object.amount;
-    } else {
-      message.amount = "";
-    }
+    message.amount = object.amount ?? "";
     return message;
   },
 };
@@ -272,21 +264,13 @@ export const MsgRemoveCollateral = {
 
   fromPartial(object: DeepPartial<MsgRemoveCollateral>): MsgRemoveCollateral {
     const message = { ...baseMsgRemoveCollateral } as MsgRemoveCollateral;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
+    message.creator = object.creator ?? "";
     if (object.vaultTypeId !== undefined && object.vaultTypeId !== null) {
       message.vaultTypeId = object.vaultTypeId as Long;
     } else {
       message.vaultTypeId = Long.UZERO;
     }
-    if (object.amount !== undefined && object.amount !== null) {
-      message.amount = object.amount;
-    } else {
-      message.amount = "";
-    }
+    message.amount = object.amount ?? "";
     return message;
   },
 };
@@ -421,21 +405,13 @@ export const MsgAddDebt = {
 
   fromPartial(object: DeepPartial<MsgAddDebt>): MsgAddDebt {
     const message = { ...baseMsgAddDebt } as MsgAddDebt;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
+    message.creator = object.creator ?? "";
     if (object.vaultTypeId !== undefined && object.vaultTypeId !== null) {
       message.vaultTypeId = object.vaultTypeId as Long;
     } else {
       message.vaultTypeId = Long.UZERO;
     }
-    if (object.amount !== undefined && object.amount !== null) {
-      message.amount = object.amount;
-    } else {
-      message.amount = "";
-    }
+    message.amount = object.amount ?? "";
     return message;
   },
 };
@@ -559,21 +535,13 @@ export const MsgRemoveDebt = {
 
   fromPartial(object: DeepPartial<MsgRemoveDebt>): MsgRemoveDebt {
     const message = { ...baseMsgRemoveDebt } as MsgRemoveDebt;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
+    message.creator = object.creator ?? "";
     if (object.vaultTypeId !== undefined && object.vaultTypeId !== null) {
       message.vaultTypeId = object.vaultTypeId as Long;
     } else {
       message.vaultTypeId = Long.UZERO;
     }
-    if (object.amount !== undefined && object.amount !== null) {
-      message.amount = object.amount;
-    } else {
-      message.amount = "";
-    }
+    message.amount = object.amount ?? "";
     return message;
   },
 };
@@ -720,32 +688,10 @@ export const MsgCreateVaultType = {
 
   fromPartial(object: DeepPartial<MsgCreateVaultType>): MsgCreateVaultType {
     const message = { ...baseMsgCreateVaultType } as MsgCreateVaultType;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
-    if (
-      object.collateralDenom !== undefined &&
-      object.collateralDenom !== null
-    ) {
-      message.collateralDenom = object.collateralDenom;
-    } else {
-      message.collateralDenom = "";
-    }
-    if (object.debtDenom !== undefined && object.debtDenom !== null) {
-      message.debtDenom = object.debtDenom;
-    } else {
-      message.debtDenom = "";
-    }
-    if (
-      object.collateralizationRatio !== undefined &&
-      object.collateralizationRatio !== null
-    ) {
-      message.collateralizationRatio = object.collateralizationRatio;
-    } else {
-      message.collateralizationRatio = "";
-    }
+    message.creator = object.creator ?? "";
+    message.collateralDenom = object.collateralDenom ?? "";
+    message.debtDenom = object.debtDenom ?? "";
+    message.collateralizationRatio = object.collateralizationRatio ?? "";
     return message;
   },
 };

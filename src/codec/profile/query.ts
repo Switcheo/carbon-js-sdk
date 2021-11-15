@@ -82,11 +82,7 @@ export const QueryGetProfileRequest = {
     object: DeepPartial<QueryGetProfileRequest>
   ): QueryGetProfileRequest {
     const message = { ...baseQueryGetProfileRequest } as QueryGetProfileRequest;
-    if (object.address !== undefined && object.address !== null) {
-      message.address = object.address;
-    } else {
-      message.address = "";
-    }
+    message.address = object.address ?? "";
     return message;
   },
 };
@@ -237,11 +233,7 @@ export const QueryAllProfileRequest = {
     } else {
       message.pagination = undefined;
     }
-    if (object.username !== undefined && object.username !== null) {
-      message.username = object.username;
-    } else {
-      message.username = "";
-    }
+    message.username = object.username ?? "";
     return message;
   },
 };

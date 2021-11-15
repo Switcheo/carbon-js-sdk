@@ -90,16 +90,8 @@ export const Message = {
 
   fromPartial(object: DeepPartial<Message>): Message {
     const message = { ...baseMessage } as Message;
-    if (object.hash !== undefined && object.hash !== null) {
-      message.hash = object.hash;
-    } else {
-      message.hash = "";
-    }
-    if (object.message !== undefined && object.message !== null) {
-      message.message = object.message;
-    } else {
-      message.message = "";
-    }
+    message.hash = object.hash ?? "";
+    message.message = object.message ?? "";
     if (object.messageType !== undefined && object.messageType !== null) {
       message.messageType = MessageType.fromPartial(object.messageType);
     } else {

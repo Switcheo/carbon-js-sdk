@@ -84,11 +84,7 @@ export const MsgCreateMarket = {
 
   fromPartial(object: DeepPartial<MsgCreateMarket>): MsgCreateMarket {
     const message = { ...baseMsgCreateMarket } as MsgCreateMarket;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
+    message.creator = object.creator ?? "";
     if (object.market !== undefined && object.market !== null) {
       message.market = Market.fromPartial(object.market);
     } else {
@@ -158,11 +154,7 @@ export const MsgCreateMarketResponse = {
     const message = {
       ...baseMsgCreateMarketResponse,
     } as MsgCreateMarketResponse;
-    if (object.name !== undefined && object.name !== null) {
-      message.name = object.name;
-    } else {
-      message.name = "";
-    }
+    message.name = object.name ?? "";
     return message;
   },
 };
@@ -234,11 +226,7 @@ export const MsgUpdateMarket = {
 
   fromPartial(object: DeepPartial<MsgUpdateMarket>): MsgUpdateMarket {
     const message = { ...baseMsgUpdateMarket } as MsgUpdateMarket;
-    if (object.updater !== undefined && object.updater !== null) {
-      message.updater = object.updater;
-    } else {
-      message.updater = "";
-    }
+    message.updater = object.updater ?? "";
     if (object.marketParams !== undefined && object.marketParams !== null) {
       message.marketParams = MarketParams.fromPartial(object.marketParams);
     } else {

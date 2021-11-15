@@ -216,26 +216,10 @@ export const Oracle = {
 
   fromPartial(object: DeepPartial<Oracle>): Oracle {
     const message = { ...baseOracle } as Oracle;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
-    if (object.id !== undefined && object.id !== null) {
-      message.id = object.id;
-    } else {
-      message.id = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = object.description;
-    } else {
-      message.description = "";
-    }
-    if (object.status !== undefined && object.status !== null) {
-      message.status = object.status;
-    } else {
-      message.status = "";
-    }
+    message.creator = object.creator ?? "";
+    message.id = object.id ?? "";
+    message.description = object.description ?? "";
+    message.status = object.status ?? "";
     if (
       object.minTurnoutPercentage !== undefined &&
       object.minTurnoutPercentage !== null
@@ -249,26 +233,14 @@ export const Oracle = {
     } else {
       message.maxResultAge = Long.ZERO;
     }
-    if (object.securityType !== undefined && object.securityType !== null) {
-      message.securityType = object.securityType;
-    } else {
-      message.securityType = "";
-    }
-    if (object.resultStrategy !== undefined && object.resultStrategy !== null) {
-      message.resultStrategy = object.resultStrategy;
-    } else {
-      message.resultStrategy = "";
-    }
+    message.securityType = object.securityType ?? "";
+    message.resultStrategy = object.resultStrategy ?? "";
     if (object.resolution !== undefined && object.resolution !== null) {
       message.resolution = object.resolution as Long;
     } else {
       message.resolution = Long.ZERO;
     }
-    if (object.spec !== undefined && object.spec !== null) {
-      message.spec = object.spec;
-    } else {
-      message.spec = "";
-    }
+    message.spec = object.spec ?? "";
     return message;
   },
 };
@@ -361,26 +333,14 @@ export const Vote = {
 
   fromPartial(object: DeepPartial<Vote>): Vote {
     const message = { ...baseVote } as Vote;
-    if (object.oracleId !== undefined && object.oracleId !== null) {
-      message.oracleId = object.oracleId;
-    } else {
-      message.oracleId = "";
-    }
+    message.oracleId = object.oracleId ?? "";
     if (object.timestamp !== undefined && object.timestamp !== null) {
       message.timestamp = object.timestamp as Long;
     } else {
       message.timestamp = Long.ZERO;
     }
-    if (object.data !== undefined && object.data !== null) {
-      message.data = object.data;
-    } else {
-      message.data = "";
-    }
-    if (object.voter !== undefined && object.voter !== null) {
-      message.voter = object.voter;
-    } else {
-      message.voter = "";
-    }
+    message.data = object.data ?? "";
+    message.voter = object.voter ?? "";
     return message;
   },
 };
@@ -459,21 +419,13 @@ export const Result = {
 
   fromPartial(object: DeepPartial<Result>): Result {
     const message = { ...baseResult } as Result;
-    if (object.oracleId !== undefined && object.oracleId !== null) {
-      message.oracleId = object.oracleId;
-    } else {
-      message.oracleId = "";
-    }
+    message.oracleId = object.oracleId ?? "";
     if (object.timestamp !== undefined && object.timestamp !== null) {
       message.timestamp = object.timestamp as Long;
     } else {
       message.timestamp = Long.ZERO;
     }
-    if (object.data !== undefined && object.data !== null) {
-      message.data = object.data;
-    } else {
-      message.data = "";
-    }
+    message.data = object.data ?? "";
     return message;
   },
 };
@@ -537,11 +489,7 @@ export const Mark = {
 
   fromPartial(object: DeepPartial<Mark>): Mark {
     const message = { ...baseMark } as Mark;
-    if (object.oracleId !== undefined && object.oracleId !== null) {
-      message.oracleId = object.oracleId;
-    } else {
-      message.oracleId = "";
-    }
+    message.oracleId = object.oracleId ?? "";
     if (object.timestamp !== undefined && object.timestamp !== null) {
       message.timestamp = object.timestamp as Long;
     } else {

@@ -58,11 +58,7 @@ export const MessageType = {
 
   fromPartial(object: DeepPartial<MessageType>): MessageType {
     const message = { ...baseMessageType } as MessageType;
-    if (object.messageType !== undefined && object.messageType !== null) {
-      message.messageType = object.messageType;
-    } else {
-      message.messageType = "";
-    }
+    message.messageType = object.messageType ?? "";
     return message;
   },
 };

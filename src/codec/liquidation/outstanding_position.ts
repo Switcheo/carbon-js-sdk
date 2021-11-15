@@ -133,37 +133,11 @@ export const OutstandingPosition = {
 
   fromPartial(object: DeepPartial<OutstandingPosition>): OutstandingPosition {
     const message = { ...baseOutstandingPosition } as OutstandingPosition;
-    if (
-      object.liquidationOrderId !== undefined &&
-      object.liquidationOrderId !== null
-    ) {
-      message.liquidationOrderId = object.liquidationOrderId;
-    } else {
-      message.liquidationOrderId = "";
-    }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = object.market;
-    } else {
-      message.market = "";
-    }
-    if (
-      object.bankruptcyPrice !== undefined &&
-      object.bankruptcyPrice !== null
-    ) {
-      message.bankruptcyPrice = object.bankruptcyPrice;
-    } else {
-      message.bankruptcyPrice = "";
-    }
-    if (object.lots !== undefined && object.lots !== null) {
-      message.lots = object.lots;
-    } else {
-      message.lots = "";
-    }
-    if (object.blockCreatedAt !== undefined && object.blockCreatedAt !== null) {
-      message.blockCreatedAt = object.blockCreatedAt;
-    } else {
-      message.blockCreatedAt = undefined;
-    }
+    message.liquidationOrderId = object.liquidationOrderId ?? "";
+    message.market = object.market ?? "";
+    message.bankruptcyPrice = object.bankruptcyPrice ?? "";
+    message.lots = object.lots ?? "";
+    message.blockCreatedAt = object.blockCreatedAt ?? undefined;
     return message;
   },
 };

@@ -85,21 +85,9 @@ export const MsgSetMargin = {
 
   fromPartial(object: DeepPartial<MsgSetMargin>): MsgSetMargin {
     const message = { ...baseMsgSetMargin } as MsgSetMargin;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = object.market;
-    } else {
-      message.market = "";
-    }
-    if (object.margin !== undefined && object.margin !== null) {
-      message.margin = object.margin;
-    } else {
-      message.margin = "";
-    }
+    message.creator = object.creator ?? "";
+    message.market = object.market ?? "";
+    message.margin = object.margin ?? "";
     return message;
   },
 };

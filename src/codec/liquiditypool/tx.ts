@@ -301,36 +301,12 @@ export const MsgCreatePool = {
 
   fromPartial(object: DeepPartial<MsgCreatePool>): MsgCreatePool {
     const message = { ...baseMsgCreatePool } as MsgCreatePool;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
-    if (object.tokenADenom !== undefined && object.tokenADenom !== null) {
-      message.tokenADenom = object.tokenADenom;
-    } else {
-      message.tokenADenom = "";
-    }
-    if (object.tokenBDenom !== undefined && object.tokenBDenom !== null) {
-      message.tokenBDenom = object.tokenBDenom;
-    } else {
-      message.tokenBDenom = "";
-    }
-    if (object.tokenAWeight !== undefined && object.tokenAWeight !== null) {
-      message.tokenAWeight = object.tokenAWeight;
-    } else {
-      message.tokenAWeight = "";
-    }
-    if (object.tokenBWeight !== undefined && object.tokenBWeight !== null) {
-      message.tokenBWeight = object.tokenBWeight;
-    } else {
-      message.tokenBWeight = "";
-    }
-    if (object.swapFee !== undefined && object.swapFee !== null) {
-      message.swapFee = object.swapFee;
-    } else {
-      message.swapFee = "";
-    }
+    message.creator = object.creator ?? "";
+    message.tokenADenom = object.tokenADenom ?? "";
+    message.tokenBDenom = object.tokenBDenom ?? "";
+    message.tokenAWeight = object.tokenAWeight ?? "";
+    message.tokenBWeight = object.tokenBWeight ?? "";
+    message.swapFee = object.swapFee ?? "";
     if (object.numQuotes !== undefined && object.numQuotes !== null) {
       message.numQuotes = object.numQuotes as Long;
     } else {
@@ -575,46 +551,14 @@ export const MsgCreatePoolWithLiquidity = {
     const message = {
       ...baseMsgCreatePoolWithLiquidity,
     } as MsgCreatePoolWithLiquidity;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
-    if (object.tokenADenom !== undefined && object.tokenADenom !== null) {
-      message.tokenADenom = object.tokenADenom;
-    } else {
-      message.tokenADenom = "";
-    }
-    if (object.tokenBDenom !== undefined && object.tokenBDenom !== null) {
-      message.tokenBDenom = object.tokenBDenom;
-    } else {
-      message.tokenBDenom = "";
-    }
-    if (object.tokenAWeight !== undefined && object.tokenAWeight !== null) {
-      message.tokenAWeight = object.tokenAWeight;
-    } else {
-      message.tokenAWeight = "";
-    }
-    if (object.tokenBWeight !== undefined && object.tokenBWeight !== null) {
-      message.tokenBWeight = object.tokenBWeight;
-    } else {
-      message.tokenBWeight = "";
-    }
-    if (object.amountA !== undefined && object.amountA !== null) {
-      message.amountA = object.amountA;
-    } else {
-      message.amountA = "";
-    }
-    if (object.amountB !== undefined && object.amountB !== null) {
-      message.amountB = object.amountB;
-    } else {
-      message.amountB = "";
-    }
-    if (object.swapFee !== undefined && object.swapFee !== null) {
-      message.swapFee = object.swapFee;
-    } else {
-      message.swapFee = "";
-    }
+    message.creator = object.creator ?? "";
+    message.tokenADenom = object.tokenADenom ?? "";
+    message.tokenBDenom = object.tokenBDenom ?? "";
+    message.tokenAWeight = object.tokenAWeight ?? "";
+    message.tokenBWeight = object.tokenBWeight ?? "";
+    message.amountA = object.amountA ?? "";
+    message.amountB = object.amountB ?? "";
+    message.swapFee = object.swapFee ?? "";
     if (object.numQuotes !== undefined && object.numQuotes !== null) {
       message.numQuotes = object.numQuotes as Long;
     } else {
@@ -780,31 +724,15 @@ export const MsgAddLiquidity = {
 
   fromPartial(object: DeepPartial<MsgAddLiquidity>): MsgAddLiquidity {
     const message = { ...baseMsgAddLiquidity } as MsgAddLiquidity;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
+    message.creator = object.creator ?? "";
     if (object.poolId !== undefined && object.poolId !== null) {
       message.poolId = object.poolId as Long;
     } else {
       message.poolId = Long.UZERO;
     }
-    if (object.amountA !== undefined && object.amountA !== null) {
-      message.amountA = object.amountA;
-    } else {
-      message.amountA = "";
-    }
-    if (object.amountB !== undefined && object.amountB !== null) {
-      message.amountB = object.amountB;
-    } else {
-      message.amountB = "";
-    }
-    if (object.minShares !== undefined && object.minShares !== null) {
-      message.minShares = object.minShares;
-    } else {
-      message.minShares = "";
-    }
+    message.amountA = object.amountA ?? "";
+    message.amountB = object.amountB ?? "";
+    message.minShares = object.minShares ?? "";
     return message;
   },
 };
@@ -939,21 +867,13 @@ export const MsgRemoveLiquidity = {
 
   fromPartial(object: DeepPartial<MsgRemoveLiquidity>): MsgRemoveLiquidity {
     const message = { ...baseMsgRemoveLiquidity } as MsgRemoveLiquidity;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
+    message.creator = object.creator ?? "";
     if (object.poolId !== undefined && object.poolId !== null) {
       message.poolId = object.poolId as Long;
     } else {
       message.poolId = Long.UZERO;
     }
-    if (object.shares !== undefined && object.shares !== null) {
-      message.shares = object.shares;
-    } else {
-      message.shares = "";
-    }
+    message.shares = object.shares ?? "";
     return message;
   },
 };
@@ -1080,11 +1000,7 @@ export const MsgLinkPool = {
 
   fromPartial(object: DeepPartial<MsgLinkPool>): MsgLinkPool {
     const message = { ...baseMsgLinkPool } as MsgLinkPool;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
+    message.creator = object.creator ?? "";
     if (object.linkPoolParams !== undefined && object.linkPoolParams !== null) {
       message.linkPoolParams = LinkPoolParams.fromPartial(
         object.linkPoolParams
@@ -1163,11 +1079,7 @@ export const LinkPoolParams = {
     } else {
       message.poolId = Long.UZERO;
     }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = object.market;
-    } else {
-      message.market = "";
-    }
+    message.market = object.market ?? "";
     return message;
   },
 };
@@ -1288,11 +1200,7 @@ export const MsgUnlinkPool = {
 
   fromPartial(object: DeepPartial<MsgUnlinkPool>): MsgUnlinkPool {
     const message = { ...baseMsgUnlinkPool } as MsgUnlinkPool;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
+    message.creator = object.creator ?? "";
     if (
       object.unlinkPoolParams !== undefined &&
       object.unlinkPoolParams !== null
@@ -1488,11 +1396,7 @@ export const MsgSetRewardsWeights = {
 
   fromPartial(object: DeepPartial<MsgSetRewardsWeights>): MsgSetRewardsWeights {
     const message = { ...baseMsgSetRewardsWeights } as MsgSetRewardsWeights;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
+    message.creator = object.creator ?? "";
     if (
       object.setRewardsWeightsParams !== undefined &&
       object.setRewardsWeightsParams !== null
@@ -1654,11 +1558,7 @@ export const RewardsWeightSetter = {
     } else {
       message.poolId = Long.UZERO;
     }
-    if (object.weight !== undefined && object.weight !== null) {
-      message.weight = object.weight;
-    } else {
-      message.weight = "";
-    }
+    message.weight = object.weight ?? "";
     return message;
   },
 };
@@ -1806,21 +1706,9 @@ export const MsgStakePoolToken = {
 
   fromPartial(object: DeepPartial<MsgStakePoolToken>): MsgStakePoolToken {
     const message = { ...baseMsgStakePoolToken } as MsgStakePoolToken;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
-    if (object.denom !== undefined && object.denom !== null) {
-      message.denom = object.denom;
-    } else {
-      message.denom = "";
-    }
-    if (object.amount !== undefined && object.amount !== null) {
-      message.amount = object.amount;
-    } else {
-      message.amount = "";
-    }
+    message.creator = object.creator ?? "";
+    message.denom = object.denom ?? "";
+    message.amount = object.amount ?? "";
     if (object.duration !== undefined && object.duration !== null) {
       message.duration = object.duration as Long;
     } else {
@@ -1955,21 +1843,9 @@ export const MsgUnstakePoolToken = {
 
   fromPartial(object: DeepPartial<MsgUnstakePoolToken>): MsgUnstakePoolToken {
     const message = { ...baseMsgUnstakePoolToken } as MsgUnstakePoolToken;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
-    if (object.denom !== undefined && object.denom !== null) {
-      message.denom = object.denom;
-    } else {
-      message.denom = "";
-    }
-    if (object.amount !== undefined && object.amount !== null) {
-      message.amount = object.amount;
-    } else {
-      message.amount = "";
-    }
+    message.creator = object.creator ?? "";
+    message.denom = object.denom ?? "";
+    message.amount = object.amount ?? "";
     return message;
   },
 };
@@ -2088,11 +1964,7 @@ export const MsgClaimPoolRewards = {
 
   fromPartial(object: DeepPartial<MsgClaimPoolRewards>): MsgClaimPoolRewards {
     const message = { ...baseMsgClaimPoolRewards } as MsgClaimPoolRewards;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
+    message.creator = object.creator ?? "";
     if (object.poolId !== undefined && object.poolId !== null) {
       message.poolId = object.poolId as Long;
     } else {
@@ -2229,11 +2101,7 @@ export const MsgSetRewardCurve = {
 
   fromPartial(object: DeepPartial<MsgSetRewardCurve>): MsgSetRewardCurve {
     const message = { ...baseMsgSetRewardCurve } as MsgSetRewardCurve;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
+    message.creator = object.creator ?? "";
     if (
       object.setRewardCurveParams !== undefined &&
       object.setRewardCurveParams !== null
@@ -2389,27 +2257,9 @@ export const SetRewardCurveParams = {
 
   fromPartial(object: DeepPartial<SetRewardCurveParams>): SetRewardCurveParams {
     const message = { ...baseSetRewardCurveParams } as SetRewardCurveParams;
-    if (object.startTime !== undefined && object.startTime !== null) {
-      message.startTime = object.startTime;
-    } else {
-      message.startTime = undefined;
-    }
-    if (
-      object.initialRewardBps !== undefined &&
-      object.initialRewardBps !== null
-    ) {
-      message.initialRewardBps = object.initialRewardBps;
-    } else {
-      message.initialRewardBps = 0;
-    }
-    if (
-      object.reductionMultiplierBps !== undefined &&
-      object.reductionMultiplierBps !== null
-    ) {
-      message.reductionMultiplierBps = object.reductionMultiplierBps;
-    } else {
-      message.reductionMultiplierBps = 0;
-    }
+    message.startTime = object.startTime ?? undefined;
+    message.initialRewardBps = object.initialRewardBps ?? 0;
+    message.reductionMultiplierBps = object.reductionMultiplierBps ?? 0;
     if (
       object.reductionIntervalSeconds !== undefined &&
       object.reductionIntervalSeconds !== null
@@ -2419,16 +2269,8 @@ export const SetRewardCurveParams = {
     } else {
       message.reductionIntervalSeconds = Long.UZERO;
     }
-    if (object.reductions !== undefined && object.reductions !== null) {
-      message.reductions = object.reductions;
-    } else {
-      message.reductions = 0;
-    }
-    if (object.finalRewardBps !== undefined && object.finalRewardBps !== null) {
-      message.finalRewardBps = object.finalRewardBps;
-    } else {
-      message.finalRewardBps = 0;
-    }
+    message.reductions = object.reductions ?? 0;
+    message.finalRewardBps = object.finalRewardBps ?? 0;
     return message;
   },
 };
@@ -2560,11 +2402,7 @@ export const MsgChangeSwapFee = {
 
   fromPartial(object: DeepPartial<MsgChangeSwapFee>): MsgChangeSwapFee {
     const message = { ...baseMsgChangeSwapFee } as MsgChangeSwapFee;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
+    message.creator = object.creator ?? "";
     if (
       object.changeSwapFeeParams !== undefined &&
       object.changeSwapFeeParams !== null
@@ -2646,11 +2484,7 @@ export const ChangeSwapFeeParams = {
     } else {
       message.poolId = Long.UZERO;
     }
-    if (object.swapFee !== undefined && object.swapFee !== null) {
-      message.swapFee = object.swapFee;
-    } else {
-      message.swapFee = "";
-    }
+    message.swapFee = object.swapFee ?? "";
     return message;
   },
 };
@@ -2787,11 +2621,7 @@ export const MsgSetCommitmentCurve = {
     object: DeepPartial<MsgSetCommitmentCurve>
   ): MsgSetCommitmentCurve {
     const message = { ...baseMsgSetCommitmentCurve } as MsgSetCommitmentCurve;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
+    message.creator = object.creator ?? "";
     if (
       object.setCommitmentCurveParams !== undefined &&
       object.setCommitmentCurveParams !== null
@@ -2891,14 +2721,7 @@ export const SetCommitmentCurveParams = {
     } else {
       message.maxDuration = Long.UZERO;
     }
-    if (
-      object.maxRewardMultiplier !== undefined &&
-      object.maxRewardMultiplier !== null
-    ) {
-      message.maxRewardMultiplier = object.maxRewardMultiplier;
-    } else {
-      message.maxRewardMultiplier = 0;
-    }
+    message.maxRewardMultiplier = object.maxRewardMultiplier ?? 0;
     return message;
   },
 };
@@ -3030,11 +2853,7 @@ export const MsgChangeNumQuotes = {
 
   fromPartial(object: DeepPartial<MsgChangeNumQuotes>): MsgChangeNumQuotes {
     const message = { ...baseMsgChangeNumQuotes } as MsgChangeNumQuotes;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = object.creator;
-    } else {
-      message.creator = "";
-    }
+    message.creator = object.creator ?? "";
     if (
       object.changeNumQuotesParams !== undefined &&
       object.changeNumQuotesParams !== null

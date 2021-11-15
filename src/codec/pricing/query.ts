@@ -84,11 +84,7 @@ export const QueryPriceRequest = {
 
   fromPartial(object: DeepPartial<QueryPriceRequest>): QueryPriceRequest {
     const message = { ...baseQueryPriceRequest } as QueryPriceRequest;
-    if (object.market !== undefined && object.market !== null) {
-      message.market = object.market;
-    } else {
-      message.market = "";
-    }
+    message.market = object.market ?? "";
     return message;
   },
 };
@@ -388,16 +384,8 @@ export const QueryRateRequest = {
 
   fromPartial(object: DeepPartial<QueryRateRequest>): QueryRateRequest {
     const message = { ...baseQueryRateRequest } as QueryRateRequest;
-    if (object.denomA !== undefined && object.denomA !== null) {
-      message.denomA = object.denomA;
-    } else {
-      message.denomA = "";
-    }
-    if (object.denomB !== undefined && object.denomB !== null) {
-      message.denomB = object.denomB;
-    } else {
-      message.denomB = "";
-    }
+    message.denomA = object.denomA ?? "";
+    message.denomB = object.denomB ?? "";
     return message;
   },
 };
@@ -452,11 +440,7 @@ export const QueryRateResponse = {
 
   fromPartial(object: DeepPartial<QueryRateResponse>): QueryRateResponse {
     const message = { ...baseQueryRateResponse } as QueryRateResponse;
-    if (object.conversionRate !== undefined && object.conversionRate !== null) {
-      message.conversionRate = object.conversionRate;
-    } else {
-      message.conversionRate = "";
-    }
+    message.conversionRate = object.conversionRate ?? "";
     return message;
   },
 };

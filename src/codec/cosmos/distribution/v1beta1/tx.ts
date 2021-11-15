@@ -129,22 +129,8 @@ export const MsgSetWithdrawAddress = {
     object: DeepPartial<MsgSetWithdrawAddress>
   ): MsgSetWithdrawAddress {
     const message = { ...baseMsgSetWithdrawAddress } as MsgSetWithdrawAddress;
-    if (
-      object.delegatorAddress !== undefined &&
-      object.delegatorAddress !== null
-    ) {
-      message.delegatorAddress = object.delegatorAddress;
-    } else {
-      message.delegatorAddress = "";
-    }
-    if (
-      object.withdrawAddress !== undefined &&
-      object.withdrawAddress !== null
-    ) {
-      message.withdrawAddress = object.withdrawAddress;
-    } else {
-      message.withdrawAddress = "";
-    }
+    message.delegatorAddress = object.delegatorAddress ?? "";
+    message.withdrawAddress = object.withdrawAddress ?? "";
     return message;
   },
 };
@@ -284,22 +270,8 @@ export const MsgWithdrawDelegatorReward = {
     const message = {
       ...baseMsgWithdrawDelegatorReward,
     } as MsgWithdrawDelegatorReward;
-    if (
-      object.delegatorAddress !== undefined &&
-      object.delegatorAddress !== null
-    ) {
-      message.delegatorAddress = object.delegatorAddress;
-    } else {
-      message.delegatorAddress = "";
-    }
-    if (
-      object.validatorAddress !== undefined &&
-      object.validatorAddress !== null
-    ) {
-      message.validatorAddress = object.validatorAddress;
-    } else {
-      message.validatorAddress = "";
-    }
+    message.delegatorAddress = object.delegatorAddress ?? "";
+    message.validatorAddress = object.validatorAddress ?? "";
     return message;
   },
 };
@@ -420,14 +392,7 @@ export const MsgWithdrawValidatorCommission = {
     const message = {
       ...baseMsgWithdrawValidatorCommission,
     } as MsgWithdrawValidatorCommission;
-    if (
-      object.validatorAddress !== undefined &&
-      object.validatorAddress !== null
-    ) {
-      message.validatorAddress = object.validatorAddress;
-    } else {
-      message.validatorAddress = "";
-    }
+    message.validatorAddress = object.validatorAddress ?? "";
     return message;
   },
 };
@@ -560,11 +525,7 @@ export const MsgFundCommunityPool = {
         message.amount.push(Coin.fromPartial(e));
       }
     }
-    if (object.depositor !== undefined && object.depositor !== null) {
-      message.depositor = object.depositor;
-    } else {
-      message.depositor = "";
-    }
+    message.depositor = object.depositor ?? "";
     return message;
   },
 };

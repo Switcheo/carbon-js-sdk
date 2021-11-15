@@ -188,27 +188,10 @@ export const Transaction = {
 
   fromPartial(object: DeepPartial<Transaction>): Transaction {
     const message = { ...baseTransaction } as Transaction;
-    message.messages = [];
-    if (object.hash !== undefined && object.hash !== null) {
-      message.hash = object.hash;
-    } else {
-      message.hash = "";
-    }
-    if (object.address !== undefined && object.address !== null) {
-      message.address = object.address;
-    } else {
-      message.address = "";
-    }
-    if (object.code !== undefined && object.code !== null) {
-      message.code = object.code;
-    } else {
-      message.code = 0;
-    }
-    if (object.memo !== undefined && object.memo !== null) {
-      message.memo = object.memo;
-    } else {
-      message.memo = "";
-    }
+    message.hash = object.hash ?? "";
+    message.address = object.address ?? "";
+    message.code = object.code ?? 0;
+    message.memo = object.memo ?? "";
     if (object.gasUsed !== undefined && object.gasUsed !== null) {
       message.gasUsed = object.gasUsed as Long;
     } else {
@@ -224,11 +207,8 @@ export const Transaction = {
     } else {
       message.blockHeight = Long.UZERO;
     }
-    if (object.blockCreatedAt !== undefined && object.blockCreatedAt !== null) {
-      message.blockCreatedAt = object.blockCreatedAt;
-    } else {
-      message.blockCreatedAt = undefined;
-    }
+    message.blockCreatedAt = object.blockCreatedAt ?? undefined;
+    message.messages = [];
     if (object.messages !== undefined && object.messages !== null) {
       for (const e of object.messages) {
         message.messages.push(Message.fromPartial(e));

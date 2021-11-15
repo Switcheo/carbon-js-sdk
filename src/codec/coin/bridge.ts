@@ -131,11 +131,7 @@ export const Bridge = {
 
   fromPartial(object: DeepPartial<Bridge>): Bridge {
     const message = { ...baseBridge } as Bridge;
-    if (object.name !== undefined && object.name !== null) {
-      message.name = object.name;
-    } else {
-      message.name = "";
-    }
+    message.name = object.name ?? "";
     if (object.bridgeId !== undefined && object.bridgeId !== null) {
       message.bridgeId = object.bridgeId as Long;
     } else {
@@ -146,21 +142,9 @@ export const Bridge = {
     } else {
       message.chainId = Long.UZERO;
     }
-    if (object.bridgeName !== undefined && object.bridgeName !== null) {
-      message.bridgeName = object.bridgeName;
-    } else {
-      message.bridgeName = "";
-    }
-    if (object.chainName !== undefined && object.chainName !== null) {
-      message.chainName = object.chainName;
-    } else {
-      message.chainName = "";
-    }
-    if (object.enabled !== undefined && object.enabled !== null) {
-      message.enabled = object.enabled;
-    } else {
-      message.enabled = false;
-    }
+    message.bridgeName = object.bridgeName ?? "";
+    message.chainName = object.chainName ?? "";
+    message.enabled = object.enabled ?? false;
     return message;
   },
 };

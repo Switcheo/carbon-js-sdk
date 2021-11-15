@@ -242,11 +242,7 @@ export const QueryInflationResponse = {
     object: DeepPartial<QueryInflationResponse>
   ): QueryInflationResponse {
     const message = { ...baseQueryInflationResponse } as QueryInflationResponse;
-    if (object.inflation !== undefined && object.inflation !== null) {
-      message.inflation = object.inflation;
-    } else {
-      message.inflation = new Uint8Array();
-    }
+    message.inflation = object.inflation ?? new Uint8Array();
     return message;
   },
 };
@@ -371,14 +367,7 @@ export const QueryAnnualProvisionsResponse = {
     const message = {
       ...baseQueryAnnualProvisionsResponse,
     } as QueryAnnualProvisionsResponse;
-    if (
-      object.annualProvisions !== undefined &&
-      object.annualProvisions !== null
-    ) {
-      message.annualProvisions = object.annualProvisions;
-    } else {
-      message.annualProvisions = new Uint8Array();
-    }
+    message.annualProvisions = object.annualProvisions ?? new Uint8Array();
     return message;
   },
 };

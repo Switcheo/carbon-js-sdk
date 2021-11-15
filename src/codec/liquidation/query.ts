@@ -193,16 +193,8 @@ export const QueryAllLiquidationRequest = {
     const message = {
       ...baseQueryAllLiquidationRequest,
     } as QueryAllLiquidationRequest;
-    if (object.address !== undefined && object.address !== null) {
-      message.address = object.address;
-    } else {
-      message.address = "";
-    }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = object.market;
-    } else {
-      message.market = "";
-    }
+    message.address = object.address ?? "";
+    message.market = object.market ?? "";
     if (object.limit !== undefined && object.limit !== null) {
       message.limit = object.limit as Long;
     } else {
@@ -218,16 +210,8 @@ export const QueryAllLiquidationRequest = {
     } else {
       message.afterId = Long.UZERO;
     }
-    if (object.orderBy !== undefined && object.orderBy !== null) {
-      message.orderBy = object.orderBy;
-    } else {
-      message.orderBy = "";
-    }
-    if (object.orderId !== undefined && object.orderId !== null) {
-      message.orderId = object.orderId;
-    } else {
-      message.orderId = "";
-    }
+    message.orderBy = object.orderBy ?? "";
+    message.orderId = object.orderId ?? "";
     if (object.afterBlock !== undefined && object.afterBlock !== null) {
       message.afterBlock = object.afterBlock as Long;
     } else {

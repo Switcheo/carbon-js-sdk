@@ -75,11 +75,7 @@ export const NewVoteEvent = {
 
   fromPartial(object: DeepPartial<NewVoteEvent>): NewVoteEvent {
     const message = { ...baseNewVoteEvent } as NewVoteEvent;
-    if (object.voterAccount !== undefined && object.voterAccount !== null) {
-      message.voterAccount = object.voterAccount;
-    } else {
-      message.voterAccount = "";
-    }
+    message.voterAccount = object.voterAccount ?? "";
     return message;
   },
 };
@@ -134,11 +130,7 @@ export const RecordVoteEvent = {
 
   fromPartial(object: DeepPartial<RecordVoteEvent>): RecordVoteEvent {
     const message = { ...baseRecordVoteEvent } as RecordVoteEvent;
-    if (object.voterAccount !== undefined && object.voterAccount !== null) {
-      message.voterAccount = object.voterAccount;
-    } else {
-      message.voterAccount = "";
-    }
+    message.voterAccount = object.voterAccount ?? "";
     return message;
   },
 };
@@ -222,16 +214,8 @@ export const VoteEvent = {
     } else {
       message.vote = undefined;
     }
-    if (object.voteId !== undefined && object.voteId !== null) {
-      message.voteId = object.voteId;
-    } else {
-      message.voteId = "";
-    }
-    if (object.type !== undefined && object.type !== null) {
-      message.type = object.type;
-    } else {
-      message.type = "";
-    }
+    message.voteId = object.voteId ?? "";
+    message.type = object.type ?? "";
     return message;
   },
 };
@@ -315,16 +299,8 @@ export const ResultEvent = {
     } else {
       message.result = undefined;
     }
-    if (object.resultId !== undefined && object.resultId !== null) {
-      message.resultId = object.resultId;
-    } else {
-      message.resultId = "";
-    }
-    if (object.type !== undefined && object.type !== null) {
-      message.type = object.type;
-    } else {
-      message.type = "";
-    }
+    message.resultId = object.resultId ?? "";
+    message.type = object.type ?? "";
     return message;
   },
 };

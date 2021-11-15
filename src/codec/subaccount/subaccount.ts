@@ -77,16 +77,8 @@ export const SubAccount = {
 
   fromPartial(object: DeepPartial<SubAccount>): SubAccount {
     const message = { ...baseSubAccount } as SubAccount;
-    if (object.mainAccount !== undefined && object.mainAccount !== null) {
-      message.mainAccount = object.mainAccount;
-    } else {
-      message.mainAccount = "";
-    }
-    if (object.active !== undefined && object.active !== null) {
-      message.active = object.active;
-    } else {
-      message.active = false;
-    }
+    message.mainAccount = object.mainAccount ?? "";
+    message.active = object.active ?? false;
     return message;
   },
 };
@@ -169,21 +161,9 @@ export const GenesisSubAccount = {
 
   fromPartial(object: DeepPartial<GenesisSubAccount>): GenesisSubAccount {
     const message = { ...baseGenesisSubAccount } as GenesisSubAccount;
-    if (object.mainAddress !== undefined && object.mainAddress !== null) {
-      message.mainAddress = object.mainAddress;
-    } else {
-      message.mainAddress = "";
-    }
-    if (object.subAddress !== undefined && object.subAddress !== null) {
-      message.subAddress = object.subAddress;
-    } else {
-      message.subAddress = "";
-    }
-    if (object.active !== undefined && object.active !== null) {
-      message.active = object.active;
-    } else {
-      message.active = false;
-    }
+    message.mainAddress = object.mainAddress ?? "";
+    message.subAddress = object.subAddress ?? "";
+    message.active = object.active ?? false;
     return message;
   },
 };

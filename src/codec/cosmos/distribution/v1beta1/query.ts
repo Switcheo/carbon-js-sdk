@@ -177,6 +177,21 @@ export interface QueryCommunityPoolResponse {
   pool: DecCoin[];
 }
 
+/**
+ * QueryLiquidityProviderRewardsRequest is the request type for the Query/LiquidityProviderRewardsRequest RPC
+ * method.
+ */
+export interface QueryLiquidityProviderRewardsRequest {}
+
+/**
+ * QueryLiquidityProviderRewardsResponse is the response type for the Query/LiquidityProviderRewardsRequest
+ * RPC method.
+ */
+export interface QueryLiquidityProviderRewardsResponse {
+  /** pool defines community pool's coins. */
+  pool: DecCoin[];
+}
+
 const baseQueryParamsRequest: object = {};
 
 export const QueryParamsRequest = {
@@ -343,14 +358,7 @@ export const QueryValidatorOutstandingRewardsRequest = {
     const message = {
       ...baseQueryValidatorOutstandingRewardsRequest,
     } as QueryValidatorOutstandingRewardsRequest;
-    if (
-      object.validatorAddress !== undefined &&
-      object.validatorAddress !== null
-    ) {
-      message.validatorAddress = object.validatorAddress;
-    } else {
-      message.validatorAddress = "";
-    }
+    message.validatorAddress = object.validatorAddress ?? "";
     return message;
   },
 };
@@ -497,14 +505,7 @@ export const QueryValidatorCommissionRequest = {
     const message = {
       ...baseQueryValidatorCommissionRequest,
     } as QueryValidatorCommissionRequest;
-    if (
-      object.validatorAddress !== undefined &&
-      object.validatorAddress !== null
-    ) {
-      message.validatorAddress = object.validatorAddress;
-    } else {
-      message.validatorAddress = "";
-    }
+    message.validatorAddress = object.validatorAddress ?? "";
     return message;
   },
 };
@@ -700,14 +701,7 @@ export const QueryValidatorSlashesRequest = {
     const message = {
       ...baseQueryValidatorSlashesRequest,
     } as QueryValidatorSlashesRequest;
-    if (
-      object.validatorAddress !== undefined &&
-      object.validatorAddress !== null
-    ) {
-      message.validatorAddress = object.validatorAddress;
-    } else {
-      message.validatorAddress = "";
-    }
+    message.validatorAddress = object.validatorAddress ?? "";
     if (object.startingHeight !== undefined && object.startingHeight !== null) {
       message.startingHeight = object.startingHeight as Long;
     } else {
@@ -913,22 +907,8 @@ export const QueryDelegationRewardsRequest = {
     const message = {
       ...baseQueryDelegationRewardsRequest,
     } as QueryDelegationRewardsRequest;
-    if (
-      object.delegatorAddress !== undefined &&
-      object.delegatorAddress !== null
-    ) {
-      message.delegatorAddress = object.delegatorAddress;
-    } else {
-      message.delegatorAddress = "";
-    }
-    if (
-      object.validatorAddress !== undefined &&
-      object.validatorAddress !== null
-    ) {
-      message.validatorAddress = object.validatorAddress;
-    } else {
-      message.validatorAddress = "";
-    }
+    message.delegatorAddress = object.delegatorAddress ?? "";
+    message.validatorAddress = object.validatorAddress ?? "";
     return message;
   },
 };
@@ -1075,14 +1055,7 @@ export const QueryDelegationTotalRewardsRequest = {
     const message = {
       ...baseQueryDelegationTotalRewardsRequest,
     } as QueryDelegationTotalRewardsRequest;
-    if (
-      object.delegatorAddress !== undefined &&
-      object.delegatorAddress !== null
-    ) {
-      message.delegatorAddress = object.delegatorAddress;
-    } else {
-      message.delegatorAddress = "";
-    }
+    message.delegatorAddress = object.delegatorAddress ?? "";
     return message;
   },
 };
@@ -1176,12 +1149,12 @@ export const QueryDelegationTotalRewardsResponse = {
       ...baseQueryDelegationTotalRewardsResponse,
     } as QueryDelegationTotalRewardsResponse;
     message.rewards = [];
-    message.total = [];
     if (object.rewards !== undefined && object.rewards !== null) {
       for (const e of object.rewards) {
         message.rewards.push(DelegationDelegatorReward.fromPartial(e));
       }
     }
+    message.total = [];
     if (object.total !== undefined && object.total !== null) {
       for (const e of object.total) {
         message.total.push(DecCoin.fromPartial(e));
@@ -1255,14 +1228,7 @@ export const QueryDelegatorValidatorsRequest = {
     const message = {
       ...baseQueryDelegatorValidatorsRequest,
     } as QueryDelegatorValidatorsRequest;
-    if (
-      object.delegatorAddress !== undefined &&
-      object.delegatorAddress !== null
-    ) {
-      message.delegatorAddress = object.delegatorAddress;
-    } else {
-      message.delegatorAddress = "";
-    }
+    message.delegatorAddress = object.delegatorAddress ?? "";
     return message;
   },
 };
@@ -1409,14 +1375,7 @@ export const QueryDelegatorWithdrawAddressRequest = {
     const message = {
       ...baseQueryDelegatorWithdrawAddressRequest,
     } as QueryDelegatorWithdrawAddressRequest;
-    if (
-      object.delegatorAddress !== undefined &&
-      object.delegatorAddress !== null
-    ) {
-      message.delegatorAddress = object.delegatorAddress;
-    } else {
-      message.delegatorAddress = "";
-    }
+    message.delegatorAddress = object.delegatorAddress ?? "";
     return message;
   },
 };
@@ -1487,14 +1446,7 @@ export const QueryDelegatorWithdrawAddressResponse = {
     const message = {
       ...baseQueryDelegatorWithdrawAddressResponse,
     } as QueryDelegatorWithdrawAddressResponse;
-    if (
-      object.withdrawAddress !== undefined &&
-      object.withdrawAddress !== null
-    ) {
-      message.withdrawAddress = object.withdrawAddress;
-    } else {
-      message.withdrawAddress = "";
-    }
+    message.withdrawAddress = object.withdrawAddress ?? "";
     return message;
   },
 };
@@ -1627,6 +1579,134 @@ export const QueryCommunityPoolResponse = {
   },
 };
 
+const baseQueryLiquidityProviderRewardsRequest: object = {};
+
+export const QueryLiquidityProviderRewardsRequest = {
+  encode(
+    _: QueryLiquidityProviderRewardsRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryLiquidityProviderRewardsRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryLiquidityProviderRewardsRequest,
+    } as QueryLiquidityProviderRewardsRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryLiquidityProviderRewardsRequest {
+    const message = {
+      ...baseQueryLiquidityProviderRewardsRequest,
+    } as QueryLiquidityProviderRewardsRequest;
+    return message;
+  },
+
+  toJSON(_: QueryLiquidityProviderRewardsRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<QueryLiquidityProviderRewardsRequest>
+  ): QueryLiquidityProviderRewardsRequest {
+    const message = {
+      ...baseQueryLiquidityProviderRewardsRequest,
+    } as QueryLiquidityProviderRewardsRequest;
+    return message;
+  },
+};
+
+const baseQueryLiquidityProviderRewardsResponse: object = {};
+
+export const QueryLiquidityProviderRewardsResponse = {
+  encode(
+    message: QueryLiquidityProviderRewardsResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.pool) {
+      DecCoin.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryLiquidityProviderRewardsResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryLiquidityProviderRewardsResponse,
+    } as QueryLiquidityProviderRewardsResponse;
+    message.pool = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.pool.push(DecCoin.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryLiquidityProviderRewardsResponse {
+    const message = {
+      ...baseQueryLiquidityProviderRewardsResponse,
+    } as QueryLiquidityProviderRewardsResponse;
+    message.pool = [];
+    if (object.pool !== undefined && object.pool !== null) {
+      for (const e of object.pool) {
+        message.pool.push(DecCoin.fromJSON(e));
+      }
+    }
+    return message;
+  },
+
+  toJSON(message: QueryLiquidityProviderRewardsResponse): unknown {
+    const obj: any = {};
+    if (message.pool) {
+      obj.pool = message.pool.map((e) => (e ? DecCoin.toJSON(e) : undefined));
+    } else {
+      obj.pool = [];
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryLiquidityProviderRewardsResponse>
+  ): QueryLiquidityProviderRewardsResponse {
+    const message = {
+      ...baseQueryLiquidityProviderRewardsResponse,
+    } as QueryLiquidityProviderRewardsResponse;
+    message.pool = [];
+    if (object.pool !== undefined && object.pool !== null) {
+      for (const e of object.pool) {
+        message.pool.push(DecCoin.fromPartial(e));
+      }
+    }
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service for distribution module. */
 export interface Query {
   /** Params queries params of the distribution module. */
@@ -1666,6 +1746,10 @@ export interface Query {
   CommunityPool(
     request: QueryCommunityPoolRequest
   ): Promise<QueryCommunityPoolResponse>;
+  /** LiquidityProviderRewards queries the outstanding liquidity provider reward coins. */
+  LiquidityProviderRewards(
+    request: QueryLiquidityProviderRewardsRequest
+  ): Promise<QueryLiquidityProviderRewardsResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -1682,6 +1766,7 @@ export class QueryClientImpl implements Query {
     this.DelegatorValidators = this.DelegatorValidators.bind(this);
     this.DelegatorWithdrawAddress = this.DelegatorWithdrawAddress.bind(this);
     this.CommunityPool = this.CommunityPool.bind(this);
+    this.LiquidityProviderRewards = this.LiquidityProviderRewards.bind(this);
   }
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
@@ -1805,6 +1890,20 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryCommunityPoolResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  LiquidityProviderRewards(
+    request: QueryLiquidityProviderRewardsRequest
+  ): Promise<QueryLiquidityProviderRewardsResponse> {
+    const data = QueryLiquidityProviderRewardsRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "cosmos.distribution.v1beta1.Query",
+      "LiquidityProviderRewards",
+      data
+    );
+    return promise.then((data) =>
+      QueryLiquidityProviderRewardsResponse.decode(new _m0.Reader(data))
     );
   }
 }

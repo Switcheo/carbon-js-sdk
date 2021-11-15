@@ -90,17 +90,9 @@ export const Transfer = {
 
   fromPartial(object: DeepPartial<Transfer>): Transfer {
     const message = { ...baseTransfer } as Transfer;
+    message.recipient = object.recipient ?? "";
+    message.sender = object.sender ?? "";
     message.amount = [];
-    if (object.recipient !== undefined && object.recipient !== null) {
-      message.recipient = object.recipient;
-    } else {
-      message.recipient = "";
-    }
-    if (object.sender !== undefined && object.sender !== null) {
-      message.sender = object.sender;
-    } else {
-      message.sender = "";
-    }
     if (object.amount !== undefined && object.amount !== null) {
       for (const e of object.amount) {
         message.amount.push(Coin.fromPartial(e));

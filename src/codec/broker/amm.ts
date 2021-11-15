@@ -105,22 +105,14 @@ export const Amm = {
 
   fromPartial(object: DeepPartial<Amm>): Amm {
     const message = { ...baseAmm } as Amm;
-    message.orders = [];
     if (object.poolId !== undefined && object.poolId !== null) {
       message.poolId = object.poolId as Long;
     } else {
       message.poolId = Long.UZERO;
     }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = object.market;
-    } else {
-      message.market = "";
-    }
-    if (object.reservesHash !== undefined && object.reservesHash !== null) {
-      message.reservesHash = object.reservesHash;
-    } else {
-      message.reservesHash = new Uint8Array();
-    }
+    message.market = object.market ?? "";
+    message.reservesHash = object.reservesHash ?? new Uint8Array();
+    message.orders = [];
     if (object.orders !== undefined && object.orders !== null) {
       for (const e of object.orders) {
         message.orders.push(e);

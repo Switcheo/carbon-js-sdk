@@ -86,11 +86,7 @@ export const QueryGetOrderRequest = {
 
   fromPartial(object: DeepPartial<QueryGetOrderRequest>): QueryGetOrderRequest {
     const message = { ...baseQueryGetOrderRequest } as QueryGetOrderRequest;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = object.id;
-    } else {
-      message.id = "";
-    }
+    message.id = object.id ?? "";
     return message;
   },
 };
@@ -253,26 +249,10 @@ export const QueryAllOrderRequest = {
 
   fromPartial(object: DeepPartial<QueryAllOrderRequest>): QueryAllOrderRequest {
     const message = { ...baseQueryAllOrderRequest } as QueryAllOrderRequest;
-    if (object.address !== undefined && object.address !== null) {
-      message.address = object.address;
-    } else {
-      message.address = "";
-    }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = object.market;
-    } else {
-      message.market = "";
-    }
-    if (object.orderType !== undefined && object.orderType !== null) {
-      message.orderType = object.orderType;
-    } else {
-      message.orderType = "";
-    }
-    if (object.orderStatus !== undefined && object.orderStatus !== null) {
-      message.orderStatus = object.orderStatus;
-    } else {
-      message.orderStatus = "";
-    }
+    message.address = object.address ?? "";
+    message.market = object.market ?? "";
+    message.orderType = object.orderType ?? "";
+    message.orderStatus = object.orderStatus ?? "";
     return message;
   },
 };
@@ -421,16 +401,8 @@ export const QueryAccountOpenOrdersRequest = {
     const message = {
       ...baseQueryAccountOpenOrdersRequest,
     } as QueryAccountOpenOrdersRequest;
-    if (object.address !== undefined && object.address !== null) {
-      message.address = object.address;
-    } else {
-      message.address = "";
-    }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = object.market;
-    } else {
-      message.market = "";
-    }
+    message.address = object.address ?? "";
+    message.market = object.market ?? "";
     return message;
   },
 };
