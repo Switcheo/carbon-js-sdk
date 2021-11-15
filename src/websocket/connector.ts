@@ -619,7 +619,9 @@ export class WSConnector {
       }, this.timeoutConnect) as unknown as number
     } catch (error) {
       console.error(error)
-      this.rejectConnect(error)
+      if (error instanceof Error) {
+        this.rejectConnect(error)
+      }
     }
   }
 

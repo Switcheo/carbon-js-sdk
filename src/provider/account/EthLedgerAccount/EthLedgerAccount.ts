@@ -106,10 +106,11 @@ export class EthLedgerAccount {
       return [ethApp, publicKey, address]
     } catch (err) {
       console.error(err)
-      if (err.statusCode) {
-        throw new Error('ETH app is not open')
+      if (err instanceof Error) {
+        if (err.message) {
+          throw new Error('ETH app is not open')
+        }
       }
-
       throw err
     }
   }
