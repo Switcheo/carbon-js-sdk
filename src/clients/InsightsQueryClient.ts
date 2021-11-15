@@ -148,8 +148,14 @@ class InsightsQueryClient {
   }
 
   // Positions api
-  async Leaderboard(req: Insights.QueryGetLeaderboardRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetLeaderboardResponse>> {
-    const request = this.apiManager.path('position/leaderboard', req, {})
+  async Leaderboard(req: Insights.GetLeaderboardPathParams, query: Insights.GetLeaderboardQueryParams): Promise<Insights.InsightsQueryResponse<Insights.QueryGetLeaderboardResponse>> {
+    const request = this.apiManager.path('position/leaderboard', req, {
+      market: query.market ?? '',
+      sort: query.sort ?? 'DESC',
+      limit: query.limit ?? 100,
+      offset: query.offset ?? 0,
+      address: query.address ?? '',
+    })
     const response = await request.get()
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetLeaderboardResponse>
   }

@@ -48,6 +48,10 @@ export interface InsightsQueryResponse<T> {
   result: T
 }
 
+export interface Entries<T> {
+  entries: T
+}
+
 export interface TimeMeta {
   from: string
   until: string
