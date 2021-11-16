@@ -1,10 +1,10 @@
 {
-  "name": "carbon-sdk",
+  "name": "carbon-js-sdk",
   "version": "0.0.1",
   "description": "TypeScript SDK for Carbon blockchain",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
-  "repository": "https://github.com/Switcheo/carbon-sdk",
+  "repository": "https://github.com/Switcheo/carbon-js-sdk",
   "author": "Switcheo <engineering@switcheo.network>",
   "license": "MIT",
   "scripts": {
