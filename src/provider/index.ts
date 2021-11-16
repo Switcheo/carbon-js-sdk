@@ -1,5 +1,6 @@
-export { default as KeplrAccount, KeplrWindow, Keplr, ChainInfo } from "./keplr";
-export { default as SDKProvider } from "./sdk";
+export { EthLedgerAccount, NeoLedgerAccount } from "./account";
+export { AminoTypesMap } from "./amino";
+export { ChainInfo, default as KeplrAccount, Keplr, KeplrWindow } from "./keplr";
 export { default as CosmosLedger } from "./ledger";
-export { MetaMaskChangeNetworkParam, CallContractArgs, MetaMaskSyncResult, MetaMask } from "./metamask";
-export { EthLedgerAccount, NeoLedgerAccount} from "./account"
+export { CallContractArgs, MetaMask, MetaMaskChangeNetworkParam, MetaMaskSyncResult } from "./metamask";
+export { default as SDKProvider } from "./sdk";

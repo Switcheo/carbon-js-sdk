@@ -182,6 +182,7 @@ export const MsgCreatePool = {
     message: MsgCreatePool,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
+    console.log('message', message);
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
