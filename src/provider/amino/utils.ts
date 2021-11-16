@@ -38,7 +38,6 @@ export const generateAminoType = (amino: AminoInit): AminoConverter => {
   return {
     ...amino,
     toAmino: (input: TypeUtils.SimpleMap<unknown>) => {
-      console.log('directInput', input);
       const keysArr = Object.keys(input);
       const aminoObj: TypeUtils.SimpleMap<unknown> = {};
       keysArr.forEach((key: string) => {
