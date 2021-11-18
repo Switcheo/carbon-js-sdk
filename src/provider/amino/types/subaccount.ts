@@ -2,8 +2,13 @@ import { CarbonTx, TypeUtils } from "@carbon-sdk/util";
 import { AminoConverter } from "@cosmjs/stargate";
 import { AminoInit, generateAminoType } from "../utils";
 
+const TxTypes: TypeUtils.SimpleMap<string> = {
+  CreateSubAccount: "subaccount/MsgCreateSubAccountV1",
+  ActivateSubAccount: "subaccount/MsgActivateSubAccountV1",
+};
+
 const MsgCreateSubAccount: AminoInit = {
-  aminoType: "subaccount/MsgCreateSubAccountV1",
+  aminoType: TxTypes.CreateSubAccount,
   valueMap: {
     creator: "string",
     subAddress: "string",
@@ -11,7 +16,7 @@ const MsgCreateSubAccount: AminoInit = {
 };
 
 const MsgActivateSubAccount: AminoInit = {
-  aminoType: "subaccount/MsgActivateSubAccountV1",
+  aminoType: TxTypes.ActivateSubAccount,
   valueMap: {
     creator: "string",
     expectedMainAccount: "string",

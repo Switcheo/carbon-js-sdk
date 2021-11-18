@@ -2,8 +2,15 @@ import { CarbonTx, TypeUtils } from "@carbon-sdk/util";
 import { AminoConverter } from "@cosmjs/stargate";
 import { AminoInit, generateAminoType } from "../utils";
 
+const TxTypes: TypeUtils.SimpleMap<string> = {
+  Delegate: "cosmos-sdk/MsgDelegate",
+  Undelegate: "cosmos-sdk/MsgUndelegate",
+  BeginRedelegate: "cosmos-sdk/MsgBeginRedelegate",
+  WithdrawDelegationReward: "cosmos-sdk/MsgWithdrawDelegationReward",
+};
+
 const MsgDelegate: AminoInit = {
-  aminoType: "cosmos-sdk/MsgDelegate",
+  aminoType: TxTypes.Delegate,
   valueMap: {
     delegatorAddress: "string",
     validatorAddress: "string",
@@ -15,7 +22,7 @@ const MsgDelegate: AminoInit = {
 };
 
 const MsgUndelegate: AminoInit = {
-  aminoType: "cosmos-sdk/MsgUndelegate",
+  aminoType: TxTypes.Undelegate,
   valueMap: {
     delegatorAddress: "string",
     validatorAddress: "string",
@@ -27,7 +34,7 @@ const MsgUndelegate: AminoInit = {
 };
 
 const MsgBeginRedelegate: AminoInit = {
-  aminoType: "cosmos-sdk/MsgBeginRedelegate",
+  aminoType: TxTypes.BeginRedelegate,
   valueMap: {
     delegatorAddress: "string",
     validatorSrcAddress: "string",
@@ -40,7 +47,7 @@ const MsgBeginRedelegate: AminoInit = {
 };
 
 const MsgWithdrawDelegatorReward: AminoInit = {
-  aminoType: "cosmos-sdk/MsgWithdrawDelegationReward",
+  aminoType: TxTypes.WithdrawDelegationReward,
   valueMap: {
     delegatorAddress: "string",
     validatorAddress: "string",

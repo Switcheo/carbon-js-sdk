@@ -2,8 +2,12 @@ import { CarbonTx, TypeUtils } from "@carbon-sdk/util";
 import { AminoConverter } from "@cosmjs/stargate";
 import { AminoInit, generateAminoType } from "../utils";
 
+const TxTypes: TypeUtils.SimpleMap<string> = {
+  UpdateProfile: "profile/MsgUpdateProfile",
+};
+
 const MsgUpdateProfile: AminoInit = {
-  aminoType: "profile/MsgUpdateProfile",
+  aminoType: TxTypes.UpdateProfile,
   valueMap: {
     creator: "string",
     username: "string",

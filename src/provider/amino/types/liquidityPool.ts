@@ -2,8 +2,18 @@ import { CarbonTx, TypeUtils } from "@carbon-sdk/util";
 import { AminoConverter } from "@cosmjs/stargate";
 import { AminoInit, generateAminoType } from "../utils";
 
+const TxTypes: TypeUtils.SimpleMap<string> = {
+  CreatePool: "liquiditypool/CreatePool",
+  CreatePoolWithLiquidity: "liquiditypool/CreatePoolWithLiquidity",
+  AddLiquidity: "liquiditypool/AddLiquidity",
+  RemoveLiquidity: "liquiditypool/RemoveLiquidity",
+  StakePoolToken: "liquiditypool/StakePoolToken",
+  UnstakePoolToken: "liquiditypool/UnstakePoolToken",
+  ClaimPoolRewards: "liquiditypool/ClaimPoolRewards",
+};
+
 const MsgCreatePool: AminoInit = {
-  aminoType: "liquiditypool/CreatePool",
+  aminoType: TxTypes.CreatePool,
   valueMap: {
     creator: "string",
     numQuotes: "long",
@@ -16,7 +26,7 @@ const MsgCreatePool: AminoInit = {
 };
 
 const MsgCreatePoolWithLiquidity: AminoInit = {
-  aminoType: "liquiditypool/CreatePoolWithLiquidity",
+  aminoType: TxTypes.CreatePoolWithLiquidity,
   valueMap: {
     creator: "string",
     tokenADenom: "string",
@@ -31,7 +41,7 @@ const MsgCreatePoolWithLiquidity: AminoInit = {
 };
 
 const MsgAddLiquidity: AminoInit = {
-  aminoType: "liquiditypool/AddLiquidity",
+  aminoType: TxTypes.AddLiquidity,
   valueMap: {
     creator: "string",
     poolId: "long",
@@ -42,7 +52,7 @@ const MsgAddLiquidity: AminoInit = {
 };
 
 const MsgRemoveLiquidity: AminoInit = {
-  aminoType: "liquiditypool/RemoveLiquidity",
+  aminoType: TxTypes.RemoveLiquidity,
   valueMap: {
     creator: "string",
     poolId: "long",
@@ -51,7 +61,7 @@ const MsgRemoveLiquidity: AminoInit = {
 };
 
 const MsgStakePoolToken: AminoInit = {
-  aminoType: "liquiditypool/StakePoolToken",
+  aminoType: TxTypes.StakePoolToken,
   valueMap: {
     creator: "string",
     denom: "string",
@@ -61,7 +71,7 @@ const MsgStakePoolToken: AminoInit = {
 };
 
 const MsgUnstakePoolToken: AminoInit = {
-  aminoType: "liquiditypool/UnstakePoolToken",
+  aminoType: TxTypes.UnstakePoolToken,
   valueMap: {
     creator: "string",
     denom: "string",
@@ -70,7 +80,7 @@ const MsgUnstakePoolToken: AminoInit = {
 };
 
 const MsgClaimPoolRewards: AminoInit = {
-  aminoType: "liquiditypool/ClaimPoolRewards",
+  aminoType: TxTypes.ClaimPoolRewards,
   valueMap: {
     creator: "string",
     poolId: "long",
