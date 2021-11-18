@@ -15,7 +15,7 @@ export class OrderModule extends BaseModule {
       market: params.market,
       orderType: params.orderType,
       price: params.price?.shiftedBy(18).toString(10),
-      quantity: params.quantity.shiftedBy(18).toString(10),
+      quantity: params.quantity.toString(10),
       side: params.side,
       stopPrice: params.stopPrice?.shiftedBy(18).toString(10),
       timeInForce: params.timeInForce,
@@ -39,7 +39,7 @@ export class OrderModule extends BaseModule {
         market: params.market,
         orderType: params.orderType,
         price: params.price?.shiftedBy(18).toString(10),
-        quantity: params.quantity.shiftedBy(18).toString(10),
+        quantity: params.quantity.toString(10),
         side: params.side,
         stopPrice: params.stopPrice?.shiftedBy(18).toString(10),
         timeInForce: params.timeInForce,
@@ -94,7 +94,7 @@ export class OrderModule extends BaseModule {
       creator: wallet.bech32Address,
       id: params.id,
       price: params.price.shiftedBy(18).toString(10),
-      quantity: params.quantity.shiftedBy(18).toString(10),
+      quantity: params.quantity.toString(10),
       stopPrice: params.stopPrice.shiftedBy(18).toString(10),
     })
 
@@ -112,7 +112,7 @@ export class OrderModule extends BaseModule {
         creator: wallet.bech32Address,
         id: param.id,
         price: param.price.shiftedBy(18).toString(10),
-        quantity: param.quantity.shiftedBy(18).toString(10),
+        quantity: param.quantity.toString(10),
         stopPrice: param.stopPrice.shiftedBy(18).toString(10),
       })
 
