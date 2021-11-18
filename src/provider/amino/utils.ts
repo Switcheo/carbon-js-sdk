@@ -3,11 +3,19 @@ import { AminoConverter } from "@cosmjs/stargate";
 import BigNumber from "bignumber.js";
 import Long from "long";
 
-type SignDocType = "string" | "long" | "long-number" | "dec" | "bignumber" | "default" | "number" | "boolean" | "number-str" | "duration" | "date" | "date-number";
+export enum AminoTypes {
+  Long = "long",
+  LongToNum = "long-number",
+  Dec = "dec",
+  NumToStr = "number-str",
+  Date = "date",
+  DateToNum = "date-number",
+  Duration = "duration",
+};
 
 export interface AminoInit {
   aminoType: string;
-  valueMap: TypeUtils.SimpleMap<SignDocType | TypeUtils.SimpleMap<SignDocType>>;
+  valueMap: TypeUtils.SimpleMap<AminoTypes | TypeUtils.SimpleMap<AminoTypes>>;
 }
 
 const typeCheck = (value: any): boolean => {
@@ -22,7 +30,7 @@ const typeCheck = (value: any): boolean => {
  */
 const mapEachIndiv = (
   mapItem: TypeUtils.SimpleMap<any> | null | undefined,
-  valueKey: TypeUtils.SimpleMap<SignDocType>,
+  valueKey: TypeUtils.SimpleMap<AminoTypes>,
   toAmino: boolean = false,
 ): TypeUtils.SimpleMap<any> | null | undefined => {
   if (!mapItem) {
@@ -55,50 +63,46 @@ const mapEachIndiv = (
  * @param type param type (e.g. "string" | "long" | "dec" | "bignumber" | "default" | "number" | "boolean" | "number-str";)
  * @param toAmino indicates whether to convert to amino or direct
  */
-const paramConverter = (value: any, type: SignDocType, toAmino: boolean = false): unknown => {
+const paramConverter = (value: any, type: AminoTypes, toAmino: boolean = false): unknown => {
   if (!value) {
     return value;
   }
   switch (type) {
-    case "dec":
+    case AminoTypes.Dec:
       const bnVal = NumberUtils.bnOrZero(value);
       const adjustedVal = toAmino ? bnVal.shiftedBy(-18) : bnVal.shiftedBy(18);
       return adjustedVal.toString(10);
-    case "bignumber":
-      return NumberUtils.bnOrZero(value).toString(10);
-    case "long":
+    case AminoTypes.Long:
       return toAmino ? value.toString() : new Long(value);
-    case "long-number":
+    case AminoTypes.LongToNum:
       return toAmino ? value.toNumber() : new Long(value);
-    case "number-str":
+    case AminoTypes.NumToStr:
       return toAmino ? value.toString() : Number(value);
-    case "date":
+    case AminoTypes.Date:
       return toAmino ? value.toISOString() : new Date(value);
-    case "date-number":
+    case AminoTypes.DateToNum:
       if (toAmino) {
-        const timestampBN = new BigNumber(value.getTime() ?? 0).shiftedBy(-3).decimalPlaces(0, 3);
+        const timestampBN = new BigNumber(value.getTime() ?? 0).shiftedBy(-3).decimalPlaces(0, 1);
         return timestampBN.toNumber();
       } else {
         const timestampNum = (value ?? 0) * 1000;
         return new Date(timestampNum);
       }
-    case "duration":
+    case AminoTypes.Duration:
       // Process Duration model from google protobuf
       if (toAmino) {
         const nanosBN = new BigNumber(value?.nanos ?? 0).shiftedBy(-6);
-        const duration = (value?.duration ?? 0).toString();
-        return nanosBN.plus(duration).toString(10);
+        const duration = (value?.seconds ?? 0).toString();
+        return `${nanosBN.plus(duration).toString(10)}s`;
       } else {
-        const durationBN = NumberUtils.bnOrZero(value);
-        const nanosBN = durationBN.modulo(new BigNumber(1).shiftedBy(-6));
+        const durationBN = NumberUtils.bnOrZero(value.replace('s', ''));
+        const secondsBN = durationBN.decimalPlaces(0, 1);
+        const nanosBN = durationBN.minus(secondsBN).shiftedBy(6).decimalPlaces(0, 1);
         return {
-          duration: new Long(durationBN.toNumber()),
+          seconds: new Long(secondsBN.toNumber()),
           nanos: nanosBN.toNumber(),
         };
       }
-    case "boolean":
-    case "number":
-    case "string":
     default:
       return value;
   }
@@ -113,17 +117,17 @@ export const generateAminoType = (amino: AminoInit): AminoConverter => {
       Object.keys(input).forEach((key: string) => {
         const snakeKey = TypeUtils.camelToSnake(key);
         if (typeCheck(input[key])) {
-          aminoObj[snakeKey] = paramConverter(input[key], valueMap[key] as SignDocType, true);
+          aminoObj[snakeKey] = paramConverter(input[key], valueMap[key] as AminoTypes, true);
           return;
         }
         if (typeof input[key] !== "object" && typeof valueMap[key] !== "object") {
-          aminoObj[snakeKey] = paramConverter(input[key], valueMap[key] as SignDocType, true);
+          aminoObj[snakeKey] = paramConverter(input[key], valueMap[key] as AminoTypes, true);
         } else {
           if (input[key]?.length && typeof input[key] === "object") {
-            aminoObj[snakeKey] = input[key].map((newItem: any) => mapEachIndiv(newItem, valueMap[key] as TypeUtils.SimpleMap<SignDocType>, true));
+            aminoObj[snakeKey] = input[key].map((newItem: any) => mapEachIndiv(newItem, valueMap[key] as TypeUtils.SimpleMap<AminoTypes>, true));
             return;
           }
-          aminoObj[snakeKey] = mapEachIndiv(input[key], valueMap[key] as TypeUtils.SimpleMap<SignDocType>, true);
+          aminoObj[snakeKey] = mapEachIndiv(input[key], valueMap[key] as TypeUtils.SimpleMap<AminoTypes>, true);
         }
       });
       return aminoObj;
@@ -133,13 +137,13 @@ export const generateAminoType = (amino: AminoInit): AminoConverter => {
       Object.keys(input).forEach((key: string) => {
         const camelKey = TypeUtils.snakeToCamel(key);
         if (typeof input[key] !== "object" && typeof valueMap[key] !== "object") {
-          aminoObj[camelKey] = paramConverter(input[key], valueMap[camelKey] as SignDocType, false);
+          aminoObj[camelKey] = paramConverter(input[key], valueMap[camelKey] as AminoTypes, false);
         } else {
           if (input[key]?.length && typeof input[key] === "object") {
-            aminoObj[camelKey] = input[key].map((newItem: any) => mapEachIndiv(newItem, valueMap[camelKey] as TypeUtils.SimpleMap<SignDocType>, false));
+            aminoObj[camelKey] = input[key].map((newItem: any) => mapEachIndiv(newItem, valueMap[camelKey] as TypeUtils.SimpleMap<AminoTypes>, false));
             return;
           }
-          aminoObj[camelKey] = mapEachIndiv(input[key], valueMap[camelKey] as TypeUtils.SimpleMap<SignDocType>, false);
+          aminoObj[camelKey] = mapEachIndiv(input[key], valueMap[camelKey] as TypeUtils.SimpleMap<AminoTypes>, false);
         }
       });
       return aminoObj;

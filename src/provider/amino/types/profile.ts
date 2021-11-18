@@ -8,11 +8,7 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
 
 const MsgUpdateProfile: AminoInit = {
   aminoType: TxTypes.UpdateProfile,
-  valueMap: {
-    creator: "string",
-    username: "string",
-    twitter: "string",
-  },
+  valueMap: {},
 };
 
 const ProfileAmino: TypeUtils.SimpleMap<AminoConverter> = {

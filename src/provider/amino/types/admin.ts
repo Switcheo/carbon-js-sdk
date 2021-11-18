@@ -1,6 +1,6 @@
 import { CarbonTx, TypeUtils } from "@carbon-sdk/util";
 import { AminoConverter } from "@cosmjs/stargate";
-import { AminoInit, generateAminoType } from "../utils";
+import { AminoInit, AminoTypes, generateAminoType } from "../utils";
 
 const TxTypes: TypeUtils.SimpleMap<string> = {
   CreateOracle: "oracle/MsgCreateOracle",
@@ -22,17 +22,10 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
 const MsgCreateOracle: AminoInit = {
   aminoType: TxTypes.CreateOracle,
   valueMap: {
-    creator: "string",
     createOracleParams: {
-      creator: "string",
-      id: "string",
-      description: "string",
-      minTurnoutPercentage: "long",
-      maxResultAge: "long",
-      securityType: "string",
-      resultStrategy: "string",
-      resolution: "long",
-      spec: "string",
+      minTurnoutPercentage: AminoTypes.Long,
+      maxResultAge: AminoTypes.Long,
+      resolution: AminoTypes.Long,
     },
   },
 };
@@ -40,62 +33,35 @@ const MsgCreateOracle: AminoInit = {
 const MsgCreateToken: AminoInit = {
   aminoType: TxTypes.CreateToken,
   valueMap: {
-    creator: "string",
     createTokenParams: {
-      creator: "string",
-      denom: "string",
-      name: "string",
-      symbol: "string",
-      decimals: "long",
-      chainId: "long",
-      bridgeId: "long",
-      bridgeAddress: "string",
-      tokenAddress: "string",
+      decimals: AminoTypes.Long,
+      chainId: AminoTypes.Long,
+      bridgeId: AminoTypes.Long,
     },
   },
 };
 
 const MsgSyncToken: AminoInit = {
   aminoType: TxTypes.SyncToken,
-  valueMap: {
-    syncer: "string",
-    denom: "string",
-  },
+  valueMap: {},
 };
 
 const MsgCreateMarket: AminoInit = {
   aminoType: TxTypes.CreateMarket,
   valueMap: {
-    creator: "string",
     market: {
-      name: "string",
-      displayName: "string",
-      description: "string",
-      marketType: "string",
-      base: "string",
-      quote: "string",
-      basePrecision: "long",
-      quotePrecision: "long",
-      lotSize: "bignumber",
-      tickSize: "dec",
-      minQuantity: "bignumber",
-      makerFee: "dec",
-      takerFee: "dec",
-      createdBlockHeight: "long",
-      riskStepSize: "bignumber",
-      initialMarginBase: "dec",
-      initialMarginStep: "dec",
-      maintenanceMarginRatio: "dec",
-      maxLiquidationOrderTicket: "bignumber",
-      maxLiquidationOrderDuration: "duration",
-      impactSize: "bignumber",
-      markPriceBand: "number",
-      lastPriceProtectedBand: "number",
-      indexOracleId: "string",
-      expiryTime: "date",
-      isActive: "boolean",
-      isSettled: "boolean",
-      closedBlockHeight: "long",
+      basePrecision: AminoTypes.Long,
+      quotePrecision: AminoTypes.Long,
+      tickSize: AminoTypes.Dec,
+      makerFee: AminoTypes.Dec,
+      takerFee: AminoTypes.Dec,
+      createdBlockHeight: AminoTypes.Long,
+      initialMarginBase: AminoTypes.Dec,
+      initialMarginStep: AminoTypes.Dec,
+      maintenanceMarginRatio: AminoTypes.Dec,
+      maxLiquidationOrderDuration: AminoTypes.Duration,
+      expiryTime: AminoTypes.Date,
+      closedBlockHeight: AminoTypes.Long,
     },
   },
 };
@@ -103,20 +69,15 @@ const MsgCreateMarket: AminoInit = {
 const MsgCreateVaultType: AminoInit = {
   aminoType: TxTypes.CreateVaultType,
   valueMap: {
-    creator: "string",
-    collateralDenom: "string",
-    debtDenom: "string",
-    collateralizationRatio: "dec",
+    collateralizationRatio: AminoTypes.Dec,
   },
 };
 
 const MsgLinkPool: AminoInit = {
   aminoType: TxTypes.LinkPool,
   valueMap: {
-    creator: "string",
     linkPoolParams: {
-      poolId: "long",
-      market: "string",
+      poolId: AminoTypes.Long,
     },
   },
 };
@@ -124,9 +85,8 @@ const MsgLinkPool: AminoInit = {
 const MsgUnlinkPool: AminoInit = {
   aminoType: TxTypes.UnlinkPool,
   valueMap: {
-    creator: "string",
     unlinkPoolParams: {
-      poolId: "long",
+      poolId: AminoTypes.Long,
     },
   },
 };
@@ -134,10 +94,9 @@ const MsgUnlinkPool: AminoInit = {
 const MsgChangeSwapFee: AminoInit = {
   aminoType: TxTypes.ChangeSwapFee,
   valueMap: {
-    creator: "string",
     changeSwapFeeParams: {
-      poolId: "long",
-      swapFee: "dec",
+      poolId: AminoTypes.Long,
+      swapFee: AminoTypes.Dec,
     },
   },
 };
@@ -145,10 +104,8 @@ const MsgChangeSwapFee: AminoInit = {
 const MsgSetRewardsWeights: AminoInit = {
   aminoType: TxTypes.SetRewardsWeights,
   valueMap: {
-    creator: "string",
     setRewardsWeightsParams: {
-      poolId: "long",
-      weight: "string",
+      poolId: AminoTypes.Long,
     },
   },
 };
@@ -156,14 +113,9 @@ const MsgSetRewardsWeights: AminoInit = {
 const MsgSetRewardCurve: AminoInit = {
   aminoType: TxTypes.SetRewardCurve,
   valueMap: {
-    creator: "string",
     setRewardCurveParams: {
-      startTime: "date-number",
-      initialRewardBps: "number",
-      reductionMultiplierBps: "number",
-      reductionIntervalSeconds: "long-number",
-      reductions: "number",
-      finalRewardBps: "number",
+      startTime: AminoTypes.DateToNum,
+      reductionIntervalSeconds: AminoTypes.LongToNum,
     },
   },
 };
@@ -171,10 +123,8 @@ const MsgSetRewardCurve: AminoInit = {
 const MsgSetCommitmentCurve: AminoInit = {
   aminoType: TxTypes.SetCommitmentCurve,
   valueMap: {
-    creator: "string",
     setCommitmentCurveParams: {
-      maxDuration: "long-number",
-      maxRewardMultiplier: "number",
+      maxDuration: AminoTypes.LongToNum,
     },
   },
 };
@@ -182,32 +132,21 @@ const MsgSetCommitmentCurve: AminoInit = {
 const MsgChangeNumQuotes: AminoInit = {
   aminoType: TxTypes.ChangeNumQuotes,
   valueMap: {
-    creator: "string",
     changeNumQuotesParams: {
-      poolId: "long",
-      numQuotes: "long",
+      poolId: AminoTypes.Long,
+      numQuotes: AminoTypes.Long,
     },
   },
 };
 
 const MsgSetTradingFlag: AminoInit = {
   aminoType: TxTypes.SetTradingFlag,
-  valueMap: {
-    creator: "string",
-    isEnabled: "boolean",
-    blockchain: "string",
-  },
+  valueMap: {},
 };
 
 const MsgSetFee: AminoInit = {
   aminoType: TxTypes.SetFee,
-  valueMap: {
-    creator: "string",
-    setFeeParams: {
-      msgType: "string",
-      fee: "bignumber",
-    },
-  },
+  valueMap: {},
 };
 
 const AdminAmino: TypeUtils.SimpleMap<AminoConverter> = {

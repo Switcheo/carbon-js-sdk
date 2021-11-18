@@ -11,47 +11,22 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
 
 const MsgDelegate: AminoInit = {
   aminoType: TxTypes.Delegate,
-  valueMap: {
-    delegatorAddress: "string",
-    validatorAddress: "string",
-    amount: {
-      amount: "string",
-      denom: "string",
-    },
-  },
+  valueMap: {},
 };
 
 const MsgUndelegate: AminoInit = {
   aminoType: TxTypes.Undelegate,
-  valueMap: {
-    delegatorAddress: "string",
-    validatorAddress: "string",
-    amount: {
-      amount: "string",
-      denom: "string",
-    },
-  },
+  valueMap: {},
 };
 
 const MsgBeginRedelegate: AminoInit = {
   aminoType: TxTypes.BeginRedelegate,
-  valueMap: {
-    delegatorAddress: "string",
-    validatorSrcAddress: "string",
-    validatorDstAddress: "string",
-    amount: {
-      amount: "string",
-      denom: "string",
-    },
-  },
+  valueMap: {},
 };
 
 const MsgWithdrawDelegatorReward: AminoInit = {
   aminoType: TxTypes.WithdrawDelegationReward,
-  valueMap: {
-    delegatorAddress: "string",
-    validatorAddress: "string",
-  },
+  valueMap: {},
 };
 
 const StakingAmino: TypeUtils.SimpleMap<AminoConverter> = {

@@ -1,6 +1,6 @@
 import { CarbonTx, TypeUtils } from "@carbon-sdk/util";
 import { AminoConverter } from "@cosmjs/stargate";
-import { AminoInit, generateAminoType } from "../utils";
+import { AminoInit, AminoTypes, generateAminoType } from "../utils";
 
 const TxTypes: TypeUtils.SimpleMap<string> = {
   SetMargin: "position/MsgSetMargin",
@@ -9,9 +9,7 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
 const MsgSetMargin: AminoInit = {
   aminoType: TxTypes.SetMargin,
   valueMap: {
-    creator: "string",
-    market: "string",
-    margin: "dec",
+    margin: AminoTypes.Dec,
   },
 };
 

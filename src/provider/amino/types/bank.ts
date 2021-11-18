@@ -8,14 +8,7 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
 
 const MsgSend: AminoInit = {
   aminoType: TxTypes.Send,
-  valueMap: {
-    fromAddress: "string",
-    toAddress: "string",
-    amount: {
-      denom: "string",
-      amount: "string",
-    },
-  },
+  valueMap: {},
 };
 
 const BankAmino: TypeUtils.SimpleMap<AminoConverter> = {

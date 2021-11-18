@@ -1,6 +1,6 @@
 import { CarbonTx, TypeUtils } from "@carbon-sdk/util";
 import { AminoConverter } from "@cosmjs/stargate";
-import { AminoInit, generateAminoType } from "../utils";
+import { AminoInit, AminoTypes, generateAminoType } from "../utils";
 
 const TxTypes: TypeUtils.SimpleMap<string> = {
   CreateOrder: "order/MsgCreateOrder",
@@ -12,45 +12,29 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
 const MsgCreateOrder: AminoInit = {
   aminoType: TxTypes.CreateOrder,
   valueMap: {
-    creator: "string",
-    isPostOnly: "boolean",
-    isReduceOnly: "boolean",
-    market: "string",
-    orderType: "string",
-    price: "dec",
-    quantity: "dec",
-    side: "string",
-    stopPrice: "dec",
-    timeInForce: "string",
-    triggerType: "string",
+    price: AminoTypes.Dec,
+    quantity: AminoTypes.Dec,
+    stopPrice: AminoTypes.Dec,
   },
 };
 
 const MsgCancelOrder: AminoInit = {
   aminoType: TxTypes.CancelOrder,
-  valueMap: {
-    creator: "string",
-    id: "string",
-  },
+  valueMap: {},
 };
 
 const MsgEditOrder: AminoInit = {
   aminoType: TxTypes.EditOrder,
   valueMap: {
-    creator: "string",
-    id: "string",
-    quantity: "dec",
-    price: "dec",
-    stopPrice: "dec",
+    quantity: AminoTypes.Dec,
+    price: AminoTypes.Dec,
+    stopPrice: AminoTypes.Dec,
   },
 };
 
 const MsgCancelAll: AminoInit = {
   aminoType: TxTypes.CancelAll,
-  valueMap: {
-    creator: "string",
-    market: "string",
-  },
+  valueMap: {},
 };
 
 const OrderAmino: TypeUtils.SimpleMap<AminoConverter> = {

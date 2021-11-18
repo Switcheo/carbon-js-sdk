@@ -9,18 +9,12 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
 
 const MsgCreateSubAccount: AminoInit = {
   aminoType: TxTypes.CreateSubAccount,
-  valueMap: {
-    creator: "string",
-    subAddress: "string",
-  },
+  valueMap: {},
 };
 
 const MsgActivateSubAccount: AminoInit = {
   aminoType: TxTypes.ActivateSubAccount,
-  valueMap: {
-    creator: "string",
-    expectedMainAccount: "string",
-  },
+  valueMap: {},
 };
 
 const SubAccountAmino: TypeUtils.SimpleMap<AminoConverter> = {
