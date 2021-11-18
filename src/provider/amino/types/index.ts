@@ -1,4 +1,5 @@
 export { default as AdminAmino } from "./admin";
+export { default as BankAmino } from "./bank";
 export { default as LiquidityPoolAmino } from "./liquidityPool";
 export { default as PositionAmino } from "./position";
 export { default as ProfileAmino } from "./profile";
