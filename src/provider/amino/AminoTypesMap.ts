@@ -1,7 +1,7 @@
 import { AminoTypes } from "@cosmjs/stargate";
 import {
-  AdminAmino, BankAmino, BrokerAmino, CdpAmino, CoinAmino, LiquidityPoolAmino, MarketAmino,
-  OracleAmino, OrderAmino, PositionAmino, ProfileAmino, StakingAmino, SubAccountAmino,
+  AdminAmino, BankAmino, BrokerAmino, CdpAmino, CoinAmino, LeverageAmino, LiquidityPoolAmino,
+  MarketAmino, OracleAmino, OrderAmino, PositionAmino, ProfileAmino, StakingAmino, SubAccountAmino,
 } from "./types";
 
 const AminoTypesMap = new AminoTypes({
@@ -11,6 +11,7 @@ const AminoTypesMap = new AminoTypes({
     ...BrokerAmino,
     ...CdpAmino,
     ...CoinAmino,
+    ...LeverageAmino,
     ...LiquidityPoolAmino,
     ...MarketAmino,
     ...OracleAmino,

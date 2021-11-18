@@ -16,4 +16,3 @@ const ProfileAmino: TypeUtils.SimpleMap<AminoConverter> = {
 };
 
 export default ProfileAmino;
-

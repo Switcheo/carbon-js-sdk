@@ -28,4 +28,3 @@ const MarketAmino: TypeUtils.SimpleMap<AminoConverter> = {
 };
 
 export default MarketAmino;
-
