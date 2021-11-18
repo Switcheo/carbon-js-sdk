@@ -10,6 +10,10 @@ export interface AminoInit {
   valueMap: TypeUtils.SimpleMap<SignDocType | TypeUtils.SimpleMap<SignDocType>>;
 }
 
+const typeCheck = (value: any): boolean => {
+  return Long.isLong(value) || BigNumber.isBigNumber(value);
+};
+
 /**
  * checks maps object to amino or direct form
  * @param mapItem obj to be converted
@@ -63,7 +67,7 @@ const paramConverter = (value: any, type: SignDocType, toAmino: boolean = false)
     case "bignumber":
       return NumberUtils.bnOrZero(value).toString(10);
     case "long":
-      return toAmino ? value.toString(10) : new Long(value);
+      return toAmino ? value.toString() : new Long(value);
     case "long-number":
       return toAmino ? value.toNumber() : new Long(value);
     case "number-str":
@@ -72,7 +76,6 @@ const paramConverter = (value: any, type: SignDocType, toAmino: boolean = false)
       return toAmino ? value.toISOString() : new Date(value);
     case "date-number":
       if (toAmino) {
-        console.log('date-number value', value);
         const timestampBN = new BigNumber(value.getTime() ?? 0).shiftedBy(-3).decimalPlaces(0, 3);
         return timestampBN.toNumber();
       } else {
@@ -109,6 +112,10 @@ export const generateAminoType = (amino: AminoInit): AminoConverter => {
       const aminoObj: TypeUtils.SimpleMap<any> = {};
       Object.keys(input).forEach((key: string) => {
         const snakeKey = TypeUtils.camelToSnake(key);
+        if (typeCheck(input[key])) {
+          aminoObj[snakeKey] = paramConverter(input[key], valueMap[key] as SignDocType, true);
+          return;
+        }
         if (typeof input[key] !== "object" && typeof valueMap[key] !== "object") {
           aminoObj[snakeKey] = paramConverter(input[key], valueMap[key] as SignDocType, true);
         } else {
@@ -129,7 +136,7 @@ export const generateAminoType = (amino: AminoInit): AminoConverter => {
           aminoObj[camelKey] = paramConverter(input[key], valueMap[camelKey] as SignDocType, false);
         } else {
           if (input[key]?.length && typeof input[key] === "object") {
-            aminoObj[camelKey] = input[key].map((newItem: any) => mapEachIndiv(newItem, valueMap[key] as TypeUtils.SimpleMap<SignDocType>, false));
+            aminoObj[camelKey] = input[key].map((newItem: any) => mapEachIndiv(newItem, valueMap[camelKey] as TypeUtils.SimpleMap<SignDocType>, false));
             return;
           }
           aminoObj[camelKey] = mapEachIndiv(input[key], valueMap[camelKey] as TypeUtils.SimpleMap<SignDocType>, false);

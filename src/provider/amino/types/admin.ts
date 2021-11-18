@@ -148,7 +148,7 @@ const MsgSetRewardsWeights: AminoInit = {
     creator: "string",
     setRewardsWeightsParams: {
       poolId: "long",
-      weight: "number-str",
+      weight: "string",
     },
   },
 };
