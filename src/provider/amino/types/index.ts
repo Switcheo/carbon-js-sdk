@@ -1,5 +1,6 @@
 export { default as AdminAmino } from "./admin";
 export { default as BankAmino } from "./bank";
+export { default as BrokerAmino } from "./broker";
 export { default as LiquidityPoolAmino } from "./liquidityPool";
 export { default as MarketAmino } from "./market";
 export { default as OracleAmino } from "./oracle";

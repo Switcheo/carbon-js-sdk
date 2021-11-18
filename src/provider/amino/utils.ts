@@ -50,7 +50,7 @@ const mapEachIndiv = (
       return;
     } else {
       // This happens when this is not an object/array. Pass straight into converter
-      const keyMap = toAmino ? valueKey[key] : valueKey[altKey];
+      const keyMap = toAmino ? valueKey?.[key] : valueKey?.[altKey];
       directMap[altKey] = paramConverter(mapItem[key], keyMap, toAmino);
     }
   });
@@ -60,10 +60,10 @@ const mapEachIndiv = (
 /**
  * convert direct params to corresponding amino params
  * @param value direct params to be converted
- * @param type param type (e.g. "string" | "long" | "dec" | "bignumber" | "default" | "number" | "boolean" | "number-str";)
+ * @param type param type (check AminoTypes for list of types)
  * @param toAmino indicates whether to convert to amino or direct
  */
-const paramConverter = (value: any, type: AminoTypes, toAmino: boolean = false): unknown => {
+const paramConverter = (value: any, type?: AminoTypes, toAmino: boolean = false): unknown => {
   if (!value) {
     return value;
   }
