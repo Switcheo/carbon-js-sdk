@@ -50,7 +50,7 @@ export function transfromUpdateMarketParams(msg: MarketModule.UpdateMarketParams
     name: msg.name,
     displayName: msg.displayName,
     description: msg.description,
-    lotSize: msg.lotSize.shiftedBy(18).toString(10),
+    lotSize: msg.lotSize.toString(10),
     tickSize: msg.tickSize.shiftedBy(18).toString(10),
     minQuantity: msg.minQuantity.toString(10),
     makerFee: msg.makerFee.shiftedBy(18).toString(10),
