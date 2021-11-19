@@ -14,7 +14,7 @@ import { SignDoc, TxRaw as StargateTxRaw } from "@cosmjs/stargate/build/codec/co
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import { BroadcastTxSyncResponse } from "@cosmjs/tendermint-rpc/build/tendermint34/responses";
 import BigNumber from "bignumber.js";
-import { CarbonLedgerSigner, CarbonNonSigner, CarbonPrivateKeySigner, CarbonSigner, CarbonSignerTypes } from "./CarbonSigner";
+import { CarbonLedgerSigner, CarbonNonSigner, CarbonPrivateKeySigner, CarbonSigner, CarbonSignerTypes, DirectCarbonSigner } from "./CarbonSigner";
 
 export interface CarbonWalletGenericOpts {
   network?: Network;
@@ -133,10 +133,15 @@ export class CarbonWallet implements OfflineDirectSigner {
 
       this.bech32Address = AddressUtils.SWTHAddress.publicKeyToAddress(this.publicKey, addressOpts);
     } else if (this.privateKey) {
-      this.signer = new CarbonPrivateKeySigner(this.privateKey);
       this.publicKey = AddressUtils.SWTHAddress.privateToPublicKey(this.privateKey);
 
       this.bech32Address = AddressUtils.SWTHAddress.publicKeyToAddress(this.publicKey, addressOpts);
+
+      if(!addressOpts.bech32Prefix) 
+        throw new Error("cannot instantiate wallet signer, no prefix")
+
+      this.signer = new CarbonPrivateKeySigner(this.privateKey, addressOpts.bech32Prefix);
+
     } else if (opts.bech32Address) {
       // read-only wallet, without private/public keys
       this.signer = new CarbonNonSigner();
@@ -309,13 +314,10 @@ export class CarbonWallet implements OfflineDirectSigner {
   };
 
   async sign(data: SignDoc): Promise<StdSignature> {
-    const signatureBuffer = await this.signer.sign(data);
+    const signResponse = await (this.signer as DirectCarbonSigner).signDirect(this.bech32Address, data)
     const signature: StdSignature = {
-      pub_key: {
-        type: "tendermint/PubKeySecp256k1",
-        value: this.publicKey.toString("base64"),
-      },
-      signature: signatureBuffer.toString("base64"),
+      pub_key: signResponse.signature.pub_key,
+      signature: signResponse.signature.signature,
     };
     return signature;
   }
