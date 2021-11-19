@@ -14,7 +14,7 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
   SetRewardsWeights: "liquiditypool/SetRewardsWeights",
   SetRewardCurve: "liquiditypool/SetRewardCurve",
   SetCommitmentCurve: "liquiditypool/SetCommitmentCurve",
-  ChangeNumQuotes: "liquiditypool/ChangeNumQuotesProposal",
+  ChangeNumQuotes: "liquiditypool/ChangeNumQuotes",
   SetTradingFlag: "order/MsgSetTradingFlag",
   SetMsgFee: "fee/SetMsgFee",
 }

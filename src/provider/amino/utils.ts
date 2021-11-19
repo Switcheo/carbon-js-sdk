@@ -13,9 +13,21 @@ export enum AminoTypes {
   Duration = "duration",
 };
 
+export type AminoValueMap = TypeUtils.SimpleMap<AminoTypes | TypeUtils.SimpleMap<AminoTypes>>;
+
 export interface AminoInit {
   aminoType: string;
-  valueMap: TypeUtils.SimpleMap<AminoTypes | TypeUtils.SimpleMap<AminoTypes>>;
+  valueMap: AminoValueMap;
+}
+
+export interface AminoProcessOutput {
+  amino?: AminoValueMap;
+  input?: any;
+}
+
+export interface AminoProcess {
+  toAminoProcess?: (amino: AminoValueMap, input: any) => AminoProcessOutput;
+  fromAminoProcess?: (amino: AminoValueMap, input: any) => AminoProcessOutput;
 }
 
 const typeCheck = (value: any): boolean => {
@@ -108,26 +120,34 @@ const paramConverter = (value: any, type?: AminoTypes, toAmino: boolean = false)
   }
 };
 
-export const generateAminoType = (amino: AminoInit): AminoConverter => {
+export const generateAminoType = (
+  amino: AminoInit,
+  aminoProcess: AminoProcess = {},
+): AminoConverter => {
   const valueMap = amino.valueMap ?? {}
   return {
     ...amino,
     toAmino: (input: TypeUtils.SimpleMap<any>) => {
+      const processRes: AminoProcessOutput | undefined = aminoProcess?.toAminoProcess
+        ? aminoProcess.toAminoProcess(valueMap, input)
+        : {};
+      const { input: newInput = input, amino: newAminoMap = valueMap } = processRes;
+
       const aminoObj: TypeUtils.SimpleMap<any> = {};
-      Object.keys(input).forEach((key: string) => {
+      Object.keys(newInput).forEach((key: string) => {
         const snakeKey = TypeUtils.camelToSnake(key);
-        if (typeCheck(input[key])) {
-          aminoObj[snakeKey] = paramConverter(input[key], valueMap[key] as AminoTypes, true);
+        if (typeCheck(newInput[key])) {
+          aminoObj[snakeKey] = paramConverter(newInput[key], newAminoMap[key] as AminoTypes, true);
           return;
         }
-        if (typeof input[key] !== "object" && typeof valueMap[key] !== "object") {
-          aminoObj[snakeKey] = paramConverter(input[key], valueMap[key] as AminoTypes, true);
+        if (typeof newInput[key] !== "object" && typeof newAminoMap[key] !== "object") {
+          aminoObj[snakeKey] = paramConverter(newInput[key], newAminoMap[key] as AminoTypes, true);
         } else {
-          if (input[key]?.length && typeof input[key] === "object") {
-            aminoObj[snakeKey] = input[key].map((newItem: any) => mapEachIndiv(newItem, valueMap[key] as TypeUtils.SimpleMap<AminoTypes>, true));
+          if (newInput[key]?.length && typeof newInput[key] === "object") {
+            aminoObj[snakeKey] = newInput[key].map((newItem: any) => mapEachIndiv(newItem, newAminoMap[key] as TypeUtils.SimpleMap<AminoTypes>, true));
             return;
           }
-          aminoObj[snakeKey] = mapEachIndiv(input[key], valueMap[key] as TypeUtils.SimpleMap<AminoTypes>, true);
+          aminoObj[snakeKey] = mapEachIndiv(newInput[key], newAminoMap[key] as TypeUtils.SimpleMap<AminoTypes>, true);
         }
       });
       return aminoObj;

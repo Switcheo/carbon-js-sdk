@@ -384,6 +384,11 @@ export const TxTypes = {
   "MsgChangeNumQuotesResponse": "/Switcheo.carbon.liquiditypool.MsgChangeNumQuotesResponse"
 }
 
+export enum ProposalTypes {
+  SetMsgFee = "/Switcheo.carbon.fee.SetMsgFeeProposal",
+  ChangeSwapFee = "/Switcheo.carbon.liquiditypool.ChangeSwapFeeProposal",
+  CreateToken = "/Switcheo.carbon.coin.CreateTokenProposal",
+};
 
 // Exported for convenience
 export { MessageType } from "./misc/message_type";
