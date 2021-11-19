@@ -56,7 +56,7 @@
     "bip39": "^3.0.4",
     "dayjs": "^1.10.5",
     "eth-sig-util": "^3.0.0",
-    "ethers": "^5.3.0",
+    "ethers": "^5.5.1",
     "ledger-cosmos-js": "^2.1.8",
     "lodash": "^4.17.21",
     "node-fetch": "^2.6.1",

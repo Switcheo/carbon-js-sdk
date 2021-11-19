@@ -135,6 +135,7 @@ export interface SWTHAddressOptions extends AddressOptions {
 }
 
 type SWTHAddressType = AddressBuilder<SWTHAddressOptions> & {
+  newMnemonic(): string;
   getBech32Prefix(net?: Network, bech32Prefix?: string, type?: Bech32AddrType): string;
   addrPrefix: { [index: string]: string };
   getAddressBytes(bech32Address: string, networkConfig: Network): Uint8Array;
@@ -143,6 +144,10 @@ type SWTHAddressType = AddressBuilder<SWTHAddressOptions> & {
 };
 
 export const SWTHAddress: SWTHAddressType = {
+  newMnemonic: () => {
+    return randomMnemonic();
+  },
+
   coinType: (): number => {
     return SWTH_COIN_TYPE;
   },

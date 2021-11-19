@@ -2,6 +2,7 @@ export * from "./CarbonSDK";
 export * from "./modules";
 export * as Models from "./codec";
 export * from "./util";
+export { Blockchain } from "./util/blockchain";
 export * from "./websocket";
 export { SDKProvider, KeplrAccount, KeplrWindow, CosmosLedger, Keplr, ChainInfo, MetaMaskChangeNetworkParam, CallContractArgs, MetaMaskSyncResult, MetaMask, EthLedgerAccount, NeoLedgerAccount } from "./provider";
 export { default as CarbonSDK } from "./CarbonSDK";

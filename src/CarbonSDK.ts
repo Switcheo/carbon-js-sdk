@@ -314,7 +314,7 @@ class CarbonSDK {
   public static parseNetwork = NetworkUtils.parseNetwork;
 }
 
-class ConnectedCarbonSDK extends CarbonSDK {
+export class ConnectedCarbonSDK extends CarbonSDK {
   wallet: CarbonWallet
 
   constructor(wallet: CarbonWallet, opts: CarbonSDKOpts) {
