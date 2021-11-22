@@ -1,4 +1,5 @@
 import { NumberUtils, TypeUtils } from "@carbon-sdk/util";
+import { SimpleMap } from "@carbon-sdk/util/type";
 import { AminoConverter } from "@cosmjs/stargate";
 import BigNumber from "bignumber.js";
 import Long from "long";
@@ -13,7 +14,11 @@ export enum AminoTypes {
   Duration = "duration",
 };
 
-export type AminoValueMap = TypeUtils.SimpleMap<AminoTypes | TypeUtils.SimpleMap<AminoTypes>>;
+export type AminoValueMap = SimpleMap<AminoTypes>
+  | SimpleMap<SimpleMap<AminoTypes>>
+  | SimpleMap<SimpleMap<SimpleMap<AminoTypes>>>
+  | SimpleMap<SimpleMap<SimpleMap<SimpleMap<AminoTypes>>>>
+  | SimpleMap<SimpleMap<SimpleMap<SimpleMap<SimpleMap<AminoTypes>>>>>;
 
 export interface AminoInit {
   aminoType: string;
@@ -30,9 +35,17 @@ export interface AminoProcess {
   fromAminoProcess?: (amino: AminoValueMap, input: any) => AminoProcessOutput;
 }
 
+/**
+ * checks if value is Long, BigNumber, Date, Duration or Uint8Array
+ * @param value value to check
+ */
 const typeCheck = (value: any): boolean => {
-  return Long.isLong(value) || BigNumber.isBigNumber(value);
+  return Long.isLong(value)
+    || BigNumber.isBigNumber(value)
+    || value instanceof Uint8Array
+    || value instanceof Date;
 };
+
 
 /**
  * checks maps object to amino or direct form
@@ -40,9 +53,9 @@ const typeCheck = (value: any): boolean => {
  * @param valueKey obj with labels that indicate how each value is treated
  * @param toAmino indicates whether to convert to amino or direct
  */
-const mapEachIndiv = (
+export const mapEachIndiv = (
   mapItem: TypeUtils.SimpleMap<any> | null | undefined,
-  valueKey: TypeUtils.SimpleMap<AminoTypes>,
+  valueKey: AminoValueMap,
   toAmino: boolean = false,
 ): TypeUtils.SimpleMap<any> | null | undefined => {
   if (!mapItem) {
@@ -54,6 +67,14 @@ const mapEachIndiv = (
   indivDirectKeys.forEach((key: string) => {
     const altKey = toAmino ? TypeUtils.camelToSnake(key) : TypeUtils.snakeToCamel(key);
 
+    const keyMap = toAmino ? valueKey?.[key] : valueKey?.[altKey];
+    if (typeof keyMap !== "object") {
+      // Check if this is a Long/BigNumber/Buffer/Date/Duration obj or a non-object/array
+      if (typeCheck(mapItem[key]) || typeof mapItem[key] !== "object") {
+        directMap[altKey] = paramConverter(mapItem[key], keyMap, toAmino);
+        return;
+      }
+    }
     if (mapItem[key].length && typeof mapItem[key] === "object") {
       // If value is an array of objects, iterate through objects and call mapToObj function
       directMap[altKey] = mapItem[key].map((newMap: any) => {
@@ -61,9 +82,11 @@ const mapEachIndiv = (
       });
       return;
     } else {
-      // This happens when this is not an object/array. Pass straight into converter
-      const keyMap = toAmino ? valueKey?.[key] : valueKey?.[altKey];
-      directMap[altKey] = paramConverter(mapItem[key], keyMap, toAmino);
+      if (TypeUtils.isDurationType(mapItem[key])) {
+        directMap[altKey] = paramConverter(mapItem[key], keyMap as AminoTypes, toAmino);
+        return;
+      }
+      directMap[altKey] = mapEachIndiv(mapItem[key], keyMap as AminoValueMap, toAmino);
     }
   });
   return directMap;
@@ -75,7 +98,7 @@ const mapEachIndiv = (
  * @param type param type (check AminoTypes for list of types)
  * @param toAmino indicates whether to convert to amino or direct
  */
-const paramConverter = (value: any, type?: AminoTypes, toAmino: boolean = false): unknown => {
+export const paramConverter = (value: any, type?: AminoTypes, toAmino: boolean = false): unknown => {
   if (!value) {
     return value;
   }
@@ -85,7 +108,7 @@ const paramConverter = (value: any, type?: AminoTypes, toAmino: boolean = false)
       const adjustedVal = toAmino ? bnVal.shiftedBy(-18) : bnVal.shiftedBy(18);
       return adjustedVal.toString(10);
     case AminoTypes.Long:
-      return toAmino ? value.toString() : new Long(value);
+      return toAmino ? value.toString() : new Long(Number(value));
     case AminoTypes.LongToNum:
       return toAmino ? value.toNumber() : new Long(value);
     case AminoTypes.NumToStr:
@@ -104,8 +127,8 @@ const paramConverter = (value: any, type?: AminoTypes, toAmino: boolean = false)
       // Process Duration model from google protobuf
       if (toAmino) {
         const nanosBN = new BigNumber(value?.nanos ?? 0).shiftedBy(-6);
-        const duration = (value?.seconds ?? 0).toString();
-        return `${nanosBN.plus(duration).toString(10)}s`;
+        const seconds = value?.seconds as Long ?? new Long(0);
+        return `${nanosBN.plus(seconds.toString()).toString(10)}s`;
       } else {
         const durationBN = NumberUtils.bnOrZero(value.replace('s', ''));
         const secondsBN = durationBN.decimalPlaces(0, 1);
@@ -153,17 +176,22 @@ export const generateAminoType = (
       return aminoObj;
     },
     fromAmino: (input: TypeUtils.SimpleMap<any>) => {
+      const processRes: AminoProcessOutput | undefined = aminoProcess?.fromAminoProcess
+        ? aminoProcess.fromAminoProcess(valueMap, input)
+        : {};
+      const { input: newInput = input, amino: newAminoMap = valueMap } = processRes;
+
       const aminoObj: TypeUtils.SimpleMap<any> = {};
-      Object.keys(input).forEach((key: string) => {
+      Object.keys(newInput).forEach((key: string) => {
         const camelKey = TypeUtils.snakeToCamel(key);
-        if (typeof input[key] !== "object" && typeof valueMap[key] !== "object") {
-          aminoObj[camelKey] = paramConverter(input[key], valueMap[camelKey] as AminoTypes, false);
+        if (typeof newInput[key] !== "object" && typeof newAminoMap[key] !== "object") {
+          aminoObj[camelKey] = paramConverter(newInput[key], newAminoMap[camelKey] as AminoTypes, false);
         } else {
-          if (input[key]?.length && typeof input[key] === "object") {
-            aminoObj[camelKey] = input[key].map((newItem: any) => mapEachIndiv(newItem, valueMap[camelKey] as TypeUtils.SimpleMap<AminoTypes>, false));
+          if (newInput[key]?.length && typeof newInput[key] === "object") {
+            aminoObj[camelKey] = newInput[key].map((newItem: any) => mapEachIndiv(newItem, newAminoMap[camelKey] as TypeUtils.SimpleMap<AminoTypes>, false));
             return;
           }
-          aminoObj[camelKey] = mapEachIndiv(input[key], valueMap[camelKey] as TypeUtils.SimpleMap<AminoTypes>, false);
+          aminoObj[camelKey] = mapEachIndiv(newInput[key], newAminoMap[camelKey] as TypeUtils.SimpleMap<AminoTypes>, false);
         }
       });
       return aminoObj;

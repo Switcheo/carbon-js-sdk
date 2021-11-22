@@ -1,3 +1,5 @@
+import Long from "long";
+
 export interface SimpleMap<T = unknown> {
   [index: string]: T
 }
@@ -37,4 +39,8 @@ export const camelToSnake = (camelStr: string): string => {
     newSnake = `${newSnake}${newLetter}`
   }
   return newSnake
+};
+
+export const isDurationType = (value: any): boolean => {
+  return Long.isLong(value?.seconds) && typeof value?.nanos === "number";
 };

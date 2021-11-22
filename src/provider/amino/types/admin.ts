@@ -114,8 +114,8 @@ const MsgSetRewardCurve: AminoInit = {
   aminoType: TxTypes.SetRewardCurve,
   valueMap: {
     setRewardCurveParams: {
-      startTime: AminoTypes.DateToNum,
-      reductionIntervalSeconds: AminoTypes.LongToNum,
+      startTime: AminoTypes.Date,
+      reductionIntervalSeconds: AminoTypes.Long,
     },
   },
 };
@@ -124,7 +124,7 @@ const MsgSetCommitmentCurve: AminoInit = {
   aminoType: TxTypes.SetCommitmentCurve,
   valueMap: {
     setCommitmentCurveParams: {
-      maxDuration: AminoTypes.LongToNum,
+      maxDuration: AminoTypes.Long,
     },
   },
 };
