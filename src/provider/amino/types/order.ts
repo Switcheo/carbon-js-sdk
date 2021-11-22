@@ -13,7 +13,6 @@ const MsgCreateOrder: AminoInit = {
   aminoType: TxTypes.CreateOrder,
   valueMap: {
     price: AminoTypes.Dec,
-    quantity: AminoTypes.Dec,
     stopPrice: AminoTypes.Dec,
   },
 };
@@ -26,7 +25,6 @@ const MsgCancelOrder: AminoInit = {
 const MsgEditOrder: AminoInit = {
   aminoType: TxTypes.EditOrder,
   valueMap: {
-    quantity: AminoTypes.Dec,
     price: AminoTypes.Dec,
     stopPrice: AminoTypes.Dec,
   },
