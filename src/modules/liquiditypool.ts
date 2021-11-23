@@ -1,9 +1,9 @@
-import { CarbonTx, NumberUtils } from "@carbon-sdk/util";
-import BaseModule from "./base";
-import { BigNumber } from "bignumber.js";
-import Long from "long";
-import { Models } from "..";
-import dayjs from "dayjs";
+import { Models } from "@carbon-sdk/index"
+import { CarbonTx, NumberUtils } from "@carbon-sdk/util"
+import { BigNumber } from "bignumber.js"
+import dayjs from "dayjs"
+import Long from "long"
+import BaseModule from "./base"
 
 export class LiquidityPoolModule extends BaseModule {
 
