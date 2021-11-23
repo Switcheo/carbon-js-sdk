@@ -1,4 +1,4 @@
-import { QueryByTimeRequest, TimeMeta } from ".";
+import { QueryByTimeRequest, TimeMeta } from "./common";
 
 export interface ActiveAccounts {
   count: string

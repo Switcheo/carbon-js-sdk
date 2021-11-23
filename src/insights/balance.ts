@@ -1,6 +1,6 @@
 import { TokenBalance } from "@carbon-sdk/codec";
 import { Coin } from "@carbon-sdk/codec/cosmos/base/v1beta1/coin";
-import { Interval, PageMeta, QueryByPageRequest } from ".";
+import { Interval, PageMeta, QueryByPageRequest } from "./common";
 
 export interface Balance {
   denom: string

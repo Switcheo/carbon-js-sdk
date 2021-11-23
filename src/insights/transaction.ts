@@ -1,4 +1,4 @@
-import { PageMeta, QueryByPageRequest, QueryByTimeRequest, TimeMeta } from ".";
+import { PageMeta, QueryByPageRequest, QueryByTimeRequest, TimeMeta } from "./common";
 
 export interface Transaction {
   hash: string

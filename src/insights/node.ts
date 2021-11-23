@@ -1,4 +1,4 @@
-import { PageMeta, QueryByPageRequest } from ".";
+import { PageMeta, QueryByPageRequest } from "./common";
 
 export interface QueryGetNodesRequest extends QueryByPageRequest {}
 

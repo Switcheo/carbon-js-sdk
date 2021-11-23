@@ -1,4 +1,4 @@
-import { FetchUtils } from '.'
+import { fetch } from './fetch';
 import querystring from 'query-string'
 
 export interface RequestResult {
@@ -104,7 +104,7 @@ export class HTTP<PathSpecs> {
    * Executes HTTP GET request with fetch
    */
   public get = ({ url, headers }: any) => {
-    return FetchUtils.fetch(url, {
+    return fetch(url, {
       method: 'GET',
       headers,
     })
@@ -114,7 +114,7 @@ export class HTTP<PathSpecs> {
    * Executes HTTP POST request with fetch
    */
   public post = (options: any) => {
-    return FetchUtils.fetch(options.url, {
+    return fetch(options.url, {
       method: 'POST',
       headers: {
         'Content-Type': options.content_type || 'application/json',
@@ -128,7 +128,7 @@ export class HTTP<PathSpecs> {
    * Executes HTTP DELETE request with fetch
    */
   public del = (options: any) => {
-    return FetchUtils.fetch(options.url, {
+    return fetch(options.url, {
       method: 'DELETE',
       headers: {
         'Content-Type': options.content_type || 'application/json',
@@ -143,7 +143,7 @@ export class HTTP<PathSpecs> {
    */
   public raw = (options: any) => {
     const { url, ...otherOpts } = options
-    return FetchUtils.fetch(url, otherOpts)
+    return fetch(url, otherOpts)
   }
 
   /**
