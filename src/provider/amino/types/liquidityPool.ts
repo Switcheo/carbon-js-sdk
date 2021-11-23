@@ -1,6 +1,6 @@
 import { CarbonTx, TypeUtils } from "@carbon-sdk/util";
 import { AminoConverter } from "@cosmjs/stargate";
-import { AminoInit, AminoConvertTypes, generateAminoType } from "../utils";
+import { AminoInit, ConvertEncType, generateAminoType } from "../utils";
 
 const TxTypes: TypeUtils.SimpleMap<string> = {
   CreatePool: "liquiditypool/CreatePool",
@@ -15,62 +15,62 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
 const MsgCreatePool: AminoInit = {
   aminoType: TxTypes.CreatePool,
   valueMap: {
-    numQuotes: AminoConvertTypes.Long,
-    swapFee: AminoConvertTypes.Dec,
-    tokenAWeight: AminoConvertTypes.Dec,
-    tokenBWeight: AminoConvertTypes.Dec,
+    numQuotes: ConvertEncType.Long,
+    swapFee: ConvertEncType.Dec,
+    tokenAWeight: ConvertEncType.Dec,
+    tokenBWeight: ConvertEncType.Dec,
   },
 };
 
 const MsgCreatePoolWithLiquidity: AminoInit = {
   aminoType: TxTypes.CreatePoolWithLiquidity,
   valueMap: {
-    tokenAWeight: AminoConvertTypes.Dec,
-    tokenBWeight: AminoConvertTypes.Dec,
-    amountA: AminoConvertTypes.Dec,
-    amountB: AminoConvertTypes.Dec,
-    swapFee: AminoConvertTypes.Dec,
-    numQuotes: AminoConvertTypes.Long,
+    tokenAWeight: ConvertEncType.Dec,
+    tokenBWeight: ConvertEncType.Dec,
+    amountA: ConvertEncType.Dec,
+    amountB: ConvertEncType.Dec,
+    swapFee: ConvertEncType.Dec,
+    numQuotes: ConvertEncType.Long,
   },
 };
 
 const MsgAddLiquidity: AminoInit = {
   aminoType: TxTypes.AddLiquidity,
   valueMap: {
-    poolId: AminoConvertTypes.Long,
-    amountA: AminoConvertTypes.Dec,
-    amountB: AminoConvertTypes.Dec,
-    minShares: AminoConvertTypes.Dec,
+    poolId: ConvertEncType.Long,
+    amountA: ConvertEncType.Dec,
+    amountB: ConvertEncType.Dec,
+    minShares: ConvertEncType.Dec,
   },
 };
 
 const MsgRemoveLiquidity: AminoInit = {
   aminoType: TxTypes.RemoveLiquidity,
   valueMap: {
-    poolId: AminoConvertTypes.Long,
-    shares: AminoConvertTypes.Dec,
+    poolId: ConvertEncType.Long,
+    shares: ConvertEncType.Dec,
   },
 };
 
 const MsgStakePoolToken: AminoInit = {
   aminoType: TxTypes.StakePoolToken,
   valueMap: {
-    amount: AminoConvertTypes.Dec,
-    duration: AminoConvertTypes.Long,
+    amount: ConvertEncType.Dec,
+    duration: ConvertEncType.Long,
   },
 };
 
 const MsgUnstakePoolToken: AminoInit = {
   aminoType: TxTypes.UnstakePoolToken,
   valueMap: {
-    amount: AminoConvertTypes.Dec,
+    amount: ConvertEncType.Dec,
   },
 };
 
 const MsgClaimPoolRewards: AminoInit = {
   aminoType: TxTypes.ClaimPoolRewards,
   valueMap: {
-    poolId: AminoConvertTypes.Long,
+    poolId: ConvertEncType.Long,
   },
 };
 

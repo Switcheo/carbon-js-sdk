@@ -8,7 +8,7 @@ import {
 import { CarbonTx, TypeUtils } from "@carbon-sdk/util";
 import { AminoConverter } from "@cosmjs/stargate";
 import {
-  AminoInit, AminoConvertTypes, AminoProcess, AminoValueMap,
+  AminoInit, ConvertEncType, AminoProcess, AminoValueMap,
   generateAminoType, mapEachIndiv,
 } from "../utils";
 
@@ -42,33 +42,33 @@ const SubmitProposalMsg: AminoInit = {
 const MsgDeposit: AminoInit = {
   aminoType: TxTypes.Deposit,
   valueMap: {
-    proposalId: AminoConvertTypes.Long,
+    proposalId: ConvertEncType.Long,
   },
 };
 
 const MsgVote: AminoInit = {
   aminoType: TxTypes.Vote,
   valueMap: {
-    proposalId: AminoConvertTypes.Long,
-    option: AminoConvertTypes.NumToStr,
+    proposalId: ConvertEncType.Long,
+    option: ConvertEncType.NumToStr,
   },
 };
 
 const CreateMarket: AminoValueMap = {
   value: {
     msg: {
-      basePrecision: AminoConvertTypes.Long,
-      quotePrecision: AminoConvertTypes.Long,
-      tickSize: AminoConvertTypes.Dec,
-      makerFee: AminoConvertTypes.Dec,
-      takerFee: AminoConvertTypes.Dec,
-      createdBlockHeight: AminoConvertTypes.Long,
-      initialMarginBase: AminoConvertTypes.Dec,
-      initialMarginStep: AminoConvertTypes.Dec,
-      maintenanceMarginRatio: AminoConvertTypes.Dec,
-      maxLiquidationOrderDuration: AminoConvertTypes.Duration,
-      expiryTime: AminoConvertTypes.Date,
-      closedBlockHeight: AminoConvertTypes.Long,
+      basePrecision: ConvertEncType.Long,
+      quotePrecision: ConvertEncType.Long,
+      tickSize: ConvertEncType.Dec,
+      makerFee: ConvertEncType.Dec,
+      takerFee: ConvertEncType.Dec,
+      createdBlockHeight: ConvertEncType.Long,
+      initialMarginBase: ConvertEncType.Dec,
+      initialMarginStep: ConvertEncType.Dec,
+      maintenanceMarginRatio: ConvertEncType.Dec,
+      maxLiquidationOrderDuration: ConvertEncType.Duration,
+      expiryTime: ConvertEncType.Date,
+      closedBlockHeight: ConvertEncType.Long,
     },
   },
 };
@@ -76,9 +76,9 @@ const CreateMarket: AminoValueMap = {
 const CreateToken: AminoValueMap = {
   value: {
     msg: {
-      decimals: AminoConvertTypes.Long,
-      chainId: AminoConvertTypes.Long,
-      bridgeId: AminoConvertTypes.Long,
+      decimals: ConvertEncType.Long,
+      chainId: ConvertEncType.Long,
+      bridgeId: ConvertEncType.Long,
     },
   },
 };
@@ -86,8 +86,8 @@ const CreateToken: AminoValueMap = {
 const ChangeNumQuotes: AminoValueMap = {
   value: {
     msg: {
-      poolId: AminoConvertTypes.Long,
-      numQuotes: AminoConvertTypes.Long,
+      poolId: ConvertEncType.Long,
+      numQuotes: ConvertEncType.Long,
     },
   },
 };
@@ -95,8 +95,8 @@ const ChangeNumQuotes: AminoValueMap = {
 const ChangeSwapFee: AminoValueMap = {
   value: {
     msg: {
-      poolId: AminoConvertTypes.Long,
-      swapFee: AminoConvertTypes.Dec,
+      poolId: ConvertEncType.Long,
+      swapFee: ConvertEncType.Dec,
     },
   },
 };
@@ -104,9 +104,9 @@ const ChangeSwapFee: AminoValueMap = {
 const CreateOracle: AminoValueMap = {
   value: {
     msg: {
-      minTurnoutPercentage: AminoConvertTypes.Long,
-      maxResultAge: AminoConvertTypes.Long,
-      resolution: AminoConvertTypes.Long,
+      minTurnoutPercentage: ConvertEncType.Long,
+      maxResultAge: ConvertEncType.Long,
+      resolution: ConvertEncType.Long,
     },
   },
 };
@@ -114,7 +114,7 @@ const CreateOracle: AminoValueMap = {
 const LinkPool: AminoValueMap = {
   value: {
     msg: {
-      poolId: AminoConvertTypes.Long,
+      poolId: ConvertEncType.Long,
     },
   },
 };
@@ -122,7 +122,7 @@ const LinkPool: AminoValueMap = {
 const SetCommitmentCurve: AminoValueMap = {
   value: {
     msg: {
-      maxDuration: AminoConvertTypes.Long,
+      maxDuration: ConvertEncType.Long,
     },
   },
 };
@@ -130,8 +130,8 @@ const SetCommitmentCurve: AminoValueMap = {
 const SetRewardCurve: AminoValueMap = {
   value: {
     msg: {
-      startTime: AminoConvertTypes.Date,
-      reductionIntervalSeconds: AminoConvertTypes.Long,
+      startTime: ConvertEncType.Date,
+      reductionIntervalSeconds: ConvertEncType.Long,
     },
   },
 };
@@ -139,7 +139,7 @@ const SetRewardCurve: AminoValueMap = {
 const SetRewardWeights: AminoValueMap = {
   value: {
     msg: {
-      poolId: AminoConvertTypes.Long,
+      poolId: ConvertEncType.Long,
     },
   },
 };
@@ -147,7 +147,7 @@ const SetRewardWeights: AminoValueMap = {
 const UnlinkPool: AminoValueMap = {
   value: {
     msg: {
-      poolId: AminoConvertTypes.Long,
+      poolId: ConvertEncType.Long,
     },
   },
 };
@@ -155,13 +155,13 @@ const UnlinkPool: AminoValueMap = {
 const UpdateMarket: AminoValueMap = {
   value: {
     msg: {
-      tickSize: AminoConvertTypes.Dec,
-      makerFee: AminoConvertTypes.Dec,
-      takerFee: AminoConvertTypes.Dec,
-      initialMarginBase: AminoConvertTypes.Dec,
-      initialMarginStep: AminoConvertTypes.Dec,
-      maintenanceMarginRatio: AminoConvertTypes.Dec,
-      maxLiquidationOrderDuration: AminoConvertTypes.Duration,
+      tickSize: ConvertEncType.Dec,
+      makerFee: ConvertEncType.Dec,
+      takerFee: ConvertEncType.Dec,
+      initialMarginBase: ConvertEncType.Dec,
+      initialMarginStep: ConvertEncType.Dec,
+      maintenanceMarginRatio: ConvertEncType.Dec,
+      maxLiquidationOrderDuration: ConvertEncType.Duration,
     },
   },
 };
@@ -169,7 +169,7 @@ const UpdateMarket: AminoValueMap = {
 const SettlementPrice: AminoValueMap = {
   value: {
     msg: {
-      settlementPrice: AminoConvertTypes.Dec,
+      settlementPrice: ConvertEncType.Dec,
     },
   },
 };
@@ -207,7 +207,7 @@ const preProcessAmino = (
   //     return;
   //   }
 
-  //   newValue[camelKey] = paramConverter(value[label], valueMap[camelKey] as AminoConvertTypes, false);
+  //   newValue[camelKey] = paramConverter(value[label], valueMap[camelKey] as ConvertEncType, false);
   // });
   // console.log("newValue", newValue);
   // return newValue;

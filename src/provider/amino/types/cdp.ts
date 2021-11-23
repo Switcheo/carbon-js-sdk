@@ -1,6 +1,6 @@
 import { CarbonTx, TypeUtils } from "@carbon-sdk/util";
 import { AminoConverter } from "@cosmjs/stargate";
-import { AminoInit, AminoConvertTypes, generateAminoType } from "../utils";
+import { AminoInit, ConvertEncType, generateAminoType } from "../utils";
 
 const TxTypes: TypeUtils.SimpleMap<string> = {
   AddCollateral: "collateralizeddebtposition/AddCollateral",
@@ -12,32 +12,32 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
 const MsgAddCollateral: AminoInit = {
   aminoType: TxTypes.AddCollateral,
   valueMap: {
-    vaultTypeId: AminoConvertTypes.Long,
-    amount: AminoConvertTypes.Dec,
+    vaultTypeId: ConvertEncType.Long,
+    amount: ConvertEncType.Dec,
   },
 };
 
 const MsgRemoveCollateral: AminoInit = {
   aminoType: TxTypes.RemoveCollateral,
   valueMap: {
-    vaultTypeId: AminoConvertTypes.Long,
-    amount: AminoConvertTypes.Dec,
+    vaultTypeId: ConvertEncType.Long,
+    amount: ConvertEncType.Dec,
   },
 };
 
 const MsgAddDebt: AminoInit = {
   aminoType: TxTypes.AddDebt,
   valueMap: {
-    vaultTypeId: AminoConvertTypes.Long,
-    amount: AminoConvertTypes.Dec,
+    vaultTypeId: ConvertEncType.Long,
+    amount: ConvertEncType.Dec,
   },
 };
 
 const MsgRemoveDebt: AminoInit = {
   aminoType: TxTypes.RemoveDebt,
   valueMap: {
-    vaultTypeId: AminoConvertTypes.Long,
-    amount: AminoConvertTypes.Dec,
+    vaultTypeId: ConvertEncType.Long,
+    amount: ConvertEncType.Dec,
   },
 };
 

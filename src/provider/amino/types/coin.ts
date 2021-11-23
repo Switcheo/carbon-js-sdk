@@ -1,6 +1,6 @@
 import { CarbonTx, TypeUtils } from "@carbon-sdk/util";
 import { AminoConverter } from "@cosmjs/stargate";
-import { AminoInit, AminoConvertTypes, generateAminoType } from "../utils";
+import { AminoInit, ConvertEncType, generateAminoType } from "../utils";
 
 const TxTypes: TypeUtils.SimpleMap<string> = {
   MintToken: "coin/MsgMintToken",
@@ -10,8 +10,8 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
 const MsgWithdraw: AminoInit = {
   aminoType: TxTypes.Withdraw,
   valueMap: {
-    amount: AminoConvertTypes.Dec,
-    feeAmount: AminoConvertTypes.Dec,
+    amount: ConvertEncType.Dec,
+    feeAmount: ConvertEncType.Dec,
   },
 };
 
