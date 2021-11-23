@@ -4,7 +4,7 @@ import { AminoConverter } from "@cosmjs/stargate";
 import BigNumber from "bignumber.js";
 import Long from "long";
 
-export enum AminoTypes {
+export enum AminoConvertTypes {
   Long = "long",
   LongToNum = "long-number",
   Dec = "dec",
@@ -14,11 +14,11 @@ export enum AminoTypes {
   Duration = "duration",
 };
 
-export type AminoValueMap = SimpleMap<AminoTypes>
-  | SimpleMap<SimpleMap<AminoTypes>>
-  | SimpleMap<SimpleMap<SimpleMap<AminoTypes>>>
-  | SimpleMap<SimpleMap<SimpleMap<SimpleMap<AminoTypes>>>>
-  | SimpleMap<SimpleMap<SimpleMap<SimpleMap<SimpleMap<AminoTypes>>>>>;
+export type AminoValueMap = SimpleMap<AminoConvertTypes>
+  | SimpleMap<SimpleMap<AminoConvertTypes>>
+  | SimpleMap<SimpleMap<SimpleMap<AminoConvertTypes>>>
+  | SimpleMap<SimpleMap<SimpleMap<SimpleMap<AminoConvertTypes>>>>
+  | SimpleMap<SimpleMap<SimpleMap<SimpleMap<SimpleMap<AminoConvertTypes>>>>>;
 
 export interface AminoInit {
   aminoType: string;
@@ -83,7 +83,7 @@ export const mapEachIndiv = (
       return;
     } else {
       if (TypeUtils.isDurationType(mapItem[key])) {
-        directMap[altKey] = paramConverter(mapItem[key], keyMap as AminoTypes, toAmino);
+        directMap[altKey] = paramConverter(mapItem[key], keyMap as AminoConvertTypes, toAmino);
         return;
       }
       directMap[altKey] = mapEachIndiv(mapItem[key], keyMap as AminoValueMap, toAmino);
@@ -95,27 +95,27 @@ export const mapEachIndiv = (
 /**
  * convert direct params to corresponding amino params
  * @param value direct params to be converted
- * @param type param type (check AminoTypes for list of types)
+ * @param type param type (check AminoConvertTypes for list of types)
  * @param toAmino indicates whether to convert to amino or direct
  */
-export const paramConverter = (value: any, type?: AminoTypes, toAmino: boolean = false): unknown => {
+export const paramConverter = (value: any, type?: AminoConvertTypes, toAmino: boolean = false): unknown => {
   if (!value) {
     return value;
   }
   switch (type) {
-    case AminoTypes.Dec:
+    case AminoConvertTypes.Dec:
       const bnVal = NumberUtils.bnOrZero(value);
       const adjustedVal = toAmino ? bnVal.shiftedBy(-18) : bnVal.shiftedBy(18);
       return adjustedVal.toString(10);
-    case AminoTypes.Long:
+    case AminoConvertTypes.Long:
       return toAmino ? value.toString() : new Long(Number(value));
-    case AminoTypes.LongToNum:
+    case AminoConvertTypes.LongToNum:
       return toAmino ? value.toNumber() : new Long(value);
-    case AminoTypes.NumToStr:
+    case AminoConvertTypes.NumToStr:
       return toAmino ? value.toString() : Number(value);
-    case AminoTypes.Date:
+    case AminoConvertTypes.Date:
       return toAmino ? value.toISOString() : new Date(value);
-    case AminoTypes.DateToNum:
+    case AminoConvertTypes.DateToNum:
       if (toAmino) {
         const timestampBN = new BigNumber(value.getTime() ?? 0).shiftedBy(-3).decimalPlaces(0, 1);
         return timestampBN.toNumber();
@@ -123,7 +123,7 @@ export const paramConverter = (value: any, type?: AminoTypes, toAmino: boolean =
         const timestampNum = (value ?? 0) * 1000;
         return new Date(timestampNum);
       }
-    case AminoTypes.Duration:
+    case AminoConvertTypes.Duration:
       // Process Duration model from google protobuf
       if (toAmino) {
         const nanosBN = new BigNumber(value?.nanos ?? 0).shiftedBy(-6);
@@ -160,17 +160,17 @@ export const generateAminoType = (
       Object.keys(newInput).forEach((key: string) => {
         const snakeKey = TypeUtils.camelToSnake(key);
         if (typeCheck(newInput[key])) {
-          aminoObj[snakeKey] = paramConverter(newInput[key], newAminoMap[key] as AminoTypes, true);
+          aminoObj[snakeKey] = paramConverter(newInput[key], newAminoMap[key] as AminoConvertTypes, true);
           return;
         }
         if (typeof newInput[key] !== "object" && typeof newAminoMap[key] !== "object") {
-          aminoObj[snakeKey] = paramConverter(newInput[key], newAminoMap[key] as AminoTypes, true);
+          aminoObj[snakeKey] = paramConverter(newInput[key], newAminoMap[key] as AminoConvertTypes, true);
         } else {
           if (newInput[key]?.length && typeof newInput[key] === "object") {
-            aminoObj[snakeKey] = newInput[key].map((newItem: any) => mapEachIndiv(newItem, newAminoMap[key] as TypeUtils.SimpleMap<AminoTypes>, true));
+            aminoObj[snakeKey] = newInput[key].map((newItem: any) => mapEachIndiv(newItem, newAminoMap[key] as TypeUtils.SimpleMap<AminoConvertTypes>, true));
             return;
           }
-          aminoObj[snakeKey] = mapEachIndiv(newInput[key], newAminoMap[key] as TypeUtils.SimpleMap<AminoTypes>, true);
+          aminoObj[snakeKey] = mapEachIndiv(newInput[key], newAminoMap[key] as TypeUtils.SimpleMap<AminoConvertTypes>, true);
         }
       });
       return aminoObj;
@@ -185,13 +185,13 @@ export const generateAminoType = (
       Object.keys(newInput).forEach((key: string) => {
         const camelKey = TypeUtils.snakeToCamel(key);
         if (typeof newInput[key] !== "object" && typeof newAminoMap[key] !== "object") {
-          aminoObj[camelKey] = paramConverter(newInput[key], newAminoMap[camelKey] as AminoTypes, false);
+          aminoObj[camelKey] = paramConverter(newInput[key], newAminoMap[camelKey] as AminoConvertTypes, false);
         } else {
           if (newInput[key]?.length && typeof newInput[key] === "object") {
-            aminoObj[camelKey] = newInput[key].map((newItem: any) => mapEachIndiv(newItem, newAminoMap[camelKey] as TypeUtils.SimpleMap<AminoTypes>, false));
+            aminoObj[camelKey] = newInput[key].map((newItem: any) => mapEachIndiv(newItem, newAminoMap[camelKey] as TypeUtils.SimpleMap<AminoConvertTypes>, false));
             return;
           }
-          aminoObj[camelKey] = mapEachIndiv(newInput[key], newAminoMap[camelKey] as TypeUtils.SimpleMap<AminoTypes>, false);
+          aminoObj[camelKey] = mapEachIndiv(newInput[key], newAminoMap[camelKey] as TypeUtils.SimpleMap<AminoConvertTypes>, false);
         }
       });
       return aminoObj;

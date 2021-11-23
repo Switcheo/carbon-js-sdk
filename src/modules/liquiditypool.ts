@@ -1,4 +1,4 @@
-import { CarbonTx, NumberUtils, TypeUtils } from "@carbon-sdk/util";
+import { CarbonTx, NumberUtils } from "@carbon-sdk/util";
 import BaseModule from "./base";
 import { BigNumber } from "bignumber.js";
 import Long from "long";

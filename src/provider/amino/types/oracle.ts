@@ -1,6 +1,6 @@
 import { CarbonTx, TypeUtils } from "@carbon-sdk/util";
 import { AminoConverter } from "@cosmjs/stargate";
-import { AminoInit, AminoTypes, generateAminoType } from "../utils";
+import { AminoInit, AminoConvertTypes, generateAminoType } from "../utils";
 
 const TxTypes: TypeUtils.SimpleMap<string> = {
   CreateVote: "oracle/MsgCreateVote",
@@ -9,7 +9,7 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
 const MsgCreateVote: AminoInit = {
   aminoType: TxTypes.CreateVote,
   valueMap: {
-    timestamp: AminoTypes.Long,
+    timestamp: AminoConvertTypes.Long,
   },
 };
 

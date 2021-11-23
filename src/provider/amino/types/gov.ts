@@ -8,7 +8,7 @@ import {
 import { CarbonTx, TypeUtils } from "@carbon-sdk/util";
 import { AminoConverter } from "@cosmjs/stargate";
 import {
-  AminoInit, AminoTypes, AminoProcess, AminoValueMap,
+  AminoInit, AminoConvertTypes, AminoProcess, AminoValueMap,
   generateAminoType, mapEachIndiv,
 } from "../utils";
 
@@ -42,33 +42,33 @@ const SubmitProposalMsg: AminoInit = {
 const MsgDeposit: AminoInit = {
   aminoType: TxTypes.Deposit,
   valueMap: {
-    proposalId: AminoTypes.Long,
+    proposalId: AminoConvertTypes.Long,
   },
 };
 
 const MsgVote: AminoInit = {
   aminoType: TxTypes.Vote,
   valueMap: {
-    proposalId: AminoTypes.Long,
-    option: AminoTypes.NumToStr,
+    proposalId: AminoConvertTypes.Long,
+    option: AminoConvertTypes.NumToStr,
   },
 };
 
 const CreateMarket: AminoValueMap = {
   value: {
     msg: {
-      basePrecision: AminoTypes.Long,
-      quotePrecision: AminoTypes.Long,
-      tickSize: AminoTypes.Dec,
-      makerFee: AminoTypes.Dec,
-      takerFee: AminoTypes.Dec,
-      createdBlockHeight: AminoTypes.Long,
-      initialMarginBase: AminoTypes.Dec,
-      initialMarginStep: AminoTypes.Dec,
-      maintenanceMarginRatio: AminoTypes.Dec,
-      maxLiquidationOrderDuration: AminoTypes.Duration,
-      expiryTime: AminoTypes.Date,
-      closedBlockHeight: AminoTypes.Long,
+      basePrecision: AminoConvertTypes.Long,
+      quotePrecision: AminoConvertTypes.Long,
+      tickSize: AminoConvertTypes.Dec,
+      makerFee: AminoConvertTypes.Dec,
+      takerFee: AminoConvertTypes.Dec,
+      createdBlockHeight: AminoConvertTypes.Long,
+      initialMarginBase: AminoConvertTypes.Dec,
+      initialMarginStep: AminoConvertTypes.Dec,
+      maintenanceMarginRatio: AminoConvertTypes.Dec,
+      maxLiquidationOrderDuration: AminoConvertTypes.Duration,
+      expiryTime: AminoConvertTypes.Date,
+      closedBlockHeight: AminoConvertTypes.Long,
     },
   },
 };
@@ -76,9 +76,9 @@ const CreateMarket: AminoValueMap = {
 const CreateToken: AminoValueMap = {
   value: {
     msg: {
-      decimals: AminoTypes.Long,
-      chainId: AminoTypes.Long,
-      bridgeId: AminoTypes.Long,
+      decimals: AminoConvertTypes.Long,
+      chainId: AminoConvertTypes.Long,
+      bridgeId: AminoConvertTypes.Long,
     },
   },
 };
@@ -86,8 +86,8 @@ const CreateToken: AminoValueMap = {
 const ChangeNumQuotes: AminoValueMap = {
   value: {
     msg: {
-      poolId: AminoTypes.Long,
-      numQuotes: AminoTypes.Long,
+      poolId: AminoConvertTypes.Long,
+      numQuotes: AminoConvertTypes.Long,
     },
   },
 };
@@ -95,8 +95,8 @@ const ChangeNumQuotes: AminoValueMap = {
 const ChangeSwapFee: AminoValueMap = {
   value: {
     msg: {
-      poolId: AminoTypes.Long,
-      swapFee: AminoTypes.Dec,
+      poolId: AminoConvertTypes.Long,
+      swapFee: AminoConvertTypes.Dec,
     },
   },
 };
@@ -104,9 +104,9 @@ const ChangeSwapFee: AminoValueMap = {
 const CreateOracle: AminoValueMap = {
   value: {
     msg: {
-      minTurnoutPercentage: AminoTypes.Long,
-      maxResultAge: AminoTypes.Long,
-      resolution: AminoTypes.Long,
+      minTurnoutPercentage: AminoConvertTypes.Long,
+      maxResultAge: AminoConvertTypes.Long,
+      resolution: AminoConvertTypes.Long,
     },
   },
 };
@@ -114,7 +114,7 @@ const CreateOracle: AminoValueMap = {
 const LinkPool: AminoValueMap = {
   value: {
     msg: {
-      poolId: AminoTypes.Long,
+      poolId: AminoConvertTypes.Long,
     },
   },
 };
@@ -122,7 +122,7 @@ const LinkPool: AminoValueMap = {
 const SetCommitmentCurve: AminoValueMap = {
   value: {
     msg: {
-      maxDuration: AminoTypes.Long,
+      maxDuration: AminoConvertTypes.Long,
     },
   },
 };
@@ -130,8 +130,8 @@ const SetCommitmentCurve: AminoValueMap = {
 const SetRewardCurve: AminoValueMap = {
   value: {
     msg: {
-      startTime: AminoTypes.Date,
-      reductionIntervalSeconds: AminoTypes.Long,
+      startTime: AminoConvertTypes.Date,
+      reductionIntervalSeconds: AminoConvertTypes.Long,
     },
   },
 };
@@ -139,7 +139,7 @@ const SetRewardCurve: AminoValueMap = {
 const SetRewardWeights: AminoValueMap = {
   value: {
     msg: {
-      poolId: AminoTypes.Long,
+      poolId: AminoConvertTypes.Long,
     },
   },
 };
@@ -147,7 +147,7 @@ const SetRewardWeights: AminoValueMap = {
 const UnlinkPool: AminoValueMap = {
   value: {
     msg: {
-      poolId: AminoTypes.Long,
+      poolId: AminoConvertTypes.Long,
     },
   },
 };
@@ -155,13 +155,13 @@ const UnlinkPool: AminoValueMap = {
 const UpdateMarket: AminoValueMap = {
   value: {
     msg: {
-      tickSize: AminoTypes.Dec,
-      makerFee: AminoTypes.Dec,
-      takerFee: AminoTypes.Dec,
-      initialMarginBase: AminoTypes.Dec,
-      initialMarginStep: AminoTypes.Dec,
-      maintenanceMarginRatio: AminoTypes.Dec,
-      maxLiquidationOrderDuration: AminoTypes.Duration,
+      tickSize: AminoConvertTypes.Dec,
+      makerFee: AminoConvertTypes.Dec,
+      takerFee: AminoConvertTypes.Dec,
+      initialMarginBase: AminoConvertTypes.Dec,
+      initialMarginStep: AminoConvertTypes.Dec,
+      maintenanceMarginRatio: AminoConvertTypes.Dec,
+      maxLiquidationOrderDuration: AminoConvertTypes.Duration,
     },
   },
 };
@@ -169,7 +169,7 @@ const UpdateMarket: AminoValueMap = {
 const SettlementPrice: AminoValueMap = {
   value: {
     msg: {
-      settlementPrice: AminoTypes.Dec,
+      settlementPrice: AminoConvertTypes.Dec,
     },
   },
 };
@@ -207,7 +207,7 @@ const preProcessAmino = (
   //     return;
   //   }
 
-  //   newValue[camelKey] = paramConverter(value[label], valueMap[camelKey] as AminoTypes, false);
+  //   newValue[camelKey] = paramConverter(value[label], valueMap[camelKey] as AminoConvertTypes, false);
   // });
   // console.log("newValue", newValue);
   // return newValue;

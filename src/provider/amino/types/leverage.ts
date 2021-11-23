@@ -1,6 +1,6 @@
 import { CarbonTx, TypeUtils } from "@carbon-sdk/util";
 import { AminoConverter } from "@cosmjs/stargate";
-import { AminoInit, AminoTypes, generateAminoType } from "../utils";
+import { AminoInit, AminoConvertTypes, generateAminoType } from "../utils";
 
 const TxTypes: TypeUtils.SimpleMap<string> = {
   SetLeverage: "leverage/MsgSetLeverage",
@@ -9,7 +9,7 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
 const MsgSetLeverage: AminoInit = {
   aminoType: TxTypes.SetLeverage,
   valueMap: {
-    leverage: AminoTypes.Dec,
+    leverage: AminoConvertTypes.Dec,
   },
 };
 

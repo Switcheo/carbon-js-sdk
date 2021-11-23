@@ -1,6 +1,6 @@
 import { CarbonTx, TypeUtils } from "@carbon-sdk/util";
 import { AminoConverter } from "@cosmjs/stargate";
-import { AminoInit, AminoTypes, generateAminoType } from "../utils";
+import { AminoInit, AminoConvertTypes, generateAminoType } from "../utils";
 
 const TxTypes: TypeUtils.SimpleMap<string> = {
   CreateOracle: "oracle/MsgCreateOracle",
@@ -23,9 +23,9 @@ const MsgCreateOracle: AminoInit = {
   aminoType: TxTypes.CreateOracle,
   valueMap: {
     createOracleParams: {
-      minTurnoutPercentage: AminoTypes.Long,
-      maxResultAge: AminoTypes.Long,
-      resolution: AminoTypes.Long,
+      minTurnoutPercentage: AminoConvertTypes.Long,
+      maxResultAge: AminoConvertTypes.Long,
+      resolution: AminoConvertTypes.Long,
     },
   },
 };
@@ -34,9 +34,9 @@ const MsgCreateToken: AminoInit = {
   aminoType: TxTypes.CreateToken,
   valueMap: {
     createTokenParams: {
-      decimals: AminoTypes.Long,
-      chainId: AminoTypes.Long,
-      bridgeId: AminoTypes.Long,
+      decimals: AminoConvertTypes.Long,
+      chainId: AminoConvertTypes.Long,
+      bridgeId: AminoConvertTypes.Long,
     },
   },
 };
@@ -50,18 +50,18 @@ const MsgCreateMarket: AminoInit = {
   aminoType: TxTypes.CreateMarket,
   valueMap: {
     market: {
-      basePrecision: AminoTypes.Long,
-      quotePrecision: AminoTypes.Long,
-      tickSize: AminoTypes.Dec,
-      makerFee: AminoTypes.Dec,
-      takerFee: AminoTypes.Dec,
-      createdBlockHeight: AminoTypes.Long,
-      initialMarginBase: AminoTypes.Dec,
-      initialMarginStep: AminoTypes.Dec,
-      maintenanceMarginRatio: AminoTypes.Dec,
-      maxLiquidationOrderDuration: AminoTypes.Duration,
-      expiryTime: AminoTypes.Date,
-      closedBlockHeight: AminoTypes.Long,
+      basePrecision: AminoConvertTypes.Long,
+      quotePrecision: AminoConvertTypes.Long,
+      tickSize: AminoConvertTypes.Dec,
+      makerFee: AminoConvertTypes.Dec,
+      takerFee: AminoConvertTypes.Dec,
+      createdBlockHeight: AminoConvertTypes.Long,
+      initialMarginBase: AminoConvertTypes.Dec,
+      initialMarginStep: AminoConvertTypes.Dec,
+      maintenanceMarginRatio: AminoConvertTypes.Dec,
+      maxLiquidationOrderDuration: AminoConvertTypes.Duration,
+      expiryTime: AminoConvertTypes.Date,
+      closedBlockHeight: AminoConvertTypes.Long,
     },
   },
 };
@@ -69,7 +69,7 @@ const MsgCreateMarket: AminoInit = {
 const MsgCreateVaultType: AminoInit = {
   aminoType: TxTypes.CreateVaultType,
   valueMap: {
-    collateralizationRatio: AminoTypes.Dec,
+    collateralizationRatio: AminoConvertTypes.Dec,
   },
 };
 
@@ -77,7 +77,7 @@ const MsgLinkPool: AminoInit = {
   aminoType: TxTypes.LinkPool,
   valueMap: {
     linkPoolParams: {
-      poolId: AminoTypes.Long,
+      poolId: AminoConvertTypes.Long,
     },
   },
 };
@@ -86,7 +86,7 @@ const MsgUnlinkPool: AminoInit = {
   aminoType: TxTypes.UnlinkPool,
   valueMap: {
     unlinkPoolParams: {
-      poolId: AminoTypes.Long,
+      poolId: AminoConvertTypes.Long,
     },
   },
 };
@@ -95,8 +95,8 @@ const MsgChangeSwapFee: AminoInit = {
   aminoType: TxTypes.ChangeSwapFee,
   valueMap: {
     changeSwapFeeParams: {
-      poolId: AminoTypes.Long,
-      swapFee: AminoTypes.Dec,
+      poolId: AminoConvertTypes.Long,
+      swapFee: AminoConvertTypes.Dec,
     },
   },
 };
@@ -105,7 +105,7 @@ const MsgSetRewardsWeights: AminoInit = {
   aminoType: TxTypes.SetRewardsWeights,
   valueMap: {
     setRewardsWeightsParams: {
-      poolId: AminoTypes.Long,
+      poolId: AminoConvertTypes.Long,
     },
   },
 };
@@ -114,8 +114,8 @@ const MsgSetRewardCurve: AminoInit = {
   aminoType: TxTypes.SetRewardCurve,
   valueMap: {
     setRewardCurveParams: {
-      startTime: AminoTypes.Date,
-      reductionIntervalSeconds: AminoTypes.Long,
+      startTime: AminoConvertTypes.Date,
+      reductionIntervalSeconds: AminoConvertTypes.Long,
     },
   },
 };
@@ -124,7 +124,7 @@ const MsgSetCommitmentCurve: AminoInit = {
   aminoType: TxTypes.SetCommitmentCurve,
   valueMap: {
     setCommitmentCurveParams: {
-      maxDuration: AminoTypes.Long,
+      maxDuration: AminoConvertTypes.Long,
     },
   },
 };
@@ -133,8 +133,8 @@ const MsgChangeNumQuotes: AminoInit = {
   aminoType: TxTypes.ChangeNumQuotes,
   valueMap: {
     changeNumQuotesParams: {
-      poolId: AminoTypes.Long,
-      numQuotes: AminoTypes.Long,
+      poolId: AminoConvertTypes.Long,
+      numQuotes: AminoConvertTypes.Long,
     },
   },
 };
