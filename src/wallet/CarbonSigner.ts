@@ -1,9 +1,8 @@
 import { CosmosLedger } from '@carbon-sdk/provider';
-import { stripHexPrefix } from '@carbon-sdk/util/generic';
-import { BlockchainUtils, GenericUtils, NumberUtils, CarbonTx } from "@carbon-sdk/util";
+import { sortObject } from '@carbon-sdk/util/generic';
+import { AminoSignResponse, OfflineAminoSigner, StdSignDoc } from "@cosmjs/amino";
+import { AccountData, DirectSecp256k1Wallet, DirectSignResponse, OfflineDirectSigner } from '@cosmjs/proto-signing';
 import { SignDoc } from "@cosmjs/stargate/build/codec/cosmos/tx/v1beta1/tx";
-import { ethers } from 'ethers';
-import secp256k1 from 'secp256k1';
 
 export enum CarbonSignerTypes {
   Ledger,
@@ -12,53 +11,73 @@ export enum CarbonSignerTypes {
   PublicKey,
 }
 
-export interface CarbonSigner {
-  type: CarbonSignerTypes;
+export type CarbonSigner = DirectCarbonSigner | AminoCarbonSigner
+export type DirectCarbonSigner = OfflineDirectSigner & { type: CarbonSignerTypes }
+export type AminoCarbonSigner = OfflineAminoSigner & { type: CarbonSignerTypes }
 
-  // signs the cosmos StdSignDoc.toJSON, returns signature buffer
-  sign: (doc: SignDoc) => Promise<Buffer>;
-}
-
-export class CarbonPrivateKeySigner implements CarbonSigner {
+export class CarbonPrivateKeySigner implements DirectCarbonSigner {
   type = CarbonSignerTypes.PrivateKey
-
-  async sign(doc: SignDoc): Promise<Buffer> {
-    const data = SignDoc.encode(doc).finish();
-    const result = secp256k1.ecdsaSign(
-      Buffer.from(stripHexPrefix(ethers.utils.sha256(data)), "hex"),
-      Buffer.from(this.privateKey),
-    )
-    return Buffer.from(result.signature)
-  }
+  wallet?: DirectSecp256k1Wallet
 
   constructor(
-    readonly privateKey: Buffer
+    readonly privateKey: Buffer,
+    readonly prefix: string
   ) { }
+
+  async initWallet() {
+    if (!this.wallet)
+      this.wallet = await DirectSecp256k1Wallet.fromKey(this.privateKey, this.prefix)
+
+    return this.wallet
+  }
+
+  async getAccounts() {
+    const wallet = await this.initWallet()
+    return wallet.getAccounts()
+  }
+
+  async signDirect(signerAddress: string, signDoc: SignDoc): Promise<DirectSignResponse> {
+    const wallet = await this.initWallet()
+    return await wallet.signDirect(signerAddress, signDoc);
+  }
 }
 
-export class CarbonNonSigner implements CarbonSigner {
+export class CarbonNonSigner implements DirectCarbonSigner {
   type = CarbonSignerTypes.PublicKey
 
-  async sign(): Promise<Buffer> {
+  async getAccounts(): Promise<readonly AccountData[]> {
+    throw new Error("signing not available");
+  }
+
+  async signDirect(): Promise<DirectSignResponse> {
     throw new Error("signing not available");
   }
 }
 
-export class CarbonLedgerSigner implements CarbonSigner {
+// Uses amino because ledger does not work with protobuf yet
+export class CarbonLedgerSigner implements AminoCarbonSigner {
   type = CarbonSignerTypes.Ledger
 
-  async sign(doc: SignDoc): Promise<Buffer> {
-    const jsonDoc: CarbonTx.StdSignDoc = new CarbonTx.StdSignDoc(
-      doc.accountNumber.toNumber(), // account_number
-      0, // sequence
-      doc.chainId, // chain_id
-      [{
-        type: "nonce",
-        value: NumberUtils.generateNonce(),
-      }], // msgs
-    );
-    const signBytes = await this.ledger.sign(jsonDoc.sortedJson());
-    return Buffer.from(signBytes.buffer);
+  async getAccounts(): Promise<readonly AccountData[]> {
+    const address = await this.ledger.getCosmosAddress() // TODO: Test this!
+    const pubkey = await this.ledger.getPubKey()
+    return [{
+      address,
+      algo: "secp256k1",
+      pubkey,
+    }];
+  }
+
+  async signAmino(_: string, doc: StdSignDoc): Promise<AminoSignResponse> {
+    const signBytes = await this.ledger.sign(JSON.stringify(sortObject(doc)));
+    const pubKey = await this.ledger.getPubKey();
+    return {
+      signed: doc,
+      signature: {
+        pub_key: pubKey,
+        signature: Buffer.from(signBytes.buffer).toString("base64")
+      }
+    };
   }
 
   constructor(
