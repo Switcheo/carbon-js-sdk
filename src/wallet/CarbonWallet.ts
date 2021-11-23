@@ -7,14 +7,14 @@ import { AddressUtils, CarbonTx, GenericUtils } from "@carbon-sdk/util";
 import { bnOrZero, BN_ZERO } from "@carbon-sdk/util/number";
 import { TxFeeTypeDefaultKey, TxFeeTypeMap } from "@carbon-sdk/util/tx";
 import { SimpleMap } from "@carbon-sdk/util/type";
-import { StdSignature } from "@cosmjs/amino";
-import { AccountData, DirectSignResponse, EncodeObject, OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
+import { encodeSecp256k1Signature, StdSignature } from "@cosmjs/amino";
+import { EncodeObject, OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
 import { BroadcastTxResponse, isBroadcastTxFailure, SigningStargateClient } from "@cosmjs/stargate";
-import { SignDoc, TxRaw as StargateTxRaw } from "@cosmjs/stargate/build/codec/cosmos/tx/v1beta1/tx";
+import { TxRaw as StargateTxRaw } from "@cosmjs/stargate/build/codec/cosmos/tx/v1beta1/tx";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import { BroadcastTxSyncResponse } from "@cosmjs/tendermint-rpc/build/tendermint34/responses";
 import BigNumber from "bignumber.js";
-import { CarbonLedgerSigner, CarbonNonSigner, CarbonPrivateKeySigner, CarbonSigner, CarbonSignerTypes, DirectCarbonSigner } from "./CarbonSigner";
+import { CarbonLedgerSigner, CarbonNonSigner, CarbonPrivateKeySigner, CarbonSigner, CarbonSignerTypes } from "./CarbonSigner";
 
 export interface CarbonWalletGenericOpts {
   network?: Network;
@@ -71,7 +71,7 @@ export type CarbonWalletInitOpts = CarbonWalletGenericOpts & (
   }
 );
 
-export class CarbonWallet implements OfflineDirectSigner {
+export class CarbonWallet {
   network: Network;
 
   configOverride: Partial<NetworkConfig>;
@@ -86,10 +86,6 @@ export class CarbonWallet implements OfflineDirectSigner {
   bech32Address: string;
   publicKey: Buffer;
   query?: CarbonQueryClient;
-
-  // Add custom signer option
-  // Keplr txs work when signer is generated and passed in from the frontend
-  customSigner?: OfflineSigner & OfflineDirectSigner;
 
   txFees?: SimpleMap<BigNumber>;
   initialized: boolean = false;
@@ -127,9 +123,6 @@ export class CarbonWallet implements OfflineDirectSigner {
     if (opts.signer) {
       this.signer = opts.signer;
       this.publicKey = Buffer.from(opts.publicKeyBase64!, "base64");
-      if (opts.customSigner) {
-        this.customSigner = opts.customSigner;
-      }
 
       this.bech32Address = AddressUtils.SWTHAddress.publicKeyToAddress(this.publicKey, addressOpts);
     } else if (this.privateKey) {
@@ -137,7 +130,7 @@ export class CarbonWallet implements OfflineDirectSigner {
 
       this.bech32Address = AddressUtils.SWTHAddress.publicKeyToAddress(this.publicKey, addressOpts);
 
-      if(!addressOpts.bech32Prefix) 
+      if (!addressOpts.bech32Prefix)
         throw new Error("cannot instantiate wallet signer, no prefix")
 
       this.signer = new CarbonPrivateKeySigner(this.privateKey, addressOpts.bech32Prefix);
@@ -284,8 +277,18 @@ export class CarbonWallet implements OfflineDirectSigner {
     }
 
     const signingClient = await this.getSigningClient();
-    const txRaw = await signingClient.sign(signerAddress, messages, fee, memo, explicitSignerData);
-    return txRaw;
+
+    const [account] = await this.signer.getAccounts()
+    let signature: StdSignature | null = null;
+    try {
+      this.onRequestSign?.(messages);
+      const txRaw = await signingClient.sign(signerAddress, messages, fee, memo, explicitSignerData);
+      signature = encodeSecp256k1Signature(account.pubkey, txRaw.signatures[0]);
+      return txRaw;
+    } finally {
+      this.onSignComplete?.(signature)
+    }
+
   }
 
   async sendTxs(msgs: EncodeObject[], opts?: CarbonTx.SignTxOpts): Promise<CarbonWallet.SendTxResponse> {
@@ -306,57 +309,12 @@ export class CarbonWallet implements OfflineDirectSigner {
     if (!this.signingClient) {
       this.signingClient = await SigningStargateClient.connectWithSigner(
         this.networkConfig.rpcUrl,
-        this.customSigner ?? this,
-        { registry }
+        this.signer,
+        { registry },
       );
     }
     return this.signingClient;
   };
-
-  async sign(data: SignDoc): Promise<StdSignature> {
-    const signResponse = await (this.signer as DirectCarbonSigner).signDirect(this.bech32Address, data)
-    const signature: StdSignature = {
-      pub_key: signResponse.signature.pub_key,
-      signature: signResponse.signature.signature,
-    };
-    return signature;
-  }
-
-  async signDirect(_: string, signDoc: SignDoc): Promise<DirectSignResponse> {
-    try {
-      await this.onRequestSign?.(signDoc)
-    } catch (error) {
-      console.error("sign request callback error")
-      console.error(error)
-    }
-
-    let stdSignature: StdSignature | null = null
-    try {
-      stdSignature = await this.sign(signDoc);
-
-      return {
-        signature: stdSignature,
-        signed: signDoc,
-      };
-    } finally {
-      try {
-        await this.onSignComplete?.(stdSignature)
-      } catch (error) {
-        console.error("sign complete callback error")
-        console.error(error)
-      }
-    }
-  }
-
-  getAccounts(): Promise<AccountData[]> {
-    return Promise.resolve([
-      {
-        address: this.bech32Address,
-        algo: "secp256k1",
-        pubkey: this.publicKey,
-      },
-    ]);
-  }
 
   isSigner(signerType: CarbonSignerTypes) {
     return this.signer.type === signerType;
@@ -409,10 +367,10 @@ export class CarbonWallet implements OfflineDirectSigner {
 export namespace CarbonWallet {
   export type SendTxResponse = BroadcastTxResponse;
   export type SendTxWithoutConfirmResponse = BroadcastTxSyncResponse;
-  export type OnRequestSignCallback = (doc: SignDoc) => void | Promise<void>;
+  export type OnRequestSignCallback = (msgs: readonly EncodeObject[]) => void | Promise<void>;
   export type OnSignCompleteCallback = (signature: StdSignature | null) => void | Promise<void>;
 
   // workaround to re-export interface mixed const type
-  export interface TxRaw extends StargateTxRaw {};
+  export interface TxRaw extends StargateTxRaw { };
   export const TxRaw: typeof StargateTxRaw = { ...StargateTxRaw };
 }

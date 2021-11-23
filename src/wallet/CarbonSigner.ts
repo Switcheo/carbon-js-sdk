@@ -1,15 +1,8 @@
 import { CosmosLedger } from '@carbon-sdk/provider';
-import { stripHexPrefix } from '@carbon-sdk/util/generic';
-import { BlockchainUtils, GenericUtils, NumberUtils, CarbonTx, AddressUtils } from "@carbon-sdk/util";
+import { sortObject } from '@carbon-sdk/util/generic';
+import { AminoSignResponse, OfflineAminoSigner, StdSignDoc } from "@cosmjs/amino";
+import { AccountData, DirectSecp256k1Wallet, DirectSignResponse, OfflineDirectSigner } from '@cosmjs/proto-signing';
 import { SignDoc } from "@cosmjs/stargate/build/codec/cosmos/tx/v1beta1/tx";
-import { ethers } from 'ethers';
-import secp256k1 from 'secp256k1';
-import { AccountData, DirectSecp256k1Wallet, DirectSignResponse, OfflineDirectSigner, OfflineSigner } from '@cosmjs/proto-signing';
-
-import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
-import { Network } from '@carbon-sdk/constant';
-import { SWTHAddress } from '@carbon-sdk/util/address';
-import { Algo, AminoSignResponse, OfflineAminoSigner, StdSignDoc } from "@cosmjs/amino";
 
 export enum CarbonSignerTypes {
   Ledger,
@@ -17,11 +10,6 @@ export enum CarbonSignerTypes {
   BrowserInjected,
   PublicKey,
 }
-
-// export interface CarbonSigner {
-//   type: CarbonSignerTypes;
-//   sign: (doc: SignDoc) => Promise<Buffer>;
-// }
 
 export type CarbonSigner = DirectCarbonSigner | AminoCarbonSigner
 export type DirectCarbonSigner = OfflineDirectSigner & { type: CarbonSignerTypes }
@@ -70,33 +58,19 @@ export class CarbonNonSigner implements DirectCarbonSigner {
 export class CarbonLedgerSigner implements AminoCarbonSigner {
   type = CarbonSignerTypes.Ledger
 
-  async getAccounts(): Promise<readonly AccountData[]>{
+  async getAccounts(): Promise<readonly AccountData[]> {
     const address = await this.ledger.getCosmosAddress() // TODO: Test this!
     const pubkey = await this.ledger.getPubKey()
-    return Promise.resolve([
-      {
-        address,
-        algo: "secp256k1" as Algo,
-        pubkey,
-      },
-    ]);
+    return [{
+      address,
+      algo: "secp256k1",
+      pubkey,
+    }];
   }
 
-  async signAmino(signerAddress: string, doc: StdSignDoc): Promise<AminoSignResponse> {
-    // const jsonDoc: CarbonTx.StdSignDoc = new CarbonTx.StdSignDoc(
-    //   doc.accountNumber.toNumber(), // account_number
-    //   0, // sequence
-    //   doc.chainId, // chain_id
-    //   [{
-    //     type: "nonce",
-    //     value: NumberUtils.generateNonce(),
-    //   }], // msgs
-    // );
-    // const signBytes = await this.ledger.sign(jsonDoc.sortedJson());
-    // return Buffer.from(signBytes.buffer);
-
-    const signBytes = await this.ledger.sign(JSON.stringify(doc));
-    const pubKey = await this.ledger.getPubKey()
+  async signAmino(_: string, doc: StdSignDoc): Promise<AminoSignResponse> {
+    const signBytes = await this.ledger.sign(JSON.stringify(sortObject(doc)));
+    const pubKey = await this.ledger.getPubKey();
     return {
       signed: doc,
       signature: {
