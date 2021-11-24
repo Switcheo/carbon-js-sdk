@@ -336,10 +336,7 @@ export class CarbonWallet {
     if (!this.txFees) {
       console.warn("tx fees not initialized");
     }
-
-    const feeKey = TxFeeTypeMap[msgTypeUrl];
-
-    return this.txFees?.[feeKey] ?? this.txFees?.[TxFeeTypeDefaultKey] ?? BN_ZERO;
+    return this.txFees?.[msgTypeUrl] ?? this.txFees?.[TxFeeTypeDefaultKey] ?? BN_ZERO;
   }
 
   public updateTxFees(msgFees: MsgFee[]) {
