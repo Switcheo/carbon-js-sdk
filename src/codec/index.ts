@@ -384,6 +384,21 @@ export const TxTypes = {
   "MsgChangeNumQuotesResponse": "/Switcheo.carbon.liquiditypool.MsgChangeNumQuotesResponse"
 }
 
+export enum ProposalTypes {
+  SetMsgFee = "/Switcheo.carbon.fee.SetMsgFeeProposal",
+  ChangeSwapFee = "/Switcheo.carbon.liquiditypool.ChangeSwapFeeProposal",
+  CreateToken = "/Switcheo.carbon.coin.CreateTokenProposal",
+  CreateOracle = "/Switcheo.carbon.oracle.CreateOracleProposal",
+  LinkPool = "/Switcheo.carbon.liquiditypool.LinkPoolProposal",
+  UnlinkPool = "/Switcheo.carbon.liquiditypool.UnlinkPoolProposal",
+  ChangeNumQuotes = "/Switcheo.carbon.liquiditypool.ChangeNumQuotesProposal",
+  SetRewardCurve = "/Switcheo.carbon.liquiditypool.SetRewardCurveProposal",
+  SetRewardsWeights = "/Switcheo.carbon.liquiditypool.SetRewardsWeightsProposal",
+  SetCommitmentCurve = "/Switcheo.carbon.liquiditypool.SetCommitmentCurveProposal",
+  CreateMarket = "/Switcheo.carbon.market.CreateMarketProposal",
+  UpdateMarket = "/Switcheo.carbon.market.UpdateMarketProposal",
+  SettlementPrice = "/Switcheo.carbon.market.SettlementPriceProposal",
+};
 
 // Exported for convenience
 export { MessageType } from "./misc/message_type";

@@ -1,16 +1,16 @@
 import CarbonSDK from "@carbon-sdk/CarbonSDK"
 import { NetworkConfig, NetworkConfigProvider, ZilNetworkConfig } from "@carbon-sdk/constant"
+import { Models } from "@carbon-sdk/index"
 import { SWTHAddress } from "@carbon-sdk/util/address"
 import { Blockchain, blockchainForChainId } from "@carbon-sdk/util/blockchain"
 import { TokensWithExternalBalance } from "@carbon-sdk/util/external"
 import { appendHexPrefix, stripHexPrefix } from "@carbon-sdk/util/generic"
 import { Transaction, Wallet } from "@zilliqa-js/account"
 import { CallParams, Contract, Value } from "@zilliqa-js/contract"
-import { BN, bytes, Long } from "@zilliqa-js/util";
-import { fromBech32Address, Zilliqa } from "@zilliqa-js/zilliqa";
-import BigNumber from "bignumber.js";
-import { ethers } from "ethers";
-import { Models } from "..";
+import { BN, bytes, Long } from "@zilliqa-js/util"
+import { fromBech32Address, Zilliqa } from "@zilliqa-js/zilliqa"
+import BigNumber from "bignumber.js"
+import { ethers } from "ethers"
 
 const uint128Max = "340282366920938463463374607431768211356"
 const zeroAddress = "0000000000000000000000000000000000000000"

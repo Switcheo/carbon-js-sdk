@@ -1,14 +1,14 @@
 import CarbonSDK from "@carbon-sdk/CarbonSDK"
-import { EthNetworkConfig, NeoNetworkConfig, NetworkConfig, NetworkConfigProvider, ZilNetworkConfig } from "@carbon-sdk/constant"
+import { EthNetworkConfig, NetworkConfig, NetworkConfigProvider } from "@carbon-sdk/constant"
 import { ABIs } from "@carbon-sdk/eth"
+import { Models } from "@carbon-sdk/index"
 import { SWTHAddress } from "@carbon-sdk/util/address"
-import { Blockchain, blockchainForChainId, getChainFromID } from "@carbon-sdk/util/blockchain"
+import { Blockchain, blockchainForChainId } from "@carbon-sdk/util/blockchain"
 import { TokenInitInfo, TokensWithExternalBalance } from "@carbon-sdk/util/external"
-import { stripHexPrefix, appendHexPrefix } from "@carbon-sdk/util/generic"
+import { appendHexPrefix, stripHexPrefix } from "@carbon-sdk/util/generic"
 import { FeeResult } from "@carbon-sdk/util/transferfees"
 import BigNumber from "bignumber.js"
 import { ethers } from "ethers"
-import { Models, SDKProvider } from ".."
 
 export interface ETHClientOpts {
   configProvider: NetworkConfigProvider,

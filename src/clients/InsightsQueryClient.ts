@@ -1,6 +1,6 @@
-import { NetworkConfig } from '@carbon-sdk/constant';
-import { APIUtils } from '@carbon-sdk/util';
-import { Insights } from '..';
+import { NetworkConfig } from "@carbon-sdk/constant"
+import { Insights } from "@carbon-sdk/index"
+import { APIUtils } from "@carbon-sdk/util"
 
 class InsightsQueryClient {
   public readonly apiManager: APIUtils.APIManager<typeof Insights.InsightsEndpoints>

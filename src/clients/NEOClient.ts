@@ -1,5 +1,6 @@
 import CarbonSDK from "@carbon-sdk/CarbonSDK"
 import { NeoNetworkConfig, NetworkConfig, NetworkConfigProvider } from "@carbon-sdk/constant"
+import { Models } from "@carbon-sdk/index"
 import { NeoLedgerAccount } from "@carbon-sdk/provider/account"
 import { SWTHAddress } from "@carbon-sdk/util/address"
 import { Blockchain, blockchainForChainId } from "@carbon-sdk/util/blockchain"
@@ -16,7 +17,6 @@ import Neon, { api, rpc, tx as neonTx, u } from "@cityofzion/neon-js"
 import BigNumber from "bignumber.js"
 import { ethers } from "ethers"
 import { chunk } from "lodash"
-import { Models } from ".."
 
 export interface NEOClientOpts {
   configProvider: NetworkConfigProvider,
