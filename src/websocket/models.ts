@@ -1,5 +1,3 @@
-import { Coin } from "../codec/cosmos/base/v1beta1/coin";
-
 export interface RecentTrade {
   block_created_at: string // string representation of timestamp
   block_height: number
@@ -149,8 +147,10 @@ export interface Pool {
 }
 
 export interface Commitment {
-  pool_id: number
-  liquidity: Coin
-  start_time: string // string representation of date
-  duration?: number
+  denom: string;
+  amount: string; // string representation of number
+  start_time: string; // string representation of date isostring
+  end_time: string; // string representation of date isostring
+  commitment_power: string; // string representation of number
+  boost_factor: string; // string representation of number
 }
