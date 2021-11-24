@@ -4,6 +4,7 @@ import { DEFAULT_GAS, DEFAULT_NETWORK, Network, NetworkConfig, NetworkConfigs } 
 import { ProviderAgent } from "@carbon-sdk/constant/walletProvider";
 import { CosmosLedger } from "@carbon-sdk/provider";
 import { AddressUtils, CarbonTx, GenericUtils } from "@carbon-sdk/util";
+import { SWTHAddress } from "@carbon-sdk/util/address";
 import { bnOrZero, BN_ZERO } from "@carbon-sdk/util/number";
 import { TxFeeTypeDefaultKey, TxFeeTypeMap } from "@carbon-sdk/util/tx";
 import { SimpleMap } from "@carbon-sdk/util/type";
@@ -130,10 +131,14 @@ export class CarbonWallet {
 
       this.bech32Address = AddressUtils.SWTHAddress.publicKeyToAddress(this.publicKey, addressOpts);
 
+      let prefix = addressOpts.bech32Prefix
       if (!addressOpts.bech32Prefix)
+        prefix = SWTHAddress.getBech32Prefix(addressOpts?.network, addressOpts?.bech32Prefix)
+
+      if (!prefix)
         throw new Error("cannot instantiate wallet signer, no prefix")
 
-      this.signer = new CarbonPrivateKeySigner(this.privateKey, addressOpts.bech32Prefix);
+      this.signer = new CarbonPrivateKeySigner(this.privateKey, prefix);
 
     } else if (opts.bech32Address) {
       // read-only wallet, without private/public keys

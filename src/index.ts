@@ -8,3 +8,4 @@ export { AminoTypesMap, SDKProvider, KeplrAccount, KeplrWindow, CosmosLedger, Ke
 export { default as CarbonSDK } from "./CarbonSDK";
 export { ProviderAgent } from "./constant";
 export * as Insights from "./insights";
+export { CarbonSigner, DirectCarbonSigner, AminoCarbonSigner, CarbonLedgerSigner, CarbonPrivateKeySigner, CarbonNonSigner } from "./wallet"
