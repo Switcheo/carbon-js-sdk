@@ -16,6 +16,7 @@ import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import { BroadcastTxSyncResponse } from "@cosmjs/tendermint-rpc/build/tendermint34/responses";
 import BigNumber from "bignumber.js";
 import { CarbonLedgerSigner, CarbonNonSigner, CarbonPrivateKeySigner, CarbonSigner, CarbonSignerTypes } from "./CarbonSigner";
+import { AminoTypesMap } from "@carbon-sdk/provider"
 
 export interface CarbonWalletGenericOpts {
   network?: Network;
@@ -315,7 +316,7 @@ export class CarbonWallet {
       this.signingClient = await SigningStargateClient.connectWithSigner(
         this.networkConfig.rpcUrl,
         this.signer,
-        { registry },
+        { aminoTypes: AminoTypesMap, registry },
       );
     }
     return this.signingClient;
