@@ -2,7 +2,7 @@ import { CarbonQueryClient } from "@carbon-sdk/clients";
 import { MsgFee, registry } from "@carbon-sdk/codec";
 import { DEFAULT_GAS, DEFAULT_NETWORK, Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
 import { ProviderAgent } from "@carbon-sdk/constant/walletProvider";
-import { CosmosLedger } from "@carbon-sdk/provider";
+import { AminoTypesMap, CosmosLedger } from "@carbon-sdk/provider";
 import { AddressUtils, CarbonTx, GenericUtils } from "@carbon-sdk/util";
 import { SWTHAddress } from "@carbon-sdk/util/address";
 import { bnOrZero, BN_ZERO } from "@carbon-sdk/util/number";
@@ -16,7 +16,6 @@ import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import { BroadcastTxSyncResponse } from "@cosmjs/tendermint-rpc/build/tendermint34/responses";
 import BigNumber from "bignumber.js";
 import { CarbonLedgerSigner, CarbonNonSigner, CarbonPrivateKeySigner, CarbonSigner, CarbonSignerTypes } from "./CarbonSigner";
-import { AminoTypesMap } from "@carbon-sdk/provider"
 
 export interface CarbonWalletGenericOpts {
   network?: Network;
@@ -316,7 +315,10 @@ export class CarbonWallet {
       this.signingClient = await SigningStargateClient.connectWithSigner(
         this.networkConfig.rpcUrl,
         this.signer,
-        { aminoTypes: AminoTypesMap, registry },
+        {
+          ...(this.signer.type === CarbonSignerTypes.Ledger && { aminoTypes: AminoTypesMap }),
+          registry
+        },
       );
     }
     return this.signingClient;
