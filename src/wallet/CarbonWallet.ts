@@ -280,7 +280,6 @@ export class CarbonWallet {
         gas: DEFAULT_GAS.times(messages.length).toString(10),
       };
     }
-
     const signingClient = await this.getSigningClient();
 
     const [account] = await this.signer.getAccounts()

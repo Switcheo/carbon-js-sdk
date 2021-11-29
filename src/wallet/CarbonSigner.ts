@@ -1,6 +1,6 @@
 import { CosmosLedger } from '@carbon-sdk/provider';
 import { sortObject } from '@carbon-sdk/util/generic';
-import { AminoSignResponse, OfflineAminoSigner, StdSignDoc } from "@cosmjs/amino";
+import { AminoSignResponse, encodeSecp256k1Signature, OfflineAminoSigner, StdSignDoc } from "@cosmjs/amino";
 import { AccountData, DirectSecp256k1Wallet, DirectSignResponse, OfflineDirectSigner } from '@cosmjs/proto-signing';
 import { SignDoc } from "@cosmjs/stargate/build/codec/cosmos/tx/v1beta1/tx";
 
@@ -58,25 +58,36 @@ export class CarbonNonSigner implements DirectCarbonSigner {
 export class CarbonLedgerSigner implements AminoCarbonSigner {
   type = CarbonSignerTypes.Ledger
 
+  account?: AccountData;
+
+  async retrieveAccount() {
+    if (!this.account) {
+      const address = await this.ledger.getCosmosAddress();
+      const pubkey = await this.ledger.getPubKey();
+
+      this.account = {
+        address,
+        algo: "secp256k1",
+        pubkey,
+      };
+    }
+
+    return this.account;
+  }
+
   async getAccounts(): Promise<readonly AccountData[]> {
-    const address = await this.ledger.getCosmosAddress() // TODO: Test this!
-    const pubkey = await this.ledger.getPubKey()
-    return [{
-      address,
-      algo: "secp256k1",
-      pubkey,
-    }];
+    const account = await this.retrieveAccount();
+    return [account];
   }
 
   async signAmino(_: string, doc: StdSignDoc): Promise<AminoSignResponse> {
+    const account = await this.retrieveAccount();
+    const { pubkey } = account;
     const signBytes = await this.ledger.sign(JSON.stringify(sortObject(doc)));
-    const pubKey = await this.ledger.getPubKey();
+    const signature = encodeSecp256k1Signature(pubkey, signBytes);
     return {
       signed: doc,
-      signature: {
-        pub_key: pubKey,
-        signature: Buffer.from(signBytes.buffer).toString("base64")
-      }
+      signature,
     };
   }
 
