@@ -3,7 +3,7 @@ import { AminoConverter } from "@cosmjs/stargate";
 import { AminoInit, generateAminoType } from "../utils";
 
 const TxTypes: TypeUtils.SimpleMap<string> = {
-  UpdateProfile: "profile/MsgUpdateProfile",
+  UpdateProfile: "profile/UpdateProfile",
 };
 
 const MsgUpdateProfile: AminoInit = {

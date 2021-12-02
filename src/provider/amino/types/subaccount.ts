@@ -3,8 +3,9 @@ import { AminoConverter } from "@cosmjs/stargate";
 import { AminoInit, generateAminoType } from "../utils";
 
 const TxTypes: TypeUtils.SimpleMap<string> = {
-  CreateSubAccount: "subaccount/MsgCreateSubAccountV1",
-  ActivateSubAccount: "subaccount/MsgActivateSubAccountV1",
+  CreateSubAccount: "subaccount/CreateSubAccount",
+  ActivateSubAccount: "subaccount/ActivateSubAccount",
+  RemoveSubAccount: "subaccount/RemoveSubAccount",
 };
 
 const MsgCreateSubAccount: AminoInit = {
@@ -17,9 +18,15 @@ const MsgActivateSubAccount: AminoInit = {
   valueMap: {},
 };
 
+const MsgRemoveSubAccount: AminoInit = {
+  aminoType: TxTypes.RemoveSubAccount,
+  valueMap: {},
+};
+
 const SubAccountAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgCreateSubAccount]: generateAminoType(MsgCreateSubAccount),
   [CarbonTx.Types.MsgActivateSubAccount]: generateAminoType(MsgActivateSubAccount),
+  [CarbonTx.Types.MsgRemoveSubAccount]: generateAminoType(MsgRemoveSubAccount),
 };
 
 export default SubAccountAmino;

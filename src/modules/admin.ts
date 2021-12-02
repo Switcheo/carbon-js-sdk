@@ -1,15 +1,18 @@
-import { MsgCreateOracle } from "@carbon-sdk/codec/oracle/tx";
-import BaseModule from "./base";
-import Long from "long";
-import { CarbonTx } from "@carbon-sdk/util";
-import { MsgCreateToken, MsgSyncToken } from "@carbon-sdk/codec/coin/tx";
-import BigNumber from "bignumber.js";
-import { MsgCreateMarket } from "@carbon-sdk/codec/market/tx";
-import { Duration } from "@carbon-sdk/codec/google/protobuf/duration";
+import { Any } from "@carbon-sdk/codec";
 import { MsgCreateVaultType } from "@carbon-sdk/codec/cdp/tx";
-import { MsgChangeNumQuotes, MsgChangeSwapFee, MsgLinkPool, MsgSetCommitmentCurve, MsgSetRewardCurve, MsgSetRewardsWeights, MsgUnlinkPool } from "@carbon-sdk/codec/liquiditypool/tx";
-import { MsgSetTradingFlag } from "@carbon-sdk/codec/order/tx";
+import { MsgCreateToken, MsgSyncToken } from "@carbon-sdk/codec/coin/tx";
+import { Description } from "@carbon-sdk/codec/cosmos/staking/v1beta1/staking";
+import { MsgCreateValidator, MsgEditValidator } from "@carbon-sdk/codec/cosmos/staking/v1beta1/tx";
 import { MsgSetFee } from "@carbon-sdk/codec/fee/tx";
+import { Duration } from "@carbon-sdk/codec/google/protobuf/duration";
+import { MsgChangeNumQuotes, MsgChangeSwapFee, MsgLinkPool, MsgSetCommitmentCurve, MsgSetRewardCurve, MsgSetRewardsWeights, MsgUnlinkPool } from "@carbon-sdk/codec/liquiditypool/tx";
+import { MsgCreateMarket } from "@carbon-sdk/codec/market/tx";
+import { MsgCreateOracle } from "@carbon-sdk/codec/oracle/tx";
+import { MsgSetTradingFlag } from "@carbon-sdk/codec/order/tx";
+import { CarbonTx } from "@carbon-sdk/util";
+import BigNumber from "bignumber.js";
+import Long from "long";
+import BaseModule from "./base";
 
 export class AdminModule extends BaseModule {
 
@@ -236,6 +239,51 @@ export class AdminModule extends BaseModule {
     });
   }
 
+  public async createValidator(params: AdminModule.CreateValidatorParams) {
+    const wallet = this.getWallet();
+
+    const value = MsgCreateValidator.fromPartial({
+      delegatorAddress: params.delegatorAddress,
+      validatorAddress: params.validatorAddress,
+      minSelfDelegation: params.minSelfDelegation.toString(10),
+      description: params.description,
+      pubkey: params.pubkey,
+      ...params.commission && {
+        commission: {
+          rate: params.commission.rate.shiftedBy(18).toString(10),
+          maxRate: params.commission.maxRate.shiftedBy(18).toString(10),
+          maxChangeRate: params.commission.maxChangeRate.shiftedBy(18).toString(10),
+        },
+      },
+      ...params.value && {
+        value: {
+          denom: params.value.denom,
+          amount: params.value.amount.toString(10),
+        },
+      },
+    });
+
+    return await wallet.sendTx({
+      typeUrl: CarbonTx.Types.MsgCreateValidator,
+      value,
+    });
+  }
+
+  public async editValidator(params: AdminModule.EditValidatorParams) {
+    const wallet = this.getWallet();
+
+    const value = MsgEditValidator.fromPartial({
+      description: params.description,
+      validatorAddress: params.validatorAddress,
+      commissionRate: params.commissionRate.shiftedBy(18).toString(10),
+      minSelfDelegation: params.minSelfDelegation.toString(10),
+    });
+
+    return await wallet.sendTx({
+      typeUrl: CarbonTx.Types.MsgEditValidator,
+      value,
+    });
+  }
 }
 
 export namespace AdminModule {
@@ -350,6 +398,30 @@ export namespace AdminModule {
   export interface SetMsgFeeParams {
     msgType: string
     fee: BigNumber
+  }
+
+  export interface CreateValidatorParams {
+    description?: Description;
+    commission?: {
+      rate: BigNumber;
+      maxRate: BigNumber;
+      maxChangeRate: BigNumber;
+    };
+    minSelfDelegation: BigNumber;
+    delegatorAddress: string;
+    validatorAddress: string;
+    pubkey?: Any;
+    value?: {
+      denom: string;
+      amount: BigNumber;
+    };
+  }
+
+  export interface EditValidatorParams {
+    description?: Description;
+    validatorAddress: string;
+    commissionRate: BigNumber;
+    minSelfDelegation: BigNumber;
   }
 };
 

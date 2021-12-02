@@ -3,7 +3,7 @@ import { AminoConverter } from "@cosmjs/stargate";
 import { AminoInit, ConvertEncType, generateAminoType } from "../utils";
 
 const TxTypes: TypeUtils.SimpleMap<string> = {
-  UpdateMarket: "market/MsgUpdateMarket",
+  UpdateMarket: "market/UpdateMarket",
 };
 
 const MsgUpdateMarket: AminoInit = {

@@ -3,7 +3,7 @@ import { AminoConverter } from "@cosmjs/stargate";
 import { AminoInit, ConvertEncType, generateAminoType } from "../utils";
 
 const TxTypes: TypeUtils.SimpleMap<string> = {
-  SetMargin: "position/MsgSetMargin",
+  SetMargin: "position/SetMargin",
 };
 
 const MsgSetMargin: AminoInit = {

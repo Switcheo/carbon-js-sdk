@@ -3,8 +3,8 @@ import { AminoConverter } from "@cosmjs/stargate";
 import { AminoInit, ConvertEncType, generateAminoType } from "../utils";
 
 const TxTypes: TypeUtils.SimpleMap<string> = {
-  MintToken: "coin/MsgMintToken",
-  Withdraw: "coin/MsgWithdraw",
+  MintToken: "coin/MintToken",
+  Withdraw: "coin/Withdraw",
 };
 
 const MsgWithdraw: AminoInit = {

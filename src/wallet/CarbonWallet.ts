@@ -6,7 +6,7 @@ import { AminoTypesMap, CosmosLedger } from "@carbon-sdk/provider";
 import { AddressUtils, CarbonTx, GenericUtils } from "@carbon-sdk/util";
 import { SWTHAddress } from "@carbon-sdk/util/address";
 import { bnOrZero, BN_ZERO } from "@carbon-sdk/util/number";
-import { TxFeeTypeDefaultKey, TxFeeTypeMap } from "@carbon-sdk/util/tx";
+import { TxFeeTypeDefaultKey } from "@carbon-sdk/util/tx";
 import { SimpleMap } from "@carbon-sdk/util/type";
 import { encodeSecp256k1Signature, StdSignature } from "@cosmjs/amino";
 import { EncodeObject, OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";

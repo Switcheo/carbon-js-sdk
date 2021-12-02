@@ -3,7 +3,7 @@ import { AminoConverter } from "@cosmjs/stargate";
 import { AminoInit, generateAminoType } from "../utils";
 
 const TxTypes: TypeUtils.SimpleMap<string> = {
-  InitiateLiquidation: "broker/MsgInitiateLiquidation",
+  InitiateLiquidation: "broker/InitiateLiquidation",
 };
 
 const MsgInitiateLiquidation: AminoInit = {

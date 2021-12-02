@@ -3,11 +3,11 @@ import { AminoConverter } from "@cosmjs/stargate";
 import { AminoInit, ConvertEncType, generateAminoType } from "../utils";
 
 const TxTypes: TypeUtils.SimpleMap<string> = {
-  CreateOracle: "oracle/MsgCreateOracle",
-  CreateToken: "coin/MsgCreateToken",
-  SyncToken: "coin/MsgSyncToken",
-  CreateMarket: "market/MsgCreateMarket",
-  CreateVaultType: "collateralizeddebtposition/CreateVaultType",
+  CreateOracle: "oracle/CreateOracle",
+  CreateToken: "coin/CreateToken",
+  SyncToken: "coin/SyncToken",
+  CreateMarket: "market/CreateMarket",
+  CreateVaultType: "cdp/CreateVaultType",
   LinkPool: "liquiditypool/LinkPool",
   UnlinkPool: "liquiditypool/UnlinkPool",
   ChangeSwapFee: "liquiditypool/ChangeSwapFee",
@@ -15,8 +15,10 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
   SetRewardCurve: "liquiditypool/SetRewardCurve",
   SetCommitmentCurve: "liquiditypool/SetCommitmentCurve",
   ChangeNumQuotes: "liquiditypool/ChangeNumQuotes",
-  SetTradingFlag: "order/MsgSetTradingFlag",
+  SetTradingFlag: "order/SetTradingFlag",
   SetMsgFee: "fee/SetMsgFee",
+  CreateValidator: "cosmos-sdk/MsgCreateValidator",
+  EditValidator: "cosmos-sdk/MsgEditValidator",
 }
 
 const MsgCreateOracle: AminoInit = {
@@ -149,6 +151,24 @@ const MsgSetFee: AminoInit = {
   valueMap: {},
 };
 
+const MsgCreateValidator: AminoInit = {
+  aminoType: TxTypes.CreateValidator,
+  valueMap: {
+    commission: {
+      rate: ConvertEncType.Dec,
+      maxRate: ConvertEncType.Dec,
+      maxChangeRate: ConvertEncType.Dec,
+    },
+  },
+};
+
+const MsgEditValidator: AminoInit = {
+  aminoType: TxTypes.EditValidator,
+  valueMap: {
+    commissionRate: ConvertEncType.Dec,
+  },
+};
+
 const AdminAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgCreateOracle]: generateAminoType(MsgCreateOracle),
   [CarbonTx.Types.MsgCreateToken]: generateAminoType(MsgCreateToken),
@@ -164,6 +184,8 @@ const AdminAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgChangeNumQuotes]: generateAminoType(MsgChangeNumQuotes),
   [CarbonTx.Types.MsgSetTradingFlag]: generateAminoType(MsgSetTradingFlag),
   [CarbonTx.Types.MsgSetFee]: generateAminoType(MsgSetFee),
+  [CarbonTx.Types.MsgCreateValidator]: generateAminoType(MsgCreateValidator),
+  [CarbonTx.Types.MsgEditValidator]: generateAminoType(MsgEditValidator),
 };
 
 export default AdminAmino;

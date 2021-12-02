@@ -3,10 +3,10 @@ import { AminoConverter } from "@cosmjs/stargate";
 import { AminoInit, ConvertEncType, generateAminoType } from "../utils";
 
 const TxTypes: TypeUtils.SimpleMap<string> = {
-  CreateOrder: "order/MsgCreateOrder",
-  CancelOrder: "order/MsgCancelOrder",
-  EditOrder: "order/MsgEditOrder",
-  CancelAll: "order/MsgCancelAll",
+  CreateOrder: "order/CreateOrder",
+  CancelOrder: "order/CancelOrder",
+  EditOrder: "order/EditOrder",
+  CancelAll: "order/CancelAll",
 };
 
 const MsgCreateOrder: AminoInit = {

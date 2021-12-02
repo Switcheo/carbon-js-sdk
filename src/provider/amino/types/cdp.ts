@@ -3,10 +3,10 @@ import { AminoConverter } from "@cosmjs/stargate";
 import { AminoInit, ConvertEncType, generateAminoType } from "../utils";
 
 const TxTypes: TypeUtils.SimpleMap<string> = {
-  AddCollateral: "collateralizeddebtposition/AddCollateral",
-  RemoveCollateral: "collateralizeddebtposition/RemoveCollateral",
-  AddDebt: "collateralizeddebtposition/AddDebt",
-  RemoveDebt: "collateralizeddebtposition/RemoveDebt",
+  AddCollateral: "cdp/AddCollateral",
+  RemoveCollateral: "cdp/removeCollateral",
+  AddDebt: "cdp/AddDebt",
+  RemoveDebt: "cdp/RemoveDebt",
 };
 
 const MsgAddCollateral: AminoInit = {
