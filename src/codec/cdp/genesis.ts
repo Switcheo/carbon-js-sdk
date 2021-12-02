@@ -54,18 +54,10 @@ export const GenesisState = {
 
   fromJSON(object: any): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
-    message.vaults = [];
-    message.vaultTypes = [];
-    if (object.vaults !== undefined && object.vaults !== null) {
-      for (const e of object.vaults) {
-        message.vaults.push(Vault.fromJSON(e));
-      }
-    }
-    if (object.vaultTypes !== undefined && object.vaultTypes !== null) {
-      for (const e of object.vaultTypes) {
-        message.vaultTypes.push(VaultType.fromJSON(e));
-      }
-    }
+    message.vaults = (object.vaults ?? []).map((e: any) => Vault.fromJSON(e));
+    message.vaultTypes = (object.vaultTypes ?? []).map((e: any) =>
+      VaultType.fromJSON(e)
+    );
     return message;
   },
 
@@ -86,20 +78,13 @@ export const GenesisState = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<GenesisState>): GenesisState {
+  fromPartial<I extends Exact<DeepPartial<GenesisState>, I>>(
+    object: I
+  ): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
-    message.vaults = [];
-    if (object.vaults !== undefined && object.vaults !== null) {
-      for (const e of object.vaults) {
-        message.vaults.push(Vault.fromPartial(e));
-      }
-    }
-    message.vaultTypes = [];
-    if (object.vaultTypes !== undefined && object.vaultTypes !== null) {
-      for (const e of object.vaultTypes) {
-        message.vaultTypes.push(VaultType.fromPartial(e));
-      }
-    }
+    message.vaults = object.vaults?.map((e) => Vault.fromPartial(e)) || [];
+    message.vaultTypes =
+      object.vaultTypes?.map((e) => VaultType.fromPartial(e)) || [];
     return message;
   },
 };
@@ -111,10 +96,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -122,6 +109,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

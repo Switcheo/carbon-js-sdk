@@ -76,29 +76,22 @@ export const Equivocation = {
 
   fromJSON(object: any): Equivocation {
     const message = { ...baseEquivocation } as Equivocation;
-    if (object.height !== undefined && object.height !== null) {
-      message.height = Long.fromString(object.height);
-    } else {
-      message.height = Long.ZERO;
-    }
-    if (object.time !== undefined && object.time !== null) {
-      message.time = fromJsonTimestamp(object.time);
-    } else {
-      message.time = undefined;
-    }
-    if (object.power !== undefined && object.power !== null) {
-      message.power = Long.fromString(object.power);
-    } else {
-      message.power = Long.ZERO;
-    }
-    if (
-      object.consensusAddress !== undefined &&
-      object.consensusAddress !== null
-    ) {
-      message.consensusAddress = String(object.consensusAddress);
-    } else {
-      message.consensusAddress = "";
-    }
+    message.height =
+      object.height !== undefined && object.height !== null
+        ? Long.fromString(object.height)
+        : Long.ZERO;
+    message.time =
+      object.time !== undefined && object.time !== null
+        ? fromJsonTimestamp(object.time)
+        : undefined;
+    message.power =
+      object.power !== undefined && object.power !== null
+        ? Long.fromString(object.power)
+        : Long.ZERO;
+    message.consensusAddress =
+      object.consensusAddress !== undefined && object.consensusAddress !== null
+        ? String(object.consensusAddress)
+        : "";
     return message;
   },
 
@@ -114,19 +107,19 @@ export const Equivocation = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<Equivocation>): Equivocation {
+  fromPartial<I extends Exact<DeepPartial<Equivocation>, I>>(
+    object: I
+  ): Equivocation {
     const message = { ...baseEquivocation } as Equivocation;
-    if (object.height !== undefined && object.height !== null) {
-      message.height = object.height as Long;
-    } else {
-      message.height = Long.ZERO;
-    }
+    message.height =
+      object.height !== undefined && object.height !== null
+        ? Long.fromValue(object.height)
+        : Long.ZERO;
     message.time = object.time ?? undefined;
-    if (object.power !== undefined && object.power !== null) {
-      message.power = object.power as Long;
-    } else {
-      message.power = Long.ZERO;
-    }
+    message.power =
+      object.power !== undefined && object.power !== null
+        ? Long.fromValue(object.power)
+        : Long.ZERO;
     message.consensusAddress = object.consensusAddress ?? "";
     return message;
   },
@@ -139,10 +132,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -150,6 +145,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 function toTimestamp(date: Date): Timestamp {
   const seconds = numberToLong(date.getTime() / 1_000);

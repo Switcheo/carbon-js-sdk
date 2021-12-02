@@ -68,11 +68,10 @@ export const QueryPriceRequest = {
 
   fromJSON(object: any): QueryPriceRequest {
     const message = { ...baseQueryPriceRequest } as QueryPriceRequest;
-    if (object.market !== undefined && object.market !== null) {
-      message.market = String(object.market);
-    } else {
-      message.market = "";
-    }
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? String(object.market)
+        : "";
     return message;
   },
 
@@ -82,7 +81,9 @@ export const QueryPriceRequest = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<QueryPriceRequest>): QueryPriceRequest {
+  fromPartial<I extends Exact<DeepPartial<QueryPriceRequest>, I>>(
+    object: I
+  ): QueryPriceRequest {
     const message = { ...baseQueryPriceRequest } as QueryPriceRequest;
     message.market = object.market ?? "";
     return message;
@@ -122,11 +123,10 @@ export const QueryPriceResponse = {
 
   fromJSON(object: any): QueryPriceResponse {
     const message = { ...baseQueryPriceResponse } as QueryPriceResponse;
-    if (object.prices !== undefined && object.prices !== null) {
-      message.prices = PriceSet.fromJSON(object.prices);
-    } else {
-      message.prices = undefined;
-    }
+    message.prices =
+      object.prices !== undefined && object.prices !== null
+        ? PriceSet.fromJSON(object.prices)
+        : undefined;
     return message;
   },
 
@@ -139,13 +139,14 @@ export const QueryPriceResponse = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<QueryPriceResponse>): QueryPriceResponse {
+  fromPartial<I extends Exact<DeepPartial<QueryPriceResponse>, I>>(
+    object: I
+  ): QueryPriceResponse {
     const message = { ...baseQueryPriceResponse } as QueryPriceResponse;
-    if (object.prices !== undefined && object.prices !== null) {
-      message.prices = PriceSet.fromPartial(object.prices);
-    } else {
-      message.prices = undefined;
-    }
+    message.prices =
+      object.prices !== undefined && object.prices !== null
+        ? PriceSet.fromPartial(object.prices)
+        : undefined;
     return message;
   },
 };
@@ -190,11 +191,10 @@ export const QueryAllPriceSetRequest = {
     const message = {
       ...baseQueryAllPriceSetRequest,
     } as QueryAllPriceSetRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -207,17 +207,16 @@ export const QueryAllPriceSetRequest = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryAllPriceSetRequest>
+  fromPartial<I extends Exact<DeepPartial<QueryAllPriceSetRequest>, I>>(
+    object: I
   ): QueryAllPriceSetRequest {
     const message = {
       ...baseQueryAllPriceSetRequest,
     } as QueryAllPriceSetRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -272,17 +271,13 @@ export const QueryAllPriceSetResponse = {
     const message = {
       ...baseQueryAllPriceSetResponse,
     } as QueryAllPriceSetResponse;
-    message.prices = [];
-    if (object.prices !== undefined && object.prices !== null) {
-      for (const e of object.prices) {
-        message.prices.push(PriceSet.fromJSON(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.prices = (object.prices ?? []).map((e: any) =>
+      PriceSet.fromJSON(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -302,23 +297,17 @@ export const QueryAllPriceSetResponse = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryAllPriceSetResponse>
+  fromPartial<I extends Exact<DeepPartial<QueryAllPriceSetResponse>, I>>(
+    object: I
   ): QueryAllPriceSetResponse {
     const message = {
       ...baseQueryAllPriceSetResponse,
     } as QueryAllPriceSetResponse;
-    message.prices = [];
-    if (object.prices !== undefined && object.prices !== null) {
-      for (const e of object.prices) {
-        message.prices.push(PriceSet.fromPartial(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.prices = object.prices?.map((e) => PriceSet.fromPartial(e)) || [];
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -362,16 +351,14 @@ export const QueryRateRequest = {
 
   fromJSON(object: any): QueryRateRequest {
     const message = { ...baseQueryRateRequest } as QueryRateRequest;
-    if (object.denomA !== undefined && object.denomA !== null) {
-      message.denomA = String(object.denomA);
-    } else {
-      message.denomA = "";
-    }
-    if (object.denomB !== undefined && object.denomB !== null) {
-      message.denomB = String(object.denomB);
-    } else {
-      message.denomB = "";
-    }
+    message.denomA =
+      object.denomA !== undefined && object.denomA !== null
+        ? String(object.denomA)
+        : "";
+    message.denomB =
+      object.denomB !== undefined && object.denomB !== null
+        ? String(object.denomB)
+        : "";
     return message;
   },
 
@@ -382,7 +369,9 @@ export const QueryRateRequest = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<QueryRateRequest>): QueryRateRequest {
+  fromPartial<I extends Exact<DeepPartial<QueryRateRequest>, I>>(
+    object: I
+  ): QueryRateRequest {
     const message = { ...baseQueryRateRequest } as QueryRateRequest;
     message.denomA = object.denomA ?? "";
     message.denomB = object.denomB ?? "";
@@ -423,11 +412,10 @@ export const QueryRateResponse = {
 
   fromJSON(object: any): QueryRateResponse {
     const message = { ...baseQueryRateResponse } as QueryRateResponse;
-    if (object.conversionRate !== undefined && object.conversionRate !== null) {
-      message.conversionRate = String(object.conversionRate);
-    } else {
-      message.conversionRate = "";
-    }
+    message.conversionRate =
+      object.conversionRate !== undefined && object.conversionRate !== null
+        ? String(object.conversionRate)
+        : "";
     return message;
   },
 
@@ -438,7 +426,9 @@ export const QueryRateResponse = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<QueryRateResponse>): QueryRateResponse {
+  fromPartial<I extends Exact<DeepPartial<QueryRateResponse>, I>>(
+    object: I
+  ): QueryRateResponse {
     const message = { ...baseQueryRateResponse } as QueryRateResponse;
     message.conversionRate = object.conversionRate ?? "";
     return message;
@@ -517,10 +507,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -528,6 +520,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

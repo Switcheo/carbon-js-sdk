@@ -62,11 +62,10 @@ export const Capability = {
 
   fromJSON(object: any): Capability {
     const message = { ...baseCapability } as Capability;
-    if (object.index !== undefined && object.index !== null) {
-      message.index = Long.fromString(object.index);
-    } else {
-      message.index = Long.UZERO;
-    }
+    message.index =
+      object.index !== undefined && object.index !== null
+        ? Long.fromString(object.index)
+        : Long.UZERO;
     return message;
   },
 
@@ -77,13 +76,14 @@ export const Capability = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<Capability>): Capability {
+  fromPartial<I extends Exact<DeepPartial<Capability>, I>>(
+    object: I
+  ): Capability {
     const message = { ...baseCapability } as Capability;
-    if (object.index !== undefined && object.index !== null) {
-      message.index = object.index as Long;
-    } else {
-      message.index = Long.UZERO;
-    }
+    message.index =
+      object.index !== undefined && object.index !== null
+        ? Long.fromValue(object.index)
+        : Long.UZERO;
     return message;
   },
 };
@@ -124,16 +124,14 @@ export const Owner = {
 
   fromJSON(object: any): Owner {
     const message = { ...baseOwner } as Owner;
-    if (object.module !== undefined && object.module !== null) {
-      message.module = String(object.module);
-    } else {
-      message.module = "";
-    }
-    if (object.name !== undefined && object.name !== null) {
-      message.name = String(object.name);
-    } else {
-      message.name = "";
-    }
+    message.module =
+      object.module !== undefined && object.module !== null
+        ? String(object.module)
+        : "";
+    message.name =
+      object.name !== undefined && object.name !== null
+        ? String(object.name)
+        : "";
     return message;
   },
 
@@ -144,7 +142,7 @@ export const Owner = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<Owner>): Owner {
+  fromPartial<I extends Exact<DeepPartial<Owner>, I>>(object: I): Owner {
     const message = { ...baseOwner } as Owner;
     message.module = object.module ?? "";
     message.name = object.name ?? "";
@@ -186,12 +184,7 @@ export const CapabilityOwners = {
 
   fromJSON(object: any): CapabilityOwners {
     const message = { ...baseCapabilityOwners } as CapabilityOwners;
-    message.owners = [];
-    if (object.owners !== undefined && object.owners !== null) {
-      for (const e of object.owners) {
-        message.owners.push(Owner.fromJSON(e));
-      }
-    }
+    message.owners = (object.owners ?? []).map((e: any) => Owner.fromJSON(e));
     return message;
   },
 
@@ -205,14 +198,11 @@ export const CapabilityOwners = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<CapabilityOwners>): CapabilityOwners {
+  fromPartial<I extends Exact<DeepPartial<CapabilityOwners>, I>>(
+    object: I
+  ): CapabilityOwners {
     const message = { ...baseCapabilityOwners } as CapabilityOwners;
-    message.owners = [];
-    if (object.owners !== undefined && object.owners !== null) {
-      for (const e of object.owners) {
-        message.owners.push(Owner.fromPartial(e));
-      }
-    }
+    message.owners = object.owners?.map((e) => Owner.fromPartial(e)) || [];
     return message;
   },
 };
@@ -224,10 +214,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -235,6 +227,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

@@ -75,31 +75,26 @@ export const OrderBookEvent = {
 
   fromJSON(object: any): OrderBookEvent {
     const message = { ...baseOrderBookEvent } as OrderBookEvent;
-    if (object.type !== undefined && object.type !== null) {
-      message.type = String(object.type);
-    } else {
-      message.type = "";
-    }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = String(object.market);
-    } else {
-      message.market = "";
-    }
-    if (object.side !== undefined && object.side !== null) {
-      message.side = String(object.side);
-    } else {
-      message.side = "";
-    }
-    if (object.price !== undefined && object.price !== null) {
-      message.price = String(object.price);
-    } else {
-      message.price = "";
-    }
-    if (object.quantity !== undefined && object.quantity !== null) {
-      message.quantity = String(object.quantity);
-    } else {
-      message.quantity = "";
-    }
+    message.type =
+      object.type !== undefined && object.type !== null
+        ? String(object.type)
+        : "";
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? String(object.market)
+        : "";
+    message.side =
+      object.side !== undefined && object.side !== null
+        ? String(object.side)
+        : "";
+    message.price =
+      object.price !== undefined && object.price !== null
+        ? String(object.price)
+        : "";
+    message.quantity =
+      object.quantity !== undefined && object.quantity !== null
+        ? String(object.quantity)
+        : "";
     return message;
   },
 
@@ -113,7 +108,9 @@ export const OrderBookEvent = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<OrderBookEvent>): OrderBookEvent {
+  fromPartial<I extends Exact<DeepPartial<OrderBookEvent>, I>>(
+    object: I
+  ): OrderBookEvent {
     const message = { ...baseOrderBookEvent } as OrderBookEvent;
     message.type = object.type ?? "";
     message.market = object.market ?? "";
@@ -131,10 +128,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -142,6 +141,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

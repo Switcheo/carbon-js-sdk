@@ -84,37 +84,27 @@ export const OutstandingPosition = {
 
   fromJSON(object: any): OutstandingPosition {
     const message = { ...baseOutstandingPosition } as OutstandingPosition;
-    if (
+    message.liquidationOrderId =
       object.liquidationOrderId !== undefined &&
       object.liquidationOrderId !== null
-    ) {
-      message.liquidationOrderId = String(object.liquidationOrderId);
-    } else {
-      message.liquidationOrderId = "";
-    }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = String(object.market);
-    } else {
-      message.market = "";
-    }
-    if (
-      object.bankruptcyPrice !== undefined &&
-      object.bankruptcyPrice !== null
-    ) {
-      message.bankruptcyPrice = String(object.bankruptcyPrice);
-    } else {
-      message.bankruptcyPrice = "";
-    }
-    if (object.lots !== undefined && object.lots !== null) {
-      message.lots = String(object.lots);
-    } else {
-      message.lots = "";
-    }
-    if (object.blockCreatedAt !== undefined && object.blockCreatedAt !== null) {
-      message.blockCreatedAt = fromJsonTimestamp(object.blockCreatedAt);
-    } else {
-      message.blockCreatedAt = undefined;
-    }
+        ? String(object.liquidationOrderId)
+        : "";
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? String(object.market)
+        : "";
+    message.bankruptcyPrice =
+      object.bankruptcyPrice !== undefined && object.bankruptcyPrice !== null
+        ? String(object.bankruptcyPrice)
+        : "";
+    message.lots =
+      object.lots !== undefined && object.lots !== null
+        ? String(object.lots)
+        : "";
+    message.blockCreatedAt =
+      object.blockCreatedAt !== undefined && object.blockCreatedAt !== null
+        ? fromJsonTimestamp(object.blockCreatedAt)
+        : undefined;
     return message;
   },
 
@@ -131,7 +121,9 @@ export const OutstandingPosition = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<OutstandingPosition>): OutstandingPosition {
+  fromPartial<I extends Exact<DeepPartial<OutstandingPosition>, I>>(
+    object: I
+  ): OutstandingPosition {
     const message = { ...baseOutstandingPosition } as OutstandingPosition;
     message.liquidationOrderId = object.liquidationOrderId ?? "";
     message.market = object.market ?? "";
@@ -181,15 +173,9 @@ export const OutstandingPositions = {
 
   fromJSON(object: any): OutstandingPositions {
     const message = { ...baseOutstandingPositions } as OutstandingPositions;
-    message.outstandingPositions = [];
-    if (
-      object.outstandingPositions !== undefined &&
-      object.outstandingPositions !== null
-    ) {
-      for (const e of object.outstandingPositions) {
-        message.outstandingPositions.push(OutstandingPosition.fromJSON(e));
-      }
-    }
+    message.outstandingPositions = (object.outstandingPositions ?? []).map(
+      (e: any) => OutstandingPosition.fromJSON(e)
+    );
     return message;
   },
 
@@ -205,17 +191,14 @@ export const OutstandingPositions = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<OutstandingPositions>): OutstandingPositions {
+  fromPartial<I extends Exact<DeepPartial<OutstandingPositions>, I>>(
+    object: I
+  ): OutstandingPositions {
     const message = { ...baseOutstandingPositions } as OutstandingPositions;
-    message.outstandingPositions = [];
-    if (
-      object.outstandingPositions !== undefined &&
-      object.outstandingPositions !== null
-    ) {
-      for (const e of object.outstandingPositions) {
-        message.outstandingPositions.push(OutstandingPosition.fromPartial(e));
-      }
-    }
+    message.outstandingPositions =
+      object.outstandingPositions?.map((e) =>
+        OutstandingPosition.fromPartial(e)
+      ) || [];
     return message;
   },
 };
@@ -227,10 +210,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -238,6 +223,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 function toTimestamp(date: Date): Timestamp {
   const seconds = numberToLong(date.getTime() / 1_000);

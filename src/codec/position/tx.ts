@@ -57,21 +57,18 @@ export const MsgSetMargin = {
 
   fromJSON(object: any): MsgSetMargin {
     const message = { ...baseMsgSetMargin } as MsgSetMargin;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = String(object.market);
-    } else {
-      message.market = "";
-    }
-    if (object.margin !== undefined && object.margin !== null) {
-      message.margin = String(object.margin);
-    } else {
-      message.margin = "";
-    }
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? String(object.market)
+        : "";
+    message.margin =
+      object.margin !== undefined && object.margin !== null
+        ? String(object.margin)
+        : "";
     return message;
   },
 
@@ -83,7 +80,9 @@ export const MsgSetMargin = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<MsgSetMargin>): MsgSetMargin {
+  fromPartial<I extends Exact<DeepPartial<MsgSetMargin>, I>>(
+    object: I
+  ): MsgSetMargin {
     const message = { ...baseMsgSetMargin } as MsgSetMargin;
     message.creator = object.creator ?? "";
     message.market = object.market ?? "";
@@ -130,7 +129,9 @@ export const MsgSetMarginResponse = {
     return obj;
   },
 
-  fromPartial(_: DeepPartial<MsgSetMarginResponse>): MsgSetMarginResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgSetMarginResponse>, I>>(
+    _: I
+  ): MsgSetMarginResponse {
     const message = { ...baseMsgSetMarginResponse } as MsgSetMarginResponse;
     return message;
   },
@@ -176,10 +177,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -187,6 +190,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

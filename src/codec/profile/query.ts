@@ -64,11 +64,10 @@ export const QueryGetProfileRequest = {
 
   fromJSON(object: any): QueryGetProfileRequest {
     const message = { ...baseQueryGetProfileRequest } as QueryGetProfileRequest;
-    if (object.address !== undefined && object.address !== null) {
-      message.address = String(object.address);
-    } else {
-      message.address = "";
-    }
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
     return message;
   },
 
@@ -78,8 +77,8 @@ export const QueryGetProfileRequest = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryGetProfileRequest>
+  fromPartial<I extends Exact<DeepPartial<QueryGetProfileRequest>, I>>(
+    object: I
   ): QueryGetProfileRequest {
     const message = { ...baseQueryGetProfileRequest } as QueryGetProfileRequest;
     message.address = object.address ?? "";
@@ -127,11 +126,10 @@ export const QueryGetProfileResponse = {
     const message = {
       ...baseQueryGetProfileResponse,
     } as QueryGetProfileResponse;
-    if (object.Profile !== undefined && object.Profile !== null) {
-      message.Profile = Profile.fromJSON(object.Profile);
-    } else {
-      message.Profile = undefined;
-    }
+    message.Profile =
+      object.Profile !== undefined && object.Profile !== null
+        ? Profile.fromJSON(object.Profile)
+        : undefined;
     return message;
   },
 
@@ -144,17 +142,16 @@ export const QueryGetProfileResponse = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryGetProfileResponse>
+  fromPartial<I extends Exact<DeepPartial<QueryGetProfileResponse>, I>>(
+    object: I
   ): QueryGetProfileResponse {
     const message = {
       ...baseQueryGetProfileResponse,
     } as QueryGetProfileResponse;
-    if (object.Profile !== undefined && object.Profile !== null) {
-      message.Profile = Profile.fromPartial(object.Profile);
-    } else {
-      message.Profile = undefined;
-    }
+    message.Profile =
+      object.Profile !== undefined && object.Profile !== null
+        ? Profile.fromPartial(object.Profile)
+        : undefined;
     return message;
   },
 };
@@ -201,16 +198,14 @@ export const QueryAllProfileRequest = {
 
   fromJSON(object: any): QueryAllProfileRequest {
     const message = { ...baseQueryAllProfileRequest } as QueryAllProfileRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
-    if (object.username !== undefined && object.username !== null) {
-      message.username = String(object.username);
-    } else {
-      message.username = "";
-    }
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
+    message.username =
+      object.username !== undefined && object.username !== null
+        ? String(object.username)
+        : "";
     return message;
   },
 
@@ -224,15 +219,14 @@ export const QueryAllProfileRequest = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryAllProfileRequest>
+  fromPartial<I extends Exact<DeepPartial<QueryAllProfileRequest>, I>>(
+    object: I
   ): QueryAllProfileRequest {
     const message = { ...baseQueryAllProfileRequest } as QueryAllProfileRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
     message.username = object.username ?? "";
     return message;
   },
@@ -288,17 +282,13 @@ export const QueryAllProfileResponse = {
     const message = {
       ...baseQueryAllProfileResponse,
     } as QueryAllProfileResponse;
-    message.profiles = [];
-    if (object.profiles !== undefined && object.profiles !== null) {
-      for (const e of object.profiles) {
-        message.profiles.push(Profile.fromJSON(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.profiles = (object.profiles ?? []).map((e: any) =>
+      Profile.fromJSON(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -318,23 +308,18 @@ export const QueryAllProfileResponse = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryAllProfileResponse>
+  fromPartial<I extends Exact<DeepPartial<QueryAllProfileResponse>, I>>(
+    object: I
   ): QueryAllProfileResponse {
     const message = {
       ...baseQueryAllProfileResponse,
     } as QueryAllProfileResponse;
-    message.profiles = [];
-    if (object.profiles !== undefined && object.profiles !== null) {
-      for (const e of object.profiles) {
-        message.profiles.push(Profile.fromPartial(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.profiles =
+      object.profiles?.map((e) => Profile.fromPartial(e)) || [];
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -395,10 +380,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -406,6 +393,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

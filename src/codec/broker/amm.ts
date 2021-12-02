@@ -61,26 +61,19 @@ export const Amm = {
 
   fromJSON(object: any): Amm {
     const message = { ...baseAmm } as Amm;
-    message.orders = [];
-    message.reservesHash = new Uint8Array();
-    if (object.poolId !== undefined && object.poolId !== null) {
-      message.poolId = Long.fromString(object.poolId);
-    } else {
-      message.poolId = Long.UZERO;
-    }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = String(object.market);
-    } else {
-      message.market = "";
-    }
-    if (object.reservesHash !== undefined && object.reservesHash !== null) {
-      message.reservesHash = bytesFromBase64(object.reservesHash);
-    }
-    if (object.orders !== undefined && object.orders !== null) {
-      for (const e of object.orders) {
-        message.orders.push(String(e));
-      }
-    }
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromString(object.poolId)
+        : Long.UZERO;
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? String(object.market)
+        : "";
+    message.reservesHash =
+      object.reservesHash !== undefined && object.reservesHash !== null
+        ? bytesFromBase64(object.reservesHash)
+        : new Uint8Array();
+    message.orders = (object.orders ?? []).map((e: any) => String(e));
     return message;
   },
 
@@ -103,21 +96,15 @@ export const Amm = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<Amm>): Amm {
+  fromPartial<I extends Exact<DeepPartial<Amm>, I>>(object: I): Amm {
     const message = { ...baseAmm } as Amm;
-    if (object.poolId !== undefined && object.poolId !== null) {
-      message.poolId = object.poolId as Long;
-    } else {
-      message.poolId = Long.UZERO;
-    }
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromValue(object.poolId)
+        : Long.UZERO;
     message.market = object.market ?? "";
     message.reservesHash = object.reservesHash ?? new Uint8Array();
-    message.orders = [];
-    if (object.orders !== undefined && object.orders !== null) {
-      for (const e of object.orders) {
-        message.orders.push(e);
-      }
-    }
+    message.orders = object.orders?.map((e) => e) || [];
     return message;
   },
 };
@@ -163,10 +150,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -174,6 +163,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

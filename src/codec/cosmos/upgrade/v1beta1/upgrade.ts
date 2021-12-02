@@ -124,34 +124,27 @@ export const Plan = {
 
   fromJSON(object: any): Plan {
     const message = { ...basePlan } as Plan;
-    if (object.name !== undefined && object.name !== null) {
-      message.name = String(object.name);
-    } else {
-      message.name = "";
-    }
-    if (object.time !== undefined && object.time !== null) {
-      message.time = fromJsonTimestamp(object.time);
-    } else {
-      message.time = undefined;
-    }
-    if (object.height !== undefined && object.height !== null) {
-      message.height = Long.fromString(object.height);
-    } else {
-      message.height = Long.ZERO;
-    }
-    if (object.info !== undefined && object.info !== null) {
-      message.info = String(object.info);
-    } else {
-      message.info = "";
-    }
-    if (
+    message.name =
+      object.name !== undefined && object.name !== null
+        ? String(object.name)
+        : "";
+    message.time =
+      object.time !== undefined && object.time !== null
+        ? fromJsonTimestamp(object.time)
+        : undefined;
+    message.height =
+      object.height !== undefined && object.height !== null
+        ? Long.fromString(object.height)
+        : Long.ZERO;
+    message.info =
+      object.info !== undefined && object.info !== null
+        ? String(object.info)
+        : "";
+    message.upgradedClientState =
       object.upgradedClientState !== undefined &&
       object.upgradedClientState !== null
-    ) {
-      message.upgradedClientState = Any.fromJSON(object.upgradedClientState);
-    } else {
-      message.upgradedClientState = undefined;
-    }
+        ? Any.fromJSON(object.upgradedClientState)
+        : undefined;
     return message;
   },
 
@@ -169,24 +162,20 @@ export const Plan = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<Plan>): Plan {
+  fromPartial<I extends Exact<DeepPartial<Plan>, I>>(object: I): Plan {
     const message = { ...basePlan } as Plan;
     message.name = object.name ?? "";
     message.time = object.time ?? undefined;
-    if (object.height !== undefined && object.height !== null) {
-      message.height = object.height as Long;
-    } else {
-      message.height = Long.ZERO;
-    }
+    message.height =
+      object.height !== undefined && object.height !== null
+        ? Long.fromValue(object.height)
+        : Long.ZERO;
     message.info = object.info ?? "";
-    if (
+    message.upgradedClientState =
       object.upgradedClientState !== undefined &&
       object.upgradedClientState !== null
-    ) {
-      message.upgradedClientState = Any.fromPartial(object.upgradedClientState);
-    } else {
-      message.upgradedClientState = undefined;
-    }
+        ? Any.fromPartial(object.upgradedClientState)
+        : undefined;
     return message;
   },
 };
@@ -243,21 +232,18 @@ export const SoftwareUpgradeProposal = {
     const message = {
       ...baseSoftwareUpgradeProposal,
     } as SoftwareUpgradeProposal;
-    if (object.title !== undefined && object.title !== null) {
-      message.title = String(object.title);
-    } else {
-      message.title = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = String(object.description);
-    } else {
-      message.description = "";
-    }
-    if (object.plan !== undefined && object.plan !== null) {
-      message.plan = Plan.fromJSON(object.plan);
-    } else {
-      message.plan = undefined;
-    }
+    message.title =
+      object.title !== undefined && object.title !== null
+        ? String(object.title)
+        : "";
+    message.description =
+      object.description !== undefined && object.description !== null
+        ? String(object.description)
+        : "";
+    message.plan =
+      object.plan !== undefined && object.plan !== null
+        ? Plan.fromJSON(object.plan)
+        : undefined;
     return message;
   },
 
@@ -271,19 +257,18 @@ export const SoftwareUpgradeProposal = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<SoftwareUpgradeProposal>
+  fromPartial<I extends Exact<DeepPartial<SoftwareUpgradeProposal>, I>>(
+    object: I
   ): SoftwareUpgradeProposal {
     const message = {
       ...baseSoftwareUpgradeProposal,
     } as SoftwareUpgradeProposal;
     message.title = object.title ?? "";
     message.description = object.description ?? "";
-    if (object.plan !== undefined && object.plan !== null) {
-      message.plan = Plan.fromPartial(object.plan);
-    } else {
-      message.plan = undefined;
-    }
+    message.plan =
+      object.plan !== undefined && object.plan !== null
+        ? Plan.fromPartial(object.plan)
+        : undefined;
     return message;
   },
 };
@@ -337,16 +322,14 @@ export const CancelSoftwareUpgradeProposal = {
     const message = {
       ...baseCancelSoftwareUpgradeProposal,
     } as CancelSoftwareUpgradeProposal;
-    if (object.title !== undefined && object.title !== null) {
-      message.title = String(object.title);
-    } else {
-      message.title = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = String(object.description);
-    } else {
-      message.description = "";
-    }
+    message.title =
+      object.title !== undefined && object.title !== null
+        ? String(object.title)
+        : "";
+    message.description =
+      object.description !== undefined && object.description !== null
+        ? String(object.description)
+        : "";
     return message;
   },
 
@@ -358,8 +341,8 @@ export const CancelSoftwareUpgradeProposal = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<CancelSoftwareUpgradeProposal>
+  fromPartial<I extends Exact<DeepPartial<CancelSoftwareUpgradeProposal>, I>>(
+    object: I
   ): CancelSoftwareUpgradeProposal {
     const message = {
       ...baseCancelSoftwareUpgradeProposal,
@@ -377,10 +360,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -388,6 +373,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 function toTimestamp(date: Date): Timestamp {
   const seconds = numberToLong(date.getTime() / 1_000);

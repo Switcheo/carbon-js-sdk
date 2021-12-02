@@ -53,16 +53,14 @@ export const MarketLeverage = {
 
   fromJSON(object: any): MarketLeverage {
     const message = { ...baseMarketLeverage } as MarketLeverage;
-    if (object.market !== undefined && object.market !== null) {
-      message.market = String(object.market);
-    } else {
-      message.market = "";
-    }
-    if (object.leverage !== undefined && object.leverage !== null) {
-      message.leverage = String(object.leverage);
-    } else {
-      message.leverage = "";
-    }
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? String(object.market)
+        : "";
+    message.leverage =
+      object.leverage !== undefined && object.leverage !== null
+        ? String(object.leverage)
+        : "";
     return message;
   },
 
@@ -73,7 +71,9 @@ export const MarketLeverage = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<MarketLeverage>): MarketLeverage {
+  fromPartial<I extends Exact<DeepPartial<MarketLeverage>, I>>(
+    object: I
+  ): MarketLeverage {
     const message = { ...baseMarketLeverage } as MarketLeverage;
     message.market = object.market ?? "";
     message.leverage = object.leverage ?? "";
@@ -130,15 +130,14 @@ export const MarketLeverageWithKey = {
 
   fromJSON(object: any): MarketLeverageWithKey {
     const message = { ...baseMarketLeverageWithKey } as MarketLeverageWithKey;
-    message.key = new Uint8Array();
-    if (object.marketLeverage !== undefined && object.marketLeverage !== null) {
-      message.marketLeverage = MarketLeverage.fromJSON(object.marketLeverage);
-    } else {
-      message.marketLeverage = undefined;
-    }
-    if (object.key !== undefined && object.key !== null) {
-      message.key = bytesFromBase64(object.key);
-    }
+    message.marketLeverage =
+      object.marketLeverage !== undefined && object.marketLeverage !== null
+        ? MarketLeverage.fromJSON(object.marketLeverage)
+        : undefined;
+    message.key =
+      object.key !== undefined && object.key !== null
+        ? bytesFromBase64(object.key)
+        : new Uint8Array();
     return message;
   },
 
@@ -155,17 +154,14 @@ export const MarketLeverageWithKey = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<MarketLeverageWithKey>
+  fromPartial<I extends Exact<DeepPartial<MarketLeverageWithKey>, I>>(
+    object: I
   ): MarketLeverageWithKey {
     const message = { ...baseMarketLeverageWithKey } as MarketLeverageWithKey;
-    if (object.marketLeverage !== undefined && object.marketLeverage !== null) {
-      message.marketLeverage = MarketLeverage.fromPartial(
-        object.marketLeverage
-      );
-    } else {
-      message.marketLeverage = undefined;
-    }
+    message.marketLeverage =
+      object.marketLeverage !== undefined && object.marketLeverage !== null
+        ? MarketLeverage.fromPartial(object.marketLeverage)
+        : undefined;
     message.key = object.key ?? new Uint8Array();
     return message;
   },
@@ -212,10 +208,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -223,6 +221,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

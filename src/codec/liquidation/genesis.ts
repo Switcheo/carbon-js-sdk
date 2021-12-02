@@ -62,16 +62,12 @@ export const GenesisState = {
 
   fromJSON(object: any): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
-    message.outstandingPositions = {};
-    if (
-      object.outstandingPositions !== undefined &&
-      object.outstandingPositions !== null
-    ) {
-      Object.entries(object.outstandingPositions).forEach(([key, value]) => {
-        message.outstandingPositions[key] =
-          OutstandingPositions.fromJSON(value);
-      });
-    }
+    message.outstandingPositions = Object.entries(
+      object.outstandingPositions ?? {}
+    ).reduce<{ [key: string]: OutstandingPositions }>((acc, [key, value]) => {
+      acc[key] = OutstandingPositions.fromJSON(value);
+      return acc;
+    }, {});
     return message;
   },
 
@@ -86,20 +82,18 @@ export const GenesisState = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<GenesisState>): GenesisState {
+  fromPartial<I extends Exact<DeepPartial<GenesisState>, I>>(
+    object: I
+  ): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
-    message.outstandingPositions = {};
-    if (
-      object.outstandingPositions !== undefined &&
-      object.outstandingPositions !== null
-    ) {
-      Object.entries(object.outstandingPositions).forEach(([key, value]) => {
-        if (value !== undefined) {
-          message.outstandingPositions[key] =
-            OutstandingPositions.fromPartial(value);
-        }
-      });
-    }
+    message.outstandingPositions = Object.entries(
+      object.outstandingPositions ?? {}
+    ).reduce<{ [key: string]: OutstandingPositions }>((acc, [key, value]) => {
+      if (value !== undefined) {
+        acc[key] = OutstandingPositions.fromPartial(value);
+      }
+      return acc;
+    }, {});
     return message;
   },
 };
@@ -153,16 +147,12 @@ export const GenesisState_OutstandingPositionsEntry = {
     const message = {
       ...baseGenesisState_OutstandingPositionsEntry,
     } as GenesisState_OutstandingPositionsEntry;
-    if (object.key !== undefined && object.key !== null) {
-      message.key = String(object.key);
-    } else {
-      message.key = "";
-    }
-    if (object.value !== undefined && object.value !== null) {
-      message.value = OutstandingPositions.fromJSON(object.value);
-    } else {
-      message.value = undefined;
-    }
+    message.key =
+      object.key !== undefined && object.key !== null ? String(object.key) : "";
+    message.value =
+      object.value !== undefined && object.value !== null
+        ? OutstandingPositions.fromJSON(object.value)
+        : undefined;
     return message;
   },
 
@@ -176,18 +166,17 @@ export const GenesisState_OutstandingPositionsEntry = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<GenesisState_OutstandingPositionsEntry>
-  ): GenesisState_OutstandingPositionsEntry {
+  fromPartial<
+    I extends Exact<DeepPartial<GenesisState_OutstandingPositionsEntry>, I>
+  >(object: I): GenesisState_OutstandingPositionsEntry {
     const message = {
       ...baseGenesisState_OutstandingPositionsEntry,
     } as GenesisState_OutstandingPositionsEntry;
     message.key = object.key ?? "";
-    if (object.value !== undefined && object.value !== null) {
-      message.value = OutstandingPositions.fromPartial(object.value);
-    } else {
-      message.value = undefined;
-    }
+    message.value =
+      object.value !== undefined && object.value !== null
+        ? OutstandingPositions.fromPartial(object.value)
+        : undefined;
     return message;
   },
 };
@@ -199,10 +188,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -210,6 +201,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

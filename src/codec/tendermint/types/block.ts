@@ -61,26 +61,22 @@ export const Block = {
 
   fromJSON(object: any): Block {
     const message = { ...baseBlock } as Block;
-    if (object.header !== undefined && object.header !== null) {
-      message.header = Header.fromJSON(object.header);
-    } else {
-      message.header = undefined;
-    }
-    if (object.data !== undefined && object.data !== null) {
-      message.data = Data.fromJSON(object.data);
-    } else {
-      message.data = undefined;
-    }
-    if (object.evidence !== undefined && object.evidence !== null) {
-      message.evidence = EvidenceList.fromJSON(object.evidence);
-    } else {
-      message.evidence = undefined;
-    }
-    if (object.lastCommit !== undefined && object.lastCommit !== null) {
-      message.lastCommit = Commit.fromJSON(object.lastCommit);
-    } else {
-      message.lastCommit = undefined;
-    }
+    message.header =
+      object.header !== undefined && object.header !== null
+        ? Header.fromJSON(object.header)
+        : undefined;
+    message.data =
+      object.data !== undefined && object.data !== null
+        ? Data.fromJSON(object.data)
+        : undefined;
+    message.evidence =
+      object.evidence !== undefined && object.evidence !== null
+        ? EvidenceList.fromJSON(object.evidence)
+        : undefined;
+    message.lastCommit =
+      object.lastCommit !== undefined && object.lastCommit !== null
+        ? Commit.fromJSON(object.lastCommit)
+        : undefined;
     return message;
   },
 
@@ -101,28 +97,24 @@ export const Block = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<Block>): Block {
+  fromPartial<I extends Exact<DeepPartial<Block>, I>>(object: I): Block {
     const message = { ...baseBlock } as Block;
-    if (object.header !== undefined && object.header !== null) {
-      message.header = Header.fromPartial(object.header);
-    } else {
-      message.header = undefined;
-    }
-    if (object.data !== undefined && object.data !== null) {
-      message.data = Data.fromPartial(object.data);
-    } else {
-      message.data = undefined;
-    }
-    if (object.evidence !== undefined && object.evidence !== null) {
-      message.evidence = EvidenceList.fromPartial(object.evidence);
-    } else {
-      message.evidence = undefined;
-    }
-    if (object.lastCommit !== undefined && object.lastCommit !== null) {
-      message.lastCommit = Commit.fromPartial(object.lastCommit);
-    } else {
-      message.lastCommit = undefined;
-    }
+    message.header =
+      object.header !== undefined && object.header !== null
+        ? Header.fromPartial(object.header)
+        : undefined;
+    message.data =
+      object.data !== undefined && object.data !== null
+        ? Data.fromPartial(object.data)
+        : undefined;
+    message.evidence =
+      object.evidence !== undefined && object.evidence !== null
+        ? EvidenceList.fromPartial(object.evidence)
+        : undefined;
+    message.lastCommit =
+      object.lastCommit !== undefined && object.lastCommit !== null
+        ? Commit.fromPartial(object.lastCommit)
+        : undefined;
     return message;
   },
 };
@@ -134,10 +126,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -145,6 +139,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

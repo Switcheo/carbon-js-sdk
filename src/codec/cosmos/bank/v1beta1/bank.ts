@@ -116,20 +116,14 @@ export const Params = {
 
   fromJSON(object: any): Params {
     const message = { ...baseParams } as Params;
-    message.sendEnabled = [];
-    if (object.sendEnabled !== undefined && object.sendEnabled !== null) {
-      for (const e of object.sendEnabled) {
-        message.sendEnabled.push(SendEnabled.fromJSON(e));
-      }
-    }
-    if (
+    message.sendEnabled = (object.sendEnabled ?? []).map((e: any) =>
+      SendEnabled.fromJSON(e)
+    );
+    message.defaultSendEnabled =
       object.defaultSendEnabled !== undefined &&
       object.defaultSendEnabled !== null
-    ) {
-      message.defaultSendEnabled = Boolean(object.defaultSendEnabled);
-    } else {
-      message.defaultSendEnabled = false;
-    }
+        ? Boolean(object.defaultSendEnabled)
+        : false;
     return message;
   },
 
@@ -147,14 +141,10 @@ export const Params = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<Params>): Params {
+  fromPartial<I extends Exact<DeepPartial<Params>, I>>(object: I): Params {
     const message = { ...baseParams } as Params;
-    message.sendEnabled = [];
-    if (object.sendEnabled !== undefined && object.sendEnabled !== null) {
-      for (const e of object.sendEnabled) {
-        message.sendEnabled.push(SendEnabled.fromPartial(e));
-      }
-    }
+    message.sendEnabled =
+      object.sendEnabled?.map((e) => SendEnabled.fromPartial(e)) || [];
     message.defaultSendEnabled = object.defaultSendEnabled ?? false;
     return message;
   },
@@ -199,16 +189,14 @@ export const SendEnabled = {
 
   fromJSON(object: any): SendEnabled {
     const message = { ...baseSendEnabled } as SendEnabled;
-    if (object.denom !== undefined && object.denom !== null) {
-      message.denom = String(object.denom);
-    } else {
-      message.denom = "";
-    }
-    if (object.enabled !== undefined && object.enabled !== null) {
-      message.enabled = Boolean(object.enabled);
-    } else {
-      message.enabled = false;
-    }
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
+    message.enabled =
+      object.enabled !== undefined && object.enabled !== null
+        ? Boolean(object.enabled)
+        : false;
     return message;
   },
 
@@ -219,7 +207,9 @@ export const SendEnabled = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<SendEnabled>): SendEnabled {
+  fromPartial<I extends Exact<DeepPartial<SendEnabled>, I>>(
+    object: I
+  ): SendEnabled {
     const message = { ...baseSendEnabled } as SendEnabled;
     message.denom = object.denom ?? "";
     message.enabled = object.enabled ?? false;
@@ -264,17 +254,11 @@ export const Input = {
 
   fromJSON(object: any): Input {
     const message = { ...baseInput } as Input;
-    message.coins = [];
-    if (object.address !== undefined && object.address !== null) {
-      message.address = String(object.address);
-    } else {
-      message.address = "";
-    }
-    if (object.coins !== undefined && object.coins !== null) {
-      for (const e of object.coins) {
-        message.coins.push(Coin.fromJSON(e));
-      }
-    }
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    message.coins = (object.coins ?? []).map((e: any) => Coin.fromJSON(e));
     return message;
   },
 
@@ -289,15 +273,10 @@ export const Input = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<Input>): Input {
+  fromPartial<I extends Exact<DeepPartial<Input>, I>>(object: I): Input {
     const message = { ...baseInput } as Input;
     message.address = object.address ?? "";
-    message.coins = [];
-    if (object.coins !== undefined && object.coins !== null) {
-      for (const e of object.coins) {
-        message.coins.push(Coin.fromPartial(e));
-      }
-    }
+    message.coins = object.coins?.map((e) => Coin.fromPartial(e)) || [];
     return message;
   },
 };
@@ -342,17 +321,11 @@ export const Output = {
 
   fromJSON(object: any): Output {
     const message = { ...baseOutput } as Output;
-    message.coins = [];
-    if (object.address !== undefined && object.address !== null) {
-      message.address = String(object.address);
-    } else {
-      message.address = "";
-    }
-    if (object.coins !== undefined && object.coins !== null) {
-      for (const e of object.coins) {
-        message.coins.push(Coin.fromJSON(e));
-      }
-    }
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    message.coins = (object.coins ?? []).map((e: any) => Coin.fromJSON(e));
     return message;
   },
 
@@ -367,15 +340,10 @@ export const Output = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<Output>): Output {
+  fromPartial<I extends Exact<DeepPartial<Output>, I>>(object: I): Output {
     const message = { ...baseOutput } as Output;
     message.address = object.address ?? "";
-    message.coins = [];
-    if (object.coins !== undefined && object.coins !== null) {
-      for (const e of object.coins) {
-        message.coins.push(Coin.fromPartial(e));
-      }
-    }
+    message.coins = object.coins?.map((e) => Coin.fromPartial(e)) || [];
     return message;
   },
 };
@@ -414,12 +382,7 @@ export const Supply = {
 
   fromJSON(object: any): Supply {
     const message = { ...baseSupply } as Supply;
-    message.total = [];
-    if (object.total !== undefined && object.total !== null) {
-      for (const e of object.total) {
-        message.total.push(Coin.fromJSON(e));
-      }
-    }
+    message.total = (object.total ?? []).map((e: any) => Coin.fromJSON(e));
     return message;
   },
 
@@ -433,14 +396,9 @@ export const Supply = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<Supply>): Supply {
+  fromPartial<I extends Exact<DeepPartial<Supply>, I>>(object: I): Supply {
     const message = { ...baseSupply } as Supply;
-    message.total = [];
-    if (object.total !== undefined && object.total !== null) {
-      for (const e of object.total) {
-        message.total.push(Coin.fromPartial(e));
-      }
-    }
+    message.total = object.total?.map((e) => Coin.fromPartial(e)) || [];
     return message;
   },
 };
@@ -491,22 +449,15 @@ export const DenomUnit = {
 
   fromJSON(object: any): DenomUnit {
     const message = { ...baseDenomUnit } as DenomUnit;
-    message.aliases = [];
-    if (object.denom !== undefined && object.denom !== null) {
-      message.denom = String(object.denom);
-    } else {
-      message.denom = "";
-    }
-    if (object.exponent !== undefined && object.exponent !== null) {
-      message.exponent = Number(object.exponent);
-    } else {
-      message.exponent = 0;
-    }
-    if (object.aliases !== undefined && object.aliases !== null) {
-      for (const e of object.aliases) {
-        message.aliases.push(String(e));
-      }
-    }
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
+    message.exponent =
+      object.exponent !== undefined && object.exponent !== null
+        ? Number(object.exponent)
+        : 0;
+    message.aliases = (object.aliases ?? []).map((e: any) => String(e));
     return message;
   },
 
@@ -522,16 +473,13 @@ export const DenomUnit = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<DenomUnit>): DenomUnit {
+  fromPartial<I extends Exact<DeepPartial<DenomUnit>, I>>(
+    object: I
+  ): DenomUnit {
     const message = { ...baseDenomUnit } as DenomUnit;
     message.denom = object.denom ?? "";
     message.exponent = object.exponent ?? 0;
-    message.aliases = [];
-    if (object.aliases !== undefined && object.aliases !== null) {
-      for (const e of object.aliases) {
-        message.aliases.push(e);
-      }
-    }
+    message.aliases = object.aliases?.map((e) => e) || [];
     return message;
   },
 };
@@ -588,27 +536,21 @@ export const Metadata = {
 
   fromJSON(object: any): Metadata {
     const message = { ...baseMetadata } as Metadata;
-    message.denomUnits = [];
-    if (object.description !== undefined && object.description !== null) {
-      message.description = String(object.description);
-    } else {
-      message.description = "";
-    }
-    if (object.denomUnits !== undefined && object.denomUnits !== null) {
-      for (const e of object.denomUnits) {
-        message.denomUnits.push(DenomUnit.fromJSON(e));
-      }
-    }
-    if (object.base !== undefined && object.base !== null) {
-      message.base = String(object.base);
-    } else {
-      message.base = "";
-    }
-    if (object.display !== undefined && object.display !== null) {
-      message.display = String(object.display);
-    } else {
-      message.display = "";
-    }
+    message.description =
+      object.description !== undefined && object.description !== null
+        ? String(object.description)
+        : "";
+    message.denomUnits = (object.denomUnits ?? []).map((e: any) =>
+      DenomUnit.fromJSON(e)
+    );
+    message.base =
+      object.base !== undefined && object.base !== null
+        ? String(object.base)
+        : "";
+    message.display =
+      object.display !== undefined && object.display !== null
+        ? String(object.display)
+        : "";
     return message;
   },
 
@@ -628,15 +570,11 @@ export const Metadata = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<Metadata>): Metadata {
+  fromPartial<I extends Exact<DeepPartial<Metadata>, I>>(object: I): Metadata {
     const message = { ...baseMetadata } as Metadata;
     message.description = object.description ?? "";
-    message.denomUnits = [];
-    if (object.denomUnits !== undefined && object.denomUnits !== null) {
-      for (const e of object.denomUnits) {
-        message.denomUnits.push(DenomUnit.fromPartial(e));
-      }
-    }
+    message.denomUnits =
+      object.denomUnits?.map((e) => DenomUnit.fromPartial(e)) || [];
     message.base = object.base ?? "";
     message.display = object.display ?? "";
     return message;
@@ -650,10 +588,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -661,6 +601,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

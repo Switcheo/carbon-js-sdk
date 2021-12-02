@@ -90,16 +90,14 @@ export const QueryGetVaultRequest = {
 
   fromJSON(object: any): QueryGetVaultRequest {
     const message = { ...baseQueryGetVaultRequest } as QueryGetVaultRequest;
-    if (object.address !== undefined && object.address !== null) {
-      message.address = String(object.address);
-    } else {
-      message.address = "";
-    }
-    if (object.vaultTypeId !== undefined && object.vaultTypeId !== null) {
-      message.vaultTypeId = Long.fromString(object.vaultTypeId);
-    } else {
-      message.vaultTypeId = Long.UZERO;
-    }
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    message.vaultTypeId =
+      object.vaultTypeId !== undefined && object.vaultTypeId !== null
+        ? Long.fromString(object.vaultTypeId)
+        : Long.UZERO;
     return message;
   },
 
@@ -111,14 +109,15 @@ export const QueryGetVaultRequest = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<QueryGetVaultRequest>): QueryGetVaultRequest {
+  fromPartial<I extends Exact<DeepPartial<QueryGetVaultRequest>, I>>(
+    object: I
+  ): QueryGetVaultRequest {
     const message = { ...baseQueryGetVaultRequest } as QueryGetVaultRequest;
     message.address = object.address ?? "";
-    if (object.vaultTypeId !== undefined && object.vaultTypeId !== null) {
-      message.vaultTypeId = object.vaultTypeId as Long;
-    } else {
-      message.vaultTypeId = Long.UZERO;
-    }
+    message.vaultTypeId =
+      object.vaultTypeId !== undefined && object.vaultTypeId !== null
+        ? Long.fromValue(object.vaultTypeId)
+        : Long.UZERO;
     return message;
   },
 };
@@ -159,11 +158,10 @@ export const QueryGetVaultResponse = {
 
   fromJSON(object: any): QueryGetVaultResponse {
     const message = { ...baseQueryGetVaultResponse } as QueryGetVaultResponse;
-    if (object.Vault !== undefined && object.Vault !== null) {
-      message.Vault = Vault.fromJSON(object.Vault);
-    } else {
-      message.Vault = undefined;
-    }
+    message.Vault =
+      object.Vault !== undefined && object.Vault !== null
+        ? Vault.fromJSON(object.Vault)
+        : undefined;
     return message;
   },
 
@@ -174,15 +172,14 @@ export const QueryGetVaultResponse = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryGetVaultResponse>
+  fromPartial<I extends Exact<DeepPartial<QueryGetVaultResponse>, I>>(
+    object: I
   ): QueryGetVaultResponse {
     const message = { ...baseQueryGetVaultResponse } as QueryGetVaultResponse;
-    if (object.Vault !== undefined && object.Vault !== null) {
-      message.Vault = Vault.fromPartial(object.Vault);
-    } else {
-      message.Vault = undefined;
-    }
+    message.Vault =
+      object.Vault !== undefined && object.Vault !== null
+        ? Vault.fromPartial(object.Vault)
+        : undefined;
     return message;
   },
 };
@@ -223,11 +220,10 @@ export const QueryAllVaultRequest = {
 
   fromJSON(object: any): QueryAllVaultRequest {
     const message = { ...baseQueryAllVaultRequest } as QueryAllVaultRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -240,13 +236,14 @@ export const QueryAllVaultRequest = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<QueryAllVaultRequest>): QueryAllVaultRequest {
+  fromPartial<I extends Exact<DeepPartial<QueryAllVaultRequest>, I>>(
+    object: I
+  ): QueryAllVaultRequest {
     const message = { ...baseQueryAllVaultRequest } as QueryAllVaultRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -297,17 +294,11 @@ export const QueryAllVaultResponse = {
 
   fromJSON(object: any): QueryAllVaultResponse {
     const message = { ...baseQueryAllVaultResponse } as QueryAllVaultResponse;
-    message.vaults = [];
-    if (object.vaults !== undefined && object.vaults !== null) {
-      for (const e of object.vaults) {
-        message.vaults.push(Vault.fromJSON(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.vaults = (object.vaults ?? []).map((e: any) => Vault.fromJSON(e));
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -325,21 +316,15 @@ export const QueryAllVaultResponse = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryAllVaultResponse>
+  fromPartial<I extends Exact<DeepPartial<QueryAllVaultResponse>, I>>(
+    object: I
   ): QueryAllVaultResponse {
     const message = { ...baseQueryAllVaultResponse } as QueryAllVaultResponse;
-    message.vaults = [];
-    if (object.vaults !== undefined && object.vaults !== null) {
-      for (const e of object.vaults) {
-        message.vaults.push(Vault.fromPartial(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.vaults = object.vaults?.map((e) => Vault.fromPartial(e)) || [];
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -384,11 +369,10 @@ export const QueryGetVaultTypeRequest = {
     const message = {
       ...baseQueryGetVaultTypeRequest,
     } as QueryGetVaultTypeRequest;
-    if (object.vaultTypeId !== undefined && object.vaultTypeId !== null) {
-      message.vaultTypeId = Long.fromString(object.vaultTypeId);
-    } else {
-      message.vaultTypeId = Long.UZERO;
-    }
+    message.vaultTypeId =
+      object.vaultTypeId !== undefined && object.vaultTypeId !== null
+        ? Long.fromString(object.vaultTypeId)
+        : Long.UZERO;
     return message;
   },
 
@@ -399,17 +383,16 @@ export const QueryGetVaultTypeRequest = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryGetVaultTypeRequest>
+  fromPartial<I extends Exact<DeepPartial<QueryGetVaultTypeRequest>, I>>(
+    object: I
   ): QueryGetVaultTypeRequest {
     const message = {
       ...baseQueryGetVaultTypeRequest,
     } as QueryGetVaultTypeRequest;
-    if (object.vaultTypeId !== undefined && object.vaultTypeId !== null) {
-      message.vaultTypeId = object.vaultTypeId as Long;
-    } else {
-      message.vaultTypeId = Long.UZERO;
-    }
+    message.vaultTypeId =
+      object.vaultTypeId !== undefined && object.vaultTypeId !== null
+        ? Long.fromValue(object.vaultTypeId)
+        : Long.UZERO;
     return message;
   },
 };
@@ -454,11 +437,10 @@ export const QueryGetVaultTypeResponse = {
     const message = {
       ...baseQueryGetVaultTypeResponse,
     } as QueryGetVaultTypeResponse;
-    if (object.VaultType !== undefined && object.VaultType !== null) {
-      message.VaultType = VaultType.fromJSON(object.VaultType);
-    } else {
-      message.VaultType = undefined;
-    }
+    message.VaultType =
+      object.VaultType !== undefined && object.VaultType !== null
+        ? VaultType.fromJSON(object.VaultType)
+        : undefined;
     return message;
   },
 
@@ -471,17 +453,16 @@ export const QueryGetVaultTypeResponse = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryGetVaultTypeResponse>
+  fromPartial<I extends Exact<DeepPartial<QueryGetVaultTypeResponse>, I>>(
+    object: I
   ): QueryGetVaultTypeResponse {
     const message = {
       ...baseQueryGetVaultTypeResponse,
     } as QueryGetVaultTypeResponse;
-    if (object.VaultType !== undefined && object.VaultType !== null) {
-      message.VaultType = VaultType.fromPartial(object.VaultType);
-    } else {
-      message.VaultType = undefined;
-    }
+    message.VaultType =
+      object.VaultType !== undefined && object.VaultType !== null
+        ? VaultType.fromPartial(object.VaultType)
+        : undefined;
     return message;
   },
 };
@@ -526,11 +507,10 @@ export const QueryAllVaultTypeRequest = {
     const message = {
       ...baseQueryAllVaultTypeRequest,
     } as QueryAllVaultTypeRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -543,17 +523,16 @@ export const QueryAllVaultTypeRequest = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryAllVaultTypeRequest>
+  fromPartial<I extends Exact<DeepPartial<QueryAllVaultTypeRequest>, I>>(
+    object: I
   ): QueryAllVaultTypeRequest {
     const message = {
       ...baseQueryAllVaultTypeRequest,
     } as QueryAllVaultTypeRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -608,17 +587,13 @@ export const QueryAllVaultTypeResponse = {
     const message = {
       ...baseQueryAllVaultTypeResponse,
     } as QueryAllVaultTypeResponse;
-    message.vaultTypes = [];
-    if (object.vaultTypes !== undefined && object.vaultTypes !== null) {
-      for (const e of object.vaultTypes) {
-        message.vaultTypes.push(VaultType.fromJSON(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.vaultTypes = (object.vaultTypes ?? []).map((e: any) =>
+      VaultType.fromJSON(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -638,23 +613,18 @@ export const QueryAllVaultTypeResponse = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryAllVaultTypeResponse>
+  fromPartial<I extends Exact<DeepPartial<QueryAllVaultTypeResponse>, I>>(
+    object: I
   ): QueryAllVaultTypeResponse {
     const message = {
       ...baseQueryAllVaultTypeResponse,
     } as QueryAllVaultTypeResponse;
-    message.vaultTypes = [];
-    if (object.vaultTypes !== undefined && object.vaultTypes !== null) {
-      for (const e of object.vaultTypes) {
-        message.vaultTypes.push(VaultType.fromPartial(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.vaultTypes =
+      object.vaultTypes?.map((e) => VaultType.fromPartial(e)) || [];
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -749,10 +719,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -760,6 +732,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

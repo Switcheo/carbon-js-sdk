@@ -78,10 +78,10 @@ export const QueryEvidenceRequest = {
 
   fromJSON(object: any): QueryEvidenceRequest {
     const message = { ...baseQueryEvidenceRequest } as QueryEvidenceRequest;
-    message.evidenceHash = new Uint8Array();
-    if (object.evidenceHash !== undefined && object.evidenceHash !== null) {
-      message.evidenceHash = bytesFromBase64(object.evidenceHash);
-    }
+    message.evidenceHash =
+      object.evidenceHash !== undefined && object.evidenceHash !== null
+        ? bytesFromBase64(object.evidenceHash)
+        : new Uint8Array();
     return message;
   },
 
@@ -96,7 +96,9 @@ export const QueryEvidenceRequest = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<QueryEvidenceRequest>): QueryEvidenceRequest {
+  fromPartial<I extends Exact<DeepPartial<QueryEvidenceRequest>, I>>(
+    object: I
+  ): QueryEvidenceRequest {
     const message = { ...baseQueryEvidenceRequest } as QueryEvidenceRequest;
     message.evidenceHash = object.evidenceHash ?? new Uint8Array();
     return message;
@@ -139,11 +141,10 @@ export const QueryEvidenceResponse = {
 
   fromJSON(object: any): QueryEvidenceResponse {
     const message = { ...baseQueryEvidenceResponse } as QueryEvidenceResponse;
-    if (object.evidence !== undefined && object.evidence !== null) {
-      message.evidence = Any.fromJSON(object.evidence);
-    } else {
-      message.evidence = undefined;
-    }
+    message.evidence =
+      object.evidence !== undefined && object.evidence !== null
+        ? Any.fromJSON(object.evidence)
+        : undefined;
     return message;
   },
 
@@ -156,15 +157,14 @@ export const QueryEvidenceResponse = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryEvidenceResponse>
+  fromPartial<I extends Exact<DeepPartial<QueryEvidenceResponse>, I>>(
+    object: I
   ): QueryEvidenceResponse {
     const message = { ...baseQueryEvidenceResponse } as QueryEvidenceResponse;
-    if (object.evidence !== undefined && object.evidence !== null) {
-      message.evidence = Any.fromPartial(object.evidence);
-    } else {
-      message.evidence = undefined;
-    }
+    message.evidence =
+      object.evidence !== undefined && object.evidence !== null
+        ? Any.fromPartial(object.evidence)
+        : undefined;
     return message;
   },
 };
@@ -209,11 +209,10 @@ export const QueryAllEvidenceRequest = {
     const message = {
       ...baseQueryAllEvidenceRequest,
     } as QueryAllEvidenceRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -226,17 +225,16 @@ export const QueryAllEvidenceRequest = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryAllEvidenceRequest>
+  fromPartial<I extends Exact<DeepPartial<QueryAllEvidenceRequest>, I>>(
+    object: I
   ): QueryAllEvidenceRequest {
     const message = {
       ...baseQueryAllEvidenceRequest,
     } as QueryAllEvidenceRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -291,17 +289,11 @@ export const QueryAllEvidenceResponse = {
     const message = {
       ...baseQueryAllEvidenceResponse,
     } as QueryAllEvidenceResponse;
-    message.evidence = [];
-    if (object.evidence !== undefined && object.evidence !== null) {
-      for (const e of object.evidence) {
-        message.evidence.push(Any.fromJSON(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.evidence = (object.evidence ?? []).map((e: any) => Any.fromJSON(e));
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -321,23 +313,17 @@ export const QueryAllEvidenceResponse = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryAllEvidenceResponse>
+  fromPartial<I extends Exact<DeepPartial<QueryAllEvidenceResponse>, I>>(
+    object: I
   ): QueryAllEvidenceResponse {
     const message = {
       ...baseQueryAllEvidenceResponse,
     } as QueryAllEvidenceResponse;
-    message.evidence = [];
-    if (object.evidence !== undefined && object.evidence !== null) {
-      for (const e of object.evidence) {
-        message.evidence.push(Any.fromPartial(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.evidence = object.evidence?.map((e) => Any.fromPartial(e)) || [];
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -435,10 +421,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -446,6 +434,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

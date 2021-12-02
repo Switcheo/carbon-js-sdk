@@ -67,26 +67,22 @@ export const Vault = {
 
   fromJSON(object: any): Vault {
     const message = { ...baseVault } as Vault;
-    if (object.vaultTypeId !== undefined && object.vaultTypeId !== null) {
-      message.vaultTypeId = Long.fromString(object.vaultTypeId);
-    } else {
-      message.vaultTypeId = Long.UZERO;
-    }
-    if (object.address !== undefined && object.address !== null) {
-      message.address = String(object.address);
-    } else {
-      message.address = "";
-    }
-    if (object.collateral !== undefined && object.collateral !== null) {
-      message.collateral = Coin.fromJSON(object.collateral);
-    } else {
-      message.collateral = undefined;
-    }
-    if (object.debt !== undefined && object.debt !== null) {
-      message.debt = Coin.fromJSON(object.debt);
-    } else {
-      message.debt = undefined;
-    }
+    message.vaultTypeId =
+      object.vaultTypeId !== undefined && object.vaultTypeId !== null
+        ? Long.fromString(object.vaultTypeId)
+        : Long.UZERO;
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    message.collateral =
+      object.collateral !== undefined && object.collateral !== null
+        ? Coin.fromJSON(object.collateral)
+        : undefined;
+    message.debt =
+      object.debt !== undefined && object.debt !== null
+        ? Coin.fromJSON(object.debt)
+        : undefined;
     return message;
   },
 
@@ -104,24 +100,21 @@ export const Vault = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<Vault>): Vault {
+  fromPartial<I extends Exact<DeepPartial<Vault>, I>>(object: I): Vault {
     const message = { ...baseVault } as Vault;
-    if (object.vaultTypeId !== undefined && object.vaultTypeId !== null) {
-      message.vaultTypeId = object.vaultTypeId as Long;
-    } else {
-      message.vaultTypeId = Long.UZERO;
-    }
+    message.vaultTypeId =
+      object.vaultTypeId !== undefined && object.vaultTypeId !== null
+        ? Long.fromValue(object.vaultTypeId)
+        : Long.UZERO;
     message.address = object.address ?? "";
-    if (object.collateral !== undefined && object.collateral !== null) {
-      message.collateral = Coin.fromPartial(object.collateral);
-    } else {
-      message.collateral = undefined;
-    }
-    if (object.debt !== undefined && object.debt !== null) {
-      message.debt = Coin.fromPartial(object.debt);
-    } else {
-      message.debt = undefined;
-    }
+    message.collateral =
+      object.collateral !== undefined && object.collateral !== null
+        ? Coin.fromPartial(object.collateral)
+        : undefined;
+    message.debt =
+      object.debt !== undefined && object.debt !== null
+        ? Coin.fromPartial(object.debt)
+        : undefined;
     return message;
   },
 };
@@ -182,32 +175,23 @@ export const VaultType = {
 
   fromJSON(object: any): VaultType {
     const message = { ...baseVaultType } as VaultType;
-    if (object.vaultTypeId !== undefined && object.vaultTypeId !== null) {
-      message.vaultTypeId = Long.fromString(object.vaultTypeId);
-    } else {
-      message.vaultTypeId = Long.UZERO;
-    }
-    if (
-      object.collateralDenom !== undefined &&
-      object.collateralDenom !== null
-    ) {
-      message.collateralDenom = String(object.collateralDenom);
-    } else {
-      message.collateralDenom = "";
-    }
-    if (
+    message.vaultTypeId =
+      object.vaultTypeId !== undefined && object.vaultTypeId !== null
+        ? Long.fromString(object.vaultTypeId)
+        : Long.UZERO;
+    message.collateralDenom =
+      object.collateralDenom !== undefined && object.collateralDenom !== null
+        ? String(object.collateralDenom)
+        : "";
+    message.collateralizationRatio =
       object.collateralizationRatio !== undefined &&
       object.collateralizationRatio !== null
-    ) {
-      message.collateralizationRatio = String(object.collateralizationRatio);
-    } else {
-      message.collateralizationRatio = "";
-    }
-    if (object.debtDenom !== undefined && object.debtDenom !== null) {
-      message.debtDenom = String(object.debtDenom);
-    } else {
-      message.debtDenom = "";
-    }
+        ? String(object.collateralizationRatio)
+        : "";
+    message.debtDenom =
+      object.debtDenom !== undefined && object.debtDenom !== null
+        ? String(object.debtDenom)
+        : "";
     return message;
   },
 
@@ -223,13 +207,14 @@ export const VaultType = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<VaultType>): VaultType {
+  fromPartial<I extends Exact<DeepPartial<VaultType>, I>>(
+    object: I
+  ): VaultType {
     const message = { ...baseVaultType } as VaultType;
-    if (object.vaultTypeId !== undefined && object.vaultTypeId !== null) {
-      message.vaultTypeId = object.vaultTypeId as Long;
-    } else {
-      message.vaultTypeId = Long.UZERO;
-    }
+    message.vaultTypeId =
+      object.vaultTypeId !== undefined && object.vaultTypeId !== null
+        ? Long.fromValue(object.vaultTypeId)
+        : Long.UZERO;
     message.collateralDenom = object.collateralDenom ?? "";
     message.collateralizationRatio = object.collateralizationRatio ?? "";
     message.debtDenom = object.debtDenom ?? "";
@@ -244,10 +229,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -255,6 +242,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

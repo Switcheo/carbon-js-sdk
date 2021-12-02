@@ -49,16 +49,14 @@ export const UpdateProfileEvent = {
 
   fromJSON(object: any): UpdateProfileEvent {
     const message = { ...baseUpdateProfileEvent } as UpdateProfileEvent;
-    if (object.profile !== undefined && object.profile !== null) {
-      message.profile = Profile.fromJSON(object.profile);
-    } else {
-      message.profile = undefined;
-    }
-    if (object.type !== undefined && object.type !== null) {
-      message.type = String(object.type);
-    } else {
-      message.type = "";
-    }
+    message.profile =
+      object.profile !== undefined && object.profile !== null
+        ? Profile.fromJSON(object.profile)
+        : undefined;
+    message.type =
+      object.type !== undefined && object.type !== null
+        ? String(object.type)
+        : "";
     return message;
   },
 
@@ -72,13 +70,14 @@ export const UpdateProfileEvent = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<UpdateProfileEvent>): UpdateProfileEvent {
+  fromPartial<I extends Exact<DeepPartial<UpdateProfileEvent>, I>>(
+    object: I
+  ): UpdateProfileEvent {
     const message = { ...baseUpdateProfileEvent } as UpdateProfileEvent;
-    if (object.profile !== undefined && object.profile !== null) {
-      message.profile = Profile.fromPartial(object.profile);
-    } else {
-      message.profile = undefined;
-    }
+    message.profile =
+      object.profile !== undefined && object.profile !== null
+        ? Profile.fromPartial(object.profile)
+        : undefined;
     message.type = object.type ?? "";
     return message;
   },
@@ -91,10 +90,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -102,6 +103,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

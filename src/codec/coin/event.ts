@@ -67,16 +67,14 @@ export const NewTokenEvent = {
 
   fromJSON(object: any): NewTokenEvent {
     const message = { ...baseNewTokenEvent } as NewTokenEvent;
-    if (object.token !== undefined && object.token !== null) {
-      message.token = Token.fromJSON(object.token);
-    } else {
-      message.token = undefined;
-    }
-    if (object.type !== undefined && object.type !== null) {
-      message.type = String(object.type);
-    } else {
-      message.type = "";
-    }
+    message.token =
+      object.token !== undefined && object.token !== null
+        ? Token.fromJSON(object.token)
+        : undefined;
+    message.type =
+      object.type !== undefined && object.type !== null
+        ? String(object.type)
+        : "";
     return message;
   },
 
@@ -88,13 +86,14 @@ export const NewTokenEvent = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<NewTokenEvent>): NewTokenEvent {
+  fromPartial<I extends Exact<DeepPartial<NewTokenEvent>, I>>(
+    object: I
+  ): NewTokenEvent {
     const message = { ...baseNewTokenEvent } as NewTokenEvent;
-    if (object.token !== undefined && object.token !== null) {
-      message.token = Token.fromPartial(object.token);
-    } else {
-      message.token = undefined;
-    }
+    message.token =
+      object.token !== undefined && object.token !== null
+        ? Token.fromPartial(object.token)
+        : undefined;
     message.type = object.type ?? "";
     return message;
   },
@@ -133,11 +132,10 @@ export const SyncTokenEvent = {
 
   fromJSON(object: any): SyncTokenEvent {
     const message = { ...baseSyncTokenEvent } as SyncTokenEvent;
-    if (object.token !== undefined && object.token !== null) {
-      message.token = Token.fromJSON(object.token);
-    } else {
-      message.token = undefined;
-    }
+    message.token =
+      object.token !== undefined && object.token !== null
+        ? Token.fromJSON(object.token)
+        : undefined;
     return message;
   },
 
@@ -148,13 +146,14 @@ export const SyncTokenEvent = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<SyncTokenEvent>): SyncTokenEvent {
+  fromPartial<I extends Exact<DeepPartial<SyncTokenEvent>, I>>(
+    object: I
+  ): SyncTokenEvent {
     const message = { ...baseSyncTokenEvent } as SyncTokenEvent;
-    if (object.token !== undefined && object.token !== null) {
-      message.token = Token.fromPartial(object.token);
-    } else {
-      message.token = undefined;
-    }
+    message.token =
+      object.token !== undefined && object.token !== null
+        ? Token.fromPartial(object.token)
+        : undefined;
     return message;
   },
 };
@@ -198,16 +197,14 @@ export const BindTokenEvent = {
 
   fromJSON(object: any): BindTokenEvent {
     const message = { ...baseBindTokenEvent } as BindTokenEvent;
-    if (object.sourceDenom !== undefined && object.sourceDenom !== null) {
-      message.sourceDenom = String(object.sourceDenom);
-    } else {
-      message.sourceDenom = "";
-    }
-    if (object.wrappedDenom !== undefined && object.wrappedDenom !== null) {
-      message.wrappedDenom = String(object.wrappedDenom);
-    } else {
-      message.wrappedDenom = "";
-    }
+    message.sourceDenom =
+      object.sourceDenom !== undefined && object.sourceDenom !== null
+        ? String(object.sourceDenom)
+        : "";
+    message.wrappedDenom =
+      object.wrappedDenom !== undefined && object.wrappedDenom !== null
+        ? String(object.wrappedDenom)
+        : "";
     return message;
   },
 
@@ -220,7 +217,9 @@ export const BindTokenEvent = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<BindTokenEvent>): BindTokenEvent {
+  fromPartial<I extends Exact<DeepPartial<BindTokenEvent>, I>>(
+    object: I
+  ): BindTokenEvent {
     const message = { ...baseBindTokenEvent } as BindTokenEvent;
     message.sourceDenom = object.sourceDenom ?? "";
     message.wrappedDenom = object.wrappedDenom ?? "";
@@ -261,11 +260,10 @@ export const UnbindTokenEvent = {
 
   fromJSON(object: any): UnbindTokenEvent {
     const message = { ...baseUnbindTokenEvent } as UnbindTokenEvent;
-    if (object.wrappedDenom !== undefined && object.wrappedDenom !== null) {
-      message.wrappedDenom = String(object.wrappedDenom);
-    } else {
-      message.wrappedDenom = "";
-    }
+    message.wrappedDenom =
+      object.wrappedDenom !== undefined && object.wrappedDenom !== null
+        ? String(object.wrappedDenom)
+        : "";
     return message;
   },
 
@@ -276,7 +274,9 @@ export const UnbindTokenEvent = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<UnbindTokenEvent>): UnbindTokenEvent {
+  fromPartial<I extends Exact<DeepPartial<UnbindTokenEvent>, I>>(
+    object: I
+  ): UnbindTokenEvent {
     const message = { ...baseUnbindTokenEvent } as UnbindTokenEvent;
     message.wrappedDenom = object.wrappedDenom ?? "";
     return message;
@@ -322,16 +322,14 @@ export const LinkTokenEvent = {
 
   fromJSON(object: any): LinkTokenEvent {
     const message = { ...baseLinkTokenEvent } as LinkTokenEvent;
-    if (object.token !== undefined && object.token !== null) {
-      message.token = Token.fromJSON(object.token);
-    } else {
-      message.token = undefined;
-    }
-    if (object.type !== undefined && object.type !== null) {
-      message.type = String(object.type);
-    } else {
-      message.type = "";
-    }
+    message.token =
+      object.token !== undefined && object.token !== null
+        ? Token.fromJSON(object.token)
+        : undefined;
+    message.type =
+      object.type !== undefined && object.type !== null
+        ? String(object.type)
+        : "";
     return message;
   },
 
@@ -343,13 +341,14 @@ export const LinkTokenEvent = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<LinkTokenEvent>): LinkTokenEvent {
+  fromPartial<I extends Exact<DeepPartial<LinkTokenEvent>, I>>(
+    object: I
+  ): LinkTokenEvent {
     const message = { ...baseLinkTokenEvent } as LinkTokenEvent;
-    if (object.token !== undefined && object.token !== null) {
-      message.token = Token.fromPartial(object.token);
-    } else {
-      message.token = undefined;
-    }
+    message.token =
+      object.token !== undefined && object.token !== null
+        ? Token.fromPartial(object.token)
+        : undefined;
     message.type = object.type ?? "";
     return message;
   },
@@ -362,10 +361,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -373,6 +374,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

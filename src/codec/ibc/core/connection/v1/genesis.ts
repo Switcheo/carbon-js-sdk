@@ -67,31 +67,17 @@ export const GenesisState = {
 
   fromJSON(object: any): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
-    message.connections = [];
-    message.clientConnectionPaths = [];
-    if (object.connections !== undefined && object.connections !== null) {
-      for (const e of object.connections) {
-        message.connections.push(IdentifiedConnection.fromJSON(e));
-      }
-    }
-    if (
-      object.clientConnectionPaths !== undefined &&
-      object.clientConnectionPaths !== null
-    ) {
-      for (const e of object.clientConnectionPaths) {
-        message.clientConnectionPaths.push(ConnectionPaths.fromJSON(e));
-      }
-    }
-    if (
+    message.connections = (object.connections ?? []).map((e: any) =>
+      IdentifiedConnection.fromJSON(e)
+    );
+    message.clientConnectionPaths = (object.clientConnectionPaths ?? []).map(
+      (e: any) => ConnectionPaths.fromJSON(e)
+    );
+    message.nextConnectionSequence =
       object.nextConnectionSequence !== undefined &&
       object.nextConnectionSequence !== null
-    ) {
-      message.nextConnectionSequence = Long.fromString(
-        object.nextConnectionSequence
-      );
-    } else {
-      message.nextConnectionSequence = Long.UZERO;
-    }
+        ? Long.fromString(object.nextConnectionSequence)
+        : Long.UZERO;
     return message;
   },
 
@@ -118,31 +104,21 @@ export const GenesisState = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<GenesisState>): GenesisState {
+  fromPartial<I extends Exact<DeepPartial<GenesisState>, I>>(
+    object: I
+  ): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
-    message.connections = [];
-    if (object.connections !== undefined && object.connections !== null) {
-      for (const e of object.connections) {
-        message.connections.push(IdentifiedConnection.fromPartial(e));
-      }
-    }
-    message.clientConnectionPaths = [];
-    if (
-      object.clientConnectionPaths !== undefined &&
-      object.clientConnectionPaths !== null
-    ) {
-      for (const e of object.clientConnectionPaths) {
-        message.clientConnectionPaths.push(ConnectionPaths.fromPartial(e));
-      }
-    }
-    if (
+    message.connections =
+      object.connections?.map((e) => IdentifiedConnection.fromPartial(e)) || [];
+    message.clientConnectionPaths =
+      object.clientConnectionPaths?.map((e) =>
+        ConnectionPaths.fromPartial(e)
+      ) || [];
+    message.nextConnectionSequence =
       object.nextConnectionSequence !== undefined &&
       object.nextConnectionSequence !== null
-    ) {
-      message.nextConnectionSequence = object.nextConnectionSequence as Long;
-    } else {
-      message.nextConnectionSequence = Long.UZERO;
-    }
+        ? Long.fromValue(object.nextConnectionSequence)
+        : Long.UZERO;
     return message;
   },
 };
@@ -154,10 +130,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -165,6 +143,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

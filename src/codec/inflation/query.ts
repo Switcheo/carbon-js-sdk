@@ -49,7 +49,9 @@ export const QueryMintDataRequest = {
     return obj;
   },
 
-  fromPartial(_: DeepPartial<QueryMintDataRequest>): QueryMintDataRequest {
+  fromPartial<I extends Exact<DeepPartial<QueryMintDataRequest>, I>>(
+    _: I
+  ): QueryMintDataRequest {
     const message = { ...baseQueryMintDataRequest } as QueryMintDataRequest;
     return message;
   },
@@ -91,11 +93,10 @@ export const QueryMintDataResponse = {
 
   fromJSON(object: any): QueryMintDataResponse {
     const message = { ...baseQueryMintDataResponse } as QueryMintDataResponse;
-    if (object.mintData !== undefined && object.mintData !== null) {
-      message.mintData = MintData.fromJSON(object.mintData);
-    } else {
-      message.mintData = undefined;
-    }
+    message.mintData =
+      object.mintData !== undefined && object.mintData !== null
+        ? MintData.fromJSON(object.mintData)
+        : undefined;
     return message;
   },
 
@@ -108,15 +109,14 @@ export const QueryMintDataResponse = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryMintDataResponse>
+  fromPartial<I extends Exact<DeepPartial<QueryMintDataResponse>, I>>(
+    object: I
   ): QueryMintDataResponse {
     const message = { ...baseQueryMintDataResponse } as QueryMintDataResponse;
-    if (object.mintData !== undefined && object.mintData !== null) {
-      message.mintData = MintData.fromPartial(object.mintData);
-    } else {
-      message.mintData = undefined;
-    }
+    message.mintData =
+      object.mintData !== undefined && object.mintData !== null
+        ? MintData.fromPartial(object.mintData)
+        : undefined;
     return message;
   },
 };
@@ -164,10 +164,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -175,6 +177,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

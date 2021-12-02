@@ -59,16 +59,14 @@ export const MsgSubmitEvidence = {
 
   fromJSON(object: any): MsgSubmitEvidence {
     const message = { ...baseMsgSubmitEvidence } as MsgSubmitEvidence;
-    if (object.submitter !== undefined && object.submitter !== null) {
-      message.submitter = String(object.submitter);
-    } else {
-      message.submitter = "";
-    }
-    if (object.evidence !== undefined && object.evidence !== null) {
-      message.evidence = Any.fromJSON(object.evidence);
-    } else {
-      message.evidence = undefined;
-    }
+    message.submitter =
+      object.submitter !== undefined && object.submitter !== null
+        ? String(object.submitter)
+        : "";
+    message.evidence =
+      object.evidence !== undefined && object.evidence !== null
+        ? Any.fromJSON(object.evidence)
+        : undefined;
     return message;
   },
 
@@ -82,14 +80,15 @@ export const MsgSubmitEvidence = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<MsgSubmitEvidence>): MsgSubmitEvidence {
+  fromPartial<I extends Exact<DeepPartial<MsgSubmitEvidence>, I>>(
+    object: I
+  ): MsgSubmitEvidence {
     const message = { ...baseMsgSubmitEvidence } as MsgSubmitEvidence;
     message.submitter = object.submitter ?? "";
-    if (object.evidence !== undefined && object.evidence !== null) {
-      message.evidence = Any.fromPartial(object.evidence);
-    } else {
-      message.evidence = undefined;
-    }
+    message.evidence =
+      object.evidence !== undefined && object.evidence !== null
+        ? Any.fromPartial(object.evidence)
+        : undefined;
     return message;
   },
 };
@@ -135,10 +134,10 @@ export const MsgSubmitEvidenceResponse = {
     const message = {
       ...baseMsgSubmitEvidenceResponse,
     } as MsgSubmitEvidenceResponse;
-    message.hash = new Uint8Array();
-    if (object.hash !== undefined && object.hash !== null) {
-      message.hash = bytesFromBase64(object.hash);
-    }
+    message.hash =
+      object.hash !== undefined && object.hash !== null
+        ? bytesFromBase64(object.hash)
+        : new Uint8Array();
     return message;
   },
 
@@ -151,8 +150,8 @@ export const MsgSubmitEvidenceResponse = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<MsgSubmitEvidenceResponse>
+  fromPartial<I extends Exact<DeepPartial<MsgSubmitEvidenceResponse>, I>>(
+    object: I
   ): MsgSubmitEvidenceResponse {
     const message = {
       ...baseMsgSubmitEvidenceResponse,
@@ -243,10 +242,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -254,6 +255,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

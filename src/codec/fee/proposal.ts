@@ -56,21 +56,18 @@ export const SetMsgFeeProposal = {
 
   fromJSON(object: any): SetMsgFeeProposal {
     const message = { ...baseSetMsgFeeProposal } as SetMsgFeeProposal;
-    if (object.title !== undefined && object.title !== null) {
-      message.title = String(object.title);
-    } else {
-      message.title = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = String(object.description);
-    } else {
-      message.description = "";
-    }
-    if (object.msg !== undefined && object.msg !== null) {
-      message.msg = MsgFee.fromJSON(object.msg);
-    } else {
-      message.msg = undefined;
-    }
+    message.title =
+      object.title !== undefined && object.title !== null
+        ? String(object.title)
+        : "";
+    message.description =
+      object.description !== undefined && object.description !== null
+        ? String(object.description)
+        : "";
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? MsgFee.fromJSON(object.msg)
+        : undefined;
     return message;
   },
 
@@ -84,15 +81,16 @@ export const SetMsgFeeProposal = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<SetMsgFeeProposal>): SetMsgFeeProposal {
+  fromPartial<I extends Exact<DeepPartial<SetMsgFeeProposal>, I>>(
+    object: I
+  ): SetMsgFeeProposal {
     const message = { ...baseSetMsgFeeProposal } as SetMsgFeeProposal;
     message.title = object.title ?? "";
     message.description = object.description ?? "";
-    if (object.msg !== undefined && object.msg !== null) {
-      message.msg = MsgFee.fromPartial(object.msg);
-    } else {
-      message.msg = undefined;
-    }
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? MsgFee.fromPartial(object.msg)
+        : undefined;
     return message;
   },
 };
@@ -104,10 +102,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -115,6 +115,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

@@ -70,11 +70,8 @@ export const QueryGetOrderRequest = {
 
   fromJSON(object: any): QueryGetOrderRequest {
     const message = { ...baseQueryGetOrderRequest } as QueryGetOrderRequest;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = String(object.id);
-    } else {
-      message.id = "";
-    }
+    message.id =
+      object.id !== undefined && object.id !== null ? String(object.id) : "";
     return message;
   },
 
@@ -84,7 +81,9 @@ export const QueryGetOrderRequest = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<QueryGetOrderRequest>): QueryGetOrderRequest {
+  fromPartial<I extends Exact<DeepPartial<QueryGetOrderRequest>, I>>(
+    object: I
+  ): QueryGetOrderRequest {
     const message = { ...baseQueryGetOrderRequest } as QueryGetOrderRequest;
     message.id = object.id ?? "";
     return message;
@@ -127,11 +126,10 @@ export const QueryGetOrderResponse = {
 
   fromJSON(object: any): QueryGetOrderResponse {
     const message = { ...baseQueryGetOrderResponse } as QueryGetOrderResponse;
-    if (object.Order !== undefined && object.Order !== null) {
-      message.Order = Order.fromJSON(object.Order);
-    } else {
-      message.Order = undefined;
-    }
+    message.Order =
+      object.Order !== undefined && object.Order !== null
+        ? Order.fromJSON(object.Order)
+        : undefined;
     return message;
   },
 
@@ -142,15 +140,14 @@ export const QueryGetOrderResponse = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryGetOrderResponse>
+  fromPartial<I extends Exact<DeepPartial<QueryGetOrderResponse>, I>>(
+    object: I
   ): QueryGetOrderResponse {
     const message = { ...baseQueryGetOrderResponse } as QueryGetOrderResponse;
-    if (object.Order !== undefined && object.Order !== null) {
-      message.Order = Order.fromPartial(object.Order);
-    } else {
-      message.Order = undefined;
-    }
+    message.Order =
+      object.Order !== undefined && object.Order !== null
+        ? Order.fromPartial(object.Order)
+        : undefined;
     return message;
   },
 };
@@ -214,26 +211,22 @@ export const QueryAllOrderRequest = {
 
   fromJSON(object: any): QueryAllOrderRequest {
     const message = { ...baseQueryAllOrderRequest } as QueryAllOrderRequest;
-    if (object.address !== undefined && object.address !== null) {
-      message.address = String(object.address);
-    } else {
-      message.address = "";
-    }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = String(object.market);
-    } else {
-      message.market = "";
-    }
-    if (object.orderType !== undefined && object.orderType !== null) {
-      message.orderType = String(object.orderType);
-    } else {
-      message.orderType = "";
-    }
-    if (object.orderStatus !== undefined && object.orderStatus !== null) {
-      message.orderStatus = String(object.orderStatus);
-    } else {
-      message.orderStatus = "";
-    }
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? String(object.market)
+        : "";
+    message.orderType =
+      object.orderType !== undefined && object.orderType !== null
+        ? String(object.orderType)
+        : "";
+    message.orderStatus =
+      object.orderStatus !== undefined && object.orderStatus !== null
+        ? String(object.orderStatus)
+        : "";
     return message;
   },
 
@@ -247,7 +240,9 @@ export const QueryAllOrderRequest = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<QueryAllOrderRequest>): QueryAllOrderRequest {
+  fromPartial<I extends Exact<DeepPartial<QueryAllOrderRequest>, I>>(
+    object: I
+  ): QueryAllOrderRequest {
     const message = { ...baseQueryAllOrderRequest } as QueryAllOrderRequest;
     message.address = object.address ?? "";
     message.market = object.market ?? "";
@@ -294,12 +289,7 @@ export const QueryAllOrderResponse = {
 
   fromJSON(object: any): QueryAllOrderResponse {
     const message = { ...baseQueryAllOrderResponse } as QueryAllOrderResponse;
-    message.orders = [];
-    if (object.orders !== undefined && object.orders !== null) {
-      for (const e of object.orders) {
-        message.orders.push(DBOrder.fromJSON(e));
-      }
-    }
+    message.orders = (object.orders ?? []).map((e: any) => DBOrder.fromJSON(e));
     return message;
   },
 
@@ -315,16 +305,11 @@ export const QueryAllOrderResponse = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryAllOrderResponse>
+  fromPartial<I extends Exact<DeepPartial<QueryAllOrderResponse>, I>>(
+    object: I
   ): QueryAllOrderResponse {
     const message = { ...baseQueryAllOrderResponse } as QueryAllOrderResponse;
-    message.orders = [];
-    if (object.orders !== undefined && object.orders !== null) {
-      for (const e of object.orders) {
-        message.orders.push(DBOrder.fromPartial(e));
-      }
-    }
+    message.orders = object.orders?.map((e) => DBOrder.fromPartial(e)) || [];
     return message;
   },
 };
@@ -375,16 +360,14 @@ export const QueryAccountOpenOrdersRequest = {
     const message = {
       ...baseQueryAccountOpenOrdersRequest,
     } as QueryAccountOpenOrdersRequest;
-    if (object.address !== undefined && object.address !== null) {
-      message.address = String(object.address);
-    } else {
-      message.address = "";
-    }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = String(object.market);
-    } else {
-      message.market = "";
-    }
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? String(object.market)
+        : "";
     return message;
   },
 
@@ -395,8 +378,8 @@ export const QueryAccountOpenOrdersRequest = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryAccountOpenOrdersRequest>
+  fromPartial<I extends Exact<DeepPartial<QueryAccountOpenOrdersRequest>, I>>(
+    object: I
   ): QueryAccountOpenOrdersRequest {
     const message = {
       ...baseQueryAccountOpenOrdersRequest,
@@ -448,12 +431,7 @@ export const QueryAccountOpenOrdersResponse = {
     const message = {
       ...baseQueryAccountOpenOrdersResponse,
     } as QueryAccountOpenOrdersResponse;
-    message.orders = [];
-    if (object.orders !== undefined && object.orders !== null) {
-      for (const e of object.orders) {
-        message.orders.push(Order.fromJSON(e));
-      }
-    }
+    message.orders = (object.orders ?? []).map((e: any) => Order.fromJSON(e));
     return message;
   },
 
@@ -467,18 +445,13 @@ export const QueryAccountOpenOrdersResponse = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryAccountOpenOrdersResponse>
+  fromPartial<I extends Exact<DeepPartial<QueryAccountOpenOrdersResponse>, I>>(
+    object: I
   ): QueryAccountOpenOrdersResponse {
     const message = {
       ...baseQueryAccountOpenOrdersResponse,
     } as QueryAccountOpenOrdersResponse;
-    message.orders = [];
-    if (object.orders !== undefined && object.orders !== null) {
-      for (const e of object.orders) {
-        message.orders.push(Order.fromPartial(e));
-      }
-    }
+    message.orders = object.orders?.map((e) => Order.fromPartial(e)) || [];
     return message;
   },
 };
@@ -555,10 +528,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -566,6 +541,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

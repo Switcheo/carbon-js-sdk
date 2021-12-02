@@ -47,11 +47,10 @@ export const GenesisState = {
 
   fromJSON(object: any): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
-    if (object.constantFee !== undefined && object.constantFee !== null) {
-      message.constantFee = Coin.fromJSON(object.constantFee);
-    } else {
-      message.constantFee = undefined;
-    }
+    message.constantFee =
+      object.constantFee !== undefined && object.constantFee !== null
+        ? Coin.fromJSON(object.constantFee)
+        : undefined;
     return message;
   },
 
@@ -64,13 +63,14 @@ export const GenesisState = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<GenesisState>): GenesisState {
+  fromPartial<I extends Exact<DeepPartial<GenesisState>, I>>(
+    object: I
+  ): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
-    if (object.constantFee !== undefined && object.constantFee !== null) {
-      message.constantFee = Coin.fromPartial(object.constantFee);
-    } else {
-      message.constantFee = undefined;
-    }
+    message.constantFee =
+      object.constantFee !== undefined && object.constantFee !== null
+        ? Coin.fromPartial(object.constantFee)
+        : undefined;
     return message;
   },
 };
@@ -82,10 +82,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -93,6 +95,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

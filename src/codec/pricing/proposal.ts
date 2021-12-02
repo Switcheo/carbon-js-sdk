@@ -70,21 +70,18 @@ export const SettlementPriceProposal = {
     const message = {
       ...baseSettlementPriceProposal,
     } as SettlementPriceProposal;
-    if (object.title !== undefined && object.title !== null) {
-      message.title = String(object.title);
-    } else {
-      message.title = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = String(object.description);
-    } else {
-      message.description = "";
-    }
-    if (object.msg !== undefined && object.msg !== null) {
-      message.msg = SettlementPriceParams.fromJSON(object.msg);
-    } else {
-      message.msg = undefined;
-    }
+    message.title =
+      object.title !== undefined && object.title !== null
+        ? String(object.title)
+        : "";
+    message.description =
+      object.description !== undefined && object.description !== null
+        ? String(object.description)
+        : "";
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? SettlementPriceParams.fromJSON(object.msg)
+        : undefined;
     return message;
   },
 
@@ -100,19 +97,18 @@ export const SettlementPriceProposal = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<SettlementPriceProposal>
+  fromPartial<I extends Exact<DeepPartial<SettlementPriceProposal>, I>>(
+    object: I
   ): SettlementPriceProposal {
     const message = {
       ...baseSettlementPriceProposal,
     } as SettlementPriceProposal;
     message.title = object.title ?? "";
     message.description = object.description ?? "";
-    if (object.msg !== undefined && object.msg !== null) {
-      message.msg = SettlementPriceParams.fromPartial(object.msg);
-    } else {
-      message.msg = undefined;
-    }
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? SettlementPriceParams.fromPartial(object.msg)
+        : undefined;
     return message;
   },
 };
@@ -159,19 +155,14 @@ export const SettlementPriceParams = {
 
   fromJSON(object: any): SettlementPriceParams {
     const message = { ...baseSettlementPriceParams } as SettlementPriceParams;
-    if (object.market !== undefined && object.market !== null) {
-      message.market = String(object.market);
-    } else {
-      message.market = "";
-    }
-    if (
-      object.settlementPrice !== undefined &&
-      object.settlementPrice !== null
-    ) {
-      message.settlementPrice = String(object.settlementPrice);
-    } else {
-      message.settlementPrice = "";
-    }
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? String(object.market)
+        : "";
+    message.settlementPrice =
+      object.settlementPrice !== undefined && object.settlementPrice !== null
+        ? String(object.settlementPrice)
+        : "";
     return message;
   },
 
@@ -183,8 +174,8 @@ export const SettlementPriceParams = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<SettlementPriceParams>
+  fromPartial<I extends Exact<DeepPartial<SettlementPriceParams>, I>>(
+    object: I
   ): SettlementPriceParams {
     const message = { ...baseSettlementPriceParams } as SettlementPriceParams;
     message.market = object.market ?? "";
@@ -200,10 +191,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -211,6 +204,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

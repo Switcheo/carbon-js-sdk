@@ -89,11 +89,8 @@ export const QueryOracleInfoRequest = {
 
   fromJSON(object: any): QueryOracleInfoRequest {
     const message = { ...baseQueryOracleInfoRequest } as QueryOracleInfoRequest;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = String(object.id);
-    } else {
-      message.id = "";
-    }
+    message.id =
+      object.id !== undefined && object.id !== null ? String(object.id) : "";
     return message;
   },
 
@@ -103,8 +100,8 @@ export const QueryOracleInfoRequest = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryOracleInfoRequest>
+  fromPartial<I extends Exact<DeepPartial<QueryOracleInfoRequest>, I>>(
+    object: I
   ): QueryOracleInfoRequest {
     const message = { ...baseQueryOracleInfoRequest } as QueryOracleInfoRequest;
     message.id = object.id ?? "";
@@ -152,11 +149,10 @@ export const QueryOracleInfoResponse = {
     const message = {
       ...baseQueryOracleInfoResponse,
     } as QueryOracleInfoResponse;
-    if (object.Oracle !== undefined && object.Oracle !== null) {
-      message.Oracle = Oracle.fromJSON(object.Oracle);
-    } else {
-      message.Oracle = undefined;
-    }
+    message.Oracle =
+      object.Oracle !== undefined && object.Oracle !== null
+        ? Oracle.fromJSON(object.Oracle)
+        : undefined;
     return message;
   },
 
@@ -167,17 +163,16 @@ export const QueryOracleInfoResponse = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryOracleInfoResponse>
+  fromPartial<I extends Exact<DeepPartial<QueryOracleInfoResponse>, I>>(
+    object: I
   ): QueryOracleInfoResponse {
     const message = {
       ...baseQueryOracleInfoResponse,
     } as QueryOracleInfoResponse;
-    if (object.Oracle !== undefined && object.Oracle !== null) {
-      message.Oracle = Oracle.fromPartial(object.Oracle);
-    } else {
-      message.Oracle = undefined;
-    }
+    message.Oracle =
+      object.Oracle !== undefined && object.Oracle !== null
+        ? Oracle.fromPartial(object.Oracle)
+        : undefined;
     return message;
   },
 };
@@ -218,11 +213,10 @@ export const QueryOracleListRequest = {
 
   fromJSON(object: any): QueryOracleListRequest {
     const message = { ...baseQueryOracleListRequest } as QueryOracleListRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -235,15 +229,14 @@ export const QueryOracleListRequest = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryOracleListRequest>
+  fromPartial<I extends Exact<DeepPartial<QueryOracleListRequest>, I>>(
+    object: I
   ): QueryOracleListRequest {
     const message = { ...baseQueryOracleListRequest } as QueryOracleListRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -298,17 +291,13 @@ export const QueryOracleListResponse = {
     const message = {
       ...baseQueryOracleListResponse,
     } as QueryOracleListResponse;
-    message.oracles = [];
-    if (object.oracles !== undefined && object.oracles !== null) {
-      for (const e of object.oracles) {
-        message.oracles.push(Oracle.fromJSON(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.oracles = (object.oracles ?? []).map((e: any) =>
+      Oracle.fromJSON(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -328,23 +317,17 @@ export const QueryOracleListResponse = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryOracleListResponse>
+  fromPartial<I extends Exact<DeepPartial<QueryOracleListResponse>, I>>(
+    object: I
   ): QueryOracleListResponse {
     const message = {
       ...baseQueryOracleListResponse,
     } as QueryOracleListResponse;
-    message.oracles = [];
-    if (object.oracles !== undefined && object.oracles !== null) {
-      for (const e of object.oracles) {
-        message.oracles.push(Oracle.fromPartial(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.oracles = object.oracles?.map((e) => Oracle.fromPartial(e)) || [];
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -385,11 +368,10 @@ export const QueryResultListRequest = {
 
   fromJSON(object: any): QueryResultListRequest {
     const message = { ...baseQueryResultListRequest } as QueryResultListRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -402,15 +384,14 @@ export const QueryResultListRequest = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryResultListRequest>
+  fromPartial<I extends Exact<DeepPartial<QueryResultListRequest>, I>>(
+    object: I
   ): QueryResultListRequest {
     const message = { ...baseQueryResultListRequest } as QueryResultListRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -465,17 +446,13 @@ export const QueryResultListResponse = {
     const message = {
       ...baseQueryResultListResponse,
     } as QueryResultListResponse;
-    message.results = [];
-    if (object.results !== undefined && object.results !== null) {
-      for (const e of object.results) {
-        message.results.push(Result.fromJSON(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.results = (object.results ?? []).map((e: any) =>
+      Result.fromJSON(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -495,23 +472,17 @@ export const QueryResultListResponse = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryResultListResponse>
+  fromPartial<I extends Exact<DeepPartial<QueryResultListResponse>, I>>(
+    object: I
   ): QueryResultListResponse {
     const message = {
       ...baseQueryResultListResponse,
     } as QueryResultListResponse;
-    message.results = [];
-    if (object.results !== undefined && object.results !== null) {
-      for (const e of object.results) {
-        message.results.push(Result.fromPartial(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.results = object.results?.map((e) => Result.fromPartial(e)) || [];
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -552,11 +523,10 @@ export const QueryVoteListRequest = {
 
   fromJSON(object: any): QueryVoteListRequest {
     const message = { ...baseQueryVoteListRequest } as QueryVoteListRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -569,13 +539,14 @@ export const QueryVoteListRequest = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<QueryVoteListRequest>): QueryVoteListRequest {
+  fromPartial<I extends Exact<DeepPartial<QueryVoteListRequest>, I>>(
+    object: I
+  ): QueryVoteListRequest {
     const message = { ...baseQueryVoteListRequest } as QueryVoteListRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -626,17 +597,11 @@ export const QueryVoteListResponse = {
 
   fromJSON(object: any): QueryVoteListResponse {
     const message = { ...baseQueryVoteListResponse } as QueryVoteListResponse;
-    message.votes = [];
-    if (object.votes !== undefined && object.votes !== null) {
-      for (const e of object.votes) {
-        message.votes.push(Vote.fromJSON(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.votes = (object.votes ?? []).map((e: any) => Vote.fromJSON(e));
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -654,21 +619,15 @@ export const QueryVoteListResponse = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryVoteListResponse>
+  fromPartial<I extends Exact<DeepPartial<QueryVoteListResponse>, I>>(
+    object: I
   ): QueryVoteListResponse {
     const message = { ...baseQueryVoteListResponse } as QueryVoteListResponse;
-    message.votes = [];
-    if (object.votes !== undefined && object.votes !== null) {
-      for (const e of object.votes) {
-        message.votes.push(Vote.fromPartial(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.votes = object.votes?.map((e) => Vote.fromPartial(e)) || [];
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -709,11 +668,10 @@ export const QueryVoterPowerRequest = {
 
   fromJSON(object: any): QueryVoterPowerRequest {
     const message = { ...baseQueryVoterPowerRequest } as QueryVoterPowerRequest;
-    if (object.address !== undefined && object.address !== null) {
-      message.address = String(object.address);
-    } else {
-      message.address = "";
-    }
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
     return message;
   },
 
@@ -723,8 +681,8 @@ export const QueryVoterPowerRequest = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryVoterPowerRequest>
+  fromPartial<I extends Exact<DeepPartial<QueryVoterPowerRequest>, I>>(
+    object: I
   ): QueryVoterPowerRequest {
     const message = { ...baseQueryVoterPowerRequest } as QueryVoterPowerRequest;
     message.address = object.address ?? "";
@@ -772,11 +730,10 @@ export const QueryVoterPowerResponse = {
     const message = {
       ...baseQueryVoterPowerResponse,
     } as QueryVoterPowerResponse;
-    if (object.Power !== undefined && object.Power !== null) {
-      message.Power = String(object.Power);
-    } else {
-      message.Power = "";
-    }
+    message.Power =
+      object.Power !== undefined && object.Power !== null
+        ? String(object.Power)
+        : "";
     return message;
   },
 
@@ -786,8 +743,8 @@ export const QueryVoterPowerResponse = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryVoterPowerResponse>
+  fromPartial<I extends Exact<DeepPartial<QueryVoterPowerResponse>, I>>(
+    object: I
   ): QueryVoterPowerResponse {
     const message = {
       ...baseQueryVoterPowerResponse,
@@ -901,10 +858,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -912,6 +871,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

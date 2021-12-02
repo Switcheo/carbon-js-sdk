@@ -56,18 +56,12 @@ export const GenesisState = {
 
   fromJSON(object: any): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
-    message.orderBooks = [];
-    message.stopBooks = [];
-    if (object.orderBooks !== undefined && object.orderBooks !== null) {
-      for (const e of object.orderBooks) {
-        message.orderBooks.push(OrderBook.fromJSON(e));
-      }
-    }
-    if (object.stopBooks !== undefined && object.stopBooks !== null) {
-      for (const e of object.stopBooks) {
-        message.stopBooks.push(StopBook.fromJSON(e));
-      }
-    }
+    message.orderBooks = (object.orderBooks ?? []).map((e: any) =>
+      OrderBook.fromJSON(e)
+    );
+    message.stopBooks = (object.stopBooks ?? []).map((e: any) =>
+      StopBook.fromJSON(e)
+    );
     return message;
   },
 
@@ -90,20 +84,14 @@ export const GenesisState = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<GenesisState>): GenesisState {
+  fromPartial<I extends Exact<DeepPartial<GenesisState>, I>>(
+    object: I
+  ): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
-    message.orderBooks = [];
-    if (object.orderBooks !== undefined && object.orderBooks !== null) {
-      for (const e of object.orderBooks) {
-        message.orderBooks.push(OrderBook.fromPartial(e));
-      }
-    }
-    message.stopBooks = [];
-    if (object.stopBooks !== undefined && object.stopBooks !== null) {
-      for (const e of object.stopBooks) {
-        message.stopBooks.push(StopBook.fromPartial(e));
-      }
-    }
+    message.orderBooks =
+      object.orderBooks?.map((e) => OrderBook.fromPartial(e)) || [];
+    message.stopBooks =
+      object.stopBooks?.map((e) => StopBook.fromPartial(e)) || [];
     return message;
   },
 };
@@ -115,10 +103,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -126,6 +116,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

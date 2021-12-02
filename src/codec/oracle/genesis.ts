@@ -62,24 +62,13 @@ export const GenesisState = {
 
   fromJSON(object: any): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
-    message.oracles = [];
-    message.results = [];
-    message.votes = [];
-    if (object.oracles !== undefined && object.oracles !== null) {
-      for (const e of object.oracles) {
-        message.oracles.push(Oracle.fromJSON(e));
-      }
-    }
-    if (object.results !== undefined && object.results !== null) {
-      for (const e of object.results) {
-        message.results.push(Result.fromJSON(e));
-      }
-    }
-    if (object.votes !== undefined && object.votes !== null) {
-      for (const e of object.votes) {
-        message.votes.push(Vote.fromJSON(e));
-      }
-    }
+    message.oracles = (object.oracles ?? []).map((e: any) =>
+      Oracle.fromJSON(e)
+    );
+    message.results = (object.results ?? []).map((e: any) =>
+      Result.fromJSON(e)
+    );
+    message.votes = (object.votes ?? []).map((e: any) => Vote.fromJSON(e));
     return message;
   },
 
@@ -107,26 +96,13 @@ export const GenesisState = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<GenesisState>): GenesisState {
+  fromPartial<I extends Exact<DeepPartial<GenesisState>, I>>(
+    object: I
+  ): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
-    message.oracles = [];
-    if (object.oracles !== undefined && object.oracles !== null) {
-      for (const e of object.oracles) {
-        message.oracles.push(Oracle.fromPartial(e));
-      }
-    }
-    message.results = [];
-    if (object.results !== undefined && object.results !== null) {
-      for (const e of object.results) {
-        message.results.push(Result.fromPartial(e));
-      }
-    }
-    message.votes = [];
-    if (object.votes !== undefined && object.votes !== null) {
-      for (const e of object.votes) {
-        message.votes.push(Vote.fromPartial(e));
-      }
-    }
+    message.oracles = object.oracles?.map((e) => Oracle.fromPartial(e)) || [];
+    message.results = object.results?.map((e) => Result.fromPartial(e)) || [];
+    message.votes = object.votes?.map((e) => Vote.fromPartial(e)) || [];
     return message;
   },
 };
@@ -138,10 +114,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -149,6 +127,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

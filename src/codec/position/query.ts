@@ -74,16 +74,14 @@ export const QueryGetPositionRequest = {
     const message = {
       ...baseQueryGetPositionRequest,
     } as QueryGetPositionRequest;
-    if (object.address !== undefined && object.address !== null) {
-      message.address = String(object.address);
-    } else {
-      message.address = "";
-    }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = String(object.market);
-    } else {
-      message.market = "";
-    }
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? String(object.market)
+        : "";
     return message;
   },
 
@@ -94,8 +92,8 @@ export const QueryGetPositionRequest = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryGetPositionRequest>
+  fromPartial<I extends Exact<DeepPartial<QueryGetPositionRequest>, I>>(
+    object: I
   ): QueryGetPositionRequest {
     const message = {
       ...baseQueryGetPositionRequest,
@@ -146,11 +144,10 @@ export const QueryGetPositionResponse = {
     const message = {
       ...baseQueryGetPositionResponse,
     } as QueryGetPositionResponse;
-    if (object.position !== undefined && object.position !== null) {
-      message.position = Position.fromJSON(object.position);
-    } else {
-      message.position = undefined;
-    }
+    message.position =
+      object.position !== undefined && object.position !== null
+        ? Position.fromJSON(object.position)
+        : undefined;
     return message;
   },
 
@@ -163,17 +160,16 @@ export const QueryGetPositionResponse = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryGetPositionResponse>
+  fromPartial<I extends Exact<DeepPartial<QueryGetPositionResponse>, I>>(
+    object: I
   ): QueryGetPositionResponse {
     const message = {
       ...baseQueryGetPositionResponse,
     } as QueryGetPositionResponse;
-    if (object.position !== undefined && object.position !== null) {
-      message.position = Position.fromPartial(object.position);
-    } else {
-      message.position = undefined;
-    }
+    message.position =
+      object.position !== undefined && object.position !== null
+        ? Position.fromPartial(object.position)
+        : undefined;
     return message;
   },
 };
@@ -255,36 +251,30 @@ export const QueryAllPositionRequest = {
     const message = {
       ...baseQueryAllPositionRequest,
     } as QueryAllPositionRequest;
-    if (object.address !== undefined && object.address !== null) {
-      message.address = String(object.address);
-    } else {
-      message.address = "";
-    }
-    if (object.beforeId !== undefined && object.beforeId !== null) {
-      message.beforeId = Long.fromString(object.beforeId);
-    } else {
-      message.beforeId = Long.UZERO;
-    }
-    if (object.afterId !== undefined && object.afterId !== null) {
-      message.afterId = Long.fromString(object.afterId);
-    } else {
-      message.afterId = Long.UZERO;
-    }
-    if (object.orderBy !== undefined && object.orderBy !== null) {
-      message.orderBy = String(object.orderBy);
-    } else {
-      message.orderBy = "";
-    }
-    if (object.limits !== undefined && object.limits !== null) {
-      message.limits = Long.fromString(object.limits);
-    } else {
-      message.limits = Long.UZERO;
-    }
-    if (object.status !== undefined && object.status !== null) {
-      message.status = String(object.status);
-    } else {
-      message.status = "";
-    }
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    message.beforeId =
+      object.beforeId !== undefined && object.beforeId !== null
+        ? Long.fromString(object.beforeId)
+        : Long.UZERO;
+    message.afterId =
+      object.afterId !== undefined && object.afterId !== null
+        ? Long.fromString(object.afterId)
+        : Long.UZERO;
+    message.orderBy =
+      object.orderBy !== undefined && object.orderBy !== null
+        ? String(object.orderBy)
+        : "";
+    message.limits =
+      object.limits !== undefined && object.limits !== null
+        ? Long.fromString(object.limits)
+        : Long.UZERO;
+    message.status =
+      object.status !== undefined && object.status !== null
+        ? String(object.status)
+        : "";
     return message;
   },
 
@@ -302,29 +292,26 @@ export const QueryAllPositionRequest = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryAllPositionRequest>
+  fromPartial<I extends Exact<DeepPartial<QueryAllPositionRequest>, I>>(
+    object: I
   ): QueryAllPositionRequest {
     const message = {
       ...baseQueryAllPositionRequest,
     } as QueryAllPositionRequest;
     message.address = object.address ?? "";
-    if (object.beforeId !== undefined && object.beforeId !== null) {
-      message.beforeId = object.beforeId as Long;
-    } else {
-      message.beforeId = Long.UZERO;
-    }
-    if (object.afterId !== undefined && object.afterId !== null) {
-      message.afterId = object.afterId as Long;
-    } else {
-      message.afterId = Long.UZERO;
-    }
+    message.beforeId =
+      object.beforeId !== undefined && object.beforeId !== null
+        ? Long.fromValue(object.beforeId)
+        : Long.UZERO;
+    message.afterId =
+      object.afterId !== undefined && object.afterId !== null
+        ? Long.fromValue(object.afterId)
+        : Long.UZERO;
     message.orderBy = object.orderBy ?? "";
-    if (object.limits !== undefined && object.limits !== null) {
-      message.limits = object.limits as Long;
-    } else {
-      message.limits = Long.UZERO;
-    }
+    message.limits =
+      object.limits !== undefined && object.limits !== null
+        ? Long.fromValue(object.limits)
+        : Long.UZERO;
     message.status = object.status ?? "";
     return message;
   },
@@ -371,12 +358,9 @@ export const QueryAllPositionResponse = {
     const message = {
       ...baseQueryAllPositionResponse,
     } as QueryAllPositionResponse;
-    message.positions = [];
-    if (object.positions !== undefined && object.positions !== null) {
-      for (const e of object.positions) {
-        message.positions.push(Position.fromJSON(e));
-      }
-    }
+    message.positions = (object.positions ?? []).map((e: any) =>
+      Position.fromJSON(e)
+    );
     return message;
   },
 
@@ -392,18 +376,14 @@ export const QueryAllPositionResponse = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryAllPositionResponse>
+  fromPartial<I extends Exact<DeepPartial<QueryAllPositionResponse>, I>>(
+    object: I
   ): QueryAllPositionResponse {
     const message = {
       ...baseQueryAllPositionResponse,
     } as QueryAllPositionResponse;
-    message.positions = [];
-    if (object.positions !== undefined && object.positions !== null) {
-      for (const e of object.positions) {
-        message.positions.push(Position.fromPartial(e));
-      }
-    }
+    message.positions =
+      object.positions?.map((e) => Position.fromPartial(e)) || [];
     return message;
   },
 };
@@ -468,10 +448,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -479,6 +461,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

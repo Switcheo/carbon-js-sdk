@@ -153,16 +153,14 @@ export const GetValidatorSetByHeightRequest = {
     const message = {
       ...baseGetValidatorSetByHeightRequest,
     } as GetValidatorSetByHeightRequest;
-    if (object.height !== undefined && object.height !== null) {
-      message.height = Long.fromString(object.height);
-    } else {
-      message.height = Long.ZERO;
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.height =
+      object.height !== undefined && object.height !== null
+        ? Long.fromString(object.height)
+        : Long.ZERO;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -177,22 +175,20 @@ export const GetValidatorSetByHeightRequest = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<GetValidatorSetByHeightRequest>
+  fromPartial<I extends Exact<DeepPartial<GetValidatorSetByHeightRequest>, I>>(
+    object: I
   ): GetValidatorSetByHeightRequest {
     const message = {
       ...baseGetValidatorSetByHeightRequest,
     } as GetValidatorSetByHeightRequest;
-    if (object.height !== undefined && object.height !== null) {
-      message.height = object.height as Long;
-    } else {
-      message.height = Long.ZERO;
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.height =
+      object.height !== undefined && object.height !== null
+        ? Long.fromValue(object.height)
+        : Long.ZERO;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -253,22 +249,17 @@ export const GetValidatorSetByHeightResponse = {
     const message = {
       ...baseGetValidatorSetByHeightResponse,
     } as GetValidatorSetByHeightResponse;
-    message.validators = [];
-    if (object.blockHeight !== undefined && object.blockHeight !== null) {
-      message.blockHeight = Long.fromString(object.blockHeight);
-    } else {
-      message.blockHeight = Long.ZERO;
-    }
-    if (object.validators !== undefined && object.validators !== null) {
-      for (const e of object.validators) {
-        message.validators.push(Validator.fromJSON(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.blockHeight =
+      object.blockHeight !== undefined && object.blockHeight !== null
+        ? Long.fromString(object.blockHeight)
+        : Long.ZERO;
+    message.validators = (object.validators ?? []).map((e: any) =>
+      Validator.fromJSON(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -290,28 +281,22 @@ export const GetValidatorSetByHeightResponse = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<GetValidatorSetByHeightResponse>
+  fromPartial<I extends Exact<DeepPartial<GetValidatorSetByHeightResponse>, I>>(
+    object: I
   ): GetValidatorSetByHeightResponse {
     const message = {
       ...baseGetValidatorSetByHeightResponse,
     } as GetValidatorSetByHeightResponse;
-    if (object.blockHeight !== undefined && object.blockHeight !== null) {
-      message.blockHeight = object.blockHeight as Long;
-    } else {
-      message.blockHeight = Long.ZERO;
-    }
-    message.validators = [];
-    if (object.validators !== undefined && object.validators !== null) {
-      for (const e of object.validators) {
-        message.validators.push(Validator.fromPartial(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.blockHeight =
+      object.blockHeight !== undefined && object.blockHeight !== null
+        ? Long.fromValue(object.blockHeight)
+        : Long.ZERO;
+    message.validators =
+      object.validators?.map((e) => Validator.fromPartial(e)) || [];
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -356,11 +341,10 @@ export const GetLatestValidatorSetRequest = {
     const message = {
       ...baseGetLatestValidatorSetRequest,
     } as GetLatestValidatorSetRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -373,17 +357,16 @@ export const GetLatestValidatorSetRequest = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<GetLatestValidatorSetRequest>
+  fromPartial<I extends Exact<DeepPartial<GetLatestValidatorSetRequest>, I>>(
+    object: I
   ): GetLatestValidatorSetRequest {
     const message = {
       ...baseGetLatestValidatorSetRequest,
     } as GetLatestValidatorSetRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -444,22 +427,17 @@ export const GetLatestValidatorSetResponse = {
     const message = {
       ...baseGetLatestValidatorSetResponse,
     } as GetLatestValidatorSetResponse;
-    message.validators = [];
-    if (object.blockHeight !== undefined && object.blockHeight !== null) {
-      message.blockHeight = Long.fromString(object.blockHeight);
-    } else {
-      message.blockHeight = Long.ZERO;
-    }
-    if (object.validators !== undefined && object.validators !== null) {
-      for (const e of object.validators) {
-        message.validators.push(Validator.fromJSON(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.blockHeight =
+      object.blockHeight !== undefined && object.blockHeight !== null
+        ? Long.fromString(object.blockHeight)
+        : Long.ZERO;
+    message.validators = (object.validators ?? []).map((e: any) =>
+      Validator.fromJSON(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -481,28 +459,22 @@ export const GetLatestValidatorSetResponse = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<GetLatestValidatorSetResponse>
+  fromPartial<I extends Exact<DeepPartial<GetLatestValidatorSetResponse>, I>>(
+    object: I
   ): GetLatestValidatorSetResponse {
     const message = {
       ...baseGetLatestValidatorSetResponse,
     } as GetLatestValidatorSetResponse;
-    if (object.blockHeight !== undefined && object.blockHeight !== null) {
-      message.blockHeight = object.blockHeight as Long;
-    } else {
-      message.blockHeight = Long.ZERO;
-    }
-    message.validators = [];
-    if (object.validators !== undefined && object.validators !== null) {
-      for (const e of object.validators) {
-        message.validators.push(Validator.fromPartial(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.blockHeight =
+      object.blockHeight !== undefined && object.blockHeight !== null
+        ? Long.fromValue(object.blockHeight)
+        : Long.ZERO;
+    message.validators =
+      object.validators?.map((e) => Validator.fromPartial(e)) || [];
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -562,29 +534,22 @@ export const Validator = {
 
   fromJSON(object: any): Validator {
     const message = { ...baseValidator } as Validator;
-    if (object.address !== undefined && object.address !== null) {
-      message.address = String(object.address);
-    } else {
-      message.address = "";
-    }
-    if (object.pubKey !== undefined && object.pubKey !== null) {
-      message.pubKey = Any.fromJSON(object.pubKey);
-    } else {
-      message.pubKey = undefined;
-    }
-    if (object.votingPower !== undefined && object.votingPower !== null) {
-      message.votingPower = Long.fromString(object.votingPower);
-    } else {
-      message.votingPower = Long.ZERO;
-    }
-    if (
-      object.proposerPriority !== undefined &&
-      object.proposerPriority !== null
-    ) {
-      message.proposerPriority = Long.fromString(object.proposerPriority);
-    } else {
-      message.proposerPriority = Long.ZERO;
-    }
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    message.pubKey =
+      object.pubKey !== undefined && object.pubKey !== null
+        ? Any.fromJSON(object.pubKey)
+        : undefined;
+    message.votingPower =
+      object.votingPower !== undefined && object.votingPower !== null
+        ? Long.fromString(object.votingPower)
+        : Long.ZERO;
+    message.proposerPriority =
+      object.proposerPriority !== undefined && object.proposerPriority !== null
+        ? Long.fromString(object.proposerPriority)
+        : Long.ZERO;
     return message;
   },
 
@@ -602,27 +567,23 @@ export const Validator = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<Validator>): Validator {
+  fromPartial<I extends Exact<DeepPartial<Validator>, I>>(
+    object: I
+  ): Validator {
     const message = { ...baseValidator } as Validator;
     message.address = object.address ?? "";
-    if (object.pubKey !== undefined && object.pubKey !== null) {
-      message.pubKey = Any.fromPartial(object.pubKey);
-    } else {
-      message.pubKey = undefined;
-    }
-    if (object.votingPower !== undefined && object.votingPower !== null) {
-      message.votingPower = object.votingPower as Long;
-    } else {
-      message.votingPower = Long.ZERO;
-    }
-    if (
-      object.proposerPriority !== undefined &&
-      object.proposerPriority !== null
-    ) {
-      message.proposerPriority = object.proposerPriority as Long;
-    } else {
-      message.proposerPriority = Long.ZERO;
-    }
+    message.pubKey =
+      object.pubKey !== undefined && object.pubKey !== null
+        ? Any.fromPartial(object.pubKey)
+        : undefined;
+    message.votingPower =
+      object.votingPower !== undefined && object.votingPower !== null
+        ? Long.fromValue(object.votingPower)
+        : Long.ZERO;
+    message.proposerPriority =
+      object.proposerPriority !== undefined && object.proposerPriority !== null
+        ? Long.fromValue(object.proposerPriority)
+        : Long.ZERO;
     return message;
   },
 };
@@ -667,11 +628,10 @@ export const GetBlockByHeightRequest = {
     const message = {
       ...baseGetBlockByHeightRequest,
     } as GetBlockByHeightRequest;
-    if (object.height !== undefined && object.height !== null) {
-      message.height = Long.fromString(object.height);
-    } else {
-      message.height = Long.ZERO;
-    }
+    message.height =
+      object.height !== undefined && object.height !== null
+        ? Long.fromString(object.height)
+        : Long.ZERO;
     return message;
   },
 
@@ -682,17 +642,16 @@ export const GetBlockByHeightRequest = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<GetBlockByHeightRequest>
+  fromPartial<I extends Exact<DeepPartial<GetBlockByHeightRequest>, I>>(
+    object: I
   ): GetBlockByHeightRequest {
     const message = {
       ...baseGetBlockByHeightRequest,
     } as GetBlockByHeightRequest;
-    if (object.height !== undefined && object.height !== null) {
-      message.height = object.height as Long;
-    } else {
-      message.height = Long.ZERO;
-    }
+    message.height =
+      object.height !== undefined && object.height !== null
+        ? Long.fromValue(object.height)
+        : Long.ZERO;
     return message;
   },
 };
@@ -743,16 +702,14 @@ export const GetBlockByHeightResponse = {
     const message = {
       ...baseGetBlockByHeightResponse,
     } as GetBlockByHeightResponse;
-    if (object.blockId !== undefined && object.blockId !== null) {
-      message.blockId = BlockID.fromJSON(object.blockId);
-    } else {
-      message.blockId = undefined;
-    }
-    if (object.block !== undefined && object.block !== null) {
-      message.block = Block.fromJSON(object.block);
-    } else {
-      message.block = undefined;
-    }
+    message.blockId =
+      object.blockId !== undefined && object.blockId !== null
+        ? BlockID.fromJSON(object.blockId)
+        : undefined;
+    message.block =
+      object.block !== undefined && object.block !== null
+        ? Block.fromJSON(object.block)
+        : undefined;
     return message;
   },
 
@@ -767,22 +724,20 @@ export const GetBlockByHeightResponse = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<GetBlockByHeightResponse>
+  fromPartial<I extends Exact<DeepPartial<GetBlockByHeightResponse>, I>>(
+    object: I
   ): GetBlockByHeightResponse {
     const message = {
       ...baseGetBlockByHeightResponse,
     } as GetBlockByHeightResponse;
-    if (object.blockId !== undefined && object.blockId !== null) {
-      message.blockId = BlockID.fromPartial(object.blockId);
-    } else {
-      message.blockId = undefined;
-    }
-    if (object.block !== undefined && object.block !== null) {
-      message.block = Block.fromPartial(object.block);
-    } else {
-      message.block = undefined;
-    }
+    message.blockId =
+      object.blockId !== undefined && object.blockId !== null
+        ? BlockID.fromPartial(object.blockId)
+        : undefined;
+    message.block =
+      object.block !== undefined && object.block !== null
+        ? Block.fromPartial(object.block)
+        : undefined;
     return message;
   },
 };
@@ -825,7 +780,9 @@ export const GetLatestBlockRequest = {
     return obj;
   },
 
-  fromPartial(_: DeepPartial<GetLatestBlockRequest>): GetLatestBlockRequest {
+  fromPartial<I extends Exact<DeepPartial<GetLatestBlockRequest>, I>>(
+    _: I
+  ): GetLatestBlockRequest {
     const message = { ...baseGetLatestBlockRequest } as GetLatestBlockRequest;
     return message;
   },
@@ -873,16 +830,14 @@ export const GetLatestBlockResponse = {
 
   fromJSON(object: any): GetLatestBlockResponse {
     const message = { ...baseGetLatestBlockResponse } as GetLatestBlockResponse;
-    if (object.blockId !== undefined && object.blockId !== null) {
-      message.blockId = BlockID.fromJSON(object.blockId);
-    } else {
-      message.blockId = undefined;
-    }
-    if (object.block !== undefined && object.block !== null) {
-      message.block = Block.fromJSON(object.block);
-    } else {
-      message.block = undefined;
-    }
+    message.blockId =
+      object.blockId !== undefined && object.blockId !== null
+        ? BlockID.fromJSON(object.blockId)
+        : undefined;
+    message.block =
+      object.block !== undefined && object.block !== null
+        ? Block.fromJSON(object.block)
+        : undefined;
     return message;
   },
 
@@ -897,20 +852,18 @@ export const GetLatestBlockResponse = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<GetLatestBlockResponse>
+  fromPartial<I extends Exact<DeepPartial<GetLatestBlockResponse>, I>>(
+    object: I
   ): GetLatestBlockResponse {
     const message = { ...baseGetLatestBlockResponse } as GetLatestBlockResponse;
-    if (object.blockId !== undefined && object.blockId !== null) {
-      message.blockId = BlockID.fromPartial(object.blockId);
-    } else {
-      message.blockId = undefined;
-    }
-    if (object.block !== undefined && object.block !== null) {
-      message.block = Block.fromPartial(object.block);
-    } else {
-      message.block = undefined;
-    }
+    message.blockId =
+      object.blockId !== undefined && object.blockId !== null
+        ? BlockID.fromPartial(object.blockId)
+        : undefined;
+    message.block =
+      object.block !== undefined && object.block !== null
+        ? Block.fromPartial(object.block)
+        : undefined;
     return message;
   },
 };
@@ -950,7 +903,9 @@ export const GetSyncingRequest = {
     return obj;
   },
 
-  fromPartial(_: DeepPartial<GetSyncingRequest>): GetSyncingRequest {
+  fromPartial<I extends Exact<DeepPartial<GetSyncingRequest>, I>>(
+    _: I
+  ): GetSyncingRequest {
     const message = { ...baseGetSyncingRequest } as GetSyncingRequest;
     return message;
   },
@@ -989,11 +944,10 @@ export const GetSyncingResponse = {
 
   fromJSON(object: any): GetSyncingResponse {
     const message = { ...baseGetSyncingResponse } as GetSyncingResponse;
-    if (object.syncing !== undefined && object.syncing !== null) {
-      message.syncing = Boolean(object.syncing);
-    } else {
-      message.syncing = false;
-    }
+    message.syncing =
+      object.syncing !== undefined && object.syncing !== null
+        ? Boolean(object.syncing)
+        : false;
     return message;
   },
 
@@ -1003,7 +957,9 @@ export const GetSyncingResponse = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<GetSyncingResponse>): GetSyncingResponse {
+  fromPartial<I extends Exact<DeepPartial<GetSyncingResponse>, I>>(
+    object: I
+  ): GetSyncingResponse {
     const message = { ...baseGetSyncingResponse } as GetSyncingResponse;
     message.syncing = object.syncing ?? false;
     return message;
@@ -1045,7 +1001,9 @@ export const GetNodeInfoRequest = {
     return obj;
   },
 
-  fromPartial(_: DeepPartial<GetNodeInfoRequest>): GetNodeInfoRequest {
+  fromPartial<I extends Exact<DeepPartial<GetNodeInfoRequest>, I>>(
+    _: I
+  ): GetNodeInfoRequest {
     const message = { ...baseGetNodeInfoRequest } as GetNodeInfoRequest;
     return message;
   },
@@ -1102,26 +1060,15 @@ export const GetNodeInfoResponse = {
 
   fromJSON(object: any): GetNodeInfoResponse {
     const message = { ...baseGetNodeInfoResponse } as GetNodeInfoResponse;
-    if (
-      object.defaultNodeInfo !== undefined &&
-      object.defaultNodeInfo !== null
-    ) {
-      message.defaultNodeInfo = DefaultNodeInfo.fromJSON(
-        object.defaultNodeInfo
-      );
-    } else {
-      message.defaultNodeInfo = undefined;
-    }
-    if (
+    message.defaultNodeInfo =
+      object.defaultNodeInfo !== undefined && object.defaultNodeInfo !== null
+        ? DefaultNodeInfo.fromJSON(object.defaultNodeInfo)
+        : undefined;
+    message.applicationVersion =
       object.applicationVersion !== undefined &&
       object.applicationVersion !== null
-    ) {
-      message.applicationVersion = VersionInfo.fromJSON(
-        object.applicationVersion
-      );
-    } else {
-      message.applicationVersion = undefined;
-    }
+        ? VersionInfo.fromJSON(object.applicationVersion)
+        : undefined;
     return message;
   },
 
@@ -1138,28 +1085,19 @@ export const GetNodeInfoResponse = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<GetNodeInfoResponse>): GetNodeInfoResponse {
+  fromPartial<I extends Exact<DeepPartial<GetNodeInfoResponse>, I>>(
+    object: I
+  ): GetNodeInfoResponse {
     const message = { ...baseGetNodeInfoResponse } as GetNodeInfoResponse;
-    if (
-      object.defaultNodeInfo !== undefined &&
-      object.defaultNodeInfo !== null
-    ) {
-      message.defaultNodeInfo = DefaultNodeInfo.fromPartial(
-        object.defaultNodeInfo
-      );
-    } else {
-      message.defaultNodeInfo = undefined;
-    }
-    if (
+    message.defaultNodeInfo =
+      object.defaultNodeInfo !== undefined && object.defaultNodeInfo !== null
+        ? DefaultNodeInfo.fromPartial(object.defaultNodeInfo)
+        : undefined;
+    message.applicationVersion =
       object.applicationVersion !== undefined &&
       object.applicationVersion !== null
-    ) {
-      message.applicationVersion = VersionInfo.fromPartial(
-        object.applicationVersion
-      );
-    } else {
-      message.applicationVersion = undefined;
-    }
+        ? VersionInfo.fromPartial(object.applicationVersion)
+        : undefined;
     return message;
   },
 };
@@ -1241,42 +1179,33 @@ export const VersionInfo = {
 
   fromJSON(object: any): VersionInfo {
     const message = { ...baseVersionInfo } as VersionInfo;
-    message.buildDeps = [];
-    if (object.name !== undefined && object.name !== null) {
-      message.name = String(object.name);
-    } else {
-      message.name = "";
-    }
-    if (object.appName !== undefined && object.appName !== null) {
-      message.appName = String(object.appName);
-    } else {
-      message.appName = "";
-    }
-    if (object.version !== undefined && object.version !== null) {
-      message.version = String(object.version);
-    } else {
-      message.version = "";
-    }
-    if (object.gitCommit !== undefined && object.gitCommit !== null) {
-      message.gitCommit = String(object.gitCommit);
-    } else {
-      message.gitCommit = "";
-    }
-    if (object.buildTags !== undefined && object.buildTags !== null) {
-      message.buildTags = String(object.buildTags);
-    } else {
-      message.buildTags = "";
-    }
-    if (object.goVersion !== undefined && object.goVersion !== null) {
-      message.goVersion = String(object.goVersion);
-    } else {
-      message.goVersion = "";
-    }
-    if (object.buildDeps !== undefined && object.buildDeps !== null) {
-      for (const e of object.buildDeps) {
-        message.buildDeps.push(Module.fromJSON(e));
-      }
-    }
+    message.name =
+      object.name !== undefined && object.name !== null
+        ? String(object.name)
+        : "";
+    message.appName =
+      object.appName !== undefined && object.appName !== null
+        ? String(object.appName)
+        : "";
+    message.version =
+      object.version !== undefined && object.version !== null
+        ? String(object.version)
+        : "";
+    message.gitCommit =
+      object.gitCommit !== undefined && object.gitCommit !== null
+        ? String(object.gitCommit)
+        : "";
+    message.buildTags =
+      object.buildTags !== undefined && object.buildTags !== null
+        ? String(object.buildTags)
+        : "";
+    message.goVersion =
+      object.goVersion !== undefined && object.goVersion !== null
+        ? String(object.goVersion)
+        : "";
+    message.buildDeps = (object.buildDeps ?? []).map((e: any) =>
+      Module.fromJSON(e)
+    );
     return message;
   },
 
@@ -1298,7 +1227,9 @@ export const VersionInfo = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<VersionInfo>): VersionInfo {
+  fromPartial<I extends Exact<DeepPartial<VersionInfo>, I>>(
+    object: I
+  ): VersionInfo {
     const message = { ...baseVersionInfo } as VersionInfo;
     message.name = object.name ?? "";
     message.appName = object.appName ?? "";
@@ -1306,12 +1237,8 @@ export const VersionInfo = {
     message.gitCommit = object.gitCommit ?? "";
     message.buildTags = object.buildTags ?? "";
     message.goVersion = object.goVersion ?? "";
-    message.buildDeps = [];
-    if (object.buildDeps !== undefined && object.buildDeps !== null) {
-      for (const e of object.buildDeps) {
-        message.buildDeps.push(Module.fromPartial(e));
-      }
-    }
+    message.buildDeps =
+      object.buildDeps?.map((e) => Module.fromPartial(e)) || [];
     return message;
   },
 };
@@ -1361,21 +1288,16 @@ export const Module = {
 
   fromJSON(object: any): Module {
     const message = { ...baseModule } as Module;
-    if (object.path !== undefined && object.path !== null) {
-      message.path = String(object.path);
-    } else {
-      message.path = "";
-    }
-    if (object.version !== undefined && object.version !== null) {
-      message.version = String(object.version);
-    } else {
-      message.version = "";
-    }
-    if (object.sum !== undefined && object.sum !== null) {
-      message.sum = String(object.sum);
-    } else {
-      message.sum = "";
-    }
+    message.path =
+      object.path !== undefined && object.path !== null
+        ? String(object.path)
+        : "";
+    message.version =
+      object.version !== undefined && object.version !== null
+        ? String(object.version)
+        : "";
+    message.sum =
+      object.sum !== undefined && object.sum !== null ? String(object.sum) : "";
     return message;
   },
 
@@ -1387,7 +1309,7 @@ export const Module = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<Module>): Module {
+  fromPartial<I extends Exact<DeepPartial<Module>, I>>(object: I): Module {
     const message = { ...baseModule } as Module;
     message.path = object.path ?? "";
     message.version = object.version ?? "";
@@ -1527,10 +1449,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -1538,6 +1462,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

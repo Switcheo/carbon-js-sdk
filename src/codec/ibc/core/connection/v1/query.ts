@@ -167,11 +167,10 @@ export const QueryConnectionRequest = {
 
   fromJSON(object: any): QueryConnectionRequest {
     const message = { ...baseQueryConnectionRequest } as QueryConnectionRequest;
-    if (object.connectionId !== undefined && object.connectionId !== null) {
-      message.connectionId = String(object.connectionId);
-    } else {
-      message.connectionId = "";
-    }
+    message.connectionId =
+      object.connectionId !== undefined && object.connectionId !== null
+        ? String(object.connectionId)
+        : "";
     return message;
   },
 
@@ -182,8 +181,8 @@ export const QueryConnectionRequest = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryConnectionRequest>
+  fromPartial<I extends Exact<DeepPartial<QueryConnectionRequest>, I>>(
+    object: I
   ): QueryConnectionRequest {
     const message = { ...baseQueryConnectionRequest } as QueryConnectionRequest;
     message.connectionId = object.connectionId ?? "";
@@ -247,20 +246,18 @@ export const QueryConnectionResponse = {
     const message = {
       ...baseQueryConnectionResponse,
     } as QueryConnectionResponse;
-    message.proof = new Uint8Array();
-    if (object.connection !== undefined && object.connection !== null) {
-      message.connection = ConnectionEnd.fromJSON(object.connection);
-    } else {
-      message.connection = undefined;
-    }
-    if (object.proof !== undefined && object.proof !== null) {
-      message.proof = bytesFromBase64(object.proof);
-    }
-    if (object.proofHeight !== undefined && object.proofHeight !== null) {
-      message.proofHeight = Height.fromJSON(object.proofHeight);
-    } else {
-      message.proofHeight = undefined;
-    }
+    message.connection =
+      object.connection !== undefined && object.connection !== null
+        ? ConnectionEnd.fromJSON(object.connection)
+        : undefined;
+    message.proof =
+      object.proof !== undefined && object.proof !== null
+        ? bytesFromBase64(object.proof)
+        : new Uint8Array();
+    message.proofHeight =
+      object.proofHeight !== undefined && object.proofHeight !== null
+        ? Height.fromJSON(object.proofHeight)
+        : undefined;
     return message;
   },
 
@@ -281,23 +278,21 @@ export const QueryConnectionResponse = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryConnectionResponse>
+  fromPartial<I extends Exact<DeepPartial<QueryConnectionResponse>, I>>(
+    object: I
   ): QueryConnectionResponse {
     const message = {
       ...baseQueryConnectionResponse,
     } as QueryConnectionResponse;
-    if (object.connection !== undefined && object.connection !== null) {
-      message.connection = ConnectionEnd.fromPartial(object.connection);
-    } else {
-      message.connection = undefined;
-    }
+    message.connection =
+      object.connection !== undefined && object.connection !== null
+        ? ConnectionEnd.fromPartial(object.connection)
+        : undefined;
     message.proof = object.proof ?? new Uint8Array();
-    if (object.proofHeight !== undefined && object.proofHeight !== null) {
-      message.proofHeight = Height.fromPartial(object.proofHeight);
-    } else {
-      message.proofHeight = undefined;
-    }
+    message.proofHeight =
+      object.proofHeight !== undefined && object.proofHeight !== null
+        ? Height.fromPartial(object.proofHeight)
+        : undefined;
     return message;
   },
 };
@@ -342,11 +337,10 @@ export const QueryConnectionsRequest = {
     const message = {
       ...baseQueryConnectionsRequest,
     } as QueryConnectionsRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -359,17 +353,16 @@ export const QueryConnectionsRequest = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryConnectionsRequest>
+  fromPartial<I extends Exact<DeepPartial<QueryConnectionsRequest>, I>>(
+    object: I
   ): QueryConnectionsRequest {
     const message = {
       ...baseQueryConnectionsRequest,
     } as QueryConnectionsRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -432,22 +425,17 @@ export const QueryConnectionsResponse = {
     const message = {
       ...baseQueryConnectionsResponse,
     } as QueryConnectionsResponse;
-    message.connections = [];
-    if (object.connections !== undefined && object.connections !== null) {
-      for (const e of object.connections) {
-        message.connections.push(IdentifiedConnection.fromJSON(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
-    if (object.height !== undefined && object.height !== null) {
-      message.height = Height.fromJSON(object.height);
-    } else {
-      message.height = undefined;
-    }
+    message.connections = (object.connections ?? []).map((e: any) =>
+      IdentifiedConnection.fromJSON(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
+    message.height =
+      object.height !== undefined && object.height !== null
+        ? Height.fromJSON(object.height)
+        : undefined;
     return message;
   },
 
@@ -469,28 +457,22 @@ export const QueryConnectionsResponse = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryConnectionsResponse>
+  fromPartial<I extends Exact<DeepPartial<QueryConnectionsResponse>, I>>(
+    object: I
   ): QueryConnectionsResponse {
     const message = {
       ...baseQueryConnectionsResponse,
     } as QueryConnectionsResponse;
-    message.connections = [];
-    if (object.connections !== undefined && object.connections !== null) {
-      for (const e of object.connections) {
-        message.connections.push(IdentifiedConnection.fromPartial(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
-    if (object.height !== undefined && object.height !== null) {
-      message.height = Height.fromPartial(object.height);
-    } else {
-      message.height = undefined;
-    }
+    message.connections =
+      object.connections?.map((e) => IdentifiedConnection.fromPartial(e)) || [];
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
+    message.height =
+      object.height !== undefined && object.height !== null
+        ? Height.fromPartial(object.height)
+        : undefined;
     return message;
   },
 };
@@ -535,11 +517,10 @@ export const QueryClientConnectionsRequest = {
     const message = {
       ...baseQueryClientConnectionsRequest,
     } as QueryClientConnectionsRequest;
-    if (object.clientId !== undefined && object.clientId !== null) {
-      message.clientId = String(object.clientId);
-    } else {
-      message.clientId = "";
-    }
+    message.clientId =
+      object.clientId !== undefined && object.clientId !== null
+        ? String(object.clientId)
+        : "";
     return message;
   },
 
@@ -549,8 +530,8 @@ export const QueryClientConnectionsRequest = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryClientConnectionsRequest>
+  fromPartial<I extends Exact<DeepPartial<QueryClientConnectionsRequest>, I>>(
+    object: I
   ): QueryClientConnectionsRequest {
     const message = {
       ...baseQueryClientConnectionsRequest,
@@ -614,24 +595,17 @@ export const QueryClientConnectionsResponse = {
     const message = {
       ...baseQueryClientConnectionsResponse,
     } as QueryClientConnectionsResponse;
-    message.connectionPaths = [];
-    message.proof = new Uint8Array();
-    if (
-      object.connectionPaths !== undefined &&
-      object.connectionPaths !== null
-    ) {
-      for (const e of object.connectionPaths) {
-        message.connectionPaths.push(String(e));
-      }
-    }
-    if (object.proof !== undefined && object.proof !== null) {
-      message.proof = bytesFromBase64(object.proof);
-    }
-    if (object.proofHeight !== undefined && object.proofHeight !== null) {
-      message.proofHeight = Height.fromJSON(object.proofHeight);
-    } else {
-      message.proofHeight = undefined;
-    }
+    message.connectionPaths = (object.connectionPaths ?? []).map((e: any) =>
+      String(e)
+    );
+    message.proof =
+      object.proof !== undefined && object.proof !== null
+        ? bytesFromBase64(object.proof)
+        : new Uint8Array();
+    message.proofHeight =
+      object.proofHeight !== undefined && object.proofHeight !== null
+        ? Height.fromJSON(object.proofHeight)
+        : undefined;
     return message;
   },
 
@@ -653,27 +627,18 @@ export const QueryClientConnectionsResponse = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryClientConnectionsResponse>
+  fromPartial<I extends Exact<DeepPartial<QueryClientConnectionsResponse>, I>>(
+    object: I
   ): QueryClientConnectionsResponse {
     const message = {
       ...baseQueryClientConnectionsResponse,
     } as QueryClientConnectionsResponse;
-    message.connectionPaths = [];
-    if (
-      object.connectionPaths !== undefined &&
-      object.connectionPaths !== null
-    ) {
-      for (const e of object.connectionPaths) {
-        message.connectionPaths.push(e);
-      }
-    }
+    message.connectionPaths = object.connectionPaths?.map((e) => e) || [];
     message.proof = object.proof ?? new Uint8Array();
-    if (object.proofHeight !== undefined && object.proofHeight !== null) {
-      message.proofHeight = Height.fromPartial(object.proofHeight);
-    } else {
-      message.proofHeight = undefined;
-    }
+    message.proofHeight =
+      object.proofHeight !== undefined && object.proofHeight !== null
+        ? Height.fromPartial(object.proofHeight)
+        : undefined;
     return message;
   },
 };
@@ -718,11 +683,10 @@ export const QueryConnectionClientStateRequest = {
     const message = {
       ...baseQueryConnectionClientStateRequest,
     } as QueryConnectionClientStateRequest;
-    if (object.connectionId !== undefined && object.connectionId !== null) {
-      message.connectionId = String(object.connectionId);
-    } else {
-      message.connectionId = "";
-    }
+    message.connectionId =
+      object.connectionId !== undefined && object.connectionId !== null
+        ? String(object.connectionId)
+        : "";
     return message;
   },
 
@@ -733,9 +697,9 @@ export const QueryConnectionClientStateRequest = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryConnectionClientStateRequest>
-  ): QueryConnectionClientStateRequest {
+  fromPartial<
+    I extends Exact<DeepPartial<QueryConnectionClientStateRequest>, I>
+  >(object: I): QueryConnectionClientStateRequest {
     const message = {
       ...baseQueryConnectionClientStateRequest,
     } as QueryConnectionClientStateRequest;
@@ -803,25 +767,19 @@ export const QueryConnectionClientStateResponse = {
     const message = {
       ...baseQueryConnectionClientStateResponse,
     } as QueryConnectionClientStateResponse;
-    message.proof = new Uint8Array();
-    if (
+    message.identifiedClientState =
       object.identifiedClientState !== undefined &&
       object.identifiedClientState !== null
-    ) {
-      message.identifiedClientState = IdentifiedClientState.fromJSON(
-        object.identifiedClientState
-      );
-    } else {
-      message.identifiedClientState = undefined;
-    }
-    if (object.proof !== undefined && object.proof !== null) {
-      message.proof = bytesFromBase64(object.proof);
-    }
-    if (object.proofHeight !== undefined && object.proofHeight !== null) {
-      message.proofHeight = Height.fromJSON(object.proofHeight);
-    } else {
-      message.proofHeight = undefined;
-    }
+        ? IdentifiedClientState.fromJSON(object.identifiedClientState)
+        : undefined;
+    message.proof =
+      object.proof !== undefined && object.proof !== null
+        ? bytesFromBase64(object.proof)
+        : new Uint8Array();
+    message.proofHeight =
+      object.proofHeight !== undefined && object.proofHeight !== null
+        ? Height.fromJSON(object.proofHeight)
+        : undefined;
     return message;
   },
 
@@ -842,28 +800,22 @@ export const QueryConnectionClientStateResponse = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryConnectionClientStateResponse>
-  ): QueryConnectionClientStateResponse {
+  fromPartial<
+    I extends Exact<DeepPartial<QueryConnectionClientStateResponse>, I>
+  >(object: I): QueryConnectionClientStateResponse {
     const message = {
       ...baseQueryConnectionClientStateResponse,
     } as QueryConnectionClientStateResponse;
-    if (
+    message.identifiedClientState =
       object.identifiedClientState !== undefined &&
       object.identifiedClientState !== null
-    ) {
-      message.identifiedClientState = IdentifiedClientState.fromPartial(
-        object.identifiedClientState
-      );
-    } else {
-      message.identifiedClientState = undefined;
-    }
+        ? IdentifiedClientState.fromPartial(object.identifiedClientState)
+        : undefined;
     message.proof = object.proof ?? new Uint8Array();
-    if (object.proofHeight !== undefined && object.proofHeight !== null) {
-      message.proofHeight = Height.fromPartial(object.proofHeight);
-    } else {
-      message.proofHeight = undefined;
-    }
+    message.proofHeight =
+      object.proofHeight !== undefined && object.proofHeight !== null
+        ? Height.fromPartial(object.proofHeight)
+        : undefined;
     return message;
   },
 };
@@ -924,21 +876,18 @@ export const QueryConnectionConsensusStateRequest = {
     const message = {
       ...baseQueryConnectionConsensusStateRequest,
     } as QueryConnectionConsensusStateRequest;
-    if (object.connectionId !== undefined && object.connectionId !== null) {
-      message.connectionId = String(object.connectionId);
-    } else {
-      message.connectionId = "";
-    }
-    if (object.revisionNumber !== undefined && object.revisionNumber !== null) {
-      message.revisionNumber = Long.fromString(object.revisionNumber);
-    } else {
-      message.revisionNumber = Long.UZERO;
-    }
-    if (object.revisionHeight !== undefined && object.revisionHeight !== null) {
-      message.revisionHeight = Long.fromString(object.revisionHeight);
-    } else {
-      message.revisionHeight = Long.UZERO;
-    }
+    message.connectionId =
+      object.connectionId !== undefined && object.connectionId !== null
+        ? String(object.connectionId)
+        : "";
+    message.revisionNumber =
+      object.revisionNumber !== undefined && object.revisionNumber !== null
+        ? Long.fromString(object.revisionNumber)
+        : Long.UZERO;
+    message.revisionHeight =
+      object.revisionHeight !== undefined && object.revisionHeight !== null
+        ? Long.fromString(object.revisionHeight)
+        : Long.UZERO;
     return message;
   },
 
@@ -953,23 +902,21 @@ export const QueryConnectionConsensusStateRequest = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryConnectionConsensusStateRequest>
-  ): QueryConnectionConsensusStateRequest {
+  fromPartial<
+    I extends Exact<DeepPartial<QueryConnectionConsensusStateRequest>, I>
+  >(object: I): QueryConnectionConsensusStateRequest {
     const message = {
       ...baseQueryConnectionConsensusStateRequest,
     } as QueryConnectionConsensusStateRequest;
     message.connectionId = object.connectionId ?? "";
-    if (object.revisionNumber !== undefined && object.revisionNumber !== null) {
-      message.revisionNumber = object.revisionNumber as Long;
-    } else {
-      message.revisionNumber = Long.UZERO;
-    }
-    if (object.revisionHeight !== undefined && object.revisionHeight !== null) {
-      message.revisionHeight = object.revisionHeight as Long;
-    } else {
-      message.revisionHeight = Long.UZERO;
-    }
+    message.revisionNumber =
+      object.revisionNumber !== undefined && object.revisionNumber !== null
+        ? Long.fromValue(object.revisionNumber)
+        : Long.UZERO;
+    message.revisionHeight =
+      object.revisionHeight !== undefined && object.revisionHeight !== null
+        ? Long.fromValue(object.revisionHeight)
+        : Long.UZERO;
     return message;
   },
 };
@@ -1033,25 +980,22 @@ export const QueryConnectionConsensusStateResponse = {
     const message = {
       ...baseQueryConnectionConsensusStateResponse,
     } as QueryConnectionConsensusStateResponse;
-    message.proof = new Uint8Array();
-    if (object.consensusState !== undefined && object.consensusState !== null) {
-      message.consensusState = Any.fromJSON(object.consensusState);
-    } else {
-      message.consensusState = undefined;
-    }
-    if (object.clientId !== undefined && object.clientId !== null) {
-      message.clientId = String(object.clientId);
-    } else {
-      message.clientId = "";
-    }
-    if (object.proof !== undefined && object.proof !== null) {
-      message.proof = bytesFromBase64(object.proof);
-    }
-    if (object.proofHeight !== undefined && object.proofHeight !== null) {
-      message.proofHeight = Height.fromJSON(object.proofHeight);
-    } else {
-      message.proofHeight = undefined;
-    }
+    message.consensusState =
+      object.consensusState !== undefined && object.consensusState !== null
+        ? Any.fromJSON(object.consensusState)
+        : undefined;
+    message.clientId =
+      object.clientId !== undefined && object.clientId !== null
+        ? String(object.clientId)
+        : "";
+    message.proof =
+      object.proof !== undefined && object.proof !== null
+        ? bytesFromBase64(object.proof)
+        : new Uint8Array();
+    message.proofHeight =
+      object.proofHeight !== undefined && object.proofHeight !== null
+        ? Height.fromJSON(object.proofHeight)
+        : undefined;
     return message;
   },
 
@@ -1073,24 +1017,22 @@ export const QueryConnectionConsensusStateResponse = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryConnectionConsensusStateResponse>
-  ): QueryConnectionConsensusStateResponse {
+  fromPartial<
+    I extends Exact<DeepPartial<QueryConnectionConsensusStateResponse>, I>
+  >(object: I): QueryConnectionConsensusStateResponse {
     const message = {
       ...baseQueryConnectionConsensusStateResponse,
     } as QueryConnectionConsensusStateResponse;
-    if (object.consensusState !== undefined && object.consensusState !== null) {
-      message.consensusState = Any.fromPartial(object.consensusState);
-    } else {
-      message.consensusState = undefined;
-    }
+    message.consensusState =
+      object.consensusState !== undefined && object.consensusState !== null
+        ? Any.fromPartial(object.consensusState)
+        : undefined;
     message.clientId = object.clientId ?? "";
     message.proof = object.proof ?? new Uint8Array();
-    if (object.proofHeight !== undefined && object.proofHeight !== null) {
-      message.proofHeight = Height.fromPartial(object.proofHeight);
-    } else {
-      message.proofHeight = undefined;
-    }
+    message.proofHeight =
+      object.proofHeight !== undefined && object.proofHeight !== null
+        ? Height.fromPartial(object.proofHeight)
+        : undefined;
     return message;
   },
 };
@@ -1256,10 +1198,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -1267,6 +1211,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

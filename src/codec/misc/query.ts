@@ -55,16 +55,14 @@ export const QuerySearchRequest = {
 
   fromJSON(object: any): QuerySearchRequest {
     const message = { ...baseQuerySearchRequest } as QuerySearchRequest;
-    if (object.keyword !== undefined && object.keyword !== null) {
-      message.keyword = String(object.keyword);
-    } else {
-      message.keyword = "";
-    }
-    if (object.limit !== undefined && object.limit !== null) {
-      message.limit = Long.fromString(object.limit);
-    } else {
-      message.limit = Long.UZERO;
-    }
+    message.keyword =
+      object.keyword !== undefined && object.keyword !== null
+        ? String(object.keyword)
+        : "";
+    message.limit =
+      object.limit !== undefined && object.limit !== null
+        ? Long.fromString(object.limit)
+        : Long.UZERO;
     return message;
   },
 
@@ -76,14 +74,15 @@ export const QuerySearchRequest = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<QuerySearchRequest>): QuerySearchRequest {
+  fromPartial<I extends Exact<DeepPartial<QuerySearchRequest>, I>>(
+    object: I
+  ): QuerySearchRequest {
     const message = { ...baseQuerySearchRequest } as QuerySearchRequest;
     message.keyword = object.keyword ?? "";
-    if (object.limit !== undefined && object.limit !== null) {
-      message.limit = object.limit as Long;
-    } else {
-      message.limit = Long.UZERO;
-    }
+    message.limit =
+      object.limit !== undefined && object.limit !== null
+        ? Long.fromValue(object.limit)
+        : Long.UZERO;
     return message;
   },
 };
@@ -131,18 +130,10 @@ export const QuerySearchResponse = {
 
   fromJSON(object: any): QuerySearchResponse {
     const message = { ...baseQuerySearchResponse } as QuerySearchResponse;
-    message.transactions = [];
-    message.orders = [];
-    if (object.transactions !== undefined && object.transactions !== null) {
-      for (const e of object.transactions) {
-        message.transactions.push(Transaction.fromJSON(e));
-      }
-    }
-    if (object.orders !== undefined && object.orders !== null) {
-      for (const e of object.orders) {
-        message.orders.push(DBOrder.fromJSON(e));
-      }
-    }
+    message.transactions = (object.transactions ?? []).map((e: any) =>
+      Transaction.fromJSON(e)
+    );
+    message.orders = (object.orders ?? []).map((e: any) => DBOrder.fromJSON(e));
     return message;
   },
 
@@ -165,20 +156,13 @@ export const QuerySearchResponse = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<QuerySearchResponse>): QuerySearchResponse {
+  fromPartial<I extends Exact<DeepPartial<QuerySearchResponse>, I>>(
+    object: I
+  ): QuerySearchResponse {
     const message = { ...baseQuerySearchResponse } as QuerySearchResponse;
-    message.transactions = [];
-    if (object.transactions !== undefined && object.transactions !== null) {
-      for (const e of object.transactions) {
-        message.transactions.push(Transaction.fromPartial(e));
-      }
-    }
-    message.orders = [];
-    if (object.orders !== undefined && object.orders !== null) {
-      for (const e of object.orders) {
-        message.orders.push(DBOrder.fromPartial(e));
-      }
-    }
+    message.transactions =
+      object.transactions?.map((e) => Transaction.fromPartial(e)) || [];
+    message.orders = object.orders?.map((e) => DBOrder.fromPartial(e)) || [];
     return message;
   },
 };
@@ -222,10 +206,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -233,6 +219,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

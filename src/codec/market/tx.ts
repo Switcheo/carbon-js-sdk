@@ -61,16 +61,14 @@ export const MsgCreateMarket = {
 
   fromJSON(object: any): MsgCreateMarket {
     const message = { ...baseMsgCreateMarket } as MsgCreateMarket;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = Market.fromJSON(object.market);
-    } else {
-      message.market = undefined;
-    }
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? Market.fromJSON(object.market)
+        : undefined;
     return message;
   },
 
@@ -82,14 +80,15 @@ export const MsgCreateMarket = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<MsgCreateMarket>): MsgCreateMarket {
+  fromPartial<I extends Exact<DeepPartial<MsgCreateMarket>, I>>(
+    object: I
+  ): MsgCreateMarket {
     const message = { ...baseMsgCreateMarket } as MsgCreateMarket;
     message.creator = object.creator ?? "";
-    if (object.market !== undefined && object.market !== null) {
-      message.market = Market.fromPartial(object.market);
-    } else {
-      message.market = undefined;
-    }
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? Market.fromPartial(object.market)
+        : undefined;
     return message;
   },
 };
@@ -134,11 +133,10 @@ export const MsgCreateMarketResponse = {
     const message = {
       ...baseMsgCreateMarketResponse,
     } as MsgCreateMarketResponse;
-    if (object.name !== undefined && object.name !== null) {
-      message.name = String(object.name);
-    } else {
-      message.name = "";
-    }
+    message.name =
+      object.name !== undefined && object.name !== null
+        ? String(object.name)
+        : "";
     return message;
   },
 
@@ -148,8 +146,8 @@ export const MsgCreateMarketResponse = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<MsgCreateMarketResponse>
+  fromPartial<I extends Exact<DeepPartial<MsgCreateMarketResponse>, I>>(
+    object: I
   ): MsgCreateMarketResponse {
     const message = {
       ...baseMsgCreateMarketResponse,
@@ -201,16 +199,14 @@ export const MsgUpdateMarket = {
 
   fromJSON(object: any): MsgUpdateMarket {
     const message = { ...baseMsgUpdateMarket } as MsgUpdateMarket;
-    if (object.updater !== undefined && object.updater !== null) {
-      message.updater = String(object.updater);
-    } else {
-      message.updater = "";
-    }
-    if (object.marketParams !== undefined && object.marketParams !== null) {
-      message.marketParams = MarketParams.fromJSON(object.marketParams);
-    } else {
-      message.marketParams = undefined;
-    }
+    message.updater =
+      object.updater !== undefined && object.updater !== null
+        ? String(object.updater)
+        : "";
+    message.marketParams =
+      object.marketParams !== undefined && object.marketParams !== null
+        ? MarketParams.fromJSON(object.marketParams)
+        : undefined;
     return message;
   },
 
@@ -224,14 +220,15 @@ export const MsgUpdateMarket = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<MsgUpdateMarket>): MsgUpdateMarket {
+  fromPartial<I extends Exact<DeepPartial<MsgUpdateMarket>, I>>(
+    object: I
+  ): MsgUpdateMarket {
     const message = { ...baseMsgUpdateMarket } as MsgUpdateMarket;
     message.updater = object.updater ?? "";
-    if (object.marketParams !== undefined && object.marketParams !== null) {
-      message.marketParams = MarketParams.fromPartial(object.marketParams);
-    } else {
-      message.marketParams = undefined;
-    }
+    message.marketParams =
+      object.marketParams !== undefined && object.marketParams !== null
+        ? MarketParams.fromPartial(object.marketParams)
+        : undefined;
     return message;
   },
 };
@@ -278,8 +275,8 @@ export const MsgUpdateMarketResponse = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgUpdateMarketResponse>
+  fromPartial<I extends Exact<DeepPartial<MsgUpdateMarketResponse>, I>>(
+    _: I
   ): MsgUpdateMarketResponse {
     const message = {
       ...baseMsgUpdateMarketResponse,
@@ -342,10 +339,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -353,6 +352,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

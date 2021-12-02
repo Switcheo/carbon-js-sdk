@@ -49,16 +49,14 @@ export const MarketEvent = {
 
   fromJSON(object: any): MarketEvent {
     const message = { ...baseMarketEvent } as MarketEvent;
-    if (object.market !== undefined && object.market !== null) {
-      message.market = Market.fromJSON(object.market);
-    } else {
-      message.market = undefined;
-    }
-    if (object.type !== undefined && object.type !== null) {
-      message.type = String(object.type);
-    } else {
-      message.type = "";
-    }
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? Market.fromJSON(object.market)
+        : undefined;
+    message.type =
+      object.type !== undefined && object.type !== null
+        ? String(object.type)
+        : "";
     return message;
   },
 
@@ -70,13 +68,14 @@ export const MarketEvent = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<MarketEvent>): MarketEvent {
+  fromPartial<I extends Exact<DeepPartial<MarketEvent>, I>>(
+    object: I
+  ): MarketEvent {
     const message = { ...baseMarketEvent } as MarketEvent;
-    if (object.market !== undefined && object.market !== null) {
-      message.market = Market.fromPartial(object.market);
-    } else {
-      message.market = undefined;
-    }
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? Market.fromPartial(object.market)
+        : undefined;
     message.type = object.type ?? "";
     return message;
   },
@@ -89,10 +88,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -100,6 +101,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

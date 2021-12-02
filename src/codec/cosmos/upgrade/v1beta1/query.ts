@@ -101,8 +101,8 @@ export const QueryCurrentPlanRequest = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<QueryCurrentPlanRequest>
+  fromPartial<I extends Exact<DeepPartial<QueryCurrentPlanRequest>, I>>(
+    _: I
   ): QueryCurrentPlanRequest {
     const message = {
       ...baseQueryCurrentPlanRequest,
@@ -151,11 +151,10 @@ export const QueryCurrentPlanResponse = {
     const message = {
       ...baseQueryCurrentPlanResponse,
     } as QueryCurrentPlanResponse;
-    if (object.plan !== undefined && object.plan !== null) {
-      message.plan = Plan.fromJSON(object.plan);
-    } else {
-      message.plan = undefined;
-    }
+    message.plan =
+      object.plan !== undefined && object.plan !== null
+        ? Plan.fromJSON(object.plan)
+        : undefined;
     return message;
   },
 
@@ -166,17 +165,16 @@ export const QueryCurrentPlanResponse = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryCurrentPlanResponse>
+  fromPartial<I extends Exact<DeepPartial<QueryCurrentPlanResponse>, I>>(
+    object: I
   ): QueryCurrentPlanResponse {
     const message = {
       ...baseQueryCurrentPlanResponse,
     } as QueryCurrentPlanResponse;
-    if (object.plan !== undefined && object.plan !== null) {
-      message.plan = Plan.fromPartial(object.plan);
-    } else {
-      message.plan = undefined;
-    }
+    message.plan =
+      object.plan !== undefined && object.plan !== null
+        ? Plan.fromPartial(object.plan)
+        : undefined;
     return message;
   },
 };
@@ -221,11 +219,10 @@ export const QueryAppliedPlanRequest = {
     const message = {
       ...baseQueryAppliedPlanRequest,
     } as QueryAppliedPlanRequest;
-    if (object.name !== undefined && object.name !== null) {
-      message.name = String(object.name);
-    } else {
-      message.name = "";
-    }
+    message.name =
+      object.name !== undefined && object.name !== null
+        ? String(object.name)
+        : "";
     return message;
   },
 
@@ -235,8 +232,8 @@ export const QueryAppliedPlanRequest = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryAppliedPlanRequest>
+  fromPartial<I extends Exact<DeepPartial<QueryAppliedPlanRequest>, I>>(
+    object: I
   ): QueryAppliedPlanRequest {
     const message = {
       ...baseQueryAppliedPlanRequest,
@@ -286,11 +283,10 @@ export const QueryAppliedPlanResponse = {
     const message = {
       ...baseQueryAppliedPlanResponse,
     } as QueryAppliedPlanResponse;
-    if (object.height !== undefined && object.height !== null) {
-      message.height = Long.fromString(object.height);
-    } else {
-      message.height = Long.ZERO;
-    }
+    message.height =
+      object.height !== undefined && object.height !== null
+        ? Long.fromString(object.height)
+        : Long.ZERO;
     return message;
   },
 
@@ -301,17 +297,16 @@ export const QueryAppliedPlanResponse = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryAppliedPlanResponse>
+  fromPartial<I extends Exact<DeepPartial<QueryAppliedPlanResponse>, I>>(
+    object: I
   ): QueryAppliedPlanResponse {
     const message = {
       ...baseQueryAppliedPlanResponse,
     } as QueryAppliedPlanResponse;
-    if (object.height !== undefined && object.height !== null) {
-      message.height = object.height as Long;
-    } else {
-      message.height = Long.ZERO;
-    }
+    message.height =
+      object.height !== undefined && object.height !== null
+        ? Long.fromValue(object.height)
+        : Long.ZERO;
     return message;
   },
 };
@@ -358,11 +353,10 @@ export const QueryUpgradedConsensusStateRequest = {
     const message = {
       ...baseQueryUpgradedConsensusStateRequest,
     } as QueryUpgradedConsensusStateRequest;
-    if (object.lastHeight !== undefined && object.lastHeight !== null) {
-      message.lastHeight = Long.fromString(object.lastHeight);
-    } else {
-      message.lastHeight = Long.ZERO;
-    }
+    message.lastHeight =
+      object.lastHeight !== undefined && object.lastHeight !== null
+        ? Long.fromString(object.lastHeight)
+        : Long.ZERO;
     return message;
   },
 
@@ -373,17 +367,16 @@ export const QueryUpgradedConsensusStateRequest = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryUpgradedConsensusStateRequest>
-  ): QueryUpgradedConsensusStateRequest {
+  fromPartial<
+    I extends Exact<DeepPartial<QueryUpgradedConsensusStateRequest>, I>
+  >(object: I): QueryUpgradedConsensusStateRequest {
     const message = {
       ...baseQueryUpgradedConsensusStateRequest,
     } as QueryUpgradedConsensusStateRequest;
-    if (object.lastHeight !== undefined && object.lastHeight !== null) {
-      message.lastHeight = object.lastHeight as Long;
-    } else {
-      message.lastHeight = Long.ZERO;
-    }
+    message.lastHeight =
+      object.lastHeight !== undefined && object.lastHeight !== null
+        ? Long.fromValue(object.lastHeight)
+        : Long.ZERO;
     return message;
   },
 };
@@ -431,16 +424,11 @@ export const QueryUpgradedConsensusStateResponse = {
     const message = {
       ...baseQueryUpgradedConsensusStateResponse,
     } as QueryUpgradedConsensusStateResponse;
-    if (
+    message.upgradedConsensusState =
       object.upgradedConsensusState !== undefined &&
       object.upgradedConsensusState !== null
-    ) {
-      message.upgradedConsensusState = Any.fromJSON(
-        object.upgradedConsensusState
-      );
-    } else {
-      message.upgradedConsensusState = undefined;
-    }
+        ? Any.fromJSON(object.upgradedConsensusState)
+        : undefined;
     return message;
   },
 
@@ -453,22 +441,17 @@ export const QueryUpgradedConsensusStateResponse = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryUpgradedConsensusStateResponse>
-  ): QueryUpgradedConsensusStateResponse {
+  fromPartial<
+    I extends Exact<DeepPartial<QueryUpgradedConsensusStateResponse>, I>
+  >(object: I): QueryUpgradedConsensusStateResponse {
     const message = {
       ...baseQueryUpgradedConsensusStateResponse,
     } as QueryUpgradedConsensusStateResponse;
-    if (
+    message.upgradedConsensusState =
       object.upgradedConsensusState !== undefined &&
       object.upgradedConsensusState !== null
-    ) {
-      message.upgradedConsensusState = Any.fromPartial(
-        object.upgradedConsensusState
-      );
-    } else {
-      message.upgradedConsensusState = undefined;
-    }
+        ? Any.fromPartial(object.upgradedConsensusState)
+        : undefined;
     return message;
   },
 };
@@ -560,10 +543,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -571,6 +556,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

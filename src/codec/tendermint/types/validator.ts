@@ -69,25 +69,17 @@ export const ValidatorSet = {
 
   fromJSON(object: any): ValidatorSet {
     const message = { ...baseValidatorSet } as ValidatorSet;
-    message.validators = [];
-    if (object.validators !== undefined && object.validators !== null) {
-      for (const e of object.validators) {
-        message.validators.push(Validator.fromJSON(e));
-      }
-    }
-    if (object.proposer !== undefined && object.proposer !== null) {
-      message.proposer = Validator.fromJSON(object.proposer);
-    } else {
-      message.proposer = undefined;
-    }
-    if (
-      object.totalVotingPower !== undefined &&
-      object.totalVotingPower !== null
-    ) {
-      message.totalVotingPower = Long.fromString(object.totalVotingPower);
-    } else {
-      message.totalVotingPower = Long.ZERO;
-    }
+    message.validators = (object.validators ?? []).map((e: any) =>
+      Validator.fromJSON(e)
+    );
+    message.proposer =
+      object.proposer !== undefined && object.proposer !== null
+        ? Validator.fromJSON(object.proposer)
+        : undefined;
+    message.totalVotingPower =
+      object.totalVotingPower !== undefined && object.totalVotingPower !== null
+        ? Long.fromString(object.totalVotingPower)
+        : Long.ZERO;
     return message;
   },
 
@@ -111,27 +103,20 @@ export const ValidatorSet = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<ValidatorSet>): ValidatorSet {
+  fromPartial<I extends Exact<DeepPartial<ValidatorSet>, I>>(
+    object: I
+  ): ValidatorSet {
     const message = { ...baseValidatorSet } as ValidatorSet;
-    message.validators = [];
-    if (object.validators !== undefined && object.validators !== null) {
-      for (const e of object.validators) {
-        message.validators.push(Validator.fromPartial(e));
-      }
-    }
-    if (object.proposer !== undefined && object.proposer !== null) {
-      message.proposer = Validator.fromPartial(object.proposer);
-    } else {
-      message.proposer = undefined;
-    }
-    if (
-      object.totalVotingPower !== undefined &&
-      object.totalVotingPower !== null
-    ) {
-      message.totalVotingPower = object.totalVotingPower as Long;
-    } else {
-      message.totalVotingPower = Long.ZERO;
-    }
+    message.validators =
+      object.validators?.map((e) => Validator.fromPartial(e)) || [];
+    message.proposer =
+      object.proposer !== undefined && object.proposer !== null
+        ? Validator.fromPartial(object.proposer)
+        : undefined;
+    message.totalVotingPower =
+      object.totalVotingPower !== undefined && object.totalVotingPower !== null
+        ? Long.fromValue(object.totalVotingPower)
+        : Long.ZERO;
     return message;
   },
 };
@@ -191,28 +176,22 @@ export const Validator = {
 
   fromJSON(object: any): Validator {
     const message = { ...baseValidator } as Validator;
-    message.address = new Uint8Array();
-    if (object.address !== undefined && object.address !== null) {
-      message.address = bytesFromBase64(object.address);
-    }
-    if (object.pubKey !== undefined && object.pubKey !== null) {
-      message.pubKey = PublicKey.fromJSON(object.pubKey);
-    } else {
-      message.pubKey = undefined;
-    }
-    if (object.votingPower !== undefined && object.votingPower !== null) {
-      message.votingPower = Long.fromString(object.votingPower);
-    } else {
-      message.votingPower = Long.ZERO;
-    }
-    if (
-      object.proposerPriority !== undefined &&
-      object.proposerPriority !== null
-    ) {
-      message.proposerPriority = Long.fromString(object.proposerPriority);
-    } else {
-      message.proposerPriority = Long.ZERO;
-    }
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? bytesFromBase64(object.address)
+        : new Uint8Array();
+    message.pubKey =
+      object.pubKey !== undefined && object.pubKey !== null
+        ? PublicKey.fromJSON(object.pubKey)
+        : undefined;
+    message.votingPower =
+      object.votingPower !== undefined && object.votingPower !== null
+        ? Long.fromString(object.votingPower)
+        : Long.ZERO;
+    message.proposerPriority =
+      object.proposerPriority !== undefined && object.proposerPriority !== null
+        ? Long.fromString(object.proposerPriority)
+        : Long.ZERO;
     return message;
   },
 
@@ -235,27 +214,23 @@ export const Validator = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<Validator>): Validator {
+  fromPartial<I extends Exact<DeepPartial<Validator>, I>>(
+    object: I
+  ): Validator {
     const message = { ...baseValidator } as Validator;
     message.address = object.address ?? new Uint8Array();
-    if (object.pubKey !== undefined && object.pubKey !== null) {
-      message.pubKey = PublicKey.fromPartial(object.pubKey);
-    } else {
-      message.pubKey = undefined;
-    }
-    if (object.votingPower !== undefined && object.votingPower !== null) {
-      message.votingPower = object.votingPower as Long;
-    } else {
-      message.votingPower = Long.ZERO;
-    }
-    if (
-      object.proposerPriority !== undefined &&
-      object.proposerPriority !== null
-    ) {
-      message.proposerPriority = object.proposerPriority as Long;
-    } else {
-      message.proposerPriority = Long.ZERO;
-    }
+    message.pubKey =
+      object.pubKey !== undefined && object.pubKey !== null
+        ? PublicKey.fromPartial(object.pubKey)
+        : undefined;
+    message.votingPower =
+      object.votingPower !== undefined && object.votingPower !== null
+        ? Long.fromValue(object.votingPower)
+        : Long.ZERO;
+    message.proposerPriority =
+      object.proposerPriority !== undefined && object.proposerPriority !== null
+        ? Long.fromValue(object.proposerPriority)
+        : Long.ZERO;
     return message;
   },
 };
@@ -299,16 +274,14 @@ export const SimpleValidator = {
 
   fromJSON(object: any): SimpleValidator {
     const message = { ...baseSimpleValidator } as SimpleValidator;
-    if (object.pubKey !== undefined && object.pubKey !== null) {
-      message.pubKey = PublicKey.fromJSON(object.pubKey);
-    } else {
-      message.pubKey = undefined;
-    }
-    if (object.votingPower !== undefined && object.votingPower !== null) {
-      message.votingPower = Long.fromString(object.votingPower);
-    } else {
-      message.votingPower = Long.ZERO;
-    }
+    message.pubKey =
+      object.pubKey !== undefined && object.pubKey !== null
+        ? PublicKey.fromJSON(object.pubKey)
+        : undefined;
+    message.votingPower =
+      object.votingPower !== undefined && object.votingPower !== null
+        ? Long.fromString(object.votingPower)
+        : Long.ZERO;
     return message;
   },
 
@@ -323,18 +296,18 @@ export const SimpleValidator = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<SimpleValidator>): SimpleValidator {
+  fromPartial<I extends Exact<DeepPartial<SimpleValidator>, I>>(
+    object: I
+  ): SimpleValidator {
     const message = { ...baseSimpleValidator } as SimpleValidator;
-    if (object.pubKey !== undefined && object.pubKey !== null) {
-      message.pubKey = PublicKey.fromPartial(object.pubKey);
-    } else {
-      message.pubKey = undefined;
-    }
-    if (object.votingPower !== undefined && object.votingPower !== null) {
-      message.votingPower = object.votingPower as Long;
-    } else {
-      message.votingPower = Long.ZERO;
-    }
+    message.pubKey =
+      object.pubKey !== undefined && object.pubKey !== null
+        ? PublicKey.fromPartial(object.pubKey)
+        : undefined;
+    message.votingPower =
+      object.votingPower !== undefined && object.votingPower !== null
+        ? Long.fromValue(object.votingPower)
+        : Long.ZERO;
     return message;
   },
 };
@@ -380,10 +353,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -391,6 +366,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

@@ -60,11 +60,10 @@ export const QueryGetBookRequest = {
 
   fromJSON(object: any): QueryGetBookRequest {
     const message = { ...baseQueryGetBookRequest } as QueryGetBookRequest;
-    if (object.market !== undefined && object.market !== null) {
-      message.market = String(object.market);
-    } else {
-      message.market = "";
-    }
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? String(object.market)
+        : "";
     return message;
   },
 
@@ -74,7 +73,9 @@ export const QueryGetBookRequest = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<QueryGetBookRequest>): QueryGetBookRequest {
+  fromPartial<I extends Exact<DeepPartial<QueryGetBookRequest>, I>>(
+    object: I
+  ): QueryGetBookRequest {
     const message = { ...baseQueryGetBookRequest } as QueryGetBookRequest;
     message.market = object.market ?? "";
     return message;
@@ -117,11 +118,10 @@ export const QueryGetBookResponse = {
 
   fromJSON(object: any): QueryGetBookResponse {
     const message = { ...baseQueryGetBookResponse } as QueryGetBookResponse;
-    if (object.book !== undefined && object.book !== null) {
-      message.book = OrderBook.fromJSON(object.book);
-    } else {
-      message.book = undefined;
-    }
+    message.book =
+      object.book !== undefined && object.book !== null
+        ? OrderBook.fromJSON(object.book)
+        : undefined;
     return message;
   },
 
@@ -132,13 +132,14 @@ export const QueryGetBookResponse = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<QueryGetBookResponse>): QueryGetBookResponse {
+  fromPartial<I extends Exact<DeepPartial<QueryGetBookResponse>, I>>(
+    object: I
+  ): QueryGetBookResponse {
     const message = { ...baseQueryGetBookResponse } as QueryGetBookResponse;
-    if (object.book !== undefined && object.book !== null) {
-      message.book = OrderBook.fromPartial(object.book);
-    } else {
-      message.book = undefined;
-    }
+    message.book =
+      object.book !== undefined && object.book !== null
+        ? OrderBook.fromPartial(object.book)
+        : undefined;
     return message;
   },
 };
@@ -176,11 +177,10 @@ export const QueryAllBookRequest = {
 
   fromJSON(object: any): QueryAllBookRequest {
     const message = { ...baseQueryAllBookRequest } as QueryAllBookRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -193,13 +193,14 @@ export const QueryAllBookRequest = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<QueryAllBookRequest>): QueryAllBookRequest {
+  fromPartial<I extends Exact<DeepPartial<QueryAllBookRequest>, I>>(
+    object: I
+  ): QueryAllBookRequest {
     const message = { ...baseQueryAllBookRequest } as QueryAllBookRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -250,17 +251,11 @@ export const QueryAllBookResponse = {
 
   fromJSON(object: any): QueryAllBookResponse {
     const message = { ...baseQueryAllBookResponse } as QueryAllBookResponse;
-    message.books = [];
-    if (object.books !== undefined && object.books !== null) {
-      for (const e of object.books) {
-        message.books.push(OrderBook.fromJSON(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.books = (object.books ?? []).map((e: any) => OrderBook.fromJSON(e));
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -280,19 +275,15 @@ export const QueryAllBookResponse = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<QueryAllBookResponse>): QueryAllBookResponse {
+  fromPartial<I extends Exact<DeepPartial<QueryAllBookResponse>, I>>(
+    object: I
+  ): QueryAllBookResponse {
     const message = { ...baseQueryAllBookResponse } as QueryAllBookResponse;
-    message.books = [];
-    if (object.books !== undefined && object.books !== null) {
-      for (const e of object.books) {
-        message.books.push(OrderBook.fromPartial(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.books = object.books?.map((e) => OrderBook.fromPartial(e)) || [];
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -351,10 +342,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -362,6 +355,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

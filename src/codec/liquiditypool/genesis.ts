@@ -149,87 +149,37 @@ export const GenesisState = {
 
   fromJSON(object: any): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
-    message.pools = [];
-    message.commitmentExpiries = [];
-    message.commitmentWithKeys = [];
-    message.commitmentTotalsWithKeys = [];
-    message.rewardHistoriesWithKeys = [];
-    message.allLastClaimedWithKeys = [];
-    message.totalAllocated = [];
-    if (object.pools !== undefined && object.pools !== null) {
-      for (const e of object.pools) {
-        message.pools.push(Pool.fromJSON(e));
-      }
-    }
-    if (object.rewardCurve !== undefined && object.rewardCurve !== null) {
-      message.rewardCurve = RewardCurve.fromJSON(object.rewardCurve);
-    } else {
-      message.rewardCurve = undefined;
-    }
-    if (
-      object.commitmentCurve !== undefined &&
-      object.commitmentCurve !== null
-    ) {
-      message.commitmentCurve = CommitmentCurve.fromJSON(
-        object.commitmentCurve
-      );
-    } else {
-      message.commitmentCurve = undefined;
-    }
-    if (
-      object.commitmentExpiries !== undefined &&
-      object.commitmentExpiries !== null
-    ) {
-      for (const e of object.commitmentExpiries) {
-        message.commitmentExpiries.push(CommitmentExpiryIndex.fromJSON(e));
-      }
-    }
-    if (
-      object.commitmentWithKeys !== undefined &&
-      object.commitmentWithKeys !== null
-    ) {
-      for (const e of object.commitmentWithKeys) {
-        message.commitmentWithKeys.push(CommitmentWithKey.fromJSON(e));
-      }
-    }
-    if (
-      object.commitmentTotalsWithKeys !== undefined &&
-      object.commitmentTotalsWithKeys !== null
-    ) {
-      for (const e of object.commitmentTotalsWithKeys) {
-        message.commitmentTotalsWithKeys.push(
-          CommitmentTotalWithKey.fromJSON(e)
-        );
-      }
-    }
-    if (
-      object.rewardHistoriesWithKeys !== undefined &&
-      object.rewardHistoriesWithKeys !== null
-    ) {
-      for (const e of object.rewardHistoriesWithKeys) {
-        message.rewardHistoriesWithKeys.push(RewardHistoryWithKey.fromJSON(e));
-      }
-    }
-    if (
-      object.allLastClaimedWithKeys !== undefined &&
-      object.allLastClaimedWithKeys !== null
-    ) {
-      for (const e of object.allLastClaimedWithKeys) {
-        message.allLastClaimedWithKeys.push(LastClaimedWithKey.fromJSON(e));
-      }
-    }
-    if (object.totalAllocated !== undefined && object.totalAllocated !== null) {
-      for (const e of object.totalAllocated) {
-        message.totalAllocated.push(DecCoin.fromJSON(e));
-      }
-    }
-    if (object.rewardWeights !== undefined && object.rewardWeights !== null) {
-      message.rewardWeights = WrappedRewardWeights.fromJSON(
-        object.rewardWeights
-      );
-    } else {
-      message.rewardWeights = undefined;
-    }
+    message.pools = (object.pools ?? []).map((e: any) => Pool.fromJSON(e));
+    message.rewardCurve =
+      object.rewardCurve !== undefined && object.rewardCurve !== null
+        ? RewardCurve.fromJSON(object.rewardCurve)
+        : undefined;
+    message.commitmentCurve =
+      object.commitmentCurve !== undefined && object.commitmentCurve !== null
+        ? CommitmentCurve.fromJSON(object.commitmentCurve)
+        : undefined;
+    message.commitmentExpiries = (object.commitmentExpiries ?? []).map(
+      (e: any) => CommitmentExpiryIndex.fromJSON(e)
+    );
+    message.commitmentWithKeys = (object.commitmentWithKeys ?? []).map(
+      (e: any) => CommitmentWithKey.fromJSON(e)
+    );
+    message.commitmentTotalsWithKeys = (
+      object.commitmentTotalsWithKeys ?? []
+    ).map((e: any) => CommitmentTotalWithKey.fromJSON(e));
+    message.rewardHistoriesWithKeys = (
+      object.rewardHistoriesWithKeys ?? []
+    ).map((e: any) => RewardHistoryWithKey.fromJSON(e));
+    message.allLastClaimedWithKeys = (object.allLastClaimedWithKeys ?? []).map(
+      (e: any) => LastClaimedWithKey.fromJSON(e)
+    );
+    message.totalAllocated = (object.totalAllocated ?? []).map((e: any) =>
+      DecCoin.fromJSON(e)
+    );
+    message.rewardWeights =
+      object.rewardWeights !== undefined && object.rewardWeights !== null
+        ? WrappedRewardWeights.fromJSON(object.rewardWeights)
+        : undefined;
     return message;
   },
 
@@ -297,91 +247,44 @@ export const GenesisState = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<GenesisState>): GenesisState {
+  fromPartial<I extends Exact<DeepPartial<GenesisState>, I>>(
+    object: I
+  ): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
-    message.pools = [];
-    if (object.pools !== undefined && object.pools !== null) {
-      for (const e of object.pools) {
-        message.pools.push(Pool.fromPartial(e));
-      }
-    }
-    if (object.rewardCurve !== undefined && object.rewardCurve !== null) {
-      message.rewardCurve = RewardCurve.fromPartial(object.rewardCurve);
-    } else {
-      message.rewardCurve = undefined;
-    }
-    if (
-      object.commitmentCurve !== undefined &&
-      object.commitmentCurve !== null
-    ) {
-      message.commitmentCurve = CommitmentCurve.fromPartial(
-        object.commitmentCurve
-      );
-    } else {
-      message.commitmentCurve = undefined;
-    }
-    message.commitmentExpiries = [];
-    if (
-      object.commitmentExpiries !== undefined &&
-      object.commitmentExpiries !== null
-    ) {
-      for (const e of object.commitmentExpiries) {
-        message.commitmentExpiries.push(CommitmentExpiryIndex.fromPartial(e));
-      }
-    }
-    message.commitmentWithKeys = [];
-    if (
-      object.commitmentWithKeys !== undefined &&
-      object.commitmentWithKeys !== null
-    ) {
-      for (const e of object.commitmentWithKeys) {
-        message.commitmentWithKeys.push(CommitmentWithKey.fromPartial(e));
-      }
-    }
-    message.commitmentTotalsWithKeys = [];
-    if (
-      object.commitmentTotalsWithKeys !== undefined &&
-      object.commitmentTotalsWithKeys !== null
-    ) {
-      for (const e of object.commitmentTotalsWithKeys) {
-        message.commitmentTotalsWithKeys.push(
-          CommitmentTotalWithKey.fromPartial(e)
-        );
-      }
-    }
-    message.rewardHistoriesWithKeys = [];
-    if (
-      object.rewardHistoriesWithKeys !== undefined &&
-      object.rewardHistoriesWithKeys !== null
-    ) {
-      for (const e of object.rewardHistoriesWithKeys) {
-        message.rewardHistoriesWithKeys.push(
-          RewardHistoryWithKey.fromPartial(e)
-        );
-      }
-    }
-    message.allLastClaimedWithKeys = [];
-    if (
-      object.allLastClaimedWithKeys !== undefined &&
-      object.allLastClaimedWithKeys !== null
-    ) {
-      for (const e of object.allLastClaimedWithKeys) {
-        message.allLastClaimedWithKeys.push(LastClaimedWithKey.fromPartial(e));
-      }
-    }
-    message.totalAllocated = [];
-    if (object.totalAllocated !== undefined && object.totalAllocated !== null) {
-      for (const e of object.totalAllocated) {
-        message.totalAllocated.push(DecCoin.fromPartial(e));
-      }
-    }
-    if (object.rewardWeights !== undefined && object.rewardWeights !== null) {
-      message.rewardWeights = WrappedRewardWeights.fromPartial(
-        object.rewardWeights
-      );
-    } else {
-      message.rewardWeights = undefined;
-    }
+    message.pools = object.pools?.map((e) => Pool.fromPartial(e)) || [];
+    message.rewardCurve =
+      object.rewardCurve !== undefined && object.rewardCurve !== null
+        ? RewardCurve.fromPartial(object.rewardCurve)
+        : undefined;
+    message.commitmentCurve =
+      object.commitmentCurve !== undefined && object.commitmentCurve !== null
+        ? CommitmentCurve.fromPartial(object.commitmentCurve)
+        : undefined;
+    message.commitmentExpiries =
+      object.commitmentExpiries?.map((e) =>
+        CommitmentExpiryIndex.fromPartial(e)
+      ) || [];
+    message.commitmentWithKeys =
+      object.commitmentWithKeys?.map((e) => CommitmentWithKey.fromPartial(e)) ||
+      [];
+    message.commitmentTotalsWithKeys =
+      object.commitmentTotalsWithKeys?.map((e) =>
+        CommitmentTotalWithKey.fromPartial(e)
+      ) || [];
+    message.rewardHistoriesWithKeys =
+      object.rewardHistoriesWithKeys?.map((e) =>
+        RewardHistoryWithKey.fromPartial(e)
+      ) || [];
+    message.allLastClaimedWithKeys =
+      object.allLastClaimedWithKeys?.map((e) =>
+        LastClaimedWithKey.fromPartial(e)
+      ) || [];
+    message.totalAllocated =
+      object.totalAllocated?.map((e) => DecCoin.fromPartial(e)) || [];
+    message.rewardWeights =
+      object.rewardWeights !== undefined && object.rewardWeights !== null
+        ? WrappedRewardWeights.fromPartial(object.rewardWeights)
+        : undefined;
     return message;
   },
 };
@@ -393,10 +296,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -404,6 +309,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

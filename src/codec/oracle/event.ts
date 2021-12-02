@@ -58,11 +58,10 @@ export const NewVoteEvent = {
 
   fromJSON(object: any): NewVoteEvent {
     const message = { ...baseNewVoteEvent } as NewVoteEvent;
-    if (object.voterAccount !== undefined && object.voterAccount !== null) {
-      message.voterAccount = String(object.voterAccount);
-    } else {
-      message.voterAccount = "";
-    }
+    message.voterAccount =
+      object.voterAccount !== undefined && object.voterAccount !== null
+        ? String(object.voterAccount)
+        : "";
     return message;
   },
 
@@ -73,7 +72,9 @@ export const NewVoteEvent = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<NewVoteEvent>): NewVoteEvent {
+  fromPartial<I extends Exact<DeepPartial<NewVoteEvent>, I>>(
+    object: I
+  ): NewVoteEvent {
     const message = { ...baseNewVoteEvent } as NewVoteEvent;
     message.voterAccount = object.voterAccount ?? "";
     return message;
@@ -113,11 +114,10 @@ export const RecordVoteEvent = {
 
   fromJSON(object: any): RecordVoteEvent {
     const message = { ...baseRecordVoteEvent } as RecordVoteEvent;
-    if (object.voterAccount !== undefined && object.voterAccount !== null) {
-      message.voterAccount = String(object.voterAccount);
-    } else {
-      message.voterAccount = "";
-    }
+    message.voterAccount =
+      object.voterAccount !== undefined && object.voterAccount !== null
+        ? String(object.voterAccount)
+        : "";
     return message;
   },
 
@@ -128,7 +128,9 @@ export const RecordVoteEvent = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<RecordVoteEvent>): RecordVoteEvent {
+  fromPartial<I extends Exact<DeepPartial<RecordVoteEvent>, I>>(
+    object: I
+  ): RecordVoteEvent {
     const message = { ...baseRecordVoteEvent } as RecordVoteEvent;
     message.voterAccount = object.voterAccount ?? "";
     return message;
@@ -180,21 +182,18 @@ export const VoteEvent = {
 
   fromJSON(object: any): VoteEvent {
     const message = { ...baseVoteEvent } as VoteEvent;
-    if (object.vote !== undefined && object.vote !== null) {
-      message.vote = Vote.fromJSON(object.vote);
-    } else {
-      message.vote = undefined;
-    }
-    if (object.voteId !== undefined && object.voteId !== null) {
-      message.voteId = String(object.voteId);
-    } else {
-      message.voteId = "";
-    }
-    if (object.type !== undefined && object.type !== null) {
-      message.type = String(object.type);
-    } else {
-      message.type = "";
-    }
+    message.vote =
+      object.vote !== undefined && object.vote !== null
+        ? Vote.fromJSON(object.vote)
+        : undefined;
+    message.voteId =
+      object.voteId !== undefined && object.voteId !== null
+        ? String(object.voteId)
+        : "";
+    message.type =
+      object.type !== undefined && object.type !== null
+        ? String(object.type)
+        : "";
     return message;
   },
 
@@ -207,13 +206,14 @@ export const VoteEvent = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<VoteEvent>): VoteEvent {
+  fromPartial<I extends Exact<DeepPartial<VoteEvent>, I>>(
+    object: I
+  ): VoteEvent {
     const message = { ...baseVoteEvent } as VoteEvent;
-    if (object.vote !== undefined && object.vote !== null) {
-      message.vote = Vote.fromPartial(object.vote);
-    } else {
-      message.vote = undefined;
-    }
+    message.vote =
+      object.vote !== undefined && object.vote !== null
+        ? Vote.fromPartial(object.vote)
+        : undefined;
     message.voteId = object.voteId ?? "";
     message.type = object.type ?? "";
     return message;
@@ -265,21 +265,18 @@ export const ResultEvent = {
 
   fromJSON(object: any): ResultEvent {
     const message = { ...baseResultEvent } as ResultEvent;
-    if (object.result !== undefined && object.result !== null) {
-      message.result = Result.fromJSON(object.result);
-    } else {
-      message.result = undefined;
-    }
-    if (object.resultId !== undefined && object.resultId !== null) {
-      message.resultId = String(object.resultId);
-    } else {
-      message.resultId = "";
-    }
-    if (object.type !== undefined && object.type !== null) {
-      message.type = String(object.type);
-    } else {
-      message.type = "";
-    }
+    message.result =
+      object.result !== undefined && object.result !== null
+        ? Result.fromJSON(object.result)
+        : undefined;
+    message.resultId =
+      object.resultId !== undefined && object.resultId !== null
+        ? String(object.resultId)
+        : "";
+    message.type =
+      object.type !== undefined && object.type !== null
+        ? String(object.type)
+        : "";
     return message;
   },
 
@@ -292,13 +289,14 @@ export const ResultEvent = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<ResultEvent>): ResultEvent {
+  fromPartial<I extends Exact<DeepPartial<ResultEvent>, I>>(
+    object: I
+  ): ResultEvent {
     const message = { ...baseResultEvent } as ResultEvent;
-    if (object.result !== undefined && object.result !== null) {
-      message.result = Result.fromPartial(object.result);
-    } else {
-      message.result = undefined;
-    }
+    message.result =
+      object.result !== undefined && object.result !== null
+        ? Result.fromPartial(object.result)
+        : undefined;
     message.resultId = object.resultId ?? "";
     message.type = object.type ?? "";
     return message;
@@ -312,10 +310,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -323,6 +323,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

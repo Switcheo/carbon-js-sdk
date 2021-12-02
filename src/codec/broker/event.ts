@@ -176,91 +176,74 @@ export const TradeEvent = {
 
   fromJSON(object: any): TradeEvent {
     const message = { ...baseTradeEvent } as TradeEvent;
-    if (object.blockHeight !== undefined && object.blockHeight !== null) {
-      message.blockHeight = Long.fromString(object.blockHeight);
-    } else {
-      message.blockHeight = Long.ZERO;
-    }
-    if (object.blockCreatedAt !== undefined && object.blockCreatedAt !== null) {
-      message.blockCreatedAt = fromJsonTimestamp(object.blockCreatedAt);
-    } else {
-      message.blockCreatedAt = undefined;
-    }
-    if (object.takerId !== undefined && object.takerId !== null) {
-      message.takerId = String(object.takerId);
-    } else {
-      message.takerId = "";
-    }
-    if (object.takerAddress !== undefined && object.takerAddress !== null) {
-      message.takerAddress = String(object.takerAddress);
-    } else {
-      message.takerAddress = "";
-    }
-    if (object.takerFeeAmount !== undefined && object.takerFeeAmount !== null) {
-      message.takerFeeAmount = String(object.takerFeeAmount);
-    } else {
-      message.takerFeeAmount = "";
-    }
-    if (object.takerFeeDenom !== undefined && object.takerFeeDenom !== null) {
-      message.takerFeeDenom = String(object.takerFeeDenom);
-    } else {
-      message.takerFeeDenom = "";
-    }
-    if (object.takerSide !== undefined && object.takerSide !== null) {
-      message.takerSide = String(object.takerSide);
-    } else {
-      message.takerSide = "";
-    }
-    if (object.makerId !== undefined && object.makerId !== null) {
-      message.makerId = String(object.makerId);
-    } else {
-      message.makerId = "";
-    }
-    if (object.makerAddress !== undefined && object.makerAddress !== null) {
-      message.makerAddress = String(object.makerAddress);
-    } else {
-      message.makerAddress = "";
-    }
-    if (object.makerFeeAmount !== undefined && object.makerFeeAmount !== null) {
-      message.makerFeeAmount = String(object.makerFeeAmount);
-    } else {
-      message.makerFeeAmount = "";
-    }
-    if (object.makerFeeDenom !== undefined && object.makerFeeDenom !== null) {
-      message.makerFeeDenom = String(object.makerFeeDenom);
-    } else {
-      message.makerFeeDenom = "";
-    }
-    if (object.makerSide !== undefined && object.makerSide !== null) {
-      message.makerSide = String(object.makerSide);
-    } else {
-      message.makerSide = "";
-    }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = String(object.market);
-    } else {
-      message.market = "";
-    }
-    if (object.price !== undefined && object.price !== null) {
-      message.price = String(object.price);
-    } else {
-      message.price = "";
-    }
-    if (object.quantity !== undefined && object.quantity !== null) {
-      message.quantity = String(object.quantity);
-    } else {
-      message.quantity = "";
-    }
-    if (object.liquidation !== undefined && object.liquidation !== null) {
-      message.liquidation = String(object.liquidation);
-    } else {
-      message.liquidation = "";
-    }
-    if (object.id !== undefined && object.id !== null) {
-      message.id = Long.fromString(object.id);
-    } else {
-      message.id = Long.UZERO;
-    }
+    message.blockHeight =
+      object.blockHeight !== undefined && object.blockHeight !== null
+        ? Long.fromString(object.blockHeight)
+        : Long.ZERO;
+    message.blockCreatedAt =
+      object.blockCreatedAt !== undefined && object.blockCreatedAt !== null
+        ? fromJsonTimestamp(object.blockCreatedAt)
+        : undefined;
+    message.takerId =
+      object.takerId !== undefined && object.takerId !== null
+        ? String(object.takerId)
+        : "";
+    message.takerAddress =
+      object.takerAddress !== undefined && object.takerAddress !== null
+        ? String(object.takerAddress)
+        : "";
+    message.takerFeeAmount =
+      object.takerFeeAmount !== undefined && object.takerFeeAmount !== null
+        ? String(object.takerFeeAmount)
+        : "";
+    message.takerFeeDenom =
+      object.takerFeeDenom !== undefined && object.takerFeeDenom !== null
+        ? String(object.takerFeeDenom)
+        : "";
+    message.takerSide =
+      object.takerSide !== undefined && object.takerSide !== null
+        ? String(object.takerSide)
+        : "";
+    message.makerId =
+      object.makerId !== undefined && object.makerId !== null
+        ? String(object.makerId)
+        : "";
+    message.makerAddress =
+      object.makerAddress !== undefined && object.makerAddress !== null
+        ? String(object.makerAddress)
+        : "";
+    message.makerFeeAmount =
+      object.makerFeeAmount !== undefined && object.makerFeeAmount !== null
+        ? String(object.makerFeeAmount)
+        : "";
+    message.makerFeeDenom =
+      object.makerFeeDenom !== undefined && object.makerFeeDenom !== null
+        ? String(object.makerFeeDenom)
+        : "";
+    message.makerSide =
+      object.makerSide !== undefined && object.makerSide !== null
+        ? String(object.makerSide)
+        : "";
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? String(object.market)
+        : "";
+    message.price =
+      object.price !== undefined && object.price !== null
+        ? String(object.price)
+        : "";
+    message.quantity =
+      object.quantity !== undefined && object.quantity !== null
+        ? String(object.quantity)
+        : "";
+    message.liquidation =
+      object.liquidation !== undefined && object.liquidation !== null
+        ? String(object.liquidation)
+        : "";
+    message.id =
+      object.id !== undefined && object.id !== null
+        ? Long.fromString(object.id)
+        : Long.UZERO;
     return message;
   },
 
@@ -296,13 +279,14 @@ export const TradeEvent = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<TradeEvent>): TradeEvent {
+  fromPartial<I extends Exact<DeepPartial<TradeEvent>, I>>(
+    object: I
+  ): TradeEvent {
     const message = { ...baseTradeEvent } as TradeEvent;
-    if (object.blockHeight !== undefined && object.blockHeight !== null) {
-      message.blockHeight = object.blockHeight as Long;
-    } else {
-      message.blockHeight = Long.ZERO;
-    }
+    message.blockHeight =
+      object.blockHeight !== undefined && object.blockHeight !== null
+        ? Long.fromValue(object.blockHeight)
+        : Long.ZERO;
     message.blockCreatedAt = object.blockCreatedAt ?? undefined;
     message.takerId = object.takerId ?? "";
     message.takerAddress = object.takerAddress ?? "";
@@ -318,11 +302,10 @@ export const TradeEvent = {
     message.price = object.price ?? "";
     message.quantity = object.quantity ?? "";
     message.liquidation = object.liquidation ?? "";
-    if (object.id !== undefined && object.id !== null) {
-      message.id = object.id as Long;
-    } else {
-      message.id = Long.UZERO;
-    }
+    message.id =
+      object.id !== undefined && object.id !== null
+        ? Long.fromValue(object.id)
+        : Long.UZERO;
     return message;
   },
 };
@@ -334,10 +317,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -345,6 +330,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 function toTimestamp(date: Date): Timestamp {
   const seconds = numberToLong(date.getTime() / 1_000);

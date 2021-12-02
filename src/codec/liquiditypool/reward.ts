@@ -152,26 +152,22 @@ export const Commitment = {
 
   fromJSON(object: any): Commitment {
     const message = { ...baseCommitment } as Commitment;
-    if (object.poolId !== undefined && object.poolId !== null) {
-      message.poolId = Long.fromString(object.poolId);
-    } else {
-      message.poolId = Long.UZERO;
-    }
-    if (object.liquidity !== undefined && object.liquidity !== null) {
-      message.liquidity = Coin.fromJSON(object.liquidity);
-    } else {
-      message.liquidity = undefined;
-    }
-    if (object.startTime !== undefined && object.startTime !== null) {
-      message.startTime = fromJsonTimestamp(object.startTime);
-    } else {
-      message.startTime = undefined;
-    }
-    if (object.duration !== undefined && object.duration !== null) {
-      message.duration = Long.fromString(object.duration);
-    } else {
-      message.duration = Long.UZERO;
-    }
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromString(object.poolId)
+        : Long.UZERO;
+    message.liquidity =
+      object.liquidity !== undefined && object.liquidity !== null
+        ? Coin.fromJSON(object.liquidity)
+        : undefined;
+    message.startTime =
+      object.startTime !== undefined && object.startTime !== null
+        ? fromJsonTimestamp(object.startTime)
+        : undefined;
+    message.duration =
+      object.duration !== undefined && object.duration !== null
+        ? Long.fromString(object.duration)
+        : Long.UZERO;
     return message;
   },
 
@@ -190,24 +186,23 @@ export const Commitment = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<Commitment>): Commitment {
+  fromPartial<I extends Exact<DeepPartial<Commitment>, I>>(
+    object: I
+  ): Commitment {
     const message = { ...baseCommitment } as Commitment;
-    if (object.poolId !== undefined && object.poolId !== null) {
-      message.poolId = object.poolId as Long;
-    } else {
-      message.poolId = Long.UZERO;
-    }
-    if (object.liquidity !== undefined && object.liquidity !== null) {
-      message.liquidity = Coin.fromPartial(object.liquidity);
-    } else {
-      message.liquidity = undefined;
-    }
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromValue(object.poolId)
+        : Long.UZERO;
+    message.liquidity =
+      object.liquidity !== undefined && object.liquidity !== null
+        ? Coin.fromPartial(object.liquidity)
+        : undefined;
     message.startTime = object.startTime ?? undefined;
-    if (object.duration !== undefined && object.duration !== null) {
-      message.duration = object.duration as Long;
-    } else {
-      message.duration = Long.UZERO;
-    }
+    message.duration =
+      object.duration !== undefined && object.duration !== null
+        ? Long.fromValue(object.duration)
+        : Long.UZERO;
     return message;
   },
 };
@@ -248,11 +243,10 @@ export const TotalCommitmentShares = {
 
   fromJSON(object: any): TotalCommitmentShares {
     const message = { ...baseTotalCommitmentShares } as TotalCommitmentShares;
-    if (object.total !== undefined && object.total !== null) {
-      message.total = String(object.total);
-    } else {
-      message.total = "";
-    }
+    message.total =
+      object.total !== undefined && object.total !== null
+        ? String(object.total)
+        : "";
     return message;
   },
 
@@ -262,8 +256,8 @@ export const TotalCommitmentShares = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<TotalCommitmentShares>
+  fromPartial<I extends Exact<DeepPartial<TotalCommitmentShares>, I>>(
+    object: I
   ): TotalCommitmentShares {
     const message = { ...baseTotalCommitmentShares } as TotalCommitmentShares;
     message.total = object.total ?? "";
@@ -352,44 +346,35 @@ export const RewardCurve = {
 
   fromJSON(object: any): RewardCurve {
     const message = { ...baseRewardCurve } as RewardCurve;
-    if (object.startTime !== undefined && object.startTime !== null) {
-      message.startTime = fromJsonTimestamp(object.startTime);
-    } else {
-      message.startTime = undefined;
-    }
-    if (object.initialReward !== undefined && object.initialReward !== null) {
-      message.initialReward = Number(object.initialReward);
-    } else {
-      message.initialReward = 0;
-    }
-    if (object.interval !== undefined && object.interval !== null) {
-      message.interval = Long.fromString(object.interval);
-    } else {
-      message.interval = Long.UZERO;
-    }
-    if (
+    message.startTime =
+      object.startTime !== undefined && object.startTime !== null
+        ? fromJsonTimestamp(object.startTime)
+        : undefined;
+    message.initialReward =
+      object.initialReward !== undefined && object.initialReward !== null
+        ? Number(object.initialReward)
+        : 0;
+    message.interval =
+      object.interval !== undefined && object.interval !== null
+        ? Long.fromString(object.interval)
+        : Long.UZERO;
+    message.numberOfReductions =
       object.numberOfReductions !== undefined &&
       object.numberOfReductions !== null
-    ) {
-      message.numberOfReductions = Number(object.numberOfReductions);
-    } else {
-      message.numberOfReductions = 0;
-    }
-    if (object.reduction !== undefined && object.reduction !== null) {
-      message.reduction = Number(object.reduction);
-    } else {
-      message.reduction = 0;
-    }
-    if (object.finalReward !== undefined && object.finalReward !== null) {
-      message.finalReward = Number(object.finalReward);
-    } else {
-      message.finalReward = 0;
-    }
-    if (object.reductionsMade !== undefined && object.reductionsMade !== null) {
-      message.reductionsMade = Number(object.reductionsMade);
-    } else {
-      message.reductionsMade = 0;
-    }
+        ? Number(object.numberOfReductions)
+        : 0;
+    message.reduction =
+      object.reduction !== undefined && object.reduction !== null
+        ? Number(object.reduction)
+        : 0;
+    message.finalReward =
+      object.finalReward !== undefined && object.finalReward !== null
+        ? Number(object.finalReward)
+        : 0;
+    message.reductionsMade =
+      object.reductionsMade !== undefined && object.reductionsMade !== null
+        ? Number(object.reductionsMade)
+        : 0;
     return message;
   },
 
@@ -411,15 +396,16 @@ export const RewardCurve = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<RewardCurve>): RewardCurve {
+  fromPartial<I extends Exact<DeepPartial<RewardCurve>, I>>(
+    object: I
+  ): RewardCurve {
     const message = { ...baseRewardCurve } as RewardCurve;
     message.startTime = object.startTime ?? undefined;
     message.initialReward = object.initialReward ?? 0;
-    if (object.interval !== undefined && object.interval !== null) {
-      message.interval = object.interval as Long;
-    } else {
-      message.interval = Long.UZERO;
-    }
+    message.interval =
+      object.interval !== undefined && object.interval !== null
+        ? Long.fromValue(object.interval)
+        : Long.UZERO;
     message.numberOfReductions = object.numberOfReductions ?? 0;
     message.reduction = object.reduction ?? 0;
     message.finalReward = object.finalReward ?? 0;
@@ -470,24 +456,16 @@ export const CommitmentCurve = {
 
   fromJSON(object: any): CommitmentCurve {
     const message = { ...baseCommitmentCurve } as CommitmentCurve;
-    if (
+    message.maxCommitmentDuration =
       object.maxCommitmentDuration !== undefined &&
       object.maxCommitmentDuration !== null
-    ) {
-      message.maxCommitmentDuration = Long.fromString(
-        object.maxCommitmentDuration
-      );
-    } else {
-      message.maxCommitmentDuration = Long.UZERO;
-    }
-    if (
+        ? Long.fromString(object.maxCommitmentDuration)
+        : Long.UZERO;
+    message.maxRewardMultiplier =
       object.maxRewardMultiplier !== undefined &&
       object.maxRewardMultiplier !== null
-    ) {
-      message.maxRewardMultiplier = Number(object.maxRewardMultiplier);
-    } else {
-      message.maxRewardMultiplier = 0;
-    }
+        ? Number(object.maxRewardMultiplier)
+        : 0;
     return message;
   },
 
@@ -502,16 +480,15 @@ export const CommitmentCurve = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<CommitmentCurve>): CommitmentCurve {
+  fromPartial<I extends Exact<DeepPartial<CommitmentCurve>, I>>(
+    object: I
+  ): CommitmentCurve {
     const message = { ...baseCommitmentCurve } as CommitmentCurve;
-    if (
+    message.maxCommitmentDuration =
       object.maxCommitmentDuration !== undefined &&
       object.maxCommitmentDuration !== null
-    ) {
-      message.maxCommitmentDuration = object.maxCommitmentDuration as Long;
-    } else {
-      message.maxCommitmentDuration = Long.UZERO;
-    }
+        ? Long.fromValue(object.maxCommitmentDuration)
+        : Long.UZERO;
     message.maxRewardMultiplier = object.maxRewardMultiplier ?? 0;
     return message;
   },
@@ -556,16 +533,14 @@ export const WrappedRewardWeight = {
 
   fromJSON(object: any): WrappedRewardWeight {
     const message = { ...baseWrappedRewardWeight } as WrappedRewardWeight;
-    if (object.poolId !== undefined && object.poolId !== null) {
-      message.poolId = Long.fromString(object.poolId);
-    } else {
-      message.poolId = Long.UZERO;
-    }
-    if (object.weight !== undefined && object.weight !== null) {
-      message.weight = String(object.weight);
-    } else {
-      message.weight = "";
-    }
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromString(object.poolId)
+        : Long.UZERO;
+    message.weight =
+      object.weight !== undefined && object.weight !== null
+        ? String(object.weight)
+        : "";
     return message;
   },
 
@@ -577,13 +552,14 @@ export const WrappedRewardWeight = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<WrappedRewardWeight>): WrappedRewardWeight {
+  fromPartial<I extends Exact<DeepPartial<WrappedRewardWeight>, I>>(
+    object: I
+  ): WrappedRewardWeight {
     const message = { ...baseWrappedRewardWeight } as WrappedRewardWeight;
-    if (object.poolId !== undefined && object.poolId !== null) {
-      message.poolId = object.poolId as Long;
-    } else {
-      message.poolId = Long.UZERO;
-    }
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromValue(object.poolId)
+        : Long.UZERO;
     message.weight = object.weight ?? "";
     return message;
   },
@@ -628,15 +604,9 @@ export const WrappedRewardWeights = {
 
   fromJSON(object: any): WrappedRewardWeights {
     const message = { ...baseWrappedRewardWeights } as WrappedRewardWeights;
-    message.wrappedRewardWeights = [];
-    if (
-      object.wrappedRewardWeights !== undefined &&
-      object.wrappedRewardWeights !== null
-    ) {
-      for (const e of object.wrappedRewardWeights) {
-        message.wrappedRewardWeights.push(WrappedRewardWeight.fromJSON(e));
-      }
-    }
+    message.wrappedRewardWeights = (object.wrappedRewardWeights ?? []).map(
+      (e: any) => WrappedRewardWeight.fromJSON(e)
+    );
     return message;
   },
 
@@ -652,17 +622,14 @@ export const WrappedRewardWeights = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<WrappedRewardWeights>): WrappedRewardWeights {
+  fromPartial<I extends Exact<DeepPartial<WrappedRewardWeights>, I>>(
+    object: I
+  ): WrappedRewardWeights {
     const message = { ...baseWrappedRewardWeights } as WrappedRewardWeights;
-    message.wrappedRewardWeights = [];
-    if (
-      object.wrappedRewardWeights !== undefined &&
-      object.wrappedRewardWeights !== null
-    ) {
-      for (const e of object.wrappedRewardWeights) {
-        message.wrappedRewardWeights.push(WrappedRewardWeight.fromPartial(e));
-      }
-    }
+    message.wrappedRewardWeights =
+      object.wrappedRewardWeights?.map((e) =>
+        WrappedRewardWeight.fromPartial(e)
+      ) || [];
     return message;
   },
 };
@@ -713,25 +680,17 @@ export const RewardHistory = {
 
   fromJSON(object: any): RewardHistory {
     const message = { ...baseRewardHistory } as RewardHistory;
-    message.rewards = [];
-    if (object.poolId !== undefined && object.poolId !== null) {
-      message.poolId = Long.fromString(object.poolId);
-    } else {
-      message.poolId = Long.UZERO;
-    }
-    if (object.rewards !== undefined && object.rewards !== null) {
-      for (const e of object.rewards) {
-        message.rewards.push(DecCoin.fromJSON(e));
-      }
-    }
-    if (
-      object.totalCommitment !== undefined &&
-      object.totalCommitment !== null
-    ) {
-      message.totalCommitment = String(object.totalCommitment);
-    } else {
-      message.totalCommitment = "";
-    }
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromString(object.poolId)
+        : Long.UZERO;
+    message.rewards = (object.rewards ?? []).map((e: any) =>
+      DecCoin.fromJSON(e)
+    );
+    message.totalCommitment =
+      object.totalCommitment !== undefined && object.totalCommitment !== null
+        ? String(object.totalCommitment)
+        : "";
     return message;
   },
 
@@ -751,19 +710,15 @@ export const RewardHistory = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<RewardHistory>): RewardHistory {
+  fromPartial<I extends Exact<DeepPartial<RewardHistory>, I>>(
+    object: I
+  ): RewardHistory {
     const message = { ...baseRewardHistory } as RewardHistory;
-    if (object.poolId !== undefined && object.poolId !== null) {
-      message.poolId = object.poolId as Long;
-    } else {
-      message.poolId = Long.UZERO;
-    }
-    message.rewards = [];
-    if (object.rewards !== undefined && object.rewards !== null) {
-      for (const e of object.rewards) {
-        message.rewards.push(DecCoin.fromPartial(e));
-      }
-    }
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromValue(object.poolId)
+        : Long.UZERO;
+    message.rewards = object.rewards?.map((e) => DecCoin.fromPartial(e)) || [];
     message.totalCommitment = object.totalCommitment ?? "";
     return message;
   },
@@ -861,49 +816,38 @@ export const CommitmentResponse = {
 
   fromJSON(object: any): CommitmentResponse {
     const message = { ...baseCommitmentResponse } as CommitmentResponse;
-    if (object.denom !== undefined && object.denom !== null) {
-      message.denom = String(object.denom);
-    } else {
-      message.denom = "";
-    }
-    if (object.amount !== undefined && object.amount !== null) {
-      message.amount = String(object.amount);
-    } else {
-      message.amount = "";
-    }
-    if (object.startTime !== undefined && object.startTime !== null) {
-      message.startTime = fromJsonTimestamp(object.startTime);
-    } else {
-      message.startTime = undefined;
-    }
-    if (object.endTime !== undefined && object.endTime !== null) {
-      message.endTime = fromJsonTimestamp(object.endTime);
-    } else {
-      message.endTime = undefined;
-    }
-    if (object.duration !== undefined && object.duration !== null) {
-      message.duration = Long.fromString(object.duration);
-    } else {
-      message.duration = Long.UZERO;
-    }
-    if (object.isLocked !== undefined && object.isLocked !== null) {
-      message.isLocked = Boolean(object.isLocked);
-    } else {
-      message.isLocked = false;
-    }
-    if (
-      object.commitmentPower !== undefined &&
-      object.commitmentPower !== null
-    ) {
-      message.commitmentPower = String(object.commitmentPower);
-    } else {
-      message.commitmentPower = "";
-    }
-    if (object.boostFactor !== undefined && object.boostFactor !== null) {
-      message.boostFactor = String(object.boostFactor);
-    } else {
-      message.boostFactor = "";
-    }
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
+    message.amount =
+      object.amount !== undefined && object.amount !== null
+        ? String(object.amount)
+        : "";
+    message.startTime =
+      object.startTime !== undefined && object.startTime !== null
+        ? fromJsonTimestamp(object.startTime)
+        : undefined;
+    message.endTime =
+      object.endTime !== undefined && object.endTime !== null
+        ? fromJsonTimestamp(object.endTime)
+        : undefined;
+    message.duration =
+      object.duration !== undefined && object.duration !== null
+        ? Long.fromString(object.duration)
+        : Long.UZERO;
+    message.isLocked =
+      object.isLocked !== undefined && object.isLocked !== null
+        ? Boolean(object.isLocked)
+        : false;
+    message.commitmentPower =
+      object.commitmentPower !== undefined && object.commitmentPower !== null
+        ? String(object.commitmentPower)
+        : "";
+    message.boostFactor =
+      object.boostFactor !== undefined && object.boostFactor !== null
+        ? String(object.boostFactor)
+        : "";
     return message;
   },
 
@@ -925,17 +869,18 @@ export const CommitmentResponse = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<CommitmentResponse>): CommitmentResponse {
+  fromPartial<I extends Exact<DeepPartial<CommitmentResponse>, I>>(
+    object: I
+  ): CommitmentResponse {
     const message = { ...baseCommitmentResponse } as CommitmentResponse;
     message.denom = object.denom ?? "";
     message.amount = object.amount ?? "";
     message.startTime = object.startTime ?? undefined;
     message.endTime = object.endTime ?? undefined;
-    if (object.duration !== undefined && object.duration !== null) {
-      message.duration = object.duration as Long;
-    } else {
-      message.duration = Long.UZERO;
-    }
+    message.duration =
+      object.duration !== undefined && object.duration !== null
+        ? Long.fromValue(object.duration)
+        : Long.UZERO;
     message.isLocked = object.isLocked ?? false;
     message.commitmentPower = object.commitmentPower ?? "";
     message.boostFactor = object.boostFactor ?? "";
@@ -987,16 +932,13 @@ export const CommitmentExpiryIndex = {
 
   fromJSON(object: any): CommitmentExpiryIndex {
     const message = { ...baseCommitmentExpiryIndex } as CommitmentExpiryIndex;
-    message.commitmentKeys = [];
-    message.key = new Uint8Array();
-    if (object.commitmentKeys !== undefined && object.commitmentKeys !== null) {
-      for (const e of object.commitmentKeys) {
-        message.commitmentKeys.push(bytesFromBase64(e));
-      }
-    }
-    if (object.key !== undefined && object.key !== null) {
-      message.key = bytesFromBase64(object.key);
-    }
+    message.commitmentKeys = (object.commitmentKeys ?? []).map((e: any) =>
+      bytesFromBase64(e)
+    );
+    message.key =
+      object.key !== undefined && object.key !== null
+        ? bytesFromBase64(object.key)
+        : new Uint8Array();
     return message;
   },
 
@@ -1016,16 +958,11 @@ export const CommitmentExpiryIndex = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<CommitmentExpiryIndex>
+  fromPartial<I extends Exact<DeepPartial<CommitmentExpiryIndex>, I>>(
+    object: I
   ): CommitmentExpiryIndex {
     const message = { ...baseCommitmentExpiryIndex } as CommitmentExpiryIndex;
-    message.commitmentKeys = [];
-    if (object.commitmentKeys !== undefined && object.commitmentKeys !== null) {
-      for (const e of object.commitmentKeys) {
-        message.commitmentKeys.push(e);
-      }
-    }
+    message.commitmentKeys = object.commitmentKeys?.map((e) => e) || [];
     message.key = object.key ?? new Uint8Array();
     return message;
   },
@@ -1071,15 +1008,14 @@ export const CommitmentWithKey = {
 
   fromJSON(object: any): CommitmentWithKey {
     const message = { ...baseCommitmentWithKey } as CommitmentWithKey;
-    message.key = new Uint8Array();
-    if (object.commitment !== undefined && object.commitment !== null) {
-      message.commitment = Commitment.fromJSON(object.commitment);
-    } else {
-      message.commitment = undefined;
-    }
-    if (object.key !== undefined && object.key !== null) {
-      message.key = bytesFromBase64(object.key);
-    }
+    message.commitment =
+      object.commitment !== undefined && object.commitment !== null
+        ? Commitment.fromJSON(object.commitment)
+        : undefined;
+    message.key =
+      object.key !== undefined && object.key !== null
+        ? bytesFromBase64(object.key)
+        : new Uint8Array();
     return message;
   },
 
@@ -1096,13 +1032,14 @@ export const CommitmentWithKey = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<CommitmentWithKey>): CommitmentWithKey {
+  fromPartial<I extends Exact<DeepPartial<CommitmentWithKey>, I>>(
+    object: I
+  ): CommitmentWithKey {
     const message = { ...baseCommitmentWithKey } as CommitmentWithKey;
-    if (object.commitment !== undefined && object.commitment !== null) {
-      message.commitment = Commitment.fromPartial(object.commitment);
-    } else {
-      message.commitment = undefined;
-    }
+    message.commitment =
+      object.commitment !== undefined && object.commitment !== null
+        ? Commitment.fromPartial(object.commitment)
+        : undefined;
     message.key = object.key ?? new Uint8Array();
     return message;
   },
@@ -1151,18 +1088,14 @@ export const CommitmentTotalWithKey = {
 
   fromJSON(object: any): CommitmentTotalWithKey {
     const message = { ...baseCommitmentTotalWithKey } as CommitmentTotalWithKey;
-    message.key = new Uint8Array();
-    if (
-      object.commitmentTotal !== undefined &&
-      object.commitmentTotal !== null
-    ) {
-      message.commitmentTotal = String(object.commitmentTotal);
-    } else {
-      message.commitmentTotal = "";
-    }
-    if (object.key !== undefined && object.key !== null) {
-      message.key = bytesFromBase64(object.key);
-    }
+    message.commitmentTotal =
+      object.commitmentTotal !== undefined && object.commitmentTotal !== null
+        ? String(object.commitmentTotal)
+        : "";
+    message.key =
+      object.key !== undefined && object.key !== null
+        ? bytesFromBase64(object.key)
+        : new Uint8Array();
     return message;
   },
 
@@ -1177,8 +1110,8 @@ export const CommitmentTotalWithKey = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<CommitmentTotalWithKey>
+  fromPartial<I extends Exact<DeepPartial<CommitmentTotalWithKey>, I>>(
+    object: I
   ): CommitmentTotalWithKey {
     const message = { ...baseCommitmentTotalWithKey } as CommitmentTotalWithKey;
     message.commitmentTotal = object.commitmentTotal ?? "";
@@ -1233,15 +1166,14 @@ export const RewardHistoryWithKey = {
 
   fromJSON(object: any): RewardHistoryWithKey {
     const message = { ...baseRewardHistoryWithKey } as RewardHistoryWithKey;
-    message.key = new Uint8Array();
-    if (object.rewardHistory !== undefined && object.rewardHistory !== null) {
-      message.rewardHistory = RewardHistory.fromJSON(object.rewardHistory);
-    } else {
-      message.rewardHistory = undefined;
-    }
-    if (object.key !== undefined && object.key !== null) {
-      message.key = bytesFromBase64(object.key);
-    }
+    message.rewardHistory =
+      object.rewardHistory !== undefined && object.rewardHistory !== null
+        ? RewardHistory.fromJSON(object.rewardHistory)
+        : undefined;
+    message.key =
+      object.key !== undefined && object.key !== null
+        ? bytesFromBase64(object.key)
+        : new Uint8Array();
     return message;
   },
 
@@ -1258,13 +1190,14 @@ export const RewardHistoryWithKey = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<RewardHistoryWithKey>): RewardHistoryWithKey {
+  fromPartial<I extends Exact<DeepPartial<RewardHistoryWithKey>, I>>(
+    object: I
+  ): RewardHistoryWithKey {
     const message = { ...baseRewardHistoryWithKey } as RewardHistoryWithKey;
-    if (object.rewardHistory !== undefined && object.rewardHistory !== null) {
-      message.rewardHistory = RewardHistory.fromPartial(object.rewardHistory);
-    } else {
-      message.rewardHistory = undefined;
-    }
+    message.rewardHistory =
+      object.rewardHistory !== undefined && object.rewardHistory !== null
+        ? RewardHistory.fromPartial(object.rewardHistory)
+        : undefined;
     message.key = object.key ?? new Uint8Array();
     return message;
   },
@@ -1310,15 +1243,14 @@ export const LastClaimedWithKey = {
 
   fromJSON(object: any): LastClaimedWithKey {
     const message = { ...baseLastClaimedWithKey } as LastClaimedWithKey;
-    message.key = new Uint8Array();
-    if (object.height !== undefined && object.height !== null) {
-      message.height = Long.fromString(object.height);
-    } else {
-      message.height = Long.UZERO;
-    }
-    if (object.key !== undefined && object.key !== null) {
-      message.key = bytesFromBase64(object.key);
-    }
+    message.height =
+      object.height !== undefined && object.height !== null
+        ? Long.fromString(object.height)
+        : Long.UZERO;
+    message.key =
+      object.key !== undefined && object.key !== null
+        ? bytesFromBase64(object.key)
+        : new Uint8Array();
     return message;
   },
 
@@ -1333,13 +1265,14 @@ export const LastClaimedWithKey = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<LastClaimedWithKey>): LastClaimedWithKey {
+  fromPartial<I extends Exact<DeepPartial<LastClaimedWithKey>, I>>(
+    object: I
+  ): LastClaimedWithKey {
     const message = { ...baseLastClaimedWithKey } as LastClaimedWithKey;
-    if (object.height !== undefined && object.height !== null) {
-      message.height = object.height as Long;
-    } else {
-      message.height = Long.UZERO;
-    }
+    message.height =
+      object.height !== undefined && object.height !== null
+        ? Long.fromValue(object.height)
+        : Long.UZERO;
     message.key = object.key ?? new Uint8Array();
     return message;
   },
@@ -1379,12 +1312,9 @@ export const CommitmentKeys = {
 
   fromJSON(object: any): CommitmentKeys {
     const message = { ...baseCommitmentKeys } as CommitmentKeys;
-    message.commitmentKeys = [];
-    if (object.commitmentKeys !== undefined && object.commitmentKeys !== null) {
-      for (const e of object.commitmentKeys) {
-        message.commitmentKeys.push(bytesFromBase64(e));
-      }
-    }
+    message.commitmentKeys = (object.commitmentKeys ?? []).map((e: any) =>
+      bytesFromBase64(e)
+    );
     return message;
   },
 
@@ -1400,14 +1330,11 @@ export const CommitmentKeys = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<CommitmentKeys>): CommitmentKeys {
+  fromPartial<I extends Exact<DeepPartial<CommitmentKeys>, I>>(
+    object: I
+  ): CommitmentKeys {
     const message = { ...baseCommitmentKeys } as CommitmentKeys;
-    message.commitmentKeys = [];
-    if (object.commitmentKeys !== undefined && object.commitmentKeys !== null) {
-      for (const e of object.commitmentKeys) {
-        message.commitmentKeys.push(e);
-      }
-    }
+    message.commitmentKeys = object.commitmentKeys?.map((e) => e) || [];
     return message;
   },
 };
@@ -1446,12 +1373,9 @@ export const AllocatedRewards = {
 
   fromJSON(object: any): AllocatedRewards {
     const message = { ...baseAllocatedRewards } as AllocatedRewards;
-    message.outstanding = [];
-    if (object.outstanding !== undefined && object.outstanding !== null) {
-      for (const e of object.outstanding) {
-        message.outstanding.push(DecCoin.fromJSON(e));
-      }
-    }
+    message.outstanding = (object.outstanding ?? []).map((e: any) =>
+      DecCoin.fromJSON(e)
+    );
     return message;
   },
 
@@ -1467,14 +1391,12 @@ export const AllocatedRewards = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<AllocatedRewards>): AllocatedRewards {
+  fromPartial<I extends Exact<DeepPartial<AllocatedRewards>, I>>(
+    object: I
+  ): AllocatedRewards {
     const message = { ...baseAllocatedRewards } as AllocatedRewards;
-    message.outstanding = [];
-    if (object.outstanding !== undefined && object.outstanding !== null) {
-      for (const e of object.outstanding) {
-        message.outstanding.push(DecCoin.fromPartial(e));
-      }
-    }
+    message.outstanding =
+      object.outstanding?.map((e) => DecCoin.fromPartial(e)) || [];
     return message;
   },
 };
@@ -1518,19 +1440,14 @@ export const TotalCommitment = {
 
   fromJSON(object: any): TotalCommitment {
     const message = { ...baseTotalCommitment } as TotalCommitment;
-    if (object.poolId !== undefined && object.poolId !== null) {
-      message.poolId = Long.fromString(object.poolId);
-    } else {
-      message.poolId = Long.UZERO;
-    }
-    if (
-      object.totalCommitment !== undefined &&
-      object.totalCommitment !== null
-    ) {
-      message.totalCommitment = String(object.totalCommitment);
-    } else {
-      message.totalCommitment = "";
-    }
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromString(object.poolId)
+        : Long.UZERO;
+    message.totalCommitment =
+      object.totalCommitment !== undefined && object.totalCommitment !== null
+        ? String(object.totalCommitment)
+        : "";
     return message;
   },
 
@@ -1543,13 +1460,14 @@ export const TotalCommitment = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<TotalCommitment>): TotalCommitment {
+  fromPartial<I extends Exact<DeepPartial<TotalCommitment>, I>>(
+    object: I
+  ): TotalCommitment {
     const message = { ...baseTotalCommitment } as TotalCommitment;
-    if (object.poolId !== undefined && object.poolId !== null) {
-      message.poolId = object.poolId as Long;
-    } else {
-      message.poolId = Long.UZERO;
-    }
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromValue(object.poolId)
+        : Long.UZERO;
     message.totalCommitment = object.totalCommitment ?? "";
     return message;
   },
@@ -1596,10 +1514,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -1607,6 +1527,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 function toTimestamp(date: Date): Timestamp {
   const seconds = numberToLong(date.getTime() / 1_000);

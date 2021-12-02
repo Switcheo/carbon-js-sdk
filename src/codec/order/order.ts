@@ -246,129 +246,97 @@ export const Order = {
 
   fromJSON(object: any): Order {
     const message = { ...baseOrder } as Order;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = String(object.id);
-    } else {
-      message.id = "";
-    }
-    if (object.blockHeight !== undefined && object.blockHeight !== null) {
-      message.blockHeight = Long.fromString(object.blockHeight);
-    } else {
-      message.blockHeight = Long.ZERO;
-    }
-    if (object.blockCreatedAt !== undefined && object.blockCreatedAt !== null) {
-      message.blockCreatedAt = fromJsonTimestamp(object.blockCreatedAt);
-    } else {
-      message.blockCreatedAt = undefined;
-    }
-    if (
+    message.id =
+      object.id !== undefined && object.id !== null ? String(object.id) : "";
+    message.blockHeight =
+      object.blockHeight !== undefined && object.blockHeight !== null
+        ? Long.fromString(object.blockHeight)
+        : Long.ZERO;
+    message.blockCreatedAt =
+      object.blockCreatedAt !== undefined && object.blockCreatedAt !== null
+        ? fromJsonTimestamp(object.blockCreatedAt)
+        : undefined;
+    message.triggeredBlockHeight =
       object.triggeredBlockHeight !== undefined &&
       object.triggeredBlockHeight !== null
-    ) {
-      message.triggeredBlockHeight = Long.fromString(
-        object.triggeredBlockHeight
-      );
-    } else {
-      message.triggeredBlockHeight = Long.ZERO;
-    }
-    if (object.address !== undefined && object.address !== null) {
-      message.address = String(object.address);
-    } else {
-      message.address = "";
-    }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = String(object.market);
-    } else {
-      message.market = "";
-    }
-    if (object.side !== undefined && object.side !== null) {
-      message.side = String(object.side);
-    } else {
-      message.side = "";
-    }
-    if (object.price !== undefined && object.price !== null) {
-      message.price = String(object.price);
-    } else {
-      message.price = "";
-    }
-    if (object.quantity !== undefined && object.quantity !== null) {
-      message.quantity = String(object.quantity);
-    } else {
-      message.quantity = "";
-    }
-    if (object.available !== undefined && object.available !== null) {
-      message.available = String(object.available);
-    } else {
-      message.available = "";
-    }
-    if (object.filled !== undefined && object.filled !== null) {
-      message.filled = String(object.filled);
-    } else {
-      message.filled = "";
-    }
-    if (object.status !== undefined && object.status !== null) {
-      message.status = String(object.status);
-    } else {
-      message.status = "";
-    }
-    if (object.orderType !== undefined && object.orderType !== null) {
-      message.orderType = String(object.orderType);
-    } else {
-      message.orderType = "";
-    }
-    if (object.initiator !== undefined && object.initiator !== null) {
-      message.initiator = String(object.initiator);
-    } else {
-      message.initiator = "";
-    }
-    if (object.timeInForce !== undefined && object.timeInForce !== null) {
-      message.timeInForce = String(object.timeInForce);
-    } else {
-      message.timeInForce = "";
-    }
-    if (object.stopPrice !== undefined && object.stopPrice !== null) {
-      message.stopPrice = String(object.stopPrice);
-    } else {
-      message.stopPrice = "";
-    }
-    if (object.triggerType !== undefined && object.triggerType !== null) {
-      message.triggerType = String(object.triggerType);
-    } else {
-      message.triggerType = "";
-    }
-    if (
-      object.allocatedMargin !== undefined &&
-      object.allocatedMargin !== null
-    ) {
-      message.allocatedMargin = Coin.fromJSON(object.allocatedMargin);
-    } else {
-      message.allocatedMargin = undefined;
-    }
-    if (object.isLiquidation !== undefined && object.isLiquidation !== null) {
-      message.isLiquidation = Boolean(object.isLiquidation);
-    } else {
-      message.isLiquidation = false;
-    }
-    if (object.isPostOnly !== undefined && object.isPostOnly !== null) {
-      message.isPostOnly = Boolean(object.isPostOnly);
-    } else {
-      message.isPostOnly = false;
-    }
-    if (object.isReduceOnly !== undefined && object.isReduceOnly !== null) {
-      message.isReduceOnly = Boolean(object.isReduceOnly);
-    } else {
-      message.isReduceOnly = false;
-    }
-    if (object.poolId !== undefined && object.poolId !== null) {
-      message.poolId = Long.fromString(object.poolId);
-    } else {
-      message.poolId = Long.UZERO;
-    }
-    if (object.avgFilledPrice !== undefined && object.avgFilledPrice !== null) {
-      message.avgFilledPrice = String(object.avgFilledPrice);
-    } else {
-      message.avgFilledPrice = "";
-    }
+        ? Long.fromString(object.triggeredBlockHeight)
+        : Long.ZERO;
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? String(object.market)
+        : "";
+    message.side =
+      object.side !== undefined && object.side !== null
+        ? String(object.side)
+        : "";
+    message.price =
+      object.price !== undefined && object.price !== null
+        ? String(object.price)
+        : "";
+    message.quantity =
+      object.quantity !== undefined && object.quantity !== null
+        ? String(object.quantity)
+        : "";
+    message.available =
+      object.available !== undefined && object.available !== null
+        ? String(object.available)
+        : "";
+    message.filled =
+      object.filled !== undefined && object.filled !== null
+        ? String(object.filled)
+        : "";
+    message.status =
+      object.status !== undefined && object.status !== null
+        ? String(object.status)
+        : "";
+    message.orderType =
+      object.orderType !== undefined && object.orderType !== null
+        ? String(object.orderType)
+        : "";
+    message.initiator =
+      object.initiator !== undefined && object.initiator !== null
+        ? String(object.initiator)
+        : "";
+    message.timeInForce =
+      object.timeInForce !== undefined && object.timeInForce !== null
+        ? String(object.timeInForce)
+        : "";
+    message.stopPrice =
+      object.stopPrice !== undefined && object.stopPrice !== null
+        ? String(object.stopPrice)
+        : "";
+    message.triggerType =
+      object.triggerType !== undefined && object.triggerType !== null
+        ? String(object.triggerType)
+        : "";
+    message.allocatedMargin =
+      object.allocatedMargin !== undefined && object.allocatedMargin !== null
+        ? Coin.fromJSON(object.allocatedMargin)
+        : undefined;
+    message.isLiquidation =
+      object.isLiquidation !== undefined && object.isLiquidation !== null
+        ? Boolean(object.isLiquidation)
+        : false;
+    message.isPostOnly =
+      object.isPostOnly !== undefined && object.isPostOnly !== null
+        ? Boolean(object.isPostOnly)
+        : false;
+    message.isReduceOnly =
+      object.isReduceOnly !== undefined && object.isReduceOnly !== null
+        ? Boolean(object.isReduceOnly)
+        : false;
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromString(object.poolId)
+        : Long.UZERO;
+    message.avgFilledPrice =
+      object.avgFilledPrice !== undefined && object.avgFilledPrice !== null
+        ? String(object.avgFilledPrice)
+        : "";
     return message;
   },
 
@@ -414,23 +382,19 @@ export const Order = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<Order>): Order {
+  fromPartial<I extends Exact<DeepPartial<Order>, I>>(object: I): Order {
     const message = { ...baseOrder } as Order;
     message.id = object.id ?? "";
-    if (object.blockHeight !== undefined && object.blockHeight !== null) {
-      message.blockHeight = object.blockHeight as Long;
-    } else {
-      message.blockHeight = Long.ZERO;
-    }
+    message.blockHeight =
+      object.blockHeight !== undefined && object.blockHeight !== null
+        ? Long.fromValue(object.blockHeight)
+        : Long.ZERO;
     message.blockCreatedAt = object.blockCreatedAt ?? undefined;
-    if (
+    message.triggeredBlockHeight =
       object.triggeredBlockHeight !== undefined &&
       object.triggeredBlockHeight !== null
-    ) {
-      message.triggeredBlockHeight = object.triggeredBlockHeight as Long;
-    } else {
-      message.triggeredBlockHeight = Long.ZERO;
-    }
+        ? Long.fromValue(object.triggeredBlockHeight)
+        : Long.ZERO;
     message.address = object.address ?? "";
     message.market = object.market ?? "";
     message.side = object.side ?? "";
@@ -444,22 +408,17 @@ export const Order = {
     message.timeInForce = object.timeInForce ?? "";
     message.stopPrice = object.stopPrice ?? "";
     message.triggerType = object.triggerType ?? "";
-    if (
-      object.allocatedMargin !== undefined &&
-      object.allocatedMargin !== null
-    ) {
-      message.allocatedMargin = Coin.fromPartial(object.allocatedMargin);
-    } else {
-      message.allocatedMargin = undefined;
-    }
+    message.allocatedMargin =
+      object.allocatedMargin !== undefined && object.allocatedMargin !== null
+        ? Coin.fromPartial(object.allocatedMargin)
+        : undefined;
     message.isLiquidation = object.isLiquidation ?? false;
     message.isPostOnly = object.isPostOnly ?? false;
     message.isReduceOnly = object.isReduceOnly ?? false;
-    if (object.poolId !== undefined && object.poolId !== null) {
-      message.poolId = object.poolId as Long;
-    } else {
-      message.poolId = Long.UZERO;
-    }
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromValue(object.poolId)
+        : Long.UZERO;
     message.avgFilledPrice = object.avgFilledPrice ?? "";
     return message;
   },
@@ -520,32 +479,24 @@ export const DBOrder = {
 
   fromJSON(object: any): DBOrder {
     const message = { ...baseDBOrder } as DBOrder;
-    if (object.order !== undefined && object.order !== null) {
-      message.order = Order.fromJSON(object.order);
-    } else {
-      message.order = undefined;
-    }
-    if (
+    message.order =
+      object.order !== undefined && object.order !== null
+        ? Order.fromJSON(object.order)
+        : undefined;
+    message.allocatedMarginDenom =
       object.allocatedMarginDenom !== undefined &&
       object.allocatedMarginDenom !== null
-    ) {
-      message.allocatedMarginDenom = String(object.allocatedMarginDenom);
-    } else {
-      message.allocatedMarginDenom = "";
-    }
-    if (
+        ? String(object.allocatedMarginDenom)
+        : "";
+    message.allocatedMarginAmount =
       object.allocatedMarginAmount !== undefined &&
       object.allocatedMarginAmount !== null
-    ) {
-      message.allocatedMarginAmount = String(object.allocatedMarginAmount);
-    } else {
-      message.allocatedMarginAmount = "";
-    }
-    if (object.username !== undefined && object.username !== null) {
-      message.username = String(object.username);
-    } else {
-      message.username = "";
-    }
+        ? String(object.allocatedMarginAmount)
+        : "";
+    message.username =
+      object.username !== undefined && object.username !== null
+        ? String(object.username)
+        : "";
     return message;
   },
 
@@ -561,13 +512,12 @@ export const DBOrder = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<DBOrder>): DBOrder {
+  fromPartial<I extends Exact<DeepPartial<DBOrder>, I>>(object: I): DBOrder {
     const message = { ...baseDBOrder } as DBOrder;
-    if (object.order !== undefined && object.order !== null) {
-      message.order = Order.fromPartial(object.order);
-    } else {
-      message.order = undefined;
-    }
+    message.order =
+      object.order !== undefined && object.order !== null
+        ? Order.fromPartial(object.order)
+        : undefined;
     message.allocatedMarginDenom = object.allocatedMarginDenom ?? "";
     message.allocatedMarginAmount = object.allocatedMarginAmount ?? "";
     message.username = object.username ?? "";
@@ -615,17 +565,11 @@ export const OrdersForMarket = {
 
   fromJSON(object: any): OrdersForMarket {
     const message = { ...baseOrdersForMarket } as OrdersForMarket;
-    message.orders = [];
-    if (object.marketId !== undefined && object.marketId !== null) {
-      message.marketId = String(object.marketId);
-    } else {
-      message.marketId = "";
-    }
-    if (object.orders !== undefined && object.orders !== null) {
-      for (const e of object.orders) {
-        message.orders.push(Order.fromJSON(e));
-      }
-    }
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
+        : "";
+    message.orders = (object.orders ?? []).map((e: any) => Order.fromJSON(e));
     return message;
   },
 
@@ -640,15 +584,12 @@ export const OrdersForMarket = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<OrdersForMarket>): OrdersForMarket {
+  fromPartial<I extends Exact<DeepPartial<OrdersForMarket>, I>>(
+    object: I
+  ): OrdersForMarket {
     const message = { ...baseOrdersForMarket } as OrdersForMarket;
     message.marketId = object.marketId ?? "";
-    message.orders = [];
-    if (object.orders !== undefined && object.orders !== null) {
-      for (const e of object.orders) {
-        message.orders.push(Order.fromPartial(e));
-      }
-    }
+    message.orders = object.orders?.map((e) => Order.fromPartial(e)) || [];
     return message;
   },
 };
@@ -693,17 +634,11 @@ export const OrderIDsForMarket = {
 
   fromJSON(object: any): OrderIDsForMarket {
     const message = { ...baseOrderIDsForMarket } as OrderIDsForMarket;
-    message.orderIds = [];
-    if (object.marketId !== undefined && object.marketId !== null) {
-      message.marketId = String(object.marketId);
-    } else {
-      message.marketId = "";
-    }
-    if (object.orderIds !== undefined && object.orderIds !== null) {
-      for (const e of object.orderIds) {
-        message.orderIds.push(String(e));
-      }
-    }
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
+        : "";
+    message.orderIds = (object.orderIds ?? []).map((e: any) => String(e));
     return message;
   },
 
@@ -718,15 +653,12 @@ export const OrderIDsForMarket = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<OrderIDsForMarket>): OrderIDsForMarket {
+  fromPartial<I extends Exact<DeepPartial<OrderIDsForMarket>, I>>(
+    object: I
+  ): OrderIDsForMarket {
     const message = { ...baseOrderIDsForMarket } as OrderIDsForMarket;
     message.marketId = object.marketId ?? "";
-    message.orderIds = [];
-    if (object.orderIds !== undefined && object.orderIds !== null) {
-      for (const e of object.orderIds) {
-        message.orderIds.push(e);
-      }
-    }
+    message.orderIds = object.orderIds?.map((e) => e) || [];
     return message;
   },
 };
@@ -765,12 +697,7 @@ export const OrderIDs = {
 
   fromJSON(object: any): OrderIDs {
     const message = { ...baseOrderIDs } as OrderIDs;
-    message.ids = [];
-    if (object.ids !== undefined && object.ids !== null) {
-      for (const e of object.ids) {
-        message.ids.push(String(e));
-      }
-    }
+    message.ids = (object.ids ?? []).map((e: any) => String(e));
     return message;
   },
 
@@ -784,14 +711,9 @@ export const OrderIDs = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<OrderIDs>): OrderIDs {
+  fromPartial<I extends Exact<DeepPartial<OrderIDs>, I>>(object: I): OrderIDs {
     const message = { ...baseOrderIDs } as OrderIDs;
-    message.ids = [];
-    if (object.ids !== undefined && object.ids !== null) {
-      for (const e of object.ids) {
-        message.ids.push(e);
-      }
-    }
+    message.ids = object.ids?.map((e) => e) || [];
     return message;
   },
 };
@@ -830,12 +752,7 @@ export const Orders = {
 
   fromJSON(object: any): Orders {
     const message = { ...baseOrders } as Orders;
-    message.orders = [];
-    if (object.orders !== undefined && object.orders !== null) {
-      for (const e of object.orders) {
-        message.orders.push(Order.fromJSON(e));
-      }
-    }
+    message.orders = (object.orders ?? []).map((e: any) => Order.fromJSON(e));
     return message;
   },
 
@@ -849,14 +766,9 @@ export const Orders = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<Orders>): Orders {
+  fromPartial<I extends Exact<DeepPartial<Orders>, I>>(object: I): Orders {
     const message = { ...baseOrders } as Orders;
-    message.orders = [];
-    if (object.orders !== undefined && object.orders !== null) {
-      for (const e of object.orders) {
-        message.orders.push(Order.fromPartial(e));
-      }
-    }
+    message.orders = object.orders?.map((e) => Order.fromPartial(e)) || [];
     return message;
   },
 };
@@ -868,10 +780,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -879,6 +793,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 function toTimestamp(date: Date): Timestamp {
   const seconds = numberToLong(date.getTime() / 1_000);

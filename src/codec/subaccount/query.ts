@@ -84,11 +84,10 @@ export const QueryGetSubAccountRequest = {
     const message = {
       ...baseQueryGetSubAccountRequest,
     } as QueryGetSubAccountRequest;
-    if (object.subAccount !== undefined && object.subAccount !== null) {
-      message.subAccount = String(object.subAccount);
-    } else {
-      message.subAccount = "";
-    }
+    message.subAccount =
+      object.subAccount !== undefined && object.subAccount !== null
+        ? String(object.subAccount)
+        : "";
     return message;
   },
 
@@ -98,8 +97,8 @@ export const QueryGetSubAccountRequest = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryGetSubAccountRequest>
+  fromPartial<I extends Exact<DeepPartial<QueryGetSubAccountRequest>, I>>(
+    object: I
   ): QueryGetSubAccountRequest {
     const message = {
       ...baseQueryGetSubAccountRequest,
@@ -149,11 +148,10 @@ export const QueryGetSubAccountResponse = {
     const message = {
       ...baseQueryGetSubAccountResponse,
     } as QueryGetSubAccountResponse;
-    if (object.SubAccount !== undefined && object.SubAccount !== null) {
-      message.SubAccount = SubAccount.fromJSON(object.SubAccount);
-    } else {
-      message.SubAccount = undefined;
-    }
+    message.SubAccount =
+      object.SubAccount !== undefined && object.SubAccount !== null
+        ? SubAccount.fromJSON(object.SubAccount)
+        : undefined;
     return message;
   },
 
@@ -166,17 +164,16 @@ export const QueryGetSubAccountResponse = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryGetSubAccountResponse>
+  fromPartial<I extends Exact<DeepPartial<QueryGetSubAccountResponse>, I>>(
+    object: I
   ): QueryGetSubAccountResponse {
     const message = {
       ...baseQueryGetSubAccountResponse,
     } as QueryGetSubAccountResponse;
-    if (object.SubAccount !== undefined && object.SubAccount !== null) {
-      message.SubAccount = SubAccount.fromPartial(object.SubAccount);
-    } else {
-      message.SubAccount = undefined;
-    }
+    message.SubAccount =
+      object.SubAccount !== undefined && object.SubAccount !== null
+        ? SubAccount.fromPartial(object.SubAccount)
+        : undefined;
     return message;
   },
 };
@@ -221,11 +218,10 @@ export const QueryAllSubAccountRequest = {
     const message = {
       ...baseQueryAllSubAccountRequest,
     } as QueryAllSubAccountRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -238,17 +234,16 @@ export const QueryAllSubAccountRequest = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryAllSubAccountRequest>
+  fromPartial<I extends Exact<DeepPartial<QueryAllSubAccountRequest>, I>>(
+    object: I
   ): QueryAllSubAccountRequest {
     const message = {
       ...baseQueryAllSubAccountRequest,
     } as QueryAllSubAccountRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -305,17 +300,13 @@ export const QueryAllSubAccountResponse = {
     const message = {
       ...baseQueryAllSubAccountResponse,
     } as QueryAllSubAccountResponse;
-    message.subAccounts = [];
-    if (object.subAccounts !== undefined && object.subAccounts !== null) {
-      for (const e of object.subAccounts) {
-        message.subAccounts.push(GenesisSubAccount.fromJSON(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.subAccounts = (object.subAccounts ?? []).map((e: any) =>
+      GenesisSubAccount.fromJSON(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -335,23 +326,18 @@ export const QueryAllSubAccountResponse = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryAllSubAccountResponse>
+  fromPartial<I extends Exact<DeepPartial<QueryAllSubAccountResponse>, I>>(
+    object: I
   ): QueryAllSubAccountResponse {
     const message = {
       ...baseQueryAllSubAccountResponse,
     } as QueryAllSubAccountResponse;
-    message.subAccounts = [];
-    if (object.subAccounts !== undefined && object.subAccounts !== null) {
-      for (const e of object.subAccounts) {
-        message.subAccounts.push(GenesisSubAccount.fromPartial(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.subAccounts =
+      object.subAccounts?.map((e) => GenesisSubAccount.fromPartial(e)) || [];
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -405,16 +391,14 @@ export const QuerySubAccountStatusRequest = {
     const message = {
       ...baseQuerySubAccountStatusRequest,
     } as QuerySubAccountStatusRequest;
-    if (object.mainAddress !== undefined && object.mainAddress !== null) {
-      message.mainAddress = String(object.mainAddress);
-    } else {
-      message.mainAddress = "";
-    }
-    if (object.subAddress !== undefined && object.subAddress !== null) {
-      message.subAddress = String(object.subAddress);
-    } else {
-      message.subAddress = "";
-    }
+    message.mainAddress =
+      object.mainAddress !== undefined && object.mainAddress !== null
+        ? String(object.mainAddress)
+        : "";
+    message.subAddress =
+      object.subAddress !== undefined && object.subAddress !== null
+        ? String(object.subAddress)
+        : "";
     return message;
   },
 
@@ -426,8 +410,8 @@ export const QuerySubAccountStatusRequest = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QuerySubAccountStatusRequest>
+  fromPartial<I extends Exact<DeepPartial<QuerySubAccountStatusRequest>, I>>(
+    object: I
   ): QuerySubAccountStatusRequest {
     const message = {
       ...baseQuerySubAccountStatusRequest,
@@ -478,11 +462,10 @@ export const QuerySubAccountStatusResponse = {
     const message = {
       ...baseQuerySubAccountStatusResponse,
     } as QuerySubAccountStatusResponse;
-    if (object.status !== undefined && object.status !== null) {
-      message.status = String(object.status);
-    } else {
-      message.status = "";
-    }
+    message.status =
+      object.status !== undefined && object.status !== null
+        ? String(object.status)
+        : "";
     return message;
   },
 
@@ -492,8 +475,8 @@ export const QuerySubAccountStatusResponse = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QuerySubAccountStatusResponse>
+  fromPartial<I extends Exact<DeepPartial<QuerySubAccountStatusResponse>, I>>(
+    object: I
   ): QuerySubAccountStatusResponse {
     const message = {
       ...baseQuerySubAccountStatusResponse,
@@ -543,11 +526,10 @@ export const QuerySubAccountPowerRequest = {
     const message = {
       ...baseQuerySubAccountPowerRequest,
     } as QuerySubAccountPowerRequest;
-    if (object.subAddress !== undefined && object.subAddress !== null) {
-      message.subAddress = String(object.subAddress);
-    } else {
-      message.subAddress = "";
-    }
+    message.subAddress =
+      object.subAddress !== undefined && object.subAddress !== null
+        ? String(object.subAddress)
+        : "";
     return message;
   },
 
@@ -557,8 +539,8 @@ export const QuerySubAccountPowerRequest = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QuerySubAccountPowerRequest>
+  fromPartial<I extends Exact<DeepPartial<QuerySubAccountPowerRequest>, I>>(
+    object: I
   ): QuerySubAccountPowerRequest {
     const message = {
       ...baseQuerySubAccountPowerRequest,
@@ -608,11 +590,10 @@ export const QuerySubAccountPowerResponse = {
     const message = {
       ...baseQuerySubAccountPowerResponse,
     } as QuerySubAccountPowerResponse;
-    if (object.power !== undefined && object.power !== null) {
-      message.power = String(object.power);
-    } else {
-      message.power = "";
-    }
+    message.power =
+      object.power !== undefined && object.power !== null
+        ? String(object.power)
+        : "";
     return message;
   },
 
@@ -622,8 +603,8 @@ export const QuerySubAccountPowerResponse = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QuerySubAccountPowerResponse>
+  fromPartial<I extends Exact<DeepPartial<QuerySubAccountPowerResponse>, I>>(
+    object: I
   ): QuerySubAccountPowerResponse {
     const message = {
       ...baseQuerySubAccountPowerResponse,
@@ -731,10 +712,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -742,6 +725,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

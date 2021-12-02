@@ -152,79 +152,60 @@ export const ExternalTransfer = {
 
   fromJSON(object: any): ExternalTransfer {
     const message = { ...baseExternalTransfer } as ExternalTransfer;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = String(object.id);
-    } else {
-      message.id = "";
-    }
-    if (object.blockchain !== undefined && object.blockchain !== null) {
-      message.blockchain = String(object.blockchain);
-    } else {
-      message.blockchain = "";
-    }
-    if (object.blockHeight !== undefined && object.blockHeight !== null) {
-      message.blockHeight = String(object.blockHeight);
-    } else {
-      message.blockHeight = "";
-    }
-    if (
-      object.transactionHash !== undefined &&
-      object.transactionHash !== null
-    ) {
-      message.transactionHash = String(object.transactionHash);
-    } else {
-      message.transactionHash = "";
-    }
-    if (object.contractHash !== undefined && object.contractHash !== null) {
-      message.contractHash = String(object.contractHash);
-    } else {
-      message.contractHash = "";
-    }
-    if (object.transferType !== undefined && object.transferType !== null) {
-      message.transferType = String(object.transferType);
-    } else {
-      message.transferType = "";
-    }
-    if (object.address !== undefined && object.address !== null) {
-      message.address = String(object.address);
-    } else {
-      message.address = "";
-    }
-    if (object.denom !== undefined && object.denom !== null) {
-      message.denom = String(object.denom);
-    } else {
-      message.denom = "";
-    }
-    if (object.amount !== undefined && object.amount !== null) {
-      message.amount = String(object.amount);
-    } else {
-      message.amount = "";
-    }
-    if (object.feeAmount !== undefined && object.feeAmount !== null) {
-      message.feeAmount = String(object.feeAmount);
-    } else {
-      message.feeAmount = "";
-    }
-    if (object.status !== undefined && object.status !== null) {
-      message.status = String(object.status);
-    } else {
-      message.status = "";
-    }
-    if (object.timestamp !== undefined && object.timestamp !== null) {
-      message.timestamp = fromJsonTimestamp(object.timestamp);
-    } else {
-      message.timestamp = undefined;
-    }
-    if (object.paramsHash !== undefined && object.paramsHash !== null) {
-      message.paramsHash = String(object.paramsHash);
-    } else {
-      message.paramsHash = "";
-    }
-    if (object.feeAddress !== undefined && object.feeAddress !== null) {
-      message.feeAddress = String(object.feeAddress);
-    } else {
-      message.feeAddress = "";
-    }
+    message.id =
+      object.id !== undefined && object.id !== null ? String(object.id) : "";
+    message.blockchain =
+      object.blockchain !== undefined && object.blockchain !== null
+        ? String(object.blockchain)
+        : "";
+    message.blockHeight =
+      object.blockHeight !== undefined && object.blockHeight !== null
+        ? String(object.blockHeight)
+        : "";
+    message.transactionHash =
+      object.transactionHash !== undefined && object.transactionHash !== null
+        ? String(object.transactionHash)
+        : "";
+    message.contractHash =
+      object.contractHash !== undefined && object.contractHash !== null
+        ? String(object.contractHash)
+        : "";
+    message.transferType =
+      object.transferType !== undefined && object.transferType !== null
+        ? String(object.transferType)
+        : "";
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
+    message.amount =
+      object.amount !== undefined && object.amount !== null
+        ? String(object.amount)
+        : "";
+    message.feeAmount =
+      object.feeAmount !== undefined && object.feeAmount !== null
+        ? String(object.feeAmount)
+        : "";
+    message.status =
+      object.status !== undefined && object.status !== null
+        ? String(object.status)
+        : "";
+    message.timestamp =
+      object.timestamp !== undefined && object.timestamp !== null
+        ? fromJsonTimestamp(object.timestamp)
+        : undefined;
+    message.paramsHash =
+      object.paramsHash !== undefined && object.paramsHash !== null
+        ? String(object.paramsHash)
+        : "";
+    message.feeAddress =
+      object.feeAddress !== undefined && object.feeAddress !== null
+        ? String(object.feeAddress)
+        : "";
     return message;
   },
 
@@ -252,7 +233,9 @@ export const ExternalTransfer = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<ExternalTransfer>): ExternalTransfer {
+  fromPartial<I extends Exact<DeepPartial<ExternalTransfer>, I>>(
+    object: I
+  ): ExternalTransfer {
     const message = { ...baseExternalTransfer } as ExternalTransfer;
     message.id = object.id ?? "";
     message.blockchain = object.blockchain ?? "";
@@ -279,10 +262,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -290,6 +275,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 function toTimestamp(date: Date): Timestamp {
   const seconds = numberToLong(date.getTime() / 1_000);

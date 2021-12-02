@@ -127,11 +127,10 @@ export const DoubleValue = {
 
   fromJSON(object: any): DoubleValue {
     const message = { ...baseDoubleValue } as DoubleValue;
-    if (object.value !== undefined && object.value !== null) {
-      message.value = Number(object.value);
-    } else {
-      message.value = 0;
-    }
+    message.value =
+      object.value !== undefined && object.value !== null
+        ? Number(object.value)
+        : 0;
     return message;
   },
 
@@ -141,7 +140,9 @@ export const DoubleValue = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<DoubleValue>): DoubleValue {
+  fromPartial<I extends Exact<DeepPartial<DoubleValue>, I>>(
+    object: I
+  ): DoubleValue {
     const message = { ...baseDoubleValue } as DoubleValue;
     message.value = object.value ?? 0;
     return message;
@@ -181,11 +182,10 @@ export const FloatValue = {
 
   fromJSON(object: any): FloatValue {
     const message = { ...baseFloatValue } as FloatValue;
-    if (object.value !== undefined && object.value !== null) {
-      message.value = Number(object.value);
-    } else {
-      message.value = 0;
-    }
+    message.value =
+      object.value !== undefined && object.value !== null
+        ? Number(object.value)
+        : 0;
     return message;
   },
 
@@ -195,7 +195,9 @@ export const FloatValue = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<FloatValue>): FloatValue {
+  fromPartial<I extends Exact<DeepPartial<FloatValue>, I>>(
+    object: I
+  ): FloatValue {
     const message = { ...baseFloatValue } as FloatValue;
     message.value = object.value ?? 0;
     return message;
@@ -235,11 +237,10 @@ export const Int64Value = {
 
   fromJSON(object: any): Int64Value {
     const message = { ...baseInt64Value } as Int64Value;
-    if (object.value !== undefined && object.value !== null) {
-      message.value = Long.fromString(object.value);
-    } else {
-      message.value = Long.ZERO;
-    }
+    message.value =
+      object.value !== undefined && object.value !== null
+        ? Long.fromString(object.value)
+        : Long.ZERO;
     return message;
   },
 
@@ -250,13 +251,14 @@ export const Int64Value = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<Int64Value>): Int64Value {
+  fromPartial<I extends Exact<DeepPartial<Int64Value>, I>>(
+    object: I
+  ): Int64Value {
     const message = { ...baseInt64Value } as Int64Value;
-    if (object.value !== undefined && object.value !== null) {
-      message.value = object.value as Long;
-    } else {
-      message.value = Long.ZERO;
-    }
+    message.value =
+      object.value !== undefined && object.value !== null
+        ? Long.fromValue(object.value)
+        : Long.ZERO;
     return message;
   },
 };
@@ -294,11 +296,10 @@ export const UInt64Value = {
 
   fromJSON(object: any): UInt64Value {
     const message = { ...baseUInt64Value } as UInt64Value;
-    if (object.value !== undefined && object.value !== null) {
-      message.value = Long.fromString(object.value);
-    } else {
-      message.value = Long.UZERO;
-    }
+    message.value =
+      object.value !== undefined && object.value !== null
+        ? Long.fromString(object.value)
+        : Long.UZERO;
     return message;
   },
 
@@ -309,13 +310,14 @@ export const UInt64Value = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<UInt64Value>): UInt64Value {
+  fromPartial<I extends Exact<DeepPartial<UInt64Value>, I>>(
+    object: I
+  ): UInt64Value {
     const message = { ...baseUInt64Value } as UInt64Value;
-    if (object.value !== undefined && object.value !== null) {
-      message.value = object.value as Long;
-    } else {
-      message.value = Long.UZERO;
-    }
+    message.value =
+      object.value !== undefined && object.value !== null
+        ? Long.fromValue(object.value)
+        : Long.UZERO;
     return message;
   },
 };
@@ -353,11 +355,10 @@ export const Int32Value = {
 
   fromJSON(object: any): Int32Value {
     const message = { ...baseInt32Value } as Int32Value;
-    if (object.value !== undefined && object.value !== null) {
-      message.value = Number(object.value);
-    } else {
-      message.value = 0;
-    }
+    message.value =
+      object.value !== undefined && object.value !== null
+        ? Number(object.value)
+        : 0;
     return message;
   },
 
@@ -367,7 +368,9 @@ export const Int32Value = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<Int32Value>): Int32Value {
+  fromPartial<I extends Exact<DeepPartial<Int32Value>, I>>(
+    object: I
+  ): Int32Value {
     const message = { ...baseInt32Value } as Int32Value;
     message.value = object.value ?? 0;
     return message;
@@ -407,11 +410,10 @@ export const UInt32Value = {
 
   fromJSON(object: any): UInt32Value {
     const message = { ...baseUInt32Value } as UInt32Value;
-    if (object.value !== undefined && object.value !== null) {
-      message.value = Number(object.value);
-    } else {
-      message.value = 0;
-    }
+    message.value =
+      object.value !== undefined && object.value !== null
+        ? Number(object.value)
+        : 0;
     return message;
   },
 
@@ -421,7 +423,9 @@ export const UInt32Value = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<UInt32Value>): UInt32Value {
+  fromPartial<I extends Exact<DeepPartial<UInt32Value>, I>>(
+    object: I
+  ): UInt32Value {
     const message = { ...baseUInt32Value } as UInt32Value;
     message.value = object.value ?? 0;
     return message;
@@ -461,11 +465,10 @@ export const BoolValue = {
 
   fromJSON(object: any): BoolValue {
     const message = { ...baseBoolValue } as BoolValue;
-    if (object.value !== undefined && object.value !== null) {
-      message.value = Boolean(object.value);
-    } else {
-      message.value = false;
-    }
+    message.value =
+      object.value !== undefined && object.value !== null
+        ? Boolean(object.value)
+        : false;
     return message;
   },
 
@@ -475,7 +478,9 @@ export const BoolValue = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<BoolValue>): BoolValue {
+  fromPartial<I extends Exact<DeepPartial<BoolValue>, I>>(
+    object: I
+  ): BoolValue {
     const message = { ...baseBoolValue } as BoolValue;
     message.value = object.value ?? false;
     return message;
@@ -515,11 +520,10 @@ export const StringValue = {
 
   fromJSON(object: any): StringValue {
     const message = { ...baseStringValue } as StringValue;
-    if (object.value !== undefined && object.value !== null) {
-      message.value = String(object.value);
-    } else {
-      message.value = "";
-    }
+    message.value =
+      object.value !== undefined && object.value !== null
+        ? String(object.value)
+        : "";
     return message;
   },
 
@@ -529,7 +533,9 @@ export const StringValue = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<StringValue>): StringValue {
+  fromPartial<I extends Exact<DeepPartial<StringValue>, I>>(
+    object: I
+  ): StringValue {
     const message = { ...baseStringValue } as StringValue;
     message.value = object.value ?? "";
     return message;
@@ -570,10 +576,10 @@ export const BytesValue = {
 
   fromJSON(object: any): BytesValue {
     const message = { ...baseBytesValue } as BytesValue;
-    message.value = new Uint8Array();
-    if (object.value !== undefined && object.value !== null) {
-      message.value = bytesFromBase64(object.value);
-    }
+    message.value =
+      object.value !== undefined && object.value !== null
+        ? bytesFromBase64(object.value)
+        : new Uint8Array();
     return message;
   },
 
@@ -586,7 +592,9 @@ export const BytesValue = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<BytesValue>): BytesValue {
+  fromPartial<I extends Exact<DeepPartial<BytesValue>, I>>(
+    object: I
+  ): BytesValue {
     const message = { ...baseBytesValue } as BytesValue;
     message.value = object.value ?? new Uint8Array();
     return message;
@@ -634,10 +642,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -645,6 +655,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

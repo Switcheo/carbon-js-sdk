@@ -100,21 +100,18 @@ export const LinkPoolProposal = {
 
   fromJSON(object: any): LinkPoolProposal {
     const message = { ...baseLinkPoolProposal } as LinkPoolProposal;
-    if (object.title !== undefined && object.title !== null) {
-      message.title = String(object.title);
-    } else {
-      message.title = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = String(object.description);
-    } else {
-      message.description = "";
-    }
-    if (object.msg !== undefined && object.msg !== null) {
-      message.msg = LinkPoolParams.fromJSON(object.msg);
-    } else {
-      message.msg = undefined;
-    }
+    message.title =
+      object.title !== undefined && object.title !== null
+        ? String(object.title)
+        : "";
+    message.description =
+      object.description !== undefined && object.description !== null
+        ? String(object.description)
+        : "";
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? LinkPoolParams.fromJSON(object.msg)
+        : undefined;
     return message;
   },
 
@@ -128,15 +125,16 @@ export const LinkPoolProposal = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<LinkPoolProposal>): LinkPoolProposal {
+  fromPartial<I extends Exact<DeepPartial<LinkPoolProposal>, I>>(
+    object: I
+  ): LinkPoolProposal {
     const message = { ...baseLinkPoolProposal } as LinkPoolProposal;
     message.title = object.title ?? "";
     message.description = object.description ?? "";
-    if (object.msg !== undefined && object.msg !== null) {
-      message.msg = LinkPoolParams.fromPartial(object.msg);
-    } else {
-      message.msg = undefined;
-    }
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? LinkPoolParams.fromPartial(object.msg)
+        : undefined;
     return message;
   },
 };
@@ -186,21 +184,18 @@ export const UnlinkPoolProposal = {
 
   fromJSON(object: any): UnlinkPoolProposal {
     const message = { ...baseUnlinkPoolProposal } as UnlinkPoolProposal;
-    if (object.title !== undefined && object.title !== null) {
-      message.title = String(object.title);
-    } else {
-      message.title = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = String(object.description);
-    } else {
-      message.description = "";
-    }
-    if (object.msg !== undefined && object.msg !== null) {
-      message.msg = UnlinkPoolParams.fromJSON(object.msg);
-    } else {
-      message.msg = undefined;
-    }
+    message.title =
+      object.title !== undefined && object.title !== null
+        ? String(object.title)
+        : "";
+    message.description =
+      object.description !== undefined && object.description !== null
+        ? String(object.description)
+        : "";
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? UnlinkPoolParams.fromJSON(object.msg)
+        : undefined;
     return message;
   },
 
@@ -216,15 +211,16 @@ export const UnlinkPoolProposal = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<UnlinkPoolProposal>): UnlinkPoolProposal {
+  fromPartial<I extends Exact<DeepPartial<UnlinkPoolProposal>, I>>(
+    object: I
+  ): UnlinkPoolProposal {
     const message = { ...baseUnlinkPoolProposal } as UnlinkPoolProposal;
     message.title = object.title ?? "";
     message.description = object.description ?? "";
-    if (object.msg !== undefined && object.msg !== null) {
-      message.msg = UnlinkPoolParams.fromPartial(object.msg);
-    } else {
-      message.msg = undefined;
-    }
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? UnlinkPoolParams.fromPartial(object.msg)
+        : undefined;
     return message;
   },
 };
@@ -280,21 +276,18 @@ export const SetRewardCurveProposal = {
 
   fromJSON(object: any): SetRewardCurveProposal {
     const message = { ...baseSetRewardCurveProposal } as SetRewardCurveProposal;
-    if (object.title !== undefined && object.title !== null) {
-      message.title = String(object.title);
-    } else {
-      message.title = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = String(object.description);
-    } else {
-      message.description = "";
-    }
-    if (object.msg !== undefined && object.msg !== null) {
-      message.msg = SetRewardCurveParams.fromJSON(object.msg);
-    } else {
-      message.msg = undefined;
-    }
+    message.title =
+      object.title !== undefined && object.title !== null
+        ? String(object.title)
+        : "";
+    message.description =
+      object.description !== undefined && object.description !== null
+        ? String(object.description)
+        : "";
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? SetRewardCurveParams.fromJSON(object.msg)
+        : undefined;
     return message;
   },
 
@@ -310,17 +303,16 @@ export const SetRewardCurveProposal = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<SetRewardCurveProposal>
+  fromPartial<I extends Exact<DeepPartial<SetRewardCurveProposal>, I>>(
+    object: I
   ): SetRewardCurveProposal {
     const message = { ...baseSetRewardCurveProposal } as SetRewardCurveProposal;
     message.title = object.title ?? "";
     message.description = object.description ?? "";
-    if (object.msg !== undefined && object.msg !== null) {
-      message.msg = SetRewardCurveParams.fromPartial(object.msg);
-    } else {
-      message.msg = undefined;
-    }
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? SetRewardCurveParams.fromPartial(object.msg)
+        : undefined;
     return message;
   },
 };
@@ -383,21 +375,18 @@ export const SetCommitmentCurveProposal = {
     const message = {
       ...baseSetCommitmentCurveProposal,
     } as SetCommitmentCurveProposal;
-    if (object.title !== undefined && object.title !== null) {
-      message.title = String(object.title);
-    } else {
-      message.title = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = String(object.description);
-    } else {
-      message.description = "";
-    }
-    if (object.msg !== undefined && object.msg !== null) {
-      message.msg = SetCommitmentCurveParams.fromJSON(object.msg);
-    } else {
-      message.msg = undefined;
-    }
+    message.title =
+      object.title !== undefined && object.title !== null
+        ? String(object.title)
+        : "";
+    message.description =
+      object.description !== undefined && object.description !== null
+        ? String(object.description)
+        : "";
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? SetCommitmentCurveParams.fromJSON(object.msg)
+        : undefined;
     return message;
   },
 
@@ -413,19 +402,18 @@ export const SetCommitmentCurveProposal = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<SetCommitmentCurveProposal>
+  fromPartial<I extends Exact<DeepPartial<SetCommitmentCurveProposal>, I>>(
+    object: I
   ): SetCommitmentCurveProposal {
     const message = {
       ...baseSetCommitmentCurveProposal,
     } as SetCommitmentCurveProposal;
     message.title = object.title ?? "";
     message.description = object.description ?? "";
-    if (object.msg !== undefined && object.msg !== null) {
-      message.msg = SetCommitmentCurveParams.fromPartial(object.msg);
-    } else {
-      message.msg = undefined;
-    }
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? SetCommitmentCurveParams.fromPartial(object.msg)
+        : undefined;
     return message;
   },
 };
@@ -485,21 +473,18 @@ export const SetRewardsWeightsProposal = {
     const message = {
       ...baseSetRewardsWeightsProposal,
     } as SetRewardsWeightsProposal;
-    if (object.title !== undefined && object.title !== null) {
-      message.title = String(object.title);
-    } else {
-      message.title = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = String(object.description);
-    } else {
-      message.description = "";
-    }
-    if (object.msg !== undefined && object.msg !== null) {
-      message.msg = SetRewardsWeightsParams.fromJSON(object.msg);
-    } else {
-      message.msg = undefined;
-    }
+    message.title =
+      object.title !== undefined && object.title !== null
+        ? String(object.title)
+        : "";
+    message.description =
+      object.description !== undefined && object.description !== null
+        ? String(object.description)
+        : "";
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? SetRewardsWeightsParams.fromJSON(object.msg)
+        : undefined;
     return message;
   },
 
@@ -515,19 +500,18 @@ export const SetRewardsWeightsProposal = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<SetRewardsWeightsProposal>
+  fromPartial<I extends Exact<DeepPartial<SetRewardsWeightsProposal>, I>>(
+    object: I
   ): SetRewardsWeightsProposal {
     const message = {
       ...baseSetRewardsWeightsProposal,
     } as SetRewardsWeightsProposal;
     message.title = object.title ?? "";
     message.description = object.description ?? "";
-    if (object.msg !== undefined && object.msg !== null) {
-      message.msg = SetRewardsWeightsParams.fromPartial(object.msg);
-    } else {
-      message.msg = undefined;
-    }
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? SetRewardsWeightsParams.fromPartial(object.msg)
+        : undefined;
     return message;
   },
 };
@@ -583,21 +567,18 @@ export const ChangeSwapFeeProposal = {
 
   fromJSON(object: any): ChangeSwapFeeProposal {
     const message = { ...baseChangeSwapFeeProposal } as ChangeSwapFeeProposal;
-    if (object.title !== undefined && object.title !== null) {
-      message.title = String(object.title);
-    } else {
-      message.title = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = String(object.description);
-    } else {
-      message.description = "";
-    }
-    if (object.msg !== undefined && object.msg !== null) {
-      message.msg = ChangeSwapFeeParams.fromJSON(object.msg);
-    } else {
-      message.msg = undefined;
-    }
+    message.title =
+      object.title !== undefined && object.title !== null
+        ? String(object.title)
+        : "";
+    message.description =
+      object.description !== undefined && object.description !== null
+        ? String(object.description)
+        : "";
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? ChangeSwapFeeParams.fromJSON(object.msg)
+        : undefined;
     return message;
   },
 
@@ -613,17 +594,16 @@ export const ChangeSwapFeeProposal = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<ChangeSwapFeeProposal>
+  fromPartial<I extends Exact<DeepPartial<ChangeSwapFeeProposal>, I>>(
+    object: I
   ): ChangeSwapFeeProposal {
     const message = { ...baseChangeSwapFeeProposal } as ChangeSwapFeeProposal;
     message.title = object.title ?? "";
     message.description = object.description ?? "";
-    if (object.msg !== undefined && object.msg !== null) {
-      message.msg = ChangeSwapFeeParams.fromPartial(object.msg);
-    } else {
-      message.msg = undefined;
-    }
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? ChangeSwapFeeParams.fromPartial(object.msg)
+        : undefined;
     return message;
   },
 };
@@ -683,21 +663,18 @@ export const ChangeNumQuotesProposal = {
     const message = {
       ...baseChangeNumQuotesProposal,
     } as ChangeNumQuotesProposal;
-    if (object.title !== undefined && object.title !== null) {
-      message.title = String(object.title);
-    } else {
-      message.title = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = String(object.description);
-    } else {
-      message.description = "";
-    }
-    if (object.msg !== undefined && object.msg !== null) {
-      message.msg = ChangeNumQuotesParams.fromJSON(object.msg);
-    } else {
-      message.msg = undefined;
-    }
+    message.title =
+      object.title !== undefined && object.title !== null
+        ? String(object.title)
+        : "";
+    message.description =
+      object.description !== undefined && object.description !== null
+        ? String(object.description)
+        : "";
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? ChangeNumQuotesParams.fromJSON(object.msg)
+        : undefined;
     return message;
   },
 
@@ -713,19 +690,18 @@ export const ChangeNumQuotesProposal = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<ChangeNumQuotesProposal>
+  fromPartial<I extends Exact<DeepPartial<ChangeNumQuotesProposal>, I>>(
+    object: I
   ): ChangeNumQuotesProposal {
     const message = {
       ...baseChangeNumQuotesProposal,
     } as ChangeNumQuotesProposal;
     message.title = object.title ?? "";
     message.description = object.description ?? "";
-    if (object.msg !== undefined && object.msg !== null) {
-      message.msg = ChangeNumQuotesParams.fromPartial(object.msg);
-    } else {
-      message.msg = undefined;
-    }
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? ChangeNumQuotesParams.fromPartial(object.msg)
+        : undefined;
     return message;
   },
 };
@@ -737,10 +713,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -748,6 +726,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

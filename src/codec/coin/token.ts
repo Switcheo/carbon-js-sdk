@@ -163,66 +163,52 @@ export const Token = {
 
   fromJSON(object: any): Token {
     const message = { ...baseToken } as Token;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = String(object.id);
-    } else {
-      message.id = "";
-    }
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
-    if (object.denom !== undefined && object.denom !== null) {
-      message.denom = String(object.denom);
-    } else {
-      message.denom = "";
-    }
-    if (object.name !== undefined && object.name !== null) {
-      message.name = String(object.name);
-    } else {
-      message.name = "";
-    }
-    if (object.symbol !== undefined && object.symbol !== null) {
-      message.symbol = String(object.symbol);
-    } else {
-      message.symbol = "";
-    }
-    if (object.decimals !== undefined && object.decimals !== null) {
-      message.decimals = Long.fromString(object.decimals);
-    } else {
-      message.decimals = Long.ZERO;
-    }
-    if (object.bridgeId !== undefined && object.bridgeId !== null) {
-      message.bridgeId = Long.fromString(object.bridgeId);
-    } else {
-      message.bridgeId = Long.UZERO;
-    }
-    if (object.chainId !== undefined && object.chainId !== null) {
-      message.chainId = Long.fromString(object.chainId);
-    } else {
-      message.chainId = Long.UZERO;
-    }
-    if (object.tokenAddress !== undefined && object.tokenAddress !== null) {
-      message.tokenAddress = String(object.tokenAddress);
-    } else {
-      message.tokenAddress = "";
-    }
-    if (object.bridgeAddress !== undefined && object.bridgeAddress !== null) {
-      message.bridgeAddress = String(object.bridgeAddress);
-    } else {
-      message.bridgeAddress = "";
-    }
-    if (object.isActive !== undefined && object.isActive !== null) {
-      message.isActive = Boolean(object.isActive);
-    } else {
-      message.isActive = false;
-    }
-    if (object.isCollateral !== undefined && object.isCollateral !== null) {
-      message.isCollateral = Boolean(object.isCollateral);
-    } else {
-      message.isCollateral = false;
-    }
+    message.id =
+      object.id !== undefined && object.id !== null ? String(object.id) : "";
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
+    message.name =
+      object.name !== undefined && object.name !== null
+        ? String(object.name)
+        : "";
+    message.symbol =
+      object.symbol !== undefined && object.symbol !== null
+        ? String(object.symbol)
+        : "";
+    message.decimals =
+      object.decimals !== undefined && object.decimals !== null
+        ? Long.fromString(object.decimals)
+        : Long.ZERO;
+    message.bridgeId =
+      object.bridgeId !== undefined && object.bridgeId !== null
+        ? Long.fromString(object.bridgeId)
+        : Long.UZERO;
+    message.chainId =
+      object.chainId !== undefined && object.chainId !== null
+        ? Long.fromString(object.chainId)
+        : Long.UZERO;
+    message.tokenAddress =
+      object.tokenAddress !== undefined && object.tokenAddress !== null
+        ? String(object.tokenAddress)
+        : "";
+    message.bridgeAddress =
+      object.bridgeAddress !== undefined && object.bridgeAddress !== null
+        ? String(object.bridgeAddress)
+        : "";
+    message.isActive =
+      object.isActive !== undefined && object.isActive !== null
+        ? Boolean(object.isActive)
+        : false;
+    message.isCollateral =
+      object.isCollateral !== undefined && object.isCollateral !== null
+        ? Boolean(object.isCollateral)
+        : false;
     return message;
   },
 
@@ -249,28 +235,25 @@ export const Token = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<Token>): Token {
+  fromPartial<I extends Exact<DeepPartial<Token>, I>>(object: I): Token {
     const message = { ...baseToken } as Token;
     message.id = object.id ?? "";
     message.creator = object.creator ?? "";
     message.denom = object.denom ?? "";
     message.name = object.name ?? "";
     message.symbol = object.symbol ?? "";
-    if (object.decimals !== undefined && object.decimals !== null) {
-      message.decimals = object.decimals as Long;
-    } else {
-      message.decimals = Long.ZERO;
-    }
-    if (object.bridgeId !== undefined && object.bridgeId !== null) {
-      message.bridgeId = object.bridgeId as Long;
-    } else {
-      message.bridgeId = Long.UZERO;
-    }
-    if (object.chainId !== undefined && object.chainId !== null) {
-      message.chainId = object.chainId as Long;
-    } else {
-      message.chainId = Long.UZERO;
-    }
+    message.decimals =
+      object.decimals !== undefined && object.decimals !== null
+        ? Long.fromValue(object.decimals)
+        : Long.ZERO;
+    message.bridgeId =
+      object.bridgeId !== undefined && object.bridgeId !== null
+        ? Long.fromValue(object.bridgeId)
+        : Long.UZERO;
+    message.chainId =
+      object.chainId !== undefined && object.chainId !== null
+        ? Long.fromValue(object.chainId)
+        : Long.UZERO;
     message.tokenAddress = object.tokenAddress ?? "";
     message.bridgeAddress = object.bridgeAddress ?? "";
     message.isActive = object.isActive ?? false;
@@ -349,36 +332,30 @@ export const BalanceChange = {
 
   fromJSON(object: any): BalanceChange {
     const message = { ...baseBalanceChange } as BalanceChange;
-    if (object.address !== undefined && object.address !== null) {
-      message.address = String(object.address);
-    } else {
-      message.address = "";
-    }
-    if (object.blockHeight !== undefined && object.blockHeight !== null) {
-      message.blockHeight = Long.fromString(object.blockHeight);
-    } else {
-      message.blockHeight = Long.UZERO;
-    }
-    if (object.denom !== undefined && object.denom !== null) {
-      message.denom = String(object.denom);
-    } else {
-      message.denom = "";
-    }
-    if (object.amount !== undefined && object.amount !== null) {
-      message.amount = String(object.amount);
-    } else {
-      message.amount = "";
-    }
-    if (object.type !== undefined && object.type !== null) {
-      message.type = String(object.type);
-    } else {
-      message.type = "";
-    }
-    if (object.location !== undefined && object.location !== null) {
-      message.location = String(object.location);
-    } else {
-      message.location = "";
-    }
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    message.blockHeight =
+      object.blockHeight !== undefined && object.blockHeight !== null
+        ? Long.fromString(object.blockHeight)
+        : Long.UZERO;
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
+    message.amount =
+      object.amount !== undefined && object.amount !== null
+        ? String(object.amount)
+        : "";
+    message.type =
+      object.type !== undefined && object.type !== null
+        ? String(object.type)
+        : "";
+    message.location =
+      object.location !== undefined && object.location !== null
+        ? String(object.location)
+        : "";
     return message;
   },
 
@@ -394,14 +371,15 @@ export const BalanceChange = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<BalanceChange>): BalanceChange {
+  fromPartial<I extends Exact<DeepPartial<BalanceChange>, I>>(
+    object: I
+  ): BalanceChange {
     const message = { ...baseBalanceChange } as BalanceChange;
     message.address = object.address ?? "";
-    if (object.blockHeight !== undefined && object.blockHeight !== null) {
-      message.blockHeight = object.blockHeight as Long;
-    } else {
-      message.blockHeight = Long.UZERO;
-    }
+    message.blockHeight =
+      object.blockHeight !== undefined && object.blockHeight !== null
+        ? Long.fromValue(object.blockHeight)
+        : Long.UZERO;
     message.denom = object.denom ?? "";
     message.amount = object.amount ?? "";
     message.type = object.type ?? "";
@@ -466,26 +444,22 @@ export const LockedCoins = {
 
   fromJSON(object: any): LockedCoins {
     const message = { ...baseLockedCoins } as LockedCoins;
-    if (object.denom !== undefined && object.denom !== null) {
-      message.denom = String(object.denom);
-    } else {
-      message.denom = "";
-    }
-    if (object.orderMargin !== undefined && object.orderMargin !== null) {
-      message.orderMargin = String(object.orderMargin);
-    } else {
-      message.orderMargin = "";
-    }
-    if (object.positionMargin !== undefined && object.positionMargin !== null) {
-      message.positionMargin = String(object.positionMargin);
-    } else {
-      message.positionMargin = "";
-    }
-    if (object.collateral !== undefined && object.collateral !== null) {
-      message.collateral = String(object.collateral);
-    } else {
-      message.collateral = "";
-    }
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
+    message.orderMargin =
+      object.orderMargin !== undefined && object.orderMargin !== null
+        ? String(object.orderMargin)
+        : "";
+    message.positionMargin =
+      object.positionMargin !== undefined && object.positionMargin !== null
+        ? String(object.positionMargin)
+        : "";
+    message.collateral =
+      object.collateral !== undefined && object.collateral !== null
+        ? String(object.collateral)
+        : "";
     return message;
   },
 
@@ -500,7 +474,9 @@ export const LockedCoins = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<LockedCoins>): LockedCoins {
+  fromPartial<I extends Exact<DeepPartial<LockedCoins>, I>>(
+    object: I
+  ): LockedCoins {
     const message = { ...baseLockedCoins } as LockedCoins;
     message.denom = object.denom ?? "";
     message.orderMargin = object.orderMargin ?? "";
@@ -558,21 +534,18 @@ export const LockedCoinsRecord = {
 
   fromJSON(object: any): LockedCoinsRecord {
     const message = { ...baseLockedCoinsRecord } as LockedCoinsRecord;
-    if (object.address !== undefined && object.address !== null) {
-      message.address = String(object.address);
-    } else {
-      message.address = "";
-    }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = String(object.market);
-    } else {
-      message.market = "";
-    }
-    if (object.lockedCoins !== undefined && object.lockedCoins !== null) {
-      message.lockedCoins = LockedCoins.fromJSON(object.lockedCoins);
-    } else {
-      message.lockedCoins = undefined;
-    }
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? String(object.market)
+        : "";
+    message.lockedCoins =
+      object.lockedCoins !== undefined && object.lockedCoins !== null
+        ? LockedCoins.fromJSON(object.lockedCoins)
+        : undefined;
     return message;
   },
 
@@ -587,15 +560,16 @@ export const LockedCoinsRecord = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<LockedCoinsRecord>): LockedCoinsRecord {
+  fromPartial<I extends Exact<DeepPartial<LockedCoinsRecord>, I>>(
+    object: I
+  ): LockedCoinsRecord {
     const message = { ...baseLockedCoinsRecord } as LockedCoinsRecord;
     message.address = object.address ?? "";
     message.market = object.market ?? "";
-    if (object.lockedCoins !== undefined && object.lockedCoins !== null) {
-      message.lockedCoins = LockedCoins.fromPartial(object.lockedCoins);
-    } else {
-      message.lockedCoins = undefined;
-    }
+    message.lockedCoins =
+      object.lockedCoins !== undefined && object.lockedCoins !== null
+        ? LockedCoins.fromPartial(object.lockedCoins)
+        : undefined;
     return message;
   },
 };
@@ -640,17 +614,11 @@ export const PositionPool = {
 
   fromJSON(object: any): PositionPool {
     const message = { ...basePositionPool } as PositionPool;
-    message.coins = [];
-    if (object.market !== undefined && object.market !== null) {
-      message.market = String(object.market);
-    } else {
-      message.market = "";
-    }
-    if (object.coins !== undefined && object.coins !== null) {
-      for (const e of object.coins) {
-        message.coins.push(Coin.fromJSON(e));
-      }
-    }
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? String(object.market)
+        : "";
+    message.coins = (object.coins ?? []).map((e: any) => Coin.fromJSON(e));
     return message;
   },
 
@@ -665,15 +633,12 @@ export const PositionPool = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<PositionPool>): PositionPool {
+  fromPartial<I extends Exact<DeepPartial<PositionPool>, I>>(
+    object: I
+  ): PositionPool {
     const message = { ...basePositionPool } as PositionPool;
     message.market = object.market ?? "";
-    message.coins = [];
-    if (object.coins !== undefined && object.coins !== null) {
-      for (const e of object.coins) {
-        message.coins.push(Coin.fromPartial(e));
-      }
-    }
+    message.coins = object.coins?.map((e) => Coin.fromPartial(e)) || [];
     return message;
   },
 };
@@ -734,26 +699,22 @@ export const TokenBalance = {
 
   fromJSON(object: any): TokenBalance {
     const message = { ...baseTokenBalance } as TokenBalance;
-    if (object.available !== undefined && object.available !== null) {
-      message.available = String(object.available);
-    } else {
-      message.available = "";
-    }
-    if (object.order !== undefined && object.order !== null) {
-      message.order = String(object.order);
-    } else {
-      message.order = "";
-    }
-    if (object.position !== undefined && object.position !== null) {
-      message.position = String(object.position);
-    } else {
-      message.position = "";
-    }
-    if (object.denom !== undefined && object.denom !== null) {
-      message.denom = String(object.denom);
-    } else {
-      message.denom = "";
-    }
+    message.available =
+      object.available !== undefined && object.available !== null
+        ? String(object.available)
+        : "";
+    message.order =
+      object.order !== undefined && object.order !== null
+        ? String(object.order)
+        : "";
+    message.position =
+      object.position !== undefined && object.position !== null
+        ? String(object.position)
+        : "";
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
     return message;
   },
 
@@ -766,7 +727,9 @@ export const TokenBalance = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<TokenBalance>): TokenBalance {
+  fromPartial<I extends Exact<DeepPartial<TokenBalance>, I>>(
+    object: I
+  ): TokenBalance {
     const message = { ...baseTokenBalance } as TokenBalance;
     message.available = object.available ?? "";
     message.order = object.order ?? "";
@@ -783,10 +746,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -794,6 +759,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

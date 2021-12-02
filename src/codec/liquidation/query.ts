@@ -120,51 +120,42 @@ export const QueryAllLiquidationRequest = {
     const message = {
       ...baseQueryAllLiquidationRequest,
     } as QueryAllLiquidationRequest;
-    if (object.address !== undefined && object.address !== null) {
-      message.address = String(object.address);
-    } else {
-      message.address = "";
-    }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = String(object.market);
-    } else {
-      message.market = "";
-    }
-    if (object.limit !== undefined && object.limit !== null) {
-      message.limit = Long.fromString(object.limit);
-    } else {
-      message.limit = Long.UZERO;
-    }
-    if (object.beforeId !== undefined && object.beforeId !== null) {
-      message.beforeId = Long.fromString(object.beforeId);
-    } else {
-      message.beforeId = Long.UZERO;
-    }
-    if (object.afterId !== undefined && object.afterId !== null) {
-      message.afterId = Long.fromString(object.afterId);
-    } else {
-      message.afterId = Long.UZERO;
-    }
-    if (object.orderBy !== undefined && object.orderBy !== null) {
-      message.orderBy = String(object.orderBy);
-    } else {
-      message.orderBy = "";
-    }
-    if (object.orderId !== undefined && object.orderId !== null) {
-      message.orderId = String(object.orderId);
-    } else {
-      message.orderId = "";
-    }
-    if (object.afterBlock !== undefined && object.afterBlock !== null) {
-      message.afterBlock = Long.fromString(object.afterBlock);
-    } else {
-      message.afterBlock = Long.UZERO;
-    }
-    if (object.beforeBlock !== undefined && object.beforeBlock !== null) {
-      message.beforeBlock = Long.fromString(object.beforeBlock);
-    } else {
-      message.beforeBlock = Long.UZERO;
-    }
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? String(object.market)
+        : "";
+    message.limit =
+      object.limit !== undefined && object.limit !== null
+        ? Long.fromString(object.limit)
+        : Long.UZERO;
+    message.beforeId =
+      object.beforeId !== undefined && object.beforeId !== null
+        ? Long.fromString(object.beforeId)
+        : Long.UZERO;
+    message.afterId =
+      object.afterId !== undefined && object.afterId !== null
+        ? Long.fromString(object.afterId)
+        : Long.UZERO;
+    message.orderBy =
+      object.orderBy !== undefined && object.orderBy !== null
+        ? String(object.orderBy)
+        : "";
+    message.orderId =
+      object.orderId !== undefined && object.orderId !== null
+        ? String(object.orderId)
+        : "";
+    message.afterBlock =
+      object.afterBlock !== undefined && object.afterBlock !== null
+        ? Long.fromString(object.afterBlock)
+        : Long.UZERO;
+    message.beforeBlock =
+      object.beforeBlock !== undefined && object.beforeBlock !== null
+        ? Long.fromString(object.beforeBlock)
+        : Long.UZERO;
     return message;
   },
 
@@ -187,41 +178,36 @@ export const QueryAllLiquidationRequest = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryAllLiquidationRequest>
+  fromPartial<I extends Exact<DeepPartial<QueryAllLiquidationRequest>, I>>(
+    object: I
   ): QueryAllLiquidationRequest {
     const message = {
       ...baseQueryAllLiquidationRequest,
     } as QueryAllLiquidationRequest;
     message.address = object.address ?? "";
     message.market = object.market ?? "";
-    if (object.limit !== undefined && object.limit !== null) {
-      message.limit = object.limit as Long;
-    } else {
-      message.limit = Long.UZERO;
-    }
-    if (object.beforeId !== undefined && object.beforeId !== null) {
-      message.beforeId = object.beforeId as Long;
-    } else {
-      message.beforeId = Long.UZERO;
-    }
-    if (object.afterId !== undefined && object.afterId !== null) {
-      message.afterId = object.afterId as Long;
-    } else {
-      message.afterId = Long.UZERO;
-    }
+    message.limit =
+      object.limit !== undefined && object.limit !== null
+        ? Long.fromValue(object.limit)
+        : Long.UZERO;
+    message.beforeId =
+      object.beforeId !== undefined && object.beforeId !== null
+        ? Long.fromValue(object.beforeId)
+        : Long.UZERO;
+    message.afterId =
+      object.afterId !== undefined && object.afterId !== null
+        ? Long.fromValue(object.afterId)
+        : Long.UZERO;
     message.orderBy = object.orderBy ?? "";
     message.orderId = object.orderId ?? "";
-    if (object.afterBlock !== undefined && object.afterBlock !== null) {
-      message.afterBlock = object.afterBlock as Long;
-    } else {
-      message.afterBlock = Long.UZERO;
-    }
-    if (object.beforeBlock !== undefined && object.beforeBlock !== null) {
-      message.beforeBlock = object.beforeBlock as Long;
-    } else {
-      message.beforeBlock = Long.UZERO;
-    }
+    message.afterBlock =
+      object.afterBlock !== undefined && object.afterBlock !== null
+        ? Long.fromValue(object.afterBlock)
+        : Long.UZERO;
+    message.beforeBlock =
+      object.beforeBlock !== undefined && object.beforeBlock !== null
+        ? Long.fromValue(object.beforeBlock)
+        : Long.UZERO;
     return message;
   },
 };
@@ -269,17 +255,9 @@ export const QueryAllLiquidationResponse = {
     const message = {
       ...baseQueryAllLiquidationResponse,
     } as QueryAllLiquidationResponse;
-    message.accountTradeHistoryRows = [];
-    if (
-      object.accountTradeHistoryRows !== undefined &&
-      object.accountTradeHistoryRows !== null
-    ) {
-      for (const e of object.accountTradeHistoryRows) {
-        message.accountTradeHistoryRows.push(
-          AccountTradeHistoryRow.fromJSON(e)
-        );
-      }
-    }
+    message.accountTradeHistoryRows = (
+      object.accountTradeHistoryRows ?? []
+    ).map((e: any) => AccountTradeHistoryRow.fromJSON(e));
     return message;
   },
 
@@ -295,23 +273,16 @@ export const QueryAllLiquidationResponse = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryAllLiquidationResponse>
+  fromPartial<I extends Exact<DeepPartial<QueryAllLiquidationResponse>, I>>(
+    object: I
   ): QueryAllLiquidationResponse {
     const message = {
       ...baseQueryAllLiquidationResponse,
     } as QueryAllLiquidationResponse;
-    message.accountTradeHistoryRows = [];
-    if (
-      object.accountTradeHistoryRows !== undefined &&
-      object.accountTradeHistoryRows !== null
-    ) {
-      for (const e of object.accountTradeHistoryRows) {
-        message.accountTradeHistoryRows.push(
-          AccountTradeHistoryRow.fromPartial(e)
-        );
-      }
-    }
+    message.accountTradeHistoryRows =
+      object.accountTradeHistoryRows?.map((e) =>
+        AccountTradeHistoryRow.fromPartial(e)
+      ) || [];
     return message;
   },
 };
@@ -360,10 +331,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -371,6 +344,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

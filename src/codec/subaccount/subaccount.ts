@@ -54,16 +54,14 @@ export const SubAccount = {
 
   fromJSON(object: any): SubAccount {
     const message = { ...baseSubAccount } as SubAccount;
-    if (object.mainAccount !== undefined && object.mainAccount !== null) {
-      message.mainAccount = String(object.mainAccount);
-    } else {
-      message.mainAccount = "";
-    }
-    if (object.active !== undefined && object.active !== null) {
-      message.active = Boolean(object.active);
-    } else {
-      message.active = false;
-    }
+    message.mainAccount =
+      object.mainAccount !== undefined && object.mainAccount !== null
+        ? String(object.mainAccount)
+        : "";
+    message.active =
+      object.active !== undefined && object.active !== null
+        ? Boolean(object.active)
+        : false;
     return message;
   },
 
@@ -75,7 +73,9 @@ export const SubAccount = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<SubAccount>): SubAccount {
+  fromPartial<I extends Exact<DeepPartial<SubAccount>, I>>(
+    object: I
+  ): SubAccount {
     const message = { ...baseSubAccount } as SubAccount;
     message.mainAccount = object.mainAccount ?? "";
     message.active = object.active ?? false;
@@ -132,21 +132,18 @@ export const GenesisSubAccount = {
 
   fromJSON(object: any): GenesisSubAccount {
     const message = { ...baseGenesisSubAccount } as GenesisSubAccount;
-    if (object.mainAddress !== undefined && object.mainAddress !== null) {
-      message.mainAddress = String(object.mainAddress);
-    } else {
-      message.mainAddress = "";
-    }
-    if (object.subAddress !== undefined && object.subAddress !== null) {
-      message.subAddress = String(object.subAddress);
-    } else {
-      message.subAddress = "";
-    }
-    if (object.active !== undefined && object.active !== null) {
-      message.active = Boolean(object.active);
-    } else {
-      message.active = false;
-    }
+    message.mainAddress =
+      object.mainAddress !== undefined && object.mainAddress !== null
+        ? String(object.mainAddress)
+        : "";
+    message.subAddress =
+      object.subAddress !== undefined && object.subAddress !== null
+        ? String(object.subAddress)
+        : "";
+    message.active =
+      object.active !== undefined && object.active !== null
+        ? Boolean(object.active)
+        : false;
     return message;
   },
 
@@ -159,7 +156,9 @@ export const GenesisSubAccount = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<GenesisSubAccount>): GenesisSubAccount {
+  fromPartial<I extends Exact<DeepPartial<GenesisSubAccount>, I>>(
+    object: I
+  ): GenesisSubAccount {
     const message = { ...baseGenesisSubAccount } as GenesisSubAccount;
     message.mainAddress = object.mainAddress ?? "";
     message.subAddress = object.subAddress ?? "";
@@ -175,10 +174,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -186,6 +187,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

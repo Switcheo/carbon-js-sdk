@@ -97,22 +97,14 @@ export const MsgSetWithdrawAddress = {
 
   fromJSON(object: any): MsgSetWithdrawAddress {
     const message = { ...baseMsgSetWithdrawAddress } as MsgSetWithdrawAddress;
-    if (
-      object.delegatorAddress !== undefined &&
-      object.delegatorAddress !== null
-    ) {
-      message.delegatorAddress = String(object.delegatorAddress);
-    } else {
-      message.delegatorAddress = "";
-    }
-    if (
-      object.withdrawAddress !== undefined &&
-      object.withdrawAddress !== null
-    ) {
-      message.withdrawAddress = String(object.withdrawAddress);
-    } else {
-      message.withdrawAddress = "";
-    }
+    message.delegatorAddress =
+      object.delegatorAddress !== undefined && object.delegatorAddress !== null
+        ? String(object.delegatorAddress)
+        : "";
+    message.withdrawAddress =
+      object.withdrawAddress !== undefined && object.withdrawAddress !== null
+        ? String(object.withdrawAddress)
+        : "";
     return message;
   },
 
@@ -125,8 +117,8 @@ export const MsgSetWithdrawAddress = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<MsgSetWithdrawAddress>
+  fromPartial<I extends Exact<DeepPartial<MsgSetWithdrawAddress>, I>>(
+    object: I
   ): MsgSetWithdrawAddress {
     const message = { ...baseMsgSetWithdrawAddress } as MsgSetWithdrawAddress;
     message.delegatorAddress = object.delegatorAddress ?? "";
@@ -177,8 +169,8 @@ export const MsgSetWithdrawAddressResponse = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgSetWithdrawAddressResponse>
+  fromPartial<I extends Exact<DeepPartial<MsgSetWithdrawAddressResponse>, I>>(
+    _: I
   ): MsgSetWithdrawAddressResponse {
     const message = {
       ...baseMsgSetWithdrawAddressResponse,
@@ -236,22 +228,14 @@ export const MsgWithdrawDelegatorReward = {
     const message = {
       ...baseMsgWithdrawDelegatorReward,
     } as MsgWithdrawDelegatorReward;
-    if (
-      object.delegatorAddress !== undefined &&
-      object.delegatorAddress !== null
-    ) {
-      message.delegatorAddress = String(object.delegatorAddress);
-    } else {
-      message.delegatorAddress = "";
-    }
-    if (
-      object.validatorAddress !== undefined &&
-      object.validatorAddress !== null
-    ) {
-      message.validatorAddress = String(object.validatorAddress);
-    } else {
-      message.validatorAddress = "";
-    }
+    message.delegatorAddress =
+      object.delegatorAddress !== undefined && object.delegatorAddress !== null
+        ? String(object.delegatorAddress)
+        : "";
+    message.validatorAddress =
+      object.validatorAddress !== undefined && object.validatorAddress !== null
+        ? String(object.validatorAddress)
+        : "";
     return message;
   },
 
@@ -264,8 +248,8 @@ export const MsgWithdrawDelegatorReward = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<MsgWithdrawDelegatorReward>
+  fromPartial<I extends Exact<DeepPartial<MsgWithdrawDelegatorReward>, I>>(
+    object: I
   ): MsgWithdrawDelegatorReward {
     const message = {
       ...baseMsgWithdrawDelegatorReward,
@@ -318,9 +302,9 @@ export const MsgWithdrawDelegatorRewardResponse = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgWithdrawDelegatorRewardResponse>
-  ): MsgWithdrawDelegatorRewardResponse {
+  fromPartial<
+    I extends Exact<DeepPartial<MsgWithdrawDelegatorRewardResponse>, I>
+  >(_: I): MsgWithdrawDelegatorRewardResponse {
     const message = {
       ...baseMsgWithdrawDelegatorRewardResponse,
     } as MsgWithdrawDelegatorRewardResponse;
@@ -368,14 +352,10 @@ export const MsgWithdrawValidatorCommission = {
     const message = {
       ...baseMsgWithdrawValidatorCommission,
     } as MsgWithdrawValidatorCommission;
-    if (
-      object.validatorAddress !== undefined &&
-      object.validatorAddress !== null
-    ) {
-      message.validatorAddress = String(object.validatorAddress);
-    } else {
-      message.validatorAddress = "";
-    }
+    message.validatorAddress =
+      object.validatorAddress !== undefined && object.validatorAddress !== null
+        ? String(object.validatorAddress)
+        : "";
     return message;
   },
 
@@ -386,8 +366,8 @@ export const MsgWithdrawValidatorCommission = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<MsgWithdrawValidatorCommission>
+  fromPartial<I extends Exact<DeepPartial<MsgWithdrawValidatorCommission>, I>>(
+    object: I
   ): MsgWithdrawValidatorCommission {
     const message = {
       ...baseMsgWithdrawValidatorCommission,
@@ -439,9 +419,9 @@ export const MsgWithdrawValidatorCommissionResponse = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgWithdrawValidatorCommissionResponse>
-  ): MsgWithdrawValidatorCommissionResponse {
+  fromPartial<
+    I extends Exact<DeepPartial<MsgWithdrawValidatorCommissionResponse>, I>
+  >(_: I): MsgWithdrawValidatorCommissionResponse {
     const message = {
       ...baseMsgWithdrawValidatorCommissionResponse,
     } as MsgWithdrawValidatorCommissionResponse;
@@ -492,17 +472,11 @@ export const MsgFundCommunityPool = {
 
   fromJSON(object: any): MsgFundCommunityPool {
     const message = { ...baseMsgFundCommunityPool } as MsgFundCommunityPool;
-    message.amount = [];
-    if (object.amount !== undefined && object.amount !== null) {
-      for (const e of object.amount) {
-        message.amount.push(Coin.fromJSON(e));
-      }
-    }
-    if (object.depositor !== undefined && object.depositor !== null) {
-      message.depositor = String(object.depositor);
-    } else {
-      message.depositor = "";
-    }
+    message.amount = (object.amount ?? []).map((e: any) => Coin.fromJSON(e));
+    message.depositor =
+      object.depositor !== undefined && object.depositor !== null
+        ? String(object.depositor)
+        : "";
     return message;
   },
 
@@ -517,14 +491,11 @@ export const MsgFundCommunityPool = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<MsgFundCommunityPool>): MsgFundCommunityPool {
+  fromPartial<I extends Exact<DeepPartial<MsgFundCommunityPool>, I>>(
+    object: I
+  ): MsgFundCommunityPool {
     const message = { ...baseMsgFundCommunityPool } as MsgFundCommunityPool;
-    message.amount = [];
-    if (object.amount !== undefined && object.amount !== null) {
-      for (const e of object.amount) {
-        message.amount.push(Coin.fromPartial(e));
-      }
-    }
+    message.amount = object.amount?.map((e) => Coin.fromPartial(e)) || [];
     message.depositor = object.depositor ?? "";
     return message;
   },
@@ -572,8 +543,8 @@ export const MsgFundCommunityPoolResponse = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgFundCommunityPoolResponse>
+  fromPartial<I extends Exact<DeepPartial<MsgFundCommunityPoolResponse>, I>>(
+    _: I
   ): MsgFundCommunityPoolResponse {
     const message = {
       ...baseMsgFundCommunityPoolResponse,
@@ -696,10 +667,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -707,6 +680,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

@@ -63,11 +63,10 @@ export const QueryGetMarketRequest = {
 
   fromJSON(object: any): QueryGetMarketRequest {
     const message = { ...baseQueryGetMarketRequest } as QueryGetMarketRequest;
-    if (object.name !== undefined && object.name !== null) {
-      message.name = String(object.name);
-    } else {
-      message.name = "";
-    }
+    message.name =
+      object.name !== undefined && object.name !== null
+        ? String(object.name)
+        : "";
     return message;
   },
 
@@ -77,8 +76,8 @@ export const QueryGetMarketRequest = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryGetMarketRequest>
+  fromPartial<I extends Exact<DeepPartial<QueryGetMarketRequest>, I>>(
+    object: I
   ): QueryGetMarketRequest {
     const message = { ...baseQueryGetMarketRequest } as QueryGetMarketRequest;
     message.name = object.name ?? "";
@@ -122,11 +121,10 @@ export const QueryGetMarketResponse = {
 
   fromJSON(object: any): QueryGetMarketResponse {
     const message = { ...baseQueryGetMarketResponse } as QueryGetMarketResponse;
-    if (object.Market !== undefined && object.Market !== null) {
-      message.Market = Market.fromJSON(object.Market);
-    } else {
-      message.Market = undefined;
-    }
+    message.Market =
+      object.Market !== undefined && object.Market !== null
+        ? Market.fromJSON(object.Market)
+        : undefined;
     return message;
   },
 
@@ -137,15 +135,14 @@ export const QueryGetMarketResponse = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryGetMarketResponse>
+  fromPartial<I extends Exact<DeepPartial<QueryGetMarketResponse>, I>>(
+    object: I
   ): QueryGetMarketResponse {
     const message = { ...baseQueryGetMarketResponse } as QueryGetMarketResponse;
-    if (object.Market !== undefined && object.Market !== null) {
-      message.Market = Market.fromPartial(object.Market);
-    } else {
-      message.Market = undefined;
-    }
+    message.Market =
+      object.Market !== undefined && object.Market !== null
+        ? Market.fromPartial(object.Market)
+        : undefined;
     return message;
   },
 };
@@ -186,11 +183,10 @@ export const QueryAllMarketRequest = {
 
   fromJSON(object: any): QueryAllMarketRequest {
     const message = { ...baseQueryAllMarketRequest } as QueryAllMarketRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -203,15 +199,14 @@ export const QueryAllMarketRequest = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryAllMarketRequest>
+  fromPartial<I extends Exact<DeepPartial<QueryAllMarketRequest>, I>>(
+    object: I
   ): QueryAllMarketRequest {
     const message = { ...baseQueryAllMarketRequest } as QueryAllMarketRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -262,17 +257,13 @@ export const QueryAllMarketResponse = {
 
   fromJSON(object: any): QueryAllMarketResponse {
     const message = { ...baseQueryAllMarketResponse } as QueryAllMarketResponse;
-    message.markets = [];
-    if (object.markets !== undefined && object.markets !== null) {
-      for (const e of object.markets) {
-        message.markets.push(Market.fromJSON(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.markets = (object.markets ?? []).map((e: any) =>
+      Market.fromJSON(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -292,21 +283,15 @@ export const QueryAllMarketResponse = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryAllMarketResponse>
+  fromPartial<I extends Exact<DeepPartial<QueryAllMarketResponse>, I>>(
+    object: I
   ): QueryAllMarketResponse {
     const message = { ...baseQueryAllMarketResponse } as QueryAllMarketResponse;
-    message.markets = [];
-    if (object.markets !== undefined && object.markets !== null) {
-      for (const e of object.markets) {
-        message.markets.push(Market.fromPartial(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.markets = object.markets?.map((e) => Market.fromPartial(e)) || [];
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -365,10 +350,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -376,6 +363,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

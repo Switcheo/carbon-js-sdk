@@ -65,16 +65,14 @@ export const MsgCreateSubAccount = {
 
   fromJSON(object: any): MsgCreateSubAccount {
     const message = { ...baseMsgCreateSubAccount } as MsgCreateSubAccount;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
-    if (object.subAddress !== undefined && object.subAddress !== null) {
-      message.subAddress = String(object.subAddress);
-    } else {
-      message.subAddress = "";
-    }
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.subAddress =
+      object.subAddress !== undefined && object.subAddress !== null
+        ? String(object.subAddress)
+        : "";
     return message;
   },
 
@@ -85,7 +83,9 @@ export const MsgCreateSubAccount = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<MsgCreateSubAccount>): MsgCreateSubAccount {
+  fromPartial<I extends Exact<DeepPartial<MsgCreateSubAccount>, I>>(
+    object: I
+  ): MsgCreateSubAccount {
     const message = { ...baseMsgCreateSubAccount } as MsgCreateSubAccount;
     message.creator = object.creator ?? "";
     message.subAddress = object.subAddress ?? "";
@@ -135,8 +135,8 @@ export const MsgCreateSubAccountResponse = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgCreateSubAccountResponse>
+  fromPartial<I extends Exact<DeepPartial<MsgCreateSubAccountResponse>, I>>(
+    _: I
   ): MsgCreateSubAccountResponse {
     const message = {
       ...baseMsgCreateSubAccountResponse,
@@ -190,19 +190,15 @@ export const MsgActivateSubAccount = {
 
   fromJSON(object: any): MsgActivateSubAccount {
     const message = { ...baseMsgActivateSubAccount } as MsgActivateSubAccount;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
-    if (
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.expectedMainAccount =
       object.expectedMainAccount !== undefined &&
       object.expectedMainAccount !== null
-    ) {
-      message.expectedMainAccount = String(object.expectedMainAccount);
-    } else {
-      message.expectedMainAccount = "";
-    }
+        ? String(object.expectedMainAccount)
+        : "";
     return message;
   },
 
@@ -214,8 +210,8 @@ export const MsgActivateSubAccount = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<MsgActivateSubAccount>
+  fromPartial<I extends Exact<DeepPartial<MsgActivateSubAccount>, I>>(
+    object: I
   ): MsgActivateSubAccount {
     const message = { ...baseMsgActivateSubAccount } as MsgActivateSubAccount;
     message.creator = object.creator ?? "";
@@ -266,8 +262,8 @@ export const MsgActivateSubAccountResponse = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgActivateSubAccountResponse>
+  fromPartial<I extends Exact<DeepPartial<MsgActivateSubAccountResponse>, I>>(
+    _: I
   ): MsgActivateSubAccountResponse {
     const message = {
       ...baseMsgActivateSubAccountResponse,
@@ -315,16 +311,14 @@ export const MsgRemoveSubAccount = {
 
   fromJSON(object: any): MsgRemoveSubAccount {
     const message = { ...baseMsgRemoveSubAccount } as MsgRemoveSubAccount;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
-    if (object.subAddress !== undefined && object.subAddress !== null) {
-      message.subAddress = String(object.subAddress);
-    } else {
-      message.subAddress = "";
-    }
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.subAddress =
+      object.subAddress !== undefined && object.subAddress !== null
+        ? String(object.subAddress)
+        : "";
     return message;
   },
 
@@ -335,7 +329,9 @@ export const MsgRemoveSubAccount = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<MsgRemoveSubAccount>): MsgRemoveSubAccount {
+  fromPartial<I extends Exact<DeepPartial<MsgRemoveSubAccount>, I>>(
+    object: I
+  ): MsgRemoveSubAccount {
     const message = { ...baseMsgRemoveSubAccount } as MsgRemoveSubAccount;
     message.creator = object.creator ?? "";
     message.subAddress = object.subAddress ?? "";
@@ -385,8 +381,8 @@ export const MsgRemoveSubAccountResponse = {
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgRemoveSubAccountResponse>
+  fromPartial<I extends Exact<DeepPartial<MsgRemoveSubAccountResponse>, I>>(
+    _: I
   ): MsgRemoveSubAccountResponse {
     const message = {
       ...baseMsgRemoveSubAccountResponse,
@@ -475,10 +471,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -486,6 +484,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

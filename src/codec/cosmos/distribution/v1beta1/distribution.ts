@@ -193,43 +193,30 @@ export const Params = {
 
   fromJSON(object: any): Params {
     const message = { ...baseParams } as Params;
-    if (object.communityTax !== undefined && object.communityTax !== null) {
-      message.communityTax = String(object.communityTax);
-    } else {
-      message.communityTax = "";
-    }
-    if (
+    message.communityTax =
+      object.communityTax !== undefined && object.communityTax !== null
+        ? String(object.communityTax)
+        : "";
+    message.baseProposerReward =
       object.baseProposerReward !== undefined &&
       object.baseProposerReward !== null
-    ) {
-      message.baseProposerReward = String(object.baseProposerReward);
-    } else {
-      message.baseProposerReward = "";
-    }
-    if (
+        ? String(object.baseProposerReward)
+        : "";
+    message.bonusProposerReward =
       object.bonusProposerReward !== undefined &&
       object.bonusProposerReward !== null
-    ) {
-      message.bonusProposerReward = String(object.bonusProposerReward);
-    } else {
-      message.bonusProposerReward = "";
-    }
-    if (
+        ? String(object.bonusProposerReward)
+        : "";
+    message.liquidityProviderReward =
       object.liquidityProviderReward !== undefined &&
       object.liquidityProviderReward !== null
-    ) {
-      message.liquidityProviderReward = String(object.liquidityProviderReward);
-    } else {
-      message.liquidityProviderReward = "";
-    }
-    if (
+        ? String(object.liquidityProviderReward)
+        : "";
+    message.withdrawAddrEnabled =
       object.withdrawAddrEnabled !== undefined &&
       object.withdrawAddrEnabled !== null
-    ) {
-      message.withdrawAddrEnabled = Boolean(object.withdrawAddrEnabled);
-    } else {
-      message.withdrawAddrEnabled = false;
-    }
+        ? Boolean(object.withdrawAddrEnabled)
+        : false;
     return message;
   },
 
@@ -248,7 +235,7 @@ export const Params = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<Params>): Params {
+  fromPartial<I extends Exact<DeepPartial<Params>, I>>(object: I): Params {
     const message = { ...baseParams } as Params;
     message.communityTax = object.communityTax ?? "";
     message.baseProposerReward = object.baseProposerReward ?? "";
@@ -308,20 +295,13 @@ export const ValidatorHistoricalRewards = {
     const message = {
       ...baseValidatorHistoricalRewards,
     } as ValidatorHistoricalRewards;
-    message.cumulativeRewardRatio = [];
-    if (
-      object.cumulativeRewardRatio !== undefined &&
-      object.cumulativeRewardRatio !== null
-    ) {
-      for (const e of object.cumulativeRewardRatio) {
-        message.cumulativeRewardRatio.push(DecCoin.fromJSON(e));
-      }
-    }
-    if (object.referenceCount !== undefined && object.referenceCount !== null) {
-      message.referenceCount = Number(object.referenceCount);
-    } else {
-      message.referenceCount = 0;
-    }
+    message.cumulativeRewardRatio = (object.cumulativeRewardRatio ?? []).map(
+      (e: any) => DecCoin.fromJSON(e)
+    );
+    message.referenceCount =
+      object.referenceCount !== undefined && object.referenceCount !== null
+        ? Number(object.referenceCount)
+        : 0;
     return message;
   },
 
@@ -339,21 +319,14 @@ export const ValidatorHistoricalRewards = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<ValidatorHistoricalRewards>
+  fromPartial<I extends Exact<DeepPartial<ValidatorHistoricalRewards>, I>>(
+    object: I
   ): ValidatorHistoricalRewards {
     const message = {
       ...baseValidatorHistoricalRewards,
     } as ValidatorHistoricalRewards;
-    message.cumulativeRewardRatio = [];
-    if (
-      object.cumulativeRewardRatio !== undefined &&
-      object.cumulativeRewardRatio !== null
-    ) {
-      for (const e of object.cumulativeRewardRatio) {
-        message.cumulativeRewardRatio.push(DecCoin.fromPartial(e));
-      }
-    }
+    message.cumulativeRewardRatio =
+      object.cumulativeRewardRatio?.map((e) => DecCoin.fromPartial(e)) || [];
     message.referenceCount = object.referenceCount ?? 0;
     return message;
   },
@@ -406,17 +379,13 @@ export const ValidatorCurrentRewards = {
     const message = {
       ...baseValidatorCurrentRewards,
     } as ValidatorCurrentRewards;
-    message.rewards = [];
-    if (object.rewards !== undefined && object.rewards !== null) {
-      for (const e of object.rewards) {
-        message.rewards.push(DecCoin.fromJSON(e));
-      }
-    }
-    if (object.period !== undefined && object.period !== null) {
-      message.period = Long.fromString(object.period);
-    } else {
-      message.period = Long.UZERO;
-    }
+    message.rewards = (object.rewards ?? []).map((e: any) =>
+      DecCoin.fromJSON(e)
+    );
+    message.period =
+      object.period !== undefined && object.period !== null
+        ? Long.fromString(object.period)
+        : Long.UZERO;
     return message;
   },
 
@@ -434,23 +403,17 @@ export const ValidatorCurrentRewards = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<ValidatorCurrentRewards>
+  fromPartial<I extends Exact<DeepPartial<ValidatorCurrentRewards>, I>>(
+    object: I
   ): ValidatorCurrentRewards {
     const message = {
       ...baseValidatorCurrentRewards,
     } as ValidatorCurrentRewards;
-    message.rewards = [];
-    if (object.rewards !== undefined && object.rewards !== null) {
-      for (const e of object.rewards) {
-        message.rewards.push(DecCoin.fromPartial(e));
-      }
-    }
-    if (object.period !== undefined && object.period !== null) {
-      message.period = object.period as Long;
-    } else {
-      message.period = Long.UZERO;
-    }
+    message.rewards = object.rewards?.map((e) => DecCoin.fromPartial(e)) || [];
+    message.period =
+      object.period !== undefined && object.period !== null
+        ? Long.fromValue(object.period)
+        : Long.UZERO;
     return message;
   },
 };
@@ -496,12 +459,9 @@ export const ValidatorAccumulatedCommission = {
     const message = {
       ...baseValidatorAccumulatedCommission,
     } as ValidatorAccumulatedCommission;
-    message.commission = [];
-    if (object.commission !== undefined && object.commission !== null) {
-      for (const e of object.commission) {
-        message.commission.push(DecCoin.fromJSON(e));
-      }
-    }
+    message.commission = (object.commission ?? []).map((e: any) =>
+      DecCoin.fromJSON(e)
+    );
     return message;
   },
 
@@ -517,18 +477,14 @@ export const ValidatorAccumulatedCommission = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<ValidatorAccumulatedCommission>
+  fromPartial<I extends Exact<DeepPartial<ValidatorAccumulatedCommission>, I>>(
+    object: I
   ): ValidatorAccumulatedCommission {
     const message = {
       ...baseValidatorAccumulatedCommission,
     } as ValidatorAccumulatedCommission;
-    message.commission = [];
-    if (object.commission !== undefined && object.commission !== null) {
-      for (const e of object.commission) {
-        message.commission.push(DecCoin.fromPartial(e));
-      }
-    }
+    message.commission =
+      object.commission?.map((e) => DecCoin.fromPartial(e)) || [];
     return message;
   },
 };
@@ -574,12 +530,9 @@ export const ValidatorOutstandingRewards = {
     const message = {
       ...baseValidatorOutstandingRewards,
     } as ValidatorOutstandingRewards;
-    message.rewards = [];
-    if (object.rewards !== undefined && object.rewards !== null) {
-      for (const e of object.rewards) {
-        message.rewards.push(DecCoin.fromJSON(e));
-      }
-    }
+    message.rewards = (object.rewards ?? []).map((e: any) =>
+      DecCoin.fromJSON(e)
+    );
     return message;
   },
 
@@ -595,18 +548,13 @@ export const ValidatorOutstandingRewards = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<ValidatorOutstandingRewards>
+  fromPartial<I extends Exact<DeepPartial<ValidatorOutstandingRewards>, I>>(
+    object: I
   ): ValidatorOutstandingRewards {
     const message = {
       ...baseValidatorOutstandingRewards,
     } as ValidatorOutstandingRewards;
-    message.rewards = [];
-    if (object.rewards !== undefined && object.rewards !== null) {
-      for (const e of object.rewards) {
-        message.rewards.push(DecCoin.fromPartial(e));
-      }
-    }
+    message.rewards = object.rewards?.map((e) => DecCoin.fromPartial(e)) || [];
     return message;
   },
 };
@@ -653,19 +601,14 @@ export const ValidatorSlashEvent = {
 
   fromJSON(object: any): ValidatorSlashEvent {
     const message = { ...baseValidatorSlashEvent } as ValidatorSlashEvent;
-    if (
-      object.validatorPeriod !== undefined &&
-      object.validatorPeriod !== null
-    ) {
-      message.validatorPeriod = Long.fromString(object.validatorPeriod);
-    } else {
-      message.validatorPeriod = Long.UZERO;
-    }
-    if (object.fraction !== undefined && object.fraction !== null) {
-      message.fraction = String(object.fraction);
-    } else {
-      message.fraction = "";
-    }
+    message.validatorPeriod =
+      object.validatorPeriod !== undefined && object.validatorPeriod !== null
+        ? Long.fromString(object.validatorPeriod)
+        : Long.UZERO;
+    message.fraction =
+      object.fraction !== undefined && object.fraction !== null
+        ? String(object.fraction)
+        : "";
     return message;
   },
 
@@ -679,16 +622,14 @@ export const ValidatorSlashEvent = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<ValidatorSlashEvent>): ValidatorSlashEvent {
+  fromPartial<I extends Exact<DeepPartial<ValidatorSlashEvent>, I>>(
+    object: I
+  ): ValidatorSlashEvent {
     const message = { ...baseValidatorSlashEvent } as ValidatorSlashEvent;
-    if (
-      object.validatorPeriod !== undefined &&
-      object.validatorPeriod !== null
-    ) {
-      message.validatorPeriod = object.validatorPeriod as Long;
-    } else {
-      message.validatorPeriod = Long.UZERO;
-    }
+    message.validatorPeriod =
+      object.validatorPeriod !== undefined && object.validatorPeriod !== null
+        ? Long.fromValue(object.validatorPeriod)
+        : Long.UZERO;
     message.fraction = object.fraction ?? "";
     return message;
   },
@@ -733,15 +674,9 @@ export const ValidatorSlashEvents = {
 
   fromJSON(object: any): ValidatorSlashEvents {
     const message = { ...baseValidatorSlashEvents } as ValidatorSlashEvents;
-    message.validatorSlashEvents = [];
-    if (
-      object.validatorSlashEvents !== undefined &&
-      object.validatorSlashEvents !== null
-    ) {
-      for (const e of object.validatorSlashEvents) {
-        message.validatorSlashEvents.push(ValidatorSlashEvent.fromJSON(e));
-      }
-    }
+    message.validatorSlashEvents = (object.validatorSlashEvents ?? []).map(
+      (e: any) => ValidatorSlashEvent.fromJSON(e)
+    );
     return message;
   },
 
@@ -757,17 +692,14 @@ export const ValidatorSlashEvents = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<ValidatorSlashEvents>): ValidatorSlashEvents {
+  fromPartial<I extends Exact<DeepPartial<ValidatorSlashEvents>, I>>(
+    object: I
+  ): ValidatorSlashEvents {
     const message = { ...baseValidatorSlashEvents } as ValidatorSlashEvents;
-    message.validatorSlashEvents = [];
-    if (
-      object.validatorSlashEvents !== undefined &&
-      object.validatorSlashEvents !== null
-    ) {
-      for (const e of object.validatorSlashEvents) {
-        message.validatorSlashEvents.push(ValidatorSlashEvent.fromPartial(e));
-      }
-    }
+    message.validatorSlashEvents =
+      object.validatorSlashEvents?.map((e) =>
+        ValidatorSlashEvent.fromPartial(e)
+      ) || [];
     return message;
   },
 };
@@ -815,21 +747,12 @@ export const FeePool = {
 
   fromJSON(object: any): FeePool {
     const message = { ...baseFeePool } as FeePool;
-    message.communityPool = [];
-    message.liquidityProviderPool = [];
-    if (object.communityPool !== undefined && object.communityPool !== null) {
-      for (const e of object.communityPool) {
-        message.communityPool.push(DecCoin.fromJSON(e));
-      }
-    }
-    if (
-      object.liquidityProviderPool !== undefined &&
-      object.liquidityProviderPool !== null
-    ) {
-      for (const e of object.liquidityProviderPool) {
-        message.liquidityProviderPool.push(DecCoin.fromJSON(e));
-      }
-    }
+    message.communityPool = (object.communityPool ?? []).map((e: any) =>
+      DecCoin.fromJSON(e)
+    );
+    message.liquidityProviderPool = (object.liquidityProviderPool ?? []).map(
+      (e: any) => DecCoin.fromJSON(e)
+    );
     return message;
   },
 
@@ -852,23 +775,12 @@ export const FeePool = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<FeePool>): FeePool {
+  fromPartial<I extends Exact<DeepPartial<FeePool>, I>>(object: I): FeePool {
     const message = { ...baseFeePool } as FeePool;
-    message.communityPool = [];
-    if (object.communityPool !== undefined && object.communityPool !== null) {
-      for (const e of object.communityPool) {
-        message.communityPool.push(DecCoin.fromPartial(e));
-      }
-    }
-    message.liquidityProviderPool = [];
-    if (
-      object.liquidityProviderPool !== undefined &&
-      object.liquidityProviderPool !== null
-    ) {
-      for (const e of object.liquidityProviderPool) {
-        message.liquidityProviderPool.push(DecCoin.fromPartial(e));
-      }
-    }
+    message.communityPool =
+      object.communityPool?.map((e) => DecCoin.fromPartial(e)) || [];
+    message.liquidityProviderPool =
+      object.liquidityProviderPool?.map((e) => DecCoin.fromPartial(e)) || [];
     return message;
   },
 };
@@ -936,27 +848,19 @@ export const CommunityPoolSpendProposal = {
     const message = {
       ...baseCommunityPoolSpendProposal,
     } as CommunityPoolSpendProposal;
-    message.amount = [];
-    if (object.title !== undefined && object.title !== null) {
-      message.title = String(object.title);
-    } else {
-      message.title = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = String(object.description);
-    } else {
-      message.description = "";
-    }
-    if (object.recipient !== undefined && object.recipient !== null) {
-      message.recipient = String(object.recipient);
-    } else {
-      message.recipient = "";
-    }
-    if (object.amount !== undefined && object.amount !== null) {
-      for (const e of object.amount) {
-        message.amount.push(Coin.fromJSON(e));
-      }
-    }
+    message.title =
+      object.title !== undefined && object.title !== null
+        ? String(object.title)
+        : "";
+    message.description =
+      object.description !== undefined && object.description !== null
+        ? String(object.description)
+        : "";
+    message.recipient =
+      object.recipient !== undefined && object.recipient !== null
+        ? String(object.recipient)
+        : "";
+    message.amount = (object.amount ?? []).map((e: any) => Coin.fromJSON(e));
     return message;
   },
 
@@ -974,8 +878,8 @@ export const CommunityPoolSpendProposal = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<CommunityPoolSpendProposal>
+  fromPartial<I extends Exact<DeepPartial<CommunityPoolSpendProposal>, I>>(
+    object: I
   ): CommunityPoolSpendProposal {
     const message = {
       ...baseCommunityPoolSpendProposal,
@@ -983,12 +887,7 @@ export const CommunityPoolSpendProposal = {
     message.title = object.title ?? "";
     message.description = object.description ?? "";
     message.recipient = object.recipient ?? "";
-    message.amount = [];
-    if (object.amount !== undefined && object.amount !== null) {
-      for (const e of object.amount) {
-        message.amount.push(Coin.fromPartial(e));
-      }
-    }
+    message.amount = object.amount?.map((e) => Coin.fromPartial(e)) || [];
     return message;
   },
 };
@@ -1045,21 +944,18 @@ export const DelegatorStartingInfo = {
 
   fromJSON(object: any): DelegatorStartingInfo {
     const message = { ...baseDelegatorStartingInfo } as DelegatorStartingInfo;
-    if (object.previousPeriod !== undefined && object.previousPeriod !== null) {
-      message.previousPeriod = Long.fromString(object.previousPeriod);
-    } else {
-      message.previousPeriod = Long.UZERO;
-    }
-    if (object.stake !== undefined && object.stake !== null) {
-      message.stake = String(object.stake);
-    } else {
-      message.stake = "";
-    }
-    if (object.height !== undefined && object.height !== null) {
-      message.height = Long.fromString(object.height);
-    } else {
-      message.height = Long.UZERO;
-    }
+    message.previousPeriod =
+      object.previousPeriod !== undefined && object.previousPeriod !== null
+        ? Long.fromString(object.previousPeriod)
+        : Long.UZERO;
+    message.stake =
+      object.stake !== undefined && object.stake !== null
+        ? String(object.stake)
+        : "";
+    message.height =
+      object.height !== undefined && object.height !== null
+        ? Long.fromString(object.height)
+        : Long.UZERO;
     return message;
   },
 
@@ -1073,21 +969,19 @@ export const DelegatorStartingInfo = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<DelegatorStartingInfo>
+  fromPartial<I extends Exact<DeepPartial<DelegatorStartingInfo>, I>>(
+    object: I
   ): DelegatorStartingInfo {
     const message = { ...baseDelegatorStartingInfo } as DelegatorStartingInfo;
-    if (object.previousPeriod !== undefined && object.previousPeriod !== null) {
-      message.previousPeriod = object.previousPeriod as Long;
-    } else {
-      message.previousPeriod = Long.UZERO;
-    }
+    message.previousPeriod =
+      object.previousPeriod !== undefined && object.previousPeriod !== null
+        ? Long.fromValue(object.previousPeriod)
+        : Long.UZERO;
     message.stake = object.stake ?? "";
-    if (object.height !== undefined && object.height !== null) {
-      message.height = object.height as Long;
-    } else {
-      message.height = Long.UZERO;
-    }
+    message.height =
+      object.height !== undefined && object.height !== null
+        ? Long.fromValue(object.height)
+        : Long.UZERO;
     return message;
   },
 };
@@ -1139,20 +1033,11 @@ export const DelegationDelegatorReward = {
     const message = {
       ...baseDelegationDelegatorReward,
     } as DelegationDelegatorReward;
-    message.reward = [];
-    if (
-      object.validatorAddress !== undefined &&
-      object.validatorAddress !== null
-    ) {
-      message.validatorAddress = String(object.validatorAddress);
-    } else {
-      message.validatorAddress = "";
-    }
-    if (object.reward !== undefined && object.reward !== null) {
-      for (const e of object.reward) {
-        message.reward.push(DecCoin.fromJSON(e));
-      }
-    }
+    message.validatorAddress =
+      object.validatorAddress !== undefined && object.validatorAddress !== null
+        ? String(object.validatorAddress)
+        : "";
+    message.reward = (object.reward ?? []).map((e: any) => DecCoin.fromJSON(e));
     return message;
   },
 
@@ -1170,19 +1055,14 @@ export const DelegationDelegatorReward = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<DelegationDelegatorReward>
+  fromPartial<I extends Exact<DeepPartial<DelegationDelegatorReward>, I>>(
+    object: I
   ): DelegationDelegatorReward {
     const message = {
       ...baseDelegationDelegatorReward,
     } as DelegationDelegatorReward;
     message.validatorAddress = object.validatorAddress ?? "";
-    message.reward = [];
-    if (object.reward !== undefined && object.reward !== null) {
-      for (const e of object.reward) {
-        message.reward.push(DecCoin.fromPartial(e));
-      }
-    }
+    message.reward = object.reward?.map((e) => DecCoin.fromPartial(e)) || [];
     return message;
   },
 };
@@ -1257,31 +1137,26 @@ export const CommunityPoolSpendProposalWithDeposit = {
     const message = {
       ...baseCommunityPoolSpendProposalWithDeposit,
     } as CommunityPoolSpendProposalWithDeposit;
-    if (object.title !== undefined && object.title !== null) {
-      message.title = String(object.title);
-    } else {
-      message.title = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = String(object.description);
-    } else {
-      message.description = "";
-    }
-    if (object.recipient !== undefined && object.recipient !== null) {
-      message.recipient = String(object.recipient);
-    } else {
-      message.recipient = "";
-    }
-    if (object.amount !== undefined && object.amount !== null) {
-      message.amount = String(object.amount);
-    } else {
-      message.amount = "";
-    }
-    if (object.deposit !== undefined && object.deposit !== null) {
-      message.deposit = String(object.deposit);
-    } else {
-      message.deposit = "";
-    }
+    message.title =
+      object.title !== undefined && object.title !== null
+        ? String(object.title)
+        : "";
+    message.description =
+      object.description !== undefined && object.description !== null
+        ? String(object.description)
+        : "";
+    message.recipient =
+      object.recipient !== undefined && object.recipient !== null
+        ? String(object.recipient)
+        : "";
+    message.amount =
+      object.amount !== undefined && object.amount !== null
+        ? String(object.amount)
+        : "";
+    message.deposit =
+      object.deposit !== undefined && object.deposit !== null
+        ? String(object.deposit)
+        : "";
     return message;
   },
 
@@ -1296,9 +1171,9 @@ export const CommunityPoolSpendProposalWithDeposit = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<CommunityPoolSpendProposalWithDeposit>
-  ): CommunityPoolSpendProposalWithDeposit {
+  fromPartial<
+    I extends Exact<DeepPartial<CommunityPoolSpendProposalWithDeposit>, I>
+  >(object: I): CommunityPoolSpendProposalWithDeposit {
     const message = {
       ...baseCommunityPoolSpendProposalWithDeposit,
     } as CommunityPoolSpendProposalWithDeposit;
@@ -1318,10 +1193,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -1329,6 +1206,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

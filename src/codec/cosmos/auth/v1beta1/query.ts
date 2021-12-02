@@ -60,11 +60,10 @@ export const QueryAccountRequest = {
 
   fromJSON(object: any): QueryAccountRequest {
     const message = { ...baseQueryAccountRequest } as QueryAccountRequest;
-    if (object.address !== undefined && object.address !== null) {
-      message.address = String(object.address);
-    } else {
-      message.address = "";
-    }
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
     return message;
   },
 
@@ -74,7 +73,9 @@ export const QueryAccountRequest = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<QueryAccountRequest>): QueryAccountRequest {
+  fromPartial<I extends Exact<DeepPartial<QueryAccountRequest>, I>>(
+    object: I
+  ): QueryAccountRequest {
     const message = { ...baseQueryAccountRequest } as QueryAccountRequest;
     message.address = object.address ?? "";
     return message;
@@ -117,11 +118,10 @@ export const QueryAccountResponse = {
 
   fromJSON(object: any): QueryAccountResponse {
     const message = { ...baseQueryAccountResponse } as QueryAccountResponse;
-    if (object.account !== undefined && object.account !== null) {
-      message.account = Any.fromJSON(object.account);
-    } else {
-      message.account = undefined;
-    }
+    message.account =
+      object.account !== undefined && object.account !== null
+        ? Any.fromJSON(object.account)
+        : undefined;
     return message;
   },
 
@@ -132,13 +132,14 @@ export const QueryAccountResponse = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<QueryAccountResponse>): QueryAccountResponse {
+  fromPartial<I extends Exact<DeepPartial<QueryAccountResponse>, I>>(
+    object: I
+  ): QueryAccountResponse {
     const message = { ...baseQueryAccountResponse } as QueryAccountResponse;
-    if (object.account !== undefined && object.account !== null) {
-      message.account = Any.fromPartial(object.account);
-    } else {
-      message.account = undefined;
-    }
+    message.account =
+      object.account !== undefined && object.account !== null
+        ? Any.fromPartial(object.account)
+        : undefined;
     return message;
   },
 };
@@ -178,7 +179,9 @@ export const QueryParamsRequest = {
     return obj;
   },
 
-  fromPartial(_: DeepPartial<QueryParamsRequest>): QueryParamsRequest {
+  fromPartial<I extends Exact<DeepPartial<QueryParamsRequest>, I>>(
+    _: I
+  ): QueryParamsRequest {
     const message = { ...baseQueryParamsRequest } as QueryParamsRequest;
     return message;
   },
@@ -217,11 +220,10 @@ export const QueryParamsResponse = {
 
   fromJSON(object: any): QueryParamsResponse {
     const message = { ...baseQueryParamsResponse } as QueryParamsResponse;
-    if (object.params !== undefined && object.params !== null) {
-      message.params = Params.fromJSON(object.params);
-    } else {
-      message.params = undefined;
-    }
+    message.params =
+      object.params !== undefined && object.params !== null
+        ? Params.fromJSON(object.params)
+        : undefined;
     return message;
   },
 
@@ -232,13 +234,14 @@ export const QueryParamsResponse = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<QueryParamsResponse>): QueryParamsResponse {
+  fromPartial<I extends Exact<DeepPartial<QueryParamsResponse>, I>>(
+    object: I
+  ): QueryParamsResponse {
     const message = { ...baseQueryParamsResponse } as QueryParamsResponse;
-    if (object.params !== undefined && object.params !== null) {
-      message.params = Params.fromPartial(object.params);
-    } else {
-      message.params = undefined;
-    }
+    message.params =
+      object.params !== undefined && object.params !== null
+        ? Params.fromPartial(object.params)
+        : undefined;
     return message;
   },
 };
@@ -298,10 +301,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -309,6 +314,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

@@ -69,16 +69,14 @@ export const GenesisOwners = {
 
   fromJSON(object: any): GenesisOwners {
     const message = { ...baseGenesisOwners } as GenesisOwners;
-    if (object.index !== undefined && object.index !== null) {
-      message.index = Long.fromString(object.index);
-    } else {
-      message.index = Long.UZERO;
-    }
-    if (object.indexOwners !== undefined && object.indexOwners !== null) {
-      message.indexOwners = CapabilityOwners.fromJSON(object.indexOwners);
-    } else {
-      message.indexOwners = undefined;
-    }
+    message.index =
+      object.index !== undefined && object.index !== null
+        ? Long.fromString(object.index)
+        : Long.UZERO;
+    message.indexOwners =
+      object.indexOwners !== undefined && object.indexOwners !== null
+        ? CapabilityOwners.fromJSON(object.indexOwners)
+        : undefined;
     return message;
   },
 
@@ -93,18 +91,18 @@ export const GenesisOwners = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<GenesisOwners>): GenesisOwners {
+  fromPartial<I extends Exact<DeepPartial<GenesisOwners>, I>>(
+    object: I
+  ): GenesisOwners {
     const message = { ...baseGenesisOwners } as GenesisOwners;
-    if (object.index !== undefined && object.index !== null) {
-      message.index = object.index as Long;
-    } else {
-      message.index = Long.UZERO;
-    }
-    if (object.indexOwners !== undefined && object.indexOwners !== null) {
-      message.indexOwners = CapabilityOwners.fromPartial(object.indexOwners);
-    } else {
-      message.indexOwners = undefined;
-    }
+    message.index =
+      object.index !== undefined && object.index !== null
+        ? Long.fromValue(object.index)
+        : Long.UZERO;
+    message.indexOwners =
+      object.indexOwners !== undefined && object.indexOwners !== null
+        ? CapabilityOwners.fromPartial(object.indexOwners)
+        : undefined;
     return message;
   },
 };
@@ -149,17 +147,13 @@ export const GenesisState = {
 
   fromJSON(object: any): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
-    message.owners = [];
-    if (object.index !== undefined && object.index !== null) {
-      message.index = Long.fromString(object.index);
-    } else {
-      message.index = Long.UZERO;
-    }
-    if (object.owners !== undefined && object.owners !== null) {
-      for (const e of object.owners) {
-        message.owners.push(GenesisOwners.fromJSON(e));
-      }
-    }
+    message.index =
+      object.index !== undefined && object.index !== null
+        ? Long.fromString(object.index)
+        : Long.UZERO;
+    message.owners = (object.owners ?? []).map((e: any) =>
+      GenesisOwners.fromJSON(e)
+    );
     return message;
   },
 
@@ -177,19 +171,16 @@ export const GenesisState = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<GenesisState>): GenesisState {
+  fromPartial<I extends Exact<DeepPartial<GenesisState>, I>>(
+    object: I
+  ): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
-    if (object.index !== undefined && object.index !== null) {
-      message.index = object.index as Long;
-    } else {
-      message.index = Long.UZERO;
-    }
-    message.owners = [];
-    if (object.owners !== undefined && object.owners !== null) {
-      for (const e of object.owners) {
-        message.owners.push(GenesisOwners.fromPartial(e));
-      }
-    }
+    message.index =
+      object.index !== undefined && object.index !== null
+        ? Long.fromValue(object.index)
+        : Long.UZERO;
+    message.owners =
+      object.owners?.map((e) => GenesisOwners.fromPartial(e)) || [];
     return message;
   },
 };
@@ -201,10 +192,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -212,6 +205,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

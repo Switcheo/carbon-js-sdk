@@ -45,12 +45,9 @@ export const IncomingLiquidations = {
 
   fromJSON(object: any): IncomingLiquidations {
     const message = { ...baseIncomingLiquidations } as IncomingLiquidations;
-    message.addresses = [];
-    if (object.addresses !== undefined && object.addresses !== null) {
-      for (const e of object.addresses) {
-        message.addresses.push(bytesFromBase64(e));
-      }
-    }
+    message.addresses = (object.addresses ?? []).map((e: any) =>
+      bytesFromBase64(e)
+    );
     return message;
   },
 
@@ -66,14 +63,11 @@ export const IncomingLiquidations = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<IncomingLiquidations>): IncomingLiquidations {
+  fromPartial<I extends Exact<DeepPartial<IncomingLiquidations>, I>>(
+    object: I
+  ): IncomingLiquidations {
     const message = { ...baseIncomingLiquidations } as IncomingLiquidations;
-    message.addresses = [];
-    if (object.addresses !== undefined && object.addresses !== null) {
-      for (const e of object.addresses) {
-        message.addresses.push(e);
-      }
-    }
+    message.addresses = object.addresses?.map((e) => e) || [];
     return message;
   },
 };
@@ -119,10 +113,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -130,6 +126,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

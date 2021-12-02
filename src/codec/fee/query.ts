@@ -63,11 +63,10 @@ export const QueryGetMsgFeeRequest = {
 
   fromJSON(object: any): QueryGetMsgFeeRequest {
     const message = { ...baseQueryGetMsgFeeRequest } as QueryGetMsgFeeRequest;
-    if (object.msgType !== undefined && object.msgType !== null) {
-      message.msgType = String(object.msgType);
-    } else {
-      message.msgType = "";
-    }
+    message.msgType =
+      object.msgType !== undefined && object.msgType !== null
+        ? String(object.msgType)
+        : "";
     return message;
   },
 
@@ -77,8 +76,8 @@ export const QueryGetMsgFeeRequest = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryGetMsgFeeRequest>
+  fromPartial<I extends Exact<DeepPartial<QueryGetMsgFeeRequest>, I>>(
+    object: I
   ): QueryGetMsgFeeRequest {
     const message = { ...baseQueryGetMsgFeeRequest } as QueryGetMsgFeeRequest;
     message.msgType = object.msgType ?? "";
@@ -122,11 +121,10 @@ export const QueryGetMsgFeeResponse = {
 
   fromJSON(object: any): QueryGetMsgFeeResponse {
     const message = { ...baseQueryGetMsgFeeResponse } as QueryGetMsgFeeResponse;
-    if (object.MsgFee !== undefined && object.MsgFee !== null) {
-      message.MsgFee = MsgFee.fromJSON(object.MsgFee);
-    } else {
-      message.MsgFee = undefined;
-    }
+    message.MsgFee =
+      object.MsgFee !== undefined && object.MsgFee !== null
+        ? MsgFee.fromJSON(object.MsgFee)
+        : undefined;
     return message;
   },
 
@@ -137,15 +135,14 @@ export const QueryGetMsgFeeResponse = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryGetMsgFeeResponse>
+  fromPartial<I extends Exact<DeepPartial<QueryGetMsgFeeResponse>, I>>(
+    object: I
   ): QueryGetMsgFeeResponse {
     const message = { ...baseQueryGetMsgFeeResponse } as QueryGetMsgFeeResponse;
-    if (object.MsgFee !== undefined && object.MsgFee !== null) {
-      message.MsgFee = MsgFee.fromPartial(object.MsgFee);
-    } else {
-      message.MsgFee = undefined;
-    }
+    message.MsgFee =
+      object.MsgFee !== undefined && object.MsgFee !== null
+        ? MsgFee.fromPartial(object.MsgFee)
+        : undefined;
     return message;
   },
 };
@@ -186,11 +183,10 @@ export const QueryAllMsgFeeRequest = {
 
   fromJSON(object: any): QueryAllMsgFeeRequest {
     const message = { ...baseQueryAllMsgFeeRequest } as QueryAllMsgFeeRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -203,15 +199,14 @@ export const QueryAllMsgFeeRequest = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryAllMsgFeeRequest>
+  fromPartial<I extends Exact<DeepPartial<QueryAllMsgFeeRequest>, I>>(
+    object: I
   ): QueryAllMsgFeeRequest {
     const message = { ...baseQueryAllMsgFeeRequest } as QueryAllMsgFeeRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -262,17 +257,13 @@ export const QueryAllMsgFeeResponse = {
 
   fromJSON(object: any): QueryAllMsgFeeResponse {
     const message = { ...baseQueryAllMsgFeeResponse } as QueryAllMsgFeeResponse;
-    message.msgFees = [];
-    if (object.msgFees !== undefined && object.msgFees !== null) {
-      for (const e of object.msgFees) {
-        message.msgFees.push(MsgFee.fromJSON(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.msgFees = (object.msgFees ?? []).map((e: any) =>
+      MsgFee.fromJSON(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -292,21 +283,15 @@ export const QueryAllMsgFeeResponse = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryAllMsgFeeResponse>
+  fromPartial<I extends Exact<DeepPartial<QueryAllMsgFeeResponse>, I>>(
+    object: I
   ): QueryAllMsgFeeResponse {
     const message = { ...baseQueryAllMsgFeeResponse } as QueryAllMsgFeeResponse;
-    message.msgFees = [];
-    if (object.msgFees !== undefined && object.msgFees !== null) {
-      for (const e of object.msgFees) {
-        message.msgFees.push(MsgFee.fromPartial(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.msgFees = object.msgFees?.map((e) => MsgFee.fromPartial(e)) || [];
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -365,10 +350,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -376,6 +363,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

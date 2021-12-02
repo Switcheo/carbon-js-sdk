@@ -113,52 +113,41 @@ export const Transaction = {
 
   fromJSON(object: any): Transaction {
     const message = { ...baseTransaction } as Transaction;
-    message.messages = [];
-    if (object.hash !== undefined && object.hash !== null) {
-      message.hash = String(object.hash);
-    } else {
-      message.hash = "";
-    }
-    if (object.address !== undefined && object.address !== null) {
-      message.address = String(object.address);
-    } else {
-      message.address = "";
-    }
-    if (object.code !== undefined && object.code !== null) {
-      message.code = Number(object.code);
-    } else {
-      message.code = 0;
-    }
-    if (object.memo !== undefined && object.memo !== null) {
-      message.memo = String(object.memo);
-    } else {
-      message.memo = "";
-    }
-    if (object.gasUsed !== undefined && object.gasUsed !== null) {
-      message.gasUsed = Long.fromString(object.gasUsed);
-    } else {
-      message.gasUsed = Long.ZERO;
-    }
-    if (object.gasWanted !== undefined && object.gasWanted !== null) {
-      message.gasWanted = Long.fromString(object.gasWanted);
-    } else {
-      message.gasWanted = Long.ZERO;
-    }
-    if (object.blockHeight !== undefined && object.blockHeight !== null) {
-      message.blockHeight = Long.fromString(object.blockHeight);
-    } else {
-      message.blockHeight = Long.UZERO;
-    }
-    if (object.blockCreatedAt !== undefined && object.blockCreatedAt !== null) {
-      message.blockCreatedAt = fromJsonTimestamp(object.blockCreatedAt);
-    } else {
-      message.blockCreatedAt = undefined;
-    }
-    if (object.messages !== undefined && object.messages !== null) {
-      for (const e of object.messages) {
-        message.messages.push(Message.fromJSON(e));
-      }
-    }
+    message.hash =
+      object.hash !== undefined && object.hash !== null
+        ? String(object.hash)
+        : "";
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    message.code =
+      object.code !== undefined && object.code !== null
+        ? Number(object.code)
+        : 0;
+    message.memo =
+      object.memo !== undefined && object.memo !== null
+        ? String(object.memo)
+        : "";
+    message.gasUsed =
+      object.gasUsed !== undefined && object.gasUsed !== null
+        ? Long.fromString(object.gasUsed)
+        : Long.ZERO;
+    message.gasWanted =
+      object.gasWanted !== undefined && object.gasWanted !== null
+        ? Long.fromString(object.gasWanted)
+        : Long.ZERO;
+    message.blockHeight =
+      object.blockHeight !== undefined && object.blockHeight !== null
+        ? Long.fromString(object.blockHeight)
+        : Long.UZERO;
+    message.blockCreatedAt =
+      object.blockCreatedAt !== undefined && object.blockCreatedAt !== null
+        ? fromJsonTimestamp(object.blockCreatedAt)
+        : undefined;
+    message.messages = (object.messages ?? []).map((e: any) =>
+      Message.fromJSON(e)
+    );
     return message;
   },
 
@@ -186,34 +175,29 @@ export const Transaction = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<Transaction>): Transaction {
+  fromPartial<I extends Exact<DeepPartial<Transaction>, I>>(
+    object: I
+  ): Transaction {
     const message = { ...baseTransaction } as Transaction;
     message.hash = object.hash ?? "";
     message.address = object.address ?? "";
     message.code = object.code ?? 0;
     message.memo = object.memo ?? "";
-    if (object.gasUsed !== undefined && object.gasUsed !== null) {
-      message.gasUsed = object.gasUsed as Long;
-    } else {
-      message.gasUsed = Long.ZERO;
-    }
-    if (object.gasWanted !== undefined && object.gasWanted !== null) {
-      message.gasWanted = object.gasWanted as Long;
-    } else {
-      message.gasWanted = Long.ZERO;
-    }
-    if (object.blockHeight !== undefined && object.blockHeight !== null) {
-      message.blockHeight = object.blockHeight as Long;
-    } else {
-      message.blockHeight = Long.UZERO;
-    }
+    message.gasUsed =
+      object.gasUsed !== undefined && object.gasUsed !== null
+        ? Long.fromValue(object.gasUsed)
+        : Long.ZERO;
+    message.gasWanted =
+      object.gasWanted !== undefined && object.gasWanted !== null
+        ? Long.fromValue(object.gasWanted)
+        : Long.ZERO;
+    message.blockHeight =
+      object.blockHeight !== undefined && object.blockHeight !== null
+        ? Long.fromValue(object.blockHeight)
+        : Long.UZERO;
     message.blockCreatedAt = object.blockCreatedAt ?? undefined;
-    message.messages = [];
-    if (object.messages !== undefined && object.messages !== null) {
-      for (const e of object.messages) {
-        message.messages.push(Message.fromPartial(e));
-      }
-    }
+    message.messages =
+      object.messages?.map((e) => Message.fromPartial(e)) || [];
     return message;
   },
 };
@@ -225,10 +209,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -236,6 +222,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 function toTimestamp(date: Date): Timestamp {
   const seconds = numberToLong(date.getTime() / 1_000);

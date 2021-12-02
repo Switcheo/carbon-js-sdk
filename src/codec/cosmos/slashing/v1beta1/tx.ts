@@ -45,11 +45,10 @@ export const MsgUnjail = {
 
   fromJSON(object: any): MsgUnjail {
     const message = { ...baseMsgUnjail } as MsgUnjail;
-    if (object.validatorAddr !== undefined && object.validatorAddr !== null) {
-      message.validatorAddr = String(object.validatorAddr);
-    } else {
-      message.validatorAddr = "";
-    }
+    message.validatorAddr =
+      object.validatorAddr !== undefined && object.validatorAddr !== null
+        ? String(object.validatorAddr)
+        : "";
     return message;
   },
 
@@ -60,7 +59,9 @@ export const MsgUnjail = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<MsgUnjail>): MsgUnjail {
+  fromPartial<I extends Exact<DeepPartial<MsgUnjail>, I>>(
+    object: I
+  ): MsgUnjail {
     const message = { ...baseMsgUnjail } as MsgUnjail;
     message.validatorAddr = object.validatorAddr ?? "";
     return message;
@@ -102,7 +103,9 @@ export const MsgUnjailResponse = {
     return obj;
   },
 
-  fromPartial(_: DeepPartial<MsgUnjailResponse>): MsgUnjailResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgUnjailResponse>, I>>(
+    _: I
+  ): MsgUnjailResponse {
     const message = { ...baseMsgUnjailResponse } as MsgUnjailResponse;
     return message;
   },
@@ -152,10 +155,12 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -163,6 +168,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
