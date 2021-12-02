@@ -1,1 +1,1 @@
-export * from "./ZilPay";
+export * from "./Zilpay";
