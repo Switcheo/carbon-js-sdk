@@ -1,6 +1,6 @@
 import { Any } from "@carbon-sdk/codec";
 import { MsgCreateVaultType } from "@carbon-sdk/codec/cdp/tx";
-import { MsgCreateToken, MsgSyncToken } from "@carbon-sdk/codec/coin/tx";
+import { MsgAuthorizeBridge, MsgBindToken, MsgCreateToken, MsgDeauthorizeBridge, MsgLinkToken, MsgSyncToken, MsgUnbindToken } from "@carbon-sdk/codec/coin/tx";
 import { Description } from "@carbon-sdk/codec/cosmos/staking/v1beta1/staking";
 import { MsgCreateValidator, MsgEditValidator } from "@carbon-sdk/codec/cosmos/staking/v1beta1/tx";
 import { MsgSetFee } from "@carbon-sdk/codec/fee/tx";
@@ -69,6 +69,50 @@ export class AdminModule extends BaseModule {
 
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgSyncToken,
+      value,
+    });
+  }
+
+  public async bindToken(params: AdminModule.BindTokenParams) {
+    const wallet = this.getWallet();
+    
+    const value = MsgBindToken.fromPartial({
+      creator: wallet.bech32Address,
+      sourceDenom: params.sourceDenom,
+      wrappedDenom: params.wrappedDenom,
+    })
+
+    return await wallet.sendTx({
+      typeUrl: CarbonTx.Types.MsgBindToken,
+      value,
+    });
+  }
+
+  public async unbindToken(params: AdminModule.UnbindTokenParams) {
+    const wallet = this.getWallet();
+    
+    const value = MsgUnbindToken.fromPartial({
+      creator: wallet.bech32Address,
+      wrappedDenom: params.wrappedDenom,
+    })
+
+    return await wallet.sendTx({
+      typeUrl: CarbonTx.Types.MsgUnbindToken,
+      value,
+    });
+  }
+
+  public async linkToken(params: AdminModule.LinkTokenParams) {
+    const wallet = this.getWallet();
+
+    const value = MsgLinkToken.fromPartial({
+      creator: wallet.bech32Address,
+      denom: params.denom,
+      bridgeAddress: params.bridgeAddress,
+    });
+
+    return await wallet.sendTx({
+      typeUrl: CarbonTx.Types.MsgLinkToken,
       value,
     });
   }
@@ -284,9 +328,52 @@ export class AdminModule extends BaseModule {
       value,
     });
   }
+
+  public async authorizeBridge(params: AdminModule.AuthorizeBridgeParams) {
+    const wallet = this.getWallet();
+
+    const value = MsgAuthorizeBridge.fromPartial({
+      creator: wallet.bech32Address,
+      bridgeId: new Long(params.bridgeId),
+      chainId: new Long(params.chainId),
+      chainName: params.chainName,
+    });
+
+    return await wallet.sendTx({
+      typeUrl: CarbonTx.Types.MsgAuthorizeBridge,
+      value,
+    });
+  }
+
+  public async deauthorizeBridge(params: AdminModule.DeauthorizeBridgeParams) {
+    const wallet = this.getWallet();
+
+    const value = MsgDeauthorizeBridge.fromPartial({
+      initiator: wallet.bech32Address,
+      bridgeId: new Long(params.bridgeId),
+      chainId: new Long(params.chainId),
+    });
+
+    return await wallet.sendTx({
+      typeUrl: CarbonTx.Types.MsgDeauthorizeBridge,
+      value,
+    });
+  }
 }
 
 export namespace AdminModule {
+  export interface AuthorizeBridgeParams {
+    bridgeId: number;
+    chainId: number;
+    chainName: string;
+  }
+
+  export interface DeauthorizeBridgeParams {
+    initiator: string;
+    bridgeId: number;
+    chainId: number;
+  }
+
   export interface CreateOracleParams {
     id: string
     description: string
@@ -313,6 +400,20 @@ export namespace AdminModule {
 
   export interface SyncTokenParams {
     denom: string
+  }
+
+  export interface BindTokenParams {
+    sourceDenom: string;
+    wrappedDenom: string;
+  }
+
+  export interface LinkTokenParams {
+    denom: string;
+    bridgeAddress: string;
+  }
+
+  export interface UnbindTokenParams {
+    wrappedDenom: string;
   }
 
   export interface CreateMarketParams {

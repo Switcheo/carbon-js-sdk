@@ -4,7 +4,9 @@ import { AminoInit, ConvertEncType, generateAminoType } from "../utils";
 
 const TxTypes: TypeUtils.SimpleMap<string> = {
   CreateOracle: "oracle/CreateOracle",
+  BindToken: "coin/BindToken",
   CreateToken: "coin/CreateToken",
+  LinkToken: "coin/LinkToken",
   SyncToken: "coin/SyncToken",
   CreateMarket: "market/CreateMarket",
   CreateVaultType: "cdp/CreateVaultType",
@@ -32,6 +34,11 @@ const MsgCreateOracle: AminoInit = {
   },
 };
 
+const MsgBindToken: AminoInit = {
+  aminoType: TxTypes.BindToken,
+  valueMap: {},
+}
+
 const MsgCreateToken: AminoInit = {
   aminoType: TxTypes.CreateToken,
   valueMap: {
@@ -41,6 +48,11 @@ const MsgCreateToken: AminoInit = {
       bridgeId: ConvertEncType.Long,
     },
   },
+};
+
+const MsgLinkToken: AminoInit = {
+  aminoType: TxTypes.LinkToken,
+  valueMap: {},
 };
 
 const MsgSyncToken: AminoInit = {
@@ -171,7 +183,9 @@ const MsgEditValidator: AminoInit = {
 
 const AdminAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgCreateOracle]: generateAminoType(MsgCreateOracle),
+  [CarbonTx.Types.MsgBindToken]: generateAminoType(MsgBindToken),
   [CarbonTx.Types.MsgCreateToken]: generateAminoType(MsgCreateToken),
+  [CarbonTx.Types.MsgLinkToken]: generateAminoType(MsgLinkToken),
   [CarbonTx.Types.MsgSyncToken]: generateAminoType(MsgSyncToken),
   [CarbonTx.Types.MsgCreateMarket]: generateAminoType(MsgCreateMarket),
   [CarbonTx.Types.MsgCreateVaultType]: generateAminoType(MsgCreateVaultType),
