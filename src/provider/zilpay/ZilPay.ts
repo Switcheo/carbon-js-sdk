@@ -22,7 +22,7 @@ interface ZilPayAPI extends Zilliqa {
   wallet: ZilPayWallet;
 }
 
-export class ZilPay {
+export class Zilpay {
   private blockchain: BlockchainUtils.Blockchain = BlockchainUtils.Blockchain.Zilliqa
 
   static getNetworkParams(network: Network): ZilPayChangeNetworkParam {
