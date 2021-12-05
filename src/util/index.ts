@@ -1,6 +1,7 @@
 export * as NetworkUtils from "./network";
 export * as GenericUtils from "./generic";
 export * as AddressUtils from "./address";
+export * as TransferUtils from "./transferfees";
 export * as TypeUtils from "./type";
 export * as CarbonTx from "./tx";
 export * as BlockchainUtils from "./blockchain";
