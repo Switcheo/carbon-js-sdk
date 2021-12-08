@@ -1,6 +1,6 @@
 import { CarbonTx, TypeUtils } from "@carbon-sdk/util";
 import { AminoConverter } from "@cosmjs/stargate";
-import { AminoInit, ConvertEncType, generateAminoType } from "../utils";
+import { AminoInit, AminoProcess, AminoValueMap, ConvertEncType, generateAminoType } from "../utils";
 
 const TxTypes: TypeUtils.SimpleMap<string> = {
   CreatePool: "liquiditypool/CreatePool",
@@ -74,12 +74,29 @@ const MsgClaimPoolRewards: AminoInit = {
   },
 };
 
+const commitTokensProcess: AminoProcess = {
+  toAminoProcess: (amino: AminoValueMap, input: any) => {
+    const newInput = input;
+    if (input.duration.equals(0)) {
+      delete newInput.duration;
+    }
+    return { amino, input: newInput };
+  },
+  fromAminoProcess: (amino: AminoValueMap, input: any) => {
+    const newInput = input;
+    if (!input.duration) {
+      newInput.duration = "0";
+    }
+    return { amino, input: newInput };
+  },
+}
+
 const LiquidityPoolAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgCreatePool]: generateAminoType(MsgCreatePool),
   [CarbonTx.Types.MsgCreatePoolWithLiquidity]: generateAminoType(MsgCreatePoolWithLiquidity),
   [CarbonTx.Types.MsgAddLiquidity]: generateAminoType(MsgAddLiquidity),
   [CarbonTx.Types.MsgRemoveLiquidity]: generateAminoType(MsgRemoveLiquidity),
-  [CarbonTx.Types.MsgStakePoolToken]: generateAminoType(MsgStakePoolToken),
+  [CarbonTx.Types.MsgStakePoolToken]: generateAminoType(MsgStakePoolToken, commitTokensProcess),
   [CarbonTx.Types.MsgUnstakePoolToken]: generateAminoType(MsgUnstakePoolToken),
   [CarbonTx.Types.MsgClaimPoolRewards]: generateAminoType(MsgClaimPoolRewards),
 };
