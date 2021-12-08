@@ -105,8 +105,9 @@ export const paramConverter = (value: any, type?: ConvertEncType, toAmino: boole
   switch (type) {
     case ConvertEncType.Dec:
       const bnVal = NumberUtils.bnOrZero(value);
-      const adjustedVal = toAmino ? bnVal.shiftedBy(-18) : bnVal.shiftedBy(18);
-      return adjustedVal.toString(10);
+      return toAmino
+        ? bnVal.shiftedBy(-18).toFixed(18)
+        : bnVal.shiftedBy(18).toString(10);
     case ConvertEncType.Long:
       return toAmino ? value.toString() : new Long(Number(value));
     case ConvertEncType.LongToNum:
