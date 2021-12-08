@@ -8,6 +8,7 @@ export enum ConvertEncType {
   Long = "long",
   LongToNum = "long-number",
   Dec = "dec",
+  DecOrZero = "dec-or-zero",
   NumToStr = "number-str",
   Date = "date",
   DateToNum = "date-number",
@@ -108,6 +109,12 @@ export const paramConverter = (value: any, type?: ConvertEncType, toAmino: boole
       return toAmino
         ? bnVal.shiftedBy(-18).toFixed(18)
         : bnVal.shiftedBy(18).toString(10);
+    case ConvertEncType.DecOrZero:
+      const decBnVal = NumberUtils.bnOrZero(value);
+      if (decBnVal.isZero()) return "0";
+      return toAmino
+        ? decBnVal.shiftedBy(-18).toFixed(18)
+        : decBnVal.shiftedBy(18).toString(10);
     case ConvertEncType.Long:
       return toAmino ? value.toString() : new Long(Number(value));
     case ConvertEncType.LongToNum:
