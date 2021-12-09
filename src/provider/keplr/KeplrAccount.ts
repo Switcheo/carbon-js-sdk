@@ -36,7 +36,7 @@ class KeplrAccount {
       currencies: [KeplrAccount.SWTH_CURRENCY],
       stakeCurrency: KeplrAccount.SWTH_CURRENCY,
       rest: config.restUrl,
-      rpc: config.rpcUrl,
+      rpc: config.tmRpcUrl,
       chainName: config.network === Network.MainNet ? `Carbon` : `Carbon (${config.network})`,
       chainId: chainId,
       bech32Config: {

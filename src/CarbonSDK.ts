@@ -126,7 +126,7 @@ class CarbonSDK {
     const configOverride = opts.config ?? {};
 
     const networkConfig = GenericUtils.overrideConfig(NetworkConfigs[network], configOverride);
-    const tmClient = await Tendermint34Client.connect(networkConfig.rpcUrl);
+    const tmClient = await Tendermint34Client.connect(networkConfig.tmRpcUrl);
 
     const sdk = new CarbonSDK({ network, config: configOverride, tmClient });
 

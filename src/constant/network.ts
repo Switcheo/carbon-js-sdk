@@ -28,7 +28,7 @@ export interface ZilNetworkConfig {
 }
 
 export interface NetworkConfig {
-  rpcUrl: string;
+  tmRpcUrl: string;
   restUrl: string;
   insightsUrl: string;
   wsUrl: string;
@@ -62,7 +62,7 @@ export const NetworkConfigs: {
   [Network.MainNet]: {
     network: Network.MainNet,
 
-    rpcUrl: "https://dev-tm-api.carbon.network",
+    tmRpcUrl: "https://dev-tm-api.carbon.network",
     restUrl: "https://dev-api.carbon.network",
     insightsUrl: "https://dev-api-insights.carbon.network",
     wsUrl: "wss://dev-ws-api.carbon.network/ws",
@@ -111,7 +111,7 @@ export const NetworkConfigs: {
   [Network.TestNet]: {
     network: Network.TestNet,
 
-    rpcUrl: "https://test-tm-api.carbon.network",
+    tmRpcUrl: "https://test-tm-api.carbon.network",
     restUrl: "https://test-api.carbon.network",
     insightsUrl: "https://test-api-insights.carbon.network",
     wsUrl: "wss://test-ws-api.carbon.network/ws",
@@ -160,7 +160,7 @@ export const NetworkConfigs: {
   [Network.DevNet]: {
     network: Network.DevNet,
 
-    rpcUrl: "https://dev-tm-api.carbon.network",
+    tmRpcUrl: "https://dev-tm-api.carbon.network",
     restUrl: "https://dev-api.carbon.network",
     insightsUrl: "https://dev-api-insights.carbon.network",
     wsUrl: "wss://dev-ws-api.carbon.network/ws",
@@ -209,7 +209,7 @@ export const NetworkConfigs: {
   [Network.LocalHost]: {
     network: Network.LocalHost,
 
-    rpcUrl: "http://localhost:26657",
+    tmRpcUrl: "http://localhost:26657",
     restUrl: "http://localhost:1317",
     insightsUrl: "http://localhost:8181",
     wsUrl: "ws://localhost:5000/ws",
