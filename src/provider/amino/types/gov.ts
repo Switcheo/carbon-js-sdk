@@ -5,7 +5,7 @@ import {
   SetMsgFeeProposal, SetRewardCurveProposal, SetRewardsWeightsProposal, UnlinkPoolProposal,
   SettlementPriceProposal, UpdateMarketProposal,
 } from "@carbon-sdk/codec";
-import { CarbonTx, TypeUtils } from "@carbon-sdk/util";
+import { CarbonTx, GovUtils, TypeUtils } from "@carbon-sdk/util";
 import { AminoConverter } from "@cosmjs/stargate";
 import {
   AminoInit, ConvertEncType, AminoProcess, AminoValueMap,
@@ -214,161 +214,60 @@ const preProcessAmino = (
 };
 
 const checkDecodeProposal = (content: any, amino: AminoValueMap): AminoProposalRes => {
+  const decodedValue = GovUtils.decodeContent(content);
+  const newContent = {
+    type: ContentTypes[content.typeUrl],
+    value: decodedValue.value,
+  }
+  const newAmino = { ...amino };
+
   switch (content.typeUrl) {
     case ProposalTypes.CreateMarket:
-      return {
-        newContent: {
-          type: ContentTypes[ProposalTypes.CreateMarket],
-          value: CreateMarketProposal.decode(content.value),
-        },
-        newAmino: {
-          ...amino,
-          content: { ...CreateMarket },
-        },
-      };
+      newAmino.content = { ...CreateMarket };
+      break;
     case ProposalTypes.ChangeNumQuotes:
-      return {
-        newContent: {
-          type: ContentTypes[ProposalTypes.ChangeNumQuotes],
-          value: ChangeNumQuotesProposal.decode(content.value),
-        },
-        newAmino: {
-          ...amino,
-          content: { ...ChangeNumQuotes },
-        },
-      };
+      newAmino.content = { ...ChangeNumQuotes };
+      break;
     case ProposalTypes.ChangeSwapFee:
-      return {
-        newContent: {
-          type: ContentTypes[ProposalTypes.ChangeSwapFee],
-          value: ChangeSwapFeeProposal.decode(content.value),
-        },
-        newAmino: {
-          ...amino,
-          content: { ...ChangeSwapFee },
-        },
-      };
+      newAmino.content = { ...ChangeSwapFee };
+      break;
     case ProposalTypes.CreateToken:
-      return {
-        newContent: {
-          type: ContentTypes[ProposalTypes.CreateToken],
-          value: CreateTokenProposal.decode(content.value),
-        },
-        newAmino: {
-          ...amino,
-          content: { ...CreateToken },
-        },
-      };
+      newAmino.content = { ...CreateToken };
+      break;
     case ProposalTypes.SetCommitmentCurve:
-      return {
-        newContent: {
-          type: ContentTypes[ProposalTypes.SetCommitmentCurve],
-          value: SetCommitmentCurveProposal.decode(content.value),
-        },
-        newAmino: {
-          ...amino,
-          content: { ...SetCommitmentCurve },
-        },
-      };
+      newAmino.content = { ...SetCommitmentCurve };
+      break;
     case ProposalTypes.SetRewardCurve:
-      return {
-        newContent: {
-          type: ContentTypes[ProposalTypes.SetRewardCurve],
-          value: SetRewardCurveProposal.decode(content.value),
-        },
-        newAmino: {
-          ...amino,
-          content: { ...SetRewardCurve },
-        },
-      };
+      newAmino.content = { ...SetRewardCurve };
+      break;
     case ProposalTypes.SetRewardsWeights:
-      return {
-        newContent: {
-          type: ContentTypes[ProposalTypes.SetRewardsWeights],
-          value: SetRewardsWeightsProposal.decode(content.value),
-        },
-        newAmino: {
-          ...amino,
-          content: { ...SetRewardWeights },
-        },
-      };
+      newAmino.content = { ...SetRewardWeights };
+      break;
     case ProposalTypes.SetMsgFee:
-      return {
-        newContent: {
-          type: ContentTypes[ProposalTypes.SetMsgFee],
-          value: SetMsgFeeProposal.decode(content.value),
-        },
-        newAmino: {
-          ...amino,
-          content: {},
-        },
-      };
+      newAmino.content = {};
+      break;
     case ProposalTypes.SettlementPrice:
-      return {
-        newContent: {
-          type: ContentTypes[ProposalTypes.SettlementPrice],
-          value: SettlementPriceProposal.decode(content.value),
-        },
-        newAmino: {
-          ...amino,
-          content: { ...SettlementPrice },
-        },
-      };
+      newAmino.content = { ...SettlementPrice };
+      break;
     case ProposalTypes.CreateOracle:
-      return {
-        newContent: {
-          type: ContentTypes[ProposalTypes.CreateOracle],
-          value: CreateOracleProposal.decode(content.value),
-        },
-        newAmino: {
-          ...amino,
-          content: { ...CreateOracle },
-        },
-      };
+      newAmino.content = { ...CreateOracle };
+      break;
     case ProposalTypes.LinkPool:
-      return {
-        newContent: {
-          type: ContentTypes[ProposalTypes.LinkPool],
-          value: LinkPoolProposal.decode(content.value),
-        },
-        newAmino: {
-          ...amino,
-          content: { ...LinkPool },
-        },
-      };
+      newAmino.content = { ...LinkPool };
+      break;
     case ProposalTypes.UnlinkPool:
-      return {
-        newContent: {
-          type: ContentTypes[ProposalTypes.UnlinkPool],
-          value: UnlinkPoolProposal.decode(content.value),
-        },
-        newAmino: {
-          ...amino,
-          content: { ...UnlinkPool },
-        },
-      };
+      newAmino.content = { ...UnlinkPool };
+      break;
     case ProposalTypes.UpdateMarket:
-      return {
-        newContent: {
-          type: ContentTypes[ProposalTypes.UpdateMarket],
-          value: UpdateMarketProposal.decode(content.value),
-        },
-        newAmino: {
-          ...amino,
-          content: { ...UpdateMarket },
-        },
-      };
+      newAmino.content = { ...UpdateMarket };
+      break;
     default:
-      return {
-        newContent: {
-          type: "",
-          value: {},
-        },
-        newAmino: {
-          ...amino,
-        },
-      };
+      break;
   }
+  return {
+    newContent,
+    newAmino,
+  };
 };
 
 const checkEncodeProposal = (content: any, amino: AminoValueMap): DirectProposalRes => {
