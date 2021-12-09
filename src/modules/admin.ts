@@ -75,7 +75,7 @@ export class AdminModule extends BaseModule {
 
   public async bindToken(params: AdminModule.BindTokenParams) {
     const wallet = this.getWallet();
-    
+
     const value = MsgBindToken.fromPartial({
       creator: wallet.bech32Address,
       sourceDenom: params.sourceDenom,
@@ -90,7 +90,7 @@ export class AdminModule extends BaseModule {
 
   public async unbindToken(params: AdminModule.UnbindTokenParams) {
     const wallet = this.getWallet();
-    
+
     const value = MsgUnbindToken.fromPartial({
       creator: wallet.bech32Address,
       wrappedDenom: params.wrappedDenom,
