@@ -29,7 +29,12 @@ import "./_setup";
   console.log("markets", markets);
 
   // query all orders;
-  const orders = await sdk.query.order.OrderAll({});
+  const orders = await sdk.query.order.OrderAll({
+    address: "",
+    market: "",
+    orderType: "",
+    orderStatus: "",
+  });
   console.log("orders", orders);
 
   // query all profiles with pagination
