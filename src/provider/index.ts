@@ -1,4 +1,4 @@
-export { EthLedgerAccount, NeoLedgerAccount } from "./account";
+export { EthLedgerAccount, EthLedgerSigner, NeoLedgerAccount } from "./account";
 export { AminoTypesMap } from "./amino";
 export { ChainInfo, default as KeplrAccount, Keplr, KeplrWindow } from "./keplr";
 export { default as CosmosLedger } from "./ledger";

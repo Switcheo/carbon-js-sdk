@@ -1,2 +1,2 @@
 export * from "./NeoLedgerAccount"
-export * from "./EthLedgerAccount"
+export { EthLedgerAccount, EthLedgerSigner } from "./EthLedgerAccount"
