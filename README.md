@@ -27,7 +27,7 @@ ts-node examples/connect_sdk
     // optionally provide a set of network configuration overrides
     // to overwrite default parameters for a selected network.
     config: {
-      rpcURL: TRPC_ENDPOINT,
+      tmRpcUrl: TRPC_ENDPOINT,
     },
   });
 

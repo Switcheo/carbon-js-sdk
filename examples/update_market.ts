@@ -12,7 +12,7 @@ import { Duration } from "../lib/codec/google/protobuf/duration";
   const sdk = await CarbonSDK.instance({
     network: CarbonSDK.Network.LocalHost,
     config: {
-      rpcUrl: process.env.TRPC_ENDPOINT,
+      tmRpcUrl: process.env.TRPC_ENDPOINT,
     },
   });
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
