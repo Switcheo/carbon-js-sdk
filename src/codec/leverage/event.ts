@@ -67,26 +67,22 @@ export const LeverageEvent = {
 
   fromJSON(object: any): LeverageEvent {
     const message = { ...baseLeverageEvent } as LeverageEvent;
-    if (object.leverage !== undefined && object.leverage !== null) {
-      message.leverage = String(object.leverage);
-    } else {
-      message.leverage = "";
-    }
-    if (object.type !== undefined && object.type !== null) {
-      message.type = String(object.type);
-    } else {
-      message.type = "";
-    }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = String(object.market);
-    } else {
-      message.market = "";
-    }
-    if (object.address !== undefined && object.address !== null) {
-      message.address = String(object.address);
-    } else {
-      message.address = "";
-    }
+    message.leverage =
+      object.leverage !== undefined && object.leverage !== null
+        ? String(object.leverage)
+        : "";
+    message.type =
+      object.type !== undefined && object.type !== null
+        ? String(object.type)
+        : "";
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? String(object.market)
+        : "";
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
     return message;
   },
 
@@ -116,10 +112,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

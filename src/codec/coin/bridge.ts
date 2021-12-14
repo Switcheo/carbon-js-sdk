@@ -83,36 +83,30 @@ export const Bridge = {
 
   fromJSON(object: any): Bridge {
     const message = { ...baseBridge } as Bridge;
-    if (object.name !== undefined && object.name !== null) {
-      message.name = String(object.name);
-    } else {
-      message.name = "";
-    }
-    if (object.bridgeId !== undefined && object.bridgeId !== null) {
-      message.bridgeId = Long.fromString(object.bridgeId);
-    } else {
-      message.bridgeId = Long.UZERO;
-    }
-    if (object.chainId !== undefined && object.chainId !== null) {
-      message.chainId = Long.fromString(object.chainId);
-    } else {
-      message.chainId = Long.UZERO;
-    }
-    if (object.bridgeName !== undefined && object.bridgeName !== null) {
-      message.bridgeName = String(object.bridgeName);
-    } else {
-      message.bridgeName = "";
-    }
-    if (object.chainName !== undefined && object.chainName !== null) {
-      message.chainName = String(object.chainName);
-    } else {
-      message.chainName = "";
-    }
-    if (object.enabled !== undefined && object.enabled !== null) {
-      message.enabled = Boolean(object.enabled);
-    } else {
-      message.enabled = false;
-    }
+    message.name =
+      object.name !== undefined && object.name !== null
+        ? String(object.name)
+        : "";
+    message.bridgeId =
+      object.bridgeId !== undefined && object.bridgeId !== null
+        ? Long.fromString(object.bridgeId)
+        : Long.UZERO;
+    message.chainId =
+      object.chainId !== undefined && object.chainId !== null
+        ? Long.fromString(object.chainId)
+        : Long.UZERO;
+    message.bridgeName =
+      object.bridgeName !== undefined && object.bridgeName !== null
+        ? String(object.bridgeName)
+        : "";
+    message.chainName =
+      object.chainName !== undefined && object.chainName !== null
+        ? String(object.chainName)
+        : "";
+    message.enabled =
+      object.enabled !== undefined && object.enabled !== null
+        ? Boolean(object.enabled)
+        : false;
     return message;
   },
 
@@ -132,16 +126,14 @@ export const Bridge = {
   fromPartial(object: DeepPartial<Bridge>): Bridge {
     const message = { ...baseBridge } as Bridge;
     message.name = object.name ?? "";
-    if (object.bridgeId !== undefined && object.bridgeId !== null) {
-      message.bridgeId = object.bridgeId as Long;
-    } else {
-      message.bridgeId = Long.UZERO;
-    }
-    if (object.chainId !== undefined && object.chainId !== null) {
-      message.chainId = object.chainId as Long;
-    } else {
-      message.chainId = Long.UZERO;
-    }
+    message.bridgeId =
+      object.bridgeId !== undefined && object.bridgeId !== null
+        ? Long.fromValue(object.bridgeId)
+        : Long.UZERO;
+    message.chainId =
+      object.chainId !== undefined && object.chainId !== null
+        ? Long.fromValue(object.chainId)
+        : Long.UZERO;
     message.bridgeName = object.bridgeName ?? "";
     message.chainName = object.chainName ?? "";
     message.enabled = object.enabled ?? false;
@@ -156,10 +148,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

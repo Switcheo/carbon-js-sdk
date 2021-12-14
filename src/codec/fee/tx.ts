@@ -51,16 +51,14 @@ export const MsgSetFee = {
 
   fromJSON(object: any): MsgSetFee {
     const message = { ...baseMsgSetFee } as MsgSetFee;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
-    if (object.setFeeParams !== undefined && object.setFeeParams !== null) {
-      message.setFeeParams = MsgFee.fromJSON(object.setFeeParams);
-    } else {
-      message.setFeeParams = undefined;
-    }
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.setFeeParams =
+      object.setFeeParams !== undefined && object.setFeeParams !== null
+        ? MsgFee.fromJSON(object.setFeeParams)
+        : undefined;
     return message;
   },
 
@@ -77,11 +75,10 @@ export const MsgSetFee = {
   fromPartial(object: DeepPartial<MsgSetFee>): MsgSetFee {
     const message = { ...baseMsgSetFee } as MsgSetFee;
     message.creator = object.creator ?? "";
-    if (object.setFeeParams !== undefined && object.setFeeParams !== null) {
-      message.setFeeParams = MsgFee.fromPartial(object.setFeeParams);
-    } else {
-      message.setFeeParams = undefined;
-    }
+    message.setFeeParams =
+      object.setFeeParams !== undefined && object.setFeeParams !== null
+        ? MsgFee.fromPartial(object.setFeeParams)
+        : undefined;
     return message;
   },
 };
@@ -167,10 +164,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

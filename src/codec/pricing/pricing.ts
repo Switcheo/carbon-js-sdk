@@ -128,70 +128,52 @@ export const PriceSet = {
 
   fromJSON(object: any): PriceSet {
     const message = { ...basePriceSet } as PriceSet;
-    if (object.last !== undefined && object.last !== null) {
-      message.last = String(object.last);
-    } else {
-      message.last = "";
-    }
-    if (object.index !== undefined && object.index !== null) {
-      message.index = String(object.index);
-    } else {
-      message.index = "";
-    }
-    if (object.fair !== undefined && object.fair !== null) {
-      message.fair = String(object.fair);
-    } else {
-      message.fair = "";
-    }
-    if (object.mark !== undefined && object.mark !== null) {
-      message.mark = String(object.mark);
-    } else {
-      message.mark = "";
-    }
-    if (object.markAvg !== undefined && object.markAvg !== null) {
-      message.markAvg = String(object.markAvg);
-    } else {
-      message.markAvg = "";
-    }
-    if (object.settlement !== undefined && object.settlement !== null) {
-      message.settlement = String(object.settlement);
-    } else {
-      message.settlement = "";
-    }
-    if (
+    message.last =
+      object.last !== undefined && object.last !== null
+        ? String(object.last)
+        : "";
+    message.index =
+      object.index !== undefined && object.index !== null
+        ? String(object.index)
+        : "";
+    message.fair =
+      object.fair !== undefined && object.fair !== null
+        ? String(object.fair)
+        : "";
+    message.mark =
+      object.mark !== undefined && object.mark !== null
+        ? String(object.mark)
+        : "";
+    message.markAvg =
+      object.markAvg !== undefined && object.markAvg !== null
+        ? String(object.markAvg)
+        : "";
+    message.settlement =
+      object.settlement !== undefined && object.settlement !== null
+        ? String(object.settlement)
+        : "";
+    message.fairIndexDeltaAvg =
       object.fairIndexDeltaAvg !== undefined &&
       object.fairIndexDeltaAvg !== null
-    ) {
-      message.fairIndexDeltaAvg = String(object.fairIndexDeltaAvg);
-    } else {
-      message.fairIndexDeltaAvg = "";
-    }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = String(object.market);
-    } else {
-      message.market = "";
-    }
-    if (
-      object.markingStrategy !== undefined &&
-      object.markingStrategy !== null
-    ) {
-      message.markingStrategy = String(object.markingStrategy);
-    } else {
-      message.markingStrategy = "";
-    }
-    if (object.indexUpdatedAt !== undefined && object.indexUpdatedAt !== null) {
-      message.indexUpdatedAt = fromJsonTimestamp(object.indexUpdatedAt);
-    } else {
-      message.indexUpdatedAt = undefined;
-    }
-    if (
+        ? String(object.fairIndexDeltaAvg)
+        : "";
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? String(object.market)
+        : "";
+    message.markingStrategy =
+      object.markingStrategy !== undefined && object.markingStrategy !== null
+        ? String(object.markingStrategy)
+        : "";
+    message.indexUpdatedAt =
+      object.indexUpdatedAt !== undefined && object.indexUpdatedAt !== null
+        ? fromJsonTimestamp(object.indexUpdatedAt)
+        : undefined;
+    message.settlementCounter =
       object.settlementCounter !== undefined &&
       object.settlementCounter !== null
-    ) {
-      message.settlementCounter = String(object.settlementCounter);
-    } else {
-      message.settlementCounter = "";
-    }
+        ? String(object.settlementCounter)
+        : "";
     return message;
   },
 
@@ -239,10 +221,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

@@ -80,37 +80,28 @@ export const OrderEvent = {
 
   fromJSON(object: any): OrderEvent {
     const message = { ...baseOrderEvent } as OrderEvent;
-    if (object.order !== undefined && object.order !== null) {
-      message.order = Order.fromJSON(object.order);
-    } else {
-      message.order = undefined;
-    }
-    if (object.type !== undefined && object.type !== null) {
-      message.type = String(object.type);
-    } else {
-      message.type = "";
-    }
-    if (
+    message.order =
+      object.order !== undefined && object.order !== null
+        ? Order.fromJSON(object.order)
+        : undefined;
+    message.type =
+      object.type !== undefined && object.type !== null
+        ? String(object.type)
+        : "";
+    message.allocatedMarginDenom =
       object.allocatedMarginDenom !== undefined &&
       object.allocatedMarginDenom !== null
-    ) {
-      message.allocatedMarginDenom = String(object.allocatedMarginDenom);
-    } else {
-      message.allocatedMarginDenom = "";
-    }
-    if (
+        ? String(object.allocatedMarginDenom)
+        : "";
+    message.allocatedMarginAmount =
       object.allocatedMarginAmount !== undefined &&
       object.allocatedMarginAmount !== null
-    ) {
-      message.allocatedMarginAmount = String(object.allocatedMarginAmount);
-    } else {
-      message.allocatedMarginAmount = "";
-    }
-    if (object.blockCreatedAt !== undefined && object.blockCreatedAt !== null) {
-      message.blockCreatedAt = fromJsonTimestamp(object.blockCreatedAt);
-    } else {
-      message.blockCreatedAt = undefined;
-    }
+        ? String(object.allocatedMarginAmount)
+        : "";
+    message.blockCreatedAt =
+      object.blockCreatedAt !== undefined && object.blockCreatedAt !== null
+        ? fromJsonTimestamp(object.blockCreatedAt)
+        : undefined;
     return message;
   },
 
@@ -130,11 +121,10 @@ export const OrderEvent = {
 
   fromPartial(object: DeepPartial<OrderEvent>): OrderEvent {
     const message = { ...baseOrderEvent } as OrderEvent;
-    if (object.order !== undefined && object.order !== null) {
-      message.order = Order.fromPartial(object.order);
-    } else {
-      message.order = undefined;
-    }
+    message.order =
+      object.order !== undefined && object.order !== null
+        ? Order.fromPartial(object.order)
+        : undefined;
     message.type = object.type ?? "";
     message.allocatedMarginDenom = object.allocatedMarginDenom ?? "";
     message.allocatedMarginAmount = object.allocatedMarginAmount ?? "";
@@ -150,10 +140,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

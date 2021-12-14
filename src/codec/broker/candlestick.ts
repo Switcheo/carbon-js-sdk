@@ -112,51 +112,40 @@ export const Candlestick = {
 
   fromJSON(object: any): Candlestick {
     const message = { ...baseCandlestick } as Candlestick;
-    if (object.market !== undefined && object.market !== null) {
-      message.market = String(object.market);
-    } else {
-      message.market = "";
-    }
-    if (object.time !== undefined && object.time !== null) {
-      message.time = fromJsonTimestamp(object.time);
-    } else {
-      message.time = undefined;
-    }
-    if (object.resolution !== undefined && object.resolution !== null) {
-      message.resolution = Long.fromString(object.resolution);
-    } else {
-      message.resolution = Long.UZERO;
-    }
-    if (object.open !== undefined && object.open !== null) {
-      message.open = String(object.open);
-    } else {
-      message.open = "";
-    }
-    if (object.close !== undefined && object.close !== null) {
-      message.close = String(object.close);
-    } else {
-      message.close = "";
-    }
-    if (object.high !== undefined && object.high !== null) {
-      message.high = String(object.high);
-    } else {
-      message.high = "";
-    }
-    if (object.low !== undefined && object.low !== null) {
-      message.low = String(object.low);
-    } else {
-      message.low = "";
-    }
-    if (object.volume !== undefined && object.volume !== null) {
-      message.volume = String(object.volume);
-    } else {
-      message.volume = "";
-    }
-    if (object.quoteVolume !== undefined && object.quoteVolume !== null) {
-      message.quoteVolume = String(object.quoteVolume);
-    } else {
-      message.quoteVolume = "";
-    }
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? String(object.market)
+        : "";
+    message.time =
+      object.time !== undefined && object.time !== null
+        ? fromJsonTimestamp(object.time)
+        : undefined;
+    message.resolution =
+      object.resolution !== undefined && object.resolution !== null
+        ? Long.fromString(object.resolution)
+        : Long.UZERO;
+    message.open =
+      object.open !== undefined && object.open !== null
+        ? String(object.open)
+        : "";
+    message.close =
+      object.close !== undefined && object.close !== null
+        ? String(object.close)
+        : "";
+    message.high =
+      object.high !== undefined && object.high !== null
+        ? String(object.high)
+        : "";
+    message.low =
+      object.low !== undefined && object.low !== null ? String(object.low) : "";
+    message.volume =
+      object.volume !== undefined && object.volume !== null
+        ? String(object.volume)
+        : "";
+    message.quoteVolume =
+      object.quoteVolume !== undefined && object.quoteVolume !== null
+        ? String(object.quoteVolume)
+        : "";
     return message;
   },
 
@@ -180,11 +169,10 @@ export const Candlestick = {
     const message = { ...baseCandlestick } as Candlestick;
     message.market = object.market ?? "";
     message.time = object.time ?? undefined;
-    if (object.resolution !== undefined && object.resolution !== null) {
-      message.resolution = object.resolution as Long;
-    } else {
-      message.resolution = Long.UZERO;
-    }
+    message.resolution =
+      object.resolution !== undefined && object.resolution !== null
+        ? Long.fromValue(object.resolution)
+        : Long.UZERO;
     message.open = object.open ?? "";
     message.close = object.close ?? "";
     message.high = object.high ?? "";
@@ -202,10 +190,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

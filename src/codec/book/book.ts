@@ -68,22 +68,15 @@ export const OrderBookLevel = {
 
   fromJSON(object: any): OrderBookLevel {
     const message = { ...baseOrderBookLevel } as OrderBookLevel;
-    message.orders = [];
-    if (object.price !== undefined && object.price !== null) {
-      message.price = String(object.price);
-    } else {
-      message.price = "";
-    }
-    if (object.totalQuantity !== undefined && object.totalQuantity !== null) {
-      message.totalQuantity = String(object.totalQuantity);
-    } else {
-      message.totalQuantity = "";
-    }
-    if (object.orders !== undefined && object.orders !== null) {
-      for (const e of object.orders) {
-        message.orders.push(String(e));
-      }
-    }
+    message.price =
+      object.price !== undefined && object.price !== null
+        ? String(object.price)
+        : "";
+    message.totalQuantity =
+      object.totalQuantity !== undefined && object.totalQuantity !== null
+        ? String(object.totalQuantity)
+        : "";
+    message.orders = (object.orders ?? []).map((e: any) => String(e));
     return message;
   },
 
@@ -104,12 +97,7 @@ export const OrderBookLevel = {
     const message = { ...baseOrderBookLevel } as OrderBookLevel;
     message.price = object.price ?? "";
     message.totalQuantity = object.totalQuantity ?? "";
-    message.orders = [];
-    if (object.orders !== undefined && object.orders !== null) {
-      for (const e of object.orders) {
-        message.orders.push(e);
-      }
-    }
+    message.orders = (object.orders ?? []).map((e) => e);
     return message;
   },
 };
@@ -161,23 +149,16 @@ export const OrderBook = {
 
   fromJSON(object: any): OrderBook {
     const message = { ...baseOrderBook } as OrderBook;
-    message.asks = [];
-    message.bids = [];
-    if (object.market !== undefined && object.market !== null) {
-      message.market = String(object.market);
-    } else {
-      message.market = "";
-    }
-    if (object.asks !== undefined && object.asks !== null) {
-      for (const e of object.asks) {
-        message.asks.push(OrderBookLevel.fromJSON(e));
-      }
-    }
-    if (object.bids !== undefined && object.bids !== null) {
-      for (const e of object.bids) {
-        message.bids.push(OrderBookLevel.fromJSON(e));
-      }
-    }
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? String(object.market)
+        : "";
+    message.asks = (object.asks ?? []).map((e: any) =>
+      OrderBookLevel.fromJSON(e)
+    );
+    message.bids = (object.bids ?? []).map((e: any) =>
+      OrderBookLevel.fromJSON(e)
+    );
     return message;
   },
 
@@ -204,18 +185,12 @@ export const OrderBook = {
   fromPartial(object: DeepPartial<OrderBook>): OrderBook {
     const message = { ...baseOrderBook } as OrderBook;
     message.market = object.market ?? "";
-    message.asks = [];
-    if (object.asks !== undefined && object.asks !== null) {
-      for (const e of object.asks) {
-        message.asks.push(OrderBookLevel.fromPartial(e));
-      }
-    }
-    message.bids = [];
-    if (object.bids !== undefined && object.bids !== null) {
-      for (const e of object.bids) {
-        message.bids.push(OrderBookLevel.fromPartial(e));
-      }
-    }
+    message.asks = (object.asks ?? []).map((e) =>
+      OrderBookLevel.fromPartial(e)
+    );
+    message.bids = (object.bids ?? []).map((e) =>
+      OrderBookLevel.fromPartial(e)
+    );
     return message;
   },
 };
@@ -267,23 +242,12 @@ export const StopBook = {
 
   fromJSON(object: any): StopBook {
     const message = { ...baseStopBook } as StopBook;
-    message.asks = [];
-    message.bids = [];
-    if (object.market !== undefined && object.market !== null) {
-      message.market = String(object.market);
-    } else {
-      message.market = "";
-    }
-    if (object.asks !== undefined && object.asks !== null) {
-      for (const e of object.asks) {
-        message.asks.push(String(e));
-      }
-    }
-    if (object.bids !== undefined && object.bids !== null) {
-      for (const e of object.bids) {
-        message.bids.push(String(e));
-      }
-    }
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? String(object.market)
+        : "";
+    message.asks = (object.asks ?? []).map((e: any) => String(e));
+    message.bids = (object.bids ?? []).map((e: any) => String(e));
     return message;
   },
 
@@ -306,18 +270,8 @@ export const StopBook = {
   fromPartial(object: DeepPartial<StopBook>): StopBook {
     const message = { ...baseStopBook } as StopBook;
     message.market = object.market ?? "";
-    message.asks = [];
-    if (object.asks !== undefined && object.asks !== null) {
-      for (const e of object.asks) {
-        message.asks.push(e);
-      }
-    }
-    message.bids = [];
-    if (object.bids !== undefined && object.bids !== null) {
-      for (const e of object.bids) {
-        message.bids.push(e);
-      }
-    }
+    message.asks = (object.asks ?? []).map((e) => e);
+    message.bids = (object.bids ?? []).map((e) => e);
     return message;
   },
 };
@@ -329,10 +283,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

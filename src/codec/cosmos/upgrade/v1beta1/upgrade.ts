@@ -19,8 +19,11 @@ export interface Plan {
    */
   name: string;
   /**
-   * The time after which the upgrade must be performed.
-   * Leave set to its zero value to use a pre-defined Height instead.
+   * Deprecated: Time based upgrades have been deprecated. Time based upgrade logic
+   * has been removed from the SDK.
+   * If this field is not empty, an error will be thrown.
+   *
+   * @deprecated
    */
   time?: Date;
   /**
@@ -34,11 +37,11 @@ export interface Plan {
    */
   info: string;
   /**
-   * IBC-enabled chains can opt-in to including the upgraded client state in its upgrade plan
-   * This will make the chain commit to the correct upgraded (self) client state before the upgrade occurs,
-   * so that connecting chains can verify that the new upgraded client is valid by verifying a proof on the
-   * previous version of the chain.
-   * This will allow IBC connections to persist smoothly across planned chain upgrades
+   * Deprecated: UpgradedClientState field has been deprecated. IBC upgrade logic has been
+   * moved to the IBC module in the sub module 02-client.
+   * If this field is not empty, an error will be thrown.
+   *
+   * @deprecated
    */
   upgradedClientState?: Any;
 }
@@ -60,6 +63,14 @@ export interface SoftwareUpgradeProposal {
 export interface CancelSoftwareUpgradeProposal {
   title: string;
   description: string;
+}
+
+/** ModuleVersion specifies a module and its consensus version. */
+export interface ModuleVersion {
+  /** name of the app module */
+  name: string;
+  /** consensus version of the app module */
+  version: Long;
 }
 
 const basePlan: object = { name: "", height: Long.ZERO, info: "" };
@@ -124,34 +135,27 @@ export const Plan = {
 
   fromJSON(object: any): Plan {
     const message = { ...basePlan } as Plan;
-    if (object.name !== undefined && object.name !== null) {
-      message.name = String(object.name);
-    } else {
-      message.name = "";
-    }
-    if (object.time !== undefined && object.time !== null) {
-      message.time = fromJsonTimestamp(object.time);
-    } else {
-      message.time = undefined;
-    }
-    if (object.height !== undefined && object.height !== null) {
-      message.height = Long.fromString(object.height);
-    } else {
-      message.height = Long.ZERO;
-    }
-    if (object.info !== undefined && object.info !== null) {
-      message.info = String(object.info);
-    } else {
-      message.info = "";
-    }
-    if (
+    message.name =
+      object.name !== undefined && object.name !== null
+        ? String(object.name)
+        : "";
+    message.time =
+      object.time !== undefined && object.time !== null
+        ? fromJsonTimestamp(object.time)
+        : undefined;
+    message.height =
+      object.height !== undefined && object.height !== null
+        ? Long.fromString(object.height)
+        : Long.ZERO;
+    message.info =
+      object.info !== undefined && object.info !== null
+        ? String(object.info)
+        : "";
+    message.upgradedClientState =
       object.upgradedClientState !== undefined &&
       object.upgradedClientState !== null
-    ) {
-      message.upgradedClientState = Any.fromJSON(object.upgradedClientState);
-    } else {
-      message.upgradedClientState = undefined;
-    }
+        ? Any.fromJSON(object.upgradedClientState)
+        : undefined;
     return message;
   },
 
@@ -173,20 +177,16 @@ export const Plan = {
     const message = { ...basePlan } as Plan;
     message.name = object.name ?? "";
     message.time = object.time ?? undefined;
-    if (object.height !== undefined && object.height !== null) {
-      message.height = object.height as Long;
-    } else {
-      message.height = Long.ZERO;
-    }
+    message.height =
+      object.height !== undefined && object.height !== null
+        ? Long.fromValue(object.height)
+        : Long.ZERO;
     message.info = object.info ?? "";
-    if (
+    message.upgradedClientState =
       object.upgradedClientState !== undefined &&
       object.upgradedClientState !== null
-    ) {
-      message.upgradedClientState = Any.fromPartial(object.upgradedClientState);
-    } else {
-      message.upgradedClientState = undefined;
-    }
+        ? Any.fromPartial(object.upgradedClientState)
+        : undefined;
     return message;
   },
 };
@@ -243,21 +243,18 @@ export const SoftwareUpgradeProposal = {
     const message = {
       ...baseSoftwareUpgradeProposal,
     } as SoftwareUpgradeProposal;
-    if (object.title !== undefined && object.title !== null) {
-      message.title = String(object.title);
-    } else {
-      message.title = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = String(object.description);
-    } else {
-      message.description = "";
-    }
-    if (object.plan !== undefined && object.plan !== null) {
-      message.plan = Plan.fromJSON(object.plan);
-    } else {
-      message.plan = undefined;
-    }
+    message.title =
+      object.title !== undefined && object.title !== null
+        ? String(object.title)
+        : "";
+    message.description =
+      object.description !== undefined && object.description !== null
+        ? String(object.description)
+        : "";
+    message.plan =
+      object.plan !== undefined && object.plan !== null
+        ? Plan.fromJSON(object.plan)
+        : undefined;
     return message;
   },
 
@@ -279,11 +276,10 @@ export const SoftwareUpgradeProposal = {
     } as SoftwareUpgradeProposal;
     message.title = object.title ?? "";
     message.description = object.description ?? "";
-    if (object.plan !== undefined && object.plan !== null) {
-      message.plan = Plan.fromPartial(object.plan);
-    } else {
-      message.plan = undefined;
-    }
+    message.plan =
+      object.plan !== undefined && object.plan !== null
+        ? Plan.fromPartial(object.plan)
+        : undefined;
     return message;
   },
 };
@@ -337,16 +333,14 @@ export const CancelSoftwareUpgradeProposal = {
     const message = {
       ...baseCancelSoftwareUpgradeProposal,
     } as CancelSoftwareUpgradeProposal;
-    if (object.title !== undefined && object.title !== null) {
-      message.title = String(object.title);
-    } else {
-      message.title = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = String(object.description);
-    } else {
-      message.description = "";
-    }
+    message.title =
+      object.title !== undefined && object.title !== null
+        ? String(object.title)
+        : "";
+    message.description =
+      object.description !== undefined && object.description !== null
+        ? String(object.description)
+        : "";
     return message;
   },
 
@@ -370,6 +364,75 @@ export const CancelSoftwareUpgradeProposal = {
   },
 };
 
+const baseModuleVersion: object = { name: "", version: Long.UZERO };
+
+export const ModuleVersion = {
+  encode(
+    message: ModuleVersion,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.name !== "") {
+      writer.uint32(10).string(message.name);
+    }
+    if (!message.version.isZero()) {
+      writer.uint32(16).uint64(message.version);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ModuleVersion {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseModuleVersion } as ModuleVersion;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.name = reader.string();
+          break;
+        case 2:
+          message.version = reader.uint64() as Long;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ModuleVersion {
+    const message = { ...baseModuleVersion } as ModuleVersion;
+    message.name =
+      object.name !== undefined && object.name !== null
+        ? String(object.name)
+        : "";
+    message.version =
+      object.version !== undefined && object.version !== null
+        ? Long.fromString(object.version)
+        : Long.UZERO;
+    return message;
+  },
+
+  toJSON(message: ModuleVersion): unknown {
+    const obj: any = {};
+    message.name !== undefined && (obj.name = message.name);
+    message.version !== undefined &&
+      (obj.version = (message.version || Long.UZERO).toString());
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<ModuleVersion>): ModuleVersion {
+    const message = { ...baseModuleVersion } as ModuleVersion;
+    message.name = object.name ?? "";
+    message.version =
+      object.version !== undefined && object.version !== null
+        ? Long.fromValue(object.version)
+        : Long.UZERO;
+    return message;
+  },
+};
+
 type Builtin =
   | Date
   | Function
@@ -377,10 +440,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

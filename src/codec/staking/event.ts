@@ -68,21 +68,18 @@ export const CreateValidator = {
 
   fromJSON(object: any): CreateValidator {
     const message = { ...baseCreateValidator } as CreateValidator;
-    if (object.validator !== undefined && object.validator !== null) {
-      message.validator = String(object.validator);
-    } else {
-      message.validator = "";
-    }
-    if (object.amount !== undefined && object.amount !== null) {
-      message.amount = String(object.amount);
-    } else {
-      message.amount = "";
-    }
-    if (object.sender !== undefined && object.sender !== null) {
-      message.sender = String(object.sender);
-    } else {
-      message.sender = "";
-    }
+    message.validator =
+      object.validator !== undefined && object.validator !== null
+        ? String(object.validator)
+        : "";
+    message.amount =
+      object.amount !== undefined && object.amount !== null
+        ? String(object.amount)
+        : "";
+    message.sender =
+      object.sender !== undefined && object.sender !== null
+        ? String(object.sender)
+        : "";
     return message;
   },
 
@@ -149,22 +146,15 @@ export const CompleteUnbonding = {
 
   fromJSON(object: any): CompleteUnbonding {
     const message = { ...baseCompleteUnbonding } as CompleteUnbonding;
-    message.amount = [];
-    if (object.amount !== undefined && object.amount !== null) {
-      for (const e of object.amount) {
-        message.amount.push(Coin.fromJSON(e));
-      }
-    }
-    if (object.validator !== undefined && object.validator !== null) {
-      message.validator = String(object.validator);
-    } else {
-      message.validator = "";
-    }
-    if (object.delegator !== undefined && object.delegator !== null) {
-      message.delegator = String(object.delegator);
-    } else {
-      message.delegator = "";
-    }
+    message.amount = (object.amount ?? []).map((e: any) => Coin.fromJSON(e));
+    message.validator =
+      object.validator !== undefined && object.validator !== null
+        ? String(object.validator)
+        : "";
+    message.delegator =
+      object.delegator !== undefined && object.delegator !== null
+        ? String(object.delegator)
+        : "";
     return message;
   },
 
@@ -182,12 +172,7 @@ export const CompleteUnbonding = {
 
   fromPartial(object: DeepPartial<CompleteUnbonding>): CompleteUnbonding {
     const message = { ...baseCompleteUnbonding } as CompleteUnbonding;
-    message.amount = [];
-    if (object.amount !== undefined && object.amount !== null) {
-      for (const e of object.amount) {
-        message.amount.push(Coin.fromPartial(e));
-      }
-    }
+    message.amount = (object.amount ?? []).map((e) => Coin.fromPartial(e));
     message.validator = object.validator ?? "";
     message.delegator = object.delegator ?? "";
     return message;
@@ -239,21 +224,18 @@ export const Delegate = {
 
   fromJSON(object: any): Delegate {
     const message = { ...baseDelegate } as Delegate;
-    if (object.validator !== undefined && object.validator !== null) {
-      message.validator = String(object.validator);
-    } else {
-      message.validator = "";
-    }
-    if (object.amount !== undefined && object.amount !== null) {
-      message.amount = String(object.amount);
-    } else {
-      message.amount = "";
-    }
-    if (object.sender !== undefined && object.sender !== null) {
-      message.sender = String(object.sender);
-    } else {
-      message.sender = "";
-    }
+    message.validator =
+      object.validator !== undefined && object.validator !== null
+        ? String(object.validator)
+        : "";
+    message.amount =
+      object.amount !== undefined && object.amount !== null
+        ? String(object.amount)
+        : "";
+    message.sender =
+      object.sender !== undefined && object.sender !== null
+        ? String(object.sender)
+        : "";
     return message;
   },
 
@@ -281,10 +263,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

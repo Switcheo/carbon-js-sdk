@@ -41,11 +41,10 @@ export const MessageType = {
 
   fromJSON(object: any): MessageType {
     const message = { ...baseMessageType } as MessageType;
-    if (object.messageType !== undefined && object.messageType !== null) {
-      message.messageType = String(object.messageType);
-    } else {
-      message.messageType = "";
-    }
+    message.messageType =
+      object.messageType !== undefined && object.messageType !== null
+        ? String(object.messageType)
+        : "";
     return message;
   },
 
@@ -70,10 +69,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

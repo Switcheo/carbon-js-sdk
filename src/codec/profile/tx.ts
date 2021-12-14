@@ -58,21 +58,18 @@ export const MsgUpdateProfile = {
 
   fromJSON(object: any): MsgUpdateProfile {
     const message = { ...baseMsgUpdateProfile } as MsgUpdateProfile;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
-    if (object.username !== undefined && object.username !== null) {
-      message.username = String(object.username);
-    } else {
-      message.username = "";
-    }
-    if (object.twitter !== undefined && object.twitter !== null) {
-      message.twitter = String(object.twitter);
-    } else {
-      message.twitter = "";
-    }
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.username =
+      object.username !== undefined && object.username !== null
+        ? String(object.username)
+        : "";
+    message.twitter =
+      object.twitter !== undefined && object.twitter !== null
+        ? String(object.twitter)
+        : "";
     return message;
   },
 
@@ -185,10 +182,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

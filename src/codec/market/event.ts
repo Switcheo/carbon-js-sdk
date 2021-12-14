@@ -49,16 +49,14 @@ export const MarketEvent = {
 
   fromJSON(object: any): MarketEvent {
     const message = { ...baseMarketEvent } as MarketEvent;
-    if (object.market !== undefined && object.market !== null) {
-      message.market = Market.fromJSON(object.market);
-    } else {
-      message.market = undefined;
-    }
-    if (object.type !== undefined && object.type !== null) {
-      message.type = String(object.type);
-    } else {
-      message.type = "";
-    }
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? Market.fromJSON(object.market)
+        : undefined;
+    message.type =
+      object.type !== undefined && object.type !== null
+        ? String(object.type)
+        : "";
     return message;
   },
 
@@ -72,11 +70,10 @@ export const MarketEvent = {
 
   fromPartial(object: DeepPartial<MarketEvent>): MarketEvent {
     const message = { ...baseMarketEvent } as MarketEvent;
-    if (object.market !== undefined && object.market !== null) {
-      message.market = Market.fromPartial(object.market);
-    } else {
-      message.market = undefined;
-    }
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? Market.fromPartial(object.market)
+        : undefined;
     message.type = object.type ?? "";
     return message;
   },
@@ -89,10 +86,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

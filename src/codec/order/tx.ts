@@ -102,21 +102,18 @@ export const MsgSetTradingFlag = {
 
   fromJSON(object: any): MsgSetTradingFlag {
     const message = { ...baseMsgSetTradingFlag } as MsgSetTradingFlag;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
-    if (object.isEnabled !== undefined && object.isEnabled !== null) {
-      message.isEnabled = Boolean(object.isEnabled);
-    } else {
-      message.isEnabled = false;
-    }
-    if (object.blockchain !== undefined && object.blockchain !== null) {
-      message.blockchain = String(object.blockchain);
-    } else {
-      message.blockchain = "";
-    }
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.isEnabled =
+      object.isEnabled !== undefined && object.isEnabled !== null
+        ? Boolean(object.isEnabled)
+        : false;
+    message.blockchain =
+      object.blockchain !== undefined && object.blockchain !== null
+        ? String(object.blockchain)
+        : "";
     return message;
   },
 
@@ -294,61 +291,50 @@ export const MsgCreateOrder = {
 
   fromJSON(object: any): MsgCreateOrder {
     const message = { ...baseMsgCreateOrder } as MsgCreateOrder;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = String(object.market);
-    } else {
-      message.market = "";
-    }
-    if (object.side !== undefined && object.side !== null) {
-      message.side = String(object.side);
-    } else {
-      message.side = "";
-    }
-    if (object.quantity !== undefined && object.quantity !== null) {
-      message.quantity = String(object.quantity);
-    } else {
-      message.quantity = "";
-    }
-    if (object.orderType !== undefined && object.orderType !== null) {
-      message.orderType = String(object.orderType);
-    } else {
-      message.orderType = "";
-    }
-    if (object.price !== undefined && object.price !== null) {
-      message.price = String(object.price);
-    } else {
-      message.price = "";
-    }
-    if (object.stopPrice !== undefined && object.stopPrice !== null) {
-      message.stopPrice = String(object.stopPrice);
-    } else {
-      message.stopPrice = "";
-    }
-    if (object.timeInForce !== undefined && object.timeInForce !== null) {
-      message.timeInForce = String(object.timeInForce);
-    } else {
-      message.timeInForce = "";
-    }
-    if (object.triggerType !== undefined && object.triggerType !== null) {
-      message.triggerType = String(object.triggerType);
-    } else {
-      message.triggerType = "";
-    }
-    if (object.isPostOnly !== undefined && object.isPostOnly !== null) {
-      message.isPostOnly = Boolean(object.isPostOnly);
-    } else {
-      message.isPostOnly = false;
-    }
-    if (object.isReduceOnly !== undefined && object.isReduceOnly !== null) {
-      message.isReduceOnly = Boolean(object.isReduceOnly);
-    } else {
-      message.isReduceOnly = false;
-    }
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? String(object.market)
+        : "";
+    message.side =
+      object.side !== undefined && object.side !== null
+        ? String(object.side)
+        : "";
+    message.quantity =
+      object.quantity !== undefined && object.quantity !== null
+        ? String(object.quantity)
+        : "";
+    message.orderType =
+      object.orderType !== undefined && object.orderType !== null
+        ? String(object.orderType)
+        : "";
+    message.price =
+      object.price !== undefined && object.price !== null
+        ? String(object.price)
+        : "";
+    message.stopPrice =
+      object.stopPrice !== undefined && object.stopPrice !== null
+        ? String(object.stopPrice)
+        : "";
+    message.timeInForce =
+      object.timeInForce !== undefined && object.timeInForce !== null
+        ? String(object.timeInForce)
+        : "";
+    message.triggerType =
+      object.triggerType !== undefined && object.triggerType !== null
+        ? String(object.triggerType)
+        : "";
+    message.isPostOnly =
+      object.isPostOnly !== undefined && object.isPostOnly !== null
+        ? Boolean(object.isPostOnly)
+        : false;
+    message.isReduceOnly =
+      object.isReduceOnly !== undefined && object.isReduceOnly !== null
+        ? Boolean(object.isReduceOnly)
+        : false;
     return message;
   },
 
@@ -495,31 +481,24 @@ export const MsgEditOrder = {
 
   fromJSON(object: any): MsgEditOrder {
     const message = { ...baseMsgEditOrder } as MsgEditOrder;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
-    if (object.id !== undefined && object.id !== null) {
-      message.id = String(object.id);
-    } else {
-      message.id = "";
-    }
-    if (object.quantity !== undefined && object.quantity !== null) {
-      message.quantity = String(object.quantity);
-    } else {
-      message.quantity = "";
-    }
-    if (object.price !== undefined && object.price !== null) {
-      message.price = String(object.price);
-    } else {
-      message.price = "";
-    }
-    if (object.stopPrice !== undefined && object.stopPrice !== null) {
-      message.stopPrice = String(object.stopPrice);
-    } else {
-      message.stopPrice = "";
-    }
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.id =
+      object.id !== undefined && object.id !== null ? String(object.id) : "";
+    message.quantity =
+      object.quantity !== undefined && object.quantity !== null
+        ? String(object.quantity)
+        : "";
+    message.price =
+      object.price !== undefined && object.price !== null
+        ? String(object.price)
+        : "";
+    message.stopPrice =
+      object.stopPrice !== undefined && object.stopPrice !== null
+        ? String(object.stopPrice)
+        : "";
     return message;
   },
 
@@ -627,16 +606,12 @@ export const MsgCancelOrder = {
 
   fromJSON(object: any): MsgCancelOrder {
     const message = { ...baseMsgCancelOrder } as MsgCancelOrder;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
-    if (object.id !== undefined && object.id !== null) {
-      message.id = String(object.id);
-    } else {
-      message.id = "";
-    }
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.id =
+      object.id !== undefined && object.id !== null ? String(object.id) : "";
     return message;
   },
 
@@ -738,16 +713,14 @@ export const MsgCancelAll = {
 
   fromJSON(object: any): MsgCancelAll {
     const message = { ...baseMsgCancelAll } as MsgCancelAll;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = String(object.market);
-    } else {
-      message.market = "";
-    }
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? String(object.market)
+        : "";
     return message;
   },
 
@@ -910,10 +883,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

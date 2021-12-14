@@ -63,11 +63,10 @@ export const QueryGetMsgFeeRequest = {
 
   fromJSON(object: any): QueryGetMsgFeeRequest {
     const message = { ...baseQueryGetMsgFeeRequest } as QueryGetMsgFeeRequest;
-    if (object.msgType !== undefined && object.msgType !== null) {
-      message.msgType = String(object.msgType);
-    } else {
-      message.msgType = "";
-    }
+    message.msgType =
+      object.msgType !== undefined && object.msgType !== null
+        ? String(object.msgType)
+        : "";
     return message;
   },
 
@@ -122,11 +121,10 @@ export const QueryGetMsgFeeResponse = {
 
   fromJSON(object: any): QueryGetMsgFeeResponse {
     const message = { ...baseQueryGetMsgFeeResponse } as QueryGetMsgFeeResponse;
-    if (object.MsgFee !== undefined && object.MsgFee !== null) {
-      message.MsgFee = MsgFee.fromJSON(object.MsgFee);
-    } else {
-      message.MsgFee = undefined;
-    }
+    message.MsgFee =
+      object.MsgFee !== undefined && object.MsgFee !== null
+        ? MsgFee.fromJSON(object.MsgFee)
+        : undefined;
     return message;
   },
 
@@ -141,11 +139,10 @@ export const QueryGetMsgFeeResponse = {
     object: DeepPartial<QueryGetMsgFeeResponse>
   ): QueryGetMsgFeeResponse {
     const message = { ...baseQueryGetMsgFeeResponse } as QueryGetMsgFeeResponse;
-    if (object.MsgFee !== undefined && object.MsgFee !== null) {
-      message.MsgFee = MsgFee.fromPartial(object.MsgFee);
-    } else {
-      message.MsgFee = undefined;
-    }
+    message.MsgFee =
+      object.MsgFee !== undefined && object.MsgFee !== null
+        ? MsgFee.fromPartial(object.MsgFee)
+        : undefined;
     return message;
   },
 };
@@ -186,11 +183,10 @@ export const QueryAllMsgFeeRequest = {
 
   fromJSON(object: any): QueryAllMsgFeeRequest {
     const message = { ...baseQueryAllMsgFeeRequest } as QueryAllMsgFeeRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -207,11 +203,10 @@ export const QueryAllMsgFeeRequest = {
     object: DeepPartial<QueryAllMsgFeeRequest>
   ): QueryAllMsgFeeRequest {
     const message = { ...baseQueryAllMsgFeeRequest } as QueryAllMsgFeeRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -262,17 +257,13 @@ export const QueryAllMsgFeeResponse = {
 
   fromJSON(object: any): QueryAllMsgFeeResponse {
     const message = { ...baseQueryAllMsgFeeResponse } as QueryAllMsgFeeResponse;
-    message.msgFees = [];
-    if (object.msgFees !== undefined && object.msgFees !== null) {
-      for (const e of object.msgFees) {
-        message.msgFees.push(MsgFee.fromJSON(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.msgFees = (object.msgFees ?? []).map((e: any) =>
+      MsgFee.fromJSON(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -296,17 +287,11 @@ export const QueryAllMsgFeeResponse = {
     object: DeepPartial<QueryAllMsgFeeResponse>
   ): QueryAllMsgFeeResponse {
     const message = { ...baseQueryAllMsgFeeResponse } as QueryAllMsgFeeResponse;
-    message.msgFees = [];
-    if (object.msgFees !== undefined && object.msgFees !== null) {
-      for (const e of object.msgFees) {
-        message.msgFees.push(MsgFee.fromPartial(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.msgFees = (object.msgFees ?? []).map((e) => MsgFee.fromPartial(e));
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -365,10 +350,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

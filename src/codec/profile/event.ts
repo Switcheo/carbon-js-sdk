@@ -49,16 +49,14 @@ export const UpdateProfileEvent = {
 
   fromJSON(object: any): UpdateProfileEvent {
     const message = { ...baseUpdateProfileEvent } as UpdateProfileEvent;
-    if (object.profile !== undefined && object.profile !== null) {
-      message.profile = Profile.fromJSON(object.profile);
-    } else {
-      message.profile = undefined;
-    }
-    if (object.type !== undefined && object.type !== null) {
-      message.type = String(object.type);
-    } else {
-      message.type = "";
-    }
+    message.profile =
+      object.profile !== undefined && object.profile !== null
+        ? Profile.fromJSON(object.profile)
+        : undefined;
+    message.type =
+      object.type !== undefined && object.type !== null
+        ? String(object.type)
+        : "";
     return message;
   },
 
@@ -74,11 +72,10 @@ export const UpdateProfileEvent = {
 
   fromPartial(object: DeepPartial<UpdateProfileEvent>): UpdateProfileEvent {
     const message = { ...baseUpdateProfileEvent } as UpdateProfileEvent;
-    if (object.profile !== undefined && object.profile !== null) {
-      message.profile = Profile.fromPartial(object.profile);
-    } else {
-      message.profile = undefined;
-    }
+    message.profile =
+      object.profile !== undefined && object.profile !== null
+        ? Profile.fromPartial(object.profile)
+        : undefined;
     message.type = object.type ?? "";
     return message;
   },
@@ -91,10 +88,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

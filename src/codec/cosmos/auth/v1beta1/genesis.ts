@@ -54,17 +54,11 @@ export const GenesisState = {
 
   fromJSON(object: any): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
-    message.accounts = [];
-    if (object.params !== undefined && object.params !== null) {
-      message.params = Params.fromJSON(object.params);
-    } else {
-      message.params = undefined;
-    }
-    if (object.accounts !== undefined && object.accounts !== null) {
-      for (const e of object.accounts) {
-        message.accounts.push(Any.fromJSON(e));
-      }
-    }
+    message.params =
+      object.params !== undefined && object.params !== null
+        ? Params.fromJSON(object.params)
+        : undefined;
+    message.accounts = (object.accounts ?? []).map((e: any) => Any.fromJSON(e));
     return message;
   },
 
@@ -84,17 +78,11 @@ export const GenesisState = {
 
   fromPartial(object: DeepPartial<GenesisState>): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
-    if (object.params !== undefined && object.params !== null) {
-      message.params = Params.fromPartial(object.params);
-    } else {
-      message.params = undefined;
-    }
-    message.accounts = [];
-    if (object.accounts !== undefined && object.accounts !== null) {
-      for (const e of object.accounts) {
-        message.accounts.push(Any.fromPartial(e));
-      }
-    }
+    message.params =
+      object.params !== undefined && object.params !== null
+        ? Params.fromPartial(object.params)
+        : undefined;
+    message.accounts = (object.accounts ?? []).map((e) => Any.fromPartial(e));
     return message;
   },
 };
@@ -106,10 +94,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

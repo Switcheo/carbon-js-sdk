@@ -80,21 +80,15 @@ export const MsgCreateOracle = {
 
   fromJSON(object: any): MsgCreateOracle {
     const message = { ...baseMsgCreateOracle } as MsgCreateOracle;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
-    if (
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.createOracleParams =
       object.createOracleParams !== undefined &&
       object.createOracleParams !== null
-    ) {
-      message.createOracleParams = CreateOracleParams.fromJSON(
-        object.createOracleParams
-      );
-    } else {
-      message.createOracleParams = undefined;
-    }
+        ? CreateOracleParams.fromJSON(object.createOracleParams)
+        : undefined;
     return message;
   },
 
@@ -111,16 +105,11 @@ export const MsgCreateOracle = {
   fromPartial(object: DeepPartial<MsgCreateOracle>): MsgCreateOracle {
     const message = { ...baseMsgCreateOracle } as MsgCreateOracle;
     message.creator = object.creator ?? "";
-    if (
+    message.createOracleParams =
       object.createOracleParams !== undefined &&
       object.createOracleParams !== null
-    ) {
-      message.createOracleParams = CreateOracleParams.fromPartial(
-        object.createOracleParams
-      );
-    } else {
-      message.createOracleParams = undefined;
-    }
+        ? CreateOracleParams.fromPartial(object.createOracleParams)
+        : undefined;
     return message;
   },
 };
@@ -216,56 +205,41 @@ export const CreateOracleParams = {
 
   fromJSON(object: any): CreateOracleParams {
     const message = { ...baseCreateOracleParams } as CreateOracleParams;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
-    if (object.id !== undefined && object.id !== null) {
-      message.id = String(object.id);
-    } else {
-      message.id = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = String(object.description);
-    } else {
-      message.description = "";
-    }
-    if (
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.id =
+      object.id !== undefined && object.id !== null ? String(object.id) : "";
+    message.description =
+      object.description !== undefined && object.description !== null
+        ? String(object.description)
+        : "";
+    message.minTurnoutPercentage =
       object.minTurnoutPercentage !== undefined &&
       object.minTurnoutPercentage !== null
-    ) {
-      message.minTurnoutPercentage = Long.fromString(
-        object.minTurnoutPercentage
-      );
-    } else {
-      message.minTurnoutPercentage = Long.ZERO;
-    }
-    if (object.maxResultAge !== undefined && object.maxResultAge !== null) {
-      message.maxResultAge = Long.fromString(object.maxResultAge);
-    } else {
-      message.maxResultAge = Long.ZERO;
-    }
-    if (object.securityType !== undefined && object.securityType !== null) {
-      message.securityType = String(object.securityType);
-    } else {
-      message.securityType = "";
-    }
-    if (object.resultStrategy !== undefined && object.resultStrategy !== null) {
-      message.resultStrategy = String(object.resultStrategy);
-    } else {
-      message.resultStrategy = "";
-    }
-    if (object.resolution !== undefined && object.resolution !== null) {
-      message.resolution = Long.fromString(object.resolution);
-    } else {
-      message.resolution = Long.ZERO;
-    }
-    if (object.spec !== undefined && object.spec !== null) {
-      message.spec = String(object.spec);
-    } else {
-      message.spec = "";
-    }
+        ? Long.fromString(object.minTurnoutPercentage)
+        : Long.ZERO;
+    message.maxResultAge =
+      object.maxResultAge !== undefined && object.maxResultAge !== null
+        ? Long.fromString(object.maxResultAge)
+        : Long.ZERO;
+    message.securityType =
+      object.securityType !== undefined && object.securityType !== null
+        ? String(object.securityType)
+        : "";
+    message.resultStrategy =
+      object.resultStrategy !== undefined && object.resultStrategy !== null
+        ? String(object.resultStrategy)
+        : "";
+    message.resolution =
+      object.resolution !== undefined && object.resolution !== null
+        ? Long.fromString(object.resolution)
+        : Long.ZERO;
+    message.spec =
+      object.spec !== undefined && object.spec !== null
+        ? String(object.spec)
+        : "";
     return message;
   },
 
@@ -296,26 +270,21 @@ export const CreateOracleParams = {
     message.creator = object.creator ?? "";
     message.id = object.id ?? "";
     message.description = object.description ?? "";
-    if (
+    message.minTurnoutPercentage =
       object.minTurnoutPercentage !== undefined &&
       object.minTurnoutPercentage !== null
-    ) {
-      message.minTurnoutPercentage = object.minTurnoutPercentage as Long;
-    } else {
-      message.minTurnoutPercentage = Long.ZERO;
-    }
-    if (object.maxResultAge !== undefined && object.maxResultAge !== null) {
-      message.maxResultAge = object.maxResultAge as Long;
-    } else {
-      message.maxResultAge = Long.ZERO;
-    }
+        ? Long.fromValue(object.minTurnoutPercentage)
+        : Long.ZERO;
+    message.maxResultAge =
+      object.maxResultAge !== undefined && object.maxResultAge !== null
+        ? Long.fromValue(object.maxResultAge)
+        : Long.ZERO;
     message.securityType = object.securityType ?? "";
     message.resultStrategy = object.resultStrategy ?? "";
-    if (object.resolution !== undefined && object.resolution !== null) {
-      message.resolution = object.resolution as Long;
-    } else {
-      message.resolution = Long.ZERO;
-    }
+    message.resolution =
+      object.resolution !== undefined && object.resolution !== null
+        ? Long.fromValue(object.resolution)
+        : Long.ZERO;
     message.spec = object.spec ?? "";
     return message;
   },
@@ -361,11 +330,8 @@ export const MsgCreateOracleResponse = {
     const message = {
       ...baseMsgCreateOracleResponse,
     } as MsgCreateOracleResponse;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = String(object.id);
-    } else {
-      message.id = "";
-    }
+    message.id =
+      object.id !== undefined && object.id !== null ? String(object.id) : "";
     return message;
   },
 
@@ -442,26 +408,22 @@ export const MsgCreateVote = {
 
   fromJSON(object: any): MsgCreateVote {
     const message = { ...baseMsgCreateVote } as MsgCreateVote;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
-    if (object.oracleId !== undefined && object.oracleId !== null) {
-      message.oracleId = String(object.oracleId);
-    } else {
-      message.oracleId = "";
-    }
-    if (object.timestamp !== undefined && object.timestamp !== null) {
-      message.timestamp = Long.fromString(object.timestamp);
-    } else {
-      message.timestamp = Long.ZERO;
-    }
-    if (object.data !== undefined && object.data !== null) {
-      message.data = String(object.data);
-    } else {
-      message.data = "";
-    }
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.oracleId =
+      object.oracleId !== undefined && object.oracleId !== null
+        ? String(object.oracleId)
+        : "";
+    message.timestamp =
+      object.timestamp !== undefined && object.timestamp !== null
+        ? Long.fromString(object.timestamp)
+        : Long.ZERO;
+    message.data =
+      object.data !== undefined && object.data !== null
+        ? String(object.data)
+        : "";
     return message;
   },
 
@@ -479,11 +441,10 @@ export const MsgCreateVote = {
     const message = { ...baseMsgCreateVote } as MsgCreateVote;
     message.creator = object.creator ?? "";
     message.oracleId = object.oracleId ?? "";
-    if (object.timestamp !== undefined && object.timestamp !== null) {
-      message.timestamp = object.timestamp as Long;
-    } else {
-      message.timestamp = Long.ZERO;
-    }
+    message.timestamp =
+      object.timestamp !== undefined && object.timestamp !== null
+        ? Long.fromValue(object.timestamp)
+        : Long.ZERO;
     message.data = object.data ?? "";
     return message;
   },
@@ -587,10 +548,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

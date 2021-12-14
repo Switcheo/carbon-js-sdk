@@ -56,21 +56,18 @@ export const CreateTokenProposal = {
 
   fromJSON(object: any): CreateTokenProposal {
     const message = { ...baseCreateTokenProposal } as CreateTokenProposal;
-    if (object.title !== undefined && object.title !== null) {
-      message.title = String(object.title);
-    } else {
-      message.title = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = String(object.description);
-    } else {
-      message.description = "";
-    }
-    if (object.msg !== undefined && object.msg !== null) {
-      message.msg = CreateTokenParams.fromJSON(object.msg);
-    } else {
-      message.msg = undefined;
-    }
+    message.title =
+      object.title !== undefined && object.title !== null
+        ? String(object.title)
+        : "";
+    message.description =
+      object.description !== undefined && object.description !== null
+        ? String(object.description)
+        : "";
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? CreateTokenParams.fromJSON(object.msg)
+        : undefined;
     return message;
   },
 
@@ -90,11 +87,10 @@ export const CreateTokenProposal = {
     const message = { ...baseCreateTokenProposal } as CreateTokenProposal;
     message.title = object.title ?? "";
     message.description = object.description ?? "";
-    if (object.msg !== undefined && object.msg !== null) {
-      message.msg = CreateTokenParams.fromPartial(object.msg);
-    } else {
-      message.msg = undefined;
-    }
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? CreateTokenParams.fromPartial(object.msg)
+        : undefined;
     return message;
   },
 };
@@ -106,10 +102,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

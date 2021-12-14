@@ -94,21 +94,18 @@ export const MsgAddCollateral = {
 
   fromJSON(object: any): MsgAddCollateral {
     const message = { ...baseMsgAddCollateral } as MsgAddCollateral;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
-    if (object.vaultTypeId !== undefined && object.vaultTypeId !== null) {
-      message.vaultTypeId = Long.fromString(object.vaultTypeId);
-    } else {
-      message.vaultTypeId = Long.UZERO;
-    }
-    if (object.amount !== undefined && object.amount !== null) {
-      message.amount = String(object.amount);
-    } else {
-      message.amount = "";
-    }
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.vaultTypeId =
+      object.vaultTypeId !== undefined && object.vaultTypeId !== null
+        ? Long.fromString(object.vaultTypeId)
+        : Long.UZERO;
+    message.amount =
+      object.amount !== undefined && object.amount !== null
+        ? String(object.amount)
+        : "";
     return message;
   },
 
@@ -124,11 +121,10 @@ export const MsgAddCollateral = {
   fromPartial(object: DeepPartial<MsgAddCollateral>): MsgAddCollateral {
     const message = { ...baseMsgAddCollateral } as MsgAddCollateral;
     message.creator = object.creator ?? "";
-    if (object.vaultTypeId !== undefined && object.vaultTypeId !== null) {
-      message.vaultTypeId = object.vaultTypeId as Long;
-    } else {
-      message.vaultTypeId = Long.UZERO;
-    }
+    message.vaultTypeId =
+      object.vaultTypeId !== undefined && object.vaultTypeId !== null
+        ? Long.fromValue(object.vaultTypeId)
+        : Long.UZERO;
     message.amount = object.amount ?? "";
     return message;
   },
@@ -235,21 +231,18 @@ export const MsgRemoveCollateral = {
 
   fromJSON(object: any): MsgRemoveCollateral {
     const message = { ...baseMsgRemoveCollateral } as MsgRemoveCollateral;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
-    if (object.vaultTypeId !== undefined && object.vaultTypeId !== null) {
-      message.vaultTypeId = Long.fromString(object.vaultTypeId);
-    } else {
-      message.vaultTypeId = Long.UZERO;
-    }
-    if (object.amount !== undefined && object.amount !== null) {
-      message.amount = String(object.amount);
-    } else {
-      message.amount = "";
-    }
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.vaultTypeId =
+      object.vaultTypeId !== undefined && object.vaultTypeId !== null
+        ? Long.fromString(object.vaultTypeId)
+        : Long.UZERO;
+    message.amount =
+      object.amount !== undefined && object.amount !== null
+        ? String(object.amount)
+        : "";
     return message;
   },
 
@@ -265,11 +258,10 @@ export const MsgRemoveCollateral = {
   fromPartial(object: DeepPartial<MsgRemoveCollateral>): MsgRemoveCollateral {
     const message = { ...baseMsgRemoveCollateral } as MsgRemoveCollateral;
     message.creator = object.creator ?? "";
-    if (object.vaultTypeId !== undefined && object.vaultTypeId !== null) {
-      message.vaultTypeId = object.vaultTypeId as Long;
-    } else {
-      message.vaultTypeId = Long.UZERO;
-    }
+    message.vaultTypeId =
+      object.vaultTypeId !== undefined && object.vaultTypeId !== null
+        ? Long.fromValue(object.vaultTypeId)
+        : Long.UZERO;
     message.amount = object.amount ?? "";
     return message;
   },
@@ -376,21 +368,18 @@ export const MsgAddDebt = {
 
   fromJSON(object: any): MsgAddDebt {
     const message = { ...baseMsgAddDebt } as MsgAddDebt;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
-    if (object.vaultTypeId !== undefined && object.vaultTypeId !== null) {
-      message.vaultTypeId = Long.fromString(object.vaultTypeId);
-    } else {
-      message.vaultTypeId = Long.UZERO;
-    }
-    if (object.amount !== undefined && object.amount !== null) {
-      message.amount = String(object.amount);
-    } else {
-      message.amount = "";
-    }
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.vaultTypeId =
+      object.vaultTypeId !== undefined && object.vaultTypeId !== null
+        ? Long.fromString(object.vaultTypeId)
+        : Long.UZERO;
+    message.amount =
+      object.amount !== undefined && object.amount !== null
+        ? String(object.amount)
+        : "";
     return message;
   },
 
@@ -406,11 +395,10 @@ export const MsgAddDebt = {
   fromPartial(object: DeepPartial<MsgAddDebt>): MsgAddDebt {
     const message = { ...baseMsgAddDebt } as MsgAddDebt;
     message.creator = object.creator ?? "";
-    if (object.vaultTypeId !== undefined && object.vaultTypeId !== null) {
-      message.vaultTypeId = object.vaultTypeId as Long;
-    } else {
-      message.vaultTypeId = Long.UZERO;
-    }
+    message.vaultTypeId =
+      object.vaultTypeId !== undefined && object.vaultTypeId !== null
+        ? Long.fromValue(object.vaultTypeId)
+        : Long.UZERO;
     message.amount = object.amount ?? "";
     return message;
   },
@@ -506,21 +494,18 @@ export const MsgRemoveDebt = {
 
   fromJSON(object: any): MsgRemoveDebt {
     const message = { ...baseMsgRemoveDebt } as MsgRemoveDebt;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
-    if (object.vaultTypeId !== undefined && object.vaultTypeId !== null) {
-      message.vaultTypeId = Long.fromString(object.vaultTypeId);
-    } else {
-      message.vaultTypeId = Long.UZERO;
-    }
-    if (object.amount !== undefined && object.amount !== null) {
-      message.amount = String(object.amount);
-    } else {
-      message.amount = "";
-    }
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.vaultTypeId =
+      object.vaultTypeId !== undefined && object.vaultTypeId !== null
+        ? Long.fromString(object.vaultTypeId)
+        : Long.UZERO;
+    message.amount =
+      object.amount !== undefined && object.amount !== null
+        ? String(object.amount)
+        : "";
     return message;
   },
 
@@ -536,11 +521,10 @@ export const MsgRemoveDebt = {
   fromPartial(object: DeepPartial<MsgRemoveDebt>): MsgRemoveDebt {
     const message = { ...baseMsgRemoveDebt } as MsgRemoveDebt;
     message.creator = object.creator ?? "";
-    if (object.vaultTypeId !== undefined && object.vaultTypeId !== null) {
-      message.vaultTypeId = object.vaultTypeId as Long;
-    } else {
-      message.vaultTypeId = Long.UZERO;
-    }
+    message.vaultTypeId =
+      object.vaultTypeId !== undefined && object.vaultTypeId !== null
+        ? Long.fromValue(object.vaultTypeId)
+        : Long.UZERO;
     message.amount = object.amount ?? "";
     return message;
   },
@@ -646,32 +630,23 @@ export const MsgCreateVaultType = {
 
   fromJSON(object: any): MsgCreateVaultType {
     const message = { ...baseMsgCreateVaultType } as MsgCreateVaultType;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
-    if (
-      object.collateralDenom !== undefined &&
-      object.collateralDenom !== null
-    ) {
-      message.collateralDenom = String(object.collateralDenom);
-    } else {
-      message.collateralDenom = "";
-    }
-    if (object.debtDenom !== undefined && object.debtDenom !== null) {
-      message.debtDenom = String(object.debtDenom);
-    } else {
-      message.debtDenom = "";
-    }
-    if (
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.collateralDenom =
+      object.collateralDenom !== undefined && object.collateralDenom !== null
+        ? String(object.collateralDenom)
+        : "";
+    message.debtDenom =
+      object.debtDenom !== undefined && object.debtDenom !== null
+        ? String(object.debtDenom)
+        : "";
+    message.collateralizationRatio =
       object.collateralizationRatio !== undefined &&
       object.collateralizationRatio !== null
-    ) {
-      message.collateralizationRatio = String(object.collateralizationRatio);
-    } else {
-      message.collateralizationRatio = "";
-    }
+        ? String(object.collateralizationRatio)
+        : "";
     return message;
   },
 
@@ -856,10 +831,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

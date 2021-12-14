@@ -123,56 +123,46 @@ export const AccountTradeHistoryRow = {
 
   fromJSON(object: any): AccountTradeHistoryRow {
     const message = { ...baseAccountTradeHistoryRow } as AccountTradeHistoryRow;
-    if (object.orderId !== undefined && object.orderId !== null) {
-      message.orderId = String(object.orderId);
-    } else {
-      message.orderId = "";
-    }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = String(object.market);
-    } else {
-      message.market = "";
-    }
-    if (object.side !== undefined && object.side !== null) {
-      message.side = String(object.side);
-    } else {
-      message.side = "";
-    }
-    if (object.quantity !== undefined && object.quantity !== null) {
-      message.quantity = String(object.quantity);
-    } else {
-      message.quantity = "";
-    }
-    if (object.price !== undefined && object.price !== null) {
-      message.price = String(object.price);
-    } else {
-      message.price = "";
-    }
-    if (object.feeAmount !== undefined && object.feeAmount !== null) {
-      message.feeAmount = String(object.feeAmount);
-    } else {
-      message.feeAmount = "";
-    }
-    if (object.feeDenom !== undefined && object.feeDenom !== null) {
-      message.feeDenom = String(object.feeDenom);
-    } else {
-      message.feeDenom = "";
-    }
-    if (object.address !== undefined && object.address !== null) {
-      message.address = String(object.address);
-    } else {
-      message.address = "";
-    }
-    if (object.blockHeight !== undefined && object.blockHeight !== null) {
-      message.blockHeight = Long.fromString(object.blockHeight);
-    } else {
-      message.blockHeight = Long.ZERO;
-    }
-    if (object.blockCreatedAt !== undefined && object.blockCreatedAt !== null) {
-      message.blockCreatedAt = fromJsonTimestamp(object.blockCreatedAt);
-    } else {
-      message.blockCreatedAt = undefined;
-    }
+    message.orderId =
+      object.orderId !== undefined && object.orderId !== null
+        ? String(object.orderId)
+        : "";
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? String(object.market)
+        : "";
+    message.side =
+      object.side !== undefined && object.side !== null
+        ? String(object.side)
+        : "";
+    message.quantity =
+      object.quantity !== undefined && object.quantity !== null
+        ? String(object.quantity)
+        : "";
+    message.price =
+      object.price !== undefined && object.price !== null
+        ? String(object.price)
+        : "";
+    message.feeAmount =
+      object.feeAmount !== undefined && object.feeAmount !== null
+        ? String(object.feeAmount)
+        : "";
+    message.feeDenom =
+      object.feeDenom !== undefined && object.feeDenom !== null
+        ? String(object.feeDenom)
+        : "";
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    message.blockHeight =
+      object.blockHeight !== undefined && object.blockHeight !== null
+        ? Long.fromString(object.blockHeight)
+        : Long.ZERO;
+    message.blockCreatedAt =
+      object.blockCreatedAt !== undefined && object.blockCreatedAt !== null
+        ? fromJsonTimestamp(object.blockCreatedAt)
+        : undefined;
     return message;
   },
 
@@ -205,11 +195,10 @@ export const AccountTradeHistoryRow = {
     message.feeAmount = object.feeAmount ?? "";
     message.feeDenom = object.feeDenom ?? "";
     message.address = object.address ?? "";
-    if (object.blockHeight !== undefined && object.blockHeight !== null) {
-      message.blockHeight = object.blockHeight as Long;
-    } else {
-      message.blockHeight = Long.ZERO;
-    }
+    message.blockHeight =
+      object.blockHeight !== undefined && object.blockHeight !== null
+        ? Long.fromValue(object.blockHeight)
+        : Long.ZERO;
     message.blockCreatedAt = object.blockCreatedAt ?? undefined;
     return message;
   },
@@ -222,10 +211,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

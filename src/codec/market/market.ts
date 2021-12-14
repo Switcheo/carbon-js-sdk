@@ -298,174 +298,126 @@ export const Market = {
 
   fromJSON(object: any): Market {
     const message = { ...baseMarket } as Market;
-    if (object.name !== undefined && object.name !== null) {
-      message.name = String(object.name);
-    } else {
-      message.name = "";
-    }
-    if (object.displayName !== undefined && object.displayName !== null) {
-      message.displayName = String(object.displayName);
-    } else {
-      message.displayName = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = String(object.description);
-    } else {
-      message.description = "";
-    }
-    if (object.marketType !== undefined && object.marketType !== null) {
-      message.marketType = String(object.marketType);
-    } else {
-      message.marketType = "";
-    }
-    if (object.base !== undefined && object.base !== null) {
-      message.base = String(object.base);
-    } else {
-      message.base = "";
-    }
-    if (object.quote !== undefined && object.quote !== null) {
-      message.quote = String(object.quote);
-    } else {
-      message.quote = "";
-    }
-    if (object.basePrecision !== undefined && object.basePrecision !== null) {
-      message.basePrecision = Long.fromString(object.basePrecision);
-    } else {
-      message.basePrecision = Long.ZERO;
-    }
-    if (object.quotePrecision !== undefined && object.quotePrecision !== null) {
-      message.quotePrecision = Long.fromString(object.quotePrecision);
-    } else {
-      message.quotePrecision = Long.ZERO;
-    }
-    if (object.lotSize !== undefined && object.lotSize !== null) {
-      message.lotSize = String(object.lotSize);
-    } else {
-      message.lotSize = "";
-    }
-    if (object.tickSize !== undefined && object.tickSize !== null) {
-      message.tickSize = String(object.tickSize);
-    } else {
-      message.tickSize = "";
-    }
-    if (object.minQuantity !== undefined && object.minQuantity !== null) {
-      message.minQuantity = String(object.minQuantity);
-    } else {
-      message.minQuantity = "";
-    }
-    if (object.makerFee !== undefined && object.makerFee !== null) {
-      message.makerFee = String(object.makerFee);
-    } else {
-      message.makerFee = "";
-    }
-    if (object.takerFee !== undefined && object.takerFee !== null) {
-      message.takerFee = String(object.takerFee);
-    } else {
-      message.takerFee = "";
-    }
-    if (
+    message.name =
+      object.name !== undefined && object.name !== null
+        ? String(object.name)
+        : "";
+    message.displayName =
+      object.displayName !== undefined && object.displayName !== null
+        ? String(object.displayName)
+        : "";
+    message.description =
+      object.description !== undefined && object.description !== null
+        ? String(object.description)
+        : "";
+    message.marketType =
+      object.marketType !== undefined && object.marketType !== null
+        ? String(object.marketType)
+        : "";
+    message.base =
+      object.base !== undefined && object.base !== null
+        ? String(object.base)
+        : "";
+    message.quote =
+      object.quote !== undefined && object.quote !== null
+        ? String(object.quote)
+        : "";
+    message.basePrecision =
+      object.basePrecision !== undefined && object.basePrecision !== null
+        ? Long.fromString(object.basePrecision)
+        : Long.ZERO;
+    message.quotePrecision =
+      object.quotePrecision !== undefined && object.quotePrecision !== null
+        ? Long.fromString(object.quotePrecision)
+        : Long.ZERO;
+    message.lotSize =
+      object.lotSize !== undefined && object.lotSize !== null
+        ? String(object.lotSize)
+        : "";
+    message.tickSize =
+      object.tickSize !== undefined && object.tickSize !== null
+        ? String(object.tickSize)
+        : "";
+    message.minQuantity =
+      object.minQuantity !== undefined && object.minQuantity !== null
+        ? String(object.minQuantity)
+        : "";
+    message.makerFee =
+      object.makerFee !== undefined && object.makerFee !== null
+        ? String(object.makerFee)
+        : "";
+    message.takerFee =
+      object.takerFee !== undefined && object.takerFee !== null
+        ? String(object.takerFee)
+        : "";
+    message.createdBlockHeight =
       object.createdBlockHeight !== undefined &&
       object.createdBlockHeight !== null
-    ) {
-      message.createdBlockHeight = Long.fromString(object.createdBlockHeight);
-    } else {
-      message.createdBlockHeight = Long.UZERO;
-    }
-    if (object.riskStepSize !== undefined && object.riskStepSize !== null) {
-      message.riskStepSize = String(object.riskStepSize);
-    } else {
-      message.riskStepSize = "";
-    }
-    if (
+        ? Long.fromString(object.createdBlockHeight)
+        : Long.UZERO;
+    message.riskStepSize =
+      object.riskStepSize !== undefined && object.riskStepSize !== null
+        ? String(object.riskStepSize)
+        : "";
+    message.initialMarginBase =
       object.initialMarginBase !== undefined &&
       object.initialMarginBase !== null
-    ) {
-      message.initialMarginBase = String(object.initialMarginBase);
-    } else {
-      message.initialMarginBase = "";
-    }
-    if (
+        ? String(object.initialMarginBase)
+        : "";
+    message.initialMarginStep =
       object.initialMarginStep !== undefined &&
       object.initialMarginStep !== null
-    ) {
-      message.initialMarginStep = String(object.initialMarginStep);
-    } else {
-      message.initialMarginStep = "";
-    }
-    if (
+        ? String(object.initialMarginStep)
+        : "";
+    message.maintenanceMarginRatio =
       object.maintenanceMarginRatio !== undefined &&
       object.maintenanceMarginRatio !== null
-    ) {
-      message.maintenanceMarginRatio = String(object.maintenanceMarginRatio);
-    } else {
-      message.maintenanceMarginRatio = "";
-    }
-    if (
+        ? String(object.maintenanceMarginRatio)
+        : "";
+    message.maxLiquidationOrderTicket =
       object.maxLiquidationOrderTicket !== undefined &&
       object.maxLiquidationOrderTicket !== null
-    ) {
-      message.maxLiquidationOrderTicket = String(
-        object.maxLiquidationOrderTicket
-      );
-    } else {
-      message.maxLiquidationOrderTicket = "";
-    }
-    if (
+        ? String(object.maxLiquidationOrderTicket)
+        : "";
+    message.maxLiquidationOrderDuration =
       object.maxLiquidationOrderDuration !== undefined &&
       object.maxLiquidationOrderDuration !== null
-    ) {
-      message.maxLiquidationOrderDuration = Duration.fromJSON(
-        object.maxLiquidationOrderDuration
-      );
-    } else {
-      message.maxLiquidationOrderDuration = undefined;
-    }
-    if (object.impactSize !== undefined && object.impactSize !== null) {
-      message.impactSize = String(object.impactSize);
-    } else {
-      message.impactSize = "";
-    }
-    if (object.markPriceBand !== undefined && object.markPriceBand !== null) {
-      message.markPriceBand = Number(object.markPriceBand);
-    } else {
-      message.markPriceBand = 0;
-    }
-    if (
+        ? Duration.fromJSON(object.maxLiquidationOrderDuration)
+        : undefined;
+    message.impactSize =
+      object.impactSize !== undefined && object.impactSize !== null
+        ? String(object.impactSize)
+        : "";
+    message.markPriceBand =
+      object.markPriceBand !== undefined && object.markPriceBand !== null
+        ? Number(object.markPriceBand)
+        : 0;
+    message.lastPriceProtectedBand =
       object.lastPriceProtectedBand !== undefined &&
       object.lastPriceProtectedBand !== null
-    ) {
-      message.lastPriceProtectedBand = Number(object.lastPriceProtectedBand);
-    } else {
-      message.lastPriceProtectedBand = 0;
-    }
-    if (object.indexOracleId !== undefined && object.indexOracleId !== null) {
-      message.indexOracleId = String(object.indexOracleId);
-    } else {
-      message.indexOracleId = "";
-    }
-    if (object.expiryTime !== undefined && object.expiryTime !== null) {
-      message.expiryTime = fromJsonTimestamp(object.expiryTime);
-    } else {
-      message.expiryTime = undefined;
-    }
-    if (object.isActive !== undefined && object.isActive !== null) {
-      message.isActive = Boolean(object.isActive);
-    } else {
-      message.isActive = false;
-    }
-    if (object.isSettled !== undefined && object.isSettled !== null) {
-      message.isSettled = Boolean(object.isSettled);
-    } else {
-      message.isSettled = false;
-    }
-    if (
+        ? Number(object.lastPriceProtectedBand)
+        : 0;
+    message.indexOracleId =
+      object.indexOracleId !== undefined && object.indexOracleId !== null
+        ? String(object.indexOracleId)
+        : "";
+    message.expiryTime =
+      object.expiryTime !== undefined && object.expiryTime !== null
+        ? fromJsonTimestamp(object.expiryTime)
+        : undefined;
+    message.isActive =
+      object.isActive !== undefined && object.isActive !== null
+        ? Boolean(object.isActive)
+        : false;
+    message.isSettled =
+      object.isSettled !== undefined && object.isSettled !== null
+        ? Boolean(object.isSettled)
+        : false;
+    message.closedBlockHeight =
       object.closedBlockHeight !== undefined &&
       object.closedBlockHeight !== null
-    ) {
-      message.closedBlockHeight = Long.fromString(object.closedBlockHeight);
-    } else {
-      message.closedBlockHeight = Long.UZERO;
-    }
+        ? Long.fromString(object.closedBlockHeight)
+        : Long.UZERO;
     return message;
   },
 
@@ -533,44 +485,34 @@ export const Market = {
     message.marketType = object.marketType ?? "";
     message.base = object.base ?? "";
     message.quote = object.quote ?? "";
-    if (object.basePrecision !== undefined && object.basePrecision !== null) {
-      message.basePrecision = object.basePrecision as Long;
-    } else {
-      message.basePrecision = Long.ZERO;
-    }
-    if (object.quotePrecision !== undefined && object.quotePrecision !== null) {
-      message.quotePrecision = object.quotePrecision as Long;
-    } else {
-      message.quotePrecision = Long.ZERO;
-    }
+    message.basePrecision =
+      object.basePrecision !== undefined && object.basePrecision !== null
+        ? Long.fromValue(object.basePrecision)
+        : Long.ZERO;
+    message.quotePrecision =
+      object.quotePrecision !== undefined && object.quotePrecision !== null
+        ? Long.fromValue(object.quotePrecision)
+        : Long.ZERO;
     message.lotSize = object.lotSize ?? "";
     message.tickSize = object.tickSize ?? "";
     message.minQuantity = object.minQuantity ?? "";
     message.makerFee = object.makerFee ?? "";
     message.takerFee = object.takerFee ?? "";
-    if (
+    message.createdBlockHeight =
       object.createdBlockHeight !== undefined &&
       object.createdBlockHeight !== null
-    ) {
-      message.createdBlockHeight = object.createdBlockHeight as Long;
-    } else {
-      message.createdBlockHeight = Long.UZERO;
-    }
+        ? Long.fromValue(object.createdBlockHeight)
+        : Long.UZERO;
     message.riskStepSize = object.riskStepSize ?? "";
     message.initialMarginBase = object.initialMarginBase ?? "";
     message.initialMarginStep = object.initialMarginStep ?? "";
     message.maintenanceMarginRatio = object.maintenanceMarginRatio ?? "";
     message.maxLiquidationOrderTicket = object.maxLiquidationOrderTicket ?? "";
-    if (
+    message.maxLiquidationOrderDuration =
       object.maxLiquidationOrderDuration !== undefined &&
       object.maxLiquidationOrderDuration !== null
-    ) {
-      message.maxLiquidationOrderDuration = Duration.fromPartial(
-        object.maxLiquidationOrderDuration
-      );
-    } else {
-      message.maxLiquidationOrderDuration = undefined;
-    }
+        ? Duration.fromPartial(object.maxLiquidationOrderDuration)
+        : undefined;
     message.impactSize = object.impactSize ?? "";
     message.markPriceBand = object.markPriceBand ?? 0;
     message.lastPriceProtectedBand = object.lastPriceProtectedBand ?? 0;
@@ -578,14 +520,11 @@ export const Market = {
     message.expiryTime = object.expiryTime ?? undefined;
     message.isActive = object.isActive ?? false;
     message.isSettled = object.isSettled ?? false;
-    if (
+    message.closedBlockHeight =
       object.closedBlockHeight !== undefined &&
       object.closedBlockHeight !== null
-    ) {
-      message.closedBlockHeight = object.closedBlockHeight as Long;
-    } else {
-      message.closedBlockHeight = Long.UZERO;
-    }
+        ? Long.fromValue(object.closedBlockHeight)
+        : Long.UZERO;
     return message;
   },
 };
@@ -771,118 +710,84 @@ export const MarketParams = {
 
   fromJSON(object: any): MarketParams {
     const message = { ...baseMarketParams } as MarketParams;
-    if (object.name !== undefined && object.name !== null) {
-      message.name = String(object.name);
-    } else {
-      message.name = "";
-    }
-    if (object.displayName !== undefined && object.displayName !== null) {
-      message.displayName = String(object.displayName);
-    } else {
-      message.displayName = undefined;
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = String(object.description);
-    } else {
-      message.description = undefined;
-    }
-    if (object.lotSize !== undefined && object.lotSize !== null) {
-      message.lotSize = String(object.lotSize);
-    } else {
-      message.lotSize = "";
-    }
-    if (object.tickSize !== undefined && object.tickSize !== null) {
-      message.tickSize = String(object.tickSize);
-    } else {
-      message.tickSize = "";
-    }
-    if (object.minQuantity !== undefined && object.minQuantity !== null) {
-      message.minQuantity = String(object.minQuantity);
-    } else {
-      message.minQuantity = "";
-    }
-    if (object.makerFee !== undefined && object.makerFee !== null) {
-      message.makerFee = String(object.makerFee);
-    } else {
-      message.makerFee = "";
-    }
-    if (object.takerFee !== undefined && object.takerFee !== null) {
-      message.takerFee = String(object.takerFee);
-    } else {
-      message.takerFee = "";
-    }
-    if (object.riskStepSize !== undefined && object.riskStepSize !== null) {
-      message.riskStepSize = String(object.riskStepSize);
-    } else {
-      message.riskStepSize = "";
-    }
-    if (
+    message.name =
+      object.name !== undefined && object.name !== null
+        ? String(object.name)
+        : "";
+    message.displayName =
+      object.displayName !== undefined && object.displayName !== null
+        ? String(object.displayName)
+        : undefined;
+    message.description =
+      object.description !== undefined && object.description !== null
+        ? String(object.description)
+        : undefined;
+    message.lotSize =
+      object.lotSize !== undefined && object.lotSize !== null
+        ? String(object.lotSize)
+        : "";
+    message.tickSize =
+      object.tickSize !== undefined && object.tickSize !== null
+        ? String(object.tickSize)
+        : "";
+    message.minQuantity =
+      object.minQuantity !== undefined && object.minQuantity !== null
+        ? String(object.minQuantity)
+        : "";
+    message.makerFee =
+      object.makerFee !== undefined && object.makerFee !== null
+        ? String(object.makerFee)
+        : "";
+    message.takerFee =
+      object.takerFee !== undefined && object.takerFee !== null
+        ? String(object.takerFee)
+        : "";
+    message.riskStepSize =
+      object.riskStepSize !== undefined && object.riskStepSize !== null
+        ? String(object.riskStepSize)
+        : "";
+    message.initialMarginBase =
       object.initialMarginBase !== undefined &&
       object.initialMarginBase !== null
-    ) {
-      message.initialMarginBase = String(object.initialMarginBase);
-    } else {
-      message.initialMarginBase = "";
-    }
-    if (
+        ? String(object.initialMarginBase)
+        : "";
+    message.initialMarginStep =
       object.initialMarginStep !== undefined &&
       object.initialMarginStep !== null
-    ) {
-      message.initialMarginStep = String(object.initialMarginStep);
-    } else {
-      message.initialMarginStep = "";
-    }
-    if (
+        ? String(object.initialMarginStep)
+        : "";
+    message.maintenanceMarginRatio =
       object.maintenanceMarginRatio !== undefined &&
       object.maintenanceMarginRatio !== null
-    ) {
-      message.maintenanceMarginRatio = String(object.maintenanceMarginRatio);
-    } else {
-      message.maintenanceMarginRatio = "";
-    }
-    if (
+        ? String(object.maintenanceMarginRatio)
+        : "";
+    message.maxLiquidationOrderTicket =
       object.maxLiquidationOrderTicket !== undefined &&
       object.maxLiquidationOrderTicket !== null
-    ) {
-      message.maxLiquidationOrderTicket = String(
-        object.maxLiquidationOrderTicket
-      );
-    } else {
-      message.maxLiquidationOrderTicket = "";
-    }
-    if (
+        ? String(object.maxLiquidationOrderTicket)
+        : "";
+    message.maxLiquidationOrderDuration =
       object.maxLiquidationOrderDuration !== undefined &&
       object.maxLiquidationOrderDuration !== null
-    ) {
-      message.maxLiquidationOrderDuration = Duration.fromJSON(
-        object.maxLiquidationOrderDuration
-      );
-    } else {
-      message.maxLiquidationOrderDuration = undefined;
-    }
-    if (object.impactSize !== undefined && object.impactSize !== null) {
-      message.impactSize = String(object.impactSize);
-    } else {
-      message.impactSize = "";
-    }
-    if (object.markPriceBand !== undefined && object.markPriceBand !== null) {
-      message.markPriceBand = Number(object.markPriceBand);
-    } else {
-      message.markPriceBand = undefined;
-    }
-    if (
+        ? Duration.fromJSON(object.maxLiquidationOrderDuration)
+        : undefined;
+    message.impactSize =
+      object.impactSize !== undefined && object.impactSize !== null
+        ? String(object.impactSize)
+        : "";
+    message.markPriceBand =
+      object.markPriceBand !== undefined && object.markPriceBand !== null
+        ? Number(object.markPriceBand)
+        : undefined;
+    message.lastPriceProtectedBand =
       object.lastPriceProtectedBand !== undefined &&
       object.lastPriceProtectedBand !== null
-    ) {
-      message.lastPriceProtectedBand = Number(object.lastPriceProtectedBand);
-    } else {
-      message.lastPriceProtectedBand = undefined;
-    }
-    if (object.isActive !== undefined && object.isActive !== null) {
-      message.isActive = Boolean(object.isActive);
-    } else {
-      message.isActive = undefined;
-    }
+        ? Number(object.lastPriceProtectedBand)
+        : undefined;
+    message.isActive =
+      object.isActive !== undefined && object.isActive !== null
+        ? Boolean(object.isActive)
+        : undefined;
     return message;
   },
 
@@ -937,16 +842,11 @@ export const MarketParams = {
     message.initialMarginStep = object.initialMarginStep ?? "";
     message.maintenanceMarginRatio = object.maintenanceMarginRatio ?? "";
     message.maxLiquidationOrderTicket = object.maxLiquidationOrderTicket ?? "";
-    if (
+    message.maxLiquidationOrderDuration =
       object.maxLiquidationOrderDuration !== undefined &&
       object.maxLiquidationOrderDuration !== null
-    ) {
-      message.maxLiquidationOrderDuration = Duration.fromPartial(
-        object.maxLiquidationOrderDuration
-      );
-    } else {
-      message.maxLiquidationOrderDuration = undefined;
-    }
+        ? Duration.fromPartial(object.maxLiquidationOrderDuration)
+        : undefined;
     message.impactSize = object.impactSize ?? "";
     message.markPriceBand = object.markPriceBand ?? undefined;
     message.lastPriceProtectedBand = object.lastPriceProtectedBand ?? undefined;
@@ -962,10 +862,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

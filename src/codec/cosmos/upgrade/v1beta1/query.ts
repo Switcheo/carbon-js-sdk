@@ -1,8 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Plan } from "../../../cosmos/upgrade/v1beta1/upgrade";
-import { Any } from "../../../google/protobuf/any";
+import { Plan, ModuleVersion } from "../../../cosmos/upgrade/v1beta1/upgrade";
 
 export const protobufPackage = "cosmos.upgrade.v1beta1";
 
@@ -42,6 +41,8 @@ export interface QueryAppliedPlanResponse {
 /**
  * QueryUpgradedConsensusStateRequest is the request type for the Query/UpgradedConsensusState
  * RPC method.
+ *
+ * @deprecated
  */
 export interface QueryUpgradedConsensusStateRequest {
   /**
@@ -54,9 +55,33 @@ export interface QueryUpgradedConsensusStateRequest {
 /**
  * QueryUpgradedConsensusStateResponse is the response type for the Query/UpgradedConsensusState
  * RPC method.
+ *
+ * @deprecated
  */
 export interface QueryUpgradedConsensusStateResponse {
-  upgradedConsensusState?: Any;
+  upgradedConsensusState: Uint8Array;
+}
+
+/**
+ * QueryModuleVersionsRequest is the request type for the Query/ModuleVersions
+ * RPC method.
+ */
+export interface QueryModuleVersionsRequest {
+  /**
+   * module_name is a field to query a specific module
+   * consensus version from state. Leaving this empty will
+   * fetch the full list of module versions from state
+   */
+  moduleName: string;
+}
+
+/**
+ * QueryModuleVersionsResponse is the response type for the Query/ModuleVersions
+ * RPC method.
+ */
+export interface QueryModuleVersionsResponse {
+  /** module_versions is a list of module names with their consensus versions. */
+  moduleVersions: ModuleVersion[];
 }
 
 const baseQueryCurrentPlanRequest: object = {};
@@ -151,11 +176,10 @@ export const QueryCurrentPlanResponse = {
     const message = {
       ...baseQueryCurrentPlanResponse,
     } as QueryCurrentPlanResponse;
-    if (object.plan !== undefined && object.plan !== null) {
-      message.plan = Plan.fromJSON(object.plan);
-    } else {
-      message.plan = undefined;
-    }
+    message.plan =
+      object.plan !== undefined && object.plan !== null
+        ? Plan.fromJSON(object.plan)
+        : undefined;
     return message;
   },
 
@@ -172,11 +196,10 @@ export const QueryCurrentPlanResponse = {
     const message = {
       ...baseQueryCurrentPlanResponse,
     } as QueryCurrentPlanResponse;
-    if (object.plan !== undefined && object.plan !== null) {
-      message.plan = Plan.fromPartial(object.plan);
-    } else {
-      message.plan = undefined;
-    }
+    message.plan =
+      object.plan !== undefined && object.plan !== null
+        ? Plan.fromPartial(object.plan)
+        : undefined;
     return message;
   },
 };
@@ -221,11 +244,10 @@ export const QueryAppliedPlanRequest = {
     const message = {
       ...baseQueryAppliedPlanRequest,
     } as QueryAppliedPlanRequest;
-    if (object.name !== undefined && object.name !== null) {
-      message.name = String(object.name);
-    } else {
-      message.name = "";
-    }
+    message.name =
+      object.name !== undefined && object.name !== null
+        ? String(object.name)
+        : "";
     return message;
   },
 
@@ -286,11 +308,10 @@ export const QueryAppliedPlanResponse = {
     const message = {
       ...baseQueryAppliedPlanResponse,
     } as QueryAppliedPlanResponse;
-    if (object.height !== undefined && object.height !== null) {
-      message.height = Long.fromString(object.height);
-    } else {
-      message.height = Long.ZERO;
-    }
+    message.height =
+      object.height !== undefined && object.height !== null
+        ? Long.fromString(object.height)
+        : Long.ZERO;
     return message;
   },
 
@@ -307,11 +328,10 @@ export const QueryAppliedPlanResponse = {
     const message = {
       ...baseQueryAppliedPlanResponse,
     } as QueryAppliedPlanResponse;
-    if (object.height !== undefined && object.height !== null) {
-      message.height = object.height as Long;
-    } else {
-      message.height = Long.ZERO;
-    }
+    message.height =
+      object.height !== undefined && object.height !== null
+        ? Long.fromValue(object.height)
+        : Long.ZERO;
     return message;
   },
 };
@@ -358,11 +378,10 @@ export const QueryUpgradedConsensusStateRequest = {
     const message = {
       ...baseQueryUpgradedConsensusStateRequest,
     } as QueryUpgradedConsensusStateRequest;
-    if (object.lastHeight !== undefined && object.lastHeight !== null) {
-      message.lastHeight = Long.fromString(object.lastHeight);
-    } else {
-      message.lastHeight = Long.ZERO;
-    }
+    message.lastHeight =
+      object.lastHeight !== undefined && object.lastHeight !== null
+        ? Long.fromString(object.lastHeight)
+        : Long.ZERO;
     return message;
   },
 
@@ -379,11 +398,10 @@ export const QueryUpgradedConsensusStateRequest = {
     const message = {
       ...baseQueryUpgradedConsensusStateRequest,
     } as QueryUpgradedConsensusStateRequest;
-    if (object.lastHeight !== undefined && object.lastHeight !== null) {
-      message.lastHeight = object.lastHeight as Long;
-    } else {
-      message.lastHeight = Long.ZERO;
-    }
+    message.lastHeight =
+      object.lastHeight !== undefined && object.lastHeight !== null
+        ? Long.fromValue(object.lastHeight)
+        : Long.ZERO;
     return message;
   },
 };
@@ -395,11 +413,8 @@ export const QueryUpgradedConsensusStateResponse = {
     message: QueryUpgradedConsensusStateResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.upgradedConsensusState !== undefined) {
-      Any.encode(
-        message.upgradedConsensusState,
-        writer.uint32(10).fork()
-      ).ldelim();
+    if (message.upgradedConsensusState.length !== 0) {
+      writer.uint32(18).bytes(message.upgradedConsensusState);
     }
     return writer;
   },
@@ -413,11 +428,12 @@ export const QueryUpgradedConsensusStateResponse = {
     const message = {
       ...baseQueryUpgradedConsensusStateResponse,
     } as QueryUpgradedConsensusStateResponse;
+    message.upgradedConsensusState = new Uint8Array();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        case 1:
-          message.upgradedConsensusState = Any.decode(reader, reader.uint32());
+        case 2:
+          message.upgradedConsensusState = reader.bytes();
           break;
         default:
           reader.skipType(tag & 7);
@@ -431,25 +447,22 @@ export const QueryUpgradedConsensusStateResponse = {
     const message = {
       ...baseQueryUpgradedConsensusStateResponse,
     } as QueryUpgradedConsensusStateResponse;
-    if (
+    message.upgradedConsensusState =
       object.upgradedConsensusState !== undefined &&
       object.upgradedConsensusState !== null
-    ) {
-      message.upgradedConsensusState = Any.fromJSON(
-        object.upgradedConsensusState
-      );
-    } else {
-      message.upgradedConsensusState = undefined;
-    }
+        ? bytesFromBase64(object.upgradedConsensusState)
+        : new Uint8Array();
     return message;
   },
 
   toJSON(message: QueryUpgradedConsensusStateResponse): unknown {
     const obj: any = {};
     message.upgradedConsensusState !== undefined &&
-      (obj.upgradedConsensusState = message.upgradedConsensusState
-        ? Any.toJSON(message.upgradedConsensusState)
-        : undefined);
+      (obj.upgradedConsensusState = base64FromBytes(
+        message.upgradedConsensusState !== undefined
+          ? message.upgradedConsensusState
+          : new Uint8Array()
+      ));
     return obj;
   },
 
@@ -459,16 +472,146 @@ export const QueryUpgradedConsensusStateResponse = {
     const message = {
       ...baseQueryUpgradedConsensusStateResponse,
     } as QueryUpgradedConsensusStateResponse;
-    if (
-      object.upgradedConsensusState !== undefined &&
-      object.upgradedConsensusState !== null
-    ) {
-      message.upgradedConsensusState = Any.fromPartial(
-        object.upgradedConsensusState
+    message.upgradedConsensusState =
+      object.upgradedConsensusState ?? new Uint8Array();
+    return message;
+  },
+};
+
+const baseQueryModuleVersionsRequest: object = { moduleName: "" };
+
+export const QueryModuleVersionsRequest = {
+  encode(
+    message: QueryModuleVersionsRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.moduleName !== "") {
+      writer.uint32(10).string(message.moduleName);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryModuleVersionsRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryModuleVersionsRequest,
+    } as QueryModuleVersionsRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.moduleName = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryModuleVersionsRequest {
+    const message = {
+      ...baseQueryModuleVersionsRequest,
+    } as QueryModuleVersionsRequest;
+    message.moduleName =
+      object.moduleName !== undefined && object.moduleName !== null
+        ? String(object.moduleName)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryModuleVersionsRequest): unknown {
+    const obj: any = {};
+    message.moduleName !== undefined && (obj.moduleName = message.moduleName);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryModuleVersionsRequest>
+  ): QueryModuleVersionsRequest {
+    const message = {
+      ...baseQueryModuleVersionsRequest,
+    } as QueryModuleVersionsRequest;
+    message.moduleName = object.moduleName ?? "";
+    return message;
+  },
+};
+
+const baseQueryModuleVersionsResponse: object = {};
+
+export const QueryModuleVersionsResponse = {
+  encode(
+    message: QueryModuleVersionsResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.moduleVersions) {
+      ModuleVersion.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryModuleVersionsResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryModuleVersionsResponse,
+    } as QueryModuleVersionsResponse;
+    message.moduleVersions = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.moduleVersions.push(
+            ModuleVersion.decode(reader, reader.uint32())
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryModuleVersionsResponse {
+    const message = {
+      ...baseQueryModuleVersionsResponse,
+    } as QueryModuleVersionsResponse;
+    message.moduleVersions = (object.moduleVersions ?? []).map((e: any) =>
+      ModuleVersion.fromJSON(e)
+    );
+    return message;
+  },
+
+  toJSON(message: QueryModuleVersionsResponse): unknown {
+    const obj: any = {};
+    if (message.moduleVersions) {
+      obj.moduleVersions = message.moduleVersions.map((e) =>
+        e ? ModuleVersion.toJSON(e) : undefined
       );
     } else {
-      message.upgradedConsensusState = undefined;
+      obj.moduleVersions = [];
     }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryModuleVersionsResponse>
+  ): QueryModuleVersionsResponse {
+    const message = {
+      ...baseQueryModuleVersionsResponse,
+    } as QueryModuleVersionsResponse;
+    message.moduleVersions = (object.moduleVersions ?? []).map((e) =>
+      ModuleVersion.fromPartial(e)
+    );
     return message;
   },
 };
@@ -488,10 +631,18 @@ export interface Query {
    * as a trusted kernel for the next version of this chain. It will only be
    * stored at the last height of this chain.
    * UpgradedConsensusState RPC not supported with legacy querier
+   * This rpc is deprecated now that IBC has its own replacement
+   * (https://github.com/cosmos/ibc-go/blob/2c880a22e9f9cc75f62b527ca94aa75ce1106001/proto/ibc/core/client/v1/query.proto#L54)
+   *
+   * @deprecated
    */
   UpgradedConsensusState(
     request: QueryUpgradedConsensusStateRequest
   ): Promise<QueryUpgradedConsensusStateResponse>;
+  /** ModuleVersions queries the list of module versions from state. */
+  ModuleVersions(
+    request: QueryModuleVersionsRequest
+  ): Promise<QueryModuleVersionsResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -501,6 +652,7 @@ export class QueryClientImpl implements Query {
     this.CurrentPlan = this.CurrentPlan.bind(this);
     this.AppliedPlan = this.AppliedPlan.bind(this);
     this.UpgradedConsensusState = this.UpgradedConsensusState.bind(this);
+    this.ModuleVersions = this.ModuleVersions.bind(this);
   }
   CurrentPlan(
     request: QueryCurrentPlanRequest
@@ -543,6 +695,20 @@ export class QueryClientImpl implements Query {
       QueryUpgradedConsensusStateResponse.decode(new _m0.Reader(data))
     );
   }
+
+  ModuleVersions(
+    request: QueryModuleVersionsRequest
+  ): Promise<QueryModuleVersionsResponse> {
+    const data = QueryModuleVersionsRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "cosmos.upgrade.v1beta1.Query",
+      "ModuleVersions",
+      data
+    );
+    return promise.then((data) =>
+      QueryModuleVersionsResponse.decode(new _m0.Reader(data))
+    );
+  }
 }
 
 interface Rpc {
@@ -553,6 +719,40 @@ interface Rpc {
   ): Promise<Uint8Array>;
 }
 
+declare var self: any | undefined;
+declare var window: any | undefined;
+declare var global: any | undefined;
+var globalThis: any = (() => {
+  if (typeof globalThis !== "undefined") return globalThis;
+  if (typeof self !== "undefined") return self;
+  if (typeof window !== "undefined") return window;
+  if (typeof global !== "undefined") return global;
+  throw "Unable to locate global object";
+})();
+
+const atob: (b64: string) => string =
+  globalThis.atob ||
+  ((b64) => globalThis.Buffer.from(b64, "base64").toString("binary"));
+function bytesFromBase64(b64: string): Uint8Array {
+  const bin = atob(b64);
+  const arr = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; ++i) {
+    arr[i] = bin.charCodeAt(i);
+  }
+  return arr;
+}
+
+const btoa: (bin: string) => string =
+  globalThis.btoa ||
+  ((bin) => globalThis.Buffer.from(bin, "binary").toString("base64"));
+function base64FromBytes(arr: Uint8Array): string {
+  const bin: string[] = [];
+  for (const byte of arr) {
+    bin.push(String.fromCharCode(byte));
+  }
+  return btoa(bin.join(""));
+}
+
 type Builtin =
   | Date
   | Function
@@ -560,10 +760,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

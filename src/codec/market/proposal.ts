@@ -65,21 +65,18 @@ export const CreateMarketProposal = {
 
   fromJSON(object: any): CreateMarketProposal {
     const message = { ...baseCreateMarketProposal } as CreateMarketProposal;
-    if (object.title !== undefined && object.title !== null) {
-      message.title = String(object.title);
-    } else {
-      message.title = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = String(object.description);
-    } else {
-      message.description = "";
-    }
-    if (object.msg !== undefined && object.msg !== null) {
-      message.msg = Market.fromJSON(object.msg);
-    } else {
-      message.msg = undefined;
-    }
+    message.title =
+      object.title !== undefined && object.title !== null
+        ? String(object.title)
+        : "";
+    message.description =
+      object.description !== undefined && object.description !== null
+        ? String(object.description)
+        : "";
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? Market.fromJSON(object.msg)
+        : undefined;
     return message;
   },
 
@@ -97,11 +94,10 @@ export const CreateMarketProposal = {
     const message = { ...baseCreateMarketProposal } as CreateMarketProposal;
     message.title = object.title ?? "";
     message.description = object.description ?? "";
-    if (object.msg !== undefined && object.msg !== null) {
-      message.msg = Market.fromPartial(object.msg);
-    } else {
-      message.msg = undefined;
-    }
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? Market.fromPartial(object.msg)
+        : undefined;
     return message;
   },
 };
@@ -154,21 +150,18 @@ export const UpdateMarketProposal = {
 
   fromJSON(object: any): UpdateMarketProposal {
     const message = { ...baseUpdateMarketProposal } as UpdateMarketProposal;
-    if (object.title !== undefined && object.title !== null) {
-      message.title = String(object.title);
-    } else {
-      message.title = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = String(object.description);
-    } else {
-      message.description = "";
-    }
-    if (object.msg !== undefined && object.msg !== null) {
-      message.msg = MarketParams.fromJSON(object.msg);
-    } else {
-      message.msg = undefined;
-    }
+    message.title =
+      object.title !== undefined && object.title !== null
+        ? String(object.title)
+        : "";
+    message.description =
+      object.description !== undefined && object.description !== null
+        ? String(object.description)
+        : "";
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? MarketParams.fromJSON(object.msg)
+        : undefined;
     return message;
   },
 
@@ -186,11 +179,10 @@ export const UpdateMarketProposal = {
     const message = { ...baseUpdateMarketProposal } as UpdateMarketProposal;
     message.title = object.title ?? "";
     message.description = object.description ?? "";
-    if (object.msg !== undefined && object.msg !== null) {
-      message.msg = MarketParams.fromPartial(object.msg);
-    } else {
-      message.msg = undefined;
-    }
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? MarketParams.fromPartial(object.msg)
+        : undefined;
     return message;
   },
 };
@@ -202,10 +194,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

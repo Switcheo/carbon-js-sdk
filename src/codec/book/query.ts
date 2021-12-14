@@ -60,11 +60,10 @@ export const QueryGetBookRequest = {
 
   fromJSON(object: any): QueryGetBookRequest {
     const message = { ...baseQueryGetBookRequest } as QueryGetBookRequest;
-    if (object.market !== undefined && object.market !== null) {
-      message.market = String(object.market);
-    } else {
-      message.market = "";
-    }
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? String(object.market)
+        : "";
     return message;
   },
 
@@ -117,11 +116,10 @@ export const QueryGetBookResponse = {
 
   fromJSON(object: any): QueryGetBookResponse {
     const message = { ...baseQueryGetBookResponse } as QueryGetBookResponse;
-    if (object.book !== undefined && object.book !== null) {
-      message.book = OrderBook.fromJSON(object.book);
-    } else {
-      message.book = undefined;
-    }
+    message.book =
+      object.book !== undefined && object.book !== null
+        ? OrderBook.fromJSON(object.book)
+        : undefined;
     return message;
   },
 
@@ -134,11 +132,10 @@ export const QueryGetBookResponse = {
 
   fromPartial(object: DeepPartial<QueryGetBookResponse>): QueryGetBookResponse {
     const message = { ...baseQueryGetBookResponse } as QueryGetBookResponse;
-    if (object.book !== undefined && object.book !== null) {
-      message.book = OrderBook.fromPartial(object.book);
-    } else {
-      message.book = undefined;
-    }
+    message.book =
+      object.book !== undefined && object.book !== null
+        ? OrderBook.fromPartial(object.book)
+        : undefined;
     return message;
   },
 };
@@ -176,11 +173,10 @@ export const QueryAllBookRequest = {
 
   fromJSON(object: any): QueryAllBookRequest {
     const message = { ...baseQueryAllBookRequest } as QueryAllBookRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -195,11 +191,10 @@ export const QueryAllBookRequest = {
 
   fromPartial(object: DeepPartial<QueryAllBookRequest>): QueryAllBookRequest {
     const message = { ...baseQueryAllBookRequest } as QueryAllBookRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -250,17 +245,11 @@ export const QueryAllBookResponse = {
 
   fromJSON(object: any): QueryAllBookResponse {
     const message = { ...baseQueryAllBookResponse } as QueryAllBookResponse;
-    message.books = [];
-    if (object.books !== undefined && object.books !== null) {
-      for (const e of object.books) {
-        message.books.push(OrderBook.fromJSON(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.books = (object.books ?? []).map((e: any) => OrderBook.fromJSON(e));
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -282,17 +271,11 @@ export const QueryAllBookResponse = {
 
   fromPartial(object: DeepPartial<QueryAllBookResponse>): QueryAllBookResponse {
     const message = { ...baseQueryAllBookResponse } as QueryAllBookResponse;
-    message.books = [];
-    if (object.books !== undefined && object.books !== null) {
-      for (const e of object.books) {
-        message.books.push(OrderBook.fromPartial(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.books = (object.books ?? []).map((e) => OrderBook.fromPartial(e));
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -351,10 +334,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

@@ -97,39 +97,22 @@ export const GenesisState = {
 
   fromJSON(object: any): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
-    message.tokens = [];
-    message.wrapperMappings = {};
-    message.lockedCoins = [];
-    message.positionPools = [];
-    message.bridges = [];
-    if (object.tokens !== undefined && object.tokens !== null) {
-      for (const e of object.tokens) {
-        message.tokens.push(Token.fromJSON(e));
-      }
-    }
-    if (
-      object.wrapperMappings !== undefined &&
-      object.wrapperMappings !== null
-    ) {
-      Object.entries(object.wrapperMappings).forEach(([key, value]) => {
-        message.wrapperMappings[key] = String(value);
-      });
-    }
-    if (object.lockedCoins !== undefined && object.lockedCoins !== null) {
-      for (const e of object.lockedCoins) {
-        message.lockedCoins.push(LockedCoinsRecord.fromJSON(e));
-      }
-    }
-    if (object.positionPools !== undefined && object.positionPools !== null) {
-      for (const e of object.positionPools) {
-        message.positionPools.push(PositionPool.fromJSON(e));
-      }
-    }
-    if (object.bridges !== undefined && object.bridges !== null) {
-      for (const e of object.bridges) {
-        message.bridges.push(Bridge.fromJSON(e));
-      }
-    }
+    message.tokens = (object.tokens ?? []).map((e: any) => Token.fromJSON(e));
+    message.wrapperMappings = Object.entries(
+      object.wrapperMappings ?? {}
+    ).reduce<{ [key: string]: string }>((acc, [key, value]) => {
+      acc[key] = String(value);
+      return acc;
+    }, {});
+    message.lockedCoins = (object.lockedCoins ?? []).map((e: any) =>
+      LockedCoinsRecord.fromJSON(e)
+    );
+    message.positionPools = (object.positionPools ?? []).map((e: any) =>
+      PositionPool.fromJSON(e)
+    );
+    message.bridges = (object.bridges ?? []).map((e: any) =>
+      Bridge.fromJSON(e)
+    );
     return message;
   },
 
@@ -172,41 +155,22 @@ export const GenesisState = {
 
   fromPartial(object: DeepPartial<GenesisState>): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
-    message.tokens = [];
-    if (object.tokens !== undefined && object.tokens !== null) {
-      for (const e of object.tokens) {
-        message.tokens.push(Token.fromPartial(e));
+    message.tokens = (object.tokens ?? []).map((e) => Token.fromPartial(e));
+    message.wrapperMappings = Object.entries(
+      object.wrapperMappings ?? {}
+    ).reduce<{ [key: string]: string }>((acc, [key, value]) => {
+      if (value !== undefined) {
+        acc[key] = String(value);
       }
-    }
-    message.wrapperMappings = {};
-    if (
-      object.wrapperMappings !== undefined &&
-      object.wrapperMappings !== null
-    ) {
-      Object.entries(object.wrapperMappings).forEach(([key, value]) => {
-        if (value !== undefined) {
-          message.wrapperMappings[key] = String(value);
-        }
-      });
-    }
-    message.lockedCoins = [];
-    if (object.lockedCoins !== undefined && object.lockedCoins !== null) {
-      for (const e of object.lockedCoins) {
-        message.lockedCoins.push(LockedCoinsRecord.fromPartial(e));
-      }
-    }
-    message.positionPools = [];
-    if (object.positionPools !== undefined && object.positionPools !== null) {
-      for (const e of object.positionPools) {
-        message.positionPools.push(PositionPool.fromPartial(e));
-      }
-    }
-    message.bridges = [];
-    if (object.bridges !== undefined && object.bridges !== null) {
-      for (const e of object.bridges) {
-        message.bridges.push(Bridge.fromPartial(e));
-      }
-    }
+      return acc;
+    }, {});
+    message.lockedCoins = (object.lockedCoins ?? []).map((e) =>
+      LockedCoinsRecord.fromPartial(e)
+    );
+    message.positionPools = (object.positionPools ?? []).map((e) =>
+      PositionPool.fromPartial(e)
+    );
+    message.bridges = (object.bridges ?? []).map((e) => Bridge.fromPartial(e));
     return message;
   },
 };
@@ -257,16 +221,12 @@ export const GenesisState_WrapperMappingsEntry = {
     const message = {
       ...baseGenesisState_WrapperMappingsEntry,
     } as GenesisState_WrapperMappingsEntry;
-    if (object.key !== undefined && object.key !== null) {
-      message.key = String(object.key);
-    } else {
-      message.key = "";
-    }
-    if (object.value !== undefined && object.value !== null) {
-      message.value = String(object.value);
-    } else {
-      message.value = "";
-    }
+    message.key =
+      object.key !== undefined && object.key !== null ? String(object.key) : "";
+    message.value =
+      object.value !== undefined && object.value !== null
+        ? String(object.value)
+        : "";
     return message;
   },
 
@@ -296,10 +256,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

@@ -35,6 +35,9 @@ export interface Output {
 /**
  * Supply represents a struct that passively keeps track of the total supply
  * amounts in the network.
+ * This message is deprecated now that supply is indexed by denom.
+ *
+ * @deprecated
  */
 export interface Supply {
   total: Coin[];
@@ -74,6 +77,13 @@ export interface Metadata {
    * displayed in clients.
    */
   display: string;
+  /** name defines the name of the token (eg: Cosmos Atom) */
+  name: string;
+  /**
+   * symbol is the token symbol usually shown on exchanges (eg: ATOM). This can
+   * be the same as the display.
+   */
+  symbol: string;
 }
 
 const baseParams: object = { defaultSendEnabled: false };
@@ -116,20 +126,14 @@ export const Params = {
 
   fromJSON(object: any): Params {
     const message = { ...baseParams } as Params;
-    message.sendEnabled = [];
-    if (object.sendEnabled !== undefined && object.sendEnabled !== null) {
-      for (const e of object.sendEnabled) {
-        message.sendEnabled.push(SendEnabled.fromJSON(e));
-      }
-    }
-    if (
+    message.sendEnabled = (object.sendEnabled ?? []).map((e: any) =>
+      SendEnabled.fromJSON(e)
+    );
+    message.defaultSendEnabled =
       object.defaultSendEnabled !== undefined &&
       object.defaultSendEnabled !== null
-    ) {
-      message.defaultSendEnabled = Boolean(object.defaultSendEnabled);
-    } else {
-      message.defaultSendEnabled = false;
-    }
+        ? Boolean(object.defaultSendEnabled)
+        : false;
     return message;
   },
 
@@ -149,12 +153,9 @@ export const Params = {
 
   fromPartial(object: DeepPartial<Params>): Params {
     const message = { ...baseParams } as Params;
-    message.sendEnabled = [];
-    if (object.sendEnabled !== undefined && object.sendEnabled !== null) {
-      for (const e of object.sendEnabled) {
-        message.sendEnabled.push(SendEnabled.fromPartial(e));
-      }
-    }
+    message.sendEnabled = (object.sendEnabled ?? []).map((e) =>
+      SendEnabled.fromPartial(e)
+    );
     message.defaultSendEnabled = object.defaultSendEnabled ?? false;
     return message;
   },
@@ -199,16 +200,14 @@ export const SendEnabled = {
 
   fromJSON(object: any): SendEnabled {
     const message = { ...baseSendEnabled } as SendEnabled;
-    if (object.denom !== undefined && object.denom !== null) {
-      message.denom = String(object.denom);
-    } else {
-      message.denom = "";
-    }
-    if (object.enabled !== undefined && object.enabled !== null) {
-      message.enabled = Boolean(object.enabled);
-    } else {
-      message.enabled = false;
-    }
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
+    message.enabled =
+      object.enabled !== undefined && object.enabled !== null
+        ? Boolean(object.enabled)
+        : false;
     return message;
   },
 
@@ -264,17 +263,11 @@ export const Input = {
 
   fromJSON(object: any): Input {
     const message = { ...baseInput } as Input;
-    message.coins = [];
-    if (object.address !== undefined && object.address !== null) {
-      message.address = String(object.address);
-    } else {
-      message.address = "";
-    }
-    if (object.coins !== undefined && object.coins !== null) {
-      for (const e of object.coins) {
-        message.coins.push(Coin.fromJSON(e));
-      }
-    }
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    message.coins = (object.coins ?? []).map((e: any) => Coin.fromJSON(e));
     return message;
   },
 
@@ -292,12 +285,7 @@ export const Input = {
   fromPartial(object: DeepPartial<Input>): Input {
     const message = { ...baseInput } as Input;
     message.address = object.address ?? "";
-    message.coins = [];
-    if (object.coins !== undefined && object.coins !== null) {
-      for (const e of object.coins) {
-        message.coins.push(Coin.fromPartial(e));
-      }
-    }
+    message.coins = (object.coins ?? []).map((e) => Coin.fromPartial(e));
     return message;
   },
 };
@@ -342,17 +330,11 @@ export const Output = {
 
   fromJSON(object: any): Output {
     const message = { ...baseOutput } as Output;
-    message.coins = [];
-    if (object.address !== undefined && object.address !== null) {
-      message.address = String(object.address);
-    } else {
-      message.address = "";
-    }
-    if (object.coins !== undefined && object.coins !== null) {
-      for (const e of object.coins) {
-        message.coins.push(Coin.fromJSON(e));
-      }
-    }
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    message.coins = (object.coins ?? []).map((e: any) => Coin.fromJSON(e));
     return message;
   },
 
@@ -370,12 +352,7 @@ export const Output = {
   fromPartial(object: DeepPartial<Output>): Output {
     const message = { ...baseOutput } as Output;
     message.address = object.address ?? "";
-    message.coins = [];
-    if (object.coins !== undefined && object.coins !== null) {
-      for (const e of object.coins) {
-        message.coins.push(Coin.fromPartial(e));
-      }
-    }
+    message.coins = (object.coins ?? []).map((e) => Coin.fromPartial(e));
     return message;
   },
 };
@@ -414,12 +391,7 @@ export const Supply = {
 
   fromJSON(object: any): Supply {
     const message = { ...baseSupply } as Supply;
-    message.total = [];
-    if (object.total !== undefined && object.total !== null) {
-      for (const e of object.total) {
-        message.total.push(Coin.fromJSON(e));
-      }
-    }
+    message.total = (object.total ?? []).map((e: any) => Coin.fromJSON(e));
     return message;
   },
 
@@ -435,12 +407,7 @@ export const Supply = {
 
   fromPartial(object: DeepPartial<Supply>): Supply {
     const message = { ...baseSupply } as Supply;
-    message.total = [];
-    if (object.total !== undefined && object.total !== null) {
-      for (const e of object.total) {
-        message.total.push(Coin.fromPartial(e));
-      }
-    }
+    message.total = (object.total ?? []).map((e) => Coin.fromPartial(e));
     return message;
   },
 };
@@ -491,22 +458,15 @@ export const DenomUnit = {
 
   fromJSON(object: any): DenomUnit {
     const message = { ...baseDenomUnit } as DenomUnit;
-    message.aliases = [];
-    if (object.denom !== undefined && object.denom !== null) {
-      message.denom = String(object.denom);
-    } else {
-      message.denom = "";
-    }
-    if (object.exponent !== undefined && object.exponent !== null) {
-      message.exponent = Number(object.exponent);
-    } else {
-      message.exponent = 0;
-    }
-    if (object.aliases !== undefined && object.aliases !== null) {
-      for (const e of object.aliases) {
-        message.aliases.push(String(e));
-      }
-    }
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
+    message.exponent =
+      object.exponent !== undefined && object.exponent !== null
+        ? Number(object.exponent)
+        : 0;
+    message.aliases = (object.aliases ?? []).map((e: any) => String(e));
     return message;
   },
 
@@ -526,17 +486,18 @@ export const DenomUnit = {
     const message = { ...baseDenomUnit } as DenomUnit;
     message.denom = object.denom ?? "";
     message.exponent = object.exponent ?? 0;
-    message.aliases = [];
-    if (object.aliases !== undefined && object.aliases !== null) {
-      for (const e of object.aliases) {
-        message.aliases.push(e);
-      }
-    }
+    message.aliases = (object.aliases ?? []).map((e) => e);
     return message;
   },
 };
 
-const baseMetadata: object = { description: "", base: "", display: "" };
+const baseMetadata: object = {
+  description: "",
+  base: "",
+  display: "",
+  name: "",
+  symbol: "",
+};
 
 export const Metadata = {
   encode(
@@ -554,6 +515,12 @@ export const Metadata = {
     }
     if (message.display !== "") {
       writer.uint32(34).string(message.display);
+    }
+    if (message.name !== "") {
+      writer.uint32(42).string(message.name);
+    }
+    if (message.symbol !== "") {
+      writer.uint32(50).string(message.symbol);
     }
     return writer;
   },
@@ -578,6 +545,12 @@ export const Metadata = {
         case 4:
           message.display = reader.string();
           break;
+        case 5:
+          message.name = reader.string();
+          break;
+        case 6:
+          message.symbol = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -588,27 +561,29 @@ export const Metadata = {
 
   fromJSON(object: any): Metadata {
     const message = { ...baseMetadata } as Metadata;
-    message.denomUnits = [];
-    if (object.description !== undefined && object.description !== null) {
-      message.description = String(object.description);
-    } else {
-      message.description = "";
-    }
-    if (object.denomUnits !== undefined && object.denomUnits !== null) {
-      for (const e of object.denomUnits) {
-        message.denomUnits.push(DenomUnit.fromJSON(e));
-      }
-    }
-    if (object.base !== undefined && object.base !== null) {
-      message.base = String(object.base);
-    } else {
-      message.base = "";
-    }
-    if (object.display !== undefined && object.display !== null) {
-      message.display = String(object.display);
-    } else {
-      message.display = "";
-    }
+    message.description =
+      object.description !== undefined && object.description !== null
+        ? String(object.description)
+        : "";
+    message.denomUnits = (object.denomUnits ?? []).map((e: any) =>
+      DenomUnit.fromJSON(e)
+    );
+    message.base =
+      object.base !== undefined && object.base !== null
+        ? String(object.base)
+        : "";
+    message.display =
+      object.display !== undefined && object.display !== null
+        ? String(object.display)
+        : "";
+    message.name =
+      object.name !== undefined && object.name !== null
+        ? String(object.name)
+        : "";
+    message.symbol =
+      object.symbol !== undefined && object.symbol !== null
+        ? String(object.symbol)
+        : "";
     return message;
   },
 
@@ -625,20 +600,21 @@ export const Metadata = {
     }
     message.base !== undefined && (obj.base = message.base);
     message.display !== undefined && (obj.display = message.display);
+    message.name !== undefined && (obj.name = message.name);
+    message.symbol !== undefined && (obj.symbol = message.symbol);
     return obj;
   },
 
   fromPartial(object: DeepPartial<Metadata>): Metadata {
     const message = { ...baseMetadata } as Metadata;
     message.description = object.description ?? "";
-    message.denomUnits = [];
-    if (object.denomUnits !== undefined && object.denomUnits !== null) {
-      for (const e of object.denomUnits) {
-        message.denomUnits.push(DenomUnit.fromPartial(e));
-      }
-    }
+    message.denomUnits = (object.denomUnits ?? []).map((e) =>
+      DenomUnit.fromPartial(e)
+    );
     message.base = object.base ?? "";
     message.display = object.display ?? "";
+    message.name = object.name ?? "";
+    message.symbol = object.symbol ?? "";
     return message;
   },
 };
@@ -650,10 +626,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

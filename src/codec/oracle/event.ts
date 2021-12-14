@@ -58,11 +58,10 @@ export const NewVoteEvent = {
 
   fromJSON(object: any): NewVoteEvent {
     const message = { ...baseNewVoteEvent } as NewVoteEvent;
-    if (object.voterAccount !== undefined && object.voterAccount !== null) {
-      message.voterAccount = String(object.voterAccount);
-    } else {
-      message.voterAccount = "";
-    }
+    message.voterAccount =
+      object.voterAccount !== undefined && object.voterAccount !== null
+        ? String(object.voterAccount)
+        : "";
     return message;
   },
 
@@ -113,11 +112,10 @@ export const RecordVoteEvent = {
 
   fromJSON(object: any): RecordVoteEvent {
     const message = { ...baseRecordVoteEvent } as RecordVoteEvent;
-    if (object.voterAccount !== undefined && object.voterAccount !== null) {
-      message.voterAccount = String(object.voterAccount);
-    } else {
-      message.voterAccount = "";
-    }
+    message.voterAccount =
+      object.voterAccount !== undefined && object.voterAccount !== null
+        ? String(object.voterAccount)
+        : "";
     return message;
   },
 
@@ -180,21 +178,18 @@ export const VoteEvent = {
 
   fromJSON(object: any): VoteEvent {
     const message = { ...baseVoteEvent } as VoteEvent;
-    if (object.vote !== undefined && object.vote !== null) {
-      message.vote = Vote.fromJSON(object.vote);
-    } else {
-      message.vote = undefined;
-    }
-    if (object.voteId !== undefined && object.voteId !== null) {
-      message.voteId = String(object.voteId);
-    } else {
-      message.voteId = "";
-    }
-    if (object.type !== undefined && object.type !== null) {
-      message.type = String(object.type);
-    } else {
-      message.type = "";
-    }
+    message.vote =
+      object.vote !== undefined && object.vote !== null
+        ? Vote.fromJSON(object.vote)
+        : undefined;
+    message.voteId =
+      object.voteId !== undefined && object.voteId !== null
+        ? String(object.voteId)
+        : "";
+    message.type =
+      object.type !== undefined && object.type !== null
+        ? String(object.type)
+        : "";
     return message;
   },
 
@@ -209,11 +204,10 @@ export const VoteEvent = {
 
   fromPartial(object: DeepPartial<VoteEvent>): VoteEvent {
     const message = { ...baseVoteEvent } as VoteEvent;
-    if (object.vote !== undefined && object.vote !== null) {
-      message.vote = Vote.fromPartial(object.vote);
-    } else {
-      message.vote = undefined;
-    }
+    message.vote =
+      object.vote !== undefined && object.vote !== null
+        ? Vote.fromPartial(object.vote)
+        : undefined;
     message.voteId = object.voteId ?? "";
     message.type = object.type ?? "";
     return message;
@@ -265,21 +259,18 @@ export const ResultEvent = {
 
   fromJSON(object: any): ResultEvent {
     const message = { ...baseResultEvent } as ResultEvent;
-    if (object.result !== undefined && object.result !== null) {
-      message.result = Result.fromJSON(object.result);
-    } else {
-      message.result = undefined;
-    }
-    if (object.resultId !== undefined && object.resultId !== null) {
-      message.resultId = String(object.resultId);
-    } else {
-      message.resultId = "";
-    }
-    if (object.type !== undefined && object.type !== null) {
-      message.type = String(object.type);
-    } else {
-      message.type = "";
-    }
+    message.result =
+      object.result !== undefined && object.result !== null
+        ? Result.fromJSON(object.result)
+        : undefined;
+    message.resultId =
+      object.resultId !== undefined && object.resultId !== null
+        ? String(object.resultId)
+        : "";
+    message.type =
+      object.type !== undefined && object.type !== null
+        ? String(object.type)
+        : "";
     return message;
   },
 
@@ -294,11 +285,10 @@ export const ResultEvent = {
 
   fromPartial(object: DeepPartial<ResultEvent>): ResultEvent {
     const message = { ...baseResultEvent } as ResultEvent;
-    if (object.result !== undefined && object.result !== null) {
-      message.result = Result.fromPartial(object.result);
-    } else {
-      message.result = undefined;
-    }
+    message.result =
+      object.result !== undefined && object.result !== null
+        ? Result.fromPartial(object.result)
+        : undefined;
     message.resultId = object.resultId ?? "";
     message.type = object.type ?? "";
     return message;
@@ -312,10 +302,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

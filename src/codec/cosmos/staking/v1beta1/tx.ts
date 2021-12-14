@@ -165,50 +165,35 @@ export const MsgCreateValidator = {
 
   fromJSON(object: any): MsgCreateValidator {
     const message = { ...baseMsgCreateValidator } as MsgCreateValidator;
-    if (object.description !== undefined && object.description !== null) {
-      message.description = Description.fromJSON(object.description);
-    } else {
-      message.description = undefined;
-    }
-    if (object.commission !== undefined && object.commission !== null) {
-      message.commission = CommissionRates.fromJSON(object.commission);
-    } else {
-      message.commission = undefined;
-    }
-    if (
+    message.description =
+      object.description !== undefined && object.description !== null
+        ? Description.fromJSON(object.description)
+        : undefined;
+    message.commission =
+      object.commission !== undefined && object.commission !== null
+        ? CommissionRates.fromJSON(object.commission)
+        : undefined;
+    message.minSelfDelegation =
       object.minSelfDelegation !== undefined &&
       object.minSelfDelegation !== null
-    ) {
-      message.minSelfDelegation = String(object.minSelfDelegation);
-    } else {
-      message.minSelfDelegation = "";
-    }
-    if (
-      object.delegatorAddress !== undefined &&
-      object.delegatorAddress !== null
-    ) {
-      message.delegatorAddress = String(object.delegatorAddress);
-    } else {
-      message.delegatorAddress = "";
-    }
-    if (
-      object.validatorAddress !== undefined &&
-      object.validatorAddress !== null
-    ) {
-      message.validatorAddress = String(object.validatorAddress);
-    } else {
-      message.validatorAddress = "";
-    }
-    if (object.pubkey !== undefined && object.pubkey !== null) {
-      message.pubkey = Any.fromJSON(object.pubkey);
-    } else {
-      message.pubkey = undefined;
-    }
-    if (object.value !== undefined && object.value !== null) {
-      message.value = Coin.fromJSON(object.value);
-    } else {
-      message.value = undefined;
-    }
+        ? String(object.minSelfDelegation)
+        : "";
+    message.delegatorAddress =
+      object.delegatorAddress !== undefined && object.delegatorAddress !== null
+        ? String(object.delegatorAddress)
+        : "";
+    message.validatorAddress =
+      object.validatorAddress !== undefined && object.validatorAddress !== null
+        ? String(object.validatorAddress)
+        : "";
+    message.pubkey =
+      object.pubkey !== undefined && object.pubkey !== null
+        ? Any.fromJSON(object.pubkey)
+        : undefined;
+    message.value =
+      object.value !== undefined && object.value !== null
+        ? Coin.fromJSON(object.value)
+        : undefined;
     return message;
   },
 
@@ -237,29 +222,25 @@ export const MsgCreateValidator = {
 
   fromPartial(object: DeepPartial<MsgCreateValidator>): MsgCreateValidator {
     const message = { ...baseMsgCreateValidator } as MsgCreateValidator;
-    if (object.description !== undefined && object.description !== null) {
-      message.description = Description.fromPartial(object.description);
-    } else {
-      message.description = undefined;
-    }
-    if (object.commission !== undefined && object.commission !== null) {
-      message.commission = CommissionRates.fromPartial(object.commission);
-    } else {
-      message.commission = undefined;
-    }
+    message.description =
+      object.description !== undefined && object.description !== null
+        ? Description.fromPartial(object.description)
+        : undefined;
+    message.commission =
+      object.commission !== undefined && object.commission !== null
+        ? CommissionRates.fromPartial(object.commission)
+        : undefined;
     message.minSelfDelegation = object.minSelfDelegation ?? "";
     message.delegatorAddress = object.delegatorAddress ?? "";
     message.validatorAddress = object.validatorAddress ?? "";
-    if (object.pubkey !== undefined && object.pubkey !== null) {
-      message.pubkey = Any.fromPartial(object.pubkey);
-    } else {
-      message.pubkey = undefined;
-    }
-    if (object.value !== undefined && object.value !== null) {
-      message.value = Coin.fromPartial(object.value);
-    } else {
-      message.value = undefined;
-    }
+    message.pubkey =
+      object.pubkey !== undefined && object.pubkey !== null
+        ? Any.fromPartial(object.pubkey)
+        : undefined;
+    message.value =
+      object.value !== undefined && object.value !== null
+        ? Coin.fromPartial(object.value)
+        : undefined;
     return message;
   },
 };
@@ -374,32 +355,23 @@ export const MsgEditValidator = {
 
   fromJSON(object: any): MsgEditValidator {
     const message = { ...baseMsgEditValidator } as MsgEditValidator;
-    if (object.description !== undefined && object.description !== null) {
-      message.description = Description.fromJSON(object.description);
-    } else {
-      message.description = undefined;
-    }
-    if (
-      object.validatorAddress !== undefined &&
-      object.validatorAddress !== null
-    ) {
-      message.validatorAddress = String(object.validatorAddress);
-    } else {
-      message.validatorAddress = "";
-    }
-    if (object.commissionRate !== undefined && object.commissionRate !== null) {
-      message.commissionRate = String(object.commissionRate);
-    } else {
-      message.commissionRate = "";
-    }
-    if (
+    message.description =
+      object.description !== undefined && object.description !== null
+        ? Description.fromJSON(object.description)
+        : undefined;
+    message.validatorAddress =
+      object.validatorAddress !== undefined && object.validatorAddress !== null
+        ? String(object.validatorAddress)
+        : "";
+    message.commissionRate =
+      object.commissionRate !== undefined && object.commissionRate !== null
+        ? String(object.commissionRate)
+        : "";
+    message.minSelfDelegation =
       object.minSelfDelegation !== undefined &&
       object.minSelfDelegation !== null
-    ) {
-      message.minSelfDelegation = String(object.minSelfDelegation);
-    } else {
-      message.minSelfDelegation = "";
-    }
+        ? String(object.minSelfDelegation)
+        : "";
     return message;
   },
 
@@ -420,11 +392,10 @@ export const MsgEditValidator = {
 
   fromPartial(object: DeepPartial<MsgEditValidator>): MsgEditValidator {
     const message = { ...baseMsgEditValidator } as MsgEditValidator;
-    if (object.description !== undefined && object.description !== null) {
-      message.description = Description.fromPartial(object.description);
-    } else {
-      message.description = undefined;
-    }
+    message.description =
+      object.description !== undefined && object.description !== null
+        ? Description.fromPartial(object.description)
+        : undefined;
     message.validatorAddress = object.validatorAddress ?? "";
     message.commissionRate = object.commissionRate ?? "";
     message.minSelfDelegation = object.minSelfDelegation ?? "";
@@ -529,27 +500,18 @@ export const MsgDelegate = {
 
   fromJSON(object: any): MsgDelegate {
     const message = { ...baseMsgDelegate } as MsgDelegate;
-    if (
-      object.delegatorAddress !== undefined &&
-      object.delegatorAddress !== null
-    ) {
-      message.delegatorAddress = String(object.delegatorAddress);
-    } else {
-      message.delegatorAddress = "";
-    }
-    if (
-      object.validatorAddress !== undefined &&
-      object.validatorAddress !== null
-    ) {
-      message.validatorAddress = String(object.validatorAddress);
-    } else {
-      message.validatorAddress = "";
-    }
-    if (object.amount !== undefined && object.amount !== null) {
-      message.amount = Coin.fromJSON(object.amount);
-    } else {
-      message.amount = undefined;
-    }
+    message.delegatorAddress =
+      object.delegatorAddress !== undefined && object.delegatorAddress !== null
+        ? String(object.delegatorAddress)
+        : "";
+    message.validatorAddress =
+      object.validatorAddress !== undefined && object.validatorAddress !== null
+        ? String(object.validatorAddress)
+        : "";
+    message.amount =
+      object.amount !== undefined && object.amount !== null
+        ? Coin.fromJSON(object.amount)
+        : undefined;
     return message;
   },
 
@@ -568,11 +530,10 @@ export const MsgDelegate = {
     const message = { ...baseMsgDelegate } as MsgDelegate;
     message.delegatorAddress = object.delegatorAddress ?? "";
     message.validatorAddress = object.validatorAddress ?? "";
-    if (object.amount !== undefined && object.amount !== null) {
-      message.amount = Coin.fromPartial(object.amount);
-    } else {
-      message.amount = undefined;
-    }
+    message.amount =
+      object.amount !== undefined && object.amount !== null
+        ? Coin.fromPartial(object.amount)
+        : undefined;
     return message;
   },
 };
@@ -673,35 +634,24 @@ export const MsgBeginRedelegate = {
 
   fromJSON(object: any): MsgBeginRedelegate {
     const message = { ...baseMsgBeginRedelegate } as MsgBeginRedelegate;
-    if (
-      object.delegatorAddress !== undefined &&
-      object.delegatorAddress !== null
-    ) {
-      message.delegatorAddress = String(object.delegatorAddress);
-    } else {
-      message.delegatorAddress = "";
-    }
-    if (
+    message.delegatorAddress =
+      object.delegatorAddress !== undefined && object.delegatorAddress !== null
+        ? String(object.delegatorAddress)
+        : "";
+    message.validatorSrcAddress =
       object.validatorSrcAddress !== undefined &&
       object.validatorSrcAddress !== null
-    ) {
-      message.validatorSrcAddress = String(object.validatorSrcAddress);
-    } else {
-      message.validatorSrcAddress = "";
-    }
-    if (
+        ? String(object.validatorSrcAddress)
+        : "";
+    message.validatorDstAddress =
       object.validatorDstAddress !== undefined &&
       object.validatorDstAddress !== null
-    ) {
-      message.validatorDstAddress = String(object.validatorDstAddress);
-    } else {
-      message.validatorDstAddress = "";
-    }
-    if (object.amount !== undefined && object.amount !== null) {
-      message.amount = Coin.fromJSON(object.amount);
-    } else {
-      message.amount = undefined;
-    }
+        ? String(object.validatorDstAddress)
+        : "";
+    message.amount =
+      object.amount !== undefined && object.amount !== null
+        ? Coin.fromJSON(object.amount)
+        : undefined;
     return message;
   },
 
@@ -723,11 +673,10 @@ export const MsgBeginRedelegate = {
     message.delegatorAddress = object.delegatorAddress ?? "";
     message.validatorSrcAddress = object.validatorSrcAddress ?? "";
     message.validatorDstAddress = object.validatorDstAddress ?? "";
-    if (object.amount !== undefined && object.amount !== null) {
-      message.amount = Coin.fromPartial(object.amount);
-    } else {
-      message.amount = undefined;
-    }
+    message.amount =
+      object.amount !== undefined && object.amount !== null
+        ? Coin.fromPartial(object.amount)
+        : undefined;
     return message;
   },
 };
@@ -777,11 +726,10 @@ export const MsgBeginRedelegateResponse = {
     const message = {
       ...baseMsgBeginRedelegateResponse,
     } as MsgBeginRedelegateResponse;
-    if (object.completionTime !== undefined && object.completionTime !== null) {
-      message.completionTime = fromJsonTimestamp(object.completionTime);
-    } else {
-      message.completionTime = undefined;
-    }
+    message.completionTime =
+      object.completionTime !== undefined && object.completionTime !== null
+        ? fromJsonTimestamp(object.completionTime)
+        : undefined;
     return message;
   },
 
@@ -851,27 +799,18 @@ export const MsgUndelegate = {
 
   fromJSON(object: any): MsgUndelegate {
     const message = { ...baseMsgUndelegate } as MsgUndelegate;
-    if (
-      object.delegatorAddress !== undefined &&
-      object.delegatorAddress !== null
-    ) {
-      message.delegatorAddress = String(object.delegatorAddress);
-    } else {
-      message.delegatorAddress = "";
-    }
-    if (
-      object.validatorAddress !== undefined &&
-      object.validatorAddress !== null
-    ) {
-      message.validatorAddress = String(object.validatorAddress);
-    } else {
-      message.validatorAddress = "";
-    }
-    if (object.amount !== undefined && object.amount !== null) {
-      message.amount = Coin.fromJSON(object.amount);
-    } else {
-      message.amount = undefined;
-    }
+    message.delegatorAddress =
+      object.delegatorAddress !== undefined && object.delegatorAddress !== null
+        ? String(object.delegatorAddress)
+        : "";
+    message.validatorAddress =
+      object.validatorAddress !== undefined && object.validatorAddress !== null
+        ? String(object.validatorAddress)
+        : "";
+    message.amount =
+      object.amount !== undefined && object.amount !== null
+        ? Coin.fromJSON(object.amount)
+        : undefined;
     return message;
   },
 
@@ -890,11 +829,10 @@ export const MsgUndelegate = {
     const message = { ...baseMsgUndelegate } as MsgUndelegate;
     message.delegatorAddress = object.delegatorAddress ?? "";
     message.validatorAddress = object.validatorAddress ?? "";
-    if (object.amount !== undefined && object.amount !== null) {
-      message.amount = Coin.fromPartial(object.amount);
-    } else {
-      message.amount = undefined;
-    }
+    message.amount =
+      object.amount !== undefined && object.amount !== null
+        ? Coin.fromPartial(object.amount)
+        : undefined;
     return message;
   },
 };
@@ -940,11 +878,10 @@ export const MsgUndelegateResponse = {
 
   fromJSON(object: any): MsgUndelegateResponse {
     const message = { ...baseMsgUndelegateResponse } as MsgUndelegateResponse;
-    if (object.completionTime !== undefined && object.completionTime !== null) {
-      message.completionTime = fromJsonTimestamp(object.completionTime);
-    } else {
-      message.completionTime = undefined;
-    }
+    message.completionTime =
+      object.completionTime !== undefined && object.completionTime !== null
+        ? fromJsonTimestamp(object.completionTime)
+        : undefined;
     return message;
   },
 
@@ -1081,10 +1018,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

@@ -32,6 +32,35 @@ export interface Order {
   avgFilledPrice: string;
 }
 
+export interface APIOrder {
+  id: string;
+  blockHeight: Long;
+  blockCreatedAt?: Date;
+  triggeredBlockHeight: Long;
+  address: string;
+  market: string;
+  side: string;
+  price: string;
+  quantity: string;
+  available: string;
+  filled: string;
+  status: string;
+  orderType: string;
+  initiator: string;
+  timeInForce: string;
+  stopPrice: string;
+  triggerType: string;
+  allocatedMargin?: Coin;
+  isLiquidation: boolean;
+  isPostOnly: boolean;
+  isReduceOnly: boolean;
+  poolId: Long;
+  avgFilledPrice: string;
+  allocatedMarginDenom: string;
+  allocatedMarginAmount: string;
+  username: string;
+}
+
 export interface DBOrder {
   order?: Order;
   allocatedMarginDenom: string;
@@ -246,129 +275,97 @@ export const Order = {
 
   fromJSON(object: any): Order {
     const message = { ...baseOrder } as Order;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = String(object.id);
-    } else {
-      message.id = "";
-    }
-    if (object.blockHeight !== undefined && object.blockHeight !== null) {
-      message.blockHeight = Long.fromString(object.blockHeight);
-    } else {
-      message.blockHeight = Long.ZERO;
-    }
-    if (object.blockCreatedAt !== undefined && object.blockCreatedAt !== null) {
-      message.blockCreatedAt = fromJsonTimestamp(object.blockCreatedAt);
-    } else {
-      message.blockCreatedAt = undefined;
-    }
-    if (
+    message.id =
+      object.id !== undefined && object.id !== null ? String(object.id) : "";
+    message.blockHeight =
+      object.blockHeight !== undefined && object.blockHeight !== null
+        ? Long.fromString(object.blockHeight)
+        : Long.ZERO;
+    message.blockCreatedAt =
+      object.blockCreatedAt !== undefined && object.blockCreatedAt !== null
+        ? fromJsonTimestamp(object.blockCreatedAt)
+        : undefined;
+    message.triggeredBlockHeight =
       object.triggeredBlockHeight !== undefined &&
       object.triggeredBlockHeight !== null
-    ) {
-      message.triggeredBlockHeight = Long.fromString(
-        object.triggeredBlockHeight
-      );
-    } else {
-      message.triggeredBlockHeight = Long.ZERO;
-    }
-    if (object.address !== undefined && object.address !== null) {
-      message.address = String(object.address);
-    } else {
-      message.address = "";
-    }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = String(object.market);
-    } else {
-      message.market = "";
-    }
-    if (object.side !== undefined && object.side !== null) {
-      message.side = String(object.side);
-    } else {
-      message.side = "";
-    }
-    if (object.price !== undefined && object.price !== null) {
-      message.price = String(object.price);
-    } else {
-      message.price = "";
-    }
-    if (object.quantity !== undefined && object.quantity !== null) {
-      message.quantity = String(object.quantity);
-    } else {
-      message.quantity = "";
-    }
-    if (object.available !== undefined && object.available !== null) {
-      message.available = String(object.available);
-    } else {
-      message.available = "";
-    }
-    if (object.filled !== undefined && object.filled !== null) {
-      message.filled = String(object.filled);
-    } else {
-      message.filled = "";
-    }
-    if (object.status !== undefined && object.status !== null) {
-      message.status = String(object.status);
-    } else {
-      message.status = "";
-    }
-    if (object.orderType !== undefined && object.orderType !== null) {
-      message.orderType = String(object.orderType);
-    } else {
-      message.orderType = "";
-    }
-    if (object.initiator !== undefined && object.initiator !== null) {
-      message.initiator = String(object.initiator);
-    } else {
-      message.initiator = "";
-    }
-    if (object.timeInForce !== undefined && object.timeInForce !== null) {
-      message.timeInForce = String(object.timeInForce);
-    } else {
-      message.timeInForce = "";
-    }
-    if (object.stopPrice !== undefined && object.stopPrice !== null) {
-      message.stopPrice = String(object.stopPrice);
-    } else {
-      message.stopPrice = "";
-    }
-    if (object.triggerType !== undefined && object.triggerType !== null) {
-      message.triggerType = String(object.triggerType);
-    } else {
-      message.triggerType = "";
-    }
-    if (
-      object.allocatedMargin !== undefined &&
-      object.allocatedMargin !== null
-    ) {
-      message.allocatedMargin = Coin.fromJSON(object.allocatedMargin);
-    } else {
-      message.allocatedMargin = undefined;
-    }
-    if (object.isLiquidation !== undefined && object.isLiquidation !== null) {
-      message.isLiquidation = Boolean(object.isLiquidation);
-    } else {
-      message.isLiquidation = false;
-    }
-    if (object.isPostOnly !== undefined && object.isPostOnly !== null) {
-      message.isPostOnly = Boolean(object.isPostOnly);
-    } else {
-      message.isPostOnly = false;
-    }
-    if (object.isReduceOnly !== undefined && object.isReduceOnly !== null) {
-      message.isReduceOnly = Boolean(object.isReduceOnly);
-    } else {
-      message.isReduceOnly = false;
-    }
-    if (object.poolId !== undefined && object.poolId !== null) {
-      message.poolId = Long.fromString(object.poolId);
-    } else {
-      message.poolId = Long.UZERO;
-    }
-    if (object.avgFilledPrice !== undefined && object.avgFilledPrice !== null) {
-      message.avgFilledPrice = String(object.avgFilledPrice);
-    } else {
-      message.avgFilledPrice = "";
-    }
+        ? Long.fromString(object.triggeredBlockHeight)
+        : Long.ZERO;
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? String(object.market)
+        : "";
+    message.side =
+      object.side !== undefined && object.side !== null
+        ? String(object.side)
+        : "";
+    message.price =
+      object.price !== undefined && object.price !== null
+        ? String(object.price)
+        : "";
+    message.quantity =
+      object.quantity !== undefined && object.quantity !== null
+        ? String(object.quantity)
+        : "";
+    message.available =
+      object.available !== undefined && object.available !== null
+        ? String(object.available)
+        : "";
+    message.filled =
+      object.filled !== undefined && object.filled !== null
+        ? String(object.filled)
+        : "";
+    message.status =
+      object.status !== undefined && object.status !== null
+        ? String(object.status)
+        : "";
+    message.orderType =
+      object.orderType !== undefined && object.orderType !== null
+        ? String(object.orderType)
+        : "";
+    message.initiator =
+      object.initiator !== undefined && object.initiator !== null
+        ? String(object.initiator)
+        : "";
+    message.timeInForce =
+      object.timeInForce !== undefined && object.timeInForce !== null
+        ? String(object.timeInForce)
+        : "";
+    message.stopPrice =
+      object.stopPrice !== undefined && object.stopPrice !== null
+        ? String(object.stopPrice)
+        : "";
+    message.triggerType =
+      object.triggerType !== undefined && object.triggerType !== null
+        ? String(object.triggerType)
+        : "";
+    message.allocatedMargin =
+      object.allocatedMargin !== undefined && object.allocatedMargin !== null
+        ? Coin.fromJSON(object.allocatedMargin)
+        : undefined;
+    message.isLiquidation =
+      object.isLiquidation !== undefined && object.isLiquidation !== null
+        ? Boolean(object.isLiquidation)
+        : false;
+    message.isPostOnly =
+      object.isPostOnly !== undefined && object.isPostOnly !== null
+        ? Boolean(object.isPostOnly)
+        : false;
+    message.isReduceOnly =
+      object.isReduceOnly !== undefined && object.isReduceOnly !== null
+        ? Boolean(object.isReduceOnly)
+        : false;
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromString(object.poolId)
+        : Long.UZERO;
+    message.avgFilledPrice =
+      object.avgFilledPrice !== undefined && object.avgFilledPrice !== null
+        ? String(object.avgFilledPrice)
+        : "";
     return message;
   },
 
@@ -417,20 +414,16 @@ export const Order = {
   fromPartial(object: DeepPartial<Order>): Order {
     const message = { ...baseOrder } as Order;
     message.id = object.id ?? "";
-    if (object.blockHeight !== undefined && object.blockHeight !== null) {
-      message.blockHeight = object.blockHeight as Long;
-    } else {
-      message.blockHeight = Long.ZERO;
-    }
+    message.blockHeight =
+      object.blockHeight !== undefined && object.blockHeight !== null
+        ? Long.fromValue(object.blockHeight)
+        : Long.ZERO;
     message.blockCreatedAt = object.blockCreatedAt ?? undefined;
-    if (
+    message.triggeredBlockHeight =
       object.triggeredBlockHeight !== undefined &&
       object.triggeredBlockHeight !== null
-    ) {
-      message.triggeredBlockHeight = object.triggeredBlockHeight as Long;
-    } else {
-      message.triggeredBlockHeight = Long.ZERO;
-    }
+        ? Long.fromValue(object.triggeredBlockHeight)
+        : Long.ZERO;
     message.address = object.address ?? "";
     message.market = object.market ?? "";
     message.side = object.side ?? "";
@@ -444,23 +437,431 @@ export const Order = {
     message.timeInForce = object.timeInForce ?? "";
     message.stopPrice = object.stopPrice ?? "";
     message.triggerType = object.triggerType ?? "";
-    if (
-      object.allocatedMargin !== undefined &&
-      object.allocatedMargin !== null
-    ) {
-      message.allocatedMargin = Coin.fromPartial(object.allocatedMargin);
-    } else {
-      message.allocatedMargin = undefined;
-    }
+    message.allocatedMargin =
+      object.allocatedMargin !== undefined && object.allocatedMargin !== null
+        ? Coin.fromPartial(object.allocatedMargin)
+        : undefined;
     message.isLiquidation = object.isLiquidation ?? false;
     message.isPostOnly = object.isPostOnly ?? false;
     message.isReduceOnly = object.isReduceOnly ?? false;
-    if (object.poolId !== undefined && object.poolId !== null) {
-      message.poolId = object.poolId as Long;
-    } else {
-      message.poolId = Long.UZERO;
-    }
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromValue(object.poolId)
+        : Long.UZERO;
     message.avgFilledPrice = object.avgFilledPrice ?? "";
+    return message;
+  },
+};
+
+const baseAPIOrder: object = {
+  id: "",
+  blockHeight: Long.ZERO,
+  triggeredBlockHeight: Long.ZERO,
+  address: "",
+  market: "",
+  side: "",
+  price: "",
+  quantity: "",
+  available: "",
+  filled: "",
+  status: "",
+  orderType: "",
+  initiator: "",
+  timeInForce: "",
+  stopPrice: "",
+  triggerType: "",
+  isLiquidation: false,
+  isPostOnly: false,
+  isReduceOnly: false,
+  poolId: Long.UZERO,
+  avgFilledPrice: "",
+  allocatedMarginDenom: "",
+  allocatedMarginAmount: "",
+  username: "",
+};
+
+export const APIOrder = {
+  encode(
+    message: APIOrder,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (!message.blockHeight.isZero()) {
+      writer.uint32(16).int64(message.blockHeight);
+    }
+    if (message.blockCreatedAt !== undefined) {
+      Timestamp.encode(
+        toTimestamp(message.blockCreatedAt),
+        writer.uint32(26).fork()
+      ).ldelim();
+    }
+    if (!message.triggeredBlockHeight.isZero()) {
+      writer.uint32(32).int64(message.triggeredBlockHeight);
+    }
+    if (message.address !== "") {
+      writer.uint32(42).string(message.address);
+    }
+    if (message.market !== "") {
+      writer.uint32(50).string(message.market);
+    }
+    if (message.side !== "") {
+      writer.uint32(58).string(message.side);
+    }
+    if (message.price !== "") {
+      writer.uint32(66).string(message.price);
+    }
+    if (message.quantity !== "") {
+      writer.uint32(74).string(message.quantity);
+    }
+    if (message.available !== "") {
+      writer.uint32(82).string(message.available);
+    }
+    if (message.filled !== "") {
+      writer.uint32(90).string(message.filled);
+    }
+    if (message.status !== "") {
+      writer.uint32(98).string(message.status);
+    }
+    if (message.orderType !== "") {
+      writer.uint32(106).string(message.orderType);
+    }
+    if (message.initiator !== "") {
+      writer.uint32(114).string(message.initiator);
+    }
+    if (message.timeInForce !== "") {
+      writer.uint32(122).string(message.timeInForce);
+    }
+    if (message.stopPrice !== "") {
+      writer.uint32(130).string(message.stopPrice);
+    }
+    if (message.triggerType !== "") {
+      writer.uint32(138).string(message.triggerType);
+    }
+    if (message.allocatedMargin !== undefined) {
+      Coin.encode(message.allocatedMargin, writer.uint32(146).fork()).ldelim();
+    }
+    if (message.isLiquidation === true) {
+      writer.uint32(152).bool(message.isLiquidation);
+    }
+    if (message.isPostOnly === true) {
+      writer.uint32(160).bool(message.isPostOnly);
+    }
+    if (message.isReduceOnly === true) {
+      writer.uint32(168).bool(message.isReduceOnly);
+    }
+    if (!message.poolId.isZero()) {
+      writer.uint32(176).uint64(message.poolId);
+    }
+    if (message.avgFilledPrice !== "") {
+      writer.uint32(186).string(message.avgFilledPrice);
+    }
+    if (message.allocatedMarginDenom !== "") {
+      writer.uint32(194).string(message.allocatedMarginDenom);
+    }
+    if (message.allocatedMarginAmount !== "") {
+      writer.uint32(202).string(message.allocatedMarginAmount);
+    }
+    if (message.username !== "") {
+      writer.uint32(210).string(message.username);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): APIOrder {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseAPIOrder } as APIOrder;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        case 2:
+          message.blockHeight = reader.int64() as Long;
+          break;
+        case 3:
+          message.blockCreatedAt = fromTimestamp(
+            Timestamp.decode(reader, reader.uint32())
+          );
+          break;
+        case 4:
+          message.triggeredBlockHeight = reader.int64() as Long;
+          break;
+        case 5:
+          message.address = reader.string();
+          break;
+        case 6:
+          message.market = reader.string();
+          break;
+        case 7:
+          message.side = reader.string();
+          break;
+        case 8:
+          message.price = reader.string();
+          break;
+        case 9:
+          message.quantity = reader.string();
+          break;
+        case 10:
+          message.available = reader.string();
+          break;
+        case 11:
+          message.filled = reader.string();
+          break;
+        case 12:
+          message.status = reader.string();
+          break;
+        case 13:
+          message.orderType = reader.string();
+          break;
+        case 14:
+          message.initiator = reader.string();
+          break;
+        case 15:
+          message.timeInForce = reader.string();
+          break;
+        case 16:
+          message.stopPrice = reader.string();
+          break;
+        case 17:
+          message.triggerType = reader.string();
+          break;
+        case 18:
+          message.allocatedMargin = Coin.decode(reader, reader.uint32());
+          break;
+        case 19:
+          message.isLiquidation = reader.bool();
+          break;
+        case 20:
+          message.isPostOnly = reader.bool();
+          break;
+        case 21:
+          message.isReduceOnly = reader.bool();
+          break;
+        case 22:
+          message.poolId = reader.uint64() as Long;
+          break;
+        case 23:
+          message.avgFilledPrice = reader.string();
+          break;
+        case 24:
+          message.allocatedMarginDenom = reader.string();
+          break;
+        case 25:
+          message.allocatedMarginAmount = reader.string();
+          break;
+        case 26:
+          message.username = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): APIOrder {
+    const message = { ...baseAPIOrder } as APIOrder;
+    message.id =
+      object.id !== undefined && object.id !== null ? String(object.id) : "";
+    message.blockHeight =
+      object.blockHeight !== undefined && object.blockHeight !== null
+        ? Long.fromString(object.blockHeight)
+        : Long.ZERO;
+    message.blockCreatedAt =
+      object.blockCreatedAt !== undefined && object.blockCreatedAt !== null
+        ? fromJsonTimestamp(object.blockCreatedAt)
+        : undefined;
+    message.triggeredBlockHeight =
+      object.triggeredBlockHeight !== undefined &&
+      object.triggeredBlockHeight !== null
+        ? Long.fromString(object.triggeredBlockHeight)
+        : Long.ZERO;
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? String(object.market)
+        : "";
+    message.side =
+      object.side !== undefined && object.side !== null
+        ? String(object.side)
+        : "";
+    message.price =
+      object.price !== undefined && object.price !== null
+        ? String(object.price)
+        : "";
+    message.quantity =
+      object.quantity !== undefined && object.quantity !== null
+        ? String(object.quantity)
+        : "";
+    message.available =
+      object.available !== undefined && object.available !== null
+        ? String(object.available)
+        : "";
+    message.filled =
+      object.filled !== undefined && object.filled !== null
+        ? String(object.filled)
+        : "";
+    message.status =
+      object.status !== undefined && object.status !== null
+        ? String(object.status)
+        : "";
+    message.orderType =
+      object.orderType !== undefined && object.orderType !== null
+        ? String(object.orderType)
+        : "";
+    message.initiator =
+      object.initiator !== undefined && object.initiator !== null
+        ? String(object.initiator)
+        : "";
+    message.timeInForce =
+      object.timeInForce !== undefined && object.timeInForce !== null
+        ? String(object.timeInForce)
+        : "";
+    message.stopPrice =
+      object.stopPrice !== undefined && object.stopPrice !== null
+        ? String(object.stopPrice)
+        : "";
+    message.triggerType =
+      object.triggerType !== undefined && object.triggerType !== null
+        ? String(object.triggerType)
+        : "";
+    message.allocatedMargin =
+      object.allocatedMargin !== undefined && object.allocatedMargin !== null
+        ? Coin.fromJSON(object.allocatedMargin)
+        : undefined;
+    message.isLiquidation =
+      object.isLiquidation !== undefined && object.isLiquidation !== null
+        ? Boolean(object.isLiquidation)
+        : false;
+    message.isPostOnly =
+      object.isPostOnly !== undefined && object.isPostOnly !== null
+        ? Boolean(object.isPostOnly)
+        : false;
+    message.isReduceOnly =
+      object.isReduceOnly !== undefined && object.isReduceOnly !== null
+        ? Boolean(object.isReduceOnly)
+        : false;
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromString(object.poolId)
+        : Long.UZERO;
+    message.avgFilledPrice =
+      object.avgFilledPrice !== undefined && object.avgFilledPrice !== null
+        ? String(object.avgFilledPrice)
+        : "";
+    message.allocatedMarginDenom =
+      object.allocatedMarginDenom !== undefined &&
+      object.allocatedMarginDenom !== null
+        ? String(object.allocatedMarginDenom)
+        : "";
+    message.allocatedMarginAmount =
+      object.allocatedMarginAmount !== undefined &&
+      object.allocatedMarginAmount !== null
+        ? String(object.allocatedMarginAmount)
+        : "";
+    message.username =
+      object.username !== undefined && object.username !== null
+        ? String(object.username)
+        : "";
+    return message;
+  },
+
+  toJSON(message: APIOrder): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    message.blockHeight !== undefined &&
+      (obj.blockHeight = (message.blockHeight || Long.ZERO).toString());
+    message.blockCreatedAt !== undefined &&
+      (obj.blockCreatedAt = message.blockCreatedAt.toISOString());
+    message.triggeredBlockHeight !== undefined &&
+      (obj.triggeredBlockHeight = (
+        message.triggeredBlockHeight || Long.ZERO
+      ).toString());
+    message.address !== undefined && (obj.address = message.address);
+    message.market !== undefined && (obj.market = message.market);
+    message.side !== undefined && (obj.side = message.side);
+    message.price !== undefined && (obj.price = message.price);
+    message.quantity !== undefined && (obj.quantity = message.quantity);
+    message.available !== undefined && (obj.available = message.available);
+    message.filled !== undefined && (obj.filled = message.filled);
+    message.status !== undefined && (obj.status = message.status);
+    message.orderType !== undefined && (obj.orderType = message.orderType);
+    message.initiator !== undefined && (obj.initiator = message.initiator);
+    message.timeInForce !== undefined &&
+      (obj.timeInForce = message.timeInForce);
+    message.stopPrice !== undefined && (obj.stopPrice = message.stopPrice);
+    message.triggerType !== undefined &&
+      (obj.triggerType = message.triggerType);
+    message.allocatedMargin !== undefined &&
+      (obj.allocatedMargin = message.allocatedMargin
+        ? Coin.toJSON(message.allocatedMargin)
+        : undefined);
+    message.isLiquidation !== undefined &&
+      (obj.isLiquidation = message.isLiquidation);
+    message.isPostOnly !== undefined && (obj.isPostOnly = message.isPostOnly);
+    message.isReduceOnly !== undefined &&
+      (obj.isReduceOnly = message.isReduceOnly);
+    message.poolId !== undefined &&
+      (obj.poolId = (message.poolId || Long.UZERO).toString());
+    message.avgFilledPrice !== undefined &&
+      (obj.avgFilledPrice = message.avgFilledPrice);
+    message.allocatedMarginDenom !== undefined &&
+      (obj.allocatedMarginDenom = message.allocatedMarginDenom);
+    message.allocatedMarginAmount !== undefined &&
+      (obj.allocatedMarginAmount = message.allocatedMarginAmount);
+    message.username !== undefined && (obj.username = message.username);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<APIOrder>): APIOrder {
+    const message = { ...baseAPIOrder } as APIOrder;
+    message.id = object.id ?? "";
+    message.blockHeight =
+      object.blockHeight !== undefined && object.blockHeight !== null
+        ? Long.fromValue(object.blockHeight)
+        : Long.ZERO;
+    message.blockCreatedAt = object.blockCreatedAt ?? undefined;
+    message.triggeredBlockHeight =
+      object.triggeredBlockHeight !== undefined &&
+      object.triggeredBlockHeight !== null
+        ? Long.fromValue(object.triggeredBlockHeight)
+        : Long.ZERO;
+    message.address = object.address ?? "";
+    message.market = object.market ?? "";
+    message.side = object.side ?? "";
+    message.price = object.price ?? "";
+    message.quantity = object.quantity ?? "";
+    message.available = object.available ?? "";
+    message.filled = object.filled ?? "";
+    message.status = object.status ?? "";
+    message.orderType = object.orderType ?? "";
+    message.initiator = object.initiator ?? "";
+    message.timeInForce = object.timeInForce ?? "";
+    message.stopPrice = object.stopPrice ?? "";
+    message.triggerType = object.triggerType ?? "";
+    message.allocatedMargin =
+      object.allocatedMargin !== undefined && object.allocatedMargin !== null
+        ? Coin.fromPartial(object.allocatedMargin)
+        : undefined;
+    message.isLiquidation = object.isLiquidation ?? false;
+    message.isPostOnly = object.isPostOnly ?? false;
+    message.isReduceOnly = object.isReduceOnly ?? false;
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromValue(object.poolId)
+        : Long.UZERO;
+    message.avgFilledPrice = object.avgFilledPrice ?? "";
+    message.allocatedMarginDenom = object.allocatedMarginDenom ?? "";
+    message.allocatedMarginAmount = object.allocatedMarginAmount ?? "";
+    message.username = object.username ?? "";
     return message;
   },
 };
@@ -520,32 +921,24 @@ export const DBOrder = {
 
   fromJSON(object: any): DBOrder {
     const message = { ...baseDBOrder } as DBOrder;
-    if (object.order !== undefined && object.order !== null) {
-      message.order = Order.fromJSON(object.order);
-    } else {
-      message.order = undefined;
-    }
-    if (
+    message.order =
+      object.order !== undefined && object.order !== null
+        ? Order.fromJSON(object.order)
+        : undefined;
+    message.allocatedMarginDenom =
       object.allocatedMarginDenom !== undefined &&
       object.allocatedMarginDenom !== null
-    ) {
-      message.allocatedMarginDenom = String(object.allocatedMarginDenom);
-    } else {
-      message.allocatedMarginDenom = "";
-    }
-    if (
+        ? String(object.allocatedMarginDenom)
+        : "";
+    message.allocatedMarginAmount =
       object.allocatedMarginAmount !== undefined &&
       object.allocatedMarginAmount !== null
-    ) {
-      message.allocatedMarginAmount = String(object.allocatedMarginAmount);
-    } else {
-      message.allocatedMarginAmount = "";
-    }
-    if (object.username !== undefined && object.username !== null) {
-      message.username = String(object.username);
-    } else {
-      message.username = "";
-    }
+        ? String(object.allocatedMarginAmount)
+        : "";
+    message.username =
+      object.username !== undefined && object.username !== null
+        ? String(object.username)
+        : "";
     return message;
   },
 
@@ -563,11 +956,10 @@ export const DBOrder = {
 
   fromPartial(object: DeepPartial<DBOrder>): DBOrder {
     const message = { ...baseDBOrder } as DBOrder;
-    if (object.order !== undefined && object.order !== null) {
-      message.order = Order.fromPartial(object.order);
-    } else {
-      message.order = undefined;
-    }
+    message.order =
+      object.order !== undefined && object.order !== null
+        ? Order.fromPartial(object.order)
+        : undefined;
     message.allocatedMarginDenom = object.allocatedMarginDenom ?? "";
     message.allocatedMarginAmount = object.allocatedMarginAmount ?? "";
     message.username = object.username ?? "";
@@ -615,17 +1007,11 @@ export const OrdersForMarket = {
 
   fromJSON(object: any): OrdersForMarket {
     const message = { ...baseOrdersForMarket } as OrdersForMarket;
-    message.orders = [];
-    if (object.marketId !== undefined && object.marketId !== null) {
-      message.marketId = String(object.marketId);
-    } else {
-      message.marketId = "";
-    }
-    if (object.orders !== undefined && object.orders !== null) {
-      for (const e of object.orders) {
-        message.orders.push(Order.fromJSON(e));
-      }
-    }
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
+        : "";
+    message.orders = (object.orders ?? []).map((e: any) => Order.fromJSON(e));
     return message;
   },
 
@@ -643,12 +1029,7 @@ export const OrdersForMarket = {
   fromPartial(object: DeepPartial<OrdersForMarket>): OrdersForMarket {
     const message = { ...baseOrdersForMarket } as OrdersForMarket;
     message.marketId = object.marketId ?? "";
-    message.orders = [];
-    if (object.orders !== undefined && object.orders !== null) {
-      for (const e of object.orders) {
-        message.orders.push(Order.fromPartial(e));
-      }
-    }
+    message.orders = (object.orders ?? []).map((e) => Order.fromPartial(e));
     return message;
   },
 };
@@ -693,17 +1074,11 @@ export const OrderIDsForMarket = {
 
   fromJSON(object: any): OrderIDsForMarket {
     const message = { ...baseOrderIDsForMarket } as OrderIDsForMarket;
-    message.orderIds = [];
-    if (object.marketId !== undefined && object.marketId !== null) {
-      message.marketId = String(object.marketId);
-    } else {
-      message.marketId = "";
-    }
-    if (object.orderIds !== undefined && object.orderIds !== null) {
-      for (const e of object.orderIds) {
-        message.orderIds.push(String(e));
-      }
-    }
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
+        : "";
+    message.orderIds = (object.orderIds ?? []).map((e: any) => String(e));
     return message;
   },
 
@@ -721,12 +1096,7 @@ export const OrderIDsForMarket = {
   fromPartial(object: DeepPartial<OrderIDsForMarket>): OrderIDsForMarket {
     const message = { ...baseOrderIDsForMarket } as OrderIDsForMarket;
     message.marketId = object.marketId ?? "";
-    message.orderIds = [];
-    if (object.orderIds !== undefined && object.orderIds !== null) {
-      for (const e of object.orderIds) {
-        message.orderIds.push(e);
-      }
-    }
+    message.orderIds = (object.orderIds ?? []).map((e) => e);
     return message;
   },
 };
@@ -765,12 +1135,7 @@ export const OrderIDs = {
 
   fromJSON(object: any): OrderIDs {
     const message = { ...baseOrderIDs } as OrderIDs;
-    message.ids = [];
-    if (object.ids !== undefined && object.ids !== null) {
-      for (const e of object.ids) {
-        message.ids.push(String(e));
-      }
-    }
+    message.ids = (object.ids ?? []).map((e: any) => String(e));
     return message;
   },
 
@@ -786,12 +1151,7 @@ export const OrderIDs = {
 
   fromPartial(object: DeepPartial<OrderIDs>): OrderIDs {
     const message = { ...baseOrderIDs } as OrderIDs;
-    message.ids = [];
-    if (object.ids !== undefined && object.ids !== null) {
-      for (const e of object.ids) {
-        message.ids.push(e);
-      }
-    }
+    message.ids = (object.ids ?? []).map((e) => e);
     return message;
   },
 };
@@ -830,12 +1190,7 @@ export const Orders = {
 
   fromJSON(object: any): Orders {
     const message = { ...baseOrders } as Orders;
-    message.orders = [];
-    if (object.orders !== undefined && object.orders !== null) {
-      for (const e of object.orders) {
-        message.orders.push(Order.fromJSON(e));
-      }
-    }
+    message.orders = (object.orders ?? []).map((e: any) => Order.fromJSON(e));
     return message;
   },
 
@@ -851,12 +1206,7 @@ export const Orders = {
 
   fromPartial(object: DeepPartial<Orders>): Orders {
     const message = { ...baseOrders } as Orders;
-    message.orders = [];
-    if (object.orders !== undefined && object.orders !== null) {
-      for (const e of object.orders) {
-        message.orders.push(Order.fromPartial(e));
-      }
-    }
+    message.orders = (object.orders ?? []).map((e) => Order.fromPartial(e));
     return message;
   },
 };
@@ -868,10 +1218,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

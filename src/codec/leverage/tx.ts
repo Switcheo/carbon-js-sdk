@@ -58,21 +58,18 @@ export const MsgSetLeverage = {
 
   fromJSON(object: any): MsgSetLeverage {
     const message = { ...baseMsgSetLeverage } as MsgSetLeverage;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = String(object.market);
-    } else {
-      message.market = "";
-    }
-    if (object.leverage !== undefined && object.leverage !== null) {
-      message.leverage = String(object.leverage);
-    } else {
-      message.leverage = "";
-    }
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? String(object.market)
+        : "";
+    message.leverage =
+      object.leverage !== undefined && object.leverage !== null
+        ? String(object.leverage)
+        : "";
     return message;
   },
 
@@ -177,10 +174,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

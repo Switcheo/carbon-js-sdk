@@ -2,7 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Transaction } from "../misc/transaction";
-import { DBOrder } from "../order/order";
+import { APIOrder } from "../order/order";
 
 export const protobufPackage = "Switcheo.carbon.misc";
 
@@ -13,7 +13,7 @@ export interface QuerySearchRequest {
 
 export interface QuerySearchResponse {
   transactions: Transaction[];
-  orders: DBOrder[];
+  orders: APIOrder[];
 }
 
 const baseQuerySearchRequest: object = { keyword: "", limit: Long.UZERO };
@@ -55,16 +55,14 @@ export const QuerySearchRequest = {
 
   fromJSON(object: any): QuerySearchRequest {
     const message = { ...baseQuerySearchRequest } as QuerySearchRequest;
-    if (object.keyword !== undefined && object.keyword !== null) {
-      message.keyword = String(object.keyword);
-    } else {
-      message.keyword = "";
-    }
-    if (object.limit !== undefined && object.limit !== null) {
-      message.limit = Long.fromString(object.limit);
-    } else {
-      message.limit = Long.UZERO;
-    }
+    message.keyword =
+      object.keyword !== undefined && object.keyword !== null
+        ? String(object.keyword)
+        : "";
+    message.limit =
+      object.limit !== undefined && object.limit !== null
+        ? Long.fromString(object.limit)
+        : Long.UZERO;
     return message;
   },
 
@@ -79,11 +77,10 @@ export const QuerySearchRequest = {
   fromPartial(object: DeepPartial<QuerySearchRequest>): QuerySearchRequest {
     const message = { ...baseQuerySearchRequest } as QuerySearchRequest;
     message.keyword = object.keyword ?? "";
-    if (object.limit !== undefined && object.limit !== null) {
-      message.limit = object.limit as Long;
-    } else {
-      message.limit = Long.UZERO;
-    }
+    message.limit =
+      object.limit !== undefined && object.limit !== null
+        ? Long.fromValue(object.limit)
+        : Long.UZERO;
     return message;
   },
 };
@@ -99,7 +96,7 @@ export const QuerySearchResponse = {
       Transaction.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     for (const v of message.orders) {
-      DBOrder.encode(v!, writer.uint32(18).fork()).ldelim();
+      APIOrder.encode(v!, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
@@ -119,7 +116,7 @@ export const QuerySearchResponse = {
           );
           break;
         case 2:
-          message.orders.push(DBOrder.decode(reader, reader.uint32()));
+          message.orders.push(APIOrder.decode(reader, reader.uint32()));
           break;
         default:
           reader.skipType(tag & 7);
@@ -131,18 +128,12 @@ export const QuerySearchResponse = {
 
   fromJSON(object: any): QuerySearchResponse {
     const message = { ...baseQuerySearchResponse } as QuerySearchResponse;
-    message.transactions = [];
-    message.orders = [];
-    if (object.transactions !== undefined && object.transactions !== null) {
-      for (const e of object.transactions) {
-        message.transactions.push(Transaction.fromJSON(e));
-      }
-    }
-    if (object.orders !== undefined && object.orders !== null) {
-      for (const e of object.orders) {
-        message.orders.push(DBOrder.fromJSON(e));
-      }
-    }
+    message.transactions = (object.transactions ?? []).map((e: any) =>
+      Transaction.fromJSON(e)
+    );
+    message.orders = (object.orders ?? []).map((e: any) =>
+      APIOrder.fromJSON(e)
+    );
     return message;
   },
 
@@ -157,7 +148,7 @@ export const QuerySearchResponse = {
     }
     if (message.orders) {
       obj.orders = message.orders.map((e) =>
-        e ? DBOrder.toJSON(e) : undefined
+        e ? APIOrder.toJSON(e) : undefined
       );
     } else {
       obj.orders = [];
@@ -167,18 +158,10 @@ export const QuerySearchResponse = {
 
   fromPartial(object: DeepPartial<QuerySearchResponse>): QuerySearchResponse {
     const message = { ...baseQuerySearchResponse } as QuerySearchResponse;
-    message.transactions = [];
-    if (object.transactions !== undefined && object.transactions !== null) {
-      for (const e of object.transactions) {
-        message.transactions.push(Transaction.fromPartial(e));
-      }
-    }
-    message.orders = [];
-    if (object.orders !== undefined && object.orders !== null) {
-      for (const e of object.orders) {
-        message.orders.push(DBOrder.fromPartial(e));
-      }
-    }
+    message.transactions = (object.transactions ?? []).map((e) =>
+      Transaction.fromPartial(e)
+    );
+    message.orders = (object.orders ?? []).map((e) => APIOrder.fromPartial(e));
     return message;
   },
 };
@@ -222,10 +205,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

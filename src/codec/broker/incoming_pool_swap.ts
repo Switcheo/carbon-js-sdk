@@ -83,52 +83,32 @@ export const IncomingPoolSwap = {
 
   fromJSON(object: any): IncomingPoolSwap {
     const message = { ...baseIncomingPoolSwap } as IncomingPoolSwap;
-    if (object.poolId !== undefined && object.poolId !== null) {
-      message.poolId = Long.fromString(object.poolId);
-    } else {
-      message.poolId = Long.UZERO;
-    }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = String(object.market);
-    } else {
-      message.market = "";
-    }
-    if (
-      object.tokenATotalInput !== undefined &&
-      object.tokenATotalInput !== null
-    ) {
-      message.tokenATotalInput = String(object.tokenATotalInput);
-    } else {
-      message.tokenATotalInput = "";
-    }
-    if (
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromString(object.poolId)
+        : Long.UZERO;
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? String(object.market)
+        : "";
+    message.tokenATotalInput =
+      object.tokenATotalInput !== undefined && object.tokenATotalInput !== null
+        ? String(object.tokenATotalInput)
+        : "";
+    message.tokenATotalExpectedOutput =
       object.tokenATotalExpectedOutput !== undefined &&
       object.tokenATotalExpectedOutput !== null
-    ) {
-      message.tokenATotalExpectedOutput = String(
-        object.tokenATotalExpectedOutput
-      );
-    } else {
-      message.tokenATotalExpectedOutput = "";
-    }
-    if (
-      object.tokenBTotalInput !== undefined &&
-      object.tokenBTotalInput !== null
-    ) {
-      message.tokenBTotalInput = String(object.tokenBTotalInput);
-    } else {
-      message.tokenBTotalInput = "";
-    }
-    if (
+        ? String(object.tokenATotalExpectedOutput)
+        : "";
+    message.tokenBTotalInput =
+      object.tokenBTotalInput !== undefined && object.tokenBTotalInput !== null
+        ? String(object.tokenBTotalInput)
+        : "";
+    message.tokenBTotalExpectedOutput =
       object.tokenBTotalExpectedOutput !== undefined &&
       object.tokenBTotalExpectedOutput !== null
-    ) {
-      message.tokenBTotalExpectedOutput = String(
-        object.tokenBTotalExpectedOutput
-      );
-    } else {
-      message.tokenBTotalExpectedOutput = "";
-    }
+        ? String(object.tokenBTotalExpectedOutput)
+        : "";
     return message;
   },
 
@@ -150,11 +130,10 @@ export const IncomingPoolSwap = {
 
   fromPartial(object: DeepPartial<IncomingPoolSwap>): IncomingPoolSwap {
     const message = { ...baseIncomingPoolSwap } as IncomingPoolSwap;
-    if (object.poolId !== undefined && object.poolId !== null) {
-      message.poolId = object.poolId as Long;
-    } else {
-      message.poolId = Long.UZERO;
-    }
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromValue(object.poolId)
+        : Long.UZERO;
     message.market = object.market ?? "";
     message.tokenATotalInput = object.tokenATotalInput ?? "";
     message.tokenATotalExpectedOutput = object.tokenATotalExpectedOutput ?? "";
@@ -171,10 +150,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

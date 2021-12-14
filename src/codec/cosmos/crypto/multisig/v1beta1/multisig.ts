@@ -58,12 +58,9 @@ export const MultiSignature = {
 
   fromJSON(object: any): MultiSignature {
     const message = { ...baseMultiSignature } as MultiSignature;
-    message.signatures = [];
-    if (object.signatures !== undefined && object.signatures !== null) {
-      for (const e of object.signatures) {
-        message.signatures.push(bytesFromBase64(e));
-      }
-    }
+    message.signatures = (object.signatures ?? []).map((e: any) =>
+      bytesFromBase64(e)
+    );
     return message;
   },
 
@@ -81,12 +78,7 @@ export const MultiSignature = {
 
   fromPartial(object: DeepPartial<MultiSignature>): MultiSignature {
     const message = { ...baseMultiSignature } as MultiSignature;
-    message.signatures = [];
-    if (object.signatures !== undefined && object.signatures !== null) {
-      for (const e of object.signatures) {
-        message.signatures.push(e);
-      }
-    }
+    message.signatures = (object.signatures ?? []).map((e) => e);
     return message;
   },
 };
@@ -131,18 +123,14 @@ export const CompactBitArray = {
 
   fromJSON(object: any): CompactBitArray {
     const message = { ...baseCompactBitArray } as CompactBitArray;
-    message.elems = new Uint8Array();
-    if (
-      object.extraBitsStored !== undefined &&
-      object.extraBitsStored !== null
-    ) {
-      message.extraBitsStored = Number(object.extraBitsStored);
-    } else {
-      message.extraBitsStored = 0;
-    }
-    if (object.elems !== undefined && object.elems !== null) {
-      message.elems = bytesFromBase64(object.elems);
-    }
+    message.extraBitsStored =
+      object.extraBitsStored !== undefined && object.extraBitsStored !== null
+        ? Number(object.extraBitsStored)
+        : 0;
+    message.elems =
+      object.elems !== undefined && object.elems !== null
+        ? bytesFromBase64(object.elems)
+        : new Uint8Array();
     return message;
   },
 
@@ -206,10 +194,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

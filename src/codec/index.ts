@@ -6,18 +6,16 @@ import { MsgInitiateLiquidation, MsgInitiateLiquidationResponse } from "./broker
 import { MsgSetFee, MsgSetFeeResponse } from "./fee/tx";
 import { MsgSetMargin, MsgSetMarginResponse } from "./position/tx";
 import { MsgCreateOracle, MsgCreateOracleResponse, MsgCreateVote, MsgCreateVoteResponse } from "./oracle/tx";
+import { MsgGrantAllowance, MsgGrantAllowanceResponse, MsgRevokeAllowance, MsgRevokeAllowanceResponse } from "./cosmos/feegrant/v1beta1/tx";
 import { MsgSubmitEvidence, MsgSubmitEvidenceResponse } from "./cosmos/evidence/v1beta1/tx";
 import { MsgSend, MsgSendResponse, MsgMultiSend, MsgMultiSendResponse } from "./cosmos/bank/v1beta1/tx";
 import { MsgSetWithdrawAddress, MsgSetWithdrawAddressResponse, MsgWithdrawDelegatorReward, MsgWithdrawDelegatorRewardResponse, MsgWithdrawValidatorCommission, MsgWithdrawValidatorCommissionResponse, MsgFundCommunityPool, MsgFundCommunityPoolResponse } from "./cosmos/distribution/v1beta1/tx";
 import { MsgVerifyInvariant, MsgVerifyInvariantResponse } from "./cosmos/crisis/v1beta1/tx";
 import { MsgCreateVestingAccount, MsgCreateVestingAccountResponse } from "./cosmos/vesting/v1beta1/tx";
 import { MsgCreateValidator, MsgCreateValidatorResponse, MsgEditValidator, MsgEditValidatorResponse, MsgDelegate, MsgDelegateResponse, MsgBeginRedelegate, MsgBeginRedelegateResponse, MsgUndelegate, MsgUndelegateResponse } from "./cosmos/staking/v1beta1/tx";
+import { MsgGrant, MsgExecResponse, MsgExec, MsgGrantResponse, MsgRevoke, MsgRevokeResponse } from "./cosmos/authz/v1beta1/tx";
 import { MsgUnjail, MsgUnjailResponse } from "./cosmos/slashing/v1beta1/tx";
-import { MsgSubmitProposal, MsgSubmitProposalResponse, MsgVote, MsgVoteResponse, MsgDeposit, MsgDepositResponse } from "./cosmos/gov/v1beta1/tx";
-import { MsgConnectionOpenInit, MsgConnectionOpenInitResponse, MsgConnectionOpenTry, MsgConnectionOpenTryResponse, MsgConnectionOpenAck, MsgConnectionOpenAckResponse, MsgConnectionOpenConfirm, MsgConnectionOpenConfirmResponse } from "./ibc/core/connection/v1/tx";
-import { MsgChannelOpenInit, MsgChannelOpenInitResponse, MsgChannelOpenTry, MsgChannelOpenTryResponse, MsgChannelOpenAck, MsgChannelOpenAckResponse, MsgChannelOpenConfirm, MsgChannelOpenConfirmResponse, MsgChannelCloseInit, MsgChannelCloseInitResponse, MsgChannelCloseConfirm, MsgChannelCloseConfirmResponse, MsgRecvPacket, MsgRecvPacketResponse, MsgTimeout, MsgTimeoutResponse, MsgTimeoutOnClose, MsgTimeoutOnCloseResponse, MsgAcknowledgement, MsgAcknowledgementResponse } from "./ibc/core/channel/v1/tx";
-import { MsgCreateClient, MsgCreateClientResponse, MsgUpdateClient, MsgUpdateClientResponse, MsgUpgradeClient, MsgUpgradeClientResponse, MsgSubmitMisbehaviour, MsgSubmitMisbehaviourResponse } from "./ibc/core/client/v1/tx";
-import { MsgTransfer, MsgTransferResponse } from "./ibc/applications/transfer/v1/tx";
+import { MsgSubmitProposal, MsgSubmitProposalResponse, MsgVote, MsgVoteResponse, MsgVoteWeighted, MsgVoteWeightedResponse, MsgDeposit, MsgDepositResponse } from "./cosmos/gov/v1beta1/tx";
 import { MsgCreateToken, MsgCreateTokenResponse, MsgSyncToken, MsgSyncTokenResponse, MsgMintToken, MsgMintTokenResponse, MsgBindToken, MsgBindTokenResponse, MsgUnbindToken, MsgUnbindTokenResponse, MsgLinkToken, MsgLinkTokenResponse, MsgWithdraw, MsgWithdrawResponse, MsgAuthorizeBridge, MsgAuthorizeBridgeResponse, MsgDeauthorizeBridge, MsgDeauthorizeBridgeResponse } from "./coin/tx";
 import { MsgSetLeverage, MsgSetLeverageResponse } from "./leverage/tx";
 import { MsgUpdateProfile, MsgUpdateProfileResponse } from "./profile/tx";
@@ -65,6 +63,11 @@ registry.register("/Switcheo.carbon.oracle.MsgCreateOracleResponse", MsgCreateOr
 registry.register("/Switcheo.carbon.oracle.MsgCreateVote", MsgCreateVote);
 registry.register("/Switcheo.carbon.oracle.MsgCreateVoteResponse", MsgCreateVoteResponse);
 
+registry.register("/cosmos.feegrant.v1beta1.MsgGrantAllowance", MsgGrantAllowance);
+registry.register("/cosmos.feegrant.v1beta1.MsgGrantAllowanceResponse", MsgGrantAllowanceResponse);
+registry.register("/cosmos.feegrant.v1beta1.MsgRevokeAllowance", MsgRevokeAllowance);
+registry.register("/cosmos.feegrant.v1beta1.MsgRevokeAllowanceResponse", MsgRevokeAllowanceResponse);
+
 registry.register("/cosmos.evidence.v1beta1.MsgSubmitEvidence", MsgSubmitEvidence);
 registry.register("/cosmos.evidence.v1beta1.MsgSubmitEvidenceResponse", MsgSubmitEvidenceResponse);
 
@@ -99,6 +102,13 @@ registry.register("/cosmos.staking.v1beta1.MsgBeginRedelegateResponse", MsgBegin
 registry.register("/cosmos.staking.v1beta1.MsgUndelegate", MsgUndelegate);
 registry.register("/cosmos.staking.v1beta1.MsgUndelegateResponse", MsgUndelegateResponse);
 
+registry.register("/cosmos.authz.v1beta1.MsgGrant", MsgGrant);
+registry.register("/cosmos.authz.v1beta1.MsgExecResponse", MsgExecResponse);
+registry.register("/cosmos.authz.v1beta1.MsgExec", MsgExec);
+registry.register("/cosmos.authz.v1beta1.MsgGrantResponse", MsgGrantResponse);
+registry.register("/cosmos.authz.v1beta1.MsgRevoke", MsgRevoke);
+registry.register("/cosmos.authz.v1beta1.MsgRevokeResponse", MsgRevokeResponse);
+
 registry.register("/cosmos.slashing.v1beta1.MsgUnjail", MsgUnjail);
 registry.register("/cosmos.slashing.v1beta1.MsgUnjailResponse", MsgUnjailResponse);
 
@@ -106,50 +116,10 @@ registry.register("/cosmos.gov.v1beta1.MsgSubmitProposal", MsgSubmitProposal);
 registry.register("/cosmos.gov.v1beta1.MsgSubmitProposalResponse", MsgSubmitProposalResponse);
 registry.register("/cosmos.gov.v1beta1.MsgVote", MsgVote);
 registry.register("/cosmos.gov.v1beta1.MsgVoteResponse", MsgVoteResponse);
+registry.register("/cosmos.gov.v1beta1.MsgVoteWeighted", MsgVoteWeighted);
+registry.register("/cosmos.gov.v1beta1.MsgVoteWeightedResponse", MsgVoteWeightedResponse);
 registry.register("/cosmos.gov.v1beta1.MsgDeposit", MsgDeposit);
 registry.register("/cosmos.gov.v1beta1.MsgDepositResponse", MsgDepositResponse);
-
-registry.register("/ibc.core.connection.v1.MsgConnectionOpenInit", MsgConnectionOpenInit);
-registry.register("/ibc.core.connection.v1.MsgConnectionOpenInitResponse", MsgConnectionOpenInitResponse);
-registry.register("/ibc.core.connection.v1.MsgConnectionOpenTry", MsgConnectionOpenTry);
-registry.register("/ibc.core.connection.v1.MsgConnectionOpenTryResponse", MsgConnectionOpenTryResponse);
-registry.register("/ibc.core.connection.v1.MsgConnectionOpenAck", MsgConnectionOpenAck);
-registry.register("/ibc.core.connection.v1.MsgConnectionOpenAckResponse", MsgConnectionOpenAckResponse);
-registry.register("/ibc.core.connection.v1.MsgConnectionOpenConfirm", MsgConnectionOpenConfirm);
-registry.register("/ibc.core.connection.v1.MsgConnectionOpenConfirmResponse", MsgConnectionOpenConfirmResponse);
-
-registry.register("/ibc.core.channel.v1.MsgChannelOpenInit", MsgChannelOpenInit);
-registry.register("/ibc.core.channel.v1.MsgChannelOpenInitResponse", MsgChannelOpenInitResponse);
-registry.register("/ibc.core.channel.v1.MsgChannelOpenTry", MsgChannelOpenTry);
-registry.register("/ibc.core.channel.v1.MsgChannelOpenTryResponse", MsgChannelOpenTryResponse);
-registry.register("/ibc.core.channel.v1.MsgChannelOpenAck", MsgChannelOpenAck);
-registry.register("/ibc.core.channel.v1.MsgChannelOpenAckResponse", MsgChannelOpenAckResponse);
-registry.register("/ibc.core.channel.v1.MsgChannelOpenConfirm", MsgChannelOpenConfirm);
-registry.register("/ibc.core.channel.v1.MsgChannelOpenConfirmResponse", MsgChannelOpenConfirmResponse);
-registry.register("/ibc.core.channel.v1.MsgChannelCloseInit", MsgChannelCloseInit);
-registry.register("/ibc.core.channel.v1.MsgChannelCloseInitResponse", MsgChannelCloseInitResponse);
-registry.register("/ibc.core.channel.v1.MsgChannelCloseConfirm", MsgChannelCloseConfirm);
-registry.register("/ibc.core.channel.v1.MsgChannelCloseConfirmResponse", MsgChannelCloseConfirmResponse);
-registry.register("/ibc.core.channel.v1.MsgRecvPacket", MsgRecvPacket);
-registry.register("/ibc.core.channel.v1.MsgRecvPacketResponse", MsgRecvPacketResponse);
-registry.register("/ibc.core.channel.v1.MsgTimeout", MsgTimeout);
-registry.register("/ibc.core.channel.v1.MsgTimeoutResponse", MsgTimeoutResponse);
-registry.register("/ibc.core.channel.v1.MsgTimeoutOnClose", MsgTimeoutOnClose);
-registry.register("/ibc.core.channel.v1.MsgTimeoutOnCloseResponse", MsgTimeoutOnCloseResponse);
-registry.register("/ibc.core.channel.v1.MsgAcknowledgement", MsgAcknowledgement);
-registry.register("/ibc.core.channel.v1.MsgAcknowledgementResponse", MsgAcknowledgementResponse);
-
-registry.register("/ibc.core.client.v1.MsgCreateClient", MsgCreateClient);
-registry.register("/ibc.core.client.v1.MsgCreateClientResponse", MsgCreateClientResponse);
-registry.register("/ibc.core.client.v1.MsgUpdateClient", MsgUpdateClient);
-registry.register("/ibc.core.client.v1.MsgUpdateClientResponse", MsgUpdateClientResponse);
-registry.register("/ibc.core.client.v1.MsgUpgradeClient", MsgUpgradeClient);
-registry.register("/ibc.core.client.v1.MsgUpgradeClientResponse", MsgUpgradeClientResponse);
-registry.register("/ibc.core.client.v1.MsgSubmitMisbehaviour", MsgSubmitMisbehaviour);
-registry.register("/ibc.core.client.v1.MsgSubmitMisbehaviourResponse", MsgSubmitMisbehaviourResponse);
-
-registry.register("/ibc.applications.transfer.v1.MsgTransfer", MsgTransfer);
-registry.register("/ibc.applications.transfer.v1.MsgTransferResponse", MsgTransferResponse);
 
 registry.register("/Switcheo.carbon.coin.MsgCreateToken", MsgCreateToken);
 registry.register("/Switcheo.carbon.coin.MsgCreateTokenResponse", MsgCreateTokenResponse);
@@ -248,6 +218,10 @@ export const TxTypes = {
   "MsgCreateOracleResponse": "/Switcheo.carbon.oracle.MsgCreateOracleResponse",
   "MsgCreateVote": "/Switcheo.carbon.oracle.MsgCreateVote",
   "MsgCreateVoteResponse": "/Switcheo.carbon.oracle.MsgCreateVoteResponse",
+  "MsgGrantAllowance": "/cosmos.feegrant.v1beta1.MsgGrantAllowance",
+  "MsgGrantAllowanceResponse": "/cosmos.feegrant.v1beta1.MsgGrantAllowanceResponse",
+  "MsgRevokeAllowance": "/cosmos.feegrant.v1beta1.MsgRevokeAllowance",
+  "MsgRevokeAllowanceResponse": "/cosmos.feegrant.v1beta1.MsgRevokeAllowanceResponse",
   "MsgSubmitEvidence": "/cosmos.evidence.v1beta1.MsgSubmitEvidence",
   "MsgSubmitEvidenceResponse": "/cosmos.evidence.v1beta1.MsgSubmitEvidenceResponse",
   "MsgSend": "/cosmos.bank.v1beta1.MsgSend",
@@ -276,52 +250,22 @@ export const TxTypes = {
   "MsgBeginRedelegateResponse": "/cosmos.staking.v1beta1.MsgBeginRedelegateResponse",
   "MsgUndelegate": "/cosmos.staking.v1beta1.MsgUndelegate",
   "MsgUndelegateResponse": "/cosmos.staking.v1beta1.MsgUndelegateResponse",
+  "MsgGrant": "/cosmos.authz.v1beta1.MsgGrant",
+  "MsgExecResponse": "/cosmos.authz.v1beta1.MsgExecResponse",
+  "MsgExec": "/cosmos.authz.v1beta1.MsgExec",
+  "MsgGrantResponse": "/cosmos.authz.v1beta1.MsgGrantResponse",
+  "MsgRevoke": "/cosmos.authz.v1beta1.MsgRevoke",
+  "MsgRevokeResponse": "/cosmos.authz.v1beta1.MsgRevokeResponse",
   "MsgUnjail": "/cosmos.slashing.v1beta1.MsgUnjail",
   "MsgUnjailResponse": "/cosmos.slashing.v1beta1.MsgUnjailResponse",
   "MsgSubmitProposal": "/cosmos.gov.v1beta1.MsgSubmitProposal",
   "MsgSubmitProposalResponse": "/cosmos.gov.v1beta1.MsgSubmitProposalResponse",
   "MsgVote": "/cosmos.gov.v1beta1.MsgVote",
   "MsgVoteResponse": "/cosmos.gov.v1beta1.MsgVoteResponse",
+  "MsgVoteWeighted": "/cosmos.gov.v1beta1.MsgVoteWeighted",
+  "MsgVoteWeightedResponse": "/cosmos.gov.v1beta1.MsgVoteWeightedResponse",
   "MsgDeposit": "/cosmos.gov.v1beta1.MsgDeposit",
   "MsgDepositResponse": "/cosmos.gov.v1beta1.MsgDepositResponse",
-  "MsgConnectionOpenInit": "/ibc.core.connection.v1.MsgConnectionOpenInit",
-  "MsgConnectionOpenInitResponse": "/ibc.core.connection.v1.MsgConnectionOpenInitResponse",
-  "MsgConnectionOpenTry": "/ibc.core.connection.v1.MsgConnectionOpenTry",
-  "MsgConnectionOpenTryResponse": "/ibc.core.connection.v1.MsgConnectionOpenTryResponse",
-  "MsgConnectionOpenAck": "/ibc.core.connection.v1.MsgConnectionOpenAck",
-  "MsgConnectionOpenAckResponse": "/ibc.core.connection.v1.MsgConnectionOpenAckResponse",
-  "MsgConnectionOpenConfirm": "/ibc.core.connection.v1.MsgConnectionOpenConfirm",
-  "MsgConnectionOpenConfirmResponse": "/ibc.core.connection.v1.MsgConnectionOpenConfirmResponse",
-  "MsgChannelOpenInit": "/ibc.core.channel.v1.MsgChannelOpenInit",
-  "MsgChannelOpenInitResponse": "/ibc.core.channel.v1.MsgChannelOpenInitResponse",
-  "MsgChannelOpenTry": "/ibc.core.channel.v1.MsgChannelOpenTry",
-  "MsgChannelOpenTryResponse": "/ibc.core.channel.v1.MsgChannelOpenTryResponse",
-  "MsgChannelOpenAck": "/ibc.core.channel.v1.MsgChannelOpenAck",
-  "MsgChannelOpenAckResponse": "/ibc.core.channel.v1.MsgChannelOpenAckResponse",
-  "MsgChannelOpenConfirm": "/ibc.core.channel.v1.MsgChannelOpenConfirm",
-  "MsgChannelOpenConfirmResponse": "/ibc.core.channel.v1.MsgChannelOpenConfirmResponse",
-  "MsgChannelCloseInit": "/ibc.core.channel.v1.MsgChannelCloseInit",
-  "MsgChannelCloseInitResponse": "/ibc.core.channel.v1.MsgChannelCloseInitResponse",
-  "MsgChannelCloseConfirm": "/ibc.core.channel.v1.MsgChannelCloseConfirm",
-  "MsgChannelCloseConfirmResponse": "/ibc.core.channel.v1.MsgChannelCloseConfirmResponse",
-  "MsgRecvPacket": "/ibc.core.channel.v1.MsgRecvPacket",
-  "MsgRecvPacketResponse": "/ibc.core.channel.v1.MsgRecvPacketResponse",
-  "MsgTimeout": "/ibc.core.channel.v1.MsgTimeout",
-  "MsgTimeoutResponse": "/ibc.core.channel.v1.MsgTimeoutResponse",
-  "MsgTimeoutOnClose": "/ibc.core.channel.v1.MsgTimeoutOnClose",
-  "MsgTimeoutOnCloseResponse": "/ibc.core.channel.v1.MsgTimeoutOnCloseResponse",
-  "MsgAcknowledgement": "/ibc.core.channel.v1.MsgAcknowledgement",
-  "MsgAcknowledgementResponse": "/ibc.core.channel.v1.MsgAcknowledgementResponse",
-  "MsgCreateClient": "/ibc.core.client.v1.MsgCreateClient",
-  "MsgCreateClientResponse": "/ibc.core.client.v1.MsgCreateClientResponse",
-  "MsgUpdateClient": "/ibc.core.client.v1.MsgUpdateClient",
-  "MsgUpdateClientResponse": "/ibc.core.client.v1.MsgUpdateClientResponse",
-  "MsgUpgradeClient": "/ibc.core.client.v1.MsgUpgradeClient",
-  "MsgUpgradeClientResponse": "/ibc.core.client.v1.MsgUpgradeClientResponse",
-  "MsgSubmitMisbehaviour": "/ibc.core.client.v1.MsgSubmitMisbehaviour",
-  "MsgSubmitMisbehaviourResponse": "/ibc.core.client.v1.MsgSubmitMisbehaviourResponse",
-  "MsgTransfer": "/ibc.applications.transfer.v1.MsgTransfer",
-  "MsgTransferResponse": "/ibc.applications.transfer.v1.MsgTransferResponse",
   "MsgCreateToken": "/Switcheo.carbon.coin.MsgCreateToken",
   "MsgCreateTokenResponse": "/Switcheo.carbon.coin.MsgCreateTokenResponse",
   "MsgSyncToken": "/Switcheo.carbon.coin.MsgSyncToken",
@@ -405,7 +349,7 @@ export { MessageType } from "./misc/message_type";
 export { Transaction } from "./misc/transaction";
 export { QuerySearchRequest, QuerySearchResponse } from "./misc/query";
 export { MsgSetTradingFlag, MsgSetTradingFlagResponse, MsgCreateOrder, MsgCreateOrderResponse, MsgEditOrder, MsgEditOrderResponse, MsgCancelOrder, MsgCancelOrderResponse, MsgCancelAll, MsgCancelAllResponse } from "./order/tx";
-export { Order, DBOrder, OrdersForMarket, OrderIDsForMarket, OrderIDs, Orders } from "./order/order";
+export { Order, APIOrder, DBOrder, OrdersForMarket, OrderIDsForMarket, OrderIDs, Orders } from "./order/order";
 export { QueryGetOrderRequest, QueryGetOrderResponse, QueryAllOrderRequest, QueryAllOrderResponse, QueryAccountOpenOrdersRequest, QueryAccountOpenOrdersResponse } from "./order/query";
 export { OrderEvent } from "./order/event";
 export { MsgAddCollateral, MsgAddCollateralResponse, MsgRemoveCollateral, MsgRemoveCollateralResponse, MsgAddDebt, MsgAddDebtResponse, MsgRemoveDebt, MsgRemoveDebtResponse, MsgCreateVaultType, MsgCreateVaultTypeResponse } from "./cdp/tx";
@@ -414,16 +358,16 @@ export { QueryGetVaultRequest, QueryGetVaultResponse, QueryAllVaultRequest, Quer
 export { VaultTypeEvent, VaultEvent } from "./cdp/event";
 export { LiquidatorPosition, MsgInitiateLiquidation, MsgInitiateLiquidationResponse } from "./broker/tx";
 export { IncomingLiquidations } from "./broker/incoming_liquidations";
+export { MinMaxBoundary } from "./broker/pagination";
 export { Candlestick } from "./broker/candlestick";
 export { Amm } from "./broker/amm";
-export { QueryInsuranceBalanceRequest, QueryInsuranceBalanceResponse, InsuranceFundBalance, QueryCandlesticksRequest, QueryCandlesticksResponse, QueryTradesRequest, QueryTradesResponse } from "./broker/query";
+export { QueryCandlesticksRequest, QueryCandlesticksResponse, QueryTradesRequest, QueryTradesResponse } from "./broker/query";
 export { TradeEvent } from "./broker/event";
 export { IncomingPoolSwap } from "./broker/incoming_pool_swap";
 export { MsgSetFee, MsgSetFeeResponse } from "./fee/tx";
 export { MsgFee } from "./fee/fee";
 export { SetMsgFeeProposal } from "./fee/proposal";
 export { QueryGetMsgFeeRequest, QueryGetMsgFeeResponse, QueryAllMsgFeeRequest, QueryAllMsgFeeResponse } from "./fee/query";
-export { HashOp, hashOpFromJSON, hashOpToJSON, LengthOp, lengthOpFromJSON, lengthOpToJSON, ExistenceProof, NonExistenceProof, CommitmentProof, LeafOp, InnerOp, ProofSpec, InnerSpec, BatchProof, BatchEntry, CompressedBatchProof, CompressedBatchEntry, CompressedExistenceProof, CompressedNonExistenceProof } from "./confio/proofs";
 export { Transfer } from "./bank/event";
 export { AccountTradeHistoryRow } from "./liquidation/history";
 export { OutstandingPosition, OutstandingPositions } from "./liquidation/outstanding_position";
@@ -439,7 +383,7 @@ export { PositionEvent } from "./position/event";
 export { MsgCreateOracle, CreateOracleParams, MsgCreateOracleResponse, MsgCreateVote, MsgCreateVoteResponse } from "./oracle/tx";
 export { Oracle, Vote, Result, Mark } from "./oracle/oracle";
 export { CreateOracleProposal } from "./oracle/proposal";
-export { QueryOracleInfoRequest, QueryOracleInfoResponse, QueryOracleListRequest, QueryOracleListResponse, QueryResultListRequest, QueryResultListResponse, QueryVoteListRequest, QueryVoteListResponse, QueryVoterPowerRequest, QueryVoterPowerResponse } from "./oracle/query";
+export { QueryOracleRequest, QueryOracleResponse, QueryAllOracleRequest, QueryAllOracleResponse, QueryAllResultRequest, QueryAllResultResponse, QueryAllVoteRequest, QueryAllVoteResponse, QueryVoterPowerRequest, QueryVoterPowerResponse } from "./oracle/query";
 export { NewVoteEvent, RecordVoteEvent, VoteEvent, ResultEvent } from "./oracle/event";
 export { MsgCreateToken, CreateTokenParams, MsgCreateTokenResponse, MsgSyncToken, MsgSyncTokenResponse, MsgMintToken, MsgMintTokenResponse, MsgBindToken, MsgBindTokenResponse, MsgUnbindToken, MsgUnbindTokenResponse, MsgLinkToken, MsgLinkTokenResponse, MsgWithdraw, MsgWithdrawResponse, MsgAuthorizeBridge, MsgAuthorizeBridgeResponse, MsgDeauthorizeBridge, MsgDeauthorizeBridgeResponse } from "./coin/tx";
 export { ExternalTransfer } from "./coin/extevents";
@@ -448,7 +392,7 @@ export { Bridge } from "./coin/bridge";
 export { QueryGetTokenRequest, QueryGetTokenResponse, QueryAllTokenRequest, QueryAllTokenResponse, QueryGetLockedCoinsRequest, QueryGetLockedCoinsResponse, QueryAllWrapperMappingsRequest, QueryAllWrapperMappingsResponse, QueryAllWrapperMappingsResponse_WrapperMappingsEntry, QueryGetBalancesRequest, QueryGetBalancesResponse, QueryGetExternalTransfersRequest, QueryGetExternalTransfersResponse, QueryGetBridgeRequest, QueryGetBridgeResponse, QueryAllBridgeRequest, QueryAllBridgeResponse } from "./coin/query";
 export { Token, BalanceChange, LockedCoins, LockedCoinsRecord, PositionPool, TokenBalance } from "./coin/token";
 export { NewTokenEvent, SyncTokenEvent, BindTokenEvent, UnbindTokenEvent, LinkTokenEvent } from "./coin/event";
-export { MarketLeverage, MarketLeverageWithKey } from "./leverage/leverage";
+export { MarketLeverage, MarketLeverageRecord } from "./leverage/leverage";
 export { MsgSetLeverage, MsgSetLeverageResponse } from "./leverage/tx";
 export { QueryGetLeverageRequest, QueryGetLeverageResponse, QueryAllLeverageRequest, QueryAllLeverageResponse } from "./leverage/query";
 export { LeverageEvent } from "./leverage/event";
@@ -470,15 +414,16 @@ export { QueryGetMarketRequest, QueryGetMarketResponse, QueryAllMarketRequest, Q
 export { MarketEvent } from "./market/event";
 export { MintData } from "./inflation/inflation";
 export { QueryMintDataRequest, QueryMintDataResponse } from "./inflation/query";
-export { MsgCreatePool, MsgCreatePoolResponse, MsgCreatePoolWithLiquidity, MsgCreatePoolWithLiquidityResponse, MsgAddLiquidity, MsgAddLiquidityResponse, MsgRemoveLiquidity, MsgRemoveLiquidityResponse, MsgLinkPool, LinkPoolParams, MsgLinkPoolResponse, MsgUnlinkPool, UnlinkPoolParams, MsgUnlinkPoolResponse, MsgSetRewardsWeights, SetRewardsWeightsParams, RewardsWeightSetter, MsgSetRewardsWeightsResponse, MsgStakePoolToken, MsgStakePoolTokenResponse, MsgUnstakePoolToken, MsgUnstakePoolTokenResponse, MsgClaimPoolRewards, MsgClaimPoolRewardsResponse, MsgSetRewardCurve, SetRewardCurveParams, MsgSetRewardCurveResponse, MsgChangeSwapFee, ChangeSwapFeeParams, MsgChangeSwapFeeResponse, MsgSetCommitmentCurve, SetCommitmentCurveParams, MsgSetCommitmentCurveResponse, MsgChangeNumQuotes, ChangeNumQuotesParams, MsgChangeNumQuotesResponse } from "./liquiditypool/tx";
-export { Commitment, TotalCommitmentShares, RewardCurve, CommitmentCurve, WrappedRewardWeight, WrappedRewardWeights, RewardHistory, CommitmentResponse, CommitmentExpiryIndex, CommitmentWithKey, CommitmentTotalWithKey, RewardHistoryWithKey, LastClaimedWithKey, CommitmentKeys, AllocatedRewards, TotalCommitment } from "./liquiditypool/reward";
+export { MsgCreatePool, MsgCreatePoolResponse, MsgCreatePoolWithLiquidity, MsgCreatePoolWithLiquidityResponse, MsgAddLiquidity, MsgAddLiquidityResponse, MsgRemoveLiquidity, MsgRemoveLiquidityResponse, MsgLinkPool, LinkPoolParams, MsgLinkPoolResponse, MsgUnlinkPool, UnlinkPoolParams, MsgUnlinkPoolResponse, MsgSetRewardsWeights, SetRewardsWeightsParams, MsgSetRewardsWeightsResponse, MsgStakePoolToken, MsgStakePoolTokenResponse, MsgUnstakePoolToken, MsgUnstakePoolTokenResponse, MsgClaimPoolRewards, MsgClaimPoolRewardsResponse, MsgSetRewardCurve, SetRewardCurveParams, MsgSetRewardCurveResponse, MsgChangeSwapFee, ChangeSwapFeeParams, MsgChangeSwapFeeResponse, MsgSetCommitmentCurve, SetCommitmentCurveParams, MsgSetCommitmentCurveResponse, MsgChangeNumQuotes, ChangeNumQuotesParams, MsgChangeNumQuotesResponse } from "./liquiditypool/tx";
+export { RewardCurve, CommitmentCurve, RewardWeight, RewardWeights, Commitment, CommitmentRecord, TotalCommitment, TotalCommitmentRecord, CommitmentResponse, RewardHistory, RewardHistoryRecord, CommitmentExpiry, CommitmentExpiries, CommitmentExpiriesRecord, LastClaimRecord, AllocatedRewards } from "./liquiditypool/reward";
 export { Pool, Pools, AddLiquidity, AddLiquidities, RemoveLiquidity, RemoveLiquidities } from "./liquiditypool/liquiditypool";
 export { LinkPoolProposal, UnlinkPoolProposal, SetRewardCurveProposal, SetCommitmentCurveProposal, SetRewardsWeightsProposal, ChangeSwapFeeProposal, ChangeNumQuotesProposal } from "./liquiditypool/proposal";
 export { QueryGetPoolRequest, QueryGetPoolResponse, QueryAllPoolRequest, QueryAllPoolResponse, QueryRewardHistoryRequest, ExtendedPool, QueryRewardHistoryResponse, QuerierRewardHistory, QueryCommitmentRequest, QueryCommitmentResponse, QueryAllCommitmentRequest, QueryAllCommitmentResponse, QueryLastClaimRequest, QueryLastClaimResponse, QueryCommitmentCurveRequest, QueryCommitmentCurveResponse, QueryRewardCurveRequest, QueryRewardCurveResponse, QueryTotalCommitmentRequest, QueryTotalCommitmentResponse, QueryAllTotalCommitmentRequest, QueryAllTotalCommitmentResponse, QueryClaimableRewardsRequest, QueryClaimableRewardsResponse } from "./liquiditypool/query";
 export { PoolEvent, TotalCommitmentChangeEvent, RewardsWeightChangeEvent, CommitmentCurveEvent, CommitmentEvent } from "./liquiditypool/event";
+export { QueryBalanceRequest, QueryBalanceResponse } from "./insurance/query";
 export { EventDataInsuranceFundTransfer } from "./insurance/event";
 export { FundByMarket, Fund } from "./insurance/fund";
 export { PriceSet } from "./pricing/pricing";
 export { SettlementPriceProposal, SettlementPriceParams } from "./pricing/proposal";
-export { QueryPriceRequest, QueryPriceResponse, QueryAllPriceSetRequest, QueryAllPriceSetResponse, QueryRateRequest, QueryRateResponse } from "./pricing/query";
+export { QueryPriceSetRequest, QueryPriceSetResponse, QueryAllPriceSetRequest, QueryAllPriceSetResponse, QueryRateRequest, QueryRateResponse } from "./pricing/query";
 export { PriceUpdateEvent } from "./pricing/event";

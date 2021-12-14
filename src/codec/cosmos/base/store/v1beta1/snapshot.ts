@@ -65,16 +65,14 @@ export const SnapshotItem = {
 
   fromJSON(object: any): SnapshotItem {
     const message = { ...baseSnapshotItem } as SnapshotItem;
-    if (object.store !== undefined && object.store !== null) {
-      message.store = SnapshotStoreItem.fromJSON(object.store);
-    } else {
-      message.store = undefined;
-    }
-    if (object.iavl !== undefined && object.iavl !== null) {
-      message.iavl = SnapshotIAVLItem.fromJSON(object.iavl);
-    } else {
-      message.iavl = undefined;
-    }
+    message.store =
+      object.store !== undefined && object.store !== null
+        ? SnapshotStoreItem.fromJSON(object.store)
+        : undefined;
+    message.iavl =
+      object.iavl !== undefined && object.iavl !== null
+        ? SnapshotIAVLItem.fromJSON(object.iavl)
+        : undefined;
     return message;
   },
 
@@ -93,16 +91,14 @@ export const SnapshotItem = {
 
   fromPartial(object: DeepPartial<SnapshotItem>): SnapshotItem {
     const message = { ...baseSnapshotItem } as SnapshotItem;
-    if (object.store !== undefined && object.store !== null) {
-      message.store = SnapshotStoreItem.fromPartial(object.store);
-    } else {
-      message.store = undefined;
-    }
-    if (object.iavl !== undefined && object.iavl !== null) {
-      message.iavl = SnapshotIAVLItem.fromPartial(object.iavl);
-    } else {
-      message.iavl = undefined;
-    }
+    message.store =
+      object.store !== undefined && object.store !== null
+        ? SnapshotStoreItem.fromPartial(object.store)
+        : undefined;
+    message.iavl =
+      object.iavl !== undefined && object.iavl !== null
+        ? SnapshotIAVLItem.fromPartial(object.iavl)
+        : undefined;
     return message;
   },
 };
@@ -140,11 +136,10 @@ export const SnapshotStoreItem = {
 
   fromJSON(object: any): SnapshotStoreItem {
     const message = { ...baseSnapshotStoreItem } as SnapshotStoreItem;
-    if (object.name !== undefined && object.name !== null) {
-      message.name = String(object.name);
-    } else {
-      message.name = "";
-    }
+    message.name =
+      object.name !== undefined && object.name !== null
+        ? String(object.name)
+        : "";
     return message;
   },
 
@@ -214,24 +209,22 @@ export const SnapshotIAVLItem = {
 
   fromJSON(object: any): SnapshotIAVLItem {
     const message = { ...baseSnapshotIAVLItem } as SnapshotIAVLItem;
-    message.key = new Uint8Array();
-    message.value = new Uint8Array();
-    if (object.key !== undefined && object.key !== null) {
-      message.key = bytesFromBase64(object.key);
-    }
-    if (object.value !== undefined && object.value !== null) {
-      message.value = bytesFromBase64(object.value);
-    }
-    if (object.version !== undefined && object.version !== null) {
-      message.version = Long.fromString(object.version);
-    } else {
-      message.version = Long.ZERO;
-    }
-    if (object.height !== undefined && object.height !== null) {
-      message.height = Number(object.height);
-    } else {
-      message.height = 0;
-    }
+    message.key =
+      object.key !== undefined && object.key !== null
+        ? bytesFromBase64(object.key)
+        : new Uint8Array();
+    message.value =
+      object.value !== undefined && object.value !== null
+        ? bytesFromBase64(object.value)
+        : new Uint8Array();
+    message.version =
+      object.version !== undefined && object.version !== null
+        ? Long.fromString(object.version)
+        : Long.ZERO;
+    message.height =
+      object.height !== undefined && object.height !== null
+        ? Number(object.height)
+        : 0;
     return message;
   },
 
@@ -255,11 +248,10 @@ export const SnapshotIAVLItem = {
     const message = { ...baseSnapshotIAVLItem } as SnapshotIAVLItem;
     message.key = object.key ?? new Uint8Array();
     message.value = object.value ?? new Uint8Array();
-    if (object.version !== undefined && object.version !== null) {
-      message.version = object.version as Long;
-    } else {
-      message.version = Long.ZERO;
-    }
+    message.version =
+      object.version !== undefined && object.version !== null
+        ? Long.fromValue(object.version)
+        : Long.ZERO;
     message.height = object.height ?? 0;
     return message;
   },
@@ -306,10 +298,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Order, DBOrder } from "../order/order";
+import { APIOrder, Order } from "../order/order";
 
 export const protobufPackage = "Switcheo.carbon.order";
 
@@ -11,7 +11,7 @@ export interface QueryGetOrderRequest {
 }
 
 export interface QueryGetOrderResponse {
-  Order?: Order;
+  Order?: APIOrder;
 }
 
 export interface QueryAllOrderRequest {
@@ -22,7 +22,7 @@ export interface QueryAllOrderRequest {
 }
 
 export interface QueryAllOrderResponse {
-  orders: DBOrder[];
+  orders: APIOrder[];
 }
 
 export interface QueryAccountOpenOrdersRequest {
@@ -70,11 +70,8 @@ export const QueryGetOrderRequest = {
 
   fromJSON(object: any): QueryGetOrderRequest {
     const message = { ...baseQueryGetOrderRequest } as QueryGetOrderRequest;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = String(object.id);
-    } else {
-      message.id = "";
-    }
+    message.id =
+      object.id !== undefined && object.id !== null ? String(object.id) : "";
     return message;
   },
 
@@ -99,7 +96,7 @@ export const QueryGetOrderResponse = {
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.Order !== undefined) {
-      Order.encode(message.Order, writer.uint32(10).fork()).ldelim();
+      APIOrder.encode(message.Order, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -115,7 +112,7 @@ export const QueryGetOrderResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.Order = Order.decode(reader, reader.uint32());
+          message.Order = APIOrder.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -127,18 +124,17 @@ export const QueryGetOrderResponse = {
 
   fromJSON(object: any): QueryGetOrderResponse {
     const message = { ...baseQueryGetOrderResponse } as QueryGetOrderResponse;
-    if (object.Order !== undefined && object.Order !== null) {
-      message.Order = Order.fromJSON(object.Order);
-    } else {
-      message.Order = undefined;
-    }
+    message.Order =
+      object.Order !== undefined && object.Order !== null
+        ? APIOrder.fromJSON(object.Order)
+        : undefined;
     return message;
   },
 
   toJSON(message: QueryGetOrderResponse): unknown {
     const obj: any = {};
     message.Order !== undefined &&
-      (obj.Order = message.Order ? Order.toJSON(message.Order) : undefined);
+      (obj.Order = message.Order ? APIOrder.toJSON(message.Order) : undefined);
     return obj;
   },
 
@@ -146,11 +142,10 @@ export const QueryGetOrderResponse = {
     object: DeepPartial<QueryGetOrderResponse>
   ): QueryGetOrderResponse {
     const message = { ...baseQueryGetOrderResponse } as QueryGetOrderResponse;
-    if (object.Order !== undefined && object.Order !== null) {
-      message.Order = Order.fromPartial(object.Order);
-    } else {
-      message.Order = undefined;
-    }
+    message.Order =
+      object.Order !== undefined && object.Order !== null
+        ? APIOrder.fromPartial(object.Order)
+        : undefined;
     return message;
   },
 };
@@ -214,26 +209,22 @@ export const QueryAllOrderRequest = {
 
   fromJSON(object: any): QueryAllOrderRequest {
     const message = { ...baseQueryAllOrderRequest } as QueryAllOrderRequest;
-    if (object.address !== undefined && object.address !== null) {
-      message.address = String(object.address);
-    } else {
-      message.address = "";
-    }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = String(object.market);
-    } else {
-      message.market = "";
-    }
-    if (object.orderType !== undefined && object.orderType !== null) {
-      message.orderType = String(object.orderType);
-    } else {
-      message.orderType = "";
-    }
-    if (object.orderStatus !== undefined && object.orderStatus !== null) {
-      message.orderStatus = String(object.orderStatus);
-    } else {
-      message.orderStatus = "";
-    }
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? String(object.market)
+        : "";
+    message.orderType =
+      object.orderType !== undefined && object.orderType !== null
+        ? String(object.orderType)
+        : "";
+    message.orderStatus =
+      object.orderStatus !== undefined && object.orderStatus !== null
+        ? String(object.orderStatus)
+        : "";
     return message;
   },
 
@@ -265,7 +256,7 @@ export const QueryAllOrderResponse = {
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     for (const v of message.orders) {
-      DBOrder.encode(v!, writer.uint32(10).fork()).ldelim();
+      APIOrder.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -282,7 +273,7 @@ export const QueryAllOrderResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.orders.push(DBOrder.decode(reader, reader.uint32()));
+          message.orders.push(APIOrder.decode(reader, reader.uint32()));
           break;
         default:
           reader.skipType(tag & 7);
@@ -294,12 +285,9 @@ export const QueryAllOrderResponse = {
 
   fromJSON(object: any): QueryAllOrderResponse {
     const message = { ...baseQueryAllOrderResponse } as QueryAllOrderResponse;
-    message.orders = [];
-    if (object.orders !== undefined && object.orders !== null) {
-      for (const e of object.orders) {
-        message.orders.push(DBOrder.fromJSON(e));
-      }
-    }
+    message.orders = (object.orders ?? []).map((e: any) =>
+      APIOrder.fromJSON(e)
+    );
     return message;
   },
 
@@ -307,7 +295,7 @@ export const QueryAllOrderResponse = {
     const obj: any = {};
     if (message.orders) {
       obj.orders = message.orders.map((e) =>
-        e ? DBOrder.toJSON(e) : undefined
+        e ? APIOrder.toJSON(e) : undefined
       );
     } else {
       obj.orders = [];
@@ -319,12 +307,7 @@ export const QueryAllOrderResponse = {
     object: DeepPartial<QueryAllOrderResponse>
   ): QueryAllOrderResponse {
     const message = { ...baseQueryAllOrderResponse } as QueryAllOrderResponse;
-    message.orders = [];
-    if (object.orders !== undefined && object.orders !== null) {
-      for (const e of object.orders) {
-        message.orders.push(DBOrder.fromPartial(e));
-      }
-    }
+    message.orders = (object.orders ?? []).map((e) => APIOrder.fromPartial(e));
     return message;
   },
 };
@@ -375,16 +358,14 @@ export const QueryAccountOpenOrdersRequest = {
     const message = {
       ...baseQueryAccountOpenOrdersRequest,
     } as QueryAccountOpenOrdersRequest;
-    if (object.address !== undefined && object.address !== null) {
-      message.address = String(object.address);
-    } else {
-      message.address = "";
-    }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = String(object.market);
-    } else {
-      message.market = "";
-    }
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? String(object.market)
+        : "";
     return message;
   },
 
@@ -448,12 +429,7 @@ export const QueryAccountOpenOrdersResponse = {
     const message = {
       ...baseQueryAccountOpenOrdersResponse,
     } as QueryAccountOpenOrdersResponse;
-    message.orders = [];
-    if (object.orders !== undefined && object.orders !== null) {
-      for (const e of object.orders) {
-        message.orders.push(Order.fromJSON(e));
-      }
-    }
+    message.orders = (object.orders ?? []).map((e: any) => Order.fromJSON(e));
     return message;
   },
 
@@ -473,12 +449,7 @@ export const QueryAccountOpenOrdersResponse = {
     const message = {
       ...baseQueryAccountOpenOrdersResponse,
     } as QueryAccountOpenOrdersResponse;
-    message.orders = [];
-    if (object.orders !== undefined && object.orders !== null) {
-      for (const e of object.orders) {
-        message.orders.push(Order.fromPartial(e));
-      }
-    }
+    message.orders = (object.orders ?? []).map((e) => Order.fromPartial(e));
     return message;
   },
 };
@@ -488,7 +459,7 @@ export interface Query {
   /** this line is used by starport scaffolding # 2 */
   Order(request: QueryGetOrderRequest): Promise<QueryGetOrderResponse>;
   OrderAll(request: QueryAllOrderRequest): Promise<QueryAllOrderResponse>;
-  AccountOrdersOpen(
+  OrdersAccountOpen(
     request: QueryAccountOpenOrdersRequest
   ): Promise<QueryAccountOpenOrdersResponse>;
 }
@@ -499,7 +470,7 @@ export class QueryClientImpl implements Query {
     this.rpc = rpc;
     this.Order = this.Order.bind(this);
     this.OrderAll = this.OrderAll.bind(this);
-    this.AccountOrdersOpen = this.AccountOrdersOpen.bind(this);
+    this.OrdersAccountOpen = this.OrdersAccountOpen.bind(this);
   }
   Order(request: QueryGetOrderRequest): Promise<QueryGetOrderResponse> {
     const data = QueryGetOrderRequest.encode(request).finish();
@@ -525,13 +496,13 @@ export class QueryClientImpl implements Query {
     );
   }
 
-  AccountOrdersOpen(
+  OrdersAccountOpen(
     request: QueryAccountOpenOrdersRequest
   ): Promise<QueryAccountOpenOrdersResponse> {
     const data = QueryAccountOpenOrdersRequest.encode(request).finish();
     const promise = this.rpc.request(
       "Switcheo.carbon.order.Query",
-      "AccountOrdersOpen",
+      "OrdersAccountOpen",
       data
     );
     return promise.then((data) =>
@@ -555,10 +526,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

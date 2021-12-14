@@ -77,30 +77,26 @@ export const Snapshot = {
 
   fromJSON(object: any): Snapshot {
     const message = { ...baseSnapshot } as Snapshot;
-    message.hash = new Uint8Array();
-    if (object.height !== undefined && object.height !== null) {
-      message.height = Long.fromString(object.height);
-    } else {
-      message.height = Long.UZERO;
-    }
-    if (object.format !== undefined && object.format !== null) {
-      message.format = Number(object.format);
-    } else {
-      message.format = 0;
-    }
-    if (object.chunks !== undefined && object.chunks !== null) {
-      message.chunks = Number(object.chunks);
-    } else {
-      message.chunks = 0;
-    }
-    if (object.hash !== undefined && object.hash !== null) {
-      message.hash = bytesFromBase64(object.hash);
-    }
-    if (object.metadata !== undefined && object.metadata !== null) {
-      message.metadata = Metadata.fromJSON(object.metadata);
-    } else {
-      message.metadata = undefined;
-    }
+    message.height =
+      object.height !== undefined && object.height !== null
+        ? Long.fromString(object.height)
+        : Long.UZERO;
+    message.format =
+      object.format !== undefined && object.format !== null
+        ? Number(object.format)
+        : 0;
+    message.chunks =
+      object.chunks !== undefined && object.chunks !== null
+        ? Number(object.chunks)
+        : 0;
+    message.hash =
+      object.hash !== undefined && object.hash !== null
+        ? bytesFromBase64(object.hash)
+        : new Uint8Array();
+    message.metadata =
+      object.metadata !== undefined && object.metadata !== null
+        ? Metadata.fromJSON(object.metadata)
+        : undefined;
     return message;
   },
 
@@ -123,19 +119,17 @@ export const Snapshot = {
 
   fromPartial(object: DeepPartial<Snapshot>): Snapshot {
     const message = { ...baseSnapshot } as Snapshot;
-    if (object.height !== undefined && object.height !== null) {
-      message.height = object.height as Long;
-    } else {
-      message.height = Long.UZERO;
-    }
+    message.height =
+      object.height !== undefined && object.height !== null
+        ? Long.fromValue(object.height)
+        : Long.UZERO;
     message.format = object.format ?? 0;
     message.chunks = object.chunks ?? 0;
     message.hash = object.hash ?? new Uint8Array();
-    if (object.metadata !== undefined && object.metadata !== null) {
-      message.metadata = Metadata.fromPartial(object.metadata);
-    } else {
-      message.metadata = undefined;
-    }
+    message.metadata =
+      object.metadata !== undefined && object.metadata !== null
+        ? Metadata.fromPartial(object.metadata)
+        : undefined;
     return message;
   },
 };
@@ -174,12 +168,9 @@ export const Metadata = {
 
   fromJSON(object: any): Metadata {
     const message = { ...baseMetadata } as Metadata;
-    message.chunkHashes = [];
-    if (object.chunkHashes !== undefined && object.chunkHashes !== null) {
-      for (const e of object.chunkHashes) {
-        message.chunkHashes.push(bytesFromBase64(e));
-      }
-    }
+    message.chunkHashes = (object.chunkHashes ?? []).map((e: any) =>
+      bytesFromBase64(e)
+    );
     return message;
   },
 
@@ -197,12 +188,7 @@ export const Metadata = {
 
   fromPartial(object: DeepPartial<Metadata>): Metadata {
     const message = { ...baseMetadata } as Metadata;
-    message.chunkHashes = [];
-    if (object.chunkHashes !== undefined && object.chunkHashes !== null) {
-      for (const e of object.chunkHashes) {
-        message.chunkHashes.push(e);
-      }
-    }
+    message.chunkHashes = (object.chunkHashes ?? []).map((e) => e);
     return message;
   },
 };
@@ -248,10 +234,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

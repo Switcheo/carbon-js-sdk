@@ -67,19 +67,14 @@ export const Minter = {
 
   fromJSON(object: any): Minter {
     const message = { ...baseMinter } as Minter;
-    if (object.inflation !== undefined && object.inflation !== null) {
-      message.inflation = String(object.inflation);
-    } else {
-      message.inflation = "";
-    }
-    if (
-      object.annualProvisions !== undefined &&
-      object.annualProvisions !== null
-    ) {
-      message.annualProvisions = String(object.annualProvisions);
-    } else {
-      message.annualProvisions = "";
-    }
+    message.inflation =
+      object.inflation !== undefined && object.inflation !== null
+        ? String(object.inflation)
+        : "";
+    message.annualProvisions =
+      object.annualProvisions !== undefined && object.annualProvisions !== null
+        ? String(object.annualProvisions)
+        : "";
     return message;
   },
 
@@ -169,39 +164,31 @@ export const Params = {
 
   fromJSON(object: any): Params {
     const message = { ...baseParams } as Params;
-    if (object.mintDenom !== undefined && object.mintDenom !== null) {
-      message.mintDenom = String(object.mintDenom);
-    } else {
-      message.mintDenom = "";
-    }
-    if (
+    message.mintDenom =
+      object.mintDenom !== undefined && object.mintDenom !== null
+        ? String(object.mintDenom)
+        : "";
+    message.inflationRateChange =
       object.inflationRateChange !== undefined &&
       object.inflationRateChange !== null
-    ) {
-      message.inflationRateChange = String(object.inflationRateChange);
-    } else {
-      message.inflationRateChange = "";
-    }
-    if (object.inflationMax !== undefined && object.inflationMax !== null) {
-      message.inflationMax = String(object.inflationMax);
-    } else {
-      message.inflationMax = "";
-    }
-    if (object.inflationMin !== undefined && object.inflationMin !== null) {
-      message.inflationMin = String(object.inflationMin);
-    } else {
-      message.inflationMin = "";
-    }
-    if (object.goalBonded !== undefined && object.goalBonded !== null) {
-      message.goalBonded = String(object.goalBonded);
-    } else {
-      message.goalBonded = "";
-    }
-    if (object.blocksPerYear !== undefined && object.blocksPerYear !== null) {
-      message.blocksPerYear = Long.fromString(object.blocksPerYear);
-    } else {
-      message.blocksPerYear = Long.UZERO;
-    }
+        ? String(object.inflationRateChange)
+        : "";
+    message.inflationMax =
+      object.inflationMax !== undefined && object.inflationMax !== null
+        ? String(object.inflationMax)
+        : "";
+    message.inflationMin =
+      object.inflationMin !== undefined && object.inflationMin !== null
+        ? String(object.inflationMin)
+        : "";
+    message.goalBonded =
+      object.goalBonded !== undefined && object.goalBonded !== null
+        ? String(object.goalBonded)
+        : "";
+    message.blocksPerYear =
+      object.blocksPerYear !== undefined && object.blocksPerYear !== null
+        ? Long.fromString(object.blocksPerYear)
+        : Long.UZERO;
     return message;
   },
 
@@ -227,11 +214,10 @@ export const Params = {
     message.inflationMax = object.inflationMax ?? "";
     message.inflationMin = object.inflationMin ?? "";
     message.goalBonded = object.goalBonded ?? "";
-    if (object.blocksPerYear !== undefined && object.blocksPerYear !== null) {
-      message.blocksPerYear = object.blocksPerYear as Long;
-    } else {
-      message.blocksPerYear = Long.UZERO;
-    }
+    message.blocksPerYear =
+      object.blocksPerYear !== undefined && object.blocksPerYear !== null
+        ? Long.fromValue(object.blocksPerYear)
+        : Long.UZERO;
     return message;
   },
 };
@@ -243,10 +229,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

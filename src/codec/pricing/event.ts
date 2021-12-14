@@ -6,7 +6,7 @@ import { PriceSet } from "../pricing/pricing";
 export const protobufPackage = "Switcheo.carbon.pricing";
 
 export interface PriceUpdateEvent {
-  priceSet?: PriceSet;
+  prices?: PriceSet;
 }
 
 const basePriceUpdateEvent: object = {};
@@ -16,8 +16,8 @@ export const PriceUpdateEvent = {
     message: PriceUpdateEvent,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.priceSet !== undefined) {
-      PriceSet.encode(message.priceSet, writer.uint32(10).fork()).ldelim();
+    if (message.prices !== undefined) {
+      PriceSet.encode(message.prices, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -30,7 +30,7 @@ export const PriceUpdateEvent = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.priceSet = PriceSet.decode(reader, reader.uint32());
+          message.prices = PriceSet.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -42,30 +42,28 @@ export const PriceUpdateEvent = {
 
   fromJSON(object: any): PriceUpdateEvent {
     const message = { ...basePriceUpdateEvent } as PriceUpdateEvent;
-    if (object.priceSet !== undefined && object.priceSet !== null) {
-      message.priceSet = PriceSet.fromJSON(object.priceSet);
-    } else {
-      message.priceSet = undefined;
-    }
+    message.prices =
+      object.prices !== undefined && object.prices !== null
+        ? PriceSet.fromJSON(object.prices)
+        : undefined;
     return message;
   },
 
   toJSON(message: PriceUpdateEvent): unknown {
     const obj: any = {};
-    message.priceSet !== undefined &&
-      (obj.priceSet = message.priceSet
-        ? PriceSet.toJSON(message.priceSet)
+    message.prices !== undefined &&
+      (obj.prices = message.prices
+        ? PriceSet.toJSON(message.prices)
         : undefined);
     return obj;
   },
 
   fromPartial(object: DeepPartial<PriceUpdateEvent>): PriceUpdateEvent {
     const message = { ...basePriceUpdateEvent } as PriceUpdateEvent;
-    if (object.priceSet !== undefined && object.priceSet !== null) {
-      message.priceSet = PriceSet.fromPartial(object.priceSet);
-    } else {
-      message.priceSet = undefined;
-    }
+    message.prices =
+      object.prices !== undefined && object.prices !== null
+        ? PriceSet.fromPartial(object.prices)
+        : undefined;
     return message;
   },
 };
@@ -77,10 +75,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

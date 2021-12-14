@@ -54,19 +54,14 @@ export const GenesisState = {
 
   fromJSON(object: any): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
-    if (object.mintData !== undefined && object.mintData !== null) {
-      message.mintData = MintData.fromJSON(object.mintData);
-    } else {
-      message.mintData = undefined;
-    }
-    if (
-      object.inflationEnabled !== undefined &&
-      object.inflationEnabled !== null
-    ) {
-      message.inflationEnabled = Boolean(object.inflationEnabled);
-    } else {
-      message.inflationEnabled = false;
-    }
+    message.mintData =
+      object.mintData !== undefined && object.mintData !== null
+        ? MintData.fromJSON(object.mintData)
+        : undefined;
+    message.inflationEnabled =
+      object.inflationEnabled !== undefined && object.inflationEnabled !== null
+        ? Boolean(object.inflationEnabled)
+        : false;
     return message;
   },
 
@@ -83,11 +78,10 @@ export const GenesisState = {
 
   fromPartial(object: DeepPartial<GenesisState>): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
-    if (object.mintData !== undefined && object.mintData !== null) {
-      message.mintData = MintData.fromPartial(object.mintData);
-    } else {
-      message.mintData = undefined;
-    }
+    message.mintData =
+      object.mintData !== undefined && object.mintData !== null
+        ? MintData.fromPartial(object.mintData)
+        : undefined;
     message.inflationEnabled = object.inflationEnabled ?? false;
     return message;
   },
@@ -100,10 +94,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

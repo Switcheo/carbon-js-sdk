@@ -95,47 +95,35 @@ export const Position = {
 
   fromJSON(object: any): Position {
     const message = { ...basePosition } as Position;
-    if (object.market !== undefined && object.market !== null) {
-      message.market = String(object.market);
-    } else {
-      message.market = "";
-    }
-    if (object.address !== undefined && object.address !== null) {
-      message.address = String(object.address);
-    } else {
-      message.address = "";
-    }
-    if (object.lots !== undefined && object.lots !== null) {
-      message.lots = String(object.lots);
-    } else {
-      message.lots = "";
-    }
-    if (object.entryPrice !== undefined && object.entryPrice !== null) {
-      message.entryPrice = String(object.entryPrice);
-    } else {
-      message.entryPrice = "";
-    }
-    if (object.realizedPnl !== undefined && object.realizedPnl !== null) {
-      message.realizedPnl = String(object.realizedPnl);
-    } else {
-      message.realizedPnl = "";
-    }
-    if (
-      object.allocatedMargin !== undefined &&
-      object.allocatedMargin !== null
-    ) {
-      message.allocatedMargin = Coin.fromJSON(object.allocatedMargin);
-    } else {
-      message.allocatedMargin = undefined;
-    }
-    if (
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? String(object.market)
+        : "";
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    message.lots =
+      object.lots !== undefined && object.lots !== null
+        ? String(object.lots)
+        : "";
+    message.entryPrice =
+      object.entryPrice !== undefined && object.entryPrice !== null
+        ? String(object.entryPrice)
+        : "";
+    message.realizedPnl =
+      object.realizedPnl !== undefined && object.realizedPnl !== null
+        ? String(object.realizedPnl)
+        : "";
+    message.allocatedMargin =
+      object.allocatedMargin !== undefined && object.allocatedMargin !== null
+        ? Coin.fromJSON(object.allocatedMargin)
+        : undefined;
+    message.openedBlockHeight =
       object.openedBlockHeight !== undefined &&
       object.openedBlockHeight !== null
-    ) {
-      message.openedBlockHeight = Long.fromString(object.openedBlockHeight);
-    } else {
-      message.openedBlockHeight = Long.UZERO;
-    }
+        ? Long.fromString(object.openedBlockHeight)
+        : Long.UZERO;
     return message;
   },
 
@@ -165,22 +153,15 @@ export const Position = {
     message.lots = object.lots ?? "";
     message.entryPrice = object.entryPrice ?? "";
     message.realizedPnl = object.realizedPnl ?? "";
-    if (
-      object.allocatedMargin !== undefined &&
-      object.allocatedMargin !== null
-    ) {
-      message.allocatedMargin = Coin.fromPartial(object.allocatedMargin);
-    } else {
-      message.allocatedMargin = undefined;
-    }
-    if (
+    message.allocatedMargin =
+      object.allocatedMargin !== undefined && object.allocatedMargin !== null
+        ? Coin.fromPartial(object.allocatedMargin)
+        : undefined;
+    message.openedBlockHeight =
       object.openedBlockHeight !== undefined &&
       object.openedBlockHeight !== null
-    ) {
-      message.openedBlockHeight = object.openedBlockHeight as Long;
-    } else {
-      message.openedBlockHeight = Long.UZERO;
-    }
+        ? Long.fromValue(object.openedBlockHeight)
+        : Long.UZERO;
     return message;
   },
 };
@@ -219,12 +200,9 @@ export const Positions = {
 
   fromJSON(object: any): Positions {
     const message = { ...basePositions } as Positions;
-    message.positions = [];
-    if (object.positions !== undefined && object.positions !== null) {
-      for (const e of object.positions) {
-        message.positions.push(Position.fromJSON(e));
-      }
-    }
+    message.positions = (object.positions ?? []).map((e: any) =>
+      Position.fromJSON(e)
+    );
     return message;
   },
 
@@ -242,12 +220,9 @@ export const Positions = {
 
   fromPartial(object: DeepPartial<Positions>): Positions {
     const message = { ...basePositions } as Positions;
-    message.positions = [];
-    if (object.positions !== undefined && object.positions !== null) {
-      for (const e of object.positions) {
-        message.positions.push(Position.fromPartial(e));
-      }
-    }
+    message.positions = (object.positions ?? []).map((e) =>
+      Position.fromPartial(e)
+    );
     return message;
   },
 };
@@ -259,10 +234,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

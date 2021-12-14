@@ -266,11 +266,10 @@ export const QueryParamsResponse = {
 
   fromJSON(object: any): QueryParamsResponse {
     const message = { ...baseQueryParamsResponse } as QueryParamsResponse;
-    if (object.params !== undefined && object.params !== null) {
-      message.params = Params.fromJSON(object.params);
-    } else {
-      message.params = undefined;
-    }
+    message.params =
+      object.params !== undefined && object.params !== null
+        ? Params.fromJSON(object.params)
+        : undefined;
     return message;
   },
 
@@ -283,11 +282,10 @@ export const QueryParamsResponse = {
 
   fromPartial(object: DeepPartial<QueryParamsResponse>): QueryParamsResponse {
     const message = { ...baseQueryParamsResponse } as QueryParamsResponse;
-    if (object.params !== undefined && object.params !== null) {
-      message.params = Params.fromPartial(object.params);
-    } else {
-      message.params = undefined;
-    }
+    message.params =
+      object.params !== undefined && object.params !== null
+        ? Params.fromPartial(object.params)
+        : undefined;
     return message;
   },
 };
@@ -334,14 +332,10 @@ export const QueryValidatorOutstandingRewardsRequest = {
     const message = {
       ...baseQueryValidatorOutstandingRewardsRequest,
     } as QueryValidatorOutstandingRewardsRequest;
-    if (
-      object.validatorAddress !== undefined &&
-      object.validatorAddress !== null
-    ) {
-      message.validatorAddress = String(object.validatorAddress);
-    } else {
-      message.validatorAddress = "";
-    }
+    message.validatorAddress =
+      object.validatorAddress !== undefined && object.validatorAddress !== null
+        ? String(object.validatorAddress)
+        : "";
     return message;
   },
 
@@ -409,11 +403,10 @@ export const QueryValidatorOutstandingRewardsResponse = {
     const message = {
       ...baseQueryValidatorOutstandingRewardsResponse,
     } as QueryValidatorOutstandingRewardsResponse;
-    if (object.rewards !== undefined && object.rewards !== null) {
-      message.rewards = ValidatorOutstandingRewards.fromJSON(object.rewards);
-    } else {
-      message.rewards = undefined;
-    }
+    message.rewards =
+      object.rewards !== undefined && object.rewards !== null
+        ? ValidatorOutstandingRewards.fromJSON(object.rewards)
+        : undefined;
     return message;
   },
 
@@ -432,11 +425,10 @@ export const QueryValidatorOutstandingRewardsResponse = {
     const message = {
       ...baseQueryValidatorOutstandingRewardsResponse,
     } as QueryValidatorOutstandingRewardsResponse;
-    if (object.rewards !== undefined && object.rewards !== null) {
-      message.rewards = ValidatorOutstandingRewards.fromPartial(object.rewards);
-    } else {
-      message.rewards = undefined;
-    }
+    message.rewards =
+      object.rewards !== undefined && object.rewards !== null
+        ? ValidatorOutstandingRewards.fromPartial(object.rewards)
+        : undefined;
     return message;
   },
 };
@@ -481,14 +473,10 @@ export const QueryValidatorCommissionRequest = {
     const message = {
       ...baseQueryValidatorCommissionRequest,
     } as QueryValidatorCommissionRequest;
-    if (
-      object.validatorAddress !== undefined &&
-      object.validatorAddress !== null
-    ) {
-      message.validatorAddress = String(object.validatorAddress);
-    } else {
-      message.validatorAddress = "";
-    }
+    message.validatorAddress =
+      object.validatorAddress !== undefined && object.validatorAddress !== null
+        ? String(object.validatorAddress)
+        : "";
     return message;
   },
 
@@ -556,13 +544,10 @@ export const QueryValidatorCommissionResponse = {
     const message = {
       ...baseQueryValidatorCommissionResponse,
     } as QueryValidatorCommissionResponse;
-    if (object.commission !== undefined && object.commission !== null) {
-      message.commission = ValidatorAccumulatedCommission.fromJSON(
-        object.commission
-      );
-    } else {
-      message.commission = undefined;
-    }
+    message.commission =
+      object.commission !== undefined && object.commission !== null
+        ? ValidatorAccumulatedCommission.fromJSON(object.commission)
+        : undefined;
     return message;
   },
 
@@ -581,13 +566,10 @@ export const QueryValidatorCommissionResponse = {
     const message = {
       ...baseQueryValidatorCommissionResponse,
     } as QueryValidatorCommissionResponse;
-    if (object.commission !== undefined && object.commission !== null) {
-      message.commission = ValidatorAccumulatedCommission.fromPartial(
-        object.commission
-      );
-    } else {
-      message.commission = undefined;
-    }
+    message.commission =
+      object.commission !== undefined && object.commission !== null
+        ? ValidatorAccumulatedCommission.fromPartial(object.commission)
+        : undefined;
     return message;
   },
 };
@@ -654,29 +636,22 @@ export const QueryValidatorSlashesRequest = {
     const message = {
       ...baseQueryValidatorSlashesRequest,
     } as QueryValidatorSlashesRequest;
-    if (
-      object.validatorAddress !== undefined &&
-      object.validatorAddress !== null
-    ) {
-      message.validatorAddress = String(object.validatorAddress);
-    } else {
-      message.validatorAddress = "";
-    }
-    if (object.startingHeight !== undefined && object.startingHeight !== null) {
-      message.startingHeight = Long.fromString(object.startingHeight);
-    } else {
-      message.startingHeight = Long.UZERO;
-    }
-    if (object.endingHeight !== undefined && object.endingHeight !== null) {
-      message.endingHeight = Long.fromString(object.endingHeight);
-    } else {
-      message.endingHeight = Long.UZERO;
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.validatorAddress =
+      object.validatorAddress !== undefined && object.validatorAddress !== null
+        ? String(object.validatorAddress)
+        : "";
+    message.startingHeight =
+      object.startingHeight !== undefined && object.startingHeight !== null
+        ? Long.fromString(object.startingHeight)
+        : Long.UZERO;
+    message.endingHeight =
+      object.endingHeight !== undefined && object.endingHeight !== null
+        ? Long.fromString(object.endingHeight)
+        : Long.UZERO;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -702,21 +677,18 @@ export const QueryValidatorSlashesRequest = {
       ...baseQueryValidatorSlashesRequest,
     } as QueryValidatorSlashesRequest;
     message.validatorAddress = object.validatorAddress ?? "";
-    if (object.startingHeight !== undefined && object.startingHeight !== null) {
-      message.startingHeight = object.startingHeight as Long;
-    } else {
-      message.startingHeight = Long.UZERO;
-    }
-    if (object.endingHeight !== undefined && object.endingHeight !== null) {
-      message.endingHeight = object.endingHeight as Long;
-    } else {
-      message.endingHeight = Long.UZERO;
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.startingHeight =
+      object.startingHeight !== undefined && object.startingHeight !== null
+        ? Long.fromValue(object.startingHeight)
+        : Long.UZERO;
+    message.endingHeight =
+      object.endingHeight !== undefined && object.endingHeight !== null
+        ? Long.fromValue(object.endingHeight)
+        : Long.UZERO;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -773,17 +745,13 @@ export const QueryValidatorSlashesResponse = {
     const message = {
       ...baseQueryValidatorSlashesResponse,
     } as QueryValidatorSlashesResponse;
-    message.slashes = [];
-    if (object.slashes !== undefined && object.slashes !== null) {
-      for (const e of object.slashes) {
-        message.slashes.push(ValidatorSlashEvent.fromJSON(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.slashes = (object.slashes ?? []).map((e: any) =>
+      ValidatorSlashEvent.fromJSON(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -809,17 +777,13 @@ export const QueryValidatorSlashesResponse = {
     const message = {
       ...baseQueryValidatorSlashesResponse,
     } as QueryValidatorSlashesResponse;
-    message.slashes = [];
-    if (object.slashes !== undefined && object.slashes !== null) {
-      for (const e of object.slashes) {
-        message.slashes.push(ValidatorSlashEvent.fromPartial(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.slashes = (object.slashes ?? []).map((e) =>
+      ValidatorSlashEvent.fromPartial(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -873,22 +837,14 @@ export const QueryDelegationRewardsRequest = {
     const message = {
       ...baseQueryDelegationRewardsRequest,
     } as QueryDelegationRewardsRequest;
-    if (
-      object.delegatorAddress !== undefined &&
-      object.delegatorAddress !== null
-    ) {
-      message.delegatorAddress = String(object.delegatorAddress);
-    } else {
-      message.delegatorAddress = "";
-    }
-    if (
-      object.validatorAddress !== undefined &&
-      object.validatorAddress !== null
-    ) {
-      message.validatorAddress = String(object.validatorAddress);
-    } else {
-      message.validatorAddress = "";
-    }
+    message.delegatorAddress =
+      object.delegatorAddress !== undefined && object.delegatorAddress !== null
+        ? String(object.delegatorAddress)
+        : "";
+    message.validatorAddress =
+      object.validatorAddress !== undefined && object.validatorAddress !== null
+        ? String(object.validatorAddress)
+        : "";
     return message;
   },
 
@@ -954,12 +910,9 @@ export const QueryDelegationRewardsResponse = {
     const message = {
       ...baseQueryDelegationRewardsResponse,
     } as QueryDelegationRewardsResponse;
-    message.rewards = [];
-    if (object.rewards !== undefined && object.rewards !== null) {
-      for (const e of object.rewards) {
-        message.rewards.push(DecCoin.fromJSON(e));
-      }
-    }
+    message.rewards = (object.rewards ?? []).map((e: any) =>
+      DecCoin.fromJSON(e)
+    );
     return message;
   },
 
@@ -981,12 +934,7 @@ export const QueryDelegationRewardsResponse = {
     const message = {
       ...baseQueryDelegationRewardsResponse,
     } as QueryDelegationRewardsResponse;
-    message.rewards = [];
-    if (object.rewards !== undefined && object.rewards !== null) {
-      for (const e of object.rewards) {
-        message.rewards.push(DecCoin.fromPartial(e));
-      }
-    }
+    message.rewards = (object.rewards ?? []).map((e) => DecCoin.fromPartial(e));
     return message;
   },
 };
@@ -1031,14 +979,10 @@ export const QueryDelegationTotalRewardsRequest = {
     const message = {
       ...baseQueryDelegationTotalRewardsRequest,
     } as QueryDelegationTotalRewardsRequest;
-    if (
-      object.delegatorAddress !== undefined &&
-      object.delegatorAddress !== null
-    ) {
-      message.delegatorAddress = String(object.delegatorAddress);
-    } else {
-      message.delegatorAddress = "";
-    }
+    message.delegatorAddress =
+      object.delegatorAddress !== undefined && object.delegatorAddress !== null
+        ? String(object.delegatorAddress)
+        : "";
     return message;
   },
 
@@ -1110,18 +1054,10 @@ export const QueryDelegationTotalRewardsResponse = {
     const message = {
       ...baseQueryDelegationTotalRewardsResponse,
     } as QueryDelegationTotalRewardsResponse;
-    message.rewards = [];
-    message.total = [];
-    if (object.rewards !== undefined && object.rewards !== null) {
-      for (const e of object.rewards) {
-        message.rewards.push(DelegationDelegatorReward.fromJSON(e));
-      }
-    }
-    if (object.total !== undefined && object.total !== null) {
-      for (const e of object.total) {
-        message.total.push(DecCoin.fromJSON(e));
-      }
-    }
+    message.rewards = (object.rewards ?? []).map((e: any) =>
+      DelegationDelegatorReward.fromJSON(e)
+    );
+    message.total = (object.total ?? []).map((e: any) => DecCoin.fromJSON(e));
     return message;
   },
 
@@ -1148,18 +1084,10 @@ export const QueryDelegationTotalRewardsResponse = {
     const message = {
       ...baseQueryDelegationTotalRewardsResponse,
     } as QueryDelegationTotalRewardsResponse;
-    message.rewards = [];
-    if (object.rewards !== undefined && object.rewards !== null) {
-      for (const e of object.rewards) {
-        message.rewards.push(DelegationDelegatorReward.fromPartial(e));
-      }
-    }
-    message.total = [];
-    if (object.total !== undefined && object.total !== null) {
-      for (const e of object.total) {
-        message.total.push(DecCoin.fromPartial(e));
-      }
-    }
+    message.rewards = (object.rewards ?? []).map((e) =>
+      DelegationDelegatorReward.fromPartial(e)
+    );
+    message.total = (object.total ?? []).map((e) => DecCoin.fromPartial(e));
     return message;
   },
 };
@@ -1204,14 +1132,10 @@ export const QueryDelegatorValidatorsRequest = {
     const message = {
       ...baseQueryDelegatorValidatorsRequest,
     } as QueryDelegatorValidatorsRequest;
-    if (
-      object.delegatorAddress !== undefined &&
-      object.delegatorAddress !== null
-    ) {
-      message.delegatorAddress = String(object.delegatorAddress);
-    } else {
-      message.delegatorAddress = "";
-    }
+    message.delegatorAddress =
+      object.delegatorAddress !== undefined && object.delegatorAddress !== null
+        ? String(object.delegatorAddress)
+        : "";
     return message;
   },
 
@@ -1274,12 +1198,7 @@ export const QueryDelegatorValidatorsResponse = {
     const message = {
       ...baseQueryDelegatorValidatorsResponse,
     } as QueryDelegatorValidatorsResponse;
-    message.validators = [];
-    if (object.validators !== undefined && object.validators !== null) {
-      for (const e of object.validators) {
-        message.validators.push(String(e));
-      }
-    }
+    message.validators = (object.validators ?? []).map((e: any) => String(e));
     return message;
   },
 
@@ -1299,12 +1218,7 @@ export const QueryDelegatorValidatorsResponse = {
     const message = {
       ...baseQueryDelegatorValidatorsResponse,
     } as QueryDelegatorValidatorsResponse;
-    message.validators = [];
-    if (object.validators !== undefined && object.validators !== null) {
-      for (const e of object.validators) {
-        message.validators.push(e);
-      }
-    }
+    message.validators = (object.validators ?? []).map((e) => e);
     return message;
   },
 };
@@ -1351,14 +1265,10 @@ export const QueryDelegatorWithdrawAddressRequest = {
     const message = {
       ...baseQueryDelegatorWithdrawAddressRequest,
     } as QueryDelegatorWithdrawAddressRequest;
-    if (
-      object.delegatorAddress !== undefined &&
-      object.delegatorAddress !== null
-    ) {
-      message.delegatorAddress = String(object.delegatorAddress);
-    } else {
-      message.delegatorAddress = "";
-    }
+    message.delegatorAddress =
+      object.delegatorAddress !== undefined && object.delegatorAddress !== null
+        ? String(object.delegatorAddress)
+        : "";
     return message;
   },
 
@@ -1422,14 +1332,10 @@ export const QueryDelegatorWithdrawAddressResponse = {
     const message = {
       ...baseQueryDelegatorWithdrawAddressResponse,
     } as QueryDelegatorWithdrawAddressResponse;
-    if (
-      object.withdrawAddress !== undefined &&
-      object.withdrawAddress !== null
-    ) {
-      message.withdrawAddress = String(object.withdrawAddress);
-    } else {
-      message.withdrawAddress = "";
-    }
+    message.withdrawAddress =
+      object.withdrawAddress !== undefined && object.withdrawAddress !== null
+        ? String(object.withdrawAddress)
+        : "";
     return message;
   },
 
@@ -1544,12 +1450,7 @@ export const QueryCommunityPoolResponse = {
     const message = {
       ...baseQueryCommunityPoolResponse,
     } as QueryCommunityPoolResponse;
-    message.pool = [];
-    if (object.pool !== undefined && object.pool !== null) {
-      for (const e of object.pool) {
-        message.pool.push(DecCoin.fromJSON(e));
-      }
-    }
+    message.pool = (object.pool ?? []).map((e: any) => DecCoin.fromJSON(e));
     return message;
   },
 
@@ -1569,12 +1470,7 @@ export const QueryCommunityPoolResponse = {
     const message = {
       ...baseQueryCommunityPoolResponse,
     } as QueryCommunityPoolResponse;
-    message.pool = [];
-    if (object.pool !== undefined && object.pool !== null) {
-      for (const e of object.pool) {
-        message.pool.push(DecCoin.fromPartial(e));
-      }
-    }
+    message.pool = (object.pool ?? []).map((e) => DecCoin.fromPartial(e));
     return message;
   },
 };
@@ -1672,12 +1568,7 @@ export const QueryLiquidityProviderRewardsResponse = {
     const message = {
       ...baseQueryLiquidityProviderRewardsResponse,
     } as QueryLiquidityProviderRewardsResponse;
-    message.pool = [];
-    if (object.pool !== undefined && object.pool !== null) {
-      for (const e of object.pool) {
-        message.pool.push(DecCoin.fromJSON(e));
-      }
-    }
+    message.pool = (object.pool ?? []).map((e: any) => DecCoin.fromJSON(e));
     return message;
   },
 
@@ -1697,12 +1588,7 @@ export const QueryLiquidityProviderRewardsResponse = {
     const message = {
       ...baseQueryLiquidityProviderRewardsResponse,
     } as QueryLiquidityProviderRewardsResponse;
-    message.pool = [];
-    if (object.pool !== undefined && object.pool !== null) {
-      for (const e of object.pool) {
-        message.pool.push(DecCoin.fromPartial(e));
-      }
-    }
+    message.pool = (object.pool ?? []).map((e) => DecCoin.fromPartial(e));
     return message;
   },
 };
@@ -1923,10 +1809,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

@@ -170,76 +170,62 @@ export const Pool = {
 
   fromJSON(object: any): Pool {
     const message = { ...basePool } as Pool;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
-    if (object.id !== undefined && object.id !== null) {
-      message.id = Long.fromString(object.id);
-    } else {
-      message.id = Long.UZERO;
-    }
-    if (object.name !== undefined && object.name !== null) {
-      message.name = String(object.name);
-    } else {
-      message.name = "";
-    }
-    if (object.denom !== undefined && object.denom !== null) {
-      message.denom = String(object.denom);
-    } else {
-      message.denom = "";
-    }
-    if (object.denomA !== undefined && object.denomA !== null) {
-      message.denomA = String(object.denomA);
-    } else {
-      message.denomA = "";
-    }
-    if (object.amountA !== undefined && object.amountA !== null) {
-      message.amountA = String(object.amountA);
-    } else {
-      message.amountA = "";
-    }
-    if (object.weightA !== undefined && object.weightA !== null) {
-      message.weightA = String(object.weightA);
-    } else {
-      message.weightA = "";
-    }
-    if (object.denomB !== undefined && object.denomB !== null) {
-      message.denomB = String(object.denomB);
-    } else {
-      message.denomB = "";
-    }
-    if (object.amountB !== undefined && object.amountB !== null) {
-      message.amountB = String(object.amountB);
-    } else {
-      message.amountB = "";
-    }
-    if (object.weightB !== undefined && object.weightB !== null) {
-      message.weightB = String(object.weightB);
-    } else {
-      message.weightB = "";
-    }
-    if (object.swapFee !== undefined && object.swapFee !== null) {
-      message.swapFee = String(object.swapFee);
-    } else {
-      message.swapFee = "";
-    }
-    if (object.numQuotes !== undefined && object.numQuotes !== null) {
-      message.numQuotes = Long.fromString(object.numQuotes);
-    } else {
-      message.numQuotes = Long.ZERO;
-    }
-    if (object.sharesAmount !== undefined && object.sharesAmount !== null) {
-      message.sharesAmount = String(object.sharesAmount);
-    } else {
-      message.sharesAmount = "";
-    }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = String(object.market);
-    } else {
-      message.market = "";
-    }
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.id =
+      object.id !== undefined && object.id !== null
+        ? Long.fromString(object.id)
+        : Long.UZERO;
+    message.name =
+      object.name !== undefined && object.name !== null
+        ? String(object.name)
+        : "";
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
+    message.denomA =
+      object.denomA !== undefined && object.denomA !== null
+        ? String(object.denomA)
+        : "";
+    message.amountA =
+      object.amountA !== undefined && object.amountA !== null
+        ? String(object.amountA)
+        : "";
+    message.weightA =
+      object.weightA !== undefined && object.weightA !== null
+        ? String(object.weightA)
+        : "";
+    message.denomB =
+      object.denomB !== undefined && object.denomB !== null
+        ? String(object.denomB)
+        : "";
+    message.amountB =
+      object.amountB !== undefined && object.amountB !== null
+        ? String(object.amountB)
+        : "";
+    message.weightB =
+      object.weightB !== undefined && object.weightB !== null
+        ? String(object.weightB)
+        : "";
+    message.swapFee =
+      object.swapFee !== undefined && object.swapFee !== null
+        ? String(object.swapFee)
+        : "";
+    message.numQuotes =
+      object.numQuotes !== undefined && object.numQuotes !== null
+        ? Long.fromString(object.numQuotes)
+        : Long.ZERO;
+    message.sharesAmount =
+      object.sharesAmount !== undefined && object.sharesAmount !== null
+        ? String(object.sharesAmount)
+        : "";
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? String(object.market)
+        : "";
     return message;
   },
 
@@ -268,11 +254,10 @@ export const Pool = {
   fromPartial(object: DeepPartial<Pool>): Pool {
     const message = { ...basePool } as Pool;
     message.creator = object.creator ?? "";
-    if (object.id !== undefined && object.id !== null) {
-      message.id = object.id as Long;
-    } else {
-      message.id = Long.UZERO;
-    }
+    message.id =
+      object.id !== undefined && object.id !== null
+        ? Long.fromValue(object.id)
+        : Long.UZERO;
     message.name = object.name ?? "";
     message.denom = object.denom ?? "";
     message.denomA = object.denomA ?? "";
@@ -282,11 +267,10 @@ export const Pool = {
     message.amountB = object.amountB ?? "";
     message.weightB = object.weightB ?? "";
     message.swapFee = object.swapFee ?? "";
-    if (object.numQuotes !== undefined && object.numQuotes !== null) {
-      message.numQuotes = object.numQuotes as Long;
-    } else {
-      message.numQuotes = Long.ZERO;
-    }
+    message.numQuotes =
+      object.numQuotes !== undefined && object.numQuotes !== null
+        ? Long.fromValue(object.numQuotes)
+        : Long.ZERO;
     message.sharesAmount = object.sharesAmount ?? "";
     message.market = object.market ?? "";
     return message;
@@ -324,12 +308,7 @@ export const Pools = {
 
   fromJSON(object: any): Pools {
     const message = { ...basePools } as Pools;
-    message.pools = [];
-    if (object.pools !== undefined && object.pools !== null) {
-      for (const e of object.pools) {
-        message.pools.push(Pool.fromJSON(e));
-      }
-    }
+    message.pools = (object.pools ?? []).map((e: any) => Pool.fromJSON(e));
     return message;
   },
 
@@ -345,12 +324,7 @@ export const Pools = {
 
   fromPartial(object: DeepPartial<Pools>): Pools {
     const message = { ...basePools } as Pools;
-    message.pools = [];
-    if (object.pools !== undefined && object.pools !== null) {
-      for (const e of object.pools) {
-        message.pools.push(Pool.fromPartial(e));
-      }
-    }
+    message.pools = (object.pools ?? []).map((e) => Pool.fromPartial(e));
     return message;
   },
 };
@@ -418,31 +392,26 @@ export const AddLiquidity = {
 
   fromJSON(object: any): AddLiquidity {
     const message = { ...baseAddLiquidity } as AddLiquidity;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
-    if (object.id !== undefined && object.id !== null) {
-      message.id = Long.fromString(object.id);
-    } else {
-      message.id = Long.UZERO;
-    }
-    if (object.amountA !== undefined && object.amountA !== null) {
-      message.amountA = String(object.amountA);
-    } else {
-      message.amountA = "";
-    }
-    if (object.amountB !== undefined && object.amountB !== null) {
-      message.amountB = String(object.amountB);
-    } else {
-      message.amountB = "";
-    }
-    if (object.minShares !== undefined && object.minShares !== null) {
-      message.minShares = String(object.minShares);
-    } else {
-      message.minShares = "";
-    }
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.id =
+      object.id !== undefined && object.id !== null
+        ? Long.fromString(object.id)
+        : Long.UZERO;
+    message.amountA =
+      object.amountA !== undefined && object.amountA !== null
+        ? String(object.amountA)
+        : "";
+    message.amountB =
+      object.amountB !== undefined && object.amountB !== null
+        ? String(object.amountB)
+        : "";
+    message.minShares =
+      object.minShares !== undefined && object.minShares !== null
+        ? String(object.minShares)
+        : "";
     return message;
   },
 
@@ -460,11 +429,10 @@ export const AddLiquidity = {
   fromPartial(object: DeepPartial<AddLiquidity>): AddLiquidity {
     const message = { ...baseAddLiquidity } as AddLiquidity;
     message.creator = object.creator ?? "";
-    if (object.id !== undefined && object.id !== null) {
-      message.id = object.id as Long;
-    } else {
-      message.id = Long.UZERO;
-    }
+    message.id =
+      object.id !== undefined && object.id !== null
+        ? Long.fromValue(object.id)
+        : Long.UZERO;
     message.amountA = object.amountA ?? "";
     message.amountB = object.amountB ?? "";
     message.minShares = object.minShares ?? "";
@@ -508,12 +476,9 @@ export const AddLiquidities = {
 
   fromJSON(object: any): AddLiquidities {
     const message = { ...baseAddLiquidities } as AddLiquidities;
-    message.addLiquidities = [];
-    if (object.addLiquidities !== undefined && object.addLiquidities !== null) {
-      for (const e of object.addLiquidities) {
-        message.addLiquidities.push(AddLiquidity.fromJSON(e));
-      }
-    }
+    message.addLiquidities = (object.addLiquidities ?? []).map((e: any) =>
+      AddLiquidity.fromJSON(e)
+    );
     return message;
   },
 
@@ -531,12 +496,9 @@ export const AddLiquidities = {
 
   fromPartial(object: DeepPartial<AddLiquidities>): AddLiquidities {
     const message = { ...baseAddLiquidities } as AddLiquidities;
-    message.addLiquidities = [];
-    if (object.addLiquidities !== undefined && object.addLiquidities !== null) {
-      for (const e of object.addLiquidities) {
-        message.addLiquidities.push(AddLiquidity.fromPartial(e));
-      }
-    }
+    message.addLiquidities = (object.addLiquidities ?? []).map((e) =>
+      AddLiquidity.fromPartial(e)
+    );
     return message;
   },
 };
@@ -586,21 +548,18 @@ export const RemoveLiquidity = {
 
   fromJSON(object: any): RemoveLiquidity {
     const message = { ...baseRemoveLiquidity } as RemoveLiquidity;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
-    if (object.id !== undefined && object.id !== null) {
-      message.id = Long.fromString(object.id);
-    } else {
-      message.id = Long.UZERO;
-    }
-    if (object.amount !== undefined && object.amount !== null) {
-      message.amount = String(object.amount);
-    } else {
-      message.amount = "";
-    }
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.id =
+      object.id !== undefined && object.id !== null
+        ? Long.fromString(object.id)
+        : Long.UZERO;
+    message.amount =
+      object.amount !== undefined && object.amount !== null
+        ? String(object.amount)
+        : "";
     return message;
   },
 
@@ -616,11 +575,10 @@ export const RemoveLiquidity = {
   fromPartial(object: DeepPartial<RemoveLiquidity>): RemoveLiquidity {
     const message = { ...baseRemoveLiquidity } as RemoveLiquidity;
     message.creator = object.creator ?? "";
-    if (object.id !== undefined && object.id !== null) {
-      message.id = object.id as Long;
-    } else {
-      message.id = Long.UZERO;
-    }
+    message.id =
+      object.id !== undefined && object.id !== null
+        ? Long.fromValue(object.id)
+        : Long.UZERO;
     message.amount = object.amount ?? "";
     return message;
   },
@@ -662,15 +620,9 @@ export const RemoveLiquidities = {
 
   fromJSON(object: any): RemoveLiquidities {
     const message = { ...baseRemoveLiquidities } as RemoveLiquidities;
-    message.removeLiquidities = [];
-    if (
-      object.removeLiquidities !== undefined &&
-      object.removeLiquidities !== null
-    ) {
-      for (const e of object.removeLiquidities) {
-        message.removeLiquidities.push(RemoveLiquidity.fromJSON(e));
-      }
-    }
+    message.removeLiquidities = (object.removeLiquidities ?? []).map((e: any) =>
+      RemoveLiquidity.fromJSON(e)
+    );
     return message;
   },
 
@@ -688,15 +640,9 @@ export const RemoveLiquidities = {
 
   fromPartial(object: DeepPartial<RemoveLiquidities>): RemoveLiquidities {
     const message = { ...baseRemoveLiquidities } as RemoveLiquidities;
-    message.removeLiquidities = [];
-    if (
-      object.removeLiquidities !== undefined &&
-      object.removeLiquidities !== null
-    ) {
-      for (const e of object.removeLiquidities) {
-        message.removeLiquidities.push(RemoveLiquidity.fromPartial(e));
-      }
-    }
+    message.removeLiquidities = (object.removeLiquidities ?? []).map((e) =>
+      RemoveLiquidity.fromPartial(e)
+    );
     return message;
   },
 };
@@ -708,10 +654,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

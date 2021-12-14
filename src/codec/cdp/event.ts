@@ -57,16 +57,14 @@ export const VaultTypeEvent = {
 
   fromJSON(object: any): VaultTypeEvent {
     const message = { ...baseVaultTypeEvent } as VaultTypeEvent;
-    if (object.vaultType !== undefined && object.vaultType !== null) {
-      message.vaultType = VaultType.fromJSON(object.vaultType);
-    } else {
-      message.vaultType = undefined;
-    }
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
+    message.vaultType =
+      object.vaultType !== undefined && object.vaultType !== null
+        ? VaultType.fromJSON(object.vaultType)
+        : undefined;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
     return message;
   },
 
@@ -82,11 +80,10 @@ export const VaultTypeEvent = {
 
   fromPartial(object: DeepPartial<VaultTypeEvent>): VaultTypeEvent {
     const message = { ...baseVaultTypeEvent } as VaultTypeEvent;
-    if (object.vaultType !== undefined && object.vaultType !== null) {
-      message.vaultType = VaultType.fromPartial(object.vaultType);
-    } else {
-      message.vaultType = undefined;
-    }
+    message.vaultType =
+      object.vaultType !== undefined && object.vaultType !== null
+        ? VaultType.fromPartial(object.vaultType)
+        : undefined;
     message.creator = object.creator ?? "";
     return message;
   },
@@ -155,34 +152,26 @@ export const VaultEvent = {
 
   fromJSON(object: any): VaultEvent {
     const message = { ...baseVaultEvent } as VaultEvent;
-    if (object.type !== undefined && object.type !== null) {
-      message.type = String(object.type);
-    } else {
-      message.type = "";
-    }
-    if (object.vaultTypeId !== undefined && object.vaultTypeId !== null) {
-      message.vaultTypeId = Long.fromString(object.vaultTypeId);
-    } else {
-      message.vaultTypeId = Long.UZERO;
-    }
-    if (
-      object.collateralAmount !== undefined &&
-      object.collateralAmount !== null
-    ) {
-      message.collateralAmount = String(object.collateralAmount);
-    } else {
-      message.collateralAmount = "";
-    }
-    if (object.debtAmount !== undefined && object.debtAmount !== null) {
-      message.debtAmount = String(object.debtAmount);
-    } else {
-      message.debtAmount = "";
-    }
-    if (object.address !== undefined && object.address !== null) {
-      message.address = String(object.address);
-    } else {
-      message.address = "";
-    }
+    message.type =
+      object.type !== undefined && object.type !== null
+        ? String(object.type)
+        : "";
+    message.vaultTypeId =
+      object.vaultTypeId !== undefined && object.vaultTypeId !== null
+        ? Long.fromString(object.vaultTypeId)
+        : Long.UZERO;
+    message.collateralAmount =
+      object.collateralAmount !== undefined && object.collateralAmount !== null
+        ? String(object.collateralAmount)
+        : "";
+    message.debtAmount =
+      object.debtAmount !== undefined && object.debtAmount !== null
+        ? String(object.debtAmount)
+        : "";
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
     return message;
   },
 
@@ -201,11 +190,10 @@ export const VaultEvent = {
   fromPartial(object: DeepPartial<VaultEvent>): VaultEvent {
     const message = { ...baseVaultEvent } as VaultEvent;
     message.type = object.type ?? "";
-    if (object.vaultTypeId !== undefined && object.vaultTypeId !== null) {
-      message.vaultTypeId = object.vaultTypeId as Long;
-    } else {
-      message.vaultTypeId = Long.UZERO;
-    }
+    message.vaultTypeId =
+      object.vaultTypeId !== undefined && object.vaultTypeId !== null
+        ? Long.fromValue(object.vaultTypeId)
+        : Long.UZERO;
     message.collateralAmount = object.collateralAmount ?? "";
     message.debtAmount = object.debtAmount ?? "";
     message.address = object.address ?? "";
@@ -220,10 +208,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

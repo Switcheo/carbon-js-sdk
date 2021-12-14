@@ -57,21 +57,18 @@ export const MsgSetMargin = {
 
   fromJSON(object: any): MsgSetMargin {
     const message = { ...baseMsgSetMargin } as MsgSetMargin;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = String(object.market);
-    } else {
-      message.market = "";
-    }
-    if (object.margin !== undefined && object.margin !== null) {
-      message.margin = String(object.margin);
-    } else {
-      message.margin = "";
-    }
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? String(object.market)
+        : "";
+    message.margin =
+      object.margin !== undefined && object.margin !== null
+        ? String(object.margin)
+        : "";
     return message;
   },
 
@@ -176,10 +173,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

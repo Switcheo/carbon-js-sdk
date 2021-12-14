@@ -11,8 +11,9 @@ import {
   CommitmentCurve,
   RewardCurve,
   Commitment,
-  TotalCommitment,
+  TotalCommitmentRecord,
 } from "../liquiditypool/reward";
+import { Timestamp } from "../google/protobuf/timestamp";
 import { DecCoin } from "../cosmos/base/v1beta1/coin";
 
 export const protobufPackage = "Switcheo.carbon.liquiditypool";
@@ -75,6 +76,7 @@ export interface QueryAllCommitmentRequest {
 export interface QueryAllCommitmentResponse {
   commitments: Commitment[];
   pagination?: PageResponse;
+  blockTime?: Date;
 }
 
 export interface QueryLastClaimRequest {
@@ -111,7 +113,7 @@ export interface QueryAllTotalCommitmentRequest {
 }
 
 export interface QueryAllTotalCommitmentResponse {
-  totalCommitments: TotalCommitment[];
+  totalCommitments: TotalCommitmentRecord[];
   pagination?: PageResponse;
 }
 
@@ -157,11 +159,10 @@ export const QueryGetPoolRequest = {
 
   fromJSON(object: any): QueryGetPoolRequest {
     const message = { ...baseQueryGetPoolRequest } as QueryGetPoolRequest;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = Long.fromString(object.id);
-    } else {
-      message.id = Long.UZERO;
-    }
+    message.id =
+      object.id !== undefined && object.id !== null
+        ? Long.fromString(object.id)
+        : Long.UZERO;
     return message;
   },
 
@@ -174,11 +175,10 @@ export const QueryGetPoolRequest = {
 
   fromPartial(object: DeepPartial<QueryGetPoolRequest>): QueryGetPoolRequest {
     const message = { ...baseQueryGetPoolRequest } as QueryGetPoolRequest;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = object.id as Long;
-    } else {
-      message.id = Long.UZERO;
-    }
+    message.id =
+      object.id !== undefined && object.id !== null
+        ? Long.fromValue(object.id)
+        : Long.UZERO;
     return message;
   },
 };
@@ -222,11 +222,10 @@ export const QueryGetPoolResponse = {
 
   fromJSON(object: any): QueryGetPoolResponse {
     const message = { ...baseQueryGetPoolResponse } as QueryGetPoolResponse;
-    if (object.extendedPool !== undefined && object.extendedPool !== null) {
-      message.extendedPool = ExtendedPool.fromJSON(object.extendedPool);
-    } else {
-      message.extendedPool = undefined;
-    }
+    message.extendedPool =
+      object.extendedPool !== undefined && object.extendedPool !== null
+        ? ExtendedPool.fromJSON(object.extendedPool)
+        : undefined;
     return message;
   },
 
@@ -241,11 +240,10 @@ export const QueryGetPoolResponse = {
 
   fromPartial(object: DeepPartial<QueryGetPoolResponse>): QueryGetPoolResponse {
     const message = { ...baseQueryGetPoolResponse } as QueryGetPoolResponse;
-    if (object.extendedPool !== undefined && object.extendedPool !== null) {
-      message.extendedPool = ExtendedPool.fromPartial(object.extendedPool);
-    } else {
-      message.extendedPool = undefined;
-    }
+    message.extendedPool =
+      object.extendedPool !== undefined && object.extendedPool !== null
+        ? ExtendedPool.fromPartial(object.extendedPool)
+        : undefined;
     return message;
   },
 };
@@ -283,11 +281,10 @@ export const QueryAllPoolRequest = {
 
   fromJSON(object: any): QueryAllPoolRequest {
     const message = { ...baseQueryAllPoolRequest } as QueryAllPoolRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -302,11 +299,10 @@ export const QueryAllPoolRequest = {
 
   fromPartial(object: DeepPartial<QueryAllPoolRequest>): QueryAllPoolRequest {
     const message = { ...baseQueryAllPoolRequest } as QueryAllPoolRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -359,17 +355,13 @@ export const QueryAllPoolResponse = {
 
   fromJSON(object: any): QueryAllPoolResponse {
     const message = { ...baseQueryAllPoolResponse } as QueryAllPoolResponse;
-    message.extendedPools = [];
-    if (object.extendedPools !== undefined && object.extendedPools !== null) {
-      for (const e of object.extendedPools) {
-        message.extendedPools.push(ExtendedPool.fromJSON(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.extendedPools = (object.extendedPools ?? []).map((e: any) =>
+      ExtendedPool.fromJSON(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -391,17 +383,13 @@ export const QueryAllPoolResponse = {
 
   fromPartial(object: DeepPartial<QueryAllPoolResponse>): QueryAllPoolResponse {
     const message = { ...baseQueryAllPoolResponse } as QueryAllPoolResponse;
-    message.extendedPools = [];
-    if (object.extendedPools !== undefined && object.extendedPools !== null) {
-      for (const e of object.extendedPools) {
-        message.extendedPools.push(ExtendedPool.fromPartial(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.extendedPools = (object.extendedPools ?? []).map((e) =>
+      ExtendedPool.fromPartial(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -461,24 +449,18 @@ export const QueryRewardHistoryRequest = {
     const message = {
       ...baseQueryRewardHistoryRequest,
     } as QueryRewardHistoryRequest;
-    if (object.poolId !== undefined && object.poolId !== null) {
-      message.poolId = String(object.poolId);
-    } else {
-      message.poolId = "";
-    }
-    if (
-      object.startBlockHeight !== undefined &&
-      object.startBlockHeight !== null
-    ) {
-      message.startBlockHeight = String(object.startBlockHeight);
-    } else {
-      message.startBlockHeight = "";
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? String(object.poolId)
+        : "";
+    message.startBlockHeight =
+      object.startBlockHeight !== undefined && object.startBlockHeight !== null
+        ? String(object.startBlockHeight)
+        : "";
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -502,11 +484,10 @@ export const QueryRewardHistoryRequest = {
     } as QueryRewardHistoryRequest;
     message.poolId = object.poolId ?? "";
     message.startBlockHeight = object.startBlockHeight ?? "";
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -556,24 +537,18 @@ export const ExtendedPool = {
 
   fromJSON(object: any): ExtendedPool {
     const message = { ...baseExtendedPool } as ExtendedPool;
-    if (object.pool !== undefined && object.pool !== null) {
-      message.pool = Pool.fromJSON(object.pool);
-    } else {
-      message.pool = undefined;
-    }
-    if (object.rewardsWeight !== undefined && object.rewardsWeight !== null) {
-      message.rewardsWeight = String(object.rewardsWeight);
-    } else {
-      message.rewardsWeight = "";
-    }
-    if (
-      object.totalCommitment !== undefined &&
-      object.totalCommitment !== null
-    ) {
-      message.totalCommitment = String(object.totalCommitment);
-    } else {
-      message.totalCommitment = "";
-    }
+    message.pool =
+      object.pool !== undefined && object.pool !== null
+        ? Pool.fromJSON(object.pool)
+        : undefined;
+    message.rewardsWeight =
+      object.rewardsWeight !== undefined && object.rewardsWeight !== null
+        ? String(object.rewardsWeight)
+        : "";
+    message.totalCommitment =
+      object.totalCommitment !== undefined && object.totalCommitment !== null
+        ? String(object.totalCommitment)
+        : "";
     return message;
   },
 
@@ -590,11 +565,10 @@ export const ExtendedPool = {
 
   fromPartial(object: DeepPartial<ExtendedPool>): ExtendedPool {
     const message = { ...baseExtendedPool } as ExtendedPool;
-    if (object.pool !== undefined && object.pool !== null) {
-      message.pool = Pool.fromPartial(object.pool);
-    } else {
-      message.pool = undefined;
-    }
+    message.pool =
+      object.pool !== undefined && object.pool !== null
+        ? Pool.fromPartial(object.pool)
+        : undefined;
     message.rewardsWeight = object.rewardsWeight ?? "";
     message.totalCommitment = object.totalCommitment ?? "";
     return message;
@@ -653,20 +627,13 @@ export const QueryRewardHistoryResponse = {
     const message = {
       ...baseQueryRewardHistoryResponse,
     } as QueryRewardHistoryResponse;
-    message.querierRewardHistories = [];
-    if (
-      object.querierRewardHistories !== undefined &&
-      object.querierRewardHistories !== null
-    ) {
-      for (const e of object.querierRewardHistories) {
-        message.querierRewardHistories.push(QuerierRewardHistory.fromJSON(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.querierRewardHistories = (object.querierRewardHistories ?? []).map(
+      (e: any) => QuerierRewardHistory.fromJSON(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -692,22 +659,13 @@ export const QueryRewardHistoryResponse = {
     const message = {
       ...baseQueryRewardHistoryResponse,
     } as QueryRewardHistoryResponse;
-    message.querierRewardHistories = [];
-    if (
-      object.querierRewardHistories !== undefined &&
-      object.querierRewardHistories !== null
-    ) {
-      for (const e of object.querierRewardHistories) {
-        message.querierRewardHistories.push(
-          QuerierRewardHistory.fromPartial(e)
-        );
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.querierRewardHistories = (object.querierRewardHistories ?? []).map(
+      (e) => QuerierRewardHistory.fromPartial(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -764,25 +722,17 @@ export const QuerierRewardHistory = {
 
   fromJSON(object: any): QuerierRewardHistory {
     const message = { ...baseQuerierRewardHistory } as QuerierRewardHistory;
-    message.rewards = [];
-    if (object.blockHeight !== undefined && object.blockHeight !== null) {
-      message.blockHeight = Long.fromString(object.blockHeight);
-    } else {
-      message.blockHeight = Long.UZERO;
-    }
-    if (object.rewards !== undefined && object.rewards !== null) {
-      for (const e of object.rewards) {
-        message.rewards.push(DecCoin.fromJSON(e));
-      }
-    }
-    if (
-      object.totalCommitment !== undefined &&
-      object.totalCommitment !== null
-    ) {
-      message.totalCommitment = String(object.totalCommitment);
-    } else {
-      message.totalCommitment = "";
-    }
+    message.blockHeight =
+      object.blockHeight !== undefined && object.blockHeight !== null
+        ? Long.fromString(object.blockHeight)
+        : Long.UZERO;
+    message.rewards = (object.rewards ?? []).map((e: any) =>
+      DecCoin.fromJSON(e)
+    );
+    message.totalCommitment =
+      object.totalCommitment !== undefined && object.totalCommitment !== null
+        ? String(object.totalCommitment)
+        : "";
     return message;
   },
 
@@ -804,17 +754,11 @@ export const QuerierRewardHistory = {
 
   fromPartial(object: DeepPartial<QuerierRewardHistory>): QuerierRewardHistory {
     const message = { ...baseQuerierRewardHistory } as QuerierRewardHistory;
-    if (object.blockHeight !== undefined && object.blockHeight !== null) {
-      message.blockHeight = object.blockHeight as Long;
-    } else {
-      message.blockHeight = Long.UZERO;
-    }
-    message.rewards = [];
-    if (object.rewards !== undefined && object.rewards !== null) {
-      for (const e of object.rewards) {
-        message.rewards.push(DecCoin.fromPartial(e));
-      }
-    }
+    message.blockHeight =
+      object.blockHeight !== undefined && object.blockHeight !== null
+        ? Long.fromValue(object.blockHeight)
+        : Long.UZERO;
+    message.rewards = (object.rewards ?? []).map((e) => DecCoin.fromPartial(e));
     message.totalCommitment = object.totalCommitment ?? "";
     return message;
   },
@@ -862,16 +806,14 @@ export const QueryCommitmentRequest = {
 
   fromJSON(object: any): QueryCommitmentRequest {
     const message = { ...baseQueryCommitmentRequest } as QueryCommitmentRequest;
-    if (object.poolId !== undefined && object.poolId !== null) {
-      message.poolId = String(object.poolId);
-    } else {
-      message.poolId = "";
-    }
-    if (object.address !== undefined && object.address !== null) {
-      message.address = String(object.address);
-    } else {
-      message.address = "";
-    }
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? String(object.poolId)
+        : "";
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
     return message;
   },
 
@@ -938,16 +880,11 @@ export const QueryCommitmentResponse = {
     const message = {
       ...baseQueryCommitmentResponse,
     } as QueryCommitmentResponse;
-    if (
+    message.commitmentResponse =
       object.commitmentResponse !== undefined &&
       object.commitmentResponse !== null
-    ) {
-      message.commitmentResponse = CommitmentResponse.fromJSON(
-        object.commitmentResponse
-      );
-    } else {
-      message.commitmentResponse = undefined;
-    }
+        ? CommitmentResponse.fromJSON(object.commitmentResponse)
+        : undefined;
     return message;
   },
 
@@ -966,16 +903,11 @@ export const QueryCommitmentResponse = {
     const message = {
       ...baseQueryCommitmentResponse,
     } as QueryCommitmentResponse;
-    if (
+    message.commitmentResponse =
       object.commitmentResponse !== undefined &&
       object.commitmentResponse !== null
-    ) {
-      message.commitmentResponse = CommitmentResponse.fromPartial(
-        object.commitmentResponse
-      );
-    } else {
-      message.commitmentResponse = undefined;
-    }
+        ? CommitmentResponse.fromPartial(object.commitmentResponse)
+        : undefined;
     return message;
   },
 };
@@ -1026,16 +958,14 @@ export const QueryAllCommitmentRequest = {
     const message = {
       ...baseQueryAllCommitmentRequest,
     } as QueryAllCommitmentRequest;
-    if (object.address !== undefined && object.address !== null) {
-      message.address = String(object.address);
-    } else {
-      message.address = "";
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -1056,11 +986,10 @@ export const QueryAllCommitmentRequest = {
       ...baseQueryAllCommitmentRequest,
     } as QueryAllCommitmentRequest;
     message.address = object.address ?? "";
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -1079,6 +1008,12 @@ export const QueryAllCommitmentResponse = {
       PageResponse.encode(
         message.pagination,
         writer.uint32(18).fork()
+      ).ldelim();
+    }
+    if (message.blockTime !== undefined) {
+      Timestamp.encode(
+        toTimestamp(message.blockTime),
+        writer.uint32(26).fork()
       ).ldelim();
     }
     return writer;
@@ -1103,6 +1038,11 @@ export const QueryAllCommitmentResponse = {
         case 2:
           message.pagination = PageResponse.decode(reader, reader.uint32());
           break;
+        case 3:
+          message.blockTime = fromTimestamp(
+            Timestamp.decode(reader, reader.uint32())
+          );
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1115,17 +1055,17 @@ export const QueryAllCommitmentResponse = {
     const message = {
       ...baseQueryAllCommitmentResponse,
     } as QueryAllCommitmentResponse;
-    message.commitments = [];
-    if (object.commitments !== undefined && object.commitments !== null) {
-      for (const e of object.commitments) {
-        message.commitments.push(Commitment.fromJSON(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.commitments = (object.commitments ?? []).map((e: any) =>
+      Commitment.fromJSON(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
+    message.blockTime =
+      object.blockTime !== undefined && object.blockTime !== null
+        ? fromJsonTimestamp(object.blockTime)
+        : undefined;
     return message;
   },
 
@@ -1142,6 +1082,8 @@ export const QueryAllCommitmentResponse = {
       (obj.pagination = message.pagination
         ? PageResponse.toJSON(message.pagination)
         : undefined);
+    message.blockTime !== undefined &&
+      (obj.blockTime = message.blockTime.toISOString());
     return obj;
   },
 
@@ -1151,17 +1093,14 @@ export const QueryAllCommitmentResponse = {
     const message = {
       ...baseQueryAllCommitmentResponse,
     } as QueryAllCommitmentResponse;
-    message.commitments = [];
-    if (object.commitments !== undefined && object.commitments !== null) {
-      for (const e of object.commitments) {
-        message.commitments.push(Commitment.fromPartial(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.commitments = (object.commitments ?? []).map((e) =>
+      Commitment.fromPartial(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
+    message.blockTime = object.blockTime ?? undefined;
     return message;
   },
 };
@@ -1208,16 +1147,14 @@ export const QueryLastClaimRequest = {
 
   fromJSON(object: any): QueryLastClaimRequest {
     const message = { ...baseQueryLastClaimRequest } as QueryLastClaimRequest;
-    if (object.poolId !== undefined && object.poolId !== null) {
-      message.poolId = String(object.poolId);
-    } else {
-      message.poolId = "";
-    }
-    if (object.address !== undefined && object.address !== null) {
-      message.address = String(object.address);
-    } else {
-      message.address = "";
-    }
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? String(object.poolId)
+        : "";
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
     return message;
   },
 
@@ -1274,11 +1211,10 @@ export const QueryLastClaimResponse = {
 
   fromJSON(object: any): QueryLastClaimResponse {
     const message = { ...baseQueryLastClaimResponse } as QueryLastClaimResponse;
-    if (object.lastClaim !== undefined && object.lastClaim !== null) {
-      message.lastClaim = Long.fromString(object.lastClaim);
-    } else {
-      message.lastClaim = Long.ZERO;
-    }
+    message.lastClaim =
+      object.lastClaim !== undefined && object.lastClaim !== null
+        ? Long.fromString(object.lastClaim)
+        : Long.ZERO;
     return message;
   },
 
@@ -1293,11 +1229,10 @@ export const QueryLastClaimResponse = {
     object: DeepPartial<QueryLastClaimResponse>
   ): QueryLastClaimResponse {
     const message = { ...baseQueryLastClaimResponse } as QueryLastClaimResponse;
-    if (object.lastClaim !== undefined && object.lastClaim !== null) {
-      message.lastClaim = object.lastClaim as Long;
-    } else {
-      message.lastClaim = Long.ZERO;
-    }
+    message.lastClaim =
+      object.lastClaim !== undefined && object.lastClaim !== null
+        ? Long.fromValue(object.lastClaim)
+        : Long.ZERO;
     return message;
   },
 };
@@ -1400,16 +1335,10 @@ export const QueryCommitmentCurveResponse = {
     const message = {
       ...baseQueryCommitmentCurveResponse,
     } as QueryCommitmentCurveResponse;
-    if (
-      object.commitmentCurve !== undefined &&
-      object.commitmentCurve !== null
-    ) {
-      message.commitmentCurve = CommitmentCurve.fromJSON(
-        object.commitmentCurve
-      );
-    } else {
-      message.commitmentCurve = undefined;
-    }
+    message.commitmentCurve =
+      object.commitmentCurve !== undefined && object.commitmentCurve !== null
+        ? CommitmentCurve.fromJSON(object.commitmentCurve)
+        : undefined;
     return message;
   },
 
@@ -1428,16 +1357,10 @@ export const QueryCommitmentCurveResponse = {
     const message = {
       ...baseQueryCommitmentCurveResponse,
     } as QueryCommitmentCurveResponse;
-    if (
-      object.commitmentCurve !== undefined &&
-      object.commitmentCurve !== null
-    ) {
-      message.commitmentCurve = CommitmentCurve.fromPartial(
-        object.commitmentCurve
-      );
-    } else {
-      message.commitmentCurve = undefined;
-    }
+    message.commitmentCurve =
+      object.commitmentCurve !== undefined && object.commitmentCurve !== null
+        ? CommitmentCurve.fromPartial(object.commitmentCurve)
+        : undefined;
     return message;
   },
 };
@@ -1537,11 +1460,10 @@ export const QueryRewardCurveResponse = {
     const message = {
       ...baseQueryRewardCurveResponse,
     } as QueryRewardCurveResponse;
-    if (object.rewardCurve !== undefined && object.rewardCurve !== null) {
-      message.rewardCurve = RewardCurve.fromJSON(object.rewardCurve);
-    } else {
-      message.rewardCurve = undefined;
-    }
+    message.rewardCurve =
+      object.rewardCurve !== undefined && object.rewardCurve !== null
+        ? RewardCurve.fromJSON(object.rewardCurve)
+        : undefined;
     return message;
   },
 
@@ -1560,11 +1482,10 @@ export const QueryRewardCurveResponse = {
     const message = {
       ...baseQueryRewardCurveResponse,
     } as QueryRewardCurveResponse;
-    if (object.rewardCurve !== undefined && object.rewardCurve !== null) {
-      message.rewardCurve = RewardCurve.fromPartial(object.rewardCurve);
-    } else {
-      message.rewardCurve = undefined;
-    }
+    message.rewardCurve =
+      object.rewardCurve !== undefined && object.rewardCurve !== null
+        ? RewardCurve.fromPartial(object.rewardCurve)
+        : undefined;
     return message;
   },
 };
@@ -1609,11 +1530,10 @@ export const QueryTotalCommitmentRequest = {
     const message = {
       ...baseQueryTotalCommitmentRequest,
     } as QueryTotalCommitmentRequest;
-    if (object.poolId !== undefined && object.poolId !== null) {
-      message.poolId = Long.fromString(object.poolId);
-    } else {
-      message.poolId = Long.UZERO;
-    }
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromString(object.poolId)
+        : Long.UZERO;
     return message;
   },
 
@@ -1630,11 +1550,10 @@ export const QueryTotalCommitmentRequest = {
     const message = {
       ...baseQueryTotalCommitmentRequest,
     } as QueryTotalCommitmentRequest;
-    if (object.poolId !== undefined && object.poolId !== null) {
-      message.poolId = object.poolId as Long;
-    } else {
-      message.poolId = Long.UZERO;
-    }
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromValue(object.poolId)
+        : Long.UZERO;
     return message;
   },
 };
@@ -1679,14 +1598,10 @@ export const QueryTotalCommitmentResponse = {
     const message = {
       ...baseQueryTotalCommitmentResponse,
     } as QueryTotalCommitmentResponse;
-    if (
-      object.totalCommitment !== undefined &&
-      object.totalCommitment !== null
-    ) {
-      message.totalCommitment = String(object.totalCommitment);
-    } else {
-      message.totalCommitment = "";
-    }
+    message.totalCommitment =
+      object.totalCommitment !== undefined && object.totalCommitment !== null
+        ? String(object.totalCommitment)
+        : "";
     return message;
   },
 
@@ -1748,11 +1663,10 @@ export const QueryAllTotalCommitmentRequest = {
     const message = {
       ...baseQueryAllTotalCommitmentRequest,
     } as QueryAllTotalCommitmentRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -1771,11 +1685,10 @@ export const QueryAllTotalCommitmentRequest = {
     const message = {
       ...baseQueryAllTotalCommitmentRequest,
     } as QueryAllTotalCommitmentRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -1788,7 +1701,7 @@ export const QueryAllTotalCommitmentResponse = {
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     for (const v of message.totalCommitments) {
-      TotalCommitment.encode(v!, writer.uint32(10).fork()).ldelim();
+      TotalCommitmentRecord.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.pagination !== undefined) {
       PageResponse.encode(
@@ -1814,7 +1727,7 @@ export const QueryAllTotalCommitmentResponse = {
       switch (tag >>> 3) {
         case 1:
           message.totalCommitments.push(
-            TotalCommitment.decode(reader, reader.uint32())
+            TotalCommitmentRecord.decode(reader, reader.uint32())
           );
           break;
         case 2:
@@ -1832,20 +1745,13 @@ export const QueryAllTotalCommitmentResponse = {
     const message = {
       ...baseQueryAllTotalCommitmentResponse,
     } as QueryAllTotalCommitmentResponse;
-    message.totalCommitments = [];
-    if (
-      object.totalCommitments !== undefined &&
-      object.totalCommitments !== null
-    ) {
-      for (const e of object.totalCommitments) {
-        message.totalCommitments.push(TotalCommitment.fromJSON(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.totalCommitments = (object.totalCommitments ?? []).map((e: any) =>
+      TotalCommitmentRecord.fromJSON(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -1853,7 +1759,7 @@ export const QueryAllTotalCommitmentResponse = {
     const obj: any = {};
     if (message.totalCommitments) {
       obj.totalCommitments = message.totalCommitments.map((e) =>
-        e ? TotalCommitment.toJSON(e) : undefined
+        e ? TotalCommitmentRecord.toJSON(e) : undefined
       );
     } else {
       obj.totalCommitments = [];
@@ -1871,20 +1777,13 @@ export const QueryAllTotalCommitmentResponse = {
     const message = {
       ...baseQueryAllTotalCommitmentResponse,
     } as QueryAllTotalCommitmentResponse;
-    message.totalCommitments = [];
-    if (
-      object.totalCommitments !== undefined &&
-      object.totalCommitments !== null
-    ) {
-      for (const e of object.totalCommitments) {
-        message.totalCommitments.push(TotalCommitment.fromPartial(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.totalCommitments = (object.totalCommitments ?? []).map((e) =>
+      TotalCommitmentRecord.fromPartial(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -1938,16 +1837,14 @@ export const QueryClaimableRewardsRequest = {
     const message = {
       ...baseQueryClaimableRewardsRequest,
     } as QueryClaimableRewardsRequest;
-    if (object.poolId !== undefined && object.poolId !== null) {
-      message.poolId = Long.fromString(object.poolId);
-    } else {
-      message.poolId = Long.UZERO;
-    }
-    if (object.address !== undefined && object.address !== null) {
-      message.address = String(object.address);
-    } else {
-      message.address = "";
-    }
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromString(object.poolId)
+        : Long.UZERO;
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
     return message;
   },
 
@@ -1965,11 +1862,10 @@ export const QueryClaimableRewardsRequest = {
     const message = {
       ...baseQueryClaimableRewardsRequest,
     } as QueryClaimableRewardsRequest;
-    if (object.poolId !== undefined && object.poolId !== null) {
-      message.poolId = object.poolId as Long;
-    } else {
-      message.poolId = Long.UZERO;
-    }
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromValue(object.poolId)
+        : Long.UZERO;
     message.address = object.address ?? "";
     return message;
   },
@@ -2016,12 +1912,9 @@ export const QueryClaimableRewardsResponse = {
     const message = {
       ...baseQueryClaimableRewardsResponse,
     } as QueryClaimableRewardsResponse;
-    message.rewards = [];
-    if (object.rewards !== undefined && object.rewards !== null) {
-      for (const e of object.rewards) {
-        message.rewards.push(DecCoin.fromJSON(e));
-      }
-    }
+    message.rewards = (object.rewards ?? []).map((e: any) =>
+      DecCoin.fromJSON(e)
+    );
     return message;
   },
 
@@ -2043,12 +1936,7 @@ export const QueryClaimableRewardsResponse = {
     const message = {
       ...baseQueryClaimableRewardsResponse,
     } as QueryClaimableRewardsResponse;
-    message.rewards = [];
-    if (object.rewards !== undefined && object.rewards !== null) {
-      for (const e of object.rewards) {
-        message.rewards.push(DecCoin.fromPartial(e));
-      }
-    }
+    message.rewards = (object.rewards ?? []).map((e) => DecCoin.fromPartial(e));
     return message;
   },
 };
@@ -2263,10 +2151,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
@@ -2274,6 +2163,32 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+function toTimestamp(date: Date): Timestamp {
+  const seconds = numberToLong(date.getTime() / 1_000);
+  const nanos = (date.getTime() % 1_000) * 1_000_000;
+  return { seconds, nanos };
+}
+
+function fromTimestamp(t: Timestamp): Date {
+  let millis = t.seconds.toNumber() * 1_000;
+  millis += t.nanos / 1_000_000;
+  return new Date(millis);
+}
+
+function fromJsonTimestamp(o: any): Date {
+  if (o instanceof Date) {
+    return o;
+  } else if (typeof o === "string") {
+    return new Date(o);
+  } else {
+    return fromTimestamp(Timestamp.fromJSON(o));
+  }
+}
+
+function numberToLong(number: number) {
+  return Long.fromNumber(number);
+}
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

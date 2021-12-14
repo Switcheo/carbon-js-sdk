@@ -48,16 +48,12 @@ export const MsgFee = {
 
   fromJSON(object: any): MsgFee {
     const message = { ...baseMsgFee } as MsgFee;
-    if (object.msgType !== undefined && object.msgType !== null) {
-      message.msgType = String(object.msgType);
-    } else {
-      message.msgType = "";
-    }
-    if (object.fee !== undefined && object.fee !== null) {
-      message.fee = String(object.fee);
-    } else {
-      message.fee = "";
-    }
+    message.msgType =
+      object.msgType !== undefined && object.msgType !== null
+        ? String(object.msgType)
+        : "";
+    message.fee =
+      object.fee !== undefined && object.fee !== null ? String(object.fee) : "";
     return message;
   },
 
@@ -83,10 +79,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

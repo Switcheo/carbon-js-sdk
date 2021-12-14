@@ -78,10 +78,10 @@ export const QueryEvidenceRequest = {
 
   fromJSON(object: any): QueryEvidenceRequest {
     const message = { ...baseQueryEvidenceRequest } as QueryEvidenceRequest;
-    message.evidenceHash = new Uint8Array();
-    if (object.evidenceHash !== undefined && object.evidenceHash !== null) {
-      message.evidenceHash = bytesFromBase64(object.evidenceHash);
-    }
+    message.evidenceHash =
+      object.evidenceHash !== undefined && object.evidenceHash !== null
+        ? bytesFromBase64(object.evidenceHash)
+        : new Uint8Array();
     return message;
   },
 
@@ -139,11 +139,10 @@ export const QueryEvidenceResponse = {
 
   fromJSON(object: any): QueryEvidenceResponse {
     const message = { ...baseQueryEvidenceResponse } as QueryEvidenceResponse;
-    if (object.evidence !== undefined && object.evidence !== null) {
-      message.evidence = Any.fromJSON(object.evidence);
-    } else {
-      message.evidence = undefined;
-    }
+    message.evidence =
+      object.evidence !== undefined && object.evidence !== null
+        ? Any.fromJSON(object.evidence)
+        : undefined;
     return message;
   },
 
@@ -160,11 +159,10 @@ export const QueryEvidenceResponse = {
     object: DeepPartial<QueryEvidenceResponse>
   ): QueryEvidenceResponse {
     const message = { ...baseQueryEvidenceResponse } as QueryEvidenceResponse;
-    if (object.evidence !== undefined && object.evidence !== null) {
-      message.evidence = Any.fromPartial(object.evidence);
-    } else {
-      message.evidence = undefined;
-    }
+    message.evidence =
+      object.evidence !== undefined && object.evidence !== null
+        ? Any.fromPartial(object.evidence)
+        : undefined;
     return message;
   },
 };
@@ -209,11 +207,10 @@ export const QueryAllEvidenceRequest = {
     const message = {
       ...baseQueryAllEvidenceRequest,
     } as QueryAllEvidenceRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -232,11 +229,10 @@ export const QueryAllEvidenceRequest = {
     const message = {
       ...baseQueryAllEvidenceRequest,
     } as QueryAllEvidenceRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -291,17 +287,11 @@ export const QueryAllEvidenceResponse = {
     const message = {
       ...baseQueryAllEvidenceResponse,
     } as QueryAllEvidenceResponse;
-    message.evidence = [];
-    if (object.evidence !== undefined && object.evidence !== null) {
-      for (const e of object.evidence) {
-        message.evidence.push(Any.fromJSON(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.evidence = (object.evidence ?? []).map((e: any) => Any.fromJSON(e));
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -327,17 +317,11 @@ export const QueryAllEvidenceResponse = {
     const message = {
       ...baseQueryAllEvidenceResponse,
     } as QueryAllEvidenceResponse;
-    message.evidence = [];
-    if (object.evidence !== undefined && object.evidence !== null) {
-      for (const e of object.evidence) {
-        message.evidence.push(Any.fromPartial(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.evidence = (object.evidence ?? []).map((e) => Any.fromPartial(e));
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -435,10 +419,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

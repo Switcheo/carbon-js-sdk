@@ -69,16 +69,14 @@ export const QueryGetLeverageRequest = {
     const message = {
       ...baseQueryGetLeverageRequest,
     } as QueryGetLeverageRequest;
-    if (object.address !== undefined && object.address !== null) {
-      message.address = String(object.address);
-    } else {
-      message.address = "";
-    }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = String(object.market);
-    } else {
-      message.market = "";
-    }
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? String(object.market)
+        : "";
     return message;
   },
 
@@ -147,11 +145,10 @@ export const QueryGetLeverageResponse = {
     const message = {
       ...baseQueryGetLeverageResponse,
     } as QueryGetLeverageResponse;
-    if (object.MarketLeverage !== undefined && object.MarketLeverage !== null) {
-      message.MarketLeverage = MarketLeverage.fromJSON(object.MarketLeverage);
-    } else {
-      message.MarketLeverage = undefined;
-    }
+    message.MarketLeverage =
+      object.MarketLeverage !== undefined && object.MarketLeverage !== null
+        ? MarketLeverage.fromJSON(object.MarketLeverage)
+        : undefined;
     return message;
   },
 
@@ -170,13 +167,10 @@ export const QueryGetLeverageResponse = {
     const message = {
       ...baseQueryGetLeverageResponse,
     } as QueryGetLeverageResponse;
-    if (object.MarketLeverage !== undefined && object.MarketLeverage !== null) {
-      message.MarketLeverage = MarketLeverage.fromPartial(
-        object.MarketLeverage
-      );
-    } else {
-      message.MarketLeverage = undefined;
-    }
+    message.MarketLeverage =
+      object.MarketLeverage !== undefined && object.MarketLeverage !== null
+        ? MarketLeverage.fromPartial(object.MarketLeverage)
+        : undefined;
     return message;
   },
 };
@@ -221,11 +215,10 @@ export const QueryAllLeverageRequest = {
     const message = {
       ...baseQueryAllLeverageRequest,
     } as QueryAllLeverageRequest;
-    if (object.address !== undefined && object.address !== null) {
-      message.address = String(object.address);
-    } else {
-      message.address = "";
-    }
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
     return message;
   },
 
@@ -289,15 +282,9 @@ export const QueryAllLeverageResponse = {
     const message = {
       ...baseQueryAllLeverageResponse,
     } as QueryAllLeverageResponse;
-    message.marketLeverages = [];
-    if (
-      object.marketLeverages !== undefined &&
-      object.marketLeverages !== null
-    ) {
-      for (const e of object.marketLeverages) {
-        message.marketLeverages.push(MarketLeverage.fromJSON(e));
-      }
-    }
+    message.marketLeverages = (object.marketLeverages ?? []).map((e: any) =>
+      MarketLeverage.fromJSON(e)
+    );
     return message;
   },
 
@@ -319,15 +306,9 @@ export const QueryAllLeverageResponse = {
     const message = {
       ...baseQueryAllLeverageResponse,
     } as QueryAllLeverageResponse;
-    message.marketLeverages = [];
-    if (
-      object.marketLeverages !== undefined &&
-      object.marketLeverages !== null
-    ) {
-      for (const e of object.marketLeverages) {
-        message.marketLeverages.push(MarketLeverage.fromPartial(e));
-      }
-    }
+    message.marketLeverages = (object.marketLeverages ?? []).map((e) =>
+      MarketLeverage.fromPartial(e)
+    );
     return message;
   },
 };
@@ -396,10 +377,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

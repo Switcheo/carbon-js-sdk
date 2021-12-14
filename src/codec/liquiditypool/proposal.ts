@@ -100,21 +100,18 @@ export const LinkPoolProposal = {
 
   fromJSON(object: any): LinkPoolProposal {
     const message = { ...baseLinkPoolProposal } as LinkPoolProposal;
-    if (object.title !== undefined && object.title !== null) {
-      message.title = String(object.title);
-    } else {
-      message.title = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = String(object.description);
-    } else {
-      message.description = "";
-    }
-    if (object.msg !== undefined && object.msg !== null) {
-      message.msg = LinkPoolParams.fromJSON(object.msg);
-    } else {
-      message.msg = undefined;
-    }
+    message.title =
+      object.title !== undefined && object.title !== null
+        ? String(object.title)
+        : "";
+    message.description =
+      object.description !== undefined && object.description !== null
+        ? String(object.description)
+        : "";
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? LinkPoolParams.fromJSON(object.msg)
+        : undefined;
     return message;
   },
 
@@ -132,11 +129,10 @@ export const LinkPoolProposal = {
     const message = { ...baseLinkPoolProposal } as LinkPoolProposal;
     message.title = object.title ?? "";
     message.description = object.description ?? "";
-    if (object.msg !== undefined && object.msg !== null) {
-      message.msg = LinkPoolParams.fromPartial(object.msg);
-    } else {
-      message.msg = undefined;
-    }
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? LinkPoolParams.fromPartial(object.msg)
+        : undefined;
     return message;
   },
 };
@@ -186,21 +182,18 @@ export const UnlinkPoolProposal = {
 
   fromJSON(object: any): UnlinkPoolProposal {
     const message = { ...baseUnlinkPoolProposal } as UnlinkPoolProposal;
-    if (object.title !== undefined && object.title !== null) {
-      message.title = String(object.title);
-    } else {
-      message.title = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = String(object.description);
-    } else {
-      message.description = "";
-    }
-    if (object.msg !== undefined && object.msg !== null) {
-      message.msg = UnlinkPoolParams.fromJSON(object.msg);
-    } else {
-      message.msg = undefined;
-    }
+    message.title =
+      object.title !== undefined && object.title !== null
+        ? String(object.title)
+        : "";
+    message.description =
+      object.description !== undefined && object.description !== null
+        ? String(object.description)
+        : "";
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? UnlinkPoolParams.fromJSON(object.msg)
+        : undefined;
     return message;
   },
 
@@ -220,11 +213,10 @@ export const UnlinkPoolProposal = {
     const message = { ...baseUnlinkPoolProposal } as UnlinkPoolProposal;
     message.title = object.title ?? "";
     message.description = object.description ?? "";
-    if (object.msg !== undefined && object.msg !== null) {
-      message.msg = UnlinkPoolParams.fromPartial(object.msg);
-    } else {
-      message.msg = undefined;
-    }
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? UnlinkPoolParams.fromPartial(object.msg)
+        : undefined;
     return message;
   },
 };
@@ -280,21 +272,18 @@ export const SetRewardCurveProposal = {
 
   fromJSON(object: any): SetRewardCurveProposal {
     const message = { ...baseSetRewardCurveProposal } as SetRewardCurveProposal;
-    if (object.title !== undefined && object.title !== null) {
-      message.title = String(object.title);
-    } else {
-      message.title = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = String(object.description);
-    } else {
-      message.description = "";
-    }
-    if (object.msg !== undefined && object.msg !== null) {
-      message.msg = SetRewardCurveParams.fromJSON(object.msg);
-    } else {
-      message.msg = undefined;
-    }
+    message.title =
+      object.title !== undefined && object.title !== null
+        ? String(object.title)
+        : "";
+    message.description =
+      object.description !== undefined && object.description !== null
+        ? String(object.description)
+        : "";
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? SetRewardCurveParams.fromJSON(object.msg)
+        : undefined;
     return message;
   },
 
@@ -316,11 +305,10 @@ export const SetRewardCurveProposal = {
     const message = { ...baseSetRewardCurveProposal } as SetRewardCurveProposal;
     message.title = object.title ?? "";
     message.description = object.description ?? "";
-    if (object.msg !== undefined && object.msg !== null) {
-      message.msg = SetRewardCurveParams.fromPartial(object.msg);
-    } else {
-      message.msg = undefined;
-    }
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? SetRewardCurveParams.fromPartial(object.msg)
+        : undefined;
     return message;
   },
 };
@@ -383,21 +371,18 @@ export const SetCommitmentCurveProposal = {
     const message = {
       ...baseSetCommitmentCurveProposal,
     } as SetCommitmentCurveProposal;
-    if (object.title !== undefined && object.title !== null) {
-      message.title = String(object.title);
-    } else {
-      message.title = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = String(object.description);
-    } else {
-      message.description = "";
-    }
-    if (object.msg !== undefined && object.msg !== null) {
-      message.msg = SetCommitmentCurveParams.fromJSON(object.msg);
-    } else {
-      message.msg = undefined;
-    }
+    message.title =
+      object.title !== undefined && object.title !== null
+        ? String(object.title)
+        : "";
+    message.description =
+      object.description !== undefined && object.description !== null
+        ? String(object.description)
+        : "";
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? SetCommitmentCurveParams.fromJSON(object.msg)
+        : undefined;
     return message;
   },
 
@@ -421,11 +406,10 @@ export const SetCommitmentCurveProposal = {
     } as SetCommitmentCurveProposal;
     message.title = object.title ?? "";
     message.description = object.description ?? "";
-    if (object.msg !== undefined && object.msg !== null) {
-      message.msg = SetCommitmentCurveParams.fromPartial(object.msg);
-    } else {
-      message.msg = undefined;
-    }
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? SetCommitmentCurveParams.fromPartial(object.msg)
+        : undefined;
     return message;
   },
 };
@@ -485,21 +469,18 @@ export const SetRewardsWeightsProposal = {
     const message = {
       ...baseSetRewardsWeightsProposal,
     } as SetRewardsWeightsProposal;
-    if (object.title !== undefined && object.title !== null) {
-      message.title = String(object.title);
-    } else {
-      message.title = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = String(object.description);
-    } else {
-      message.description = "";
-    }
-    if (object.msg !== undefined && object.msg !== null) {
-      message.msg = SetRewardsWeightsParams.fromJSON(object.msg);
-    } else {
-      message.msg = undefined;
-    }
+    message.title =
+      object.title !== undefined && object.title !== null
+        ? String(object.title)
+        : "";
+    message.description =
+      object.description !== undefined && object.description !== null
+        ? String(object.description)
+        : "";
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? SetRewardsWeightsParams.fromJSON(object.msg)
+        : undefined;
     return message;
   },
 
@@ -523,11 +504,10 @@ export const SetRewardsWeightsProposal = {
     } as SetRewardsWeightsProposal;
     message.title = object.title ?? "";
     message.description = object.description ?? "";
-    if (object.msg !== undefined && object.msg !== null) {
-      message.msg = SetRewardsWeightsParams.fromPartial(object.msg);
-    } else {
-      message.msg = undefined;
-    }
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? SetRewardsWeightsParams.fromPartial(object.msg)
+        : undefined;
     return message;
   },
 };
@@ -583,21 +563,18 @@ export const ChangeSwapFeeProposal = {
 
   fromJSON(object: any): ChangeSwapFeeProposal {
     const message = { ...baseChangeSwapFeeProposal } as ChangeSwapFeeProposal;
-    if (object.title !== undefined && object.title !== null) {
-      message.title = String(object.title);
-    } else {
-      message.title = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = String(object.description);
-    } else {
-      message.description = "";
-    }
-    if (object.msg !== undefined && object.msg !== null) {
-      message.msg = ChangeSwapFeeParams.fromJSON(object.msg);
-    } else {
-      message.msg = undefined;
-    }
+    message.title =
+      object.title !== undefined && object.title !== null
+        ? String(object.title)
+        : "";
+    message.description =
+      object.description !== undefined && object.description !== null
+        ? String(object.description)
+        : "";
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? ChangeSwapFeeParams.fromJSON(object.msg)
+        : undefined;
     return message;
   },
 
@@ -619,11 +596,10 @@ export const ChangeSwapFeeProposal = {
     const message = { ...baseChangeSwapFeeProposal } as ChangeSwapFeeProposal;
     message.title = object.title ?? "";
     message.description = object.description ?? "";
-    if (object.msg !== undefined && object.msg !== null) {
-      message.msg = ChangeSwapFeeParams.fromPartial(object.msg);
-    } else {
-      message.msg = undefined;
-    }
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? ChangeSwapFeeParams.fromPartial(object.msg)
+        : undefined;
     return message;
   },
 };
@@ -683,21 +659,18 @@ export const ChangeNumQuotesProposal = {
     const message = {
       ...baseChangeNumQuotesProposal,
     } as ChangeNumQuotesProposal;
-    if (object.title !== undefined && object.title !== null) {
-      message.title = String(object.title);
-    } else {
-      message.title = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = String(object.description);
-    } else {
-      message.description = "";
-    }
-    if (object.msg !== undefined && object.msg !== null) {
-      message.msg = ChangeNumQuotesParams.fromJSON(object.msg);
-    } else {
-      message.msg = undefined;
-    }
+    message.title =
+      object.title !== undefined && object.title !== null
+        ? String(object.title)
+        : "";
+    message.description =
+      object.description !== undefined && object.description !== null
+        ? String(object.description)
+        : "";
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? ChangeNumQuotesParams.fromJSON(object.msg)
+        : undefined;
     return message;
   },
 
@@ -721,11 +694,10 @@ export const ChangeNumQuotesProposal = {
     } as ChangeNumQuotesProposal;
     message.title = object.title ?? "";
     message.description = object.description ?? "";
-    if (object.msg !== undefined && object.msg !== null) {
-      message.msg = ChangeNumQuotesParams.fromPartial(object.msg);
-    } else {
-      message.msg = undefined;
-    }
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? ChangeNumQuotesParams.fromPartial(object.msg)
+        : undefined;
     return message;
   },
 };
@@ -737,10 +709,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

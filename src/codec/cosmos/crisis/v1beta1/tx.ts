@@ -63,24 +63,19 @@ export const MsgVerifyInvariant = {
 
   fromJSON(object: any): MsgVerifyInvariant {
     const message = { ...baseMsgVerifyInvariant } as MsgVerifyInvariant;
-    if (object.sender !== undefined && object.sender !== null) {
-      message.sender = String(object.sender);
-    } else {
-      message.sender = "";
-    }
-    if (
+    message.sender =
+      object.sender !== undefined && object.sender !== null
+        ? String(object.sender)
+        : "";
+    message.invariantModuleName =
       object.invariantModuleName !== undefined &&
       object.invariantModuleName !== null
-    ) {
-      message.invariantModuleName = String(object.invariantModuleName);
-    } else {
-      message.invariantModuleName = "";
-    }
-    if (object.invariantRoute !== undefined && object.invariantRoute !== null) {
-      message.invariantRoute = String(object.invariantRoute);
-    } else {
-      message.invariantRoute = "";
-    }
+        ? String(object.invariantModuleName)
+        : "";
+    message.invariantRoute =
+      object.invariantRoute !== undefined && object.invariantRoute !== null
+        ? String(object.invariantRoute)
+        : "";
     return message;
   },
 
@@ -199,10 +194,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

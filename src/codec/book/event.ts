@@ -75,31 +75,26 @@ export const OrderBookEvent = {
 
   fromJSON(object: any): OrderBookEvent {
     const message = { ...baseOrderBookEvent } as OrderBookEvent;
-    if (object.type !== undefined && object.type !== null) {
-      message.type = String(object.type);
-    } else {
-      message.type = "";
-    }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = String(object.market);
-    } else {
-      message.market = "";
-    }
-    if (object.side !== undefined && object.side !== null) {
-      message.side = String(object.side);
-    } else {
-      message.side = "";
-    }
-    if (object.price !== undefined && object.price !== null) {
-      message.price = String(object.price);
-    } else {
-      message.price = "";
-    }
-    if (object.quantity !== undefined && object.quantity !== null) {
-      message.quantity = String(object.quantity);
-    } else {
-      message.quantity = "";
-    }
+    message.type =
+      object.type !== undefined && object.type !== null
+        ? String(object.type)
+        : "";
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? String(object.market)
+        : "";
+    message.side =
+      object.side !== undefined && object.side !== null
+        ? String(object.side)
+        : "";
+    message.price =
+      object.price !== undefined && object.price !== null
+        ? String(object.price)
+        : "";
+    message.quantity =
+      object.quantity !== undefined && object.quantity !== null
+        ? String(object.quantity)
+        : "";
     return message;
   },
 
@@ -131,10 +126,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

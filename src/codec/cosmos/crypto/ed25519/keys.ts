@@ -5,17 +5,20 @@ import _m0 from "protobufjs/minimal";
 export const protobufPackage = "cosmos.crypto.ed25519";
 
 /**
- * PubKey defines a ed25519 public key
- * Key is the compressed form of the pubkey. The first byte depends is a 0x02 byte
- * if the y-coordinate is the lexicographically largest of the two associated with
- * the x-coordinate. Otherwise the first byte is a 0x03.
- * This prefix is followed with the x-coordinate.
+ * PubKey is an ed25519 public key for handling Tendermint keys in SDK.
+ * It's needed for Any serialization and SDK compatibility.
+ * It must not be used in a non Tendermint key context because it doesn't implement
+ * ADR-28. Nevertheless, you will like to use ed25519 in app user level
+ * then you must create a new proto message and follow ADR-28 for Address construction.
  */
 export interface PubKey {
   key: Uint8Array;
 }
 
-/** PrivKey defines a ed25519 private key. */
+/**
+ * Deprecated: PrivKey defines a ed25519 private key.
+ * NOTE: ed25519 keys must not be used in SDK apps except in a tendermint validator context.
+ */
 export interface PrivKey {
   key: Uint8Array;
 }
@@ -54,10 +57,10 @@ export const PubKey = {
 
   fromJSON(object: any): PubKey {
     const message = { ...basePubKey } as PubKey;
-    message.key = new Uint8Array();
-    if (object.key !== undefined && object.key !== null) {
-      message.key = bytesFromBase64(object.key);
-    }
+    message.key =
+      object.key !== undefined && object.key !== null
+        ? bytesFromBase64(object.key)
+        : new Uint8Array();
     return message;
   },
 
@@ -111,10 +114,10 @@ export const PrivKey = {
 
   fromJSON(object: any): PrivKey {
     const message = { ...basePrivKey } as PrivKey;
-    message.key = new Uint8Array();
-    if (object.key !== undefined && object.key !== null) {
-      message.key = bytesFromBase64(object.key);
-    }
+    message.key =
+      object.key !== undefined && object.key !== null
+        ? bytesFromBase64(object.key)
+        : new Uint8Array();
     return message;
   },
 
@@ -175,10 +178,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

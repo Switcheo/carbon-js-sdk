@@ -92,36 +92,16 @@ export const GenesisState = {
 
   fromJSON(object: any): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
-    message.orders = [];
-    message.accountOrderIds = [];
-    message.accountSequences = [];
-    message.flags = [];
-    if (object.orders !== undefined && object.orders !== null) {
-      for (const e of object.orders) {
-        message.orders.push(Order.fromJSON(e));
-      }
-    }
-    if (
-      object.accountOrderIds !== undefined &&
-      object.accountOrderIds !== null
-    ) {
-      for (const e of object.accountOrderIds) {
-        message.accountOrderIds.push(GenesisAccountOrderIDs.fromJSON(e));
-      }
-    }
-    if (
-      object.accountSequences !== undefined &&
-      object.accountSequences !== null
-    ) {
-      for (const e of object.accountSequences) {
-        message.accountSequences.push(GenesisAccountSequence.fromJSON(e));
-      }
-    }
-    if (object.flags !== undefined && object.flags !== null) {
-      for (const e of object.flags) {
-        message.flags.push(GenesisFlag.fromJSON(e));
-      }
-    }
+    message.orders = (object.orders ?? []).map((e: any) => Order.fromJSON(e));
+    message.accountOrderIds = (object.accountOrderIds ?? []).map((e: any) =>
+      GenesisAccountOrderIDs.fromJSON(e)
+    );
+    message.accountSequences = (object.accountSequences ?? []).map((e: any) =>
+      GenesisAccountSequence.fromJSON(e)
+    );
+    message.flags = (object.flags ?? []).map((e: any) =>
+      GenesisFlag.fromJSON(e)
+    );
     return message;
   },
 
@@ -158,36 +138,14 @@ export const GenesisState = {
 
   fromPartial(object: DeepPartial<GenesisState>): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
-    message.orders = [];
-    if (object.orders !== undefined && object.orders !== null) {
-      for (const e of object.orders) {
-        message.orders.push(Order.fromPartial(e));
-      }
-    }
-    message.accountOrderIds = [];
-    if (
-      object.accountOrderIds !== undefined &&
-      object.accountOrderIds !== null
-    ) {
-      for (const e of object.accountOrderIds) {
-        message.accountOrderIds.push(GenesisAccountOrderIDs.fromPartial(e));
-      }
-    }
-    message.accountSequences = [];
-    if (
-      object.accountSequences !== undefined &&
-      object.accountSequences !== null
-    ) {
-      for (const e of object.accountSequences) {
-        message.accountSequences.push(GenesisAccountSequence.fromPartial(e));
-      }
-    }
-    message.flags = [];
-    if (object.flags !== undefined && object.flags !== null) {
-      for (const e of object.flags) {
-        message.flags.push(GenesisFlag.fromPartial(e));
-      }
-    }
+    message.orders = (object.orders ?? []).map((e) => Order.fromPartial(e));
+    message.accountOrderIds = (object.accountOrderIds ?? []).map((e) =>
+      GenesisAccountOrderIDs.fromPartial(e)
+    );
+    message.accountSequences = (object.accountSequences ?? []).map((e) =>
+      GenesisAccountSequence.fromPartial(e)
+    );
+    message.flags = (object.flags ?? []).map((e) => GenesisFlag.fromPartial(e));
     return message;
   },
 };
@@ -240,21 +198,18 @@ export const GenesisAccountOrderIDs = {
 
   fromJSON(object: any): GenesisAccountOrderIDs {
     const message = { ...baseGenesisAccountOrderIDs } as GenesisAccountOrderIDs;
-    if (object.address !== undefined && object.address !== null) {
-      message.address = String(object.address);
-    } else {
-      message.address = "";
-    }
-    if (object.market !== undefined && object.market !== null) {
-      message.market = String(object.market);
-    } else {
-      message.market = "";
-    }
-    if (object.openOrderIds !== undefined && object.openOrderIds !== null) {
-      message.openOrderIds = OrderIDs.fromJSON(object.openOrderIds);
-    } else {
-      message.openOrderIds = undefined;
-    }
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? String(object.market)
+        : "";
+    message.openOrderIds =
+      object.openOrderIds !== undefined && object.openOrderIds !== null
+        ? OrderIDs.fromJSON(object.openOrderIds)
+        : undefined;
     return message;
   },
 
@@ -275,11 +230,10 @@ export const GenesisAccountOrderIDs = {
     const message = { ...baseGenesisAccountOrderIDs } as GenesisAccountOrderIDs;
     message.address = object.address ?? "";
     message.market = object.market ?? "";
-    if (object.openOrderIds !== undefined && object.openOrderIds !== null) {
-      message.openOrderIds = OrderIDs.fromPartial(object.openOrderIds);
-    } else {
-      message.openOrderIds = undefined;
-    }
+    message.openOrderIds =
+      object.openOrderIds !== undefined && object.openOrderIds !== null
+        ? OrderIDs.fromPartial(object.openOrderIds)
+        : undefined;
     return message;
   },
 };
@@ -329,16 +283,14 @@ export const GenesisAccountSequence = {
 
   fromJSON(object: any): GenesisAccountSequence {
     const message = { ...baseGenesisAccountSequence } as GenesisAccountSequence;
-    if (object.address !== undefined && object.address !== null) {
-      message.address = String(object.address);
-    } else {
-      message.address = "";
-    }
-    if (object.sequenceNumber !== undefined && object.sequenceNumber !== null) {
-      message.sequenceNumber = Long.fromString(object.sequenceNumber);
-    } else {
-      message.sequenceNumber = Long.UZERO;
-    }
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    message.sequenceNumber =
+      object.sequenceNumber !== undefined && object.sequenceNumber !== null
+        ? Long.fromString(object.sequenceNumber)
+        : Long.UZERO;
     return message;
   },
 
@@ -355,11 +307,10 @@ export const GenesisAccountSequence = {
   ): GenesisAccountSequence {
     const message = { ...baseGenesisAccountSequence } as GenesisAccountSequence;
     message.address = object.address ?? "";
-    if (object.sequenceNumber !== undefined && object.sequenceNumber !== null) {
-      message.sequenceNumber = object.sequenceNumber as Long;
-    } else {
-      message.sequenceNumber = Long.UZERO;
-    }
+    message.sequenceNumber =
+      object.sequenceNumber !== undefined && object.sequenceNumber !== null
+        ? Long.fromValue(object.sequenceNumber)
+        : Long.UZERO;
     return message;
   },
 };
@@ -403,19 +354,14 @@ export const GenesisFlag = {
 
   fromJSON(object: any): GenesisFlag {
     const message = { ...baseGenesisFlag } as GenesisFlag;
-    if (object.blockchain !== undefined && object.blockchain !== null) {
-      message.blockchain = String(object.blockchain);
-    } else {
-      message.blockchain = "";
-    }
-    if (
-      object.isTradingEnabled !== undefined &&
-      object.isTradingEnabled !== null
-    ) {
-      message.isTradingEnabled = Boolean(object.isTradingEnabled);
-    } else {
-      message.isTradingEnabled = false;
-    }
+    message.blockchain =
+      object.blockchain !== undefined && object.blockchain !== null
+        ? String(object.blockchain)
+        : "";
+    message.isTradingEnabled =
+      object.isTradingEnabled !== undefined && object.isTradingEnabled !== null
+        ? Boolean(object.isTradingEnabled)
+        : false;
     return message;
   },
 
@@ -442,10 +388,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

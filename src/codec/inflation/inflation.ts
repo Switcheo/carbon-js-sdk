@@ -60,21 +60,18 @@ export const MintData = {
 
   fromJSON(object: any): MintData {
     const message = { ...baseMintData } as MintData;
-    if (object.firstBlockTime !== undefined && object.firstBlockTime !== null) {
-      message.firstBlockTime = Long.fromString(object.firstBlockTime);
-    } else {
-      message.firstBlockTime = Long.ZERO;
-    }
-    if (object.prevBlockTime !== undefined && object.prevBlockTime !== null) {
-      message.prevBlockTime = Long.fromString(object.prevBlockTime);
-    } else {
-      message.prevBlockTime = Long.ZERO;
-    }
-    if (object.currentSupply !== undefined && object.currentSupply !== null) {
-      message.currentSupply = String(object.currentSupply);
-    } else {
-      message.currentSupply = "";
-    }
+    message.firstBlockTime =
+      object.firstBlockTime !== undefined && object.firstBlockTime !== null
+        ? Long.fromString(object.firstBlockTime)
+        : Long.ZERO;
+    message.prevBlockTime =
+      object.prevBlockTime !== undefined && object.prevBlockTime !== null
+        ? Long.fromString(object.prevBlockTime)
+        : Long.ZERO;
+    message.currentSupply =
+      object.currentSupply !== undefined && object.currentSupply !== null
+        ? String(object.currentSupply)
+        : "";
     return message;
   },
 
@@ -91,16 +88,14 @@ export const MintData = {
 
   fromPartial(object: DeepPartial<MintData>): MintData {
     const message = { ...baseMintData } as MintData;
-    if (object.firstBlockTime !== undefined && object.firstBlockTime !== null) {
-      message.firstBlockTime = object.firstBlockTime as Long;
-    } else {
-      message.firstBlockTime = Long.ZERO;
-    }
-    if (object.prevBlockTime !== undefined && object.prevBlockTime !== null) {
-      message.prevBlockTime = object.prevBlockTime as Long;
-    } else {
-      message.prevBlockTime = Long.ZERO;
-    }
+    message.firstBlockTime =
+      object.firstBlockTime !== undefined && object.firstBlockTime !== null
+        ? Long.fromValue(object.firstBlockTime)
+        : Long.ZERO;
+    message.prevBlockTime =
+      object.prevBlockTime !== undefined && object.prevBlockTime !== null
+        ? Long.fromValue(object.prevBlockTime)
+        : Long.ZERO;
     message.currentSupply = object.currentSupply ?? "";
     return message;
   },
@@ -113,10 +108,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

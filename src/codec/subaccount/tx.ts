@@ -65,16 +65,14 @@ export const MsgCreateSubAccount = {
 
   fromJSON(object: any): MsgCreateSubAccount {
     const message = { ...baseMsgCreateSubAccount } as MsgCreateSubAccount;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
-    if (object.subAddress !== undefined && object.subAddress !== null) {
-      message.subAddress = String(object.subAddress);
-    } else {
-      message.subAddress = "";
-    }
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.subAddress =
+      object.subAddress !== undefined && object.subAddress !== null
+        ? String(object.subAddress)
+        : "";
     return message;
   },
 
@@ -190,19 +188,15 @@ export const MsgActivateSubAccount = {
 
   fromJSON(object: any): MsgActivateSubAccount {
     const message = { ...baseMsgActivateSubAccount } as MsgActivateSubAccount;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
-    if (
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.expectedMainAccount =
       object.expectedMainAccount !== undefined &&
       object.expectedMainAccount !== null
-    ) {
-      message.expectedMainAccount = String(object.expectedMainAccount);
-    } else {
-      message.expectedMainAccount = "";
-    }
+        ? String(object.expectedMainAccount)
+        : "";
     return message;
   },
 
@@ -315,16 +309,14 @@ export const MsgRemoveSubAccount = {
 
   fromJSON(object: any): MsgRemoveSubAccount {
     const message = { ...baseMsgRemoveSubAccount } as MsgRemoveSubAccount;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
-    if (object.subAddress !== undefined && object.subAddress !== null) {
-      message.subAddress = String(object.subAddress);
-    } else {
-      message.subAddress = "";
-    }
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.subAddress =
+      object.subAddress !== undefined && object.subAddress !== null
+        ? String(object.subAddress)
+        : "";
     return message;
   },
 
@@ -475,10 +467,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

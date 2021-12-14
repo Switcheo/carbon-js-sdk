@@ -48,12 +48,9 @@ export const GenesisState = {
 
   fromJSON(object: any): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
-    message.prices = [];
-    if (object.prices !== undefined && object.prices !== null) {
-      for (const e of object.prices) {
-        message.prices.push(PriceSet.fromJSON(e));
-      }
-    }
+    message.prices = (object.prices ?? []).map((e: any) =>
+      PriceSet.fromJSON(e)
+    );
     return message;
   },
 
@@ -71,12 +68,7 @@ export const GenesisState = {
 
   fromPartial(object: DeepPartial<GenesisState>): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
-    message.prices = [];
-    if (object.prices !== undefined && object.prices !== null) {
-      for (const e of object.prices) {
-        message.prices.push(PriceSet.fromPartial(e));
-      }
-    }
+    message.prices = (object.prices ?? []).map((e) => PriceSet.fromPartial(e));
     return message;
   },
 };
@@ -88,10 +80,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

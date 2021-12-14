@@ -91,11 +91,10 @@ export const QueryMintDataResponse = {
 
   fromJSON(object: any): QueryMintDataResponse {
     const message = { ...baseQueryMintDataResponse } as QueryMintDataResponse;
-    if (object.mintData !== undefined && object.mintData !== null) {
-      message.mintData = MintData.fromJSON(object.mintData);
-    } else {
-      message.mintData = undefined;
-    }
+    message.mintData =
+      object.mintData !== undefined && object.mintData !== null
+        ? MintData.fromJSON(object.mintData)
+        : undefined;
     return message;
   },
 
@@ -112,11 +111,10 @@ export const QueryMintDataResponse = {
     object: DeepPartial<QueryMintDataResponse>
   ): QueryMintDataResponse {
     const message = { ...baseQueryMintDataResponse } as QueryMintDataResponse;
-    if (object.mintData !== undefined && object.mintData !== null) {
-      message.mintData = MintData.fromPartial(object.mintData);
-    } else {
-      message.mintData = undefined;
-    }
+    message.mintData =
+      object.mintData !== undefined && object.mintData !== null
+        ? MintData.fromPartial(object.mintData)
+        : undefined;
     return message;
   },
 };
@@ -164,10 +162,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

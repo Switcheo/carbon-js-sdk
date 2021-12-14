@@ -56,21 +56,18 @@ export const SetMsgFeeProposal = {
 
   fromJSON(object: any): SetMsgFeeProposal {
     const message = { ...baseSetMsgFeeProposal } as SetMsgFeeProposal;
-    if (object.title !== undefined && object.title !== null) {
-      message.title = String(object.title);
-    } else {
-      message.title = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = String(object.description);
-    } else {
-      message.description = "";
-    }
-    if (object.msg !== undefined && object.msg !== null) {
-      message.msg = MsgFee.fromJSON(object.msg);
-    } else {
-      message.msg = undefined;
-    }
+    message.title =
+      object.title !== undefined && object.title !== null
+        ? String(object.title)
+        : "";
+    message.description =
+      object.description !== undefined && object.description !== null
+        ? String(object.description)
+        : "";
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? MsgFee.fromJSON(object.msg)
+        : undefined;
     return message;
   },
 
@@ -88,11 +85,10 @@ export const SetMsgFeeProposal = {
     const message = { ...baseSetMsgFeeProposal } as SetMsgFeeProposal;
     message.title = object.title ?? "";
     message.description = object.description ?? "";
-    if (object.msg !== undefined && object.msg !== null) {
-      message.msg = MsgFee.fromPartial(object.msg);
-    } else {
-      message.msg = undefined;
-    }
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? MsgFee.fromPartial(object.msg)
+        : undefined;
     return message;
   },
 };
@@ -104,10 +100,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

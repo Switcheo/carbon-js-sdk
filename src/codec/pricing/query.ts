@@ -9,11 +9,11 @@ import {
 
 export const protobufPackage = "Switcheo.carbon.pricing";
 
-export interface QueryPriceRequest {
+export interface QueryPriceSetRequest {
   market: string;
 }
 
-export interface QueryPriceResponse {
+export interface QueryPriceSetResponse {
   prices?: PriceSet;
 }
 
@@ -35,11 +35,11 @@ export interface QueryRateResponse {
   conversionRate: string;
 }
 
-const baseQueryPriceRequest: object = { market: "" };
+const baseQueryPriceSetRequest: object = { market: "" };
 
-export const QueryPriceRequest = {
+export const QueryPriceSetRequest = {
   encode(
-    message: QueryPriceRequest,
+    message: QueryPriceSetRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.market !== "") {
@@ -48,10 +48,13 @@ export const QueryPriceRequest = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): QueryPriceRequest {
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryPriceSetRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryPriceRequest } as QueryPriceRequest;
+    const message = { ...baseQueryPriceSetRequest } as QueryPriceSetRequest;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -66,34 +69,33 @@ export const QueryPriceRequest = {
     return message;
   },
 
-  fromJSON(object: any): QueryPriceRequest {
-    const message = { ...baseQueryPriceRequest } as QueryPriceRequest;
-    if (object.market !== undefined && object.market !== null) {
-      message.market = String(object.market);
-    } else {
-      message.market = "";
-    }
+  fromJSON(object: any): QueryPriceSetRequest {
+    const message = { ...baseQueryPriceSetRequest } as QueryPriceSetRequest;
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? String(object.market)
+        : "";
     return message;
   },
 
-  toJSON(message: QueryPriceRequest): unknown {
+  toJSON(message: QueryPriceSetRequest): unknown {
     const obj: any = {};
     message.market !== undefined && (obj.market = message.market);
     return obj;
   },
 
-  fromPartial(object: DeepPartial<QueryPriceRequest>): QueryPriceRequest {
-    const message = { ...baseQueryPriceRequest } as QueryPriceRequest;
+  fromPartial(object: DeepPartial<QueryPriceSetRequest>): QueryPriceSetRequest {
+    const message = { ...baseQueryPriceSetRequest } as QueryPriceSetRequest;
     message.market = object.market ?? "";
     return message;
   },
 };
 
-const baseQueryPriceResponse: object = {};
+const baseQueryPriceSetResponse: object = {};
 
-export const QueryPriceResponse = {
+export const QueryPriceSetResponse = {
   encode(
-    message: QueryPriceResponse,
+    message: QueryPriceSetResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.prices !== undefined) {
@@ -102,10 +104,13 @@ export const QueryPriceResponse = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): QueryPriceResponse {
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryPriceSetResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryPriceResponse } as QueryPriceResponse;
+    const message = { ...baseQueryPriceSetResponse } as QueryPriceSetResponse;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -120,17 +125,16 @@ export const QueryPriceResponse = {
     return message;
   },
 
-  fromJSON(object: any): QueryPriceResponse {
-    const message = { ...baseQueryPriceResponse } as QueryPriceResponse;
-    if (object.prices !== undefined && object.prices !== null) {
-      message.prices = PriceSet.fromJSON(object.prices);
-    } else {
-      message.prices = undefined;
-    }
+  fromJSON(object: any): QueryPriceSetResponse {
+    const message = { ...baseQueryPriceSetResponse } as QueryPriceSetResponse;
+    message.prices =
+      object.prices !== undefined && object.prices !== null
+        ? PriceSet.fromJSON(object.prices)
+        : undefined;
     return message;
   },
 
-  toJSON(message: QueryPriceResponse): unknown {
+  toJSON(message: QueryPriceSetResponse): unknown {
     const obj: any = {};
     message.prices !== undefined &&
       (obj.prices = message.prices
@@ -139,13 +143,14 @@ export const QueryPriceResponse = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<QueryPriceResponse>): QueryPriceResponse {
-    const message = { ...baseQueryPriceResponse } as QueryPriceResponse;
-    if (object.prices !== undefined && object.prices !== null) {
-      message.prices = PriceSet.fromPartial(object.prices);
-    } else {
-      message.prices = undefined;
-    }
+  fromPartial(
+    object: DeepPartial<QueryPriceSetResponse>
+  ): QueryPriceSetResponse {
+    const message = { ...baseQueryPriceSetResponse } as QueryPriceSetResponse;
+    message.prices =
+      object.prices !== undefined && object.prices !== null
+        ? PriceSet.fromPartial(object.prices)
+        : undefined;
     return message;
   },
 };
@@ -190,11 +195,10 @@ export const QueryAllPriceSetRequest = {
     const message = {
       ...baseQueryAllPriceSetRequest,
     } as QueryAllPriceSetRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -213,11 +217,10 @@ export const QueryAllPriceSetRequest = {
     const message = {
       ...baseQueryAllPriceSetRequest,
     } as QueryAllPriceSetRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -272,17 +275,13 @@ export const QueryAllPriceSetResponse = {
     const message = {
       ...baseQueryAllPriceSetResponse,
     } as QueryAllPriceSetResponse;
-    message.prices = [];
-    if (object.prices !== undefined && object.prices !== null) {
-      for (const e of object.prices) {
-        message.prices.push(PriceSet.fromJSON(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.prices = (object.prices ?? []).map((e: any) =>
+      PriceSet.fromJSON(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -308,17 +307,11 @@ export const QueryAllPriceSetResponse = {
     const message = {
       ...baseQueryAllPriceSetResponse,
     } as QueryAllPriceSetResponse;
-    message.prices = [];
-    if (object.prices !== undefined && object.prices !== null) {
-      for (const e of object.prices) {
-        message.prices.push(PriceSet.fromPartial(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.prices = (object.prices ?? []).map((e) => PriceSet.fromPartial(e));
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -362,16 +355,14 @@ export const QueryRateRequest = {
 
   fromJSON(object: any): QueryRateRequest {
     const message = { ...baseQueryRateRequest } as QueryRateRequest;
-    if (object.denomA !== undefined && object.denomA !== null) {
-      message.denomA = String(object.denomA);
-    } else {
-      message.denomA = "";
-    }
-    if (object.denomB !== undefined && object.denomB !== null) {
-      message.denomB = String(object.denomB);
-    } else {
-      message.denomB = "";
-    }
+    message.denomA =
+      object.denomA !== undefined && object.denomA !== null
+        ? String(object.denomA)
+        : "";
+    message.denomB =
+      object.denomB !== undefined && object.denomB !== null
+        ? String(object.denomB)
+        : "";
     return message;
   },
 
@@ -423,11 +414,10 @@ export const QueryRateResponse = {
 
   fromJSON(object: any): QueryRateResponse {
     const message = { ...baseQueryRateResponse } as QueryRateResponse;
-    if (object.conversionRate !== undefined && object.conversionRate !== null) {
-      message.conversionRate = String(object.conversionRate);
-    } else {
-      message.conversionRate = "";
-    }
+    message.conversionRate =
+      object.conversionRate !== undefined && object.conversionRate !== null
+        ? String(object.conversionRate)
+        : "";
     return message;
   },
 
@@ -448,7 +438,7 @@ export const QueryRateResponse = {
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** this line is used by starport scaffolding # 2 */
-  PriceSet(request: QueryPriceRequest): Promise<QueryPriceResponse>;
+  PriceSet(request: QueryPriceSetRequest): Promise<QueryPriceSetResponse>;
   PriceSetAll(
     request: QueryAllPriceSetRequest
   ): Promise<QueryAllPriceSetResponse>;
@@ -463,15 +453,15 @@ export class QueryClientImpl implements Query {
     this.PriceSetAll = this.PriceSetAll.bind(this);
     this.Rate = this.Rate.bind(this);
   }
-  PriceSet(request: QueryPriceRequest): Promise<QueryPriceResponse> {
-    const data = QueryPriceRequest.encode(request).finish();
+  PriceSet(request: QueryPriceSetRequest): Promise<QueryPriceSetResponse> {
+    const data = QueryPriceSetRequest.encode(request).finish();
     const promise = this.rpc.request(
       "Switcheo.carbon.pricing.Query",
       "PriceSet",
       data
     );
     return promise.then((data) =>
-      QueryPriceResponse.decode(new _m0.Reader(data))
+      QueryPriceSetResponse.decode(new _m0.Reader(data))
     );
   }
 
@@ -517,10 +507,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

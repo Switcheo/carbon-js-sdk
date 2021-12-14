@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { MarketLeverageWithKey } from "../leverage/leverage";
+import { MarketLeverageRecord } from "../leverage/leverage";
 
 export const protobufPackage = "Switcheo.carbon.leverage";
 
@@ -11,7 +11,7 @@ export interface GenesisState {
    * this line is used by starport scaffolding # genesis/proto/state
    * this line is used by starport scaffolding # ibc/genesis/proto
    */
-  marketLeveragesWithKeys: MarketLeverageWithKey[];
+  marketLeverageRecords: MarketLeverageRecord[];
 }
 
 const baseGenesisState: object = {};
@@ -21,8 +21,8 @@ export const GenesisState = {
     message: GenesisState,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    for (const v of message.marketLeveragesWithKeys) {
-      MarketLeverageWithKey.encode(v!, writer.uint32(10).fork()).ldelim();
+    for (const v of message.marketLeverageRecords) {
+      MarketLeverageRecord.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -31,13 +31,13 @@ export const GenesisState = {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseGenesisState } as GenesisState;
-    message.marketLeveragesWithKeys = [];
+    message.marketLeverageRecords = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.marketLeveragesWithKeys.push(
-            MarketLeverageWithKey.decode(reader, reader.uint32())
+          message.marketLeverageRecords.push(
+            MarketLeverageRecord.decode(reader, reader.uint32())
           );
           break;
         default:
@@ -50,43 +50,29 @@ export const GenesisState = {
 
   fromJSON(object: any): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
-    message.marketLeveragesWithKeys = [];
-    if (
-      object.marketLeveragesWithKeys !== undefined &&
-      object.marketLeveragesWithKeys !== null
-    ) {
-      for (const e of object.marketLeveragesWithKeys) {
-        message.marketLeveragesWithKeys.push(MarketLeverageWithKey.fromJSON(e));
-      }
-    }
+    message.marketLeverageRecords = (object.marketLeverageRecords ?? []).map(
+      (e: any) => MarketLeverageRecord.fromJSON(e)
+    );
     return message;
   },
 
   toJSON(message: GenesisState): unknown {
     const obj: any = {};
-    if (message.marketLeveragesWithKeys) {
-      obj.marketLeveragesWithKeys = message.marketLeveragesWithKeys.map((e) =>
-        e ? MarketLeverageWithKey.toJSON(e) : undefined
+    if (message.marketLeverageRecords) {
+      obj.marketLeverageRecords = message.marketLeverageRecords.map((e) =>
+        e ? MarketLeverageRecord.toJSON(e) : undefined
       );
     } else {
-      obj.marketLeveragesWithKeys = [];
+      obj.marketLeverageRecords = [];
     }
     return obj;
   },
 
   fromPartial(object: DeepPartial<GenesisState>): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
-    message.marketLeveragesWithKeys = [];
-    if (
-      object.marketLeveragesWithKeys !== undefined &&
-      object.marketLeveragesWithKeys !== null
-    ) {
-      for (const e of object.marketLeveragesWithKeys) {
-        message.marketLeveragesWithKeys.push(
-          MarketLeverageWithKey.fromPartial(e)
-        );
-      }
-    }
+    message.marketLeverageRecords = (object.marketLeverageRecords ?? []).map(
+      (e) => MarketLeverageRecord.fromPartial(e)
+    );
     return message;
   },
 };
@@ -98,10 +84,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

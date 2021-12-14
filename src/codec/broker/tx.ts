@@ -56,16 +56,14 @@ export const LiquidatorPosition = {
 
   fromJSON(object: any): LiquidatorPosition {
     const message = { ...baseLiquidatorPosition } as LiquidatorPosition;
-    if (object.market !== undefined && object.market !== null) {
-      message.market = String(object.market);
-    } else {
-      message.market = "";
-    }
-    if (object.address !== undefined && object.address !== null) {
-      message.address = String(object.address);
-    } else {
-      message.address = "";
-    }
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? String(object.market)
+        : "";
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
     return message;
   },
 
@@ -129,17 +127,13 @@ export const MsgInitiateLiquidation = {
 
   fromJSON(object: any): MsgInitiateLiquidation {
     const message = { ...baseMsgInitiateLiquidation } as MsgInitiateLiquidation;
-    message.positions = [];
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
-    if (object.positions !== undefined && object.positions !== null) {
-      for (const e of object.positions) {
-        message.positions.push(LiquidatorPosition.fromJSON(e));
-      }
-    }
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.positions = (object.positions ?? []).map((e: any) =>
+      LiquidatorPosition.fromJSON(e)
+    );
     return message;
   },
 
@@ -161,12 +155,9 @@ export const MsgInitiateLiquidation = {
   ): MsgInitiateLiquidation {
     const message = { ...baseMsgInitiateLiquidation } as MsgInitiateLiquidation;
     message.creator = object.creator ?? "";
-    message.positions = [];
-    if (object.positions !== undefined && object.positions !== null) {
-      for (const e of object.positions) {
-        message.positions.push(LiquidatorPosition.fromPartial(e));
-      }
-    }
+    message.positions = (object.positions ?? []).map((e) =>
+      LiquidatorPosition.fromPartial(e)
+    );
     return message;
   },
 };
@@ -267,10 +258,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

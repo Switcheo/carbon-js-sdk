@@ -70,21 +70,18 @@ export const SettlementPriceProposal = {
     const message = {
       ...baseSettlementPriceProposal,
     } as SettlementPriceProposal;
-    if (object.title !== undefined && object.title !== null) {
-      message.title = String(object.title);
-    } else {
-      message.title = "";
-    }
-    if (object.description !== undefined && object.description !== null) {
-      message.description = String(object.description);
-    } else {
-      message.description = "";
-    }
-    if (object.msg !== undefined && object.msg !== null) {
-      message.msg = SettlementPriceParams.fromJSON(object.msg);
-    } else {
-      message.msg = undefined;
-    }
+    message.title =
+      object.title !== undefined && object.title !== null
+        ? String(object.title)
+        : "";
+    message.description =
+      object.description !== undefined && object.description !== null
+        ? String(object.description)
+        : "";
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? SettlementPriceParams.fromJSON(object.msg)
+        : undefined;
     return message;
   },
 
@@ -108,11 +105,10 @@ export const SettlementPriceProposal = {
     } as SettlementPriceProposal;
     message.title = object.title ?? "";
     message.description = object.description ?? "";
-    if (object.msg !== undefined && object.msg !== null) {
-      message.msg = SettlementPriceParams.fromPartial(object.msg);
-    } else {
-      message.msg = undefined;
-    }
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? SettlementPriceParams.fromPartial(object.msg)
+        : undefined;
     return message;
   },
 };
@@ -159,19 +155,14 @@ export const SettlementPriceParams = {
 
   fromJSON(object: any): SettlementPriceParams {
     const message = { ...baseSettlementPriceParams } as SettlementPriceParams;
-    if (object.market !== undefined && object.market !== null) {
-      message.market = String(object.market);
-    } else {
-      message.market = "";
-    }
-    if (
-      object.settlementPrice !== undefined &&
-      object.settlementPrice !== null
-    ) {
-      message.settlementPrice = String(object.settlementPrice);
-    } else {
-      message.settlementPrice = "";
-    }
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? String(object.market)
+        : "";
+    message.settlementPrice =
+      object.settlementPrice !== undefined && object.settlementPrice !== null
+        ? String(object.settlementPrice)
+        : "";
     return message;
   },
 
@@ -200,10 +191,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

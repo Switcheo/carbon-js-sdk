@@ -97,31 +97,26 @@ export const PoolEvent = {
 
   fromJSON(object: any): PoolEvent {
     const message = { ...basePoolEvent } as PoolEvent;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
-    if (object.pool !== undefined && object.pool !== null) {
-      message.pool = Pool.fromJSON(object.pool);
-    } else {
-      message.pool = undefined;
-    }
-    if (object.type !== undefined && object.type !== null) {
-      message.type = String(object.type);
-    } else {
-      message.type = "";
-    }
-    if (object.id !== undefined && object.id !== null) {
-      message.id = Long.fromString(object.id);
-    } else {
-      message.id = Long.UZERO;
-    }
-    if (object.poolAddress !== undefined && object.poolAddress !== null) {
-      message.poolAddress = String(object.poolAddress);
-    } else {
-      message.poolAddress = "";
-    }
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.pool =
+      object.pool !== undefined && object.pool !== null
+        ? Pool.fromJSON(object.pool)
+        : undefined;
+    message.type =
+      object.type !== undefined && object.type !== null
+        ? String(object.type)
+        : "";
+    message.id =
+      object.id !== undefined && object.id !== null
+        ? Long.fromString(object.id)
+        : Long.UZERO;
+    message.poolAddress =
+      object.poolAddress !== undefined && object.poolAddress !== null
+        ? String(object.poolAddress)
+        : "";
     return message;
   },
 
@@ -141,17 +136,15 @@ export const PoolEvent = {
   fromPartial(object: DeepPartial<PoolEvent>): PoolEvent {
     const message = { ...basePoolEvent } as PoolEvent;
     message.creator = object.creator ?? "";
-    if (object.pool !== undefined && object.pool !== null) {
-      message.pool = Pool.fromPartial(object.pool);
-    } else {
-      message.pool = undefined;
-    }
+    message.pool =
+      object.pool !== undefined && object.pool !== null
+        ? Pool.fromPartial(object.pool)
+        : undefined;
     message.type = object.type ?? "";
-    if (object.id !== undefined && object.id !== null) {
-      message.id = object.id as Long;
-    } else {
-      message.id = Long.UZERO;
-    }
+    message.id =
+      object.id !== undefined && object.id !== null
+        ? Long.fromValue(object.id)
+        : Long.UZERO;
     message.poolAddress = object.poolAddress ?? "";
     return message;
   },
@@ -206,19 +199,14 @@ export const TotalCommitmentChangeEvent = {
     const message = {
       ...baseTotalCommitmentChangeEvent,
     } as TotalCommitmentChangeEvent;
-    if (object.poolId !== undefined && object.poolId !== null) {
-      message.poolId = Long.fromString(object.poolId);
-    } else {
-      message.poolId = Long.UZERO;
-    }
-    if (
-      object.totalCommitment !== undefined &&
-      object.totalCommitment !== null
-    ) {
-      message.totalCommitment = String(object.totalCommitment);
-    } else {
-      message.totalCommitment = "";
-    }
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromString(object.poolId)
+        : Long.UZERO;
+    message.totalCommitment =
+      object.totalCommitment !== undefined && object.totalCommitment !== null
+        ? String(object.totalCommitment)
+        : "";
     return message;
   },
 
@@ -237,11 +225,10 @@ export const TotalCommitmentChangeEvent = {
     const message = {
       ...baseTotalCommitmentChangeEvent,
     } as TotalCommitmentChangeEvent;
-    if (object.poolId !== undefined && object.poolId !== null) {
-      message.poolId = object.poolId as Long;
-    } else {
-      message.poolId = Long.UZERO;
-    }
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromValue(object.poolId)
+        : Long.UZERO;
     message.totalCommitment = object.totalCommitment ?? "";
     return message;
   },
@@ -296,16 +283,14 @@ export const RewardsWeightChangeEvent = {
     const message = {
       ...baseRewardsWeightChangeEvent,
     } as RewardsWeightChangeEvent;
-    if (object.poolId !== undefined && object.poolId !== null) {
-      message.poolId = Long.fromString(object.poolId);
-    } else {
-      message.poolId = Long.UZERO;
-    }
-    if (object.rewardsWeight !== undefined && object.rewardsWeight !== null) {
-      message.rewardsWeight = String(object.rewardsWeight);
-    } else {
-      message.rewardsWeight = "";
-    }
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromString(object.poolId)
+        : Long.UZERO;
+    message.rewardsWeight =
+      object.rewardsWeight !== undefined && object.rewardsWeight !== null
+        ? String(object.rewardsWeight)
+        : "";
     return message;
   },
 
@@ -324,11 +309,10 @@ export const RewardsWeightChangeEvent = {
     const message = {
       ...baseRewardsWeightChangeEvent,
     } as RewardsWeightChangeEvent;
-    if (object.poolId !== undefined && object.poolId !== null) {
-      message.poolId = object.poolId as Long;
-    } else {
-      message.poolId = Long.UZERO;
-    }
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromValue(object.poolId)
+        : Long.UZERO;
     message.rewardsWeight = object.rewardsWeight ?? "";
     return message;
   },
@@ -376,16 +360,10 @@ export const CommitmentCurveEvent = {
 
   fromJSON(object: any): CommitmentCurveEvent {
     const message = { ...baseCommitmentCurveEvent } as CommitmentCurveEvent;
-    if (
-      object.commitmentCurve !== undefined &&
-      object.commitmentCurve !== null
-    ) {
-      message.commitmentCurve = CommitmentCurve.fromJSON(
-        object.commitmentCurve
-      );
-    } else {
-      message.commitmentCurve = undefined;
-    }
+    message.commitmentCurve =
+      object.commitmentCurve !== undefined && object.commitmentCurve !== null
+        ? CommitmentCurve.fromJSON(object.commitmentCurve)
+        : undefined;
     return message;
   },
 
@@ -400,16 +378,10 @@ export const CommitmentCurveEvent = {
 
   fromPartial(object: DeepPartial<CommitmentCurveEvent>): CommitmentCurveEvent {
     const message = { ...baseCommitmentCurveEvent } as CommitmentCurveEvent;
-    if (
-      object.commitmentCurve !== undefined &&
-      object.commitmentCurve !== null
-    ) {
-      message.commitmentCurve = CommitmentCurve.fromPartial(
-        object.commitmentCurve
-      );
-    } else {
-      message.commitmentCurve = undefined;
-    }
+    message.commitmentCurve =
+      object.commitmentCurve !== undefined && object.commitmentCurve !== null
+        ? CommitmentCurve.fromPartial(object.commitmentCurve)
+        : undefined;
     return message;
   },
 };
@@ -469,26 +441,22 @@ export const CommitmentEvent = {
 
   fromJSON(object: any): CommitmentEvent {
     const message = { ...baseCommitmentEvent } as CommitmentEvent;
-    if (object.poolId !== undefined && object.poolId !== null) {
-      message.poolId = Long.fromString(object.poolId);
-    } else {
-      message.poolId = Long.UZERO;
-    }
-    if (object.address !== undefined && object.address !== null) {
-      message.address = String(object.address);
-    } else {
-      message.address = "";
-    }
-    if (object.commitment !== undefined && object.commitment !== null) {
-      message.commitment = Commitment.fromJSON(object.commitment);
-    } else {
-      message.commitment = undefined;
-    }
-    if (object.type !== undefined && object.type !== null) {
-      message.type = String(object.type);
-    } else {
-      message.type = "";
-    }
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromString(object.poolId)
+        : Long.UZERO;
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    message.commitment =
+      object.commitment !== undefined && object.commitment !== null
+        ? Commitment.fromJSON(object.commitment)
+        : undefined;
+    message.type =
+      object.type !== undefined && object.type !== null
+        ? String(object.type)
+        : "";
     return message;
   },
 
@@ -507,17 +475,15 @@ export const CommitmentEvent = {
 
   fromPartial(object: DeepPartial<CommitmentEvent>): CommitmentEvent {
     const message = { ...baseCommitmentEvent } as CommitmentEvent;
-    if (object.poolId !== undefined && object.poolId !== null) {
-      message.poolId = object.poolId as Long;
-    } else {
-      message.poolId = Long.UZERO;
-    }
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromValue(object.poolId)
+        : Long.UZERO;
     message.address = object.address ?? "";
-    if (object.commitment !== undefined && object.commitment !== null) {
-      message.commitment = Commitment.fromPartial(object.commitment);
-    } else {
-      message.commitment = undefined;
-    }
+    message.commitment =
+      object.commitment !== undefined && object.commitment !== null
+        ? Commitment.fromPartial(object.commitment)
+        : undefined;
     message.type = object.type ?? "";
     return message;
   },
@@ -530,10 +496,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

@@ -4,15 +4,15 @@ import _m0 from "protobufjs/minimal";
 import {
   RewardCurve,
   CommitmentCurve,
-  WrappedRewardWeights,
-  CommitmentExpiryIndex,
-  CommitmentWithKey,
-  CommitmentTotalWithKey,
-  RewardHistoryWithKey,
-  LastClaimedWithKey,
+  RewardWeights,
+  AllocatedRewards,
+  CommitmentRecord,
+  TotalCommitmentRecord,
+  CommitmentExpiriesRecord,
+  RewardHistoryRecord,
+  LastClaimRecord,
 } from "../liquiditypool/reward";
 import { Pool } from "../liquiditypool/liquiditypool";
-import { DecCoin } from "../cosmos/base/v1beta1/coin";
 
 export const protobufPackage = "Switcheo.carbon.liquiditypool";
 
@@ -21,13 +21,13 @@ export interface GenesisState {
   pools: Pool[];
   rewardCurve?: RewardCurve;
   commitmentCurve?: CommitmentCurve;
-  commitmentExpiries: CommitmentExpiryIndex[];
-  commitmentWithKeys: CommitmentWithKey[];
-  commitmentTotalsWithKeys: CommitmentTotalWithKey[];
-  rewardHistoriesWithKeys: RewardHistoryWithKey[];
-  allLastClaimedWithKeys: LastClaimedWithKey[];
-  totalAllocated: DecCoin[];
-  rewardWeights?: WrappedRewardWeights;
+  rewardWeights?: RewardWeights;
+  commitments: CommitmentRecord[];
+  totalCommitments: TotalCommitmentRecord[];
+  commitmentExpiries: CommitmentExpiriesRecord[];
+  rewardHistories: RewardHistoryRecord[];
+  lastClaims: LastClaimRecord[];
+  allocatedRewards?: AllocatedRewards;
 }
 
 const baseGenesisState: object = {};
@@ -52,27 +52,30 @@ export const GenesisState = {
         writer.uint32(26).fork()
       ).ldelim();
     }
-    for (const v of message.commitmentExpiries) {
-      CommitmentExpiryIndex.encode(v!, writer.uint32(34).fork()).ldelim();
-    }
-    for (const v of message.commitmentWithKeys) {
-      CommitmentWithKey.encode(v!, writer.uint32(42).fork()).ldelim();
-    }
-    for (const v of message.commitmentTotalsWithKeys) {
-      CommitmentTotalWithKey.encode(v!, writer.uint32(50).fork()).ldelim();
-    }
-    for (const v of message.rewardHistoriesWithKeys) {
-      RewardHistoryWithKey.encode(v!, writer.uint32(58).fork()).ldelim();
-    }
-    for (const v of message.allLastClaimedWithKeys) {
-      LastClaimedWithKey.encode(v!, writer.uint32(66).fork()).ldelim();
-    }
-    for (const v of message.totalAllocated) {
-      DecCoin.encode(v!, writer.uint32(74).fork()).ldelim();
-    }
     if (message.rewardWeights !== undefined) {
-      WrappedRewardWeights.encode(
+      RewardWeights.encode(
         message.rewardWeights,
+        writer.uint32(34).fork()
+      ).ldelim();
+    }
+    for (const v of message.commitments) {
+      CommitmentRecord.encode(v!, writer.uint32(42).fork()).ldelim();
+    }
+    for (const v of message.totalCommitments) {
+      TotalCommitmentRecord.encode(v!, writer.uint32(50).fork()).ldelim();
+    }
+    for (const v of message.commitmentExpiries) {
+      CommitmentExpiriesRecord.encode(v!, writer.uint32(58).fork()).ldelim();
+    }
+    for (const v of message.rewardHistories) {
+      RewardHistoryRecord.encode(v!, writer.uint32(66).fork()).ldelim();
+    }
+    for (const v of message.lastClaims) {
+      LastClaimRecord.encode(v!, writer.uint32(74).fork()).ldelim();
+    }
+    if (message.allocatedRewards !== undefined) {
+      AllocatedRewards.encode(
+        message.allocatedRewards,
         writer.uint32(82).fork()
       ).ldelim();
     }
@@ -84,12 +87,11 @@ export const GenesisState = {
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseGenesisState } as GenesisState;
     message.pools = [];
+    message.commitments = [];
+    message.totalCommitments = [];
     message.commitmentExpiries = [];
-    message.commitmentWithKeys = [];
-    message.commitmentTotalsWithKeys = [];
-    message.rewardHistoriesWithKeys = [];
-    message.allLastClaimedWithKeys = [];
-    message.totalAllocated = [];
+    message.rewardHistories = [];
+    message.lastClaims = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -106,35 +108,35 @@ export const GenesisState = {
           );
           break;
         case 4:
-          message.commitmentExpiries.push(
-            CommitmentExpiryIndex.decode(reader, reader.uint32())
-          );
+          message.rewardWeights = RewardWeights.decode(reader, reader.uint32());
           break;
         case 5:
-          message.commitmentWithKeys.push(
-            CommitmentWithKey.decode(reader, reader.uint32())
+          message.commitments.push(
+            CommitmentRecord.decode(reader, reader.uint32())
           );
           break;
         case 6:
-          message.commitmentTotalsWithKeys.push(
-            CommitmentTotalWithKey.decode(reader, reader.uint32())
+          message.totalCommitments.push(
+            TotalCommitmentRecord.decode(reader, reader.uint32())
           );
           break;
         case 7:
-          message.rewardHistoriesWithKeys.push(
-            RewardHistoryWithKey.decode(reader, reader.uint32())
+          message.commitmentExpiries.push(
+            CommitmentExpiriesRecord.decode(reader, reader.uint32())
           );
           break;
         case 8:
-          message.allLastClaimedWithKeys.push(
-            LastClaimedWithKey.decode(reader, reader.uint32())
+          message.rewardHistories.push(
+            RewardHistoryRecord.decode(reader, reader.uint32())
           );
           break;
         case 9:
-          message.totalAllocated.push(DecCoin.decode(reader, reader.uint32()));
+          message.lastClaims.push(
+            LastClaimRecord.decode(reader, reader.uint32())
+          );
           break;
         case 10:
-          message.rewardWeights = WrappedRewardWeights.decode(
+          message.allocatedRewards = AllocatedRewards.decode(
             reader,
             reader.uint32()
           );
@@ -149,87 +151,38 @@ export const GenesisState = {
 
   fromJSON(object: any): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
-    message.pools = [];
-    message.commitmentExpiries = [];
-    message.commitmentWithKeys = [];
-    message.commitmentTotalsWithKeys = [];
-    message.rewardHistoriesWithKeys = [];
-    message.allLastClaimedWithKeys = [];
-    message.totalAllocated = [];
-    if (object.pools !== undefined && object.pools !== null) {
-      for (const e of object.pools) {
-        message.pools.push(Pool.fromJSON(e));
-      }
-    }
-    if (object.rewardCurve !== undefined && object.rewardCurve !== null) {
-      message.rewardCurve = RewardCurve.fromJSON(object.rewardCurve);
-    } else {
-      message.rewardCurve = undefined;
-    }
-    if (
-      object.commitmentCurve !== undefined &&
-      object.commitmentCurve !== null
-    ) {
-      message.commitmentCurve = CommitmentCurve.fromJSON(
-        object.commitmentCurve
-      );
-    } else {
-      message.commitmentCurve = undefined;
-    }
-    if (
-      object.commitmentExpiries !== undefined &&
-      object.commitmentExpiries !== null
-    ) {
-      for (const e of object.commitmentExpiries) {
-        message.commitmentExpiries.push(CommitmentExpiryIndex.fromJSON(e));
-      }
-    }
-    if (
-      object.commitmentWithKeys !== undefined &&
-      object.commitmentWithKeys !== null
-    ) {
-      for (const e of object.commitmentWithKeys) {
-        message.commitmentWithKeys.push(CommitmentWithKey.fromJSON(e));
-      }
-    }
-    if (
-      object.commitmentTotalsWithKeys !== undefined &&
-      object.commitmentTotalsWithKeys !== null
-    ) {
-      for (const e of object.commitmentTotalsWithKeys) {
-        message.commitmentTotalsWithKeys.push(
-          CommitmentTotalWithKey.fromJSON(e)
-        );
-      }
-    }
-    if (
-      object.rewardHistoriesWithKeys !== undefined &&
-      object.rewardHistoriesWithKeys !== null
-    ) {
-      for (const e of object.rewardHistoriesWithKeys) {
-        message.rewardHistoriesWithKeys.push(RewardHistoryWithKey.fromJSON(e));
-      }
-    }
-    if (
-      object.allLastClaimedWithKeys !== undefined &&
-      object.allLastClaimedWithKeys !== null
-    ) {
-      for (const e of object.allLastClaimedWithKeys) {
-        message.allLastClaimedWithKeys.push(LastClaimedWithKey.fromJSON(e));
-      }
-    }
-    if (object.totalAllocated !== undefined && object.totalAllocated !== null) {
-      for (const e of object.totalAllocated) {
-        message.totalAllocated.push(DecCoin.fromJSON(e));
-      }
-    }
-    if (object.rewardWeights !== undefined && object.rewardWeights !== null) {
-      message.rewardWeights = WrappedRewardWeights.fromJSON(
-        object.rewardWeights
-      );
-    } else {
-      message.rewardWeights = undefined;
-    }
+    message.pools = (object.pools ?? []).map((e: any) => Pool.fromJSON(e));
+    message.rewardCurve =
+      object.rewardCurve !== undefined && object.rewardCurve !== null
+        ? RewardCurve.fromJSON(object.rewardCurve)
+        : undefined;
+    message.commitmentCurve =
+      object.commitmentCurve !== undefined && object.commitmentCurve !== null
+        ? CommitmentCurve.fromJSON(object.commitmentCurve)
+        : undefined;
+    message.rewardWeights =
+      object.rewardWeights !== undefined && object.rewardWeights !== null
+        ? RewardWeights.fromJSON(object.rewardWeights)
+        : undefined;
+    message.commitments = (object.commitments ?? []).map((e: any) =>
+      CommitmentRecord.fromJSON(e)
+    );
+    message.totalCommitments = (object.totalCommitments ?? []).map((e: any) =>
+      TotalCommitmentRecord.fromJSON(e)
+    );
+    message.commitmentExpiries = (object.commitmentExpiries ?? []).map(
+      (e: any) => CommitmentExpiriesRecord.fromJSON(e)
+    );
+    message.rewardHistories = (object.rewardHistories ?? []).map((e: any) =>
+      RewardHistoryRecord.fromJSON(e)
+    );
+    message.lastClaims = (object.lastClaims ?? []).map((e: any) =>
+      LastClaimRecord.fromJSON(e)
+    );
+    message.allocatedRewards =
+      object.allocatedRewards !== undefined && object.allocatedRewards !== null
+        ? AllocatedRewards.fromJSON(object.allocatedRewards)
+        : undefined;
     return message;
   },
 
@@ -248,140 +201,86 @@ export const GenesisState = {
       (obj.commitmentCurve = message.commitmentCurve
         ? CommitmentCurve.toJSON(message.commitmentCurve)
         : undefined);
+    message.rewardWeights !== undefined &&
+      (obj.rewardWeights = message.rewardWeights
+        ? RewardWeights.toJSON(message.rewardWeights)
+        : undefined);
+    if (message.commitments) {
+      obj.commitments = message.commitments.map((e) =>
+        e ? CommitmentRecord.toJSON(e) : undefined
+      );
+    } else {
+      obj.commitments = [];
+    }
+    if (message.totalCommitments) {
+      obj.totalCommitments = message.totalCommitments.map((e) =>
+        e ? TotalCommitmentRecord.toJSON(e) : undefined
+      );
+    } else {
+      obj.totalCommitments = [];
+    }
     if (message.commitmentExpiries) {
       obj.commitmentExpiries = message.commitmentExpiries.map((e) =>
-        e ? CommitmentExpiryIndex.toJSON(e) : undefined
+        e ? CommitmentExpiriesRecord.toJSON(e) : undefined
       );
     } else {
       obj.commitmentExpiries = [];
     }
-    if (message.commitmentWithKeys) {
-      obj.commitmentWithKeys = message.commitmentWithKeys.map((e) =>
-        e ? CommitmentWithKey.toJSON(e) : undefined
+    if (message.rewardHistories) {
+      obj.rewardHistories = message.rewardHistories.map((e) =>
+        e ? RewardHistoryRecord.toJSON(e) : undefined
       );
     } else {
-      obj.commitmentWithKeys = [];
+      obj.rewardHistories = [];
     }
-    if (message.commitmentTotalsWithKeys) {
-      obj.commitmentTotalsWithKeys = message.commitmentTotalsWithKeys.map((e) =>
-        e ? CommitmentTotalWithKey.toJSON(e) : undefined
+    if (message.lastClaims) {
+      obj.lastClaims = message.lastClaims.map((e) =>
+        e ? LastClaimRecord.toJSON(e) : undefined
       );
     } else {
-      obj.commitmentTotalsWithKeys = [];
+      obj.lastClaims = [];
     }
-    if (message.rewardHistoriesWithKeys) {
-      obj.rewardHistoriesWithKeys = message.rewardHistoriesWithKeys.map((e) =>
-        e ? RewardHistoryWithKey.toJSON(e) : undefined
-      );
-    } else {
-      obj.rewardHistoriesWithKeys = [];
-    }
-    if (message.allLastClaimedWithKeys) {
-      obj.allLastClaimedWithKeys = message.allLastClaimedWithKeys.map((e) =>
-        e ? LastClaimedWithKey.toJSON(e) : undefined
-      );
-    } else {
-      obj.allLastClaimedWithKeys = [];
-    }
-    if (message.totalAllocated) {
-      obj.totalAllocated = message.totalAllocated.map((e) =>
-        e ? DecCoin.toJSON(e) : undefined
-      );
-    } else {
-      obj.totalAllocated = [];
-    }
-    message.rewardWeights !== undefined &&
-      (obj.rewardWeights = message.rewardWeights
-        ? WrappedRewardWeights.toJSON(message.rewardWeights)
+    message.allocatedRewards !== undefined &&
+      (obj.allocatedRewards = message.allocatedRewards
+        ? AllocatedRewards.toJSON(message.allocatedRewards)
         : undefined);
     return obj;
   },
 
   fromPartial(object: DeepPartial<GenesisState>): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
-    message.pools = [];
-    if (object.pools !== undefined && object.pools !== null) {
-      for (const e of object.pools) {
-        message.pools.push(Pool.fromPartial(e));
-      }
-    }
-    if (object.rewardCurve !== undefined && object.rewardCurve !== null) {
-      message.rewardCurve = RewardCurve.fromPartial(object.rewardCurve);
-    } else {
-      message.rewardCurve = undefined;
-    }
-    if (
-      object.commitmentCurve !== undefined &&
-      object.commitmentCurve !== null
-    ) {
-      message.commitmentCurve = CommitmentCurve.fromPartial(
-        object.commitmentCurve
-      );
-    } else {
-      message.commitmentCurve = undefined;
-    }
-    message.commitmentExpiries = [];
-    if (
-      object.commitmentExpiries !== undefined &&
-      object.commitmentExpiries !== null
-    ) {
-      for (const e of object.commitmentExpiries) {
-        message.commitmentExpiries.push(CommitmentExpiryIndex.fromPartial(e));
-      }
-    }
-    message.commitmentWithKeys = [];
-    if (
-      object.commitmentWithKeys !== undefined &&
-      object.commitmentWithKeys !== null
-    ) {
-      for (const e of object.commitmentWithKeys) {
-        message.commitmentWithKeys.push(CommitmentWithKey.fromPartial(e));
-      }
-    }
-    message.commitmentTotalsWithKeys = [];
-    if (
-      object.commitmentTotalsWithKeys !== undefined &&
-      object.commitmentTotalsWithKeys !== null
-    ) {
-      for (const e of object.commitmentTotalsWithKeys) {
-        message.commitmentTotalsWithKeys.push(
-          CommitmentTotalWithKey.fromPartial(e)
-        );
-      }
-    }
-    message.rewardHistoriesWithKeys = [];
-    if (
-      object.rewardHistoriesWithKeys !== undefined &&
-      object.rewardHistoriesWithKeys !== null
-    ) {
-      for (const e of object.rewardHistoriesWithKeys) {
-        message.rewardHistoriesWithKeys.push(
-          RewardHistoryWithKey.fromPartial(e)
-        );
-      }
-    }
-    message.allLastClaimedWithKeys = [];
-    if (
-      object.allLastClaimedWithKeys !== undefined &&
-      object.allLastClaimedWithKeys !== null
-    ) {
-      for (const e of object.allLastClaimedWithKeys) {
-        message.allLastClaimedWithKeys.push(LastClaimedWithKey.fromPartial(e));
-      }
-    }
-    message.totalAllocated = [];
-    if (object.totalAllocated !== undefined && object.totalAllocated !== null) {
-      for (const e of object.totalAllocated) {
-        message.totalAllocated.push(DecCoin.fromPartial(e));
-      }
-    }
-    if (object.rewardWeights !== undefined && object.rewardWeights !== null) {
-      message.rewardWeights = WrappedRewardWeights.fromPartial(
-        object.rewardWeights
-      );
-    } else {
-      message.rewardWeights = undefined;
-    }
+    message.pools = (object.pools ?? []).map((e) => Pool.fromPartial(e));
+    message.rewardCurve =
+      object.rewardCurve !== undefined && object.rewardCurve !== null
+        ? RewardCurve.fromPartial(object.rewardCurve)
+        : undefined;
+    message.commitmentCurve =
+      object.commitmentCurve !== undefined && object.commitmentCurve !== null
+        ? CommitmentCurve.fromPartial(object.commitmentCurve)
+        : undefined;
+    message.rewardWeights =
+      object.rewardWeights !== undefined && object.rewardWeights !== null
+        ? RewardWeights.fromPartial(object.rewardWeights)
+        : undefined;
+    message.commitments = (object.commitments ?? []).map((e) =>
+      CommitmentRecord.fromPartial(e)
+    );
+    message.totalCommitments = (object.totalCommitments ?? []).map((e) =>
+      TotalCommitmentRecord.fromPartial(e)
+    );
+    message.commitmentExpiries = (object.commitmentExpiries ?? []).map((e) =>
+      CommitmentExpiriesRecord.fromPartial(e)
+    );
+    message.rewardHistories = (object.rewardHistories ?? []).map((e) =>
+      RewardHistoryRecord.fromPartial(e)
+    );
+    message.lastClaims = (object.lastClaims ?? []).map((e) =>
+      LastClaimRecord.fromPartial(e)
+    );
+    message.allocatedRewards =
+      object.allocatedRewards !== undefined && object.allocatedRewards !== null
+        ? AllocatedRewards.fromPartial(object.allocatedRewards)
+        : undefined;
     return message;
   },
 };
@@ -393,10 +292,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

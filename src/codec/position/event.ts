@@ -99,55 +99,41 @@ export const PositionEvent = {
 
   fromJSON(object: any): PositionEvent {
     const message = { ...basePositionEvent } as PositionEvent;
-    if (object.position !== undefined && object.position !== null) {
-      message.position = Position.fromJSON(object.position);
-    } else {
-      message.position = undefined;
-    }
-    if (object.id !== undefined && object.id !== null) {
-      message.id = Long.fromString(object.id);
-    } else {
-      message.id = Long.UZERO;
-    }
-    if (object.type !== undefined && object.type !== null) {
-      message.type = String(object.type);
-    } else {
-      message.type = "";
-    }
-    if (
+    message.position =
+      object.position !== undefined && object.position !== null
+        ? Position.fromJSON(object.position)
+        : undefined;
+    message.id =
+      object.id !== undefined && object.id !== null
+        ? Long.fromString(object.id)
+        : Long.UZERO;
+    message.type =
+      object.type !== undefined && object.type !== null
+        ? String(object.type)
+        : "";
+    message.allocatedMarginDenom =
       object.allocatedMarginDenom !== undefined &&
       object.allocatedMarginDenom !== null
-    ) {
-      message.allocatedMarginDenom = String(object.allocatedMarginDenom);
-    } else {
-      message.allocatedMarginDenom = "";
-    }
-    if (
+        ? String(object.allocatedMarginDenom)
+        : "";
+    message.allocatedMarginAmount =
       object.allocatedMarginAmount !== undefined &&
       object.allocatedMarginAmount !== null
-    ) {
-      message.allocatedMarginAmount = String(object.allocatedMarginAmount);
-    } else {
-      message.allocatedMarginAmount = "";
-    }
-    if (
+        ? String(object.allocatedMarginAmount)
+        : "";
+    message.updatedBlockHeight =
       object.updatedBlockHeight !== undefined &&
       object.updatedBlockHeight !== null
-    ) {
-      message.updatedBlockHeight = Long.fromString(object.updatedBlockHeight);
-    } else {
-      message.updatedBlockHeight = Long.UZERO;
-    }
-    if (object.tradeId !== undefined && object.tradeId !== null) {
-      message.tradeId = Long.fromString(object.tradeId);
-    } else {
-      message.tradeId = Long.UZERO;
-    }
-    if (object.updateReason !== undefined && object.updateReason !== null) {
-      message.updateReason = Long.fromString(object.updateReason);
-    } else {
-      message.updateReason = Long.UZERO;
-    }
+        ? Long.fromString(object.updatedBlockHeight)
+        : Long.UZERO;
+    message.tradeId =
+      object.tradeId !== undefined && object.tradeId !== null
+        ? Long.fromString(object.tradeId)
+        : Long.UZERO;
+    message.updateReason =
+      object.updateReason !== undefined && object.updateReason !== null
+        ? Long.fromString(object.updateReason)
+        : Long.UZERO;
     return message;
   },
 
@@ -177,37 +163,30 @@ export const PositionEvent = {
 
   fromPartial(object: DeepPartial<PositionEvent>): PositionEvent {
     const message = { ...basePositionEvent } as PositionEvent;
-    if (object.position !== undefined && object.position !== null) {
-      message.position = Position.fromPartial(object.position);
-    } else {
-      message.position = undefined;
-    }
-    if (object.id !== undefined && object.id !== null) {
-      message.id = object.id as Long;
-    } else {
-      message.id = Long.UZERO;
-    }
+    message.position =
+      object.position !== undefined && object.position !== null
+        ? Position.fromPartial(object.position)
+        : undefined;
+    message.id =
+      object.id !== undefined && object.id !== null
+        ? Long.fromValue(object.id)
+        : Long.UZERO;
     message.type = object.type ?? "";
     message.allocatedMarginDenom = object.allocatedMarginDenom ?? "";
     message.allocatedMarginAmount = object.allocatedMarginAmount ?? "";
-    if (
+    message.updatedBlockHeight =
       object.updatedBlockHeight !== undefined &&
       object.updatedBlockHeight !== null
-    ) {
-      message.updatedBlockHeight = object.updatedBlockHeight as Long;
-    } else {
-      message.updatedBlockHeight = Long.UZERO;
-    }
-    if (object.tradeId !== undefined && object.tradeId !== null) {
-      message.tradeId = object.tradeId as Long;
-    } else {
-      message.tradeId = Long.UZERO;
-    }
-    if (object.updateReason !== undefined && object.updateReason !== null) {
-      message.updateReason = object.updateReason as Long;
-    } else {
-      message.updateReason = Long.UZERO;
-    }
+        ? Long.fromValue(object.updatedBlockHeight)
+        : Long.UZERO;
+    message.tradeId =
+      object.tradeId !== undefined && object.tradeId !== null
+        ? Long.fromValue(object.tradeId)
+        : Long.UZERO;
+    message.updateReason =
+      object.updateReason !== undefined && object.updateReason !== null
+        ? Long.fromValue(object.updateReason)
+        : Long.UZERO;
     return message;
   },
 };
@@ -219,10 +198,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

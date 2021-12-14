@@ -129,11 +129,10 @@ export const QueryGetTokenRequest = {
 
   fromJSON(object: any): QueryGetTokenRequest {
     const message = { ...baseQueryGetTokenRequest } as QueryGetTokenRequest;
-    if (object.denom !== undefined && object.denom !== null) {
-      message.denom = String(object.denom);
-    } else {
-      message.denom = "";
-    }
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
     return message;
   },
 
@@ -186,11 +185,10 @@ export const QueryGetTokenResponse = {
 
   fromJSON(object: any): QueryGetTokenResponse {
     const message = { ...baseQueryGetTokenResponse } as QueryGetTokenResponse;
-    if (object.token !== undefined && object.token !== null) {
-      message.token = Token.fromJSON(object.token);
-    } else {
-      message.token = undefined;
-    }
+    message.token =
+      object.token !== undefined && object.token !== null
+        ? Token.fromJSON(object.token)
+        : undefined;
     return message;
   },
 
@@ -205,11 +203,10 @@ export const QueryGetTokenResponse = {
     object: DeepPartial<QueryGetTokenResponse>
   ): QueryGetTokenResponse {
     const message = { ...baseQueryGetTokenResponse } as QueryGetTokenResponse;
-    if (object.token !== undefined && object.token !== null) {
-      message.token = Token.fromPartial(object.token);
-    } else {
-      message.token = undefined;
-    }
+    message.token =
+      object.token !== undefined && object.token !== null
+        ? Token.fromPartial(object.token)
+        : undefined;
     return message;
   },
 };
@@ -250,11 +247,10 @@ export const QueryAllTokenRequest = {
 
   fromJSON(object: any): QueryAllTokenRequest {
     const message = { ...baseQueryAllTokenRequest } as QueryAllTokenRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -269,11 +265,10 @@ export const QueryAllTokenRequest = {
 
   fromPartial(object: DeepPartial<QueryAllTokenRequest>): QueryAllTokenRequest {
     const message = { ...baseQueryAllTokenRequest } as QueryAllTokenRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -324,17 +319,11 @@ export const QueryAllTokenResponse = {
 
   fromJSON(object: any): QueryAllTokenResponse {
     const message = { ...baseQueryAllTokenResponse } as QueryAllTokenResponse;
-    message.tokens = [];
-    if (object.tokens !== undefined && object.tokens !== null) {
-      for (const e of object.tokens) {
-        message.tokens.push(Token.fromJSON(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.tokens = (object.tokens ?? []).map((e: any) => Token.fromJSON(e));
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -356,17 +345,11 @@ export const QueryAllTokenResponse = {
     object: DeepPartial<QueryAllTokenResponse>
   ): QueryAllTokenResponse {
     const message = { ...baseQueryAllTokenResponse } as QueryAllTokenResponse;
-    message.tokens = [];
-    if (object.tokens !== undefined && object.tokens !== null) {
-      for (const e of object.tokens) {
-        message.tokens.push(Token.fromPartial(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.tokens = (object.tokens ?? []).map((e) => Token.fromPartial(e));
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -417,16 +400,14 @@ export const QueryGetLockedCoinsRequest = {
     const message = {
       ...baseQueryGetLockedCoinsRequest,
     } as QueryGetLockedCoinsRequest;
-    if (object.address !== undefined && object.address !== null) {
-      message.address = String(object.address);
-    } else {
-      message.address = "";
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -447,11 +428,10 @@ export const QueryGetLockedCoinsRequest = {
       ...baseQueryGetLockedCoinsRequest,
     } as QueryGetLockedCoinsRequest;
     message.address = object.address ?? "";
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -506,17 +486,13 @@ export const QueryGetLockedCoinsResponse = {
     const message = {
       ...baseQueryGetLockedCoinsResponse,
     } as QueryGetLockedCoinsResponse;
-    message.lockedCoins = [];
-    if (object.lockedCoins !== undefined && object.lockedCoins !== null) {
-      for (const e of object.lockedCoins) {
-        message.lockedCoins.push(LockedCoins.fromJSON(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.lockedCoins = (object.lockedCoins ?? []).map((e: any) =>
+      LockedCoins.fromJSON(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -542,17 +518,13 @@ export const QueryGetLockedCoinsResponse = {
     const message = {
       ...baseQueryGetLockedCoinsResponse,
     } as QueryGetLockedCoinsResponse;
-    message.lockedCoins = [];
-    if (object.lockedCoins !== undefined && object.lockedCoins !== null) {
-      for (const e of object.lockedCoins) {
-        message.lockedCoins.push(LockedCoins.fromPartial(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.lockedCoins = (object.lockedCoins ?? []).map((e) =>
+      LockedCoins.fromPartial(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -597,11 +569,10 @@ export const QueryAllWrapperMappingsRequest = {
     const message = {
       ...baseQueryAllWrapperMappingsRequest,
     } as QueryAllWrapperMappingsRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -620,11 +591,10 @@ export const QueryAllWrapperMappingsRequest = {
     const message = {
       ...baseQueryAllWrapperMappingsRequest,
     } as QueryAllWrapperMappingsRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -689,20 +659,16 @@ export const QueryAllWrapperMappingsResponse = {
     const message = {
       ...baseQueryAllWrapperMappingsResponse,
     } as QueryAllWrapperMappingsResponse;
-    message.wrapperMappings = {};
-    if (
-      object.wrapperMappings !== undefined &&
-      object.wrapperMappings !== null
-    ) {
-      Object.entries(object.wrapperMappings).forEach(([key, value]) => {
-        message.wrapperMappings[key] = String(value);
-      });
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.wrapperMappings = Object.entries(
+      object.wrapperMappings ?? {}
+    ).reduce<{ [key: string]: string }>((acc, [key, value]) => {
+      acc[key] = String(value);
+      return acc;
+    }, {});
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -727,22 +693,18 @@ export const QueryAllWrapperMappingsResponse = {
     const message = {
       ...baseQueryAllWrapperMappingsResponse,
     } as QueryAllWrapperMappingsResponse;
-    message.wrapperMappings = {};
-    if (
-      object.wrapperMappings !== undefined &&
-      object.wrapperMappings !== null
-    ) {
-      Object.entries(object.wrapperMappings).forEach(([key, value]) => {
-        if (value !== undefined) {
-          message.wrapperMappings[key] = String(value);
-        }
-      });
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.wrapperMappings = Object.entries(
+      object.wrapperMappings ?? {}
+    ).reduce<{ [key: string]: string }>((acc, [key, value]) => {
+      if (value !== undefined) {
+        acc[key] = String(value);
+      }
+      return acc;
+    }, {});
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -796,16 +758,12 @@ export const QueryAllWrapperMappingsResponse_WrapperMappingsEntry = {
     const message = {
       ...baseQueryAllWrapperMappingsResponse_WrapperMappingsEntry,
     } as QueryAllWrapperMappingsResponse_WrapperMappingsEntry;
-    if (object.key !== undefined && object.key !== null) {
-      message.key = String(object.key);
-    } else {
-      message.key = "";
-    }
-    if (object.value !== undefined && object.value !== null) {
-      message.value = String(object.value);
-    } else {
-      message.value = "";
-    }
+    message.key =
+      object.key !== undefined && object.key !== null ? String(object.key) : "";
+    message.value =
+      object.value !== undefined && object.value !== null
+        ? String(object.value)
+        : "";
     return message;
   },
 
@@ -870,11 +828,10 @@ export const QueryGetBalancesRequest = {
     const message = {
       ...baseQueryGetBalancesRequest,
     } as QueryGetBalancesRequest;
-    if (object.address !== undefined && object.address !== null) {
-      message.address = String(object.address);
-    } else {
-      message.address = "";
-    }
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
     return message;
   },
 
@@ -938,12 +895,9 @@ export const QueryGetBalancesResponse = {
     const message = {
       ...baseQueryGetBalancesResponse,
     } as QueryGetBalancesResponse;
-    message.tokenBalances = [];
-    if (object.tokenBalances !== undefined && object.tokenBalances !== null) {
-      for (const e of object.tokenBalances) {
-        message.tokenBalances.push(TokenBalance.fromJSON(e));
-      }
-    }
+    message.tokenBalances = (object.tokenBalances ?? []).map((e: any) =>
+      TokenBalance.fromJSON(e)
+    );
     return message;
   },
 
@@ -965,12 +919,9 @@ export const QueryGetBalancesResponse = {
     const message = {
       ...baseQueryGetBalancesResponse,
     } as QueryGetBalancesResponse;
-    message.tokenBalances = [];
-    if (object.tokenBalances !== undefined && object.tokenBalances !== null) {
-      for (const e of object.tokenBalances) {
-        message.tokenBalances.push(TokenBalance.fromPartial(e));
-      }
-    }
+    message.tokenBalances = (object.tokenBalances ?? []).map((e) =>
+      TokenBalance.fromPartial(e)
+    );
     return message;
   },
 };
@@ -1059,41 +1010,34 @@ export const QueryGetExternalTransfersRequest = {
     const message = {
       ...baseQueryGetExternalTransfersRequest,
     } as QueryGetExternalTransfersRequest;
-    if (object.address !== undefined && object.address !== null) {
-      message.address = String(object.address);
-    } else {
-      message.address = "";
-    }
-    if (object.blockchain !== undefined && object.blockchain !== null) {
-      message.blockchain = String(object.blockchain);
-    } else {
-      message.blockchain = "";
-    }
-    if (object.transferType !== undefined && object.transferType !== null) {
-      message.transferType = String(object.transferType);
-    } else {
-      message.transferType = "";
-    }
-    if (object.denom !== undefined && object.denom !== null) {
-      message.denom = String(object.denom);
-    } else {
-      message.denom = "";
-    }
-    if (object.status !== undefined && object.status !== null) {
-      message.status = String(object.status);
-    } else {
-      message.status = "";
-    }
-    if (object.limit !== undefined && object.limit !== null) {
-      message.limit = Long.fromString(object.limit);
-    } else {
-      message.limit = Long.UZERO;
-    }
-    if (object.orderBy !== undefined && object.orderBy !== null) {
-      message.orderBy = String(object.orderBy);
-    } else {
-      message.orderBy = "";
-    }
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    message.blockchain =
+      object.blockchain !== undefined && object.blockchain !== null
+        ? String(object.blockchain)
+        : "";
+    message.transferType =
+      object.transferType !== undefined && object.transferType !== null
+        ? String(object.transferType)
+        : "";
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
+    message.status =
+      object.status !== undefined && object.status !== null
+        ? String(object.status)
+        : "";
+    message.limit =
+      object.limit !== undefined && object.limit !== null
+        ? Long.fromString(object.limit)
+        : Long.UZERO;
+    message.orderBy =
+      object.orderBy !== undefined && object.orderBy !== null
+        ? String(object.orderBy)
+        : "";
     return message;
   },
 
@@ -1122,11 +1066,10 @@ export const QueryGetExternalTransfersRequest = {
     message.transferType = object.transferType ?? "";
     message.denom = object.denom ?? "";
     message.status = object.status ?? "";
-    if (object.limit !== undefined && object.limit !== null) {
-      message.limit = object.limit as Long;
-    } else {
-      message.limit = Long.UZERO;
-    }
+    message.limit =
+      object.limit !== undefined && object.limit !== null
+        ? Long.fromValue(object.limit)
+        : Long.UZERO;
     message.orderBy = object.orderBy ?? "";
     return message;
   },
@@ -1175,15 +1118,9 @@ export const QueryGetExternalTransfersResponse = {
     const message = {
       ...baseQueryGetExternalTransfersResponse,
     } as QueryGetExternalTransfersResponse;
-    message.externalTransfers = [];
-    if (
-      object.externalTransfers !== undefined &&
-      object.externalTransfers !== null
-    ) {
-      for (const e of object.externalTransfers) {
-        message.externalTransfers.push(ExternalTransfer.fromJSON(e));
-      }
-    }
+    message.externalTransfers = (object.externalTransfers ?? []).map((e: any) =>
+      ExternalTransfer.fromJSON(e)
+    );
     return message;
   },
 
@@ -1205,15 +1142,9 @@ export const QueryGetExternalTransfersResponse = {
     const message = {
       ...baseQueryGetExternalTransfersResponse,
     } as QueryGetExternalTransfersResponse;
-    message.externalTransfers = [];
-    if (
-      object.externalTransfers !== undefined &&
-      object.externalTransfers !== null
-    ) {
-      for (const e of object.externalTransfers) {
-        message.externalTransfers.push(ExternalTransfer.fromPartial(e));
-      }
-    }
+    message.externalTransfers = (object.externalTransfers ?? []).map((e) =>
+      ExternalTransfer.fromPartial(e)
+    );
     return message;
   },
 };
@@ -1263,16 +1194,14 @@ export const QueryGetBridgeRequest = {
 
   fromJSON(object: any): QueryGetBridgeRequest {
     const message = { ...baseQueryGetBridgeRequest } as QueryGetBridgeRequest;
-    if (object.bridgeId !== undefined && object.bridgeId !== null) {
-      message.bridgeId = Long.fromString(object.bridgeId);
-    } else {
-      message.bridgeId = Long.UZERO;
-    }
-    if (object.chainId !== undefined && object.chainId !== null) {
-      message.chainId = Long.fromString(object.chainId);
-    } else {
-      message.chainId = Long.UZERO;
-    }
+    message.bridgeId =
+      object.bridgeId !== undefined && object.bridgeId !== null
+        ? Long.fromString(object.bridgeId)
+        : Long.UZERO;
+    message.chainId =
+      object.chainId !== undefined && object.chainId !== null
+        ? Long.fromString(object.chainId)
+        : Long.UZERO;
     return message;
   },
 
@@ -1289,16 +1218,14 @@ export const QueryGetBridgeRequest = {
     object: DeepPartial<QueryGetBridgeRequest>
   ): QueryGetBridgeRequest {
     const message = { ...baseQueryGetBridgeRequest } as QueryGetBridgeRequest;
-    if (object.bridgeId !== undefined && object.bridgeId !== null) {
-      message.bridgeId = object.bridgeId as Long;
-    } else {
-      message.bridgeId = Long.UZERO;
-    }
-    if (object.chainId !== undefined && object.chainId !== null) {
-      message.chainId = object.chainId as Long;
-    } else {
-      message.chainId = Long.UZERO;
-    }
+    message.bridgeId =
+      object.bridgeId !== undefined && object.bridgeId !== null
+        ? Long.fromValue(object.bridgeId)
+        : Long.UZERO;
+    message.chainId =
+      object.chainId !== undefined && object.chainId !== null
+        ? Long.fromValue(object.chainId)
+        : Long.UZERO;
     return message;
   },
 };
@@ -1339,11 +1266,10 @@ export const QueryGetBridgeResponse = {
 
   fromJSON(object: any): QueryGetBridgeResponse {
     const message = { ...baseQueryGetBridgeResponse } as QueryGetBridgeResponse;
-    if (object.bridge !== undefined && object.bridge !== null) {
-      message.bridge = Bridge.fromJSON(object.bridge);
-    } else {
-      message.bridge = undefined;
-    }
+    message.bridge =
+      object.bridge !== undefined && object.bridge !== null
+        ? Bridge.fromJSON(object.bridge)
+        : undefined;
     return message;
   },
 
@@ -1358,11 +1284,10 @@ export const QueryGetBridgeResponse = {
     object: DeepPartial<QueryGetBridgeResponse>
   ): QueryGetBridgeResponse {
     const message = { ...baseQueryGetBridgeResponse } as QueryGetBridgeResponse;
-    if (object.bridge !== undefined && object.bridge !== null) {
-      message.bridge = Bridge.fromPartial(object.bridge);
-    } else {
-      message.bridge = undefined;
-    }
+    message.bridge =
+      object.bridge !== undefined && object.bridge !== null
+        ? Bridge.fromPartial(object.bridge)
+        : undefined;
     return message;
   },
 };
@@ -1403,11 +1328,10 @@ export const QueryAllBridgeRequest = {
 
   fromJSON(object: any): QueryAllBridgeRequest {
     const message = { ...baseQueryAllBridgeRequest } as QueryAllBridgeRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -1424,11 +1348,10 @@ export const QueryAllBridgeRequest = {
     object: DeepPartial<QueryAllBridgeRequest>
   ): QueryAllBridgeRequest {
     const message = { ...baseQueryAllBridgeRequest } as QueryAllBridgeRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -1479,17 +1402,13 @@ export const QueryAllBridgeResponse = {
 
   fromJSON(object: any): QueryAllBridgeResponse {
     const message = { ...baseQueryAllBridgeResponse } as QueryAllBridgeResponse;
-    message.bridges = [];
-    if (object.bridges !== undefined && object.bridges !== null) {
-      for (const e of object.bridges) {
-        message.bridges.push(Bridge.fromJSON(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.bridges = (object.bridges ?? []).map((e: any) =>
+      Bridge.fromJSON(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -1513,17 +1432,11 @@ export const QueryAllBridgeResponse = {
     object: DeepPartial<QueryAllBridgeResponse>
   ): QueryAllBridgeResponse {
     const message = { ...baseQueryAllBridgeResponse } as QueryAllBridgeResponse;
-    message.bridges = [];
-    if (object.bridges !== undefined && object.bridges !== null) {
-      for (const e of object.bridges) {
-        message.bridges.push(Bridge.fromPartial(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.bridges = (object.bridges ?? []).map((e) => Bridge.fromPartial(e));
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -1680,10 +1593,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

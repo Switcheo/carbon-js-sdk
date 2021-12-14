@@ -64,11 +64,10 @@ export const QueryGetProfileRequest = {
 
   fromJSON(object: any): QueryGetProfileRequest {
     const message = { ...baseQueryGetProfileRequest } as QueryGetProfileRequest;
-    if (object.address !== undefined && object.address !== null) {
-      message.address = String(object.address);
-    } else {
-      message.address = "";
-    }
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
     return message;
   },
 
@@ -127,11 +126,10 @@ export const QueryGetProfileResponse = {
     const message = {
       ...baseQueryGetProfileResponse,
     } as QueryGetProfileResponse;
-    if (object.Profile !== undefined && object.Profile !== null) {
-      message.Profile = Profile.fromJSON(object.Profile);
-    } else {
-      message.Profile = undefined;
-    }
+    message.Profile =
+      object.Profile !== undefined && object.Profile !== null
+        ? Profile.fromJSON(object.Profile)
+        : undefined;
     return message;
   },
 
@@ -150,11 +148,10 @@ export const QueryGetProfileResponse = {
     const message = {
       ...baseQueryGetProfileResponse,
     } as QueryGetProfileResponse;
-    if (object.Profile !== undefined && object.Profile !== null) {
-      message.Profile = Profile.fromPartial(object.Profile);
-    } else {
-      message.Profile = undefined;
-    }
+    message.Profile =
+      object.Profile !== undefined && object.Profile !== null
+        ? Profile.fromPartial(object.Profile)
+        : undefined;
     return message;
   },
 };
@@ -201,16 +198,14 @@ export const QueryAllProfileRequest = {
 
   fromJSON(object: any): QueryAllProfileRequest {
     const message = { ...baseQueryAllProfileRequest } as QueryAllProfileRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
-    if (object.username !== undefined && object.username !== null) {
-      message.username = String(object.username);
-    } else {
-      message.username = "";
-    }
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
+    message.username =
+      object.username !== undefined && object.username !== null
+        ? String(object.username)
+        : "";
     return message;
   },
 
@@ -228,11 +223,10 @@ export const QueryAllProfileRequest = {
     object: DeepPartial<QueryAllProfileRequest>
   ): QueryAllProfileRequest {
     const message = { ...baseQueryAllProfileRequest } as QueryAllProfileRequest;
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageRequest.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
     message.username = object.username ?? "";
     return message;
   },
@@ -288,17 +282,13 @@ export const QueryAllProfileResponse = {
     const message = {
       ...baseQueryAllProfileResponse,
     } as QueryAllProfileResponse;
-    message.profiles = [];
-    if (object.profiles !== undefined && object.profiles !== null) {
-      for (const e of object.profiles) {
-        message.profiles.push(Profile.fromJSON(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromJSON(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.profiles = (object.profiles ?? []).map((e: any) =>
+      Profile.fromJSON(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -324,17 +314,13 @@ export const QueryAllProfileResponse = {
     const message = {
       ...baseQueryAllProfileResponse,
     } as QueryAllProfileResponse;
-    message.profiles = [];
-    if (object.profiles !== undefined && object.profiles !== null) {
-      for (const e of object.profiles) {
-        message.profiles.push(Profile.fromPartial(e));
-      }
-    }
-    if (object.pagination !== undefined && object.pagination !== null) {
-      message.pagination = PageResponse.fromPartial(object.pagination);
-    } else {
-      message.pagination = undefined;
-    }
+    message.profiles = (object.profiles ?? []).map((e) =>
+      Profile.fromPartial(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -395,10 +381,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

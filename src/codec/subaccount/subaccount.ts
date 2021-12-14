@@ -54,16 +54,14 @@ export const SubAccount = {
 
   fromJSON(object: any): SubAccount {
     const message = { ...baseSubAccount } as SubAccount;
-    if (object.mainAccount !== undefined && object.mainAccount !== null) {
-      message.mainAccount = String(object.mainAccount);
-    } else {
-      message.mainAccount = "";
-    }
-    if (object.active !== undefined && object.active !== null) {
-      message.active = Boolean(object.active);
-    } else {
-      message.active = false;
-    }
+    message.mainAccount =
+      object.mainAccount !== undefined && object.mainAccount !== null
+        ? String(object.mainAccount)
+        : "";
+    message.active =
+      object.active !== undefined && object.active !== null
+        ? Boolean(object.active)
+        : false;
     return message;
   },
 
@@ -132,21 +130,18 @@ export const GenesisSubAccount = {
 
   fromJSON(object: any): GenesisSubAccount {
     const message = { ...baseGenesisSubAccount } as GenesisSubAccount;
-    if (object.mainAddress !== undefined && object.mainAddress !== null) {
-      message.mainAddress = String(object.mainAddress);
-    } else {
-      message.mainAddress = "";
-    }
-    if (object.subAddress !== undefined && object.subAddress !== null) {
-      message.subAddress = String(object.subAddress);
-    } else {
-      message.subAddress = "";
-    }
-    if (object.active !== undefined && object.active !== null) {
-      message.active = Boolean(object.active);
-    } else {
-      message.active = false;
-    }
+    message.mainAddress =
+      object.mainAddress !== undefined && object.mainAddress !== null
+        ? String(object.mainAddress)
+        : "";
+    message.subAddress =
+      object.subAddress !== undefined && object.subAddress !== null
+        ? String(object.subAddress)
+        : "";
+    message.active =
+      object.active !== undefined && object.active !== null
+        ? Boolean(object.active)
+        : false;
     return message;
   },
 
@@ -175,10 +170,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

@@ -18,7 +18,7 @@ export interface GenesisState {
    */
   signingInfos: SigningInfo[];
   /**
-   * signing_infos represents a map between validator addresses and their
+   * missed_blocks represents a map between validator addresses and their
    * missed blocks.
    */
   missedBlocks: ValidatorMissedBlocks[];
@@ -102,23 +102,16 @@ export const GenesisState = {
 
   fromJSON(object: any): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
-    message.signingInfos = [];
-    message.missedBlocks = [];
-    if (object.params !== undefined && object.params !== null) {
-      message.params = Params.fromJSON(object.params);
-    } else {
-      message.params = undefined;
-    }
-    if (object.signingInfos !== undefined && object.signingInfos !== null) {
-      for (const e of object.signingInfos) {
-        message.signingInfos.push(SigningInfo.fromJSON(e));
-      }
-    }
-    if (object.missedBlocks !== undefined && object.missedBlocks !== null) {
-      for (const e of object.missedBlocks) {
-        message.missedBlocks.push(ValidatorMissedBlocks.fromJSON(e));
-      }
-    }
+    message.params =
+      object.params !== undefined && object.params !== null
+        ? Params.fromJSON(object.params)
+        : undefined;
+    message.signingInfos = (object.signingInfos ?? []).map((e: any) =>
+      SigningInfo.fromJSON(e)
+    );
+    message.missedBlocks = (object.missedBlocks ?? []).map((e: any) =>
+      ValidatorMissedBlocks.fromJSON(e)
+    );
     return message;
   },
 
@@ -145,23 +138,16 @@ export const GenesisState = {
 
   fromPartial(object: DeepPartial<GenesisState>): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
-    if (object.params !== undefined && object.params !== null) {
-      message.params = Params.fromPartial(object.params);
-    } else {
-      message.params = undefined;
-    }
-    message.signingInfos = [];
-    if (object.signingInfos !== undefined && object.signingInfos !== null) {
-      for (const e of object.signingInfos) {
-        message.signingInfos.push(SigningInfo.fromPartial(e));
-      }
-    }
-    message.missedBlocks = [];
-    if (object.missedBlocks !== undefined && object.missedBlocks !== null) {
-      for (const e of object.missedBlocks) {
-        message.missedBlocks.push(ValidatorMissedBlocks.fromPartial(e));
-      }
-    }
+    message.params =
+      object.params !== undefined && object.params !== null
+        ? Params.fromPartial(object.params)
+        : undefined;
+    message.signingInfos = (object.signingInfos ?? []).map((e) =>
+      SigningInfo.fromPartial(e)
+    );
+    message.missedBlocks = (object.missedBlocks ?? []).map((e) =>
+      ValidatorMissedBlocks.fromPartial(e)
+    );
     return message;
   },
 };
@@ -211,21 +197,15 @@ export const SigningInfo = {
 
   fromJSON(object: any): SigningInfo {
     const message = { ...baseSigningInfo } as SigningInfo;
-    if (object.address !== undefined && object.address !== null) {
-      message.address = String(object.address);
-    } else {
-      message.address = "";
-    }
-    if (
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    message.validatorSigningInfo =
       object.validatorSigningInfo !== undefined &&
       object.validatorSigningInfo !== null
-    ) {
-      message.validatorSigningInfo = ValidatorSigningInfo.fromJSON(
-        object.validatorSigningInfo
-      );
-    } else {
-      message.validatorSigningInfo = undefined;
-    }
+        ? ValidatorSigningInfo.fromJSON(object.validatorSigningInfo)
+        : undefined;
     return message;
   },
 
@@ -242,16 +222,11 @@ export const SigningInfo = {
   fromPartial(object: DeepPartial<SigningInfo>): SigningInfo {
     const message = { ...baseSigningInfo } as SigningInfo;
     message.address = object.address ?? "";
-    if (
+    message.validatorSigningInfo =
       object.validatorSigningInfo !== undefined &&
       object.validatorSigningInfo !== null
-    ) {
-      message.validatorSigningInfo = ValidatorSigningInfo.fromPartial(
-        object.validatorSigningInfo
-      );
-    } else {
-      message.validatorSigningInfo = undefined;
-    }
+        ? ValidatorSigningInfo.fromPartial(object.validatorSigningInfo)
+        : undefined;
     return message;
   },
 };
@@ -301,17 +276,13 @@ export const ValidatorMissedBlocks = {
 
   fromJSON(object: any): ValidatorMissedBlocks {
     const message = { ...baseValidatorMissedBlocks } as ValidatorMissedBlocks;
-    message.missedBlocks = [];
-    if (object.address !== undefined && object.address !== null) {
-      message.address = String(object.address);
-    } else {
-      message.address = "";
-    }
-    if (object.missedBlocks !== undefined && object.missedBlocks !== null) {
-      for (const e of object.missedBlocks) {
-        message.missedBlocks.push(MissedBlock.fromJSON(e));
-      }
-    }
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    message.missedBlocks = (object.missedBlocks ?? []).map((e: any) =>
+      MissedBlock.fromJSON(e)
+    );
     return message;
   },
 
@@ -333,12 +304,9 @@ export const ValidatorMissedBlocks = {
   ): ValidatorMissedBlocks {
     const message = { ...baseValidatorMissedBlocks } as ValidatorMissedBlocks;
     message.address = object.address ?? "";
-    message.missedBlocks = [];
-    if (object.missedBlocks !== undefined && object.missedBlocks !== null) {
-      for (const e of object.missedBlocks) {
-        message.missedBlocks.push(MissedBlock.fromPartial(e));
-      }
-    }
+    message.missedBlocks = (object.missedBlocks ?? []).map((e) =>
+      MissedBlock.fromPartial(e)
+    );
     return message;
   },
 };
@@ -382,16 +350,14 @@ export const MissedBlock = {
 
   fromJSON(object: any): MissedBlock {
     const message = { ...baseMissedBlock } as MissedBlock;
-    if (object.index !== undefined && object.index !== null) {
-      message.index = Long.fromString(object.index);
-    } else {
-      message.index = Long.ZERO;
-    }
-    if (object.missed !== undefined && object.missed !== null) {
-      message.missed = Boolean(object.missed);
-    } else {
-      message.missed = false;
-    }
+    message.index =
+      object.index !== undefined && object.index !== null
+        ? Long.fromString(object.index)
+        : Long.ZERO;
+    message.missed =
+      object.missed !== undefined && object.missed !== null
+        ? Boolean(object.missed)
+        : false;
     return message;
   },
 
@@ -405,11 +371,10 @@ export const MissedBlock = {
 
   fromPartial(object: DeepPartial<MissedBlock>): MissedBlock {
     const message = { ...baseMissedBlock } as MissedBlock;
-    if (object.index !== undefined && object.index !== null) {
-      message.index = object.index as Long;
-    } else {
-      message.index = Long.ZERO;
-    }
+    message.index =
+      object.index !== undefined && object.index !== null
+        ? Long.fromValue(object.index)
+        : Long.ZERO;
     message.missed = object.missed ?? false;
     return message;
   },
@@ -422,10 +387,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

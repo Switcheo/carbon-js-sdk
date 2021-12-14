@@ -55,21 +55,18 @@ export const Profile = {
 
   fromJSON(object: any): Profile {
     const message = { ...baseProfile } as Profile;
-    if (object.address !== undefined && object.address !== null) {
-      message.address = String(object.address);
-    } else {
-      message.address = "";
-    }
-    if (object.username !== undefined && object.username !== null) {
-      message.username = String(object.username);
-    } else {
-      message.username = "";
-    }
-    if (object.twitter !== undefined && object.twitter !== null) {
-      message.twitter = String(object.twitter);
-    } else {
-      message.twitter = "";
-    }
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    message.username =
+      object.username !== undefined && object.username !== null
+        ? String(object.username)
+        : "";
+    message.twitter =
+      object.twitter !== undefined && object.twitter !== null
+        ? String(object.twitter)
+        : "";
     return message;
   },
 
@@ -97,10 +94,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

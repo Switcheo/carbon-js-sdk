@@ -12,7 +12,10 @@ export interface GenesisState {
   params?: Params;
   /** balances is an array containing the balances of all the accounts. */
   balances: Balance[];
-  /** supply represents the total supply. */
+  /**
+   * supply represents the total supply. If it is left empty, then supply will be calculated based on the provided
+   * balances. Otherwise, it will be used to validate that the sum of the balances equals this amount.
+   */
   supply: Coin[];
   /** denom_metadata defines the metadata of the differents coins. */
   denomMetadata: Metadata[];
@@ -83,29 +86,17 @@ export const GenesisState = {
 
   fromJSON(object: any): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
-    message.balances = [];
-    message.supply = [];
-    message.denomMetadata = [];
-    if (object.params !== undefined && object.params !== null) {
-      message.params = Params.fromJSON(object.params);
-    } else {
-      message.params = undefined;
-    }
-    if (object.balances !== undefined && object.balances !== null) {
-      for (const e of object.balances) {
-        message.balances.push(Balance.fromJSON(e));
-      }
-    }
-    if (object.supply !== undefined && object.supply !== null) {
-      for (const e of object.supply) {
-        message.supply.push(Coin.fromJSON(e));
-      }
-    }
-    if (object.denomMetadata !== undefined && object.denomMetadata !== null) {
-      for (const e of object.denomMetadata) {
-        message.denomMetadata.push(Metadata.fromJSON(e));
-      }
-    }
+    message.params =
+      object.params !== undefined && object.params !== null
+        ? Params.fromJSON(object.params)
+        : undefined;
+    message.balances = (object.balances ?? []).map((e: any) =>
+      Balance.fromJSON(e)
+    );
+    message.supply = (object.supply ?? []).map((e: any) => Coin.fromJSON(e));
+    message.denomMetadata = (object.denomMetadata ?? []).map((e: any) =>
+      Metadata.fromJSON(e)
+    );
     return message;
   },
 
@@ -137,29 +128,17 @@ export const GenesisState = {
 
   fromPartial(object: DeepPartial<GenesisState>): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
-    if (object.params !== undefined && object.params !== null) {
-      message.params = Params.fromPartial(object.params);
-    } else {
-      message.params = undefined;
-    }
-    message.balances = [];
-    if (object.balances !== undefined && object.balances !== null) {
-      for (const e of object.balances) {
-        message.balances.push(Balance.fromPartial(e));
-      }
-    }
-    message.supply = [];
-    if (object.supply !== undefined && object.supply !== null) {
-      for (const e of object.supply) {
-        message.supply.push(Coin.fromPartial(e));
-      }
-    }
-    message.denomMetadata = [];
-    if (object.denomMetadata !== undefined && object.denomMetadata !== null) {
-      for (const e of object.denomMetadata) {
-        message.denomMetadata.push(Metadata.fromPartial(e));
-      }
-    }
+    message.params =
+      object.params !== undefined && object.params !== null
+        ? Params.fromPartial(object.params)
+        : undefined;
+    message.balances = (object.balances ?? []).map((e) =>
+      Balance.fromPartial(e)
+    );
+    message.supply = (object.supply ?? []).map((e) => Coin.fromPartial(e));
+    message.denomMetadata = (object.denomMetadata ?? []).map((e) =>
+      Metadata.fromPartial(e)
+    );
     return message;
   },
 };
@@ -204,17 +183,11 @@ export const Balance = {
 
   fromJSON(object: any): Balance {
     const message = { ...baseBalance } as Balance;
-    message.coins = [];
-    if (object.address !== undefined && object.address !== null) {
-      message.address = String(object.address);
-    } else {
-      message.address = "";
-    }
-    if (object.coins !== undefined && object.coins !== null) {
-      for (const e of object.coins) {
-        message.coins.push(Coin.fromJSON(e));
-      }
-    }
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    message.coins = (object.coins ?? []).map((e: any) => Coin.fromJSON(e));
     return message;
   },
 
@@ -232,12 +205,7 @@ export const Balance = {
   fromPartial(object: DeepPartial<Balance>): Balance {
     const message = { ...baseBalance } as Balance;
     message.address = object.address ?? "";
-    message.coins = [];
-    if (object.coins !== undefined && object.coins !== null) {
-      for (const e of object.coins) {
-        message.coins.push(Coin.fromPartial(e));
-      }
-    }
+    message.coins = (object.coins ?? []).map((e) => Coin.fromPartial(e));
     return message;
   },
 };
@@ -249,10 +217,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>

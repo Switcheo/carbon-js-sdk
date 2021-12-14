@@ -144,21 +144,15 @@ export const MsgCreateToken = {
 
   fromJSON(object: any): MsgCreateToken {
     const message = { ...baseMsgCreateToken } as MsgCreateToken;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
-    if (
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.createTokenParams =
       object.createTokenParams !== undefined &&
       object.createTokenParams !== null
-    ) {
-      message.createTokenParams = CreateTokenParams.fromJSON(
-        object.createTokenParams
-      );
-    } else {
-      message.createTokenParams = undefined;
-    }
+        ? CreateTokenParams.fromJSON(object.createTokenParams)
+        : undefined;
     return message;
   },
 
@@ -175,16 +169,11 @@ export const MsgCreateToken = {
   fromPartial(object: DeepPartial<MsgCreateToken>): MsgCreateToken {
     const message = { ...baseMsgCreateToken } as MsgCreateToken;
     message.creator = object.creator ?? "";
-    if (
+    message.createTokenParams =
       object.createTokenParams !== undefined &&
       object.createTokenParams !== null
-    ) {
-      message.createTokenParams = CreateTokenParams.fromPartial(
-        object.createTokenParams
-      );
-    } else {
-      message.createTokenParams = undefined;
-    }
+        ? CreateTokenParams.fromPartial(object.createTokenParams)
+        : undefined;
     return message;
   },
 };
@@ -273,46 +262,38 @@ export const CreateTokenParams = {
 
   fromJSON(object: any): CreateTokenParams {
     const message = { ...baseCreateTokenParams } as CreateTokenParams;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
-    if (object.name !== undefined && object.name !== null) {
-      message.name = String(object.name);
-    } else {
-      message.name = "";
-    }
-    if (object.symbol !== undefined && object.symbol !== null) {
-      message.symbol = String(object.symbol);
-    } else {
-      message.symbol = "";
-    }
-    if (object.decimals !== undefined && object.decimals !== null) {
-      message.decimals = Long.fromString(object.decimals);
-    } else {
-      message.decimals = Long.ZERO;
-    }
-    if (object.chainId !== undefined && object.chainId !== null) {
-      message.chainId = Long.fromString(object.chainId);
-    } else {
-      message.chainId = Long.UZERO;
-    }
-    if (object.bridgeId !== undefined && object.bridgeId !== null) {
-      message.bridgeId = Long.fromString(object.bridgeId);
-    } else {
-      message.bridgeId = Long.UZERO;
-    }
-    if (object.bridgeAddress !== undefined && object.bridgeAddress !== null) {
-      message.bridgeAddress = String(object.bridgeAddress);
-    } else {
-      message.bridgeAddress = "";
-    }
-    if (object.tokenAddress !== undefined && object.tokenAddress !== null) {
-      message.tokenAddress = String(object.tokenAddress);
-    } else {
-      message.tokenAddress = "";
-    }
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.name =
+      object.name !== undefined && object.name !== null
+        ? String(object.name)
+        : "";
+    message.symbol =
+      object.symbol !== undefined && object.symbol !== null
+        ? String(object.symbol)
+        : "";
+    message.decimals =
+      object.decimals !== undefined && object.decimals !== null
+        ? Long.fromString(object.decimals)
+        : Long.ZERO;
+    message.chainId =
+      object.chainId !== undefined && object.chainId !== null
+        ? Long.fromString(object.chainId)
+        : Long.UZERO;
+    message.bridgeId =
+      object.bridgeId !== undefined && object.bridgeId !== null
+        ? Long.fromString(object.bridgeId)
+        : Long.UZERO;
+    message.bridgeAddress =
+      object.bridgeAddress !== undefined && object.bridgeAddress !== null
+        ? String(object.bridgeAddress)
+        : "";
+    message.tokenAddress =
+      object.tokenAddress !== undefined && object.tokenAddress !== null
+        ? String(object.tokenAddress)
+        : "";
     return message;
   },
 
@@ -339,21 +320,18 @@ export const CreateTokenParams = {
     message.creator = object.creator ?? "";
     message.name = object.name ?? "";
     message.symbol = object.symbol ?? "";
-    if (object.decimals !== undefined && object.decimals !== null) {
-      message.decimals = object.decimals as Long;
-    } else {
-      message.decimals = Long.ZERO;
-    }
-    if (object.chainId !== undefined && object.chainId !== null) {
-      message.chainId = object.chainId as Long;
-    } else {
-      message.chainId = Long.UZERO;
-    }
-    if (object.bridgeId !== undefined && object.bridgeId !== null) {
-      message.bridgeId = object.bridgeId as Long;
-    } else {
-      message.bridgeId = Long.UZERO;
-    }
+    message.decimals =
+      object.decimals !== undefined && object.decimals !== null
+        ? Long.fromValue(object.decimals)
+        : Long.ZERO;
+    message.chainId =
+      object.chainId !== undefined && object.chainId !== null
+        ? Long.fromValue(object.chainId)
+        : Long.UZERO;
+    message.bridgeId =
+      object.bridgeId !== undefined && object.bridgeId !== null
+        ? Long.fromValue(object.bridgeId)
+        : Long.UZERO;
     message.bridgeAddress = object.bridgeAddress ?? "";
     message.tokenAddress = object.tokenAddress ?? "";
     return message;
@@ -396,11 +374,10 @@ export const MsgCreateTokenResponse = {
 
   fromJSON(object: any): MsgCreateTokenResponse {
     const message = { ...baseMsgCreateTokenResponse } as MsgCreateTokenResponse;
-    if (object.denom !== undefined && object.denom !== null) {
-      message.denom = String(object.denom);
-    } else {
-      message.denom = "";
-    }
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
     return message;
   },
 
@@ -458,16 +435,14 @@ export const MsgSyncToken = {
 
   fromJSON(object: any): MsgSyncToken {
     const message = { ...baseMsgSyncToken } as MsgSyncToken;
-    if (object.syncer !== undefined && object.syncer !== null) {
-      message.syncer = String(object.syncer);
-    } else {
-      message.syncer = "";
-    }
-    if (object.denom !== undefined && object.denom !== null) {
-      message.denom = String(object.denom);
-    } else {
-      message.denom = "";
-    }
+    message.syncer =
+      object.syncer !== undefined && object.syncer !== null
+        ? String(object.syncer)
+        : "";
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
     return message;
   },
 
@@ -581,26 +556,20 @@ export const MsgMintToken = {
 
   fromJSON(object: any): MsgMintToken {
     const message = { ...baseMsgMintToken } as MsgMintToken;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
-    if (object.denom !== undefined && object.denom !== null) {
-      message.denom = String(object.denom);
-    } else {
-      message.denom = "";
-    }
-    if (object.amount !== undefined && object.amount !== null) {
-      message.amount = String(object.amount);
-    } else {
-      message.amount = "";
-    }
-    if (object.to !== undefined && object.to !== null) {
-      message.to = String(object.to);
-    } else {
-      message.to = "";
-    }
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
+    message.amount =
+      object.amount !== undefined && object.amount !== null
+        ? String(object.amount)
+        : "";
+    message.to =
+      object.to !== undefined && object.to !== null ? String(object.to) : "";
     return message;
   },
 
@@ -716,21 +685,18 @@ export const MsgBindToken = {
 
   fromJSON(object: any): MsgBindToken {
     const message = { ...baseMsgBindToken } as MsgBindToken;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
-    if (object.sourceDenom !== undefined && object.sourceDenom !== null) {
-      message.sourceDenom = String(object.sourceDenom);
-    } else {
-      message.sourceDenom = "";
-    }
-    if (object.wrappedDenom !== undefined && object.wrappedDenom !== null) {
-      message.wrappedDenom = String(object.wrappedDenom);
-    } else {
-      message.wrappedDenom = "";
-    }
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.sourceDenom =
+      object.sourceDenom !== undefined && object.sourceDenom !== null
+        ? String(object.sourceDenom)
+        : "";
+    message.wrappedDenom =
+      object.wrappedDenom !== undefined && object.wrappedDenom !== null
+        ? String(object.wrappedDenom)
+        : "";
     return message;
   },
 
@@ -836,16 +802,14 @@ export const MsgUnbindToken = {
 
   fromJSON(object: any): MsgUnbindToken {
     const message = { ...baseMsgUnbindToken } as MsgUnbindToken;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
-    if (object.wrappedDenom !== undefined && object.wrappedDenom !== null) {
-      message.wrappedDenom = String(object.wrappedDenom);
-    } else {
-      message.wrappedDenom = "";
-    }
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.wrappedDenom =
+      object.wrappedDenom !== undefined && object.wrappedDenom !== null
+        ? String(object.wrappedDenom)
+        : "";
     return message;
   },
 
@@ -954,21 +918,18 @@ export const MsgLinkToken = {
 
   fromJSON(object: any): MsgLinkToken {
     const message = { ...baseMsgLinkToken } as MsgLinkToken;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
-    if (object.denom !== undefined && object.denom !== null) {
-      message.denom = String(object.denom);
-    } else {
-      message.denom = "";
-    }
-    if (object.bridgeAddress !== undefined && object.bridgeAddress !== null) {
-      message.bridgeAddress = String(object.bridgeAddress);
-    } else {
-      message.bridgeAddress = "";
-    }
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
+    message.bridgeAddress =
+      object.bridgeAddress !== undefined && object.bridgeAddress !== null
+        ? String(object.bridgeAddress)
+        : "";
     return message;
   },
 
@@ -1104,36 +1065,30 @@ export const MsgWithdraw = {
 
   fromJSON(object: any): MsgWithdraw {
     const message = { ...baseMsgWithdraw } as MsgWithdraw;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
-    if (object.toAddress !== undefined && object.toAddress !== null) {
-      message.toAddress = String(object.toAddress);
-    } else {
-      message.toAddress = "";
-    }
-    if (object.denom !== undefined && object.denom !== null) {
-      message.denom = String(object.denom);
-    } else {
-      message.denom = "";
-    }
-    if (object.amount !== undefined && object.amount !== null) {
-      message.amount = String(object.amount);
-    } else {
-      message.amount = "";
-    }
-    if (object.feeAmount !== undefined && object.feeAmount !== null) {
-      message.feeAmount = String(object.feeAmount);
-    } else {
-      message.feeAmount = "";
-    }
-    if (object.feeAddress !== undefined && object.feeAddress !== null) {
-      message.feeAddress = String(object.feeAddress);
-    } else {
-      message.feeAddress = "";
-    }
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.toAddress =
+      object.toAddress !== undefined && object.toAddress !== null
+        ? String(object.toAddress)
+        : "";
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
+    message.amount =
+      object.amount !== undefined && object.amount !== null
+        ? String(object.amount)
+        : "";
+    message.feeAmount =
+      object.feeAmount !== undefined && object.feeAmount !== null
+        ? String(object.feeAmount)
+        : "";
+    message.feeAddress =
+      object.feeAddress !== undefined && object.feeAddress !== null
+        ? String(object.feeAddress)
+        : "";
     return message;
   },
 
@@ -1257,26 +1212,22 @@ export const MsgAuthorizeBridge = {
 
   fromJSON(object: any): MsgAuthorizeBridge {
     const message = { ...baseMsgAuthorizeBridge } as MsgAuthorizeBridge;
-    if (object.creator !== undefined && object.creator !== null) {
-      message.creator = String(object.creator);
-    } else {
-      message.creator = "";
-    }
-    if (object.bridgeId !== undefined && object.bridgeId !== null) {
-      message.bridgeId = Long.fromString(object.bridgeId);
-    } else {
-      message.bridgeId = Long.UZERO;
-    }
-    if (object.chainId !== undefined && object.chainId !== null) {
-      message.chainId = Long.fromString(object.chainId);
-    } else {
-      message.chainId = Long.UZERO;
-    }
-    if (object.chainName !== undefined && object.chainName !== null) {
-      message.chainName = String(object.chainName);
-    } else {
-      message.chainName = "";
-    }
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.bridgeId =
+      object.bridgeId !== undefined && object.bridgeId !== null
+        ? Long.fromString(object.bridgeId)
+        : Long.UZERO;
+    message.chainId =
+      object.chainId !== undefined && object.chainId !== null
+        ? Long.fromString(object.chainId)
+        : Long.UZERO;
+    message.chainName =
+      object.chainName !== undefined && object.chainName !== null
+        ? String(object.chainName)
+        : "";
     return message;
   },
 
@@ -1294,16 +1245,14 @@ export const MsgAuthorizeBridge = {
   fromPartial(object: DeepPartial<MsgAuthorizeBridge>): MsgAuthorizeBridge {
     const message = { ...baseMsgAuthorizeBridge } as MsgAuthorizeBridge;
     message.creator = object.creator ?? "";
-    if (object.bridgeId !== undefined && object.bridgeId !== null) {
-      message.bridgeId = object.bridgeId as Long;
-    } else {
-      message.bridgeId = Long.UZERO;
-    }
-    if (object.chainId !== undefined && object.chainId !== null) {
-      message.chainId = object.chainId as Long;
-    } else {
-      message.chainId = Long.UZERO;
-    }
+    message.bridgeId =
+      object.bridgeId !== undefined && object.bridgeId !== null
+        ? Long.fromValue(object.bridgeId)
+        : Long.UZERO;
+    message.chainId =
+      object.chainId !== undefined && object.chainId !== null
+        ? Long.fromValue(object.chainId)
+        : Long.UZERO;
     message.chainName = object.chainName ?? "";
     return message;
   },
@@ -1355,16 +1304,12 @@ export const MsgAuthorizeBridgeResponse = {
     const message = {
       ...baseMsgAuthorizeBridgeResponse,
     } as MsgAuthorizeBridgeResponse;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = String(object.id);
-    } else {
-      message.id = "";
-    }
-    if (object.bridge !== undefined && object.bridge !== null) {
-      message.bridge = Bridge.fromJSON(object.bridge);
-    } else {
-      message.bridge = undefined;
-    }
+    message.id =
+      object.id !== undefined && object.id !== null ? String(object.id) : "";
+    message.bridge =
+      object.bridge !== undefined && object.bridge !== null
+        ? Bridge.fromJSON(object.bridge)
+        : undefined;
     return message;
   },
 
@@ -1383,11 +1328,10 @@ export const MsgAuthorizeBridgeResponse = {
       ...baseMsgAuthorizeBridgeResponse,
     } as MsgAuthorizeBridgeResponse;
     message.id = object.id ?? "";
-    if (object.bridge !== undefined && object.bridge !== null) {
-      message.bridge = Bridge.fromPartial(object.bridge);
-    } else {
-      message.bridge = undefined;
-    }
+    message.bridge =
+      object.bridge !== undefined && object.bridge !== null
+        ? Bridge.fromPartial(object.bridge)
+        : undefined;
     return message;
   },
 };
@@ -1444,21 +1388,18 @@ export const MsgDeauthorizeBridge = {
 
   fromJSON(object: any): MsgDeauthorizeBridge {
     const message = { ...baseMsgDeauthorizeBridge } as MsgDeauthorizeBridge;
-    if (object.initiator !== undefined && object.initiator !== null) {
-      message.initiator = String(object.initiator);
-    } else {
-      message.initiator = "";
-    }
-    if (object.bridgeId !== undefined && object.bridgeId !== null) {
-      message.bridgeId = Long.fromString(object.bridgeId);
-    } else {
-      message.bridgeId = Long.UZERO;
-    }
-    if (object.chainId !== undefined && object.chainId !== null) {
-      message.chainId = Long.fromString(object.chainId);
-    } else {
-      message.chainId = Long.UZERO;
-    }
+    message.initiator =
+      object.initiator !== undefined && object.initiator !== null
+        ? String(object.initiator)
+        : "";
+    message.bridgeId =
+      object.bridgeId !== undefined && object.bridgeId !== null
+        ? Long.fromString(object.bridgeId)
+        : Long.UZERO;
+    message.chainId =
+      object.chainId !== undefined && object.chainId !== null
+        ? Long.fromString(object.chainId)
+        : Long.UZERO;
     return message;
   },
 
@@ -1475,16 +1416,14 @@ export const MsgDeauthorizeBridge = {
   fromPartial(object: DeepPartial<MsgDeauthorizeBridge>): MsgDeauthorizeBridge {
     const message = { ...baseMsgDeauthorizeBridge } as MsgDeauthorizeBridge;
     message.initiator = object.initiator ?? "";
-    if (object.bridgeId !== undefined && object.bridgeId !== null) {
-      message.bridgeId = object.bridgeId as Long;
-    } else {
-      message.bridgeId = Long.UZERO;
-    }
-    if (object.chainId !== undefined && object.chainId !== null) {
-      message.chainId = object.chainId as Long;
-    } else {
-      message.chainId = Long.UZERO;
-    }
+    message.bridgeId =
+      object.bridgeId !== undefined && object.bridgeId !== null
+        ? Long.fromValue(object.bridgeId)
+        : Long.UZERO;
+    message.chainId =
+      object.chainId !== undefined && object.chainId !== null
+        ? Long.fromValue(object.chainId)
+        : Long.UZERO;
     return message;
   },
 };
@@ -1535,16 +1474,12 @@ export const MsgDeauthorizeBridgeResponse = {
     const message = {
       ...baseMsgDeauthorizeBridgeResponse,
     } as MsgDeauthorizeBridgeResponse;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = String(object.id);
-    } else {
-      message.id = "";
-    }
-    if (object.bridge !== undefined && object.bridge !== null) {
-      message.bridge = Bridge.fromJSON(object.bridge);
-    } else {
-      message.bridge = undefined;
-    }
+    message.id =
+      object.id !== undefined && object.id !== null ? String(object.id) : "";
+    message.bridge =
+      object.bridge !== undefined && object.bridge !== null
+        ? Bridge.fromJSON(object.bridge)
+        : undefined;
     return message;
   },
 
@@ -1563,11 +1498,10 @@ export const MsgDeauthorizeBridgeResponse = {
       ...baseMsgDeauthorizeBridgeResponse,
     } as MsgDeauthorizeBridgeResponse;
     message.id = object.id ?? "";
-    if (object.bridge !== undefined && object.bridge !== null) {
-      message.bridge = Bridge.fromPartial(object.bridge);
-    } else {
-      message.bridge = undefined;
-    }
+    message.bridge =
+      object.bridge !== undefined && object.bridge !== null
+        ? Bridge.fromPartial(object.bridge)
+        : undefined;
     return message;
   },
 };
@@ -1732,10 +1666,11 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
-  | Long;
+  | undefined;
 export type DeepPartial<T> = T extends Builtin
   ? T
+  : T extends Long
+  ? string | number | Long
   : T extends Array<infer U>
   ? Array<DeepPartial<U>>
   : T extends ReadonlyArray<infer U>
