@@ -46,7 +46,7 @@ export interface NetworkConfig {
   neo: NeoNetworkConfig
   zil: ZilNetworkConfig
 
-  /** @deprecated use rpcUrl */
+  /** @deprecated use tmRpcUrl */
   rpcURL: string;
   /** @deprecated use restUrl */
   restURL: string;
