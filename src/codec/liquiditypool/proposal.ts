@@ -7,8 +7,7 @@ import {
   SetRewardCurveParams,
   SetCommitmentCurveParams,
   SetRewardsWeightsParams,
-  ChangeSwapFeeParams,
-  ChangeNumQuotesParams,
+  UpdatePoolParams,
 } from "../liquiditypool/tx";
 
 export const protobufPackage = "Switcheo.carbon.liquiditypool";
@@ -43,16 +42,10 @@ export interface SetRewardsWeightsProposal {
   msg?: SetRewardsWeightsParams;
 }
 
-export interface ChangeSwapFeeProposal {
+export interface UpdatePoolProposal {
   title: string;
   description: string;
-  msg?: ChangeSwapFeeParams;
-}
-
-export interface ChangeNumQuotesProposal {
-  title: string;
-  description: string;
-  msg?: ChangeNumQuotesParams;
+  msg?: UpdatePoolParams;
 }
 
 const baseLinkPoolProposal: object = { title: "", description: "" };
@@ -512,11 +505,11 @@ export const SetRewardsWeightsProposal = {
   },
 };
 
-const baseChangeSwapFeeProposal: object = { title: "", description: "" };
+const baseUpdatePoolProposal: object = { title: "", description: "" };
 
-export const ChangeSwapFeeProposal = {
+export const UpdatePoolProposal = {
   encode(
-    message: ChangeSwapFeeProposal,
+    message: UpdatePoolProposal,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.title !== "") {
@@ -526,21 +519,15 @@ export const ChangeSwapFeeProposal = {
       writer.uint32(18).string(message.description);
     }
     if (message.msg !== undefined) {
-      ChangeSwapFeeParams.encode(
-        message.msg,
-        writer.uint32(26).fork()
-      ).ldelim();
+      UpdatePoolParams.encode(message.msg, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): ChangeSwapFeeProposal {
+  decode(input: _m0.Reader | Uint8Array, length?: number): UpdatePoolProposal {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseChangeSwapFeeProposal } as ChangeSwapFeeProposal;
+    const message = { ...baseUpdatePoolProposal } as UpdatePoolProposal;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -551,7 +538,7 @@ export const ChangeSwapFeeProposal = {
           message.description = reader.string();
           break;
         case 3:
-          message.msg = ChangeSwapFeeParams.decode(reader, reader.uint32());
+          message.msg = UpdatePoolParams.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -561,8 +548,8 @@ export const ChangeSwapFeeProposal = {
     return message;
   },
 
-  fromJSON(object: any): ChangeSwapFeeProposal {
-    const message = { ...baseChangeSwapFeeProposal } as ChangeSwapFeeProposal;
+  fromJSON(object: any): UpdatePoolProposal {
+    const message = { ...baseUpdatePoolProposal } as UpdatePoolProposal;
     message.title =
       object.title !== undefined && object.title !== null
         ? String(object.title)
@@ -573,130 +560,30 @@ export const ChangeSwapFeeProposal = {
         : "";
     message.msg =
       object.msg !== undefined && object.msg !== null
-        ? ChangeSwapFeeParams.fromJSON(object.msg)
+        ? UpdatePoolParams.fromJSON(object.msg)
         : undefined;
     return message;
   },
 
-  toJSON(message: ChangeSwapFeeProposal): unknown {
+  toJSON(message: UpdatePoolProposal): unknown {
     const obj: any = {};
     message.title !== undefined && (obj.title = message.title);
     message.description !== undefined &&
       (obj.description = message.description);
     message.msg !== undefined &&
       (obj.msg = message.msg
-        ? ChangeSwapFeeParams.toJSON(message.msg)
+        ? UpdatePoolParams.toJSON(message.msg)
         : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<ChangeSwapFeeProposal>
-  ): ChangeSwapFeeProposal {
-    const message = { ...baseChangeSwapFeeProposal } as ChangeSwapFeeProposal;
+  fromPartial(object: DeepPartial<UpdatePoolProposal>): UpdatePoolProposal {
+    const message = { ...baseUpdatePoolProposal } as UpdatePoolProposal;
     message.title = object.title ?? "";
     message.description = object.description ?? "";
     message.msg =
       object.msg !== undefined && object.msg !== null
-        ? ChangeSwapFeeParams.fromPartial(object.msg)
-        : undefined;
-    return message;
-  },
-};
-
-const baseChangeNumQuotesProposal: object = { title: "", description: "" };
-
-export const ChangeNumQuotesProposal = {
-  encode(
-    message: ChangeNumQuotesProposal,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.title !== "") {
-      writer.uint32(10).string(message.title);
-    }
-    if (message.description !== "") {
-      writer.uint32(18).string(message.description);
-    }
-    if (message.msg !== undefined) {
-      ChangeNumQuotesParams.encode(
-        message.msg,
-        writer.uint32(26).fork()
-      ).ldelim();
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): ChangeNumQuotesProposal {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseChangeNumQuotesProposal,
-    } as ChangeNumQuotesProposal;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.title = reader.string();
-          break;
-        case 2:
-          message.description = reader.string();
-          break;
-        case 3:
-          message.msg = ChangeNumQuotesParams.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): ChangeNumQuotesProposal {
-    const message = {
-      ...baseChangeNumQuotesProposal,
-    } as ChangeNumQuotesProposal;
-    message.title =
-      object.title !== undefined && object.title !== null
-        ? String(object.title)
-        : "";
-    message.description =
-      object.description !== undefined && object.description !== null
-        ? String(object.description)
-        : "";
-    message.msg =
-      object.msg !== undefined && object.msg !== null
-        ? ChangeNumQuotesParams.fromJSON(object.msg)
-        : undefined;
-    return message;
-  },
-
-  toJSON(message: ChangeNumQuotesProposal): unknown {
-    const obj: any = {};
-    message.title !== undefined && (obj.title = message.title);
-    message.description !== undefined &&
-      (obj.description = message.description);
-    message.msg !== undefined &&
-      (obj.msg = message.msg
-        ? ChangeNumQuotesParams.toJSON(message.msg)
-        : undefined);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<ChangeNumQuotesProposal>
-  ): ChangeNumQuotesProposal {
-    const message = {
-      ...baseChangeNumQuotesProposal,
-    } as ChangeNumQuotesProposal;
-    message.title = object.title ?? "";
-    message.description = object.description ?? "";
-    message.msg =
-      object.msg !== undefined && object.msg !== null
-        ? ChangeNumQuotesParams.fromPartial(object.msg)
+        ? UpdatePoolParams.fromPartial(object.msg)
         : undefined;
     return message;
   },

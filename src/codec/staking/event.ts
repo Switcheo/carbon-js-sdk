@@ -7,7 +7,7 @@ export const protobufPackage = "Switcheo.carbon.staking";
 
 export interface CreateValidator {
   validator: string;
-  amount: string;
+  amount?: Coin;
   sender: string;
 }
 
@@ -19,11 +19,11 @@ export interface CompleteUnbonding {
 
 export interface Delegate {
   validator: string;
-  amount: string;
+  amount?: Coin;
   sender: string;
 }
 
-const baseCreateValidator: object = { validator: "", amount: "", sender: "" };
+const baseCreateValidator: object = { validator: "", sender: "" };
 
 export const CreateValidator = {
   encode(
@@ -33,8 +33,8 @@ export const CreateValidator = {
     if (message.validator !== "") {
       writer.uint32(10).string(message.validator);
     }
-    if (message.amount !== "") {
-      writer.uint32(18).string(message.amount);
+    if (message.amount !== undefined) {
+      Coin.encode(message.amount, writer.uint32(18).fork()).ldelim();
     }
     if (message.sender !== "") {
       writer.uint32(26).string(message.sender);
@@ -53,7 +53,7 @@ export const CreateValidator = {
           message.validator = reader.string();
           break;
         case 2:
-          message.amount = reader.string();
+          message.amount = Coin.decode(reader, reader.uint32());
           break;
         case 3:
           message.sender = reader.string();
@@ -74,8 +74,8 @@ export const CreateValidator = {
         : "";
     message.amount =
       object.amount !== undefined && object.amount !== null
-        ? String(object.amount)
-        : "";
+        ? Coin.fromJSON(object.amount)
+        : undefined;
     message.sender =
       object.sender !== undefined && object.sender !== null
         ? String(object.sender)
@@ -86,7 +86,8 @@ export const CreateValidator = {
   toJSON(message: CreateValidator): unknown {
     const obj: any = {};
     message.validator !== undefined && (obj.validator = message.validator);
-    message.amount !== undefined && (obj.amount = message.amount);
+    message.amount !== undefined &&
+      (obj.amount = message.amount ? Coin.toJSON(message.amount) : undefined);
     message.sender !== undefined && (obj.sender = message.sender);
     return obj;
   },
@@ -94,7 +95,10 @@ export const CreateValidator = {
   fromPartial(object: DeepPartial<CreateValidator>): CreateValidator {
     const message = { ...baseCreateValidator } as CreateValidator;
     message.validator = object.validator ?? "";
-    message.amount = object.amount ?? "";
+    message.amount =
+      object.amount !== undefined && object.amount !== null
+        ? Coin.fromPartial(object.amount)
+        : undefined;
     message.sender = object.sender ?? "";
     return message;
   },
@@ -179,7 +183,7 @@ export const CompleteUnbonding = {
   },
 };
 
-const baseDelegate: object = { validator: "", amount: "", sender: "" };
+const baseDelegate: object = { validator: "", sender: "" };
 
 export const Delegate = {
   encode(
@@ -189,8 +193,8 @@ export const Delegate = {
     if (message.validator !== "") {
       writer.uint32(10).string(message.validator);
     }
-    if (message.amount !== "") {
-      writer.uint32(18).string(message.amount);
+    if (message.amount !== undefined) {
+      Coin.encode(message.amount, writer.uint32(18).fork()).ldelim();
     }
     if (message.sender !== "") {
       writer.uint32(26).string(message.sender);
@@ -209,7 +213,7 @@ export const Delegate = {
           message.validator = reader.string();
           break;
         case 2:
-          message.amount = reader.string();
+          message.amount = Coin.decode(reader, reader.uint32());
           break;
         case 3:
           message.sender = reader.string();
@@ -230,8 +234,8 @@ export const Delegate = {
         : "";
     message.amount =
       object.amount !== undefined && object.amount !== null
-        ? String(object.amount)
-        : "";
+        ? Coin.fromJSON(object.amount)
+        : undefined;
     message.sender =
       object.sender !== undefined && object.sender !== null
         ? String(object.sender)
@@ -242,7 +246,8 @@ export const Delegate = {
   toJSON(message: Delegate): unknown {
     const obj: any = {};
     message.validator !== undefined && (obj.validator = message.validator);
-    message.amount !== undefined && (obj.amount = message.amount);
+    message.amount !== undefined &&
+      (obj.amount = message.amount ? Coin.toJSON(message.amount) : undefined);
     message.sender !== undefined && (obj.sender = message.sender);
     return obj;
   },
@@ -250,7 +255,10 @@ export const Delegate = {
   fromPartial(object: DeepPartial<Delegate>): Delegate {
     const message = { ...baseDelegate } as Delegate;
     message.validator = object.validator ?? "";
-    message.amount = object.amount ?? "";
+    message.amount =
+      object.amount !== undefined && object.amount !== null
+        ? Coin.fromPartial(object.amount)
+        : undefined;
     message.sender = object.sender ?? "";
     return message;
   },

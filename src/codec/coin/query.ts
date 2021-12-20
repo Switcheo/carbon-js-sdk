@@ -6,6 +6,10 @@ import {
   PageRequest,
   PageResponse,
 } from "../cosmos/base/query/v1beta1/pagination";
+import {
+  PageRequest as PageRequest1,
+  PageResponse as PageResponse2,
+} from "../query/pagination";
 import { Bridge } from "../coin/bridge";
 import { ExternalTransfer } from "../coin/extevents";
 
@@ -67,12 +71,13 @@ export interface QueryGetExternalTransfersRequest {
   transferType: string;
   denom: string;
   status: string;
-  limit: Long;
   orderBy: string;
+  pagination?: PageRequest1;
 }
 
 export interface QueryGetExternalTransfersResponse {
   externalTransfers: ExternalTransfer[];
+  pagination?: PageResponse2;
 }
 
 export interface QueryGetBridgeRequest {
@@ -932,7 +937,6 @@ const baseQueryGetExternalTransfersRequest: object = {
   transferType: "",
   denom: "",
   status: "",
-  limit: Long.UZERO,
   orderBy: "",
 };
 
@@ -956,11 +960,14 @@ export const QueryGetExternalTransfersRequest = {
     if (message.status !== "") {
       writer.uint32(42).string(message.status);
     }
-    if (!message.limit.isZero()) {
-      writer.uint32(48).uint64(message.limit);
-    }
     if (message.orderBy !== "") {
-      writer.uint32(58).string(message.orderBy);
+      writer.uint32(50).string(message.orderBy);
+    }
+    if (message.pagination !== undefined) {
+      PageRequest1.encode(
+        message.pagination,
+        writer.uint32(58).fork()
+      ).ldelim();
     }
     return writer;
   },
@@ -993,10 +1000,10 @@ export const QueryGetExternalTransfersRequest = {
           message.status = reader.string();
           break;
         case 6:
-          message.limit = reader.uint64() as Long;
+          message.orderBy = reader.string();
           break;
         case 7:
-          message.orderBy = reader.string();
+          message.pagination = PageRequest1.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -1030,14 +1037,14 @@ export const QueryGetExternalTransfersRequest = {
       object.status !== undefined && object.status !== null
         ? String(object.status)
         : "";
-    message.limit =
-      object.limit !== undefined && object.limit !== null
-        ? Long.fromString(object.limit)
-        : Long.UZERO;
     message.orderBy =
       object.orderBy !== undefined && object.orderBy !== null
         ? String(object.orderBy)
         : "";
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest1.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -1049,9 +1056,11 @@ export const QueryGetExternalTransfersRequest = {
       (obj.transferType = message.transferType);
     message.denom !== undefined && (obj.denom = message.denom);
     message.status !== undefined && (obj.status = message.status);
-    message.limit !== undefined &&
-      (obj.limit = (message.limit || Long.UZERO).toString());
     message.orderBy !== undefined && (obj.orderBy = message.orderBy);
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest1.toJSON(message.pagination)
+        : undefined);
     return obj;
   },
 
@@ -1066,11 +1075,11 @@ export const QueryGetExternalTransfersRequest = {
     message.transferType = object.transferType ?? "";
     message.denom = object.denom ?? "";
     message.status = object.status ?? "";
-    message.limit =
-      object.limit !== undefined && object.limit !== null
-        ? Long.fromValue(object.limit)
-        : Long.UZERO;
     message.orderBy = object.orderBy ?? "";
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest1.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -1084,6 +1093,12 @@ export const QueryGetExternalTransfersResponse = {
   ): _m0.Writer {
     for (const v of message.externalTransfers) {
       ExternalTransfer.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse2.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
     }
     return writer;
   },
@@ -1106,6 +1121,9 @@ export const QueryGetExternalTransfersResponse = {
             ExternalTransfer.decode(reader, reader.uint32())
           );
           break;
+        case 2:
+          message.pagination = PageResponse2.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1121,6 +1139,10 @@ export const QueryGetExternalTransfersResponse = {
     message.externalTransfers = (object.externalTransfers ?? []).map((e: any) =>
       ExternalTransfer.fromJSON(e)
     );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse2.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -1133,6 +1155,10 @@ export const QueryGetExternalTransfersResponse = {
     } else {
       obj.externalTransfers = [];
     }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse2.toJSON(message.pagination)
+        : undefined);
     return obj;
   },
 
@@ -1145,6 +1171,10 @@ export const QueryGetExternalTransfersResponse = {
     message.externalTransfers = (object.externalTransfers ?? []).map((e) =>
       ExternalTransfer.fromPartial(e)
     );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse2.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };

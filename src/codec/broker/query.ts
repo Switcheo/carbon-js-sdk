@@ -1,6 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
+import { PageRequest, PageResponse } from "../query/pagination";
 import { MinMaxBoundary } from "../broker/pagination";
 import { Candlestick } from "../broker/candlestick";
 import { TradeEvent } from "../broker/event";
@@ -28,11 +29,13 @@ export interface QueryTradesRequest {
   orderId: string;
   afterBlock: Long;
   beforeBlock: Long;
+  pagination?: PageRequest;
 }
 
 export interface QueryTradesResponse {
   trades: TradeEvent[];
   MinMaxBoundary?: MinMaxBoundary;
+  pagination?: PageResponse;
 }
 
 const baseQueryCandlesticksRequest: object = {
@@ -270,6 +273,9 @@ export const QueryTradesRequest = {
     if (!message.beforeBlock.isZero()) {
       writer.uint32(72).uint64(message.beforeBlock);
     }
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(82).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -306,6 +312,9 @@ export const QueryTradesRequest = {
           break;
         case 9:
           message.beforeBlock = reader.uint64() as Long;
+          break;
+        case 10:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -353,6 +362,10 @@ export const QueryTradesRequest = {
       object.beforeBlock !== undefined && object.beforeBlock !== null
         ? Long.fromString(object.beforeBlock)
         : Long.UZERO;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -372,6 +385,10 @@ export const QueryTradesRequest = {
       (obj.afterBlock = (message.afterBlock || Long.UZERO).toString());
     message.beforeBlock !== undefined &&
       (obj.beforeBlock = (message.beforeBlock || Long.UZERO).toString());
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
     return obj;
   },
 
@@ -401,6 +418,10 @@ export const QueryTradesRequest = {
       object.beforeBlock !== undefined && object.beforeBlock !== null
         ? Long.fromValue(object.beforeBlock)
         : Long.UZERO;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -419,6 +440,12 @@ export const QueryTradesResponse = {
       MinMaxBoundary.encode(
         message.MinMaxBoundary,
         writer.uint32(18).fork()
+      ).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(26).fork()
       ).ldelim();
     }
     return writer;
@@ -441,6 +468,9 @@ export const QueryTradesResponse = {
             reader.uint32()
           );
           break;
+        case 3:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -458,6 +488,10 @@ export const QueryTradesResponse = {
       object.MinMaxBoundary !== undefined && object.MinMaxBoundary !== null
         ? MinMaxBoundary.fromJSON(object.MinMaxBoundary)
         : undefined;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -474,6 +508,10 @@ export const QueryTradesResponse = {
       (obj.MinMaxBoundary = message.MinMaxBoundary
         ? MinMaxBoundary.toJSON(message.MinMaxBoundary)
         : undefined);
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
     return obj;
   },
 
@@ -485,6 +523,10 @@ export const QueryTradesResponse = {
     message.MinMaxBoundary =
       object.MinMaxBoundary !== undefined && object.MinMaxBoundary !== null
         ? MinMaxBoundary.fromPartial(object.MinMaxBoundary)
+        : undefined;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
         : undefined;
     return message;
   },

@@ -2,6 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { APIOrder, Order } from "../order/order";
+import { PageRequest, PageResponse } from "../query/pagination";
 
 export const protobufPackage = "Switcheo.carbon.order";
 
@@ -19,10 +20,12 @@ export interface QueryAllOrderRequest {
   market: string;
   orderType: string;
   orderStatus: string;
+  pagination?: PageRequest;
 }
 
 export interface QueryAllOrderResponse {
   orders: APIOrder[];
+  pagination?: PageResponse;
 }
 
 export interface QueryAccountOpenOrdersRequest {
@@ -174,6 +177,9 @@ export const QueryAllOrderRequest = {
     if (message.orderStatus !== "") {
       writer.uint32(34).string(message.orderStatus);
     }
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(42).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -198,6 +204,9 @@ export const QueryAllOrderRequest = {
           break;
         case 4:
           message.orderStatus = reader.string();
+          break;
+        case 5:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -225,6 +234,10 @@ export const QueryAllOrderRequest = {
       object.orderStatus !== undefined && object.orderStatus !== null
         ? String(object.orderStatus)
         : "";
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -235,6 +248,10 @@ export const QueryAllOrderRequest = {
     message.orderType !== undefined && (obj.orderType = message.orderType);
     message.orderStatus !== undefined &&
       (obj.orderStatus = message.orderStatus);
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
     return obj;
   },
 
@@ -244,6 +261,10 @@ export const QueryAllOrderRequest = {
     message.market = object.market ?? "";
     message.orderType = object.orderType ?? "";
     message.orderStatus = object.orderStatus ?? "";
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -257,6 +278,12 @@ export const QueryAllOrderResponse = {
   ): _m0.Writer {
     for (const v of message.orders) {
       APIOrder.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
     }
     return writer;
   },
@@ -275,6 +302,9 @@ export const QueryAllOrderResponse = {
         case 1:
           message.orders.push(APIOrder.decode(reader, reader.uint32()));
           break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -288,6 +318,10 @@ export const QueryAllOrderResponse = {
     message.orders = (object.orders ?? []).map((e: any) =>
       APIOrder.fromJSON(e)
     );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -300,6 +334,10 @@ export const QueryAllOrderResponse = {
     } else {
       obj.orders = [];
     }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
     return obj;
   },
 
@@ -308,6 +346,10 @@ export const QueryAllOrderResponse = {
   ): QueryAllOrderResponse {
     const message = { ...baseQueryAllOrderResponse } as QueryAllOrderResponse;
     message.orders = (object.orders ?? []).map((e) => APIOrder.fromPartial(e));
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };

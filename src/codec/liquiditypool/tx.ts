@@ -127,18 +127,6 @@ export interface SetRewardCurveParams {
 
 export interface MsgSetRewardCurveResponse {}
 
-export interface MsgChangeSwapFee {
-  creator: string;
-  changeSwapFeeParams?: ChangeSwapFeeParams;
-}
-
-export interface ChangeSwapFeeParams {
-  poolId: Long;
-  swapFee: string;
-}
-
-export interface MsgChangeSwapFeeResponse {}
-
 export interface MsgSetCommitmentCurve {
   creator: string;
   setCommitmentCurveParams?: SetCommitmentCurveParams;
@@ -151,17 +139,18 @@ export interface SetCommitmentCurveParams {
 
 export interface MsgSetCommitmentCurveResponse {}
 
-export interface MsgChangeNumQuotes {
+export interface MsgUpdatePool {
   creator: string;
-  changeNumQuotesParams?: ChangeNumQuotesParams;
+  updatePoolParams?: UpdatePoolParams;
 }
 
-export interface ChangeNumQuotesParams {
+export interface UpdatePoolParams {
   poolId: Long;
+  swapFee: string;
   numQuotes: Long;
 }
 
-export interface MsgChangeNumQuotesResponse {}
+export interface MsgUpdatePoolResponse {}
 
 const baseMsgCreatePool: object = {
   creator: "",
@@ -2138,206 +2127,6 @@ export const MsgSetRewardCurveResponse = {
   },
 };
 
-const baseMsgChangeSwapFee: object = { creator: "" };
-
-export const MsgChangeSwapFee = {
-  encode(
-    message: MsgChangeSwapFee,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.creator !== "") {
-      writer.uint32(10).string(message.creator);
-    }
-    if (message.changeSwapFeeParams !== undefined) {
-      ChangeSwapFeeParams.encode(
-        message.changeSwapFeeParams,
-        writer.uint32(18).fork()
-      ).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgChangeSwapFee {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgChangeSwapFee } as MsgChangeSwapFee;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.creator = reader.string();
-          break;
-        case 2:
-          message.changeSwapFeeParams = ChangeSwapFeeParams.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): MsgChangeSwapFee {
-    const message = { ...baseMsgChangeSwapFee } as MsgChangeSwapFee;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.changeSwapFeeParams =
-      object.changeSwapFeeParams !== undefined &&
-      object.changeSwapFeeParams !== null
-        ? ChangeSwapFeeParams.fromJSON(object.changeSwapFeeParams)
-        : undefined;
-    return message;
-  },
-
-  toJSON(message: MsgChangeSwapFee): unknown {
-    const obj: any = {};
-    message.creator !== undefined && (obj.creator = message.creator);
-    message.changeSwapFeeParams !== undefined &&
-      (obj.changeSwapFeeParams = message.changeSwapFeeParams
-        ? ChangeSwapFeeParams.toJSON(message.changeSwapFeeParams)
-        : undefined);
-    return obj;
-  },
-
-  fromPartial(object: DeepPartial<MsgChangeSwapFee>): MsgChangeSwapFee {
-    const message = { ...baseMsgChangeSwapFee } as MsgChangeSwapFee;
-    message.creator = object.creator ?? "";
-    message.changeSwapFeeParams =
-      object.changeSwapFeeParams !== undefined &&
-      object.changeSwapFeeParams !== null
-        ? ChangeSwapFeeParams.fromPartial(object.changeSwapFeeParams)
-        : undefined;
-    return message;
-  },
-};
-
-const baseChangeSwapFeeParams: object = { poolId: Long.UZERO, swapFee: "" };
-
-export const ChangeSwapFeeParams = {
-  encode(
-    message: ChangeSwapFeeParams,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (!message.poolId.isZero()) {
-      writer.uint32(8).uint64(message.poolId);
-    }
-    if (message.swapFee !== "") {
-      writer.uint32(18).string(message.swapFee);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): ChangeSwapFeeParams {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseChangeSwapFeeParams } as ChangeSwapFeeParams;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.poolId = reader.uint64() as Long;
-          break;
-        case 2:
-          message.swapFee = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): ChangeSwapFeeParams {
-    const message = { ...baseChangeSwapFeeParams } as ChangeSwapFeeParams;
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromString(object.poolId)
-        : Long.UZERO;
-    message.swapFee =
-      object.swapFee !== undefined && object.swapFee !== null
-        ? String(object.swapFee)
-        : "";
-    return message;
-  },
-
-  toJSON(message: ChangeSwapFeeParams): unknown {
-    const obj: any = {};
-    message.poolId !== undefined &&
-      (obj.poolId = (message.poolId || Long.UZERO).toString());
-    message.swapFee !== undefined && (obj.swapFee = message.swapFee);
-    return obj;
-  },
-
-  fromPartial(object: DeepPartial<ChangeSwapFeeParams>): ChangeSwapFeeParams {
-    const message = { ...baseChangeSwapFeeParams } as ChangeSwapFeeParams;
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromValue(object.poolId)
-        : Long.UZERO;
-    message.swapFee = object.swapFee ?? "";
-    return message;
-  },
-};
-
-const baseMsgChangeSwapFeeResponse: object = {};
-
-export const MsgChangeSwapFeeResponse = {
-  encode(
-    _: MsgChangeSwapFeeResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgChangeSwapFeeResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgChangeSwapFeeResponse,
-    } as MsgChangeSwapFeeResponse;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(_: any): MsgChangeSwapFeeResponse {
-    const message = {
-      ...baseMsgChangeSwapFeeResponse,
-    } as MsgChangeSwapFeeResponse;
-    return message;
-  },
-
-  toJSON(_: MsgChangeSwapFeeResponse): unknown {
-    const obj: any = {};
-    return obj;
-  },
-
-  fromPartial(
-    _: DeepPartial<MsgChangeSwapFeeResponse>
-  ): MsgChangeSwapFeeResponse {
-    const message = {
-      ...baseMsgChangeSwapFeeResponse,
-    } as MsgChangeSwapFeeResponse;
-    return message;
-  },
-};
-
 const baseMsgSetCommitmentCurve: object = { creator: "" };
 
 export const MsgSetCommitmentCurve = {
@@ -2559,29 +2348,29 @@ export const MsgSetCommitmentCurveResponse = {
   },
 };
 
-const baseMsgChangeNumQuotes: object = { creator: "" };
+const baseMsgUpdatePool: object = { creator: "" };
 
-export const MsgChangeNumQuotes = {
+export const MsgUpdatePool = {
   encode(
-    message: MsgChangeNumQuotes,
+    message: MsgUpdatePool,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
-    if (message.changeNumQuotesParams !== undefined) {
-      ChangeNumQuotesParams.encode(
-        message.changeNumQuotesParams,
+    if (message.updatePoolParams !== undefined) {
+      UpdatePoolParams.encode(
+        message.updatePoolParams,
         writer.uint32(18).fork()
       ).ldelim();
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgChangeNumQuotes {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdatePool {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgChangeNumQuotes } as MsgChangeNumQuotes;
+    const message = { ...baseMsgUpdatePool } as MsgUpdatePool;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -2589,7 +2378,7 @@ export const MsgChangeNumQuotes = {
           message.creator = reader.string();
           break;
         case 2:
-          message.changeNumQuotesParams = ChangeNumQuotesParams.decode(
+          message.updatePoolParams = UpdatePoolParams.decode(
             reader,
             reader.uint32()
           );
@@ -2602,68 +2391,67 @@ export const MsgChangeNumQuotes = {
     return message;
   },
 
-  fromJSON(object: any): MsgChangeNumQuotes {
-    const message = { ...baseMsgChangeNumQuotes } as MsgChangeNumQuotes;
+  fromJSON(object: any): MsgUpdatePool {
+    const message = { ...baseMsgUpdatePool } as MsgUpdatePool;
     message.creator =
       object.creator !== undefined && object.creator !== null
         ? String(object.creator)
         : "";
-    message.changeNumQuotesParams =
-      object.changeNumQuotesParams !== undefined &&
-      object.changeNumQuotesParams !== null
-        ? ChangeNumQuotesParams.fromJSON(object.changeNumQuotesParams)
+    message.updatePoolParams =
+      object.updatePoolParams !== undefined && object.updatePoolParams !== null
+        ? UpdatePoolParams.fromJSON(object.updatePoolParams)
         : undefined;
     return message;
   },
 
-  toJSON(message: MsgChangeNumQuotes): unknown {
+  toJSON(message: MsgUpdatePool): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.changeNumQuotesParams !== undefined &&
-      (obj.changeNumQuotesParams = message.changeNumQuotesParams
-        ? ChangeNumQuotesParams.toJSON(message.changeNumQuotesParams)
+    message.updatePoolParams !== undefined &&
+      (obj.updatePoolParams = message.updatePoolParams
+        ? UpdatePoolParams.toJSON(message.updatePoolParams)
         : undefined);
     return obj;
   },
 
-  fromPartial(object: DeepPartial<MsgChangeNumQuotes>): MsgChangeNumQuotes {
-    const message = { ...baseMsgChangeNumQuotes } as MsgChangeNumQuotes;
+  fromPartial(object: DeepPartial<MsgUpdatePool>): MsgUpdatePool {
+    const message = { ...baseMsgUpdatePool } as MsgUpdatePool;
     message.creator = object.creator ?? "";
-    message.changeNumQuotesParams =
-      object.changeNumQuotesParams !== undefined &&
-      object.changeNumQuotesParams !== null
-        ? ChangeNumQuotesParams.fromPartial(object.changeNumQuotesParams)
+    message.updatePoolParams =
+      object.updatePoolParams !== undefined && object.updatePoolParams !== null
+        ? UpdatePoolParams.fromPartial(object.updatePoolParams)
         : undefined;
     return message;
   },
 };
 
-const baseChangeNumQuotesParams: object = {
+const baseUpdatePoolParams: object = {
   poolId: Long.UZERO,
+  swapFee: "",
   numQuotes: Long.ZERO,
 };
 
-export const ChangeNumQuotesParams = {
+export const UpdatePoolParams = {
   encode(
-    message: ChangeNumQuotesParams,
+    message: UpdatePoolParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (!message.poolId.isZero()) {
       writer.uint32(8).uint64(message.poolId);
     }
+    if (message.swapFee !== "") {
+      writer.uint32(18).string(message.swapFee);
+    }
     if (!message.numQuotes.isZero()) {
-      writer.uint32(16).int64(message.numQuotes);
+      writer.uint32(24).int64(message.numQuotes);
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): ChangeNumQuotesParams {
+  decode(input: _m0.Reader | Uint8Array, length?: number): UpdatePoolParams {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseChangeNumQuotesParams } as ChangeNumQuotesParams;
+    const message = { ...baseUpdatePoolParams } as UpdatePoolParams;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -2671,6 +2459,9 @@ export const ChangeNumQuotesParams = {
           message.poolId = reader.uint64() as Long;
           break;
         case 2:
+          message.swapFee = reader.string();
+          break;
+        case 3:
           message.numQuotes = reader.int64() as Long;
           break;
         default:
@@ -2681,12 +2472,16 @@ export const ChangeNumQuotesParams = {
     return message;
   },
 
-  fromJSON(object: any): ChangeNumQuotesParams {
-    const message = { ...baseChangeNumQuotesParams } as ChangeNumQuotesParams;
+  fromJSON(object: any): UpdatePoolParams {
+    const message = { ...baseUpdatePoolParams } as UpdatePoolParams;
     message.poolId =
       object.poolId !== undefined && object.poolId !== null
         ? Long.fromString(object.poolId)
         : Long.UZERO;
+    message.swapFee =
+      object.swapFee !== undefined && object.swapFee !== null
+        ? String(object.swapFee)
+        : "";
     message.numQuotes =
       object.numQuotes !== undefined && object.numQuotes !== null
         ? Long.fromString(object.numQuotes)
@@ -2694,23 +2489,23 @@ export const ChangeNumQuotesParams = {
     return message;
   },
 
-  toJSON(message: ChangeNumQuotesParams): unknown {
+  toJSON(message: UpdatePoolParams): unknown {
     const obj: any = {};
     message.poolId !== undefined &&
       (obj.poolId = (message.poolId || Long.UZERO).toString());
+    message.swapFee !== undefined && (obj.swapFee = message.swapFee);
     message.numQuotes !== undefined &&
       (obj.numQuotes = (message.numQuotes || Long.ZERO).toString());
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<ChangeNumQuotesParams>
-  ): ChangeNumQuotesParams {
-    const message = { ...baseChangeNumQuotesParams } as ChangeNumQuotesParams;
+  fromPartial(object: DeepPartial<UpdatePoolParams>): UpdatePoolParams {
+    const message = { ...baseUpdatePoolParams } as UpdatePoolParams;
     message.poolId =
       object.poolId !== undefined && object.poolId !== null
         ? Long.fromValue(object.poolId)
         : Long.UZERO;
+    message.swapFee = object.swapFee ?? "";
     message.numQuotes =
       object.numQuotes !== undefined && object.numQuotes !== null
         ? Long.fromValue(object.numQuotes)
@@ -2719,11 +2514,11 @@ export const ChangeNumQuotesParams = {
   },
 };
 
-const baseMsgChangeNumQuotesResponse: object = {};
+const baseMsgUpdatePoolResponse: object = {};
 
-export const MsgChangeNumQuotesResponse = {
+export const MsgUpdatePoolResponse = {
   encode(
-    _: MsgChangeNumQuotesResponse,
+    _: MsgUpdatePoolResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     return writer;
@@ -2732,12 +2527,10 @@ export const MsgChangeNumQuotesResponse = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): MsgChangeNumQuotesResponse {
+  ): MsgUpdatePoolResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgChangeNumQuotesResponse,
-    } as MsgChangeNumQuotesResponse;
+    const message = { ...baseMsgUpdatePoolResponse } as MsgUpdatePoolResponse;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -2749,24 +2542,18 @@ export const MsgChangeNumQuotesResponse = {
     return message;
   },
 
-  fromJSON(_: any): MsgChangeNumQuotesResponse {
-    const message = {
-      ...baseMsgChangeNumQuotesResponse,
-    } as MsgChangeNumQuotesResponse;
+  fromJSON(_: any): MsgUpdatePoolResponse {
+    const message = { ...baseMsgUpdatePoolResponse } as MsgUpdatePoolResponse;
     return message;
   },
 
-  toJSON(_: MsgChangeNumQuotesResponse): unknown {
+  toJSON(_: MsgUpdatePoolResponse): unknown {
     const obj: any = {};
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<MsgChangeNumQuotesResponse>
-  ): MsgChangeNumQuotesResponse {
-    const message = {
-      ...baseMsgChangeNumQuotesResponse,
-    } as MsgChangeNumQuotesResponse;
+  fromPartial(_: DeepPartial<MsgUpdatePoolResponse>): MsgUpdatePoolResponse {
+    const message = { ...baseMsgUpdatePoolResponse } as MsgUpdatePoolResponse;
     return message;
   },
 };
@@ -2801,15 +2588,10 @@ export interface Msg {
   HandleSetRewardCurve(
     request: MsgSetRewardCurve
   ): Promise<MsgSetRewardCurveResponse>;
-  HandleChangeSwapFee(
-    request: MsgChangeSwapFee
-  ): Promise<MsgChangeSwapFeeResponse>;
   HandleSetCommitmentCurve(
     request: MsgSetCommitmentCurve
   ): Promise<MsgSetCommitmentCurveResponse>;
-  HandleChangeNumQuotes(
-    request: MsgChangeNumQuotes
-  ): Promise<MsgChangeNumQuotesResponse>;
+  HandleUpdatePool(request: MsgUpdatePool): Promise<MsgUpdatePoolResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -2828,9 +2610,8 @@ export class MsgClientImpl implements Msg {
     this.HandleUnstakePoolToken = this.HandleUnstakePoolToken.bind(this);
     this.HandleClaimPoolRewards = this.HandleClaimPoolRewards.bind(this);
     this.HandleSetRewardCurve = this.HandleSetRewardCurve.bind(this);
-    this.HandleChangeSwapFee = this.HandleChangeSwapFee.bind(this);
     this.HandleSetCommitmentCurve = this.HandleSetCommitmentCurve.bind(this);
-    this.HandleChangeNumQuotes = this.HandleChangeNumQuotes.bind(this);
+    this.HandleUpdatePool = this.HandleUpdatePool.bind(this);
   }
   HandleCreatePool(request: MsgCreatePool): Promise<MsgCreatePoolResponse> {
     const data = MsgCreatePool.encode(request).finish();
@@ -2980,20 +2761,6 @@ export class MsgClientImpl implements Msg {
     );
   }
 
-  HandleChangeSwapFee(
-    request: MsgChangeSwapFee
-  ): Promise<MsgChangeSwapFeeResponse> {
-    const data = MsgChangeSwapFee.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.liquiditypool.Msg",
-      "HandleChangeSwapFee",
-      data
-    );
-    return promise.then((data) =>
-      MsgChangeSwapFeeResponse.decode(new _m0.Reader(data))
-    );
-  }
-
   HandleSetCommitmentCurve(
     request: MsgSetCommitmentCurve
   ): Promise<MsgSetCommitmentCurveResponse> {
@@ -3008,17 +2775,15 @@ export class MsgClientImpl implements Msg {
     );
   }
 
-  HandleChangeNumQuotes(
-    request: MsgChangeNumQuotes
-  ): Promise<MsgChangeNumQuotesResponse> {
-    const data = MsgChangeNumQuotes.encode(request).finish();
+  HandleUpdatePool(request: MsgUpdatePool): Promise<MsgUpdatePoolResponse> {
+    const data = MsgUpdatePool.encode(request).finish();
     const promise = this.rpc.request(
       "Switcheo.carbon.liquiditypool.Msg",
-      "HandleChangeNumQuotes",
+      "HandleUpdatePool",
       data
     );
     return promise.then((data) =>
-      MsgChangeNumQuotesResponse.decode(new _m0.Reader(data))
+      MsgUpdatePoolResponse.decode(new _m0.Reader(data))
     );
   }
 }

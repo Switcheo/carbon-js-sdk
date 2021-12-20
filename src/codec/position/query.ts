@@ -2,6 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Position } from "../position/position";
+import { PageRequest, PageResponse } from "../query/pagination";
 
 export const protobufPackage = "Switcheo.carbon.position";
 
@@ -22,10 +23,12 @@ export interface QueryAllPositionRequest {
   orderBy: string;
   limits: Long;
   status: string;
+  pagination?: PageRequest;
 }
 
 export interface QueryAllPositionResponse {
   positions: Position[];
+  pagination?: PageResponse;
 }
 
 const baseQueryGetPositionRequest: object = { address: "", market: "" };
@@ -206,6 +209,9 @@ export const QueryAllPositionRequest = {
     if (message.status !== "") {
       writer.uint32(50).string(message.status);
     }
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(58).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -238,6 +244,9 @@ export const QueryAllPositionRequest = {
           break;
         case 6:
           message.status = reader.string();
+          break;
+        case 7:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -275,6 +284,10 @@ export const QueryAllPositionRequest = {
       object.status !== undefined && object.status !== null
         ? String(object.status)
         : "";
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -289,6 +302,10 @@ export const QueryAllPositionRequest = {
     message.limits !== undefined &&
       (obj.limits = (message.limits || Long.UZERO).toString());
     message.status !== undefined && (obj.status = message.status);
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
     return obj;
   },
 
@@ -313,6 +330,10 @@ export const QueryAllPositionRequest = {
         ? Long.fromValue(object.limits)
         : Long.UZERO;
     message.status = object.status ?? "";
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -326,6 +347,12 @@ export const QueryAllPositionResponse = {
   ): _m0.Writer {
     for (const v of message.positions) {
       Position.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
     }
     return writer;
   },
@@ -346,6 +373,9 @@ export const QueryAllPositionResponse = {
         case 1:
           message.positions.push(Position.decode(reader, reader.uint32()));
           break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -361,6 +391,10 @@ export const QueryAllPositionResponse = {
     message.positions = (object.positions ?? []).map((e: any) =>
       Position.fromJSON(e)
     );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -373,6 +407,10 @@ export const QueryAllPositionResponse = {
     } else {
       obj.positions = [];
     }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
     return obj;
   },
 
@@ -385,6 +423,10 @@ export const QueryAllPositionResponse = {
     message.positions = (object.positions ?? []).map((e) =>
       Position.fromPartial(e)
     );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
