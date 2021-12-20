@@ -387,7 +387,6 @@ export namespace AdminModule {
 
   export interface CreateTokenParams {
     creator: string;
-    denom: string;
     name: string;
     symbol: string;
     decimals: number;
@@ -395,7 +394,6 @@ export namespace AdminModule {
     bridgeId: number;
     bridgeAddress: string;
     tokenAddress: string;
-    isCollateral: boolean;
   }
 
   export interface SyncTokenParams {
@@ -543,7 +541,6 @@ export function transfromCreateOracleParams(msg: AdminModule.CreateOracleParams,
 export function transfromCreateTokenParams(msg: AdminModule.CreateTokenParams, address: string) {
   return {
     creator: address,
-    denom: msg.denom,
     name: msg.name,
     symbol: msg.symbol,
     decimals: new Long(msg.decimals),
@@ -551,7 +548,6 @@ export function transfromCreateTokenParams(msg: AdminModule.CreateTokenParams, a
     bridgeId: new Long(msg.bridgeId),
     bridgeAddress: msg.bridgeAddress,
     tokenAddress: msg.bridgeAddress,
-    isCollateral: msg.isCollateral,
   }
 }
 
