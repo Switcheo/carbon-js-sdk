@@ -250,7 +250,7 @@ export class CarbonWallet {
    */
   async broadcastTxWithoutConfirm(txRaw: CarbonWallet.TxRaw): Promise<CarbonWallet.SendTxWithoutConfirmResponse> {
     const tx = CarbonWallet.TxRaw.encode(txRaw).finish();
-    const tmClient = await Tendermint34Client.connect(this.networkConfig.rpcUrl);
+    const tmClient = await Tendermint34Client.connect(this.networkConfig.tmRpcUrl);
     return tmClient.broadcastTxSync({ tx });
   };
 
@@ -312,7 +312,7 @@ export class CarbonWallet {
   async getSigningClient(): Promise<SigningStargateClient> {
     if (!this.signingClient) {
       this.signingClient = await SigningStargateClient.connectWithSigner(
-        this.networkConfig.rpcUrl,
+        this.networkConfig.tmRpcUrl,
         this.signer,
         {
           ...(this.signer.type === CarbonSignerTypes.Ledger && { aminoTypes: AminoTypesMap }),
