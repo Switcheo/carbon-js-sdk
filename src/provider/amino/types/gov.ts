@@ -1,9 +1,9 @@
 import { MsgSubmitProposal } from "@carbon-sdk/codec/cosmos/gov/v1beta1/tx";
 import {
-  ChangeNumQuotesProposal, ChangeSwapFeeProposal, CreateMarketProposal, CreateOracleProposal,
+  CreateMarketProposal, CreateOracleProposal,
   CreateTokenProposal, LinkPoolProposal, ProposalTypes, SetCommitmentCurveProposal, 
   SetMsgFeeProposal, SetRewardCurveProposal, SetRewardsWeightsProposal, UnlinkPoolProposal,
-  SettlementPriceProposal, UpdateMarketProposal,
+  SettlementPriceProposal, UpdateMarketProposal, UpdatePoolProposal,
 } from "@carbon-sdk/codec";
 import { CarbonTx, GovUtils, TypeUtils } from "@carbon-sdk/util";
 import { AminoConverter } from "@cosmjs/stargate";
@@ -22,10 +22,9 @@ const ContentTypes: TypeUtils.SimpleMap<string> = {
   [ProposalTypes.CreateToken]: "coin/CreateTokenProposal",
   [ProposalTypes.SetMsgFee]: "fee/SetMsgFeeProposal",
   [ProposalTypes.SetCommitmentCurve]: 'liquiditypool/SetCommitmentCurveProposal',
-  [ProposalTypes.ChangeNumQuotes]: 'liquiditypool/ChangeNumQuotesProposal',
   [ProposalTypes.SetRewardCurve]: 'liquiditypool/SetRewardCurveProposal',
   [ProposalTypes.SetRewardsWeights]: 'liquiditypool/SetRewardsWeightsProposal',
-  [ProposalTypes.ChangeSwapFee]: "liquiditypool/ChangeSwapFeeProposal",
+  [ProposalTypes.UpdatePool]: "liquiditypool/UpdatePoolProposal",
   [ProposalTypes.LinkPool]: "liquiditypool/LinkPoolProposal",
   [ProposalTypes.UnlinkPool]: "liquiditypool/UnlinkPoolProposal",
   [ProposalTypes.CreateMarket]: "market/CreateMarketProposal",
@@ -92,11 +91,12 @@ const ChangeNumQuotes: AminoValueMap = {
   },
 };
 
-const ChangeSwapFee: AminoValueMap = {
+const UpdatePool: AminoValueMap = {
   value: {
     msg: {
       poolId: ConvertEncType.Long,
       swapFee: ConvertEncType.Dec,
+      numQuotes: ConvertEncType.Long,
     },
   },
 };
@@ -225,11 +225,8 @@ const checkDecodeProposal = (content: any, amino: AminoValueMap): AminoProposalR
     case ProposalTypes.CreateMarket:
       newAmino.content = { ...CreateMarket };
       break;
-    case ProposalTypes.ChangeNumQuotes:
-      newAmino.content = { ...ChangeNumQuotes };
-      break;
-    case ProposalTypes.ChangeSwapFee:
-      newAmino.content = { ...ChangeSwapFee };
+    case ProposalTypes.UpdatePool:
+      newAmino.content = { ...UpdatePool };
       break;
     case ProposalTypes.CreateToken:
       newAmino.content = { ...CreateToken };
@@ -287,31 +284,16 @@ const checkEncodeProposal = (content: any, amino: AminoValueMap): DirectProposal
           ...amino,
         },
       };
-    case ContentTypes[ProposalTypes.ChangeNumQuotes]:
-      const newNumQuotesMsg = preProcessAmino(content.value.msg, ChangeNumQuotes.value.msg);
-      const numQuotesProp = ChangeNumQuotesProposal.fromPartial({
+    case ContentTypes[ProposalTypes.UpdatePool]:
+      const updatePoolMsg = preProcessAmino(content.value.msg, UpdatePool.value.msg);
+      const updatePoolProp = UpdatePoolProposal.fromPartial({
         ...content.value,
-        msg: newNumQuotesMsg,
+        msg: updatePoolMsg,
       });
       return {
         newContent: {
-          typeUrl: ProposalTypes.ChangeNumQuotes,
-          value: ChangeNumQuotesProposal.encode(numQuotesProp).finish(),
-        },
-        newAmino: {
-          ...amino,
-        },
-      };
-    case ContentTypes[ProposalTypes.ChangeSwapFee]:
-      const newSwapFeeMsg = preProcessAmino(content.value.msg, ChangeSwapFee.value.msg);
-      const swapFeeProp = ChangeSwapFeeProposal.fromPartial({
-        ...content.value,
-        msg: newSwapFeeMsg,
-      });
-      return {
-        newContent: {
-          typeUrl: ProposalTypes.ChangeSwapFee,
-          value: ChangeSwapFeeProposal.encode(swapFeeProp).finish(),
+          typeUrl: ProposalTypes.UpdatePool,
+          value: UpdatePoolProposal.encode(updatePoolProp).finish(),
         },
         newAmino: {
           ...amino,

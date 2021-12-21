@@ -16,7 +16,7 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
   SetRewardsWeights: "liquiditypool/SetRewardsWeights",
   SetRewardCurve: "liquiditypool/SetRewardCurve",
   SetCommitmentCurve: "liquiditypool/SetCommitmentCurve",
-  ChangeNumQuotes: "liquiditypool/ChangeNumQuotes",
+  UpdatePool: "liquiditypool/UpdatePool",
   SetTradingFlag: "order/SetTradingFlag",
   SetMsgFee: "fee/SetMsgFee",
   CreateValidator: "cosmos-sdk/MsgCreateValidator",
@@ -105,12 +105,13 @@ const MsgUnlinkPool: AminoInit = {
   },
 };
 
-const MsgChangeSwapFee: AminoInit = {
+const MsgUpdatePool: AminoInit = {
   aminoType: TxTypes.ChangeSwapFee,
   valueMap: {
-    changeSwapFeeParams: {
+    updatePoolParams: {
       poolId: ConvertEncType.Long,
       swapFee: ConvertEncType.Dec,
+      numQuotes: ConvertEncType.Long,
     },
   },
 };
@@ -139,16 +140,6 @@ const MsgSetCommitmentCurve: AminoInit = {
   valueMap: {
     setCommitmentCurveParams: {
       maxDuration: ConvertEncType.Long,
-    },
-  },
-};
-
-const MsgChangeNumQuotes: AminoInit = {
-  aminoType: TxTypes.ChangeNumQuotes,
-  valueMap: {
-    changeNumQuotesParams: {
-      poolId: ConvertEncType.Long,
-      numQuotes: ConvertEncType.Long,
     },
   },
 };
@@ -191,11 +182,10 @@ const AdminAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgCreateVaultType]: generateAminoType(MsgCreateVaultType),
   [CarbonTx.Types.MsgLinkPool]: generateAminoType(MsgLinkPool),
   [CarbonTx.Types.MsgUnlinkPool]: generateAminoType(MsgUnlinkPool),
-  [CarbonTx.Types.MsgChangeSwapFee]: generateAminoType(MsgChangeSwapFee),
+  [CarbonTx.Types.MsgUpdatePool]: generateAminoType(MsgUpdatePool),
   [CarbonTx.Types.MsgSetRewardsWeights]: generateAminoType(MsgSetRewardsWeights),
   [CarbonTx.Types.MsgSetRewardCurve]: generateAminoType(MsgSetRewardCurve),
   [CarbonTx.Types.MsgSetCommitmentCurve]: generateAminoType(MsgSetCommitmentCurve),
-  [CarbonTx.Types.MsgChangeNumQuotes]: generateAminoType(MsgChangeNumQuotes),
   [CarbonTx.Types.MsgSetTradingFlag]: generateAminoType(MsgSetTradingFlag),
   [CarbonTx.Types.MsgSetFee]: generateAminoType(MsgSetFee),
   [CarbonTx.Types.MsgCreateValidator]: generateAminoType(MsgCreateValidator),

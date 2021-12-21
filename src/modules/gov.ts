@@ -1,6 +1,6 @@
 import { CreateTokenProposal } from "@carbon-sdk/codec/coin/proposal";
 import { SetMsgFeeProposal } from "@carbon-sdk/codec/fee/proposal";
-import { ChangeNumQuotesProposal, ChangeSwapFeeProposal, LinkPoolProposal, SetCommitmentCurveProposal, SetRewardCurveProposal, SetRewardsWeightsProposal, UnlinkPoolProposal } from "@carbon-sdk/codec/liquiditypool/proposal";
+import { LinkPoolProposal, SetCommitmentCurveProposal, SetRewardCurveProposal, SetRewardsWeightsProposal, UnlinkPoolProposal, UpdatePoolProposal } from "@carbon-sdk/codec/liquiditypool/proposal";
 import { CreateMarketProposal, UpdateMarketProposal } from "@carbon-sdk/codec/market/proposal";
 import { CreateOracleProposal } from "@carbon-sdk/codec/oracle/proposal";
 import { SettlementPriceParams, SettlementPriceProposal } from "@carbon-sdk/codec/pricing/proposal";
@@ -20,10 +20,9 @@ import {
   transfromSetRewardCurveParams,
   transfromSetCommitmentCurveParams,
   transfromSetRewardsWeightsParams,
-  transfromChangeSwapFeeParams,
   transformCreateMarketParams,
   transfromCreateOracleParams,
-  transfromChangNumQuotesParams,
+  transfromUpdatePoolParams,
   AdminModule,
 } from "./admin";
 import { MarketModule, transfromUpdateMarketParams } from "./market";
@@ -126,20 +125,13 @@ export class GovModule extends BaseModule {
           msg: transfromSetRewardsWeightsParams(msg)
         }
         return SetRewardsWeightsProposal.encode(setRewardsWeightsMsg).finish()
-      case "ChangeSwapFeeProposal":
-        const changeSwapFeeMsg = {
+      case "UpdatePoolProposal": 
+        const updatePoolProposalMsg = {
           title : title,
           description: description,
-          msg: transfromChangeSwapFeeParams(msg)
+          msg: transfromUpdatePoolParams(msg)
         }
-        return ChangeSwapFeeProposal.encode(changeSwapFeeMsg).finish()
-      case "ChangeNumQuotesProposal": 
-        const changeNumQuotesProposalMsg = {
-          title : title,
-          description: description,
-          msg: transfromChangNumQuotesParams(msg)
-        }
-        return ChangeNumQuotesProposal.encode(changeNumQuotesProposalMsg).finish()
+        return UpdatePoolProposal.encode(updatePoolProposalMsg).finish()
       case "CreateMarketProposal": 
         const createMarketProposalMsg = {
           title : title,
@@ -204,7 +196,7 @@ export namespace GovModule {
     AdminModule.SetRewardCurveParams |
     AdminModule.SetCommitmentCurveParams |
     AdminModule.SetRewardsWeightsParams |
-    AdminModule.ChangeSwapFeeParams |
+    AdminModule.UpdatePoolParams |
     AdminModule.ChangeNumQuotesParams |
     AdminModule.CreateMarketParams |
     MarketModule.UpdateMarketParams |

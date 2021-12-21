@@ -326,12 +326,11 @@ export const TxTypes = {
 
 export enum ProposalTypes {
   SetMsgFee = "/Switcheo.carbon.fee.SetMsgFeeProposal",
-  ChangeSwapFee = "/Switcheo.carbon.liquiditypool.ChangeSwapFeeProposal",
   CreateToken = "/Switcheo.carbon.coin.CreateTokenProposal",
   CreateOracle = "/Switcheo.carbon.oracle.CreateOracleProposal",
   LinkPool = "/Switcheo.carbon.liquiditypool.LinkPoolProposal",
   UnlinkPool = "/Switcheo.carbon.liquiditypool.UnlinkPoolProposal",
-  ChangeNumQuotes = "/Switcheo.carbon.liquiditypool.ChangeNumQuotesProposal",
+  UpdatePool = "/Switcheo.carbon.liquiditypool.UpdatePoolProposal",
   SetRewardCurve = "/Switcheo.carbon.liquiditypool.SetRewardCurveProposal",
   SetRewardsWeights = "/Switcheo.carbon.liquiditypool.SetRewardsWeightsProposal",
   SetCommitmentCurve = "/Switcheo.carbon.liquiditypool.SetCommitmentCurveProposal",

@@ -1,9 +1,9 @@
 import {
-  ChangeNumQuotesProposal, ChangeSwapFeeProposal, CreateMarketProposal,
+  CreateMarketProposal,
   CreateOracleProposal, CreateTokenProposal, LinkPoolProposal,
   ProposalTypes, SetCommitmentCurveProposal, SetMsgFeeProposal,
   SetRewardCurveProposal, SetRewardsWeightsProposal, SettlementPriceProposal,
-  UnlinkPoolProposal, UpdateMarketProposal,
+  UnlinkPoolProposal, UpdateMarketProposal, UpdatePoolProposal,
 } from "@carbon-sdk/codec";
 import { Any } from "@carbon-sdk/codec/google/protobuf/any";
 
@@ -22,15 +22,10 @@ export const decodeContent = (content?: Any): PropDecoded => {
     return emptyProposal;
   }
   switch (content.typeUrl) {
-    case ProposalTypes.ChangeNumQuotes:
+    case ProposalTypes.UpdatePool:
       return {
         ...content,
-        value: ChangeNumQuotesProposal.decode(content.value),
-      };
-    case ProposalTypes.ChangeSwapFee:
-      return {
-        ...content,
-        value: ChangeSwapFeeProposal.decode(content.value),
+        value: UpdatePoolProposal.decode(content.value),
       };
     case ProposalTypes.CreateMarket:
       return {

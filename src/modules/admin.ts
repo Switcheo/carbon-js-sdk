@@ -5,7 +5,7 @@ import { Description } from "@carbon-sdk/codec/cosmos/staking/v1beta1/staking";
 import { MsgCreateValidator, MsgEditValidator } from "@carbon-sdk/codec/cosmos/staking/v1beta1/tx";
 import { MsgSetFee } from "@carbon-sdk/codec/fee/tx";
 import { Duration } from "@carbon-sdk/codec/google/protobuf/duration";
-import { MsgChangeNumQuotes, MsgChangeSwapFee, MsgLinkPool, MsgSetCommitmentCurve, MsgSetRewardCurve, MsgSetRewardsWeights, MsgUnlinkPool } from "@carbon-sdk/codec/liquiditypool/tx";
+import { MsgLinkPool, MsgSetCommitmentCurve, MsgSetRewardCurve, MsgSetRewardsWeights, MsgUnlinkPool, MsgUpdatePool } from "@carbon-sdk/codec/liquiditypool/tx";
 import { MsgCreateMarket } from "@carbon-sdk/codec/market/tx";
 import { MsgCreateOracle } from "@carbon-sdk/codec/oracle/tx";
 import { MsgSetTradingFlag } from "@carbon-sdk/codec/order/tx";
@@ -188,20 +188,6 @@ export class AdminModule extends BaseModule {
     });
   }
 
-  public async changeSwapFee(params: AdminModule.ChangeSwapFeeParams) {
-    const wallet = this.getWallet();
-
-    const value = MsgChangeSwapFee.fromPartial({
-        creator: wallet.bech32Address,
-        changeSwapFeeParams: transfromChangeSwapFeeParams(params)
-    })
-
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgChangeSwapFee,
-      value,
-    });
-  }
-
   public async setRewardsWeights(params: AdminModule.SetRewardsWeightsParams[]) {
     const wallet = this.getWallet();
 
@@ -244,16 +230,16 @@ export class AdminModule extends BaseModule {
     });
   }
 
-  public async changeNumQuotes(params: AdminModule.ChangeNumQuotesParams) {
+  public async updatePool(params: AdminModule.UpdatePoolParams) {
     const wallet = this.getWallet();
 
-    const value = MsgChangeNumQuotes.fromPartial({
+    const value = MsgUpdatePool.fromPartial({
       creator: wallet.bech32Address,
-      changeNumQuotesParams: transfromChangNumQuotesParams(params),
+      updatePoolParams: transfromUpdatePoolParams(params),
     })
 
     return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgChangeNumQuotes,
+      typeUrl: CarbonTx.Types.MsgUpdatePool,
       value,
     });
   }
@@ -460,9 +446,10 @@ export namespace AdminModule {
     poolId: number
   }
 
-  export interface ChangeSwapFeeParams {
+  export interface UpdatePoolParams {
     poolId: number
     swapFee: BigNumber
+    numQuotes: number
   }
 
   export interface SetRewardsWeightsParams {
@@ -613,13 +600,6 @@ export function transfromUnlinkPoolParams(msg: AdminModule.UnlinkPoolParams) {
   }
 }
 
-export function transfromChangeSwapFeeParams(msg: AdminModule.ChangeSwapFeeParams) {
-  return {
-    poolId: new Long(msg.poolId),
-    swapFee: msg.swapFee.shiftedBy(18).toString(),
-  }
-}
-
 export function transfromSetRewardsWeightsParams(msg: AdminModule.SetRewardsWeightsParams[]) {  
   const weights = msg.map(param => {
     return {
@@ -651,10 +631,11 @@ export function transfromSetCommitmentCurveParams(msg: AdminModule.SetCommitment
   }
 }
 
-export function transfromChangNumQuotesParams(msg: AdminModule.ChangeNumQuotesParams) {
+export function transfromUpdatePoolParams(msg: AdminModule.UpdatePoolParams) {
   return {
     poolId: new Long(msg.poolId),
     numQuotes: new Long(msg.numQuotes),
+    swapFee: msg.swapFee.shiftedBy(18).toString(),
   }
 }
 
