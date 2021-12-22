@@ -62,18 +62,18 @@ export const NetworkConfigs: {
   [Network.MainNet]: {
     network: Network.MainNet,
 
-    tmRpcUrl: "https://dev-tm-api.carbon.network",
-    restUrl: "https://dev-api.carbon.network",
-    insightsUrl: "https://dev-api-insights.carbon.network",
-    wsUrl: "wss://dev-ws-api.carbon.network/ws",
-    faucetUrl: "https://dev-faucet.carbon.network",
+    tmRpcUrl: "https://tm-api.carbon.network",
+    restUrl: "https://api.carbon.network",
+    insightsUrl: "https://api-insights.carbon.network",
+    wsUrl: "wss://ws-api.carbon.network/ws",
+    faucetUrl: "https://faucet.carbon.network",
 
     Bech32Prefix: "swth",
 
     /** @deprecated use rpcUrl */
-    rpcURL: "https://dev-tm-api.carbon.network",
+    rpcURL: "https://tm-api.carbon.network",
     /** @deprecated use restUrl */
-    restURL: "https://dev-api.carbon.network",
+    restURL: "https://api.carbon.network",
 
     feeURL: `https://fees.switcheo.org`,
     feeAddress: '08d8f59e475830d9a1bb97d74285c4d34c6dac08', // swth1prv0t8j8tqcdngdmjlt59pwy6dxxmtqgycy2h7
