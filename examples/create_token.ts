@@ -8,7 +8,7 @@ import "./_setup";
   console.log("mnemonics", mnemonics);
 
   const sdk = await CarbonSDK.instance({
-    network: CarbonSDK.Network.LocalHost,
+    network: CarbonSDK.Network.TestNet,
     config: {
       tmRpcUrl: process.env.TRPC_ENDPOINT,
     },
@@ -18,16 +18,13 @@ import "./_setup";
 
   const result = await connectedSDK.admin.createToken({
     creator: sdk?.wallet?.bech32Address || '',
-    denom: "luna",
-    name: "luna",
-    symbol: "LUNA",
-    decimals: 8,
-    chainId: 1,
+    name: "ETH (ERC20)",
+    symbol: "ETH",
+    decimals: 18,
+    chainId: 2,
     bridgeId: 1,
-    bridgeAddress: '',
-    tokenAddress: '',
-    isCollateral: true,
-
+    bridgeAddress: '91f453851e297524749a740d53cf54a89231487c',
+    tokenAddress: '0000000000000000000000000000000000000000',
   })
   console.log(result)
 })().catch(console.error).finally(() => process.exit(0));

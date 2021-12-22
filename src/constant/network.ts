@@ -102,8 +102,8 @@ export const NetworkConfigs: {
     },
 
     zil: {
-      rpcURL: '',
-      lockProxyAddr: '',
+      rpcURL: 'https://api.zilliqa.com',
+      lockProxyAddr: '0xd73c6b871b4d0e130d64581993b745fc938a5be7',
       chainId: 1,
     }
   },
@@ -200,9 +200,9 @@ export const NetworkConfigs: {
     },
 
     zil: {
-      rpcURL: 'https://poly-api.zilliqa.com',
+      rpcURL: 'https://dev-api.zilliqa.com',
       lockProxyAddr: '0xa5484b227f35f5e192e444146a3d9e09f4cdad80',
-      chainId: 888,
+      chainId: 333,
     }
   },
 
