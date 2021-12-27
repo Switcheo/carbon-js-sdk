@@ -1,4 +1,4 @@
-import { Any } from "@carbon-sdk/codec";
+import { Any, SettlementPriceParams } from "@carbon-sdk/codec";
 import { MsgCreateVaultType } from "@carbon-sdk/codec/cdp/tx";
 import { MsgAuthorizeBridge, MsgBindToken, MsgCreateToken, MsgDeauthorizeBridge, MsgLinkToken, MsgSyncToken, MsgUnbindToken } from "@carbon-sdk/codec/coin/tx";
 import { Description } from "@carbon-sdk/codec/cosmos/staking/v1beta1/staking";
@@ -651,5 +651,12 @@ export function transfromSetMsgFeeParams(msg: AdminModule.SetMsgFeeParams) {
   return {
     msgType: msg.msgType,
     fee: msg.fee.toString(),
+  }
+}
+
+export function transformSetSettlementPriceParams(msg: SettlementPriceParams) {
+  return {
+    market: msg.market,
+    settlementPrice: new BigNumber(msg.settlementPrice).shiftedBy(18).toString(),
   }
 }

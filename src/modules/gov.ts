@@ -24,6 +24,7 @@ import {
   transfromCreateOracleParams,
   transfromUpdatePoolParams,
   AdminModule,
+  transformSetSettlementPriceParams,
 } from "./admin";
 import { MarketModule, transfromUpdateMarketParams } from "./market";
 
@@ -154,7 +155,12 @@ export class GovModule extends BaseModule {
         }
         return CreateOracleProposal.encode(createOracleProposalMsg).finish()
       case "SettlementPriceProposal":
-        return SettlementPriceProposal.encode(msg).finish()
+        const settlementPriceProposalMsg = {
+          title : title,
+          description: description,
+          msg: transformSetSettlementPriceParams(msg),
+        }
+        return SettlementPriceProposal.encode(settlementPriceProposalMsg).finish()
       default:
         return new Uint8Array()
     }
