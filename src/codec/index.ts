@@ -336,7 +336,7 @@ export enum ProposalTypes {
   SetCommitmentCurve = "/Switcheo.carbon.liquiditypool.SetCommitmentCurveProposal",
   CreateMarket = "/Switcheo.carbon.market.CreateMarketProposal",
   UpdateMarket = "/Switcheo.carbon.market.UpdateMarketProposal",
-  SettlementPrice = "/Switcheo.carbon.market.SettlementPriceProposal",
+  SettlementPrice = "/Switcheo.carbon.pricing.SettlementPriceProposal",
 };
 
 // Exported for convenience
