@@ -173,7 +173,7 @@ export const NetworkConfigs: {
     /** @deprecated use restUrl */
     restURL: "https://dev-api.carbon.network",
 
-    feeURL: `http://13.251.218.38:9001`,
+    feeURL: `http://52.221.181.110:9001`,
     feeAddress: '989761fb0c0eb0c05605e849cae77d239f98ac7f',
 
     eth: {
