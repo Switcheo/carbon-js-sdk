@@ -156,12 +156,14 @@ class TokenClient {
     const result: Token[] = [];
 
     if (!this.tokens) return result;
+    const tokenId = this.tokens[denom]?.id;
+    if (!tokenId) return result;
 
     // check if denom is source token
-    if (Object.values(this.wrapperMap).includes(denom)) {
-      for (const [wrappedDenom, sourceDenom] of Object.entries(this.wrapperMap)) {
+    if (Object.values(this.wrapperMap).includes(tokenId)) {
+      for (const [wrappedDenom, sourceId] of Object.entries(this.wrapperMap)) {
         // if mapping is not relevant to current source denom, skip.
-        if (sourceDenom !== denom) {
+        if (sourceId !== tokenId) {
           continue;
         }
 
@@ -183,17 +185,20 @@ class TokenClient {
       return this.tokens[denom];
     }
 
+    const tokenId = this.tokens?.[denom]?.id;
+    if (!tokenId) return null;
+
     // check if denom is source token
-    if (Object.values(this.wrapperMap).includes(denom)) {
-      for (const [wrappedDenom, sourceDenom] of Object.entries(this.wrapperMap)) {
+    if (Object.values(this.wrapperMap).includes(tokenId)) {
+      for (const [wrappedDenom, sourceId] of Object.entries(this.wrapperMap)) {
         // if mapping is not relevant to current source denom, skip.
-        if (sourceDenom !== denom) {
+        if (sourceId !== tokenId) {
           continue;
         }
 
         // check if wrapped denom is of correct blockchain
         const token = this.tokens[wrappedDenom];
-        const tokenChain = BlockchainUtils.getChainFromID(token.chainId.toNumber())
+        const tokenChain = BlockchainUtils.blockchainForChainId(token.chainId.toNumber())
         if (!blockchain || !tokenChain || tokenChain === blockchain) {
           return token;
         }
@@ -204,15 +209,19 @@ class TokenClient {
   }
 
   public getSourceToken(denom: string): Token | null {
+
+    const tokenId = this.tokens?.[denom]?.id;
+    if (!tokenId) return null;
+
     // check if denom is source token
-    if (Object.values(this.wrapperMap).includes(denom)) {
+    if (Object.values(this.wrapperMap).includes(tokenId)) {
       return this.tokens[denom];
     }
 
     // check if denom is wrapped token
     if (this.wrapperMap[denom]) {
-      const sourceDenom = this.wrapperMap[denom];
-      return this.tokens[sourceDenom];
+      const sourceId = this.wrapperMap[denom];
+      return Object.values(this.tokens).find(token => token.id === sourceId) ?? null;
     }
 
     return null;

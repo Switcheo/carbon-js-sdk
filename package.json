@@ -76,7 +76,6 @@
     "@types/websocket": "^1.0.4",
     "@types/wif": "^2.0.2",
     "dotenv": "^10.0.0",
-    "nodemon": "^2.0.12",
-    "ts-proto": "^1.81.1"
+    "nodemon": "^2.0.12"
   }
 }

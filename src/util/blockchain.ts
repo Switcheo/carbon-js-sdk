@@ -63,8 +63,12 @@ export const blockchainForChainId = (chainId?: number): Blockchain | undefined =
     case 4:
       return Blockchain.Neo
     case 6:
+    case 79:
       return Blockchain.BinanceSmartChain
-    case 9:
+    case 9: // mainnet
+    case 18:
+    case 110: // testnet
+    case 111:
       return Blockchain.Zilliqa
     default:
       return undefined
