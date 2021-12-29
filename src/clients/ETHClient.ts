@@ -68,21 +68,26 @@ export class ETHClient {
     const tokens = tokenQueryResults.tokens.filter(token =>
       blockchainForChainId(token.chainId.toNumber()) == this.blockchain &&
       token.tokenAddress.length == 40 &&
-      // TODO: Check if bridgeAddress corresponds to carbon token lock_proxy_hash
       token.bridgeAddress.toLowerCase() == stripHexPrefix(lockProxyAddress) &&
-      (!whitelistDenoms || whitelistDenoms.includes(token.denom))
+      (!whitelistDenoms || whitelistDenoms.includes(token.denom)) &&
+      this.verifyChecksum(appendHexPrefix(token.tokenAddress))
     )
-    const assetIds = tokens.map(token => appendHexPrefix(token.tokenAddress))
+    const assetIds = tokens.map(token => {
+      return this.verifyChecksum(appendHexPrefix(token.tokenAddress))
+    })
+
     const provider = this.getProvider()
     const contractAddress = this.getBalanceReaderAddress()
     const contract = new ethers.Contract(contractAddress, ABIs.balanceReader, provider)
 
-    const balances = await contract.getBalances(address, assetIds)
+    const checkSumAddr = ethers.utils.getAddress(address)
+    const balances = await contract.getBalances(checkSumAddr, assetIds)
     const TokensWithExternalBalance: TokensWithExternalBalance[] = []
-    for (let i = 0; i < tokens.length; i++) {
-      const token = tokens[i]
+    for (let i = 0; i < assetIds.length; i++) {
+      if (!tokens[i]) continue
+
       TokensWithExternalBalance.push({
-        ...token,
+        ...tokens[i],
         externalBalance: balances[i].toString(),
       })
     }
@@ -99,7 +104,6 @@ export class ETHClient {
 
     const nonce = await rpcProvider.getTransactionCount(ethAddress)
     const approveResultTx = await contract.connect(signer).approve(
-      // TODO: Check if bridgeAddress corresponds to carbon token lock_proxy_hash
       token.bridgeAddress,
       ethers.constants.MaxUint256,
       {
@@ -366,6 +370,17 @@ export class ETHClient {
 
   public getWalletBytecodeHash() {
     return this.getConfig().byteCodeHash;
+  }
+
+  /**
+   * verify that address is a valid checksum.
+   * Returns checksum address if valid, returns undefined if invalid
+   * @input address to be verified
+   */
+  public verifyChecksum(input: string): string | undefined {
+    try {
+      return ethers.utils.getAddress(input)
+    } catch { }
   }
 }
 
