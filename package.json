@@ -70,7 +70,7 @@
   },
   "devDependencies": {
     "@types/lodash": "^4.14.174",
-    "@types/node": "^15.6.2",
+    "@types/node": "^17.0.6",
     "@types/node-fetch": "^2.5.12",
     "@types/secp256k1": "^4.0.2",
     "@types/websocket": "^1.0.4",
