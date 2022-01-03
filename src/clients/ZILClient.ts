@@ -105,7 +105,7 @@ type SupportedBlockchains = Blockchain.Zilliqa
 export class ZILClient {
   static SUPPORTED_BLOCKCHAINS = [Blockchain.Zilliqa]
   static BLOCKCHAIN_KEY = {
-    [Blockchain.Zilliqa]: "Zil"
+    [Blockchain.Zilliqa]: "zil"
   }
 
   private walletProvider?: WalletProvider // zilpay
@@ -131,7 +131,7 @@ export class ZILClient {
       token.tokenAddress.length == 40 &&
       (!whitelistDenoms || whitelistDenoms.includes(token.denom))
     )
-
+    
     const requests = tokens.map(token => token.tokenAddress === zeroAddress ? balanceBatchRequest(address) : tokenBalanceBatchRequest(token.tokenAddress, address))
     const response = await fetch(this.getProviderUrl(), {
       method: "post",
@@ -139,7 +139,6 @@ export class ZILClient {
       body: JSON.stringify(requests.flatMap((request: BatchRequest) => request.item)),
     });
     const results: BatchResponse = await response.json();
-    console.log("batch result", results, requests)
 
     const TokensWithExternalBalance: TokensWithExternalBalance[] = []
     if (!Array.isArray(results)) {
@@ -266,7 +265,7 @@ export class ZILClient {
     const assetId = appendHexPrefix(token.tokenAddress)
     const targetProxyHash = appendHexPrefix(this.getTargetProxyHash(token))
     const feeAddress = appendHexPrefix(networkConfig.feeAddress);
-    const toAssetHash = ethers.utils.hexlify(ethers.utils.toUtf8Bytes(token.denom))
+    const toAssetHash = ethers.utils.hexlify(ethers.utils.toUtf8Bytes(token.id))
     const swthAddress = ethers.utils.hexlify(address)
     // TODO: Check if bridgeAddress corresponds to carbon token lock_proxy_hash
     const contractAddress = appendHexPrefix(token.bridgeAddress)

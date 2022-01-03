@@ -201,7 +201,7 @@ export const NetworkConfigs: {
 
     zil: {
       rpcURL: 'https://dev-api.zilliqa.com',
-      lockProxyAddr: '0xa5484b227f35f5e192e444146a3d9e09f4cdad80',
+      lockProxyAddr: '0xeb380184790dcf174e70f062a1630653ca0356c7',
       chainId: 333,
     }
   },
