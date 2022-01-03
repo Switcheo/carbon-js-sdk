@@ -1,3 +1,5 @@
+import { shadowNets } from "@carbon-sdk/constant";
+
 export enum Network {
   MainNet = "mainnet",
   TestNet = "testnet",
@@ -62,18 +64,18 @@ export const NetworkConfigs: {
   [Network.MainNet]: {
     network: Network.MainNet,
 
-    tmRpcUrl: "https://tm-api.carbon.network",
-    restUrl: "https://api.carbon.network",
+    tmRpcUrl: "http://54.255.76.60:26657",
+    restUrl: "http://54.255.76.60:1317",
     insightsUrl: "https://api-insights.carbon.network",
-    wsUrl: "wss://ws-api.carbon.network/ws",
-    faucetUrl: "https://faucet.carbon.network",
+    wsUrl: "ws://54.255.76.60:5000/ws",
+    faucetUrl: "",
 
     Bech32Prefix: "swth",
 
     /** @deprecated use rpcUrl */
-    rpcURL: "https://tm-api.carbon.network",
+    rpcURL: "http://54.255.76.60:26657",
     /** @deprecated use restUrl */
-    restURL: "https://api.carbon.network",
+    restURL: "http://54.255.76.60:1317",
 
     feeURL: `https://fees.switcheo.org`,
     feeAddress: '08d8f59e475830d9a1bb97d74285c4d34c6dac08', // swth1prv0t8j8tqcdngdmjlt59pwy6dxxmtqgycy2h7
@@ -189,7 +191,7 @@ export const NetworkConfigs: {
       rpcURL: 'https://data-seed-prebsc-2-s3.binance.org:8545/',
       wsURL: '',
       payerURL: `http://13.251.218.38:8001`,
-      lockProxyAddr: '0x7c2b13d656d222cb79670e301dd826dc5b8dc20c',
+      lockProxyAddr: '0xb5d4f343412dc8efb6ff599d790074d0f1e8d430',
       balanceReader: '0x25c22f65cb820e787a13951f295d0b86db7b07b5',
       byteCodeHash: '0x1b147c1cef546fcbcc1284df778073d65b90f80d5b649a69d5f8a01e186c0ec1',
     },
