@@ -64,6 +64,8 @@ export const NetworkConfigs: {
   [Network.MainNet]: {
     network: Network.MainNet,
 
+    // Temporarily add shadow mainnet urls config
+    // TODO: Change back to original urls when mainnet is ready
     tmRpcUrl: "http://54.255.76.60:26657",
     restUrl: "http://54.255.76.60:1317",
     insightsUrl: "https://api-insights.carbon.network",
