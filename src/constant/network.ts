@@ -191,7 +191,7 @@ export const NetworkConfigs: {
       rpcURL: 'https://data-seed-prebsc-2-s3.binance.org:8545/',
       wsURL: '',
       payerURL: `http://13.251.218.38:8001`,
-      lockProxyAddr: '0xb5d4f343412dc8efb6ff599d790074d0f1e8d430',
+      lockProxyAddr: '0x7c2b13d656d222cb79670e301dd826dc5b8dc20c',
       balanceReader: '0x25c22f65cb820e787a13951f295d0b86db7b07b5',
       byteCodeHash: '0x1b147c1cef546fcbcc1284df778073d65b90f80d5b649a69d5f8a01e186c0ec1',
     },
