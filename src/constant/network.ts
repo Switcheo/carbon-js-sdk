@@ -1,5 +1,3 @@
-import { shadowNets } from "@carbon-sdk/constant";
-
 export enum Network {
   MainNet = "mainnet",
   TestNet = "testnet",

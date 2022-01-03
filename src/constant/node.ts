@@ -4,7 +4,8 @@ import { Network } from "./network";
 
 type NodeNet = TypeUtils.SimpleMap<Insights.NodeItem[]>;
 
-export const shadowNets: NodeNet = {
+// Add hard-coded nodes here
+export const nodesByNet: NodeNet = {
   [Network.MainNet]: [{
     nodeId: "shadowmainnet1",
     rpcUrl: "http://54.255.76.60:26657",
