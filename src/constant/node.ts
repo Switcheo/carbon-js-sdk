@@ -8,11 +8,11 @@ type NodeNet = TypeUtils.SimpleMap<Insights.NodeItem[]>;
 export const nodesByNet: NodeNet = {
   [Network.MainNet]: [{
     nodeId: "shadowmainnet1",
-    rpcUrl: "https://54.255.76.60:26657",
-    wsUrl: "ws://54.255.76.60:5000/ws",
+    rpcUrl: "https://shadow-tm-api.carbon.network/",
+    wsUrl: "wss://shadow-ws-api.carbon.network/ws",
     faucetUrl: "",
     insightsUrl: "https://api-insights.carbon.network",
-    restUrl: "https://54.255.76.60:1317",
+    restUrl: "https://shadow-api.carbon.network",
     moniker: "Shadow Mainnet 1",
     appBuild: "mainnet",
     lastupdated: "2022-01-03T03:56:10.190Z",
