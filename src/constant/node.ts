@@ -21,11 +21,11 @@ export const nodesByNet: NodeNet = {
     insightUptime: "100",
   }, {
     nodeId: "shadowmainnet2",
-    rpcUrl: "https://18.139.169.234:26657",
+    rpcUrl: "http://18.139.169.234:26657",
     wsUrl: "ws://18.139.169.234:5000/ws",
     faucetUrl: "",
     insightsUrl: "https://api-insights.carbon.network",
-    restUrl: "https://18.139.169.234:1317",
+    restUrl: "http://18.139.169.234:1317",
     moniker: "Shadow Mainnet 2",
     appBuild: "mainnet",
     lastupdated: "2022-01-03T03:56:10.190Z",
