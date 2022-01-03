@@ -64,8 +64,8 @@ export const NetworkConfigs: {
 
     // Temporarily add shadow mainnet urls config
     // TODO: Change back to original urls when mainnet is ready
-    tmRpcUrl: "http://54.255.76.60:26657",
-    restUrl: "http://54.255.76.60:1317",
+    tmRpcUrl: "https://54.255.76.60:26657",
+    restUrl: "https://54.255.76.60:1317",
     insightsUrl: "https://api-insights.carbon.network",
     wsUrl: "ws://54.255.76.60:5000/ws",
     faucetUrl: "",
@@ -73,9 +73,9 @@ export const NetworkConfigs: {
     Bech32Prefix: "swth",
 
     /** @deprecated use rpcUrl */
-    rpcURL: "http://54.255.76.60:26657",
+    rpcURL: "https://54.255.76.60:26657",
     /** @deprecated use restUrl */
-    restURL: "http://54.255.76.60:1317",
+    restURL: "https://54.255.76.60:1317",
 
     feeURL: `https://fees.switcheo.org`,
     feeAddress: '08d8f59e475830d9a1bb97d74285c4d34c6dac08', // swth1prv0t8j8tqcdngdmjlt59pwy6dxxmtqgycy2h7
