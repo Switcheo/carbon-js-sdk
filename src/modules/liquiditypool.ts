@@ -1,4 +1,6 @@
 import { Models } from "@carbon-sdk/index"
+import { RewardHistoryRecord } from "@carbon-sdk/codec/liquiditypool/reward"
+import { DecCoin } from "@carbon-sdk/codec/cosmos/base/v1beta1/coin"
 import { CarbonTx, NumberUtils } from "@carbon-sdk/util"
 import { BigNumber } from "bignumber.js"
 import dayjs from "dayjs"
@@ -183,16 +185,17 @@ export class LiquidityPoolModule extends BaseModule {
       address: params.address,
     });
 
-    const commitmentPower = new BigNumber(shares.commitmentResponse?.commitmentPower || '0');
+    const commitmentPower = new BigNumber(shares.commitment?.commitmentPower || '0');
 
     // calculate accrued rewards based on history
-    if (!commitmentPower.isZero() && allocation && allocation.querierRewardHistories) {
-      allocation.querierRewardHistories.forEach((period) => {
-        lastHeight = period.blockHeight;
-        const totalCommit = new BigNumber(period.totalCommitment);
+    if (!commitmentPower.isZero() && allocation && allocation.rewardHistories) {
+      allocation.rewardHistories.forEach((period: RewardHistoryRecord) => {
+        lastHeight = period.height;
+        const totalCommit = NumberUtils.bnOrZero(period.rewardHistory?.totalCommitment);
         const ratio = commitmentPower.div(totalCommit);
 
-        period.rewards?.forEach((reward) => {
+        const rewardsArr = period.rewardHistory?.rewards ?? []
+        rewardsArr.forEach((reward: DecCoin) => {
           // reward amount is ridiculously big, so had to shift
           const rewardAmt = new BigNumber(reward.amount).shiftedBy(-18)
           const rewardCut = new BigNumber(rewardAmt).times(ratio).integerValue(BigNumber.ROUND_DOWN);
@@ -211,7 +214,7 @@ export class LiquidityPoolModule extends BaseModule {
     if (!commitmentPower.isZero()) {
       const weeklyRewards = await this.getWeeklyRewards();
       const pools = await sdk.query.liquiditypool.PoolAll({});
-      const pool = pools.extendedPools.find((pool: Models.ExtendedPool) => pool.pool?.id.toString() === params.poolId);
+      const pool = pools.pools.find((pool: Models.ExtendedPool) => pool.pool?.id.toString() === params.poolId);
       if (!pool) {
         return {};
       }
@@ -222,7 +225,7 @@ export class LiquidityPoolModule extends BaseModule {
       const totalCommitBN = new BigNumber(totalCommitment.totalCommitment ?? '0')
       const poolWeight = new BigNumber(pool?.rewardsWeight || '0');
       let totalWeight = NumberUtils.BN_ZERO;
-      pools.extendedPools.forEach((pool: Models.ExtendedPool) => {
+      pools.pools.forEach((pool: Models.ExtendedPool) => {
         const rewardWght = pool?.rewardsWeight || '0'
         totalWeight = totalWeight.plus(rewardWght);
       });
