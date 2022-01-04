@@ -17,7 +17,15 @@ import "./_setup";
   console.log("fees", fees);
 
   // query all tokens
-  const tokens = await sdk.query.coin.TokenAll({});
+  const tokens = await sdk.query.coin.TokenAll({
+    pagination: {
+      limit: new Long(100),
+      offset: new Long(0),
+      key: new Uint8Array(),
+      countTotal: true,
+      reverse: false,
+    },
+  });
   console.log("tokens", tokens);
 
   // query all token mappings
