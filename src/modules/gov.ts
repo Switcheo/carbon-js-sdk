@@ -180,7 +180,7 @@ export namespace GovModule {
   export interface ProposalMsg {
     title: string,
     description: string,
-    msg: ProposalTypes 
+    msg: ProposalTypeParams 
   }
 
   export interface DepositParams {
@@ -194,7 +194,7 @@ export namespace GovModule {
     option: VoteOption,
   }
 
-  export type ProposalTypes =
+  export type ProposalTypeParams =
     AdminModule.CreateTokenParams |
     AdminModule.SetMsgFeeParams |
     AdminModule.LinkPoolParams |

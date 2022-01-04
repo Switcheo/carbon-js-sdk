@@ -1,11 +1,24 @@
 import {
-  CreateMarketProposal,
-  CreateOracleProposal, CreateTokenProposal, LinkPoolProposal,
-  ProposalTypes, SetCommitmentCurveProposal, SetMsgFeeProposal,
-  SetRewardCurveProposal, SetRewardsWeightsProposal, SettlementPriceProposal,
-  UnlinkPoolProposal, UpdateMarketProposal, UpdatePoolProposal,
+  CreateMarketProposal, CreateOracleProposal, CreateTokenProposal, LinkPoolProposal,
+  SetCommitmentCurveProposal, SetMsgFeeProposal, SetRewardCurveProposal, SetRewardsWeightsProposal,
+  SettlementPriceProposal, UnlinkPoolProposal, UpdateMarketProposal, UpdatePoolProposal,
 } from "@carbon-sdk/codec";
 import { Any } from "@carbon-sdk/codec/google/protobuf/any";
+
+export enum ProposalTypes {
+  SetMsgFee = "/Switcheo.carbon.fee.SetMsgFeeProposal",
+  CreateToken = "/Switcheo.carbon.coin.CreateTokenProposal",
+  CreateOracle = "/Switcheo.carbon.oracle.CreateOracleProposal",
+  LinkPool = "/Switcheo.carbon.liquiditypool.LinkPoolProposal",
+  UnlinkPool = "/Switcheo.carbon.liquiditypool.UnlinkPoolProposal",
+  UpdatePool = "/Switcheo.carbon.liquiditypool.UpdatePoolProposal",
+  SetRewardCurve = "/Switcheo.carbon.liquiditypool.SetRewardCurveProposal",
+  SetRewardsWeights = "/Switcheo.carbon.liquiditypool.SetRewardsWeightsProposal",
+  SetCommitmentCurve = "/Switcheo.carbon.liquiditypool.SetCommitmentCurveProposal",
+  CreateMarket = "/Switcheo.carbon.market.CreateMarketProposal",
+  UpdateMarket = "/Switcheo.carbon.market.UpdateMarketProposal",
+  SettlementPrice = "/Switcheo.carbon.pricing.SettlementPriceProposal",
+};
 
 export interface PropDecoded {
   typeUrl: string;
