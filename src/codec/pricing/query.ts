@@ -32,7 +32,7 @@ export interface QueryRateRequest {
 }
 
 export interface QueryRateResponse {
-  conversionRate: string;
+  rate: string;
 }
 
 const baseQueryPriceSetRequest: object = { market: "" };
@@ -381,15 +381,15 @@ export const QueryRateRequest = {
   },
 };
 
-const baseQueryRateResponse: object = { conversionRate: "" };
+const baseQueryRateResponse: object = { rate: "" };
 
 export const QueryRateResponse = {
   encode(
     message: QueryRateResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.conversionRate !== "") {
-      writer.uint32(10).string(message.conversionRate);
+    if (message.rate !== "") {
+      writer.uint32(10).string(message.rate);
     }
     return writer;
   },
@@ -402,7 +402,7 @@ export const QueryRateResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.conversionRate = reader.string();
+          message.rate = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -414,34 +414,35 @@ export const QueryRateResponse = {
 
   fromJSON(object: any): QueryRateResponse {
     const message = { ...baseQueryRateResponse } as QueryRateResponse;
-    message.conversionRate =
-      object.conversionRate !== undefined && object.conversionRate !== null
-        ? String(object.conversionRate)
+    message.rate =
+      object.rate !== undefined && object.rate !== null
+        ? String(object.rate)
         : "";
     return message;
   },
 
   toJSON(message: QueryRateResponse): unknown {
     const obj: any = {};
-    message.conversionRate !== undefined &&
-      (obj.conversionRate = message.conversionRate);
+    message.rate !== undefined && (obj.rate = message.rate);
     return obj;
   },
 
   fromPartial(object: DeepPartial<QueryRateResponse>): QueryRateResponse {
     const message = { ...baseQueryRateResponse } as QueryRateResponse;
-    message.conversionRate = object.conversionRate ?? "";
+    message.rate = object.rate ?? "";
     return message;
   },
 };
 
 /** Query defines the gRPC querier service. */
 export interface Query {
-  /** this line is used by starport scaffolding # 2 */
+  /** Get prices for a market */
   PriceSet(request: QueryPriceSetRequest): Promise<QueryPriceSetResponse>;
+  /** Get prices for all markets */
   PriceSetAll(
     request: QueryAllPriceSetRequest
   ): Promise<QueryAllPriceSetResponse>;
+  /** Get current exchange rate between two denoms */
   Rate(request: QueryRateRequest): Promise<QueryRateResponse>;
 }
 

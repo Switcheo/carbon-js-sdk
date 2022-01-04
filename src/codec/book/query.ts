@@ -282,8 +282,9 @@ export const QueryAllBookResponse = {
 
 /** Query defines the gRPC querier service. */
 export interface Query {
-  /** this line is used by starport scaffolding # 2 */
+  /** Get order books for all markets */
   Book(request: QueryGetBookRequest): Promise<QueryGetBookResponse>;
+  /** Get order book for a market */
   BookAll(request: QueryAllBookRequest): Promise<QueryAllBookResponse>;
 }
 

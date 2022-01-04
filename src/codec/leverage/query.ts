@@ -12,7 +12,7 @@ export interface QueryGetLeverageRequest {
 }
 
 export interface QueryGetLeverageResponse {
-  MarketLeverage?: MarketLeverage;
+  marketLeverage?: MarketLeverage;
 }
 
 export interface QueryAllLeverageRequest {
@@ -106,9 +106,9 @@ export const QueryGetLeverageResponse = {
     message: QueryGetLeverageResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.MarketLeverage !== undefined) {
+    if (message.marketLeverage !== undefined) {
       MarketLeverage.encode(
-        message.MarketLeverage,
+        message.marketLeverage,
         writer.uint32(10).fork()
       ).ldelim();
     }
@@ -128,7 +128,7 @@ export const QueryGetLeverageResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.MarketLeverage = MarketLeverage.decode(
+          message.marketLeverage = MarketLeverage.decode(
             reader,
             reader.uint32()
           );
@@ -145,18 +145,18 @@ export const QueryGetLeverageResponse = {
     const message = {
       ...baseQueryGetLeverageResponse,
     } as QueryGetLeverageResponse;
-    message.MarketLeverage =
-      object.MarketLeverage !== undefined && object.MarketLeverage !== null
-        ? MarketLeverage.fromJSON(object.MarketLeverage)
+    message.marketLeverage =
+      object.marketLeverage !== undefined && object.marketLeverage !== null
+        ? MarketLeverage.fromJSON(object.marketLeverage)
         : undefined;
     return message;
   },
 
   toJSON(message: QueryGetLeverageResponse): unknown {
     const obj: any = {};
-    message.MarketLeverage !== undefined &&
-      (obj.MarketLeverage = message.MarketLeverage
-        ? MarketLeverage.toJSON(message.MarketLeverage)
+    message.marketLeverage !== undefined &&
+      (obj.marketLeverage = message.marketLeverage
+        ? MarketLeverage.toJSON(message.marketLeverage)
         : undefined);
     return obj;
   },
@@ -167,9 +167,9 @@ export const QueryGetLeverageResponse = {
     const message = {
       ...baseQueryGetLeverageResponse,
     } as QueryGetLeverageResponse;
-    message.MarketLeverage =
-      object.MarketLeverage !== undefined && object.MarketLeverage !== null
-        ? MarketLeverage.fromPartial(object.MarketLeverage)
+    message.marketLeverage =
+      object.marketLeverage !== undefined && object.marketLeverage !== null
+        ? MarketLeverage.fromPartial(object.marketLeverage)
         : undefined;
     return message;
   },

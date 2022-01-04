@@ -121,10 +121,7 @@ export const QueryMintDataResponse = {
 
 /** Query defines the gRPC querier service. */
 export interface Query {
-  /**
-   * this line is used by starport scaffolding # 2
-   * Leverage returns the leverage which corresponds to the address and market
-   */
+  /** Get mint data */
   MintData(request: QueryMintDataRequest): Promise<QueryMintDataResponse>;
 }
 

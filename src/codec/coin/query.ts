@@ -1473,20 +1473,27 @@ export const QueryAllBridgeResponse = {
 
 /** Query defines the gRPC querier service. */
 export interface Query {
-  /** this line is used by starport scaffolding # 2 */
+  /** Get token details for a denom */
   Token(request: QueryGetTokenRequest): Promise<QueryGetTokenResponse>;
+  /** Get all token details */
   TokenAll(request: QueryAllTokenRequest): Promise<QueryAllTokenResponse>;
+  /** Get locked coins for an address */
   LockedCoins(
     request: QueryGetLockedCoinsRequest
   ): Promise<QueryGetLockedCoinsResponse>;
+  /** Get wrapper mappings for wrapped tokens */
   WrapperMappings(
     request: QueryAllWrapperMappingsRequest
   ): Promise<QueryAllWrapperMappingsResponse>;
+  /** Get balances for an address */
   Balances(request: QueryGetBalancesRequest): Promise<QueryGetBalancesResponse>;
+  /** Get cross-chain transfers */
   ExternalTransfers(
     request: QueryGetExternalTransfersRequest
   ): Promise<QueryGetExternalTransfersResponse>;
+  /** Get details for a cross-chain bridge */
   Bridge(request: QueryGetBridgeRequest): Promise<QueryGetBridgeResponse>;
+  /** Get details for all cross-chain bridges */
   BridgeAll(request: QueryAllBridgeRequest): Promise<QueryAllBridgeResponse>;
 }
 

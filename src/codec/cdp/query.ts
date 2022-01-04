@@ -16,7 +16,7 @@ export interface QueryGetVaultRequest {
 }
 
 export interface QueryGetVaultResponse {
-  Vault?: Vault;
+  vault?: Vault;
 }
 
 export interface QueryAllVaultRequest {
@@ -33,7 +33,7 @@ export interface QueryGetVaultTypeRequest {
 }
 
 export interface QueryGetVaultTypeResponse {
-  VaultType?: VaultType;
+  vaultType?: VaultType;
 }
 
 export interface QueryAllVaultTypeRequest {
@@ -127,8 +127,8 @@ export const QueryGetVaultResponse = {
     message: QueryGetVaultResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.Vault !== undefined) {
-      Vault.encode(message.Vault, writer.uint32(10).fork()).ldelim();
+    if (message.vault !== undefined) {
+      Vault.encode(message.vault, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -144,7 +144,7 @@ export const QueryGetVaultResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.Vault = Vault.decode(reader, reader.uint32());
+          message.vault = Vault.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -156,17 +156,17 @@ export const QueryGetVaultResponse = {
 
   fromJSON(object: any): QueryGetVaultResponse {
     const message = { ...baseQueryGetVaultResponse } as QueryGetVaultResponse;
-    message.Vault =
-      object.Vault !== undefined && object.Vault !== null
-        ? Vault.fromJSON(object.Vault)
+    message.vault =
+      object.vault !== undefined && object.vault !== null
+        ? Vault.fromJSON(object.vault)
         : undefined;
     return message;
   },
 
   toJSON(message: QueryGetVaultResponse): unknown {
     const obj: any = {};
-    message.Vault !== undefined &&
-      (obj.Vault = message.Vault ? Vault.toJSON(message.Vault) : undefined);
+    message.vault !== undefined &&
+      (obj.vault = message.vault ? Vault.toJSON(message.vault) : undefined);
     return obj;
   },
 
@@ -174,9 +174,9 @@ export const QueryGetVaultResponse = {
     object: DeepPartial<QueryGetVaultResponse>
   ): QueryGetVaultResponse {
     const message = { ...baseQueryGetVaultResponse } as QueryGetVaultResponse;
-    message.Vault =
-      object.Vault !== undefined && object.Vault !== null
-        ? Vault.fromPartial(object.Vault)
+    message.vault =
+      object.vault !== undefined && object.vault !== null
+        ? Vault.fromPartial(object.vault)
         : undefined;
     return message;
   },
@@ -400,8 +400,8 @@ export const QueryGetVaultTypeResponse = {
     message: QueryGetVaultTypeResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.VaultType !== undefined) {
-      VaultType.encode(message.VaultType, writer.uint32(10).fork()).ldelim();
+    if (message.vaultType !== undefined) {
+      VaultType.encode(message.vaultType, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -419,7 +419,7 @@ export const QueryGetVaultTypeResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.VaultType = VaultType.decode(reader, reader.uint32());
+          message.vaultType = VaultType.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -433,18 +433,18 @@ export const QueryGetVaultTypeResponse = {
     const message = {
       ...baseQueryGetVaultTypeResponse,
     } as QueryGetVaultTypeResponse;
-    message.VaultType =
-      object.VaultType !== undefined && object.VaultType !== null
-        ? VaultType.fromJSON(object.VaultType)
+    message.vaultType =
+      object.vaultType !== undefined && object.vaultType !== null
+        ? VaultType.fromJSON(object.vaultType)
         : undefined;
     return message;
   },
 
   toJSON(message: QueryGetVaultTypeResponse): unknown {
     const obj: any = {};
-    message.VaultType !== undefined &&
-      (obj.VaultType = message.VaultType
-        ? VaultType.toJSON(message.VaultType)
+    message.vaultType !== undefined &&
+      (obj.vaultType = message.vaultType
+        ? VaultType.toJSON(message.vaultType)
         : undefined);
     return obj;
   },
@@ -455,9 +455,9 @@ export const QueryGetVaultTypeResponse = {
     const message = {
       ...baseQueryGetVaultTypeResponse,
     } as QueryGetVaultTypeResponse;
-    message.VaultType =
-      object.VaultType !== undefined && object.VaultType !== null
-        ? VaultType.fromPartial(object.VaultType)
+    message.vaultType =
+      object.vaultType !== undefined && object.vaultType !== null
+        ? VaultType.fromPartial(object.vaultType)
         : undefined;
     return message;
   },
@@ -628,12 +628,15 @@ export const QueryAllVaultTypeResponse = {
 
 /** Query defines the gRPC querier service. */
 export interface Query {
-  /** this line is used by starport scaffolding # 2 */
+  /** Get a vault */
   Vault(request: QueryGetVaultRequest): Promise<QueryGetVaultResponse>;
+  /** Get all vaults */
   VaultAll(request: QueryAllVaultRequest): Promise<QueryAllVaultResponse>;
+  /** Get value type for a vault */
   VaultType(
     request: QueryGetVaultTypeRequest
   ): Promise<QueryGetVaultTypeResponse>;
+  /** Get all vault types */
   VaultTypeAll(
     request: QueryAllVaultTypeRequest
   ): Promise<QueryAllVaultTypeResponse>;

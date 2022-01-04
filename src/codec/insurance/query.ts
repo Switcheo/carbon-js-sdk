@@ -112,7 +112,7 @@ export const QueryBalanceResponse = {
 
 /** Query defines the gRPC querier service. */
 export interface Query {
-  /** this line is used by starport scaffolding # 2 */
+  /** Get the insurance fund balance */
   Balance(request: QueryBalanceRequest): Promise<QueryBalanceResponse>;
 }
 

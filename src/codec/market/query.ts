@@ -15,7 +15,7 @@ export interface QueryGetMarketRequest {
 }
 
 export interface QueryGetMarketResponse {
-  Market?: Market;
+  market?: Market;
 }
 
 export interface QueryAllMarketRequest {
@@ -92,8 +92,8 @@ export const QueryGetMarketResponse = {
     message: QueryGetMarketResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.Market !== undefined) {
-      Market.encode(message.Market, writer.uint32(10).fork()).ldelim();
+    if (message.market !== undefined) {
+      Market.encode(message.market, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -109,7 +109,7 @@ export const QueryGetMarketResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.Market = Market.decode(reader, reader.uint32());
+          message.market = Market.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -121,17 +121,17 @@ export const QueryGetMarketResponse = {
 
   fromJSON(object: any): QueryGetMarketResponse {
     const message = { ...baseQueryGetMarketResponse } as QueryGetMarketResponse;
-    message.Market =
-      object.Market !== undefined && object.Market !== null
-        ? Market.fromJSON(object.Market)
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? Market.fromJSON(object.market)
         : undefined;
     return message;
   },
 
   toJSON(message: QueryGetMarketResponse): unknown {
     const obj: any = {};
-    message.Market !== undefined &&
-      (obj.Market = message.Market ? Market.toJSON(message.Market) : undefined);
+    message.market !== undefined &&
+      (obj.market = message.market ? Market.toJSON(message.market) : undefined);
     return obj;
   },
 
@@ -139,9 +139,9 @@ export const QueryGetMarketResponse = {
     object: DeepPartial<QueryGetMarketResponse>
   ): QueryGetMarketResponse {
     const message = { ...baseQueryGetMarketResponse } as QueryGetMarketResponse;
-    message.Market =
-      object.Market !== undefined && object.Market !== null
-        ? Market.fromPartial(object.Market)
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? Market.fromPartial(object.market)
         : undefined;
     return message;
   },
@@ -298,8 +298,9 @@ export const QueryAllMarketResponse = {
 
 /** Query defines the gRPC querier service. */
 export interface Query {
-  /** this line is used by starport scaffolding # 2 */
+  /** Get details for a market */
   Market(request: QueryGetMarketRequest): Promise<QueryGetMarketResponse>;
+  /** Get details for all markets */
   MarketAll(request: QueryAllMarketRequest): Promise<QueryAllMarketResponse>;
 }
 

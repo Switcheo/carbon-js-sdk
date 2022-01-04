@@ -15,7 +15,7 @@ export interface QueryGetProfileRequest {
 }
 
 export interface QueryGetProfileResponse {
-  Profile?: Profile;
+  profile?: Profile;
 }
 
 export interface QueryAllProfileRequest {
@@ -93,8 +93,8 @@ export const QueryGetProfileResponse = {
     message: QueryGetProfileResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.Profile !== undefined) {
-      Profile.encode(message.Profile, writer.uint32(10).fork()).ldelim();
+    if (message.profile !== undefined) {
+      Profile.encode(message.profile, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -112,7 +112,7 @@ export const QueryGetProfileResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.Profile = Profile.decode(reader, reader.uint32());
+          message.profile = Profile.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -126,18 +126,18 @@ export const QueryGetProfileResponse = {
     const message = {
       ...baseQueryGetProfileResponse,
     } as QueryGetProfileResponse;
-    message.Profile =
-      object.Profile !== undefined && object.Profile !== null
-        ? Profile.fromJSON(object.Profile)
+    message.profile =
+      object.profile !== undefined && object.profile !== null
+        ? Profile.fromJSON(object.profile)
         : undefined;
     return message;
   },
 
   toJSON(message: QueryGetProfileResponse): unknown {
     const obj: any = {};
-    message.Profile !== undefined &&
-      (obj.Profile = message.Profile
-        ? Profile.toJSON(message.Profile)
+    message.profile !== undefined &&
+      (obj.profile = message.profile
+        ? Profile.toJSON(message.profile)
         : undefined);
     return obj;
   },
@@ -148,9 +148,9 @@ export const QueryGetProfileResponse = {
     const message = {
       ...baseQueryGetProfileResponse,
     } as QueryGetProfileResponse;
-    message.Profile =
-      object.Profile !== undefined && object.Profile !== null
-        ? Profile.fromPartial(object.Profile)
+    message.profile =
+      object.profile !== undefined && object.profile !== null
+        ? Profile.fromPartial(object.profile)
         : undefined;
     return message;
   },
@@ -327,8 +327,9 @@ export const QueryAllProfileResponse = {
 
 /** Query defines the gRPC querier service. */
 export interface Query {
-  /** this line is used by starport scaffolding # 2 */
+  /** Get profile details for an address */
   Profile(request: QueryGetProfileRequest): Promise<QueryGetProfileResponse>;
+  /** Get details for all profiles */
   ProfileAll(request: QueryAllProfileRequest): Promise<QueryAllProfileResponse>;
 }
 

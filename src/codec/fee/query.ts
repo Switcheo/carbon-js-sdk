@@ -15,7 +15,7 @@ export interface QueryGetMsgFeeRequest {
 }
 
 export interface QueryGetMsgFeeResponse {
-  MsgFee?: MsgFee;
+  msgFee?: MsgFee;
 }
 
 export interface QueryAllMsgFeeRequest {
@@ -92,8 +92,8 @@ export const QueryGetMsgFeeResponse = {
     message: QueryGetMsgFeeResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.MsgFee !== undefined) {
-      MsgFee.encode(message.MsgFee, writer.uint32(10).fork()).ldelim();
+    if (message.msgFee !== undefined) {
+      MsgFee.encode(message.msgFee, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -109,7 +109,7 @@ export const QueryGetMsgFeeResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.MsgFee = MsgFee.decode(reader, reader.uint32());
+          message.msgFee = MsgFee.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -121,17 +121,17 @@ export const QueryGetMsgFeeResponse = {
 
   fromJSON(object: any): QueryGetMsgFeeResponse {
     const message = { ...baseQueryGetMsgFeeResponse } as QueryGetMsgFeeResponse;
-    message.MsgFee =
-      object.MsgFee !== undefined && object.MsgFee !== null
-        ? MsgFee.fromJSON(object.MsgFee)
+    message.msgFee =
+      object.msgFee !== undefined && object.msgFee !== null
+        ? MsgFee.fromJSON(object.msgFee)
         : undefined;
     return message;
   },
 
   toJSON(message: QueryGetMsgFeeResponse): unknown {
     const obj: any = {};
-    message.MsgFee !== undefined &&
-      (obj.MsgFee = message.MsgFee ? MsgFee.toJSON(message.MsgFee) : undefined);
+    message.msgFee !== undefined &&
+      (obj.msgFee = message.msgFee ? MsgFee.toJSON(message.msgFee) : undefined);
     return obj;
   },
 
@@ -139,9 +139,9 @@ export const QueryGetMsgFeeResponse = {
     object: DeepPartial<QueryGetMsgFeeResponse>
   ): QueryGetMsgFeeResponse {
     const message = { ...baseQueryGetMsgFeeResponse } as QueryGetMsgFeeResponse;
-    message.MsgFee =
-      object.MsgFee !== undefined && object.MsgFee !== null
-        ? MsgFee.fromPartial(object.MsgFee)
+    message.msgFee =
+      object.msgFee !== undefined && object.msgFee !== null
+        ? MsgFee.fromPartial(object.msgFee)
         : undefined;
     return message;
   },
@@ -298,8 +298,9 @@ export const QueryAllMsgFeeResponse = {
 
 /** Query defines the gRPC querier service. */
 export interface Query {
-  /** this line is used by starport scaffolding # 2 */
+  /** Get network fee for msg type */
   MsgFee(request: QueryGetMsgFeeRequest): Promise<QueryGetMsgFeeResponse>;
+  /** Get network fee for all msg types */
   MsgFeeAll(request: QueryAllMsgFeeRequest): Promise<QueryAllMsgFeeResponse>;
 }
 

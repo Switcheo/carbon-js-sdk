@@ -12,7 +12,7 @@ export interface QueryGetOrderRequest {
 }
 
 export interface QueryGetOrderResponse {
-  Order?: APIOrder;
+  order?: APIOrder;
 }
 
 export interface QueryAllOrderRequest {
@@ -98,8 +98,8 @@ export const QueryGetOrderResponse = {
     message: QueryGetOrderResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.Order !== undefined) {
-      APIOrder.encode(message.Order, writer.uint32(10).fork()).ldelim();
+    if (message.order !== undefined) {
+      APIOrder.encode(message.order, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -115,7 +115,7 @@ export const QueryGetOrderResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.Order = APIOrder.decode(reader, reader.uint32());
+          message.order = APIOrder.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -127,17 +127,17 @@ export const QueryGetOrderResponse = {
 
   fromJSON(object: any): QueryGetOrderResponse {
     const message = { ...baseQueryGetOrderResponse } as QueryGetOrderResponse;
-    message.Order =
-      object.Order !== undefined && object.Order !== null
-        ? APIOrder.fromJSON(object.Order)
+    message.order =
+      object.order !== undefined && object.order !== null
+        ? APIOrder.fromJSON(object.order)
         : undefined;
     return message;
   },
 
   toJSON(message: QueryGetOrderResponse): unknown {
     const obj: any = {};
-    message.Order !== undefined &&
-      (obj.Order = message.Order ? APIOrder.toJSON(message.Order) : undefined);
+    message.order !== undefined &&
+      (obj.order = message.order ? APIOrder.toJSON(message.order) : undefined);
     return obj;
   },
 
@@ -145,9 +145,9 @@ export const QueryGetOrderResponse = {
     object: DeepPartial<QueryGetOrderResponse>
   ): QueryGetOrderResponse {
     const message = { ...baseQueryGetOrderResponse } as QueryGetOrderResponse;
-    message.Order =
-      object.Order !== undefined && object.Order !== null
-        ? APIOrder.fromPartial(object.Order)
+    message.order =
+      object.order !== undefined && object.order !== null
+        ? APIOrder.fromPartial(object.order)
         : undefined;
     return message;
   },
@@ -498,9 +498,11 @@ export const QueryAccountOpenOrdersResponse = {
 
 /** Query defines the gRPC querier service. */
 export interface Query {
-  /** this line is used by starport scaffolding # 2 */
+  /** Get details for an order */
   Order(request: QueryGetOrderRequest): Promise<QueryGetOrderResponse>;
+  /** Get details for all orders */
   OrderAll(request: QueryAllOrderRequest): Promise<QueryAllOrderResponse>;
+  /** Get open orders for an address and market */
   OrdersAccountOpen(
     request: QueryAccountOpenOrdersRequest
   ): Promise<QueryAccountOpenOrdersResponse>;

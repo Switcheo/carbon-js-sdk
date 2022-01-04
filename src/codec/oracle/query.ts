@@ -15,7 +15,7 @@ export interface QueryOracleRequest {
 }
 
 export interface QueryOracleResponse {
-  Oracle?: Oracle;
+  oracle?: Oracle;
 }
 
 export interface QueryAllOracleRequest {
@@ -54,7 +54,7 @@ export interface QueryVoterPowerRequest {
 }
 
 export interface QueryVoterPowerResponse {
-  Power: string;
+  power: string;
 }
 
 const baseQueryOracleRequest: object = { id: "" };
@@ -115,8 +115,8 @@ export const QueryOracleResponse = {
     message: QueryOracleResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.Oracle !== undefined) {
-      Oracle.encode(message.Oracle, writer.uint32(10).fork()).ldelim();
+    if (message.oracle !== undefined) {
+      Oracle.encode(message.oracle, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -129,7 +129,7 @@ export const QueryOracleResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.Oracle = Oracle.decode(reader, reader.uint32());
+          message.oracle = Oracle.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -141,25 +141,25 @@ export const QueryOracleResponse = {
 
   fromJSON(object: any): QueryOracleResponse {
     const message = { ...baseQueryOracleResponse } as QueryOracleResponse;
-    message.Oracle =
-      object.Oracle !== undefined && object.Oracle !== null
-        ? Oracle.fromJSON(object.Oracle)
+    message.oracle =
+      object.oracle !== undefined && object.oracle !== null
+        ? Oracle.fromJSON(object.oracle)
         : undefined;
     return message;
   },
 
   toJSON(message: QueryOracleResponse): unknown {
     const obj: any = {};
-    message.Oracle !== undefined &&
-      (obj.Oracle = message.Oracle ? Oracle.toJSON(message.Oracle) : undefined);
+    message.oracle !== undefined &&
+      (obj.oracle = message.oracle ? Oracle.toJSON(message.oracle) : undefined);
     return obj;
   },
 
   fromPartial(object: DeepPartial<QueryOracleResponse>): QueryOracleResponse {
     const message = { ...baseQueryOracleResponse } as QueryOracleResponse;
-    message.Oracle =
-      object.Oracle !== undefined && object.Oracle !== null
-        ? Oracle.fromPartial(object.Oracle)
+    message.oracle =
+      object.oracle !== undefined && object.oracle !== null
+        ? Oracle.fromPartial(object.oracle)
         : undefined;
     return message;
   },
@@ -715,15 +715,15 @@ export const QueryVoterPowerRequest = {
   },
 };
 
-const baseQueryVoterPowerResponse: object = { Power: "" };
+const baseQueryVoterPowerResponse: object = { power: "" };
 
 export const QueryVoterPowerResponse = {
   encode(
     message: QueryVoterPowerResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.Power !== "") {
-      writer.uint32(10).string(message.Power);
+    if (message.power !== "") {
+      writer.uint32(10).string(message.power);
     }
     return writer;
   },
@@ -741,7 +741,7 @@ export const QueryVoterPowerResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.Power = reader.string();
+          message.power = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -755,16 +755,16 @@ export const QueryVoterPowerResponse = {
     const message = {
       ...baseQueryVoterPowerResponse,
     } as QueryVoterPowerResponse;
-    message.Power =
-      object.Power !== undefined && object.Power !== null
-        ? String(object.Power)
+    message.power =
+      object.power !== undefined && object.power !== null
+        ? String(object.power)
         : "";
     return message;
   },
 
   toJSON(message: QueryVoterPowerResponse): unknown {
     const obj: any = {};
-    message.Power !== undefined && (obj.Power = message.Power);
+    message.power !== undefined && (obj.power = message.power);
     return obj;
   },
 
@@ -774,18 +774,22 @@ export const QueryVoterPowerResponse = {
     const message = {
       ...baseQueryVoterPowerResponse,
     } as QueryVoterPowerResponse;
-    message.Power = object.Power ?? "";
+    message.power = object.power ?? "";
     return message;
   },
 };
 
 /** Query defines the gRPC querier service. */
 export interface Query {
-  /** this line is used by starport scaffolding # 2 */
+  /** Get details for an oracle */
   Oracle(request: QueryOracleRequest): Promise<QueryOracleResponse>;
+  /** Get details for all oracles */
   OracleAll(request: QueryAllOracleRequest): Promise<QueryAllOracleResponse>;
+  /** Get all oracle results */
   ResultAll(request: QueryAllResultRequest): Promise<QueryAllResultResponse>;
+  /** Get all oracle votes */
   VoteAll(request: QueryAllVoteRequest): Promise<QueryAllVoteResponse>;
+  /** Get voting power for an address */
   VoterPower(request: QueryVoterPowerRequest): Promise<QueryVoterPowerResponse>;
 }
 

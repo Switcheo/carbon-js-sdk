@@ -534,10 +534,11 @@ export const QueryTradesResponse = {
 
 /** Query defines the gRPC querier service. */
 export interface Query {
-  /** this line is used by starport scaffolding # 2 */
+  /** Get candlesticks for a market */
   Candlesticks(
     request: QueryCandlesticksRequest
   ): Promise<QueryCandlesticksResponse>;
+  /** Get trade history for a market */
   Trades(request: QueryTradesRequest): Promise<QueryTradesResponse>;
 }
 

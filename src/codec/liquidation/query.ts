@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { AccountTradeHistoryRow } from "../liquidation/history";
+import { AccountTrade } from "../broker/trade";
 
 export const protobufPackage = "Switcheo.carbon.liquidation";
 
@@ -19,7 +19,7 @@ export interface QueryAllLiquidationRequest {
 }
 
 export interface QueryAllLiquidationResponse {
-  accountTradeHistoryRows: AccountTradeHistoryRow[];
+  trades: AccountTrade[];
 }
 
 const baseQueryAllLiquidationRequest: object = {
@@ -219,8 +219,8 @@ export const QueryAllLiquidationResponse = {
     message: QueryAllLiquidationResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    for (const v of message.accountTradeHistoryRows) {
-      AccountTradeHistoryRow.encode(v!, writer.uint32(10).fork()).ldelim();
+    for (const v of message.trades) {
+      AccountTrade.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -234,14 +234,12 @@ export const QueryAllLiquidationResponse = {
     const message = {
       ...baseQueryAllLiquidationResponse,
     } as QueryAllLiquidationResponse;
-    message.accountTradeHistoryRows = [];
+    message.trades = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.accountTradeHistoryRows.push(
-            AccountTradeHistoryRow.decode(reader, reader.uint32())
-          );
+          message.trades.push(AccountTrade.decode(reader, reader.uint32()));
           break;
         default:
           reader.skipType(tag & 7);
@@ -255,20 +253,20 @@ export const QueryAllLiquidationResponse = {
     const message = {
       ...baseQueryAllLiquidationResponse,
     } as QueryAllLiquidationResponse;
-    message.accountTradeHistoryRows = (
-      object.accountTradeHistoryRows ?? []
-    ).map((e: any) => AccountTradeHistoryRow.fromJSON(e));
+    message.trades = (object.trades ?? []).map((e: any) =>
+      AccountTrade.fromJSON(e)
+    );
     return message;
   },
 
   toJSON(message: QueryAllLiquidationResponse): unknown {
     const obj: any = {};
-    if (message.accountTradeHistoryRows) {
-      obj.accountTradeHistoryRows = message.accountTradeHistoryRows.map((e) =>
-        e ? AccountTradeHistoryRow.toJSON(e) : undefined
+    if (message.trades) {
+      obj.trades = message.trades.map((e) =>
+        e ? AccountTrade.toJSON(e) : undefined
       );
     } else {
-      obj.accountTradeHistoryRows = [];
+      obj.trades = [];
     }
     return obj;
   },
@@ -279,16 +277,16 @@ export const QueryAllLiquidationResponse = {
     const message = {
       ...baseQueryAllLiquidationResponse,
     } as QueryAllLiquidationResponse;
-    message.accountTradeHistoryRows = (
-      object.accountTradeHistoryRows ?? []
-    ).map((e) => AccountTradeHistoryRow.fromPartial(e));
+    message.trades = (object.trades ?? []).map((e) =>
+      AccountTrade.fromPartial(e)
+    );
     return message;
   },
 };
 
 /** Query defines the gRPC querier service. */
 export interface Query {
-  /** this line is used by starport scaffolding # 2 */
+  /** Get liquidation history */
   LiquidationAll(
     request: QueryAllLiquidationRequest
   ): Promise<QueryAllLiquidationResponse>;
