@@ -125,8 +125,8 @@ export class ZILClient {
   }
 
   public async getExternalBalances(sdk: CarbonSDK, address: string, whitelistDenoms?: string[]): Promise<TokensWithExternalBalance[]> {
-    const tokenQueryResults = await sdk.query.coin.TokenAll({})
-    const tokens = tokenQueryResults.tokens.filter(token =>
+    const tokenQueryResults = await sdk.token.getAllTokens()
+    const tokens = tokenQueryResults.filter(token =>
       blockchainForChainId(token.chainId.toNumber()) == this.blockchain &&
       token.tokenAddress.length == 40 &&
       (!whitelistDenoms || whitelistDenoms.includes(token.denom))

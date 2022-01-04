@@ -68,9 +68,9 @@ export class NEOClient {
   }
 
   public async getExternalBalances(sdk: CarbonSDK, address: string, url: string, whitelistDenoms?: string[]): Promise<TokensWithExternalBalance[]> {
-    const tokenQueryResults = await sdk.query.coin.TokenAll({})
+    const tokenQueryResults = await sdk.token.getAllTokens()
     const account = new neonWallet.Account(address)
-    const tokens = tokenQueryResults.tokens.filter(token =>
+    const tokens = tokenQueryResults.filter(token =>
       blockchainForChainId(token.chainId.toNumber()) == this.blockchain &&
       token.tokenAddress.length == 40 &&
       // TODO: Check if bridgeAddress corresponds to carbon token lock_proxy_hash
