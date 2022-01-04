@@ -1,7 +1,7 @@
 import { DEFAULT_NETWORK, Network, Network as _Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
 import { GenericUtils, NetworkUtils } from "@carbon-sdk/util";
 import { OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
-import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
+import { Tendermint34Client, WebsocketClient } from "@cosmjs/tendermint-rpc";
 import { CarbonQueryClient, ETHClient, InsightsQueryClient, NEOClient, TokenClient, ZILClient } from "./clients";
 import { AdminModule, BankModule, BrokerModule, CDPModule, CoinModule, FeeModule, GovModule, LeverageModule, LiquidityPoolModule, MarketModule, OracleModule, OrderModule, PositionModule, ProfileModule, SubAccountModule } from "./modules";
 import { StakingModule } from "./modules/staking";
@@ -16,6 +16,7 @@ export { CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletGenericOpts,
 export interface CarbonSDKOpts {
   network: Network;
   tmClient: Tendermint34Client;
+  tmWsClient?: Tendermint34Client;
   config?: Partial<NetworkConfig>;
 }
 export interface CarbonSDKInitOpts {
@@ -49,6 +50,7 @@ class CarbonSDK {
   configOverride: Partial<NetworkConfig>;
   networkConfig: NetworkConfig;
   tmClient: Tendermint34Client;
+  tmWsClient: Tendermint34Client;
   token: TokenClient;
 
   admin: AdminModule;
@@ -79,6 +81,7 @@ class CarbonSDK {
     this.networkConfig = GenericUtils.overrideConfig(NetworkConfigs[this.network], this.configOverride);
 
     this.tmClient = opts.tmClient;
+    this.tmWsClient = opts.tmWsClient ?? opts.tmClient;
     this.query = new CarbonQueryClient(opts.tmClient);
     this.insights = new InsightsQueryClient(this.networkConfig);
     this.token = TokenClient.instance(this.query, this);
@@ -129,8 +132,9 @@ class CarbonSDK {
 
     const networkConfig = GenericUtils.overrideConfig(NetworkConfigs[network], configOverride);
     const tmClient = await Tendermint34Client.connect(networkConfig.tmRpcUrl);
-
-    const sdk = new CarbonSDK({ network, config: configOverride, tmClient });
+    const wsClient = new WebsocketClient(networkConfig.tmWsUrl);
+    const tmWsClient = await Tendermint34Client.create(wsClient)
+    const sdk = new CarbonSDK({ network, config: configOverride, tmClient, tmWsClient });
 
     if (opts.wallet) {
       await sdk.connect(opts.wallet);

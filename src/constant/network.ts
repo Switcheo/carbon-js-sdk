@@ -29,6 +29,7 @@ export interface ZilNetworkConfig {
 
 export interface NetworkConfig {
   tmRpcUrl: string;
+  tmWsUrl: string;
   restUrl: string;
   insightsUrl: string;
   wsUrl: string;
@@ -65,6 +66,7 @@ export const NetworkConfigs: {
     // Temporarily add shadow mainnet urls config
     // TODO: Change back to original urls when mainnet is ready
     tmRpcUrl: "https://shadow-tm-api.carbon.network/",
+    tmWsUrl: "ws://shadow-tm-api.carbon.network/",
     restUrl: "https://shadow-api.carbon.network",
     insightsUrl: "",
     wsUrl: "wss://shadow-ws-api.carbon.network/ws",
@@ -114,6 +116,7 @@ export const NetworkConfigs: {
     network: Network.TestNet,
 
     tmRpcUrl: "https://test-tm-api.carbon.network",
+    tmWsUrl: "ws://test-tm-api.carbon.network",
     restUrl: "https://test-api.carbon.network",
     insightsUrl: "https://test-api-insights.carbon.network",
     wsUrl: "wss://test-ws-api.carbon.network/ws",
@@ -163,6 +166,7 @@ export const NetworkConfigs: {
     network: Network.DevNet,
 
     tmRpcUrl: "https://dev-tm-api.carbon.network",
+    tmWsUrl: "ws://dev-tm-api.carbon.network",
     restUrl: "https://dev-api.carbon.network",
     insightsUrl: "https://dev-api-insights.carbon.network",
     wsUrl: "wss://dev-ws-api.carbon.network/ws",
@@ -212,6 +216,7 @@ export const NetworkConfigs: {
     network: Network.LocalHost,
 
     tmRpcUrl: "http://localhost:26657",
+    tmWsUrl: "ws://localhost:26657",
     restUrl: "http://localhost:1317",
     insightsUrl: "http://localhost:8181",
     wsUrl: "ws://localhost:5000/ws",
