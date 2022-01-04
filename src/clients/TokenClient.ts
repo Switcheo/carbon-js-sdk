@@ -273,7 +273,6 @@ class TokenClient {
 
   public async reloadTokens(): Promise<TypeUtils.SimpleMap<Token>> {
     const tokenResponse = await this.getAllTokens();
-    console.log('tokenReponse count', tokenResponse.length);
 
     for (const token of tokenResponse) {
       if (TokenClient.isPoolToken(token.denom)) {
