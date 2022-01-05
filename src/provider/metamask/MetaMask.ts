@@ -187,18 +187,13 @@ export class MetaMask {
   ) { }
 
   private checkProvider(blockchain: Blockchain = this.blockchain): ethers.providers.Provider {
-    const ethClient = ETHClient.instance({
-      blockchain: blockchain,
-      configProvider: {
-        getConfig: () => NetworkConfigs[this.network],
-      },
-    })
+    const config: any = NetworkConfigs[this.network];
 
-    const provider = ethClient.getProvider()
-
-    if (!provider) {
+    if (!config[blockchain]?.rpcURL) {
       throw new Error(`MetaMask login not supported for this network ${this.network}`)
     }
+
+    const provider = new ethers.providers.JsonRpcProvider(config.eth.rpcURL);
 
     return provider
   }

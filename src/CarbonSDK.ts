@@ -81,7 +81,7 @@ class CarbonSDK {
     this.tmClient = opts.tmClient;
     this.query = new CarbonQueryClient(opts.tmClient);
     this.insights = new InsightsQueryClient(this.networkConfig);
-    this.token = TokenClient.instance(this.query);
+    this.token = TokenClient.instance(this.query, this);
 
     this.admin = new AdminModule(this);
     this.order = new OrderModule(this);
@@ -108,11 +108,13 @@ class CarbonSDK {
     this.eth = ETHClient.instance({
       configProvider: this,
       blockchain: Blockchain.Ethereum,
+      tokenClient: this.token,
     });
 
     this.bsc = ETHClient.instance({
       configProvider: this,
       blockchain: Blockchain.BinanceSmartChain,
+      tokenClient: this.token,
     });
 
     this.zil = ZILClient.instance({
