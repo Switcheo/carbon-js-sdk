@@ -777,6 +777,10 @@ export interface Query {
   ): Promise<QueryCandlesticksResponse>;
   /** Get trade history for a market */
   Trades(request: QueryTradesRequest): Promise<QueryTradesResponse>;
+  /** Get trades for a position */
+  TradesForPosition(
+    request: QueryTradesForPositionRequest
+  ): Promise<QueryTradesForPositionResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -785,6 +789,7 @@ export class QueryClientImpl implements Query {
     this.rpc = rpc;
     this.Candlesticks = this.Candlesticks.bind(this);
     this.Trades = this.Trades.bind(this);
+    this.TradesForPosition = this.TradesForPosition.bind(this);
   }
   Candlesticks(
     request: QueryCandlesticksRequest
@@ -809,6 +814,20 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryTradesResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  TradesForPosition(
+    request: QueryTradesForPositionRequest
+  ): Promise<QueryTradesForPositionResponse> {
+    const data = QueryTradesForPositionRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.broker.Query",
+      "TradesForPosition",
+      data
+    );
+    return promise.then((data) =>
+      QueryTradesForPositionResponse.decode(new _m0.Reader(data))
     );
   }
 }
