@@ -11,6 +11,12 @@ export interface FeeResult {
   details: FeeInfoDetails
 }
 
+export enum FeeResultType {
+  CreateWallet = "createWallet",
+  Deposit = "deposit",
+  Withdrawal = "withdrawal",
+}
+
 export interface FeeInfo extends FeeResult {
   denom: string
 }

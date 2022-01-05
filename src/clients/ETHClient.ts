@@ -6,12 +6,13 @@ import { SWTHAddress } from "@carbon-sdk/util/address"
 import { Blockchain, blockchainForChainId } from "@carbon-sdk/util/blockchain"
 import { TokenInitInfo, TokensWithExternalBalance } from "@carbon-sdk/util/external"
 import { appendHexPrefix, stripHexPrefix } from "@carbon-sdk/util/generic"
-import { FeeResult } from "@carbon-sdk/util/transferfees"
 import BigNumber from "bignumber.js"
 import { ethers } from "ethers"
+import TokenClient from "./TokenClient"
 
 export interface ETHClientOpts {
   configProvider: NetworkConfigProvider,
+  tokenClient: TokenClient,
   blockchain: Blockchain,
 }
 
@@ -51,15 +52,16 @@ export class ETHClient {
   private constructor(
     public readonly configProvider: NetworkConfigProvider,
     public readonly blockchain: Blockchain,
+    public readonly tokenClient: TokenClient,
   ) { }
 
   public static instance(opts: ETHClientOpts) {
-    const { configProvider, blockchain } = opts
+    const { configProvider, blockchain, tokenClient } = opts
 
     if (!ETHClient.SUPPORTED_BLOCKCHAINS.includes(blockchain))
       throw new Error(`unsupported blockchain - ${blockchain}`)
 
-    return new ETHClient(configProvider, blockchain)
+    return new ETHClient(configProvider, blockchain, tokenClient)
   }
 
   public async getExternalBalances(api: CarbonSDK, address: string, whitelistDenoms?: string[]): Promise<TokensWithExternalBalance[]> {
@@ -257,8 +259,8 @@ export class ETHClient {
   }
 
   public async getDepositFeeAmount(token: Models.Token, depositAddress: string) {
-    const feeInfo = await this.getFeeInfo(token.denom)
-    if (!feeInfo.details?.deposit?.fee) {
+    const feeInfo = await this.tokenClient.getFeeInfo(token.denom)
+    if (!feeInfo.details.deposit.fee) {
       throw new Error("unsupported token")
     }
     if (blockchainForChainId(token.chainId.toNumber()) !== this.blockchain) {
@@ -272,13 +274,6 @@ export class ETHClient {
     }
 
     return feeAmount
-  }
-
-  public async getFeeInfo(denom: string) {
-    const networkConfig = this.getNetworkConfig();
-    const url = `${networkConfig.feeURL}/fees?denom=${denom}`
-    const result = await fetch(url).then(res => res.json()) as FeeResult
-    return result
   }
 
   public async isContract(address: string) {

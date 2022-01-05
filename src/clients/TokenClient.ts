@@ -1,7 +1,8 @@
 import { Token } from "@carbon-sdk/codec";
-import { CoinGeckoTokenNames, CommonAssetName } from "@carbon-sdk/constant";
+import { CoinGeckoTokenNames, CommonAssetName, NetworkConfigProvider } from "@carbon-sdk/constant";
 import { BlockchainUtils, FetchUtils, NumberUtils, TypeUtils } from "@carbon-sdk/util";
-import { BN_ZERO } from "@carbon-sdk/util/number";
+import { bnOrZero, BN_ZERO } from "@carbon-sdk/util/number";
+import { FeeResult, FeeResultType } from "@carbon-sdk/util/transferfees";
 import BigNumber from "bignumber.js";
 import Long from "long";
 import CarbonQueryClient from "./CarbonQueryClient";
@@ -30,11 +31,12 @@ class TokenClient {
 
   private constructor(
     public readonly query: CarbonQueryClient,
+    public readonly configProvider: NetworkConfigProvider,
   ) {
   }
 
-  public static instance(query: CarbonQueryClient) {
-    return new TokenClient(query);
+  public static instance(query: CarbonQueryClient, configProvider: NetworkConfigProvider) {
+    return new TokenClient(query, configProvider);
   }
 
   public async initialize(): Promise<void> {
@@ -87,6 +89,25 @@ class TokenClient {
   public toUnitless(denom: string, humanAmt: BigNumber): BigNumber {
     const decimals = this.getDecimals(denom);
     return NumberUtils.toUnitless(humanAmt, decimals) ?? BN_ZERO;
+  }
+
+  public async getFeeInfo(denom: string) {
+    const config = this.configProvider.getConfig();
+    const url = `${config.feeURL}/fees?denom=${denom}`
+    const result = await fetch(url).then(res => res.json())
+
+    const feeResult: FeeResult = {
+      prev_update_time: result.prev_update_time,
+      details: {},
+    };
+    for (const key in [FeeResultType.CreateWallet, FeeResultType.Deposit, FeeResultType.Withdrawal]) {
+      if (!result.details?.[key]?.fee) continue;
+
+      const fee = this.toHuman(denom, bnOrZero(result.details[key].fee)).toString(10);
+      feeResult.details[key] = { fee };
+    }
+
+    return feeResult;
   }
 
   public getTokenName(denom: string, overrideMap?: TypeUtils.SimpleMap<string>): string {

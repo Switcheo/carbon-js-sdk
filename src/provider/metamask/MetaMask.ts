@@ -1,4 +1,4 @@
-import { Network, NetworkConfigs } from '@carbon-sdk/constant'
+import { EthNetworkConfig, Network, NetworkConfig, NetworkConfigs } from '@carbon-sdk/constant'
 import { ABIs } from '@carbon-sdk/eth'
 import { Blockchain, getBlockchainFromChain, ChainNames } from '@carbon-sdk/util/blockchain'
 import { ethers } from 'ethers'
@@ -187,18 +187,15 @@ export class MetaMask {
   ) { }
 
   private checkProvider(blockchain: Blockchain = this.blockchain): ethers.providers.Provider {
-    const ethClient = ETHClient.instance({
-      blockchain: blockchain,
-      configProvider: {
-        getConfig: () => NetworkConfigs[this.network],
-      },
-    })
+    const config: any = NetworkConfigs[this.network];
 
-    const provider = ethClient.getProvider()
-
-    if (!provider) {
+    if (!config[blockchain]) {
       throw new Error(`MetaMask login not supported for this network ${this.network}`)
     }
+
+    const ethNetworkConfig: EthNetworkConfig = config[blockchain];
+
+    const provider = new ethers.providers.JsonRpcProvider(ethNetworkConfig.rpcURL);
 
     return provider
   }
