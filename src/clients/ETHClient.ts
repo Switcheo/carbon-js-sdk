@@ -62,14 +62,14 @@ export class ETHClient {
     return new ETHClient(configProvider, blockchain)
   }
 
-  public async getExternalBalances(api: CarbonSDK, address: string, whitelistDenoms?: string[]): Promise<TokensWithExternalBalance[]> {
+  public async getExternalBalances(api: CarbonSDK, address: string, whitelistIds?: string[]): Promise<TokensWithExternalBalance[]> {
     const tokenQueryResults = await api.token.getAllTokens()
     const lockProxyAddress = this.getLockProxyAddress().toLowerCase()
     const tokens = tokenQueryResults.filter(token =>
       blockchainForChainId(token.chainId.toNumber()) == this.blockchain &&
       token.tokenAddress.length == 40 &&
       token.bridgeAddress.toLowerCase() == stripHexPrefix(lockProxyAddress) &&
-      (!whitelistDenoms || whitelistDenoms.includes(token.denom)) &&
+      (!whitelistIds || whitelistIds.includes(token.id)) &&
       this.verifyChecksum(appendHexPrefix(token.tokenAddress))
     )
     const assetIds = tokens.map(token => {
