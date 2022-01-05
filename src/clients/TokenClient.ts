@@ -77,7 +77,8 @@ class TokenClient {
   }
 
   public getUSDValue(denom: string): BigNumber | undefined {
-    const commonDenom = this.getCommonDenom(denom);
+    const tokenId = this.getTokenId(denom);
+    const commonDenom = this.getCommonDenom(tokenId !== "" ? tokenId : denom);
     return this.usdValues[commonDenom];
   }
 
@@ -231,6 +232,15 @@ class TokenClient {
     }
 
     return null;
+  }
+
+  public getTokenId(denom: string): string {
+    if (denom === "") return "";
+
+    const token = this.tokens[denom];
+    if (!token) return "";
+
+    return token.id;
   }
 
   public getSourceToken(denom: string): Token | null {
