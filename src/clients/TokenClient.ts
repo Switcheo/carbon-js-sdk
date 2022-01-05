@@ -102,7 +102,7 @@ class TokenClient {
     for (const key in [FeeResultType.CreateWallet, FeeResultType.Deposit, FeeResultType.Withdrawal]) {
       if (!result.details?.[key]?.fee) continue;
 
-      const fee = this.toHuman(denom, bnOrZero(result.details[key])).toString(10);
+      const fee = this.toHuman(denom, bnOrZero(result.details[key].fee)).toString(10);
       feeResult.details[key] = { fee };
     }
 
