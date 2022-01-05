@@ -13,10 +13,27 @@ export interface Position {
   realizedPnl: string;
   allocatedMargin?: Coin;
   openedBlockHeight: Long;
+  closedBlockHeight: Long;
 }
 
 export interface Positions {
   positions: Position[];
+}
+
+export interface APIPosition {
+  market: string;
+  address: string;
+  tradeId: Long;
+  side: string;
+  openedBlockHeight: Long;
+  updatedBlockHeight: Long;
+  closedBlockHeight: Long;
+  realizedPnl: string;
+  maxLots: string;
+  totalFeeAmount: string;
+  avgAllocatedMargin: string;
+  avgEntryPrice: string;
+  avgExitPrice: string;
 }
 
 const basePosition: object = {
@@ -26,6 +43,7 @@ const basePosition: object = {
   entryPrice: "",
   realizedPnl: "",
   openedBlockHeight: Long.UZERO,
+  closedBlockHeight: Long.UZERO,
 };
 
 export const Position = {
@@ -53,6 +71,9 @@ export const Position = {
     }
     if (!message.openedBlockHeight.isZero()) {
       writer.uint32(56).uint64(message.openedBlockHeight);
+    }
+    if (!message.closedBlockHeight.isZero()) {
+      writer.uint32(64).uint64(message.closedBlockHeight);
     }
     return writer;
   },
@@ -84,6 +105,9 @@ export const Position = {
           break;
         case 7:
           message.openedBlockHeight = reader.uint64() as Long;
+          break;
+        case 8:
+          message.closedBlockHeight = reader.uint64() as Long;
           break;
         default:
           reader.skipType(tag & 7);
@@ -124,6 +148,11 @@ export const Position = {
       object.openedBlockHeight !== null
         ? Long.fromString(object.openedBlockHeight)
         : Long.UZERO;
+    message.closedBlockHeight =
+      object.closedBlockHeight !== undefined &&
+      object.closedBlockHeight !== null
+        ? Long.fromString(object.closedBlockHeight)
+        : Long.UZERO;
     return message;
   },
 
@@ -143,6 +172,10 @@ export const Position = {
       (obj.openedBlockHeight = (
         message.openedBlockHeight || Long.UZERO
       ).toString());
+    message.closedBlockHeight !== undefined &&
+      (obj.closedBlockHeight = (
+        message.closedBlockHeight || Long.UZERO
+      ).toString());
     return obj;
   },
 
@@ -161,6 +194,11 @@ export const Position = {
       object.openedBlockHeight !== undefined &&
       object.openedBlockHeight !== null
         ? Long.fromValue(object.openedBlockHeight)
+        : Long.UZERO;
+    message.closedBlockHeight =
+      object.closedBlockHeight !== undefined &&
+      object.closedBlockHeight !== null
+        ? Long.fromValue(object.closedBlockHeight)
         : Long.UZERO;
     return message;
   },
@@ -223,6 +261,251 @@ export const Positions = {
     message.positions = (object.positions ?? []).map((e) =>
       Position.fromPartial(e)
     );
+    return message;
+  },
+};
+
+const baseAPIPosition: object = {
+  market: "",
+  address: "",
+  tradeId: Long.UZERO,
+  side: "",
+  openedBlockHeight: Long.UZERO,
+  updatedBlockHeight: Long.UZERO,
+  closedBlockHeight: Long.UZERO,
+  realizedPnl: "",
+  maxLots: "",
+  totalFeeAmount: "",
+  avgAllocatedMargin: "",
+  avgEntryPrice: "",
+  avgExitPrice: "",
+};
+
+export const APIPosition = {
+  encode(
+    message: APIPosition,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.market !== "") {
+      writer.uint32(10).string(message.market);
+    }
+    if (message.address !== "") {
+      writer.uint32(18).string(message.address);
+    }
+    if (!message.tradeId.isZero()) {
+      writer.uint32(24).uint64(message.tradeId);
+    }
+    if (message.side !== "") {
+      writer.uint32(34).string(message.side);
+    }
+    if (!message.openedBlockHeight.isZero()) {
+      writer.uint32(40).uint64(message.openedBlockHeight);
+    }
+    if (!message.updatedBlockHeight.isZero()) {
+      writer.uint32(48).uint64(message.updatedBlockHeight);
+    }
+    if (!message.closedBlockHeight.isZero()) {
+      writer.uint32(56).uint64(message.closedBlockHeight);
+    }
+    if (message.realizedPnl !== "") {
+      writer.uint32(66).string(message.realizedPnl);
+    }
+    if (message.maxLots !== "") {
+      writer.uint32(74).string(message.maxLots);
+    }
+    if (message.totalFeeAmount !== "") {
+      writer.uint32(82).string(message.totalFeeAmount);
+    }
+    if (message.avgAllocatedMargin !== "") {
+      writer.uint32(90).string(message.avgAllocatedMargin);
+    }
+    if (message.avgEntryPrice !== "") {
+      writer.uint32(98).string(message.avgEntryPrice);
+    }
+    if (message.avgExitPrice !== "") {
+      writer.uint32(106).string(message.avgExitPrice);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): APIPosition {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseAPIPosition } as APIPosition;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.market = reader.string();
+          break;
+        case 2:
+          message.address = reader.string();
+          break;
+        case 3:
+          message.tradeId = reader.uint64() as Long;
+          break;
+        case 4:
+          message.side = reader.string();
+          break;
+        case 5:
+          message.openedBlockHeight = reader.uint64() as Long;
+          break;
+        case 6:
+          message.updatedBlockHeight = reader.uint64() as Long;
+          break;
+        case 7:
+          message.closedBlockHeight = reader.uint64() as Long;
+          break;
+        case 8:
+          message.realizedPnl = reader.string();
+          break;
+        case 9:
+          message.maxLots = reader.string();
+          break;
+        case 10:
+          message.totalFeeAmount = reader.string();
+          break;
+        case 11:
+          message.avgAllocatedMargin = reader.string();
+          break;
+        case 12:
+          message.avgEntryPrice = reader.string();
+          break;
+        case 13:
+          message.avgExitPrice = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): APIPosition {
+    const message = { ...baseAPIPosition } as APIPosition;
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? String(object.market)
+        : "";
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    message.tradeId =
+      object.tradeId !== undefined && object.tradeId !== null
+        ? Long.fromString(object.tradeId)
+        : Long.UZERO;
+    message.side =
+      object.side !== undefined && object.side !== null
+        ? String(object.side)
+        : "";
+    message.openedBlockHeight =
+      object.openedBlockHeight !== undefined &&
+      object.openedBlockHeight !== null
+        ? Long.fromString(object.openedBlockHeight)
+        : Long.UZERO;
+    message.updatedBlockHeight =
+      object.updatedBlockHeight !== undefined &&
+      object.updatedBlockHeight !== null
+        ? Long.fromString(object.updatedBlockHeight)
+        : Long.UZERO;
+    message.closedBlockHeight =
+      object.closedBlockHeight !== undefined &&
+      object.closedBlockHeight !== null
+        ? Long.fromString(object.closedBlockHeight)
+        : Long.UZERO;
+    message.realizedPnl =
+      object.realizedPnl !== undefined && object.realizedPnl !== null
+        ? String(object.realizedPnl)
+        : "";
+    message.maxLots =
+      object.maxLots !== undefined && object.maxLots !== null
+        ? String(object.maxLots)
+        : "";
+    message.totalFeeAmount =
+      object.totalFeeAmount !== undefined && object.totalFeeAmount !== null
+        ? String(object.totalFeeAmount)
+        : "";
+    message.avgAllocatedMargin =
+      object.avgAllocatedMargin !== undefined &&
+      object.avgAllocatedMargin !== null
+        ? String(object.avgAllocatedMargin)
+        : "";
+    message.avgEntryPrice =
+      object.avgEntryPrice !== undefined && object.avgEntryPrice !== null
+        ? String(object.avgEntryPrice)
+        : "";
+    message.avgExitPrice =
+      object.avgExitPrice !== undefined && object.avgExitPrice !== null
+        ? String(object.avgExitPrice)
+        : "";
+    return message;
+  },
+
+  toJSON(message: APIPosition): unknown {
+    const obj: any = {};
+    message.market !== undefined && (obj.market = message.market);
+    message.address !== undefined && (obj.address = message.address);
+    message.tradeId !== undefined &&
+      (obj.tradeId = (message.tradeId || Long.UZERO).toString());
+    message.side !== undefined && (obj.side = message.side);
+    message.openedBlockHeight !== undefined &&
+      (obj.openedBlockHeight = (
+        message.openedBlockHeight || Long.UZERO
+      ).toString());
+    message.updatedBlockHeight !== undefined &&
+      (obj.updatedBlockHeight = (
+        message.updatedBlockHeight || Long.UZERO
+      ).toString());
+    message.closedBlockHeight !== undefined &&
+      (obj.closedBlockHeight = (
+        message.closedBlockHeight || Long.UZERO
+      ).toString());
+    message.realizedPnl !== undefined &&
+      (obj.realizedPnl = message.realizedPnl);
+    message.maxLots !== undefined && (obj.maxLots = message.maxLots);
+    message.totalFeeAmount !== undefined &&
+      (obj.totalFeeAmount = message.totalFeeAmount);
+    message.avgAllocatedMargin !== undefined &&
+      (obj.avgAllocatedMargin = message.avgAllocatedMargin);
+    message.avgEntryPrice !== undefined &&
+      (obj.avgEntryPrice = message.avgEntryPrice);
+    message.avgExitPrice !== undefined &&
+      (obj.avgExitPrice = message.avgExitPrice);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<APIPosition>): APIPosition {
+    const message = { ...baseAPIPosition } as APIPosition;
+    message.market = object.market ?? "";
+    message.address = object.address ?? "";
+    message.tradeId =
+      object.tradeId !== undefined && object.tradeId !== null
+        ? Long.fromValue(object.tradeId)
+        : Long.UZERO;
+    message.side = object.side ?? "";
+    message.openedBlockHeight =
+      object.openedBlockHeight !== undefined &&
+      object.openedBlockHeight !== null
+        ? Long.fromValue(object.openedBlockHeight)
+        : Long.UZERO;
+    message.updatedBlockHeight =
+      object.updatedBlockHeight !== undefined &&
+      object.updatedBlockHeight !== null
+        ? Long.fromValue(object.updatedBlockHeight)
+        : Long.UZERO;
+    message.closedBlockHeight =
+      object.closedBlockHeight !== undefined &&
+      object.closedBlockHeight !== null
+        ? Long.fromValue(object.closedBlockHeight)
+        : Long.UZERO;
+    message.realizedPnl = object.realizedPnl ?? "";
+    message.maxLots = object.maxLots ?? "";
+    message.totalFeeAmount = object.totalFeeAmount ?? "";
+    message.avgAllocatedMargin = object.avgAllocatedMargin ?? "";
+    message.avgEntryPrice = object.avgEntryPrice ?? "";
+    message.avgExitPrice = object.avgExitPrice ?? "";
     return message;
   },
 };
