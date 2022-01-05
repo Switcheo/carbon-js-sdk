@@ -324,6 +324,7 @@ export const TxTypes = {
   "MsgUpdatePoolResponse": "/Switcheo.carbon.liquiditypool.MsgUpdatePoolResponse"
 }
 
+
 // Exported for convenience
 export { MessageType } from "./misc/message_type";
 export { Transaction } from "./misc/transaction";
@@ -342,7 +343,7 @@ export { MinMaxBoundary } from "./broker/pagination";
 export { Candlestick } from "./broker/candlestick";
 export { Amm } from "./broker/amm";
 export { AccountTrade } from "./broker/trade";
-export { QueryCandlesticksRequest, QueryCandlesticksResponse, QueryTradesRequest, QueryTradesResponse } from "./broker/query";
+export { QueryCandlesticksRequest, QueryCandlesticksResponse, QueryTradesRequest, QueryTradesResponse, QueryTradesForPositionRequest, QueryTradesForPositionResponse } from "./broker/query";
 export { TradeEvent } from "./broker/event";
 export { IncomingPoolSwap } from "./broker/incoming_pool_swap";
 export { MsgSetFee, MsgSetFeeResponse } from "./fee/tx";
@@ -350,7 +351,6 @@ export { MsgFee } from "./fee/fee";
 export { SetMsgFeeProposal } from "./fee/proposal";
 export { QueryGetMsgFeeRequest, QueryGetMsgFeeResponse, QueryAllMsgFeeRequest, QueryAllMsgFeeResponse } from "./fee/query";
 export { Transfer } from "./bank/event";
-export { AccountTradeHistoryRow } from "./liquidation/history";
 export { OutstandingPosition, OutstandingPositions } from "./liquidation/outstanding_position";
 export { QueryAllLiquidationRequest, QueryAllLiquidationResponse } from "./liquidation/query";
 export { Any } from "./google/protobuf/any";
@@ -358,7 +358,7 @@ export { Timestamp } from "./google/protobuf/timestamp";
 export { DoubleValue, FloatValue, Int64Value, UInt64Value, Int32Value, UInt32Value, BoolValue, StringValue, BytesValue } from "./google/protobuf/wrappers";
 export { Duration } from "./google/protobuf/duration";
 export { MsgSetMargin, MsgSetMarginResponse } from "./position/tx";
-export { Position, Positions } from "./position/position";
+export { Position, Positions, APIPosition } from "./position/position";
 export { QueryGetPositionRequest, QueryGetPositionResponse, QueryAllPositionRequest, QueryAllPositionResponse } from "./position/query";
 export { PositionEvent } from "./position/event";
 export { MsgCreateOracle, CreateOracleParams, MsgCreateOracleResponse, MsgCreateVote, MsgCreateVoteResponse } from "./oracle/tx";

@@ -10,7 +10,6 @@ export interface Params {
   communityTax: string;
   baseProposerReward: string;
   bonusProposerReward: string;
-  liquidityProviderReward: string;
   withdrawAddrEnabled: boolean;
 }
 
@@ -77,10 +76,7 @@ export interface ValidatorSlashEvents {
 
 /** FeePool is the global fee pool for distribution. */
 export interface FeePool {
-  /** pool for dev fund yet to be distributed */
   communityPool: DecCoin[];
-  /** pool for lps yet to be distributed */
-  liquidityProviderPool: DecCoin[];
 }
 
 /**
@@ -134,7 +130,6 @@ const baseParams: object = {
   communityTax: "",
   baseProposerReward: "",
   bonusProposerReward: "",
-  liquidityProviderReward: "",
   withdrawAddrEnabled: false,
 };
 
@@ -151,9 +146,6 @@ export const Params = {
     }
     if (message.bonusProposerReward !== "") {
       writer.uint32(26).string(message.bonusProposerReward);
-    }
-    if (message.liquidityProviderReward !== "") {
-      writer.uint32(42).string(message.liquidityProviderReward);
     }
     if (message.withdrawAddrEnabled === true) {
       writer.uint32(32).bool(message.withdrawAddrEnabled);
@@ -176,9 +168,6 @@ export const Params = {
           break;
         case 3:
           message.bonusProposerReward = reader.string();
-          break;
-        case 5:
-          message.liquidityProviderReward = reader.string();
           break;
         case 4:
           message.withdrawAddrEnabled = reader.bool();
@@ -207,11 +196,6 @@ export const Params = {
       object.bonusProposerReward !== null
         ? String(object.bonusProposerReward)
         : "";
-    message.liquidityProviderReward =
-      object.liquidityProviderReward !== undefined &&
-      object.liquidityProviderReward !== null
-        ? String(object.liquidityProviderReward)
-        : "";
     message.withdrawAddrEnabled =
       object.withdrawAddrEnabled !== undefined &&
       object.withdrawAddrEnabled !== null
@@ -228,8 +212,6 @@ export const Params = {
       (obj.baseProposerReward = message.baseProposerReward);
     message.bonusProposerReward !== undefined &&
       (obj.bonusProposerReward = message.bonusProposerReward);
-    message.liquidityProviderReward !== undefined &&
-      (obj.liquidityProviderReward = message.liquidityProviderReward);
     message.withdrawAddrEnabled !== undefined &&
       (obj.withdrawAddrEnabled = message.withdrawAddrEnabled);
     return obj;
@@ -240,7 +222,6 @@ export const Params = {
     message.communityTax = object.communityTax ?? "";
     message.baseProposerReward = object.baseProposerReward ?? "";
     message.bonusProposerReward = object.bonusProposerReward ?? "";
-    message.liquidityProviderReward = object.liquidityProviderReward ?? "";
     message.withdrawAddrEnabled = object.withdrawAddrEnabled ?? false;
     return message;
   },
@@ -711,9 +692,6 @@ export const FeePool = {
     for (const v of message.communityPool) {
       DecCoin.encode(v!, writer.uint32(10).fork()).ldelim();
     }
-    for (const v of message.liquidityProviderPool) {
-      DecCoin.encode(v!, writer.uint32(18).fork()).ldelim();
-    }
     return writer;
   },
 
@@ -722,17 +700,11 @@ export const FeePool = {
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseFeePool } as FeePool;
     message.communityPool = [];
-    message.liquidityProviderPool = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
           message.communityPool.push(DecCoin.decode(reader, reader.uint32()));
-          break;
-        case 2:
-          message.liquidityProviderPool.push(
-            DecCoin.decode(reader, reader.uint32())
-          );
           break;
         default:
           reader.skipType(tag & 7);
@@ -747,9 +719,6 @@ export const FeePool = {
     message.communityPool = (object.communityPool ?? []).map((e: any) =>
       DecCoin.fromJSON(e)
     );
-    message.liquidityProviderPool = (object.liquidityProviderPool ?? []).map(
-      (e: any) => DecCoin.fromJSON(e)
-    );
     return message;
   },
 
@@ -762,13 +731,6 @@ export const FeePool = {
     } else {
       obj.communityPool = [];
     }
-    if (message.liquidityProviderPool) {
-      obj.liquidityProviderPool = message.liquidityProviderPool.map((e) =>
-        e ? DecCoin.toJSON(e) : undefined
-      );
-    } else {
-      obj.liquidityProviderPool = [];
-    }
     return obj;
   },
 
@@ -776,9 +738,6 @@ export const FeePool = {
     const message = { ...baseFeePool } as FeePool;
     message.communityPool = (object.communityPool ?? []).map((e) =>
       DecCoin.fromPartial(e)
-    );
-    message.liquidityProviderPool = (object.liquidityProviderPool ?? []).map(
-      (e) => DecCoin.fromPartial(e)
     );
     return message;
   },

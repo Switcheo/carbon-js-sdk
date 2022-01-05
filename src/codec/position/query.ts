@@ -1,12 +1,11 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Position } from "../position/position";
+import { Position, APIPosition } from "../position/position";
 import { PageRequest, PageResponse } from "../query/pagination";
 
 export const protobufPackage = "Switcheo.carbon.position";
 
-/** this line is used by starport scaffolding # 3 */
 export interface QueryGetPositionRequest {
   address: string;
   market: string;
@@ -18,16 +17,14 @@ export interface QueryGetPositionResponse {
 
 export interface QueryAllPositionRequest {
   address: string;
-  beforeId: Long;
-  afterId: Long;
+  market: string;
   orderBy: string;
-  limits: Long;
   status: string;
   pagination?: PageRequest;
 }
 
 export interface QueryAllPositionResponse {
-  positions: Position[];
+  positions: APIPosition[];
   pagination?: PageResponse;
 }
 
@@ -179,10 +176,8 @@ export const QueryGetPositionResponse = {
 
 const baseQueryAllPositionRequest: object = {
   address: "",
-  beforeId: Long.UZERO,
-  afterId: Long.UZERO,
+  market: "",
   orderBy: "",
-  limits: Long.UZERO,
   status: "",
 };
 
@@ -194,23 +189,17 @@ export const QueryAllPositionRequest = {
     if (message.address !== "") {
       writer.uint32(10).string(message.address);
     }
-    if (!message.beforeId.isZero()) {
-      writer.uint32(16).uint64(message.beforeId);
-    }
-    if (!message.afterId.isZero()) {
-      writer.uint32(24).uint64(message.afterId);
+    if (message.market !== "") {
+      writer.uint32(18).string(message.market);
     }
     if (message.orderBy !== "") {
-      writer.uint32(34).string(message.orderBy);
-    }
-    if (!message.limits.isZero()) {
-      writer.uint32(40).uint64(message.limits);
+      writer.uint32(26).string(message.orderBy);
     }
     if (message.status !== "") {
-      writer.uint32(50).string(message.status);
+      writer.uint32(34).string(message.status);
     }
     if (message.pagination !== undefined) {
-      PageRequest.encode(message.pagination, writer.uint32(58).fork()).ldelim();
+      PageRequest.encode(message.pagination, writer.uint32(42).fork()).ldelim();
     }
     return writer;
   },
@@ -231,21 +220,15 @@ export const QueryAllPositionRequest = {
           message.address = reader.string();
           break;
         case 2:
-          message.beforeId = reader.uint64() as Long;
+          message.market = reader.string();
           break;
         case 3:
-          message.afterId = reader.uint64() as Long;
-          break;
-        case 4:
           message.orderBy = reader.string();
           break;
-        case 5:
-          message.limits = reader.uint64() as Long;
-          break;
-        case 6:
+        case 4:
           message.status = reader.string();
           break;
-        case 7:
+        case 5:
           message.pagination = PageRequest.decode(reader, reader.uint32());
           break;
         default:
@@ -264,22 +247,14 @@ export const QueryAllPositionRequest = {
       object.address !== undefined && object.address !== null
         ? String(object.address)
         : "";
-    message.beforeId =
-      object.beforeId !== undefined && object.beforeId !== null
-        ? Long.fromString(object.beforeId)
-        : Long.UZERO;
-    message.afterId =
-      object.afterId !== undefined && object.afterId !== null
-        ? Long.fromString(object.afterId)
-        : Long.UZERO;
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? String(object.market)
+        : "";
     message.orderBy =
       object.orderBy !== undefined && object.orderBy !== null
         ? String(object.orderBy)
         : "";
-    message.limits =
-      object.limits !== undefined && object.limits !== null
-        ? Long.fromString(object.limits)
-        : Long.UZERO;
     message.status =
       object.status !== undefined && object.status !== null
         ? String(object.status)
@@ -294,13 +269,8 @@ export const QueryAllPositionRequest = {
   toJSON(message: QueryAllPositionRequest): unknown {
     const obj: any = {};
     message.address !== undefined && (obj.address = message.address);
-    message.beforeId !== undefined &&
-      (obj.beforeId = (message.beforeId || Long.UZERO).toString());
-    message.afterId !== undefined &&
-      (obj.afterId = (message.afterId || Long.UZERO).toString());
+    message.market !== undefined && (obj.market = message.market);
     message.orderBy !== undefined && (obj.orderBy = message.orderBy);
-    message.limits !== undefined &&
-      (obj.limits = (message.limits || Long.UZERO).toString());
     message.status !== undefined && (obj.status = message.status);
     message.pagination !== undefined &&
       (obj.pagination = message.pagination
@@ -316,19 +286,8 @@ export const QueryAllPositionRequest = {
       ...baseQueryAllPositionRequest,
     } as QueryAllPositionRequest;
     message.address = object.address ?? "";
-    message.beforeId =
-      object.beforeId !== undefined && object.beforeId !== null
-        ? Long.fromValue(object.beforeId)
-        : Long.UZERO;
-    message.afterId =
-      object.afterId !== undefined && object.afterId !== null
-        ? Long.fromValue(object.afterId)
-        : Long.UZERO;
+    message.market = object.market ?? "";
     message.orderBy = object.orderBy ?? "";
-    message.limits =
-      object.limits !== undefined && object.limits !== null
-        ? Long.fromValue(object.limits)
-        : Long.UZERO;
     message.status = object.status ?? "";
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
@@ -346,7 +305,7 @@ export const QueryAllPositionResponse = {
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     for (const v of message.positions) {
-      Position.encode(v!, writer.uint32(10).fork()).ldelim();
+      APIPosition.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.pagination !== undefined) {
       PageResponse.encode(
@@ -371,7 +330,7 @@ export const QueryAllPositionResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.positions.push(Position.decode(reader, reader.uint32()));
+          message.positions.push(APIPosition.decode(reader, reader.uint32()));
           break;
         case 2:
           message.pagination = PageResponse.decode(reader, reader.uint32());
@@ -389,7 +348,7 @@ export const QueryAllPositionResponse = {
       ...baseQueryAllPositionResponse,
     } as QueryAllPositionResponse;
     message.positions = (object.positions ?? []).map((e: any) =>
-      Position.fromJSON(e)
+      APIPosition.fromJSON(e)
     );
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
@@ -402,7 +361,7 @@ export const QueryAllPositionResponse = {
     const obj: any = {};
     if (message.positions) {
       obj.positions = message.positions.map((e) =>
-        e ? Position.toJSON(e) : undefined
+        e ? APIPosition.toJSON(e) : undefined
       );
     } else {
       obj.positions = [];
@@ -421,7 +380,7 @@ export const QueryAllPositionResponse = {
       ...baseQueryAllPositionResponse,
     } as QueryAllPositionResponse;
     message.positions = (object.positions ?? []).map((e) =>
-      Position.fromPartial(e)
+      APIPosition.fromPartial(e)
     );
     message.pagination =
       object.pagination !== undefined && object.pagination !== null

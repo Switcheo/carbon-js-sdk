@@ -38,6 +38,19 @@ export interface QueryTradesResponse {
   pagination?: PageResponse;
 }
 
+export interface QueryTradesForPositionRequest {
+  address: string;
+  market: string;
+  openedBlockHeight: Long;
+  orderBy: string;
+  pagination?: PageRequest;
+}
+
+export interface QueryTradesForPositionResponse {
+  trades: TradeEvent[];
+  pagination?: PageResponse;
+}
+
 const baseQueryCandlesticksRequest: object = {
   market: "",
   resolution: Long.UZERO,
@@ -524,6 +537,230 @@ export const QueryTradesResponse = {
       object.MinMaxBoundary !== undefined && object.MinMaxBoundary !== null
         ? MinMaxBoundary.fromPartial(object.MinMaxBoundary)
         : undefined;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryTradesForPositionRequest: object = {
+  address: "",
+  market: "",
+  openedBlockHeight: Long.UZERO,
+  orderBy: "",
+};
+
+export const QueryTradesForPositionRequest = {
+  encode(
+    message: QueryTradesForPositionRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.address !== "") {
+      writer.uint32(10).string(message.address);
+    }
+    if (message.market !== "") {
+      writer.uint32(18).string(message.market);
+    }
+    if (!message.openedBlockHeight.isZero()) {
+      writer.uint32(24).uint64(message.openedBlockHeight);
+    }
+    if (message.orderBy !== "") {
+      writer.uint32(34).string(message.orderBy);
+    }
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(42).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryTradesForPositionRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryTradesForPositionRequest,
+    } as QueryTradesForPositionRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.address = reader.string();
+          break;
+        case 2:
+          message.market = reader.string();
+          break;
+        case 3:
+          message.openedBlockHeight = reader.uint64() as Long;
+          break;
+        case 4:
+          message.orderBy = reader.string();
+          break;
+        case 5:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryTradesForPositionRequest {
+    const message = {
+      ...baseQueryTradesForPositionRequest,
+    } as QueryTradesForPositionRequest;
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? String(object.market)
+        : "";
+    message.openedBlockHeight =
+      object.openedBlockHeight !== undefined &&
+      object.openedBlockHeight !== null
+        ? Long.fromString(object.openedBlockHeight)
+        : Long.UZERO;
+    message.orderBy =
+      object.orderBy !== undefined && object.orderBy !== null
+        ? String(object.orderBy)
+        : "";
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryTradesForPositionRequest): unknown {
+    const obj: any = {};
+    message.address !== undefined && (obj.address = message.address);
+    message.market !== undefined && (obj.market = message.market);
+    message.openedBlockHeight !== undefined &&
+      (obj.openedBlockHeight = (
+        message.openedBlockHeight || Long.UZERO
+      ).toString());
+    message.orderBy !== undefined && (obj.orderBy = message.orderBy);
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryTradesForPositionRequest>
+  ): QueryTradesForPositionRequest {
+    const message = {
+      ...baseQueryTradesForPositionRequest,
+    } as QueryTradesForPositionRequest;
+    message.address = object.address ?? "";
+    message.market = object.market ?? "";
+    message.openedBlockHeight =
+      object.openedBlockHeight !== undefined &&
+      object.openedBlockHeight !== null
+        ? Long.fromValue(object.openedBlockHeight)
+        : Long.UZERO;
+    message.orderBy = object.orderBy ?? "";
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryTradesForPositionResponse: object = {};
+
+export const QueryTradesForPositionResponse = {
+  encode(
+    message: QueryTradesForPositionResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.trades) {
+      TradeEvent.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryTradesForPositionResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryTradesForPositionResponse,
+    } as QueryTradesForPositionResponse;
+    message.trades = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.trades.push(TradeEvent.decode(reader, reader.uint32()));
+          break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryTradesForPositionResponse {
+    const message = {
+      ...baseQueryTradesForPositionResponse,
+    } as QueryTradesForPositionResponse;
+    message.trades = (object.trades ?? []).map((e: any) =>
+      TradeEvent.fromJSON(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryTradesForPositionResponse): unknown {
+    const obj: any = {};
+    if (message.trades) {
+      obj.trades = message.trades.map((e) =>
+        e ? TradeEvent.toJSON(e) : undefined
+      );
+    } else {
+      obj.trades = [];
+    }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryTradesForPositionResponse>
+  ): QueryTradesForPositionResponse {
+    const message = {
+      ...baseQueryTradesForPositionResponse,
+    } as QueryTradesForPositionResponse;
+    message.trades = (object.trades ?? []).map((e) =>
+      TradeEvent.fromPartial(e)
+    );
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
         ? PageResponse.fromPartial(object.pagination)
