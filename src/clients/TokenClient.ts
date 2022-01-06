@@ -333,7 +333,8 @@ class TokenClient {
         return accum;
       }
 
-      const commonDenom = CommonAssetName[denom] ?? denom;
+      const tokenId = this.getTokenId(denom);
+      const commonDenom = this.getCommonDenom(tokenId !== "" ? tokenId : denom);
 
       if (!accum[commonDenom]) {
         accum[commonDenom] = commonDenom;
