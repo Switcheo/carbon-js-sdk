@@ -356,9 +356,8 @@ export const ETHAddress: AddressBuilder<AddressOptions> = {
   },
 
   privateToPublicKey: (privateKey: string | Buffer): Buffer => {
-    const privateKeyBuff = stringOrBufferToBuffer(privateKey);
-    const publicKeyUint8Array: Uint8Array = secp256r1.publicKeyCreate(privateKeyBuff, true);
-    return Buffer.from(publicKeyUint8Array);
+    const privateKeyBuff = stringOrBufferToBuffer(privateKey)!;
+    return Buffer.from(ethers.utils.computePublicKey(privateKeyBuff).replace(/^0x/, ""), "hex");
   },
 
   privateKeyToAddress: (privateKey: string | Buffer): string => {
@@ -368,7 +367,7 @@ export const ETHAddress: AddressBuilder<AddressOptions> = {
   },
 
   generateAddress: (mnemonic: string, account: number = 0) => {
-    const wallet = Wallet.fromMnemonic(mnemonic);
-    return wallet.address;
+    const privateKey = ETHAddress.mnemonicToPrivateKey(mnemonic, account);
+    return ETHAddress.privateKeyToAddress(privateKey);
   },
 };
