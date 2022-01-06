@@ -1,7 +1,7 @@
 import { DEFAULT_NETWORK, Network, Network as _Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
 import { GenericUtils, NetworkUtils } from "@carbon-sdk/util";
 import { OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
-import { Tendermint34Client, WebsocketClient } from "@cosmjs/tendermint-rpc";
+import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import { CarbonQueryClient, ETHClient, InsightsQueryClient, NEOClient, TokenClient, ZILClient } from "./clients";
 import { AdminModule, BankModule, BrokerModule, CDPModule, CoinModule, FeeModule, GovModule, LeverageModule, LiquidityPoolModule, MarketModule, OracleModule, OrderModule, PositionModule, ProfileModule, SubAccountModule } from "./modules";
 import { StakingModule } from "./modules/staking";
