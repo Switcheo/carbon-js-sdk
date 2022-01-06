@@ -16,7 +16,6 @@ export { CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletGenericOpts,
 export interface CarbonSDKOpts {
   network: Network;
   tmClient: Tendermint34Client;
-  tmWsClient?: Tendermint34Client;
   config?: Partial<NetworkConfig>;
 }
 export interface CarbonSDKInitOpts {
@@ -50,7 +49,6 @@ class CarbonSDK {
   configOverride: Partial<NetworkConfig>;
   networkConfig: NetworkConfig;
   tmClient: Tendermint34Client;
-  tmWsClient: Tendermint34Client;
   token: TokenClient;
 
   admin: AdminModule;
@@ -81,7 +79,6 @@ class CarbonSDK {
     this.networkConfig = GenericUtils.overrideConfig(NetworkConfigs[this.network], this.configOverride);
 
     this.tmClient = opts.tmClient;
-    this.tmWsClient = opts.tmWsClient ?? opts.tmClient;
     this.query = new CarbonQueryClient(opts.tmClient);
     this.insights = new InsightsQueryClient(this.networkConfig);
     this.token = TokenClient.instance(this.query, this);
@@ -132,9 +129,7 @@ class CarbonSDK {
 
     const networkConfig = GenericUtils.overrideConfig(NetworkConfigs[network], configOverride);
     const tmClient = await Tendermint34Client.connect(networkConfig.tmRpcUrl);
-    const wsClient = new WebsocketClient(networkConfig.tmWsUrl);
-    const tmWsClient = await Tendermint34Client.create(wsClient)
-    const sdk = new CarbonSDK({ network, config: configOverride, tmClient, tmWsClient });
+    const sdk = new CarbonSDK({ network, config: configOverride, tmClient });
 
     if (opts.wallet) {
       await sdk.connect(opts.wallet);
