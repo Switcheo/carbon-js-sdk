@@ -3,7 +3,7 @@ import * as Base58Check from "base58check";
 import * as bech32 from "bech32";
 import * as BIP32 from "bip32";
 import * as BIP39 from "bip39";
-import { ethers } from "ethers";
+import { ethers, Wallet } from "ethers";
 import * as secp256k1 from "secp256k1";
 import * as secp256r1 from "secp256r1";
 import * as wif from "wif";
@@ -368,7 +368,7 @@ export const ETHAddress: AddressBuilder<AddressOptions> = {
   },
 
   generateAddress: (mnemonic: string, account: number = 0) => {
-    const privateKey = ETHAddress.mnemonicToPrivateKey(mnemonic, account);
-    return ETHAddress.privateKeyToAddress(privateKey);
+    const wallet = Wallet.fromMnemonic(mnemonic);
+    return wallet.address;
   },
 };
