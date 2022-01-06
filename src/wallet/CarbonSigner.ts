@@ -1,8 +1,8 @@
+import { SignDoc } from '@carbon-sdk/codec/cosmos/tx/v1beta1/tx';
 import { CosmosLedger } from '@carbon-sdk/provider';
 import { sortObject } from '@carbon-sdk/util/generic';
 import { AminoSignResponse, encodeSecp256k1Signature, OfflineAminoSigner, StdSignDoc } from "@cosmjs/amino";
 import { AccountData, DirectSecp256k1Wallet, DirectSignResponse, OfflineDirectSigner } from '@cosmjs/proto-signing';
-import { SignDoc } from "@cosmjs/stargate/build/codec/cosmos/tx/v1beta1/tx";
 
 export enum CarbonSignerTypes {
   Ledger,

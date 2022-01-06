@@ -4,8 +4,7 @@ import { LinkPoolProposal, SetCommitmentCurveProposal, SetRewardCurveProposal, S
 import { CreateMarketProposal, UpdateMarketProposal } from "@carbon-sdk/codec/market/proposal";
 import { CreateOracleProposal } from "@carbon-sdk/codec/oracle/proposal";
 import { SettlementPriceParams, SettlementPriceProposal } from "@carbon-sdk/codec/pricing/proposal";
-import { coins } from "@cosmjs/amino";
-import { Coin } from "@cosmjs/stargate/build/codec/cosmos/base/v1beta1/coin";
+import { coins, Coin } from "@cosmjs/amino";
 import BaseModule from "./base";
 import Long from "long";
 import { CarbonTx } from "@carbon-sdk/util";

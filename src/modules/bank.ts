@@ -1,4 +1,4 @@
-import { MsgSend } from "@cosmjs/stargate/build/codec/cosmos/bank/v1beta1/tx";
+import { MsgSend } from "@carbon-sdk/codec/cosmos/bank/v1beta1/tx";
 import { Coin } from "@cosmjs/amino";
 import BaseModule from "./base";
 
