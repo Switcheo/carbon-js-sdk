@@ -66,7 +66,7 @@ export const NetworkConfigs: {
     // Temporarily add shadow mainnet urls config
     // TODO: Change back to original urls when mainnet is ready
     tmRpcUrl: "https://shadow-tm-api.carbon.network/",
-    tmWsUrl: "ws://shadow-tm-api.carbon.network/",
+    tmWsUrl: "wss://shadow-tm-api.carbon.network/",
     restUrl: "https://shadow-api.carbon.network",
     insightsUrl: "",
     wsUrl: "wss://shadow-ws-api.carbon.network/ws",
@@ -116,7 +116,7 @@ export const NetworkConfigs: {
     network: Network.TestNet,
 
     tmRpcUrl: "https://test-tm-api.carbon.network",
-    tmWsUrl: "ws://test-tm-api.carbon.network",
+    tmWsUrl: "wss://test-tm-api.carbon.network",
     restUrl: "https://test-api.carbon.network",
     insightsUrl: "https://test-api-insights.carbon.network",
     wsUrl: "wss://test-ws-api.carbon.network/ws",
@@ -166,7 +166,7 @@ export const NetworkConfigs: {
     network: Network.DevNet,
 
     tmRpcUrl: "https://dev-tm-api.carbon.network",
-    tmWsUrl: "ws://dev-tm-api.carbon.network",
+    tmWsUrl: "wss://dev-tm-api.carbon.network",
     restUrl: "https://dev-api.carbon.network",
     insightsUrl: "https://dev-api-insights.carbon.network",
     wsUrl: "wss://dev-ws-api.carbon.network/ws",
