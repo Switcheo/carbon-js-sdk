@@ -104,18 +104,7 @@ class TokenClient {
     const url = `${config.feeURL}/fees?denom=${denom}`
     const result = await fetch(url).then(res => res.json())
 
-    const feeResult: FeeResult = {
-      prev_update_time: result.prev_update_time,
-      details: {},
-    };
-    for (const key in [FeeResultType.CreateWallet, FeeResultType.Deposit, FeeResultType.Withdrawal]) {
-      if (!result.details?.[key]?.fee) continue;
-
-      const fee = this.toHuman(denom, bnOrZero(result.details[key].fee)).toString(10);
-      feeResult.details[key] = { fee };
-    }
-
-    return feeResult;
+    return result;
   }
 
   public getTokenName(denom: string, overrideMap?: TypeUtils.SimpleMap<string>): string {
