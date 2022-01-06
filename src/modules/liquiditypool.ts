@@ -126,14 +126,20 @@ export class LiquidityPoolModule extends BaseModule {
     });
   }
 
-
+  /**
+   * Calculates weekly LP rewards (in SWTH)
+   * weeklySWTHRewards = ((INITIAL_SUPPLY) * (WEEKLY_DECAY)^(weeksFromInitalRewardsStart)) / 52
+   * weeklySWTHLPRewards = weeklySWTHRewards * liquidityRewardRatio
+   * @returns weekly SWTH rewards allocated to liquidityProviders (BigNumber)
+   */
   public async getWeeklyRewards(): Promise<BigNumber> {
-    const mintDataResponse = await this.getInflationMintData()
-    const mintData = mintDataResponse.mintData
     const WEEKLY_DECAY = new BigNumber(0.9835)
     const MIN_RATE = new BigNumber(0.0003)
     const INITIAL_SUPPLY = new BigNumber(1000000000)
     const SECONDS_IN_A_WEEK = new BigNumber(604800)
+
+    const mintDataResponse: Models.QueryMintDataResponse = await this.sdkProvider.query.inflation.MintData({})
+    const mintData = mintDataResponse.mintData
 
     const nowTime = new BigNumber(dayjs().unix())
     const firstBlockTime = mintData?.firstBlockTime.toNumber() ?? 0
@@ -151,12 +157,6 @@ export class LiquidityPoolModule extends BaseModule {
     const distributionParams = await this.sdkProvider.query.distribution.Params({});
     const liquidityRewardRatio = NumberUtils.bnOrZero(distributionParams.params?.liquidityProviderReward).shiftedBy(-18)
     return liquidityRewardRatio.times(weeklyRewards)
-  }
-
-  public async getInflationMintData(): Promise<Models.QueryMintDataResponse> {
-    // const request = this.apiManager.path('staking/get_inflation_start_time') // TODO: Remove when tested
-    const response: Models.QueryMintDataResponse = await this.sdkProvider.query.inflation.MintData({})
-    return response
   }
 
   public async claimMultiPoolRewards(params: LiquidityPoolModule.ClaimMultiPoolRewards) {
