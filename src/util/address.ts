@@ -361,7 +361,7 @@ export const ETHAddress: AddressBuilder<AddressOptions> = {
   },
 
   generateAddress: (mnemonic: string, account: number = 0) => {
-    const privateKey = ETHAddress.mnemonicToPrivateKey(mnemonic, account);
-    return ETHAddress.privateKeyToAddress(privateKey);
+    const wallet = Wallet.fromMnemonic(mnemonic);
+    return wallet.address;
   },
 };
