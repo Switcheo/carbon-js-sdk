@@ -131,7 +131,7 @@ export class LiquidityPoolModule extends BaseModule {
    * weeklySWTHRewards = ((INITIAL_SUPPLY) * (WEEKLY_DECAY)^(weeksFromInitalRewardsStart)) / 52
    * weeklySWTHLPRewards = weeklySWTHRewards * liquidityRewardRatio
    * @returns weekly SWTH rewards allocated to liquidityProviders (BigNumber)
-   */
+  */
   public async getWeeklyRewards(): Promise<BigNumber> {
     const WEEKLY_DECAY = new BigNumber(0.9835)
     const MIN_RATE = new BigNumber(0.0003)
@@ -172,94 +172,6 @@ export class LiquidityPoolModule extends BaseModule {
         creator: params.creator,
       },
     })));
-  }
-
-  public async estimateUnclaimedRewards(params: LiquidityPoolModule.EstimateUnclaimedRewardsMsg): Promise<LiquidityPoolModule.UnclaimedRewards> {
-    const sdk = this.sdkProvider;
-
-    const accruedRewards: LiquidityPoolModule.UnclaimedRewards = {};
-    const lastClaimed = await sdk.query.liquiditypool.LastClaim(params);
-    let lastHeight = lastClaimed.lastClaim;
-
-    const allocation = await sdk.query.liquiditypool.RewardHistory({
-      poolId: params.poolId,
-      startBlockHeight: new BigNumber(lastClaimed.lastClaim.toString() || '0').plus(1).toString()
-    });
-
-    // get current share
-    const shares = await sdk.query.liquiditypool.Commitment({
-      poolId: params.poolId,
-      address: params.address,
-    });
-
-    const commitmentPower = new BigNumber(shares.commitment?.commitmentPower || '0');
-
-    // calculate accrued rewards based on history
-    if (!commitmentPower.isZero() && allocation && allocation.rewardHistories) {
-      allocation.rewardHistories.forEach((period: RewardHistoryRecord) => {
-        lastHeight = period.height;
-        const totalCommit = NumberUtils.bnOrZero(period.rewardHistory?.totalCommitment);
-        const ratio = commitmentPower.div(totalCommit);
-
-        const rewardsArr = period.rewardHistory?.rewards ?? []
-        rewardsArr.forEach((reward: DecCoin) => {
-          // reward amount is ridiculously big, so had to shift
-          const rewardAmt = new BigNumber(reward.amount).shiftedBy(-18)
-          const rewardCut = new BigNumber(rewardAmt).times(ratio).integerValue(BigNumber.ROUND_DOWN);
-          if (reward.denom in accruedRewards) {
-            accruedRewards[reward.denom] = accruedRewards[reward.denom].plus(rewardCut);
-          } else {
-            accruedRewards[reward.denom] = rewardCut;
-          }
-        });
-      });
-    }
-    // Estimate rewards from last allocated rewards
-    // the current logic will under estimate the rewards as the current weekly reward rate is used across the full period
-    // instead of deriving the reward rate for each week since the last reward allocation
-
-    if (!commitmentPower.isZero()) {
-      const weeklyRewards = await this.getWeeklyRewards();
-      const pools = await sdk.query.liquiditypool.PoolAll({});
-      const pool = pools.pools.find((pool: Models.ExtendedPool) => pool.pool?.id.toString() === params.poolId);
-      if (!pool) {
-        return {};
-      }
-
-      const totalCommitment = await sdk.query.liquiditypool.TotalCommitment({
-        poolId: pool.pool?.id ?? Long.UZERO,
-      })
-      const totalCommitBN = new BigNumber(totalCommitment.totalCommitment ?? '0')
-      const poolWeight = new BigNumber(pool?.rewardsWeight || '0');
-      let totalWeight = NumberUtils.BN_ZERO;
-      pools.pools.forEach((pool: Models.ExtendedPool) => {
-        const rewardWght = pool?.rewardsWeight || '0'
-        totalWeight = totalWeight.plus(rewardWght);
-      });
-      const poolWeekRewards = poolWeight.dividedBy(totalWeight).times(weeklyRewards);
-
-      // get time from last height
-      const blockInfo = await sdk.query.chain.getBlock(lastHeight.toNumber());
-
-      const estimatedStart = dayjs(blockInfo.header.time);
-
-      const now = dayjs();
-      const WEEKS_IN_SECONDS = 604800;
-      const diff = now.diff(estimatedStart, 'second');
-
-      const estimatedRewards = totalCommitBN.isZero()
-        ? NumberUtils.BN_ZERO
-        : new BigNumber(diff / WEEKS_IN_SECONDS).times(poolWeekRewards)
-          .times(commitmentPower).div(totalCommitBN)
-          .shiftedBy(8).integerValue(BigNumber.ROUND_DOWN);
-
-      if ('swth' in accruedRewards) {
-        accruedRewards['swth'] = accruedRewards['swth'].plus(estimatedRewards);
-      } else {
-        accruedRewards['swth'] = estimatedRewards;
-      }
-    }
-    return accruedRewards;
   }
 }
 
