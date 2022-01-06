@@ -93,27 +93,73 @@ export const CommonAssetName: SimpleMap<string> = {
   'lkt.7ef7febf': 'lkt',
   'gas.1.4.66bba7': 'gas',
 
+
   // devnet tokens
+  'one.1.2.0c4e3f': 'one',
+  'one.1.2.2ce83e': 'one',
+
+  'swth-e-test': 'swth',
+
+  'ewnxm1': 'nxm',
+  'wnxm.b.1': 'nxm',
+  'wnxm.e.1': 'nxm',
+  'wnxm.0.6.b4e1db': 'nxm',
+
+  'uni.e.2': 'uni',
+
   'zil1': 'zil',
   'zil.e': 'zil',
+  'zil2.e': 'zil',
+  'zil3.e': 'zil',
+  'zil4.e': 'zil',
   'zil9': 'zil',
   'zil9.e': 'zil',
   'zil5.e': 'zil',
+  'zil2.z': 'zil',
+  'zil3.z': 'zil',
   'zil5.z': 'zil',
+
+  'zwap.e': 'zwap',
   'zwap1.e': 'zwap',
+  'zwap2.e': 'zwap',
+  'zwap3.e': 'zwap',
   'zwap5.e': 'zwap',
+  'zwap2.z': 'zwap',
+  'zwap3.z': 'zwap',
   'zwap5.z': 'zwap',
+  'zwap6.z': 'zwap',
   'zwap1': 'zwap',
 
   'dai1': 'dai',
+  'dai2.e': 'dai',
+  'dai3.e': 'dai',
   'dai.z': 'dai',
+  'dai2.z': 'dai',
+  'dai3.z': 'dai',
+  'dai4.z': 'dai',
   'dai5.z': 'dai',
+  'dai6.z': 'dai',
 
-  'eth5.z': 'dai',
+  'eth2.e': 'eth',
+  'eth3.e': 'eth',
+  'eth1.z': 'eth',
+  'eth2.z': 'eth',
+  'eth3.z': 'eth',
+  'eth4.z': 'eth',
+  'eth5.z': 'eth',
+  'eth6.z': 'eth',
+  'eth.zilliqa': 'eth',
+
+  'zusdc': 'usdc',
+  'zusdc2': 'usdc',
 
   'usdt.e': 'usdt',
+  'usdt.z': 'usdt',
   'usdt1.z': 'usdt',
   'usdt2.z': 'usdt',
+  'zusdt': 'usdt',
+  'zusdt1': 'usdt', 
+  'zusdt99': 'usdt',
 };
 
 export const CoinGeckoTokenNames: SimpleMap<string> = {
