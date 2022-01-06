@@ -3,7 +3,7 @@ import * as Base58Check from "base58check";
 import * as bech32 from "bech32";
 import * as BIP32 from "bip32";
 import * as BIP39 from "bip39";
-import { ethers } from "ethers";
+import { ethers, Wallet } from "ethers";
 import * as secp256k1 from "secp256k1";
 import * as secp256r1 from "secp256r1";
 import * as wif from "wif";
@@ -345,20 +345,13 @@ export const ETHAddress: AddressBuilder<AddressOptions> = {
   mnemonicToPrivateKey: (mnemonic: string, account: number = 0): Buffer => {
     const coinType = ETHAddress.coinType();
     const path = new BIP44Path(BIP44_PURPOSE, coinType).update(account).generate();
-    const seed = BIP39.mnemonicToSeedSync(mnemonic);
-    const masterKey = BIP32.fromSeed(seed);
-    const hardenedDerivation = masterKey.derivePath(path);
-    const privateKey = hardenedDerivation.privateKey;
-
-    if (!privateKey) throw new Error("Private key derivation from mnemonic failed");
-
-    return privateKey;
+    const wallet = ethers.Wallet.fromMnemonic(mnemonic, path);
+    return Buffer.from(wallet.privateKey?.replace(/^0x/, ""), "hex");
   },
 
   privateToPublicKey: (privateKey: string | Buffer): Buffer => {
-    const privateKeyBuff = stringOrBufferToBuffer(privateKey);
-    const publicKeyUint8Array: Uint8Array = secp256r1.publicKeyCreate(privateKeyBuff, true);
-    return Buffer.from(publicKeyUint8Array);
+    const privateKeyBuff = stringOrBufferToBuffer(privateKey)!;
+    return Buffer.from(ethers.utils.computePublicKey(privateKeyBuff).replace(/^0x/, ""), "hex");
   },
 
   privateKeyToAddress: (privateKey: string | Buffer): string => {
