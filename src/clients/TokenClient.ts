@@ -91,6 +91,14 @@ class TokenClient {
     return NumberUtils.toUnitless(humanAmt, decimals) ?? BN_ZERO;
   }
 
+  public tokenForId(id: string): Token | undefined {
+    return Object.values(this.tokens).find(token => token.id === id);
+  }
+
+  public tokenForDenom(denom: string): Token | undefined {
+    return this.tokens[denom];
+  }
+
   public async getFeeInfo(denom: string) {
     const config = this.configProvider.getConfig();
     const url = `${config.feeURL}/fees?denom=${denom}`
