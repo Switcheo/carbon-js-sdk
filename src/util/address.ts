@@ -345,14 +345,8 @@ export const ETHAddress: AddressBuilder<AddressOptions> = {
   mnemonicToPrivateKey: (mnemonic: string, account: number = 0): Buffer => {
     const coinType = ETHAddress.coinType();
     const path = new BIP44Path(BIP44_PURPOSE, coinType).update(account).generate();
-    const seed = BIP39.mnemonicToSeedSync(mnemonic);
-    const masterKey = BIP32.fromSeed(seed);
-    const hardenedDerivation = masterKey.derivePath(path);
-    const privateKey = hardenedDerivation.privateKey;
-
-    if (!privateKey) throw new Error("Private key derivation from mnemonic failed");
-
-    return privateKey;
+    const wallet = ethers.Wallet.fromMnemonic(mnemonic, path);
+    return Buffer.from(wallet.privateKey?.replace(/^0x/, ""), "hex");
   },
 
   privateToPublicKey: (privateKey: string | Buffer): Buffer => {
