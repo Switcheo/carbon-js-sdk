@@ -188,7 +188,7 @@ export const NetworkConfigs: {
       payerURL: `https://dev-payer.carbon.network`,
       lockProxyAddr: '0x91f453851e297524749a740d53cf54a89231487c',
       balanceReader: '0xa74c81866c5bfff6684aa8edf35a5de8c3b9f173',
-      byteCodeHash: '0xc77e5709a69e94d310a6dfb700801758c4caed0385b25bdf82bbdf954e4dd0c3',
+      byteCodeHash: '0xb007776ceef3efcf6412e67dfd4fc36ab367db2df8a3da10a08401970181e1fa',
     },
 
     bsc: {
@@ -207,7 +207,7 @@ export const NetworkConfigs: {
 
     zil: {
       rpcURL: 'https://dev-api.zilliqa.com',
-      lockProxyAddr: '0xeb380184790dcf174e70f062a1630653ca0356c7',
+      lockProxyAddr: '0xa5a43eecd29534edf80792a9889f52c77455245d',
       chainId: 333,
     }
   },
