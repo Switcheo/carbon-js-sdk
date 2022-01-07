@@ -201,10 +201,10 @@ export class ETHClient {
 
     const networkConfig = this.getNetworkConfig()
 
-    const assetId = appendHexPrefix(tokenWithExternalBalances.id)
+    const assetId = appendHexPrefix(tokenWithExternalBalances.tokenAddress)
     const targetProxyHash = appendHexPrefix(this.getTargetProxyHash(tokenWithExternalBalances))
     const feeAddress = appendHexPrefix(networkConfig.feeAddress)
-    const toAssetHash = ethers.utils.hexlify(tokenWithExternalBalances.tokenAddress)
+    const toAssetHash = ethers.utils.hexlify(ethers.utils.toUtf8Bytes(tokenWithExternalBalances.id))
     const nonce = Math.floor(Math.random() * 1000000000) // random nonce to prevent replay attacks
     const message = ethers.utils.solidityKeccak256(
       ["string", "address", "bytes", "bytes", "bytes", "uint256", "uint256", "uint256"],
@@ -238,9 +238,10 @@ export class ETHClient {
     const body = {
       owner_address: signatureResult.owner,
       swth_address: swthAddressHex,
-      asset_hash: assetId,
-      target_proxy_hash: targetProxyHash,
-      to_asset_hash: toAssetHash,
+      token_address: assetId,
+      token_creator: targetProxyHash,
+      token_denom: tokenWithExternalBalances.denom,
+      token_id: tokenWithExternalBalances.id,
       amount: amount.toString(),
       fee_amount: feeAmount.toString(),
       fee_address: feeAddress,
