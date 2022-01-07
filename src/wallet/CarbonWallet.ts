@@ -1,6 +1,6 @@
 import { CarbonQueryClient } from "@carbon-sdk/clients";
 import { MsgFee, registry } from "@carbon-sdk/codec";
-import { TxRaw as StargateTxRaw } from "@carbon-sdk/codec/cosmos/tx/v1beta1/tx";
+import { TxRaw as StargateTxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import { DEFAULT_GAS, DEFAULT_NETWORK, Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
 import { ProviderAgent } from "@carbon-sdk/constant/walletProvider";
 import { AminoTypesMap, CosmosLedger } from "@carbon-sdk/provider";
@@ -234,7 +234,7 @@ export class CarbonWallet {
     } = opts;
 
     const signingClient = await this.getSigningClient();
-    const tx = StargateTxRaw.encode(txRaw).finish();
+    const tx = CarbonWallet.TxRaw.encode(txRaw).finish();
     const response = await signingClient.broadcastTx(tx, timeoutMs, pollIntervalMs)
     if (isBroadcastTxFailure(response)) {
       // tx failed

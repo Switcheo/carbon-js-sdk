@@ -54,6 +54,7 @@
     "bignumber.js": "^9.0.1",
     "bip32": "^2.0.6",
     "bip39": "^3.0.4",
+    "cosmjs-types": "^0.4.1",
     "dayjs": "^1.10.5",
     "eth-sig-util": "^3.0.0",
     "ethers": "^5.5.1",
@@ -75,7 +76,6 @@
     "@types/secp256k1": "^4.0.2",
     "@types/websocket": "^1.0.4",
     "@types/wif": "^2.0.2",
-    "dotenv": "^10.0.0",
-    "nodemon": "^2.0.12"
+    "dotenv": "^10.0.0"
   }
 }
