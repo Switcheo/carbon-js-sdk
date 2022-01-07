@@ -1,9 +1,9 @@
-import { Bech32AddrType, Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
+import { Bech32AddrType, Network, NetworkConfigs } from "@carbon-sdk/constant";
 import * as Base58Check from "base58check";
 import * as bech32 from "bech32";
 import * as BIP32 from "bip32";
 import * as BIP39 from "bip39";
-import { ethers, Wallet } from "ethers";
+import { ethers } from "ethers";
 import * as secp256k1 from "secp256k1";
 import * as secp256r1 from "secp256r1";
 import * as wif from "wif";

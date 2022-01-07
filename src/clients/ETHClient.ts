@@ -194,8 +194,7 @@ export class ETHClient {
     const depositAddress = await this.getDepositContractAddress(swthAddress, ethAddress)
     const feeAmount = await this.getDepositFeeAmount(tokenWithExternalBalances, depositAddress)
     const amount = ethers.BigNumber.from(tokenWithExternalBalances.externalBalance)
-    // if (amount.lt(feeAmount.mul(FEE_MULTIPLIER))) { TODO: change this back!!!!!!
-    if (amount.lt(feeAmount.mul(0))) {
+    if (amount.lt(feeAmount.mul(FEE_MULTIPLIER))) {
       return "insufficient balance"
     }
 
