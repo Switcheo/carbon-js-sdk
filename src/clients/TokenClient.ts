@@ -238,6 +238,26 @@ class TokenClient {
     return null;
   }
 
+  public getDepositTokenFor(tokenDenom: string, chain: BlockchainUtils.Blockchain): Token | undefined {
+    const token = this.tokenForDenom(tokenDenom);
+    if (!token) {
+      console.error('getDepositTokenFor token not found for', tokenDenom)
+      return
+    }
+    
+    // check if selected token is a source token
+    const isSourceToken = BlockchainUtils.blockchainForChainId(token.chainId.toNumber()) === chain
+
+    // if not source token find wrapped token for chain
+    const depositToken = isSourceToken ? token : this.getWrappedToken(token.denom, chain)
+    if (!depositToken) {
+      console.error(' getDepositTokenFor wrapped token not found for', token.denom)
+      return
+    }
+
+    return depositToken;
+  }
+
   public async getAllTokens(): Promise<Token[]> {
     let allTokens: Token[] = [];
     const limit = new Long(100);
@@ -245,7 +265,7 @@ class TokenClient {
     const reverse = false;
 
     let key = new Uint8Array();
-    
+
     const initTokens = await this.query.coin.TokenAll({
       pagination: {
         limit,
