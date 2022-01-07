@@ -1,8 +1,9 @@
 import { QueryByTimeRequest, TimeMeta } from "./common";
 
 export interface ActiveAccounts {
-  count: string
-  time: string
+  t: string
+  height: Long
+  users: string
 }
 
 export interface QueryGetActiveAccountsRequest extends QueryByTimeRequest { }
