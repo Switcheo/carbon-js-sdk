@@ -189,20 +189,20 @@ export class ETHClient {
   }
 
   public async sendDeposit(tokenWithExternalBalances: TokensWithExternalBalance, swthAddress: string, ethAddress: string, getSignatureCallback: (msg: string) => Promise<{ address: string, signature: string }>) {
-    // logger("sendDeposit", token, swthAddress, ethAddress)
     const depositAddress = await this.getDepositContractAddress(swthAddress, ethAddress)
     const feeAmount = await this.getDepositFeeAmount(tokenWithExternalBalances, depositAddress)
     const amount = ethers.BigNumber.from(tokenWithExternalBalances.externalBalance)
-    if (amount.lt(feeAmount.mul(FEE_MULTIPLIER))) {
+    // if (amount.lt(feeAmount.mul(FEE_MULTIPLIER))) { TODO: change this back!!!!!!
+    if (amount.lt(feeAmount.mul(0))) {
       return "insufficient balance"
     }
 
     const networkConfig = this.getNetworkConfig()
 
-    const assetId = appendHexPrefix(tokenWithExternalBalances.tokenAddress)
+    const assetId = appendHexPrefix(tokenWithExternalBalances.id)
     const targetProxyHash = appendHexPrefix(this.getTargetProxyHash(tokenWithExternalBalances))
     const feeAddress = appendHexPrefix(networkConfig.feeAddress)
-    const toAssetHash = ethers.utils.hexlify(ethers.utils.toUtf8Bytes(tokenWithExternalBalances.denom))
+    const toAssetHash = ethers.utils.hexlify(tokenWithExternalBalances.tokenAddress)
     const nonce = Math.floor(Math.random() * 1000000000) // random nonce to prevent replay attacks
     const message = ethers.utils.solidityKeccak256(
       ["string", "address", "bytes", "bytes", "bytes", "uint256", "uint256", "uint256"],
@@ -234,18 +234,19 @@ export class ETHClient {
     const addressBytes = SWTHAddress.getAddressBytes(swthAddress, network)
     const swthAddressHex = ethers.utils.hexlify(addressBytes)
     const body = {
-      OwnerAddress: signatureResult.owner,
-      SwthAddress: swthAddressHex,
-      AssetHash: assetId,
-      TargetProxyHash: targetProxyHash,
-      ToAssetHash: toAssetHash,
-      Amount: amount.toString(),
-      FeeAmount: feeAmount.toString(),
-      FeeAddress: feeAddress,
-      Nonce: nonce.toString(),
-      V: signatureResult.v,
-      R: signatureResult.r,
-      S: signatureResult.s,
+      owner_address: signatureResult.owner,
+      swth_address: swthAddressHex,
+      asset_hash: assetId,
+      target_proxy_hash: targetProxyHash,
+      to_asset_hash: toAssetHash,
+      amount: amount.toString(),
+      fee_amount: feeAmount.toString(),
+      fee_address: feeAddress,
+      nonce: nonce.toString(),
+      v: signatureResult.v,
+      r: signatureResult.r,
+      s: signatureResult.s,
+      blockchain: this.blockchain
     }
 
     const result = await fetch(
