@@ -15,6 +15,7 @@ export interface NodeItem {
   rpcUptime: string; // string rep of number
   wsUptime: string; // string rep of number
   insightUptime: string; // string rep of number
+  tmWsUrl: string;
 }
 
 export interface QueryGetNodesResponse {
