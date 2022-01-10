@@ -351,6 +351,7 @@ export { MsgFee } from "./fee/fee";
 export { SetMsgFeeProposal } from "./fee/proposal";
 export { QueryGetMsgFeeRequest, QueryGetMsgFeeResponse, QueryAllMsgFeeRequest, QueryAllMsgFeeResponse } from "./fee/query";
 export { Transfer } from "./bank/event";
+export { AccountTradeHistoryRow } from "./liquidation/history";
 export { OutstandingPosition, OutstandingPositions } from "./liquidation/outstanding_position";
 export { QueryAllLiquidationRequest, QueryAllLiquidationResponse } from "./liquidation/query";
 export { Any } from "./google/protobuf/any";

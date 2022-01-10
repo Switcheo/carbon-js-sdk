@@ -282,9 +282,9 @@ export const QueryAllBookResponse = {
 
 /** Query defines the gRPC querier service. */
 export interface Query {
-  /** Get order books for all markets */
-  Book(request: QueryGetBookRequest): Promise<QueryGetBookResponse>;
   /** Get order book for a market */
+  Book(request: QueryGetBookRequest): Promise<QueryGetBookResponse>;
+  /** Get order books for all markets */
   BookAll(request: QueryAllBookRequest): Promise<QueryAllBookResponse>;
 }
 
