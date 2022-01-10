@@ -19,6 +19,7 @@ export const nodesByNet: NodeNet = {
     rpcUptime: "0",
     wsUptime: "0",
     insightUptime: "100",
+    tmWsUrl: "wss://shadow-tm-api.carbon.network/"
   }, {
     nodeId: "shadowmainnet2",
     rpcUrl: "http://18.139.169.234:26657",
@@ -32,5 +33,6 @@ export const nodesByNet: NodeNet = {
     rpcUptime: "0",
     wsUptime: "0",
     insightUptime: "100",
+    tmWsUrl: "wss://shadow-tm-api.carbon.network/"
   }],
 };
