@@ -238,6 +238,10 @@ class TokenClient {
     return null;
   }
 
+  public getNativeToken(): Token | undefined {
+    return this.tokenForId("swth");
+  }
+
   public getDepositTokenFor(tokenDenom: string, chain: BlockchainUtils.Blockchain): Token | undefined {
     const token = this.tokenForDenom(tokenDenom);
     if (!token) {
