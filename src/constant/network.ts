@@ -46,11 +46,6 @@ export interface NetworkConfig {
 
   neo: NeoNetworkConfig
   zil: ZilNetworkConfig
-
-  /** @deprecated use tmRpcUrl */
-  rpcURL: string;
-  /** @deprecated use restUrl */
-  restURL: string;
 }
 
 export interface NetworkConfigProvider {
@@ -63,29 +58,22 @@ export const NetworkConfigs: {
   [Network.MainNet]: {
     network: Network.MainNet,
 
-    // Temporarily add shadow mainnet urls config
-    // TODO: Change back to original urls when mainnet is ready
-    tmRpcUrl: "https://shadow-tm-api.carbon.network/",
-    tmWsUrl: "wss://shadow-tm-api.carbon.network/",
-    restUrl: "https://shadow-api.carbon.network",
-    insightsUrl: "",
-    wsUrl: "wss://shadow-ws-api.carbon.network/ws",
+    tmRpcUrl: "https://tm-api.carbon.network/",
+    tmWsUrl: "wss://tm-api.carbon.network/",
+    restUrl: "https://api.carbon.network",
+    insightsUrl: "https://api-insights.carbon.network",
+    wsUrl: "wss://ws-api.carbon.network/ws",
     faucetUrl: "",
 
     Bech32Prefix: "swth",
 
-    /** @deprecated use rpcUrl */
-    rpcURL: "https://shadow-tm-api.carbon.network/",
-    /** @deprecated use restUrl */
-    restURL: "https://shadow-api.carbon.network",
-
-    feeURL: `https://fees.switcheo.org`,
+    feeURL: "https://fees.carbon.network",
     feeAddress: '08d8f59e475830d9a1bb97d74285c4d34c6dac08', // swth1prv0t8j8tqcdngdmjlt59pwy6dxxmtqgycy2h7
 
     eth: {
       rpcURL: 'https://eth-mainnet.alchemyapi.io/v2/RWHcfoaBKzRpXnLONcEDnVqtUp7StNYl',
       wsURL: 'wss://mainnet.dagger.matic.network',
-      payerURL: `https://payer.switcheo.org`,
+      payerURL: "https://payer.carbon.network",
       lockProxyAddr: '0x9a016ce184a22dbf6c17daa59eb7d3140dbd1c54',
       balanceReader: '0xe5e83cdba612672785d835714af26707f98030c3',
       byteCodeHash: '0xc77e5709a69e94d310a6dfb700801758c4caed0385b25bdf82bbdf954e4dd0c3',
@@ -93,8 +81,8 @@ export const NetworkConfigs: {
 
     bsc: {
       rpcURL: 'https://bsc-dataseed2.binance.org/',
-      wsURL: '',
-      payerURL: `https://payer.carbon.network`,
+      wsURL: "",
+      payerURL: "",
       lockProxyAddr: '0xb5d4f343412dc8efb6ff599d790074d0f1e8d430',
       balanceReader: '0x2b18c5e1edaa7e27d40fec8d0b7d96c5eefa35df',
       byteCodeHash: '0x1b147c1cef546fcbcc1284df778073d65b90f80d5b649a69d5f8a01e186c0ec1',
@@ -126,11 +114,6 @@ export const NetworkConfigs: {
 
     feeURL: `http://54.255.42.175:9001`,
     feeAddress: '989761fb0c0eb0c05605e849cae77d239f98ac7f',
-
-    /** @deprecated use rpcUrl */
-    rpcURL: "https://test-tm-api.carbon.network",
-    /** @deprecated use restUrl */
-    restURL: "https://test-api.carbon.network",
 
     eth: {
       rpcURL: 'https://eth-ropsten.alchemyapi.io/v2/2KD9F3mFPNMfflSqZsPuTKmK_w7fFfut',
@@ -173,11 +156,6 @@ export const NetworkConfigs: {
     faucetUrl: "https://dev-faucet.carbon.network",
 
     Bech32Prefix: "swth",
-
-    /** @deprecated use rpcUrl */
-    rpcURL: "https://dev-tm-api.carbon.network",
-    /** @deprecated use restUrl */
-    restURL: "https://dev-api.carbon.network",
 
     feeURL: `https://dev-fees.carbon.network`,
     feeAddress: '989761fb0c0eb0c05605e849cae77d239f98ac7f',
@@ -223,11 +201,6 @@ export const NetworkConfigs: {
     faucetUrl: "http://localhost:4500",
 
     Bech32Prefix: "tswth",
-
-    /** @deprecated use rpcUrl */
-    rpcURL: "http://localhost:26657",
-    /** @deprecated use restUrl */
-    restURL: "http://localhost:1317",
 
     feeURL: `http://localhost:9001`,
     feeAddress: '989761fb0c0eb0c05605e849cae77d239f98ac7f',
