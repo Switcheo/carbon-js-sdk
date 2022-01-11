@@ -125,13 +125,12 @@ export class NEOClient {
     const account = Neon.create.account(neoPrivateKey)
 
     const networkConfig = this.getNetworkConfig()
-    // TODO: Check if bridgeAddress corresponds to carbon token lock_proxy_hash
     const scriptHash = u.reverseHex(token.bridgeAddress)
 
     const fromAssetHash = token.tokenAddress
     const fromAddress = u.reverseHex(account.scriptHash)
     const targetProxyHash = this.getTargetProxyHash(token)
-    const toAssetHash = u.str2hexstring(token.denom)
+    const toAssetHash = u.str2hexstring(token.id)
     const addressBytes = SWTHAddress.getAddressBytes(swthAddress, networkConfig.network)
     const toAddress = stripHexPrefix(ethers.utils.hexlify(addressBytes))
 
@@ -184,7 +183,7 @@ export class NEOClient {
     const fromAssetHash = token.tokenAddress
     const fromAddress = ledger.scriptHash
     const targetProxyHash = this.getTargetProxyHash(token)
-    const toAssetHash = u.str2hexstring(token.denom)
+    const toAssetHash = u.str2hexstring(token.id)
     const toAddress = stripHexPrefix(ethers.utils.hexlify(address))
   
     const feeAddress = networkConfig.feeAddress
