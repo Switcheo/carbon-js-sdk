@@ -251,6 +251,7 @@ class TokenClient {
     
     // check if selected token is a source token
     const isSourceToken = BlockchainUtils.blockchainForChainId(token.chainId.toNumber()) === chain
+      && token.id !== "swth";
 
     // if not source token find wrapped token for chain
     const depositToken = isSourceToken ? token : this.getWrappedToken(token.denom, chain)
