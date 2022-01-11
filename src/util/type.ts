@@ -1,8 +1,18 @@
+import { Network } from "@carbon-sdk/constant";
 import Long from "long";
 
 export interface SimpleMap<T = unknown> {
   [index: string]: T
 }
+
+export interface NetworkMap<T> {
+  [Network.MainNet]: T;
+  [Network.TestNet]: T;
+  [Network.DevNet]: T;
+  [Network.LocalHost]: T;
+}
+
+export type OptionalNetworkMap<T> = Partial<NetworkMap<T>>;
 
 /**
  * converts snakecase strings to camelcase

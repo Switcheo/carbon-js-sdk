@@ -1,4 +1,5 @@
-import { SimpleMap } from "@carbon-sdk/util/type";
+import { OptionalNetworkMap, SimpleMap } from "@carbon-sdk/util/type";
+import { Network } from "./network";
 
 export const CommonAssetName: SimpleMap<string> = {
   swth: 'swth',
@@ -288,3 +289,9 @@ export const CoinGeckoTokenNames: SimpleMap<string> = {
   math: 'math',
   lkt: 'locklet',
 };
+
+export const TokenBlacklist: OptionalNetworkMap<string[]> = {
+  [Network.MainNet]: [
+    "swthb.1.6.d04123", // binance wrapped token
+  ],
+}

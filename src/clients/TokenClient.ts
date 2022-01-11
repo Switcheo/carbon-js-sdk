@@ -1,8 +1,7 @@
 import { Token } from "@carbon-sdk/codec";
-import { CoinGeckoTokenNames, CommonAssetName, NetworkConfigProvider } from "@carbon-sdk/constant";
+import { CoinGeckoTokenNames, CommonAssetName, NetworkConfigProvider, TokenBlacklist } from "@carbon-sdk/constant";
 import { BlockchainUtils, FetchUtils, NumberUtils, TypeUtils } from "@carbon-sdk/util";
-import { bnOrZero, BN_ZERO } from "@carbon-sdk/util/number";
-import { FeeResult, FeeResultType } from "@carbon-sdk/util/transferfees";
+import { BN_ZERO } from "@carbon-sdk/util/number";
 import BigNumber from "bignumber.js";
 import Long from "long";
 import CarbonQueryClient from "./CarbonQueryClient";
@@ -21,6 +20,7 @@ const SYMBOL_OVERRIDE: {
 };
 
 class TokenClient {
+  public static Blacklist = TokenBlacklist;
   public readonly tokens: TypeUtils.SimpleMap<Token> = {};
   public readonly wrapperMap: TypeUtils.SimpleMap<string> = {};
   public readonly poolTokens: TypeUtils.SimpleMap<Token> = {};
@@ -264,46 +264,19 @@ class TokenClient {
   }
 
   public async getAllTokens(): Promise<Token[]> {
-    let allTokens: Token[] = [];
-    const limit = new Long(100);
-    const countTotal = true;
-    const reverse = false;
-
-    let key = new Uint8Array();
-
-    const initTokens = await this.query.coin.TokenAll({
+    const result = await this.query.coin.TokenAll({
       pagination: {
-        limit,
+        limit: new Long(10000),
         offset: Long.UZERO,
-        key,
-        countTotal,
-        reverse,
+        key: new Uint8Array(),
+        countTotal: false,
+        reverse: false,
       },
     });
-    const grandTotal = initTokens.pagination?.total.toNumber() ?? 0;
-    key = initTokens.pagination?.nextKey ?? new Uint8Array();
-    allTokens = allTokens.concat(initTokens.tokens);
 
-    if (initTokens.tokens.length === grandTotal) {
-      return allTokens;
-    }
-
-    const iterations = Math.ceil(grandTotal / limit.toNumber()) - 1;
-    for (let ii = 0; ii < iterations; ii++) {
-      const tokens = await this.query.coin.TokenAll({
-        pagination: {
-          limit,
-          offset: Long.UZERO,
-          key,
-          countTotal,
-          reverse,
-        },
-      });
-      key = initTokens.pagination?.nextKey ?? new Uint8Array();
-      allTokens = allTokens.concat(tokens.tokens ?? []);
-    }
-
-    return allTokens;
+    const networkConfig = this.configProvider.getConfig();
+    const tokenBlacklist = TokenBlacklist[networkConfig.network] ?? [];
+    return result.tokens.filter(token => !tokenBlacklist.includes(token.denom));
   }
 
   public async reloadTokens(): Promise<TypeUtils.SimpleMap<Token>> {
