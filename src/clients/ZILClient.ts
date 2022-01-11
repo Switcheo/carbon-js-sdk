@@ -132,7 +132,7 @@ export class ZILClient {
       (!whitelistDenoms || whitelistDenoms.includes(token.denom))
     )
     
-    const requests = tokens.map(token => token.tokenAddress === zeroAddress ? balanceBatchRequest(address) : tokenBalanceBatchRequest(token.tokenAddress, address))
+    const requests = tokens.map(token => token.tokenAddress === zeroAddress ? balanceBatchRequest(address.replace(/^0x/i, "")) : tokenBalanceBatchRequest(token.tokenAddress, address))
     const response = await fetch(this.getProviderUrl(), {
       method: "post",
       headers: { "content-type": "application/json" },
@@ -149,7 +149,9 @@ export class ZILClient {
       const token = tokens[i]
       TokensWithExternalBalance.push({
         ...token,
-        externalBalance: result.result.balance,
+        externalBalance: result.result?.balance ?? result.result.balances?.[address],
+        // result.result?.balance - zil balance query result
+        // result.result.balances?.[address] - zrc2 balance query result
       })
     })
 
