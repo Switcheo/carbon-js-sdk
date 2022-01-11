@@ -82,7 +82,7 @@ export const NetworkConfigs: {
     bsc: {
       rpcURL: 'https://bsc-dataseed2.binance.org/',
       wsURL: "",
-      payerURL: "",
+      payerURL: "https://payer.carbon.network",
       lockProxyAddr: '0xb5d4f343412dc8efb6ff599d790074d0f1e8d430',
       balanceReader: '0x2b18c5e1edaa7e27d40fec8d0b7d96c5eefa35df',
       byteCodeHash: '0x1b147c1cef546fcbcc1284df778073d65b90f80d5b649a69d5f8a01e186c0ec1',
