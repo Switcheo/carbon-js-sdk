@@ -1,25 +1,22 @@
-import * as BIP39 from "bip39";
+import BigNumber from "bignumber.js";
 import { CarbonSDK } from "./_sdk";
 import "./_setup";
 
 (async () => {
-  const mnemonics = process.env.MNEMONICS ?? BIP39.generateMnemonic();
+  const mnemonics = "absurd give grit arrow else sort visual lawn base adult pause segment"
   console.log("mnemonics", mnemonics);
 
   const sdk = await CarbonSDK.instance({
-    network: CarbonSDK.Network.LocalHost,
-    config: {
-      tmRpcUrl: process.env.TRPC_ENDPOINT,
-    },
+    network: CarbonSDK.Network.MainNet,
   });
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
 
   const result = await connectedSDK.bank.sendTokens({
     fromAddress: connectedSDK.wallet.bech32Address,
-    toAddress: "tswth1mw90en8tcqnvdjhp64qmyhuq4qasvhy2s6st4t",
+    toAddress: "swth1jmh3cdvlfv3ql53yggy23gl04evxt6xkvu45d4",
     amount: [{
-      amount: '1000',
+      amount: new BigNumber('10000').shiftedBy(8).toString(10),
       denom: "swth",
     }],
   })
