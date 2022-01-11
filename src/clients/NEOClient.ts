@@ -36,8 +36,6 @@ interface ScriptResult {
   stack: ReadonlyArray<{ type: string, value: string }>
 }
 
-type SupportedBlockchains = Blockchain.Neo
-
 export class NEOClient {
   static SUPPORTED_BLOCKCHAINS = [Blockchain.Neo]
   static BLOCKCHAIN_KEY = {
@@ -345,8 +343,7 @@ export class NEOClient {
 
   public getConfig(): NeoNetworkConfig {
     const networkConfig = this.getNetworkConfig();
-    const blockchain = this.blockchain as SupportedBlockchains
-    return networkConfig[NEOClient.BLOCKCHAIN_KEY[blockchain] as SupportedBlockchains];
+    return networkConfig.neo;
   }
 
   public getProviderUrl() {
