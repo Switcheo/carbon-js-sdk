@@ -112,7 +112,9 @@ export const CommonAssetName: SimpleMap<string> = {
   'lkt.7ef7febf': 'lkt',
   'lkt.bep20.c5a4937a': 'lkt',
   'gas.1.4.66bba7': 'gas',
-
+  'fees.z.1': 'fees',
+  'lunr.z.1': 'lunr',
+  'play.z.1': 'play',
 
   // devnet tokens
   'one.1.2.0c4e3f': 'one',
@@ -294,6 +296,12 @@ export const CoinGeckoTokenNames: SimpleMap<string> = {
   dodo: 'dodo',
   math: 'math',
   lkt: 'locklet',
+  xsgd: 'xsgd',
+  gzil: 'governance-zil',
+  xcad: 'xcad-network',
+  fees: 'unifees',
+  lunr: 'lunr-token',
+  port: 'packageportal',
 };
 
 export const TokenBlacklist: OptionalNetworkMap<string[]> = {
