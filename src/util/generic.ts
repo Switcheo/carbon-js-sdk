@@ -1,3 +1,4 @@
+import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import { sha256 } from "@cosmjs/crypto";
 
 export const overrideConfig = <T = unknown>(defaults: T, override?: Partial<T>) => {
@@ -53,4 +54,23 @@ export const toTxHash = (bytes?: Uint8Array | Buffer): string | undefined => {
   if (!bytes) return bytes;
 
   return Buffer.from(bytes).toString("hex").toUpperCase();
+}
+
+export const modifyTmClient = (tmClient: Tendermint34Client) => {
+  try {
+    const p = (tmClient as any).p;
+    for (const method of Object.getOwnPropertyNames(p)) {
+      if (typeof p[method] !== 'function') continue;
+      const ogHandler = p[method]
+      p[method] = (req: any) => ({
+        ...ogHandler(req),
+        id: 42,
+      })
+    }
+  } catch (error) {
+    console.error('failed to modify tm client');
+    console.error(error)
+  }
+
+  return tmClient;
 }

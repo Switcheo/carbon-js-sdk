@@ -128,7 +128,7 @@ class CarbonSDK {
     const configOverride = opts.config ?? {};
 
     const networkConfig = GenericUtils.overrideConfig(NetworkConfigs[network], configOverride);
-    const tmClient = opts.tmClient ?? await Tendermint34Client.connect(networkConfig.tmRpcUrl);
+    const tmClient = opts.tmClient ?? GenericUtils.modifyTmClient(await Tendermint34Client.connect(networkConfig.tmRpcUrl));
     const sdk = new CarbonSDK({ network, config: configOverride, tmClient });
 
     if (opts.wallet) {
