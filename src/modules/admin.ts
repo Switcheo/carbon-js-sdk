@@ -534,7 +534,7 @@ export function transfromCreateTokenParams(msg: AdminModule.CreateTokenParams, a
     chainId: new Long(msg.chainId),
     bridgeId: new Long(msg.bridgeId),
     bridgeAddress: msg.bridgeAddress,
-    tokenAddress: msg.bridgeAddress,
+    tokenAddress: msg.tokenAddress,
   }
 }
 
