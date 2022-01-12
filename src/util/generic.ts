@@ -56,11 +56,19 @@ export const toTxHash = (bytes?: Uint8Array | Buffer): string | undefined => {
   return Buffer.from(bytes).toString("hex").toUpperCase();
 }
 
+/**
+ * Make tendermint client send RPC requests with the same request
+ * ID instead of using a random id that is unread in the client.
+ * 
+ * Motivation: enhanced cache-ability on API providers.
+ * 
+ * Broadcast methods are untouched to ensure retries don't hit cache.
+ */
 export const modifyTmClient = (tmClient: Tendermint34Client) => {
   try {
     const p = (tmClient as any).p;
     for (const method of Object.getOwnPropertyNames(p)) {
-      if (typeof p[method] !== 'function') continue;
+      if (method === "encodeBroadcastTx" || typeof p[method] !== 'function') continue;
       const ogHandler = p[method]
       p[method] = (req: any) => ({
         ...ogHandler(req),
