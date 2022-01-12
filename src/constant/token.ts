@@ -101,6 +101,10 @@ export const CommonAssetName: SimpleMap<string> = {
   'port.z.1': 'port',
   'xcad.e.1': 'xcad',
   'xcad.z.1': 'xcad',
+  'brkl.1.2.797e04': 'brkl',
+  'zbrkl.1.18.b8c24f': 'brkl',
+  'zopul.1.18.4bcdc9': 'opul',
+  'opul.1.2.d9af8f': 'opul',
   asa1: 'asa',
   asa2: 'asa',
   dbc1: 'dbc',
@@ -292,6 +296,8 @@ export const CoinGeckoTokenNames: SimpleMap<string> = {
 
 export const TokenBlacklist: OptionalNetworkMap<string[]> = {
   [Network.MainNet]: [
-    "swthb.1.6.d04123", // binance wrapped token
+    "swthb.1.6.d04123",   // binance wrapped token
+    "brkl.1.2.337f55",    // wrong token address
+    "zusdt.1.18.1cbca1",  // duplicated token
   ],
 }
