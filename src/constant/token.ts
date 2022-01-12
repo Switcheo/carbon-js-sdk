@@ -204,6 +204,8 @@ export const CoinGeckoTokenNames: SimpleMap<string> = {
   zil: 'zilliqa',
   zwap: 'zilswap',
   trb: 'tellor',
+  brkl: 'brokoli',
+  opul: 'opulous',
   grt: 'the-graph',
   inch: '1inch',
   storj: 'storj',
