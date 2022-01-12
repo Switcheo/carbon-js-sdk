@@ -62,7 +62,7 @@ export const NetworkConfigs: {
     tmWsUrl: "wss://tm-api.carbon.network/",
     restUrl: "https://api.carbon.network",
     insightsUrl: "https://api-insights.carbon.network",
-    wsUrl: "wss://ws-api.carbon.network/ws",
+    wsUrl: "wss://ws-api.carbon.tech/ws",
     faucetUrl: "",
 
     Bech32Prefix: "swth",
