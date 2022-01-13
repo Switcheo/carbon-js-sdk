@@ -225,6 +225,11 @@ class CarbonSDK {
     return this as ConnectedCarbonSDK;
   }
 
+  public disconnect(): CarbonSDK {
+    this.wallet = undefined;
+    return this as CarbonSDK;
+  }
+
   public async connectWithPrivateKey(
     privateKey: string | Buffer,
     opts?: CarbonWalletGenericOpts,
