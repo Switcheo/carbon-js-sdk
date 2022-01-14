@@ -1,4 +1,5 @@
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
+import { Params } from "@cosmjs/tendermint-rpc/build/tendermint34/adaptor/requests";
 import { sha256 } from "@cosmjs/crypto";
 
 export const overrideConfig = <T = unknown>(defaults: T, override?: Partial<T>) => {
@@ -67,14 +68,16 @@ export const toTxHash = (bytes?: Uint8Array | Buffer): string | undefined => {
 export const modifyTmClient = (tmClient: Tendermint34Client) => {
   try {
     const p = (tmClient as any).p;
+    const newEncoder = { ...p };
     for (const method of Object.getOwnPropertyNames(p)) {
       if (method === "encodeBroadcastTx" || typeof p[method] !== 'function') continue;
       const ogHandler = p[method]
-      p[method] = (req: any) => ({
+      newEncoder[method] = (req: any) => ({
         ...ogHandler(req),
         id: 42,
       })
     }
+    (tmClient as any).p = newEncoder;
   } catch (error) {
     console.error('failed to modify tm client');
     console.error(error)
