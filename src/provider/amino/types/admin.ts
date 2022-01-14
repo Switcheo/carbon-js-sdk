@@ -4,10 +4,10 @@ import { AminoInit, ConvertEncType, generateAminoType } from "../utils";
 
 const TxTypes: TypeUtils.SimpleMap<string> = {
   CreateOracle: "oracle/CreateOracle",
-  BindToken: "coin/BindToken",
-  CreateToken: "coin/CreateToken",
-  LinkToken: "coin/LinkToken",
-  SyncToken: "coin/SyncToken",
+  BindToken: "carbon/MsgBindToken",
+  CreateToken: "carbon/MsgCreateToken",
+  LinkToken: "carbon/MsgLinkToken",
+  SyncToken: "carbon/MsgSyncToken",
   CreateMarket: "market/CreateMarket",
   CreateVaultType: "cdp/CreateVaultType",
   LinkPool: "liquiditypool/LinkPool",
