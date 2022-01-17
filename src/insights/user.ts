@@ -1,9 +1,14 @@
 import { QueryByTimeRequest, TimeMeta } from "./common";
 
 export interface ActiveAccounts {
-  t: string
-  height: Long
-  users: string
+  date: string
+  last1DCount: number
+  last1WCount: number
+  last2WCount: number
+  last1MCount: number
+  last3MCount: number
+  last6MCount: number
+  last1YCount: number
 }
 
 export interface Profile {
