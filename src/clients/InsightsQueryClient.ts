@@ -38,11 +38,29 @@ class InsightsQueryClient {
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetActiveAccountsResponse>
   }
 
+  async UserProfile(req: Insights.QueryGetUserProfileRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetUserProfileResponse>> {
+    const request = this.apiManager.path('user/profile', {}, req)
+    const response = await request.get()
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetUserProfileResponse>
+  }
+
   // Pool api
   async Pools(req: Insights.QueryGetPoolsRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetPoolsResponse>> {
     const request = this.apiManager.path('pool/list', {}, req)
     const response = await request.get()
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetPoolsResponse>
+  }
+
+  async PoolsVolume(req: Insights.QueryGetPoolVolumeRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetPoolVolumeResponse>> {
+    const queryParams = {
+      poolId: req.poolId,
+      interval: req.interval,
+      from: req.from,
+      until: req.until,
+    }
+    const request = this.apiManager.path('pools/volume', {}, queryParams)
+    const response = await request.get()
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetPoolVolumeResponse>
   }
 
   async PoolVolume(req: Insights.QueryGetPoolVolumeRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetPoolVolumeResponse>> {
@@ -57,6 +75,18 @@ class InsightsQueryClient {
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetPoolVolumeResponse>
   }
 
+  async marketsVolume(req: Insights.QueryGetMarketVolumeRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetMarketVolumeResponse>> {
+    const queryParams = {
+      market: req.market,
+      interval: req.interval,
+      from: req.from,
+      until: req.until,
+    }
+    const request = this.apiManager.path('market/volume', {}, queryParams)
+    const response = await request.get()
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetMarketVolumeResponse>
+  }
+
   // Node api
   async Nodes(req: Insights.QueryGetNodesRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetNodesResponse>> {
     const request = this.apiManager.path('node/list', {}, req)
@@ -64,49 +94,6 @@ class InsightsQueryClient {
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetNodesResponse>
   }
 
-  // Block api
-  async Blocks(req: Insights.QueryGetBlocksRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetBlocksResponse>> {
-    const request = this.apiManager.path('block/list', {}, req)
-    const response = await request.get()
-    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetBlocksResponse>
-  }
-
-  async Block(req: Insights.QueryGetBlockRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetBlockResponse>> {
-    const request = this.apiManager.path('block/details', req)
-    const response = await request.get()
-    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetBlockResponse>
-  }
-
-  async BlockAtUnix(req: Insights.QueryGetBlockAtUnixRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetBlockResponse>> {
-    const request = this.apiManager.path('block/unix', req)
-    const response = await request.get()
-    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetBlockResponse>
-  }
-
-  async BlockTime(): Promise<Insights.InsightsQueryResponse<Insights.QueryGetBlockTimeResponse>> {
-    const request = this.apiManager.path('block/time')
-    const response = await request.get()
-    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetBlockTimeResponse>
-  }
-
-  // Transaction api
-  async Txs(req: Insights.QueryGetTransactionsRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetTransactionsResponse>> {
-    const request = this.apiManager.path('tx/list', {}, req)
-    const response = await request.get()
-    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetTransactionsResponse>
-  }
-
-  async TxTypes(): Promise<Insights.InsightsQueryResponse<Insights.QueryGetTransactionTypesResponse>> {
-    const request = this.apiManager.path('tx/types')
-    const response = await request.get()
-    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetTransactionTypesResponse>
-  }
-
-  async TxActivity(req: Insights.QueryGetTransactionActivityRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetTransactionActivityResponse>> {
-    const request = this.apiManager.path('tx/activity', {}, req)
-    const response = await request.get()
-    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetTransactionActivityResponse>
-  }
 
   // Balance api
   async BalanceTotal(req: Insights.QueryGetTotalBalanceRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetTotalBalanceResponse>> {

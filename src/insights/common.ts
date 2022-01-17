@@ -1,37 +1,31 @@
 export const InsightsEndpoints = {
   // User api
   'user/active': '/user/active',
+  'user/profile': '/user/profile',
 
   // Pool api
   'pool/list': '/pool/list',
   'pool/volume': '/pool/:poolId/volume',
+  'pools/volume': '/pool/volume',
+
+  //market
+  'market/volume': '/market/volume',
 
   // Node api
   'node/list': '/node/list',
-
-  // Block api
-  'block/list': '/chain/block/list',
-  'block/details': '/chain/block/:height/detail',
-  'block/time': '/chain/block/time',
-  'block/unix': '/chain/block/unix/:unix/detail',
-
-  // Transaction api
-  'tx/list': '/chain/tx/list',
-  'tx/types': '/chain/tx/types',
-  'tx/activity': '/chain/tx/activity',
 
   // Balance api
   'balance/total': '/balance/total',
   'balance/list': '/balance/list',
   'balance/change': '/balance/:address/change',
-  'balance/history': '/balance/:address/:denom/history',
   'balance/supply': '/balance/supply',
+  'balance/history': '/balance/:address/:denom/history',
 
   // Position api
   'position/leaderboard': '/position/:fromUnix/:toUnix/leaderboard',
 }
 
-export type Interval = "millisecond" | "second" | "minute" | "hour" | "day" | "month" | "quarter"
+export type Interval = "millisecond" | "second" | "minute" | "hour" | "day" | "week" | "month" | "quarter"
 
 export interface QueryByTimeRequest {
   interval?: Interval
