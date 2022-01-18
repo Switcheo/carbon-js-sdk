@@ -65,7 +65,6 @@ export const generateChannelId = (params: WsSubscriptionParams): string => {
       const { channel, market, address } = params as WsSubscribePositionsByMarketParams
       return [channel, market, address].join(':')
     }
-    // not sure what is include for channel ONLY
     case WSChannel.pools: {
       const { channel } = params as WsSubscribePoolsAllParams
       return [channel].join(':')

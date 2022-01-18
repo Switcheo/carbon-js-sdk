@@ -89,6 +89,10 @@ export interface WsSubscribeCandlesticksParams extends WsSubscribeParams {
   subscribeUID: string
 }
 
+export interface WsSubscribeBooksParams extends WsSubscribeParams {
+  market: string
+}
+
 export interface WsSubscribeRecentTradesParams extends WsSubscribeParams {
   market: string
 }
@@ -100,10 +104,6 @@ export interface WsSubscribeOrdersAllParams extends WsSubscribeParams {
 export interface WsSubscribeOrdersByMarketParams extends WsSubscribeParams {
   market?: string
   address: string
-}
-
-export interface WsSubscribeBooksParams extends WsSubscribeParams {
-  market: string
 }
 
 export interface WsSubscribeWalletBalanceParams extends WsSubscribeParams {
@@ -119,7 +119,6 @@ export interface WsSubscribeAccountTradesByMarketParams extends WsSubscribeParam
   address: string
 }
 
-// not sure what else to include since channel is included in WsSubscribeParams
 export interface WsSubscribeMarketStatsAllParams extends WsSubscribeParams { }
 
 export interface WsSubscribeMarketStatsByMarketParams extends WsSubscribeParams {
@@ -144,12 +143,6 @@ export interface WsSubscribePositionsByMarketParams extends WsSubscribeParams {
   address: string
 }
 
-export interface WsUnsubscribeCandlesticksParams extends WsSubscribeParams {
-  market: string
-  resolution: string
-}
-
-// not sure what else to include since channel is included in WsSubscribeParams
 export interface WsSubscribePoolsAllParams extends WsSubscribeParams { }
 
 export interface WsSubscribePoolsByIdParams extends WsSubscribeParams {
@@ -160,12 +153,17 @@ export interface WsSubscribeCommitmentParams extends WsSubscribeParams {
   address: string
 }
 
+export interface WsUnsubscribeCandlesticksParams extends WsSubscribeParams {
+  market: string
+  resolution: string
+}
+
 export type WsSubscriptionParams =
   | WsSubscribeCandlesticksParams
+  | WsSubscribeBooksParams
   | WsSubscribeRecentTradesParams
   | WsSubscribeOrdersAllParams
   | WsSubscribeOrdersByMarketParams
-  | WsSubscribeBooksParams
   | WsSubscribeWalletBalanceParams
   | WsSubscribeAccountTradesAllParams
   | WsSubscribeAccountTradesByMarketParams
@@ -175,7 +173,7 @@ export type WsSubscriptionParams =
   | WsSubscribeLeveragesByMarketParams
   | WsSubscribePositionsAllParams
   | WsSubscribePositionsByMarketParams
-  | WsUnsubscribeCandlesticksParams
   | WsSubscribePoolsAllParams
   | WsSubscribePoolsByIdParams
   | WsSubscribeCommitmentParams
+  | WsUnsubscribeCandlesticksParams
