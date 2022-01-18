@@ -30,6 +30,10 @@ export interface QueryGetPoolVolumeRequest extends QueryByTimeRequest {
   poolId: number
 }
 
+export interface QueryGetPoolsVolumeRequest extends QueryByTimeRequest {
+  poolIds: number[]
+}
+
 export interface QueryGetPoolVolumeResponse {
   entries: PoolVolume[]
   meta: TimeMeta

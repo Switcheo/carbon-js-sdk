@@ -51,9 +51,10 @@ class InsightsQueryClient {
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetPoolsResponse>
   }
 
-  async PoolsVolume(req: Insights.QueryGetPoolVolumeRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetPoolVolumeResponse>> {
+  async PoolsVolume(req: Insights.QueryGetPoolsVolumeRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetPoolVolumeResponse>> {
+    const poolIdStr = req.poolIds.join(',')
     const queryParams = {
-      poolId: req.poolId,
+      poolId: poolIdStr,
       interval: req.interval,
       from: req.from,
       until: req.until,
