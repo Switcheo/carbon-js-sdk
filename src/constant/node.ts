@@ -35,4 +35,19 @@ export const nodesByNet: NodeNet = {
     insightUptime: "100",
     tmWsUrl: "wss://shadow-tm-api.carbon.network/"
   }],
+  [Network.DevNet]: [{
+    nodeId: "devnetlatest",
+    rpcUrl: "https://dev39911-tm-api.carbon.network",
+    wsUrl: "wss://dev39911-ws-api.carbon.network/ws",
+    faucetUrl: "",
+    insightsUrl: "https://api-insights.carbon.network",
+    restUrl: "https://dev39911-api.carbon.network",
+    moniker: "Devnet Latest",
+    appBuild: "devnet",
+    lastupdated: "2022-01-17T10:00:00.190Z",
+    rpcUptime: "0",
+    wsUptime: "0",
+    insightUptime: "100",
+    tmWsUrl: "wss://dev39911-tm-api.carbon.network/"
+  }],
 };
