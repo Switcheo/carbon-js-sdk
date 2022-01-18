@@ -1,6 +1,6 @@
 import { QueryByTimeRequest, TimeMeta } from "./common";
 
-export interface marketVolume {
+export interface MarketVolume {
   market: string
   t: string
   height: number
@@ -12,6 +12,6 @@ export interface QueryGetMarketVolumeRequest extends QueryByTimeRequest {
 }
 
 export interface QueryGetMarketVolumeResponse {
-  entries: marketVolume[]
+  entries: MarketVolume[]
   meta: TimeMeta
 }

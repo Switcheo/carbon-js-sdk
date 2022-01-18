@@ -75,7 +75,7 @@ class InsightsQueryClient {
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetPoolVolumeResponse>
   }
 
-  async marketsVolume(req: Insights.QueryGetMarketVolumeRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetMarketVolumeResponse>> {
+  async MarketsVolume(req: Insights.QueryGetMarketVolumeRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetMarketVolumeResponse>> {
     const queryParams = {
       market: req.market,
       interval: req.interval,
