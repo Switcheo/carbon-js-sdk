@@ -78,7 +78,11 @@ class TokenClient {
 
   public getUSDValue(denom: string): BigNumber | undefined {
     const tokenId = this.tokenForDenom(denom)?.id;
-    const commonDenom = this.getCommonDenom(tokenId ?? denom);
+    // Deal with tokens with id = "" on testnet/devnet/localhost
+    const id = tokenId
+      ? (tokenId !== "" ? tokenId : denom)
+      : denom
+    const commonDenom = this.getCommonDenom(id);
     return this.usdValues[commonDenom];
   }
 
