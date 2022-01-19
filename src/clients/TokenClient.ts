@@ -315,12 +315,8 @@ class TokenClient {
         return accum;
       }
 
-      const tokenId = this.tokenForDenom(denom)?.id;
-      // Deal with tokens with id = "" on testnet/devnet/localhost
-      const id = tokenId
-        ? (tokenId !== "" ? tokenId : denom)
-        : denom;
-      const commonDenom = this.getCommonDenom(id);
+      const tokenId = this.tokenForDenom(denom)?.id ?? "";
+      const commonDenom = this.getCommonDenom(tokenId !== "" ? tokenId : denom);
 
       if (!accum[commonDenom]) {
         accum[commonDenom] = commonDenom;
