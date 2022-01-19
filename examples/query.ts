@@ -4,7 +4,7 @@ import "./_setup";
 
 (async () => {
   const sdk = await CarbonSDK.instance({
-    network: CarbonSDK.Network.MainNet,
+    network: CarbonSDK.Network.LocalHost,
     config: {
       tmRpcUrl: process.env.TRPC_ENDPOINT,
     },
@@ -15,7 +15,6 @@ import "./_setup";
   // query txn fees
   const fees = await sdk.query.fee.MsgFeeAll({})
   console.log("fees", fees);
-  process.exit(0);
 
   // query all tokens
   const tokens = await sdk.query.coin.TokenAll({
