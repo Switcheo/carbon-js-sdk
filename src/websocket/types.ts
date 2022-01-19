@@ -102,7 +102,7 @@ export interface WsSubscribeOrdersAllParams extends WsSubscribeParams {
 }
 
 export interface WsSubscribeOrdersByMarketParams extends WsSubscribeParams {
-  market?: string
+  market: string
   address: string
 }
 
@@ -115,14 +115,14 @@ export interface WsSubscribeAccountTradesAllParams extends WsSubscribeParams {
 }
 
 export interface WsSubscribeAccountTradesByMarketParams extends WsSubscribeParams {
-  market?: string
+  market: string
   address: string
 }
 
 export interface WsSubscribeMarketStatsAllParams extends WsSubscribeParams { }
 
 export interface WsSubscribeMarketStatsByMarketParams extends WsSubscribeParams {
-  market?: string
+  market: string
 }
 
 export interface WsSubscribeLeveragesAllParams extends WsSubscribeParams {
@@ -130,7 +130,7 @@ export interface WsSubscribeLeveragesAllParams extends WsSubscribeParams {
 }
 
 export interface WsSubscribeLeveragesByMarketParams extends WsSubscribeParams {
-  market?: string
+  market: string
   address: string
 }
 
@@ -139,14 +139,14 @@ export interface WsSubscribePositionsAllParams extends WsSubscribeParams {
 }
 
 export interface WsSubscribePositionsByMarketParams extends WsSubscribeParams {
-  market?: string
+  market: string
   address: string
 }
 
 export interface WsSubscribePoolsAllParams extends WsSubscribeParams { }
 
 export interface WsSubscribePoolsByIdParams extends WsSubscribeParams {
-  id?: string
+  id: string
 }
 
 export interface WsSubscribeCommitmentParams extends WsSubscribeParams {
