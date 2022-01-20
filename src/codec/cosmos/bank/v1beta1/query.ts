@@ -48,7 +48,11 @@ export interface QueryAllBalancesResponse {
  * method.
  */
 export interface QueryTotalSupplyRequest {
-  /** pagination defines an optional pagination for the request. */
+  /**
+   * pagination defines an optional pagination for the request.
+   *
+   * Since: cosmos-sdk 0.43
+   */
   pagination?: PageRequest;
 }
 
@@ -59,7 +63,11 @@ export interface QueryTotalSupplyRequest {
 export interface QueryTotalSupplyResponse {
   /** supply is the supply of the coins */
   supply: Coin[];
-  /** pagination defines the pagination in the response. */
+  /**
+   * pagination defines the pagination in the response.
+   *
+   * Since: cosmos-sdk 0.43
+   */
   pagination?: PageResponse;
 }
 

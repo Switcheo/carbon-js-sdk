@@ -4,6 +4,8 @@ import _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "cosmos.base.reflection.v2alpha1";
 
+/** Since: cosmos-sdk 0.43 */
+
 /** AppDescriptor describes a cosmos-sdk based application */
 export interface AppDescriptor {
   /**
