@@ -63,7 +63,8 @@ class TokenClient {
   public getBlockchain(denom: string): BlockchainUtils.Blockchain | undefined {
     // chainId defaults to 3 so that blockchain will be undefined
     let chainId = this.tokens[denom]?.chainId?.toNumber() ?? 3;
-    if (TokenClient.isPoolToken(denom)) {
+    if (denom === "swth" || TokenClient.isPoolToken(denom)) {
+      // native denom "swth" should be native.
       // pool tokens are on the Native blockchain, hence 0
       chainId = 0;
     }
@@ -252,7 +253,7 @@ class TokenClient {
       console.error('getDepositTokenFor token not found for', tokenDenom)
       return
     }
-    
+
     // check if selected token is a source token
     const isSourceToken = BlockchainUtils.blockchainForChainId(token.chainId.toNumber()) === chain
       && token.id !== "swth";
