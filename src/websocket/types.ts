@@ -44,6 +44,7 @@ export interface WsGetCandlesticksParams {
   from?: string
   to?: string
 }
+
 export interface WsGetOrderHistoryParams {
   market: string
   address: string
@@ -88,39 +89,67 @@ export interface WsSubscribeCandlesticksParams extends WsSubscribeParams {
   subscribeUID: string
 }
 
+export interface WsSubscribeBooksParams extends WsSubscribeParams {
+  market: string
+}
+
 export interface WsSubscribeRecentTradesParams extends WsSubscribeParams {
   market: string
 }
 
-export interface WsSubscribeOrdersParams extends WsSubscribeParams {
-  market?: string
+export interface WsSubscribeOrdersAllParams extends WsSubscribeParams {
   address: string
 }
 
-export interface WsSubscribeBooksParams extends WsSubscribeParams {
+export interface WsSubscribeOrdersByMarketParams extends WsSubscribeParams {
   market: string
+  address: string
 }
 
 export interface WsSubscribeWalletBalanceParams extends WsSubscribeParams {
   address: string
 }
 
-export interface WsSubscribeAccountTradesParams extends WsSubscribeParams {
-  market?: string
+export interface WsSubscribeAccountTradesAllParams extends WsSubscribeParams {
   address: string
 }
 
-export interface WsSubscribeMarketStatsParams extends WsSubscribeParams {
-  market?: string
-}
-
-export interface WsSubscribeLeveragesParams extends WsSubscribeParams {
-  market?: string
+export interface WsSubscribeAccountTradesByMarketParams extends WsSubscribeParams {
+  market: string
   address: string
 }
 
-export interface WsSubscribePositionsParams extends WsSubscribeParams {
-  market?: string
+export interface WsSubscribeMarketStatsAllParams extends WsSubscribeParams { }
+
+export interface WsSubscribeMarketStatsByMarketParams extends WsSubscribeParams {
+  market: string
+}
+
+export interface WsSubscribeLeveragesAllParams extends WsSubscribeParams {
+  address: string
+}
+
+export interface WsSubscribeLeveragesByMarketParams extends WsSubscribeParams {
+  market: string
+  address: string
+}
+
+export interface WsSubscribePositionsAllParams extends WsSubscribeParams {
+  address: string
+}
+
+export interface WsSubscribePositionsByMarketParams extends WsSubscribeParams {
+  market: string
+  address: string
+}
+
+export interface WsSubscribePoolsAllParams extends WsSubscribeParams { }
+
+export interface WsSubscribePoolsByIdParams extends WsSubscribeParams {
+  id: string
+}
+
+export interface WsSubscribeCommitmentParams extends WsSubscribeParams {
   address: string
 }
 
@@ -129,24 +158,22 @@ export interface WsUnsubscribeCandlesticksParams extends WsSubscribeParams {
   resolution: string
 }
 
-export interface WsSubscribePoolsParams extends WsSubscribeParams {
-  id?: string
-}
-
-export interface WsSubscribeCommitmentParams extends WsSubscribeParams {
-  address: string
-}
-
 export type WsSubscriptionParams =
   | WsSubscribeCandlesticksParams
-  | WsSubscribeRecentTradesParams
-  | WsSubscribeOrdersParams
   | WsSubscribeBooksParams
+  | WsSubscribeRecentTradesParams
+  | WsSubscribeOrdersAllParams
+  | WsSubscribeOrdersByMarketParams
   | WsSubscribeWalletBalanceParams
-  | WsSubscribeAccountTradesParams
-  | WsSubscribeMarketStatsParams
-  | WsSubscribeLeveragesParams
-  | WsSubscribePositionsParams
-  | WsUnsubscribeCandlesticksParams
-  | WsSubscribePoolsParams
+  | WsSubscribeAccountTradesAllParams
+  | WsSubscribeAccountTradesByMarketParams
+  | WsSubscribeMarketStatsAllParams
+  | WsSubscribeMarketStatsByMarketParams
+  | WsSubscribeLeveragesAllParams
+  | WsSubscribeLeveragesByMarketParams
+  | WsSubscribePositionsAllParams
+  | WsSubscribePositionsByMarketParams
+  | WsSubscribePoolsAllParams
+  | WsSubscribePoolsByIdParams
   | WsSubscribeCommitmentParams
+  | WsUnsubscribeCandlesticksParams
