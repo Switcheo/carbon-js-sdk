@@ -3,9 +3,12 @@ import {
   SetCommitmentCurveProposal, SetMsgFeeProposal, SetRewardCurveProposal, SetRewardsWeightsProposal,
   SettlementPriceProposal, UnlinkPoolProposal, UpdateMarketProposal, UpdatePoolProposal,
 } from "@carbon-sdk/codec";
+import { ParamChange } from "@carbon-sdk/codec/cosmos/params/v1beta1/params";
 import { Any } from "@carbon-sdk/codec/google/protobuf/any";
 
 export enum ProposalTypes {
+  ParameterChange = "/cosmos.params.v1beta1.ParameterChangeProposal",
+
   SetMsgFee = "/Switcheo.carbon.fee.SetMsgFeeProposal",
   CreateToken = "/Switcheo.carbon.coin.CreateTokenProposal",
   CreateOracle = "/Switcheo.carbon.oracle.CreateOracleProposal",
@@ -35,6 +38,11 @@ export const decodeContent = (content?: Any): PropDecoded => {
     return emptyProposal;
   }
   switch (content.typeUrl) {
+    case ProposalTypes.ParameterChange:
+      return {
+        ...content,
+        value: ParamChange.decode(content.value),
+      };
     case ProposalTypes.UpdatePool:
       return {
         ...content,

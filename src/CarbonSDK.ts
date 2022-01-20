@@ -226,8 +226,11 @@ class CarbonSDK {
   }
 
   public disconnect(): CarbonSDK {
-    this.wallet = undefined;
-    return this as CarbonSDK;
+    return new CarbonSDK({
+      ...this,
+      wallet: null,
+      skipInit: true,
+    });
   }
 
   public async connectWithPrivateKey(

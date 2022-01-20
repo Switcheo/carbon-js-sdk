@@ -1,5 +1,4 @@
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
-import { Params } from "@cosmjs/tendermint-rpc/build/tendermint34/adaptor/requests";
 import { sha256 } from "@cosmjs/crypto";
 
 export const overrideConfig = <T = unknown>(defaults: T, override?: Partial<T>) => {
