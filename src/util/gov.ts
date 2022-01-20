@@ -1,9 +1,9 @@
 import {
   CreateMarketProposal, CreateOracleProposal, CreateTokenProposal, LinkPoolProposal,
   SetCommitmentCurveProposal, SetMsgFeeProposal, SetRewardCurveProposal, SetRewardsWeightsProposal,
-  SettlementPriceProposal, UnlinkPoolProposal, UpdateMarketProposal, UpdatePoolProposal,
+  SettlementPriceProposal, UnlinkPoolProposal, UpdateMarketProposal, UpdatePoolProposal
 } from "@carbon-sdk/codec";
-import { ParamChange } from "@carbon-sdk/codec/cosmos/params/v1beta1/params";
+import { ParameterChangeProposal } from "@carbon-sdk/codec/cosmos/params/v1beta1/params";
 import { Any } from "@carbon-sdk/codec/google/protobuf/any";
 
 export enum ProposalTypes {
@@ -41,7 +41,7 @@ export const decodeContent = (content?: Any): PropDecoded => {
     case ProposalTypes.ParameterChange:
       return {
         ...content,
-        value: ParamChange.decode(content.value),
+        value: ParameterChangeProposal.decode(content.value),
       };
     case ProposalTypes.UpdatePool:
       return {
