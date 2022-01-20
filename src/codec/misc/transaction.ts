@@ -18,15 +18,19 @@ export interface Transaction {
   messages: Message[];
 }
 
-const baseTransaction: object = {
-  hash: "",
-  address: "",
-  code: 0,
-  memo: "",
-  gasUsed: Long.ZERO,
-  gasWanted: Long.ZERO,
-  blockHeight: Long.UZERO,
-};
+function createBaseTransaction(): Transaction {
+  return {
+    hash: "",
+    address: "",
+    code: 0,
+    memo: "",
+    gasUsed: Long.ZERO,
+    gasWanted: Long.ZERO,
+    blockHeight: Long.UZERO,
+    blockCreatedAt: undefined,
+    messages: [],
+  };
+}
 
 export const Transaction = {
   encode(
@@ -69,8 +73,7 @@ export const Transaction = {
   decode(input: _m0.Reader | Uint8Array, length?: number): Transaction {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseTransaction } as Transaction;
-    message.messages = [];
+    const message = createBaseTransaction();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -112,50 +115,34 @@ export const Transaction = {
   },
 
   fromJSON(object: any): Transaction {
-    const message = { ...baseTransaction } as Transaction;
-    message.hash =
-      object.hash !== undefined && object.hash !== null
-        ? String(object.hash)
-        : "";
-    message.address =
-      object.address !== undefined && object.address !== null
-        ? String(object.address)
-        : "";
-    message.code =
-      object.code !== undefined && object.code !== null
-        ? Number(object.code)
-        : 0;
-    message.memo =
-      object.memo !== undefined && object.memo !== null
-        ? String(object.memo)
-        : "";
-    message.gasUsed =
-      object.gasUsed !== undefined && object.gasUsed !== null
+    return {
+      hash: isSet(object.hash) ? String(object.hash) : "",
+      address: isSet(object.address) ? String(object.address) : "",
+      code: isSet(object.code) ? Number(object.code) : 0,
+      memo: isSet(object.memo) ? String(object.memo) : "",
+      gasUsed: isSet(object.gasUsed)
         ? Long.fromString(object.gasUsed)
-        : Long.ZERO;
-    message.gasWanted =
-      object.gasWanted !== undefined && object.gasWanted !== null
+        : Long.ZERO,
+      gasWanted: isSet(object.gasWanted)
         ? Long.fromString(object.gasWanted)
-        : Long.ZERO;
-    message.blockHeight =
-      object.blockHeight !== undefined && object.blockHeight !== null
+        : Long.ZERO,
+      blockHeight: isSet(object.blockHeight)
         ? Long.fromString(object.blockHeight)
-        : Long.UZERO;
-    message.blockCreatedAt =
-      object.blockCreatedAt !== undefined && object.blockCreatedAt !== null
+        : Long.UZERO,
+      blockCreatedAt: isSet(object.blockCreatedAt)
         ? fromJsonTimestamp(object.blockCreatedAt)
-        : undefined;
-    message.messages = (object.messages ?? []).map((e: any) =>
-      Message.fromJSON(e)
-    );
-    return message;
+        : undefined,
+      messages: Array.isArray(object?.messages)
+        ? object.messages.map((e: any) => Message.fromJSON(e))
+        : [],
+    };
   },
 
   toJSON(message: Transaction): unknown {
     const obj: any = {};
     message.hash !== undefined && (obj.hash = message.hash);
     message.address !== undefined && (obj.address = message.address);
-    message.code !== undefined && (obj.code = message.code);
+    message.code !== undefined && (obj.code = Math.round(message.code));
     message.memo !== undefined && (obj.memo = message.memo);
     message.gasUsed !== undefined &&
       (obj.gasUsed = (message.gasUsed || Long.ZERO).toString());
@@ -175,8 +162,10 @@ export const Transaction = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<Transaction>): Transaction {
-    const message = { ...baseTransaction } as Transaction;
+  fromPartial<I extends Exact<DeepPartial<Transaction>, I>>(
+    object: I
+  ): Transaction {
+    const message = createBaseTransaction();
     message.hash = object.hash ?? "";
     message.address = object.address ?? "";
     message.code = object.code ?? 0;
@@ -194,9 +183,8 @@ export const Transaction = {
         ? Long.fromValue(object.blockHeight)
         : Long.UZERO;
     message.blockCreatedAt = object.blockCreatedAt ?? undefined;
-    message.messages = (object.messages ?? []).map((e) =>
-      Message.fromPartial(e)
-    );
+    message.messages =
+      object.messages?.map((e) => Message.fromPartial(e)) || [];
     return message;
   },
 };
@@ -209,6 +197,7 @@ type Builtin =
   | number
   | boolean
   | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
   : T extends Long
@@ -220,6 +209,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 function toTimestamp(date: Date): Timestamp {
   const seconds = numberToLong(date.getTime() / 1_000);
@@ -250,4 +247,8 @@ function numberToLong(number: number) {
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }
