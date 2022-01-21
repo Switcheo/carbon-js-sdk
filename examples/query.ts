@@ -80,7 +80,7 @@ import "./_setup";
   // filter transactions with MessageType
   const filteredTxns = await sdk.query.misc.TransactionAll(
     QueryAllTransactionRequest.fromPartial({
-      msgTypeFilters: firstMessageType,
+      msgTypeFilters: [firstMessageType],
       pagination: {
         page: new Long(1),
         pageSize: new Long(10),
