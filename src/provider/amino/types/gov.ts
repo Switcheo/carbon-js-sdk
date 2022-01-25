@@ -49,7 +49,6 @@ const MsgVote: AminoInit = {
   aminoType: TxTypes.Vote,
   valueMap: {
     proposalId: ConvertEncType.Long,
-    option: ConvertEncType.NumToStr,
   },
 };
 
