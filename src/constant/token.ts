@@ -14,6 +14,7 @@ export const CommonAssetName: SimpleMap<string> = {
   btc1: 'btc',
   'btc.1.1.6569cd': 'btc',
   usdc1: 'usdc',
+  iusd: 'usdc',
   'usdc.0.2.ef2019': 'usdc',
   wbtc1: 'wbtc',
   cel1: 'cel',
