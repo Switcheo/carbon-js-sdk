@@ -31,11 +31,11 @@ export interface HistoryOrder {
   is_reduce_only: boolean;
   market: string;
   order_id: string;
-  order_status: string;
   order_type: string;
   price: string;
   quantity: string;
   side: string;
+  status: string;
   stop_price: string;
   time_in_force: string;
   trigger_type: string;
