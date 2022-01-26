@@ -1,7 +1,7 @@
 import { Token } from "@carbon-sdk/codec";
 import { CoinGeckoTokenNames, CommonAssetName, NetworkConfigProvider, TokenBlacklist } from "@carbon-sdk/constant";
 import { BlockchainUtils, FetchUtils, NumberUtils, TypeUtils } from "@carbon-sdk/util";
-import { BN_ZERO } from "@carbon-sdk/util/number";
+import { BN_ONE, BN_ZERO } from "@carbon-sdk/util/number";
 import BigNumber from "bignumber.js";
 import Long from "long";
 import CarbonQueryClient from "./CarbonQueryClient";
@@ -310,6 +310,8 @@ class TokenClient {
   }
 
   public async reloadUSDValues(denoms: string[] = Object.keys(this.tokens)): Promise<TypeUtils.SimpleMap<BigNumber>> {
+    this.usdValues.iusd = BN_ONE;
+
     // flatten duplicate denoms
     const commonDenoms = denoms.reduce((accum, denom) => {
       if (TokenClient.isPoolToken(denom)) {
