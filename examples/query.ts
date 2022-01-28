@@ -1,4 +1,5 @@
 import Long from "long";
+import { QueryAllTransactionRequest } from "../lib/codec";
 import { CarbonSDK, CarbonTx, GenericUtils } from "./_sdk";
 import "./_setup";
 
@@ -50,6 +51,42 @@ import "./_setup";
     username: "",
   });
   console.log("profiles", profiles);
+
+  // query 10 latest blocks
+  const blocksResponse = await sdk.query.misc.BlockAll({
+    pagination: {
+      page: new Long(1),
+      pageSize: new Long(10),
+    },
+  });
+  console.log("latest block", blocksResponse.blocks[0]);
+
+  // query 10 latest transactions
+  const txnsResponse = await sdk.query.misc.TransactionAll(
+    QueryAllTransactionRequest.fromPartial({
+    pagination: {
+      page: new Long(1),
+      pageSize: new Long(10),
+    },
+  }));
+  console.log("latest txn", txnsResponse.transactions[0]);
+
+  // query all transaction MessageTypes
+  const messageTypeReponse = await sdk.query.misc.MessageTypeAll({});
+  console.log("message types", messageTypeReponse.messageTypes);
+  
+  const firstMessageType = messageTypeReponse.messageTypes[0].messageType;
+
+  // filter transactions with MessageType
+  const filteredTxns = await sdk.query.misc.TransactionAll(
+    QueryAllTransactionRequest.fromPartial({
+      msgTypeFilters: [firstMessageType],
+      pagination: {
+        page: new Long(1),
+        pageSize: new Long(10),
+      },
+    }));
+  console.log("filtered txns by messageType:", firstMessageType, filteredTxns.transactions[0]);
 
   // Tendermint Queries
   // Note: sdk.query.chain is an instance of BlockchainClient

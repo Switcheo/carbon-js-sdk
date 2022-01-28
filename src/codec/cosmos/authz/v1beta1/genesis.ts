@@ -6,6 +6,8 @@ import { Timestamp } from "../../../google/protobuf/timestamp";
 
 export const protobufPackage = "cosmos.authz.v1beta1";
 
+/** Since: cosmos-sdk 0.43 */
+
 /** GenesisState defines the authz module's genesis state. */
 export interface GenesisState {
   authorization: GrantAuthorization[];

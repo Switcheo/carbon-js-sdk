@@ -13,7 +13,14 @@ export interface Message {
   blockCreatedAt?: Date;
 }
 
-const baseMessage: object = { hash: "", message: "" };
+function createBaseMessage(): Message {
+  return {
+    hash: "",
+    message: "",
+    messageType: undefined,
+    blockCreatedAt: undefined,
+  };
+}
 
 export const Message = {
   encode(
@@ -44,7 +51,7 @@ export const Message = {
   decode(input: _m0.Reader | Uint8Array, length?: number): Message {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMessage } as Message;
+    const message = createBaseMessage();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -71,24 +78,16 @@ export const Message = {
   },
 
   fromJSON(object: any): Message {
-    const message = { ...baseMessage } as Message;
-    message.hash =
-      object.hash !== undefined && object.hash !== null
-        ? String(object.hash)
-        : "";
-    message.message =
-      object.message !== undefined && object.message !== null
-        ? String(object.message)
-        : "";
-    message.messageType =
-      object.messageType !== undefined && object.messageType !== null
+    return {
+      hash: isSet(object.hash) ? String(object.hash) : "",
+      message: isSet(object.message) ? String(object.message) : "",
+      messageType: isSet(object.messageType)
         ? MessageType.fromJSON(object.messageType)
-        : undefined;
-    message.blockCreatedAt =
-      object.blockCreatedAt !== undefined && object.blockCreatedAt !== null
+        : undefined,
+      blockCreatedAt: isSet(object.blockCreatedAt)
         ? fromJsonTimestamp(object.blockCreatedAt)
-        : undefined;
-    return message;
+        : undefined,
+    };
   },
 
   toJSON(message: Message): unknown {
@@ -104,8 +103,8 @@ export const Message = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<Message>): Message {
-    const message = { ...baseMessage } as Message;
+  fromPartial<I extends Exact<DeepPartial<Message>, I>>(object: I): Message {
+    const message = createBaseMessage();
     message.hash = object.hash ?? "";
     message.message = object.message ?? "";
     message.messageType =
@@ -125,6 +124,7 @@ type Builtin =
   | number
   | boolean
   | undefined;
+
 export type DeepPartial<T> = T extends Builtin
   ? T
   : T extends Long
@@ -136,6 +136,14 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+type KeysOfUnion<T> = T extends T ? keyof T : never;
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
+        Exclude<keyof I, KeysOfUnion<P>>,
+        never
+      >;
 
 function toTimestamp(date: Date): Timestamp {
   const seconds = numberToLong(date.getTime() / 1_000);
@@ -166,4 +174,8 @@ function numberToLong(number: number) {
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isSet(value: any): boolean {
+  return value !== null && value !== undefined;
 }
