@@ -63,7 +63,7 @@ class TokenClient {
   public getBlockchain(denom: string): BlockchainUtils.Blockchain | undefined {
     // chainId defaults to 3 so that blockchain will be undefined
     let chainId = this.tokens[denom]?.chainId?.toNumber() ?? 3;
-    if (denom === "swth" || TokenClient.isPoolToken(denom)) {
+    if (this.isNativeToken(denom) || TokenClient.isPoolToken(denom)) {
       // native denom "swth" should be native.
       // pool tokens are on the Native blockchain, hence 0
       chainId = 0;
@@ -247,6 +247,10 @@ class TokenClient {
     return this.tokenForId("swth");
   }
 
+  public isNativeToken(denom: string): boolean {
+    return denom === "swth";
+  }
+
   public getDepositTokenFor(tokenDenom: string, chain: BlockchainUtils.Blockchain): Token | undefined {
     const token = this.tokenForDenom(tokenDenom);
     if (!token) {
@@ -291,6 +295,10 @@ class TokenClient {
       if (TokenClient.isPoolToken(token.denom)) {
         this.poolTokens[token.denom] = token;
       } else {
+        if (this.isNativeToken(token.denom)) {
+          // Change token name to Carbon
+          token.name = 'Carbon';
+        }
         this.tokens[token.denom] = token;
 
         if (!this.wrapperMap[token.denom]) {
