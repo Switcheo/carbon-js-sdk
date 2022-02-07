@@ -1,4 +1,5 @@
 import Long from "long";
+import { AddressUtils } from "../lib";
 import { QueryAllTransactionRequest } from "../lib/codec";
 import { CarbonSDK, CarbonTx, GenericUtils } from "./_sdk";
 import "./_setup";
