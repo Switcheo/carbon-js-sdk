@@ -63,7 +63,7 @@ export const NetworkConfigs: {
     tmWsUrl: "wss://tm-api.carbon.network/",
     restUrl: "https://api.carbon.network",
     insightsUrl: "https://api-insights.carbon.network",
-    hydrogenUrl: "http://hydrogen-api.carbon.network",
+    hydrogenUrl: "https://hydrogen-api.carbon.network",
     wsUrl: "wss://ws-api.carbon.tech/ws",
     faucetUrl: "",
 
@@ -109,7 +109,7 @@ export const NetworkConfigs: {
     tmWsUrl: "wss://test-tm-api.carbon.network",
     restUrl: "https://test-api.carbon.network",
     insightsUrl: "https://test-api-insights.carbon.network",
-    hydrogenUrl: "http://hydrogen-api.carbon.network",
+    hydrogenUrl: "",
     wsUrl: "wss://test-ws-api.carbon.network/ws",
     faucetUrl: "https://test-faucet.carbon.network",
 
@@ -155,7 +155,7 @@ export const NetworkConfigs: {
     tmWsUrl: "wss://dev-tm-api.carbon.network",
     restUrl: "https://dev-api.carbon.network",
     insightsUrl: "https://dev-api-insights.carbon.network",
-    hydrogenUrl: "http://hydrogen-api.carbon.network",
+    hydrogenUrl: "https://hydrogen-api.carbon.network",
     wsUrl: "wss://dev-ws-api.carbon.network/ws",
     faucetUrl: "https://dev-faucet.carbon.network",
 
@@ -201,7 +201,7 @@ export const NetworkConfigs: {
     tmWsUrl: "ws://localhost:26657",
     restUrl: "http://localhost:1317",
     insightsUrl: "http://localhost:8181",
-    hydrogenUrl: "http://hydrogen-api.carbon.network",
+    hydrogenUrl: "",
     wsUrl: "ws://localhost:5000/ws",
     faucetUrl: "http://localhost:4500",
 
