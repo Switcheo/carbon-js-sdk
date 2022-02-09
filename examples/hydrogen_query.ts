@@ -2,7 +2,7 @@ import { CarbonSDK }  from "./_sdk";
 
 (async () => {
   const sdk = await CarbonSDK.instance({
-    network: CarbonSDK.Network.MainNet,
+    network: CarbonSDK.Network.DevNet,
     config: {
       tmRpcUrl: process.env.TRPC_ENDPOINT,
     },
