@@ -1,5 +1,5 @@
 import Long from "long";
-import { AddressUtils } from "../lib";
+import { AddressUtils, Hydrogen } from "../lib";
 import { QueryAllTransactionRequest } from "../lib/codec";
 import { CarbonSDK, CarbonTx, GenericUtils } from "./_sdk";
 import "./_setup";
@@ -117,4 +117,18 @@ import "./_setup";
   const decodedTx = CarbonTx.decode(tx.tx)
   console.log("tx decoded", JSON.stringify(decodedTx))
   console.log("tx msgs", decodedTx?.body?.messages)
+
+  // Hydrogen transfer payload query
+  const sdkMainNet = await CarbonSDK.instance({
+    network: CarbonSDK.Network.MainNet,
+    config: {
+      tmRpcUrl: process.env.TRPC_ENDPOINT,
+    },
+  });
+
+  // query 5 crosschain transfers
+  const transferPayloadResponse = await sdkMainNet.hydrogen.TransferPayloads({
+    limit: 5,
+  })
+  console.log(`first crosschain transfer`, transferPayloadResponse.data[0]);
 })().catch(console.error).finally(() => process.exit(0));
