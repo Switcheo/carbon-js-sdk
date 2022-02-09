@@ -14,46 +14,46 @@ export interface QueryGetTransferPayloadsResponse {
 
 export interface TransferPayload {
     id: string
-    crossChainFlowId: string
-    assetName: string
-    fromAddress: string
-    fromAddressHash: string
-    fromAsset: string
-    fromAssetHash: string
-    toAddress: string
-    toAddressHash: string
-    toAsset: string
-    toAssetHash: string
+    cross_chain_flow_id: string
+    asset_name: string
+    from_address: string
+    from_address_hash: string
+    from_asset: string
+    from_asset_hash: string
+    to_address: string
+    to_address_hash: string
+    to_asset: string
+    to_asset_hash: string
     amount: string
-    feeAddress: string
-    feeAddressHash: string
-    feeAmount: string
+    fee_address: string
+    fee_address_hash: string
+    fee_amount: string
     nonce: string
-    createdAt: string
-    updatedAt: string
-    sourceTransaction: Transaction
-    bridgingTransaction: Transaction
-    desinationTransaction: Transaction
+    created_at: Date
+    updated_at: Date
+    source_transaction: Transaction
+    bridging_transaction: Transaction
+    desination_transaction: Transaction
 }
 
 export interface Transaction {
     id: string
-    eventId: string
-    crossChainFlowId: string
-    linkStatus: string
-    txHash: string
-    txFee: string
-    blockChain: string
+    event_id: string
+    cross_chain_flow_id: string
+    link_status: string
+    tx_hash: string
+    tx_fee: string
+    blockchain: Blockchain
     contract: string
-    relayedBy: string
-    destinationBlockChain: string
-    destinationContract: string
-    destinationMethod: string
-    broadcastStatus: string
-    broadcastedBy: string
-    broadcastedAt: string
-    createdAt: string
-    updatedAt: string
-    blockTime: string
-    blockHeight: string
+    relayed_by: string
+    destination_blockchain: Blockchain
+    destination_contract: string
+    destination_method: string
+    broadcast_status: string
+    broadcasted_by: string
+    broadcasted_at: Date
+    created_at: Date
+    updated_at: Date
+    block_time: number
+    block_height: number
 }
