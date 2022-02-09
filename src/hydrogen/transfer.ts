@@ -1,15 +1,20 @@
+import { Blockchain } from "..";
+
 export interface QueryGetTransferPayloadsRequest {
-    include_tx: boolean
-    bridge_blockchain: string
-    from_address: string
-    to_address: string
-    asset_name: string
-    offset: number
-    limit: number
+    include_tx?: boolean
+    bridge_blockchain?: string
+    from_address?: string
+    to_address?: string
+    asset_name?: string
+    offset?: number
+    limit?: number
 }
 
 export interface QueryGetTransferPayloadsResponse {
     data: TransferPayload[]
+    pagination: {
+        total_pages: number
+    }
 }
 
 export interface TransferPayload {

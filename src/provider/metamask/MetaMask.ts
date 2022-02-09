@@ -50,6 +50,41 @@ const CONTRACT_HASH = {
 
     [Network.MainNet]: '',
   } as const,
+  [Blockchain.Carbon]: {
+    [Network.TestNet]: '',
+    [Network.DevNet]: '',
+    [Network.LocalHost]: '',
+
+    [Network.MainNet]: '',
+  } as const,
+  [Blockchain.Switcheo]: {
+    [Network.TestNet]: '',
+    [Network.DevNet]: '',
+    [Network.LocalHost]: '',
+
+    [Network.MainNet]: '',
+  } as const,
+  [Blockchain.PolyNetwork]: {
+    [Network.TestNet]: '',
+    [Network.DevNet]: '',
+    [Network.LocalHost]: '',
+
+    [Network.MainNet]: '',
+  } as const,
+  [Blockchain.NEO]: {
+    [Network.TestNet]: '',
+    [Network.DevNet]: '',
+    [Network.LocalHost]: '',
+
+    [Network.MainNet]: '',
+  } as const,
+  [Blockchain.NEO3]: {
+    [Network.TestNet]: '',
+    [Network.DevNet]: '',
+    [Network.LocalHost]: '',
+
+    [Network.MainNet]: '',
+  } as const,
 } as const
 
 const REGISTRY_CONTRACT_ABI = ABIs.keyStorage

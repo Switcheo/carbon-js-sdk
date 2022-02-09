@@ -7,6 +7,11 @@ export enum Blockchain {
   Zilliqa = 'zil',
   Native = 'native',
   Btc = 'btc',
+  Carbon = 'carbon',
+  Switcheo = 'carbon',
+  PolyNetwork = 'polynetwork',
+  NEO = 'neo',
+  NEO3 = 'n3',
 };
 
 export const BRIDGE_IDS = {
