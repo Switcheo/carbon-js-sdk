@@ -1,15 +1,24 @@
 import { APIUtils } from "@carbon-sdk/util"
 import { Hydrogen } from "@carbon-sdk/index"
-import { Network, NetworkConfig } from "@carbon-sdk/constant";
+import { NetworkConfig } from "@carbon-sdk/constant";
+
+export const HydrogenEndpoints = {
+  // Status api
+  'stats': '/stats',
+
+  // Transfer Payloads api
+  'transfer_payloads': '/transfer_payloads',
+}
+
 
 class HydrogenQueryClient {
-  public readonly apiManager: APIUtils.APIManager<typeof Hydrogen.HydrogenEndpoints>
+  public readonly apiManager: APIUtils.APIManager<typeof HydrogenEndpoints>
   
   constructor(
       config: NetworkConfig
   ) {
       const responseParser: APIUtils.ResponseParser = this.parseResponse.bind(this);
-      this.apiManager = new APIUtils.APIManager(config.hydrogenUrl, Hydrogen.HydrogenEndpoints, responseParser)
+      this.apiManager = new APIUtils.APIManager(config.hydrogenUrl, HydrogenEndpoints, responseParser)
   }
 
   async parseResponse(response: Response): Promise<APIUtils.RequestResult> {
