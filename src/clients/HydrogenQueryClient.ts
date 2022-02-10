@@ -19,27 +19,7 @@ class HydrogenQueryClient {
   constructor(
       config: NetworkConfig
   ) {
-      const responseParser: APIUtils.ResponseParser = this.parseResponse.bind(this);
-      this.apiManager = new APIUtils.APIManager(config.hydrogenUrl, HydrogenEndpoints, responseParser)
-  }
-
-  async parseResponse(response: Response): Promise<APIUtils.RequestResult> {
-    const { status, statusText, headers, url } = response
-    const result: APIUtils.RequestResult = { status, statusText, headers, url }
-
-    try {
-      const responseJson = await response.json()
-      result.data = responseJson
-
-    } catch (e) {
-      console.error(e);
-    }
-
-    if (response.status >= 400 && response.status < 600) {
-      throw new APIUtils.RequestError(result, result.data?.error?.message || 'unknown error')
-    }
-
-    return result;
+      this.apiManager = new APIUtils.APIManager(config.hydrogenUrl, HydrogenEndpoints)
   }
 
   // Status api
