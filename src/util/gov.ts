@@ -4,10 +4,12 @@ import {
   SettlementPriceProposal, UnlinkPoolProposal, UpdateMarketProposal, UpdatePoolProposal
 } from "@carbon-sdk/codec";
 import { ParameterChangeProposal } from "@carbon-sdk/codec/cosmos/params/v1beta1/params";
+import { SoftwareUpgradeProposal } from "@carbon-sdk/codec/cosmos/upgrade/v1beta1/upgrade";
 import { Any } from "@carbon-sdk/codec/google/protobuf/any";
 
 export enum ProposalTypes {
   ParameterChange = "/cosmos.params.v1beta1.ParameterChangeProposal",
+  SoftwareUpgrade = "/cosmos.params.v1beta1.SoftwareUpgradeProposal",
 
   SetMsgFee = "/Switcheo.carbon.fee.SetMsgFeeProposal",
   CreateToken = "/Switcheo.carbon.coin.CreateTokenProposal",
@@ -42,6 +44,11 @@ export const decodeContent = (content?: Any): PropDecoded => {
       return {
         ...content,
         value: ParameterChangeProposal.decode(content.value),
+      };
+    case ProposalTypes.SoftwareUpgrade:
+      return {
+        ...content,
+        value: SoftwareUpgradeProposal.decode(content.value),
       };
     case ProposalTypes.UpdatePool:
       return {
