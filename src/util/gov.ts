@@ -9,7 +9,7 @@ import { Any } from "@carbon-sdk/codec/google/protobuf/any";
 
 export enum ProposalTypes {
   ParameterChange = "/cosmos.params.v1beta1.ParameterChangeProposal",
-  SoftwareUpgrade = "/cosmos.params.v1beta1.SoftwareUpgradeProposal",
+  SoftwareUpgrade = "/cosmos.upgrade.v1beta1.SoftwareUpgradeProposal",
 
   SetMsgFee = "/Switcheo.carbon.fee.SetMsgFeeProposal",
   CreateToken = "/Switcheo.carbon.coin.CreateTokenProposal",
