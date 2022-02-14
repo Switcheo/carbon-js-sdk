@@ -5,7 +5,13 @@ import { ethers } from 'ethers'
 import * as ethSignUtils from 'eth-sig-util'
 import { ETHClient } from '@carbon-sdk/clients/ETHClient'
 
-const CONTRACT_HASH = {
+type EVMChain = Blockchain.Ethereum | Blockchain.BinanceSmartChain;
+type ChainContracts = {
+  [key in Network]: string;
+}
+const CONTRACT_HASH: {
+  [key in EVMChain]: ChainContracts
+} = {
   [Blockchain.Ethereum]: {
     // use same ropsten contract for all non-mainnet uses
     [Network.TestNet]: '0x23629C94F4e8b719094f5D1Ae1c1AA8d6d687966',
@@ -21,69 +27,6 @@ const CONTRACT_HASH = {
     [Network.LocalHost]: '0x06E949ec2d6737ff57859CdcE426C5b5CA2Fc085',
 
     [Network.MainNet]: '0x3786d94AC6B15FE2eaC72c3CA78cB82578Fc66f4',
-  } as const,
-  [Blockchain.Neo]: {
-    [Network.TestNet]: '',
-    [Network.DevNet]: '',
-    [Network.LocalHost]: '',
-
-    [Network.MainNet]: '',
-  } as const,
-  [Blockchain.Zilliqa]: {
-    [Network.TestNet]: '',
-    [Network.DevNet]: '',
-    [Network.LocalHost]: '',
-
-    [Network.MainNet]: '',
-  } as const,
-  [Blockchain.Native]: {
-    [Network.TestNet]: '',
-    [Network.DevNet]: '',
-    [Network.LocalHost]: '',
-
-    [Network.MainNet]: '',
-  } as const,
-  [Blockchain.Btc]: {
-    [Network.TestNet]: '',
-    [Network.DevNet]: '',
-    [Network.LocalHost]: '',
-
-    [Network.MainNet]: '',
-  } as const,
-  [Blockchain.Carbon]: {
-    [Network.TestNet]: '',
-    [Network.DevNet]: '',
-    [Network.LocalHost]: '',
-
-    [Network.MainNet]: '',
-  } as const,
-  [Blockchain.Switcheo]: {
-    [Network.TestNet]: '',
-    [Network.DevNet]: '',
-    [Network.LocalHost]: '',
-
-    [Network.MainNet]: '',
-  } as const,
-  [Blockchain.PolyNetwork]: {
-    [Network.TestNet]: '',
-    [Network.DevNet]: '',
-    [Network.LocalHost]: '',
-
-    [Network.MainNet]: '',
-  } as const,
-  [Blockchain.NEO]: {
-    [Network.TestNet]: '',
-    [Network.DevNet]: '',
-    [Network.LocalHost]: '',
-
-    [Network.MainNet]: '',
-  } as const,
-  [Blockchain.NEO3]: {
-    [Network.TestNet]: '',
-    [Network.DevNet]: '',
-    [Network.LocalHost]: '',
-
-    [Network.MainNet]: '',
   } as const,
 } as const
 
@@ -141,9 +84,9 @@ export interface MetaMaskSyncResult {
  * TODO: Add docs
  */
 export class MetaMask {
-  private blockchain: Blockchain = Blockchain.Ethereum
+  private blockchain: EVMChain = Blockchain.Ethereum
 
-  static getNetworkParams(network: Network, blockchain: Blockchain = Blockchain.Ethereum): MetaMaskChangeNetworkParam {
+  static getNetworkParams(network: Network, blockchain: EVMChain = Blockchain.Ethereum): MetaMaskChangeNetworkParam {
     if (network === Network.MainNet) {
       switch (blockchain) {
         case Blockchain.BinanceSmartChain:
@@ -242,7 +185,7 @@ export class MetaMask {
   async syncBlockchain(): Promise<MetaMaskSyncResult> {
     const chainIdHex = await this.getAPI()?.request({ method: 'eth_chainId' }) as string
     const chainId = !!chainIdHex ? parseInt(chainIdHex, 16) : undefined
-    const blockchain = getBlockchainFromChain(chainId)
+    const blockchain = getBlockchainFromChain(chainId) as EVMChain
     this.blockchain = blockchain!
 
     return { chainId, blockchain }
@@ -286,7 +229,7 @@ export class MetaMask {
     return defaultAccount
   }
 
-  async getStoredMnemonicCipher(account: string, blockchain?: Blockchain): Promise<string | undefined> {
+  async getStoredMnemonicCipher(account: string, blockchain?: EVMChain): Promise<string | undefined> {
     const contractHash = this.getContractHash(blockchain)
     const provider = this.checkProvider(blockchain)
     const contract = new ethers.Contract(contractHash, REGISTRY_CONTRACT_ABI, provider)
@@ -328,7 +271,7 @@ export class MetaMask {
     return Buffer.from(encryptedMnemonic).toString('hex')
   }
 
-  async storeMnemonic(encryptedMnemonic: string, blockchain?: Blockchain) {
+  async storeMnemonic(encryptedMnemonic: string, blockchain?: EVMChain) {
     const metamaskAPI = await this.getConnectedAPI()
     const defaultAccount = await this.defaultAccount()
     const storedMnemonicCipher = await this.getStoredMnemonicCipher(defaultAccount, blockchain)
@@ -355,7 +298,7 @@ export class MetaMask {
     return txHash
   }
 
-  async login(blockchain?: Blockchain): Promise<string | null> {
+  async login(blockchain?: EVMChain): Promise<string | null> {
     const metamaskAPI = await this.getConnectedAPI()
     const defaultAccount = await this.defaultAccount()
     const cipherTextHex: string | undefined = await this.getStoredMnemonicCipher(defaultAccount, blockchain)
@@ -436,7 +379,7 @@ export class MetaMask {
     return 3
   }
 
-  private getContractHash(blockchain: Blockchain = this.blockchain) {
+  private getContractHash(blockchain: EVMChain = this.blockchain) {
     const contractHash = CONTRACT_HASH[blockchain][this.network]
     if (!contractHash) {
       throw new Error(`MetaMask login is not supported on ${this.network} on ${blockchain}`)

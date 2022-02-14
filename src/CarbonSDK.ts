@@ -2,7 +2,7 @@ import { DEFAULT_NETWORK, Network, Network as _Network, NetworkConfig, NetworkCo
 import { GenericUtils, NetworkUtils } from "@carbon-sdk/util";
 import { OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
-import { CarbonQueryClient, ETHClient, HydrogenQueryClient, InsightsQueryClient, NEOClient, TokenClient, ZILClient } from "./clients";
+import { CarbonQueryClient, ETHClient, HydrogenClient, InsightsQueryClient, NEOClient, TokenClient, ZILClient } from "./clients";
 import { AdminModule, BankModule, BrokerModule, CDPModule, CoinModule, FeeModule, GovModule, LeverageModule, LiquidityPoolModule, MarketModule, OracleModule, OrderModule, PositionModule, ProfileModule, SubAccountModule } from "./modules";
 import { StakingModule } from "./modules/staking";
 import { CosmosLedger } from "./provider";
@@ -43,7 +43,7 @@ class CarbonSDK {
 
   public readonly query: CarbonQueryClient;
   insights: InsightsQueryClient;
-  hydrogen: HydrogenQueryClient;
+  hydrogen: HydrogenClient;
 
   wallet?: CarbonWallet;
 
@@ -83,7 +83,7 @@ class CarbonSDK {
     this.tmClient = opts.tmClient;
     this.query = new CarbonQueryClient(opts.tmClient);
     this.insights = new InsightsQueryClient(this.networkConfig);
-    this.hydrogen = new HydrogenQueryClient(this.networkConfig);
+    this.hydrogen = new HydrogenClient(this.networkConfig);
     this.token = opts.token ?? TokenClient.instance(this.query, this);
 
     this.admin = new AdminModule(this);

@@ -1,6 +1,6 @@
-export interface QueryGetStatsRequest {}
+export interface GetStatsRequest {}
 
-export interface QueryGetStatsResponse {
+export interface GetStatsResponse {
     transactionCounts: TransactionCount[]
     monitors: Monitor[]
     queues: Queue[]
