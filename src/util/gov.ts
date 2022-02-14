@@ -3,13 +3,18 @@ import {
   SetCommitmentCurveProposal, SetMsgFeeProposal, SetRewardCurveProposal, SetRewardsWeightsProposal,
   SettlementPriceProposal, UnlinkPoolProposal, UpdateMarketProposal, UpdatePoolProposal
 } from "@carbon-sdk/codec";
+import { CommunityPoolSpendProposal } from "@carbon-sdk/codec/cosmos/distribution/v1beta1/distribution";
+import { TextProposal } from "@carbon-sdk/codec/cosmos/gov/v1beta1/gov";
 import { ParameterChangeProposal } from "@carbon-sdk/codec/cosmos/params/v1beta1/params";
-import { SoftwareUpgradeProposal } from "@carbon-sdk/codec/cosmos/upgrade/v1beta1/upgrade";
+import { CancelSoftwareUpgradeProposal, SoftwareUpgradeProposal } from "@carbon-sdk/codec/cosmos/upgrade/v1beta1/upgrade";
 import { Any } from "@carbon-sdk/codec/google/protobuf/any";
 
 export enum ProposalTypes {
   ParameterChange = "/cosmos.params.v1beta1.ParameterChangeProposal",
   SoftwareUpgrade = "/cosmos.upgrade.v1beta1.SoftwareUpgradeProposal",
+  CancelSoftwareUpgrade = "/cosmos.upgrade.v1beta1.CancelSoftwareUpgradeProposal",
+  CommunityPoolSpend = "/cosmos.distribution.v1beta1.CommunityPoolSpendProposal",
+  Text = "/cosmos.gov.v1beta1.TextProposal",
 
   SetMsgFee = "/Switcheo.carbon.fee.SetMsgFeeProposal",
   CreateToken = "/Switcheo.carbon.coin.CreateTokenProposal",
@@ -49,6 +54,21 @@ export const decodeContent = (content?: Any): PropDecoded => {
       return {
         ...content,
         value: SoftwareUpgradeProposal.decode(content.value),
+      };
+    case ProposalTypes.CancelSoftwareUpgrade:
+      return {
+        ...content,
+        value: CancelSoftwareUpgradeProposal.decode(content.value),
+      };
+    case ProposalTypes.CommunityPoolSpend:
+      return {
+        ...content,
+        value: CommunityPoolSpendProposal.decode(content.value),
+      };
+    case ProposalTypes.Text:
+      return {
+        ...content,
+        value: TextProposal.decode(content.value),
       };
     case ProposalTypes.UpdatePool:
       return {
