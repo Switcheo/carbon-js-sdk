@@ -4,6 +4,7 @@ export * from "./broker";
 export * from "./cdp";
 export * from "./coin";
 export * from "./gov";
+export * from "./ibc";
 export * from "./leverage";
 export * from "./liquiditypool";
 export * from "./market";
