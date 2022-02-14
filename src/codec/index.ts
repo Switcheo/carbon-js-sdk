@@ -16,6 +16,10 @@ import { MsgCreateValidator, MsgCreateValidatorResponse, MsgEditValidator, MsgEd
 import { MsgGrant, MsgExecResponse, MsgExec, MsgGrantResponse, MsgRevoke, MsgRevokeResponse } from "./cosmos/authz/v1beta1/tx";
 import { MsgUnjail, MsgUnjailResponse } from "./cosmos/slashing/v1beta1/tx";
 import { MsgSubmitProposal, MsgSubmitProposalResponse, MsgVote, MsgVoteResponse, MsgVoteWeighted, MsgVoteWeightedResponse, MsgDeposit, MsgDepositResponse } from "./cosmos/gov/v1beta1/tx";
+import { MsgConnectionOpenInit, MsgConnectionOpenInitResponse, MsgConnectionOpenTry, MsgConnectionOpenTryResponse, MsgConnectionOpenAck, MsgConnectionOpenAckResponse, MsgConnectionOpenConfirm, MsgConnectionOpenConfirmResponse } from "./ibc/core/connection/v1/tx";
+import { MsgChannelOpenInit, MsgChannelOpenInitResponse, MsgChannelOpenTry, MsgChannelOpenTryResponse, MsgChannelOpenAck, MsgChannelOpenAckResponse, MsgChannelOpenConfirm, MsgChannelOpenConfirmResponse, MsgChannelCloseInit, MsgChannelCloseInitResponse, MsgChannelCloseConfirm, MsgChannelCloseConfirmResponse, MsgRecvPacket, MsgRecvPacketResponse, MsgTimeout, MsgTimeoutResponse, MsgTimeoutOnClose, MsgTimeoutOnCloseResponse, MsgAcknowledgement, MsgAcknowledgementResponse } from "./ibc/core/channel/v1/tx";
+import { MsgCreateClient, MsgCreateClientResponse, MsgUpdateClient, MsgUpdateClientResponse, MsgUpgradeClient, MsgUpgradeClientResponse, MsgSubmitMisbehaviour, MsgSubmitMisbehaviourResponse } from "./ibc/core/client/v1/tx";
+import { MsgTransfer, MsgTransferResponse } from "./ibc/applications/transfer/v1/tx";
 import { MsgCreateToken, MsgCreateTokenResponse, MsgSyncToken, MsgSyncTokenResponse, MsgMintToken, MsgMintTokenResponse, MsgBindToken, MsgBindTokenResponse, MsgUnbindToken, MsgUnbindTokenResponse, MsgLinkToken, MsgLinkTokenResponse, MsgWithdraw, MsgWithdrawResponse, MsgAuthorizeBridge, MsgAuthorizeBridgeResponse, MsgDeauthorizeBridge, MsgDeauthorizeBridgeResponse, MsgEditBridgeName, MsgEditBridgeNameResponse, MsgRemoveBridge, MsgRemoveBridgeResponse } from "./coin/tx";
 import { MsgSetLeverage, MsgSetLeverageResponse } from "./leverage/tx";
 import { MsgUpdateProfile, MsgUpdateProfileResponse } from "./profile/tx";
@@ -120,6 +124,48 @@ registry.register("/cosmos.gov.v1beta1.MsgVoteWeighted", MsgVoteWeighted);
 registry.register("/cosmos.gov.v1beta1.MsgVoteWeightedResponse", MsgVoteWeightedResponse);
 registry.register("/cosmos.gov.v1beta1.MsgDeposit", MsgDeposit);
 registry.register("/cosmos.gov.v1beta1.MsgDepositResponse", MsgDepositResponse);
+
+registry.register("/ibc.core.connection.v1.MsgConnectionOpenInit", MsgConnectionOpenInit);
+registry.register("/ibc.core.connection.v1.MsgConnectionOpenInitResponse", MsgConnectionOpenInitResponse);
+registry.register("/ibc.core.connection.v1.MsgConnectionOpenTry", MsgConnectionOpenTry);
+registry.register("/ibc.core.connection.v1.MsgConnectionOpenTryResponse", MsgConnectionOpenTryResponse);
+registry.register("/ibc.core.connection.v1.MsgConnectionOpenAck", MsgConnectionOpenAck);
+registry.register("/ibc.core.connection.v1.MsgConnectionOpenAckResponse", MsgConnectionOpenAckResponse);
+registry.register("/ibc.core.connection.v1.MsgConnectionOpenConfirm", MsgConnectionOpenConfirm);
+registry.register("/ibc.core.connection.v1.MsgConnectionOpenConfirmResponse", MsgConnectionOpenConfirmResponse);
+
+registry.register("/ibc.core.channel.v1.MsgChannelOpenInit", MsgChannelOpenInit);
+registry.register("/ibc.core.channel.v1.MsgChannelOpenInitResponse", MsgChannelOpenInitResponse);
+registry.register("/ibc.core.channel.v1.MsgChannelOpenTry", MsgChannelOpenTry);
+registry.register("/ibc.core.channel.v1.MsgChannelOpenTryResponse", MsgChannelOpenTryResponse);
+registry.register("/ibc.core.channel.v1.MsgChannelOpenAck", MsgChannelOpenAck);
+registry.register("/ibc.core.channel.v1.MsgChannelOpenAckResponse", MsgChannelOpenAckResponse);
+registry.register("/ibc.core.channel.v1.MsgChannelOpenConfirm", MsgChannelOpenConfirm);
+registry.register("/ibc.core.channel.v1.MsgChannelOpenConfirmResponse", MsgChannelOpenConfirmResponse);
+registry.register("/ibc.core.channel.v1.MsgChannelCloseInit", MsgChannelCloseInit);
+registry.register("/ibc.core.channel.v1.MsgChannelCloseInitResponse", MsgChannelCloseInitResponse);
+registry.register("/ibc.core.channel.v1.MsgChannelCloseConfirm", MsgChannelCloseConfirm);
+registry.register("/ibc.core.channel.v1.MsgChannelCloseConfirmResponse", MsgChannelCloseConfirmResponse);
+registry.register("/ibc.core.channel.v1.MsgRecvPacket", MsgRecvPacket);
+registry.register("/ibc.core.channel.v1.MsgRecvPacketResponse", MsgRecvPacketResponse);
+registry.register("/ibc.core.channel.v1.MsgTimeout", MsgTimeout);
+registry.register("/ibc.core.channel.v1.MsgTimeoutResponse", MsgTimeoutResponse);
+registry.register("/ibc.core.channel.v1.MsgTimeoutOnClose", MsgTimeoutOnClose);
+registry.register("/ibc.core.channel.v1.MsgTimeoutOnCloseResponse", MsgTimeoutOnCloseResponse);
+registry.register("/ibc.core.channel.v1.MsgAcknowledgement", MsgAcknowledgement);
+registry.register("/ibc.core.channel.v1.MsgAcknowledgementResponse", MsgAcknowledgementResponse);
+
+registry.register("/ibc.core.client.v1.MsgCreateClient", MsgCreateClient);
+registry.register("/ibc.core.client.v1.MsgCreateClientResponse", MsgCreateClientResponse);
+registry.register("/ibc.core.client.v1.MsgUpdateClient", MsgUpdateClient);
+registry.register("/ibc.core.client.v1.MsgUpdateClientResponse", MsgUpdateClientResponse);
+registry.register("/ibc.core.client.v1.MsgUpgradeClient", MsgUpgradeClient);
+registry.register("/ibc.core.client.v1.MsgUpgradeClientResponse", MsgUpgradeClientResponse);
+registry.register("/ibc.core.client.v1.MsgSubmitMisbehaviour", MsgSubmitMisbehaviour);
+registry.register("/ibc.core.client.v1.MsgSubmitMisbehaviourResponse", MsgSubmitMisbehaviourResponse);
+
+registry.register("/ibc.applications.transfer.v1.MsgTransfer", MsgTransfer);
+registry.register("/ibc.applications.transfer.v1.MsgTransferResponse", MsgTransferResponse);
 
 registry.register("/Switcheo.carbon.coin.MsgCreateToken", MsgCreateToken);
 registry.register("/Switcheo.carbon.coin.MsgCreateTokenResponse", MsgCreateTokenResponse);
@@ -268,6 +314,44 @@ export const TxTypes = {
   "MsgVoteWeightedResponse": "/cosmos.gov.v1beta1.MsgVoteWeightedResponse",
   "MsgDeposit": "/cosmos.gov.v1beta1.MsgDeposit",
   "MsgDepositResponse": "/cosmos.gov.v1beta1.MsgDepositResponse",
+  "MsgConnectionOpenInit": "/ibc.core.connection.v1.MsgConnectionOpenInit",
+  "MsgConnectionOpenInitResponse": "/ibc.core.connection.v1.MsgConnectionOpenInitResponse",
+  "MsgConnectionOpenTry": "/ibc.core.connection.v1.MsgConnectionOpenTry",
+  "MsgConnectionOpenTryResponse": "/ibc.core.connection.v1.MsgConnectionOpenTryResponse",
+  "MsgConnectionOpenAck": "/ibc.core.connection.v1.MsgConnectionOpenAck",
+  "MsgConnectionOpenAckResponse": "/ibc.core.connection.v1.MsgConnectionOpenAckResponse",
+  "MsgConnectionOpenConfirm": "/ibc.core.connection.v1.MsgConnectionOpenConfirm",
+  "MsgConnectionOpenConfirmResponse": "/ibc.core.connection.v1.MsgConnectionOpenConfirmResponse",
+  "MsgChannelOpenInit": "/ibc.core.channel.v1.MsgChannelOpenInit",
+  "MsgChannelOpenInitResponse": "/ibc.core.channel.v1.MsgChannelOpenInitResponse",
+  "MsgChannelOpenTry": "/ibc.core.channel.v1.MsgChannelOpenTry",
+  "MsgChannelOpenTryResponse": "/ibc.core.channel.v1.MsgChannelOpenTryResponse",
+  "MsgChannelOpenAck": "/ibc.core.channel.v1.MsgChannelOpenAck",
+  "MsgChannelOpenAckResponse": "/ibc.core.channel.v1.MsgChannelOpenAckResponse",
+  "MsgChannelOpenConfirm": "/ibc.core.channel.v1.MsgChannelOpenConfirm",
+  "MsgChannelOpenConfirmResponse": "/ibc.core.channel.v1.MsgChannelOpenConfirmResponse",
+  "MsgChannelCloseInit": "/ibc.core.channel.v1.MsgChannelCloseInit",
+  "MsgChannelCloseInitResponse": "/ibc.core.channel.v1.MsgChannelCloseInitResponse",
+  "MsgChannelCloseConfirm": "/ibc.core.channel.v1.MsgChannelCloseConfirm",
+  "MsgChannelCloseConfirmResponse": "/ibc.core.channel.v1.MsgChannelCloseConfirmResponse",
+  "MsgRecvPacket": "/ibc.core.channel.v1.MsgRecvPacket",
+  "MsgRecvPacketResponse": "/ibc.core.channel.v1.MsgRecvPacketResponse",
+  "MsgTimeout": "/ibc.core.channel.v1.MsgTimeout",
+  "MsgTimeoutResponse": "/ibc.core.channel.v1.MsgTimeoutResponse",
+  "MsgTimeoutOnClose": "/ibc.core.channel.v1.MsgTimeoutOnClose",
+  "MsgTimeoutOnCloseResponse": "/ibc.core.channel.v1.MsgTimeoutOnCloseResponse",
+  "MsgAcknowledgement": "/ibc.core.channel.v1.MsgAcknowledgement",
+  "MsgAcknowledgementResponse": "/ibc.core.channel.v1.MsgAcknowledgementResponse",
+  "MsgCreateClient": "/ibc.core.client.v1.MsgCreateClient",
+  "MsgCreateClientResponse": "/ibc.core.client.v1.MsgCreateClientResponse",
+  "MsgUpdateClient": "/ibc.core.client.v1.MsgUpdateClient",
+  "MsgUpdateClientResponse": "/ibc.core.client.v1.MsgUpdateClientResponse",
+  "MsgUpgradeClient": "/ibc.core.client.v1.MsgUpgradeClient",
+  "MsgUpgradeClientResponse": "/ibc.core.client.v1.MsgUpgradeClientResponse",
+  "MsgSubmitMisbehaviour": "/ibc.core.client.v1.MsgSubmitMisbehaviour",
+  "MsgSubmitMisbehaviourResponse": "/ibc.core.client.v1.MsgSubmitMisbehaviourResponse",
+  "MsgTransfer": "/ibc.applications.transfer.v1.MsgTransfer",
+  "MsgTransferResponse": "/ibc.applications.transfer.v1.MsgTransferResponse",
   "MsgCreateToken": "/Switcheo.carbon.coin.MsgCreateToken",
   "MsgCreateTokenResponse": "/Switcheo.carbon.coin.MsgCreateTokenResponse",
   "MsgSyncToken": "/Switcheo.carbon.coin.MsgSyncToken",
@@ -346,6 +430,7 @@ export { MsgAddCollateral, MsgAddCollateralResponse, MsgRemoveCollateral, MsgRem
 export { Vault, VaultType } from "./cdp/vault";
 export { QueryGetVaultRequest, QueryGetVaultResponse, QueryAllVaultRequest, QueryAllVaultResponse, QueryGetVaultTypeRequest, QueryGetVaultTypeResponse, QueryAllVaultTypeRequest, QueryAllVaultTypeResponse } from "./cdp/query";
 export { VaultTypeEvent, VaultEvent } from "./cdp/event";
+export { HashOp, hashOpFromJSON, hashOpToJSON, LengthOp, lengthOpFromJSON, lengthOpToJSON, ExistenceProof, NonExistenceProof, CommitmentProof, LeafOp, InnerOp, ProofSpec, InnerSpec, BatchProof, BatchEntry, CompressedBatchProof, CompressedBatchEntry, CompressedExistenceProof, CompressedNonExistenceProof } from "./proofs";
 export { LiquidatorPosition, MsgInitiateLiquidation, MsgInitiateLiquidationResponse } from "./broker/tx";
 export { IncomingLiquidations } from "./broker/incoming_liquidations";
 export { MinMaxBoundary } from "./broker/pagination";
