@@ -321,7 +321,13 @@ export const TxTypes = {
   "MsgSetCommitmentCurve": "/Switcheo.carbon.liquiditypool.MsgSetCommitmentCurve",
   "MsgSetCommitmentCurveResponse": "/Switcheo.carbon.liquiditypool.MsgSetCommitmentCurveResponse",
   "MsgUpdatePool": "/Switcheo.carbon.liquiditypool.MsgUpdatePool",
-  "MsgUpdatePoolResponse": "/Switcheo.carbon.liquiditypool.MsgUpdatePoolResponse"
+  "MsgUpdatePoolResponse": "/Switcheo.carbon.liquiditypool.MsgUpdatePoolResponse",
+  "MsgProcessCrossChainTx": "/Switcheo.polynetworkcosmos.ccm.MsgProcessCrossChainTx",
+  "MsgSyncHeaders": "/Switcheo.polynetworkcosmos.headersync.MsgSyncHeaders",
+  "MsgCreateClient": "/ibc.core.client.v1.MsgCreateClient",
+  "MsgUpdateClient": "/ibc.core.client.v1.MsgUpdateClient",
+  "MsgConnectionOpenConfirm": "/ibc.core.connection.v1.MsgConnectionOpenConfirm",
+  "MsgConnectionOpenTry": "/ibc.core.connection.v1.MsgConnectionOpenTry",
 }
 
 
