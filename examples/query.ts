@@ -1,5 +1,4 @@
 import Long from "long";
-import { AddressUtils } from "../lib";
 import { QueryAllTransactionRequest } from "../lib/codec";
 import { CarbonSDK, CarbonTx, GenericUtils } from "./_sdk";
 import "./_setup";
@@ -117,4 +116,5 @@ import "./_setup";
   const decodedTx = CarbonTx.decode(tx.tx)
   console.log("tx decoded", JSON.stringify(decodedTx))
   console.log("tx msgs", decodedTx?.body?.messages)
+
 })().catch(console.error).finally(() => process.exit(0));

@@ -7,6 +7,10 @@ export enum Blockchain {
   Zilliqa = 'zil',
   Native = 'native',
   Btc = 'btc',
+  Carbon = 'carbon',
+  Switcheo = 'switcheo',
+  PolyNetwork = 'polynetwork',
+  Neo3 = 'n3',
 };
 
 export const BRIDGE_IDS = {
@@ -32,6 +36,11 @@ export const CHAIN_IDS: ChainIds = {
   'bsc': 6,
   'zil': 9,
 };
+
+export function parseBlockchain(value: string | null): Blockchain | null {
+  if (value === null || value === undefined) return null;
+  return Object.values(Blockchain).find((enumMember) => enumMember.toLowerCase() === value.toLowerCase()) ?? null;
+}
 
 export function getChainFromID(id: number): string | undefined {
   return Object.keys(CHAIN_IDS).find((key) => CHAIN_IDS[key] === id)
