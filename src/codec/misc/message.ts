@@ -78,16 +78,24 @@ export const Message = {
   },
 
   fromJSON(object: any): Message {
-    return {
-      hash: isSet(object.hash) ? String(object.hash) : "",
-      message: isSet(object.message) ? String(object.message) : "",
-      messageType: isSet(object.messageType)
+    const message = createBaseMessage();
+    message.hash =
+      object.hash !== undefined && object.hash !== null
+        ? String(object.hash)
+        : "";
+    message.message =
+      object.message !== undefined && object.message !== null
+        ? String(object.message)
+        : "";
+    message.messageType =
+      object.messageType !== undefined && object.messageType !== null
         ? MessageType.fromJSON(object.messageType)
-        : undefined,
-      blockCreatedAt: isSet(object.blockCreatedAt)
+        : undefined;
+    message.blockCreatedAt =
+      object.blockCreatedAt !== undefined && object.blockCreatedAt !== null
         ? fromJsonTimestamp(object.blockCreatedAt)
-        : undefined,
-    };
+        : undefined;
+    return message;
   },
 
   toJSON(message: Message): unknown {
@@ -174,8 +182,4 @@ function numberToLong(number: number) {
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
-}
-
-function isSet(value: any): boolean {
-  return value !== null && value !== undefined;
 }

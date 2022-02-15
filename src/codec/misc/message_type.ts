@@ -42,9 +42,12 @@ export const MessageType = {
   },
 
   fromJSON(object: any): MessageType {
-    return {
-      messageType: isSet(object.messageType) ? String(object.messageType) : "",
-    };
+    const message = createBaseMessageType();
+    message.messageType =
+      object.messageType !== undefined && object.messageType !== null
+        ? String(object.messageType)
+        : "";
+    return message;
   },
 
   toJSON(message: MessageType): unknown {
@@ -95,8 +98,4 @@ export type Exact<P, I extends P> = P extends Builtin
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
-}
-
-function isSet(value: any): boolean {
-  return value !== null && value !== undefined;
 }

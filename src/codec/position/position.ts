@@ -13,7 +13,6 @@ export interface Position {
   realizedPnl: string;
   allocatedMargin?: Coin;
   openedBlockHeight: Long;
-  closedBlockHeight: Long;
 }
 
 export interface Positions {
@@ -43,7 +42,6 @@ const basePosition: object = {
   entryPrice: "",
   realizedPnl: "",
   openedBlockHeight: Long.UZERO,
-  closedBlockHeight: Long.UZERO,
 };
 
 export const Position = {
@@ -71,9 +69,6 @@ export const Position = {
     }
     if (!message.openedBlockHeight.isZero()) {
       writer.uint32(56).uint64(message.openedBlockHeight);
-    }
-    if (!message.closedBlockHeight.isZero()) {
-      writer.uint32(64).uint64(message.closedBlockHeight);
     }
     return writer;
   },
@@ -105,9 +100,6 @@ export const Position = {
           break;
         case 7:
           message.openedBlockHeight = reader.uint64() as Long;
-          break;
-        case 8:
-          message.closedBlockHeight = reader.uint64() as Long;
           break;
         default:
           reader.skipType(tag & 7);
@@ -148,11 +140,6 @@ export const Position = {
       object.openedBlockHeight !== null
         ? Long.fromString(object.openedBlockHeight)
         : Long.UZERO;
-    message.closedBlockHeight =
-      object.closedBlockHeight !== undefined &&
-      object.closedBlockHeight !== null
-        ? Long.fromString(object.closedBlockHeight)
-        : Long.UZERO;
     return message;
   },
 
@@ -172,10 +159,6 @@ export const Position = {
       (obj.openedBlockHeight = (
         message.openedBlockHeight || Long.UZERO
       ).toString());
-    message.closedBlockHeight !== undefined &&
-      (obj.closedBlockHeight = (
-        message.closedBlockHeight || Long.UZERO
-      ).toString());
     return obj;
   },
 
@@ -194,11 +177,6 @@ export const Position = {
       object.openedBlockHeight !== undefined &&
       object.openedBlockHeight !== null
         ? Long.fromValue(object.openedBlockHeight)
-        : Long.UZERO;
-    message.closedBlockHeight =
-      object.closedBlockHeight !== undefined &&
-      object.closedBlockHeight !== null
-        ? Long.fromValue(object.closedBlockHeight)
         : Long.UZERO;
     return message;
   },

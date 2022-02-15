@@ -12,7 +12,7 @@ import {
   RewardHistoryRecord,
   LastClaimRecord,
 } from "../liquiditypool/reward";
-import { Pool } from "../liquiditypool/liquiditypool";
+import { Params, Pool } from "../liquiditypool/liquiditypool";
 
 export const protobufPackage = "Switcheo.carbon.liquiditypool";
 
@@ -28,6 +28,8 @@ export interface GenesisState {
   rewardHistories: RewardHistoryRecord[];
   lastClaims: LastClaimRecord[];
   allocatedRewards?: AllocatedRewards;
+  /** params defines all the paramaters of the module. */
+  params?: Params;
 }
 
 const baseGenesisState: object = {};
@@ -78,6 +80,9 @@ export const GenesisState = {
         message.allocatedRewards,
         writer.uint32(82).fork()
       ).ldelim();
+    }
+    if (message.params !== undefined) {
+      Params.encode(message.params, writer.uint32(90).fork()).ldelim();
     }
     return writer;
   },
@@ -141,6 +146,9 @@ export const GenesisState = {
             reader.uint32()
           );
           break;
+        case 11:
+          message.params = Params.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -182,6 +190,10 @@ export const GenesisState = {
     message.allocatedRewards =
       object.allocatedRewards !== undefined && object.allocatedRewards !== null
         ? AllocatedRewards.fromJSON(object.allocatedRewards)
+        : undefined;
+    message.params =
+      object.params !== undefined && object.params !== null
+        ? Params.fromJSON(object.params)
         : undefined;
     return message;
   },
@@ -244,6 +256,8 @@ export const GenesisState = {
       (obj.allocatedRewards = message.allocatedRewards
         ? AllocatedRewards.toJSON(message.allocatedRewards)
         : undefined);
+    message.params !== undefined &&
+      (obj.params = message.params ? Params.toJSON(message.params) : undefined);
     return obj;
   },
 
@@ -280,6 +294,10 @@ export const GenesisState = {
     message.allocatedRewards =
       object.allocatedRewards !== undefined && object.allocatedRewards !== null
         ? AllocatedRewards.fromPartial(object.allocatedRewards)
+        : undefined;
+    message.params =
+      object.params !== undefined && object.params !== null
+        ? Params.fromPartial(object.params)
         : undefined;
     return message;
   },

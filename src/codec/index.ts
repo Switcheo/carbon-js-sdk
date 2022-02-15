@@ -16,7 +16,7 @@ import { MsgCreateValidator, MsgCreateValidatorResponse, MsgEditValidator, MsgEd
 import { MsgGrant, MsgExecResponse, MsgExec, MsgGrantResponse, MsgRevoke, MsgRevokeResponse } from "./cosmos/authz/v1beta1/tx";
 import { MsgUnjail, MsgUnjailResponse } from "./cosmos/slashing/v1beta1/tx";
 import { MsgSubmitProposal, MsgSubmitProposalResponse, MsgVote, MsgVoteResponse, MsgVoteWeighted, MsgVoteWeightedResponse, MsgDeposit, MsgDepositResponse } from "./cosmos/gov/v1beta1/tx";
-import { MsgCreateToken, MsgCreateTokenResponse, MsgSyncToken, MsgSyncTokenResponse, MsgMintToken, MsgMintTokenResponse, MsgBindToken, MsgBindTokenResponse, MsgUnbindToken, MsgUnbindTokenResponse, MsgLinkToken, MsgLinkTokenResponse, MsgWithdraw, MsgWithdrawResponse, MsgAuthorizeBridge, MsgAuthorizeBridgeResponse, MsgDeauthorizeBridge, MsgDeauthorizeBridgeResponse } from "./coin/tx";
+import { MsgCreateToken, MsgCreateTokenResponse, MsgSyncToken, MsgSyncTokenResponse, MsgMintToken, MsgMintTokenResponse, MsgBindToken, MsgBindTokenResponse, MsgUnbindToken, MsgUnbindTokenResponse, MsgLinkToken, MsgLinkTokenResponse, MsgWithdraw, MsgWithdrawResponse, MsgAuthorizeBridge, MsgAuthorizeBridgeResponse, MsgDeauthorizeBridge, MsgDeauthorizeBridgeResponse, MsgEditBridgeName, MsgEditBridgeNameResponse, MsgRemoveBridge, MsgRemoveBridgeResponse } from "./coin/tx";
 import { MsgSetLeverage, MsgSetLeverageResponse } from "./leverage/tx";
 import { MsgUpdateProfile, MsgUpdateProfileResponse } from "./profile/tx";
 import { MsgCreateSubAccount, MsgCreateSubAccountResponse, MsgActivateSubAccount, MsgActivateSubAccountResponse, MsgRemoveSubAccount, MsgRemoveSubAccountResponse } from "./subaccount/tx";
@@ -139,6 +139,10 @@ registry.register("/Switcheo.carbon.coin.MsgAuthorizeBridge", MsgAuthorizeBridge
 registry.register("/Switcheo.carbon.coin.MsgAuthorizeBridgeResponse", MsgAuthorizeBridgeResponse);
 registry.register("/Switcheo.carbon.coin.MsgDeauthorizeBridge", MsgDeauthorizeBridge);
 registry.register("/Switcheo.carbon.coin.MsgDeauthorizeBridgeResponse", MsgDeauthorizeBridgeResponse);
+registry.register("/Switcheo.carbon.coin.MsgEditBridgeName", MsgEditBridgeName);
+registry.register("/Switcheo.carbon.coin.MsgEditBridgeNameResponse", MsgEditBridgeNameResponse);
+registry.register("/Switcheo.carbon.coin.MsgRemoveBridge", MsgRemoveBridge);
+registry.register("/Switcheo.carbon.coin.MsgRemoveBridgeResponse", MsgRemoveBridgeResponse);
 
 registry.register("/Switcheo.carbon.leverage.MsgSetLeverage", MsgSetLeverage);
 registry.register("/Switcheo.carbon.leverage.MsgSetLeverageResponse", MsgSetLeverageResponse);
@@ -282,6 +286,10 @@ export const TxTypes = {
   "MsgAuthorizeBridgeResponse": "/Switcheo.carbon.coin.MsgAuthorizeBridgeResponse",
   "MsgDeauthorizeBridge": "/Switcheo.carbon.coin.MsgDeauthorizeBridge",
   "MsgDeauthorizeBridgeResponse": "/Switcheo.carbon.coin.MsgDeauthorizeBridgeResponse",
+  "MsgEditBridgeName": "/Switcheo.carbon.coin.MsgEditBridgeName",
+  "MsgEditBridgeNameResponse": "/Switcheo.carbon.coin.MsgEditBridgeNameResponse",
+  "MsgRemoveBridge": "/Switcheo.carbon.coin.MsgRemoveBridge",
+  "MsgRemoveBridgeResponse": "/Switcheo.carbon.coin.MsgRemoveBridgeResponse",
   "MsgSetLeverage": "/Switcheo.carbon.leverage.MsgSetLeverage",
   "MsgSetLeverageResponse": "/Switcheo.carbon.leverage.MsgSetLeverageResponse",
   "MsgUpdateProfile": "/Switcheo.carbon.profile.MsgUpdateProfile",
@@ -328,7 +336,7 @@ export const TxTypes = {
 // Exported for convenience
 export { Message } from "./misc/message";
 export { MessageType } from "./misc/message_type";
-export { Transaction } from "./misc/transaction";
+export { Transaction, APITransaction } from "./misc/transaction";
 export { QuerySearchRequest, QuerySearchResponse, QueryAllMessageTypeRequest, QueryAllMessageTypeResponse, QueryAllTransactionRequest, QueryAllTransactionResponse, QueryAllBlockRequest, QueryAllBlockResponse } from "./misc/query";
 export { MsgSetTradingFlag, MsgSetTradingFlagResponse, MsgCreateOrder, MsgCreateOrderResponse, MsgEditOrder, MsgEditOrderResponse, MsgCancelOrder, MsgCancelOrderResponse, MsgCancelAll, MsgCancelAllResponse } from "./order/tx";
 export { Order, APIOrder, DBOrder, OrdersForMarket, OrderIDsForMarket, OrderIDs, Orders } from "./order/order";
@@ -351,10 +359,10 @@ export { MsgSetFee, MsgSetFeeResponse } from "./fee/tx";
 export { MsgFee } from "./fee/fee";
 export { SetMsgFeeProposal } from "./fee/proposal";
 export { QueryGetMsgFeeRequest, QueryGetMsgFeeResponse, QueryAllMsgFeeRequest, QueryAllMsgFeeResponse } from "./fee/query";
-export { Transfer } from "./bank/event";
-export { AccountTradeHistoryRow } from "./liquidation/history";
+export { CoinSpent, CoinReceived } from "./bank/event";
 export { OutstandingPosition, OutstandingPositions } from "./liquidation/outstanding_position";
 export { QueryAllLiquidationRequest, QueryAllLiquidationResponse } from "./liquidation/query";
+export { NullValue, nullValueFromJSON, nullValueToJSON, Struct, Struct_FieldsEntry, Value, ListValue } from "./google/protobuf/struct";
 export { Any } from "./google/protobuf/any";
 export { Timestamp } from "./google/protobuf/timestamp";
 export { DoubleValue, FloatValue, Int64Value, UInt64Value, Int32Value, UInt32Value, BoolValue, StringValue, BytesValue } from "./google/protobuf/wrappers";
@@ -368,7 +376,7 @@ export { Oracle, Vote, Result, Mark } from "./oracle/oracle";
 export { CreateOracleProposal } from "./oracle/proposal";
 export { QueryOracleRequest, QueryOracleResponse, QueryAllOracleRequest, QueryAllOracleResponse, QueryAllResultRequest, QueryAllResultResponse, QueryAllVoteRequest, QueryAllVoteResponse, QueryVoterPowerRequest, QueryVoterPowerResponse } from "./oracle/query";
 export { NewVoteEvent, RecordVoteEvent, VoteEvent, ResultEvent } from "./oracle/event";
-export { MsgCreateToken, CreateTokenParams, MsgCreateTokenResponse, MsgSyncToken, MsgSyncTokenResponse, MsgMintToken, MsgMintTokenResponse, MsgBindToken, MsgBindTokenResponse, MsgUnbindToken, MsgUnbindTokenResponse, MsgLinkToken, MsgLinkTokenResponse, MsgWithdraw, MsgWithdrawResponse, MsgAuthorizeBridge, MsgAuthorizeBridgeResponse, MsgDeauthorizeBridge, MsgDeauthorizeBridgeResponse } from "./coin/tx";
+export { MsgCreateToken, CreateTokenParams, MsgCreateTokenResponse, MsgSyncToken, MsgSyncTokenResponse, MsgMintToken, MsgMintTokenResponse, MsgBindToken, MsgBindTokenResponse, MsgUnbindToken, MsgUnbindTokenResponse, MsgLinkToken, MsgLinkTokenResponse, MsgWithdraw, MsgWithdrawResponse, MsgAuthorizeBridge, MsgAuthorizeBridgeResponse, MsgDeauthorizeBridge, MsgDeauthorizeBridgeResponse, MsgEditBridgeName, MsgEditBridgeNameResponse, MsgRemoveBridge, MsgRemoveBridgeResponse } from "./coin/tx";
 export { ExternalTransfer } from "./coin/extevents";
 export { CreateTokenProposal } from "./coin/proposal";
 export { Bridge } from "./coin/bridge";
@@ -386,7 +394,6 @@ export { UpdateProfileEvent } from "./profile/event";
 export { MsgCreateSubAccount, MsgCreateSubAccountResponse, MsgActivateSubAccount, MsgActivateSubAccountResponse, MsgRemoveSubAccount, MsgRemoveSubAccountResponse } from "./subaccount/tx";
 export { QueryGetSubAccountRequest, QueryGetSubAccountResponse, QueryAllSubAccountRequest, QueryAllSubAccountResponse, QuerySubAccountStatusRequest, QuerySubAccountStatusResponse, QuerySubAccountPowerRequest, QuerySubAccountPowerResponse } from "./subaccount/query";
 export { SubAccount, GenesisSubAccount } from "./subaccount/subaccount";
-export { CreateValidator, CompleteUnbonding, Delegate } from "./staking/event";
 export { OrderBookLevel, OrderBook, StopBook } from "./book/book";
 export { QueryGetBookRequest, QueryGetBookResponse, QueryAllBookRequest, QueryAllBookResponse } from "./book/query";
 export { OrderBookEvent } from "./book/event";
@@ -400,7 +407,7 @@ export { QueryMintDataRequest, QueryMintDataResponse } from "./inflation/query";
 export { PageRequest, PageResponse } from "./query/pagination";
 export { MsgCreatePool, MsgCreatePoolResponse, MsgCreatePoolWithLiquidity, MsgCreatePoolWithLiquidityResponse, MsgAddLiquidity, MsgAddLiquidityResponse, MsgRemoveLiquidity, MsgRemoveLiquidityResponse, MsgLinkPool, LinkPoolParams, MsgLinkPoolResponse, MsgUnlinkPool, UnlinkPoolParams, MsgUnlinkPoolResponse, MsgSetRewardsWeights, SetRewardsWeightsParams, MsgSetRewardsWeightsResponse, MsgStakePoolToken, MsgStakePoolTokenResponse, MsgUnstakePoolToken, MsgUnstakePoolTokenResponse, MsgClaimPoolRewards, MsgClaimPoolRewardsResponse, MsgSetRewardCurve, SetRewardCurveParams, MsgSetRewardCurveResponse, MsgSetCommitmentCurve, SetCommitmentCurveParams, MsgSetCommitmentCurveResponse, MsgUpdatePool, UpdatePoolParams, MsgUpdatePoolResponse } from "./liquiditypool/tx";
 export { RewardCurve, CommitmentCurve, RewardWeight, RewardWeights, Commitment, CommitmentRecord, TotalCommitment, TotalCommitmentRecord, CommitmentResponse, RewardHistory, RewardHistoryRecord, CommitmentExpiry, CommitmentExpiries, CommitmentExpiriesRecord, LastClaimRecord, AllocatedRewards } from "./liquiditypool/reward";
-export { Pool, Pools, AddLiquidity, AddLiquidities, RemoveLiquidity, RemoveLiquidities } from "./liquiditypool/liquiditypool";
+export { Params, Pool, Pools, AddLiquidity, AddLiquidities, RemoveLiquidity, RemoveLiquidities } from "./liquiditypool/liquiditypool";
 export { LinkPoolProposal, UnlinkPoolProposal, SetRewardCurveProposal, SetCommitmentCurveProposal, SetRewardsWeightsProposal, UpdatePoolProposal } from "./liquiditypool/proposal";
 export { QueryGetPoolRequest, QueryGetPoolResponse, QueryAllPoolRequest, QueryAllPoolResponse, QueryRewardHistoryRequest, ExtendedPool, QueryRewardHistoryResponse, QueryCommitmentRequest, QueryCommitmentResponse, QueryAllCommitmentRequest, QueryAllCommitmentResponse, QueryLastClaimRequest, QueryLastClaimResponse, QueryCommitmentCurveRequest, QueryCommitmentCurveResponse, QueryRewardCurveRequest, QueryRewardCurveResponse, QueryTotalCommitmentRequest, QueryTotalCommitmentResponse, QueryAllTotalCommitmentRequest, QueryAllTotalCommitmentResponse, QueryClaimableRewardsRequest, QueryClaimableRewardsResponse } from "./liquiditypool/query";
 export { PoolEvent, TotalCommitmentChangeEvent, RewardsWeightChangeEvent, CommitmentCurveEvent, CommitmentEvent } from "./liquiditypool/event";

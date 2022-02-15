@@ -41,6 +41,7 @@ export interface Market {
   isActive: boolean;
   isSettled: boolean;
   closedBlockHeight: Long;
+  tradingBandwidth: number;
 }
 
 export interface MarketParams {
@@ -63,6 +64,7 @@ export interface MarketParams {
   markPriceBand?: number;
   lastPriceProtectedBand?: number;
   isActive?: boolean;
+  tradingBandwidth?: number;
 }
 
 const baseMarket: object = {
@@ -92,6 +94,7 @@ const baseMarket: object = {
   isActive: false,
   isSettled: false,
   closedBlockHeight: Long.UZERO,
+  tradingBandwidth: 0,
 };
 
 export const Market = {
@@ -188,6 +191,9 @@ export const Market = {
     }
     if (!message.closedBlockHeight.isZero()) {
       writer.uint32(904).uint64(message.closedBlockHeight);
+    }
+    if (message.tradingBandwidth !== 0) {
+      writer.uint32(912).uint32(message.tradingBandwidth);
     }
     return writer;
   },
@@ -287,6 +293,9 @@ export const Market = {
           break;
         case 113:
           message.closedBlockHeight = reader.uint64() as Long;
+          break;
+        case 114:
+          message.tradingBandwidth = reader.uint32();
           break;
         default:
           reader.skipType(tag & 7);
@@ -418,6 +427,10 @@ export const Market = {
       object.closedBlockHeight !== null
         ? Long.fromString(object.closedBlockHeight)
         : Long.UZERO;
+    message.tradingBandwidth =
+      object.tradingBandwidth !== undefined && object.tradingBandwidth !== null
+        ? Number(object.tradingBandwidth)
+        : 0;
     return message;
   },
 
@@ -474,6 +487,8 @@ export const Market = {
       (obj.closedBlockHeight = (
         message.closedBlockHeight || Long.UZERO
       ).toString());
+    message.tradingBandwidth !== undefined &&
+      (obj.tradingBandwidth = message.tradingBandwidth);
     return obj;
   },
 
@@ -525,6 +540,7 @@ export const Market = {
       object.closedBlockHeight !== null
         ? Long.fromValue(object.closedBlockHeight)
         : Long.UZERO;
+    message.tradingBandwidth = object.tradingBandwidth ?? 0;
     return message;
   },
 };
@@ -621,6 +637,12 @@ export const MarketParams = {
         writer.uint32(890).fork()
       ).ldelim();
     }
+    if (message.tradingBandwidth !== undefined) {
+      UInt32Value.encode(
+        { value: message.tradingBandwidth! },
+        writer.uint32(914).fork()
+      ).ldelim();
+    }
     return writer;
   },
 
@@ -699,6 +721,12 @@ export const MarketParams = {
           break;
         case 111:
           message.isActive = BoolValue.decode(reader, reader.uint32()).value;
+          break;
+        case 114:
+          message.tradingBandwidth = UInt32Value.decode(
+            reader,
+            reader.uint32()
+          ).value;
           break;
         default:
           reader.skipType(tag & 7);
@@ -788,6 +816,10 @@ export const MarketParams = {
       object.isActive !== undefined && object.isActive !== null
         ? Boolean(object.isActive)
         : undefined;
+    message.tradingBandwidth =
+      object.tradingBandwidth !== undefined && object.tradingBandwidth !== null
+        ? Number(object.tradingBandwidth)
+        : undefined;
     return message;
   },
 
@@ -824,6 +856,8 @@ export const MarketParams = {
     message.lastPriceProtectedBand !== undefined &&
       (obj.lastPriceProtectedBand = message.lastPriceProtectedBand);
     message.isActive !== undefined && (obj.isActive = message.isActive);
+    message.tradingBandwidth !== undefined &&
+      (obj.tradingBandwidth = message.tradingBandwidth);
     return obj;
   },
 
@@ -851,6 +885,7 @@ export const MarketParams = {
     message.markPriceBand = object.markPriceBand ?? undefined;
     message.lastPriceProtectedBand = object.lastPriceProtectedBand ?? undefined;
     message.isActive = object.isActive ?? undefined;
+    message.tradingBandwidth = object.tradingBandwidth ?? undefined;
     return message;
   },
 };
