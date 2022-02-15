@@ -429,6 +429,7 @@ export namespace AdminModule {
     isSettled?: boolean
     isActive?: boolean
     closedBlockHeight?: number
+    tradingBandwidth: number
   }
 
   export interface CreateVaultTypeParams {
@@ -575,6 +576,7 @@ export function transformCreateMarketParams(msg: AdminModule.CreateMarketParams)
     isSettled: !!msg.isSettled,
     isActive: !!msg.isActive,
     closedBlockHeight: new Long(msg.createdBlockHeight || 0),
+    tradingBandwidth: msg.tradingBandwidth,
   }
 }
 
