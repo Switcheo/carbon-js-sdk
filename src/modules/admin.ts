@@ -1,6 +1,7 @@
 import { Any, SettlementPriceParams } from "@carbon-sdk/codec";
 import { MsgCreateVaultType } from "@carbon-sdk/codec/cdp/tx";
 import { MsgAuthorizeBridge, MsgBindToken, MsgCreateToken, MsgDeauthorizeBridge, MsgLinkToken, MsgSyncToken, MsgUnbindToken } from "@carbon-sdk/codec/coin/tx";
+import { Coin } from "@carbon-sdk/codec/cosmos/base/v1beta1/coin";
 import { Description } from "@carbon-sdk/codec/cosmos/staking/v1beta1/staking";
 import { MsgCreateValidator, MsgEditValidator } from "@carbon-sdk/codec/cosmos/staking/v1beta1/tx";
 import { MsgSetFee } from "@carbon-sdk/codec/fee/tx";
@@ -659,4 +660,14 @@ export function transformSetSettlementPriceParams(msg: SettlementPriceParams) {
     market: msg.market,
     settlementPrice: new BigNumber(msg.settlementPrice).shiftedBy(18).toString(),
   }
+}
+
+export function transformCommunityPoolSpendAmount(amount: Coin[]) {
+  const amounts = amount.map(param => {
+    return {
+      denom: param.denom,
+      amount: new BigNumber(param.amount).shiftedBy(18).toString()
+    } as Coin
+  })
+  return amounts
 }
