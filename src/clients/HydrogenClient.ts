@@ -24,21 +24,24 @@ const formatCrossChainTransfer = (value: any): CrossChainTransfer => {
     ...value,
     created_at: formatDateField(value.created_at?.toString()),
     updated_at: formatDateField(value.updated_at?.toString()),
+    source_blockchain: BlockchainUtils.parseBlockchain(value.source_blockchain),
+    bridging_blockchain: BlockchainUtils.parseBlockchain(value.bridging_blockchain),
+    destination_blockchain: BlockchainUtils.parseBlockchain(value.destination_blockchain),
   }
 }
 
 const formatCrossChainTransferDetailed = (value: any): CrossChainTransferDetailed => {
-  if (typeof value !== "object") return value;
+  if (!value || typeof value !== "object") return value;
   return {
     ...formatCrossChainTransfer(value),
-    source_transaction: formatChainTransaction(value),
-    bridging_transaction: formatChainTransaction(value),
-    destination_transaction: formatChainTransaction(value),
+    source_transaction: formatChainTransaction(value.source_transaction),
+    bridging_transaction: formatChainTransaction(value.bridging_transaction),
+    destination_transaction: formatChainTransaction(value.destination_transaction),
   }
 }
 
 const formatChainTransaction = (value: any): ChainTransaction | null => {
-  if (typeof value !== "object") return value;
+  if (!value || typeof value !== "object") return value;
   return {
     ...value,
     created_at: formatDateField(value.created_at?.toString()),

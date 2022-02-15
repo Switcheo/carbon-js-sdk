@@ -19,7 +19,9 @@ export interface GetTransfersResponse {
 export interface GetDetailedTransfersResponse {
   data: CrossChainTransferDetailed[]
   pagination: {
-    total_pages: number
+    total: number
+    currentOffset: number
+    limit: number
   }
 }
 
@@ -42,6 +44,10 @@ export interface CrossChainTransfer {
   nonce: string
   created_at: Date
   updated_at: Date
+
+  source_blockchain: Blockchain | null
+  bridging_blockchain: Blockchain | null
+  destination_blockchain: Blockchain | null
 }
 
 export interface CrossChainTransferDetailed extends CrossChainTransfer {
