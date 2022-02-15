@@ -208,7 +208,7 @@ export namespace GovModule {
   export interface SubmitProposalParams {
     content: {
       typeUrl: string
-      value: ProposalMsg | Uint8Array
+      value: ProposalMsg | CosmosProposalMsg | Uint8Array
     }
     initialDeposit: Coin[]
     proposer: string
@@ -230,6 +230,13 @@ export namespace GovModule {
     proposalId: number,
     option: VoteOption,
   }
+
+  export type CosmosProposalMsg =
+    ParameterChangeProposal |
+    SoftwareUpgradeProposal |
+    CancelSoftwareUpgradeProposal |
+    TextProposal |
+    CommunityPoolSpendProposal 
 
   export type ProposalTypeParams =
     AdminModule.CreateTokenParams |
