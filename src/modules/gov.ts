@@ -9,7 +9,7 @@ import BaseModule from "./base";
 import Long from "long";
 import { CarbonTx } from "@carbon-sdk/util";
 import { MsgDeposit, MsgVote } from "@carbon-sdk/codec/cosmos/gov/v1beta1/tx";
-import { VoteOption } from "@carbon-sdk/codec/cosmos/gov/v1beta1/gov";
+import { TextProposal, VoteOption } from "@carbon-sdk/codec/cosmos/gov/v1beta1/gov";
 import _m0 from "protobufjs/minimal";
 import { 
   transfromCreateTokenParams,
@@ -24,8 +24,12 @@ import {
   transfromUpdatePoolParams,
   AdminModule,
   transformSetSettlementPriceParams,
+  transformCommunityPoolSpendAmount,
 } from "./admin";
 import { MarketModule, transfromUpdateMarketParams } from "./market";
+import { ParameterChangeProposal } from "@carbon-sdk/codec/cosmos/params/v1beta1/params";
+import { CancelSoftwareUpgradeProposal, SoftwareUpgradeProposal } from "@carbon-sdk/codec/cosmos/upgrade/v1beta1/upgrade";
+import { CommunityPoolSpendProposal } from "@carbon-sdk/codec/cosmos/distribution/v1beta1/distribution";
 
 export class GovModule extends BaseModule {
 
@@ -160,6 +164,40 @@ export class GovModule extends BaseModule {
           msg: transformSetSettlementPriceParams(msg),
         }
         return SettlementPriceProposal.encode(settlementPriceProposalMsg).finish()
+      case "ParameterChangeProposal":
+        const parameterChangeProposalMsg = {
+          title : title,
+          description: description,
+          changes: proposalMsg.changes,
+        }
+        return ParameterChangeProposal.encode(parameterChangeProposalMsg).finish()
+      case "SoftwareUpgradeProposal":
+        const softwareUpgradeProposalMsg = {
+          title: title,
+          description: description,
+          plan: proposalMsg.plan,
+        }
+        return SoftwareUpgradeProposal.encode(softwareUpgradeProposalMsg).finish()
+      case "CommunityPoolSpendProposal":
+        const communityPoolSpendProposalMsg = {
+          title: title,
+          description: description,
+          recipient: proposalMsg.recipient,
+          amount: transformCommunityPoolSpendAmount(proposalMsg.amount),
+        }
+        return CommunityPoolSpendProposal.encode(communityPoolSpendProposalMsg).finish()
+      case "CancelSoftwareUpgradeProposal":
+        const cancelSoftwareUpgradeProposaMsg = {
+          title: title,
+          description: description,
+        }
+        return CancelSoftwareUpgradeProposal.encode(cancelSoftwareUpgradeProposaMsg).finish()
+      case "TextProposal":
+        const textProposalMsg = {
+          title: title,
+          description: description,
+        }
+        return TextProposal.encode(textProposalMsg).finish()
       default:
         return new Uint8Array()
     }
@@ -170,7 +208,7 @@ export namespace GovModule {
   export interface SubmitProposalParams {
     content: {
       typeUrl: string
-      value: ProposalMsg | Uint8Array
+      value: ProposalMsg | CosmosProposalMsg | Uint8Array
     }
     initialDeposit: Coin[]
     proposer: string
@@ -192,6 +230,13 @@ export namespace GovModule {
     proposalId: number,
     option: VoteOption,
   }
+
+  export type CosmosProposalMsg =
+    ParameterChangeProposal |
+    SoftwareUpgradeProposal |
+    CancelSoftwareUpgradeProposal |
+    TextProposal |
+    CommunityPoolSpendProposal 
 
   export type ProposalTypeParams =
     AdminModule.CreateTokenParams |
