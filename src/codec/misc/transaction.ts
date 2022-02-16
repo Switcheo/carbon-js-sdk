@@ -18,6 +18,18 @@ export interface Transaction {
   messages: Message[];
 }
 
+export interface APITransaction {
+  hash: string;
+  address: string;
+  code: number;
+  memo: string;
+  gasUsed: Long;
+  gasWanted: Long;
+  blockHeight: Long;
+  blockCreatedAt?: Date;
+  messages: string;
+}
+
 function createBaseTransaction(): Transaction {
   return {
     hash: "",
@@ -115,27 +127,43 @@ export const Transaction = {
   },
 
   fromJSON(object: any): Transaction {
-    return {
-      hash: isSet(object.hash) ? String(object.hash) : "",
-      address: isSet(object.address) ? String(object.address) : "",
-      code: isSet(object.code) ? Number(object.code) : 0,
-      memo: isSet(object.memo) ? String(object.memo) : "",
-      gasUsed: isSet(object.gasUsed)
+    const message = createBaseTransaction();
+    message.hash =
+      object.hash !== undefined && object.hash !== null
+        ? String(object.hash)
+        : "";
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    message.code =
+      object.code !== undefined && object.code !== null
+        ? Number(object.code)
+        : 0;
+    message.memo =
+      object.memo !== undefined && object.memo !== null
+        ? String(object.memo)
+        : "";
+    message.gasUsed =
+      object.gasUsed !== undefined && object.gasUsed !== null
         ? Long.fromString(object.gasUsed)
-        : Long.ZERO,
-      gasWanted: isSet(object.gasWanted)
+        : Long.ZERO;
+    message.gasWanted =
+      object.gasWanted !== undefined && object.gasWanted !== null
         ? Long.fromString(object.gasWanted)
-        : Long.ZERO,
-      blockHeight: isSet(object.blockHeight)
+        : Long.ZERO;
+    message.blockHeight =
+      object.blockHeight !== undefined && object.blockHeight !== null
         ? Long.fromString(object.blockHeight)
-        : Long.UZERO,
-      blockCreatedAt: isSet(object.blockCreatedAt)
+        : Long.UZERO;
+    message.blockCreatedAt =
+      object.blockCreatedAt !== undefined && object.blockCreatedAt !== null
         ? fromJsonTimestamp(object.blockCreatedAt)
-        : undefined,
-      messages: Array.isArray(object?.messages)
-        ? object.messages.map((e: any) => Message.fromJSON(e))
-        : [],
-    };
+        : undefined;
+    message.messages = (object.messages ?? []).map((e: any) =>
+      Message.fromJSON(e)
+    );
+    return message;
   },
 
   toJSON(message: Transaction): unknown {
@@ -185,6 +213,187 @@ export const Transaction = {
     message.blockCreatedAt = object.blockCreatedAt ?? undefined;
     message.messages =
       object.messages?.map((e) => Message.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseAPITransaction(): APITransaction {
+  return {
+    hash: "",
+    address: "",
+    code: 0,
+    memo: "",
+    gasUsed: Long.ZERO,
+    gasWanted: Long.ZERO,
+    blockHeight: Long.UZERO,
+    blockCreatedAt: undefined,
+    messages: "",
+  };
+}
+
+export const APITransaction = {
+  encode(
+    message: APITransaction,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.hash !== "") {
+      writer.uint32(10).string(message.hash);
+    }
+    if (message.address !== "") {
+      writer.uint32(18).string(message.address);
+    }
+    if (message.code !== 0) {
+      writer.uint32(24).uint32(message.code);
+    }
+    if (message.memo !== "") {
+      writer.uint32(34).string(message.memo);
+    }
+    if (!message.gasUsed.isZero()) {
+      writer.uint32(40).int64(message.gasUsed);
+    }
+    if (!message.gasWanted.isZero()) {
+      writer.uint32(48).int64(message.gasWanted);
+    }
+    if (!message.blockHeight.isZero()) {
+      writer.uint32(56).uint64(message.blockHeight);
+    }
+    if (message.blockCreatedAt !== undefined) {
+      Timestamp.encode(
+        toTimestamp(message.blockCreatedAt),
+        writer.uint32(66).fork()
+      ).ldelim();
+    }
+    if (message.messages !== "") {
+      writer.uint32(74).string(message.messages);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): APITransaction {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAPITransaction();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.hash = reader.string();
+          break;
+        case 2:
+          message.address = reader.string();
+          break;
+        case 3:
+          message.code = reader.uint32();
+          break;
+        case 4:
+          message.memo = reader.string();
+          break;
+        case 5:
+          message.gasUsed = reader.int64() as Long;
+          break;
+        case 6:
+          message.gasWanted = reader.int64() as Long;
+          break;
+        case 7:
+          message.blockHeight = reader.uint64() as Long;
+          break;
+        case 8:
+          message.blockCreatedAt = fromTimestamp(
+            Timestamp.decode(reader, reader.uint32())
+          );
+          break;
+        case 9:
+          message.messages = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): APITransaction {
+    const message = createBaseAPITransaction();
+    message.hash =
+      object.hash !== undefined && object.hash !== null
+        ? String(object.hash)
+        : "";
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    message.code =
+      object.code !== undefined && object.code !== null
+        ? Number(object.code)
+        : 0;
+    message.memo =
+      object.memo !== undefined && object.memo !== null
+        ? String(object.memo)
+        : "";
+    message.gasUsed =
+      object.gasUsed !== undefined && object.gasUsed !== null
+        ? Long.fromString(object.gasUsed)
+        : Long.ZERO;
+    message.gasWanted =
+      object.gasWanted !== undefined && object.gasWanted !== null
+        ? Long.fromString(object.gasWanted)
+        : Long.ZERO;
+    message.blockHeight =
+      object.blockHeight !== undefined && object.blockHeight !== null
+        ? Long.fromString(object.blockHeight)
+        : Long.UZERO;
+    message.blockCreatedAt =
+      object.blockCreatedAt !== undefined && object.blockCreatedAt !== null
+        ? fromJsonTimestamp(object.blockCreatedAt)
+        : undefined;
+    message.messages =
+      object.messages !== undefined && object.messages !== null
+        ? String(object.messages)
+        : "";
+    return message;
+  },
+
+  toJSON(message: APITransaction): unknown {
+    const obj: any = {};
+    message.hash !== undefined && (obj.hash = message.hash);
+    message.address !== undefined && (obj.address = message.address);
+    message.code !== undefined && (obj.code = Math.round(message.code));
+    message.memo !== undefined && (obj.memo = message.memo);
+    message.gasUsed !== undefined &&
+      (obj.gasUsed = (message.gasUsed || Long.ZERO).toString());
+    message.gasWanted !== undefined &&
+      (obj.gasWanted = (message.gasWanted || Long.ZERO).toString());
+    message.blockHeight !== undefined &&
+      (obj.blockHeight = (message.blockHeight || Long.UZERO).toString());
+    message.blockCreatedAt !== undefined &&
+      (obj.blockCreatedAt = message.blockCreatedAt.toISOString());
+    message.messages !== undefined && (obj.messages = message.messages);
+    return obj;
+  },
+
+  fromPartial<I extends Exact<DeepPartial<APITransaction>, I>>(
+    object: I
+  ): APITransaction {
+    const message = createBaseAPITransaction();
+    message.hash = object.hash ?? "";
+    message.address = object.address ?? "";
+    message.code = object.code ?? 0;
+    message.memo = object.memo ?? "";
+    message.gasUsed =
+      object.gasUsed !== undefined && object.gasUsed !== null
+        ? Long.fromValue(object.gasUsed)
+        : Long.ZERO;
+    message.gasWanted =
+      object.gasWanted !== undefined && object.gasWanted !== null
+        ? Long.fromValue(object.gasWanted)
+        : Long.ZERO;
+    message.blockHeight =
+      object.blockHeight !== undefined && object.blockHeight !== null
+        ? Long.fromValue(object.blockHeight)
+        : Long.UZERO;
+    message.blockCreatedAt = object.blockCreatedAt ?? undefined;
+    message.messages = object.messages ?? "";
     return message;
   },
 };
@@ -247,8 +456,4 @@ function numberToLong(number: number) {
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
-}
-
-function isSet(value: any): boolean {
-  return value !== null && value !== undefined;
 }

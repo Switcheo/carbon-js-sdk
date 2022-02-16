@@ -9,7 +9,7 @@ import { CarbonTx, GovUtils, TypeUtils } from "@carbon-sdk/util";
 import { AminoConverter } from "@cosmjs/stargate";
 import {
   AminoInit, ConvertEncType, AminoProcess, AminoValueMap,
-  generateAminoType, mapEachIndiv,
+  generateAminoType, mapEachIndiv, pruneAmino,
 } from "../utils";
 
 const TxTypes: TypeUtils.SimpleMap<string> = {
@@ -67,6 +67,7 @@ const CreateMarket: AminoValueMap = {
       maxLiquidationOrderDuration: ConvertEncType.Duration,
       expiryTime: ConvertEncType.Date,
       closedBlockHeight: ConvertEncType.Long,
+      tradingBandwidth: ConvertEncType.NumToStr,
     },
   },
 };
@@ -223,7 +224,14 @@ const checkDecodeProposal = (content: any, amino: AminoValueMap): AminoProposalR
   switch (content.typeUrl) {
     case GovUtils.ProposalTypes.CreateMarket:
       newAmino.content = { ...CreateMarket };
-      break;
+      const prunedContent = pruneAmino(newContent.value, CreateMarket.value.msg);
+      return {
+        newContent: {
+          type: ContentTypes[content.typeUrl],
+          value: prunedContent,
+        },
+        newAmino,
+      };
     case GovUtils.ProposalTypes.UpdatePool:
       newAmino.content = { ...UpdatePool };
       break;

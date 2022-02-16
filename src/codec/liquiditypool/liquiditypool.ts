@@ -4,6 +4,11 @@ import _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "Switcheo.carbon.liquiditypool";
 
+/** Params defines the parameters for the liquiditypool module. */
+export interface Params {
+  rewardReductionThreshold: Long;
+}
+
 export interface Pool {
   creator: string;
   id: Long;
@@ -46,6 +51,67 @@ export interface RemoveLiquidity {
 export interface RemoveLiquidities {
   removeLiquidities: RemoveLiquidity[];
 }
+
+const baseParams: object = { rewardReductionThreshold: Long.UZERO };
+
+export const Params = {
+  encode(
+    message: Params,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (!message.rewardReductionThreshold.isZero()) {
+      writer.uint32(8).uint64(message.rewardReductionThreshold);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): Params {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseParams } as Params;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.rewardReductionThreshold = reader.uint64() as Long;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Params {
+    const message = { ...baseParams } as Params;
+    message.rewardReductionThreshold =
+      object.rewardReductionThreshold !== undefined &&
+      object.rewardReductionThreshold !== null
+        ? Long.fromString(object.rewardReductionThreshold)
+        : Long.UZERO;
+    return message;
+  },
+
+  toJSON(message: Params): unknown {
+    const obj: any = {};
+    message.rewardReductionThreshold !== undefined &&
+      (obj.rewardReductionThreshold = (
+        message.rewardReductionThreshold || Long.UZERO
+      ).toString());
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<Params>): Params {
+    const message = { ...baseParams } as Params;
+    message.rewardReductionThreshold =
+      object.rewardReductionThreshold !== undefined &&
+      object.rewardReductionThreshold !== null
+        ? Long.fromValue(object.rewardReductionThreshold)
+        : Long.UZERO;
+    return message;
+  },
+};
 
 const basePool: object = {
   creator: "",

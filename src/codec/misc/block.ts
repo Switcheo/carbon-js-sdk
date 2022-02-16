@@ -60,16 +60,24 @@ export const Block = {
   },
 
   fromJSON(object: any): Block {
-    return {
-      blockHeight: isSet(object.blockHeight)
+    const message = createBaseBlock();
+    message.blockHeight =
+      object.blockHeight !== undefined && object.blockHeight !== null
         ? Long.fromString(object.blockHeight)
-        : Long.UZERO,
-      time: isSet(object.time) ? String(object.time) : "",
-      count: isSet(object.count) ? Number(object.count) : 0,
-      proposerAddress: isSet(object.proposerAddress)
+        : Long.UZERO;
+    message.time =
+      object.time !== undefined && object.time !== null
+        ? String(object.time)
+        : "";
+    message.count =
+      object.count !== undefined && object.count !== null
+        ? Number(object.count)
+        : 0;
+    message.proposerAddress =
+      object.proposerAddress !== undefined && object.proposerAddress !== null
         ? String(object.proposerAddress)
-        : "",
-    };
+        : "";
+    return message;
   },
 
   toJSON(message: Block): unknown {
@@ -128,8 +136,4 @@ export type Exact<P, I extends P> = P extends Builtin
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
-}
-
-function isSet(value: any): boolean {
-  return value !== null && value !== undefined;
 }

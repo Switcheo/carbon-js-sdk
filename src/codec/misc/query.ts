@@ -86,10 +86,16 @@ export const QuerySearchRequest = {
   },
 
   fromJSON(object: any): QuerySearchRequest {
-    return {
-      keyword: isSet(object.keyword) ? String(object.keyword) : "",
-      limit: isSet(object.limit) ? Long.fromString(object.limit) : Long.UZERO,
-    };
+    const message = createBaseQuerySearchRequest();
+    message.keyword =
+      object.keyword !== undefined && object.keyword !== null
+        ? String(object.keyword)
+        : "";
+    message.limit =
+      object.limit !== undefined && object.limit !== null
+        ? Long.fromString(object.limit)
+        : Long.UZERO;
+    return message;
   },
 
   toJSON(message: QuerySearchRequest): unknown {
@@ -155,14 +161,14 @@ export const QuerySearchResponse = {
   },
 
   fromJSON(object: any): QuerySearchResponse {
-    return {
-      transactions: Array.isArray(object?.transactions)
-        ? object.transactions.map((e: any) => Transaction.fromJSON(e))
-        : [],
-      orders: Array.isArray(object?.orders)
-        ? object.orders.map((e: any) => APIOrder.fromJSON(e))
-        : [],
-    };
+    const message = createBaseQuerySearchResponse();
+    message.transactions = (object.transactions ?? []).map((e: any) =>
+      Transaction.fromJSON(e)
+    );
+    message.orders = (object.orders ?? []).map((e: any) =>
+      APIOrder.fromJSON(e)
+    );
+    return message;
   },
 
   toJSON(message: QuerySearchResponse): unknown {
@@ -226,7 +232,8 @@ export const QueryAllMessageTypeRequest = {
   },
 
   fromJSON(_: any): QueryAllMessageTypeRequest {
-    return {};
+    const message = createBaseQueryAllMessageTypeRequest();
+    return message;
   },
 
   toJSON(_: QueryAllMessageTypeRequest): unknown {
@@ -281,11 +288,11 @@ export const QueryAllMessageTypeResponse = {
   },
 
   fromJSON(object: any): QueryAllMessageTypeResponse {
-    return {
-      messageTypes: Array.isArray(object?.messageTypes)
-        ? object.messageTypes.map((e: any) => MessageType.fromJSON(e))
-        : [],
-    };
+    const message = createBaseQueryAllMessageTypeResponse();
+    message.messageTypes = (object.messageTypes ?? []).map((e: any) =>
+      MessageType.fromJSON(e)
+    );
+    return message;
   },
 
   toJSON(message: QueryAllMessageTypeResponse): unknown {
@@ -365,16 +372,23 @@ export const QueryAllTransactionRequest = {
   },
 
   fromJSON(object: any): QueryAllTransactionRequest {
-    return {
-      hash: isSet(object.hash) ? String(object.hash) : "",
-      address: isSet(object.address) ? String(object.address) : "",
-      msgTypeFilters: Array.isArray(object?.msgTypeFilters)
-        ? object.msgTypeFilters.map((e: any) => String(e))
-        : [],
-      pagination: isSet(object.pagination)
+    const message = createBaseQueryAllTransactionRequest();
+    message.hash =
+      object.hash !== undefined && object.hash !== null
+        ? String(object.hash)
+        : "";
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    message.msgTypeFilters = (object.msgTypeFilters ?? []).map((e: any) =>
+      String(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
         ? PageRequest.fromJSON(object.pagination)
-        : undefined,
-    };
+        : undefined;
+    return message;
   },
 
   toJSON(message: QueryAllTransactionRequest): unknown {
@@ -456,14 +470,15 @@ export const QueryAllTransactionResponse = {
   },
 
   fromJSON(object: any): QueryAllTransactionResponse {
-    return {
-      transactions: Array.isArray(object?.transactions)
-        ? object.transactions.map((e: any) => Transaction.fromJSON(e))
-        : [],
-      pagination: isSet(object.pagination)
+    const message = createBaseQueryAllTransactionResponse();
+    message.transactions = (object.transactions ?? []).map((e: any) =>
+      Transaction.fromJSON(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
         ? PageResponse.fromJSON(object.pagination)
-        : undefined,
-    };
+        : undefined;
+    return message;
   },
 
   toJSON(message: QueryAllTransactionResponse): unknown {
@@ -533,11 +548,12 @@ export const QueryAllBlockRequest = {
   },
 
   fromJSON(object: any): QueryAllBlockRequest {
-    return {
-      pagination: isSet(object.pagination)
+    const message = createBaseQueryAllBlockRequest();
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
         ? PageRequest.fromJSON(object.pagination)
-        : undefined,
-    };
+        : undefined;
+    return message;
   },
 
   toJSON(message: QueryAllBlockRequest): unknown {
@@ -607,14 +623,13 @@ export const QueryAllBlockResponse = {
   },
 
   fromJSON(object: any): QueryAllBlockResponse {
-    return {
-      blocks: Array.isArray(object?.blocks)
-        ? object.blocks.map((e: any) => Block.fromJSON(e))
-        : [],
-      pagination: isSet(object.pagination)
+    const message = createBaseQueryAllBlockResponse();
+    message.blocks = (object.blocks ?? []).map((e: any) => Block.fromJSON(e));
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
         ? PageResponse.fromJSON(object.pagination)
-        : undefined,
-    };
+        : undefined;
+    return message;
   },
 
   toJSON(message: QueryAllBlockResponse): unknown {
@@ -761,8 +776,4 @@ export type Exact<P, I extends P> = P extends Builtin
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
-}
-
-function isSet(value: any): boolean {
-  return value !== null && value !== undefined;
 }
