@@ -1,4 +1,4 @@
-import { NumberUtils, TypeUtils } from "@carbon-sdk/util";
+import { GovUtils, NumberUtils, TypeUtils } from "@carbon-sdk/util";
 import { SimpleMap } from "@carbon-sdk/util/type";
 import { AminoConverter } from "@cosmjs/stargate";
 import BigNumber from "bignumber.js";
@@ -122,7 +122,7 @@ export const paramConverter = (value: any, type?: ConvertEncType, toAmino: boole
     case ConvertEncType.NumToStr:
       return toAmino ? value.toString() : Number(value);
     case ConvertEncType.Date:
-      return toAmino ? value.toISOString() : new Date(value);
+      return toAmino ? value.toISOString().replace('.000', '') : new Date(value);
     case ConvertEncType.DateToNum:
       if (toAmino) {
         const timestampBN = new BigNumber(value.getTime() ?? 0).shiftedBy(-3).decimalPlaces(0, 1);
@@ -136,7 +136,7 @@ export const paramConverter = (value: any, type?: ConvertEncType, toAmino: boole
       if (toAmino) {
         const nanosBN = new BigNumber(value?.nanos ?? 0).shiftedBy(-6);
         const seconds = value?.seconds as Long ?? new Long(0);
-        return `${nanosBN.plus(seconds.toString()).toString(10)}s`;
+        return `${nanosBN.plus(seconds.toString()).toString(10)}`;
       } else {
         const durationBN = NumberUtils.bnOrZero(value.replace('s', ''));
         const secondsBN = durationBN.decimalPlaces(0, 1);
@@ -205,4 +205,31 @@ export const generateAminoType = (
       return aminoObj;
     },
   };
+};
+
+export const pruneAmino = (value: any, pruneMap: TypeUtils.SimpleMap<ConvertEncType>) => {
+  const newValue = value;
+  const newMsg = value.msg;
+  Object.entries(newMsg).forEach(([key, value]) => {
+    const camelKey = TypeUtils.snakeToCamel(key);
+    const pruneItem = pruneMap[camelKey];
+    switch (pruneItem) {
+      case ConvertEncType.Long:
+        if (Long.isLong(value) && value.isZero()) {
+          delete newMsg[key];
+        }
+      default:
+        if (typeof value === "boolean" && !value) {
+          delete newMsg[key];
+        }
+        if (typeof value === "string" && value === "") {
+          delete newMsg[key];
+        }
+        if (typeof value === "number" && value === 0) {
+          delete newMsg[key];
+        }
+    }
+  });
+  newValue.msg = newMsg;
+  return newValue;
 };
