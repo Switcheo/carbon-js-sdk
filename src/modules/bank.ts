@@ -1,4 +1,5 @@
 import { MsgSend } from "@carbon-sdk/codec/cosmos/bank/v1beta1/tx";
+import { CarbonTx } from "@carbon-sdk/util";
 import { Coin } from "@cosmjs/amino";
 import BaseModule from "./base";
 
@@ -14,7 +15,7 @@ export class BankModule extends BaseModule {
     })
 
     return await wallet.sendTx({
-      typeUrl: "/cosmos.bank.v1beta1.MsgSend",
+      typeUrl: CarbonTx.Types.MsgSend,
       value,
     }, { memo: params.memo });
   }

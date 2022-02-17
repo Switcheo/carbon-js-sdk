@@ -13,6 +13,9 @@ import { QueryClientImpl as ParamsQueryClient } from "@carbon-sdk/codec/cosmos/p
 import { QueryClientImpl as SlashingQueryClient } from "@carbon-sdk/codec/cosmos/slashing/v1beta1/query";
 import { QueryClientImpl as StakingQueryClient } from "@carbon-sdk/codec/cosmos/staking/v1beta1/query";
 import { QueryClientImpl as UpgradeQueryClient } from "@carbon-sdk/codec/cosmos/upgrade/v1beta1/query";
+import { QueryClientImpl as IBCInterchainControlQueryClient } from "@carbon-sdk/codec/ibc/applications/interchain_accounts/controller/v1/query";
+import { QueryClientImpl as IBCInterchainHostQueryClient } from "@carbon-sdk/codec/ibc/applications/interchain_accounts/host/v1/query";
+import { QueryClientImpl as IBCTransferQueryClient } from "@carbon-sdk/codec/ibc/applications/transfer/v1/query";
 import { QueryClientImpl as FeeQueryClient } from "@carbon-sdk/codec/fee/query";
 import { QueryClientImpl as InflationQueryClient } from "@carbon-sdk/codec/inflation/query";
 import { QueryClientImpl as InsuranceQueryClient } from "@carbon-sdk/codec/insurance/query";
@@ -30,6 +33,12 @@ import { QueryClientImpl as SubaccountQueryClient } from "@carbon-sdk/codec/suba
 import { createProtobufRpcClient, QueryClient } from "@cosmjs/stargate";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import BlockchainClient from "./BlockchainClient";
+
+export interface IBCClientGroup {
+  controller: IBCInterchainControlQueryClient;
+  host: IBCInterchainHostQueryClient;
+  transfer: IBCTransferQueryClient;
+}
 
 class CarbonQueryClient {
   adl: ADLQueryClient;
@@ -64,6 +73,7 @@ class CarbonQueryClient {
   upgrade: UpgradeQueryClient;
 
   chain: BlockchainClient;
+  ibc: IBCClientGroup;
 
   private baseClient: QueryClient;
 
@@ -105,6 +115,12 @@ class CarbonQueryClient {
     this.slashing = new SlashingQueryClient(rpcClient);
     this.staking = new StakingQueryClient(rpcClient);
     this.upgrade = new UpgradeQueryClient(rpcClient);
+
+    this.ibc = {
+      controller: new IBCInterchainControlQueryClient(rpcClient),
+      host: new IBCInterchainHostQueryClient(rpcClient),
+      transfer: new IBCTransferQueryClient(rpcClient),
+    }
   }
 }
 
