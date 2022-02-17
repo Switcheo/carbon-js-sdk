@@ -1,7 +1,6 @@
+import { BigNumber } from "bignumber.js";
 import * as BIP39 from "bip39";
 import { CarbonSDK } from "./_sdk";
-import { BigNumber } from "bignumber.js";
-import Long from "long";
 import "./_setup";
 
 (async () => {
@@ -10,9 +9,6 @@ import "./_setup";
 
   const sdk = await CarbonSDK.instance({
     network: CarbonSDK.Network.DevNet,
-    config: {
-      tmRpcUrl: process.env.TRPC_ENDPOINT,
-    },
   });
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
@@ -23,10 +19,8 @@ import "./_setup";
     sourceChannel: "channel-0", // channel of receiving blockchain
     denom: "uatom",
     amount: new BigNumber(4981550),
-    sender: "osmo1wz62puany843kr8rk7vx8kh3yg53cwfkerc6tp", // address to send from
-    receiver: "cosmos1wz62puany843kr8rk7vx8kh3yg53cwfk3ct2an", // address to send to
-    revisionNumber: new Long(1),
-    revisionHeight: new Long(3208766),
+    sender: "swth1wz62puany843kr8rk7vx8kh3yg53cwfk3ct2an", // address to send from
+    receiver: "osmo1wz62puany843kr8rk7vx8kh3yg53cwfkerc6tp", // address to send to
   });
   console.log("response", response);
 })().catch(console.error).finally(() => process.exit(0));
