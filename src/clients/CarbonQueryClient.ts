@@ -34,6 +34,12 @@ import { createProtobufRpcClient, QueryClient } from "@cosmjs/stargate";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import BlockchainClient from "./BlockchainClient";
 
+export interface IBCClientGroup {
+  controller: IBCInterchainControlQueryClient;
+  host: IBCInterchainHostQueryClient;
+  transfer: IBCTransferQueryClient;
+}
+
 class CarbonQueryClient {
   adl: ADLQueryClient;
   book: BookQueryClient;
@@ -66,11 +72,8 @@ class CarbonQueryClient {
   staking: StakingQueryClient;
   upgrade: UpgradeQueryClient;
 
-  ibcController: IBCInterchainControlQueryClient;
-  ibcHost: IBCInterchainHostQueryClient;
-  ibcTransfer: IBCTransferQueryClient;
-
   chain: BlockchainClient;
+  ibc: IBCClientGroup;
 
   private baseClient: QueryClient;
 
@@ -113,9 +116,11 @@ class CarbonQueryClient {
     this.staking = new StakingQueryClient(rpcClient);
     this.upgrade = new UpgradeQueryClient(rpcClient);
 
-    this.ibcController = new IBCInterchainControlQueryClient(rpcClient);
-    this.ibcHost = new IBCInterchainHostQueryClient(rpcClient);
-    this.ibcTransfer = new IBCTransferQueryClient(rpcClient);
+    this.ibc = {
+      controller: new IBCInterchainControlQueryClient(rpcClient),
+      host: new IBCInterchainHostQueryClient(rpcClient),
+      transfer: new IBCTransferQueryClient(rpcClient),
+    }
   }
 }
 
