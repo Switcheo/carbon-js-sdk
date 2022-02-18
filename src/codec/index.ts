@@ -27,7 +27,9 @@ import { MsgCreateSubAccount, MsgCreateSubAccountResponse, MsgActivateSubAccount
 import { MsgCreateMarket, MsgCreateMarketResponse, MsgUpdateMarket, MsgUpdateMarketResponse } from "./market/tx";
 import { MsgCreatePool, MsgCreatePoolResponse, MsgCreatePoolWithLiquidity, MsgCreatePoolWithLiquidityResponse, MsgAddLiquidity, MsgAddLiquidityResponse, MsgRemoveLiquidity, MsgRemoveLiquidityResponse, MsgLinkPool, MsgLinkPoolResponse, MsgUnlinkPool, MsgUnlinkPoolResponse, MsgSetRewardsWeights, MsgSetRewardsWeightsResponse, MsgStakePoolToken, MsgStakePoolTokenResponse, MsgUnstakePoolToken, MsgUnstakePoolTokenResponse, MsgClaimPoolRewards, MsgClaimPoolRewardsResponse, MsgSetRewardCurve, MsgSetRewardCurveResponse, MsgSetCommitmentCurve, MsgSetCommitmentCurveResponse, MsgUpdatePool, MsgUpdatePoolResponse } from "./liquiditypool/tx";
 
-export * from './cosmos-models'
+export * from './cosmos-models';
+
+export * as IBC from './ibc-models';
 
 export const registry = new Registry();
 
@@ -414,10 +416,11 @@ export const TxTypes = {
   "MsgSetCommitmentCurveResponse": "/Switcheo.carbon.liquiditypool.MsgSetCommitmentCurveResponse",
   "MsgUpdatePool": "/Switcheo.carbon.liquiditypool.MsgUpdatePool",
   "MsgUpdatePoolResponse": "/Switcheo.carbon.liquiditypool.MsgUpdatePoolResponse"
-}
+};
 
 
 // Exported for convenience
+export { Block } from "./misc/block";
 export { Message } from "./misc/message";
 export { MessageType } from "./misc/message_type";
 export { Transaction, APITransaction } from "./misc/transaction";
