@@ -1,13 +1,9 @@
-
 import path from "path";
-import fs from "fs";
 
 const files = process.argv;
-const cmd = files.shift()
-const thisFile = files.shift()
 
-const [pwd, registryFile, cosmosModelsFile] = files.slice(-3);
-const codecFiles = files.slice(1, files.length - 3);
+const [pwd, registryFile, cosmosModelsFile, ibcModelsFile] = files.slice(-4);
+const codecFiles = files.slice(2, files.length - 4);
 
 console.log(`import { Registry } from "@cosmjs/proto-signing";`);
 
@@ -30,8 +26,12 @@ for (const moduleFile of codecFiles) {
 }
 
 console.log("");
-const cosmosModelsImportPath = path.relative(registryFile, cosmosModelsFile)
-console.log(`export * from '${cosmosModelsImportPath.replace(/^\.\./i, '.').replace(/\.ts$/i, '')}'`);
+const cosmosModelsImportPath = path.relative(registryFile, cosmosModelsFile);
+console.log(`export * from '${cosmosModelsImportPath.replace(/^\.\./i, '.').replace(/\.ts$/i, '')}';`);
+
+console.log("");
+const ibcModelsImportPath = path.relative(registryFile, ibcModelsFile);
+console.log(`export * as IBC from '${ibcModelsImportPath.replace(/^\.\./i, '.').replace(/\.ts$/i, '')}';`);
 
 console.log("");
 console.log("export const registry = new Registry();");
@@ -47,7 +47,7 @@ for (const packageName in modules) {
 }
 
 console.log("");
-console.log(`export const TxTypes = ${JSON.stringify(typeMap, null, 2)}\n`);
+console.log(`export const TxTypes = ${JSON.stringify(typeMap, null, 2)};\n`);
 
 console.log("");
 console.log('// Exported for convenience');
