@@ -1,7 +1,13 @@
 export const InsightsEndpoints = {
+  // Chain api
+  'chain/stake': '/chain/stake',
+  'chain/transaction': '/chain/transaction',
+
   // User api
   'user/active': '/user/active',
   'user/profile': '/user/profile',
+  'user/total': '/user/total',
+  'user/growth': '/user/growth',
 
   // Pool api
   'pool/list': '/pool/list',
