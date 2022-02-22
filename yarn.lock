@@ -34,6 +34,24 @@
   resolved "https://registry.yarnpkg.com/@cityofzion/neon-api/-/neon-api-5.0.0-next.17.tgz#81d6765101c90a49564bddd967656ff290979bd4"
   integrity sha512-QQiwopbDLmli9cyGvvmdhrpEyss2/9g+zJ4DJ2aP9T0Clep37Mv2Yfv10/XIXwrGPXdB/cXht58GevKa8P1cLQ==
 
+"@cityofzion/neon-core-3@npm:@cityofzion/neon-core@^5.0.0-next.17", "@cityofzion/neon-core@^5.0.0-next.17":
+  version "5.0.0-next.17"
+  resolved "https://registry.yarnpkg.com/@cityofzion/neon-core/-/neon-core-5.0.0-next.17.tgz#fe666b9432eabc7743be926882499d01a33c4f05"
+  integrity sha512-+yb9J+gJSvmOEP6raKOLJdg88GsVP6I6ITFAkdxeWe32PzgtMl1NxZc3QrWBOJ8PQ9t5CGN+KW2l+fwgMqfavQ==
+  dependencies:
+    abort-controller "3.0.0"
+    bignumber.js "7.2.1"
+    bn.js "5.2.0"
+    bs58 "4.0.1"
+    buffer "6.0.3"
+    cross-fetch "^3.1.4"
+    crypto-js "4.1.1"
+    elliptic "6.5.4"
+    lodash "4.17.21"
+    loglevel "1.8.0"
+    loglevel-plugin-prefix "0.8.4"
+    scrypt-js "3.0.1"
+
 "@cityofzion/neon-core@^4.9.0":
   version "4.9.0"
   resolved "https://registry.yarnpkg.com/@cityofzion/neon-core/-/neon-core-4.9.0.tgz#aed0c67997534a7ca1a4c4fbef43858551d0cbbb"
@@ -56,25 +74,7 @@
     secure-random "1.1.2"
     wif "2.0.6"
 
-"@cityofzion/neon-core@^5.0.0-next.17":
-  version "5.0.0-next.17"
-  resolved "https://registry.yarnpkg.com/@cityofzion/neon-core/-/neon-core-5.0.0-next.17.tgz#fe666b9432eabc7743be926882499d01a33c4f05"
-  integrity sha512-+yb9J+gJSvmOEP6raKOLJdg88GsVP6I6ITFAkdxeWe32PzgtMl1NxZc3QrWBOJ8PQ9t5CGN+KW2l+fwgMqfavQ==
-  dependencies:
-    abort-controller "3.0.0"
-    bignumber.js "7.2.1"
-    bn.js "5.2.0"
-    bs58 "4.0.1"
-    buffer "6.0.3"
-    cross-fetch "^3.1.4"
-    crypto-js "4.1.1"
-    elliptic "6.5.4"
-    lodash "4.17.21"
-    loglevel "1.8.0"
-    loglevel-plugin-prefix "0.8.4"
-    scrypt-js "3.0.1"
-
-"@cityofzion/neon-js-3@npm:@cityofzion/neon-js@^5.0.0-next.16":
+"@cityofzion/neon-js-3@npm:@cityofzion/neon-js@^5.0.0-next.17":
   version "5.0.0-next.17"
   resolved "https://registry.yarnpkg.com/@cityofzion/neon-js/-/neon-js-5.0.0-next.17.tgz#ba09d3404f799bbc381e85f18664c5e6c996923e"
   integrity sha512-36Gzh1wrDYvHKoCn7tBenbAOP2ke/rvpkzMwRILxGc3PmY4xJATzGKlpbw9koNFR4fs8uLKZCnyC4aT4XWWDKQ==
