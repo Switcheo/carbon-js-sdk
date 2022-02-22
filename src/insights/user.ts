@@ -21,6 +21,19 @@ export interface Profile {
   twitter: string
 }
 
+export interface UserGrowth {
+  t: string
+  minHeight: number
+  maxHeight: number
+  users: string
+}
+
+export interface TotalUser{
+  count: number
+  total: number
+  date: string
+}
+
 export interface QueryGetUserProfileRequest { 
   username?: string
   address?: string
@@ -34,5 +47,19 @@ export interface QueryGetActiveAccountsRequest extends QueryByTimeRequest { }
 
 export interface QueryGetActiveAccountsResponse {
   entries: ActiveAccounts[]
+  meta: TimeMeta
+}
+
+export interface QueryGetUserGrowthRequest extends QueryByTimeRequest { }
+
+export interface QueryGetUserGrowthResponse{
+  entries: UserGrowth[]
+  meta: TimeMeta
+}
+
+export interface QueryGetTotalUsersRequest extends QueryByTimeRequest{ }
+
+export interface QueryGetTotalUsersResponse {
+  entries: TotalUser[]
   meta: TimeMeta
 }
