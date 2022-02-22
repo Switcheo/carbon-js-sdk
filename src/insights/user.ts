@@ -28,7 +28,7 @@ export interface UserGrowth {
   users: string
 }
 
-export interface TotalUser{
+export interface TotalUser {
   count: number
   total: number
   date: string
@@ -57,7 +57,7 @@ export interface QueryGetUserGrowthResponse{
   meta: TimeMeta
 }
 
-export interface QueryGetTotalUsersRequest extends QueryByTimeRequest{ }
+export interface QueryGetTotalUsersRequest extends QueryByTimeRequest { }
 
 export interface QueryGetTotalUsersResponse {
   entries: TotalUser[]
