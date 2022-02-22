@@ -9,24 +9,24 @@ import { CarbonSDK } from "./_sdk";
     });
     
     // chain api
-    const stakeResponse = await sdk.insights.Stake({});
+    const stakeResponse = await sdk.insights.Stake();
     console.log("stake", stakeResponse);
 
-    const txResponse = await sdk.insights.Transaction({});
+    const txResponse = await sdk.insights.Transaction();
     console.log("tx", txResponse);
 
     // user api
-    const activeAccountsResponse = await sdk.insights.ActiveAccounts({});
+    const activeAccountsResponse = await sdk.insights.ActiveAccounts();
     console.log("activeAccounts", activeAccountsResponse);
 
-    const UserGrowthResponse = await sdk.insights.UserGrowth({});
+    const UserGrowthResponse = await sdk.insights.UserGrowth();
     console.log("UserGrowth", UserGrowthResponse);
 
-    const totalUsersResponse = await sdk.insights.TotalUsers({});
+    const totalUsersResponse = await sdk.insights.TotalUsers();
     console.log("totalUsers", totalUsersResponse);
 
     // pool api
-    const poolsResposne = await sdk.insights.Pools({});
+    const poolsResposne = await sdk.insights.Pools();
     console.log("pools", poolsResposne);
 
     const poolsVolumeResponse = await sdk.insights.PoolsVolume({
@@ -35,7 +35,7 @@ import { CarbonSDK } from "./_sdk";
     console.log("poolsVolume", poolsVolumeResponse);
 
     // node api
-    const nodeResponse = await sdk.insights.Nodes({});
+    const nodeResponse = await sdk.insights.Nodes();
     console.log("nodes", nodeResponse);
 
     // balance api

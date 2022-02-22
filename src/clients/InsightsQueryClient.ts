@@ -32,13 +32,13 @@ class InsightsQueryClient {
   }
 
   // Chain api
-  async Stake(req: Insights.QueryGetStakeRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetStakeResponse>> {
+  async Stake(req: Insights.QueryGetStakeRequest = {}): Promise<Insights.InsightsQueryResponse<Insights.QueryGetStakeResponse>> {
     const request = this.apiManager.path('chain/stake', {}, req)
     const response = await request.get()
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetStakeResponse>
   }
 
-  async Transaction(req: Insights.QueryGetTransactionRequest) :
+  async Transaction(req: Insights.QueryGetTransactionRequest = {}) :
     Promise<Insights.InsightsQueryResponse<Insights.QueryGetTransactionResponse>> {
     const request = this.apiManager.path('chain/transaction', {}, req)
     const response = await request.get()
@@ -46,7 +46,7 @@ class InsightsQueryClient {
   }
 
   // User api
-  async ActiveAccounts(req: Insights.QueryGetActiveAccountsRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetActiveAccountsResponse>> {
+  async ActiveAccounts(req: Insights.QueryGetActiveAccountsRequest = {}): Promise<Insights.InsightsQueryResponse<Insights.QueryGetActiveAccountsResponse>> {
     const request = this.apiManager.path('user/active', {}, req)
     const response = await request.get()
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetActiveAccountsResponse>
@@ -58,13 +58,13 @@ class InsightsQueryClient {
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetUserProfileResponse>
   }
 
-  async UserGrowth(req: Insights.QueryGetUserGrowthRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetUserGrowthResponse>> {
+  async UserGrowth(req: Insights.QueryGetUserGrowthRequest = {}): Promise<Insights.InsightsQueryResponse<Insights.QueryGetUserGrowthResponse>> {
     const request = this.apiManager.path('user/growth', {}, req)
     const response = await request.get()
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetUserGrowthResponse>
   }
 
-  async TotalUsers(req: Insights.QueryGetTotalUsersRequest) :
+  async TotalUsers(req: Insights.QueryGetTotalUsersRequest = {}) :
     Promise<Insights.InsightsQueryResponse<Insights.QueryGetTotalUsersResponse>> {
     const request = this.apiManager.path('user/total', {}, req)
     const response = await request.get()
@@ -72,7 +72,7 @@ class InsightsQueryClient {
   }
 
   // Pool api
-  async Pools(req: Insights.QueryGetPoolsRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetPoolsResponse>> {
+  async Pools(req: Insights.QueryGetPoolsRequest = {}): Promise<Insights.InsightsQueryResponse<Insights.QueryGetPoolsResponse>> {
     const request = this.apiManager.path('pool/list', {}, req)
     const response = await request.get()
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetPoolsResponse>
@@ -116,7 +116,7 @@ class InsightsQueryClient {
   }
 
   // Node api
-  async Nodes(req: Insights.QueryGetNodesRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetNodesResponse>> {
+  async Nodes(req: Insights.QueryGetNodesRequest = {}): Promise<Insights.InsightsQueryResponse<Insights.QueryGetNodesResponse>> {
     const request = this.apiManager.path('node/list', {}, req)
     const response = await request.get()
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetNodesResponse>
