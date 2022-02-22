@@ -3,9 +3,8 @@ import { ABIs } from '@carbon-sdk/eth'
 import { Blockchain, getBlockchainFromChain, ChainNames } from '@carbon-sdk/util/blockchain'
 import { ethers } from 'ethers'
 import * as ethSignUtils from 'eth-sig-util'
-import { ETHClient } from '@carbon-sdk/clients/ETHClient'
 
-type EVMChain = Blockchain.Ethereum | Blockchain.BinanceSmartChain;
+export type EVMChain = Blockchain.Ethereum | Blockchain.BinanceSmartChain;
 type ChainContracts = {
   [key in Network]: string;
 }
