@@ -43,6 +43,7 @@ import "./_setup";
     lastPriceProtectedBand: 0,
     indexOracleId: "",
     expiryTime: new Date(""),
+    tradingBandwidth: 0,
   })
   console.log(result)
 })().catch(console.error).finally(() => process.exit(0));
