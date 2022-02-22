@@ -20,6 +20,9 @@ export interface NeoNetworkConfig {
   rpcURL: string
   wrapperScriptHash: string
 }
+export interface N3NetworkConfig {
+  rpcURL: string
+}
 
 export interface ZilNetworkConfig {
   rpcURL: string
@@ -46,6 +49,7 @@ export interface NetworkConfig {
   bsc: EthNetworkConfig
 
   neo: NeoNetworkConfig
+  n3: N3NetworkConfig
   zil: ZilNetworkConfig
 }
 
@@ -95,6 +99,10 @@ export const NetworkConfigs: {
       wrapperScriptHash: 'f46719e2d16bf50cddcef9d4bbfece901f73cbb6',
     },
 
+    n3: {
+      rpcURL: '',
+    },
+
     zil: {
       rpcURL: 'https://api.zilliqa.com',
       lockProxyAddr: '0xd73c6b871b4d0e130d64581993b745fc938a5be7',
@@ -139,6 +147,10 @@ export const NetworkConfigs: {
     neo: {
       rpcURL: 'https://g30trj885e.execute-api.ap-southeast-1.amazonaws.com',
       wrapperScriptHash: 'f46719e2d16bf50cddcef9d4bbfece901f73cbb6',
+    },
+
+    n3: {
+      rpcURL: '',
     },
 
     zil: {
@@ -187,6 +199,10 @@ export const NetworkConfigs: {
       wrapperScriptHash: 'f46719e2d16bf50cddcef9d4bbfece901f73cbb6',
     },
 
+    n3: {
+      rpcURL: '',
+    },
+
     zil: {
       rpcURL: 'https://dev-api.zilliqa.com',
       lockProxyAddr: '0xa5a43eecd29534edf80792a9889f52c77455245d',
@@ -231,6 +247,10 @@ export const NetworkConfigs: {
     neo: {
       rpcURL: 'https://g30trj885e.execute-api.ap-southeast-1.amazonaws.com',
       wrapperScriptHash: 'f46719e2d16bf50cddcef9d4bbfece901f73cbb6',
+    },
+
+    n3: {
+      rpcURL: '',
     },
 
     zil: {

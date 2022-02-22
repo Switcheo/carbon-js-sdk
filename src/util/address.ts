@@ -321,6 +321,45 @@ export const NEOAddress: AddressBuilder<AddressOptions> = {
   },
 };
 
+export const N3Address: AddressBuilder<AddressOptions> = {
+  ...NEOAddress,
+
+  publicKeyToScriptHash: (publicKey: string | Buffer): string => {
+    const encodedPublicKey = NEOAddress.encodePublicKey(publicKey);
+
+    const addressScript = Buffer.concat([
+      Buffer.from([0x0C]), // OptCode.PUSHDATA1
+      Buffer.from([0x21]), // OptCode.PUSHBYTES21
+      encodedPublicKey,
+      Buffer.from([0x41]), // OptCode.SYSCALL
+      Buffer.from([0x56, 0xe7, 0xb3, 0x27]), // OptCode.CHECKSIG
+    ]);
+    const sha256Hash = ethers.utils.sha256(addressScript);
+    const ripemdHash = ethers.utils.ripemd160(sha256Hash);
+
+    return stripHexPrefix(ripemdHash);
+  },
+
+  publicKeyToAddress: (publicKey: string | Buffer): string => {
+    const addressScript = N3Address.publicKeyToScriptHash(publicKey);
+    const address = Base58Check.encode(addressScript, "35");
+
+    return address;
+  },
+
+  privateKeyToAddress: (privateKey: string | Buffer): string => {
+    const compressedPublicKey = N3Address.privateToPublicKey(privateKey);
+    const address = N3Address.publicKeyToAddress(compressedPublicKey);
+
+    return address;
+  },
+
+  generateAddress: (mnemonic: string, account: number = 0) => {
+    const privateKey = N3Address.mnemonicToPrivateKey(mnemonic, account);
+    return N3Address.privateKeyToAddress(privateKey);
+  },
+}
+
 export const ETHAddress: AddressBuilder<AddressOptions> = {
   coinType: (): number => {
     return ETH_COIN_TYPE;

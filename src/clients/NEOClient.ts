@@ -71,7 +71,6 @@ export class NEOClient {
     const tokens = tokenQueryResults.filter(token =>
       blockchainForChainId(token.chainId.toNumber()) == this.blockchain &&
       token.tokenAddress.length == 40 &&
-      // TODO: Check if bridgeAddress corresponds to carbon token lock_proxy_hash
       token.bridgeAddress.length == 40
     )
 

@@ -3,6 +3,7 @@ import { GenericUtils, NetworkUtils } from "@carbon-sdk/util";
 import { OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import { CarbonQueryClient, ETHClient, HydrogenClient, InsightsQueryClient, NEOClient, TokenClient, ZILClient } from "./clients";
+import N3Client from "./clients/N3Client";
 import { AdminModule, BankModule, BrokerModule, CDPModule, CoinModule, FeeModule, GovModule, IBCModule, LeverageModule, LiquidityPoolModule, MarketModule, OracleModule, OrderModule, PositionModule, ProfileModule, SubAccountModule } from "./modules";
 import { StakingModule } from "./modules/staking";
 import { CosmosLedger } from "./provider";
@@ -75,6 +76,7 @@ class CarbonSDK {
   eth: ETHClient;
   bsc: ETHClient;
   zil: ZILClient;
+  n3: N3Client;
 
   constructor(opts: CarbonSDKOpts) {
     this.network = opts.network ?? DEFAULT_NETWORK;
@@ -108,6 +110,11 @@ class CarbonSDK {
     this.neo = NEOClient.instance({
       configProvider: this,
       blockchain: Blockchain.Neo,
+    });
+
+    this.n3 = N3Client.instance({
+      configProvider: this,
+      blockchain: Blockchain.Neo3,
     });
 
     this.eth = ETHClient.instance({
