@@ -1,6 +1,6 @@
 import { AminoSignResponse, encodeSecp256k1Signature, StdSignDoc } from "@cosmjs/amino";
 import { AminoCarbonSigner, CarbonSDK, CarbonSignerTypes } from "@carbon-sdk/index";
-import { sortObject } from '@carbon-sdk/util/generic';
+import { sortObject } from "@carbon-sdk/util/generic";
 import neo3Dapi from "neo3-dapi";
 
 export enum Events {
@@ -22,6 +22,12 @@ export enum Errors {
   InsufficientFunds = "INSUFFICIENT_FUNDS",
 }
 
+export interface GetNetworksOutput {
+  chainId?: number
+  networks: string[];
+  defaultNetwork: string;
+}
+
 export interface Account {
   address: string;
   label: string;
@@ -33,11 +39,12 @@ export interface PublicKeyOutput {
 }
 
 export interface O3WalletOpts {
-  network: CarbonSDK.Network
+  network: CarbonSDK.Network;
 }
 
 export class O3Wallet {
   public neo3Dapi: any;
+  public address: string = "";
 
   private constructor(
     public readonly network: CarbonSDK.Network,
@@ -66,13 +73,36 @@ export class O3Wallet {
       getAccounts: async () => {
         return [
           {
-            algo: 'secp256k1',
+            algo: "secp256k1",
             address: bech32Address,
             pubkey: pubKey,
           },
-        ]
+        ];
       },
+    };
+  }
+
+  async connectWallet() {
+    try {
+      const publicKeyOutput = await this.getPublicKeyOutput() as PublicKeyOutput;
+      this.address = publicKeyOutput.address;
+      return publicKeyOutput;
+    } catch (err) {
+      const type = (err as any).type ?? "";
+      throw new Error(type ?? (err as Error)?.message ?? "");
     }
+  }
+
+  disconnectWallet() {
+    this.address = "";
+  }
+
+  isConnected() {
+    return this.address !== "";
+  }
+
+  async getNetworks() {
+    return this.neo3Dapi.getNetworks();
   }
 
   async getPublicKeyOutput() {
@@ -88,4 +118,4 @@ export class O3Wallet {
   }
 }
 
-export default O3Wallet
+export default O3Wallet;
