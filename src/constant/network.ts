@@ -1,3 +1,5 @@
+import { CONST } from "@cityofzion/neon-core-3";
+
 export enum Network {
   MainNet = "mainnet",
   TestNet = "testnet",
@@ -22,6 +24,7 @@ export interface NeoNetworkConfig {
 }
 export interface N3NetworkConfig {
   rpcURL: string
+  networkMagic: number;
 }
 
 export interface ZilNetworkConfig {
@@ -100,7 +103,8 @@ export const NetworkConfigs: {
     },
 
     n3: {
-      rpcURL: '',
+      rpcURL: 'http://seed1.neo.org:10332',
+      networkMagic: CONST.MAGIC_NUMBER.MainNet,
     },
 
     zil: {
@@ -150,7 +154,8 @@ export const NetworkConfigs: {
     },
 
     n3: {
-      rpcURL: '',
+      rpcURL: 'http://seed1t4.neo.org:20332',
+      networkMagic: CONST.MAGIC_NUMBER.TestNet,
     },
 
     zil: {
@@ -200,7 +205,8 @@ export const NetworkConfigs: {
     },
 
     n3: {
-      rpcURL: '',
+      rpcURL: 'http://seed1t4.neo.org:20332',
+      networkMagic: CONST.MAGIC_NUMBER.TestNet,
     },
 
     zil: {
@@ -250,7 +256,8 @@ export const NetworkConfigs: {
     },
 
     n3: {
-      rpcURL: '',
+      rpcURL: 'http://seed1t4.neo.org:20332',
+      networkMagic: CONST.MAGIC_NUMBER.TestNet,
     },
 
     zil: {

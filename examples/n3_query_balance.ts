@@ -1,3 +1,4 @@
+import { CONST } from "@cityofzion/neon-core-3";
 import { rpc } from "@cityofzion/neon-js-3";
 import BigNumber from "bignumber.js";
 import * as BIP39 from "bip39";
@@ -19,13 +20,15 @@ const neoRpcUrl = "http://seed1t4.neo.org:20332";
     configProvider: {
       getConfig: () => ({
         n3: {
-          rpcURL: neoRpcUrl
+          rpcURL: neoRpcUrl,
+          networkMagic: CONST.MAGIC_NUMBER.TestNet,
         },
       } as any),
     },
   })
 
   const bech32Address = SWTHAddress.generateAddress(mnemonics);
+  console.log("deposit to ", bech32Address)
 
   const privateKeyWif = "";
   const privateKey = wif.decode(privateKeyWif).privateKey.toString("hex");
@@ -46,7 +49,8 @@ const neoRpcUrl = "http://seed1t4.neo.org:20332";
   const lockProxyScriptHash = "eeebee7ef57cb2106fbad2c51c5b9b4c30f0c0ca"
   const tokenScriptHash = "285b332bc0323bc334987bd4735fb39cc3269e20"
 
-  const result = await n3Client.lock(lockProxyScriptHash, tokenScriptHash, fromAddress, toAddressHex, new BigNumber(88000), BN_ZERO, privateKey);
+  const signer = N3Client.signerFromPrivateKey(privateKey);
+  const result = await n3Client.lock(lockProxyScriptHash, tokenScriptHash, fromAddress, toAddressHex, new BigNumber(8800), BN_ZERO, signer);
   console.log(result);
 
 })().catch(console.error).finally(() => process.exit(0));
