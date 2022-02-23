@@ -7,7 +7,7 @@ import { TokensWithExternalBalance } from "@carbon-sdk/util/external"
 import { SimpleMap } from "@carbon-sdk/util/type"
 import { CONST, sc, wallet, rpc, tx, u } from "@cityofzion/neon-core-3"
 import BigNumber from "bignumber.js"
-import { SWTHAddress } from "@carbon-sdk/util/address"
+import { N3Address, SWTHAddress } from "@carbon-sdk/util/address"
 
 export interface N3ClientOpts {
   configProvider: NetworkConfigProvider,
@@ -15,12 +15,15 @@ export interface N3ClientOpts {
 }
 
 export interface LockLedgerDepositParams {
+  token: TokensWithExternalBalance
+
+  toAddressHex: string
+
   feeAmount: BigNumber
   amount: BigNumber
-  address: Uint8Array
-  token: TokensWithExternalBalance
-  ledger: NeoLedgerAccount
+
   signCompleteCallback?: () => void
+  ledger: NeoLedgerAccount
 }
 
 export class N3Client {
@@ -77,7 +80,7 @@ export class N3Client {
     return tokensWithBalance
   }
 
-  public async lock(lockProxyScriptHash: string, tokenScriptHash: string, fromAddressHex: string, toAddressHex: string, amount: BigNumber, feeAmount: BigNumber, signingKey: string) {
+  public async lock(lockProxyScriptHash: string, tokenScriptHash: string, fromAddressHex: string, toAddressHex: string, amount: BigNumber, feeAmount: BigNumber, signer: string | NeoLedgerAccount) {
 
     const nonce = Math.floor(Math.random() * 1000000)
 
@@ -107,21 +110,34 @@ export class N3Client {
     const networkFee = await this.getNetworkFee(txn, 0);
     txn.networkFee = networkFee;
 
-    const account = new wallet.Account(signingKey);
-    const systemFee = await this.getSystemFee(txn, 0, [{
-      account: account.address,
-      scopes: tx.WitnessScope.Global.toString(),
-    }]);
-    txn.systemFee = systemFee;
+    if (typeof signer === "string") {
+      const account = new wallet.Account(signer);
+      const systemFee = await this.getSystemFee(txn, 0, [{
+        account: account.address,
+        scopes: tx.WitnessScope.Global.toString(),
+      }]);
+      txn.systemFee = systemFee;
+  
+      await txn.sign(account, CONST.MAGIC_NUMBER.TestNet)
+    } else {
+      const ledger = signer as NeoLedgerAccount;
+      const systemFee = await this.getSystemFee(txn, 0, [{
+        account: ledger.scriptHash,
+        scopes: tx.WitnessScope.Global.toString(),
+      }]);
+      txn.systemFee = systemFee;
 
-    const signedTx = await txn.sign(signingKey, CONST.MAGIC_NUMBER.TestNet)
+      const networkHex = CONST.MAGIC_NUMBER.TestNet.toString(16);
+      const signature = await ledger.sign(networkHex + u.reverseHex(txn.hash()));
+      txn.addWitness(tx.Witness.fromSignature(signature, ledger.publicKey));
+    }
 
     if (amount.lt(feeAmount)) {
       return false
     }
 
     const result = await this.rpcClient.sendRawTransaction(
-      u.HexString.fromHex(signedTx.serialize(true)).toString()
+      u.HexString.fromHex(txn.serialize(true)).toString()
     );
 
     return result;
@@ -144,6 +160,18 @@ export class N3Client {
     const feeAmount = new BigNumber(feeAmountInput ?? "100000000")
 
     return await this.lock(scriptHash, tokenScriptHash, account.address, toAddress, amount, feeAmount, neoPrivateKey);
+  }
+
+  public async lockLedgerDeposit(params: LockLedgerDepositParams) {
+    const {
+      feeAmount, toAddressHex, amount, token, ledger, signCompleteCallback,
+    } = params
+  
+    const scriptHash = u.reverseHex(token.bridgeAddress)
+    const tokenScriptHash = u.reverseHex(token.tokenAddress);
+    const fromAddressHex = ledger.scriptHash
+
+    return await this.lock(scriptHash, tokenScriptHash, fromAddressHex, toAddressHex, amount, feeAmount, ledger);
   }
 
   /**
