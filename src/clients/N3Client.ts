@@ -246,6 +246,16 @@ export class N3Client {
       return u.BigInteger.fromNumber(requiredSystemFee);
     }
   }
+
+  public async formatWithdrawalAddress(address: string): Promise<string> {
+    const isValidAddress = wallet.isAddress(address);
+    if (!isValidAddress) {
+      throw new Error("invalid address");
+    }
+    const scriptHash = wallet.getScriptHashFromAddress(address);
+    // return the little endian version of the address
+    return u.reverseHex(scriptHash);
+  }
 }
 
 export default N3Client;
