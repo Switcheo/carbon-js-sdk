@@ -11,6 +11,7 @@ import { MsgCreateMarket } from "@carbon-sdk/codec/market/tx";
 import { MsgCreateOracle } from "@carbon-sdk/codec/oracle/tx";
 import { MsgSetTradingFlag } from "@carbon-sdk/codec/order/tx";
 import { CarbonTx } from "@carbon-sdk/util";
+import { toUnitless } from "@carbon-sdk/util/number";
 import BigNumber from "bignumber.js";
 import Long from "long";
 import BaseModule from "./base";
@@ -668,7 +669,7 @@ export function transformCommunityPoolSpendAmount(amount: Coin[]) {
   const amounts = amount.map(param => {
     return {
       denom: param.denom,
-      amount: new BigNumber(param.amount).shiftedBy(18).toString()
+      amount: new BigNumber(param.amount).shiftedBy(18).toString(10)
     } as Coin
   })
   return amounts
