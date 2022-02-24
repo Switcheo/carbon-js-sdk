@@ -11,7 +11,6 @@ import { MsgCreateMarket } from "@carbon-sdk/codec/market/tx";
 import { MsgCreateOracle } from "@carbon-sdk/codec/oracle/tx";
 import { MsgSetTradingFlag } from "@carbon-sdk/codec/order/tx";
 import { CarbonTx } from "@carbon-sdk/util";
-import { toUnitless } from "@carbon-sdk/util/number";
 import BigNumber from "bignumber.js";
 import Long from "long";
 import BaseModule from "./base";
