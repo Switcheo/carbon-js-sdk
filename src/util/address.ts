@@ -1,4 +1,5 @@
 import { Bech32AddrType, Network, NetworkConfigs } from "@carbon-sdk/constant";
+import { wallet } from "@cityofzion/neon-core-3";
 import * as Base58Check from "base58check";
 import * as bech32 from "bech32";
 import * as BIP32 from "bip32";
@@ -325,26 +326,13 @@ export const N3Address: AddressBuilder<AddressOptions> = {
   ...NEOAddress,
 
   publicKeyToScriptHash: (publicKey: string | Buffer): string => {
-    const encodedPublicKey = NEOAddress.encodePublicKey(publicKey);
-
-    const addressScript = Buffer.concat([
-      Buffer.from([0x0C]), // OptCode.PUSHDATA1
-      Buffer.from([0x21]), // OptCode.PUSHBYTES21
-      encodedPublicKey,
-      Buffer.from([0x41]), // OptCode.SYSCALL
-      Buffer.from([0x56, 0xe7, 0xb3, 0x27]), // OptCode.CHECKSIG
-    ]);
-    const sha256Hash = ethers.utils.sha256(addressScript);
-    const ripemdHash = ethers.utils.ripemd160(sha256Hash);
-
-    return stripHexPrefix(ripemdHash);
+    const publicKeyHex = stringOrBufferToBuffer(publicKey)!.toString("hex");
+    return wallet.getScriptHashFromPublicKey(publicKeyHex)
   },
 
   publicKeyToAddress: (publicKey: string | Buffer): string => {
     const addressScript = N3Address.publicKeyToScriptHash(publicKey);
-    const address = Base58Check.encode(addressScript, "35");
-
-    return address;
+    return wallet.getAddressFromScriptHash(addressScript);
   },
 
   privateKeyToAddress: (privateKey: string | Buffer): string => {

@@ -89,8 +89,8 @@ export class N3Client {
 
     const balances: SimpleMap<string> = {};
     const tokensWithBalance: TokensWithExternalBalance[] = []
-    for (const balanceResult of response?.result?.balance ?? []) {
-      balances[balanceResult.assetHash] = balanceResult.amount;
+    for (const balanceResult of response?.balance ?? []) {
+      balances[balanceResult.assethash.replace(/^0x/i, "")] = balanceResult.amount;
     }
 
     for (const token of tokens) {
@@ -120,8 +120,8 @@ export class N3Client {
       sc.ContractParam.integer(nonce),
     ];
 
-    // console.log("script hash", lockProxyScriptHash)
-    // console.log("args", args.map(item => item.value?.toString?.()));
+    console.log("script hash", lockProxyScriptHash)
+    console.log("args", args.map(item => item.value?.toString?.()));
 
     const script = sc.createScript({
       scriptHash: lockProxyScriptHash,
@@ -167,7 +167,7 @@ export class N3Client {
     const account = new wallet.Account(neoPrivateKey)
     const networkConfig = this.configProvider.getConfig()
     const scriptHash = u.reverseHex(token.bridgeAddress)
-    const tokenScriptHash = u.reverseHex(token.tokenAddress);
+    const tokenScriptHash = token.tokenAddress;
 
     const addressBytes = SWTHAddress.getAddressBytes(swthAddress, networkConfig.network)
     const toAddress = Buffer.from(addressBytes).toString("hex");
@@ -184,7 +184,7 @@ export class N3Client {
     } = params
 
     const scriptHash = u.reverseHex(token.bridgeAddress)
-    const tokenScriptHash = u.reverseHex(token.tokenAddress);
+    const tokenScriptHash = token.tokenAddress;
     const fromAddressHex = ledger.scriptHash
 
     const n3Signer = N3Client.signerFromLedger(ledger);
