@@ -82,16 +82,9 @@ export class N3Client {
 
   public async getExternalBalances(sdk: CarbonSDK, address: string, whitelistDenoms?: string[]): Promise<TokensWithExternalBalance[]> {
     const tokens = await sdk.token.getAllTokens();
-    const response: any = await this.rpcClient.execute(new rpc.Query({
-      method: "getnep17balances",
-      params: [address],
-    }))
 
-    const balances: SimpleMap<string> = {};
-    const tokensWithBalance: TokensWithExternalBalance[] = []
-    for (const balanceResult of response?.balance ?? []) {
-      balances[balanceResult.assethash.replace(/^0x/i, "")] = balanceResult.amount;
-    }
+    const balances: SimpleMap<string> = await this.getAllN3Balances(address);
+    const tokensWithBalance: TokensWithExternalBalance[] = [];
 
     for (const token of tokens) {
       if (whitelistDenoms && !whitelistDenoms.includes(token.denom)) continue
@@ -100,10 +93,24 @@ export class N3Client {
       tokensWithBalance.push({
         ...token,
         externalBalance: balances[token.tokenAddress],
-      })
+      });
     }
 
-    return tokensWithBalance
+    return tokensWithBalance;
+  }
+
+  public async getAllN3Balances(address: string): Promise<SimpleMap<string>> {
+    const response: any = await this.rpcClient.execute(new rpc.Query({
+      method: "getnep17balances",
+      params: [address],
+    }));
+
+    const balances: SimpleMap<string> = {};
+    for (const balanceResult of response?.balance ?? []) {
+      balances[balanceResult.assethash.replace(/^0x/i, "")] = balanceResult.amount;
+    }
+
+    return balances;
   }
 
   public async lock(lockProxyScriptHash: string, tokenScriptHash: string, fromAddressHex: string, toAddressHex: string, amount: BigNumber, feeAmount: BigNumber, signer: N3Signer) {
