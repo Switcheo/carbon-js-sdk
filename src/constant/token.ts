@@ -306,7 +306,6 @@ export const CoinGeckoTokenNames: SimpleMap<string> = {
 
 export const TokenBlacklist: OptionalNetworkMap<string[]> = {
   [Network.MainNet]: [
-    "swthb.1.6.d04123",   // binance wrapped token
     "brkl.1.2.337f55",    // wrong token address
     "zusdt.1.18.1cbca1",  // duplicated token
   ],
