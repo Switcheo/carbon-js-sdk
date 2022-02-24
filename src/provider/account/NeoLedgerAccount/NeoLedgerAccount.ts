@@ -1,5 +1,5 @@
 import { getLedgerTransport } from "@carbon-sdk/util/ledger"
-import { AddressOptions, NEOAddress } from "@carbon-sdk/util/address"
+import { AddressBuilder, AddressOptions, NEOAddress } from "@carbon-sdk/util/address"
 import Transport from "@ledgerhq/hw-transport"
 import NeonLedger, { getNEOBIP44String } from "./NeonLedger"
 
@@ -15,14 +15,14 @@ export class NeoLedgerAccount {
 
   private static _connectPolling = false
 
-  private constructor(ledger: Transport, publicKey: string) {
+  private constructor(ledger: Transport, publicKey: string, neoAddressUtil: AddressBuilder = NEOAddress) {
     this.ledger = ledger
     this.publicKey = publicKey
-    this.scriptHash = NEOAddress.publicKeyToScriptHash(publicKey)
-    this.displayAddress = NEOAddress.publicKeyToAddress(publicKey)
+    this.scriptHash = neoAddressUtil.publicKeyToScriptHash(publicKey)
+    this.displayAddress = neoAddressUtil.publicKeyToAddress(publicKey)
   }
 
-  static async connect() {
+  static async connect(neoAddressUtils: AddressBuilder = NEOAddress) {
     let connectResult: [Transport, string] | null = null
     let connectionAttempts = 0
 
@@ -76,7 +76,7 @@ export class NeoLedgerAccount {
     }
 
     const [ledger, publicKey] = connectResult
-    return new NeoLedgerAccount(ledger, publicKey)
+    return new NeoLedgerAccount(ledger, publicKey, neoAddressUtils)
   }
 
   /**

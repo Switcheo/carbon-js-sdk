@@ -99,7 +99,7 @@ export const wifEncodePrivateKey = (privateKey: string | Buffer, iter: number = 
 
 export interface AddressOptions { }
 
-export interface AddressBuilder<T extends AddressOptions> {
+export interface AddressBuilder<T extends AddressOptions = AddressOptions> {
   /**
    * BIP44 coin type
    * used in `m/44'/${coinType}'/0'/0/0`
