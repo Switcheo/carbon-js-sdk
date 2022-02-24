@@ -74,8 +74,6 @@ export const blockchainForChainId = (chainId?: number): Blockchain | undefined =
     case 6:
     case 79:
       return Blockchain.BinanceSmartChain
-    case 88: // NEO3 chain id on Devnet
-      return Blockchain.Neo3
     case 9: // mainnet
     case 18:
     case 110: // testnet
