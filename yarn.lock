@@ -35,6 +35,7 @@
   integrity sha512-QQiwopbDLmli9cyGvvmdhrpEyss2/9g+zJ4DJ2aP9T0Clep37Mv2Yfv10/XIXwrGPXdB/cXht58GevKa8P1cLQ==
 
 "@cityofzion/neon-core-3@npm:@cityofzion/neon-core@^5.0.0-next.17", "@cityofzion/neon-core@^5.0.0-next.17":
+  name "@cityofzion/neon-core-3"
   version "5.0.0-next.17"
   resolved "https://registry.yarnpkg.com/@cityofzion/neon-core/-/neon-core-5.0.0-next.17.tgz#fe666b9432eabc7743be926882499d01a33c4f05"
   integrity sha512-+yb9J+gJSvmOEP6raKOLJdg88GsVP6I6ITFAkdxeWe32PzgtMl1NxZc3QrWBOJ8PQ9t5CGN+KW2l+fwgMqfavQ==
@@ -2569,6 +2570,14 @@ nan@^2.14.0:
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.15.0.tgz#3f34a473ff18e15c1b5626b62903b5ad6e665fee"
   integrity sha512-8ZtvEnA2c5aYCZYd1cvgdnU6cqwixRoYg70xPLWUws5ORTa/lnw+u4amixRS/Ac5U5mQVgp9pnlSUnbNWFaWZQ==
 
+neo-dapi@^2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/neo-dapi/-/neo-dapi-2.0.4.tgz#8f3b2543b0e90dbcc69391e651d456e219b06165"
+  integrity sha512-DikbfAs83SitWZIgYWsi1DrdvyA17qw1AvlGFAYj7o3RGX0Ij+SXb9E+lC2RxHRsT2semIkbNM4YzQvW3INqHQ==
+  dependencies:
+    o3-dapi-core "^0.3.13"
+    o3-dapi-neo "^0.6.1"
+
 neo3-dapi@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/neo3-dapi/-/neo3-dapi-1.0.1.tgz#afb2c77b061600d2ec8cd3a16e780918b1966157"
@@ -2629,6 +2638,11 @@ o3-dapi-neo3@1.0.4:
   integrity sha512-t1BdFckB/gs+17pMC22LBTDrhWF39mNGnk01QMHflsaiYKhgkOtSXKxjaDEj2qB/5KNU/CQi0AsqFTrMIlcrTg==
   dependencies:
     codelyzer "^6.0.2"
+
+o3-dapi-neo@^0.6.1:
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/o3-dapi-neo/-/o3-dapi-neo-0.6.1.tgz#e09c86bb716d09133f74ca1908497e2ea7729a45"
+  integrity sha512-geKch5aE7A99v/f077A6Tyq0Fv5FKE9GPLtjZyDd4SXk23kj4Ig8agMoTx9ARzdP2ueSq/dcLoNQLzQWnBczUw==
 
 object-component@0.0.3:
   version "0.0.3"

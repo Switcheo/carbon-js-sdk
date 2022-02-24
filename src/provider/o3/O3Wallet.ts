@@ -2,19 +2,24 @@ import { AminoSignResponse, encodeSecp256k1Signature, StdSignDoc } from "@cosmjs
 import { AminoCarbonSigner, CarbonSDK, CarbonSignerTypes, Models } from "@carbon-sdk/index";
 import { sortObject } from "@carbon-sdk/util/generic";
 import { u } from "@cityofzion/neon-js-3";
+import neoDapi from "neo-dapi";
 import neo3Dapi from "neo3-dapi";
 import { AddressUtils, ExternalUtils, TypeUtils } from "@carbon-sdk/util";
 
 import * as O3Types from "./O3Types";
 
 export class O3Wallet {
-  public neo3Dapi: any;
+  public neo3Dapi: any; // for Neo N3
+  public neo2Dapi: any; // for Neo Legacy
+  public neoNetwork: O3Types.AcceptedNets | undefined;
+
   public address: string = "";
   private publicKey: string = "";
 
   private constructor(
     public readonly network: CarbonSDK.Network,
   ) {
+    this.neo2Dapi = neoDapi;
     this.neo3Dapi = neo3Dapi;
   }
 
@@ -25,11 +30,12 @@ export class O3Wallet {
   }
 
   assembleSigner(bech32Address: string, pubKey: Uint8Array): AminoCarbonSigner {
+    const dapi = this.getDAPI();
     return {
       type: CarbonSignerTypes.BrowserInjected,
       signAmino: async (_: string, doc: StdSignDoc): Promise<AminoSignResponse> => {
         const msg = JSON.stringify(sortObject(doc));
-        const signBytes = await this.neo3Dapi.signMessage(msg);
+        const signBytes = await dapi.signMessage(msg);
         const signature = encodeSecp256k1Signature(pubKey, signBytes);
         return {
           signed: doc,
@@ -63,6 +69,7 @@ export class O3Wallet {
   disconnectWallet() {
     this.address = "";
     this.publicKey = "";
+    this.neoNetwork = undefined;
   }
 
   isConnected() {
@@ -106,12 +113,11 @@ export class O3Wallet {
 
   async assembleAndInvoke(operation: string, scriptHash: string, args: O3Types.Argument[], broadcastOverride: boolean = false, signers: O3Types.Signers[]) {
     try {
-      const network = await this.getNetworks() as O3Types.GetNetworksOutput;
       const invokeMsg = {
         scriptHash,
         operation,
         args,
-        network: network.defaultNetwork,
+        network: this.neoNetwork,
         broadcastOverride: broadcastOverride,
         signers,
       };
@@ -140,7 +146,8 @@ export class O3Wallet {
           contracts: Object.keys(tokenMap),
         }],
       };
-      const response = await this.neo3Dapi.getBalance(argsBalance) as O3Types.BalanceResults;
+      const dapi = this.getDAPI();
+      const response = await dapi.getBalance(argsBalance) as O3Types.BalanceResults;
 
       const balanceMap: TypeUtils.SimpleMap<ExternalUtils.TokensWithExternalBalance> = {};
       const balances: O3Types.Balance[] = response[this.address];
@@ -168,15 +175,25 @@ export class O3Wallet {
   }
 
   async getPublicKeyOutput() {
-    return this.neo3Dapi.getPublicKey();
+    const dapi = this.getDAPI();
+    return dapi.getPublicKey();
   }
 
   async getAccount() {
-    return this.neo3Dapi.getAccount();
+    const dapi = this.getDAPI();
+    return dapi.getAccount();
   }
 
-  getDAPI()   {
-    return this.neo3Dapi;
+  getDAPI() {
+    return this.neoNetwork === "N3MainNet" ? this.neo3Dapi : this.neo2Dapi;
+  }
+
+  setNetwork(network: string) {
+    if (network === "N3MainNet" || network === "MainNet") {
+      this.neoNetwork = network;
+    } else {
+      this.neoNetwork = undefined;
+    }
   }
 }
 

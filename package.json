@@ -37,8 +37,8 @@
   ],
   "dependencies": {
     "@cityofzion/neon-core": "^4.9.0",
-    "@cityofzion/neon-js": "^4.9.0",
     "@cityofzion/neon-core-3": "npm:@cityofzion/neon-core@^5.0.0-next.17",
+    "@cityofzion/neon-js": "^4.9.0",
     "@cityofzion/neon-js-3": "npm:@cityofzion/neon-js@^5.0.0-next.17",
     "@cosmjs/proto-signing": "^0.26.6",
     "@cosmjs/stargate": "^0.26.6",
@@ -63,6 +63,7 @@
     "ethers": "^5.5.1",
     "ledger-cosmos-js": "^2.1.8",
     "lodash": "^4.17.21",
+    "neo-dapi": "^2.0.4",
     "neo3-dapi": "^1.0.1",
     "node-fetch": "^2.6.1",
     "query-string": "^7.0.1",

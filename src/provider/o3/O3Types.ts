@@ -3,6 +3,8 @@ import { ExternalUtils } from "@carbon-sdk/util";
 import BigNumber from "bignumber.js";
 import neo3Dapi from "neo3-dapi";
 
+export type AcceptedNets = "N3MainNet" | "MainNet";
+
 // O3 Wallet Events Enum
 export enum Events {
   Ready = neo3Dapi.Constants.EventName.READY,
