@@ -172,7 +172,7 @@ export const NetworkConfigs: {
     tmWsUrl: "wss://dev-tm-api.carbon.network",
     restUrl: "https://dev-api.carbon.network",
     insightsUrl: "https://dev-api-insights.carbon.network",
-    hydrogenUrl: "https://hydrogen-api.carbon.network",
+    hydrogenUrl: "https://dev-hydrogen-api.carbon.network",
     wsUrl: "wss://dev-ws-api.carbon.network/ws",
     faucetUrl: "https://dev-faucet.carbon.network",
 
