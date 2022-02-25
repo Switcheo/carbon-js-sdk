@@ -1,6 +1,6 @@
 import { AddressOptions, N3Address, NEOAddress } from "@carbon-sdk/util/address"
 import { getLedgerTransport } from "@carbon-sdk/util/ledger"
-import { CONST } from "@cityofzion/neon-core-next"
+import { CONST, wallet } from "@cityofzion/neon-core-next"
 import * as NeonN3Ledger from '@cityofzion/neon-ledger-next'
 import Transport from "@ledgerhq/hw-transport"
 import NeonLedger, { getNEOBIP44String } from "./NeonLedger"
@@ -130,6 +130,10 @@ export class NeoLedgerAccount {
     const ledger = this.useLedger()
     const ledgerAdapter = adapterForVersion(this.version);
     console.log("getsignature", ledgerAdapter, ledger, msg, bipString, magic)
+    const publicKey = this.publicKey
+    const scriptHash = wallet.getScriptHashFromPublicKey(publicKey);
+    const address = wallet.getAddressFromScriptHash(scriptHash)
+    console.log(publicKey, scriptHash, address)
     return await ledgerAdapter.getSignature(ledger, msg, bipString, magic)
   }
 
