@@ -668,7 +668,7 @@ export function transformCommunityPoolSpendAmount(amount: Coin[]) {
   const amounts = amount.map(param => {
     return {
       denom: param.denom,
-      amount: new BigNumber(param.amount).shiftedBy(18).toString(10)
+      amount: new BigNumber(param.amount).toString()
     } as Coin
   })
   return amounts
