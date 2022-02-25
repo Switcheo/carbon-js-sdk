@@ -557,19 +557,19 @@ export function transformCreateMarketParams(msg: AdminModule.CreateMarketParams)
     quote: msg.quote,
     basePrecision: new Long(msg.basePrecision || 0),
     quotePrecision: new Long(msg.quotePrecision || 0),
-    lotSize: msg.lotSize.toString(),
-    tickSize: msg.tickSize.shiftedBy(18).toString(),
-    minQuantity: msg.minQuantity.toString(),
-    makerFee: msg.makerFee.shiftedBy(18).toString(),
-    takerFee: msg.takerFee.shiftedBy(18).toString(),
+    lotSize: msg.lotSize.toString(10),
+    tickSize: msg.tickSize.shiftedBy(18).toString(10),
+    minQuantity: msg.minQuantity.toString(10),
+    makerFee: msg.makerFee.shiftedBy(18).toString(10),
+    takerFee: msg.takerFee.shiftedBy(18).toString(10),
     createdBlockHeight: new Long(msg.createdBlockHeight || 0),
-    riskStepSize: msg.riskStepSize.toString(),
-    initialMarginBase: msg.initialMarginBase.shiftedBy(18).toString(),
-    initialMarginStep: msg.initialMarginStep.shiftedBy(18).toString(),
-    maintenanceMarginRatio: msg.maintenanceMarginRatio.shiftedBy(18).toString(),
-    maxLiquidationOrderTicket: msg.maxLiquidationOrderTicket.toString(),
+    riskStepSize: msg.riskStepSize.toString(10),
+    initialMarginBase: msg.initialMarginBase.shiftedBy(18).toString(10),
+    initialMarginStep: msg.initialMarginStep.shiftedBy(18).toString(10),
+    maintenanceMarginRatio: msg.maintenanceMarginRatio.shiftedBy(18).toString(10),
+    maxLiquidationOrderTicket: msg.maxLiquidationOrderTicket.toString(10),
     maxLiquidationOrderDuration: msg.maxLiquidationOrderDuration,
-    impactSize: msg.impactSize.toString(),
+    impactSize: msg.impactSize.toString(10),
     markPriceBand: msg.markPriceBand,
     lastPriceProtectedBand: msg.lastPriceProtectedBand,
     indexOracleId: msg.indexOracleId,
@@ -586,7 +586,7 @@ export function transfromCreateVaultTypeParams(msg: AdminModule.CreateVaultTypeP
     creator: address,
     collateralDenom: msg.collateralDenom,
     debtDenom: msg.debtDenom,
-    collateralizationRatio: msg.collateralizationRatio.shiftedBy(18).toString(),
+    collateralizationRatio: msg.collateralizationRatio.shiftedBy(18).toString(10),
   }
 }
 
@@ -607,7 +607,7 @@ export function transfromSetRewardsWeightsParams(msg: AdminModule.SetRewardsWeig
   const weights = msg.map(param => {
     return {
       poolId: new Long(param.poolId),
-      weight: param.weight.toString()
+      weight: param.weight.toString(10)
     }
   })
 
@@ -638,7 +638,7 @@ export function transfromUpdatePoolParams(msg: AdminModule.UpdatePoolParams) {
   return {
     poolId: new Long(msg.poolId),
     numQuotes: new Long(msg.numQuotes),
-    swapFee: msg.swapFee.shiftedBy(18).toString(),
+    swapFee: msg.swapFee.shiftedBy(18).toString(10),
   }
 }
 
@@ -653,14 +653,14 @@ export function transfromSetTradingFlagParams(msg: AdminModule.SetTradingFlagPar
 export function transfromSetMsgFeeParams(msg: AdminModule.SetMsgFeeParams) {
   return {
     msgType: msg.msgType,
-    fee: msg.fee.toString(),
+    fee: msg.fee.toString(10),
   }
 }
 
 export function transformSetSettlementPriceParams(msg: SettlementPriceParams) {
   return {
     market: msg.market,
-    settlementPrice: new BigNumber(msg.settlementPrice).shiftedBy(18).toString(),
+    settlementPrice: new BigNumber(msg.settlementPrice).shiftedBy(18).toString(10),
   }
 }
 
@@ -668,7 +668,7 @@ export function transformCommunityPoolSpendAmount(amount: Coin[]) {
   const amounts = amount.map(param => {
     return {
       denom: param.denom,
-      amount: new BigNumber(param.amount).toString()
+      amount: new BigNumber(param.amount).toString(10)
     } as Coin
   })
   return amounts
