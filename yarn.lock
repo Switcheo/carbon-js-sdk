@@ -34,7 +34,7 @@
   resolved "https://registry.yarnpkg.com/@cityofzion/neon-api/-/neon-api-5.0.0-next.17.tgz#81d6765101c90a49564bddd967656ff290979bd4"
   integrity sha512-QQiwopbDLmli9cyGvvmdhrpEyss2/9g+zJ4DJ2aP9T0Clep37Mv2Yfv10/XIXwrGPXdB/cXht58GevKa8P1cLQ==
 
-"@cityofzion/neon-core-3@npm:@cityofzion/neon-core@^5.0.0-next.17", "@cityofzion/neon-core@^5.0.0-next.17":
+"@cityofzion/neon-core-next@npm:@cityofzion/neon-core@^5.0.0-next.17", "@cityofzion/neon-core@^5.0.0-next.17":
   name "@cityofzion/neon-core-3"
   version "5.0.0-next.17"
   resolved "https://registry.yarnpkg.com/@cityofzion/neon-core/-/neon-core-5.0.0-next.17.tgz#fe666b9432eabc7743be926882499d01a33c4f05"
@@ -75,7 +75,7 @@
     secure-random "1.1.2"
     wif "2.0.6"
 
-"@cityofzion/neon-js-3@npm:@cityofzion/neon-js@^5.0.0-next.17":
+"@cityofzion/neon-js-next@npm:@cityofzion/neon-js@^5.0.0-next.17":
   version "5.0.0-next.17"
   resolved "https://registry.yarnpkg.com/@cityofzion/neon-js/-/neon-js-5.0.0-next.17.tgz#ba09d3404f799bbc381e85f18664c5e6c996923e"
   integrity sha512-36Gzh1wrDYvHKoCn7tBenbAOP2ke/rvpkzMwRILxGc3PmY4xJATzGKlpbw9koNFR4fs8uLKZCnyC4aT4XWWDKQ==
@@ -91,6 +91,16 @@
     "@cityofzion/neon-api" "^4.9.0"
     "@cityofzion/neon-core" "^4.9.0"
     "@cityofzion/neon-nep5" "^4.9.0"
+
+"@cityofzion/neon-ledger-next@npm:@cityofzion/neon-ledger@^5.0.0-next.17":
+  version "5.0.0-next.17"
+  resolved "https://registry.yarnpkg.com/@cityofzion/neon-ledger/-/neon-ledger-5.0.0-next.17.tgz#0bf7195a9e037a0fd4c651204e3dc8c51f2556cc"
+  integrity sha512-Yt05Dbz9eN1S20Bhow3CWC3tzAE3nfxSKAy0cKhE3C02mF8I5+tX0ys6WG3ROjG7FzmOrNZ4jDu78l3XwzVkCw==
+  dependencies:
+    "@ledgerhq/hw-transport" "5.51.1"
+    "@types/ledgerhq__hw-transport" "4.21.3"
+    "@types/lodash-es" "^4.17.4"
+    lodash-es "4.17.15"
 
 "@cityofzion/neon-nep5@^4.9.0":
   version "4.9.0"
@@ -808,7 +818,7 @@
     "@ledgerhq/hw-transport" "^6.3.0"
     "@ledgerhq/logs" "^6.2.0"
 
-"@ledgerhq/hw-transport@^5.25.0":
+"@ledgerhq/hw-transport@5.51.1", "@ledgerhq/hw-transport@^5.25.0":
   version "5.51.1"
   resolved "https://registry.yarnpkg.com/@ledgerhq/hw-transport/-/hw-transport-5.51.1.tgz#8dd14a8e58cbee4df0c29eaeef983a79f5f22578"
   integrity sha512-6wDYdbWrw9VwHIcoDnqWBaDFyviyjZWv6H9vz9Vyhe4Qd7TIFmbTl/eWs6hZvtZBza9K8y7zD8ChHwRI4s9tSw==
@@ -970,6 +980,25 @@
   integrity sha512-4Kkr06hq+R8a9EzVNqXGOY2x1xA7dhY6qlp6OvaZ+IJy1BCca1Cv126RD9X7CMJoXoLo8WvAizy8gQHpqW6K0Q==
   dependencies:
     "@types/node" "*"
+
+"@types/ledgerhq__hw-transport@4.21.3":
+  version "4.21.3"
+  resolved "https://registry.yarnpkg.com/@types/ledgerhq__hw-transport/-/ledgerhq__hw-transport-4.21.3.tgz#1e658da6b5d01ffab92f9660cf57121aecfa7e2c"
+  integrity sha512-6QveiZLsFLq9WZDk8HWAZhivoGzyz5S8WV36hpUe7KrVDaTR1fDdB+syorrNRhYbyjraAuUJrIdJR5p/7doq8g==
+  dependencies:
+    "@types/node" "*"
+
+"@types/lodash-es@^4.17.4":
+  version "4.17.6"
+  resolved "https://registry.yarnpkg.com/@types/lodash-es/-/lodash-es-4.17.6.tgz#c2ed4c8320ffa6f11b43eb89e9eaeec65966a0a0"
+  integrity sha512-R+zTeVUKDdfoRxpAryaQNRKk3105Rrgx2CFRClIgRGaqDTdjsm8h6IYA8ir584W3ePzkZfst5xIgDwYrlh9HLg==
+  dependencies:
+    "@types/lodash" "*"
+
+"@types/lodash@*":
+  version "4.14.178"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.178.tgz#341f6d2247db528d4a13ddbb374bcdc80406f4f8"
+  integrity sha512-0d5Wd09ItQWH1qFbEyQ7oTQ3GZrMfth5JkbN3EvTKLXcHLRDSXeLnlvlOn0wvxVIwK5o2M8JzP/OWz7T3NRsbw==
 
 "@types/lodash@^4.14.174":
   version "4.14.174"
@@ -2440,6 +2469,11 @@ lodash-es@4.17.14:
   version "4.17.14"
   resolved "https://registry.yarnpkg.com/lodash-es/-/lodash-es-4.17.14.tgz#12a95a963cc5955683cee3b74e85458954f37ecc"
   integrity sha512-7zchRrGa8UZXjD/4ivUWP1867jDkhzTG2c/uj739utSd7O/pFFdxspCemIFKEEjErbcqRzn8nKnGsi7mvTgRPA==
+
+lodash-es@4.17.15:
+  version "4.17.15"
+  resolved "https://registry.yarnpkg.com/lodash-es/-/lodash-es-4.17.15.tgz#21bd96839354412f23d7a10340e5eac6ee455d78"
+  integrity sha512-rlrc3yU3+JNOpZ9zj5pQtxnx2THmvRykwL4Xlxoa8I9lHBlVbbyPhgyPMioxVZ4NqyxaVVtaJnzsyOidQIhyyQ==
 
 lodash@4.17.21, lodash@^4.17.21:
   version "4.17.21"

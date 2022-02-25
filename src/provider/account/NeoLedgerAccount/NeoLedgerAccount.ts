@@ -1,10 +1,28 @@
+import { AddressOptions, N3Address, NEOAddress } from "@carbon-sdk/util/address"
 import { getLedgerTransport } from "@carbon-sdk/util/ledger"
-import { AddressBuilder, AddressOptions, NEOAddress } from "@carbon-sdk/util/address"
+import { CONST } from "@cityofzion/neon-core-next"
+import * as NeonN3Ledger from '@cityofzion/neon-ledger-next'
 import Transport from "@ledgerhq/hw-transport"
 import NeonLedger, { getNEOBIP44String } from "./NeonLedger"
 
 const CONNECT_POLL_INTERVAL = 3000 // ms
 const CONNECT_POLL_ATTEMPTS = 10 // attempts
+
+type NeoVersion = "neo" | "n3";
+
+interface NeoLedgerAdapter {
+  getPublicKey(ledger: Transport, bipString: string): Promise<string>;
+  getSignature(ledger: Transport, msg: string, bipString: string, magic?: number): Promise<string>;
+}
+
+const addressUtilForVersion = (version: NeoVersion) => {
+  if (version === "n3") return N3Address;
+  return NEOAddress
+}
+const adapterForVersion = (version: NeoVersion): NeoLedgerAdapter => {
+  if (version === "n3") return NeonN3Ledger;
+  return NeonLedger;
+}
 
 export class NeoLedgerAccount {
   public options: AddressOptions = {}
@@ -12,17 +30,22 @@ export class NeoLedgerAccount {
   public readonly publicKey: string
   public readonly scriptHash: string
   public readonly displayAddress: string
+  public readonly version: NeoVersion
 
   private static _connectPolling = false
 
-  private constructor(ledger: Transport, publicKey: string, neoAddressUtil: AddressBuilder = NEOAddress) {
+  private constructor(ledger: Transport, publicKey: string, version: "neo" | "n3" = "neo") {
     this.ledger = ledger
     this.publicKey = publicKey
+    this.version = version;
+
+    const neoAddressUtil = addressUtilForVersion(version);
+
     this.scriptHash = neoAddressUtil.publicKeyToScriptHash(publicKey)
     this.displayAddress = neoAddressUtil.publicKeyToAddress(publicKey)
   }
 
-  static async connect(neoAddressUtils: AddressBuilder = NEOAddress) {
+  static async connect(version: "neo" | "n3" = "neo") {
     let connectResult: [Transport, string] | null = null
     let connectionAttempts = 0
 
@@ -76,19 +99,20 @@ export class NeoLedgerAccount {
     }
 
     const [ledger, publicKey] = connectResult
-    return new NeoLedgerAccount(ledger, publicKey, neoAddressUtils)
+    return new NeoLedgerAccount(ledger, publicKey, version)
   }
 
   /**
    * Used to try connecting with ledger, executes a public key request
    * on USB device to detect NEO app connection
    */
-  private static async tryConnect(): Promise<[Transport, string]> {
+  private static async tryConnect(version: NeoVersion = "neo"): Promise<[Transport, string]> {
     const bipString = getNEOBIP44String()
     const ledger = await getLedgerTransport()
 
     // get public key to assert that NEO app is open
-    const publicKey = await NeonLedger.getPublicKey(ledger, bipString)
+    const ledgerAdapter = adapterForVersion(version);
+    const publicKey = await ledgerAdapter.getPublicKey(ledger, bipString)
 
     return [ledger, publicKey]
   }
@@ -101,10 +125,12 @@ export class NeoLedgerAccount {
     throw new Error("Cannot retrieve private key from Ledger")
   }
 
-  async sign(msg: string) {
+  async sign(msg: string, magic: number = CONST.MAGIC_NUMBER.MainNet) {
     const bipString = getNEOBIP44String()
     const ledger = this.useLedger()
-    return await NeonLedger.getSignature(ledger, msg, bipString)
+    const ledgerAdapter = adapterForVersion(this.version);
+    console.log("getsignature", ledgerAdapter, ledger, msg, bipString, magic)
+    return await ledgerAdapter.getSignature(ledger, msg, bipString, magic)
   }
 
   private useLedger() {

@@ -1,12 +1,11 @@
 import CarbonSDK from "@carbon-sdk/CarbonSDK"
 import { NetworkConfigProvider } from "@carbon-sdk/constant"
-import { Models } from "@carbon-sdk/index"
 import { NeoLedgerAccount } from "@carbon-sdk/provider/account"
 import { N3Address, SWTHAddress } from "@carbon-sdk/util/address"
 import { Blockchain } from "@carbon-sdk/util/blockchain"
 import { TokensWithExternalBalance } from "@carbon-sdk/util/external"
 import { SimpleMap } from "@carbon-sdk/util/type"
-import { CONST, rpc, sc, tx, u, wallet } from "@cityofzion/neon-core-3"
+import { CONST, rpc, sc, tx, u, wallet } from "@cityofzion/neon-core-next"
 import BigNumber from "bignumber.js"
 
 export interface N3ClientOpts {
