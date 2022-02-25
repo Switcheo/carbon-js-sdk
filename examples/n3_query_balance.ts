@@ -1,5 +1,5 @@
-import { CONST } from "@cityofzion/neon-core-3";
-import { rpc } from "@cityofzion/neon-js-3";
+import { CONST } from "@cityofzion/neon-core-next";
+import { rpc } from "@cityofzion/neon-js-next";
 import BigNumber from "bignumber.js";
 import * as BIP39 from "bip39";
 import * as wif from "wif";

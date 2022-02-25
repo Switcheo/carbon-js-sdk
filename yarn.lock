@@ -35,7 +35,7 @@
   integrity sha512-QQiwopbDLmli9cyGvvmdhrpEyss2/9g+zJ4DJ2aP9T0Clep37Mv2Yfv10/XIXwrGPXdB/cXht58GevKa8P1cLQ==
 
 "@cityofzion/neon-core-next@npm:@cityofzion/neon-core@^5.0.0-next.17", "@cityofzion/neon-core@^5.0.0-next.17":
-  name "@cityofzion/neon-core-3"
+  name "@cityofzion/neon-core-next"
   version "5.0.0-next.17"
   resolved "https://registry.yarnpkg.com/@cityofzion/neon-core/-/neon-core-5.0.0-next.17.tgz#fe666b9432eabc7743be926882499d01a33c4f05"
   integrity sha512-+yb9J+gJSvmOEP6raKOLJdg88GsVP6I6ITFAkdxeWe32PzgtMl1NxZc3QrWBOJ8PQ9t5CGN+KW2l+fwgMqfavQ==

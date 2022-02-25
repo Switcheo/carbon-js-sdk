@@ -1,5 +1,5 @@
 import { Bech32AddrType, Network, NetworkConfigs } from "@carbon-sdk/constant";
-import { wallet } from "@cityofzion/neon-core-3";
+import { wallet } from "@cityofzion/neon-core-next";
 import * as Base58Check from "base58check";
 import * as bech32 from "bech32";
 import * as BIP32 from "bip32";

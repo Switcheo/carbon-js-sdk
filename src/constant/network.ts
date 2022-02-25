@@ -1,4 +1,4 @@
-import { CONST } from "@cityofzion/neon-core-3";
+import { CONST } from "@cityofzion/neon-core-next";
 
 export enum Network {
   MainNet = "mainnet",
