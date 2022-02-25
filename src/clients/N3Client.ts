@@ -173,7 +173,6 @@ export class N3Client {
   }
 
   public async lockDeposit(token: TokensWithExternalBalance, feeAmountInput: string, swthAddress: string, neoPrivateKey: string) {
-    const account = new wallet.Account(neoPrivateKey)
     const networkConfig = this.configProvider.getConfig()
     const scriptHash = u.reverseHex(token.bridgeAddress)
     const tokenScriptHash = u.reverseHex(token.tokenAddress);
@@ -184,7 +183,8 @@ export class N3Client {
     const feeAmount = new BigNumber(feeAmountInput ?? "100000000")
 
     const n3Signer = N3Client.signerFromPrivateKey(neoPrivateKey);
-    return await this.lock(scriptHash, tokenScriptHash, account.address, toAddress, amount, feeAmount, n3Signer);
+    const fromAddress = N3Address.privateKeyToAddress(neoPrivateKey);
+    return await this.lock(scriptHash, tokenScriptHash, fromAddress, toAddress, amount, feeAmount, n3Signer);
   }
 
   public async lockLedgerDeposit(params: LockLedgerDepositParams) {
@@ -194,7 +194,7 @@ export class N3Client {
 
     const scriptHash = u.reverseHex(token.bridgeAddress)
     const tokenScriptHash = u.reverseHex(token.tokenAddress);
-    const fromAddressHex = ledger.scriptHash
+    const fromAddressHex = ledger.displayAddress
 
     const n3Signer = N3Client.signerFromLedger(ledger);
     return await this.lock(scriptHash, tokenScriptHash, fromAddressHex, toAddressHex, amount, feeAmount, n3Signer);
