@@ -87,12 +87,14 @@ export class N3Client {
     const tokensWithBalance: TokensWithExternalBalance[] = [];
 
     for (const token of tokens) {
+      if (!token.tokenAddress.match(/^[0-9a-f]+$/i)) continue;
       if (whitelistDenoms && !whitelistDenoms.includes(token.denom)) continue
-      if (!balances[token.tokenAddress]) continue;
+      const tokenScriptHash = u.reverseHex(token.tokenAddress);
+      if (!balances[tokenScriptHash]) continue;
 
       tokensWithBalance.push({
         ...token,
-        externalBalance: balances[token.tokenAddress],
+        externalBalance: balances[tokenScriptHash],
       });
     }
 
@@ -174,7 +176,7 @@ export class N3Client {
     const account = new wallet.Account(neoPrivateKey)
     const networkConfig = this.configProvider.getConfig()
     const scriptHash = u.reverseHex(token.bridgeAddress)
-    const tokenScriptHash = token.tokenAddress;
+    const tokenScriptHash = u.reverseHex(token.tokenAddress);
 
     const addressBytes = SWTHAddress.getAddressBytes(swthAddress, networkConfig.network)
     const toAddress = Buffer.from(addressBytes).toString("hex");
@@ -191,24 +193,11 @@ export class N3Client {
     } = params
 
     const scriptHash = u.reverseHex(token.bridgeAddress)
-    const tokenScriptHash = token.tokenAddress;
+    const tokenScriptHash = u.reverseHex(token.tokenAddress);
     const fromAddressHex = ledger.scriptHash
 
     const n3Signer = N3Client.signerFromLedger(ledger);
     return await this.lock(scriptHash, tokenScriptHash, fromAddressHex, toAddressHex, amount, feeAmount, n3Signer);
-  }
-
-  /**
-   * TargetProxyHash is a hash of token originator address that is used
-   * for lockproxy asset registration and identification
-   * 
-   * @param token
-   */
-  public getTargetProxyHash(token: Models.Token) {
-    const networkConfig = this.configProvider.getConfig();
-    const addressBytes = SWTHAddress.getAddressBytes(token.creator, networkConfig.network)
-    const addressHex = Buffer.from(addressBytes).toString("hex");
-    return addressHex
   }
 
   public async getNetworkFee(txn: tx.Transaction, networkFee: number) {
