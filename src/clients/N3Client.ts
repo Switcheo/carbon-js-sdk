@@ -51,17 +51,19 @@ export class N3Client {
     const account = new wallet.Account(privateKey);
     return {
       scriptHash: account.scriptHash,
-      sign: async (txn: tx.Transaction, networkMagic: number = CONST.MAGIC_NUMBER.MainNet, k?: string | number) => txn.sign(account, networkMagic, k),
+      sign: async (txn: tx.Transaction, networkMagic: number = CONST.MAGIC_NUMBER.MainNet, k?: string | number) => {
+        await txn.sign(account, networkMagic, k);
+        return txn;
+      },
     };
   }
   public static signerFromLedger(ledger: NeoLedgerAccount): N3Signer {
     return {
       scriptHash: ledger.scriptHash,
       sign: async (txn: tx.Transaction, networkMagic: number = CONST.MAGIC_NUMBER.MainNet, k?: string | number) => {
-        const networkHex = networkMagic.toString(16);
-        const signature = await ledger.sign(networkHex + u.reverseHex(txn.hash()));
-        txn.addWitness(tx.Witness.fromSignature(signature, ledger.publicKey));
-
+        const signature = await ledger.sign(txn.serialize(false), networkMagic);
+        const encodedPublicKey = wallet.getPublicKeyEncoded(ledger.publicKey);
+        txn.addWitness(tx.Witness.fromSignature(signature, encodedPublicKey));
         return txn;
       },
     };
@@ -127,9 +129,6 @@ export class N3Client {
       sc.ContractParam.byteArray(""),
       sc.ContractParam.integer(nonce),
     ];
-
-    console.log("script hash", lockProxyScriptHash)
-    console.log("args", args.map(item => item.value?.toString?.()));
 
     const script = sc.createScript({
       scriptHash: lockProxyScriptHash,
