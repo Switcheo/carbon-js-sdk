@@ -103,7 +103,7 @@ export const NetworkConfigs: {
     },
 
     n3: {
-      rpcURL: 'http://seed1.neo.org:10332',
+      rpcURL: 'https://n3-rpc.carbon.network',
       networkMagic: CONST.MAGIC_NUMBER.MainNet,
     },
 
@@ -154,7 +154,7 @@ export const NetworkConfigs: {
     },
 
     n3: {
-      rpcURL: 'http://seed1t4.neo.org:20332',
+      rpcURL: 'https://test-n3-rpc.carbon.network',
       networkMagic: CONST.MAGIC_NUMBER.TestNet,
     },
 
@@ -205,7 +205,7 @@ export const NetworkConfigs: {
     },
 
     n3: {
-      rpcURL: 'http://seed1t4.neo.org:20332',
+      rpcURL: 'https://test-n3-rpc.carbon.network',
       networkMagic: CONST.MAGIC_NUMBER.TestNet,
     },
 
@@ -256,7 +256,7 @@ export const NetworkConfigs: {
     },
 
     n3: {
-      rpcURL: 'http://seed1t4.neo.org:20332',
+      rpcURL: 'https://test-n3-rpc.carbon.network',
       networkMagic: CONST.MAGIC_NUMBER.TestNet,
     },
 
