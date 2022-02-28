@@ -2,6 +2,8 @@ import CarbonSDK from "@carbon-sdk/CarbonSDK"
 import { NeoNetworkConfig, NetworkConfig, NetworkConfigProvider } from "@carbon-sdk/constant"
 import { Models } from "@carbon-sdk/index"
 import { NeoLedgerAccount } from "@carbon-sdk/provider/account"
+import { O3Types, O3Wallet } from "@carbon-sdk/provider/o3"
+import { AddressUtils } from "@carbon-sdk/util"
 import { SWTHAddress } from "@carbon-sdk/util/address"
 import { Blockchain, blockchainForChainId } from "@carbon-sdk/util/blockchain"
 import { TokenInitInfo, TokensWithExternalBalance } from "@carbon-sdk/util/external"
@@ -29,6 +31,15 @@ export interface LockLedgerDepositParams {
   address: Uint8Array
   token: TokensWithExternalBalance
   ledger: NeoLedgerAccount
+  signCompleteCallback?: () => void
+}
+
+export interface LockO3DepositParams {
+  feeAmount: BigNumber
+  amount: BigNumber
+  address: Uint8Array
+  token: TokensWithExternalBalance
+  o3Wallet: O3Wallet
   signCompleteCallback?: () => void
 }
 
@@ -167,6 +178,102 @@ export class NEOClient {
       gas: 0,
       fees: 0
     })
+  }
+
+  public async lockO3Deposit(params: LockO3DepositParams) {
+    const {
+      feeAmount, address, amount, token, o3Wallet, signCompleteCallback,
+    } = params
+    if (!o3Wallet.isConnected()) {
+      throw new Error("O3 wallet not connected. Please reconnect and try again.")
+    }
+
+    const publicKeyOutput = await o3Wallet.getPublicKeyOutput() as O3Types.PublicKeyOutput
+    const compressedPublicKey = neonWallet.getPublicKeyEncoded(publicKeyOutput.publicKey)
+
+    const networkConfig = this.getNetworkConfig()
+    // TODO: Check if bridgeAddress corresponds to carbon token lock_proxy_hash
+    const scriptHash = u.reverseHex(token.bridgeAddress)
+
+    const fromAssetHash = token.tokenAddress
+    const fromAddress = AddressUtils.NEOAddress.publicKeyToScriptHash(publicKeyOutput.publicKey)
+    const targetProxyHash = this.getTargetProxyHash(token)
+    const toAssetHash = u.str2hexstring(token.id)
+    const toAddress = stripHexPrefix(ethers.utils.hexlify(address))
+  
+    const feeAddress = networkConfig.feeAddress
+    const nonce = Math.floor(Math.random() * 1000000)
+
+    if (amount.lt(feeAmount)) {
+      throw new Error("Invalid amount")
+    }
+  
+    const sb = Neon.create.scriptBuilder()
+    const data = [
+      fromAssetHash,
+      fromAddress,
+      targetProxyHash,
+      toAssetHash,
+      toAddress,
+      amount.toNumber(),
+      feeAmount.toNumber(),
+      feeAddress,
+      nonce,
+    ]
+    sb.emitAppCall(scriptHash, "lock", data)
+  
+    const rpcUrl = await this.getProviderUrl()
+    const apiProvider = networkConfig.network === CarbonSDK.Network.MainNet
+      ? new api.neonDB.instance("https://api.switcheo.network")
+      : new api.neoCli.instance(rpcUrl)
+  
+    let invokeTxConfig: any = {
+      account: {
+        // zombie account provided because config requires an account, and makes use
+        // of the address and public key properties during the signing process, even
+        // when signingFunction override is provided.
+        ...Neon.create.account(""),
+  
+        // overwrite the address and public key to values provided by the ledger.
+        address: publicKeyOutput.address,
+        publicKey: compressedPublicKey,
+      } as neonWallet.Account,
+  
+      signingFunction: async (tx: string, publicKey: string) => {
+        const dApi = o3Wallet.neo2Dapi
+        const signature = await dApi.signMessage({
+          message: tx,
+        })
+        const witness = neonTx.Witness.fromSignature(signature.data, publicKey)
+        return witness.serialize()
+      },
+  
+      api: apiProvider,
+      url: rpcUrl,
+      script: sb.str,
+      gas: 0,
+      fees: 0,
+    }
+  
+    // similar to Neon.doInvoke(invokeTxConfig), but
+    // separates out sendTx to broadcast to several nodes
+    invokeTxConfig = await api.fillBalance(invokeTxConfig)
+    invokeTxConfig = await api.createInvocationTx(invokeTxConfig)
+    invokeTxConfig = await api.modifyTransactionForEmptyTransaction(invokeTxConfig)
+    invokeTxConfig = await api.signTx(invokeTxConfig)
+  
+    // provide notification to caller that signature is
+    // done and proceeding to broadcasting tx
+    if (signCompleteCallback) {
+      signCompleteCallback()
+    }
+
+    await api.sendTx({
+      ...invokeTxConfig,
+      rpcUrl,
+    })
+  
+    return invokeTxConfig.tx?.hash
   }
 
   public async lockLedgerDeposit(params: LockLedgerDepositParams) {
