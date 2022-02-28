@@ -1,10 +1,14 @@
 import { Blockchain } from "../util/blockchain";
 
 export interface GetTransfersRequest {
-  bridge_blockchain?: string
+  bridging_blockchain?: string
+  source_blockchain?: string
+  destination_blockchain?: string
   from_address?: string
   to_address?: string
   asset_name?: string
+  from_asset?: string
+  to_asset?: string
   offset?: number
   limit?: number
 }
@@ -12,7 +16,9 @@ export interface GetTransfersRequest {
 export interface GetTransfersResponse {
   data: CrossChainTransfer[]
   pagination: {
-    total_pages: number
+    total: number
+    currentOffset: number
+    limit: number
   }
 }
 
