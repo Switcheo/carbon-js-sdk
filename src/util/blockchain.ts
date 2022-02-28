@@ -9,6 +9,7 @@ export enum Blockchain {
   Btc = 'btc',
   Carbon = 'carbon',
   Switcheo = 'switcheo',
+  TradeHub = 'tradehub',
   PolyNetwork = 'polynetwork',
   Neo3 = 'n3',
 };
