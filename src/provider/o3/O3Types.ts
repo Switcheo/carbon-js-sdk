@@ -91,6 +91,7 @@ export interface Balance {
   contract: string;
   symbol: string;
   amount: string;
+  assetID?: string;
 }
 
 // Custom Contract Params
