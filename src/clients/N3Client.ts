@@ -1,6 +1,7 @@
 import CarbonSDK from "@carbon-sdk/CarbonSDK"
 import { NetworkConfigProvider } from "@carbon-sdk/constant"
 import { NeoLedgerAccount } from "@carbon-sdk/provider/account"
+import { O3Types, O3Wallet } from "@carbon-sdk/provider/o3"
 import { N3Address, SWTHAddress } from "@carbon-sdk/util/address"
 import { Blockchain } from "@carbon-sdk/util/blockchain"
 import { TokensWithExternalBalance } from "@carbon-sdk/util/external"
@@ -23,6 +24,18 @@ export interface LockLedgerDepositParams {
 
   signCompleteCallback?: () => void
   ledger: NeoLedgerAccount
+}
+
+export interface LockO3DepositParams {
+  token: TokensWithExternalBalance
+
+  toAddressHex: string
+
+  feeAmount: BigNumber
+  amount: BigNumber
+
+  signCompleteCallback?: () => void
+  o3Wallet: O3Wallet
 }
 
 export interface N3Signer {
@@ -53,6 +66,20 @@ export class N3Client {
       scriptHash: account.scriptHash,
       sign: async (txn: tx.Transaction, networkMagic: number = CONST.MAGIC_NUMBER.MainNet, k?: string | number) => {
         await txn.sign(account, networkMagic, k);
+        return txn;
+      },
+    };
+  }
+  public static signerFromO3(o3Wallet: O3Wallet, publicKey: string, scriptHash: string): N3Signer {
+    const dApi = o3Wallet.neo3Dapi;
+    return {
+      scriptHash,
+      sign: async (txn: tx.Transaction, networkMagic: number = CONST.MAGIC_NUMBER.MainNet, k?: string | number) => {
+        const signature = await dApi.signMessage({
+          message: txn.serialize(false),
+        });
+        const encodedPublicKey = wallet.getPublicKeyEncoded(publicKey);
+        txn.addWitness(tx.Witness.fromSignature(signature.data, encodedPublicKey));
         return txn;
       },
     };
@@ -120,13 +147,14 @@ export class N3Client {
 
     const nonce = Math.floor(Math.random() * 1000000)
 
+    const networkConfig = this.configProvider.getConfig();
     const args = [
       sc.ContractParam.hash160(tokenScriptHash),
       sc.ContractParam.hash160(fromAddressHex),
       sc.ContractParam.byteArray(u.HexString.fromHex(toAddressHex, true)),
       sc.ContractParam.integer(amount.toString(10)),
       sc.ContractParam.integer(feeAmount.toString(10)),
-      sc.ContractParam.byteArray(""),
+      sc.ContractParam.byteArray(u.HexString.fromHex(networkConfig.feeAddress, true)),
       sc.ContractParam.integer(nonce),
     ];
 
@@ -183,6 +211,25 @@ export class N3Client {
     const n3Signer = N3Client.signerFromPrivateKey(neoPrivateKey);
     const fromAddress = N3Address.privateKeyToAddress(neoPrivateKey);
     return await this.lock(scriptHash, tokenScriptHash, fromAddress, toAddress, amount, feeAmount, n3Signer);
+  }
+
+  public async lockO3Deposit(params: LockO3DepositParams) {
+    const {
+      feeAmount, toAddressHex, amount, token, o3Wallet, signCompleteCallback,
+    } = params
+    if (!o3Wallet.isConnected()) {
+      throw new Error("O3 wallet not connected. Please reconnect and try again.")
+    }
+
+    const scriptHash = u.reverseHex(token.bridgeAddress)
+    const tokenScriptHash = u.reverseHex(token.tokenAddress);
+    const fromAddressHex = o3Wallet.address;
+
+    const publicKeyOutput = await o3Wallet.getPublicKeyOutput() as O3Types.PublicKeyOutput;
+    const accountScriptHash = N3Address.publicKeyToScriptHash(publicKeyOutput.publicKey);
+
+    const n3Signer = N3Client.signerFromO3(o3Wallet, publicKeyOutput.address, accountScriptHash);
+    return await this.lock(scriptHash, tokenScriptHash, fromAddressHex, toAddressHex, amount, feeAmount, n3Signer);
   }
 
   public async lockLedgerDeposit(params: LockLedgerDepositParams) {
