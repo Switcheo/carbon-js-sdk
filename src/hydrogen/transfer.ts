@@ -2,6 +2,7 @@ import { Blockchain } from "../util/blockchain";
 
 export interface GetTransfersRequest {
   bridge_blockchain?: string
+  address?: string
   from_address?: string
   to_address?: string
   asset_name?: string
