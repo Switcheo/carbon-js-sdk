@@ -15,7 +15,7 @@ import {
   u as neonUtils,
   wallet as neonWallet
 } from "@cityofzion/neon-core"
-import Neon, { api, rpc, tx as neonTx, u } from "@cityofzion/neon-js"
+import Neon, { api, rpc, sc, tx as neonTx, u } from "@cityofzion/neon-js"
 import BigNumber from "bignumber.js"
 import { ethers } from "ethers"
 import { chunk } from "lodash"
@@ -189,91 +189,43 @@ export class NEOClient {
     }
 
     const publicKeyOutput = await o3Wallet.getPublicKeyOutput() as O3Types.PublicKeyOutput
-    const compressedPublicKey = neonWallet.getPublicKeyEncoded(publicKeyOutput.publicKey)
 
     const networkConfig = this.getNetworkConfig()
-    // TODO: Check if bridgeAddress corresponds to carbon token lock_proxy_hash
     const scriptHash = u.reverseHex(token.bridgeAddress)
 
-    const fromAssetHash = token.tokenAddress
-    const fromAddress = AddressUtils.NEOAddress.publicKeyToScriptHash(publicKeyOutput.publicKey)
+    const fromAssetHash = u.reverseHex(token.tokenAddress)
+    const fromAddress = AddressUtils.NEOAddress.publicKeyToAddress(publicKeyOutput.publicKey)
     const targetProxyHash = this.getTargetProxyHash(token)
     const toAssetHash = u.str2hexstring(token.id)
     const toAddress = stripHexPrefix(ethers.utils.hexlify(address))
-  
-    const feeAddress = networkConfig.feeAddress
+
     const nonce = Math.floor(Math.random() * 1000000)
 
     if (amount.lt(feeAmount)) {
       throw new Error("Invalid amount")
     }
-  
-    const sb = Neon.create.scriptBuilder()
-    const data = [
-      fromAssetHash,
-      fromAddress,
-      targetProxyHash,
-      toAssetHash,
-      toAddress,
-      amount.toNumber(),
-      feeAmount.toNumber(),
-      feeAddress,
-      nonce,
-    ]
-    sb.emitAppCall(scriptHash, "lock", data)
-  
-    const rpcUrl = await this.getProviderUrl()
-    const apiProvider = networkConfig.network === CarbonSDK.Network.MainNet
-      ? new api.neonDB.instance("https://api.switcheo.network")
-      : new api.neoCli.instance(rpcUrl)
-  
-    let invokeTxConfig: any = {
-      account: {
-        // zombie account provided because config requires an account, and makes use
-        // of the address and public key properties during the signing process, even
-        // when signingFunction override is provided.
-        ...Neon.create.account(""),
-  
-        // overwrite the address and public key to values provided by the ledger.
-        address: publicKeyOutput.address,
-        publicKey: compressedPublicKey,
-      } as neonWallet.Account,
-  
-      signingFunction: async (tx: string, publicKey: string) => {
-        const dApi = o3Wallet.neo2Dapi
-        const signature = await dApi.signMessage({
-          message: tx,
-        })
-        const witness = neonTx.Witness.fromSignature(signature.data, publicKey)
-        return witness.serialize()
-      },
-  
-      api: apiProvider,
-      url: rpcUrl,
-      script: sb.str,
-      gas: 0,
-      fees: 0,
-    }
-  
-    // similar to Neon.doInvoke(invokeTxConfig), but
-    // separates out sendTx to broadcast to several nodes
-    invokeTxConfig = await api.fillBalance(invokeTxConfig)
-    invokeTxConfig = await api.createInvocationTx(invokeTxConfig)
-    invokeTxConfig = await api.modifyTransactionForEmptyTransaction(invokeTxConfig)
-    invokeTxConfig = await api.signTx(invokeTxConfig)
-  
-    // provide notification to caller that signature is
-    // done and proceeding to broadcasting tx
-    if (signCompleteCallback) {
-      signCompleteCallback()
-    }
 
-    await api.sendTx({
-      ...invokeTxConfig,
-      rpcUrl,
+    const sb = Neon.create.scriptBuilder()
+    const data: any = [
+      sc.ContractParam.hash160(fromAssetHash),
+      sc.ContractParam.hash160(fromAddress),
+      sc.ContractParam.byteArray(targetProxyHash, "hex"),
+      sc.ContractParam.byteArray(toAssetHash, "hex"),
+      sc.ContractParam.byteArray(toAddress, "hex"),
+      sc.ContractParam.integer(amount.toNumber()),
+      sc.ContractParam.integer(feeAmount.toNumber()),
+      sc.ContractParam.byteArray(networkConfig.feeAddress, "hex"),
+      sc.ContractParam.integer(nonce),
+    ]
+
+    const tx = await o3Wallet.getDAPI().invoke({
+      scriptHash,
+      args: data,
+      operation: "lock",
+      fee: 0,
     })
-  
-    return invokeTxConfig.tx?.hash
+
+    return tx.txid;
   }
 
   public async lockLedgerDeposit(params: LockLedgerDepositParams) {
@@ -281,9 +233,8 @@ export class NEOClient {
       feeAmount, address, amount, token, ledger, signCompleteCallback,
     } = params
     const compressedPublicKey = neonWallet.getPublicKeyEncoded(ledger.publicKey)
-  
+
     const networkConfig = this.getNetworkConfig()
-    // TODO: Check if bridgeAddress corresponds to carbon token lock_proxy_hash
     const scriptHash = u.reverseHex(token.bridgeAddress)
 
     const fromAssetHash = token.tokenAddress
@@ -291,14 +242,14 @@ export class NEOClient {
     const targetProxyHash = this.getTargetProxyHash(token)
     const toAssetHash = u.str2hexstring(token.id)
     const toAddress = stripHexPrefix(ethers.utils.hexlify(address))
-  
+
     const feeAddress = networkConfig.feeAddress
     const nonce = Math.floor(Math.random() * 1000000)
-  
+
     if (amount.lt(feeAmount)) {
       throw new Error("Invalid amount")
     }
-  
+
     const sb = Neon.create.scriptBuilder()
     const data = [
       fromAssetHash,
@@ -312,44 +263,44 @@ export class NEOClient {
       nonce,
     ]
     sb.emitAppCall(scriptHash, "lock", data)
-  
+
     const rpcUrl = await this.getProviderUrl()
     const apiProvider = networkConfig.network === CarbonSDK.Network.MainNet
       ? new api.neonDB.instance("https://api.switcheo.network")
       : new api.neoCli.instance(rpcUrl)
-  
+
     let invokeTxConfig: any = {
       account: {
         // zombie account provided because config requires an account, and makes use
         // of the address and public key properties during the signing process, even
         // when signingFunction override is provided.
         ...Neon.create.account(""),
-  
+
         // overwrite the address and public key to values provided by the ledger.
         address: ledger.displayAddress,
         publicKey: compressedPublicKey,
       } as neonWallet.Account,
-  
+
       signingFunction: async (tx: string, publicKey: string) => {
         const signature = await ledger.sign(tx)
         const witness = neonTx.Witness.fromSignature(signature, publicKey)
         return witness.serialize()
       },
-  
+
       api: apiProvider,
       url: rpcUrl,
       script: sb.str,
       gas: 0,
       fees: 0,
     }
-  
+
     // similar to Neon.doInvoke(invokeTxConfig), but
     // separates out sendTx to broadcast to several nodes
     invokeTxConfig = await api.fillBalance(invokeTxConfig)
     invokeTxConfig = await api.createInvocationTx(invokeTxConfig)
     invokeTxConfig = await api.modifyTransactionForEmptyTransaction(invokeTxConfig)
     invokeTxConfig = await api.signTx(invokeTxConfig)
-  
+
     // provide notification to caller that signature is
     // done and proceeding to broadcasting tx
     if (signCompleteCallback) {
@@ -360,7 +311,7 @@ export class NEOClient {
       ...invokeTxConfig,
       rpcUrl,
     })
-  
+
     return invokeTxConfig.tx?.hash
   }
 
@@ -386,7 +337,7 @@ export class NEOClient {
   public async wrapNeoToNneo(neoAmount: BigNumber, neoPrivateKey: string) {
     const account = Neon.create.account(neoPrivateKey)
     const rpcUrl = await this.getProviderUrl()
-    
+
     const wrapperContractScriptHash = this.getConfig().wrapperScriptHash;
     const wrapperContractAddress = neonWallet.getAddressFromScriptHash(wrapperContractScriptHash);
 
@@ -435,7 +386,7 @@ export class NEOClient {
    * 
    * @param token
    */
-   public getTargetProxyHash(token: Models.Token) {
+  public getTargetProxyHash(token: Models.Token) {
     const networkConfig = this.getNetworkConfig()
     const addressBytes = SWTHAddress.getAddressBytes(token.creator, networkConfig.network)
     const addressHex = stripHexPrefix(ethers.utils.hexlify(addressBytes))
