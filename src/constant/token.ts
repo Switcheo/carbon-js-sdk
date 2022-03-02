@@ -115,6 +115,7 @@ export const CommonAssetName: SimpleMap<string> = {
   'fees.z.1': 'fees',
   'lunr.z.1': 'lunr',
   'play.z.1': 'play',
+  'gm.1.6.e93773': 'gm',
 
   // devnet tokens
   'one.1.2.0c4e3f': 'one',
@@ -302,6 +303,7 @@ export const CoinGeckoTokenNames: SimpleMap<string> = {
   fees: 'unifees',
   lunr: 'lunr-token',
   port: 'packageportal',
+  gm: 'ghostmarket',
 };
 
 export const TokenBlacklist: OptionalNetworkMap<string[]> = {
