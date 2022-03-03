@@ -38,10 +38,23 @@ export interface LockO3DepositParams {
   o3Wallet: O3Wallet
 }
 
-export interface N3Signer {
-  sign: (txn: tx.Transaction, networkMagic?: number, k?: string | number) => Promise<tx.Transaction>;
+export interface NeoDapiInvokeArgs {
   scriptHash: string;
+  args?: any[]
+  operation: string;
+  fee?: string;
+  signers: any[]
 }
+
+export interface NeoDapiInvokeOutput {
+  txid: string;
+  nodeUrl: string;
+}
+
+export interface N3Signer {
+  scriptHash: string;
+  sign: (txn: tx.Transaction, networkMagic?: number, k?: string | number) => Promise<tx.Transaction>;
+};
 
 export class N3Client {
   static SUPPORTED_BLOCKCHAINS = [Blockchain.Neo3]
@@ -66,20 +79,6 @@ export class N3Client {
       scriptHash: account.scriptHash,
       sign: async (txn: tx.Transaction, networkMagic: number = CONST.MAGIC_NUMBER.MainNet, k?: string | number) => {
         await txn.sign(account, networkMagic, k);
-        return txn;
-      },
-    };
-  }
-  public static signerFromO3(o3Wallet: O3Wallet, publicKey: string, scriptHash: string): N3Signer {
-    const dApi = o3Wallet.neo3Dapi;
-    return {
-      scriptHash,
-      sign: async (txn: tx.Transaction, networkMagic: number = CONST.MAGIC_NUMBER.MainNet, k?: string | number) => {
-        const signature = await dApi.signMessage({
-          message: txn.serialize(false),
-        });
-        const encodedPublicKey = wallet.getPublicKeyEncoded(publicKey);
-        txn.addWitness(tx.Witness.fromSignature(signature.data, encodedPublicKey));
         return txn;
       },
     };
@@ -181,21 +180,22 @@ export class N3Client {
     }]);
     txn.systemFee = systemFee;
 
-    const config = this.configProvider.getConfig();
-    await signer.sign(txn, config.n3.networkMagic);
 
     if (amount.lt(feeAmount)) {
       return false
     }
 
+    const config = this.configProvider.getConfig();
+    await signer.sign(txn, config.n3.networkMagic);
+
     // console.log("magic", config.n3.networkMagic)
     // console.log("txn", txn.toJson());
     // console.log("txn", u.HexString.fromHex(txn.serialize(true)).toString());
-    const result = await this.rpcClient.sendRawTransaction(
+    const txHash = await this.rpcClient.sendRawTransaction(
       u.HexString.fromHex(txn.serialize(true))
     );
 
-    return result;
+    return txHash;
   }
 
   public async lockDeposit(token: TokensWithExternalBalance, feeAmountInput: string, swthAddress: string, neoPrivateKey: string) {
@@ -213,23 +213,45 @@ export class N3Client {
     return await this.lock(scriptHash, tokenScriptHash, fromAddress, toAddress, amount, feeAmount, n3Signer);
   }
 
-  public async lockO3Deposit(params: LockO3DepositParams) {
+  public async lockO3Deposit(params: LockO3DepositParams): Promise<string> {
     const {
       feeAmount, toAddressHex, amount, token, o3Wallet, signCompleteCallback,
     } = params
     if (!o3Wallet.isConnected()) {
       throw new Error("O3 wallet not connected. Please reconnect and try again.")
     }
+    
+    const nonce = Math.floor(Math.random() * 1000000)
+    const networkConfig = this.configProvider.getConfig();
 
-    const scriptHash = u.reverseHex(token.bridgeAddress)
+    const lockProxyScriptHash = u.reverseHex(token.bridgeAddress)
     const tokenScriptHash = u.reverseHex(token.tokenAddress);
     const fromAddressHex = o3Wallet.address;
 
     const publicKeyOutput = await o3Wallet.getPublicKeyOutput() as O3Types.PublicKeyOutput;
     const accountScriptHash = N3Address.publicKeyToScriptHash(publicKeyOutput.publicKey);
 
-    const n3Signer = N3Client.signerFromO3(o3Wallet, publicKeyOutput.address, accountScriptHash);
-    return await this.lock(scriptHash, tokenScriptHash, fromAddressHex, toAddressHex, amount, feeAmount, n3Signer);
+    const args: O3Types.Argument[] = [
+      { type: O3Types.ArgTypes.Hash160, value: tokenScriptHash },
+      { type: O3Types.ArgTypes.Hash160, value: fromAddressHex },
+      { type: O3Types.ArgTypes.ByteArray, value: u.HexString.fromHex(toAddressHex, true).toString() },
+      { type: O3Types.ArgTypes.Integer, value: amount.toString(10) },
+      { type: O3Types.ArgTypes.Integer, value: feeAmount.toString(10) },
+      { type: O3Types.ArgTypes.ByteArray, value: u.HexString.fromHex(networkConfig.feeAddress, true).toString() },
+      { type: O3Types.ArgTypes.Integer, value: nonce.toString() },
+    ];
+
+    const result = await o3Wallet.getDAPI().invoke({
+      operation: "lock",
+      scriptHash: lockProxyScriptHash,
+      args,
+      network: o3Wallet.neoNetwork,
+      signers: [{
+        account: accountScriptHash,
+        scopes: tx.WitnessScope.Global,
+      }],
+    })
+    return result.txid;
   }
 
   public async lockLedgerDeposit(params: LockLedgerDepositParams) {
