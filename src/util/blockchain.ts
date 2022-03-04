@@ -11,7 +11,7 @@ export enum Blockchain {
   Switcheo = 'switcheo',
   TradeHub = 'tradehub',
   PolyNetwork = 'polynetwork',
-  Neo3 = 'n3',
+  Neo3 = 'neo3',
 };
 
 export const BRIDGE_IDS = {
