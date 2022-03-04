@@ -17,6 +17,7 @@ const SYMBOL_OVERRIDE: {
   ASA2: 'ASA',
   DBC1: 'DBC',
   DBC2: 'DBC',
+  AVA1: 'AVA',
 };
 
 class TokenClient {
