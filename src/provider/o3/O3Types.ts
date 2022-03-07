@@ -24,6 +24,7 @@ export enum Errors {
   MalformedInput = "MALFORMED_INPUT",
   Cancelled = "CANCELED",
   InsufficientFunds = "INSUFFICIENT_FUNDS",
+  Unknown = "UNKNOWN_ERROR",
 }
 
 // Get Networks Query Types
