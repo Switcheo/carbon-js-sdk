@@ -301,11 +301,7 @@ class TokenClient {
           token.name = 'Carbon';
         }
         this.tokens[token.denom] = token;
-
-        if (!this.wrapperMap[token.denom]) {
-          const commonDenom = CommonAssetName[token.denom] ?? token.denom;
-          this.symbols[commonDenom] = token.symbol;
-        }
+        this.symbols[token.denom] = token.symbol;
       }
     }
 
