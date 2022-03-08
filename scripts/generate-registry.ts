@@ -9,6 +9,19 @@ console.log(`import { Registry } from "@cosmjs/proto-signing";`);
 
 const modules: { [name: string]: string[] } = {};
 for (const moduleFile of codecFiles) {
+
+  if (moduleFile.endsWith("/tendermint.ts")) {
+    const codecModule = require(`${pwd}/${moduleFile}`);
+    const messages = Object.keys(codecModule).filter((key) => key.startsWith("Header"));
+    if (messages.length) {
+      modules[codecModule.protobufPackage] = messages;
+      const relativePath = path.relative(registryFile, moduleFile)
+        .replace(/^\.\.\//, "./")
+        .replace(/\.ts$/, "");
+      console.log(`import { ${messages.join(", ")} } from "${relativePath}";`)
+    }
+  }
+
   if (!moduleFile.endsWith("/tx.ts")) {
     continue
   }

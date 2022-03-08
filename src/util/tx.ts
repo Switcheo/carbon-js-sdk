@@ -5,6 +5,8 @@ import { SignerData } from "@cosmjs/stargate";
 import { registry } from "@carbon-sdk/codec";
 import * as CosmosModels from "@carbon-sdk/codec/cosmos-models";
 import { SWTHAddress, SWTHAddressOptions } from "./address";
+import { GenericUtils } from "@carbon-sdk/util";
+import Long from "long";
 
 export interface TxBody extends Omit<CosmosModels.Tx.TxBody, "messages"> {
   messages: unknown[]
@@ -13,6 +15,24 @@ export interface Tx extends Omit<CosmosModels.Tx.Tx, "body"> {
   body?: TxBody
 }
 
+const decodeNestedMsg = (obj: any) => {
+  for (const key in obj) {
+
+    if (typeof obj[key] === "object" && obj[key].low !== undefined && obj[key].high !== undefined && obj[key].unsigned !== undefined) {
+      obj[key] = Long.fromValue(obj[key]).toString()
+    } else if (obj[key] instanceof Uint8Array) {
+      obj[key] = GenericUtils.toTxHash(obj[key])
+    } else if (typeof obj[key] === "object" && obj[key].typeUrl !== undefined && obj[key].value !== undefined && Object.values(TxTypes).includes(obj[key].typeUrl)) {
+      obj[key].value = registry.decode(obj[key])
+      obj[key] = decodeNestedMsg(obj[key])
+    } else if (obj[key] instanceof Object) {
+      obj[key] = decodeNestedMsg(obj[key]);
+    }
+
+  }
+  return obj;
+};
+
 export const decode = (bytes?: Uint8Array | Buffer): Tx | undefined => {
   if (!bytes) return bytes;
 
@@ -20,13 +40,17 @@ export const decode = (bytes?: Uint8Array | Buffer): Tx | undefined => {
   const carbonTx: Tx = { ...decodedTx, body: undefined };
 
   if (decodedTx.body) {
+    const messages = decodedTx.body.messages.map((message) => ({  
+        typeUrl: message.typeUrl,
+        value: decodeNestedMsg(registry.decode(message)),
+    }))
     carbonTx.body = {
       ...decodedTx.body,
       // override original UInt8Array messages with decoded messages
       messages: decodedTx.body.messages.map(message => ({
         typeUrl: message.typeUrl,
-        value: registry.decode(message),
-      })),
+        value: decodeNestedMsg(registry.decode(message)),
+    }))
     };
   } else {
     delete carbonTx.body;
