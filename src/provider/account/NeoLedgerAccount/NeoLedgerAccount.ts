@@ -1,7 +1,7 @@
 import { AddressOptions, N3Address, NEOAddress } from "@carbon-sdk/util/address"
 import { getLedgerTransport } from "@carbon-sdk/util/ledger"
 import { CONST, wallet } from "@cityofzion/neon-core-next"
-import * as NeonN3Ledger from '@cityofzion/neon-ledger-next'
+import * as NeonN3Ledger from './N3Ledger'
 import Transport from "@ledgerhq/hw-transport"
 import NeonLedger, { getNEOBIP44String } from "./NeonLedger"
 
