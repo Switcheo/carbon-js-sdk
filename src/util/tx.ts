@@ -5,9 +5,6 @@ import { SignerData } from "@cosmjs/stargate";
 import { registry } from "@carbon-sdk/codec";
 import * as CosmosModels from "@carbon-sdk/codec/cosmos-models";
 import { SWTHAddress, SWTHAddressOptions } from "./address";
-import { GenericUtils } from "@carbon-sdk/util";
-import Long from "long";
-
 export interface TxBody extends Omit<CosmosModels.Tx.TxBody, "messages"> {
   messages: unknown[]
 }
@@ -15,18 +12,42 @@ export interface Tx extends Omit<CosmosModels.Tx.Tx, "body"> {
   body?: TxBody
 }
 
+const msgUpdateClientInnerFields = [
+  "lastCommitHash",
+  "dataHash",
+  "validatorsHash",
+  "nextValidatorsHash",
+  "consensusHash",
+  "appHash",
+  "lastResultsHash",
+  "evidenceHash",
+  "hash",
+  "signature",
+  "proposerAddress",
+  "validatorAddress",
+  "address",
+  "ed25519",
+  "data",
+]
+
+const msgRecvPacketInnerFields = [
+  "proofCommitment",
+  "data",
+]
+
+const decodeHexList = [...msgUpdateClientInnerFields, ...msgRecvPacketInnerFields];
+
 const decodeNestedMsg = (obj: any) => {
   for (const key in obj) {
 
-    if (typeof obj[key] === "object" && obj[key].low !== undefined && obj[key].high !== undefined && obj[key].unsigned !== undefined) {
-      obj[key] = Long.fromValue(obj[key]).toString()
-    } else if (obj[key] instanceof Uint8Array) {
-      obj[key] = GenericUtils.toTxHash(obj[key])
-    } else if (typeof obj[key] === "object" && obj[key].typeUrl !== undefined && obj[key].value !== undefined && Object.values(TxTypes).includes(obj[key].typeUrl)) {
-      obj[key].value = registry.decode(obj[key])
-      obj[key] = decodeNestedMsg(obj[key])
-    } else if (obj[key] instanceof Object) {
-      obj[key] = decodeNestedMsg(obj[key]);
+    let value = obj[key];
+    if (decodeHexList.includes(key) && value instanceof Uint8Array) {
+      obj[key] = Buffer.from(value).toString("hex");
+    } else if (typeof value === "object" && value?.typeUrl !== undefined && value?.value !== undefined && Object.values(TxTypes).includes(value?.typeUrl)) {
+      obj[key].value = registry.decode(value)
+      obj[key] = decodeNestedMsg(value);
+    } else if (value instanceof Object) {
+      obj[key] = decodeNestedMsg(value);
     }
 
   }

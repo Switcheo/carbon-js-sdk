@@ -19,6 +19,7 @@ import { MsgSubmitProposal, MsgSubmitProposalResponse, MsgVote, MsgVoteResponse,
 import { MsgConnectionOpenInit, MsgConnectionOpenInitResponse, MsgConnectionOpenTry, MsgConnectionOpenTryResponse, MsgConnectionOpenAck, MsgConnectionOpenAckResponse, MsgConnectionOpenConfirm, MsgConnectionOpenConfirmResponse } from "./ibc/core/connection/v1/tx";
 import { MsgChannelOpenInit, MsgChannelOpenInitResponse, MsgChannelOpenTry, MsgChannelOpenTryResponse, MsgChannelOpenAck, MsgChannelOpenAckResponse, MsgChannelOpenConfirm, MsgChannelOpenConfirmResponse, MsgChannelCloseInit, MsgChannelCloseInitResponse, MsgChannelCloseConfirm, MsgChannelCloseConfirmResponse, MsgRecvPacket, MsgRecvPacketResponse, MsgTimeout, MsgTimeoutResponse, MsgTimeoutOnClose, MsgTimeoutOnCloseResponse, MsgAcknowledgement, MsgAcknowledgementResponse } from "./ibc/core/channel/v1/tx";
 import { MsgCreateClient, MsgCreateClientResponse, MsgUpdateClient, MsgUpdateClientResponse, MsgUpgradeClient, MsgUpgradeClientResponse, MsgSubmitMisbehaviour, MsgSubmitMisbehaviourResponse } from "./ibc/core/client/v1/tx";
+import { Header } from "./ibc/lightclients/tendermint/v1/tendermint";
 import { MsgTransfer, MsgTransferResponse } from "./ibc/applications/transfer/v1/tx";
 import { MsgCreateToken, MsgCreateTokenResponse, MsgSyncToken, MsgSyncTokenResponse, MsgMintToken, MsgMintTokenResponse, MsgBindToken, MsgBindTokenResponse, MsgUnbindToken, MsgUnbindTokenResponse, MsgLinkToken, MsgLinkTokenResponse, MsgWithdraw, MsgWithdrawResponse, MsgAuthorizeBridge, MsgAuthorizeBridgeResponse, MsgDeauthorizeBridge, MsgDeauthorizeBridgeResponse, MsgEditBridgeName, MsgEditBridgeNameResponse, MsgRemoveBridge, MsgRemoveBridgeResponse } from "./coin/tx";
 import { MsgSetLeverage, MsgSetLeverageResponse } from "./leverage/tx";
@@ -165,6 +166,8 @@ registry.register("/ibc.core.client.v1.MsgUpgradeClient", MsgUpgradeClient);
 registry.register("/ibc.core.client.v1.MsgUpgradeClientResponse", MsgUpgradeClientResponse);
 registry.register("/ibc.core.client.v1.MsgSubmitMisbehaviour", MsgSubmitMisbehaviour);
 registry.register("/ibc.core.client.v1.MsgSubmitMisbehaviourResponse", MsgSubmitMisbehaviourResponse);
+
+registry.register("/ibc.lightclients.tendermint.v1.Header", Header);
 
 registry.register("/ibc.applications.transfer.v1.MsgTransfer", MsgTransfer);
 registry.register("/ibc.applications.transfer.v1.MsgTransferResponse", MsgTransferResponse);
@@ -352,6 +355,7 @@ export const TxTypes = {
   "MsgUpgradeClientResponse": "/ibc.core.client.v1.MsgUpgradeClientResponse",
   "MsgSubmitMisbehaviour": "/ibc.core.client.v1.MsgSubmitMisbehaviour",
   "MsgSubmitMisbehaviourResponse": "/ibc.core.client.v1.MsgSubmitMisbehaviourResponse",
+  "Header": "/ibc.lightclients.tendermint.v1.Header",
   "MsgTransfer": "/ibc.applications.transfer.v1.MsgTransfer",
   "MsgTransferResponse": "/ibc.applications.transfer.v1.MsgTransferResponse",
   "MsgCreateToken": "/Switcheo.carbon.coin.MsgCreateToken",

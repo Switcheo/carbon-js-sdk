@@ -10,24 +10,12 @@ console.log(`import { Registry } from "@cosmjs/proto-signing";`);
 const modules: { [name: string]: string[] } = {};
 for (const moduleFile of codecFiles) {
 
-  if (moduleFile.endsWith("/tendermint.ts")) {
-    const codecModule = require(`${pwd}/${moduleFile}`);
-    const messages = Object.keys(codecModule).filter((key) => key.startsWith("Header"));
-    if (messages.length) {
-      modules[codecModule.protobufPackage] = messages;
-      const relativePath = path.relative(registryFile, moduleFile)
-        .replace(/^\.\.\//, "./")
-        .replace(/\.ts$/, "");
-      console.log(`import { ${messages.join(", ")} } from "${relativePath}";`)
-    }
-  }
-
-  if (!moduleFile.endsWith("/tx.ts")) {
+  if (!["/tx.ts", "/tendermint.ts"].some(fileName => moduleFile.endsWith(fileName))) {
     continue
   }
 
   const codecModule = require(`${pwd}/${moduleFile}`);
-  const messages = Object.keys(codecModule).filter((key) => key.startsWith("Msg") && key !== "MsgClientImpl");
+  const messages = Object.keys(codecModule).filter((key) => (key.startsWith("Msg") && key !== "MsgClientImpl") || key.startsWith("Header"));
 
   if (messages.length) {
     modules[codecModule.protobufPackage] = messages;
@@ -90,7 +78,9 @@ for (const moduleFile of codecFiles) {
     const relativePath = path.relative(registryFile, moduleFile)
       .replace(/^\.\.\//, "./")
       .replace(/\.ts$/, "");
-
+    if (relativePath === "") {
+      continue
+    }
 
     console.log(`export { ${messages.join(", ")} } from "${relativePath}";`)
   }
