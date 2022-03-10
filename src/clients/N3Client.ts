@@ -234,10 +234,10 @@ export class N3Client {
     const args: O3Types.Argument[] = [
       { type: O3Types.ArgTypes.Hash160, value: tokenScriptHash },
       { type: O3Types.ArgTypes.Hash160, value: fromAddressHex },
-      { type: O3Types.ArgTypes.ByteArray, value: u.HexString.fromHex(toAddressHex, false).toString() },
+      { type: O3Types.ArgTypes.ByteArray, value: u.HexString.fromHex(toAddressHex).toBase64() },
       { type: O3Types.ArgTypes.Integer, value: amount.toString(10) },
       { type: O3Types.ArgTypes.Integer, value: feeAmount.toString(10) },
-      { type: O3Types.ArgTypes.ByteArray, value: u.HexString.fromHex(networkConfig.feeAddress, false).toString() },
+      { type: O3Types.ArgTypes.ByteArray, value: u.HexString.fromHex(networkConfig.feeAddress).toBase64() },
       { type: O3Types.ArgTypes.Integer, value: nonce.toString() },
     ];
 
