@@ -16,7 +16,6 @@ import "./_setup";
   // query market stats
   const marketStats = await sdk.query.marketstats.MarketStats({});
   console.log("marketStats", marketStats);
-  process.exit(0);
 
   // query txn fees
   const fees = await sdk.query.fee.MsgFeeAll({})
