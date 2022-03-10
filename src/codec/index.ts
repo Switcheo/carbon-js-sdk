@@ -468,6 +468,8 @@ export { Oracle, Vote, Result, Mark } from "./oracle/oracle";
 export { CreateOracleProposal } from "./oracle/proposal";
 export { QueryOracleRequest, QueryOracleResponse, QueryAllOracleRequest, QueryAllOracleResponse, QueryAllResultRequest, QueryAllResultResponse, QueryAllVoteRequest, QueryAllVoteResponse, QueryVoterPowerRequest, QueryVoterPowerResponse } from "./oracle/query";
 export { NewVoteEvent, RecordVoteEvent, VoteEvent, ResultEvent } from "./oracle/event";
+export { QueryParamsRequest, QueryParamsResponse, QueryMarketStatsRequest, QueryMarketStatsResponse } from "./marketstats/query";
+export { MarketStats } from "./marketstats/marketstats";
 export { MsgCreateToken, CreateTokenParams, MsgCreateTokenResponse, MsgSyncToken, MsgSyncTokenResponse, MsgMintToken, MsgMintTokenResponse, MsgBindToken, MsgBindTokenResponse, MsgUnbindToken, MsgUnbindTokenResponse, MsgLinkToken, MsgLinkTokenResponse, MsgWithdraw, MsgWithdrawResponse, MsgAuthorizeBridge, MsgAuthorizeBridgeResponse, MsgDeauthorizeBridge, MsgDeauthorizeBridgeResponse, MsgEditBridgeName, MsgEditBridgeNameResponse, MsgRemoveBridge, MsgRemoveBridgeResponse } from "./coin/tx";
 export { ExternalTransfer } from "./coin/extevents";
 export { CreateTokenProposal } from "./coin/proposal";

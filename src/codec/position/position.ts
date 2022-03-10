@@ -2,6 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Coin } from "../cosmos/base/v1beta1/coin";
+import { Timestamp } from "../google/protobuf/timestamp";
 
 export const protobufPackage = "Switcheo.carbon.position";
 
@@ -33,6 +34,10 @@ export interface APIPosition {
   avgAllocatedMargin: string;
   avgEntryPrice: string;
   avgExitPrice: string;
+  allocatedMargin: string;
+  lots: string;
+  openedAt?: Date;
+  closedAt?: Date;
 }
 
 const basePosition: object = {
@@ -257,6 +262,8 @@ const baseAPIPosition: object = {
   avgAllocatedMargin: "",
   avgEntryPrice: "",
   avgExitPrice: "",
+  allocatedMargin: "",
+  lots: "",
 };
 
 export const APIPosition = {
@@ -302,6 +309,24 @@ export const APIPosition = {
     }
     if (message.avgExitPrice !== "") {
       writer.uint32(106).string(message.avgExitPrice);
+    }
+    if (message.allocatedMargin !== "") {
+      writer.uint32(114).string(message.allocatedMargin);
+    }
+    if (message.lots !== "") {
+      writer.uint32(122).string(message.lots);
+    }
+    if (message.openedAt !== undefined) {
+      Timestamp.encode(
+        toTimestamp(message.openedAt),
+        writer.uint32(130).fork()
+      ).ldelim();
+    }
+    if (message.closedAt !== undefined) {
+      Timestamp.encode(
+        toTimestamp(message.closedAt),
+        writer.uint32(138).fork()
+      ).ldelim();
     }
     return writer;
   },
@@ -351,6 +376,22 @@ export const APIPosition = {
           break;
         case 13:
           message.avgExitPrice = reader.string();
+          break;
+        case 14:
+          message.allocatedMargin = reader.string();
+          break;
+        case 15:
+          message.lots = reader.string();
+          break;
+        case 16:
+          message.openedAt = fromTimestamp(
+            Timestamp.decode(reader, reader.uint32())
+          );
+          break;
+        case 17:
+          message.closedAt = fromTimestamp(
+            Timestamp.decode(reader, reader.uint32())
+          );
           break;
         default:
           reader.skipType(tag & 7);
@@ -418,6 +459,22 @@ export const APIPosition = {
       object.avgExitPrice !== undefined && object.avgExitPrice !== null
         ? String(object.avgExitPrice)
         : "";
+    message.allocatedMargin =
+      object.allocatedMargin !== undefined && object.allocatedMargin !== null
+        ? String(object.allocatedMargin)
+        : "";
+    message.lots =
+      object.lots !== undefined && object.lots !== null
+        ? String(object.lots)
+        : "";
+    message.openedAt =
+      object.openedAt !== undefined && object.openedAt !== null
+        ? fromJsonTimestamp(object.openedAt)
+        : undefined;
+    message.closedAt =
+      object.closedAt !== undefined && object.closedAt !== null
+        ? fromJsonTimestamp(object.closedAt)
+        : undefined;
     return message;
   },
 
@@ -451,6 +508,13 @@ export const APIPosition = {
       (obj.avgEntryPrice = message.avgEntryPrice);
     message.avgExitPrice !== undefined &&
       (obj.avgExitPrice = message.avgExitPrice);
+    message.allocatedMargin !== undefined &&
+      (obj.allocatedMargin = message.allocatedMargin);
+    message.lots !== undefined && (obj.lots = message.lots);
+    message.openedAt !== undefined &&
+      (obj.openedAt = message.openedAt.toISOString());
+    message.closedAt !== undefined &&
+      (obj.closedAt = message.closedAt.toISOString());
     return obj;
   },
 
@@ -484,6 +548,10 @@ export const APIPosition = {
     message.avgAllocatedMargin = object.avgAllocatedMargin ?? "";
     message.avgEntryPrice = object.avgEntryPrice ?? "";
     message.avgExitPrice = object.avgExitPrice ?? "";
+    message.allocatedMargin = object.allocatedMargin ?? "";
+    message.lots = object.lots ?? "";
+    message.openedAt = object.openedAt ?? undefined;
+    message.closedAt = object.closedAt ?? undefined;
     return message;
   },
 };
@@ -507,6 +575,32 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+function toTimestamp(date: Date): Timestamp {
+  const seconds = numberToLong(date.getTime() / 1_000);
+  const nanos = (date.getTime() % 1_000) * 1_000_000;
+  return { seconds, nanos };
+}
+
+function fromTimestamp(t: Timestamp): Date {
+  let millis = t.seconds.toNumber() * 1_000;
+  millis += t.nanos / 1_000_000;
+  return new Date(millis);
+}
+
+function fromJsonTimestamp(o: any): Date {
+  if (o instanceof Date) {
+    return o;
+  } else if (typeof o === "string") {
+    return new Date(o);
+  } else {
+    return fromTimestamp(Timestamp.fromJSON(o));
+  }
+}
+
+function numberToLong(number: number) {
+  return Long.fromNumber(number);
+}
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
