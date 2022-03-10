@@ -205,7 +205,6 @@ export class NEOClient {
       throw new Error("Invalid amount")
     }
 
-    const sb = Neon.create.scriptBuilder()
     const data: any = [
       sc.ContractParam.hash160(fromAssetHash),
       sc.ContractParam.hash160(fromAddress),
