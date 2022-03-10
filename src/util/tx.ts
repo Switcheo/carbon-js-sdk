@@ -61,14 +61,20 @@ export const decode = (bytes?: Uint8Array | Buffer): Tx | undefined => {
   const carbonTx: Tx = { ...decodedTx, body: undefined };
 
   if (decodedTx.body) {
-    carbonTx.body = {
-      ...decodedTx.body,
-      // override original UInt8Array messages with decoded messages
-      messages: decodedTx.body.messages.map(message => ({
-        typeUrl: message.typeUrl,
-        value: decodeNestedMsg(registry.decode(message)),
-    })),
-    };
+    carbonTx.body = decodedTx.body;
+    carbonTx.body.messages = [];
+    for (const message of decodedTx.body.messages) {
+      try {
+        carbonTx.body.messages.push({
+          typeUrl: message.typeUrl,
+          value: decodeNestedMsg(registry.decode(message)),
+        })
+      } catch (error) {
+        console.error(`failed to decode tx message: ${message?.typeUrl}`);
+        console.error(error);
+        carbonTx.body.messages.push(message);
+      }
+    }
   } else {
     delete carbonTx.body;
   }
