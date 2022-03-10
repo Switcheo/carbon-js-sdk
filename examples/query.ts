@@ -13,6 +13,10 @@ import "./_setup";
 
   // GRPC Queries
 
+  // query market stats
+  const marketStats = await sdk.query.marketstats.MarketStats({});
+  console.log("marketStats", marketStats);
+
   // query txn fees
   const fees = await sdk.query.fee.MsgFeeAll({})
   console.log("fees", fees);

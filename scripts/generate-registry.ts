@@ -54,6 +54,7 @@ console.log("");
 console.log('// Exported for convenience');
 const directoryBlacklist = ['cosmos', 'ibc', 'tendermint']
 const fileNameBlacklist = ['genesis.ts', 'keys.ts']
+const relativePathBlacklist = ['./marketstats/params']
 const modelBlacklist = ['MsgClientImpl', 'protobufPackage', 'GenesisState', 'QueryClientImpl']
 
 for (const moduleFile of codecFiles) {
@@ -78,7 +79,7 @@ for (const moduleFile of codecFiles) {
     const relativePath = path.relative(registryFile, moduleFile)
       .replace(/^\.\.\//, "./")
       .replace(/\.ts$/, "");
-    if (relativePath === "") {
+    if (relativePath === "" || relativePathBlacklist.includes(relativePath)) {
       continue
     }
 

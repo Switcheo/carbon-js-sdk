@@ -23,6 +23,7 @@ import { QueryClientImpl as LeverageQueryClient } from "@carbon-sdk/codec/levera
 import { QueryClientImpl as LiquidationQueryClient } from "@carbon-sdk/codec/liquidation/query";
 import { QueryClientImpl as LiquidityPoolQueryClient } from "@carbon-sdk/codec/liquiditypool/query";
 import { QueryClientImpl as MarketQueryClient } from "@carbon-sdk/codec/market/query";
+import { QueryClientImpl as MarketStatsQueryClient } from "@carbon-sdk/codec/marketstats/query";
 import { QueryClientImpl as MiscQueryClient } from "@carbon-sdk/codec/misc/query";
 import { QueryClientImpl as OracleQueryClient } from "@carbon-sdk/codec/oracle/query";
 import { QueryClientImpl as OrderQueryClient } from "@carbon-sdk/codec/order/query";
@@ -53,6 +54,7 @@ class CarbonQueryClient {
   liquidation: LiquidationQueryClient;
   liquiditypool: LiquidityPoolQueryClient;
   market: MarketQueryClient;
+  marketstats: MarketStatsQueryClient;
   misc: MiscQueryClient;
   oracle: OracleQueryClient;
   order: OrderQueryClient;
@@ -97,6 +99,7 @@ class CarbonQueryClient {
     this.liquidation = new LiquidationQueryClient(rpcClient);
     this.liquiditypool = new LiquidityPoolQueryClient(rpcClient);
     this.market = new MarketQueryClient(rpcClient);
+    this.marketstats = new MarketStatsQueryClient(rpcClient);
     this.misc = new MiscQueryClient(rpcClient);
     this.oracle = new OracleQueryClient(rpcClient);
     this.order = new OrderQueryClient(rpcClient);
