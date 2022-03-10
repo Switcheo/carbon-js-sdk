@@ -220,7 +220,7 @@ export class N3Client {
     if (!o3Wallet.isConnected()) {
       throw new Error("O3 wallet not connected. Please reconnect and try again.")
     }
-    
+
     const nonce = Math.floor(Math.random() * 1000000)
     const networkConfig = this.configProvider.getConfig();
 
@@ -234,10 +234,10 @@ export class N3Client {
     const args: O3Types.Argument[] = [
       { type: O3Types.ArgTypes.Hash160, value: tokenScriptHash },
       { type: O3Types.ArgTypes.Hash160, value: fromAddressHex },
-      { type: O3Types.ArgTypes.ByteArray, value: u.HexString.fromHex(toAddressHex, true).toString() },
+      { type: O3Types.ArgTypes.ByteArray, value: u.HexString.fromHex(toAddressHex, false).toString() },
       { type: O3Types.ArgTypes.Integer, value: amount.toString(10) },
       { type: O3Types.ArgTypes.Integer, value: feeAmount.toString(10) },
-      { type: O3Types.ArgTypes.ByteArray, value: u.HexString.fromHex(networkConfig.feeAddress, true).toString() },
+      { type: O3Types.ArgTypes.ByteArray, value: u.HexString.fromHex(networkConfig.feeAddress, false).toString() },
       { type: O3Types.ArgTypes.Integer, value: nonce.toString() },
     ];
 
