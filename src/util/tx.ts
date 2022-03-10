@@ -71,14 +71,7 @@ export const decode = (bytes?: Uint8Array | Buffer): Tx | undefined => {
       } catch (error) {
         console.error(`failed to decode tx message: ${message?.typeUrl}`);
         console.error(error);
-        try {
-          carbonTx.body.messages.push({
-            typeUrl: message.typeUrl,
-            value: Buffer.from(message.value).toString("hex"),
-          });
-        } catch {
-          carbonTx.body.messages.push(message);
-        }
+        carbonTx.body.messages.push(message);
       }
     }
   } else {
