@@ -61,8 +61,7 @@ export const decode = (bytes?: Uint8Array | Buffer): Tx | undefined => {
   const carbonTx: Tx = { ...decodedTx, body: undefined };
 
   if (decodedTx.body) {
-    carbonTx.body = decodedTx.body;
-    carbonTx.body.messages = [];
+    carbonTx.body = { ...decodedTx.body, messages: [] };
     for (const message of decodedTx.body.messages) {
       try {
         carbonTx.body.messages.push({
