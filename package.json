@@ -1,6 +1,6 @@
 {
   "name": "carbon-js-sdk",
-  "version": "0.1.52",
+  "version": "0.1.53",
   "description": "TypeScript SDK for Carbon blockchain",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -81,6 +81,7 @@
     "@types/secp256k1": "^4.0.2",
     "@types/websocket": "^1.0.4",
     "@types/wif": "^2.0.2",
-    "dotenv": "^10.0.0"
+    "dotenv": "^10.0.0",
+    "prettier": "2.5.1"
   }
 }
