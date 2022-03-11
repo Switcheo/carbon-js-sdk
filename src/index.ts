@@ -6,7 +6,7 @@ export { Blockchain } from "./util/blockchain";
 export * from "./websocket";
 export { AminoTypesMap, SDKProvider, KeplrAccount, KeplrWindow, CosmosLedger, Keplr, ChainInfo, EVMChain, MetaMaskChangeNetworkParam, CallContractArgs, MetaMaskSyncResult, MetaMask, EthLedgerAccount, EthLedgerSigner, NeoLedgerAccount, Zilpay, ZilPayChangeNetworkParam, O3Types, O3Wallet } from "./provider";
 export { default as CarbonSDK } from "./CarbonSDK";
-export { ProviderAgent } from "./constant";
+export { AssetData, AssetListObj, DenomUnit, IBCObj, LogoURI, ProviderAgent, ibcAssetList } from "./constant";
 export * as Insights from "./insights";
 export * as Hydrogen from "./hydrogen";
-export { CarbonSigner, DirectCarbonSigner, AminoCarbonSigner, CarbonLedgerSigner, CarbonPrivateKeySigner, CarbonNonSigner } from "./wallet"
+export { CarbonSigner, DirectCarbonSigner, AminoCarbonSigner, CarbonLedgerSigner, CarbonPrivateKeySigner, CarbonNonSigner } from "./wallet";
