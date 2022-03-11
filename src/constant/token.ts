@@ -350,17 +350,20 @@ export interface AssetData {
 
 export interface AssetListObj {
   chain_id: string;
-  assets: AssetData[];
+  assets: TypeUtils.SimpleMap<AssetData>
 }
 
-export const ibcAssetList: TypeUtils.SimpleMap<AssetData> = assetLists.assets.reduce((
-  prev: TypeUtils.SimpleMap<AssetData>,
-  asset: AssetData,
-) => {
-  const newList = prev;
-  newList[asset.display] = asset;
-  return newList;
-}, {});
+export const ibcAssetObj: AssetListObj = {
+  ...assetLists,
+  assets: assetLists.assets.reduce((
+    prev: TypeUtils.SimpleMap<AssetData>,
+    asset: AssetData,
+  ) => {
+    const newList = prev;
+    newList[asset.display] = asset;
+    return newList;
+  }, {}),
+}
 
 export const ibcDisplayOverride: TypeUtils.SimpleMap<string> = {
   'swth': 'dswth',
