@@ -1,5 +1,6 @@
 import { OptionalNetworkMap, SimpleMap } from "@carbon-sdk/util/type";
 import assetLists from "assetlists/osmosis-1/osmosis-1.assetlist.json";
+import { TypeUtils } from "..";
 import { Network } from "./network";
 
 export const CommonAssetName: SimpleMap<string> = {
@@ -352,4 +353,11 @@ export interface AssetListObj {
   assets: AssetData[];
 }
 
-export const ibcAssetList = assetLists as AssetListObj;
+export const ibcAssetList: TypeUtils.SimpleMap<AssetData> = assetLists.assets.reduce((
+  prev: TypeUtils.SimpleMap<AssetData>,
+  asset: AssetData,
+) => {
+  const newList = prev;
+  newList[asset.display] = asset;
+  return newList;
+}, {});
