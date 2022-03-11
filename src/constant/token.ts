@@ -361,3 +361,7 @@ export const ibcAssetList: TypeUtils.SimpleMap<AssetData> = assetLists.assets.re
   newList[asset.display] = asset;
   return newList;
 }, {});
+
+export const ibcDisplayOverride: TypeUtils.SimpleMap<string> = {
+  'swth': 'dswth',
+}
