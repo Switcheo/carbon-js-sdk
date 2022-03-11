@@ -53,6 +53,7 @@
     "@types/w3c-web-usb": "^1.0.5",
     "@types/ws": "^7.4.7",
     "@zilliqa-js/zilliqa": "^2.2.0",
+    "assetlists": "git+ssh://git@github.com/Switcheo/assetlists",
     "base58check": "^2.0.0",
     "bignumber.js": "^9.0.1",
     "bip32": "^2.0.6",
