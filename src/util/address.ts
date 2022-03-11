@@ -392,3 +392,19 @@ export const ETHAddress: AddressBuilder<AddressOptions> = {
     return ETHAddress.privateKeyToAddress(privateKey);
   },
 };
+
+export const IBCAddress = {
+  getAddressBytes(bech32Address: string, prefix?: string): Uint8Array {
+    const decoded = bech32.decode(bech32Address);
+    if (prefix && decoded.prefix !== prefix) {
+      throw new Error("Unmatched prefix");
+    }
+
+    return new Uint8Array(bech32.fromWords(decoded.words));
+  },
+
+  deriveAddressFromBytes(bytes: Uint8Array, prefix: string): string {
+    const words = bech32.toWords(bytes);
+    return bech32.encode(prefix, words);
+  },
+};
