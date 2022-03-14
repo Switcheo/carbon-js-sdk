@@ -2,7 +2,7 @@ import { CarbonSDK } from "./_sdk";
 
 (async () => {
     const sdk = await CarbonSDK.instance({
-      network: CarbonSDK.Network.DevNet,
+      network: CarbonSDK.Network.MainNet,
       config: {
         tmRpcUrl: process.env.TRPC_ENDPOINT,
       },
@@ -29,13 +29,8 @@ import { CarbonSDK } from "./_sdk";
     const poolsResponse = await sdk.insights.Pools();
     console.log("pools", poolsResponse);
 
-    const poolsVolumeResponse = await sdk.insights.PoolsVolume({
-        poolIds: [1],
-    });
+    const poolsVolumeResponse = await sdk.insights.PoolsVolume();
     console.log("poolsVolume", poolsVolumeResponse);
-
-    const poolVolumesResponse = await sdk.insights.PoolVolumes()
-    console.log("poolVolumes", poolVolumesResponse);
 
     // market api
     const marketsVolumeResponse = await sdk.insights.MarketsVolume()

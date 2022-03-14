@@ -14,13 +14,6 @@ export interface Pool {
 
 export interface PoolVolume {
   poolId: number
-  t: string
-  height: number
-  volume: string
-}
-
-export interface PoolVolumes {
-  poolId: number
   market: string
   volumeShifted: number
   volumeValue: number
@@ -43,19 +36,15 @@ export interface QueryGetPoolVolumeResponse {
   meta: TimeMeta
 }
 export interface QueryGetPoolsVolumeRequest extends QueryByTimeRequest {
-  poolIds: number[]
-}
-
-export interface QueryGetPoolVolumesRequest extends QueryByTimeRequest {
   market?: string[]
 }
 
-export interface QueryGetPoolVolumesResponse {
+export interface QueryGetPoolsVolumeResponse {
   entries: {
     date: string
     volumeValue: string
     totalVolumeValue: string
-    markets: PoolVolumes[]
+    markets: PoolVolume[]
   }[]
   meta: TimeMeta
 }
