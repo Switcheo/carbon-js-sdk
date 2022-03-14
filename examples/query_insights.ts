@@ -19,20 +19,22 @@ import { CarbonSDK } from "./_sdk";
     const activeAccountsResponse = await sdk.insights.ActiveAccounts();
     console.log("activeAccounts", activeAccountsResponse);
 
-    const UserGrowthResponse = await sdk.insights.UserGrowth();
-    console.log("UserGrowth", UserGrowthResponse);
+    const userGrowthResponse = await sdk.insights.UserGrowth();
+    console.log("userGrowth", userGrowthResponse);
 
     const totalUsersResponse = await sdk.insights.TotalUsers();
     console.log("totalUsers", totalUsersResponse);
 
     // pool api
-    const poolsResposne = await sdk.insights.Pools();
-    console.log("pools", poolsResposne);
+    const poolsResponse = await sdk.insights.Pools();
+    console.log("pools", poolsResponse);
 
-    const poolsVolumeResponse = await sdk.insights.PoolsVolume({
-        poolIds: [1],
-    });
+    const poolsVolumeResponse = await sdk.insights.PoolsVolume();
     console.log("poolsVolume", poolsVolumeResponse);
+
+    // market api
+    const marketsVolumeResponse = await sdk.insights.MarketsVolume();
+    console.log("marketsVolume", marketsVolumeResponse);
 
     // node api
     const nodeResponse = await sdk.insights.Nodes();
