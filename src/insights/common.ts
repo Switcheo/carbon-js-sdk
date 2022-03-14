@@ -12,7 +12,7 @@ export const InsightsEndpoints = {
   // Pool api
   'pool/list': '/pool/list',
   'pool/volume': '/pool/:poolId/volume',
-  'pools/volume': '/pool/volumes',
+  'pools/volume': '/pool/volume',
 
   //market
   'market/volume': '/market/volume',
