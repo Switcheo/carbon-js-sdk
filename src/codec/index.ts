@@ -32,6 +32,9 @@ export * from './cosmos-models';
 
 export * as IBC from './ibc-models';
 
+import * as PolyNetwork from './polynetwork-models';
+export * as PolyNetwork from './polynetwork-models';
+
 export const registry = new Registry();
 
 registry.register("/Switcheo.carbon.order.MsgSetTradingFlag", MsgSetTradingFlag);
@@ -56,11 +59,23 @@ registry.register("/Switcheo.carbon.cdp.MsgRemoveDebtResponse", MsgRemoveDebtRes
 registry.register("/Switcheo.carbon.cdp.MsgCreateVaultType", MsgCreateVaultType);
 registry.register("/Switcheo.carbon.cdp.MsgCreateVaultTypeResponse", MsgCreateVaultTypeResponse);
 
+registry.register("/Switcheo.polynetworkcosmos.headersync.MsgSyncGenesis", PolyNetwork.Headersync.MsgSyncGenesis);
+registry.register("/Switcheo.polynetworkcosmos.headersync.MsgSyncGenesisResponse", PolyNetwork.Headersync.MsgSyncGenesisResponse);
+registry.register("/Switcheo.polynetworkcosmos.headersync.MsgSyncHeaders", PolyNetwork.Headersync.MsgSyncHeaders);
+registry.register("/Switcheo.polynetworkcosmos.headersync.MsgSyncHeadersResponse", PolyNetwork.Headersync.MsgSyncHeadersResponse);
+
 registry.register("/Switcheo.carbon.broker.MsgInitiateLiquidation", MsgInitiateLiquidation);
 registry.register("/Switcheo.carbon.broker.MsgInitiateLiquidationResponse", MsgInitiateLiquidationResponse);
 
 registry.register("/Switcheo.carbon.fee.MsgSetFee", MsgSetFee);
 registry.register("/Switcheo.carbon.fee.MsgSetFeeResponse", MsgSetFeeResponse);
+
+registry.register("/Switcheo.polynetworkcosmos.btcx.MsgCreate", PolyNetwork.Btcx.MsgCreate);
+registry.register("/Switcheo.polynetworkcosmos.btcx.MsgCreateResponse", PolyNetwork.Btcx.MsgCreateResponse);
+registry.register("/Switcheo.polynetworkcosmos.btcx.MsgBind", PolyNetwork.Btcx.MsgBind);
+registry.register("/Switcheo.polynetworkcosmos.btcx.MsgBindResponse", PolyNetwork.Btcx.MsgBindResponse);
+registry.register("/Switcheo.polynetworkcosmos.btcx.MsgLock", PolyNetwork.Btcx.MsgLock);
+registry.register("/Switcheo.polynetworkcosmos.btcx.MsgLockResponse", PolyNetwork.Btcx.MsgLockResponse);
 
 registry.register("/Switcheo.carbon.position.MsgSetMargin", MsgSetMargin);
 registry.register("/Switcheo.carbon.position.MsgSetMarginResponse", MsgSetMarginResponse);
@@ -127,6 +142,9 @@ registry.register("/cosmos.gov.v1beta1.MsgVoteWeighted", MsgVoteWeighted);
 registry.register("/cosmos.gov.v1beta1.MsgVoteWeightedResponse", MsgVoteWeightedResponse);
 registry.register("/cosmos.gov.v1beta1.MsgDeposit", MsgDeposit);
 registry.register("/cosmos.gov.v1beta1.MsgDepositResponse", MsgDepositResponse);
+
+registry.register("/Switcheo.polynetworkcosmos.ccm.MsgProcessCrossChainTx", PolyNetwork.Ccm.MsgProcessCrossChainTx);
+registry.register("/Switcheo.polynetworkcosmos.ccm.MsgProcessCrossChainTxResponse", PolyNetwork.Ccm.MsgProcessCrossChainTxResponse);
 
 registry.register("/ibc.core.connection.v1.MsgConnectionOpenInit", MsgConnectionOpenInit);
 registry.register("/ibc.core.connection.v1.MsgConnectionOpenInitResponse", MsgConnectionOpenInitResponse);
@@ -240,6 +258,13 @@ registry.register("/Switcheo.carbon.liquiditypool.MsgSetCommitmentCurveResponse"
 registry.register("/Switcheo.carbon.liquiditypool.MsgUpdatePool", MsgUpdatePool);
 registry.register("/Switcheo.carbon.liquiditypool.MsgUpdatePoolResponse", MsgUpdatePoolResponse);
 
+registry.register("/Switcheo.polynetworkcosmos.lockproxy.MsgCreate", PolyNetwork.Lockproxy.MsgCreate);
+registry.register("/Switcheo.polynetworkcosmos.lockproxy.MsgCreateResponse", PolyNetwork.Lockproxy.MsgCreateResponse);
+registry.register("/Switcheo.polynetworkcosmos.lockproxy.MsgBind", PolyNetwork.Lockproxy.MsgBind);
+registry.register("/Switcheo.polynetworkcosmos.lockproxy.MsgBindResponse", PolyNetwork.Lockproxy.MsgBindResponse);
+registry.register("/Switcheo.polynetworkcosmos.lockproxy.MsgLock", PolyNetwork.Lockproxy.MsgLock);
+registry.register("/Switcheo.polynetworkcosmos.lockproxy.MsgLockResponse", PolyNetwork.Lockproxy.MsgLockResponse);
+
 export const TxTypes = {
   "MsgSetTradingFlag": "/Switcheo.carbon.order.MsgSetTradingFlag",
   "MsgSetTradingFlagResponse": "/Switcheo.carbon.order.MsgSetTradingFlagResponse",
@@ -261,10 +286,20 @@ export const TxTypes = {
   "MsgRemoveDebtResponse": "/Switcheo.carbon.cdp.MsgRemoveDebtResponse",
   "MsgCreateVaultType": "/Switcheo.carbon.cdp.MsgCreateVaultType",
   "MsgCreateVaultTypeResponse": "/Switcheo.carbon.cdp.MsgCreateVaultTypeResponse",
+  "MsgSyncGenesis": "/Switcheo.polynetworkcosmos.headersync.MsgSyncGenesis",
+  "MsgSyncGenesisResponse": "/Switcheo.polynetworkcosmos.headersync.MsgSyncGenesisResponse",
+  "MsgSyncHeaders": "/Switcheo.polynetworkcosmos.headersync.MsgSyncHeaders",
+  "MsgSyncHeadersResponse": "/Switcheo.polynetworkcosmos.headersync.MsgSyncHeadersResponse",
   "MsgInitiateLiquidation": "/Switcheo.carbon.broker.MsgInitiateLiquidation",
   "MsgInitiateLiquidationResponse": "/Switcheo.carbon.broker.MsgInitiateLiquidationResponse",
   "MsgSetFee": "/Switcheo.carbon.fee.MsgSetFee",
   "MsgSetFeeResponse": "/Switcheo.carbon.fee.MsgSetFeeResponse",
+  "MsgCreate": "/Switcheo.polynetworkcosmos.lockproxy.MsgCreate",
+  "MsgCreateResponse": "/Switcheo.polynetworkcosmos.lockproxy.MsgCreateResponse",
+  "MsgBind": "/Switcheo.polynetworkcosmos.lockproxy.MsgBind",
+  "MsgBindResponse": "/Switcheo.polynetworkcosmos.lockproxy.MsgBindResponse",
+  "MsgLock": "/Switcheo.polynetworkcosmos.lockproxy.MsgLock",
+  "MsgLockResponse": "/Switcheo.polynetworkcosmos.lockproxy.MsgLockResponse",
   "MsgSetMargin": "/Switcheo.carbon.position.MsgSetMargin",
   "MsgSetMarginResponse": "/Switcheo.carbon.position.MsgSetMarginResponse",
   "MsgCreateOracle": "/Switcheo.carbon.oracle.MsgCreateOracle",
@@ -319,6 +354,8 @@ export const TxTypes = {
   "MsgVoteWeightedResponse": "/cosmos.gov.v1beta1.MsgVoteWeightedResponse",
   "MsgDeposit": "/cosmos.gov.v1beta1.MsgDeposit",
   "MsgDepositResponse": "/cosmos.gov.v1beta1.MsgDepositResponse",
+  "MsgProcessCrossChainTx": "/Switcheo.polynetworkcosmos.ccm.MsgProcessCrossChainTx",
+  "MsgProcessCrossChainTxResponse": "/Switcheo.polynetworkcosmos.ccm.MsgProcessCrossChainTxResponse",
   "MsgConnectionOpenInit": "/ibc.core.connection.v1.MsgConnectionOpenInit",
   "MsgConnectionOpenInitResponse": "/ibc.core.connection.v1.MsgConnectionOpenInitResponse",
   "MsgConnectionOpenTry": "/ibc.core.connection.v1.MsgConnectionOpenTry",
