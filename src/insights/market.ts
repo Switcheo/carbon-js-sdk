@@ -2,16 +2,22 @@ import { QueryByTimeRequest, TimeMeta } from "./common";
 
 export interface MarketVolume {
   market: string
-  t: string
-  height: number
+  volumeShifted: number
+  volumeValue: number
   volume: string
+  height: number
 }
 
 export interface QueryGetMarketVolumeRequest extends QueryByTimeRequest {
-  market: string
+  market?: string
 }
 
 export interface QueryGetMarketVolumeResponse {
-  entries: MarketVolume[]
+  entries: {
+    date: string
+    volumeValue: string
+    totalVolumeValue: string
+    markets: MarketVolume[]
+  }[]
   meta: TimeMeta
 }

@@ -103,7 +103,19 @@ class InsightsQueryClient {
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetPoolVolumeResponse>
   }
 
-  async MarketsVolume(req: Insights.QueryGetMarketVolumeRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetMarketVolumeResponse>> {
+  async PoolVolumes(req: Insights.QueryGetPoolVolumesRequest = {}): Promise<Insights.InsightsQueryResponse<Insights.QueryGetPoolVolumesResponse>> {
+    const queryParams = {
+      market: req.market,
+      interval: req.interval,
+      from: req.from,
+      until: req.until,
+    }
+    const request = this.apiManager.path('pool/volumes', {}, queryParams)
+    const response = await request.get()
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetPoolVolumesResponse>
+  }
+
+  async MarketsVolume(req: Insights.QueryGetMarketVolumeRequest = {}): Promise<Insights.InsightsQueryResponse<Insights.QueryGetMarketVolumeResponse>> {
     const queryParams = {
       market: req.market,
       interval: req.interval,
