@@ -1,7 +1,16 @@
+import { DirectSecp256k1Wallet, DirectSignResponse, OfflineDirectSigner } from '@cosmjs/proto-signing';
+import { SigningStargateClient } from "@cosmjs/stargate";
 import { BigNumber } from "bignumber.js";
 import * as BIP39 from "bip39";
-import { CarbonSDK } from "./_sdk";
+import { AddressUtils, CarbonSDK, CarbonTx, CarbonWallet } from "./_sdk";
+import { SignDoc } from '../lib/codec/cosmos/tx/v1beta1/tx';
+import { registry } from "../lib/codec/index";
+import { EmbedChainInfos, ibcAssetObj, ibcDisplayOverride } from "../lib/constant";
 import "./_setup";
+import { Models } from '../lib';
+
+const network = "osmosis-1";
+const networkObj = EmbedChainInfos[network];
 
 (async () => {
   const mnemonics = process.env.MNEMONICS ?? BIP39.generateMnemonic();
@@ -13,14 +22,75 @@ import "./_setup";
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
 
-  // Withdrawal 
-  const response = await connectedSDK.ibc.sendIBCTransfer({
+  const swthToken = await sdk.token.tokenForId("swth");
+  if (!swthToken) return;
+
+  const ibcLabel = ibcDisplayOverride[swthToken.id];
+  const ibcToken = ibcAssetObj.assets[ibcLabel];
+  if (!ibcToken) return;
+
+  const tokenDecimals = ibcToken.denom_units?.[1]?.exponent ?? 0
+
+  const counterAddressBytes = AddressUtils.IBCAddress.getAddressBytes(sdk?.wallet?.bech32Address ?? "");
+  const counterAddr = AddressUtils.IBCAddress.deriveAddressFromBytes(counterAddressBytes, networkObj.bech32Config.bech32PrefixAccAddr)
+
+  // Withdrawal
+  const withdrawResponse = await connectedSDK.ibc.sendIBCTransfer({
     sourcePort: "transfer",
-    sourceChannel: "channel-0", // channel of receiving blockchain
-    denom: "uatom",
-    amount: new BigNumber(4981550),
-    sender: "swth1wz62puany843kr8rk7vx8kh3yg53cwfk3ct2an", // address to send from
-    receiver: "osmo1wz62puany843kr8rk7vx8kh3yg53cwfkerc6tp", // address to send to
+    sourceChannel: ibcToken.ibc?.source_channel ?? "", // channel of receiving blockchain
+    denom: ibcToken.ibc?.source_denom ?? "",
+    amount: new BigNumber(50).shiftedBy(tokenDecimals),
+    sender: sdk?.wallet?.bech32Address ?? "", // address to send from
+    receiver: counterAddr, // address to send to
   });
-  console.log("response", response);
+  console.log("withdrawal response", withdrawResponse);
+
+
+  const walletPrivateKey = AddressUtils.SWTHAddress.mnemonicToPrivateKey(mnemonics);
+  const counterWallet = await DirectSecp256k1Wallet.fromKey(walletPrivateKey, networkObj.bech32Config.bech32PrefixAccAddr);
+  const counterSigner: OfflineDirectSigner = {
+    getAccounts() {
+      return counterWallet.getAccounts()
+    },
+    async signDirect(signerAddress: string, signDoc: SignDoc): Promise<DirectSignResponse> {
+      return await counterWallet.signDirect(signerAddress, signDoc);
+    },
+  }
+
+  if (!networkObj.tmRpc) {
+    throw new Error('No rpc url provided in network obj')
+  }
+  const signingClient = await SigningStargateClient.connectWithSigner(
+    networkObj.tmRpc,
+    counterSigner,
+    { registry },
+  );
+  const lastHeight: number = await sdk.query.chain.getHeight();
+
+  // Deposit
+  const txBody = await Models.IBC.TranferV1.MsgTransfer.fromPartial({
+    sourcePort: "transfer",
+    sourceChannel: ibcToken.ibc?.dst_channel ?? "",
+    token: {
+      denom: ibcToken.denom_units?.[0]?.denom ?? '',
+      amount: new BigNumber(50).toString(10),
+    },
+    sender: counterAddr, // address to send from
+    receiver: sdk?.wallet?.bech32Address ?? "", // address to send to
+    timeoutHeight: {
+      revisionHeight: (lastHeight ?? 0) + 150,
+      revisionNumber: 1,
+    },
+  });
+  const txMsgs = [{
+    typeUrl: CarbonTx.Types.MsgTransfer,
+    value: txBody,
+  }];
+  const txRaw = await signingClient.sign(counterAddr, txMsgs, {
+    amount: [],
+    gas: "350000",
+  }, "");
+  const tx = CarbonWallet.TxRaw.encode(txRaw).finish();
+  const depositResponse = await signingClient.broadcastTx(tx, 60_000, 3_000)
+  console.log("deposit response", depositResponse);
 })().catch(console.error).finally(() => process.exit(0));
