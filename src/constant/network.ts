@@ -924,6 +924,7 @@ export const EmbedChainInfos: SimpleMap<ChainInfoExplorerTmRpc> = {
 		],
 		features: ["stargate", "ibc-transfer", "no-legacy-stdTx"],
 		explorerUrlToTx: "https://www.mintscan.io/bitcanna/txs/{txHash}",
+		tmRpc: "https://rpc.bitcanna.io/",
 	},
 	"bitsong-2b": {
 		rpc: "https://rpc.explorebitsong.com",
@@ -958,6 +959,7 @@ export const EmbedChainInfos: SimpleMap<ChainInfoExplorerTmRpc> = {
 		],
 		features: ["stargate", "ibc-transfer", "no-legacy-stdTx", "ibc-go"],
 		explorerUrlToTx: "https://explorebitsong.com/transactions/{txHash}",
+		tmRpc: "https://rpc.explorebitsong.com/",
 	},
 	"kichain-2": {
 		rpc: "https://rpc-mainnet.blockchain.ki",
@@ -992,6 +994,7 @@ export const EmbedChainInfos: SimpleMap<ChainInfoExplorerTmRpc> = {
 		],
 		features: ["stargate", "ibc-transfer"],
 		explorerUrlToTx: "https://www.mintscan.io/ki-chain/txs/{txHash}",
+		tmRpc: "https://rpc-mainnet.blockchain.ki",
 	},
 	"panacea-3": {
 		rpc: "https://rpc.gopanacea.org",
@@ -1031,6 +1034,7 @@ export const EmbedChainInfos: SimpleMap<ChainInfoExplorerTmRpc> = {
 		},
 		features: ["stargate", "ibc-transfer"],
 		explorerUrlToTx: "https://www.mintscan.io/medibloc/txs/{txHash}",
+		tmRpc: "https://rpc.gopanacea.org/",
 	},
 	"bostrom": {
 		rpc: "https://rpc.bostrom.cybernode.ai",
@@ -1065,6 +1069,7 @@ export const EmbedChainInfos: SimpleMap<ChainInfoExplorerTmRpc> = {
 		],
 		features: ["stargate", "ibc-transfer", "no-legacy-stdTx"],
 		explorerUrlToTx: "https://cyb.ai/network/bostrom/tx/{txHash}",
+		tmRpc: "https://rpc.bostrom.cybernode.ai/",
 	},
 	"comdex-1": {
 		rpc: "https://rpc.comdex.one",
@@ -1099,6 +1104,7 @@ export const EmbedChainInfos: SimpleMap<ChainInfoExplorerTmRpc> = {
 		],
 		features: ["stargate", "ibc-transfer", "no-legacy-stdTx"],
 		explorerUrlToTx: "https://www.mintscan.io/comdex/txs/{txHash}",
+		tmRpc: "https://rpc.comdex.one/",
 	},
 	"cheqd-mainnet-1": {
 		rpc: "https://rpc.cheqd.net",
@@ -1138,6 +1144,7 @@ export const EmbedChainInfos: SimpleMap<ChainInfoExplorerTmRpc> = {
 		},
 		features: ["stargate", "ibc-transfer", "no-legacy-stdTx"],
 		explorerUrlToTx: "https://explorer.cheqd.io/transactions/{txHash}",
+		tmRpc: "https://rpc.cheqd.net/",
 	},
 	"stargaze-1": {
 		rpc: "https://rpc.stargaze-apis.com",
@@ -1172,6 +1179,7 @@ export const EmbedChainInfos: SimpleMap<ChainInfoExplorerTmRpc> = {
 		],
 		features: ["stargate", "ibc-transfer", "no-legacy-stdTx"],
 		explorerUrlToTx: "https://www.mintscan.io/stargaze/txs/{txHash}",
+		tmRpc: "https://rpc.stargaze-apis.com/",
 	},
 	"chihuahua-1": {
 		rpc: "https://rpc.chihuahua.wtf",
@@ -1246,6 +1254,7 @@ export const EmbedChainInfos: SimpleMap<ChainInfoExplorerTmRpc> = {
 		coinType: 118,
 		features: ["stargate", "ibc-transfer", "no-legacy-stdTx", "ibc-go"],
 		explorerUrlToTx: "https://www.mintscan.io/lum/txs/{txHash}",
+		tmRpc: "https://node0.mainnet.lum.network/rpc/",
 	},
 	"vidulum-1": {
 		rpc: "https://mainnet-rpc.vidulum.app",
@@ -1281,6 +1290,7 @@ export const EmbedChainInfos: SimpleMap<ChainInfoExplorerTmRpc> = {
 		coinType: 370,
 		features: ["stargate", "ibc-transfer", "no-legacy-stdTx", "ibc-go"],
 		explorerUrlToTx: "https://explorers.vidulum.app/vidulum/tx/{txHash}",
+		tmRpc: "https://mainnet-rpc.vidulum.app/",
 	},
 	"desmos-mainnet": {
 		rpc: "https://rpc.mainnet.desmos.network",
@@ -1315,6 +1325,7 @@ export const EmbedChainInfos: SimpleMap<ChainInfoExplorerTmRpc> = {
 		],
 		features: ["stargate", "ibc-transfer", "no-legacy-stdTx", "ibc-go"],
 		explorerUrlToTx: "https://explorer.desmos.network/transactions/{txHash}",
+		tmRpc: "https://rpc.mainnet.desmos.network/",
 	},
 	"dig-1": {
 		rpc: "https://rpc-1-dig.notional.ventures",
@@ -1354,6 +1365,7 @@ export const EmbedChainInfos: SimpleMap<ChainInfoExplorerTmRpc> = {
 		},
 		features: ["stargate", "ibc-transfer", "no-legacy-stdTx", "ibc-go"],
 		explorerUrlToTx: "https://ping.pub/dig/tx/{txHash}",
+		tmRpc: "https://rpc-1-dig.notional.ventures/",
 	},
 	"sommelier-3": {
 		rpc: "https://rpc-sommelier.keplr.app",
@@ -1422,6 +1434,7 @@ export const EmbedChainInfos: SimpleMap<ChainInfoExplorerTmRpc> = {
 		],
 		features: ["stargate", "ibc-transfer"],
 		explorerUrlToTx: "https://www.mintscan.io/sifchain/txs/{txHash}",
+		tmRpc: "https://rpc.sifchain.finance/",
 	},
 	"laozi-mainnet": {
 		rpc: "https://rpc.laozi3.bandchain.org",
@@ -1456,6 +1469,7 @@ export const EmbedChainInfos: SimpleMap<ChainInfoExplorerTmRpc> = {
 		],
 		features: ["stargate", "ibc-transfer", "no-legacy-stdTx"],
 		explorerUrlToTx: "https://cosmoscan.io/tx/{txHash}",
+		tmRpc: "https://rpc.laozi3.bandchain.org/",
 	},
 	"darchub": {
 		rpc: "https://node1.konstellation.tech:26657",
@@ -1490,6 +1504,7 @@ export const EmbedChainInfos: SimpleMap<ChainInfoExplorerTmRpc> = {
 		],
 		features: ["stargate", "ibc-transfer", "no-legacy-stdTx"],
 		explorerUrlToTx: "https://www.mintscan.io/konstellation/txs/{txHash}",
+		tmRpc: "https://node1.konstellation.tech:26657/",
 	},
 	"umee-1": {
 		rpc: "https://rpc.aphrodite.main.network.umee.cc",
@@ -1524,6 +1539,7 @@ export const EmbedChainInfos: SimpleMap<ChainInfoExplorerTmRpc> = {
 		],
 		features: ["stargate", "ibc-transfer", "no-legacy-stdTx"],
 		explorerUrlToTx: "https://www.mintscan.io/umee/txs/{txHash}",
+		tmRpc: "https://rpc.aphrodite.main.network.umee.cc/",
 	},
 	"gravity-bridge-3": {
 		rpc: "https://gravitychain.io:26657",
@@ -1569,6 +1585,7 @@ export const EmbedChainInfos: SimpleMap<ChainInfoExplorerTmRpc> = {
 		},
 		features: ["stargate", "ibc-transfer", "no-legacy-stdTx", "ibc-go"],
 		explorerUrlToTx: "https://www.mintscan.io/gravity-bridge/txs/{txHash}",
+		tmRpc: "https://gravitychain.io:26657/",
 	},
 	"mainnet-3": {
 		rpc: "https://poseidon.mainnet.decentr.xyz",
@@ -1603,6 +1620,7 @@ export const EmbedChainInfos: SimpleMap<ChainInfoExplorerTmRpc> = {
 		],
 		features: ["stargate", "ibc-transfer", "no-legacy-stdTx"],
 		explorerUrlToTx: "https://explorer.decentr.net/transactions/{txHash}?networkId=mainnet",
+		tmRpc: "https://poseidon.mainnet.decentr.xyz/",
 	},
 	"shentu-2.2": {
 		rpc: "https://shenturpc.certikpowered.info",
@@ -1637,5 +1655,6 @@ export const EmbedChainInfos: SimpleMap<ChainInfoExplorerTmRpc> = {
 		],
 		features: ["stargate", "ibc-transfer", "no-legacy-stdTx", "ibc-go"],
 		explorerUrlToTx: "https://www.mintscan.io/certik/txs/{txHash}",
+		tmRpc: "https://shenturpc.certikpowered.info/",
 	},
 };
