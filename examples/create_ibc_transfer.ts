@@ -73,7 +73,7 @@ const networkObj = EmbedChainInfos[network];
     sourceChannel: ibcToken.ibc?.dst_channel ?? "",
     token: {
       denom: ibcToken.denom_units?.[0]?.denom ?? '',
-      amount: new BigNumber(50).toString(10),
+      amount: new BigNumber(50).shiftedBy(tokenDecimals).toString(10),
     },
     sender: counterAddr, // address to send from
     receiver: sdk?.wallet?.bech32Address ?? "", // address to send to

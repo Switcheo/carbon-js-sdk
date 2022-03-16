@@ -322,6 +322,7 @@ export const EmbedChainInfos: SimpleMap<ChainInfoExplorerTmRpc> = {
     },
     features: ["stargate", "ibc-transfer", "no-legacy-stdTx", "ibc-go"],
     explorerUrlToTx: "https://www.mintscan.io/osmosis/txs/{txHash}",
+		tmRpc: "https://rpc-osmosis.blockapsis.com/",
   },
 	"cosmoshub-4": {
 		rpc: "https://rpc-cosmoshub.keplr.app",
