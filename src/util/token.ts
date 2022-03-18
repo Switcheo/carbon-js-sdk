@@ -1,4 +1,4 @@
-import { ChainInfoExplorerTmRpc, EmbedChainInfosInit, ibcAssetObj, ibcDisplayOverride, swthIbcWhitelist } from "@carbon-sdk/constant";
+import { ChainInfoExplorerTmRpc, EmbedChainInfosInit, ibcAssetObj, ibcDisplayOverride, ibcWhitelist } from "@carbon-sdk/constant";
 import { Hash } from "@keplr-wallet/crypto";
 import { KeplrAccount } from "@carbon-sdk/provider";
 
@@ -22,7 +22,7 @@ export function makeIBCMinimalDenom(sourceChannelId: string, coinMinimalDenom: s
 
 const swthIbc = ibcAssetObj.assets[ibcDisplayOverride['swth']];
 export const EmbedChainInfos = Object.values(EmbedChainInfosInit).reduce((prev: SimpleMap<ChainInfoExplorerTmRpc>, chainInfo: ChainInfoExplorerTmRpc) => {
-	if (swthIbcWhitelist.includes(chainInfo.chainId)) {
+	if (ibcWhitelist.includes(chainInfo.chainId)) {
 		chainInfo.currencies.push({
 			...KeplrAccount.SWTH_CURRENCY,
 			coinMinimalDenom: makeIBCMinimalDenom(swthIbc.ibc?.dst_channel ?? '', KeplrAccount.SWTH_CURRENCY.coinMinimalDenom),

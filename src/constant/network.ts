@@ -280,8 +280,8 @@ export interface ChainInfoExplorerTmRpc extends ChainInfo {
 	tmRpc?: string;
 }
 
-// whitelisted networks for addition of swth as a currency
-export const swthIbcWhitelist: string[] = ["osmosis-1"];
+// whitelisted networks for addition of swth as a currency, and addition of transfer options
+export const ibcWhitelist: string[] = ["osmosis-1"];
 
 export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
   "osmosis-1": {
