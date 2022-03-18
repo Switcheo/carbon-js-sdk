@@ -2,15 +2,15 @@ import { DirectSecp256k1Wallet, DirectSignResponse, OfflineDirectSigner } from '
 import { SigningStargateClient } from "@cosmjs/stargate";
 import { BigNumber } from "bignumber.js";
 import * as BIP39 from "bip39";
-import { AddressUtils, CarbonSDK, CarbonTx, CarbonWallet } from "./_sdk";
+import { AddressUtils, CarbonSDK, CarbonTx, CarbonWallet, TokenUtils } from "./_sdk";
 import { SignDoc } from '../lib/codec/cosmos/tx/v1beta1/tx';
 import { registry } from "../lib/codec/index";
-import { EmbedChainInfos, ibcAssetObj, ibcDisplayOverride } from "../lib/constant";
+import { ibcAssetObj, ibcDisplayOverride } from "../lib/constant";
 import "./_setup";
 import { Models } from '../lib';
 
 const network = "osmosis-1";
-const networkObj = EmbedChainInfos[network];
+const networkObj = TokenUtils.EmbedChainInfos[network];
 
 (async () => {
   const mnemonics = process.env.MNEMONICS ?? BIP39.generateMnemonic();

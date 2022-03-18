@@ -2,6 +2,9 @@ import { IBCAddress } from "@carbon-sdk/util/address";
 import { SimpleMap } from "@carbon-sdk/util/type";
 import { CONST } from "@cityofzion/neon-core-next";
 import { ChainInfo } from "@keplr-wallet/types";
+import { KeplrAccount } from "..";
+
+import { DEFAULT_GAS_PRICE } from "./generic";
 
 export enum Network {
   MainNet = "mainnet",
@@ -277,7 +280,10 @@ export interface ChainInfoExplorerTmRpc extends ChainInfo {
 	tmRpc?: string;
 }
 
-export const EmbedChainInfos: SimpleMap<ChainInfoExplorerTmRpc> = {
+// whitelisted networks for addition of swth as a currency
+export const swthIbcWhitelist: string[] = ["osmosis-1"];
+
+export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
   "osmosis-1": {
     rpc: "https://rpc-osmosis.keplr.app",
     rest: "https://lcd-osmosis.keplr.app",
@@ -1656,5 +1662,38 @@ export const EmbedChainInfos: SimpleMap<ChainInfoExplorerTmRpc> = {
 		features: ["stargate", "ibc-transfer", "no-legacy-stdTx", "ibc-go"],
 		explorerUrlToTx: "https://www.mintscan.io/certik/txs/{txHash}",
 		tmRpc: "https://shenturpc.certikpowered.info/",
+	},
+	"carbon-1": {
+		feeCurrencies: [{
+			coinDenom: "SWTH",
+			coinMinimalDenom: "swth",
+			coinDecimals: 8,
+			coinGeckoId: "switcheo",
+		}],
+		gasPriceStep: {
+      low: DEFAULT_GAS_PRICE.toNumber(),
+      average: DEFAULT_GAS_PRICE.toNumber(),
+      high: DEFAULT_GAS_PRICE.toNumber(),
+    },
+		bip44: { coinType: 118 },
+		currencies: [{
+			coinDenom: "SWTH",
+			coinMinimalDenom: "swth",
+			coinDecimals: 8,
+			coinGeckoId: "switcheo",
+		}],
+		stakeCurrency: {
+			coinDenom: "SWTH",
+			coinMinimalDenom: "swth",
+			coinDecimals: 8,
+			coinGeckoId: "switcheo",
+		},
+		rest: "https://api.carbon.network",
+		rpc: "https://tm-api.carbon.network/",
+		chainName: "Carbon",
+		chainId: "carbon-1",
+		bech32Config: IBCAddress.defaultBech32Config("swth"),
+		features: ["stargate", "ibc-transfer", "ibc-go"],
+		explorerUrlToTx: "https://scan.carbon.network/transaction/{txHash}?net=main",
 	},
 };
