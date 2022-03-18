@@ -1,6 +1,5 @@
 import { OptionalNetworkMap, SimpleMap } from "@carbon-sdk/util/type";
 import assetLists from "assetlists/osmosis-1/osmosis-1.assetlist.json";
-import { TypeUtils } from "..";
 import { Network } from "./network";
 
 export const CommonAssetName: SimpleMap<string> = {
@@ -350,13 +349,13 @@ export interface AssetData {
 
 export interface AssetListObj {
   chain_id: string;
-  assets: TypeUtils.SimpleMap<AssetData>
+  assets: SimpleMap<AssetData>
 }
 
 export const ibcAssetObj: AssetListObj = {
   ...assetLists,
   assets: assetLists.assets.reduce((
-    prev: TypeUtils.SimpleMap<AssetData>,
+    prev: SimpleMap<AssetData>,
     asset: AssetData,
   ) => {
     const newList = prev;
@@ -365,6 +364,6 @@ export const ibcAssetObj: AssetListObj = {
   }, {}),
 }
 
-export const ibcDisplayOverride: TypeUtils.SimpleMap<string> = {
+export const ibcDisplayOverride: SimpleMap<string> = {
   'swth': 'dswth',
 }
