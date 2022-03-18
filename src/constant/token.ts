@@ -1,4 +1,6 @@
 import { OptionalNetworkMap, SimpleMap } from "@carbon-sdk/util/type";
+import assetLists from "assetlists/osmosis-1/osmosis-1.assetlist.json";
+import { TypeUtils } from "..";
 import { Network } from "./network";
 
 export const CommonAssetName: SimpleMap<string> = {
@@ -313,4 +315,56 @@ export const TokenBlacklist: OptionalNetworkMap<string[]> = {
     "brkl.1.2.337f55",    // wrong token address
     "zusdt.1.18.1cbca1",  // duplicated token
   ],
+}
+
+export interface DenomUnit {
+  denom: string;
+  exponent: number;
+  aliases?: string[];
+}
+
+export interface LogoURI {
+  png: string;
+  svg?: string;
+}
+
+export interface IBCObj {
+  source_channel: string;
+  dst_channel: string;
+  source_denom: string;
+}
+
+export interface AssetData {
+  description?: string;
+  type_asset?: string;
+  address?: string;
+  denom_units: DenomUnit[];
+  base: string;
+  name: string;
+  display: string;
+  symbol: string;
+  ibc?: IBCObj;
+  logo_URIs: LogoURI;
+  coingecko_id?: string;
+}
+
+export interface AssetListObj {
+  chain_id: string;
+  assets: TypeUtils.SimpleMap<AssetData>
+}
+
+export const ibcAssetObj: AssetListObj = {
+  ...assetLists,
+  assets: assetLists.assets.reduce((
+    prev: TypeUtils.SimpleMap<AssetData>,
+    asset: AssetData,
+  ) => {
+    const newList = prev;
+    newList[asset.display] = asset;
+    return newList;
+  }, {}),
+}
+
+export const ibcDisplayOverride: TypeUtils.SimpleMap<string> = {
+  'swth': 'dswth',
 }
