@@ -10,7 +10,7 @@ export const HydrogenEndpoints = {
   'stats': '/stats',
 
   // Transfer Payloads api
-  'transfer_payloads': '/transfer_payloads',
+  'transfer_payloads': '/v2/transfer_payloads',
 }
 
 const formatDateField = (value?: string | null) => {
@@ -34,19 +34,19 @@ const formatCrossChainTransferDetailed = (value: any): CrossChainTransferDetaile
   if (!value || typeof value !== "object") return value;
   return {
     ...formatCrossChainTransfer(value),
-    source_transaction: formatChainTransaction(value.source_transaction),
-    bridging_transaction: formatChainTransaction(value.bridging_transaction),
-    destination_transaction: formatChainTransaction(value.destination_transaction),
+    source_event: formatChainEvent(value.source_event),
+    bridging_event: formatChainEvent(value.bridging_event),
+    destination_event: formatChainEvent(value.destination_event),
   }
 }
 
-const formatChainTransaction = (value: any): ChainTransaction | null => {
+const formatChainEvent = (value: any): ChainTransaction | null => {
   if (!value || typeof value !== "object") return value;
   return {
     ...value,
+    confirmed_at: formatDateField(value.confirmed_at?.toString()),
     created_at: formatDateField(value.created_at?.toString()),
     updated_at: formatDateField(value.updated_at?.toString()),
-    broadcasted_at: formatDateField(value.broadcasted_at?.toString()),
     destination_blockchain: BlockchainUtils.parseBlockchain(value.destination_blockchain),
     blockchain: BlockchainUtils.parseBlockchain(value.blockchain),
   } as ChainTransaction;

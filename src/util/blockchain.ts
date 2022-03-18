@@ -12,6 +12,8 @@ export enum Blockchain {
   TradeHub = 'tradehub',
   PolyNetwork = 'polynetwork',
   Neo3 = 'neo3',
+  Osmosis = 'osmosis',
+  Ibc = 'ibc',
 };
 
 export const BRIDGE_IDS = {
