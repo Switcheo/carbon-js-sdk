@@ -1,4 +1,4 @@
-import { ChainInfoExplorerTmRpc } from "@carbon-sdk/constant/network";
+import { ChainInfoExplorerTmRpc } from "@carbon-sdk/constant/ibc";
 import {
   AccountStore,
   ChainStore,
