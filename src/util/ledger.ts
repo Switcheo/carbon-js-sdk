@@ -36,7 +36,7 @@ async function getWebHIDTransport(): Promise<Transport> {
 
     const devices = await getDevicePaths(TransportWebHID)
     const transport = new TransportWebHID(devices[0])
-    return transport
+    return transport as Transport
   }
 }
 

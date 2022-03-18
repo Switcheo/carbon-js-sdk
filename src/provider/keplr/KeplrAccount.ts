@@ -10,6 +10,8 @@ const SWTH = {
   coinGeckoId: "switcheo",
 }
 
+const GAS_PRICE = 769.23077;
+
 class KeplrAccount {
   static SWTH_CURRENCY: AppCurrency = SWTH
   static BASE_CHAIN_INFO = {
@@ -17,9 +19,9 @@ class KeplrAccount {
     currencies: [],
     feeCurrencies: [SWTH],
     gasPriceStep: {
-      low: DEFAULT_GAS_PRICE.toNumber(),
-      average: DEFAULT_GAS_PRICE.toNumber(),
-      high: DEFAULT_GAS_PRICE.toNumber(),
+      low: GAS_PRICE,
+      average: GAS_PRICE,
+      high: GAS_PRICE,
     },
   } as const
 
