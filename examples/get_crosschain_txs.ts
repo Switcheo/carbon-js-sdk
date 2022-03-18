@@ -8,7 +8,7 @@ import { CarbonSDK }  from "./_sdk";
 
   // Hydrogen transfer payload query
   // query 5 crosschain transfers
-  const result = await sdk.hydrogen.getDetailedTransfers({
+  const result = await sdk.hydrogen.getTransfers({
     limit: 5,
   })
   console.log("crosschain transfers", result);
