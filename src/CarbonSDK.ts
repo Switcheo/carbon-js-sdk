@@ -14,6 +14,11 @@ export { CarbonTx } from "@carbon-sdk/util";
 export { CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletGenericOpts, CarbonWalletInitOpts } from "@carbon-sdk/wallet";
 
 
+const _window = window as any;
+if (_window?.browser && !_window.browser.storage) {
+  _window.browser.storage = { local: {} }
+}
+
 export interface CarbonSDKOpts {
   network: Network;
   tmClient: Tendermint34Client;
