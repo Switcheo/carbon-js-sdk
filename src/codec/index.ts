@@ -4,15 +4,20 @@ import { MsgSetTradingFlag, MsgSetTradingFlagResponse, MsgCreateOrder, MsgCreate
 import { MsgAddCollateral, MsgAddCollateralResponse, MsgRemoveCollateral, MsgRemoveCollateralResponse, MsgAddDebt, MsgAddDebtResponse, MsgRemoveDebt, MsgRemoveDebtResponse, MsgCreateVaultType, MsgCreateVaultTypeResponse } from "./cdp/tx";
 import { MsgInitiateLiquidation, MsgInitiateLiquidationResponse } from "./broker/tx";
 import { MsgSetFee, MsgSetFeeResponse } from "./fee/tx";
+import { SetMsgFeeProposal } from "./fee/proposal";
 import { MsgSetMargin, MsgSetMarginResponse } from "./position/tx";
 import { MsgCreateOracle, MsgCreateOracleResponse, MsgCreateVote, MsgCreateVoteResponse } from "./oracle/tx";
+import { CreateOracleProposal } from "./oracle/proposal";
+import { SoftwareUpgradeProposal, CancelSoftwareUpgradeProposal } from "./cosmos/upgrade/v1beta1/upgrade";
 import { MsgGrantAllowance, MsgGrantAllowanceResponse, MsgRevokeAllowance, MsgRevokeAllowanceResponse } from "./cosmos/feegrant/v1beta1/tx";
 import { MsgSubmitEvidence, MsgSubmitEvidenceResponse } from "./cosmos/evidence/v1beta1/tx";
 import { MsgSend, MsgSendResponse, MsgMultiSend, MsgMultiSendResponse } from "./cosmos/bank/v1beta1/tx";
 import { MsgSetWithdrawAddress, MsgSetWithdrawAddressResponse, MsgWithdrawDelegatorReward, MsgWithdrawDelegatorRewardResponse, MsgWithdrawValidatorCommission, MsgWithdrawValidatorCommissionResponse, MsgFundCommunityPool, MsgFundCommunityPoolResponse } from "./cosmos/distribution/v1beta1/tx";
+import { CommunityPoolSpendProposal } from "./cosmos/distribution/v1beta1/distribution";
 import { MsgVerifyInvariant, MsgVerifyInvariantResponse } from "./cosmos/crisis/v1beta1/tx";
 import { MsgCreateVestingAccount, MsgCreateVestingAccountResponse } from "./cosmos/vesting/v1beta1/tx";
 import { MsgCreateValidator, MsgCreateValidatorResponse, MsgEditValidator, MsgEditValidatorResponse, MsgDelegate, MsgDelegateResponse, MsgBeginRedelegate, MsgBeginRedelegateResponse, MsgUndelegate, MsgUndelegateResponse } from "./cosmos/staking/v1beta1/tx";
+import { ParameterChangeProposal } from "./cosmos/params/v1beta1/params";
 import { MsgGrant, MsgExecResponse, MsgExec, MsgGrantResponse, MsgRevoke, MsgRevokeResponse } from "./cosmos/authz/v1beta1/tx";
 import { MsgUnjail, MsgUnjailResponse } from "./cosmos/slashing/v1beta1/tx";
 import { MsgSubmitProposal, MsgSubmitProposalResponse, MsgVote, MsgVoteResponse, MsgVoteWeighted, MsgVoteWeightedResponse, MsgDeposit, MsgDepositResponse } from "./cosmos/gov/v1beta1/tx";
@@ -22,11 +27,15 @@ import { MsgCreateClient, MsgCreateClientResponse, MsgUpdateClient, MsgUpdateCli
 import { Header } from "./ibc/lightclients/tendermint/v1/tendermint";
 import { MsgTransfer, MsgTransferResponse } from "./ibc/applications/transfer/v1/tx";
 import { MsgCreateToken, MsgCreateTokenResponse, MsgSyncToken, MsgSyncTokenResponse, MsgMintToken, MsgMintTokenResponse, MsgBindToken, MsgBindTokenResponse, MsgUnbindToken, MsgUnbindTokenResponse, MsgLinkToken, MsgLinkTokenResponse, MsgWithdraw, MsgWithdrawResponse, MsgAuthorizeBridge, MsgAuthorizeBridgeResponse, MsgDeauthorizeBridge, MsgDeauthorizeBridgeResponse, MsgEditBridgeName, MsgEditBridgeNameResponse, MsgRemoveBridge, MsgRemoveBridgeResponse } from "./coin/tx";
+import { CreateTokenProposal } from "./coin/proposal";
 import { MsgSetLeverage, MsgSetLeverageResponse } from "./leverage/tx";
 import { MsgUpdateProfile, MsgUpdateProfileResponse } from "./profile/tx";
 import { MsgCreateSubAccount, MsgCreateSubAccountResponse, MsgActivateSubAccount, MsgActivateSubAccountResponse, MsgRemoveSubAccount, MsgRemoveSubAccountResponse } from "./subaccount/tx";
 import { MsgCreateMarket, MsgCreateMarketResponse, MsgUpdateMarket, MsgUpdateMarketResponse } from "./market/tx";
+import { CreateMarketProposal, UpdateMarketProposal } from "./market/proposal";
 import { MsgCreatePool, MsgCreatePoolResponse, MsgCreatePoolWithLiquidity, MsgCreatePoolWithLiquidityResponse, MsgAddLiquidity, MsgAddLiquidityResponse, MsgRemoveLiquidity, MsgRemoveLiquidityResponse, MsgLinkPool, MsgLinkPoolResponse, MsgUnlinkPool, MsgUnlinkPoolResponse, MsgSetRewardsWeights, MsgSetRewardsWeightsResponse, MsgStakePoolToken, MsgStakePoolTokenResponse, MsgUnstakePoolToken, MsgUnstakePoolTokenResponse, MsgClaimPoolRewards, MsgClaimPoolRewardsResponse, MsgSetRewardCurve, MsgSetRewardCurveResponse, MsgSetCommitmentCurve, MsgSetCommitmentCurveResponse, MsgUpdatePool, MsgUpdatePoolResponse } from "./liquiditypool/tx";
+import { LinkPoolProposal, UnlinkPoolProposal, SetRewardCurveProposal, SetCommitmentCurveProposal, SetRewardsWeightsProposal, UpdatePoolProposal } from "./liquiditypool/proposal";
+import { SettlementPriceProposal } from "./pricing/proposal";
 
 export * from './cosmos-models';
 
@@ -69,6 +78,7 @@ registry.register("/Switcheo.carbon.broker.MsgInitiateLiquidationResponse", MsgI
 
 registry.register("/Switcheo.carbon.fee.MsgSetFee", MsgSetFee);
 registry.register("/Switcheo.carbon.fee.MsgSetFeeResponse", MsgSetFeeResponse);
+registry.register("/Switcheo.carbon.fee.SetMsgFeeProposal", SetMsgFeeProposal);
 
 registry.register("/Switcheo.polynetworkcosmos.btcx.MsgCreate", PolyNetwork.Btcx.MsgCreate);
 registry.register("/Switcheo.polynetworkcosmos.btcx.MsgCreateResponse", PolyNetwork.Btcx.MsgCreateResponse);
@@ -84,6 +94,10 @@ registry.register("/Switcheo.carbon.oracle.MsgCreateOracle", MsgCreateOracle);
 registry.register("/Switcheo.carbon.oracle.MsgCreateOracleResponse", MsgCreateOracleResponse);
 registry.register("/Switcheo.carbon.oracle.MsgCreateVote", MsgCreateVote);
 registry.register("/Switcheo.carbon.oracle.MsgCreateVoteResponse", MsgCreateVoteResponse);
+registry.register("/Switcheo.carbon.oracle.CreateOracleProposal", CreateOracleProposal);
+
+registry.register("/cosmos.upgrade.v1beta1.SoftwareUpgradeProposal", SoftwareUpgradeProposal);
+registry.register("/cosmos.upgrade.v1beta1.CancelSoftwareUpgradeProposal", CancelSoftwareUpgradeProposal);
 
 registry.register("/cosmos.feegrant.v1beta1.MsgGrantAllowance", MsgGrantAllowance);
 registry.register("/cosmos.feegrant.v1beta1.MsgGrantAllowanceResponse", MsgGrantAllowanceResponse);
@@ -106,6 +120,7 @@ registry.register("/cosmos.distribution.v1beta1.MsgWithdrawValidatorCommission",
 registry.register("/cosmos.distribution.v1beta1.MsgWithdrawValidatorCommissionResponse", MsgWithdrawValidatorCommissionResponse);
 registry.register("/cosmos.distribution.v1beta1.MsgFundCommunityPool", MsgFundCommunityPool);
 registry.register("/cosmos.distribution.v1beta1.MsgFundCommunityPoolResponse", MsgFundCommunityPoolResponse);
+registry.register("/cosmos.distribution.v1beta1.CommunityPoolSpendProposal", CommunityPoolSpendProposal);
 
 registry.register("/cosmos.crisis.v1beta1.MsgVerifyInvariant", MsgVerifyInvariant);
 registry.register("/cosmos.crisis.v1beta1.MsgVerifyInvariantResponse", MsgVerifyInvariantResponse);
@@ -123,6 +138,8 @@ registry.register("/cosmos.staking.v1beta1.MsgBeginRedelegate", MsgBeginRedelega
 registry.register("/cosmos.staking.v1beta1.MsgBeginRedelegateResponse", MsgBeginRedelegateResponse);
 registry.register("/cosmos.staking.v1beta1.MsgUndelegate", MsgUndelegate);
 registry.register("/cosmos.staking.v1beta1.MsgUndelegateResponse", MsgUndelegateResponse);
+
+registry.register("/cosmos.params.v1beta1.ParameterChangeProposal", ParameterChangeProposal);
 
 registry.register("/cosmos.authz.v1beta1.MsgGrant", MsgGrant);
 registry.register("/cosmos.authz.v1beta1.MsgExecResponse", MsgExecResponse);
@@ -212,6 +229,7 @@ registry.register("/Switcheo.carbon.coin.MsgEditBridgeName", MsgEditBridgeName);
 registry.register("/Switcheo.carbon.coin.MsgEditBridgeNameResponse", MsgEditBridgeNameResponse);
 registry.register("/Switcheo.carbon.coin.MsgRemoveBridge", MsgRemoveBridge);
 registry.register("/Switcheo.carbon.coin.MsgRemoveBridgeResponse", MsgRemoveBridgeResponse);
+registry.register("/Switcheo.carbon.coin.CreateTokenProposal", CreateTokenProposal);
 
 registry.register("/Switcheo.carbon.leverage.MsgSetLeverage", MsgSetLeverage);
 registry.register("/Switcheo.carbon.leverage.MsgSetLeverageResponse", MsgSetLeverageResponse);
@@ -230,6 +248,8 @@ registry.register("/Switcheo.carbon.market.MsgCreateMarket", MsgCreateMarket);
 registry.register("/Switcheo.carbon.market.MsgCreateMarketResponse", MsgCreateMarketResponse);
 registry.register("/Switcheo.carbon.market.MsgUpdateMarket", MsgUpdateMarket);
 registry.register("/Switcheo.carbon.market.MsgUpdateMarketResponse", MsgUpdateMarketResponse);
+registry.register("/Switcheo.carbon.market.CreateMarketProposal", CreateMarketProposal);
+registry.register("/Switcheo.carbon.market.UpdateMarketProposal", UpdateMarketProposal);
 
 registry.register("/Switcheo.carbon.liquiditypool.MsgCreatePool", MsgCreatePool);
 registry.register("/Switcheo.carbon.liquiditypool.MsgCreatePoolResponse", MsgCreatePoolResponse);
@@ -257,6 +277,14 @@ registry.register("/Switcheo.carbon.liquiditypool.MsgSetCommitmentCurve", MsgSet
 registry.register("/Switcheo.carbon.liquiditypool.MsgSetCommitmentCurveResponse", MsgSetCommitmentCurveResponse);
 registry.register("/Switcheo.carbon.liquiditypool.MsgUpdatePool", MsgUpdatePool);
 registry.register("/Switcheo.carbon.liquiditypool.MsgUpdatePoolResponse", MsgUpdatePoolResponse);
+registry.register("/Switcheo.carbon.liquiditypool.LinkPoolProposal", LinkPoolProposal);
+registry.register("/Switcheo.carbon.liquiditypool.UnlinkPoolProposal", UnlinkPoolProposal);
+registry.register("/Switcheo.carbon.liquiditypool.SetRewardCurveProposal", SetRewardCurveProposal);
+registry.register("/Switcheo.carbon.liquiditypool.SetCommitmentCurveProposal", SetCommitmentCurveProposal);
+registry.register("/Switcheo.carbon.liquiditypool.SetRewardsWeightsProposal", SetRewardsWeightsProposal);
+registry.register("/Switcheo.carbon.liquiditypool.UpdatePoolProposal", UpdatePoolProposal);
+
+registry.register("/Switcheo.carbon.pricing.SettlementPriceProposal", SettlementPriceProposal);
 
 registry.register("/Switcheo.polynetworkcosmos.lockproxy.MsgCreate", PolyNetwork.Lockproxy.MsgCreate);
 registry.register("/Switcheo.polynetworkcosmos.lockproxy.MsgCreateResponse", PolyNetwork.Lockproxy.MsgCreateResponse);
@@ -294,6 +322,7 @@ export const TxTypes = {
   "MsgInitiateLiquidationResponse": "/Switcheo.carbon.broker.MsgInitiateLiquidationResponse",
   "MsgSetFee": "/Switcheo.carbon.fee.MsgSetFee",
   "MsgSetFeeResponse": "/Switcheo.carbon.fee.MsgSetFeeResponse",
+  "SetMsgFeeProposal": "/Switcheo.carbon.fee.SetMsgFeeProposal",
   "MsgCreate": "/Switcheo.polynetworkcosmos.lockproxy.MsgCreate",
   "MsgCreateResponse": "/Switcheo.polynetworkcosmos.lockproxy.MsgCreateResponse",
   "MsgBind": "/Switcheo.polynetworkcosmos.lockproxy.MsgBind",
@@ -306,6 +335,9 @@ export const TxTypes = {
   "MsgCreateOracleResponse": "/Switcheo.carbon.oracle.MsgCreateOracleResponse",
   "MsgCreateVote": "/Switcheo.carbon.oracle.MsgCreateVote",
   "MsgCreateVoteResponse": "/Switcheo.carbon.oracle.MsgCreateVoteResponse",
+  "CreateOracleProposal": "/Switcheo.carbon.oracle.CreateOracleProposal",
+  "SoftwareUpgradeProposal": "/cosmos.upgrade.v1beta1.SoftwareUpgradeProposal",
+  "CancelSoftwareUpgradeProposal": "/cosmos.upgrade.v1beta1.CancelSoftwareUpgradeProposal",
   "MsgGrantAllowance": "/cosmos.feegrant.v1beta1.MsgGrantAllowance",
   "MsgGrantAllowanceResponse": "/cosmos.feegrant.v1beta1.MsgGrantAllowanceResponse",
   "MsgRevokeAllowance": "/cosmos.feegrant.v1beta1.MsgRevokeAllowance",
@@ -324,6 +356,7 @@ export const TxTypes = {
   "MsgWithdrawValidatorCommissionResponse": "/cosmos.distribution.v1beta1.MsgWithdrawValidatorCommissionResponse",
   "MsgFundCommunityPool": "/cosmos.distribution.v1beta1.MsgFundCommunityPool",
   "MsgFundCommunityPoolResponse": "/cosmos.distribution.v1beta1.MsgFundCommunityPoolResponse",
+  "CommunityPoolSpendProposal": "/cosmos.distribution.v1beta1.CommunityPoolSpendProposal",
   "MsgVerifyInvariant": "/cosmos.crisis.v1beta1.MsgVerifyInvariant",
   "MsgVerifyInvariantResponse": "/cosmos.crisis.v1beta1.MsgVerifyInvariantResponse",
   "MsgCreateVestingAccount": "/cosmos.vesting.v1beta1.MsgCreateVestingAccount",
@@ -338,6 +371,7 @@ export const TxTypes = {
   "MsgBeginRedelegateResponse": "/cosmos.staking.v1beta1.MsgBeginRedelegateResponse",
   "MsgUndelegate": "/cosmos.staking.v1beta1.MsgUndelegate",
   "MsgUndelegateResponse": "/cosmos.staking.v1beta1.MsgUndelegateResponse",
+  "ParameterChangeProposal": "/cosmos.params.v1beta1.ParameterChangeProposal",
   "MsgGrant": "/cosmos.authz.v1beta1.MsgGrant",
   "MsgExecResponse": "/cosmos.authz.v1beta1.MsgExecResponse",
   "MsgExec": "/cosmos.authz.v1beta1.MsgExec",
@@ -417,6 +451,7 @@ export const TxTypes = {
   "MsgEditBridgeNameResponse": "/Switcheo.carbon.coin.MsgEditBridgeNameResponse",
   "MsgRemoveBridge": "/Switcheo.carbon.coin.MsgRemoveBridge",
   "MsgRemoveBridgeResponse": "/Switcheo.carbon.coin.MsgRemoveBridgeResponse",
+  "CreateTokenProposal": "/Switcheo.carbon.coin.CreateTokenProposal",
   "MsgSetLeverage": "/Switcheo.carbon.leverage.MsgSetLeverage",
   "MsgSetLeverageResponse": "/Switcheo.carbon.leverage.MsgSetLeverageResponse",
   "MsgUpdateProfile": "/Switcheo.carbon.profile.MsgUpdateProfile",
@@ -431,6 +466,8 @@ export const TxTypes = {
   "MsgCreateMarketResponse": "/Switcheo.carbon.market.MsgCreateMarketResponse",
   "MsgUpdateMarket": "/Switcheo.carbon.market.MsgUpdateMarket",
   "MsgUpdateMarketResponse": "/Switcheo.carbon.market.MsgUpdateMarketResponse",
+  "CreateMarketProposal": "/Switcheo.carbon.market.CreateMarketProposal",
+  "UpdateMarketProposal": "/Switcheo.carbon.market.UpdateMarketProposal",
   "MsgCreatePool": "/Switcheo.carbon.liquiditypool.MsgCreatePool",
   "MsgCreatePoolResponse": "/Switcheo.carbon.liquiditypool.MsgCreatePoolResponse",
   "MsgCreatePoolWithLiquidity": "/Switcheo.carbon.liquiditypool.MsgCreatePoolWithLiquidity",
@@ -456,7 +493,14 @@ export const TxTypes = {
   "MsgSetCommitmentCurve": "/Switcheo.carbon.liquiditypool.MsgSetCommitmentCurve",
   "MsgSetCommitmentCurveResponse": "/Switcheo.carbon.liquiditypool.MsgSetCommitmentCurveResponse",
   "MsgUpdatePool": "/Switcheo.carbon.liquiditypool.MsgUpdatePool",
-  "MsgUpdatePoolResponse": "/Switcheo.carbon.liquiditypool.MsgUpdatePoolResponse"
+  "MsgUpdatePoolResponse": "/Switcheo.carbon.liquiditypool.MsgUpdatePoolResponse",
+  "LinkPoolProposal": "/Switcheo.carbon.liquiditypool.LinkPoolProposal",
+  "UnlinkPoolProposal": "/Switcheo.carbon.liquiditypool.UnlinkPoolProposal",
+  "SetRewardCurveProposal": "/Switcheo.carbon.liquiditypool.SetRewardCurveProposal",
+  "SetCommitmentCurveProposal": "/Switcheo.carbon.liquiditypool.SetCommitmentCurveProposal",
+  "SetRewardsWeightsProposal": "/Switcheo.carbon.liquiditypool.SetRewardsWeightsProposal",
+  "UpdatePoolProposal": "/Switcheo.carbon.liquiditypool.UpdatePoolProposal",
+  "SettlementPriceProposal": "/Switcheo.carbon.pricing.SettlementPriceProposal"
 };
 
 

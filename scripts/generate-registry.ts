@@ -12,16 +12,26 @@ const modules: { [name: string]: string[] } = {};
 for (const moduleFile of codecFiles) {
 
   if (
-    !["/tx.ts", "/tendermint.ts"].some(fileName => moduleFile.endsWith(fileName))
+    !["/tx.ts", 
+    "/tendermint.ts", 
+    "/proposal.ts", 
+    "/distribution.ts", 
+    "/upgrade.ts",
+    "/params.ts"]
+  .some(fileName => moduleFile.endsWith(fileName))
   ) {
     continue
   }
 
   const codecModule = require(`${pwd}/${moduleFile}`);
-  const messages = Object.keys(codecModule).filter((key) => (key.startsWith("Msg") && key !== "MsgClientImpl") || key.startsWith("Header"));
+  const messages = Object.keys(codecModule).filter((key) => (key.startsWith("Msg") && key !== "MsgClientImpl") || key.startsWith("Header") || key.endsWith("Proposal"));
 
   if (messages.length) {
-    modules[codecModule.protobufPackage] = messages;
+    if (modules[codecModule.protobufPackage]) {
+      modules[codecModule.protobufPackage] = [...modules[codecModule.protobufPackage], ...messages];
+    } else {
+      modules[codecModule.protobufPackage] = messages;
+    }
     const relativePath = path.relative(registryFile, moduleFile)
       .replace(/^\.\.\//, "./")
       .replace(/\.ts$/, "");
