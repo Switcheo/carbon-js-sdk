@@ -9,7 +9,7 @@ import {
 import { IndexedDBKVStore } from "@keplr-wallet/common";
 import { ChainInfo } from "@keplr-wallet/types";
 import { iOS } from "@carbon-sdk/util/external";
-import { EmbedChainInfos } from "@carbon-sdk/util/token";
+import { EmbedChainInfos } from "@carbon-sdk/util/ibc";
 
 export class RootStore {
   public readonly chainStore: ChainStore;

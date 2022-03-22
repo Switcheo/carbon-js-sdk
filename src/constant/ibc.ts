@@ -1,6 +1,7 @@
 import { IBCAddress } from "@carbon-sdk/util/address";
 import { SimpleMap } from "@carbon-sdk/util/type";
 import { ChainInfo } from "@keplr-wallet/types";
+import osmosisAssetLists from "assetlists/osmosis-1/osmosis-1.assetlist.json";
 import { DEFAULT_GAS_PRICE } from "./generic";
 
 export interface ChainInfoExplorerTmRpc extends ChainInfo {
@@ -1426,3 +1427,55 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
 		explorerUrlToTx: "https://scan.carbon.network/transaction/{txHash}?net=main",
 	},
 };
+
+export interface DenomUnit {
+  denom: string;
+  exponent: number;
+  aliases?: string[];
+}
+
+export interface LogoURI {
+  png: string;
+  svg?: string;
+}
+
+export interface IBCObj {
+  source_channel: string;
+  dst_channel: string;
+  source_denom: string;
+}
+
+export interface AssetData {
+  description?: string;
+  type_asset?: string;
+  address?: string;
+  denom_units: DenomUnit[];
+  base: string;
+  name: string;
+  display: string;
+  symbol: string;
+  ibc?: IBCObj;
+  logo_URIs: LogoURI;
+  coingecko_id?: string;
+}
+
+export interface AssetListObj {
+  chain_id: string;
+  assets: SimpleMap<AssetData>
+}
+
+export const osmosisAssetObj: AssetListObj = {
+  ...osmosisAssetLists,
+  assets: osmosisAssetLists.assets.reduce((
+    prev: SimpleMap<AssetData>,
+    asset: AssetData,
+  ) => {
+    const newList = prev;
+    newList[asset.display] = asset;
+    return newList;
+  }, {}),
+}
+
+export const osmoDisplayOverride: SimpleMap<string> = {
+  'swth': 'dswth',
+}

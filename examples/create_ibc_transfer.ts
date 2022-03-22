@@ -2,15 +2,15 @@ import { DirectSecp256k1Wallet, DirectSignResponse, OfflineDirectSigner } from '
 import { SigningStargateClient } from "@cosmjs/stargate";
 import { BigNumber } from "bignumber.js";
 import * as BIP39 from "bip39";
-import { AddressUtils, CarbonSDK, CarbonTx, CarbonWallet, TokenUtils } from "./_sdk";
+import { AddressUtils, CarbonSDK, CarbonTx, CarbonWallet, IBCUtils } from "./_sdk";
 import { SignDoc } from '../lib/codec/cosmos/tx/v1beta1/tx';
 import { registry } from "../lib/codec/index";
-import { ibcAssetObj, ibcDisplayOverride } from "../lib/constant";
+import { osmosisAssetObj, osmoDisplayOverride } from "../lib/constant";
 import "./_setup";
 import { Models } from '../lib';
 
 const network = "osmosis-1";
-const networkObj = TokenUtils.EmbedChainInfos[network];
+const networkObj = IBCUtils.EmbedChainInfos[network];
 
 (async () => {
   const mnemonics = process.env.MNEMONICS ?? BIP39.generateMnemonic();
@@ -25,8 +25,8 @@ const networkObj = TokenUtils.EmbedChainInfos[network];
   const swthToken = await sdk.token.tokenForId("swth");
   if (!swthToken) return;
 
-  const ibcLabel = ibcDisplayOverride[swthToken.id];
-  const ibcToken = ibcAssetObj.assets[ibcLabel];
+  const ibcLabel = osmoDisplayOverride[swthToken.id];
+  const ibcToken = osmosisAssetObj.assets[ibcLabel];
   if (!ibcToken) return;
 
   const tokenDecimals = ibcToken.denom_units?.[1]?.exponent ?? 0
