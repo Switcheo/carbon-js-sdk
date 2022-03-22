@@ -1,6 +1,7 @@
 import { TokenBalance } from "@carbon-sdk/codec";
 import { Coin } from "@carbon-sdk/codec/cosmos/base/v1beta1/coin";
-import { Interval, PageMeta, QueryByPageRequest } from "./common";
+import { Network } from "@carbon-sdk/constant";
+import { Interval, PageMeta, QueryByPageRequest, QueryByTimeRequest, TimeMeta } from "./common";
 
 export interface Balance {
   denom: string
@@ -19,6 +20,14 @@ export interface BalanceDetails {
 export interface BalanceHistory {
   amount: string
   time: string
+}
+
+export interface BalanceDistribution {
+  denom: string
+  amountShifted: string
+  amountValue: string
+  balance: string
+  height: number
 }
 
 export interface QueryGetTotalBalanceRequest {
@@ -61,4 +70,17 @@ export interface QueryGetBalanceHistoryResponse {
 
 export interface QueryGetBalanceSupplyResponse {
   entries: TokenBalance[]
+}
+
+export interface QueryGetBalanceDistributionRequest extends QueryByTimeRequest{
+}
+
+export interface QueryGetBalanceDistributionResponse {
+  entries: {
+    date: string
+    amountValue: string
+    totalAmountValue: string
+    markets: BalanceDistribution[]
+  }[]
+  meta: TimeMeta
 }

@@ -161,6 +161,12 @@ class InsightsQueryClient {
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetBalanceSupplyResponse>
   }
 
+  async BalanceDistribution(req: Insights.QueryGetBalanceDistributionRequest = {}): Promise<Insights.InsightsQueryResponse<Insights.QueryGetBalanceDistributionResponse>> {
+    const request = this.apiManager.path('balance/distribution', {}, req)
+    const response = await request.get()
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetBalanceDistributionResponse>
+  }
+
   // Positions api
   async Leaderboard(req: Insights.GetLeaderboardPathParams, query: Insights.GetLeaderboardQueryParams): Promise<Insights.InsightsQueryResponse<Insights.QueryGetLeaderboardResponse>> {
     const request = this.apiManager.path('position/leaderboard', req, {
