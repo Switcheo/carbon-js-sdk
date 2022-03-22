@@ -10,3 +10,9 @@ export interface TokenInitInfo {
   symbol: string
   name: string
 }
+
+// Detect device type
+export function iOS() {
+  return /iPad|iPhone|iPod/.test(navigator.platform)
+    || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+}

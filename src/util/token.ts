@@ -1,5 +1,5 @@
-import { ChainInfoExplorerTmRpc, EmbedChainInfosInit, ibcWhitelist } from "@carbon-sdk/constant";
-// import { Hash } from "@keplr-wallet/crypto";
+import { ChainInfoExplorerTmRpc, EmbedChainInfosInit, ibcWhitelist, ibcAssetObj, ibcDisplayOverride } from "@carbon-sdk/constant";
+import { Hash } from "@keplr-wallet/crypto";
 import { KeplrAccount } from "@carbon-sdk/provider";
 
 import { SimpleMap } from "./type";
@@ -11,21 +11,21 @@ export const FuturesDenomOverride: SimpleMap<string> = {
 };
 
 // Create IBC minimal denom
-// export function makeIBCMinimalDenom(sourceChannelId: string, coinMinimalDenom: string): string {
-// 	return (
-// 		'ibc/' +
-// 		Buffer.from(Hash.sha256(Buffer.from(`transfer/${sourceChannelId}/${coinMinimalDenom}`)))
-// 			.toString('hex')
-// 			.toUpperCase()
-// 	);
-// };
+export function makeIBCMinimalDenom(sourceChannelId: string, coinMinimalDenom: string): string {
+	return (
+		'ibc/' +
+		Buffer.from(Hash.sha256(Buffer.from(`transfer/${sourceChannelId}/${coinMinimalDenom}`)))
+			.toString('hex')
+			.toUpperCase()
+	);
+};
 
-// const swthIbc = ibcAssetObj.assets[ibcDisplayOverride['swth']];
+const swthIbc = ibcAssetObj.assets[ibcDisplayOverride['swth']];
 export const EmbedChainInfos = Object.values(EmbedChainInfosInit).reduce((prev: SimpleMap<ChainInfoExplorerTmRpc>, chainInfo: ChainInfoExplorerTmRpc) => {
 	if (ibcWhitelist.includes(chainInfo.chainId)) {
 		chainInfo.currencies.push({
 			...KeplrAccount.SWTH_CURRENCY,
-			// coinMinimalDenom: makeIBCMinimalDenom(swthIbc.ibc?.dst_channel ?? '', KeplrAccount.SWTH_CURRENCY.coinMinimalDenom),
+			coinMinimalDenom: makeIBCMinimalDenom(swthIbc.ibc?.dst_channel ?? '', KeplrAccount.SWTH_CURRENCY.coinMinimalDenom),
 		})
 	}
 	prev[chainInfo.chainId] = chainInfo;

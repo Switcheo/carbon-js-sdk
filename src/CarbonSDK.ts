@@ -13,13 +13,6 @@ import { CarbonSigner, CarbonWallet, CarbonWalletGenericOpts } from "./wallet";
 export { CarbonTx } from "@carbon-sdk/util";
 export { CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletGenericOpts, CarbonWalletInitOpts } from "@carbon-sdk/wallet";
 
-// Added as a temporary workaround to prevent @keplr-wallet/stores from breaking production site on iOS 15.4 Safari
-// TODO: Check if there are fixes on https://github.com/chainapsis/keplr-wallet to see if this can be removed
-const _window = window as any;
-if (_window?.browser && !_window.browser.storage) {
-  _window.browser.storage = { local: {} }
-}
-
 export interface CarbonSDKOpts {
   network: Network;
   tmClient: Tendermint34Client;
