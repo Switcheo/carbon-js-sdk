@@ -1778,7 +1778,7 @@ arraybuffer.slice@~0.0.7:
 
 "assetlists@git+ssh://git@github.com/osmosis-labs/assetlists":
   version "0.0.0"
-  resolved "git+ssh://git@github.com/osmosis-labs/assetlists#935282c59a14abaa4191ff7eeeca068d3c856f0b"
+  resolved "git+ssh://git@github.com/osmosis-labs/assetlists#342935a8a769736efb14b82184e791f62956c8c7"
 
 ast-types-flow@0.0.7:
   version "0.0.7"
