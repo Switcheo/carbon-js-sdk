@@ -1,4 +1,5 @@
 import { OptionalNetworkMap, SimpleMap } from "@carbon-sdk/util/type";
+import { AssetData, osmosisAssetObj } from "./ibc";
 import { Network } from "./network";
 
 export const CommonAssetName: SimpleMap<string> = {
@@ -186,7 +187,7 @@ export const CommonAssetName: SimpleMap<string> = {
   'zusdt99': 'usdt',
 };
 
-export const CoinGeckoTokenNames: SimpleMap<string> = {
+export const InitCoinGeckoTokenNames: SimpleMap<string> = {
   swth: 'switcheo',
   btc: 'bitcoin',
   dai: 'dai',
@@ -307,6 +308,14 @@ export const CoinGeckoTokenNames: SimpleMap<string> = {
   gm: 'ghostmarket',
   ava: 'concierge-io',
 };
+
+export const CoinGeckoTokenNames = Object.values(osmosisAssetObj.assets).reduce((prev: SimpleMap<string>, asset: AssetData) => {
+  const newGeckoMap = prev;
+  if (asset.coingecko_id && !newGeckoMap[asset.symbol.toLowerCase()]) {
+    newGeckoMap[asset.symbol.toLowerCase()] = asset.coingecko_id;
+  }
+  return newGeckoMap;
+}, InitCoinGeckoTokenNames);
 
 export const TokenBlacklist: OptionalNetworkMap<string[]> = {
   [Network.MainNet]: [

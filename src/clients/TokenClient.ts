@@ -1,5 +1,6 @@
 import { Token } from "@carbon-sdk/codec";
 import { CoinGeckoTokenNames, CommonAssetName, NetworkConfigProvider, TokenBlacklist } from "@carbon-sdk/constant";
+import { AssetData, osmosisAssetObj } from "@carbon-sdk/constant/ibc";
 import { BlockchainUtils, FetchUtils, NumberUtils, TypeUtils } from "@carbon-sdk/util";
 import { BN_ONE, BN_ZERO } from "@carbon-sdk/util/number";
 import BigNumber from "bignumber.js";
@@ -304,6 +305,28 @@ class TokenClient {
         this.symbols[token.denom] = token.symbol;
       }
     }
+
+    Object.values(osmosisAssetObj.assets).forEach((asset: AssetData) => {
+      const assetDenom = asset.symbol.toLowerCase();
+      const assetDecimals = asset.denom_units[1]?.exponent ?? 0;
+      if (!this.tokens[assetDenom]) {
+        this.tokens[assetDenom] = {
+          id: assetDenom,
+          creator: "",
+          denom: assetDenom,
+          name: asset.name,
+          symbol: asset.symbol,
+          decimals: new Long(assetDecimals),
+          bridgeId: new Long(BlockchainUtils.BRIDGE_IDS.ibc), // ibc = 2
+          chainId: new Long(BlockchainUtils.CHAIN_IDS.osmo), // osmos = 26
+          tokenAddress: "",
+          bridgeAddress: "",
+          isActive: true,
+          isCollateral: false,
+        };
+        this.symbols[assetDenom] = asset.symbol;
+      }
+    })
 
     return this.tokens;
   }

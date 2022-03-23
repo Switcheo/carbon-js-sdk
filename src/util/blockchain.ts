@@ -17,7 +17,8 @@ export enum Blockchain {
 };
 
 export const BRIDGE_IDS = {
-  'polynetwork': 1
+  'polynetwork': 1,
+  'ibc': 2,
 };
 
 export type ChainIds = SimpleMap<number>;
@@ -38,6 +39,7 @@ export const CHAIN_IDS: ChainIds = {
   'neo': 4,
   'bsc': 6,
   'zil': 9,
+  'osmo': 244,
 };
 
 export function parseBlockchain(value: string | null): Blockchain | null {
@@ -85,6 +87,8 @@ export const blockchainForChainId = (chainId?: number): Blockchain | undefined =
     case 14: // mainnet
     case 88: // testnet
       return Blockchain.Neo3
+    case 244: // mainnet
+      return Blockchain.Osmosis
     default:
       return undefined
   }

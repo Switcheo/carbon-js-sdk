@@ -1471,11 +1471,7 @@ export const osmosisAssetObj: AssetListObj = {
     asset: AssetData,
   ) => {
     const newList = prev;
-    newList[asset.display] = asset;
+    newList[asset.symbol.toLowerCase()] = asset;
     return newList;
   }, {}),
-}
-
-export const osmoDisplayOverride: SimpleMap<string> = {
-  'swth': 'dswth',
 }
