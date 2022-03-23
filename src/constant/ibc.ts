@@ -2,7 +2,7 @@ import { IBCAddress } from "@carbon-sdk/util/address";
 import { SimpleMap } from "@carbon-sdk/util/type";
 import { ChainInfo } from "@keplr-wallet/types";
 import osmosisAssetLists from "assetlists/osmosis-1/osmosis-1.assetlist.json";
-import { DEFAULT_GAS_PRICE } from "./generic";
+import { CURRENT_GAS_PRICE } from "./generic";
 
 export interface ChainInfoExplorerTmRpc extends ChainInfo {
 	// Formed as "https://explorer.com/{txHash}"
@@ -1401,9 +1401,9 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
 			coinGeckoId: "switcheo",
 		}],
 		gasPriceStep: {
-      low: DEFAULT_GAS_PRICE.toNumber(),
-      average: DEFAULT_GAS_PRICE.toNumber(),
-      high: DEFAULT_GAS_PRICE.toNumber(),
+      low: CURRENT_GAS_PRICE,
+      average: CURRENT_GAS_PRICE,
+      high: CURRENT_GAS_PRICE,
     },
 		bip44: { coinType: 118 },
 		currencies: [{
@@ -1464,6 +1464,8 @@ export interface AssetListObj {
   assets: SimpleMap<AssetData>
 }
 
+export const tokenBlacklist = ["evmos"];
+
 export const osmosisAssetObj: AssetListObj = {
   ...osmosisAssetLists,
   assets: osmosisAssetLists.assets.reduce((
@@ -1471,7 +1473,12 @@ export const osmosisAssetObj: AssetListObj = {
     asset: AssetData,
   ) => {
     const newList = prev;
-    newList[asset.symbol.toLowerCase()] = asset;
+		const symbolLabel = asset.symbol.toLowerCase();
+		if (tokenBlacklist.includes(symbolLabel)) {
+			return newList;
+		}
+
+    newList[symbolLabel] = asset;
     return newList;
   }, {}),
 }

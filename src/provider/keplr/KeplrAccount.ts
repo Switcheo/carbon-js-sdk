@@ -1,6 +1,6 @@
 import { AppCurrency, ChainInfo } from "@keplr-wallet/types";
 import { AddressUtils } from "@carbon-sdk/util";
-import { DEFAULT_GAS_PRICE, Network } from "@carbon-sdk/constant";
+import { CURRENT_GAS_PRICE, Network } from "@carbon-sdk/constant";
 import SDKProvider from "../sdk";
 
 const SWTH = {
@@ -10,8 +10,6 @@ const SWTH = {
   coinGeckoId: "switcheo",
 }
 
-const GAS_PRICE = 769.23077;
-
 class KeplrAccount {
   static SWTH_CURRENCY: AppCurrency = SWTH
   static BASE_CHAIN_INFO = {
@@ -19,9 +17,9 @@ class KeplrAccount {
     currencies: [],
     feeCurrencies: [SWTH],
     gasPriceStep: {
-      low: GAS_PRICE,
-      average: GAS_PRICE,
-      high: GAS_PRICE,
+      low: CURRENT_GAS_PRICE,
+      average: CURRENT_GAS_PRICE,
+      high: CURRENT_GAS_PRICE,
     },
   } as const
 

@@ -11,3 +11,5 @@ export const DEFAULT_FEE: StdFee = {
   amount: coins(DEFAULT_GAS_PRICE.times(DEFAULT_GAS).dp(0).toString(), "swth"),
   gas: DEFAULT_GAS.toString(10),
 };
+
+export const CURRENT_GAS_PRICE = 769.23077;
