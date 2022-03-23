@@ -2,7 +2,7 @@ import { OptionalNetworkMap, SimpleMap } from "@carbon-sdk/util/type";
 import { AssetData, osmosisAssetObj } from "./ibc";
 import { Network } from "./network";
 
-export const CommonAssetName: SimpleMap<string> = {
+const CommonAssetNameInit: SimpleMap<string> = {
   swth: 'swth',
   'swth-n': 'swth',
   'swth-b': 'swth',
@@ -186,6 +186,14 @@ export const CommonAssetName: SimpleMap<string> = {
   'zusdt1': 'usdt', 
   'zusdt99': 'usdt',
 };
+
+export const CommonAssetName = Object.values(osmosisAssetObj.assets).reduce((prev: SimpleMap<string>, asset: AssetData) => {
+  const assetNameMap = prev;
+  if (!assetNameMap[asset.symbol.toLowerCase()]) {
+    assetNameMap[asset.symbol.toLowerCase()] = asset.symbol.toLowerCase();
+  }
+  return assetNameMap;
+}, CommonAssetNameInit);
 
 export const InitCoinGeckoTokenNames: SimpleMap<string> = {
   swth: 'switcheo',

@@ -1,4 +1,4 @@
-import { AssetData, ChainInfoExplorerTmRpc, EmbedChainInfosInit } from "@carbon-sdk/constant";
+import { AssetData, ChainInfoExplorerTmRpc, EmbedChainInfosInit, tokenBlacklist } from "@carbon-sdk/constant";
 import { Hash } from "@keplr-wallet/crypto";
 import osmosisAssetLists from "assetlists/osmosis-1/osmosis-1.assetlist.json";
 import { SimpleMap } from "./type";
@@ -17,7 +17,7 @@ export const EmbedChainInfos = Object.values(EmbedChainInfosInit).reduce((prev: 
   if (chainInfo.chainId === "osmosis-1") {
     const osmoAssetFiltered = osmosisAssetLists.assets.filter((asset: AssetData) => {
       const assetDenom = asset.symbol.toLowerCase();
-      return assetDenom !== "osmo" && assetDenom !== "ion";
+      return assetDenom !== "osmo" && assetDenom !== "ion" && !tokenBlacklist.includes(assetDenom);
     });
 
     osmoAssetFiltered.forEach((asset: AssetData) => {

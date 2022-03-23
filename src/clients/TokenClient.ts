@@ -2,7 +2,7 @@ import { Token } from "@carbon-sdk/codec";
 import { CoinGeckoTokenNames, CommonAssetName, NetworkConfigProvider, TokenBlacklist } from "@carbon-sdk/constant";
 import { AssetData, osmosisAssetObj } from "@carbon-sdk/constant/ibc";
 import { Network } from "@carbon-sdk/constant/network";
-import { BlockchainUtils, FetchUtils, NumberUtils, TypeUtils } from "@carbon-sdk/util";
+import { BlockchainUtils, FetchUtils, IBCUtils, NumberUtils, TypeUtils } from "@carbon-sdk/util";
 import { BN_ONE, BN_ZERO } from "@carbon-sdk/util/number";
 import BigNumber from "bignumber.js";
 import Long from "long";
@@ -118,7 +118,9 @@ class TokenClient {
 
   public getTokenName(denom: string, overrideMap?: TypeUtils.SimpleMap<string>): string {
     if (typeof denom !== 'string') return '';
-    denom = denom.toLowerCase();
+    if (!denom.includes('ibc/')) {
+      denom = denom.toLowerCase();
+    }
 
     const symbol = this.getSymbol(denom);
     if (TokenClient.isPoolToken(denom)) {
@@ -311,37 +313,50 @@ class TokenClient {
     if (networkConfig.network === Network.MainNet) {
       const symbolDenoms = Object.keys(this.symbols);
       const symbolMap = Object.values(this.symbols);
-      Object.values(osmosisAssetObj.assets).forEach((asset: AssetData) => {
-        const assetDenom = asset.symbol.toLowerCase() === "swth"
-          ? "swth.o.1"
-          : asset.symbol.toLowerCase();
-        const assetDecimals = asset.denom_units[1]?.exponent ?? 0;
-        const index = symbolMap.indexOf(asset.symbol.toLowerCase());
-        this.tokens[assetDenom] = {
-          id: assetDenom,
-          creator: "",
-          denom: assetDenom,
-          name: asset.name,
-          symbol: asset.symbol,
-          decimals: new Long(assetDecimals),
-          bridgeId: new Long(BlockchainUtils.BRIDGE_IDS.ibc), // ibc = 2
-          chainId: new Long(BlockchainUtils.CHAIN_IDS.osmo), // osmos = 26
-          tokenAddress: "",
-          bridgeAddress: "",
-          isActive: true,
-          isCollateral: false,
-        };
-        this.symbols[assetDenom] = asset.symbol;
+      const osmosisTokens = this.getOsmosisTokens();
+
+      osmosisTokens.forEach((token: Token) => {
+        const index = symbolMap.indexOf(token.symbol.toUpperCase());
+        this.tokens[token.denom] = token;
+        this.symbols[token.denom] = token.symbol;
         if (index > -1) {
           const similarDenom = symbolDenoms[index];
           if (similarDenom) {
-            this.wrapperMap[assetDenom] = similarDenom;
+            this.wrapperMap[token.denom] = similarDenom;
           }
         }
-      })
+      });
     }
 
     return this.tokens;
+  }
+
+  public getOsmosisTokens(): Token[] {
+    const tokens = Object.values(osmosisAssetObj.assets).map((asset: AssetData) => {
+      let assetDenom = asset.base.includes('ibc/')
+        ? asset.base
+        : IBCUtils.makeIBCMinimalDenom("channel-0", asset.denom_units[0].denom ?? '') // for OSMO/ION token on osmo
+      if (asset.symbol.toLowerCase() === "swth") {
+        assetDenom = "swth.o.1";
+      }
+
+      const assetDecimals = asset.denom_units[1]?.exponent ?? 0;
+      return {
+        id: asset.symbol.toLowerCase(),
+        creator: "",
+        denom: assetDenom,
+        name: asset.name,
+        symbol: asset.symbol.toUpperCase(),
+        decimals: new Long(assetDecimals),
+        bridgeId: new Long(BlockchainUtils.BRIDGE_IDS.ibc), // ibc = 2
+        chainId: new Long(BlockchainUtils.CHAIN_IDS.osmo), // osmos = 26
+        tokenAddress: "",
+        bridgeAddress: "",
+        isActive: true,
+        isCollateral: false,
+      };
+    });
+    return tokens;
   }
 
   public async reloadWrapperMap(): Promise<TypeUtils.SimpleMap<string>> {
