@@ -5,7 +5,7 @@ import * as BIP39 from "bip39";
 import { AddressUtils, CarbonSDK, CarbonTx, CarbonWallet, IBCUtils } from "./_sdk";
 import { SignDoc } from '../lib/codec/cosmos/tx/v1beta1/tx';
 import { registry } from "../lib/codec/index";
-import { osmosisAssetObj } from "../lib/constant";
+import { ChainIds, totalAssetObj } from "../lib/constant";
 import "./_setup";
 import { Models } from '../lib';
 
@@ -25,7 +25,7 @@ const networkObj = IBCUtils.EmbedChainInfos[network];
   const swthToken = await sdk.token.tokenForId("swth");
   if (!swthToken) return;
 
-  const ibcToken = osmosisAssetObj.assets.swth;
+  const ibcToken = totalAssetObj[ChainIds.Osmosis].swth;
   if (!ibcToken) return;
 
   const tokenDecimals = ibcToken.denom_units?.[1]?.exponent ?? 0

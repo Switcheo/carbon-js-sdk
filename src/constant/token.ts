@@ -1,8 +1,7 @@
 import { OptionalNetworkMap, SimpleMap } from "@carbon-sdk/util/type";
-import { AssetData, osmosisAssetObj } from "./ibc";
 import { Network } from "./network";
 
-const CommonAssetNameInit: SimpleMap<string> = {
+export const CommonAssetName: SimpleMap<string> = {
   swth: 'swth',
   'swth-n': 'swth',
   'swth-b': 'swth',
@@ -187,15 +186,7 @@ const CommonAssetNameInit: SimpleMap<string> = {
   'zusdt99': 'usdt',
 };
 
-export const CommonAssetName = Object.values(osmosisAssetObj.assets).reduce((prev: SimpleMap<string>, asset: AssetData) => {
-  const assetNameMap = prev;
-  if (!assetNameMap[asset.symbol.toLowerCase()]) {
-    assetNameMap[asset.symbol.toLowerCase()] = asset.symbol.toLowerCase();
-  }
-  return assetNameMap;
-}, CommonAssetNameInit);
-
-export const InitCoinGeckoTokenNames: SimpleMap<string> = {
+export const CoinGeckoTokenNames: SimpleMap<string> = {
   swth: 'switcheo',
   btc: 'bitcoin',
   dai: 'dai',
@@ -316,14 +307,6 @@ export const InitCoinGeckoTokenNames: SimpleMap<string> = {
   gm: 'ghostmarket',
   ava: 'concierge-io',
 };
-
-export const CoinGeckoTokenNames = Object.values(osmosisAssetObj.assets).reduce((prev: SimpleMap<string>, asset: AssetData) => {
-  const newGeckoMap = prev;
-  if (asset.coingecko_id && !newGeckoMap[asset.symbol.toLowerCase()]) {
-    newGeckoMap[asset.symbol.toLowerCase()] = asset.coingecko_id;
-  }
-  return newGeckoMap;
-}, InitCoinGeckoTokenNames);
 
 export const TokenBlacklist: OptionalNetworkMap<string[]> = {
   [Network.MainNet]: [

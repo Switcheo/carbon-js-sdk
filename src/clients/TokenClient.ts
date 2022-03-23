@@ -1,6 +1,6 @@
 import { Token } from "@carbon-sdk/codec";
 import { CoinGeckoTokenNames, CommonAssetName, NetworkConfigProvider, TokenBlacklist } from "@carbon-sdk/constant";
-import { AssetData, osmosisAssetObj } from "@carbon-sdk/constant/ibc";
+import { AssetData, ChainIds, totalAssetObj } from "@carbon-sdk/constant/ibc";
 import { Network } from "@carbon-sdk/constant/network";
 import { BlockchainUtils, FetchUtils, IBCUtils, NumberUtils, TypeUtils } from "@carbon-sdk/util";
 import { BN_ONE, BN_ZERO } from "@carbon-sdk/util/number";
@@ -29,6 +29,8 @@ class TokenClient {
   public readonly poolTokens: TypeUtils.SimpleMap<Token> = {};
   public readonly symbols: TypeUtils.SimpleMap<string> = {};
   public readonly usdValues: TypeUtils.SimpleMap<BigNumber> = {};
+  public readonly commonAssetNames: TypeUtils.SimpleMap<string> = CommonAssetName;
+  public readonly geckoTokenNames: TypeUtils.SimpleMap<string> = CoinGeckoTokenNames;
 
   private additionalGeckoDenoms: TypeUtils.SimpleMap<string> = {};
 
@@ -43,6 +45,7 @@ class TokenClient {
   }
 
   public async initialize(): Promise<void> {
+    this.setCommonAssetConfig();
     await this.reloadWrapperMap();
     await this.reloadTokens();
     await this.reloadUSDValues();
@@ -56,7 +59,7 @@ class TokenClient {
   }
 
   public getCommonDenom(denom: string): string {
-    return CommonAssetName[denom] ?? denom;
+    return this.commonAssetNames[denom] ?? denom;
   }
 
   public getDecimals(denom: string): number | undefined {
@@ -332,7 +335,8 @@ class TokenClient {
   }
 
   public getOsmosisTokens(): Token[] {
-    const tokens = Object.values(osmosisAssetObj.assets).map((asset: AssetData) => {
+    const tokensObj = totalAssetObj[ChainIds.Osmosis]
+    const tokens = Object.values(tokensObj).map((asset: AssetData) => {
       let assetDenom = asset.base.includes('ibc/')
         ? asset.base
         : IBCUtils.makeIBCMinimalDenom("channel-0", asset.denom_units[0].denom ?? '') // for OSMO/ION token on osmo
@@ -342,7 +346,7 @@ class TokenClient {
 
       const assetDecimals = asset.denom_units[1]?.exponent ?? 0;
       return {
-        id: asset.symbol.toLowerCase(),
+        id: asset.symbol.toLowerCase() === "swth" ? "swth.o.1" : asset.symbol.toLowerCase(),
         creator: "",
         denom: assetDenom,
         name: asset.name,
@@ -383,13 +387,13 @@ class TokenClient {
 
       return accum;
     }, {} as TypeUtils.SimpleMap);
-    const coinIds = Object.keys(commonDenoms).map((denom) => CoinGeckoTokenNames[denom] ?? denom);
+    const coinIds = Object.keys(commonDenoms).map((denom) => this.geckoTokenNames[denom] ?? denom);
 
     const request = await FetchUtils.fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${coinIds.join(',')}&vs_currencies=usd`);
     const response = await request.json();
 
     for (const denom in commonDenoms) {
-      const coinId = CoinGeckoTokenNames[denom];
+      const coinId = this.geckoTokenNames[denom];
       const price = NumberUtils.bnOrZero(response?.[coinId]?.usd);
       if (price?.gt(0)) {
         this.usdValues[denom] = price!;
@@ -397,6 +401,20 @@ class TokenClient {
     }
 
     return this.usdValues;
+  }
+
+  public setCommonAssetConfig() {
+    // For osmosis tokens
+    const osmoTokenObj = totalAssetObj[ChainIds.Osmosis];
+    Object.values(osmoTokenObj).forEach((asset: AssetData) => {
+      const symbolSmall = asset.symbol.toLowerCase();
+      if (!this.commonAssetNames[symbolSmall]) {
+        this.commonAssetNames[symbolSmall] = symbolSmall;
+      }
+      if (asset.coingecko_id && !this.geckoTokenNames[symbolSmall]) {
+        this.geckoTokenNames[symbolSmall] = asset.coingecko_id;
+      }
+    });
   }
 }
 

@@ -1,6 +1,6 @@
-import { AssetData, ChainInfoExplorerTmRpc, EmbedChainInfosInit, tokenBlacklist } from "@carbon-sdk/constant";
+import { ChainInfoExplorerTmRpc, EmbedChainInfosInit, ibcWhitelist, totalAssetObj } from "@carbon-sdk/constant";
+import { KeplrAccount } from "@carbon-sdk/provider";
 import { Hash } from "@keplr-wallet/crypto";
-import osmosisAssetLists from "assetlists/osmosis-1/osmosis-1.assetlist.json";
 import { SimpleMap } from "./type";
 
 // Create IBC minimal denom
@@ -14,21 +14,13 @@ export function makeIBCMinimalDenom(sourceChannelId: string, coinMinimalDenom: s
 };
 
 export const EmbedChainInfos = Object.values(EmbedChainInfosInit).reduce((prev: SimpleMap<ChainInfoExplorerTmRpc>, chainInfo: ChainInfoExplorerTmRpc) => {
-  if (chainInfo.chainId === "osmosis-1") {
-    const osmoAssetFiltered = osmosisAssetLists.assets.filter((asset: AssetData) => {
-      const assetDenom = asset.symbol.toLowerCase();
-      return assetDenom !== "osmo" && assetDenom !== "ion" && !tokenBlacklist.includes(assetDenom);
+  if (ibcWhitelist.includes(chainInfo.chainId)) {
+    const swthIbc = totalAssetObj[chainInfo.chainId].swth;
+    chainInfo.currencies.push({
+      ...KeplrAccount.SWTH_CURRENCY,
+      coinMinimalDenom: makeIBCMinimalDenom(swthIbc.ibc?.dst_channel ?? '', KeplrAccount.SWTH_CURRENCY.coinMinimalDenom),
     });
-
-    osmoAssetFiltered.forEach((asset: AssetData) => {
-      chainInfo.currencies.push({
-        coinDenom: asset.symbol,
-        coinMinimalDenom: asset.base,
-        coinDecimals: asset.denom_units[1]?.exponent ?? 0,
-        coinGeckoId: asset.coingecko_id,
-      })
-    })
-	}
+  }
 	prev[chainInfo.chainId] = chainInfo;
 	return prev;
 }, {});
