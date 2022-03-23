@@ -1,6 +1,7 @@
 import { Token } from "@carbon-sdk/codec";
 import { CoinGeckoTokenNames, CommonAssetName, NetworkConfigProvider, TokenBlacklist } from "@carbon-sdk/constant";
 import { AssetData, osmosisAssetObj } from "@carbon-sdk/constant/ibc";
+import { Network } from "@carbon-sdk/constant/network";
 import { BlockchainUtils, FetchUtils, NumberUtils, TypeUtils } from "@carbon-sdk/util";
 import { BN_ONE, BN_ZERO } from "@carbon-sdk/util/number";
 import BigNumber from "bignumber.js";
@@ -306,10 +307,14 @@ class TokenClient {
       }
     }
 
-    Object.values(osmosisAssetObj.assets).forEach((asset: AssetData) => {
-      const assetDenom = asset.symbol.toLowerCase();
-      const assetDecimals = asset.denom_units[1]?.exponent ?? 0;
-      if (!this.tokens[assetDenom]) {
+    const networkConfig = this.configProvider.getConfig();
+    if (networkConfig.network === Network.MainNet) {
+      const symbolDenoms = Object.keys(this.symbols);
+      const symbolMap = Object.values(this.symbols);
+      Object.values(osmosisAssetObj.assets).forEach((asset: AssetData) => {
+        const assetDenom = asset.symbol.toLowerCase();
+        const assetDecimals = asset.denom_units[1]?.exponent ?? 0;
+        const index = symbolMap.indexOf(assetDenom.toUpperCase());
         this.tokens[assetDenom] = {
           id: assetDenom,
           creator: "",
@@ -325,8 +330,14 @@ class TokenClient {
           isCollateral: false,
         };
         this.symbols[assetDenom] = asset.symbol;
-      }
-    })
+        if (index > -1) {
+          const similarDenom = symbolDenoms[index];
+          if (similarDenom) {
+            this.wrapperMap[assetDenom] = similarDenom;
+          }
+        }
+      })
+    }
 
     return this.tokens;
   }
