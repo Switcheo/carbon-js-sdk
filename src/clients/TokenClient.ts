@@ -312,9 +312,11 @@ class TokenClient {
       const symbolDenoms = Object.keys(this.symbols);
       const symbolMap = Object.values(this.symbols);
       Object.values(osmosisAssetObj.assets).forEach((asset: AssetData) => {
-        const assetDenom = asset.symbol.toLowerCase();
+        const assetDenom = asset.symbol.toLowerCase() === "swth"
+          ? "swth.o.1"
+          : asset.symbol.toLowerCase();
         const assetDecimals = asset.denom_units[1]?.exponent ?? 0;
-        const index = symbolMap.indexOf(assetDenom.toUpperCase());
+        const index = symbolMap.indexOf(asset.symbol.toLowerCase());
         this.tokens[assetDenom] = {
           id: assetDenom,
           creator: "",
