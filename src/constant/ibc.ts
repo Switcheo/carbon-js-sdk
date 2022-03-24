@@ -1503,7 +1503,9 @@ export interface AssetData {
 export type AssetListObj = SimpleMap<SimpleMap<AssetData>>
 
 // Blacklist evmos because it has the same ibc denom as osmo
-export const tokenBlacklist = ["evmos"];
+export const IbcTokenBlacklist: SimpleMap<string[]> = {
+	[ChainIds.Osmosis]: ["evmos"],
+};
 
 export const totalAssetObj: AssetListObj = Object.keys(EmbedChainInfosInit).reduce((prev: AssetListObj, chainId: string) => {
 	const newAssetObj = prev;
