@@ -246,7 +246,7 @@ export class ZILClient {
   }
 
   public async checkAllowanceZRC2(token: Models.Token, owner: string, spender: string) {
-    const contractAddress = token.tokenAddress
+    const contractAddress = appendHexPrefix(token.tokenAddress)
     const zilliqa = new Zilliqa(this.getProviderUrl())
     const resp = await zilliqa.blockchain.getSmartContractSubState(contractAddress, "allowances", [owner, spender])
     if (resp.error !== undefined) {
