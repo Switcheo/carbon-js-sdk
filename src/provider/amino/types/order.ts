@@ -1,4 +1,5 @@
-import { CarbonTx, NumberUtils, TypeUtils } from "@carbon-sdk/util";
+import { NumberUtils, TypeUtils } from "@carbon-sdk/util";
+import * as CarbonTx from "@carbon-sdk/util/tx";
 import { AminoConverter } from "@cosmjs/stargate";
 import { AminoInit, AminoProcess, AminoValueMap, ConvertEncType, generateAminoType } from "../utils";
 

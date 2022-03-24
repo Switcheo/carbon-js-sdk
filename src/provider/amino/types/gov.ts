@@ -5,7 +5,8 @@ import {
   SetMsgFeeProposal, SetRewardCurveProposal, SetRewardsWeightsProposal, UnlinkPoolProposal,
   SettlementPriceProposal, UpdateMarketProposal, UpdatePoolProposal,
 } from "@carbon-sdk/codec";
-import { CarbonTx, GovUtils, TypeUtils } from "@carbon-sdk/util";
+import { GovUtils, TypeUtils } from "@carbon-sdk/util";
+import * as CarbonTx from "@carbon-sdk/util/tx";
 import { AminoConverter } from "@cosmjs/stargate";
 import {
   AminoInit, ConvertEncType, AminoProcess, AminoValueMap,
