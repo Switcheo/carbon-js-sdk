@@ -18,7 +18,7 @@ export const EmbedChainInfos = Object.values(EmbedChainInfosInit).reduce((prev: 
     const swthIbc = totalAssetObj[chainInfo.chainId].swth;
     chainInfo.currencies.push({
       ...KeplrAccount.SWTH_CURRENCY,
-      coinMinimalDenom: makeIBCMinimalDenom(swthIbc.ibc?.dst_channel ?? '', KeplrAccount.SWTH_CURRENCY.coinMinimalDenom),
+      coinMinimalDenom: makeIBCMinimalDenom(swthIbc?.ibc?.dst_channel ?? '', KeplrAccount.SWTH_CURRENCY.coinMinimalDenom),
     });
   }
 	prev[chainInfo.chainId] = chainInfo;

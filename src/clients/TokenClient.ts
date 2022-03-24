@@ -319,7 +319,8 @@ class TokenClient {
       const osmosisTokens = this.getOsmosisTokens();
 
       osmosisTokens.forEach((token: Token) => {
-        const index = symbolMap.indexOf(token.symbol.toUpperCase());
+        const tokenSymbol = token.symbol.toLowerCase() === "swth" ? "swth" : token.symbol.toUpperCase();
+        const index = symbolMap.indexOf(tokenSymbol);
         this.tokens[token.denom] = token;
         this.symbols[token.denom] = token.symbol;
         if (index > -1) {

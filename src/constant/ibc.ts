@@ -1521,6 +1521,13 @@ export const totalAssetObj: AssetListObj = Object.keys(EmbedChainInfosInit).redu
 			});
 			break;
 	}
+
+	if (ibcWhitelist.includes(chainId)) {
+		const swthIbc = osmosisAssetLists.assets.find((asset: AssetData) => asset.symbol.toLowerCase() === "swth");
+		if (swthIbc) {
+			assetsObj.swth = swthIbc;
+		}
+  }
 	newAssetObj[chainId] = assetsObj;
 	return newAssetObj;
 }, {});
