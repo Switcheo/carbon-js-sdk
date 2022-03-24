@@ -5,19 +5,13 @@ import "./_setup";
 
 (async () => {
   const sdk = await CarbonSDK.instance({
-    network: CarbonSDK.Network.MainNet,
-    // config: {
-    //   tmRpcUrl: process.env.TRPC_ENDPOINT,
-    // },
+    network: CarbonSDK.Network.LocalHost,
+    config: {
+      tmRpcUrl: process.env.TRPC_ENDPOINT,
+    },
   });
 
   // GRPC Queries
-  const symbols = sdk.token.symbols;
-  const wrapperMap = sdk.token.wrapperMap;
-  console.log('tokens', sdk.token.tokens);
-  console.log('symbols', symbols);
-  console.log('wrapperMap', wrapperMap);
-  process.exit(0);
 
   // query market stats
   const marketStats = await sdk.query.marketstats.MarketStats({});
