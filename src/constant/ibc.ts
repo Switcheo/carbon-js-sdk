@@ -1,7 +1,7 @@
 import { IBCAddress } from "@carbon-sdk/util/address";
 import { SimpleMap } from "@carbon-sdk/util/type";
 import { AppCurrency, ChainInfo } from "@keplr-wallet/types";
-import osmosisAssetLists from "assetlists/osmosis-1/osmosis-1.assetlist.json";
+import osmosisAssetLists from "./ibc-assetlist.json";
 import { CURRENT_GAS_PRICE } from "./generic";
 
 export interface ChainInfoExplorerTmRpc extends ChainInfo {

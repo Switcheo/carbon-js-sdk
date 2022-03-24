@@ -5,3 +5,4 @@ export * from "./network";
 export * from "./node";
 export * from "./token";
 export * from "./walletProvider";
+export { default as OSMOSIS_ASSETLIST } from "./ibc-assetlist.json";

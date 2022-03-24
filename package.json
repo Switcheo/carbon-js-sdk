@@ -1,6 +1,6 @@
 {
   "name": "carbon-js-sdk",
-  "version": "0.1.68",
+  "version": "0.1.69",
   "description": "TypeScript SDK for Carbon blockchain",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -54,7 +54,6 @@
     "@types/w3c-web-usb": "^1.0.5",
     "@types/ws": "^7.4.7",
     "@zilliqa-js/zilliqa": "^2.2.0",
-    "assetlists": "git+ssh://git@github.com/osmosis-labs/assetlists",
     "base58check": "^2.0.0",
     "bignumber.js": "^9.0.1",
     "bip32": "^2.0.6",
