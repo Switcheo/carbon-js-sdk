@@ -80,7 +80,7 @@ export interface QueryGetBalanceDistributionResponse {
     date: string
     amountValue: string
     totalAmountValue: string
-    markets: BalanceDistribution[]
+    tokens: BalanceDistribution[]
   }[]
   meta: TimeMeta
 }
