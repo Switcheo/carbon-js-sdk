@@ -32,6 +32,13 @@ export interface GetDetailedTransfersResponse {
   }
 }
 
+export enum CrossChainFlowStatus {
+  InTransit = 'in_transit',
+  Completed = 'completed',
+  Refunded = 'refunded',
+  FailedAndNotRecoverable = 'failed_and_not_recoverable', // due to development/testing/adding wrong asset/ or something more sinister
+}
+
 export interface CrossChainTransfer {
   id: string
   cross_chain_flow_id: string
@@ -54,7 +61,7 @@ export interface CrossChainTransfer {
   source_blockchain: Blockchain | null
   bridging_blockchain: Blockchain | null
   destination_blockchain: Blockchain | null
-  status: string
+  status: CrossChainFlowStatus
 }
 
 export interface CrossChainTransferDetailed extends CrossChainTransfer {

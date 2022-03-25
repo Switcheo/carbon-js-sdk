@@ -127,7 +127,7 @@ class TokenClient {
 
     const symbol = this.getSymbol(denom);
     if (TokenClient.isPoolToken(denom)) {
-      const match = symbol.match(/^([a-z\d.-]+)-(\d+)-([a-z\d.-]+)-(\d+)-lp\d+$/i);
+      const match = symbol.match(/^([a-z\d.-\/]+)-(\d+)-([a-z\d.-\/]+)-(\d+)-lp\d+$/i);
       // inconsistent implementation of isPoolToken, exit
       if (match === null) return symbol;
 
@@ -138,6 +138,12 @@ class TokenClient {
       const symbolB = this.getTokenName(denomB);
 
       return `${symbolA}-${symbolB}`;
+    }
+
+    if (denom.includes('ibc/')) {
+      const splitDenom = denom.split('/')
+      denom = `${splitDenom[0].toLowerCase()}/${splitDenom[1].toUpperCase()}`
+      return this.symbols[denom] ?? denom.toUpperCase()
     }
 
     if (SYMBOL_OVERRIDE[symbol]) {
@@ -156,7 +162,7 @@ class TokenClient {
     denom = denom.toLowerCase();
 
     if (TokenClient.isPoolToken(denom)) {
-      const match = denom.match(/^([a-z\d.-]+)-(\d+)-([a-z\d.-]+)-(\d+)-lp\d+$/i);
+      const match = denom.match(/^([a-z\d.-\/]+)-(\d+)-([a-z\d.-\/]+)-(\d+)-lp\d+$/i);
       // inconsistent implementation of isPoolToken, exit
       if (match === null) return this.getSymbol(denom);
 
@@ -175,7 +181,7 @@ class TokenClient {
   }
 
   public static isPoolToken(denom: string): boolean {
-    return denom.match(/^([a-z\d.-]+)-(\d+)-([a-z\d.-]+)-(\d+)-lp\d+$/i) !== null;
+    return denom.match(/^([a-z\d.-\/]+)-(\d+)-([a-z\d.-\/]+)-(\d+)-lp\d+$/i) !== null;
   }
 
   public isWrappedToken(denom?: string) {
@@ -341,13 +347,10 @@ class TokenClient {
       let assetDenom = asset.base.includes('ibc/')
         ? asset.base
         : IBCUtils.makeIBCMinimalDenom("channel-0", asset.denom_units[0].denom ?? '') // for OSMO/ION token on osmo
-      if (asset.symbol.toLowerCase() === "swth") {
-        assetDenom = "swth.o.1";
-      }
 
       const assetDecimals = asset.denom_units[1]?.exponent ?? 0;
       return {
-        id: asset.symbol.toLowerCase() === "swth" ? "swth.o.1" : asset.symbol.toLowerCase(),
+        id: asset.symbol.toLowerCase() === "swth" ? "swth.o.1" : asset.symbol.toLowerCase(), // use swth.o.1 as id because swth already has an id
         creator: "",
         denom: assetDenom,
         name: asset.name,
