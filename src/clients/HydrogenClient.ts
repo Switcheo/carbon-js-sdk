@@ -10,7 +10,7 @@ export const HydrogenEndpoints = {
   'stats': '/stats',
 
   // Transfer Payloads api
-  'transfer_payloads': '/v2/transfer_payloads',
+  'transfer_payloads': '/transfer_payloads',
 }
 
 const formatDateField = (value?: string | null) => {
