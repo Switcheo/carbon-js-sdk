@@ -1,5 +1,5 @@
 import { Bech32AddrType, Network, NetworkConfigs } from "@carbon-sdk/constant";
-import { wallet } from "@cityofzion/neon-core-next";
+import { CONST, wallet } from "@cityofzion/neon-core-next";
 import { Bech32Config } from "@keplr-wallet/types";
 import * as Base58Check from "base58check";
 import * as bech32 from "bech32";
@@ -252,7 +252,11 @@ export const SWTHAddress: SWTHAddressType = {
   },
 };
 
-export const NEOAddress: AddressBuilder<AddressOptions> = {
+type NEOAddressType = AddressBuilder<AddressOptions> & {
+  isNeoAddress(address: string): boolean;
+};
+
+export const NEOAddress: NEOAddressType = {
   coinType: (): number => {
     return NEO_COIN_TYPE;
   },
@@ -321,9 +325,17 @@ export const NEOAddress: AddressBuilder<AddressOptions> = {
     const privateKey = NEOAddress.mnemonicToPrivateKey(mnemonic, account);
     return NEOAddress.privateKeyToAddress(privateKey);
   },
+
+  isNeoAddress: (address: string) => {
+    return wallet.isAddress(address, 0x17);
+  },
 };
 
-export const N3Address: AddressBuilder<AddressOptions> = {
+type N3AddressType = AddressBuilder<AddressOptions> & {
+  isN3Address(address: string): boolean;
+};
+
+export const N3Address: N3AddressType = {
   ...NEOAddress,
 
   publicKeyToScriptHash: (publicKey: string | Buffer): string => {
@@ -346,6 +358,10 @@ export const N3Address: AddressBuilder<AddressOptions> = {
   generateAddress: (mnemonic: string, account: number = 0) => {
     const privateKey = N3Address.mnemonicToPrivateKey(mnemonic, account);
     return N3Address.privateKeyToAddress(privateKey);
+  },
+
+  isN3Address: (address: string) => {
+    return wallet.isAddress(address, CONST.DEFAULT_ADDRESS_VERSION);
   },
 }
 
