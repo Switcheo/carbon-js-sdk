@@ -14,3 +14,4 @@ export * from "./position";
 export * from "./profile";
 export * from "./subaccount";
 export * from "./fee";
+export * from "./xchain";

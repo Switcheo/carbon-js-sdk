@@ -4,7 +4,7 @@ import { OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import { CarbonQueryClient, ETHClient, HydrogenClient, InsightsQueryClient, NEOClient, TokenClient, ZILClient } from "./clients";
 import N3Client from "./clients/N3Client";
-import { AdminModule, BankModule, BrokerModule, CDPModule, CoinModule, FeeModule, GovModule, IBCModule, LeverageModule, LiquidityPoolModule, MarketModule, OracleModule, OrderModule, PositionModule, ProfileModule, SubAccountModule } from "./modules";
+import { AdminModule, BankModule, BrokerModule, CDPModule, CoinModule, FeeModule, GovModule, IBCModule, LeverageModule, LiquidityPoolModule, MarketModule, OracleModule, OrderModule, PositionModule, ProfileModule, SubAccountModule, XChainModule } from "./modules";
 import { StakingModule } from "./modules/staking";
 import { CosmosLedger } from "./provider";
 import { Blockchain } from "./util/blockchain";
@@ -70,6 +70,7 @@ class CarbonSDK {
   bank: BankModule;
   fee: FeeModule;
   ibc: IBCModule;
+  xchain: XChainModule;
 
   neo: NEOClient;
   eth: ETHClient;
@@ -105,6 +106,7 @@ class CarbonSDK {
     this.bank = new BankModule(this);
     this.fee = new FeeModule(this);
     this.ibc = new IBCModule(this);
+    this.xchain = new XChainModule(this);
 
     this.neo = NEOClient.instance({
       configProvider: this,
