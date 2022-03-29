@@ -1,6 +1,7 @@
 import { MsgProcessCrossChainTx } from '@carbon-sdk/codec/ccm/tx'
 import { MsgSyncHeaders } from '@carbon-sdk/codec/headersync/tx'
 import { CarbonTx } from "@carbon-sdk/util"
+import { BRIDGE_IDS } from '@carbon-sdk/util/blockchain'
 import BaseModule from "./base"
 
 export class XChainModule extends BaseModule {
@@ -24,8 +25,7 @@ export class XChainModule extends BaseModule {
 
     const value = MsgProcessCrossChainTx.fromPartial({
       submitter: wallet.bech32Address,
-      // Always From Poly so chainId = 0, should I not hardcode?
-      fromChainId: 0,
+      fromChainId: BRIDGE_IDS.polynetwork,
       proof: params.proof,
       header: params.header,
       headerProof: params.headerProof,
