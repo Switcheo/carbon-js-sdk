@@ -33,7 +33,7 @@ export class XChainModule extends BaseModule {
     })
 
     return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgSyncHeaders,
+      typeUrl: CarbonTx.Types.MsgProcessCrossChainTx,
       value,
     })
   }
