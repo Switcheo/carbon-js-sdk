@@ -417,9 +417,10 @@ class TokenClient {
       const assetDenom = asset.base.includes('ibc/')
         ? asset.base
         : IBCUtils.makeIBCMinimalDenom("channel-0", asset.denom_units[0].denom ?? '') // for OSMO/ION token on osmo
-      if (!this.commonAssetNames[assetDenom]) {
+      if (!this.commonAssetNames[assetDenom])
         this.commonAssetNames[assetDenom] = symbolSmall;
-      }
+      if (!this.commonAssetNames[symbolSmall])
+        this.commonAssetNames[symbolSmall] = symbolSmall;
       if (asset.coingecko_id && !this.geckoTokenNames[symbolSmall])
         this.geckoTokenNames[symbolSmall] = asset.coingecko_id;
     });
