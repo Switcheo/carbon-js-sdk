@@ -126,6 +126,20 @@ class TokenClient {
     }
 
     const symbol = this.getSymbol(denom);
+    if (TokenClient.isPoolTokenLegacy(denom)) {
+      const match = symbol.match(/^([a-z\d.-\/]+)-(\d+)-([a-z\d.-\/]+)-(\d+)-lp\d+$/i);
+      // inconsistent implementation of isPoolToken, exit
+      if (match === null) return symbol;
+
+      const denomA = match[1];
+      const denomB = match[3];
+
+      const symbolA = this.getTokenName(denomA);
+      const symbolB = this.getTokenName(denomB);
+
+      return `${symbolA}-${symbolB}`;
+    }
+
     if (denom.includes('ibc/')) {
       const splitDenom = denom.split('/')
       denom = `${splitDenom[0].toLowerCase()}/${splitDenom[1].toUpperCase()}`
@@ -146,6 +160,22 @@ class TokenClient {
   public getTokenDesc(denom: string) {
     if (typeof denom !== 'string') return '';
     denom = denom.toLowerCase();
+    if (TokenClient.isPoolTokenLegacy(denom)) {
+      const match = denom.match(/^([a-z\d.-\/]+)-(\d+)-([a-z\d.-\/]+)-(\d+)-lp\d+$/i);
+      // inconsistent implementation of isPoolToken, exit
+      if (match === null) return this.getSymbol(denom);
+
+      const denomA = match[1];
+      const weightA = match[2];
+      const denomB = match[3];
+      const weightB = match[4];
+
+      const symbolA = this.getTokenName(denomA);
+      const symbolB = this.getTokenName(denomB);
+
+      return `${weightA}% ${symbolA} / ${weightB}% ${symbolB}`;
+    }
+
     return this.tokens[denom]?.name ?? this.getSymbol(denom);
   }
 
