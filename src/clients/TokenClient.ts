@@ -69,7 +69,7 @@ class TokenClient {
   public getBlockchain(denom: string): BlockchainUtils.Blockchain | undefined {
     // chainId defaults to 3 so that blockchain will be undefined
     let chainId = this.tokens[denom]?.chainId?.toNumber() ?? 3;
-    if (this.isNativeToken(denom) || TokenClient.isPoolToken(denom)) {
+    if (this.isNativeToken(denom) || TokenClient.isPoolToken(denom) || TokenClient.isPoolTokenLegacy(denom)) {
       // native denom "swth" should be native.
       // pool tokens are on the Native blockchain, hence 0
       chainId = 0;
@@ -126,20 +126,6 @@ class TokenClient {
     }
 
     const symbol = this.getSymbol(denom);
-    if (TokenClient.isPoolToken(denom)) {
-      const match = symbol.match(/^([a-z\d.-\/]+)-(\d+)-([a-z\d.-\/]+)-(\d+)-lp\d+$/i);
-      // inconsistent implementation of isPoolToken, exit
-      if (match === null) return symbol;
-
-      const denomA = match[1];
-      const denomB = match[3];
-
-      const symbolA = this.getTokenName(denomA);
-      const symbolB = this.getTokenName(denomB);
-
-      return `${symbolA}-${symbolB}`;
-    }
-
     if (denom.includes('ibc/')) {
       const splitDenom = denom.split('/')
       denom = `${splitDenom[0].toLowerCase()}/${splitDenom[1].toUpperCase()}`
@@ -160,28 +146,15 @@ class TokenClient {
   public getTokenDesc(denom: string) {
     if (typeof denom !== 'string') return '';
     denom = denom.toLowerCase();
-
-    if (TokenClient.isPoolToken(denom)) {
-      const match = denom.match(/^([a-z\d.-\/]+)-(\d+)-([a-z\d.-\/]+)-(\d+)-lp\d+$/i);
-      // inconsistent implementation of isPoolToken, exit
-      if (match === null) return this.getSymbol(denom);
-
-      const denomA = match[1];
-      const weightA = match[2];
-      const denomB = match[3];
-      const weightB = match[4];
-
-      const symbolA = this.getTokenName(denomA);
-      const symbolB = this.getTokenName(denomB);
-
-      return `${weightA}% ${symbolA} / ${weightB}% ${symbolB}`;
-    }
-
     return this.tokens[denom]?.name ?? this.getSymbol(denom);
   }
 
   public static isPoolToken(denom: string): boolean {
-    return denom.match(/^([a-z\d.-\/]+)-(\d+)-([a-z\d.-\/]+)-(\d+)-lp\d+$/i) !== null;
+    return denom.match(/^clpt\/(\d+)$/i) !== null;
+  }
+
+  public static isPoolTokenLegacy(denom: string): boolean {
+    return denom.match(/^([a-z\d.-]+)-(\d+)-([a-z\d.-]+)-(\d+)-lp\d+$/i) !== null;
   }
 
   public isWrappedToken(denom?: string) {
@@ -306,7 +279,7 @@ class TokenClient {
     const tokenResponse = await this.getAllTokens();
 
     for (const token of tokenResponse) {
-      if (TokenClient.isPoolToken(token.denom)) {
+      if (TokenClient.isPoolToken(token.denom) || TokenClient.isPoolTokenLegacy(token.denom)) {
         this.poolTokens[token.denom] = token;
       } else {
         if (this.isNativeToken(token.denom)) {
@@ -378,7 +351,7 @@ class TokenClient {
 
     // flatten duplicate denoms
     const commonDenoms = denoms.reduce((accum, denom) => {
-      if (TokenClient.isPoolToken(denom)) {
+      if (TokenClient.isPoolToken(denom) || TokenClient.isPoolTokenLegacy(denom)) {
         return accum;
       }
 
