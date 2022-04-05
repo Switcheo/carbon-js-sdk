@@ -69,7 +69,7 @@ class TokenClient {
   public getBlockchain(denom: string): BlockchainUtils.Blockchain | undefined {
     // chainId defaults to 3 so that blockchain will be undefined
     let chainId = this.tokens[denom]?.chainId?.toNumber() ?? 3;
-    if (this.isNativeToken(denom) || TokenClient.isPoolToken(denom) || TokenClient.isPoolTokenLegacy(denom)) {
+    if (this.isNativeToken(denom) || TokenClient.isPoolToken(denom)) {
       // native denom "swth" should be native.
       // pool tokens are on the Native blockchain, hence 0
       chainId = 0;
@@ -149,12 +149,16 @@ class TokenClient {
     return this.tokens[denom]?.name ?? this.getSymbol(denom);
   }
 
-  public static isPoolToken(denom: string): boolean {
+  public static isPoolTokenNew(denom: string): boolean {
     return denom.match(/^clpt\/(\d+)$/i) !== null;
   }
 
   public static isPoolTokenLegacy(denom: string): boolean {
     return denom.match(/^([a-z\d.-]+)-(\d+)-([a-z\d.-]+)-(\d+)-lp\d+$/i) !== null;
+  }
+
+  public static isPoolToken(denom: string): boolean {
+    return this.isPoolTokenNew(denom) || this.isPoolTokenLegacy(denom);
   }
 
   public isWrappedToken(denom?: string) {
@@ -279,7 +283,7 @@ class TokenClient {
     const tokenResponse = await this.getAllTokens();
 
     for (const token of tokenResponse) {
-      if (TokenClient.isPoolToken(token.denom) || TokenClient.isPoolTokenLegacy(token.denom)) {
+      if (TokenClient.isPoolToken(token.denom)) {
         this.poolTokens[token.denom] = token;
       } else {
         if (this.isNativeToken(token.denom)) {
@@ -351,7 +355,7 @@ class TokenClient {
 
     // flatten duplicate denoms
     const commonDenoms = denoms.reduce((accum, denom) => {
-      if (TokenClient.isPoolToken(denom) || TokenClient.isPoolTokenLegacy(denom)) {
+      if (TokenClient.isPoolToken(denom)) {
         return accum;
       }
 
