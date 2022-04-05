@@ -414,8 +414,12 @@ class TokenClient {
     const osmoTokenObj = totalAssetObj[ChainIds.Osmosis];
     Object.values(osmoTokenObj).forEach((asset: AssetData) => {
       const symbolSmall = asset.symbol.toLowerCase();
-      if (!this.commonAssetNames[symbolSmall])
-        this.commonAssetNames[symbolSmall] = symbolSmall;
+      const assetDenom = asset.base.includes('ibc/')
+        ? asset.base
+        : IBCUtils.makeIBCMinimalDenom("channel-0", asset.denom_units[0].denom ?? '') // for OSMO/ION token on osmo
+      if (!this.commonAssetNames[assetDenom]) {
+        this.commonAssetNames[assetDenom] = symbolSmall;
+      }
       if (asset.coingecko_id && !this.geckoTokenNames[symbolSmall])
         this.geckoTokenNames[symbolSmall] = asset.coingecko_id;
     });
