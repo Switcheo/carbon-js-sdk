@@ -18,32 +18,17 @@ import "./_setup";
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
   
+  const base = "swth";
+  const quote = "eth";
+  const baseUSD = sdk.token.getUSDValue(base) ?? new BigNumber(0);
+  const quoteUSD = sdk.token.getUSDValue(quote) ?? new BigNumber(0);
+
   const result = await connectedSDK.admin.createMarket({
-	name: "swth_eth2",
-    displayName: "SwitcheoEth",
-    description: "spot market swth eth",
     marketType: "spot",
-    base: "swth",
-    quote: "eth",
-    lotSize: new BigNumber(100000),
-    tickSize: new BigNumber(0.01),
-    minQuantity: new BigNumber(100000),
-    makerFee: new BigNumber(0.002),
-    takerFee: new BigNumber(0.002),
-    riskStepSize: new BigNumber(0),
-    initialMarginBase: new BigNumber(1),
-    initialMarginStep: new BigNumber(0),
-    maintenanceMarginRatio: new BigNumber(0),
-    maxLiquidationOrderTicket: new BigNumber(0),
-    maxLiquidationOrderDuration: Duration.fromPartial({
-        seconds: Long.fromNumber(0)
-    }),
-    impactSize: new BigNumber(0),
-    markPriceBand: 0,
-    lastPriceProtectedBand: 0,
-    indexOracleId: "",
-    expiryTime: new Date(""),
-    tradingBandwidth: 0,
+    base,
+    quote,
+    currentBasePriceUsd: baseUSD,
+    currentQuotePriceUsd: quoteUSD,
   })
-  console.log(result)
+  console.log(result).
 })().catch(console.error).finally(() => process.exit(0));

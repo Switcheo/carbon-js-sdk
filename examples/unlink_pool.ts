@@ -16,7 +16,7 @@ import "./_setup";
   console.log("connected sdk");
   
   const result = await connectedSDK.admin.unlinkPool({
-	poolId: 1,
+	  poolId: 1,
   })
   console.log(result)
 })().catch(console.error).finally(() => process.exit(0));

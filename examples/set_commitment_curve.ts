@@ -16,7 +16,7 @@ import "./_setup";
   console.log("connected sdk");
   
   const result = await connectedSDK.admin.setCommitmentCurve({
-	maxDuration: 100,
+	  maxDuration: 100,
     maxRewardMultiplier: 100,
   })
   console.log(result)

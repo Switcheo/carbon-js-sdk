@@ -16,7 +16,7 @@ import "./_setup";
   console.log("connected sdk");
   
   const result = await connectedSDK.admin.setTradingFlag({
-	isEnabled: true,
+	  isEnabled: true,
     blockchain: "swth_eth2",
   })
   console.log(result)

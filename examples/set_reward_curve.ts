@@ -16,7 +16,7 @@ import "./_setup";
   console.log("connected sdk");
   
   const result = await connectedSDK.admin.setRewardCurve({
-	startTime: new Date(),
+	  startTime: new Date(),
     initialRewardBps: 1000,
     reductionMultiplierBps: 100,
     reductionIntervalSeconds: 5000,

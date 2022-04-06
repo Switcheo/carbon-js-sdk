@@ -17,7 +17,7 @@ import "./_setup";
   console.log("connected sdk");
   
   const result = await connectedSDK.admin.setMsgFee({
-	msgType: "test1",
+	  msgType: "test1",
     fee: new BigNumber(100),
   })
   console.log(result)
