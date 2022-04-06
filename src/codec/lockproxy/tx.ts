@@ -2,7 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 
-export const protobufPackage = "Switcheo.polynetworkcosmos.lockproxy";
+export const protobufPackage = "Switcheo.carbon.lockproxy";
 
 /** this line is used by starport scaffolding # proto/tx/message */
 export interface MsgCreate {
@@ -600,7 +600,7 @@ export class MsgClientImpl implements Msg {
   Create(request: MsgCreate): Promise<MsgCreateResponse> {
     const data = MsgCreate.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.polynetworkcosmos.lockproxy.Msg",
+      "Switcheo.carbon.lockproxy.Msg",
       "Create",
       data
     );
@@ -612,7 +612,7 @@ export class MsgClientImpl implements Msg {
   Bind(request: MsgBind): Promise<MsgBindResponse> {
     const data = MsgBind.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.polynetworkcosmos.lockproxy.Msg",
+      "Switcheo.carbon.lockproxy.Msg",
       "Bind",
       data
     );
@@ -622,7 +622,7 @@ export class MsgClientImpl implements Msg {
   Lock(request: MsgLock): Promise<MsgLockResponse> {
     const data = MsgLock.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.polynetworkcosmos.lockproxy.Msg",
+      "Switcheo.carbon.lockproxy.Msg",
       "Lock",
       data
     );

@@ -6,6 +6,48 @@ import { Height } from "../../../../ibc/core/client/v1/client";
 
 export const protobufPackage = "ibc.core.channel.v1";
 
+/** ResponseResultType defines the possible outcomes of the execution of a message */
+export enum ResponseResultType {
+  /** RESPONSE_RESULT_UNSPECIFIED - Default zero value enumeration */
+  RESPONSE_RESULT_UNSPECIFIED = 0,
+  /** RESPONSE_RESULT_NOOP - The message did not call the IBC application callbacks (because, for example, the packet had already been relayed) */
+  RESPONSE_RESULT_NOOP = 1,
+  /** RESPONSE_RESULT_SUCCESS - The message was executed successfully */
+  RESPONSE_RESULT_SUCCESS = 2,
+  UNRECOGNIZED = -1,
+}
+
+export function responseResultTypeFromJSON(object: any): ResponseResultType {
+  switch (object) {
+    case 0:
+    case "RESPONSE_RESULT_UNSPECIFIED":
+      return ResponseResultType.RESPONSE_RESULT_UNSPECIFIED;
+    case 1:
+    case "RESPONSE_RESULT_NOOP":
+      return ResponseResultType.RESPONSE_RESULT_NOOP;
+    case 2:
+    case "RESPONSE_RESULT_SUCCESS":
+      return ResponseResultType.RESPONSE_RESULT_SUCCESS;
+    case -1:
+    case "UNRECOGNIZED":
+    default:
+      return ResponseResultType.UNRECOGNIZED;
+  }
+}
+
+export function responseResultTypeToJSON(object: ResponseResultType): string {
+  switch (object) {
+    case ResponseResultType.RESPONSE_RESULT_UNSPECIFIED:
+      return "RESPONSE_RESULT_UNSPECIFIED";
+    case ResponseResultType.RESPONSE_RESULT_NOOP:
+      return "RESPONSE_RESULT_NOOP";
+    case ResponseResultType.RESPONSE_RESULT_SUCCESS:
+      return "RESPONSE_RESULT_SUCCESS";
+    default:
+      return "UNKNOWN";
+  }
+}
+
 /**
  * MsgChannelOpenInit defines an sdk.Msg to initialize a channel handshake. It
  * is called by a relayer on Chain A.
@@ -119,7 +161,9 @@ export interface MsgRecvPacket {
 }
 
 /** MsgRecvPacketResponse defines the Msg/RecvPacket response type. */
-export interface MsgRecvPacketResponse {}
+export interface MsgRecvPacketResponse {
+  result: ResponseResultType;
+}
 
 /** MsgTimeout receives timed-out packet */
 export interface MsgTimeout {
@@ -131,7 +175,9 @@ export interface MsgTimeout {
 }
 
 /** MsgTimeoutResponse defines the Msg/Timeout response type. */
-export interface MsgTimeoutResponse {}
+export interface MsgTimeoutResponse {
+  result: ResponseResultType;
+}
 
 /** MsgTimeoutOnClose timed-out packet upon counterparty channel closure. */
 export interface MsgTimeoutOnClose {
@@ -144,7 +190,9 @@ export interface MsgTimeoutOnClose {
 }
 
 /** MsgTimeoutOnCloseResponse defines the Msg/TimeoutOnClose response type. */
-export interface MsgTimeoutOnCloseResponse {}
+export interface MsgTimeoutOnCloseResponse {
+  result: ResponseResultType;
+}
 
 /** MsgAcknowledgement receives incoming IBC acknowledgement */
 export interface MsgAcknowledgement {
@@ -156,7 +204,9 @@ export interface MsgAcknowledgement {
 }
 
 /** MsgAcknowledgementResponse defines the Msg/Acknowledgement response type. */
-export interface MsgAcknowledgementResponse {}
+export interface MsgAcknowledgementResponse {
+  result: ResponseResultType;
+}
 
 const baseMsgChannelOpenInit: object = { portId: "", signer: "" };
 
@@ -1286,13 +1336,16 @@ export const MsgRecvPacket = {
   },
 };
 
-const baseMsgRecvPacketResponse: object = {};
+const baseMsgRecvPacketResponse: object = { result: 0 };
 
 export const MsgRecvPacketResponse = {
   encode(
-    _: MsgRecvPacketResponse,
+    message: MsgRecvPacketResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
+    if (message.result !== 0) {
+      writer.uint32(8).int32(message.result);
+    }
     return writer;
   },
 
@@ -1306,6 +1359,9 @@ export const MsgRecvPacketResponse = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.result = reader.int32() as any;
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1314,18 +1370,27 @@ export const MsgRecvPacketResponse = {
     return message;
   },
 
-  fromJSON(_: any): MsgRecvPacketResponse {
+  fromJSON(object: any): MsgRecvPacketResponse {
     const message = { ...baseMsgRecvPacketResponse } as MsgRecvPacketResponse;
+    message.result =
+      object.result !== undefined && object.result !== null
+        ? responseResultTypeFromJSON(object.result)
+        : 0;
     return message;
   },
 
-  toJSON(_: MsgRecvPacketResponse): unknown {
+  toJSON(message: MsgRecvPacketResponse): unknown {
     const obj: any = {};
+    message.result !== undefined &&
+      (obj.result = responseResultTypeToJSON(message.result));
     return obj;
   },
 
-  fromPartial(_: DeepPartial<MsgRecvPacketResponse>): MsgRecvPacketResponse {
+  fromPartial(
+    object: DeepPartial<MsgRecvPacketResponse>
+  ): MsgRecvPacketResponse {
     const message = { ...baseMsgRecvPacketResponse } as MsgRecvPacketResponse;
+    message.result = object.result ?? 0;
     return message;
   },
 };
@@ -1453,13 +1518,16 @@ export const MsgTimeout = {
   },
 };
 
-const baseMsgTimeoutResponse: object = {};
+const baseMsgTimeoutResponse: object = { result: 0 };
 
 export const MsgTimeoutResponse = {
   encode(
-    _: MsgTimeoutResponse,
+    message: MsgTimeoutResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
+    if (message.result !== 0) {
+      writer.uint32(8).int32(message.result);
+    }
     return writer;
   },
 
@@ -1470,6 +1538,9 @@ export const MsgTimeoutResponse = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.result = reader.int32() as any;
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1478,18 +1549,25 @@ export const MsgTimeoutResponse = {
     return message;
   },
 
-  fromJSON(_: any): MsgTimeoutResponse {
+  fromJSON(object: any): MsgTimeoutResponse {
     const message = { ...baseMsgTimeoutResponse } as MsgTimeoutResponse;
+    message.result =
+      object.result !== undefined && object.result !== null
+        ? responseResultTypeFromJSON(object.result)
+        : 0;
     return message;
   },
 
-  toJSON(_: MsgTimeoutResponse): unknown {
+  toJSON(message: MsgTimeoutResponse): unknown {
     const obj: any = {};
+    message.result !== undefined &&
+      (obj.result = responseResultTypeToJSON(message.result));
     return obj;
   },
 
-  fromPartial(_: DeepPartial<MsgTimeoutResponse>): MsgTimeoutResponse {
+  fromPartial(object: DeepPartial<MsgTimeoutResponse>): MsgTimeoutResponse {
     const message = { ...baseMsgTimeoutResponse } as MsgTimeoutResponse;
+    message.result = object.result ?? 0;
     return message;
   },
 };
@@ -1636,13 +1714,16 @@ export const MsgTimeoutOnClose = {
   },
 };
 
-const baseMsgTimeoutOnCloseResponse: object = {};
+const baseMsgTimeoutOnCloseResponse: object = { result: 0 };
 
 export const MsgTimeoutOnCloseResponse = {
   encode(
-    _: MsgTimeoutOnCloseResponse,
+    message: MsgTimeoutOnCloseResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
+    if (message.result !== 0) {
+      writer.uint32(8).int32(message.result);
+    }
     return writer;
   },
 
@@ -1658,6 +1739,9 @@ export const MsgTimeoutOnCloseResponse = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.result = reader.int32() as any;
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1666,24 +1750,31 @@ export const MsgTimeoutOnCloseResponse = {
     return message;
   },
 
-  fromJSON(_: any): MsgTimeoutOnCloseResponse {
+  fromJSON(object: any): MsgTimeoutOnCloseResponse {
     const message = {
       ...baseMsgTimeoutOnCloseResponse,
     } as MsgTimeoutOnCloseResponse;
+    message.result =
+      object.result !== undefined && object.result !== null
+        ? responseResultTypeFromJSON(object.result)
+        : 0;
     return message;
   },
 
-  toJSON(_: MsgTimeoutOnCloseResponse): unknown {
+  toJSON(message: MsgTimeoutOnCloseResponse): unknown {
     const obj: any = {};
+    message.result !== undefined &&
+      (obj.result = responseResultTypeToJSON(message.result));
     return obj;
   },
 
   fromPartial(
-    _: DeepPartial<MsgTimeoutOnCloseResponse>
+    object: DeepPartial<MsgTimeoutOnCloseResponse>
   ): MsgTimeoutOnCloseResponse {
     const message = {
       ...baseMsgTimeoutOnCloseResponse,
     } as MsgTimeoutOnCloseResponse;
+    message.result = object.result ?? 0;
     return message;
   },
 };
@@ -1809,13 +1900,16 @@ export const MsgAcknowledgement = {
   },
 };
 
-const baseMsgAcknowledgementResponse: object = {};
+const baseMsgAcknowledgementResponse: object = { result: 0 };
 
 export const MsgAcknowledgementResponse = {
   encode(
-    _: MsgAcknowledgementResponse,
+    message: MsgAcknowledgementResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
+    if (message.result !== 0) {
+      writer.uint32(8).int32(message.result);
+    }
     return writer;
   },
 
@@ -1831,6 +1925,9 @@ export const MsgAcknowledgementResponse = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.result = reader.int32() as any;
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1839,24 +1936,31 @@ export const MsgAcknowledgementResponse = {
     return message;
   },
 
-  fromJSON(_: any): MsgAcknowledgementResponse {
+  fromJSON(object: any): MsgAcknowledgementResponse {
     const message = {
       ...baseMsgAcknowledgementResponse,
     } as MsgAcknowledgementResponse;
+    message.result =
+      object.result !== undefined && object.result !== null
+        ? responseResultTypeFromJSON(object.result)
+        : 0;
     return message;
   },
 
-  toJSON(_: MsgAcknowledgementResponse): unknown {
+  toJSON(message: MsgAcknowledgementResponse): unknown {
     const obj: any = {};
+    message.result !== undefined &&
+      (obj.result = responseResultTypeToJSON(message.result));
     return obj;
   },
 
   fromPartial(
-    _: DeepPartial<MsgAcknowledgementResponse>
+    object: DeepPartial<MsgAcknowledgementResponse>
   ): MsgAcknowledgementResponse {
     const message = {
       ...baseMsgAcknowledgementResponse,
     } as MsgAcknowledgementResponse;
+    message.result = object.result ?? 0;
     return message;
   },
 };

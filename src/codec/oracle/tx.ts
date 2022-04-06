@@ -1,6 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
+import { StringValue, Int64Value } from "../google/protobuf/wrappers";
 
 export const protobufPackage = "Switcheo.carbon.oracle";
 
@@ -34,6 +35,32 @@ export interface MsgCreateVote {
 }
 
 export interface MsgCreateVoteResponse {}
+
+export interface MsgUpdateOracle {
+  updater: string;
+  updateOracleParams?: UpdateOracleParams;
+}
+
+export interface UpdateOracleParams {
+  id: string;
+  description?: string;
+  status?: string;
+  minTurnoutPercentage?: Long;
+  maxResultAge?: Long;
+  securityType?: string;
+  resultStrategy?: string;
+  resolution?: Long;
+  spec?: string;
+}
+
+export interface MsgUpdateOracleResponse {}
+
+export interface MsgRemoveOracle {
+  creator: string;
+  oracleId: string;
+}
+
+export interface MsgRemoveOracleResponse {}
 
 const baseMsgCreateOracle: object = { creator: "" };
 
@@ -494,11 +521,463 @@ export const MsgCreateVoteResponse = {
   },
 };
 
+const baseMsgUpdateOracle: object = { updater: "" };
+
+export const MsgUpdateOracle = {
+  encode(
+    message: MsgUpdateOracle,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.updater !== "") {
+      writer.uint32(10).string(message.updater);
+    }
+    if (message.updateOracleParams !== undefined) {
+      UpdateOracleParams.encode(
+        message.updateOracleParams,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateOracle {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgUpdateOracle } as MsgUpdateOracle;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.updater = reader.string();
+          break;
+        case 2:
+          message.updateOracleParams = UpdateOracleParams.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdateOracle {
+    const message = { ...baseMsgUpdateOracle } as MsgUpdateOracle;
+    message.updater =
+      object.updater !== undefined && object.updater !== null
+        ? String(object.updater)
+        : "";
+    message.updateOracleParams =
+      object.updateOracleParams !== undefined &&
+      object.updateOracleParams !== null
+        ? UpdateOracleParams.fromJSON(object.updateOracleParams)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: MsgUpdateOracle): unknown {
+    const obj: any = {};
+    message.updater !== undefined && (obj.updater = message.updater);
+    message.updateOracleParams !== undefined &&
+      (obj.updateOracleParams = message.updateOracleParams
+        ? UpdateOracleParams.toJSON(message.updateOracleParams)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgUpdateOracle>): MsgUpdateOracle {
+    const message = { ...baseMsgUpdateOracle } as MsgUpdateOracle;
+    message.updater = object.updater ?? "";
+    message.updateOracleParams =
+      object.updateOracleParams !== undefined &&
+      object.updateOracleParams !== null
+        ? UpdateOracleParams.fromPartial(object.updateOracleParams)
+        : undefined;
+    return message;
+  },
+};
+
+const baseUpdateOracleParams: object = { id: "" };
+
+export const UpdateOracleParams = {
+  encode(
+    message: UpdateOracleParams,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.description !== undefined) {
+      StringValue.encode(
+        { value: message.description! },
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    if (message.status !== undefined) {
+      StringValue.encode(
+        { value: message.status! },
+        writer.uint32(26).fork()
+      ).ldelim();
+    }
+    if (message.minTurnoutPercentage !== undefined) {
+      Int64Value.encode(
+        { value: message.minTurnoutPercentage! },
+        writer.uint32(34).fork()
+      ).ldelim();
+    }
+    if (message.maxResultAge !== undefined) {
+      Int64Value.encode(
+        { value: message.maxResultAge! },
+        writer.uint32(42).fork()
+      ).ldelim();
+    }
+    if (message.securityType !== undefined) {
+      StringValue.encode(
+        { value: message.securityType! },
+        writer.uint32(50).fork()
+      ).ldelim();
+    }
+    if (message.resultStrategy !== undefined) {
+      StringValue.encode(
+        { value: message.resultStrategy! },
+        writer.uint32(58).fork()
+      ).ldelim();
+    }
+    if (message.resolution !== undefined) {
+      Int64Value.encode(
+        { value: message.resolution! },
+        writer.uint32(66).fork()
+      ).ldelim();
+    }
+    if (message.spec !== undefined) {
+      StringValue.encode(
+        { value: message.spec! },
+        writer.uint32(74).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): UpdateOracleParams {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseUpdateOracleParams } as UpdateOracleParams;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        case 2:
+          message.description = StringValue.decode(
+            reader,
+            reader.uint32()
+          ).value;
+          break;
+        case 3:
+          message.status = StringValue.decode(reader, reader.uint32()).value;
+          break;
+        case 4:
+          message.minTurnoutPercentage = Int64Value.decode(
+            reader,
+            reader.uint32()
+          ).value;
+          break;
+        case 5:
+          message.maxResultAge = Int64Value.decode(
+            reader,
+            reader.uint32()
+          ).value;
+          break;
+        case 6:
+          message.securityType = StringValue.decode(
+            reader,
+            reader.uint32()
+          ).value;
+          break;
+        case 7:
+          message.resultStrategy = StringValue.decode(
+            reader,
+            reader.uint32()
+          ).value;
+          break;
+        case 8:
+          message.resolution = Int64Value.decode(reader, reader.uint32()).value;
+          break;
+        case 9:
+          message.spec = StringValue.decode(reader, reader.uint32()).value;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UpdateOracleParams {
+    const message = { ...baseUpdateOracleParams } as UpdateOracleParams;
+    message.id =
+      object.id !== undefined && object.id !== null ? String(object.id) : "";
+    message.description =
+      object.description !== undefined && object.description !== null
+        ? String(object.description)
+        : undefined;
+    message.status =
+      object.status !== undefined && object.status !== null
+        ? String(object.status)
+        : undefined;
+    message.minTurnoutPercentage =
+      object.minTurnoutPercentage !== undefined &&
+      object.minTurnoutPercentage !== null
+        ? Long.fromValue(object.minTurnoutPercentage)
+        : undefined;
+    message.maxResultAge =
+      object.maxResultAge !== undefined && object.maxResultAge !== null
+        ? Long.fromValue(object.maxResultAge)
+        : undefined;
+    message.securityType =
+      object.securityType !== undefined && object.securityType !== null
+        ? String(object.securityType)
+        : undefined;
+    message.resultStrategy =
+      object.resultStrategy !== undefined && object.resultStrategy !== null
+        ? String(object.resultStrategy)
+        : undefined;
+    message.resolution =
+      object.resolution !== undefined && object.resolution !== null
+        ? Long.fromValue(object.resolution)
+        : undefined;
+    message.spec =
+      object.spec !== undefined && object.spec !== null
+        ? String(object.spec)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: UpdateOracleParams): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    message.description !== undefined &&
+      (obj.description = message.description);
+    message.status !== undefined && (obj.status = message.status);
+    message.minTurnoutPercentage !== undefined &&
+      (obj.minTurnoutPercentage = message.minTurnoutPercentage);
+    message.maxResultAge !== undefined &&
+      (obj.maxResultAge = message.maxResultAge);
+    message.securityType !== undefined &&
+      (obj.securityType = message.securityType);
+    message.resultStrategy !== undefined &&
+      (obj.resultStrategy = message.resultStrategy);
+    message.resolution !== undefined && (obj.resolution = message.resolution);
+    message.spec !== undefined && (obj.spec = message.spec);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<UpdateOracleParams>): UpdateOracleParams {
+    const message = { ...baseUpdateOracleParams } as UpdateOracleParams;
+    message.id = object.id ?? "";
+    message.description = object.description ?? undefined;
+    message.status = object.status ?? undefined;
+    message.minTurnoutPercentage =
+      object.minTurnoutPercentage !== undefined &&
+      object.minTurnoutPercentage !== null
+        ? Long.fromValue(object.minTurnoutPercentage)
+        : undefined;
+    message.maxResultAge =
+      object.maxResultAge !== undefined && object.maxResultAge !== null
+        ? Long.fromValue(object.maxResultAge)
+        : undefined;
+    message.securityType = object.securityType ?? undefined;
+    message.resultStrategy = object.resultStrategy ?? undefined;
+    message.resolution =
+      object.resolution !== undefined && object.resolution !== null
+        ? Long.fromValue(object.resolution)
+        : undefined;
+    message.spec = object.spec ?? undefined;
+    return message;
+  },
+};
+
+const baseMsgUpdateOracleResponse: object = {};
+
+export const MsgUpdateOracleResponse = {
+  encode(
+    _: MsgUpdateOracleResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUpdateOracleResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgUpdateOracleResponse,
+    } as MsgUpdateOracleResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgUpdateOracleResponse {
+    const message = {
+      ...baseMsgUpdateOracleResponse,
+    } as MsgUpdateOracleResponse;
+    return message;
+  },
+
+  toJSON(_: MsgUpdateOracleResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgUpdateOracleResponse>
+  ): MsgUpdateOracleResponse {
+    const message = {
+      ...baseMsgUpdateOracleResponse,
+    } as MsgUpdateOracleResponse;
+    return message;
+  },
+};
+
+const baseMsgRemoveOracle: object = { creator: "", oracleId: "" };
+
+export const MsgRemoveOracle = {
+  encode(
+    message: MsgRemoveOracle,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.oracleId !== "") {
+      writer.uint32(18).string(message.oracleId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgRemoveOracle {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgRemoveOracle } as MsgRemoveOracle;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.oracleId = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgRemoveOracle {
+    const message = { ...baseMsgRemoveOracle } as MsgRemoveOracle;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.oracleId =
+      object.oracleId !== undefined && object.oracleId !== null
+        ? String(object.oracleId)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgRemoveOracle): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.oracleId !== undefined && (obj.oracleId = message.oracleId);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgRemoveOracle>): MsgRemoveOracle {
+    const message = { ...baseMsgRemoveOracle } as MsgRemoveOracle;
+    message.creator = object.creator ?? "";
+    message.oracleId = object.oracleId ?? "";
+    return message;
+  },
+};
+
+const baseMsgRemoveOracleResponse: object = {};
+
+export const MsgRemoveOracleResponse = {
+  encode(
+    _: MsgRemoveOracleResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgRemoveOracleResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgRemoveOracleResponse,
+    } as MsgRemoveOracleResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgRemoveOracleResponse {
+    const message = {
+      ...baseMsgRemoveOracleResponse,
+    } as MsgRemoveOracleResponse;
+    return message;
+  },
+
+  toJSON(_: MsgRemoveOracleResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgRemoveOracleResponse>
+  ): MsgRemoveOracleResponse {
+    const message = {
+      ...baseMsgRemoveOracleResponse,
+    } as MsgRemoveOracleResponse;
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
   /** this line is used by starport scaffolding # proto/tx/rpc */
   CreateOracle(request: MsgCreateOracle): Promise<MsgCreateOracleResponse>;
   CreateVote(request: MsgCreateVote): Promise<MsgCreateVoteResponse>;
+  UpdateOracle(request: MsgUpdateOracle): Promise<MsgUpdateOracleResponse>;
+  RemoveOracle(request: MsgRemoveOracle): Promise<MsgRemoveOracleResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -507,6 +986,8 @@ export class MsgClientImpl implements Msg {
     this.rpc = rpc;
     this.CreateOracle = this.CreateOracle.bind(this);
     this.CreateVote = this.CreateVote.bind(this);
+    this.UpdateOracle = this.UpdateOracle.bind(this);
+    this.RemoveOracle = this.RemoveOracle.bind(this);
   }
   CreateOracle(request: MsgCreateOracle): Promise<MsgCreateOracleResponse> {
     const data = MsgCreateOracle.encode(request).finish();
@@ -529,6 +1010,30 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgCreateVoteResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  UpdateOracle(request: MsgUpdateOracle): Promise<MsgUpdateOracleResponse> {
+    const data = MsgUpdateOracle.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.oracle.Msg",
+      "UpdateOracle",
+      data
+    );
+    return promise.then((data) =>
+      MsgUpdateOracleResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  RemoveOracle(request: MsgRemoveOracle): Promise<MsgRemoveOracleResponse> {
+    const data = MsgRemoveOracle.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.oracle.Msg",
+      "RemoveOracle",
+      data
+    );
+    return promise.then((data) =>
+      MsgRemoveOracleResponse.decode(new _m0.Reader(data))
     );
   }
 }

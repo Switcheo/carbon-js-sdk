@@ -2,7 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 
-export const protobufPackage = "Switcheo.polynetworkcosmos.ccm";
+export const protobufPackage = "Switcheo.carbon.ccm";
 
 /** GenesisState defines the ccm module's genesis state. */
 export interface GenesisState {

@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { APIOrder, Order } from "../order/order";
+import { Order } from "../order/order";
 import { PageRequest, PageResponse } from "../query/pagination";
 
 export const protobufPackage = "Switcheo.carbon.order";
@@ -12,7 +12,7 @@ export interface QueryGetOrderRequest {
 }
 
 export interface QueryGetOrderResponse {
-  order?: APIOrder;
+  order?: Order;
 }
 
 export interface QueryAllOrderRequest {
@@ -24,7 +24,7 @@ export interface QueryAllOrderRequest {
 }
 
 export interface QueryAllOrderResponse {
-  orders: APIOrder[];
+  orders: Order[];
   pagination?: PageResponse;
 }
 
@@ -99,7 +99,7 @@ export const QueryGetOrderResponse = {
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.order !== undefined) {
-      APIOrder.encode(message.order, writer.uint32(10).fork()).ldelim();
+      Order.encode(message.order, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -115,7 +115,7 @@ export const QueryGetOrderResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.order = APIOrder.decode(reader, reader.uint32());
+          message.order = Order.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -129,7 +129,7 @@ export const QueryGetOrderResponse = {
     const message = { ...baseQueryGetOrderResponse } as QueryGetOrderResponse;
     message.order =
       object.order !== undefined && object.order !== null
-        ? APIOrder.fromJSON(object.order)
+        ? Order.fromJSON(object.order)
         : undefined;
     return message;
   },
@@ -137,7 +137,7 @@ export const QueryGetOrderResponse = {
   toJSON(message: QueryGetOrderResponse): unknown {
     const obj: any = {};
     message.order !== undefined &&
-      (obj.order = message.order ? APIOrder.toJSON(message.order) : undefined);
+      (obj.order = message.order ? Order.toJSON(message.order) : undefined);
     return obj;
   },
 
@@ -147,7 +147,7 @@ export const QueryGetOrderResponse = {
     const message = { ...baseQueryGetOrderResponse } as QueryGetOrderResponse;
     message.order =
       object.order !== undefined && object.order !== null
-        ? APIOrder.fromPartial(object.order)
+        ? Order.fromPartial(object.order)
         : undefined;
     return message;
   },
@@ -277,7 +277,7 @@ export const QueryAllOrderResponse = {
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     for (const v of message.orders) {
-      APIOrder.encode(v!, writer.uint32(10).fork()).ldelim();
+      Order.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.pagination !== undefined) {
       PageResponse.encode(
@@ -300,7 +300,7 @@ export const QueryAllOrderResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.orders.push(APIOrder.decode(reader, reader.uint32()));
+          message.orders.push(Order.decode(reader, reader.uint32()));
           break;
         case 2:
           message.pagination = PageResponse.decode(reader, reader.uint32());
@@ -315,9 +315,7 @@ export const QueryAllOrderResponse = {
 
   fromJSON(object: any): QueryAllOrderResponse {
     const message = { ...baseQueryAllOrderResponse } as QueryAllOrderResponse;
-    message.orders = (object.orders ?? []).map((e: any) =>
-      APIOrder.fromJSON(e)
-    );
+    message.orders = (object.orders ?? []).map((e: any) => Order.fromJSON(e));
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
         ? PageResponse.fromJSON(object.pagination)
@@ -328,9 +326,7 @@ export const QueryAllOrderResponse = {
   toJSON(message: QueryAllOrderResponse): unknown {
     const obj: any = {};
     if (message.orders) {
-      obj.orders = message.orders.map((e) =>
-        e ? APIOrder.toJSON(e) : undefined
-      );
+      obj.orders = message.orders.map((e) => (e ? Order.toJSON(e) : undefined));
     } else {
       obj.orders = [];
     }
@@ -345,7 +341,7 @@ export const QueryAllOrderResponse = {
     object: DeepPartial<QueryAllOrderResponse>
   ): QueryAllOrderResponse {
     const message = { ...baseQueryAllOrderResponse } as QueryAllOrderResponse;
-    message.orders = (object.orders ?? []).map((e) => APIOrder.fromPartial(e));
+    message.orders = (object.orders ?? []).map((e) => Order.fromPartial(e));
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
         ? PageResponse.fromPartial(object.pagination)

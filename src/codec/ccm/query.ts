@@ -2,7 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 
-export const protobufPackage = "Switcheo.polynetworkcosmos.ccm";
+export const protobufPackage = "Switcheo.carbon.ccm";
 
 /** this line is used by starport scaffolding # 3 */
 export interface QueryCheckModuleContractRequest {
@@ -216,7 +216,7 @@ export class QueryClientImpl implements Query {
   ): Promise<QueryCheckModuleContractResponse> {
     const data = QueryCheckModuleContractRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.polynetworkcosmos.ccm.Query",
+      "Switcheo.carbon.ccm.Query",
       "CheckModuleContract",
       data
     );

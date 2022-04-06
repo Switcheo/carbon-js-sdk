@@ -11,9 +11,12 @@ export interface Block {
   proposerAddress: string;
 }
 
-function createBaseBlock(): Block {
-  return { blockHeight: Long.UZERO, time: "", count: 0, proposerAddress: "" };
-}
+const baseBlock: object = {
+  blockHeight: Long.UZERO,
+  time: "",
+  count: 0,
+  proposerAddress: "",
+};
 
 export const Block = {
   encode(message: Block, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
@@ -35,7 +38,7 @@ export const Block = {
   decode(input: _m0.Reader | Uint8Array, length?: number): Block {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseBlock();
+    const message = { ...baseBlock } as Block;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -60,7 +63,7 @@ export const Block = {
   },
 
   fromJSON(object: any): Block {
-    const message = createBaseBlock();
+    const message = { ...baseBlock } as Block;
     message.blockHeight =
       object.blockHeight !== undefined && object.blockHeight !== null
         ? Long.fromString(object.blockHeight)
@@ -85,14 +88,14 @@ export const Block = {
     message.blockHeight !== undefined &&
       (obj.blockHeight = (message.blockHeight || Long.UZERO).toString());
     message.time !== undefined && (obj.time = message.time);
-    message.count !== undefined && (obj.count = Math.round(message.count));
+    message.count !== undefined && (obj.count = message.count);
     message.proposerAddress !== undefined &&
       (obj.proposerAddress = message.proposerAddress);
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<Block>, I>>(object: I): Block {
-    const message = createBaseBlock();
+  fromPartial(object: DeepPartial<Block>): Block {
+    const message = { ...baseBlock } as Block;
     message.blockHeight =
       object.blockHeight !== undefined && object.blockHeight !== null
         ? Long.fromValue(object.blockHeight)
@@ -112,7 +115,6 @@ type Builtin =
   | number
   | boolean
   | undefined;
-
 export type DeepPartial<T> = T extends Builtin
   ? T
   : T extends Long
@@ -124,14 +126,6 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
-
-type KeysOfUnion<T> = T extends T ? keyof T : never;
-export type Exact<P, I extends P> = P extends Builtin
-  ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
-        Exclude<keyof I, KeysOfUnion<P>>,
-        never
-      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

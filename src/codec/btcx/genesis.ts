@@ -2,7 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 
-export const protobufPackage = "Switcheo.polynetworkcosmos.btcx";
+export const protobufPackage = "Switcheo.carbon.btcx";
 
 /** GenesisState defines the btcx module's genesis state. */
 export interface GenesisState {}

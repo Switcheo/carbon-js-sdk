@@ -3,7 +3,7 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { ConsensusPeers } from "../headersync/consensus_peers";
 
-export const protobufPackage = "Switcheo.polynetworkcosmos.headersync";
+export const protobufPackage = "Switcheo.carbon.headersync";
 
 export interface QueryGetConsensusPeersRequest {
   chainId: Long;
@@ -176,7 +176,7 @@ export class QueryClientImpl implements Query {
   ): Promise<QueryGetConsensusPeersResponse> {
     const data = QueryGetConsensusPeersRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.polynetworkcosmos.headersync.Query",
+      "Switcheo.carbon.headersync.Query",
       "ConsensusPeers",
       data
     );
