@@ -16,7 +16,7 @@ import "./_setup";
   console.log("connected sdk");
   
   const result = await connectedSDK.admin.syncToken({
-	denom: "swth",
+	  denom: "swth",
   })
   console.log(result)
 })().catch(console.error).finally(() => process.exit(0));

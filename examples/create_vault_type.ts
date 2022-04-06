@@ -17,7 +17,7 @@ import "./_setup";
   console.log("connected sdk");
   
   const result = await connectedSDK.admin.createVaultType({
-	collateralDenom: "swth",
+	  collateralDenom: "swth",
     debtDenom: "eth",
     collateralizationRatio: new BigNumber(0.01)
   })

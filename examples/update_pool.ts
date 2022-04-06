@@ -16,9 +16,10 @@ import "./_setup";
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
   
-  const result = await connectedSDK.admin.changeNumQuotes({
-	poolId: 1,
-    numQuotes: 15,
+  const result = await connectedSDK.admin.updatePool({
+	  poolId: 1,
+    swapFee: new BigNumber(0.001),
+    numQuotes: 12,
   })
   console.log(result)
 })().catch(console.error).finally(() => process.exit(0));

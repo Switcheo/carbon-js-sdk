@@ -321,6 +321,87 @@ export const CancelSoftwareUpgradeProposal = {
   },
 };
 
+/**
+ * ModuleVersion specifies a module and its consensus version.
+ *
+ * Since: cosmos-sdk 0.43
+ */
+ export interface ModuleVersion {
+  /** name of the app module */
+  name: string;
+  /** consensus version of the app module */
+  version: Long;
+}
+
+const baseModuleVersion: object = { name: "", version: Long.UZERO };
+
+export const ModuleVersion = {
+  encode(
+    message: ModuleVersion,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.name !== "") {
+      writer.uint32(10).string(message.name);
+    }
+    if (!message.version.isZero()) {
+      writer.uint32(16).uint64(message.version);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ModuleVersion {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseModuleVersion } as ModuleVersion;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.name = reader.string();
+          break;
+        case 2:
+          message.version = reader.uint64() as Long;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ModuleVersion {
+    const message = { ...baseModuleVersion } as ModuleVersion;
+    message.name =
+      object.name !== undefined && object.name !== null
+        ? String(object.name)
+        : "";
+    message.version =
+      object.version !== undefined && object.version !== null
+        ? Long.fromString(object.version)
+        : Long.UZERO;
+    return message;
+  },
+
+  toJSON(message: ModuleVersion): unknown {
+    const obj: any = {};
+    message.name !== undefined && (obj.name = message.name);
+    message.version !== undefined &&
+      (obj.version = (message.version || Long.UZERO).toString());
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<ModuleVersion>): ModuleVersion {
+    const message = { ...baseModuleVersion } as ModuleVersion;
+    message.name = object.name ?? "";
+    message.version =
+      object.version !== undefined && object.version !== null
+        ? Long.fromValue(object.version)
+        : Long.UZERO;
+    return message;
+  },
+};
+
 type Builtin =
   | Date
   | Function

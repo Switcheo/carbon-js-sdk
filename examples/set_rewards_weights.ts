@@ -16,7 +16,7 @@ import "./_setup";
   console.log("connected sdk");
   
   const result = await connectedSDK.admin.setRewardsWeights([{
-	poolId: 1,
+	  poolId: 1,
     weight: 100,
   }])
   console.log(result)
