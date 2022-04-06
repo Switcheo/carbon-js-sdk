@@ -2,7 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 
-export const protobufPackage = "Switcheo.polynetworkcosmos.ccm";
+export const protobufPackage = "Switcheo.carbon.ccm";
 
 /** this line is used by starport scaffolding # proto/tx/message */
 export interface MsgProcessCrossChainTx {
@@ -218,7 +218,7 @@ export class MsgClientImpl implements Msg {
   ): Promise<MsgProcessCrossChainTxResponse> {
     const data = MsgProcessCrossChainTx.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.polynetworkcosmos.ccm.Msg",
+      "Switcheo.carbon.ccm.Msg",
       "Process",
       data
     );

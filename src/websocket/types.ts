@@ -26,6 +26,7 @@ export enum WSRequest {
   OpenOrders = 'get_open_orders',
   AccountTrades = 'get_account_trades',
   Leverages = 'get_leverages',
+  Positions = 'get_positions',
   OpenPositions = 'get_open_positions',
   ClosedPosition = 'get_closed_positions',
   Balances = 'get_balances',

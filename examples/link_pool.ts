@@ -16,7 +16,7 @@ import "./_setup";
   console.log("connected sdk");
   
   const result = await connectedSDK.admin.linkPool({
-	poolId: 1,
+	  poolId: 1,
     market: "swth_eth",
   })
   console.log(result)

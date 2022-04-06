@@ -5,7 +5,6 @@ import { Coin } from "@carbon-sdk/codec/cosmos/base/v1beta1/coin";
 import { Description } from "@carbon-sdk/codec/cosmos/staking/v1beta1/staking";
 import { MsgCreateValidator, MsgEditValidator } from "@carbon-sdk/codec/cosmos/staking/v1beta1/tx";
 import { MsgSetFee } from "@carbon-sdk/codec/fee/tx";
-import { Duration } from "@carbon-sdk/codec/google/protobuf/duration";
 import { MsgLinkPool, MsgSetCommitmentCurve, MsgSetRewardCurve, MsgSetRewardsWeights, MsgUnlinkPool, MsgUpdatePool } from "@carbon-sdk/codec/liquiditypool/tx";
 import { MsgCreateMarket } from "@carbon-sdk/codec/market/tx";
 import { MsgCreateOracle } from "@carbon-sdk/codec/oracle/tx";
@@ -122,8 +121,14 @@ export class AdminModule extends BaseModule {
     const wallet = this.getWallet();
 
     const value = MsgCreateMarket.fromPartial({
-        creator: wallet.bech32Address,
-        market: transformCreateMarketParams(params)
+      creator: wallet.bech32Address,
+      marketType: params.marketType,
+      base: params.base,
+      quote: params.quote,
+      currentBasePriceUsd: params.currentBasePriceUsd.toString(10),
+      currentQuotePriceUsd: params.currentQuotePriceUsd.toString(10),
+      indexOracleId: params.indexOracleId ?? "",
+      ...params.expiryTime && { expiryTime: params.expiryTime },
     })
 
     return await wallet.sendTx({
@@ -135,17 +140,23 @@ export class AdminModule extends BaseModule {
   public async createMarkets(params: AdminModule.CreateMarketParams[]) {
     const wallet = this.getWallet();
 
-    const msgs = params.map(param => {
+    const msgs = params.map((param: AdminModule.CreateMarketParams) => {
       const value = MsgCreateMarket.fromPartial({
-          creator: wallet.bech32Address,
-          market: transformCreateMarketParams(param)
-      })
+        creator: wallet.bech32Address,
+        marketType: param.marketType,
+        base: param.base,
+        quote: param.quote,
+        currentBasePriceUsd: param.currentBasePriceUsd.toString(10),
+        currentQuotePriceUsd: param.currentQuotePriceUsd.toString(10),
+        indexOracleId: param.indexOracleId ?? "",
+        ...param.expiryTime && { expiryTime: param.expiryTime },
+      });
 
       return {
         typeUrl: CarbonTx.Types.MsgCreateMarket,
         value,
-      }
-    })
+      };
+    });
 
     return await wallet.sendTxs(msgs, CarbonTx.DEFAULT_SIGN_OPTS);
   }
@@ -402,35 +413,15 @@ export namespace AdminModule {
   }
 
   export interface CreateMarketParams {
-    name: string
-    displayName: string
-    description: string
-    marketType: string
-    base: string
-    quote: string
-    basePrecision?: number
-    quotePrecision?: number
-    lotSize: BigNumber
-    tickSize: BigNumber
-    minQuantity: BigNumber
-    makerFee: BigNumber
-    takerFee: BigNumber
-    createdBlockHeight?: number
-    riskStepSize: BigNumber
-    initialMarginBase: BigNumber
-    initialMarginStep: BigNumber
-    maintenanceMarginRatio: BigNumber
-    maxLiquidationOrderTicket: BigNumber
-    maxLiquidationOrderDuration: Duration
-    impactSize: BigNumber
-    markPriceBand: number
-    lastPriceProtectedBand: number
-    indexOracleId: string
-    expiryTime: Date
-    isSettled?: boolean
-    isActive?: boolean
-    closedBlockHeight?: number
-    tradingBandwidth: number
+    marketType: string;
+    base: string;
+    quote: string;
+    currentBasePriceUsd: BigNumber;
+    currentQuotePriceUsd: BigNumber;
+
+    /** futures only */
+    indexOracleId?: string;
+    expiryTime?: Date;
   }
 
   export interface CreateVaultTypeParams {
@@ -544,40 +535,6 @@ export function transfromSyncTokenParams(msg: AdminModule.SyncTokenParams, addre
   return {
     syncer: address,
     denom: msg.denom,
-  }
-}
-
-export function transformCreateMarketParams(msg: AdminModule.CreateMarketParams) {
-  return {
-    name: msg.name,
-    displayName: msg.displayName,
-    description: msg.description,
-    marketType: msg.marketType,
-    base: msg.base,
-    quote: msg.quote,
-    basePrecision: new Long(msg.basePrecision || 0),
-    quotePrecision: new Long(msg.quotePrecision || 0),
-    lotSize: msg.lotSize.toString(10),
-    tickSize: msg.tickSize.shiftedBy(18).toString(10),
-    minQuantity: msg.minQuantity.toString(10),
-    makerFee: msg.makerFee.shiftedBy(18).toString(10),
-    takerFee: msg.takerFee.shiftedBy(18).toString(10),
-    createdBlockHeight: new Long(msg.createdBlockHeight || 0),
-    riskStepSize: msg.riskStepSize.toString(10),
-    initialMarginBase: msg.initialMarginBase.shiftedBy(18).toString(10),
-    initialMarginStep: msg.initialMarginStep.shiftedBy(18).toString(10),
-    maintenanceMarginRatio: msg.maintenanceMarginRatio.shiftedBy(18).toString(10),
-    maxLiquidationOrderTicket: msg.maxLiquidationOrderTicket.toString(10),
-    maxLiquidationOrderDuration: msg.maxLiquidationOrderDuration,
-    impactSize: msg.impactSize.toString(10),
-    markPriceBand: msg.markPriceBand,
-    lastPriceProtectedBand: msg.lastPriceProtectedBand,
-    indexOracleId: msg.indexOracleId,
-    expiryTime: msg.expiryTime,
-    isSettled: !!msg.isSettled,
-    isActive: !!msg.isActive,
-    closedBlockHeight: new Long(msg.createdBlockHeight || 0),
-    tradingBandwidth: msg.tradingBandwidth,
   }
 }
 

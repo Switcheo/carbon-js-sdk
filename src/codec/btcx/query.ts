@@ -3,7 +3,7 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { DenomInfo } from "../btcx/denom_info";
 
-export const protobufPackage = "Switcheo.polynetworkcosmos.btcx";
+export const protobufPackage = "Switcheo.carbon.btcx";
 
 /** this line is used by starport scaffolding # 3 */
 export interface QueryGetDenomInfoRequest {
@@ -367,7 +367,7 @@ export class QueryClientImpl implements Query {
   ): Promise<QueryGetDenomInfoResponse> {
     const data = QueryGetDenomInfoRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.polynetworkcosmos.btcx.Query",
+      "Switcheo.carbon.btcx.Query",
       "DenomInfo",
       data
     );
@@ -381,7 +381,7 @@ export class QueryClientImpl implements Query {
   ): Promise<QueryGetDenomCrossChainInfoResponse> {
     const data = QueryGetDenomCrossChainInfoRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.polynetworkcosmos.btcx.Query",
+      "Switcheo.carbon.btcx.Query",
       "DenomCrossChainInfo",
       data
     );

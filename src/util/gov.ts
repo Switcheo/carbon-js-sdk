@@ -1,5 +1,5 @@
 import {
-  CreateMarketProposal, CreateOracleProposal, CreateTokenProposal, LinkPoolProposal,
+  CreateOracleProposal, CreateTokenProposal, LinkPoolProposal,
   SetCommitmentCurveProposal, SetMsgFeeProposal, SetRewardCurveProposal, SetRewardsWeightsProposal,
   SettlementPriceProposal, UnlinkPoolProposal, UpdateMarketProposal, UpdatePoolProposal
 } from "@carbon-sdk/codec";
@@ -25,7 +25,6 @@ export enum ProposalTypes {
   SetRewardCurve = "/Switcheo.carbon.liquiditypool.SetRewardCurveProposal",
   SetRewardsWeights = "/Switcheo.carbon.liquiditypool.SetRewardsWeightsProposal",
   SetCommitmentCurve = "/Switcheo.carbon.liquiditypool.SetCommitmentCurveProposal",
-  CreateMarket = "/Switcheo.carbon.market.CreateMarketProposal",
   UpdateMarket = "/Switcheo.carbon.market.UpdateMarketProposal",
   SettlementPrice = "/Switcheo.carbon.pricing.SettlementPriceProposal",
 };
@@ -74,11 +73,6 @@ export const decodeContent = (content?: Any): PropDecoded => {
       return {
         ...content,
         value: UpdatePoolProposal.decode(content.value),
-      };
-    case ProposalTypes.CreateMarket:
-      return {
-        ...content,
-        value: CreateMarketProposal.decode(content.value),
       };
     case ProposalTypes.CreateOracle:
       return {

@@ -2,7 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 
-export const protobufPackage = "Switcheo.polynetworkcosmos.lockproxy";
+export const protobufPackage = "Switcheo.carbon.lockproxy";
 
 /** GenesisState defines the lockproxy module's genesis state. */
 export interface GenesisState {

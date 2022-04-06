@@ -1,6 +1,6 @@
 import { MsgSubmitProposal } from "@carbon-sdk/codec/cosmos/gov/v1beta1/tx";
 import {
-  CreateMarketProposal, CreateOracleProposal,
+  CreateOracleProposal,
   CreateTokenProposal, LinkPoolProposal, SetCommitmentCurveProposal, 
   SetMsgFeeProposal, SetRewardCurveProposal, SetRewardsWeightsProposal, UnlinkPoolProposal,
   SettlementPriceProposal, UpdateMarketProposal, UpdatePoolProposal,
@@ -28,7 +28,6 @@ const ContentTypes: TypeUtils.SimpleMap<string> = {
   [GovUtils.ProposalTypes.UpdatePool]: "liquiditypool/UpdatePoolProposal",
   [GovUtils.ProposalTypes.LinkPool]: "liquiditypool/LinkPoolProposal",
   [GovUtils.ProposalTypes.UnlinkPool]: "liquiditypool/UnlinkPoolProposal",
-  [GovUtils.ProposalTypes.CreateMarket]: "market/CreateMarketProposal",
   [GovUtils.ProposalTypes.UpdateMarket]: "market/UpdateMarketProposal",
   [GovUtils.ProposalTypes.CreateOracle]: "oracle/CreateOracleProposal",
   [GovUtils.ProposalTypes.SettlementPrice]: "pricing/SettlementPriceProposal",
@@ -223,16 +222,6 @@ const checkDecodeProposal = (content: any, amino: AminoValueMap): AminoProposalR
   const newAmino = { ...amino };
 
   switch (content.typeUrl) {
-    case GovUtils.ProposalTypes.CreateMarket:
-      newAmino.content = { ...CreateMarket };
-      const prunedContent = pruneAmino(newContent.value, CreateMarket.value.msg);
-      return {
-        newContent: {
-          type: ContentTypes[content.typeUrl],
-          value: prunedContent,
-        },
-        newAmino,
-      };
     case GovUtils.ProposalTypes.UpdatePool:
       newAmino.content = { ...UpdatePool };
       break;
@@ -277,21 +266,6 @@ const checkDecodeProposal = (content: any, amino: AminoValueMap): AminoProposalR
 
 const checkEncodeProposal = (content: any, amino: AminoValueMap): DirectProposalRes => {
   switch (content.type) {
-    case ContentTypes[GovUtils.ProposalTypes.CreateMarket]:
-      const createMarketMsg = preProcessAmino(content.value.msg, CreateMarket.value.msg);
-      const createMarketProp = CreateMarketProposal.fromPartial({
-        ...content.value,
-        msg: createMarketMsg,
-      });
-      return {
-        newContent: {
-          typeUrl: GovUtils.ProposalTypes.CreateMarket,
-          value: CreateMarketProposal.encode(createMarketProp).finish(),
-        },
-        newAmino: {
-          ...amino,
-        },
-      };
     case ContentTypes[GovUtils.ProposalTypes.UpdatePool]:
       const updatePoolMsg = preProcessAmino(content.value.msg, UpdatePool.value.msg);
       const updatePoolProp = UpdatePoolProposal.fromPartial({

@@ -2,7 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 
-export const protobufPackage = "Switcheo.polynetworkcosmos.lockproxy";
+export const protobufPackage = "Switcheo.carbon.lockproxy";
 
 /** this line is used by starport scaffolding # 3 */
 export interface QueryGetProxyRequest {
@@ -147,7 +147,7 @@ export class QueryClientImpl implements Query {
   Proxy(request: QueryGetProxyRequest): Promise<QueryGetProxyResponse> {
     const data = QueryGetProxyRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.polynetworkcosmos.lockproxy.Query",
+      "Switcheo.carbon.lockproxy.Query",
       "Proxy",
       data
     );

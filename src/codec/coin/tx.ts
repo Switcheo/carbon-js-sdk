@@ -2,6 +2,11 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Bridge } from "../coin/bridge";
+import {
+  BoolValue,
+  StringValue,
+  Int64Value,
+} from "../google/protobuf/wrappers";
 
 export const protobufPackage = "Switcheo.carbon.coin";
 
@@ -118,6 +123,22 @@ export interface MsgRemoveBridge {
 }
 
 export interface MsgRemoveBridgeResponse {}
+
+export interface MsgUpdateToken {
+  updater: string;
+  denom: string;
+  updateTokenParams?: UpdateTokenParams;
+}
+
+export interface UpdateTokenParams {
+  isActive?: boolean;
+  isCollateral?: boolean;
+  name?: string;
+  symbol?: string;
+  decimals?: Long;
+}
+
+export interface MsgUpdateTokenResponse {}
 
 const baseMsgCreateToken: object = { creator: "" };
 
@@ -1848,6 +1869,264 @@ export const MsgRemoveBridgeResponse = {
   },
 };
 
+const baseMsgUpdateToken: object = { updater: "", denom: "" };
+
+export const MsgUpdateToken = {
+  encode(
+    message: MsgUpdateToken,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.updater !== "") {
+      writer.uint32(10).string(message.updater);
+    }
+    if (message.denom !== "") {
+      writer.uint32(18).string(message.denom);
+    }
+    if (message.updateTokenParams !== undefined) {
+      UpdateTokenParams.encode(
+        message.updateTokenParams,
+        writer.uint32(26).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateToken {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgUpdateToken } as MsgUpdateToken;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.updater = reader.string();
+          break;
+        case 2:
+          message.denom = reader.string();
+          break;
+        case 3:
+          message.updateTokenParams = UpdateTokenParams.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdateToken {
+    const message = { ...baseMsgUpdateToken } as MsgUpdateToken;
+    message.updater =
+      object.updater !== undefined && object.updater !== null
+        ? String(object.updater)
+        : "";
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
+    message.updateTokenParams =
+      object.updateTokenParams !== undefined &&
+      object.updateTokenParams !== null
+        ? UpdateTokenParams.fromJSON(object.updateTokenParams)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: MsgUpdateToken): unknown {
+    const obj: any = {};
+    message.updater !== undefined && (obj.updater = message.updater);
+    message.denom !== undefined && (obj.denom = message.denom);
+    message.updateTokenParams !== undefined &&
+      (obj.updateTokenParams = message.updateTokenParams
+        ? UpdateTokenParams.toJSON(message.updateTokenParams)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgUpdateToken>): MsgUpdateToken {
+    const message = { ...baseMsgUpdateToken } as MsgUpdateToken;
+    message.updater = object.updater ?? "";
+    message.denom = object.denom ?? "";
+    message.updateTokenParams =
+      object.updateTokenParams !== undefined &&
+      object.updateTokenParams !== null
+        ? UpdateTokenParams.fromPartial(object.updateTokenParams)
+        : undefined;
+    return message;
+  },
+};
+
+const baseUpdateTokenParams: object = {};
+
+export const UpdateTokenParams = {
+  encode(
+    message: UpdateTokenParams,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.isActive !== undefined) {
+      BoolValue.encode(
+        { value: message.isActive! },
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    if (message.isCollateral !== undefined) {
+      BoolValue.encode(
+        { value: message.isCollateral! },
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    if (message.name !== undefined) {
+      StringValue.encode(
+        { value: message.name! },
+        writer.uint32(26).fork()
+      ).ldelim();
+    }
+    if (message.symbol !== undefined) {
+      StringValue.encode(
+        { value: message.symbol! },
+        writer.uint32(34).fork()
+      ).ldelim();
+    }
+    if (message.decimals !== undefined) {
+      Int64Value.encode(
+        { value: message.decimals! },
+        writer.uint32(42).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): UpdateTokenParams {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseUpdateTokenParams } as UpdateTokenParams;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.isActive = BoolValue.decode(reader, reader.uint32()).value;
+          break;
+        case 2:
+          message.isCollateral = BoolValue.decode(
+            reader,
+            reader.uint32()
+          ).value;
+          break;
+        case 3:
+          message.name = StringValue.decode(reader, reader.uint32()).value;
+          break;
+        case 4:
+          message.symbol = StringValue.decode(reader, reader.uint32()).value;
+          break;
+        case 5:
+          message.decimals = Int64Value.decode(reader, reader.uint32()).value;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UpdateTokenParams {
+    const message = { ...baseUpdateTokenParams } as UpdateTokenParams;
+    message.isActive =
+      object.isActive !== undefined && object.isActive !== null
+        ? Boolean(object.isActive)
+        : undefined;
+    message.isCollateral =
+      object.isCollateral !== undefined && object.isCollateral !== null
+        ? Boolean(object.isCollateral)
+        : undefined;
+    message.name =
+      object.name !== undefined && object.name !== null
+        ? String(object.name)
+        : undefined;
+    message.symbol =
+      object.symbol !== undefined && object.symbol !== null
+        ? String(object.symbol)
+        : undefined;
+    message.decimals =
+      object.decimals !== undefined && object.decimals !== null
+        ? Long.fromValue(object.decimals)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: UpdateTokenParams): unknown {
+    const obj: any = {};
+    message.isActive !== undefined && (obj.isActive = message.isActive);
+    message.isCollateral !== undefined &&
+      (obj.isCollateral = message.isCollateral);
+    message.name !== undefined && (obj.name = message.name);
+    message.symbol !== undefined && (obj.symbol = message.symbol);
+    message.decimals !== undefined && (obj.decimals = message.decimals);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<UpdateTokenParams>): UpdateTokenParams {
+    const message = { ...baseUpdateTokenParams } as UpdateTokenParams;
+    message.isActive = object.isActive ?? undefined;
+    message.isCollateral = object.isCollateral ?? undefined;
+    message.name = object.name ?? undefined;
+    message.symbol = object.symbol ?? undefined;
+    message.decimals =
+      object.decimals !== undefined && object.decimals !== null
+        ? Long.fromValue(object.decimals)
+        : undefined;
+    return message;
+  },
+};
+
+const baseMsgUpdateTokenResponse: object = {};
+
+export const MsgUpdateTokenResponse = {
+  encode(
+    _: MsgUpdateTokenResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUpdateTokenResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgUpdateTokenResponse } as MsgUpdateTokenResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgUpdateTokenResponse {
+    const message = { ...baseMsgUpdateTokenResponse } as MsgUpdateTokenResponse;
+    return message;
+  },
+
+  toJSON(_: MsgUpdateTokenResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(_: DeepPartial<MsgUpdateTokenResponse>): MsgUpdateTokenResponse {
+    const message = { ...baseMsgUpdateTokenResponse } as MsgUpdateTokenResponse;
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
   /** this line is used by starport scaffolding # proto/tx/rpc */
@@ -1868,6 +2147,7 @@ export interface Msg {
     request: MsgEditBridgeName
   ): Promise<MsgEditBridgeNameResponse>;
   RemoveBridge(request: MsgRemoveBridge): Promise<MsgRemoveBridgeResponse>;
+  UpdateToken(request: MsgUpdateToken): Promise<MsgUpdateTokenResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -1885,6 +2165,7 @@ export class MsgClientImpl implements Msg {
     this.DeauthorizeBridge = this.DeauthorizeBridge.bind(this);
     this.EditBridgeName = this.EditBridgeName.bind(this);
     this.RemoveBridge = this.RemoveBridge.bind(this);
+    this.UpdateToken = this.UpdateToken.bind(this);
   }
   CreateToken(request: MsgCreateToken): Promise<MsgCreateTokenResponse> {
     const data = MsgCreateToken.encode(request).finish();
@@ -2021,6 +2302,18 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgRemoveBridgeResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  UpdateToken(request: MsgUpdateToken): Promise<MsgUpdateTokenResponse> {
+    const data = MsgUpdateToken.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.coin.Msg",
+      "UpdateToken",
+      data
+    );
+    return promise.then((data) =>
+      MsgUpdateTokenResponse.decode(new _m0.Reader(data))
     );
   }
 }

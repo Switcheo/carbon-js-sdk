@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Market } from "../market/market";
+import { Params, Market } from "../market/market";
 
 export const protobufPackage = "Switcheo.carbon.market";
 
@@ -12,6 +12,8 @@ export interface GenesisState {
    * this line is used by starport scaffolding # ibc/genesis/proto
    */
   markets: Market[];
+  /** params defines all the paramaters of the module. */
+  params?: Params;
 }
 
 const baseGenesisState: object = {};
@@ -23,6 +25,9 @@ export const GenesisState = {
   ): _m0.Writer {
     for (const v of message.markets) {
       Market.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.params !== undefined) {
+      Params.encode(message.params, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
@@ -38,6 +43,9 @@ export const GenesisState = {
         case 1:
           message.markets.push(Market.decode(reader, reader.uint32()));
           break;
+        case 2:
+          message.params = Params.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -51,6 +59,10 @@ export const GenesisState = {
     message.markets = (object.markets ?? []).map((e: any) =>
       Market.fromJSON(e)
     );
+    message.params =
+      object.params !== undefined && object.params !== null
+        ? Params.fromJSON(object.params)
+        : undefined;
     return message;
   },
 
@@ -63,12 +75,18 @@ export const GenesisState = {
     } else {
       obj.markets = [];
     }
+    message.params !== undefined &&
+      (obj.params = message.params ? Params.toJSON(message.params) : undefined);
     return obj;
   },
 
   fromPartial(object: DeepPartial<GenesisState>): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
     message.markets = (object.markets ?? []).map((e) => Market.fromPartial(e));
+    message.params =
+      object.params !== undefined && object.params !== null
+        ? Params.fromPartial(object.params)
+        : undefined;
     return message;
   },
 };

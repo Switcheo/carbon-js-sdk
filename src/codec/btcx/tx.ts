@@ -2,7 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 
-export const protobufPackage = "Switcheo.polynetworkcosmos.btcx";
+export const protobufPackage = "Switcheo.carbon.btcx";
 
 /** this line is used by starport scaffolding # proto/tx/message */
 export interface MsgCreate {
@@ -474,7 +474,7 @@ export class MsgClientImpl implements Msg {
   Create(request: MsgCreate): Promise<MsgCreateResponse> {
     const data = MsgCreate.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.polynetworkcosmos.btcx.Msg",
+      "Switcheo.carbon.btcx.Msg",
       "Create",
       data
     );
@@ -485,21 +485,13 @@ export class MsgClientImpl implements Msg {
 
   Bind(request: MsgBind): Promise<MsgBindResponse> {
     const data = MsgBind.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.polynetworkcosmos.btcx.Msg",
-      "Bind",
-      data
-    );
+    const promise = this.rpc.request("Switcheo.carbon.btcx.Msg", "Bind", data);
     return promise.then((data) => MsgBindResponse.decode(new _m0.Reader(data)));
   }
 
   Lock(request: MsgLock): Promise<MsgLockResponse> {
     const data = MsgLock.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.polynetworkcosmos.btcx.Msg",
-      "Lock",
-      data
-    );
+    const promise = this.rpc.request("Switcheo.carbon.btcx.Msg", "Lock", data);
     return promise.then((data) => MsgLockResponse.decode(new _m0.Reader(data)));
   }
 }

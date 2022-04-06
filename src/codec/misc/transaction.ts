@@ -30,19 +30,15 @@ export interface APITransaction {
   messages: string;
 }
 
-function createBaseTransaction(): Transaction {
-  return {
-    hash: "",
-    address: "",
-    code: 0,
-    memo: "",
-    gasUsed: Long.ZERO,
-    gasWanted: Long.ZERO,
-    blockHeight: Long.UZERO,
-    blockCreatedAt: undefined,
-    messages: [],
-  };
-}
+const baseTransaction: object = {
+  hash: "",
+  address: "",
+  code: 0,
+  memo: "",
+  gasUsed: Long.ZERO,
+  gasWanted: Long.ZERO,
+  blockHeight: Long.UZERO,
+};
 
 export const Transaction = {
   encode(
@@ -85,7 +81,8 @@ export const Transaction = {
   decode(input: _m0.Reader | Uint8Array, length?: number): Transaction {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseTransaction();
+    const message = { ...baseTransaction } as Transaction;
+    message.messages = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -127,7 +124,7 @@ export const Transaction = {
   },
 
   fromJSON(object: any): Transaction {
-    const message = createBaseTransaction();
+    const message = { ...baseTransaction } as Transaction;
     message.hash =
       object.hash !== undefined && object.hash !== null
         ? String(object.hash)
@@ -170,7 +167,7 @@ export const Transaction = {
     const obj: any = {};
     message.hash !== undefined && (obj.hash = message.hash);
     message.address !== undefined && (obj.address = message.address);
-    message.code !== undefined && (obj.code = Math.round(message.code));
+    message.code !== undefined && (obj.code = message.code);
     message.memo !== undefined && (obj.memo = message.memo);
     message.gasUsed !== undefined &&
       (obj.gasUsed = (message.gasUsed || Long.ZERO).toString());
@@ -190,10 +187,8 @@ export const Transaction = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<Transaction>, I>>(
-    object: I
-  ): Transaction {
-    const message = createBaseTransaction();
+  fromPartial(object: DeepPartial<Transaction>): Transaction {
+    const message = { ...baseTransaction } as Transaction;
     message.hash = object.hash ?? "";
     message.address = object.address ?? "";
     message.code = object.code ?? 0;
@@ -211,25 +206,23 @@ export const Transaction = {
         ? Long.fromValue(object.blockHeight)
         : Long.UZERO;
     message.blockCreatedAt = object.blockCreatedAt ?? undefined;
-    message.messages =
-      object.messages?.map((e) => Message.fromPartial(e)) || [];
+    message.messages = (object.messages ?? []).map((e) =>
+      Message.fromPartial(e)
+    );
     return message;
   },
 };
 
-function createBaseAPITransaction(): APITransaction {
-  return {
-    hash: "",
-    address: "",
-    code: 0,
-    memo: "",
-    gasUsed: Long.ZERO,
-    gasWanted: Long.ZERO,
-    blockHeight: Long.UZERO,
-    blockCreatedAt: undefined,
-    messages: "",
-  };
-}
+const baseAPITransaction: object = {
+  hash: "",
+  address: "",
+  code: 0,
+  memo: "",
+  gasUsed: Long.ZERO,
+  gasWanted: Long.ZERO,
+  blockHeight: Long.UZERO,
+  messages: "",
+};
 
 export const APITransaction = {
   encode(
@@ -272,7 +265,7 @@ export const APITransaction = {
   decode(input: _m0.Reader | Uint8Array, length?: number): APITransaction {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseAPITransaction();
+    const message = { ...baseAPITransaction } as APITransaction;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -314,7 +307,7 @@ export const APITransaction = {
   },
 
   fromJSON(object: any): APITransaction {
-    const message = createBaseAPITransaction();
+    const message = { ...baseAPITransaction } as APITransaction;
     message.hash =
       object.hash !== undefined && object.hash !== null
         ? String(object.hash)
@@ -358,7 +351,7 @@ export const APITransaction = {
     const obj: any = {};
     message.hash !== undefined && (obj.hash = message.hash);
     message.address !== undefined && (obj.address = message.address);
-    message.code !== undefined && (obj.code = Math.round(message.code));
+    message.code !== undefined && (obj.code = message.code);
     message.memo !== undefined && (obj.memo = message.memo);
     message.gasUsed !== undefined &&
       (obj.gasUsed = (message.gasUsed || Long.ZERO).toString());
@@ -372,10 +365,8 @@ export const APITransaction = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<APITransaction>, I>>(
-    object: I
-  ): APITransaction {
-    const message = createBaseAPITransaction();
+  fromPartial(object: DeepPartial<APITransaction>): APITransaction {
+    const message = { ...baseAPITransaction } as APITransaction;
     message.hash = object.hash ?? "";
     message.address = object.address ?? "";
     message.code = object.code ?? 0;
@@ -406,7 +397,6 @@ type Builtin =
   | number
   | boolean
   | undefined;
-
 export type DeepPartial<T> = T extends Builtin
   ? T
   : T extends Long
@@ -418,14 +408,6 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
-
-type KeysOfUnion<T> = T extends T ? keyof T : never;
-export type Exact<P, I extends P> = P extends Builtin
-  ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
-        Exclude<keyof I, KeysOfUnion<P>>,
-        never
-      >;
 
 function toTimestamp(date: Date): Timestamp {
   const seconds = numberToLong(date.getTime() / 1_000);

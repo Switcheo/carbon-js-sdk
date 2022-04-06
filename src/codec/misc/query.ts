@@ -3,7 +3,7 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { PageRequest, PageResponse } from "../query/pagination";
 import { Transaction } from "../misc/transaction";
-import { APIOrder } from "../order/order";
+import { Order } from "../order/order";
 import { MessageType } from "../misc/message_type";
 import { Block } from "../misc/block";
 
@@ -16,7 +16,7 @@ export interface QuerySearchRequest {
 
 export interface QuerySearchResponse {
   transactions: Transaction[];
-  orders: APIOrder[];
+  orders: Order[];
 }
 
 export interface QueryAllMessageTypeRequest {}
@@ -46,9 +46,7 @@ export interface QueryAllBlockResponse {
   pagination?: PageResponse;
 }
 
-function createBaseQuerySearchRequest(): QuerySearchRequest {
-  return { keyword: "", limit: Long.UZERO };
-}
+const baseQuerySearchRequest: object = { keyword: "", limit: Long.UZERO };
 
 export const QuerySearchRequest = {
   encode(
@@ -67,7 +65,7 @@ export const QuerySearchRequest = {
   decode(input: _m0.Reader | Uint8Array, length?: number): QuerySearchRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseQuerySearchRequest();
+    const message = { ...baseQuerySearchRequest } as QuerySearchRequest;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -86,7 +84,7 @@ export const QuerySearchRequest = {
   },
 
   fromJSON(object: any): QuerySearchRequest {
-    const message = createBaseQuerySearchRequest();
+    const message = { ...baseQuerySearchRequest } as QuerySearchRequest;
     message.keyword =
       object.keyword !== undefined && object.keyword !== null
         ? String(object.keyword)
@@ -106,10 +104,8 @@ export const QuerySearchRequest = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QuerySearchRequest>, I>>(
-    object: I
-  ): QuerySearchRequest {
-    const message = createBaseQuerySearchRequest();
+  fromPartial(object: DeepPartial<QuerySearchRequest>): QuerySearchRequest {
+    const message = { ...baseQuerySearchRequest } as QuerySearchRequest;
     message.keyword = object.keyword ?? "";
     message.limit =
       object.limit !== undefined && object.limit !== null
@@ -119,9 +115,7 @@ export const QuerySearchRequest = {
   },
 };
 
-function createBaseQuerySearchResponse(): QuerySearchResponse {
-  return { transactions: [], orders: [] };
-}
+const baseQuerySearchResponse: object = {};
 
 export const QuerySearchResponse = {
   encode(
@@ -132,7 +126,7 @@ export const QuerySearchResponse = {
       Transaction.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     for (const v of message.orders) {
-      APIOrder.encode(v!, writer.uint32(18).fork()).ldelim();
+      Order.encode(v!, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
@@ -140,7 +134,9 @@ export const QuerySearchResponse = {
   decode(input: _m0.Reader | Uint8Array, length?: number): QuerySearchResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseQuerySearchResponse();
+    const message = { ...baseQuerySearchResponse } as QuerySearchResponse;
+    message.transactions = [];
+    message.orders = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -150,7 +146,7 @@ export const QuerySearchResponse = {
           );
           break;
         case 2:
-          message.orders.push(APIOrder.decode(reader, reader.uint32()));
+          message.orders.push(Order.decode(reader, reader.uint32()));
           break;
         default:
           reader.skipType(tag & 7);
@@ -161,13 +157,11 @@ export const QuerySearchResponse = {
   },
 
   fromJSON(object: any): QuerySearchResponse {
-    const message = createBaseQuerySearchResponse();
+    const message = { ...baseQuerySearchResponse } as QuerySearchResponse;
     message.transactions = (object.transactions ?? []).map((e: any) =>
       Transaction.fromJSON(e)
     );
-    message.orders = (object.orders ?? []).map((e: any) =>
-      APIOrder.fromJSON(e)
-    );
+    message.orders = (object.orders ?? []).map((e: any) => Order.fromJSON(e));
     return message;
   },
 
@@ -181,29 +175,24 @@ export const QuerySearchResponse = {
       obj.transactions = [];
     }
     if (message.orders) {
-      obj.orders = message.orders.map((e) =>
-        e ? APIOrder.toJSON(e) : undefined
-      );
+      obj.orders = message.orders.map((e) => (e ? Order.toJSON(e) : undefined));
     } else {
       obj.orders = [];
     }
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QuerySearchResponse>, I>>(
-    object: I
-  ): QuerySearchResponse {
-    const message = createBaseQuerySearchResponse();
-    message.transactions =
-      object.transactions?.map((e) => Transaction.fromPartial(e)) || [];
-    message.orders = object.orders?.map((e) => APIOrder.fromPartial(e)) || [];
+  fromPartial(object: DeepPartial<QuerySearchResponse>): QuerySearchResponse {
+    const message = { ...baseQuerySearchResponse } as QuerySearchResponse;
+    message.transactions = (object.transactions ?? []).map((e) =>
+      Transaction.fromPartial(e)
+    );
+    message.orders = (object.orders ?? []).map((e) => Order.fromPartial(e));
     return message;
   },
 };
 
-function createBaseQueryAllMessageTypeRequest(): QueryAllMessageTypeRequest {
-  return {};
-}
+const baseQueryAllMessageTypeRequest: object = {};
 
 export const QueryAllMessageTypeRequest = {
   encode(
@@ -219,7 +208,9 @@ export const QueryAllMessageTypeRequest = {
   ): QueryAllMessageTypeRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseQueryAllMessageTypeRequest();
+    const message = {
+      ...baseQueryAllMessageTypeRequest,
+    } as QueryAllMessageTypeRequest;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -232,7 +223,9 @@ export const QueryAllMessageTypeRequest = {
   },
 
   fromJSON(_: any): QueryAllMessageTypeRequest {
-    const message = createBaseQueryAllMessageTypeRequest();
+    const message = {
+      ...baseQueryAllMessageTypeRequest,
+    } as QueryAllMessageTypeRequest;
     return message;
   },
 
@@ -241,17 +234,17 @@ export const QueryAllMessageTypeRequest = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QueryAllMessageTypeRequest>, I>>(
-    _: I
+  fromPartial(
+    _: DeepPartial<QueryAllMessageTypeRequest>
   ): QueryAllMessageTypeRequest {
-    const message = createBaseQueryAllMessageTypeRequest();
+    const message = {
+      ...baseQueryAllMessageTypeRequest,
+    } as QueryAllMessageTypeRequest;
     return message;
   },
 };
 
-function createBaseQueryAllMessageTypeResponse(): QueryAllMessageTypeResponse {
-  return { messageTypes: [] };
-}
+const baseQueryAllMessageTypeResponse: object = {};
 
 export const QueryAllMessageTypeResponse = {
   encode(
@@ -270,7 +263,10 @@ export const QueryAllMessageTypeResponse = {
   ): QueryAllMessageTypeResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseQueryAllMessageTypeResponse();
+    const message = {
+      ...baseQueryAllMessageTypeResponse,
+    } as QueryAllMessageTypeResponse;
+    message.messageTypes = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -288,7 +284,9 @@ export const QueryAllMessageTypeResponse = {
   },
 
   fromJSON(object: any): QueryAllMessageTypeResponse {
-    const message = createBaseQueryAllMessageTypeResponse();
+    const message = {
+      ...baseQueryAllMessageTypeResponse,
+    } as QueryAllMessageTypeResponse;
     message.messageTypes = (object.messageTypes ?? []).map((e: any) =>
       MessageType.fromJSON(e)
     );
@@ -307,19 +305,24 @@ export const QueryAllMessageTypeResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QueryAllMessageTypeResponse>, I>>(
-    object: I
+  fromPartial(
+    object: DeepPartial<QueryAllMessageTypeResponse>
   ): QueryAllMessageTypeResponse {
-    const message = createBaseQueryAllMessageTypeResponse();
-    message.messageTypes =
-      object.messageTypes?.map((e) => MessageType.fromPartial(e)) || [];
+    const message = {
+      ...baseQueryAllMessageTypeResponse,
+    } as QueryAllMessageTypeResponse;
+    message.messageTypes = (object.messageTypes ?? []).map((e) =>
+      MessageType.fromPartial(e)
+    );
     return message;
   },
 };
 
-function createBaseQueryAllTransactionRequest(): QueryAllTransactionRequest {
-  return { hash: "", address: "", msgTypeFilters: [], pagination: undefined };
-}
+const baseQueryAllTransactionRequest: object = {
+  hash: "",
+  address: "",
+  msgTypeFilters: "",
+};
 
 export const QueryAllTransactionRequest = {
   encode(
@@ -347,7 +350,10 @@ export const QueryAllTransactionRequest = {
   ): QueryAllTransactionRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseQueryAllTransactionRequest();
+    const message = {
+      ...baseQueryAllTransactionRequest,
+    } as QueryAllTransactionRequest;
+    message.msgTypeFilters = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -372,7 +378,9 @@ export const QueryAllTransactionRequest = {
   },
 
   fromJSON(object: any): QueryAllTransactionRequest {
-    const message = createBaseQueryAllTransactionRequest();
+    const message = {
+      ...baseQueryAllTransactionRequest,
+    } as QueryAllTransactionRequest;
     message.hash =
       object.hash !== undefined && object.hash !== null
         ? String(object.hash)
@@ -407,13 +415,15 @@ export const QueryAllTransactionRequest = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QueryAllTransactionRequest>, I>>(
-    object: I
+  fromPartial(
+    object: DeepPartial<QueryAllTransactionRequest>
   ): QueryAllTransactionRequest {
-    const message = createBaseQueryAllTransactionRequest();
+    const message = {
+      ...baseQueryAllTransactionRequest,
+    } as QueryAllTransactionRequest;
     message.hash = object.hash ?? "";
     message.address = object.address ?? "";
-    message.msgTypeFilters = object.msgTypeFilters?.map((e) => e) || [];
+    message.msgTypeFilters = (object.msgTypeFilters ?? []).map((e) => e);
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
         ? PageRequest.fromPartial(object.pagination)
@@ -422,9 +432,7 @@ export const QueryAllTransactionRequest = {
   },
 };
 
-function createBaseQueryAllTransactionResponse(): QueryAllTransactionResponse {
-  return { transactions: [], pagination: undefined };
-}
+const baseQueryAllTransactionResponse: object = {};
 
 export const QueryAllTransactionResponse = {
   encode(
@@ -449,7 +457,10 @@ export const QueryAllTransactionResponse = {
   ): QueryAllTransactionResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseQueryAllTransactionResponse();
+    const message = {
+      ...baseQueryAllTransactionResponse,
+    } as QueryAllTransactionResponse;
+    message.transactions = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -470,7 +481,9 @@ export const QueryAllTransactionResponse = {
   },
 
   fromJSON(object: any): QueryAllTransactionResponse {
-    const message = createBaseQueryAllTransactionResponse();
+    const message = {
+      ...baseQueryAllTransactionResponse,
+    } as QueryAllTransactionResponse;
     message.transactions = (object.transactions ?? []).map((e: any) =>
       Transaction.fromJSON(e)
     );
@@ -497,12 +510,15 @@ export const QueryAllTransactionResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QueryAllTransactionResponse>, I>>(
-    object: I
+  fromPartial(
+    object: DeepPartial<QueryAllTransactionResponse>
   ): QueryAllTransactionResponse {
-    const message = createBaseQueryAllTransactionResponse();
-    message.transactions =
-      object.transactions?.map((e) => Transaction.fromPartial(e)) || [];
+    const message = {
+      ...baseQueryAllTransactionResponse,
+    } as QueryAllTransactionResponse;
+    message.transactions = (object.transactions ?? []).map((e) =>
+      Transaction.fromPartial(e)
+    );
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
         ? PageResponse.fromPartial(object.pagination)
@@ -511,9 +527,7 @@ export const QueryAllTransactionResponse = {
   },
 };
 
-function createBaseQueryAllBlockRequest(): QueryAllBlockRequest {
-  return { pagination: undefined };
-}
+const baseQueryAllBlockRequest: object = {};
 
 export const QueryAllBlockRequest = {
   encode(
@@ -532,7 +546,7 @@ export const QueryAllBlockRequest = {
   ): QueryAllBlockRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseQueryAllBlockRequest();
+    const message = { ...baseQueryAllBlockRequest } as QueryAllBlockRequest;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -548,7 +562,7 @@ export const QueryAllBlockRequest = {
   },
 
   fromJSON(object: any): QueryAllBlockRequest {
-    const message = createBaseQueryAllBlockRequest();
+    const message = { ...baseQueryAllBlockRequest } as QueryAllBlockRequest;
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
         ? PageRequest.fromJSON(object.pagination)
@@ -565,10 +579,8 @@ export const QueryAllBlockRequest = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QueryAllBlockRequest>, I>>(
-    object: I
-  ): QueryAllBlockRequest {
-    const message = createBaseQueryAllBlockRequest();
+  fromPartial(object: DeepPartial<QueryAllBlockRequest>): QueryAllBlockRequest {
+    const message = { ...baseQueryAllBlockRequest } as QueryAllBlockRequest;
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
         ? PageRequest.fromPartial(object.pagination)
@@ -577,9 +589,7 @@ export const QueryAllBlockRequest = {
   },
 };
 
-function createBaseQueryAllBlockResponse(): QueryAllBlockResponse {
-  return { blocks: [], pagination: undefined };
-}
+const baseQueryAllBlockResponse: object = {};
 
 export const QueryAllBlockResponse = {
   encode(
@@ -604,7 +614,8 @@ export const QueryAllBlockResponse = {
   ): QueryAllBlockResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseQueryAllBlockResponse();
+    const message = { ...baseQueryAllBlockResponse } as QueryAllBlockResponse;
+    message.blocks = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -623,7 +634,7 @@ export const QueryAllBlockResponse = {
   },
 
   fromJSON(object: any): QueryAllBlockResponse {
-    const message = createBaseQueryAllBlockResponse();
+    const message = { ...baseQueryAllBlockResponse } as QueryAllBlockResponse;
     message.blocks = (object.blocks ?? []).map((e: any) => Block.fromJSON(e));
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
@@ -646,11 +657,11 @@ export const QueryAllBlockResponse = {
     return obj;
   },
 
-  fromPartial<I extends Exact<DeepPartial<QueryAllBlockResponse>, I>>(
-    object: I
+  fromPartial(
+    object: DeepPartial<QueryAllBlockResponse>
   ): QueryAllBlockResponse {
-    const message = createBaseQueryAllBlockResponse();
-    message.blocks = object.blocks?.map((e) => Block.fromPartial(e)) || [];
+    const message = { ...baseQueryAllBlockResponse } as QueryAllBlockResponse;
+    message.blocks = (object.blocks ?? []).map((e) => Block.fromPartial(e));
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
         ? PageResponse.fromPartial(object.pagination)
@@ -752,7 +763,6 @@ type Builtin =
   | number
   | boolean
   | undefined;
-
 export type DeepPartial<T> = T extends Builtin
   ? T
   : T extends Long
@@ -764,14 +774,6 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
-
-type KeysOfUnion<T> = T extends T ? keyof T : never;
-export type Exact<P, I extends P> = P extends Builtin
-  ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<
-        Exclude<keyof I, KeysOfUnion<P>>,
-        never
-      >;
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

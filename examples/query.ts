@@ -28,7 +28,6 @@ import "./_setup";
       offset: new Long(0),
       key: new Uint8Array(),
       countTotal: true,
-      reverse: false,
     },
   });
   console.log("tokens", tokens);

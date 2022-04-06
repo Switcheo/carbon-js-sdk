@@ -62,15 +62,17 @@ console.log(`export * as PolyNetwork from '${polynetworkModelsImportPath.replace
 console.log("");
 console.log("export const registry = new Registry();");
 
+const polynetworkFolders = ['btcx', 'ccm', 'headersync', 'lockproxy']
 const typeMap: { [msg: string]: string } = {};
 for (const packageName in modules) {
   console.log("");
   for (const key of modules[packageName]) {
     const typeUrl = `/${packageName}.${key}`;
     typeMap[key] = typeUrl;
-    if (typeUrl.includes('/Switcheo.polynetworkcosmos')) {
-      const packageGroup = packageName.replace('Switcheo.polynetworkcosmos.', '')
-      console.log(`registry.register("${typeUrl}", PolyNetwork.${capitalize(packageGroup)}.${key});`);
+
+    const match = typeUrl.match(/^\/Switcheo.carbon.([a-z]+).([A-Za-z]+)$/i);
+    if (match?.[1] && polynetworkFolders.includes(match?.[1])) {
+      console.log(`registry.register("${typeUrl}", PolyNetwork.${capitalize(match[1])}.${key});`);
     } else {
       console.log(`registry.register("${typeUrl}", ${key});`);
     }
@@ -85,12 +87,36 @@ console.log('// Exported for convenience');
 const directoryBlacklist = ['cosmos', 'ibc', 'tendermint', 'btcx', 'ccm', 'headersync', 'lockproxy']
 const fileNameBlacklist = ['genesis.ts', 'keys.ts']
 const relativePathBlacklist = ['./marketstats/params']
-const modelBlacklist = ['MsgClientImpl', 'protobufPackage', 'GenesisState', 'QueryClientImpl']
+
+interface BlacklistItem {
+  path: string
+  module: string
+}
+
+const modelBlacklist: BlacklistItem[] = [{
+  path: 'all',
+  module: 'MsgClientImpl',
+}, {
+  path: 'all',
+  module: 'protobufPackage',
+}, {
+  path: 'all',
+  module: 'GenesisState',
+}, {
+  path: 'all',
+  module: 'QueryClientImpl',
+}, {
+  path: '/market/market',
+  module: 'Params',
+}]
 
 for (const moduleFile of codecFiles) {
   if (!moduleFile.endsWith(".ts")) {
     continue
   }
+  const relativePath = path.relative(registryFile, moduleFile)
+    .replace(/^\.\.\//, "./")
+    .replace(/\.ts$/, "");
 
   const file = moduleFile.split("/")
   const fileName = file[file.length - 1]
@@ -100,15 +126,18 @@ for (const moduleFile of codecFiles) {
 
   const codecModule = require(`${pwd}/${moduleFile.replace(/\.ts$/i, '')}`);
 
-  const messages = Object.keys(codecModule).filter((key) =>
-    !modelBlacklist.includes(key)
-  );
+  const messages = Object.keys(codecModule).filter((key) => {
+    const blacklistItem = modelBlacklist.find((blacklist: BlacklistItem) => {
+      if (blacklist.path === 'all' || relativePath.includes(blacklist.path)) {
+        return blacklist.module === key
+      }
+      return false
+    })
+    return blacklistItem ? false : true
+  });
 
   if (messages.length) {
     modules[codecModule.protobufPackage] = messages;
-    const relativePath = path.relative(registryFile, moduleFile)
-      .replace(/^\.\.\//, "./")
-      .replace(/\.ts$/, "");
     if (relativePath === "" || relativePathBlacklist.includes(relativePath)) {
       continue
     }

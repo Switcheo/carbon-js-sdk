@@ -1,7 +1,7 @@
 import { CreateTokenProposal } from "@carbon-sdk/codec/coin/proposal";
 import { SetMsgFeeProposal } from "@carbon-sdk/codec/fee/proposal";
 import { LinkPoolProposal, SetCommitmentCurveProposal, SetRewardCurveProposal, SetRewardsWeightsProposal, UnlinkPoolProposal, UpdatePoolProposal } from "@carbon-sdk/codec/liquiditypool/proposal";
-import { CreateMarketProposal, UpdateMarketProposal } from "@carbon-sdk/codec/market/proposal";
+import { UpdateMarketProposal } from "@carbon-sdk/codec/market/proposal";
 import { CreateOracleProposal } from "@carbon-sdk/codec/oracle/proposal";
 import { SettlementPriceParams, SettlementPriceProposal } from "@carbon-sdk/codec/pricing/proposal";
 import { coins, Coin } from "@cosmjs/amino";
@@ -19,7 +19,6 @@ import {
   transfromSetRewardCurveParams,
   transfromSetCommitmentCurveParams,
   transfromSetRewardsWeightsParams,
-  transformCreateMarketParams,
   transfromCreateOracleParams,
   transfromUpdatePoolParams,
   AdminModule,
@@ -136,13 +135,6 @@ export class GovModule extends BaseModule {
           msg: transfromUpdatePoolParams(msg)
         }
         return UpdatePoolProposal.encode(updatePoolProposalMsg).finish()
-      case "CreateMarketProposal": 
-        const createMarketProposalMsg = {
-          title : title,
-          description: description,
-          msg: transformCreateMarketParams(msg)
-        }
-        return CreateMarketProposal.encode(createMarketProposalMsg).finish()
       case "UpdateMarketProposal": 
         const updateMarketProposalMsg = {
           title : title,
