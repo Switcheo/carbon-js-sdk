@@ -1,7 +1,6 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Any } from "../../../google/protobuf/any";
 import { Timestamp } from "../../../google/protobuf/timestamp";
 
 export const protobufPackage = "cosmos.upgrade.v1beta1";
@@ -19,11 +18,8 @@ export interface Plan {
    */
   name: string;
   /**
-   * Deprecated: Time based upgrades have been deprecated. Time based upgrade logic
-   * has been removed from the SDK.
-   * If this field is not empty, an error will be thrown.
-   *
-   * @deprecated
+   * The time after which the upgrade must be performed.
+   * Leave set to its zero value to use a pre-defined Height instead.
    */
   time?: Date;
   /**
@@ -36,14 +32,6 @@ export interface Plan {
    * such as a git commit that validators could automatically upgrade to
    */
   info: string;
-  /**
-   * Deprecated: UpgradedClientState field has been deprecated. IBC upgrade logic has been
-   * moved to the IBC module in the sub module 02-client.
-   * If this field is not empty, an error will be thrown.
-   *
-   * @deprecated
-   */
-  upgradedClientState?: Any;
 }
 
 /**
@@ -65,18 +53,6 @@ export interface CancelSoftwareUpgradeProposal {
   description: string;
 }
 
-/**
- * ModuleVersion specifies a module and its consensus version.
- *
- * Since: cosmos-sdk 0.43
- */
-export interface ModuleVersion {
-  /** name of the app module */
-  name: string;
-  /** consensus version of the app module */
-  version: Long;
-}
-
 const basePlan: object = { name: "", height: Long.ZERO, info: "" };
 
 export const Plan = {
@@ -95,12 +71,6 @@ export const Plan = {
     }
     if (message.info !== "") {
       writer.uint32(34).string(message.info);
-    }
-    if (message.upgradedClientState !== undefined) {
-      Any.encode(
-        message.upgradedClientState,
-        writer.uint32(42).fork()
-      ).ldelim();
     }
     return writer;
   },
@@ -125,9 +95,6 @@ export const Plan = {
           break;
         case 4:
           message.info = reader.string();
-          break;
-        case 5:
-          message.upgradedClientState = Any.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -155,11 +122,6 @@ export const Plan = {
       object.info !== undefined && object.info !== null
         ? String(object.info)
         : "";
-    message.upgradedClientState =
-      object.upgradedClientState !== undefined &&
-      object.upgradedClientState !== null
-        ? Any.fromJSON(object.upgradedClientState)
-        : undefined;
     return message;
   },
 
@@ -170,10 +132,6 @@ export const Plan = {
     message.height !== undefined &&
       (obj.height = (message.height || Long.ZERO).toString());
     message.info !== undefined && (obj.info = message.info);
-    message.upgradedClientState !== undefined &&
-      (obj.upgradedClientState = message.upgradedClientState
-        ? Any.toJSON(message.upgradedClientState)
-        : undefined);
     return obj;
   },
 
@@ -186,11 +144,6 @@ export const Plan = {
         ? Long.fromValue(object.height)
         : Long.ZERO;
     message.info = object.info ?? "";
-    message.upgradedClientState =
-      object.upgradedClientState !== undefined &&
-      object.upgradedClientState !== null
-        ? Any.fromPartial(object.upgradedClientState)
-        : undefined;
     return message;
   },
 };
@@ -364,75 +317,6 @@ export const CancelSoftwareUpgradeProposal = {
     } as CancelSoftwareUpgradeProposal;
     message.title = object.title ?? "";
     message.description = object.description ?? "";
-    return message;
-  },
-};
-
-const baseModuleVersion: object = { name: "", version: Long.UZERO };
-
-export const ModuleVersion = {
-  encode(
-    message: ModuleVersion,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.name !== "") {
-      writer.uint32(10).string(message.name);
-    }
-    if (!message.version.isZero()) {
-      writer.uint32(16).uint64(message.version);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): ModuleVersion {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseModuleVersion } as ModuleVersion;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.name = reader.string();
-          break;
-        case 2:
-          message.version = reader.uint64() as Long;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): ModuleVersion {
-    const message = { ...baseModuleVersion } as ModuleVersion;
-    message.name =
-      object.name !== undefined && object.name !== null
-        ? String(object.name)
-        : "";
-    message.version =
-      object.version !== undefined && object.version !== null
-        ? Long.fromString(object.version)
-        : Long.UZERO;
-    return message;
-  },
-
-  toJSON(message: ModuleVersion): unknown {
-    const obj: any = {};
-    message.name !== undefined && (obj.name = message.name);
-    message.version !== undefined &&
-      (obj.version = (message.version || Long.UZERO).toString());
-    return obj;
-  },
-
-  fromPartial(object: DeepPartial<ModuleVersion>): ModuleVersion {
-    const message = { ...baseModuleVersion } as ModuleVersion;
-    message.name = object.name ?? "";
-    message.version =
-      object.version !== undefined && object.version !== null
-        ? Long.fromValue(object.version)
-        : Long.UZERO;
     return message;
   },
 };

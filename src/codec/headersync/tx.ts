@@ -2,7 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 
-export const protobufPackage = "Switcheo.polynetworkcosmos.headersync";
+export const protobufPackage = "Switcheo.carbon.headersync";
 
 /** this line is used by starport scaffolding # proto/tx/message */
 export interface MsgSyncGenesis {
@@ -257,7 +257,7 @@ export class MsgClientImpl implements Msg {
   SyncGenesis(request: MsgSyncGenesis): Promise<MsgSyncGenesisResponse> {
     const data = MsgSyncGenesis.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.polynetworkcosmos.headersync.Msg",
+      "Switcheo.carbon.headersync.Msg",
       "SyncGenesis",
       data
     );
@@ -269,7 +269,7 @@ export class MsgClientImpl implements Msg {
   SyncHeaders(request: MsgSyncHeaders): Promise<MsgSyncHeadersResponse> {
     const data = MsgSyncHeaders.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.polynetworkcosmos.headersync.Msg",
+      "Switcheo.carbon.headersync.Msg",
       "SyncHeaders",
       data
     );

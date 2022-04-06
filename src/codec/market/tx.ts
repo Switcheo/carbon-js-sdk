@@ -1,14 +1,22 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Market, MarketParams } from "../market/market";
+import { MarketParams } from "../market/market";
+import { Timestamp } from "../google/protobuf/timestamp";
 
 export const protobufPackage = "Switcheo.carbon.market";
 
 /** this line is used by starport scaffolding # proto/tx/message */
 export interface MsgCreateMarket {
   creator: string;
-  market?: Market;
+  marketType: string;
+  base: string;
+  quote: string;
+  currentBasePriceUsd: string;
+  currentQuotePriceUsd: string;
+  /** futures only */
+  indexOracleId: string;
+  expiryTime?: Date;
 }
 
 export interface MsgCreateMarketResponse {
@@ -22,7 +30,15 @@ export interface MsgUpdateMarket {
 
 export interface MsgUpdateMarketResponse {}
 
-const baseMsgCreateMarket: object = { creator: "" };
+const baseMsgCreateMarket: object = {
+  creator: "",
+  marketType: "",
+  base: "",
+  quote: "",
+  currentBasePriceUsd: "",
+  currentQuotePriceUsd: "",
+  indexOracleId: "",
+};
 
 export const MsgCreateMarket = {
   encode(
@@ -32,8 +48,29 @@ export const MsgCreateMarket = {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
-    if (message.market !== undefined) {
-      Market.encode(message.market, writer.uint32(18).fork()).ldelim();
+    if (message.marketType !== "") {
+      writer.uint32(26).string(message.marketType);
+    }
+    if (message.base !== "") {
+      writer.uint32(34).string(message.base);
+    }
+    if (message.quote !== "") {
+      writer.uint32(42).string(message.quote);
+    }
+    if (message.currentBasePriceUsd !== "") {
+      writer.uint32(50).string(message.currentBasePriceUsd);
+    }
+    if (message.currentQuotePriceUsd !== "") {
+      writer.uint32(58).string(message.currentQuotePriceUsd);
+    }
+    if (message.indexOracleId !== "") {
+      writer.uint32(82).string(message.indexOracleId);
+    }
+    if (message.expiryTime !== undefined) {
+      Timestamp.encode(
+        toTimestamp(message.expiryTime),
+        writer.uint32(90).fork()
+      ).ldelim();
     }
     return writer;
   },
@@ -48,8 +85,28 @@ export const MsgCreateMarket = {
         case 1:
           message.creator = reader.string();
           break;
-        case 2:
-          message.market = Market.decode(reader, reader.uint32());
+        case 3:
+          message.marketType = reader.string();
+          break;
+        case 4:
+          message.base = reader.string();
+          break;
+        case 5:
+          message.quote = reader.string();
+          break;
+        case 6:
+          message.currentBasePriceUsd = reader.string();
+          break;
+        case 7:
+          message.currentQuotePriceUsd = reader.string();
+          break;
+        case 10:
+          message.indexOracleId = reader.string();
+          break;
+        case 11:
+          message.expiryTime = fromTimestamp(
+            Timestamp.decode(reader, reader.uint32())
+          );
           break;
         default:
           reader.skipType(tag & 7);
@@ -65,9 +122,35 @@ export const MsgCreateMarket = {
       object.creator !== undefined && object.creator !== null
         ? String(object.creator)
         : "";
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? Market.fromJSON(object.market)
+    message.marketType =
+      object.marketType !== undefined && object.marketType !== null
+        ? String(object.marketType)
+        : "";
+    message.base =
+      object.base !== undefined && object.base !== null
+        ? String(object.base)
+        : "";
+    message.quote =
+      object.quote !== undefined && object.quote !== null
+        ? String(object.quote)
+        : "";
+    message.currentBasePriceUsd =
+      object.currentBasePriceUsd !== undefined &&
+      object.currentBasePriceUsd !== null
+        ? String(object.currentBasePriceUsd)
+        : "";
+    message.currentQuotePriceUsd =
+      object.currentQuotePriceUsd !== undefined &&
+      object.currentQuotePriceUsd !== null
+        ? String(object.currentQuotePriceUsd)
+        : "";
+    message.indexOracleId =
+      object.indexOracleId !== undefined && object.indexOracleId !== null
+        ? String(object.indexOracleId)
+        : "";
+    message.expiryTime =
+      object.expiryTime !== undefined && object.expiryTime !== null
+        ? fromJsonTimestamp(object.expiryTime)
         : undefined;
     return message;
   },
@@ -75,18 +158,30 @@ export const MsgCreateMarket = {
   toJSON(message: MsgCreateMarket): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.market !== undefined &&
-      (obj.market = message.market ? Market.toJSON(message.market) : undefined);
+    message.marketType !== undefined && (obj.marketType = message.marketType);
+    message.base !== undefined && (obj.base = message.base);
+    message.quote !== undefined && (obj.quote = message.quote);
+    message.currentBasePriceUsd !== undefined &&
+      (obj.currentBasePriceUsd = message.currentBasePriceUsd);
+    message.currentQuotePriceUsd !== undefined &&
+      (obj.currentQuotePriceUsd = message.currentQuotePriceUsd);
+    message.indexOracleId !== undefined &&
+      (obj.indexOracleId = message.indexOracleId);
+    message.expiryTime !== undefined &&
+      (obj.expiryTime = message.expiryTime.toISOString());
     return obj;
   },
 
   fromPartial(object: DeepPartial<MsgCreateMarket>): MsgCreateMarket {
     const message = { ...baseMsgCreateMarket } as MsgCreateMarket;
     message.creator = object.creator ?? "";
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? Market.fromPartial(object.market)
-        : undefined;
+    message.marketType = object.marketType ?? "";
+    message.base = object.base ?? "";
+    message.quote = object.quote ?? "";
+    message.currentBasePriceUsd = object.currentBasePriceUsd ?? "";
+    message.currentQuotePriceUsd = object.currentQuotePriceUsd ?? "";
+    message.indexOracleId = object.indexOracleId ?? "";
+    message.expiryTime = object.expiryTime ?? undefined;
     return message;
   },
 };
@@ -347,6 +442,32 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+function toTimestamp(date: Date): Timestamp {
+  const seconds = numberToLong(date.getTime() / 1_000);
+  const nanos = (date.getTime() % 1_000) * 1_000_000;
+  return { seconds, nanos };
+}
+
+function fromTimestamp(t: Timestamp): Date {
+  let millis = t.seconds.toNumber() * 1_000;
+  millis += t.nanos / 1_000_000;
+  return new Date(millis);
+}
+
+function fromJsonTimestamp(o: any): Date {
+  if (o instanceof Date) {
+    return o;
+  } else if (typeof o === "string") {
+    return new Date(o);
+  } else {
+    return fromTimestamp(Timestamp.fromJSON(o));
+  }
+}
+
+function numberToLong(number: number) {
+  return Long.fromNumber(number);
+}
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

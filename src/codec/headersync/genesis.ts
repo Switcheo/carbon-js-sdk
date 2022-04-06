@@ -3,7 +3,7 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { ConsensusPeers } from "../headersync/consensus_peers";
 
-export const protobufPackage = "Switcheo.polynetworkcosmos.headersync";
+export const protobufPackage = "Switcheo.carbon.headersync";
 
 /** GenesisState defines the headersync module's genesis state. */
 export interface GenesisState {
