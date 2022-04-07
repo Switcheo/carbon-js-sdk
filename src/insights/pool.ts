@@ -17,7 +17,7 @@ export interface PoolTokens {
   denom: string
   amountShifted: number
   amountValue: number
-  balance: number
+  balance: string
 }
 
 export interface PoolVolume {
@@ -63,7 +63,7 @@ export interface QueryGetPoolsVolumeRequest extends QueryByTimeRequest {
 }
 
 export interface QueryGetPoolsLiquidityRequest extends QueryByTimeRequest {
-  market?: string[]
+  poolId?: string
 }
 
 export interface QueryGetPoolsVolumeResponse {

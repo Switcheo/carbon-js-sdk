@@ -104,7 +104,7 @@ class InsightsQueryClient {
 
   async PoolsLiquidity(req: Insights.QueryGetPoolsLiquidityRequest = {}): Promise<Insights.InsightsQueryResponse<Insights.QueryGetPoolsLiquidityResponse>> {
     const queryParams = {
-      market: req.market,
+      poolId: req.poolId,
       interval: req.interval,
       from: req.from,
       until: req.until,
