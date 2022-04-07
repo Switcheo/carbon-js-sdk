@@ -32,6 +32,9 @@ import { CarbonSDK } from "./_sdk";
     const poolsVolumeResponse = await sdk.insights.PoolsVolume();
     console.log("poolsVolume", poolsVolumeResponse);
 
+    const poolsLiquidityResponse = await sdk.insights.PoolsLiquidity();
+    console.log("poolsLiquidity", poolsLiquidityResponse);
+
     // market api
     const marketsVolumeResponse = await sdk.insights.MarketsVolume();
     console.log("marketsVolume", marketsVolumeResponse);

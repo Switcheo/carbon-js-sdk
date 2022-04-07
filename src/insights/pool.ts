@@ -12,6 +12,14 @@ export interface Pool {
   market: string | null
 }
 
+export interface PoolTokens {
+  total: number
+  denom: string
+  amountShifted: number
+  amountValue: number
+  balance: string
+}
+
 export interface PoolVolume {
   poolId: number
   t: string
@@ -26,6 +34,12 @@ export interface PoolsVolume {
   volumeValue: number
   volume: string
   height: number
+}
+
+export interface PoolsLiquidity {
+  poolId: number
+  amountValue: number
+  tokens: PoolTokens[]
 }
 
 export interface QueryGetPoolsRequest extends QueryByPageRequest { }
@@ -48,12 +62,24 @@ export interface QueryGetPoolsVolumeRequest extends QueryByTimeRequest {
   market?: string[]
 }
 
+export interface QueryGetPoolsLiquidityRequest extends QueryByTimeRequest {
+  poolId?: string
+}
+
 export interface QueryGetPoolsVolumeResponse {
   entries: {
     date: string
     volumeValue: string
     totalVolumeValue: string
     markets: PoolsVolume[]
+  }[]
+  meta: TimeMeta
+}
+
+export interface QueryGetPoolsLiquidityResponse {
+  entries: {
+    date: string
+    pools: PoolsLiquidity[]
   }[]
   meta: TimeMeta
 }
