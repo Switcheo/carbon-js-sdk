@@ -47,7 +47,7 @@ export namespace XChainModule {
   export interface ProcessCrossChainTxParams {
     proof: string
     header: string
-    headerProof: string
-    currentHeader: string
+    headerProof?: string
+    currentHeader?: string
   }
 }
