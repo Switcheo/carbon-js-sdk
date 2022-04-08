@@ -126,7 +126,7 @@ class TokenClient {
     }
 
     const symbol = this.getSymbol(denom);
-    if (TokenClient.isPoolToken(denom)) {
+    if (TokenClient.isPoolTokenLegacy(denom)) {
       const match = symbol.match(/^([a-z\d.-\/]+)-(\d+)-([a-z\d.-\/]+)-(\d+)-lp\d+$/i);
       // inconsistent implementation of isPoolToken, exit
       if (match === null) return symbol;
@@ -160,8 +160,7 @@ class TokenClient {
   public getTokenDesc(denom: string) {
     if (typeof denom !== 'string') return '';
     denom = denom.toLowerCase();
-
-    if (TokenClient.isPoolToken(denom)) {
+    if (TokenClient.isPoolTokenLegacy(denom)) {
       const match = denom.match(/^([a-z\d.-\/]+)-(\d+)-([a-z\d.-\/]+)-(\d+)-lp\d+$/i);
       // inconsistent implementation of isPoolToken, exit
       if (match === null) return this.getSymbol(denom);
@@ -180,8 +179,16 @@ class TokenClient {
     return this.tokens[denom]?.name ?? this.getSymbol(denom);
   }
 
+  public static isPoolTokenNew(denom: string): boolean {
+    return denom.match(/^clpt\/(\d+)$/i) !== null;
+  }
+
+  public static isPoolTokenLegacy(denom: string): boolean {
+    return denom.match(/^([a-z\d.-]+)-(\d+)-([a-z\d.-]+)-(\d+)-lp\d+$/i) !== null;
+  }
+
   public static isPoolToken(denom: string): boolean {
-    return denom.match(/^([a-z\d.-\/]+)-(\d+)-([a-z\d.-\/]+)-(\d+)-lp\d+$/i) !== null;
+    return this.isPoolTokenNew(denom) || this.isPoolTokenLegacy(denom);
   }
 
   public isWrappedToken(denom?: string) {
@@ -326,11 +333,13 @@ class TokenClient {
       osmosisTokens.forEach((token: Token) => {
         const tokenSymbol = token.symbol.toLowerCase() === "swth" ? "swth" : token.symbol.toUpperCase();
         const index = symbolMap.indexOf(tokenSymbol);
-        this.tokens[token.denom] = token;
-        this.symbols[token.denom] = token.symbol;
+        if (!this.tokens[token.denom])
+          this.tokens[token.denom] = token;
+        if (!this.symbols[token.denom])
+          this.symbols[token.denom] = token.symbol;
         if (index > -1) {
           const similarDenom = symbolDenoms[index];
-          if (similarDenom) {
+          if (similarDenom && !this.wrapperMap[token.denom]) {
             this.wrapperMap[token.denom] = similarDenom;
           }
         }
@@ -411,12 +420,15 @@ class TokenClient {
     const osmoTokenObj = totalAssetObj[ChainIds.Osmosis];
     Object.values(osmoTokenObj).forEach((asset: AssetData) => {
       const symbolSmall = asset.symbol.toLowerCase();
-      if (!this.commonAssetNames[symbolSmall]) {
+      const assetDenom = asset.base.includes('ibc/')
+        ? asset.base
+        : IBCUtils.makeIBCMinimalDenom("channel-0", asset.denom_units[0].denom ?? '') // for OSMO/ION token on osmo
+      if (!this.commonAssetNames[assetDenom])
+        this.commonAssetNames[assetDenom] = symbolSmall;
+      if (!this.commonAssetNames[symbolSmall])
         this.commonAssetNames[symbolSmall] = symbolSmall;
-      }
-      if (asset.coingecko_id && !this.geckoTokenNames[symbolSmall]) {
+      if (asset.coingecko_id && !this.geckoTokenNames[symbolSmall])
         this.geckoTokenNames[symbolSmall] = asset.coingecko_id;
-      }
     });
   }
 }

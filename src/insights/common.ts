@@ -13,7 +13,8 @@ export const InsightsEndpoints = {
   'pool/list': '/pool/list',
   'pool/volume': '/pool/:poolId/volume',
   'pools/volume': '/pool/volume',
-
+  'pools/liquidity': '/pool/liquidity',
+  
   //market
   'market/volume': '/market/volume',
 
