@@ -126,7 +126,7 @@ class TokenClient {
     }
 
     const symbol = this.getSymbol(denom);
-    if (TokenClient.isPoolToken(denom)) {
+    if (TokenClient.isPoolTokenLegacy(denom)) {
       const match = symbol.match(/^([a-z\d.-\/]+)-(\d+)-([a-z\d.-\/]+)-(\d+)-lp\d+$/i);
       // inconsistent implementation of isPoolToken, exit
       if (match === null) return symbol;
@@ -160,8 +160,7 @@ class TokenClient {
   public getTokenDesc(denom: string) {
     if (typeof denom !== 'string') return '';
     denom = denom.toLowerCase();
-
-    if (TokenClient.isPoolToken(denom)) {
+    if (TokenClient.isPoolTokenLegacy(denom)) {
       const match = denom.match(/^([a-z\d.-\/]+)-(\d+)-([a-z\d.-\/]+)-(\d+)-lp\d+$/i);
       // inconsistent implementation of isPoolToken, exit
       if (match === null) return this.getSymbol(denom);
@@ -180,8 +179,16 @@ class TokenClient {
     return this.tokens[denom]?.name ?? this.getSymbol(denom);
   }
 
+  public static isPoolTokenNew(denom: string): boolean {
+    return denom.match(/^clpt\/(\d+)$/i) !== null;
+  }
+
+  public static isPoolTokenLegacy(denom: string): boolean {
+    return denom.match(/^([a-z\d.-]+)-(\d+)-([a-z\d.-]+)-(\d+)-lp\d+$/i) !== null;
+  }
+
   public static isPoolToken(denom: string): boolean {
-    return denom.match(/^([a-z\d.-\/]+)-(\d+)-([a-z\d.-\/]+)-(\d+)-lp\d+$/i) !== null;
+    return this.isPoolTokenNew(denom) || this.isPoolTokenLegacy(denom);
   }
 
   public isWrappedToken(denom?: string) {
