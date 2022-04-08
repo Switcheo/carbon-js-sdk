@@ -1,8 +1,6 @@
 import BigNumber from "bignumber.js";
 import * as BIP39 from "bip39";
-import { Duration } from "../lib/codec/google/protobuf/duration";
 import { CarbonSDK } from "./_sdk";
-import Long from "long";
 import "./_setup";
 
 (async () => {
@@ -18,17 +16,19 @@ import "./_setup";
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
   
-  const base = "swth";
-  const quote = "eth";
+  const base = "eth";
+  const quote = "iusd";
   const baseUSD = sdk.token.getUSDValue(base) ?? new BigNumber(0);
   const quoteUSD = sdk.token.getUSDValue(quote) ?? new BigNumber(0);
 
   const result = await connectedSDK.admin.createMarket({
-    marketType: "spot",
+    marketType: "futures",
     base,
     quote,
     currentBasePriceUsd: baseUSD,
     currentQuotePriceUsd: quoteUSD,
-  })
-  console.log(result).
+    indexOracleId: "DETH",
+    expiryTime: new Date("2022-04-22 16:00:00"),
+  });
+  console.log(result);
 })().catch(console.error).finally(() => process.exit(0));

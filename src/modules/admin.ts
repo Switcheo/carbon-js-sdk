@@ -128,8 +128,8 @@ export class AdminModule extends BaseModule {
       currentBasePriceUsd: params.currentBasePriceUsd.shiftedBy(18).toString(10), // types.Dec
       currentQuotePriceUsd: params.currentQuotePriceUsd.shiftedBy(18).toString(10), // types.Dec
       indexOracleId: params.indexOracleId ?? "",
-      ...params.expiryTime && { expiryTime: params.expiryTime },
-    })
+      expiryTime: params.expiryTime ?? new Date(0),
+    });
 
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgCreateMarket,
