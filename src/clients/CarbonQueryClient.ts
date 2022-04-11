@@ -31,6 +31,7 @@ import { QueryClientImpl as PositionQueryClient } from "@carbon-sdk/codec/positi
 import { QueryClientImpl as PricingQueryClient } from "@carbon-sdk/codec/pricing/query";
 import { QueryClientImpl as ProfileQueryClient } from "@carbon-sdk/codec/profile/query";
 import { QueryClientImpl as SubaccountQueryClient } from "@carbon-sdk/codec/subaccount/query";
+import { QueryClientImpl as HeadersyncQueryClient } from "@carbon-sdk/codec/headersync/query";
 import { createProtobufRpcClient, QueryClient } from "@cosmjs/stargate";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import BlockchainClient from "./BlockchainClient";
@@ -62,6 +63,7 @@ class CarbonQueryClient {
   pricing: PricingQueryClient;
   profile: ProfileQueryClient;
   subaccount: SubaccountQueryClient;
+  headersync: HeadersyncQueryClient;
 
   auth: AuthQueryClient;
   bank: BankQueryClient;
@@ -107,6 +109,7 @@ class CarbonQueryClient {
     this.pricing = new PricingQueryClient(rpcClient);
     this.profile = new ProfileQueryClient(rpcClient);
     this.subaccount = new SubaccountQueryClient(rpcClient);
+    this.headersync = new HeadersyncQueryClient(rpcClient);
 
     this.auth = new AuthQueryClient(rpcClient);
     this.bank = new BankQueryClient(rpcClient);

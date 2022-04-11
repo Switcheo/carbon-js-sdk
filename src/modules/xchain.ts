@@ -1,7 +1,7 @@
 import { MsgProcessCrossChainTx } from '@carbon-sdk/codec/ccm/tx'
 import { MsgSyncHeaders } from '@carbon-sdk/codec/headersync/tx'
 import { CarbonTx } from "@carbon-sdk/util"
-import { BRIDGE_IDS } from '@carbon-sdk/util/blockchain'
+import { CHAIN_IDS } from '@carbon-sdk/util/blockchain'
 import BaseModule from "./base"
 
 export class XChainModule extends BaseModule {
@@ -25,7 +25,7 @@ export class XChainModule extends BaseModule {
 
     const value = MsgProcessCrossChainTx.fromPartial({
       submitter: wallet.bech32Address,
-      fromChainId: BRIDGE_IDS.polynetwork,
+      fromChainId: CHAIN_IDS.polynetwork,
       proof: params.proof,
       header: params.header,
       headerProof: params.headerProof,
@@ -33,7 +33,7 @@ export class XChainModule extends BaseModule {
     })
 
     return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgSyncHeaders,
+      typeUrl: CarbonTx.Types.MsgProcessCrossChainTx,
       value,
     })
   }
@@ -47,7 +47,7 @@ export namespace XChainModule {
   export interface ProcessCrossChainTxParams {
     proof: string
     header: string
-    headerProof: string
-    currentHeader: string
+    headerProof?: string
+    currentHeader?: string
   }
 }
