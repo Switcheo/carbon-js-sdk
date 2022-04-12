@@ -31,6 +31,9 @@ export const InsightsEndpoints = {
 
   // Position api
   'position/leaderboard': '/position/:fromUnix/:toUnix/leaderboard',
+
+  // Competition api
+  'competition/leaderboard': '/competition/leaderboard'
 }
 
 export type Interval = "millisecond" | "second" | "minute" | "hour" | "day" | "week" | "month" | "quarter"

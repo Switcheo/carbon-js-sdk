@@ -102,6 +102,17 @@ class InsightsQueryClient {
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetPoolsVolumeResponse>
   }
 
+  async CompetitionLeaderboard(req: Insights.QueryGetCompetitionLeaderboardRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetCompetitionLeaderboardResponse>> {
+    const queryParams = {
+      market: req.market,
+      from: req.from,
+      until: req.until,
+    }
+    const request = this.apiManager.path('competition/leaderboard', {}, queryParams)
+    const response = await request.get()
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetCompetitionLeaderboardResponse>
+  }
+
   async PoolsLiquidity(req: Insights.QueryGetPoolsLiquidityRequest = {}): Promise<Insights.InsightsQueryResponse<Insights.QueryGetPoolsLiquidityResponse>> {
     const queryParams = {
       poolId: req.poolId,
