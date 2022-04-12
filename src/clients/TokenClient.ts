@@ -339,7 +339,7 @@ class TokenClient {
           this.symbols[token.denom] = token.symbol;
         if (index > -1) {
           const similarDenom = symbolDenoms[index];
-          if (similarDenom && !this.wrapperMap[token.denom]) {
+          if (similarDenom && !this.wrapperMap[token.denom] && similarDenom !== token.denom) {
             this.wrapperMap[token.denom] = similarDenom;
           }
         }
