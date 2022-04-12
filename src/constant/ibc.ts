@@ -1534,4 +1534,4 @@ export const totalAssetObj: AssetListObj = Object.keys(EmbedChainInfosInit).redu
 	return newAssetObj;
 }, {});
 
-export const ibcTokenRegex = /^ibc\/([a-z\d]+)$/i
+export const ibcTokenRegex = /^ibc\/([a-f\d]+)$/i
