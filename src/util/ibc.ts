@@ -1,7 +1,8 @@
-import { ChainInfoExplorerTmRpc, EmbedChainInfosInit, ibcWhitelist, totalAssetObj } from "@carbon-sdk/constant";
+import { ChainInfoExplorerTmRpc, ChainIds, EmbedChainInfosInit, ibcWhitelist, totalAssetObj } from "@carbon-sdk/constant";
 import { KeplrAccount } from "@carbon-sdk/provider";
 import { Hash } from "@keplr-wallet/crypto";
 import { AppCurrency } from "@keplr-wallet/types";
+import { Blockchain } from "./blockchain";
 import { SimpleMap } from "./type";
 
 // Create IBC minimal denom
@@ -26,17 +27,21 @@ export const EmbedChainInfos = Object.values(EmbedChainInfosInit).reduce((prev: 
 	return prev;
 }, {});
 
-export const BlockchainMap = Object.values(EmbedChainInfos).reduce((prev: SimpleMap<string>, chainInfo: ChainInfoExplorerTmRpc) => {
+export const ChainIdBlockchainMap: SimpleMap<Blockchain> = {
+	[ChainIds.Osmosis]: Blockchain.Osmosis,
+};
+
+export const BlockchainMap = Object.values(EmbedChainInfos).reduce((prev: SimpleMap<Blockchain | undefined>, chainInfo: ChainInfoExplorerTmRpc) => {
 	if (!ibcWhitelist.includes(chainInfo.chainId)) {
 		return prev;
 	}
 	const newPrev = prev;
 	chainInfo.currencies.forEach((currency: AppCurrency) => {
 		if (currency.coinDenom.toLowerCase() === "swth") {
-			newPrev[currency.coinMinimalDenom] = chainInfo.chainId;
+			newPrev[currency.coinMinimalDenom] = ChainIdBlockchainMap[chainInfo.chainId];
 		} else {
 			const ibcAddr = makeIBCMinimalDenom("channel-0", currency.coinMinimalDenom);
-			newPrev[ibcAddr] = chainInfo.chainId;
+			newPrev[ibcAddr] = ChainIdBlockchainMap[chainInfo.chainId];
 		}
 	});
 	return newPrev;

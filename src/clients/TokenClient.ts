@@ -1,6 +1,6 @@
 import { Token } from "@carbon-sdk/codec";
 import { CoinGeckoTokenNames, CommonAssetName, NetworkConfigProvider, TokenBlacklist } from "@carbon-sdk/constant";
-import { AssetData, ChainIds, totalAssetObj } from "@carbon-sdk/constant/ibc";
+import { AssetData, ChainIds, totalAssetObj, ibcTokenRegex } from "@carbon-sdk/constant/ibc";
 import { Network } from "@carbon-sdk/constant/network";
 import { BlockchainUtils, FetchUtils, IBCUtils, NumberUtils, TypeUtils } from "@carbon-sdk/util";
 import { BN_ONE, BN_ZERO } from "@carbon-sdk/util/number";
@@ -74,6 +74,10 @@ class TokenClient {
       // pool tokens are on the Native blockchain, hence 0
       chainId = 0;
     }
+    if (TokenClient.isIBCDenom(denom)) {
+      return IBCUtils.BlockchainMap[denom];
+    }
+
     const blockchain = BlockchainUtils.blockchainForChainId(chainId);
     return blockchain;
   }
@@ -121,7 +125,7 @@ class TokenClient {
 
   public getTokenName(denom: string, overrideMap?: TypeUtils.SimpleMap<string>): string {
     if (typeof denom !== 'string') return '';
-    if (!denom.includes('ibc/')) {
+    if (!TokenClient.isIBCDenom(denom)) {
       denom = denom.toLowerCase();
     }
 
@@ -140,7 +144,7 @@ class TokenClient {
       return `${symbolA}-${symbolB}`;
     }
 
-    if (denom.includes('ibc/')) {
+    if (TokenClient.isIBCDenom(denom)) {
       const splitDenom = denom.split('/')
       denom = `${splitDenom[0].toLowerCase()}/${splitDenom[1].toUpperCase()}`
       return this.symbols[denom] ?? denom.toUpperCase()
@@ -191,6 +195,10 @@ class TokenClient {
     return this.isPoolTokenNew(denom) || this.isPoolTokenLegacy(denom);
   }
 
+  public static isIBCDenom(denom: string): boolean {
+    return denom.match(ibcTokenRegex) !== null;
+  }
+
   public isWrappedToken(denom?: string) {
     return !!this.wrapperMap[denom ?? ""];
   }
@@ -239,7 +247,10 @@ class TokenClient {
 
         // check if wrapped denom is of correct blockchain
         const token = this.tokens[wrappedDenom];
-        const tokenChain = BlockchainUtils.blockchainForChainId(token.chainId.toNumber())
+        let tokenChain = BlockchainUtils.blockchainForChainId(token.chainId.toNumber());
+        if (TokenClient.isIBCDenom(wrappedDenom)) {
+          tokenChain = IBCUtils.BlockchainMap[wrappedDenom]
+        }
         if (!blockchain || !tokenChain || tokenChain === blockchain) {
           return token;
         }
@@ -280,7 +291,11 @@ class TokenClient {
     }
 
     // check if selected token is a source token
-    const isSourceToken = BlockchainUtils.blockchainForChainId(token.chainId.toNumber()) === chain
+    let targetChain = BlockchainUtils.blockchainForChainId(token.chainId.toNumber());
+    if (TokenClient.isIBCDenom(token.denom)) {
+      targetChain = IBCUtils.BlockchainMap[token.denom];
+    }
+    const isSourceToken = targetChain === chain
       && token.denom !== "swth";
 
     // if not source token find wrapped token for chain
@@ -352,7 +367,7 @@ class TokenClient {
   public getOsmosisTokens(): Token[] {
     const tokensObj = totalAssetObj[ChainIds.Osmosis]
     const tokens = Object.values(tokensObj).map((asset: AssetData) => {
-      let assetDenom = asset.base.includes('ibc/')
+      let assetDenom = TokenClient.isIBCDenom(asset.base)
         ? asset.base
         : IBCUtils.makeIBCMinimalDenom("channel-0", asset.denom_units[0].denom ?? '') // for OSMO/ION token on osmo
 
@@ -420,7 +435,7 @@ class TokenClient {
     const osmoTokenObj = totalAssetObj[ChainIds.Osmosis];
     Object.values(osmoTokenObj).forEach((asset: AssetData) => {
       const symbolSmall = asset.symbol.toLowerCase();
-      const assetDenom = asset.base.includes('ibc/')
+      const assetDenom = TokenClient.isIBCDenom(asset.base)
         ? asset.base
         : IBCUtils.makeIBCMinimalDenom("channel-0", asset.denom_units[0].denom ?? '') // for OSMO/ION token on osmo
       if (!this.commonAssetNames[assetDenom])
