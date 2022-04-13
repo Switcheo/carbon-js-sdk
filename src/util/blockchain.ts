@@ -14,6 +14,7 @@ export enum Blockchain {
   Neo3 = 'neo3',
   Osmosis = 'osmosis',
   Ibc = 'ibc',
+  Terra = 'terra'
 };
 
 export const BRIDGE_IDS = {
