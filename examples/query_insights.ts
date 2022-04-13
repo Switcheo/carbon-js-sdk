@@ -47,4 +47,12 @@ import { CarbonSDK } from "./_sdk";
     const balanceSupplyResponse = await sdk.insights.BalanceSupply();
     console.log("balanceSupply", balanceSupplyResponse);
 
+    // balance api
+    const competitionLeaderboard = await sdk.insights.CompetitionLeaderboard({
+      from: '1618282336',
+      until: '1681354336',
+      market: 'eth_z39'
+    });
+    console.log("competitionLeaderboard", competitionLeaderboard);
+
 })().catch(console.error).finally(() => process.exit(0));
