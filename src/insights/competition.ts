@@ -1,14 +1,16 @@
 import { TimeMeta } from ".";
 
+export interface LeaderboardEntry {
+  address: string
+  market: string
+  totalVolume: string
+  rank: string
+  username: string | null
+  twitter: string | null
+}
+
 export interface QueryGetCompetitionLeaderboardResponse {
-  entries: {
-    address: string
-    market: string
-    totalVolume: string
-    rank: string
-    username: string
-    twitter: string
-  }[]
+  entries: LeaderboardEntry[]
   meta: TimeMeta
 }
 
