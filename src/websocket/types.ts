@@ -74,6 +74,12 @@ export interface WsGetLeveragesParams {
 export interface WsGetPositionsParams {
   market: string
   address: string
+  status?: string
+  order_by?: string
+  pagination?: {
+    page?: string
+    page_size?: string
+  }
 }
 
 export interface WsGetCommitmentsParams {
