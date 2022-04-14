@@ -80,24 +80,23 @@ export interface AccountTrade {
 }
 
 export interface Position {
-  AllocatedMarginAmount: string; // string representation of number
-  AllocatedMarginDenom: string;
-  ClosedBlockHeight: number;
-  Id: number;
-  TradeId: number | null;
-  UpdateReason: number;
-  UpdatedBlockHeight: number;
-  address: string;
-  allocated_margin: {
-    amount: string; // string representation of number
-    denom?: string;
-  };
-  entry_price: string; // string representation of number
-  id: string;
-  lots: string; // string representation of number
   market: string;
-  opened_block_height: number;
+  address: string;
+  trade_id: string; // string representation of number
+  side: string;
+  opened_block_height: string; // string representation of number
+  updated_block_height: string; // string representation of number
+  closed_block_height: string; // string representation of number
   realized_pnl: string; // string representation of number
+  max_lots: string; // string representation of number
+  total_fee_amount: string; // string representation of number
+  avg_allocated_margin: string; // string representation of number
+  avg_entry_price: string; // string representation of number
+  avg_exit_price: string; // string representation of number
+  allocated_margin: string; // string representation of number
+  lots: string; // string representation of number
+  opened_at: string;
+  closed_at: string;
 }
 
 export interface MarketStat {
@@ -134,7 +133,7 @@ export interface Pool {
     denom_a: string
     amount_a: string // string representation of number
     weight_a: string  // string representation of number
-    denom_b: string 
+    denom_b: string
     amount_b: string // string representation of number
     weight_b: string // string representation of number
     swap_fee: string // string representation of number
