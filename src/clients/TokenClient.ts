@@ -1,8 +1,10 @@
 import { Token } from "@carbon-sdk/codec";
 import { CoinGeckoTokenNames, CommonAssetName, NetworkConfigProvider, TokenBlacklist } from "@carbon-sdk/constant";
-import { AssetData, ChainIds, totalAssetObj, ibcTokenRegex } from "@carbon-sdk/constant/ibc";
+import { ibcTokenRegex, ibcWhitelist, swthChannels, swthIbcWhitelist } from "@carbon-sdk/constant/ibc";
 import { Network } from "@carbon-sdk/constant/network";
+import KeplrAccount from "@carbon-sdk/provider/keplr/KeplrAccount";
 import { BlockchainUtils, FetchUtils, IBCUtils, NumberUtils, TypeUtils } from "@carbon-sdk/util";
+import { AppCurrency } from "@keplr-wallet/types";
 import { BN_ONE, BN_ZERO } from "@carbon-sdk/util/number";
 import BigNumber from "bignumber.js";
 import Long from "long";
@@ -343,11 +345,10 @@ class TokenClient {
     if (networkConfig.network === Network.MainNet) {
       const symbolDenoms = Object.keys(this.symbols);
       const symbolMap = Object.values(this.symbols);
-      const osmosisTokens = this.getOsmosisTokens();
+      const swthIbc = this.getSWTHIbcTokens();
 
-      osmosisTokens.forEach((token: Token) => {
-        const tokenSymbol = token.symbol.toLowerCase() === "swth" ? "swth" : token.symbol.toUpperCase();
-        const index = symbolMap.indexOf(tokenSymbol);
+      swthIbc.forEach((token: Token) => {
+        const index = symbolMap.indexOf("swth");
         if (!this.tokens[token.denom])
           this.tokens[token.denom] = token;
         if (!this.symbols[token.denom])
@@ -364,30 +365,29 @@ class TokenClient {
     return this.tokens;
   }
 
-  public getOsmosisTokens(): Token[] {
-    const tokensObj = totalAssetObj[ChainIds.Osmosis]
-    const tokens = Object.values(tokensObj).map((asset: AssetData) => {
-      let assetDenom = TokenClient.isIBCDenom(asset.base)
-        ? asset.base
-        : IBCUtils.makeIBCMinimalDenom("channel-0", asset.denom_units[0].denom ?? '') // for OSMO/ION token on osmo
-
-      const assetDecimals = asset.denom_units[1]?.exponent ?? 0;
+  public getSWTHIbcTokens(): Token[] {
+    const swthTokens = swthIbcWhitelist.map((chainId: string) => {
+      const blockchain = IBCUtils.BlockchainMap[chainId]
+      const carbonBlockchain = IBCUtils.ChainIdBlockchainMap[blockchain ?? ''];
+      const blockchainNum = BlockchainUtils.CHAIN_IDS[carbonBlockchain ?? ''] ?? 0
+      const swthChannel = swthChannels[chainId]
+      const assetDenom = IBCUtils.makeIBCMinimalDenom(swthChannel.dstChannel ?? "channel-0", KeplrAccount.SWTH_CURRENCY.coinMinimalDenom);
       return {
-        id: asset.symbol.toLowerCase() === "swth" ? "swth.o.1" : asset.symbol.toLowerCase(), // use swth.o.1 as id because swth already has an id
+        id: assetDenom,
         creator: "",
         denom: assetDenom,
-        name: asset.name,
-        symbol: asset.symbol.toUpperCase(),
-        decimals: new Long(assetDecimals),
+        name: "Carbon",
+        symbol: KeplrAccount.SWTH_CURRENCY.coinDenom,
+        decimals: new Long(KeplrAccount.SWTH_CURRENCY.coinDecimals),
         bridgeId: new Long(BlockchainUtils.BRIDGE_IDS.ibc), // ibc = 2
-        chainId: new Long(BlockchainUtils.CHAIN_IDS.osmo), // osmos = 26
+        chainId: new Long(blockchainNum),
         tokenAddress: "",
         bridgeAddress: "",
         isActive: true,
         isCollateral: false,
       };
     });
-    return tokens;
+    return swthTokens;
   }
 
   public async reloadWrapperMap(): Promise<TypeUtils.SimpleMap<string>> {
@@ -431,19 +431,23 @@ class TokenClient {
   }
 
   public setCommonAssetConfig() {
-    // For osmosis tokens
-    const osmoTokenObj = totalAssetObj[ChainIds.Osmosis];
-    Object.values(osmoTokenObj).forEach((asset: AssetData) => {
-      const symbolSmall = asset.symbol.toLowerCase();
-      const assetDenom = TokenClient.isIBCDenom(asset.base)
-        ? asset.base
-        : IBCUtils.makeIBCMinimalDenom("channel-0", asset.denom_units[0].denom ?? '') // for OSMO/ION token on osmo
-      if (!this.commonAssetNames[assetDenom])
-        this.commonAssetNames[assetDenom] = symbolSmall;
-      if (!this.commonAssetNames[symbolSmall])
-        this.commonAssetNames[symbolSmall] = symbolSmall;
-      if (asset.coingecko_id && !this.geckoTokenNames[symbolSmall])
-        this.geckoTokenNames[symbolSmall] = asset.coingecko_id;
+    // whitelisted ibc tokens
+    ibcWhitelist.forEach((chainId: string) => {
+      const currencies = IBCUtils.EmbedChainInfos[chainId].currencies;
+      const channelObj = swthChannels[chainId]
+      currencies.forEach((asset: AppCurrency) => {
+        const channel = asset.coinMinimalDenom !== "swth"
+          ? (channelObj?.sourceChannel ?? "channel-0")
+          : (channelObj?.dstChannel ?? "channel-0");
+        const assetDenom = TokenClient.isIBCDenom(asset.coinMinimalDenom)
+          ? asset.coinMinimalDenom
+          : IBCUtils.makeIBCMinimalDenom(channel, asset.coinMinimalDenom);
+        const symbolSmall = asset.coinDenom.toLowerCase();
+        if (!this.commonAssetNames[assetDenom])
+          this.commonAssetNames[assetDenom] = symbolSmall;
+        if (asset.coinGeckoId && !this.geckoTokenNames[symbolSmall])
+          this.geckoTokenNames[symbolSmall] = asset.coinGeckoId;
+      })
     });
   }
 }

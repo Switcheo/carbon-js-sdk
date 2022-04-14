@@ -40,7 +40,8 @@ export const CHAIN_IDS: ChainIds = {
   'neo': 4,
   'bsc': 6,
   'zil': 9,
-  'osmo': 244,
+  'osmosis': 244,
+  'terra': 245,
 };
 
 export function parseBlockchain(value: string | null): Blockchain | null {
@@ -90,6 +91,8 @@ export const blockchainForChainId = (chainId?: number): Blockchain | undefined =
       return Blockchain.Neo3
     case 244: // mainnet
       return Blockchain.Osmosis
+    case 245: // mainnet
+      return Blockchain.Terra
     default:
       return undefined
   }
