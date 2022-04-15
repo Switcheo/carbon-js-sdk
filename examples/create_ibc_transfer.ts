@@ -5,7 +5,7 @@ import * as BIP39 from "bip39";
 import { AddressUtils, CarbonSDK, CarbonTx, CarbonWallet, IBCUtils } from "./_sdk";
 import { SignDoc } from '../lib/codec/cosmos/tx/v1beta1/tx';
 import { registry } from "../lib/codec/index";
-import { ChainIds, totalAssetObj } from "../lib/constant";
+import { ChainIds, swthChannels } from "../lib/constant";
 import "./_setup";
 import { Models } from '../lib';
 
@@ -22,13 +22,13 @@ const networkObj = IBCUtils.EmbedChainInfos[network];
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
 
-  const swthToken = await sdk.token.tokenForId("swth");
+  const swthToken = await sdk.token.tokenForId("ibc/8FEFAE6AECF6E2A255585617F781F35A8D5709A545A804482A261C0C9548A9D3"); // swth on osmo blockchain
   if (!swthToken) return;
 
-  const ibcToken = totalAssetObj[ChainIds.Osmosis].swth;
-  if (!ibcToken) return;
+  const channelObj = swthChannels[ChainIds.Osmosis];
+  if (!channelObj) return;
 
-  const tokenDecimals = ibcToken.denom_units?.[1]?.exponent ?? 0
+  const tokenDecimals = swthToken.decimals.toNumber() ?? 0;
 
   const counterAddressBytes = AddressUtils.IBCAddress.getAddressBytes(sdk?.wallet?.bech32Address ?? "");
   const counterAddr = AddressUtils.IBCAddress.deriveAddressFromBytes(counterAddressBytes, networkObj.bech32Config.bech32PrefixAccAddr)
@@ -36,8 +36,8 @@ const networkObj = IBCUtils.EmbedChainInfos[network];
   // Withdrawal
   const withdrawResponse = await connectedSDK.ibc.sendIBCTransfer({
     sourcePort: "transfer",
-    sourceChannel: ibcToken.ibc?.source_channel ?? "", // channel of receiving blockchain
-    denom: ibcToken.ibc?.source_denom ?? "",
+    sourceChannel: channelObj.sourceChannel ?? "channel-0", // channel of receiving blockchain
+    denom: "swth",
     amount: new BigNumber(50).shiftedBy(tokenDecimals),
     sender: sdk?.wallet?.bech32Address ?? "", // address to send from
     receiver: counterAddr, // address to send to
@@ -49,7 +49,7 @@ const networkObj = IBCUtils.EmbedChainInfos[network];
   const counterWallet = await DirectSecp256k1Wallet.fromKey(walletPrivateKey, networkObj.bech32Config.bech32PrefixAccAddr);
   const counterSigner: OfflineDirectSigner = {
     getAccounts() {
-      return counterWallet.getAccounts()
+      return counterWallet.getAccounts();
     },
     async signDirect(signerAddress: string, signDoc: SignDoc): Promise<DirectSignResponse> {
       return await counterWallet.signDirect(signerAddress, signDoc);
@@ -69,9 +69,9 @@ const networkObj = IBCUtils.EmbedChainInfos[network];
   // Deposit
   const txBody = await Models.IBC.TranferV1.MsgTransfer.fromPartial({
     sourcePort: "transfer",
-    sourceChannel: ibcToken.ibc?.dst_channel ?? "",
+    sourceChannel: channelObj.dstChannel ?? "channel-0",
     token: {
-      denom: ibcToken.denom_units?.[0]?.denom ?? '',
+      denom: swthToken.denom,
       amount: new BigNumber(50).shiftedBy(tokenDecimals).toString(10),
     },
     sender: counterAddr, // address to send from
