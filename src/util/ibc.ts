@@ -35,8 +35,10 @@ export const totalAssetObj: AssetListObj = Object.values(EmbedChainInfos).reduce
 
 	const newAssetObj = prev;
 	const assetsObj: SimpleMap<AppCurrency> = {};
+	const channelsObj = swthChannels[chainInfo.chainId];
 	chainInfo.currencies.forEach((currency: AppCurrency) => {
-		assetsObj[currency.coinDenom.toLowerCase()] = currency;
+		const ibcAddr = makeIBCMinimalDenom(channelsObj?.sourceChannel ?? "channel-0", currency.coinMinimalDenom);
+		assetsObj[ibcAddr] = currency;
 	});
 	newAssetObj[chainInfo.chainId] = assetsObj;
 	return newAssetObj;
@@ -46,6 +48,16 @@ export const ChainIdBlockchainMap: SimpleMap<Blockchain> = {
 	[ChainIds.Osmosis]: Blockchain.Osmosis,
 	[ChainIds.Terra]: Blockchain.Terra,
 };
+
+export const getIbcChainFromBlockchain = (blockchain: Blockchain | undefined): ChainIds | undefined => {
+	if (!blockchain) return undefined;
+	Object.entries(ChainIdBlockchainMap).forEach(([key, value]) => {
+		if (blockchain === value) {
+			return key;
+		}
+	})
+	return undefined;
+}
 
 export const BlockchainMap = Object.values(EmbedChainInfos).reduce((prev: SimpleMap<Blockchain | undefined>, chainInfo: ChainInfoExplorerTmRpc) => {
 	if (!ibcWhitelist.includes(chainInfo.chainId)) {
@@ -57,7 +69,7 @@ export const BlockchainMap = Object.values(EmbedChainInfos).reduce((prev: Simple
 		if (currency.coinDenom.toLowerCase() === "swth") {
 			newPrev[currency.coinMinimalDenom] = ChainIdBlockchainMap[chainInfo.chainId];
 		} else {
-			const ibcAddr = makeIBCMinimalDenom(channelsObj?.dstChannel ?? "channel-0", currency.coinMinimalDenom);
+			const ibcAddr = makeIBCMinimalDenom(channelsObj?.sourceChannel ?? "channel-0", currency.coinMinimalDenom);
 			newPrev[ibcAddr] = ChainIdBlockchainMap[chainInfo.chainId];
 		}
 	});
