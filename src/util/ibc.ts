@@ -50,13 +50,13 @@ export const ChainIdBlockchainMap: SimpleMap<Blockchain> = {
 };
 
 export const getIbcChainFromBlockchain = (blockchain: Blockchain | undefined): ChainIds | undefined => {
-	if (!blockchain) return undefined;
+	let ibcChain: ChainIds | undefined = undefined;
 	Object.entries(ChainIdBlockchainMap).forEach(([key, value]) => {
-		if (blockchain === value) {
-			return key;
+		if (blockchain && blockchain.includes(value)) {
+			ibcChain = key as ChainIds;
 		}
-	})
-	return undefined;
+	});
+	return ibcChain;
 }
 
 export const BlockchainMap = Object.values(EmbedChainInfos).reduce((prev: SimpleMap<Blockchain | undefined>, chainInfo: ChainInfoExplorerTmRpc) => {
