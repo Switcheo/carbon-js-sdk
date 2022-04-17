@@ -1,3 +1,5 @@
+import { Account, AccountWithCosmos } from "@keplr-wallet/stores";
+
 export interface FeeAmount {
   fee: string
 }
@@ -20,3 +22,5 @@ export enum FeeResultType {
 export interface FeeInfo extends FeeResult {
   denom: string
 }
+
+export const DefaultMsgOpts = AccountWithCosmos.defaultMsgOpts;

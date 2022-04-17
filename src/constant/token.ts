@@ -170,6 +170,7 @@ export const CommonAssetName: SimpleMap<string> = {
   'play.z.1': 'play',
   'gm.1.6.e93773': 'gm',
   'ava1.1.6.95712b': 'ava',
+  'ibc/4294C3DB67564CF4A0B2BFACC8415A59B38243F6FF9E288FBA34F9B4823BA16E': 'ust-terra',
 
   // devnet tokens
   'one.1.2.0c4e3f': 'one',
@@ -331,7 +332,7 @@ export const CoinGeckoTokenNames: SimpleMap<string> = {
   cake: 'pancakeswap-token',
   atom: 'cosmos',
   safemoon: 'safemoon',
-  ust: 'wrapped-ust-bsc',
+  ust: 'wrapped-ust',
   zec: 'zcash',
   pax: 'paxos-standard',
   near: 'near',
@@ -359,6 +360,7 @@ export const CoinGeckoTokenNames: SimpleMap<string> = {
   port: 'packageportal',
   gm: 'ghostmarket',
   ava: 'concierge-io',
+  'ust-terra': 'terrausd',
 };
 
 export const TokenBlacklist: OptionalNetworkMap<string[]> = {
