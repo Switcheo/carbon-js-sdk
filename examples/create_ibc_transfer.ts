@@ -9,8 +9,9 @@ import { ChainIds, swthChannels } from "../lib/constant";
 import "./_setup";
 import { Models } from '../lib';
 
-const network = "osmosis-1";
+const network = ChainIds.Osmosis;
 const networkObj = IBCUtils.EmbedChainInfos[network];
+const swthDenom = "ibc/8FEFAE6AECF6E2A255585617F781F35A8D5709A545A804482A261C0C9548A9D3";
 
 (async () => {
   const mnemonics = process.env.MNEMONICS ?? BIP39.generateMnemonic();
@@ -22,10 +23,10 @@ const networkObj = IBCUtils.EmbedChainInfos[network];
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
 
-  const swthToken = await sdk.token.tokenForId("ibc/8FEFAE6AECF6E2A255585617F781F35A8D5709A545A804482A261C0C9548A9D3"); // swth on osmo blockchain
+  const swthToken = await sdk.token.tokenForId(swthDenom); // swth on osmo blockchain
   if (!swthToken) return;
 
-  const channelObj = swthChannels[ChainIds.Osmosis];
+  const channelObj = swthChannels[network];
   if (!channelObj) return;
 
   const tokenDecimals = swthToken.decimals.toNumber() ?? 0;
