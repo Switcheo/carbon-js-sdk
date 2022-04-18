@@ -1,4 +1,4 @@
-import { TimeMeta } from ".";
+import { TimeMeta } from "./common";
 
 export interface LeaderboardEntry {
   address: string

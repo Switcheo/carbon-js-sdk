@@ -346,9 +346,9 @@ class TokenClient {
     if (networkConfig.network === Network.MainNet) {
       const symbolDenoms = Object.keys(this.symbols);
       const symbolMap = Object.values(this.symbols);
-      const swthIbc = this.getSWTHIbcTokens();
+      const carbonIbc = this.getCarbonIbcTokens();
 
-      swthIbc.forEach((token: Token) => {
+      carbonIbc.forEach((token: Token) => {
         const index = symbolMap.indexOf("swth");
         if (!this.tokens[token.denom])
           this.tokens[token.denom] = token;
@@ -366,7 +366,7 @@ class TokenClient {
     return this.tokens;
   }
 
-  public getSWTHIbcTokens(): Token[] {
+  public getCarbonIbcTokens(): Token[] {
     const swthTokens = swthIbcWhitelist.map((chainId: string) => {
       const blockchain = IBCUtils.BlockchainMap[chainId]
       const carbonBlockchain = IBCUtils.ChainIdBlockchainMap[blockchain ?? ''];
