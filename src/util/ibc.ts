@@ -1,4 +1,4 @@
-import { ChainInfoExplorerTmRpc, ChainIds, EmbedChainInfosInit, ibcWhitelist, AssetListObj, swthChannels, swthIbcWhitelist } from "@carbon-sdk/constant";
+import { ChainInfoExplorerTmRpc, ChainIds, EmbedChainInfosInit, ibcWhitelist, AssetListObj, swthChannels, swthIbcWhitelist, ibcNetworkRegex } from "@carbon-sdk/constant";
 import { KeplrAccount } from "@carbon-sdk/provider";
 import { Hash } from "@keplr-wallet/crypto";
 import { AppCurrency } from "@keplr-wallet/types";
@@ -75,3 +75,16 @@ export const BlockchainMap = Object.values(EmbedChainInfos).reduce((prev: Simple
 	});
 	return newPrev;
 }, {});
+
+export interface ChainIdOutput {
+	identifier: string;
+	version: number;
+}
+
+export const parseChainId = (chainId: string): ChainIdOutput => {
+	const chainArr = chainId.match(ibcNetworkRegex);
+	return {
+		identifier: chainArr?.[1] ?? "",
+		version: parseInt(chainArr?.[2] ?? '0'),
+	};
+};

@@ -55,6 +55,9 @@ export const swthIbcWhitelist: string[] = [ChainIds.Osmosis];
 // whitelisted networks for addition of transfer options
 export const ibcWhitelist: string[] = [ChainIds.Osmosis, ChainIds.Terra];
 
+// blacklisted networks for address generation and input
+export const ibcAddrBlacklist: string[] = [ChainIds.Terra]
+
 export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
   [ChainIds.Osmosis]: {
     rpc: "https://rpc-osmosis.keplr.app",
@@ -1525,3 +1528,5 @@ export const swthChannels: SimpleMap<ChannelConfig> = {
 }
 
 export const ibcTokenRegex = /^ibc\/([a-f\d]+)$/i
+
+export const ibcNetworkRegex = /^([a-z]+)-([\d]+)$/i

@@ -36,7 +36,7 @@ export class IBCModule extends BaseModule {
     let msgOpts: CarbonTx.SignTxOpts | undefined = undefined;
     if (fee) {
       msgOpts = { fee };
-    } 
+    }
 
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgTransfer,
