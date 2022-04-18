@@ -1,20 +1,17 @@
 import Long from "long";
-import { IBCUtils } from "../lib";
 import { QueryAllTransactionRequest } from "../lib/codec";
 import { CarbonSDK, CarbonTx, GenericUtils } from "./_sdk";
 import "./_setup";
 
 (async () => {
   const sdk = await CarbonSDK.instance({
-    network: CarbonSDK.Network.MainNet,
-    // config: {
-    //   tmRpcUrl: process.env.TRPC_ENDPOINT,
-    // },
+    network: CarbonSDK.Network.LocalHost,
+    config: {
+      tmRpcUrl: process.env.TRPC_ENDPOINT,
+    },
   });
 
   // GRPC Queries
-  console.log("BlockchainMap", IBCUtils.BlockchainMap);
-  process.exit(0);
 
   // query market stats
   const marketStats = await sdk.query.marketstats.MarketStats({});
