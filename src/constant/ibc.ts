@@ -1,7 +1,6 @@
 import { IBCAddress } from "@carbon-sdk/util/address";
 import { SimpleMap } from "@carbon-sdk/util/type";
 import { AppCurrency, ChainInfo } from "@keplr-wallet/types";
-import osmosisAssetLists from "./ibc-assetlist.json";
 import { CURRENT_GAS_PRICE } from "./generic";
 
 export interface ChainInfoExplorerTmRpc extends ChainInfo {
@@ -51,8 +50,13 @@ export enum ChainIds {
 	Carbon = "carbon-1",
 }
 
-// whitelisted networks for addition of swth as a currency, and addition of transfer options
-export const ibcWhitelist: string[] = [ChainIds.Osmosis];
+// whitelisted networks for addition of swth as a currency
+export const swthIbcWhitelist: string[] = [ChainIds.Osmosis];
+// whitelisted networks for addition of transfer options
+export const ibcWhitelist: string[] = [ChainIds.Osmosis, ChainIds.Terra];
+
+// blacklisted networks for address generation and input
+export const ibcAddrBlacklist: string[] = [ChainIds.Terra]
 
 export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
   [ChainIds.Osmosis]: {
@@ -1500,38 +1504,29 @@ export interface AssetData {
   coingecko_id?: string;
 }
 
-export type AssetListObj = SimpleMap<SimpleMap<AssetData>>
+export type AssetListObj = SimpleMap<SimpleMap<AppCurrency>>
 
 // Blacklist evmos because it has the same ibc denom as osmo
 export const IbcTokenBlacklist: SimpleMap<string[]> = {
 	[ChainIds.Osmosis]: ["evmos"],
 };
 
-export const totalAssetObj: AssetListObj = Object.keys(EmbedChainInfosInit).reduce((prev: AssetListObj, chainId: string) => {
-	const newAssetObj = prev;
-	let assetsObj: SimpleMap<AssetData> = {};
+export interface ChannelConfig {
+	sourceChannel: string;
+	dstChannel: string;
+}
 
-	const currencies = EmbedChainInfosInit[chainId].currencies;
-	switch (chainId) {
-		case ChainIds.Osmosis:
-			currencies.forEach((currency: AppCurrency) => {
-				const coinDenom = currency.coinDenom.toLowerCase();
-				const tokenAsset = osmosisAssetLists.assets.find((asset: AssetData) => asset.symbol.toLowerCase() === coinDenom);
-				if (tokenAsset) {
-					assetsObj[coinDenom] = tokenAsset;
-				}
-			});
-			break;
-	}
-
-	if (ibcWhitelist.includes(chainId)) {
-		const swthIbc = osmosisAssetLists.assets.find((asset: AssetData) => asset.symbol.toLowerCase() === "swth");
-		if (swthIbc) {
-			assetsObj.swth = swthIbc;
-		}
-  }
-	newAssetObj[chainId] = assetsObj;
-	return newAssetObj;
-}, {});
+export const swthChannels: SimpleMap<ChannelConfig> = {
+	[ChainIds.Osmosis]: {
+		sourceChannel: "channel-0",
+		dstChannel: "channel-188",
+	},
+	[ChainIds.Terra]: {
+		sourceChannel: "channel-2",
+		dstChannel: "channel-48",
+	},
+}
 
 export const ibcTokenRegex = /^ibc\/([a-f\d]+)$/i
+
+export const ibcNetworkRegex = /^([a-z]+)-([\d]+)$/i
