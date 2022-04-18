@@ -37,7 +37,9 @@ export const totalAssetObj: AssetListObj = Object.values(EmbedChainInfos).reduce
 	const assetsObj: SimpleMap<AppCurrency> = {};
 	const channelsObj = swthChannels[chainInfo.chainId];
 	chainInfo.currencies.forEach((currency: AppCurrency) => {
-		const ibcAddr = makeIBCMinimalDenom(channelsObj?.sourceChannel ?? "channel-0", currency.coinMinimalDenom);
+		const ibcAddr = currency.coinDenom.toLowerCase() === "swth"
+			? currency.coinMinimalDenom
+			: makeIBCMinimalDenom(channelsObj?.sourceChannel ?? "channel-0", currency.coinMinimalDenom);
 		assetsObj[ibcAddr] = currency;
 	});
 	newAssetObj[chainInfo.chainId] = assetsObj;
