@@ -9,6 +9,7 @@ export const CommonAssetName: SimpleMap<string> = {
   dai: 'dai',
   'dai.1.2.0fdfd1': 'dai',
   flm1: 'flm',
+  'flm.1.14.e492c5': 'flm',
   eth1: 'eth',
   'eth.b.1': 'eth',
   'eth.1.2.4730ca': 'eth',
