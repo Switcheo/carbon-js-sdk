@@ -98,10 +98,11 @@ export enum BroadcastTxMode {
 export interface SignTxOpts {
   fee?: StdFee;
   memo?: string;
-  explicitSignerData?: SignerData;
+  explicitSignerData?: Partial<SignerData>;
 }
 
 export interface BroadcastTxOpts {
+  mode?: BroadcastTxMode
   timeoutMs?: number
   pollIntervalMs?: number
 }

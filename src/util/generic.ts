@@ -84,3 +84,7 @@ export const modifyTmClient = (tmClient: Tendermint34Client) => {
 
   return tmClient;
 }
+
+export const callIgnoreError = <T = any>(runnable: () => T) => {
+  return runnable();
+};
