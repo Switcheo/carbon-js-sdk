@@ -232,7 +232,7 @@ class InsightsQueryClient {
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetLiquidationAndADLResponse>
   }
 
-  async Liquidation(req: Insights.GetPositionsViewPathParams, query: Insights.GetPositionsViewQueryParams): Promise<Insights.InsightsQueryResponse<Insights.QueryGetPositionsViewResponse>> {
+  async PositionsView(req: Insights.GetPositionsViewPathParams, query: Insights.GetPositionsViewQueryParams): Promise<Insights.InsightsQueryResponse<Insights.QueryGetPositionsViewResponse>> {
     const request = this.apiManager.path('position/view', req, {
       sort: query.sort ?? 'DESC',
       limit: query.limit ?? 100,
