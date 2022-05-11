@@ -11,6 +11,7 @@
     "watch": "nodemon yarn build",
     "build": "tsc && tsc-alias",
     "cp-proto": "cp ~/go/src/github.com/Switcheo/carbon/gen/proto-ts.tar.gz .",
+    "sync-ibc-assets": "sh scripts/update-ibc-assets.sh",
     "sync-proto": "sh scripts/update-proto.sh",
     "sync-register": "sh scripts/generate-registry.sh",
     "test": "tsc && node lib/test.js",

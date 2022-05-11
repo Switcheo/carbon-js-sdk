@@ -1,4 +1,5 @@
 import { ChainInfoExplorerTmRpc, ChainIds, EmbedChainInfosInit, ibcWhitelist, AssetListObj, swthChannels, swthIbcWhitelist, ibcNetworkRegex } from "@carbon-sdk/constant";
+import ibcTokenInfo from "@carbon-sdk/constant/ibc-assetlist.json";
 import { KeplrAccount } from "@carbon-sdk/provider";
 import { Hash } from "@keplr-wallet/crypto";
 import { AppCurrency } from "@keplr-wallet/types";
@@ -45,6 +46,19 @@ export const totalAssetObj: AssetListObj = Object.values(EmbedChainInfos).reduce
 	newAssetObj[chainInfo.chainId] = assetsObj;
 	return newAssetObj;
 }, {});
+
+export interface DenomUnitsArr {
+	denom: string;
+	exponent: number;
+	aliases?: string[];
+}
+
+export const TokenInfoMap = ibcTokenInfo.assets.reduce((prev, asset) => {
+	const newPrev = prev;
+	const ibcBaseDenom = asset.ibc?.source_denom ?? ((asset.denom_units as DenomUnitsArr[])?.[0]?.aliases)?.[0] ?? asset.denom_units[0].denom ?? asset.base;
+	newPrev[ibcBaseDenom] = asset;
+	return newPrev;
+}, {})
 
 export const ChainIdBlockchainMap: SimpleMap<Blockchain> = {
 	[ChainIds.Osmosis]: Blockchain.Osmosis,
