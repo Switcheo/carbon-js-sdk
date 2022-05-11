@@ -45,6 +45,16 @@ class InsightsQueryClient {
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetTransactionResponse>
   }
 
+  async AvgBlockTime(req: Insights.QueryGetAvgBlockTimeRequest) :
+  Promise<Insights.InsightsQueryResponse<Insights.QueryGetAvgBlockTimeResponse>> {
+    const queryParams = {
+      hours: req.hours
+    }
+  const request = this.apiManager.path('chain/blocktime', {}, req)
+  const response = await request.get()
+  return response.data as Insights.InsightsQueryResponse<Insights.QueryGetAvgBlockTimeResponse>
+}
+
   // User api
   async ActiveAccounts(req: Insights.QueryGetActiveAccountsRequest = {}): Promise<Insights.InsightsQueryResponse<Insights.QueryGetActiveAccountsResponse>> {
     const request = this.apiManager.path('user/active', {}, req)
@@ -76,6 +86,17 @@ class InsightsQueryClient {
     const request = this.apiManager.path('pool/list', {}, req)
     const response = await request.get()
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetPoolsResponse>
+  }
+
+  async PoolHistory(query: Insights.QueryGetPoolHistoryRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetPoolHistoryResponse>> {
+    const request = this.apiManager.path('pool/history', {}, {
+      sort: query.sort ?? 'DESC',
+      limit: query.limit ?? 100,
+      offset: query.offset ?? 0,
+      poolId: query.poolId
+    })
+    const response = await request.get()
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetPoolHistoryResponse>
   }
 
   async PoolVolume(req: Insights.QueryGetPoolVolumeRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetPoolVolumeResponse>> {
@@ -191,6 +212,36 @@ class InsightsQueryClient {
   }
 
   // Positions api
+  async LiquidationEngine(query: Insights.GetLiquidationAndADLQueryParams): Promise<Insights.InsightsQueryResponse<Insights.QueryGetLiquidationAndADLResponse>> {
+    const request = this.apiManager.path('position/liquidation/engine', {}, {
+      sort: query.sort ?? 'DESC',
+      limit: query.limit ?? 100,
+      offset: query.offset ?? 0
+    })
+    const response = await request.get()
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetLiquidationAndADLResponse>
+  }
+
+  async LiquidationAndADL(query: Insights.GetLiquidationAndADLQueryParams): Promise<Insights.InsightsQueryResponse<Insights.QueryGetLiquidationAndADLResponse>> {
+    const request = this.apiManager.path('position/liquidation', {}, {
+      sort: query.sort ?? 'DESC',
+      limit: query.limit ?? 100,
+      offset: query.offset ?? 0
+    })
+    const response = await request.get()
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetLiquidationAndADLResponse>
+  }
+
+  async Liquidation(req: Insights.GetPositionsViewPathParams, query: Insights.GetPositionsViewQueryParams): Promise<Insights.InsightsQueryResponse<Insights.QueryGetPositionsViewResponse>> {
+    const request = this.apiManager.path('position/view', req, {
+      sort: query.sort ?? 'DESC',
+      limit: query.limit ?? 100,
+      offset: query.offset ?? 0
+    })
+    const response = await request.get()
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetPositionsViewResponse>
+  }
+
   async Leaderboard(req: Insights.GetLeaderboardPathParams, query: Insights.GetLeaderboardQueryParams): Promise<Insights.InsightsQueryResponse<Insights.QueryGetLeaderboardResponse>> {
     const request = this.apiManager.path('position/leaderboard', req, {
       market: query.market ?? '',
