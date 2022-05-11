@@ -33,8 +33,8 @@ export const InsightsEndpoints = {
 
   // Position api
   'position/leaderboard': '/position/:fromUnix/:toUnix/leaderboard',
-  'position/view': '/position/:view',
-  'position/liquidation': '/position/liquidtion',
+  'position/view': '/position/view/:view',
+  'position/liquidation': '/position/liquidation',
   'position/liquidation/engine': '/position/liquidation/engine',
 
   // Competition api

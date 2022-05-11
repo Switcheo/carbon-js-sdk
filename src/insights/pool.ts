@@ -86,7 +86,7 @@ export interface QueryGetPoolsLiquidityResponse {
 
 //pool history
 export interface QueryGetPoolHistoryRequest extends QueryByPageRequest {
-  poolId: string
+  poolId: number | string
   sort?: 'DESC' | 'ASC'
 }
 export interface Action {

@@ -55,4 +55,24 @@ import { CarbonSDK } from "./_sdk";
     });
     console.log("competitionLeaderboard", competitionLeaderboard);
 
+    //Position Views
+    const positionViews = await sdk.insights.PositionsView({ view: "profit"},{})
+    console.log("PositionsView", positionViews)
+
+    //Liquidation
+    const liquidationAndADL = await sdk.insights.LiquidationAndADL({})
+    console.log("Liquidation and ADL", liquidationAndADL)
+
+    //Liquidation Engine
+    const liquidation = await sdk.insights.LiquidationEngine({})
+    console.log("Liquidation", liquidation)
+
+    //AvgBlocktime
+    const avgBlocktime = await sdk.insights.AvgBlockTime({ hours: 24 })
+    console.log("Avg Blocktime", avgBlocktime)
+
+    //Pool History
+    const PoolHistory = await sdk.insights.PoolHistory({ poolId: 42 })
+    console.log("PoolHistory", PoolHistory)
+
 })().catch(console.error).finally(() => process.exit(0));
