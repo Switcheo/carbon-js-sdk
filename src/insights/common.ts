@@ -52,6 +52,7 @@ export interface QueryByTimeRequest {
 export interface QueryByPageRequest {
   limit?: number
   offset?: number
+  sort?: "ASC" | "DESC";
 }
 
 export interface InsightsQueryResponse<T> {

@@ -47,10 +47,10 @@ class InsightsQueryClient {
 
   async AvgBlockTime(req: Insights.QueryGetAvgBlockTimeRequest) :
   Promise<Insights.InsightsQueryResponse<Insights.QueryGetAvgBlockTimeResponse>> {
-    const queryParams = {
-      hours: req.hours
-    }
-  const request = this.apiManager.path('chain/blocktime', {}, req)
+  const queryParams = {
+    hours: req.hours
+  }
+  const request = this.apiManager.path('chain/blocktime', {}, queryParams)
   const response = await request.get()
   return response.data as Insights.InsightsQueryResponse<Insights.QueryGetAvgBlockTimeResponse>
 }
@@ -212,14 +212,14 @@ class InsightsQueryClient {
   }
 
   // Positions api
-  async LiquidationEngine(query: Insights.GetLiquidationAndADLQueryParams): Promise<Insights.InsightsQueryResponse<Insights.QueryGetLiquidationAndADLResponse>> {
+  async LiquidationEngine(query: Insights.GetLiquidationEngineParams): Promise<Insights.InsightsQueryResponse<Insights.QueryGetLiquidationEngineResponse>> {
     const request = this.apiManager.path('position/liquidation/engine', {}, {
       sort: query.sort ?? 'DESC',
       limit: query.limit ?? 100,
       offset: query.offset ?? 0
     })
     const response = await request.get()
-    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetLiquidationAndADLResponse>
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetLiquidationEngineResponse>
   }
 
   async LiquidationAndADL(query: Insights.GetLiquidationAndADLQueryParams): Promise<Insights.InsightsQueryResponse<Insights.QueryGetLiquidationAndADLResponse>> {

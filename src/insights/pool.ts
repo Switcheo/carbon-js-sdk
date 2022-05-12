@@ -87,7 +87,6 @@ export interface QueryGetPoolsLiquidityResponse {
 //pool history
 export interface QueryGetPoolHistoryRequest extends QueryByPageRequest {
   poolId: number | string
-  sort?: 'DESC' | 'ASC'
 }
 export interface Action {
   category:      string;
@@ -97,13 +96,15 @@ export interface Action {
   amountValue:   number;
 }
 
+export interface PositionHistoryEntry {
+  timestamp: string;
+  height:    number;
+  vault:     string;
+  poolId:    number;
+  actions:   Action[];
+}
+
 export interface QueryGetPoolHistoryResponse {
-  entries: {
-    timestamp: Date;
-    height:    number;
-    vault:     string;
-    poolID:    number;
-    actions:   Action[];
-  }[]
+  entries: PositionHistoryEntry[]
   meta: PageMeta
 }
