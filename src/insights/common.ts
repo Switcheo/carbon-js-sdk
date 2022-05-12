@@ -2,6 +2,7 @@ export const InsightsEndpoints = {
   // Chain api
   'chain/stake': '/chain/stake',
   'chain/transaction': '/chain/transaction',
+  'chain/blocktime': '/chain/blocktime',
 
   // User api
   'user/active': '/user/active',
@@ -14,6 +15,7 @@ export const InsightsEndpoints = {
   'pool/volume': '/pool/:poolId/volume',
   'pools/volume': '/pool/volume',
   'pools/liquidity': '/pool/liquidity',
+  'pool/history': '/pool/history',
   
   //market
   'market/volume': '/market/volume',
@@ -31,6 +33,9 @@ export const InsightsEndpoints = {
 
   // Position api
   'position/leaderboard': '/position/:fromUnix/:toUnix/leaderboard',
+  'position/view': '/position/view/:view',
+  'position/liquidation': '/position/liquidation',
+  'position/liquidation/engine': '/position/liquidation/engine',
 
   // Competition api
   'competition/leaderboard': '/competition/leaderboard'
@@ -47,6 +52,7 @@ export interface QueryByTimeRequest {
 export interface QueryByPageRequest {
   limit?: number
   offset?: number
+  sort?: "ASC" | "DESC";
 }
 
 export interface InsightsQueryResponse<T> {

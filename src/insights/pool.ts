@@ -83,3 +83,28 @@ export interface QueryGetPoolsLiquidityResponse {
   }[]
   meta: TimeMeta
 }
+
+//pool history
+export interface QueryGetPoolHistoryRequest extends QueryByPageRequest {
+  poolId: number | string
+}
+export interface Action {
+  category:      string;
+  denom:         string;
+  amount:        number;
+  amountShifted: number;
+  amountValue:   number;
+}
+
+export interface PositionHistoryEntry {
+  timestamp: string;
+  height:    number;
+  vault:     string;
+  poolId:    number;
+  actions:   Action[];
+}
+
+export interface QueryGetPoolHistoryResponse {
+  entries: PositionHistoryEntry[]
+  meta: PageMeta
+}

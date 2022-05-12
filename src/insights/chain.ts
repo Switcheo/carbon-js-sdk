@@ -33,3 +33,16 @@ export interface QueryGetTransactionResponse {
     entries: Transaction[]
     meta: TimeMeta
 }
+
+export interface QueryGetAvgBlockTimeRequest extends QueryByTimeRequest { 
+    hours: number
+}
+
+export interface AvgBlockTime {
+    avgBlocktime: string;
+    unit:         string;
+}
+
+export interface QueryGetAvgBlockTimeResponse {
+    entries: AvgBlockTime[];
+}
