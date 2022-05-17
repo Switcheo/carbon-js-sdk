@@ -77,7 +77,9 @@ export interface GetPositionsViewPathParams {
   view: PositionViewOptions
 }
 
-export interface GetPositionsViewQueryParams extends QueryByPageRequest {}
+export interface GetPositionsViewQueryParams extends QueryByPageRequest {
+  market?: string
+}
 
 export interface GetPositionsViewEntry {
   address:               string;
@@ -89,6 +91,7 @@ export interface GetPositionsViewEntry {
   allocatedMarginAmount: string;
   openedBlockHeight:     number;
   estLiquidationPrice:   string;
+  market:                string;
 }
 
 export interface QueryGetPositionsViewResponse {

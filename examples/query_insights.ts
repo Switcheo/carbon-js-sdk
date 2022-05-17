@@ -1,3 +1,4 @@
+import { PositionViewOptions } from "../lib/insights";
 import { CarbonSDK } from "./_sdk";
 
 (async () => {
@@ -56,7 +57,7 @@ import { CarbonSDK } from "./_sdk";
     console.log("competitionLeaderboard", competitionLeaderboard);
 
     //Position Views
-    const positionViews = await sdk.insights.PositionsView({ view: "profit"},{})
+    const positionViews = await sdk.insights.PositionsView({ view: "risk" as PositionViewOptions },{})
     console.log("PositionsView", positionViews)
 
     //Liquidation
