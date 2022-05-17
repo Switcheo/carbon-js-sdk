@@ -74,6 +74,6 @@ import { CarbonSDK } from "./_sdk";
 
     //Pool History
     const PoolHistory = await sdk.insights.PoolHistory({ poolId: 42 })
-    console.log("PoolHistory", PoolHistory.result.entries)
+    console.log("PoolHistory", PoolHistory)
 
 })().catch(console.error).finally(() => process.exit(0));
