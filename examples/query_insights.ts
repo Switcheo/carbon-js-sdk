@@ -58,7 +58,7 @@ import { CarbonSDK } from "./_sdk";
 
     //Position Views
     const positionViews = await sdk.insights.PositionsView({ view: "risk" as PositionViewOptions },{})
-    console.log("PositionsView", positionViews.result.entries)
+    console.log("PositionsView", positionViews)
 
     //Liquidation
     const liquidationAndADL = await sdk.insights.LiquidationAndADL({})
