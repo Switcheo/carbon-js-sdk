@@ -1,3 +1,4 @@
+import { PositionViewOptions } from "../lib/insights";
 import { CarbonSDK } from "./_sdk";
 
 (async () => {
@@ -56,8 +57,8 @@ import { CarbonSDK } from "./_sdk";
     console.log("competitionLeaderboard", competitionLeaderboard);
 
     //Position Views
-    const positionViews = await sdk.insights.PositionsView({ view: "profit"},{})
-    console.log("PositionsView", positionViews)
+    const positionViews = await sdk.insights.PositionsView({ view: "risk" as PositionViewOptions },{})
+    console.log("PositionsView", positionViews.result.entries)
 
     //Liquidation
     const liquidationAndADL = await sdk.insights.LiquidationAndADL({})
@@ -73,6 +74,6 @@ import { CarbonSDK } from "./_sdk";
 
     //Pool History
     const PoolHistory = await sdk.insights.PoolHistory({ poolId: 42 })
-    console.log("PoolHistory", PoolHistory)
+    console.log("PoolHistory", PoolHistory.result.entries)
 
 })().catch(console.error).finally(() => process.exit(0));
