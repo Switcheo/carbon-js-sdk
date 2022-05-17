@@ -236,7 +236,8 @@ class InsightsQueryClient {
     const request = this.apiManager.path('position/view', req, {
       sort: query.sort ?? 'DESC',
       limit: query.limit ?? 100,
-      offset: query.offset ?? 0
+      offset: query.offset ?? 0,
+      market: query.market ?? ''
     })
     const response = await request.get()
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetPositionsViewResponse>
