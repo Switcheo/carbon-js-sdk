@@ -9,6 +9,9 @@ Try out the [examples](./examples/). The project has to be built before you can 
 # install ts-node, typescript
 npm i -g ts-node typescript
 
+# install local dependencies
+yarn
+
 # build the SDK
 yarn build
 
