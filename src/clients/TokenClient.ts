@@ -51,7 +51,9 @@ class TokenClient {
     this.setCommonAssetConfig();
     await this.reloadWrapperMap();
     await this.reloadTokens();
-    await this.reloadUSDValues();
+
+    // non-blocking reload
+    this.reloadUSDValues();
   }
 
   public registerGeckoIdMap(map: TypeUtils.SimpleMap<string>) {
