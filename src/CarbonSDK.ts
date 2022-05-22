@@ -232,8 +232,17 @@ class CarbonSDK {
   }
 
   public async connect(wallet: CarbonWallet): Promise<ConnectedCarbonSDK> {
-    if (!wallet.initialized)
-      await wallet.initialize(this.query);
+    if (!wallet.initialized) {
+      try {
+        // Perform initialize function as per normal, but add try-catch statement to check err message
+        await wallet.initialize(this.query);
+      } catch (err) {
+        const errorTyped = err as Error;
+        // In the case where account does not exist on chain, still allow wallet connection.
+        // Else, throw an error as per normal
+        if (errorTyped.message.includes('Account does not exist on chain. Send some tokens there before trying to query sequence.')) { }
+      }
+    }
     this.wallet = wallet;
     return this as ConnectedCarbonSDK;
   }
