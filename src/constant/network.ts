@@ -71,7 +71,7 @@ export const NetworkConfigs: {
     restUrl: "https://api.carbon.network",
     insightsUrl: "https://api-insights.carbon.network",
     hydrogenUrl: "https://hydrogen-api.carbon.network",
-    wsUrl: "wss://ws-api.carbon.tech/ws",
+    wsUrl: "wss://ws-api.carbon.network/ws",
     faucetUrl: "",
 
     Bech32Prefix: "swth",
