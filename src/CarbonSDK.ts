@@ -240,7 +240,9 @@ class CarbonSDK {
         const errorTyped = err as Error;
         // In the case where account does not exist on chain, still allow wallet connection.
         // Else, throw an error as per normal
-        if (errorTyped.message.includes('Account does not exist on chain. Send some tokens there before trying to query sequence.')) { }
+        if (!errorTyped.message.includes('Account does not exist on chain. Send some tokens there before trying to query sequence.')) {
+          throw new Error(errorTyped.message);
+        }
       }
     }
     this.wallet = wallet;
