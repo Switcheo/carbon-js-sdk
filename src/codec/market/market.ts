@@ -86,6 +86,7 @@ export interface MarketParams {
   lastPriceProtectedBand?: number;
   isActive?: boolean;
   tradingBandwidth?: number;
+  expiryTime?: Date;
 }
 
 const baseParams: object = {
@@ -978,6 +979,12 @@ export const MarketParams = {
         writer.uint32(914).fork()
       ).ldelim();
     }
+    if (message.expiryTime !== undefined) {
+      Timestamp.encode(
+        toTimestamp(message.expiryTime),
+        writer.uint32(922).fork()
+      ).ldelim();
+    }
     return writer;
   },
 
@@ -1062,6 +1069,11 @@ export const MarketParams = {
             reader,
             reader.uint32()
           ).value;
+          break;
+        case 115:
+          message.expiryTime = fromTimestamp(
+            Timestamp.decode(reader, reader.uint32())
+          );
           break;
         default:
           reader.skipType(tag & 7);
@@ -1155,6 +1167,10 @@ export const MarketParams = {
       object.tradingBandwidth !== undefined && object.tradingBandwidth !== null
         ? Number(object.tradingBandwidth)
         : undefined;
+    message.expiryTime =
+      object.expiryTime !== undefined && object.expiryTime !== null
+        ? fromJsonTimestamp(object.expiryTime)
+        : undefined;
     return message;
   },
 
@@ -1193,6 +1209,8 @@ export const MarketParams = {
     message.isActive !== undefined && (obj.isActive = message.isActive);
     message.tradingBandwidth !== undefined &&
       (obj.tradingBandwidth = message.tradingBandwidth);
+    message.expiryTime !== undefined &&
+      (obj.expiryTime = message.expiryTime.toISOString());
     return obj;
   },
 
@@ -1221,6 +1239,7 @@ export const MarketParams = {
     message.lastPriceProtectedBand = object.lastPriceProtectedBand ?? undefined;
     message.isActive = object.isActive ?? undefined;
     message.tradingBandwidth = object.tradingBandwidth ?? undefined;
+    message.expiryTime = object.expiryTime ?? undefined;
     return message;
   },
 };

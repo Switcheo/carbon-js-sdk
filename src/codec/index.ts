@@ -32,7 +32,7 @@ import { MsgSetLeverage, MsgSetLeverageResponse } from "./leverage/tx";
 import { MsgUpdateProfile, MsgUpdateProfileResponse } from "./profile/tx";
 import { MsgCreateSubAccount, MsgCreateSubAccountResponse, MsgActivateSubAccount, MsgActivateSubAccountResponse, MsgRemoveSubAccount, MsgRemoveSubAccountResponse } from "./subaccount/tx";
 import { MsgCreateMarket, MsgCreateMarketResponse, MsgUpdateMarket, MsgUpdateMarketResponse } from "./market/tx";
-import { UpdateMarketProposal } from "./market/proposal";
+import { CreateMarketProposal, UpdateMarketProposal } from "./market/proposal";
 import { MsgCreatePool, MsgCreatePoolResponse, MsgCreatePoolWithLiquidity, MsgCreatePoolWithLiquidityResponse, MsgAddLiquidity, MsgAddLiquidityResponse, MsgRemoveLiquidity, MsgRemoveLiquidityResponse, MsgLinkPool, MsgLinkPoolResponse, MsgUnlinkPool, MsgUnlinkPoolResponse, MsgSetRewardsWeights, MsgSetRewardsWeightsResponse, MsgStakePoolToken, MsgStakePoolTokenResponse, MsgUnstakePoolToken, MsgUnstakePoolTokenResponse, MsgClaimPoolRewards, MsgClaimPoolRewardsResponse, MsgSetRewardCurve, MsgSetRewardCurveResponse, MsgSetCommitmentCurve, MsgSetCommitmentCurveResponse, MsgUpdatePool, MsgUpdatePoolResponse } from "./liquiditypool/tx";
 import { LinkPoolProposal, UnlinkPoolProposal, SetRewardCurveProposal, SetCommitmentCurveProposal, SetRewardsWeightsProposal, UpdatePoolProposal } from "./liquiditypool/proposal";
 import { SettlementPriceProposal } from "./pricing/proposal";
@@ -254,6 +254,7 @@ registry.register("/Switcheo.carbon.market.MsgCreateMarket", MsgCreateMarket);
 registry.register("/Switcheo.carbon.market.MsgCreateMarketResponse", MsgCreateMarketResponse);
 registry.register("/Switcheo.carbon.market.MsgUpdateMarket", MsgUpdateMarket);
 registry.register("/Switcheo.carbon.market.MsgUpdateMarketResponse", MsgUpdateMarketResponse);
+registry.register("/Switcheo.carbon.market.CreateMarketProposal", CreateMarketProposal);
 registry.register("/Switcheo.carbon.market.UpdateMarketProposal", UpdateMarketProposal);
 
 registry.register("/Switcheo.carbon.liquiditypool.MsgCreatePool", MsgCreatePool);
@@ -477,6 +478,7 @@ export const TxTypes = {
   "MsgCreateMarketResponse": "/Switcheo.carbon.market.MsgCreateMarketResponse",
   "MsgUpdateMarket": "/Switcheo.carbon.market.MsgUpdateMarket",
   "MsgUpdateMarketResponse": "/Switcheo.carbon.market.MsgUpdateMarketResponse",
+  "CreateMarketProposal": "/Switcheo.carbon.market.CreateMarketProposal",
   "UpdateMarketProposal": "/Switcheo.carbon.market.UpdateMarketProposal",
   "MsgCreatePool": "/Switcheo.carbon.liquiditypool.MsgCreatePool",
   "MsgCreatePoolResponse": "/Switcheo.carbon.liquiditypool.MsgCreatePoolResponse",
@@ -562,10 +564,9 @@ export { NewVoteEvent, RecordVoteEvent, VoteEvent, ResultEvent } from "./oracle/
 export { QueryParamsRequest, QueryParamsResponse, QueryMarketStatsRequest, QueryMarketStatsResponse } from "./marketstats/query";
 export { MarketStats } from "./marketstats/marketstats";
 export { MsgCreateToken, CreateTokenParams, MsgCreateTokenResponse, MsgSyncToken, MsgSyncTokenResponse, MsgMintToken, MsgMintTokenResponse, MsgBindToken, MsgBindTokenResponse, MsgUnbindToken, MsgUnbindTokenResponse, MsgLinkToken, MsgLinkTokenResponse, MsgWithdraw, MsgWithdrawResponse, MsgAuthorizeBridge, MsgAuthorizeBridgeResponse, MsgDeauthorizeBridge, MsgDeauthorizeBridgeResponse, MsgEditBridgeName, MsgEditBridgeNameResponse, MsgRemoveBridge, MsgRemoveBridgeResponse, MsgUpdateToken, UpdateTokenParams, MsgUpdateTokenResponse } from "./coin/tx";
-export { ExternalTransfer } from "./coin/extevents";
 export { CreateTokenProposal } from "./coin/proposal";
 export { Bridge } from "./coin/bridge";
-export { QueryGetTokenRequest, QueryGetTokenResponse, QueryAllTokenRequest, QueryAllTokenResponse, QueryGetLockedCoinsRequest, QueryGetLockedCoinsResponse, QueryAllWrapperMappingsRequest, QueryAllWrapperMappingsResponse, QueryAllWrapperMappingsResponse_WrapperMappingsEntry, QueryGetBalancesRequest, QueryGetBalancesResponse, QueryGetExternalTransfersRequest, QueryGetExternalTransfersResponse, QueryGetBridgeRequest, QueryGetBridgeResponse, QueryAllBridgeRequest, QueryAllBridgeResponse } from "./coin/query";
+export { QueryGetTokenRequest, QueryGetTokenResponse, QueryAllTokenRequest, QueryAllTokenResponse, QueryGetLockedCoinsRequest, QueryGetLockedCoinsResponse, QueryAllWrapperMappingsRequest, QueryAllWrapperMappingsResponse, QueryAllWrapperMappingsResponse_WrapperMappingsEntry, QueryGetBalancesRequest, QueryGetBalancesResponse, QueryGetBridgeRequest, QueryGetBridgeResponse, QueryAllBridgeRequest, QueryAllBridgeResponse } from "./coin/query";
 export { Token, BalanceChange, LockedCoins, LockedCoinsRecord, PositionPool, TokenBalance } from "./coin/token";
 export { NewTokenEvent, SyncTokenEvent, BindTokenEvent, UnbindTokenEvent, LinkTokenEvent } from "./coin/event";
 export { MarketLeverage, MarketLeverageRecord } from "./leverage/leverage";
@@ -583,7 +584,7 @@ export { OrderBookLevel, OrderBook, StopBook } from "./book/book";
 export { QueryGetBookRequest, QueryGetBookResponse, QueryAllBookRequest, QueryAllBookResponse } from "./book/query";
 export { OrderBookEvent } from "./book/event";
 export { MsgCreateMarket, MsgCreateMarketResponse, MsgUpdateMarket, MsgUpdateMarketResponse } from "./market/tx";
-export { UpdateMarketProposal } from "./market/proposal";
+export { CreateMarketProposal, UpdateMarketProposal } from "./market/proposal";
 export { Market, MarketParams } from "./market/market";
 export { QueryGetMarketRequest, QueryGetMarketResponse, QueryAllMarketRequest, QueryAllMarketResponse } from "./market/query";
 export { MarketEvent } from "./market/event";
@@ -599,7 +600,6 @@ export { PoolEvent, TotalCommitmentChangeEvent, RewardsWeightChangeEvent, Commit
 export { QueryBalanceRequest, QueryBalanceResponse } from "./insurance/query";
 export { EventDataInsuranceFundTransfer } from "./insurance/event";
 export { FundByMarket, Fund } from "./insurance/fund";
-export { PriceSet } from "./pricing/pricing";
 export { SettlementPriceProposal, SettlementPriceParams } from "./pricing/proposal";
 export { QueryPriceSetRequest, QueryPriceSetResponse, QueryAllPriceSetRequest, QueryAllPriceSetResponse, QueryRateRequest, QueryRateResponse } from "./pricing/query";
 export { PriceUpdateEvent } from "./pricing/event";
