@@ -6,12 +6,7 @@ import {
   PageRequest,
   PageResponse,
 } from "../cosmos/base/query/v1beta1/pagination";
-import {
-  PageRequest as PageRequest1,
-  PageResponse as PageResponse2,
-} from "../query/pagination";
 import { Bridge } from "../coin/bridge";
-import { ExternalTransfer } from "../coin/extevents";
 
 export const protobufPackage = "Switcheo.carbon.coin";
 
@@ -63,21 +58,6 @@ export interface QueryGetBalancesRequest {
 
 export interface QueryGetBalancesResponse {
   tokenBalances: TokenBalance[];
-}
-
-export interface QueryGetExternalTransfersRequest {
-  address: string;
-  blockchain: string;
-  transferType: string;
-  denom: string;
-  status: string;
-  orderBy: string;
-  pagination?: PageRequest1;
-}
-
-export interface QueryGetExternalTransfersResponse {
-  externalTransfers: ExternalTransfer[];
-  pagination?: PageResponse2;
 }
 
 export interface QueryGetBridgeRequest {
@@ -931,254 +911,6 @@ export const QueryGetBalancesResponse = {
   },
 };
 
-const baseQueryGetExternalTransfersRequest: object = {
-  address: "",
-  blockchain: "",
-  transferType: "",
-  denom: "",
-  status: "",
-  orderBy: "",
-};
-
-export const QueryGetExternalTransfersRequest = {
-  encode(
-    message: QueryGetExternalTransfersRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.address !== "") {
-      writer.uint32(10).string(message.address);
-    }
-    if (message.blockchain !== "") {
-      writer.uint32(18).string(message.blockchain);
-    }
-    if (message.transferType !== "") {
-      writer.uint32(26).string(message.transferType);
-    }
-    if (message.denom !== "") {
-      writer.uint32(34).string(message.denom);
-    }
-    if (message.status !== "") {
-      writer.uint32(42).string(message.status);
-    }
-    if (message.orderBy !== "") {
-      writer.uint32(50).string(message.orderBy);
-    }
-    if (message.pagination !== undefined) {
-      PageRequest1.encode(
-        message.pagination,
-        writer.uint32(58).fork()
-      ).ldelim();
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryGetExternalTransfersRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryGetExternalTransfersRequest,
-    } as QueryGetExternalTransfersRequest;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.address = reader.string();
-          break;
-        case 2:
-          message.blockchain = reader.string();
-          break;
-        case 3:
-          message.transferType = reader.string();
-          break;
-        case 4:
-          message.denom = reader.string();
-          break;
-        case 5:
-          message.status = reader.string();
-          break;
-        case 6:
-          message.orderBy = reader.string();
-          break;
-        case 7:
-          message.pagination = PageRequest1.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): QueryGetExternalTransfersRequest {
-    const message = {
-      ...baseQueryGetExternalTransfersRequest,
-    } as QueryGetExternalTransfersRequest;
-    message.address =
-      object.address !== undefined && object.address !== null
-        ? String(object.address)
-        : "";
-    message.blockchain =
-      object.blockchain !== undefined && object.blockchain !== null
-        ? String(object.blockchain)
-        : "";
-    message.transferType =
-      object.transferType !== undefined && object.transferType !== null
-        ? String(object.transferType)
-        : "";
-    message.denom =
-      object.denom !== undefined && object.denom !== null
-        ? String(object.denom)
-        : "";
-    message.status =
-      object.status !== undefined && object.status !== null
-        ? String(object.status)
-        : "";
-    message.orderBy =
-      object.orderBy !== undefined && object.orderBy !== null
-        ? String(object.orderBy)
-        : "";
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest1.fromJSON(object.pagination)
-        : undefined;
-    return message;
-  },
-
-  toJSON(message: QueryGetExternalTransfersRequest): unknown {
-    const obj: any = {};
-    message.address !== undefined && (obj.address = message.address);
-    message.blockchain !== undefined && (obj.blockchain = message.blockchain);
-    message.transferType !== undefined &&
-      (obj.transferType = message.transferType);
-    message.denom !== undefined && (obj.denom = message.denom);
-    message.status !== undefined && (obj.status = message.status);
-    message.orderBy !== undefined && (obj.orderBy = message.orderBy);
-    message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageRequest1.toJSON(message.pagination)
-        : undefined);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<QueryGetExternalTransfersRequest>
-  ): QueryGetExternalTransfersRequest {
-    const message = {
-      ...baseQueryGetExternalTransfersRequest,
-    } as QueryGetExternalTransfersRequest;
-    message.address = object.address ?? "";
-    message.blockchain = object.blockchain ?? "";
-    message.transferType = object.transferType ?? "";
-    message.denom = object.denom ?? "";
-    message.status = object.status ?? "";
-    message.orderBy = object.orderBy ?? "";
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest1.fromPartial(object.pagination)
-        : undefined;
-    return message;
-  },
-};
-
-const baseQueryGetExternalTransfersResponse: object = {};
-
-export const QueryGetExternalTransfersResponse = {
-  encode(
-    message: QueryGetExternalTransfersResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    for (const v of message.externalTransfers) {
-      ExternalTransfer.encode(v!, writer.uint32(10).fork()).ldelim();
-    }
-    if (message.pagination !== undefined) {
-      PageResponse2.encode(
-        message.pagination,
-        writer.uint32(18).fork()
-      ).ldelim();
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryGetExternalTransfersResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryGetExternalTransfersResponse,
-    } as QueryGetExternalTransfersResponse;
-    message.externalTransfers = [];
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.externalTransfers.push(
-            ExternalTransfer.decode(reader, reader.uint32())
-          );
-          break;
-        case 2:
-          message.pagination = PageResponse2.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): QueryGetExternalTransfersResponse {
-    const message = {
-      ...baseQueryGetExternalTransfersResponse,
-    } as QueryGetExternalTransfersResponse;
-    message.externalTransfers = (object.externalTransfers ?? []).map((e: any) =>
-      ExternalTransfer.fromJSON(e)
-    );
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageResponse2.fromJSON(object.pagination)
-        : undefined;
-    return message;
-  },
-
-  toJSON(message: QueryGetExternalTransfersResponse): unknown {
-    const obj: any = {};
-    if (message.externalTransfers) {
-      obj.externalTransfers = message.externalTransfers.map((e) =>
-        e ? ExternalTransfer.toJSON(e) : undefined
-      );
-    } else {
-      obj.externalTransfers = [];
-    }
-    message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageResponse2.toJSON(message.pagination)
-        : undefined);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<QueryGetExternalTransfersResponse>
-  ): QueryGetExternalTransfersResponse {
-    const message = {
-      ...baseQueryGetExternalTransfersResponse,
-    } as QueryGetExternalTransfersResponse;
-    message.externalTransfers = (object.externalTransfers ?? []).map((e) =>
-      ExternalTransfer.fromPartial(e)
-    );
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageResponse2.fromPartial(object.pagination)
-        : undefined;
-    return message;
-  },
-};
-
 const baseQueryGetBridgeRequest: object = {
   bridgeId: Long.UZERO,
   chainId: Long.UZERO,
@@ -1487,10 +1219,6 @@ export interface Query {
   ): Promise<QueryAllWrapperMappingsResponse>;
   /** Get balances for an address */
   Balances(request: QueryGetBalancesRequest): Promise<QueryGetBalancesResponse>;
-  /** Get cross-chain transfers */
-  ExternalTransfers(
-    request: QueryGetExternalTransfersRequest
-  ): Promise<QueryGetExternalTransfersResponse>;
   /** Get details for a cross-chain bridge */
   Bridge(request: QueryGetBridgeRequest): Promise<QueryGetBridgeResponse>;
   /** Get details for all cross-chain bridges */
@@ -1506,7 +1234,6 @@ export class QueryClientImpl implements Query {
     this.LockedCoins = this.LockedCoins.bind(this);
     this.WrapperMappings = this.WrapperMappings.bind(this);
     this.Balances = this.Balances.bind(this);
-    this.ExternalTransfers = this.ExternalTransfers.bind(this);
     this.Bridge = this.Bridge.bind(this);
     this.BridgeAll = this.BridgeAll.bind(this);
   }
@@ -1573,20 +1300,6 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryGetBalancesResponse.decode(new _m0.Reader(data))
-    );
-  }
-
-  ExternalTransfers(
-    request: QueryGetExternalTransfersRequest
-  ): Promise<QueryGetExternalTransfersResponse> {
-    const data = QueryGetExternalTransfersRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.coin.Query",
-      "ExternalTransfers",
-      data
-    );
-    return promise.then((data) =>
-      QueryGetExternalTransfersResponse.decode(new _m0.Reader(data))
     );
   }
 

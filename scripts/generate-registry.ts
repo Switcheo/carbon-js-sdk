@@ -86,7 +86,7 @@ console.log("");
 console.log('// Exported for convenience');
 const directoryBlacklist = ['cosmos', 'ibc', 'tendermint', 'btcx', 'ccm', 'headersync', 'lockproxy']
 const fileNameBlacklist = ['genesis.ts', 'keys.ts']
-const relativePathBlacklist = ['./marketstats/params']
+const relativePathBlacklist = ['./marketstats/params', './pricing/pricing']
 
 interface BlacklistItem {
   path: string

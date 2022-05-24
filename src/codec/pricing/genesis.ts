@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { PriceSet } from "../pricing/pricing";
+import { Params, PriceSet } from "../pricing/pricing";
 
 export const protobufPackage = "Switcheo.carbon.pricing";
 
@@ -12,6 +12,7 @@ export interface GenesisState {
    * this line is used by starport scaffolding # ibc/genesis/proto
    */
   prices: PriceSet[];
+  params?: Params;
 }
 
 const baseGenesisState: object = {};
@@ -23,6 +24,9 @@ export const GenesisState = {
   ): _m0.Writer {
     for (const v of message.prices) {
       PriceSet.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.params !== undefined) {
+      Params.encode(message.params, writer.uint32(42).fork()).ldelim();
     }
     return writer;
   },
@@ -38,6 +42,9 @@ export const GenesisState = {
         case 1:
           message.prices.push(PriceSet.decode(reader, reader.uint32()));
           break;
+        case 5:
+          message.params = Params.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -51,6 +58,10 @@ export const GenesisState = {
     message.prices = (object.prices ?? []).map((e: any) =>
       PriceSet.fromJSON(e)
     );
+    message.params =
+      object.params !== undefined && object.params !== null
+        ? Params.fromJSON(object.params)
+        : undefined;
     return message;
   },
 
@@ -63,12 +74,18 @@ export const GenesisState = {
     } else {
       obj.prices = [];
     }
+    message.params !== undefined &&
+      (obj.params = message.params ? Params.toJSON(message.params) : undefined);
     return obj;
   },
 
   fromPartial(object: DeepPartial<GenesisState>): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
     message.prices = (object.prices ?? []).map((e) => PriceSet.fromPartial(e));
+    message.params =
+      object.params !== undefined && object.params !== null
+        ? Params.fromPartial(object.params)
+        : undefined;
     return message;
   },
 };
