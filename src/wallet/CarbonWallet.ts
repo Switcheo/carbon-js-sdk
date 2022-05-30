@@ -1,6 +1,5 @@
 import { CarbonQueryClient } from "@carbon-sdk/clients";
 import { MsgFee, registry } from "@carbon-sdk/codec";
-import { BroadcastMode } from "@carbon-sdk/codec/cosmos/tx/v1beta1/service";
 import { DEFAULT_GAS, DEFAULT_NETWORK, Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
 import { ProviderAgent } from "@carbon-sdk/constant/walletProvider";
 import { AminoTypesMap, CosmosLedger } from "@carbon-sdk/provider";
@@ -333,6 +332,11 @@ export class CarbonWallet {
       };
       const signedTx = await this.getSignedTx(this.bech32Address, msgs, signOpts);
       return broadcastFunc(signedTx, broadcastOpts);
+    } finally {
+      this.accountInfo = {
+        ...this.accountInfo!,
+        sequence: this.accountInfo!.sequence + 1,
+      };
     }
   }
 

@@ -71,10 +71,17 @@ export const modifyTmClient = (tmClient: Tendermint34Client) => {
     for (const method of Object.getOwnPropertyNames(p)) {
       if (method === "encodeBroadcastTx" || typeof p[method] !== 'function') continue;
       const ogHandler = p[method]
-      newEncoder[method] = (req: any) => ({
-        ...ogHandler(req),
-        id: 42,
-      })
+      newEncoder[method] = (req: any) => {
+        const result = ogHandler(req);
+        if (req.method === "abci_query" && req.params.path === "/cosmos.auth.v1beta1.Query/Account") {
+          return result;
+        }
+
+        return {
+          ...result,
+          id: 42,
+        };
+      };
     }
     (tmClient as any).p = newEncoder;
   } catch (error) {
