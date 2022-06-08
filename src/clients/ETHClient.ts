@@ -138,7 +138,7 @@ export class ETHClient {
     const networkConfig = this.getNetworkConfig();
     const rpcProvider = this.getProvider();
 
-    if (!recoveryAddress.startsWith("swth") || recoveryAddress.length !== 43) {
+    if (!recoveryAddress.match(/^(swth)[a-zA-Z0-9]{39}$/)) {
       throw new Error("Invalid recovery address");
     }
 
