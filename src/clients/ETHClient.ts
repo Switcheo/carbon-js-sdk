@@ -138,7 +138,7 @@ export class ETHClient {
     const networkConfig = this.getNetworkConfig();
     const rpcProvider = this.getProvider();
 
-    if (!recoveryAddress.match(/^(swth)[a-zA-Z0-9]{39}$/)) {
+    if (!recoveryAddress.match(/^swth[a-z0-9]{39}$/)) {
       throw new Error("Invalid recovery address");
     }
 
@@ -147,7 +147,7 @@ export class ETHClient {
     const toTokenDenom = toToken.denom;
     const decimals = fromToken.decimals.toNumber();
 
-    const parsedRecoveryAddress = ethers.utils.hexlify(
+    const recoveryAddressHex = ethers.utils.hexlify(
       AddressUtils.SWTHAddress.getAddressBytes(recoveryAddress, CarbonSDK.Network.MainNet) 
     );
     
@@ -168,7 +168,7 @@ export class ETHClient {
       fromTokenAddress, // the asset to deposit (from) (0x00 if eth)
       [
         targetProxyHash, //_targetProxyHash
-        parsedRecoveryAddress, // _recoveryAddress
+        recoveryAddressHex, // _recoveryAddress
         fromAssetHash, // _fromAssetHash
         feeAddress, // _feeAddress
         ethAddress, // _toAddress the L1 address to bridge to
