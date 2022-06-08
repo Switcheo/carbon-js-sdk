@@ -10,28 +10,27 @@ export enum Network {
 export const DEFAULT_NETWORK = Network.MainNet;
 
 export interface EthNetworkConfig {
-  rpcURL: string;
-  wsURL: string;
-  payerURL: string;
-  lockProxyAddr: string;
-  bridgeEntranceAddr?: string;
-  balanceReader: string;
-  byteCodeHash: string;
+  rpcURL: string
+  wsURL: string
+  payerURL: string
+  lockProxyAddr: string
+  balanceReader: string
+  byteCodeHash: string
 }
 
 export interface NeoNetworkConfig {
-  rpcURL: string;
-  wrapperScriptHash: string;
+  rpcURL: string
+  wrapperScriptHash: string
 }
 export interface N3NetworkConfig {
-  rpcURL: string;
+  rpcURL: string
   networkMagic: number;
 }
 
 export interface ZilNetworkConfig {
-  rpcURL: string;
-  chainId: number;
-  lockProxyAddr: string;
+  rpcURL: string
+  chainId: number
+  lockProxyAddr: string
 }
 
 export interface NetworkConfig {
@@ -46,19 +45,19 @@ export interface NetworkConfig {
 
   network: Network;
 
-  feeURL: string;
-  feeAddress: string;
+  feeURL: string
+  feeAddress: string
 
-  eth: EthNetworkConfig;
-  bsc: EthNetworkConfig;
+  eth: EthNetworkConfig
+  bsc: EthNetworkConfig
 
-  neo: NeoNetworkConfig;
-  n3: N3NetworkConfig;
-  zil: ZilNetworkConfig;
+  neo: NeoNetworkConfig
+  n3: N3NetworkConfig
+  zil: ZilNetworkConfig
 }
 
 export interface NetworkConfigProvider {
-  getConfig(): NetworkConfig;
+  getConfig(): NetworkConfig
 }
 
 export const NetworkConfigs: {
@@ -112,7 +111,7 @@ export const NetworkConfigs: {
       rpcURL: "https://api.zilliqa.com",
       lockProxyAddr: "0xd73c6b871b4d0e130d64581993b745fc938a5be7",
       chainId: 1,
-    },
+    }
   },
 
   [Network.TestNet]: {
@@ -132,11 +131,10 @@ export const NetworkConfigs: {
     feeAddress: "989761fb0c0eb0c05605e849cae77d239f98ac7f",
 
     eth: {
-      rpcURL: "https://eth-rinkeby.alchemyapi.io/v2/_nFUy8nuljf0bVdCfQ_b9HAvuqmv06kH",
-      wsURL: "wss://rinkeby.infura.io/ws",
+      rpcURL: "https://eth-ropsten.alchemyapi.io/v2/2KD9F3mFPNMfflSqZsPuTKmK_w7fFfut",
+      wsURL: "wss://ropsten.dagger.matic.network",
       payerURL: `https://test-payer.carbon.network`,
       lockProxyAddr: "0x91f453851e297524749a740d53cf54a89231487c",
-      bridgeEntranceAddr: "0x22bf293E7CB485662CcA0cd05044F4B59c2b14e6",
       balanceReader: "0xa74c81866c5bfff6684aa8edf35a5de8c3b9f173",
       byteCodeHash: "0xc77e5709a69e94d310a6dfb700801758c4caed0385b25bdf82bbdf954e4dd0c3",
     },
@@ -164,7 +162,7 @@ export const NetworkConfigs: {
       rpcURL: "",
       lockProxyAddr: "",
       chainId: 333,
-    },
+    }
   },
 
   [Network.DevNet]: {
@@ -184,11 +182,10 @@ export const NetworkConfigs: {
     feeAddress: "989761fb0c0eb0c05605e849cae77d239f98ac7f",
 
     eth: {
-      rpcURL: "https://eth-rinkeby.alchemyapi.io/v2/_nFUy8nuljf0bVdCfQ_b9HAvuqmv06kH",
-      wsURL: "wss://rinkeby.infura.io/ws",
+      rpcURL: "https://eth-ropsten.alchemyapi.io/v2/2KD9F3mFPNMfflSqZsPuTKmK_w7fFfut",
+      wsURL: "wss://ropsten.dagger.matic.network",
       payerURL: `https://dev-payer.carbon.network`,
       lockProxyAddr: "0x91f453851e297524749a740d53cf54a89231487c",
-      bridgeEntranceAddr: "0x22bf293E7CB485662CcA0cd05044F4B59c2b14e6",
       balanceReader: "0xa74c81866c5bfff6684aa8edf35a5de8c3b9f173",
       byteCodeHash: "0xb007776ceef3efcf6412e67dfd4fc36ab367db2df8a3da10a08401970181e1fa",
     },
@@ -216,7 +213,7 @@ export const NetworkConfigs: {
       rpcURL: "https://dev-api.zilliqa.com",
       lockProxyAddr: "0xa5a43eecd29534edf80792a9889f52c77455245d",
       chainId: 333,
-    },
+    }
   },
 
   [Network.LocalHost]: {
@@ -267,6 +264,6 @@ export const NetworkConfigs: {
       rpcURL: "",
       lockProxyAddr: "",
       chainId: 1,
-    },
+    }
   },
 } as const;

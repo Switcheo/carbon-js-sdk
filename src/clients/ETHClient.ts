@@ -2,6 +2,7 @@ import CarbonSDK from "@carbon-sdk/CarbonSDK";
 import { EthNetworkConfig, NetworkConfig, NetworkConfigProvider } from "@carbon-sdk/constant";
 import { ABIs } from "@carbon-sdk/eth";
 import { Models } from "@carbon-sdk/index";
+import { AddressUtils } from "@carbon-sdk/util";
 import { SWTHAddress } from "@carbon-sdk/util/address";
 import { Blockchain, blockchainForChainId } from "@carbon-sdk/util/blockchain";
 import { TokenInitInfo, TokensWithExternalBalance } from "@carbon-sdk/util/external";
@@ -9,7 +10,6 @@ import { appendHexPrefix, stripHexPrefix } from "@carbon-sdk/util/generic";
 import BigNumber from "bignumber.js";
 import { ethers } from "ethers";
 import TokenClient from "./TokenClient";
-import { AddressUtils } from "@carbon-sdk/util";
 
 export interface ETHClientOpts {
   configProvider: NetworkConfigProvider;
@@ -29,6 +29,7 @@ export interface BridgeParams extends ETHTxParams {
   toToken: Models.Token;
   amount: BigNumber;
   recoveryAddress: string;
+  bridgeEntranceAddress: string;
   signCompleteCallback?: () => void;
 }
 
@@ -132,13 +133,13 @@ export class ETHClient {
   }
 
   public async bridgeTokens(params: BridgeParams): Promise<EthersTransactionResponse> {
-    const { fromToken, toToken, amount, recoveryAddress, ethAddress, signer, gasPriceGwei, gasLimit } = params;
+    const { fromToken, toToken, amount, recoveryAddress, bridgeEntranceAddress, ethAddress, signer, gasPriceGwei, gasLimit } = params;
 
     const networkConfig = this.getNetworkConfig();
     const rpcProvider = this.getProvider();
-    const bridgeEntranceAddress = this.getBridgeEntranceAddress();
-    if (!bridgeEntranceAddress) {
-      throw new Error("Bridge Entrance Address not found");
+
+    if (!recoveryAddress.startsWith("swth") || recoveryAddress.length !== 43) {
+      throw new Error("Invalid recovery address");
     }
 
     const fromTokenId = fromToken.id;
@@ -147,7 +148,7 @@ export class ETHClient {
     const decimals = fromToken.decimals.toNumber();
 
     const parsedRecoveryAddress = ethers.utils.hexlify(
-      AddressUtils.SWTHAddress.getAddressBytes(recoveryAddress, CarbonSDK.Network.MainNet)
+      AddressUtils.SWTHAddress.getAddressBytes(recoveryAddress, CarbonSDK.Network.MainNet) // TODO: check whether this is correct
     );
     const fromAssetHash = ethers.utils.hexlify(ethers.utils.toUtf8Bytes(fromTokenId));
     const bridgeAmount = ethers.utils.parseUnits(amount.toString(), decimals);
@@ -161,9 +162,6 @@ export class ETHClient {
 
     const targetAddressBytes = AddressUtils.SWTHAddress.getAddressBytes(tokenCreator, CarbonSDK.Network.MainNet);
     const targetProxyHash = ethers.utils.hexlify(targetAddressBytes);
-    if (fromToken.tokenAddress === "0000000000000000000000000000000000000000") {
-      throw new Error("Bridging of Native Assets is not implemented");
-    }
 
     const bridgeResultTx = await contract.connect(signer).lock(
       fromTokenAddress, // the asset to deposit (from) (0x00 if eth)
@@ -431,10 +429,6 @@ export class ETHClient {
 
   public getWalletBytecodeHash() {
     return this.getConfig().byteCodeHash;
-  }
-
-  public getBridgeEntranceAddress() {
-    return this.getConfig().bridgeEntranceAddr;
   }
 
   /**
