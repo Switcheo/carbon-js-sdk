@@ -148,8 +148,9 @@ export class ETHClient {
     const decimals = fromToken.decimals.toNumber();
 
     const parsedRecoveryAddress = ethers.utils.hexlify(
-      AddressUtils.SWTHAddress.getAddressBytes(recoveryAddress, CarbonSDK.Network.MainNet) // TODO: check whether this is correct
+      AddressUtils.SWTHAddress.getAddressBytes(recoveryAddress, CarbonSDK.Network.MainNet) 
     );
+    
     const fromAssetHash = ethers.utils.hexlify(ethers.utils.toUtf8Bytes(fromTokenId));
     const bridgeAmount = ethers.utils.parseUnits(amount.toString(), decimals);
     const toAssetHash = ethers.utils.hexlify(ethers.utils.toUtf8Bytes(toTokenDenom));
