@@ -26,7 +26,7 @@ import { MsgChannelOpenInit, MsgChannelOpenInitResponse, MsgChannelOpenTry, MsgC
 import { MsgCreateClient, MsgCreateClientResponse, MsgUpdateClient, MsgUpdateClientResponse, MsgUpgradeClient, MsgUpgradeClientResponse, MsgSubmitMisbehaviour, MsgSubmitMisbehaviourResponse } from "./ibc/core/client/v1/tx";
 import { Header } from "./ibc/lightclients/tendermint/v1/tendermint";
 import { MsgTransfer, MsgTransferResponse } from "./ibc/applications/transfer/v1/tx";
-import { MsgCreateToken, MsgCreateTokenResponse, MsgSyncToken, MsgSyncTokenResponse, MsgMintToken, MsgMintTokenResponse, MsgBindToken, MsgBindTokenResponse, MsgUnbindToken, MsgUnbindTokenResponse, MsgLinkToken, MsgLinkTokenResponse, MsgWithdraw, MsgWithdrawResponse, MsgAuthorizeBridge, MsgAuthorizeBridgeResponse, MsgDeauthorizeBridge, MsgDeauthorizeBridgeResponse, MsgEditBridgeName, MsgEditBridgeNameResponse, MsgRemoveBridge, MsgRemoveBridgeResponse, MsgUpdateToken, MsgUpdateTokenResponse } from "./coin/tx";
+import { MsgCreateToken, MsgCreateTokenResponse, MsgSyncToken, MsgSyncTokenResponse, MsgMintToken, MsgMintTokenResponse, MsgBindToken, MsgBindTokenResponse, MsgUnbindToken, MsgUnbindTokenResponse, MsgLinkToken, MsgLinkTokenResponse, MsgWithdraw, MsgWithdrawResponse, MsgAuthorizeBridge, MsgAuthorizeBridgeResponse, MsgDeauthorizeBridge, MsgDeauthorizeBridgeResponse, MsgEditBridgeName, MsgEditBridgeNameResponse, MsgRemoveBridge, MsgRemoveBridgeResponse, MsgUpdateToken, MsgUpdateTokenResponse, MsgAddBridgeAddress, MsgAddBridgeAddressResponse, MsgRemoveBridgeAddress, MsgRemoveBridgeAddressResponse } from "./coin/tx";
 import { CreateTokenProposal } from "./coin/proposal";
 import { MsgSetLeverage, MsgSetLeverageResponse } from "./leverage/tx";
 import { MsgUpdateProfile, MsgUpdateProfileResponse } from "./profile/tx";
@@ -235,6 +235,10 @@ registry.register("/Switcheo.carbon.coin.MsgRemoveBridge", MsgRemoveBridge);
 registry.register("/Switcheo.carbon.coin.MsgRemoveBridgeResponse", MsgRemoveBridgeResponse);
 registry.register("/Switcheo.carbon.coin.MsgUpdateToken", MsgUpdateToken);
 registry.register("/Switcheo.carbon.coin.MsgUpdateTokenResponse", MsgUpdateTokenResponse);
+registry.register("/Switcheo.carbon.coin.MsgAddBridgeAddress", MsgAddBridgeAddress);
+registry.register("/Switcheo.carbon.coin.MsgAddBridgeAddressResponse", MsgAddBridgeAddressResponse);
+registry.register("/Switcheo.carbon.coin.MsgRemoveBridgeAddress", MsgRemoveBridgeAddress);
+registry.register("/Switcheo.carbon.coin.MsgRemoveBridgeAddressResponse", MsgRemoveBridgeAddressResponse);
 registry.register("/Switcheo.carbon.coin.CreateTokenProposal", CreateTokenProposal);
 
 registry.register("/Switcheo.carbon.leverage.MsgSetLeverage", MsgSetLeverage);
@@ -298,6 +302,10 @@ registry.register("/Switcheo.carbon.lockproxy.MsgBind", PolyNetwork.Lockproxy.Ms
 registry.register("/Switcheo.carbon.lockproxy.MsgBindResponse", PolyNetwork.Lockproxy.MsgBindResponse);
 registry.register("/Switcheo.carbon.lockproxy.MsgLock", PolyNetwork.Lockproxy.MsgLock);
 registry.register("/Switcheo.carbon.lockproxy.MsgLockResponse", PolyNetwork.Lockproxy.MsgLockResponse);
+registry.register("/Switcheo.carbon.lockproxy.MsgSetWrapperMapping", PolyNetwork.Lockproxy.MsgSetWrapperMapping);
+registry.register("/Switcheo.carbon.lockproxy.MsgSetWrapperMappingResponse", PolyNetwork.Lockproxy.MsgSetWrapperMappingResponse);
+registry.register("/Switcheo.carbon.lockproxy.MsgDeleteWrapperMapping", PolyNetwork.Lockproxy.MsgDeleteWrapperMapping);
+registry.register("/Switcheo.carbon.lockproxy.MsgDeleteWrapperMappingResponse", PolyNetwork.Lockproxy.MsgDeleteWrapperMappingResponse);
 
 export const TxTypes = {
   "MsgSetTradingFlag": "/Switcheo.carbon.order.MsgSetTradingFlag",
@@ -463,6 +471,10 @@ export const TxTypes = {
   "MsgRemoveBridgeResponse": "/Switcheo.carbon.coin.MsgRemoveBridgeResponse",
   "MsgUpdateToken": "/Switcheo.carbon.coin.MsgUpdateToken",
   "MsgUpdateTokenResponse": "/Switcheo.carbon.coin.MsgUpdateTokenResponse",
+  "MsgAddBridgeAddress": "/Switcheo.carbon.coin.MsgAddBridgeAddress",
+  "MsgAddBridgeAddressResponse": "/Switcheo.carbon.coin.MsgAddBridgeAddressResponse",
+  "MsgRemoveBridgeAddress": "/Switcheo.carbon.coin.MsgRemoveBridgeAddress",
+  "MsgRemoveBridgeAddressResponse": "/Switcheo.carbon.coin.MsgRemoveBridgeAddressResponse",
   "CreateTokenProposal": "/Switcheo.carbon.coin.CreateTokenProposal",
   "MsgSetLeverage": "/Switcheo.carbon.leverage.MsgSetLeverage",
   "MsgSetLeverageResponse": "/Switcheo.carbon.leverage.MsgSetLeverageResponse",
@@ -512,7 +524,11 @@ export const TxTypes = {
   "SetCommitmentCurveProposal": "/Switcheo.carbon.liquiditypool.SetCommitmentCurveProposal",
   "SetRewardsWeightsProposal": "/Switcheo.carbon.liquiditypool.SetRewardsWeightsProposal",
   "UpdatePoolProposal": "/Switcheo.carbon.liquiditypool.UpdatePoolProposal",
-  "SettlementPriceProposal": "/Switcheo.carbon.pricing.SettlementPriceProposal"
+  "SettlementPriceProposal": "/Switcheo.carbon.pricing.SettlementPriceProposal",
+  "MsgSetWrapperMapping": "/Switcheo.carbon.lockproxy.MsgSetWrapperMapping",
+  "MsgSetWrapperMappingResponse": "/Switcheo.carbon.lockproxy.MsgSetWrapperMappingResponse",
+  "MsgDeleteWrapperMapping": "/Switcheo.carbon.lockproxy.MsgDeleteWrapperMapping",
+  "MsgDeleteWrapperMappingResponse": "/Switcheo.carbon.lockproxy.MsgDeleteWrapperMappingResponse"
 };
 
 
@@ -558,12 +574,13 @@ export { QueryGetPositionRequest, QueryGetPositionResponse, QueryAllPositionRequ
 export { PositionEvent } from "./position/event";
 export { MsgCreateOracle, CreateOracleParams, MsgCreateOracleResponse, MsgCreateVote, MsgCreateVoteResponse, MsgUpdateOracle, UpdateOracleParams, MsgUpdateOracleResponse, MsgRemoveOracle, MsgRemoveOracleResponse } from "./oracle/tx";
 export { Oracle, Vote, Result, Mark } from "./oracle/oracle";
+export { OracleVotesWindow, SlashCounter } from "./oracle/slashing";
 export { CreateOracleProposal } from "./oracle/proposal";
-export { QueryOracleRequest, QueryOracleResponse, QueryAllOracleRequest, QueryAllOracleResponse, QueryAllResultRequest, QueryAllResultResponse, QueryAllVoteRequest, QueryAllVoteResponse, QueryVoterPowerRequest, QueryVoterPowerResponse } from "./oracle/query";
-export { NewVoteEvent, RecordVoteEvent, VoteEvent, ResultEvent } from "./oracle/event";
+export { QueryOracleRequest, QueryOracleResponse, QueryAllOracleRequest, QueryAllOracleResponse, QueryAllResultRequest, QueryAllResultResponse, QueryAllVoteRequest, QueryAllVoteResponse, QueryVoterPowerRequest, QueryVoterPowerResponse, QueryAllSlashCounterRequest, QueryAllSlashCounterResponse, QuerySlashCounterRequest, QuerySlashCounterResponse, QueryAllOracleVotesWindowRequest, QueryAllOracleVotesWindowResponse, QueryOracleVotesWindowRequest, QueryOracleVotesWindowResponse } from "./oracle/query";
+export { NewVoteEvent, RecordVoteEvent, VoteEvent, ResultEvent, OracleSlashEvent } from "./oracle/event";
 export { QueryParamsRequest, QueryParamsResponse, QueryMarketStatsRequest, QueryMarketStatsResponse } from "./marketstats/query";
 export { MarketStats } from "./marketstats/marketstats";
-export { MsgCreateToken, CreateTokenParams, MsgCreateTokenResponse, MsgSyncToken, MsgSyncTokenResponse, MsgMintToken, MsgMintTokenResponse, MsgBindToken, MsgBindTokenResponse, MsgUnbindToken, MsgUnbindTokenResponse, MsgLinkToken, MsgLinkTokenResponse, MsgWithdraw, MsgWithdrawResponse, MsgAuthorizeBridge, MsgAuthorizeBridgeResponse, MsgDeauthorizeBridge, MsgDeauthorizeBridgeResponse, MsgEditBridgeName, MsgEditBridgeNameResponse, MsgRemoveBridge, MsgRemoveBridgeResponse, MsgUpdateToken, UpdateTokenParams, MsgUpdateTokenResponse } from "./coin/tx";
+export { MsgCreateToken, CreateTokenParams, MsgCreateTokenResponse, MsgSyncToken, MsgSyncTokenResponse, MsgMintToken, MsgMintTokenResponse, MsgBindToken, MsgBindTokenResponse, MsgUnbindToken, MsgUnbindTokenResponse, MsgLinkToken, MsgLinkTokenResponse, MsgWithdraw, MsgWithdrawResponse, MsgAuthorizeBridge, MsgAuthorizeBridgeResponse, MsgDeauthorizeBridge, MsgDeauthorizeBridgeResponse, MsgEditBridgeName, MsgEditBridgeNameResponse, MsgRemoveBridge, MsgRemoveBridgeResponse, MsgUpdateToken, UpdateTokenParams, MsgUpdateTokenResponse, MsgAddBridgeAddress, MsgAddBridgeAddressResponse, MsgRemoveBridgeAddress, MsgRemoveBridgeAddressResponse } from "./coin/tx";
 export { CreateTokenProposal } from "./coin/proposal";
 export { Bridge } from "./coin/bridge";
 export { QueryGetTokenRequest, QueryGetTokenResponse, QueryAllTokenRequest, QueryAllTokenResponse, QueryGetLockedCoinsRequest, QueryGetLockedCoinsResponse, QueryAllWrapperMappingsRequest, QueryAllWrapperMappingsResponse, QueryAllWrapperMappingsResponse_WrapperMappingsEntry, QueryGetBalancesRequest, QueryGetBalancesResponse, QueryGetBridgeRequest, QueryGetBridgeResponse, QueryAllBridgeRequest, QueryAllBridgeResponse } from "./coin/query";

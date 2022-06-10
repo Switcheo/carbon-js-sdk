@@ -164,6 +164,24 @@ export const Struct = {
     }, {});
     return message;
   },
+
+  wrap(object: { [key: string]: any } | undefined): Struct {
+    const struct = Struct.fromPartial({});
+    if (object !== undefined) {
+      Object.keys(object).forEach((key) => {
+        struct.fields[key] = object[key];
+      });
+    }
+    return struct;
+  },
+
+  unwrap(message: Struct): { [key: string]: any } {
+    const object: { [key: string]: any } = {};
+    Object.keys(message.fields).forEach((key) => {
+      object[key] = message.fields[key];
+    });
+    return object;
+  },
 };
 
 const baseStruct_FieldsEntry: object = { key: "" };
@@ -178,7 +196,7 @@ export const Struct_FieldsEntry = {
     }
     if (message.value !== undefined) {
       Value.encode(
-        wrapAnyValue(message.value),
+        Value.wrap(message.value),
         writer.uint32(18).fork()
       ).ldelim();
     }
@@ -196,7 +214,7 @@ export const Struct_FieldsEntry = {
           message.key = reader.string();
           break;
         case 2:
-          message.value = unwrapAnyValue(Value.decode(reader, reader.uint32()));
+          message.value = Value.unwrap(Value.decode(reader, reader.uint32()));
           break;
         default:
           reader.skipType(tag & 7);
@@ -247,13 +265,13 @@ export const Value = {
     }
     if (message.structValue !== undefined) {
       Struct.encode(
-        wrapStruct(message.structValue),
+        Struct.wrap(message.structValue),
         writer.uint32(42).fork()
       ).ldelim();
     }
     if (message.listValue !== undefined) {
       ListValue.encode(
-        { values: message.listValue },
+        ListValue.wrap(message.listValue),
         writer.uint32(50).fork()
       ).ldelim();
     }
@@ -280,12 +298,14 @@ export const Value = {
           message.boolValue = reader.bool();
           break;
         case 5:
-          message.structValue = unwrapStruct(
+          message.structValue = Struct.unwrap(
             Struct.decode(reader, reader.uint32())
           );
           break;
         case 6:
-          message.listValue = ListValue.decode(reader, reader.uint32()).values;
+          message.listValue = ListValue.unwrap(
+            ListValue.decode(reader, reader.uint32())
+          );
           break;
         default:
           reader.skipType(tag & 7);
@@ -349,6 +369,44 @@ export const Value = {
     message.listValue = object.listValue ?? undefined;
     return message;
   },
+
+  wrap(value: any): Value {
+    if (value === null) {
+      return { nullValue: 0 } as Value;
+    } else if (typeof value === "boolean") {
+      return { boolValue: value } as Value;
+    } else if (typeof value === "number") {
+      return { numberValue: value } as Value;
+    } else if (typeof value === "string") {
+      return { stringValue: value } as Value;
+    } else if (Array.isArray(value)) {
+      return { listValue: value } as Value;
+    } else if (typeof value === "object") {
+      return { structValue: value } as Value;
+    } else if (typeof value === "undefined") {
+      return {} as Value;
+    } else {
+      throw new Error("Unsupported any value type: " + typeof value);
+    }
+  },
+
+  unwrap(
+    message: Value
+  ): string | number | boolean | Object | null | Array<any> | undefined {
+    if (message.stringValue !== undefined) {
+      return message.stringValue;
+    } else if (message.numberValue !== undefined) {
+      return message.numberValue;
+    } else if (message.boolValue !== undefined) {
+      return message.boolValue;
+    } else if (message.structValue !== undefined) {
+      return message.structValue;
+    } else if (message.listValue !== undefined) {
+      return message.listValue;
+    } else if (message.nullValue !== undefined) {
+      return null;
+    }
+  },
 };
 
 const baseListValue: object = {};
@@ -359,7 +417,7 @@ export const ListValue = {
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     for (const v of message.values) {
-      Value.encode(wrapAnyValue(v!), writer.uint32(10).fork()).ldelim();
+      Value.encode(Value.wrap(v!), writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -374,7 +432,7 @@ export const ListValue = {
       switch (tag >>> 3) {
         case 1:
           message.values.push(
-            unwrapAnyValue(Value.decode(reader, reader.uint32()))
+            Value.unwrap(Value.decode(reader, reader.uint32()))
           );
           break;
         default:
@@ -406,6 +464,14 @@ export const ListValue = {
     message.values = (object.values ?? []).map((e) => e);
     return message;
   },
+
+  wrap(value: Array<any>): ListValue {
+    return { values: value };
+  },
+
+  unwrap(message: ListValue): Array<any> {
+    return message.values;
+  },
 };
 
 type Builtin =
@@ -431,58 +497,4 @@ export type DeepPartial<T> = T extends Builtin
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
-}
-
-function wrapAnyValue(value: any): Value {
-  if (value === null) {
-    return { nullValue: 0 } as Value;
-  } else if (typeof value === "boolean") {
-    return { boolValue: value } as Value;
-  } else if (typeof value === "number") {
-    return { numberValue: value } as Value;
-  } else if (typeof value === "string") {
-    return { stringValue: value } as Value;
-  } else if (Array.isArray(value)) {
-    return { listValue: value } as Value;
-  } else if (typeof value === "object") {
-    return { structValue: value } as Value;
-  } else if (typeof value === "undefined") {
-    return {} as Value;
-  } else {
-    throw new Error("Unsupported any value type: " + typeof value);
-  }
-}
-
-function unwrapAnyValue(
-  value: Value
-): string | number | boolean | Object | null | Array<any> | undefined {
-  if (value.stringValue !== undefined) {
-    return value.stringValue;
-  } else if (value.numberValue !== undefined) {
-    return value.numberValue;
-  } else if (value.boolValue !== undefined) {
-    return value.boolValue;
-  } else if (value.structValue !== undefined) {
-    return value.structValue;
-  } else if (value.listValue !== undefined) {
-    return value.listValue;
-  } else if (value.nullValue !== undefined) {
-    return null;
-  }
-}
-
-function wrapStruct(object: { [key: string]: any }): Struct {
-  const struct = Struct.fromPartial({});
-  Object.keys(object).forEach((key) => {
-    struct.fields[key] = object[key];
-  });
-  return struct;
-}
-
-function unwrapStruct(struct: Struct): { [key: string]: any } {
-  const object: { [key: string]: any } = {};
-  Object.keys(struct.fields).forEach((key) => {
-    object[key] = struct.fields[key];
-  });
-  return object;
 }
