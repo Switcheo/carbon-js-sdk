@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Oracle, Result, Vote } from "../oracle/oracle";
+import { Params, Oracle, Result, Vote } from "../oracle/oracle";
 
 export const protobufPackage = "Switcheo.carbon.oracle";
 
@@ -10,8 +10,9 @@ export interface GenesisState {
   /** this line is used by starport scaffolding # genesis/proto/state */
   oracles: Oracle[];
   results: Result[];
-  /** this line is used by starport scaffolding # ibc/genesis/proto */
   votes: Vote[];
+  /** this line is used by starport scaffolding # ibc/genesis/proto */
+  params?: Params;
 }
 
 const baseGenesisState: object = {};
@@ -29,6 +30,9 @@ export const GenesisState = {
     }
     for (const v of message.votes) {
       Vote.encode(v!, writer.uint32(26).fork()).ldelim();
+    }
+    if (message.params !== undefined) {
+      Params.encode(message.params, writer.uint32(42).fork()).ldelim();
     }
     return writer;
   },
@@ -52,6 +56,9 @@ export const GenesisState = {
         case 3:
           message.votes.push(Vote.decode(reader, reader.uint32()));
           break;
+        case 5:
+          message.params = Params.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -69,6 +76,10 @@ export const GenesisState = {
       Result.fromJSON(e)
     );
     message.votes = (object.votes ?? []).map((e: any) => Vote.fromJSON(e));
+    message.params =
+      object.params !== undefined && object.params !== null
+        ? Params.fromJSON(object.params)
+        : undefined;
     return message;
   },
 
@@ -93,6 +104,8 @@ export const GenesisState = {
     } else {
       obj.votes = [];
     }
+    message.params !== undefined &&
+      (obj.params = message.params ? Params.toJSON(message.params) : undefined);
     return obj;
   },
 
@@ -101,6 +114,10 @@ export const GenesisState = {
     message.oracles = (object.oracles ?? []).map((e) => Oracle.fromPartial(e));
     message.results = (object.results ?? []).map((e) => Result.fromPartial(e));
     message.votes = (object.votes ?? []).map((e) => Vote.fromPartial(e));
+    message.params =
+      object.params !== undefined && object.params !== null
+        ? Params.fromPartial(object.params)
+        : undefined;
     return message;
   },
 };

@@ -62,6 +62,13 @@ export interface MsgRemoveOracle {
 
 export interface MsgRemoveOracleResponse {}
 
+export interface MsgSetOracleSlashEnabled {
+  creator: string;
+  enabled: boolean;
+}
+
+export interface MsgSetOracleSlashEnabledResponse {}
+
 const baseMsgCreateOracle: object = { creator: "" };
 
 export const MsgCreateOracle = {
@@ -971,6 +978,134 @@ export const MsgRemoveOracleResponse = {
   },
 };
 
+const baseMsgSetOracleSlashEnabled: object = { creator: "", enabled: false };
+
+export const MsgSetOracleSlashEnabled = {
+  encode(
+    message: MsgSetOracleSlashEnabled,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.enabled === true) {
+      writer.uint32(16).bool(message.enabled);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgSetOracleSlashEnabled {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgSetOracleSlashEnabled,
+    } as MsgSetOracleSlashEnabled;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.enabled = reader.bool();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgSetOracleSlashEnabled {
+    const message = {
+      ...baseMsgSetOracleSlashEnabled,
+    } as MsgSetOracleSlashEnabled;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.enabled =
+      object.enabled !== undefined && object.enabled !== null
+        ? Boolean(object.enabled)
+        : false;
+    return message;
+  },
+
+  toJSON(message: MsgSetOracleSlashEnabled): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.enabled !== undefined && (obj.enabled = message.enabled);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgSetOracleSlashEnabled>
+  ): MsgSetOracleSlashEnabled {
+    const message = {
+      ...baseMsgSetOracleSlashEnabled,
+    } as MsgSetOracleSlashEnabled;
+    message.creator = object.creator ?? "";
+    message.enabled = object.enabled ?? false;
+    return message;
+  },
+};
+
+const baseMsgSetOracleSlashEnabledResponse: object = {};
+
+export const MsgSetOracleSlashEnabledResponse = {
+  encode(
+    _: MsgSetOracleSlashEnabledResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgSetOracleSlashEnabledResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgSetOracleSlashEnabledResponse,
+    } as MsgSetOracleSlashEnabledResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgSetOracleSlashEnabledResponse {
+    const message = {
+      ...baseMsgSetOracleSlashEnabledResponse,
+    } as MsgSetOracleSlashEnabledResponse;
+    return message;
+  },
+
+  toJSON(_: MsgSetOracleSlashEnabledResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgSetOracleSlashEnabledResponse>
+  ): MsgSetOracleSlashEnabledResponse {
+    const message = {
+      ...baseMsgSetOracleSlashEnabledResponse,
+    } as MsgSetOracleSlashEnabledResponse;
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
   /** this line is used by starport scaffolding # proto/tx/rpc */
@@ -978,6 +1113,9 @@ export interface Msg {
   CreateVote(request: MsgCreateVote): Promise<MsgCreateVoteResponse>;
   UpdateOracle(request: MsgUpdateOracle): Promise<MsgUpdateOracleResponse>;
   RemoveOracle(request: MsgRemoveOracle): Promise<MsgRemoveOracleResponse>;
+  SetOracleSlashEnabled(
+    request: MsgSetOracleSlashEnabled
+  ): Promise<MsgSetOracleSlashEnabledResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -988,6 +1126,7 @@ export class MsgClientImpl implements Msg {
     this.CreateVote = this.CreateVote.bind(this);
     this.UpdateOracle = this.UpdateOracle.bind(this);
     this.RemoveOracle = this.RemoveOracle.bind(this);
+    this.SetOracleSlashEnabled = this.SetOracleSlashEnabled.bind(this);
   }
   CreateOracle(request: MsgCreateOracle): Promise<MsgCreateOracleResponse> {
     const data = MsgCreateOracle.encode(request).finish();
@@ -1034,6 +1173,20 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgRemoveOracleResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  SetOracleSlashEnabled(
+    request: MsgSetOracleSlashEnabled
+  ): Promise<MsgSetOracleSlashEnabledResponse> {
+    const data = MsgSetOracleSlashEnabled.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.oracle.Msg",
+      "SetOracleSlashEnabled",
+      data
+    );
+    return promise.then((data) =>
+      MsgSetOracleSlashEnabledResponse.decode(new _m0.Reader(data))
     );
   }
 }

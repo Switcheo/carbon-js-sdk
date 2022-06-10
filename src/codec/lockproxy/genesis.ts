@@ -1,6 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
+import { WrapperMapping } from "../lockproxy/lockproxy";
 
 export const protobufPackage = "Switcheo.carbon.lockproxy";
 
@@ -14,6 +15,8 @@ export interface GenesisState {
   registries: { [key: string]: Uint8Array };
   /** Records operators (value is operator address as bytes) */
   operators: { [key: string]: Uint8Array };
+  /** Records wrapper mappings */
+  wrapperMappings: WrapperMapping[];
 }
 
 export interface GenesisState_ChainIdsEntry {
@@ -59,6 +62,9 @@ export const GenesisState = {
         writer.uint32(34).fork()
       ).ldelim();
     });
+    for (const v of message.wrapperMappings) {
+      WrapperMapping.encode(v!, writer.uint32(42).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -69,6 +75,7 @@ export const GenesisState = {
     message.chainIds = {};
     message.registries = {};
     message.operators = {};
+    message.wrapperMappings = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -102,6 +109,11 @@ export const GenesisState = {
             message.operators[entry4.key] = entry4.value;
           }
           break;
+        case 5:
+          message.wrapperMappings.push(
+            WrapperMapping.decode(reader, reader.uint32())
+          );
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -134,6 +146,9 @@ export const GenesisState = {
       acc[key] = bytesFromBase64(value as string);
       return acc;
     }, {});
+    message.wrapperMappings = (object.wrapperMappings ?? []).map((e: any) =>
+      WrapperMapping.fromJSON(e)
+    );
     return message;
   },
 
@@ -157,6 +172,13 @@ export const GenesisState = {
       Object.entries(message.operators).forEach(([k, v]) => {
         obj.operators[k] = base64FromBytes(v);
       });
+    }
+    if (message.wrapperMappings) {
+      obj.wrapperMappings = message.wrapperMappings.map((e) =>
+        e ? WrapperMapping.toJSON(e) : undefined
+      );
+    } else {
+      obj.wrapperMappings = [];
     }
     return obj;
   },
@@ -188,6 +210,9 @@ export const GenesisState = {
       }
       return acc;
     }, {});
+    message.wrapperMappings = (object.wrapperMappings ?? []).map((e) =>
+      WrapperMapping.fromPartial(e)
+    );
     return message;
   },
 };

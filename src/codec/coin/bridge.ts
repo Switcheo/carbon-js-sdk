@@ -11,6 +11,7 @@ export interface Bridge {
   bridgeName: string;
   chainName: string;
   enabled: boolean;
+  bridgeAddresses: string[];
 }
 
 const baseBridge: object = {
@@ -20,6 +21,7 @@ const baseBridge: object = {
   bridgeName: "",
   chainName: "",
   enabled: false,
+  bridgeAddresses: "",
 };
 
 export const Bridge = {
@@ -45,6 +47,9 @@ export const Bridge = {
     if (message.enabled === true) {
       writer.uint32(48).bool(message.enabled);
     }
+    for (const v of message.bridgeAddresses) {
+      writer.uint32(58).string(v!);
+    }
     return writer;
   },
 
@@ -52,6 +57,7 @@ export const Bridge = {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseBridge } as Bridge;
+    message.bridgeAddresses = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -72,6 +78,9 @@ export const Bridge = {
           break;
         case 6:
           message.enabled = reader.bool();
+          break;
+        case 7:
+          message.bridgeAddresses.push(reader.string());
           break;
         default:
           reader.skipType(tag & 7);
@@ -107,6 +116,9 @@ export const Bridge = {
       object.enabled !== undefined && object.enabled !== null
         ? Boolean(object.enabled)
         : false;
+    message.bridgeAddresses = (object.bridgeAddresses ?? []).map((e: any) =>
+      String(e)
+    );
     return message;
   },
 
@@ -120,6 +132,11 @@ export const Bridge = {
     message.bridgeName !== undefined && (obj.bridgeName = message.bridgeName);
     message.chainName !== undefined && (obj.chainName = message.chainName);
     message.enabled !== undefined && (obj.enabled = message.enabled);
+    if (message.bridgeAddresses) {
+      obj.bridgeAddresses = message.bridgeAddresses.map((e) => e);
+    } else {
+      obj.bridgeAddresses = [];
+    }
     return obj;
   },
 
@@ -137,6 +154,7 @@ export const Bridge = {
     message.bridgeName = object.bridgeName ?? "";
     message.chainName = object.chainName ?? "";
     message.enabled = object.enabled ?? false;
+    message.bridgeAddresses = (object.bridgeAddresses ?? []).map((e) => e);
     return message;
   },
 };

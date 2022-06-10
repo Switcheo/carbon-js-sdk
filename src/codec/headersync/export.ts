@@ -1,4 +1,4 @@
 export { Peer, ConsensusPeers, ConsensusPeers_PeersEntry } from "./consensus_peers"
-export { GenesisState_ConsensusPeersEntry, GenesisState_CheckpointHashesEntry } from "./genesis"
-export { QueryGetConsensusPeersRequest, QueryGetConsensusPeersResponse } from "./query"
+export { GenesisState_ConsensusPeersEntry, GenesisState_CheckpointHashesEntry, GenesisState_ZionConsensusPeersEntry, GenesisState_ZionHeadersEntry } from "./genesis"
+export { QueryGetConsensusPeersRequest, QueryGetConsensusPeersResponse, QueryGetZionConsensusPeersRequest, QueryGetZionConsensusPeersResponse } from "./query"
 export { MsgSyncGenesis, MsgSyncGenesisResponse, MsgSyncHeaders, MsgSyncHeadersResponse } from "./tx"

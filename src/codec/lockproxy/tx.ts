@@ -39,6 +39,24 @@ export interface MsgLock {
 
 export interface MsgLockResponse {}
 
+export interface MsgSetWrapperMapping {
+  creator: string;
+  chainId: Long;
+  fromContractAddress: string;
+  toContractAddress: string;
+  lockType: Long;
+}
+
+export interface MsgSetWrapperMappingResponse {}
+
+export interface MsgDeleteWrapperMapping {
+  creator: string;
+  chainId: Long;
+  contractAddress: string;
+}
+
+export interface MsgDeleteWrapperMappingResponse {}
+
 const baseMsgCreate: object = { creator: "" };
 
 export const MsgCreate = {
@@ -581,12 +599,341 @@ export const MsgLockResponse = {
   },
 };
 
+const baseMsgSetWrapperMapping: object = {
+  creator: "",
+  chainId: Long.UZERO,
+  fromContractAddress: "",
+  toContractAddress: "",
+  lockType: Long.UZERO,
+};
+
+export const MsgSetWrapperMapping = {
+  encode(
+    message: MsgSetWrapperMapping,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (!message.chainId.isZero()) {
+      writer.uint32(16).uint64(message.chainId);
+    }
+    if (message.fromContractAddress !== "") {
+      writer.uint32(26).string(message.fromContractAddress);
+    }
+    if (message.toContractAddress !== "") {
+      writer.uint32(34).string(message.toContractAddress);
+    }
+    if (!message.lockType.isZero()) {
+      writer.uint32(40).uint64(message.lockType);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgSetWrapperMapping {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgSetWrapperMapping } as MsgSetWrapperMapping;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.chainId = reader.uint64() as Long;
+          break;
+        case 3:
+          message.fromContractAddress = reader.string();
+          break;
+        case 4:
+          message.toContractAddress = reader.string();
+          break;
+        case 5:
+          message.lockType = reader.uint64() as Long;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgSetWrapperMapping {
+    const message = { ...baseMsgSetWrapperMapping } as MsgSetWrapperMapping;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.chainId =
+      object.chainId !== undefined && object.chainId !== null
+        ? Long.fromString(object.chainId)
+        : Long.UZERO;
+    message.fromContractAddress =
+      object.fromContractAddress !== undefined &&
+      object.fromContractAddress !== null
+        ? String(object.fromContractAddress)
+        : "";
+    message.toContractAddress =
+      object.toContractAddress !== undefined &&
+      object.toContractAddress !== null
+        ? String(object.toContractAddress)
+        : "";
+    message.lockType =
+      object.lockType !== undefined && object.lockType !== null
+        ? Long.fromString(object.lockType)
+        : Long.UZERO;
+    return message;
+  },
+
+  toJSON(message: MsgSetWrapperMapping): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.chainId !== undefined &&
+      (obj.chainId = (message.chainId || Long.UZERO).toString());
+    message.fromContractAddress !== undefined &&
+      (obj.fromContractAddress = message.fromContractAddress);
+    message.toContractAddress !== undefined &&
+      (obj.toContractAddress = message.toContractAddress);
+    message.lockType !== undefined &&
+      (obj.lockType = (message.lockType || Long.UZERO).toString());
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgSetWrapperMapping>): MsgSetWrapperMapping {
+    const message = { ...baseMsgSetWrapperMapping } as MsgSetWrapperMapping;
+    message.creator = object.creator ?? "";
+    message.chainId =
+      object.chainId !== undefined && object.chainId !== null
+        ? Long.fromValue(object.chainId)
+        : Long.UZERO;
+    message.fromContractAddress = object.fromContractAddress ?? "";
+    message.toContractAddress = object.toContractAddress ?? "";
+    message.lockType =
+      object.lockType !== undefined && object.lockType !== null
+        ? Long.fromValue(object.lockType)
+        : Long.UZERO;
+    return message;
+  },
+};
+
+const baseMsgSetWrapperMappingResponse: object = {};
+
+export const MsgSetWrapperMappingResponse = {
+  encode(
+    _: MsgSetWrapperMappingResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgSetWrapperMappingResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgSetWrapperMappingResponse,
+    } as MsgSetWrapperMappingResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgSetWrapperMappingResponse {
+    const message = {
+      ...baseMsgSetWrapperMappingResponse,
+    } as MsgSetWrapperMappingResponse;
+    return message;
+  },
+
+  toJSON(_: MsgSetWrapperMappingResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgSetWrapperMappingResponse>
+  ): MsgSetWrapperMappingResponse {
+    const message = {
+      ...baseMsgSetWrapperMappingResponse,
+    } as MsgSetWrapperMappingResponse;
+    return message;
+  },
+};
+
+const baseMsgDeleteWrapperMapping: object = {
+  creator: "",
+  chainId: Long.UZERO,
+  contractAddress: "",
+};
+
+export const MsgDeleteWrapperMapping = {
+  encode(
+    message: MsgDeleteWrapperMapping,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (!message.chainId.isZero()) {
+      writer.uint32(16).uint64(message.chainId);
+    }
+    if (message.contractAddress !== "") {
+      writer.uint32(26).string(message.contractAddress);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgDeleteWrapperMapping {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgDeleteWrapperMapping,
+    } as MsgDeleteWrapperMapping;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.chainId = reader.uint64() as Long;
+          break;
+        case 3:
+          message.contractAddress = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgDeleteWrapperMapping {
+    const message = {
+      ...baseMsgDeleteWrapperMapping,
+    } as MsgDeleteWrapperMapping;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.chainId =
+      object.chainId !== undefined && object.chainId !== null
+        ? Long.fromString(object.chainId)
+        : Long.UZERO;
+    message.contractAddress =
+      object.contractAddress !== undefined && object.contractAddress !== null
+        ? String(object.contractAddress)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgDeleteWrapperMapping): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.chainId !== undefined &&
+      (obj.chainId = (message.chainId || Long.UZERO).toString());
+    message.contractAddress !== undefined &&
+      (obj.contractAddress = message.contractAddress);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgDeleteWrapperMapping>
+  ): MsgDeleteWrapperMapping {
+    const message = {
+      ...baseMsgDeleteWrapperMapping,
+    } as MsgDeleteWrapperMapping;
+    message.creator = object.creator ?? "";
+    message.chainId =
+      object.chainId !== undefined && object.chainId !== null
+        ? Long.fromValue(object.chainId)
+        : Long.UZERO;
+    message.contractAddress = object.contractAddress ?? "";
+    return message;
+  },
+};
+
+const baseMsgDeleteWrapperMappingResponse: object = {};
+
+export const MsgDeleteWrapperMappingResponse = {
+  encode(
+    _: MsgDeleteWrapperMappingResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgDeleteWrapperMappingResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgDeleteWrapperMappingResponse,
+    } as MsgDeleteWrapperMappingResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgDeleteWrapperMappingResponse {
+    const message = {
+      ...baseMsgDeleteWrapperMappingResponse,
+    } as MsgDeleteWrapperMappingResponse;
+    return message;
+  },
+
+  toJSON(_: MsgDeleteWrapperMappingResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgDeleteWrapperMappingResponse>
+  ): MsgDeleteWrapperMappingResponse {
+    const message = {
+      ...baseMsgDeleteWrapperMappingResponse,
+    } as MsgDeleteWrapperMappingResponse;
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
   /** this line is used by starport scaffolding # proto/tx/rpc */
   Create(request: MsgCreate): Promise<MsgCreateResponse>;
   Bind(request: MsgBind): Promise<MsgBindResponse>;
   Lock(request: MsgLock): Promise<MsgLockResponse>;
+  SetWrapperMapping(
+    request: MsgSetWrapperMapping
+  ): Promise<MsgSetWrapperMappingResponse>;
+  DeleteWrapperMapping(
+    request: MsgDeleteWrapperMapping
+  ): Promise<MsgDeleteWrapperMappingResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -596,6 +943,8 @@ export class MsgClientImpl implements Msg {
     this.Create = this.Create.bind(this);
     this.Bind = this.Bind.bind(this);
     this.Lock = this.Lock.bind(this);
+    this.SetWrapperMapping = this.SetWrapperMapping.bind(this);
+    this.DeleteWrapperMapping = this.DeleteWrapperMapping.bind(this);
   }
   Create(request: MsgCreate): Promise<MsgCreateResponse> {
     const data = MsgCreate.encode(request).finish();
@@ -627,6 +976,34 @@ export class MsgClientImpl implements Msg {
       data
     );
     return promise.then((data) => MsgLockResponse.decode(new _m0.Reader(data)));
+  }
+
+  SetWrapperMapping(
+    request: MsgSetWrapperMapping
+  ): Promise<MsgSetWrapperMappingResponse> {
+    const data = MsgSetWrapperMapping.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.lockproxy.Msg",
+      "SetWrapperMapping",
+      data
+    );
+    return promise.then((data) =>
+      MsgSetWrapperMappingResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  DeleteWrapperMapping(
+    request: MsgDeleteWrapperMapping
+  ): Promise<MsgDeleteWrapperMappingResponse> {
+    const data = MsgDeleteWrapperMapping.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.lockproxy.Msg",
+      "DeleteWrapperMapping",
+      data
+    );
+    return promise.then((data) =>
+      MsgDeleteWrapperMappingResponse.decode(new _m0.Reader(data))
+    );
   }
 }
 
