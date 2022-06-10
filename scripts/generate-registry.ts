@@ -108,6 +108,9 @@ const modelBlacklist: BlacklistItem[] = [{
 }, {
   path: '/market/market',
   module: 'Params',
+}, {
+  path: '/oracle/oracle',
+  module: 'Params',
 }]
 
 for (const moduleFile of codecFiles) {
