@@ -432,9 +432,8 @@ export class ETHClient {
   }
 
   public getBridgeEntranceAddr() {
-    return this.getConfig().bridgeEntranceAddr;
+    return this.getConfig().bridgeEntranceAddr as string;
   }
-
   /**
    * verify that address is a valid checksum.
    * Returns checksum address if valid, returns undefined if invalid
