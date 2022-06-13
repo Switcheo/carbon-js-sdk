@@ -1,5 +1,5 @@
 import CarbonSDK from "@carbon-sdk/CarbonSDK";
-import { EthNetworkConfig, NetworkConfig, NetworkConfigProvider } from "@carbon-sdk/constant";
+import { EthNetworkConfig, Network, NetworkConfig, NetworkConfigProvider } from "@carbon-sdk/constant";
 import { ABIs } from "@carbon-sdk/eth";
 import { Models } from "@carbon-sdk/index";
 import { AddressUtils } from "@carbon-sdk/util";
@@ -29,7 +29,6 @@ export interface BridgeParams extends ETHTxParams {
   toToken: Models.Token;
   amount: BigNumber;
   recoveryAddress: string;
-  bridgeEntranceAddress: string;
   signCompleteCallback?: () => void;
 }
 
@@ -133,7 +132,7 @@ export class ETHClient {
   }
 
   public async bridgeTokens(params: BridgeParams): Promise<EthersTransactionResponse> {
-    const { fromToken, toToken, amount, recoveryAddress, bridgeEntranceAddress, ethAddress, signer, gasPriceGwei, gasLimit } = params;
+    const { fromToken, toToken, amount, recoveryAddress, ethAddress, signer, gasPriceGwei, gasLimit } = params;
 
     const networkConfig = this.getNetworkConfig();
     const rpcProvider = this.getProvider();
@@ -156,7 +155,7 @@ export class ETHClient {
     const toAssetHash = ethers.utils.hexlify(ethers.utils.toUtf8Bytes(toTokenDenom));
     const nonce = await rpcProvider.getTransactionCount(ethAddress);
 
-    const contract = new ethers.Contract(bridgeEntranceAddress, ABIs.bridgeEntrance, rpcProvider);
+    const contract = new ethers.Contract(this.getBridgeEntranceAddr(), ABIs.bridgeEntrance, rpcProvider);
     const feeAddress = appendHexPrefix(networkConfig.feeAddress);
 
     const tokenCreator = fromToken.creator;
@@ -430,6 +429,10 @@ export class ETHClient {
 
   public getWalletBytecodeHash() {
     return this.getConfig().byteCodeHash;
+  }
+
+  public getBridgeEntranceAddr() {
+    return this.getConfig().bridgeEntranceAddr;
   }
 
   /**
