@@ -1,5 +1,5 @@
 import CarbonSDK from "@carbon-sdk/CarbonSDK";
-import { EthNetworkConfig, Network, NetworkConfig, NetworkConfigProvider } from "@carbon-sdk/constant";
+import { EthNetworkConfig, NetworkConfig, NetworkConfigProvider } from "@carbon-sdk/constant";
 import { ABIs } from "@carbon-sdk/eth";
 import { Models } from "@carbon-sdk/index";
 import { AddressUtils } from "@carbon-sdk/util";
