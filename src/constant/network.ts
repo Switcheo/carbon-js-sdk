@@ -14,7 +14,7 @@ export interface EthNetworkConfig {
   wsURL: string
   payerURL: string
   lockProxyAddr: string
-  bridgeEntranceAddr?: string
+  bridgeEntranceAddr: string
   balanceReader: string
   byteCodeHash: string
 }
@@ -84,6 +84,7 @@ export const NetworkConfigs: {
       rpcURL: "https://eth-mainnet.alchemyapi.io/v2/RWHcfoaBKzRpXnLONcEDnVqtUp7StNYl",
       wsURL: "wss://mainnet.dagger.matic.network",
       payerURL: "https://payer.carbon.network",
+      bridgeEntranceAddr: "",
       lockProxyAddr: "0x9a016ce184a22dbf6c17daa59eb7d3140dbd1c54",
       balanceReader: "0xe5e83cdba612672785d835714af26707f98030c3",
       byteCodeHash: "0xc77e5709a69e94d310a6dfb700801758c4caed0385b25bdf82bbdf954e4dd0c3",
@@ -132,12 +133,13 @@ export const NetworkConfigs: {
     feeAddress: "989761fb0c0eb0c05605e849cae77d239f98ac7f",
 
     eth: {
-      rpcURL: "https://eth-ropsten.alchemyapi.io/v2/2KD9F3mFPNMfflSqZsPuTKmK_w7fFfut",
-      wsURL: "wss://ropsten.dagger.matic.network",
-      payerURL: `https://test-payer.carbon.network`,
-      lockProxyAddr: "0x91f453851e297524749a740d53cf54a89231487c",
-      balanceReader: "0xa74c81866c5bfff6684aa8edf35a5de8c3b9f173",
-      byteCodeHash: "0xc77e5709a69e94d310a6dfb700801758c4caed0385b25bdf82bbdf954e4dd0c3",
+      rpcURL: "https://eth-rinkeby.alchemyapi.io/v2/2KD9F3mFPNMfflSqZsPuTKmK_w7fFfut",
+      wsURL: "",
+      payerURL: `https://dev-payer.carbon.network`,
+      lockProxyAddr: "0xFE5C9832b62bFfFFfD1B091de457254dab344C04",
+      bridgeEntranceAddr: "0x1fFf3678De3b2e250eccB214078902DcEe08748B",
+      balanceReader: "0xf6fBa7Bbc806F55dA52af17203d84C61FfFa18c2",
+      byteCodeHash: "0xeb1f732f12a0448d8692018a6d6d381cc7afc84d7e0729007931d966c0c9dc6d",
     },
 
     bsc: {
