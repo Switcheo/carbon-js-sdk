@@ -93,6 +93,8 @@ export const blockchainForChainId = (chainId?: number): Blockchain | undefined =
       return Blockchain.Osmosis
     case 245: // mainnet
       return Blockchain.Terra
+    case 348:
+      return Blockchain.Ethereum
     default:
       return undefined
   }
