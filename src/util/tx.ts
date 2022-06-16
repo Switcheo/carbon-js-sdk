@@ -98,6 +98,7 @@ export enum BroadcastTxMode {
 export interface SignTxOpts {
   fee?: StdFee;
   memo?: string;
+  sequence?: number;
   explicitSignerData?: Partial<SignerData>;
 }
 

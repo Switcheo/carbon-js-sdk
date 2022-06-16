@@ -76,6 +76,18 @@ export interface AccountInfo extends Account {
   chainId: string;
 }
 
+interface PromiseHandler<T> {
+  requestId?: string
+  resolve: (result: T) => void
+  reject: (reason?: any) => void
+}
+
+interface BroadcastTxRequest {
+  signedTx: CarbonWallet.TxRaw;
+  broadcastOpts?: CarbonTx.BroadcastTxOpts;
+  handler: PromiseHandler<DeliverTxResponse | BroadcastTxSyncResponse>;
+}
+
 export class CarbonWallet {
   network: Network;
 
@@ -102,6 +114,11 @@ export class CarbonWallet {
   providerAgent?: ProviderAgent | string
 
   private signingClient?: SigningStargateClient;
+
+  private txQueue: BroadcastTxRequest[] = [];
+  private txQueueTrigger: NodeJS.Timeout | null = null;
+  private txTriggerThreshold: number = 0;
+  private isDispatchingTxQueue: boolean = false;
 
   constructor(opts: CarbonWalletInitOpts) {
     const network = opts.network ?? DEFAULT_NETWORK;
@@ -233,6 +250,57 @@ export class CarbonWallet {
     return this;
   }
 
+  async getSignedTx(
+    signerAddress: string,
+    messages: readonly EncodeObject[],
+    opts: CarbonTx.SignTxOpts = {},
+  ): Promise<CarbonWallet.TxRaw> {
+    const {
+      memo = "",
+      explicitSignerData,
+      sequence,
+    } = opts;
+
+    let fee = opts?.fee;
+
+    if (!fee) {
+      // compute required fee
+      const totalFeeCost = messages.reduce((totalFee, message) => {
+        const msgFee = this.getFee(message.typeUrl);
+        return msgFee.gt(0) ? totalFee.plus(msgFee) : totalFee;
+      }, BN_ZERO);
+      fee = {
+        amount: [{
+          amount: totalFeeCost.toString(10),
+          denom: "swth",
+        }],
+        gas: DEFAULT_GAS.times(messages.length).toString(10),
+      };
+    }
+    const signingClient = await this.getSigningClient();
+
+    const [account] = await this.signer.getAccounts();
+    let signature: StdSignature | null = null;
+    try {
+      if (!this.accountInfo && !sequence)
+        await this.reloadAccountSequence();
+
+      await GenericUtils.callIgnoreError(() => this.onRequestSign?.(messages));
+      const signerData = {
+        accountNumber: this.accountInfo!.accountNumber,
+        sequence: sequence ?? this.accountInfo!.sequence,
+        chainId: this.accountInfo!.chainId,
+        ...explicitSignerData,
+      };
+
+      const txRaw = await signingClient.sign(signerAddress, messages, fee, memo, signerData);
+      signature = encodeSecp256k1Signature(account.pubkey, txRaw.signatures[0]);
+      return txRaw;
+    } finally {
+      await GenericUtils.callIgnoreError(() => this.onSignComplete?.(signature));
+    }
+  }
+
   /**
    * broadcast TX and wait for block confirmation
    * 
@@ -267,81 +335,24 @@ export class CarbonWallet {
     return tmClient.broadcastTxSync({ tx });
   };
 
-  async getSignedTx(
-    signerAddress: string,
-    messages: readonly EncodeObject[],
-    opts: CarbonTx.SignTxOpts = {},
-  ): Promise<CarbonWallet.TxRaw> {
-    const {
-      memo = "",
-      explicitSignerData,
-    } = opts;
-
-    let fee = opts?.fee;
-
-    if (!fee) {
-      // compute required fee
-      const totalFeeCost = messages.reduce((totalFee, message) => {
-        const msgFee = this.getFee(message.typeUrl);
-        return msgFee.gt(0) ? totalFee.plus(msgFee) : totalFee;
-      }, BN_ZERO);
-      fee = {
-        amount: [{
-          amount: totalFeeCost.toString(10),
-          denom: "swth",
-        }],
-        gas: DEFAULT_GAS.times(messages.length).toString(10),
-      };
-    }
-    const signingClient = await this.getSigningClient();
-
-    const [account] = await this.signer.getAccounts();
-    let signature: StdSignature | null = null;
-    try {
-      if (!this.accountInfo)
-        await this.reloadAccountSequence();
-
-      await GenericUtils.callIgnoreError(() => this.onRequestSign?.(messages));
-      const signerData = {
-        accountNumber: this.accountInfo!.accountNumber,
-        sequence: this.accountInfo!.sequence,
-        chainId: this.accountInfo!.chainId,
-        ...explicitSignerData,
-      };
-      const txRaw = await signingClient.sign(signerAddress, messages, fee, memo, signerData);
-      signature = encodeSecp256k1Signature(account.pubkey, txRaw.signatures[0]);
-      return txRaw;
-    } finally {
-      await GenericUtils.callIgnoreError(() => this.onSignComplete?.(signature));
-    }
-  }
-
   async signAndBroadcast(msgs: EncodeObject[], signOpts?: CarbonTx.SignTxOpts, broadcastOpts?: CarbonTx.BroadcastTxOpts): Promise<DeliverTxResponse | BroadcastTxSyncResponse> {
     const signedTx = await this.getSignedTx(this.bech32Address, msgs, signOpts);
 
-    const broadcastFunc = broadcastOpts?.mode === BroadcastTxMode.BroadcastTxSync ? this.broadcastTxWithoutConfirm.bind(this) : this.broadcastTx.bind(this);
+    const promise = new Promise<DeliverTxResponse | BroadcastTxSyncResponse>((resolve, reject) => {
+      this.txQueue.unshift({
+        signedTx,
+        broadcastOpts,
+        handler: { resolve, reject, requestId: this.accountInfo?.sequence.toString() ?? "", }
+      });
+    });
 
-    try {
-      return await broadcastFunc(signedTx, broadcastOpts);
-    } catch (error: any) {
-      const result = this.isNonceMismatchError(error);
-      if (!result)
-        throw error;
+    this.accountInfo = {
+      ...this.accountInfo!,
+      sequence: this.accountInfo!.sequence + 1,
+    };
 
-      console.log(`encountered account sequence error: provided ${result.provided}, retrying with ${result.expected}…`);
-      // encountered account sequence error, retrying…
-      this.accountInfo = {
-        ...this.accountInfo!,
-        sequence: parseInt(result.expected),
-      };
-      const signedTx = await this.getSignedTx(this.bech32Address, msgs, signOpts);
-      return broadcastFunc(signedTx, broadcastOpts);
-    } finally {
-      this.accountInfo = {
-        ...this.accountInfo!,
-        sequence: this.accountInfo!.sequence + 1,
-      };
-    }
+    await this.triggerTxDispatch();
+    return promise;
   }
 
   async sendTxs(msgs: EncodeObject[], opts?: CarbonTx.SignTxOpts): Promise<CarbonWallet.SendTxResponse> {
@@ -351,7 +362,7 @@ export class CarbonWallet {
 
   async sendTxsWithoutConfirm(msgs: EncodeObject[], opts?: CarbonTx.SignTxOpts): Promise<CarbonWallet.SendTxWithoutConfirmResponse> {
     const result = await this.signAndBroadcast(msgs, opts, { mode: BroadcastTxMode.BroadcastTxSync });
-      return result as BroadcastTxSyncResponse;
+    return result as BroadcastTxSyncResponse;
   }
 
   async sendTx(msg: EncodeObject, opts?: CarbonTx.SignTxOpts): Promise<CarbonWallet.SendTxResponse> {
@@ -426,6 +437,44 @@ export class CarbonWallet {
       pubkey,
       chainId,
     };
+  }
+
+  private triggerTxDispatch() {
+    const DELAY = 300;
+    const currentTimeMillis = new Date().getTime();
+
+    // do not shift delay later if next schedule
+    if (this.txTriggerThreshold && (currentTimeMillis + DELAY) > this.txTriggerThreshold) {
+      return;
+    }
+
+    if (!this.txTriggerThreshold) {
+      this.txTriggerThreshold = currentTimeMillis + 1000; // max wait for 1s before dispatching queue
+    }
+
+    clearTimeout(this.txQueueTrigger as unknown as number);
+
+    this.txQueueTrigger = setTimeout(this.dispatchTxQueue.bind(this), 500);
+  }
+
+  private async dispatchTxQueue() {
+    if (this.isDispatchingTxQueue) return;
+    this.isDispatchingTxQueue = true; // activate sync lock
+    this.txTriggerThreshold = 0; // reset to 0
+
+    try {
+      while (this.txQueue.length) {
+        const txRequest = this.txQueue.pop()!;
+        const { signedTx, broadcastOpts, handler } = txRequest;
+
+        const broadcastFunc = broadcastOpts?.mode === BroadcastTxMode.BroadcastTxSync ? this.broadcastTxWithoutConfirm.bind(this) : this.broadcastTx.bind(this);
+        await broadcastFunc(signedTx, broadcastOpts).then(handler.resolve).catch(handler.reject);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      this.isDispatchingTxQueue = false;
+    }
   }
 
   private isNonceMismatchError = (error?: Error) => {
