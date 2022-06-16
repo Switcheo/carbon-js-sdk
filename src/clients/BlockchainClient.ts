@@ -13,7 +13,7 @@ import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
  */
 class BlockchainClient extends StargateClient {
   static connectWithTm(tmClient: Tendermint34Client): BlockchainClient {
-    return new BlockchainClient(tmClient)
+    return new BlockchainClient(tmClient, {});
   }
 }
 
