@@ -10,7 +10,7 @@ import { BroadcastTxMode, TxFeeTypeDefaultKey } from "@carbon-sdk/util/tx";
 import { SimpleMap } from "@carbon-sdk/util/type";
 import { encodeSecp256k1Signature, StdSignature } from "@cosmjs/amino";
 import { EncodeObject, OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
-import { Account, BroadcastTxResponse, isBroadcastTxFailure, SigningStargateClient } from "@cosmjs/stargate";
+import { Account, DeliverTxResponse, isDeliverTxFailure, SigningStargateClient } from "@cosmjs/stargate";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import { BroadcastTxSyncResponse } from "@cosmjs/tendermint-rpc/build/tendermint34/responses";
 import BigNumber from "bignumber.js";
@@ -245,7 +245,7 @@ export class CarbonWallet {
     const tx = CarbonWallet.TxRaw.encode(txRaw).finish();
     const signingClient = await this.getSigningClient();
     const response = await signingClient.broadcastTx(tx, timeoutMs, pollIntervalMs);
-    if (isBroadcastTxFailure(response)) {
+    if (isDeliverTxFailure(response)) {
       // tx failed
       console.error(response);
       throw new Error(`[${response.code}] ${response.rawLog}`);
@@ -312,7 +312,7 @@ export class CarbonWallet {
     }
   }
 
-  async signAndBroadcast(msgs: EncodeObject[], signOpts?: CarbonTx.SignTxOpts, broadcastOpts?: CarbonTx.BroadcastTxOpts): Promise<BroadcastTxResponse | BroadcastTxSyncResponse> {
+  async signAndBroadcast(msgs: EncodeObject[], signOpts?: CarbonTx.SignTxOpts, broadcastOpts?: CarbonTx.BroadcastTxOpts): Promise<DeliverTxResponse | BroadcastTxSyncResponse> {
     const signedTx = await this.getSignedTx(this.bech32Address, msgs, signOpts);
 
     const broadcastFunc = broadcastOpts?.mode === BroadcastTxMode.BroadcastTxSync ? this.broadcastTxWithoutConfirm.bind(this) : this.broadcastTx.bind(this);
@@ -342,7 +342,7 @@ export class CarbonWallet {
 
   async sendTxs(msgs: EncodeObject[], opts?: CarbonTx.SignTxOpts): Promise<CarbonWallet.SendTxResponse> {
     const result = await this.signAndBroadcast(msgs, opts, { mode: BroadcastTxMode.BroadcastTxBlock });
-    return result as BroadcastTxResponse;
+    return result as DeliverTxResponse;
   }
 
   async sendTxsWithoutConfirm(msgs: EncodeObject[], opts?: CarbonTx.SignTxOpts): Promise<CarbonWallet.SendTxWithoutConfirmResponse> {
@@ -445,7 +445,7 @@ export class CarbonWallet {
 }
 
 export namespace CarbonWallet {
-  export type SendTxResponse = BroadcastTxResponse;
+  export type SendTxResponse = DeliverTxResponse;
   export type SendTxWithoutConfirmResponse = BroadcastTxSyncResponse;
   export type OnRequestSignCallback = (msgs: readonly EncodeObject[]) => void | Promise<void>;
   export type OnSignCompleteCallback = (signature: StdSignature | null) => void | Promise<void>;

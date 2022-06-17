@@ -27,6 +27,7 @@ export type ChainIds = SimpleMap<number>;
 export const ChainNames = {
   1: 'MainNet',
   3: 'Ropsten',
+  4: 'Rinkeby',
   56: 'BSC MainNet',
   97: 'BSC TestNet',
   110: 'ZIL DevNet',
@@ -57,6 +58,7 @@ export const getBlockchainFromChain = (chainId?: number) => {
   switch (chainId) {
     case 1:
     case 3:
+    case 4:
       return Blockchain.Ethereum
     case 56:
     case 97:
@@ -75,6 +77,7 @@ export const blockchainForChainId = (chainId?: number): Blockchain | undefined =
     case 1:
       return Blockchain.Btc
     case 2:
+    case 348: // devnet
       return Blockchain.Ethereum
     case 4:
       return Blockchain.Neo

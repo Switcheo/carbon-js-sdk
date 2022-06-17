@@ -155,7 +155,7 @@ export class MetaMask {
 
     switch (blockchain) {
       case Blockchain.BinanceSmartChain: return 97
-      default: return 3
+      default: return 4
     }
   }
 
@@ -362,7 +362,7 @@ export class MetaMask {
       return 1
     }
 
-    if (currentChainId === 3) {
+    if (currentChainId === 4) {
       this.blockchain = Blockchain.Ethereum
       return currentChainId
     }
@@ -375,7 +375,7 @@ export class MetaMask {
     if (currentChainId === 56) {
       return 97
     }
-    return 3
+    return 4
   }
 
   private getContractHash(blockchain: EVMChain = this.blockchain) {
