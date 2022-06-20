@@ -89,6 +89,7 @@ export class CarbonWallet {
   privateKey?: Buffer;
   signer: CarbonSigner;
   bech32Address: string;
+  hexAddress: string;
   publicKey: Buffer;
   query?: CarbonQueryClient;
 
@@ -154,6 +155,9 @@ export class CarbonWallet {
     } else {
       throw new Error("cannot instantiate wallet signer");
     }
+
+    const addressBytes = AddressUtils.SWTHAddress.getAddressBytes(this.bech32Address, this.network);
+    this.hexAddress = `0x${Buffer.from(addressBytes).toString("hex")}`;
   }
 
   public static withPrivateKey(

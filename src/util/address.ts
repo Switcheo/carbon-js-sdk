@@ -253,6 +253,7 @@ export const SWTHAddress: SWTHAddressType = {
 
 type NEOAddressType = AddressBuilder<AddressOptions> & {
   isAddress(address: string): boolean;
+  encode(hash: string | Buffer, version?: string): string;
 };
 
 export const NEOAddress: NEOAddressType = {
@@ -292,6 +293,10 @@ export const NEOAddress: NEOAddressType = {
     const pointYEven = unencPubKeyBuf[unencPubKeyBuf.length - 1] % 2 === 0;
     const compressedPublicKey = Buffer.concat([Buffer.from([pointYEven ? 0x02 : 0x03]), pointXHex]);
     return compressedPublicKey;
+  },
+
+  encode: (addressScript: string | Buffer, version = "17"): string => {
+    return Base58Check.encode(addressScript, version);
   },
 
   mnemonicToPrivateKey: (mnemonic: string, account: number = 0): Buffer => {
@@ -359,6 +364,10 @@ export const N3Address: N3AddressType = {
 
   isAddress: (address: string) => {
     return wallet.isAddress(address, CONST.DEFAULT_ADDRESS_VERSION);
+  },
+
+  encode: (addressScript: string | Buffer, version = "35"): string => {
+    return Base58Check.encode(addressScript, version);
   },
 }
 
