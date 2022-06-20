@@ -365,6 +365,19 @@ export class ZILClient {
     return addressHex
   }
 
+  public async retrieveZRC2Info(address: string) {
+    const zilliqa = new Zilliqa(this.getProviderUrl())
+    const smartContractInit = await zilliqa.blockchain.getSmartContractInit(address)
+    const mask = ['name', '_this_address', 'symbol', 'decimals']
+    const result = smartContractInit.result
+    if (result === undefined) throw new Error(`address ${address} is invalid`)
+    return result
+      .filter(({ vname }) => mask.includes(vname))
+      .reduce((prev, cur) => (
+        { ...prev, [cur.vname === '_this_address' ? 'address' : cur.vname]: cur.value }
+      ), {})
+  }
+
   public getNetworkConfig(): NetworkConfig {
     return this.configProvider.getConfig();
   }
