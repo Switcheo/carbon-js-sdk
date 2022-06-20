@@ -1,6 +1,5 @@
 import { Bech32AddrType, Network, NetworkConfigs } from "@carbon-sdk/constant";
 import { CONST, wallet } from "@cityofzion/neon-core-next";
-import { Bech32Config } from "@keplr-wallet/types";
 import * as Base58Check from "base58check";
 import * as bech32 from "bech32";
 import * as BIP32 from "bip32";
@@ -405,40 +404,5 @@ export const ETHAddress: AddressBuilder<AddressOptions> = {
   generateAddress: (mnemonic: string, account: number = 0) => {
     const privateKey = ETHAddress.mnemonicToPrivateKey(mnemonic, account);
     return ETHAddress.privateKeyToAddress(privateKey);
-  },
-};
-
-export const IBCAddress = {
-  getAddressBytes(bech32Address: string, prefix?: string): Uint8Array {
-    const decoded = bech32.decode(bech32Address);
-    if (prefix && decoded.prefix !== prefix) {
-      throw new Error("Unmatched prefix");
-    }
-
-    return new Uint8Array(bech32.fromWords(decoded.words));
-  },
-
-  defaultBech32Config(
-    mainPrefix: string,
-    validatorPrefix: string = "val",
-    consensusPrefix: string = "cons",
-    publicPrefix: string = "pub",
-    operatorPrefix: string = "oper"
-  ): Bech32Config {
-    return {
-      bech32PrefixAccAddr: mainPrefix,
-      bech32PrefixAccPub: mainPrefix + publicPrefix,
-      bech32PrefixValAddr: mainPrefix + validatorPrefix + operatorPrefix,
-      bech32PrefixValPub:
-        mainPrefix + validatorPrefix + operatorPrefix + publicPrefix,
-      bech32PrefixConsAddr: mainPrefix + validatorPrefix + consensusPrefix,
-      bech32PrefixConsPub:
-        mainPrefix + validatorPrefix + consensusPrefix + publicPrefix,
-    };
-  },
-
-  deriveAddressFromBytes(bytes: Uint8Array, prefix: string): string {
-    const words = bech32.toWords(bytes);
-    return bech32.encode(prefix, words);
   },
 };

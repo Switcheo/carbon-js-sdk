@@ -1,6 +1,6 @@
-import { IBCAddress } from "@carbon-sdk/util/address";
 import { SimpleMap } from "@carbon-sdk/util/type";
-import { AppCurrency, ChainInfo } from "@keplr-wallet/types";
+import { AppCurrency, Bech32Config, ChainInfo } from "@keplr-wallet/types";
+import * as bech32 from "bech32";
 import { CURRENT_GAS_PRICE } from "./generic";
 
 export interface ChainInfoExplorerTmRpc extends ChainInfo {
@@ -8,6 +8,43 @@ export interface ChainInfoExplorerTmRpc extends ChainInfo {
 	explorerUrlToTx: string;
 	tmRpc?: string;
 }
+
+
+export const IBCAddress = {
+  getAddressBytes(bech32Address: string, prefix?: string): Uint8Array {
+    const decoded = bech32.decode(bech32Address);
+    if (prefix && decoded.prefix !== prefix) {
+      throw new Error("Unmatched prefix");
+    }
+
+    return new Uint8Array(bech32.fromWords(decoded.words));
+  },
+
+  defaultBech32Config(
+    mainPrefix: string,
+    validatorPrefix: string = "val",
+    consensusPrefix: string = "cons",
+    publicPrefix: string = "pub",
+    operatorPrefix: string = "oper"
+  ): Bech32Config {
+    return {
+      bech32PrefixAccAddr: mainPrefix,
+      bech32PrefixAccPub: mainPrefix + publicPrefix,
+      bech32PrefixValAddr: mainPrefix + validatorPrefix + operatorPrefix,
+      bech32PrefixValPub:
+        mainPrefix + validatorPrefix + operatorPrefix + publicPrefix,
+      bech32PrefixConsAddr: mainPrefix + validatorPrefix + consensusPrefix,
+      bech32PrefixConsPub:
+        mainPrefix + validatorPrefix + consensusPrefix + publicPrefix,
+    };
+  },
+
+  deriveAddressFromBytes(bytes: Uint8Array, prefix: string): string {
+    const words = bech32.toWords(bytes);
+    return bech32.encode(prefix, words);
+  },
+};
+
 
 export enum ChainIds {
 	Osmosis = "osmosis-1",
