@@ -7,6 +7,7 @@ import { Blockchain } from "@carbon-sdk/util/blockchain"
 import { TokensWithExternalBalance } from "@carbon-sdk/util/external"
 import { SimpleMap } from "@carbon-sdk/util/type"
 import { CONST, rpc, sc, tx, u, wallet } from "@cityofzion/neon-core-next"
+import { InvokeResult } from "@cityofzion/neon-core-next/lib/rpc"
 import BigNumber from "bignumber.js"
 
 export interface N3ClientOpts {
@@ -318,6 +319,15 @@ export class N3Client {
     const scriptHash = wallet.getScriptHashFromAddress(address);
     // return the little endian version of the address
     return u.reverseHex(scriptHash);
+  }
+
+  public async retrieveNEP17Info(address: string) {
+    const fn = (q:string): Promise<InvokeResult> => this.rpcClient.invokeFunction(address, q);
+    const key = ['name', 'symbol', 'decimals']
+    const xs: Promise<InvokeResult>[] = key.map(fn);
+    const response = (await Promise.all(xs)).map(({stack:[{type, value}]})=> type === 'Integer' ? value : (typeof value === 'string' && atob(value)))
+    const result = response.reduce((acc, curr, i) => ({ ...acc, [key[i]]: curr }),{ address })
+    return result
   }
 }
 
