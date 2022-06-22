@@ -87,18 +87,16 @@ interface PromiseHandler<T> {
 }
 
 interface SignTxRequest {
-  signerAddress: string,
-  messages: readonly EncodeObject[],
+  signerAddress: string;
+  attempts?: number;
+  messages: readonly EncodeObject[];
   broadcastOpts?: CarbonTx.BroadcastTxOpts;
   signOpts?: CarbonTx.SignTxOpts;
   handler: PromiseHandler<DeliverTxResponse | BroadcastTxSyncResponse>;
 }
 
-interface BroadcastTxRequest {
+interface BroadcastTxRequest extends SignTxRequest {
   signedTx: CarbonWallet.TxRaw;
-  broadcastOpts?: CarbonTx.BroadcastTxOpts;
-  signOpts?: CarbonTx.SignTxOpts;
-  handler: PromiseHandler<DeliverTxResponse | BroadcastTxSyncResponse>;
 }
 
 export class CarbonWallet {
@@ -132,6 +130,7 @@ export class CarbonWallet {
   private signingClient?: CarbonSigningClient;
   private chainId?: string;
 
+  private sequenceInvalidated: boolean = false;
   private txSignManager: QueueManager<SignTxRequest>;
   private txDispatchManager: QueueManager<BroadcastTxRequest>;
 
@@ -353,39 +352,67 @@ export class CarbonWallet {
 
   private async signTx(txRequest: SignTxRequest) {
     const { signerAddress, signOpts, messages, broadcastOpts, handler: { resolve, reject } } = txRequest;
-    if (!this.accountInfo)
-      await this.reloadAccountSequence();
+    try {
+      if (!this.accountInfo || this.sequenceInvalidated)
+        await this.reloadAccountSequence();
 
-    const height = await this.getQueryClient().chain.getHeight();
-    const timeoutHeight = height + this.defaultTimeoutBlocks;
+      const height = await this.getQueryClient().chain.getHeight();
+      const timeoutHeight = height + this.defaultTimeoutBlocks;
 
-    const sequence = this.accountInfo!.sequence;
-    this.accountInfo = {
-      ...this.accountInfo!,
-      sequence: sequence + 1,
-    };
+      const sequence = this.accountInfo!.sequence;
+      this.accountInfo = {
+        ...this.accountInfo!,
+        sequence: sequence + 1,
+      };
 
-    const _signOpts: CarbonTx.SignTxOpts = {
-      ...signOpts,
-      explicitSignerData: {
-        timeoutHeight,
-        ...signOpts?.explicitSignerData,
-      },
-    };
-    const signedTx = await this.getSignedTx(signerAddress, messages, sequence, _signOpts);
+      const _signOpts: CarbonTx.SignTxOpts = {
+        ...signOpts,
+        explicitSignerData: {
+          timeoutHeight,
+          ...signOpts?.explicitSignerData,
+        },
+      };
+      const signedTx = await this.getSignedTx(signerAddress, messages, sequence, _signOpts);
 
-    this.txDispatchManager.enqueue({
-      signedTx,
-      broadcastOpts,
-      signOpts: _signOpts,
-      handler: { resolve, reject, requestId: `${sequence}` },
-    });
+      this.txDispatchManager.enqueue({
+        signerAddress,
+        messages,
+        signedTx,
+        broadcastOpts,
+        signOpts: _signOpts,
+        handler: { resolve, reject, requestId: `${sequence}` },
+      });
+    } catch (error) {
+      reject(error);
+    }
   }
 
   private async dispatchTx(txRequest: BroadcastTxRequest) {
     const { broadcastOpts, signedTx, handler: { resolve, reject } } = txRequest;
     const broadcastFunc = broadcastOpts?.mode === BroadcastTxMode.BroadcastTxSync ? this.broadcastTxWithoutConfirm.bind(this) : this.broadcastTx.bind(this);
-    await broadcastFunc(signedTx, broadcastOpts).then(resolve).catch(reject);
+    try {
+      const result = await broadcastFunc(signedTx, broadcastOpts);
+      resolve(result);
+    } catch (error: any) {
+      const attempts = txRequest.attempts ?? 0;
+      // retry sendTx if nonce error once.
+      if (attempts < 1 && this.isNonceMismatchError(error)) {
+        // invalidate account sequence for reload on next signTx call
+        this.sequenceInvalidated = true;
+
+        // requeue transaction for signTx
+        this.txSignManager.enqueue({
+          attempts: (txRequest.attempts ?? 0) + 1,
+          signerAddress: txRequest.signerAddress,
+          messages: txRequest.messages,
+          broadcastOpts,
+          signOpts: txRequest.signOpts,
+          handler: { resolve, reject },
+        });
+      } else {
+        reject(error);
+      }
+    }
   }
 
   async sendTxs(msgs: EncodeObject[], opts?: CarbonTx.SignTxOpts): Promise<CarbonWallet.SendTxResponse> {
@@ -467,6 +494,9 @@ export class CarbonWallet {
   }
 
   public async reloadAccountSequence() {
+    if (this.sequenceInvalidated)
+      this.sequenceInvalidated = false;
+
     const info = await this.getQueryClient().chain.getSequence(this.bech32Address);
 
     const pubkey = this.accountInfo?.pubkey ?? {
