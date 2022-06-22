@@ -15,7 +15,8 @@ export enum Blockchain {
   Neo3 = 'neo3',
   Osmosis = 'osmosis',
   Ibc = 'ibc',
-  Terra = 'terra'
+  Terra = 'terra',
+  CosmosHub = 'cosmoshub',
 };
 
 export const BRIDGE_IDS = {
@@ -45,6 +46,7 @@ export const CHAIN_IDS: ChainIds = {
   'zil': 18,
   'osmosis': 244,
   'terra': 245,
+  'cosmoshub': 246,
 };
 
 export const CHAIN_IDS_DEV: ChainIds = {
@@ -121,6 +123,8 @@ export const blockchainForChainId = (chainId?: number): Blockchain | undefined =
       return Blockchain.Osmosis
     case 245: // mainnet
       return Blockchain.Terra
+    case 246: // mainnet
+      return Blockchain.CosmosHub
     default:
       return undefined
   }
