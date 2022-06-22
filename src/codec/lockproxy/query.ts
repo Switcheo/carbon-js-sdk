@@ -1,6 +1,11 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
+import {
+  PageRequest,
+  PageResponse,
+} from "../cosmos/base/query/v1beta1/pagination";
+import { WrapperMapping } from "./lockproxy";
 
 export const protobufPackage = "Switcheo.carbon.lockproxy";
 
@@ -11,6 +16,15 @@ export interface QueryGetProxyRequest {
 
 export interface QueryGetProxyResponse {
   proxyHash: Uint8Array;
+}
+
+export interface QueryListWrapperMappingRequest {
+  pagination?: PageRequest;
+}
+
+export interface QueryListWrapperMappingResponse {
+  wrapperMappings: WrapperMapping[];
+  pagination?: PageResponse;
 }
 
 const baseQueryGetProxyRequest: object = { operatorAddress: "" };
@@ -132,10 +146,178 @@ export const QueryGetProxyResponse = {
   },
 };
 
+const baseQueryListWrapperMappingRequest: object = {};
+
+export const QueryListWrapperMappingRequest = {
+  encode(
+    message: QueryListWrapperMappingRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryListWrapperMappingRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryListWrapperMappingRequest,
+    } as QueryListWrapperMappingRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryListWrapperMappingRequest {
+    const message = {
+      ...baseQueryListWrapperMappingRequest,
+    } as QueryListWrapperMappingRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryListWrapperMappingRequest): unknown {
+    const obj: any = {};
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryListWrapperMappingRequest>
+  ): QueryListWrapperMappingRequest {
+    const message = {
+      ...baseQueryListWrapperMappingRequest,
+    } as QueryListWrapperMappingRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryListWrapperMappingResponse: object = {};
+
+export const QueryListWrapperMappingResponse = {
+  encode(
+    message: QueryListWrapperMappingResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.wrapperMappings) {
+      WrapperMapping.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryListWrapperMappingResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryListWrapperMappingResponse,
+    } as QueryListWrapperMappingResponse;
+    message.wrapperMappings = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.wrapperMappings.push(
+            WrapperMapping.decode(reader, reader.uint32())
+          );
+          break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryListWrapperMappingResponse {
+    const message = {
+      ...baseQueryListWrapperMappingResponse,
+    } as QueryListWrapperMappingResponse;
+    message.wrapperMappings = (object.wrapperMappings ?? []).map((e: any) =>
+      WrapperMapping.fromJSON(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryListWrapperMappingResponse): unknown {
+    const obj: any = {};
+    if (message.wrapperMappings) {
+      obj.wrapperMappings = message.wrapperMappings.map((e) =>
+        e ? WrapperMapping.toJSON(e) : undefined
+      );
+    } else {
+      obj.wrapperMappings = [];
+    }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryListWrapperMappingResponse>
+  ): QueryListWrapperMappingResponse {
+    const message = {
+      ...baseQueryListWrapperMappingResponse,
+    } as QueryListWrapperMappingResponse;
+    message.wrapperMappings = (object.wrapperMappings ?? []).map((e) =>
+      WrapperMapping.fromPartial(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** this line is used by starport scaffolding # 2 */
   Proxy(request: QueryGetProxyRequest): Promise<QueryGetProxyResponse>;
+  WrapperMappings(
+    request: QueryListWrapperMappingRequest
+  ): Promise<QueryListWrapperMappingResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -143,6 +325,7 @@ export class QueryClientImpl implements Query {
   constructor(rpc: Rpc) {
     this.rpc = rpc;
     this.Proxy = this.Proxy.bind(this);
+    this.WrapperMappings = this.WrapperMappings.bind(this);
   }
   Proxy(request: QueryGetProxyRequest): Promise<QueryGetProxyResponse> {
     const data = QueryGetProxyRequest.encode(request).finish();
@@ -153,6 +336,20 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryGetProxyResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  WrapperMappings(
+    request: QueryListWrapperMappingRequest
+  ): Promise<QueryListWrapperMappingResponse> {
+    const data = QueryListWrapperMappingRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.lockproxy.Query",
+      "WrapperMappings",
+      data
+    );
+    return promise.then((data) =>
+      QueryListWrapperMappingResponse.decode(new _m0.Reader(data))
     );
   }
 }

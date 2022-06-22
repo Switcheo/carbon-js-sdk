@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Market } from "../market/market";
+import { Market, Params } from "./market";
 import {
   PageRequest,
   PageResponse,
@@ -25,6 +25,15 @@ export interface QueryAllMarketRequest {
 export interface QueryAllMarketResponse {
   markets: Market[];
   pagination?: PageResponse;
+}
+
+/** QueryParamsRequest is request type for the Query/Params RPC method. */
+export interface QueryParamsRequest {}
+
+/** QueryParamsResponse is response type for the Query/Params RPC method. */
+export interface QueryParamsResponse {
+  /** params holds all the parameters of this module. */
+  params?: Params;
 }
 
 const baseQueryGetMarketRequest: object = { name: "" };
@@ -296,12 +305,112 @@ export const QueryAllMarketResponse = {
   },
 };
 
+const baseQueryParamsRequest: object = {};
+
+export const QueryParamsRequest = {
+  encode(
+    _: QueryParamsRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryParamsRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseQueryParamsRequest } as QueryParamsRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryParamsRequest {
+    const message = { ...baseQueryParamsRequest } as QueryParamsRequest;
+    return message;
+  },
+
+  toJSON(_: QueryParamsRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(_: DeepPartial<QueryParamsRequest>): QueryParamsRequest {
+    const message = { ...baseQueryParamsRequest } as QueryParamsRequest;
+    return message;
+  },
+};
+
+const baseQueryParamsResponse: object = {};
+
+export const QueryParamsResponse = {
+  encode(
+    message: QueryParamsResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.params !== undefined) {
+      Params.encode(message.params, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryParamsResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseQueryParamsResponse } as QueryParamsResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.params = Params.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryParamsResponse {
+    const message = { ...baseQueryParamsResponse } as QueryParamsResponse;
+    message.params =
+      object.params !== undefined && object.params !== null
+        ? Params.fromJSON(object.params)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryParamsResponse): unknown {
+    const obj: any = {};
+    message.params !== undefined &&
+      (obj.params = message.params ? Params.toJSON(message.params) : undefined);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<QueryParamsResponse>): QueryParamsResponse {
+    const message = { ...baseQueryParamsResponse } as QueryParamsResponse;
+    message.params =
+      object.params !== undefined && object.params !== null
+        ? Params.fromPartial(object.params)
+        : undefined;
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Get details for a market */
   Market(request: QueryGetMarketRequest): Promise<QueryGetMarketResponse>;
   /** Get details for all markets */
   MarketAll(request: QueryAllMarketRequest): Promise<QueryAllMarketResponse>;
+  /** Parameters queries the staking parameters. */
+  Params(request: QueryParamsRequest): Promise<QueryParamsResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -310,6 +419,7 @@ export class QueryClientImpl implements Query {
     this.rpc = rpc;
     this.Market = this.Market.bind(this);
     this.MarketAll = this.MarketAll.bind(this);
+    this.Params = this.Params.bind(this);
   }
   Market(request: QueryGetMarketRequest): Promise<QueryGetMarketResponse> {
     const data = QueryGetMarketRequest.encode(request).finish();
@@ -332,6 +442,18 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryAllMarketResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
+    const data = QueryParamsRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.market.Query",
+      "Params",
+      data
+    );
+    return promise.then((data) =>
+      QueryParamsResponse.decode(new _m0.Reader(data))
     );
   }
 }

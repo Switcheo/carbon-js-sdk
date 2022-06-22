@@ -320,6 +320,7 @@ class TokenClient {
         offset: Long.UZERO,
         key: new Uint8Array(),
         countTotal: false,
+        reverse: false,
       },
     });
 

@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Bridge } from "../coin/bridge";
+import { Bridge } from "./bridge";
 import {
   BoolValue,
   StringValue,
@@ -139,6 +139,30 @@ export interface UpdateTokenParams {
 }
 
 export interface MsgUpdateTokenResponse {}
+
+export interface MsgAddBridgeAddress {
+  creator: string;
+  chainId: Long;
+  bridgeId: Long;
+  bridgeAddress: string;
+}
+
+export interface MsgAddBridgeAddressResponse {
+  id: string;
+  bridge?: Bridge;
+}
+
+export interface MsgRemoveBridgeAddress {
+  initiator: string;
+  chainId: Long;
+  bridgeId: Long;
+  bridgeAddress: string;
+}
+
+export interface MsgRemoveBridgeAddressResponse {
+  id: string;
+  bridge?: Bridge;
+}
 
 const baseMsgCreateToken: object = { creator: "" };
 
@@ -2127,6 +2151,373 @@ export const MsgUpdateTokenResponse = {
   },
 };
 
+const baseMsgAddBridgeAddress: object = {
+  creator: "",
+  chainId: Long.UZERO,
+  bridgeId: Long.UZERO,
+  bridgeAddress: "",
+};
+
+export const MsgAddBridgeAddress = {
+  encode(
+    message: MsgAddBridgeAddress,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (!message.chainId.isZero()) {
+      writer.uint32(16).uint64(message.chainId);
+    }
+    if (!message.bridgeId.isZero()) {
+      writer.uint32(24).uint64(message.bridgeId);
+    }
+    if (message.bridgeAddress !== "") {
+      writer.uint32(34).string(message.bridgeAddress);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgAddBridgeAddress {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgAddBridgeAddress } as MsgAddBridgeAddress;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.chainId = reader.uint64() as Long;
+          break;
+        case 3:
+          message.bridgeId = reader.uint64() as Long;
+          break;
+        case 4:
+          message.bridgeAddress = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgAddBridgeAddress {
+    const message = { ...baseMsgAddBridgeAddress } as MsgAddBridgeAddress;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.chainId =
+      object.chainId !== undefined && object.chainId !== null
+        ? Long.fromString(object.chainId)
+        : Long.UZERO;
+    message.bridgeId =
+      object.bridgeId !== undefined && object.bridgeId !== null
+        ? Long.fromString(object.bridgeId)
+        : Long.UZERO;
+    message.bridgeAddress =
+      object.bridgeAddress !== undefined && object.bridgeAddress !== null
+        ? String(object.bridgeAddress)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgAddBridgeAddress): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.chainId !== undefined &&
+      (obj.chainId = (message.chainId || Long.UZERO).toString());
+    message.bridgeId !== undefined &&
+      (obj.bridgeId = (message.bridgeId || Long.UZERO).toString());
+    message.bridgeAddress !== undefined &&
+      (obj.bridgeAddress = message.bridgeAddress);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgAddBridgeAddress>): MsgAddBridgeAddress {
+    const message = { ...baseMsgAddBridgeAddress } as MsgAddBridgeAddress;
+    message.creator = object.creator ?? "";
+    message.chainId =
+      object.chainId !== undefined && object.chainId !== null
+        ? Long.fromValue(object.chainId)
+        : Long.UZERO;
+    message.bridgeId =
+      object.bridgeId !== undefined && object.bridgeId !== null
+        ? Long.fromValue(object.bridgeId)
+        : Long.UZERO;
+    message.bridgeAddress = object.bridgeAddress ?? "";
+    return message;
+  },
+};
+
+const baseMsgAddBridgeAddressResponse: object = { id: "" };
+
+export const MsgAddBridgeAddressResponse = {
+  encode(
+    message: MsgAddBridgeAddressResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.bridge !== undefined) {
+      Bridge.encode(message.bridge, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgAddBridgeAddressResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgAddBridgeAddressResponse,
+    } as MsgAddBridgeAddressResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        case 2:
+          message.bridge = Bridge.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgAddBridgeAddressResponse {
+    const message = {
+      ...baseMsgAddBridgeAddressResponse,
+    } as MsgAddBridgeAddressResponse;
+    message.id =
+      object.id !== undefined && object.id !== null ? String(object.id) : "";
+    message.bridge =
+      object.bridge !== undefined && object.bridge !== null
+        ? Bridge.fromJSON(object.bridge)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: MsgAddBridgeAddressResponse): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    message.bridge !== undefined &&
+      (obj.bridge = message.bridge ? Bridge.toJSON(message.bridge) : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgAddBridgeAddressResponse>
+  ): MsgAddBridgeAddressResponse {
+    const message = {
+      ...baseMsgAddBridgeAddressResponse,
+    } as MsgAddBridgeAddressResponse;
+    message.id = object.id ?? "";
+    message.bridge =
+      object.bridge !== undefined && object.bridge !== null
+        ? Bridge.fromPartial(object.bridge)
+        : undefined;
+    return message;
+  },
+};
+
+const baseMsgRemoveBridgeAddress: object = {
+  initiator: "",
+  chainId: Long.UZERO,
+  bridgeId: Long.UZERO,
+  bridgeAddress: "",
+};
+
+export const MsgRemoveBridgeAddress = {
+  encode(
+    message: MsgRemoveBridgeAddress,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.initiator !== "") {
+      writer.uint32(10).string(message.initiator);
+    }
+    if (!message.chainId.isZero()) {
+      writer.uint32(16).uint64(message.chainId);
+    }
+    if (!message.bridgeId.isZero()) {
+      writer.uint32(24).uint64(message.bridgeId);
+    }
+    if (message.bridgeAddress !== "") {
+      writer.uint32(34).string(message.bridgeAddress);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgRemoveBridgeAddress {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgRemoveBridgeAddress } as MsgRemoveBridgeAddress;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.initiator = reader.string();
+          break;
+        case 2:
+          message.chainId = reader.uint64() as Long;
+          break;
+        case 3:
+          message.bridgeId = reader.uint64() as Long;
+          break;
+        case 4:
+          message.bridgeAddress = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgRemoveBridgeAddress {
+    const message = { ...baseMsgRemoveBridgeAddress } as MsgRemoveBridgeAddress;
+    message.initiator =
+      object.initiator !== undefined && object.initiator !== null
+        ? String(object.initiator)
+        : "";
+    message.chainId =
+      object.chainId !== undefined && object.chainId !== null
+        ? Long.fromString(object.chainId)
+        : Long.UZERO;
+    message.bridgeId =
+      object.bridgeId !== undefined && object.bridgeId !== null
+        ? Long.fromString(object.bridgeId)
+        : Long.UZERO;
+    message.bridgeAddress =
+      object.bridgeAddress !== undefined && object.bridgeAddress !== null
+        ? String(object.bridgeAddress)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgRemoveBridgeAddress): unknown {
+    const obj: any = {};
+    message.initiator !== undefined && (obj.initiator = message.initiator);
+    message.chainId !== undefined &&
+      (obj.chainId = (message.chainId || Long.UZERO).toString());
+    message.bridgeId !== undefined &&
+      (obj.bridgeId = (message.bridgeId || Long.UZERO).toString());
+    message.bridgeAddress !== undefined &&
+      (obj.bridgeAddress = message.bridgeAddress);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgRemoveBridgeAddress>
+  ): MsgRemoveBridgeAddress {
+    const message = { ...baseMsgRemoveBridgeAddress } as MsgRemoveBridgeAddress;
+    message.initiator = object.initiator ?? "";
+    message.chainId =
+      object.chainId !== undefined && object.chainId !== null
+        ? Long.fromValue(object.chainId)
+        : Long.UZERO;
+    message.bridgeId =
+      object.bridgeId !== undefined && object.bridgeId !== null
+        ? Long.fromValue(object.bridgeId)
+        : Long.UZERO;
+    message.bridgeAddress = object.bridgeAddress ?? "";
+    return message;
+  },
+};
+
+const baseMsgRemoveBridgeAddressResponse: object = { id: "" };
+
+export const MsgRemoveBridgeAddressResponse = {
+  encode(
+    message: MsgRemoveBridgeAddressResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.bridge !== undefined) {
+      Bridge.encode(message.bridge, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgRemoveBridgeAddressResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgRemoveBridgeAddressResponse,
+    } as MsgRemoveBridgeAddressResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        case 2:
+          message.bridge = Bridge.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgRemoveBridgeAddressResponse {
+    const message = {
+      ...baseMsgRemoveBridgeAddressResponse,
+    } as MsgRemoveBridgeAddressResponse;
+    message.id =
+      object.id !== undefined && object.id !== null ? String(object.id) : "";
+    message.bridge =
+      object.bridge !== undefined && object.bridge !== null
+        ? Bridge.fromJSON(object.bridge)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: MsgRemoveBridgeAddressResponse): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    message.bridge !== undefined &&
+      (obj.bridge = message.bridge ? Bridge.toJSON(message.bridge) : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgRemoveBridgeAddressResponse>
+  ): MsgRemoveBridgeAddressResponse {
+    const message = {
+      ...baseMsgRemoveBridgeAddressResponse,
+    } as MsgRemoveBridgeAddressResponse;
+    message.id = object.id ?? "";
+    message.bridge =
+      object.bridge !== undefined && object.bridge !== null
+        ? Bridge.fromPartial(object.bridge)
+        : undefined;
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
   /** this line is used by starport scaffolding # proto/tx/rpc */
@@ -2148,6 +2539,12 @@ export interface Msg {
   ): Promise<MsgEditBridgeNameResponse>;
   RemoveBridge(request: MsgRemoveBridge): Promise<MsgRemoveBridgeResponse>;
   UpdateToken(request: MsgUpdateToken): Promise<MsgUpdateTokenResponse>;
+  AddBridgeAddress(
+    request: MsgAddBridgeAddress
+  ): Promise<MsgAddBridgeAddressResponse>;
+  RemoveBridgeAddress(
+    request: MsgRemoveBridgeAddress
+  ): Promise<MsgRemoveBridgeAddressResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -2166,6 +2563,8 @@ export class MsgClientImpl implements Msg {
     this.EditBridgeName = this.EditBridgeName.bind(this);
     this.RemoveBridge = this.RemoveBridge.bind(this);
     this.UpdateToken = this.UpdateToken.bind(this);
+    this.AddBridgeAddress = this.AddBridgeAddress.bind(this);
+    this.RemoveBridgeAddress = this.RemoveBridgeAddress.bind(this);
   }
   CreateToken(request: MsgCreateToken): Promise<MsgCreateTokenResponse> {
     const data = MsgCreateToken.encode(request).finish();
@@ -2314,6 +2713,34 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgUpdateTokenResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  AddBridgeAddress(
+    request: MsgAddBridgeAddress
+  ): Promise<MsgAddBridgeAddressResponse> {
+    const data = MsgAddBridgeAddress.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.coin.Msg",
+      "AddBridgeAddress",
+      data
+    );
+    return promise.then((data) =>
+      MsgAddBridgeAddressResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  RemoveBridgeAddress(
+    request: MsgRemoveBridgeAddress
+  ): Promise<MsgRemoveBridgeAddressResponse> {
+    const data = MsgRemoveBridgeAddress.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.coin.Msg",
+      "RemoveBridgeAddress",
+      data
+    );
+    return promise.then((data) =>
+      MsgRemoveBridgeAddressResponse.decode(new _m0.Reader(data))
     );
   }
 }

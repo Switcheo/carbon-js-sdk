@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { MintData } from "../inflation/inflation";
+import { MintData } from "./inflation";
 
 export const protobufPackage = "Switcheo.carbon.inflation";
 

@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { MsgFee } from "../fee/fee";
+import { MsgFee } from "./fee";
 
 export const protobufPackage = "Switcheo.carbon.fee";
 

@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { ConsensusPeers } from "../headersync/consensus_peers";
+import { ConsensusPeers } from "./consensus_peers";
 
 export const protobufPackage = "Switcheo.carbon.headersync";
 
@@ -11,6 +11,10 @@ export interface GenesisState {
   consensusPeers: { [key: string]: ConsensusPeers };
   /** Header hash for blocks where consensus public keys is updated for PoS chain by chain ID. */
   checkpointHashes: { [key: string]: Uint8Array };
+  /** Peers for each Zion PoS chain by chain ID. */
+  zionConsensusPeers: { [key: string]: ConsensusPeers };
+  /** Header for Zion blocks where consensus public keys is updated for PoS chain by chain ID. */
+  zionHeaders: { [key: string]: Uint8Array };
 }
 
 export interface GenesisState_ConsensusPeersEntry {
@@ -19,6 +23,16 @@ export interface GenesisState_ConsensusPeersEntry {
 }
 
 export interface GenesisState_CheckpointHashesEntry {
+  key: string;
+  value: Uint8Array;
+}
+
+export interface GenesisState_ZionConsensusPeersEntry {
+  key: string;
+  value?: ConsensusPeers;
+}
+
+export interface GenesisState_ZionHeadersEntry {
   key: string;
   value: Uint8Array;
 }
@@ -42,6 +56,18 @@ export const GenesisState = {
         writer.uint32(18).fork()
       ).ldelim();
     });
+    Object.entries(message.zionConsensusPeers).forEach(([key, value]) => {
+      GenesisState_ZionConsensusPeersEntry.encode(
+        { key: key as any, value },
+        writer.uint32(26).fork()
+      ).ldelim();
+    });
+    Object.entries(message.zionHeaders).forEach(([key, value]) => {
+      GenesisState_ZionHeadersEntry.encode(
+        { key: key as any, value },
+        writer.uint32(34).fork()
+      ).ldelim();
+    });
     return writer;
   },
 
@@ -51,6 +77,8 @@ export const GenesisState = {
     const message = { ...baseGenesisState } as GenesisState;
     message.consensusPeers = {};
     message.checkpointHashes = {};
+    message.zionConsensusPeers = {};
+    message.zionHeaders = {};
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -70,6 +98,24 @@ export const GenesisState = {
           );
           if (entry2.value !== undefined) {
             message.checkpointHashes[entry2.key] = entry2.value;
+          }
+          break;
+        case 3:
+          const entry3 = GenesisState_ZionConsensusPeersEntry.decode(
+            reader,
+            reader.uint32()
+          );
+          if (entry3.value !== undefined) {
+            message.zionConsensusPeers[entry3.key] = entry3.value;
+          }
+          break;
+        case 4:
+          const entry4 = GenesisState_ZionHeadersEntry.decode(
+            reader,
+            reader.uint32()
+          );
+          if (entry4.value !== undefined) {
+            message.zionHeaders[entry4.key] = entry4.value;
           }
           break;
         default:
@@ -94,6 +140,18 @@ export const GenesisState = {
       acc[key] = bytesFromBase64(value as string);
       return acc;
     }, {});
+    message.zionConsensusPeers = Object.entries(
+      object.zionConsensusPeers ?? {}
+    ).reduce<{ [key: string]: ConsensusPeers }>((acc, [key, value]) => {
+      acc[key] = ConsensusPeers.fromJSON(value);
+      return acc;
+    }, {});
+    message.zionHeaders = Object.entries(object.zionHeaders ?? {}).reduce<{
+      [key: string]: Uint8Array;
+    }>((acc, [key, value]) => {
+      acc[key] = bytesFromBase64(value as string);
+      return acc;
+    }, {});
     return message;
   },
 
@@ -109,6 +167,18 @@ export const GenesisState = {
     if (message.checkpointHashes) {
       Object.entries(message.checkpointHashes).forEach(([k, v]) => {
         obj.checkpointHashes[k] = base64FromBytes(v);
+      });
+    }
+    obj.zionConsensusPeers = {};
+    if (message.zionConsensusPeers) {
+      Object.entries(message.zionConsensusPeers).forEach(([k, v]) => {
+        obj.zionConsensusPeers[k] = ConsensusPeers.toJSON(v);
+      });
+    }
+    obj.zionHeaders = {};
+    if (message.zionHeaders) {
+      Object.entries(message.zionHeaders).forEach(([k, v]) => {
+        obj.zionHeaders[k] = base64FromBytes(v);
       });
     }
     return obj;
@@ -127,6 +197,22 @@ export const GenesisState = {
     message.checkpointHashes = Object.entries(
       object.checkpointHashes ?? {}
     ).reduce<{ [key: string]: Uint8Array }>((acc, [key, value]) => {
+      if (value !== undefined) {
+        acc[key] = value;
+      }
+      return acc;
+    }, {});
+    message.zionConsensusPeers = Object.entries(
+      object.zionConsensusPeers ?? {}
+    ).reduce<{ [key: string]: ConsensusPeers }>((acc, [key, value]) => {
+      if (value !== undefined) {
+        acc[key] = ConsensusPeers.fromPartial(value);
+      }
+      return acc;
+    }, {});
+    message.zionHeaders = Object.entries(object.zionHeaders ?? {}).reduce<{
+      [key: string]: Uint8Array;
+    }>((acc, [key, value]) => {
       if (value !== undefined) {
         acc[key] = value;
       }
@@ -288,6 +374,164 @@ export const GenesisState_CheckpointHashesEntry = {
     const message = {
       ...baseGenesisState_CheckpointHashesEntry,
     } as GenesisState_CheckpointHashesEntry;
+    message.key = object.key ?? "";
+    message.value = object.value ?? new Uint8Array();
+    return message;
+  },
+};
+
+const baseGenesisState_ZionConsensusPeersEntry: object = { key: "" };
+
+export const GenesisState_ZionConsensusPeersEntry = {
+  encode(
+    message: GenesisState_ZionConsensusPeersEntry,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== undefined) {
+      ConsensusPeers.encode(message.value, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): GenesisState_ZionConsensusPeersEntry {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseGenesisState_ZionConsensusPeersEntry,
+    } as GenesisState_ZionConsensusPeersEntry;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.key = reader.string();
+          break;
+        case 2:
+          message.value = ConsensusPeers.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GenesisState_ZionConsensusPeersEntry {
+    const message = {
+      ...baseGenesisState_ZionConsensusPeersEntry,
+    } as GenesisState_ZionConsensusPeersEntry;
+    message.key =
+      object.key !== undefined && object.key !== null ? String(object.key) : "";
+    message.value =
+      object.value !== undefined && object.value !== null
+        ? ConsensusPeers.fromJSON(object.value)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: GenesisState_ZionConsensusPeersEntry): unknown {
+    const obj: any = {};
+    message.key !== undefined && (obj.key = message.key);
+    message.value !== undefined &&
+      (obj.value = message.value
+        ? ConsensusPeers.toJSON(message.value)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<GenesisState_ZionConsensusPeersEntry>
+  ): GenesisState_ZionConsensusPeersEntry {
+    const message = {
+      ...baseGenesisState_ZionConsensusPeersEntry,
+    } as GenesisState_ZionConsensusPeersEntry;
+    message.key = object.key ?? "";
+    message.value =
+      object.value !== undefined && object.value !== null
+        ? ConsensusPeers.fromPartial(object.value)
+        : undefined;
+    return message;
+  },
+};
+
+const baseGenesisState_ZionHeadersEntry: object = { key: "" };
+
+export const GenesisState_ZionHeadersEntry = {
+  encode(
+    message: GenesisState_ZionHeadersEntry,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value.length !== 0) {
+      writer.uint32(18).bytes(message.value);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): GenesisState_ZionHeadersEntry {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseGenesisState_ZionHeadersEntry,
+    } as GenesisState_ZionHeadersEntry;
+    message.value = new Uint8Array();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.key = reader.string();
+          break;
+        case 2:
+          message.value = reader.bytes();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GenesisState_ZionHeadersEntry {
+    const message = {
+      ...baseGenesisState_ZionHeadersEntry,
+    } as GenesisState_ZionHeadersEntry;
+    message.key =
+      object.key !== undefined && object.key !== null ? String(object.key) : "";
+    message.value =
+      object.value !== undefined && object.value !== null
+        ? bytesFromBase64(object.value)
+        : new Uint8Array();
+    return message;
+  },
+
+  toJSON(message: GenesisState_ZionHeadersEntry): unknown {
+    const obj: any = {};
+    message.key !== undefined && (obj.key = message.key);
+    message.value !== undefined &&
+      (obj.value = base64FromBytes(
+        message.value !== undefined ? message.value : new Uint8Array()
+      ));
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<GenesisState_ZionHeadersEntry>
+  ): GenesisState_ZionHeadersEntry {
+    const message = {
+      ...baseGenesisState_ZionHeadersEntry,
+    } as GenesisState_ZionHeadersEntry;
     message.key = object.key ?? "";
     message.value = object.value ?? new Uint8Array();
     return message;

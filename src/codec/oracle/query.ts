@@ -1,11 +1,12 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Oracle, Result, Vote } from "../oracle/oracle";
+import { Oracle, Result, Vote } from "./oracle";
 import {
   PageRequest,
   PageResponse,
 } from "../cosmos/base/query/v1beta1/pagination";
+import { SlashCounter, OracleVotesWindow } from "./slashing";
 
 export const protobufPackage = "Switcheo.carbon.oracle";
 
@@ -55,6 +56,42 @@ export interface QueryVoterPowerRequest {
 
 export interface QueryVoterPowerResponse {
   power: string;
+}
+
+export interface QueryAllSlashCounterRequest {
+  pagination?: PageRequest;
+}
+
+export interface QueryAllSlashCounterResponse {
+  slashCounters: SlashCounter[];
+  pagination?: PageResponse;
+}
+
+export interface QuerySlashCounterRequest {
+  valoperAddress: string;
+}
+
+export interface QuerySlashCounterResponse {
+  slashCounter?: SlashCounter;
+}
+
+export interface QueryAllOracleVotesWindowRequest {
+  pagination?: PageRequest;
+}
+
+export interface QueryAllOracleVotesWindowResponse {
+  oracleVotesWindows: OracleVotesWindow[];
+  pagination?: PageResponse;
+}
+
+export interface QueryOracleVotesWindowRequest {
+  valoperAddress: string;
+  pagination?: PageRequest;
+}
+
+export interface QueryOracleVotesWindowResponse {
+  oracleVotesWindows: OracleVotesWindow[];
+  pagination?: PageResponse;
 }
 
 const baseQueryOracleRequest: object = { id: "" };
@@ -779,6 +816,652 @@ export const QueryVoterPowerResponse = {
   },
 };
 
+const baseQueryAllSlashCounterRequest: object = {};
+
+export const QueryAllSlashCounterRequest = {
+  encode(
+    message: QueryAllSlashCounterRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAllSlashCounterRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAllSlashCounterRequest,
+    } as QueryAllSlashCounterRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllSlashCounterRequest {
+    const message = {
+      ...baseQueryAllSlashCounterRequest,
+    } as QueryAllSlashCounterRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryAllSlashCounterRequest): unknown {
+    const obj: any = {};
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAllSlashCounterRequest>
+  ): QueryAllSlashCounterRequest {
+    const message = {
+      ...baseQueryAllSlashCounterRequest,
+    } as QueryAllSlashCounterRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryAllSlashCounterResponse: object = {};
+
+export const QueryAllSlashCounterResponse = {
+  encode(
+    message: QueryAllSlashCounterResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.slashCounters) {
+      SlashCounter.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAllSlashCounterResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAllSlashCounterResponse,
+    } as QueryAllSlashCounterResponse;
+    message.slashCounters = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.slashCounters.push(
+            SlashCounter.decode(reader, reader.uint32())
+          );
+          break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllSlashCounterResponse {
+    const message = {
+      ...baseQueryAllSlashCounterResponse,
+    } as QueryAllSlashCounterResponse;
+    message.slashCounters = (object.slashCounters ?? []).map((e: any) =>
+      SlashCounter.fromJSON(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryAllSlashCounterResponse): unknown {
+    const obj: any = {};
+    if (message.slashCounters) {
+      obj.slashCounters = message.slashCounters.map((e) =>
+        e ? SlashCounter.toJSON(e) : undefined
+      );
+    } else {
+      obj.slashCounters = [];
+    }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAllSlashCounterResponse>
+  ): QueryAllSlashCounterResponse {
+    const message = {
+      ...baseQueryAllSlashCounterResponse,
+    } as QueryAllSlashCounterResponse;
+    message.slashCounters = (object.slashCounters ?? []).map((e) =>
+      SlashCounter.fromPartial(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQuerySlashCounterRequest: object = { valoperAddress: "" };
+
+export const QuerySlashCounterRequest = {
+  encode(
+    message: QuerySlashCounterRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.valoperAddress !== "") {
+      writer.uint32(10).string(message.valoperAddress);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QuerySlashCounterRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQuerySlashCounterRequest,
+    } as QuerySlashCounterRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.valoperAddress = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QuerySlashCounterRequest {
+    const message = {
+      ...baseQuerySlashCounterRequest,
+    } as QuerySlashCounterRequest;
+    message.valoperAddress =
+      object.valoperAddress !== undefined && object.valoperAddress !== null
+        ? String(object.valoperAddress)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QuerySlashCounterRequest): unknown {
+    const obj: any = {};
+    message.valoperAddress !== undefined &&
+      (obj.valoperAddress = message.valoperAddress);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QuerySlashCounterRequest>
+  ): QuerySlashCounterRequest {
+    const message = {
+      ...baseQuerySlashCounterRequest,
+    } as QuerySlashCounterRequest;
+    message.valoperAddress = object.valoperAddress ?? "";
+    return message;
+  },
+};
+
+const baseQuerySlashCounterResponse: object = {};
+
+export const QuerySlashCounterResponse = {
+  encode(
+    message: QuerySlashCounterResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.slashCounter !== undefined) {
+      SlashCounter.encode(
+        message.slashCounter,
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QuerySlashCounterResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQuerySlashCounterResponse,
+    } as QuerySlashCounterResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.slashCounter = SlashCounter.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QuerySlashCounterResponse {
+    const message = {
+      ...baseQuerySlashCounterResponse,
+    } as QuerySlashCounterResponse;
+    message.slashCounter =
+      object.slashCounter !== undefined && object.slashCounter !== null
+        ? SlashCounter.fromJSON(object.slashCounter)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QuerySlashCounterResponse): unknown {
+    const obj: any = {};
+    message.slashCounter !== undefined &&
+      (obj.slashCounter = message.slashCounter
+        ? SlashCounter.toJSON(message.slashCounter)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QuerySlashCounterResponse>
+  ): QuerySlashCounterResponse {
+    const message = {
+      ...baseQuerySlashCounterResponse,
+    } as QuerySlashCounterResponse;
+    message.slashCounter =
+      object.slashCounter !== undefined && object.slashCounter !== null
+        ? SlashCounter.fromPartial(object.slashCounter)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryAllOracleVotesWindowRequest: object = {};
+
+export const QueryAllOracleVotesWindowRequest = {
+  encode(
+    message: QueryAllOracleVotesWindowRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAllOracleVotesWindowRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAllOracleVotesWindowRequest,
+    } as QueryAllOracleVotesWindowRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllOracleVotesWindowRequest {
+    const message = {
+      ...baseQueryAllOracleVotesWindowRequest,
+    } as QueryAllOracleVotesWindowRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryAllOracleVotesWindowRequest): unknown {
+    const obj: any = {};
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAllOracleVotesWindowRequest>
+  ): QueryAllOracleVotesWindowRequest {
+    const message = {
+      ...baseQueryAllOracleVotesWindowRequest,
+    } as QueryAllOracleVotesWindowRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryAllOracleVotesWindowResponse: object = {};
+
+export const QueryAllOracleVotesWindowResponse = {
+  encode(
+    message: QueryAllOracleVotesWindowResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.oracleVotesWindows) {
+      OracleVotesWindow.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAllOracleVotesWindowResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAllOracleVotesWindowResponse,
+    } as QueryAllOracleVotesWindowResponse;
+    message.oracleVotesWindows = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.oracleVotesWindows.push(
+            OracleVotesWindow.decode(reader, reader.uint32())
+          );
+          break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllOracleVotesWindowResponse {
+    const message = {
+      ...baseQueryAllOracleVotesWindowResponse,
+    } as QueryAllOracleVotesWindowResponse;
+    message.oracleVotesWindows = (object.oracleVotesWindows ?? []).map(
+      (e: any) => OracleVotesWindow.fromJSON(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryAllOracleVotesWindowResponse): unknown {
+    const obj: any = {};
+    if (message.oracleVotesWindows) {
+      obj.oracleVotesWindows = message.oracleVotesWindows.map((e) =>
+        e ? OracleVotesWindow.toJSON(e) : undefined
+      );
+    } else {
+      obj.oracleVotesWindows = [];
+    }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAllOracleVotesWindowResponse>
+  ): QueryAllOracleVotesWindowResponse {
+    const message = {
+      ...baseQueryAllOracleVotesWindowResponse,
+    } as QueryAllOracleVotesWindowResponse;
+    message.oracleVotesWindows = (object.oracleVotesWindows ?? []).map((e) =>
+      OracleVotesWindow.fromPartial(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryOracleVotesWindowRequest: object = { valoperAddress: "" };
+
+export const QueryOracleVotesWindowRequest = {
+  encode(
+    message: QueryOracleVotesWindowRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.valoperAddress !== "") {
+      writer.uint32(10).string(message.valoperAddress);
+    }
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryOracleVotesWindowRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryOracleVotesWindowRequest,
+    } as QueryOracleVotesWindowRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.valoperAddress = reader.string();
+          break;
+        case 2:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryOracleVotesWindowRequest {
+    const message = {
+      ...baseQueryOracleVotesWindowRequest,
+    } as QueryOracleVotesWindowRequest;
+    message.valoperAddress =
+      object.valoperAddress !== undefined && object.valoperAddress !== null
+        ? String(object.valoperAddress)
+        : "";
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryOracleVotesWindowRequest): unknown {
+    const obj: any = {};
+    message.valoperAddress !== undefined &&
+      (obj.valoperAddress = message.valoperAddress);
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryOracleVotesWindowRequest>
+  ): QueryOracleVotesWindowRequest {
+    const message = {
+      ...baseQueryOracleVotesWindowRequest,
+    } as QueryOracleVotesWindowRequest;
+    message.valoperAddress = object.valoperAddress ?? "";
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryOracleVotesWindowResponse: object = {};
+
+export const QueryOracleVotesWindowResponse = {
+  encode(
+    message: QueryOracleVotesWindowResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.oracleVotesWindows) {
+      OracleVotesWindow.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryOracleVotesWindowResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryOracleVotesWindowResponse,
+    } as QueryOracleVotesWindowResponse;
+    message.oracleVotesWindows = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.oracleVotesWindows.push(
+            OracleVotesWindow.decode(reader, reader.uint32())
+          );
+          break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryOracleVotesWindowResponse {
+    const message = {
+      ...baseQueryOracleVotesWindowResponse,
+    } as QueryOracleVotesWindowResponse;
+    message.oracleVotesWindows = (object.oracleVotesWindows ?? []).map(
+      (e: any) => OracleVotesWindow.fromJSON(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryOracleVotesWindowResponse): unknown {
+    const obj: any = {};
+    if (message.oracleVotesWindows) {
+      obj.oracleVotesWindows = message.oracleVotesWindows.map((e) =>
+        e ? OracleVotesWindow.toJSON(e) : undefined
+      );
+    } else {
+      obj.oracleVotesWindows = [];
+    }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryOracleVotesWindowResponse>
+  ): QueryOracleVotesWindowResponse {
+    const message = {
+      ...baseQueryOracleVotesWindowResponse,
+    } as QueryOracleVotesWindowResponse;
+    message.oracleVotesWindows = (object.oracleVotesWindows ?? []).map((e) =>
+      OracleVotesWindow.fromPartial(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Get details for an oracle */
@@ -791,6 +1474,22 @@ export interface Query {
   VoteAll(request: QueryAllVoteRequest): Promise<QueryAllVoteResponse>;
   /** Get voting power for an address */
   VoterPower(request: QueryVoterPowerRequest): Promise<QueryVoterPowerResponse>;
+  /** Get all slash counters */
+  SlashCounterAll(
+    request: QueryAllSlashCounterRequest
+  ): Promise<QueryAllSlashCounterResponse>;
+  /** Get slash counter for a valoper address */
+  SlashCounter(
+    request: QuerySlashCounterRequest
+  ): Promise<QuerySlashCounterResponse>;
+  /** Get all oracle votes window */
+  OracleVotesWindowAll(
+    request: QueryAllOracleVotesWindowRequest
+  ): Promise<QueryAllOracleVotesWindowResponse>;
+  /** Get oracle votes window for address */
+  OracleVotesWindow(
+    request: QueryOracleVotesWindowRequest
+  ): Promise<QueryOracleVotesWindowResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -802,6 +1501,10 @@ export class QueryClientImpl implements Query {
     this.ResultAll = this.ResultAll.bind(this);
     this.VoteAll = this.VoteAll.bind(this);
     this.VoterPower = this.VoterPower.bind(this);
+    this.SlashCounterAll = this.SlashCounterAll.bind(this);
+    this.SlashCounter = this.SlashCounter.bind(this);
+    this.OracleVotesWindowAll = this.OracleVotesWindowAll.bind(this);
+    this.OracleVotesWindow = this.OracleVotesWindow.bind(this);
   }
   Oracle(request: QueryOracleRequest): Promise<QueryOracleResponse> {
     const data = QueryOracleRequest.encode(request).finish();
@@ -862,6 +1565,62 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryVoterPowerResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  SlashCounterAll(
+    request: QueryAllSlashCounterRequest
+  ): Promise<QueryAllSlashCounterResponse> {
+    const data = QueryAllSlashCounterRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.oracle.Query",
+      "SlashCounterAll",
+      data
+    );
+    return promise.then((data) =>
+      QueryAllSlashCounterResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  SlashCounter(
+    request: QuerySlashCounterRequest
+  ): Promise<QuerySlashCounterResponse> {
+    const data = QuerySlashCounterRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.oracle.Query",
+      "SlashCounter",
+      data
+    );
+    return promise.then((data) =>
+      QuerySlashCounterResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  OracleVotesWindowAll(
+    request: QueryAllOracleVotesWindowRequest
+  ): Promise<QueryAllOracleVotesWindowResponse> {
+    const data = QueryAllOracleVotesWindowRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.oracle.Query",
+      "OracleVotesWindowAll",
+      data
+    );
+    return promise.then((data) =>
+      QueryAllOracleVotesWindowResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  OracleVotesWindow(
+    request: QueryOracleVotesWindowRequest
+  ): Promise<QueryOracleVotesWindowResponse> {
+    const data = QueryOracleVotesWindowRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.oracle.Query",
+      "OracleVotesWindow",
+      data
+    );
+    return promise.then((data) =>
+      QueryOracleVotesWindowResponse.decode(new _m0.Reader(data))
     );
   }
 }
