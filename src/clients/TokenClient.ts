@@ -53,7 +53,7 @@ class TokenClient {
     await this.reloadTokens();
 
     // non-blocking reload
-    this.reloadUSDValues();
+    // this.reloadUSDValues();
   }
 
   public registerGeckoIdMap(map: TypeUtils.SimpleMap<string>) {

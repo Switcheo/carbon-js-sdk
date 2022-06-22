@@ -1,9 +1,8 @@
-import { TxTypes } from "@carbon-sdk/codec";
+import { registry, TxTypes } from "@carbon-sdk/codec";
+import * as CosmosModels from "@carbon-sdk/codec/cosmos-models";
 import { DEFAULT_FEE } from "@carbon-sdk/constant";
 import { StdFee } from "@cosmjs/amino";
 import { SignerData } from "@cosmjs/stargate";
-import { registry } from "@carbon-sdk/codec";
-import * as CosmosModels from "@carbon-sdk/codec/cosmos-models";
 import { SWTHAddress, SWTHAddressOptions } from "./address";
 export interface TxBody extends Omit<CosmosModels.Tx.TxBody, "messages"> {
   messages: unknown[]
@@ -95,11 +94,16 @@ export enum BroadcastTxMode {
   BroadcastTxBlock = 'block',
 }
 
+
+export interface CarbonSignerData extends SignerData {
+  timeoutHeight?: number;
+}
+
 export interface SignTxOpts {
   fee?: StdFee;
   memo?: string;
   sequence?: number;
-  explicitSignerData?: Partial<SignerData>;
+  explicitSignerData?: Partial<CarbonSignerData>;
 }
 
 export interface BroadcastTxOpts {

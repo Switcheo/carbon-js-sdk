@@ -1,26 +1,30 @@
 import { CarbonQueryClient } from "@carbon-sdk/clients";
-import { MsgFee, registry } from "@carbon-sdk/codec";
+import { MsgFee } from "@carbon-sdk/codec";
 import { DEFAULT_GAS, DEFAULT_NETWORK, Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
 import { ProviderAgent } from "@carbon-sdk/constant/walletProvider";
-import { AminoTypesMap, CosmosLedger } from "@carbon-sdk/provider";
+import { CosmosLedger } from "@carbon-sdk/provider";
 import { AddressUtils, CarbonTx, GenericUtils } from "@carbon-sdk/util";
 import { SWTHAddress } from "@carbon-sdk/util/address";
+import { QueueManager } from "@carbon-sdk/util/generic";
 import { bnOrZero, BN_ZERO } from "@carbon-sdk/util/number";
-import { BroadcastTxMode, TxFeeTypeDefaultKey } from "@carbon-sdk/util/tx";
+import { BroadcastTxMode, CarbonSignerData, TxFeeTypeDefaultKey } from "@carbon-sdk/util/tx";
 import { SimpleMap } from "@carbon-sdk/util/type";
 import { encodeSecp256k1Signature, StdSignature } from "@cosmjs/amino";
 import { EncodeObject, OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
-import { Account, DeliverTxResponse, isDeliverTxFailure, SigningStargateClient } from "@cosmjs/stargate";
+import { Account, DeliverTxResponse, isDeliverTxFailure } from "@cosmjs/stargate";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import { BroadcastTxSyncResponse } from "@cosmjs/tendermint-rpc/build/tendermint34/responses";
 import BigNumber from "bignumber.js";
 import { TxRaw as StargateTxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import { CarbonLedgerSigner, CarbonNonSigner, CarbonPrivateKeySigner, CarbonSigner, CarbonSignerTypes } from "./CarbonSigner";
+import { CarbonSigningClient } from "./CarbonSigningClient";
 
 export interface CarbonWalletGenericOpts {
+  tmClient?: Tendermint34Client;
   network?: Network;
   config?: Partial<NetworkConfig>;
   providerAgent?: ProviderAgent | string;
+  defaultTimeoutBlocks?: number; // tx mempool ttl (timeoutHeight)
 
   /**
    * Optional callback that will be called before signing is requested/executed.
@@ -82,9 +86,18 @@ interface PromiseHandler<T> {
   reject: (reason?: any) => void
 }
 
+interface SignTxRequest {
+  signerAddress: string,
+  messages: readonly EncodeObject[],
+  broadcastOpts?: CarbonTx.BroadcastTxOpts;
+  signOpts?: CarbonTx.SignTxOpts;
+  handler: PromiseHandler<DeliverTxResponse | BroadcastTxSyncResponse>;
+}
+
 interface BroadcastTxRequest {
   signedTx: CarbonWallet.TxRaw;
   broadcastOpts?: CarbonTx.BroadcastTxOpts;
+  signOpts?: CarbonTx.SignTxOpts;
   handler: PromiseHandler<DeliverTxResponse | BroadcastTxSyncResponse>;
 }
 
@@ -96,6 +109,8 @@ export class CarbonWallet {
 
   onRequestSign?: CarbonWallet.OnRequestSignCallback
   onSignComplete?: CarbonWallet.OnSignCompleteCallback
+
+  defaultTimeoutBlocks: number;
 
   mnemonic?: string;
   privateKey?: Buffer;
@@ -113,12 +128,12 @@ export class CarbonWallet {
   // for analytics
   providerAgent?: ProviderAgent | string
 
-  private signingClient?: SigningStargateClient;
+  private tmClient?: Tendermint34Client;
+  private signingClient?: CarbonSigningClient;
+  private chainId?: string;
 
-  private txQueue: BroadcastTxRequest[] = [];
-  private txQueueTrigger: NodeJS.Timeout | null = null;
-  private txTriggerThreshold: number = 0;
-  private isDispatchingTxQueue: boolean = false;
+  private txSignManager: QueueManager<SignTxRequest>;
+  private txDispatchManager: QueueManager<BroadcastTxRequest>;
 
   constructor(opts: CarbonWalletInitOpts) {
     const network = opts.network ?? DEFAULT_NETWORK;
@@ -126,10 +141,14 @@ export class CarbonWallet {
     this.networkConfig = NetworkConfigs[network];
     this.configOverride = opts.config ?? {};
     this.providerAgent = opts.providerAgent;
+    this.defaultTimeoutBlocks = opts.defaultTimeoutBlocks ?? 30; // default ~1 minute
     this.updateNetwork(network);
 
     this.onRequestSign = opts.onRequestSign;
     this.onSignComplete = opts.onSignComplete;
+
+    this.txDispatchManager = new QueueManager(this.dispatchTx.bind(this));
+    this.txSignManager = new QueueManager(this.signTx.bind(this));
 
     this.mnemonic = opts.mnemonic;
     if (this.mnemonic) {
@@ -234,6 +253,7 @@ export class CarbonWallet {
     this.query = queryClient;
 
     await Promise.all([
+      this.reconnectTmClient(),
       this.reloadTxFees(),
       this.reloadAccountSequence(),
     ]);
@@ -253,46 +273,28 @@ export class CarbonWallet {
   async getSignedTx(
     signerAddress: string,
     messages: readonly EncodeObject[],
-    opts: CarbonTx.SignTxOpts = {},
+    sequence: number,
+    opts: Omit<CarbonTx.SignTxOpts, "sequence">,
   ): Promise<CarbonWallet.TxRaw> {
     const {
       memo = "",
       explicitSignerData,
-      sequence,
     } = opts;
 
-    let fee = opts?.fee;
-
-    if (!fee) {
-      // compute required fee
-      const totalFeeCost = messages.reduce((totalFee, message) => {
-        const msgFee = this.getFee(message.typeUrl);
-        return msgFee.gt(0) ? totalFee.plus(msgFee) : totalFee;
-      }, BN_ZERO);
-      fee = {
-        amount: [{
-          amount: totalFeeCost.toString(10),
-          denom: "swth",
-        }],
-        gas: DEFAULT_GAS.times(messages.length).toString(10),
-      };
-    }
-    const signingClient = await this.getSigningClient();
-
+    const signingClient = this.getSigningClient();
     const [account] = await this.signer.getAccounts();
+
     let signature: StdSignature | null = null;
     try {
-      if (!this.accountInfo && !sequence)
-        await this.reloadAccountSequence();
-
       await GenericUtils.callIgnoreError(() => this.onRequestSign?.(messages));
-      const signerData = {
+      const signerData: CarbonSignerData = {
         accountNumber: this.accountInfo!.accountNumber,
-        sequence: sequence ?? this.accountInfo!.sequence,
-        chainId: this.accountInfo!.chainId,
+        chainId: this.getChainId(),
+        sequence,
         ...explicitSignerData,
       };
 
+      const fee = opts?.fee ?? this.estimateTxFee(messages);
       const txRaw = await signingClient.sign(signerAddress, messages, fee, memo, signerData);
       signature = encodeSecp256k1Signature(account.pubkey, txRaw.signatures[0]);
       return txRaw;
@@ -315,8 +317,8 @@ export class CarbonWallet {
     } = opts;
 
     const tx = CarbonWallet.TxRaw.encode(txRaw).finish();
-    const signingClient = await this.getSigningClient();
-    const response = await signingClient.broadcastTx(tx, timeoutMs, pollIntervalMs);
+    const carbonClient = this.getSigningClient();
+    const response = await carbonClient.broadcastTx(tx, timeoutMs, pollIntervalMs);
     if (isDeliverTxFailure(response)) {
       // tx failed
       console.error(response);
@@ -331,28 +333,59 @@ export class CarbonWallet {
    */
   async broadcastTxWithoutConfirm(txRaw: CarbonWallet.TxRaw): Promise<CarbonWallet.SendTxWithoutConfirmResponse> {
     const tx = CarbonWallet.TxRaw.encode(txRaw).finish();
-    const tmClient = await Tendermint34Client.connect(this.networkConfig.tmRpcUrl);
+    const tmClient = this.getTmClient();
     return tmClient.broadcastTxSync({ tx });
   };
 
-  async signAndBroadcast(msgs: EncodeObject[], signOpts?: CarbonTx.SignTxOpts, broadcastOpts?: CarbonTx.BroadcastTxOpts): Promise<DeliverTxResponse | BroadcastTxSyncResponse> {
-    const signedTx = await this.getSignedTx(this.bech32Address, msgs, signOpts);
-
+  async signAndBroadcast(messages: EncodeObject[], signOpts?: CarbonTx.SignTxOpts, broadcastOpts?: CarbonTx.BroadcastTxOpts): Promise<DeliverTxResponse | BroadcastTxSyncResponse> {
     const promise = new Promise<DeliverTxResponse | BroadcastTxSyncResponse>((resolve, reject) => {
-      this.txQueue.unshift({
-        signedTx,
+      this.txSignManager.enqueue({
+        signerAddress: this.bech32Address,
+        messages,
         broadcastOpts,
-        handler: { resolve, reject, requestId: this.accountInfo?.sequence.toString() ?? "", }
+        signOpts,
+        handler: { resolve, reject },
       });
     });
 
+    return promise;
+  }
+
+  private async signTx(txRequest: SignTxRequest) {
+    const { signerAddress, signOpts, messages, broadcastOpts, handler: { resolve, reject } } = txRequest;
+    if (!this.accountInfo)
+      await this.reloadAccountSequence();
+
+    const height = await this.getQueryClient().chain.getHeight();
+    const timeoutHeight = height + this.defaultTimeoutBlocks;
+
+    const sequence = this.accountInfo!.sequence;
     this.accountInfo = {
       ...this.accountInfo!,
-      sequence: this.accountInfo!.sequence + 1,
+      sequence: sequence + 1,
     };
 
-    await this.triggerTxDispatch();
-    return promise;
+    const _signOpts: CarbonTx.SignTxOpts = {
+      ...signOpts,
+      explicitSignerData: {
+        timeoutHeight,
+        ...signOpts?.explicitSignerData,
+      },
+    };
+    const signedTx = await this.getSignedTx(signerAddress, messages, sequence, _signOpts);
+
+    this.txDispatchManager.enqueue({
+      signedTx,
+      broadcastOpts,
+      signOpts: _signOpts,
+      handler: { resolve, reject, requestId: `${sequence}` },
+    });
+  }
+
+  private async dispatchTx(txRequest: BroadcastTxRequest) {
+    const { broadcastOpts, signedTx, handler: { resolve, reject } } = txRequest;
+    const broadcastFunc = broadcastOpts?.mode === BroadcastTxMode.BroadcastTxSync ? this.broadcastTxWithoutConfirm.bind(this) : this.broadcastTx.bind(this);
+    await broadcastFunc(signedTx, broadcastOpts).then(resolve).catch(reject);
   }
 
   async sendTxs(msgs: EncodeObject[], opts?: CarbonTx.SignTxOpts): Promise<CarbonWallet.SendTxResponse> {
@@ -369,19 +402,25 @@ export class CarbonWallet {
     return this.sendTxs([msg], opts);
   }
 
-  async getSigningClient(): Promise<SigningStargateClient> {
+  getSigningClient(): CarbonSigningClient {
+    const tmClient = this.getTmClient();
     if (!this.signingClient) {
-      this.signingClient = await SigningStargateClient.connectWithSigner(
-        this.networkConfig.tmRpcUrl,
-        this.signer,
-        {
-          ...(this.signer.type === CarbonSignerTypes.Ledger && { aminoTypes: AminoTypesMap }),
-          registry
-        },
-      );
+      this.signingClient = new CarbonSigningClient(tmClient, this.signer);
     }
     return this.signingClient;
-  };
+  }
+
+  getTmClient(): Tendermint34Client {
+    if (!this.tmClient)
+      throw new Error("CarbonWallet is not initialized");
+    return this.tmClient;
+  }
+
+  getChainId(): string {
+    if (!this.chainId)
+      throw new Error("CarbonWallet is not initialized");
+    return this.chainId;
+  }
 
   isSigner(signerType: CarbonSignerTypes) {
     return this.signer.type === signerType;
@@ -415,6 +454,12 @@ export class CarbonWallet {
     this.txFees = feesMap;
   }
 
+  public async reconnectTmClient() {
+    this.tmClient = await Tendermint34Client.connect(this.networkConfig.tmRpcUrl);
+    const status = await this.tmClient.status();
+    this.chainId = status.nodeInfo.network;
+  }
+
   public async reloadTxFees() {
     const queryClient = this.getQueryClient();
     const response = await queryClient.fee.MsgFeeAll({});
@@ -429,7 +474,7 @@ export class CarbonWallet {
       value: this.publicKey.toString("base64"),
     };
 
-    const chainId = this.accountInfo?.chainId ?? await this.getQueryClient().chain.getChainId();
+    const chainId = this.accountInfo?.chainId ?? this.chainId ?? await this.getQueryClient().chain.getChainId();
 
     this.accountInfo = {
       ...info,
@@ -439,42 +484,20 @@ export class CarbonWallet {
     };
   }
 
-  private triggerTxDispatch() {
-    const DELAY = 300;
-    const currentTimeMillis = new Date().getTime();
-
-    // do not shift delay later if next schedule
-    if (this.txTriggerThreshold && (currentTimeMillis + DELAY) > this.txTriggerThreshold) {
-      return;
-    }
-
-    if (!this.txTriggerThreshold) {
-      this.txTriggerThreshold = currentTimeMillis + 1000; // max wait for 1s before dispatching queue
-    }
-
-    clearTimeout(this.txQueueTrigger as unknown as number);
-
-    this.txQueueTrigger = setTimeout(this.dispatchTxQueue.bind(this), 500);
-  }
-
-  private async dispatchTxQueue() {
-    if (this.isDispatchingTxQueue) return;
-    this.isDispatchingTxQueue = true; // activate sync lock
-    this.txTriggerThreshold = 0; // reset to 0
-
-    try {
-      while (this.txQueue.length) {
-        const txRequest = this.txQueue.pop()!;
-        const { signedTx, broadcastOpts, handler } = txRequest;
-
-        const broadcastFunc = broadcastOpts?.mode === BroadcastTxMode.BroadcastTxSync ? this.broadcastTxWithoutConfirm.bind(this) : this.broadcastTx.bind(this);
-        await broadcastFunc(signedTx, broadcastOpts).then(handler.resolve).catch(handler.reject);
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      this.isDispatchingTxQueue = false;
-    }
+  private estimateTxFee(
+    messages: readonly EncodeObject[],
+  ) {
+    const totalFeeCost = messages.reduce((totalFee, message) => {
+      const msgFee = this.getFee(message.typeUrl);
+      return msgFee.gt(0) ? totalFee.plus(msgFee) : totalFee;
+    }, BN_ZERO);
+    return {
+      amount: [{
+        amount: totalFeeCost.toString(10),
+        denom: "swth",
+      }],
+      gas: DEFAULT_GAS.times(messages.length).toString(10),
+    };
   }
 
   private isNonceMismatchError = (error?: Error) => {

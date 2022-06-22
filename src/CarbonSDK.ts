@@ -18,6 +18,7 @@ export interface CarbonSDKOpts {
   tmClient: Tendermint34Client;
   token?: TokenClient;
   config?: Partial<NetworkConfig>;
+  defaultTimeoutBlocks?: number; // tx mempool ttl (timeoutHeight)
 }
 export interface CarbonSDKInitOpts {
   network: Network;
@@ -25,7 +26,8 @@ export interface CarbonSDKInitOpts {
   config?: Partial<NetworkConfig>;
   wallet?: CarbonWallet;
 
-  skipInit?: boolean
+  skipInit?: boolean;
+  defaultTimeoutBlocks?: number;
 }
 
 const DEFAULT_SDK_INIT_OPTS: CarbonSDKInitOpts = {
@@ -142,7 +144,8 @@ class CarbonSDK {
 
     const networkConfig = GenericUtils.overrideConfig(NetworkConfigs[network], configOverride);
     const tmClient = opts.tmClient ?? GenericUtils.modifyTmClient(await Tendermint34Client.connect(networkConfig.tmRpcUrl));
-    const sdk = new CarbonSDK({ network, config: configOverride, tmClient });
+    const defaultTimeoutBlocks = opts.defaultTimeoutBlocks;
+    const sdk = new CarbonSDK({ network, config: configOverride, tmClient, defaultTimeoutBlocks });
 
     if (opts.wallet) {
       await sdk.connect(opts.wallet);
