@@ -352,6 +352,20 @@ export class ZILClient {
     return callTx;
   }
 
+  public async retrieveZRC2Info(address: string) {
+    const zilliqa = new Zilliqa(this.getProviderUrl())
+    const smartContractInit = await zilliqa.blockchain.getSmartContractInit(address)
+    const mask = ['name', '_this_address', 'symbol', 'decimals']
+    const result = smartContractInit.result
+    if (result === undefined) throw new Error(`token contract ${address} is not found`)
+    const intermediate = result
+      .filter(({ vname }) => mask.includes(vname))
+      .reduce((prev, cur) => (
+        { ...prev, [cur.vname === '_this_address' ? 'address' : cur.vname]: cur.value }
+      ), <{name:string, symbol:string, decimals:string, address:string}>{}) 
+    return {...intermediate, decimals: Number(intermediate.decimals)}
+  }
+
   /**
    * TargetProxyHash is a hash of token originator address that is used
    * for lockproxy asset registration and identification
@@ -364,7 +378,7 @@ export class ZILClient {
     const addressHex = stripHexPrefix(ethers.utils.hexlify(addressBytes))
     return addressHex
   }
-
+  
   public getNetworkConfig(): NetworkConfig {
     return this.configProvider.getConfig();
   }
