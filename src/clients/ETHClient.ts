@@ -174,7 +174,7 @@ export class ETHClient {
       [
         amount.toString(), // amount
         "0", // fee amount
-        amount.toString()], // callamount
+        amount.toString()], // callAmount
       {
         gasLimit: gasLimit.toString(10),
         gasPrice: gasPriceGwei.shiftedBy(9).toString(10),
@@ -191,7 +191,6 @@ export class ETHClient {
     if (gasLimit.lt(150000)) {
       throw new Error("Minimum gas required: 150,000");
     }
-    
     const networkConfig = this.getNetworkConfig();
 
     const assetId = appendHexPrefix(token.tokenAddress);
