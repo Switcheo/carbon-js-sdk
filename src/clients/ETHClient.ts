@@ -191,7 +191,7 @@ export class ETHClient {
     if (gasLimit.lt(150000)) {
       throw new Error("Minimum gas required: 150,000");
     }
-    
+
     const networkConfig = this.getNetworkConfig();
 
     const assetId = appendHexPrefix(token.tokenAddress);
