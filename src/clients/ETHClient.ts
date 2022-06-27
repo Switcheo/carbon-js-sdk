@@ -161,20 +161,6 @@ export class ETHClient {
 
     const targetAddressBytes = AddressUtils.SWTHAddress.getAddressBytes(tokenCreator, CarbonSDK.Network.MainNet);
     const targetProxyHash = ethers.utils.hexlify(targetAddressBytes);
-    console.log("-----LOCK PARAMS-----");
-    console.log(`fromTokenAddress: ${fromTokenAddress}`);
-    console.log(`targetProxyHash: ${targetProxyHash}`);
-    console.log(`recoveryAddressHex: ${recoveryAddressHex}`);
-    console.log(`fromAssetHash: ${fromAssetHash}`);
-    console.log(`feeAddress: ${feeAddress}`);
-    console.log(`address: ${address}`);
-    console.log(`toAssetHash: ${toAssetHash}`);
-    console.log(`amount: ${amount}`);
-    console.log(`gasLimit: ${gasLimit.toString(10)}`);
-    console.log(`gasPrice: ${gasPriceGwei.shiftedBy(9).toString(10)}`);
-    console.log(`nonce: ${nonce}`);
-    console.log("-----END OF LOCK PARAMS-----");
-
     const bridgeResultTx = await contract.connect(signer).lock(
       fromTokenAddress, // the asset to deposit (from) (0x00 if eth)
       [
@@ -220,18 +206,6 @@ export class ETHClient {
 
     const nonce = await rpcProvider.getTransactionCount(ethAddress);
     const contract = new ethers.Contract(contractAddress, ABIs.lockProxy, rpcProvider);
-    console.log("-----LOCK PARAMS-----");
-    console.log(`lockDepositContractAddr: ${contractAddress}`)
-    console.log(`assetId: ${assetId}`);
-    console.log(`targetProxyHash: ${targetProxyHash}`);
-    console.log(`swthAddress: ${swthAddress}`);
-    console.log(`toAssetHash: ${toAssetHash}`);
-    console.log(`feeAddress: ${feeAddress}`);
-    console.log(`amount: ${amount.toString()}`);
-    console.log(`gasLimit: ${gasLimit.toString(10)}`);
-    console.log(`gasPrice: ${gasPriceGwei.shiftedBy(9).toString(10)}`);
-    console.log(`nonce: ${nonce}`);
-    console.log("-----END OF LOCK PARAMS-----");
     const lockResultTx = await contract.connect(signer).lock(
       assetId, // _assetHash
       targetProxyHash, // _targetProxyHash
