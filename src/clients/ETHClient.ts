@@ -28,6 +28,7 @@ export interface BridgeParams extends ETHTxParams {
   fromToken: Models.Token;
   toToken: Models.Token;
   amount: BigNumber;
+  address: string;
   recoveryAddress: string;
   signCompleteCallback?: () => void;
 }
@@ -132,7 +133,7 @@ export class ETHClient {
   }
 
   public async bridgeTokens(params: BridgeParams): Promise<EthersTransactionResponse> {
-    const { fromToken, toToken, amount, recoveryAddress, ethAddress, signer, gasPriceGwei, gasLimit } = params;
+    const { fromToken, toToken, amount, address, recoveryAddress, ethAddress, signer, gasPriceGwei, gasLimit } = params;
 
     const networkConfig = this.getNetworkConfig();
     const rpcProvider = this.getProvider();
@@ -144,14 +145,12 @@ export class ETHClient {
     const fromTokenId = fromToken.id;
     const fromTokenAddress = appendHexPrefix(fromToken.tokenAddress);
     const toTokenDenom = toToken.denom;
-    const decimals = fromToken.decimals.toNumber();
 
     const recoveryAddressHex = ethers.utils.hexlify(
       AddressUtils.SWTHAddress.getAddressBytes(recoveryAddress, CarbonSDK.Network.MainNet) 
     );
     
     const fromAssetHash = ethers.utils.hexlify(ethers.utils.toUtf8Bytes(fromTokenId));
-    const bridgeAmount = ethers.utils.parseUnits(amount.toString(), decimals);
     const toAssetHash = ethers.utils.hexlify(ethers.utils.toUtf8Bytes(toTokenDenom));
     const nonce = await rpcProvider.getTransactionCount(ethAddress);
 
@@ -162,18 +161,34 @@ export class ETHClient {
 
     const targetAddressBytes = AddressUtils.SWTHAddress.getAddressBytes(tokenCreator, CarbonSDK.Network.MainNet);
     const targetProxyHash = ethers.utils.hexlify(targetAddressBytes);
+    console.log("-----LOCK PARAMS-----");
+    console.log(`fromTokenAddress: ${fromTokenAddress}`);
+    console.log(`targetProxyHash: ${targetProxyHash}`);
+    console.log(`recoveryAddressHex: ${recoveryAddressHex}`);
+    console.log(`fromAssetHash: ${fromAssetHash}`);
+    console.log(`feeAddress: ${feeAddress}`);
+    console.log(`address: ${address}`);
+    console.log(`toAssetHash: ${toAssetHash}`);
+    console.log(`amount: ${amount}`);
+    console.log(`gasLimit: ${gasLimit.toString(10)}`);
+    console.log(`gasPrice: ${gasPriceGwei.shiftedBy(9).toString(10)}`);
+    console.log(`nonce: ${nonce}`);
+    console.log("-----END OF LOCK PARAMS-----");
 
     const bridgeResultTx = await contract.connect(signer).lock(
       fromTokenAddress, // the asset to deposit (from) (0x00 if eth)
       [
-        targetProxyHash, //_targetProxyHash
+        targetProxyHash, // _targetProxyHash
         recoveryAddressHex, // _recoveryAddress
         fromAssetHash, // _fromAssetHash
         feeAddress, // _feeAddress
-        ethAddress, // _toAddress the L1 address to bridge to
+        address, // _toAddress the L1 address to bridge to
         toAssetHash, // _toAssetHash
       ],
-      [bridgeAmount.toString(), "0", bridgeAmount.toString()],
+      [
+        amount.toString(), // amount
+        "0", // fee amount
+        amount.toString()], // callamount
       {
         gasLimit: gasLimit.toString(10),
         gasPrice: gasPriceGwei.shiftedBy(9).toString(10),
@@ -190,7 +205,7 @@ export class ETHClient {
     if (gasLimit.lt(150000)) {
       throw new Error("Minimum gas required: 150,000");
     }
-
+    
     const networkConfig = this.getNetworkConfig();
 
     const assetId = appendHexPrefix(token.tokenAddress);
@@ -205,6 +220,18 @@ export class ETHClient {
 
     const nonce = await rpcProvider.getTransactionCount(ethAddress);
     const contract = new ethers.Contract(contractAddress, ABIs.lockProxy, rpcProvider);
+    console.log("-----LOCK PARAMS-----");
+    console.log(`lockDepositContractAddr: ${contractAddress}`)
+    console.log(`assetId: ${assetId}`);
+    console.log(`targetProxyHash: ${targetProxyHash}`);
+    console.log(`swthAddress: ${swthAddress}`);
+    console.log(`toAssetHash: ${toAssetHash}`);
+    console.log(`feeAddress: ${feeAddress}`);
+    console.log(`amount: ${amount.toString()}`);
+    console.log(`gasLimit: ${gasLimit.toString(10)}`);
+    console.log(`gasPrice: ${gasPriceGwei.shiftedBy(9).toString(10)}`);
+    console.log(`nonce: ${nonce}`);
+    console.log("-----END OF LOCK PARAMS-----");
     const lockResultTx = await contract.connect(signer).lock(
       assetId, // _assetHash
       targetProxyHash, // _targetProxyHash
