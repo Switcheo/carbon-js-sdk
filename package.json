@@ -42,6 +42,7 @@
     "@cityofzion/neon-js-next": "npm:@cityofzion/neon-js@^5.0.0",
     "@cosmjs/proto-signing": "^0.28.9",
     "@cosmjs/stargate": "^0.28.9",
+    "@cosmjs/tendermint-rpc": "git@github.com:Switcheo/cosmjs.git#head=main&workspace=@cosmjs/tendermint-rpc",
     "@grpc/grpc-js": "^1.3.2",
     "@keplr-wallet/stores": "~0.9.0-alpha.10",
     "@keplr-wallet/types": "~0.8.13",
@@ -84,5 +85,6 @@
     "@types/wif": "^2.0.2",
     "dotenv": "^10.0.0",
     "prettier": "2.5.1"
-  }
+  },
+  "packageManager": "yarn@2.4.3"
 }
