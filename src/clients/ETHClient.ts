@@ -24,12 +24,17 @@ interface ETHTxParams {
   signer: ethers.Signer;
 }
 
-export interface BridgeParams extends ETHTxParams {
+export interface BridgeParams {
   fromToken: Models.Token;
   toToken: Models.Token;
   amount: BigNumber;
-  address: string;
+  fromAddress: string;
   recoveryAddress: string;
+  toAddress: string;
+  feeAmount: BigNumber
+  gasPriceGwei: BigNumber;
+  gasLimit: BigNumber;
+  signer: ethers.Signer;
   signCompleteCallback?: () => void;
 }
 
@@ -133,7 +138,7 @@ export class ETHClient {
   }
 
   public async bridgeTokens(params: BridgeParams): Promise<EthersTransactionResponse> {
-    const { fromToken, toToken, amount, address, recoveryAddress, ethAddress, signer, gasPriceGwei, gasLimit } = params;
+    const { fromToken, toToken, amount, toAddress, fromAddress, recoveryAddress, signer, gasPriceGwei, gasLimit, feeAmount, signCompleteCallback } = params;
 
     const networkConfig = this.getNetworkConfig();
     const rpcProvider = this.getProvider();
@@ -152,7 +157,7 @@ export class ETHClient {
     
     const fromAssetHash = ethers.utils.hexlify(ethers.utils.toUtf8Bytes(fromTokenId));
     const toAssetHash = ethers.utils.hexlify(ethers.utils.toUtf8Bytes(toTokenDenom));
-    const nonce = await rpcProvider.getTransactionCount(ethAddress);
+    const nonce = await rpcProvider.getTransactionCount(fromAddress);
 
     const contract = new ethers.Contract(this.getBridgeEntranceAddr(), ABIs.bridgeEntrance, rpcProvider);
     const feeAddress = appendHexPrefix(networkConfig.feeAddress);
@@ -168,13 +173,13 @@ export class ETHClient {
         recoveryAddressHex, // _recoveryAddress
         fromAssetHash, // _fromAssetHash
         feeAddress, // _feeAddress
-        address, // _toAddress the L1 address to bridge to
+        toAddress, // _toAddress the L1 address to bridge to
         toAssetHash, // _toAssetHash
       ],
       [
-        amount.toString(), // amount
-        "0", // fee amount
-        amount.toString()], // callAmount
+        amount.toString(10), // amount
+        feeAmount.toString(10), // fee amount
+        amount.toString(10)], // callAmount
       {
         gasLimit: gasLimit.toString(10),
         gasPrice: gasPriceGwei.shiftedBy(9).toString(10),
@@ -182,11 +187,15 @@ export class ETHClient {
       }
     );
 
+    if (signCompleteCallback) {
+      signCompleteCallback();
+    }
+
     return bridgeResultTx;
   }
 
   public async lockDeposit(params: LockParams): Promise<EthersTransactionResponse> {
-    const { address, token, amount, gasPriceGwei, gasLimit, ethAddress, signer } = params;
+    const { address, token, amount, gasPriceGwei, gasLimit, ethAddress, signer, signCompleteCallback } = params;
 
     if (gasLimit.lt(150000)) {
       throw new Error("Minimum gas required: 150,000");
@@ -230,6 +239,10 @@ export class ETHClient {
         }),
       }
     );
+
+    if (signCompleteCallback) {
+      signCompleteCallback();
+    }
 
     return lockResultTx;
   }

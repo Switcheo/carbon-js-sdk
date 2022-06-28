@@ -131,14 +131,14 @@ export const NetworkConfigs: {
     Bech32Prefix: "tswth",
 
     feeURL: `http://54.255.42.175:9001`,
-    feeAddress: "989761fb0c0eb0c05605e849cae77d239f98ac7f",
+    feeAddress: "989761fb0c0eb0c05605e849cae77d239f98ac7f", // swth1nztkr7cvp6cvq4s9apyu4emayw0e3trl9ezyzs
 
     eth: {
       rpcURL: "https://eth-rinkeby.alchemyapi.io/v2/2KD9F3mFPNMfflSqZsPuTKmK_w7fFfut",
       wsURL: "",
       payerURL: `https://dev-payer.carbon.network`,
       lockProxyAddr: "0xFE5C9832b62bFfFFfD1B091de457254dab344C04",
-      bridgeEntranceAddr: "0x1fFf3678De3b2e250eccB214078902DcEe08748B",
+      bridgeEntranceAddr: "0xd942Ba20A58543878335108aAC8C811F1f92fa33",
       balanceReader: "0xf6fBa7Bbc806F55dA52af17203d84C61FfFa18c2",
       byteCodeHash: "0xeb1f732f12a0448d8692018a6d6d381cc7afc84d7e0729007931d966c0c9dc6d",
     },
@@ -184,14 +184,14 @@ export const NetworkConfigs: {
     Bech32Prefix: "swth",
 
     feeURL: `https://dev-fees.carbon.network`,
-    feeAddress: "989761fb0c0eb0c05605e849cae77d239f98ac7f",
+    feeAddress: "989761fb0c0eb0c05605e849cae77d239f98ac7f", // swth1nztkr7cvp6cvq4s9apyu4emayw0e3trl9ezyzs
 
     eth: {
       rpcURL: "https://eth-rinkeby.alchemyapi.io/v2/2KD9F3mFPNMfflSqZsPuTKmK_w7fFfut",
       wsURL: "",
       payerURL: `https://dev-payer.carbon.network`,
       lockProxyAddr: "0xFE5C9832b62bFfFFfD1B091de457254dab344C04",
-      bridgeEntranceAddr: "0x1fFf3678De3b2e250eccB214078902DcEe08748B",
+      bridgeEntranceAddr: "0xd942Ba20A58543878335108aAC8C811F1f92fa33",
       balanceReader: "0xf6fBa7Bbc806F55dA52af17203d84C61FfFa18c2",
       byteCodeHash: "0xeb1f732f12a0448d8692018a6d6d381cc7afc84d7e0729007931d966c0c9dc6d",
     },
