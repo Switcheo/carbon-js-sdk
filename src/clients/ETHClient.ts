@@ -187,9 +187,7 @@ export class ETHClient {
       }
     );
 
-    if (signCompleteCallback) {
-      signCompleteCallback();
-    }
+    signCompleteCallback?.();
 
     return bridgeResultTx;
   }
@@ -240,9 +238,7 @@ export class ETHClient {
       }
     );
 
-    if (signCompleteCallback) {
-      signCompleteCallback();
-    }
+    signCompleteCallback?.();
 
     return lockResultTx;
   }
