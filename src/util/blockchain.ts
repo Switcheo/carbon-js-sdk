@@ -1,3 +1,4 @@
+import { Network } from '@carbon-sdk/constant/network';
 import { SimpleMap } from './type';
 
 export enum Blockchain {
@@ -40,10 +41,34 @@ export const CHAIN_IDS: ChainIds = {
   'eth': 2,
   'neo': 4,
   'bsc': 6,
-  'zil': 9,
+  'neo3': 14,
+  'zil': 18,
   'osmosis': 244,
   'terra': 245,
 };
+
+export const CHAIN_IDS_DEV: ChainIds = {
+  'eth': 350,
+  'neo': 5,
+  'neo3': 88,
+  'bsc': 79,
+  'zil': 111,
+};
+
+export const CHAIN_IDS_TEST: ChainIds = {
+  'eth': 2,
+  'neo': 5,
+  'neo3': 88,
+  'bsc': 79,
+  'zil': 111,
+};
+
+export const chainIdsByBlockchain: SimpleMap<ChainIds> = {
+  [Network.MainNet]: CHAIN_IDS,
+  [Network.DevNet]: CHAIN_IDS_DEV,
+  [Network.TestNet]: CHAIN_IDS_TEST,
+  [Network.LocalHost]: CHAIN_IDS_TEST,
+}
 
 export function parseBlockchain(value: string | null): Blockchain | null {
   if (value === null || value === undefined) return null;
@@ -77,7 +102,7 @@ export const blockchainForChainId = (chainId?: number): Blockchain | undefined =
     case 1:
       return Blockchain.Btc
     case 2:
-    case 348: // devnet
+    case 350: // devnet
       return Blockchain.Ethereum
     case 4:
       return Blockchain.Neo

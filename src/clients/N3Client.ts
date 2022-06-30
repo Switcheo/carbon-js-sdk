@@ -337,10 +337,11 @@ export class N3Client {
       }),
     ])
     const [decimalRaw, symbolRaw, nameRaw] = result
-    let decimal: number = 0
-    let symbol, name : string = ''
+    let decimals: number = 0
+    let symbol: string = ''
+    let name : string = ''
     if (typeof decimalRaw.stack[0].value ==='string') {
-      decimal = Number(decimalRaw.stack[0].value)
+      decimals = Number(decimalRaw.stack[0].value)
     }
     if (typeof symbolRaw.stack[0].value ==='string') {
       symbol = Buffer.from(symbolRaw.stack[0].value, 'base64').toString('ascii')
@@ -348,7 +349,7 @@ export class N3Client {
     if (typeof nameRaw.manifest.name ==='string') {
       name = nameRaw.manifest.name
     } 
-    return {name, symbol, address, decimal}
+    return {name, symbol, address, decimals}
   }
 }
 
