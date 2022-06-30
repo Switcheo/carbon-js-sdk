@@ -18,7 +18,7 @@ export interface GetTransfersResponse {
   data: CrossChainTransfer[]
   pagination: {
     total: number
-    currentOffset: number
+    current_offset: number
     limit: number
   }
 }
@@ -27,7 +27,7 @@ export interface GetDetailedTransfersResponse {
   data: CrossChainTransferDetailed[]
   pagination: {
     total: number
-    currentOffset: number
+    current_offset: number
     limit: number
   }
 }
