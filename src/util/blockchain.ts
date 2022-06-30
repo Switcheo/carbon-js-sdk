@@ -63,7 +63,7 @@ export const CHAIN_IDS_TEST: ChainIds = {
   'zil': 111,
 };
 
-export const getChainIdFromBlockchain: SimpleMap<ChainIds> = {
+export const chainIdsByBlockchain: SimpleMap<ChainIds> = {
   [Network.MainNet]: CHAIN_IDS,
   [Network.DevNet]: CHAIN_IDS_DEV,
   [Network.TestNet]: CHAIN_IDS_TEST,
