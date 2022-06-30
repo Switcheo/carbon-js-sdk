@@ -38,13 +38,13 @@ export const ChainNames = {
 export const CHAIN_IDS: ChainIds = {
   'native': 0,
   'btc': 1,
-  'osmosis': 1,
   'eth': 2,
-  'terra': 3,
   'neo': 4,
   'bsc': 6,
   'neo3': 14,
   'zil': 18,
+  'osmosis': 244,
+  'terra': 245,
 };
 
 export const CHAIN_IDS_DEV: ChainIds = {
@@ -102,7 +102,7 @@ export const blockchainForChainId = (chainId?: number): Blockchain | undefined =
     case 1:
       return Blockchain.Btc
     case 2:
-    case 348: // devnet
+    case 350: // devnet
       return Blockchain.Ethereum
     case 4:
       return Blockchain.Neo
