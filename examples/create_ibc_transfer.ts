@@ -5,7 +5,7 @@ import * as BIP39 from "bip39";
 import { AddressUtils, CarbonSDK, CarbonTx, CarbonWallet, IBCUtils } from "./_sdk";
 import { SignDoc } from '../lib/codec/cosmos/tx/v1beta1/tx';
 import { registry } from "../lib/codec/index";
-import { ChainIds, swthChannels } from "../lib/constant";
+import { ChainIds, IBCAddress, swthChannels } from "../lib/constant";
 import "./_setup";
 import { Models } from '../lib';
 
@@ -31,8 +31,8 @@ const swthDenom = "ibc/8FEFAE6AECF6E2A255585617F781F35A8D5709A545A804482A261C0C9
 
   const tokenDecimals = swthToken.decimals.toNumber() ?? 0;
 
-  const counterAddressBytes = AddressUtils.IBCAddress.getAddressBytes(sdk?.wallet?.bech32Address ?? "");
-  const counterAddr = AddressUtils.IBCAddress.deriveAddressFromBytes(counterAddressBytes, networkObj.bech32Config.bech32PrefixAccAddr)
+  const counterAddressBytes = IBCAddress.getAddressBytes(sdk?.wallet?.bech32Address ?? "");
+  const counterAddr = IBCAddress.deriveAddressFromBytes(counterAddressBytes, networkObj.bech32Config.bech32PrefixAccAddr)
 
   // Withdrawal
   const withdrawResponse = await connectedSDK.ibc.sendIBCTransfer({
