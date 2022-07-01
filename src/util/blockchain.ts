@@ -107,9 +107,10 @@ export const blockchainForChainId = (chainId?: number): Blockchain | undefined =
     case 350: // devnet
       return Blockchain.Ethereum
     case 4:
+    case 5: // devnet
       return Blockchain.Neo
     case 6:
-    case 79:
+    case 79: // devnet
       return Blockchain.BinanceSmartChain
     case 9: // mainnet
     case 18:
