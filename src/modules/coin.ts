@@ -12,8 +12,8 @@ export class CoinModule extends BaseModule {
       creator: wallet.bech32Address,
       toAddress: params.toAddress,
       denom: params.denom,
-      amount: params.amount.shiftedBy(18).toString(10),
-      feeAmount: params.feeAmount.shiftedBy(18).toString(10),
+      amount: params.amount.toString(10),
+      feeAmount: params.feeAmount.toString(10),
       feeAddress: params.feeAddress,
     })
 
