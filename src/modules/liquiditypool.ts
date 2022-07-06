@@ -37,8 +37,8 @@ export class LiquidityPoolModule extends BaseModule {
       tokenBDenom: params.tokenBDenom,
       tokenAWeight: params.tokenAWeight.shiftedBy(18).toString(10),
       tokenBWeight: params.tokenBWeight.shiftedBy(18).toString(10),
-      amountA: params.amountA.shiftedBy(18).toString(10),
-      amountB: params.amountB.shiftedBy(18).toString(10),
+      amountA: params.amountA.toString(10),
+      amountB: params.amountB.toString(10),
       swapFee: params.swapFee.shiftedBy(18).toString(10),
       numQuotes: new Long(params.numQuotes),
     })
@@ -55,9 +55,9 @@ export class LiquidityPoolModule extends BaseModule {
     const value = Models.MsgAddLiquidity.fromPartial({
       creator: wallet.bech32Address,
       poolId: new Long(params.poolId),
-      amountA: params.amountA.shiftedBy(18).toString(10),
-      amountB: params.amountB.shiftedBy(18).toString(10),
-      minShares: params.minShares.shiftedBy(18).toString(10),
+      amountA: params.amountA.toString(10),
+      amountB: params.amountB.toString(10),
+      minShares: params.minShares.toString(10),
     })
 
     return await wallet.sendTx({
@@ -72,7 +72,7 @@ export class LiquidityPoolModule extends BaseModule {
     const value = Models.MsgRemoveLiquidity.fromPartial({
       creator: wallet.bech32Address,
       poolId: new Long(params.poolId),
-      shares: params.shares.shiftedBy(18).toString(10),
+      shares: params.shares.toString(10),
     })
 
     return await wallet.sendTx({
@@ -87,7 +87,7 @@ export class LiquidityPoolModule extends BaseModule {
     const value = Models.MsgStakePoolToken.fromPartial({
       creator: wallet.bech32Address,
       denom: params.denom,
-      amount: params.amount.shiftedBy(18).toString(10),
+      amount: params.amount.toString(10),
       duration: new Long(params.duration)
     })
 
@@ -103,7 +103,7 @@ export class LiquidityPoolModule extends BaseModule {
     const value = Models.MsgUnstakePoolToken.fromPartial({
       creator: wallet.bech32Address,
       denom: params.denom,
-      amount: params.amount.shiftedBy(18).toString(10),
+      amount: params.amount.toString(10),
     })
 
     return await wallet.sendTx({
