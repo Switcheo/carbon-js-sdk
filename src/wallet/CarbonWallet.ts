@@ -25,6 +25,7 @@ export interface CarbonWalletGenericOpts {
   config?: Partial<NetworkConfig>;
   providerAgent?: ProviderAgent | string;
   defaultTimeoutBlocks?: number; // tx mempool ttl (timeoutHeight)
+  disableRetryOnSequenceError?: boolean; // disable auto retry on nonce error
 
   /**
    * Optional callback that will be called before signing is requested/executed.
@@ -122,6 +123,8 @@ export class CarbonWallet {
   initialized: boolean = false;
 
   accountInfo?: AccountInfo;
+  
+  disableRetryOnSequenceError: boolean;
 
   // for analytics
   providerAgent?: ProviderAgent | string
@@ -141,6 +144,7 @@ export class CarbonWallet {
     this.configOverride = opts.config ?? {};
     this.providerAgent = opts.providerAgent;
     this.defaultTimeoutBlocks = opts.defaultTimeoutBlocks ?? 30; // default ~1 minute
+    this.disableRetryOnSequenceError = opts.disableRetryOnSequenceError ?? false;
     this.updateNetwork(network);
 
     this.onRequestSign = opts.onRequestSign;
@@ -396,7 +400,7 @@ export class CarbonWallet {
     } catch (error: any) {
       const attempts = txRequest.attempts ?? 0;
       // retry sendTx if nonce error once.
-      if (attempts < 1 && this.isNonceMismatchError(error)) {
+      if (!this.disableRetryOnSequenceError && attempts < 1 && this.isNonceMismatchError(error)) {
         // invalidate account sequence for reload on next signTx call
         this.sequenceInvalidated = true;
 
