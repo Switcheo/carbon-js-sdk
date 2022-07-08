@@ -3,8 +3,8 @@ import { Registry } from "@cosmjs/proto-signing";
 import { MsgSetTradingFlag, MsgSetTradingFlagResponse, MsgCreateOrder, MsgCreateOrderResponse, MsgEditOrder, MsgEditOrderResponse, MsgCancelOrder, MsgCancelOrderResponse, MsgCancelAll, MsgCancelAllResponse } from "./order/tx";
 import { MsgAddCollateral, MsgAddCollateralResponse, MsgRemoveCollateral, MsgRemoveCollateralResponse, MsgAddDebt, MsgAddDebtResponse, MsgRemoveDebt, MsgRemoveDebtResponse, MsgCreateVaultType, MsgCreateVaultTypeResponse } from "./cdp/tx";
 import { MsgInitiateLiquidation, MsgInitiateLiquidationResponse } from "./broker/tx";
-import { MsgSetFee, MsgSetFeeResponse } from "./fee/tx";
-import { SetMsgFeeProposal } from "./fee/proposal";
+import { MsgSetGasCost, MsgSetGasCostResponse, MsgSetMinGasPrice, MsgSetMinGasPriceResponse, MsgRemoveGasCost, MsgRemoveGasCostResponse, MsgRemoveMinGasPrice, MsgRemoveMinGasPriceResponse } from "./fee/tx";
+import { SetMsgGasCostProposal, SetMinGasPriceProposal, RemoveMsgGasCostProposal, RemoveMinGasPriceProposal } from "./fee/proposal";
 import { MsgEnableSend, MsgEnableSendResponse, MsgDisableSend, MsgDisableSendResponse } from "./bank/tx";
 import { MsgSetMargin, MsgSetMarginResponse } from "./position/tx";
 import { MsgCreateOracle, MsgCreateOracleResponse, MsgCreateVote, MsgCreateVoteResponse, MsgUpdateOracle, MsgUpdateOracleResponse, MsgRemoveOracle, MsgRemoveOracleResponse, MsgSetOracleSlashEnabled, MsgSetOracleSlashEnabledResponse } from "./oracle/tx";
@@ -77,9 +77,18 @@ registry.register("/Switcheo.carbon.headersync.MsgSyncHeadersResponse", PolyNetw
 registry.register("/Switcheo.carbon.broker.MsgInitiateLiquidation", MsgInitiateLiquidation);
 registry.register("/Switcheo.carbon.broker.MsgInitiateLiquidationResponse", MsgInitiateLiquidationResponse);
 
-registry.register("/Switcheo.carbon.fee.MsgSetFee", MsgSetFee);
-registry.register("/Switcheo.carbon.fee.MsgSetFeeResponse", MsgSetFeeResponse);
-registry.register("/Switcheo.carbon.fee.SetMsgFeeProposal", SetMsgFeeProposal);
+registry.register("/Switcheo.carbon.fee.MsgSetGasCost", MsgSetGasCost);
+registry.register("/Switcheo.carbon.fee.MsgSetGasCostResponse", MsgSetGasCostResponse);
+registry.register("/Switcheo.carbon.fee.MsgSetMinGasPrice", MsgSetMinGasPrice);
+registry.register("/Switcheo.carbon.fee.MsgSetMinGasPriceResponse", MsgSetMinGasPriceResponse);
+registry.register("/Switcheo.carbon.fee.MsgRemoveGasCost", MsgRemoveGasCost);
+registry.register("/Switcheo.carbon.fee.MsgRemoveGasCostResponse", MsgRemoveGasCostResponse);
+registry.register("/Switcheo.carbon.fee.MsgRemoveMinGasPrice", MsgRemoveMinGasPrice);
+registry.register("/Switcheo.carbon.fee.MsgRemoveMinGasPriceResponse", MsgRemoveMinGasPriceResponse);
+registry.register("/Switcheo.carbon.fee.SetMsgGasCostProposal", SetMsgGasCostProposal);
+registry.register("/Switcheo.carbon.fee.SetMinGasPriceProposal", SetMinGasPriceProposal);
+registry.register("/Switcheo.carbon.fee.RemoveMsgGasCostProposal", RemoveMsgGasCostProposal);
+registry.register("/Switcheo.carbon.fee.RemoveMinGasPriceProposal", RemoveMinGasPriceProposal);
 
 registry.register("/Switcheo.carbon.bank.MsgEnableSend", MsgEnableSend);
 registry.register("/Switcheo.carbon.bank.MsgEnableSendResponse", MsgEnableSendResponse);
@@ -342,9 +351,18 @@ export const TxTypes = {
   "MsgSyncHeadersResponse": "/Switcheo.carbon.headersync.MsgSyncHeadersResponse",
   "MsgInitiateLiquidation": "/Switcheo.carbon.broker.MsgInitiateLiquidation",
   "MsgInitiateLiquidationResponse": "/Switcheo.carbon.broker.MsgInitiateLiquidationResponse",
-  "MsgSetFee": "/Switcheo.carbon.fee.MsgSetFee",
-  "MsgSetFeeResponse": "/Switcheo.carbon.fee.MsgSetFeeResponse",
-  "SetMsgFeeProposal": "/Switcheo.carbon.fee.SetMsgFeeProposal",
+  "MsgSetGasCost": "/Switcheo.carbon.fee.MsgSetGasCost",
+  "MsgSetGasCostResponse": "/Switcheo.carbon.fee.MsgSetGasCostResponse",
+  "MsgSetMinGasPrice": "/Switcheo.carbon.fee.MsgSetMinGasPrice",
+  "MsgSetMinGasPriceResponse": "/Switcheo.carbon.fee.MsgSetMinGasPriceResponse",
+  "MsgRemoveGasCost": "/Switcheo.carbon.fee.MsgRemoveGasCost",
+  "MsgRemoveGasCostResponse": "/Switcheo.carbon.fee.MsgRemoveGasCostResponse",
+  "MsgRemoveMinGasPrice": "/Switcheo.carbon.fee.MsgRemoveMinGasPrice",
+  "MsgRemoveMinGasPriceResponse": "/Switcheo.carbon.fee.MsgRemoveMinGasPriceResponse",
+  "SetMsgGasCostProposal": "/Switcheo.carbon.fee.SetMsgGasCostProposal",
+  "SetMinGasPriceProposal": "/Switcheo.carbon.fee.SetMinGasPriceProposal",
+  "RemoveMsgGasCostProposal": "/Switcheo.carbon.fee.RemoveMsgGasCostProposal",
+  "RemoveMinGasPriceProposal": "/Switcheo.carbon.fee.RemoveMinGasPriceProposal",
   "MsgEnableSend": "/Switcheo.carbon.bank.MsgEnableSend",
   "MsgEnableSendResponse": "/Switcheo.carbon.bank.MsgEnableSendResponse",
   "MsgDisableSend": "/Switcheo.carbon.bank.MsgDisableSend",
@@ -551,14 +569,14 @@ export { Block } from "./misc/block";
 export { Message } from "./misc/message";
 export { MessageType } from "./misc/message_type";
 export { Transaction, APITransaction } from "./misc/transaction";
-export { QuerySearchRequest, QuerySearchResponse, QueryAllMessageTypeRequest, QueryAllMessageTypeResponse, QueryAllTransactionRequest, QueryAllTransactionResponse, QueryAllBlockRequest, QueryAllBlockResponse } from "./misc/query";
+export { QuerySearchRequest, QuerySearchResponse, QueryAllMessageTypeRequest, QueryAllMessageTypeResponse, QueryAllTransactionRequest, QueryAllTransactionResponse, QueryAllBlockRequest, QueryAllBlockResponse, QueryModuleAddressRequest, QueryModuleAddressResponse } from "./misc/query";
 export { MsgSetTradingFlag, MsgSetTradingFlagResponse, MsgCreateOrder, MsgCreateOrderResponse, MsgEditOrder, MsgEditOrderResponse, MsgCancelOrder, MsgCancelOrderResponse, MsgCancelAll, MsgCancelAllResponse } from "./order/tx";
 export { Order, DBOrder, OrdersForMarket, OrderIDsForMarket, OrderIDs, Orders } from "./order/order";
 export { QueryGetOrderRequest, QueryGetOrderResponse, QueryAllOrderRequest, QueryAllOrderResponse, QueryAccountOpenOrdersRequest, QueryAccountOpenOrdersResponse } from "./order/query";
 export { OrderEvent } from "./order/event";
 export { MsgAddCollateral, MsgAddCollateralResponse, MsgRemoveCollateral, MsgRemoveCollateralResponse, MsgAddDebt, MsgAddDebtResponse, MsgRemoveDebt, MsgRemoveDebtResponse, MsgCreateVaultType, MsgCreateVaultTypeResponse } from "./cdp/tx";
-export { Vault, VaultType } from "./cdp/vault";
-export { QueryGetVaultRequest, QueryGetVaultResponse, QueryAllVaultRequest, QueryAllVaultResponse, QueryGetVaultTypeRequest, QueryGetVaultTypeResponse, QueryAllVaultTypeRequest, QueryAllVaultTypeResponse } from "./cdp/query";
+export { Vault, VaultType, Params } from "./cdp/vault";
+export { QueryGetVaultRequest, QueryGetVaultResponse, QueryAllVaultRequest, QueryAllVaultResponse, QueryGetVaultTypeRequest, QueryGetVaultTypeResponse, QueryAllVaultTypeRequest, QueryAllVaultTypeResponse, QueryParamsRequest, QueryParamsResponse } from "./cdp/query";
 export { VaultTypeEvent, VaultEvent } from "./cdp/event";
 export { HashOp, hashOpFromJSON, hashOpToJSON, LengthOp, lengthOpFromJSON, lengthOpToJSON, ExistenceProof, NonExistenceProof, CommitmentProof, LeafOp, InnerOp, ProofSpec, InnerSpec, BatchProof, BatchEntry, CompressedBatchProof, CompressedBatchEntry, CompressedExistenceProof, CompressedNonExistenceProof } from "./proofs";
 export { LiquidatorPosition, MsgInitiateLiquidation, MsgInitiateLiquidationResponse } from "./broker/tx";
@@ -570,14 +588,15 @@ export { AccountTrade } from "./broker/trade";
 export { QueryCandlesticksRequest, QueryCandlesticksResponse, QueryTradesRequest, QueryTradesResponse, QueryTradesForPositionRequest, QueryTradesForPositionResponse } from "./broker/query";
 export { TradeEvent } from "./broker/event";
 export { IncomingPoolSwap } from "./broker/incoming_pool_swap";
-export { MsgSetFee, MsgSetFeeResponse } from "./fee/tx";
-export { MsgFee } from "./fee/fee";
-export { SetMsgFeeProposal } from "./fee/proposal";
-export { QueryGetMsgFeeRequest, QueryGetMsgFeeResponse, QueryAllMsgFeeRequest, QueryAllMsgFeeResponse } from "./fee/query";
+export { MsgSetGasCost, MsgSetGasCostResponse, MsgSetMinGasPrice, MsgSetMinGasPriceResponse, MsgRemoveGasCost, MsgRemoveGasCostResponse, MsgRemoveMinGasPrice, MsgRemoveMinGasPriceResponse } from "./fee/tx";
+export { MsgGasCost, MinGasPrice } from "./fee/fee";
+export { SetMsgGasCostProposal, SetMinGasPriceProposal, RemoveMsgGasCostProposal, RemoveMinGasPriceProposal } from "./fee/proposal";
+export { QueryGetMsgGasCostRequest, QueryGetMsgGasCostResponse, QueryAllMsgGasCostRequest, QueryAllMsgGasCostResponse, QueryGetMinGasPriceRequest, QueryGetMinGasPriceResponse, QueryAllMinGasPriceRequest, QueryAllMinGasPriceResponse } from "./fee/query";
 export { MsgEnableSend, MsgEnableSendResponse, MsgDisableSend, MsgDisableSendResponse } from "./bank/tx";
 export { CoinSpent, CoinReceived } from "./bank/event";
+export { Params } from "./liquidation/liquidation";
 export { OutstandingPosition, OutstandingPositions } from "./liquidation/outstanding_position";
-export { QueryAllLiquidationRequest, QueryAllLiquidationResponse } from "./liquidation/query";
+export { QueryAllLiquidationRequest, QueryAllLiquidationResponse, QueryParamsRequest, QueryParamsResponse } from "./liquidation/query";
 export { NullValue, nullValueFromJSON, nullValueToJSON, Struct, Struct_FieldsEntry, Value, ListValue } from "./google/protobuf/struct";
 export { Any } from "./google/protobuf/any";
 export { Timestamp } from "./google/protobuf/timestamp";
@@ -588,11 +607,12 @@ export { Position, Positions, APIPosition } from "./position/position";
 export { QueryGetPositionRequest, QueryGetPositionResponse, QueryAllPositionRequest, QueryAllPositionResponse } from "./position/query";
 export { PositionEvent } from "./position/event";
 export { MsgCreateOracle, CreateOracleParams, MsgCreateOracleResponse, MsgCreateVote, MsgCreateVoteResponse, MsgUpdateOracle, UpdateOracleParams, MsgUpdateOracleResponse, MsgRemoveOracle, MsgRemoveOracleResponse, MsgSetOracleSlashEnabled, MsgSetOracleSlashEnabledResponse } from "./oracle/tx";
-export { Params as OracleParams, Oracle, Vote, Result, Mark } from "./oracle/oracle";
+export { Params, Oracle, Vote, Result, Mark } from "./oracle/oracle";
 export { OracleVotesWindow, SlashCounter } from "./oracle/slashing";
 export { CreateOracleProposal } from "./oracle/proposal";
-export { QueryOracleRequest, QueryOracleResponse, QueryAllOracleRequest, QueryAllOracleResponse, QueryAllResultRequest, QueryAllResultResponse, QueryAllVoteRequest, QueryAllVoteResponse, QueryVoterPowerRequest, QueryVoterPowerResponse, QueryAllSlashCounterRequest, QueryAllSlashCounterResponse, QuerySlashCounterRequest, QuerySlashCounterResponse, QueryAllOracleVotesWindowRequest, QueryAllOracleVotesWindowResponse, QueryOracleVotesWindowRequest, QueryOracleVotesWindowResponse } from "./oracle/query";
+export { QueryOracleRequest, QueryOracleResponse, QueryAllOracleRequest, QueryAllOracleResponse, QueryAllResultRequest, QueryAllResultResponse, QueryAllVoteRequest, QueryAllVoteResponse, QueryVoterPowerRequest, QueryVoterPowerResponse, QueryAllSlashCounterRequest, QueryAllSlashCounterResponse, QuerySlashCounterRequest, QuerySlashCounterResponse, QueryAllOracleVotesWindowRequest, QueryAllOracleVotesWindowResponse, QueryOracleVotesWindowRequest, QueryOracleVotesWindowResponse, QueryParamsRequest, QueryParamsResponse } from "./oracle/query";
 export { NewVoteEvent, RecordVoteEvent, VoteEvent, ResultEvent, OracleSlashEvent } from "./oracle/event";
+export { QueryParamsRequest, QueryParamsResponse } from "./crisis/query";
 export { QueryParamsRequest, QueryParamsResponse, QueryMarketStatsRequest, QueryMarketStatsResponse } from "./marketstats/query";
 export { MarketStats } from "./marketstats/marketstats";
 export { MsgCreateToken, CreateTokenParams, MsgCreateTokenResponse, MsgSyncToken, MsgSyncTokenResponse, MsgMintToken, MsgMintTokenResponse, MsgBindToken, MsgBindTokenResponse, MsgUnbindToken, MsgUnbindTokenResponse, MsgLinkToken, MsgLinkTokenResponse, MsgWithdraw, MsgWithdrawResponse, MsgAuthorizeBridge, MsgAuthorizeBridgeResponse, MsgDeauthorizeBridge, MsgDeauthorizeBridgeResponse, MsgEditBridgeName, MsgEditBridgeNameResponse, MsgRemoveBridge, MsgRemoveBridgeResponse, MsgUpdateToken, UpdateTokenParams, MsgUpdateTokenResponse, MsgAddBridgeAddress, MsgAddBridgeAddressResponse, MsgRemoveBridgeAddress, MsgRemoveBridgeAddressResponse } from "./coin/tx";
@@ -618,7 +638,7 @@ export { OrderBookEvent } from "./book/event";
 export { MsgCreateMarket, MsgCreateMarketResponse, MsgUpdateMarket, MsgUpdateMarketResponse } from "./market/tx";
 export { CreateMarketProposal, UpdateMarketProposal } from "./market/proposal";
 export { Market, MarketParams } from "./market/market";
-export { QueryGetMarketRequest, QueryGetMarketResponse, QueryAllMarketRequest, QueryAllMarketResponse, QueryParamsRequest as MarketQueryParamsRequest, QueryParamsResponse as MarketQueryParamsResponse } from "./market/query";
+export { QueryGetMarketRequest, QueryGetMarketResponse, QueryAllMarketRequest, QueryAllMarketResponse, QueryParamsRequest, QueryParamsResponse } from "./market/query";
 export { MarketEvent } from "./market/event";
 export { MintData } from "./inflation/inflation";
 export { QueryMintDataRequest, QueryMintDataResponse } from "./inflation/query";
@@ -627,11 +647,11 @@ export { MsgCreatePool, MsgCreatePoolResponse, MsgCreatePoolWithLiquidity, MsgCr
 export { RewardCurve, CommitmentCurve, RewardWeight, RewardWeights, Commitment, CommitmentRecord, TotalCommitment, TotalCommitmentRecord, CommitmentResponse, RewardHistory, RewardHistoryRecord, CommitmentExpiry, CommitmentExpiries, CommitmentExpiriesRecord, LastClaimRecord, AllocatedRewards } from "./liquiditypool/reward";
 export { Params, Pool, Pools, AddLiquidity, AddLiquidities, RemoveLiquidity, RemoveLiquidities } from "./liquiditypool/liquiditypool";
 export { LinkPoolProposal, UnlinkPoolProposal, SetRewardCurveProposal, SetCommitmentCurveProposal, SetRewardsWeightsProposal, UpdatePoolProposal } from "./liquiditypool/proposal";
-export { QueryGetPoolRequest, QueryGetPoolResponse, QueryAllPoolRequest, QueryAllPoolResponse, QueryRewardHistoryRequest, ExtendedPool, QueryRewardHistoryResponse, QueryCommitmentRequest, QueryCommitmentResponse, QueryAllCommitmentRequest, QueryAllCommitmentResponse, QueryLastClaimRequest, QueryLastClaimResponse, QueryCommitmentCurveRequest, QueryCommitmentCurveResponse, QueryRewardCurveRequest, QueryRewardCurveResponse, QueryTotalCommitmentRequest, QueryTotalCommitmentResponse, QueryAllTotalCommitmentRequest, QueryAllTotalCommitmentResponse, QueryClaimableRewardsRequest, QueryClaimableRewardsResponse } from "./liquiditypool/query";
+export { QueryGetPoolRequest, QueryGetPoolResponse, QueryAllPoolRequest, QueryAllPoolResponse, QueryRewardHistoryRequest, ExtendedPool, QueryRewardHistoryResponse, QueryCommitmentRequest, QueryCommitmentResponse, QueryAllCommitmentRequest, QueryAllCommitmentResponse, QueryLastClaimRequest, QueryLastClaimResponse, QueryCommitmentCurveRequest, QueryCommitmentCurveResponse, QueryRewardCurveRequest, QueryRewardCurveResponse, QueryTotalCommitmentRequest, QueryTotalCommitmentResponse, QueryAllTotalCommitmentRequest, QueryAllTotalCommitmentResponse, QueryClaimableRewardsRequest, QueryClaimableRewardsResponse, QueryParamsRequest, QueryParamsResponse } from "./liquiditypool/query";
 export { PoolEvent, TotalCommitmentChangeEvent, RewardsWeightChangeEvent, CommitmentCurveEvent, CommitmentEvent } from "./liquiditypool/event";
 export { QueryBalanceRequest, QueryBalanceResponse } from "./insurance/query";
 export { EventDataInsuranceFundTransfer } from "./insurance/event";
 export { FundByMarket, Fund } from "./insurance/fund";
 export { SettlementPriceProposal, SettlementPriceParams } from "./pricing/proposal";
-export { QueryPriceSetRequest, QueryPriceSetResponse, QueryAllPriceSetRequest, QueryAllPriceSetResponse, QueryRateRequest, QueryRateResponse } from "./pricing/query";
+export { QueryPriceSetRequest, QueryPriceSetResponse, QueryAllPriceSetRequest, QueryAllPriceSetResponse, QueryRateRequest, QueryRateResponse, QueryParamsRequest, QueryParamsResponse } from "./pricing/query";
 export { PriceUpdateEvent } from "./pricing/event";

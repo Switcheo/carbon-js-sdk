@@ -46,6 +46,14 @@ export interface QueryAllBlockResponse {
   pagination?: PageResponse;
 }
 
+export interface QueryModuleAddressRequest {
+  module: string;
+}
+
+export interface QueryModuleAddressResponse {
+  address: string;
+}
+
 const baseQuerySearchRequest: object = { keyword: "", limit: Long.UZERO };
 
 export const QuerySearchRequest = {
@@ -670,6 +678,134 @@ export const QueryAllBlockResponse = {
   },
 };
 
+const baseQueryModuleAddressRequest: object = { module: "" };
+
+export const QueryModuleAddressRequest = {
+  encode(
+    message: QueryModuleAddressRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.module !== "") {
+      writer.uint32(10).string(message.module);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryModuleAddressRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryModuleAddressRequest,
+    } as QueryModuleAddressRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.module = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryModuleAddressRequest {
+    const message = {
+      ...baseQueryModuleAddressRequest,
+    } as QueryModuleAddressRequest;
+    message.module =
+      object.module !== undefined && object.module !== null
+        ? String(object.module)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryModuleAddressRequest): unknown {
+    const obj: any = {};
+    message.module !== undefined && (obj.module = message.module);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryModuleAddressRequest>
+  ): QueryModuleAddressRequest {
+    const message = {
+      ...baseQueryModuleAddressRequest,
+    } as QueryModuleAddressRequest;
+    message.module = object.module ?? "";
+    return message;
+  },
+};
+
+const baseQueryModuleAddressResponse: object = { address: "" };
+
+export const QueryModuleAddressResponse = {
+  encode(
+    message: QueryModuleAddressResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.address !== "") {
+      writer.uint32(10).string(message.address);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryModuleAddressResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryModuleAddressResponse,
+    } as QueryModuleAddressResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.address = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryModuleAddressResponse {
+    const message = {
+      ...baseQueryModuleAddressResponse,
+    } as QueryModuleAddressResponse;
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryModuleAddressResponse): unknown {
+    const obj: any = {};
+    message.address !== undefined && (obj.address = message.address);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryModuleAddressResponse>
+  ): QueryModuleAddressResponse {
+    const message = {
+      ...baseQueryModuleAddressResponse,
+    } as QueryModuleAddressResponse;
+    message.address = object.address ?? "";
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   Search(request: QuerySearchRequest): Promise<QuerySearchResponse>;
@@ -683,6 +819,10 @@ export interface Query {
   ): Promise<QueryAllTransactionResponse>;
   /** Get all blocks */
   BlockAll(request: QueryAllBlockRequest): Promise<QueryAllBlockResponse>;
+  /** Get module address */
+  ModuleAddress(
+    request: QueryModuleAddressRequest
+  ): Promise<QueryModuleAddressResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -693,6 +833,7 @@ export class QueryClientImpl implements Query {
     this.MessageTypeAll = this.MessageTypeAll.bind(this);
     this.TransactionAll = this.TransactionAll.bind(this);
     this.BlockAll = this.BlockAll.bind(this);
+    this.ModuleAddress = this.ModuleAddress.bind(this);
   }
   Search(request: QuerySearchRequest): Promise<QuerySearchResponse> {
     const data = QuerySearchRequest.encode(request).finish();
@@ -743,6 +884,20 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryAllBlockResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  ModuleAddress(
+    request: QueryModuleAddressRequest
+  ): Promise<QueryModuleAddressResponse> {
+    const data = QueryModuleAddressRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.misc.Query",
+      "ModuleAddress",
+      data
+    );
+    return promise.then((data) =>
+      QueryModuleAddressResponse.decode(new _m0.Reader(data))
     );
   }
 }
