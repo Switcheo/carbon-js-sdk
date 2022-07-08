@@ -4,7 +4,7 @@ import { MsgAuthorizeBridge, MsgBindToken, MsgCreateToken, MsgDeauthorizeBridge,
 import { Coin } from "@carbon-sdk/codec/cosmos/base/v1beta1/coin";
 import { Description } from "@carbon-sdk/codec/cosmos/staking/v1beta1/staking";
 import { MsgCreateValidator, MsgEditValidator } from "@carbon-sdk/codec/cosmos/staking/v1beta1/tx";
-import { MsgSetFee } from "@carbon-sdk/codec/fee/tx";
+import { MsgSetGasCost, MsgSetMinGasPrice, MsgRemoveGasCost, MsgRemoveMinGasPrice } from "@carbon-sdk/codec/fee/tx";
 import { MsgLinkPool, MsgSetCommitmentCurve, MsgSetRewardCurve, MsgSetRewardsWeights, MsgUnlinkPool, MsgUpdatePool } from "@carbon-sdk/codec/liquiditypool/tx";
 import { MsgCreateMarket } from "@carbon-sdk/codec/market/tx";
 import { MsgCreateOracle } from "@carbon-sdk/codec/oracle/tx";
@@ -267,16 +267,58 @@ export class AdminModule extends BaseModule {
     });
   }
 
-  public async setMsgFee(params: AdminModule.SetMsgFeeParams) {
+  public async setMsgGasCost(params: AdminModule.SetMsgGasCostParams) {
     const wallet = this.getWallet();
 
-    const value = MsgSetFee.fromPartial({
+    const value = MsgSetGasCost.fromPartial({
       creator: wallet.bech32Address,
-      setFeeParams: transfromSetMsgFeeParams(params)
+      setGasCostParams: transfromSetMsgGasCostParams(params)
     })
 
     return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgSetFee,
+      typeUrl: CarbonTx.Types.MsgSetGasCost,
+      value,
+    });
+  }
+
+  public async setMinGasPrice(params: AdminModule.SetMinGasPriceParams) {
+    const wallet = this.getWallet();
+
+    const value = MsgSetMinGasPrice.fromPartial({
+      creator: wallet.bech32Address,
+      setMinGasPriceParams: transfromSetMinGasPriceParams(params)
+    })
+
+    return await wallet.sendTx({
+      typeUrl: CarbonTx.Types.MsgSetMinGasPrice,
+      value,
+    });
+  }
+
+  public async removeMsgGasCost(params: AdminModule.RemoveMsgGasCostParams) {
+    const wallet = this.getWallet();
+
+    const value = MsgRemoveGasCost.fromPartial({
+      creator: wallet.bech32Address,
+      msgType: transfromRemoveMsgGasCostParams(params)
+    })
+
+    return await wallet.sendTx({
+      typeUrl: CarbonTx.Types.MsgRemoveGasCost,
+      value,
+    });
+  }
+
+  public async removeMinGasPrice(params: AdminModule.RemoveMinGasPriceParams) {
+    const wallet = this.getWallet();
+
+    const value = MsgRemoveMinGasPrice.fromPartial({
+      creator: wallet.bech32Address,
+      denom: transfromRemoveMinGasPriceParams(params)
+    })
+
+    return await wallet.sendTx({
+      typeUrl: CarbonTx.Types.MsgRemoveMinGasPrice,
       value,
     });
   }
@@ -474,9 +516,21 @@ export namespace AdminModule {
     blockchain: string
   }
 
-  export interface SetMsgFeeParams {
+  export interface SetMsgGasCostParams {
     msgType: string
-    fee: BigNumber
+    gasCost: BigNumber
+  }
+
+  export interface SetMinGasPriceParams {
+    denom: string
+    gasPrice: BigNumber
+  }
+
+  export interface RemoveMsgGasCostParams {
+    msgType: string
+  }
+  export interface RemoveMinGasPriceParams {
+    denom: string
   }
 
   export interface CreateValidatorParams {
@@ -607,10 +661,29 @@ export function transfromSetTradingFlagParams(msg: AdminModule.SetTradingFlagPar
   }
 }
 
-export function transfromSetMsgFeeParams(msg: AdminModule.SetMsgFeeParams) {
+export function transfromSetMsgGasCostParams(msg: AdminModule.SetMsgGasCostParams) {
   return {
     msgType: msg.msgType,
-    fee: msg.fee.toString(10),
+    gasCost: msg.gasCost.toString(10),
+  }
+}
+
+export function transfromSetMinGasPriceParams(msg: AdminModule.SetMinGasPriceParams) {
+  return {
+    denom: msg.denom,
+    gasPrice: msg.gasPrice.toString(10),
+  }
+}
+
+export function transfromRemoveMsgGasCostParams(msg: AdminModule.RemoveMsgGasCostParams) {
+  return {
+    msgType: msg.msgType,
+  }
+}
+
+export function transfromRemoveMinGasPriceParams(msg: AdminModule.RemoveMinGasPriceParams) {
+  return {
+    denom: msg.denom,
   }
 }
 
