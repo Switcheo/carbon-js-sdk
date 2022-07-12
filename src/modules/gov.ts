@@ -1,5 +1,5 @@
 import { CreateTokenProposal } from "@carbon-sdk/codec/coin/proposal";
-import { SetMsgFeeProposal } from "@carbon-sdk/codec/fee/proposal";
+import { SetMsgGasCostProposal, SetMinGasPriceProposal, RemoveMsgGasCostProposal, RemoveMinGasPriceProposal } from "@carbon-sdk/codec/fee/proposal";
 import { LinkPoolProposal, SetCommitmentCurveProposal, SetRewardCurveProposal, SetRewardsWeightsProposal, UnlinkPoolProposal, UpdatePoolProposal } from "@carbon-sdk/codec/liquiditypool/proposal";
 import { UpdateMarketProposal } from "@carbon-sdk/codec/market/proposal";
 import { CreateOracleProposal } from "@carbon-sdk/codec/oracle/proposal";
@@ -13,7 +13,8 @@ import { TextProposal, VoteOption } from "@carbon-sdk/codec/cosmos/gov/v1beta1/g
 import _m0 from "protobufjs/minimal";
 import { 
   transfromCreateTokenParams,
-  transfromSetMsgFeeParams, 
+  transfromSetMsgGasCostParams, 
+  transfromSetMinGasPriceParams, 
   transfromLinkPoolParams,
   transfromUnlinkPoolParams,
   transfromSetRewardCurveParams,
@@ -86,13 +87,34 @@ export class GovModule extends BaseModule {
           msg: transfromCreateTokenParams(msg, wallet.bech32Address)
         }
         return CreateTokenProposal.encode(createTokenMsg).finish()
-      case "SetMsgFeeProposal":
-        const setMsgFeeMsg = {
+      case "SetMsgGasCostProposal":
+        const setMsgGasCostMsg = {
           title : title,
           description: description,
-          msg: transfromSetMsgFeeParams(msg)
+          msg: transfromSetMsgGasCostParams(msg)
         }
-        return SetMsgFeeProposal.encode(setMsgFeeMsg).finish()
+        return SetMsgGasCostProposal.encode(setMsgGasCostMsg).finish()
+      case "SetMinGasPriceProposal":
+        const setMinGasPriceMsg = {
+          title : title,
+          description: description,
+          msg: transfromSetMinGasPriceParams(msg)
+        }
+        return SetMinGasPriceProposal.encode(setMinGasPriceMsg).finish()
+      case "RemoveMsgGasCostProposal":
+        const removeMsgGasCostMsg = {
+          title : title,
+          description: description,
+          msgType: proposalMsg.msgType,
+        }
+        return RemoveMsgGasCostProposal.encode(removeMsgGasCostMsg).finish()
+      case "RemoveMinGasPriceProposal":
+        const removeMinGasPriceMsg = {
+          title : title,
+          description: description,
+          denom: proposalMsg.denom,
+        }
+        return RemoveMinGasPriceProposal.encode(removeMinGasPriceMsg).finish()
       case "LinkPoolProposal":
         const linkPoolMsg = {
           title : title,
@@ -232,7 +254,8 @@ export namespace GovModule {
 
   export type ProposalTypeParams =
     AdminModule.CreateTokenParams |
-    AdminModule.SetMsgFeeParams |
+    AdminModule.SetMsgGasCostParams |
+    AdminModule.SetMinGasPriceParams |
     AdminModule.LinkPoolParams |
     AdminModule.UnlinkPoolParams |
     AdminModule.SetRewardCurveParams |

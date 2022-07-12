@@ -19,7 +19,10 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
   SetCommitmentCurve: "liquiditypool/SetCommitmentCurve",
   UpdatePool: "liquiditypool/UpdatePool",
   SetTradingFlag: "order/SetTradingFlag",
-  SetMsgFee: "fee/SetMsgFee",
+  SetMsgGasCost: "fee/SetMsgGasCost",
+  SetMinGasPrice: "fee/SetMinGasPrice",
+  RemoveMsgGasCost: "fee/RemoveMsgGasCost",
+  RemoveMinGasPrice: "fee/RemoveMinGasPrice",
   CreateValidator: "cosmos-sdk/MsgCreateValidator",
   EditValidator: "cosmos-sdk/MsgEditValidator",
 }
@@ -150,8 +153,23 @@ const MsgSetTradingFlag: AminoInit = {
   valueMap: {},
 };
 
-const MsgSetFee: AminoInit = {
-  aminoType: TxTypes.SetFee,
+const MsgSetGasCost: AminoInit = {
+  aminoType: TxTypes.SetMsgGasCost,
+  valueMap: {},
+};
+
+const MsgSetMinGasPrice: AminoInit = {
+  aminoType: TxTypes.SetMinGasPrice,
+  valueMap: {},
+};
+
+const MsgRemoveGasCost: AminoInit = {
+  aminoType: TxTypes.RemoveMsgGasCost,
+  valueMap: {},
+};
+
+const MsgRemoveMinGasPrice: AminoInit = {
+  aminoType: TxTypes.RemoveMinGasPrice,
   valueMap: {},
 };
 
@@ -188,7 +206,10 @@ const AdminAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgSetRewardCurve]: generateAminoType(MsgSetRewardCurve),
   [CarbonTx.Types.MsgSetCommitmentCurve]: generateAminoType(MsgSetCommitmentCurve),
   [CarbonTx.Types.MsgSetTradingFlag]: generateAminoType(MsgSetTradingFlag),
-  [CarbonTx.Types.MsgSetFee]: generateAminoType(MsgSetFee),
+  [CarbonTx.Types.MsgSetGasCost]: generateAminoType(MsgSetGasCost),
+  [CarbonTx.Types.MsgSetMinGasPrice]: generateAminoType(MsgSetMinGasPrice),
+  [CarbonTx.Types.MsgRemoveGasCost]: generateAminoType(MsgRemoveGasCost),
+  [CarbonTx.Types.MsgRemoveMinGasPrice]: generateAminoType(MsgRemoveMinGasPrice),
   [CarbonTx.Types.MsgCreateValidator]: generateAminoType(MsgCreateValidator),
   [CarbonTx.Types.MsgEditValidator]: generateAminoType(MsgEditValidator),
 };

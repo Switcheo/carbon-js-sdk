@@ -300,7 +300,7 @@ export class AdminModule extends BaseModule {
 
     const value = MsgRemoveGasCost.fromPartial({
       creator: wallet.bech32Address,
-      msgType: transfromRemoveMsgGasCostParams(params)
+      msgType: params.msgType,
     })
 
     return await wallet.sendTx({
@@ -314,7 +314,7 @@ export class AdminModule extends BaseModule {
 
     const value = MsgRemoveMinGasPrice.fromPartial({
       creator: wallet.bech32Address,
-      denom: transfromRemoveMinGasPriceParams(params)
+      denom: params.denom,
     })
 
     return await wallet.sendTx({
@@ -672,18 +672,6 @@ export function transfromSetMinGasPriceParams(msg: AdminModule.SetMinGasPricePar
   return {
     denom: msg.denom,
     gasPrice: msg.gasPrice.toString(10),
-  }
-}
-
-export function transfromRemoveMsgGasCostParams(msg: AdminModule.RemoveMsgGasCostParams) {
-  return {
-    msgType: msg.msgType,
-  }
-}
-
-export function transfromRemoveMinGasPriceParams(msg: AdminModule.RemoveMinGasPriceParams) {
-  return {
-    denom: msg.denom,
   }
 }
 
