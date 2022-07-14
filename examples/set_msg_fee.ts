@@ -4,7 +4,8 @@ import { CarbonSDK } from "./_sdk";
 import "./_setup";
 
 (async () => {
-  const mnemonics = process.env.MNEMONICS ?? BIP39.generateMnemonic();
+  // const mnemonics = process.env.MNEMONICS ?? BIP39.generateMnemonic();
+  const mnemonics = "student sell close mad beef exit gospel inform mom industry airport lounge";
   console.log("mnemonics", mnemonics);
 
   const sdk = await CarbonSDK.instance({
