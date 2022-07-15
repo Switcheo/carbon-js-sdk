@@ -12,10 +12,10 @@ const CONTRACT_HASH: {
   [key in EVMChain]: ChainContracts
 } = {
   [Blockchain.Ethereum]: {
-    // use same ropsten contract for all non-mainnet uses
-    [Network.TestNet]: '0x23629C94F4e8b719094f5D1Ae1c1AA8d6d687966',
-    [Network.DevNet]: '0x23629C94F4e8b719094f5D1Ae1c1AA8d6d687966',
-    [Network.LocalHost]: '0x23629C94F4e8b719094f5D1Ae1c1AA8d6d687966',
+    // use same rinkeby contract for all non-mainnet uses
+    [Network.TestNet]: '0xec8BC20687FfA944F57EB1aAa6F98FEDA30bcA65',
+    [Network.DevNet]: '0xec8BC20687FfA944F57EB1aAa6F98FEDA30bcA65',
+    [Network.LocalHost]: '0xec8BC20687FfA944F57EB1aAa6F98FEDA30bcA65',
 
     [Network.MainNet]: '0xf4552877A40c1527D38970F170993660084D4541',
   } as const,
