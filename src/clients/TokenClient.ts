@@ -9,6 +9,8 @@ import { BN_ONE, BN_ZERO } from "@carbon-sdk/util/number";
 import BigNumber from "bignumber.js";
 import Long from "long";
 import CarbonQueryClient from "./CarbonQueryClient";
+import InsightsQueryClient from "./InsightsQueryClient";
+import { SimpleMap } from "@carbon-sdk/util/type";
 
 const SYMBOL_OVERRIDE: {
   [symbol: string]: string
@@ -93,13 +95,7 @@ class TokenClient {
   }
 
   public getUSDValue(denom: string): BigNumber | undefined {
-    const tokenId = this.tokenForDenom(denom)?.id;
-    // Deal with tokens with id = "" on testnet/devnet/localhost
-    const id = tokenId
-      ? (tokenId !== "" ? tokenId : denom)
-      : denom
-    const commonDenom = this.getCommonDenom(id);
-    return this.usdValues[commonDenom];
+    return this.usdValues[denom];
   }
 
   public toHuman(denom: string, unitlessAmt: BigNumber): BigNumber {
@@ -403,35 +399,52 @@ class TokenClient {
   public async reloadUSDValues(denoms: string[] = Object.keys(this.tokens)): Promise<TypeUtils.SimpleMap<BigNumber>> {
     this.usdValues.iusd = BN_ONE;
 
-    // flatten duplicate denoms
-    const commonDenoms = denoms.reduce((accum, denom) => {
-      if (TokenClient.isPoolToken(denom)) {
-        return accum;
-      }
+    const geckoTokensDenomToCoinIdMap = (await this.getDenomToGeckoIdMap()) as TypeUtils.SimpleMap<string>;
 
-      const tokenId = this.tokenForDenom(denom)?.id ?? "";
-      const commonDenom = this.getCommonDenom(tokenId !== "" ? tokenId : denom);
-
-      if (!accum[commonDenom]) {
-        accum[commonDenom] = commonDenom;
-      }
-
-      return accum;
-    }, {} as TypeUtils.SimpleMap);
-    const coinIds = Object.keys(commonDenoms).map((denom) => this.geckoTokenNames[denom] ?? denom);
-
-    const request = await FetchUtils.fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${coinIds.join(',')}&vs_currencies=usd`);
-    const response = await request.json();
-
-    for (const denom in commonDenoms) {
-      const coinId = this.geckoTokenNames[denom];
-      const price = NumberUtils.bnOrZero(response?.[coinId]?.usd);
-      if (price?.gt(0)) {
-        this.usdValues[denom] = price!;
-      }
+    for (const geckoDenom in geckoTokensDenomToCoinIdMap) {
+      this.geckoTokenNames[geckoDenom] = geckoTokensDenomToCoinIdMap[geckoDenom];
     }
 
+    //Get corresponding geckoId for denoms and removes any duplicated geckoIds (espeically for different wrapped tokens as they correspond to the same geckoId(same price))
+    const geckoIds = denoms.reduce((coinIds, denom) => {
+      const geckoId = this.geckoTokenNames[denom] ?? denom;
+
+      if (geckoId && !coinIds.includes(geckoId)) {
+        coinIds.push(geckoId);
+      }
+      return coinIds;
+    }, [] as string[]);
+
+    const geckoIdToUsdPriceMap = await this.getUSDValuesFromCoinGecko(geckoIds);
+
+    //store price based on denoms
+    for (const denom of denoms) {
+      const coinId = this.geckoTokenNames[denom] ?? denom;
+      const price = NumberUtils.bnOrZero(geckoIdToUsdPriceMap?.[coinId]?.usd)!;
+      if (price.gt(0)) {
+        this.usdValues[denom] = price;
+      }
+    }
     return this.usdValues;
+  }
+
+  async getUSDValuesFromCoinGecko(geckoIds: string[]) {
+    const response = await FetchUtils.fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${geckoIds.join(",")}&vs_currencies=usd`);
+    return await response.json();
+  }
+
+  async getDenomToGeckoIdMap(): Promise<TypeUtils.SimpleMap<string>> {
+    const networkConfig = this.configProvider.getConfig();
+    const insights = new InsightsQueryClient(networkConfig);
+    let tokens : SimpleMap<string> = {};
+    try {
+      const response = await insights.DenomToGeckoIdMap();
+      tokens = response.result.gecko;
+    } catch (err) {
+      throw new Error((err as Error).message ?? "Unknown gecko query error");
+    } finally {
+      return tokens;
+    }
   }
 
   public setCommonAssetConfig() {

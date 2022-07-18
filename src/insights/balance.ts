@@ -1,6 +1,6 @@
 import { TokenBalance } from "@carbon-sdk/codec";
 import { Coin } from "@carbon-sdk/codec/cosmos/base/v1beta1/coin";
-import { Network } from "@carbon-sdk/constant";
+import { SimpleMap } from "@carbon-sdk/util/type";
 import { Interval, PageMeta, QueryByPageRequest, QueryByTimeRequest, TimeMeta } from "./common";
 
 export interface Balance {
@@ -83,4 +83,7 @@ export interface QueryGetBalanceDistributionResponse {
     tokens: BalanceDistribution[]
   }[]
   meta: TimeMeta
+}
+export interface QueryDenomToGeckoIdMap {
+  gecko: SimpleMap<string>
 }
