@@ -53,6 +53,7 @@ class TokenClient {
     this.setCommonAssetConfig();
     await this.reloadWrapperMap();
     await this.reloadTokens();
+    await this.reloadDenomGeckoMap();
 
     // non-blocking reload
     this.reloadUSDValues();
@@ -396,14 +397,16 @@ class TokenClient {
     return this.wrapperMap;
   }
 
-  public async reloadUSDValues(denoms: string[] = Object.keys(this.tokens)): Promise<TypeUtils.SimpleMap<BigNumber>> {
-    this.usdValues.iusd = BN_ONE;
-
+  public async reloadDenomGeckoMap() {
     const geckoTokensDenomToCoinIdMap = (await this.getDenomToGeckoIdMap()) as TypeUtils.SimpleMap<string>;
 
     for (const geckoDenom in geckoTokensDenomToCoinIdMap) {
       this.geckoTokenNames[geckoDenom] = geckoTokensDenomToCoinIdMap[geckoDenom];
     }
+  }
+
+  public async reloadUSDValues(denoms: string[] = Object.keys(this.tokens)): Promise<TypeUtils.SimpleMap<BigNumber>> {
+    this.usdValues.iusd = BN_ONE;
 
     //Get corresponding geckoId for denoms and removes any duplicated geckoIds (espeically for different wrapped tokens as they correspond to the same geckoId(same price))
     const geckoIds = denoms.reduce((coinIds, denom) => {
