@@ -88,6 +88,9 @@ const directoryBlacklist = ['cosmos', 'ibc', 'tendermint', 'btcx', 'ccm', 'heade
 const fileNameBlacklist = ['genesis.ts', 'keys.ts']
 
 const modelBlacklist: string[] = ['MsgClientImpl', 'protobufPackage', 'GenesisState', 'QueryClientImpl'];
+const labelOverride: { [key: string]: string } = {
+  "MarketParams": "MarketDefaults",
+}
 
 for (const moduleFile of codecFiles) {
   if (!moduleFile.endsWith(".ts")) {
@@ -111,14 +114,15 @@ for (const moduleFile of codecFiles) {
     const messagePrev = prev;
     let newKey = key;
     const firstDirName = capitalize(firstDirectory);
-    const fileNameNoSuffix = capitalize(fileName.replace('.ts', ''));
-    const newLabel = `${firstDirName}${fileNameNoSuffix}`;
+    const fileNameNoSuffix = fileName.replace('.ts', '');
+    const newLabel = fileNameNoSuffix === 'query' ? firstDirName : `${firstDirName}${capitalize(fileNameNoSuffix)}`;
+
     if (key === "Params") {
-      newKey = `Params as ${newLabel}Params`;
+      newKey = `Params as ${labelOverride[`${firstDirName}Params`] ?? firstDirName}Params`;
     } else if (key === "QueryParamsRequest") {
-      newKey = `QueryParamsRequest as Query${newLabel}ParamsRequest`;
+      newKey = `QueryParamsRequest as Query${labelOverride[newLabel] ?? newLabel}ParamsRequest`;
     } else if (key === "QueryParamsResponse") {
-      newKey = `QueryParamsResponse as Query${newLabel}ParamsResponse`;
+      newKey = `QueryParamsResponse as Query${labelOverride[newLabel] ?? newLabel}ParamsResponse`;
     }
     messagePrev.push(newKey);
     return messagePrev;
