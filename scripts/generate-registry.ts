@@ -86,29 +86,8 @@ console.log("");
 console.log('// Exported for convenience');
 const directoryBlacklist = ['cosmos', 'ibc', 'tendermint', 'btcx', 'ccm', 'headersync', 'lockproxy']
 const fileNameBlacklist = ['genesis.ts', 'keys.ts']
-const relativePathBlacklist = ['./marketstats/params', './pricing/pricing']
 
-interface BlacklistItem {
-  path: string
-  module: string
-}
-
-const modelBlacklist: BlacklistItem[] = [{
-  path: 'all',
-  module: 'MsgClientImpl',
-}, {
-  path: 'all',
-  module: 'protobufPackage',
-}, {
-  path: 'all',
-  module: 'GenesisState',
-}, {
-  path: 'all',
-  module: 'QueryClientImpl',
-}, {
-  path: '/market/market',
-  module: 'Params',
-}]
+const modelBlacklist: string[] = ['MsgClientImpl', 'protobufPackage', 'GenesisState', 'QueryClientImpl'];
 
 for (const moduleFile of codecFiles) {
   if (!moduleFile.endsWith(".ts")) {
@@ -126,19 +105,29 @@ for (const moduleFile of codecFiles) {
 
   const codecModule = require(`${pwd}/${moduleFile.replace(/\.ts$/i, '')}`);
 
-  const messages = Object.keys(codecModule).filter((key) => {
-    const blacklistItem = modelBlacklist.find((blacklist: BlacklistItem) => {
-      if (blacklist.path === 'all' || relativePath.includes(blacklist.path)) {
-        return blacklist.module === key
-      }
-      return false
-    })
-    return blacklistItem ? false : true
-  });
+  const messages = Object.keys(codecModule).filter((key: string) => (
+    !modelBlacklist.includes(key)
+  )).reduce((prev: string[], key: string) => {
+    const messagePrev = prev;
+    let newKey = key;
+    const firstDirName = capitalize(firstDirectory);
+    const fileNameNoSuffix = capitalize(fileName.replace('.ts', ''));
+    const newLabel = `${firstDirName}${fileNameNoSuffix}`;
+    if (key === "Params") {
+      newKey = `Params as ${newLabel}Params`;
+    } else if (key === "QueryParamsRequest") {
+      newKey = `QueryParamsRequest as Query${newLabel}ParamsRequest`;
+    } else if (key === "QueryParamsResponse") {
+      newKey = `QueryParamsResponse as Query${newLabel}ParamsResponse`;
+    }
+    messagePrev.push(newKey);
+    return messagePrev;
+  }, []);
+
 
   if (messages.length) {
     modules[codecModule.protobufPackage] = messages;
-    if (relativePath === "" || relativePathBlacklist.includes(relativePath)) {
+    if (relativePath === "") {
       continue
     }
 
