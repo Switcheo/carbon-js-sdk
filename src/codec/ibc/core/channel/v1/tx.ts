@@ -8,26 +8,26 @@ export const protobufPackage = "ibc.core.channel.v1";
 
 /** ResponseResultType defines the possible outcomes of the execution of a message */
 export enum ResponseResultType {
-  /** RESPONSE_RESULT_UNSPECIFIED - Default zero value enumeration */
-  RESPONSE_RESULT_UNSPECIFIED = 0,
-  /** RESPONSE_RESULT_NOOP - The message did not call the IBC application callbacks (because, for example, the packet had already been relayed) */
-  RESPONSE_RESULT_NOOP = 1,
-  /** RESPONSE_RESULT_SUCCESS - The message was executed successfully */
-  RESPONSE_RESULT_SUCCESS = 2,
+  /** RESPONSE_RESULT_TYPE_UNSPECIFIED - Default zero value enumeration */
+  RESPONSE_RESULT_TYPE_UNSPECIFIED = 0,
+  /** RESPONSE_RESULT_TYPE_NOOP - The message did not call the IBC application callbacks (because, for example, the packet had already been relayed) */
+  RESPONSE_RESULT_TYPE_NOOP = 1,
+  /** RESPONSE_RESULT_TYPE_SUCCESS - The message was executed successfully */
+  RESPONSE_RESULT_TYPE_SUCCESS = 2,
   UNRECOGNIZED = -1,
 }
 
 export function responseResultTypeFromJSON(object: any): ResponseResultType {
   switch (object) {
     case 0:
-    case "RESPONSE_RESULT_UNSPECIFIED":
-      return ResponseResultType.RESPONSE_RESULT_UNSPECIFIED;
+    case "RESPONSE_RESULT_TYPE_UNSPECIFIED":
+      return ResponseResultType.RESPONSE_RESULT_TYPE_UNSPECIFIED;
     case 1:
-    case "RESPONSE_RESULT_NOOP":
-      return ResponseResultType.RESPONSE_RESULT_NOOP;
+    case "RESPONSE_RESULT_TYPE_NOOP":
+      return ResponseResultType.RESPONSE_RESULT_TYPE_NOOP;
     case 2:
-    case "RESPONSE_RESULT_SUCCESS":
-      return ResponseResultType.RESPONSE_RESULT_SUCCESS;
+    case "RESPONSE_RESULT_TYPE_SUCCESS":
+      return ResponseResultType.RESPONSE_RESULT_TYPE_SUCCESS;
     case -1:
     case "UNRECOGNIZED":
     default:
@@ -37,12 +37,12 @@ export function responseResultTypeFromJSON(object: any): ResponseResultType {
 
 export function responseResultTypeToJSON(object: ResponseResultType): string {
   switch (object) {
-    case ResponseResultType.RESPONSE_RESULT_UNSPECIFIED:
-      return "RESPONSE_RESULT_UNSPECIFIED";
-    case ResponseResultType.RESPONSE_RESULT_NOOP:
-      return "RESPONSE_RESULT_NOOP";
-    case ResponseResultType.RESPONSE_RESULT_SUCCESS:
-      return "RESPONSE_RESULT_SUCCESS";
+    case ResponseResultType.RESPONSE_RESULT_TYPE_UNSPECIFIED:
+      return "RESPONSE_RESULT_TYPE_UNSPECIFIED";
+    case ResponseResultType.RESPONSE_RESULT_TYPE_NOOP:
+      return "RESPONSE_RESULT_TYPE_NOOP";
+    case ResponseResultType.RESPONSE_RESULT_TYPE_SUCCESS:
+      return "RESPONSE_RESULT_TYPE_SUCCESS";
     default:
       return "UNKNOWN";
   }
@@ -61,6 +61,7 @@ export interface MsgChannelOpenInit {
 /** MsgChannelOpenInitResponse defines the Msg/ChannelOpenInit response type. */
 export interface MsgChannelOpenInitResponse {
   channelId: string;
+  version: string;
 }
 
 /**
@@ -84,7 +85,9 @@ export interface MsgChannelOpenTry {
 }
 
 /** MsgChannelOpenTryResponse defines the Msg/ChannelOpenTry response type. */
-export interface MsgChannelOpenTryResponse {}
+export interface MsgChannelOpenTryResponse {
+  version: string;
+}
 
 /**
  * MsgChannelOpenAck defines a msg sent by a Relayer to Chain A to acknowledge
@@ -291,7 +294,7 @@ export const MsgChannelOpenInit = {
   },
 };
 
-const baseMsgChannelOpenInitResponse: object = { channelId: "" };
+const baseMsgChannelOpenInitResponse: object = { channelId: "", version: "" };
 
 export const MsgChannelOpenInitResponse = {
   encode(
@@ -300,6 +303,9 @@ export const MsgChannelOpenInitResponse = {
   ): _m0.Writer {
     if (message.channelId !== "") {
       writer.uint32(10).string(message.channelId);
+    }
+    if (message.version !== "") {
+      writer.uint32(18).string(message.version);
     }
     return writer;
   },
@@ -319,6 +325,9 @@ export const MsgChannelOpenInitResponse = {
         case 1:
           message.channelId = reader.string();
           break;
+        case 2:
+          message.version = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -335,12 +344,17 @@ export const MsgChannelOpenInitResponse = {
       object.channelId !== undefined && object.channelId !== null
         ? String(object.channelId)
         : "";
+    message.version =
+      object.version !== undefined && object.version !== null
+        ? String(object.version)
+        : "";
     return message;
   },
 
   toJSON(message: MsgChannelOpenInitResponse): unknown {
     const obj: any = {};
     message.channelId !== undefined && (obj.channelId = message.channelId);
+    message.version !== undefined && (obj.version = message.version);
     return obj;
   },
 
@@ -351,6 +365,7 @@ export const MsgChannelOpenInitResponse = {
       ...baseMsgChannelOpenInitResponse,
     } as MsgChannelOpenInitResponse;
     message.channelId = object.channelId ?? "";
+    message.version = object.version ?? "";
     return message;
   },
 };
@@ -505,13 +520,16 @@ export const MsgChannelOpenTry = {
   },
 };
 
-const baseMsgChannelOpenTryResponse: object = {};
+const baseMsgChannelOpenTryResponse: object = { version: "" };
 
 export const MsgChannelOpenTryResponse = {
   encode(
-    _: MsgChannelOpenTryResponse,
+    message: MsgChannelOpenTryResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
+    if (message.version !== "") {
+      writer.uint32(10).string(message.version);
+    }
     return writer;
   },
 
@@ -527,6 +545,9 @@ export const MsgChannelOpenTryResponse = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.version = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -535,24 +556,30 @@ export const MsgChannelOpenTryResponse = {
     return message;
   },
 
-  fromJSON(_: any): MsgChannelOpenTryResponse {
+  fromJSON(object: any): MsgChannelOpenTryResponse {
     const message = {
       ...baseMsgChannelOpenTryResponse,
     } as MsgChannelOpenTryResponse;
+    message.version =
+      object.version !== undefined && object.version !== null
+        ? String(object.version)
+        : "";
     return message;
   },
 
-  toJSON(_: MsgChannelOpenTryResponse): unknown {
+  toJSON(message: MsgChannelOpenTryResponse): unknown {
     const obj: any = {};
+    message.version !== undefined && (obj.version = message.version);
     return obj;
   },
 
   fromPartial(
-    _: DeepPartial<MsgChannelOpenTryResponse>
+    object: DeepPartial<MsgChannelOpenTryResponse>
   ): MsgChannelOpenTryResponse {
     const message = {
       ...baseMsgChannelOpenTryResponse,
     } as MsgChannelOpenTryResponse;
+    message.version = object.version ?? "";
     return message;
   },
 };

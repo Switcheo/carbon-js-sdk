@@ -2,9 +2,9 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 
-export const protobufPackage = "Switcheo.carbon.bank";
+export const protobufPackage = "Switcheo.carbon.crisis";
 
-/** GenesisState defines the bank module's genesis state. */
+/** GenesisState defines the crisis module's genesis state. */
 export interface GenesisState {}
 
 const baseGenesisState: object = {};

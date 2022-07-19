@@ -16,6 +16,12 @@ export interface MsgProcessCrossChainTx {
 
 export interface MsgProcessCrossChainTxResponse {}
 
+export interface MsgCreateEmitEvent {
+  creator: string;
+  toChainId: Long;
+  crossChainId: Long;
+}
+
 const baseMsgProcessCrossChainTx: object = {
   submitter: "",
   fromChainId: Long.UZERO,
@@ -199,11 +205,103 @@ export const MsgProcessCrossChainTxResponse = {
   },
 };
 
+const baseMsgCreateEmitEvent: object = {
+  creator: "",
+  toChainId: Long.UZERO,
+  crossChainId: Long.UZERO,
+};
+
+export const MsgCreateEmitEvent = {
+  encode(
+    message: MsgCreateEmitEvent,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (!message.toChainId.isZero()) {
+      writer.uint32(16).uint64(message.toChainId);
+    }
+    if (!message.crossChainId.isZero()) {
+      writer.uint32(24).uint64(message.crossChainId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreateEmitEvent {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgCreateEmitEvent } as MsgCreateEmitEvent;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.toChainId = reader.uint64() as Long;
+          break;
+        case 3:
+          message.crossChainId = reader.uint64() as Long;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgCreateEmitEvent {
+    const message = { ...baseMsgCreateEmitEvent } as MsgCreateEmitEvent;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.toChainId =
+      object.toChainId !== undefined && object.toChainId !== null
+        ? Long.fromString(object.toChainId)
+        : Long.UZERO;
+    message.crossChainId =
+      object.crossChainId !== undefined && object.crossChainId !== null
+        ? Long.fromString(object.crossChainId)
+        : Long.UZERO;
+    return message;
+  },
+
+  toJSON(message: MsgCreateEmitEvent): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.toChainId !== undefined &&
+      (obj.toChainId = (message.toChainId || Long.UZERO).toString());
+    message.crossChainId !== undefined &&
+      (obj.crossChainId = (message.crossChainId || Long.UZERO).toString());
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgCreateEmitEvent>): MsgCreateEmitEvent {
+    const message = { ...baseMsgCreateEmitEvent } as MsgCreateEmitEvent;
+    message.creator = object.creator ?? "";
+    message.toChainId =
+      object.toChainId !== undefined && object.toChainId !== null
+        ? Long.fromValue(object.toChainId)
+        : Long.UZERO;
+    message.crossChainId =
+      object.crossChainId !== undefined && object.crossChainId !== null
+        ? Long.fromValue(object.crossChainId)
+        : Long.UZERO;
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
   /** this line is used by starport scaffolding # proto/tx/rpc */
   Process(
     request: MsgProcessCrossChainTx
+  ): Promise<MsgProcessCrossChainTxResponse>;
+  ProcessMsgCreateEmitEvent(
+    request: MsgCreateEmitEvent
   ): Promise<MsgProcessCrossChainTxResponse>;
 }
 
@@ -212,6 +310,7 @@ export class MsgClientImpl implements Msg {
   constructor(rpc: Rpc) {
     this.rpc = rpc;
     this.Process = this.Process.bind(this);
+    this.ProcessMsgCreateEmitEvent = this.ProcessMsgCreateEmitEvent.bind(this);
   }
   Process(
     request: MsgProcessCrossChainTx
@@ -220,6 +319,20 @@ export class MsgClientImpl implements Msg {
     const promise = this.rpc.request(
       "Switcheo.carbon.ccm.Msg",
       "Process",
+      data
+    );
+    return promise.then((data) =>
+      MsgProcessCrossChainTxResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  ProcessMsgCreateEmitEvent(
+    request: MsgCreateEmitEvent
+  ): Promise<MsgProcessCrossChainTxResponse> {
+    const data = MsgCreateEmitEvent.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.ccm.Msg",
+      "ProcessMsgCreateEmitEvent",
       data
     );
     return promise.then((data) =>

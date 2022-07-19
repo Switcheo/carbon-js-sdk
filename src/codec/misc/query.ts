@@ -46,6 +46,25 @@ export interface QueryAllBlockResponse {
   pagination?: PageResponse;
 }
 
+export interface QueryAllModuleAddressRequest {}
+
+export interface QueryAllModuleAddressResponse {
+  addresses: { [key: string]: string };
+}
+
+export interface QueryAllModuleAddressResponse_AddressesEntry {
+  key: string;
+  value: string;
+}
+
+export interface QueryModuleAddressRequest {
+  module: string;
+}
+
+export interface QueryModuleAddressResponse {
+  address: string;
+}
+
 const baseQuerySearchRequest: object = { keyword: "", limit: Long.UZERO };
 
 export const QuerySearchRequest = {
@@ -670,6 +689,351 @@ export const QueryAllBlockResponse = {
   },
 };
 
+const baseQueryAllModuleAddressRequest: object = {};
+
+export const QueryAllModuleAddressRequest = {
+  encode(
+    _: QueryAllModuleAddressRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAllModuleAddressRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAllModuleAddressRequest,
+    } as QueryAllModuleAddressRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryAllModuleAddressRequest {
+    const message = {
+      ...baseQueryAllModuleAddressRequest,
+    } as QueryAllModuleAddressRequest;
+    return message;
+  },
+
+  toJSON(_: QueryAllModuleAddressRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<QueryAllModuleAddressRequest>
+  ): QueryAllModuleAddressRequest {
+    const message = {
+      ...baseQueryAllModuleAddressRequest,
+    } as QueryAllModuleAddressRequest;
+    return message;
+  },
+};
+
+const baseQueryAllModuleAddressResponse: object = {};
+
+export const QueryAllModuleAddressResponse = {
+  encode(
+    message: QueryAllModuleAddressResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    Object.entries(message.addresses).forEach(([key, value]) => {
+      QueryAllModuleAddressResponse_AddressesEntry.encode(
+        { key: key as any, value },
+        writer.uint32(10).fork()
+      ).ldelim();
+    });
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAllModuleAddressResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAllModuleAddressResponse,
+    } as QueryAllModuleAddressResponse;
+    message.addresses = {};
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          const entry1 = QueryAllModuleAddressResponse_AddressesEntry.decode(
+            reader,
+            reader.uint32()
+          );
+          if (entry1.value !== undefined) {
+            message.addresses[entry1.key] = entry1.value;
+          }
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllModuleAddressResponse {
+    const message = {
+      ...baseQueryAllModuleAddressResponse,
+    } as QueryAllModuleAddressResponse;
+    message.addresses = Object.entries(object.addresses ?? {}).reduce<{
+      [key: string]: string;
+    }>((acc, [key, value]) => {
+      acc[key] = String(value);
+      return acc;
+    }, {});
+    return message;
+  },
+
+  toJSON(message: QueryAllModuleAddressResponse): unknown {
+    const obj: any = {};
+    obj.addresses = {};
+    if (message.addresses) {
+      Object.entries(message.addresses).forEach(([k, v]) => {
+        obj.addresses[k] = v;
+      });
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAllModuleAddressResponse>
+  ): QueryAllModuleAddressResponse {
+    const message = {
+      ...baseQueryAllModuleAddressResponse,
+    } as QueryAllModuleAddressResponse;
+    message.addresses = Object.entries(object.addresses ?? {}).reduce<{
+      [key: string]: string;
+    }>((acc, [key, value]) => {
+      if (value !== undefined) {
+        acc[key] = String(value);
+      }
+      return acc;
+    }, {});
+    return message;
+  },
+};
+
+const baseQueryAllModuleAddressResponse_AddressesEntry: object = {
+  key: "",
+  value: "",
+};
+
+export const QueryAllModuleAddressResponse_AddressesEntry = {
+  encode(
+    message: QueryAllModuleAddressResponse_AddressesEntry,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== "") {
+      writer.uint32(18).string(message.value);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAllModuleAddressResponse_AddressesEntry {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAllModuleAddressResponse_AddressesEntry,
+    } as QueryAllModuleAddressResponse_AddressesEntry;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.key = reader.string();
+          break;
+        case 2:
+          message.value = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllModuleAddressResponse_AddressesEntry {
+    const message = {
+      ...baseQueryAllModuleAddressResponse_AddressesEntry,
+    } as QueryAllModuleAddressResponse_AddressesEntry;
+    message.key =
+      object.key !== undefined && object.key !== null ? String(object.key) : "";
+    message.value =
+      object.value !== undefined && object.value !== null
+        ? String(object.value)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryAllModuleAddressResponse_AddressesEntry): unknown {
+    const obj: any = {};
+    message.key !== undefined && (obj.key = message.key);
+    message.value !== undefined && (obj.value = message.value);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAllModuleAddressResponse_AddressesEntry>
+  ): QueryAllModuleAddressResponse_AddressesEntry {
+    const message = {
+      ...baseQueryAllModuleAddressResponse_AddressesEntry,
+    } as QueryAllModuleAddressResponse_AddressesEntry;
+    message.key = object.key ?? "";
+    message.value = object.value ?? "";
+    return message;
+  },
+};
+
+const baseQueryModuleAddressRequest: object = { module: "" };
+
+export const QueryModuleAddressRequest = {
+  encode(
+    message: QueryModuleAddressRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.module !== "") {
+      writer.uint32(10).string(message.module);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryModuleAddressRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryModuleAddressRequest,
+    } as QueryModuleAddressRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.module = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryModuleAddressRequest {
+    const message = {
+      ...baseQueryModuleAddressRequest,
+    } as QueryModuleAddressRequest;
+    message.module =
+      object.module !== undefined && object.module !== null
+        ? String(object.module)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryModuleAddressRequest): unknown {
+    const obj: any = {};
+    message.module !== undefined && (obj.module = message.module);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryModuleAddressRequest>
+  ): QueryModuleAddressRequest {
+    const message = {
+      ...baseQueryModuleAddressRequest,
+    } as QueryModuleAddressRequest;
+    message.module = object.module ?? "";
+    return message;
+  },
+};
+
+const baseQueryModuleAddressResponse: object = { address: "" };
+
+export const QueryModuleAddressResponse = {
+  encode(
+    message: QueryModuleAddressResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.address !== "") {
+      writer.uint32(10).string(message.address);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryModuleAddressResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryModuleAddressResponse,
+    } as QueryModuleAddressResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.address = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryModuleAddressResponse {
+    const message = {
+      ...baseQueryModuleAddressResponse,
+    } as QueryModuleAddressResponse;
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryModuleAddressResponse): unknown {
+    const obj: any = {};
+    message.address !== undefined && (obj.address = message.address);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryModuleAddressResponse>
+  ): QueryModuleAddressResponse {
+    const message = {
+      ...baseQueryModuleAddressResponse,
+    } as QueryModuleAddressResponse;
+    message.address = object.address ?? "";
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   Search(request: QuerySearchRequest): Promise<QuerySearchResponse>;
@@ -683,6 +1047,14 @@ export interface Query {
   ): Promise<QueryAllTransactionResponse>;
   /** Get all blocks */
   BlockAll(request: QueryAllBlockRequest): Promise<QueryAllBlockResponse>;
+  /** Get all module addresses */
+  ModuleAddressAll(
+    request: QueryAllModuleAddressRequest
+  ): Promise<QueryAllModuleAddressResponse>;
+  /** Get module address */
+  ModuleAddress(
+    request: QueryModuleAddressRequest
+  ): Promise<QueryModuleAddressResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -693,6 +1065,8 @@ export class QueryClientImpl implements Query {
     this.MessageTypeAll = this.MessageTypeAll.bind(this);
     this.TransactionAll = this.TransactionAll.bind(this);
     this.BlockAll = this.BlockAll.bind(this);
+    this.ModuleAddressAll = this.ModuleAddressAll.bind(this);
+    this.ModuleAddress = this.ModuleAddress.bind(this);
   }
   Search(request: QuerySearchRequest): Promise<QuerySearchResponse> {
     const data = QuerySearchRequest.encode(request).finish();
@@ -743,6 +1117,34 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryAllBlockResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  ModuleAddressAll(
+    request: QueryAllModuleAddressRequest
+  ): Promise<QueryAllModuleAddressResponse> {
+    const data = QueryAllModuleAddressRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.misc.Query",
+      "ModuleAddressAll",
+      data
+    );
+    return promise.then((data) =>
+      QueryAllModuleAddressResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  ModuleAddress(
+    request: QueryModuleAddressRequest
+  ): Promise<QueryModuleAddressResponse> {
+    const data = QueryModuleAddressRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.misc.Query",
+      "ModuleAddress",
+      data
+    );
+    return promise.then((data) =>
+      QueryModuleAddressResponse.decode(new _m0.Reader(data))
     );
   }
 }

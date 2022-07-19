@@ -2,25 +2,21 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 
-export const protobufPackage = "Switcheo.carbon.bank";
+export const protobufPackage = "Switcheo.carbon.liquidation";
 
-/** GenesisState defines the bank module's genesis state. */
-export interface GenesisState {}
+export interface Params {}
 
-const baseGenesisState: object = {};
+const baseParams: object = {};
 
-export const GenesisState = {
-  encode(
-    _: GenesisState,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+export const Params = {
+  encode(_: Params, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): GenesisState {
+  decode(input: _m0.Reader | Uint8Array, length?: number): Params {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseGenesisState } as GenesisState;
+    const message = { ...baseParams } as Params;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -32,18 +28,18 @@ export const GenesisState = {
     return message;
   },
 
-  fromJSON(_: any): GenesisState {
-    const message = { ...baseGenesisState } as GenesisState;
+  fromJSON(_: any): Params {
+    const message = { ...baseParams } as Params;
     return message;
   },
 
-  toJSON(_: GenesisState): unknown {
+  toJSON(_: Params): unknown {
     const obj: any = {};
     return obj;
   },
 
-  fromPartial(_: DeepPartial<GenesisState>): GenesisState {
-    const message = { ...baseGenesisState } as GenesisState;
+  fromPartial(_: DeepPartial<Params>): Params {
+    const message = { ...baseParams } as Params;
     return message;
   },
 };

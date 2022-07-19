@@ -1,7 +1,9 @@
 import {
   CreateOracleProposal, CreateTokenProposal, LinkPoolProposal,
-  SetCommitmentCurveProposal, SetMsgFeeProposal, SetRewardCurveProposal, SetRewardsWeightsProposal,
-  SettlementPriceProposal, UnlinkPoolProposal, UpdateMarketProposal, UpdatePoolProposal
+  SetCommitmentCurveProposal, SetMsgGasCostProposal, SetMinGasPriceProposal,
+  RemoveMsgGasCostProposal, RemoveMinGasPriceProposal, SetRewardCurveProposal,
+  SetRewardsWeightsProposal, SettlementPriceProposal, UnlinkPoolProposal,
+  UpdateMarketProposal, UpdatePoolProposal
 } from "@carbon-sdk/codec";
 import { CommunityPoolSpendProposal } from "@carbon-sdk/codec/cosmos/distribution/v1beta1/distribution";
 import { TextProposal } from "@carbon-sdk/codec/cosmos/gov/v1beta1/gov";
@@ -16,7 +18,10 @@ export enum ProposalTypes {
   CommunityPoolSpend = "/cosmos.distribution.v1beta1.CommunityPoolSpendProposal",
   Text = "/cosmos.gov.v1beta1.TextProposal",
 
-  SetMsgFee = "/Switcheo.carbon.fee.SetMsgFeeProposal",
+  SetMsgGasCost = "/Switcheo.carbon.fee.SetMsgGasCostProposal",
+  SetMinGasPrice = "/Switcheo.carbon.fee.SetMinGasPriceProposal",
+  RemoveMsgGasCost = "/Switcheo.carbon.fee.RemoveMsgGasCostProposal",
+  RemoveMinGasPrice = "/Switcheo.carbon.fee.RemoveMinGasPriceProposal",
   CreateToken = "/Switcheo.carbon.coin.CreateTokenProposal",
   CreateOracle = "/Switcheo.carbon.oracle.CreateOracleProposal",
   LinkPool = "/Switcheo.carbon.liquiditypool.LinkPoolProposal",
@@ -94,10 +99,25 @@ export const decodeContent = (content?: Any): PropDecoded => {
         ...content,
         value: SetCommitmentCurveProposal.decode(content.value),
       };
-    case ProposalTypes.SetMsgFee:
+    case ProposalTypes.SetMsgGasCost:
       return {
         ...content,
-        value: SetMsgFeeProposal.decode(content.value),
+        value: SetMsgGasCostProposal.decode(content.value),
+      };
+    case ProposalTypes.SetMinGasPrice:
+      return {
+        ...content,
+        value: SetMinGasPriceProposal.decode(content.value),
+      };
+    case ProposalTypes.RemoveMsgGasCost:
+      return {
+        ...content,
+        value: RemoveMsgGasCostProposal.decode(content.value),
+      };
+    case ProposalTypes.RemoveMinGasPrice:
+      return {
+        ...content,
+        value: RemoveMinGasPriceProposal.decode(content.value),
       };
     case ProposalTypes.SetRewardCurve:
       return {

@@ -19,6 +19,8 @@ export interface VaultType {
   debtDenom: string;
 }
 
+export interface Params {}
+
 const baseVault: object = { vaultTypeId: Long.UZERO, address: "" };
 
 export const Vault = {
@@ -216,6 +218,44 @@ export const VaultType = {
     message.collateralDenom = object.collateralDenom ?? "";
     message.collateralizationRatio = object.collateralizationRatio ?? "";
     message.debtDenom = object.debtDenom ?? "";
+    return message;
+  },
+};
+
+const baseParams: object = {};
+
+export const Params = {
+  encode(_: Params, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): Params {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseParams } as Params;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): Params {
+    const message = { ...baseParams } as Params;
+    return message;
+  },
+
+  toJSON(_: Params): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(_: DeepPartial<Params>): Params {
+    const message = { ...baseParams } as Params;
     return message;
   },
 };

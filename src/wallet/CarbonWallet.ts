@@ -1,12 +1,12 @@
 import { CarbonQueryClient } from "@carbon-sdk/clients";
-import { MsgFee, registry } from "@carbon-sdk/codec";
+import { MsgGasCost, MinGasPrice, registry } from "@carbon-sdk/codec";
 import { DEFAULT_GAS, DEFAULT_NETWORK, Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
 import { ProviderAgent } from "@carbon-sdk/constant/walletProvider";
 import { AminoTypesMap, CosmosLedger } from "@carbon-sdk/provider";
 import { AddressUtils, CarbonTx, GenericUtils } from "@carbon-sdk/util";
 import { SWTHAddress } from "@carbon-sdk/util/address";
 import { bnOrZero, BN_ZERO } from "@carbon-sdk/util/number";
-import { BroadcastTxMode, TxFeeTypeDefaultKey } from "@carbon-sdk/util/tx";
+import { BroadcastTxMode, TxGasCostTypeDefaultKey, TxMinGasPriceTypeDefaultKey } from "@carbon-sdk/util/tx";
 import { SimpleMap } from "@carbon-sdk/util/type";
 import { encodeSecp256k1Signature, StdSignature } from "@cosmjs/amino";
 import { EncodeObject, OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
@@ -93,7 +93,8 @@ export class CarbonWallet {
   publicKey: Buffer;
   query?: CarbonQueryClient;
 
-  txFees?: SimpleMap<BigNumber>;
+  txGasCosts?: SimpleMap<BigNumber>;
+  txMinGasPrices?: SimpleMap<BigNumber>;
   initialized: boolean = false;
 
   accountInfo?: AccountInfo;
@@ -217,7 +218,8 @@ export class CarbonWallet {
     this.query = queryClient;
 
     await Promise.all([
-      this.reloadTxFees(),
+      this.reloadTxGasCosts(),
+      this.reloadTxMinGasPrices(),
       this.reloadAccountSequence(),
     ]);
 
@@ -281,14 +283,17 @@ export class CarbonWallet {
 
     if (!fee) {
       // compute required fee
+      const defaultDenom = TxMinGasPriceTypeDefaultKey;
       const totalFeeCost = messages.reduce((totalFee, message) => {
-        const msgFee = this.getFee(message.typeUrl);
-        return msgFee.gt(0) ? totalFee.plus(msgFee) : totalFee;
+        const msgGasCost = this.getMsgGasCost(message.typeUrl);
+        const minGasPrice = this.getMinGasPrice(defaultDenom);
+        const msgFee = msgGasCost.multipliedBy(minGasPrice);
+        return msgGasCost.gt(0) ? totalFee.plus(msgFee) : totalFee;
       }, BN_ZERO);
       fee = {
         amount: [{
           amount: totalFeeCost.toString(10),
-          denom: "swth",
+          denom: defaultDenom,
         }],
         gas: DEFAULT_GAS.times(messages.length).toString(10),
       };
@@ -388,26 +393,48 @@ export class CarbonWallet {
     return this.isSigner(CarbonSignerTypes.BrowserInjected);
   }
 
-  public getFee(msgTypeUrl: string): BigNumber {
-    if (!this.txFees) {
-      console.warn("tx fees not initialized");
+  public getMsgGasCost(msgTypeUrl: string): BigNumber {
+    if (!this.txGasCosts) {
+      console.warn("tx gas costs not initialized");
     }
-    return this.txFees?.[msgTypeUrl] ?? this.txFees?.[TxFeeTypeDefaultKey] ?? BN_ZERO;
+    return this.txGasCosts?.[msgTypeUrl] ?? this.txGasCosts?.[TxGasCostTypeDefaultKey] ?? BN_ZERO;
   }
 
-  public updateTxFees(msgFees: MsgFee[]) {
-    const feesMap: SimpleMap<BigNumber> = msgFees.reduce((accum, fee) => {
-      accum[fee.msgType] = bnOrZero(fee.fee);
+  public updateTxGasCosts(msgGasCosts: MsgGasCost[]) {
+    const msgGasCostsMap: SimpleMap<BigNumber> = msgGasCosts.reduce((accum, msgGasCost) => {
+      accum[msgGasCost.msgType] = bnOrZero(msgGasCost.gasCost);
       return accum;
     }, {} as SimpleMap<BigNumber>);
 
-    this.txFees = feesMap;
+    this.txGasCosts = msgGasCostsMap;
   }
 
-  public async reloadTxFees() {
+  public getMinGasPrice(denom: string): BigNumber {
+    if (!this.txMinGasPrices) {
+      console.warn("tx min gas prices not initialized");
+    }
+    return this.txMinGasPrices?.[denom] ?? this.txMinGasPrices?.[TxMinGasPriceTypeDefaultKey] ?? BN_ZERO;
+  }
+
+  public updateTxMinGasPrices(minGasPrices: MinGasPrice[]) {
+    const minGasPricesMap: SimpleMap<BigNumber> = minGasPrices.reduce((accum, minGasPrice) => {
+      accum[minGasPrice.denom] = bnOrZero(minGasPrice.gasPrice);
+      return accum;
+    }, {} as SimpleMap<BigNumber>);
+
+    this.txMinGasPrices = minGasPricesMap;
+  }
+
+  public async reloadTxGasCosts() {
     const queryClient = this.getQueryClient();
-    const response = await queryClient.fee.MsgFeeAll({});
-    this.updateTxFees(response.msgFees);
+    const response = await queryClient.fee.MsgGasCostAll({});
+    this.updateTxGasCosts(response.msgGasCosts);
+  }
+
+  public async reloadTxMinGasPrices() {
+    const queryClient = this.getQueryClient();
+    const response = await queryClient.fee.MinGasPriceAll({});
+    this.updateTxMinGasPrices(response.minGasPrices);
   }
 
   public async reloadAccountSequence() {

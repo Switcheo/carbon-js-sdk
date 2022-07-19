@@ -60,6 +60,14 @@ export interface QueryGetBalancesResponse {
   tokenBalances: TokenBalance[];
 }
 
+export interface QueryTotalBalancesRequest {
+  endBlockHeight: string;
+}
+
+export interface QueryTotalBalancesResponse {
+  balances: TokenBalance[];
+}
+
 export interface QueryGetBridgeRequest {
   bridgeId: Long;
   chainId: Long;
@@ -911,6 +919,143 @@ export const QueryGetBalancesResponse = {
   },
 };
 
+const baseQueryTotalBalancesRequest: object = { endBlockHeight: "" };
+
+export const QueryTotalBalancesRequest = {
+  encode(
+    message: QueryTotalBalancesRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.endBlockHeight !== "") {
+      writer.uint32(10).string(message.endBlockHeight);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryTotalBalancesRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryTotalBalancesRequest,
+    } as QueryTotalBalancesRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.endBlockHeight = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryTotalBalancesRequest {
+    const message = {
+      ...baseQueryTotalBalancesRequest,
+    } as QueryTotalBalancesRequest;
+    message.endBlockHeight =
+      object.endBlockHeight !== undefined && object.endBlockHeight !== null
+        ? String(object.endBlockHeight)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryTotalBalancesRequest): unknown {
+    const obj: any = {};
+    message.endBlockHeight !== undefined &&
+      (obj.endBlockHeight = message.endBlockHeight);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryTotalBalancesRequest>
+  ): QueryTotalBalancesRequest {
+    const message = {
+      ...baseQueryTotalBalancesRequest,
+    } as QueryTotalBalancesRequest;
+    message.endBlockHeight = object.endBlockHeight ?? "";
+    return message;
+  },
+};
+
+const baseQueryTotalBalancesResponse: object = {};
+
+export const QueryTotalBalancesResponse = {
+  encode(
+    message: QueryTotalBalancesResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.balances) {
+      TokenBalance.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryTotalBalancesResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryTotalBalancesResponse,
+    } as QueryTotalBalancesResponse;
+    message.balances = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.balances.push(TokenBalance.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryTotalBalancesResponse {
+    const message = {
+      ...baseQueryTotalBalancesResponse,
+    } as QueryTotalBalancesResponse;
+    message.balances = (object.balances ?? []).map((e: any) =>
+      TokenBalance.fromJSON(e)
+    );
+    return message;
+  },
+
+  toJSON(message: QueryTotalBalancesResponse): unknown {
+    const obj: any = {};
+    if (message.balances) {
+      obj.balances = message.balances.map((e) =>
+        e ? TokenBalance.toJSON(e) : undefined
+      );
+    } else {
+      obj.balances = [];
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryTotalBalancesResponse>
+  ): QueryTotalBalancesResponse {
+    const message = {
+      ...baseQueryTotalBalancesResponse,
+    } as QueryTotalBalancesResponse;
+    message.balances = (object.balances ?? []).map((e) =>
+      TokenBalance.fromPartial(e)
+    );
+    return message;
+  },
+};
+
 const baseQueryGetBridgeRequest: object = {
   bridgeId: Long.UZERO,
   chainId: Long.UZERO,
@@ -1219,6 +1364,10 @@ export interface Query {
   ): Promise<QueryAllWrapperMappingsResponse>;
   /** Get balances for an address */
   Balances(request: QueryGetBalancesRequest): Promise<QueryGetBalancesResponse>;
+  /** Get all balances of all addresses */
+  BalancesTotal(
+    request: QueryTotalBalancesRequest
+  ): Promise<QueryTotalBalancesResponse>;
   /** Get details for a cross-chain bridge */
   Bridge(request: QueryGetBridgeRequest): Promise<QueryGetBridgeResponse>;
   /** Get details for all cross-chain bridges */
@@ -1234,6 +1383,7 @@ export class QueryClientImpl implements Query {
     this.LockedCoins = this.LockedCoins.bind(this);
     this.WrapperMappings = this.WrapperMappings.bind(this);
     this.Balances = this.Balances.bind(this);
+    this.BalancesTotal = this.BalancesTotal.bind(this);
     this.Bridge = this.Bridge.bind(this);
     this.BridgeAll = this.BridgeAll.bind(this);
   }
@@ -1300,6 +1450,20 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryGetBalancesResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  BalancesTotal(
+    request: QueryTotalBalancesRequest
+  ): Promise<QueryTotalBalancesResponse> {
+    const data = QueryTotalBalancesRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.coin.Query",
+      "BalancesTotal",
+      data
+    );
+    return promise.then((data) =>
+      QueryTotalBalancesResponse.decode(new _m0.Reader(data))
     );
   }
 

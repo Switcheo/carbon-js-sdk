@@ -30,6 +30,7 @@ export interface Params {
   defaultMarkPriceBand: number;
   defaultLastPriceProtectedBand: number;
   maxActiveMarkets: number;
+  defaultTradingBandwidth: number;
 }
 
 export interface Market {
@@ -106,6 +107,7 @@ const baseParams: object = {
   defaultMarkPriceBand: 0,
   defaultLastPriceProtectedBand: 0,
   maxActiveMarkets: 0,
+  defaultTradingBandwidth: 0,
 };
 
 export const Params = {
@@ -166,6 +168,9 @@ export const Params = {
     }
     if (message.maxActiveMarkets !== 0) {
       writer.uint32(136).uint32(message.maxActiveMarkets);
+    }
+    if (message.defaultTradingBandwidth !== 0) {
+      writer.uint32(144).uint32(message.defaultTradingBandwidth);
     }
     return writer;
   },
@@ -230,6 +235,9 @@ export const Params = {
           break;
         case 17:
           message.maxActiveMarkets = reader.uint32();
+          break;
+        case 18:
+          message.defaultTradingBandwidth = reader.uint32();
           break;
         default:
           reader.skipType(tag & 7);
@@ -325,6 +333,11 @@ export const Params = {
       object.maxActiveMarkets !== undefined && object.maxActiveMarkets !== null
         ? Number(object.maxActiveMarkets)
         : 0;
+    message.defaultTradingBandwidth =
+      object.defaultTradingBandwidth !== undefined &&
+      object.defaultTradingBandwidth !== null
+        ? Number(object.defaultTradingBandwidth)
+        : 0;
     return message;
   },
 
@@ -370,6 +383,8 @@ export const Params = {
         message.defaultLastPriceProtectedBand);
     message.maxActiveMarkets !== undefined &&
       (obj.maxActiveMarkets = message.maxActiveMarkets);
+    message.defaultTradingBandwidth !== undefined &&
+      (obj.defaultTradingBandwidth = message.defaultTradingBandwidth);
     return obj;
   },
 
@@ -399,6 +414,7 @@ export const Params = {
     message.defaultLastPriceProtectedBand =
       object.defaultLastPriceProtectedBand ?? 0;
     message.maxActiveMarkets = object.maxActiveMarkets ?? 0;
+    message.defaultTradingBandwidth = object.defaultTradingBandwidth ?? 0;
     return message;
   },
 };
