@@ -16,6 +16,11 @@ export interface MsgProcessCrossChainTx {
 
 export interface MsgProcessCrossChainTxResponse {}
 
+export interface MsgToggleEmitZionEvents {
+  creator: string;
+  toggleTo: boolean;
+}
+
 const baseMsgProcessCrossChainTx: object = {
   submitter: "",
   fromChainId: Long.UZERO,
@@ -199,11 +204,90 @@ export const MsgProcessCrossChainTxResponse = {
   },
 };
 
+const baseMsgToggleEmitZionEvents: object = { creator: "", toggleTo: false };
+
+export const MsgToggleEmitZionEvents = {
+  encode(
+    message: MsgToggleEmitZionEvents,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.toggleTo === true) {
+      writer.uint32(16).bool(message.toggleTo);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgToggleEmitZionEvents {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgToggleEmitZionEvents,
+    } as MsgToggleEmitZionEvents;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.toggleTo = reader.bool();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgToggleEmitZionEvents {
+    const message = {
+      ...baseMsgToggleEmitZionEvents,
+    } as MsgToggleEmitZionEvents;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.toggleTo =
+      object.toggleTo !== undefined && object.toggleTo !== null
+        ? Boolean(object.toggleTo)
+        : false;
+    return message;
+  },
+
+  toJSON(message: MsgToggleEmitZionEvents): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.toggleTo !== undefined && (obj.toggleTo = message.toggleTo);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgToggleEmitZionEvents>
+  ): MsgToggleEmitZionEvents {
+    const message = {
+      ...baseMsgToggleEmitZionEvents,
+    } as MsgToggleEmitZionEvents;
+    message.creator = object.creator ?? "";
+    message.toggleTo = object.toggleTo ?? false;
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
   /** this line is used by starport scaffolding # proto/tx/rpc */
   Process(
     request: MsgProcessCrossChainTx
+  ): Promise<MsgProcessCrossChainTxResponse>;
+  ProcessToggleEmitZionEvents(
+    request: MsgToggleEmitZionEvents
   ): Promise<MsgProcessCrossChainTxResponse>;
 }
 
@@ -212,6 +296,8 @@ export class MsgClientImpl implements Msg {
   constructor(rpc: Rpc) {
     this.rpc = rpc;
     this.Process = this.Process.bind(this);
+    this.ProcessToggleEmitZionEvents =
+      this.ProcessToggleEmitZionEvents.bind(this);
   }
   Process(
     request: MsgProcessCrossChainTx
@@ -220,6 +306,20 @@ export class MsgClientImpl implements Msg {
     const promise = this.rpc.request(
       "Switcheo.carbon.ccm.Msg",
       "Process",
+      data
+    );
+    return promise.then((data) =>
+      MsgProcessCrossChainTxResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  ProcessToggleEmitZionEvents(
+    request: MsgToggleEmitZionEvents
+  ): Promise<MsgProcessCrossChainTxResponse> {
+    const data = MsgToggleEmitZionEvents.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.ccm.Msg",
+      "ProcessToggleEmitZionEvents",
       data
     );
     return promise.then((data) =>
