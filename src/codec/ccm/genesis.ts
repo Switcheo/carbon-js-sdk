@@ -1,6 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
+import { Params } from "./ccm";
 
 export const protobufPackage = "Switcheo.carbon.ccm";
 
@@ -14,6 +15,8 @@ export interface GenesisState {
   receivedTxIds: { [key: string]: Uint8Array };
   /** Denom to creator mapping. */
   denomCreators: { [key: string]: string };
+  /** params defines all the paramaters of the module. */
+  params?: Params;
 }
 
 export interface GenesisState_CreatedTxDetailsEntry {
@@ -59,6 +62,9 @@ export const GenesisState = {
         writer.uint32(34).fork()
       ).ldelim();
     });
+    if (message.params !== undefined) {
+      Params.encode(message.params, writer.uint32(42).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -102,6 +108,9 @@ export const GenesisState = {
             message.denomCreators[entry4.key] = entry4.value;
           }
           break;
+        case 5:
+          message.params = Params.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -134,6 +143,10 @@ export const GenesisState = {
       acc[key] = String(value);
       return acc;
     }, {});
+    message.params =
+      object.params !== undefined && object.params !== null
+        ? Params.fromJSON(object.params)
+        : undefined;
     return message;
   },
 
@@ -159,6 +172,8 @@ export const GenesisState = {
         obj.denomCreators[k] = v;
       });
     }
+    message.params !== undefined &&
+      (obj.params = message.params ? Params.toJSON(message.params) : undefined);
     return obj;
   },
 
@@ -189,6 +204,10 @@ export const GenesisState = {
       }
       return acc;
     }, {});
+    message.params =
+      object.params !== undefined && object.params !== null
+        ? Params.fromPartial(object.params)
+        : undefined;
     return message;
   },
 };

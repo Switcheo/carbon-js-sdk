@@ -2,28 +2,36 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 
-export const protobufPackage = "Switcheo.carbon.bank";
+export const protobufPackage = "Switcheo.carbon.ccm";
 
-/** GenesisState defines the bank module's genesis state. */
-export interface GenesisState {}
+/** Params defines the parameters for the ccm module. */
+export interface Params {
+  emitZionEvents: boolean;
+}
 
-const baseGenesisState: object = {};
+const baseParams: object = { emitZionEvents: false };
 
-export const GenesisState = {
+export const Params = {
   encode(
-    _: GenesisState,
+    message: Params,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
+    if (message.emitZionEvents === true) {
+      writer.uint32(8).bool(message.emitZionEvents);
+    }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): GenesisState {
+  decode(input: _m0.Reader | Uint8Array, length?: number): Params {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseGenesisState } as GenesisState;
+    const message = { ...baseParams } as Params;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.emitZionEvents = reader.bool();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -32,18 +40,25 @@ export const GenesisState = {
     return message;
   },
 
-  fromJSON(_: any): GenesisState {
-    const message = { ...baseGenesisState } as GenesisState;
+  fromJSON(object: any): Params {
+    const message = { ...baseParams } as Params;
+    message.emitZionEvents =
+      object.emitZionEvents !== undefined && object.emitZionEvents !== null
+        ? Boolean(object.emitZionEvents)
+        : false;
     return message;
   },
 
-  toJSON(_: GenesisState): unknown {
+  toJSON(message: Params): unknown {
     const obj: any = {};
+    message.emitZionEvents !== undefined &&
+      (obj.emitZionEvents = message.emitZionEvents);
     return obj;
   },
 
-  fromPartial(_: DeepPartial<GenesisState>): GenesisState {
-    const message = { ...baseGenesisState } as GenesisState;
+  fromPartial(object: DeepPartial<Params>): Params {
+    const message = { ...baseParams } as Params;
+    message.emitZionEvents = object.emitZionEvents ?? false;
     return message;
   },
 };
