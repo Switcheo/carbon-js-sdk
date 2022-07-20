@@ -88,9 +88,9 @@ export enum ChainIds {
 }
 
 // whitelisted networks for addition of swth as a currency
-export const swthIbcWhitelist: string[] = [ChainIds.Osmosis];
+export const swthIbcWhitelist: string[] = [ChainIds.Osmosis, ChainIds.Juno];
 // whitelisted networks for addition of transfer options
-export const ibcWhitelist: string[] = [ChainIds.Osmosis, ChainIds.Terra, ChainIds.CosmosHub];
+export const ibcWhitelist: string[] = [ChainIds.Osmosis, ChainIds.Terra, ChainIds.CosmosHub, ChainIds.Juno];
 
 // blacklisted networks for address generation and input
 export const ibcAddrBlacklist: string[] = [ChainIds.Terra]
