@@ -88,7 +88,7 @@ export enum ChainIds {
 }
 
 // whitelisted networks for addition of swth as a currency
-export const swthIbcWhitelist: string[] = [ChainIds.Osmosis, ChainIds.Juno];
+export const swthIbcWhitelist: string[] = [ChainIds.Osmosis];
 // whitelisted networks for addition of transfer options
 export const ibcWhitelist: string[] = [ChainIds.Osmosis, ChainIds.Terra, ChainIds.CosmosHub, ChainIds.Juno];
 
@@ -1565,6 +1565,10 @@ export const swthChannels: SimpleMap<ChannelConfig> = {
 	[ChainIds.CosmosHub]: {
 		sourceChannel: "channel-3",
 		dstChannel: "channel-342",
+	},
+	[ChainIds.Juno]: {
+		sourceChannel: "channel-4",
+		dstChannel: "channel-92",
 	},
 };
 
