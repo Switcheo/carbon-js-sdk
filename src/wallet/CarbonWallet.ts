@@ -89,7 +89,7 @@ interface PromiseHandler<T> {
 
 interface SignTxRequest {
   signerAddress: string;
-  attempts?: number;
+  reattempts?: number;
   messages: readonly EncodeObject[];
   broadcastOpts?: CarbonTx.BroadcastTxOpts;
   signOpts?: CarbonTx.SignTxOpts;
@@ -355,7 +355,7 @@ export class CarbonWallet {
   }
 
   private async signTx(txRequest: SignTxRequest) {
-    const { signerAddress, signOpts, messages, broadcastOpts, handler: { resolve, reject } } = txRequest;
+    const { reattempts, signerAddress, signOpts, messages, broadcastOpts, handler: { resolve, reject } } = txRequest;
     try {
       if (!this.accountInfo || this.sequenceInvalidated)
         await this.reloadAccountSequence();
@@ -379,6 +379,7 @@ export class CarbonWallet {
       const signedTx = await this.getSignedTx(signerAddress, messages, sequence, _signOpts);
 
       this.txDispatchManager.enqueue({
+        reattempts,
         signerAddress,
         messages,
         signedTx,
@@ -398,15 +399,15 @@ export class CarbonWallet {
       const result = await broadcastFunc(signedTx, broadcastOpts);
       resolve(result);
     } catch (error: any) {
-      const attempts = txRequest.attempts ?? 0;
+      const reattempts = txRequest.reattempts ?? 0;
       // retry sendTx if nonce error once.
-      if (!this.disableRetryOnSequenceError && attempts < 1 && this.isNonceMismatchError(error)) {
+      if (!this.disableRetryOnSequenceError && reattempts < 1 && this.isNonceMismatchError(error)) {
         // invalidate account sequence for reload on next signTx call
         this.sequenceInvalidated = true;
 
         // requeue transaction for signTx
         this.txSignManager.enqueue({
-          attempts: (txRequest.attempts ?? 0) + 1,
+          reattempts: (reattempts ?? 0) + 1,
           signerAddress: txRequest.signerAddress,
           messages: txRequest.messages,
           broadcastOpts,
