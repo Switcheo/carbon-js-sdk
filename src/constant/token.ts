@@ -172,6 +172,7 @@ export const CommonAssetName: SimpleMap<string> = {
   'gm.1.6.e93773': 'gm',
   'ava1.1.6.95712b': 'ava',
   'ibc/4294C3DB67564CF4A0B2BFACC8415A59B38243F6FF9E288FBA34F9B4823BA16E': 'ust-terra',
+  'huny.1.18.3a5a8b': 'huny',
 
   // devnet tokens
   'one.1.2.0c4e3f': 'one',
@@ -362,6 +363,7 @@ export const CoinGeckoTokenNames: SimpleMap<string> = {
   gm: 'ghostmarket',
   ava: 'concierge-io',
   'ust-terra': 'terrausd',
+  huny: 'huny',
 };
 
 export const TokenBlacklist: OptionalNetworkMap<string[]> = {

@@ -24,11 +24,17 @@ interface ETHTxParams {
   signer: ethers.Signer;
 }
 
-export interface BridgeParams extends ETHTxParams {
+export interface BridgeParams {
   fromToken: Models.Token;
   toToken: Models.Token;
   amount: BigNumber;
+  fromAddress: string;
   recoveryAddress: string;
+  toAddress: string;
+  feeAmount: BigNumber
+  gasPriceGwei: BigNumber;
+  gasLimit: BigNumber;
+  signer: ethers.Signer;
   signCompleteCallback?: () => void;
 }
 
@@ -132,7 +138,7 @@ export class ETHClient {
   }
 
   public async bridgeTokens(params: BridgeParams): Promise<EthersTransactionResponse> {
-    const { fromToken, toToken, amount, recoveryAddress, ethAddress, signer, gasPriceGwei, gasLimit } = params;
+    const { fromToken, toToken, amount, toAddress, fromAddress, recoveryAddress, signer, gasPriceGwei, gasLimit, feeAmount, signCompleteCallback } = params;
 
     const networkConfig = this.getNetworkConfig();
     const rpcProvider = this.getProvider();
@@ -144,16 +150,14 @@ export class ETHClient {
     const fromTokenId = fromToken.id;
     const fromTokenAddress = appendHexPrefix(fromToken.tokenAddress);
     const toTokenDenom = toToken.denom;
-    const decimals = fromToken.decimals.toNumber();
 
     const recoveryAddressHex = ethers.utils.hexlify(
       AddressUtils.SWTHAddress.getAddressBytes(recoveryAddress, CarbonSDK.Network.MainNet) 
     );
     
     const fromAssetHash = ethers.utils.hexlify(ethers.utils.toUtf8Bytes(fromTokenId));
-    const bridgeAmount = ethers.utils.parseUnits(amount.toString(), decimals);
     const toAssetHash = ethers.utils.hexlify(ethers.utils.toUtf8Bytes(toTokenDenom));
-    const nonce = await rpcProvider.getTransactionCount(ethAddress);
+    const nonce = await rpcProvider.getTransactionCount(fromAddress);
 
     const contract = new ethers.Contract(this.getBridgeEntranceAddr(), ABIs.bridgeEntrance, rpcProvider);
     const feeAddress = appendHexPrefix(networkConfig.feeAddress);
@@ -162,18 +166,20 @@ export class ETHClient {
 
     const targetAddressBytes = AddressUtils.SWTHAddress.getAddressBytes(tokenCreator, CarbonSDK.Network.MainNet);
     const targetProxyHash = ethers.utils.hexlify(targetAddressBytes);
-
     const bridgeResultTx = await contract.connect(signer).lock(
       fromTokenAddress, // the asset to deposit (from) (0x00 if eth)
       [
-        targetProxyHash, //_targetProxyHash
+        targetProxyHash, // _targetProxyHash
         recoveryAddressHex, // _recoveryAddress
         fromAssetHash, // _fromAssetHash
         feeAddress, // _feeAddress
-        ethAddress, // _toAddress the L1 address to bridge to
+        toAddress, // _toAddress the L1 address to bridge to
         toAssetHash, // _toAssetHash
       ],
-      [bridgeAmount.toString(), "0", bridgeAmount.toString()],
+      [
+        amount.toString(10), // amount
+        feeAmount.toString(10), // fee amount
+        amount.toString(10)], // callAmount
       {
         gasLimit: gasLimit.toString(10),
         gasPrice: gasPriceGwei.shiftedBy(9).toString(10),
@@ -181,11 +187,13 @@ export class ETHClient {
       }
     );
 
+    signCompleteCallback?.();
+
     return bridgeResultTx;
   }
 
   public async lockDeposit(params: LockParams): Promise<EthersTransactionResponse> {
-    const { address, token, amount, gasPriceGwei, gasLimit, ethAddress, signer } = params;
+    const { address, token, amount, gasPriceGwei, gasLimit, ethAddress, signer, signCompleteCallback } = params;
 
     if (gasLimit.lt(150000)) {
       throw new Error("Minimum gas required: 150,000");
@@ -229,6 +237,8 @@ export class ETHClient {
         }),
       }
     );
+
+    signCompleteCallback?.();
 
     return lockResultTx;
   }

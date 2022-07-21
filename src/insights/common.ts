@@ -38,7 +38,11 @@ export const InsightsEndpoints = {
   'position/liquidation/engine': '/position/liquidation/engine',
 
   // Competition api
-  'competition/leaderboard': '/competition/leaderboard'
+  'competition/leaderboard': '/competition/leaderboard',
+  
+  //Coin Gecko Tokens api
+  'info/denom_gecko_map' : '/info/denom_gecko_map'
+
 }
 
 export type Interval = "millisecond" | "second" | "minute" | "hour" | "day" | "week" | "month" | "quarter"

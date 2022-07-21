@@ -11,7 +11,7 @@ export class PositionModule extends BaseModule {
     const value = MsgSetMargin.fromPartial({
       creator: wallet.bech32Address,
       market: params.market,
-      margin: params.margin.shiftedBy(18).toString(10),
+      margin: params.margin.toString(10),
     })
 
     return await wallet.sendTx({
@@ -27,7 +27,7 @@ export class PositionModule extends BaseModule {
         const value = MsgSetMargin.fromPartial({
             creator: wallet.bech32Address,
             market: param.market,
-            margin: param.margin.shiftedBy(18).toString(10),
+            margin: param.margin.toString(10),
           })
 
       return {

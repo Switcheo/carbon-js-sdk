@@ -7,6 +7,7 @@ import { Blockchain } from "@carbon-sdk/util/blockchain"
 import { TokensWithExternalBalance } from "@carbon-sdk/util/external"
 import { SimpleMap } from "@carbon-sdk/util/type"
 import { CONST, rpc, sc, tx, u, wallet } from "@cityofzion/neon-core-next"
+import { GetContractStateResult, InvokeResult } from "@cityofzion/neon-core-next/lib/rpc"
 import BigNumber from "bignumber.js"
 
 export interface N3ClientOpts {
@@ -318,6 +319,37 @@ export class N3Client {
     const scriptHash = wallet.getScriptHashFromAddress(address);
     // return the little endian version of the address
     return u.reverseHex(scriptHash);
+  }
+
+  public async retrieveNEP17Info(address: string) {
+    const result: [ InvokeResult, InvokeResult, GetContractStateResult ] = await this.rpcClient.executeAll([
+      new rpc.Query({
+        method: 'invokefunction',
+        params: [address, 'decimals'],
+      }),
+      new rpc.Query({
+        method: 'invokefunction',
+        params: [address, 'symbol'],
+      }),
+      new rpc.Query({
+        method: 'getcontractstate',
+        params: [address],
+      }),
+    ])
+    const [decimalRaw, symbolRaw, nameRaw] = result
+    let decimals: number = 0
+    let symbol: string = ''
+    let name : string = ''
+    if (typeof decimalRaw.stack[0].value ==='string') {
+      decimals = Number(decimalRaw.stack[0].value)
+    }
+    if (typeof symbolRaw.stack[0].value ==='string') {
+      symbol = Buffer.from(symbolRaw.stack[0].value, 'base64').toString('ascii')
+    } 
+    if (typeof nameRaw.manifest.name ==='string') {
+      name = nameRaw.manifest.name
+    } 
+    return {name, symbol, address, decimals}
   }
 }
 

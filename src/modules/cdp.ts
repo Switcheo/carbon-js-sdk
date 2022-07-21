@@ -12,7 +12,7 @@ export class CDPModule extends BaseModule {
     const value = MsgAddCollateral.fromPartial({
       creator: wallet.bech32Address,
       vaultTypeId: new Long(params.vaultTypeId),
-      amount: params.amount.shiftedBy(18).toString(10),
+      amount: params.amount.toString(10),
     })
 
     return await wallet.sendTx({
@@ -27,7 +27,7 @@ export class CDPModule extends BaseModule {
     const value = MsgRemoveCollateral.fromPartial({
       creator: wallet.bech32Address,
       vaultTypeId: new Long(params.vaultTypeId),
-      amount: params.amount.shiftedBy(18).toString(10),
+      amount: params.amount.toString(10),
     })
 
     return await wallet.sendTx({
@@ -42,7 +42,7 @@ export class CDPModule extends BaseModule {
     const value = MsgAddDebt.fromPartial({
       creator: wallet.bech32Address,
       vaultTypeId: new Long(params.vaultTypeId),
-      amount: params.amount.shiftedBy(18).toString(10),
+      amount: params.amount.toString(10),
     })
 
     return await wallet.sendTx({
@@ -57,7 +57,7 @@ export class CDPModule extends BaseModule {
     const value = MsgRemoveDebt.fromPartial({
       creator: wallet.bech32Address,
       vaultTypeId: new Long(params.vaultTypeId),
-      amount: params.amount.shiftedBy(18).toString(10),
+      amount: params.amount.toString(10),
     })
 
     return await wallet.sendTx({
