@@ -56,7 +56,7 @@ class TokenClient {
     await this.reloadDenomGeckoMap();
 
     // non-blocking reload
-    // this.reloadUSDValues();
+    this.reloadUSDValues();
   }
 
   public registerGeckoIdMap(map: TypeUtils.SimpleMap<string>) {
