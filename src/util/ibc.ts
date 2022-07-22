@@ -1,4 +1,4 @@
-import { ChainInfoExplorerTmRpc, ChainIds, EmbedChainInfosInit, ibcWhitelist, AssetListObj, swthChannels, swthIbcWhitelist, ibcNetworkRegex } from "@carbon-sdk/constant";
+import { ChainInfoExplorerTmRpc, ChainIds, DefaultGasPriceStep, EmbedChainInfosInit, GasPriceStep, ibcWhitelist, AssetListObj, swthChannels, swthIbcWhitelist, ibcNetworkRegex } from "@carbon-sdk/constant";
 import { KeplrAccount } from "@carbon-sdk/provider";
 import { Hash } from "@keplr-wallet/crypto";
 import { AppCurrency } from "@keplr-wallet/types";
@@ -91,4 +91,11 @@ export const parseChainId = (chainId: string): ChainIdOutput => {
 		identifier: chainArr?.[1] ?? "",
 		version: parseInt(chainArr?.[2] ?? '0'),
 	};
+};
+
+export const calculateMaxFee = (
+	gasStep: GasPriceStep = DefaultGasPriceStep,
+	gas: number = 0,
+): number => {
+	return gasStep.high * gas;
 };

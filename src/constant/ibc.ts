@@ -579,22 +579,6 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
 				coinDecimals: 6,
 				coinGeckoId: "juno-network",
 			},
-			{
-				type: "cw20",
-				contractAddress: "juno168ctmpyppk90d34p3jjy658zf5a5l3w8wk35wht6ccqj4mr0yv8s4j5awr",
-				coinDenom: "NETA",
-				coinMinimalDenom: "cw20:juno168ctmpyppk90d34p3jjy658zf5a5l3w8wk35wht6ccqj4mr0yv8s4j5awr:NETA",
-				coinDecimals: 6,
-				coinGeckoId: "neta",
-			},
-			{
-				type: "cw20",
-				contractAddress: "juno1g2g7ucurum66d42g8k5twk34yegdq8c82858gz0tq2fc75zy7khssgnhjl",
-				coinDenom: "MARBLE",
-				coinMinimalDenom: "cw20:juno1g2g7ucurum66d42g8k5twk34yegdq8c82858gz0tq2fc75zy7khssgnhjl:MARBLE",
-				coinDecimals: 3,
-				coinGeckoId: "pool:marble",
-			},
 		],
 		feeCurrencies: [
 			{
@@ -604,7 +588,7 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
 				coinGeckoId: "juno-network",
 			},
 		],
-		features: ["stargate", "ibc-transfer"],
+		features: ["stargate", "ibc-transfer", "no-legacy-stdTx"],
 		explorerUrlToTx: "https://www.mintscan.io/juno/txs/{txHash}",
 	},
 	[ChainIds.Microtick]: {
@@ -1575,3 +1559,17 @@ export const swthChannels: SimpleMap<ChannelConfig> = {
 export const ibcTokenRegex = /^ibc\/([a-f\d]+)$/i
 
 export const ibcNetworkRegex = /^([a-z]+)-([\d]+)$/i
+
+export const ibcDefaultGas: number = 130000;
+
+export interface GasPriceStep {
+	low: number;
+  average: number;
+  high: number;
+}
+
+export const DefaultGasPriceStep: GasPriceStep = {
+  low: 0.01,
+  average: 0.025,
+  high: 0.04,
+};
