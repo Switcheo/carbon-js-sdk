@@ -2,14 +2,45 @@ import { registry as TypesRegistry } from "@carbon-sdk/codec";
 import { SignMode } from "@carbon-sdk/codec/cosmos/tx/signing/v1beta1/signing";
 import { TxRaw } from "@carbon-sdk/codec/cosmos/tx/v1beta1/tx";
 import { CarbonSignerData } from "@carbon-sdk/util/tx";
-import { encodeSecp256k1Pubkey, makeSignDoc as makeSignDocAmino, OfflineAminoSigner } from "@cosmjs/amino";
+import { AminoMsg, encodeSecp256k1Pubkey, OfflineAminoSigner } from "@cosmjs/amino";
 import { fromBase64 } from "@cosmjs/encoding";
-import { Int53 } from "@cosmjs/math";
+import { Int53, Uint53 } from "@cosmjs/math";
 import { EncodeObject, encodePubkey, isOfflineDirectSigner, makeAuthInfoBytes, makeSignDoc, OfflineDirectSigner, OfflineSigner, Registry, TxBodyEncodeObject } from "@cosmjs/proto-signing";
 import { AminoTypes, GasPrice, SigningStargateClientOptions, StargateClient, StdFee } from "@cosmjs/stargate";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import Long from "long";
 import { AminoTypesMap } from "../provider";
+
+export interface StdSignDoc {
+  readonly chain_id: string;
+  readonly account_number: string;
+  readonly sequence: string;
+  readonly fee: StdFee;
+  readonly msgs: readonly AminoMsg[];
+  readonly memo: string;
+  readonly timeout_height: string;
+}
+
+export function makeSignDocAmino(
+  msgs: readonly AminoMsg[],
+  fee: StdFee,
+  chainId: string,
+  memo: string | undefined,
+  accountNumber: number | string,
+  sequence: number | string,
+  timeoutHeight: number | string = 0,
+): StdSignDoc {
+  const timeoutHeightStr = typeof timeoutHeight === "number" ? timeoutHeight.toString(10) : timeoutHeight;
+  return {
+    chain_id: chainId,
+    account_number: Uint53.fromString(accountNumber.toString()).toString(),
+    sequence: Uint53.fromString(sequence.toString()).toString(),
+    fee: fee,
+    msgs: msgs,
+    memo: memo || "",
+    timeout_height: timeoutHeightStr,
+  };
+}
 
 export class CarbonSigningClient extends StargateClient {
   public readonly registry: Registry;
@@ -112,7 +143,7 @@ export class CarbonSigningClient extends StargateClient {
     const pubkey = encodePubkey(encodeSecp256k1Pubkey(accountFromSigner.pubkey));
     const signMode = SignMode.SIGN_MODE_LEGACY_AMINO_JSON;
     const msgs = messages.map((msg) => this.aminoTypes.toAmino(msg));
-    const signDoc = makeSignDocAmino(msgs, fee, chainId, memo, accountNumber, sequence);
+    const signDoc = makeSignDocAmino(msgs, fee, chainId, memo, accountNumber, sequence, timeoutHeight ?? 0);
     const { signature, signed } = await signer.signAmino(signerAddress, signDoc);
     const signedTxBody = {
       messages: signed.msgs.map((msg) => this.aminoTypes.fromAmino(msg)),
