@@ -14,7 +14,6 @@ const MsgAddCollateral: AminoInit = {
   aminoType: TxTypes.AddCollateral,
   valueMap: {
     vaultTypeId: ConvertEncType.Long,
-    amount: ConvertEncType.Dec,
   },
 };
 
@@ -22,7 +21,6 @@ const MsgRemoveCollateral: AminoInit = {
   aminoType: TxTypes.RemoveCollateral,
   valueMap: {
     vaultTypeId: ConvertEncType.Long,
-    amount: ConvertEncType.Dec,
   },
 };
 
@@ -30,7 +28,6 @@ const MsgAddDebt: AminoInit = {
   aminoType: TxTypes.AddDebt,
   valueMap: {
     vaultTypeId: ConvertEncType.Long,
-    amount: ConvertEncType.Dec,
   },
 };
 
@@ -38,7 +35,6 @@ const MsgRemoveDebt: AminoInit = {
   aminoType: TxTypes.RemoveDebt,
   valueMap: {
     vaultTypeId: ConvertEncType.Long,
-    amount: ConvertEncType.Dec,
   },
 };
 
