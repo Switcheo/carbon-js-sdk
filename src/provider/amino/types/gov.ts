@@ -10,7 +10,7 @@ import * as CarbonTx from "@carbon-sdk/util/tx";
 import { AminoConverter } from "@cosmjs/stargate";
 import {
   AminoInit, ConvertEncType, AminoProcess, AminoValueMap,
-  generateAminoType, mapEachIndiv, pruneAmino,
+  generateAminoType, mapEachIndiv,
 } from "../utils";
 
 const TxTypes: TypeUtils.SimpleMap<string> = {
@@ -195,22 +195,6 @@ const preProcessAmino = (
   valueMap: AminoValueMap
 ): TypeUtils.SimpleMap<any> | null | undefined => {
   return mapEachIndiv(value, valueMap, false);
-
-  // Alt solution - Check if all proposals work with mapEachIndiv
-  // const newValue: TypeUtils.SimpleMap<any> = {};
-  // Object.keys(value).forEach((label: string) => {
-  //   const camelKey = TypeUtils.snakeToCamel(label);
-  //   if (value[label]?.length) {
-  //     newValue[camelKey] = value[label].map((labelItem: any) => {
-  //       return preProcessAmino(value[label], valueMap)
-  //     });
-  //     return;
-  //   }
-
-  //   newValue[camelKey] = paramConverter(value[label], valueMap[camelKey] as ConvertEncType, false);
-  // });
-  // console.log("newValue", newValue);
-  // return newValue;
 };
 
 const checkDecodeProposal = (content: any, amino: AminoValueMap): AminoProposalRes => {
