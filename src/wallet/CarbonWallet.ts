@@ -363,7 +363,7 @@ export class CarbonWallet {
 
       const heightResponse = await fetch(`${this.networkConfig.tmRpcUrl}/blockchain?cache=${new Date().getTime()}`)
       const heightRes = await heightResponse.json();
-      const height = heightRes.result;
+      const height = heightRes.result?.last_height;
       const timeoutHeight = height + this.defaultTimeoutBlocks;
 
       const sequence = this.accountInfo!.sequence;
