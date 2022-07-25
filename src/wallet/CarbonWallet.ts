@@ -16,6 +16,7 @@ import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import { BroadcastTxSyncResponse } from "@cosmjs/tendermint-rpc/build/tendermint34/responses";
 import BigNumber from "bignumber.js";
 import { TxRaw as StargateTxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx";
+import fetch from "node-fetch";
 import { CarbonLedgerSigner, CarbonNonSigner, CarbonPrivateKeySigner, CarbonSigner, CarbonSignerTypes } from "./CarbonSigner";
 import { CarbonSigningClient } from "./CarbonSigningClient";
 
@@ -360,7 +361,9 @@ export class CarbonWallet {
       if (!this.accountInfo || this.sequenceInvalidated)
         await this.reloadAccountSequence();
 
-      const height = await this.getQueryClient().chain.getHeight();
+      const heightResponse = await fetch(`${this.networkConfig.tmRpcUrl}/blockchain?cache=${new Date().getTime()}`)
+      const heightRes = await heightResponse.json();
+      const height = heightRes.result;
       const timeoutHeight = height + this.defaultTimeoutBlocks;
 
       const sequence = this.accountInfo!.sequence;
