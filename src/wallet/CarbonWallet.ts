@@ -1,26 +1,32 @@
 import { CarbonQueryClient } from "@carbon-sdk/clients";
-import { MsgGasCost, MinGasPrice, registry } from "@carbon-sdk/codec";
+import { MsgGasCost, MinGasPrice } from "@carbon-sdk/codec";
 import { DEFAULT_GAS, DEFAULT_NETWORK, Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
 import { ProviderAgent } from "@carbon-sdk/constant/walletProvider";
-import { AminoTypesMap, CosmosLedger } from "@carbon-sdk/provider";
+import { CosmosLedger } from "@carbon-sdk/provider";
 import { AddressUtils, CarbonTx, GenericUtils } from "@carbon-sdk/util";
 import { SWTHAddress } from "@carbon-sdk/util/address";
+import { QueueManager } from "@carbon-sdk/util/generic";
 import { bnOrZero, BN_ZERO } from "@carbon-sdk/util/number";
-import { BroadcastTxMode, TxGasCostTypeDefaultKey, TxMinGasPriceTypeDefaultKey } from "@carbon-sdk/util/tx";
+import { BroadcastTxMode, CarbonSignerData, TxGasCostTypeDefaultKey, TxMinGasPriceTypeDefaultKey } from "@carbon-sdk/util/tx";
 import { SimpleMap } from "@carbon-sdk/util/type";
 import { encodeSecp256k1Signature, StdSignature } from "@cosmjs/amino";
 import { EncodeObject, OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
-import { Account, DeliverTxResponse, isDeliverTxFailure, SigningStargateClient } from "@cosmjs/stargate";
+import { Account, DeliverTxResponse, isDeliverTxFailure } from "@cosmjs/stargate";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import { BroadcastTxSyncResponse } from "@cosmjs/tendermint-rpc/build/tendermint34/responses";
 import BigNumber from "bignumber.js";
 import { TxRaw as StargateTxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx";
+import fetch from "node-fetch";
 import { CarbonLedgerSigner, CarbonNonSigner, CarbonPrivateKeySigner, CarbonSigner, CarbonSignerTypes } from "./CarbonSigner";
+import { CarbonSigningClient } from "./CarbonSigningClient";
 
 export interface CarbonWalletGenericOpts {
+  tmClient?: Tendermint34Client;
   network?: Network;
   config?: Partial<NetworkConfig>;
   providerAgent?: ProviderAgent | string;
+  defaultTimeoutBlocks?: number; // tx mempool ttl (timeoutHeight)
+  disableRetryOnSequenceError?: boolean; // disable auto retry on nonce error
 
   /**
    * Optional callback that will be called before signing is requested/executed.
@@ -33,47 +39,67 @@ export interface CarbonWalletGenericOpts {
   onSignComplete?: CarbonWallet.OnSignCompleteCallback;
 }
 
-export type CarbonWalletInitOpts = CarbonWalletGenericOpts & (
-  | {
-    // connect with mnemonic
-    mnemonic: string;
-    privateKey?: string | Buffer;
-    signer?: CarbonSigner;
-    publicKeyBase64?: string;
-    bech32Address?: string;
-    customSigner?: OfflineSigner & OfflineDirectSigner;
-  }
-  | {
-    // connect with private key
-    mnemonic?: string;
-    privateKey: string | Buffer;
-    signer?: CarbonSigner;
-    publicKeyBase64?: string;
-    bech32Address?: string;
-    customSigner?: OfflineSigner & OfflineDirectSigner;
-  }
-  | {
-    // connect with custom signer
-    mnemonic?: string;
-    privateKey?: string | Buffer;
-    signer: CarbonSigner;
-    publicKeyBase64: string;
-    bech32Address?: string;
-    customSigner?: OfflineSigner & OfflineDirectSigner; // to allow adding of keplr offline signer
-  }
-  | {
-    // connect with address (view only)
-    mnemonic?: string;
-    privateKey?: string | Buffer;
-    signer?: CarbonSigner;
-    publicKeyBase64?: string;
-    bech32Address: string;
-    customSigner?: OfflineSigner & OfflineDirectSigner;
-  }
-);
+export type CarbonWalletInitOpts = CarbonWalletGenericOpts &
+  (
+    | {
+        // connect with mnemonic
+        mnemonic: string;
+        privateKey?: string | Buffer;
+        signer?: CarbonSigner;
+        publicKeyBase64?: string;
+        bech32Address?: string;
+        customSigner?: OfflineSigner & OfflineDirectSigner;
+      }
+    | {
+        // connect with private key
+        mnemonic?: string;
+        privateKey: string | Buffer;
+        signer?: CarbonSigner;
+        publicKeyBase64?: string;
+        bech32Address?: string;
+        customSigner?: OfflineSigner & OfflineDirectSigner;
+      }
+    | {
+        // connect with custom signer
+        mnemonic?: string;
+        privateKey?: string | Buffer;
+        signer: CarbonSigner;
+        publicKeyBase64: string;
+        bech32Address?: string;
+        customSigner?: OfflineSigner & OfflineDirectSigner; // to allow adding of keplr offline signer
+      }
+    | {
+        // connect with address (view only)
+        mnemonic?: string;
+        privateKey?: string | Buffer;
+        signer?: CarbonSigner;
+        publicKeyBase64?: string;
+        bech32Address: string;
+        customSigner?: OfflineSigner & OfflineDirectSigner;
+      }
+  );
 
 export interface AccountInfo extends Account {
   chainId: string;
+}
+
+interface PromiseHandler<T> {
+  requestId?: string;
+  resolve: (result: T) => void;
+  reject: (reason?: any) => void;
+}
+
+interface SignTxRequest {
+  signerAddress: string;
+  reattempts?: number;
+  messages: readonly EncodeObject[];
+  broadcastOpts?: CarbonTx.BroadcastTxOpts;
+  signOpts?: CarbonTx.SignTxOpts;
+  handler: PromiseHandler<DeliverTxResponse | BroadcastTxSyncResponse>;
+}
+
+interface BroadcastTxRequest extends SignTxRequest {
+  signedTx: CarbonWallet.TxRaw;
 }
 
 export class CarbonWallet {
@@ -82,8 +108,10 @@ export class CarbonWallet {
   configOverride: Partial<NetworkConfig>;
   networkConfig: NetworkConfig;
 
-  onRequestSign?: CarbonWallet.OnRequestSignCallback
-  onSignComplete?: CarbonWallet.OnSignCompleteCallback
+  onRequestSign?: CarbonWallet.OnRequestSignCallback;
+  onSignComplete?: CarbonWallet.OnSignCompleteCallback;
+
+  defaultTimeoutBlocks: number;
 
   mnemonic?: string;
   privateKey?: Buffer;
@@ -99,21 +127,34 @@ export class CarbonWallet {
 
   accountInfo?: AccountInfo;
 
-  // for analytics
-  providerAgent?: ProviderAgent | string
+  disableRetryOnSequenceError: boolean;
 
-  private signingClient?: SigningStargateClient;
+  // for analytics
+  providerAgent?: ProviderAgent | string;
+
+  private tmClient?: Tendermint34Client;
+  private signingClient?: CarbonSigningClient;
+  private chainId?: string;
+
+  private sequenceInvalidated: boolean = false;
+  private txSignManager: QueueManager<SignTxRequest>;
+  private txDispatchManager: QueueManager<BroadcastTxRequest>;
 
   constructor(opts: CarbonWalletInitOpts) {
     const network = opts.network ?? DEFAULT_NETWORK;
-    this.network = network
+    this.network = network;
     this.networkConfig = NetworkConfigs[network];
     this.configOverride = opts.config ?? {};
     this.providerAgent = opts.providerAgent;
+    this.defaultTimeoutBlocks = opts.defaultTimeoutBlocks ?? 30; // default ~1 minute
+    this.disableRetryOnSequenceError = opts.disableRetryOnSequenceError ?? false;
     this.updateNetwork(network);
 
     this.onRequestSign = opts.onRequestSign;
     this.onSignComplete = opts.onSignComplete;
+
+    this.txDispatchManager = new QueueManager(this.dispatchTx.bind(this));
+    this.txSignManager = new QueueManager(this.signTx.bind(this));
 
     this.mnemonic = opts.mnemonic;
     if (this.mnemonic) {
@@ -124,9 +165,9 @@ export class CarbonWallet {
 
     const addressOpts: AddressUtils.SWTHAddressOptions = {
       network,
-      ...this.configOverride.Bech32Prefix && {
+      ...(this.configOverride.Bech32Prefix && {
         bech32Prefix: this.configOverride.Bech32Prefix,
-      },
+      }),
     };
 
     if (opts.signer) {
@@ -139,15 +180,12 @@ export class CarbonWallet {
 
       this.bech32Address = AddressUtils.SWTHAddress.publicKeyToAddress(this.publicKey, addressOpts);
 
-      let prefix = addressOpts.bech32Prefix
-      if (!addressOpts.bech32Prefix)
-        prefix = SWTHAddress.getBech32Prefix(addressOpts?.network, addressOpts?.bech32Prefix)
+      let prefix = addressOpts.bech32Prefix;
+      if (!addressOpts.bech32Prefix) prefix = SWTHAddress.getBech32Prefix(addressOpts?.network, addressOpts?.bech32Prefix);
 
-      if (!prefix)
-        throw new Error("cannot instantiate wallet signer, no prefix")
+      if (!prefix) throw new Error("cannot instantiate wallet signer, no prefix");
 
       this.signer = new CarbonPrivateKeySigner(this.privateKey, prefix);
-
     } else if (opts.bech32Address) {
       // read-only wallet, without private/public keys
       this.signer = new CarbonNonSigner();
@@ -161,41 +199,27 @@ export class CarbonWallet {
     this.hexAddress = `0x${Buffer.from(addressBytes).toString("hex")}`;
   }
 
-  public static withPrivateKey(
-    privateKey: string | Buffer,
-    opts: Omit<CarbonWalletInitOpts, "privateKey"> = {},
-  ) {
+  public static withPrivateKey(privateKey: string | Buffer, opts: Omit<CarbonWalletInitOpts, "privateKey"> = {}) {
     return new CarbonWallet({
       ...opts,
       privateKey,
     });
   }
 
-  public static withMnemonic(
-    mnemonic: string,
-    opts: Omit<CarbonWalletInitOpts, "mnemonic"> = {},
-  ) {
+  public static withMnemonic(mnemonic: string, opts: Omit<CarbonWalletInitOpts, "mnemonic"> = {}) {
     return new CarbonWallet({
       ...opts,
       mnemonic,
     });
   }
 
-  public static withLedger(
-    cosmosLedger: CosmosLedger,
-    publicKeyBase64: string,
-    opts: Omit<CarbonWalletInitOpts, "signer"> = {},
-  ) {
+  public static withLedger(cosmosLedger: CosmosLedger, publicKeyBase64: string, opts: Omit<CarbonWalletInitOpts, "signer"> = {}) {
     const signer = new CarbonLedgerSigner(cosmosLedger);
     const wallet = CarbonWallet.withSigner(signer, publicKeyBase64, opts);
     return wallet;
   }
 
-  public static withSigner(
-    signer: CarbonSigner,
-    publicKeyBase64: string,
-    opts: Omit<CarbonWalletInitOpts, "signer"> = {},
-  ) {
+  public static withSigner(signer: CarbonSigner, publicKeyBase64: string, opts: Omit<CarbonWalletInitOpts, "signer"> = {}) {
     return new CarbonWallet({
       ...opts,
       signer,
@@ -204,24 +228,17 @@ export class CarbonWallet {
     });
   }
 
-  public static withAddress(
-    bech32Address: string,
-    opts: Partial<CarbonWalletInitOpts> = {}
-  ) {
+  public static withAddress(bech32Address: string, opts: Partial<CarbonWalletInitOpts> = {}) {
     return new CarbonWallet({
       ...opts,
       bech32Address,
-    })
+    });
   }
 
   public async initialize(queryClient: CarbonQueryClient): Promise<CarbonWallet> {
     this.query = queryClient;
 
-    await Promise.all([
-      this.reloadTxGasCosts(),
-      this.reloadTxMinGasPrices(),
-      this.reloadAccountSequence(),
-    ]);
+    await Promise.all([this.reconnectTmClient(), this.reloadTxGasCosts(), this.reloadTxMinGasPrices(), this.reloadAccountSequence()]);
 
     this.initialized = true;
     return this;
@@ -235,22 +252,46 @@ export class CarbonWallet {
     return this;
   }
 
+  async getSignedTx(
+    signerAddress: string,
+    messages: readonly EncodeObject[],
+    sequence: number,
+    opts: Omit<CarbonTx.SignTxOpts, "sequence">
+  ): Promise<CarbonWallet.TxRaw> {
+    const { memo = "", explicitSignerData } = opts;
+
+    const signingClient = this.getSigningClient();
+    const [account] = await this.signer.getAccounts();
+
+    let signature: StdSignature | null = null;
+    try {
+      await GenericUtils.callIgnoreError(() => this.onRequestSign?.(messages));
+      const signerData: CarbonSignerData = {
+        accountNumber: this.accountInfo!.accountNumber,
+        chainId: this.getChainId(),
+        sequence,
+        ...explicitSignerData,
+      };
+
+      const fee = opts?.fee ?? this.estimateTxFee(messages);
+      const txRaw = await signingClient.sign(signerAddress, messages, fee, memo, signerData);
+      signature = encodeSecp256k1Signature(account.pubkey, txRaw.signatures[0]);
+      return txRaw;
+    } finally {
+      await GenericUtils.callIgnoreError(() => this.onSignComplete?.(signature));
+    }
+  }
+
   /**
    * broadcast TX and wait for block confirmation
-   * 
+   *
    */
-  async broadcastTx(
-    txRaw: CarbonWallet.TxRaw,
-    opts: CarbonTx.BroadcastTxOpts = {},
-  ): Promise<CarbonWallet.SendTxResponse> {
-    const {
-      pollIntervalMs = 3_000,
-      timeoutMs = 60_000,
-    } = opts;
+  async broadcastTx(txRaw: CarbonWallet.TxRaw, opts: CarbonTx.BroadcastTxOpts = {}): Promise<CarbonWallet.SendTxResponse> {
+    const { pollIntervalMs = 3_000, timeoutMs = 60_000 } = opts;
 
     const tx = CarbonWallet.TxRaw.encode(txRaw).finish();
-    const signingClient = await this.getSigningClient();
-    const response = await signingClient.broadcastTx(tx, timeoutMs, pollIntervalMs);
+    const carbonClient = this.getSigningClient();
+    const response = await carbonClient.broadcastTx(tx, timeoutMs, pollIntervalMs);
     if (isDeliverTxFailure(response)) {
       // tx failed
       console.error(response);
@@ -261,91 +302,108 @@ export class CarbonWallet {
 
   /**
    * broadcast TX to mempool but doesnt wait for block confirmation
-   * 
+   *
    */
   async broadcastTxWithoutConfirm(txRaw: CarbonWallet.TxRaw): Promise<CarbonWallet.SendTxWithoutConfirmResponse> {
     const tx = CarbonWallet.TxRaw.encode(txRaw).finish();
-    const tmClient = await Tendermint34Client.connect(this.networkConfig.tmRpcUrl);
+    const tmClient = this.getTmClient();
     return tmClient.broadcastTxSync({ tx });
-  };
+  }
 
-  async getSignedTx(
-    signerAddress: string,
-    messages: readonly EncodeObject[],
-    opts: CarbonTx.SignTxOpts = {},
-  ): Promise<CarbonWallet.TxRaw> {
+  async signAndBroadcast(
+    messages: EncodeObject[],
+    signOpts?: CarbonTx.SignTxOpts,
+    broadcastOpts?: CarbonTx.BroadcastTxOpts
+  ): Promise<DeliverTxResponse | BroadcastTxSyncResponse> {
+    const promise = new Promise<DeliverTxResponse | BroadcastTxSyncResponse>((resolve, reject) => {
+      this.txSignManager.enqueue({
+        signerAddress: this.bech32Address,
+        messages,
+        broadcastOpts,
+        signOpts,
+        handler: { resolve, reject },
+      });
+    });
+
+    return promise;
+  }
+
+  private async signTx(txRequest: SignTxRequest) {
     const {
-      memo = "",
-      explicitSignerData,
-    } = opts;
-
-    let fee = opts?.fee;
-
-    if (!fee) {
-      // compute required fee
-      const defaultDenom = TxMinGasPriceTypeDefaultKey;
-      const totalFeeCost = messages.reduce((totalFee, message) => {
-        const msgGasCost = this.getMsgGasCost(message.typeUrl);
-        const minGasPrice = this.getMinGasPrice(defaultDenom);
-        const msgFee = msgGasCost.multipliedBy(minGasPrice);
-        return msgGasCost.gt(0) ? totalFee.plus(msgFee) : totalFee;
-      }, BN_ZERO);
-      fee = {
-        amount: [{
-          amount: totalFeeCost.toString(10),
-          denom: defaultDenom,
-        }],
-        gas: DEFAULT_GAS.times(messages.length).toString(10),
-      };
-    }
-    const signingClient = await this.getSigningClient();
-
-    const [account] = await this.signer.getAccounts();
-    let signature: StdSignature | null = null;
+      reattempts,
+      signerAddress,
+      signOpts,
+      messages,
+      broadcastOpts,
+      handler: { resolve, reject },
+    } = txRequest;
     try {
-      if (!this.accountInfo)
-        await this.reloadAccountSequence();
+      if (!this.accountInfo || this.sequenceInvalidated) await this.reloadAccountSequence();
 
-      await GenericUtils.callIgnoreError(() => this.onRequestSign?.(messages));
-      const signerData = {
-        accountNumber: this.accountInfo!.accountNumber,
-        sequence: this.accountInfo!.sequence,
-        chainId: this.accountInfo!.chainId,
-        ...explicitSignerData,
+      const heightResponse = await fetch(`${this.networkConfig.tmRpcUrl}/blockchain?cache=${new Date().getTime()}`);
+      const heightRes = await heightResponse.json();
+      const height = heightRes.result?.last_height;
+      const timeoutHeight = height + this.defaultTimeoutBlocks;
+
+      const sequence = this.accountInfo!.sequence;
+      this.accountInfo = {
+        ...this.accountInfo!,
+        sequence: sequence + 1,
       };
-      const txRaw = await signingClient.sign(signerAddress, messages, fee, memo, signerData);
-      signature = encodeSecp256k1Signature(account.pubkey, txRaw.signatures[0]);
-      return txRaw;
-    } finally {
-      await GenericUtils.callIgnoreError(() => this.onSignComplete?.(signature));
+
+      const _signOpts: CarbonTx.SignTxOpts = {
+        ...signOpts,
+        explicitSignerData: {
+          timeoutHeight,
+          ...signOpts?.explicitSignerData,
+        },
+      };
+      const signedTx = await this.getSignedTx(signerAddress, messages, sequence, _signOpts);
+
+      this.txDispatchManager.enqueue({
+        reattempts,
+        signerAddress,
+        messages,
+        signedTx,
+        broadcastOpts,
+        signOpts: _signOpts,
+        handler: { resolve, reject, requestId: `${sequence}` },
+      });
+    } catch (error) {
+      reject(error);
     }
   }
 
-  async signAndBroadcast(msgs: EncodeObject[], signOpts?: CarbonTx.SignTxOpts, broadcastOpts?: CarbonTx.BroadcastTxOpts): Promise<DeliverTxResponse | BroadcastTxSyncResponse> {
-    const signedTx = await this.getSignedTx(this.bech32Address, msgs, signOpts);
-
-    const broadcastFunc = broadcastOpts?.mode === BroadcastTxMode.BroadcastTxSync ? this.broadcastTxWithoutConfirm.bind(this) : this.broadcastTx.bind(this);
-
+  private async dispatchTx(txRequest: BroadcastTxRequest) {
+    const {
+      broadcastOpts,
+      signedTx,
+      handler: { resolve, reject },
+    } = txRequest;
+    const broadcastFunc =
+      broadcastOpts?.mode === BroadcastTxMode.BroadcastTxSync ? this.broadcastTxWithoutConfirm.bind(this) : this.broadcastTx.bind(this);
     try {
-      return await broadcastFunc(signedTx, broadcastOpts);
+      const result = await broadcastFunc(signedTx, broadcastOpts);
+      resolve(result);
     } catch (error: any) {
-      const result = this.isNonceMismatchError(error);
-      if (!result)
-        throw error;
+      const reattempts = txRequest.reattempts ?? 0;
+      // retry sendTx if nonce error once.
+      if (!this.disableRetryOnSequenceError && reattempts < 1 && this.isNonceMismatchError(error)) {
+        // invalidate account sequence for reload on next signTx call
+        this.sequenceInvalidated = true;
 
-      console.log(`encountered account sequence error: provided ${result.provided}, retrying with ${result.expected}…`);
-      // encountered account sequence error, retrying…
-      this.accountInfo = {
-        ...this.accountInfo!,
-        sequence: parseInt(result.expected),
-      };
-      const signedTx = await this.getSignedTx(this.bech32Address, msgs, signOpts);
-      return broadcastFunc(signedTx, broadcastOpts);
-    } finally {
-      this.accountInfo = {
-        ...this.accountInfo!,
-        sequence: this.accountInfo!.sequence + 1,
-      };
+        // requeue transaction for signTx
+        this.txSignManager.enqueue({
+          reattempts: (reattempts ?? 0) + 1,
+          signerAddress: txRequest.signerAddress,
+          messages: txRequest.messages,
+          broadcastOpts,
+          signOpts: txRequest.signOpts,
+          handler: { resolve, reject },
+        });
+      } else {
+        reject(error);
+      }
     }
   }
 
@@ -356,26 +414,30 @@ export class CarbonWallet {
 
   async sendTxsWithoutConfirm(msgs: EncodeObject[], opts?: CarbonTx.SignTxOpts): Promise<CarbonWallet.SendTxWithoutConfirmResponse> {
     const result = await this.signAndBroadcast(msgs, opts, { mode: BroadcastTxMode.BroadcastTxSync });
-      return result as BroadcastTxSyncResponse;
+    return result as BroadcastTxSyncResponse;
   }
 
   async sendTx(msg: EncodeObject, opts?: CarbonTx.SignTxOpts): Promise<CarbonWallet.SendTxResponse> {
     return this.sendTxs([msg], opts);
   }
 
-  async getSigningClient(): Promise<SigningStargateClient> {
+  getSigningClient(): CarbonSigningClient {
+    const tmClient = this.getTmClient();
     if (!this.signingClient) {
-      this.signingClient = await SigningStargateClient.connectWithSigner(
-        this.networkConfig.tmRpcUrl,
-        this.signer,
-        {
-          ...(this.signer.type === CarbonSignerTypes.Ledger && { aminoTypes: AminoTypesMap }),
-          registry
-        },
-      );
+      this.signingClient = new CarbonSigningClient(tmClient, this.signer);
     }
     return this.signingClient;
-  };
+  }
+
+  getTmClient(): Tendermint34Client {
+    if (!this.tmClient) throw new Error("CarbonWallet is not initialized");
+    return this.tmClient;
+  }
+
+  getChainId(): string {
+    if (!this.chainId) throw new Error("CarbonWallet is not initialized");
+    return this.chainId;
+  }
 
   isSigner(signerType: CarbonSignerTypes) {
     return this.signer.type === signerType;
@@ -409,6 +471,12 @@ export class CarbonWallet {
     this.txGasCosts = msgGasCostsMap;
   }
 
+  public async reloadTxGasCosts() {
+    const queryClient = this.getQueryClient();
+    const response = await queryClient.fee.MsgGasCostAll({});
+    this.updateTxGasCosts(response.msgGasCosts);
+  }
+
   public getMinGasPrice(denom: string): BigNumber {
     if (!this.txMinGasPrices) {
       console.warn("tx min gas prices not initialized");
@@ -425,19 +493,21 @@ export class CarbonWallet {
     this.txMinGasPrices = minGasPricesMap;
   }
 
-  public async reloadTxGasCosts() {
-    const queryClient = this.getQueryClient();
-    const response = await queryClient.fee.MsgGasCostAll({});
-    this.updateTxGasCosts(response.msgGasCosts);
-  }
-
   public async reloadTxMinGasPrices() {
     const queryClient = this.getQueryClient();
     const response = await queryClient.fee.MinGasPriceAll({});
     this.updateTxMinGasPrices(response.minGasPrices);
   }
 
+  public async reconnectTmClient() {
+    this.tmClient = await Tendermint34Client.connect(this.networkConfig.tmRpcUrl);
+    const status = await this.tmClient.status();
+    this.chainId = status.nodeInfo.network;
+  }
+
   public async reloadAccountSequence() {
+    if (this.sequenceInvalidated) this.sequenceInvalidated = false;
+
     const info = await this.getQueryClient().chain.getSequence(this.bech32Address);
 
     const pubkey = this.accountInfo?.pubkey ?? {
@@ -445,7 +515,7 @@ export class CarbonWallet {
       value: this.publicKey.toString("base64"),
     };
 
-    const chainId = this.accountInfo?.chainId ?? await this.getQueryClient().chain.getChainId();
+    const chainId = this.accountInfo?.chainId ?? this.chainId ?? (await this.getQueryClient().chain.getChainId());
 
     this.accountInfo = {
       ...info,
@@ -455,23 +525,42 @@ export class CarbonWallet {
     };
   }
 
+  private estimateTxFee(messages: readonly EncodeObject[]) {
+    const defaultDenom = TxMinGasPriceTypeDefaultKey;
+    const minGasPrice = this.getMinGasPrice(defaultDenom);
+    const totalFeeCost = messages.reduce((totalFee, message) => {
+      const msgGasCost = this.getMsgGasCost(message.typeUrl);
+      const msgFee = msgGasCost.multipliedBy(minGasPrice);
+      return msgFee.gt(0) ? totalFee.plus(msgFee) : totalFee;
+    }, BN_ZERO);
+    return {
+      amount: [
+        {
+          amount: totalFeeCost.toString(10),
+          denom: defaultDenom,
+        },
+      ],
+      gas: DEFAULT_GAS.times(messages.length).toString(10),
+    };
+  }
+
   private isNonceMismatchError = (error?: Error) => {
-    const regex = /^Broadcasting transaction failed with code 32 \(codespace: sdk\)\. Log: account sequence mismatch, expected (\d+), got (\d+): incorrect account sequence/;
+    const regex =
+      /^Broadcasting transaction failed with code 32 \(codespace: sdk\)\. Log: account sequence mismatch, expected (\d+), got (\d+): incorrect account sequence/;
     const match = error?.message.match(regex);
     if (match) {
       return {
         expected: match[1],
         provided: match[2],
-      }
+      };
     }
 
     return false;
-  }
+  };
 
   private getQueryClient(): CarbonQueryClient {
-    if (!this.query)
-      throw new Error("wallet not initialized");
-    return this.query
+    if (!this.query) throw new Error("wallet not initialized");
+    return this.query;
   }
 }
 
@@ -482,6 +571,6 @@ export namespace CarbonWallet {
   export type OnSignCompleteCallback = (signature: StdSignature | null) => void | Promise<void>;
 
   // workaround to re-export interface mixed const type
-  export interface TxRaw extends StargateTxRaw { };
+  export interface TxRaw extends StargateTxRaw {}
   export const TxRaw: typeof StargateTxRaw = { ...StargateTxRaw };
 }

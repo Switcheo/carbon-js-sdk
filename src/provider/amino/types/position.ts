@@ -9,9 +9,7 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
 
 const MsgSetMargin: AminoInit = {
   aminoType: TxTypes.SetMargin,
-  valueMap: {
-    margin: ConvertEncType.Dec,
-  },
+  valueMap: {},
 };
 
 const PositionAmino: TypeUtils.SimpleMap<AminoConverter> = {

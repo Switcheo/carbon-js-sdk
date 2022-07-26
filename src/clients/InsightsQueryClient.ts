@@ -254,6 +254,12 @@ class InsightsQueryClient {
     const response = await request.get()
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetLeaderboardResponse>
   }
+  //Coin Gecko Tokens
+  async DenomToGeckoIdMap(): Promise<Insights.InsightsQueryResponse<Insights.QueryDenomToGeckoIdMap>> {
+    const request = this.apiManager.path('info/denom_gecko_map')
+    const response = await request.get()
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryDenomToGeckoIdMap>
+  }
 }
 
 export default InsightsQueryClient

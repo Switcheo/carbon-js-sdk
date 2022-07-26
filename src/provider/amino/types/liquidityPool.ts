@@ -28,8 +28,6 @@ const MsgCreatePoolWithLiquidity: AminoInit = {
   valueMap: {
     tokenAWeight: ConvertEncType.Dec,
     tokenBWeight: ConvertEncType.Dec,
-    amountA: ConvertEncType.Dec,
-    amountB: ConvertEncType.Dec,
     swapFee: ConvertEncType.Dec,
     numQuotes: ConvertEncType.Long,
   },
@@ -39,9 +37,6 @@ const MsgAddLiquidity: AminoInit = {
   aminoType: TxTypes.AddLiquidity,
   valueMap: {
     poolId: ConvertEncType.Long,
-    amountA: ConvertEncType.Dec,
-    amountB: ConvertEncType.Dec,
-    minShares: ConvertEncType.Dec,
   },
 };
 
@@ -49,23 +44,19 @@ const MsgRemoveLiquidity: AminoInit = {
   aminoType: TxTypes.RemoveLiquidity,
   valueMap: {
     poolId: ConvertEncType.Long,
-    shares: ConvertEncType.Dec,
   },
 };
 
 const MsgStakePoolToken: AminoInit = {
   aminoType: TxTypes.StakePoolToken,
   valueMap: {
-    amount: ConvertEncType.Dec,
     duration: ConvertEncType.Long,
   },
 };
 
 const MsgUnstakePoolToken: AminoInit = {
   aminoType: TxTypes.UnstakePoolToken,
-  valueMap: {
-    amount: ConvertEncType.Dec,
-  },
+  valueMap: {},
 };
 
 const MsgClaimPoolRewards: AminoInit = {

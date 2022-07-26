@@ -4,6 +4,7 @@ export { default as BrokerAmino } from "./broker";
 export { default as CdpAmino } from "./cdp";
 export { default as CoinAmino } from "./coin";
 export { default as GovAmino } from "./gov";
+export { default as IbcAmino } from "./ibc";
 export { default as LeverageAmino } from "./leverage";
 export { default as LiquidityPoolAmino } from "./liquidityPool";
 export { default as MarketAmino } from "./market";

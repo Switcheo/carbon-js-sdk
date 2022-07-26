@@ -15,4 +15,5 @@ rm -rf \
   src/codec/google/api/ \
   src/codec/google/protobuf/descriptor.ts
 
+yarn sync-reset
 sh $(dirname "${BASH_SOURCE[0]}")/generate-registry.sh

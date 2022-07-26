@@ -10,10 +10,7 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
 
 const MsgWithdraw: AminoInit = {
   aminoType: TxTypes.Withdraw,
-  valueMap: {
-    amount: ConvertEncType.Dec,
-    feeAmount: ConvertEncType.Dec,
-  },
+  valueMap: {},
 };
 
 const MsgMintToken: AminoInit = {
