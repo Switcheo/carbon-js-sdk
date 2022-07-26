@@ -1,10 +1,10 @@
-import { Any, SettlementPriceParams } from "@carbon-sdk/codec";
+import { Any, MsgGasCost, SettlementPriceParams } from "@carbon-sdk/codec";
 import { MsgCreateVaultType } from "@carbon-sdk/codec/cdp/tx";
 import { MsgAuthorizeBridge, MsgBindToken, MsgCreateToken, MsgDeauthorizeBridge, MsgLinkToken, MsgSyncToken, MsgUnbindToken } from "@carbon-sdk/codec/coin/tx";
 import { Coin } from "@carbon-sdk/codec/cosmos/base/v1beta1/coin";
 import { Description } from "@carbon-sdk/codec/cosmos/staking/v1beta1/staking";
 import { MsgCreateValidator, MsgEditValidator } from "@carbon-sdk/codec/cosmos/staking/v1beta1/tx";
-import { MsgSetFee } from "@carbon-sdk/codec/fee/tx";
+import { MsgSetGasCost } from "@carbon-sdk/codec/fee/tx";
 import { MsgLinkPool, MsgSetCommitmentCurve, MsgSetRewardCurve, MsgSetRewardsWeights, MsgUnlinkPool, MsgUpdatePool } from "@carbon-sdk/codec/liquiditypool/tx";
 import { MsgCreateMarket } from "@carbon-sdk/codec/market/tx";
 import { MsgCreateOracle } from "@carbon-sdk/codec/oracle/tx";
@@ -268,15 +268,19 @@ export class AdminModule extends BaseModule {
   }
 
   public async setMsgFee(params: AdminModule.SetMsgFeeParams) {
+    throw new Error("deprecated");
+  }
+
+  public async setMsgGasCost(params: AdminModule.SetMsgGasCostParams) {
     const wallet = this.getWallet();
 
-    const value = MsgSetFee.fromPartial({
-      creator: wallet.bech32Address,
-      setFeeParams: transfromSetMsgFeeParams(params)
+    const value = MsgGasCost.fromPartial({
+      msgType: params.msgType,
+      gasCost: params.gasCost.toString(10),
     })
 
     return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgSetFee,
+      typeUrl: CarbonTx.Types.MsgSetGasCost,
       value,
     });
   }
@@ -479,6 +483,11 @@ export namespace AdminModule {
     fee: BigNumber
   }
 
+  export interface SetMsgGasCostParams {
+    msgType: string
+    gasCost: BigNumber
+  }
+
   export interface CreateValidatorParams {
     description?: Description;
     commission?: {
@@ -611,6 +620,13 @@ export function transfromSetMsgFeeParams(msg: AdminModule.SetMsgFeeParams) {
   return {
     msgType: msg.msgType,
     fee: msg.fee.toString(10),
+  }
+}
+
+export function transfromSetMsgGasCostParams(msg: AdminModule.SetMsgGasCostParams) {
+  return {
+    msgType: msg.msgType,
+    gasCost: msg.gasCost.toString(10),
   }
 }
 

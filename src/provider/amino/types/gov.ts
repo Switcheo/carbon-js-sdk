@@ -2,7 +2,7 @@ import { MsgSubmitProposal } from "@carbon-sdk/codec/cosmos/gov/v1beta1/tx";
 import {
   CreateOracleProposal,
   CreateTokenProposal, LinkPoolProposal, SetCommitmentCurveProposal, 
-  SetMsgFeeProposal, SetRewardCurveProposal, SetRewardsWeightsProposal, UnlinkPoolProposal,
+  SetMsgGasCostProposal, SetRewardCurveProposal, SetRewardsWeightsProposal, UnlinkPoolProposal,
   SettlementPriceProposal, UpdateMarketProposal, UpdatePoolProposal,
 } from "@carbon-sdk/codec";
 import { GovUtils, TypeUtils } from "@carbon-sdk/util";
@@ -21,7 +21,7 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
 
 const ContentTypes: TypeUtils.SimpleMap<string> = {
   [GovUtils.ProposalTypes.CreateToken]: "coin/CreateTokenProposal",
-  [GovUtils.ProposalTypes.SetMsgFee]: "fee/SetMsgFeeProposal",
+  [GovUtils.ProposalTypes.SetMsgGasCost]: "fee/SetMsgGasCostProposal",
   [GovUtils.ProposalTypes.SetCommitmentCurve]: 'liquiditypool/SetCommitmentCurveProposal',
   [GovUtils.ProposalTypes.SetRewardCurve]: 'liquiditypool/SetRewardCurveProposal',
   [GovUtils.ProposalTypes.SetRewardsWeights]: 'liquiditypool/SetRewardsWeightsProposal',
@@ -221,7 +221,7 @@ const checkDecodeProposal = (content: any, amino: AminoValueMap): AminoProposalR
     case GovUtils.ProposalTypes.SetRewardsWeights:
       newAmino.content = { ...SetRewardWeights };
       break;
-    case GovUtils.ProposalTypes.SetMsgFee:
+    case GovUtils.ProposalTypes.SetMsgGasCost:
       newAmino.content = {};
       break;
     case GovUtils.ProposalTypes.SettlementPrice:
@@ -280,16 +280,16 @@ const checkEncodeProposal = (content: any, amino: AminoValueMap): DirectProposal
           ...amino,
         },
       };
-    case ContentTypes[GovUtils.ProposalTypes.SetMsgFee]:
+    case ContentTypes[GovUtils.ProposalTypes.SetMsgGasCost]:
       const setMsgFeeMsg = preProcessAmino(content.value.msg, {});
-      const msgFeeProp = SetMsgFeeProposal.fromPartial({
+      const msgFeeProp = SetMsgGasCostProposal.fromPartial({
         ...content.value,
         msg: setMsgFeeMsg,
       });
       return {
         newContent: {
-          typeUrl: GovUtils.ProposalTypes.SetMsgFee,
-          value: SetMsgFeeProposal.encode(msgFeeProp).finish(),
+          typeUrl: GovUtils.ProposalTypes.SetMsgGasCost,
+          value: SetMsgGasCostProposal.encode(msgFeeProp).finish(),
         },
         newAmino: {
           ...amino,

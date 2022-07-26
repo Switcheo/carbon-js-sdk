@@ -1,5 +1,5 @@
 import { CarbonQueryClient } from "@carbon-sdk/clients";
-import { MsgFee } from "@carbon-sdk/codec";
+import { MsgFee, MsgGasCost } from "@carbon-sdk/codec";
 import { DEFAULT_GAS, DEFAULT_NETWORK, Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
 import { ProviderAgent } from "@carbon-sdk/constant/walletProvider";
 import { CosmosLedger } from "@carbon-sdk/provider";
@@ -480,9 +480,9 @@ export class CarbonWallet {
     return this.txFees?.[msgTypeUrl] ?? this.txFees?.[TxFeeTypeDefaultKey] ?? BN_ZERO;
   }
 
-  public updateTxFees(msgFees: MsgFee[]) {
+  public updateTxFees(msgFees: MsgGasCost[]) {
     const feesMap: SimpleMap<BigNumber> = msgFees.reduce((accum, fee) => {
-      accum[fee.msgType] = bnOrZero(fee.fee);
+      accum[fee.msgType] = bnOrZero(fee.gasCost);
       return accum;
     }, {} as SimpleMap<BigNumber>);
 
@@ -497,8 +497,8 @@ export class CarbonWallet {
 
   public async reloadTxFees() {
     const queryClient = this.getQueryClient();
-    const response = await queryClient.fee.MsgFeeAll({});
-    this.updateTxFees(response.msgFees);
+    const response = await queryClient.fee.MsgGasCostAll({})
+    this.updateTxFees(response.msgGasCosts);
   }
 
   public async reloadAccountSequence() {

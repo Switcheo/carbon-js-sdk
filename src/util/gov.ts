@@ -1,6 +1,6 @@
 import {
   CreateOracleProposal, CreateTokenProposal, LinkPoolProposal,
-  SetCommitmentCurveProposal, SetMsgFeeProposal, SetRewardCurveProposal, SetRewardsWeightsProposal,
+  SetCommitmentCurveProposal, SetMsgGasCostProposal, SetRewardCurveProposal, SetRewardsWeightsProposal,
   SettlementPriceProposal, UnlinkPoolProposal, UpdateMarketProposal, UpdatePoolProposal
 } from "@carbon-sdk/codec";
 import { CommunityPoolSpendProposal } from "@carbon-sdk/codec/cosmos/distribution/v1beta1/distribution";
@@ -16,7 +16,7 @@ export enum ProposalTypes {
   CommunityPoolSpend = "/cosmos.distribution.v1beta1.CommunityPoolSpendProposal",
   Text = "/cosmos.gov.v1beta1.TextProposal",
 
-  SetMsgFee = "/Switcheo.carbon.fee.SetMsgFeeProposal",
+  SetMsgGasCost = "/Switcheo.carbon.fee.SetMsgGasCostProposal",
   CreateToken = "/Switcheo.carbon.coin.CreateTokenProposal",
   CreateOracle = "/Switcheo.carbon.oracle.CreateOracleProposal",
   LinkPool = "/Switcheo.carbon.liquiditypool.LinkPoolProposal",
@@ -94,10 +94,10 @@ export const decodeContent = (content?: Any): PropDecoded => {
         ...content,
         value: SetCommitmentCurveProposal.decode(content.value),
       };
-    case ProposalTypes.SetMsgFee:
+    case ProposalTypes.SetMsgGasCost:
       return {
         ...content,
-        value: SetMsgFeeProposal.decode(content.value),
+        value: SetMsgGasCostProposal.decode(content.value),
       };
     case ProposalTypes.SetRewardCurve:
       return {

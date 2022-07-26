@@ -150,7 +150,7 @@ const MsgSetTradingFlag: AminoInit = {
   valueMap: {},
 };
 
-const MsgSetFee: AminoInit = {
+const MsgSetGasCost: AminoInit = {
   aminoType: TxTypes.SetFee,
   valueMap: {},
 };
@@ -188,7 +188,7 @@ const AdminAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgSetRewardCurve]: generateAminoType(MsgSetRewardCurve),
   [CarbonTx.Types.MsgSetCommitmentCurve]: generateAminoType(MsgSetCommitmentCurve),
   [CarbonTx.Types.MsgSetTradingFlag]: generateAminoType(MsgSetTradingFlag),
-  [CarbonTx.Types.MsgSetFee]: generateAminoType(MsgSetFee),
+  [CarbonTx.Types.MsgSetGasCost]: generateAminoType(MsgSetGasCost),
   [CarbonTx.Types.MsgCreateValidator]: generateAminoType(MsgCreateValidator),
   [CarbonTx.Types.MsgEditValidator]: generateAminoType(MsgEditValidator),
 };

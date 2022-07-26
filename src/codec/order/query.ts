@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Order } from "./order";
+import { Order, Params, DBOrder } from "./order";
 import { PageRequest, PageResponse } from "../query/pagination";
 
 export const protobufPackage = "Switcheo.carbon.order";
@@ -35,6 +35,23 @@ export interface QueryAccountOpenOrdersRequest {
 
 export interface QueryAccountOpenOrdersResponse {
   orders: Order[];
+}
+
+/** QueryParamsRequest is request type for the Query/Params RPC method. */
+export interface QueryParamsRequest {}
+
+/** QueryParamsResponse is response type for the Query/Params RPC method. */
+export interface QueryParamsResponse {
+  /** params holds all the parameters of this module. */
+  params?: Params;
+}
+
+export interface QueryOrderAllocatedMarginRequest {
+  endBlockHeight: string;
+}
+
+export interface QueryOrderAllocatedMarginResponse {
+  orders: DBOrder[];
 }
 
 const baseQueryGetOrderRequest: object = { id: "" };
@@ -492,6 +509,237 @@ export const QueryAccountOpenOrdersResponse = {
   },
 };
 
+const baseQueryParamsRequest: object = {};
+
+export const QueryParamsRequest = {
+  encode(
+    _: QueryParamsRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryParamsRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseQueryParamsRequest } as QueryParamsRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryParamsRequest {
+    const message = { ...baseQueryParamsRequest } as QueryParamsRequest;
+    return message;
+  },
+
+  toJSON(_: QueryParamsRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(_: DeepPartial<QueryParamsRequest>): QueryParamsRequest {
+    const message = { ...baseQueryParamsRequest } as QueryParamsRequest;
+    return message;
+  },
+};
+
+const baseQueryParamsResponse: object = {};
+
+export const QueryParamsResponse = {
+  encode(
+    message: QueryParamsResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.params !== undefined) {
+      Params.encode(message.params, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryParamsResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseQueryParamsResponse } as QueryParamsResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.params = Params.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryParamsResponse {
+    const message = { ...baseQueryParamsResponse } as QueryParamsResponse;
+    message.params =
+      object.params !== undefined && object.params !== null
+        ? Params.fromJSON(object.params)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryParamsResponse): unknown {
+    const obj: any = {};
+    message.params !== undefined &&
+      (obj.params = message.params ? Params.toJSON(message.params) : undefined);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<QueryParamsResponse>): QueryParamsResponse {
+    const message = { ...baseQueryParamsResponse } as QueryParamsResponse;
+    message.params =
+      object.params !== undefined && object.params !== null
+        ? Params.fromPartial(object.params)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryOrderAllocatedMarginRequest: object = { endBlockHeight: "" };
+
+export const QueryOrderAllocatedMarginRequest = {
+  encode(
+    message: QueryOrderAllocatedMarginRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.endBlockHeight !== "") {
+      writer.uint32(10).string(message.endBlockHeight);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryOrderAllocatedMarginRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryOrderAllocatedMarginRequest,
+    } as QueryOrderAllocatedMarginRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.endBlockHeight = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryOrderAllocatedMarginRequest {
+    const message = {
+      ...baseQueryOrderAllocatedMarginRequest,
+    } as QueryOrderAllocatedMarginRequest;
+    message.endBlockHeight =
+      object.endBlockHeight !== undefined && object.endBlockHeight !== null
+        ? String(object.endBlockHeight)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryOrderAllocatedMarginRequest): unknown {
+    const obj: any = {};
+    message.endBlockHeight !== undefined &&
+      (obj.endBlockHeight = message.endBlockHeight);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryOrderAllocatedMarginRequest>
+  ): QueryOrderAllocatedMarginRequest {
+    const message = {
+      ...baseQueryOrderAllocatedMarginRequest,
+    } as QueryOrderAllocatedMarginRequest;
+    message.endBlockHeight = object.endBlockHeight ?? "";
+    return message;
+  },
+};
+
+const baseQueryOrderAllocatedMarginResponse: object = {};
+
+export const QueryOrderAllocatedMarginResponse = {
+  encode(
+    message: QueryOrderAllocatedMarginResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.orders) {
+      DBOrder.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryOrderAllocatedMarginResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryOrderAllocatedMarginResponse,
+    } as QueryOrderAllocatedMarginResponse;
+    message.orders = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.orders.push(DBOrder.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryOrderAllocatedMarginResponse {
+    const message = {
+      ...baseQueryOrderAllocatedMarginResponse,
+    } as QueryOrderAllocatedMarginResponse;
+    message.orders = (object.orders ?? []).map((e: any) => DBOrder.fromJSON(e));
+    return message;
+  },
+
+  toJSON(message: QueryOrderAllocatedMarginResponse): unknown {
+    const obj: any = {};
+    if (message.orders) {
+      obj.orders = message.orders.map((e) =>
+        e ? DBOrder.toJSON(e) : undefined
+      );
+    } else {
+      obj.orders = [];
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryOrderAllocatedMarginResponse>
+  ): QueryOrderAllocatedMarginResponse {
+    const message = {
+      ...baseQueryOrderAllocatedMarginResponse,
+    } as QueryOrderAllocatedMarginResponse;
+    message.orders = (object.orders ?? []).map((e) => DBOrder.fromPartial(e));
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Get details for an order */
@@ -502,6 +750,11 @@ export interface Query {
   OrdersAccountOpen(
     request: QueryAccountOpenOrdersRequest
   ): Promise<QueryAccountOpenOrdersResponse>;
+  Params(request: QueryParamsRequest): Promise<QueryParamsResponse>;
+  /** Get all orders with allocated margin (open orders) */
+  OrderAllocatedMargin(
+    request: QueryOrderAllocatedMarginRequest
+  ): Promise<QueryOrderAllocatedMarginResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -511,6 +764,8 @@ export class QueryClientImpl implements Query {
     this.Order = this.Order.bind(this);
     this.OrderAll = this.OrderAll.bind(this);
     this.OrdersAccountOpen = this.OrdersAccountOpen.bind(this);
+    this.Params = this.Params.bind(this);
+    this.OrderAllocatedMargin = this.OrderAllocatedMargin.bind(this);
   }
   Order(request: QueryGetOrderRequest): Promise<QueryGetOrderResponse> {
     const data = QueryGetOrderRequest.encode(request).finish();
@@ -547,6 +802,32 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryAccountOpenOrdersResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
+    const data = QueryParamsRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.order.Query",
+      "Params",
+      data
+    );
+    return promise.then((data) =>
+      QueryParamsResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  OrderAllocatedMargin(
+    request: QueryOrderAllocatedMarginRequest
+  ): Promise<QueryOrderAllocatedMarginResponse> {
+    const data = QueryOrderAllocatedMarginRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.order.Query",
+      "OrderAllocatedMargin",
+      data
+    );
+    return promise.then((data) =>
+      QueryOrderAllocatedMarginResponse.decode(new _m0.Reader(data))
     );
   }
 }

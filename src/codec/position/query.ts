@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Position, APIPosition } from "./position";
+import { Position, APIPosition, PositionAllocatedMargin } from "./position";
 import { PageRequest, PageResponse } from "../query/pagination";
 
 export const protobufPackage = "Switcheo.carbon.position";
@@ -26,6 +26,14 @@ export interface QueryAllPositionRequest {
 export interface QueryAllPositionResponse {
   positions: APIPosition[];
   pagination?: PageResponse;
+}
+
+export interface QueryPositionAllocatedMarginRequest {
+  endBlockHeight: string;
+}
+
+export interface QueryPositionAllocatedMarginResponse {
+  positions: PositionAllocatedMargin[];
 }
 
 const baseQueryGetPositionRequest: object = { address: "", market: "" };
@@ -390,6 +398,145 @@ export const QueryAllPositionResponse = {
   },
 };
 
+const baseQueryPositionAllocatedMarginRequest: object = { endBlockHeight: "" };
+
+export const QueryPositionAllocatedMarginRequest = {
+  encode(
+    message: QueryPositionAllocatedMarginRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.endBlockHeight !== "") {
+      writer.uint32(10).string(message.endBlockHeight);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryPositionAllocatedMarginRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryPositionAllocatedMarginRequest,
+    } as QueryPositionAllocatedMarginRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.endBlockHeight = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryPositionAllocatedMarginRequest {
+    const message = {
+      ...baseQueryPositionAllocatedMarginRequest,
+    } as QueryPositionAllocatedMarginRequest;
+    message.endBlockHeight =
+      object.endBlockHeight !== undefined && object.endBlockHeight !== null
+        ? String(object.endBlockHeight)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryPositionAllocatedMarginRequest): unknown {
+    const obj: any = {};
+    message.endBlockHeight !== undefined &&
+      (obj.endBlockHeight = message.endBlockHeight);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryPositionAllocatedMarginRequest>
+  ): QueryPositionAllocatedMarginRequest {
+    const message = {
+      ...baseQueryPositionAllocatedMarginRequest,
+    } as QueryPositionAllocatedMarginRequest;
+    message.endBlockHeight = object.endBlockHeight ?? "";
+    return message;
+  },
+};
+
+const baseQueryPositionAllocatedMarginResponse: object = {};
+
+export const QueryPositionAllocatedMarginResponse = {
+  encode(
+    message: QueryPositionAllocatedMarginResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.positions) {
+      PositionAllocatedMargin.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryPositionAllocatedMarginResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryPositionAllocatedMarginResponse,
+    } as QueryPositionAllocatedMarginResponse;
+    message.positions = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.positions.push(
+            PositionAllocatedMargin.decode(reader, reader.uint32())
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryPositionAllocatedMarginResponse {
+    const message = {
+      ...baseQueryPositionAllocatedMarginResponse,
+    } as QueryPositionAllocatedMarginResponse;
+    message.positions = (object.positions ?? []).map((e: any) =>
+      PositionAllocatedMargin.fromJSON(e)
+    );
+    return message;
+  },
+
+  toJSON(message: QueryPositionAllocatedMarginResponse): unknown {
+    const obj: any = {};
+    if (message.positions) {
+      obj.positions = message.positions.map((e) =>
+        e ? PositionAllocatedMargin.toJSON(e) : undefined
+      );
+    } else {
+      obj.positions = [];
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryPositionAllocatedMarginResponse>
+  ): QueryPositionAllocatedMarginResponse {
+    const message = {
+      ...baseQueryPositionAllocatedMarginResponse,
+    } as QueryPositionAllocatedMarginResponse;
+    message.positions = (object.positions ?? []).map((e) =>
+      PositionAllocatedMargin.fromPartial(e)
+    );
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** this line is used by starport scaffolding # 2 */
@@ -397,6 +544,9 @@ export interface Query {
   PositionAll(
     request: QueryAllPositionRequest
   ): Promise<QueryAllPositionResponse>;
+  PositionAllocatedMargin(
+    request: QueryPositionAllocatedMarginRequest
+  ): Promise<QueryPositionAllocatedMarginResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -405,6 +555,7 @@ export class QueryClientImpl implements Query {
     this.rpc = rpc;
     this.Position = this.Position.bind(this);
     this.PositionAll = this.PositionAll.bind(this);
+    this.PositionAllocatedMargin = this.PositionAllocatedMargin.bind(this);
   }
   Position(
     request: QueryGetPositionRequest
@@ -431,6 +582,20 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryAllPositionResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  PositionAllocatedMargin(
+    request: QueryPositionAllocatedMarginRequest
+  ): Promise<QueryPositionAllocatedMarginResponse> {
+    const data = QueryPositionAllocatedMarginRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.position.Query",
+      "PositionAllocatedMargin",
+      data
+    );
+    return promise.then((data) =>
+      QueryPositionAllocatedMarginResponse.decode(new _m0.Reader(data))
     );
   }
 }

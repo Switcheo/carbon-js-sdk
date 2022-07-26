@@ -1,14 +1,16 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { MsgFee } from "./fee";
+import { MsgGasCost, MinGasPrice } from "./fee";
 
 export const protobufPackage = "Switcheo.carbon.fee";
 
 /** GenesisState defines the fee module's genesis state. */
 export interface GenesisState {
   /** this line is used by starport scaffolding # genesis/proto/state */
-  msgFees: MsgFee[];
+  msgGasCosts: MsgGasCost[];
+  /** this line is used by starport scaffolding # ibc/genesis/proto */
+  minGasPrices: MinGasPrice[];
 }
 
 const baseGenesisState: object = {};
@@ -18,8 +20,11 @@ export const GenesisState = {
     message: GenesisState,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    for (const v of message.msgFees) {
-      MsgFee.encode(v!, writer.uint32(10).fork()).ldelim();
+    for (const v of message.msgGasCosts) {
+      MsgGasCost.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    for (const v of message.minGasPrices) {
+      MinGasPrice.encode(v!, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
@@ -28,12 +33,18 @@ export const GenesisState = {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseGenesisState } as GenesisState;
-    message.msgFees = [];
+    message.msgGasCosts = [];
+    message.minGasPrices = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.msgFees.push(MsgFee.decode(reader, reader.uint32()));
+          message.msgGasCosts.push(MsgGasCost.decode(reader, reader.uint32()));
+          break;
+        case 2:
+          message.minGasPrices.push(
+            MinGasPrice.decode(reader, reader.uint32())
+          );
           break;
         default:
           reader.skipType(tag & 7);
@@ -45,27 +56,42 @@ export const GenesisState = {
 
   fromJSON(object: any): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
-    message.msgFees = (object.msgFees ?? []).map((e: any) =>
-      MsgFee.fromJSON(e)
+    message.msgGasCosts = (object.msgGasCosts ?? []).map((e: any) =>
+      MsgGasCost.fromJSON(e)
+    );
+    message.minGasPrices = (object.minGasPrices ?? []).map((e: any) =>
+      MinGasPrice.fromJSON(e)
     );
     return message;
   },
 
   toJSON(message: GenesisState): unknown {
     const obj: any = {};
-    if (message.msgFees) {
-      obj.msgFees = message.msgFees.map((e) =>
-        e ? MsgFee.toJSON(e) : undefined
+    if (message.msgGasCosts) {
+      obj.msgGasCosts = message.msgGasCosts.map((e) =>
+        e ? MsgGasCost.toJSON(e) : undefined
       );
     } else {
-      obj.msgFees = [];
+      obj.msgGasCosts = [];
+    }
+    if (message.minGasPrices) {
+      obj.minGasPrices = message.minGasPrices.map((e) =>
+        e ? MinGasPrice.toJSON(e) : undefined
+      );
+    } else {
+      obj.minGasPrices = [];
     }
     return obj;
   },
 
   fromPartial(object: DeepPartial<GenesisState>): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
-    message.msgFees = (object.msgFees ?? []).map((e) => MsgFee.fromPartial(e));
+    message.msgGasCosts = (object.msgGasCosts ?? []).map((e) =>
+      MsgGasCost.fromPartial(e)
+    );
+    message.minGasPrices = (object.minGasPrices ?? []).map((e) =>
+      MinGasPrice.fromPartial(e)
+    );
     return message;
   },
 };
