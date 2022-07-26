@@ -16,6 +16,8 @@ export interface NodeItem {
   wsUptime: string; // string rep of number
   insightUptime: string; // string rep of number
   tmWsUrl: string;
+  appVersion: string;
+  appCommit: string;
 }
 
 export interface QueryGetNodesResponse {

@@ -19,7 +19,9 @@ export const nodesByNet: NodeNet = {
     rpcUptime: "0",
     wsUptime: "0",
     insightUptime: "100",
-    tmWsUrl: "wss://shadow-tm-api.carbon.network/"
+    tmWsUrl: "wss://shadow-tm-api.carbon.network/",
+    appCommit: "",
+    appVersion: ""
   }, {
     nodeId: "shadowmainnet2",
     rpcUrl: "http://18.139.169.234:26657",
@@ -33,7 +35,9 @@ export const nodesByNet: NodeNet = {
     rpcUptime: "0",
     wsUptime: "0",
     insightUptime: "100",
-    tmWsUrl: "wss://shadow-tm-api.carbon.network/"
+    tmWsUrl: "wss://shadow-tm-api.carbon.network/",
+    appCommit: "",
+    appVersion: ""
   }],
   [Network.DevNet]: [{
     nodeId: "devnetlatest",
@@ -48,6 +52,8 @@ export const nodesByNet: NodeNet = {
     rpcUptime: "0",
     wsUptime: "0",
     insightUptime: "100",
-    tmWsUrl: "wss://dev39911-tm-api.carbon.network/"
+    tmWsUrl: "wss://dev39911-tm-api.carbon.network/",
+    appCommit: "",
+    appVersion: ""
   }],
 };
