@@ -671,7 +671,7 @@ export function transfromSetMsgGasCostParams(msg: AdminModule.SetMsgGasCostParam
 export function transfromSetMinGasPriceParams(msg: AdminModule.SetMinGasPriceParams) {
   return {
     denom: msg.denom,
-    gasPrice: msg.gasPrice.toString(10),
+    gasPrice: new BigNumber(msg.gasPrice).shiftedBy(18).toString(10),
   }
 }
 
