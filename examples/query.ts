@@ -17,13 +17,18 @@ import "./_setup";
   const marketStats = await sdk.query.marketstats.MarketStats({});
   console.log("marketStats", marketStats);
 
-  // query txn fees
-  const fees = await sdk.query.fee.MsgFeeAll({})
-  console.log("fees", fees);
+  // query msg type gas costs
+  const msgGasCosts = await sdk.query.fee.MsgGasCostAll({});
+  console.log("msg gas costs", msgGasCosts);
+
+  // query txn min gas price
+  const minGasPrices = await sdk.query.fee.MinGasPriceAll({});
+  console.log("min gas prices", minGasPrices);
 
   // query all tokens
   const tokens = await sdk.query.coin.TokenAll({
     pagination: {
+      reverse: false,
       limit: new Long(100),
       offset: new Long(0),
       key: new Uint8Array(),
@@ -67,17 +72,18 @@ import "./_setup";
   // query 10 latest transactions
   const txnsResponse = await sdk.query.misc.TransactionAll(
     QueryAllTransactionRequest.fromPartial({
-    pagination: {
-      page: new Long(1),
-      pageSize: new Long(10),
-    },
-  }));
+      pagination: {
+        page: new Long(1),
+        pageSize: new Long(10),
+      },
+    })
+  );
   console.log("latest txn", txnsResponse.transactions[0]);
 
   // query all transaction MessageTypes
   const messageTypeReponse = await sdk.query.misc.MessageTypeAll({});
   console.log("message types", messageTypeReponse.messageTypes);
-  
+
   const firstMessageType = messageTypeReponse.messageTypes[0].messageType;
 
   // filter transactions with MessageType
@@ -88,7 +94,8 @@ import "./_setup";
         page: new Long(1),
         pageSize: new Long(10),
       },
-    }));
+    })
+  );
   console.log("filtered txns by messageType:", firstMessageType, filteredTxns.transactions[0]);
 
   // Tendermint Queries
@@ -98,26 +105,29 @@ import "./_setup";
 
   // query latest block
   const block = await sdk.query.chain.getBlock();
-  console.log("block", block)
-  console.log("block tx hashes", block.txs.map(GenericUtils.computeTxHash))
+  console.log("block", block);
+  console.log("block tx hashes", block.txs.map(GenericUtils.computeTxHash));
 
   const txHash = GenericUtils.computeTxHash(block.txs[0])!;
 
   // get tx
   const txs = await sdk.query.chain.searchTx({
-    tags: [{
-      key: "tx.hash",
-      value: txHash,
-    }]
-  })
-  const [tx] = txs; 
-  console.log("tx", tx)
-  console.log("tx hash", tx.hash)
-  console.log("tx events", JSON.parse(tx.rawLog))
+    tags: [
+      {
+        key: "tx.hash",
+        value: txHash,
+      },
+    ],
+  });
+  const [tx] = txs;
+  console.log("tx", tx);
+  console.log("tx hash", tx.hash);
+  console.log("tx events", JSON.parse(tx.rawLog));
 
   // decode tx
-  const decodedTx = CarbonTx.decode(tx.tx)
-  console.log("tx decoded", JSON.stringify(decodedTx))
-  console.log("tx msgs", decodedTx?.body?.messages)
-
-})().catch(console.error).finally(() => process.exit(0));
+  const decodedTx = CarbonTx.decode(tx.tx);
+  console.log("tx decoded", JSON.stringify(decodedTx));
+  console.log("tx msgs", decodedTx?.body?.messages);
+})()
+  .catch(console.error)
+  .finally(() => process.exit(0));

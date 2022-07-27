@@ -2,8 +2,9 @@ import { MsgSubmitProposal } from "@carbon-sdk/codec/cosmos/gov/v1beta1/tx";
 import {
   CreateOracleProposal,
   CreateTokenProposal, LinkPoolProposal, SetCommitmentCurveProposal, 
-  SetMsgGasCostProposal, SetRewardCurveProposal, SetRewardsWeightsProposal, UnlinkPoolProposal,
-  SettlementPriceProposal, UpdateMarketProposal, UpdatePoolProposal,
+  SetMsgGasCostProposal, SetMinGasPriceProposal, RemoveMsgGasCostProposal,
+  RemoveMinGasPriceProposal, SetRewardCurveProposal, SetRewardsWeightsProposal,
+  UnlinkPoolProposal, SettlementPriceProposal, UpdateMarketProposal, UpdatePoolProposal,
 } from "@carbon-sdk/codec";
 import { GovUtils, TypeUtils } from "@carbon-sdk/util";
 import * as CarbonTx from "@carbon-sdk/util/tx";
@@ -22,6 +23,9 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
 const ContentTypes: TypeUtils.SimpleMap<string> = {
   [GovUtils.ProposalTypes.CreateToken]: "coin/CreateTokenProposal",
   [GovUtils.ProposalTypes.SetMsgGasCost]: "fee/SetMsgGasCostProposal",
+  [GovUtils.ProposalTypes.SetMinGasPrice]: "fee/SetMinGasPriceProposal",
+  [GovUtils.ProposalTypes.RemoveMsgGasCost]: "fee/RemoveMsgGasCostProposal",
+  [GovUtils.ProposalTypes.RemoveMinGasPrice]: "fee/RemoveMinGasPriceProposal",
   [GovUtils.ProposalTypes.SetCommitmentCurve]: 'liquiditypool/SetCommitmentCurveProposal',
   [GovUtils.ProposalTypes.SetRewardCurve]: 'liquiditypool/SetRewardCurveProposal',
   [GovUtils.ProposalTypes.SetRewardsWeights]: 'liquiditypool/SetRewardsWeightsProposal',
@@ -224,6 +228,15 @@ const checkDecodeProposal = (content: any, amino: AminoValueMap): AminoProposalR
     case GovUtils.ProposalTypes.SetMsgGasCost:
       newAmino.content = {};
       break;
+    case GovUtils.ProposalTypes.SetMinGasPrice:
+      newAmino.content = {};
+      break;
+    case GovUtils.ProposalTypes.RemoveMsgGasCost:
+      newAmino.content = {};
+      break;
+    case GovUtils.ProposalTypes.RemoveMinGasPrice:
+      newAmino.content = {};
+      break;
     case GovUtils.ProposalTypes.SettlementPrice:
       newAmino.content = { ...SettlementPrice };
       break;
@@ -281,15 +294,60 @@ const checkEncodeProposal = (content: any, amino: AminoValueMap): DirectProposal
         },
       };
     case ContentTypes[GovUtils.ProposalTypes.SetMsgGasCost]:
-      const setMsgFeeMsg = preProcessAmino(content.value.msg, {});
-      const msgFeeProp = SetMsgGasCostProposal.fromPartial({
+      const setMsgGasCostMsg = preProcessAmino(content.value.msg, {});
+      const setMsgGasCostProp = SetMsgGasCostProposal.fromPartial({
         ...content.value,
-        msg: setMsgFeeMsg,
+        msg: setMsgGasCostMsg,
       });
       return {
         newContent: {
           typeUrl: GovUtils.ProposalTypes.SetMsgGasCost,
-          value: SetMsgGasCostProposal.encode(msgFeeProp).finish(),
+          value: SetMsgGasCostProposal.encode(setMsgGasCostProp).finish(),
+        },
+        newAmino: {
+          ...amino,
+        },
+      };
+    case ContentTypes[GovUtils.ProposalTypes.SetMinGasPrice]:
+      const setMinGasPriceMsg = preProcessAmino(content.value.msg, {});
+      const setMinGasPriceProp = SetMinGasPriceProposal.fromPartial({
+        ...content.value,
+        msg: setMinGasPriceMsg,
+      });
+      return {
+        newContent: {
+          typeUrl: GovUtils.ProposalTypes.SetMinGasPrice,
+          value: SetMinGasPriceProposal.encode(setMinGasPriceProp).finish(),
+        },
+        newAmino: {
+          ...amino,
+        },
+      };
+    case ContentTypes[GovUtils.ProposalTypes.RemoveMsgGasCost]:
+      const removeMsgGasCostMsg = preProcessAmino(content.value.msg, {});
+      const removeMsgGasCostProp = RemoveMsgGasCostProposal.fromPartial({
+        ...content.value,
+        msg: removeMsgGasCostMsg,
+      });
+      return {
+        newContent: {
+          typeUrl: GovUtils.ProposalTypes.RemoveMsgGasCost,
+          value: RemoveMsgGasCostProposal.encode(removeMsgGasCostProp).finish(),
+        },
+        newAmino: {
+          ...amino,
+        },
+      };
+    case ContentTypes[GovUtils.ProposalTypes.RemoveMinGasPrice]:
+      const removeMinGasPriceMsg = preProcessAmino(content.value.msg, {});
+      const removeMinGasPriceProp = RemoveMinGasPriceProposal.fromPartial({
+        ...content.value,
+        msg: removeMinGasPriceMsg,
+      });
+      return {
+        newContent: {
+          typeUrl: GovUtils.ProposalTypes.RemoveMinGasPrice,
+          value: RemoveMinGasPriceProposal.encode(removeMinGasPriceProp).finish(),
         },
         newAmino: {
           ...amino,

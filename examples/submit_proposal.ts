@@ -19,19 +19,19 @@ import BigNumber from "bignumber.js";
 
   const FeeProposalresult = await connectedSDK.gov.submit({
     content: {
-      typeUrl: "/Switcheo.carbon.fee.SetMsgFeeProposal",
+      typeUrl: "/Switcheo.carbon.fee.SetMsgGasCostProposal",
       value: {
         title: "proposal title",
         description: "proposal desc",
         msg: {
           msgType: "test1",
-          fee: new BigNumber(2)
-        }
-      }
+          gasCost: new BigNumber(2),
+        },
+      },
     },
     initialDeposit: coins(100000000, "swth"),
     proposer: connectedSDK.wallet.bech32Address,
-  })
+  });
 
   const OracleProposalresult = await connectedSDK.gov.submit({
     content: {
@@ -41,21 +41,22 @@ import BigNumber from "bignumber.js";
         description: "proposal desc",
         msg: {
           id: "DXBT4",
-        description: "Demex XBT Index",
-        minTurnoutPercentage: 67,
-        maxResultAge: 100,
-        securityType: "SecuredByValidators",
-        resultStrategy: "median",
-        resolution: 1,
-        spec: "{}",
-        }
-      }
+          description: "Demex XBT Index",
+          minTurnoutPercentage: 67,
+          maxResultAge: 100,
+          securityType: "SecuredByValidators",
+          resultStrategy: "median",
+          resolution: 1,
+          spec: "{}",
+        },
+      },
     },
     initialDeposit: coins(100000000, "swth"),
     proposer: connectedSDK.wallet.bech32Address,
-  })
+  });
 
-  console.log(FeeProposalresult)
-  console.log(OracleProposalresult)
-  
-})().catch(console.error).finally(() => process.exit(0));
+  console.log(FeeProposalresult);
+  console.log(OracleProposalresult);
+})()
+  .catch(console.error)
+  .finally(() => process.exit(0));

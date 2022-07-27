@@ -4,7 +4,7 @@ import { TextProposal, VoteOption } from "@carbon-sdk/codec/cosmos/gov/v1beta1/g
 import { MsgDeposit, MsgVote } from "@carbon-sdk/codec/cosmos/gov/v1beta1/tx";
 import { ParameterChangeProposal } from "@carbon-sdk/codec/cosmos/params/v1beta1/params";
 import { CancelSoftwareUpgradeProposal, SoftwareUpgradeProposal } from "@carbon-sdk/codec/cosmos/upgrade/v1beta1/upgrade";
-import { SetMsgGasCostProposal } from "@carbon-sdk/codec/fee/proposal";
+import { SetMsgGasCostProposal, SetMinGasPriceProposal, RemoveMsgGasCostProposal, RemoveMinGasPriceProposal } from "@carbon-sdk/codec/fee/proposal";
 import { LinkPoolProposal, SetCommitmentCurveProposal, SetRewardCurveProposal, SetRewardsWeightsProposal, UnlinkPoolProposal, UpdatePoolProposal } from "@carbon-sdk/codec/liquiditypool/proposal";
 import { UpdateMarketProposal } from "@carbon-sdk/codec/market/proposal";
 import { CreateOracleProposal } from "@carbon-sdk/codec/oracle/proposal";
@@ -13,7 +13,7 @@ import { CarbonTx } from "@carbon-sdk/util";
 import { Coin, coins } from "@cosmjs/amino";
 import Long from "long";
 import {
-  AdminModule, transformCommunityPoolSpendAmount, transformSetSettlementPriceParams, transfromCreateOracleParams, transfromCreateTokenParams, transfromLinkPoolParams, transfromSetCommitmentCurveParams, transfromSetMsgGasCostParams, transfromSetRewardCurveParams, transfromSetRewardsWeightsParams, transfromUnlinkPoolParams, transfromUpdatePoolParams
+  AdminModule, transformCommunityPoolSpendAmount, transformSetSettlementPriceParams, transfromCreateOracleParams, transfromCreateTokenParams, transfromLinkPoolParams, transfromSetCommitmentCurveParams, transfromSetMsgGasCostParams, transfromSetMinGasPriceParams, transfromSetRewardCurveParams, transfromSetRewardsWeightsParams, transfromUnlinkPoolParams, transfromUpdatePoolParams
 } from "./admin";
 import BaseModule from "./base";
 import { MarketModule, transfromUpdateMarketParams } from "./market";
@@ -75,12 +75,33 @@ export class GovModule extends BaseModule {
         }
         return CreateTokenProposal.encode(createTokenMsg).finish()
       case "SetMsgGasCostProposal":
-        const setMsgGasCost = {
+        const setMsgGasCostMsg = {
           title : title,
           description: description,
           msg: transfromSetMsgGasCostParams(msg)
         }
-        return SetMsgGasCostProposal.encode(setMsgGasCost).finish()
+        return SetMsgGasCostProposal.encode(setMsgGasCostMsg).finish()
+      case "SetMinGasPriceProposal":
+        const setMinGasPriceMsg = {
+          title : title,
+          description: description,
+          msg: transfromSetMinGasPriceParams(msg)
+        }
+        return SetMinGasPriceProposal.encode(setMinGasPriceMsg).finish()
+      case "RemoveMsgGasCostProposal":
+        const removeMsgGasCostMsg = {
+          title : title,
+          description: description,
+          msgType: proposalMsg.msgType,
+        }
+        return RemoveMsgGasCostProposal.encode(removeMsgGasCostMsg).finish()
+      case "RemoveMinGasPriceProposal":
+        const removeMinGasPriceMsg = {
+          title : title,
+          description: description,
+          denom: proposalMsg.denom,
+        }
+        return RemoveMinGasPriceProposal.encode(removeMinGasPriceMsg).finish()
       case "LinkPoolProposal":
         const linkPoolMsg = {
           title : title,
@@ -220,7 +241,8 @@ export namespace GovModule {
 
   export type ProposalTypeParams =
     AdminModule.CreateTokenParams |
-    AdminModule.SetMsgFeeParams |
+    AdminModule.SetMsgGasCostParams |
+    AdminModule.SetMinGasPriceParams |
     AdminModule.LinkPoolParams |
     AdminModule.UnlinkPoolParams |
     AdminModule.SetRewardCurveParams |
