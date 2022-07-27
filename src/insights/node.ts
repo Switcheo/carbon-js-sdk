@@ -25,7 +25,8 @@ export interface NodeItem {
 export interface Creator {
   name: string;
   telegram: string;
-  email: string
+  email?: string;
+  description?: string;
 }
 
 export interface QueryGetNodesResponse {
