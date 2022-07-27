@@ -5,6 +5,7 @@ import { ProviderAgent } from "@carbon-sdk/constant/walletProvider";
 import { CosmosLedger } from "@carbon-sdk/provider";
 import { AddressUtils, CarbonTx, GenericUtils } from "@carbon-sdk/util";
 import { SWTHAddress } from "@carbon-sdk/util/address";
+import { fetch } from "@carbon-sdk/util/fetch";
 import { QueueManager } from "@carbon-sdk/util/generic";
 import { bnOrZero, BN_ZERO } from "@carbon-sdk/util/number";
 import { BroadcastTxMode, CarbonSignerData, TxFeeTypeDefaultKey } from "@carbon-sdk/util/tx";
@@ -16,7 +17,6 @@ import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import { BroadcastTxSyncResponse } from "@cosmjs/tendermint-rpc/build/tendermint34/responses";
 import BigNumber from "bignumber.js";
 import { TxRaw as StargateTxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx";
-import fetch from "node-fetch";
 import { CarbonLedgerSigner, CarbonNonSigner, CarbonPrivateKeySigner, CarbonSigner, CarbonSignerTypes } from "./CarbonSigner";
 import { CarbonSigningClient } from "./CarbonSigningClient";
 
