@@ -124,7 +124,7 @@ export class CarbonWallet {
   initialized: boolean = false;
 
   accountInfo?: AccountInfo;
-  
+
   disableRetryOnSequenceError: boolean;
 
   // for analytics
@@ -505,21 +505,26 @@ export class CarbonWallet {
     if (this.sequenceInvalidated)
       this.sequenceInvalidated = false;
 
-    const info = await this.getQueryClient().chain.getSequence(this.bech32Address);
-
-    const pubkey = this.accountInfo?.pubkey ?? {
-      type: "tendermint/PubKeySecp256k1",
-      value: this.publicKey.toString("base64"),
-    };
-
-    const chainId = this.accountInfo?.chainId ?? this.chainId ?? await this.getQueryClient().chain.getChainId();
-
-    this.accountInfo = {
-      ...info,
-      address: this.bech32Address,
-      pubkey,
-      chainId,
-    };
+    try {
+      const info = await this.getQueryClient().chain.getSequence(this.bech32Address);
+  
+      const pubkey = this.accountInfo?.pubkey ?? {
+        type: "tendermint/PubKeySecp256k1",
+        value: this.publicKey.toString("base64"),
+      };
+  
+      const chainId = this.accountInfo?.chainId ?? this.chainId ?? await this.getQueryClient().chain.getChainId();
+  
+      this.accountInfo = {
+        ...info,
+        address: this.bech32Address,
+        pubkey,
+        chainId,
+      };
+    } catch (error: any) {
+      if (!this.isNewAccountError(error))
+        throw error;
+    }
   }
 
   private estimateTxFee(
@@ -536,6 +541,10 @@ export class CarbonWallet {
       }],
       gas: DEFAULT_GAS.times(messages.length).toString(10),
     };
+  }
+
+  private isNewAccountError = (error?: Error) => {
+    return error?.message?.includes("Account does not exist on chain. Send some tokens there before trying to query sequence.");
   }
 
   private isNonceMismatchError = (error?: Error) => {
