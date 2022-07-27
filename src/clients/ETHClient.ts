@@ -25,27 +25,28 @@ interface ETHTxParams {
 }
 
 export interface BridgeParams {
-  fromToken: Models.Token;
-  toToken: Models.Token;
-  amount: BigNumber;
-  fromAddress: string;
-  recoveryAddress: string;
-  toAddress: string;
+  fromToken: Models.Token
+  toToken: Models.Token
+  amount: BigNumber
+  fromAddress: string
+  recoveryAddress: string
+  toAddress: string
   feeAmount: BigNumber
-  gasPriceGwei: BigNumber;
-  gasLimit: BigNumber;
-  signer: ethers.Signer;
-  signCompleteCallback?: () => void;
+  gasPriceGwei: BigNumber
+  gasLimit: BigNumber
+  signer: ethers.Signer
+  signCompleteCallback?: () => void
 }
 
 export interface LockParams extends ETHTxParams {
-  address: Uint8Array;
-  amount: BigNumber;
-  token: Models.Token;
+  address: Uint8Array
+  amount: BigNumber
+  token: Models.Token
   signCompleteCallback?: () => void;
 }
 export interface ApproveERC20Params extends ETHTxParams {
-  token: Models.Token;
+  token: Models.Token
+  spenderAddress?: string
   signCompleteCallback?: () => void;
 }
 
@@ -113,14 +114,14 @@ export class ETHClient {
   }
 
   public async approveERC20(params: ApproveERC20Params): Promise<EthersTransactionResponse> {
-    const { token, gasPriceGwei, gasLimit, ethAddress, signer } = params;
+    const { token, gasPriceGwei, gasLimit, ethAddress, spenderAddress, signer } = params;
     const contractAddress = token.tokenAddress;
 
     const rpcProvider = this.getProvider();
     const contract = new ethers.Contract(contractAddress, ABIs.erc20, rpcProvider);
 
     const nonce = await rpcProvider.getTransactionCount(ethAddress);
-    const approveResultTx = await contract.connect(signer).approve(token.bridgeAddress, ethers.constants.MaxUint256, {
+    const approveResultTx = await contract.connect(signer).approve(spenderAddress ?? token.bridgeAddress, ethers.constants.MaxUint256, {
       nonce,
       gasPrice: gasPriceGwei.shiftedBy(9).toString(10),
       gasLimit: gasLimit.toString(10),

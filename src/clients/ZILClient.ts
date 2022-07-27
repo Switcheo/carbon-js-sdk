@@ -1,6 +1,6 @@
 import CarbonSDK from "@carbon-sdk/CarbonSDK"
 import { NetworkConfig, NetworkConfigProvider, ZilNetworkConfig } from "@carbon-sdk/constant"
-import { Models } from "@carbon-sdk/index"
+import { Models, AddressUtils } from "@carbon-sdk/index"
 import { SWTHAddress } from "@carbon-sdk/util/address"
 import { Blockchain, blockchainForChainId } from "@carbon-sdk/util/blockchain"
 import { TokensWithExternalBalance } from "@carbon-sdk/util/external"
@@ -45,8 +45,23 @@ export interface ZILLockParams extends ZILTxParams {
   signCompleteCallback?: () => void
 }
 
+export interface ZilBridgeParams {
+  fromToken: Models.Token
+  toToken: Models.Token
+  amount: BigNumber
+  fromAddress: string
+  recoveryAddress: string
+  toAddress: string
+  feeAmount: BigNumber
+  gasPrice: BigNumber
+  gasLimit: BigNumber
+  signer: WalletProvider | string
+  signCompleteCallback?: () => void
+}
+
 export interface ApproveZRC2Params extends ZILTxParams {
   token: Models.Token
+  spenderAddress?: string
   signCompleteCallback?: () => void
 }
 
@@ -191,7 +206,7 @@ export class ZILClient {
   }
 
   public async approveZRC2(params: ApproveZRC2Params) {
-    const { token, gasPrice, gasLimit, zilAddress, signer } = params
+    const { token, gasPrice, gasLimit, zilAddress, spenderAddress, signer } = params
     const contractAddress = token.tokenAddress
 
     let zilliqa;
@@ -204,7 +219,6 @@ export class ZILClient {
     } else {
       zilliqa = new Zilliqa(this.getProviderUrl())
     }
-
     const deployedContract = (this.walletProvider || zilliqa).contracts.at(contractAddress)
     const balanceAndNonceResp = await zilliqa.blockchain.getBalance(stripHexPrefix(zilAddress))
     if (balanceAndNonceResp.error !== undefined) {
@@ -227,7 +241,7 @@ export class ZILClient {
         vname: 'spender',
         type: 'ByStr20',
         // TODO: Check if bridgeAddress corresponds to carbon token lock_proxy_hash
-        value: appendHexPrefix(token.bridgeAddress),
+        value: spenderAddress ?? appendHexPrefix(token.bridgeAddress),
       },
       {
         vname: 'amount',
@@ -245,6 +259,21 @@ export class ZILClient {
     return callTx;
   }
 
+  // public async checkAllowanceZRC2(token: Models.Token, owner: string, spender: string) {
+  //   const contractAddress = appendHexPrefix(token.tokenAddress)
+  //   const zilliqa = new Zilliqa(this.getProviderUrl())
+  //   const resp = await zilliqa.blockchain.getSmartContractSubState(contractAddress, "allowances", [owner, spender])
+  //   if (resp.error !== undefined) {
+  //     throw new Error(resp.error.message)
+  //   }
+
+  //   if (resp.result === null) {
+  //     return new BigNumber("0")
+  //   }
+
+  //   return new BigNumber(resp.result.allowances[owner][spender])
+  // }
+
   public async checkAllowanceZRC2(token: Models.Token, owner: string, spender: string) {
     const contractAddress = appendHexPrefix(token.tokenAddress)
     const zilliqa = new Zilliqa(this.getProviderUrl())
@@ -258,6 +287,122 @@ export class ZILClient {
     }
 
     return new BigNumber(resp.result.allowances[owner][spender])
+  }
+
+  public async bridgeTokens(params: ZilBridgeParams) {
+    const { fromToken, toToken, amount, fromAddress, recoveryAddress, toAddress, signer, gasPrice, gasLimit, feeAmount, signCompleteCallback } = params
+    const networkConfig = this.getNetworkConfig()
+
+    if (!recoveryAddress.match(/^swth[a-z0-9]{39}$/)) {
+      throw new Error("Invalid recovery address")
+    }
+
+    const fromTokenId = fromToken.id;
+    const fromTokenAddr = appendHexPrefix(fromToken.tokenAddress)
+    const toTokenDenom = toToken.denom;
+    const targetProxyHash = appendHexPrefix(this.getTargetProxyHash(fromToken))
+
+    const recoveryAddressHex = ethers.utils.hexlify(
+      AddressUtils.SWTHAddress.getAddressBytes(recoveryAddress, CarbonSDK.Network.MainNet) 
+    );
+
+    const fromAssetHash = ethers.utils.hexlify(ethers.utils.toUtf8Bytes(fromTokenId))
+    const toAssetHash = ethers.utils.hexlify(ethers.utils.toUtf8Bytes(toTokenDenom))
+    const feeAddress = appendHexPrefix(networkConfig.feeAddress)
+
+    const contractAddress = this.getBridgeEntranceAddr();
+
+    let zilliqa;
+    if (typeof signer === 'string') {
+      zilliqa = new Zilliqa(this.getProviderUrl())
+      zilliqa.wallet.addByPrivateKey(signer)
+    } else if (signer) {
+      zilliqa = new Zilliqa(this.getProviderUrl(), signer.provider)
+      this.walletProvider = signer
+    } else {
+      zilliqa = new Zilliqa(this.getProviderUrl())
+    }
+
+    const deployedContract = (this.walletProvider || zilliqa).contracts.at(contractAddress)
+    const balanceAndNonceResp = await zilliqa.blockchain.getBalance(stripHexPrefix(fromAddress))
+    if (balanceAndNonceResp.error !== undefined) {
+      throw new Error(balanceAndNonceResp.error.message)
+    }
+
+    const nonce = balanceAndNonceResp.result.nonce + 1
+    const version = bytes.pack(this.getConfig().chainId, Number(1))
+
+    let nativeAmt = new BN(0)
+    if (fromToken.tokenAddress == zeroAddress) {
+      nativeAmt = new BN(amount.toString())
+    }
+
+    const callParams = {
+      version: version,
+      nonce: nonce,
+      amount: nativeAmt,
+      gasPrice: new BN(gasPrice.toString()),
+      gasLimit: Long.fromString(gasLimit.toString()),
+    }
+
+    const transitionParams = [
+      {
+        vname: 'tokenAddr',
+        type: 'ByStr20',
+        value: fromTokenAddr,
+      },
+      {
+        vname: 'targetProxyHash',
+        type: 'ByStr',
+        value: targetProxyHash,
+      },
+      {
+        vname: 'recoveryAddress',
+        type: 'ByStr',
+        value: recoveryAddressHex,
+      },
+      {
+        vname: 'fromAssetDenom',
+        type: 'ByStr',
+        value: fromAssetHash,
+      },
+      {
+        vname: 'withdrawFeeAddress',
+        type: 'ByStr',
+        value: feeAddress,
+      },
+      {
+        vname: 'toAddress',
+        type: 'ByStr',
+        value: toAddress,
+      },
+      {
+        vname: 'toAssetDenom',
+        type: 'ByStr',
+        value: toAssetHash,
+      },
+      {
+        vname: 'amount',
+        type: 'Uint256',
+        value: amount.toString()
+      },
+      {
+        vname: 'withdrawFeeAmount',
+        type: 'Uint256',
+        value: feeAmount.toString()
+      }
+    ]
+
+    const data = {
+      _tag: "Lock",
+      params: [...transitionParams],
+    }
+
+    const callTx = await this.callContract(deployedContract, data._tag, data.params, callParams, true)
+
+    signCompleteCallback?.();
+
+    return callTx;
   }
 
   public async lockDeposit(params: ZILLockParams) {
@@ -395,6 +540,10 @@ export class ZILClient {
 
   public getLockProxyAddress() {
     return this.getConfig().lockProxyAddr;
+  }
+
+  public getBridgeEntranceAddr() {
+    return this.getConfig().bridgeEntranceAddr;
   }
 }
 
