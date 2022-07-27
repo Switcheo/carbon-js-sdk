@@ -21,7 +21,13 @@ export const nodesByNet: NodeNet = {
     insightUptime: "100",
     tmWsUrl: "wss://shadow-tm-api.carbon.network/",
     appCommit: "",
-    appVersion: ""
+    appVersion: "",
+    creator: {
+      name: "",
+      telegram: "",
+      email: ""
+    },
+    latestBlockHeight: 0
   }, {
     nodeId: "shadowmainnet2",
     rpcUrl: "http://18.139.169.234:26657",
@@ -37,7 +43,13 @@ export const nodesByNet: NodeNet = {
     insightUptime: "100",
     tmWsUrl: "wss://shadow-tm-api.carbon.network/",
     appCommit: "",
-    appVersion: ""
+    appVersion: "",
+    creator: {
+      name: "",
+      telegram: "",
+      email: ""
+    },
+    latestBlockHeight: 0
   }],
   [Network.DevNet]: [{
     nodeId: "devnetlatest",
@@ -54,6 +66,12 @@ export const nodesByNet: NodeNet = {
     insightUptime: "100",
     tmWsUrl: "wss://dev39911-tm-api.carbon.network/",
     appCommit: "",
-    appVersion: ""
+    appVersion: "",
+    creator: {
+      name: "",
+      telegram: "",
+      email: ""
+    },
+    latestBlockHeight: 0
   }],
 };
