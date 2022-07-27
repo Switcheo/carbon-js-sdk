@@ -520,6 +520,11 @@ export namespace AdminModule {
     blockchain: string
   }
 
+  export interface SetMsgFeeParams {
+    msgType: string
+    fee: BigNumber
+  }
+
   export interface SetMsgGasCostParams {
     msgType: string
     gasCost: BigNumber
@@ -681,13 +686,6 @@ export function transfromSetMinGasPriceParams(msg: AdminModule.SetMinGasPricePar
   return {
     denom: msg.denom,
     gasPrice: new BigNumber(msg.gasPrice).shiftedBy(18).toString(10),
-  }
-}
-
-export function transfromSetMsgGasCostParams(msg: AdminModule.SetMsgGasCostParams) {
-  return {
-    msgType: msg.msgType,
-    gasCost: msg.gasCost.toString(10),
   }
 }
 

@@ -13,7 +13,7 @@ import { CarbonTx } from "@carbon-sdk/util";
 import { Coin, coins } from "@cosmjs/amino";
 import Long from "long";
 import {
-  AdminModule, transformCommunityPoolSpendAmount, transformSetSettlementPriceParams, transfromCreateOracleParams, transfromCreateTokenParams, transfromLinkPoolParams, transfromSetCommitmentCurveParams, transfromSetMsgGasCostParams, transfromSetRewardCurveParams, transfromSetRewardsWeightsParams, transfromUnlinkPoolParams, transfromUpdatePoolParams
+  AdminModule, transformCommunityPoolSpendAmount, transformSetSettlementPriceParams, transfromCreateOracleParams, transfromCreateTokenParams, transfromLinkPoolParams, transfromSetCommitmentCurveParams, transfromSetMsgGasCostParams, transfromSetMinGasPriceParams, transfromSetRewardCurveParams, transfromSetRewardsWeightsParams, transfromUnlinkPoolParams, transfromUpdatePoolParams
 } from "./admin";
 import BaseModule from "./base";
 import { MarketModule, transfromUpdateMarketParams } from "./market";
