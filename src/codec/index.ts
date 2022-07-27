@@ -26,7 +26,6 @@ import { MsgConnectionOpenInit, MsgConnectionOpenInitResponse, MsgConnectionOpen
 import { MsgChannelOpenInit, MsgChannelOpenInitResponse, MsgChannelOpenTry, MsgChannelOpenTryResponse, MsgChannelOpenAck, MsgChannelOpenAckResponse, MsgChannelOpenConfirm, MsgChannelOpenConfirmResponse, MsgChannelCloseInit, MsgChannelCloseInitResponse, MsgChannelCloseConfirm, MsgChannelCloseConfirmResponse, MsgRecvPacket, MsgRecvPacketResponse, MsgTimeout, MsgTimeoutResponse, MsgTimeoutOnClose, MsgTimeoutOnCloseResponse, MsgAcknowledgement, MsgAcknowledgementResponse } from "./ibc/core/channel/v1/tx";
 import { MsgCreateClient, MsgCreateClientResponse, MsgUpdateClient, MsgUpdateClientResponse, MsgUpgradeClient, MsgUpgradeClientResponse, MsgSubmitMisbehaviour, MsgSubmitMisbehaviourResponse } from "./ibc/core/client/v1/tx";
 import { Header } from "./ibc/lightclients/tendermint/v1/tendermint";
-import { MsgRegisterPayee, MsgRegisterPayeeResponse, MsgRegisterCounterpartyPayee, MsgRegisterCounterpartyPayeeResponse, MsgPayPacketFee, MsgPayPacketFeeResponse, MsgPayPacketFeeAsync, MsgPayPacketFeeAsyncResponse } from "./ibc/applications/fee/v1/tx";
 import { MsgTransfer, MsgTransferResponse } from "./ibc/applications/transfer/v1/tx";
 import { MsgCreateToken, MsgCreateTokenResponse, MsgSyncToken, MsgSyncTokenResponse, MsgMintToken, MsgMintTokenResponse, MsgBindToken, MsgBindTokenResponse, MsgUnbindToken, MsgUnbindTokenResponse, MsgLinkToken, MsgLinkTokenResponse, MsgWithdraw, MsgWithdrawResponse, MsgAuthorizeBridge, MsgAuthorizeBridgeResponse, MsgDeauthorizeBridge, MsgDeauthorizeBridgeResponse, MsgEditBridgeName, MsgEditBridgeNameResponse, MsgRemoveBridge, MsgRemoveBridgeResponse, MsgUpdateToken, MsgUpdateTokenResponse, MsgAddBridgeAddress, MsgAddBridgeAddressResponse, MsgRemoveBridgeAddress, MsgRemoveBridgeAddressResponse } from "./coin/tx";
 import { CreateTokenProposal } from "./coin/proposal";
@@ -227,15 +226,6 @@ registry.register("/ibc.core.client.v1.MsgSubmitMisbehaviour", MsgSubmitMisbehav
 registry.register("/ibc.core.client.v1.MsgSubmitMisbehaviourResponse", MsgSubmitMisbehaviourResponse);
 
 registry.register("/ibc.lightclients.tendermint.v1.Header", Header);
-
-registry.register("/ibc.applications.fee.v1.MsgRegisterPayee", MsgRegisterPayee);
-registry.register("/ibc.applications.fee.v1.MsgRegisterPayeeResponse", MsgRegisterPayeeResponse);
-registry.register("/ibc.applications.fee.v1.MsgRegisterCounterpartyPayee", MsgRegisterCounterpartyPayee);
-registry.register("/ibc.applications.fee.v1.MsgRegisterCounterpartyPayeeResponse", MsgRegisterCounterpartyPayeeResponse);
-registry.register("/ibc.applications.fee.v1.MsgPayPacketFee", MsgPayPacketFee);
-registry.register("/ibc.applications.fee.v1.MsgPayPacketFeeResponse", MsgPayPacketFeeResponse);
-registry.register("/ibc.applications.fee.v1.MsgPayPacketFeeAsync", MsgPayPacketFeeAsync);
-registry.register("/ibc.applications.fee.v1.MsgPayPacketFeeAsyncResponse", MsgPayPacketFeeAsyncResponse);
 
 registry.register("/ibc.applications.transfer.v1.MsgTransfer", MsgTransfer);
 registry.register("/ibc.applications.transfer.v1.MsgTransferResponse", MsgTransferResponse);
@@ -491,14 +481,6 @@ export const TxTypes = {
   "MsgSubmitMisbehaviour": "/ibc.core.client.v1.MsgSubmitMisbehaviour",
   "MsgSubmitMisbehaviourResponse": "/ibc.core.client.v1.MsgSubmitMisbehaviourResponse",
   "Header": "/ibc.lightclients.tendermint.v1.Header",
-  "MsgRegisterPayee": "/ibc.applications.fee.v1.MsgRegisterPayee",
-  "MsgRegisterPayeeResponse": "/ibc.applications.fee.v1.MsgRegisterPayeeResponse",
-  "MsgRegisterCounterpartyPayee": "/ibc.applications.fee.v1.MsgRegisterCounterpartyPayee",
-  "MsgRegisterCounterpartyPayeeResponse": "/ibc.applications.fee.v1.MsgRegisterCounterpartyPayeeResponse",
-  "MsgPayPacketFee": "/ibc.applications.fee.v1.MsgPayPacketFee",
-  "MsgPayPacketFeeResponse": "/ibc.applications.fee.v1.MsgPayPacketFeeResponse",
-  "MsgPayPacketFeeAsync": "/ibc.applications.fee.v1.MsgPayPacketFeeAsync",
-  "MsgPayPacketFeeAsyncResponse": "/ibc.applications.fee.v1.MsgPayPacketFeeAsyncResponse",
   "MsgTransfer": "/ibc.applications.transfer.v1.MsgTransfer",
   "MsgTransferResponse": "/ibc.applications.transfer.v1.MsgTransferResponse",
   "MsgCreateToken": "/Switcheo.carbon.coin.MsgCreateToken",
@@ -593,8 +575,8 @@ export { MessageType } from "./misc/message_type";
 export { Transaction, APITransaction } from "./misc/transaction";
 export { QuerySearchRequest, QuerySearchResponse, QueryAllMessageTypeRequest, QueryAllMessageTypeResponse, QueryAllTransactionRequest, QueryAllTransactionResponse, QueryAllBlockRequest, QueryAllBlockResponse, QueryAllModuleAddressRequest, QueryAllModuleAddressResponse, QueryAllModuleAddressResponse_AddressesEntry, QueryModuleAddressRequest, QueryModuleAddressResponse } from "./misc/query";
 export { MsgSetTradingFlag, MsgSetTradingFlagResponse, MsgCreateOrder, MsgCreateOrderResponse, MsgEditOrder, MsgEditOrderResponse, MsgCancelOrder, MsgCancelOrderResponse, MsgCancelAll, MsgCancelAllResponse } from "./order/tx";
-export { Order, DBOrder, OrdersForMarket, OrderIDsForMarket, OrderIDs, Orders } from "./order/order";
-export { QueryGetOrderRequest, QueryGetOrderResponse, QueryAllOrderRequest, QueryAllOrderResponse, QueryAccountOpenOrdersRequest, QueryAccountOpenOrdersResponse, QueryOrderAllocatedMarginRequest, QueryOrderAllocatedMarginResponse } from "./order/query";
+export { Params as OrderParams, Order, DBOrder, OrdersForMarket, OrderIDsForMarket, OrderIDs, Orders } from "./order/order";
+export { QueryGetOrderRequest, QueryGetOrderResponse, QueryAllOrderRequest, QueryAllOrderResponse, QueryAccountOpenOrdersRequest, QueryAccountOpenOrdersResponse, QueryParamsRequest as QueryOrderParamsRequest, QueryParamsResponse as QueryOrderParamsResponse, QueryOrderAllocatedMarginRequest, QueryOrderAllocatedMarginResponse } from "./order/query";
 export { OrderEvent } from "./order/event";
 export { MsgAddCollateral, MsgAddCollateralResponse, MsgRemoveCollateral, MsgRemoveCollateralResponse, MsgAddDebt, MsgAddDebtResponse, MsgRemoveDebt, MsgRemoveDebtResponse, MsgCreateVaultType, MsgCreateVaultTypeResponse } from "./cdp/tx";
 export { Vault, VaultType, Params as CdpParams } from "./cdp/vault";

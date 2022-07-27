@@ -6,6 +6,11 @@ import { Timestamp } from "../google/protobuf/timestamp";
 
 export const protobufPackage = "Switcheo.carbon.order";
 
+/** Params defines the parameters for the market module. */
+export interface Params {
+  maxReferralCommission: number;
+}
+
 export interface Order {
   id: string;
   blockHeight: Long;
@@ -30,6 +35,8 @@ export interface Order {
   isReduceOnly: boolean;
   poolId: Long;
   avgFilledPrice: string;
+  referralAddress: string;
+  referralCommission: number;
 }
 
 export interface DBOrder {
@@ -58,6 +65,61 @@ export interface Orders {
   orders: Order[];
 }
 
+const baseParams: object = { maxReferralCommission: 0 };
+
+export const Params = {
+  encode(
+    message: Params,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.maxReferralCommission !== 0) {
+      writer.uint32(8).uint32(message.maxReferralCommission);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): Params {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseParams } as Params;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.maxReferralCommission = reader.uint32();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Params {
+    const message = { ...baseParams } as Params;
+    message.maxReferralCommission =
+      object.maxReferralCommission !== undefined &&
+      object.maxReferralCommission !== null
+        ? Number(object.maxReferralCommission)
+        : 0;
+    return message;
+  },
+
+  toJSON(message: Params): unknown {
+    const obj: any = {};
+    message.maxReferralCommission !== undefined &&
+      (obj.maxReferralCommission = message.maxReferralCommission);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<Params>): Params {
+    const message = { ...baseParams } as Params;
+    message.maxReferralCommission = object.maxReferralCommission ?? 0;
+    return message;
+  },
+};
+
 const baseOrder: object = {
   id: "",
   blockHeight: Long.ZERO,
@@ -80,6 +142,8 @@ const baseOrder: object = {
   isReduceOnly: false,
   poolId: Long.UZERO,
   avgFilledPrice: "",
+  referralAddress: "",
+  referralCommission: 0,
 };
 
 export const Order = {
@@ -155,6 +219,12 @@ export const Order = {
     }
     if (message.avgFilledPrice !== "") {
       writer.uint32(186).string(message.avgFilledPrice);
+    }
+    if (message.referralAddress !== "") {
+      writer.uint32(194).string(message.referralAddress);
+    }
+    if (message.referralCommission !== 0) {
+      writer.uint32(200).uint32(message.referralCommission);
     }
     return writer;
   },
@@ -236,6 +306,12 @@ export const Order = {
           break;
         case 23:
           message.avgFilledPrice = reader.string();
+          break;
+        case 24:
+          message.referralAddress = reader.string();
+          break;
+        case 25:
+          message.referralCommission = reader.uint32();
           break;
         default:
           reader.skipType(tag & 7);
@@ -338,6 +414,15 @@ export const Order = {
       object.avgFilledPrice !== undefined && object.avgFilledPrice !== null
         ? String(object.avgFilledPrice)
         : "";
+    message.referralAddress =
+      object.referralAddress !== undefined && object.referralAddress !== null
+        ? String(object.referralAddress)
+        : "";
+    message.referralCommission =
+      object.referralCommission !== undefined &&
+      object.referralCommission !== null
+        ? Number(object.referralCommission)
+        : 0;
     return message;
   },
 
@@ -380,6 +465,10 @@ export const Order = {
       (obj.poolId = (message.poolId || Long.UZERO).toString());
     message.avgFilledPrice !== undefined &&
       (obj.avgFilledPrice = message.avgFilledPrice);
+    message.referralAddress !== undefined &&
+      (obj.referralAddress = message.referralAddress);
+    message.referralCommission !== undefined &&
+      (obj.referralCommission = message.referralCommission);
     return obj;
   },
 
@@ -421,6 +510,8 @@ export const Order = {
         ? Long.fromValue(object.poolId)
         : Long.UZERO;
     message.avgFilledPrice = object.avgFilledPrice ?? "";
+    message.referralAddress = object.referralAddress ?? "";
+    message.referralCommission = object.referralCommission ?? 0;
     return message;
   },
 };

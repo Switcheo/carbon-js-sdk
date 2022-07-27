@@ -25,6 +25,8 @@ export interface MsgCreateOrder {
   triggerType: string;
   isPostOnly: boolean;
   isReduceOnly: boolean;
+  referralAddress: string;
+  referralCommission: number;
 }
 
 export interface MsgCreateOrderResponse {}
@@ -198,6 +200,8 @@ const baseMsgCreateOrder: object = {
   triggerType: "",
   isPostOnly: false,
   isReduceOnly: false,
+  referralAddress: "",
+  referralCommission: 0,
 };
 
 export const MsgCreateOrder = {
@@ -237,6 +241,12 @@ export const MsgCreateOrder = {
     }
     if (message.isReduceOnly === true) {
       writer.uint32(88).bool(message.isReduceOnly);
+    }
+    if (message.referralAddress !== "") {
+      writer.uint32(98).string(message.referralAddress);
+    }
+    if (message.referralCommission !== 0) {
+      writer.uint32(104).uint32(message.referralCommission);
     }
     return writer;
   },
@@ -280,6 +290,12 @@ export const MsgCreateOrder = {
           break;
         case 11:
           message.isReduceOnly = reader.bool();
+          break;
+        case 12:
+          message.referralAddress = reader.string();
+          break;
+        case 13:
+          message.referralCommission = reader.uint32();
           break;
         default:
           reader.skipType(tag & 7);
@@ -335,6 +351,15 @@ export const MsgCreateOrder = {
       object.isReduceOnly !== undefined && object.isReduceOnly !== null
         ? Boolean(object.isReduceOnly)
         : false;
+    message.referralAddress =
+      object.referralAddress !== undefined && object.referralAddress !== null
+        ? String(object.referralAddress)
+        : "";
+    message.referralCommission =
+      object.referralCommission !== undefined &&
+      object.referralCommission !== null
+        ? Number(object.referralCommission)
+        : 0;
     return message;
   },
 
@@ -354,6 +379,10 @@ export const MsgCreateOrder = {
     message.isPostOnly !== undefined && (obj.isPostOnly = message.isPostOnly);
     message.isReduceOnly !== undefined &&
       (obj.isReduceOnly = message.isReduceOnly);
+    message.referralAddress !== undefined &&
+      (obj.referralAddress = message.referralAddress);
+    message.referralCommission !== undefined &&
+      (obj.referralCommission = message.referralCommission);
     return obj;
   },
 
@@ -370,6 +399,8 @@ export const MsgCreateOrder = {
     message.triggerType = object.triggerType ?? "";
     message.isPostOnly = object.isPostOnly ?? false;
     message.isReduceOnly = object.isReduceOnly ?? false;
+    message.referralAddress = object.referralAddress ?? "";
+    message.referralCommission = object.referralCommission ?? 0;
     return message;
   },
 };

@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { OrderIDs, Order } from "./order";
+import { Params, OrderIDs, Order } from "./order";
 
 export const protobufPackage = "Switcheo.carbon.order";
 
@@ -15,6 +15,7 @@ export interface GenesisState {
   accountOrderIds: GenesisAccountOrderIDs[];
   accountSequences: GenesisAccountSequence[];
   flags: GenesisFlag[];
+  params?: Params;
 }
 
 export interface GenesisAccountOrderIDs {
@@ -52,6 +53,9 @@ export const GenesisState = {
     for (const v of message.flags) {
       GenesisFlag.encode(v!, writer.uint32(34).fork()).ldelim();
     }
+    if (message.params !== undefined) {
+      Params.encode(message.params, writer.uint32(42).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -82,6 +86,9 @@ export const GenesisState = {
         case 4:
           message.flags.push(GenesisFlag.decode(reader, reader.uint32()));
           break;
+        case 5:
+          message.params = Params.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -102,6 +109,10 @@ export const GenesisState = {
     message.flags = (object.flags ?? []).map((e: any) =>
       GenesisFlag.fromJSON(e)
     );
+    message.params =
+      object.params !== undefined && object.params !== null
+        ? Params.fromJSON(object.params)
+        : undefined;
     return message;
   },
 
@@ -133,6 +144,8 @@ export const GenesisState = {
     } else {
       obj.flags = [];
     }
+    message.params !== undefined &&
+      (obj.params = message.params ? Params.toJSON(message.params) : undefined);
     return obj;
   },
 
@@ -146,6 +159,10 @@ export const GenesisState = {
       GenesisAccountSequence.fromPartial(e)
     );
     message.flags = (object.flags ?? []).map((e) => GenesisFlag.fromPartial(e));
+    message.params =
+      object.params !== undefined && object.params !== null
+        ? Params.fromPartial(object.params)
+        : undefined;
     return message;
   },
 };

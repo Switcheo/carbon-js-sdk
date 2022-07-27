@@ -267,6 +267,10 @@ export class AdminModule extends BaseModule {
     });
   }
 
+  public async setMsgFee(params: AdminModule.SetMsgFeeParams) {
+    throw new Error("deprecated");
+  }
+
   public async setMsgGasCost(params: AdminModule.SetMsgGasCostParams) {
     const wallet = this.getWallet();
 
@@ -533,6 +537,11 @@ export namespace AdminModule {
     denom: string
   }
 
+  export interface SetMsgGasCostParams {
+    msgType: string
+    gasCost: BigNumber
+  }
+
   export interface CreateValidatorParams {
     description?: Description;
     commission?: {
@@ -672,6 +681,13 @@ export function transfromSetMinGasPriceParams(msg: AdminModule.SetMinGasPricePar
   return {
     denom: msg.denom,
     gasPrice: new BigNumber(msg.gasPrice).shiftedBy(18).toString(10),
+  }
+}
+
+export function transfromSetMsgGasCostParams(msg: AdminModule.SetMsgGasCostParams) {
+  return {
+    msgType: msg.msgType,
+    gasCost: msg.gasCost.toString(10),
   }
 }
 
