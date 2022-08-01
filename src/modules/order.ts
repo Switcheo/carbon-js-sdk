@@ -44,6 +44,8 @@ export class OrderModule extends BaseModule {
         stopPrice: params.stopPrice?.shiftedBy(18).toString(10),
         timeInForce: params.timeInForce,
         triggerType: params.triggerType,
+        referralAddress: params.referralAddress,
+        referralCommission: params.referralCommission,
       })
 
       return {
@@ -156,6 +158,10 @@ export namespace OrderModule {
 
     isPostOnly?: boolean
     isReduceOnly?: boolean
+
+    referralAddress?: string
+    /** commission percents, input 10 for 10% */
+    referralCommission?: number
   }
 
   export interface EditOrderParams {

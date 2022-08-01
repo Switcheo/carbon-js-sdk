@@ -1,6 +1,7 @@
-import { AppCurrency, ChainInfo } from "@keplr-wallet/types";
+import { MinGasPrice } from "@carbon-sdk/codec";
+import { Network } from "@carbon-sdk/constant";
 import { AddressUtils } from "@carbon-sdk/util";
-import { CURRENT_GAS_PRICE, Network } from "@carbon-sdk/constant";
+import { AppCurrency, ChainInfo } from "@keplr-wallet/types";
 import SDKProvider from "../sdk";
 
 const SWTH = {
@@ -17,9 +18,9 @@ class KeplrAccount {
     currencies: [],
     feeCurrencies: [SWTH],
     gasPriceStep: {
-      low: CURRENT_GAS_PRICE,
-      average: CURRENT_GAS_PRICE,
-      high: CURRENT_GAS_PRICE,
+      low: 1,
+      average: 1.5,
+      high: 2,
     },
   } as const
 
@@ -28,12 +29,26 @@ class KeplrAccount {
     const bech32Prefix = config.Bech32Prefix;
 
     const chainId = await configProvider.query.chain.getChainId();
+    const gasPricesResult = await configProvider.query.fee.MinGasPriceAll({});
+    const tokenClient = configProvider.getTokenClient();
+    const coingeckoIdMap = tokenClient.geckoTokenNames;
+    const feeCurrencies: AppCurrency[] = gasPricesResult.minGasPrices.reduce((result: AppCurrency[], price: MinGasPrice) => {
+      const token = tokenClient.tokenForDenom(price.denom);
+      if (!token) return result;
+      result.push({
+        coinDenom: token.denom,
+        coinMinimalDenom: token.denom,
+        coinDecimals: token.decimals.toNumber(),
+        coinGeckoId: coingeckoIdMap[token.denom],
+      });
+      return result;
+    }, [] as AppCurrency[]);
 
     return {
-      feeCurrencies: [KeplrAccount.SWTH_CURRENCY],
+      feeCurrencies: [KeplrAccount.SWTH_CURRENCY, ...feeCurrencies],
       gasPriceStep: KeplrAccount.BASE_CHAIN_INFO.gasPriceStep,
       bip44: KeplrAccount.BASE_CHAIN_INFO.bip44,
-      currencies: [KeplrAccount.SWTH_CURRENCY],
+      currencies: [KeplrAccount.SWTH_CURRENCY, ...feeCurrencies],
       stakeCurrency: KeplrAccount.SWTH_CURRENCY,
       rest: config.restUrl,
       rpc: config.tmRpcUrl,

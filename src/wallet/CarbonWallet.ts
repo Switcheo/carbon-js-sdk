@@ -1,6 +1,5 @@
 import { CarbonQueryClient } from "@carbon-sdk/clients";
-import { MsgGasCost, MinGasPrice } from "@carbon-sdk/codec";
-import { DEFAULT_GAS, DEFAULT_NETWORK, Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
+import { DEFAULT_FEE_DENOM, DEFAULT_NETWORK, Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
 import { ProviderAgent } from "@carbon-sdk/constant/walletProvider";
 import { CosmosLedger } from "@carbon-sdk/provider";
 import { AddressUtils, CarbonTx, GenericUtils } from "@carbon-sdk/util";
@@ -8,7 +7,7 @@ import { SWTHAddress } from "@carbon-sdk/util/address";
 import { fetch } from "@carbon-sdk/util/fetch";
 import { QueueManager } from "@carbon-sdk/util/generic";
 import { bnOrZero, BN_ZERO } from "@carbon-sdk/util/number";
-import { BroadcastTxMode, CarbonSignerData, TxGasCostTypeDefaultKey, TxMinGasPriceTypeDefaultKey } from "@carbon-sdk/util/tx";
+import { BroadcastTxMode, CarbonSignerData } from "@carbon-sdk/util/tx";
 import { SimpleMap } from "@carbon-sdk/util/type";
 import { encodeSecp256k1Signature, StdSignature } from "@cosmjs/amino";
 import { EncodeObject, OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
@@ -42,41 +41,41 @@ export interface CarbonWalletGenericOpts {
 export type CarbonWalletInitOpts = CarbonWalletGenericOpts &
   (
     | {
-        // connect with mnemonic
-        mnemonic: string;
-        privateKey?: string | Buffer;
-        signer?: CarbonSigner;
-        publicKeyBase64?: string;
-        bech32Address?: string;
-        customSigner?: OfflineSigner & OfflineDirectSigner;
-      }
+      // connect with mnemonic
+      mnemonic: string;
+      privateKey?: string | Buffer;
+      signer?: CarbonSigner;
+      publicKeyBase64?: string;
+      bech32Address?: string;
+      customSigner?: OfflineSigner & OfflineDirectSigner;
+    }
     | {
-        // connect with private key
-        mnemonic?: string;
-        privateKey: string | Buffer;
-        signer?: CarbonSigner;
-        publicKeyBase64?: string;
-        bech32Address?: string;
-        customSigner?: OfflineSigner & OfflineDirectSigner;
-      }
+      // connect with private key
+      mnemonic?: string;
+      privateKey: string | Buffer;
+      signer?: CarbonSigner;
+      publicKeyBase64?: string;
+      bech32Address?: string;
+      customSigner?: OfflineSigner & OfflineDirectSigner;
+    }
     | {
-        // connect with custom signer
-        mnemonic?: string;
-        privateKey?: string | Buffer;
-        signer: CarbonSigner;
-        publicKeyBase64: string;
-        bech32Address?: string;
-        customSigner?: OfflineSigner & OfflineDirectSigner; // to allow adding of keplr offline signer
-      }
+      // connect with custom signer
+      mnemonic?: string;
+      privateKey?: string | Buffer;
+      signer: CarbonSigner;
+      publicKeyBase64: string;
+      bech32Address?: string;
+      customSigner?: OfflineSigner & OfflineDirectSigner; // to allow adding of keplr offline signer
+    }
     | {
-        // connect with address (view only)
-        mnemonic?: string;
-        privateKey?: string | Buffer;
-        signer?: CarbonSigner;
-        publicKeyBase64?: string;
-        bech32Address: string;
-        customSigner?: OfflineSigner & OfflineDirectSigner;
-      }
+      // connect with address (view only)
+      mnemonic?: string;
+      privateKey?: string | Buffer;
+      signer?: CarbonSigner;
+      publicKeyBase64?: string;
+      bech32Address: string;
+      customSigner?: OfflineSigner & OfflineDirectSigner;
+    }
   );
 
 export interface AccountInfo extends Account {
@@ -121,8 +120,16 @@ export class CarbonWallet {
   publicKey: Buffer;
   query?: CarbonQueryClient;
 
+  /**
+   * @deprecated Carbon v2.9.0
+   * use gasCosts and gasPrices instead.
+   */
+  txFees?: SimpleMap<BigNumber>;
   txGasCosts?: SimpleMap<BigNumber>;
-  txMinGasPrices?: SimpleMap<BigNumber>;
+  txGasPrices?: SimpleMap<BigNumber>;
+
+  defaultFeeDenom: string = DEFAULT_FEE_DENOM;
+
   initialized: boolean = false;
 
   accountInfo?: AccountInfo;
@@ -238,7 +245,11 @@ export class CarbonWallet {
   public async initialize(queryClient: CarbonQueryClient): Promise<CarbonWallet> {
     this.query = queryClient;
 
-    await Promise.all([this.reconnectTmClient(), this.reloadTxGasCosts(), this.reloadTxMinGasPrices(), this.reloadAccountSequence()]);
+    await Promise.all([
+      this.reconnectTmClient(),
+      this.reloadTxFees(),
+      this.reloadAccountSequence(),
+    ]);
 
     this.initialized = true;
     return this;
@@ -258,7 +269,11 @@ export class CarbonWallet {
     sequence: number,
     opts: Omit<CarbonTx.SignTxOpts, "sequence">
   ): Promise<CarbonWallet.TxRaw> {
-    const { memo = "", explicitSignerData } = opts;
+    const {
+      memo = "",
+      explicitSignerData,
+      feeDenom,
+    } = opts;
 
     const signingClient = this.getSigningClient();
     const [account] = await this.signer.getAccounts();
@@ -273,7 +288,7 @@ export class CarbonWallet {
         ...explicitSignerData,
       };
 
-      const fee = opts?.fee ?? this.estimateTxFee(messages);
+      const fee = opts?.fee ?? this.estimateTxFee(messages, feeDenom);
       const txRaw = await signingClient.sign(signerAddress, messages, fee, memo, signerData);
       signature = encodeSecp256k1Signature(account.pubkey, txRaw.signatures[0]);
       return txRaw;
@@ -342,8 +357,8 @@ export class CarbonWallet {
 
       const heightResponse = await fetch(`${this.networkConfig.tmRpcUrl}/blockchain?cache=${new Date().getTime()}`);
       const heightRes = await heightResponse.json();
-      const height = heightRes.result?.last_height;
-      const timeoutHeight = height + this.defaultTimeoutBlocks;
+      const height = bnOrZero(heightRes.result?.last_height);
+      const timeoutHeight = height.isZero() ? undefined : height.toNumber() + this.defaultTimeoutBlocks;
 
       const sequence = this.accountInfo!.sequence;
       this.accountInfo = {
@@ -455,48 +470,30 @@ export class CarbonWallet {
     return this.isSigner(CarbonSignerTypes.BrowserInjected);
   }
 
-  public getMsgGasCost(msgTypeUrl: string): BigNumber {
+  public getGasCost(msgTypeUrl: string) {
     if (!this.txGasCosts) {
       console.warn("tx gas costs not initialized");
     }
-    return this.txGasCosts?.[msgTypeUrl] ?? this.txGasCosts?.[TxGasCostTypeDefaultKey] ?? BN_ZERO;
+    return this.txGasCosts?.[msgTypeUrl] ?? this.txGasCosts?.[CarbonTx.TxGasCostTypeDefaultKey] ?? BN_ZERO;
   }
 
-  public updateTxGasCosts(msgGasCosts: MsgGasCost[]) {
-    const msgGasCostsMap: SimpleMap<BigNumber> = msgGasCosts.reduce((accum, msgGasCost) => {
-      accum[msgGasCost.msgType] = bnOrZero(msgGasCost.gasCost);
-      return accum;
-    }, {} as SimpleMap<BigNumber>);
-
-    this.txGasCosts = msgGasCostsMap;
-  }
-
-  public async reloadTxGasCosts() {
-    const queryClient = this.getQueryClient();
-    const response = await queryClient.fee.MsgGasCostAll({});
-    this.updateTxGasCosts(response.msgGasCosts);
-  }
-
-  public getMinGasPrice(denom: string): BigNumber {
-    if (!this.txMinGasPrices) {
-      console.warn("tx min gas prices not initialized");
+  public getGasPrice(denom: string) {
+    if (!this.txGasPrices) {
+      console.warn("tx gas prices not initialized");
     }
-    return this.txMinGasPrices?.[denom] ?? this.txMinGasPrices?.[TxMinGasPriceTypeDefaultKey] ?? BN_ZERO;
+
+    const gasPrice = this.txGasPrices?.[denom];
+    if (!gasPrice) {
+      console.warn("denom not supported for paying gas");
+    }
+    return gasPrice ?? BN_ZERO;
   }
 
-  public updateTxMinGasPrices(minGasPrices: MinGasPrice[]) {
-    const minGasPricesMap: SimpleMap<BigNumber> = minGasPrices.reduce((accum, minGasPrice) => {
-      accum[minGasPrice.denom] = bnOrZero(minGasPrice.gasPrice);
-      return accum;
-    }, {} as SimpleMap<BigNumber>);
+  public getFee(msgTypeUrl: string, denom: string = this.defaultFeeDenom): BigNumber {
+    const minGasPrice = this.getGasPrice(denom);
+    const msgGasCost = this.getGasCost(msgTypeUrl);
 
-    this.txMinGasPrices = minGasPricesMap;
-  }
-
-  public async reloadTxMinGasPrices() {
-    const queryClient = this.getQueryClient();
-    const response = await queryClient.fee.MinGasPriceAll({});
-    this.updateTxMinGasPrices(response.minGasPrices);
+    return msgGasCost.times(minGasPrice);
   }
 
   public async reconnectTmClient() {
@@ -505,19 +502,42 @@ export class CarbonWallet {
     this.chainId = status.nodeInfo.network;
   }
 
+  public async reloadTxFees() {
+    const queryClient = this.getQueryClient();
+    const { msgGasCosts } = await queryClient.fee.MsgGasCostAll({});
+    this.txGasCosts = msgGasCosts.reduce((result, item) => {
+      result[item.msgType] = bnOrZero(item.gasCost);
+      return result;
+    }, {} as SimpleMap<BigNumber>);
+
+    const { minGasPrices } = await queryClient.fee.MinGasPriceAll({});
+    this.txGasPrices = minGasPrices.reduce((result, item) => {
+      result[item.denom] = bnOrZero(item.gasPrice).shiftedBy(-18); // sdk.Dec shifting
+      return result;
+    }, {} as SimpleMap<BigNumber>);
+
+    if (!this.txGasPrices[this.defaultFeeDenom]) {
+      const newDefaultFeeDenom = minGasPrices[0]?.denom
+      if (newDefaultFeeDenom) {
+        console.warn(`default fee denom ${this.defaultFeeDenom} not supported, using ${newDefaultFeeDenom} instead.`);
+        this.defaultFeeDenom = newDefaultFeeDenom;
+      }
+    }
+  }
+
   public async reloadAccountSequence() {
     if (this.sequenceInvalidated) this.sequenceInvalidated = false;
 
     try {
       const info = await this.getQueryClient().chain.getSequence(this.bech32Address);
-  
+
       const pubkey = this.accountInfo?.pubkey ?? {
         type: "tendermint/PubKeySecp256k1",
         value: this.publicKey.toString("base64"),
       };
-  
+
       const chainId = this.accountInfo?.chainId ?? this.chainId ?? await this.getQueryClient().chain.getChainId();
-  
+
       this.accountInfo = {
         ...info,
         address: this.bech32Address,
@@ -530,22 +550,22 @@ export class CarbonWallet {
     }
   }
 
-  private estimateTxFee(messages: readonly EncodeObject[]) {
-    const defaultDenom = TxMinGasPriceTypeDefaultKey;
-    const minGasPrice = this.getMinGasPrice(defaultDenom);
-    const totalFeeCost = messages.reduce((totalFee, message) => {
-      const msgGasCost = this.getMsgGasCost(message.typeUrl);
-      const msgFee = msgGasCost.multipliedBy(minGasPrice);
-      return msgFee.gt(0) ? totalFee.plus(msgFee) : totalFee;
+  private estimateTxFee(
+    messages: readonly EncodeObject[],
+    feeDenom: string = this.defaultFeeDenom,
+  ) {
+    const denomGasPrice = this.getGasPrice(feeDenom);;
+    const totalGasCost = messages.reduce((result, message) => {
+      const gasCost = this.getGasCost(message.typeUrl);
+      return result.plus(gasCost);
     }, BN_ZERO);
+    const totalFees = totalGasCost.times(denomGasPrice);
     return {
-      amount: [
-        {
-          amount: totalFeeCost.toString(10),
-          denom: defaultDenom,
-        },
-      ],
-      gas: DEFAULT_GAS.times(messages.length).toString(10),
+      amount: [{
+        amount: totalFees.toString(10),
+        denom: feeDenom,
+      }],
+      gas: totalGasCost.toString(10),
     };
   }
 
@@ -580,6 +600,6 @@ export namespace CarbonWallet {
   export type OnSignCompleteCallback = (signature: StdSignature | null) => void | Promise<void>;
 
   // workaround to re-export interface mixed const type
-  export interface TxRaw extends StargateTxRaw {}
+  export interface TxRaw extends StargateTxRaw { }
   export const TxRaw: typeof StargateTxRaw = { ...StargateTxRaw };
 }

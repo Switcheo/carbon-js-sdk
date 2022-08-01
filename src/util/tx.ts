@@ -101,6 +101,7 @@ export interface CarbonSignerData extends SignerData {
 
 export interface SignTxOpts {
   fee?: StdFee;
+  feeDenom?: string;
   memo?: string;
   sequence?: number;
   explicitSignerData?: Partial<CarbonSignerData>;

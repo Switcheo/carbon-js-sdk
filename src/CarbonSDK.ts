@@ -331,6 +331,10 @@ class CarbonSDK {
     return this.networkConfig;
   }
 
+  public getTokenClient(): TokenClient {
+    return this.token;
+  }
+
   public getConnectedWallet(): CarbonWallet {
     return this.checkWallet();
   }
