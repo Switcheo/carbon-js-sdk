@@ -31,6 +31,8 @@ export interface Params {
   defaultLastPriceProtectedBand: number;
   maxActiveMarkets: number;
   defaultTradingBandwidth: number;
+  perpetualsFundingInterval?: Duration;
+  fundingRateBand: string;
 }
 
 export interface Market {
@@ -108,6 +110,7 @@ const baseParams: object = {
   defaultLastPriceProtectedBand: 0,
   maxActiveMarkets: 0,
   defaultTradingBandwidth: 0,
+  fundingRateBand: "",
 };
 
 export const Params = {
@@ -171,6 +174,15 @@ export const Params = {
     }
     if (message.defaultTradingBandwidth !== 0) {
       writer.uint32(144).uint32(message.defaultTradingBandwidth);
+    }
+    if (message.perpetualsFundingInterval !== undefined) {
+      Duration.encode(
+        message.perpetualsFundingInterval,
+        writer.uint32(154).fork()
+      ).ldelim();
+    }
+    if (message.fundingRateBand !== "") {
+      writer.uint32(162).string(message.fundingRateBand);
     }
     return writer;
   },
@@ -238,6 +250,15 @@ export const Params = {
           break;
         case 18:
           message.defaultTradingBandwidth = reader.uint32();
+          break;
+        case 19:
+          message.perpetualsFundingInterval = Duration.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 20:
+          message.fundingRateBand = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -338,6 +359,15 @@ export const Params = {
       object.defaultTradingBandwidth !== null
         ? Number(object.defaultTradingBandwidth)
         : 0;
+    message.perpetualsFundingInterval =
+      object.perpetualsFundingInterval !== undefined &&
+      object.perpetualsFundingInterval !== null
+        ? Duration.fromJSON(object.perpetualsFundingInterval)
+        : undefined;
+    message.fundingRateBand =
+      object.fundingRateBand !== undefined && object.fundingRateBand !== null
+        ? String(object.fundingRateBand)
+        : "";
     return message;
   },
 
@@ -385,6 +415,12 @@ export const Params = {
       (obj.maxActiveMarkets = message.maxActiveMarkets);
     message.defaultTradingBandwidth !== undefined &&
       (obj.defaultTradingBandwidth = message.defaultTradingBandwidth);
+    message.perpetualsFundingInterval !== undefined &&
+      (obj.perpetualsFundingInterval = message.perpetualsFundingInterval
+        ? Duration.toJSON(message.perpetualsFundingInterval)
+        : undefined);
+    message.fundingRateBand !== undefined &&
+      (obj.fundingRateBand = message.fundingRateBand);
     return obj;
   },
 
@@ -415,6 +451,12 @@ export const Params = {
       object.defaultLastPriceProtectedBand ?? 0;
     message.maxActiveMarkets = object.maxActiveMarkets ?? 0;
     message.defaultTradingBandwidth = object.defaultTradingBandwidth ?? 0;
+    message.perpetualsFundingInterval =
+      object.perpetualsFundingInterval !== undefined &&
+      object.perpetualsFundingInterval !== null
+        ? Duration.fromPartial(object.perpetualsFundingInterval)
+        : undefined;
+    message.fundingRateBand = object.fundingRateBand ?? "";
     return message;
   },
 };

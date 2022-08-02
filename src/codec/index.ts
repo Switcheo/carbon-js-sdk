@@ -26,7 +26,6 @@ import { MsgConnectionOpenInit, MsgConnectionOpenInitResponse, MsgConnectionOpen
 import { MsgChannelOpenInit, MsgChannelOpenInitResponse, MsgChannelOpenTry, MsgChannelOpenTryResponse, MsgChannelOpenAck, MsgChannelOpenAckResponse, MsgChannelOpenConfirm, MsgChannelOpenConfirmResponse, MsgChannelCloseInit, MsgChannelCloseInitResponse, MsgChannelCloseConfirm, MsgChannelCloseConfirmResponse, MsgRecvPacket, MsgRecvPacketResponse, MsgTimeout, MsgTimeoutResponse, MsgTimeoutOnClose, MsgTimeoutOnCloseResponse, MsgAcknowledgement, MsgAcknowledgementResponse } from "./ibc/core/channel/v1/tx";
 import { MsgCreateClient, MsgCreateClientResponse, MsgUpdateClient, MsgUpdateClientResponse, MsgUpgradeClient, MsgUpgradeClientResponse, MsgSubmitMisbehaviour, MsgSubmitMisbehaviourResponse } from "./ibc/core/client/v1/tx";
 import { Header } from "./ibc/lightclients/tendermint/v1/tendermint";
-import { MsgRegisterPayee, MsgRegisterPayeeResponse, MsgRegisterCounterpartyPayee, MsgRegisterCounterpartyPayeeResponse, MsgPayPacketFee, MsgPayPacketFeeResponse, MsgPayPacketFeeAsync, MsgPayPacketFeeAsyncResponse } from "./ibc/applications/fee/v1/tx";
 import { MsgTransfer, MsgTransferResponse } from "./ibc/applications/transfer/v1/tx";
 import { MsgCreateToken, MsgCreateTokenResponse, MsgSyncToken, MsgSyncTokenResponse, MsgMintToken, MsgMintTokenResponse, MsgBindToken, MsgBindTokenResponse, MsgUnbindToken, MsgUnbindTokenResponse, MsgLinkToken, MsgLinkTokenResponse, MsgWithdraw, MsgWithdrawResponse, MsgAuthorizeBridge, MsgAuthorizeBridgeResponse, MsgDeauthorizeBridge, MsgDeauthorizeBridgeResponse, MsgEditBridgeName, MsgEditBridgeNameResponse, MsgRemoveBridge, MsgRemoveBridgeResponse, MsgUpdateToken, MsgUpdateTokenResponse, MsgAddBridgeAddress, MsgAddBridgeAddressResponse, MsgRemoveBridgeAddress, MsgRemoveBridgeAddressResponse } from "./coin/tx";
 import { CreateTokenProposal } from "./coin/proposal";
@@ -227,15 +226,6 @@ registry.register("/ibc.core.client.v1.MsgSubmitMisbehaviour", MsgSubmitMisbehav
 registry.register("/ibc.core.client.v1.MsgSubmitMisbehaviourResponse", MsgSubmitMisbehaviourResponse);
 
 registry.register("/ibc.lightclients.tendermint.v1.Header", Header);
-
-registry.register("/ibc.applications.fee.v1.MsgRegisterPayee", MsgRegisterPayee);
-registry.register("/ibc.applications.fee.v1.MsgRegisterPayeeResponse", MsgRegisterPayeeResponse);
-registry.register("/ibc.applications.fee.v1.MsgRegisterCounterpartyPayee", MsgRegisterCounterpartyPayee);
-registry.register("/ibc.applications.fee.v1.MsgRegisterCounterpartyPayeeResponse", MsgRegisterCounterpartyPayeeResponse);
-registry.register("/ibc.applications.fee.v1.MsgPayPacketFee", MsgPayPacketFee);
-registry.register("/ibc.applications.fee.v1.MsgPayPacketFeeResponse", MsgPayPacketFeeResponse);
-registry.register("/ibc.applications.fee.v1.MsgPayPacketFeeAsync", MsgPayPacketFeeAsync);
-registry.register("/ibc.applications.fee.v1.MsgPayPacketFeeAsyncResponse", MsgPayPacketFeeAsyncResponse);
 
 registry.register("/ibc.applications.transfer.v1.MsgTransfer", MsgTransfer);
 registry.register("/ibc.applications.transfer.v1.MsgTransferResponse", MsgTransferResponse);
@@ -491,14 +481,6 @@ export const TxTypes = {
   "MsgSubmitMisbehaviour": "/ibc.core.client.v1.MsgSubmitMisbehaviour",
   "MsgSubmitMisbehaviourResponse": "/ibc.core.client.v1.MsgSubmitMisbehaviourResponse",
   "Header": "/ibc.lightclients.tendermint.v1.Header",
-  "MsgRegisterPayee": "/ibc.applications.fee.v1.MsgRegisterPayee",
-  "MsgRegisterPayeeResponse": "/ibc.applications.fee.v1.MsgRegisterPayeeResponse",
-  "MsgRegisterCounterpartyPayee": "/ibc.applications.fee.v1.MsgRegisterCounterpartyPayee",
-  "MsgRegisterCounterpartyPayeeResponse": "/ibc.applications.fee.v1.MsgRegisterCounterpartyPayeeResponse",
-  "MsgPayPacketFee": "/ibc.applications.fee.v1.MsgPayPacketFee",
-  "MsgPayPacketFeeResponse": "/ibc.applications.fee.v1.MsgPayPacketFeeResponse",
-  "MsgPayPacketFeeAsync": "/ibc.applications.fee.v1.MsgPayPacketFeeAsync",
-  "MsgPayPacketFeeAsyncResponse": "/ibc.applications.fee.v1.MsgPayPacketFeeAsyncResponse",
   "MsgTransfer": "/ibc.applications.transfer.v1.MsgTransfer",
   "MsgTransferResponse": "/ibc.applications.transfer.v1.MsgTransferResponse",
   "MsgCreateToken": "/Switcheo.carbon.coin.MsgCreateToken",
@@ -661,7 +643,7 @@ export { MsgCreateMarket, MsgCreateMarketResponse, MsgUpdateMarket, MsgUpdateMar
 export { CreateMarketProposal, UpdateMarketProposal } from "./market/proposal";
 export { Params as MarketDefaultsParams, Market, MarketParams } from "./market/market";
 export { QueryGetMarketRequest, QueryGetMarketResponse, QueryAllMarketRequest, QueryAllMarketResponse, QueryParamsRequest as QueryMarketParamsRequest, QueryParamsResponse as QueryMarketParamsResponse } from "./market/query";
-export { ParamsV270 } from "./market/legacy";
+export { ParamsV270, ParamsV280 } from "./market/legacy";
 export { MarketEvent } from "./market/event";
 export { MintData } from "./inflation/inflation";
 export { QueryMintDataRequest, QueryMintDataResponse } from "./inflation/query";

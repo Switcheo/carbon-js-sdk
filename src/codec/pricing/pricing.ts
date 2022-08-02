@@ -25,6 +25,9 @@ export interface PriceSet {
   markingStrategy: string;
   indexUpdatedAt?: Date;
   settlementCounter: string;
+  premiumRateTwap: string;
+  premiumRateCounter: string;
+  lastFundingPayment?: Date;
 }
 
 const baseParams: object = { smoothenBand: 0, impactBand: 0 };
@@ -130,6 +133,8 @@ const basePriceSet: object = {
   market: "",
   markingStrategy: "",
   settlementCounter: "",
+  premiumRateTwap: "",
+  premiumRateCounter: "",
 };
 
 export const PriceSet = {
@@ -172,6 +177,18 @@ export const PriceSet = {
     }
     if (message.settlementCounter !== "") {
       writer.uint32(98).string(message.settlementCounter);
+    }
+    if (message.premiumRateTwap !== "") {
+      writer.uint32(106).string(message.premiumRateTwap);
+    }
+    if (message.premiumRateCounter !== "") {
+      writer.uint32(114).string(message.premiumRateCounter);
+    }
+    if (message.lastFundingPayment !== undefined) {
+      Timestamp.encode(
+        toTimestamp(message.lastFundingPayment),
+        writer.uint32(122).fork()
+      ).ldelim();
     }
     return writer;
   },
@@ -217,6 +234,17 @@ export const PriceSet = {
           break;
         case 12:
           message.settlementCounter = reader.string();
+          break;
+        case 13:
+          message.premiumRateTwap = reader.string();
+          break;
+        case 14:
+          message.premiumRateCounter = reader.string();
+          break;
+        case 15:
+          message.lastFundingPayment = fromTimestamp(
+            Timestamp.decode(reader, reader.uint32())
+          );
           break;
         default:
           reader.skipType(tag & 7);
@@ -274,6 +302,20 @@ export const PriceSet = {
       object.settlementCounter !== null
         ? String(object.settlementCounter)
         : "";
+    message.premiumRateTwap =
+      object.premiumRateTwap !== undefined && object.premiumRateTwap !== null
+        ? String(object.premiumRateTwap)
+        : "";
+    message.premiumRateCounter =
+      object.premiumRateCounter !== undefined &&
+      object.premiumRateCounter !== null
+        ? String(object.premiumRateCounter)
+        : "";
+    message.lastFundingPayment =
+      object.lastFundingPayment !== undefined &&
+      object.lastFundingPayment !== null
+        ? fromJsonTimestamp(object.lastFundingPayment)
+        : undefined;
     return message;
   },
 
@@ -294,6 +336,12 @@ export const PriceSet = {
       (obj.indexUpdatedAt = message.indexUpdatedAt.toISOString());
     message.settlementCounter !== undefined &&
       (obj.settlementCounter = message.settlementCounter);
+    message.premiumRateTwap !== undefined &&
+      (obj.premiumRateTwap = message.premiumRateTwap);
+    message.premiumRateCounter !== undefined &&
+      (obj.premiumRateCounter = message.premiumRateCounter);
+    message.lastFundingPayment !== undefined &&
+      (obj.lastFundingPayment = message.lastFundingPayment.toISOString());
     return obj;
   },
 
@@ -310,6 +358,9 @@ export const PriceSet = {
     message.markingStrategy = object.markingStrategy ?? "";
     message.indexUpdatedAt = object.indexUpdatedAt ?? undefined;
     message.settlementCounter = object.settlementCounter ?? "";
+    message.premiumRateTwap = object.premiumRateTwap ?? "";
+    message.premiumRateCounter = object.premiumRateCounter ?? "";
+    message.lastFundingPayment = object.lastFundingPayment ?? undefined;
     return message;
   },
 };
