@@ -1,5 +1,5 @@
 import { CarbonQueryClient } from "@carbon-sdk/clients";
-import { DEFAULT_FEE_DENOM, DEFAULT_NETWORK, Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
+import { DEFAULT_FEE_DENOM, DEFAULT_GAS, DEFAULT_NETWORK, Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
 import { ProviderAgent } from "@carbon-sdk/constant/walletProvider";
 import { CosmosLedger } from "@carbon-sdk/provider";
 import { AddressUtils, CarbonTx, GenericUtils } from "@carbon-sdk/util";
@@ -555,11 +555,19 @@ export class CarbonWallet {
     feeDenom: string = this.defaultFeeDenom,
   ) {
     const denomGasPrice = this.getGasPrice(feeDenom);;
-    const totalGasCost = messages.reduce((result, message) => {
+    let totalGasCost = messages.reduce((result, message) => {
       const gasCost = this.getGasCost(message.typeUrl);
       return result.plus(gasCost);
     }, BN_ZERO);
-    const totalFees = totalGasCost.times(denomGasPrice);
+    let totalFees = totalGasCost.times(denomGasPrice);
+
+    // override zero gas cost tx with some gas for tx execution
+    // set overall fee to zero, implying 0 gas price.
+    if (totalGasCost.isZero()) {
+      totalGasCost = DEFAULT_GAS;
+      totalFees = BN_ZERO;
+    }
+
     return {
       amount: [{
         amount: totalFees.toString(10),

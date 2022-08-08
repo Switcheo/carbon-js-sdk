@@ -40,9 +40,11 @@ import "./_setup";
     price: "1",
     quantity: "100",
     side: "buy",
-    stopPrice: "100",
+    stopPrice: "",
     timeInForce: "gtc",
     triggerType: "",
+    referralAddress: "",
+    referralCommission: 0,
   }
   const genericTxCallResult = await connectedSDK.wallet.sendTx({
     typeUrl: CarbonTx.Types.MsgCreateOrder,
