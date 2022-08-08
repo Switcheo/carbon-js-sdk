@@ -530,7 +530,6 @@ export class CarbonWallet {
 
     try {
       const info = await this.getQueryClient().chain.getSequence(this.bech32Address);
-
       const pubkey = this.accountInfo?.pubkey ?? {
         type: "tendermint/PubKeySecp256k1",
         value: this.publicKey.toString("base64"),

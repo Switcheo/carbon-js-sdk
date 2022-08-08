@@ -16,6 +16,17 @@ export interface NodeItem {
   wsUptime: string; // string rep of number
   insightUptime: string; // string rep of number
   tmWsUrl: string;
+  appVersion: string;
+  appCommit: string;
+  creator: Creator;
+  latestBlockHeight: number; // string rep of number
+}
+
+export interface Creator {
+  name: string;
+  telegram: string;
+  email?: string;
+  description?: string;
 }
 
 export interface QueryGetNodesResponse {
