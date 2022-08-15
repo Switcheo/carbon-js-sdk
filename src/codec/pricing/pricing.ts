@@ -25,9 +25,9 @@ export interface PriceSet {
   markingStrategy: string;
   indexUpdatedAt?: Date;
   settlementCounter: string;
-  premiumRateTwap: string;
+  premiumRate: string;
   premiumRateCounter: string;
-  lastFundingPayment?: Date;
+  lastFundingAt?: Date;
 }
 
 const baseParams: object = { smoothenBand: 0, impactBand: 0 };
@@ -133,7 +133,7 @@ const basePriceSet: object = {
   market: "",
   markingStrategy: "",
   settlementCounter: "",
-  premiumRateTwap: "",
+  premiumRate: "",
   premiumRateCounter: "",
 };
 
@@ -178,15 +178,15 @@ export const PriceSet = {
     if (message.settlementCounter !== "") {
       writer.uint32(98).string(message.settlementCounter);
     }
-    if (message.premiumRateTwap !== "") {
-      writer.uint32(106).string(message.premiumRateTwap);
+    if (message.premiumRate !== "") {
+      writer.uint32(106).string(message.premiumRate);
     }
     if (message.premiumRateCounter !== "") {
       writer.uint32(114).string(message.premiumRateCounter);
     }
-    if (message.lastFundingPayment !== undefined) {
+    if (message.lastFundingAt !== undefined) {
       Timestamp.encode(
-        toTimestamp(message.lastFundingPayment),
+        toTimestamp(message.lastFundingAt),
         writer.uint32(122).fork()
       ).ldelim();
     }
@@ -236,13 +236,13 @@ export const PriceSet = {
           message.settlementCounter = reader.string();
           break;
         case 13:
-          message.premiumRateTwap = reader.string();
+          message.premiumRate = reader.string();
           break;
         case 14:
           message.premiumRateCounter = reader.string();
           break;
         case 15:
-          message.lastFundingPayment = fromTimestamp(
+          message.lastFundingAt = fromTimestamp(
             Timestamp.decode(reader, reader.uint32())
           );
           break;
@@ -302,19 +302,18 @@ export const PriceSet = {
       object.settlementCounter !== null
         ? String(object.settlementCounter)
         : "";
-    message.premiumRateTwap =
-      object.premiumRateTwap !== undefined && object.premiumRateTwap !== null
-        ? String(object.premiumRateTwap)
+    message.premiumRate =
+      object.premiumRate !== undefined && object.premiumRate !== null
+        ? String(object.premiumRate)
         : "";
     message.premiumRateCounter =
       object.premiumRateCounter !== undefined &&
       object.premiumRateCounter !== null
         ? String(object.premiumRateCounter)
         : "";
-    message.lastFundingPayment =
-      object.lastFundingPayment !== undefined &&
-      object.lastFundingPayment !== null
-        ? fromJsonTimestamp(object.lastFundingPayment)
+    message.lastFundingAt =
+      object.lastFundingAt !== undefined && object.lastFundingAt !== null
+        ? fromJsonTimestamp(object.lastFundingAt)
         : undefined;
     return message;
   },
@@ -336,12 +335,12 @@ export const PriceSet = {
       (obj.indexUpdatedAt = message.indexUpdatedAt.toISOString());
     message.settlementCounter !== undefined &&
       (obj.settlementCounter = message.settlementCounter);
-    message.premiumRateTwap !== undefined &&
-      (obj.premiumRateTwap = message.premiumRateTwap);
+    message.premiumRate !== undefined &&
+      (obj.premiumRate = message.premiumRate);
     message.premiumRateCounter !== undefined &&
       (obj.premiumRateCounter = message.premiumRateCounter);
-    message.lastFundingPayment !== undefined &&
-      (obj.lastFundingPayment = message.lastFundingPayment.toISOString());
+    message.lastFundingAt !== undefined &&
+      (obj.lastFundingAt = message.lastFundingAt.toISOString());
     return obj;
   },
 
@@ -358,9 +357,9 @@ export const PriceSet = {
     message.markingStrategy = object.markingStrategy ?? "";
     message.indexUpdatedAt = object.indexUpdatedAt ?? undefined;
     message.settlementCounter = object.settlementCounter ?? "";
-    message.premiumRateTwap = object.premiumRateTwap ?? "";
+    message.premiumRate = object.premiumRate ?? "";
     message.premiumRateCounter = object.premiumRateCounter ?? "";
-    message.lastFundingPayment = object.lastFundingPayment ?? undefined;
+    message.lastFundingAt = object.lastFundingAt ?? undefined;
     return message;
   },
 };

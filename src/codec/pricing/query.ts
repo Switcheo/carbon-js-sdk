@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { PriceSet, Params } from "./pricing";
+import { PriceSet, Params } from "../pricing/pricing";
 import {
   PageRequest,
   PageResponse,

@@ -5,7 +5,7 @@ import {
   PageRequest,
   PageResponse,
 } from "../cosmos/base/query/v1beta1/pagination";
-import { Pool, Params } from "./liquiditypool";
+import { Pool, Params } from "../liquiditypool/liquiditypool";
 import {
   CommitmentResponse,
   CommitmentCurve,
@@ -13,7 +13,7 @@ import {
   RewardHistoryRecord,
   Commitment,
   TotalCommitmentRecord,
-} from "./reward";
+} from "../liquiditypool/reward";
 import { Timestamp } from "../google/protobuf/timestamp";
 import { DecCoin } from "../cosmos/base/v1beta1/coin";
 

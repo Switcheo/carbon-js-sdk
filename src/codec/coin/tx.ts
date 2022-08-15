@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Bridge } from "./bridge";
+import { Bridge } from "../coin/bridge";
 import {
   BoolValue,
   StringValue,

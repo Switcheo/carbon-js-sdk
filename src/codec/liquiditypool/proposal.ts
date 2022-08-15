@@ -8,7 +8,7 @@ import {
   SetCommitmentCurveParams,
   SetRewardsWeightsParams,
   UpdatePoolParams,
-} from "./tx";
+} from "../liquiditypool/tx";
 
 export const protobufPackage = "Switcheo.carbon.liquiditypool";
 

@@ -2,7 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Timestamp } from "../google/protobuf/timestamp";
-import { Message } from "./message";
+import { Message } from "../misc/message";
 
 export const protobufPackage = "Switcheo.carbon.misc";
 

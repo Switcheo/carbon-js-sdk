@@ -12,8 +12,11 @@ import {
   TallyResult,
   proposalStatusFromJSON,
   proposalStatusToJSON,
-} from "./gov";
-import { PageRequest, PageResponse } from "../../base/query/v1beta1/pagination";
+} from "../../../cosmos/gov/v1beta1/gov";
+import {
+  PageRequest,
+  PageResponse,
+} from "../../../cosmos/base/query/v1beta1/pagination";
 
 export const protobufPackage = "cosmos.gov.v1beta1";
 

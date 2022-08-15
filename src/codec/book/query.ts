@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { OrderBook } from "./book";
+import { OrderBook } from "../book/book";
 import {
   PageRequest,
   PageResponse,

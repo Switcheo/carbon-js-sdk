@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { DenomInfo } from "./denom_info";
+import { DenomInfo } from "../btcx/denom_info";
 
 export const protobufPackage = "Switcheo.carbon.btcx";
 

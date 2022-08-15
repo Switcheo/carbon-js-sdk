@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Market, Params } from "./market";
+import { Market, Params } from "../market/market";
 import {
   PageRequest,
   PageResponse,

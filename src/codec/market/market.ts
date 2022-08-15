@@ -31,8 +31,11 @@ export interface Params {
   defaultLastPriceProtectedBand: number;
   maxActiveMarkets: number;
   defaultTradingBandwidth: number;
-  perpetualsFundingInterval?: Duration;
   fundingRateBand: string;
+}
+
+export interface ControlledParams {
+  perpetualsFundingInterval?: Duration;
 }
 
 export interface Market {
@@ -175,14 +178,8 @@ export const Params = {
     if (message.defaultTradingBandwidth !== 0) {
       writer.uint32(144).uint32(message.defaultTradingBandwidth);
     }
-    if (message.perpetualsFundingInterval !== undefined) {
-      Duration.encode(
-        message.perpetualsFundingInterval,
-        writer.uint32(154).fork()
-      ).ldelim();
-    }
     if (message.fundingRateBand !== "") {
-      writer.uint32(162).string(message.fundingRateBand);
+      writer.uint32(154).string(message.fundingRateBand);
     }
     return writer;
   },
@@ -252,12 +249,6 @@ export const Params = {
           message.defaultTradingBandwidth = reader.uint32();
           break;
         case 19:
-          message.perpetualsFundingInterval = Duration.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
-        case 20:
           message.fundingRateBand = reader.string();
           break;
         default:
@@ -359,11 +350,6 @@ export const Params = {
       object.defaultTradingBandwidth !== null
         ? Number(object.defaultTradingBandwidth)
         : 0;
-    message.perpetualsFundingInterval =
-      object.perpetualsFundingInterval !== undefined &&
-      object.perpetualsFundingInterval !== null
-        ? Duration.fromJSON(object.perpetualsFundingInterval)
-        : undefined;
     message.fundingRateBand =
       object.fundingRateBand !== undefined && object.fundingRateBand !== null
         ? String(object.fundingRateBand)
@@ -415,10 +401,6 @@ export const Params = {
       (obj.maxActiveMarkets = message.maxActiveMarkets);
     message.defaultTradingBandwidth !== undefined &&
       (obj.defaultTradingBandwidth = message.defaultTradingBandwidth);
-    message.perpetualsFundingInterval !== undefined &&
-      (obj.perpetualsFundingInterval = message.perpetualsFundingInterval
-        ? Duration.toJSON(message.perpetualsFundingInterval)
-        : undefined);
     message.fundingRateBand !== undefined &&
       (obj.fundingRateBand = message.fundingRateBand);
     return obj;
@@ -451,12 +433,74 @@ export const Params = {
       object.defaultLastPriceProtectedBand ?? 0;
     message.maxActiveMarkets = object.maxActiveMarkets ?? 0;
     message.defaultTradingBandwidth = object.defaultTradingBandwidth ?? 0;
+    message.fundingRateBand = object.fundingRateBand ?? "";
+    return message;
+  },
+};
+
+const baseControlledParams: object = {};
+
+export const ControlledParams = {
+  encode(
+    message: ControlledParams,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.perpetualsFundingInterval !== undefined) {
+      Duration.encode(
+        message.perpetualsFundingInterval,
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ControlledParams {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseControlledParams } as ControlledParams;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.perpetualsFundingInterval = Duration.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ControlledParams {
+    const message = { ...baseControlledParams } as ControlledParams;
+    message.perpetualsFundingInterval =
+      object.perpetualsFundingInterval !== undefined &&
+      object.perpetualsFundingInterval !== null
+        ? Duration.fromJSON(object.perpetualsFundingInterval)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: ControlledParams): unknown {
+    const obj: any = {};
+    message.perpetualsFundingInterval !== undefined &&
+      (obj.perpetualsFundingInterval = message.perpetualsFundingInterval
+        ? Duration.toJSON(message.perpetualsFundingInterval)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<ControlledParams>): ControlledParams {
+    const message = { ...baseControlledParams } as ControlledParams;
     message.perpetualsFundingInterval =
       object.perpetualsFundingInterval !== undefined &&
       object.perpetualsFundingInterval !== null
         ? Duration.fromPartial(object.perpetualsFundingInterval)
         : undefined;
-    message.fundingRateBand = object.fundingRateBand ?? "";
     return message;
   },
 };
