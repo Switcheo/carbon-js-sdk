@@ -1,7 +1,8 @@
 import { MsgCancelAll, MsgCancelOrder, MsgCreateOrder, MsgEditOrder } from "@carbon-sdk/codec/order/tx";
 import { CarbonTx } from "@carbon-sdk/util";
-import BaseModule from "./base";
+import { BN_ZERO } from "@carbon-sdk/util/number";
 import { BigNumber } from "bignumber.js";
+import BaseModule from "./base";
 
 export class OrderModule extends BaseModule {
 
@@ -54,7 +55,7 @@ export class OrderModule extends BaseModule {
       }
     });
     
-    return await wallet.sendTxs(msgs, CarbonTx.DEFAULT_SIGN_OPTS);
+    return await wallet.sendTxs(msgs);
   }
 
   public async cancel(orderId: string) {
@@ -86,7 +87,7 @@ export class OrderModule extends BaseModule {
       }
     })
     
-    return await wallet.sendTxs(msgs, CarbonTx.DEFAULT_SIGN_OPTS);
+    return await wallet.sendTxs(msgs);
   }
 
   public async edit(params: OrderModule.EditOrderParams) {
@@ -97,7 +98,7 @@ export class OrderModule extends BaseModule {
       id: params.id,
       price: params.price.shiftedBy(18).toString(10),
       quantity: params.quantity.toString(10),
-      stopPrice: params.stopPrice.shiftedBy(18).toString(10),
+      stopPrice: (params.stopPrice?.shiftedBy(18) ?? BN_ZERO).toString(10),
     })
 
     return await wallet.sendTx({
@@ -115,7 +116,7 @@ export class OrderModule extends BaseModule {
         id: param.id,
         price: param.price.shiftedBy(18).toString(10),
         quantity: param.quantity.toString(10),
-        stopPrice: param.stopPrice.shiftedBy(18).toString(10),
+        stopPrice: (param.stopPrice?.shiftedBy(18) ?? BN_ZERO).toString(10),
       })
 
       return {
@@ -124,7 +125,7 @@ export class OrderModule extends BaseModule {
       }
     })
 
-    return await wallet.sendTxs(msgs, CarbonTx.DEFAULT_SIGN_OPTS);
+    return await wallet.sendTxs(msgs);
   }
 
   public async cancelAll(params: OrderModule.CancelAllParams) {
@@ -168,7 +169,7 @@ export namespace OrderModule {
     id: string
     quantity: BigNumber
     price: BigNumber
-    stopPrice: BigNumber
+    stopPrice?: BigNumber
   }
 
   export interface CancelAllParams {

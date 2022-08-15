@@ -59,7 +59,7 @@ export class AdminModule extends BaseModule {
       }
     })
 
-    return await wallet.sendTxs(msgs, CarbonTx.DEFAULT_SIGN_OPTS);
+    return await wallet.sendTxs(msgs);
   }
 
   public async syncToken(params: AdminModule.SyncTokenParams) {
@@ -158,7 +158,7 @@ export class AdminModule extends BaseModule {
       };
     });
 
-    return await wallet.sendTxs(msgs, CarbonTx.DEFAULT_SIGN_OPTS);
+    return await wallet.sendTxs(msgs);
   }
 
   public async createVaultType(params: AdminModule.CreateVaultTypeParams) {
