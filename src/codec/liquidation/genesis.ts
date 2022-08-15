@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { OutstandingPositions } from "./outstanding_position";
+import { OutstandingPositions } from "../liquidation/outstanding_position";
 
 export const protobufPackage = "Switcheo.carbon.liquidation";
 

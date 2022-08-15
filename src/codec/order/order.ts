@@ -11,6 +11,7 @@ export interface Params {
   maxReferralCommission: number;
 }
 
+/** IMPORTANT: remember to update Order.Copy() in x/order/types/order.go when adding new fields */
 export interface Order {
   id: string;
   blockHeight: Long;

@@ -5,7 +5,7 @@ import {
   PageRequest,
   PageResponse,
 } from "../cosmos/base/query/v1beta1/pagination";
-import { WrapperMapping } from "./lockproxy";
+import { WrapperMapping } from "../lockproxy/lockproxy";
 
 export const protobufPackage = "Switcheo.carbon.lockproxy";
 

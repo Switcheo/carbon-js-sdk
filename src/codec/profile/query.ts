@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Profile } from "./profile";
+import { Profile } from "../profile/profile";
 import {
   PageRequest,
   PageResponse,

@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { FundByMarket } from "./fund";
+import { FundByMarket } from "../insurance/fund";
 
 export const protobufPackage = "Switcheo.carbon.insurance";
 

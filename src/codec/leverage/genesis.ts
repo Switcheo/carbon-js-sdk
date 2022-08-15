@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { MarketLeverageRecord } from "./leverage";
+import { MarketLeverageRecord } from "../leverage/leverage";
 
 export const protobufPackage = "Switcheo.carbon.leverage";
 

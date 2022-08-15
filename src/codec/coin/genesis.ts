@@ -1,8 +1,8 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Token, LockedCoinsRecord, PositionPool } from "./token";
-import { Bridge } from "./bridge";
+import { Token, LockedCoinsRecord, PositionPool } from "../coin/token";
+import { Bridge } from "../coin/bridge";
 
 export const protobufPackage = "Switcheo.carbon.coin";
 
