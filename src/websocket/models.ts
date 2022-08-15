@@ -99,6 +99,8 @@ export interface Position {
   closed_at: string;
 }
 
+// Note: premium_rate/last_funding_at/open_interest is optional until after v2.9.0 upgrade
+// where these fields will be added permanently
 export interface MarketStat {
   day_high: string
   day_low: string
@@ -111,6 +113,9 @@ export interface MarketStat {
   last_price: string
   market: string
   market_type: string
+  premium_rate?: string
+  last_funding_at?: string
+  open_interest?: string
 }
 
 export interface PriceLevel {
