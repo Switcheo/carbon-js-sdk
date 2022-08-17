@@ -64,18 +64,7 @@ const MsgSyncToken: AminoInit = {
 const MsgCreateMarket: AminoInit = {
   aminoType: TxTypes.CreateMarket,
   valueMap: {
-    basePrecision: ConvertEncType.Long,
-    quotePrecision: ConvertEncType.Long,
-    tickSize: ConvertEncType.Dec,
-    makerFee: ConvertEncType.Dec,
-    takerFee: ConvertEncType.Dec,
-    createdBlockHeight: ConvertEncType.Long,
-    initialMarginBase: ConvertEncType.Dec,
-    initialMarginStep: ConvertEncType.Dec,
-    maintenanceMarginRatio: ConvertEncType.Dec,
-    maxLiquidationOrderDuration: ConvertEncType.Duration,
     expiryTime: ConvertEncType.Date,
-    closedBlockHeight: ConvertEncType.Long,
     currentBasePriceUsd: ConvertEncType.Dec,
     currentQuotePriceUsd: ConvertEncType.Dec,
   },
