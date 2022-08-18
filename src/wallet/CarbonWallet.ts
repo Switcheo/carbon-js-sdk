@@ -5,6 +5,7 @@ import { ProviderAgent } from "@carbon-sdk/constant/walletProvider";
 import { CosmosLedger } from "@carbon-sdk/provider";
 import { AddressUtils, CarbonTx, GenericUtils } from "@carbon-sdk/util";
 import { SWTHAddress } from "@carbon-sdk/util/address";
+import { fetch } from "@carbon-sdk/util/fetch";
 import { QueueManager } from "@carbon-sdk/util/generic";
 import { bnOrZero, BN_ZERO } from "@carbon-sdk/util/number";
 import { BroadcastTxMode, CarbonSignerData, TxFeeTypeDefaultKey } from "@carbon-sdk/util/tx";
@@ -16,7 +17,6 @@ import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import { BroadcastTxSyncResponse } from "@cosmjs/tendermint-rpc/build/tendermint34/responses";
 import BigNumber from "bignumber.js";
 import { TxRaw as StargateTxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx";
-import fetch from "node-fetch";
 import { CarbonLedgerSigner, CarbonNonSigner, CarbonPrivateKeySigner, CarbonSigner, CarbonSignerTypes } from "./CarbonSigner";
 import { CarbonSigningClient } from "./CarbonSigningClient";
 
@@ -124,7 +124,7 @@ export class CarbonWallet {
   initialized: boolean = false;
 
   accountInfo?: AccountInfo;
-  
+
   disableRetryOnSequenceError: boolean;
 
   // for analytics
@@ -505,21 +505,26 @@ export class CarbonWallet {
     if (this.sequenceInvalidated)
       this.sequenceInvalidated = false;
 
-    const info = await this.getQueryClient().chain.getSequence(this.bech32Address);
-
-    const pubkey = this.accountInfo?.pubkey ?? {
-      type: "tendermint/PubKeySecp256k1",
-      value: this.publicKey.toString("base64"),
-    };
-
-    const chainId = this.accountInfo?.chainId ?? this.chainId ?? await this.getQueryClient().chain.getChainId();
-
-    this.accountInfo = {
-      ...info,
-      address: this.bech32Address,
-      pubkey,
-      chainId,
-    };
+    try {
+      const info = await this.getQueryClient().chain.getSequence(this.bech32Address);
+  
+      const pubkey = this.accountInfo?.pubkey ?? {
+        type: "tendermint/PubKeySecp256k1",
+        value: this.publicKey.toString("base64"),
+      };
+  
+      const chainId = this.accountInfo?.chainId ?? this.chainId ?? await this.getQueryClient().chain.getChainId();
+  
+      this.accountInfo = {
+        ...info,
+        address: this.bech32Address,
+        pubkey,
+        chainId,
+      };
+    } catch (error: any) {
+      if (!this.isNewAccountError(error))
+        throw error;
+    }
   }
 
   private estimateTxFee(
@@ -536,6 +541,10 @@ export class CarbonWallet {
       }],
       gas: DEFAULT_GAS.times(messages.length).toString(10),
     };
+  }
+
+  private isNewAccountError = (error?: Error) => {
+    return error?.message?.includes("Account does not exist on chain. Send some tokens there before trying to query sequence.");
   }
 
   private isNonceMismatchError = (error?: Error) => {

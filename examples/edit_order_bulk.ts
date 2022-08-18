@@ -13,10 +13,14 @@ import "./_setup";
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
 
-  const moduleCallResult = await connectedSDK.order.edit({
+  const moduleCallResult = await connectedSDK.order.editOrders([{
     id: "1",
     price: new BigNumber(100), // raw
     quantity: new BigNumber(100), // raw
-  });
+  }, {
+    id: "2",
+    price: new BigNumber(100), // raw
+    quantity: new BigNumber(100), // raw
+  }]);
   console.log("call from module", moduleCallResult);
 })().catch(console.error).finally(() => process.exit(0));

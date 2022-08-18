@@ -36,7 +36,7 @@ export class PositionModule extends BaseModule {
       }
     })
 
-    return await wallet.sendTxs(msgs, CarbonTx.DEFAULT_SIGN_OPTS);
+    return await wallet.sendTxs(msgs);
   }
 }
 
