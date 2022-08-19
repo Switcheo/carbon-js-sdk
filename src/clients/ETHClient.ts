@@ -189,7 +189,7 @@ export class ETHClient {
         gasLimit: gasLimit.toString(10),
         gasPrice: gasPriceGwei.shiftedBy(9).toString(10),
         nonce,
-        amount: ethAmount.toString(10),
+        value: ethAmount.toString(10),
       }
     );
 
