@@ -1,5 +1,5 @@
 import CarbonSDK from "@carbon-sdk/CarbonSDK";
-import { EthNetworkConfig, NetworkConfig, NetworkConfigProvider } from "@carbon-sdk/constant";
+import { EthNetworkConfig, NativeTokenHash, NetworkConfig, NetworkConfigProvider } from "@carbon-sdk/constant";
 import { ABIs } from "@carbon-sdk/eth";
 import { Models } from "@carbon-sdk/index";
 import { AddressUtils } from "@carbon-sdk/util";
@@ -7,6 +7,7 @@ import { SWTHAddress } from "@carbon-sdk/util/address";
 import { Blockchain, blockchainForChainId } from "@carbon-sdk/util/blockchain";
 import { TokenInitInfo, TokensWithExternalBalance } from "@carbon-sdk/util/external";
 import { appendHexPrefix, stripHexPrefix } from "@carbon-sdk/util/generic";
+import { BN_ZERO } from "@carbon-sdk/util/number";
 import BigNumber from "bignumber.js";
 import { ethers } from "ethers";
 import TokenClient from "./TokenClient";
@@ -167,6 +168,9 @@ export class ETHClient {
 
     const targetAddressBytes = AddressUtils.SWTHAddress.getAddressBytes(tokenCreator, CarbonSDK.Network.MainNet);
     const targetProxyHash = ethers.utils.hexlify(targetAddressBytes);
+
+    const ethAmount = fromToken.tokenAddress === NativeTokenHash ? amount : BN_ZERO;
+
     const bridgeResultTx = await contract.connect(signer).lock(
       fromTokenAddress, // the asset to deposit (from) (0x00 if eth)
       [
@@ -185,6 +189,7 @@ export class ETHClient {
         gasLimit: gasLimit.toString(10),
         gasPrice: gasPriceGwei.shiftedBy(9).toString(10),
         nonce,
+        amount: ethAmount.toString(10),
       }
     );
 
