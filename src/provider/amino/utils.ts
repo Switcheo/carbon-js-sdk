@@ -168,6 +168,7 @@ export const generateAminoType = (
       const aminoObj: TypeUtils.SimpleMap<any> = {};
       Object.keys(newInput).forEach((key: string) => {
         const snakeKey = TypeUtils.camelToSnake(key);
+        if (!newInput[key]) return
         if (typeCheck(newInput[key])) {
           aminoObj[snakeKey] = paramConverter(newInput[key], newAminoMap[key] as ConvertEncType, true);
           return;
