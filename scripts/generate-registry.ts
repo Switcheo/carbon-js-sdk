@@ -1,5 +1,6 @@
 import { capitalize } from "lodash";
 import path from "path";
+import { whitelistCosmosExports, whitelistIbcExports } from "./config";
 
 const files = process.argv;
 
@@ -45,6 +46,23 @@ for (const moduleFile of codecFiles) {
     }
   }
 }
+
+// List of proposal files (for cosmos and ibc)
+const proposalWhitelist: string[] = [`${whitelistCosmosExports.Gov}/gov.ts`, `${whitelistIbcExports.Client[0]}/client.ts`]
+
+proposalWhitelist.forEach((file: string) => {
+  const codecModule = require(path.join(pwd, 'src/codec', file));
+  const modelNames = Object.keys(codecModule).filter((key) => key.endsWith("Proposal"));
+  const directoryArr = file.split('/');
+  directoryArr.pop();
+  const directoryLabel = directoryArr.join('.').replace('.ts', '');
+  if (modules[directoryLabel]) {
+    modules[directoryLabel] = [...modules[directoryLabel], ...modelNames];
+  } else {
+    modules[directoryLabel] = modelNames;
+  }
+  console.log(`import { ${modelNames.join(", ")} } from "./${file.replace('.ts', '')}";`);
+});
 
 console.log("");
 const cosmosModelsImportPath = path.relative(registryFile, cosmosModelsFile);
