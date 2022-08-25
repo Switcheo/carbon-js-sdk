@@ -70,7 +70,7 @@ export class ETHClient {
     public readonly configProvider: NetworkConfigProvider,
     public readonly blockchain: Blockchain,
     public readonly tokenClient: TokenClient
-  ) {}
+  ) { }
 
   public static instance(opts: ETHClientOpts) {
     const { configProvider, blockchain, tokenClient } = opts;
@@ -154,9 +154,9 @@ export class ETHClient {
     const toTokenDenom = toToken.denom;
 
     const recoveryAddressHex = ethers.utils.hexlify(
-      AddressUtils.SWTHAddress.getAddressBytes(recoveryAddress, CarbonSDK.Network.MainNet) 
+      AddressUtils.SWTHAddress.getAddressBytes(recoveryAddress, CarbonSDK.Network.MainNet)
     );
-    
+
     const fromAssetHash = ethers.utils.hexlify(ethers.utils.toUtf8Bytes(fromTokenId));
     const toAssetHash = ethers.utils.hexlify(ethers.utils.toUtf8Bytes(toTokenDenom));
     const nonce = await rpcProvider.getTransactionCount(fromAddress);
@@ -170,7 +170,6 @@ export class ETHClient {
     const targetProxyHash = ethers.utils.hexlify(targetAddressBytes);
 
     const ethAmount = fromToken.tokenAddress === NativeTokenHash ? amount : BN_ZERO;
-
     const bridgeResultTx = await contract.connect(signer).lock(
       fromTokenAddress, // the asset to deposit (from) (0x00 if eth)
       [
@@ -293,11 +292,11 @@ export class ETHClient {
 
     let signatureResult:
       | {
-          owner: string;
-          r: string;
-          s: string;
-          v: string;
-        }
+        owner: string;
+        r: string;
+        s: string;
+        v: string;
+      }
       | undefined;
 
     const { address, signature } = await getSignatureCallback(message);
@@ -458,7 +457,7 @@ export class ETHClient {
   public verifyChecksum(input: string): string | undefined {
     try {
       return ethers.utils.getAddress(input);
-    } catch {}
+    } catch { }
   }
 }
 

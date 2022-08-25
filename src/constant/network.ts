@@ -167,8 +167,8 @@ export const NetworkConfigs: {
 
     zil: {
       rpcURL: "",
-      lockProxyAddr: "",
-      bridgeEntranceAddr: "",
+      lockProxyAddr: "0xa5a43eecd29534edf80792a9889f52c77455245d",
+      bridgeEntranceAddr: "0x347b8478093f7a3ed5bcaec968349538eac6ef98",
       chainId: 333,
     }
   },

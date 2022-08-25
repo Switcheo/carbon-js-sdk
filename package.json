@@ -77,7 +77,7 @@
     "wif": "^2.0.6"
   },
   "resolutions": {
-    "bignumber.js": "^9.0.1"
+    "bignumber.js": "9.0.1"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.174",
