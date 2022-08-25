@@ -1,6 +1,7 @@
 
 import path from "path";
 import fs from "fs";
+import { whitelistCosmosExports } from "./config";
 
 const files = process.argv;
 
@@ -8,20 +9,8 @@ const [pwd, modelsFile] = files.splice(files.length - 2, 2);
 
 const MODEL_BLACKLIST = ['MsgClientImpl', 'protobufPackage', 'GenesisState', 'QueryClientImpl']
 
-const whitelistExports: { [name: string]: string } = {
-  'Mint': 'cosmos/mint/v1beta1',
-  'Auth': 'cosmos/auth/v1beta1',
-  'Bank': 'cosmos/bank/v1beta1',
-  'Distribution': 'cosmos/distribution/v1beta1',
-  'Tx': 'cosmos/tx/v1beta1',
-  'Vesting': 'cosmos/vesting/v1beta1',
-  'Staking': 'cosmos/staking/v1beta1',
-  'Params': 'cosmos/params/v1beta1',
-  'Slashing': 'cosmos/slashing/v1beta1',
-}
-
-for (const exportName in whitelistExports) {
-  const directoryPath = whitelistExports[exportName];
+for (const exportName in whitelistCosmosExports) {
+  const directoryPath = whitelistCosmosExports[exportName];
   const directory = path.join(pwd, 'src/codec', directoryPath);
   const files = fs.readdirSync(directory);
 
