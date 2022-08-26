@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Params, ControlledParams, Market } from "../market/market";
+import { Params, Market } from "./market";
 
 export const protobufPackage = "Switcheo.carbon.market";
 
@@ -14,7 +14,6 @@ export interface GenesisState {
   markets: Market[];
   /** params defines all the paramaters of the module. */
   params?: Params;
-  controlledParams?: ControlledParams;
 }
 
 const baseGenesisState: object = {};
@@ -29,12 +28,6 @@ export const GenesisState = {
     }
     if (message.params !== undefined) {
       Params.encode(message.params, writer.uint32(18).fork()).ldelim();
-    }
-    if (message.controlledParams !== undefined) {
-      ControlledParams.encode(
-        message.controlledParams,
-        writer.uint32(26).fork()
-      ).ldelim();
     }
     return writer;
   },
@@ -53,12 +46,6 @@ export const GenesisState = {
         case 2:
           message.params = Params.decode(reader, reader.uint32());
           break;
-        case 3:
-          message.controlledParams = ControlledParams.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -76,10 +63,6 @@ export const GenesisState = {
       object.params !== undefined && object.params !== null
         ? Params.fromJSON(object.params)
         : undefined;
-    message.controlledParams =
-      object.controlledParams !== undefined && object.controlledParams !== null
-        ? ControlledParams.fromJSON(object.controlledParams)
-        : undefined;
     return message;
   },
 
@@ -94,10 +77,6 @@ export const GenesisState = {
     }
     message.params !== undefined &&
       (obj.params = message.params ? Params.toJSON(message.params) : undefined);
-    message.controlledParams !== undefined &&
-      (obj.controlledParams = message.controlledParams
-        ? ControlledParams.toJSON(message.controlledParams)
-        : undefined);
     return obj;
   },
 
@@ -107,10 +86,6 @@ export const GenesisState = {
     message.params =
       object.params !== undefined && object.params !== null
         ? Params.fromPartial(object.params)
-        : undefined;
-    message.controlledParams =
-      object.controlledParams !== undefined && object.controlledParams !== null
-        ? ControlledParams.fromPartial(object.controlledParams)
         : undefined;
     return message;
   },

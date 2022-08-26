@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Vault, VaultType, Params } from "../cdp/vault";
+import { Vault, VaultType, Params } from "./vault";
 import {
   PageRequest,
   PageResponse,

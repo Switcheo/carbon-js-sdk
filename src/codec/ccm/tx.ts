@@ -14,7 +14,17 @@ export interface MsgProcessCrossChainTx {
   currentHeader: string;
 }
 
+export interface MsgProcessZionCrossChainTx {
+  submitter: string;
+  fromChainId: Long;
+  proof: string;
+  header: string;
+  rawCrossTx: string;
+}
+
 export interface MsgProcessCrossChainTxResponse {}
+
+export interface MsgProcessZionCrossChainTxResponse {}
 
 /** MsgCreateEmitEvent was removed, but leaving this as legacy record */
 export interface MsgCreateEmitEvent {
@@ -159,6 +169,128 @@ export const MsgProcessCrossChainTx = {
   },
 };
 
+const baseMsgProcessZionCrossChainTx: object = {
+  submitter: "",
+  fromChainId: Long.UZERO,
+  proof: "",
+  header: "",
+  rawCrossTx: "",
+};
+
+export const MsgProcessZionCrossChainTx = {
+  encode(
+    message: MsgProcessZionCrossChainTx,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.submitter !== "") {
+      writer.uint32(10).string(message.submitter);
+    }
+    if (!message.fromChainId.isZero()) {
+      writer.uint32(16).uint64(message.fromChainId);
+    }
+    if (message.proof !== "") {
+      writer.uint32(26).string(message.proof);
+    }
+    if (message.header !== "") {
+      writer.uint32(34).string(message.header);
+    }
+    if (message.rawCrossTx !== "") {
+      writer.uint32(42).string(message.rawCrossTx);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgProcessZionCrossChainTx {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgProcessZionCrossChainTx,
+    } as MsgProcessZionCrossChainTx;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.submitter = reader.string();
+          break;
+        case 2:
+          message.fromChainId = reader.uint64() as Long;
+          break;
+        case 3:
+          message.proof = reader.string();
+          break;
+        case 4:
+          message.header = reader.string();
+          break;
+        case 5:
+          message.rawCrossTx = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgProcessZionCrossChainTx {
+    const message = {
+      ...baseMsgProcessZionCrossChainTx,
+    } as MsgProcessZionCrossChainTx;
+    message.submitter =
+      object.submitter !== undefined && object.submitter !== null
+        ? String(object.submitter)
+        : "";
+    message.fromChainId =
+      object.fromChainId !== undefined && object.fromChainId !== null
+        ? Long.fromString(object.fromChainId)
+        : Long.UZERO;
+    message.proof =
+      object.proof !== undefined && object.proof !== null
+        ? String(object.proof)
+        : "";
+    message.header =
+      object.header !== undefined && object.header !== null
+        ? String(object.header)
+        : "";
+    message.rawCrossTx =
+      object.rawCrossTx !== undefined && object.rawCrossTx !== null
+        ? String(object.rawCrossTx)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgProcessZionCrossChainTx): unknown {
+    const obj: any = {};
+    message.submitter !== undefined && (obj.submitter = message.submitter);
+    message.fromChainId !== undefined &&
+      (obj.fromChainId = (message.fromChainId || Long.UZERO).toString());
+    message.proof !== undefined && (obj.proof = message.proof);
+    message.header !== undefined && (obj.header = message.header);
+    message.rawCrossTx !== undefined && (obj.rawCrossTx = message.rawCrossTx);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgProcessZionCrossChainTx>
+  ): MsgProcessZionCrossChainTx {
+    const message = {
+      ...baseMsgProcessZionCrossChainTx,
+    } as MsgProcessZionCrossChainTx;
+    message.submitter = object.submitter ?? "";
+    message.fromChainId =
+      object.fromChainId !== undefined && object.fromChainId !== null
+        ? Long.fromValue(object.fromChainId)
+        : Long.UZERO;
+    message.proof = object.proof ?? "";
+    message.header = object.header ?? "";
+    message.rawCrossTx = object.rawCrossTx ?? "";
+    return message;
+  },
+};
+
 const baseMsgProcessCrossChainTxResponse: object = {};
 
 export const MsgProcessCrossChainTxResponse = {
@@ -207,6 +339,58 @@ export const MsgProcessCrossChainTxResponse = {
     const message = {
       ...baseMsgProcessCrossChainTxResponse,
     } as MsgProcessCrossChainTxResponse;
+    return message;
+  },
+};
+
+const baseMsgProcessZionCrossChainTxResponse: object = {};
+
+export const MsgProcessZionCrossChainTxResponse = {
+  encode(
+    _: MsgProcessZionCrossChainTxResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgProcessZionCrossChainTxResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgProcessZionCrossChainTxResponse,
+    } as MsgProcessZionCrossChainTxResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgProcessZionCrossChainTxResponse {
+    const message = {
+      ...baseMsgProcessZionCrossChainTxResponse,
+    } as MsgProcessZionCrossChainTxResponse;
+    return message;
+  },
+
+  toJSON(_: MsgProcessZionCrossChainTxResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgProcessZionCrossChainTxResponse>
+  ): MsgProcessZionCrossChainTxResponse {
+    const message = {
+      ...baseMsgProcessZionCrossChainTxResponse,
+    } as MsgProcessZionCrossChainTxResponse;
     return message;
   },
 };
@@ -382,6 +566,9 @@ export interface Msg {
   Process(
     request: MsgProcessCrossChainTx
   ): Promise<MsgProcessCrossChainTxResponse>;
+  ProcessZion(
+    request: MsgProcessZionCrossChainTx
+  ): Promise<MsgProcessZionCrossChainTxResponse>;
   ProcessToggleEmitZionEvents(
     request: MsgToggleEmitZionEvents
   ): Promise<MsgProcessCrossChainTxResponse>;
@@ -392,6 +579,7 @@ export class MsgClientImpl implements Msg {
   constructor(rpc: Rpc) {
     this.rpc = rpc;
     this.Process = this.Process.bind(this);
+    this.ProcessZion = this.ProcessZion.bind(this);
     this.ProcessToggleEmitZionEvents =
       this.ProcessToggleEmitZionEvents.bind(this);
   }
@@ -406,6 +594,20 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgProcessCrossChainTxResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  ProcessZion(
+    request: MsgProcessZionCrossChainTx
+  ): Promise<MsgProcessZionCrossChainTxResponse> {
+    const data = MsgProcessZionCrossChainTx.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.ccm.Msg",
+      "ProcessZion",
+      data
+    );
+    return promise.then((data) =>
+      MsgProcessZionCrossChainTxResponse.decode(new _m0.Reader(data))
     );
   }
 

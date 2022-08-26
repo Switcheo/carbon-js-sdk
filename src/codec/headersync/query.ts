@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { ConsensusPeers } from "../headersync/consensus_peers";
+import { ConsensusPeers } from "./consensus_peers";
 
 export const protobufPackage = "Switcheo.carbon.headersync";
 

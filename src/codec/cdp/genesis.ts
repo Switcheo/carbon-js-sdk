@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Vault, VaultType } from "../cdp/vault";
+import { Vault, VaultType } from "./vault";
 
 export const protobufPackage = "Switcheo.carbon.cdp";
 

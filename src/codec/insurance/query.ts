@@ -5,31 +5,26 @@ import { Coin } from "../cosmos/base/v1beta1/coin";
 
 export const protobufPackage = "Switcheo.carbon.insurance";
 
-export interface QueryCoinBalancesRequest {}
+export interface QueryBalanceRequest {}
 
-export interface QueryCoinBalancesResponse {
+export interface QueryBalanceResponse {
   coins: Coin[];
 }
 
-const baseQueryCoinBalancesRequest: object = {};
+const baseQueryBalanceRequest: object = {};
 
-export const QueryCoinBalancesRequest = {
+export const QueryBalanceRequest = {
   encode(
-    _: QueryCoinBalancesRequest,
+    _: QueryBalanceRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryCoinBalancesRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryBalanceRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryCoinBalancesRequest,
-    } as QueryCoinBalancesRequest;
+    const message = { ...baseQueryBalanceRequest } as QueryBalanceRequest;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -41,33 +36,27 @@ export const QueryCoinBalancesRequest = {
     return message;
   },
 
-  fromJSON(_: any): QueryCoinBalancesRequest {
-    const message = {
-      ...baseQueryCoinBalancesRequest,
-    } as QueryCoinBalancesRequest;
+  fromJSON(_: any): QueryBalanceRequest {
+    const message = { ...baseQueryBalanceRequest } as QueryBalanceRequest;
     return message;
   },
 
-  toJSON(_: QueryCoinBalancesRequest): unknown {
+  toJSON(_: QueryBalanceRequest): unknown {
     const obj: any = {};
     return obj;
   },
 
-  fromPartial(
-    _: DeepPartial<QueryCoinBalancesRequest>
-  ): QueryCoinBalancesRequest {
-    const message = {
-      ...baseQueryCoinBalancesRequest,
-    } as QueryCoinBalancesRequest;
+  fromPartial(_: DeepPartial<QueryBalanceRequest>): QueryBalanceRequest {
+    const message = { ...baseQueryBalanceRequest } as QueryBalanceRequest;
     return message;
   },
 };
 
-const baseQueryCoinBalancesResponse: object = {};
+const baseQueryBalanceResponse: object = {};
 
-export const QueryCoinBalancesResponse = {
+export const QueryBalanceResponse = {
   encode(
-    message: QueryCoinBalancesResponse,
+    message: QueryBalanceResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     for (const v of message.coins) {
@@ -79,12 +68,10 @@ export const QueryCoinBalancesResponse = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): QueryCoinBalancesResponse {
+  ): QueryBalanceResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryCoinBalancesResponse,
-    } as QueryCoinBalancesResponse;
+    const message = { ...baseQueryBalanceResponse } as QueryBalanceResponse;
     message.coins = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
@@ -100,15 +87,13 @@ export const QueryCoinBalancesResponse = {
     return message;
   },
 
-  fromJSON(object: any): QueryCoinBalancesResponse {
-    const message = {
-      ...baseQueryCoinBalancesResponse,
-    } as QueryCoinBalancesResponse;
+  fromJSON(object: any): QueryBalanceResponse {
+    const message = { ...baseQueryBalanceResponse } as QueryBalanceResponse;
     message.coins = (object.coins ?? []).map((e: any) => Coin.fromJSON(e));
     return message;
   },
 
-  toJSON(message: QueryCoinBalancesResponse): unknown {
+  toJSON(message: QueryBalanceResponse): unknown {
     const obj: any = {};
     if (message.coins) {
       obj.coins = message.coins.map((e) => (e ? Coin.toJSON(e) : undefined));
@@ -118,12 +103,8 @@ export const QueryCoinBalancesResponse = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryCoinBalancesResponse>
-  ): QueryCoinBalancesResponse {
-    const message = {
-      ...baseQueryCoinBalancesResponse,
-    } as QueryCoinBalancesResponse;
+  fromPartial(object: DeepPartial<QueryBalanceResponse>): QueryBalanceResponse {
+    const message = { ...baseQueryBalanceResponse } as QueryBalanceResponse;
     message.coins = (object.coins ?? []).map((e) => Coin.fromPartial(e));
     return message;
   },
@@ -132,28 +113,24 @@ export const QueryCoinBalancesResponse = {
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Get the insurance fund balance */
-  CoinBalances(
-    request: QueryCoinBalancesRequest
-  ): Promise<QueryCoinBalancesResponse>;
+  Balance(request: QueryBalanceRequest): Promise<QueryBalanceResponse>;
 }
 
 export class QueryClientImpl implements Query {
   private readonly rpc: Rpc;
   constructor(rpc: Rpc) {
     this.rpc = rpc;
-    this.CoinBalances = this.CoinBalances.bind(this);
+    this.Balance = this.Balance.bind(this);
   }
-  CoinBalances(
-    request: QueryCoinBalancesRequest
-  ): Promise<QueryCoinBalancesResponse> {
-    const data = QueryCoinBalancesRequest.encode(request).finish();
+  Balance(request: QueryBalanceRequest): Promise<QueryBalanceResponse> {
+    const data = QueryBalanceRequest.encode(request).finish();
     const promise = this.rpc.request(
       "Switcheo.carbon.insurance.Query",
-      "CoinBalances",
+      "Balance",
       data
     );
     return promise.then((data) =>
-      QueryCoinBalancesResponse.decode(new _m0.Reader(data))
+      QueryBalanceResponse.decode(new _m0.Reader(data))
     );
   }
 }

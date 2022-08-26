@@ -1,12 +1,12 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Token, LockedCoins, TokenBalance } from "../coin/token";
+import { Token, LockedCoins, TokenBalance } from "./token";
 import {
   PageRequest,
   PageResponse,
 } from "../cosmos/base/query/v1beta1/pagination";
-import { Bridge } from "../coin/bridge";
+import { Bridge } from "./bridge";
 
 export const protobufPackage = "Switcheo.carbon.coin";
 
@@ -1352,6 +1352,10 @@ export const QueryAllBridgeResponse = {
 export interface Query {
   /** Get token details for a denom */
   Token(request: QueryGetTokenRequest): Promise<QueryGetTokenResponse>;
+  /** Get token details for a denom(as string) */
+  TokenQueryParams(
+    request: QueryGetTokenRequest
+  ): Promise<QueryGetTokenResponse>;
   /** Get all token details */
   TokenAll(request: QueryAllTokenRequest): Promise<QueryAllTokenResponse>;
   /** Get locked coins for an address */
@@ -1379,6 +1383,7 @@ export class QueryClientImpl implements Query {
   constructor(rpc: Rpc) {
     this.rpc = rpc;
     this.Token = this.Token.bind(this);
+    this.TokenQueryParams = this.TokenQueryParams.bind(this);
     this.TokenAll = this.TokenAll.bind(this);
     this.LockedCoins = this.LockedCoins.bind(this);
     this.WrapperMappings = this.WrapperMappings.bind(this);
@@ -1392,6 +1397,20 @@ export class QueryClientImpl implements Query {
     const promise = this.rpc.request(
       "Switcheo.carbon.coin.Query",
       "Token",
+      data
+    );
+    return promise.then((data) =>
+      QueryGetTokenResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  TokenQueryParams(
+    request: QueryGetTokenRequest
+  ): Promise<QueryGetTokenResponse> {
+    const data = QueryGetTokenRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.coin.Query",
+      "TokenQueryParams",
       data
     );
     return promise.then((data) =>

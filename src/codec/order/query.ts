@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Order, Params, DBOrder } from "../order/order";
+import { Order, Params, DBOrder } from "./order";
 import { PageRequest, PageResponse } from "../query/pagination";
 
 export const protobufPackage = "Switcheo.carbon.order";

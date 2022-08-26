@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { ConsensusPeers } from "../headersync/consensus_peers";
+import { ConsensusPeers } from "./consensus_peers";
 
 export const protobufPackage = "Switcheo.carbon.headersync";
 
@@ -13,8 +13,8 @@ export interface GenesisState {
   checkpointHashes: { [key: string]: Uint8Array };
   /** Peers for each Zion PoS chain by chain ID. */
   zionConsensusPeers: { [key: string]: ConsensusPeers };
-  /** Header for Zion blocks where consensus public keys is updated for PoS chain by chain ID. */
-  zionHeaders: { [key: string]: Uint8Array };
+  /** Header Hash for Zion blocks where consensus public keys is updated for PoS chain by chain ID. */
+  zionCheckpointHashes: { [key: string]: Uint8Array };
 }
 
 export interface GenesisState_ConsensusPeersEntry {
@@ -32,7 +32,7 @@ export interface GenesisState_ZionConsensusPeersEntry {
   value?: ConsensusPeers;
 }
 
-export interface GenesisState_ZionHeadersEntry {
+export interface GenesisState_ZionCheckpointHashesEntry {
   key: string;
   value: Uint8Array;
 }
@@ -62,8 +62,8 @@ export const GenesisState = {
         writer.uint32(26).fork()
       ).ldelim();
     });
-    Object.entries(message.zionHeaders).forEach(([key, value]) => {
-      GenesisState_ZionHeadersEntry.encode(
+    Object.entries(message.zionCheckpointHashes).forEach(([key, value]) => {
+      GenesisState_ZionCheckpointHashesEntry.encode(
         { key: key as any, value },
         writer.uint32(34).fork()
       ).ldelim();
@@ -78,7 +78,7 @@ export const GenesisState = {
     message.consensusPeers = {};
     message.checkpointHashes = {};
     message.zionConsensusPeers = {};
-    message.zionHeaders = {};
+    message.zionCheckpointHashes = {};
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -110,12 +110,12 @@ export const GenesisState = {
           }
           break;
         case 4:
-          const entry4 = GenesisState_ZionHeadersEntry.decode(
+          const entry4 = GenesisState_ZionCheckpointHashesEntry.decode(
             reader,
             reader.uint32()
           );
           if (entry4.value !== undefined) {
-            message.zionHeaders[entry4.key] = entry4.value;
+            message.zionCheckpointHashes[entry4.key] = entry4.value;
           }
           break;
         default:
@@ -146,9 +146,9 @@ export const GenesisState = {
       acc[key] = ConsensusPeers.fromJSON(value);
       return acc;
     }, {});
-    message.zionHeaders = Object.entries(object.zionHeaders ?? {}).reduce<{
-      [key: string]: Uint8Array;
-    }>((acc, [key, value]) => {
+    message.zionCheckpointHashes = Object.entries(
+      object.zionCheckpointHashes ?? {}
+    ).reduce<{ [key: string]: Uint8Array }>((acc, [key, value]) => {
       acc[key] = bytesFromBase64(value as string);
       return acc;
     }, {});
@@ -175,10 +175,10 @@ export const GenesisState = {
         obj.zionConsensusPeers[k] = ConsensusPeers.toJSON(v);
       });
     }
-    obj.zionHeaders = {};
-    if (message.zionHeaders) {
-      Object.entries(message.zionHeaders).forEach(([k, v]) => {
-        obj.zionHeaders[k] = base64FromBytes(v);
+    obj.zionCheckpointHashes = {};
+    if (message.zionCheckpointHashes) {
+      Object.entries(message.zionCheckpointHashes).forEach(([k, v]) => {
+        obj.zionCheckpointHashes[k] = base64FromBytes(v);
       });
     }
     return obj;
@@ -210,9 +210,9 @@ export const GenesisState = {
       }
       return acc;
     }, {});
-    message.zionHeaders = Object.entries(object.zionHeaders ?? {}).reduce<{
-      [key: string]: Uint8Array;
-    }>((acc, [key, value]) => {
+    message.zionCheckpointHashes = Object.entries(
+      object.zionCheckpointHashes ?? {}
+    ).reduce<{ [key: string]: Uint8Array }>((acc, [key, value]) => {
       if (value !== undefined) {
         acc[key] = value;
       }
@@ -460,11 +460,11 @@ export const GenesisState_ZionConsensusPeersEntry = {
   },
 };
 
-const baseGenesisState_ZionHeadersEntry: object = { key: "" };
+const baseGenesisState_ZionCheckpointHashesEntry: object = { key: "" };
 
-export const GenesisState_ZionHeadersEntry = {
+export const GenesisState_ZionCheckpointHashesEntry = {
   encode(
-    message: GenesisState_ZionHeadersEntry,
+    message: GenesisState_ZionCheckpointHashesEntry,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.key !== "") {
@@ -479,12 +479,12 @@ export const GenesisState_ZionHeadersEntry = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): GenesisState_ZionHeadersEntry {
+  ): GenesisState_ZionCheckpointHashesEntry {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseGenesisState_ZionHeadersEntry,
-    } as GenesisState_ZionHeadersEntry;
+      ...baseGenesisState_ZionCheckpointHashesEntry,
+    } as GenesisState_ZionCheckpointHashesEntry;
     message.value = new Uint8Array();
     while (reader.pos < end) {
       const tag = reader.uint32();
@@ -503,10 +503,10 @@ export const GenesisState_ZionHeadersEntry = {
     return message;
   },
 
-  fromJSON(object: any): GenesisState_ZionHeadersEntry {
+  fromJSON(object: any): GenesisState_ZionCheckpointHashesEntry {
     const message = {
-      ...baseGenesisState_ZionHeadersEntry,
-    } as GenesisState_ZionHeadersEntry;
+      ...baseGenesisState_ZionCheckpointHashesEntry,
+    } as GenesisState_ZionCheckpointHashesEntry;
     message.key =
       object.key !== undefined && object.key !== null ? String(object.key) : "";
     message.value =
@@ -516,7 +516,7 @@ export const GenesisState_ZionHeadersEntry = {
     return message;
   },
 
-  toJSON(message: GenesisState_ZionHeadersEntry): unknown {
+  toJSON(message: GenesisState_ZionCheckpointHashesEntry): unknown {
     const obj: any = {};
     message.key !== undefined && (obj.key = message.key);
     message.value !== undefined &&
@@ -527,11 +527,11 @@ export const GenesisState_ZionHeadersEntry = {
   },
 
   fromPartial(
-    object: DeepPartial<GenesisState_ZionHeadersEntry>
-  ): GenesisState_ZionHeadersEntry {
+    object: DeepPartial<GenesisState_ZionCheckpointHashesEntry>
+  ): GenesisState_ZionCheckpointHashesEntry {
     const message = {
-      ...baseGenesisState_ZionHeadersEntry,
-    } as GenesisState_ZionHeadersEntry;
+      ...baseGenesisState_ZionCheckpointHashesEntry,
+    } as GenesisState_ZionCheckpointHashesEntry;
     message.key = object.key ?? "";
     message.value = object.value ?? new Uint8Array();
     return message;
