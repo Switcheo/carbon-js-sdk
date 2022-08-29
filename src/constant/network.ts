@@ -124,7 +124,7 @@ export const NetworkConfigs: {
     tmWsUrl: "wss://test-tm-api.carbon.network",
     restUrl: "https://test-api.carbon.network",
     insightsUrl: "https://test-api-insights.carbon.network",
-    hydrogenUrl: "",
+    hydrogenUrl: "https://test-hydrogen-api.carbon.network",
     wsUrl: "wss://test-ws-api.carbon.network/ws",
     faucetUrl: "https://test-faucet.carbon.network",
 
