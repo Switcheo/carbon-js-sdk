@@ -1,7 +1,6 @@
 import { APIUtils } from "@carbon-sdk/util"
 import { Network, NetworkConfig } from "@carbon-sdk/constant";
 import { BlockchainUtils } from "@carbon-sdk/util";
-import { EnumMember } from "typescript";
 import { ChainTransaction, CrossChainTransfer, CrossChainTransferDetailed, GetDetailedTransfersResponse, GetStatsResponse, GetTransfersRequest, GetTransfersResponse } from "../hydrogen";
 import dayjs from "dayjs";
 import { FeeQuote, GetFeeQuoteRequest, GetFeeQuoteResponse } from "@carbon-sdk/hydrogen/feeQuote";
@@ -122,18 +121,15 @@ class HydrogenClient {
   }
 
   async getFeeQuote(req: GetFeeQuoteRequest): Promise<GetFeeQuoteResponse> {
-    this.checkState();
+    // this.checkState();
     const request = this.apiManager.path('fee_quote', {}, {
       ...req,
-      include_tx: true,
+      include_tx: false,
     })
-    const response = await request.get();
-    const result = response.data;
+    const response = await request.get()
+    const result = response.data
 
-    return {
-      ...result,
-      data: result.data.map(formatFeeQuote),
-    }
+    return formatFeeQuote(result)
   }
 }
 
