@@ -4,6 +4,7 @@ import { BlockchainUtils } from "@carbon-sdk/util";
 import { EnumMember } from "typescript";
 import { ChainTransaction, CrossChainTransfer, CrossChainTransferDetailed, GetDetailedTransfersResponse, GetStatsResponse, GetTransfersRequest, GetTransfersResponse } from "../hydrogen";
 import dayjs from "dayjs";
+import { FeeQuote, GetFeeQuoteRequest, GetFeeQuoteResponse } from "@carbon-sdk/hydrogen/feeQuote";
 
 export const HydrogenEndpoints = {
   // Status api
@@ -11,6 +12,9 @@ export const HydrogenEndpoints = {
 
   // Transfer Payloads api
   'transfer_payloads': '/transfer_payloads',
+
+  // Fee service api
+  'fee_quote': '/fee_quote',
 }
 
 const formatDateField = (value?: string | null) => {
@@ -50,6 +54,16 @@ const formatChainEvent = (value: any): ChainTransaction | null => {
     destination_blockchain: BlockchainUtils.parseBlockchain(value.destination_blockchain),
     blockchain: BlockchainUtils.parseBlockchain(value.blockchain),
   } as ChainTransaction;
+}
+
+const formatFeeQuote = (value: any): FeeQuote => {
+  if (typeof value !== "object") return value;
+  return {
+    ...value,
+    blockchain: BlockchainUtils.parseBlockchain(value.blockchain),
+    created_at: formatDateField(value.created_at?.toString()),
+    expires_at: formatDateField(value.expires_at?.toString()),
+  }
 }
 
 class HydrogenClient {
@@ -104,6 +118,21 @@ class HydrogenClient {
     return {
       ...result,
       data: result.data.map(formatCrossChainTransferDetailed),
+    }
+  }
+
+  async getFeeQuote(req: GetFeeQuoteRequest): Promise<GetFeeQuoteResponse> {
+    this.checkState();
+    const request = this.apiManager.path('fee_quote', {}, {
+      ...req,
+      include_tx: true,
+    })
+    const response = await request.get();
+    const result = response.data;
+
+    return {
+      ...result,
+      data: result.data.map(formatFeeQuote),
     }
   }
 }
