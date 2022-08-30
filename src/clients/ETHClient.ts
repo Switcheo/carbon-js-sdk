@@ -263,10 +263,17 @@ export class ETHClient {
     tokenWithExternalBalances: TokensWithExternalBalance,
     swthAddress: string,
     ethAddress: string,
-    getSignatureCallback: (msg: string) => Promise<{ address: string; signature: string }>
+    getSignatureCallback: (msg: string) => Promise<{ address: string; signature: string }>,
+    overrideFee?: ethers.BigNumber,
   ) {
     const depositAddress = await this.getDepositContractAddress(swthAddress, ethAddress);
-    const feeAmount = await this.getDepositFeeAmount(tokenWithExternalBalances, depositAddress);
+
+    // TODO: Remove overrideFee when hydrogen feeQuote is deployed on production
+    let feeAmount: ethers.BigNumber = await this.getDepositFeeAmount(tokenWithExternalBalances, depositAddress);
+    if (overrideFee) {
+      feeAmount = overrideFee
+    }
+
     const amount = ethers.BigNumber.from(tokenWithExternalBalances.externalBalance);
     if (amount.lt(feeAmount.mul(FEE_MULTIPLIER))) {
       return "insufficient balance";
