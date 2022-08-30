@@ -56,7 +56,12 @@ class TokenClient {
     await this.reloadDenomGeckoMap();
 
     // non-blocking reload
-    this.reloadUSDValues();
+    try {
+      this.reloadUSDValues();
+    } catch (error) {
+      console.error("failed to reload usd values");
+      console.error(error);
+    }
   }
 
   public registerGeckoIdMap(map: TypeUtils.SimpleMap<string>) {
