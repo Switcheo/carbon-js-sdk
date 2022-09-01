@@ -94,7 +94,7 @@ export const swthIbcWhitelist: string[] = [ChainIds.Osmosis];
 export const ibcWhitelist: string[] = [ChainIds.Osmosis, ChainIds.Terra, ChainIds.CosmosHub, ChainIds.Juno, ChainIds.Evmos];
 
 // blacklisted networks for address generation and input
-export const ibcAddrBlacklist: string[] = [ChainIds.Terra]
+export const ibcAddrBlacklist: string[] = [ChainIds.Terra, ChainIds.Evmos];
 
 export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
   [ChainIds.Osmosis]: {
@@ -1602,7 +1602,7 @@ export const swthChannels: SimpleMap<ChannelConfig> = {
 
 export const ibcTokenRegex = /^ibc\/([a-f\d]+)$/i
 
-export const ibcNetworkRegex = /^([a-z]+)-([\d]+)$/i
+export const ibcNetworkRegex = /^([a-z\d_]+)-([\d]+)$/i
 
 export const ibcDefaultGas: number = 130000;
 
