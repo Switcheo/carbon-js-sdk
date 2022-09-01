@@ -1602,7 +1602,7 @@ export const swthChannels: SimpleMap<ChannelConfig> = {
 
 export const ibcTokenRegex = /^ibc\/([a-f\d]+)$/i
 
-export const ibcNetworkRegex = /^([a-z]+)-([\d]+)$/i
+export const ibcNetworkRegex = /^([a-z\d_]+)-([\d]+)$/i
 
 export const ibcDefaultGas: number = 130000;
 
