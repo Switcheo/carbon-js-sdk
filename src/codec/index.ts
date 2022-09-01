@@ -37,6 +37,8 @@ import { CreateMarketProposal, UpdateMarketProposal, UpdatePerpetualsFundingInte
 import { MsgCreatePool, MsgCreatePoolResponse, MsgCreatePoolWithLiquidity, MsgCreatePoolWithLiquidityResponse, MsgAddLiquidity, MsgAddLiquidityResponse, MsgRemoveLiquidity, MsgRemoveLiquidityResponse, MsgLinkPool, MsgLinkPoolResponse, MsgUnlinkPool, MsgUnlinkPoolResponse, MsgSetRewardsWeights, MsgSetRewardsWeightsResponse, MsgStakePoolToken, MsgStakePoolTokenResponse, MsgUnstakePoolToken, MsgUnstakePoolTokenResponse, MsgClaimPoolRewards, MsgClaimPoolRewardsResponse, MsgSetRewardCurve, MsgSetRewardCurveResponse, MsgSetCommitmentCurve, MsgSetCommitmentCurveResponse, MsgUpdatePool, MsgUpdatePoolResponse } from "./liquiditypool/tx";
 import { LinkPoolProposal, UnlinkPoolProposal, SetRewardCurveProposal, SetCommitmentCurveProposal, SetRewardsWeightsProposal, UpdatePoolProposal } from "./liquiditypool/proposal";
 import { SettlementPriceProposal } from "./pricing/proposal";
+import { TextProposal, Proposal } from "./cosmos/gov/v1beta1/gov";
+import { ClientUpdateProposal, UpgradeProposal } from "./ibc/core/client/v1/client";
 
 export * from './cosmos-models';
 
@@ -180,6 +182,8 @@ registry.register("/cosmos.gov.v1beta1.MsgVoteWeighted", MsgVoteWeighted);
 registry.register("/cosmos.gov.v1beta1.MsgVoteWeightedResponse", MsgVoteWeightedResponse);
 registry.register("/cosmos.gov.v1beta1.MsgDeposit", MsgDeposit);
 registry.register("/cosmos.gov.v1beta1.MsgDepositResponse", MsgDepositResponse);
+registry.register("/cosmos.gov.v1beta1.TextProposal", TextProposal);
+registry.register("/cosmos.gov.v1beta1.Proposal", Proposal);
 
 registry.register("/Switcheo.carbon.ccm.MsgProcessCrossChainTx", PolyNetwork.Ccm.MsgProcessCrossChainTx);
 registry.register("/Switcheo.carbon.ccm.MsgProcessZionCrossChainTx", PolyNetwork.Ccm.MsgProcessZionCrossChainTx);
@@ -226,6 +230,8 @@ registry.register("/ibc.core.client.v1.MsgUpgradeClient", MsgUpgradeClient);
 registry.register("/ibc.core.client.v1.MsgUpgradeClientResponse", MsgUpgradeClientResponse);
 registry.register("/ibc.core.client.v1.MsgSubmitMisbehaviour", MsgSubmitMisbehaviour);
 registry.register("/ibc.core.client.v1.MsgSubmitMisbehaviourResponse", MsgSubmitMisbehaviourResponse);
+registry.register("/ibc.core.client.v1.ClientUpdateProposal", ClientUpdateProposal);
+registry.register("/ibc.core.client.v1.UpgradeProposal", UpgradeProposal);
 
 registry.register("/ibc.lightclients.tendermint.v1.Header", Header);
 
@@ -445,6 +451,8 @@ export const TxTypes = {
   "MsgVoteWeightedResponse": "/cosmos.gov.v1beta1.MsgVoteWeightedResponse",
   "MsgDeposit": "/cosmos.gov.v1beta1.MsgDeposit",
   "MsgDepositResponse": "/cosmos.gov.v1beta1.MsgDepositResponse",
+  "TextProposal": "/cosmos.gov.v1beta1.TextProposal",
+  "Proposal": "/cosmos.gov.v1beta1.Proposal",
   "MsgProcessCrossChainTx": "/Switcheo.carbon.ccm.MsgProcessCrossChainTx",
   "MsgProcessZionCrossChainTx": "/Switcheo.carbon.ccm.MsgProcessZionCrossChainTx",
   "MsgProcessCrossChainTxResponse": "/Switcheo.carbon.ccm.MsgProcessCrossChainTxResponse",
@@ -487,6 +495,8 @@ export const TxTypes = {
   "MsgUpgradeClientResponse": "/ibc.core.client.v1.MsgUpgradeClientResponse",
   "MsgSubmitMisbehaviour": "/ibc.core.client.v1.MsgSubmitMisbehaviour",
   "MsgSubmitMisbehaviourResponse": "/ibc.core.client.v1.MsgSubmitMisbehaviourResponse",
+  "ClientUpdateProposal": "/ibc.core.client.v1.ClientUpdateProposal",
+  "UpgradeProposal": "/ibc.core.client.v1.UpgradeProposal",
   "Header": "/ibc.lightclients.tendermint.v1.Header",
   "MsgTransfer": "/ibc.applications.transfer.v1.MsgTransfer",
   "MsgTransferResponse": "/ibc.applications.transfer.v1.MsgTransferResponse",

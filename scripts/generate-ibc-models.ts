@@ -1,6 +1,7 @@
 
 import path from "path";
 import fs from "fs";
+import { whitelistIbcExports } from "./config";
 
 const files = process.argv;
 
@@ -8,23 +9,8 @@ const [pwd, modelsFile] = files.splice(files.length - 2, 2);
 
 const MODEL_BLACKLIST = ['MsgClientImpl', 'protobufPackage', 'GenesisState', 'QueryClientImpl']
 
-const whitelistExports: { [name: string]: string[] } = {
-  'Controller': ['ibc/applications/interchain_accounts/controller/v1'],
-  'Host': ['ibc/applications/interchain_accounts/host/v1'],
-  'InterchainTypes': ['ibc/applications/interchain_accounts/v1'],
-  'TranferV1': ['ibc/applications/transfer/v1'],
-  'TransferV2': ['ibc/applications/transfer/v2'],
-  'Channel': ['ibc/core/channel/v1'],
-  'Client': ['ibc/core/client/v1'],
-  'Commitment': ['ibc/core/commitment/v1'],
-  'Connection': ['ibc/core/connection/v1'],
-  'LocalHost': ['ibc/lightclients/localhost/v1'],
-  'Solomachine': ['ibc/lightclients/solomachine/v1'],
-  'Tendermint': ['ibc/lightclients/tendermint/v1'],
-};
-
-for (const exportName in whitelistExports) {
-  const directoryArr: string[] = whitelistExports[exportName];
+for (const exportName in whitelistIbcExports) {
+  const directoryArr: string[] = whitelistIbcExports[exportName];
   // Get common path (e.g. ibc/applications/transfer for Transfer)
   const commonPath = directoryArr[0].split('/').slice(0, 4).join('/');
   const commonDir = path.join(pwd, 'src/codec', commonPath);
