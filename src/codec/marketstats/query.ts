@@ -1,8 +1,8 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Params } from "./params";
-import { MarketStats } from "./marketstats";
+import { Params } from "../marketstats/params";
+import { MarketStats } from "../marketstats/marketstats";
 
 export const protobufPackage = "Switcheo.carbon.marketstats";
 

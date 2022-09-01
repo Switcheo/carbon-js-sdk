@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { OrderBook, StopBook } from "./book";
+import { OrderBook, StopBook } from "../book/book";
 
 export const protobufPackage = "Switcheo.carbon.book";
 

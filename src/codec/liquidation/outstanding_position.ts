@@ -11,6 +11,7 @@ export interface OutstandingPosition {
   bankruptcyPrice: string;
   lots: string;
   blockCreatedAt?: Date;
+  tickSize: string;
 }
 
 export interface OutstandingPositions {
@@ -22,6 +23,7 @@ const baseOutstandingPosition: object = {
   market: "",
   bankruptcyPrice: "",
   lots: "",
+  tickSize: "",
 };
 
 export const OutstandingPosition = {
@@ -46,6 +48,9 @@ export const OutstandingPosition = {
         toTimestamp(message.blockCreatedAt),
         writer.uint32(42).fork()
       ).ldelim();
+    }
+    if (message.tickSize !== "") {
+      writer.uint32(50).string(message.tickSize);
     }
     return writer;
   },
@@ -73,6 +78,9 @@ export const OutstandingPosition = {
           message.blockCreatedAt = fromTimestamp(
             Timestamp.decode(reader, reader.uint32())
           );
+          break;
+        case 6:
+          message.tickSize = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -105,6 +113,10 @@ export const OutstandingPosition = {
       object.blockCreatedAt !== undefined && object.blockCreatedAt !== null
         ? fromJsonTimestamp(object.blockCreatedAt)
         : undefined;
+    message.tickSize =
+      object.tickSize !== undefined && object.tickSize !== null
+        ? String(object.tickSize)
+        : "";
     return message;
   },
 
@@ -118,6 +130,7 @@ export const OutstandingPosition = {
     message.lots !== undefined && (obj.lots = message.lots);
     message.blockCreatedAt !== undefined &&
       (obj.blockCreatedAt = message.blockCreatedAt.toISOString());
+    message.tickSize !== undefined && (obj.tickSize = message.tickSize);
     return obj;
   },
 
@@ -128,6 +141,7 @@ export const OutstandingPosition = {
     message.bankruptcyPrice = object.bankruptcyPrice ?? "";
     message.lots = object.lots ?? "";
     message.blockCreatedAt = object.blockCreatedAt ?? undefined;
+    message.tickSize = object.tickSize ?? "";
     return message;
   },
 };

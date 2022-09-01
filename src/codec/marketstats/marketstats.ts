@@ -1,6 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
+import { Timestamp } from "../google/protobuf/timestamp";
 
 export const protobufPackage = "Switcheo.carbon.marketstats";
 
@@ -16,6 +17,9 @@ export interface MarketStats {
   indexPrice: string;
   markPrice: string;
   lastPrice: string;
+  premiumRate: string;
+  lastFundingAt?: Date;
+  openInterest: string;
 }
 
 const baseMarketStats: object = {
@@ -30,6 +34,8 @@ const baseMarketStats: object = {
   indexPrice: "",
   markPrice: "",
   lastPrice: "",
+  premiumRate: "",
+  openInterest: "",
 };
 
 export const MarketStats = {
@@ -69,6 +75,18 @@ export const MarketStats = {
     }
     if (message.lastPrice !== "") {
       writer.uint32(90).string(message.lastPrice);
+    }
+    if (message.premiumRate !== "") {
+      writer.uint32(98).string(message.premiumRate);
+    }
+    if (message.lastFundingAt !== undefined) {
+      Timestamp.encode(
+        toTimestamp(message.lastFundingAt),
+        writer.uint32(106).fork()
+      ).ldelim();
+    }
+    if (message.openInterest !== "") {
+      writer.uint32(114).string(message.openInterest);
     }
     return writer;
   },
@@ -112,6 +130,17 @@ export const MarketStats = {
           break;
         case 11:
           message.lastPrice = reader.string();
+          break;
+        case 12:
+          message.premiumRate = reader.string();
+          break;
+        case 13:
+          message.lastFundingAt = fromTimestamp(
+            Timestamp.decode(reader, reader.uint32())
+          );
+          break;
+        case 14:
+          message.openInterest = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -167,6 +196,18 @@ export const MarketStats = {
       object.lastPrice !== undefined && object.lastPrice !== null
         ? String(object.lastPrice)
         : "";
+    message.premiumRate =
+      object.premiumRate !== undefined && object.premiumRate !== null
+        ? String(object.premiumRate)
+        : "";
+    message.lastFundingAt =
+      object.lastFundingAt !== undefined && object.lastFundingAt !== null
+        ? fromJsonTimestamp(object.lastFundingAt)
+        : undefined;
+    message.openInterest =
+      object.openInterest !== undefined && object.openInterest !== null
+        ? String(object.openInterest)
+        : "";
     return message;
   },
 
@@ -184,6 +225,12 @@ export const MarketStats = {
     message.indexPrice !== undefined && (obj.indexPrice = message.indexPrice);
     message.markPrice !== undefined && (obj.markPrice = message.markPrice);
     message.lastPrice !== undefined && (obj.lastPrice = message.lastPrice);
+    message.premiumRate !== undefined &&
+      (obj.premiumRate = message.premiumRate);
+    message.lastFundingAt !== undefined &&
+      (obj.lastFundingAt = message.lastFundingAt.toISOString());
+    message.openInterest !== undefined &&
+      (obj.openInterest = message.openInterest);
     return obj;
   },
 
@@ -200,6 +247,9 @@ export const MarketStats = {
     message.indexPrice = object.indexPrice ?? "";
     message.markPrice = object.markPrice ?? "";
     message.lastPrice = object.lastPrice ?? "";
+    message.premiumRate = object.premiumRate ?? "";
+    message.lastFundingAt = object.lastFundingAt ?? undefined;
+    message.openInterest = object.openInterest ?? "";
     return message;
   },
 };
@@ -223,6 +273,32 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+function toTimestamp(date: Date): Timestamp {
+  const seconds = numberToLong(date.getTime() / 1_000);
+  const nanos = (date.getTime() % 1_000) * 1_000_000;
+  return { seconds, nanos };
+}
+
+function fromTimestamp(t: Timestamp): Date {
+  let millis = t.seconds.toNumber() * 1_000;
+  millis += t.nanos / 1_000_000;
+  return new Date(millis);
+}
+
+function fromJsonTimestamp(o: any): Date {
+  if (o instanceof Date) {
+    return o;
+  } else if (typeof o === "string") {
+    return new Date(o);
+  } else {
+    return fromTimestamp(Timestamp.fromJSON(o));
+  }
+}
+
+function numberToLong(number: number) {
+  return Long.fromNumber(number);
+}
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

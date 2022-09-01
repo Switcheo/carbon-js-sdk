@@ -1,12 +1,12 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Token, LockedCoins, TokenBalance } from "./token";
+import { Token, LockedCoins, TokenBalance } from "../coin/token";
 import {
   PageRequest,
   PageResponse,
 } from "../cosmos/base/query/v1beta1/pagination";
-import { Bridge } from "./bridge";
+import { Bridge } from "../coin/bridge";
 
 export const protobufPackage = "Switcheo.carbon.coin";
 

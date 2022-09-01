@@ -1,8 +1,8 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Params } from "./liquidation";
-import { AccountTrade } from "../broker/trade";
+import { Params } from "../liquidation/liquidation";
+import { AccountTrade } from "../misc/trade";
 
 export const protobufPackage = "Switcheo.carbon.liquidation";
 

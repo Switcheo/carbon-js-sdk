@@ -1,7 +1,8 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { MarketParams } from "./market";
+import { MarketParams } from "../market/market";
+import { Duration } from "../google/protobuf/duration";
 import { Timestamp } from "../google/protobuf/timestamp";
 
 export const protobufPackage = "Switcheo.carbon.market";
@@ -29,6 +30,13 @@ export interface MsgUpdateMarket {
 }
 
 export interface MsgUpdateMarketResponse {}
+
+export interface MsgUpdatePerpetualsFundingInterval {
+  updater: string;
+  perpetualsFundingInterval?: Duration;
+}
+
+export interface MsgUpdatePerpetualsFundingIntervalResponse {}
 
 const baseMsgCreateMarket: object = {
   creator: "",
@@ -376,11 +384,156 @@ export const MsgUpdateMarketResponse = {
   },
 };
 
+const baseMsgUpdatePerpetualsFundingInterval: object = { updater: "" };
+
+export const MsgUpdatePerpetualsFundingInterval = {
+  encode(
+    message: MsgUpdatePerpetualsFundingInterval,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.updater !== "") {
+      writer.uint32(10).string(message.updater);
+    }
+    if (message.perpetualsFundingInterval !== undefined) {
+      Duration.encode(
+        message.perpetualsFundingInterval,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUpdatePerpetualsFundingInterval {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgUpdatePerpetualsFundingInterval,
+    } as MsgUpdatePerpetualsFundingInterval;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.updater = reader.string();
+          break;
+        case 2:
+          message.perpetualsFundingInterval = Duration.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdatePerpetualsFundingInterval {
+    const message = {
+      ...baseMsgUpdatePerpetualsFundingInterval,
+    } as MsgUpdatePerpetualsFundingInterval;
+    message.updater =
+      object.updater !== undefined && object.updater !== null
+        ? String(object.updater)
+        : "";
+    message.perpetualsFundingInterval =
+      object.perpetualsFundingInterval !== undefined &&
+      object.perpetualsFundingInterval !== null
+        ? Duration.fromJSON(object.perpetualsFundingInterval)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: MsgUpdatePerpetualsFundingInterval): unknown {
+    const obj: any = {};
+    message.updater !== undefined && (obj.updater = message.updater);
+    message.perpetualsFundingInterval !== undefined &&
+      (obj.perpetualsFundingInterval = message.perpetualsFundingInterval
+        ? Duration.toJSON(message.perpetualsFundingInterval)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgUpdatePerpetualsFundingInterval>
+  ): MsgUpdatePerpetualsFundingInterval {
+    const message = {
+      ...baseMsgUpdatePerpetualsFundingInterval,
+    } as MsgUpdatePerpetualsFundingInterval;
+    message.updater = object.updater ?? "";
+    message.perpetualsFundingInterval =
+      object.perpetualsFundingInterval !== undefined &&
+      object.perpetualsFundingInterval !== null
+        ? Duration.fromPartial(object.perpetualsFundingInterval)
+        : undefined;
+    return message;
+  },
+};
+
+const baseMsgUpdatePerpetualsFundingIntervalResponse: object = {};
+
+export const MsgUpdatePerpetualsFundingIntervalResponse = {
+  encode(
+    _: MsgUpdatePerpetualsFundingIntervalResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUpdatePerpetualsFundingIntervalResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgUpdatePerpetualsFundingIntervalResponse,
+    } as MsgUpdatePerpetualsFundingIntervalResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgUpdatePerpetualsFundingIntervalResponse {
+    const message = {
+      ...baseMsgUpdatePerpetualsFundingIntervalResponse,
+    } as MsgUpdatePerpetualsFundingIntervalResponse;
+    return message;
+  },
+
+  toJSON(_: MsgUpdatePerpetualsFundingIntervalResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgUpdatePerpetualsFundingIntervalResponse>
+  ): MsgUpdatePerpetualsFundingIntervalResponse {
+    const message = {
+      ...baseMsgUpdatePerpetualsFundingIntervalResponse,
+    } as MsgUpdatePerpetualsFundingIntervalResponse;
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
   /** this line is used by starport scaffolding # proto/tx/rpc */
   CreateMarket(request: MsgCreateMarket): Promise<MsgCreateMarketResponse>;
   UpdateMarket(request: MsgUpdateMarket): Promise<MsgUpdateMarketResponse>;
+  UpdatePerpetualsFundingInterval(
+    request: MsgUpdatePerpetualsFundingInterval
+  ): Promise<MsgUpdatePerpetualsFundingIntervalResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -389,6 +542,8 @@ export class MsgClientImpl implements Msg {
     this.rpc = rpc;
     this.CreateMarket = this.CreateMarket.bind(this);
     this.UpdateMarket = this.UpdateMarket.bind(this);
+    this.UpdatePerpetualsFundingInterval =
+      this.UpdatePerpetualsFundingInterval.bind(this);
   }
   CreateMarket(request: MsgCreateMarket): Promise<MsgCreateMarketResponse> {
     const data = MsgCreateMarket.encode(request).finish();
@@ -411,6 +566,20 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgUpdateMarketResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  UpdatePerpetualsFundingInterval(
+    request: MsgUpdatePerpetualsFundingInterval
+  ): Promise<MsgUpdatePerpetualsFundingIntervalResponse> {
+    const data = MsgUpdatePerpetualsFundingInterval.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.market.Msg",
+      "UpdatePerpetualsFundingInterval",
+      data
+    );
+    return promise.then((data) =>
+      MsgUpdatePerpetualsFundingIntervalResponse.decode(new _m0.Reader(data))
     );
   }
 }

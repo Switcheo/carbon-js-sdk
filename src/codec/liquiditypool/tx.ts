@@ -2,7 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Timestamp } from "../google/protobuf/timestamp";
-import { RewardWeight } from "./reward";
+import { RewardWeight } from "../liquiditypool/reward";
 
 export const protobufPackage = "Switcheo.carbon.liquiditypool";
 

@@ -7,9 +7,12 @@ import {
   ValidatorAccumulatedCommission,
   ValidatorSlashEvent,
   DelegationDelegatorReward,
-} from "./distribution";
-import { PageRequest, PageResponse } from "../../base/query/v1beta1/pagination";
-import { DecCoin } from "../../base/v1beta1/coin";
+} from "../../../cosmos/distribution/v1beta1/distribution";
+import {
+  PageRequest,
+  PageResponse,
+} from "../../../cosmos/base/query/v1beta1/pagination";
+import { DecCoin } from "../../../cosmos/base/v1beta1/coin";
 
 export const protobufPackage = "cosmos.distribution.v1beta1";
 

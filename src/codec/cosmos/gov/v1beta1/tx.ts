@@ -7,8 +7,8 @@ import {
   WeightedVoteOption,
   voteOptionFromJSON,
   voteOptionToJSON,
-} from "./gov";
-import { Coin } from "../../base/v1beta1/coin";
+} from "../../../cosmos/gov/v1beta1/gov";
+import { Coin } from "../../../cosmos/base/v1beta1/coin";
 
 export const protobufPackage = "cosmos.gov.v1beta1";
 

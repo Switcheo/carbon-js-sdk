@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Params, Oracle, Result, Vote } from "./oracle";
+import { Params, Oracle, Result, Vote } from "../oracle/oracle";
 
 export const protobufPackage = "Switcheo.carbon.oracle";
 
