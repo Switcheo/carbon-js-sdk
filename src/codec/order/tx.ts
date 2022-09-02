@@ -27,6 +27,7 @@ export interface MsgCreateOrder {
   isReduceOnly: boolean;
   referralAddress: string;
   referralCommission: number;
+  referralKickback: number;
 }
 
 export interface MsgCreateOrderResponse {}
@@ -202,6 +203,7 @@ const baseMsgCreateOrder: object = {
   isReduceOnly: false,
   referralAddress: "",
   referralCommission: 0,
+  referralKickback: 0,
 };
 
 export const MsgCreateOrder = {
@@ -247,6 +249,9 @@ export const MsgCreateOrder = {
     }
     if (message.referralCommission !== 0) {
       writer.uint32(104).uint32(message.referralCommission);
+    }
+    if (message.referralKickback !== 0) {
+      writer.uint32(112).uint32(message.referralKickback);
     }
     return writer;
   },
@@ -296,6 +301,9 @@ export const MsgCreateOrder = {
           break;
         case 13:
           message.referralCommission = reader.uint32();
+          break;
+        case 14:
+          message.referralKickback = reader.uint32();
           break;
         default:
           reader.skipType(tag & 7);
@@ -360,6 +368,10 @@ export const MsgCreateOrder = {
       object.referralCommission !== null
         ? Number(object.referralCommission)
         : 0;
+    message.referralKickback =
+      object.referralKickback !== undefined && object.referralKickback !== null
+        ? Number(object.referralKickback)
+        : 0;
     return message;
   },
 
@@ -383,6 +395,8 @@ export const MsgCreateOrder = {
       (obj.referralAddress = message.referralAddress);
     message.referralCommission !== undefined &&
       (obj.referralCommission = message.referralCommission);
+    message.referralKickback !== undefined &&
+      (obj.referralKickback = message.referralKickback);
     return obj;
   },
 
@@ -401,6 +415,7 @@ export const MsgCreateOrder = {
     message.isReduceOnly = object.isReduceOnly ?? false;
     message.referralAddress = object.referralAddress ?? "";
     message.referralCommission = object.referralCommission ?? 0;
+    message.referralKickback = object.referralKickback ?? 0;
     return message;
   },
 };

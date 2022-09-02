@@ -38,6 +38,7 @@ export interface Order {
   avgFilledPrice: string;
   referralAddress: string;
   referralCommission: number;
+  referralKickback: number;
 }
 
 export interface DBOrder {
@@ -145,6 +146,7 @@ const baseOrder: object = {
   avgFilledPrice: "",
   referralAddress: "",
   referralCommission: 0,
+  referralKickback: 0,
 };
 
 export const Order = {
@@ -226,6 +228,9 @@ export const Order = {
     }
     if (message.referralCommission !== 0) {
       writer.uint32(200).uint32(message.referralCommission);
+    }
+    if (message.referralKickback !== 0) {
+      writer.uint32(208).uint32(message.referralKickback);
     }
     return writer;
   },
@@ -313,6 +318,9 @@ export const Order = {
           break;
         case 25:
           message.referralCommission = reader.uint32();
+          break;
+        case 26:
+          message.referralKickback = reader.uint32();
           break;
         default:
           reader.skipType(tag & 7);
@@ -424,6 +432,10 @@ export const Order = {
       object.referralCommission !== null
         ? Number(object.referralCommission)
         : 0;
+    message.referralKickback =
+      object.referralKickback !== undefined && object.referralKickback !== null
+        ? Number(object.referralKickback)
+        : 0;
     return message;
   },
 
@@ -470,6 +482,8 @@ export const Order = {
       (obj.referralAddress = message.referralAddress);
     message.referralCommission !== undefined &&
       (obj.referralCommission = message.referralCommission);
+    message.referralKickback !== undefined &&
+      (obj.referralKickback = message.referralKickback);
     return obj;
   },
 
@@ -513,6 +527,7 @@ export const Order = {
     message.avgFilledPrice = object.avgFilledPrice ?? "";
     message.referralAddress = object.referralAddress ?? "";
     message.referralCommission = object.referralCommission ?? 0;
+    message.referralKickback = object.referralKickback ?? 0;
     return message;
   },
 };
