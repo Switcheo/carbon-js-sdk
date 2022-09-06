@@ -1,6 +1,5 @@
 import { CarbonSDK }  from "./_sdk";
 
-;
 (async () => {
   const sdk = await CarbonSDK.instance({
     network: CarbonSDK.Network.DevNet,

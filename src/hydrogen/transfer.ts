@@ -62,6 +62,9 @@ export interface CrossChainTransfer {
   bridging_blockchain: Blockchain | null
   destination_blockchain: Blockchain | null
   status: CrossChainFlowStatus
+  carbon_token_id: string
+  recovery_address_hash: string
+  recovery_address: string
 }
 
 export interface CrossChainTransferDetailed extends CrossChainTransfer {

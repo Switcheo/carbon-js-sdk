@@ -60,6 +60,7 @@ export enum ChainIds {
 	Starname = "iov-mainnet-ibc",
 	EMoney = "emoney-3",
 	Juno = "juno-1",
+	Evmos = "evmos_9001-2",
 	Microtick = "microtick-1",
 	LikeCoin = "likecoin-mainnet-2",
 	IXO = "impacthub-3",
@@ -90,10 +91,10 @@ export enum ChainIds {
 // whitelisted networks for addition of swth as a currency
 export const swthIbcWhitelist: string[] = [ChainIds.Osmosis];
 // whitelisted networks for addition of transfer options
-export const ibcWhitelist: string[] = [ChainIds.Osmosis, ChainIds.Terra, ChainIds.CosmosHub, ChainIds.Juno];
+export const ibcWhitelist: string[] = [ChainIds.Osmosis, ChainIds.Terra, ChainIds.CosmosHub, ChainIds.Juno, ChainIds.Evmos];
 
 // blacklisted networks for address generation and input
-export const ibcAddrBlacklist: string[] = [ChainIds.Terra]
+export const ibcAddrBlacklist: string[] = [ChainIds.Terra, ChainIds.Evmos];
 
 export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
   [ChainIds.Osmosis]: {
@@ -590,6 +591,45 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
 		],
 		features: ["stargate", "ibc-transfer", "no-legacy-stdTx"],
 		explorerUrlToTx: "https://www.mintscan.io/juno/txs/{txHash}",
+	},
+	[ChainIds.Evmos]: {
+		rpc: "https://rpc-evmos.keplr.app/",
+		rest: "https://lcd-evmos.keplr.app/",
+		chainId: "evmos_9001-2",
+		chainName: "Evmos",
+		stakeCurrency: {
+			coinDenom: "EVMOS",
+			coinMinimalDenom: "aevmos",
+			coinDecimals: 18,
+			coinGeckoId: "evmos",
+		},
+		bip44: {
+			coinType: 60,
+		},
+		bech32Config: IBCAddress.defaultBech32Config("evmos"),
+		currencies: [
+			{
+				coinDenom: "EVMOS",
+				coinMinimalDenom: "aevmos",
+				coinDecimals: 18,
+				coinGeckoId: "evmos",
+			},
+		],
+		feeCurrencies: [
+			{
+				coinDenom: "EVMOS",
+				coinMinimalDenom: "aevmos",
+				coinDecimals: 18,
+				coinGeckoId: "evmos",
+			},
+		],
+		gasPriceStep: {
+			low: 10000000000,
+			average: 25000000000,
+			high: 40000000000,
+		},
+		features: ["stargate", "ibc-transfer", "no-legacy-stdTx", "ibc-go"],
+		explorerUrlToTx: "https://www.mintscan.io/evmos/txs/{txHash}",
 	},
 	[ChainIds.Microtick]: {
 		rpc: "https://rpc-microtick.keplr.app",
@@ -1554,11 +1594,15 @@ export const swthChannels: SimpleMap<ChannelConfig> = {
 		sourceChannel: "channel-4",
 		dstChannel: "channel-92",
 	},
+	[ChainIds.Evmos]: {
+		sourceChannel: "channel-6",
+		dstChannel: "channel-23",
+	},
 };
 
 export const ibcTokenRegex = /^ibc\/([a-f\d]+)$/i
 
-export const ibcNetworkRegex = /^([a-z]+)-([\d]+)$/i
+export const ibcNetworkRegex = /^([a-z\d_]+)-([\d]+)$/i
 
 export const ibcDefaultGas: number = 130000;
 
