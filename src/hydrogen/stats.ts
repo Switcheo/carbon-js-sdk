@@ -1,4 +1,4 @@
-export interface GetStatsRequest {}
+export interface GetStatsRequest { }
 
 export interface GetStatsResponse {
     transactionCounts: TransactionCount[]
