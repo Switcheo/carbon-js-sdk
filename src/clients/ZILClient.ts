@@ -146,7 +146,7 @@ export class ZILClient {
       token.tokenAddress.length == 40 &&
       (!whitelistDenoms || whitelistDenoms.includes(token.denom))
     )
-    
+
     const requests = tokens.map(token => token.tokenAddress === zeroAddress ? balanceBatchRequest(address.replace(/^0x/i, "")) : tokenBalanceBatchRequest(token.tokenAddress, address))
     const response = await fetch(this.getProviderUrl(), {
       method: "post",
@@ -159,7 +159,7 @@ export class ZILClient {
     if (!Array.isArray(results)) {
       return TokensWithExternalBalance
     }
-  
+
     results.forEach((result: any, i: number) => {
       const token = tokens[i]
       TokensWithExternalBalance.push({
@@ -259,21 +259,6 @@ export class ZILClient {
     return callTx;
   }
 
-  // public async checkAllowanceZRC2(token: Models.Token, owner: string, spender: string) {
-  //   const contractAddress = appendHexPrefix(token.tokenAddress)
-  //   const zilliqa = new Zilliqa(this.getProviderUrl())
-  //   const resp = await zilliqa.blockchain.getSmartContractSubState(contractAddress, "allowances", [owner, spender])
-  //   if (resp.error !== undefined) {
-  //     throw new Error(resp.error.message)
-  //   }
-
-  //   if (resp.result === null) {
-  //     return new BigNumber("0")
-  //   }
-
-  //   return new BigNumber(resp.result.allowances[owner][spender])
-  // }
-
   public async checkAllowanceZRC2(token: Models.Token, owner: string, spender: string) {
     const contractAddress = appendHexPrefix(token.tokenAddress)
     const zilliqa = new Zilliqa(this.getProviderUrl())
@@ -303,7 +288,7 @@ export class ZILClient {
     const targetProxyHash = appendHexPrefix(this.getTargetProxyHash(fromToken))
 
     const recoveryAddressHex = ethers.utils.hexlify(
-      AddressUtils.SWTHAddress.getAddressBytes(recoveryAddress, CarbonSDK.Network.MainNet) 
+      AddressUtils.SWTHAddress.getAddressBytes(recoveryAddress, CarbonSDK.Network.MainNet)
     );
 
     const fromAssetHash = ethers.utils.hexlify(ethers.utils.toUtf8Bytes(fromTokenId))
@@ -507,8 +492,8 @@ export class ZILClient {
       .filter(({ vname }) => mask.includes(vname))
       .reduce((prev, cur) => (
         { ...prev, [cur.vname === '_this_address' ? 'address' : cur.vname]: cur.value }
-      ), <{name:string, symbol:string, decimals:string, address:string}>{}) 
-    return {...intermediate, decimals: Number(intermediate.decimals)}
+      ), <{ name: string, symbol: string, decimals: string, address: string }>{})
+    return { ...intermediate, decimals: Number(intermediate.decimals) }
   }
 
   /**
@@ -523,7 +508,7 @@ export class ZILClient {
     const addressHex = stripHexPrefix(ethers.utils.hexlify(addressBytes))
     return addressHex
   }
-  
+
   public getNetworkConfig(): NetworkConfig {
     return this.configProvider.getConfig();
   }
