@@ -32,6 +32,7 @@ export interface ZilNetworkConfig {
   rpcURL: string
   chainId: number
   lockProxyAddr: string
+  bridgeEntranceAddr: string
 }
 
 export interface NetworkConfig {
@@ -113,6 +114,7 @@ export const NetworkConfigs: {
     zil: {
       rpcURL: "https://api.zilliqa.com",
       lockProxyAddr: "0xd73c6b871b4d0e130d64581993b745fc938a5be7",
+      bridgeEntranceAddr: "0x3fd798e7fc7c5817bae8d06da8050e37ae45a739",
       chainId: 1,
     }
   },
@@ -165,7 +167,8 @@ export const NetworkConfigs: {
 
     zil: {
       rpcURL: "",
-      lockProxyAddr: "",
+      lockProxyAddr: "0xa5a43eecd29534edf80792a9889f52c77455245d",
+      bridgeEntranceAddr: "0x347b8478093f7a3ed5bcaec968349538eac6ef98",
       chainId: 333,
     }
   },
@@ -219,6 +222,7 @@ export const NetworkConfigs: {
     zil: {
       rpcURL: "https://dev-api.zilliqa.com",
       lockProxyAddr: "0xa5a43eecd29534edf80792a9889f52c77455245d",
+      bridgeEntranceAddr: "0xbbe98D54689c96D0278a1222594533e8C5fa551e",
       chainId: 333,
     }
   },
@@ -272,6 +276,7 @@ export const NetworkConfigs: {
     zil: {
       rpcURL: "",
       lockProxyAddr: "",
+      bridgeEntranceAddr: "",
       chainId: 1,
     }
   },

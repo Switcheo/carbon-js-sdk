@@ -95,7 +95,7 @@ export interface ChainTransaction {
   cross_chain_flow_id: string
 }
 
-export type EventParams = 
+export type EventParams =
   string
   | CrossChainEventEventParams
   | IbcWriteAckEventEventParams
@@ -106,72 +106,72 @@ export type EventParams =
   | MakePolyProofEventEventParams
   | Attribute[]
 
-  export interface CrossChainEventEventParams { 
-    txId: string 
-    sender: string 
-    rawdata: string 
-    toChainId: string 
-    toContract: string 
-    proxyOrAssetContract: string 
-  } 
-   
-  export interface NEOCrossChainUnlockEventEventParams { 
-    fromChainId: string 
-    toContract: string 
-    txHash: string 
-  } 
-   
-   
-  export interface NEOCrossChainLockEventEventParams {
-    key: string 
-    tx_param: string
-    to_chain_id: string  
-    from_address: string
-    from_contract: string
-  } 
-   
-  export interface VerifyHeaderAndExecuteTxEventEventParams { 
-    fromChainId: string 
-    toContractAddr?: string 
-    toContract?: string 
-    fromChainTxHash: string 
-    crossChainTxHash: string 
-  } 
-   
-  export interface MakePolyProofEventEventParams { 
-    NOTIFY_MAKE_PROOF: string 
-    fromChainID: number 
-    toChainID: number 
-    txHash: string 
-    blockheight: number 
-    key: string 
-  } 
-   
-  export interface IbcEventEventParams {
-    packet_data: string 
-    packet_data_hex: string 
-    packet_timeout_height: string 
-    packet_timeout_timestamp: string 
-    packet_sequence: string 
-    packet_src_port: string 
-    packet_src_channel: string 
-    packet_dst_port: string 
-    packet_dst_channel: string 
-    packet_connection: string 
-    denom: string
-  
-  } 
-   
-  export interface IbcWriteAckEventEventParams extends IbcEventEventParams { 
-    packet_ack: string 
-    packet_ack_hex: string 
-  } 
-   
-  export interface IbcSendPacketEventEventParams extends IbcEventEventParams { 
-    packet_channel_ordering: string 
-  }
+export interface CrossChainEventEventParams {
+  txId: string
+  sender: string
+  rawdata: string
+  toChainId: string
+  toContract: string
+  proxyOrAssetContract: string
+}
 
-  export type Attribute = { 
-    key: string 
-    value: string 
-  }
+export interface NEOCrossChainUnlockEventEventParams {
+  fromChainId: string
+  toContract: string
+  txHash: string
+}
+
+
+export interface NEOCrossChainLockEventEventParams {
+  key: string
+  tx_param: string
+  to_chain_id: string
+  from_address: string
+  from_contract: string
+}
+
+export interface VerifyHeaderAndExecuteTxEventEventParams {
+  fromChainId: string
+  toContractAddr?: string
+  toContract?: string
+  fromChainTxHash: string
+  crossChainTxHash: string
+}
+
+export interface MakePolyProofEventEventParams {
+  NOTIFY_MAKE_PROOF: string
+  fromChainID: number
+  toChainID: number
+  txHash: string
+  blockheight: number
+  key: string
+}
+
+export interface IbcEventEventParams {
+  packet_data: string
+  packet_data_hex: string
+  packet_timeout_height: string
+  packet_timeout_timestamp: string
+  packet_sequence: string
+  packet_src_port: string
+  packet_src_channel: string
+  packet_dst_port: string
+  packet_dst_channel: string
+  packet_connection: string
+  denom: string
+
+}
+
+export interface IbcWriteAckEventEventParams extends IbcEventEventParams {
+  packet_ack: string
+  packet_ack_hex: string
+}
+
+export interface IbcSendPacketEventEventParams extends IbcEventEventParams {
+  packet_channel_ordering: string
+}
+
+export type Attribute = {
+  key: string
+  value: string
+}

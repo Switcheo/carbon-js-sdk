@@ -1,8 +1,7 @@
-import { APIUtils } from "@carbon-sdk/util"
 import { Network, NetworkConfig } from "@carbon-sdk/constant";
-import { BlockchainUtils } from "@carbon-sdk/util";
-import { ChainTransaction, CrossChainTransfer, CrossChainTransferDetailed, GetDetailedTransfersResponse, GetStatsResponse, GetTransfersRequest, GetTransfersResponse } from "../hydrogen";
+import { APIUtils, BlockchainUtils } from "@carbon-sdk/util";
 import dayjs from "dayjs";
+import { ChainTransaction, CrossChainTransfer, CrossChainTransferDetailed, GetDetailedTransfersResponse, GetRelaysRequest, GetStatsResponse, GetTransfersRequest, GetTransfersResponse } from "../hydrogen";
 import { FeeQuote, GetFeeQuoteRequest, GetFeeQuoteResponse } from "@carbon-sdk/hydrogen/feeQuote";
 
 export const HydrogenEndpoints = {
@@ -11,6 +10,9 @@ export const HydrogenEndpoints = {
 
   // Transfer Payloads api
   'transfer_payloads': '/transfer_payloads',
+
+  // Relays api
+  'relays': '/relays',
 
   // Fee service api
   'fee_quote': '/fee_quote',
@@ -108,6 +110,21 @@ class HydrogenClient {
   async getDetailedTransfers(req: GetTransfersRequest): Promise<GetDetailedTransfersResponse> {
     this.checkState();
     const request = this.apiManager.path('transfer_payloads', {}, {
+      ...req,
+      include_tx: true,
+    })
+    const response = await request.get();
+    const result = response.data;
+
+    return {
+      ...result,
+      data: result.data.map(formatCrossChainTransferDetailed),
+    }
+  }
+
+  async getRelaysTransfers(req: GetRelaysRequest): Promise<GetDetailedTransfersResponse> {
+    this.checkState();
+    const request = this.apiManager.path('relays', {}, {
       ...req,
       include_tx: true,
     })

@@ -1,5 +1,5 @@
 import CarbonSDK from "@carbon-sdk/CarbonSDK";
-import { EthNetworkConfig, NetworkConfig, NetworkConfigProvider } from "@carbon-sdk/constant";
+import { EthNetworkConfig, NativeTokenHash, NetworkConfig, NetworkConfigProvider } from "@carbon-sdk/constant";
 import { ABIs } from "@carbon-sdk/eth";
 import { Models } from "@carbon-sdk/index";
 import { AddressUtils } from "@carbon-sdk/util";
@@ -7,6 +7,7 @@ import { SWTHAddress } from "@carbon-sdk/util/address";
 import { Blockchain, blockchainForChainId } from "@carbon-sdk/util/blockchain";
 import { TokenInitInfo, TokensWithExternalBalance } from "@carbon-sdk/util/external";
 import { appendHexPrefix, stripHexPrefix } from "@carbon-sdk/util/generic";
+import { BN_ZERO } from "@carbon-sdk/util/number";
 import BigNumber from "bignumber.js";
 import { ethers } from "ethers";
 import TokenClient from "./TokenClient";
@@ -25,27 +26,28 @@ interface ETHTxParams {
 }
 
 export interface BridgeParams {
-  fromToken: Models.Token;
-  toToken: Models.Token;
-  amount: BigNumber;
-  fromAddress: string;
-  recoveryAddress: string;
-  toAddress: string;
+  fromToken: Models.Token
+  toToken: Models.Token
+  amount: BigNumber
+  fromAddress: string
+  recoveryAddress: string
+  toAddress: string
   feeAmount: BigNumber
-  gasPriceGwei: BigNumber;
-  gasLimit: BigNumber;
-  signer: ethers.Signer;
-  signCompleteCallback?: () => void;
+  gasPriceGwei: BigNumber
+  gasLimit: BigNumber
+  signer: ethers.Signer
+  signCompleteCallback?: () => void
 }
 
 export interface LockParams extends ETHTxParams {
-  address: Uint8Array;
-  amount: BigNumber;
-  token: Models.Token;
+  address: Uint8Array
+  amount: BigNumber
+  token: Models.Token
   signCompleteCallback?: () => void;
 }
 export interface ApproveERC20Params extends ETHTxParams {
-  token: Models.Token;
+  token: Models.Token
+  spenderAddress?: string
   signCompleteCallback?: () => void;
 }
 
@@ -68,7 +70,7 @@ export class ETHClient {
     public readonly configProvider: NetworkConfigProvider,
     public readonly blockchain: Blockchain,
     public readonly tokenClient: TokenClient
-  ) {}
+  ) { }
 
   public static instance(opts: ETHClientOpts) {
     const { configProvider, blockchain, tokenClient } = opts;
@@ -113,14 +115,14 @@ export class ETHClient {
   }
 
   public async approveERC20(params: ApproveERC20Params): Promise<EthersTransactionResponse> {
-    const { token, gasPriceGwei, gasLimit, ethAddress, signer } = params;
+    const { token, gasPriceGwei, gasLimit, ethAddress, spenderAddress, signer } = params;
     const contractAddress = token.tokenAddress;
 
     const rpcProvider = this.getProvider();
     const contract = new ethers.Contract(contractAddress, ABIs.erc20, rpcProvider);
 
     const nonce = await rpcProvider.getTransactionCount(ethAddress);
-    const approveResultTx = await contract.connect(signer).approve(token.bridgeAddress, ethers.constants.MaxUint256, {
+    const approveResultTx = await contract.connect(signer).approve(spenderAddress ?? token.bridgeAddress, ethers.constants.MaxUint256, {
       nonce,
       gasPrice: gasPriceGwei.shiftedBy(9).toString(10),
       gasLimit: gasLimit.toString(10),
@@ -152,9 +154,9 @@ export class ETHClient {
     const toTokenDenom = toToken.denom;
 
     const recoveryAddressHex = ethers.utils.hexlify(
-      AddressUtils.SWTHAddress.getAddressBytes(recoveryAddress, CarbonSDK.Network.MainNet) 
+      AddressUtils.SWTHAddress.getAddressBytes(recoveryAddress, CarbonSDK.Network.MainNet)
     );
-    
+
     const fromAssetHash = ethers.utils.hexlify(ethers.utils.toUtf8Bytes(fromTokenId));
     const toAssetHash = ethers.utils.hexlify(ethers.utils.toUtf8Bytes(toTokenDenom));
     const nonce = await rpcProvider.getTransactionCount(fromAddress);
@@ -166,6 +168,8 @@ export class ETHClient {
 
     const targetAddressBytes = AddressUtils.SWTHAddress.getAddressBytes(tokenCreator, CarbonSDK.Network.MainNet);
     const targetProxyHash = ethers.utils.hexlify(targetAddressBytes);
+
+    const ethAmount = fromToken.tokenAddress === NativeTokenHash ? amount : BN_ZERO;
     const bridgeResultTx = await contract.connect(signer).lock(
       fromTokenAddress, // the asset to deposit (from) (0x00 if eth)
       [
@@ -184,6 +188,7 @@ export class ETHClient {
         gasLimit: gasLimit.toString(10),
         gasPrice: gasPriceGwei.shiftedBy(9).toString(10),
         nonce,
+        value: ethAmount.toString(10),
       }
     );
 
@@ -294,11 +299,11 @@ export class ETHClient {
 
     let signatureResult:
       | {
-          owner: string;
-          r: string;
-          s: string;
-          v: string;
-        }
+        owner: string;
+        r: string;
+        s: string;
+        v: string;
+      }
       | undefined;
 
     const { address, signature } = await getSignatureCallback(message);
@@ -459,7 +464,7 @@ export class ETHClient {
   public verifyChecksum(input: string): string | undefined {
     try {
       return ethers.utils.getAddress(input);
-    } catch {}
+    } catch { }
   }
 }
 
