@@ -21,6 +21,9 @@ export class OrderModule extends BaseModule {
       stopPrice: params.stopPrice?.shiftedBy(18).toString(10),
       timeInForce: params.timeInForce,
       triggerType: params.triggerType,
+      referralAddress: params.referralAddress,
+      referralCommission: params.referralCommission,
+      referralKickback: params.referralKickback,
     })
 
     return await wallet.sendTx({
@@ -47,6 +50,7 @@ export class OrderModule extends BaseModule {
         triggerType: params.triggerType,
         referralAddress: params.referralAddress,
         referralCommission: params.referralCommission,
+        referralKickback: params.referralKickback,
       })
 
       return {
@@ -163,6 +167,7 @@ export namespace OrderModule {
     referralAddress?: string
     /** commission percents, input 10 for 10% */
     referralCommission?: number
+    referralKickback?: number
   }
 
   export interface EditOrderParams {
