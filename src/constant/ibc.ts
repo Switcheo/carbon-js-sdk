@@ -94,7 +94,7 @@ export const swthIbcWhitelist: string[] = [ChainIds.Osmosis];
 export const ibcWhitelist: string[] = [ChainIds.Osmosis, ChainIds.Terra, ChainIds.CosmosHub, ChainIds.Juno, ChainIds.Evmos];
 
 // blacklisted networks for address generation and input
-export const ibcAddrBlacklist: string[] = [ChainIds.Terra, ChainIds.Evmos];
+export const ibcAddrBlacklist: string[] = [ChainIds.Terra, ChainIds.Evmos, ChainIds.Juno];
 
 export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
   [ChainIds.Osmosis]: {
@@ -136,8 +136,8 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
     ],
     gasPriceStep: {
       low: 0,
-      average: 0,
-      high: 0.025,
+			average: 0.025,
+			high: 0.04,
     },
     features: ["stargate", "ibc-transfer", "no-legacy-stdTx", "ibc-go"],
     explorerUrlToTx: "https://www.mintscan.io/osmosis/txs/{txHash}",
@@ -229,9 +229,9 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
 			},
 		],
 		gasPriceStep: {
-			low: 0.015,
-			average: 0.015,
-			high: 0.015,
+			low: 0.15,
+			average: 0.2,
+			high: 0.25,
 		},
 		features: ["stargate", "ibc-transfer", "no-legacy-stdTx"],
 		explorerUrlToTx: "https://finder.terra.money/columbus-5/tx/{txHash}",
@@ -589,6 +589,11 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
 				coinGeckoId: "juno-network",
 			},
 		],
+		gasPriceStep: {
+      low: 0.001,
+			average: 0.0025,
+			high: 0.004,
+    },
 		features: ["stargate", "ibc-transfer", "no-legacy-stdTx"],
 		explorerUrlToTx: "https://www.mintscan.io/juno/txs/{txHash}",
 	},
@@ -623,11 +628,11 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
 				coinGeckoId: "evmos",
 			},
 		],
-		gasPriceStep: {
-			low: 10000000000,
-			average: 25000000000,
-			high: 40000000000,
-		},
+    gasPriceStep: {
+      low: 25000000000,
+      average: 25000000000,
+      high: 40000000000,
+    },
 		features: ["stargate", "ibc-transfer", "no-legacy-stdTx", "ibc-go"],
 		explorerUrlToTx: "https://www.mintscan.io/evmos/txs/{txHash}",
 	},
@@ -1604,7 +1609,7 @@ export const ibcTokenRegex = /^ibc\/([a-f\d]+)$/i
 
 export const ibcNetworkRegex = /^([a-z\d_]+)-([\d]+)$/i
 
-export const ibcDefaultGas: number = 130000;
+export const ibcDefaultGas: number = 450000;
 
 export interface GasPriceStep {
 	low: number;
