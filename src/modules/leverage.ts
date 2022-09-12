@@ -5,7 +5,7 @@ import { BigNumber } from "bignumber.js";
 
 export class LeverageModule extends BaseModule {
 
-  public async set(params: LeverageModule.SetLeverageParams) {
+  public async set(params: LeverageModule.SetLeverageParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgSetLeverage.fromPartial({
@@ -18,10 +18,10 @@ export class LeverageModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgSetLeverage,
       value,
-    });
+    }, opts);
   }
 
-  public async setLeverages(params: LeverageModule.SetLeverageParams[]) {
+  public async setLeverages(params: LeverageModule.SetLeverageParams[], opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const msgs = params.map(param => {
@@ -37,7 +37,7 @@ export class LeverageModule extends BaseModule {
       }
     })
 
-    return await wallet.sendTxs(msgs);
+    return await wallet.sendTxs(msgs, opts);
   }
 }
 

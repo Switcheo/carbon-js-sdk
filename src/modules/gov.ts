@@ -20,7 +20,7 @@ import { MarketModule, transfromUpdateMarketParams } from "./market";
 
 export class GovModule extends BaseModule {
 
-  public async submit(params: GovModule.SubmitProposalParams) {
+  public async submit(params: GovModule.SubmitProposalParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const {typeUrl, value} = params.content;
@@ -29,10 +29,10 @@ export class GovModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgSubmitProposal,
       value: params,
-    });
+    }, opts);
   }
 
-  public async deposit(params: GovModule.DepositParams) {
+  public async deposit(params: GovModule.DepositParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgDeposit.fromPartial({
@@ -44,10 +44,10 @@ export class GovModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgDeposit,
       value,
-    });
+    }, opts);
   }
 
-  public async vote(params: GovModule.VoteParams) {
+  public async vote(params: GovModule.VoteParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgVote.fromPartial({
@@ -59,7 +59,7 @@ export class GovModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgVote,
       value,
-    });
+    }, opts);
   }
 
   public encode(proposalUrl: string, proposalMsg: any): Uint8Array {

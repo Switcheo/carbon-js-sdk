@@ -2,11 +2,12 @@ import { TxTypes } from "@carbon-sdk/codec";
 import { MsgWithdrawDelegatorReward } from "@carbon-sdk/codec/cosmos/distribution/v1beta1/tx";
 import { MsgBeginRedelegate, MsgDelegate, MsgUndelegate } from "@carbon-sdk/codec/cosmos/staking/v1beta1/tx";
 import BigNumber from "bignumber.js";
+import { CarbonTx } from "..";
 import BaseModule from "./base";
 
 export class StakingModule extends BaseModule {
 
-  public async delegateTokens(params: StakingModule.DelegateTokensParams) {
+  public async delegateTokens(params: StakingModule.DelegateTokensParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
     const value = MsgDelegate.fromPartial({
       delegatorAddress: params.delegatorAddress ?? wallet.bech32Address,
@@ -20,10 +21,10 @@ export class StakingModule extends BaseModule {
     return wallet.sendTx({
       typeUrl: TxTypes.MsgDelegate,
       value,
-    });
+    }, opts);
   }
 
-  public async undelegateTokens(params: StakingModule.DelegateTokensParams) {
+  public async undelegateTokens(params: StakingModule.DelegateTokensParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
     const value = MsgUndelegate.fromPartial({
       delegatorAddress: params.delegatorAddress ?? wallet.bech32Address,
@@ -37,10 +38,10 @@ export class StakingModule extends BaseModule {
     return wallet.sendTx({
       typeUrl: TxTypes.MsgUndelegate,
       value,
-    });
+    }, opts);
   }
 
-  public async redelegateTokens(params: StakingModule.RedelegateTokensParams) {
+  public async redelegateTokens(params: StakingModule.RedelegateTokensParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
     const value = MsgBeginRedelegate.fromPartial({
       delegatorAddress: params.delegatorAddress ?? wallet.bech32Address,
@@ -55,10 +56,10 @@ export class StakingModule extends BaseModule {
     return wallet.sendTx({
       typeUrl: TxTypes.MsgBeginRedelegate,
       value,
-    });
+    }, opts);
   }
 
-  public async withdrawRewards(params: StakingModule.WithdrawRewardsParams) {
+  public async withdrawRewards(params: StakingModule.WithdrawRewardsParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
     const value = MsgWithdrawDelegatorReward.fromPartial({
       delegatorAddress: params.delegatorAddress ?? wallet.bech32Address,
@@ -67,10 +68,10 @@ export class StakingModule extends BaseModule {
     return wallet.sendTx({
       typeUrl: TxTypes.MsgWithdrawDelegatorReward,
       value,
-    });
+    }, opts);
   }
 
-  public async withdrawAllDelegatorRewards(params: StakingModule.WithdrawAllDelegatorRewardsParams) {
+  public async withdrawAllDelegatorRewards(params: StakingModule.WithdrawAllDelegatorRewardsParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
     const messages = params.validatorAddresses.map((address: string) => ({
       typeUrl: TxTypes.MsgWithdrawDelegatorReward,
@@ -80,7 +81,7 @@ export class StakingModule extends BaseModule {
       })
     }))
 
-    return wallet.sendTxs(messages)
+    return wallet.sendTxs(messages, opts)
   }
 }
 

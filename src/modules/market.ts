@@ -6,7 +6,7 @@ import {Duration} from "@carbon-sdk/codec/google/protobuf/duration";
 
 export class MarketModule extends BaseModule {
 
-  public async update(params: MarketModule.UpdateMarketParams) {
+  public async update(params: MarketModule.UpdateMarketParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgUpdateMarket.fromPartial({
@@ -17,7 +17,7 @@ export class MarketModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgUpdateMarket,
       value,
-    });
+    }, opts);
   }
 }
 

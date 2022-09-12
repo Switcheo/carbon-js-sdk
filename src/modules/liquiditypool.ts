@@ -9,7 +9,7 @@ import BaseModule from "./base"
 
 export class LiquidityPoolModule extends BaseModule {
 
-  public async create(params: LiquidityPoolModule.CreatePoolParams) {
+  public async create(params: LiquidityPoolModule.CreatePoolParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = Models.MsgCreatePool.fromPartial({
@@ -25,10 +25,10 @@ export class LiquidityPoolModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgCreatePool,
       value,
-    });
+    }, opts);
   }
 
-  public async createWithLiquidity(params: LiquidityPoolModule.CreatePoolWithLiquidityParams) {
+  public async createWithLiquidity(params: LiquidityPoolModule.CreatePoolWithLiquidityParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = Models.MsgCreatePoolWithLiquidity.fromPartial({
@@ -46,10 +46,10 @@ export class LiquidityPoolModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgCreatePoolWithLiquidity,
       value,
-    });
+    }, opts);
   }
 
-  public async addLiquidity(params: LiquidityPoolModule.AddLiquidityParams) {
+  public async addLiquidity(params: LiquidityPoolModule.AddLiquidityParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = Models.MsgAddLiquidity.fromPartial({
@@ -63,10 +63,10 @@ export class LiquidityPoolModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgAddLiquidity,
       value,
-    });
+    }, opts);
   }
 
-  public async removeLiquidity(params: LiquidityPoolModule.RemoveLiquidityParams) {
+  public async removeLiquidity(params: LiquidityPoolModule.RemoveLiquidityParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = Models.MsgRemoveLiquidity.fromPartial({
@@ -78,10 +78,10 @@ export class LiquidityPoolModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgRemoveLiquidity,
       value,
-    });
+    }, opts);
   }
 
-  public async stakePoolToken(params: LiquidityPoolModule.StakePoolTokenParams) {
+  public async stakePoolToken(params: LiquidityPoolModule.StakePoolTokenParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = Models.MsgStakePoolToken.fromPartial({
@@ -94,10 +94,10 @@ export class LiquidityPoolModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgStakePoolToken,
       value,
-    });
+    }, opts);
   }
 
-  public async unstakePoolToken(params: LiquidityPoolModule.UnstakePoolTokenParams) {
+  public async unstakePoolToken(params: LiquidityPoolModule.UnstakePoolTokenParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = Models.MsgUnstakePoolToken.fromPartial({
@@ -109,10 +109,10 @@ export class LiquidityPoolModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgUnstakePoolToken,
       value,
-    });
+    }, opts);
   }
 
-  public async claimPoolRewards(params: LiquidityPoolModule.ClaimPoolRewardsParams) {
+  public async claimPoolRewards(params: LiquidityPoolModule.ClaimPoolRewardsParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = Models.MsgClaimPoolRewards.fromPartial({
@@ -123,7 +123,7 @@ export class LiquidityPoolModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgClaimPoolRewards,
       value,
-    });
+    }, opts);
   }
 
   /**

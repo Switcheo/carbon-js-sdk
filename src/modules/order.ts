@@ -6,7 +6,7 @@ import BaseModule from "./base";
 
 export class OrderModule extends BaseModule {
 
-  public async create(params: OrderModule.CreateOrderParams) {
+  public async create(params: OrderModule.CreateOrderParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgCreateOrder.fromPartial({
@@ -29,10 +29,10 @@ export class OrderModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgCreateOrder,
       value,
-    });
+    }, opts);
   }
 
-  public async createOrders(params: OrderModule.CreateOrderParams[]) {
+  public async createOrders(params: OrderModule.CreateOrderParams[], opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const msgs = params.map(params => {
@@ -59,10 +59,10 @@ export class OrderModule extends BaseModule {
       }
     });
     
-    return await wallet.sendTxs(msgs);
+    return await wallet.sendTxs(msgs, opts);
   }
 
-  public async cancel(orderId: string) {
+  public async cancel(orderId: string, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
     
     const value: MsgCancelOrder = {
@@ -73,10 +73,10 @@ export class OrderModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgCancelOrder,
       value,
-    });
+    }, opts);
   }
 
-  public async cancelOrders(orderIds: string[]) {
+  public async cancelOrders(orderIds: string[], opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const msgs = orderIds.map(id => {
@@ -91,10 +91,10 @@ export class OrderModule extends BaseModule {
       }
     })
     
-    return await wallet.sendTxs(msgs);
+    return await wallet.sendTxs(msgs, opts);
   }
 
-  public async edit(params: OrderModule.EditOrderParams) {
+  public async edit(params: OrderModule.EditOrderParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgEditOrder.fromPartial({
@@ -108,10 +108,10 @@ export class OrderModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgEditOrder,
       value,
-    });
+    }, opts);
   }
 
-  public async editOrders(params: OrderModule.EditOrderParams[]) {
+  public async editOrders(params: OrderModule.EditOrderParams[], opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const msgs = params.map(param => {
@@ -129,10 +129,10 @@ export class OrderModule extends BaseModule {
       }
     })
 
-    return await wallet.sendTxs(msgs);
+    return await wallet.sendTxs(msgs, opts);
   }
 
-  public async cancelAll(params: OrderModule.CancelAllParams) {
+  public async cancelAll(params: OrderModule.CancelAllParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgCancelAll.fromPartial({
@@ -143,7 +143,7 @@ export class OrderModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgCancelAll,
       value,
-    });
+    }, opts);
   }
 }
 

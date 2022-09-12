@@ -5,7 +5,7 @@ import BaseModule from "./base";
 
 export class CoinModule extends BaseModule {
 
-  public async createWithdrawal(params: CoinModule.CreateWithdrawalParams) {
+  public async createWithdrawal(params: CoinModule.CreateWithdrawalParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgWithdraw.fromPartial({
@@ -20,10 +20,10 @@ export class CoinModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgWithdraw,
       value,
-    });
+    }, opts);
   }
 
-  public async mintToken(params: CoinModule.MintTokenParams) {
+  public async mintToken(params: CoinModule.MintTokenParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgMintToken.fromPartial({
@@ -36,7 +36,7 @@ export class CoinModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgMintToken,
       value,
-    })
+    }, opts)
   }
 }
 
