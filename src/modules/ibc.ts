@@ -1,12 +1,11 @@
 import { MsgTransfer } from "@carbon-sdk/codec/ibc/applications/transfer/v1/tx";
 import { CarbonTx } from "@carbon-sdk/util";
-import { StdFee } from "@cosmjs/amino";
 import BigNumber from "bignumber.js";
 import BaseModule from "./base";
 
 export class IBCModule extends BaseModule {
 
-  public async sendIBCTransfer(params: IBCModule.SendIBCTransferParams, fee?: StdFee) {
+  public async sendIBCTransfer(params: IBCModule.SendIBCTransferParams, msgOpts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     if (!params.revisionHeight) {
@@ -32,11 +31,6 @@ export class IBCModule extends BaseModule {
         timeoutTimestamp: params.timeoutTimestamp,
       },
     });
-
-    let msgOpts: CarbonTx.SignTxOpts | undefined = undefined;
-    if (fee) {
-      msgOpts = { fee };
-    }
 
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgTransfer,

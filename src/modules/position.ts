@@ -5,7 +5,7 @@ import BaseModule from "./base";
 
 export class PositionModule extends BaseModule {
 
-  public async editMargin(params: PositionModule.SetMarginParams) {
+  public async editMargin(params: PositionModule.SetMarginParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgSetMargin.fromPartial({
@@ -17,10 +17,10 @@ export class PositionModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgSetMargin,
       value,
-    });
+    }, opts);
   }
 
-  public async editMargins(params: PositionModule.SetMarginParams[]) {
+  public async editMargins(params: PositionModule.SetMarginParams[], opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const msgs = params.map(param => {
@@ -36,7 +36,7 @@ export class PositionModule extends BaseModule {
       }
     })
 
-    return await wallet.sendTxs(msgs);
+    return await wallet.sendTxs(msgs, opts);
   }
 }
 

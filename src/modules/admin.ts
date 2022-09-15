@@ -16,7 +16,7 @@ import BaseModule from "./base";
 
 export class AdminModule extends BaseModule {
 
-  public async createOracle(params: AdminModule.CreateOracleParams) {
+  public async createOracle(params: AdminModule.CreateOracleParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgCreateOracle.fromPartial({
@@ -27,10 +27,10 @@ export class AdminModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgCreateOracle,
       value,
-    });
+    }, opts);
   }
 
-  public async createToken(params: AdminModule.CreateTokenParams) {
+  public async createToken(params: AdminModule.CreateTokenParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgCreateToken.fromPartial({
@@ -41,10 +41,10 @@ export class AdminModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgCreateToken,
       value,
-    });
+    }, opts);
   }
 
-  public async createTokens(params: AdminModule.CreateTokenParams[]) {
+  public async createTokens(params: AdminModule.CreateTokenParams[], opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const msgs = params.map(param => {
@@ -59,10 +59,10 @@ export class AdminModule extends BaseModule {
       }
     })
 
-    return await wallet.sendTxs(msgs);
+    return await wallet.sendTxs(msgs, opts);
   }
 
-  public async syncToken(params: AdminModule.SyncTokenParams) {
+  public async syncToken(params: AdminModule.SyncTokenParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgSyncToken.fromPartial(transfromSyncTokenParams(params, wallet.bech32Address))
@@ -70,10 +70,10 @@ export class AdminModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgSyncToken,
       value,
-    });
+    }, opts);
   }
 
-  public async bindToken(params: AdminModule.BindTokenParams) {
+  public async bindToken(params: AdminModule.BindTokenParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgBindToken.fromPartial({
@@ -85,10 +85,10 @@ export class AdminModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgBindToken,
       value,
-    });
+    }, opts);
   }
 
-  public async unbindToken(params: AdminModule.UnbindTokenParams) {
+  public async unbindToken(params: AdminModule.UnbindTokenParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgUnbindToken.fromPartial({
@@ -99,10 +99,10 @@ export class AdminModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgUnbindToken,
       value,
-    });
+    }, opts);
   }
 
-  public async linkToken(params: AdminModule.LinkTokenParams) {
+  public async linkToken(params: AdminModule.LinkTokenParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgLinkToken.fromPartial({
@@ -114,10 +114,10 @@ export class AdminModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgLinkToken,
       value,
-    });
+    }, opts);
   }
 
-  public async createMarket(params: AdminModule.CreateMarketParams) {
+  public async createMarket(params: AdminModule.CreateMarketParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgCreateMarket.fromPartial({
@@ -134,10 +134,10 @@ export class AdminModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgCreateMarket,
       value,
-    });
+    }, opts);
   }
 
-  public async createMarkets(params: AdminModule.CreateMarketParams[]) {
+  public async createMarkets(params: AdminModule.CreateMarketParams[], opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const msgs = params.map((param: AdminModule.CreateMarketParams) => {
@@ -158,10 +158,10 @@ export class AdminModule extends BaseModule {
       };
     });
 
-    return await wallet.sendTxs(msgs);
+    return await wallet.sendTxs(msgs, opts);
   }
 
-  public async createVaultType(params: AdminModule.CreateVaultTypeParams) {
+  public async createVaultType(params: AdminModule.CreateVaultTypeParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgCreateVaultType.fromPartial(transfromCreateVaultTypeParams(params, wallet.bech32Address))
@@ -169,10 +169,10 @@ export class AdminModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgCreateVaultType,
       value,
-    });
+    }, opts);
   }
 
-  public async linkPool(params: AdminModule.LinkPoolParams) {
+  public async linkPool(params: AdminModule.LinkPoolParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgLinkPool.fromPartial({
@@ -183,10 +183,10 @@ export class AdminModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgLinkPool,
       value,
-    });
+    }, opts);
   }
 
-  public async unlinkPool(params: AdminModule.UnlinkPoolParams) {
+  public async unlinkPool(params: AdminModule.UnlinkPoolParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgUnlinkPool.fromPartial({
@@ -197,10 +197,10 @@ export class AdminModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgUnlinkPool,
       value,
-    });
+    }, opts);
   }
 
-  public async setRewardsWeights(params: AdminModule.SetRewardsWeightsParams[]) {
+  public async setRewardsWeights(params: AdminModule.SetRewardsWeightsParams[], opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgSetRewardsWeights.fromPartial({
@@ -211,10 +211,10 @@ export class AdminModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgSetRewardsWeights,
       value,
-    });
+    }, opts);
   }
 
-  public async setRewardCurve(params: AdminModule.SetRewardCurveParams) {
+  public async setRewardCurve(params: AdminModule.SetRewardCurveParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgSetRewardCurve.fromPartial({
@@ -225,10 +225,10 @@ export class AdminModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgSetRewardCurve,
       value,
-    });
+    }, opts);
   }
 
-  public async setCommitmentCurve(params: AdminModule.SetCommitmentCurveParams) {
+  public async setCommitmentCurve(params: AdminModule.SetCommitmentCurveParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgSetCommitmentCurve.fromPartial({
@@ -239,10 +239,10 @@ export class AdminModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgSetCommitmentCurve,
       value,
-    });
+    }, opts);
   }
 
-  public async updatePool(params: AdminModule.UpdatePoolParams) {
+  public async updatePool(params: AdminModule.UpdatePoolParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgUpdatePool.fromPartial({
@@ -253,10 +253,10 @@ export class AdminModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgUpdatePool,
       value,
-    });
+    }, opts);
   }
 
-  public async setTradingFlag(params: AdminModule.SetTradingFlagParams) {
+  public async setTradingFlag(params: AdminModule.SetTradingFlagParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgSetTradingFlag.fromPartial(transfromSetTradingFlagParams(params, wallet.bech32Address))
@@ -264,14 +264,14 @@ export class AdminModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgSetTradingFlag,
       value,
-    });
+    }, opts);
   }
 
   public async setMsgFee(params: AdminModule.SetMsgFeeParams) {
     throw new Error("deprecated");
   }
 
-  public async setMsgGasCost(params: AdminModule.SetMsgGasCostParams) {
+  public async setMsgGasCost(params: AdminModule.SetMsgGasCostParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgSetGasCost.fromPartial({
@@ -282,10 +282,10 @@ export class AdminModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgSetGasCost,
       value,
-    });
+    }, opts);
   }
 
-  public async setMinGasPrice(params: AdminModule.SetMinGasPriceParams) {
+  public async setMinGasPrice(params: AdminModule.SetMinGasPriceParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgSetMinGasPrice.fromPartial({
@@ -296,10 +296,10 @@ export class AdminModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgSetMinGasPrice,
       value,
-    });
+    }, opts);
   }
 
-  public async removeMsgGasCost(params: AdminModule.RemoveMsgGasCostParams) {
+  public async removeMsgGasCost(params: AdminModule.RemoveMsgGasCostParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgRemoveGasCost.fromPartial({
@@ -310,10 +310,10 @@ export class AdminModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgRemoveGasCost,
       value,
-    });
+    }, opts);
   }
 
-  public async removeMinGasPrice(params: AdminModule.RemoveMinGasPriceParams) {
+  public async removeMinGasPrice(params: AdminModule.RemoveMinGasPriceParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgRemoveMinGasPrice.fromPartial({
@@ -324,10 +324,10 @@ export class AdminModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgRemoveMinGasPrice,
       value,
-    });
+    }, opts);
   }
 
-  public async createValidator(params: AdminModule.CreateValidatorParams) {
+  public async createValidator(params: AdminModule.CreateValidatorParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgCreateValidator.fromPartial({
@@ -354,10 +354,10 @@ export class AdminModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgCreateValidator,
       value,
-    });
+    }, opts);
   }
 
-  public async editValidator(params: AdminModule.EditValidatorParams) {
+  public async editValidator(params: AdminModule.EditValidatorParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgEditValidator.fromPartial({
@@ -370,10 +370,10 @@ export class AdminModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgEditValidator,
       value,
-    });
+    }, opts);
   }
 
-  public async authorizeBridge(params: AdminModule.AuthorizeBridgeParams) {
+  public async authorizeBridge(params: AdminModule.AuthorizeBridgeParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgAuthorizeBridge.fromPartial({
@@ -386,10 +386,10 @@ export class AdminModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgAuthorizeBridge,
       value,
-    });
+    }, opts);
   }
 
-  public async deauthorizeBridge(params: AdminModule.DeauthorizeBridgeParams) {
+  public async deauthorizeBridge(params: AdminModule.DeauthorizeBridgeParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgDeauthorizeBridge.fromPartial({
@@ -401,7 +401,7 @@ export class AdminModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgDeauthorizeBridge,
       value,
-    });
+    }, opts);
   }
 }
 

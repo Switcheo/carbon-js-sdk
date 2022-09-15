@@ -4,7 +4,7 @@ import BaseModule from "./base";
 
 export class ProfileModule extends BaseModule {
 
-  public async update(params: ProfileModule.UpdateProfileParams) {
+  public async update(params: ProfileModule.UpdateProfileParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgUpdateProfile.fromPartial({
@@ -16,7 +16,7 @@ export class ProfileModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgUpdateProfile,
       value,
-    });
+    }, opts);
   }
 }
 

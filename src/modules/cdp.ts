@@ -6,7 +6,7 @@ import Long from "long";
 
 export class CDPModule extends BaseModule {
 
-  public async addCollateral(params: CDPModule.AddCollateralParams) {
+  public async addCollateral(params: CDPModule.AddCollateralParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgAddCollateral.fromPartial({
@@ -18,10 +18,10 @@ export class CDPModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgAddCollateral,
       value,
-    });
+    }, opts);
   }
 
-  public async removeCollateral(params: CDPModule.RemoveCollateralParams) {
+  public async removeCollateral(params: CDPModule.RemoveCollateralParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgRemoveCollateral.fromPartial({
@@ -33,10 +33,10 @@ export class CDPModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgRemoveCollateral,
       value,
-    });
+    }, opts);
   }
 
-  public async addDebt(params: CDPModule.AddDebtParams) {
+  public async addDebt(params: CDPModule.AddDebtParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgAddDebt.fromPartial({
@@ -48,10 +48,10 @@ export class CDPModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgAddDebt,
       value,
-    });
+    }, opts);
   }
 
-  public async removeDebt(params: CDPModule.RemoveDebtParams) {
+  public async removeDebt(params: CDPModule.RemoveDebtParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgRemoveDebt.fromPartial({
@@ -63,7 +63,7 @@ export class CDPModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgRemoveDebt,
       value,
-    });
+    }, opts);
   }
 }
 

@@ -4,7 +4,7 @@ import BaseModule from "./base";
 
 export class BrokerModule extends BaseModule {
 
-  public async initiateLiquidation(params: BrokerModule.InitiateLiquidationParams) {
+  public async initiateLiquidation(params: BrokerModule.InitiateLiquidationParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgInitiateLiquidation.fromPartial({
@@ -15,10 +15,10 @@ export class BrokerModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgInitiateLiquidation,
       value,
-    });
+    }, opts);
   }
 
-  public async initiateLiquidations(params: BrokerModule.InitiateLiquidationParams[]) {
+  public async initiateLiquidations(params: BrokerModule.InitiateLiquidationParams[], opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const msgs = params.map(param => {
@@ -33,7 +33,7 @@ export class BrokerModule extends BaseModule {
       }
     })
 
-    return await wallet.sendTxs(msgs);
+    return await wallet.sendTxs(msgs, opts);
   }
 }
 

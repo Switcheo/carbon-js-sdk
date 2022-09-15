@@ -5,7 +5,7 @@ import Long from "long";
 
 export class OracleModule extends BaseModule {
 
-  public async createVote(params: OracleModule.CreateVoteParams) {
+  public async createVote(params: OracleModule.CreateVoteParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgCreateVote.fromPartial({
@@ -18,7 +18,7 @@ export class OracleModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgCreateVote,
       value,
-    });
+    }, opts);
   }
 }
 

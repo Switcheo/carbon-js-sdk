@@ -6,7 +6,7 @@ import BaseModule from "./base"
 
 export class XChainModule extends BaseModule {
 
-  public async syncHeader(params: XChainModule.SyncHeaderParams) {
+  public async syncHeader(params: XChainModule.SyncHeaderParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet()
 
     const value = MsgSyncHeaders.fromPartial({
@@ -17,10 +17,10 @@ export class XChainModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgSyncHeaders,
       value,
-    })
+    }, opts)
   }
 
-  public async processCrossChainTx(params: XChainModule.ProcessCrossChainTxParams) {
+  public async processCrossChainTx(params: XChainModule.ProcessCrossChainTxParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet()
 
     const value = MsgProcessCrossChainTx.fromPartial({
@@ -35,10 +35,10 @@ export class XChainModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgProcessCrossChainTx,
       value,
-    })
+    }, opts)
   }
 
-  public async processZionCrossChainTx(params: XChainModule.ProcessZionCrossChainTxParams) {
+  public async processZionCrossChainTx(params: XChainModule.ProcessZionCrossChainTxParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet()
 
     const value = MsgProcessZionCrossChainTx.fromPartial({
@@ -52,7 +52,7 @@ export class XChainModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgProcessZionCrossChainTx,
       value,
-    })
+    }, opts)
   }
 }
 

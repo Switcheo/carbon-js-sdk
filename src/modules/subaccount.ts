@@ -4,7 +4,7 @@ import BaseModule from "./base";
 
 export class SubAccountModule extends BaseModule {
 
-  public async create(params: SubAccountModule.CreateSubAccountParams) {
+  public async create(params: SubAccountModule.CreateSubAccountParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgCreateSubAccount.fromPartial({
@@ -15,10 +15,10 @@ export class SubAccountModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgCreateSubAccount,
       value,
-    });
+    }, opts);
   }
 
-  public async activate(params: SubAccountModule.ActivateSubAccountParams) {
+  public async activate(params: SubAccountModule.ActivateSubAccountParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgActivateSubAccount.fromPartial({
@@ -29,10 +29,10 @@ export class SubAccountModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgActivateSubAccount,
       value,
-    });
+    }, opts);
   }
 
-  public async remove(params: SubAccountModule.RemoveSubAccountParams) {
+  public async remove(params: SubAccountModule.RemoveSubAccountParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgRemoveSubAccount.fromPartial({
@@ -43,7 +43,7 @@ export class SubAccountModule extends BaseModule {
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgRemoveSubAccount,
       value,
-    });
+    }, opts);
   }
 }
 
