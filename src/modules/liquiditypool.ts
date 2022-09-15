@@ -159,7 +159,7 @@ export class LiquidityPoolModule extends BaseModule {
     return liquidityRewardRatio.times(weeklyRewards)
   }
 
-  public async claimMultiPoolRewards(params: LiquidityPoolModule.ClaimMultiPoolRewards) {
+  public async claimMultiPoolRewards(params: LiquidityPoolModule.ClaimMultiPoolRewards, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     if (!params.creator)
@@ -171,7 +171,7 @@ export class LiquidityPoolModule extends BaseModule {
         poolId: poolId,
         creator: params.creator,
       },
-    })));
+    })), opts);
   }
 }
 
