@@ -47,13 +47,13 @@ class InsightsQueryClient {
 
   async AvgBlockTime(req: Insights.QueryGetAvgBlockTimeRequest) :
   Promise<Insights.InsightsQueryResponse<Insights.QueryGetAvgBlockTimeResponse>> {
-  const queryParams = {
-    hours: req.hours
+    const queryParams = {
+      hours: req.hours
+    }
+    const request = this.apiManager.path('chain/blocktime', {}, queryParams)
+    const response = await request.get()
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetAvgBlockTimeResponse>
   }
-  const request = this.apiManager.path('chain/blocktime', {}, queryParams)
-  const response = await request.get()
-  return response.data as Insights.InsightsQueryResponse<Insights.QueryGetAvgBlockTimeResponse>
-}
 
   // User api
   async ActiveAccounts(req: Insights.QueryGetActiveAccountsRequest = {}): Promise<Insights.InsightsQueryResponse<Insights.QueryGetActiveAccountsResponse>> {
@@ -254,11 +254,22 @@ class InsightsQueryClient {
     const response = await request.get()
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetLeaderboardResponse>
   }
+
   //Coin Gecko Tokens
   async DenomToGeckoIdMap(): Promise<Insights.InsightsQueryResponse<Insights.QueryDenomToGeckoIdMap>> {
     const request = this.apiManager.path('info/denom_gecko_map')
     const response = await request.get()
     return response.data as Insights.InsightsQueryResponse<Insights.QueryDenomToGeckoIdMap>
+  }
+
+  async FundingHistory(query: Insights.QueryGetFundingRateRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetFundingRateResponse>> {
+    const request = this.apiManager.path('market/funding', {}, {
+      market: query.market ?? '',
+      limit: query.limit ?? 100,
+      offset: query.offset ?? 0,
+    })
+    const response = await request.get()
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetFundingRateResponse>
   }
 }
 

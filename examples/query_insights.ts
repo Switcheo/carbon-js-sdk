@@ -61,11 +61,11 @@ import { CarbonSDK } from "./_sdk";
     console.log("PositionsView", positionViews)
 
     //Liquidation
-    const liquidationAndADL = await sdk.insights.LiquidationAndADL({})
+    const liquidationAndADL = await sdk.insights.LiquidationAndADL({ limit: 10 })
     console.log("Liquidation and ADL", liquidationAndADL)
 
     //Liquidation Engine
-    const liquidation = await sdk.insights.LiquidationEngine({})
+    const liquidation = await sdk.insights.LiquidationEngine({ limit: 10})
     console.log("Liquidation", liquidation)
 
     //AvgBlocktime
@@ -75,5 +75,9 @@ import { CarbonSDK } from "./_sdk";
     //Pool History
     const PoolHistory = await sdk.insights.PoolHistory({ poolId: 42 })
     console.log("PoolHistory", PoolHistory)
+
+    //Funding History
+    const fundingHistory = await sdk.insights.FundingHistory({})
+    console.log("fundingHistory", fundingHistory)
 
 })().catch(console.error).finally(() => process.exit(0));
