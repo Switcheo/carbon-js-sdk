@@ -20,6 +20,7 @@ export interface RecentTrade {
 export interface HistoryOrder {
   address: string;
   allocated_margin: string;
+  avg_filled_price: string;
   available: string;
   block_created_at: string;
   block_height: number;
@@ -49,6 +50,7 @@ export interface HistoryOrder {
 export interface BaseHistoryOrder {
   allocated_margin_amount: string;
   allocated_margin_denom: string;
+  last_updated_block_height: number;
   order: HistoryOrder;
 }
 
@@ -64,18 +66,14 @@ export interface Candlestick {
 
 export interface AccountTrade {
   address: string;
-  base_precision: number;
   block_created_at: string;
   block_height: string;
   fee_amount: string;
   fee_denom: string;
-  fee_precision: number;
-  id: number;
   market: string;
   order_id: string;
   price: string;
   quantity: string;
-  quote_precision: number;
   side: string;
 }
 
@@ -86,7 +84,7 @@ export interface Position {
   side: string;
   opened_block_height: string; // string representation of number
   updated_block_height: string; // string representation of number
-  closed_block_height: string; // string representation of number
+  closed_block_height?: string; // string representation of number
   realized_pnl: string; // string representation of number
   max_lots: string; // string representation of number
   total_fee_amount: string; // string representation of number
@@ -96,7 +94,7 @@ export interface Position {
   allocated_margin: string; // string representation of number
   lots: string; // string representation of number
   opened_at: string;
-  closed_at: string;
+  closed_at?: string;
 }
 
 // Note: premium_rate/last_funding_at/open_interest is optional until after v2.9.0 upgrade
@@ -126,7 +124,6 @@ export interface PriceLevel {
 export interface Leverage {
   market: string
   leverage: string // string representation of number
-  originator?: string
 }
 
 export interface Pool {
