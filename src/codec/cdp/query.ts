@@ -1,50 +1,13 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Vault, VaultType, Params } from "../cdp/vault";
-import {
-  PageRequest,
-  PageResponse,
-} from "../cosmos/base/query/v1beta1/pagination";
+import { Params } from "./params";
+import { RateStrategyParams } from "./rate_strategy_params";
+import { AssetData } from "./asset_params";
 
 export const protobufPackage = "Switcheo.carbon.cdp";
 
-/** this line is used by starport scaffolding # 3 */
-export interface QueryGetVaultRequest {
-  address: string;
-  vaultTypeId: Long;
-}
-
-export interface QueryGetVaultResponse {
-  vault?: Vault;
-}
-
-export interface QueryAllVaultRequest {
-  pagination?: PageRequest;
-}
-
-export interface QueryAllVaultResponse {
-  vaults: Vault[];
-  pagination?: PageResponse;
-}
-
-export interface QueryGetVaultTypeRequest {
-  vaultTypeId: Long;
-}
-
-export interface QueryGetVaultTypeResponse {
-  vaultType?: VaultType;
-}
-
-export interface QueryAllVaultTypeRequest {
-  pagination?: PageRequest;
-}
-
-export interface QueryAllVaultTypeResponse {
-  vaultTypes: VaultType[];
-  pagination?: PageResponse;
-}
-
+/** QueryParamsRequest is request type for the Query/Params RPC method. */
 export interface QueryParamsRequest {}
 
 /** QueryParamsResponse is response type for the Query/Params RPC method. */
@@ -53,586 +16,75 @@ export interface QueryParamsResponse {
   params?: Params;
 }
 
-const baseQueryGetVaultRequest: object = {
-  address: "",
-  vaultTypeId: Long.UZERO,
-};
+export interface QueryRateStrategyRequest {
+  name: string;
+}
 
-export const QueryGetVaultRequest = {
-  encode(
-    message: QueryGetVaultRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.address !== "") {
-      writer.uint32(10).string(message.address);
-    }
-    if (!message.vaultTypeId.isZero()) {
-      writer.uint32(16).uint64(message.vaultTypeId);
-    }
-    return writer;
-  },
+export interface QueryRateStrategyResponse {
+  rateStrategyParams?: RateStrategyParams;
+}
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryGetVaultRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryGetVaultRequest } as QueryGetVaultRequest;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.address = reader.string();
-          break;
-        case 2:
-          message.vaultTypeId = reader.uint64() as Long;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
+export interface QueryRateStrategiesAllRequest {}
 
-  fromJSON(object: any): QueryGetVaultRequest {
-    const message = { ...baseQueryGetVaultRequest } as QueryGetVaultRequest;
-    message.address =
-      object.address !== undefined && object.address !== null
-        ? String(object.address)
-        : "";
-    message.vaultTypeId =
-      object.vaultTypeId !== undefined && object.vaultTypeId !== null
-        ? Long.fromString(object.vaultTypeId)
-        : Long.UZERO;
-    return message;
-  },
+export interface QueryRateStrategiesAllResponse {
+  rateStrategyParamsAll: RateStrategyParams[];
+}
 
-  toJSON(message: QueryGetVaultRequest): unknown {
-    const obj: any = {};
-    message.address !== undefined && (obj.address = message.address);
-    message.vaultTypeId !== undefined &&
-      (obj.vaultTypeId = (message.vaultTypeId || Long.UZERO).toString());
-    return obj;
-  },
+export interface QueryAssetRequest {
+  denom: string;
+}
 
-  fromPartial(object: DeepPartial<QueryGetVaultRequest>): QueryGetVaultRequest {
-    const message = { ...baseQueryGetVaultRequest } as QueryGetVaultRequest;
-    message.address = object.address ?? "";
-    message.vaultTypeId =
-      object.vaultTypeId !== undefined && object.vaultTypeId !== null
-        ? Long.fromValue(object.vaultTypeId)
-        : Long.UZERO;
-    return message;
-  },
-};
+export interface QueryAssetResponse {
+  assetData?: AssetData;
+}
 
-const baseQueryGetVaultResponse: object = {};
+export interface QueryAssetsAllRequest {}
 
-export const QueryGetVaultResponse = {
-  encode(
-    message: QueryGetVaultResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.vault !== undefined) {
-      Vault.encode(message.vault, writer.uint32(10).fork()).ldelim();
-    }
-    return writer;
-  },
+export interface QueryAssetsAllResponse {
+  assetDataAll: AssetData[];
+}
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryGetVaultResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryGetVaultResponse } as QueryGetVaultResponse;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.vault = Vault.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
+export interface QueryAccountCollateralsRequest {
+  account: string;
+}
 
-  fromJSON(object: any): QueryGetVaultResponse {
-    const message = { ...baseQueryGetVaultResponse } as QueryGetVaultResponse;
-    message.vault =
-      object.vault !== undefined && object.vault !== null
-        ? Vault.fromJSON(object.vault)
-        : undefined;
-    return message;
-  },
+export interface QueryAccountCollateralsResponse {
+  collaterals: Collateral[];
+}
 
-  toJSON(message: QueryGetVaultResponse): unknown {
-    const obj: any = {};
-    message.vault !== undefined &&
-      (obj.vault = message.vault ? Vault.toJSON(message.vault) : undefined);
-    return obj;
-  },
+export interface Collateral {
+  cdpDenom: string;
+  denom: string;
+  cdpToActualRatio: string;
+  amount: string;
+  valueInUsd: string;
+}
 
-  fromPartial(
-    object: DeepPartial<QueryGetVaultResponse>
-  ): QueryGetVaultResponse {
-    const message = { ...baseQueryGetVaultResponse } as QueryGetVaultResponse;
-    message.vault =
-      object.vault !== undefined && object.vault !== null
-        ? Vault.fromPartial(object.vault)
-        : undefined;
-    return message;
-  },
-};
+export interface QueryAccountDebtsRequest {
+  account: string;
+}
 
-const baseQueryAllVaultRequest: object = {};
+export interface QueryAccountDebtsResponse {
+  debts: Debt[];
+}
 
-export const QueryAllVaultRequest = {
-  encode(
-    message: QueryAllVaultRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.pagination !== undefined) {
-      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
-    }
-    return writer;
-  },
+export interface Debt {
+  denom: string;
+  amount: string;
+  valueInUsd: string;
+}
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryAllVaultRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryAllVaultRequest } as QueryAllVaultRequest;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.pagination = PageRequest.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
+export interface QueryAccountDataRequest {
+  account: string;
+}
 
-  fromJSON(object: any): QueryAllVaultRequest {
-    const message = { ...baseQueryAllVaultRequest } as QueryAllVaultRequest;
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromJSON(object.pagination)
-        : undefined;
-    return message;
-  },
-
-  toJSON(message: QueryAllVaultRequest): unknown {
-    const obj: any = {};
-    message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageRequest.toJSON(message.pagination)
-        : undefined);
-    return obj;
-  },
-
-  fromPartial(object: DeepPartial<QueryAllVaultRequest>): QueryAllVaultRequest {
-    const message = { ...baseQueryAllVaultRequest } as QueryAllVaultRequest;
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromPartial(object.pagination)
-        : undefined;
-    return message;
-  },
-};
-
-const baseQueryAllVaultResponse: object = {};
-
-export const QueryAllVaultResponse = {
-  encode(
-    message: QueryAllVaultResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    for (const v of message.vaults) {
-      Vault.encode(v!, writer.uint32(10).fork()).ldelim();
-    }
-    if (message.pagination !== undefined) {
-      PageResponse.encode(
-        message.pagination,
-        writer.uint32(18).fork()
-      ).ldelim();
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryAllVaultResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryAllVaultResponse } as QueryAllVaultResponse;
-    message.vaults = [];
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.vaults.push(Vault.decode(reader, reader.uint32()));
-          break;
-        case 2:
-          message.pagination = PageResponse.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): QueryAllVaultResponse {
-    const message = { ...baseQueryAllVaultResponse } as QueryAllVaultResponse;
-    message.vaults = (object.vaults ?? []).map((e: any) => Vault.fromJSON(e));
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageResponse.fromJSON(object.pagination)
-        : undefined;
-    return message;
-  },
-
-  toJSON(message: QueryAllVaultResponse): unknown {
-    const obj: any = {};
-    if (message.vaults) {
-      obj.vaults = message.vaults.map((e) => (e ? Vault.toJSON(e) : undefined));
-    } else {
-      obj.vaults = [];
-    }
-    message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageResponse.toJSON(message.pagination)
-        : undefined);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<QueryAllVaultResponse>
-  ): QueryAllVaultResponse {
-    const message = { ...baseQueryAllVaultResponse } as QueryAllVaultResponse;
-    message.vaults = (object.vaults ?? []).map((e) => Vault.fromPartial(e));
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageResponse.fromPartial(object.pagination)
-        : undefined;
-    return message;
-  },
-};
-
-const baseQueryGetVaultTypeRequest: object = { vaultTypeId: Long.UZERO };
-
-export const QueryGetVaultTypeRequest = {
-  encode(
-    message: QueryGetVaultTypeRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (!message.vaultTypeId.isZero()) {
-      writer.uint32(8).uint64(message.vaultTypeId);
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryGetVaultTypeRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryGetVaultTypeRequest,
-    } as QueryGetVaultTypeRequest;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.vaultTypeId = reader.uint64() as Long;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): QueryGetVaultTypeRequest {
-    const message = {
-      ...baseQueryGetVaultTypeRequest,
-    } as QueryGetVaultTypeRequest;
-    message.vaultTypeId =
-      object.vaultTypeId !== undefined && object.vaultTypeId !== null
-        ? Long.fromString(object.vaultTypeId)
-        : Long.UZERO;
-    return message;
-  },
-
-  toJSON(message: QueryGetVaultTypeRequest): unknown {
-    const obj: any = {};
-    message.vaultTypeId !== undefined &&
-      (obj.vaultTypeId = (message.vaultTypeId || Long.UZERO).toString());
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<QueryGetVaultTypeRequest>
-  ): QueryGetVaultTypeRequest {
-    const message = {
-      ...baseQueryGetVaultTypeRequest,
-    } as QueryGetVaultTypeRequest;
-    message.vaultTypeId =
-      object.vaultTypeId !== undefined && object.vaultTypeId !== null
-        ? Long.fromValue(object.vaultTypeId)
-        : Long.UZERO;
-    return message;
-  },
-};
-
-const baseQueryGetVaultTypeResponse: object = {};
-
-export const QueryGetVaultTypeResponse = {
-  encode(
-    message: QueryGetVaultTypeResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.vaultType !== undefined) {
-      VaultType.encode(message.vaultType, writer.uint32(10).fork()).ldelim();
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryGetVaultTypeResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryGetVaultTypeResponse,
-    } as QueryGetVaultTypeResponse;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.vaultType = VaultType.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): QueryGetVaultTypeResponse {
-    const message = {
-      ...baseQueryGetVaultTypeResponse,
-    } as QueryGetVaultTypeResponse;
-    message.vaultType =
-      object.vaultType !== undefined && object.vaultType !== null
-        ? VaultType.fromJSON(object.vaultType)
-        : undefined;
-    return message;
-  },
-
-  toJSON(message: QueryGetVaultTypeResponse): unknown {
-    const obj: any = {};
-    message.vaultType !== undefined &&
-      (obj.vaultType = message.vaultType
-        ? VaultType.toJSON(message.vaultType)
-        : undefined);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<QueryGetVaultTypeResponse>
-  ): QueryGetVaultTypeResponse {
-    const message = {
-      ...baseQueryGetVaultTypeResponse,
-    } as QueryGetVaultTypeResponse;
-    message.vaultType =
-      object.vaultType !== undefined && object.vaultType !== null
-        ? VaultType.fromPartial(object.vaultType)
-        : undefined;
-    return message;
-  },
-};
-
-const baseQueryAllVaultTypeRequest: object = {};
-
-export const QueryAllVaultTypeRequest = {
-  encode(
-    message: QueryAllVaultTypeRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.pagination !== undefined) {
-      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryAllVaultTypeRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryAllVaultTypeRequest,
-    } as QueryAllVaultTypeRequest;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.pagination = PageRequest.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): QueryAllVaultTypeRequest {
-    const message = {
-      ...baseQueryAllVaultTypeRequest,
-    } as QueryAllVaultTypeRequest;
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromJSON(object.pagination)
-        : undefined;
-    return message;
-  },
-
-  toJSON(message: QueryAllVaultTypeRequest): unknown {
-    const obj: any = {};
-    message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageRequest.toJSON(message.pagination)
-        : undefined);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<QueryAllVaultTypeRequest>
-  ): QueryAllVaultTypeRequest {
-    const message = {
-      ...baseQueryAllVaultTypeRequest,
-    } as QueryAllVaultTypeRequest;
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromPartial(object.pagination)
-        : undefined;
-    return message;
-  },
-};
-
-const baseQueryAllVaultTypeResponse: object = {};
-
-export const QueryAllVaultTypeResponse = {
-  encode(
-    message: QueryAllVaultTypeResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    for (const v of message.vaultTypes) {
-      VaultType.encode(v!, writer.uint32(10).fork()).ldelim();
-    }
-    if (message.pagination !== undefined) {
-      PageResponse.encode(
-        message.pagination,
-        writer.uint32(18).fork()
-      ).ldelim();
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryAllVaultTypeResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryAllVaultTypeResponse,
-    } as QueryAllVaultTypeResponse;
-    message.vaultTypes = [];
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.vaultTypes.push(VaultType.decode(reader, reader.uint32()));
-          break;
-        case 2:
-          message.pagination = PageResponse.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): QueryAllVaultTypeResponse {
-    const message = {
-      ...baseQueryAllVaultTypeResponse,
-    } as QueryAllVaultTypeResponse;
-    message.vaultTypes = (object.vaultTypes ?? []).map((e: any) =>
-      VaultType.fromJSON(e)
-    );
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageResponse.fromJSON(object.pagination)
-        : undefined;
-    return message;
-  },
-
-  toJSON(message: QueryAllVaultTypeResponse): unknown {
-    const obj: any = {};
-    if (message.vaultTypes) {
-      obj.vaultTypes = message.vaultTypes.map((e) =>
-        e ? VaultType.toJSON(e) : undefined
-      );
-    } else {
-      obj.vaultTypes = [];
-    }
-    message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageResponse.toJSON(message.pagination)
-        : undefined);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<QueryAllVaultTypeResponse>
-  ): QueryAllVaultTypeResponse {
-    const message = {
-      ...baseQueryAllVaultTypeResponse,
-    } as QueryAllVaultTypeResponse;
-    message.vaultTypes = (object.vaultTypes ?? []).map((e) =>
-      VaultType.fromPartial(e)
-    );
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageResponse.fromPartial(object.pagination)
-        : undefined;
-    return message;
-  },
-};
+export interface QueryAccountDataResponse {
+  totalCollateralsUsd: string;
+  totalDebtsUsd: string;
+  availableBorrowsUsd: string;
+  currLiquidationThreshold: string;
+  healthFactor: string;
+}
 
 const baseQueryParamsRequest: object = {};
 
@@ -732,85 +184,1177 @@ export const QueryParamsResponse = {
   },
 };
 
+const baseQueryRateStrategyRequest: object = { name: "" };
+
+export const QueryRateStrategyRequest = {
+  encode(
+    message: QueryRateStrategyRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.name !== "") {
+      writer.uint32(10).string(message.name);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryRateStrategyRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryRateStrategyRequest,
+    } as QueryRateStrategyRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.name = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryRateStrategyRequest {
+    const message = {
+      ...baseQueryRateStrategyRequest,
+    } as QueryRateStrategyRequest;
+    message.name =
+      object.name !== undefined && object.name !== null
+        ? String(object.name)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryRateStrategyRequest): unknown {
+    const obj: any = {};
+    message.name !== undefined && (obj.name = message.name);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryRateStrategyRequest>
+  ): QueryRateStrategyRequest {
+    const message = {
+      ...baseQueryRateStrategyRequest,
+    } as QueryRateStrategyRequest;
+    message.name = object.name ?? "";
+    return message;
+  },
+};
+
+const baseQueryRateStrategyResponse: object = {};
+
+export const QueryRateStrategyResponse = {
+  encode(
+    message: QueryRateStrategyResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.rateStrategyParams !== undefined) {
+      RateStrategyParams.encode(
+        message.rateStrategyParams,
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryRateStrategyResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryRateStrategyResponse,
+    } as QueryRateStrategyResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.rateStrategyParams = RateStrategyParams.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryRateStrategyResponse {
+    const message = {
+      ...baseQueryRateStrategyResponse,
+    } as QueryRateStrategyResponse;
+    message.rateStrategyParams =
+      object.rateStrategyParams !== undefined &&
+      object.rateStrategyParams !== null
+        ? RateStrategyParams.fromJSON(object.rateStrategyParams)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryRateStrategyResponse): unknown {
+    const obj: any = {};
+    message.rateStrategyParams !== undefined &&
+      (obj.rateStrategyParams = message.rateStrategyParams
+        ? RateStrategyParams.toJSON(message.rateStrategyParams)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryRateStrategyResponse>
+  ): QueryRateStrategyResponse {
+    const message = {
+      ...baseQueryRateStrategyResponse,
+    } as QueryRateStrategyResponse;
+    message.rateStrategyParams =
+      object.rateStrategyParams !== undefined &&
+      object.rateStrategyParams !== null
+        ? RateStrategyParams.fromPartial(object.rateStrategyParams)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryRateStrategiesAllRequest: object = {};
+
+export const QueryRateStrategiesAllRequest = {
+  encode(
+    _: QueryRateStrategiesAllRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryRateStrategiesAllRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryRateStrategiesAllRequest,
+    } as QueryRateStrategiesAllRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryRateStrategiesAllRequest {
+    const message = {
+      ...baseQueryRateStrategiesAllRequest,
+    } as QueryRateStrategiesAllRequest;
+    return message;
+  },
+
+  toJSON(_: QueryRateStrategiesAllRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<QueryRateStrategiesAllRequest>
+  ): QueryRateStrategiesAllRequest {
+    const message = {
+      ...baseQueryRateStrategiesAllRequest,
+    } as QueryRateStrategiesAllRequest;
+    return message;
+  },
+};
+
+const baseQueryRateStrategiesAllResponse: object = {};
+
+export const QueryRateStrategiesAllResponse = {
+  encode(
+    message: QueryRateStrategiesAllResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.rateStrategyParamsAll) {
+      RateStrategyParams.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryRateStrategiesAllResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryRateStrategiesAllResponse,
+    } as QueryRateStrategiesAllResponse;
+    message.rateStrategyParamsAll = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.rateStrategyParamsAll.push(
+            RateStrategyParams.decode(reader, reader.uint32())
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryRateStrategiesAllResponse {
+    const message = {
+      ...baseQueryRateStrategiesAllResponse,
+    } as QueryRateStrategiesAllResponse;
+    message.rateStrategyParamsAll = (object.rateStrategyParamsAll ?? []).map(
+      (e: any) => RateStrategyParams.fromJSON(e)
+    );
+    return message;
+  },
+
+  toJSON(message: QueryRateStrategiesAllResponse): unknown {
+    const obj: any = {};
+    if (message.rateStrategyParamsAll) {
+      obj.rateStrategyParamsAll = message.rateStrategyParamsAll.map((e) =>
+        e ? RateStrategyParams.toJSON(e) : undefined
+      );
+    } else {
+      obj.rateStrategyParamsAll = [];
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryRateStrategiesAllResponse>
+  ): QueryRateStrategiesAllResponse {
+    const message = {
+      ...baseQueryRateStrategiesAllResponse,
+    } as QueryRateStrategiesAllResponse;
+    message.rateStrategyParamsAll = (object.rateStrategyParamsAll ?? []).map(
+      (e) => RateStrategyParams.fromPartial(e)
+    );
+    return message;
+  },
+};
+
+const baseQueryAssetRequest: object = { denom: "" };
+
+export const QueryAssetRequest = {
+  encode(
+    message: QueryAssetRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.denom !== "") {
+      writer.uint32(10).string(message.denom);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryAssetRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseQueryAssetRequest } as QueryAssetRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.denom = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAssetRequest {
+    const message = { ...baseQueryAssetRequest } as QueryAssetRequest;
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryAssetRequest): unknown {
+    const obj: any = {};
+    message.denom !== undefined && (obj.denom = message.denom);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<QueryAssetRequest>): QueryAssetRequest {
+    const message = { ...baseQueryAssetRequest } as QueryAssetRequest;
+    message.denom = object.denom ?? "";
+    return message;
+  },
+};
+
+const baseQueryAssetResponse: object = {};
+
+export const QueryAssetResponse = {
+  encode(
+    message: QueryAssetResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.assetData !== undefined) {
+      AssetData.encode(message.assetData, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryAssetResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseQueryAssetResponse } as QueryAssetResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.assetData = AssetData.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAssetResponse {
+    const message = { ...baseQueryAssetResponse } as QueryAssetResponse;
+    message.assetData =
+      object.assetData !== undefined && object.assetData !== null
+        ? AssetData.fromJSON(object.assetData)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryAssetResponse): unknown {
+    const obj: any = {};
+    message.assetData !== undefined &&
+      (obj.assetData = message.assetData
+        ? AssetData.toJSON(message.assetData)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<QueryAssetResponse>): QueryAssetResponse {
+    const message = { ...baseQueryAssetResponse } as QueryAssetResponse;
+    message.assetData =
+      object.assetData !== undefined && object.assetData !== null
+        ? AssetData.fromPartial(object.assetData)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryAssetsAllRequest: object = {};
+
+export const QueryAssetsAllRequest = {
+  encode(
+    _: QueryAssetsAllRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAssetsAllRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseQueryAssetsAllRequest } as QueryAssetsAllRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryAssetsAllRequest {
+    const message = { ...baseQueryAssetsAllRequest } as QueryAssetsAllRequest;
+    return message;
+  },
+
+  toJSON(_: QueryAssetsAllRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(_: DeepPartial<QueryAssetsAllRequest>): QueryAssetsAllRequest {
+    const message = { ...baseQueryAssetsAllRequest } as QueryAssetsAllRequest;
+    return message;
+  },
+};
+
+const baseQueryAssetsAllResponse: object = {};
+
+export const QueryAssetsAllResponse = {
+  encode(
+    message: QueryAssetsAllResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.assetDataAll) {
+      AssetData.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAssetsAllResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseQueryAssetsAllResponse } as QueryAssetsAllResponse;
+    message.assetDataAll = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.assetDataAll.push(AssetData.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAssetsAllResponse {
+    const message = { ...baseQueryAssetsAllResponse } as QueryAssetsAllResponse;
+    message.assetDataAll = (object.assetDataAll ?? []).map((e: any) =>
+      AssetData.fromJSON(e)
+    );
+    return message;
+  },
+
+  toJSON(message: QueryAssetsAllResponse): unknown {
+    const obj: any = {};
+    if (message.assetDataAll) {
+      obj.assetDataAll = message.assetDataAll.map((e) =>
+        e ? AssetData.toJSON(e) : undefined
+      );
+    } else {
+      obj.assetDataAll = [];
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAssetsAllResponse>
+  ): QueryAssetsAllResponse {
+    const message = { ...baseQueryAssetsAllResponse } as QueryAssetsAllResponse;
+    message.assetDataAll = (object.assetDataAll ?? []).map((e) =>
+      AssetData.fromPartial(e)
+    );
+    return message;
+  },
+};
+
+const baseQueryAccountCollateralsRequest: object = { account: "" };
+
+export const QueryAccountCollateralsRequest = {
+  encode(
+    message: QueryAccountCollateralsRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.account !== "") {
+      writer.uint32(10).string(message.account);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAccountCollateralsRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAccountCollateralsRequest,
+    } as QueryAccountCollateralsRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.account = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAccountCollateralsRequest {
+    const message = {
+      ...baseQueryAccountCollateralsRequest,
+    } as QueryAccountCollateralsRequest;
+    message.account =
+      object.account !== undefined && object.account !== null
+        ? String(object.account)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryAccountCollateralsRequest): unknown {
+    const obj: any = {};
+    message.account !== undefined && (obj.account = message.account);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAccountCollateralsRequest>
+  ): QueryAccountCollateralsRequest {
+    const message = {
+      ...baseQueryAccountCollateralsRequest,
+    } as QueryAccountCollateralsRequest;
+    message.account = object.account ?? "";
+    return message;
+  },
+};
+
+const baseQueryAccountCollateralsResponse: object = {};
+
+export const QueryAccountCollateralsResponse = {
+  encode(
+    message: QueryAccountCollateralsResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.collaterals) {
+      Collateral.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAccountCollateralsResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAccountCollateralsResponse,
+    } as QueryAccountCollateralsResponse;
+    message.collaterals = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.collaterals.push(Collateral.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAccountCollateralsResponse {
+    const message = {
+      ...baseQueryAccountCollateralsResponse,
+    } as QueryAccountCollateralsResponse;
+    message.collaterals = (object.collaterals ?? []).map((e: any) =>
+      Collateral.fromJSON(e)
+    );
+    return message;
+  },
+
+  toJSON(message: QueryAccountCollateralsResponse): unknown {
+    const obj: any = {};
+    if (message.collaterals) {
+      obj.collaterals = message.collaterals.map((e) =>
+        e ? Collateral.toJSON(e) : undefined
+      );
+    } else {
+      obj.collaterals = [];
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAccountCollateralsResponse>
+  ): QueryAccountCollateralsResponse {
+    const message = {
+      ...baseQueryAccountCollateralsResponse,
+    } as QueryAccountCollateralsResponse;
+    message.collaterals = (object.collaterals ?? []).map((e) =>
+      Collateral.fromPartial(e)
+    );
+    return message;
+  },
+};
+
+const baseCollateral: object = {
+  cdpDenom: "",
+  denom: "",
+  cdpToActualRatio: "",
+  amount: "",
+  valueInUsd: "",
+};
+
+export const Collateral = {
+  encode(
+    message: Collateral,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.cdpDenom !== "") {
+      writer.uint32(10).string(message.cdpDenom);
+    }
+    if (message.denom !== "") {
+      writer.uint32(18).string(message.denom);
+    }
+    if (message.cdpToActualRatio !== "") {
+      writer.uint32(26).string(message.cdpToActualRatio);
+    }
+    if (message.amount !== "") {
+      writer.uint32(34).string(message.amount);
+    }
+    if (message.valueInUsd !== "") {
+      writer.uint32(42).string(message.valueInUsd);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): Collateral {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseCollateral } as Collateral;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.cdpDenom = reader.string();
+          break;
+        case 2:
+          message.denom = reader.string();
+          break;
+        case 3:
+          message.cdpToActualRatio = reader.string();
+          break;
+        case 4:
+          message.amount = reader.string();
+          break;
+        case 5:
+          message.valueInUsd = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Collateral {
+    const message = { ...baseCollateral } as Collateral;
+    message.cdpDenom =
+      object.cdpDenom !== undefined && object.cdpDenom !== null
+        ? String(object.cdpDenom)
+        : "";
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
+    message.cdpToActualRatio =
+      object.cdpToActualRatio !== undefined && object.cdpToActualRatio !== null
+        ? String(object.cdpToActualRatio)
+        : "";
+    message.amount =
+      object.amount !== undefined && object.amount !== null
+        ? String(object.amount)
+        : "";
+    message.valueInUsd =
+      object.valueInUsd !== undefined && object.valueInUsd !== null
+        ? String(object.valueInUsd)
+        : "";
+    return message;
+  },
+
+  toJSON(message: Collateral): unknown {
+    const obj: any = {};
+    message.cdpDenom !== undefined && (obj.cdpDenom = message.cdpDenom);
+    message.denom !== undefined && (obj.denom = message.denom);
+    message.cdpToActualRatio !== undefined &&
+      (obj.cdpToActualRatio = message.cdpToActualRatio);
+    message.amount !== undefined && (obj.amount = message.amount);
+    message.valueInUsd !== undefined && (obj.valueInUsd = message.valueInUsd);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<Collateral>): Collateral {
+    const message = { ...baseCollateral } as Collateral;
+    message.cdpDenom = object.cdpDenom ?? "";
+    message.denom = object.denom ?? "";
+    message.cdpToActualRatio = object.cdpToActualRatio ?? "";
+    message.amount = object.amount ?? "";
+    message.valueInUsd = object.valueInUsd ?? "";
+    return message;
+  },
+};
+
+const baseQueryAccountDebtsRequest: object = { account: "" };
+
+export const QueryAccountDebtsRequest = {
+  encode(
+    message: QueryAccountDebtsRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.account !== "") {
+      writer.uint32(10).string(message.account);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAccountDebtsRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAccountDebtsRequest,
+    } as QueryAccountDebtsRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.account = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAccountDebtsRequest {
+    const message = {
+      ...baseQueryAccountDebtsRequest,
+    } as QueryAccountDebtsRequest;
+    message.account =
+      object.account !== undefined && object.account !== null
+        ? String(object.account)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryAccountDebtsRequest): unknown {
+    const obj: any = {};
+    message.account !== undefined && (obj.account = message.account);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAccountDebtsRequest>
+  ): QueryAccountDebtsRequest {
+    const message = {
+      ...baseQueryAccountDebtsRequest,
+    } as QueryAccountDebtsRequest;
+    message.account = object.account ?? "";
+    return message;
+  },
+};
+
+const baseQueryAccountDebtsResponse: object = {};
+
+export const QueryAccountDebtsResponse = {
+  encode(
+    message: QueryAccountDebtsResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.debts) {
+      Debt.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAccountDebtsResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAccountDebtsResponse,
+    } as QueryAccountDebtsResponse;
+    message.debts = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.debts.push(Debt.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAccountDebtsResponse {
+    const message = {
+      ...baseQueryAccountDebtsResponse,
+    } as QueryAccountDebtsResponse;
+    message.debts = (object.debts ?? []).map((e: any) => Debt.fromJSON(e));
+    return message;
+  },
+
+  toJSON(message: QueryAccountDebtsResponse): unknown {
+    const obj: any = {};
+    if (message.debts) {
+      obj.debts = message.debts.map((e) => (e ? Debt.toJSON(e) : undefined));
+    } else {
+      obj.debts = [];
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAccountDebtsResponse>
+  ): QueryAccountDebtsResponse {
+    const message = {
+      ...baseQueryAccountDebtsResponse,
+    } as QueryAccountDebtsResponse;
+    message.debts = (object.debts ?? []).map((e) => Debt.fromPartial(e));
+    return message;
+  },
+};
+
+const baseDebt: object = { denom: "", amount: "", valueInUsd: "" };
+
+export const Debt = {
+  encode(message: Debt, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.denom !== "") {
+      writer.uint32(10).string(message.denom);
+    }
+    if (message.amount !== "") {
+      writer.uint32(18).string(message.amount);
+    }
+    if (message.valueInUsd !== "") {
+      writer.uint32(26).string(message.valueInUsd);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): Debt {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseDebt } as Debt;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.denom = reader.string();
+          break;
+        case 2:
+          message.amount = reader.string();
+          break;
+        case 3:
+          message.valueInUsd = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Debt {
+    const message = { ...baseDebt } as Debt;
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
+    message.amount =
+      object.amount !== undefined && object.amount !== null
+        ? String(object.amount)
+        : "";
+    message.valueInUsd =
+      object.valueInUsd !== undefined && object.valueInUsd !== null
+        ? String(object.valueInUsd)
+        : "";
+    return message;
+  },
+
+  toJSON(message: Debt): unknown {
+    const obj: any = {};
+    message.denom !== undefined && (obj.denom = message.denom);
+    message.amount !== undefined && (obj.amount = message.amount);
+    message.valueInUsd !== undefined && (obj.valueInUsd = message.valueInUsd);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<Debt>): Debt {
+    const message = { ...baseDebt } as Debt;
+    message.denom = object.denom ?? "";
+    message.amount = object.amount ?? "";
+    message.valueInUsd = object.valueInUsd ?? "";
+    return message;
+  },
+};
+
+const baseQueryAccountDataRequest: object = { account: "" };
+
+export const QueryAccountDataRequest = {
+  encode(
+    message: QueryAccountDataRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.account !== "") {
+      writer.uint32(10).string(message.account);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAccountDataRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAccountDataRequest,
+    } as QueryAccountDataRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.account = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAccountDataRequest {
+    const message = {
+      ...baseQueryAccountDataRequest,
+    } as QueryAccountDataRequest;
+    message.account =
+      object.account !== undefined && object.account !== null
+        ? String(object.account)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryAccountDataRequest): unknown {
+    const obj: any = {};
+    message.account !== undefined && (obj.account = message.account);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAccountDataRequest>
+  ): QueryAccountDataRequest {
+    const message = {
+      ...baseQueryAccountDataRequest,
+    } as QueryAccountDataRequest;
+    message.account = object.account ?? "";
+    return message;
+  },
+};
+
+const baseQueryAccountDataResponse: object = {
+  totalCollateralsUsd: "",
+  totalDebtsUsd: "",
+  availableBorrowsUsd: "",
+  currLiquidationThreshold: "",
+  healthFactor: "",
+};
+
+export const QueryAccountDataResponse = {
+  encode(
+    message: QueryAccountDataResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.totalCollateralsUsd !== "") {
+      writer.uint32(10).string(message.totalCollateralsUsd);
+    }
+    if (message.totalDebtsUsd !== "") {
+      writer.uint32(18).string(message.totalDebtsUsd);
+    }
+    if (message.availableBorrowsUsd !== "") {
+      writer.uint32(26).string(message.availableBorrowsUsd);
+    }
+    if (message.currLiquidationThreshold !== "") {
+      writer.uint32(34).string(message.currLiquidationThreshold);
+    }
+    if (message.healthFactor !== "") {
+      writer.uint32(42).string(message.healthFactor);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAccountDataResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAccountDataResponse,
+    } as QueryAccountDataResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.totalCollateralsUsd = reader.string();
+          break;
+        case 2:
+          message.totalDebtsUsd = reader.string();
+          break;
+        case 3:
+          message.availableBorrowsUsd = reader.string();
+          break;
+        case 4:
+          message.currLiquidationThreshold = reader.string();
+          break;
+        case 5:
+          message.healthFactor = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAccountDataResponse {
+    const message = {
+      ...baseQueryAccountDataResponse,
+    } as QueryAccountDataResponse;
+    message.totalCollateralsUsd =
+      object.totalCollateralsUsd !== undefined &&
+      object.totalCollateralsUsd !== null
+        ? String(object.totalCollateralsUsd)
+        : "";
+    message.totalDebtsUsd =
+      object.totalDebtsUsd !== undefined && object.totalDebtsUsd !== null
+        ? String(object.totalDebtsUsd)
+        : "";
+    message.availableBorrowsUsd =
+      object.availableBorrowsUsd !== undefined &&
+      object.availableBorrowsUsd !== null
+        ? String(object.availableBorrowsUsd)
+        : "";
+    message.currLiquidationThreshold =
+      object.currLiquidationThreshold !== undefined &&
+      object.currLiquidationThreshold !== null
+        ? String(object.currLiquidationThreshold)
+        : "";
+    message.healthFactor =
+      object.healthFactor !== undefined && object.healthFactor !== null
+        ? String(object.healthFactor)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryAccountDataResponse): unknown {
+    const obj: any = {};
+    message.totalCollateralsUsd !== undefined &&
+      (obj.totalCollateralsUsd = message.totalCollateralsUsd);
+    message.totalDebtsUsd !== undefined &&
+      (obj.totalDebtsUsd = message.totalDebtsUsd);
+    message.availableBorrowsUsd !== undefined &&
+      (obj.availableBorrowsUsd = message.availableBorrowsUsd);
+    message.currLiquidationThreshold !== undefined &&
+      (obj.currLiquidationThreshold = message.currLiquidationThreshold);
+    message.healthFactor !== undefined &&
+      (obj.healthFactor = message.healthFactor);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAccountDataResponse>
+  ): QueryAccountDataResponse {
+    const message = {
+      ...baseQueryAccountDataResponse,
+    } as QueryAccountDataResponse;
+    message.totalCollateralsUsd = object.totalCollateralsUsd ?? "";
+    message.totalDebtsUsd = object.totalDebtsUsd ?? "";
+    message.availableBorrowsUsd = object.availableBorrowsUsd ?? "";
+    message.currLiquidationThreshold = object.currLiquidationThreshold ?? "";
+    message.healthFactor = object.healthFactor ?? "";
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
-  /** Get a vault */
-  Vault(request: QueryGetVaultRequest): Promise<QueryGetVaultResponse>;
-  /** Get all vaults */
-  VaultAll(request: QueryAllVaultRequest): Promise<QueryAllVaultResponse>;
-  /** Get value type for a vault */
-  VaultType(
-    request: QueryGetVaultTypeRequest
-  ): Promise<QueryGetVaultTypeResponse>;
-  /** Get all vault types */
-  VaultTypeAll(
-    request: QueryAllVaultTypeRequest
-  ): Promise<QueryAllVaultTypeResponse>;
+  /** Parameters queries the parameters of the module. */
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse>;
+  /** Queries a list of RateStrategy items. */
+  RateStrategy(
+    request: QueryRateStrategyRequest
+  ): Promise<QueryRateStrategyResponse>;
+  /** Queries a list of RateStrategiesAll items. */
+  RateStrategiesAll(
+    request: QueryRateStrategiesAllRequest
+  ): Promise<QueryRateStrategiesAllResponse>;
+  /** Queries a list of Asset items. */
+  Asset(request: QueryAssetRequest): Promise<QueryAssetResponse>;
+  /** Queries a list of AssetsAll items. */
+  AssetsAll(request: QueryAssetsAllRequest): Promise<QueryAssetsAllResponse>;
+  /** Queries a list of AccountCollaterals items. */
+  AccountCollaterals(
+    request: QueryAccountCollateralsRequest
+  ): Promise<QueryAccountCollateralsResponse>;
+  /** Queries a list of AccountDebts items. */
+  AccountDebts(
+    request: QueryAccountDebtsRequest
+  ): Promise<QueryAccountDebtsResponse>;
+  /** Queries a list of AccountData items. */
+  AccountData(
+    request: QueryAccountDataRequest
+  ): Promise<QueryAccountDataResponse>;
 }
 
 export class QueryClientImpl implements Query {
   private readonly rpc: Rpc;
   constructor(rpc: Rpc) {
     this.rpc = rpc;
-    this.Vault = this.Vault.bind(this);
-    this.VaultAll = this.VaultAll.bind(this);
-    this.VaultType = this.VaultType.bind(this);
-    this.VaultTypeAll = this.VaultTypeAll.bind(this);
     this.Params = this.Params.bind(this);
+    this.RateStrategy = this.RateStrategy.bind(this);
+    this.RateStrategiesAll = this.RateStrategiesAll.bind(this);
+    this.Asset = this.Asset.bind(this);
+    this.AssetsAll = this.AssetsAll.bind(this);
+    this.AccountCollaterals = this.AccountCollaterals.bind(this);
+    this.AccountDebts = this.AccountDebts.bind(this);
+    this.AccountData = this.AccountData.bind(this);
   }
-  Vault(request: QueryGetVaultRequest): Promise<QueryGetVaultResponse> {
-    const data = QueryGetVaultRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.cdp.Query",
-      "Vault",
-      data
-    );
-    return promise.then((data) =>
-      QueryGetVaultResponse.decode(new _m0.Reader(data))
-    );
-  }
-
-  VaultAll(request: QueryAllVaultRequest): Promise<QueryAllVaultResponse> {
-    const data = QueryAllVaultRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.cdp.Query",
-      "VaultAll",
-      data
-    );
-    return promise.then((data) =>
-      QueryAllVaultResponse.decode(new _m0.Reader(data))
-    );
-  }
-
-  VaultType(
-    request: QueryGetVaultTypeRequest
-  ): Promise<QueryGetVaultTypeResponse> {
-    const data = QueryGetVaultTypeRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.cdp.Query",
-      "VaultType",
-      data
-    );
-    return promise.then((data) =>
-      QueryGetVaultTypeResponse.decode(new _m0.Reader(data))
-    );
-  }
-
-  VaultTypeAll(
-    request: QueryAllVaultTypeRequest
-  ): Promise<QueryAllVaultTypeResponse> {
-    const data = QueryAllVaultTypeRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.cdp.Query",
-      "VaultTypeAll",
-      data
-    );
-    return promise.then((data) =>
-      QueryAllVaultTypeResponse.decode(new _m0.Reader(data))
-    );
-  }
-
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
     const promise = this.rpc.request(
@@ -820,6 +1364,100 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryParamsResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  RateStrategy(
+    request: QueryRateStrategyRequest
+  ): Promise<QueryRateStrategyResponse> {
+    const data = QueryRateStrategyRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Query",
+      "RateStrategy",
+      data
+    );
+    return promise.then((data) =>
+      QueryRateStrategyResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  RateStrategiesAll(
+    request: QueryRateStrategiesAllRequest
+  ): Promise<QueryRateStrategiesAllResponse> {
+    const data = QueryRateStrategiesAllRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Query",
+      "RateStrategiesAll",
+      data
+    );
+    return promise.then((data) =>
+      QueryRateStrategiesAllResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  Asset(request: QueryAssetRequest): Promise<QueryAssetResponse> {
+    const data = QueryAssetRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Query",
+      "Asset",
+      data
+    );
+    return promise.then((data) =>
+      QueryAssetResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  AssetsAll(request: QueryAssetsAllRequest): Promise<QueryAssetsAllResponse> {
+    const data = QueryAssetsAllRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Query",
+      "AssetsAll",
+      data
+    );
+    return promise.then((data) =>
+      QueryAssetsAllResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  AccountCollaterals(
+    request: QueryAccountCollateralsRequest
+  ): Promise<QueryAccountCollateralsResponse> {
+    const data = QueryAccountCollateralsRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Query",
+      "AccountCollaterals",
+      data
+    );
+    return promise.then((data) =>
+      QueryAccountCollateralsResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  AccountDebts(
+    request: QueryAccountDebtsRequest
+  ): Promise<QueryAccountDebtsResponse> {
+    const data = QueryAccountDebtsRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Query",
+      "AccountDebts",
+      data
+    );
+    return promise.then((data) =>
+      QueryAccountDebtsResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  AccountData(
+    request: QueryAccountDataRequest
+  ): Promise<QueryAccountDataResponse> {
+    const data = QueryAccountDataRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Query",
+      "AccountData",
+      data
+    );
+    return promise.then((data) =>
+      QueryAccountDataResponse.decode(new _m0.Reader(data))
     );
   }
 }

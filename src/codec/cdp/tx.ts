@@ -1,77 +1,176 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
+import { RateStrategyParams } from "./rate_strategy_params";
+import { AssetParams } from "./asset_params";
 
 export const protobufPackage = "Switcheo.carbon.cdp";
 
-export interface MsgAddCollateral {
+export interface MsgAddRateStrategy {
   creator: string;
-  vaultTypeId: Long;
+  rateStrategyParams?: RateStrategyParams;
+}
+
+export interface MsgAddRateStrategyResponse {
+  rateStrategyParams?: RateStrategyParams;
+}
+
+export interface MsgUpdateRateStrategy {
+  creator: string;
+  rateStrategyParams?: RateStrategyParams;
+}
+
+export interface MsgUpdateRateStrategyResponse {
+  rateStrategyParams?: RateStrategyParams;
+}
+
+export interface MsgRemoveRateStrategy {
+  creator: string;
+  name: string;
+}
+
+export interface MsgRemoveRateStrategyResponse {
+  name: string;
+}
+
+export interface MsgAddAsset {
+  creator: string;
+  assetParams?: AssetParams;
+}
+
+export interface MsgAddAssetResponse {
+  assetParams?: AssetParams;
+}
+
+export interface MsgUpdateAsset {
+  creator: string;
+  assetParams?: AssetParams;
+}
+
+export interface MsgUpdateAssetResponse {
+  assetParams?: AssetParams;
+}
+
+export interface MsgSupplyAsset {
+  creator: string;
+  denom: string;
   amount: string;
 }
 
-export interface MsgAddCollateralResponse {}
+export interface MsgSupplyAssetResponse {}
 
-export interface MsgRemoveCollateral {
+export interface MsgWithdrawAsset {
   creator: string;
-  vaultTypeId: Long;
+  cdpDenom: string;
   amount: string;
 }
 
-export interface MsgRemoveCollateralResponse {}
+export interface MsgWithdrawAssetResponse {}
 
-export interface MsgAddDebt {
+export interface MsgLockCollateral {
   creator: string;
-  vaultTypeId: Long;
+  cdpDenom: string;
   amount: string;
 }
 
-export interface MsgAddDebtResponse {}
+export interface MsgLockCollateralResponse {}
 
-export interface MsgRemoveDebt {
+export interface MsgUnlockCollateral {
   creator: string;
-  vaultTypeId: Long;
+  cdpDenom: string;
   amount: string;
 }
 
-export interface MsgRemoveDebtResponse {}
+export interface MsgUnlockCollateralResponse {}
 
-export interface MsgCreateVaultType {
+export interface MsgBorrowAsset {
   creator: string;
+  denom: string;
+  amount: string;
+}
+
+export interface MsgBorrowAssetResponse {}
+
+export interface MsgRepayAsset {
+  creator: string;
+  denom: string;
+  amount: string;
+}
+
+export interface MsgRepayAssetResponse {}
+
+export interface MsgSupplyAndLockAsset {
+  creator: string;
+  denom: string;
+  supplyAmount: string;
+  lockAmount: string;
+}
+
+export interface MsgSupplyAndLockAssetResponse {}
+
+export interface MsgUnlockAndWithdrawAsset {
+  creator: string;
+  cdpDenom: string;
+  unlockAmount: string;
+  withdrawAmount: string;
+}
+
+export interface MsgUnlockAndWithdrawAssetResponse {}
+
+export interface MsgLiquidateCollateral {
+  creator: string;
+  debtor: string;
   collateralDenom: string;
   debtDenom: string;
-  collateralizationRatio: string;
+  debtAmount: string;
 }
 
-export interface MsgCreateVaultTypeResponse {}
+export interface MsgLiquidateCollateralResponse {}
 
-const baseMsgAddCollateral: object = {
-  creator: "",
-  vaultTypeId: Long.UZERO,
-  amount: "",
-};
+export interface MsgSetLiquidationFee {
+  creator: string;
+  liquidationFee: string;
+}
 
-export const MsgAddCollateral = {
+export interface MsgSetLiquidationFeeResponse {}
+
+export interface MsgSetInterestFee {
+  creator: string;
+  interestFee: string;
+}
+
+export interface MsgSetInterestFeeResponse {}
+
+export interface MsgSetStableCoinInterestRate {
+  creator: string;
+  stableCoinInterestRate: string;
+}
+
+export interface MsgSetStableCoinInterestRateResponse {}
+
+const baseMsgAddRateStrategy: object = { creator: "" };
+
+export const MsgAddRateStrategy = {
   encode(
-    message: MsgAddCollateral,
+    message: MsgAddRateStrategy,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
-    if (!message.vaultTypeId.isZero()) {
-      writer.uint32(16).uint64(message.vaultTypeId);
-    }
-    if (message.amount !== "") {
-      writer.uint32(26).string(message.amount);
+    if (message.rateStrategyParams !== undefined) {
+      RateStrategyParams.encode(
+        message.rateStrategyParams,
+        writer.uint32(18).fork()
+      ).ldelim();
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgAddCollateral {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgAddRateStrategy {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgAddCollateral } as MsgAddCollateral;
+    const message = { ...baseMsgAddRateStrategy } as MsgAddRateStrategy;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -79,7 +178,737 @@ export const MsgAddCollateral = {
           message.creator = reader.string();
           break;
         case 2:
-          message.vaultTypeId = reader.uint64() as Long;
+          message.rateStrategyParams = RateStrategyParams.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgAddRateStrategy {
+    const message = { ...baseMsgAddRateStrategy } as MsgAddRateStrategy;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.rateStrategyParams =
+      object.rateStrategyParams !== undefined &&
+      object.rateStrategyParams !== null
+        ? RateStrategyParams.fromJSON(object.rateStrategyParams)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: MsgAddRateStrategy): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.rateStrategyParams !== undefined &&
+      (obj.rateStrategyParams = message.rateStrategyParams
+        ? RateStrategyParams.toJSON(message.rateStrategyParams)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgAddRateStrategy>): MsgAddRateStrategy {
+    const message = { ...baseMsgAddRateStrategy } as MsgAddRateStrategy;
+    message.creator = object.creator ?? "";
+    message.rateStrategyParams =
+      object.rateStrategyParams !== undefined &&
+      object.rateStrategyParams !== null
+        ? RateStrategyParams.fromPartial(object.rateStrategyParams)
+        : undefined;
+    return message;
+  },
+};
+
+const baseMsgAddRateStrategyResponse: object = {};
+
+export const MsgAddRateStrategyResponse = {
+  encode(
+    message: MsgAddRateStrategyResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.rateStrategyParams !== undefined) {
+      RateStrategyParams.encode(
+        message.rateStrategyParams,
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgAddRateStrategyResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgAddRateStrategyResponse,
+    } as MsgAddRateStrategyResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.rateStrategyParams = RateStrategyParams.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgAddRateStrategyResponse {
+    const message = {
+      ...baseMsgAddRateStrategyResponse,
+    } as MsgAddRateStrategyResponse;
+    message.rateStrategyParams =
+      object.rateStrategyParams !== undefined &&
+      object.rateStrategyParams !== null
+        ? RateStrategyParams.fromJSON(object.rateStrategyParams)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: MsgAddRateStrategyResponse): unknown {
+    const obj: any = {};
+    message.rateStrategyParams !== undefined &&
+      (obj.rateStrategyParams = message.rateStrategyParams
+        ? RateStrategyParams.toJSON(message.rateStrategyParams)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgAddRateStrategyResponse>
+  ): MsgAddRateStrategyResponse {
+    const message = {
+      ...baseMsgAddRateStrategyResponse,
+    } as MsgAddRateStrategyResponse;
+    message.rateStrategyParams =
+      object.rateStrategyParams !== undefined &&
+      object.rateStrategyParams !== null
+        ? RateStrategyParams.fromPartial(object.rateStrategyParams)
+        : undefined;
+    return message;
+  },
+};
+
+const baseMsgUpdateRateStrategy: object = { creator: "" };
+
+export const MsgUpdateRateStrategy = {
+  encode(
+    message: MsgUpdateRateStrategy,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.rateStrategyParams !== undefined) {
+      RateStrategyParams.encode(
+        message.rateStrategyParams,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUpdateRateStrategy {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgUpdateRateStrategy } as MsgUpdateRateStrategy;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.rateStrategyParams = RateStrategyParams.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdateRateStrategy {
+    const message = { ...baseMsgUpdateRateStrategy } as MsgUpdateRateStrategy;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.rateStrategyParams =
+      object.rateStrategyParams !== undefined &&
+      object.rateStrategyParams !== null
+        ? RateStrategyParams.fromJSON(object.rateStrategyParams)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: MsgUpdateRateStrategy): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.rateStrategyParams !== undefined &&
+      (obj.rateStrategyParams = message.rateStrategyParams
+        ? RateStrategyParams.toJSON(message.rateStrategyParams)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgUpdateRateStrategy>
+  ): MsgUpdateRateStrategy {
+    const message = { ...baseMsgUpdateRateStrategy } as MsgUpdateRateStrategy;
+    message.creator = object.creator ?? "";
+    message.rateStrategyParams =
+      object.rateStrategyParams !== undefined &&
+      object.rateStrategyParams !== null
+        ? RateStrategyParams.fromPartial(object.rateStrategyParams)
+        : undefined;
+    return message;
+  },
+};
+
+const baseMsgUpdateRateStrategyResponse: object = {};
+
+export const MsgUpdateRateStrategyResponse = {
+  encode(
+    message: MsgUpdateRateStrategyResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.rateStrategyParams !== undefined) {
+      RateStrategyParams.encode(
+        message.rateStrategyParams,
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUpdateRateStrategyResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgUpdateRateStrategyResponse,
+    } as MsgUpdateRateStrategyResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.rateStrategyParams = RateStrategyParams.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdateRateStrategyResponse {
+    const message = {
+      ...baseMsgUpdateRateStrategyResponse,
+    } as MsgUpdateRateStrategyResponse;
+    message.rateStrategyParams =
+      object.rateStrategyParams !== undefined &&
+      object.rateStrategyParams !== null
+        ? RateStrategyParams.fromJSON(object.rateStrategyParams)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: MsgUpdateRateStrategyResponse): unknown {
+    const obj: any = {};
+    message.rateStrategyParams !== undefined &&
+      (obj.rateStrategyParams = message.rateStrategyParams
+        ? RateStrategyParams.toJSON(message.rateStrategyParams)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgUpdateRateStrategyResponse>
+  ): MsgUpdateRateStrategyResponse {
+    const message = {
+      ...baseMsgUpdateRateStrategyResponse,
+    } as MsgUpdateRateStrategyResponse;
+    message.rateStrategyParams =
+      object.rateStrategyParams !== undefined &&
+      object.rateStrategyParams !== null
+        ? RateStrategyParams.fromPartial(object.rateStrategyParams)
+        : undefined;
+    return message;
+  },
+};
+
+const baseMsgRemoveRateStrategy: object = { creator: "", name: "" };
+
+export const MsgRemoveRateStrategy = {
+  encode(
+    message: MsgRemoveRateStrategy,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.name !== "") {
+      writer.uint32(18).string(message.name);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgRemoveRateStrategy {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgRemoveRateStrategy } as MsgRemoveRateStrategy;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.name = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgRemoveRateStrategy {
+    const message = { ...baseMsgRemoveRateStrategy } as MsgRemoveRateStrategy;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.name =
+      object.name !== undefined && object.name !== null
+        ? String(object.name)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgRemoveRateStrategy): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.name !== undefined && (obj.name = message.name);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgRemoveRateStrategy>
+  ): MsgRemoveRateStrategy {
+    const message = { ...baseMsgRemoveRateStrategy } as MsgRemoveRateStrategy;
+    message.creator = object.creator ?? "";
+    message.name = object.name ?? "";
+    return message;
+  },
+};
+
+const baseMsgRemoveRateStrategyResponse: object = { name: "" };
+
+export const MsgRemoveRateStrategyResponse = {
+  encode(
+    message: MsgRemoveRateStrategyResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.name !== "") {
+      writer.uint32(10).string(message.name);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgRemoveRateStrategyResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgRemoveRateStrategyResponse,
+    } as MsgRemoveRateStrategyResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.name = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgRemoveRateStrategyResponse {
+    const message = {
+      ...baseMsgRemoveRateStrategyResponse,
+    } as MsgRemoveRateStrategyResponse;
+    message.name =
+      object.name !== undefined && object.name !== null
+        ? String(object.name)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgRemoveRateStrategyResponse): unknown {
+    const obj: any = {};
+    message.name !== undefined && (obj.name = message.name);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgRemoveRateStrategyResponse>
+  ): MsgRemoveRateStrategyResponse {
+    const message = {
+      ...baseMsgRemoveRateStrategyResponse,
+    } as MsgRemoveRateStrategyResponse;
+    message.name = object.name ?? "";
+    return message;
+  },
+};
+
+const baseMsgAddAsset: object = { creator: "" };
+
+export const MsgAddAsset = {
+  encode(
+    message: MsgAddAsset,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.assetParams !== undefined) {
+      AssetParams.encode(
+        message.assetParams,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgAddAsset {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgAddAsset } as MsgAddAsset;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.assetParams = AssetParams.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgAddAsset {
+    const message = { ...baseMsgAddAsset } as MsgAddAsset;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.assetParams =
+      object.assetParams !== undefined && object.assetParams !== null
+        ? AssetParams.fromJSON(object.assetParams)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: MsgAddAsset): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.assetParams !== undefined &&
+      (obj.assetParams = message.assetParams
+        ? AssetParams.toJSON(message.assetParams)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgAddAsset>): MsgAddAsset {
+    const message = { ...baseMsgAddAsset } as MsgAddAsset;
+    message.creator = object.creator ?? "";
+    message.assetParams =
+      object.assetParams !== undefined && object.assetParams !== null
+        ? AssetParams.fromPartial(object.assetParams)
+        : undefined;
+    return message;
+  },
+};
+
+const baseMsgAddAssetResponse: object = {};
+
+export const MsgAddAssetResponse = {
+  encode(
+    message: MsgAddAssetResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.assetParams !== undefined) {
+      AssetParams.encode(
+        message.assetParams,
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgAddAssetResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgAddAssetResponse } as MsgAddAssetResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.assetParams = AssetParams.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgAddAssetResponse {
+    const message = { ...baseMsgAddAssetResponse } as MsgAddAssetResponse;
+    message.assetParams =
+      object.assetParams !== undefined && object.assetParams !== null
+        ? AssetParams.fromJSON(object.assetParams)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: MsgAddAssetResponse): unknown {
+    const obj: any = {};
+    message.assetParams !== undefined &&
+      (obj.assetParams = message.assetParams
+        ? AssetParams.toJSON(message.assetParams)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgAddAssetResponse>): MsgAddAssetResponse {
+    const message = { ...baseMsgAddAssetResponse } as MsgAddAssetResponse;
+    message.assetParams =
+      object.assetParams !== undefined && object.assetParams !== null
+        ? AssetParams.fromPartial(object.assetParams)
+        : undefined;
+    return message;
+  },
+};
+
+const baseMsgUpdateAsset: object = { creator: "" };
+
+export const MsgUpdateAsset = {
+  encode(
+    message: MsgUpdateAsset,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.assetParams !== undefined) {
+      AssetParams.encode(
+        message.assetParams,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateAsset {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgUpdateAsset } as MsgUpdateAsset;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.assetParams = AssetParams.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdateAsset {
+    const message = { ...baseMsgUpdateAsset } as MsgUpdateAsset;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.assetParams =
+      object.assetParams !== undefined && object.assetParams !== null
+        ? AssetParams.fromJSON(object.assetParams)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: MsgUpdateAsset): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.assetParams !== undefined &&
+      (obj.assetParams = message.assetParams
+        ? AssetParams.toJSON(message.assetParams)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgUpdateAsset>): MsgUpdateAsset {
+    const message = { ...baseMsgUpdateAsset } as MsgUpdateAsset;
+    message.creator = object.creator ?? "";
+    message.assetParams =
+      object.assetParams !== undefined && object.assetParams !== null
+        ? AssetParams.fromPartial(object.assetParams)
+        : undefined;
+    return message;
+  },
+};
+
+const baseMsgUpdateAssetResponse: object = {};
+
+export const MsgUpdateAssetResponse = {
+  encode(
+    message: MsgUpdateAssetResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.assetParams !== undefined) {
+      AssetParams.encode(
+        message.assetParams,
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUpdateAssetResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgUpdateAssetResponse } as MsgUpdateAssetResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.assetParams = AssetParams.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdateAssetResponse {
+    const message = { ...baseMsgUpdateAssetResponse } as MsgUpdateAssetResponse;
+    message.assetParams =
+      object.assetParams !== undefined && object.assetParams !== null
+        ? AssetParams.fromJSON(object.assetParams)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: MsgUpdateAssetResponse): unknown {
+    const obj: any = {};
+    message.assetParams !== undefined &&
+      (obj.assetParams = message.assetParams
+        ? AssetParams.toJSON(message.assetParams)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgUpdateAssetResponse>
+  ): MsgUpdateAssetResponse {
+    const message = { ...baseMsgUpdateAssetResponse } as MsgUpdateAssetResponse;
+    message.assetParams =
+      object.assetParams !== undefined && object.assetParams !== null
+        ? AssetParams.fromPartial(object.assetParams)
+        : undefined;
+    return message;
+  },
+};
+
+const baseMsgSupplyAsset: object = { creator: "", denom: "", amount: "" };
+
+export const MsgSupplyAsset = {
+  encode(
+    message: MsgSupplyAsset,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.denom !== "") {
+      writer.uint32(18).string(message.denom);
+    }
+    if (message.amount !== "") {
+      writer.uint32(26).string(message.amount);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgSupplyAsset {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgSupplyAsset } as MsgSupplyAsset;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.denom = reader.string();
           break;
         case 3:
           message.amount = reader.string();
@@ -92,16 +921,16 @@ export const MsgAddCollateral = {
     return message;
   },
 
-  fromJSON(object: any): MsgAddCollateral {
-    const message = { ...baseMsgAddCollateral } as MsgAddCollateral;
+  fromJSON(object: any): MsgSupplyAsset {
+    const message = { ...baseMsgSupplyAsset } as MsgSupplyAsset;
     message.creator =
       object.creator !== undefined && object.creator !== null
         ? String(object.creator)
         : "";
-    message.vaultTypeId =
-      object.vaultTypeId !== undefined && object.vaultTypeId !== null
-        ? Long.fromString(object.vaultTypeId)
-        : Long.UZERO;
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
     message.amount =
       object.amount !== undefined && object.amount !== null
         ? String(object.amount)
@@ -109,32 +938,28 @@ export const MsgAddCollateral = {
     return message;
   },
 
-  toJSON(message: MsgAddCollateral): unknown {
+  toJSON(message: MsgSupplyAsset): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.vaultTypeId !== undefined &&
-      (obj.vaultTypeId = (message.vaultTypeId || Long.UZERO).toString());
+    message.denom !== undefined && (obj.denom = message.denom);
     message.amount !== undefined && (obj.amount = message.amount);
     return obj;
   },
 
-  fromPartial(object: DeepPartial<MsgAddCollateral>): MsgAddCollateral {
-    const message = { ...baseMsgAddCollateral } as MsgAddCollateral;
+  fromPartial(object: DeepPartial<MsgSupplyAsset>): MsgSupplyAsset {
+    const message = { ...baseMsgSupplyAsset } as MsgSupplyAsset;
     message.creator = object.creator ?? "";
-    message.vaultTypeId =
-      object.vaultTypeId !== undefined && object.vaultTypeId !== null
-        ? Long.fromValue(object.vaultTypeId)
-        : Long.UZERO;
+    message.denom = object.denom ?? "";
     message.amount = object.amount ?? "";
     return message;
   },
 };
 
-const baseMsgAddCollateralResponse: object = {};
+const baseMsgSupplyAssetResponse: object = {};
 
-export const MsgAddCollateralResponse = {
+export const MsgSupplyAssetResponse = {
   encode(
-    _: MsgAddCollateralResponse,
+    _: MsgSupplyAssetResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     return writer;
@@ -143,12 +968,10 @@ export const MsgAddCollateralResponse = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): MsgAddCollateralResponse {
+  ): MsgSupplyAssetResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgAddCollateralResponse,
-    } as MsgAddCollateralResponse;
+    const message = { ...baseMsgSupplyAssetResponse } as MsgSupplyAssetResponse;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -160,44 +983,163 @@ export const MsgAddCollateralResponse = {
     return message;
   },
 
-  fromJSON(_: any): MsgAddCollateralResponse {
-    const message = {
-      ...baseMsgAddCollateralResponse,
-    } as MsgAddCollateralResponse;
+  fromJSON(_: any): MsgSupplyAssetResponse {
+    const message = { ...baseMsgSupplyAssetResponse } as MsgSupplyAssetResponse;
     return message;
   },
 
-  toJSON(_: MsgAddCollateralResponse): unknown {
+  toJSON(_: MsgSupplyAssetResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(_: DeepPartial<MsgSupplyAssetResponse>): MsgSupplyAssetResponse {
+    const message = { ...baseMsgSupplyAssetResponse } as MsgSupplyAssetResponse;
+    return message;
+  },
+};
+
+const baseMsgWithdrawAsset: object = { creator: "", cdpDenom: "", amount: "" };
+
+export const MsgWithdrawAsset = {
+  encode(
+    message: MsgWithdrawAsset,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.cdpDenom !== "") {
+      writer.uint32(18).string(message.cdpDenom);
+    }
+    if (message.amount !== "") {
+      writer.uint32(26).string(message.amount);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgWithdrawAsset {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgWithdrawAsset } as MsgWithdrawAsset;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.cdpDenom = reader.string();
+          break;
+        case 3:
+          message.amount = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgWithdrawAsset {
+    const message = { ...baseMsgWithdrawAsset } as MsgWithdrawAsset;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.cdpDenom =
+      object.cdpDenom !== undefined && object.cdpDenom !== null
+        ? String(object.cdpDenom)
+        : "";
+    message.amount =
+      object.amount !== undefined && object.amount !== null
+        ? String(object.amount)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgWithdrawAsset): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.cdpDenom !== undefined && (obj.cdpDenom = message.cdpDenom);
+    message.amount !== undefined && (obj.amount = message.amount);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgWithdrawAsset>): MsgWithdrawAsset {
+    const message = { ...baseMsgWithdrawAsset } as MsgWithdrawAsset;
+    message.creator = object.creator ?? "";
+    message.cdpDenom = object.cdpDenom ?? "";
+    message.amount = object.amount ?? "";
+    return message;
+  },
+};
+
+const baseMsgWithdrawAssetResponse: object = {};
+
+export const MsgWithdrawAssetResponse = {
+  encode(
+    _: MsgWithdrawAssetResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgWithdrawAssetResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgWithdrawAssetResponse,
+    } as MsgWithdrawAssetResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgWithdrawAssetResponse {
+    const message = {
+      ...baseMsgWithdrawAssetResponse,
+    } as MsgWithdrawAssetResponse;
+    return message;
+  },
+
+  toJSON(_: MsgWithdrawAssetResponse): unknown {
     const obj: any = {};
     return obj;
   },
 
   fromPartial(
-    _: DeepPartial<MsgAddCollateralResponse>
-  ): MsgAddCollateralResponse {
+    _: DeepPartial<MsgWithdrawAssetResponse>
+  ): MsgWithdrawAssetResponse {
     const message = {
-      ...baseMsgAddCollateralResponse,
-    } as MsgAddCollateralResponse;
+      ...baseMsgWithdrawAssetResponse,
+    } as MsgWithdrawAssetResponse;
     return message;
   },
 };
 
-const baseMsgRemoveCollateral: object = {
-  creator: "",
-  vaultTypeId: Long.UZERO,
-  amount: "",
-};
+const baseMsgLockCollateral: object = { creator: "", cdpDenom: "", amount: "" };
 
-export const MsgRemoveCollateral = {
+export const MsgLockCollateral = {
   encode(
-    message: MsgRemoveCollateral,
+    message: MsgLockCollateral,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
-    if (!message.vaultTypeId.isZero()) {
-      writer.uint32(16).uint64(message.vaultTypeId);
+    if (message.cdpDenom !== "") {
+      writer.uint32(18).string(message.cdpDenom);
     }
     if (message.amount !== "") {
       writer.uint32(26).string(message.amount);
@@ -205,10 +1147,10 @@ export const MsgRemoveCollateral = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgRemoveCollateral {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgLockCollateral {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgRemoveCollateral } as MsgRemoveCollateral;
+    const message = { ...baseMsgLockCollateral } as MsgLockCollateral;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -216,7 +1158,7 @@ export const MsgRemoveCollateral = {
           message.creator = reader.string();
           break;
         case 2:
-          message.vaultTypeId = reader.uint64() as Long;
+          message.cdpDenom = reader.string();
           break;
         case 3:
           message.amount = reader.string();
@@ -229,16 +1171,16 @@ export const MsgRemoveCollateral = {
     return message;
   },
 
-  fromJSON(object: any): MsgRemoveCollateral {
-    const message = { ...baseMsgRemoveCollateral } as MsgRemoveCollateral;
+  fromJSON(object: any): MsgLockCollateral {
+    const message = { ...baseMsgLockCollateral } as MsgLockCollateral;
     message.creator =
       object.creator !== undefined && object.creator !== null
         ? String(object.creator)
         : "";
-    message.vaultTypeId =
-      object.vaultTypeId !== undefined && object.vaultTypeId !== null
-        ? Long.fromString(object.vaultTypeId)
-        : Long.UZERO;
+    message.cdpDenom =
+      object.cdpDenom !== undefined && object.cdpDenom !== null
+        ? String(object.cdpDenom)
+        : "";
     message.amount =
       object.amount !== undefined && object.amount !== null
         ? String(object.amount)
@@ -246,32 +1188,28 @@ export const MsgRemoveCollateral = {
     return message;
   },
 
-  toJSON(message: MsgRemoveCollateral): unknown {
+  toJSON(message: MsgLockCollateral): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.vaultTypeId !== undefined &&
-      (obj.vaultTypeId = (message.vaultTypeId || Long.UZERO).toString());
+    message.cdpDenom !== undefined && (obj.cdpDenom = message.cdpDenom);
     message.amount !== undefined && (obj.amount = message.amount);
     return obj;
   },
 
-  fromPartial(object: DeepPartial<MsgRemoveCollateral>): MsgRemoveCollateral {
-    const message = { ...baseMsgRemoveCollateral } as MsgRemoveCollateral;
+  fromPartial(object: DeepPartial<MsgLockCollateral>): MsgLockCollateral {
+    const message = { ...baseMsgLockCollateral } as MsgLockCollateral;
     message.creator = object.creator ?? "";
-    message.vaultTypeId =
-      object.vaultTypeId !== undefined && object.vaultTypeId !== null
-        ? Long.fromValue(object.vaultTypeId)
-        : Long.UZERO;
+    message.cdpDenom = object.cdpDenom ?? "";
     message.amount = object.amount ?? "";
     return message;
   },
 };
 
-const baseMsgRemoveCollateralResponse: object = {};
+const baseMsgLockCollateralResponse: object = {};
 
-export const MsgRemoveCollateralResponse = {
+export const MsgLockCollateralResponse = {
   encode(
-    _: MsgRemoveCollateralResponse,
+    _: MsgLockCollateralResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     return writer;
@@ -280,12 +1218,12 @@ export const MsgRemoveCollateralResponse = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): MsgRemoveCollateralResponse {
+  ): MsgLockCollateralResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseMsgRemoveCollateralResponse,
-    } as MsgRemoveCollateralResponse;
+      ...baseMsgLockCollateralResponse,
+    } as MsgLockCollateralResponse;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -297,44 +1235,44 @@ export const MsgRemoveCollateralResponse = {
     return message;
   },
 
-  fromJSON(_: any): MsgRemoveCollateralResponse {
+  fromJSON(_: any): MsgLockCollateralResponse {
     const message = {
-      ...baseMsgRemoveCollateralResponse,
-    } as MsgRemoveCollateralResponse;
+      ...baseMsgLockCollateralResponse,
+    } as MsgLockCollateralResponse;
     return message;
   },
 
-  toJSON(_: MsgRemoveCollateralResponse): unknown {
+  toJSON(_: MsgLockCollateralResponse): unknown {
     const obj: any = {};
     return obj;
   },
 
   fromPartial(
-    _: DeepPartial<MsgRemoveCollateralResponse>
-  ): MsgRemoveCollateralResponse {
+    _: DeepPartial<MsgLockCollateralResponse>
+  ): MsgLockCollateralResponse {
     const message = {
-      ...baseMsgRemoveCollateralResponse,
-    } as MsgRemoveCollateralResponse;
+      ...baseMsgLockCollateralResponse,
+    } as MsgLockCollateralResponse;
     return message;
   },
 };
 
-const baseMsgAddDebt: object = {
+const baseMsgUnlockCollateral: object = {
   creator: "",
-  vaultTypeId: Long.UZERO,
+  cdpDenom: "",
   amount: "",
 };
 
-export const MsgAddDebt = {
+export const MsgUnlockCollateral = {
   encode(
-    message: MsgAddDebt,
+    message: MsgUnlockCollateral,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
-    if (!message.vaultTypeId.isZero()) {
-      writer.uint32(16).uint64(message.vaultTypeId);
+    if (message.cdpDenom !== "") {
+      writer.uint32(18).string(message.cdpDenom);
     }
     if (message.amount !== "") {
       writer.uint32(26).string(message.amount);
@@ -342,10 +1280,10 @@ export const MsgAddDebt = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgAddDebt {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUnlockCollateral {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgAddDebt } as MsgAddDebt;
+    const message = { ...baseMsgUnlockCollateral } as MsgUnlockCollateral;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -353,7 +1291,7 @@ export const MsgAddDebt = {
           message.creator = reader.string();
           break;
         case 2:
-          message.vaultTypeId = reader.uint64() as Long;
+          message.cdpDenom = reader.string();
           break;
         case 3:
           message.amount = reader.string();
@@ -366,16 +1304,16 @@ export const MsgAddDebt = {
     return message;
   },
 
-  fromJSON(object: any): MsgAddDebt {
-    const message = { ...baseMsgAddDebt } as MsgAddDebt;
+  fromJSON(object: any): MsgUnlockCollateral {
+    const message = { ...baseMsgUnlockCollateral } as MsgUnlockCollateral;
     message.creator =
       object.creator !== undefined && object.creator !== null
         ? String(object.creator)
         : "";
-    message.vaultTypeId =
-      object.vaultTypeId !== undefined && object.vaultTypeId !== null
-        ? Long.fromString(object.vaultTypeId)
-        : Long.UZERO;
+    message.cdpDenom =
+      object.cdpDenom !== undefined && object.cdpDenom !== null
+        ? String(object.cdpDenom)
+        : "";
     message.amount =
       object.amount !== undefined && object.amount !== null
         ? String(object.amount)
@@ -383,158 +1321,28 @@ export const MsgAddDebt = {
     return message;
   },
 
-  toJSON(message: MsgAddDebt): unknown {
+  toJSON(message: MsgUnlockCollateral): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.vaultTypeId !== undefined &&
-      (obj.vaultTypeId = (message.vaultTypeId || Long.UZERO).toString());
+    message.cdpDenom !== undefined && (obj.cdpDenom = message.cdpDenom);
     message.amount !== undefined && (obj.amount = message.amount);
     return obj;
   },
 
-  fromPartial(object: DeepPartial<MsgAddDebt>): MsgAddDebt {
-    const message = { ...baseMsgAddDebt } as MsgAddDebt;
+  fromPartial(object: DeepPartial<MsgUnlockCollateral>): MsgUnlockCollateral {
+    const message = { ...baseMsgUnlockCollateral } as MsgUnlockCollateral;
     message.creator = object.creator ?? "";
-    message.vaultTypeId =
-      object.vaultTypeId !== undefined && object.vaultTypeId !== null
-        ? Long.fromValue(object.vaultTypeId)
-        : Long.UZERO;
+    message.cdpDenom = object.cdpDenom ?? "";
     message.amount = object.amount ?? "";
     return message;
   },
 };
 
-const baseMsgAddDebtResponse: object = {};
+const baseMsgUnlockCollateralResponse: object = {};
 
-export const MsgAddDebtResponse = {
+export const MsgUnlockCollateralResponse = {
   encode(
-    _: MsgAddDebtResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgAddDebtResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgAddDebtResponse } as MsgAddDebtResponse;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(_: any): MsgAddDebtResponse {
-    const message = { ...baseMsgAddDebtResponse } as MsgAddDebtResponse;
-    return message;
-  },
-
-  toJSON(_: MsgAddDebtResponse): unknown {
-    const obj: any = {};
-    return obj;
-  },
-
-  fromPartial(_: DeepPartial<MsgAddDebtResponse>): MsgAddDebtResponse {
-    const message = { ...baseMsgAddDebtResponse } as MsgAddDebtResponse;
-    return message;
-  },
-};
-
-const baseMsgRemoveDebt: object = {
-  creator: "",
-  vaultTypeId: Long.UZERO,
-  amount: "",
-};
-
-export const MsgRemoveDebt = {
-  encode(
-    message: MsgRemoveDebt,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.creator !== "") {
-      writer.uint32(10).string(message.creator);
-    }
-    if (!message.vaultTypeId.isZero()) {
-      writer.uint32(16).uint64(message.vaultTypeId);
-    }
-    if (message.amount !== "") {
-      writer.uint32(26).string(message.amount);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgRemoveDebt {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgRemoveDebt } as MsgRemoveDebt;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.creator = reader.string();
-          break;
-        case 2:
-          message.vaultTypeId = reader.uint64() as Long;
-          break;
-        case 3:
-          message.amount = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): MsgRemoveDebt {
-    const message = { ...baseMsgRemoveDebt } as MsgRemoveDebt;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.vaultTypeId =
-      object.vaultTypeId !== undefined && object.vaultTypeId !== null
-        ? Long.fromString(object.vaultTypeId)
-        : Long.UZERO;
-    message.amount =
-      object.amount !== undefined && object.amount !== null
-        ? String(object.amount)
-        : "";
-    return message;
-  },
-
-  toJSON(message: MsgRemoveDebt): unknown {
-    const obj: any = {};
-    message.creator !== undefined && (obj.creator = message.creator);
-    message.vaultTypeId !== undefined &&
-      (obj.vaultTypeId = (message.vaultTypeId || Long.UZERO).toString());
-    message.amount !== undefined && (obj.amount = message.amount);
-    return obj;
-  },
-
-  fromPartial(object: DeepPartial<MsgRemoveDebt>): MsgRemoveDebt {
-    const message = { ...baseMsgRemoveDebt } as MsgRemoveDebt;
-    message.creator = object.creator ?? "";
-    message.vaultTypeId =
-      object.vaultTypeId !== undefined && object.vaultTypeId !== null
-        ? Long.fromValue(object.vaultTypeId)
-        : Long.UZERO;
-    message.amount = object.amount ?? "";
-    return message;
-  },
-};
-
-const baseMsgRemoveDebtResponse: object = {};
-
-export const MsgRemoveDebtResponse = {
-  encode(
-    _: MsgRemoveDebtResponse,
+    _: MsgUnlockCollateralResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     return writer;
@@ -543,10 +1351,12 @@ export const MsgRemoveDebtResponse = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): MsgRemoveDebtResponse {
+  ): MsgUnlockCollateralResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgRemoveDebtResponse } as MsgRemoveDebtResponse;
+    const message = {
+      ...baseMsgUnlockCollateralResponse,
+    } as MsgUnlockCollateralResponse;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -558,53 +1368,51 @@ export const MsgRemoveDebtResponse = {
     return message;
   },
 
-  fromJSON(_: any): MsgRemoveDebtResponse {
-    const message = { ...baseMsgRemoveDebtResponse } as MsgRemoveDebtResponse;
+  fromJSON(_: any): MsgUnlockCollateralResponse {
+    const message = {
+      ...baseMsgUnlockCollateralResponse,
+    } as MsgUnlockCollateralResponse;
     return message;
   },
 
-  toJSON(_: MsgRemoveDebtResponse): unknown {
+  toJSON(_: MsgUnlockCollateralResponse): unknown {
     const obj: any = {};
     return obj;
   },
 
-  fromPartial(_: DeepPartial<MsgRemoveDebtResponse>): MsgRemoveDebtResponse {
-    const message = { ...baseMsgRemoveDebtResponse } as MsgRemoveDebtResponse;
+  fromPartial(
+    _: DeepPartial<MsgUnlockCollateralResponse>
+  ): MsgUnlockCollateralResponse {
+    const message = {
+      ...baseMsgUnlockCollateralResponse,
+    } as MsgUnlockCollateralResponse;
     return message;
   },
 };
 
-const baseMsgCreateVaultType: object = {
-  creator: "",
-  collateralDenom: "",
-  debtDenom: "",
-  collateralizationRatio: "",
-};
+const baseMsgBorrowAsset: object = { creator: "", denom: "", amount: "" };
 
-export const MsgCreateVaultType = {
+export const MsgBorrowAsset = {
   encode(
-    message: MsgCreateVaultType,
+    message: MsgBorrowAsset,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
-    if (message.collateralDenom !== "") {
-      writer.uint32(18).string(message.collateralDenom);
+    if (message.denom !== "") {
+      writer.uint32(18).string(message.denom);
     }
-    if (message.debtDenom !== "") {
-      writer.uint32(26).string(message.debtDenom);
-    }
-    if (message.collateralizationRatio !== "") {
-      writer.uint32(34).string(message.collateralizationRatio);
+    if (message.amount !== "") {
+      writer.uint32(26).string(message.amount);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreateVaultType {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgBorrowAsset {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgCreateVaultType } as MsgCreateVaultType;
+    const message = { ...baseMsgBorrowAsset } as MsgBorrowAsset;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -612,13 +1420,266 @@ export const MsgCreateVaultType = {
           message.creator = reader.string();
           break;
         case 2:
-          message.collateralDenom = reader.string();
+          message.denom = reader.string();
           break;
         case 3:
-          message.debtDenom = reader.string();
+          message.amount = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgBorrowAsset {
+    const message = { ...baseMsgBorrowAsset } as MsgBorrowAsset;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
+    message.amount =
+      object.amount !== undefined && object.amount !== null
+        ? String(object.amount)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgBorrowAsset): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.denom !== undefined && (obj.denom = message.denom);
+    message.amount !== undefined && (obj.amount = message.amount);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgBorrowAsset>): MsgBorrowAsset {
+    const message = { ...baseMsgBorrowAsset } as MsgBorrowAsset;
+    message.creator = object.creator ?? "";
+    message.denom = object.denom ?? "";
+    message.amount = object.amount ?? "";
+    return message;
+  },
+};
+
+const baseMsgBorrowAssetResponse: object = {};
+
+export const MsgBorrowAssetResponse = {
+  encode(
+    _: MsgBorrowAssetResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgBorrowAssetResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgBorrowAssetResponse } as MsgBorrowAssetResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgBorrowAssetResponse {
+    const message = { ...baseMsgBorrowAssetResponse } as MsgBorrowAssetResponse;
+    return message;
+  },
+
+  toJSON(_: MsgBorrowAssetResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(_: DeepPartial<MsgBorrowAssetResponse>): MsgBorrowAssetResponse {
+    const message = { ...baseMsgBorrowAssetResponse } as MsgBorrowAssetResponse;
+    return message;
+  },
+};
+
+const baseMsgRepayAsset: object = { creator: "", denom: "", amount: "" };
+
+export const MsgRepayAsset = {
+  encode(
+    message: MsgRepayAsset,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.denom !== "") {
+      writer.uint32(18).string(message.denom);
+    }
+    if (message.amount !== "") {
+      writer.uint32(26).string(message.amount);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgRepayAsset {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgRepayAsset } as MsgRepayAsset;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.denom = reader.string();
+          break;
+        case 3:
+          message.amount = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgRepayAsset {
+    const message = { ...baseMsgRepayAsset } as MsgRepayAsset;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
+    message.amount =
+      object.amount !== undefined && object.amount !== null
+        ? String(object.amount)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgRepayAsset): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.denom !== undefined && (obj.denom = message.denom);
+    message.amount !== undefined && (obj.amount = message.amount);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgRepayAsset>): MsgRepayAsset {
+    const message = { ...baseMsgRepayAsset } as MsgRepayAsset;
+    message.creator = object.creator ?? "";
+    message.denom = object.denom ?? "";
+    message.amount = object.amount ?? "";
+    return message;
+  },
+};
+
+const baseMsgRepayAssetResponse: object = {};
+
+export const MsgRepayAssetResponse = {
+  encode(
+    _: MsgRepayAssetResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgRepayAssetResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgRepayAssetResponse } as MsgRepayAssetResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgRepayAssetResponse {
+    const message = { ...baseMsgRepayAssetResponse } as MsgRepayAssetResponse;
+    return message;
+  },
+
+  toJSON(_: MsgRepayAssetResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(_: DeepPartial<MsgRepayAssetResponse>): MsgRepayAssetResponse {
+    const message = { ...baseMsgRepayAssetResponse } as MsgRepayAssetResponse;
+    return message;
+  },
+};
+
+const baseMsgSupplyAndLockAsset: object = {
+  creator: "",
+  denom: "",
+  supplyAmount: "",
+  lockAmount: "",
+};
+
+export const MsgSupplyAndLockAsset = {
+  encode(
+    message: MsgSupplyAndLockAsset,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.denom !== "") {
+      writer.uint32(18).string(message.denom);
+    }
+    if (message.supplyAmount !== "") {
+      writer.uint32(26).string(message.supplyAmount);
+    }
+    if (message.lockAmount !== "") {
+      writer.uint32(34).string(message.lockAmount);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgSupplyAndLockAsset {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgSupplyAndLockAsset } as MsgSupplyAndLockAsset;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.denom = reader.string();
+          break;
+        case 3:
+          message.supplyAmount = reader.string();
           break;
         case 4:
-          message.collateralizationRatio = reader.string();
+          message.lockAmount = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -628,11 +1689,333 @@ export const MsgCreateVaultType = {
     return message;
   },
 
-  fromJSON(object: any): MsgCreateVaultType {
-    const message = { ...baseMsgCreateVaultType } as MsgCreateVaultType;
+  fromJSON(object: any): MsgSupplyAndLockAsset {
+    const message = { ...baseMsgSupplyAndLockAsset } as MsgSupplyAndLockAsset;
     message.creator =
       object.creator !== undefined && object.creator !== null
         ? String(object.creator)
+        : "";
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
+    message.supplyAmount =
+      object.supplyAmount !== undefined && object.supplyAmount !== null
+        ? String(object.supplyAmount)
+        : "";
+    message.lockAmount =
+      object.lockAmount !== undefined && object.lockAmount !== null
+        ? String(object.lockAmount)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgSupplyAndLockAsset): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.denom !== undefined && (obj.denom = message.denom);
+    message.supplyAmount !== undefined &&
+      (obj.supplyAmount = message.supplyAmount);
+    message.lockAmount !== undefined && (obj.lockAmount = message.lockAmount);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgSupplyAndLockAsset>
+  ): MsgSupplyAndLockAsset {
+    const message = { ...baseMsgSupplyAndLockAsset } as MsgSupplyAndLockAsset;
+    message.creator = object.creator ?? "";
+    message.denom = object.denom ?? "";
+    message.supplyAmount = object.supplyAmount ?? "";
+    message.lockAmount = object.lockAmount ?? "";
+    return message;
+  },
+};
+
+const baseMsgSupplyAndLockAssetResponse: object = {};
+
+export const MsgSupplyAndLockAssetResponse = {
+  encode(
+    _: MsgSupplyAndLockAssetResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgSupplyAndLockAssetResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgSupplyAndLockAssetResponse,
+    } as MsgSupplyAndLockAssetResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgSupplyAndLockAssetResponse {
+    const message = {
+      ...baseMsgSupplyAndLockAssetResponse,
+    } as MsgSupplyAndLockAssetResponse;
+    return message;
+  },
+
+  toJSON(_: MsgSupplyAndLockAssetResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgSupplyAndLockAssetResponse>
+  ): MsgSupplyAndLockAssetResponse {
+    const message = {
+      ...baseMsgSupplyAndLockAssetResponse,
+    } as MsgSupplyAndLockAssetResponse;
+    return message;
+  },
+};
+
+const baseMsgUnlockAndWithdrawAsset: object = {
+  creator: "",
+  cdpDenom: "",
+  unlockAmount: "",
+  withdrawAmount: "",
+};
+
+export const MsgUnlockAndWithdrawAsset = {
+  encode(
+    message: MsgUnlockAndWithdrawAsset,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.cdpDenom !== "") {
+      writer.uint32(18).string(message.cdpDenom);
+    }
+    if (message.unlockAmount !== "") {
+      writer.uint32(26).string(message.unlockAmount);
+    }
+    if (message.withdrawAmount !== "") {
+      writer.uint32(34).string(message.withdrawAmount);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUnlockAndWithdrawAsset {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgUnlockAndWithdrawAsset,
+    } as MsgUnlockAndWithdrawAsset;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.cdpDenom = reader.string();
+          break;
+        case 3:
+          message.unlockAmount = reader.string();
+          break;
+        case 4:
+          message.withdrawAmount = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUnlockAndWithdrawAsset {
+    const message = {
+      ...baseMsgUnlockAndWithdrawAsset,
+    } as MsgUnlockAndWithdrawAsset;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.cdpDenom =
+      object.cdpDenom !== undefined && object.cdpDenom !== null
+        ? String(object.cdpDenom)
+        : "";
+    message.unlockAmount =
+      object.unlockAmount !== undefined && object.unlockAmount !== null
+        ? String(object.unlockAmount)
+        : "";
+    message.withdrawAmount =
+      object.withdrawAmount !== undefined && object.withdrawAmount !== null
+        ? String(object.withdrawAmount)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgUnlockAndWithdrawAsset): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.cdpDenom !== undefined && (obj.cdpDenom = message.cdpDenom);
+    message.unlockAmount !== undefined &&
+      (obj.unlockAmount = message.unlockAmount);
+    message.withdrawAmount !== undefined &&
+      (obj.withdrawAmount = message.withdrawAmount);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgUnlockAndWithdrawAsset>
+  ): MsgUnlockAndWithdrawAsset {
+    const message = {
+      ...baseMsgUnlockAndWithdrawAsset,
+    } as MsgUnlockAndWithdrawAsset;
+    message.creator = object.creator ?? "";
+    message.cdpDenom = object.cdpDenom ?? "";
+    message.unlockAmount = object.unlockAmount ?? "";
+    message.withdrawAmount = object.withdrawAmount ?? "";
+    return message;
+  },
+};
+
+const baseMsgUnlockAndWithdrawAssetResponse: object = {};
+
+export const MsgUnlockAndWithdrawAssetResponse = {
+  encode(
+    _: MsgUnlockAndWithdrawAssetResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUnlockAndWithdrawAssetResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgUnlockAndWithdrawAssetResponse,
+    } as MsgUnlockAndWithdrawAssetResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgUnlockAndWithdrawAssetResponse {
+    const message = {
+      ...baseMsgUnlockAndWithdrawAssetResponse,
+    } as MsgUnlockAndWithdrawAssetResponse;
+    return message;
+  },
+
+  toJSON(_: MsgUnlockAndWithdrawAssetResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgUnlockAndWithdrawAssetResponse>
+  ): MsgUnlockAndWithdrawAssetResponse {
+    const message = {
+      ...baseMsgUnlockAndWithdrawAssetResponse,
+    } as MsgUnlockAndWithdrawAssetResponse;
+    return message;
+  },
+};
+
+const baseMsgLiquidateCollateral: object = {
+  creator: "",
+  debtor: "",
+  collateralDenom: "",
+  debtDenom: "",
+  debtAmount: "",
+};
+
+export const MsgLiquidateCollateral = {
+  encode(
+    message: MsgLiquidateCollateral,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.debtor !== "") {
+      writer.uint32(18).string(message.debtor);
+    }
+    if (message.collateralDenom !== "") {
+      writer.uint32(26).string(message.collateralDenom);
+    }
+    if (message.debtDenom !== "") {
+      writer.uint32(34).string(message.debtDenom);
+    }
+    if (message.debtAmount !== "") {
+      writer.uint32(42).string(message.debtAmount);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgLiquidateCollateral {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgLiquidateCollateral } as MsgLiquidateCollateral;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.debtor = reader.string();
+          break;
+        case 3:
+          message.collateralDenom = reader.string();
+          break;
+        case 4:
+          message.debtDenom = reader.string();
+          break;
+        case 5:
+          message.debtAmount = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgLiquidateCollateral {
+    const message = { ...baseMsgLiquidateCollateral } as MsgLiquidateCollateral;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.debtor =
+      object.debtor !== undefined && object.debtor !== null
+        ? String(object.debtor)
         : "";
     message.collateralDenom =
       object.collateralDenom !== undefined && object.collateralDenom !== null
@@ -642,40 +2025,42 @@ export const MsgCreateVaultType = {
       object.debtDenom !== undefined && object.debtDenom !== null
         ? String(object.debtDenom)
         : "";
-    message.collateralizationRatio =
-      object.collateralizationRatio !== undefined &&
-      object.collateralizationRatio !== null
-        ? String(object.collateralizationRatio)
+    message.debtAmount =
+      object.debtAmount !== undefined && object.debtAmount !== null
+        ? String(object.debtAmount)
         : "";
     return message;
   },
 
-  toJSON(message: MsgCreateVaultType): unknown {
+  toJSON(message: MsgLiquidateCollateral): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
+    message.debtor !== undefined && (obj.debtor = message.debtor);
     message.collateralDenom !== undefined &&
       (obj.collateralDenom = message.collateralDenom);
     message.debtDenom !== undefined && (obj.debtDenom = message.debtDenom);
-    message.collateralizationRatio !== undefined &&
-      (obj.collateralizationRatio = message.collateralizationRatio);
+    message.debtAmount !== undefined && (obj.debtAmount = message.debtAmount);
     return obj;
   },
 
-  fromPartial(object: DeepPartial<MsgCreateVaultType>): MsgCreateVaultType {
-    const message = { ...baseMsgCreateVaultType } as MsgCreateVaultType;
+  fromPartial(
+    object: DeepPartial<MsgLiquidateCollateral>
+  ): MsgLiquidateCollateral {
+    const message = { ...baseMsgLiquidateCollateral } as MsgLiquidateCollateral;
     message.creator = object.creator ?? "";
+    message.debtor = object.debtor ?? "";
     message.collateralDenom = object.collateralDenom ?? "";
     message.debtDenom = object.debtDenom ?? "";
-    message.collateralizationRatio = object.collateralizationRatio ?? "";
+    message.debtAmount = object.debtAmount ?? "";
     return message;
   },
 };
 
-const baseMsgCreateVaultTypeResponse: object = {};
+const baseMsgLiquidateCollateralResponse: object = {};
 
-export const MsgCreateVaultTypeResponse = {
+export const MsgLiquidateCollateralResponse = {
   encode(
-    _: MsgCreateVaultTypeResponse,
+    _: MsgLiquidateCollateralResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     return writer;
@@ -684,12 +2069,12 @@ export const MsgCreateVaultTypeResponse = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): MsgCreateVaultTypeResponse {
+  ): MsgLiquidateCollateralResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseMsgCreateVaultTypeResponse,
-    } as MsgCreateVaultTypeResponse;
+      ...baseMsgLiquidateCollateralResponse,
+    } as MsgLiquidateCollateralResponse;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -701,117 +2086,689 @@ export const MsgCreateVaultTypeResponse = {
     return message;
   },
 
-  fromJSON(_: any): MsgCreateVaultTypeResponse {
+  fromJSON(_: any): MsgLiquidateCollateralResponse {
     const message = {
-      ...baseMsgCreateVaultTypeResponse,
-    } as MsgCreateVaultTypeResponse;
+      ...baseMsgLiquidateCollateralResponse,
+    } as MsgLiquidateCollateralResponse;
     return message;
   },
 
-  toJSON(_: MsgCreateVaultTypeResponse): unknown {
+  toJSON(_: MsgLiquidateCollateralResponse): unknown {
     const obj: any = {};
     return obj;
   },
 
   fromPartial(
-    _: DeepPartial<MsgCreateVaultTypeResponse>
-  ): MsgCreateVaultTypeResponse {
+    _: DeepPartial<MsgLiquidateCollateralResponse>
+  ): MsgLiquidateCollateralResponse {
     const message = {
-      ...baseMsgCreateVaultTypeResponse,
-    } as MsgCreateVaultTypeResponse;
+      ...baseMsgLiquidateCollateralResponse,
+    } as MsgLiquidateCollateralResponse;
+    return message;
+  },
+};
+
+const baseMsgSetLiquidationFee: object = { creator: "", liquidationFee: "" };
+
+export const MsgSetLiquidationFee = {
+  encode(
+    message: MsgSetLiquidationFee,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.liquidationFee !== "") {
+      writer.uint32(18).string(message.liquidationFee);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgSetLiquidationFee {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgSetLiquidationFee } as MsgSetLiquidationFee;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.liquidationFee = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgSetLiquidationFee {
+    const message = { ...baseMsgSetLiquidationFee } as MsgSetLiquidationFee;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.liquidationFee =
+      object.liquidationFee !== undefined && object.liquidationFee !== null
+        ? String(object.liquidationFee)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgSetLiquidationFee): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.liquidationFee !== undefined &&
+      (obj.liquidationFee = message.liquidationFee);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgSetLiquidationFee>): MsgSetLiquidationFee {
+    const message = { ...baseMsgSetLiquidationFee } as MsgSetLiquidationFee;
+    message.creator = object.creator ?? "";
+    message.liquidationFee = object.liquidationFee ?? "";
+    return message;
+  },
+};
+
+const baseMsgSetLiquidationFeeResponse: object = {};
+
+export const MsgSetLiquidationFeeResponse = {
+  encode(
+    _: MsgSetLiquidationFeeResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgSetLiquidationFeeResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgSetLiquidationFeeResponse,
+    } as MsgSetLiquidationFeeResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgSetLiquidationFeeResponse {
+    const message = {
+      ...baseMsgSetLiquidationFeeResponse,
+    } as MsgSetLiquidationFeeResponse;
+    return message;
+  },
+
+  toJSON(_: MsgSetLiquidationFeeResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgSetLiquidationFeeResponse>
+  ): MsgSetLiquidationFeeResponse {
+    const message = {
+      ...baseMsgSetLiquidationFeeResponse,
+    } as MsgSetLiquidationFeeResponse;
+    return message;
+  },
+};
+
+const baseMsgSetInterestFee: object = { creator: "", interestFee: "" };
+
+export const MsgSetInterestFee = {
+  encode(
+    message: MsgSetInterestFee,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.interestFee !== "") {
+      writer.uint32(18).string(message.interestFee);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgSetInterestFee {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgSetInterestFee } as MsgSetInterestFee;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.interestFee = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgSetInterestFee {
+    const message = { ...baseMsgSetInterestFee } as MsgSetInterestFee;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.interestFee =
+      object.interestFee !== undefined && object.interestFee !== null
+        ? String(object.interestFee)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgSetInterestFee): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.interestFee !== undefined &&
+      (obj.interestFee = message.interestFee);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgSetInterestFee>): MsgSetInterestFee {
+    const message = { ...baseMsgSetInterestFee } as MsgSetInterestFee;
+    message.creator = object.creator ?? "";
+    message.interestFee = object.interestFee ?? "";
+    return message;
+  },
+};
+
+const baseMsgSetInterestFeeResponse: object = {};
+
+export const MsgSetInterestFeeResponse = {
+  encode(
+    _: MsgSetInterestFeeResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgSetInterestFeeResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgSetInterestFeeResponse,
+    } as MsgSetInterestFeeResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgSetInterestFeeResponse {
+    const message = {
+      ...baseMsgSetInterestFeeResponse,
+    } as MsgSetInterestFeeResponse;
+    return message;
+  },
+
+  toJSON(_: MsgSetInterestFeeResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgSetInterestFeeResponse>
+  ): MsgSetInterestFeeResponse {
+    const message = {
+      ...baseMsgSetInterestFeeResponse,
+    } as MsgSetInterestFeeResponse;
+    return message;
+  },
+};
+
+const baseMsgSetStableCoinInterestRate: object = {
+  creator: "",
+  stableCoinInterestRate: "",
+};
+
+export const MsgSetStableCoinInterestRate = {
+  encode(
+    message: MsgSetStableCoinInterestRate,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.stableCoinInterestRate !== "") {
+      writer.uint32(18).string(message.stableCoinInterestRate);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgSetStableCoinInterestRate {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgSetStableCoinInterestRate,
+    } as MsgSetStableCoinInterestRate;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.stableCoinInterestRate = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgSetStableCoinInterestRate {
+    const message = {
+      ...baseMsgSetStableCoinInterestRate,
+    } as MsgSetStableCoinInterestRate;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.stableCoinInterestRate =
+      object.stableCoinInterestRate !== undefined &&
+      object.stableCoinInterestRate !== null
+        ? String(object.stableCoinInterestRate)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgSetStableCoinInterestRate): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.stableCoinInterestRate !== undefined &&
+      (obj.stableCoinInterestRate = message.stableCoinInterestRate);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgSetStableCoinInterestRate>
+  ): MsgSetStableCoinInterestRate {
+    const message = {
+      ...baseMsgSetStableCoinInterestRate,
+    } as MsgSetStableCoinInterestRate;
+    message.creator = object.creator ?? "";
+    message.stableCoinInterestRate = object.stableCoinInterestRate ?? "";
+    return message;
+  },
+};
+
+const baseMsgSetStableCoinInterestRateResponse: object = {};
+
+export const MsgSetStableCoinInterestRateResponse = {
+  encode(
+    _: MsgSetStableCoinInterestRateResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgSetStableCoinInterestRateResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgSetStableCoinInterestRateResponse,
+    } as MsgSetStableCoinInterestRateResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgSetStableCoinInterestRateResponse {
+    const message = {
+      ...baseMsgSetStableCoinInterestRateResponse,
+    } as MsgSetStableCoinInterestRateResponse;
+    return message;
+  },
+
+  toJSON(_: MsgSetStableCoinInterestRateResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgSetStableCoinInterestRateResponse>
+  ): MsgSetStableCoinInterestRateResponse {
+    const message = {
+      ...baseMsgSetStableCoinInterestRateResponse,
+    } as MsgSetStableCoinInterestRateResponse;
     return message;
   },
 };
 
 /** Msg defines the Msg service. */
 export interface Msg {
+  AddRateStrategy(
+    request: MsgAddRateStrategy
+  ): Promise<MsgAddRateStrategyResponse>;
+  RemoveRateStrategy(
+    request: MsgRemoveRateStrategy
+  ): Promise<MsgRemoveRateStrategyResponse>;
+  AddAsset(request: MsgAddAsset): Promise<MsgAddAssetResponse>;
+  UpdateRateStrategy(
+    request: MsgUpdateRateStrategy
+  ): Promise<MsgUpdateRateStrategyResponse>;
+  UpdateAsset(request: MsgUpdateAsset): Promise<MsgUpdateAssetResponse>;
+  SupplyAsset(request: MsgSupplyAsset): Promise<MsgSupplyAssetResponse>;
+  WithdrawAsset(request: MsgWithdrawAsset): Promise<MsgWithdrawAssetResponse>;
+  LockCollateral(
+    request: MsgLockCollateral
+  ): Promise<MsgLockCollateralResponse>;
+  UnlockCollateral(
+    request: MsgUnlockCollateral
+  ): Promise<MsgUnlockCollateralResponse>;
+  BorrowAsset(request: MsgBorrowAsset): Promise<MsgBorrowAssetResponse>;
+  RepayAsset(request: MsgRepayAsset): Promise<MsgRepayAssetResponse>;
+  SupplyAndLockAsset(
+    request: MsgSupplyAndLockAsset
+  ): Promise<MsgSupplyAndLockAssetResponse>;
+  UnlockAndWithdrawAsset(
+    request: MsgUnlockAndWithdrawAsset
+  ): Promise<MsgUnlockAndWithdrawAssetResponse>;
+  LiquidateCollateral(
+    request: MsgLiquidateCollateral
+  ): Promise<MsgLiquidateCollateralResponse>;
+  SetLiquidationFee(
+    request: MsgSetLiquidationFee
+  ): Promise<MsgSetLiquidationFeeResponse>;
+  SetInterestFee(
+    request: MsgSetInterestFee
+  ): Promise<MsgSetInterestFeeResponse>;
   /** this line is used by starport scaffolding # proto/tx/rpc */
-  HandleMsgAddCollateral(
-    request: MsgAddCollateral
-  ): Promise<MsgAddCollateralResponse>;
-  HandleMsgRemoveCollateral(
-    request: MsgRemoveCollateral
-  ): Promise<MsgRemoveCollateralResponse>;
-  HandleMsgAddDebt(request: MsgAddDebt): Promise<MsgAddDebtResponse>;
-  HandleMsgRemoveDebt(request: MsgRemoveDebt): Promise<MsgRemoveDebtResponse>;
-  HandleMsgCreateVaultType(
-    request: MsgCreateVaultType
-  ): Promise<MsgCreateVaultTypeResponse>;
+  SetStableCoinInterestRate(
+    request: MsgSetStableCoinInterestRate
+  ): Promise<MsgSetStableCoinInterestRateResponse>;
 }
 
 export class MsgClientImpl implements Msg {
   private readonly rpc: Rpc;
   constructor(rpc: Rpc) {
     this.rpc = rpc;
-    this.HandleMsgAddCollateral = this.HandleMsgAddCollateral.bind(this);
-    this.HandleMsgRemoveCollateral = this.HandleMsgRemoveCollateral.bind(this);
-    this.HandleMsgAddDebt = this.HandleMsgAddDebt.bind(this);
-    this.HandleMsgRemoveDebt = this.HandleMsgRemoveDebt.bind(this);
-    this.HandleMsgCreateVaultType = this.HandleMsgCreateVaultType.bind(this);
+    this.AddRateStrategy = this.AddRateStrategy.bind(this);
+    this.RemoveRateStrategy = this.RemoveRateStrategy.bind(this);
+    this.AddAsset = this.AddAsset.bind(this);
+    this.UpdateRateStrategy = this.UpdateRateStrategy.bind(this);
+    this.UpdateAsset = this.UpdateAsset.bind(this);
+    this.SupplyAsset = this.SupplyAsset.bind(this);
+    this.WithdrawAsset = this.WithdrawAsset.bind(this);
+    this.LockCollateral = this.LockCollateral.bind(this);
+    this.UnlockCollateral = this.UnlockCollateral.bind(this);
+    this.BorrowAsset = this.BorrowAsset.bind(this);
+    this.RepayAsset = this.RepayAsset.bind(this);
+    this.SupplyAndLockAsset = this.SupplyAndLockAsset.bind(this);
+    this.UnlockAndWithdrawAsset = this.UnlockAndWithdrawAsset.bind(this);
+    this.LiquidateCollateral = this.LiquidateCollateral.bind(this);
+    this.SetLiquidationFee = this.SetLiquidationFee.bind(this);
+    this.SetInterestFee = this.SetInterestFee.bind(this);
+    this.SetStableCoinInterestRate = this.SetStableCoinInterestRate.bind(this);
   }
-  HandleMsgAddCollateral(
-    request: MsgAddCollateral
-  ): Promise<MsgAddCollateralResponse> {
-    const data = MsgAddCollateral.encode(request).finish();
+  AddRateStrategy(
+    request: MsgAddRateStrategy
+  ): Promise<MsgAddRateStrategyResponse> {
+    const data = MsgAddRateStrategy.encode(request).finish();
     const promise = this.rpc.request(
       "Switcheo.carbon.cdp.Msg",
-      "HandleMsgAddCollateral",
+      "AddRateStrategy",
       data
     );
     return promise.then((data) =>
-      MsgAddCollateralResponse.decode(new _m0.Reader(data))
-    );
-  }
-
-  HandleMsgRemoveCollateral(
-    request: MsgRemoveCollateral
-  ): Promise<MsgRemoveCollateralResponse> {
-    const data = MsgRemoveCollateral.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.cdp.Msg",
-      "HandleMsgRemoveCollateral",
-      data
-    );
-    return promise.then((data) =>
-      MsgRemoveCollateralResponse.decode(new _m0.Reader(data))
+      MsgAddRateStrategyResponse.decode(new _m0.Reader(data))
     );
   }
 
-  HandleMsgAddDebt(request: MsgAddDebt): Promise<MsgAddDebtResponse> {
-    const data = MsgAddDebt.encode(request).finish();
+  RemoveRateStrategy(
+    request: MsgRemoveRateStrategy
+  ): Promise<MsgRemoveRateStrategyResponse> {
+    const data = MsgRemoveRateStrategy.encode(request).finish();
     const promise = this.rpc.request(
       "Switcheo.carbon.cdp.Msg",
-      "HandleMsgAddDebt",
+      "RemoveRateStrategy",
       data
     );
     return promise.then((data) =>
-      MsgAddDebtResponse.decode(new _m0.Reader(data))
+      MsgRemoveRateStrategyResponse.decode(new _m0.Reader(data))
     );
   }
 
-  HandleMsgRemoveDebt(request: MsgRemoveDebt): Promise<MsgRemoveDebtResponse> {
-    const data = MsgRemoveDebt.encode(request).finish();
+  AddAsset(request: MsgAddAsset): Promise<MsgAddAssetResponse> {
+    const data = MsgAddAsset.encode(request).finish();
     const promise = this.rpc.request(
       "Switcheo.carbon.cdp.Msg",
-      "HandleMsgRemoveDebt",
+      "AddAsset",
       data
     );
     return promise.then((data) =>
-      MsgRemoveDebtResponse.decode(new _m0.Reader(data))
+      MsgAddAssetResponse.decode(new _m0.Reader(data))
     );
   }
 
-  HandleMsgCreateVaultType(
-    request: MsgCreateVaultType
-  ): Promise<MsgCreateVaultTypeResponse> {
-    const data = MsgCreateVaultType.encode(request).finish();
+  UpdateRateStrategy(
+    request: MsgUpdateRateStrategy
+  ): Promise<MsgUpdateRateStrategyResponse> {
+    const data = MsgUpdateRateStrategy.encode(request).finish();
     const promise = this.rpc.request(
       "Switcheo.carbon.cdp.Msg",
-      "HandleMsgCreateVaultType",
+      "UpdateRateStrategy",
       data
     );
     return promise.then((data) =>
-      MsgCreateVaultTypeResponse.decode(new _m0.Reader(data))
+      MsgUpdateRateStrategyResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  UpdateAsset(request: MsgUpdateAsset): Promise<MsgUpdateAssetResponse> {
+    const data = MsgUpdateAsset.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Msg",
+      "UpdateAsset",
+      data
+    );
+    return promise.then((data) =>
+      MsgUpdateAssetResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  SupplyAsset(request: MsgSupplyAsset): Promise<MsgSupplyAssetResponse> {
+    const data = MsgSupplyAsset.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Msg",
+      "SupplyAsset",
+      data
+    );
+    return promise.then((data) =>
+      MsgSupplyAssetResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  WithdrawAsset(request: MsgWithdrawAsset): Promise<MsgWithdrawAssetResponse> {
+    const data = MsgWithdrawAsset.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Msg",
+      "WithdrawAsset",
+      data
+    );
+    return promise.then((data) =>
+      MsgWithdrawAssetResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  LockCollateral(
+    request: MsgLockCollateral
+  ): Promise<MsgLockCollateralResponse> {
+    const data = MsgLockCollateral.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Msg",
+      "LockCollateral",
+      data
+    );
+    return promise.then((data) =>
+      MsgLockCollateralResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  UnlockCollateral(
+    request: MsgUnlockCollateral
+  ): Promise<MsgUnlockCollateralResponse> {
+    const data = MsgUnlockCollateral.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Msg",
+      "UnlockCollateral",
+      data
+    );
+    return promise.then((data) =>
+      MsgUnlockCollateralResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  BorrowAsset(request: MsgBorrowAsset): Promise<MsgBorrowAssetResponse> {
+    const data = MsgBorrowAsset.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Msg",
+      "BorrowAsset",
+      data
+    );
+    return promise.then((data) =>
+      MsgBorrowAssetResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  RepayAsset(request: MsgRepayAsset): Promise<MsgRepayAssetResponse> {
+    const data = MsgRepayAsset.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Msg",
+      "RepayAsset",
+      data
+    );
+    return promise.then((data) =>
+      MsgRepayAssetResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  SupplyAndLockAsset(
+    request: MsgSupplyAndLockAsset
+  ): Promise<MsgSupplyAndLockAssetResponse> {
+    const data = MsgSupplyAndLockAsset.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Msg",
+      "SupplyAndLockAsset",
+      data
+    );
+    return promise.then((data) =>
+      MsgSupplyAndLockAssetResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  UnlockAndWithdrawAsset(
+    request: MsgUnlockAndWithdrawAsset
+  ): Promise<MsgUnlockAndWithdrawAssetResponse> {
+    const data = MsgUnlockAndWithdrawAsset.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Msg",
+      "UnlockAndWithdrawAsset",
+      data
+    );
+    return promise.then((data) =>
+      MsgUnlockAndWithdrawAssetResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  LiquidateCollateral(
+    request: MsgLiquidateCollateral
+  ): Promise<MsgLiquidateCollateralResponse> {
+    const data = MsgLiquidateCollateral.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Msg",
+      "LiquidateCollateral",
+      data
+    );
+    return promise.then((data) =>
+      MsgLiquidateCollateralResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  SetLiquidationFee(
+    request: MsgSetLiquidationFee
+  ): Promise<MsgSetLiquidationFeeResponse> {
+    const data = MsgSetLiquidationFee.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Msg",
+      "SetLiquidationFee",
+      data
+    );
+    return promise.then((data) =>
+      MsgSetLiquidationFeeResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  SetInterestFee(
+    request: MsgSetInterestFee
+  ): Promise<MsgSetInterestFeeResponse> {
+    const data = MsgSetInterestFee.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Msg",
+      "SetInterestFee",
+      data
+    );
+    return promise.then((data) =>
+      MsgSetInterestFeeResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  SetStableCoinInterestRate(
+    request: MsgSetStableCoinInterestRate
+  ): Promise<MsgSetStableCoinInterestRateResponse> {
+    const data = MsgSetStableCoinInterestRate.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Msg",
+      "SetStableCoinInterestRate",
+      data
+    );
+    return promise.then((data) =>
+      MsgSetStableCoinInterestRateResponse.decode(new _m0.Reader(data))
     );
   }
 }

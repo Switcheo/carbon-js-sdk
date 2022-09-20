@@ -2,10 +2,10 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { PageRequest, PageResponse } from "../query/pagination";
-import { Transaction } from "../misc/transaction";
+import { Transaction } from "./transaction";
 import { Order } from "../order/order";
-import { MessageType } from "../misc/message_type";
-import { Block } from "../misc/block";
+import { MessageType } from "./message_type";
+import { Block } from "./block";
 
 export const protobufPackage = "Switcheo.carbon.misc";
 
