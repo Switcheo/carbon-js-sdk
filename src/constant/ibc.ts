@@ -94,9 +94,6 @@ export const swthIbcWhitelist: string[] = [ChainIds.Osmosis];
 // whitelisted networks for addition of transfer options
 export const ibcWhitelist: string[] = [ChainIds.Osmosis, ChainIds.Terra, ChainIds.CosmosHub, ChainIds.Juno, ChainIds.Evmos, ChainIds.Axelar];
 
-// blacklisted networks for address generation and input
-export const ibcAddrBlacklist: string[] = [ChainIds.Terra, ChainIds.Evmos, ChainIds.Juno];
-
 export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
   [ChainIds.Osmosis]: {
     rpc: "https://rpc-osmosis.keplr.app",
@@ -1568,48 +1565,12 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
 		chainName: "Axelar",
 		chainId: ChainIds.Axelar,
 		bech32Config: IBCAddress.defaultBech32Config("axelar"),
-		features: ["stargate", "ibc-transfer", "ibc-go"],
+		features: ["stargate", "ibc-transfer", "ibc-go", "no-legacy-stdTx"],
 		explorerUrlToTx: "https://axelarscan.io/tx/{txHash}",
 	},
 };
 
-export interface DenomUnit {
-  denom: string;
-  exponent: number;
-  aliases?: string[];
-}
-
-export interface LogoURI {
-  png: string;
-  svg?: string;
-}
-
-export interface IBCObj {
-  source_channel: string;
-  dst_channel: string;
-  source_denom: string;
-}
-
-export interface AssetData {
-  description?: string;
-  type_asset?: string;
-  address?: string;
-  denom_units: DenomUnit[];
-  base: string;
-  name: string;
-  display: string;
-  symbol: string;
-  ibc?: IBCObj;
-  logo_URIs: LogoURI;
-  coingecko_id?: string;
-}
-
 export type AssetListObj = SimpleMap<SimpleMap<AppCurrency>>
-
-// Blacklist evmos because it has the same ibc denom as osmo
-export const IbcTokenBlacklist: SimpleMap<string[]> = {
-	[ChainIds.Osmosis]: ["evmos"],
-};
 
 export interface ChannelConfig {
 	sourceChannel: string;
@@ -1645,9 +1606,9 @@ export const swthChannels: SimpleMap<ChannelConfig> = {
 
 export const ibcTokenRegex = /^ibc\/([a-f\d]+)$/i
 
-export const ibcNetworkRegex = /^([a-z\d_]+)-([\d]+)$/i
+export const ibcNetworkRegex = /^([a-z\d_-]+)-([\d]+)$/i
 
-export const ibcDefaultGas: number = 450000;
+export const ibcDefaultGas: number = 150000;
 
 export interface GasPriceStep {
 	low: number;

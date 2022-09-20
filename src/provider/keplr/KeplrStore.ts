@@ -1,4 +1,4 @@
-import { ChainInfoExplorerTmRpc } from "@carbon-sdk/constant/ibc";
+import { ChainInfoExplorerTmRpc, ibcDefaultGas } from "@carbon-sdk/constant/ibc";
 import {
   AccountStore,
   ChainStore,
@@ -47,6 +47,12 @@ export class RootStore {
           suggestChain: true,
           autoInit: true,
           getKeplr,
+          msgOpts: {
+            ibcTransfer: {
+              type: 'cosmos-sdk/MsgTransfer',
+              gas: ibcDefaultGas,
+            },
+          },
         },
       }
     );
