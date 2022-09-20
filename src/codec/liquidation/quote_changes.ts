@@ -2,7 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Order } from "../order/order";
-import { OutstandingPosition } from "../liquidation/outstanding_position";
+import { OutstandingPosition } from "./outstanding_position";
 
 export const protobufPackage = "Switcheo.carbon.liquidation";
 

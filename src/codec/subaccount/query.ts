@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { SubAccount, GenesisSubAccount } from "../subaccount/subaccount";
+import { SubAccount, GenesisSubAccount } from "./subaccount";
 import {
   PageRequest,
   PageResponse,

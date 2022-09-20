@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Order } from "../order/order";
+import { Order } from "./order";
 import { Timestamp } from "../google/protobuf/timestamp";
 
 export const protobufPackage = "Switcheo.carbon.order";
