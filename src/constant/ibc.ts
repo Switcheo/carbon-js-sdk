@@ -86,15 +86,13 @@ export enum ChainIds {
 	Decentr = "mainnet-3",
 	Certik = "shentu-2.2",
 	Carbon = "carbon-1",
+	Axelar = "axelar-dojo-1",
 }
 
 // whitelisted networks for addition of swth as a currency
 export const swthIbcWhitelist: string[] = [ChainIds.Osmosis];
 // whitelisted networks for addition of transfer options
-export const ibcWhitelist: string[] = [ChainIds.Osmosis, ChainIds.Terra, ChainIds.CosmosHub, ChainIds.Juno, ChainIds.Evmos];
-
-// blacklisted networks for address generation and input
-export const ibcAddrBlacklist: string[] = [ChainIds.Terra, ChainIds.Evmos, ChainIds.Juno];
+export const ibcWhitelist: string[] = [ChainIds.Osmosis, ChainIds.Terra, ChainIds.CosmosHub, ChainIds.Juno, ChainIds.Evmos, ChainIds.Axelar];
 
 export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
   [ChainIds.Osmosis]: {
@@ -1537,45 +1535,42 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
 		features: ["stargate", "ibc-transfer", "ibc-go"],
 		explorerUrlToTx: "https://scan.carbon.network/transaction/{txHash}?net=main",
 	},
+	[ChainIds.Axelar]: {
+		feeCurrencies: [{
+			coinDenom: "AXL",
+			coinMinimalDenom: "uaxl",
+			coinDecimals: 6,
+			coinGeckoId: "", // TODO: fill in when available
+		}],
+		gasPriceStep: {
+			low: 0.00005,
+			average: 0.00007,
+			high: 0.00009,
+		},
+		bip44: { coinType: 118 },
+		currencies: [{
+			coinDenom: "AXL",
+			coinMinimalDenom: "uaxl",
+			coinDecimals: 6,
+			coinGeckoId: "", // TODO: fill in when available
+		}],
+		stakeCurrency: {
+			coinDenom: "AXL",
+			coinMinimalDenom: "uaxl",
+			coinDecimals: 6,
+			coinGeckoId: "", // TODO: fill in when available
+		},
+		rpc: "https://rpc-axelar.keplr.app",
+		rest: "https://lcd-axelar.keplr.app",
+		chainName: "Axelar",
+		chainId: ChainIds.Axelar,
+		bech32Config: IBCAddress.defaultBech32Config("axelar"),
+		features: ["stargate", "ibc-transfer", "ibc-go", "no-legacy-stdTx"],
+		explorerUrlToTx: "https://axelarscan.io/tx/{txHash}",
+	},
 };
-
-export interface DenomUnit {
-  denom: string;
-  exponent: number;
-  aliases?: string[];
-}
-
-export interface LogoURI {
-  png: string;
-  svg?: string;
-}
-
-export interface IBCObj {
-  source_channel: string;
-  dst_channel: string;
-  source_denom: string;
-}
-
-export interface AssetData {
-  description?: string;
-  type_asset?: string;
-  address?: string;
-  denom_units: DenomUnit[];
-  base: string;
-  name: string;
-  display: string;
-  symbol: string;
-  ibc?: IBCObj;
-  logo_URIs: LogoURI;
-  coingecko_id?: string;
-}
 
 export type AssetListObj = SimpleMap<SimpleMap<AppCurrency>>
-
-// Blacklist evmos because it has the same ibc denom as osmo
-export const IbcTokenBlacklist: SimpleMap<string[]> = {
-	[ChainIds.Osmosis]: ["evmos"],
-};
 
 export interface ChannelConfig {
 	sourceChannel: string;
@@ -1603,13 +1598,17 @@ export const swthChannels: SimpleMap<ChannelConfig> = {
 		sourceChannel: "channel-6",
 		dstChannel: "channel-23",
 	},
+	[ChainIds.Axelar]: {
+		sourceChannel: "channel-7",
+		dstChannel: "channel-37",
+	},
 };
 
 export const ibcTokenRegex = /^ibc\/([a-f\d]+)$/i
 
-export const ibcNetworkRegex = /^([a-z\d_]+)-([\d]+)$/i
+export const ibcNetworkRegex = /^([a-z\d_-]+)-([\d]+)$/i
 
-export const ibcDefaultGas: number = 450000;
+export const ibcDefaultGas: number = 150000;
 
 export interface GasPriceStep {
 	low: number;
