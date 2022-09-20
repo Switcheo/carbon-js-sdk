@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Params } from "../ccm/ccm";
+import { Params } from "./ccm";
 
 export const protobufPackage = "Switcheo.carbon.ccm";
 
