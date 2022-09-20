@@ -1543,7 +1543,7 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
 			coinDenom: "AXL",
 			coinMinimalDenom: "uaxl",
 			coinDecimals: 6,
-			coinGeckoId: '', // TODO: fill in when available
+			coinGeckoId: "", // TODO: fill in when available
 		}],
 		gasPriceStep: {
 			low: 0.00005,
@@ -1555,13 +1555,13 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
 			coinDenom: "AXL",
 			coinMinimalDenom: "uaxl",
 			coinDecimals: 6,
-			coinGeckoId: '', // TODO: fill in when available
+			coinGeckoId: "", // TODO: fill in when available
 		}],
 		stakeCurrency: {
 			coinDenom: "AXL",
 			coinMinimalDenom: "uaxl",
 			coinDecimals: 6,
-			coinGeckoId: '', // TODO: fill in when available
+			coinGeckoId: "", // TODO: fill in when available
 		},
 		rpc: "https://rpc-axelar.keplr.app",
 		rest: "https://lcd-axelar.keplr.app",
