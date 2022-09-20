@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { MsgGasCost, MinGasPrice } from "../fee/fee";
+import { MsgGasCost, MinGasPrice } from "./fee";
 import {
   PageRequest,
   PageResponse,
