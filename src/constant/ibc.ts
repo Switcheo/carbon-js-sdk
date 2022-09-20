@@ -86,12 +86,13 @@ export enum ChainIds {
 	Decentr = "mainnet-3",
 	Certik = "shentu-2.2",
 	Carbon = "carbon-1",
+	Axelar = "axelar-dojo-1",
 }
 
 // whitelisted networks for addition of swth as a currency
 export const swthIbcWhitelist: string[] = [ChainIds.Osmosis];
 // whitelisted networks for addition of transfer options
-export const ibcWhitelist: string[] = [ChainIds.Osmosis, ChainIds.Terra, ChainIds.CosmosHub, ChainIds.Juno, ChainIds.Evmos];
+export const ibcWhitelist: string[] = [ChainIds.Osmosis, ChainIds.Terra, ChainIds.CosmosHub, ChainIds.Juno, ChainIds.Evmos, ChainIds.Axelar];
 
 // blacklisted networks for address generation and input
 export const ibcAddrBlacklist: string[] = [ChainIds.Terra, ChainIds.Evmos, ChainIds.Juno];
@@ -1537,6 +1538,39 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
 		features: ["stargate", "ibc-transfer", "ibc-go"],
 		explorerUrlToTx: "https://scan.carbon.network/transaction/{txHash}?net=main",
 	},
+	[ChainIds.Axelar]: {
+		feeCurrencies: [{
+			coinDenom: "AXL",
+			coinMinimalDenom: "uaxl",
+			coinDecimals: 6,
+			coinGeckoId: '', // TODO: fill in when available
+		}],
+		gasPriceStep: {
+			low: 0.00005,
+			average: 0.00007,
+			high: 0.00009,
+		},
+		bip44: { coinType: 118 },
+		currencies: [{
+			coinDenom: "AXL",
+			coinMinimalDenom: "uaxl",
+			coinDecimals: 6,
+			coinGeckoId: '', // TODO: fill in when available
+		}],
+		stakeCurrency: {
+			coinDenom: "AXL",
+			coinMinimalDenom: "uaxl",
+			coinDecimals: 6,
+			coinGeckoId: '', // TODO: fill in when available
+		},
+		rpc: "https://rpc-axelar.keplr.app",
+		rest: "https://lcd-axelar.keplr.app",
+		chainName: "Axelar",
+		chainId: ChainIds.Axelar,
+		bech32Config: IBCAddress.defaultBech32Config("axelar"),
+		features: ["stargate", "ibc-transfer", "ibc-go"],
+		explorerUrlToTx: "https://axelarscan.io/tx/{txHash}",
+	},
 };
 
 export interface DenomUnit {
@@ -1602,6 +1636,10 @@ export const swthChannels: SimpleMap<ChannelConfig> = {
 	[ChainIds.Evmos]: {
 		sourceChannel: "channel-6",
 		dstChannel: "channel-23",
+	},
+	[ChainIds.Axelar]: {
+		sourceChannel: "channel-7",
+		dstChannel: "channel-37",
 	},
 };
 
