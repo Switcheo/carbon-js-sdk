@@ -34,7 +34,7 @@ class KeplrAccount {
     const coingeckoIdMap = tokenClient.geckoTokenNames;
     const feeCurrencies: AppCurrency[] = gasPricesResult.minGasPrices.reduce((result: AppCurrency[], price: MinGasPrice) => {
       const token = tokenClient.tokenForDenom(price.denom);
-      if (!token) return result;
+      if (!token || token.denom === 'swth') return result;
       result.push({
         coinDenom: token.denom,
         coinMinimalDenom: token.denom,
