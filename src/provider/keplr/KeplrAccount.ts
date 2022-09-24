@@ -36,7 +36,7 @@ class KeplrAccount {
       const token = tokenClient.tokenForDenom(price.denom);
       if (!token || token.denom === 'swth') return result;
       result.push({
-        coinDenom: token.denom,
+        coinDenom: token.symbol ?? token.denom,
         coinMinimalDenom: token.denom,
         coinDecimals: token.decimals.toNumber(),
         coinGeckoId: coingeckoIdMap[token.denom],
