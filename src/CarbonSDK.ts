@@ -6,7 +6,7 @@ import { CarbonQueryClient, ETHClient, HydrogenClient, InsightsQueryClient, NEOC
 import N3Client from "./clients/N3Client";
 import { AdminModule, BankModule, BrokerModule, CDPModule, CoinModule, FeeModule, GovModule, IBCModule, LeverageModule, LiquidityPoolModule, MarketModule, OracleModule, OrderModule, PositionModule, ProfileModule, SubAccountModule, XChainModule } from "./modules";
 import { StakingModule } from "./modules/staking";
-import { CosmosLedger } from "./provider";
+import { CosmosLedger, Keplr, KeplrAccount } from "./provider";
 import { Blockchain } from "./util/blockchain";
 import { CarbonSigner, CarbonWallet, CarbonWalletGenericOpts } from "./wallet";
 
@@ -204,6 +204,15 @@ class CarbonSDK {
     return sdk.connectWithLedger(ledger, walletOpts);
   }
 
+  public static async instanceWithKeplr(
+    keplr: Keplr,
+    sdkOpts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS,
+    walletOpts?: CarbonWalletGenericOpts,
+  ) {
+    const sdk = await CarbonSDK.instance(sdkOpts);
+    return sdk.connectWithKeplr(keplr, walletOpts);
+  }
+
   public static async instanceViewOnly(
     bech32Address: string,
     sdkOpts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS,
@@ -312,6 +321,25 @@ class CarbonSDK {
       config: this.configOverride,
     })
     return this.connect(wallet)
+  }
+
+  public async connectWithKeplr(
+    keplr: Keplr,
+    opts?: CarbonWalletGenericOpts,
+  ) {
+    const chainInfo = await KeplrAccount.getChainInfo(this);
+    const chainId = chainInfo.chainId;
+    const keplrKey = await keplr.getKey(chainId);
+
+    await keplr.experimentalSuggestChain(chainInfo);
+    await keplr.enable(chainId);
+
+    const wallet = CarbonWallet.withKeplr(keplr, chainInfo, keplrKey, {
+      ...opts,
+      network: this.network,
+      config: this.configOverride,
+    });
+    return this.connect(wallet);
   }
 
   public async connectViewOnly(

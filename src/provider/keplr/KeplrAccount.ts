@@ -1,7 +1,10 @@
 import { MinGasPrice } from "@carbon-sdk/codec";
 import { Network } from "@carbon-sdk/constant";
+import { Models } from "@carbon-sdk/index";
 import { AddressUtils } from "@carbon-sdk/util";
-import { AppCurrency, ChainInfo } from "@keplr-wallet/types";
+import { CarbonSigner, CarbonSignerTypes } from "@carbon-sdk/wallet";
+import { Algo } from "@cosmjs/proto-signing";
+import { AppCurrency, ChainInfo, Keplr, Key } from "@keplr-wallet/types";
 import SDKProvider from "../sdk";
 
 const SWTH = {
@@ -22,7 +25,26 @@ class KeplrAccount {
       average: 1.5,
       high: 2,
     },
-  } as const
+  } as const;
+
+  static createKeplrSigner(keplr: Keplr, chainInfo: ChainInfo, account: Key): CarbonSigner {
+    const signDirect = async (signerAddress: string, doc: Models.Tx.SignDoc) => {
+      const signOpts = { preferNoSetFee: true };
+      return await keplr!.signDirect(chainInfo.chainId, signerAddress, doc, signOpts);
+    };
+
+    const getAccounts = async () => [{
+      algo: 'secp256k1' as Algo,
+      address: account.bech32Address,
+      pubkey: account.pubKey,
+    }];
+
+    return {
+      type: CarbonSignerTypes.BrowserInjected,
+      signDirect,
+      getAccounts,
+    };
+  }
 
   static async getChainInfo(configProvider: SDKProvider): Promise<ChainInfo> {
     const config = configProvider.getConfig();
