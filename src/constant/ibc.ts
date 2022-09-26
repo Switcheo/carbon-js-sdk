@@ -1543,9 +1543,9 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
 			coinGeckoId: "", // TODO: fill in when available
 		}],
 		gasPriceStep: {
-			low: 0.00005,
-			average: 0.00007,
-			high: 0.00009,
+			low: 0.007,
+			average: 0.007,
+			high: 0.01,
 		},
 		bip44: { coinType: 118 },
 		currencies: [{
