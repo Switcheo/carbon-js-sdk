@@ -1,90 +1,190 @@
-import { MsgAddCollateral, MsgAddDebt, MsgRemoveCollateral, MsgRemoveDebt } from "@carbon-sdk/codec/cdp/tx";
+import { MsgAddAsset, MsgAddRateStrategy, MsgBorrowAsset, MsgLiquidateCollateral, MsgLockCollateral, MsgRemoveRateStrategy, MsgRepayAsset, MsgSetInterestFee, MsgSetLiquidationFee, MsgSetStableCoinInterestRate, MsgSupplyAndLockAsset, MsgSupplyAsset, MsgUnlockAndWithdrawAsset, MsgUnlockCollateral, MsgUpdateAsset, MsgUpdateRateStrategy, MsgWithdrawAsset } from "@carbon-sdk/codec/cdp/tx";
 import { CarbonTx } from "@carbon-sdk/util";
 import BaseModule from "./base";
 import { BigNumber } from "bignumber.js";
-import Long from "long";
 
 export class CDPModule extends BaseModule {
 
-  public async addCollateral(params: CDPModule.AddCollateralParams, opts?: CarbonTx.SignTxOpts) {
+  public async supplyAsset(params: CDPModule.SupplyAssetParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = MsgAddCollateral.fromPartial({
+    const value = MsgSupplyAsset.fromPartial({
       creator: wallet.bech32Address,
-      vaultTypeId: new Long(params.vaultTypeId),
+      denom: params.denom,
       amount: params.amount.toString(10),
     })
 
     return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgAddCollateral,
-      value,
+      typeUrl: CarbonTx.Types.MsgSupplyAsset,
+      value
     }, opts);
   }
 
-  public async removeCollateral(params: CDPModule.RemoveCollateralParams, opts?: CarbonTx.SignTxOpts) {
+  public async withdrawAsset(params: CDPModule.WithdrawAssetParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = MsgRemoveCollateral.fromPartial({
+    const value = MsgWithdrawAsset.fromPartial({
       creator: wallet.bech32Address,
-      vaultTypeId: new Long(params.vaultTypeId),
+      cdpDenom: params.cdpDenom,
       amount: params.amount.toString(10),
     })
 
     return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgRemoveCollateral,
-      value,
+      typeUrl: CarbonTx.Types.MsgWithdrawAsset,
+      value
     }, opts);
   }
 
-  public async addDebt(params: CDPModule.AddDebtParams, opts?: CarbonTx.SignTxOpts) {
+  public async lockCollateral(params: CDPModule.LockCollateralParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = MsgAddDebt.fromPartial({
+    const value = MsgLockCollateral.fromPartial({
       creator: wallet.bech32Address,
-      vaultTypeId: new Long(params.vaultTypeId),
+      cdpDenom: params.cdpDenom,
       amount: params.amount.toString(10),
     })
 
     return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgAddDebt,
-      value,
+      typeUrl: CarbonTx.Types.MsgLockCollateral,
+      value
     }, opts);
   }
 
-  public async removeDebt(params: CDPModule.RemoveDebtParams, opts?: CarbonTx.SignTxOpts) {
+  public async unlockCollateral(params: CDPModule.UnlockCollateralParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = MsgRemoveDebt.fromPartial({
+    const value = MsgUnlockCollateral.fromPartial({
       creator: wallet.bech32Address,
-      vaultTypeId: new Long(params.vaultTypeId),
+      cdpDenom: params.cdpDenom,
       amount: params.amount.toString(10),
     })
 
     return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgRemoveDebt,
-      value,
+      typeUrl: CarbonTx.Types.MsgUnlockCollateral,
+      value
+    }, opts);
+  }
+
+  public async borrowAsset(params: CDPModule.BorrowAssetParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+
+    const value = MsgBorrowAsset.fromPartial({
+      creator: wallet.bech32Address,
+      denom: params.denom,
+      amount: params.amount.toString(10),
+    })
+
+    return await wallet.sendTx({
+      typeUrl: CarbonTx.Types.MsgBorrowAsset,
+      value
+    }, opts);
+  }
+
+  public async repayAsset(params: CDPModule.RepayAssetParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+
+    const value = MsgRepayAsset.fromPartial({
+      creator: wallet.bech32Address,
+      denom: params.denom,
+      amount: params.amount.toString(10),
+    })
+
+    return await wallet.sendTx({
+      typeUrl: CarbonTx.Types.MsgRepayAsset,
+      value
+    }, opts);
+  }
+
+  public async supplyAndLockAsset(params: CDPModule.SupplyAndLockAssetParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+
+    const value = MsgSupplyAndLockAsset.fromPartial({
+      creator: wallet.bech32Address,
+      denom: params.denom,
+      supplyAmount: params.supplyAmount.toString(10),
+      lockAmount: params.lockAmount.toString(10),
+    })
+
+    return await wallet.sendTx({
+      typeUrl: CarbonTx.Types.MsgSupplyAndLockAsset,
+      value
+    }, opts);
+  }
+
+  public async unlockAndWithdrawAsset(params: CDPModule.UnlockAndWithdrawAssetParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+
+    const value = MsgUnlockAndWithdrawAsset.fromPartial({
+      creator: wallet.bech32Address,
+      cdpDenom: params.cdpDenom,
+      unlockAmount: params.unlockAmount.toString(10),
+      withdrawAmount: params.withdrawAmount.toString(10),
+    })
+
+    return await wallet.sendTx({
+      typeUrl: CarbonTx.Types.MsgUnlockAndWithdrawAsset,
+      value
+    }, opts);
+  }
+
+  public async liquidateCollateral(params: CDPModule.LiquidateCollateralParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+
+    const value = MsgLiquidateCollateral.fromPartial({
+      creator: wallet.bech32Address,
+      debtor: params.debtor,
+      collateralDenom: params.collateralDenom,
+      debtDenom: params.debtDenom,
+      debtAmount: params.debtAmount.toString(10),
+    })
+
+    return await wallet.sendTx({
+      typeUrl: CarbonTx.Types.MsgLiquidateCollateral,
+      value
     }, opts);
   }
 }
 
 export namespace CDPModule {
-  export interface AddCollateralParams {
-    vaultTypeId: number
+  export interface SupplyAssetParams {
+    denom: string
+    amount: BigNumber
+  }
+  export interface WithdrawAssetParams {
+    cdpDenom: string
+    amount: BigNumber
+  }
+  export interface LockCollateralParams {
+    cdpDenom: string
+    amount: BigNumber
+  }
+  export interface UnlockCollateralParams {
+    cdpDenom: string
+    amount: BigNumber
+  }
+  export interface BorrowAssetParams {
+    denom: string
     amount: BigNumber
   }
 
-  export interface RemoveCollateralParams {
-    vaultTypeId: number
+  export interface RepayAssetParams {
+    denom: string
     amount: BigNumber
   }
-
-  export interface AddDebtParams {
-    vaultTypeId: number
-    amount: BigNumber
+  export interface SupplyAndLockAssetParams {
+    denom: string
+    supplyAmount: BigNumber
+    lockAmount: BigNumber
   }
-
-  export interface RemoveDebtParams {
-    vaultTypeId: number
-    amount: BigNumber
+  export interface UnlockAndWithdrawAssetParams {
+    cdpDenom: string
+    unlockAmount: BigNumber
+    withdrawAmount: BigNumber
+  }
+  export interface LiquidateCollateralParams {
+    debtor: string
+    collateralDenom: string
+    debtDenom: string
+    debtAmount: BigNumber
   }
 };
