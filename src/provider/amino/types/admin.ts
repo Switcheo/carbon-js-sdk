@@ -25,6 +25,14 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
   RemoveMinGasPrice: "fee/RemoveMinGasPrice",
   CreateValidator: "cosmos-sdk/MsgCreateValidator",
   EditValidator: "cosmos-sdk/MsgEditValidator",
+  AddRateStrategy: "cdp/AddRateStrategy",
+  UpdateRateStrategy: "cdp/UpdateRateStrategy",
+  RemoveRateStrategy: "cdp/RemoveRateStrategy",
+  AddAsset: "cdp/AddAsset",
+  UpdateAsset: "cdp/UpdateAsset",
+  SetLiquidationFee: "cdp/SetLiquidationFee",
+  SetInterestFee: "cdp/SetInterestFee",
+  SetStableCoinInterestRate: "cdp/SetStableCoinInterestRate",
 }
 
 const MsgCreateOracle: AminoInit = {
@@ -70,13 +78,6 @@ const MsgCreateMarket: AminoInit = {
     expiryTime: ConvertEncType.Date,
     currentBasePriceUsd: ConvertEncType.Dec,
     currentQuotePriceUsd: ConvertEncType.Dec,
-  },
-};
-
-const MsgCreateVaultType: AminoInit = {
-  aminoType: TxTypes.CreateVaultType,
-  valueMap: {
-    collateralizationRatio: ConvertEncType.Dec,
   },
 };
 
@@ -180,6 +181,46 @@ const MsgEditValidator: AminoInit = {
   },
 };
 
+const MsgAddRateStrategy: AminoInit = {
+  aminoType: TxTypes.AddRateStrategy,
+  valueMap: {}
+}
+
+const MsgUpdateRateStrategy: AminoInit = {
+  aminoType: TxTypes.UpdateRateStrategy,
+  valueMap: {}
+}
+
+const MsgRemoveRateStrategy: AminoInit = {
+  aminoType: TxTypes.RemoveRateStrategy,
+  valueMap: {}
+}
+
+const MsgAddAsset: AminoInit = {
+  aminoType: TxTypes.AddAsset,
+  valueMap: {}
+}
+
+const MsgUpdateAsset: AminoInit = {
+  aminoType: TxTypes.UpdateAsset,
+  valueMap: {}
+}
+
+const MsgSetLiquidationFee: AminoInit = {
+  aminoType: TxTypes.SetLiquidationFee,
+  valueMap: {}
+}
+
+const MsgSetInterestFee: AminoInit = {
+  aminoType: TxTypes.SetInterestFee,
+  valueMap: {}
+}
+
+const MsgSetStableCoinInterestRate: AminoInit = {
+  aminoType: TxTypes.SetStableCoinInterestRate,
+  valueMap: {}
+}
+
 const AdminAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgCreateOracle]: generateAminoType(MsgCreateOracle),
   [CarbonTx.Types.MsgBindToken]: generateAminoType(MsgBindToken),
@@ -187,7 +228,6 @@ const AdminAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgLinkToken]: generateAminoType(MsgLinkToken),
   [CarbonTx.Types.MsgSyncToken]: generateAminoType(MsgSyncToken),
   [CarbonTx.Types.MsgCreateMarket]: generateAminoType(MsgCreateMarket),
-  [CarbonTx.Types.MsgCreateVaultType]: generateAminoType(MsgCreateVaultType),
   [CarbonTx.Types.MsgLinkPool]: generateAminoType(MsgLinkPool),
   [CarbonTx.Types.MsgUnlinkPool]: generateAminoType(MsgUnlinkPool),
   [CarbonTx.Types.MsgUpdatePool]: generateAminoType(MsgUpdatePool),
@@ -201,6 +241,14 @@ const AdminAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgRemoveMinGasPrice]: generateAminoType(MsgRemoveMinGasPrice),
   [CarbonTx.Types.MsgCreateValidator]: generateAminoType(MsgCreateValidator),
   [CarbonTx.Types.MsgEditValidator]: generateAminoType(MsgEditValidator),
+  [CarbonTx.Types.MsgAddRateStrategy]: generateAminoType(MsgAddRateStrategy),
+  [CarbonTx.Types.MsgUpdateRateStrategy]: generateAminoType(MsgUpdateRateStrategy),
+  [CarbonTx.Types.MsgRemoveRateStrategy]: generateAminoType(MsgRemoveRateStrategy),
+  [CarbonTx.Types.MsgAddAsset]: generateAminoType(MsgAddAsset),
+  [CarbonTx.Types.MsgUpdateAsset]: generateAminoType(MsgUpdateAsset),
+  [CarbonTx.Types.MsgSetLiquidationFee]: generateAminoType(MsgSetLiquidationFee),
+  [CarbonTx.Types.MsgSetInterestFee]: generateAminoType(MsgSetInterestFee),
+  [CarbonTx.Types.MsgSetStableCoinInterestRate]: generateAminoType(MsgSetStableCoinInterestRate),
 };
 
 export default AdminAmino;
