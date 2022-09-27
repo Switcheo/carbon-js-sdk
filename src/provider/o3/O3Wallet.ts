@@ -2,8 +2,7 @@ import { AminoSignResponse, encodeSecp256k1Signature, StdSignDoc } from "@cosmjs
 import { NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
 import { AminoCarbonSigner, CarbonSDK, CarbonSignerTypes, Models } from "@carbon-sdk/index";
 import { sortObject } from "@carbon-sdk/util/generic";
-import { u } from "@cityofzion/neon-js-next";
-import { u as coreUtils } from "@cityofzion/neon-core-next"
+import Neon from "@cityofzion/neon-core-next"
 import neoDapi from "neo-dapi";
 import neo3Dapi from "neo3-dapi";
 import { AddressUtils, ExternalUtils, TypeUtils } from "@carbon-sdk/util";
@@ -90,8 +89,8 @@ export class O3Wallet {
         throw new Error("O3 wallet is not connected. Please reconnect and perform this transaction again.");
       }
 
-      const scriptHash = u.reverseHex(token.bridgeAddress);
-      const tokenScriptHash = u.reverseHex(token.tokenAddress);
+      const scriptHash = Neon.u.reverseHex(token.bridgeAddress);
+      const tokenScriptHash = Neon.u.reverseHex(token.tokenAddress);
       const nonce = Math.floor(Math.random() * 1000000);
       const scriptHashAccount = this.neoNetwork === "N3MainNet"
         ? AddressUtils.N3Address.publicKeyToScriptHash(this.publicKey)
@@ -103,7 +102,7 @@ export class O3Wallet {
         { type: O3Types.ArgTypes.ByteArray, value: toAddress },
         { type: O3Types.ArgTypes.Integer, value: amount.toString(10) },
         { type: O3Types.ArgTypes.Integer, value: feeAmount.toString(10) },
-        { type: O3Types.ArgTypes.ByteArray, value: coreUtils.HexString.fromHex(this.networkConfig.feeAddress, true) },
+        { type: O3Types.ArgTypes.ByteArray, value: Neon.u.HexString.fromHex(this.networkConfig.feeAddress, true) },
         { type: O3Types.ArgTypes.Integer, value: nonce.toString() },
       ];
 
@@ -162,7 +161,7 @@ export class O3Wallet {
       const balances: O3Types.Balance[] = response[this.address];
       balances.forEach((balance: O3Types.Balance) => {
         const assetId = balance.assetID?.replace('0x', '') ?? balance.contract.replace('0x', '');
-        const tokenContract = u.reverseHex(assetId);
+        const tokenContract = Neon.u.reverseHex(assetId);
         const tokenInfo = tokenMap[tokenContract];
         if (!tokenInfo) {
           return

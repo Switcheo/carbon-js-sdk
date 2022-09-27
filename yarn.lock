@@ -29,13 +29,7 @@
     isomorphic-ws "4.0.1"
     ws "7.4.5"
 
-"@cityofzion/neon-api@^5.0.0":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@cityofzion/neon-api/-/neon-api-5.0.0.tgz#7f8e68b14923dfb8c1292836c276b178f5184372"
-  integrity sha512-nvslHi77gv1Vc44rZb2QamQyWhWGhooXDnVCIA6BZUpiArMWZ3TNYaDCXLWQTSvz14UdcYN8WIIt9v/vcD/wqg==
-
-"@cityofzion/neon-core-next@npm:@cityofzion/neon-core@^5.0.0", "@cityofzion/neon-core@^5.0.0":
-  name "@cityofzion/neon-core-next"
+"@cityofzion/neon-core-next@npm:@cityofzion/neon-core@^5.0.0":
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/@cityofzion/neon-core/-/neon-core-5.0.0.tgz#6b242782404df474285ad7760224871444cc1d35"
   integrity sha512-OJPZsgWxXFCSSFo6WiGmxn+/2XP0w0JXT8oYOqYxKfFYJXNh6/ENuglMs7w5jMpFsYb/Hp6Hy8qdXf/Q3Es9jg==
@@ -74,30 +68,6 @@
     scrypt-js "3.0.1"
     secure-random "1.1.2"
     wif "2.0.6"
-
-"@cityofzion/neon-js-next@npm:@cityofzion/neon-js@^5.0.0":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@cityofzion/neon-js/-/neon-js-5.0.0.tgz#018df01d691f0736f5e604f2b87d01ef102bb5cf"
-  integrity sha512-c1c1wkGEn3vGds+T61Ki9Dm5uycrIUmC9UgtwrztkAhuZXxL86QgaAOCARLnJol+/qsHLSUwUmHo7cIrcMVWJA==
-  dependencies:
-    "@cityofzion/neon-api" "^5.0.0"
-    "@cityofzion/neon-core" "^5.0.0"
-
-"@cityofzion/neon-js@^4.9.0":
-  version "4.9.0"
-  resolved "https://registry.yarnpkg.com/@cityofzion/neon-js/-/neon-js-4.9.0.tgz#39f46720cff76f807128d5882832a3d722d9fd25"
-  integrity sha512-YYeMbQGZJkC8Wq2UQt98OUys8f8tPCaXMplbV8GwiJEdG+PJJOFGg3NkvrDGUfcuasff0dcn8LWjXTPKPp+Gyw==
-  dependencies:
-    "@cityofzion/neon-api" "^4.9.0"
-    "@cityofzion/neon-core" "^4.9.0"
-    "@cityofzion/neon-nep5" "^4.9.0"
-
-"@cityofzion/neon-nep5@^4.9.0":
-  version "4.9.0"
-  resolved "https://registry.yarnpkg.com/@cityofzion/neon-nep5/-/neon-nep5-4.9.0.tgz#aa170bfa83c5ef75270d10951e02f87e7faf4f47"
-  integrity sha512-MSRXHl+UGYnh8f9FC7zZvMNRblnl496VxG3tjA+GIShtLR6u75/FK7syVXua9h8/khljL7qqSfnNqA+sy7q+eg==
-  dependencies:
-    "@cityofzion/neon-core" "^4.9.0"
 
 "@confio/ics23@^0.6.8":
   version "0.6.8"
