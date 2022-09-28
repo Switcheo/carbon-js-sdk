@@ -158,3 +158,54 @@ export interface Commitment {
   commitment_power: string; // string representation of number
   boost_factor: string; // string representation of number
 }
+
+export interface CDP {
+  interest_fee: string // string representation of number
+  liquidation_fee: string // string representation of number
+  stable_coin_interest_rate: string // string representation of number
+}
+
+export interface RateStrategy { // CDP
+  name: string
+  optimal_usage: string // string representation of number
+  base_variable_borrow_rate: string // string representation of number
+  variable_rate_slope_1: string // string representation of number
+  variable_rate_slope_2: string // string representation of number
+  base_stable_borrow_rate: string // string representation of number
+  stable_rate_slope_1: string // string representation of number
+  stable_rate_slope_2: string // string representation of number
+  optimal_stable_to_total_debt_ratio: string // string representation of number
+}
+
+export interface Assets { // CDP
+  asset: {
+    denom: string
+    oracle_id: string
+    rate_strategy_name: string
+    loan_to_value: string // string representation of number
+    liquidation_threshold: string // string representation of number
+    liquidation_bonus: string // string representation of number
+    supply_cap: string // string representation of number
+    borrow_cap: string // string representation of number
+  },
+  utilization: {
+    denom: string
+    total_borrowed: string
+    total_amount: string
+    utilization_rate: string
+  },
+}
+
+export interface Collateral { // CDP
+  cdp_denom: string
+  denom: string
+  cdp_to_actual_ratio: string // string representation of number 
+  amount: string // string representation of number 
+  value_in_usd: string // string representation of number 
+}
+
+export interface Debt { // CDP
+  denom: string
+  amount: string // string representation of date isostring
+  value_in_usd: string // string representation of number
+}
