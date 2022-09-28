@@ -10,7 +10,7 @@ import { TokenInitInfo, TokensWithExternalBalance } from "@carbon-sdk/util/exter
 import { stripHexPrefix } from "@carbon-sdk/util/generic"
 import { SimpleMap } from "@carbon-sdk/util/type"
 import NeonAPIPlugin from "@cityofzion/neon-api/lib/plugin"
-import Neon from "@cityofzion/neon-core"
+import * as Neon from "@cityofzion/neon-core"
 import BigNumber from "bignumber.js"
 import { ethers } from "ethers"
 import { chunk } from "lodash"
