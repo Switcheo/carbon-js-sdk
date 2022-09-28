@@ -1,10 +1,10 @@
 import {
   WSChannel, WsSubscribeAccountTradesAllParams, WsSubscribeAccountTradesByMarketParams, WsSubscribeBooksParams,
-  WsSubscribeCandlesticksParams, WsSubscribeCommitmentParams, WsSubscribeLeveragesAllParams,
-  WsSubscribeLeveragesByMarketParams, WsSubscribeMarketStatsAllParams, WsSubscribeMarketStatsByMarketParams,
-  WsSubscribeOrdersAllParams,WsSubscribeOrdersByMarketParams, WsSubscribePoolsAllParams, WsSubscribePoolsByIdParams,
-  WsSubscribePositionsAllParams, WsSubscribePositionsByMarketParams, WsSubscribeRecentTradesParams,
-  WsSubscribeWalletBalanceParams, WsSubscriptionParams,
+  WsSubscribeCandlesticksParams, WsSubscribeCDPBorrows, WsSubscribeCDPCollaterals, WsSubscribeCDPLiquidateCollaterals,
+  WsSubscribeCommitmentParams, WsSubscribeLeveragesAllParams, WsSubscribeLeveragesByMarketParams,
+  WsSubscribeMarketStatsAllParams, WsSubscribeMarketStatsByMarketParams, WsSubscribeOrdersAllParams,
+  WsSubscribeOrdersByMarketParams, WsSubscribePoolsAllParams, WsSubscribePoolsByIdParams, WsSubscribePositionsAllParams,
+  WsSubscribePositionsByMarketParams, WsSubscribeRecentTradesParams, WsSubscribeWalletBalanceParams, WsSubscriptionParams,
 } from './types'
 
 export const generateChannelId = (params: WsSubscriptionParams): string => {
@@ -76,6 +76,18 @@ export const generateChannelId = (params: WsSubscriptionParams): string => {
     case WSChannel.commitments: {
       const { channel, address } = params as WsSubscribeCommitmentParams
       return [channel, address].join(':')
+    }
+    case WSChannel.cdp_borrows: {
+      const { channel, address } = params as WsSubscribeCDPBorrows
+      return [channel, address].join(':')
+    }
+    case WSChannel.cdp_collaterals: {
+      const { channel, address } = params as WsSubscribeCDPCollaterals
+      return [channel, address].join(':')
+    }
+    case WSChannel.cdp_liquidate_collaterals: {
+      const { channel } = params as WsSubscribeCDPLiquidateCollaterals
+      return [channel].join(':')
     }
     default:
       throw new Error(`invalid subscription channel: ${params.channel}`)
@@ -173,6 +185,20 @@ export const parseChannelId = (rawChannelId: string): WsSubscriptionParams => {
         channel,
         address,
       } as WsSubscribeCommitmentParams
+    case WSChannel.cdp_borrows:
+      return {
+        channel,
+        address,
+      } as WsSubscribeCDPBorrows
+    case WSChannel.cdp_collaterals:
+      return {
+        channel,
+        address,
+      } as WsSubscribeCDPCollaterals
+    case WSChannel.cdp_liquidate_collaterals:
+      return {
+        channel,
+      } as WsSubscribeCDPLiquidateCollaterals
     default:
       throw new Error('Error parsing channelId')
   }

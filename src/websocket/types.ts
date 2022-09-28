@@ -16,6 +16,9 @@ export enum WSChannel {
   pools = 'pools',
   pools_by_id = 'pools_by_id',
   commitments = 'commitments',
+  cdp_borrows = 'cdp_borrows',
+  cdp_collaterals = 'cdp_collaterals',
+  cdp_liquidate_collaterals = 'cdp_liquidate_collaterals',
 }
 
 export enum WSRequest {
@@ -33,6 +36,19 @@ export enum WSRequest {
   OrderBook = 'get_orderbook',
   Pools = 'get_pools',
   Commitments = 'get_commitments',
+  CDPAllAssets = 'get_cdp_all_assets',
+  CDPAssets = 'get_cdp_assets',
+  CDPAccountCollaterals = 'get_cdp_account_collaterals',
+  CDPAccountDebts = 'get_cdp_account_debts',
+  CDPAccountData = 'get_cdp_account_data',
+  CDPParams = 'get_cdp_params',
+  CDPAllRateStrategies = 'get_cdp_all_rate_strategies',
+  CDPRateStrategies = 'get_cdp_rate_strategies',
+  CDPBorrows = 'get_cdp_borrows',
+  CDPTotalBorrows = 'get_cdp_total_borrows',
+  CDPCollaterals = 'get_cdp_collaterals',
+  CDPTotalCollaterals = 'get_cdp_total_collaterals',
+  CDPLiquidateCollateral = 'get_cdp_liquidate_collateral',
 }
 
 export interface WsGetRecentTradesParams {
@@ -84,6 +100,22 @@ export interface WsGetPositionsParams {
 
 export interface WsGetCommitmentsParams {
   address: string
+}
+
+export interface WsGetCDPParams {
+  address: string
+}
+
+export interface WsGetCDPAssetParams {
+  denom: string
+}
+
+export interface WsGetCDPAccountParams {
+  address: string
+}
+
+export interface WsGetCDPRateStrategiesParams {
+  name: string
 }
 
 export interface WsSubscribeParams {
@@ -165,6 +197,16 @@ export interface WsUnsubscribeCandlesticksParams extends WsSubscribeParams {
   resolution: string
 }
 
+export interface WsSubscribeCDPBorrows extends WsSubscribeParams {
+  address: string
+}
+
+export interface WsSubscribeCDPCollaterals extends WsSubscribeParams {
+  address: string
+}
+
+export interface WsSubscribeCDPLiquidateCollaterals extends WsSubscribeParams { }
+
 export type WsSubscriptionParams =
   | WsSubscribeCandlesticksParams
   | WsSubscribeBooksParams
@@ -184,3 +226,6 @@ export type WsSubscriptionParams =
   | WsSubscribePoolsByIdParams
   | WsSubscribeCommitmentParams
   | WsUnsubscribeCandlesticksParams
+  | WsSubscribeCDPBorrows
+  | WsSubscribeCDPCollaterals
+  | WsSubscribeCDPLiquidateCollaterals
