@@ -102,9 +102,7 @@ export interface WsGetCommitmentsParams {
   address: string
 }
 
-export interface WsGetCDPParams {
-  address: string
-}
+export interface WsGetCDPParams { }
 
 export interface WsGetCDPAssetParams {
   denom: string
