@@ -99,23 +99,23 @@ export interface MsgRepayAsset {
 
 export interface MsgRepayAssetResponse {}
 
-export interface MsgSupplyAndLockAsset {
+export interface MsgSupplyAssetAndLockCollateral {
   creator: string;
   denom: string;
   supplyAmount: string;
   lockAmount: string;
 }
 
-export interface MsgSupplyAndLockAssetResponse {}
+export interface MsgSupplyAssetAndLockCollateralResponse {}
 
-export interface MsgUnlockAndWithdrawAsset {
+export interface MsgUnlockCollateralAndWithdrawAsset {
   creator: string;
   cdpDenom: string;
   unlockAmount: string;
   withdrawAmount: string;
 }
 
-export interface MsgUnlockAndWithdrawAssetResponse {}
+export interface MsgUnlockCollateralAndWithdrawAssetResponse {}
 
 export interface MsgLiquidateCollateral {
   creator: string;
@@ -140,6 +140,22 @@ export interface MsgSetInterestFee {
 }
 
 export interface MsgSetInterestFeeResponse {}
+
+export interface MsgRepayAssetWithCdpTokens {
+  creator: string;
+  cdpDenom: string;
+  amount: string;
+}
+
+export interface MsgRepayAssetWithCdpTokensResponse {}
+
+export interface MsgRepayAssetWithCollateral {
+  creator: string;
+  cdpDenom: string;
+  amount: string;
+}
+
+export interface MsgRepayAssetWithCollateralResponse {}
 
 export interface MsgSetStableCoinInterestRate {
   creator: string;
@@ -1632,16 +1648,16 @@ export const MsgRepayAssetResponse = {
   },
 };
 
-const baseMsgSupplyAndLockAsset: object = {
+const baseMsgSupplyAssetAndLockCollateral: object = {
   creator: "",
   denom: "",
   supplyAmount: "",
   lockAmount: "",
 };
 
-export const MsgSupplyAndLockAsset = {
+export const MsgSupplyAssetAndLockCollateral = {
   encode(
-    message: MsgSupplyAndLockAsset,
+    message: MsgSupplyAssetAndLockCollateral,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.creator !== "") {
@@ -1662,10 +1678,12 @@ export const MsgSupplyAndLockAsset = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): MsgSupplyAndLockAsset {
+  ): MsgSupplyAssetAndLockCollateral {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgSupplyAndLockAsset } as MsgSupplyAndLockAsset;
+    const message = {
+      ...baseMsgSupplyAssetAndLockCollateral,
+    } as MsgSupplyAssetAndLockCollateral;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1689,8 +1707,10 @@ export const MsgSupplyAndLockAsset = {
     return message;
   },
 
-  fromJSON(object: any): MsgSupplyAndLockAsset {
-    const message = { ...baseMsgSupplyAndLockAsset } as MsgSupplyAndLockAsset;
+  fromJSON(object: any): MsgSupplyAssetAndLockCollateral {
+    const message = {
+      ...baseMsgSupplyAssetAndLockCollateral,
+    } as MsgSupplyAssetAndLockCollateral;
     message.creator =
       object.creator !== undefined && object.creator !== null
         ? String(object.creator)
@@ -1710,7 +1730,7 @@ export const MsgSupplyAndLockAsset = {
     return message;
   },
 
-  toJSON(message: MsgSupplyAndLockAsset): unknown {
+  toJSON(message: MsgSupplyAssetAndLockCollateral): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
     message.denom !== undefined && (obj.denom = message.denom);
@@ -1721,9 +1741,11 @@ export const MsgSupplyAndLockAsset = {
   },
 
   fromPartial(
-    object: DeepPartial<MsgSupplyAndLockAsset>
-  ): MsgSupplyAndLockAsset {
-    const message = { ...baseMsgSupplyAndLockAsset } as MsgSupplyAndLockAsset;
+    object: DeepPartial<MsgSupplyAssetAndLockCollateral>
+  ): MsgSupplyAssetAndLockCollateral {
+    const message = {
+      ...baseMsgSupplyAssetAndLockCollateral,
+    } as MsgSupplyAssetAndLockCollateral;
     message.creator = object.creator ?? "";
     message.denom = object.denom ?? "";
     message.supplyAmount = object.supplyAmount ?? "";
@@ -1732,11 +1754,11 @@ export const MsgSupplyAndLockAsset = {
   },
 };
 
-const baseMsgSupplyAndLockAssetResponse: object = {};
+const baseMsgSupplyAssetAndLockCollateralResponse: object = {};
 
-export const MsgSupplyAndLockAssetResponse = {
+export const MsgSupplyAssetAndLockCollateralResponse = {
   encode(
-    _: MsgSupplyAndLockAssetResponse,
+    _: MsgSupplyAssetAndLockCollateralResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     return writer;
@@ -1745,12 +1767,12 @@ export const MsgSupplyAndLockAssetResponse = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): MsgSupplyAndLockAssetResponse {
+  ): MsgSupplyAssetAndLockCollateralResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseMsgSupplyAndLockAssetResponse,
-    } as MsgSupplyAndLockAssetResponse;
+      ...baseMsgSupplyAssetAndLockCollateralResponse,
+    } as MsgSupplyAssetAndLockCollateralResponse;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1762,38 +1784,38 @@ export const MsgSupplyAndLockAssetResponse = {
     return message;
   },
 
-  fromJSON(_: any): MsgSupplyAndLockAssetResponse {
+  fromJSON(_: any): MsgSupplyAssetAndLockCollateralResponse {
     const message = {
-      ...baseMsgSupplyAndLockAssetResponse,
-    } as MsgSupplyAndLockAssetResponse;
+      ...baseMsgSupplyAssetAndLockCollateralResponse,
+    } as MsgSupplyAssetAndLockCollateralResponse;
     return message;
   },
 
-  toJSON(_: MsgSupplyAndLockAssetResponse): unknown {
+  toJSON(_: MsgSupplyAssetAndLockCollateralResponse): unknown {
     const obj: any = {};
     return obj;
   },
 
   fromPartial(
-    _: DeepPartial<MsgSupplyAndLockAssetResponse>
-  ): MsgSupplyAndLockAssetResponse {
+    _: DeepPartial<MsgSupplyAssetAndLockCollateralResponse>
+  ): MsgSupplyAssetAndLockCollateralResponse {
     const message = {
-      ...baseMsgSupplyAndLockAssetResponse,
-    } as MsgSupplyAndLockAssetResponse;
+      ...baseMsgSupplyAssetAndLockCollateralResponse,
+    } as MsgSupplyAssetAndLockCollateralResponse;
     return message;
   },
 };
 
-const baseMsgUnlockAndWithdrawAsset: object = {
+const baseMsgUnlockCollateralAndWithdrawAsset: object = {
   creator: "",
   cdpDenom: "",
   unlockAmount: "",
   withdrawAmount: "",
 };
 
-export const MsgUnlockAndWithdrawAsset = {
+export const MsgUnlockCollateralAndWithdrawAsset = {
   encode(
-    message: MsgUnlockAndWithdrawAsset,
+    message: MsgUnlockCollateralAndWithdrawAsset,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.creator !== "") {
@@ -1814,12 +1836,12 @@ export const MsgUnlockAndWithdrawAsset = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): MsgUnlockAndWithdrawAsset {
+  ): MsgUnlockCollateralAndWithdrawAsset {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseMsgUnlockAndWithdrawAsset,
-    } as MsgUnlockAndWithdrawAsset;
+      ...baseMsgUnlockCollateralAndWithdrawAsset,
+    } as MsgUnlockCollateralAndWithdrawAsset;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1843,10 +1865,10 @@ export const MsgUnlockAndWithdrawAsset = {
     return message;
   },
 
-  fromJSON(object: any): MsgUnlockAndWithdrawAsset {
+  fromJSON(object: any): MsgUnlockCollateralAndWithdrawAsset {
     const message = {
-      ...baseMsgUnlockAndWithdrawAsset,
-    } as MsgUnlockAndWithdrawAsset;
+      ...baseMsgUnlockCollateralAndWithdrawAsset,
+    } as MsgUnlockCollateralAndWithdrawAsset;
     message.creator =
       object.creator !== undefined && object.creator !== null
         ? String(object.creator)
@@ -1866,7 +1888,7 @@ export const MsgUnlockAndWithdrawAsset = {
     return message;
   },
 
-  toJSON(message: MsgUnlockAndWithdrawAsset): unknown {
+  toJSON(message: MsgUnlockCollateralAndWithdrawAsset): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
     message.cdpDenom !== undefined && (obj.cdpDenom = message.cdpDenom);
@@ -1878,11 +1900,11 @@ export const MsgUnlockAndWithdrawAsset = {
   },
 
   fromPartial(
-    object: DeepPartial<MsgUnlockAndWithdrawAsset>
-  ): MsgUnlockAndWithdrawAsset {
+    object: DeepPartial<MsgUnlockCollateralAndWithdrawAsset>
+  ): MsgUnlockCollateralAndWithdrawAsset {
     const message = {
-      ...baseMsgUnlockAndWithdrawAsset,
-    } as MsgUnlockAndWithdrawAsset;
+      ...baseMsgUnlockCollateralAndWithdrawAsset,
+    } as MsgUnlockCollateralAndWithdrawAsset;
     message.creator = object.creator ?? "";
     message.cdpDenom = object.cdpDenom ?? "";
     message.unlockAmount = object.unlockAmount ?? "";
@@ -1891,11 +1913,11 @@ export const MsgUnlockAndWithdrawAsset = {
   },
 };
 
-const baseMsgUnlockAndWithdrawAssetResponse: object = {};
+const baseMsgUnlockCollateralAndWithdrawAssetResponse: object = {};
 
-export const MsgUnlockAndWithdrawAssetResponse = {
+export const MsgUnlockCollateralAndWithdrawAssetResponse = {
   encode(
-    _: MsgUnlockAndWithdrawAssetResponse,
+    _: MsgUnlockCollateralAndWithdrawAssetResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     return writer;
@@ -1904,12 +1926,12 @@ export const MsgUnlockAndWithdrawAssetResponse = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): MsgUnlockAndWithdrawAssetResponse {
+  ): MsgUnlockCollateralAndWithdrawAssetResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseMsgUnlockAndWithdrawAssetResponse,
-    } as MsgUnlockAndWithdrawAssetResponse;
+      ...baseMsgUnlockCollateralAndWithdrawAssetResponse,
+    } as MsgUnlockCollateralAndWithdrawAssetResponse;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1921,24 +1943,24 @@ export const MsgUnlockAndWithdrawAssetResponse = {
     return message;
   },
 
-  fromJSON(_: any): MsgUnlockAndWithdrawAssetResponse {
+  fromJSON(_: any): MsgUnlockCollateralAndWithdrawAssetResponse {
     const message = {
-      ...baseMsgUnlockAndWithdrawAssetResponse,
-    } as MsgUnlockAndWithdrawAssetResponse;
+      ...baseMsgUnlockCollateralAndWithdrawAssetResponse,
+    } as MsgUnlockCollateralAndWithdrawAssetResponse;
     return message;
   },
 
-  toJSON(_: MsgUnlockAndWithdrawAssetResponse): unknown {
+  toJSON(_: MsgUnlockCollateralAndWithdrawAssetResponse): unknown {
     const obj: any = {};
     return obj;
   },
 
   fromPartial(
-    _: DeepPartial<MsgUnlockAndWithdrawAssetResponse>
-  ): MsgUnlockAndWithdrawAssetResponse {
+    _: DeepPartial<MsgUnlockCollateralAndWithdrawAssetResponse>
+  ): MsgUnlockCollateralAndWithdrawAssetResponse {
     const message = {
-      ...baseMsgUnlockAndWithdrawAssetResponse,
-    } as MsgUnlockAndWithdrawAssetResponse;
+      ...baseMsgUnlockCollateralAndWithdrawAssetResponse,
+    } as MsgUnlockCollateralAndWithdrawAssetResponse;
     return message;
   },
 };
@@ -2347,6 +2369,294 @@ export const MsgSetInterestFeeResponse = {
   },
 };
 
+const baseMsgRepayAssetWithCdpTokens: object = {
+  creator: "",
+  cdpDenom: "",
+  amount: "",
+};
+
+export const MsgRepayAssetWithCdpTokens = {
+  encode(
+    message: MsgRepayAssetWithCdpTokens,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.cdpDenom !== "") {
+      writer.uint32(18).string(message.cdpDenom);
+    }
+    if (message.amount !== "") {
+      writer.uint32(26).string(message.amount);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgRepayAssetWithCdpTokens {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgRepayAssetWithCdpTokens,
+    } as MsgRepayAssetWithCdpTokens;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.cdpDenom = reader.string();
+          break;
+        case 3:
+          message.amount = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgRepayAssetWithCdpTokens {
+    const message = {
+      ...baseMsgRepayAssetWithCdpTokens,
+    } as MsgRepayAssetWithCdpTokens;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.cdpDenom =
+      object.cdpDenom !== undefined && object.cdpDenom !== null
+        ? String(object.cdpDenom)
+        : "";
+    message.amount =
+      object.amount !== undefined && object.amount !== null
+        ? String(object.amount)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgRepayAssetWithCdpTokens): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.cdpDenom !== undefined && (obj.cdpDenom = message.cdpDenom);
+    message.amount !== undefined && (obj.amount = message.amount);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgRepayAssetWithCdpTokens>
+  ): MsgRepayAssetWithCdpTokens {
+    const message = {
+      ...baseMsgRepayAssetWithCdpTokens,
+    } as MsgRepayAssetWithCdpTokens;
+    message.creator = object.creator ?? "";
+    message.cdpDenom = object.cdpDenom ?? "";
+    message.amount = object.amount ?? "";
+    return message;
+  },
+};
+
+const baseMsgRepayAssetWithCdpTokensResponse: object = {};
+
+export const MsgRepayAssetWithCdpTokensResponse = {
+  encode(
+    _: MsgRepayAssetWithCdpTokensResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgRepayAssetWithCdpTokensResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgRepayAssetWithCdpTokensResponse,
+    } as MsgRepayAssetWithCdpTokensResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgRepayAssetWithCdpTokensResponse {
+    const message = {
+      ...baseMsgRepayAssetWithCdpTokensResponse,
+    } as MsgRepayAssetWithCdpTokensResponse;
+    return message;
+  },
+
+  toJSON(_: MsgRepayAssetWithCdpTokensResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgRepayAssetWithCdpTokensResponse>
+  ): MsgRepayAssetWithCdpTokensResponse {
+    const message = {
+      ...baseMsgRepayAssetWithCdpTokensResponse,
+    } as MsgRepayAssetWithCdpTokensResponse;
+    return message;
+  },
+};
+
+const baseMsgRepayAssetWithCollateral: object = {
+  creator: "",
+  cdpDenom: "",
+  amount: "",
+};
+
+export const MsgRepayAssetWithCollateral = {
+  encode(
+    message: MsgRepayAssetWithCollateral,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.cdpDenom !== "") {
+      writer.uint32(18).string(message.cdpDenom);
+    }
+    if (message.amount !== "") {
+      writer.uint32(26).string(message.amount);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgRepayAssetWithCollateral {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgRepayAssetWithCollateral,
+    } as MsgRepayAssetWithCollateral;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.cdpDenom = reader.string();
+          break;
+        case 3:
+          message.amount = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgRepayAssetWithCollateral {
+    const message = {
+      ...baseMsgRepayAssetWithCollateral,
+    } as MsgRepayAssetWithCollateral;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.cdpDenom =
+      object.cdpDenom !== undefined && object.cdpDenom !== null
+        ? String(object.cdpDenom)
+        : "";
+    message.amount =
+      object.amount !== undefined && object.amount !== null
+        ? String(object.amount)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgRepayAssetWithCollateral): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.cdpDenom !== undefined && (obj.cdpDenom = message.cdpDenom);
+    message.amount !== undefined && (obj.amount = message.amount);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgRepayAssetWithCollateral>
+  ): MsgRepayAssetWithCollateral {
+    const message = {
+      ...baseMsgRepayAssetWithCollateral,
+    } as MsgRepayAssetWithCollateral;
+    message.creator = object.creator ?? "";
+    message.cdpDenom = object.cdpDenom ?? "";
+    message.amount = object.amount ?? "";
+    return message;
+  },
+};
+
+const baseMsgRepayAssetWithCollateralResponse: object = {};
+
+export const MsgRepayAssetWithCollateralResponse = {
+  encode(
+    _: MsgRepayAssetWithCollateralResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgRepayAssetWithCollateralResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgRepayAssetWithCollateralResponse,
+    } as MsgRepayAssetWithCollateralResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgRepayAssetWithCollateralResponse {
+    const message = {
+      ...baseMsgRepayAssetWithCollateralResponse,
+    } as MsgRepayAssetWithCollateralResponse;
+    return message;
+  },
+
+  toJSON(_: MsgRepayAssetWithCollateralResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgRepayAssetWithCollateralResponse>
+  ): MsgRepayAssetWithCollateralResponse {
+    const message = {
+      ...baseMsgRepayAssetWithCollateralResponse,
+    } as MsgRepayAssetWithCollateralResponse;
+    return message;
+  },
+};
+
 const baseMsgSetStableCoinInterestRate: object = {
   creator: "",
   stableCoinInterestRate: "",
@@ -2503,12 +2813,12 @@ export interface Msg {
   ): Promise<MsgUnlockCollateralResponse>;
   BorrowAsset(request: MsgBorrowAsset): Promise<MsgBorrowAssetResponse>;
   RepayAsset(request: MsgRepayAsset): Promise<MsgRepayAssetResponse>;
-  SupplyAndLockAsset(
-    request: MsgSupplyAndLockAsset
-  ): Promise<MsgSupplyAndLockAssetResponse>;
-  UnlockAndWithdrawAsset(
-    request: MsgUnlockAndWithdrawAsset
-  ): Promise<MsgUnlockAndWithdrawAssetResponse>;
+  SupplyAssetAndLockCollateral(
+    request: MsgSupplyAssetAndLockCollateral
+  ): Promise<MsgSupplyAssetAndLockCollateralResponse>;
+  UnlockCollateralAndWithdrawAsset(
+    request: MsgUnlockCollateralAndWithdrawAsset
+  ): Promise<MsgUnlockCollateralAndWithdrawAssetResponse>;
   LiquidateCollateral(
     request: MsgLiquidateCollateral
   ): Promise<MsgLiquidateCollateralResponse>;
@@ -2518,6 +2828,12 @@ export interface Msg {
   SetInterestFee(
     request: MsgSetInterestFee
   ): Promise<MsgSetInterestFeeResponse>;
+  RepayAssetWithCdpTokens(
+    request: MsgRepayAssetWithCdpTokens
+  ): Promise<MsgRepayAssetWithCdpTokensResponse>;
+  RepayAssetWithCollateral(
+    request: MsgRepayAssetWithCollateral
+  ): Promise<MsgRepayAssetWithCollateralResponse>;
   /** this line is used by starport scaffolding # proto/tx/rpc */
   SetStableCoinInterestRate(
     request: MsgSetStableCoinInterestRate
@@ -2539,11 +2855,15 @@ export class MsgClientImpl implements Msg {
     this.UnlockCollateral = this.UnlockCollateral.bind(this);
     this.BorrowAsset = this.BorrowAsset.bind(this);
     this.RepayAsset = this.RepayAsset.bind(this);
-    this.SupplyAndLockAsset = this.SupplyAndLockAsset.bind(this);
-    this.UnlockAndWithdrawAsset = this.UnlockAndWithdrawAsset.bind(this);
+    this.SupplyAssetAndLockCollateral =
+      this.SupplyAssetAndLockCollateral.bind(this);
+    this.UnlockCollateralAndWithdrawAsset =
+      this.UnlockCollateralAndWithdrawAsset.bind(this);
     this.LiquidateCollateral = this.LiquidateCollateral.bind(this);
     this.SetLiquidationFee = this.SetLiquidationFee.bind(this);
     this.SetInterestFee = this.SetInterestFee.bind(this);
+    this.RepayAssetWithCdpTokens = this.RepayAssetWithCdpTokens.bind(this);
+    this.RepayAssetWithCollateral = this.RepayAssetWithCollateral.bind(this);
     this.SetStableCoinInterestRate = this.SetStableCoinInterestRate.bind(this);
   }
   AddRateStrategy(
@@ -2688,31 +3008,31 @@ export class MsgClientImpl implements Msg {
     );
   }
 
-  SupplyAndLockAsset(
-    request: MsgSupplyAndLockAsset
-  ): Promise<MsgSupplyAndLockAssetResponse> {
-    const data = MsgSupplyAndLockAsset.encode(request).finish();
+  SupplyAssetAndLockCollateral(
+    request: MsgSupplyAssetAndLockCollateral
+  ): Promise<MsgSupplyAssetAndLockCollateralResponse> {
+    const data = MsgSupplyAssetAndLockCollateral.encode(request).finish();
     const promise = this.rpc.request(
       "Switcheo.carbon.cdp.Msg",
-      "SupplyAndLockAsset",
+      "SupplyAssetAndLockCollateral",
       data
     );
     return promise.then((data) =>
-      MsgSupplyAndLockAssetResponse.decode(new _m0.Reader(data))
+      MsgSupplyAssetAndLockCollateralResponse.decode(new _m0.Reader(data))
     );
   }
 
-  UnlockAndWithdrawAsset(
-    request: MsgUnlockAndWithdrawAsset
-  ): Promise<MsgUnlockAndWithdrawAssetResponse> {
-    const data = MsgUnlockAndWithdrawAsset.encode(request).finish();
+  UnlockCollateralAndWithdrawAsset(
+    request: MsgUnlockCollateralAndWithdrawAsset
+  ): Promise<MsgUnlockCollateralAndWithdrawAssetResponse> {
+    const data = MsgUnlockCollateralAndWithdrawAsset.encode(request).finish();
     const promise = this.rpc.request(
       "Switcheo.carbon.cdp.Msg",
-      "UnlockAndWithdrawAsset",
+      "UnlockCollateralAndWithdrawAsset",
       data
     );
     return promise.then((data) =>
-      MsgUnlockAndWithdrawAssetResponse.decode(new _m0.Reader(data))
+      MsgUnlockCollateralAndWithdrawAssetResponse.decode(new _m0.Reader(data))
     );
   }
 
@@ -2755,6 +3075,34 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgSetInterestFeeResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  RepayAssetWithCdpTokens(
+    request: MsgRepayAssetWithCdpTokens
+  ): Promise<MsgRepayAssetWithCdpTokensResponse> {
+    const data = MsgRepayAssetWithCdpTokens.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Msg",
+      "RepayAssetWithCdpTokens",
+      data
+    );
+    return promise.then((data) =>
+      MsgRepayAssetWithCdpTokensResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  RepayAssetWithCollateral(
+    request: MsgRepayAssetWithCollateral
+  ): Promise<MsgRepayAssetWithCollateralResponse> {
+    const data = MsgRepayAssetWithCollateral.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Msg",
+      "RepayAssetWithCollateral",
+      data
+    );
+    return promise.then((data) =>
+      MsgRepayAssetWithCollateralResponse.decode(new _m0.Reader(data))
     );
   }
 
