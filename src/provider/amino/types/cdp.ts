@@ -10,9 +10,11 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
   UnlockCollateral: "cdp/UnlockCollateral",
   BorrowAsset: "cdp/BorrowAsset",
   RepayAsset: "cdp/RepayAsset",
-  SupplyAndLockAsset: "cdp/SupplyAndLockAsset",
-  UnlockAndWithdrawAsset: "cdp/UnlockAndWithdrawAsset",
+  SupplyAssetAndLockCollateral: "cdp/SupplyAssetAndLockCollateral",
+  UnlockCollateralAndWithdrawAsset: "cdp/UnlockCollateralAndWithdrawAsset",
   LiquidateCollateral: "cdp/LiquidateCollateral",
+  RepayAssetWithCdpTokens: "cdp/RepayAssetWithCdpTokens",
+  RepayAssetWithCollateral: "cdp/RepayAssetWithCollateral",
 };
 
 const MsgSupplyAsset: AminoInit = {
@@ -45,18 +47,28 @@ const MsgRepayAsset: AminoInit = {
   valueMap: {},
 };
 
-const MsgSupplyAndLockAsset: AminoInit = {
-  aminoType: TxTypes.SupplyAndLockAsset,
+const MsgSupplyAssetAndLockCollateral: AminoInit = {
+  aminoType: TxTypes.SupplyAssetAndLockCollateral,
   valueMap: {},
 };
 
-const MsgUnlockAndWithdrawAsset: AminoInit = {
-  aminoType: TxTypes.UnlockAndWithdrawAsset,
+const MsgUnlockCollateralAndWithdrawAsset: AminoInit = {
+  aminoType: TxTypes.UnlockCollateralAndWithdrawAsset,
   valueMap: {},
 };
 
 const MsgLiquidateCollateral: AminoInit = {
   aminoType: TxTypes.LiquidateCollateral,
+  valueMap: {},
+};
+
+const MsgRepayAssetWithCdpTokens: AminoInit = {
+  aminoType: TxTypes.RepayAssetWithCdpTokens,
+  valueMap: {},
+};
+
+const MsgRepayAssetWithCollateral: AminoInit = {
+  aminoType: TxTypes.RepayAssetWithCollateral,
   valueMap: {},
 };
 
@@ -67,9 +79,11 @@ const CdpAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgUnlockCollateral]: generateAminoType(MsgUnlockCollateral),
   [CarbonTx.Types.MsgBorrowAsset]: generateAminoType(MsgBorrowAsset),
   [CarbonTx.Types.MsgRepayAsset]: generateAminoType(MsgRepayAsset),
-  [CarbonTx.Types.MsgSupplyAndLockAsset]: generateAminoType(MsgSupplyAndLockAsset),
-  [CarbonTx.Types.MsgUnlockAndWithdrawAsset]: generateAminoType(MsgUnlockAndWithdrawAsset),
+  [CarbonTx.Types.MsgSupplyAssetAndLockCollateral]: generateAminoType(MsgSupplyAssetAndLockCollateral),
+  [CarbonTx.Types.MsgUnlockCollateralAndWithdrawAsset]: generateAminoType(MsgUnlockCollateralAndWithdrawAsset),
   [CarbonTx.Types.MsgLiquidateCollateral]: generateAminoType(MsgLiquidateCollateral),
+  [CarbonTx.Types.MsgRepayAssetWithCdpTokens]: generateAminoType(MsgRepayAssetWithCdpTokens),
+  [CarbonTx.Types.MsgRepayAssetWithCollateral]: generateAminoType(MsgRepayAssetWithCollateral),
 };
 
 export default CdpAmino;
