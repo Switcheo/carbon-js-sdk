@@ -180,7 +180,8 @@ export interface Commitment {
 export interface CommitmentEvent extends Commitment {
   Type?: string;
 }
-export interface CDP {
+
+export interface CDPParams {
   interest_fee: string // string representation of number
   liquidation_fee: string // string representation of number
   stable_coin_interest_rate: string // string representation of number
@@ -209,7 +210,7 @@ export interface Assets { // CDP
     supply_cap: string // string representation of number
     borrow_cap: string // string representation of number
   },
-  utilization: {
+  asset_utilization: {
     denom: string
     total_borrowed: string
     total_amount: string
@@ -229,4 +230,24 @@ export interface Debt { // CDP
   denom: string
   amount: string // string representation of date isostring
   value_in_usd: string // string representation of number
+}
+
+export interface AccountData {
+  total_collaterals_usd: string // string representation of number
+	total_debts_usd: string // string representation of number
+	available_borrows_usd: string // string representation of number
+	curr_liquidation_threshold: string // string representation of number
+	health_factor: string // string representation of number
+}
+
+export interface CDPBorrow {
+  address: string
+	amount: string // string representation of number
+	denom: string
+}
+
+export interface CDPCollaterals {
+  address: string
+  amount: string // string representation of number
+  denom: string
 }
