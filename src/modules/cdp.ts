@@ -1,4 +1,4 @@
-import { MsgAddAsset, MsgAddRateStrategy, MsgBorrowAsset, MsgLiquidateCollateral, MsgLockCollateral, MsgRemoveRateStrategy, MsgRepayAsset, MsgSetInterestFee, MsgSetLiquidationFee, MsgSetStableCoinInterestRate, MsgSupplyAssetAndLockCollateral, MsgSupplyAsset, MsgUnlockCollateralAndWithdrawAsset, MsgUnlockCollateral, MsgUpdateAsset, MsgUpdateRateStrategy, MsgWithdrawAsset, MsgRepayAssetWithCdpTokens, MsgRepayAssetWithCollateral } from "@carbon-sdk/codec/cdp/tx";
+import { MsgBorrowAsset, MsgLiquidateCollateral, MsgLockCollateral, MsgRepayAsset, MsgSupplyAssetAndLockCollateral, MsgSupplyAsset, MsgUnlockCollateralAndWithdrawAsset, MsgUnlockCollateral, MsgWithdrawAsset, MsgRepayAssetWithCdpTokens, MsgRepayAssetWithCollateral } from "@carbon-sdk/codec/cdp/tx";
 import { CarbonTx } from "@carbon-sdk/util";
 import BaseModule from "./base";
 import { BigNumber } from "bignumber.js";

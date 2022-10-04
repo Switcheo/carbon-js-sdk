@@ -16,9 +16,12 @@ import "./_setup";
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
 
-  const result = await connectedSDK.cdp.addCollateral({
-    vaultTypeId: 1,
-    amount: new BigNumber(100), // human
-  })
-  console.log(result)
+  const cdpToken = sdk.token.tokenForDenom("cdp/eth");
+  if (!cdpToken) return;
+
+  const result = await connectedSDK.cdp.repayAsset({
+    denom: cdpToken.denom,
+    amount: new BigNumber(0.01).shiftedBy(cdpToken.decimals.toNumber()),
+  });
+  console.log(result);
 })().catch(console.error).finally(() => process.exit(0));

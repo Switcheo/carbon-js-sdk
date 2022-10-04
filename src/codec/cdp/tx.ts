@@ -164,6 +164,13 @@ export interface MsgSetStableCoinInterestRate {
 
 export interface MsgSetStableCoinInterestRateResponse {}
 
+export interface MsgMintStablecoin {
+  creator: string;
+  amount: string;
+}
+
+export interface MsgMintStablecoinResponse {}
+
 const baseMsgAddRateStrategy: object = { creator: "" };
 
 export const MsgAddRateStrategy = {
@@ -2790,6 +2797,123 @@ export const MsgSetStableCoinInterestRateResponse = {
   },
 };
 
+const baseMsgMintStablecoin: object = { creator: "", amount: "" };
+
+export const MsgMintStablecoin = {
+  encode(
+    message: MsgMintStablecoin,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.amount !== "") {
+      writer.uint32(18).string(message.amount);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgMintStablecoin {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgMintStablecoin } as MsgMintStablecoin;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.amount = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgMintStablecoin {
+    const message = { ...baseMsgMintStablecoin } as MsgMintStablecoin;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.amount =
+      object.amount !== undefined && object.amount !== null
+        ? String(object.amount)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgMintStablecoin): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.amount !== undefined && (obj.amount = message.amount);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgMintStablecoin>): MsgMintStablecoin {
+    const message = { ...baseMsgMintStablecoin } as MsgMintStablecoin;
+    message.creator = object.creator ?? "";
+    message.amount = object.amount ?? "";
+    return message;
+  },
+};
+
+const baseMsgMintStablecoinResponse: object = {};
+
+export const MsgMintStablecoinResponse = {
+  encode(
+    _: MsgMintStablecoinResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgMintStablecoinResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgMintStablecoinResponse,
+    } as MsgMintStablecoinResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgMintStablecoinResponse {
+    const message = {
+      ...baseMsgMintStablecoinResponse,
+    } as MsgMintStablecoinResponse;
+    return message;
+  },
+
+  toJSON(_: MsgMintStablecoinResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgMintStablecoinResponse>
+  ): MsgMintStablecoinResponse {
+    const message = {
+      ...baseMsgMintStablecoinResponse,
+    } as MsgMintStablecoinResponse;
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
   AddRateStrategy(
@@ -2834,10 +2958,13 @@ export interface Msg {
   RepayAssetWithCollateral(
     request: MsgRepayAssetWithCollateral
   ): Promise<MsgRepayAssetWithCollateralResponse>;
-  /** this line is used by starport scaffolding # proto/tx/rpc */
   SetStableCoinInterestRate(
     request: MsgSetStableCoinInterestRate
   ): Promise<MsgSetStableCoinInterestRateResponse>;
+  /** this line is used by starport scaffolding # proto/tx/rpc */
+  MintStablecoin(
+    request: MsgMintStablecoin
+  ): Promise<MsgMintStablecoinResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -2865,6 +2992,7 @@ export class MsgClientImpl implements Msg {
     this.RepayAssetWithCdpTokens = this.RepayAssetWithCdpTokens.bind(this);
     this.RepayAssetWithCollateral = this.RepayAssetWithCollateral.bind(this);
     this.SetStableCoinInterestRate = this.SetStableCoinInterestRate.bind(this);
+    this.MintStablecoin = this.MintStablecoin.bind(this);
   }
   AddRateStrategy(
     request: MsgAddRateStrategy
@@ -3117,6 +3245,20 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgSetStableCoinInterestRateResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  MintStablecoin(
+    request: MsgMintStablecoin
+  ): Promise<MsgMintStablecoinResponse> {
+    const data = MsgMintStablecoin.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Msg",
+      "MintStablecoin",
+      data
+    );
+    return promise.then((data) =>
+      MsgMintStablecoinResponse.decode(new _m0.Reader(data))
     );
   }
 }
