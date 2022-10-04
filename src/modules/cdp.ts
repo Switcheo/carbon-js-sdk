@@ -1,4 +1,4 @@
-import { MsgBorrowAsset, MsgLiquidateCollateral, MsgLockCollateral, MsgRepayAsset, MsgSupplyAssetAndLockCollateral, MsgSupplyAsset, MsgUnlockCollateralAndWithdrawAsset, MsgUnlockCollateral, MsgWithdrawAsset, MsgRepayAssetWithCdpTokens, MsgRepayAssetWithCollateral } from "@carbon-sdk/codec/cdp/tx";
+import { MsgBorrowAsset, MsgLiquidateCollateral, MsgLockCollateral, MsgRepayAsset, MsgSupplyAssetAndLockCollateral, MsgSupplyAsset, MsgUnlockCollateralAndWithdrawAsset, MsgUnlockCollateral, MsgWithdrawAsset, MsgRepayAssetWithCdpTokens, MsgRepayAssetWithCollateral, MsgMintStablecoin } from "@carbon-sdk/codec/cdp/tx";
 import { CarbonTx } from "@carbon-sdk/util";
 import BaseModule from "./base";
 import { BigNumber } from "bignumber.js";
@@ -173,6 +173,20 @@ export class CDPModule extends BaseModule {
       value
     }, opts);
   }
+
+  public async mintStablecoin(params: CDPModule.MintStablecoinParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+
+    const value = MsgMintStablecoin.fromPartial({
+      creator: wallet.bech32Address,
+      amount: params.amount.toString(10),
+    });
+
+    return await wallet.sendTx({
+      typeUrl: CarbonTx.Types.MsgMintStablecoin,
+      value,
+    }, opts);
+  }
 }
 
 export namespace CDPModule {
@@ -223,6 +237,9 @@ export namespace CDPModule {
   }
   export interface RepayAssetWithCollateralParams {
     cdpDenom: string
+    amount: BigNumber
+  }
+  export interface MintStablecoinParams {
     amount: BigNumber
   }
 };
