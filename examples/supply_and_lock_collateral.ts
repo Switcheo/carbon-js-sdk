@@ -16,14 +16,13 @@ import "./_setup";
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
 
-  await connectedSDK.cdp.addCollateral({
-    vaultTypeId: 1,
-    amount: new BigNumber(100),
-  })
+  const ethToken = sdk.token.tokenForDenom("eth");
+  if (!ethToken) return;
 
-  const result = await connectedSDK.cdp.addDebt({
-    vaultTypeId: 1,
-    amount: new BigNumber(100), // human
-  })
-  console.log(result)
+  const result = await connectedSDK.cdp.supplyAssetAndLockCollateral({
+    denom: "eth",
+    supplyAmount: new BigNumber(0.01).shiftedBy(ethToken.decimals.toNumber()),
+    lockAmount: new BigNumber(0.01).shiftedBy(ethToken.decimals.toNumber()),
+  });
+  console.log(result);
 })().catch(console.error).finally(() => process.exit(0));

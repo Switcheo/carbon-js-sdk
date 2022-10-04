@@ -15,9 +15,10 @@ export interface GenesisState {
   /** params defines all the paramaters of the module. */
   params?: Params;
   controlledParams?: ControlledParams;
+  marketNameSequence: Long;
 }
 
-const baseGenesisState: object = {};
+const baseGenesisState: object = { marketNameSequence: Long.ZERO };
 
 export const GenesisState = {
   encode(
@@ -35,6 +36,9 @@ export const GenesisState = {
         message.controlledParams,
         writer.uint32(26).fork()
       ).ldelim();
+    }
+    if (!message.marketNameSequence.isZero()) {
+      writer.uint32(32).int64(message.marketNameSequence);
     }
     return writer;
   },
@@ -59,6 +63,9 @@ export const GenesisState = {
             reader.uint32()
           );
           break;
+        case 4:
+          message.marketNameSequence = reader.int64() as Long;
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -80,6 +87,11 @@ export const GenesisState = {
       object.controlledParams !== undefined && object.controlledParams !== null
         ? ControlledParams.fromJSON(object.controlledParams)
         : undefined;
+    message.marketNameSequence =
+      object.marketNameSequence !== undefined &&
+      object.marketNameSequence !== null
+        ? Long.fromString(object.marketNameSequence)
+        : Long.ZERO;
     return message;
   },
 
@@ -98,6 +110,10 @@ export const GenesisState = {
       (obj.controlledParams = message.controlledParams
         ? ControlledParams.toJSON(message.controlledParams)
         : undefined);
+    message.marketNameSequence !== undefined &&
+      (obj.marketNameSequence = (
+        message.marketNameSequence || Long.ZERO
+      ).toString());
     return obj;
   },
 
@@ -112,6 +128,11 @@ export const GenesisState = {
       object.controlledParams !== undefined && object.controlledParams !== null
         ? ControlledParams.fromPartial(object.controlledParams)
         : undefined;
+    message.marketNameSequence =
+      object.marketNameSequence !== undefined &&
+      object.marketNameSequence !== null
+        ? Long.fromValue(object.marketNameSequence)
+        : Long.ZERO;
     return message;
   },
 };

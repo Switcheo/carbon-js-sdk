@@ -2,6 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Params } from "./params";
+import { StableCoinDebtInfo } from "./stable_coin_debt_info";
 import { RateStrategyParams } from "./rate_strategy_params";
 import { AssetParams } from "./asset_params";
 import { DebtInfo } from "./debt_info";
@@ -23,6 +24,7 @@ export interface GenesisState {
   accountToCollateralized: { [key: string]: Uint8Array };
   accountToDebt: { [key: string]: Uint8Array };
   accountToPaidInterest: { [key: string]: Uint8Array };
+  stableCoinDebtInfo?: StableCoinDebtInfo;
   borrows: MsgBorrowAsset[];
   repays: MsgRepayAsset[];
   lockCollaterals: MsgLockCollateral[];
@@ -82,17 +84,23 @@ export const GenesisState = {
         writer.uint32(58).fork()
       ).ldelim();
     });
+    if (message.stableCoinDebtInfo !== undefined) {
+      StableCoinDebtInfo.encode(
+        message.stableCoinDebtInfo,
+        writer.uint32(66).fork()
+      ).ldelim();
+    }
     for (const v of message.borrows) {
-      MsgBorrowAsset.encode(v!, writer.uint32(66).fork()).ldelim();
+      MsgBorrowAsset.encode(v!, writer.uint32(74).fork()).ldelim();
     }
     for (const v of message.repays) {
-      MsgRepayAsset.encode(v!, writer.uint32(74).fork()).ldelim();
+      MsgRepayAsset.encode(v!, writer.uint32(82).fork()).ldelim();
     }
     for (const v of message.lockCollaterals) {
-      MsgLockCollateral.encode(v!, writer.uint32(82).fork()).ldelim();
+      MsgLockCollateral.encode(v!, writer.uint32(90).fork()).ldelim();
     }
     for (const v of message.unlockCollaterals) {
-      MsgUnlockCollateral.encode(v!, writer.uint32(90).fork()).ldelim();
+      MsgUnlockCollateral.encode(v!, writer.uint32(98).fork()).ldelim();
     }
     return writer;
   },
@@ -156,17 +164,23 @@ export const GenesisState = {
           }
           break;
         case 8:
-          message.borrows.push(MsgBorrowAsset.decode(reader, reader.uint32()));
+          message.stableCoinDebtInfo = StableCoinDebtInfo.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         case 9:
-          message.repays.push(MsgRepayAsset.decode(reader, reader.uint32()));
+          message.borrows.push(MsgBorrowAsset.decode(reader, reader.uint32()));
           break;
         case 10:
+          message.repays.push(MsgRepayAsset.decode(reader, reader.uint32()));
+          break;
+        case 11:
           message.lockCollaterals.push(
             MsgLockCollateral.decode(reader, reader.uint32())
           );
           break;
-        case 11:
+        case 12:
           message.unlockCollaterals.push(
             MsgUnlockCollateral.decode(reader, reader.uint32())
           );
@@ -212,6 +226,11 @@ export const GenesisState = {
       acc[key] = bytesFromBase64(value as string);
       return acc;
     }, {});
+    message.stableCoinDebtInfo =
+      object.stableCoinDebtInfo !== undefined &&
+      object.stableCoinDebtInfo !== null
+        ? StableCoinDebtInfo.fromJSON(object.stableCoinDebtInfo)
+        : undefined;
     message.borrows = (object.borrows ?? []).map((e: any) =>
       MsgBorrowAsset.fromJSON(e)
     );
@@ -270,6 +289,10 @@ export const GenesisState = {
         obj.accountToPaidInterest[k] = base64FromBytes(v);
       });
     }
+    message.stableCoinDebtInfo !== undefined &&
+      (obj.stableCoinDebtInfo = message.stableCoinDebtInfo
+        ? StableCoinDebtInfo.toJSON(message.stableCoinDebtInfo)
+        : undefined);
     if (message.borrows) {
       obj.borrows = message.borrows.map((e) =>
         e ? MsgBorrowAsset.toJSON(e) : undefined
@@ -340,6 +363,11 @@ export const GenesisState = {
       }
       return acc;
     }, {});
+    message.stableCoinDebtInfo =
+      object.stableCoinDebtInfo !== undefined &&
+      object.stableCoinDebtInfo !== null
+        ? StableCoinDebtInfo.fromPartial(object.stableCoinDebtInfo)
+        : undefined;
     message.borrows = (object.borrows ?? []).map((e) =>
       MsgBorrowAsset.fromPartial(e)
     );

@@ -2,6 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Coin } from "../cosmos/base/v1beta1/coin";
+import { StringValue } from "../google/protobuf/wrappers";
 
 export const protobufPackage = "Switcheo.carbon.coin";
 
@@ -27,6 +28,11 @@ export interface BalanceChange {
   amount: string;
   type: string;
   location: string;
+  metadata?: Metadata;
+}
+
+export interface Metadata {
+  orderId?: string;
 }
 
 export interface LockedCoins {
@@ -294,6 +300,9 @@ export const BalanceChange = {
     if (message.location !== "") {
       writer.uint32(50).string(message.location);
     }
+    if (message.metadata !== undefined) {
+      Metadata.encode(message.metadata, writer.uint32(58).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -321,6 +330,9 @@ export const BalanceChange = {
           break;
         case 6:
           message.location = reader.string();
+          break;
+        case 7:
+          message.metadata = Metadata.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -356,6 +368,10 @@ export const BalanceChange = {
       object.location !== undefined && object.location !== null
         ? String(object.location)
         : "";
+    message.metadata =
+      object.metadata !== undefined && object.metadata !== null
+        ? Metadata.fromJSON(object.metadata)
+        : undefined;
     return message;
   },
 
@@ -368,6 +384,10 @@ export const BalanceChange = {
     message.amount !== undefined && (obj.amount = message.amount);
     message.type !== undefined && (obj.type = message.type);
     message.location !== undefined && (obj.location = message.location);
+    message.metadata !== undefined &&
+      (obj.metadata = message.metadata
+        ? Metadata.toJSON(message.metadata)
+        : undefined);
     return obj;
   },
 
@@ -382,6 +402,66 @@ export const BalanceChange = {
     message.amount = object.amount ?? "";
     message.type = object.type ?? "";
     message.location = object.location ?? "";
+    message.metadata =
+      object.metadata !== undefined && object.metadata !== null
+        ? Metadata.fromPartial(object.metadata)
+        : undefined;
+    return message;
+  },
+};
+
+const baseMetadata: object = {};
+
+export const Metadata = {
+  encode(
+    message: Metadata,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.orderId !== undefined) {
+      StringValue.encode(
+        { value: message.orderId! },
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): Metadata {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMetadata } as Metadata;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.orderId = StringValue.decode(reader, reader.uint32()).value;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Metadata {
+    const message = { ...baseMetadata } as Metadata;
+    message.orderId =
+      object.orderId !== undefined && object.orderId !== null
+        ? String(object.orderId)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: Metadata): unknown {
+    const obj: any = {};
+    message.orderId !== undefined && (obj.orderId = message.orderId);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<Metadata>): Metadata {
+    const message = { ...baseMetadata } as Metadata;
+    message.orderId = object.orderId ?? undefined;
     return message;
   },
 };

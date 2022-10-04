@@ -4,6 +4,7 @@ import _m0 from "protobufjs/minimal";
 import { RateStrategyParams } from "./rate_strategy_params";
 import { AssetParams } from "./asset_params";
 import { DebtInfo } from "./debt_info";
+import { StableCoinDebtInfo } from "./stable_coin_debt_info";
 
 export const protobufPackage = "Switcheo.carbon.cdp";
 
@@ -94,6 +95,11 @@ export interface UnlockCollateralEvent {
 
 export interface UpdateDebtInfoEvent {
   debtInfo?: DebtInfo;
+  type: string;
+}
+
+export interface UpdateStableCoinDebtInfoEvent {
+  stableCoinDebtInfo?: StableCoinDebtInfo;
   type: string;
 }
 
@@ -1437,6 +1443,96 @@ export const UpdateDebtInfoEvent = {
     message.debtInfo =
       object.debtInfo !== undefined && object.debtInfo !== null
         ? DebtInfo.fromPartial(object.debtInfo)
+        : undefined;
+    message.type = object.type ?? "";
+    return message;
+  },
+};
+
+const baseUpdateStableCoinDebtInfoEvent: object = { type: "" };
+
+export const UpdateStableCoinDebtInfoEvent = {
+  encode(
+    message: UpdateStableCoinDebtInfoEvent,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.stableCoinDebtInfo !== undefined) {
+      StableCoinDebtInfo.encode(
+        message.stableCoinDebtInfo,
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    if (message.type !== "") {
+      writer.uint32(18).string(message.type);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): UpdateStableCoinDebtInfoEvent {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseUpdateStableCoinDebtInfoEvent,
+    } as UpdateStableCoinDebtInfoEvent;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.stableCoinDebtInfo = StableCoinDebtInfo.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 2:
+          message.type = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UpdateStableCoinDebtInfoEvent {
+    const message = {
+      ...baseUpdateStableCoinDebtInfoEvent,
+    } as UpdateStableCoinDebtInfoEvent;
+    message.stableCoinDebtInfo =
+      object.stableCoinDebtInfo !== undefined &&
+      object.stableCoinDebtInfo !== null
+        ? StableCoinDebtInfo.fromJSON(object.stableCoinDebtInfo)
+        : undefined;
+    message.type =
+      object.type !== undefined && object.type !== null
+        ? String(object.type)
+        : "";
+    return message;
+  },
+
+  toJSON(message: UpdateStableCoinDebtInfoEvent): unknown {
+    const obj: any = {};
+    message.stableCoinDebtInfo !== undefined &&
+      (obj.stableCoinDebtInfo = message.stableCoinDebtInfo
+        ? StableCoinDebtInfo.toJSON(message.stableCoinDebtInfo)
+        : undefined);
+    message.type !== undefined && (obj.type = message.type);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<UpdateStableCoinDebtInfoEvent>
+  ): UpdateStableCoinDebtInfoEvent {
+    const message = {
+      ...baseUpdateStableCoinDebtInfoEvent,
+    } as UpdateStableCoinDebtInfoEvent;
+    message.stableCoinDebtInfo =
+      object.stableCoinDebtInfo !== undefined &&
+      object.stableCoinDebtInfo !== null
+        ? StableCoinDebtInfo.fromPartial(object.stableCoinDebtInfo)
         : undefined;
     message.type = object.type ?? "";
     return message;

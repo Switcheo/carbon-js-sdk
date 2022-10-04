@@ -16,6 +16,7 @@ export interface AccountTrade {
   address: string;
   blockHeight: Long;
   blockCreatedAt?: Date;
+  tradeId: Long;
 }
 
 const baseAccountTrade: object = {
@@ -28,6 +29,7 @@ const baseAccountTrade: object = {
   feeDenom: "",
   address: "",
   blockHeight: Long.ZERO,
+  tradeId: Long.UZERO,
 };
 
 export const AccountTrade = {
@@ -67,6 +69,9 @@ export const AccountTrade = {
         toTimestamp(message.blockCreatedAt),
         writer.uint32(82).fork()
       ).ldelim();
+    }
+    if (!message.tradeId.isZero()) {
+      writer.uint32(88).uint64(message.tradeId);
     }
     return writer;
   },
@@ -109,6 +114,9 @@ export const AccountTrade = {
           message.blockCreatedAt = fromTimestamp(
             Timestamp.decode(reader, reader.uint32())
           );
+          break;
+        case 11:
+          message.tradeId = reader.uint64() as Long;
           break;
         default:
           reader.skipType(tag & 7);
@@ -160,6 +168,10 @@ export const AccountTrade = {
       object.blockCreatedAt !== undefined && object.blockCreatedAt !== null
         ? fromJsonTimestamp(object.blockCreatedAt)
         : undefined;
+    message.tradeId =
+      object.tradeId !== undefined && object.tradeId !== null
+        ? Long.fromString(object.tradeId)
+        : Long.UZERO;
     return message;
   },
 
@@ -177,6 +189,8 @@ export const AccountTrade = {
       (obj.blockHeight = (message.blockHeight || Long.ZERO).toString());
     message.blockCreatedAt !== undefined &&
       (obj.blockCreatedAt = message.blockCreatedAt.toISOString());
+    message.tradeId !== undefined &&
+      (obj.tradeId = (message.tradeId || Long.UZERO).toString());
     return obj;
   },
 
@@ -195,6 +209,10 @@ export const AccountTrade = {
         ? Long.fromValue(object.blockHeight)
         : Long.ZERO;
     message.blockCreatedAt = object.blockCreatedAt ?? undefined;
+    message.tradeId =
+      object.tradeId !== undefined && object.tradeId !== null
+        ? Long.fromValue(object.tradeId)
+        : Long.UZERO;
     return message;
   },
 };
