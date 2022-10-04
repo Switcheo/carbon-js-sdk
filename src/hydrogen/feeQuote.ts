@@ -1,3 +1,5 @@
+import dayjs from "dayjs"
+
 export interface GetFeeQuoteRequest {
   token_denom: string
 }
@@ -9,8 +11,8 @@ export interface GetFeeQuoteResponse {
   create_wallet_fee: string,
   deposit_fee: string,
   withdrawal_fee: string,
-  created_at: string,
-  expires_at: string
+  created_at: dayjs.Dayjs,
+  expires_at: dayjs.Dayjs
 }
 
 export interface FeeQuote {
@@ -20,6 +22,6 @@ export interface FeeQuote {
   create_wallet_fee: string,
   deposit_fee: string,
   withdrawal_fee: string,
-  created_at: string,
-  expires_at: string
+  created_at: dayjs.Dayjs,
+  expires_at: dayjs.Dayjs
 }
