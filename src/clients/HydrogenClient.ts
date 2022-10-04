@@ -138,15 +138,14 @@ class HydrogenClient {
   }
 
   async getFeeQuote(req: GetFeeQuoteRequest): Promise<GetFeeQuoteResponse> {
-    // TODO: Uncomment when this query is deployed on production
-    // this.checkState();
+    this.checkState();
     const request = this.apiManager.path('fee_quote', {}, {
       ...req,
-    })
-    const response = await request.get()
-    const result = response.data
+    });
+    const response = await request.get();
+    const result = response.data;
 
-    return formatFeeQuote(result)
+    return formatFeeQuote(result);
   }
 }
 
