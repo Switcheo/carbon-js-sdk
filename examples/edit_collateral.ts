@@ -9,9 +9,9 @@ import "./_setup";
 
   const sdk = await CarbonSDK.instance({
     network: CarbonSDK.Network.LocalHost,
-    // config: {
-    //   tmRpcUrl: process.env.TRPC_ENDPOINT,
-    // },
+    config: {
+      tmRpcUrl: process.env.TRPC_ENDPOINT,
+    },
   });
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
@@ -20,9 +20,10 @@ import "./_setup";
   const cdpEthToken = sdk.token.tokenForDenom("cdp/eth");
   if (!ethToken || !cdpEthToken) return;
 
-  await connectedSDK.cdp.lockCollateral({
-    cdpDenom: "eth",
-    amount: new BigNumber(0.01).shiftedBy(ethToken.decimals.toNumber()), // human
+  await connectedSDK.cdp.supplyAssetAndLockCollateral({
+    denom: "eth",
+    lockAmount: new BigNumber(0.01).shiftedBy(ethToken.decimals.toNumber()), // human
+    supplyAmount: new BigNumber(0.01).shiftedBy(ethToken.decimals.toNumber()), // human
   });
 
   const result = await connectedSDK.cdp.unlockCollateral({
