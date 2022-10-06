@@ -1,4 +1,4 @@
-import { Any, MsgAddAsset, MsgAddRateStrategy, MsgRemoveRateStrategy, MsgSetInterestFee, MsgSetLiquidationFee, MsgSetStableCoinInterestRate, MsgUpdateAsset, MsgUpdateRateStrategy, SettlementPriceParams } from "@carbon-sdk/codec";
+import { Any, MsgAddAsset, MsgAddRateStrategy, MsgRemoveRateStrategy, MsgSetInterestFee, MsgSetLiquidationFee, MsgSetStablecoinInterestRate, MsgUpdateAsset, MsgUpdateRateStrategy, SettlementPriceParams } from "@carbon-sdk/codec";
 import { MsgAuthorizeBridge, MsgBindToken, MsgCreateToken, MsgDeauthorizeBridge, MsgLinkToken, MsgSyncToken, MsgUnbindToken } from "@carbon-sdk/codec/coin/tx";
 import { Coin } from "@carbon-sdk/codec/cosmos/base/v1beta1/coin";
 import { Description } from "@carbon-sdk/codec/cosmos/staking/v1beta1/staking";
@@ -531,13 +531,13 @@ export class AdminModule extends BaseModule {
   public async setStableCoinInterestRate(params: AdminModule.SetStableCoinInterestRateParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = MsgSetStableCoinInterestRate.fromPartial({
+    const value = MsgSetStablecoinInterestRate.fromPartial({
       creator: wallet.bech32Address,
-      stableCoinInterestRate: params.stableCoinInterestRate.toString(10),
+      stablecoinInterestRate: params.stablecoinInterestRate.toString(10),
     })
 
     return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgSetStableCoinInterestRate,
+      typeUrl: CarbonTx.Types.MsgSetStablecoinInterestRate,
       value
     }, opts);
   }
@@ -753,7 +753,7 @@ export namespace AdminModule {
   }
 
   export interface SetStableCoinInterestRateParams {
-    stableCoinInterestRate: BigNumber
+    stablecoinInterestRate: BigNumber
   }
 };
 
