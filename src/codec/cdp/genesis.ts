@@ -2,7 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Params } from "./params";
-import { StableCoinDebtInfo } from "./stable_coin_debt_info";
+import { StablecoinDebtInfo } from "./stablecoin_debt_info";
 import { RateStrategyParams } from "./rate_strategy_params";
 import { AssetParams } from "./asset_params";
 import { DebtInfo } from "./debt_info";
@@ -24,7 +24,7 @@ export interface GenesisState {
   accountToCollateralized: { [key: string]: Uint8Array };
   accountToDebt: { [key: string]: Uint8Array };
   accountToPaidInterest: { [key: string]: Uint8Array };
-  stableCoinDebtInfo?: StableCoinDebtInfo;
+  stablecoinDebtInfo?: StablecoinDebtInfo;
   borrows: MsgBorrowAsset[];
   repays: MsgRepayAsset[];
   lockCollaterals: MsgLockCollateral[];
@@ -84,9 +84,9 @@ export const GenesisState = {
         writer.uint32(58).fork()
       ).ldelim();
     });
-    if (message.stableCoinDebtInfo !== undefined) {
-      StableCoinDebtInfo.encode(
-        message.stableCoinDebtInfo,
+    if (message.stablecoinDebtInfo !== undefined) {
+      StablecoinDebtInfo.encode(
+        message.stablecoinDebtInfo,
         writer.uint32(66).fork()
       ).ldelim();
     }
@@ -164,7 +164,7 @@ export const GenesisState = {
           }
           break;
         case 8:
-          message.stableCoinDebtInfo = StableCoinDebtInfo.decode(
+          message.stablecoinDebtInfo = StablecoinDebtInfo.decode(
             reader,
             reader.uint32()
           );
@@ -226,10 +226,10 @@ export const GenesisState = {
       acc[key] = bytesFromBase64(value as string);
       return acc;
     }, {});
-    message.stableCoinDebtInfo =
-      object.stableCoinDebtInfo !== undefined &&
-      object.stableCoinDebtInfo !== null
-        ? StableCoinDebtInfo.fromJSON(object.stableCoinDebtInfo)
+    message.stablecoinDebtInfo =
+      object.stablecoinDebtInfo !== undefined &&
+      object.stablecoinDebtInfo !== null
+        ? StablecoinDebtInfo.fromJSON(object.stablecoinDebtInfo)
         : undefined;
     message.borrows = (object.borrows ?? []).map((e: any) =>
       MsgBorrowAsset.fromJSON(e)
@@ -289,9 +289,9 @@ export const GenesisState = {
         obj.accountToPaidInterest[k] = base64FromBytes(v);
       });
     }
-    message.stableCoinDebtInfo !== undefined &&
-      (obj.stableCoinDebtInfo = message.stableCoinDebtInfo
-        ? StableCoinDebtInfo.toJSON(message.stableCoinDebtInfo)
+    message.stablecoinDebtInfo !== undefined &&
+      (obj.stablecoinDebtInfo = message.stablecoinDebtInfo
+        ? StablecoinDebtInfo.toJSON(message.stablecoinDebtInfo)
         : undefined);
     if (message.borrows) {
       obj.borrows = message.borrows.map((e) =>
@@ -363,10 +363,10 @@ export const GenesisState = {
       }
       return acc;
     }, {});
-    message.stableCoinDebtInfo =
-      object.stableCoinDebtInfo !== undefined &&
-      object.stableCoinDebtInfo !== null
-        ? StableCoinDebtInfo.fromPartial(object.stableCoinDebtInfo)
+    message.stablecoinDebtInfo =
+      object.stablecoinDebtInfo !== undefined &&
+      object.stablecoinDebtInfo !== null
+        ? StablecoinDebtInfo.fromPartial(object.stablecoinDebtInfo)
         : undefined;
     message.borrows = (object.borrows ?? []).map((e) =>
       MsgBorrowAsset.fromPartial(e)
