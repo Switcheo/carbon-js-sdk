@@ -248,7 +248,7 @@ const AdminAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgUpdateAsset]: generateAminoType(MsgUpdateAsset),
   [CarbonTx.Types.MsgSetLiquidationFee]: generateAminoType(MsgSetLiquidationFee),
   [CarbonTx.Types.MsgSetInterestFee]: generateAminoType(MsgSetInterestFee),
-  [CarbonTx.Types.MsgSetStableCoinInterestRate]: generateAminoType(MsgSetStableCoinInterestRate),
+  [CarbonTx.Types.MsgSetStablecoinInterestRate]: generateAminoType(MsgSetStableCoinInterestRate),
 };
 
 export default AdminAmino;

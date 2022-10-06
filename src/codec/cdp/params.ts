@@ -8,13 +8,13 @@ export const protobufPackage = "Switcheo.carbon.cdp";
 export interface Params {
   interestFee: string;
   liquidationFee: string;
-  stableCoinInterestRate: string;
+  stablecoinInterestRate: string;
 }
 
 const baseParams: object = {
   interestFee: "",
   liquidationFee: "",
-  stableCoinInterestRate: "",
+  stablecoinInterestRate: "",
 };
 
 export const Params = {
@@ -28,8 +28,8 @@ export const Params = {
     if (message.liquidationFee !== "") {
       writer.uint32(18).string(message.liquidationFee);
     }
-    if (message.stableCoinInterestRate !== "") {
-      writer.uint32(26).string(message.stableCoinInterestRate);
+    if (message.stablecoinInterestRate !== "") {
+      writer.uint32(26).string(message.stablecoinInterestRate);
     }
     return writer;
   },
@@ -48,7 +48,7 @@ export const Params = {
           message.liquidationFee = reader.string();
           break;
         case 3:
-          message.stableCoinInterestRate = reader.string();
+          message.stablecoinInterestRate = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -68,10 +68,10 @@ export const Params = {
       object.liquidationFee !== undefined && object.liquidationFee !== null
         ? String(object.liquidationFee)
         : "";
-    message.stableCoinInterestRate =
-      object.stableCoinInterestRate !== undefined &&
-      object.stableCoinInterestRate !== null
-        ? String(object.stableCoinInterestRate)
+    message.stablecoinInterestRate =
+      object.stablecoinInterestRate !== undefined &&
+      object.stablecoinInterestRate !== null
+        ? String(object.stablecoinInterestRate)
         : "";
     return message;
   },
@@ -82,8 +82,8 @@ export const Params = {
       (obj.interestFee = message.interestFee);
     message.liquidationFee !== undefined &&
       (obj.liquidationFee = message.liquidationFee);
-    message.stableCoinInterestRate !== undefined &&
-      (obj.stableCoinInterestRate = message.stableCoinInterestRate);
+    message.stablecoinInterestRate !== undefined &&
+      (obj.stablecoinInterestRate = message.stablecoinInterestRate);
     return obj;
   },
 
@@ -91,7 +91,7 @@ export const Params = {
     const message = { ...baseParams } as Params;
     message.interestFee = object.interestFee ?? "";
     message.liquidationFee = object.liquidationFee ?? "";
-    message.stableCoinInterestRate = object.stableCoinInterestRate ?? "";
+    message.stablecoinInterestRate = object.stablecoinInterestRate ?? "";
     return message;
   },
 };
