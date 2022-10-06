@@ -551,13 +551,13 @@ export class AdminModule extends BaseModule {
   public async setStableCoinInterestRate(params: AdminModule.SetStableCoinInterestRateParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = MsgSetStableCoinInterestRate.fromPartial({
+    const value = MsgSetStablecoinInterestRate.fromPartial({
       creator: wallet.bech32Address,
-      stableCoinInterestRate: params.stableCoinInterestRate.toString(10),
+      stablecoinInterestRate: params.stablecoinInterestRate.toString(10),
     })
 
     return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgSetStableCoinInterestRate,
+      typeUrl: CarbonTx.Types.MsgSetStablecoinInterestRate,
       value
     }, opts);
   }
@@ -781,7 +781,7 @@ export namespace AdminModule {
   }
 
   export interface SetStableCoinInterestRateParams {
-    stableCoinInterestRate: BigNumber
+    stablecoinInterestRate: BigNumber
   }
 };
 
