@@ -177,8 +177,8 @@ export interface RateStrategy { // CDP
   optimal_stable_to_total_debt_ratio: string // string representation of number
 }
 
-export interface Assets { // CDP
-  asset: {
+export interface Asset { // CDP
+  asset_params: {
     denom: string
     oracle_id: string
     rate_strategy_name: string
@@ -192,7 +192,7 @@ export interface Assets { // CDP
     denom: string
     total_borrowed: string
     total_amount: string
-    utilization_rate: string
+    utilizationRate: string
   },
 }
 
