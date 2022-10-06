@@ -5,7 +5,7 @@ import { Timestamp } from "../google/protobuf/timestamp";
 
 export const protobufPackage = "Switcheo.carbon.cdp";
 
-export interface StableCoinDebtInfo {
+export interface StablecoinDebtInfo {
   denom: string;
   lastUpdatedTime?: Date;
   totalAccInterest: string;
@@ -14,7 +14,7 @@ export interface StableCoinDebtInfo {
   totalPaidInterest: string;
 }
 
-const baseStableCoinDebtInfo: object = {
+const baseStablecoinDebtInfo: object = {
   denom: "",
   totalAccInterest: "",
   totalPrincipal: "",
@@ -22,9 +22,9 @@ const baseStableCoinDebtInfo: object = {
   totalPaidInterest: "",
 };
 
-export const StableCoinDebtInfo = {
+export const StablecoinDebtInfo = {
   encode(
-    message: StableCoinDebtInfo,
+    message: StablecoinDebtInfo,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.denom !== "") {
@@ -51,10 +51,10 @@ export const StableCoinDebtInfo = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): StableCoinDebtInfo {
+  decode(input: _m0.Reader | Uint8Array, length?: number): StablecoinDebtInfo {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseStableCoinDebtInfo } as StableCoinDebtInfo;
+    const message = { ...baseStablecoinDebtInfo } as StablecoinDebtInfo;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -86,8 +86,8 @@ export const StableCoinDebtInfo = {
     return message;
   },
 
-  fromJSON(object: any): StableCoinDebtInfo {
-    const message = { ...baseStableCoinDebtInfo } as StableCoinDebtInfo;
+  fromJSON(object: any): StablecoinDebtInfo {
+    const message = { ...baseStablecoinDebtInfo } as StablecoinDebtInfo;
     message.denom =
       object.denom !== undefined && object.denom !== null
         ? String(object.denom)
@@ -117,7 +117,7 @@ export const StableCoinDebtInfo = {
     return message;
   },
 
-  toJSON(message: StableCoinDebtInfo): unknown {
+  toJSON(message: StablecoinDebtInfo): unknown {
     const obj: any = {};
     message.denom !== undefined && (obj.denom = message.denom);
     message.lastUpdatedTime !== undefined &&
@@ -133,8 +133,8 @@ export const StableCoinDebtInfo = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<StableCoinDebtInfo>): StableCoinDebtInfo {
-    const message = { ...baseStableCoinDebtInfo } as StableCoinDebtInfo;
+  fromPartial(object: DeepPartial<StablecoinDebtInfo>): StablecoinDebtInfo {
+    const message = { ...baseStablecoinDebtInfo } as StablecoinDebtInfo;
     message.denom = object.denom ?? "";
     message.lastUpdatedTime = object.lastUpdatedTime ?? undefined;
     message.totalAccInterest = object.totalAccInterest ?? "";

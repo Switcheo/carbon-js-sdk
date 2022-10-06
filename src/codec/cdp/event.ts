@@ -4,7 +4,7 @@ import _m0 from "protobufjs/minimal";
 import { RateStrategyParams } from "./rate_strategy_params";
 import { AssetParams } from "./asset_params";
 import { DebtInfo } from "./debt_info";
-import { StableCoinDebtInfo } from "./stable_coin_debt_info";
+import { StablecoinDebtInfo } from "./stablecoin_debt_info";
 
 export const protobufPackage = "Switcheo.carbon.cdp";
 
@@ -43,8 +43,8 @@ export interface SetLiquidationFeeEvent {
   type: string;
 }
 
-export interface SetStableCoinInterestRateEvent {
-  stableCoinInterestRate: string;
+export interface SetStablecoinInterestRateEvent {
+  stablecoinInterestRate: string;
   type: string;
 }
 
@@ -98,9 +98,18 @@ export interface UpdateDebtInfoEvent {
   type: string;
 }
 
-export interface UpdateStableCoinDebtInfoEvent {
-  stableCoinDebtInfo?: StableCoinDebtInfo;
+export interface UpdateStablecoinDebtInfoEvent {
+  stablecoinDebtInfo?: StablecoinDebtInfo;
   type: string;
+}
+
+export interface ReturnStablecoinEvent {
+  repayer: string;
+  debtor: string;
+  interestDenom: string;
+  interestRepaid: string;
+  principalRepaid: string;
+  healthFactor: string;
 }
 
 export interface LiquidateCollateralEvent {
@@ -677,18 +686,18 @@ export const SetLiquidationFeeEvent = {
   },
 };
 
-const baseSetStableCoinInterestRateEvent: object = {
-  stableCoinInterestRate: "",
+const baseSetStablecoinInterestRateEvent: object = {
+  stablecoinInterestRate: "",
   type: "",
 };
 
-export const SetStableCoinInterestRateEvent = {
+export const SetStablecoinInterestRateEvent = {
   encode(
-    message: SetStableCoinInterestRateEvent,
+    message: SetStablecoinInterestRateEvent,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.stableCoinInterestRate !== "") {
-      writer.uint32(10).string(message.stableCoinInterestRate);
+    if (message.stablecoinInterestRate !== "") {
+      writer.uint32(10).string(message.stablecoinInterestRate);
     }
     if (message.type !== "") {
       writer.uint32(18).string(message.type);
@@ -699,17 +708,17 @@ export const SetStableCoinInterestRateEvent = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): SetStableCoinInterestRateEvent {
+  ): SetStablecoinInterestRateEvent {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseSetStableCoinInterestRateEvent,
-    } as SetStableCoinInterestRateEvent;
+      ...baseSetStablecoinInterestRateEvent,
+    } as SetStablecoinInterestRateEvent;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.stableCoinInterestRate = reader.string();
+          message.stablecoinInterestRate = reader.string();
           break;
         case 2:
           message.type = reader.string();
@@ -722,14 +731,14 @@ export const SetStableCoinInterestRateEvent = {
     return message;
   },
 
-  fromJSON(object: any): SetStableCoinInterestRateEvent {
+  fromJSON(object: any): SetStablecoinInterestRateEvent {
     const message = {
-      ...baseSetStableCoinInterestRateEvent,
-    } as SetStableCoinInterestRateEvent;
-    message.stableCoinInterestRate =
-      object.stableCoinInterestRate !== undefined &&
-      object.stableCoinInterestRate !== null
-        ? String(object.stableCoinInterestRate)
+      ...baseSetStablecoinInterestRateEvent,
+    } as SetStablecoinInterestRateEvent;
+    message.stablecoinInterestRate =
+      object.stablecoinInterestRate !== undefined &&
+      object.stablecoinInterestRate !== null
+        ? String(object.stablecoinInterestRate)
         : "";
     message.type =
       object.type !== undefined && object.type !== null
@@ -738,21 +747,21 @@ export const SetStableCoinInterestRateEvent = {
     return message;
   },
 
-  toJSON(message: SetStableCoinInterestRateEvent): unknown {
+  toJSON(message: SetStablecoinInterestRateEvent): unknown {
     const obj: any = {};
-    message.stableCoinInterestRate !== undefined &&
-      (obj.stableCoinInterestRate = message.stableCoinInterestRate);
+    message.stablecoinInterestRate !== undefined &&
+      (obj.stablecoinInterestRate = message.stablecoinInterestRate);
     message.type !== undefined && (obj.type = message.type);
     return obj;
   },
 
   fromPartial(
-    object: DeepPartial<SetStableCoinInterestRateEvent>
-  ): SetStableCoinInterestRateEvent {
+    object: DeepPartial<SetStablecoinInterestRateEvent>
+  ): SetStablecoinInterestRateEvent {
     const message = {
-      ...baseSetStableCoinInterestRateEvent,
-    } as SetStableCoinInterestRateEvent;
-    message.stableCoinInterestRate = object.stableCoinInterestRate ?? "";
+      ...baseSetStablecoinInterestRateEvent,
+    } as SetStablecoinInterestRateEvent;
+    message.stablecoinInterestRate = object.stablecoinInterestRate ?? "";
     message.type = object.type ?? "";
     return message;
   },
@@ -1449,16 +1458,16 @@ export const UpdateDebtInfoEvent = {
   },
 };
 
-const baseUpdateStableCoinDebtInfoEvent: object = { type: "" };
+const baseUpdateStablecoinDebtInfoEvent: object = { type: "" };
 
-export const UpdateStableCoinDebtInfoEvent = {
+export const UpdateStablecoinDebtInfoEvent = {
   encode(
-    message: UpdateStableCoinDebtInfoEvent,
+    message: UpdateStablecoinDebtInfoEvent,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.stableCoinDebtInfo !== undefined) {
-      StableCoinDebtInfo.encode(
-        message.stableCoinDebtInfo,
+    if (message.stablecoinDebtInfo !== undefined) {
+      StablecoinDebtInfo.encode(
+        message.stablecoinDebtInfo,
         writer.uint32(10).fork()
       ).ldelim();
     }
@@ -1471,17 +1480,17 @@ export const UpdateStableCoinDebtInfoEvent = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): UpdateStableCoinDebtInfoEvent {
+  ): UpdateStablecoinDebtInfoEvent {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseUpdateStableCoinDebtInfoEvent,
-    } as UpdateStableCoinDebtInfoEvent;
+      ...baseUpdateStablecoinDebtInfoEvent,
+    } as UpdateStablecoinDebtInfoEvent;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.stableCoinDebtInfo = StableCoinDebtInfo.decode(
+          message.stablecoinDebtInfo = StablecoinDebtInfo.decode(
             reader,
             reader.uint32()
           );
@@ -1497,14 +1506,14 @@ export const UpdateStableCoinDebtInfoEvent = {
     return message;
   },
 
-  fromJSON(object: any): UpdateStableCoinDebtInfoEvent {
+  fromJSON(object: any): UpdateStablecoinDebtInfoEvent {
     const message = {
-      ...baseUpdateStableCoinDebtInfoEvent,
-    } as UpdateStableCoinDebtInfoEvent;
-    message.stableCoinDebtInfo =
-      object.stableCoinDebtInfo !== undefined &&
-      object.stableCoinDebtInfo !== null
-        ? StableCoinDebtInfo.fromJSON(object.stableCoinDebtInfo)
+      ...baseUpdateStablecoinDebtInfoEvent,
+    } as UpdateStablecoinDebtInfoEvent;
+    message.stablecoinDebtInfo =
+      object.stablecoinDebtInfo !== undefined &&
+      object.stablecoinDebtInfo !== null
+        ? StablecoinDebtInfo.fromJSON(object.stablecoinDebtInfo)
         : undefined;
     message.type =
       object.type !== undefined && object.type !== null
@@ -1513,28 +1522,157 @@ export const UpdateStableCoinDebtInfoEvent = {
     return message;
   },
 
-  toJSON(message: UpdateStableCoinDebtInfoEvent): unknown {
+  toJSON(message: UpdateStablecoinDebtInfoEvent): unknown {
     const obj: any = {};
-    message.stableCoinDebtInfo !== undefined &&
-      (obj.stableCoinDebtInfo = message.stableCoinDebtInfo
-        ? StableCoinDebtInfo.toJSON(message.stableCoinDebtInfo)
+    message.stablecoinDebtInfo !== undefined &&
+      (obj.stablecoinDebtInfo = message.stablecoinDebtInfo
+        ? StablecoinDebtInfo.toJSON(message.stablecoinDebtInfo)
         : undefined);
     message.type !== undefined && (obj.type = message.type);
     return obj;
   },
 
   fromPartial(
-    object: DeepPartial<UpdateStableCoinDebtInfoEvent>
-  ): UpdateStableCoinDebtInfoEvent {
+    object: DeepPartial<UpdateStablecoinDebtInfoEvent>
+  ): UpdateStablecoinDebtInfoEvent {
     const message = {
-      ...baseUpdateStableCoinDebtInfoEvent,
-    } as UpdateStableCoinDebtInfoEvent;
-    message.stableCoinDebtInfo =
-      object.stableCoinDebtInfo !== undefined &&
-      object.stableCoinDebtInfo !== null
-        ? StableCoinDebtInfo.fromPartial(object.stableCoinDebtInfo)
+      ...baseUpdateStablecoinDebtInfoEvent,
+    } as UpdateStablecoinDebtInfoEvent;
+    message.stablecoinDebtInfo =
+      object.stablecoinDebtInfo !== undefined &&
+      object.stablecoinDebtInfo !== null
+        ? StablecoinDebtInfo.fromPartial(object.stablecoinDebtInfo)
         : undefined;
     message.type = object.type ?? "";
+    return message;
+  },
+};
+
+const baseReturnStablecoinEvent: object = {
+  repayer: "",
+  debtor: "",
+  interestDenom: "",
+  interestRepaid: "",
+  principalRepaid: "",
+  healthFactor: "",
+};
+
+export const ReturnStablecoinEvent = {
+  encode(
+    message: ReturnStablecoinEvent,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.repayer !== "") {
+      writer.uint32(10).string(message.repayer);
+    }
+    if (message.debtor !== "") {
+      writer.uint32(18).string(message.debtor);
+    }
+    if (message.interestDenom !== "") {
+      writer.uint32(26).string(message.interestDenom);
+    }
+    if (message.interestRepaid !== "") {
+      writer.uint32(34).string(message.interestRepaid);
+    }
+    if (message.principalRepaid !== "") {
+      writer.uint32(42).string(message.principalRepaid);
+    }
+    if (message.healthFactor !== "") {
+      writer.uint32(50).string(message.healthFactor);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): ReturnStablecoinEvent {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseReturnStablecoinEvent } as ReturnStablecoinEvent;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.repayer = reader.string();
+          break;
+        case 2:
+          message.debtor = reader.string();
+          break;
+        case 3:
+          message.interestDenom = reader.string();
+          break;
+        case 4:
+          message.interestRepaid = reader.string();
+          break;
+        case 5:
+          message.principalRepaid = reader.string();
+          break;
+        case 6:
+          message.healthFactor = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ReturnStablecoinEvent {
+    const message = { ...baseReturnStablecoinEvent } as ReturnStablecoinEvent;
+    message.repayer =
+      object.repayer !== undefined && object.repayer !== null
+        ? String(object.repayer)
+        : "";
+    message.debtor =
+      object.debtor !== undefined && object.debtor !== null
+        ? String(object.debtor)
+        : "";
+    message.interestDenom =
+      object.interestDenom !== undefined && object.interestDenom !== null
+        ? String(object.interestDenom)
+        : "";
+    message.interestRepaid =
+      object.interestRepaid !== undefined && object.interestRepaid !== null
+        ? String(object.interestRepaid)
+        : "";
+    message.principalRepaid =
+      object.principalRepaid !== undefined && object.principalRepaid !== null
+        ? String(object.principalRepaid)
+        : "";
+    message.healthFactor =
+      object.healthFactor !== undefined && object.healthFactor !== null
+        ? String(object.healthFactor)
+        : "";
+    return message;
+  },
+
+  toJSON(message: ReturnStablecoinEvent): unknown {
+    const obj: any = {};
+    message.repayer !== undefined && (obj.repayer = message.repayer);
+    message.debtor !== undefined && (obj.debtor = message.debtor);
+    message.interestDenom !== undefined &&
+      (obj.interestDenom = message.interestDenom);
+    message.interestRepaid !== undefined &&
+      (obj.interestRepaid = message.interestRepaid);
+    message.principalRepaid !== undefined &&
+      (obj.principalRepaid = message.principalRepaid);
+    message.healthFactor !== undefined &&
+      (obj.healthFactor = message.healthFactor);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<ReturnStablecoinEvent>
+  ): ReturnStablecoinEvent {
+    const message = { ...baseReturnStablecoinEvent } as ReturnStablecoinEvent;
+    message.repayer = object.repayer ?? "";
+    message.debtor = object.debtor ?? "";
+    message.interestDenom = object.interestDenom ?? "";
+    message.interestRepaid = object.interestRepaid ?? "";
+    message.principalRepaid = object.principalRepaid ?? "";
+    message.healthFactor = object.healthFactor ?? "";
     return message;
   },
 };
