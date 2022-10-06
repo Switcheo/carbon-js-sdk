@@ -4,6 +4,7 @@ import _m0 from "protobufjs/minimal";
 import { Params } from "./params";
 import { RateStrategyParams } from "./rate_strategy_params";
 import { AssetData } from "./asset_params";
+import { StringValue } from "../google/protobuf/wrappers";
 
 export const protobufPackage = "Switcheo.carbon.cdp";
 
@@ -84,6 +85,46 @@ export interface QueryAccountDataResponse {
   availableBorrowsUsd: string;
   currLiquidationThreshold: string;
   healthFactor: string;
+}
+
+export interface QueryBorrowsRequest {
+  address: string;
+}
+
+export interface QueryBorrowsResponse {
+  borrows: DBBorrow[];
+}
+
+export interface QueryBorrowsAllRequest {}
+
+export interface QueryBorrowsAllResponse {
+  borrows: DBBorrow[];
+}
+
+export interface DBBorrow {
+  address?: string;
+  denom: string;
+  amount: string;
+}
+
+export interface QueryCollateralsRequest {
+  address: string;
+}
+
+export interface QueryCollateralsResponse {
+  collaterals: DBCollateral[];
+}
+
+export interface QueryCollateralsAllRequest {}
+
+export interface QueryCollateralsAllResponse {
+  collaterals: DBCollateral[];
+}
+
+export interface DBCollateral {
+  address?: string;
+  denom: string;
+  amount: string;
 }
 
 const baseQueryParamsRequest: object = {};
@@ -1312,6 +1353,663 @@ export const QueryAccountDataResponse = {
   },
 };
 
+const baseQueryBorrowsRequest: object = { address: "" };
+
+export const QueryBorrowsRequest = {
+  encode(
+    message: QueryBorrowsRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.address !== "") {
+      writer.uint32(10).string(message.address);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryBorrowsRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseQueryBorrowsRequest } as QueryBorrowsRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.address = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryBorrowsRequest {
+    const message = { ...baseQueryBorrowsRequest } as QueryBorrowsRequest;
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryBorrowsRequest): unknown {
+    const obj: any = {};
+    message.address !== undefined && (obj.address = message.address);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<QueryBorrowsRequest>): QueryBorrowsRequest {
+    const message = { ...baseQueryBorrowsRequest } as QueryBorrowsRequest;
+    message.address = object.address ?? "";
+    return message;
+  },
+};
+
+const baseQueryBorrowsResponse: object = {};
+
+export const QueryBorrowsResponse = {
+  encode(
+    message: QueryBorrowsResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.borrows) {
+      DBBorrow.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryBorrowsResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseQueryBorrowsResponse } as QueryBorrowsResponse;
+    message.borrows = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.borrows.push(DBBorrow.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryBorrowsResponse {
+    const message = { ...baseQueryBorrowsResponse } as QueryBorrowsResponse;
+    message.borrows = (object.borrows ?? []).map((e: any) =>
+      DBBorrow.fromJSON(e)
+    );
+    return message;
+  },
+
+  toJSON(message: QueryBorrowsResponse): unknown {
+    const obj: any = {};
+    if (message.borrows) {
+      obj.borrows = message.borrows.map((e) =>
+        e ? DBBorrow.toJSON(e) : undefined
+      );
+    } else {
+      obj.borrows = [];
+    }
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<QueryBorrowsResponse>): QueryBorrowsResponse {
+    const message = { ...baseQueryBorrowsResponse } as QueryBorrowsResponse;
+    message.borrows = (object.borrows ?? []).map((e) =>
+      DBBorrow.fromPartial(e)
+    );
+    return message;
+  },
+};
+
+const baseQueryBorrowsAllRequest: object = {};
+
+export const QueryBorrowsAllRequest = {
+  encode(
+    _: QueryBorrowsAllRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryBorrowsAllRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseQueryBorrowsAllRequest } as QueryBorrowsAllRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryBorrowsAllRequest {
+    const message = { ...baseQueryBorrowsAllRequest } as QueryBorrowsAllRequest;
+    return message;
+  },
+
+  toJSON(_: QueryBorrowsAllRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(_: DeepPartial<QueryBorrowsAllRequest>): QueryBorrowsAllRequest {
+    const message = { ...baseQueryBorrowsAllRequest } as QueryBorrowsAllRequest;
+    return message;
+  },
+};
+
+const baseQueryBorrowsAllResponse: object = {};
+
+export const QueryBorrowsAllResponse = {
+  encode(
+    message: QueryBorrowsAllResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.borrows) {
+      DBBorrow.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryBorrowsAllResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryBorrowsAllResponse,
+    } as QueryBorrowsAllResponse;
+    message.borrows = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.borrows.push(DBBorrow.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryBorrowsAllResponse {
+    const message = {
+      ...baseQueryBorrowsAllResponse,
+    } as QueryBorrowsAllResponse;
+    message.borrows = (object.borrows ?? []).map((e: any) =>
+      DBBorrow.fromJSON(e)
+    );
+    return message;
+  },
+
+  toJSON(message: QueryBorrowsAllResponse): unknown {
+    const obj: any = {};
+    if (message.borrows) {
+      obj.borrows = message.borrows.map((e) =>
+        e ? DBBorrow.toJSON(e) : undefined
+      );
+    } else {
+      obj.borrows = [];
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryBorrowsAllResponse>
+  ): QueryBorrowsAllResponse {
+    const message = {
+      ...baseQueryBorrowsAllResponse,
+    } as QueryBorrowsAllResponse;
+    message.borrows = (object.borrows ?? []).map((e) =>
+      DBBorrow.fromPartial(e)
+    );
+    return message;
+  },
+};
+
+const baseDBBorrow: object = { denom: "", amount: "" };
+
+export const DBBorrow = {
+  encode(
+    message: DBBorrow,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.address !== undefined) {
+      StringValue.encode(
+        { value: message.address! },
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    if (message.denom !== "") {
+      writer.uint32(18).string(message.denom);
+    }
+    if (message.amount !== "") {
+      writer.uint32(26).string(message.amount);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DBBorrow {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseDBBorrow } as DBBorrow;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.address = StringValue.decode(reader, reader.uint32()).value;
+          break;
+        case 2:
+          message.denom = reader.string();
+          break;
+        case 3:
+          message.amount = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): DBBorrow {
+    const message = { ...baseDBBorrow } as DBBorrow;
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : undefined;
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
+    message.amount =
+      object.amount !== undefined && object.amount !== null
+        ? String(object.amount)
+        : "";
+    return message;
+  },
+
+  toJSON(message: DBBorrow): unknown {
+    const obj: any = {};
+    message.address !== undefined && (obj.address = message.address);
+    message.denom !== undefined && (obj.denom = message.denom);
+    message.amount !== undefined && (obj.amount = message.amount);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<DBBorrow>): DBBorrow {
+    const message = { ...baseDBBorrow } as DBBorrow;
+    message.address = object.address ?? undefined;
+    message.denom = object.denom ?? "";
+    message.amount = object.amount ?? "";
+    return message;
+  },
+};
+
+const baseQueryCollateralsRequest: object = { address: "" };
+
+export const QueryCollateralsRequest = {
+  encode(
+    message: QueryCollateralsRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.address !== "") {
+      writer.uint32(10).string(message.address);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryCollateralsRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryCollateralsRequest,
+    } as QueryCollateralsRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.address = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryCollateralsRequest {
+    const message = {
+      ...baseQueryCollateralsRequest,
+    } as QueryCollateralsRequest;
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryCollateralsRequest): unknown {
+    const obj: any = {};
+    message.address !== undefined && (obj.address = message.address);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryCollateralsRequest>
+  ): QueryCollateralsRequest {
+    const message = {
+      ...baseQueryCollateralsRequest,
+    } as QueryCollateralsRequest;
+    message.address = object.address ?? "";
+    return message;
+  },
+};
+
+const baseQueryCollateralsResponse: object = {};
+
+export const QueryCollateralsResponse = {
+  encode(
+    message: QueryCollateralsResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.collaterals) {
+      DBCollateral.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryCollateralsResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryCollateralsResponse,
+    } as QueryCollateralsResponse;
+    message.collaterals = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.collaterals.push(
+            DBCollateral.decode(reader, reader.uint32())
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryCollateralsResponse {
+    const message = {
+      ...baseQueryCollateralsResponse,
+    } as QueryCollateralsResponse;
+    message.collaterals = (object.collaterals ?? []).map((e: any) =>
+      DBCollateral.fromJSON(e)
+    );
+    return message;
+  },
+
+  toJSON(message: QueryCollateralsResponse): unknown {
+    const obj: any = {};
+    if (message.collaterals) {
+      obj.collaterals = message.collaterals.map((e) =>
+        e ? DBCollateral.toJSON(e) : undefined
+      );
+    } else {
+      obj.collaterals = [];
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryCollateralsResponse>
+  ): QueryCollateralsResponse {
+    const message = {
+      ...baseQueryCollateralsResponse,
+    } as QueryCollateralsResponse;
+    message.collaterals = (object.collaterals ?? []).map((e) =>
+      DBCollateral.fromPartial(e)
+    );
+    return message;
+  },
+};
+
+const baseQueryCollateralsAllRequest: object = {};
+
+export const QueryCollateralsAllRequest = {
+  encode(
+    _: QueryCollateralsAllRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryCollateralsAllRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryCollateralsAllRequest,
+    } as QueryCollateralsAllRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryCollateralsAllRequest {
+    const message = {
+      ...baseQueryCollateralsAllRequest,
+    } as QueryCollateralsAllRequest;
+    return message;
+  },
+
+  toJSON(_: QueryCollateralsAllRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<QueryCollateralsAllRequest>
+  ): QueryCollateralsAllRequest {
+    const message = {
+      ...baseQueryCollateralsAllRequest,
+    } as QueryCollateralsAllRequest;
+    return message;
+  },
+};
+
+const baseQueryCollateralsAllResponse: object = {};
+
+export const QueryCollateralsAllResponse = {
+  encode(
+    message: QueryCollateralsAllResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.collaterals) {
+      DBCollateral.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryCollateralsAllResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryCollateralsAllResponse,
+    } as QueryCollateralsAllResponse;
+    message.collaterals = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.collaterals.push(
+            DBCollateral.decode(reader, reader.uint32())
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryCollateralsAllResponse {
+    const message = {
+      ...baseQueryCollateralsAllResponse,
+    } as QueryCollateralsAllResponse;
+    message.collaterals = (object.collaterals ?? []).map((e: any) =>
+      DBCollateral.fromJSON(e)
+    );
+    return message;
+  },
+
+  toJSON(message: QueryCollateralsAllResponse): unknown {
+    const obj: any = {};
+    if (message.collaterals) {
+      obj.collaterals = message.collaterals.map((e) =>
+        e ? DBCollateral.toJSON(e) : undefined
+      );
+    } else {
+      obj.collaterals = [];
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryCollateralsAllResponse>
+  ): QueryCollateralsAllResponse {
+    const message = {
+      ...baseQueryCollateralsAllResponse,
+    } as QueryCollateralsAllResponse;
+    message.collaterals = (object.collaterals ?? []).map((e) =>
+      DBCollateral.fromPartial(e)
+    );
+    return message;
+  },
+};
+
+const baseDBCollateral: object = { denom: "", amount: "" };
+
+export const DBCollateral = {
+  encode(
+    message: DBCollateral,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.address !== undefined) {
+      StringValue.encode(
+        { value: message.address! },
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    if (message.denom !== "") {
+      writer.uint32(18).string(message.denom);
+    }
+    if (message.amount !== "") {
+      writer.uint32(26).string(message.amount);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DBCollateral {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseDBCollateral } as DBCollateral;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.address = StringValue.decode(reader, reader.uint32()).value;
+          break;
+        case 2:
+          message.denom = reader.string();
+          break;
+        case 3:
+          message.amount = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): DBCollateral {
+    const message = { ...baseDBCollateral } as DBCollateral;
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : undefined;
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
+    message.amount =
+      object.amount !== undefined && object.amount !== null
+        ? String(object.amount)
+        : "";
+    return message;
+  },
+
+  toJSON(message: DBCollateral): unknown {
+    const obj: any = {};
+    message.address !== undefined && (obj.address = message.address);
+    message.denom !== undefined && (obj.denom = message.denom);
+    message.amount !== undefined && (obj.amount = message.amount);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<DBCollateral>): DBCollateral {
+    const message = { ...baseDBCollateral } as DBCollateral;
+    message.address = object.address ?? undefined;
+    message.denom = object.denom ?? "";
+    message.amount = object.amount ?? "";
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Parameters queries the parameters of the module. */
@@ -1340,6 +2038,18 @@ export interface Query {
   AccountData(
     request: QueryAccountDataRequest
   ): Promise<QueryAccountDataResponse>;
+  /** Queries a list of Borrows items. */
+  Borrows(request: QueryBorrowsRequest): Promise<QueryBorrowsResponse>;
+  /** Queries a list of BorrowsAll items. */
+  BorrowsAll(request: QueryBorrowsAllRequest): Promise<QueryBorrowsAllResponse>;
+  /** Queries a list of Collaterals items. */
+  Collaterals(
+    request: QueryCollateralsRequest
+  ): Promise<QueryCollateralsResponse>;
+  /** Queries a list of CollateralsAll items. */
+  CollateralsAll(
+    request: QueryCollateralsAllRequest
+  ): Promise<QueryCollateralsAllResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -1354,6 +2064,10 @@ export class QueryClientImpl implements Query {
     this.AccountCollaterals = this.AccountCollaterals.bind(this);
     this.AccountDebts = this.AccountDebts.bind(this);
     this.AccountData = this.AccountData.bind(this);
+    this.Borrows = this.Borrows.bind(this);
+    this.BorrowsAll = this.BorrowsAll.bind(this);
+    this.Collaterals = this.Collaterals.bind(this);
+    this.CollateralsAll = this.CollateralsAll.bind(this);
   }
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
@@ -1458,6 +2172,60 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryAccountDataResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  Borrows(request: QueryBorrowsRequest): Promise<QueryBorrowsResponse> {
+    const data = QueryBorrowsRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Query",
+      "Borrows",
+      data
+    );
+    return promise.then((data) =>
+      QueryBorrowsResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  BorrowsAll(
+    request: QueryBorrowsAllRequest
+  ): Promise<QueryBorrowsAllResponse> {
+    const data = QueryBorrowsAllRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Query",
+      "BorrowsAll",
+      data
+    );
+    return promise.then((data) =>
+      QueryBorrowsAllResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  Collaterals(
+    request: QueryCollateralsRequest
+  ): Promise<QueryCollateralsResponse> {
+    const data = QueryCollateralsRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Query",
+      "Collaterals",
+      data
+    );
+    return promise.then((data) =>
+      QueryCollateralsResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  CollateralsAll(
+    request: QueryCollateralsAllRequest
+  ): Promise<QueryCollateralsAllResponse> {
+    const data = QueryCollateralsAllRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Query",
+      "CollateralsAll",
+      data
+    );
+    return promise.then((data) =>
+      QueryCollateralsAllResponse.decode(new _m0.Reader(data))
     );
   }
 }
