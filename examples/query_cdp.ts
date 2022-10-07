@@ -41,7 +41,7 @@ import "./_setup";
   console.log("accountData: ", accountData);
 
   const borrows = await sdk.query.cdp.Borrows({
-    address: "tswth1phsut994s4e9apdc25vdln02g9rz7exzw7j4nk",
+    address: connectedSDK.wallet.bech32Address,
   });
   console.log("borrows: ", borrows);
 
@@ -50,7 +50,7 @@ import "./_setup";
   console.log("borrowsAll: ", borrowsAll);
 
   const collaterals = await sdk.query.cdp.Collaterals({
-    address: "tswth1phsut994s4e9apdc25vdln02g9rz7exzw7j4nk",
+    address: connectedSDK.wallet.bech32Address,
   });
   console.log("collaterals: ", collaterals);
 
