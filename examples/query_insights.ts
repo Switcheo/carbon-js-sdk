@@ -48,13 +48,17 @@ import { CarbonSDK } from "./_sdk";
     const balanceSupplyResponse = await sdk.insights.BalanceSupply();
     console.log("balanceSupply", balanceSupplyResponse);
 
-    // balance api
-    const competitionLeaderboard = await sdk.insights.CompetitionLeaderboard({
-      from: '1618282336',
-      until: '1681354336',
-      market: 'eth_z39'
+    // volume leaderboard (competition)
+    const volumeLeaderboard = await sdk.insights.VolumeCompetitionLeaderboard({
+      competitionId: "comp1",
     });
-    console.log("competitionLeaderboard", competitionLeaderboard);
+    console.log("volumeLeaderboard", volumeLeaderboard);
+
+    // volume leaderboard (competition)
+    const pnlLeaderboard = await sdk.insights.PNLCompetitionLeaderboard({
+      competitionId: "comp1",
+    });
+    console.log("pnlLeaderboard", pnlLeaderboard);
 
     //Position Views
     const positionViews = await sdk.insights.PositionsView({ view: "risk" as PositionViewOptions },{})
