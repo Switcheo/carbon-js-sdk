@@ -9,7 +9,7 @@ import { Blockchain, blockchainForChainId } from "@carbon-sdk/util/blockchain"
 import { TokenInitInfo, TokensWithExternalBalance } from "@carbon-sdk/util/external"
 import { stripHexPrefix } from "@carbon-sdk/util/generic"
 import { SimpleMap } from "@carbon-sdk/util/type"
-import NeonAPIPlugin from "@cityofzion/neon-api/lib/plugin"
+import { api } from "@cityofzion/neon-js"
 import * as Neon from "@cityofzion/neon-core"
 import BigNumber from "bignumber.js"
 import { ethers } from "ethers"
@@ -163,9 +163,9 @@ export class NEOClient {
 
     const rpcUrl = await this.getProviderUrl()
     const apiProvider = networkConfig.network === CarbonSDK.Network.MainNet
-      ? new NeonAPIPlugin.neonDB.instance("https://api.switcheo.network")
-      : new NeonAPIPlugin.neoCli.instance(rpcUrl)
-    return NeonAPIPlugin.doInvoke({
+      ? new api.neonDB.instance("https://api.switcheo.network")
+      : new api.neoCli.instance(rpcUrl)
+    return api.doInvoke({
       api: apiProvider,
       url: rpcUrl,
       account,
@@ -260,8 +260,8 @@ export class NEOClient {
 
     const rpcUrl = await this.getProviderUrl()
     const apiProvider = networkConfig.network === CarbonSDK.Network.MainNet
-      ? new NeonAPIPlugin.neonDB.instance("https://api.switcheo.network")
-      : new NeonAPIPlugin.neoCli.instance(rpcUrl)
+      ? new api.neonDB.instance("https://api.switcheo.network")
+      : new api.neoCli.instance(rpcUrl)
 
     let invokeTxConfig: any = {
       account: {
@@ -290,10 +290,10 @@ export class NEOClient {
 
     // similar to Neon.doInvoke(invokeTxConfig), but
     // separates out sendTx to broadcast to several nodes
-    invokeTxConfig = await NeonAPIPlugin.fillBalance(invokeTxConfig)
-    invokeTxConfig = await NeonAPIPlugin.createInvocationTx(invokeTxConfig)
-    invokeTxConfig = await NeonAPIPlugin.modifyTransactionForEmptyTransaction(invokeTxConfig)
-    invokeTxConfig = await NeonAPIPlugin.signTx(invokeTxConfig)
+    invokeTxConfig = await api.fillBalance(invokeTxConfig)
+    invokeTxConfig = await api.createInvocationTx(invokeTxConfig)
+    invokeTxConfig = await api.modifyTransactionForEmptyTransaction(invokeTxConfig)
+    invokeTxConfig = await api.signTx(invokeTxConfig)
 
     // provide notification to caller that signature is
     // done and proceeding to broadcasting tx
@@ -301,7 +301,7 @@ export class NEOClient {
       signCompleteCallback()
     }
 
-    await NeonAPIPlugin.sendTx({
+    await api.sendTx({
       ...invokeTxConfig,
       rpcUrl,
     })
@@ -336,7 +336,7 @@ export class NEOClient {
     const wrapperContractAddress = Neon.wallet.getAddressFromScriptHash(wrapperContractScriptHash);
 
     // Build config
-    const intent = NeonAPIPlugin.makeIntent({ NEO: neoAmount.toNumber() }, wrapperContractAddress);
+    const intent = api.makeIntent({ NEO: neoAmount.toNumber() }, wrapperContractAddress);
 
     const props = {
       scriptHash: wrapperContractScriptHash,
@@ -347,8 +347,8 @@ export class NEOClient {
     const script = Neon.sc.createScript(props);
     const networkConfig = this.getNetworkConfig()
     const apiProvider = networkConfig.network === CarbonSDK.Network.MainNet
-      ? new NeonAPIPlugin.neonDB.instance("https://api.switcheo.network")
-      : new NeonAPIPlugin.neoCli.instance(rpcUrl)
+      ? new api.neonDB.instance("https://api.switcheo.network")
+      : new api.neoCli.instance(rpcUrl)
 
     const config = {
       api: apiProvider, // Network
@@ -359,7 +359,7 @@ export class NEOClient {
     };
 
     // Neon API
-    const response = await NeonAPIPlugin.doInvoke(config);
+    const response = await api.doInvoke(config);
 
     return response
   }
