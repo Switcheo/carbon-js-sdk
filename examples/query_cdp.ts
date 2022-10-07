@@ -39,4 +39,23 @@ import "./_setup";
     account: connectedSDK.wallet.bech32Address,
   });
   console.log("accountData: ", accountData);
+
+  const borrows = await sdk.query.cdp.Borrows({
+    address: connectedSDK.wallet.bech32Address,
+  });
+  console.log("borrows: ", borrows);
+
+  const borrowsAll = await sdk.query.cdp.BorrowsAll({
+  });
+  console.log("borrowsAll: ", borrowsAll);
+
+  const collaterals = await sdk.query.cdp.Collaterals({
+    address: connectedSDK.wallet.bech32Address,
+  });
+  console.log("collaterals: ", collaterals);
+
+  const collateralsAll = await sdk.query.cdp.CollateralsAll({
+  });
+  console.log("collateralsAll: ", collateralsAll);
+
 })().catch(console.error).finally(() => process.exit(0));
