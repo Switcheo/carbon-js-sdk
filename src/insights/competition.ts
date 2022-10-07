@@ -1,6 +1,8 @@
 import { TimeMeta } from "./common";
 
-export interface LeaderboardEntry {
+// Volume Rankings
+export interface VolumeLeaderboardEntry {
+  competitionId: string
   address: string
   market: string
   totalVolume: string
@@ -9,13 +11,39 @@ export interface LeaderboardEntry {
   twitter: string | null
 }
 
-export interface QueryGetCompetitionLeaderboardResponse {
-  entries: LeaderboardEntry[]
+export interface QueryGetVolumeCompetitionLeaderboardResponse {
+  entries: VolumeLeaderboardEntry[]
   meta: TimeMeta
 }
 
-export interface QueryGetCompetitionLeaderboardRequest {
+export interface QueryGetVolumeCompetitionLeaderboardRequest {
+  competitionId: string 
   market?: string
-  from: string
-  until: string
+  from?: string
+  until?: string
+}
+
+// PNL Rankings
+export interface PNLLeaderboardEntry {
+  competitionId: string
+  address: string
+  market: string
+  realizedPnl: string
+  unrealizedPnl: string
+  initialBalance: string
+  totalPnl: string
+  PnlPercent: string
+  rank: string
+  username: string | null
+  twitter: string | null
+}
+
+export interface QueryGetPNLCompetitionLeaderboardResponse {
+  entries: PNLLeaderboardEntry[]
+  meta: TimeMeta
+}
+
+export interface QueryGetPNLCompetitionLeaderboardRequest {
+  competitionId: string 
+  market?: string
 }
