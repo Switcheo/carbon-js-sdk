@@ -123,6 +123,12 @@ class InsightsQueryClient {
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetPoolsVolumeResponse>
   }
 
+  async CompetitionList(req: Insights.QueryGetCompetitionListRequest = {}): Promise<Insights.InsightsQueryResponse<Insights.QueryGetCompetitionListResponse>> {
+    const request = this.apiManager.path('competition/list', {}, req)
+    const response = await request.get()
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetCompetitionListResponse>
+  }
+
   async VolumeCompetitionLeaderboard(req: Insights.QueryGetVolumeCompetitionLeaderboardRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetVolumeCompetitionLeaderboardResponse>> {
     const queryParams = {
       competitionId: req.competitionId,

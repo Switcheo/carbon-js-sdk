@@ -48,6 +48,10 @@ import { CarbonSDK } from "./_sdk";
     const balanceSupplyResponse = await sdk.insights.BalanceSupply();
     console.log("balanceSupply", balanceSupplyResponse);
 
+    // list competitions
+    const competitionList = await sdk.insights.CompetitionList({});
+    console.log("competitionList", competitionList);
+
     // volume leaderboard (competition)
     const volumeLeaderboard = await sdk.insights.VolumeCompetitionLeaderboard({
       competitionId: "comp1",

@@ -1,4 +1,26 @@
-import { TimeMeta } from "./common";
+import { TimeMeta, PageMeta } from "./common";
+
+export interface CompetitionItem {
+  id: string
+  competitionId: string
+  market: string
+  start: string // string representation of timestamp
+  end: string // string representation of timestamp
+  enablePNL: boolean
+  minBalance: number
+  enableVolume: boolean
+  makerIncentive: boolean
+}
+
+export interface QueryGetCompetitionListResponse {
+  models: CompetitionItem[]
+  meta: PageMeta
+}
+
+export interface QueryGetCompetitionListRequest {
+  limit?: number
+  offset?: number
+}
 
 // Volume Rankings
 export interface VolumeLeaderboardEntry {

@@ -38,6 +38,7 @@ export const InsightsEndpoints = {
   'position/liquidation/engine': '/position/liquidation/engine',
 
   // Competition api
+  'competition/list': '/competition/list',
   'competition/leaderboard': '/competition/leaderboard',
   'competition/leaderboardpnl': '/competition/leaderboardpnl',
   
