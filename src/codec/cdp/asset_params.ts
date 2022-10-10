@@ -8,6 +8,7 @@ export interface AssetParams {
   denom: string;
   oracleId: string;
   rateStrategyName: string;
+  repayStablecoinInterestDebt: boolean;
   loanToValue: string;
   liquidationThreshold: string;
   liquidationBonus: string;
@@ -31,6 +32,7 @@ const baseAssetParams: object = {
   denom: "",
   oracleId: "",
   rateStrategyName: "",
+  repayStablecoinInterestDebt: false,
   loanToValue: "",
   liquidationThreshold: "",
   liquidationBonus: "",
@@ -52,20 +54,23 @@ export const AssetParams = {
     if (message.rateStrategyName !== "") {
       writer.uint32(26).string(message.rateStrategyName);
     }
+    if (message.repayStablecoinInterestDebt === true) {
+      writer.uint32(32).bool(message.repayStablecoinInterestDebt);
+    }
     if (message.loanToValue !== "") {
-      writer.uint32(34).string(message.loanToValue);
+      writer.uint32(42).string(message.loanToValue);
     }
     if (message.liquidationThreshold !== "") {
-      writer.uint32(42).string(message.liquidationThreshold);
+      writer.uint32(50).string(message.liquidationThreshold);
     }
     if (message.liquidationBonus !== "") {
-      writer.uint32(50).string(message.liquidationBonus);
+      writer.uint32(58).string(message.liquidationBonus);
     }
     if (message.supplyCap !== "") {
-      writer.uint32(58).string(message.supplyCap);
+      writer.uint32(66).string(message.supplyCap);
     }
     if (message.borrowCap !== "") {
-      writer.uint32(66).string(message.borrowCap);
+      writer.uint32(74).string(message.borrowCap);
     }
     return writer;
   },
@@ -87,18 +92,21 @@ export const AssetParams = {
           message.rateStrategyName = reader.string();
           break;
         case 4:
-          message.loanToValue = reader.string();
+          message.repayStablecoinInterestDebt = reader.bool();
           break;
         case 5:
-          message.liquidationThreshold = reader.string();
+          message.loanToValue = reader.string();
           break;
         case 6:
-          message.liquidationBonus = reader.string();
+          message.liquidationThreshold = reader.string();
           break;
         case 7:
-          message.supplyCap = reader.string();
+          message.liquidationBonus = reader.string();
           break;
         case 8:
+          message.supplyCap = reader.string();
+          break;
+        case 9:
           message.borrowCap = reader.string();
           break;
         default:
@@ -123,6 +131,11 @@ export const AssetParams = {
       object.rateStrategyName !== undefined && object.rateStrategyName !== null
         ? String(object.rateStrategyName)
         : "";
+    message.repayStablecoinInterestDebt =
+      object.repayStablecoinInterestDebt !== undefined &&
+      object.repayStablecoinInterestDebt !== null
+        ? Boolean(object.repayStablecoinInterestDebt)
+        : false;
     message.loanToValue =
       object.loanToValue !== undefined && object.loanToValue !== null
         ? String(object.loanToValue)
@@ -153,6 +166,8 @@ export const AssetParams = {
     message.oracleId !== undefined && (obj.oracleId = message.oracleId);
     message.rateStrategyName !== undefined &&
       (obj.rateStrategyName = message.rateStrategyName);
+    message.repayStablecoinInterestDebt !== undefined &&
+      (obj.repayStablecoinInterestDebt = message.repayStablecoinInterestDebt);
     message.loanToValue !== undefined &&
       (obj.loanToValue = message.loanToValue);
     message.liquidationThreshold !== undefined &&
@@ -169,6 +184,8 @@ export const AssetParams = {
     message.denom = object.denom ?? "";
     message.oracleId = object.oracleId ?? "";
     message.rateStrategyName = object.rateStrategyName ?? "";
+    message.repayStablecoinInterestDebt =
+      object.repayStablecoinInterestDebt ?? false;
     message.loanToValue = object.loanToValue ?? "";
     message.liquidationThreshold = object.liquidationThreshold ?? "";
     message.liquidationBonus = object.liquidationBonus ?? "";

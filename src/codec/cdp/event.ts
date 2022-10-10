@@ -53,7 +53,7 @@ export interface SupplyAssetEvent {
   denom: string;
   amountSupplied: string;
   cdpDenom: string;
-  amountReceived: string;
+  amountMinted: string;
 }
 
 export interface WithdrawAssetEvent {
@@ -772,7 +772,7 @@ const baseSupplyAssetEvent: object = {
   denom: "",
   amountSupplied: "",
   cdpDenom: "",
-  amountReceived: "",
+  amountMinted: "",
 };
 
 export const SupplyAssetEvent = {
@@ -792,8 +792,8 @@ export const SupplyAssetEvent = {
     if (message.cdpDenom !== "") {
       writer.uint32(34).string(message.cdpDenom);
     }
-    if (message.amountReceived !== "") {
-      writer.uint32(42).string(message.amountReceived);
+    if (message.amountMinted !== "") {
+      writer.uint32(42).string(message.amountMinted);
     }
     return writer;
   },
@@ -818,7 +818,7 @@ export const SupplyAssetEvent = {
           message.cdpDenom = reader.string();
           break;
         case 5:
-          message.amountReceived = reader.string();
+          message.amountMinted = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -846,9 +846,9 @@ export const SupplyAssetEvent = {
       object.cdpDenom !== undefined && object.cdpDenom !== null
         ? String(object.cdpDenom)
         : "";
-    message.amountReceived =
-      object.amountReceived !== undefined && object.amountReceived !== null
-        ? String(object.amountReceived)
+    message.amountMinted =
+      object.amountMinted !== undefined && object.amountMinted !== null
+        ? String(object.amountMinted)
         : "";
     return message;
   },
@@ -860,8 +860,8 @@ export const SupplyAssetEvent = {
     message.amountSupplied !== undefined &&
       (obj.amountSupplied = message.amountSupplied);
     message.cdpDenom !== undefined && (obj.cdpDenom = message.cdpDenom);
-    message.amountReceived !== undefined &&
-      (obj.amountReceived = message.amountReceived);
+    message.amountMinted !== undefined &&
+      (obj.amountMinted = message.amountMinted);
     return obj;
   },
 
@@ -871,7 +871,7 @@ export const SupplyAssetEvent = {
     message.denom = object.denom ?? "";
     message.amountSupplied = object.amountSupplied ?? "";
     message.cdpDenom = object.cdpDenom ?? "";
-    message.amountReceived = object.amountReceived ?? "";
+    message.amountMinted = object.amountMinted ?? "";
     return message;
   },
 };
