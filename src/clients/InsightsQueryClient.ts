@@ -123,15 +123,32 @@ class InsightsQueryClient {
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetPoolsVolumeResponse>
   }
 
-  async CompetitionLeaderboard(req: Insights.QueryGetCompetitionLeaderboardRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetCompetitionLeaderboardResponse>> {
+  async CompetitionList(req: Insights.QueryGetCompetitionListRequest = {}): Promise<Insights.InsightsQueryResponse<Insights.QueryGetCompetitionListResponse>> {
+    const request = this.apiManager.path('competition/list', {}, req)
+    const response = await request.get()
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetCompetitionListResponse>
+  }
+
+  async VolumeCompetitionLeaderboard(req: Insights.QueryGetVolumeCompetitionLeaderboardRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetVolumeCompetitionLeaderboardResponse>> {
     const queryParams = {
-      market: req.market,
-      from: req.from,
-      until: req.until,
+      competitionId: req.competitionId,
+      ...req.from && { from: req.from },
+      ...req.until && { until: req.until },
+      ...req.market && { market: req.market },
     }
     const request = this.apiManager.path('competition/leaderboard', {}, queryParams)
     const response = await request.get()
-    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetCompetitionLeaderboardResponse>
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetVolumeCompetitionLeaderboardResponse>
+  }
+
+  async PNLCompetitionLeaderboard(req: Insights.QueryGetPNLCompetitionLeaderboardRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetPNLCompetitionLeaderboardResponse>> {
+    const queryParams = {
+      competitionId: req.competitionId,
+      ...req.market && { market: req.market },
+    }
+    const request = this.apiManager.path('competition/leaderboardpnl', {}, queryParams)
+    const response = await request.get()
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetPNLCompetitionLeaderboardResponse>
   }
 
   async PoolsLiquidity(req: Insights.QueryGetPoolsLiquidityRequest = {}): Promise<Insights.InsightsQueryResponse<Insights.QueryGetPoolsLiquidityResponse>> {

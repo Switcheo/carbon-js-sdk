@@ -38,7 +38,9 @@ export const InsightsEndpoints = {
   'position/liquidation/engine': '/position/liquidation/engine',
 
   // Competition api
+  'competition/list': '/competition/list',
   'competition/leaderboard': '/competition/leaderboard',
+  'competition/leaderboardpnl': '/competition/leaderboardpnl',
   
   //Coin Gecko Tokens api
   'info/denom_gecko_map' : '/info/denom_gecko_map',

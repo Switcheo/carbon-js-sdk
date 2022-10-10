@@ -1,6 +1,6 @@
 {
   "name": "carbon-js-sdk",
-  "version": "0.2.9-dev.2",
+  "version": "0.2.11",
   "description": "TypeScript SDK for Carbon blockchain",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -38,6 +38,7 @@
   "dependencies": {
     "@cityofzion/neon-api": "^4.9.0",
     "@cityofzion/neon-core": "^4.9.0",
+    "@cityofzion/neon-js": "^4.9.0",
     "@cityofzion/neon-core-next": "npm:@cityofzion/neon-core@^5.0.0",
     "@cityofzion/neon-js": "^4.9.0",
     "@cosmjs/proto-signing": "^0.28.10",

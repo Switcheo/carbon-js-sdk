@@ -1,5 +1,5 @@
 import { Any, MsgAddAsset, MsgAddRateStrategy, MsgRemoveRateStrategy, MsgSetInterestFee, MsgSetLiquidationFee, MsgSetStablecoinInterestRate, MsgUpdateAsset, MsgUpdateRateStrategy, SettlementPriceParams } from "@carbon-sdk/codec";
-import { MsgAuthorizeBridge, MsgBindToken, MsgCreateToken, MsgDeauthorizeBridge, MsgLinkToken, MsgSyncToken, MsgUnbindToken } from "@carbon-sdk/codec/coin/tx";
+import { MsgAuthorizeBridge, MsgBindToken, MsgCreateToken, MsgUpdateToken, MsgDeauthorizeBridge, MsgLinkToken, MsgSyncToken, MsgUnbindToken } from "@carbon-sdk/codec/coin/tx";
 import { Coin } from "@carbon-sdk/codec/cosmos/base/v1beta1/coin";
 import { Description } from "@carbon-sdk/codec/cosmos/staking/v1beta1/staking";
 import { MsgCreateValidator, MsgEditValidator } from "@carbon-sdk/codec/cosmos/staking/v1beta1/tx";
@@ -97,6 +97,26 @@ export class AdminModule extends BaseModule {
 
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgUnbindToken,
+      value,
+    }, opts);
+  }
+
+  public async updateToken(params: AdminModule.UpdateTokenParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+
+    const value = MsgUpdateToken.fromPartial({
+      updater: wallet.bech32Address,
+      denom: params.denom,
+      updateTokenParams: {
+        name: params.name,
+        symbol: params.symbol,
+        decimals: params.decimals,
+        isActive: params.isActive,
+      }
+    })
+
+    return await wallet.sendTx({
+      typeUrl: CarbonTx.Types.MsgUpdateToken,
       value,
     }, opts);
   }
@@ -578,6 +598,14 @@ export namespace AdminModule {
     tokenAddress: string;
   }
 
+  export interface UpdateTokenParams {
+    denom: string;
+    name?: string;
+    symbol?: string;
+    decimals?: number;
+    isActive?: boolean,
+  }
+
   export interface SyncTokenParams {
     denom: string
   }
@@ -618,7 +646,7 @@ export namespace AdminModule {
     poolId: number
     market: string
   }
-  
+
   export interface UnlinkPoolParams {
     poolId: number
   }
@@ -813,7 +841,7 @@ export function transfromUnlinkPoolParams(msg: AdminModule.UnlinkPoolParams) {
   }
 }
 
-export function transfromSetRewardsWeightsParams(msg: AdminModule.SetRewardsWeightsParams[]) {  
+export function transfromSetRewardsWeightsParams(msg: AdminModule.SetRewardsWeightsParams[]) {
   const weights = msg.map(param => {
     return {
       poolId: new Long(param.poolId),
