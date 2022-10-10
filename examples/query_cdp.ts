@@ -58,4 +58,9 @@ import "./_setup";
   });
   console.log("collateralsAll: ", collateralsAll);
 
+  const accountStablecoin = await sdk.query.cdp.AccountStablecoin({
+    account: connectedSDK.wallet.bech32Address,
+  });
+  console.log("accountStablecoin", accountStablecoin);
+
 })().catch(console.error).finally(() => process.exit(0));

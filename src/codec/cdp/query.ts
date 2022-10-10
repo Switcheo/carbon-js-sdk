@@ -75,6 +75,15 @@ export interface Debt {
   valueInUsd: string;
 }
 
+export interface QueryAccountStablecoinRequest {
+  account: string;
+}
+
+export interface QueryAccountStablecoinResponse {
+  principalDebt: string;
+  interestDebt: string;
+}
+
 export interface QueryAccountDataRequest {
   account: string;
 }
@@ -1163,6 +1172,151 @@ export const Debt = {
   },
 };
 
+const baseQueryAccountStablecoinRequest: object = { account: "" };
+
+export const QueryAccountStablecoinRequest = {
+  encode(
+    message: QueryAccountStablecoinRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.account !== "") {
+      writer.uint32(10).string(message.account);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAccountStablecoinRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAccountStablecoinRequest,
+    } as QueryAccountStablecoinRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.account = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAccountStablecoinRequest {
+    const message = {
+      ...baseQueryAccountStablecoinRequest,
+    } as QueryAccountStablecoinRequest;
+    message.account =
+      object.account !== undefined && object.account !== null
+        ? String(object.account)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryAccountStablecoinRequest): unknown {
+    const obj: any = {};
+    message.account !== undefined && (obj.account = message.account);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAccountStablecoinRequest>
+  ): QueryAccountStablecoinRequest {
+    const message = {
+      ...baseQueryAccountStablecoinRequest,
+    } as QueryAccountStablecoinRequest;
+    message.account = object.account ?? "";
+    return message;
+  },
+};
+
+const baseQueryAccountStablecoinResponse: object = {
+  principalDebt: "",
+  interestDebt: "",
+};
+
+export const QueryAccountStablecoinResponse = {
+  encode(
+    message: QueryAccountStablecoinResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.principalDebt !== "") {
+      writer.uint32(10).string(message.principalDebt);
+    }
+    if (message.interestDebt !== "") {
+      writer.uint32(18).string(message.interestDebt);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAccountStablecoinResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAccountStablecoinResponse,
+    } as QueryAccountStablecoinResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.principalDebt = reader.string();
+          break;
+        case 2:
+          message.interestDebt = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAccountStablecoinResponse {
+    const message = {
+      ...baseQueryAccountStablecoinResponse,
+    } as QueryAccountStablecoinResponse;
+    message.principalDebt =
+      object.principalDebt !== undefined && object.principalDebt !== null
+        ? String(object.principalDebt)
+        : "";
+    message.interestDebt =
+      object.interestDebt !== undefined && object.interestDebt !== null
+        ? String(object.interestDebt)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryAccountStablecoinResponse): unknown {
+    const obj: any = {};
+    message.principalDebt !== undefined &&
+      (obj.principalDebt = message.principalDebt);
+    message.interestDebt !== undefined &&
+      (obj.interestDebt = message.interestDebt);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAccountStablecoinResponse>
+  ): QueryAccountStablecoinResponse {
+    const message = {
+      ...baseQueryAccountStablecoinResponse,
+    } as QueryAccountStablecoinResponse;
+    message.principalDebt = object.principalDebt ?? "";
+    message.interestDebt = object.interestDebt ?? "";
+    return message;
+  },
+};
+
 const baseQueryAccountDataRequest: object = { account: "" };
 
 export const QueryAccountDataRequest = {
@@ -2050,6 +2204,10 @@ export interface Query {
   CollateralsAll(
     request: QueryCollateralsAllRequest
   ): Promise<QueryCollateralsAllResponse>;
+  /** Queries a list of AccountStablecoin items. */
+  AccountStablecoin(
+    request: QueryAccountStablecoinRequest
+  ): Promise<QueryAccountStablecoinResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -2068,6 +2226,7 @@ export class QueryClientImpl implements Query {
     this.BorrowsAll = this.BorrowsAll.bind(this);
     this.Collaterals = this.Collaterals.bind(this);
     this.CollateralsAll = this.CollateralsAll.bind(this);
+    this.AccountStablecoin = this.AccountStablecoin.bind(this);
   }
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
@@ -2226,6 +2385,20 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryCollateralsAllResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  AccountStablecoin(
+    request: QueryAccountStablecoinRequest
+  ): Promise<QueryAccountStablecoinResponse> {
+    const data = QueryAccountStablecoinRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Query",
+      "AccountStablecoin",
+      data
+    );
+    return promise.then((data) =>
+      QueryAccountStablecoinResponse.decode(new _m0.Reader(data))
     );
   }
 }
