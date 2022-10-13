@@ -5,6 +5,7 @@ import { QueryClientImpl as CDPQueryClient } from "@carbon-sdk/codec/cdp/query";
 import { QueryClientImpl as CoinQueryClient } from "@carbon-sdk/codec/coin/query";
 import { QueryClientImpl as AuthQueryClient } from "@carbon-sdk/codec/cosmos/auth/v1beta1/query";
 import { QueryClientImpl as BankQueryClient } from "@carbon-sdk/codec/cosmos/bank/v1beta1/query";
+import { ServiceClientImpl as CosmosTmClient } from "@carbon-sdk/codec/cosmos/base/tendermint/v1beta1/query";
 import { QueryClientImpl as DistributionQueryClient } from "@carbon-sdk/codec/cosmos/distribution/v1beta1/query";
 import { QueryClientImpl as EvidenceQueryClient } from "@carbon-sdk/codec/cosmos/evidence/v1beta1/query";
 import { QueryClientImpl as GovQueryClient } from "@carbon-sdk/codec/cosmos/gov/v1beta1/query";
@@ -13,10 +14,11 @@ import { QueryClientImpl as ParamsQueryClient } from "@carbon-sdk/codec/cosmos/p
 import { QueryClientImpl as SlashingQueryClient } from "@carbon-sdk/codec/cosmos/slashing/v1beta1/query";
 import { QueryClientImpl as StakingQueryClient } from "@carbon-sdk/codec/cosmos/staking/v1beta1/query";
 import { QueryClientImpl as UpgradeQueryClient } from "@carbon-sdk/codec/cosmos/upgrade/v1beta1/query";
+import { QueryClientImpl as FeeQueryClient } from "@carbon-sdk/codec/fee/query";
+import { QueryClientImpl as HeadersyncQueryClient } from "@carbon-sdk/codec/headersync/query";
 import { QueryClientImpl as IBCInterchainControlQueryClient } from "@carbon-sdk/codec/ibc/applications/interchain_accounts/controller/v1/query";
 import { QueryClientImpl as IBCInterchainHostQueryClient } from "@carbon-sdk/codec/ibc/applications/interchain_accounts/host/v1/query";
 import { QueryClientImpl as IBCTransferQueryClient } from "@carbon-sdk/codec/ibc/applications/transfer/v1/query";
-import { QueryClientImpl as FeeQueryClient } from "@carbon-sdk/codec/fee/query";
 import { QueryClientImpl as InflationQueryClient } from "@carbon-sdk/codec/inflation/query";
 import { QueryClientImpl as InsuranceQueryClient } from "@carbon-sdk/codec/insurance/query";
 import { QueryClientImpl as LeverageQueryClient } from "@carbon-sdk/codec/leverage/query";
@@ -31,7 +33,6 @@ import { QueryClientImpl as PositionQueryClient } from "@carbon-sdk/codec/positi
 import { QueryClientImpl as PricingQueryClient } from "@carbon-sdk/codec/pricing/query";
 import { QueryClientImpl as ProfileQueryClient } from "@carbon-sdk/codec/profile/query";
 import { QueryClientImpl as SubaccountQueryClient } from "@carbon-sdk/codec/subaccount/query";
-import { QueryClientImpl as HeadersyncQueryClient } from "@carbon-sdk/codec/headersync/query";
 import { createProtobufRpcClient, QueryClient } from "@cosmjs/stargate";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import BlockchainClient from "./BlockchainClient";
@@ -75,6 +76,7 @@ class CarbonQueryClient {
   slashing: SlashingQueryClient;
   staking: StakingQueryClient;
   upgrade: UpgradeQueryClient;
+  cosmosTm: CosmosTmClient;
 
   chain: BlockchainClient;
   ibc: IBCClientGroup;
@@ -121,12 +123,17 @@ class CarbonQueryClient {
     this.slashing = new SlashingQueryClient(rpcClient);
     this.staking = new StakingQueryClient(rpcClient);
     this.upgrade = new UpgradeQueryClient(rpcClient);
+    this.cosmosTm = new CosmosTmClient(rpcClient);
 
     this.ibc = {
       controller: new IBCInterchainControlQueryClient(rpcClient),
       host: new IBCInterchainHostQueryClient(rpcClient),
       transfer: new IBCTransferQueryClient(rpcClient),
     }
+  }
+
+  getProtobufRpcClient() {
+    return createProtobufRpcClient(this.baseClient);
   }
 }
 
