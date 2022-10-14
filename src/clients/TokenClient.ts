@@ -32,6 +32,7 @@ class TokenClient {
   public readonly tokens: TypeUtils.SimpleMap<Token> = {};
   public readonly wrapperMap: TypeUtils.SimpleMap<string> = {};
   public readonly poolTokens: TypeUtils.SimpleMap<Token> = {};
+  public readonly cdpTokens: TypeUtils.SimpleMap<Token> = {};
   public readonly symbols: TypeUtils.SimpleMap<string> = {};
   public readonly usdValues: TypeUtils.SimpleMap<BigNumber> = {};
   public readonly commonAssetNames: TypeUtils.SimpleMap<string> = CommonAssetName;
@@ -76,15 +77,15 @@ class TokenClient {
   }
 
   public getDecimals(denom: string): number | undefined {
-    return (this.tokens[denom] ?? this.poolTokens[denom])?.decimals.toNumber();
+    return (this.tokens[denom] ?? this.poolTokens[denom] ?? this.cdpTokens[denom])?.decimals.toNumber();
   }
 
   public getBlockchain(denom: string): BlockchainUtils.Blockchain | undefined {
     // chainId defaults to 3 so that blockchain will be undefined
     let chainId = this.tokens[denom]?.chainId?.toNumber() ?? 3;
-    if (this.isNativeToken(denom) || TokenClient.isPoolToken(denom)) {
-      // native denom "swth" should be native.
-      // pool tokens are on the Native blockchain, hence 0
+    if (this.isNativeToken(denom) || this.isNativeStablecoin(denom) || TokenClient.isPoolToken(denom) || TokenClient.isCdpToken(denom)) {
+      // native denoms "swth" and "usc" should be native.
+      // pool and cdp tokens are on the Native blockchain, hence 0
       chainId = 0;
     }
     if (TokenClient.isIBCDenom(denom)) {
@@ -187,6 +188,10 @@ class TokenClient {
       return `${weightA}% ${symbolA} / ${weightB}% ${symbolB}`;
     }
 
+    if (TokenClient.isCdpToken(denom)) {
+      return this.cdpTokens[denom]?.name ?? this.getSymbol(denom);
+    }
+
     return this.tokens[denom]?.name ?? this.getSymbol(denom);
   }
 
@@ -200,6 +205,10 @@ class TokenClient {
 
   public static isPoolToken(denom: string): boolean {
     return this.isPoolTokenNew(denom) || this.isPoolTokenLegacy(denom);
+  }
+
+  public static isCdpToken(denom: string): boolean {
+    return denom.includes('cdp/');
   }
 
   public static isIBCDenom(denom: string): boolean {
@@ -286,8 +295,16 @@ class TokenClient {
     return this.tokenForId("swth");
   }
 
+  public getNativeStablecoin(): Token | undefined {
+    return this.tokenForId("usc");
+  }
+
   public isNativeToken(denom: string): boolean {
     return denom === "swth";
+  }
+
+  public isNativeStablecoin(denom: string): boolean {
+    return denom === "usc";
   }
 
   public getDepositTokenFor(tokenDenom: string, chain: BlockchainUtils.Blockchain): Token | undefined {
@@ -337,6 +354,8 @@ class TokenClient {
     for (const token of tokenResponse) {
       if (TokenClient.isPoolToken(token.denom)) {
         this.poolTokens[token.denom] = token;
+      } else if (TokenClient.isCdpToken(token.denom)) {
+        this.cdpTokens[token.denom] = token;
       } else {
         if (this.isNativeToken(token.denom)) {
           // Change token name to Carbon
