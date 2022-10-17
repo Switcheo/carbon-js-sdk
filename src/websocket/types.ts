@@ -19,6 +19,8 @@ export enum WSChannel {
   cdp_borrows = 'cdp_borrows',
   cdp_collaterals = 'cdp_collaterals',
   cdp_liquidate_collaterals = 'cdp_liquidate_collaterals',
+  cdp_all_token_debts = 'cdp_all_token_debts',
+  cdp_token_debt = 'cdp_token_debt',
 }
 
 export enum WSRequest {
@@ -49,6 +51,10 @@ export enum WSRequest {
   CDPCollaterals = 'get_cdp_collaterals',
   CDPTotalCollaterals = 'get_cdp_total_collaterals',
   CDPLiquidateCollateral = 'get_cdp_liquidate_collateral',
+  CDPTokenDebt = 'get_cdp_token_debt',
+  CDPAllTokenDebts = 'get_cdp_all_token_debts',
+  CDPStablecoinDebt = 'get_cdp_stablecoin_debt',
+  CDPLiquidations = 'get_cdp_liquidations',
 }
 
 export interface WsGetRecentTradesParams {
@@ -115,6 +121,16 @@ export interface WsGetCDPAccountParams {
 export interface WsGetCDPRateStrategiesParams {
   name: string
 }
+
+export interface WsGetCdpTokenDebt {
+  denom: string
+}
+
+export interface WsGetCdpAllTokenDebts { }
+
+export interface WsGetCdpStablecoinDebt { }
+
+export interface WsGetCdpLiquidations { }
 
 export interface WsSubscribeParams {
   channel: WSChannel
@@ -205,6 +221,12 @@ export interface WsSubscribeCDPCollaterals extends WsSubscribeParams {
 
 export interface WsSubscribeCDPLiquidateCollaterals extends WsSubscribeParams { }
 
+export interface WsSubscribeAllTokenDebts extends WsSubscribeParams { }
+
+export interface WsSubscribeTokenDebt extends WsSubscribeParams {
+  denom: string
+}
+
 export type WsSubscriptionParams =
   | WsSubscribeCandlesticksParams
   | WsSubscribeBooksParams
@@ -227,3 +249,5 @@ export type WsSubscriptionParams =
   | WsSubscribeCDPBorrows
   | WsSubscribeCDPCollaterals
   | WsSubscribeCDPLiquidateCollaterals
+  | WsSubscribeAllTokenDebts
+  | WsSubscribeTokenDebt

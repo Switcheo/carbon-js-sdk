@@ -229,3 +229,36 @@ export interface CDPCollaterals {
   amount: string // string representation of number
   denom: string
 }
+
+export interface CDPDebtInfo {
+  denom: string
+  last_updated_time: string // string representation of timestamp
+  total_principal: string // string representation of number
+  cumulative_interest_multiplier: string // string representation of number
+  initial_cumulative_interest_multiplier: string // string representation of number
+  utilization_rate: string // string representation of number
+}
+
+export interface CDPStableCoinDebtInfo {
+  denom: string
+  last_updated_time: string // string representation of timestamp
+  total_principal: string // string representation of number
+  cumulative_interest_multiplier: string // string representation of number
+  initial_cumulative_interest_multiplier: string // string representation of number
+}
+
+export interface CDPLiquidation {
+  liquidation: string
+  debtor: string
+  collateral_denom: string
+  collateral_amount_liquidated: string
+  collateral_amount_liquidator: string
+  collateral_amount_fee: string
+  liquidation_price: string
+  market_price: string
+  discount: string
+  debt_denom: string
+  debt_amount: string
+  block_height: number
+  block_time: string // string representation of timestamp
+}

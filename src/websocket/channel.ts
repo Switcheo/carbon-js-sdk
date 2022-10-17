@@ -1,10 +1,11 @@
 import {
-  WSChannel, WsSubscribeAccountTradesAllParams, WsSubscribeAccountTradesByMarketParams, WsSubscribeBooksParams,
+  WSChannel, WsSubscribeAccountTradesAllParams, WsSubscribeAccountTradesByMarketParams, WsSubscribeAllTokenDebts, WsSubscribeBooksParams,
   WsSubscribeCandlesticksParams, WsSubscribeCDPBorrows, WsSubscribeCDPCollaterals, WsSubscribeCDPLiquidateCollaterals,
   WsSubscribeCommitmentParams, WsSubscribeLeveragesAllParams, WsSubscribeLeveragesByMarketParams,
   WsSubscribeMarketStatsAllParams, WsSubscribeMarketStatsByMarketParams, WsSubscribeOrdersAllParams,
   WsSubscribeOrdersByMarketParams, WsSubscribePoolsAllParams, WsSubscribePoolsByIdParams, WsSubscribePositionsAllParams,
   WsSubscribePositionsByMarketParams, WsSubscribeRecentTradesParams, WsSubscribeWalletBalanceParams, WsSubscriptionParams,
+  WsSubscribeTokenDebt,
 } from './types'
 
 export const generateChannelId = (params: WsSubscriptionParams): string => {
@@ -88,6 +89,14 @@ export const generateChannelId = (params: WsSubscriptionParams): string => {
     case WSChannel.cdp_liquidate_collaterals: {
       const { channel } = params as WsSubscribeCDPLiquidateCollaterals
       return [channel].join(':')
+    }
+    case WSChannel.cdp_all_token_debts: {
+      const { channel } = params as WsSubscribeAllTokenDebts
+      return [channel].join(':')
+    }
+    case WSChannel.cdp_token_debt: {
+      const { channel, denom } = params as WsSubscribeTokenDebt
+      return [channel, denom].join(':')
     }
     default:
       throw new Error(`invalid subscription channel: ${params.channel}`)
@@ -199,6 +208,16 @@ export const parseChannelId = (rawChannelId: string): WsSubscriptionParams => {
       return {
         channel,
       } as WsSubscribeCDPLiquidateCollaterals
+    case WSChannel.cdp_all_token_debts:
+      return {
+        channel,
+      } as WsSubscribeAllTokenDebts
+    case WSChannel.cdp_token_debt:
+      const denom = market
+      return {
+        channel,
+        denom,
+      } as WsSubscribeTokenDebt
     default:
       throw new Error('Error parsing channelId')
   }
