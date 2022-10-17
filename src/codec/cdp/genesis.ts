@@ -6,12 +6,6 @@ import { StablecoinDebtInfo } from "./stablecoin_debt_info";
 import { RateStrategyParams } from "./rate_strategy_params";
 import { AssetParams } from "./asset_params";
 import { DebtInfo } from "./debt_info";
-import {
-  MsgBorrowAsset,
-  MsgRepayAsset,
-  MsgLockCollateral,
-  MsgUnlockCollateral,
-} from "./tx";
 
 export const protobufPackage = "Switcheo.carbon.cdp";
 
@@ -22,14 +16,14 @@ export interface GenesisState {
   assets: AssetParams[];
   debtInfos: DebtInfo[];
   accountToCollateralized: { [key: string]: Uint8Array };
-  accountToDebt: { [key: string]: Uint8Array };
-  accountToPaidInterest: { [key: string]: Uint8Array };
+  accountToPrincipalDebt: { [key: string]: Uint8Array };
+  accountToInitialCumulativeInterestMultiplier: { [key: string]: Uint8Array };
   stablecoinDebtInfo?: StablecoinDebtInfo;
-  borrows: MsgBorrowAsset[];
-  repays: MsgRepayAsset[];
-  lockCollaterals: MsgLockCollateral[];
+  accountToPrincipalStablecoinDebt: { [key: string]: Uint8Array };
   /** this line is used by starport scaffolding # genesis/proto/state */
-  unlockCollaterals: MsgUnlockCollateral[];
+  accountToStablecoinInitialCumulativeInterestMultiplier: {
+    [key: string]: Uint8Array;
+  };
 }
 
 export interface GenesisState_AccountToCollateralizedEntry {
@@ -37,12 +31,22 @@ export interface GenesisState_AccountToCollateralizedEntry {
   value: Uint8Array;
 }
 
-export interface GenesisState_AccountToDebtEntry {
+export interface GenesisState_AccountToPrincipalDebtEntry {
   key: string;
   value: Uint8Array;
 }
 
-export interface GenesisState_AccountToPaidInterestEntry {
+export interface GenesisState_AccountToInitialCumulativeInterestMultiplierEntry {
+  key: string;
+  value: Uint8Array;
+}
+
+export interface GenesisState_AccountToPrincipalStablecoinDebtEntry {
+  key: string;
+  value: Uint8Array;
+}
+
+export interface GenesisState_AccountToStablecoinInitialCumulativeInterestMultiplierEntry {
   key: string;
   value: Uint8Array;
 }
@@ -72,14 +76,16 @@ export const GenesisState = {
         writer.uint32(42).fork()
       ).ldelim();
     });
-    Object.entries(message.accountToDebt).forEach(([key, value]) => {
-      GenesisState_AccountToDebtEntry.encode(
+    Object.entries(message.accountToPrincipalDebt).forEach(([key, value]) => {
+      GenesisState_AccountToPrincipalDebtEntry.encode(
         { key: key as any, value },
         writer.uint32(50).fork()
       ).ldelim();
     });
-    Object.entries(message.accountToPaidInterest).forEach(([key, value]) => {
-      GenesisState_AccountToPaidInterestEntry.encode(
+    Object.entries(
+      message.accountToInitialCumulativeInterestMultiplier
+    ).forEach(([key, value]) => {
+      GenesisState_AccountToInitialCumulativeInterestMultiplierEntry.encode(
         { key: key as any, value },
         writer.uint32(58).fork()
       ).ldelim();
@@ -90,18 +96,22 @@ export const GenesisState = {
         writer.uint32(66).fork()
       ).ldelim();
     }
-    for (const v of message.borrows) {
-      MsgBorrowAsset.encode(v!, writer.uint32(74).fork()).ldelim();
-    }
-    for (const v of message.repays) {
-      MsgRepayAsset.encode(v!, writer.uint32(82).fork()).ldelim();
-    }
-    for (const v of message.lockCollaterals) {
-      MsgLockCollateral.encode(v!, writer.uint32(90).fork()).ldelim();
-    }
-    for (const v of message.unlockCollaterals) {
-      MsgUnlockCollateral.encode(v!, writer.uint32(98).fork()).ldelim();
-    }
+    Object.entries(message.accountToPrincipalStablecoinDebt).forEach(
+      ([key, value]) => {
+        GenesisState_AccountToPrincipalStablecoinDebtEntry.encode(
+          { key: key as any, value },
+          writer.uint32(74).fork()
+        ).ldelim();
+      }
+    );
+    Object.entries(
+      message.accountToStablecoinInitialCumulativeInterestMultiplier
+    ).forEach(([key, value]) => {
+      GenesisState_AccountToStablecoinInitialCumulativeInterestMultiplierEntry.encode(
+        { key: key as any, value },
+        writer.uint32(82).fork()
+      ).ldelim();
+    });
     return writer;
   },
 
@@ -113,12 +123,10 @@ export const GenesisState = {
     message.assets = [];
     message.debtInfos = [];
     message.accountToCollateralized = {};
-    message.accountToDebt = {};
-    message.accountToPaidInterest = {};
-    message.borrows = [];
-    message.repays = [];
-    message.lockCollaterals = [];
-    message.unlockCollaterals = [];
+    message.accountToPrincipalDebt = {};
+    message.accountToInitialCumulativeInterestMultiplier = {};
+    message.accountToPrincipalStablecoinDebt = {};
+    message.accountToStablecoinInitialCumulativeInterestMultiplier = {};
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -146,21 +154,23 @@ export const GenesisState = {
           }
           break;
         case 6:
-          const entry6 = GenesisState_AccountToDebtEntry.decode(
+          const entry6 = GenesisState_AccountToPrincipalDebtEntry.decode(
             reader,
             reader.uint32()
           );
           if (entry6.value !== undefined) {
-            message.accountToDebt[entry6.key] = entry6.value;
+            message.accountToPrincipalDebt[entry6.key] = entry6.value;
           }
           break;
         case 7:
-          const entry7 = GenesisState_AccountToPaidInterestEntry.decode(
-            reader,
-            reader.uint32()
-          );
+          const entry7 =
+            GenesisState_AccountToInitialCumulativeInterestMultiplierEntry.decode(
+              reader,
+              reader.uint32()
+            );
           if (entry7.value !== undefined) {
-            message.accountToPaidInterest[entry7.key] = entry7.value;
+            message.accountToInitialCumulativeInterestMultiplier[entry7.key] =
+              entry7.value;
           }
           break;
         case 8:
@@ -170,20 +180,26 @@ export const GenesisState = {
           );
           break;
         case 9:
-          message.borrows.push(MsgBorrowAsset.decode(reader, reader.uint32()));
+          const entry9 =
+            GenesisState_AccountToPrincipalStablecoinDebtEntry.decode(
+              reader,
+              reader.uint32()
+            );
+          if (entry9.value !== undefined) {
+            message.accountToPrincipalStablecoinDebt[entry9.key] = entry9.value;
+          }
           break;
         case 10:
-          message.repays.push(MsgRepayAsset.decode(reader, reader.uint32()));
-          break;
-        case 11:
-          message.lockCollaterals.push(
-            MsgLockCollateral.decode(reader, reader.uint32())
-          );
-          break;
-        case 12:
-          message.unlockCollaterals.push(
-            MsgUnlockCollateral.decode(reader, reader.uint32())
-          );
+          const entry10 =
+            GenesisState_AccountToStablecoinInitialCumulativeInterestMultiplierEntry.decode(
+              reader,
+              reader.uint32()
+            );
+          if (entry10.value !== undefined) {
+            message.accountToStablecoinInitialCumulativeInterestMultiplier[
+              entry10.key
+            ] = entry10.value;
+          }
           break;
         default:
           reader.skipType(tag & 7);
@@ -214,14 +230,14 @@ export const GenesisState = {
       acc[key] = bytesFromBase64(value as string);
       return acc;
     }, {});
-    message.accountToDebt = Object.entries(object.accountToDebt ?? {}).reduce<{
-      [key: string]: Uint8Array;
-    }>((acc, [key, value]) => {
+    message.accountToPrincipalDebt = Object.entries(
+      object.accountToPrincipalDebt ?? {}
+    ).reduce<{ [key: string]: Uint8Array }>((acc, [key, value]) => {
       acc[key] = bytesFromBase64(value as string);
       return acc;
     }, {});
-    message.accountToPaidInterest = Object.entries(
-      object.accountToPaidInterest ?? {}
+    message.accountToInitialCumulativeInterestMultiplier = Object.entries(
+      object.accountToInitialCumulativeInterestMultiplier ?? {}
     ).reduce<{ [key: string]: Uint8Array }>((acc, [key, value]) => {
       acc[key] = bytesFromBase64(value as string);
       return acc;
@@ -231,18 +247,19 @@ export const GenesisState = {
       object.stablecoinDebtInfo !== null
         ? StablecoinDebtInfo.fromJSON(object.stablecoinDebtInfo)
         : undefined;
-    message.borrows = (object.borrows ?? []).map((e: any) =>
-      MsgBorrowAsset.fromJSON(e)
-    );
-    message.repays = (object.repays ?? []).map((e: any) =>
-      MsgRepayAsset.fromJSON(e)
-    );
-    message.lockCollaterals = (object.lockCollaterals ?? []).map((e: any) =>
-      MsgLockCollateral.fromJSON(e)
-    );
-    message.unlockCollaterals = (object.unlockCollaterals ?? []).map((e: any) =>
-      MsgUnlockCollateral.fromJSON(e)
-    );
+    message.accountToPrincipalStablecoinDebt = Object.entries(
+      object.accountToPrincipalStablecoinDebt ?? {}
+    ).reduce<{ [key: string]: Uint8Array }>((acc, [key, value]) => {
+      acc[key] = bytesFromBase64(value as string);
+      return acc;
+    }, {});
+    message.accountToStablecoinInitialCumulativeInterestMultiplier =
+      Object.entries(
+        object.accountToStablecoinInitialCumulativeInterestMultiplier ?? {}
+      ).reduce<{ [key: string]: Uint8Array }>((acc, [key, value]) => {
+        acc[key] = bytesFromBase64(value as string);
+        return acc;
+      }, {});
     return message;
   },
 
@@ -277,49 +294,41 @@ export const GenesisState = {
         obj.accountToCollateralized[k] = base64FromBytes(v);
       });
     }
-    obj.accountToDebt = {};
-    if (message.accountToDebt) {
-      Object.entries(message.accountToDebt).forEach(([k, v]) => {
-        obj.accountToDebt[k] = base64FromBytes(v);
+    obj.accountToPrincipalDebt = {};
+    if (message.accountToPrincipalDebt) {
+      Object.entries(message.accountToPrincipalDebt).forEach(([k, v]) => {
+        obj.accountToPrincipalDebt[k] = base64FromBytes(v);
       });
     }
-    obj.accountToPaidInterest = {};
-    if (message.accountToPaidInterest) {
-      Object.entries(message.accountToPaidInterest).forEach(([k, v]) => {
-        obj.accountToPaidInterest[k] = base64FromBytes(v);
+    obj.accountToInitialCumulativeInterestMultiplier = {};
+    if (message.accountToInitialCumulativeInterestMultiplier) {
+      Object.entries(
+        message.accountToInitialCumulativeInterestMultiplier
+      ).forEach(([k, v]) => {
+        obj.accountToInitialCumulativeInterestMultiplier[k] =
+          base64FromBytes(v);
       });
     }
     message.stablecoinDebtInfo !== undefined &&
       (obj.stablecoinDebtInfo = message.stablecoinDebtInfo
         ? StablecoinDebtInfo.toJSON(message.stablecoinDebtInfo)
         : undefined);
-    if (message.borrows) {
-      obj.borrows = message.borrows.map((e) =>
-        e ? MsgBorrowAsset.toJSON(e) : undefined
+    obj.accountToPrincipalStablecoinDebt = {};
+    if (message.accountToPrincipalStablecoinDebt) {
+      Object.entries(message.accountToPrincipalStablecoinDebt).forEach(
+        ([k, v]) => {
+          obj.accountToPrincipalStablecoinDebt[k] = base64FromBytes(v);
+        }
       );
-    } else {
-      obj.borrows = [];
     }
-    if (message.repays) {
-      obj.repays = message.repays.map((e) =>
-        e ? MsgRepayAsset.toJSON(e) : undefined
-      );
-    } else {
-      obj.repays = [];
-    }
-    if (message.lockCollaterals) {
-      obj.lockCollaterals = message.lockCollaterals.map((e) =>
-        e ? MsgLockCollateral.toJSON(e) : undefined
-      );
-    } else {
-      obj.lockCollaterals = [];
-    }
-    if (message.unlockCollaterals) {
-      obj.unlockCollaterals = message.unlockCollaterals.map((e) =>
-        e ? MsgUnlockCollateral.toJSON(e) : undefined
-      );
-    } else {
-      obj.unlockCollaterals = [];
+    obj.accountToStablecoinInitialCumulativeInterestMultiplier = {};
+    if (message.accountToStablecoinInitialCumulativeInterestMultiplier) {
+      Object.entries(
+        message.accountToStablecoinInitialCumulativeInterestMultiplier
+      ).forEach(([k, v]) => {
+        obj.accountToStablecoinInitialCumulativeInterestMultiplier[k] =
+          base64FromBytes(v);
+      });
     }
     return obj;
   },
@@ -347,16 +356,16 @@ export const GenesisState = {
       }
       return acc;
     }, {});
-    message.accountToDebt = Object.entries(object.accountToDebt ?? {}).reduce<{
-      [key: string]: Uint8Array;
-    }>((acc, [key, value]) => {
+    message.accountToPrincipalDebt = Object.entries(
+      object.accountToPrincipalDebt ?? {}
+    ).reduce<{ [key: string]: Uint8Array }>((acc, [key, value]) => {
       if (value !== undefined) {
         acc[key] = value;
       }
       return acc;
     }, {});
-    message.accountToPaidInterest = Object.entries(
-      object.accountToPaidInterest ?? {}
+    message.accountToInitialCumulativeInterestMultiplier = Object.entries(
+      object.accountToInitialCumulativeInterestMultiplier ?? {}
     ).reduce<{ [key: string]: Uint8Array }>((acc, [key, value]) => {
       if (value !== undefined) {
         acc[key] = value;
@@ -368,18 +377,23 @@ export const GenesisState = {
       object.stablecoinDebtInfo !== null
         ? StablecoinDebtInfo.fromPartial(object.stablecoinDebtInfo)
         : undefined;
-    message.borrows = (object.borrows ?? []).map((e) =>
-      MsgBorrowAsset.fromPartial(e)
-    );
-    message.repays = (object.repays ?? []).map((e) =>
-      MsgRepayAsset.fromPartial(e)
-    );
-    message.lockCollaterals = (object.lockCollaterals ?? []).map((e) =>
-      MsgLockCollateral.fromPartial(e)
-    );
-    message.unlockCollaterals = (object.unlockCollaterals ?? []).map((e) =>
-      MsgUnlockCollateral.fromPartial(e)
-    );
+    message.accountToPrincipalStablecoinDebt = Object.entries(
+      object.accountToPrincipalStablecoinDebt ?? {}
+    ).reduce<{ [key: string]: Uint8Array }>((acc, [key, value]) => {
+      if (value !== undefined) {
+        acc[key] = value;
+      }
+      return acc;
+    }, {});
+    message.accountToStablecoinInitialCumulativeInterestMultiplier =
+      Object.entries(
+        object.accountToStablecoinInitialCumulativeInterestMultiplier ?? {}
+      ).reduce<{ [key: string]: Uint8Array }>((acc, [key, value]) => {
+        if (value !== undefined) {
+          acc[key] = value;
+        }
+        return acc;
+      }, {});
     return message;
   },
 };
@@ -462,11 +476,11 @@ export const GenesisState_AccountToCollateralizedEntry = {
   },
 };
 
-const baseGenesisState_AccountToDebtEntry: object = { key: "" };
+const baseGenesisState_AccountToPrincipalDebtEntry: object = { key: "" };
 
-export const GenesisState_AccountToDebtEntry = {
+export const GenesisState_AccountToPrincipalDebtEntry = {
   encode(
-    message: GenesisState_AccountToDebtEntry,
+    message: GenesisState_AccountToPrincipalDebtEntry,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.key !== "") {
@@ -481,12 +495,12 @@ export const GenesisState_AccountToDebtEntry = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): GenesisState_AccountToDebtEntry {
+  ): GenesisState_AccountToPrincipalDebtEntry {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseGenesisState_AccountToDebtEntry,
-    } as GenesisState_AccountToDebtEntry;
+      ...baseGenesisState_AccountToPrincipalDebtEntry,
+    } as GenesisState_AccountToPrincipalDebtEntry;
     message.value = new Uint8Array();
     while (reader.pos < end) {
       const tag = reader.uint32();
@@ -505,10 +519,10 @@ export const GenesisState_AccountToDebtEntry = {
     return message;
   },
 
-  fromJSON(object: any): GenesisState_AccountToDebtEntry {
+  fromJSON(object: any): GenesisState_AccountToPrincipalDebtEntry {
     const message = {
-      ...baseGenesisState_AccountToDebtEntry,
-    } as GenesisState_AccountToDebtEntry;
+      ...baseGenesisState_AccountToPrincipalDebtEntry,
+    } as GenesisState_AccountToPrincipalDebtEntry;
     message.key =
       object.key !== undefined && object.key !== null ? String(object.key) : "";
     message.value =
@@ -518,7 +532,7 @@ export const GenesisState_AccountToDebtEntry = {
     return message;
   },
 
-  toJSON(message: GenesisState_AccountToDebtEntry): unknown {
+  toJSON(message: GenesisState_AccountToPrincipalDebtEntry): unknown {
     const obj: any = {};
     message.key !== undefined && (obj.key = message.key);
     message.value !== undefined &&
@@ -529,22 +543,23 @@ export const GenesisState_AccountToDebtEntry = {
   },
 
   fromPartial(
-    object: DeepPartial<GenesisState_AccountToDebtEntry>
-  ): GenesisState_AccountToDebtEntry {
+    object: DeepPartial<GenesisState_AccountToPrincipalDebtEntry>
+  ): GenesisState_AccountToPrincipalDebtEntry {
     const message = {
-      ...baseGenesisState_AccountToDebtEntry,
-    } as GenesisState_AccountToDebtEntry;
+      ...baseGenesisState_AccountToPrincipalDebtEntry,
+    } as GenesisState_AccountToPrincipalDebtEntry;
     message.key = object.key ?? "";
     message.value = object.value ?? new Uint8Array();
     return message;
   },
 };
 
-const baseGenesisState_AccountToPaidInterestEntry: object = { key: "" };
+const baseGenesisState_AccountToInitialCumulativeInterestMultiplierEntry: object =
+  { key: "" };
 
-export const GenesisState_AccountToPaidInterestEntry = {
+export const GenesisState_AccountToInitialCumulativeInterestMultiplierEntry = {
   encode(
-    message: GenesisState_AccountToPaidInterestEntry,
+    message: GenesisState_AccountToInitialCumulativeInterestMultiplierEntry,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.key !== "") {
@@ -559,12 +574,12 @@ export const GenesisState_AccountToPaidInterestEntry = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): GenesisState_AccountToPaidInterestEntry {
+  ): GenesisState_AccountToInitialCumulativeInterestMultiplierEntry {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseGenesisState_AccountToPaidInterestEntry,
-    } as GenesisState_AccountToPaidInterestEntry;
+      ...baseGenesisState_AccountToInitialCumulativeInterestMultiplierEntry,
+    } as GenesisState_AccountToInitialCumulativeInterestMultiplierEntry;
     message.value = new Uint8Array();
     while (reader.pos < end) {
       const tag = reader.uint32();
@@ -583,10 +598,12 @@ export const GenesisState_AccountToPaidInterestEntry = {
     return message;
   },
 
-  fromJSON(object: any): GenesisState_AccountToPaidInterestEntry {
+  fromJSON(
+    object: any
+  ): GenesisState_AccountToInitialCumulativeInterestMultiplierEntry {
     const message = {
-      ...baseGenesisState_AccountToPaidInterestEntry,
-    } as GenesisState_AccountToPaidInterestEntry;
+      ...baseGenesisState_AccountToInitialCumulativeInterestMultiplierEntry,
+    } as GenesisState_AccountToInitialCumulativeInterestMultiplierEntry;
     message.key =
       object.key !== undefined && object.key !== null ? String(object.key) : "";
     message.value =
@@ -596,7 +613,9 @@ export const GenesisState_AccountToPaidInterestEntry = {
     return message;
   },
 
-  toJSON(message: GenesisState_AccountToPaidInterestEntry): unknown {
+  toJSON(
+    message: GenesisState_AccountToInitialCumulativeInterestMultiplierEntry
+  ): unknown {
     const obj: any = {};
     message.key !== undefined && (obj.key = message.key);
     message.value !== undefined &&
@@ -607,16 +626,183 @@ export const GenesisState_AccountToPaidInterestEntry = {
   },
 
   fromPartial(
-    object: DeepPartial<GenesisState_AccountToPaidInterestEntry>
-  ): GenesisState_AccountToPaidInterestEntry {
+    object: DeepPartial<GenesisState_AccountToInitialCumulativeInterestMultiplierEntry>
+  ): GenesisState_AccountToInitialCumulativeInterestMultiplierEntry {
     const message = {
-      ...baseGenesisState_AccountToPaidInterestEntry,
-    } as GenesisState_AccountToPaidInterestEntry;
+      ...baseGenesisState_AccountToInitialCumulativeInterestMultiplierEntry,
+    } as GenesisState_AccountToInitialCumulativeInterestMultiplierEntry;
     message.key = object.key ?? "";
     message.value = object.value ?? new Uint8Array();
     return message;
   },
 };
+
+const baseGenesisState_AccountToPrincipalStablecoinDebtEntry: object = {
+  key: "",
+};
+
+export const GenesisState_AccountToPrincipalStablecoinDebtEntry = {
+  encode(
+    message: GenesisState_AccountToPrincipalStablecoinDebtEntry,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value.length !== 0) {
+      writer.uint32(18).bytes(message.value);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): GenesisState_AccountToPrincipalStablecoinDebtEntry {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseGenesisState_AccountToPrincipalStablecoinDebtEntry,
+    } as GenesisState_AccountToPrincipalStablecoinDebtEntry;
+    message.value = new Uint8Array();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.key = reader.string();
+          break;
+        case 2:
+          message.value = reader.bytes();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GenesisState_AccountToPrincipalStablecoinDebtEntry {
+    const message = {
+      ...baseGenesisState_AccountToPrincipalStablecoinDebtEntry,
+    } as GenesisState_AccountToPrincipalStablecoinDebtEntry;
+    message.key =
+      object.key !== undefined && object.key !== null ? String(object.key) : "";
+    message.value =
+      object.value !== undefined && object.value !== null
+        ? bytesFromBase64(object.value)
+        : new Uint8Array();
+    return message;
+  },
+
+  toJSON(message: GenesisState_AccountToPrincipalStablecoinDebtEntry): unknown {
+    const obj: any = {};
+    message.key !== undefined && (obj.key = message.key);
+    message.value !== undefined &&
+      (obj.value = base64FromBytes(
+        message.value !== undefined ? message.value : new Uint8Array()
+      ));
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<GenesisState_AccountToPrincipalStablecoinDebtEntry>
+  ): GenesisState_AccountToPrincipalStablecoinDebtEntry {
+    const message = {
+      ...baseGenesisState_AccountToPrincipalStablecoinDebtEntry,
+    } as GenesisState_AccountToPrincipalStablecoinDebtEntry;
+    message.key = object.key ?? "";
+    message.value = object.value ?? new Uint8Array();
+    return message;
+  },
+};
+
+const baseGenesisState_AccountToStablecoinInitialCumulativeInterestMultiplierEntry: object =
+  { key: "" };
+
+export const GenesisState_AccountToStablecoinInitialCumulativeInterestMultiplierEntry =
+  {
+    encode(
+      message: GenesisState_AccountToStablecoinInitialCumulativeInterestMultiplierEntry,
+      writer: _m0.Writer = _m0.Writer.create()
+    ): _m0.Writer {
+      if (message.key !== "") {
+        writer.uint32(10).string(message.key);
+      }
+      if (message.value.length !== 0) {
+        writer.uint32(18).bytes(message.value);
+      }
+      return writer;
+    },
+
+    decode(
+      input: _m0.Reader | Uint8Array,
+      length?: number
+    ): GenesisState_AccountToStablecoinInitialCumulativeInterestMultiplierEntry {
+      const reader =
+        input instanceof _m0.Reader ? input : new _m0.Reader(input);
+      let end = length === undefined ? reader.len : reader.pos + length;
+      const message = {
+        ...baseGenesisState_AccountToStablecoinInitialCumulativeInterestMultiplierEntry,
+      } as GenesisState_AccountToStablecoinInitialCumulativeInterestMultiplierEntry;
+      message.value = new Uint8Array();
+      while (reader.pos < end) {
+        const tag = reader.uint32();
+        switch (tag >>> 3) {
+          case 1:
+            message.key = reader.string();
+            break;
+          case 2:
+            message.value = reader.bytes();
+            break;
+          default:
+            reader.skipType(tag & 7);
+            break;
+        }
+      }
+      return message;
+    },
+
+    fromJSON(
+      object: any
+    ): GenesisState_AccountToStablecoinInitialCumulativeInterestMultiplierEntry {
+      const message = {
+        ...baseGenesisState_AccountToStablecoinInitialCumulativeInterestMultiplierEntry,
+      } as GenesisState_AccountToStablecoinInitialCumulativeInterestMultiplierEntry;
+      message.key =
+        object.key !== undefined && object.key !== null
+          ? String(object.key)
+          : "";
+      message.value =
+        object.value !== undefined && object.value !== null
+          ? bytesFromBase64(object.value)
+          : new Uint8Array();
+      return message;
+    },
+
+    toJSON(
+      message: GenesisState_AccountToStablecoinInitialCumulativeInterestMultiplierEntry
+    ): unknown {
+      const obj: any = {};
+      message.key !== undefined && (obj.key = message.key);
+      message.value !== undefined &&
+        (obj.value = base64FromBytes(
+          message.value !== undefined ? message.value : new Uint8Array()
+        ));
+      return obj;
+    },
+
+    fromPartial(
+      object: DeepPartial<GenesisState_AccountToStablecoinInitialCumulativeInterestMultiplierEntry>
+    ): GenesisState_AccountToStablecoinInitialCumulativeInterestMultiplierEntry {
+      const message = {
+        ...baseGenesisState_AccountToStablecoinInitialCumulativeInterestMultiplierEntry,
+      } as GenesisState_AccountToStablecoinInitialCumulativeInterestMultiplierEntry;
+      message.key = object.key ?? "";
+      message.value = object.value ?? new Uint8Array();
+      return message;
+    },
+  };
 
 declare var self: any | undefined;
 declare var window: any | undefined;
