@@ -4,6 +4,8 @@ import _m0 from "protobufjs/minimal";
 import { Params } from "./params";
 import { RateStrategyParams } from "./rate_strategy_params";
 import { AssetData } from "./asset_params";
+import { DebtInfo } from "./debt_info";
+import { StablecoinDebtInfo } from "./stablecoin_debt_info";
 import { StringValue } from "../google/protobuf/wrappers";
 
 export const protobufPackage = "Switcheo.carbon.cdp";
@@ -71,7 +73,9 @@ export interface QueryAccountDebtsResponse {
 
 export interface Debt {
   denom: string;
-  amount: string;
+  principalDebt: string;
+  interestDebt: string;
+  initialCumulativeInterestMultiplier: string;
   valueInUsd: string;
 }
 
@@ -82,6 +86,7 @@ export interface QueryAccountStablecoinRequest {
 export interface QueryAccountStablecoinResponse {
   principalDebt: string;
   interestDebt: string;
+  initialCumulativeInterestMultiplier: string;
 }
 
 export interface QueryAccountDataRequest {
@@ -134,6 +139,26 @@ export interface DBCollateral {
   address?: string;
   denom: string;
   amount: string;
+}
+
+export interface QueryTokenDebtRequest {
+  denom: string;
+}
+
+export interface QueryTokenDebtResponse {
+  debtInfo?: DebtInfo;
+}
+
+export interface QueryTokenDebtsAllRequest {}
+
+export interface QueryTokenDebtsAllResponse {
+  debtInfosAll: DebtInfo[];
+}
+
+export interface QueryStablecoinDebtRequest {}
+
+export interface QueryStablecoinDebtResponse {
+  stablecoinDebtInfo?: StablecoinDebtInfo;
 }
 
 const baseQueryParamsRequest: object = {};
@@ -1098,18 +1123,30 @@ export const QueryAccountDebtsResponse = {
   },
 };
 
-const baseDebt: object = { denom: "", amount: "", valueInUsd: "" };
+const baseDebt: object = {
+  denom: "",
+  principalDebt: "",
+  interestDebt: "",
+  initialCumulativeInterestMultiplier: "",
+  valueInUsd: "",
+};
 
 export const Debt = {
   encode(message: Debt, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.denom !== "") {
       writer.uint32(10).string(message.denom);
     }
-    if (message.amount !== "") {
-      writer.uint32(18).string(message.amount);
+    if (message.principalDebt !== "") {
+      writer.uint32(18).string(message.principalDebt);
+    }
+    if (message.interestDebt !== "") {
+      writer.uint32(26).string(message.interestDebt);
+    }
+    if (message.initialCumulativeInterestMultiplier !== "") {
+      writer.uint32(34).string(message.initialCumulativeInterestMultiplier);
     }
     if (message.valueInUsd !== "") {
-      writer.uint32(26).string(message.valueInUsd);
+      writer.uint32(42).string(message.valueInUsd);
     }
     return writer;
   },
@@ -1125,9 +1162,15 @@ export const Debt = {
           message.denom = reader.string();
           break;
         case 2:
-          message.amount = reader.string();
+          message.principalDebt = reader.string();
           break;
         case 3:
+          message.interestDebt = reader.string();
+          break;
+        case 4:
+          message.initialCumulativeInterestMultiplier = reader.string();
+          break;
+        case 5:
           message.valueInUsd = reader.string();
           break;
         default:
@@ -1144,9 +1187,18 @@ export const Debt = {
       object.denom !== undefined && object.denom !== null
         ? String(object.denom)
         : "";
-    message.amount =
-      object.amount !== undefined && object.amount !== null
-        ? String(object.amount)
+    message.principalDebt =
+      object.principalDebt !== undefined && object.principalDebt !== null
+        ? String(object.principalDebt)
+        : "";
+    message.interestDebt =
+      object.interestDebt !== undefined && object.interestDebt !== null
+        ? String(object.interestDebt)
+        : "";
+    message.initialCumulativeInterestMultiplier =
+      object.initialCumulativeInterestMultiplier !== undefined &&
+      object.initialCumulativeInterestMultiplier !== null
+        ? String(object.initialCumulativeInterestMultiplier)
         : "";
     message.valueInUsd =
       object.valueInUsd !== undefined && object.valueInUsd !== null
@@ -1158,7 +1210,13 @@ export const Debt = {
   toJSON(message: Debt): unknown {
     const obj: any = {};
     message.denom !== undefined && (obj.denom = message.denom);
-    message.amount !== undefined && (obj.amount = message.amount);
+    message.principalDebt !== undefined &&
+      (obj.principalDebt = message.principalDebt);
+    message.interestDebt !== undefined &&
+      (obj.interestDebt = message.interestDebt);
+    message.initialCumulativeInterestMultiplier !== undefined &&
+      (obj.initialCumulativeInterestMultiplier =
+        message.initialCumulativeInterestMultiplier);
     message.valueInUsd !== undefined && (obj.valueInUsd = message.valueInUsd);
     return obj;
   },
@@ -1166,7 +1224,10 @@ export const Debt = {
   fromPartial(object: DeepPartial<Debt>): Debt {
     const message = { ...baseDebt } as Debt;
     message.denom = object.denom ?? "";
-    message.amount = object.amount ?? "";
+    message.principalDebt = object.principalDebt ?? "";
+    message.interestDebt = object.interestDebt ?? "";
+    message.initialCumulativeInterestMultiplier =
+      object.initialCumulativeInterestMultiplier ?? "";
     message.valueInUsd = object.valueInUsd ?? "";
     return message;
   },
@@ -1239,6 +1300,7 @@ export const QueryAccountStablecoinRequest = {
 const baseQueryAccountStablecoinResponse: object = {
   principalDebt: "",
   interestDebt: "",
+  initialCumulativeInterestMultiplier: "",
 };
 
 export const QueryAccountStablecoinResponse = {
@@ -1251,6 +1313,9 @@ export const QueryAccountStablecoinResponse = {
     }
     if (message.interestDebt !== "") {
       writer.uint32(18).string(message.interestDebt);
+    }
+    if (message.initialCumulativeInterestMultiplier !== "") {
+      writer.uint32(26).string(message.initialCumulativeInterestMultiplier);
     }
     return writer;
   },
@@ -1273,6 +1338,9 @@ export const QueryAccountStablecoinResponse = {
         case 2:
           message.interestDebt = reader.string();
           break;
+        case 3:
+          message.initialCumulativeInterestMultiplier = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1293,6 +1361,11 @@ export const QueryAccountStablecoinResponse = {
       object.interestDebt !== undefined && object.interestDebt !== null
         ? String(object.interestDebt)
         : "";
+    message.initialCumulativeInterestMultiplier =
+      object.initialCumulativeInterestMultiplier !== undefined &&
+      object.initialCumulativeInterestMultiplier !== null
+        ? String(object.initialCumulativeInterestMultiplier)
+        : "";
     return message;
   },
 
@@ -1302,6 +1375,9 @@ export const QueryAccountStablecoinResponse = {
       (obj.principalDebt = message.principalDebt);
     message.interestDebt !== undefined &&
       (obj.interestDebt = message.interestDebt);
+    message.initialCumulativeInterestMultiplier !== undefined &&
+      (obj.initialCumulativeInterestMultiplier =
+        message.initialCumulativeInterestMultiplier);
     return obj;
   },
 
@@ -1313,6 +1389,8 @@ export const QueryAccountStablecoinResponse = {
     } as QueryAccountStablecoinResponse;
     message.principalDebt = object.principalDebt ?? "";
     message.interestDebt = object.interestDebt ?? "";
+    message.initialCumulativeInterestMultiplier =
+      object.initialCumulativeInterestMultiplier ?? "";
     return message;
   },
 };
@@ -2164,6 +2242,382 @@ export const DBCollateral = {
   },
 };
 
+const baseQueryTokenDebtRequest: object = { denom: "" };
+
+export const QueryTokenDebtRequest = {
+  encode(
+    message: QueryTokenDebtRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.denom !== "") {
+      writer.uint32(10).string(message.denom);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryTokenDebtRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseQueryTokenDebtRequest } as QueryTokenDebtRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.denom = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryTokenDebtRequest {
+    const message = { ...baseQueryTokenDebtRequest } as QueryTokenDebtRequest;
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryTokenDebtRequest): unknown {
+    const obj: any = {};
+    message.denom !== undefined && (obj.denom = message.denom);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryTokenDebtRequest>
+  ): QueryTokenDebtRequest {
+    const message = { ...baseQueryTokenDebtRequest } as QueryTokenDebtRequest;
+    message.denom = object.denom ?? "";
+    return message;
+  },
+};
+
+const baseQueryTokenDebtResponse: object = {};
+
+export const QueryTokenDebtResponse = {
+  encode(
+    message: QueryTokenDebtResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.debtInfo !== undefined) {
+      DebtInfo.encode(message.debtInfo, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryTokenDebtResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseQueryTokenDebtResponse } as QueryTokenDebtResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.debtInfo = DebtInfo.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryTokenDebtResponse {
+    const message = { ...baseQueryTokenDebtResponse } as QueryTokenDebtResponse;
+    message.debtInfo =
+      object.debtInfo !== undefined && object.debtInfo !== null
+        ? DebtInfo.fromJSON(object.debtInfo)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryTokenDebtResponse): unknown {
+    const obj: any = {};
+    message.debtInfo !== undefined &&
+      (obj.debtInfo = message.debtInfo
+        ? DebtInfo.toJSON(message.debtInfo)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryTokenDebtResponse>
+  ): QueryTokenDebtResponse {
+    const message = { ...baseQueryTokenDebtResponse } as QueryTokenDebtResponse;
+    message.debtInfo =
+      object.debtInfo !== undefined && object.debtInfo !== null
+        ? DebtInfo.fromPartial(object.debtInfo)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryTokenDebtsAllRequest: object = {};
+
+export const QueryTokenDebtsAllRequest = {
+  encode(
+    _: QueryTokenDebtsAllRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryTokenDebtsAllRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryTokenDebtsAllRequest,
+    } as QueryTokenDebtsAllRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryTokenDebtsAllRequest {
+    const message = {
+      ...baseQueryTokenDebtsAllRequest,
+    } as QueryTokenDebtsAllRequest;
+    return message;
+  },
+
+  toJSON(_: QueryTokenDebtsAllRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<QueryTokenDebtsAllRequest>
+  ): QueryTokenDebtsAllRequest {
+    const message = {
+      ...baseQueryTokenDebtsAllRequest,
+    } as QueryTokenDebtsAllRequest;
+    return message;
+  },
+};
+
+const baseQueryTokenDebtsAllResponse: object = {};
+
+export const QueryTokenDebtsAllResponse = {
+  encode(
+    message: QueryTokenDebtsAllResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.debtInfosAll) {
+      DebtInfo.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryTokenDebtsAllResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryTokenDebtsAllResponse,
+    } as QueryTokenDebtsAllResponse;
+    message.debtInfosAll = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.debtInfosAll.push(DebtInfo.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryTokenDebtsAllResponse {
+    const message = {
+      ...baseQueryTokenDebtsAllResponse,
+    } as QueryTokenDebtsAllResponse;
+    message.debtInfosAll = (object.debtInfosAll ?? []).map((e: any) =>
+      DebtInfo.fromJSON(e)
+    );
+    return message;
+  },
+
+  toJSON(message: QueryTokenDebtsAllResponse): unknown {
+    const obj: any = {};
+    if (message.debtInfosAll) {
+      obj.debtInfosAll = message.debtInfosAll.map((e) =>
+        e ? DebtInfo.toJSON(e) : undefined
+      );
+    } else {
+      obj.debtInfosAll = [];
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryTokenDebtsAllResponse>
+  ): QueryTokenDebtsAllResponse {
+    const message = {
+      ...baseQueryTokenDebtsAllResponse,
+    } as QueryTokenDebtsAllResponse;
+    message.debtInfosAll = (object.debtInfosAll ?? []).map((e) =>
+      DebtInfo.fromPartial(e)
+    );
+    return message;
+  },
+};
+
+const baseQueryStablecoinDebtRequest: object = {};
+
+export const QueryStablecoinDebtRequest = {
+  encode(
+    _: QueryStablecoinDebtRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryStablecoinDebtRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryStablecoinDebtRequest,
+    } as QueryStablecoinDebtRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryStablecoinDebtRequest {
+    const message = {
+      ...baseQueryStablecoinDebtRequest,
+    } as QueryStablecoinDebtRequest;
+    return message;
+  },
+
+  toJSON(_: QueryStablecoinDebtRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<QueryStablecoinDebtRequest>
+  ): QueryStablecoinDebtRequest {
+    const message = {
+      ...baseQueryStablecoinDebtRequest,
+    } as QueryStablecoinDebtRequest;
+    return message;
+  },
+};
+
+const baseQueryStablecoinDebtResponse: object = {};
+
+export const QueryStablecoinDebtResponse = {
+  encode(
+    message: QueryStablecoinDebtResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.stablecoinDebtInfo !== undefined) {
+      StablecoinDebtInfo.encode(
+        message.stablecoinDebtInfo,
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryStablecoinDebtResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryStablecoinDebtResponse,
+    } as QueryStablecoinDebtResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.stablecoinDebtInfo = StablecoinDebtInfo.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryStablecoinDebtResponse {
+    const message = {
+      ...baseQueryStablecoinDebtResponse,
+    } as QueryStablecoinDebtResponse;
+    message.stablecoinDebtInfo =
+      object.stablecoinDebtInfo !== undefined &&
+      object.stablecoinDebtInfo !== null
+        ? StablecoinDebtInfo.fromJSON(object.stablecoinDebtInfo)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryStablecoinDebtResponse): unknown {
+    const obj: any = {};
+    message.stablecoinDebtInfo !== undefined &&
+      (obj.stablecoinDebtInfo = message.stablecoinDebtInfo
+        ? StablecoinDebtInfo.toJSON(message.stablecoinDebtInfo)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryStablecoinDebtResponse>
+  ): QueryStablecoinDebtResponse {
+    const message = {
+      ...baseQueryStablecoinDebtResponse,
+    } as QueryStablecoinDebtResponse;
+    message.stablecoinDebtInfo =
+      object.stablecoinDebtInfo !== undefined &&
+      object.stablecoinDebtInfo !== null
+        ? StablecoinDebtInfo.fromPartial(object.stablecoinDebtInfo)
+        : undefined;
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Parameters queries the parameters of the module. */
@@ -2208,6 +2662,16 @@ export interface Query {
   AccountStablecoin(
     request: QueryAccountStablecoinRequest
   ): Promise<QueryAccountStablecoinResponse>;
+  /** Queries a list of TokenDebt items. */
+  TokenDebt(request: QueryTokenDebtRequest): Promise<QueryTokenDebtResponse>;
+  /** Queries a list of TokenDebtsAll items. */
+  TokenDebtsAll(
+    request: QueryTokenDebtsAllRequest
+  ): Promise<QueryTokenDebtsAllResponse>;
+  /** Queries a list of StablecoinDebt items. */
+  StablecoinDebt(
+    request: QueryStablecoinDebtRequest
+  ): Promise<QueryStablecoinDebtResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -2227,6 +2691,9 @@ export class QueryClientImpl implements Query {
     this.Collaterals = this.Collaterals.bind(this);
     this.CollateralsAll = this.CollateralsAll.bind(this);
     this.AccountStablecoin = this.AccountStablecoin.bind(this);
+    this.TokenDebt = this.TokenDebt.bind(this);
+    this.TokenDebtsAll = this.TokenDebtsAll.bind(this);
+    this.StablecoinDebt = this.StablecoinDebt.bind(this);
   }
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
@@ -2399,6 +2866,46 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryAccountStablecoinResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  TokenDebt(request: QueryTokenDebtRequest): Promise<QueryTokenDebtResponse> {
+    const data = QueryTokenDebtRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Query",
+      "TokenDebt",
+      data
+    );
+    return promise.then((data) =>
+      QueryTokenDebtResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  TokenDebtsAll(
+    request: QueryTokenDebtsAllRequest
+  ): Promise<QueryTokenDebtsAllResponse> {
+    const data = QueryTokenDebtsAllRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Query",
+      "TokenDebtsAll",
+      data
+    );
+    return promise.then((data) =>
+      QueryTokenDebtsAllResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  StablecoinDebt(
+    request: QueryStablecoinDebtRequest
+  ): Promise<QueryStablecoinDebtResponse> {
+    const data = QueryStablecoinDebtRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Query",
+      "StablecoinDebt",
+      data
+    );
+    return promise.then((data) =>
+      QueryStablecoinDebtResponse.decode(new _m0.Reader(data))
     );
   }
 }
