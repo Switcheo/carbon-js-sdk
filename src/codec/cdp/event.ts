@@ -75,7 +75,8 @@ export interface RepayAssetEvent {
   repayer: string;
   debtor: string;
   denom: string;
-  amountRepaid: string;
+  principalRepaid: string;
+  interestRepaid: string;
   healthFactor: string;
 }
 
@@ -1085,7 +1086,8 @@ const baseRepayAssetEvent: object = {
   repayer: "",
   debtor: "",
   denom: "",
-  amountRepaid: "",
+  principalRepaid: "",
+  interestRepaid: "",
   healthFactor: "",
 };
 
@@ -1103,11 +1105,14 @@ export const RepayAssetEvent = {
     if (message.denom !== "") {
       writer.uint32(26).string(message.denom);
     }
-    if (message.amountRepaid !== "") {
-      writer.uint32(34).string(message.amountRepaid);
+    if (message.principalRepaid !== "") {
+      writer.uint32(34).string(message.principalRepaid);
+    }
+    if (message.interestRepaid !== "") {
+      writer.uint32(42).string(message.interestRepaid);
     }
     if (message.healthFactor !== "") {
-      writer.uint32(42).string(message.healthFactor);
+      writer.uint32(50).string(message.healthFactor);
     }
     return writer;
   },
@@ -1129,9 +1134,12 @@ export const RepayAssetEvent = {
           message.denom = reader.string();
           break;
         case 4:
-          message.amountRepaid = reader.string();
+          message.principalRepaid = reader.string();
           break;
         case 5:
+          message.interestRepaid = reader.string();
+          break;
+        case 6:
           message.healthFactor = reader.string();
           break;
         default:
@@ -1156,9 +1164,13 @@ export const RepayAssetEvent = {
       object.denom !== undefined && object.denom !== null
         ? String(object.denom)
         : "";
-    message.amountRepaid =
-      object.amountRepaid !== undefined && object.amountRepaid !== null
-        ? String(object.amountRepaid)
+    message.principalRepaid =
+      object.principalRepaid !== undefined && object.principalRepaid !== null
+        ? String(object.principalRepaid)
+        : "";
+    message.interestRepaid =
+      object.interestRepaid !== undefined && object.interestRepaid !== null
+        ? String(object.interestRepaid)
         : "";
     message.healthFactor =
       object.healthFactor !== undefined && object.healthFactor !== null
@@ -1172,8 +1184,10 @@ export const RepayAssetEvent = {
     message.repayer !== undefined && (obj.repayer = message.repayer);
     message.debtor !== undefined && (obj.debtor = message.debtor);
     message.denom !== undefined && (obj.denom = message.denom);
-    message.amountRepaid !== undefined &&
-      (obj.amountRepaid = message.amountRepaid);
+    message.principalRepaid !== undefined &&
+      (obj.principalRepaid = message.principalRepaid);
+    message.interestRepaid !== undefined &&
+      (obj.interestRepaid = message.interestRepaid);
     message.healthFactor !== undefined &&
       (obj.healthFactor = message.healthFactor);
     return obj;
@@ -1184,7 +1198,8 @@ export const RepayAssetEvent = {
     message.repayer = object.repayer ?? "";
     message.debtor = object.debtor ?? "";
     message.denom = object.denom ?? "";
-    message.amountRepaid = object.amountRepaid ?? "";
+    message.principalRepaid = object.principalRepaid ?? "";
+    message.interestRepaid = object.interestRepaid ?? "";
     message.healthFactor = object.healthFactor ?? "";
     return message;
   },

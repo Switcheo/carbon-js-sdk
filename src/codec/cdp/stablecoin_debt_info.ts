@@ -8,18 +8,16 @@ export const protobufPackage = "Switcheo.carbon.cdp";
 export interface StablecoinDebtInfo {
   denom: string;
   lastUpdatedTime?: Date;
-  totalAccInterest: string;
   totalPrincipal: string;
-  interestPerPrincipal: string;
-  totalPaidInterest: string;
+  cumulativeInterestMultiplier: string;
+  initialCumulativeInterestMultiplier: string;
 }
 
 const baseStablecoinDebtInfo: object = {
   denom: "",
-  totalAccInterest: "",
   totalPrincipal: "",
-  interestPerPrincipal: "",
-  totalPaidInterest: "",
+  cumulativeInterestMultiplier: "",
+  initialCumulativeInterestMultiplier: "",
 };
 
 export const StablecoinDebtInfo = {
@@ -36,17 +34,14 @@ export const StablecoinDebtInfo = {
         writer.uint32(18).fork()
       ).ldelim();
     }
-    if (message.totalAccInterest !== "") {
-      writer.uint32(26).string(message.totalAccInterest);
-    }
     if (message.totalPrincipal !== "") {
-      writer.uint32(34).string(message.totalPrincipal);
+      writer.uint32(26).string(message.totalPrincipal);
     }
-    if (message.interestPerPrincipal !== "") {
-      writer.uint32(42).string(message.interestPerPrincipal);
+    if (message.cumulativeInterestMultiplier !== "") {
+      writer.uint32(34).string(message.cumulativeInterestMultiplier);
     }
-    if (message.totalPaidInterest !== "") {
-      writer.uint32(50).string(message.totalPaidInterest);
+    if (message.initialCumulativeInterestMultiplier !== "") {
+      writer.uint32(42).string(message.initialCumulativeInterestMultiplier);
     }
     return writer;
   },
@@ -67,16 +62,13 @@ export const StablecoinDebtInfo = {
           );
           break;
         case 3:
-          message.totalAccInterest = reader.string();
-          break;
-        case 4:
           message.totalPrincipal = reader.string();
           break;
-        case 5:
-          message.interestPerPrincipal = reader.string();
+        case 4:
+          message.cumulativeInterestMultiplier = reader.string();
           break;
-        case 6:
-          message.totalPaidInterest = reader.string();
+        case 5:
+          message.initialCumulativeInterestMultiplier = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -96,23 +88,19 @@ export const StablecoinDebtInfo = {
       object.lastUpdatedTime !== undefined && object.lastUpdatedTime !== null
         ? fromJsonTimestamp(object.lastUpdatedTime)
         : undefined;
-    message.totalAccInterest =
-      object.totalAccInterest !== undefined && object.totalAccInterest !== null
-        ? String(object.totalAccInterest)
-        : "";
     message.totalPrincipal =
       object.totalPrincipal !== undefined && object.totalPrincipal !== null
         ? String(object.totalPrincipal)
         : "";
-    message.interestPerPrincipal =
-      object.interestPerPrincipal !== undefined &&
-      object.interestPerPrincipal !== null
-        ? String(object.interestPerPrincipal)
+    message.cumulativeInterestMultiplier =
+      object.cumulativeInterestMultiplier !== undefined &&
+      object.cumulativeInterestMultiplier !== null
+        ? String(object.cumulativeInterestMultiplier)
         : "";
-    message.totalPaidInterest =
-      object.totalPaidInterest !== undefined &&
-      object.totalPaidInterest !== null
-        ? String(object.totalPaidInterest)
+    message.initialCumulativeInterestMultiplier =
+      object.initialCumulativeInterestMultiplier !== undefined &&
+      object.initialCumulativeInterestMultiplier !== null
+        ? String(object.initialCumulativeInterestMultiplier)
         : "";
     return message;
   },
@@ -122,14 +110,13 @@ export const StablecoinDebtInfo = {
     message.denom !== undefined && (obj.denom = message.denom);
     message.lastUpdatedTime !== undefined &&
       (obj.lastUpdatedTime = message.lastUpdatedTime.toISOString());
-    message.totalAccInterest !== undefined &&
-      (obj.totalAccInterest = message.totalAccInterest);
     message.totalPrincipal !== undefined &&
       (obj.totalPrincipal = message.totalPrincipal);
-    message.interestPerPrincipal !== undefined &&
-      (obj.interestPerPrincipal = message.interestPerPrincipal);
-    message.totalPaidInterest !== undefined &&
-      (obj.totalPaidInterest = message.totalPaidInterest);
+    message.cumulativeInterestMultiplier !== undefined &&
+      (obj.cumulativeInterestMultiplier = message.cumulativeInterestMultiplier);
+    message.initialCumulativeInterestMultiplier !== undefined &&
+      (obj.initialCumulativeInterestMultiplier =
+        message.initialCumulativeInterestMultiplier);
     return obj;
   },
 
@@ -137,10 +124,11 @@ export const StablecoinDebtInfo = {
     const message = { ...baseStablecoinDebtInfo } as StablecoinDebtInfo;
     message.denom = object.denom ?? "";
     message.lastUpdatedTime = object.lastUpdatedTime ?? undefined;
-    message.totalAccInterest = object.totalAccInterest ?? "";
     message.totalPrincipal = object.totalPrincipal ?? "";
-    message.interestPerPrincipal = object.interestPerPrincipal ?? "";
-    message.totalPaidInterest = object.totalPaidInterest ?? "";
+    message.cumulativeInterestMultiplier =
+      object.cumulativeInterestMultiplier ?? "";
+    message.initialCumulativeInterestMultiplier =
+      object.initialCumulativeInterestMultiplier ?? "";
     return message;
   },
 };
