@@ -17,7 +17,7 @@ import "./_setup";
   console.log("connected wallet:", connectedSDK.wallet.bech32Address);
 
   const assetsAll = await sdk.query.cdp.AssetsAll({});
-  console.log("assetsAll: ", assetsAll.assetDataAll);
+  console.log("assetsAll: ", assetsAll.assetParamsAll);
 
   const rateStrategyAll = await sdk.query.cdp.RateStrategiesAll({});
   console.log("rateStrategyAll: ", rateStrategyAll.rateStrategyParamsAll);
