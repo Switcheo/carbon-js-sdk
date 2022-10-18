@@ -23,11 +23,6 @@ export interface AssetUtilization {
   utilizationRate: string;
 }
 
-export interface AssetData {
-  assetParams?: AssetParams;
-  assetUtilization?: AssetUtilization;
-}
-
 const baseAssetParams: object = {
   denom: "",
   oracleId: "",
@@ -288,92 +283,6 @@ export const AssetUtilization = {
     message.totalBorrowed = object.totalBorrowed ?? "";
     message.totalAmount = object.totalAmount ?? "";
     message.utilizationRate = object.utilizationRate ?? "";
-    return message;
-  },
-};
-
-const baseAssetData: object = {};
-
-export const AssetData = {
-  encode(
-    message: AssetData,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.assetParams !== undefined) {
-      AssetParams.encode(
-        message.assetParams,
-        writer.uint32(10).fork()
-      ).ldelim();
-    }
-    if (message.assetUtilization !== undefined) {
-      AssetUtilization.encode(
-        message.assetUtilization,
-        writer.uint32(18).fork()
-      ).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): AssetData {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseAssetData } as AssetData;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.assetParams = AssetParams.decode(reader, reader.uint32());
-          break;
-        case 2:
-          message.assetUtilization = AssetUtilization.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): AssetData {
-    const message = { ...baseAssetData } as AssetData;
-    message.assetParams =
-      object.assetParams !== undefined && object.assetParams !== null
-        ? AssetParams.fromJSON(object.assetParams)
-        : undefined;
-    message.assetUtilization =
-      object.assetUtilization !== undefined && object.assetUtilization !== null
-        ? AssetUtilization.fromJSON(object.assetUtilization)
-        : undefined;
-    return message;
-  },
-
-  toJSON(message: AssetData): unknown {
-    const obj: any = {};
-    message.assetParams !== undefined &&
-      (obj.assetParams = message.assetParams
-        ? AssetParams.toJSON(message.assetParams)
-        : undefined);
-    message.assetUtilization !== undefined &&
-      (obj.assetUtilization = message.assetUtilization
-        ? AssetUtilization.toJSON(message.assetUtilization)
-        : undefined);
-    return obj;
-  },
-
-  fromPartial(object: DeepPartial<AssetData>): AssetData {
-    const message = { ...baseAssetData } as AssetData;
-    message.assetParams =
-      object.assetParams !== undefined && object.assetParams !== null
-        ? AssetParams.fromPartial(object.assetParams)
-        : undefined;
-    message.assetUtilization =
-      object.assetUtilization !== undefined && object.assetUtilization !== null
-        ? AssetUtilization.fromPartial(object.assetUtilization)
-        : undefined;
     return message;
   },
 };

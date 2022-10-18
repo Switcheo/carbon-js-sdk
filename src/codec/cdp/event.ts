@@ -104,8 +104,15 @@ export interface UpdateStablecoinDebtInfoEvent {
   type: string;
 }
 
+export interface MintStablecoinEvent {
+  minter: string;
+  denom: string;
+  amountMinted: string;
+  healthFactor: string;
+}
+
 export interface ReturnStablecoinEvent {
-  repayer: string;
+  returner: string;
   debtor: string;
   interestDenom: string;
   interestRepaid: string;
@@ -1563,8 +1570,104 @@ export const UpdateStablecoinDebtInfoEvent = {
   },
 };
 
+const baseMintStablecoinEvent: object = {
+  minter: "",
+  denom: "",
+  amountMinted: "",
+  healthFactor: "",
+};
+
+export const MintStablecoinEvent = {
+  encode(
+    message: MintStablecoinEvent,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.minter !== "") {
+      writer.uint32(10).string(message.minter);
+    }
+    if (message.denom !== "") {
+      writer.uint32(18).string(message.denom);
+    }
+    if (message.amountMinted !== "") {
+      writer.uint32(26).string(message.amountMinted);
+    }
+    if (message.healthFactor !== "") {
+      writer.uint32(34).string(message.healthFactor);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MintStablecoinEvent {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMintStablecoinEvent } as MintStablecoinEvent;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.minter = reader.string();
+          break;
+        case 2:
+          message.denom = reader.string();
+          break;
+        case 3:
+          message.amountMinted = reader.string();
+          break;
+        case 4:
+          message.healthFactor = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MintStablecoinEvent {
+    const message = { ...baseMintStablecoinEvent } as MintStablecoinEvent;
+    message.minter =
+      object.minter !== undefined && object.minter !== null
+        ? String(object.minter)
+        : "";
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
+    message.amountMinted =
+      object.amountMinted !== undefined && object.amountMinted !== null
+        ? String(object.amountMinted)
+        : "";
+    message.healthFactor =
+      object.healthFactor !== undefined && object.healthFactor !== null
+        ? String(object.healthFactor)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MintStablecoinEvent): unknown {
+    const obj: any = {};
+    message.minter !== undefined && (obj.minter = message.minter);
+    message.denom !== undefined && (obj.denom = message.denom);
+    message.amountMinted !== undefined &&
+      (obj.amountMinted = message.amountMinted);
+    message.healthFactor !== undefined &&
+      (obj.healthFactor = message.healthFactor);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MintStablecoinEvent>): MintStablecoinEvent {
+    const message = { ...baseMintStablecoinEvent } as MintStablecoinEvent;
+    message.minter = object.minter ?? "";
+    message.denom = object.denom ?? "";
+    message.amountMinted = object.amountMinted ?? "";
+    message.healthFactor = object.healthFactor ?? "";
+    return message;
+  },
+};
+
 const baseReturnStablecoinEvent: object = {
-  repayer: "",
+  returner: "",
   debtor: "",
   interestDenom: "",
   interestRepaid: "",
@@ -1577,8 +1680,8 @@ export const ReturnStablecoinEvent = {
     message: ReturnStablecoinEvent,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.repayer !== "") {
-      writer.uint32(10).string(message.repayer);
+    if (message.returner !== "") {
+      writer.uint32(10).string(message.returner);
     }
     if (message.debtor !== "") {
       writer.uint32(18).string(message.debtor);
@@ -1609,7 +1712,7 @@ export const ReturnStablecoinEvent = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.repayer = reader.string();
+          message.returner = reader.string();
           break;
         case 2:
           message.debtor = reader.string();
@@ -1636,9 +1739,9 @@ export const ReturnStablecoinEvent = {
 
   fromJSON(object: any): ReturnStablecoinEvent {
     const message = { ...baseReturnStablecoinEvent } as ReturnStablecoinEvent;
-    message.repayer =
-      object.repayer !== undefined && object.repayer !== null
-        ? String(object.repayer)
+    message.returner =
+      object.returner !== undefined && object.returner !== null
+        ? String(object.returner)
         : "";
     message.debtor =
       object.debtor !== undefined && object.debtor !== null
@@ -1665,7 +1768,7 @@ export const ReturnStablecoinEvent = {
 
   toJSON(message: ReturnStablecoinEvent): unknown {
     const obj: any = {};
-    message.repayer !== undefined && (obj.repayer = message.repayer);
+    message.returner !== undefined && (obj.returner = message.returner);
     message.debtor !== undefined && (obj.debtor = message.debtor);
     message.interestDenom !== undefined &&
       (obj.interestDenom = message.interestDenom);
@@ -1682,7 +1785,7 @@ export const ReturnStablecoinEvent = {
     object: DeepPartial<ReturnStablecoinEvent>
   ): ReturnStablecoinEvent {
     const message = { ...baseReturnStablecoinEvent } as ReturnStablecoinEvent;
-    message.repayer = object.repayer ?? "";
+    message.returner = object.returner ?? "";
     message.debtor = object.debtor ?? "";
     message.interestDenom = object.interestDenom ?? "";
     message.interestRepaid = object.interestRepaid ?? "";
