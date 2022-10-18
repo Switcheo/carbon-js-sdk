@@ -199,6 +199,10 @@ export interface RateStrategy { // CDP
   optimal_stable_to_total_debt_ratio: string // string representation of number
 }
 
+/**
+ * @deprecated old websocket response struct for get_cdp_assets_all
+ * use AssetParams instead
+*/
 export interface Asset { // CDP
   asset_params: {
     denom: string
@@ -218,18 +222,28 @@ export interface Asset { // CDP
   },
 }
 
+export interface AssetParams { // CDP
+  denom: string
+  oracle_id: string
+  rate_strategy_name: string
+  repay_stablecoin_interest_debt: boolean
+  loan_to_value: string // string representation of number
+  liquidation_threshold: string // string representation of number
+  liquidation_bonus: string // string representation of number
+  supply_cap: string // string representation of number
+  borrow_cap: string // string representation of number
+}
+
 export interface Collateral { // CDP
   cdp_denom: string
   denom: string
-  cdp_to_actual_ratio: string // string representation of number 
-  amount: string // string representation of number 
-  value_in_usd: string // string representation of number 
+  collateral_amount: string // string representation of number 
 }
 
 export interface Debt { // CDP
   denom: string
-  amount: string // string representation of date isostring
-  value_in_usd: string // string representation of number
+  principal_debt: string // string representation of number
+  initial_cumulative_interest_multiplier: string // string representation of number
 }
 
 export interface AccountData {
@@ -240,13 +254,22 @@ export interface AccountData {
 	health_factor: string // string representation of number
 }
 
+/**
+ * Response for get_cdp_total_borrows and get_cdp_borrows
+ * Do not confuse with Debt
+*/
 export interface CDPBorrow {
   address: string
 	amount: string // string representation of number
 	denom: string
+  type: string
 }
 
-export interface CDPCollaterals {
+/**
+ * Response for get_cdp_total_collaterals and get_cdp_collaterals
+ * Do not confuse with Collateral
+*/
+export interface CDPCollateral {
   address: string
   amount: string // string representation of number
   denom: string
@@ -267,20 +290,21 @@ export interface CDPStableCoinDebtInfo {
   total_principal: string // string representation of number
   cumulative_interest_multiplier: string // string representation of number
   initial_cumulative_interest_multiplier: string // string representation of number
+  utilization_rate: string // string representation of number
 }
 
 export interface CDPLiquidation {
   liquidation: string
   debtor: string
   collateral_denom: string
-  collateral_amount_liquidated: string
-  collateral_amount_liquidator: string
-  collateral_amount_fee: string
-  liquidation_price: string
-  market_price: string
-  discount: string
+  collateral_amount_liquidated: string // string representation of number
+  collateral_amount_liquidator: string // string representation of number
+  collateral_amount_fee: string // string representation of number
+  liquidation_price: string // string representation of number
+  market_price: string // string representation of number
+  discount: string // string representation of number
   debt_denom: string
-  debt_amount: string
+  debt_amount: string // string representation of number
   block_height: number
   block_time: string // string representation of timestamp
 }
