@@ -2,6 +2,7 @@ import { Token } from "@carbon-sdk/codec";
 import { CoinGeckoTokenNames, CommonAssetName, NetworkConfigProvider, TokenBlacklist } from "@carbon-sdk/constant";
 import { ibcTokenRegex, ibcWhitelist, swthChannels, swthIbcWhitelist } from "@carbon-sdk/constant/ibc";
 import { Network } from "@carbon-sdk/constant/network";
+import { FeeQuote } from "@carbon-sdk/hydrogen/feeQuote";
 import KeplrAccount from "@carbon-sdk/provider/keplr/KeplrAccount";
 import { BlockchainUtils, FetchUtils, IBCUtils, NumberUtils, TypeUtils } from "@carbon-sdk/util";
 import { AppCurrency } from "@keplr-wallet/types";
@@ -122,12 +123,12 @@ class TokenClient {
     return this.tokens[denom];
   }
 
-  public async getFeeInfo(denom: string) {
+  public async getFeeInfo(denom: string): Promise<FeeQuote> {
     const config = this.configProvider.getConfig();
-    const url = `${config.feeURL}/fees?denom=${denom}`
+    const url = `${config.hydrogenUrl}/fee_quote?token_denom=${denom}`
     const result = await fetch(url).then(res => res.json())
 
-    return result;
+    return result as FeeQuote;
   }
 
   public getTokenName(denom: string, overrideMap?: TypeUtils.SimpleMap<string>): string {

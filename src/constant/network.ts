@@ -47,6 +47,9 @@ export interface NetworkConfig {
 
   network: Network;
 
+  /**
+   * @deprecated on-chain fee service has been removed, please use the hydrogen fee_quote endpoint to query deposit/withdraw fees (please see HydrogenClient for the required query)
+  */
   feeURL: string
   feeAddress: string
 
@@ -78,6 +81,9 @@ export const NetworkConfigs: {
 
     Bech32Prefix: "swth",
 
+    /**
+      * @deprecated on-chain fee service has been removed, please use the hydrogen fee_quote endpoint to query deposit/withdraw fees (please see HydrogenClient for the required query)
+    */
     feeURL: "https://fees.carbon.network",
     feeAddress: "08d8f59e475830d9a1bb97d74285c4d34c6dac08", // swth1prv0t8j8tqcdngdmjlt59pwy6dxxmtqgycy2h7
 
@@ -132,6 +138,9 @@ export const NetworkConfigs: {
 
     Bech32Prefix: "tswth",
 
+    /**
+      * @deprecated on-chain fee service has been removed, please use the hydrogen fee_quote endpoint to query deposit/withdraw fees (please see HydrogenClient for the required query)
+    */
     feeURL: `http://54.255.42.175:9001`,
     feeAddress: "989761fb0c0eb0c05605e849cae77d239f98ac7f", // swth1nztkr7cvp6cvq4s9apyu4emayw0e3trl9ezyzs
 
@@ -186,6 +195,9 @@ export const NetworkConfigs: {
 
     Bech32Prefix: "swth",
 
+    /**
+      * @deprecated on-chain fee service has been removed, please use the hydrogen fee_quote endpoint to query deposit/withdraw fees (please see HydrogenClient for the required query)
+    */
     feeURL: `https://dev-fees.carbon.network`,
     feeAddress: "989761fb0c0eb0c05605e849cae77d239f98ac7f", // swth1nztkr7cvp6cvq4s9apyu4emayw0e3trl9ezyzs
 
@@ -240,6 +252,9 @@ export const NetworkConfigs: {
 
     Bech32Prefix: "tswth",
 
+    /**
+      * @deprecated on-chain fee service has been removed, please use the hydrogen fee_quote endpoint to query deposit/withdraw fees (please see HydrogenClient for the required query)
+    */
     feeURL: `http://localhost:9001`,
     feeAddress: "989761fb0c0eb0c05605e849cae77d239f98ac7f",
 

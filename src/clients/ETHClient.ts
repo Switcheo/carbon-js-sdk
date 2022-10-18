@@ -280,7 +280,7 @@ export class ETHClient {
     }
 
     const amount = ethers.BigNumber.from(tokenWithExternalBalances.externalBalance);
-    if (amount.lt(feeAmount.mul(FEE_MULTIPLIER))) {
+    if (amount.lt(feeAmount)) {
       return "insufficient balance";
     }
 
@@ -346,17 +346,17 @@ export class ETHClient {
 
   public async getDepositFeeAmount(token: Models.Token, depositAddress: string) {
     const feeInfo = await this.tokenClient.getFeeInfo(token.denom);
-    if (!feeInfo.details.deposit.fee) {
+    if (!feeInfo.deposit_fee) {
       throw new Error("unsupported token");
     }
     if (blockchainForChainId(token.chainId.toNumber()) !== this.blockchain) {
       throw new Error("unsupported token");
     }
 
-    let feeAmount = ethers.BigNumber.from(feeInfo.details.deposit.fee);
+    let feeAmount = ethers.BigNumber.from(feeInfo.deposit_fee);
     const walletContractDeployed = await this.isContract(depositAddress);
     if (!walletContractDeployed) {
-      feeAmount = feeAmount.add(ethers.BigNumber.from(feeInfo.details.createWallet.fee));
+      feeAmount = feeAmount.add(ethers.BigNumber.from(feeInfo.create_wallet_fee));
     }
 
     return feeAmount;
