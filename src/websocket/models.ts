@@ -196,7 +196,7 @@ export interface Asset { // CDP
     denom: string
     total_borrowed: string
     total_amount: string
-    utilizationRate: string
+    utilization_rate: string
   },
 }
 
