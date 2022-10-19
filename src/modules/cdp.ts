@@ -258,7 +258,7 @@ export class CDPModule extends BaseModule {
       return
     }
 
-    const utilizationRate = (new BigNumber(debtInfo.utilizationRate))
+    const utilizationRate = (new BigNumber(debtInfo.utilizationRate).shiftedBy(-18))
     const optimalUsage = new BigNumber(rateStrategyParams.optimalUsage).div(10000)
     const variableRate1 = new BigNumber(rateStrategyParams.variableRateSlope1).div(10000)
     const variableRate2 = new BigNumber(rateStrategyParams.variableRateSlope2).div(10000)
@@ -288,7 +288,6 @@ export class CDPModule extends BaseModule {
 
   public async recalculateCIM(denom: string) {
     const sdk = this.sdkProvider
-
     const debtInfoResponse = await sdk.query.cdp.TokenDebt(QueryTokenDebtRequest.fromPartial({ denom }))
     const debtInfo = debtInfoResponse.debtInfo
     if (!debtInfo) {
