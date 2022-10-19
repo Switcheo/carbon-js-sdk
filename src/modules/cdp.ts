@@ -1,7 +1,8 @@
-import { MsgBorrowAsset, MsgLiquidateCollateral, MsgLockCollateral, MsgRepayAsset, MsgSupplyAssetAndLockCollateral, MsgSupplyAsset, MsgUnlockCollateralAndWithdrawAsset, MsgUnlockCollateral, MsgWithdrawAsset, MsgRepayAssetWithCdpTokens, MsgRepayAssetWithCollateral, MsgMintStablecoin, MsgReturnStablecoin } from "@carbon-sdk/codec/cdp/tx";
+import { QueryAccountDebtsRequest, QueryAssetRequest, QueryRateStrategyRequest, QueryTokenDebtRequest } from '@carbon-sdk/codec/cdp/query';
+import { MsgBorrowAsset, MsgLiquidateCollateral, MsgLockCollateral, MsgMintStablecoin, MsgRepayAsset, MsgRepayAssetWithCdpTokens, MsgRepayAssetWithCollateral, MsgReturnStablecoin, MsgSupplyAsset, MsgSupplyAssetAndLockCollateral, MsgUnlockCollateral, MsgUnlockCollateralAndWithdrawAsset, MsgWithdrawAsset } from "@carbon-sdk/codec/cdp/tx";
 import { CarbonTx } from "@carbon-sdk/util";
-import BaseModule from "./base";
 import { BigNumber } from "bignumber.js";
+import BaseModule from "./base";
 
 export class CDPModule extends BaseModule {
 
@@ -202,6 +203,106 @@ export class CDPModule extends BaseModule {
       typeUrl: CarbonTx.Types.MsgReturnStablecoin,
       value,
     }, opts);
+  }
+
+  // start of cdp calculations
+
+  public async getTotalAccountTokenDebt(account: string, denom: string) {
+    const sdk = this.sdkProvider
+    const debtInfoResponse = await sdk.query.cdp.TokenDebt(QueryTokenDebtRequest.fromPartial({ denom }))
+    const debtInfo = debtInfoResponse.debtInfo
+    if (!debtInfo) {
+      return
+    }
+
+    const accountDebtsRsp = await sdk.query.cdp.AccountDebts(QueryAccountDebtsRequest.fromPartial({ account }))
+    const debt = accountDebtsRsp.debts.find(d => d.denom == denom)
+    if (!debt) {
+      return
+    }
+
+    const principalAmount = new BigNumber(debt.principalDebt)
+    const initialCIM = new BigNumber(debt.initialCumulativeInterestMultiplier)
+    console.log(initialCIM)
+
+    const cim = await this.recalculateCIM(denom)
+    if (!cim) {
+      return
+    }
+
+    // TODO: change to round up
+    const totalAmountTokenDebt = principalAmount.times(cim).div(initialCIM).decimalPlaces(0)
+
+    return totalAmountTokenDebt
+  }
+
+  public async calculateAPY(denom: string) {
+    const sdk = this.sdkProvider
+    const assetResponse = await sdk.query.cdp.Asset(QueryAssetRequest.fromPartial({ denom }))
+    const assetParams = assetResponse.assetParams
+    if (!assetParams) {
+      return
+    }
+
+    const debtInfoResponse = await sdk.query.cdp.TokenDebt(QueryTokenDebtRequest.fromPartial({ denom }))
+    const debtInfo = debtInfoResponse.debtInfo
+    if (!debtInfo) {
+      return
+    }
+
+    const rateStrategyParamsResponse = await sdk.query.cdp.RateStrategy(QueryRateStrategyRequest.fromPartial({
+      name: assetParams.rateStrategyName
+    }))
+    const rateStrategyParams = rateStrategyParamsResponse.rateStrategyParams
+    if (!rateStrategyParams) {
+      return
+    }
+
+    const utilizationRate = (new BigNumber(debtInfo.utilizationRate))
+    const optimalUsage = new BigNumber(rateStrategyParams.optimalUsage).div(10000)
+    const variableRate1 = new BigNumber(rateStrategyParams.variableRateSlope1).div(10000)
+    const variableRate2 = new BigNumber(rateStrategyParams.variableRateSlope2).div(10000)
+    const baseVariableBorrowRate = new BigNumber(rateStrategyParams.baseVariableBorrowRate).div(10000)
+    let rate = new BigNumber(0)
+    if (utilizationRate.lte(optimalUsage)) {
+      rate = utilizationRate.times(variableRate1).div(optimalUsage)
+      rate = rate.plus(baseVariableBorrowRate)
+    } else {
+      const ratio = (utilizationRate.minus(optimalUsage)).div(new BigNumber(1).minus(optimalUsage))
+      rate = ratio.times(variableRate2).plus(variableRate1).plus(baseVariableBorrowRate)
+    }
+
+    return rate
+  }
+
+  public calculateInterestForTimePeriod(apy: BigNumber, start: Date, end: Date) {
+    if (end <= start) {
+      return new BigNumber(0)
+    }
+    const duration = new BigNumber(end.valueOf() - start.valueOf())
+    const millisecondsAYear = new BigNumber(31536000000)
+
+    const interest = duration.div(millisecondsAYear).times(apy)
+    return interest
+  }
+
+  public async recalculateCIM(denom: string) {
+    const sdk = this.sdkProvider
+
+    const debtInfoResponse = await sdk.query.cdp.TokenDebt(QueryTokenDebtRequest.fromPartial({ denom }))
+    const debtInfo = debtInfoResponse.debtInfo
+    if (!debtInfo) {
+      return
+    }
+    const cim = new BigNumber(debtInfo.cumulativeInterestMultiplier)
+    const apy = await this.calculateAPY(denom)
+    if (!apy) {
+      return
+    }
+    const interest = this.calculateInterestForTimePeriod(apy, debtInfo.lastUpdatedTime as Date, new Date())
+    const newCIM = cim.times(interest.plus(1))
+
+    return newCIM
   }
 }
 
