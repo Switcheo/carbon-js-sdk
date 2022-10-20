@@ -5,7 +5,6 @@ import { MsgAddCollateral, MsgAddCollateralResponse, MsgRemoveCollateral, MsgRem
 import { MsgInitiateLiquidation, MsgInitiateLiquidationResponse } from "./broker/tx";
 import { MsgSetGasCost, MsgSetGasCostResponse, MsgSetMinGasPrice, MsgSetMinGasPriceResponse, MsgRemoveGasCost, MsgRemoveGasCostResponse, MsgRemoveMinGasPrice, MsgRemoveMinGasPriceResponse } from "./fee/tx";
 import { SetMsgGasCostProposal, SetMinGasPriceProposal, RemoveMsgGasCostProposal, RemoveMinGasPriceProposal } from "./fee/proposal";
-import { MsgEnableSend, MsgEnableSendResponse, MsgDisableSend, MsgDisableSendResponse } from "./bank/tx";
 import { MsgSetMargin, MsgSetMarginResponse } from "./position/tx";
 import { MsgCreateOracle, MsgCreateOracleResponse, MsgCreateVote, MsgCreateVoteResponse, MsgUpdateOracle, MsgUpdateOracleResponse, MsgRemoveOracle, MsgRemoveOracleResponse, MsgSetOracleSlashEnabled, MsgSetOracleSlashEnabledResponse } from "./oracle/tx";
 import { CreateOracleProposal } from "./oracle/proposal";
@@ -91,11 +90,6 @@ registry.register("/Switcheo.carbon.fee.SetMsgGasCostProposal", SetMsgGasCostPro
 registry.register("/Switcheo.carbon.fee.SetMinGasPriceProposal", SetMinGasPriceProposal);
 registry.register("/Switcheo.carbon.fee.RemoveMsgGasCostProposal", RemoveMsgGasCostProposal);
 registry.register("/Switcheo.carbon.fee.RemoveMinGasPriceProposal", RemoveMinGasPriceProposal);
-
-registry.register("/Switcheo.carbon.bank.MsgEnableSend", MsgEnableSend);
-registry.register("/Switcheo.carbon.bank.MsgEnableSendResponse", MsgEnableSendResponse);
-registry.register("/Switcheo.carbon.bank.MsgDisableSend", MsgDisableSend);
-registry.register("/Switcheo.carbon.bank.MsgDisableSendResponse", MsgDisableSendResponse);
 
 registry.register("/Switcheo.carbon.btcx.MsgCreate", PolyNetwork.Btcx.MsgCreate);
 registry.register("/Switcheo.carbon.btcx.MsgCreateResponse", PolyNetwork.Btcx.MsgCreateResponse);
@@ -376,10 +370,6 @@ export const TxTypes = {
   "SetMinGasPriceProposal": "/Switcheo.carbon.fee.SetMinGasPriceProposal",
   "RemoveMsgGasCostProposal": "/Switcheo.carbon.fee.RemoveMsgGasCostProposal",
   "RemoveMinGasPriceProposal": "/Switcheo.carbon.fee.RemoveMinGasPriceProposal",
-  "MsgEnableSend": "/Switcheo.carbon.bank.MsgEnableSend",
-  "MsgEnableSendResponse": "/Switcheo.carbon.bank.MsgEnableSendResponse",
-  "MsgDisableSend": "/Switcheo.carbon.bank.MsgDisableSend",
-  "MsgDisableSendResponse": "/Switcheo.carbon.bank.MsgDisableSendResponse",
   "MsgCreate": "/Switcheo.carbon.lockproxy.MsgCreate",
   "MsgCreateResponse": "/Switcheo.carbon.lockproxy.MsgCreateResponse",
   "MsgBind": "/Switcheo.carbon.lockproxy.MsgBind",
@@ -617,7 +607,6 @@ export { MsgFee, MsgGasCost, MinGasPrice } from "./fee/fee";
 export { SetMsgGasCostProposal, SetMinGasPriceProposal, RemoveMsgGasCostProposal, RemoveMinGasPriceProposal } from "./fee/proposal";
 export { QueryGetMsgGasCostRequest, QueryGetMsgGasCostResponse, QueryAllMsgGasCostRequest, QueryAllMsgGasCostResponse, QueryGetMinGasPriceRequest, QueryGetMinGasPriceResponse, QueryAllMinGasPriceRequest, QueryAllMinGasPriceResponse } from "./fee/query";
 export { FeeDeductionEvent } from "./fee/event";
-export { MsgEnableSend, MsgEnableSendResponse, MsgDisableSend, MsgDisableSendResponse } from "./bank/tx";
 export { CoinSpent, CoinReceived } from "./bank/event";
 export { Params as LiquidationParams } from "./liquidation/liquidation";
 export { QuoteChanges } from "./liquidation/quote_changes";
@@ -645,7 +634,7 @@ export { MsgCreateToken, CreateTokenParams, MsgCreateTokenResponse, MsgSyncToken
 export { CreateTokenProposal } from "./coin/proposal";
 export { Bridge } from "./coin/bridge";
 export { QueryGetTokenRequest, QueryGetTokenResponse, QueryAllTokenRequest, QueryAllTokenResponse, QueryGetLockedCoinsRequest, QueryGetLockedCoinsResponse, QueryAllWrapperMappingsRequest, QueryAllWrapperMappingsResponse, QueryAllWrapperMappingsResponse_WrapperMappingsEntry, QueryGetBalancesRequest, QueryGetBalancesResponse, QueryTotalBalancesRequest, QueryTotalBalancesResponse, QueryGetBridgeRequest, QueryGetBridgeResponse, QueryAllBridgeRequest, QueryAllBridgeResponse } from "./coin/query";
-export { Token, BalanceChange, LockedCoins, LockedCoinsRecord, PositionPool, TokenBalance } from "./coin/token";
+export { Token, BalanceChange, Metadata, LockedCoins, LockedCoinsRecord, PositionPool, TokenBalance } from "./coin/token";
 export { NewTokenEvent, SyncTokenEvent, BindTokenEvent, UnbindTokenEvent, LinkTokenEvent } from "./coin/event";
 export { MarketLeverage, MarketLeverageRecord } from "./leverage/leverage";
 export { MsgSetLeverage, MsgSetLeverageResponse } from "./leverage/tx";

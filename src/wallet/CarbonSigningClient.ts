@@ -1,5 +1,4 @@
 import { registry as TypesRegistry } from "@carbon-sdk/codec";
-import { SignMode } from "@carbon-sdk/codec/cosmos/tx/signing/v1beta1/signing";
 import { TxRaw } from "@carbon-sdk/codec/cosmos/tx/v1beta1/tx";
 import { CarbonSignerData } from "@carbon-sdk/util/tx";
 import { AminoMsg, encodeSecp256k1Pubkey, OfflineAminoSigner } from "@cosmjs/amino";
@@ -10,6 +9,32 @@ import { AminoTypes, GasPrice, SigningStargateClientOptions, StargateClient, Std
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import Long from "long";
 import { AminoTypesMap } from "../provider";
+
+// Added SignMode enum from cosmjs-types to resolve build error
+enum SignMode {
+  /**
+   * SIGN_MODE_UNSPECIFIED - SIGN_MODE_UNSPECIFIED specifies an unknown signing mode and will be
+   * rejected
+   */
+  SIGN_MODE_UNSPECIFIED = 0,
+  /**
+   * SIGN_MODE_DIRECT - SIGN_MODE_DIRECT specifies a signing mode which uses SignDoc and is
+   * verified with raw bytes from Tx
+   */
+  SIGN_MODE_DIRECT = 1,
+  /**
+   * SIGN_MODE_TEXTUAL - SIGN_MODE_TEXTUAL is a future signing mode that will verify some
+   * human-readable textual representation on top of the binary representation
+   * from SIGN_MODE_DIRECT
+   */
+  SIGN_MODE_TEXTUAL = 2,
+  /**
+   * SIGN_MODE_LEGACY_AMINO_JSON - SIGN_MODE_LEGACY_AMINO_JSON is a backwards compatibility mode which uses
+   * Amino JSON and will be removed in the future
+   */
+  SIGN_MODE_LEGACY_AMINO_JSON = 127,
+  UNRECOGNIZED = -1
+}
 
 export interface StdSignDoc {
   readonly chain_id: string;
@@ -141,7 +166,7 @@ export class CarbonSigningClient extends StargateClient {
       throw new Error("Failed to retrieve account from signer");
     }
     const pubkey = encodePubkey(encodeSecp256k1Pubkey(accountFromSigner.pubkey));
-    const signMode = SignMode.SIGN_MODE_LEGACY_AMINO_JSON;
+    const signMode: SignMode = SignMode.SIGN_MODE_LEGACY_AMINO_JSON;
     const msgs = messages.map((msg) => this.aminoTypes.toAmino(msg));
     const signDoc = makeSignDocAmino(msgs, fee, chainId, memo, accountNumber, sequence, timeoutHeight ?? 0);
     const { signature, signed } = await signer.signAmino(signerAddress, signDoc);
