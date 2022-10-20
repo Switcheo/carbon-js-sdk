@@ -1,23 +1,16 @@
-import { QueryBorrowsRequest, DBBorrow, Debt, QueryTokenDebtsAllRequest, QueryAccountDebtRequest, QueryAccountCollateralsRequest, QueryRateStrategiesAllRequest, QueryAssetsAllRequest } from './../codec/cdp/query';
+import { AssetParams, DebtInfo, QueryModuleAddressRequest, QueryTokenPriceRequest, RateStrategyParams } from '@carbon-sdk/codec';
 import { QueryAccountDebtsRequest, QueryAssetRequest, QueryRateStrategyRequest, QueryTokenDebtRequest } from '@carbon-sdk/codec/cdp/query';
 import { MsgBorrowAsset, MsgLiquidateCollateral, MsgLockCollateral, MsgMintStablecoin, MsgRepayAsset, MsgRepayAssetWithCdpTokens, MsgRepayAssetWithCollateral, MsgReturnStablecoin, MsgSupplyAsset, MsgSupplyAssetAndLockCollateral, MsgUnlockCollateral, MsgUnlockCollateralAndWithdrawAsset, MsgWithdrawAsset } from "@carbon-sdk/codec/cdp/tx";
+import { QueryBalanceRequest, QuerySupplyOfRequest } from '@carbon-sdk/codec/cosmos/bank/v1beta1/query';
 import { CarbonTx } from "@carbon-sdk/util";
 import { BigNumber } from "bignumber.js";
+import { Debt, QueryAccountCollateralsRequest, QueryAccountDebtRequest, QueryAssetsAllRequest, QueryTokenDebtsAllRequest } from './../codec/cdp/query';
 import BaseModule from "./base";
-import { AssetParams, DebtInfo, QueryModuleAddressRequest, QueryTokenPriceRequest, RateStrategyParams } from '@carbon-sdk/codec';
-import { CarbonSDK } from '..';
-import { QueryBalanceRequest, QuerySupplyOfRequest } from '@carbon-sdk/codec/cosmos/bank/v1beta1/query';
 
 export class CDPModule extends BaseModule {
 
   private cdpModuleAddress: string = ""
   private collateralsAddress: string = ""
-
-  constructor(
-    public readonly carbonSDK: CarbonSDK,
-  ) {
-    super(carbonSDK);
-  }
 
   public async supplyAsset(params: CDPModule.SupplyAssetParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
@@ -346,7 +339,7 @@ export class CDPModule extends BaseModule {
 
   public async getTokenUsdVal(denom: string, amount: BigNumber) {
     const sdk = this.sdkProvider
-    const decimals = await this.carbonSDK.token.getDecimals(denom)
+    const decimals = await this.sdkProvider.getTokenClient().getDecimals(denom)
     if (!decimals) {
       return
     }
