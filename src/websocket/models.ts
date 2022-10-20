@@ -42,8 +42,6 @@ export interface HistoryOrder {
   time_in_force: string;
   trigger_type: string;
   triggered_block_height: number;
-  type: string;
-  username: string;
   referral_address?: string;
   referral_commission?: number;
   referral_kickback?: number;
