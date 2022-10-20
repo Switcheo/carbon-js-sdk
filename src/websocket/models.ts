@@ -127,7 +127,6 @@ export interface MarketStat {
   premium_rate: string;
   last_funding_at: string;
   open_interest: string;
-  candlesticks?: Candlestick[];
 }
 
 export interface PriceLevel {
