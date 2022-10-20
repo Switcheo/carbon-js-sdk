@@ -10,7 +10,8 @@ import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import Long from "long";
 import { AminoTypesMap } from "../provider";
 
-export declare enum SignMode {
+// Added SignMode enum from cosmjs-types to resolve build error
+enum SignMode {
   /**
    * SIGN_MODE_UNSPECIFIED - SIGN_MODE_UNSPECIFIED specifies an unknown signing mode and will be
    * rejected
