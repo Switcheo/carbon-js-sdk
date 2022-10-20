@@ -4,7 +4,7 @@ import { MsgBorrowAsset, MsgLiquidateCollateral, MsgLockCollateral, MsgMintStabl
 import { CarbonTx } from "@carbon-sdk/util";
 import { BigNumber } from "bignumber.js";
 import BaseModule from "./base";
-import { AssetParams, DebtInfo, QueryModuleAddressRequest, QueryPriceTokenRequest, RateStrategyParams } from '@carbon-sdk/codec';
+import { AssetParams, DebtInfo, QueryModuleAddressRequest, QueryTokenPriceRequest, RateStrategyParams } from '@carbon-sdk/codec';
 import { CarbonSDK } from '..';
 import { QueryBalanceRequest, QuerySupplyOfRequest } from '@carbon-sdk/codec/cosmos/bank/v1beta1/query';
 
@@ -350,7 +350,7 @@ export class CDPModule extends BaseModule {
     if (!decimals) {
       return
     }
-    const price = await sdk.query.pricing.PriceToken(QueryPriceTokenRequest.fromPartial({ denom }))
+    const price = await sdk.query.pricing.TokenPrice(QueryTokenPriceRequest.fromPartial({ denom }))
     if (!price.tokenPrice) {
       return
     }
