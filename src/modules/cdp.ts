@@ -1,9 +1,23 @@
-import { MsgBorrowAsset, MsgLiquidateCollateral, MsgLockCollateral, MsgRepayAsset, MsgSupplyAssetAndLockCollateral, MsgSupplyAsset, MsgUnlockCollateralAndWithdrawAsset, MsgUnlockCollateral, MsgWithdrawAsset, MsgRepayAssetWithCdpTokens, MsgRepayAssetWithCollateral, MsgMintStablecoin, MsgReturnStablecoin } from "@carbon-sdk/codec/cdp/tx";
+import { QueryBorrowsRequest, DBBorrow, Debt, QueryTokenDebtsAllRequest, QueryAccountDebtRequest, QueryAccountCollateralsRequest, QueryRateStrategiesAllRequest, QueryAssetsAllRequest } from './../codec/cdp/query';
+import { QueryAccountDebtsRequest, QueryAssetRequest, QueryRateStrategyRequest, QueryTokenDebtRequest } from '@carbon-sdk/codec/cdp/query';
+import { MsgBorrowAsset, MsgLiquidateCollateral, MsgLockCollateral, MsgMintStablecoin, MsgRepayAsset, MsgRepayAssetWithCdpTokens, MsgRepayAssetWithCollateral, MsgReturnStablecoin, MsgSupplyAsset, MsgSupplyAssetAndLockCollateral, MsgUnlockCollateral, MsgUnlockCollateralAndWithdrawAsset, MsgWithdrawAsset } from "@carbon-sdk/codec/cdp/tx";
 import { CarbonTx } from "@carbon-sdk/util";
-import BaseModule from "./base";
 import { BigNumber } from "bignumber.js";
+import BaseModule from "./base";
+import { AssetParams, DebtInfo, QueryModuleAddressRequest, QueryPriceTokenRequest, RateStrategyParams } from '@carbon-sdk/codec';
+import { CarbonSDK } from '..';
+import { QueryBalanceRequest, QuerySupplyOfRequest } from '@carbon-sdk/codec/cosmos/bank/v1beta1/query';
 
 export class CDPModule extends BaseModule {
+
+  private cdpModuleAddress: string = ""
+  private collateralsAddress: string = ""
+
+  constructor(
+    public readonly carbonSDK: CarbonSDK,
+  ) {
+    super(carbonSDK);
+  }
 
   public async supplyAsset(params: CDPModule.SupplyAssetParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
@@ -202,6 +216,285 @@ export class CDPModule extends BaseModule {
       typeUrl: CarbonTx.Types.MsgReturnStablecoin,
       value,
     }, opts);
+  }
+
+  // start of cdp calculations
+
+  public async getAccountData(account: string) {
+    const sdk = this.sdkProvider
+    const debtInfoResponse = await sdk.query.cdp.TokenDebtsAll(QueryTokenDebtsAllRequest.fromPartial({}))
+    const debtInfos = debtInfoResponse.debtInfosAll
+    const collateralsRsp = await sdk.query.cdp.AccountCollaterals(QueryAccountCollateralsRequest.fromPartial({ account }))
+    const collaterals = collateralsRsp.collaterals
+    const assetParamsRsp = await sdk.query.cdp.AssetsAll(QueryAssetsAllRequest.fromPartial({}))
+    const assetParams = assetParamsRsp.assetParamsAll
+
+    let totalCollateralsUsd = new BigNumber(0)
+    let availableBorrowsUsd = new BigNumber(0)
+    let currLiquidationThreshold = new BigNumber(0)
+    for (let i = 0; i < collaterals.length; i++) {
+      const amount = new BigNumber(collaterals[i].collateralAmount)
+      if (amount.isZero()) {
+        continue
+      }
+      const denom = collaterals[i].denom
+      const debtInfo = debtInfos.find(d => d.denom === denom)
+      if (!debtInfo) {
+        return
+      }
+      const collateralUsdVal = await this.getCdpTokenUsdVal(collaterals[i].cdpDenom, amount)
+      if (!collateralUsdVal) {
+        return
+      }
+      const assetParam = assetParams.find(a => a.denom === denom)
+      if (!assetParam) {
+        return
+      }
+      const ltv = new BigNumber(assetParam.loanToValue).div(10000)
+      const availableBorrowUsd = collateralUsdVal.times(ltv)
+      const liquidationThreshold = new BigNumber(assetParam.liquidationThreshold).div(10000)
+      const liquidationThresholdVal = collateralUsdVal.times(liquidationThreshold)
+      totalCollateralsUsd = totalCollateralsUsd.plus(collateralUsdVal)
+      availableBorrowsUsd = availableBorrowsUsd.plus(availableBorrowUsd)
+      currLiquidationThreshold = currLiquidationThreshold.plus(liquidationThresholdVal)
+    }
+    
+    const debtsRsp = await sdk.query.cdp.AccountDebts(QueryAccountDebtsRequest.fromPartial({ account }))
+    const debts = debtsRsp.debts
+    let totalDebtsUsd = new BigNumber(0)
+    for (let i = 0; i < debts.length; i++) {
+      const amount = new BigNumber(debts[i].principalDebt)
+      const denom = debts[i].denom
+      if (amount.isZero()) {
+        continue
+      }
+      const debtInfo = debtInfos.find(d => d.denom === denom)
+      if (!debtInfo) {
+        return
+      }
+      const tokenDebtUsdVal = await this.getTotalAccountTokenDebtUsdVal(account, denom, debts[i], debtInfo)
+      if (!tokenDebtUsdVal) {
+        return
+      }
+      totalDebtsUsd = totalDebtsUsd.plus(tokenDebtUsdVal)
+    }
+
+    const healthFactor = currLiquidationThreshold.div(totalDebtsUsd)
+
+    return {
+      TotalCollateralsUsd: totalCollateralsUsd,
+      AvailableBorrowsUsd: availableBorrowsUsd,
+      CurrLiquidationThreshold: currLiquidationThreshold,
+      TotalDebtsUsd: totalDebtsUsd,
+      HealthFactor: healthFactor,
+    }
+  }
+
+  public async getCdpToActualRatio(cdpDenom: string) {
+    const sdk = this.sdkProvider
+    const denom = this.getActualDenom(cdpDenom)
+    if (!denom) {
+      return
+    }
+    const supplyRsp = await sdk.query.bank.SupplyOf(QuerySupplyOfRequest.fromPartial({ denom: cdpDenom }))
+    const cdpAmountRsp = supplyRsp.amount
+    if (!cdpAmountRsp) {
+      return
+    }
+    const cdpAmount = new BigNumber(cdpAmountRsp.amount)
+    if (!this.cdpModuleAddress) {
+      const moduleAddressRsp = await sdk.query.misc.ModuleAddress(QueryModuleAddressRequest.fromPartial({ module: "cdp" }))
+      this.cdpModuleAddress = moduleAddressRsp.address
+    }
+    const balanceRsp = await sdk.query.bank.Balance(QueryBalanceRequest.fromPartial({ address: this.cdpModuleAddress, denom }))
+    if (!balanceRsp.balance) {
+      return
+    }
+    let actualAmount = new BigNumber(balanceRsp.balance.amount)
+    const owedAmount = await this.getTotalTokenDebt(denom)
+    if (!owedAmount) {
+      return
+    }
+    actualAmount = actualAmount.plus(owedAmount)
+    const ratio = cdpAmount.div(actualAmount)
+
+    return ratio
+  }
+
+  public async getTotalAccountTokenDebtUsdVal(account: string, denom: string, debt?: Debt, debtInfo?: DebtInfo) {
+    const amount = await this.getTotalAccountTokenDebt(account, denom, debt, debtInfo);
+    if (!amount) {
+      return
+    }
+    const tokenDebtUsdVal = await this.getTokenUsdVal(denom, amount)
+    return tokenDebtUsdVal
+  }
+
+  public async getCdpTokenUsdVal(cdpDenom: string, amount: BigNumber) {
+    const denom = this.getActualDenom(cdpDenom)
+    if (!denom) {
+      return
+    }
+    const ratio = await this.getCdpToActualRatio(cdpDenom)
+    if (!ratio) {
+      return
+    }
+    const actualTokenAmount = amount.div(ratio)
+    const cdpTokenUsdVal = await this.getTokenUsdVal(denom, actualTokenAmount)
+    return cdpTokenUsdVal
+  }
+
+  public async getTokenUsdVal(denom: string, amount: BigNumber) {
+    const sdk = this.sdkProvider
+    const decimals = await this.carbonSDK.token.getDecimals(denom)
+    if (!decimals) {
+      return
+    }
+    const price = await sdk.query.pricing.PriceToken(QueryPriceTokenRequest.fromPartial({ denom }))
+    if (!price.tokenPrice) {
+      return
+    }
+    const twap = new BigNumber(price.tokenPrice.twap).shiftedBy(decimals * (-1))
+    return amount.times(twap).shiftedBy(decimals * (-1))
+  }
+
+  public async getTotalTokenDebt(denom: string, debtInfo?: DebtInfo) {
+    const sdk = this.sdkProvider
+    if (!debtInfo) {
+      const debtInfoRsp = await sdk.query.cdp.TokenDebt(QueryTokenDebtRequest.fromPartial({ denom }))
+      debtInfo = debtInfoRsp.debtInfo
+    }
+    if (!debtInfo) {
+      return
+    }
+    const cim = await this.recalculateCIM(denom, debtInfo)
+    if (!cim) {
+      return
+    }
+    const principalAmount = new BigNumber(debtInfo.totalPrincipal)
+    const initialCIM = new BigNumber(debtInfo.initialCumulativeInterestMultiplier)
+    const totalTokenDebt = principalAmount.times(cim).div(initialCIM)
+    return totalTokenDebt
+  }
+
+  public async getTotalAccountTokenDebt(account: string, denom: string, debt?: Debt, debtInfo?: DebtInfo) {
+    const sdk = this.sdkProvider
+    if (!debtInfo) {
+      const debtInfoRsp = await sdk.query.cdp.TokenDebt(QueryTokenDebtRequest.fromPartial({ denom }))
+      debtInfo = debtInfoRsp.debtInfo
+    }
+    if (!debtInfo) {
+      return
+    }
+
+    if (!debt) {
+      const debtRsp = await sdk.query.cdp.AccountDebt(QueryAccountDebtRequest.fromPartial({ account, denom }))
+      const debt = debtRsp.debt
+    }
+    if (!debt) {
+      return
+    }
+
+    const principalAmount = new BigNumber(debt.principalDebt)
+    const initialCIM = new BigNumber(debt.initialCumulativeInterestMultiplier)
+    const cim = await this.recalculateCIM(denom, debtInfo)
+    if (!cim) {
+      return
+    }
+
+    // TODO: change to round up
+    const totalAmountTokenDebt = principalAmount.times(cim).div(initialCIM).decimalPlaces(0)
+
+    return totalAmountTokenDebt
+  }
+
+  public async calculateAPY(
+    denom: string,
+    debtInfo?: DebtInfo,
+    assetParams?: AssetParams,
+    rateStrategyParams?: RateStrategyParams,
+  ) {
+    const sdk = this.sdkProvider
+
+    if (!debtInfo) {
+      const debtInfoResponse = await sdk.query.cdp.TokenDebt(QueryTokenDebtRequest.fromPartial({ denom }))
+      debtInfo = debtInfoResponse.debtInfo
+      if (!debtInfo) {
+        return
+      }
+    }
+
+    if (!assetParams) {
+      const assetResponse = await sdk.query.cdp.Asset(QueryAssetRequest.fromPartial({ denom }))
+      assetParams = assetResponse.assetParams
+      if (!assetParams) {
+        return
+      }
+    }
+
+    if (!rateStrategyParams) {
+      const rateStrategyParamsResponse = await sdk.query.cdp.RateStrategy(QueryRateStrategyRequest.fromPartial({
+        name: assetParams.rateStrategyName
+      }))
+      rateStrategyParams = rateStrategyParamsResponse.rateStrategyParams
+      if (!rateStrategyParams) {
+        return
+      }
+    }
+
+    const utilizationRate = (new BigNumber(debtInfo.utilizationRate).shiftedBy(-18))
+    const optimalUsage = new BigNumber(rateStrategyParams.optimalUsage).div(10000)
+    const variableRate1 = new BigNumber(rateStrategyParams.variableRateSlope1).div(10000)
+    const variableRate2 = new BigNumber(rateStrategyParams.variableRateSlope2).div(10000)
+    const baseVariableBorrowRate = new BigNumber(rateStrategyParams.baseVariableBorrowRate).div(10000)
+    let rate = new BigNumber(0)
+    if (utilizationRate.lte(optimalUsage)) {
+      rate = utilizationRate.times(variableRate1).div(optimalUsage)
+      rate = rate.plus(baseVariableBorrowRate)
+    } else {
+      const ratio = (utilizationRate.minus(optimalUsage)).div(new BigNumber(1).minus(optimalUsage))
+      rate = ratio.times(variableRate2).plus(variableRate1).plus(baseVariableBorrowRate)
+    }
+
+    return rate
+  }
+
+  public calculateInterestForTimePeriod(apy: BigNumber, start: Date, end: Date) {
+    if (end <= start) {
+      return new BigNumber(0)
+    }
+    const duration = new BigNumber(end.valueOf() - start.valueOf())
+    const millisecondsAYear = new BigNumber(31536000000)
+
+    const interest = duration.div(millisecondsAYear).times(apy)
+    return interest
+  }
+
+  public async recalculateCIM(denom: string, debtInfo?: DebtInfo) {
+    const sdk = this.sdkProvider
+    if (!debtInfo) {
+      const debtInfoResponse = await sdk.query.cdp.TokenDebt(QueryTokenDebtRequest.fromPartial({ denom }))
+      debtInfo = debtInfoResponse.debtInfo
+      if (!debtInfo) {
+        return
+      }
+    }
+    const cim = new BigNumber(debtInfo.cumulativeInterestMultiplier)
+    const apy = await this.calculateAPY(denom, debtInfo)
+    if (!apy) {
+      return
+    }
+    const interest = this.calculateInterestForTimePeriod(apy, debtInfo.lastUpdatedTime as Date, new Date())
+    const newCIM = cim.times(interest.plus(1))
+
+    return newCIM
+  }
+
+  public getActualDenom(cdpDenom: string) {
+    const split = cdpDenom.split("/")
+    if (split[0] === "cdp") {
+      return split[1]
+    }
   }
 }
 
