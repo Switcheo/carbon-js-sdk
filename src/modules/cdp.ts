@@ -3,6 +3,7 @@ import { QueryAccountDebtsRequest, QueryAssetRequest, QueryRateStrategyRequest, 
 import { MsgBorrowAsset, MsgLiquidateCollateral, MsgLockCollateral, MsgMintStablecoin, MsgRepayAsset, MsgRepayAssetWithCdpTokens, MsgRepayAssetWithCollateral, MsgReturnStablecoin, MsgSupplyAsset, MsgSupplyAssetAndLockCollateral, MsgUnlockCollateral, MsgUnlockCollateralAndWithdrawAsset, MsgWithdrawAsset } from "@carbon-sdk/codec/cdp/tx";
 import { QueryBalanceRequest, QuerySupplyOfRequest } from '@carbon-sdk/codec/cosmos/bank/v1beta1/query';
 import { CarbonTx } from "@carbon-sdk/util";
+import { bnOrZero, BN_10000, BN_ZERO, BN_ONE } from '@carbon-sdk/util/number';
 import { BigNumber } from "bignumber.js";
 import { Debt, QueryAccountCollateralsRequest, QueryAccountDebtRequest, QueryAssetsAllRequest, QueryTokenDebtsAllRequest } from './../codec/cdp/query';
 import BaseModule from "./base";
@@ -222,11 +223,11 @@ export class CDPModule extends BaseModule {
     const assetParamsRsp = await sdk.query.cdp.AssetsAll(QueryAssetsAllRequest.fromPartial({}))
     const assetParams = assetParamsRsp.assetParamsAll
 
-    let totalCollateralsUsd = new BigNumber(0)
-    let availableBorrowsUsd = new BigNumber(0)
-    let currLiquidationThreshold = new BigNumber(0)
+    let totalCollateralsUsd = BN_ZERO
+    let availableBorrowsUsd = BN_ZERO
+    let currLiquidationThreshold = BN_ZERO
     for (let i = 0; i < collaterals.length; i++) {
-      const amount = new BigNumber(collaterals[i].collateralAmount)
+      const amount = bnOrZero(collaterals[i].collateralAmount)
       if (amount.isZero()) {
         continue
       }
@@ -243,9 +244,9 @@ export class CDPModule extends BaseModule {
       if (!assetParam) {
         return
       }
-      const ltv = new BigNumber(assetParam.loanToValue).div(10000)
+      const ltv = bnOrZero(assetParam.loanToValue).div(BN_10000)
       const availableBorrowUsd = collateralUsdVal.times(ltv)
-      const liquidationThreshold = new BigNumber(assetParam.liquidationThreshold).div(10000)
+      const liquidationThreshold = bnOrZero(assetParam.liquidationThreshold).div(BN_10000)
       const liquidationThresholdVal = collateralUsdVal.times(liquidationThreshold)
       totalCollateralsUsd = totalCollateralsUsd.plus(collateralUsdVal)
       availableBorrowsUsd = availableBorrowsUsd.plus(availableBorrowUsd)
@@ -254,9 +255,9 @@ export class CDPModule extends BaseModule {
     
     const debtsRsp = await sdk.query.cdp.AccountDebts(QueryAccountDebtsRequest.fromPartial({ account }))
     const debts = debtsRsp.debts
-    let totalDebtsUsd = new BigNumber(0)
+    let totalDebtsUsd = BN_ZERO
     for (let i = 0; i < debts.length; i++) {
-      const amount = new BigNumber(debts[i].principalDebt)
+      const amount = bnOrZero(debts[i].principalDebt)
       const denom = debts[i].denom
       if (amount.isZero()) {
         continue
@@ -285,7 +286,7 @@ export class CDPModule extends BaseModule {
 
   public async getCdpToActualRatio(cdpDenom: string) {
     const sdk = this.sdkProvider
-    const denom = this.getActualDenom(cdpDenom)
+    const denom = this.getUnderlyingDenom(cdpDenom)
     if (!denom) {
       return
     }
@@ -294,7 +295,7 @@ export class CDPModule extends BaseModule {
     if (!cdpAmountRsp) {
       return
     }
-    const cdpAmount = new BigNumber(cdpAmountRsp.amount)
+    const cdpAmount = bnOrZero(cdpAmountRsp.amount)
     if (!this.cdpModuleAddress) {
       const moduleAddressRsp = await sdk.query.misc.ModuleAddress(QueryModuleAddressRequest.fromPartial({ module: "cdp" }))
       this.cdpModuleAddress = moduleAddressRsp.address
@@ -303,7 +304,7 @@ export class CDPModule extends BaseModule {
     if (!balanceRsp.balance) {
       return
     }
-    let actualAmount = new BigNumber(balanceRsp.balance.amount)
+    let actualAmount = bnOrZero(balanceRsp.balance.amount)
     const owedAmount = await this.getTotalTokenDebt(denom)
     if (!owedAmount) {
       return
@@ -324,7 +325,7 @@ export class CDPModule extends BaseModule {
   }
 
   public async getCdpTokenUsdVal(cdpDenom: string, amount: BigNumber) {
-    const denom = this.getActualDenom(cdpDenom)
+    const denom = this.getUnderlyingDenom(cdpDenom)
     if (!denom) {
       return
     }
@@ -347,7 +348,7 @@ export class CDPModule extends BaseModule {
     if (!price.tokenPrice) {
       return
     }
-    const twap = new BigNumber(price.tokenPrice.twap).shiftedBy(decimals * (-1))
+    const twap = bnOrZero(price.tokenPrice.twap).shiftedBy(decimals * (-1))
     return amount.times(twap).shiftedBy(decimals * (-1))
   }
 
@@ -364,8 +365,8 @@ export class CDPModule extends BaseModule {
     if (!cim) {
       return
     }
-    const principalAmount = new BigNumber(debtInfo.totalPrincipal)
-    const initialCIM = new BigNumber(debtInfo.initialCumulativeInterestMultiplier)
+    const principalAmount = bnOrZero(debtInfo.totalPrincipal)
+    const initialCIM = bnOrZero(debtInfo.initialCumulativeInterestMultiplier)
     const totalTokenDebt = principalAmount.times(cim).div(initialCIM)
     return totalTokenDebt
   }
@@ -388,15 +389,15 @@ export class CDPModule extends BaseModule {
       return
     }
 
-    const principalAmount = new BigNumber(debt.principalDebt)
-    const initialCIM = new BigNumber(debt.initialCumulativeInterestMultiplier)
+    const principalAmount = bnOrZero(debt.principalDebt)
+    const initialCIM = bnOrZero(debt.initialCumulativeInterestMultiplier)
     const cim = await this.recalculateCIM(denom, debtInfo)
     if (!cim) {
       return
     }
 
     // TODO: change to round up
-    const totalAmountTokenDebt = principalAmount.times(cim).div(initialCIM).decimalPlaces(0)
+    const totalAmountTokenDebt = principalAmount.times(cim).dividedToIntegerBy(initialCIM)
 
     return totalAmountTokenDebt
   }
@@ -435,29 +436,25 @@ export class CDPModule extends BaseModule {
       }
     }
 
-    const utilizationRate = (new BigNumber(debtInfo.utilizationRate).shiftedBy(-18))
-    const optimalUsage = new BigNumber(rateStrategyParams.optimalUsage).div(10000)
-    const variableRate1 = new BigNumber(rateStrategyParams.variableRateSlope1).div(10000)
-    const variableRate2 = new BigNumber(rateStrategyParams.variableRateSlope2).div(10000)
-    const baseVariableBorrowRate = new BigNumber(rateStrategyParams.baseVariableBorrowRate).div(10000)
-    let rate = new BigNumber(0)
+    const utilizationRate = bnOrZero(debtInfo.utilizationRate).shiftedBy(-18)
+    const optimalUsage = bnOrZero(rateStrategyParams.optimalUsage).div(BN_10000)
+    const variableRate1 = bnOrZero(rateStrategyParams.variableRateSlope1).div(BN_10000)
+    const variableRate2 = bnOrZero(rateStrategyParams.variableRateSlope2).div(BN_10000)
+    const baseVariableBorrowRate = bnOrZero(rateStrategyParams.baseVariableBorrowRate).div(BN_10000)
     if (utilizationRate.lte(optimalUsage)) {
-      rate = utilizationRate.times(variableRate1).div(optimalUsage)
-      rate = rate.plus(baseVariableBorrowRate)
+      return utilizationRate.times(variableRate1).div(optimalUsage).plus(baseVariableBorrowRate)
     } else {
-      const ratio = (utilizationRate.minus(optimalUsage)).div(new BigNumber(1).minus(optimalUsage))
-      rate = ratio.times(variableRate2).plus(variableRate1).plus(baseVariableBorrowRate)
+      const ratio = utilizationRate.minus(optimalUsage).div(BN_ONE.minus(optimalUsage))
+      return ratio.times(variableRate2).plus(variableRate1).plus(baseVariableBorrowRate)
     }
-
-    return rate
   }
 
   public calculateInterestForTimePeriod(apy: BigNumber, start: Date, end: Date) {
     if (end <= start) {
-      return new BigNumber(0)
+      return BN_ZERO
     }
-    const duration = new BigNumber(end.valueOf() - start.valueOf())
-    const millisecondsAYear = new BigNumber(31536000000)
+    const duration = bnOrZero(end.valueOf() - start.valueOf())
+    const millisecondsAYear = bnOrZero(31536000000)
 
     const interest = duration.div(millisecondsAYear).times(apy)
     return interest
@@ -469,25 +466,22 @@ export class CDPModule extends BaseModule {
       const debtInfoResponse = await sdk.query.cdp.TokenDebt(QueryTokenDebtRequest.fromPartial({ denom }))
       debtInfo = debtInfoResponse.debtInfo
       if (!debtInfo) {
-        return
+        return BN_ZERO;
       }
     }
-    const cim = new BigNumber(debtInfo.cumulativeInterestMultiplier)
+    const cim = bnOrZero(debtInfo.cumulativeInterestMultiplier)
     const apy = await this.calculateAPY(denom, debtInfo)
     if (!apy) {
-      return
+      return BN_ZERO;
     }
-    const interest = this.calculateInterestForTimePeriod(apy, debtInfo.lastUpdatedTime as Date, new Date())
+    const interest = this.calculateInterestForTimePeriod(apy, debtInfo.lastUpdatedTime ?? new Date(0), new Date())
     const newCIM = cim.times(interest.plus(1))
 
-    return newCIM
+    return newCIM;
   }
 
-  public getActualDenom(cdpDenom: string) {
-    const split = cdpDenom.split("/")
-    if (split[0] === "cdp") {
-      return split[1]
-    }
+  public getUnderlyingDenom(cdpDenom: string) {
+    return this.sdkProvider.getTokenClient().getCdpUnderlyingToken(cdpDenom)?.denom;
   }
 }
 
