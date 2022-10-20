@@ -69,6 +69,7 @@ export interface BorrowAssetEvent {
   denom: string;
   amountBorrowed: string;
   healthFactor: string;
+  initialCumulativeInterestMultiplier: string;
 }
 
 export interface RepayAssetEvent {
@@ -109,6 +110,7 @@ export interface MintStablecoinEvent {
   denom: string;
   amountMinted: string;
   healthFactor: string;
+  initialCumulativeInterestMultiplier: string;
 }
 
 export interface ReturnStablecoinEvent {
@@ -998,6 +1000,7 @@ const baseBorrowAssetEvent: object = {
   denom: "",
   amountBorrowed: "",
   healthFactor: "",
+  initialCumulativeInterestMultiplier: "",
 };
 
 export const BorrowAssetEvent = {
@@ -1016,6 +1019,9 @@ export const BorrowAssetEvent = {
     }
     if (message.healthFactor !== "") {
       writer.uint32(34).string(message.healthFactor);
+    }
+    if (message.initialCumulativeInterestMultiplier !== "") {
+      writer.uint32(42).string(message.initialCumulativeInterestMultiplier);
     }
     return writer;
   },
@@ -1038,6 +1044,9 @@ export const BorrowAssetEvent = {
           break;
         case 4:
           message.healthFactor = reader.string();
+          break;
+        case 5:
+          message.initialCumulativeInterestMultiplier = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -1065,6 +1074,11 @@ export const BorrowAssetEvent = {
       object.healthFactor !== undefined && object.healthFactor !== null
         ? String(object.healthFactor)
         : "";
+    message.initialCumulativeInterestMultiplier =
+      object.initialCumulativeInterestMultiplier !== undefined &&
+      object.initialCumulativeInterestMultiplier !== null
+        ? String(object.initialCumulativeInterestMultiplier)
+        : "";
     return message;
   },
 
@@ -1076,6 +1090,9 @@ export const BorrowAssetEvent = {
       (obj.amountBorrowed = message.amountBorrowed);
     message.healthFactor !== undefined &&
       (obj.healthFactor = message.healthFactor);
+    message.initialCumulativeInterestMultiplier !== undefined &&
+      (obj.initialCumulativeInterestMultiplier =
+        message.initialCumulativeInterestMultiplier);
     return obj;
   },
 
@@ -1085,6 +1102,8 @@ export const BorrowAssetEvent = {
     message.denom = object.denom ?? "";
     message.amountBorrowed = object.amountBorrowed ?? "";
     message.healthFactor = object.healthFactor ?? "";
+    message.initialCumulativeInterestMultiplier =
+      object.initialCumulativeInterestMultiplier ?? "";
     return message;
   },
 };
@@ -1575,6 +1594,7 @@ const baseMintStablecoinEvent: object = {
   denom: "",
   amountMinted: "",
   healthFactor: "",
+  initialCumulativeInterestMultiplier: "",
 };
 
 export const MintStablecoinEvent = {
@@ -1593,6 +1613,9 @@ export const MintStablecoinEvent = {
     }
     if (message.healthFactor !== "") {
       writer.uint32(34).string(message.healthFactor);
+    }
+    if (message.initialCumulativeInterestMultiplier !== "") {
+      writer.uint32(42).string(message.initialCumulativeInterestMultiplier);
     }
     return writer;
   },
@@ -1615,6 +1638,9 @@ export const MintStablecoinEvent = {
           break;
         case 4:
           message.healthFactor = reader.string();
+          break;
+        case 5:
+          message.initialCumulativeInterestMultiplier = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -1642,6 +1668,11 @@ export const MintStablecoinEvent = {
       object.healthFactor !== undefined && object.healthFactor !== null
         ? String(object.healthFactor)
         : "";
+    message.initialCumulativeInterestMultiplier =
+      object.initialCumulativeInterestMultiplier !== undefined &&
+      object.initialCumulativeInterestMultiplier !== null
+        ? String(object.initialCumulativeInterestMultiplier)
+        : "";
     return message;
   },
 
@@ -1653,6 +1684,9 @@ export const MintStablecoinEvent = {
       (obj.amountMinted = message.amountMinted);
     message.healthFactor !== undefined &&
       (obj.healthFactor = message.healthFactor);
+    message.initialCumulativeInterestMultiplier !== undefined &&
+      (obj.initialCumulativeInterestMultiplier =
+        message.initialCumulativeInterestMultiplier);
     return obj;
   },
 
@@ -1662,6 +1696,8 @@ export const MintStablecoinEvent = {
     message.denom = object.denom ?? "";
     message.amountMinted = object.amountMinted ?? "";
     message.healthFactor = object.healthFactor ?? "";
+    message.initialCumulativeInterestMultiplier =
+      object.initialCumulativeInterestMultiplier ?? "";
     return message;
   },
 };
