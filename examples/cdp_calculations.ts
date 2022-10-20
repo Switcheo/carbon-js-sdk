@@ -15,9 +15,11 @@ import "./_setup";
 
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
-  sdk.cdp
 
-  const aaa = await sdk.cdp.getTotalAccountTokenDebt('tswth1pdlkkffn0dnwmjkekgtm4zcaq2d2a7qd3vjty3', 'eth')
-  console.log("result", aaa);
+  const aaa = await sdk.cdp.getAccountData("tswth1fxcpw7hjg4444sftx45e2yefmcad3np99faezs")
+  if (!aaa) {
+    return
+  }
+  console.log("result", JSON.stringify(aaa));
 
 })().catch(console.error).finally(() => process.exit(0));
