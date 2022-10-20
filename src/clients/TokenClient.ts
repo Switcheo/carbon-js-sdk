@@ -416,6 +416,13 @@ class TokenClient {
     return swthTokens;
   }
 
+  public getCdpUnderlyingToken(cdpDenom: string) {
+    if (!this.cdpTokens[cdpDenom])
+      throw new Error("not a CDP denom");
+    const tokenDenom = cdpDenom.replace(/^cdp\//i, "");
+    return this.tokenForDenom(tokenDenom);
+  }
+
   public async reloadWrapperMap(): Promise<TypeUtils.SimpleMap<string>> {
     const mappingResponse = await this.query.coin.WrapperMappings({});
     Object.assign(this.wrapperMap, mappingResponse.wrapperMappings ?? {});
