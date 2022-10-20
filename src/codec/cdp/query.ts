@@ -134,6 +134,7 @@ export interface DBBorrow {
   denom: string;
   amount: string;
   type: string;
+  initialCumulativeInterestMultiplier: string;
 }
 
 export interface QueryCollateralsRequest {
@@ -156,6 +157,14 @@ export interface DBCollateral {
   amount: string;
 }
 
+export interface RiskyPosition {
+  debtor: string;
+  healthFactor: string;
+  totalCollateral: string;
+  totalDebt: string;
+  highestBonus: string;
+}
+
 export interface QueryTokenDebtRequest {
   denom: string;
 }
@@ -174,6 +183,12 @@ export interface QueryStablecoinDebtRequest {}
 
 export interface QueryStablecoinDebtResponse {
   stablecoinDebtInfo?: StablecoinDebtInfo;
+}
+
+export interface QueryRiskyPositionsRequest {}
+
+export interface QueryRiskyPositionsResponse {
+  riskyPositions: RiskyPosition[];
 }
 
 const baseQueryParamsRequest: object = {};
@@ -2075,7 +2090,12 @@ export const QueryBorrowsAllResponse = {
   },
 };
 
-const baseDBBorrow: object = { denom: "", amount: "", type: "" };
+const baseDBBorrow: object = {
+  denom: "",
+  amount: "",
+  type: "",
+  initialCumulativeInterestMultiplier: "",
+};
 
 export const DBBorrow = {
   encode(
@@ -2096,6 +2116,9 @@ export const DBBorrow = {
     }
     if (message.type !== "") {
       writer.uint32(34).string(message.type);
+    }
+    if (message.initialCumulativeInterestMultiplier !== "") {
+      writer.uint32(42).string(message.initialCumulativeInterestMultiplier);
     }
     return writer;
   },
@@ -2118,6 +2141,9 @@ export const DBBorrow = {
           break;
         case 4:
           message.type = reader.string();
+          break;
+        case 5:
+          message.initialCumulativeInterestMultiplier = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -2145,6 +2171,11 @@ export const DBBorrow = {
       object.type !== undefined && object.type !== null
         ? String(object.type)
         : "";
+    message.initialCumulativeInterestMultiplier =
+      object.initialCumulativeInterestMultiplier !== undefined &&
+      object.initialCumulativeInterestMultiplier !== null
+        ? String(object.initialCumulativeInterestMultiplier)
+        : "";
     return message;
   },
 
@@ -2154,6 +2185,9 @@ export const DBBorrow = {
     message.denom !== undefined && (obj.denom = message.denom);
     message.amount !== undefined && (obj.amount = message.amount);
     message.type !== undefined && (obj.type = message.type);
+    message.initialCumulativeInterestMultiplier !== undefined &&
+      (obj.initialCumulativeInterestMultiplier =
+        message.initialCumulativeInterestMultiplier);
     return obj;
   },
 
@@ -2163,6 +2197,8 @@ export const DBBorrow = {
     message.denom = object.denom ?? "";
     message.amount = object.amount ?? "";
     message.type = object.type ?? "";
+    message.initialCumulativeInterestMultiplier =
+      object.initialCumulativeInterestMultiplier ?? "";
     return message;
   },
 };
@@ -2507,6 +2543,116 @@ export const DBCollateral = {
     message.address = object.address ?? undefined;
     message.denom = object.denom ?? "";
     message.amount = object.amount ?? "";
+    return message;
+  },
+};
+
+const baseRiskyPosition: object = {
+  debtor: "",
+  healthFactor: "",
+  totalCollateral: "",
+  totalDebt: "",
+  highestBonus: "",
+};
+
+export const RiskyPosition = {
+  encode(
+    message: RiskyPosition,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.debtor !== "") {
+      writer.uint32(10).string(message.debtor);
+    }
+    if (message.healthFactor !== "") {
+      writer.uint32(18).string(message.healthFactor);
+    }
+    if (message.totalCollateral !== "") {
+      writer.uint32(26).string(message.totalCollateral);
+    }
+    if (message.totalDebt !== "") {
+      writer.uint32(34).string(message.totalDebt);
+    }
+    if (message.highestBonus !== "") {
+      writer.uint32(42).string(message.highestBonus);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): RiskyPosition {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseRiskyPosition } as RiskyPosition;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.debtor = reader.string();
+          break;
+        case 2:
+          message.healthFactor = reader.string();
+          break;
+        case 3:
+          message.totalCollateral = reader.string();
+          break;
+        case 4:
+          message.totalDebt = reader.string();
+          break;
+        case 5:
+          message.highestBonus = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): RiskyPosition {
+    const message = { ...baseRiskyPosition } as RiskyPosition;
+    message.debtor =
+      object.debtor !== undefined && object.debtor !== null
+        ? String(object.debtor)
+        : "";
+    message.healthFactor =
+      object.healthFactor !== undefined && object.healthFactor !== null
+        ? String(object.healthFactor)
+        : "";
+    message.totalCollateral =
+      object.totalCollateral !== undefined && object.totalCollateral !== null
+        ? String(object.totalCollateral)
+        : "";
+    message.totalDebt =
+      object.totalDebt !== undefined && object.totalDebt !== null
+        ? String(object.totalDebt)
+        : "";
+    message.highestBonus =
+      object.highestBonus !== undefined && object.highestBonus !== null
+        ? String(object.highestBonus)
+        : "";
+    return message;
+  },
+
+  toJSON(message: RiskyPosition): unknown {
+    const obj: any = {};
+    message.debtor !== undefined && (obj.debtor = message.debtor);
+    message.healthFactor !== undefined &&
+      (obj.healthFactor = message.healthFactor);
+    message.totalCollateral !== undefined &&
+      (obj.totalCollateral = message.totalCollateral);
+    message.totalDebt !== undefined && (obj.totalDebt = message.totalDebt);
+    message.highestBonus !== undefined &&
+      (obj.highestBonus = message.highestBonus);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<RiskyPosition>): RiskyPosition {
+    const message = { ...baseRiskyPosition } as RiskyPosition;
+    message.debtor = object.debtor ?? "";
+    message.healthFactor = object.healthFactor ?? "";
+    message.totalCollateral = object.totalCollateral ?? "";
+    message.totalDebt = object.totalDebt ?? "";
+    message.highestBonus = object.highestBonus ?? "";
     return message;
   },
 };
@@ -2887,6 +3033,132 @@ export const QueryStablecoinDebtResponse = {
   },
 };
 
+const baseQueryRiskyPositionsRequest: object = {};
+
+export const QueryRiskyPositionsRequest = {
+  encode(
+    _: QueryRiskyPositionsRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryRiskyPositionsRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryRiskyPositionsRequest,
+    } as QueryRiskyPositionsRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryRiskyPositionsRequest {
+    const message = {
+      ...baseQueryRiskyPositionsRequest,
+    } as QueryRiskyPositionsRequest;
+    return message;
+  },
+
+  toJSON(_: QueryRiskyPositionsRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<QueryRiskyPositionsRequest>
+  ): QueryRiskyPositionsRequest {
+    const message = {
+      ...baseQueryRiskyPositionsRequest,
+    } as QueryRiskyPositionsRequest;
+    return message;
+  },
+};
+
+const baseQueryRiskyPositionsResponse: object = {};
+
+export const QueryRiskyPositionsResponse = {
+  encode(
+    message: QueryRiskyPositionsResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.riskyPositions) {
+      RiskyPosition.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryRiskyPositionsResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryRiskyPositionsResponse,
+    } as QueryRiskyPositionsResponse;
+    message.riskyPositions = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.riskyPositions.push(
+            RiskyPosition.decode(reader, reader.uint32())
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryRiskyPositionsResponse {
+    const message = {
+      ...baseQueryRiskyPositionsResponse,
+    } as QueryRiskyPositionsResponse;
+    message.riskyPositions = (object.riskyPositions ?? []).map((e: any) =>
+      RiskyPosition.fromJSON(e)
+    );
+    return message;
+  },
+
+  toJSON(message: QueryRiskyPositionsResponse): unknown {
+    const obj: any = {};
+    if (message.riskyPositions) {
+      obj.riskyPositions = message.riskyPositions.map((e) =>
+        e ? RiskyPosition.toJSON(e) : undefined
+      );
+    } else {
+      obj.riskyPositions = [];
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryRiskyPositionsResponse>
+  ): QueryRiskyPositionsResponse {
+    const message = {
+      ...baseQueryRiskyPositionsResponse,
+    } as QueryRiskyPositionsResponse;
+    message.riskyPositions = (object.riskyPositions ?? []).map((e) =>
+      RiskyPosition.fromPartial(e)
+    );
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Parameters queries the parameters of the module. */
@@ -2949,6 +3221,10 @@ export interface Query {
   AccountCollateral(
     request: QueryAccountCollateralRequest
   ): Promise<QueryAccountCollateralResponse>;
+  /** Queries a list of RiskyPositions */
+  RiskyPositions(
+    request: QueryRiskyPositionsRequest
+  ): Promise<QueryRiskyPositionsResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -2973,6 +3249,7 @@ export class QueryClientImpl implements Query {
     this.StablecoinDebt = this.StablecoinDebt.bind(this);
     this.AccountDebt = this.AccountDebt.bind(this);
     this.AccountCollateral = this.AccountCollateral.bind(this);
+    this.RiskyPositions = this.RiskyPositions.bind(this);
   }
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
@@ -3213,6 +3490,20 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryAccountCollateralResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  RiskyPositions(
+    request: QueryRiskyPositionsRequest
+  ): Promise<QueryRiskyPositionsResponse> {
+    const data = QueryRiskyPositionsRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Query",
+      "RiskyPositions",
+      data
+    );
+    return promise.then((data) =>
+      QueryRiskyPositionsResponse.decode(new _m0.Reader(data))
     );
   }
 }

@@ -1,21 +1,13 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { TokenPrice, PriceSet, Params } from "./pricing";
+import { PriceSet, Params, TokenPrice } from "./pricing";
 import {
   PageRequest,
   PageResponse,
 } from "../cosmos/base/query/v1beta1/pagination";
 
 export const protobufPackage = "Switcheo.carbon.pricing";
-
-export interface QueryPriceTokenRequest {
-  denom: string;
-}
-
-export interface QueryPriceTokenResponse {
-  tokenPrice?: TokenPrice;
-}
 
 export interface QueryPriceSetRequest {
   market: string;
@@ -52,133 +44,22 @@ export interface QueryParamsResponse {
   params?: Params;
 }
 
-const baseQueryPriceTokenRequest: object = { denom: "" };
+export interface QueryTokenPriceRequest {
+  denom: string;
+}
 
-export const QueryPriceTokenRequest = {
-  encode(
-    message: QueryPriceTokenRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.denom !== "") {
-      writer.uint32(10).string(message.denom);
-    }
-    return writer;
-  },
+export interface QueryTokenPriceResponse {
+  tokenPrice?: TokenPrice;
+}
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryPriceTokenRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryPriceTokenRequest } as QueryPriceTokenRequest;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.denom = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
+export interface QueryTokenPriceAllRequest {
+  pagination?: PageRequest;
+}
 
-  fromJSON(object: any): QueryPriceTokenRequest {
-    const message = { ...baseQueryPriceTokenRequest } as QueryPriceTokenRequest;
-    message.denom =
-      object.denom !== undefined && object.denom !== null
-        ? String(object.denom)
-        : "";
-    return message;
-  },
-
-  toJSON(message: QueryPriceTokenRequest): unknown {
-    const obj: any = {};
-    message.denom !== undefined && (obj.denom = message.denom);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<QueryPriceTokenRequest>
-  ): QueryPriceTokenRequest {
-    const message = { ...baseQueryPriceTokenRequest } as QueryPriceTokenRequest;
-    message.denom = object.denom ?? "";
-    return message;
-  },
-};
-
-const baseQueryPriceTokenResponse: object = {};
-
-export const QueryPriceTokenResponse = {
-  encode(
-    message: QueryPriceTokenResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.tokenPrice !== undefined) {
-      TokenPrice.encode(message.tokenPrice, writer.uint32(10).fork()).ldelim();
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryPriceTokenResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryPriceTokenResponse,
-    } as QueryPriceTokenResponse;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.tokenPrice = TokenPrice.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): QueryPriceTokenResponse {
-    const message = {
-      ...baseQueryPriceTokenResponse,
-    } as QueryPriceTokenResponse;
-    message.tokenPrice =
-      object.tokenPrice !== undefined && object.tokenPrice !== null
-        ? TokenPrice.fromJSON(object.tokenPrice)
-        : undefined;
-    return message;
-  },
-
-  toJSON(message: QueryPriceTokenResponse): unknown {
-    const obj: any = {};
-    message.tokenPrice !== undefined &&
-      (obj.tokenPrice = message.tokenPrice
-        ? TokenPrice.toJSON(message.tokenPrice)
-        : undefined);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<QueryPriceTokenResponse>
-  ): QueryPriceTokenResponse {
-    const message = {
-      ...baseQueryPriceTokenResponse,
-    } as QueryPriceTokenResponse;
-    message.tokenPrice =
-      object.tokenPrice !== undefined && object.tokenPrice !== null
-        ? TokenPrice.fromPartial(object.tokenPrice)
-        : undefined;
-    return message;
-  },
-};
+export interface QueryTokenPriceAllResponse {
+  tokenPrices: TokenPrice[];
+  pagination?: PageResponse;
+}
 
 const baseQueryPriceSetRequest: object = { market: "" };
 
@@ -677,10 +558,299 @@ export const QueryParamsResponse = {
   },
 };
 
+const baseQueryTokenPriceRequest: object = { denom: "" };
+
+export const QueryTokenPriceRequest = {
+  encode(
+    message: QueryTokenPriceRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.denom !== "") {
+      writer.uint32(10).string(message.denom);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryTokenPriceRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseQueryTokenPriceRequest } as QueryTokenPriceRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.denom = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryTokenPriceRequest {
+    const message = { ...baseQueryTokenPriceRequest } as QueryTokenPriceRequest;
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryTokenPriceRequest): unknown {
+    const obj: any = {};
+    message.denom !== undefined && (obj.denom = message.denom);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryTokenPriceRequest>
+  ): QueryTokenPriceRequest {
+    const message = { ...baseQueryTokenPriceRequest } as QueryTokenPriceRequest;
+    message.denom = object.denom ?? "";
+    return message;
+  },
+};
+
+const baseQueryTokenPriceResponse: object = {};
+
+export const QueryTokenPriceResponse = {
+  encode(
+    message: QueryTokenPriceResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.tokenPrice !== undefined) {
+      TokenPrice.encode(message.tokenPrice, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryTokenPriceResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryTokenPriceResponse,
+    } as QueryTokenPriceResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.tokenPrice = TokenPrice.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryTokenPriceResponse {
+    const message = {
+      ...baseQueryTokenPriceResponse,
+    } as QueryTokenPriceResponse;
+    message.tokenPrice =
+      object.tokenPrice !== undefined && object.tokenPrice !== null
+        ? TokenPrice.fromJSON(object.tokenPrice)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryTokenPriceResponse): unknown {
+    const obj: any = {};
+    message.tokenPrice !== undefined &&
+      (obj.tokenPrice = message.tokenPrice
+        ? TokenPrice.toJSON(message.tokenPrice)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryTokenPriceResponse>
+  ): QueryTokenPriceResponse {
+    const message = {
+      ...baseQueryTokenPriceResponse,
+    } as QueryTokenPriceResponse;
+    message.tokenPrice =
+      object.tokenPrice !== undefined && object.tokenPrice !== null
+        ? TokenPrice.fromPartial(object.tokenPrice)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryTokenPriceAllRequest: object = {};
+
+export const QueryTokenPriceAllRequest = {
+  encode(
+    message: QueryTokenPriceAllRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryTokenPriceAllRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryTokenPriceAllRequest,
+    } as QueryTokenPriceAllRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryTokenPriceAllRequest {
+    const message = {
+      ...baseQueryTokenPriceAllRequest,
+    } as QueryTokenPriceAllRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryTokenPriceAllRequest): unknown {
+    const obj: any = {};
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryTokenPriceAllRequest>
+  ): QueryTokenPriceAllRequest {
+    const message = {
+      ...baseQueryTokenPriceAllRequest,
+    } as QueryTokenPriceAllRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryTokenPriceAllResponse: object = {};
+
+export const QueryTokenPriceAllResponse = {
+  encode(
+    message: QueryTokenPriceAllResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.tokenPrices) {
+      TokenPrice.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryTokenPriceAllResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryTokenPriceAllResponse,
+    } as QueryTokenPriceAllResponse;
+    message.tokenPrices = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.tokenPrices.push(TokenPrice.decode(reader, reader.uint32()));
+          break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryTokenPriceAllResponse {
+    const message = {
+      ...baseQueryTokenPriceAllResponse,
+    } as QueryTokenPriceAllResponse;
+    message.tokenPrices = (object.tokenPrices ?? []).map((e: any) =>
+      TokenPrice.fromJSON(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryTokenPriceAllResponse): unknown {
+    const obj: any = {};
+    if (message.tokenPrices) {
+      obj.tokenPrices = message.tokenPrices.map((e) =>
+        e ? TokenPrice.toJSON(e) : undefined
+      );
+    } else {
+      obj.tokenPrices = [];
+    }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryTokenPriceAllResponse>
+  ): QueryTokenPriceAllResponse {
+    const message = {
+      ...baseQueryTokenPriceAllResponse,
+    } as QueryTokenPriceAllResponse;
+    message.tokenPrices = (object.tokenPrices ?? []).map((e) =>
+      TokenPrice.fromPartial(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
-  /** Queries a list of PriceToken items. */
-  PriceToken(request: QueryPriceTokenRequest): Promise<QueryPriceTokenResponse>;
   /** Get prices for a market */
   PriceSet(request: QueryPriceSetRequest): Promise<QueryPriceSetResponse>;
   /** Get prices for all markets */
@@ -691,32 +861,25 @@ export interface Query {
   Rate(request: QueryRateRequest): Promise<QueryRateResponse>;
   /** Parameters queries the pricing parameters. */
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse>;
+  /** Get index price and twap for a token */
+  TokenPrice(request: QueryTokenPriceRequest): Promise<QueryTokenPriceResponse>;
+  /** Get index price and twap for all tokens */
+  TokenPriceAll(
+    request: QueryTokenPriceAllRequest
+  ): Promise<QueryTokenPriceAllResponse>;
 }
 
 export class QueryClientImpl implements Query {
   private readonly rpc: Rpc;
   constructor(rpc: Rpc) {
     this.rpc = rpc;
-    this.PriceToken = this.PriceToken.bind(this);
     this.PriceSet = this.PriceSet.bind(this);
     this.PriceSetAll = this.PriceSetAll.bind(this);
     this.Rate = this.Rate.bind(this);
     this.Params = this.Params.bind(this);
+    this.TokenPrice = this.TokenPrice.bind(this);
+    this.TokenPriceAll = this.TokenPriceAll.bind(this);
   }
-  PriceToken(
-    request: QueryPriceTokenRequest
-  ): Promise<QueryPriceTokenResponse> {
-    const data = QueryPriceTokenRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.pricing.Query",
-      "PriceToken",
-      data
-    );
-    return promise.then((data) =>
-      QueryPriceTokenResponse.decode(new _m0.Reader(data))
-    );
-  }
-
   PriceSet(request: QueryPriceSetRequest): Promise<QueryPriceSetResponse> {
     const data = QueryPriceSetRequest.encode(request).finish();
     const promise = this.rpc.request(
@@ -764,6 +927,34 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryParamsResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  TokenPrice(
+    request: QueryTokenPriceRequest
+  ): Promise<QueryTokenPriceResponse> {
+    const data = QueryTokenPriceRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.pricing.Query",
+      "TokenPrice",
+      data
+    );
+    return promise.then((data) =>
+      QueryTokenPriceResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  TokenPriceAll(
+    request: QueryTokenPriceAllRequest
+  ): Promise<QueryTokenPriceAllResponse> {
+    const data = QueryTokenPriceAllRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.pricing.Query",
+      "TokenPriceAll",
+      data
+    );
+    return promise.then((data) =>
+      QueryTokenPriceAllResponse.decode(new _m0.Reader(data))
     );
   }
 }
