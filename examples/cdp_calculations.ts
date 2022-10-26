@@ -14,6 +14,8 @@ import "./_setup";
     },
   });
 
+  const account = "tswth13zw3p5902nu9p0nq7gvsvjcyruz9hdszgxqw4s"
+
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
 
@@ -38,7 +40,7 @@ import "./_setup";
   const stablecoinDebt = await sdk.query.cdp.StablecoinDebt({})
   console.log("\nStablecoinDebt", JSON.stringify(stablecoinDebt))
 
-  const accountStablecoin = await sdk.query.cdp.AccountStablecoin({account: "tswth188xswz2hyu3shtypxfaz7zz97zuevk9k2cxtp9"})
+  const accountStablecoin = await sdk.query.cdp.AccountStablecoin({account: account})
   console.log("\nAccountStablecoin", JSON.stringify(accountStablecoin))
 
   const accountCollateral = await sdk.query.cdp.AccountCollateral({account: "tswth188xswz2hyu3shtypxfaz7zz97zuevk9k2cxtp9", cdpDenom: "cdp/eth"})
