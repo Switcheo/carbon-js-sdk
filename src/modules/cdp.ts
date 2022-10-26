@@ -315,10 +315,6 @@ export class CDPModule extends BaseModule {
     return ratio
   }
 
-  public async test() {
-    console.log("hi")
-  }
-
   public async getTotalAccountTokenDebtUsdVal(account: string, denom: string, debt?: Debt, debtInfo?: DebtInfo) {
     const amount = await this.getTotalAccountTokenDebt(account, denom, debt, debtInfo).catch((err) => console.log(err));
     if (!amount) {
@@ -352,7 +348,7 @@ export class CDPModule extends BaseModule {
     if (!price.tokenPrice) {
       return
     }
-    const twap = bnOrZero(price.tokenPrice.twap).shiftedBy(decimals * (-1))
+    const twap = bnOrZero(price.tokenPrice.twap).shiftedBy(18 * (-1))
     return amount.times(twap).shiftedBy(decimals * (-1))
   }
 
