@@ -1,11 +1,41 @@
-import { AssetParams, DebtInfo, QueryModuleAddressRequest, QueryTokenPriceRequest, RateStrategyParams } from '@carbon-sdk/codec';
-import { QueryAccountDebtsRequest, QueryAssetRequest, QueryRateStrategyRequest, QueryTokenDebtRequest } from '@carbon-sdk/codec/cdp/query';
-import { MsgBorrowAsset, MsgLiquidateCollateral, MsgLockCollateral, MsgMintStablecoin, MsgRepayAsset, MsgRepayAssetWithCdpTokens, MsgRepayAssetWithCollateral, MsgReturnStablecoin, MsgSupplyAsset, MsgSupplyAssetAndLockCollateral, MsgUnlockCollateral, MsgUnlockCollateralAndWithdrawAsset, MsgWithdrawAsset } from "@carbon-sdk/codec/cdp/tx";
-import { QueryBalanceRequest, QuerySupplyOfRequest } from '@carbon-sdk/codec/cosmos/bank/v1beta1/query';
-import { CarbonTx } from "@carbon-sdk/util";
-import { bnOrZero, BN_10000, BN_ZERO, BN_ONE } from '@carbon-sdk/util/number';
-import { BigNumber } from "bignumber.js";
-import { Debt, QueryAccountCollateralsRequest, QueryAccountDebtRequest, QueryAssetsAllRequest, QueryTokenDebtsAllRequest } from './../codec/cdp/query';
+import {
+  AssetParams,
+  DebtInfo,
+  QueryModuleAddressRequest,
+  QueryTokenPriceRequest,
+  RateStrategyParams
+} from '@carbon-sdk/codec';
+import {
+  QueryAccountDebtsRequest,
+  QueryAssetRequest,
+  QueryRateStrategyRequest,
+  QueryTokenDebtRequest
+} from '@carbon-sdk/codec/cdp/query';
+import {
+  MsgBorrowAsset,
+  MsgLiquidateCollateral,
+  MsgLockCollateral,
+  MsgMintStablecoin,
+  MsgRepayAsset,
+  MsgRepayAssetWithCdpTokens,
+  MsgRepayAssetWithCollateral,
+  MsgReturnStablecoin,
+  MsgSupplyAsset,
+  MsgSupplyAssetAndLockCollateral,
+  MsgUnlockCollateral,
+  MsgUnlockCollateralAndWithdrawAsset,
+  MsgWithdrawAsset
+} from "@carbon-sdk/codec/cdp/tx";
+import {QueryBalanceRequest, QuerySupplyOfRequest} from '@carbon-sdk/codec/cosmos/bank/v1beta1/query';
+import {CarbonTx} from "@carbon-sdk/util";
+import {BN_10000, BN_ONE, BN_ZERO, bnOrZero} from '@carbon-sdk/util/number';
+import {BigNumber} from "bignumber.js";
+import {
+  Debt,
+  QueryAccountCollateralsRequest,
+  QueryAssetsAllRequest,
+  QueryTokenDebtsAllRequest
+} from './../codec/cdp/query';
 import BaseModule from "./base";
 
 export class CDPModule extends BaseModule {
@@ -334,6 +364,26 @@ export class CDPModule extends BaseModule {
     return tokenDebtUsdVal
   }
 
+  public async getModuleTotalDebtUsdVal() {
+    // get token debts
+
+
+    // get stablecoin debts
+  }
+
+  public async getModuleTotalCollateralUsdVal() {
+    const allCollaterals = await this.sdkProvider.query.cdp.CollateralsAll({});
+    let allCollateralsUsdValue = new BigNumber(0)
+    for (let i = 0 ; i < allCollaterals.collaterals.length ; i++) {
+      const denom = allCollaterals.collaterals[i].denom
+      const amount = new BigNumber(allCollaterals.collaterals[i].amount)
+      const collateralUsdValue = await this.getCdpTokenUsdVal(denom, amount);
+      if (!collateralUsdValue) {return}
+      allCollateralsUsdValue = allCollateralsUsdValue.plus(collateralUsdValue);
+    }
+    return allCollateralsUsdValue
+  }
+
   public async getCdpTokenUsdVal(cdpDenom: string, amount: BigNumber) {
     const denom = this.getUnderlyingDenom(cdpDenom)
     if (!denom) {
@@ -363,9 +413,8 @@ export class CDPModule extends BaseModule {
   }
 
   public async getTotalTokenDebt(denom: string, debtInfo?: DebtInfo) {
-    const sdk = this.sdkProvider
     if (!debtInfo) {
-      const debtInfoRsp = await sdk.query.cdp.TokenDebt(QueryTokenDebtRequest.fromPartial({ denom }))
+      const debtInfoRsp = await this.sdkProvider.query.cdp.TokenDebt(QueryTokenDebtRequest.fromPartial({ denom }))
       debtInfo = debtInfoRsp.debtInfo
     }
     if (!debtInfo) {
@@ -377,8 +426,7 @@ export class CDPModule extends BaseModule {
     }
     const principalAmount = bnOrZero(debtInfo.totalPrincipal)
     const initialCIM = bnOrZero(debtInfo.initialCumulativeInterestMultiplier)
-    const totalTokenDebt = principalAmount.times(cim).div(initialCIM)
-    return totalTokenDebt
+    return principalAmount.times(cim).div(initialCIM)
   }
 
   public async getTotalAccountTokenDebt(account: string, denom: string, debt?: Debt, debtInfo?: DebtInfo) {
