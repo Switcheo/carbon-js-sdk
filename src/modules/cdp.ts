@@ -315,12 +315,16 @@ export class CDPModule extends BaseModule {
     return ratio
   }
 
+  public async test() {
+    console.log("hi")
+  }
+
   public async getTotalAccountTokenDebtUsdVal(account: string, denom: string, debt?: Debt, debtInfo?: DebtInfo) {
-    const amount = await this.getTotalAccountTokenDebt(account, denom, debt, debtInfo);
+    const amount = await this.getTotalAccountTokenDebt(account, denom, debt, debtInfo).catch((err) => console.log(err));
     if (!amount) {
       return
     }
-    const tokenDebtUsdVal = await this.getTokenUsdVal(denom, amount)
+    const tokenDebtUsdVal = await this.getTokenUsdVal(denom, amount).catch((err) => console.log(err))
     return tokenDebtUsdVal
   }
 
@@ -380,15 +384,13 @@ export class CDPModule extends BaseModule {
     if (!debtInfo) {
       return
     }
-
     if (!debt) {
-      const debtRsp = await sdk.query.cdp.AccountDebt(QueryAccountDebtRequest.fromPartial({ account, denom }))
-      const debt = debtRsp.debt
+      const debtRes = await sdk.query.cdp.AccountDebt({ account:account, denom:denom })
+      debt = debtRes.debt
     }
     if (!debt) {
       return
     }
-
     const principalAmount = bnOrZero(debt.principalDebt)
     const initialCIM = bnOrZero(debt.initialCumulativeInterestMultiplier)
     const cim = await this.recalculateCIM(denom, debtInfo)
