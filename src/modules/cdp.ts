@@ -365,10 +365,36 @@ export class CDPModule extends BaseModule {
   }
 
   public async getModuleTotalDebtUsdVal() {
-    // get token debts
 
+    let totalDebt = new BigNumber(0)
+
+    // get token debts
+    const allDebtsRes = await this.sdkProvider.query.cdp.TokenDebtsAll({});
+    const allDebts = allDebtsRes.debtInfosAll
+    for (let i = 0; i <allDebts.length; i++) {
+      const denom = allDebts[i].denom
+      const initialCIM = allDebts[i].initialCumulativeInterestMultiplier
+      const principal = allDebts[i].totalPrincipal
+      const CIM = await this.recalculateCIM(denom, allDebts[i])
+      const debtAmt = CIM.div(initialCIM).multipliedBy(principal)
+      const debtUsdVal = await this.getTokenUsdVal(denom, debtAmt)
+      if (!debtUsdVal) {return}
+      totalDebt = totalDebt.plus(debtUsdVal)
+    }
 
     // get stablecoin debts
+    const stablecoinDebtRes = await this.sdkProvider.query.cdp.StablecoinDebt({})
+    const stablecoinDebt = stablecoinDebtRes.stablecoinDebtInfo
+    if (!stablecoinDebt) {return}
+    const CIM = new BigNumber(stablecoinDebt.cumulativeInterestMultiplier)
+    const initialCIM = new BigNumber(stablecoinDebt.initialCumulativeInterestMultiplier)
+    const debtAmt = CIM.div(initialCIM).multipliedBy(stablecoinDebt.totalPrincipal)
+    const stablecoinDecimals = await this.sdkProvider.getTokenClient().getDecimals(stablecoinDebt.denom)
+    if (!stablecoinDecimals) {return}
+    const debtUsdVal = debtAmt.shiftedBy(-stablecoinDecimals)
+    totalDebt = totalDebt.plus(debtUsdVal)
+
+    return totalDebt
   }
 
   public async getModuleTotalCollateralUsdVal() {
