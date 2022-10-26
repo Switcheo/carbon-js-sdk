@@ -253,6 +253,7 @@ export class CDPModule extends BaseModule {
       currLiquidationThreshold = currLiquidationThreshold.plus(liquidationThresholdVal)
     }
     
+    // add token debts
     const debtsRsp = await sdk.query.cdp.AccountDebts(QueryAccountDebtsRequest.fromPartial({ account }))
     const debts = debtsRsp.debts
     let totalDebtsUsd = BN_ZERO
@@ -272,6 +273,15 @@ export class CDPModule extends BaseModule {
       }
       totalDebtsUsd = totalDebtsUsd.plus(tokenDebtUsdVal)
     }
+
+    // add stablecoin debt
+    const accountStablecoin = await sdk.query.cdp.AccountStablecoin({account: account})
+    const stablecoinDecimals = await this.sdkProvider.getTokenClient().getDecimals("usc")
+    if (!stablecoinDecimals) {
+      return
+    }
+    const stablecoinDebt = new BigNumber(accountStablecoin.principalDebt).plus(accountStablecoin.interestDebt)
+    totalDebtsUsd = totalDebtsUsd.plus(stablecoinDebt.shiftedBy(-stablecoinDecimals))
 
     const healthFactor = currLiquidationThreshold.div(totalDebtsUsd)
 
