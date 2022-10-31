@@ -187,8 +187,10 @@ export class CDPModule extends BaseModule {
 
     const value = MsgRepayAssetWithCdpTokens.fromPartial({
       creator: wallet.bech32Address,
+      debtor: params.debtor,
+      debtDenom: params.debtDenom,
       cdpDenom: params.cdpDenom,
-      amount: params.amount.toString(10),
+      cdpAmount: params.amount.toString(10),
     })
 
     return await wallet.sendTx({
@@ -203,7 +205,9 @@ export class CDPModule extends BaseModule {
     const value = MsgRepayAssetWithCollateral.fromPartial({
       creator: wallet.bech32Address,
       cdpDenom: params.cdpDenom,
-      amount: params.amount.toString(10),
+      debtor: params.debtor,
+      debtDenom: params.debtDenom,
+      cdpAmount: params.amount.toString(10),
     })
 
     return await wallet.sendTx({
@@ -611,10 +615,14 @@ export namespace CDPModule {
   }
   export interface RepayAssetWithCdpTokensParams {
     cdpDenom: string
+    debtor: string
+    debtDenom: string
     amount: BigNumber
   }
   export interface RepayAssetWithCollateralParams {
     cdpDenom: string
+    debtor: string
+    debtDenom: string
     amount: BigNumber
   }
   export interface MintStablecoinParams {
