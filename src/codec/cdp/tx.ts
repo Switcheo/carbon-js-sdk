@@ -121,6 +121,7 @@ export interface MsgLiquidateCollateral {
   creator: string;
   debtor: string;
   collateralDenom: string;
+  minCollateralAmount: string;
   debtDenom: string;
   debtAmount: string;
 }
@@ -143,16 +144,20 @@ export interface MsgSetInterestFeeResponse {}
 
 export interface MsgRepayAssetWithCdpTokens {
   creator: string;
+  debtor: string;
+  debtDenom: string;
   cdpDenom: string;
-  amount: string;
+  cdpAmount: string;
 }
 
 export interface MsgRepayAssetWithCdpTokensResponse {}
 
 export interface MsgRepayAssetWithCollateral {
   creator: string;
+  debtor: string;
+  debtDenom: string;
   cdpDenom: string;
-  amount: string;
+  cdpAmount: string;
 }
 
 export interface MsgRepayAssetWithCollateralResponse {}
@@ -179,6 +184,27 @@ export interface MsgReturnStablecoin {
 }
 
 export interface MsgReturnStablecoinResponse {}
+
+export interface MsgSetCompleteLiquidationThreshold {
+  creator: string;
+  completeLiquidationThreshold: string;
+}
+
+export interface MsgSetCompleteLiquidationThresholdResponse {}
+
+export interface MsgSetMinimumCloseFactor {
+  creator: string;
+  minimumCloseFactor: string;
+}
+
+export interface MsgSetMinimumCloseFactorResponse {}
+
+export interface MsgSetSmallLiquidationSize {
+  creator: string;
+  smallLiquidationSize: string;
+}
+
+export interface MsgSetSmallLiquidationSizeResponse {}
 
 const baseMsgAddRateStrategy: object = { creator: "" };
 
@@ -1985,6 +2011,7 @@ const baseMsgLiquidateCollateral: object = {
   creator: "",
   debtor: "",
   collateralDenom: "",
+  minCollateralAmount: "",
   debtDenom: "",
   debtAmount: "",
 };
@@ -2003,11 +2030,14 @@ export const MsgLiquidateCollateral = {
     if (message.collateralDenom !== "") {
       writer.uint32(26).string(message.collateralDenom);
     }
+    if (message.minCollateralAmount !== "") {
+      writer.uint32(34).string(message.minCollateralAmount);
+    }
     if (message.debtDenom !== "") {
-      writer.uint32(34).string(message.debtDenom);
+      writer.uint32(42).string(message.debtDenom);
     }
     if (message.debtAmount !== "") {
-      writer.uint32(42).string(message.debtAmount);
+      writer.uint32(50).string(message.debtAmount);
     }
     return writer;
   },
@@ -2032,9 +2062,12 @@ export const MsgLiquidateCollateral = {
           message.collateralDenom = reader.string();
           break;
         case 4:
-          message.debtDenom = reader.string();
+          message.minCollateralAmount = reader.string();
           break;
         case 5:
+          message.debtDenom = reader.string();
+          break;
+        case 6:
           message.debtAmount = reader.string();
           break;
         default:
@@ -2059,6 +2092,11 @@ export const MsgLiquidateCollateral = {
       object.collateralDenom !== undefined && object.collateralDenom !== null
         ? String(object.collateralDenom)
         : "";
+    message.minCollateralAmount =
+      object.minCollateralAmount !== undefined &&
+      object.minCollateralAmount !== null
+        ? String(object.minCollateralAmount)
+        : "";
     message.debtDenom =
       object.debtDenom !== undefined && object.debtDenom !== null
         ? String(object.debtDenom)
@@ -2076,6 +2114,8 @@ export const MsgLiquidateCollateral = {
     message.debtor !== undefined && (obj.debtor = message.debtor);
     message.collateralDenom !== undefined &&
       (obj.collateralDenom = message.collateralDenom);
+    message.minCollateralAmount !== undefined &&
+      (obj.minCollateralAmount = message.minCollateralAmount);
     message.debtDenom !== undefined && (obj.debtDenom = message.debtDenom);
     message.debtAmount !== undefined && (obj.debtAmount = message.debtAmount);
     return obj;
@@ -2088,6 +2128,7 @@ export const MsgLiquidateCollateral = {
     message.creator = object.creator ?? "";
     message.debtor = object.debtor ?? "";
     message.collateralDenom = object.collateralDenom ?? "";
+    message.minCollateralAmount = object.minCollateralAmount ?? "";
     message.debtDenom = object.debtDenom ?? "";
     message.debtAmount = object.debtAmount ?? "";
     return message;
@@ -2387,8 +2428,10 @@ export const MsgSetInterestFeeResponse = {
 
 const baseMsgRepayAssetWithCdpTokens: object = {
   creator: "",
+  debtor: "",
+  debtDenom: "",
   cdpDenom: "",
-  amount: "",
+  cdpAmount: "",
 };
 
 export const MsgRepayAssetWithCdpTokens = {
@@ -2399,11 +2442,17 @@ export const MsgRepayAssetWithCdpTokens = {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
-    if (message.cdpDenom !== "") {
-      writer.uint32(18).string(message.cdpDenom);
+    if (message.debtor !== "") {
+      writer.uint32(18).string(message.debtor);
     }
-    if (message.amount !== "") {
-      writer.uint32(26).string(message.amount);
+    if (message.debtDenom !== "") {
+      writer.uint32(26).string(message.debtDenom);
+    }
+    if (message.cdpDenom !== "") {
+      writer.uint32(34).string(message.cdpDenom);
+    }
+    if (message.cdpAmount !== "") {
+      writer.uint32(42).string(message.cdpAmount);
     }
     return writer;
   },
@@ -2424,10 +2473,16 @@ export const MsgRepayAssetWithCdpTokens = {
           message.creator = reader.string();
           break;
         case 2:
-          message.cdpDenom = reader.string();
+          message.debtor = reader.string();
           break;
         case 3:
-          message.amount = reader.string();
+          message.debtDenom = reader.string();
+          break;
+        case 4:
+          message.cdpDenom = reader.string();
+          break;
+        case 5:
+          message.cdpAmount = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -2445,13 +2500,21 @@ export const MsgRepayAssetWithCdpTokens = {
       object.creator !== undefined && object.creator !== null
         ? String(object.creator)
         : "";
+    message.debtor =
+      object.debtor !== undefined && object.debtor !== null
+        ? String(object.debtor)
+        : "";
+    message.debtDenom =
+      object.debtDenom !== undefined && object.debtDenom !== null
+        ? String(object.debtDenom)
+        : "";
     message.cdpDenom =
       object.cdpDenom !== undefined && object.cdpDenom !== null
         ? String(object.cdpDenom)
         : "";
-    message.amount =
-      object.amount !== undefined && object.amount !== null
-        ? String(object.amount)
+    message.cdpAmount =
+      object.cdpAmount !== undefined && object.cdpAmount !== null
+        ? String(object.cdpAmount)
         : "";
     return message;
   },
@@ -2459,8 +2522,10 @@ export const MsgRepayAssetWithCdpTokens = {
   toJSON(message: MsgRepayAssetWithCdpTokens): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
+    message.debtor !== undefined && (obj.debtor = message.debtor);
+    message.debtDenom !== undefined && (obj.debtDenom = message.debtDenom);
     message.cdpDenom !== undefined && (obj.cdpDenom = message.cdpDenom);
-    message.amount !== undefined && (obj.amount = message.amount);
+    message.cdpAmount !== undefined && (obj.cdpAmount = message.cdpAmount);
     return obj;
   },
 
@@ -2471,8 +2536,10 @@ export const MsgRepayAssetWithCdpTokens = {
       ...baseMsgRepayAssetWithCdpTokens,
     } as MsgRepayAssetWithCdpTokens;
     message.creator = object.creator ?? "";
+    message.debtor = object.debtor ?? "";
+    message.debtDenom = object.debtDenom ?? "";
     message.cdpDenom = object.cdpDenom ?? "";
-    message.amount = object.amount ?? "";
+    message.cdpAmount = object.cdpAmount ?? "";
     return message;
   },
 };
@@ -2531,8 +2598,10 @@ export const MsgRepayAssetWithCdpTokensResponse = {
 
 const baseMsgRepayAssetWithCollateral: object = {
   creator: "",
+  debtor: "",
+  debtDenom: "",
   cdpDenom: "",
-  amount: "",
+  cdpAmount: "",
 };
 
 export const MsgRepayAssetWithCollateral = {
@@ -2543,11 +2612,17 @@ export const MsgRepayAssetWithCollateral = {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
-    if (message.cdpDenom !== "") {
-      writer.uint32(18).string(message.cdpDenom);
+    if (message.debtor !== "") {
+      writer.uint32(18).string(message.debtor);
     }
-    if (message.amount !== "") {
-      writer.uint32(26).string(message.amount);
+    if (message.debtDenom !== "") {
+      writer.uint32(26).string(message.debtDenom);
+    }
+    if (message.cdpDenom !== "") {
+      writer.uint32(34).string(message.cdpDenom);
+    }
+    if (message.cdpAmount !== "") {
+      writer.uint32(42).string(message.cdpAmount);
     }
     return writer;
   },
@@ -2568,10 +2643,16 @@ export const MsgRepayAssetWithCollateral = {
           message.creator = reader.string();
           break;
         case 2:
-          message.cdpDenom = reader.string();
+          message.debtor = reader.string();
           break;
         case 3:
-          message.amount = reader.string();
+          message.debtDenom = reader.string();
+          break;
+        case 4:
+          message.cdpDenom = reader.string();
+          break;
+        case 5:
+          message.cdpAmount = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -2589,13 +2670,21 @@ export const MsgRepayAssetWithCollateral = {
       object.creator !== undefined && object.creator !== null
         ? String(object.creator)
         : "";
+    message.debtor =
+      object.debtor !== undefined && object.debtor !== null
+        ? String(object.debtor)
+        : "";
+    message.debtDenom =
+      object.debtDenom !== undefined && object.debtDenom !== null
+        ? String(object.debtDenom)
+        : "";
     message.cdpDenom =
       object.cdpDenom !== undefined && object.cdpDenom !== null
         ? String(object.cdpDenom)
         : "";
-    message.amount =
-      object.amount !== undefined && object.amount !== null
-        ? String(object.amount)
+    message.cdpAmount =
+      object.cdpAmount !== undefined && object.cdpAmount !== null
+        ? String(object.cdpAmount)
         : "";
     return message;
   },
@@ -2603,8 +2692,10 @@ export const MsgRepayAssetWithCollateral = {
   toJSON(message: MsgRepayAssetWithCollateral): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
+    message.debtor !== undefined && (obj.debtor = message.debtor);
+    message.debtDenom !== undefined && (obj.debtDenom = message.debtDenom);
     message.cdpDenom !== undefined && (obj.cdpDenom = message.cdpDenom);
-    message.amount !== undefined && (obj.amount = message.amount);
+    message.cdpAmount !== undefined && (obj.cdpAmount = message.cdpAmount);
     return obj;
   },
 
@@ -2615,8 +2706,10 @@ export const MsgRepayAssetWithCollateral = {
       ...baseMsgRepayAssetWithCollateral,
     } as MsgRepayAssetWithCollateral;
     message.creator = object.creator ?? "";
+    message.debtor = object.debtor ?? "";
+    message.debtDenom = object.debtDenom ?? "";
     message.cdpDenom = object.cdpDenom ?? "";
-    message.amount = object.amount ?? "";
+    message.cdpAmount = object.cdpAmount ?? "";
     return message;
   },
 };
@@ -3068,6 +3161,406 @@ export const MsgReturnStablecoinResponse = {
     const message = {
       ...baseMsgReturnStablecoinResponse,
     } as MsgReturnStablecoinResponse;
+    return message;
+  },
+};
+
+const baseMsgSetCompleteLiquidationThreshold: object = {
+  creator: "",
+  completeLiquidationThreshold: "",
+};
+
+export const MsgSetCompleteLiquidationThreshold = {
+  encode(
+    message: MsgSetCompleteLiquidationThreshold,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.completeLiquidationThreshold !== "") {
+      writer.uint32(34).string(message.completeLiquidationThreshold);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgSetCompleteLiquidationThreshold {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgSetCompleteLiquidationThreshold,
+    } as MsgSetCompleteLiquidationThreshold;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 4:
+          message.completeLiquidationThreshold = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgSetCompleteLiquidationThreshold {
+    const message = {
+      ...baseMsgSetCompleteLiquidationThreshold,
+    } as MsgSetCompleteLiquidationThreshold;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.completeLiquidationThreshold =
+      object.completeLiquidationThreshold !== undefined &&
+      object.completeLiquidationThreshold !== null
+        ? String(object.completeLiquidationThreshold)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgSetCompleteLiquidationThreshold): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.completeLiquidationThreshold !== undefined &&
+      (obj.completeLiquidationThreshold = message.completeLiquidationThreshold);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgSetCompleteLiquidationThreshold>
+  ): MsgSetCompleteLiquidationThreshold {
+    const message = {
+      ...baseMsgSetCompleteLiquidationThreshold,
+    } as MsgSetCompleteLiquidationThreshold;
+    message.creator = object.creator ?? "";
+    message.completeLiquidationThreshold =
+      object.completeLiquidationThreshold ?? "";
+    return message;
+  },
+};
+
+const baseMsgSetCompleteLiquidationThresholdResponse: object = {};
+
+export const MsgSetCompleteLiquidationThresholdResponse = {
+  encode(
+    _: MsgSetCompleteLiquidationThresholdResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgSetCompleteLiquidationThresholdResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgSetCompleteLiquidationThresholdResponse,
+    } as MsgSetCompleteLiquidationThresholdResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgSetCompleteLiquidationThresholdResponse {
+    const message = {
+      ...baseMsgSetCompleteLiquidationThresholdResponse,
+    } as MsgSetCompleteLiquidationThresholdResponse;
+    return message;
+  },
+
+  toJSON(_: MsgSetCompleteLiquidationThresholdResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgSetCompleteLiquidationThresholdResponse>
+  ): MsgSetCompleteLiquidationThresholdResponse {
+    const message = {
+      ...baseMsgSetCompleteLiquidationThresholdResponse,
+    } as MsgSetCompleteLiquidationThresholdResponse;
+    return message;
+  },
+};
+
+const baseMsgSetMinimumCloseFactor: object = {
+  creator: "",
+  minimumCloseFactor: "",
+};
+
+export const MsgSetMinimumCloseFactor = {
+  encode(
+    message: MsgSetMinimumCloseFactor,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.minimumCloseFactor !== "") {
+      writer.uint32(42).string(message.minimumCloseFactor);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgSetMinimumCloseFactor {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgSetMinimumCloseFactor,
+    } as MsgSetMinimumCloseFactor;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 5:
+          message.minimumCloseFactor = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgSetMinimumCloseFactor {
+    const message = {
+      ...baseMsgSetMinimumCloseFactor,
+    } as MsgSetMinimumCloseFactor;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.minimumCloseFactor =
+      object.minimumCloseFactor !== undefined &&
+      object.minimumCloseFactor !== null
+        ? String(object.minimumCloseFactor)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgSetMinimumCloseFactor): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.minimumCloseFactor !== undefined &&
+      (obj.minimumCloseFactor = message.minimumCloseFactor);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgSetMinimumCloseFactor>
+  ): MsgSetMinimumCloseFactor {
+    const message = {
+      ...baseMsgSetMinimumCloseFactor,
+    } as MsgSetMinimumCloseFactor;
+    message.creator = object.creator ?? "";
+    message.minimumCloseFactor = object.minimumCloseFactor ?? "";
+    return message;
+  },
+};
+
+const baseMsgSetMinimumCloseFactorResponse: object = {};
+
+export const MsgSetMinimumCloseFactorResponse = {
+  encode(
+    _: MsgSetMinimumCloseFactorResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgSetMinimumCloseFactorResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgSetMinimumCloseFactorResponse,
+    } as MsgSetMinimumCloseFactorResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgSetMinimumCloseFactorResponse {
+    const message = {
+      ...baseMsgSetMinimumCloseFactorResponse,
+    } as MsgSetMinimumCloseFactorResponse;
+    return message;
+  },
+
+  toJSON(_: MsgSetMinimumCloseFactorResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgSetMinimumCloseFactorResponse>
+  ): MsgSetMinimumCloseFactorResponse {
+    const message = {
+      ...baseMsgSetMinimumCloseFactorResponse,
+    } as MsgSetMinimumCloseFactorResponse;
+    return message;
+  },
+};
+
+const baseMsgSetSmallLiquidationSize: object = {
+  creator: "",
+  smallLiquidationSize: "",
+};
+
+export const MsgSetSmallLiquidationSize = {
+  encode(
+    message: MsgSetSmallLiquidationSize,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.smallLiquidationSize !== "") {
+      writer.uint32(50).string(message.smallLiquidationSize);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgSetSmallLiquidationSize {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgSetSmallLiquidationSize,
+    } as MsgSetSmallLiquidationSize;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 6:
+          message.smallLiquidationSize = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgSetSmallLiquidationSize {
+    const message = {
+      ...baseMsgSetSmallLiquidationSize,
+    } as MsgSetSmallLiquidationSize;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.smallLiquidationSize =
+      object.smallLiquidationSize !== undefined &&
+      object.smallLiquidationSize !== null
+        ? String(object.smallLiquidationSize)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgSetSmallLiquidationSize): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.smallLiquidationSize !== undefined &&
+      (obj.smallLiquidationSize = message.smallLiquidationSize);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgSetSmallLiquidationSize>
+  ): MsgSetSmallLiquidationSize {
+    const message = {
+      ...baseMsgSetSmallLiquidationSize,
+    } as MsgSetSmallLiquidationSize;
+    message.creator = object.creator ?? "";
+    message.smallLiquidationSize = object.smallLiquidationSize ?? "";
+    return message;
+  },
+};
+
+const baseMsgSetSmallLiquidationSizeResponse: object = {};
+
+export const MsgSetSmallLiquidationSizeResponse = {
+  encode(
+    _: MsgSetSmallLiquidationSizeResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgSetSmallLiquidationSizeResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgSetSmallLiquidationSizeResponse,
+    } as MsgSetSmallLiquidationSizeResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgSetSmallLiquidationSizeResponse {
+    const message = {
+      ...baseMsgSetSmallLiquidationSizeResponse,
+    } as MsgSetSmallLiquidationSizeResponse;
+    return message;
+  },
+
+  toJSON(_: MsgSetSmallLiquidationSizeResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgSetSmallLiquidationSizeResponse>
+  ): MsgSetSmallLiquidationSizeResponse {
+    const message = {
+      ...baseMsgSetSmallLiquidationSizeResponse,
+    } as MsgSetSmallLiquidationSizeResponse;
     return message;
   },
 };
