@@ -185,6 +185,9 @@ export interface CDPParams {
   interest_fee: string // string representation of number
   liquidation_fee: string // string representation of number
   stable_coin_interest_rate: string // string representation of number
+  complete_liquidation_threshold: string // string representation of number
+  minimum_close_factor: string // string representation of number
+  small_liquidation_size: string // string representation of number
 }
 
 export interface RateStrategy { // CDP
@@ -237,7 +240,7 @@ export interface AssetParams { // CDP
 export interface Collateral { // CDP
   cdp_denom: string
   denom: string
-  collateral_amount: string // string representation of number 
+  collateral_amount: string // string representation of number
 }
 
 export interface Debt { // CDP
@@ -252,6 +255,12 @@ export interface AccountData {
 	available_borrows_usd: string // string representation of number
 	curr_liquidation_threshold: string // string representation of number
 	health_factor: string // string representation of number
+}
+
+export interface CDPAccountStablecoin {
+  principal_debt: string; // string representation of number
+  interest_debt: string; // string representation of number
+  initial_cumulative_interest_multiplier: string; // string representation of number
 }
 
 /**
@@ -290,11 +299,10 @@ export interface CDPStableCoinDebtInfo {
   total_principal: string // string representation of number
   cumulative_interest_multiplier: string // string representation of number
   initial_cumulative_interest_multiplier: string // string representation of number
-  utilization_rate: string // string representation of number
 }
 
 export interface CDPLiquidation {
-  liquidation: string
+  liquidator: string
   debtor: string
   collateral_denom: string
   collateral_amount_liquidated: string // string representation of number
