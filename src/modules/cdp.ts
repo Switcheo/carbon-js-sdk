@@ -6,7 +6,7 @@ import {
   RateStrategyParams
 } from '@carbon-sdk/codec';
 import {
-  QueryAccountDebtsRequest,
+  QueryAccountDebtAllRequest,
   QueryAssetRequest,
   QueryRateStrategyRequest,
   QueryTokenDebtRequest
@@ -24,6 +24,7 @@ import {
   MsgSupplyAssetAndLockCollateral,
   MsgUnlockCollateral,
   MsgUnlockCollateralAndWithdrawAsset,
+  MsgUpdateRateStrategy,
   MsgWithdrawAsset
 } from "@carbon-sdk/codec/cdp/tx";
 import {QueryBalanceRequest, QuerySupplyOfRequest} from '@carbon-sdk/codec/cosmos/bank/v1beta1/query';
@@ -32,16 +33,16 @@ import {BN_10000, BN_ONE, BN_ZERO, bnOrZero} from '@carbon-sdk/util/number';
 import {BigNumber} from "bignumber.js";
 import {
   Debt,
-  QueryAccountCollateralsRequest,
-  QueryAssetsAllRequest,
-  QueryTokenDebtsAllRequest
+  QueryAccountCollateralAllRequest,
+  QueryAssetAllRequest,
+  QueryTokenDebtAllRequest
 } from './../codec/cdp/query';
 import BaseModule from "./base";
 
 export class CDPModule extends BaseModule {
 
   private cdpModuleAddress: string = ""
-  private collateralsAddress: string = ""
+  private collateralPoolAddress: string = ""
 
   public async supplyAsset(params: CDPModule.SupplyAssetParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
@@ -187,8 +188,10 @@ export class CDPModule extends BaseModule {
 
     const value = MsgRepayAssetWithCdpTokens.fromPartial({
       creator: wallet.bech32Address,
+      debtor: params.debtor,
+      debtDenom: params.debtDenom,
       cdpDenom: params.cdpDenom,
-      amount: params.amount.toString(10),
+      cdpAmount: params.cdpAmount.toString(10),
     })
 
     return await wallet.sendTx({
@@ -202,8 +205,10 @@ export class CDPModule extends BaseModule {
 
     const value = MsgRepayAssetWithCollateral.fromPartial({
       creator: wallet.bech32Address,
+      debtor: params.debtor,
+      debtDenom: params.debtDenom,
       cdpDenom: params.cdpDenom,
-      amount: params.amount.toString(10),
+      cdpAmount: params.cdpAmount.toString(10),
     })
 
     return await wallet.sendTx({
@@ -242,15 +247,28 @@ export class CDPModule extends BaseModule {
     }, opts);
   }
 
+  public async updateRateStrategy(params: CDPModule.UpdateRateStrategyParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+    const value = MsgUpdateRateStrategy.fromPartial({
+      creator: wallet.bech32Address,
+      rateStrategyParams: params.rateStrategyParams
+    });
+
+    return await wallet.sendTx({
+      typeUrl: CarbonTx.Types.MsgUpdateRateStrategy,
+      value,
+    }, opts);
+  }
+
   // start of cdp calculations
 
   public async getAccountData(account: string) {
     const sdk = this.sdkProvider
-    const debtInfoResponse = await sdk.query.cdp.TokenDebtsAll(QueryTokenDebtsAllRequest.fromPartial({}))
+    const debtInfoResponse = await sdk.query.cdp.TokenDebtAll(QueryTokenDebtAllRequest.fromPartial({}))
     const debtInfos = debtInfoResponse.debtInfosAll
-    const collateralsRsp = await sdk.query.cdp.AccountCollaterals(QueryAccountCollateralsRequest.fromPartial({ account }))
+    const collateralsRsp = await sdk.query.cdp.AccountCollateralAll(QueryAccountCollateralAllRequest.fromPartial({ address: account }))
     const collaterals = collateralsRsp.collaterals
-    const assetParamsRsp = await sdk.query.cdp.AssetsAll(QueryAssetsAllRequest.fromPartial({}))
+    const assetParamsRsp = await sdk.query.cdp.AssetAll(QueryAssetAllRequest.fromPartial({}))
     const assetParams = assetParamsRsp.assetParamsAll
 
     let totalCollateralsUsd = BN_ZERO
@@ -284,7 +302,7 @@ export class CDPModule extends BaseModule {
     }
     
     // add token debts
-    const debtsRsp = await sdk.query.cdp.AccountDebts(QueryAccountDebtsRequest.fromPartial({ account }))
+    const debtsRsp = await sdk.query.cdp.AccountDebtAll(QueryAccountDebtAllRequest.fromPartial({ address: account }))
     const debts = debtsRsp.debts
     let totalDebtsUsd = BN_ZERO
     for (let i = 0; i < debts.length; i++) {
@@ -305,7 +323,7 @@ export class CDPModule extends BaseModule {
     }
 
     // add stablecoin debt
-    const accountStablecoin = await sdk.query.cdp.AccountStablecoin({account: account})
+    const accountStablecoin = await sdk.query.cdp.AccountStablecoin({address: account})
     const stablecoinDecimals = await this.sdkProvider.getTokenClient().getDecimals("usc")
     if (!stablecoinDecimals) {
       return
@@ -369,7 +387,7 @@ export class CDPModule extends BaseModule {
     let totalDebt = new BigNumber(0)
 
     // get token debts
-    const allDebtsRes = await this.sdkProvider.query.cdp.TokenDebtsAll({});
+    const allDebtsRes = await this.sdkProvider.query.cdp.TokenDebtAll({});
     const allDebts = allDebtsRes.debtInfosAll
     for (let i = 0; i <allDebts.length; i++) {
       const denom = allDebts[i].denom
@@ -382,7 +400,7 @@ export class CDPModule extends BaseModule {
       totalDebt = totalDebt.plus(debtUsdVal)
     }
 
-    // get stablecoin debts
+    // get stablecoin debt
     const stablecoinDebtRes = await this.sdkProvider.query.cdp.StablecoinDebt({})
     const stablecoinDebt = stablecoinDebtRes.stablecoinDebtInfo
     if (!stablecoinDebt) {return}
@@ -398,11 +416,12 @@ export class CDPModule extends BaseModule {
   }
 
   public async getModuleTotalCollateralUsdVal() {
-    const allCollaterals = await this.sdkProvider.query.cdp.CollateralsAll({});
+    const moduleAddressRsp = await this.sdkProvider.query.misc.ModuleAddress(QueryModuleAddressRequest.fromPartial({ module: "collateral_pool" }))
+    const cdpBalances = await this.sdkProvider.query.bank.AllBalances({address: moduleAddressRsp.address})
     let allCollateralsUsdValue = new BigNumber(0)
-    for (let i = 0 ; i < allCollaterals.collaterals.length ; i++) {
-      const denom = allCollaterals.collaterals[i].denom
-      const amount = new BigNumber(allCollaterals.collaterals[i].amount)
+    for (let i = 0 ; i < cdpBalances.balances.length ; i++) {
+      const denom = cdpBalances.balances[i].denom
+      const amount = new BigNumber(cdpBalances.balances[i].amount)
       const collateralUsdValue = await this.getCdpTokenUsdVal(denom, amount);
       if (!collateralUsdValue) {return}
       allCollateralsUsdValue = allCollateralsUsdValue.plus(collateralUsdValue);
@@ -420,8 +439,7 @@ export class CDPModule extends BaseModule {
       return
     }
     const actualTokenAmount = amount.div(ratio)
-    const cdpTokenUsdVal = await this.getTokenUsdVal(denom, actualTokenAmount)
-    return cdpTokenUsdVal
+    return await this.getTokenUsdVal(denom, actualTokenAmount)
   }
 
   public async getTokenUsdVal(denom: string, amount: BigNumber) {
@@ -465,7 +483,7 @@ export class CDPModule extends BaseModule {
       return
     }
     if (!debt) {
-      const debtRes = await sdk.query.cdp.AccountDebt({ account:account, denom:denom })
+      const debtRes = await sdk.query.cdp.AccountDebt({ address:account, denom:denom })
       debt = debtRes.debt
     }
     if (!debt) {
@@ -610,12 +628,16 @@ export namespace CDPModule {
     debtAmount: BigNumber
   }
   export interface RepayAssetWithCdpTokensParams {
+    debtor: string
+    debtDenom: string
     cdpDenom: string
-    amount: BigNumber
+    cdpAmount: BigNumber
   }
   export interface RepayAssetWithCollateralParams {
+    debtor: string
+    debtDenom: string
     cdpDenom: string
-    amount: BigNumber
+    cdpAmount: BigNumber
   }
   export interface MintStablecoinParams {
     amount: BigNumber
@@ -626,5 +648,9 @@ export namespace CDPModule {
     principalAmount: BigNumber
     interestDenom: string
     interestAmount: BigNumber
+  }
+
+  export interface UpdateRateStrategyParams {
+    rateStrategyParams: RateStrategyParams
   }
 };

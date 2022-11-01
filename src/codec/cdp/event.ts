@@ -48,6 +48,21 @@ export interface SetStablecoinInterestRateEvent {
   type: string;
 }
 
+export interface SetCompleteLiquidationThresholdEvent {
+  completeLiquidationThreshold: string;
+  type: string;
+}
+
+export interface SetMinimumCloseFactorEvent {
+  minimumCloseFactor: string;
+  type: string;
+}
+
+export interface SetSmallLiquidationSizeEvent {
+  smallLiquidationSize: string;
+  type: string;
+}
+
 export interface SupplyAssetEvent {
   supplier: string;
   denom: string;
@@ -69,7 +84,6 @@ export interface BorrowAssetEvent {
   denom: string;
   amountBorrowed: string;
   healthFactor: string;
-  initialCumulativeInterestMultiplier: string;
 }
 
 export interface RepayAssetEvent {
@@ -110,7 +124,6 @@ export interface MintStablecoinEvent {
   denom: string;
   amountMinted: string;
   healthFactor: string;
-  initialCumulativeInterestMultiplier: string;
 }
 
 export interface ReturnStablecoinEvent {
@@ -777,6 +790,250 @@ export const SetStablecoinInterestRateEvent = {
   },
 };
 
+const baseSetCompleteLiquidationThresholdEvent: object = {
+  completeLiquidationThreshold: "",
+  type: "",
+};
+
+export const SetCompleteLiquidationThresholdEvent = {
+  encode(
+    message: SetCompleteLiquidationThresholdEvent,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.completeLiquidationThreshold !== "") {
+      writer.uint32(10).string(message.completeLiquidationThreshold);
+    }
+    if (message.type !== "") {
+      writer.uint32(18).string(message.type);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): SetCompleteLiquidationThresholdEvent {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseSetCompleteLiquidationThresholdEvent,
+    } as SetCompleteLiquidationThresholdEvent;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.completeLiquidationThreshold = reader.string();
+          break;
+        case 2:
+          message.type = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SetCompleteLiquidationThresholdEvent {
+    const message = {
+      ...baseSetCompleteLiquidationThresholdEvent,
+    } as SetCompleteLiquidationThresholdEvent;
+    message.completeLiquidationThreshold =
+      object.completeLiquidationThreshold !== undefined &&
+      object.completeLiquidationThreshold !== null
+        ? String(object.completeLiquidationThreshold)
+        : "";
+    message.type =
+      object.type !== undefined && object.type !== null
+        ? String(object.type)
+        : "";
+    return message;
+  },
+
+  toJSON(message: SetCompleteLiquidationThresholdEvent): unknown {
+    const obj: any = {};
+    message.completeLiquidationThreshold !== undefined &&
+      (obj.completeLiquidationThreshold = message.completeLiquidationThreshold);
+    message.type !== undefined && (obj.type = message.type);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<SetCompleteLiquidationThresholdEvent>
+  ): SetCompleteLiquidationThresholdEvent {
+    const message = {
+      ...baseSetCompleteLiquidationThresholdEvent,
+    } as SetCompleteLiquidationThresholdEvent;
+    message.completeLiquidationThreshold =
+      object.completeLiquidationThreshold ?? "";
+    message.type = object.type ?? "";
+    return message;
+  },
+};
+
+const baseSetMinimumCloseFactorEvent: object = {
+  minimumCloseFactor: "",
+  type: "",
+};
+
+export const SetMinimumCloseFactorEvent = {
+  encode(
+    message: SetMinimumCloseFactorEvent,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.minimumCloseFactor !== "") {
+      writer.uint32(10).string(message.minimumCloseFactor);
+    }
+    if (message.type !== "") {
+      writer.uint32(18).string(message.type);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): SetMinimumCloseFactorEvent {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseSetMinimumCloseFactorEvent,
+    } as SetMinimumCloseFactorEvent;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.minimumCloseFactor = reader.string();
+          break;
+        case 2:
+          message.type = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SetMinimumCloseFactorEvent {
+    const message = {
+      ...baseSetMinimumCloseFactorEvent,
+    } as SetMinimumCloseFactorEvent;
+    message.minimumCloseFactor =
+      object.minimumCloseFactor !== undefined &&
+      object.minimumCloseFactor !== null
+        ? String(object.minimumCloseFactor)
+        : "";
+    message.type =
+      object.type !== undefined && object.type !== null
+        ? String(object.type)
+        : "";
+    return message;
+  },
+
+  toJSON(message: SetMinimumCloseFactorEvent): unknown {
+    const obj: any = {};
+    message.minimumCloseFactor !== undefined &&
+      (obj.minimumCloseFactor = message.minimumCloseFactor);
+    message.type !== undefined && (obj.type = message.type);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<SetMinimumCloseFactorEvent>
+  ): SetMinimumCloseFactorEvent {
+    const message = {
+      ...baseSetMinimumCloseFactorEvent,
+    } as SetMinimumCloseFactorEvent;
+    message.minimumCloseFactor = object.minimumCloseFactor ?? "";
+    message.type = object.type ?? "";
+    return message;
+  },
+};
+
+const baseSetSmallLiquidationSizeEvent: object = {
+  smallLiquidationSize: "",
+  type: "",
+};
+
+export const SetSmallLiquidationSizeEvent = {
+  encode(
+    message: SetSmallLiquidationSizeEvent,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.smallLiquidationSize !== "") {
+      writer.uint32(10).string(message.smallLiquidationSize);
+    }
+    if (message.type !== "") {
+      writer.uint32(18).string(message.type);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): SetSmallLiquidationSizeEvent {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseSetSmallLiquidationSizeEvent,
+    } as SetSmallLiquidationSizeEvent;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.smallLiquidationSize = reader.string();
+          break;
+        case 2:
+          message.type = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SetSmallLiquidationSizeEvent {
+    const message = {
+      ...baseSetSmallLiquidationSizeEvent,
+    } as SetSmallLiquidationSizeEvent;
+    message.smallLiquidationSize =
+      object.smallLiquidationSize !== undefined &&
+      object.smallLiquidationSize !== null
+        ? String(object.smallLiquidationSize)
+        : "";
+    message.type =
+      object.type !== undefined && object.type !== null
+        ? String(object.type)
+        : "";
+    return message;
+  },
+
+  toJSON(message: SetSmallLiquidationSizeEvent): unknown {
+    const obj: any = {};
+    message.smallLiquidationSize !== undefined &&
+      (obj.smallLiquidationSize = message.smallLiquidationSize);
+    message.type !== undefined && (obj.type = message.type);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<SetSmallLiquidationSizeEvent>
+  ): SetSmallLiquidationSizeEvent {
+    const message = {
+      ...baseSetSmallLiquidationSizeEvent,
+    } as SetSmallLiquidationSizeEvent;
+    message.smallLiquidationSize = object.smallLiquidationSize ?? "";
+    message.type = object.type ?? "";
+    return message;
+  },
+};
+
 const baseSupplyAssetEvent: object = {
   supplier: "",
   denom: "",
@@ -1000,7 +1257,6 @@ const baseBorrowAssetEvent: object = {
   denom: "",
   amountBorrowed: "",
   healthFactor: "",
-  initialCumulativeInterestMultiplier: "",
 };
 
 export const BorrowAssetEvent = {
@@ -1019,9 +1275,6 @@ export const BorrowAssetEvent = {
     }
     if (message.healthFactor !== "") {
       writer.uint32(34).string(message.healthFactor);
-    }
-    if (message.initialCumulativeInterestMultiplier !== "") {
-      writer.uint32(42).string(message.initialCumulativeInterestMultiplier);
     }
     return writer;
   },
@@ -1044,9 +1297,6 @@ export const BorrowAssetEvent = {
           break;
         case 4:
           message.healthFactor = reader.string();
-          break;
-        case 5:
-          message.initialCumulativeInterestMultiplier = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -1074,11 +1324,6 @@ export const BorrowAssetEvent = {
       object.healthFactor !== undefined && object.healthFactor !== null
         ? String(object.healthFactor)
         : "";
-    message.initialCumulativeInterestMultiplier =
-      object.initialCumulativeInterestMultiplier !== undefined &&
-      object.initialCumulativeInterestMultiplier !== null
-        ? String(object.initialCumulativeInterestMultiplier)
-        : "";
     return message;
   },
 
@@ -1090,9 +1335,6 @@ export const BorrowAssetEvent = {
       (obj.amountBorrowed = message.amountBorrowed);
     message.healthFactor !== undefined &&
       (obj.healthFactor = message.healthFactor);
-    message.initialCumulativeInterestMultiplier !== undefined &&
-      (obj.initialCumulativeInterestMultiplier =
-        message.initialCumulativeInterestMultiplier);
     return obj;
   },
 
@@ -1102,8 +1344,6 @@ export const BorrowAssetEvent = {
     message.denom = object.denom ?? "";
     message.amountBorrowed = object.amountBorrowed ?? "";
     message.healthFactor = object.healthFactor ?? "";
-    message.initialCumulativeInterestMultiplier =
-      object.initialCumulativeInterestMultiplier ?? "";
     return message;
   },
 };
@@ -1594,7 +1834,6 @@ const baseMintStablecoinEvent: object = {
   denom: "",
   amountMinted: "",
   healthFactor: "",
-  initialCumulativeInterestMultiplier: "",
 };
 
 export const MintStablecoinEvent = {
@@ -1613,9 +1852,6 @@ export const MintStablecoinEvent = {
     }
     if (message.healthFactor !== "") {
       writer.uint32(34).string(message.healthFactor);
-    }
-    if (message.initialCumulativeInterestMultiplier !== "") {
-      writer.uint32(42).string(message.initialCumulativeInterestMultiplier);
     }
     return writer;
   },
@@ -1638,9 +1874,6 @@ export const MintStablecoinEvent = {
           break;
         case 4:
           message.healthFactor = reader.string();
-          break;
-        case 5:
-          message.initialCumulativeInterestMultiplier = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -1668,11 +1901,6 @@ export const MintStablecoinEvent = {
       object.healthFactor !== undefined && object.healthFactor !== null
         ? String(object.healthFactor)
         : "";
-    message.initialCumulativeInterestMultiplier =
-      object.initialCumulativeInterestMultiplier !== undefined &&
-      object.initialCumulativeInterestMultiplier !== null
-        ? String(object.initialCumulativeInterestMultiplier)
-        : "";
     return message;
   },
 
@@ -1684,9 +1912,6 @@ export const MintStablecoinEvent = {
       (obj.amountMinted = message.amountMinted);
     message.healthFactor !== undefined &&
       (obj.healthFactor = message.healthFactor);
-    message.initialCumulativeInterestMultiplier !== undefined &&
-      (obj.initialCumulativeInterestMultiplier =
-        message.initialCumulativeInterestMultiplier);
     return obj;
   },
 
@@ -1696,8 +1921,6 @@ export const MintStablecoinEvent = {
     message.denom = object.denom ?? "";
     message.amountMinted = object.amountMinted ?? "";
     message.healthFactor = object.healthFactor ?? "";
-    message.initialCumulativeInterestMultiplier =
-      object.initialCumulativeInterestMultiplier ?? "";
     return message;
   },
 };

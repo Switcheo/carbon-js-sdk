@@ -1,13 +1,21 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { PriceSet, Params, TokenPrice } from "./pricing";
+import { TokenPrice, PriceSet, Params } from "./pricing";
 import {
   PageRequest,
   PageResponse,
 } from "../cosmos/base/query/v1beta1/pagination";
 
 export const protobufPackage = "Switcheo.carbon.pricing";
+
+export interface QueryPriceTokenRequest {
+  denom: string;
+}
+
+export interface QueryPriceTokenResponse {
+  tokenPrice?: TokenPrice;
+}
 
 export interface QueryPriceSetRequest {
   market: string;
@@ -60,6 +68,134 @@ export interface QueryTokenPriceAllResponse {
   tokenPrices: TokenPrice[];
   pagination?: PageResponse;
 }
+
+const baseQueryPriceTokenRequest: object = { denom: "" };
+
+export const QueryPriceTokenRequest = {
+  encode(
+    message: QueryPriceTokenRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.denom !== "") {
+      writer.uint32(10).string(message.denom);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryPriceTokenRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseQueryPriceTokenRequest } as QueryPriceTokenRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.denom = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryPriceTokenRequest {
+    const message = { ...baseQueryPriceTokenRequest } as QueryPriceTokenRequest;
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryPriceTokenRequest): unknown {
+    const obj: any = {};
+    message.denom !== undefined && (obj.denom = message.denom);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryPriceTokenRequest>
+  ): QueryPriceTokenRequest {
+    const message = { ...baseQueryPriceTokenRequest } as QueryPriceTokenRequest;
+    message.denom = object.denom ?? "";
+    return message;
+  },
+};
+
+const baseQueryPriceTokenResponse: object = {};
+
+export const QueryPriceTokenResponse = {
+  encode(
+    message: QueryPriceTokenResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.tokenPrice !== undefined) {
+      TokenPrice.encode(message.tokenPrice, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryPriceTokenResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryPriceTokenResponse,
+    } as QueryPriceTokenResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.tokenPrice = TokenPrice.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryPriceTokenResponse {
+    const message = {
+      ...baseQueryPriceTokenResponse,
+    } as QueryPriceTokenResponse;
+    message.tokenPrice =
+      object.tokenPrice !== undefined && object.tokenPrice !== null
+        ? TokenPrice.fromJSON(object.tokenPrice)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryPriceTokenResponse): unknown {
+    const obj: any = {};
+    message.tokenPrice !== undefined &&
+      (obj.tokenPrice = message.tokenPrice
+        ? TokenPrice.toJSON(message.tokenPrice)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryPriceTokenResponse>
+  ): QueryPriceTokenResponse {
+    const message = {
+      ...baseQueryPriceTokenResponse,
+    } as QueryPriceTokenResponse;
+    message.tokenPrice =
+      object.tokenPrice !== undefined && object.tokenPrice !== null
+        ? TokenPrice.fromPartial(object.tokenPrice)
+        : undefined;
+    return message;
+  },
+};
 
 const baseQueryPriceSetRequest: object = { market: "" };
 
