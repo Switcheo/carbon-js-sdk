@@ -16,50 +16,32 @@ import "./_setup";
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected wallet:", connectedSDK.wallet.bech32Address);
 
-  const assetsAll = await sdk.query.cdp.AssetsAll({});
+  const assetsAll = await sdk.query.cdp.AssetAll({});
   console.log("assetsAll: ", assetsAll.assetParamsAll);
 
-  const rateStrategyAll = await sdk.query.cdp.RateStrategiesAll({});
+  const rateStrategyAll = await sdk.query.cdp.RateStrategyAll({});
   console.log("rateStrategyAll: ", rateStrategyAll.rateStrategyParamsAll);
 
   const params = await sdk.query.cdp.Params({});
   console.log("params: ", params.params);
 
-  const accountCollaterals = await sdk.query.cdp.AccountCollaterals({
-    account: connectedSDK.wallet.bech32Address,
+  const accountCollaterals = await sdk.query.cdp.AccountCollateralAll({
+    address: connectedSDK.wallet.bech32Address,
   });
   console.log("accountCollaterals: ", accountCollaterals.collaterals);
 
-  const accountDebts = await sdk.query.cdp.AccountDebts({
-    account: connectedSDK.wallet.bech32Address,
+  const accountDebts = await sdk.query.cdp.AccountDebtAll({
+    address: connectedSDK.wallet.bech32Address,
   });
   console.log("accountDebts: ", accountDebts.debts);
 
   const accountData = await sdk.query.cdp.AccountData({
-    account: connectedSDK.wallet.bech32Address,
+    address: connectedSDK.wallet.bech32Address,
   });
   console.log("accountData: ", accountData);
 
-  const borrows = await sdk.query.cdp.Borrows({
-    address: connectedSDK.wallet.bech32Address,
-  });
-  console.log("borrows: ", borrows);
-
-  const borrowsAll = await sdk.query.cdp.BorrowsAll({
-  });
-  console.log("borrowsAll: ", borrowsAll);
-
-  const collaterals = await sdk.query.cdp.Collaterals({
-    address: connectedSDK.wallet.bech32Address,
-  });
-  console.log("collaterals: ", collaterals);
-
-  const collateralsAll = await sdk.query.cdp.CollateralsAll({
-  });
-  console.log("collateralsAll: ", collateralsAll);
-
   const accountStablecoin = await sdk.query.cdp.AccountStablecoin({
-    account: connectedSDK.wallet.bech32Address,
+    address: connectedSDK.wallet.bech32Address,
   });
   console.log("accountStablecoin", accountStablecoin);
 
