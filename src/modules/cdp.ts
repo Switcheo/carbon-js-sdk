@@ -1,14 +1,19 @@
 import {
   AssetParams,
   DebtInfo,
+  QueryCdpParamsRequest,
   QueryModuleAddressRequest,
   QueryTokenPriceRequest,
-  RateStrategyParams
+  RateStrategyParams,
+  StablecoinDebtInfo
 } from '@carbon-sdk/codec';
 import {
   QueryAccountDebtAllRequest,
+  QueryAccountStablecoinRequest,
+  QueryAccountStablecoinResponse,
   QueryAssetRequest,
   QueryRateStrategyRequest,
+  QueryStablecoinDebtRequest,
   QueryTokenDebtRequest
 } from '@carbon-sdk/codec/cdp/query';
 import {
@@ -185,10 +190,11 @@ export class CDPModule extends BaseModule {
 
   public async repayAssetWithCdpTokens(params: CDPModule.RepayAssetWithCdpTokensParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
+    const debtor = params.debtor ? params.debtor : wallet.bech32Address;
 
     const value = MsgRepayAssetWithCdpTokens.fromPartial({
       creator: wallet.bech32Address,
-      debtor: params.debtor,
+      debtor: debtor,
       debtDenom: params.debtDenom,
       cdpDenom: params.cdpDenom,
       cdpAmount: params.cdpAmount.toString(10),
@@ -202,6 +208,7 @@ export class CDPModule extends BaseModule {
 
   public async repayAssetWithCollateral(params: CDPModule.RepayAssetWithCollateralParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
+    const debtor = params.debtor ? params.debtor : wallet.bech32Address;
 
     const value = MsgRepayAssetWithCollateral.fromPartial({
       creator: wallet.bech32Address,
@@ -323,13 +330,19 @@ export class CDPModule extends BaseModule {
     }
 
     // add stablecoin debt
-    const accountStablecoin = await sdk.query.cdp.AccountStablecoin({address: account})
-    const stablecoinDecimals = await this.sdkProvider.getTokenClient().getDecimals("usc")
-    if (!stablecoinDecimals) {
+    const debtInfoRsp = await sdk.query.cdp.StablecoinDebt(QueryStablecoinDebtRequest.fromPartial({}))
+    const stablecoinDebtInfo = debtInfoRsp.stablecoinDebtInfo
+    if (!stablecoinDebtInfo) {
       return
     }
-    const stablecoinDebt = new BigNumber(accountStablecoin.principalDebt).plus(accountStablecoin.interestDebt)
-    totalDebtsUsd = totalDebtsUsd.plus(stablecoinDebt.shiftedBy(-stablecoinDecimals))
+
+    const accountStablecoin = await sdk.query.cdp.AccountStablecoin({address: account})
+    const usdValue = await sdk.getTokenClient().getUSDValue(stablecoinDebtInfo.denom) ?? BN_ZERO
+    const stablecoinDecimals = await this.sdkProvider.getTokenClient().getDecimals(stablecoinDebtInfo.denom) ?? BN_ZERO
+
+    const stablecoinDebtAmount = bnOrZero(accountStablecoin.principalDebt).plus(bnOrZero(accountStablecoin.interestDebt))
+    const stablecoinDebtUsd = (stablecoinDebtAmount.times(usdValue)).shiftedBy(-stablecoinDecimals)
+    totalDebtsUsd = totalDebtsUsd.plus(stablecoinDebtUsd)
 
     const healthFactor = currLiquidationThreshold.div(totalDebtsUsd)
 
@@ -338,8 +351,24 @@ export class CDPModule extends BaseModule {
       AvailableBorrowsUsd: availableBorrowsUsd,
       CurrLiquidationThreshold: currLiquidationThreshold,
       TotalDebtsUsd: totalDebtsUsd,
+      TotalStablecoinDebtsUsd: stablecoinDebtUsd,
       HealthFactor: healthFactor,
     }
+  }
+
+  public async getAssetBorrowableSupply(denom: string) {
+    const sdk = this.sdkProvider
+
+    if (!this.cdpModuleAddress) {
+      const moduleAddressRsp = await sdk.query.misc.ModuleAddress(QueryModuleAddressRequest.fromPartial({ module: "cdp" }))
+      this.cdpModuleAddress = moduleAddressRsp.address
+    }
+    const balanceRsp = await sdk.query.bank.Balance(QueryBalanceRequest.fromPartial({ address: this.cdpModuleAddress, denom }))
+    if (!balanceRsp.balance) {
+      return
+    }
+
+    return bnOrZero(balanceRsp.balance.amount)
   }
 
   public async getCdpToActualRatio(cdpDenom: string) {
@@ -383,7 +412,7 @@ export class CDPModule extends BaseModule {
   }
 
   public async getModuleTotalDebtUsdVal() {
-
+    const sdk = this.sdkProvider
     let totalDebt = new BigNumber(0)
 
     // get token debts
@@ -402,14 +431,17 @@ export class CDPModule extends BaseModule {
 
     // get stablecoin debt
     const stablecoinDebtRes = await this.sdkProvider.query.cdp.StablecoinDebt({})
-    const stablecoinDebt = stablecoinDebtRes.stablecoinDebtInfo
-    if (!stablecoinDebt) {return}
-    const CIM = new BigNumber(stablecoinDebt.cumulativeInterestMultiplier)
-    const initialCIM = new BigNumber(stablecoinDebt.initialCumulativeInterestMultiplier)
-    const debtAmt = CIM.div(initialCIM).multipliedBy(stablecoinDebt.totalPrincipal)
-    const stablecoinDecimals = await this.sdkProvider.getTokenClient().getDecimals(stablecoinDebt.denom)
-    if (!stablecoinDecimals) {return}
-    const debtUsdVal = debtAmt.shiftedBy(-stablecoinDecimals)
+    const stablecoinDebtInfo = stablecoinDebtRes.stablecoinDebtInfo
+    if (!stablecoinDebtInfo) {
+      return
+    }
+    const CIM = bnOrZero(stablecoinDebtInfo.cumulativeInterestMultiplier)
+    const initialCIM = bnOrZero(stablecoinDebtInfo.initialCumulativeInterestMultiplier)
+    const debtAmt = CIM.div(initialCIM).multipliedBy(bnOrZero(stablecoinDebtInfo.totalPrincipal))
+    const stablecoinDecimals = await sdk.getTokenClient().getDecimals(stablecoinDebtInfo.denom) ?? BN_ZERO
+    const usdValue = await sdk.getTokenClient().getUSDValue(stablecoinDebtInfo.denom) ?? BN_ZERO
+    const debtUsdVal = (debtAmt.times(usdValue)).shiftedBy(-stablecoinDecimals)
+
     totalDebt = totalDebt.plus(debtUsdVal)
 
     return totalDebt
@@ -502,6 +534,38 @@ export class CDPModule extends BaseModule {
     return totalAmountTokenDebt
   }
 
+  public async getTotalAccountStablecoinDebt(account: string, debt?: CDPModule.StablecoinDebt ,debtInfo?: StablecoinDebtInfo) {
+    const sdk = this.sdkProvider
+    let principalAmount = BN_ZERO
+
+    if (!debtInfo) {
+      const debtInfoResponse = await sdk.query.cdp.StablecoinDebt(QueryStablecoinDebtRequest.fromPartial({}))
+      debtInfo = debtInfoResponse.stablecoinDebtInfo
+    }
+    if (!debtInfo) {
+      return BN_ZERO;
+    }
+
+    if (!debt) {
+      const debtResp = await sdk.query.cdp.AccountStablecoin(QueryAccountStablecoinRequest.fromPartial({ address: account }))
+      debt = debtResp
+    }
+    if (!debt) {
+      return BN_ZERO;
+    }
+
+    principalAmount = bnOrZero(debt.principalDebt)
+    const initialCIM = bnOrZero(debt.initialCumulativeInterestMultiplier)
+    const cim = await this.recalculateStablecoinCIM(debtInfo)
+    if (!cim) {
+      return BN_ZERO
+    }
+
+    const totalStablecoinDebtAmount = principalAmount.times(cim).dividedToIntegerBy(initialCIM)
+
+    return totalStablecoinDebtAmount
+  }
+
   public async calculateAPY(
     denom: string,
     debtInfo?: DebtInfo,
@@ -580,6 +644,28 @@ export class CDPModule extends BaseModule {
     return newCIM;
   }
 
+  public async recalculateStablecoinCIM(debtInfo?: StablecoinDebtInfo) {
+    const sdk = this.sdkProvider
+    if (!debtInfo) {
+      const debtInfoResponse = await sdk.query.cdp.StablecoinDebt(QueryStablecoinDebtRequest.fromPartial({}))
+      debtInfo = debtInfoResponse.stablecoinDebtInfo
+      if (!debtInfo) {
+        return BN_ZERO;
+      }
+    }
+    
+    const paramsResponse = await sdk.query.cdp.Params(QueryCdpParamsRequest.fromPartial({}))
+    const cim = bnOrZero(debtInfo.cumulativeInterestMultiplier)
+    const apy = bnOrZero(paramsResponse.params?.stablecoinInterestRate)
+    if (!apy) {
+      return BN_ZERO;
+    }
+    const interest = this.calculateInterestForTimePeriod(apy, debtInfo.lastUpdatedTime ?? new Date(0), new Date())
+    const newCIM = cim.times(interest.plus(1))
+
+    return newCIM;
+  }
+
   public getUnderlyingDenom(cdpDenom: string) {
     return this.sdkProvider.getTokenClient().getCdpUnderlyingToken(cdpDenom)?.denom;
   }
@@ -628,13 +714,13 @@ export namespace CDPModule {
     debtAmount: BigNumber
   }
   export interface RepayAssetWithCdpTokensParams {
-    debtor: string
+    debtor?: string
     debtDenom: string
     cdpDenom: string
     cdpAmount: BigNumber
   }
   export interface RepayAssetWithCollateralParams {
-    debtor: string
+    debtor?: string
     debtDenom: string
     cdpDenom: string
     cdpAmount: BigNumber
@@ -652,5 +738,9 @@ export namespace CDPModule {
 
   export interface UpdateRateStrategyParams {
     rateStrategyParams: RateStrategyParams
+  }
+  export interface StablecoinDebt {
+    principalDebt: string
+    initialCumulativeInterestMultiplier: string
   }
 };
