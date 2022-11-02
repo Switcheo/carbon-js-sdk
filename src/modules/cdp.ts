@@ -346,6 +346,8 @@ export class CDPModule extends BaseModule {
 
     const healthFactor = currLiquidationThreshold.div(totalDebtsUsd)
 
+    availableBorrowsUsd = availableBorrowsUsd.minus(totalDebtsUsd)
+
     return {
       TotalCollateralsUsd: totalCollateralsUsd,
       AvailableBorrowsUsd: availableBorrowsUsd,

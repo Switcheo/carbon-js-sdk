@@ -293,4 +293,5 @@ export interface CDPLiquidation {
   debt_amount: string // string representation of number
   block_height: number
   block_time: string // string representation of timestamp
+  transaction_hash: string
 }
