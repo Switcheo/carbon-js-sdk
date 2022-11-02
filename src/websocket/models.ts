@@ -162,7 +162,7 @@ export interface Commitment {
 export interface CDPParams {
   interest_fee: string // string representation of number
   liquidation_fee: string // string representation of number
-  stable_coin_interest_rate: string // string representation of number
+  stablecoin_interest_rate: string // string representation of number
   complete_liquidation_threshold: string // string representation of number
   minimum_close_factor: string // string representation of number
   small_liquidation_size: string // string representation of number
