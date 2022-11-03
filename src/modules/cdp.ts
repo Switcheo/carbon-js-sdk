@@ -668,6 +668,51 @@ export class CDPModule extends BaseModule {
     return newCIM;
   }
 
+  public async getMaxCollateralForUnlock(account:string, cdpDenom:string) {
+    const sdk = this.sdkProvider
+    const denom = await this.getUnderlyingDenom(cdpDenom)
+    if (!denom) return
+    const assetParams = await sdk.query.cdp.Asset({denom: denom})
+    if (!assetParams.assetParams) return
+    const ltv = new BigNumber(assetParams.assetParams.loanToValue)
+    const accountData = await this.getAccountData(account)
+    if (!accountData) return
+    const availableBorrowsUsd = accountData.AvailableBorrowsUsd.minus(accountData.TotalDebtsUsd)
+    const unlockableUsd = availableBorrowsUsd.div(ltv).multipliedBy(10000)
+    const cdpTokenPrice = await this.getCdpTokenPrice(cdpDenom)
+    if (!cdpTokenPrice) return
+    const tokenDecimals = await sdk.getTokenClient().getDecimals(denom)
+    if (!tokenDecimals) return
+    const cdpTokensUnlockableAmt = unlockableUsd.div(cdpTokenPrice).shiftedBy(tokenDecimals)
+
+    const accountCollateral = await sdk.query.cdp.AccountCollateral({
+      address: account,
+      cdpDenom: cdpDenom
+    })
+    if (!accountCollateral.collateral) return
+    const lockedAmount = new BigNumber(accountCollateral.collateral.collateralAmount)
+
+    // take the min of cdpTokensUnlockableAmt and locked tokens
+    if (lockedAmount.lt(cdpTokensUnlockableAmt)) {
+      return lockedAmount
+    }
+
+    return cdpTokensUnlockableAmt
+  }
+
+  public async getCdpTokenPrice(cdpDenom:string) {
+    const sdk = this.sdkProvider
+    const denom = await this.getUnderlyingDenom(cdpDenom)
+    if (!denom) {
+      return
+    }
+    const cdpToActualRatio = await this.getCdpToActualRatio(cdpDenom) ?? BN_ZERO
+    const tokenPrice = await sdk.query.pricing.TokenPrice({denom: denom})
+    if (!tokenPrice.tokenPrice) {return}
+    const tokenTwap = new BigNumber(tokenPrice.tokenPrice.twap)
+    return tokenTwap.multipliedBy(cdpToActualRatio).shiftedBy(-18)
+  }
+
   public getUnderlyingDenom(cdpDenom: string) {
     return this.sdkProvider.getTokenClient().getCdpUnderlyingToken(cdpDenom)?.denom;
   }

@@ -16,16 +16,19 @@ import "./_setup";
     },
   });
 
-  const account = "tswth13zw3p5902nu9p0nq7gvsvjcyruz9hdszgxqw4s"
+  const account = "tswth1mkzq49f6axtuyq4qxsalujfujl8sglznqx9zmg"
 
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
 
-  const accData = await sdk.cdp.getAccountData("tswth13zw3p5902nu9p0nq7gvsvjcyruz9hdszgxqw4s")
+  const accData = await sdk.cdp.getAccountData(account)
   console.log("\ngetAccountData", JSON.stringify(accData));
 
   const debt = await sdk.query.cdp.AccountDebt({ address: "tswth17ktnyhxuxe4s9a2u55gnt5qyalhksws7thnswq", denom: "eth"})
   console.log("\nAccountDebt", JSON.stringify(debt))
+
+  const assetParamsAll = await sdk.query.cdp.AssetAll({})
+  console.log("\nAssetAll", JSON.stringify(assetParamsAll))
 
   const tokenDebts = await sdk.query.cdp.TokenDebtAll({})
   console.log("\nTokenDebtsAll", JSON.stringify(tokenDebts))
@@ -45,19 +48,24 @@ import "./_setup";
   const accountStablecoin = await sdk.query.cdp.AccountStablecoin({address: account})
   console.log("\nAccountStablecoin", JSON.stringify(accountStablecoin))
 
-  const ratio = await sdk.cdp.getCdpToActualRatio("cdp/eth");
+  const ratio = await sdk.cdp.getCdpToActualRatio("cdp/eth")
   console.log("\ngetCdpToActualRatio", JSON.stringify(ratio))
 
   const amt = new BigNumber("1000000")
-  const cdpTokenValue = await sdk.cdp.getCdpTokenUsdVal("cdp/usdc", amt);
+  const cdpTokenValue = await sdk.cdp.getCdpTokenUsdVal("cdp/usdc", amt)
   console.log("\ngetCdpTokenUsdVal", cdpTokenValue?.toNumber())
 
-  const totalCollateral = await sdk.cdp.getModuleTotalCollateralUsdVal();
+  const totalCollateral = await sdk.cdp.getModuleTotalCollateralUsdVal()
   console.log("\ngetModuleTotalCollateralUsdVal", totalCollateral?.toNumber())
 
-  const totalDebt = await sdk.cdp.getModuleTotalDebtUsdVal();
+  const totalDebt = await sdk.cdp.getModuleTotalDebtUsdVal()
   console.log("\ngetModuleTotalDebtUsdVal", totalDebt?.toNumber())
 
+  const maxCollateralsForUnlock = await sdk.cdp.getMaxCollateralForUnlock(account, "cdp/eth")
+  console.log("\ngetMaxCollateralForUnlock", maxCollateralsForUnlock?.toNumber())
+
+  const cdpTokenPrice = await sdk.cdp.getCdpTokenPrice("cdp/eth")
+  console.log("\ngetCdpTokenPrice", cdpTokenPrice?.toNumber())
 
 
 
