@@ -10,7 +10,7 @@ export interface DebtInfo {
   lastUpdatedTime?: Date;
   totalPrincipal: string;
   cumulativeInterestMultiplier: string;
-  initialCumulativeInterestMultiplier: string;
+  totalAccumulatedInterest: string;
   utilizationRate: string;
 }
 
@@ -18,7 +18,7 @@ const baseDebtInfo: object = {
   denom: "",
   totalPrincipal: "",
   cumulativeInterestMultiplier: "",
-  initialCumulativeInterestMultiplier: "",
+  totalAccumulatedInterest: "",
   utilizationRate: "",
 };
 
@@ -42,8 +42,8 @@ export const DebtInfo = {
     if (message.cumulativeInterestMultiplier !== "") {
       writer.uint32(34).string(message.cumulativeInterestMultiplier);
     }
-    if (message.initialCumulativeInterestMultiplier !== "") {
-      writer.uint32(42).string(message.initialCumulativeInterestMultiplier);
+    if (message.totalAccumulatedInterest !== "") {
+      writer.uint32(42).string(message.totalAccumulatedInterest);
     }
     if (message.utilizationRate !== "") {
       writer.uint32(50).string(message.utilizationRate);
@@ -73,7 +73,7 @@ export const DebtInfo = {
           message.cumulativeInterestMultiplier = reader.string();
           break;
         case 5:
-          message.initialCumulativeInterestMultiplier = reader.string();
+          message.totalAccumulatedInterest = reader.string();
           break;
         case 6:
           message.utilizationRate = reader.string();
@@ -105,10 +105,10 @@ export const DebtInfo = {
       object.cumulativeInterestMultiplier !== null
         ? String(object.cumulativeInterestMultiplier)
         : "";
-    message.initialCumulativeInterestMultiplier =
-      object.initialCumulativeInterestMultiplier !== undefined &&
-      object.initialCumulativeInterestMultiplier !== null
-        ? String(object.initialCumulativeInterestMultiplier)
+    message.totalAccumulatedInterest =
+      object.totalAccumulatedInterest !== undefined &&
+      object.totalAccumulatedInterest !== null
+        ? String(object.totalAccumulatedInterest)
         : "";
     message.utilizationRate =
       object.utilizationRate !== undefined && object.utilizationRate !== null
@@ -126,9 +126,8 @@ export const DebtInfo = {
       (obj.totalPrincipal = message.totalPrincipal);
     message.cumulativeInterestMultiplier !== undefined &&
       (obj.cumulativeInterestMultiplier = message.cumulativeInterestMultiplier);
-    message.initialCumulativeInterestMultiplier !== undefined &&
-      (obj.initialCumulativeInterestMultiplier =
-        message.initialCumulativeInterestMultiplier);
+    message.totalAccumulatedInterest !== undefined &&
+      (obj.totalAccumulatedInterest = message.totalAccumulatedInterest);
     message.utilizationRate !== undefined &&
       (obj.utilizationRate = message.utilizationRate);
     return obj;
@@ -141,8 +140,7 @@ export const DebtInfo = {
     message.totalPrincipal = object.totalPrincipal ?? "";
     message.cumulativeInterestMultiplier =
       object.cumulativeInterestMultiplier ?? "";
-    message.initialCumulativeInterestMultiplier =
-      object.initialCumulativeInterestMultiplier ?? "";
+    message.totalAccumulatedInterest = object.totalAccumulatedInterest ?? "";
     message.utilizationRate = object.utilizationRate ?? "";
     return message;
   },

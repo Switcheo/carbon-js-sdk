@@ -422,10 +422,9 @@ export class CDPModule extends BaseModule {
     const allDebts = allDebtsRes.debtInfosAll
     for (let i = 0; i <allDebts.length; i++) {
       const denom = allDebts[i].denom
-      const initialCIM = allDebts[i].initialCumulativeInterestMultiplier
-      const principal = allDebts[i].totalPrincipal
-      const CIM = await this.recalculateCIM(denom, allDebts[i])
-      const debtAmt = CIM.div(initialCIM).multipliedBy(principal)
+      const interest = bnOrZero(allDebts[i].totalAccumulatedInterest)
+      const principal = bnOrZero(allDebts[i].totalPrincipal)
+      const debtAmt = interest.plus(principal)
       const debtUsdVal = await this.getTokenUsdVal(denom, debtAmt)
       if (!debtUsdVal) {return}
       totalDebt = totalDebt.plus(debtUsdVal)
@@ -437,12 +436,9 @@ export class CDPModule extends BaseModule {
     if (!stablecoinDebtInfo) {
       return
     }
-    const CIM = bnOrZero(stablecoinDebtInfo.cumulativeInterestMultiplier)
-    const initialCIM = bnOrZero(stablecoinDebtInfo.initialCumulativeInterestMultiplier)
-    const debtAmt = CIM.div(initialCIM).multipliedBy(bnOrZero(stablecoinDebtInfo.totalPrincipal))
+    const debtAmt = bnOrZero(stablecoinDebtInfo.totalPrincipal).plus(bnOrZero(stablecoinDebtInfo.totalAccumulatedInterest))
     const stablecoinDecimals = await sdk.getTokenClient().getDecimals(stablecoinDebtInfo.denom) ?? BN_ZERO
-    const usdValue = await sdk.getTokenClient().getUSDValue(stablecoinDebtInfo.denom) ?? BN_ZERO
-    const debtUsdVal = (debtAmt.times(usdValue)).shiftedBy(-stablecoinDecimals)
+    const debtUsdVal = (debtAmt).shiftedBy(-stablecoinDecimals)
 
     totalDebt = totalDebt.plus(debtUsdVal)
 
@@ -502,9 +498,9 @@ export class CDPModule extends BaseModule {
     if (!cim) {
       return
     }
-    const principalAmount = bnOrZero(debtInfo.totalPrincipal)
-    const initialCIM = bnOrZero(debtInfo.initialCumulativeInterestMultiplier)
-    return principalAmount.times(cim).div(initialCIM)
+    const principal = bnOrZero(debtInfo.totalPrincipal)
+    const interest = bnOrZero(debtInfo.totalAccumulatedInterest)
+    return principal.plus(interest)
   }
 
   public async getTotalAccountTokenDebt(account: string, denom: string, debt?: Debt, debtInfo?: DebtInfo) {
