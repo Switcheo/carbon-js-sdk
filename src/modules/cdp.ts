@@ -346,8 +346,6 @@ export class CDPModule extends BaseModule {
 
     const healthFactor = currLiquidationThreshold.div(totalDebtsUsd)
 
-    availableBorrowsUsd = availableBorrowsUsd.minus(totalDebtsUsd)
-
     return {
       TotalCollateralsUsd: totalCollateralsUsd,
       AvailableBorrowsUsd: availableBorrowsUsd,
@@ -674,13 +672,14 @@ export class CDPModule extends BaseModule {
     const accountData = await this.getAccountData(account)
     if (!accountData) return
     const availableBorrowsUsd = accountData.AvailableBorrowsUsd.minus(accountData.TotalDebtsUsd)
-    const unlockableUsd = availableBorrowsUsd.div(ltv).multipliedBy(10000)
+    const unlockableUsd = availableBorrowsUsd.multipliedBy(10000).div(ltv)
     const cdpTokenPrice = await this.getCdpTokenPrice(cdpDenom)
     if (!cdpTokenPrice) return
     const tokenDecimals = await sdk.getTokenClient().getDecimals(denom)
     if (!tokenDecimals) return
     const cdpTokensUnlockableAmt = unlockableUsd.div(cdpTokenPrice).shiftedBy(tokenDecimals)
 
+    // take the min of cdpTokensUnlockableAmt and locked tokens
     const accountCollateral = await sdk.query.cdp.AccountCollateral({
       address: account,
       cdpDenom: cdpDenom
@@ -688,7 +687,6 @@ export class CDPModule extends BaseModule {
     if (!accountCollateral.collateral) return
     const lockedAmount = new BigNumber(accountCollateral.collateral.collateralAmount)
 
-    // take the min of cdpTokensUnlockableAmt and locked tokens
     if (lockedAmount.lt(cdpTokensUnlockableAmt)) {
       return lockedAmount
     }
