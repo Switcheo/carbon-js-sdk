@@ -10,14 +10,14 @@ export interface StablecoinDebtInfo {
   lastUpdatedTime?: Date;
   totalPrincipal: string;
   cumulativeInterestMultiplier: string;
-  initialCumulativeInterestMultiplier: string;
+  totalAccumulatedInterest: string;
 }
 
 const baseStablecoinDebtInfo: object = {
   denom: "",
   totalPrincipal: "",
   cumulativeInterestMultiplier: "",
-  initialCumulativeInterestMultiplier: "",
+  totalAccumulatedInterest: "",
 };
 
 export const StablecoinDebtInfo = {
@@ -40,8 +40,8 @@ export const StablecoinDebtInfo = {
     if (message.cumulativeInterestMultiplier !== "") {
       writer.uint32(34).string(message.cumulativeInterestMultiplier);
     }
-    if (message.initialCumulativeInterestMultiplier !== "") {
-      writer.uint32(42).string(message.initialCumulativeInterestMultiplier);
+    if (message.totalAccumulatedInterest !== "") {
+      writer.uint32(42).string(message.totalAccumulatedInterest);
     }
     return writer;
   },
@@ -68,7 +68,7 @@ export const StablecoinDebtInfo = {
           message.cumulativeInterestMultiplier = reader.string();
           break;
         case 5:
-          message.initialCumulativeInterestMultiplier = reader.string();
+          message.totalAccumulatedInterest = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -97,10 +97,10 @@ export const StablecoinDebtInfo = {
       object.cumulativeInterestMultiplier !== null
         ? String(object.cumulativeInterestMultiplier)
         : "";
-    message.initialCumulativeInterestMultiplier =
-      object.initialCumulativeInterestMultiplier !== undefined &&
-      object.initialCumulativeInterestMultiplier !== null
-        ? String(object.initialCumulativeInterestMultiplier)
+    message.totalAccumulatedInterest =
+      object.totalAccumulatedInterest !== undefined &&
+      object.totalAccumulatedInterest !== null
+        ? String(object.totalAccumulatedInterest)
         : "";
     return message;
   },
@@ -114,9 +114,8 @@ export const StablecoinDebtInfo = {
       (obj.totalPrincipal = message.totalPrincipal);
     message.cumulativeInterestMultiplier !== undefined &&
       (obj.cumulativeInterestMultiplier = message.cumulativeInterestMultiplier);
-    message.initialCumulativeInterestMultiplier !== undefined &&
-      (obj.initialCumulativeInterestMultiplier =
-        message.initialCumulativeInterestMultiplier);
+    message.totalAccumulatedInterest !== undefined &&
+      (obj.totalAccumulatedInterest = message.totalAccumulatedInterest);
     return obj;
   },
 
@@ -127,8 +126,7 @@ export const StablecoinDebtInfo = {
     message.totalPrincipal = object.totalPrincipal ?? "";
     message.cumulativeInterestMultiplier =
       object.cumulativeInterestMultiplier ?? "";
-    message.initialCumulativeInterestMultiplier =
-      object.initialCumulativeInterestMultiplier ?? "";
+    message.totalAccumulatedInterest = object.totalAccumulatedInterest ?? "";
     return message;
   },
 };
