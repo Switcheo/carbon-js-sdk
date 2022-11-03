@@ -10,6 +10,11 @@ import {
 import { AssetParams } from "./asset_params";
 import { DebtInfo } from "./debt_info";
 import { StablecoinDebtInfo } from "./stablecoin_debt_info";
+import {
+  PageRequest as PageRequest1,
+  PageResponse as PageResponse2,
+} from "../query/pagination";
+import { Coin } from "../cosmos/base/v1beta1/coin";
 
 export const protobufPackage = "Switcheo.carbon.cdp";
 
@@ -149,6 +154,31 @@ export interface QueryStablecoinDebtRequest {}
 
 export interface QueryStablecoinDebtResponse {
   stablecoinDebtInfo?: StablecoinDebtInfo;
+}
+
+export interface CdpPositionItem {
+  address: string;
+  denom: string;
+  cdpDenom: string;
+  healthFactor: string;
+  collateralAmount: string;
+  borrowAmount: string;
+}
+
+export interface CdpPosition {
+  address: string;
+  healthFactor: string;
+  collateral: Coin[];
+  borrow: Coin[];
+}
+
+export interface QueryCdpPositionsRequest {
+  pagination?: PageRequest1;
+}
+
+export interface QueryCdpPositionsResponse {
+  positions: CdpPosition[];
+  pagination?: PageResponse2;
 }
 
 const baseQueryParamsRequest: object = {};
@@ -2388,6 +2418,395 @@ export const QueryStablecoinDebtResponse = {
   },
 };
 
+const baseCdpPositionItem: object = {
+  address: "",
+  denom: "",
+  cdpDenom: "",
+  healthFactor: "",
+  collateralAmount: "",
+  borrowAmount: "",
+};
+
+export const CdpPositionItem = {
+  encode(
+    message: CdpPositionItem,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.address !== "") {
+      writer.uint32(10).string(message.address);
+    }
+    if (message.denom !== "") {
+      writer.uint32(18).string(message.denom);
+    }
+    if (message.cdpDenom !== "") {
+      writer.uint32(26).string(message.cdpDenom);
+    }
+    if (message.healthFactor !== "") {
+      writer.uint32(34).string(message.healthFactor);
+    }
+    if (message.collateralAmount !== "") {
+      writer.uint32(42).string(message.collateralAmount);
+    }
+    if (message.borrowAmount !== "") {
+      writer.uint32(50).string(message.borrowAmount);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): CdpPositionItem {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseCdpPositionItem } as CdpPositionItem;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.address = reader.string();
+          break;
+        case 2:
+          message.denom = reader.string();
+          break;
+        case 3:
+          message.cdpDenom = reader.string();
+          break;
+        case 4:
+          message.healthFactor = reader.string();
+          break;
+        case 5:
+          message.collateralAmount = reader.string();
+          break;
+        case 6:
+          message.borrowAmount = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CdpPositionItem {
+    const message = { ...baseCdpPositionItem } as CdpPositionItem;
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
+    message.cdpDenom =
+      object.cdpDenom !== undefined && object.cdpDenom !== null
+        ? String(object.cdpDenom)
+        : "";
+    message.healthFactor =
+      object.healthFactor !== undefined && object.healthFactor !== null
+        ? String(object.healthFactor)
+        : "";
+    message.collateralAmount =
+      object.collateralAmount !== undefined && object.collateralAmount !== null
+        ? String(object.collateralAmount)
+        : "";
+    message.borrowAmount =
+      object.borrowAmount !== undefined && object.borrowAmount !== null
+        ? String(object.borrowAmount)
+        : "";
+    return message;
+  },
+
+  toJSON(message: CdpPositionItem): unknown {
+    const obj: any = {};
+    message.address !== undefined && (obj.address = message.address);
+    message.denom !== undefined && (obj.denom = message.denom);
+    message.cdpDenom !== undefined && (obj.cdpDenom = message.cdpDenom);
+    message.healthFactor !== undefined &&
+      (obj.healthFactor = message.healthFactor);
+    message.collateralAmount !== undefined &&
+      (obj.collateralAmount = message.collateralAmount);
+    message.borrowAmount !== undefined &&
+      (obj.borrowAmount = message.borrowAmount);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<CdpPositionItem>): CdpPositionItem {
+    const message = { ...baseCdpPositionItem } as CdpPositionItem;
+    message.address = object.address ?? "";
+    message.denom = object.denom ?? "";
+    message.cdpDenom = object.cdpDenom ?? "";
+    message.healthFactor = object.healthFactor ?? "";
+    message.collateralAmount = object.collateralAmount ?? "";
+    message.borrowAmount = object.borrowAmount ?? "";
+    return message;
+  },
+};
+
+const baseCdpPosition: object = { address: "", healthFactor: "" };
+
+export const CdpPosition = {
+  encode(
+    message: CdpPosition,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.address !== "") {
+      writer.uint32(10).string(message.address);
+    }
+    if (message.healthFactor !== "") {
+      writer.uint32(18).string(message.healthFactor);
+    }
+    for (const v of message.collateral) {
+      Coin.encode(v!, writer.uint32(34).fork()).ldelim();
+    }
+    for (const v of message.borrow) {
+      Coin.encode(v!, writer.uint32(42).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): CdpPosition {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseCdpPosition } as CdpPosition;
+    message.collateral = [];
+    message.borrow = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.address = reader.string();
+          break;
+        case 2:
+          message.healthFactor = reader.string();
+          break;
+        case 4:
+          message.collateral.push(Coin.decode(reader, reader.uint32()));
+          break;
+        case 5:
+          message.borrow.push(Coin.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CdpPosition {
+    const message = { ...baseCdpPosition } as CdpPosition;
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    message.healthFactor =
+      object.healthFactor !== undefined && object.healthFactor !== null
+        ? String(object.healthFactor)
+        : "";
+    message.collateral = (object.collateral ?? []).map((e: any) =>
+      Coin.fromJSON(e)
+    );
+    message.borrow = (object.borrow ?? []).map((e: any) => Coin.fromJSON(e));
+    return message;
+  },
+
+  toJSON(message: CdpPosition): unknown {
+    const obj: any = {};
+    message.address !== undefined && (obj.address = message.address);
+    message.healthFactor !== undefined &&
+      (obj.healthFactor = message.healthFactor);
+    if (message.collateral) {
+      obj.collateral = message.collateral.map((e) =>
+        e ? Coin.toJSON(e) : undefined
+      );
+    } else {
+      obj.collateral = [];
+    }
+    if (message.borrow) {
+      obj.borrow = message.borrow.map((e) => (e ? Coin.toJSON(e) : undefined));
+    } else {
+      obj.borrow = [];
+    }
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<CdpPosition>): CdpPosition {
+    const message = { ...baseCdpPosition } as CdpPosition;
+    message.address = object.address ?? "";
+    message.healthFactor = object.healthFactor ?? "";
+    message.collateral = (object.collateral ?? []).map((e) =>
+      Coin.fromPartial(e)
+    );
+    message.borrow = (object.borrow ?? []).map((e) => Coin.fromPartial(e));
+    return message;
+  },
+};
+
+const baseQueryCdpPositionsRequest: object = {};
+
+export const QueryCdpPositionsRequest = {
+  encode(
+    message: QueryCdpPositionsRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.pagination !== undefined) {
+      PageRequest1.encode(
+        message.pagination,
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryCdpPositionsRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryCdpPositionsRequest,
+    } as QueryCdpPositionsRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.pagination = PageRequest1.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryCdpPositionsRequest {
+    const message = {
+      ...baseQueryCdpPositionsRequest,
+    } as QueryCdpPositionsRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest1.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryCdpPositionsRequest): unknown {
+    const obj: any = {};
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest1.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryCdpPositionsRequest>
+  ): QueryCdpPositionsRequest {
+    const message = {
+      ...baseQueryCdpPositionsRequest,
+    } as QueryCdpPositionsRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest1.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryCdpPositionsResponse: object = {};
+
+export const QueryCdpPositionsResponse = {
+  encode(
+    message: QueryCdpPositionsResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.positions) {
+      CdpPosition.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse2.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryCdpPositionsResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryCdpPositionsResponse,
+    } as QueryCdpPositionsResponse;
+    message.positions = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.positions.push(CdpPosition.decode(reader, reader.uint32()));
+          break;
+        case 2:
+          message.pagination = PageResponse2.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryCdpPositionsResponse {
+    const message = {
+      ...baseQueryCdpPositionsResponse,
+    } as QueryCdpPositionsResponse;
+    message.positions = (object.positions ?? []).map((e: any) =>
+      CdpPosition.fromJSON(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse2.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryCdpPositionsResponse): unknown {
+    const obj: any = {};
+    if (message.positions) {
+      obj.positions = message.positions.map((e) =>
+        e ? CdpPosition.toJSON(e) : undefined
+      );
+    } else {
+      obj.positions = [];
+    }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse2.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryCdpPositionsResponse>
+  ): QueryCdpPositionsResponse {
+    const message = {
+      ...baseQueryCdpPositionsResponse,
+    } as QueryCdpPositionsResponse;
+    message.positions = (object.positions ?? []).map((e) =>
+      CdpPosition.fromPartial(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse2.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Parameters queries the parameters of the module. */
@@ -2438,6 +2857,10 @@ export interface Query {
   StablecoinDebt(
     request: QueryStablecoinDebtRequest
   ): Promise<QueryStablecoinDebtResponse>;
+  /** Queries a list of CDP Positions */
+  PositionsAll(
+    request: QueryCdpPositionsRequest
+  ): Promise<QueryCdpPositionsResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -2458,6 +2881,7 @@ export class QueryClientImpl implements Query {
     this.TokenDebt = this.TokenDebt.bind(this);
     this.TokenDebtAll = this.TokenDebtAll.bind(this);
     this.StablecoinDebt = this.StablecoinDebt.bind(this);
+    this.PositionsAll = this.PositionsAll.bind(this);
   }
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
@@ -2644,6 +3068,20 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryStablecoinDebtResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  PositionsAll(
+    request: QueryCdpPositionsRequest
+  ): Promise<QueryCdpPositionsResponse> {
+    const data = QueryCdpPositionsRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Query",
+      "PositionsAll",
+      data
+    );
+    return promise.then((data) =>
+      QueryCdpPositionsResponse.decode(new _m0.Reader(data))
     );
   }
 }
