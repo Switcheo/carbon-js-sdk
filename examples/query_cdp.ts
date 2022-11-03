@@ -1,4 +1,5 @@
 import * as BIP39 from "bip39";
+import Long from "long";
 import { CarbonSDK } from "./_sdk";
 import "./_setup";
 
@@ -44,5 +45,13 @@ import "./_setup";
     address: connectedSDK.wallet.bech32Address,
   });
   console.log("accountStablecoin", accountStablecoin);
+
+  const positionsAll = await sdk.query.cdp.PositionsAll({
+    pagination: {
+      page: Long.fromNumber(1),
+      pageSize: Long.fromNumber(200),
+    }
+  });
+  console.log("positionsAll", positionsAll); // shift healthFactor by 18 decimals
 
 })().catch(console.error).finally(() => process.exit(0));
