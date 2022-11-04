@@ -178,6 +178,7 @@ export class CDPModule extends BaseModule {
       creator: wallet.bech32Address,
       debtor: params.debtor,
       collateralDenom: params.collateralDenom,
+      minCollateralAmount: params.minCollateralAmount.toString(10),
       debtDenom: params.debtDenom,
       debtAmount: params.debtAmount.toString(10),
     })
@@ -255,7 +256,7 @@ export class CDPModule extends BaseModule {
   }
 
   public async updateRateStrategy(params: CDPModule.UpdateRateStrategyParams, opts?: CarbonTx.SignTxOpts) {
-    const wallet = this.getWallet();
+    const wallet = this.getWallet()
     const value = MsgUpdateRateStrategy.fromPartial({
       creator: wallet.bech32Address,
       rateStrategyParams: params.rateStrategyParams
@@ -751,6 +752,7 @@ export namespace CDPModule {
   export interface LiquidateCollateralParams {
     debtor: string
     collateralDenom: string
+    minCollateralAmount: BigNumber
     debtDenom: string
     debtAmount: BigNumber
   }

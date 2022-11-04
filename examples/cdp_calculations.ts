@@ -16,7 +16,7 @@ import "./_setup";
     },
   });
 
-  const address = "tswth15y6dfq9aqf0asue5x2dngr8huxegq8asakv766"
+  const address = "tswth1rzsmdqps0l2u690f5l24pjxyrjt4dlg66fr3c8"
   const denom = "usdc"
   const cdpDenom = "cdp/usdc"
 
@@ -26,7 +26,7 @@ import "./_setup";
   const accData = await sdk.cdp.getAccountData(address)
   console.log("\ngetAccountData", JSON.stringify(accData));
 
-  const debt = await sdk.query.cdp.AccountDebt({ address: address, denom: "eth"})
+  const debt = await sdk.query.cdp.AccountDebt({ address: address, denom: denom})
   console.log("\nAccountDebt", JSON.stringify(debt))
 
   const assetParamsAll = await sdk.query.cdp.AssetAll({})
@@ -35,10 +35,10 @@ import "./_setup";
   const tokenDebts = await sdk.query.cdp.TokenDebtAll({})
   console.log("\nTokenDebtsAll", JSON.stringify(tokenDebts))
 
-  const tokenDebt = await sdk.cdp.getTotalAccountTokenDebt(address, "eth")
+  const tokenDebt = await sdk.cdp.getTotalAccountTokenDebt(address, denom)
   console.log("\ngetTotalAccountTokenDebt", JSON.stringify(tokenDebt))
 
-  const tokenDebtUSD = await sdk.cdp.getTotalAccountTokenDebtUsdVal(address, "eth")
+  const tokenDebtUSD = await sdk.cdp.getTotalAccountTokenDebtUsdVal(address, denom)
   console.log("\ngetTotalAccountTokenDebtUsdVal", JSON.stringify(tokenDebtUSD))
 
   const cim = await sdk.cdp.recalculateCIM("eth")
@@ -50,11 +50,11 @@ import "./_setup";
   const accountStablecoin = await sdk.query.cdp.AccountStablecoin({address: address})
   console.log("\nAccountStablecoin", JSON.stringify(accountStablecoin))
 
-  const ratio = await sdk.cdp.getCdpToActualRatio("cdp/eth")
+  const ratio = await sdk.cdp.getCdpToActualRatio(cdpDenom)
   console.log("\ngetCdpToActualRatio", JSON.stringify(ratio))
 
   const amt = new BigNumber("1000000")
-  const cdpTokenValue = await sdk.cdp.getCdpTokenUsdVal("cdp/usdc", amt)
+  const cdpTokenValue = await sdk.cdp.getCdpTokenUsdVal(cdpDenom, amt)
   console.log("\ngetCdpTokenUsdVal", cdpTokenValue?.toNumber())
 
   const totalCollateral = await sdk.cdp.getModuleTotalCollateralUsdVal()
