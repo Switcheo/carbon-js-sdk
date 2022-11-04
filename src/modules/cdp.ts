@@ -10,8 +10,8 @@ import {
 import {
   QueryAccountDebtAllRequest,
   QueryAccountStablecoinRequest,
-  QueryAccountStablecoinResponse,
   QueryAssetRequest,
+  QueryParamsRequest,
   QueryRateStrategyRequest,
   QueryStablecoinDebtRequest,
   QueryTokenDebtRequest
@@ -32,10 +32,10 @@ import {
   MsgUpdateRateStrategy,
   MsgWithdrawAsset
 } from "@carbon-sdk/codec/cdp/tx";
-import {QueryBalanceRequest, QuerySupplyOfRequest} from '@carbon-sdk/codec/cosmos/bank/v1beta1/query';
-import {CarbonTx} from "@carbon-sdk/util";
-import {BN_10000, BN_ONE, BN_ZERO, bnOrZero} from '@carbon-sdk/util/number';
-import {BigNumber} from "bignumber.js";
+import { QueryBalanceRequest, QuerySupplyOfRequest } from '@carbon-sdk/codec/cosmos/bank/v1beta1/query';
+import { CarbonTx } from "@carbon-sdk/util";
+import { bnOrZero, BN_10000, BN_ONE, BN_ZERO } from '@carbon-sdk/util/number';
+import { BigNumber } from "bignumber.js";
 import {
   Debt,
   QueryAccountCollateralAllRequest,
@@ -499,7 +499,14 @@ export class CDPModule extends BaseModule {
     }
     const principal = bnOrZero(debtInfo.totalPrincipal)
     const interest = bnOrZero(debtInfo.totalAccumulatedInterest)
-    return principal.plus(interest)
+    const cdpParamsRsp = await this.sdkProvider.query.cdp.Params(QueryParamsRequest.fromPartial({}))
+    const cdpParams = cdpParamsRsp.params
+    if (!cdpParams) {
+      return
+    }
+    const interestFee = bnOrZero(cdpParams.interestFee).div(10000)
+
+    return principal.plus(interest.times(bnOrZero(1).minus(interestFee)))
   }
 
   public async getTotalAccountTokenDebt(account: string, denom: string, debt?: Debt, debtInfo?: DebtInfo) {
