@@ -15,6 +15,7 @@ import {
   PageResponse as PageResponse2,
 } from "../query/pagination";
 import { Coin } from "../cosmos/base/v1beta1/coin";
+import { RewardScheme, RewardDebt } from "./reward_scheme";
 
 export const protobufPackage = "Switcheo.carbon.cdp";
 
@@ -179,6 +180,23 @@ export interface QueryCdpPositionsRequest {
 export interface QueryCdpPositionsResponse {
   positions: CdpPosition[];
   pagination?: PageResponse2;
+}
+
+export interface QueryRewardSchemesAllRequest {
+  pagination?: PageRequest;
+}
+
+export interface QueryRewardSchemesAllResponse {
+  rewardSchemes: RewardScheme[];
+  pagination?: PageResponse;
+}
+
+export interface QueryRewardDebtsRequest {
+  address: string;
+}
+
+export interface QueryRewardDebtsResponse {
+  rewardDebts: RewardDebt[];
 }
 
 const baseQueryParamsRequest: object = {};
@@ -2807,6 +2825,307 @@ export const QueryCdpPositionsResponse = {
   },
 };
 
+const baseQueryRewardSchemesAllRequest: object = {};
+
+export const QueryRewardSchemesAllRequest = {
+  encode(
+    message: QueryRewardSchemesAllRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryRewardSchemesAllRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryRewardSchemesAllRequest,
+    } as QueryRewardSchemesAllRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryRewardSchemesAllRequest {
+    const message = {
+      ...baseQueryRewardSchemesAllRequest,
+    } as QueryRewardSchemesAllRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryRewardSchemesAllRequest): unknown {
+    const obj: any = {};
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryRewardSchemesAllRequest>
+  ): QueryRewardSchemesAllRequest {
+    const message = {
+      ...baseQueryRewardSchemesAllRequest,
+    } as QueryRewardSchemesAllRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryRewardSchemesAllResponse: object = {};
+
+export const QueryRewardSchemesAllResponse = {
+  encode(
+    message: QueryRewardSchemesAllResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.rewardSchemes) {
+      RewardScheme.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryRewardSchemesAllResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryRewardSchemesAllResponse,
+    } as QueryRewardSchemesAllResponse;
+    message.rewardSchemes = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.rewardSchemes.push(
+            RewardScheme.decode(reader, reader.uint32())
+          );
+          break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryRewardSchemesAllResponse {
+    const message = {
+      ...baseQueryRewardSchemesAllResponse,
+    } as QueryRewardSchemesAllResponse;
+    message.rewardSchemes = (object.rewardSchemes ?? []).map((e: any) =>
+      RewardScheme.fromJSON(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryRewardSchemesAllResponse): unknown {
+    const obj: any = {};
+    if (message.rewardSchemes) {
+      obj.rewardSchemes = message.rewardSchemes.map((e) =>
+        e ? RewardScheme.toJSON(e) : undefined
+      );
+    } else {
+      obj.rewardSchemes = [];
+    }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryRewardSchemesAllResponse>
+  ): QueryRewardSchemesAllResponse {
+    const message = {
+      ...baseQueryRewardSchemesAllResponse,
+    } as QueryRewardSchemesAllResponse;
+    message.rewardSchemes = (object.rewardSchemes ?? []).map((e) =>
+      RewardScheme.fromPartial(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryRewardDebtsRequest: object = { address: "" };
+
+export const QueryRewardDebtsRequest = {
+  encode(
+    message: QueryRewardDebtsRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.address !== "") {
+      writer.uint32(10).string(message.address);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryRewardDebtsRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryRewardDebtsRequest,
+    } as QueryRewardDebtsRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.address = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryRewardDebtsRequest {
+    const message = {
+      ...baseQueryRewardDebtsRequest,
+    } as QueryRewardDebtsRequest;
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryRewardDebtsRequest): unknown {
+    const obj: any = {};
+    message.address !== undefined && (obj.address = message.address);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryRewardDebtsRequest>
+  ): QueryRewardDebtsRequest {
+    const message = {
+      ...baseQueryRewardDebtsRequest,
+    } as QueryRewardDebtsRequest;
+    message.address = object.address ?? "";
+    return message;
+  },
+};
+
+const baseQueryRewardDebtsResponse: object = {};
+
+export const QueryRewardDebtsResponse = {
+  encode(
+    message: QueryRewardDebtsResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.rewardDebts) {
+      RewardDebt.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryRewardDebtsResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryRewardDebtsResponse,
+    } as QueryRewardDebtsResponse;
+    message.rewardDebts = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.rewardDebts.push(RewardDebt.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryRewardDebtsResponse {
+    const message = {
+      ...baseQueryRewardDebtsResponse,
+    } as QueryRewardDebtsResponse;
+    message.rewardDebts = (object.rewardDebts ?? []).map((e: any) =>
+      RewardDebt.fromJSON(e)
+    );
+    return message;
+  },
+
+  toJSON(message: QueryRewardDebtsResponse): unknown {
+    const obj: any = {};
+    if (message.rewardDebts) {
+      obj.rewardDebts = message.rewardDebts.map((e) =>
+        e ? RewardDebt.toJSON(e) : undefined
+      );
+    } else {
+      obj.rewardDebts = [];
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryRewardDebtsResponse>
+  ): QueryRewardDebtsResponse {
+    const message = {
+      ...baseQueryRewardDebtsResponse,
+    } as QueryRewardDebtsResponse;
+    message.rewardDebts = (object.rewardDebts ?? []).map((e) =>
+      RewardDebt.fromPartial(e)
+    );
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Parameters queries the parameters of the module. */
@@ -2857,6 +3176,13 @@ export interface Query {
   StablecoinDebt(
     request: QueryStablecoinDebtRequest
   ): Promise<QueryStablecoinDebtResponse>;
+  /** Queries a list of all RewardSchemes. */
+  RewardSchemesAll(
+    request: QueryRewardSchemesAllRequest
+  ): Promise<QueryRewardSchemesAllResponse>;
+  RewardDebtsAll(
+    request: QueryRewardDebtsRequest
+  ): Promise<QueryRewardDebtsResponse>;
   /** Queries a list of CDP Positions */
   PositionsAll(
     request: QueryCdpPositionsRequest
@@ -2881,6 +3207,8 @@ export class QueryClientImpl implements Query {
     this.TokenDebt = this.TokenDebt.bind(this);
     this.TokenDebtAll = this.TokenDebtAll.bind(this);
     this.StablecoinDebt = this.StablecoinDebt.bind(this);
+    this.RewardSchemesAll = this.RewardSchemesAll.bind(this);
+    this.RewardDebtsAll = this.RewardDebtsAll.bind(this);
     this.PositionsAll = this.PositionsAll.bind(this);
   }
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
@@ -3068,6 +3396,34 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryStablecoinDebtResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  RewardSchemesAll(
+    request: QueryRewardSchemesAllRequest
+  ): Promise<QueryRewardSchemesAllResponse> {
+    const data = QueryRewardSchemesAllRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Query",
+      "RewardSchemesAll",
+      data
+    );
+    return promise.then((data) =>
+      QueryRewardSchemesAllResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  RewardDebtsAll(
+    request: QueryRewardDebtsRequest
+  ): Promise<QueryRewardDebtsResponse> {
+    const data = QueryRewardDebtsRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Query",
+      "RewardDebtsAll",
+      data
+    );
+    return promise.then((data) =>
+      QueryRewardDebtsResponse.decode(new _m0.Reader(data))
     );
   }
 

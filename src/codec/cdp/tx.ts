@@ -3,6 +3,8 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { RateStrategyParams } from "./rate_strategy_params";
 import { AssetParams } from "./asset_params";
+import { CreateRewardSchemeParams, UpdateRewardSchemeParams, AddReservesParams } from "./reward_scheme";
+import { Timestamp } from "../google/protobuf/timestamp";
 
 export const protobufPackage = "Switcheo.carbon.cdp";
 
@@ -231,6 +233,35 @@ export interface MsgLiquidateCollateralWithCollateral {
 }
 
 export interface MsgLiquidateCollateralWithCollateralResponse {}
+
+export interface MsgCreateRewardScheme {
+  creator: string;
+  createRewardSchemeParams?: CreateRewardSchemeParams;
+}
+
+export interface MsgCreateRewardSchemeResponse {
+  id: Long;
+  rewardDenom: string;
+  assetDenom: string;
+  rewardType: string;
+  rewardAmountPerSecond: string;
+  startTime?: Date;
+  endTime?: Date;
+}
+
+export interface MsgUpdateRewardScheme {
+  updator: string;
+  updateRewardSchemeParams?: UpdateRewardSchemeParams;
+}
+
+export interface MsgUpdateRewardSchemeResponse {}
+
+export interface MsgAddRewardReserve {
+  creator: string;
+  addReservesParams?: AddReservesParams;
+}
+
+export interface MsgAddRewardReserveResponse {}
 
 const baseMsgAddRateStrategy: object = { creator: "" };
 
@@ -4023,6 +4054,518 @@ export const MsgLiquidateCollateralWithCollateralResponse = {
   },
 };
 
+const baseMsgCreateRewardScheme: object = { creator: "" };
+
+export const MsgCreateRewardScheme = {
+  encode(
+    message: MsgCreateRewardScheme,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.createRewardSchemeParams !== undefined) {
+      CreateRewardSchemeParams.encode(
+        message.createRewardSchemeParams,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgCreateRewardScheme {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgCreateRewardScheme } as MsgCreateRewardScheme;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.createRewardSchemeParams = CreateRewardSchemeParams.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgCreateRewardScheme {
+    const message = { ...baseMsgCreateRewardScheme } as MsgCreateRewardScheme;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.createRewardSchemeParams =
+      object.createRewardSchemeParams !== undefined &&
+      object.createRewardSchemeParams !== null
+        ? CreateRewardSchemeParams.fromJSON(object.createRewardSchemeParams)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: MsgCreateRewardScheme): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.createRewardSchemeParams !== undefined &&
+      (obj.createRewardSchemeParams = message.createRewardSchemeParams
+        ? CreateRewardSchemeParams.toJSON(message.createRewardSchemeParams)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgCreateRewardScheme>
+  ): MsgCreateRewardScheme {
+    const message = { ...baseMsgCreateRewardScheme } as MsgCreateRewardScheme;
+    message.creator = object.creator ?? "";
+    message.createRewardSchemeParams =
+      object.createRewardSchemeParams !== undefined &&
+      object.createRewardSchemeParams !== null
+        ? CreateRewardSchemeParams.fromPartial(object.createRewardSchemeParams)
+        : undefined;
+    return message;
+  },
+};
+
+const baseMsgCreateRewardSchemeResponse: object = {
+  id: Long.UZERO,
+  rewardDenom: "",
+  assetDenom: "",
+  rewardType: "",
+  rewardAmountPerSecond: "",
+};
+
+export const MsgCreateRewardSchemeResponse = {
+  encode(
+    message: MsgCreateRewardSchemeResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (!message.id.isZero()) {
+      writer.uint32(8).uint64(message.id);
+    }
+    if (message.rewardDenom !== "") {
+      writer.uint32(18).string(message.rewardDenom);
+    }
+    if (message.assetDenom !== "") {
+      writer.uint32(26).string(message.assetDenom);
+    }
+    if (message.rewardType !== "") {
+      writer.uint32(34).string(message.rewardType);
+    }
+    if (message.rewardAmountPerSecond !== "") {
+      writer.uint32(42).string(message.rewardAmountPerSecond);
+    }
+    if (message.startTime !== undefined) {
+      Timestamp.encode(
+        toTimestamp(message.startTime),
+        writer.uint32(50).fork()
+      ).ldelim();
+    }
+    if (message.endTime !== undefined) {
+      Timestamp.encode(
+        toTimestamp(message.endTime),
+        writer.uint32(58).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgCreateRewardSchemeResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgCreateRewardSchemeResponse,
+    } as MsgCreateRewardSchemeResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.uint64() as Long;
+          break;
+        case 2:
+          message.rewardDenom = reader.string();
+          break;
+        case 3:
+          message.assetDenom = reader.string();
+          break;
+        case 4:
+          message.rewardType = reader.string();
+          break;
+        case 5:
+          message.rewardAmountPerSecond = reader.string();
+          break;
+        case 6:
+          message.startTime = fromTimestamp(
+            Timestamp.decode(reader, reader.uint32())
+          );
+          break;
+        case 7:
+          message.endTime = fromTimestamp(
+            Timestamp.decode(reader, reader.uint32())
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgCreateRewardSchemeResponse {
+    const message = {
+      ...baseMsgCreateRewardSchemeResponse,
+    } as MsgCreateRewardSchemeResponse;
+    message.id =
+      object.id !== undefined && object.id !== null
+        ? Long.fromString(object.id)
+        : Long.UZERO;
+    message.rewardDenom =
+      object.rewardDenom !== undefined && object.rewardDenom !== null
+        ? String(object.rewardDenom)
+        : "";
+    message.assetDenom =
+      object.assetDenom !== undefined && object.assetDenom !== null
+        ? String(object.assetDenom)
+        : "";
+    message.rewardType =
+      object.rewardType !== undefined && object.rewardType !== null
+        ? String(object.rewardType)
+        : "";
+    message.rewardAmountPerSecond =
+      object.rewardAmountPerSecond !== undefined &&
+      object.rewardAmountPerSecond !== null
+        ? String(object.rewardAmountPerSecond)
+        : "";
+    message.startTime =
+      object.startTime !== undefined && object.startTime !== null
+        ? fromJsonTimestamp(object.startTime)
+        : undefined;
+    message.endTime =
+      object.endTime !== undefined && object.endTime !== null
+        ? fromJsonTimestamp(object.endTime)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: MsgCreateRewardSchemeResponse): unknown {
+    const obj: any = {};
+    message.id !== undefined &&
+      (obj.id = (message.id || Long.UZERO).toString());
+    message.rewardDenom !== undefined &&
+      (obj.rewardDenom = message.rewardDenom);
+    message.assetDenom !== undefined && (obj.assetDenom = message.assetDenom);
+    message.rewardType !== undefined && (obj.rewardType = message.rewardType);
+    message.rewardAmountPerSecond !== undefined &&
+      (obj.rewardAmountPerSecond = message.rewardAmountPerSecond);
+    message.startTime !== undefined &&
+      (obj.startTime = message.startTime.toISOString());
+    message.endTime !== undefined &&
+      (obj.endTime = message.endTime.toISOString());
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgCreateRewardSchemeResponse>
+  ): MsgCreateRewardSchemeResponse {
+    const message = {
+      ...baseMsgCreateRewardSchemeResponse,
+    } as MsgCreateRewardSchemeResponse;
+    message.id =
+      object.id !== undefined && object.id !== null
+        ? Long.fromValue(object.id)
+        : Long.UZERO;
+    message.rewardDenom = object.rewardDenom ?? "";
+    message.assetDenom = object.assetDenom ?? "";
+    message.rewardType = object.rewardType ?? "";
+    message.rewardAmountPerSecond = object.rewardAmountPerSecond ?? "";
+    message.startTime = object.startTime ?? undefined;
+    message.endTime = object.endTime ?? undefined;
+    return message;
+  },
+};
+
+const baseMsgUpdateRewardScheme: object = { updator: "" };
+
+export const MsgUpdateRewardScheme = {
+  encode(
+    message: MsgUpdateRewardScheme,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.updator !== "") {
+      writer.uint32(10).string(message.updator);
+    }
+    if (message.updateRewardSchemeParams !== undefined) {
+      UpdateRewardSchemeParams.encode(
+        message.updateRewardSchemeParams,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUpdateRewardScheme {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgUpdateRewardScheme } as MsgUpdateRewardScheme;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.updator = reader.string();
+          break;
+        case 2:
+          message.updateRewardSchemeParams = UpdateRewardSchemeParams.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdateRewardScheme {
+    const message = { ...baseMsgUpdateRewardScheme } as MsgUpdateRewardScheme;
+    message.updator =
+      object.updator !== undefined && object.updator !== null
+        ? String(object.updator)
+        : "";
+    message.updateRewardSchemeParams =
+      object.updateRewardSchemeParams !== undefined &&
+      object.updateRewardSchemeParams !== null
+        ? UpdateRewardSchemeParams.fromJSON(object.updateRewardSchemeParams)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: MsgUpdateRewardScheme): unknown {
+    const obj: any = {};
+    message.updator !== undefined && (obj.updator = message.updator);
+    message.updateRewardSchemeParams !== undefined &&
+      (obj.updateRewardSchemeParams = message.updateRewardSchemeParams
+        ? UpdateRewardSchemeParams.toJSON(message.updateRewardSchemeParams)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgUpdateRewardScheme>
+  ): MsgUpdateRewardScheme {
+    const message = { ...baseMsgUpdateRewardScheme } as MsgUpdateRewardScheme;
+    message.updator = object.updator ?? "";
+    message.updateRewardSchemeParams =
+      object.updateRewardSchemeParams !== undefined &&
+      object.updateRewardSchemeParams !== null
+        ? UpdateRewardSchemeParams.fromPartial(object.updateRewardSchemeParams)
+        : undefined;
+    return message;
+  },
+};
+
+const baseMsgUpdateRewardSchemeResponse: object = {};
+
+export const MsgUpdateRewardSchemeResponse = {
+  encode(
+    _: MsgUpdateRewardSchemeResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUpdateRewardSchemeResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgUpdateRewardSchemeResponse,
+    } as MsgUpdateRewardSchemeResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgUpdateRewardSchemeResponse {
+    const message = {
+      ...baseMsgUpdateRewardSchemeResponse,
+    } as MsgUpdateRewardSchemeResponse;
+    return message;
+  },
+
+  toJSON(_: MsgUpdateRewardSchemeResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgUpdateRewardSchemeResponse>
+  ): MsgUpdateRewardSchemeResponse {
+    const message = {
+      ...baseMsgUpdateRewardSchemeResponse,
+    } as MsgUpdateRewardSchemeResponse;
+    return message;
+  },
+};
+
+const baseMsgAddRewardReserve: object = { creator: "" };
+
+export const MsgAddRewardReserve = {
+  encode(
+    message: MsgAddRewardReserve,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.addReservesParams !== undefined) {
+      AddReservesParams.encode(
+        message.addReservesParams,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgAddRewardReserve {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgAddRewardReserve } as MsgAddRewardReserve;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.addReservesParams = AddReservesParams.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgAddRewardReserve {
+    const message = { ...baseMsgAddRewardReserve } as MsgAddRewardReserve;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.addReservesParams =
+      object.addReservesParams !== undefined &&
+      object.addReservesParams !== null
+        ? AddReservesParams.fromJSON(object.addReservesParams)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: MsgAddRewardReserve): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.addReservesParams !== undefined &&
+      (obj.addReservesParams = message.addReservesParams
+        ? AddReservesParams.toJSON(message.addReservesParams)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgAddRewardReserve>): MsgAddRewardReserve {
+    const message = { ...baseMsgAddRewardReserve } as MsgAddRewardReserve;
+    message.creator = object.creator ?? "";
+    message.addReservesParams =
+      object.addReservesParams !== undefined &&
+      object.addReservesParams !== null
+        ? AddReservesParams.fromPartial(object.addReservesParams)
+        : undefined;
+    return message;
+  },
+};
+
+const baseMsgAddRewardReserveResponse: object = {};
+
+export const MsgAddRewardReserveResponse = {
+  encode(
+    _: MsgAddRewardReserveResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgAddRewardReserveResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgAddRewardReserveResponse,
+    } as MsgAddRewardReserveResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgAddRewardReserveResponse {
+    const message = {
+      ...baseMsgAddRewardReserveResponse,
+    } as MsgAddRewardReserveResponse;
+    return message;
+  },
+
+  toJSON(_: MsgAddRewardReserveResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgAddRewardReserveResponse>
+  ): MsgAddRewardReserveResponse {
+    const message = {
+      ...baseMsgAddRewardReserveResponse,
+    } as MsgAddRewardReserveResponse;
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
   AddRateStrategy(
@@ -4067,6 +4610,15 @@ export interface Msg {
   RepayAssetWithCollateral(
     request: MsgRepayAssetWithCollateral
   ): Promise<MsgRepayAssetWithCollateralResponse>;
+  CreateRewardScheme(
+    request: MsgCreateRewardScheme
+  ): Promise<MsgCreateRewardSchemeResponse>;
+  UpdateRewardScheme(
+    request: MsgUpdateRewardScheme
+  ): Promise<MsgUpdateRewardSchemeResponse>;
+  AddReserve(
+    request: MsgAddRewardReserve
+  ): Promise<MsgAddRewardReserveResponse>;
   SetStablecoinInterestRate(
     request: MsgSetStablecoinInterestRate
   ): Promise<MsgSetStablecoinInterestRateResponse>;
@@ -4118,6 +4670,9 @@ export class MsgClientImpl implements Msg {
     this.SetInterestFee = this.SetInterestFee.bind(this);
     this.RepayAssetWithCdpTokens = this.RepayAssetWithCdpTokens.bind(this);
     this.RepayAssetWithCollateral = this.RepayAssetWithCollateral.bind(this);
+    this.CreateRewardScheme = this.CreateRewardScheme.bind(this);
+    this.UpdateRewardScheme = this.UpdateRewardScheme.bind(this);
+    this.AddReserve = this.AddReserve.bind(this);
     this.SetStablecoinInterestRate = this.SetStablecoinInterestRate.bind(this);
     this.MintStablecoin = this.MintStablecoin.bind(this);
     this.ReturnStablecoin = this.ReturnStablecoin.bind(this);
@@ -4370,6 +4925,48 @@ export class MsgClientImpl implements Msg {
     );
   }
 
+  CreateRewardScheme(
+    request: MsgCreateRewardScheme
+  ): Promise<MsgCreateRewardSchemeResponse> {
+    const data = MsgCreateRewardScheme.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Msg",
+      "CreateRewardScheme",
+      data
+    );
+    return promise.then((data) =>
+      MsgCreateRewardSchemeResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  UpdateRewardScheme(
+    request: MsgUpdateRewardScheme
+  ): Promise<MsgUpdateRewardSchemeResponse> {
+    const data = MsgUpdateRewardScheme.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Msg",
+      "UpdateRewardScheme",
+      data
+    );
+    return promise.then((data) =>
+      MsgUpdateRewardSchemeResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  AddReserve(
+    request: MsgAddRewardReserve
+  ): Promise<MsgAddRewardReserveResponse> {
+    const data = MsgAddRewardReserve.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Msg",
+      "AddReserve",
+      data
+    );
+    return promise.then((data) =>
+      MsgAddRewardReserveResponse.decode(new _m0.Reader(data))
+    );
+  }
+
   SetStablecoinInterestRate(
     request: MsgSetStablecoinInterestRate
   ): Promise<MsgSetStablecoinInterestRateResponse> {
@@ -4510,6 +5107,32 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+function toTimestamp(date: Date): Timestamp {
+  const seconds = numberToLong(date.getTime() / 1_000);
+  const nanos = (date.getTime() % 1_000) * 1_000_000;
+  return { seconds, nanos };
+}
+
+function fromTimestamp(t: Timestamp): Date {
+  let millis = t.seconds.toNumber() * 1_000;
+  millis += t.nanos / 1_000_000;
+  return new Date(millis);
+}
+
+function fromJsonTimestamp(o: any): Date {
+  if (o instanceof Date) {
+    return o;
+  } else if (typeof o === "string") {
+    return new Date(o);
+  } else {
+    return fromTimestamp(Timestamp.fromJSON(o));
+  }
+}
+
+function numberToLong(number: number) {
+  return Long.fromNumber(number);
+}
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
