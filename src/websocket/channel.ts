@@ -6,6 +6,8 @@ import {
   WsSubscribeOrdersByMarketParams, WsSubscribePoolsAllParams, WsSubscribePoolsByIdParams, WsSubscribePositionsAllParams,
   WsSubscribePositionsByMarketParams, WsSubscribeRecentTradesParams, WsSubscribeWalletBalanceParams, WsSubscriptionParams,
   WsSubscribeTokenDebt,
+  WsSubscribeRewardSchemes,
+  WsSubscribeRewardDebts,
 } from './types'
 
 export const generateChannelId = (params: WsSubscriptionParams): string => {
@@ -97,6 +99,14 @@ export const generateChannelId = (params: WsSubscriptionParams): string => {
     case WSChannel.cdp_token_debt: {
       const { channel, denom } = params as WsSubscribeTokenDebt
       return [channel, denom].join(':')
+    }
+    case WSChannel.cdp_reward_schemes: {
+      const { channel, address } = params as WsSubscribeRewardSchemes
+      return [channel, address].join(':')
+    }
+    case WSChannel.cdp_reward_debts: {
+      const { channel, address } = params as WsSubscribeRewardDebts
+      return [channel, address].join(':')
     }
     default:
       throw new Error(`invalid subscription channel: ${params.channel}`)
@@ -218,6 +228,14 @@ export const parseChannelId = (rawChannelId: string): WsSubscriptionParams => {
         channel,
         denom,
       } as WsSubscribeTokenDebt
+    case WSChannel.cdp_reward_schemes:
+      return {
+        address,
+      } as WsSubscribeRewardSchemes
+    case WSChannel.cdp_reward_debts:
+      return {
+        address,
+      } as WsSubscribeRewardDebts
     default:
       throw new Error('Error parsing channelId')
   }

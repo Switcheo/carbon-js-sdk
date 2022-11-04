@@ -229,7 +229,7 @@ export interface AssetParams { // CDP
   denom: string
   oracle_id: string
   rate_strategy_name: string
-  repay_stablecoin_interest_debt: boolean
+  allow_repay_stablecoin_interest_debt: boolean
   loan_to_value: string // string representation of number
   liquidation_threshold: string // string representation of number
   liquidation_bonus: string // string representation of number
@@ -289,7 +289,7 @@ export interface CDPDebtInfo {
   last_updated_time: string // string representation of timestamp
   total_principal: string // string representation of number
   cumulative_interest_multiplier: string // string representation of number
-  initial_cumulative_interest_multiplier: string // string representation of number
+  total_accumulated_interest: string // string representation of number
   utilization_rate: string // string representation of number
 }
 
@@ -298,7 +298,7 @@ export interface CDPStableCoinDebtInfo {
   last_updated_time: string // string representation of timestamp
   total_principal: string // string representation of number
   cumulative_interest_multiplier: string // string representation of number
-  initial_cumulative_interest_multiplier: string // string representation of number
+  total_accumulated_interest: string // string representation of number
 }
 
 export interface CDPLiquidation {
@@ -316,4 +316,24 @@ export interface CDPLiquidation {
   block_height: number
   block_time: string // string representation of timestamp
   transaction_hash: string
+}
+
+export interface RewardScheme {
+  id: number;
+  creator: string;
+  reward_denom: string;
+  asset_denom: string;
+  reward_type: string;
+  reward_amount_per_second: string; // string representation of number
+  start_time: string; // string representation of timestamp
+  end_time: string; // string representation of timestamp
+  reward_reserve_amount: string; // string representation of number
+  reward_per_share_last_updated_at: string; // string representation of timestamp
+  reward_per_share: string; // string representation of number
+}
+
+export interface RewardDebt {
+  user_address: string;
+  reward_scheme_id: number;
+  reward_debt: string; // string representation of number
 }
