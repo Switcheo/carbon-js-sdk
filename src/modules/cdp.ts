@@ -338,11 +338,10 @@ export class CDPModule extends BaseModule {
     }
 
     const accountStablecoin = await sdk.query.cdp.AccountStablecoin({address: account})
-    const usdValue = await sdk.getTokenClient().getUSDValue(stablecoinDebtInfo.denom) ?? BN_ZERO
     const stablecoinDecimals = await this.sdkProvider.getTokenClient().getDecimals(stablecoinDebtInfo.denom) ?? BN_ZERO
-
     const stablecoinDebtAmount = bnOrZero(accountStablecoin.principalDebt).plus(bnOrZero(accountStablecoin.interestDebt))
-    const stablecoinDebtUsd = (stablecoinDebtAmount.times(usdValue)).shiftedBy(-stablecoinDecimals)
+    const stablecoinDebtUsd = stablecoinDebtAmount.shiftedBy(-stablecoinDecimals)
+
     totalDebtsUsd = totalDebtsUsd.plus(stablecoinDebtUsd)
 
     const healthFactor = currLiquidationThreshold.div(totalDebtsUsd)
@@ -672,20 +671,28 @@ export class CDPModule extends BaseModule {
 
   public async getMaxCollateralForUnlock(account:string, cdpDenom:string) {
     const sdk = this.sdkProvider
+
     const denom = await this.getUnderlyingDenom(cdpDenom)
     if (!denom) return
+
     const assetParams = await sdk.query.cdp.Asset({denom: denom})
     if (!assetParams.assetParams) return
     const ltv = new BigNumber(assetParams.assetParams.loanToValue)
+
     const accountData = await this.getAccountData(account)
     if (!accountData) return
-    const availableBorrowsUsd = accountData.AvailableBorrowsUsd.minus(accountData.TotalDebtsUsd)
-    const unlockableUsd = availableBorrowsUsd.multipliedBy(10000).div(ltv)
-    const cdpTokenPrice = await this.getCdpTokenPrice(cdpDenom)
-    if (!cdpTokenPrice) return
+
     const tokenDecimals = await sdk.getTokenClient().getDecimals(denom)
     if (!tokenDecimals) return
-    const cdpTokensUnlockableAmt = unlockableUsd.div(cdpTokenPrice).shiftedBy(tokenDecimals)
+    const availableBorrowsUsd = accountData.AvailableBorrowsUsd.minus(accountData.TotalDebtsUsd)
+    const unlockableUsd = availableBorrowsUsd.multipliedBy(10000).div(ltv)
+    const tokenPrice = await sdk.query.pricing.TokenPrice({denom: denom})
+    if (!tokenPrice.tokenPrice) return
+
+    const tokenTwap = new BigNumber(tokenPrice.tokenPrice.twap)
+    const tokenAmt = unlockableUsd.div(tokenTwap.shiftedBy(-18)).shiftedBy(tokenDecimals)
+    const cdpToActualRatio = await this.getCdpToActualRatio(cdpDenom) ?? BN_ZERO
+    const cdpTokenAmt = tokenAmt.multipliedBy(cdpToActualRatio)
 
     // take the min of cdpTokensUnlockableAmt and locked tokens
     const accountCollateral = await sdk.query.cdp.AccountCollateral({
@@ -695,11 +702,10 @@ export class CDPModule extends BaseModule {
     if (!accountCollateral.collateral) return
     const lockedAmount = new BigNumber(accountCollateral.collateral.collateralAmount)
 
-    if (lockedAmount.lt(cdpTokensUnlockableAmt)) {
+    if (lockedAmount.lt(cdpTokenAmt)) {
       return lockedAmount
     }
-
-    return cdpTokensUnlockableAmt
+    return cdpTokenAmt
   }
 
   public async getCdpTokenPrice(cdpDenom:string) {
