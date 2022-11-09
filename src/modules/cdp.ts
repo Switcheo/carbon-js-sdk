@@ -19,6 +19,9 @@ import {
 import {
   MsgBorrowAsset,
   MsgLiquidateCollateral,
+  MsgLiquidateCollateralWithCdpTokens,
+  MsgLiquidateCollateralWithCollateral,
+  MsgLiquidateCollateralWithStablecoin,
   MsgLockCollateral,
   MsgMintStablecoin,
   MsgRepayAsset,
@@ -189,6 +192,64 @@ export class CDPModule extends BaseModule {
     }, opts);
   }
 
+  public async liquidateCollateralWithCdpTokens(params: CDPModule.LiquidateCollateralWithCdpTokensParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+    const value = MsgLiquidateCollateralWithCdpTokens.fromPartial({
+      creator: wallet.bech32Address,
+      debtor: params.debtor,
+      collateralDenom: params.collateralDenom,
+      minCollateralAmount: params.minCollateralAmount.toString(10),
+      debtDenom: params.debtDenom,
+      debtAmount: params.debtAmount.toString(10),
+      debtCollateralDenom: params.debtCollateralDenom,
+      debtCollateralAmount: params.debtCollateralAmount.toString(10)
+    })
+
+    return await wallet.sendTx({
+      typeUrl: CarbonTx.Types.MsgLiquidateCollateralWithCdpTokens,
+      value
+    }, opts);
+  }
+
+  public async liquidateCollateralWithCollateral(params: CDPModule.LiquidateCollateralWithCollateralParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+    const value = MsgLiquidateCollateralWithCollateral.fromPartial({
+      creator: wallet.bech32Address,
+      debtor: params.debtor,
+      collateralDenom: params.collateralDenom,
+      minCollateralAmount: params.minCollateralAmount.toString(10),
+      debtDenom: params.debtDenom,
+      debtAmount: params.debtAmount.toString(10),
+      debtCollateralDenom: params.debtCollateralDenom,
+      debtCollateralAmount: params.debtCollateralAmount.toString(10)
+    })
+
+    return await wallet.sendTx({
+      typeUrl: CarbonTx.Types.MsgLiquidateCollateralWithCollateral,
+      value
+    }, opts);
+  }
+
+  public async liquidateCollateralWithStablecoin(params: CDPModule.LiquidateCollateralWithStablecoinParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+    const value = MsgLiquidateCollateralWithStablecoin.fromPartial({
+      creator: wallet.bech32Address,
+      debtor: params.debtor,
+      collateralDenom: params.collateralDenom,
+      minCollateralAmount: params.minCollateralAmount.toString(10),
+      debtDenom: params.debtDenom,
+      debtAmount: params.debtAmount.toString(10),
+      principalAmount: params.principalAmount.toString(10),
+      interestDenom: params.interestDenom,
+      interestAmount: params.interestAmount.toString(10),
+    })
+
+    return await wallet.sendTx({
+      typeUrl: CarbonTx.Types.MsgLiquidateCollateralWithStablecoin,
+      value
+    }, opts);
+  }
+
   public async repayAssetWithCdpTokens(params: CDPModule.RepayAssetWithCdpTokensParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
     const debtor = params.debtor ? params.debtor : wallet.bech32Address;
@@ -308,7 +369,7 @@ export class CDPModule extends BaseModule {
       availableBorrowsUsd = availableBorrowsUsd.plus(availableBorrowUsd)
       currLiquidationThreshold = currLiquidationThreshold.plus(liquidationThresholdVal)
     }
-    
+
     // add token debts
     const debtsRsp = await sdk.query.cdp.AccountDebtAll(QueryAccountDebtAllRequest.fromPartial({ address: account }))
     const debts = debtsRsp.debts
@@ -656,7 +717,7 @@ export class CDPModule extends BaseModule {
         return BN_ZERO;
       }
     }
-    
+
     const paramsResponse = await sdk.query.cdp.Params(QueryCdpParamsRequest.fromPartial({}))
     const cim = bnOrZero(debtInfo.cumulativeInterestMultiplier)
     const apy = bnOrZero(paramsResponse.params?.stablecoinInterestRate)
@@ -768,6 +829,31 @@ export namespace CDPModule {
     minCollateralAmount: BigNumber
     debtDenom: string
     debtAmount: BigNumber
+  }  export interface LiquidateCollateralWithCdpTokensParams {
+    debtor: string
+    collateralDenom: string
+    minCollateralAmount: BigNumber
+    debtDenom: string
+    debtAmount: BigNumber
+    debtCollateralDenom: string
+    debtCollateralAmount: BigNumber
+  }  export interface LiquidateCollateralWithCollateralParams {
+    debtor: string
+    collateralDenom: string
+    minCollateralAmount: BigNumber
+    debtDenom: string
+    debtAmount: BigNumber
+    debtCollateralDenom: string
+    debtCollateralAmount: BigNumber
+  }  export interface LiquidateCollateralWithStablecoinParams {
+    debtor: string
+    collateralDenom: string
+    minCollateralAmount: BigNumber
+    debtDenom: string
+    debtAmount: BigNumber
+    principalAmount: BigNumber
+    interestDenom: string
+    interestAmount: BigNumber
   }
   export interface RepayAssetWithCdpTokensParams {
     debtor?: string
