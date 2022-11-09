@@ -32,7 +32,10 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
   UpdateAsset: "cdp/UpdateAsset",
   SetLiquidationFee: "cdp/SetLiquidationFee",
   SetInterestFee: "cdp/SetInterestFee",
-  SetStableCoinInterestRate: "cdp/SetStableCoinInterestRate",
+  SetStablecoinInterestRate: "cdp/SetStablecoinInterestRate",
+  SetCompleteLiquidationThreshold: "cdp/SetCompleteLiquidationThreshold",
+  SetMinimumCloseFactor: "cdp/SetMinimumCloseFactor",
+  SetSmallLiquidationSize: "cdp/SetSmallLiquidationSize",
 }
 
 const MsgCreateOracle: AminoInit = {
@@ -183,42 +186,63 @@ const MsgEditValidator: AminoInit = {
 
 const MsgAddRateStrategy: AminoInit = {
   aminoType: TxTypes.AddRateStrategy,
-  valueMap: {}
+  valueMap: {},
 }
 
 const MsgUpdateRateStrategy: AminoInit = {
   aminoType: TxTypes.UpdateRateStrategy,
-  valueMap: {}
+  valueMap: {},
 }
 
 const MsgRemoveRateStrategy: AminoInit = {
   aminoType: TxTypes.RemoveRateStrategy,
-  valueMap: {}
+  valueMap: {},
 }
 
 const MsgAddAsset: AminoInit = {
   aminoType: TxTypes.AddAsset,
-  valueMap: {}
+  valueMap: {},
 }
 
 const MsgUpdateAsset: AminoInit = {
   aminoType: TxTypes.UpdateAsset,
-  valueMap: {}
+  valueMap: {},
 }
 
 const MsgSetLiquidationFee: AminoInit = {
   aminoType: TxTypes.SetLiquidationFee,
-  valueMap: {}
+  valueMap: {},
 }
 
 const MsgSetInterestFee: AminoInit = {
   aminoType: TxTypes.SetInterestFee,
-  valueMap: {}
+  valueMap: {},
 }
 
-const MsgSetStableCoinInterestRate: AminoInit = {
-  aminoType: TxTypes.SetStableCoinInterestRate,
-  valueMap: {}
+const MsgSetStablecoinInterestRate: AminoInit = {
+  aminoType: TxTypes.SetStablecoinInterestRate,
+  valueMap: {},
+}
+
+const MsgSetCompleteLiquidationThreshold: AminoInit = {
+  aminoType: TxTypes.SetCompleteLiquidationThreshold,
+  valueMap: {
+    completeLiquidationThreshold: ConvertEncType.Dec,
+  },
+}
+
+const MsgSetMinimumCloseFactor: AminoInit = {
+  aminoType: TxTypes.SetMinimumCloseFactor,
+  valueMap: {
+    minimumCloseFactor: ConvertEncType.Dec,
+  },
+}
+
+const MsgSetSmallLiquidationSize: AminoInit = {
+  aminoType: TxTypes.SetSmallLiquidationSize,
+  valueMap: {
+    smallLiquidationSize: ConvertEncType.Dec,
+  },
 }
 
 const AdminAmino: TypeUtils.SimpleMap<AminoConverter> = {
@@ -248,7 +272,10 @@ const AdminAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgUpdateAsset]: generateAminoType(MsgUpdateAsset),
   [CarbonTx.Types.MsgSetLiquidationFee]: generateAminoType(MsgSetLiquidationFee),
   [CarbonTx.Types.MsgSetInterestFee]: generateAminoType(MsgSetInterestFee),
-  [CarbonTx.Types.MsgSetStablecoinInterestRate]: generateAminoType(MsgSetStableCoinInterestRate),
+  [CarbonTx.Types.MsgSetStablecoinInterestRate]: generateAminoType(MsgSetStablecoinInterestRate),
+  [CarbonTx.Types.MsgSetCompleteLiquidationThreshold]: generateAminoType(MsgSetCompleteLiquidationThreshold),
+  [CarbonTx.Types.MsgSetMinimumCloseFactor]: generateAminoType(MsgSetMinimumCloseFactor),
+  [CarbonTx.Types.MsgSetSmallLiquidationSize]: generateAminoType(MsgSetSmallLiquidationSize),
 };
 
 export default AdminAmino;

@@ -829,7 +829,8 @@ export namespace CDPModule {
     minCollateralAmount: BigNumber
     debtDenom: string
     debtAmount: BigNumber
-  }  export interface LiquidateCollateralWithCdpTokensParams {
+  }
+  export interface LiquidateCollateralWithCdpTokensParams {
     debtor: string
     collateralDenom: string
     minCollateralAmount: BigNumber
@@ -837,7 +838,8 @@ export namespace CDPModule {
     debtAmount: BigNumber
     debtCollateralDenom: string
     debtCollateralAmount: BigNumber
-  }  export interface LiquidateCollateralWithCollateralParams {
+  }
+  export interface LiquidateCollateralWithCollateralParams {
     debtor: string
     collateralDenom: string
     minCollateralAmount: BigNumber
@@ -845,7 +847,8 @@ export namespace CDPModule {
     debtAmount: BigNumber
     debtCollateralDenom: string
     debtCollateralAmount: BigNumber
-  }  export interface LiquidateCollateralWithStablecoinParams {
+  }
+  export interface LiquidateCollateralWithStablecoinParams {
     debtor: string
     collateralDenom: string
     minCollateralAmount: BigNumber
