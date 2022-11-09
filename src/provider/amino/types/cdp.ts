@@ -1,7 +1,7 @@
 import { TypeUtils } from "@carbon-sdk/util";
 import * as CarbonTx from "@carbon-sdk/util/tx";
 import { AminoConverter } from "@cosmjs/stargate";
-import { AminoInit, ConvertEncType, generateAminoType } from "../utils";
+import { AminoInit, generateAminoType } from "../utils";
 
 const TxTypes: TypeUtils.SimpleMap<string> = {
   SupplyAsset: "cdp/SupplyAsset",
@@ -16,6 +16,10 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
   RepayAssetWithCdpTokens: "cdp/RepayAssetWithCdpTokens",
   RepayAssetWithCollateral: "cdp/RepayAssetWithCollateral",
   MintStablecoin: "cdp/MintStablecoin",
+  ReturnStablecoin: "cdp/ReturnStablecoin",
+  LiquidateCollateralWithCdpTokens: "cdp/LiquidateCollateralWithCdpTokens",
+  LiquidateCollateralWithCollateral: "cdp/LiquidateCollateralWithCollateral",
+  LiquidateCollateralWithStablecoin: "cdp/LiquidateCollateralWithStablecoin",
 };
 
 const MsgSupplyAsset: AminoInit = {
@@ -78,6 +82,26 @@ const MsgMintStablecoin: AminoInit = {
   valueMap: {},
 };
 
+const MsgReturnStablecoin: AminoInit = {
+  aminoType: TxTypes.ReturnStablecoin,
+  valueMap: {},
+}
+
+const MsgLiquidateCollateralWithCdpTokens: AminoInit = {
+  aminoType: TxTypes.LiquidateCollateralWithCdpTokens,
+  valueMap: {},
+}
+
+const MsgLiquidateCollateralWithCollateral: AminoInit = {
+  aminoType: TxTypes.LiquidateCollateralWithCollateral,
+  valueMap: {},
+}
+
+const MsgLiquidateCollateralWithStablecoin: AminoInit = {
+  aminoType: TxTypes.LiquidateCollateralWithStablecoin,
+  valueMap: {},
+}
+
 const CdpAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgSupplyAsset]: generateAminoType(MsgSupplyAsset),
   [CarbonTx.Types.MsgWithdrawAsset]: generateAminoType(MsgWithdrawAsset),
@@ -91,6 +115,10 @@ const CdpAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgRepayAssetWithCdpTokens]: generateAminoType(MsgRepayAssetWithCdpTokens),
   [CarbonTx.Types.MsgRepayAssetWithCollateral]: generateAminoType(MsgRepayAssetWithCollateral),
   [CarbonTx.Types.MsgMintStablecoin]: generateAminoType(MsgMintStablecoin),
+  [CarbonTx.Types.MsgReturnStablecoin]: generateAminoType(MsgReturnStablecoin),
+  [CarbonTx.Types.MsgLiquidateCollateralWithCdpTokens]: generateAminoType(MsgLiquidateCollateralWithCdpTokens),
+  [CarbonTx.Types.MsgLiquidateCollateralWithCollateral]: generateAminoType(MsgLiquidateCollateralWithCollateral),
+  [CarbonTx.Types.MsgLiquidateCollateralWithStablecoin]: generateAminoType(MsgLiquidateCollateralWithStablecoin),
 };
 
 export default CdpAmino;
