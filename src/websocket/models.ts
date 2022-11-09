@@ -182,24 +182,24 @@ export interface CommitmentEvent extends Commitment {
 }
 
 export interface CDPParams {
-  interest_fee: string // string representation of number
-  liquidation_fee: string // string representation of number
-  stablecoin_interest_rate: string // string representation of number
-  complete_liquidation_threshold: string // string representation of number
-  minimum_close_factor: string // string representation of number
-  small_liquidation_size: string // string representation of number
+  interest_fee: string; // string representation of number
+  liquidation_fee: string; // string representation of number
+  stablecoin_interest_rate: string; // string representation of number
+  complete_liquidation_threshold: string; // string representation of number
+  minimum_close_factor: string; // string representation of number
+  small_liquidation_size: string; // string representation of number
 }
 
 export interface RateStrategy { // CDP
-  name: string
-  optimal_usage: string // string representation of number
-  base_variable_borrow_rate: string // string representation of number
-  variable_rate_slope_1: string // string representation of number
-  variable_rate_slope_2: string // string representation of number
-  base_stable_borrow_rate: string // string representation of number
-  stable_rate_slope_1: string // string representation of number
-  stable_rate_slope_2: string // string representation of number
-  optimal_stable_to_total_debt_ratio: string // string representation of number
+  name: string;
+  optimal_usage: string; // string representation of number
+  base_variable_borrow_rate: string; // string representation of number
+  variable_rate_slope_1: string; // string representation of number
+  variable_rate_slope_2: string; // string representation of number
+  base_stable_borrow_rate: string; // string representation of number
+  stable_rate_slope_1: string; // string representation of number
+  stable_rate_slope_2: string; // string representation of number
+  optimal_stable_to_total_debt_ratio: string; // string representation of number
 }
 
 /**
@@ -208,53 +208,53 @@ export interface RateStrategy { // CDP
 */
 export interface Asset { // CDP
   asset_params: {
-    denom: string
-    oracle_id: string
-    rate_strategy_name: string
-    loan_to_value: string // string representation of number
-    liquidation_threshold: string // string representation of number
-    liquidation_bonus: string // string representation of number
-    supply_cap: string // string representation of number
-    borrow_cap: string // string representation of number
+    denom: string;
+    oracle_id: string;
+    rate_strategy_name: string;
+    loan_to_value: string; // string representation of number
+    liquidation_threshold: string; // string representation of number
+    liquidation_bonus: string; // string representation of number
+    supply_cap: string; // string representation of number
+    borrow_cap: string; // string representation of number
   },
   asset_utilization: {
-    denom: string
-    total_borrowed: string
-    total_amount: string
-    utilization_rate: string
+    denom: string;
+    total_borrowed: string;
+    total_amount: string;
+    utilization_rate: string;
   },
 }
 
 export interface AssetParams { // CDP
-  denom: string
-  oracle_id: string
-  rate_strategy_name: string
-  allow_repay_stablecoin_interest_debt: boolean
-  loan_to_value: string // string representation of number
-  liquidation_threshold: string // string representation of number
-  liquidation_bonus: string // string representation of number
-  supply_cap: string // string representation of number
-  borrow_cap: string // string representation of number
+  denom: string;
+  oracle_id: string;
+  rate_strategy_name: string;
+  allow_repay_stablecoin_interest_debt: boolean;
+  loan_to_value: string; // string representation of number
+  liquidation_threshold: string; // string representation of number
+  liquidation_bonus: string; // string representation of number
+  supply_cap: string; // string representation of number
+  borrow_cap: string; // string representation of number
 }
 
 export interface Collateral { // CDP
-  cdp_denom: string
-  denom: string
-  collateral_amount: string // string representation of number
+  cdp_denom: string;
+  denom: string;
+  collateral_amount: string; // string representation of number
 }
 
 export interface Debt { // CDP
-  denom: string
-  principal_debt: string // string representation of number
-  initial_cumulative_interest_multiplier: string // string representation of number
+  denom: string;
+  principal_debt: string; // string representation of number
+  initial_cumulative_interest_multiplier: string; // string representation of number
 }
 
 export interface AccountData {
-  total_collaterals_usd: string // string representation of number
-	total_debts_usd: string // string representation of number
-	available_borrows_usd: string // string representation of number
-	curr_liquidation_threshold: string // string representation of number
-	health_factor: string // string representation of number
+  total_collaterals_usd: string; // string representation of number
+	total_debts_usd: string; // string representation of number
+	available_borrows_usd: string; // string representation of number
+	curr_liquidation_threshold: string; // string representation of number
+	health_factor: string; // string representation of number
 }
 
 export interface CDPAccountStablecoin {
@@ -268,10 +268,11 @@ export interface CDPAccountStablecoin {
  * Do not confuse with Debt
 */
 export interface CDPBorrow {
-  address: string
-	amount: string // string representation of number
-	denom: string
-  type: string
+  address: string;
+	amount: string; // string representation of number
+	denom: string;
+  type: string;
+  initial_cumulative_interest_multiplier?: string; // string representation of number
 }
 
 /**
@@ -279,43 +280,43 @@ export interface CDPBorrow {
  * Do not confuse with Collateral
 */
 export interface CDPCollateral {
-  address: string
-  amount: string // string representation of number
-  denom: string
+  address: string;
+  amount: string; // string representation of number
+  denom: string;
 }
 
 export interface CDPDebtInfo {
-  denom: string
-  last_updated_time: string // string representation of timestamp
-  total_principal: string // string representation of number
-  cumulative_interest_multiplier: string // string representation of number
-  total_accumulated_interest: string // string representation of number
-  utilization_rate: string // string representation of number
+  denom: string;
+  last_updated_time: string; // string representation of timestamp
+  total_principal: string; // string representation of number
+  cumulative_interest_multiplier: string; // string representation of number
+  total_accumulated_interest: string; // string representation of number
+  utilization_rate: string; // string representation of number
 }
 
 export interface CDPStableCoinDebtInfo {
-  denom: string
-  last_updated_time: string // string representation of timestamp
-  total_principal: string // string representation of number
-  cumulative_interest_multiplier: string // string representation of number
-  total_accumulated_interest: string // string representation of number
+  denom: string;
+  last_updated_time: string; // string representation of timestamp
+  total_principal: string; // string representation of number
+  cumulative_interest_multiplier: string; // string representation of number
+  total_accumulated_interest: string; // string representation of number
 }
 
 export interface CDPLiquidation {
-  liquidator: string
-  debtor: string
-  collateral_denom: string
-  collateral_amount_liquidated: string // string representation of number
-  collateral_amount_liquidator: string // string representation of number
-  collateral_amount_fee: string // string representation of number
-  liquidation_price: string // string representation of number
-  market_price: string // string representation of number
-  discount: string // string representation of number
-  debt_denom: string
-  debt_amount: string // string representation of number
-  block_height: number
-  block_time: string // string representation of timestamp
-  transaction_hash: string
+  liquidator: string;
+  debtor: string;
+  collateral_denom: string;
+  collateral_amount_liquidated: string; // string representation of number
+  collateral_amount_liquidator: string; // string representation of number
+  collateral_amount_fee: string; // string representation of number
+  liquidation_price: string; // string representation of number
+  market_price: string; // string representation of number
+  discount: string; // string representation of number
+  debt_denom: string;
+  debt_amount: string; // string representation of number
+  block_height: number;
+  block_time: string; // string representation of timestamp
+  transaction_hash: string;
 }
 
 export interface RewardScheme {
