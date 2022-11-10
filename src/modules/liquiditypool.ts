@@ -224,16 +224,16 @@ export namespace LiquidityPoolModule {
   }
 
   export interface ClaimMultiPoolRewards {
-    pools: string[],
-    creator?: string,
+    pools: string[];
+    creator?: string;
   }
 
   export interface UnclaimedRewards {
-    [key: string]: BigNumber
+    [key: string]: BigNumber;
   }
 
   export interface EstimateUnclaimedRewardsMsg {
-    poolId: string
-    address: string
+    poolId: string;
+    address: string;
   }
 };
