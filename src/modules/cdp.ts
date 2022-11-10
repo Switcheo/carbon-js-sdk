@@ -275,7 +275,7 @@ export class CDPModule extends BaseModule {
 
     const value = MsgRepayAssetWithCollateral.fromPartial({
       creator: wallet.bech32Address,
-      debtor: params.debtor,
+      debtor: debtor,
       debtDenom: params.debtDenom,
       cdpDenom: params.cdpDenom,
       cdpAmount: params.cdpAmount.toString(10),
@@ -879,7 +879,6 @@ export namespace CDPModule {
   }
 
   export interface ReturnStablecoinParams {
-    creator: string
     principalAmount: BigNumber
     interestDenom: string
     interestAmount: BigNumber
