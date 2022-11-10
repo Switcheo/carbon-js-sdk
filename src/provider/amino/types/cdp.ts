@@ -20,6 +20,7 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
   LiquidateCollateralWithCdpTokens: "cdp/LiquidateCollateralWithCdpTokens",
   LiquidateCollateralWithCollateral: "cdp/LiquidateCollateralWithCollateral",
   LiquidateCollateralWithStablecoin: "cdp/LiquidateCollateralWithStablecoin",
+  ClaimRewards: "cdp/ClaimRewards",
 };
 
 const MsgSupplyAsset: AminoInit = {
@@ -102,6 +103,11 @@ const MsgLiquidateCollateralWithStablecoin: AminoInit = {
   valueMap: {},
 }
 
+const MsgClaimRewards: AminoInit = {
+  aminoType: TxTypes.ClaimRewards,
+  valueMap: {},
+}
+
 const CdpAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgSupplyAsset]: generateAminoType(MsgSupplyAsset),
   [CarbonTx.Types.MsgWithdrawAsset]: generateAminoType(MsgWithdrawAsset),
@@ -119,6 +125,7 @@ const CdpAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgLiquidateCollateralWithCdpTokens]: generateAminoType(MsgLiquidateCollateralWithCdpTokens),
   [CarbonTx.Types.MsgLiquidateCollateralWithCollateral]: generateAminoType(MsgLiquidateCollateralWithCollateral),
   [CarbonTx.Types.MsgLiquidateCollateralWithStablecoin]: generateAminoType(MsgLiquidateCollateralWithStablecoin),
+  [CarbonTx.Types.MsgClaimRewards]: generateAminoType(MsgClaimRewards),
 };
 
 export default CdpAmino;
