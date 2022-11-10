@@ -24,8 +24,8 @@ export class OracleModule extends BaseModule {
 
 export namespace OracleModule {
   export interface CreateVoteParams {
-    oracleId: string
-    timestamp: number,
-    data: string,
+    oracleId: string;
+    timestamp: number;
+    data: string;
   }
 };

@@ -15,7 +15,6 @@ export interface RewardScheme {
   rewardAmountPerSecond: string;
   startTime?: Date;
   endTime?: Date;
-  rewardReserveAmount: string;
   rewardPerShareLastUpdatedAt?: Date;
   rewardPerShare: string;
 }
@@ -27,7 +26,6 @@ export interface CreateRewardSchemeParams {
   rewardAmountPerSecond: string;
   startTime?: Date;
   endTime?: Date;
-  reservesAmount: string;
 }
 
 export interface UpdateRewardSchemeParams {
@@ -60,7 +58,6 @@ const baseRewardScheme: object = {
   assetDenom: "",
   rewardType: "",
   rewardAmountPerSecond: "",
-  rewardReserveAmount: "",
   rewardPerShare: "",
 };
 
@@ -99,17 +96,14 @@ export const RewardScheme = {
         writer.uint32(66).fork()
       ).ldelim();
     }
-    if (message.rewardReserveAmount !== "") {
-      writer.uint32(74).string(message.rewardReserveAmount);
-    }
     if (message.rewardPerShareLastUpdatedAt !== undefined) {
       Timestamp.encode(
         toTimestamp(message.rewardPerShareLastUpdatedAt),
-        writer.uint32(82).fork()
+        writer.uint32(74).fork()
       ).ldelim();
     }
     if (message.rewardPerShare !== "") {
-      writer.uint32(90).string(message.rewardPerShare);
+      writer.uint32(82).string(message.rewardPerShare);
     }
     return writer;
   },
@@ -150,14 +144,11 @@ export const RewardScheme = {
           );
           break;
         case 9:
-          message.rewardReserveAmount = reader.string();
-          break;
-        case 10:
           message.rewardPerShareLastUpdatedAt = fromTimestamp(
             Timestamp.decode(reader, reader.uint32())
           );
           break;
-        case 11:
+        case 10:
           message.rewardPerShare = reader.string();
           break;
         default:
@@ -203,11 +194,6 @@ export const RewardScheme = {
       object.endTime !== undefined && object.endTime !== null
         ? fromJsonTimestamp(object.endTime)
         : undefined;
-    message.rewardReserveAmount =
-      object.rewardReserveAmount !== undefined &&
-      object.rewardReserveAmount !== null
-        ? String(object.rewardReserveAmount)
-        : "";
     message.rewardPerShareLastUpdatedAt =
       object.rewardPerShareLastUpdatedAt !== undefined &&
       object.rewardPerShareLastUpdatedAt !== null
@@ -235,8 +221,6 @@ export const RewardScheme = {
       (obj.startTime = message.startTime.toISOString());
     message.endTime !== undefined &&
       (obj.endTime = message.endTime.toISOString());
-    message.rewardReserveAmount !== undefined &&
-      (obj.rewardReserveAmount = message.rewardReserveAmount);
     message.rewardPerShareLastUpdatedAt !== undefined &&
       (obj.rewardPerShareLastUpdatedAt =
         message.rewardPerShareLastUpdatedAt.toISOString());
@@ -258,7 +242,6 @@ export const RewardScheme = {
     message.rewardAmountPerSecond = object.rewardAmountPerSecond ?? "";
     message.startTime = object.startTime ?? undefined;
     message.endTime = object.endTime ?? undefined;
-    message.rewardReserveAmount = object.rewardReserveAmount ?? "";
     message.rewardPerShareLastUpdatedAt =
       object.rewardPerShareLastUpdatedAt ?? undefined;
     message.rewardPerShare = object.rewardPerShare ?? "";
@@ -271,7 +254,6 @@ const baseCreateRewardSchemeParams: object = {
   assetDenom: "",
   rewardType: "",
   rewardAmountPerSecond: "",
-  reservesAmount: "",
 };
 
 export const CreateRewardSchemeParams = {
@@ -302,9 +284,6 @@ export const CreateRewardSchemeParams = {
         toTimestamp(message.endTime),
         writer.uint32(50).fork()
       ).ldelim();
-    }
-    if (message.reservesAmount !== "") {
-      writer.uint32(58).string(message.reservesAmount);
     }
     return writer;
   },
@@ -343,9 +322,6 @@ export const CreateRewardSchemeParams = {
             Timestamp.decode(reader, reader.uint32())
           );
           break;
-        case 7:
-          message.reservesAmount = reader.string();
-          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -383,10 +359,6 @@ export const CreateRewardSchemeParams = {
       object.endTime !== undefined && object.endTime !== null
         ? fromJsonTimestamp(object.endTime)
         : undefined;
-    message.reservesAmount =
-      object.reservesAmount !== undefined && object.reservesAmount !== null
-        ? String(object.reservesAmount)
-        : "";
     return message;
   },
 
@@ -402,8 +374,6 @@ export const CreateRewardSchemeParams = {
       (obj.startTime = message.startTime.toISOString());
     message.endTime !== undefined &&
       (obj.endTime = message.endTime.toISOString());
-    message.reservesAmount !== undefined &&
-      (obj.reservesAmount = message.reservesAmount);
     return obj;
   },
 
@@ -419,7 +389,6 @@ export const CreateRewardSchemeParams = {
     message.rewardAmountPerSecond = object.rewardAmountPerSecond ?? "";
     message.startTime = object.startTime ?? undefined;
     message.endTime = object.endTime ?? undefined;
-    message.reservesAmount = object.reservesAmount ?? "";
     return message;
   },
 };
