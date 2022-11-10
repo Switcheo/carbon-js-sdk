@@ -18,7 +18,7 @@ export interface ParameterChangeProposal {
 export interface ParamChange {
   subspace: string;
   key: string;
-  value: string;
+  value: string | number;
 }
 
 const baseParameterChangeProposal: object = { title: "", description: "" };
