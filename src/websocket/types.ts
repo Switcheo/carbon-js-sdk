@@ -137,6 +137,12 @@ export interface WsGetCdpStablecoinDebt { }
 
 export interface WsGetCdpLiquidations { }
 
+export interface WsGetCdpRewardSchemes { }
+
+export interface WsGetCdpRewardDebts {
+  address: string;
+}
+
 export interface WsSubscribeParams {
   channel: WSChannel
 }

@@ -10,10 +10,6 @@ import {
 import { AssetParams } from "./asset_params";
 import { DebtInfo } from "./debt_info";
 import { StablecoinDebtInfo } from "./stablecoin_debt_info";
-import {
-  PageRequest as PageRequest1,
-  PageResponse as PageResponse2,
-} from "../query/pagination";
 import { Coin } from "../cosmos/base/v1beta1/coin";
 import { RewardScheme, RewardDebt } from "./reward_scheme";
 
@@ -174,12 +170,14 @@ export interface CdpPosition {
 }
 
 export interface QueryCdpPositionsRequest {
-  pagination?: PageRequest1;
+  pagination?: PageRequest;
+  maxHealthFactor: string;
+  minHealthFactor: string;
 }
 
 export interface QueryCdpPositionsResponse {
   positions: CdpPosition[];
-  pagination?: PageResponse2;
+  pagination?: PageResponse;
 }
 
 export interface QueryRewardSchemesAllRequest {
@@ -2659,7 +2657,10 @@ export const CdpPosition = {
   },
 };
 
-const baseQueryCdpPositionsRequest: object = {};
+const baseQueryCdpPositionsRequest: object = {
+  maxHealthFactor: "",
+  minHealthFactor: "",
+};
 
 export const QueryCdpPositionsRequest = {
   encode(
@@ -2667,10 +2668,13 @@ export const QueryCdpPositionsRequest = {
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.pagination !== undefined) {
-      PageRequest1.encode(
-        message.pagination,
-        writer.uint32(10).fork()
-      ).ldelim();
+      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.maxHealthFactor !== "") {
+      writer.uint32(18).string(message.maxHealthFactor);
+    }
+    if (message.minHealthFactor !== "") {
+      writer.uint32(26).string(message.minHealthFactor);
     }
     return writer;
   },
@@ -2688,7 +2692,13 @@ export const QueryCdpPositionsRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.pagination = PageRequest1.decode(reader, reader.uint32());
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
+        case 2:
+          message.maxHealthFactor = reader.string();
+          break;
+        case 3:
+          message.minHealthFactor = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -2704,8 +2714,16 @@ export const QueryCdpPositionsRequest = {
     } as QueryCdpPositionsRequest;
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
-        ? PageRequest1.fromJSON(object.pagination)
+        ? PageRequest.fromJSON(object.pagination)
         : undefined;
+    message.maxHealthFactor =
+      object.maxHealthFactor !== undefined && object.maxHealthFactor !== null
+        ? String(object.maxHealthFactor)
+        : "";
+    message.minHealthFactor =
+      object.minHealthFactor !== undefined && object.minHealthFactor !== null
+        ? String(object.minHealthFactor)
+        : "";
     return message;
   },
 
@@ -2713,8 +2731,12 @@ export const QueryCdpPositionsRequest = {
     const obj: any = {};
     message.pagination !== undefined &&
       (obj.pagination = message.pagination
-        ? PageRequest1.toJSON(message.pagination)
+        ? PageRequest.toJSON(message.pagination)
         : undefined);
+    message.maxHealthFactor !== undefined &&
+      (obj.maxHealthFactor = message.maxHealthFactor);
+    message.minHealthFactor !== undefined &&
+      (obj.minHealthFactor = message.minHealthFactor);
     return obj;
   },
 
@@ -2726,8 +2748,10 @@ export const QueryCdpPositionsRequest = {
     } as QueryCdpPositionsRequest;
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
-        ? PageRequest1.fromPartial(object.pagination)
+        ? PageRequest.fromPartial(object.pagination)
         : undefined;
+    message.maxHealthFactor = object.maxHealthFactor ?? "";
+    message.minHealthFactor = object.minHealthFactor ?? "";
     return message;
   },
 };
@@ -2743,7 +2767,7 @@ export const QueryCdpPositionsResponse = {
       CdpPosition.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.pagination !== undefined) {
-      PageResponse2.encode(
+      PageResponse.encode(
         message.pagination,
         writer.uint32(18).fork()
       ).ldelim();
@@ -2768,7 +2792,7 @@ export const QueryCdpPositionsResponse = {
           message.positions.push(CdpPosition.decode(reader, reader.uint32()));
           break;
         case 2:
-          message.pagination = PageResponse2.decode(reader, reader.uint32());
+          message.pagination = PageResponse.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -2787,7 +2811,7 @@ export const QueryCdpPositionsResponse = {
     );
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
-        ? PageResponse2.fromJSON(object.pagination)
+        ? PageResponse.fromJSON(object.pagination)
         : undefined;
     return message;
   },
@@ -2803,7 +2827,7 @@ export const QueryCdpPositionsResponse = {
     }
     message.pagination !== undefined &&
       (obj.pagination = message.pagination
-        ? PageResponse2.toJSON(message.pagination)
+        ? PageResponse.toJSON(message.pagination)
         : undefined);
     return obj;
   },
@@ -2819,7 +2843,7 @@ export const QueryCdpPositionsResponse = {
     );
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
-        ? PageResponse2.fromPartial(object.pagination)
+        ? PageResponse.fromPartial(object.pagination)
         : undefined;
     return message;
   },
