@@ -35,10 +35,10 @@ import {
   MsgUpdateRateStrategy,
   MsgWithdrawAsset
 } from "@carbon-sdk/codec/cdp/tx";
-import { QueryBalanceRequest, QuerySupplyOfRequest } from '@carbon-sdk/codec/cosmos/bank/v1beta1/query';
-import { CarbonTx } from "@carbon-sdk/util";
-import { bnOrZero, BN_10000, BN_ONE, BN_ZERO } from '@carbon-sdk/util/number';
-import { BigNumber } from "bignumber.js";
+import {QueryBalanceRequest, QuerySupplyOfRequest} from '@carbon-sdk/codec/cosmos/bank/v1beta1/query';
+import {CarbonTx} from "@carbon-sdk/util";
+import {BN_10000, BN_ONE, BN_ZERO, bnOrZero} from '@carbon-sdk/util/number';
+import {BigNumber} from "bignumber.js";
 import {
   Debt,
   QueryAccountCollateralAllRequest,
@@ -46,6 +46,7 @@ import {
   QueryTokenDebtAllRequest
 } from './../codec/cdp/query';
 import BaseModule from "./base";
+import {Network} from "@carbon-sdk/constant";
 
 export class CDPModule extends BaseModule {
 
@@ -738,7 +739,10 @@ export class CDPModule extends BaseModule {
 
     const assetParams = await sdk.query.cdp.Asset({denom: denom})
     if (!assetParams.assetParams) return
-    const ltv = new BigNumber(assetParams.assetParams.loanToValue)
+    let unlockRatio = new BigNumber(assetParams.assetParams.loanToValue)
+    if (sdk.getConfig().network === Network.LocalHost || sdk.getConfig().network === Network.DevNet) {
+      unlockRatio = new BigNumber(assetParams.assetParams.liquidationThreshold)
+    }
 
     const accountData = await this.getAccountData(account)
     if (!accountData) return
@@ -746,7 +750,7 @@ export class CDPModule extends BaseModule {
     const tokenDecimals = await sdk.getTokenClient().getDecimals(denom)
     if (!tokenDecimals) return
     const availableBorrowsUsd = accountData.AvailableBorrowsUsd.minus(accountData.TotalDebtsUsd)
-    const unlockableUsd = availableBorrowsUsd.multipliedBy(10000).div(ltv)
+    const unlockableUsd = availableBorrowsUsd.multipliedBy(10000).div(unlockRatio)
     const tokenPrice = await sdk.query.pricing.TokenPrice({denom: denom})
     if (!tokenPrice.tokenPrice) return
 
