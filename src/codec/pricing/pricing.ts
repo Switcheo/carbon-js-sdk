@@ -11,6 +11,7 @@ export interface Params {
   smoothenBand: number;
   impactBand: number;
   staleIndexAllowance?: Duration;
+  backfillTimeInterval?: Duration;
 }
 
 export interface PriceSet {
@@ -56,6 +57,12 @@ export const Params = {
         writer.uint32(26).fork()
       ).ldelim();
     }
+    if (message.backfillTimeInterval !== undefined) {
+      Duration.encode(
+        message.backfillTimeInterval,
+        writer.uint32(34).fork()
+      ).ldelim();
+    }
     return writer;
   },
 
@@ -74,6 +81,12 @@ export const Params = {
           break;
         case 3:
           message.staleIndexAllowance = Duration.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 4:
+          message.backfillTimeInterval = Duration.decode(
             reader,
             reader.uint32()
           );
@@ -101,6 +114,11 @@ export const Params = {
       object.staleIndexAllowance !== null
         ? Duration.fromJSON(object.staleIndexAllowance)
         : undefined;
+    message.backfillTimeInterval =
+      object.backfillTimeInterval !== undefined &&
+      object.backfillTimeInterval !== null
+        ? Duration.fromJSON(object.backfillTimeInterval)
+        : undefined;
     return message;
   },
 
@@ -113,6 +131,10 @@ export const Params = {
       (obj.staleIndexAllowance = message.staleIndexAllowance
         ? Duration.toJSON(message.staleIndexAllowance)
         : undefined);
+    message.backfillTimeInterval !== undefined &&
+      (obj.backfillTimeInterval = message.backfillTimeInterval
+        ? Duration.toJSON(message.backfillTimeInterval)
+        : undefined);
     return obj;
   },
 
@@ -124,6 +146,11 @@ export const Params = {
       object.staleIndexAllowance !== undefined &&
       object.staleIndexAllowance !== null
         ? Duration.fromPartial(object.staleIndexAllowance)
+        : undefined;
+    message.backfillTimeInterval =
+      object.backfillTimeInterval !== undefined &&
+      object.backfillTimeInterval !== null
+        ? Duration.fromPartial(object.backfillTimeInterval)
         : undefined;
     return message;
   },

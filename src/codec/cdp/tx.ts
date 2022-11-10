@@ -3,7 +3,11 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { RateStrategyParams } from "./rate_strategy_params";
 import { AssetParams } from "./asset_params";
-import { CreateRewardSchemeParams, UpdateRewardSchemeParams, AddReservesParams } from "./reward_scheme";
+import {
+  CreateRewardSchemeParams,
+  UpdateRewardSchemeParams,
+  AddReservesParams,
+} from "./reward_scheme";
 import { Timestamp } from "../google/protobuf/timestamp";
 
 export const protobufPackage = "Switcheo.carbon.cdp";
@@ -276,6 +280,12 @@ export interface MsgAddRewardReserve {
 }
 
 export interface MsgAddRewardReserveResponse {}
+
+export interface MsgClaimRewards {
+  creator: string;
+}
+
+export interface MsgClaimRewardsResponse {}
 
 const baseMsgAddRateStrategy: object = { creator: "" };
 
@@ -4808,6 +4818,111 @@ export const MsgAddRewardReserveResponse = {
   },
 };
 
+const baseMsgClaimRewards: object = { creator: "" };
+
+export const MsgClaimRewards = {
+  encode(
+    message: MsgClaimRewards,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgClaimRewards {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgClaimRewards } as MsgClaimRewards;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgClaimRewards {
+    const message = { ...baseMsgClaimRewards } as MsgClaimRewards;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgClaimRewards): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgClaimRewards>): MsgClaimRewards {
+    const message = { ...baseMsgClaimRewards } as MsgClaimRewards;
+    message.creator = object.creator ?? "";
+    return message;
+  },
+};
+
+const baseMsgClaimRewardsResponse: object = {};
+
+export const MsgClaimRewardsResponse = {
+  encode(
+    _: MsgClaimRewardsResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgClaimRewardsResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgClaimRewardsResponse,
+    } as MsgClaimRewardsResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgClaimRewardsResponse {
+    const message = {
+      ...baseMsgClaimRewardsResponse,
+    } as MsgClaimRewardsResponse;
+    return message;
+  },
+
+  toJSON(_: MsgClaimRewardsResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgClaimRewardsResponse>
+  ): MsgClaimRewardsResponse {
+    const message = {
+      ...baseMsgClaimRewardsResponse,
+    } as MsgClaimRewardsResponse;
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
   AddRateStrategy(
@@ -4861,6 +4976,7 @@ export interface Msg {
   AddReserve(
     request: MsgAddRewardReserve
   ): Promise<MsgAddRewardReserveResponse>;
+  ClaimRewards(request: MsgClaimRewards): Promise<MsgClaimRewardsResponse>;
   SetStablecoinInterestRate(
     request: MsgSetStablecoinInterestRate
   ): Promise<MsgSetStablecoinInterestRateResponse>;
@@ -4918,6 +5034,7 @@ export class MsgClientImpl implements Msg {
     this.CreateRewardScheme = this.CreateRewardScheme.bind(this);
     this.UpdateRewardScheme = this.UpdateRewardScheme.bind(this);
     this.AddReserve = this.AddReserve.bind(this);
+    this.ClaimRewards = this.ClaimRewards.bind(this);
     this.SetStablecoinInterestRate = this.SetStablecoinInterestRate.bind(this);
     this.MintStablecoin = this.MintStablecoin.bind(this);
     this.ReturnStablecoin = this.ReturnStablecoin.bind(this);
@@ -5211,6 +5328,18 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgAddRewardReserveResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  ClaimRewards(request: MsgClaimRewards): Promise<MsgClaimRewardsResponse> {
+    const data = MsgClaimRewards.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Msg",
+      "ClaimRewards",
+      data
+    );
+    return promise.then((data) =>
+      MsgClaimRewardsResponse.decode(new _m0.Reader(data))
     );
   }
 

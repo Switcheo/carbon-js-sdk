@@ -33,7 +33,8 @@ import {
   MsgUnlockCollateral,
   MsgUnlockCollateralAndWithdrawAsset,
   MsgUpdateRateStrategy,
-  MsgWithdrawAsset
+  MsgWithdrawAsset,
+  MsgClaimRewards
 } from "@carbon-sdk/codec/cdp/tx";
 import { QueryBalanceRequest, QuerySupplyOfRequest } from '@carbon-sdk/codec/cosmos/bank/v1beta1/query';
 import { CarbonTx } from "@carbon-sdk/util";
@@ -325,6 +326,18 @@ export class CDPModule extends BaseModule {
 
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgUpdateRateStrategy,
+      value,
+    }, opts);
+  }
+
+  public async claimRewards(opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+    const value = MsgClaimRewards.fromPartial({
+      creator: wallet.bech32Address,
+    });
+
+    return await wallet.sendTx({
+      typeUrl: CarbonTx.Types.MsgClaimRewards,
       value,
     }, opts);
   }
