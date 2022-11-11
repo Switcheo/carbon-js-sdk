@@ -18,13 +18,13 @@ import BigNumber from "bignumber.js";
   console.log("connected sdk", connectedSDK.wallet.bech32Address);
 
   const nowDate = dayjs().add(10, 's'); // add delay of 10 seconds to startTime so that ErrRewardSchemeDurationInvalidType error is not thrown
-  const endDate = nowDate.add(2, "m");
+  const endDate = nowDate.add(2, "w");
 
   const response = await sdk.admin.createRewardScheme({
     rewardDenom: "swth",
     assetDenom: "cdp/usdc",
     rewardType: "lend",
-    rewardAmountPerSecond: new BigNumber(0.01).shiftedBy(6),
+    rewardAmountPerSecond: new BigNumber(0.1).shiftedBy(8),
     startTime: nowDate.toDate(),
     endTime: endDate.toDate(),
   });
