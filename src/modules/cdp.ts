@@ -48,6 +48,7 @@ import {
 } from './../codec/cdp/query';
 import BaseModule from "./base";
 import {Network} from "@carbon-sdk/constant";
+import tokenClient from "@carbon-sdk/clients/TokenClient";
 
 export class CDPModule extends BaseModule {
 
@@ -524,6 +525,9 @@ export class CDPModule extends BaseModule {
     let allCollateralsUsdValue = new BigNumber(0)
     for (let i = 0 ; i < cdpBalances.balances.length ; i++) {
       const denom = cdpBalances.balances[i].denom
+      if (!tokenClient.isCdpToken(denom)) {
+        continue;
+      }
       const amount = new BigNumber(cdpBalances.balances[i].amount)
       const collateralUsdValue = await this.getCdpTokenUsdVal(denom, amount);
       if (!collateralUsdValue) {return}
