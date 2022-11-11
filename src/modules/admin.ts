@@ -882,7 +882,6 @@ export namespace AdminModule {
     rewardAmountPerSecond: BigNumber;
     startTime?: Date;
     endTime?: Date;
-    reservesAmount: BigNumber;
   }
 
   export interface UpdateRewardSchemeParams {
@@ -1036,7 +1035,6 @@ export function transformCreateRewardScheme(msg: AdminModule.CreateRewardSchemeP
     rewardAmountPerSecond: msg.rewardAmountPerSecond.toString(10),
     startTime: msg.startTime,
     endTime: msg.endTime,
-    reservesAmount: msg.reservesAmount.toString(10),
   };
 }
 
