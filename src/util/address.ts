@@ -142,6 +142,7 @@ type SWTHAddressType = AddressBuilder<SWTHAddressOptions> & {
   getAddressBytes(bech32Address: string, networkConfig: Network): Uint8Array;
   keyDerivationPath(index?: number, change?: number, account?: number): number[];
   encode(hash: string | Buffer, opts?: SWTHAddressOptions): string;
+  getModuleAddress(moduleKey: string): string
 };
 
 export const SWTHAddress: SWTHAddressType = {
@@ -248,6 +249,11 @@ export const SWTHAddress: SWTHAddressType = {
       throw new Error("Prefix doesn't match");
     }
     return new Uint8Array(bech32.fromWords(words));
+  },
+
+  getModuleAddress: (moduleKey: string, network: Network = Network.MainNet) => {
+    const addressHash = CryptoJS.SHA256(moduleKey).toString(CryptoJS.enc.Hex);
+    return SWTHAddress.encode(addressHash, { network });
   },
 };
 
