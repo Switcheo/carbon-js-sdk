@@ -114,50 +114,50 @@ export const generateChannelId = (params: WsSubscriptionParams): string => {
 }
 
 export const parseChannelId = (rawChannelId: string): WsSubscriptionParams => {
-  const [channel, market, resolution, address, id] = rawChannelId.split(':')
+  const [channel, param0, param1] = rawChannelId.split(':')
   switch (channel) {
     case WSChannel.candlesticks:
       return {
         channel,
-        market,
-        resolution,
+        market: param0,
+        resolution: param1,
       } as WsSubscribeCandlesticksParams
     case WSChannel.books:
       return {
         channel,
-        market,
+        market: param0,
       } as WsSubscribeBooksParams
     case WSChannel.recent_trades:
       return {
         channel,
-        market,
+        market: param0,
       } as WsSubscribeRecentTradesParams
     case WSChannel.orders:
       return {
         channel,
-        address,
+        address: param0,
       } as WsSubscribeOrdersAllParams
     case WSChannel.orders_by_market:
       return {
         channel,
-        market,
-        address,
+        market: param0,
+        address: param1,
       } as WsSubscribeOrdersByMarketParams
     case WSChannel.balances:
       return {
         channel,
-        address,
+        address: param0,
       } as WsSubscribeWalletBalanceParams
     case WSChannel.account_trades:
       return {
         channel,
-        address,
+        address: param0,
       } as WsSubscribeAccountTradesAllParams
     case WSChannel.account_trades_by_market:
       return {
         channel,
-        market,
-        address,
+        market: param0,
+        address: param1,
       } as WsSubscribeAccountTradesByMarketParams
     case WSChannel.market_stats:
       return {
@@ -166,29 +166,29 @@ export const parseChannelId = (rawChannelId: string): WsSubscriptionParams => {
     case WSChannel.market_stats_by_market:
       return {
         channel,
-        market,
+        market: param0,
       } as WsSubscribeMarketStatsByMarketParams
     case WSChannel.leverages:
       return {
         channel,
-        address,
+        address: param0,
       } as WsSubscribeLeveragesAllParams
     case WSChannel.leverages_by_market:
       return {
         channel,
-        market,
-        address,
+        market: param0,
+        address: param1,
       } as WsSubscribeLeveragesByMarketParams
     case WSChannel.positions:
       return {
         channel,
-        address,
+        address: param0,
       } as WsSubscribePositionsAllParams
     case WSChannel.positions_by_market:
       return {
         channel,
-        market,
-        address,
+        market: param0,
+        address: param1,
       } as WsSubscribePositionsByMarketParams
     case WSChannel.pools:
       return {
@@ -197,22 +197,22 @@ export const parseChannelId = (rawChannelId: string): WsSubscriptionParams => {
     case WSChannel.pools_by_id:
       return {
         channel,
-        id,
+        id: param0,
       } as WsSubscribePoolsByIdParams
     case WSChannel.commitments:
       return {
         channel,
-        address,
+        address: param0,
       } as WsSubscribeCommitmentParams
     case WSChannel.cdp_borrows:
       return {
         channel,
-        address,
+        address: param0,
       } as WsSubscribeCDPBorrows
     case WSChannel.cdp_collaterals:
       return {
         channel,
-        address,
+        address: param0,
       } as WsSubscribeCDPCollaterals
     case WSChannel.cdp_liquidate_collaterals:
       return {
@@ -223,18 +223,19 @@ export const parseChannelId = (rawChannelId: string): WsSubscriptionParams => {
         channel,
       } as WsSubscribeAllTokenDebts
     case WSChannel.cdp_token_debt:
-      const denom = market
       return {
         channel,
-        denom,
+        denom: param0,
       } as WsSubscribeTokenDebt
     case WSChannel.cdp_reward_schemes:
       return {
-        address,
+        channel,
+        address: param0,
       } as WsSubscribeRewardSchemes
     case WSChannel.cdp_reward_debts:
       return {
-        address,
+        channel,
+        address: param0,
       } as WsSubscribeRewardDebts
     default:
       throw new Error('Error parsing channelId')
