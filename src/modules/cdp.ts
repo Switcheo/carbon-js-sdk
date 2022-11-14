@@ -49,11 +49,11 @@ import {
 import BaseModule from "./base";
 import {Network} from "@carbon-sdk/constant";
 import tokenClient from "@carbon-sdk/clients/TokenClient";
+import { SWTHAddress } from '@carbon-sdk/util/address';
 
 export class CDPModule extends BaseModule {
 
-  private cdpModuleAddress: string = ""
-  private collateralPoolAddress: string = ""
+  private cdpModuleAddress: string | undefined
 
   public async supplyAsset(params: CDPModule.SupplyAssetParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
@@ -435,11 +435,8 @@ export class CDPModule extends BaseModule {
   public async getAssetBorrowableSupply(denom: string) {
     const sdk = this.sdkProvider
 
-    if (!this.cdpModuleAddress) {
-      const moduleAddressRsp = await sdk.query.misc.ModuleAddress(QueryModuleAddressRequest.fromPartial({ module: "cdp" }))
-      this.cdpModuleAddress = moduleAddressRsp.address
-    }
-    const balanceRsp = await sdk.query.bank.Balance(QueryBalanceRequest.fromPartial({ address: this.cdpModuleAddress, denom }))
+    const cdpAddress = this.getCdpModuleAddress();
+    const balanceRsp = await sdk.query.bank.Balance(QueryBalanceRequest.fromPartial({ address: cdpAddress, denom }))
     if (!balanceRsp.balance) {
       return
     }
@@ -459,11 +456,9 @@ export class CDPModule extends BaseModule {
       return
     }
     const cdpAmount = bnOrZero(cdpAmountRsp.amount)
-    if (!this.cdpModuleAddress) {
-      const moduleAddressRsp = await sdk.query.misc.ModuleAddress(QueryModuleAddressRequest.fromPartial({ module: "cdp" }))
-      this.cdpModuleAddress = moduleAddressRsp.address
-    }
-    const balanceRsp = await sdk.query.bank.Balance(QueryBalanceRequest.fromPartial({ address: this.cdpModuleAddress, denom }))
+
+    const cdpAddress = this.getCdpModuleAddress();
+    const balanceRsp = await sdk.query.bank.Balance(QueryBalanceRequest.fromPartial({ address: cdpAddress, denom }))
     if (!balanceRsp.balance) {
       return
     }
@@ -788,6 +783,14 @@ export class CDPModule extends BaseModule {
       return lockedAmount
     }
     return cdpTokenAmt
+  }
+
+  public getCdpModuleAddress() {
+    if (!this.cdpModuleAddress) {
+      const network = this.sdkProvider.getConfig().network;
+      this.cdpModuleAddress = SWTHAddress.getModuleAddress("cdp", network);
+    }
+    return this.cdpModuleAddress;
   }
 
   public async getCdpTokenPrice(cdpDenom:string) {
