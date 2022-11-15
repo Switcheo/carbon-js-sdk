@@ -773,6 +773,54 @@ export class CDPModule extends BaseModule {
     if (!denom) throw new Error("underlying denom not found for " + cdpDenom);
     return denom;
   }
+
+  // given a debt repayment amount, we get the max collateral that a liquidator can receive
+  // this takes into account the liquidation bonus and fees that will be deducted from his profit
+  public async getCollateralReceivableForLiquidation(debtDenom:string, debtAmount:BigNumber, cdpDenom:string) {
+    const sdk = this.sdkProvider
+
+    // get the discounted price for the cdp token
+    const asset = await sdk.query.cdp.Asset({
+      denom: debtDenom
+    })
+    if (!asset.assetParams) {
+      return
+    }
+    const bonus = new BigNumber(asset.assetParams.liquidationBonus).div(10000)
+    const cdpTokenPrice = await this.getCdpTokenPrice(cdpDenom);
+    if (!cdpTokenPrice) {
+      return
+    }
+    const cdpTokenDiscountedPrice = cdpTokenPrice.multipliedBy(1 - bonus.toNumber())
+
+    // get cdp tokens (discounted) that can be gained from the debt amount
+    const debtValue = await this.getTokenUsdVal(debtDenom, debtAmount) ?? BN_ZERO;
+    const underlyingDenom = await this.getUnderlyingDenom(cdpDenom)
+    if (!underlyingDenom) {
+      return
+    }
+    const cdpTokenDecimals = await sdk.getTokenClient().getDecimals(underlyingDenom)
+    if (!cdpTokenDecimals) {
+      return
+    }
+    const cdpAmountWithDiscount = debtValue.div(cdpTokenDiscountedPrice).shiftedBy(cdpTokenDecimals)
+
+    // get cdp tokens (not discounted) that can be gained from the debt amount
+    const cdpAmountWithoutDiscount = debtValue.div(cdpTokenPrice).shiftedBy(cdpTokenDecimals)
+
+    // get fee amount
+    const cdpAmountProfit = cdpAmountWithDiscount.minus(cdpAmountWithoutDiscount)
+    const params = await sdk.query.cdp.Params({})
+    if (!params.params) {
+      return
+    }
+    const feePercentage = new BigNumber(params.params.liquidationFee).div(10000)
+    const feeAmount = cdpAmountProfit.multipliedBy(feePercentage)
+
+    // return collateral that can be received by liquidator
+    return cdpAmountWithDiscount.minus(feeAmount)
+  }
+
 }
 
 export namespace CDPModule {
