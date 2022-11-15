@@ -416,7 +416,7 @@ export class CDPModule extends BaseModule {
       const stablecoinDecimals = await this.sdkProvider.getTokenClient().getDecimals(stablecoinDebtInfo.denom) ?? BN_ZERO
       const stablecoinDebtAmount = bnOrZero(accountStablecoin.principalDebt).plus(bnOrZero(accountStablecoin.interestDebt))
       stablecoinDebtUsd = stablecoinDebtAmount.shiftedBy(-stablecoinDecimals)
-  
+
       totalDebtsUsd = totalDebtsUsd.plus(stablecoinDebtUsd)
     }
 
@@ -483,15 +483,13 @@ export class CDPModule extends BaseModule {
 
     // get stablecoin debt
     const stablecoinDebtRes = await this.sdkProvider.query.cdp.StablecoinDebt({})
-    const stablecoinDebtInfo = stablecoinDebtRes.stablecoinDebtInfo
-    if (!stablecoinDebtInfo) {
-      return
+    if (stablecoinDebtRes.stablecoinDebtInfo) {
+      const debtInfo = stablecoinDebtRes.stablecoinDebtInfo;
+      const debtAmt = bnOrZero(debtInfo.totalPrincipal).plus(bnOrZero(debtInfo.totalAccumulatedInterest))
+      const stablecoinDecimals = await sdk.getTokenClient().getDecimals(debtInfo.denom) ?? 0
+      const debtUsdVal = (debtAmt).shiftedBy(-stablecoinDecimals)
+      totalDebt = totalDebt.plus(debtUsdVal)
     }
-    const debtAmt = bnOrZero(stablecoinDebtInfo.totalPrincipal).plus(bnOrZero(stablecoinDebtInfo.totalAccumulatedInterest))
-    const stablecoinDecimals = await sdk.getTokenClient().getDecimals(stablecoinDebtInfo.denom) ?? BN_ZERO
-    const debtUsdVal = (debtAmt).shiftedBy(-stablecoinDecimals)
-
-    totalDebt = totalDebt.plus(debtUsdVal)
 
     return totalDebt
   }
@@ -597,9 +595,7 @@ export class CDPModule extends BaseModule {
     if (!cim)
       throw new Error("unable to retrieve account debt");
 
-    const totalStablecoinDebtAmount = principalAmount.times(cim).dividedToIntegerBy(initialCIM)
-
-    return totalStablecoinDebtAmount
+    return principalAmount.times(cim).dividedToIntegerBy(initialCIM);
   }
 
   public async calculateAPY(
@@ -612,17 +608,16 @@ export class CDPModule extends BaseModule {
 
     if (!debtInfo) {
       const debtInfoResponse = await sdk.query.cdp.TokenDebt(QueryTokenDebtRequest.fromPartial({ denom }))
-      debtInfo = debtInfoResponse.debtInfo
-      if (!debtInfo) {
-        return
-      }
+      debtInfo = debtInfoResponse.debtInfo;
+      if (!debtInfo)
+        throw new Error("unable to retrieve debt info for " + denom);
     }
 
     if (!assetParams) {
       const assetResponse = await sdk.query.cdp.Asset(QueryAssetRequest.fromPartial({ denom }))
       assetParams = assetResponse.assetParams
       if (!assetParams) {
-        return
+        throw new Error("unable to retrieve asset param for " + denom);
       }
     }
 
@@ -632,7 +627,7 @@ export class CDPModule extends BaseModule {
       }))
       rateStrategyParams = rateStrategyParamsResponse.rateStrategyParams
       if (!rateStrategyParams) {
-        return
+        throw new Error("unable to retrieve rate strategy for " + denom);
       }
     }
 
@@ -655,9 +650,7 @@ export class CDPModule extends BaseModule {
     }
     const duration = bnOrZero(end.valueOf() - start.valueOf())
     const millisecondsAYear = bnOrZero(31536000000)
-
-    const interest = duration.div(millisecondsAYear).times(apy)
-    return interest
+    return duration.div(millisecondsAYear).times(apy)
   }
 
   public async recalculateCIM(denom: string, debtInfo?: DebtInfo) {
@@ -715,16 +708,15 @@ export class CDPModule extends BaseModule {
     }
 
     const accountData = await this.getAccountData(account)
-    if (!accountData) return
-
-    const tokenDecimals = await sdk.getTokenClient().getDecimals(denom)
-    if (!tokenDecimals) return
+    const tokenDecimals = await sdk.getTokenClient().getDecimals(denom) ?? 0
     const availableBorrowsUsd = accountData.AvailableBorrowsUsd.minus(accountData.TotalDebtsUsd)
-    const unlockableUsd = availableBorrowsUsd.multipliedBy(10000).div(unlockRatio)
-    const tokenPrice = await sdk.query.pricing.TokenPrice({ denom: denom })
-    if (!tokenPrice.tokenPrice) return
+    const unlockableUsd = availableBorrowsUsd.multipliedBy(BN_10000).div(unlockRatio)
+    const tokenPrice = await sdk.query.pricing.TokenPrice({ denom })
 
-    const tokenTwap = new BigNumber(tokenPrice.tokenPrice.twap)
+    const tokenTwap = bnOrZero(tokenPrice.tokenPrice?.twap)
+    if (tokenTwap.isZero())
+      throw new Error("unable to retrieve token price for " + denom);
+
     const tokenAmt = unlockableUsd.div(tokenTwap.shiftedBy(-18)).shiftedBy(tokenDecimals)
     const cdpToActualRatio = await this.getCdpToActualRatio(cdpDenom) ?? BN_ZERO
     const cdpTokenAmt = tokenAmt.multipliedBy(cdpToActualRatio)
@@ -734,13 +726,8 @@ export class CDPModule extends BaseModule {
       address: account,
       cdpDenom: cdpDenom
     })
-    if (!accountCollateral.collateral) return
-    const lockedAmount = new BigNumber(accountCollateral.collateral.collateralAmount)
-
-    if (lockedAmount.lt(cdpTokenAmt)) {
-      return lockedAmount
-    }
-    return cdpTokenAmt
+    const lockedAmount = bnOrZero(accountCollateral.collateral?.collateralAmount ?? "0")
+    return lockedAmount.lt(cdpTokenAmt) ? lockedAmount : cdpTokenAmt
   }
 
   public getCdpModuleAddress() {
@@ -769,33 +756,24 @@ export class CDPModule extends BaseModule {
 
   // given a debt repayment amount, we get the max collateral that a liquidator can receive
   // this takes into account the liquidation bonus and fees that will be deducted from his profit
-  public async getCollateralReceivableForLiquidation(debtDenom:string, debtAmount:BigNumber, cdpDenom:string) {
+  public async getCollateralReceivableForLiquidation(debtDenom: string, debtAmount: BigNumber, cdpDenom: string) {
     const sdk = this.sdkProvider
 
     // get the discounted price for the cdp token
     const asset = await sdk.query.cdp.Asset({
       denom: debtDenom
     })
-    if (!asset.assetParams) {
-      return
-    }
-    const bonus = new BigNumber(asset.assetParams.liquidationBonus).div(10000)
+    if (!asset.assetParams)
+      throw new Error("unable to retrieve asset param for " + debtDenom);
+
+    const bonus = bnOrZero(asset.assetParams.liquidationBonus).div(BN_10000)
     const cdpTokenPrice = await this.getCdpTokenPrice(cdpDenom);
-    if (!cdpTokenPrice) {
-      return
-    }
-    const cdpTokenDiscountedPrice = cdpTokenPrice.multipliedBy(1 - bonus.toNumber())
+    const cdpTokenDiscountedPrice = cdpTokenPrice.multipliedBy(BN_ONE.minus(bonus))
 
     // get cdp tokens (discounted) that can be gained from the debt amount
     const debtValue = await this.getTokenUsdVal(debtDenom, debtAmount) ?? BN_ZERO;
     const underlyingDenom = await this.getUnderlyingDenom(cdpDenom)
-    if (!underlyingDenom) {
-      return
-    }
-    const cdpTokenDecimals = await sdk.getTokenClient().getDecimals(underlyingDenom)
-    if (!cdpTokenDecimals) {
-      return
-    }
+    const cdpTokenDecimals = await sdk.getTokenClient().getDecimals(underlyingDenom) ?? 0
     const cdpAmountWithDiscount = debtValue.div(cdpTokenDiscountedPrice).shiftedBy(cdpTokenDecimals)
 
     // get cdp tokens (not discounted) that can be gained from the debt amount
@@ -804,10 +782,10 @@ export class CDPModule extends BaseModule {
     // get fee amount
     const cdpAmountProfit = cdpAmountWithDiscount.minus(cdpAmountWithoutDiscount)
     const params = await sdk.query.cdp.Params({})
-    if (!params.params) {
-      return
-    }
-    const feePercentage = new BigNumber(params.params.liquidationFee).div(10000)
+    if (!params.params)
+      throw new Error("unable to retrieve cdp params");
+
+    const feePercentage = bnOrZero(params.params.liquidationFee).div(BN_10000)
     const feeAmount = cdpAmountProfit.multipliedBy(feePercentage)
 
     // return collateral that can be received by liquidator
