@@ -101,8 +101,8 @@ export const generateChannelId = (params: WsSubscriptionParams): string => {
       return [channel, denom].join(':')
     }
     case WSChannel.cdp_reward_schemes: {
-      const { channel, address } = params as WsSubscribeRewardSchemes
-      return [channel, address].join(':')
+      const { channel } = params as WsSubscribeRewardSchemes
+      return [channel].join(':')
     }
     case WSChannel.cdp_reward_debts: {
       const { channel, address } = params as WsSubscribeRewardDebts
@@ -230,7 +230,6 @@ export const parseChannelId = (rawChannelId: string): WsSubscriptionParams => {
     case WSChannel.cdp_reward_schemes:
       return {
         channel,
-        address: param0,
       } as WsSubscribeRewardSchemes
     case WSChannel.cdp_reward_debts:
       return {
