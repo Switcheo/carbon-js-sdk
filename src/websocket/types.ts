@@ -238,9 +238,7 @@ export interface WsSubscribeTokenDebt extends WsSubscribeParams {
   denom: string
 }
 
-export interface WsSubscribeRewardSchemes extends WsSubscribeParams {
-  address?: string
-}
+export interface WsSubscribeRewardSchemes extends WsSubscribeParams { }
 
 export interface WsSubscribeRewardDebts extends WsSubscribeParams {
   address?: string
