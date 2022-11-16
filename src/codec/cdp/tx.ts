@@ -245,7 +245,6 @@ export interface MsgLiquidateCollateralWithStablecoin {
   minCollateralAmount: string;
   debtDenom: string;
   debtAmount: string;
-  principalAmount: string;
   interestDenom: string;
   interestAmount: string;
 }
@@ -4085,7 +4084,6 @@ const baseMsgLiquidateCollateralWithStablecoin: object = {
   minCollateralAmount: "",
   debtDenom: "",
   debtAmount: "",
-  principalAmount: "",
   interestDenom: "",
   interestAmount: "",
 };
@@ -4113,14 +4111,11 @@ export const MsgLiquidateCollateralWithStablecoin = {
     if (message.debtAmount !== "") {
       writer.uint32(50).string(message.debtAmount);
     }
-    if (message.principalAmount !== "") {
-      writer.uint32(58).string(message.principalAmount);
-    }
     if (message.interestDenom !== "") {
-      writer.uint32(66).string(message.interestDenom);
+      writer.uint32(58).string(message.interestDenom);
     }
     if (message.interestAmount !== "") {
-      writer.uint32(74).string(message.interestAmount);
+      writer.uint32(66).string(message.interestAmount);
     }
     return writer;
   },
@@ -4156,12 +4151,9 @@ export const MsgLiquidateCollateralWithStablecoin = {
           message.debtAmount = reader.string();
           break;
         case 7:
-          message.principalAmount = reader.string();
-          break;
-        case 8:
           message.interestDenom = reader.string();
           break;
-        case 9:
+        case 8:
           message.interestAmount = reader.string();
           break;
         default:
@@ -4201,10 +4193,6 @@ export const MsgLiquidateCollateralWithStablecoin = {
       object.debtAmount !== undefined && object.debtAmount !== null
         ? String(object.debtAmount)
         : "";
-    message.principalAmount =
-      object.principalAmount !== undefined && object.principalAmount !== null
-        ? String(object.principalAmount)
-        : "";
     message.interestDenom =
       object.interestDenom !== undefined && object.interestDenom !== null
         ? String(object.interestDenom)
@@ -4226,8 +4214,6 @@ export const MsgLiquidateCollateralWithStablecoin = {
       (obj.minCollateralAmount = message.minCollateralAmount);
     message.debtDenom !== undefined && (obj.debtDenom = message.debtDenom);
     message.debtAmount !== undefined && (obj.debtAmount = message.debtAmount);
-    message.principalAmount !== undefined &&
-      (obj.principalAmount = message.principalAmount);
     message.interestDenom !== undefined &&
       (obj.interestDenom = message.interestDenom);
     message.interestAmount !== undefined &&
@@ -4247,7 +4233,6 @@ export const MsgLiquidateCollateralWithStablecoin = {
     message.minCollateralAmount = object.minCollateralAmount ?? "";
     message.debtDenom = object.debtDenom ?? "";
     message.debtAmount = object.debtAmount ?? "";
-    message.principalAmount = object.principalAmount ?? "";
     message.interestDenom = object.interestDenom ?? "";
     message.interestAmount = object.interestAmount ?? "";
     return message;
