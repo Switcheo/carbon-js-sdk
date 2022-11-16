@@ -6,6 +6,7 @@ import { StablecoinDebtInfo } from "./stablecoin_debt_info";
 import { RateStrategyParams } from "./rate_strategy_params";
 import { AssetParams } from "./asset_params";
 import { DebtInfo } from "./debt_info";
+import { RewardScheme } from "./reward_scheme";
 
 export const protobufPackage = "Switcheo.carbon.cdp";
 
@@ -15,6 +16,7 @@ export interface GenesisState {
   rateStrategies: RateStrategyParams[];
   assets: AssetParams[];
   debtInfos: DebtInfo[];
+  rewardSchemes: RewardScheme[];
   accountToCollateralized: { [key: string]: Uint8Array };
   accountToPrincipalDebt: { [key: string]: Uint8Array };
   accountToInitialCumulativeInterestMultiplier: { [key: string]: Uint8Array };
@@ -70,16 +72,19 @@ export const GenesisState = {
     for (const v of message.debtInfos) {
       DebtInfo.encode(v!, writer.uint32(34).fork()).ldelim();
     }
+    for (const v of message.rewardSchemes) {
+      RewardScheme.encode(v!, writer.uint32(42).fork()).ldelim();
+    }
     Object.entries(message.accountToCollateralized).forEach(([key, value]) => {
       GenesisState_AccountToCollateralizedEntry.encode(
         { key: key as any, value },
-        writer.uint32(42).fork()
+        writer.uint32(50).fork()
       ).ldelim();
     });
     Object.entries(message.accountToPrincipalDebt).forEach(([key, value]) => {
       GenesisState_AccountToPrincipalDebtEntry.encode(
         { key: key as any, value },
-        writer.uint32(50).fork()
+        writer.uint32(58).fork()
       ).ldelim();
     });
     Object.entries(
@@ -87,20 +92,20 @@ export const GenesisState = {
     ).forEach(([key, value]) => {
       GenesisState_AccountToInitialCumulativeInterestMultiplierEntry.encode(
         { key: key as any, value },
-        writer.uint32(58).fork()
+        writer.uint32(66).fork()
       ).ldelim();
     });
     if (message.stablecoinDebtInfo !== undefined) {
       StablecoinDebtInfo.encode(
         message.stablecoinDebtInfo,
-        writer.uint32(66).fork()
+        writer.uint32(74).fork()
       ).ldelim();
     }
     Object.entries(message.accountToPrincipalStablecoinDebt).forEach(
       ([key, value]) => {
         GenesisState_AccountToPrincipalStablecoinDebtEntry.encode(
           { key: key as any, value },
-          writer.uint32(74).fork()
+          writer.uint32(82).fork()
         ).ldelim();
       }
     );
@@ -109,7 +114,7 @@ export const GenesisState = {
     ).forEach(([key, value]) => {
       GenesisState_AccountToStablecoinInitialCumulativeInterestMultiplierEntry.encode(
         { key: key as any, value },
-        writer.uint32(82).fork()
+        writer.uint32(90).fork()
       ).ldelim();
     });
     return writer;
@@ -122,6 +127,7 @@ export const GenesisState = {
     message.rateStrategies = [];
     message.assets = [];
     message.debtInfos = [];
+    message.rewardSchemes = [];
     message.accountToCollateralized = {};
     message.accountToPrincipalDebt = {};
     message.accountToInitialCumulativeInterestMultiplier = {};
@@ -145,60 +151,66 @@ export const GenesisState = {
           message.debtInfos.push(DebtInfo.decode(reader, reader.uint32()));
           break;
         case 5:
-          const entry5 = GenesisState_AccountToCollateralizedEntry.decode(
-            reader,
-            reader.uint32()
+          message.rewardSchemes.push(
+            RewardScheme.decode(reader, reader.uint32())
           );
-          if (entry5.value !== undefined) {
-            message.accountToCollateralized[entry5.key] = entry5.value;
-          }
           break;
         case 6:
-          const entry6 = GenesisState_AccountToPrincipalDebtEntry.decode(
+          const entry6 = GenesisState_AccountToCollateralizedEntry.decode(
             reader,
             reader.uint32()
           );
           if (entry6.value !== undefined) {
-            message.accountToPrincipalDebt[entry6.key] = entry6.value;
+            message.accountToCollateralized[entry6.key] = entry6.value;
           }
           break;
         case 7:
-          const entry7 =
+          const entry7 = GenesisState_AccountToPrincipalDebtEntry.decode(
+            reader,
+            reader.uint32()
+          );
+          if (entry7.value !== undefined) {
+            message.accountToPrincipalDebt[entry7.key] = entry7.value;
+          }
+          break;
+        case 8:
+          const entry8 =
             GenesisState_AccountToInitialCumulativeInterestMultiplierEntry.decode(
               reader,
               reader.uint32()
             );
-          if (entry7.value !== undefined) {
-            message.accountToInitialCumulativeInterestMultiplier[entry7.key] =
-              entry7.value;
+          if (entry8.value !== undefined) {
+            message.accountToInitialCumulativeInterestMultiplier[entry8.key] =
+              entry8.value;
           }
           break;
-        case 8:
+        case 9:
           message.stablecoinDebtInfo = StablecoinDebtInfo.decode(
             reader,
             reader.uint32()
           );
           break;
-        case 9:
-          const entry9 =
+        case 10:
+          const entry10 =
             GenesisState_AccountToPrincipalStablecoinDebtEntry.decode(
               reader,
               reader.uint32()
             );
-          if (entry9.value !== undefined) {
-            message.accountToPrincipalStablecoinDebt[entry9.key] = entry9.value;
+          if (entry10.value !== undefined) {
+            message.accountToPrincipalStablecoinDebt[entry10.key] =
+              entry10.value;
           }
           break;
-        case 10:
-          const entry10 =
+        case 11:
+          const entry11 =
             GenesisState_AccountToStablecoinInitialCumulativeInterestMultiplierEntry.decode(
               reader,
               reader.uint32()
             );
-          if (entry10.value !== undefined) {
+          if (entry11.value !== undefined) {
             message.accountToStablecoinInitialCumulativeInterestMultiplier[
-              entry10.key
-            ] = entry10.value;
+              entry11.key
+            ] = entry11.value;
           }
           break;
         default:
@@ -223,6 +235,9 @@ export const GenesisState = {
     );
     message.debtInfos = (object.debtInfos ?? []).map((e: any) =>
       DebtInfo.fromJSON(e)
+    );
+    message.rewardSchemes = (object.rewardSchemes ?? []).map((e: any) =>
+      RewardScheme.fromJSON(e)
     );
     message.accountToCollateralized = Object.entries(
       object.accountToCollateralized ?? {}
@@ -288,6 +303,13 @@ export const GenesisState = {
     } else {
       obj.debtInfos = [];
     }
+    if (message.rewardSchemes) {
+      obj.rewardSchemes = message.rewardSchemes.map((e) =>
+        e ? RewardScheme.toJSON(e) : undefined
+      );
+    } else {
+      obj.rewardSchemes = [];
+    }
     obj.accountToCollateralized = {};
     if (message.accountToCollateralized) {
       Object.entries(message.accountToCollateralized).forEach(([k, v]) => {
@@ -347,6 +369,9 @@ export const GenesisState = {
     );
     message.debtInfos = (object.debtInfos ?? []).map((e) =>
       DebtInfo.fromPartial(e)
+    );
+    message.rewardSchemes = (object.rewardSchemes ?? []).map((e) =>
+      RewardScheme.fromPartial(e)
     );
     message.accountToCollateralized = Object.entries(
       object.accountToCollateralized ?? {}
