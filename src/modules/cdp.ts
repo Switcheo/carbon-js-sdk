@@ -529,7 +529,7 @@ export class CDPModule extends BaseModule {
     if (!priceResult.tokenPrice) throw new Error("unable to retrieve token price for " + denom);
 
     const twap = bnOrZero(priceResult.tokenPrice.twap).shiftedBy(-18)
-    return amount.times(twap).shiftedBy(-decimals)
+    return amount.multipliedBy(twap).shiftedBy(-decimals)
   }
 
   public async getTotalTokenDebt(denom: string, debtInfo?: DebtInfo) {
@@ -773,8 +773,9 @@ export class CDPModule extends BaseModule {
     const sdk = this.sdkProvider
 
     // get the discounted price for the cdp token
+    const cdpActualDenom = this.getUnderlyingDenom(cdpDenom)
     const asset = await sdk.query.cdp.Asset({
-      denom: debtDenom
+      denom: cdpActualDenom
     })
     if (!asset.assetParams) {
       return
@@ -788,7 +789,7 @@ export class CDPModule extends BaseModule {
 
     // get cdp tokens (discounted) that can be gained from the debt amount
     const debtValue = await this.getTokenUsdVal(debtDenom, debtAmount) ?? BN_ZERO;
-    const underlyingDenom = await this.getUnderlyingDenom(cdpDenom)
+    const underlyingDenom = this.getUnderlyingDenom(cdpDenom)
     if (!underlyingDenom) {
       return
     }
