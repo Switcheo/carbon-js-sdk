@@ -772,8 +772,11 @@ export class CDPModule extends BaseModule {
     const cdpTokenDiscountedPrice = cdpTokenPrice.multipliedBy(BN_ONE.minus(bonus))
 
     // get cdp tokens (discounted) that can be gained from the debt amount
-    const debtValue = await this.getTokenUsdVal(debtDenom, debtAmount) ?? BN_ZERO;
-    const underlyingDenom = await this.getUnderlyingDenom(cdpDenom)
+    let debtValue = new BigNumber(debtAmount)
+    if (debtDenom !== "usc") {
+      debtValue = await this.getTokenUsdVal(debtDenom, debtAmount) ?? BN_ZERO;
+    }
+    const underlyingDenom = this.getUnderlyingDenom(cdpDenom)
     const cdpTokenDecimals = await sdk.getTokenClient().getDecimals(underlyingDenom) ?? 0
     const cdpAmountWithDiscount = debtValue.div(cdpTokenDiscountedPrice).shiftedBy(cdpTokenDecimals)
 
