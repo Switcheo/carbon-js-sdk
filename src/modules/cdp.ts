@@ -772,7 +772,6 @@ export class CDPModule extends BaseModule {
 
     // get cdp tokens (discounted) that can be gained from the debt amount
     const debtValue = await this.getTokenUsdVal(debtDenom, debtAmount) ?? BN_ZERO;
-
     const underlyingDenom = this.getUnderlyingDenom(cdpDenom)
     const cdpTokenDecimals = await sdk.getTokenClient().getDecimals(underlyingDenom) ?? 0
     const cdpAmountWithDiscount = debtValue.div(cdpTokenDiscountedPrice).shiftedBy(cdpTokenDecimals)
@@ -785,7 +784,6 @@ export class CDPModule extends BaseModule {
     const params = await sdk.query.cdp.Params({})
     if (!params.params)
       throw new Error("unable to retrieve cdp params");
-
     const feePercentage = bnOrZero(params.params.liquidationFee).div(BN_10000)
     const feeAmount = cdpAmountProfit.multipliedBy(feePercentage)
 
@@ -793,8 +791,47 @@ export class CDPModule extends BaseModule {
     return cdpAmountWithDiscount.minus(feeAmount)
   }
 
-  public async getCollateralReceivableForStablecoinLiq() {
+  public async getCollateralReceivableForStablecoinLiq(cdpDenom: string, stablecoinRepayAmt: BigNumber, interestDenom: string, interestRepayAmt: BigNumber) {
+    const sdk = this.sdkProvider
 
+    // get the discounted price for the cdp token
+    const cdpActualDenom = this.getUnderlyingDenom(cdpDenom)
+    const asset = await sdk.query.cdp.Asset({
+      denom: cdpActualDenom
+    })
+    if (!asset.assetParams)
+      throw new Error("unable to retrieve asset param for " + cdpActualDenom)
+    const bonus = bnOrZero(asset.assetParams.liquidationBonus).div(BN_10000)
+    const cdpTokenPrice = await this.getCdpTokenPrice(cdpDenom)
+    const cdpTokenDiscountedPrice = cdpTokenPrice.multipliedBy(BN_ONE.minus(bonus))
+
+    // get value of stablecoin repayment + interest repayment
+    const debtInfoRsp = await sdk.query.cdp.StablecoinDebt({}) ?? {}
+    if (!debtInfoRsp.stablecoinDebtInfo)
+      throw new Error("unable to retrieve stablecoin debt info")
+    const stablecoinDebtInfo = debtInfoRsp.stablecoinDebtInfo
+    const stablecoinDecimals = await this.sdkProvider.getTokenClient().getDecimals(stablecoinDebtInfo.denom) ?? BN_ZERO
+    const stablecoinRepaymentValue = stablecoinRepayAmt.shiftedBy(-stablecoinDecimals)
+    const interestRepaymentValue = await this.getTokenUsdVal(interestDenom, interestRepayAmt) ?? BN_ZERO;
+    const totalRepaymentValue = stablecoinRepaymentValue.plus(interestRepaymentValue)
+
+    // get cdp tokens (discounted) that can be gained from the debt amount
+    const cdpTokenDecimals = await sdk.getTokenClient().getDecimals(cdpActualDenom) ?? 0
+    const cdpAmountWithDiscount = totalRepaymentValue.div(cdpTokenDiscountedPrice).shiftedBy(cdpTokenDecimals)
+
+    // get cdp tokens (not discounted) that can be gained from the debt amount
+    const cdpAmountWithoutDiscount = totalRepaymentValue.div(cdpTokenPrice).shiftedBy(cdpTokenDecimals)
+
+    // get fee amount
+    const cdpAmountProfit = cdpAmountWithDiscount.minus(cdpAmountWithoutDiscount)
+    const params = await sdk.query.cdp.Params({})
+    if (!params.params)
+      throw new Error("unable to retrieve cdp params");
+    const feePercentage = bnOrZero(params.params.liquidationFee).div(BN_10000)
+    const feeAmount = cdpAmountProfit.multipliedBy(feePercentage)
+
+    // return collateral that can be received by liquidator
+    return cdpAmountWithDiscount.minus(feeAmount)
   }
 
 }
