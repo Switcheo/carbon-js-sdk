@@ -798,4 +798,5 @@ export { MsgSetBackfillTimeInterval, MsgSetBackfillTimeIntervalResponse, MsgSetS
 export { Params as PricingParams, PriceSet, TokenPrice } from "./pricing/pricing";
 export { SettlementPriceProposal, SettlementPriceParams } from "./pricing/proposal";
 export { QueryPriceTokenRequest, QueryPriceTokenResponse, QueryPriceSetRequest, QueryPriceSetResponse, QueryAllPriceSetRequest, QueryAllPriceSetResponse, QueryRateRequest, QueryRateResponse, QueryParamsRequest as QueryPricingParamsRequest, QueryParamsResponse as QueryPricingParamsResponse, QueryTokenPriceRequest, QueryTokenPriceResponse, QueryTokenPriceAllRequest, QueryTokenPriceAllResponse } from "./pricing/query";
+export { ParamsV2130 } from "./pricing/legacy";
 export { PriceUpdateEvent, TokenPriceUpdateEvent, SetImpactBandEvent, SetSmoothenBandEvent, SetStaleIndexAllowanceEvent, SetBackfillTimeIntervalEvent } from "./pricing/event";

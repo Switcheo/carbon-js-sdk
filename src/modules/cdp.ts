@@ -242,7 +242,6 @@ export class CDPModule extends BaseModule {
       minCollateralAmount: params.minCollateralAmount.toString(10),
       debtDenom: params.debtDenom,
       debtAmount: params.debtAmount.toString(10),
-      principalAmount: params.principalAmount.toString(10),
       interestDenom: params.interestDenom,
       interestAmount: params.interestAmount.toString(10),
     })
@@ -772,10 +771,8 @@ export class CDPModule extends BaseModule {
     const cdpTokenDiscountedPrice = cdpTokenPrice.multipliedBy(BN_ONE.minus(bonus))
 
     // get cdp tokens (discounted) that can be gained from the debt amount
-    let debtValue = new BigNumber(debtAmount)
-    if (debtDenom !== "usc") {
-      debtValue = await this.getTokenUsdVal(debtDenom, debtAmount) ?? BN_ZERO;
-    }
+    const debtValue = await this.getTokenUsdVal(debtDenom, debtAmount) ?? BN_ZERO;
+
     const underlyingDenom = this.getUnderlyingDenom(cdpDenom)
     const cdpTokenDecimals = await sdk.getTokenClient().getDecimals(underlyingDenom) ?? 0
     const cdpAmountWithDiscount = debtValue.div(cdpTokenDiscountedPrice).shiftedBy(cdpTokenDecimals)
@@ -794,6 +791,10 @@ export class CDPModule extends BaseModule {
 
     // return collateral that can be received by liquidator
     return cdpAmountWithDiscount.minus(feeAmount)
+  }
+
+  public async getCollateralReceivableForStablecoinLiq() {
+
   }
 
 }
@@ -865,7 +866,6 @@ export namespace CDPModule {
     minCollateralAmount: BigNumber
     debtDenom: string
     debtAmount: BigNumber
-    principalAmount: BigNumber
     interestDenom: string
     interestAmount: BigNumber
   }
