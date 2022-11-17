@@ -486,7 +486,7 @@ export class AdminModule extends BaseModule {
         rateStrategyName: params.asset.rateStrategyName,
         loanToValue: params.asset.loanToValue.toString(10),
         liquidationThreshold: params.asset.liquidationThreshold.toString(10),
-        liquidationBonus: params.asset.liquidationBonus.toString(10),
+        liquidationDiscount: params.asset.liquidationDiscount.toString(10),
         supplyCap: params.asset.supplyCap.toString(10),
         borrowCap: params.asset.borrowCap.toString(10),
       }
@@ -509,7 +509,7 @@ export class AdminModule extends BaseModule {
         rateStrategyName: params.asset.rateStrategyName,
         loanToValue: params.asset.loanToValue.toString(10),
         liquidationThreshold: params.asset.liquidationThreshold.toString(10),
-        liquidationBonus: params.asset.liquidationBonus.toString(10),
+        liquidationDiscount: params.asset.liquidationDiscount.toString(10),
         supplyCap: params.asset.supplyCap.toString(10),
         borrowCap: params.asset.borrowCap.toString(10),
       }
@@ -832,7 +832,7 @@ export namespace AdminModule {
     rateStrategyName: string
     loanToValue: BigNumber
     liquidationThreshold: BigNumber
-    liquidationBonus: BigNumber
+    liquidationDiscount: BigNumber
     supplyCap: BigNumber
     borrowCap: BigNumber
   }
