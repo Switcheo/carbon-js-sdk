@@ -65,7 +65,7 @@ export class NEOClient {
     return new NEOClient(configProvider, blockchain)
   }
 
-  private parseHexNum(hex: string, exp: number = 0): string {
+  public static parseHexNum(hex: string, exp: number = 0): string {
     if (!hex || typeof (hex) !== "string") return "0"
     const res: string = hex.length % 2 !== 0 ? `0${hex}` : hex
     return new BigNumber(res ? Neon.u.reverseHex(res) : "00", 16).shiftedBy(-exp).toString()
@@ -99,7 +99,7 @@ export class NEOClient {
             const response: ScriptResult = await client.invokeScript(sb.str) as ScriptResult
             acc[token.denom.toUpperCase()] = response.stack[0]?.type === "Integer" // Happens on polychain devnet
               ? response.stack[0]?.value
-              : this.parseHexNum(response.stack[0]?.value)
+              : NEOClient.parseHexNum(response.stack[0]?.value)
 
           } catch (err) {
             console.error("Could not retrieve external balance for ", token.denom)

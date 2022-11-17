@@ -108,7 +108,7 @@ export const NetworkConfigs: {
     },
 
     neo: {
-      rpcURL: "https://seed3.switcheo.network:443",
+      rpcURL: "http://seed5.ngd.network:10332",
       wrapperScriptHash: "f46719e2d16bf50cddcef9d4bbfece901f73cbb6",
     },
 
