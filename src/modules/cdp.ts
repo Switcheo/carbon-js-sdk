@@ -787,7 +787,7 @@ export class CDPModule extends BaseModule {
     if (!asset.assetParams)
       throw new Error("unable to retrieve asset param for " + debtDenom);
 
-    const bonus = bnOrZero(asset.assetParams.liquidationBonus).div(BN_10000)
+    const bonus = bnOrZero(asset.assetParams.liquidationDiscount).div(BN_10000)
     const cdpTokenPrice = await this.getCdpTokenPrice(cdpDenom);
     const cdpTokenDiscountedPrice = cdpTokenPrice.multipliedBy(BN_ONE.minus(bonus))
 
@@ -822,7 +822,7 @@ export class CDPModule extends BaseModule {
     })
     if (!asset.assetParams)
       throw new Error("unable to retrieve asset param for " + cdpActualDenom)
-    const bonus = bnOrZero(asset.assetParams.liquidationBonus).div(BN_10000)
+    const bonus = bnOrZero(asset.assetParams.liquidationDiscount).div(BN_10000)
     const cdpTokenPrice = await this.getCdpTokenPrice(cdpDenom)
     const cdpTokenDiscountedPrice = cdpTokenPrice.multipliedBy(BN_ONE.minus(bonus))
 

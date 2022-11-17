@@ -232,7 +232,7 @@ export interface AssetParams { // CDP
   allow_repay_stablecoin_interest_debt: boolean;
   loan_to_value: string; // string representation of number
   liquidation_threshold: string; // string representation of number
-  liquidation_bonus: string; // string representation of number
+  liquidation_discount: string; // string representation of number
   supply_cap: string; // string representation of number
   borrow_cap: string; // string representation of number
 }
@@ -328,7 +328,6 @@ export interface RewardScheme {
   reward_amount_per_second: string; // string representation of number
   start_time: string; // string representation of timestamp
   end_time: string; // string representation of timestamp
-  reward_reserve_amount: string; // string representation of number
   reward_per_share_last_updated_at: string; // string representation of timestamp
   reward_per_share: string; // string representation of number
 }
