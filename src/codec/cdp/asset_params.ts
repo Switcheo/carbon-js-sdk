@@ -11,7 +11,7 @@ export interface AssetParams {
   allowRepayStablecoinInterestDebt: boolean;
   loanToValue: string;
   liquidationThreshold: string;
-  liquidationBonus: string;
+  liquidationDiscount: string;
   supplyCap: string;
   borrowCap: string;
 }
@@ -30,7 +30,7 @@ const baseAssetParams: object = {
   allowRepayStablecoinInterestDebt: false,
   loanToValue: "",
   liquidationThreshold: "",
-  liquidationBonus: "",
+  liquidationDiscount: "",
   supplyCap: "",
   borrowCap: "",
 };
@@ -58,8 +58,8 @@ export const AssetParams = {
     if (message.liquidationThreshold !== "") {
       writer.uint32(50).string(message.liquidationThreshold);
     }
-    if (message.liquidationBonus !== "") {
-      writer.uint32(58).string(message.liquidationBonus);
+    if (message.liquidationDiscount !== "") {
+      writer.uint32(58).string(message.liquidationDiscount);
     }
     if (message.supplyCap !== "") {
       writer.uint32(66).string(message.supplyCap);
@@ -96,7 +96,7 @@ export const AssetParams = {
           message.liquidationThreshold = reader.string();
           break;
         case 7:
-          message.liquidationBonus = reader.string();
+          message.liquidationDiscount = reader.string();
           break;
         case 8:
           message.supplyCap = reader.string();
@@ -140,9 +140,10 @@ export const AssetParams = {
       object.liquidationThreshold !== null
         ? String(object.liquidationThreshold)
         : "";
-    message.liquidationBonus =
-      object.liquidationBonus !== undefined && object.liquidationBonus !== null
-        ? String(object.liquidationBonus)
+    message.liquidationDiscount =
+      object.liquidationDiscount !== undefined &&
+      object.liquidationDiscount !== null
+        ? String(object.liquidationDiscount)
         : "";
     message.supplyCap =
       object.supplyCap !== undefined && object.supplyCap !== null
@@ -168,8 +169,8 @@ export const AssetParams = {
       (obj.loanToValue = message.loanToValue);
     message.liquidationThreshold !== undefined &&
       (obj.liquidationThreshold = message.liquidationThreshold);
-    message.liquidationBonus !== undefined &&
-      (obj.liquidationBonus = message.liquidationBonus);
+    message.liquidationDiscount !== undefined &&
+      (obj.liquidationDiscount = message.liquidationDiscount);
     message.supplyCap !== undefined && (obj.supplyCap = message.supplyCap);
     message.borrowCap !== undefined && (obj.borrowCap = message.borrowCap);
     return obj;
@@ -184,7 +185,7 @@ export const AssetParams = {
       object.allowRepayStablecoinInterestDebt ?? false;
     message.loanToValue = object.loanToValue ?? "";
     message.liquidationThreshold = object.liquidationThreshold ?? "";
-    message.liquidationBonus = object.liquidationBonus ?? "";
+    message.liquidationDiscount = object.liquidationDiscount ?? "";
     message.supplyCap = object.supplyCap ?? "";
     message.borrowCap = object.borrowCap ?? "";
     return message;
