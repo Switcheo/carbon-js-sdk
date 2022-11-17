@@ -34,7 +34,8 @@ import {
   MsgUnlockCollateralAndWithdrawAsset,
   MsgUpdateRateStrategy,
   MsgWithdrawAsset,
-  MsgClaimRewards
+  MsgClaimRewards,
+  MsgCreateRewardScheme,
 } from "@carbon-sdk/codec/cdp/tx";
 import { QueryBalanceRequest, QuerySupplyOfRequest } from '@carbon-sdk/codec/cosmos/bank/v1beta1/query';
 import { CarbonTx } from "@carbon-sdk/util";
@@ -341,6 +342,26 @@ export class CDPModule extends BaseModule {
       typeUrl: CarbonTx.Types.MsgClaimRewards,
       value,
     }, opts);
+  }
+
+  public async createRewardScheme(params: CDPModule.CreateRewardSchemeParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet()
+    const value = MsgCreateRewardScheme.fromPartial({
+      creator: wallet.bech32Address,
+      createRewardSchemeParams: {
+        rewardDenom: params.rewardDenom,
+        rewardType: params.rewardType,
+        assetDenom: params.assetDenom,
+        rewardAmountPerSecond: params.rewardAmountPerSecond.toString(10),
+        startTime: params.startTime,
+        endTime: params.endTime,
+      }
+    })
+
+    return await wallet.sendTx({
+      typeUrl: CarbonTx.Types.MsgCreateRewardScheme,
+      value,
+    }, opts)
   }
 
   // start of cdp calculations
@@ -935,4 +956,14 @@ export namespace CDPModule {
     principalDebt: string
     initialCumulativeInterestMultiplier: string
   }
+
+  export interface  CreateRewardSchemeParams {
+    rewardDenom: string
+    assetDenom: string
+    rewardType: string
+    rewardAmountPerSecond: BigNumber
+    startTime: Date
+    endTime: Date
+  }
+
 };
