@@ -51,6 +51,7 @@ import BaseModule from "./base";
 import { Network } from "@carbon-sdk/constant";
 import tokenClient from "@carbon-sdk/clients/TokenClient";
 import { SWTHAddress } from '@carbon-sdk/util/address';
+import { Params } from '@carbon-sdk/codec/cdp/params';
 
 export class CDPModule extends BaseModule {
 
@@ -668,12 +669,13 @@ export class CDPModule extends BaseModule {
     denom: string,
     borrowInterest?: BigNumber,
     debtInfo?: DebtInfo,
+    params?: Params,
   ) {
     const sdk = this.sdkProvider
 
     if (!debtInfo) {
       const debtInfoResponse = await sdk.query.cdp.TokenDebt(QueryTokenDebtRequest.fromPartial({ denom }))
-      debtInfo = debtInfoResponse.debtInfo;
+      debtInfo = debtInfoResponse.debtInfo
       if (!debtInfo) {
         throw new Error("unable to retrieve debt info for " + denom);
       }
@@ -686,8 +688,17 @@ export class CDPModule extends BaseModule {
       }
     }
 
+    if (!params) {
+      const paramsResponse = await sdk.query.cdp.Params(QueryCdpParamsRequest.fromPartial({}))
+      params = paramsResponse.params
+      if (!params) {
+        throw new Error("unable to retrieve cdp params for " + denom);
+      }
+    }
+
+    const interestFeeRate = bnOrZero(params.interestFee).div(BN_10000)
     const utilizationRate = bnOrZero(debtInfo.utilizationRate).shiftedBy(-18)
-    return borrowInterest.times(utilizationRate)
+    return borrowInterest.times(utilizationRate).times(BN_ONE.minus(interestFeeRate))
   }
 
   public calculateInterestForTimePeriod(apy: BigNumber, start: Date, end: Date) {
