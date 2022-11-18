@@ -40,6 +40,7 @@ export class LiquidityPoolModule extends BaseModule {
       amountA: params.amountA.toString(10),
       amountB: params.amountB.toString(10),
       swapFee: params.swapFee.shiftedBy(18).toString(10),
+      ampBps: params.ampBps.shiftedBy(4).toString(10),
       numQuotes: new Long(params.numQuotes),
     })
 
@@ -193,6 +194,7 @@ export namespace LiquidityPoolModule {
     amountA: BigNumber
     amountB: BigNumber
     swapFee: BigNumber
+    ampBps: BigNumber
     numQuotes: number
   }
 

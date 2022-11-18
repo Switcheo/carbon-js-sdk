@@ -160,6 +160,9 @@ export interface Pool {
     num_quotes: number;
     shares_amount: string; // string representation of number
     market: string;
+    amp_bps: string;
+    v_amount_a: string;
+    v_amount_b: string;
   },
   rewards_weight: string // string representation of number
   total_commitment: string // string representation of number
