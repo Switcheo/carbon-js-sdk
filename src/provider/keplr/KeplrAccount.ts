@@ -3,6 +3,7 @@ import { Network } from "@carbon-sdk/constant";
 import { Models } from "@carbon-sdk/index";
 import { AddressUtils } from "@carbon-sdk/util";
 import { CarbonSigner, CarbonSignerTypes } from "@carbon-sdk/wallet";
+import { StdSignDoc } from "@cosmjs/amino";
 import { Algo } from "@cosmjs/proto-signing";
 import { AppCurrency, ChainInfo, Keplr, Key } from "@keplr-wallet/types";
 import SDKProvider from "../sdk";
@@ -33,6 +34,11 @@ class KeplrAccount {
       return await keplr!.signDirect(chainInfo.chainId, signerAddress, doc, signOpts);
     };
 
+    const signAmino = async (signerAddress: string, doc: StdSignDoc) => {
+      const signOpts = { preferNoSetFee: true };
+      return await keplr!.signAmino(chainInfo.chainId, signerAddress, doc, signOpts);
+    }
+
     const getAccounts = async () => [{
       algo: 'secp256k1' as Algo,
       address: account.bech32Address,
@@ -42,6 +48,7 @@ class KeplrAccount {
     return {
       type: CarbonSignerTypes.BrowserInjected,
       signDirect,
+      signAmino,
       getAccounts,
     };
   }
