@@ -664,6 +664,32 @@ export class CDPModule extends BaseModule {
     }
   }
 
+  public async calculateLendAPY(
+    denom: string,
+    borrowInterest?: BigNumber,
+    debtInfo?: DebtInfo,
+  ) {
+    const sdk = this.sdkProvider
+
+    if (!debtInfo) {
+      const debtInfoResponse = await sdk.query.cdp.TokenDebt(QueryTokenDebtRequest.fromPartial({ denom }))
+      debtInfo = debtInfoResponse.debtInfo;
+      if (!debtInfo) {
+        throw new Error("unable to retrieve debt info for " + denom);
+      }
+    }
+
+    if (!borrowInterest) {
+      borrowInterest = await this.calculateAPY(denom, debtInfo)
+      if (!borrowInterest) {
+        throw new Error("unable to retrieve borrow interest for " + denom);
+      }
+    }
+
+    const utilizationRate = bnOrZero(debtInfo.utilizationRate).shiftedBy(-18)
+    return borrowInterest.times(utilizationRate)
+  }
+
   public calculateInterestForTimePeriod(apy: BigNumber, start: Date, end: Date) {
     if (end <= start) {
       return BN_ZERO
