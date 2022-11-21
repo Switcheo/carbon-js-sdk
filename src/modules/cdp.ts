@@ -849,7 +849,7 @@ export class CDPModule extends BaseModule {
     return cdpAmountWithDiscount.minus(feeAmount)
   }
 
-  public async getCollateralReceivableForStablecoinLiq(cdpDenom: string, stablecoinRepayAmt: BigNumber, interestDenom: string, interestRepayAmt: BigNumber) {
+  public async getCollateralReceivableForStablecoinLiq(cdpDenom: string, stablecoinRepayAmt: BigNumber, interestDenom: string, interestRepayAmt: BigNumber, debtor: string) {
     const sdk = this.sdkProvider
 
     // get the discounted price for the cdp token
@@ -863,36 +863,168 @@ export class CDPModule extends BaseModule {
     const cdpTokenPrice = await this.getCdpTokenPrice(cdpDenom)
     const cdpTokenDiscountedPrice = cdpTokenPrice.multipliedBy(BN_ONE.minus(bonus))
 
-    // get value of stablecoin repayment + interest repayment
+    // get close factor
+    const debtorAccountData = await sdk.query.cdp.AccountData({
+      address: debtor
+    })
+    const debtorTotalCollateralVal = bnOrZero(debtorAccountData.totalCollateralsUsd)
+    const debtorTotalDebtVal = bnOrZero(debtorAccountData.totalDebtsUsd)
+    const currentLiqThreshold = bnOrZero(debtorAccountData.currLiquidationThreshold)
+    const params = await sdk.query.cdp.Params({})
+    if (!params.params) {
+      throw new Error("unable to retrieve cdp params")
+    }
+    const smallLiqSize = bnOrZero(params.params.smallLiquidationSize)
+    const minCloseFactor = bnOrZero(params.params.minimumCloseFactor)
+    const completeLiqThreshold = bnOrZero(params.params.completeLiquidationThreshold)
+    const closeFactor = this.computeCloseFactor(
+        debtorTotalDebtVal,
+        debtorTotalCollateralVal,
+        currentLiqThreshold,
+        smallLiqSize,
+        minCloseFactor,
+        completeLiqThreshold
+    )
+
+    // get max repayable amount given the debtor's debt and how much liquidator wants to repay
     const debtInfoRsp = await sdk.query.cdp.StablecoinDebt({}) ?? {}
     if (!debtInfoRsp.stablecoinDebtInfo)
       throw new Error("unable to retrieve stablecoin debt info")
     const stablecoinDebtInfo = debtInfoRsp.stablecoinDebtInfo
-    const stablecoinDecimals = await this.sdkProvider.getTokenClient().getDecimals(stablecoinDebtInfo.denom) ?? BN_ZERO
-    const stablecoinRepaymentValue = stablecoinRepayAmt.shiftedBy(-stablecoinDecimals)
-    const interestRepaymentValue = await this.getTokenUsdVal(interestDenom, interestRepayAmt) ?? BN_ZERO;
-    const totalRepaymentValue = stablecoinRepaymentValue.plus(interestRepaymentValue)
+    const stablecoinDecimals = bnOrZero(await sdk.getTokenClient().getDecimals(stablecoinDebtInfo.denom))
+    const maxRepayableValue = debtorTotalDebtVal.multipliedBy(closeFactor)
+    const maxRepayableAmt = maxRepayableValue.shiftedBy(stablecoinDecimals.toNumber())
+    if (stablecoinRepayAmt.isGreaterThan(maxRepayableAmt)) {
+      stablecoinRepayAmt = maxRepayableAmt
+    }
 
-    // get cdp tokens (discounted) that can be gained from the debt amount
-    const cdpTokenDecimals = await sdk.getTokenClient().getDecimals(cdpActualDenom) ?? 0
-    const cdpAmountWithDiscount = totalRepaymentValue.div(cdpTokenDiscountedPrice).shiftedBy(cdpTokenDecimals)
+    // calculate collateral amount that can be obtained given that debt amount and debtor's collateral balance
+    // AND, recalculate debt repay amount if needed
+    const cdpTokenDecimals = bnOrZero(await sdk.getTokenClient().getDecimals(cdpActualDenom))
+    let collateralAmtToLiquidate = this.calculateCollateralRequiredForDebt(
+        BN_ONE, // assumes USC is $1
+        cdpTokenDiscountedPrice,
+        stablecoinRepayAmt,
+        cdpTokenDecimals,
+        stablecoinDecimals,
+    )
+    const debtorAccountCollateral = await sdk.query.cdp.AccountCollateral({
+      address: debtor,
+      cdpDenom: cdpDenom,
+    })
+    if (!debtorAccountCollateral.collateral) {
+      throw Error("unable to retrieve debtor's collateral amount")
+    }
+    const debtorCollateralAmt = new BigNumber(debtorAccountCollateral.collateral.collateralAmount)
+    if (collateralAmtToLiquidate.isGreaterThan(debtorCollateralAmt)) {
+      collateralAmtToLiquidate = debtorCollateralAmt
+      stablecoinRepayAmt = this.calculateDebtCoveredByCollateral(
+          BN_ONE,
+          cdpTokenDiscountedPrice,
+          collateralAmtToLiquidate,
+          cdpTokenDecimals,
+          stablecoinDecimals,
+      )
+    }
 
-    // get cdp tokens (not discounted) that can be gained from the debt amount
-    const cdpAmountWithoutDiscount = totalRepaymentValue.div(cdpTokenPrice).shiftedBy(cdpTokenDecimals)
+    // get collateral amt without discount
+    const collateralAmountWithoutDiscount = this.calculateCollateralRequiredForDebt(
+        BN_ONE,
+        cdpTokenPrice,
+        stablecoinRepayAmt,
+        cdpTokenDecimals,
+        stablecoinDecimals,
+    )
+
+    // get liquidation profit
+    const liquidatorProfit = collateralAmtToLiquidate.minus(collateralAmountWithoutDiscount)
+    if (liquidatorProfit.isNegative()) {
+      throw Error("liquidator's profit is negative")
+    }
 
     // get fee amount
-    const cdpAmountProfit = cdpAmountWithDiscount.minus(cdpAmountWithoutDiscount)
-    const params = await sdk.query.cdp.Params({})
-    if (!params.params)
-      throw new Error("unable to retrieve cdp params");
-    const feePercentage = bnOrZero(params.params.liquidationFee).div(BN_10000)
-    const feeAmount = cdpAmountProfit.multipliedBy(feePercentage)
+    const liquidationFee = params.params.liquidationFee
+    const liquidationFeeAmount = liquidatorProfit.multipliedBy(liquidationFee).div(10000)
 
-    // return collateral that can be received by liquidator
-    return cdpAmountWithDiscount.minus(feeAmount)
+    // return the collateral amount left for the liquidator once fees have been deducted
+    return collateralAmtToLiquidate.minus(liquidationFeeAmount)
+
   }
 
+  computeCloseFactor(
+      borrowedValue: BigNumber,
+      collateralValue: BigNumber,
+      liquidationThreshold: BigNumber,
+      smallLiquidationSize: BigNumber,
+      minimumCloseFactor: BigNumber,
+      completeLiquidationThreshold: BigNumber
+  ) {
+    if (
+        borrowedValue.isLessThan(liquidationThreshold) ||
+        borrowedValue.isLessThan(smallLiquidationSize)
+    ) {
+      return BN_ZERO
+    }
+    if (completeLiquidationThreshold.isZero()) {
+      return BN_ONE
+    }
+
+    const criticalVal = liquidationThreshold.plus(completeLiquidationThreshold.multipliedBy(collateralValue.minus(liquidationThreshold)))
+
+    const slope = BN_ONE.minus(minimumCloseFactor).div(criticalVal.minus(liquidationThreshold))
+    let closeFactor = minimumCloseFactor.plus(borrowedValue.minus(liquidationThreshold).multipliedBy(slope))
+    if (liquidationThreshold.isEqualTo(criticalVal)) {
+      closeFactor = minimumCloseFactor
+    }
+
+    if (closeFactor.isGreaterThan(1)) {
+      return BN_ONE
+    }
+
+    if (closeFactor.isLessThan(0)) {
+      return BN_ZERO
+    }
+
+    return closeFactor
+  }
+
+  calculateCollateralRequiredForDebt(
+      debtPrice: BigNumber,
+      collateralPrice: BigNumber,
+      debtAmount: BigNumber,
+      collateralTokenDecimals: BigNumber,
+      debtTokenDecimals: BigNumber,
+  ) {
+    const decimalPower = collateralTokenDecimals.minus(debtTokenDecimals)
+    const decimalMultiplier = this.getDecimalMultiplier(decimalPower)
+    const res = debtPrice.multipliedBy(debtAmount).multipliedBy(decimalMultiplier).div(collateralPrice)
+    return res.decimalPlaces(0, BigNumber.ROUND_CEIL)
+  }
+
+  calculateDebtCoveredByCollateral(
+      debtPrice: BigNumber,
+      collateralPrice: BigNumber,
+      collateralAmount: BigNumber,
+      collateralTokenDecimals: BigNumber,
+      debtTokenDecimals: BigNumber,
+  ) {
+    const decimalPower = debtTokenDecimals.minus(collateralTokenDecimals)
+    const decimalMultiplier = this.getDecimalMultiplier(decimalPower)
+    const res = collateralPrice.multipliedBy(collateralAmount).multipliedBy(decimalMultiplier).div(debtPrice)
+    return res.decimalPlaces(0)
+  }
+
+  getDecimalMultiplier(n: BigNumber) {
+    const ten = new BigNumber(10)
+    if (n.isLessThan(0)) {
+      return BN_ONE.div(ten.pow(n.negated()))
+    }
+    return ten.pow(n)
+  }
+
+
 }
+
 
 export namespace CDPModule {
   export interface SupplyAssetParams {
