@@ -811,45 +811,7 @@ export class CDPModule extends BaseModule {
     return denom;
   }
 
-  // given a debt repayment amount, we get the max collateral that a liquidator can receive
-  // this takes into account the liquidation bonus and fees that will be deducted from his profit
-  public async getCollateralReceivableForLiquidation(debtDenom: string, debtAmount: BigNumber, cdpDenom: string) {
-    const sdk = this.sdkProvider
-
-    // get the discounted price for the cdp token
-    const cdpActualDenom = this.getUnderlyingDenom(cdpDenom)
-    const asset = await sdk.query.cdp.Asset({
-      denom: cdpActualDenom
-    })
-    if (!asset.assetParams)
-      throw new Error("unable to retrieve asset param for " + debtDenom);
-
-    const bonus = bnOrZero(asset.assetParams.liquidationDiscount).div(BN_10000)
-    const cdpTokenPrice = await this.getCdpTokenPrice(cdpDenom);
-    const cdpTokenDiscountedPrice = cdpTokenPrice.multipliedBy(BN_ONE.minus(bonus))
-
-    // get cdp tokens (discounted) that can be gained from the debt amount
-    const debtValue = await this.getTokenUsdVal(debtDenom, debtAmount) ?? BN_ZERO;
-    const underlyingDenom = this.getUnderlyingDenom(cdpDenom)
-    const cdpTokenDecimals = await sdk.getTokenClient().getDecimals(underlyingDenom) ?? 0
-    const cdpAmountWithDiscount = debtValue.div(cdpTokenDiscountedPrice).shiftedBy(cdpTokenDecimals)
-
-    // get cdp tokens (not discounted) that can be gained from the debt amount
-    const cdpAmountWithoutDiscount = debtValue.div(cdpTokenPrice).shiftedBy(cdpTokenDecimals)
-
-    // get fee amount
-    const cdpAmountProfit = cdpAmountWithDiscount.minus(cdpAmountWithoutDiscount)
-    const params = await sdk.query.cdp.Params({})
-    if (!params.params)
-      throw new Error("unable to retrieve cdp params");
-    const feePercentage = bnOrZero(params.params.liquidationFee).div(BN_10000)
-    const feeAmount = cdpAmountProfit.multipliedBy(feePercentage)
-
-    // return collateral that can be received by liquidator
-    return cdpAmountWithDiscount.minus(feeAmount)
-  }
-
-  public async getCollateralReceivableForStablecoinLiq(cdpDenom: string, stablecoinRepayAmt: BigNumber, interestDenom: string, interestRepayAmt: BigNumber, debtor: string) {
+  public async getMaxCollateralForLiquidator(debtor: string, cdpDenom: string, debtDenom: string, debtRepaymentAmount: BigNumber) {
     const sdk = this.sdkProvider
 
     // get the discounted price for the cdp token
@@ -887,15 +849,11 @@ export class CDPModule extends BaseModule {
     )
 
     // get max repayable amount given the debtor's debt and how much liquidator wants to repay
-    const debtInfoRsp = await sdk.query.cdp.StablecoinDebt({}) ?? {}
-    if (!debtInfoRsp.stablecoinDebtInfo)
-      throw new Error("unable to retrieve stablecoin debt info")
-    const stablecoinDebtInfo = debtInfoRsp.stablecoinDebtInfo
-    const stablecoinDecimals = bnOrZero(await sdk.getTokenClient().getDecimals(stablecoinDebtInfo.denom))
+    const debtDecimals = bnOrZero(await sdk.getTokenClient().getDecimals(debtDenom))
     const maxRepayableValue = debtorTotalDebtVal.multipliedBy(closeFactor)
-    const maxRepayableAmt = maxRepayableValue.shiftedBy(stablecoinDecimals.toNumber())
-    if (stablecoinRepayAmt.isGreaterThan(maxRepayableAmt)) {
-      stablecoinRepayAmt = maxRepayableAmt
+    const maxRepayableAmt = maxRepayableValue.shiftedBy(debtDecimals.toNumber())
+    if (debtRepaymentAmount.isGreaterThan(maxRepayableAmt)) {
+      debtRepaymentAmount = maxRepayableAmt
     }
 
     // calculate collateral amount that can be obtained given that debt amount and debtor's collateral balance
@@ -904,9 +862,9 @@ export class CDPModule extends BaseModule {
     let collateralAmtToLiquidate = this.calculateCollateralRequiredForDebt(
         BN_ONE, // assumes USC is $1
         cdpTokenDiscountedPrice,
-        stablecoinRepayAmt,
+        debtRepaymentAmount,
         cdpTokenDecimals,
-        stablecoinDecimals,
+        debtDecimals,
     )
     const debtorAccountCollateral = await sdk.query.cdp.AccountCollateral({
       address: debtor,
@@ -918,12 +876,12 @@ export class CDPModule extends BaseModule {
     const debtorCollateralAmt = new BigNumber(debtorAccountCollateral.collateral.collateralAmount)
     if (collateralAmtToLiquidate.isGreaterThan(debtorCollateralAmt)) {
       collateralAmtToLiquidate = debtorCollateralAmt
-      stablecoinRepayAmt = this.calculateDebtCoveredByCollateral(
+      debtRepaymentAmount = this.calculateDebtCoveredByCollateral(
           BN_ONE,
           cdpTokenDiscountedPrice,
           collateralAmtToLiquidate,
           cdpTokenDecimals,
-          stablecoinDecimals,
+          debtDecimals,
       )
     }
 
@@ -931,9 +889,9 @@ export class CDPModule extends BaseModule {
     const collateralAmountWithoutDiscount = this.calculateCollateralRequiredForDebt(
         BN_ONE,
         cdpTokenPrice,
-        stablecoinRepayAmt,
+        debtRepaymentAmount,
         cdpTokenDecimals,
-        stablecoinDecimals,
+        debtDecimals,
     )
 
     // get liquidation profit
