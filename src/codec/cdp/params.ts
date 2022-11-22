@@ -9,6 +9,7 @@ export interface Params {
   interestFee: string;
   liquidationFee: string;
   stablecoinInterestRate: string;
+  stablecoinMintCap: string;
   /**
    * Complete Liquidation Threshold determines how far between
    * liquidation_threshold (LT) and collateral_value (CV) a borrower's
@@ -50,6 +51,7 @@ const baseParams: object = {
   interestFee: "",
   liquidationFee: "",
   stablecoinInterestRate: "",
+  stablecoinMintCap: "",
   completeLiquidationThreshold: "",
   minimumCloseFactor: "",
   smallLiquidationSize: "",
@@ -69,14 +71,17 @@ export const Params = {
     if (message.stablecoinInterestRate !== "") {
       writer.uint32(26).string(message.stablecoinInterestRate);
     }
+    if (message.stablecoinMintCap !== "") {
+      writer.uint32(34).string(message.stablecoinMintCap);
+    }
     if (message.completeLiquidationThreshold !== "") {
-      writer.uint32(34).string(message.completeLiquidationThreshold);
+      writer.uint32(42).string(message.completeLiquidationThreshold);
     }
     if (message.minimumCloseFactor !== "") {
-      writer.uint32(42).string(message.minimumCloseFactor);
+      writer.uint32(50).string(message.minimumCloseFactor);
     }
     if (message.smallLiquidationSize !== "") {
-      writer.uint32(50).string(message.smallLiquidationSize);
+      writer.uint32(58).string(message.smallLiquidationSize);
     }
     return writer;
   },
@@ -98,12 +103,15 @@ export const Params = {
           message.stablecoinInterestRate = reader.string();
           break;
         case 4:
-          message.completeLiquidationThreshold = reader.string();
+          message.stablecoinMintCap = reader.string();
           break;
         case 5:
-          message.minimumCloseFactor = reader.string();
+          message.completeLiquidationThreshold = reader.string();
           break;
         case 6:
+          message.minimumCloseFactor = reader.string();
+          break;
+        case 7:
           message.smallLiquidationSize = reader.string();
           break;
         default:
@@ -128,6 +136,11 @@ export const Params = {
       object.stablecoinInterestRate !== undefined &&
       object.stablecoinInterestRate !== null
         ? String(object.stablecoinInterestRate)
+        : "";
+    message.stablecoinMintCap =
+      object.stablecoinMintCap !== undefined &&
+      object.stablecoinMintCap !== null
+        ? String(object.stablecoinMintCap)
         : "";
     message.completeLiquidationThreshold =
       object.completeLiquidationThreshold !== undefined &&
@@ -155,6 +168,8 @@ export const Params = {
       (obj.liquidationFee = message.liquidationFee);
     message.stablecoinInterestRate !== undefined &&
       (obj.stablecoinInterestRate = message.stablecoinInterestRate);
+    message.stablecoinMintCap !== undefined &&
+      (obj.stablecoinMintCap = message.stablecoinMintCap);
     message.completeLiquidationThreshold !== undefined &&
       (obj.completeLiquidationThreshold = message.completeLiquidationThreshold);
     message.minimumCloseFactor !== undefined &&
@@ -169,6 +184,7 @@ export const Params = {
     message.interestFee = object.interestFee ?? "";
     message.liquidationFee = object.liquidationFee ?? "";
     message.stablecoinInterestRate = object.stablecoinInterestRate ?? "";
+    message.stablecoinMintCap = object.stablecoinMintCap ?? "";
     message.completeLiquidationThreshold =
       object.completeLiquidationThreshold ?? "";
     message.minimumCloseFactor = object.minimumCloseFactor ?? "";

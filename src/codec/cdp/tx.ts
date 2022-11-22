@@ -175,6 +175,13 @@ export interface MsgSetStablecoinInterestRate {
 
 export interface MsgSetStablecoinInterestRateResponse {}
 
+export interface MsgSetStablecoinMintCap {
+  creator: string;
+  stablecoinMintCap: string;
+}
+
+export interface MsgSetStablecoinMintCapResponse {}
+
 export interface MsgMintStablecoin {
   creator: string;
   amount: string;
@@ -2979,6 +2986,139 @@ export const MsgSetStablecoinInterestRateResponse = {
   },
 };
 
+const baseMsgSetStablecoinMintCap: object = {
+  creator: "",
+  stablecoinMintCap: "",
+};
+
+export const MsgSetStablecoinMintCap = {
+  encode(
+    message: MsgSetStablecoinMintCap,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.stablecoinMintCap !== "") {
+      writer.uint32(18).string(message.stablecoinMintCap);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgSetStablecoinMintCap {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgSetStablecoinMintCap,
+    } as MsgSetStablecoinMintCap;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.stablecoinMintCap = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgSetStablecoinMintCap {
+    const message = {
+      ...baseMsgSetStablecoinMintCap,
+    } as MsgSetStablecoinMintCap;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.stablecoinMintCap =
+      object.stablecoinMintCap !== undefined &&
+      object.stablecoinMintCap !== null
+        ? String(object.stablecoinMintCap)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgSetStablecoinMintCap): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.stablecoinMintCap !== undefined &&
+      (obj.stablecoinMintCap = message.stablecoinMintCap);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgSetStablecoinMintCap>
+  ): MsgSetStablecoinMintCap {
+    const message = {
+      ...baseMsgSetStablecoinMintCap,
+    } as MsgSetStablecoinMintCap;
+    message.creator = object.creator ?? "";
+    message.stablecoinMintCap = object.stablecoinMintCap ?? "";
+    return message;
+  },
+};
+
+const baseMsgSetStablecoinMintCapResponse: object = {};
+
+export const MsgSetStablecoinMintCapResponse = {
+  encode(
+    _: MsgSetStablecoinMintCapResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgSetStablecoinMintCapResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgSetStablecoinMintCapResponse,
+    } as MsgSetStablecoinMintCapResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgSetStablecoinMintCapResponse {
+    const message = {
+      ...baseMsgSetStablecoinMintCapResponse,
+    } as MsgSetStablecoinMintCapResponse;
+    return message;
+  },
+
+  toJSON(_: MsgSetStablecoinMintCapResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgSetStablecoinMintCapResponse>
+  ): MsgSetStablecoinMintCapResponse {
+    const message = {
+      ...baseMsgSetStablecoinMintCapResponse,
+    } as MsgSetStablecoinMintCapResponse;
+    return message;
+  },
+};
+
 const baseMsgMintStablecoin: object = { creator: "", amount: "" };
 
 export const MsgMintStablecoin = {
@@ -4965,6 +5105,9 @@ export interface Msg {
   SetStablecoinInterestRate(
     request: MsgSetStablecoinInterestRate
   ): Promise<MsgSetStablecoinInterestRateResponse>;
+  SetStablecoinMintCap(
+    request: MsgSetStablecoinMintCap
+  ): Promise<MsgSetStablecoinMintCapResponse>;
   MintStablecoin(
     request: MsgMintStablecoin
   ): Promise<MsgMintStablecoinResponse>;
@@ -5021,6 +5164,7 @@ export class MsgClientImpl implements Msg {
     this.AddReserve = this.AddReserve.bind(this);
     this.ClaimRewards = this.ClaimRewards.bind(this);
     this.SetStablecoinInterestRate = this.SetStablecoinInterestRate.bind(this);
+    this.SetStablecoinMintCap = this.SetStablecoinMintCap.bind(this);
     this.MintStablecoin = this.MintStablecoin.bind(this);
     this.ReturnStablecoin = this.ReturnStablecoin.bind(this);
     this.SetCompleteLiquidationThreshold =
@@ -5339,6 +5483,20 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgSetStablecoinInterestRateResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  SetStablecoinMintCap(
+    request: MsgSetStablecoinMintCap
+  ): Promise<MsgSetStablecoinMintCapResponse> {
+    const data = MsgSetStablecoinMintCap.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Msg",
+      "SetStablecoinMintCap",
+      data
+    );
+    return promise.then((data) =>
+      MsgSetStablecoinMintCapResponse.decode(new _m0.Reader(data))
     );
   }
 
