@@ -52,6 +52,7 @@ import { Network } from "@carbon-sdk/constant";
 import tokenClient from "@carbon-sdk/clients/TokenClient";
 import { SWTHAddress } from '@carbon-sdk/util/address';
 import { Params } from '@carbon-sdk/codec/cdp/params';
+import dayjs, { Dayjs } from 'dayjs';
 
 export class CDPModule extends BaseModule {
 
@@ -619,6 +620,20 @@ export class CDPModule extends BaseModule {
     return principalAmount.times(cim).dividedToIntegerBy(initialCIM);
   }
 
+  public calculateInterestAPY = (debtInfo: DebtInfo, rateStrategy: RateStrategyParams) => {
+    const utilizationRate = bnOrZero(debtInfo.utilizationRate).shiftedBy(-18)
+    const optimalUsage = bnOrZero(rateStrategy.optimalUsage).div(BN_10000)
+    const variableRate1 = bnOrZero(rateStrategy.variableRateSlope1).div(BN_10000)
+    const variableRate2 = bnOrZero(rateStrategy.variableRateSlope2).div(BN_10000)
+    const baseVariableBorrowRate = bnOrZero(rateStrategy.baseVariableBorrowRate).div(BN_10000)
+    if (utilizationRate.lte(optimalUsage)) {
+      return utilizationRate.times(variableRate1).div(optimalUsage).plus(baseVariableBorrowRate)
+    } else {
+      const ratio = utilizationRate.minus(optimalUsage).div(BN_ONE.minus(optimalUsage))
+      return ratio.times(variableRate2).plus(variableRate1).plus(baseVariableBorrowRate)
+    }
+  }
+
   public async calculateAPY(
     denom: string,
     debtInfo?: DebtInfo,
@@ -634,15 +649,15 @@ export class CDPModule extends BaseModule {
         throw new Error("unable to retrieve debt info for " + denom);
     }
 
-    if (!assetParams) {
-      const assetResponse = await sdk.query.cdp.Asset(QueryAssetRequest.fromPartial({ denom }))
-      assetParams = assetResponse.assetParams
-      if (!assetParams) {
-        throw new Error("unable to retrieve asset param for " + denom);
-      }
-    }
-
     if (!rateStrategyParams) {
+      if (!assetParams) {
+        const assetResponse = await sdk.query.cdp.Asset(QueryAssetRequest.fromPartial({ denom }))
+        assetParams = assetResponse.assetParams
+        if (!assetParams) {
+          throw new Error("unable to retrieve asset param for " + denom);
+        }
+      }
+
       const rateStrategyParamsResponse = await sdk.query.cdp.RateStrategy(QueryRateStrategyRequest.fromPartial({
         name: assetParams.rateStrategyName
       }))
@@ -652,17 +667,16 @@ export class CDPModule extends BaseModule {
       }
     }
 
-    const utilizationRate = bnOrZero(debtInfo.utilizationRate).shiftedBy(-18)
-    const optimalUsage = bnOrZero(rateStrategyParams.optimalUsage).div(BN_10000)
-    const variableRate1 = bnOrZero(rateStrategyParams.variableRateSlope1).div(BN_10000)
-    const variableRate2 = bnOrZero(rateStrategyParams.variableRateSlope2).div(BN_10000)
-    const baseVariableBorrowRate = bnOrZero(rateStrategyParams.baseVariableBorrowRate).div(BN_10000)
-    if (utilizationRate.lte(optimalUsage)) {
-      return utilizationRate.times(variableRate1).div(optimalUsage).plus(baseVariableBorrowRate)
-    } else {
-      const ratio = utilizationRate.minus(optimalUsage).div(BN_ONE.minus(optimalUsage))
-      return ratio.times(variableRate2).plus(variableRate1).plus(baseVariableBorrowRate)
+    return this.calculateInterestAPY(debtInfo, rateStrategyParams)
+  }
+
+  public calculateInterestForTimePeriod(apy: BigNumber, start: Date, end: Date) {
+    if (end <= start) {
+      return BN_ZERO
     }
+    const duration = bnOrZero(end.valueOf() - start.valueOf())
+    const millisecondsAYear = bnOrZero(31536000000)
+    return duration.div(millisecondsAYear).times(apy)
   }
 
   public async calculateLendAPY(
@@ -699,15 +713,6 @@ export class CDPModule extends BaseModule {
     const interestFeeRate = bnOrZero(params.interestFee).div(BN_10000)
     const utilizationRate = bnOrZero(debtInfo.utilizationRate).shiftedBy(-18)
     return borrowInterest.times(utilizationRate).times(BN_ONE.minus(interestFeeRate))
-  }
-
-  public calculateInterestForTimePeriod(apy: BigNumber, start: Date, end: Date) {
-    if (end <= start) {
-      return BN_ZERO
-    }
-    const duration = bnOrZero(end.valueOf() - start.valueOf())
-    const millisecondsAYear = bnOrZero(31536000000)
-    return duration.div(millisecondsAYear).times(apy)
   }
 
   public async recalculateCIM(denom: string, debtInfo?: DebtInfo) {
@@ -1084,7 +1089,7 @@ export namespace CDPModule {
     initialCumulativeInterestMultiplier: string
   }
 
-  export interface  CreateRewardSchemeParams {
+  export interface CreateRewardSchemeParams {
     rewardDenom: string
     assetDenom: string
     rewardType: string
