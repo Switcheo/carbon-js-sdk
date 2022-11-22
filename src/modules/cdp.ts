@@ -620,7 +620,7 @@ export class CDPModule extends BaseModule {
     return principalAmount.times(cim).dividedToIntegerBy(initialCIM);
   }
 
-  public calculateInterestAPY = (debtInfo: DebtInfo, rateStrategy: RateStrategyParams) => {
+  public static calculateInterestAPY = (debtInfo: DebtInfo, rateStrategy: RateStrategyParams) => {
     const utilizationRate = bnOrZero(debtInfo.utilizationRate).shiftedBy(-18)
     const optimalUsage = bnOrZero(rateStrategy.optimalUsage).div(BN_10000)
     const variableRate1 = bnOrZero(rateStrategy.variableRateSlope1).div(BN_10000)
@@ -667,10 +667,10 @@ export class CDPModule extends BaseModule {
       }
     }
 
-    return this.calculateInterestAPY(debtInfo, rateStrategyParams)
+    return CDPModule.calculateInterestAPY(debtInfo, rateStrategyParams)
   }
 
-  public calculateInterestForTimePeriod(apy: BigNumber, start: Date, end: Date) {
+  public static calculateInterestForTimePeriod(apy: BigNumber, start: Date, end: Date) {
     const diff = end.getTime() - start.getTime();
     if (diff <= 0) {
       return BN_ZERO
@@ -729,7 +729,7 @@ export class CDPModule extends BaseModule {
     if (!apy) {
       return BN_ZERO;
     }
-    const interest = this.calculateInterestForTimePeriod(apy, debtInfo.lastUpdatedTime ?? new Date(0), new Date())
+    const interest = CDPModule.calculateInterestForTimePeriod(apy, debtInfo.lastUpdatedTime ?? new Date(0), new Date())
     const newCIM = cim.times(interest.plus(1))
 
     return newCIM;
@@ -751,7 +751,7 @@ export class CDPModule extends BaseModule {
     if (!apy) {
       return BN_ZERO;
     }
-    const interest = this.calculateInterestForTimePeriod(apy, debtInfo.lastUpdatedTime ?? new Date(0), new Date())
+    const interest = CDPModule.calculateInterestForTimePeriod(apy, debtInfo.lastUpdatedTime ?? new Date(0), new Date())
     const newCIM = cim.times(interest.plus(1))
 
     return newCIM;
