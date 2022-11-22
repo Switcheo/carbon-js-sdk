@@ -207,8 +207,8 @@ export const parseChannelId = (rawChannelId: string): WsSubscriptionParams => {
     case WSChannel.commitments:
       return {
         channel,
-        id: param0,
-      } as WsSubscribePoolsByIdParams
+        address: param0,
+      } as WsSubscribeCommitmentParams
     case WSChannel.token_prices:
       return {
         channel,
