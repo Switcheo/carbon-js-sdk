@@ -639,7 +639,7 @@ export class CDPModule extends BaseModule {
     debtInfo?: DebtInfo,
     assetParams?: AssetParams,
     rateStrategyParams?: RateStrategyParams,
-  ) {
+  ): Promise<BigNumber> {
     const sdk = this.sdkProvider
 
     if (!debtInfo) {
@@ -697,9 +697,6 @@ export class CDPModule extends BaseModule {
 
     if (!borrowInterest) {
       borrowInterest = await this.calculateAPY(denom, debtInfo)
-      if (!borrowInterest) {
-        throw new Error("unable to retrieve borrow interest for " + denom);
-      }
     }
 
     if (!params) {
@@ -726,9 +723,6 @@ export class CDPModule extends BaseModule {
     }
     const cim = bnOrZero(debtInfo.cumulativeInterestMultiplier)
     const apy = await this.calculateAPY(denom, debtInfo)
-    if (!apy) {
-      return BN_ZERO;
-    }
     const interest = CDPModule.calculateInterestForTimePeriod(apy, debtInfo.lastUpdatedTime ?? new Date(0), new Date())
     const newCIM = cim.times(interest.plus(1))
 

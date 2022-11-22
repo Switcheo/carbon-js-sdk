@@ -60,8 +60,8 @@ export enum WSRequest {
   CDPStablecoinDebt = "get_cdp_stablecoin_debt",
   CDPLiquidations = "get_cdp_liquidations",
   CDPAccountStablecoin = "get_cdp_account_stablecoin",
-  CDPRewardSchemes = "get_reward_schemes",
-  CDPRewardsDebts = "get_reward_debts",
+  CDPRewardSchemes = "get_cdp_reward_schemes",
+  CDPRewardsDebts = "get_cdp_reward_debts",
 }
 
 export interface WsGetRecentTradesParams {
