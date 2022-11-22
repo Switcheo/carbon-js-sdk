@@ -107,6 +107,14 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
       coinDecimals: 6,
       coinGeckoId: "stride",
     },
+	walletUrl:
+      process.env.NODE_ENV === "production"
+        ? "https://wallet.keplr.app/chains/stride"
+        : "http://localhost:8080/chains/stride",
+    walletUrlForStaking:
+      process.env.NODE_ENV === "production"
+        ? "https://wallet.keplr.app/chains/stride"
+        : "http://localhost:8080/chains/stride",
     bip44: {
       coinType: 118,
     },
