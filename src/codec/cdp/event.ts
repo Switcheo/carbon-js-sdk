@@ -49,6 +49,11 @@ export interface SetStablecoinInterestRateEvent {
   type: string;
 }
 
+export interface SetStablecoinMintCapEvent {
+  stablecoinMintCap: string;
+  type: string;
+}
+
 export interface SetCompleteLiquidationThresholdEvent {
   completeLiquidationThreshold: string;
   type: string;
@@ -827,6 +832,87 @@ export const SetStablecoinInterestRateEvent = {
       ...baseSetStablecoinInterestRateEvent,
     } as SetStablecoinInterestRateEvent;
     message.stablecoinInterestRate = object.stablecoinInterestRate ?? "";
+    message.type = object.type ?? "";
+    return message;
+  },
+};
+
+const baseSetStablecoinMintCapEvent: object = {
+  stablecoinMintCap: "",
+  type: "",
+};
+
+export const SetStablecoinMintCapEvent = {
+  encode(
+    message: SetStablecoinMintCapEvent,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.stablecoinMintCap !== "") {
+      writer.uint32(10).string(message.stablecoinMintCap);
+    }
+    if (message.type !== "") {
+      writer.uint32(18).string(message.type);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): SetStablecoinMintCapEvent {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseSetStablecoinMintCapEvent,
+    } as SetStablecoinMintCapEvent;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.stablecoinMintCap = reader.string();
+          break;
+        case 2:
+          message.type = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SetStablecoinMintCapEvent {
+    const message = {
+      ...baseSetStablecoinMintCapEvent,
+    } as SetStablecoinMintCapEvent;
+    message.stablecoinMintCap =
+      object.stablecoinMintCap !== undefined &&
+      object.stablecoinMintCap !== null
+        ? String(object.stablecoinMintCap)
+        : "";
+    message.type =
+      object.type !== undefined && object.type !== null
+        ? String(object.type)
+        : "";
+    return message;
+  },
+
+  toJSON(message: SetStablecoinMintCapEvent): unknown {
+    const obj: any = {};
+    message.stablecoinMintCap !== undefined &&
+      (obj.stablecoinMintCap = message.stablecoinMintCap);
+    message.type !== undefined && (obj.type = message.type);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<SetStablecoinMintCapEvent>
+  ): SetStablecoinMintCapEvent {
+    const message = {
+      ...baseSetStablecoinMintCapEvent,
+    } as SetStablecoinMintCapEvent;
+    message.stablecoinMintCap = object.stablecoinMintCap ?? "";
     message.type = object.type ?? "";
     return message;
   },

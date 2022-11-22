@@ -181,6 +181,13 @@ export interface CommitmentEvent extends Commitment {
   Type?: string;
 }
 
+export interface TokenPrice {
+  denom: string;
+  index: string;
+  index_updated_at: string;
+  twap: string;
+}
+
 export interface CDPParams {
   interest_fee: string; // string representation of number
   liquidation_fee: string; // string representation of number
