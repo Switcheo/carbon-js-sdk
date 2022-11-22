@@ -1,6 +1,4 @@
 import { Models } from "@carbon-sdk/index"
-import { RewardHistoryRecord } from "@carbon-sdk/codec/liquiditypool/reward"
-import { DecCoin } from "@carbon-sdk/codec/cosmos/base/v1beta1/coin"
 import { CarbonTx, NumberUtils } from "@carbon-sdk/util"
 import { BigNumber } from "bignumber.js"
 import dayjs from "dayjs"
@@ -19,7 +17,7 @@ export class LiquidityPoolModule extends BaseModule {
       tokenAWeight: params.tokenAWeight.shiftedBy(18).toString(10),
       tokenBWeight: params.tokenBWeight.shiftedBy(18).toString(10),
       swapFee: params.swapFee.shiftedBy(18).toString(10),
-      ampBps: params.ampBps.shiftedBy(4).toString(10),
+      ampBps: new Long(params.ampBps.shiftedBy(4).toNumber()),
       numQuotes: new Long(params.numQuotes),
     })
 
@@ -41,7 +39,7 @@ export class LiquidityPoolModule extends BaseModule {
       amountA: params.amountA.toString(10),
       amountB: params.amountB.toString(10),
       swapFee: params.swapFee.shiftedBy(18).toString(10),
-      ampBps: params.ampBps.shiftedBy(4).toString(10),
+      ampBps: new Long(params.ampBps.shiftedBy(4).toNumber()),
       numQuotes: new Long(params.numQuotes),
     })
 
