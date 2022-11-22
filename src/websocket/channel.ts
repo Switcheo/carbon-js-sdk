@@ -1,10 +1,10 @@
 import {
-  WSChannel, WsSubscribeAccountTradesAllParams, WsSubscribeAccountTradesByMarketParams, WsSubscribeAllTokenDebts, WsSubscribeAllTokenPrices, WsSubscribeBooksParams,
+  WSChannel, WsSubscribeAccountTradesAllParams, WsSubscribeAccountTradesByMarketParams, WsSubscribeTokenDebts, WsSubscribeAllTokenPrices, WsSubscribeBooksParams,
   WsSubscribeCandlesticksParams, WsSubscribeCDPBorrows, WsSubscribeCDPCollaterals, WsSubscribeCDPLiquidateCollaterals,
   WsSubscribeCommitmentParams, WsSubscribeLeveragesAllParams, WsSubscribeLeveragesByMarketParams,
   WsSubscribeMarketStatsAllParams, WsSubscribeMarketStatsByMarketParams, WsSubscribeOrdersAllParams,
   WsSubscribeOrdersByMarketParams, WsSubscribePoolsAllParams, WsSubscribePoolsByIdParams, WsSubscribePositionsAllParams,
-  WsSubscribePositionsByMarketParams, WsSubscribeRecentTradesParams, WsSubscribeRewardDebts, WsSubscribeRewardSchemes, WsSubscribeTokenDebt, WsSubscribeTokenPrices, WsSubscribeWalletBalanceParams, WsSubscriptionParams
+  WsSubscribePositionsByMarketParams, WsSubscribeRecentTradesParams, WsSubscribeRewardDebts, WsSubscribeRewardSchemes, WsSubscribeTokenDebtByDenom, WsSubscribeTokenPrices, WsSubscribeWalletBalanceParams, WsSubscriptionParams
 } from './types'
 
 export const generateChannelId = (params: WsSubscriptionParams): string => {
@@ -97,12 +97,12 @@ export const generateChannelId = (params: WsSubscriptionParams): string => {
       const { channel } = params as WsSubscribeCDPLiquidateCollaterals
       return [channel].join(':')
     }
-    case WSChannel.cdp_all_token_debts: {
-      const { channel } = params as WsSubscribeAllTokenDebts
+    case WSChannel.cdp_token_debts: {
+      const { channel } = params as WsSubscribeTokenDebts
       return [channel].join(':')
     }
-    case WSChannel.cdp_token_debt: {
-      const { channel, denom } = params as WsSubscribeTokenDebt
+    case WSChannel.cdp_token_debts_by_denom: {
+      const { channel, denom } = params as WsSubscribeTokenDebtByDenom
       return [channel, denom].join(':')
     }
     case WSChannel.cdp_reward_schemes: {
@@ -232,15 +232,15 @@ export const parseChannelId = (rawChannelId: string): WsSubscriptionParams => {
       return {
         channel,
       } as WsSubscribeCDPLiquidateCollaterals
-    case WSChannel.cdp_all_token_debts:
+    case WSChannel.cdp_token_debts:
       return {
         channel,
-      } as WsSubscribeAllTokenDebts
-    case WSChannel.cdp_token_debt:
+      } as WsSubscribeTokenDebts
+    case WSChannel.cdp_token_debts_by_denom:
       return {
         channel,
         denom: param0,
-      } as WsSubscribeTokenDebt
+      } as WsSubscribeTokenDebtByDenom
     case WSChannel.cdp_reward_schemes:
       return {
         channel,
