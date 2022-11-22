@@ -1,13 +1,10 @@
 import {
-  WSChannel, WsSubscribeAccountTradesAllParams, WsSubscribeAccountTradesByMarketParams, WsSubscribeAllTokenDebts, WsSubscribeBooksParams,
+  WSChannel, WsSubscribeAccountTradesAllParams, WsSubscribeAccountTradesByMarketParams, WsSubscribeAllTokenDebts, WsSubscribeAllTokenPrices, WsSubscribeBooksParams,
   WsSubscribeCandlesticksParams, WsSubscribeCDPBorrows, WsSubscribeCDPCollaterals, WsSubscribeCDPLiquidateCollaterals,
   WsSubscribeCommitmentParams, WsSubscribeLeveragesAllParams, WsSubscribeLeveragesByMarketParams,
   WsSubscribeMarketStatsAllParams, WsSubscribeMarketStatsByMarketParams, WsSubscribeOrdersAllParams,
   WsSubscribeOrdersByMarketParams, WsSubscribePoolsAllParams, WsSubscribePoolsByIdParams, WsSubscribePositionsAllParams,
-  WsSubscribePositionsByMarketParams, WsSubscribeRecentTradesParams, WsSubscribeWalletBalanceParams, WsSubscriptionParams,
-  WsSubscribeTokenDebt,
-  WsSubscribeRewardSchemes,
-  WsSubscribeRewardDebts,
+  WsSubscribePositionsByMarketParams, WsSubscribeRecentTradesParams, WsSubscribeRewardDebts, WsSubscribeRewardSchemes, WsSubscribeTokenDebt, WsSubscribeTokenPrices, WsSubscribeWalletBalanceParams, WsSubscriptionParams
 } from './types'
 
 export const generateChannelId = (params: WsSubscriptionParams): string => {
@@ -75,6 +72,14 @@ export const generateChannelId = (params: WsSubscriptionParams): string => {
     case WSChannel.pools_by_id: {
       const { channel, id } = params as WsSubscribePoolsByIdParams
       return [channel, id].join(':')
+    }
+    case WSChannel.token_prices: {
+      const { channel } = params as WsSubscribeAllTokenPrices
+      return [channel].join(':')
+    }
+    case WSChannel.token_prices_by_denom: {
+      const { channel, denom } = params as WsSubscribeTokenPrices
+      return [channel, denom].join(':')
     }
     case WSChannel.commitments: {
       const { channel, address } = params as WsSubscribeCommitmentParams
@@ -202,8 +207,17 @@ export const parseChannelId = (rawChannelId: string): WsSubscriptionParams => {
     case WSChannel.commitments:
       return {
         channel,
-        address: param0,
-      } as WsSubscribeCommitmentParams
+        id: param0,
+      } as WsSubscribePoolsByIdParams
+    case WSChannel.token_prices:
+      return {
+        channel,
+      } as WsSubscribeAllTokenPrices
+    case WSChannel.token_prices:
+      return {
+        channel,
+        denom: param0,
+      } as WsSubscribeTokenPrices
     case WSChannel.cdp_borrows:
       return {
         channel,

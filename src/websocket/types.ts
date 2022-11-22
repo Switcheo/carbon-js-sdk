@@ -15,6 +15,8 @@ export enum WSChannel {
   positions_by_market = "positions_by_market",
   pools = "pools",
   pools_by_id = "pools_by_id",
+  token_prices = "token_prices",
+  token_prices_by_denom = "token_prices_by_denom",
   commitments = "commitments",
   cdp_borrows = "cdp_borrows",
   cdp_collaterals = "cdp_collaterals",
@@ -244,6 +246,13 @@ export interface WsSubscribeRewardDebts extends WsSubscribeParams {
   address?: string
 }
 
+export interface WsSubscribeTokenPrices extends WsSubscribeParams {
+  denom: string
+}
+
+export interface WsSubscribeAllTokenPrices extends WsSubscribeParams {
+}
+
 export type WsSubscriptionParams =
   | WsSubscribeCandlesticksParams
   | WsSubscribeBooksParams
@@ -261,6 +270,8 @@ export type WsSubscriptionParams =
   | WsSubscribePositionsByMarketParams
   | WsSubscribePoolsAllParams
   | WsSubscribePoolsByIdParams
+  | WsSubscribeTokenPrices
+  | WsSubscribeAllTokenPrices
   | WsSubscribeCommitmentParams
   | WsUnsubscribeCandlesticksParams
   | WsSubscribeCDPBorrows
