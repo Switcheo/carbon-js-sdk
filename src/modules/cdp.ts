@@ -671,12 +671,12 @@ export class CDPModule extends BaseModule {
   }
 
   public calculateInterestForTimePeriod(apy: BigNumber, start: Date, end: Date) {
-    if (end <= start) {
+    const diff = end.getTime() - start.getTime();
+    if (diff <= 0) {
       return BN_ZERO
     }
-    const duration = bnOrZero(end.valueOf() - start.valueOf())
     const millisecondsAYear = bnOrZero(31536000000)
-    return duration.div(millisecondsAYear).times(apy)
+    return bnOrZero(diff).div(millisecondsAYear).times(apy)
   }
 
   public async calculateLendAPY(
