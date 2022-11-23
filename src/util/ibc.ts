@@ -47,13 +47,13 @@ export const totalAssetObj: AssetListObj = Object.values(EmbedChainInfos).reduce
 }, {});
 
 export const ChainIdBlockchainMap: SimpleMap<Blockchain> = {
-	[ChainIds.Stride]: Blockchain.Stride,
 	[ChainIds.Osmosis]: Blockchain.Osmosis,
 	[ChainIds.Terra]: Blockchain.Terra,
 	[ChainIds.CosmosHub]: Blockchain.CosmosHub,
 	[ChainIds.Juno]: Blockchain.Juno,
 	[ChainIds.Evmos]: Blockchain.Evmos,
 	[ChainIds.Axelar]: Blockchain.Axelar,
+	[ChainIds.Stride]: Blockchain.Stride,
 };
 
 export const getIbcChainFromBlockchain = (blockchain: Blockchain | undefined): ChainIds | undefined => {
