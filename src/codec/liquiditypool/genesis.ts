@@ -11,8 +11,8 @@ import {
   CommitmentExpiriesRecord,
   RewardHistoryRecord,
   LastClaimRecord,
-} from "../liquiditypool/reward";
-import { Params, Pool } from "../liquiditypool/liquiditypool";
+} from "./reward";
+import { Params, Pool } from "./liquiditypool";
 
 export const protobufPackage = "Switcheo.carbon.liquiditypool";
 

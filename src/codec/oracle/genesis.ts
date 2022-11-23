@@ -1,7 +1,8 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Params, Oracle, Result, Vote } from "../oracle/oracle";
+import { Params, Oracle, Result, Vote } from "./oracle";
+import { OracleVotesWindow, SlashCounter } from "./slashing";
 
 export const protobufPackage = "Switcheo.carbon.oracle";
 
@@ -13,6 +14,8 @@ export interface GenesisState {
   votes: Vote[];
   /** this line is used by starport scaffolding # ibc/genesis/proto */
   params?: Params;
+  allOracleVotesWindow: OracleVotesWindow[];
+  slashCounters: SlashCounter[];
 }
 
 const baseGenesisState: object = {};
@@ -34,6 +37,12 @@ export const GenesisState = {
     if (message.params !== undefined) {
       Params.encode(message.params, writer.uint32(42).fork()).ldelim();
     }
+    for (const v of message.allOracleVotesWindow) {
+      OracleVotesWindow.encode(v!, writer.uint32(50).fork()).ldelim();
+    }
+    for (const v of message.slashCounters) {
+      SlashCounter.encode(v!, writer.uint32(58).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -44,6 +53,8 @@ export const GenesisState = {
     message.oracles = [];
     message.results = [];
     message.votes = [];
+    message.allOracleVotesWindow = [];
+    message.slashCounters = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -58,6 +69,16 @@ export const GenesisState = {
           break;
         case 5:
           message.params = Params.decode(reader, reader.uint32());
+          break;
+        case 6:
+          message.allOracleVotesWindow.push(
+            OracleVotesWindow.decode(reader, reader.uint32())
+          );
+          break;
+        case 7:
+          message.slashCounters.push(
+            SlashCounter.decode(reader, reader.uint32())
+          );
           break;
         default:
           reader.skipType(tag & 7);
@@ -80,6 +101,12 @@ export const GenesisState = {
       object.params !== undefined && object.params !== null
         ? Params.fromJSON(object.params)
         : undefined;
+    message.allOracleVotesWindow = (object.allOracleVotesWindow ?? []).map(
+      (e: any) => OracleVotesWindow.fromJSON(e)
+    );
+    message.slashCounters = (object.slashCounters ?? []).map((e: any) =>
+      SlashCounter.fromJSON(e)
+    );
     return message;
   },
 
@@ -106,6 +133,20 @@ export const GenesisState = {
     }
     message.params !== undefined &&
       (obj.params = message.params ? Params.toJSON(message.params) : undefined);
+    if (message.allOracleVotesWindow) {
+      obj.allOracleVotesWindow = message.allOracleVotesWindow.map((e) =>
+        e ? OracleVotesWindow.toJSON(e) : undefined
+      );
+    } else {
+      obj.allOracleVotesWindow = [];
+    }
+    if (message.slashCounters) {
+      obj.slashCounters = message.slashCounters.map((e) =>
+        e ? SlashCounter.toJSON(e) : undefined
+      );
+    } else {
+      obj.slashCounters = [];
+    }
     return obj;
   },
 
@@ -118,6 +159,12 @@ export const GenesisState = {
       object.params !== undefined && object.params !== null
         ? Params.fromPartial(object.params)
         : undefined;
+    message.allOracleVotesWindow = (object.allOracleVotesWindow ?? []).map(
+      (e) => OracleVotesWindow.fromPartial(e)
+    );
+    message.slashCounters = (object.slashCounters ?? []).map((e) =>
+      SlashCounter.fromPartial(e)
+    );
     return message;
   },
 };

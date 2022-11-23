@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Params, PriceSet } from "../pricing/pricing";
+import { Params, PriceSet, TokenPrice } from "./pricing";
 
 export const protobufPackage = "Switcheo.carbon.pricing";
 
@@ -12,6 +12,7 @@ export interface GenesisState {
    * this line is used by starport scaffolding # ibc/genesis/proto
    */
   prices: PriceSet[];
+  tokenPrices: TokenPrice[];
   params?: Params;
 }
 
@@ -25,8 +26,11 @@ export const GenesisState = {
     for (const v of message.prices) {
       PriceSet.encode(v!, writer.uint32(10).fork()).ldelim();
     }
+    for (const v of message.tokenPrices) {
+      TokenPrice.encode(v!, writer.uint32(18).fork()).ldelim();
+    }
     if (message.params !== undefined) {
-      Params.encode(message.params, writer.uint32(42).fork()).ldelim();
+      Params.encode(message.params, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
@@ -36,13 +40,17 @@ export const GenesisState = {
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseGenesisState } as GenesisState;
     message.prices = [];
+    message.tokenPrices = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
           message.prices.push(PriceSet.decode(reader, reader.uint32()));
           break;
-        case 5:
+        case 2:
+          message.tokenPrices.push(TokenPrice.decode(reader, reader.uint32()));
+          break;
+        case 3:
           message.params = Params.decode(reader, reader.uint32());
           break;
         default:
@@ -57,6 +65,9 @@ export const GenesisState = {
     const message = { ...baseGenesisState } as GenesisState;
     message.prices = (object.prices ?? []).map((e: any) =>
       PriceSet.fromJSON(e)
+    );
+    message.tokenPrices = (object.tokenPrices ?? []).map((e: any) =>
+      TokenPrice.fromJSON(e)
     );
     message.params =
       object.params !== undefined && object.params !== null
@@ -74,6 +85,13 @@ export const GenesisState = {
     } else {
       obj.prices = [];
     }
+    if (message.tokenPrices) {
+      obj.tokenPrices = message.tokenPrices.map((e) =>
+        e ? TokenPrice.toJSON(e) : undefined
+      );
+    } else {
+      obj.tokenPrices = [];
+    }
     message.params !== undefined &&
       (obj.params = message.params ? Params.toJSON(message.params) : undefined);
     return obj;
@@ -82,6 +100,9 @@ export const GenesisState = {
   fromPartial(object: DeepPartial<GenesisState>): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
     message.prices = (object.prices ?? []).map((e) => PriceSet.fromPartial(e));
+    message.tokenPrices = (object.tokenPrices ?? []).map((e) =>
+      TokenPrice.fromPartial(e)
+    );
     message.params =
       object.params !== undefined && object.params !== null
         ? Params.fromPartial(object.params)

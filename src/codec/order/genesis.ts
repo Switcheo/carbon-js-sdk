@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Params, OrderIDs, Order } from "../order/order";
+import { Params, OrderIDs, Order } from "./order";
 
 export const protobufPackage = "Switcheo.carbon.order";
 

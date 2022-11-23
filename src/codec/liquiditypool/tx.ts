@@ -2,7 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Timestamp } from "../google/protobuf/timestamp";
-import { RewardWeight } from "../liquiditypool/reward";
+import { RewardWeight } from "./reward";
 
 export const protobufPackage = "Switcheo.carbon.liquiditypool";
 
@@ -15,6 +15,7 @@ export interface MsgCreatePool {
   tokenBWeight: string;
   swapFee: string;
   numQuotes: Long;
+  ampBps: Long;
 }
 
 export interface MsgCreatePoolResponse {
@@ -31,6 +32,7 @@ export interface MsgCreatePoolWithLiquidity {
   amountB: string;
   swapFee: string;
   numQuotes: Long;
+  ampBps: Long;
 }
 
 export interface MsgCreatePoolWithLiquidityResponse {}
@@ -160,6 +162,7 @@ const baseMsgCreatePool: object = {
   tokenBWeight: "",
   swapFee: "",
   numQuotes: Long.ZERO,
+  ampBps: Long.UZERO,
 };
 
 export const MsgCreatePool = {
@@ -187,6 +190,9 @@ export const MsgCreatePool = {
     }
     if (!message.numQuotes.isZero()) {
       writer.uint32(56).int64(message.numQuotes);
+    }
+    if (!message.ampBps.isZero()) {
+      writer.uint32(64).uint64(message.ampBps);
     }
     return writer;
   },
@@ -218,6 +224,9 @@ export const MsgCreatePool = {
           break;
         case 7:
           message.numQuotes = reader.int64() as Long;
+          break;
+        case 8:
+          message.ampBps = reader.uint64() as Long;
           break;
         default:
           reader.skipType(tag & 7);
@@ -257,6 +266,10 @@ export const MsgCreatePool = {
       object.numQuotes !== undefined && object.numQuotes !== null
         ? Long.fromString(object.numQuotes)
         : Long.ZERO;
+    message.ampBps =
+      object.ampBps !== undefined && object.ampBps !== null
+        ? Long.fromString(object.ampBps)
+        : Long.UZERO;
     return message;
   },
 
@@ -274,6 +287,8 @@ export const MsgCreatePool = {
     message.swapFee !== undefined && (obj.swapFee = message.swapFee);
     message.numQuotes !== undefined &&
       (obj.numQuotes = (message.numQuotes || Long.ZERO).toString());
+    message.ampBps !== undefined &&
+      (obj.ampBps = (message.ampBps || Long.UZERO).toString());
     return obj;
   },
 
@@ -289,6 +304,10 @@ export const MsgCreatePool = {
       object.numQuotes !== undefined && object.numQuotes !== null
         ? Long.fromValue(object.numQuotes)
         : Long.ZERO;
+    message.ampBps =
+      object.ampBps !== undefined && object.ampBps !== null
+        ? Long.fromValue(object.ampBps)
+        : Long.UZERO;
     return message;
   },
 };
@@ -365,6 +384,7 @@ const baseMsgCreatePoolWithLiquidity: object = {
   amountB: "",
   swapFee: "",
   numQuotes: Long.ZERO,
+  ampBps: Long.UZERO,
 };
 
 export const MsgCreatePoolWithLiquidity = {
@@ -398,6 +418,9 @@ export const MsgCreatePoolWithLiquidity = {
     }
     if (!message.numQuotes.isZero()) {
       writer.uint32(72).int64(message.numQuotes);
+    }
+    if (!message.ampBps.isZero()) {
+      writer.uint32(80).uint64(message.ampBps);
     }
     return writer;
   },
@@ -440,6 +463,9 @@ export const MsgCreatePoolWithLiquidity = {
           break;
         case 9:
           message.numQuotes = reader.int64() as Long;
+          break;
+        case 10:
+          message.ampBps = reader.uint64() as Long;
           break;
         default:
           reader.skipType(tag & 7);
@@ -489,6 +515,10 @@ export const MsgCreatePoolWithLiquidity = {
       object.numQuotes !== undefined && object.numQuotes !== null
         ? Long.fromString(object.numQuotes)
         : Long.ZERO;
+    message.ampBps =
+      object.ampBps !== undefined && object.ampBps !== null
+        ? Long.fromString(object.ampBps)
+        : Long.UZERO;
     return message;
   },
 
@@ -508,6 +538,8 @@ export const MsgCreatePoolWithLiquidity = {
     message.swapFee !== undefined && (obj.swapFee = message.swapFee);
     message.numQuotes !== undefined &&
       (obj.numQuotes = (message.numQuotes || Long.ZERO).toString());
+    message.ampBps !== undefined &&
+      (obj.ampBps = (message.ampBps || Long.UZERO).toString());
     return obj;
   },
 
@@ -529,6 +561,10 @@ export const MsgCreatePoolWithLiquidity = {
       object.numQuotes !== undefined && object.numQuotes !== null
         ? Long.fromValue(object.numQuotes)
         : Long.ZERO;
+    message.ampBps =
+      object.ampBps !== undefined && object.ampBps !== null
+        ? Long.fromValue(object.ampBps)
+        : Long.UZERO;
     return message;
   },
 };

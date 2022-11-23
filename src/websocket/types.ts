@@ -1,38 +1,67 @@
 export enum WSChannel {
-  candlesticks = 'candlesticks',
-  books = 'books',
-  recent_trades = 'recent_trades',
-  orders = 'orders',
-  orders_by_market = 'orders_by_market',
-  balances = 'balances',
-  account_trades = 'account_trades',
-  account_trades_by_market = 'account_trades_by_market',
-  market_stats = 'market_stats',
-  market_stats_by_market = 'market_stats_by_market',
-  leverages = 'leverages',
-  leverages_by_market = 'leverages_by_market',
-  positions = 'positions',
-  positions_by_market = 'positions_by_market',
-  pools = 'pools',
-  pools_by_id = 'pools_by_id',
-  commitments = 'commitments',
+  candlesticks = "candlesticks",
+  books = "books",
+  recent_trades = "recent_trades",
+  orders = "orders",
+  orders_by_market = "orders_by_market",
+  balances = "balances",
+  account_trades = "account_trades",
+  account_trades_by_market = "account_trades_by_market",
+  market_stats = "market_stats",
+  market_stats_by_market = "market_stats_by_market",
+  leverages = "leverages",
+  leverages_by_market = "leverages_by_market",
+  positions = "positions",
+  positions_by_market = "positions_by_market",
+  pools = "pools",
+  pools_by_id = "pools_by_id",
+  token_prices = "token_prices",
+  token_prices_by_denom = "token_prices_by_denom",
+  commitments = "commitments",
+  cdp_borrows = "cdp_borrows",
+  cdp_collaterals = "cdp_collaterals",
+  cdp_liquidate_collaterals = "cdp_liquidate_collaterals",
+  cdp_token_debts = "cdp_token_debts",
+  cdp_token_debts_by_denom = "cdp_token_debts_by_denom",
+  cdp_reward_schemes = "cdp_reward_schemes",
+  cdp_reward_debts = "cdp_reward_debts",
 }
 
 export enum WSRequest {
-  MarketStats = 'get_market_stats',
-  OrderHistory = 'get_order_history',
-  RecentTrades = 'get_recent_trades',
-  Candlesticks = 'get_candlesticks',
-  OpenOrders = 'get_open_orders',
-  AccountTrades = 'get_account_trades',
-  Leverages = 'get_leverages',
-  Positions = 'get_positions',
-  OpenPositions = 'get_open_positions',
-  ClosedPosition = 'get_closed_positions',
-  Balances = 'get_balances',
-  OrderBook = 'get_orderbook',
-  Pools = 'get_pools',
-  Commitments = 'get_commitments',
+  MarketStats = "get_market_stats",
+  OrderHistory = "get_order_history",
+  RecentTrades = "get_recent_trades",
+  Candlesticks = "get_candlesticks",
+  OpenOrders = "get_open_orders",
+  AccountTrades = "get_account_trades",
+  Leverages = "get_leverages",
+  Positions = "get_positions",
+  OpenPositions = "get_open_positions",
+  ClosedPosition = "get_closed_positions",
+  Balances = "get_balances",
+  OrderBook = "get_orderbook",
+  Pools = "get_pools",
+  Commitments = "get_commitments",
+  CDPAllAssets = "get_cdp_all_assets",
+  CDPAssets = "get_cdp_assets",
+  CDPAccountCollaterals = "get_cdp_account_collaterals",
+  CDPAccountDebts = "get_cdp_account_debts",
+  CDPAccountData = "get_cdp_account_data",
+  CDPParams = "get_cdp_params",
+  CDPAllRateStrategies = "get_cdp_all_rate_strategies",
+  CDPRateStrategies = "get_cdp_rate_strategies",
+  CDPBorrows = "get_cdp_borrows",
+  CDPTotalBorrows = "get_cdp_total_borrows",
+  CDPCollaterals = "get_cdp_collaterals",
+  CDPTotalCollaterals = "get_cdp_total_collaterals",
+  CDPLiquidateCollateral = "get_cdp_liquidate_collateral",
+  CDPTokenDebt = "get_cdp_token_debt",
+  CDPAllTokenDebts = "get_cdp_all_token_debts",
+  CDPStablecoinDebt = "get_cdp_stablecoin_debt",
+  CDPLiquidations = "get_cdp_liquidations",
+  CDPAccountStablecoin = "get_cdp_account_stablecoin",
+  CDPRewardSchemes = "get_cdp_reward_schemes",
+  CDPRewardsDebts = "get_cdp_reward_debts",
 }
 
 export interface WsGetRecentTradesParams {
@@ -84,6 +113,36 @@ export interface WsGetPositionsParams {
 
 export interface WsGetCommitmentsParams {
   address: string
+}
+
+export interface WsGetCDPParams { }
+
+export interface WsGetCDPAssetParams {
+  denom: string
+}
+
+export interface WsGetCDPAccountParams {
+  address: string
+}
+
+export interface WsGetCDPRateStrategiesParams {
+  name: string
+}
+
+export interface WsGetCdpTokenDebt {
+  denom: string
+}
+
+export interface WsGetCdpAllTokenDebts { }
+
+export interface WsGetCdpStablecoinDebt { }
+
+export interface WsGetCdpLiquidations { }
+
+export interface WsGetCdpRewardSchemes { }
+
+export interface WsGetCdpRewardDebts {
+  address: string;
 }
 
 export interface WsSubscribeParams {
@@ -165,6 +224,35 @@ export interface WsUnsubscribeCandlesticksParams extends WsSubscribeParams {
   resolution: string
 }
 
+export interface WsSubscribeCDPBorrows extends WsSubscribeParams {
+  address: string
+}
+
+export interface WsSubscribeCDPCollaterals extends WsSubscribeParams {
+  address: string
+}
+
+export interface WsSubscribeCDPLiquidateCollaterals extends WsSubscribeParams { }
+
+export interface WsSubscribeTokenDebts extends WsSubscribeParams { }
+
+export interface WsSubscribeTokenDebtByDenom extends WsSubscribeParams {
+  denom: string
+}
+
+export interface WsSubscribeRewardSchemes extends WsSubscribeParams { }
+
+export interface WsSubscribeRewardDebts extends WsSubscribeParams {
+  address?: string
+}
+
+export interface WsSubscribeTokenPrices extends WsSubscribeParams {
+  denom: string
+}
+
+export interface WsSubscribeAllTokenPrices extends WsSubscribeParams {
+}
+
 export type WsSubscriptionParams =
   | WsSubscribeCandlesticksParams
   | WsSubscribeBooksParams
@@ -182,5 +270,14 @@ export type WsSubscriptionParams =
   | WsSubscribePositionsByMarketParams
   | WsSubscribePoolsAllParams
   | WsSubscribePoolsByIdParams
+  | WsSubscribeTokenPrices
+  | WsSubscribeAllTokenPrices
   | WsSubscribeCommitmentParams
   | WsUnsubscribeCandlesticksParams
+  | WsSubscribeCDPBorrows
+  | WsSubscribeCDPCollaterals
+  | WsSubscribeCDPLiquidateCollaterals
+  | WsSubscribeTokenDebts
+  | WsSubscribeTokenDebtByDenom
+  | WsSubscribeRewardSchemes
+  | WsSubscribeRewardDebts

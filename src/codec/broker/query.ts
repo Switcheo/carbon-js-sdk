@@ -2,9 +2,9 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { PageRequest, PageResponse } from "../query/pagination";
-import { MinMaxBoundary } from "../broker/pagination";
-import { Candlestick } from "../broker/candlestick";
-import { TradeEvent } from "../broker/event";
+import { MinMaxBoundary } from "./pagination";
+import { Candlestick } from "./candlestick";
+import { TradeEvent } from "./event";
 
 export const protobufPackage = "Switcheo.carbon.broker";
 

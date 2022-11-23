@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Position } from "../position/position";
+import { Position } from "./position";
 
 export const protobufPackage = "Switcheo.carbon.position";
 

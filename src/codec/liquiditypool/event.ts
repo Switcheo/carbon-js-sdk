@@ -1,8 +1,8 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Pool } from "../liquiditypool/liquiditypool";
-import { CommitmentCurve, Commitment } from "../liquiditypool/reward";
+import { Pool } from "./liquiditypool";
+import { CommitmentCurve, Commitment } from "./reward";
 
 export const protobufPackage = "Switcheo.carbon.liquiditypool";
 

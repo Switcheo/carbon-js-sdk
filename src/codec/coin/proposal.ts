@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { CreateTokenParams } from "../coin/tx";
+import { CreateTokenParams } from "./tx";
 
 export const protobufPackage = "Switcheo.carbon.coin";
 

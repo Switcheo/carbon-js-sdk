@@ -317,7 +317,6 @@ export class CarbonWallet {
     const response = await carbonClient.broadcastTx(tx, timeoutMs, pollIntervalMs);
     if (isDeliverTxFailure(response)) {
       // tx failed
-      console.error(response);
       throw new Error(`[${response.code}] ${response.rawLog}`);
     }
     return response;
