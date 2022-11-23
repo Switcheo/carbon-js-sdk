@@ -2571,10 +2571,10 @@ export const CdpPosition = {
       writer.uint32(18).string(message.healthFactor);
     }
     for (const v of message.collateral) {
-      Coin.encode(v!, writer.uint32(34).fork()).ldelim();
+      Coin.encode(v!, writer.uint32(26).fork()).ldelim();
     }
     for (const v of message.borrow) {
-      Coin.encode(v!, writer.uint32(42).fork()).ldelim();
+      Coin.encode(v!, writer.uint32(34).fork()).ldelim();
     }
     return writer;
   },
@@ -2594,10 +2594,10 @@ export const CdpPosition = {
         case 2:
           message.healthFactor = reader.string();
           break;
-        case 4:
+        case 3:
           message.collateral.push(Coin.decode(reader, reader.uint32()));
           break;
-        case 5:
+        case 4:
           message.borrow.push(Coin.decode(reader, reader.uint32()));
           break;
         default:
@@ -3204,6 +3204,7 @@ export interface Query {
   RewardSchemesAll(
     request: QueryRewardSchemesAllRequest
   ): Promise<QueryRewardSchemesAllResponse>;
+  /** Queries a list of RewardDebt items for an address */
   RewardDebtsAll(
     request: QueryRewardDebtsRequest
   ): Promise<QueryRewardDebtsResponse>;

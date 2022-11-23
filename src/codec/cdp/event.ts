@@ -69,6 +69,16 @@ export interface SetSmallLiquidationSizeEvent {
   type: string;
 }
 
+export interface SetStalePriceGracePeriodEvent {
+  stalePriceGracePeriod: string;
+  type: string;
+}
+
+export interface SetCdpPausedEvent {
+  cdpPaused: boolean;
+  type: string;
+}
+
 export interface SupplyAssetEvent {
   supplier: string;
   denom: string;
@@ -194,6 +204,11 @@ export interface RewardSchemeEvent {
 export interface AddReserveEvent {
   rewardScheme?: RewardScheme;
   amountAdded: string;
+}
+
+export interface RefundReserveEvent {
+  rewardScheme?: RewardScheme;
+  amountRefunded: string;
 }
 
 const baseNewRateStrategyParamsEvent: object = { type: "" };
@@ -1157,6 +1172,152 @@ export const SetSmallLiquidationSizeEvent = {
       ...baseSetSmallLiquidationSizeEvent,
     } as SetSmallLiquidationSizeEvent;
     message.smallLiquidationSize = object.smallLiquidationSize ?? "";
+    message.type = object.type ?? "";
+    return message;
+  },
+};
+
+const baseSetStalePriceGracePeriodEvent: object = {
+  stalePriceGracePeriod: "",
+  type: "",
+};
+
+export const SetStalePriceGracePeriodEvent = {
+  encode(
+    message: SetStalePriceGracePeriodEvent,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.stalePriceGracePeriod !== "") {
+      writer.uint32(10).string(message.stalePriceGracePeriod);
+    }
+    if (message.type !== "") {
+      writer.uint32(18).string(message.type);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): SetStalePriceGracePeriodEvent {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseSetStalePriceGracePeriodEvent,
+    } as SetStalePriceGracePeriodEvent;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.stalePriceGracePeriod = reader.string();
+          break;
+        case 2:
+          message.type = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SetStalePriceGracePeriodEvent {
+    const message = {
+      ...baseSetStalePriceGracePeriodEvent,
+    } as SetStalePriceGracePeriodEvent;
+    message.stalePriceGracePeriod =
+      object.stalePriceGracePeriod !== undefined &&
+      object.stalePriceGracePeriod !== null
+        ? String(object.stalePriceGracePeriod)
+        : "";
+    message.type =
+      object.type !== undefined && object.type !== null
+        ? String(object.type)
+        : "";
+    return message;
+  },
+
+  toJSON(message: SetStalePriceGracePeriodEvent): unknown {
+    const obj: any = {};
+    message.stalePriceGracePeriod !== undefined &&
+      (obj.stalePriceGracePeriod = message.stalePriceGracePeriod);
+    message.type !== undefined && (obj.type = message.type);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<SetStalePriceGracePeriodEvent>
+  ): SetStalePriceGracePeriodEvent {
+    const message = {
+      ...baseSetStalePriceGracePeriodEvent,
+    } as SetStalePriceGracePeriodEvent;
+    message.stalePriceGracePeriod = object.stalePriceGracePeriod ?? "";
+    message.type = object.type ?? "";
+    return message;
+  },
+};
+
+const baseSetCdpPausedEvent: object = { cdpPaused: false, type: "" };
+
+export const SetCdpPausedEvent = {
+  encode(
+    message: SetCdpPausedEvent,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.cdpPaused === true) {
+      writer.uint32(8).bool(message.cdpPaused);
+    }
+    if (message.type !== "") {
+      writer.uint32(18).string(message.type);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): SetCdpPausedEvent {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseSetCdpPausedEvent } as SetCdpPausedEvent;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.cdpPaused = reader.bool();
+          break;
+        case 2:
+          message.type = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SetCdpPausedEvent {
+    const message = { ...baseSetCdpPausedEvent } as SetCdpPausedEvent;
+    message.cdpPaused =
+      object.cdpPaused !== undefined && object.cdpPaused !== null
+        ? Boolean(object.cdpPaused)
+        : false;
+    message.type =
+      object.type !== undefined && object.type !== null
+        ? String(object.type)
+        : "";
+    return message;
+  },
+
+  toJSON(message: SetCdpPausedEvent): unknown {
+    const obj: any = {};
+    message.cdpPaused !== undefined && (obj.cdpPaused = message.cdpPaused);
+    message.type !== undefined && (obj.type = message.type);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<SetCdpPausedEvent>): SetCdpPausedEvent {
+    const message = { ...baseSetCdpPausedEvent } as SetCdpPausedEvent;
+    message.cdpPaused = object.cdpPaused ?? false;
     message.type = object.type ?? "";
     return message;
   },
@@ -2984,6 +3145,81 @@ export const AddReserveEvent = {
         ? RewardScheme.fromPartial(object.rewardScheme)
         : undefined;
     message.amountAdded = object.amountAdded ?? "";
+    return message;
+  },
+};
+
+const baseRefundReserveEvent: object = { amountRefunded: "" };
+
+export const RefundReserveEvent = {
+  encode(
+    message: RefundReserveEvent,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.rewardScheme !== undefined) {
+      RewardScheme.encode(
+        message.rewardScheme,
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    if (message.amountRefunded !== "") {
+      writer.uint32(18).string(message.amountRefunded);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): RefundReserveEvent {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseRefundReserveEvent } as RefundReserveEvent;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.rewardScheme = RewardScheme.decode(reader, reader.uint32());
+          break;
+        case 2:
+          message.amountRefunded = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): RefundReserveEvent {
+    const message = { ...baseRefundReserveEvent } as RefundReserveEvent;
+    message.rewardScheme =
+      object.rewardScheme !== undefined && object.rewardScheme !== null
+        ? RewardScheme.fromJSON(object.rewardScheme)
+        : undefined;
+    message.amountRefunded =
+      object.amountRefunded !== undefined && object.amountRefunded !== null
+        ? String(object.amountRefunded)
+        : "";
+    return message;
+  },
+
+  toJSON(message: RefundReserveEvent): unknown {
+    const obj: any = {};
+    message.rewardScheme !== undefined &&
+      (obj.rewardScheme = message.rewardScheme
+        ? RewardScheme.toJSON(message.rewardScheme)
+        : undefined);
+    message.amountRefunded !== undefined &&
+      (obj.amountRefunded = message.amountRefunded);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<RefundReserveEvent>): RefundReserveEvent {
+    const message = { ...baseRefundReserveEvent } as RefundReserveEvent;
+    message.rewardScheme =
+      object.rewardScheme !== undefined && object.rewardScheme !== null
+        ? RewardScheme.fromPartial(object.rewardScheme)
+        : undefined;
+    message.amountRefunded = object.amountRefunded ?? "";
     return message;
   },
 };

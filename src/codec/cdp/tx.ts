@@ -6,7 +6,6 @@ import { AssetParams } from "./asset_params";
 import {
   CreateRewardSchemeParams,
   UpdateRewardSchemeParams,
-  AddReservesParams,
 } from "./reward_scheme";
 import { Timestamp } from "../google/protobuf/timestamp";
 
@@ -280,18 +279,25 @@ export interface MsgUpdateRewardScheme {
 
 export interface MsgUpdateRewardSchemeResponse {}
 
-export interface MsgAddRewardReserve {
-  creator: string;
-  addReservesParams?: AddReservesParams;
-}
-
-export interface MsgAddRewardReserveResponse {}
-
 export interface MsgClaimRewards {
   creator: string;
 }
 
 export interface MsgClaimRewardsResponse {}
+
+export interface MsgSetStalePriceGracePeriod {
+  creator: string;
+  stalePriceGracePeriod: string;
+}
+
+export interface MsgSetStalePriceGracePeriodResponse {}
+
+export interface MsgSetCdpPaused {
+  creator: string;
+  cdpPaused: boolean;
+}
+
+export interface MsgSetCdpPausedResponse {}
 
 const baseMsgAddRateStrategy: object = { creator: "" };
 
@@ -3399,7 +3405,7 @@ export const MsgSetCompleteLiquidationThreshold = {
       writer.uint32(10).string(message.creator);
     }
     if (message.completeLiquidationThreshold !== "") {
-      writer.uint32(34).string(message.completeLiquidationThreshold);
+      writer.uint32(18).string(message.completeLiquidationThreshold);
     }
     return writer;
   },
@@ -3419,7 +3425,7 @@ export const MsgSetCompleteLiquidationThreshold = {
         case 1:
           message.creator = reader.string();
           break;
-        case 4:
+        case 2:
           message.completeLiquidationThreshold = reader.string();
           break;
         default:
@@ -3533,7 +3539,7 @@ export const MsgSetMinimumCloseFactor = {
       writer.uint32(10).string(message.creator);
     }
     if (message.minimumCloseFactor !== "") {
-      writer.uint32(42).string(message.minimumCloseFactor);
+      writer.uint32(18).string(message.minimumCloseFactor);
     }
     return writer;
   },
@@ -3553,7 +3559,7 @@ export const MsgSetMinimumCloseFactor = {
         case 1:
           message.creator = reader.string();
           break;
-        case 5:
+        case 2:
           message.minimumCloseFactor = reader.string();
           break;
         default:
@@ -3666,7 +3672,7 @@ export const MsgSetSmallLiquidationSize = {
       writer.uint32(10).string(message.creator);
     }
     if (message.smallLiquidationSize !== "") {
-      writer.uint32(50).string(message.smallLiquidationSize);
+      writer.uint32(18).string(message.smallLiquidationSize);
     }
     return writer;
   },
@@ -3686,7 +3692,7 @@ export const MsgSetSmallLiquidationSize = {
         case 1:
           message.creator = reader.string();
           break;
-        case 6:
+        case 2:
           message.smallLiquidationSize = reader.string();
           break;
         default:
@@ -4812,137 +4818,6 @@ export const MsgUpdateRewardSchemeResponse = {
   },
 };
 
-const baseMsgAddRewardReserve: object = { creator: "" };
-
-export const MsgAddRewardReserve = {
-  encode(
-    message: MsgAddRewardReserve,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.creator !== "") {
-      writer.uint32(10).string(message.creator);
-    }
-    if (message.addReservesParams !== undefined) {
-      AddReservesParams.encode(
-        message.addReservesParams,
-        writer.uint32(18).fork()
-      ).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgAddRewardReserve {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgAddRewardReserve } as MsgAddRewardReserve;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.creator = reader.string();
-          break;
-        case 2:
-          message.addReservesParams = AddReservesParams.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): MsgAddRewardReserve {
-    const message = { ...baseMsgAddRewardReserve } as MsgAddRewardReserve;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.addReservesParams =
-      object.addReservesParams !== undefined &&
-      object.addReservesParams !== null
-        ? AddReservesParams.fromJSON(object.addReservesParams)
-        : undefined;
-    return message;
-  },
-
-  toJSON(message: MsgAddRewardReserve): unknown {
-    const obj: any = {};
-    message.creator !== undefined && (obj.creator = message.creator);
-    message.addReservesParams !== undefined &&
-      (obj.addReservesParams = message.addReservesParams
-        ? AddReservesParams.toJSON(message.addReservesParams)
-        : undefined);
-    return obj;
-  },
-
-  fromPartial(object: DeepPartial<MsgAddRewardReserve>): MsgAddRewardReserve {
-    const message = { ...baseMsgAddRewardReserve } as MsgAddRewardReserve;
-    message.creator = object.creator ?? "";
-    message.addReservesParams =
-      object.addReservesParams !== undefined &&
-      object.addReservesParams !== null
-        ? AddReservesParams.fromPartial(object.addReservesParams)
-        : undefined;
-    return message;
-  },
-};
-
-const baseMsgAddRewardReserveResponse: object = {};
-
-export const MsgAddRewardReserveResponse = {
-  encode(
-    _: MsgAddRewardReserveResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgAddRewardReserveResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgAddRewardReserveResponse,
-    } as MsgAddRewardReserveResponse;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(_: any): MsgAddRewardReserveResponse {
-    const message = {
-      ...baseMsgAddRewardReserveResponse,
-    } as MsgAddRewardReserveResponse;
-    return message;
-  },
-
-  toJSON(_: MsgAddRewardReserveResponse): unknown {
-    const obj: any = {};
-    return obj;
-  },
-
-  fromPartial(
-    _: DeepPartial<MsgAddRewardReserveResponse>
-  ): MsgAddRewardReserveResponse {
-    const message = {
-      ...baseMsgAddRewardReserveResponse,
-    } as MsgAddRewardReserveResponse;
-    return message;
-  },
-};
-
 const baseMsgClaimRewards: object = { creator: "" };
 
 export const MsgClaimRewards = {
@@ -5048,6 +4923,256 @@ export const MsgClaimRewardsResponse = {
   },
 };
 
+const baseMsgSetStalePriceGracePeriod: object = {
+  creator: "",
+  stalePriceGracePeriod: "",
+};
+
+export const MsgSetStalePriceGracePeriod = {
+  encode(
+    message: MsgSetStalePriceGracePeriod,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.stalePriceGracePeriod !== "") {
+      writer.uint32(18).string(message.stalePriceGracePeriod);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgSetStalePriceGracePeriod {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgSetStalePriceGracePeriod,
+    } as MsgSetStalePriceGracePeriod;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.stalePriceGracePeriod = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgSetStalePriceGracePeriod {
+    const message = {
+      ...baseMsgSetStalePriceGracePeriod,
+    } as MsgSetStalePriceGracePeriod;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.stalePriceGracePeriod =
+      object.stalePriceGracePeriod !== undefined &&
+      object.stalePriceGracePeriod !== null
+        ? String(object.stalePriceGracePeriod)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgSetStalePriceGracePeriod): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.stalePriceGracePeriod !== undefined &&
+      (obj.stalePriceGracePeriod = message.stalePriceGracePeriod);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgSetStalePriceGracePeriod>
+  ): MsgSetStalePriceGracePeriod {
+    const message = {
+      ...baseMsgSetStalePriceGracePeriod,
+    } as MsgSetStalePriceGracePeriod;
+    message.creator = object.creator ?? "";
+    message.stalePriceGracePeriod = object.stalePriceGracePeriod ?? "";
+    return message;
+  },
+};
+
+const baseMsgSetStalePriceGracePeriodResponse: object = {};
+
+export const MsgSetStalePriceGracePeriodResponse = {
+  encode(
+    _: MsgSetStalePriceGracePeriodResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgSetStalePriceGracePeriodResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgSetStalePriceGracePeriodResponse,
+    } as MsgSetStalePriceGracePeriodResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgSetStalePriceGracePeriodResponse {
+    const message = {
+      ...baseMsgSetStalePriceGracePeriodResponse,
+    } as MsgSetStalePriceGracePeriodResponse;
+    return message;
+  },
+
+  toJSON(_: MsgSetStalePriceGracePeriodResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgSetStalePriceGracePeriodResponse>
+  ): MsgSetStalePriceGracePeriodResponse {
+    const message = {
+      ...baseMsgSetStalePriceGracePeriodResponse,
+    } as MsgSetStalePriceGracePeriodResponse;
+    return message;
+  },
+};
+
+const baseMsgSetCdpPaused: object = { creator: "", cdpPaused: false };
+
+export const MsgSetCdpPaused = {
+  encode(
+    message: MsgSetCdpPaused,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.cdpPaused === true) {
+      writer.uint32(16).bool(message.cdpPaused);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgSetCdpPaused {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgSetCdpPaused } as MsgSetCdpPaused;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.cdpPaused = reader.bool();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgSetCdpPaused {
+    const message = { ...baseMsgSetCdpPaused } as MsgSetCdpPaused;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.cdpPaused =
+      object.cdpPaused !== undefined && object.cdpPaused !== null
+        ? Boolean(object.cdpPaused)
+        : false;
+    return message;
+  },
+
+  toJSON(message: MsgSetCdpPaused): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.cdpPaused !== undefined && (obj.cdpPaused = message.cdpPaused);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgSetCdpPaused>): MsgSetCdpPaused {
+    const message = { ...baseMsgSetCdpPaused } as MsgSetCdpPaused;
+    message.creator = object.creator ?? "";
+    message.cdpPaused = object.cdpPaused ?? false;
+    return message;
+  },
+};
+
+const baseMsgSetCdpPausedResponse: object = {};
+
+export const MsgSetCdpPausedResponse = {
+  encode(
+    _: MsgSetCdpPausedResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgSetCdpPausedResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgSetCdpPausedResponse,
+    } as MsgSetCdpPausedResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgSetCdpPausedResponse {
+    const message = {
+      ...baseMsgSetCdpPausedResponse,
+    } as MsgSetCdpPausedResponse;
+    return message;
+  },
+
+  toJSON(_: MsgSetCdpPausedResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgSetCdpPausedResponse>
+  ): MsgSetCdpPausedResponse {
+    const message = {
+      ...baseMsgSetCdpPausedResponse,
+    } as MsgSetCdpPausedResponse;
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
   AddRateStrategy(
@@ -5098,9 +5223,6 @@ export interface Msg {
   UpdateRewardScheme(
     request: MsgUpdateRewardScheme
   ): Promise<MsgUpdateRewardSchemeResponse>;
-  AddReserve(
-    request: MsgAddRewardReserve
-  ): Promise<MsgAddRewardReserveResponse>;
   ClaimRewards(request: MsgClaimRewards): Promise<MsgClaimRewardsResponse>;
   SetStablecoinInterestRate(
     request: MsgSetStablecoinInterestRate
@@ -5129,10 +5251,14 @@ export interface Msg {
   LiquidateCollateralWithCollateral(
     request: MsgLiquidateCollateralWithCollateral
   ): Promise<MsgLiquidateCollateralWithCollateralResponse>;
-  /** this line is used by starport scaffolding # proto/tx/rpc */
   LiquidateCollateralWithStablecoin(
     request: MsgLiquidateCollateralWithStablecoin
   ): Promise<MsgLiquidateCollateralWithStablecoinResponse>;
+  SetStalePriceGracePeriod(
+    request: MsgSetStalePriceGracePeriod
+  ): Promise<MsgSetStalePriceGracePeriodResponse>;
+  /** this line is used by starport scaffolding # proto/tx/rpc */
+  SetCdpPaused(request: MsgSetCdpPaused): Promise<MsgSetCdpPausedResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -5161,7 +5287,6 @@ export class MsgClientImpl implements Msg {
     this.RepayAssetWithCollateral = this.RepayAssetWithCollateral.bind(this);
     this.CreateRewardScheme = this.CreateRewardScheme.bind(this);
     this.UpdateRewardScheme = this.UpdateRewardScheme.bind(this);
-    this.AddReserve = this.AddReserve.bind(this);
     this.ClaimRewards = this.ClaimRewards.bind(this);
     this.SetStablecoinInterestRate = this.SetStablecoinInterestRate.bind(this);
     this.SetStablecoinMintCap = this.SetStablecoinMintCap.bind(this);
@@ -5177,6 +5302,8 @@ export class MsgClientImpl implements Msg {
       this.LiquidateCollateralWithCollateral.bind(this);
     this.LiquidateCollateralWithStablecoin =
       this.LiquidateCollateralWithStablecoin.bind(this);
+    this.SetStalePriceGracePeriod = this.SetStalePriceGracePeriod.bind(this);
+    this.SetCdpPaused = this.SetCdpPaused.bind(this);
   }
   AddRateStrategy(
     request: MsgAddRateStrategy
@@ -5446,20 +5573,6 @@ export class MsgClientImpl implements Msg {
     );
   }
 
-  AddReserve(
-    request: MsgAddRewardReserve
-  ): Promise<MsgAddRewardReserveResponse> {
-    const data = MsgAddRewardReserve.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.cdp.Msg",
-      "AddReserve",
-      data
-    );
-    return promise.then((data) =>
-      MsgAddRewardReserveResponse.decode(new _m0.Reader(data))
-    );
-  }
-
   ClaimRewards(request: MsgClaimRewards): Promise<MsgClaimRewardsResponse> {
     const data = MsgClaimRewards.encode(request).finish();
     const promise = this.rpc.request(
@@ -5609,6 +5722,32 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgLiquidateCollateralWithStablecoinResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  SetStalePriceGracePeriod(
+    request: MsgSetStalePriceGracePeriod
+  ): Promise<MsgSetStalePriceGracePeriodResponse> {
+    const data = MsgSetStalePriceGracePeriod.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Msg",
+      "SetStalePriceGracePeriod",
+      data
+    );
+    return promise.then((data) =>
+      MsgSetStalePriceGracePeriodResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  SetCdpPaused(request: MsgSetCdpPaused): Promise<MsgSetCdpPausedResponse> {
+    const data = MsgSetCdpPaused.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Msg",
+      "SetCdpPaused",
+      data
+    );
+    return promise.then((data) =>
+      MsgSetCdpPausedResponse.decode(new _m0.Reader(data))
     );
   }
 }

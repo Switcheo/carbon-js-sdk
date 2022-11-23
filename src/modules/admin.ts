@@ -1,4 +1,4 @@
-import { Any, MsgAddAsset, MsgAddRateStrategy, MsgRemoveRateStrategy, MsgSetInterestFee, MsgSetLiquidationFee, MsgSetStablecoinInterestRate, MsgUpdateAsset, MsgUpdateRateStrategy, SettlementPriceParams, MsgSetCompleteLiquidationThreshold, MsgSetMinimumCloseFactor, MsgSetSmallLiquidationSize, MsgCreateRewardScheme, MsgUpdateRewardScheme, MsgAddRewardReserve } from "@carbon-sdk/codec";
+import { Any, MsgAddAsset, MsgAddRateStrategy, MsgRemoveRateStrategy, MsgSetInterestFee, MsgSetLiquidationFee, MsgSetStablecoinInterestRate, MsgUpdateAsset, MsgUpdateRateStrategy, SettlementPriceParams, MsgSetCompleteLiquidationThreshold, MsgSetMinimumCloseFactor, MsgSetSmallLiquidationSize, MsgCreateRewardScheme, MsgUpdateRewardScheme } from "@carbon-sdk/codec";
 import { MsgAuthorizeBridge, MsgBindToken, MsgCreateToken, MsgUpdateToken, MsgDeauthorizeBridge, MsgLinkToken, MsgSyncToken, MsgUnbindToken } from "@carbon-sdk/codec/coin/tx";
 import { Coin } from "@carbon-sdk/codec/cosmos/base/v1beta1/coin";
 import { Description } from "@carbon-sdk/codec/cosmos/staking/v1beta1/staking";
@@ -624,19 +624,6 @@ export class AdminModule extends BaseModule {
 
     return await wallet.sendTx({
       typeUrl: CarbonTx.Types.MsgUpdateRewardScheme,
-      value,
-    }, opts);
-  }
-
-  public async addRewardReserve(params: AdminModule.AddRewardReserveParams, opts?: CarbonTx.SignTxOpts) {
-    const wallet = this.getWallet();
-    const value = MsgAddRewardReserve.fromPartial({
-      creator: wallet.bech32Address,
-      addReservesParams: transformAddRewardReserve(params, wallet),
-    });
-
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgAddRewardReserve,
       value,
     }, opts);
   }

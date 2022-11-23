@@ -45,6 +45,13 @@ export interface Params {
    * dynamic close factor.
    */
   smallLiquidationSize: string;
+  /**
+   * stale_price_grace_period determines the grace period in seconds before an oracle price is regarded as stale.
+   * This would cause certain actions like borrowing to be paused
+   */
+  stalePriceGracePeriod: string;
+  /** cdp_paused if true, causes all supply, locking, lending, borrowing and liquidations to be paused */
+  cdpPaused: boolean;
 }
 
 const baseParams: object = {
@@ -55,6 +62,8 @@ const baseParams: object = {
   completeLiquidationThreshold: "",
   minimumCloseFactor: "",
   smallLiquidationSize: "",
+  stalePriceGracePeriod: "",
+  cdpPaused: false,
 };
 
 export const Params = {
@@ -82,6 +91,12 @@ export const Params = {
     }
     if (message.smallLiquidationSize !== "") {
       writer.uint32(58).string(message.smallLiquidationSize);
+    }
+    if (message.stalePriceGracePeriod !== "") {
+      writer.uint32(66).string(message.stalePriceGracePeriod);
+    }
+    if (message.cdpPaused === true) {
+      writer.uint32(72).bool(message.cdpPaused);
     }
     return writer;
   },
@@ -113,6 +128,12 @@ export const Params = {
           break;
         case 7:
           message.smallLiquidationSize = reader.string();
+          break;
+        case 8:
+          message.stalePriceGracePeriod = reader.string();
+          break;
+        case 9:
+          message.cdpPaused = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -157,6 +178,15 @@ export const Params = {
       object.smallLiquidationSize !== null
         ? String(object.smallLiquidationSize)
         : "";
+    message.stalePriceGracePeriod =
+      object.stalePriceGracePeriod !== undefined &&
+      object.stalePriceGracePeriod !== null
+        ? String(object.stalePriceGracePeriod)
+        : "";
+    message.cdpPaused =
+      object.cdpPaused !== undefined && object.cdpPaused !== null
+        ? Boolean(object.cdpPaused)
+        : false;
     return message;
   },
 
@@ -176,6 +206,9 @@ export const Params = {
       (obj.minimumCloseFactor = message.minimumCloseFactor);
     message.smallLiquidationSize !== undefined &&
       (obj.smallLiquidationSize = message.smallLiquidationSize);
+    message.stalePriceGracePeriod !== undefined &&
+      (obj.stalePriceGracePeriod = message.stalePriceGracePeriod);
+    message.cdpPaused !== undefined && (obj.cdpPaused = message.cdpPaused);
     return obj;
   },
 
@@ -189,6 +222,8 @@ export const Params = {
       object.completeLiquidationThreshold ?? "";
     message.minimumCloseFactor = object.minimumCloseFactor ?? "";
     message.smallLiquidationSize = object.smallLiquidationSize ?? "";
+    message.stalePriceGracePeriod = object.stalePriceGracePeriod ?? "";
+    message.cdpPaused = object.cdpPaused ?? false;
     return message;
   },
 };

@@ -38,13 +38,6 @@ export interface UpdateRewardSchemeParams {
   endTime?: Date;
 }
 
-export interface AddReservesParams {
-  creator: string;
-  rewardSchemeId: Long;
-  amount: string;
-  denom: string;
-}
-
 export interface RewardDebt {
   userAddress: string;
   rewardSchemeId: Long;
@@ -565,104 +558,6 @@ export const UpdateRewardSchemeParams = {
     message.rewardAmountPerSecond = object.rewardAmountPerSecond ?? "";
     message.startTime = object.startTime ?? undefined;
     message.endTime = object.endTime ?? undefined;
-    return message;
-  },
-};
-
-const baseAddReservesParams: object = {
-  creator: "",
-  rewardSchemeId: Long.UZERO,
-  amount: "",
-  denom: "",
-};
-
-export const AddReservesParams = {
-  encode(
-    message: AddReservesParams,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.creator !== "") {
-      writer.uint32(10).string(message.creator);
-    }
-    if (!message.rewardSchemeId.isZero()) {
-      writer.uint32(16).uint64(message.rewardSchemeId);
-    }
-    if (message.amount !== "") {
-      writer.uint32(26).string(message.amount);
-    }
-    if (message.denom !== "") {
-      writer.uint32(34).string(message.denom);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): AddReservesParams {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseAddReservesParams } as AddReservesParams;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.creator = reader.string();
-          break;
-        case 2:
-          message.rewardSchemeId = reader.uint64() as Long;
-          break;
-        case 3:
-          message.amount = reader.string();
-          break;
-        case 4:
-          message.denom = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): AddReservesParams {
-    const message = { ...baseAddReservesParams } as AddReservesParams;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.rewardSchemeId =
-      object.rewardSchemeId !== undefined && object.rewardSchemeId !== null
-        ? Long.fromString(object.rewardSchemeId)
-        : Long.UZERO;
-    message.amount =
-      object.amount !== undefined && object.amount !== null
-        ? String(object.amount)
-        : "";
-    message.denom =
-      object.denom !== undefined && object.denom !== null
-        ? String(object.denom)
-        : "";
-    return message;
-  },
-
-  toJSON(message: AddReservesParams): unknown {
-    const obj: any = {};
-    message.creator !== undefined && (obj.creator = message.creator);
-    message.rewardSchemeId !== undefined &&
-      (obj.rewardSchemeId = (message.rewardSchemeId || Long.UZERO).toString());
-    message.amount !== undefined && (obj.amount = message.amount);
-    message.denom !== undefined && (obj.denom = message.denom);
-    return obj;
-  },
-
-  fromPartial(object: DeepPartial<AddReservesParams>): AddReservesParams {
-    const message = { ...baseAddReservesParams } as AddReservesParams;
-    message.creator = object.creator ?? "";
-    message.rewardSchemeId =
-      object.rewardSchemeId !== undefined && object.rewardSchemeId !== null
-        ? Long.fromValue(object.rewardSchemeId)
-        : Long.UZERO;
-    message.amount = object.amount ?? "";
-    message.denom = object.denom ?? "";
     return message;
   },
 };
