@@ -1,5 +1,5 @@
 import { Token } from "@carbon-sdk/codec";
-import { CoinGeckoTokenNames, CommonAssetName, NetworkConfigProvider, TokenBlacklist } from "@carbon-sdk/constant";
+import { CoinGeckoTokenNames, CommonAssetName, DenomPrefix, NetworkConfigProvider, TokenBlacklist } from "@carbon-sdk/constant";
 import { ibcTokenRegex, ibcWhitelist, swthChannels, swthIbcWhitelist } from "@carbon-sdk/constant/ibc";
 import { Network } from "@carbon-sdk/constant/network";
 import { FeeQuote } from "@carbon-sdk/hydrogen/feeQuote";
@@ -27,6 +27,9 @@ const SYMBOL_OVERRIDE: {
   AVA1: 'AVA',
   TSWTH: 'tSWTH',
 };
+
+const regexCdpDenom = RegExp(`^${DenomPrefix.CDPToken}/`, "i")
+const regexLPDenom = RegExp(`^${DenomPrefix.LPToken}/(\\d+)$`, "i")
 
 class TokenClient {
   public static Blacklist = TokenBlacklist;
@@ -197,19 +200,19 @@ class TokenClient {
   }
 
   public static isPoolTokenNew(denom: string): boolean {
-    return denom.match(/^clpt\/(\d+)$/i) !== null;
+    return denom.match(regexLPDenom) !== null;
   }
 
   public static isPoolTokenLegacy(denom: string): boolean {
     return denom.match(/^([a-z\d.-]+)-(\d+)-([a-z\d.-]+)-(\d+)-lp\d+$/i) !== null;
   }
 
-  public static isPoolToken(denom: string): boolean {
-    return this.isPoolTokenNew(denom) || this.isPoolTokenLegacy(denom);
+  public static isCdpToken(denom: string): boolean {
+    return denom.match(regexCdpDenom) !== null
   }
 
-  public static isCdpToken(denom: string): boolean {
-    return denom.includes('cibt/');
+  public static isPoolToken(denom: string): boolean {
+    return this.isPoolTokenNew(denom) || this.isPoolTokenLegacy(denom);
   }
 
   public static isIBCDenom(denom: string): boolean {
@@ -419,7 +422,7 @@ class TokenClient {
   public getCdpUnderlyingToken(cdpDenom: string) {
     if (!this.cdpTokens[cdpDenom])
       throw new Error("not a CDP denom");
-    const tokenDenom = cdpDenom.replace(/^cdp\//i, "");
+    const tokenDenom = cdpDenom.replace(regexCdpDenom, "");
     return this.tokenForDenom(tokenDenom);
   }
 

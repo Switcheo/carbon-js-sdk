@@ -1,6 +1,11 @@
 import { OptionalNetworkMap, SimpleMap } from "@carbon-sdk/util/type";
 import { Network } from "./network";
 
+export const DenomPrefix = {
+  LPToken: "clpt",
+  CDPToken: "cibt",
+}
+
 export const CommonAssetName: SimpleMap<string> = {
   swth: 'swth',
   'swth-n': 'swth',
