@@ -1,7 +1,7 @@
 import { SignDoc } from '@carbon-sdk/codec/cosmos/tx/v1beta1/tx';
 import { CosmosLedger } from '@carbon-sdk/provider';
 import { sortObject } from '@carbon-sdk/util/generic';
-import { AminoSignResponse, encodeSecp256k1Signature, OfflineAminoSigner, StdSignDoc, Secp256k1Wallet } from "@cosmjs/amino";
+import { AminoSignResponse, encodeSecp256k1Signature, OfflineAminoSigner, Secp256k1Wallet, StdSignDoc } from "@cosmjs/amino";
 import { AccountData, DirectSecp256k1Wallet, DirectSignResponse, OfflineDirectSigner } from '@cosmjs/proto-signing';
 
 export enum CarbonSignerTypes {
@@ -43,14 +43,14 @@ export class CarbonPrivateKeySigner implements DirectCarbonSigner, AminoCarbonSi
     return wallet.getAccounts();
   }
 
+  async signAmino(signerAddress: string, signDoc: StdSignDoc): Promise<AminoSignResponse> {
+    const aminoWallet = await this.initAminoWallet()
+    return await aminoWallet.signAmino(signerAddress, signDoc);
+  }
+
   async signDirect(signerAddress: string, signDoc: SignDoc): Promise<DirectSignResponse> {
     const wallet = await this.initWallet();
     return await wallet.signDirect(signerAddress, signDoc);
-  }
-
-  async signAmino(signerAddress: string, signDoc: StdSignDoc): Promise<AminoSignResponse> {
-    const wallet = await this.initAminoWallet();
-    return await wallet.signAmino(signerAddress, signDoc);
   }
 }
 
