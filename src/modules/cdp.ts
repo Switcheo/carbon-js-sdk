@@ -2,7 +2,6 @@ import {
   AssetParams,
   DebtInfo,
   QueryCdpParamsRequest,
-  QueryModuleAddressRequest,
   QueryTokenPriceRequest,
   RateStrategyParams,
   StablecoinDebtInfo
@@ -52,7 +51,6 @@ import { Network } from "@carbon-sdk/constant";
 import tokenClient from "@carbon-sdk/clients/TokenClient";
 import { SWTHAddress } from '@carbon-sdk/util/address';
 import { Params } from '@carbon-sdk/codec/cdp/params';
-import dayjs, { Dayjs } from 'dayjs';
 
 export class CDPModule extends BaseModule {
 

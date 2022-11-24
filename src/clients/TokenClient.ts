@@ -209,7 +209,7 @@ class TokenClient {
   }
 
   public static isCdpToken(denom: string): boolean {
-    return denom.includes('cdp/');
+    return denom.includes('cibt/');
   }
 
   public static isIBCDenom(denom: string): boolean {

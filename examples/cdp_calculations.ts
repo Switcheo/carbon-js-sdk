@@ -20,7 +20,7 @@ import Long from "long";
 
   const address = "tswth17tek8m2y6n0d7xczvvednq76v789ewds6adcc2"
   const denom = "usdc"
-  const cdpDenom = `cdp/${denom}`
+  const cdpDenom = `cibt/${denom}`
 
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");

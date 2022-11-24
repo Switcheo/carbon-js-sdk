@@ -22,7 +22,7 @@ import BigNumber from "bignumber.js";
 
   const response = await sdk.admin.createRewardScheme({
     rewardDenom: "swth",
-    assetDenom: "cdp/usdc",
+    assetDenom: "cibt/usdc",
     rewardType: "lend",
     rewardAmountPerSecond: new BigNumber(0.1).shiftedBy(8),
     startTime: nowDate.toDate(),

@@ -17,7 +17,7 @@ import "./_setup";
   console.log("connected sdk");
 
   const ethToken = sdk.token.tokenForDenom("eth");
-  const cdpEthToken = sdk.token.tokenForDenom("cdp/eth");
+  const cdpEthToken = sdk.token.tokenForDenom("cibt/eth");
   if (!ethToken || !cdpEthToken) return;
 
   await connectedSDK.cdp.supplyAssetAndLockCollateral({
