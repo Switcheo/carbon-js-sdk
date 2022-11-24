@@ -25,6 +25,8 @@ export enum WSChannel {
   cdp_token_debts_by_denom = "cdp_token_debts_by_denom",
   cdp_reward_schemes = "cdp_reward_schemes",
   cdp_reward_debts = "cdp_reward_debts",
+  cdp_token_supply = "cdp_token_supply",
+  cdp_token_supply_by_denom = "cdp_token_supply_by_denom",
 }
 
 export enum WSRequest {
@@ -252,6 +254,12 @@ export interface WsSubscribeTokenPrices extends WsSubscribeParams {
 
 export interface WsSubscribeAllTokenPrices extends WsSubscribeParams {
 }
+export interface WsSubscribeCDPTokenSupplyByDenom extends WsSubscribeParams {
+  denom: string
+}
+
+export interface WsSubscribeCDPTokenSupply extends WsSubscribeParams {
+}
 
 export type WsSubscriptionParams =
   | WsSubscribeCandlesticksParams
@@ -281,3 +289,5 @@ export type WsSubscriptionParams =
   | WsSubscribeTokenDebtByDenom
   | WsSubscribeRewardSchemes
   | WsSubscribeRewardDebts
+  | WsSubscribeCDPTokenSupply
+  | WsSubscribeCDPTokenSupplyByDenom

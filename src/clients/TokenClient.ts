@@ -101,7 +101,11 @@ class TokenClient {
   }
 
   public getSymbol(denom: string): string {
+    if (TokenClient.isCdpToken(denom)) {
+      return this.symbols[denom] ?? denom;
+    }
     const commonDenom = this.getCommonDenom(denom);
+
     return this.symbols[commonDenom] ?? commonDenom.toUpperCase();
   }
 
@@ -360,6 +364,7 @@ class TokenClient {
         this.poolTokens[token.denom] = token;
       } else if (TokenClient.isCdpToken(token.denom)) {
         this.cdpTokens[token.denom] = token;
+        this.symbols[token.denom] = token.symbol;
       } else {
         if (this.isNativeToken(token.denom)) {
           // Change token name to Carbon

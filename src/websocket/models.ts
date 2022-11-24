@@ -347,3 +347,8 @@ export interface RewardDebt {
   reward_scheme_id: number;
   reward_debt: string; // string representation of number
 }
+
+export interface CDPTokenSupply {
+  cdp_denom: string
+  amount: string // string representation of number
+}

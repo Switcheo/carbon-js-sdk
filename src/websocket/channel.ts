@@ -4,7 +4,7 @@ import {
   WsSubscribeCommitmentParams, WsSubscribeLeveragesAllParams, WsSubscribeLeveragesByMarketParams,
   WsSubscribeMarketStatsAllParams, WsSubscribeMarketStatsByMarketParams, WsSubscribeOrdersAllParams,
   WsSubscribeOrdersByMarketParams, WsSubscribePoolsAllParams, WsSubscribePoolsByIdParams, WsSubscribePositionsAllParams,
-  WsSubscribePositionsByMarketParams, WsSubscribeRecentTradesParams, WsSubscribeRewardDebts, WsSubscribeRewardSchemes, WsSubscribeTokenDebtByDenom, WsSubscribeTokenPrices, WsSubscribeWalletBalanceParams, WsSubscriptionParams
+  WsSubscribePositionsByMarketParams, WsSubscribeRecentTradesParams, WsSubscribeRewardDebts, WsSubscribeRewardSchemes, WsSubscribeTokenDebtByDenom, WsSubscribeTokenPrices, WsSubscribeWalletBalanceParams, WsSubscriptionParams, WsSubscribeCDPTokenSupply, WsSubscribeCDPTokenSupplyByDenom
 } from './types'
 
 export const generateChannelId = (params: WsSubscriptionParams): string => {
@@ -112,6 +112,14 @@ export const generateChannelId = (params: WsSubscriptionParams): string => {
     case WSChannel.cdp_reward_debts: {
       const { channel, address } = params as WsSubscribeRewardDebts
       return [channel, address].join(':')
+    }
+    case WSChannel.cdp_token_supply: {
+      const { channel } = params as WsSubscribeCDPTokenSupply
+      return [channel].join(':')
+    }
+    case WSChannel.cdp_token_supply_by_denom: {
+      const { channel, denom } = params as WsSubscribeCDPTokenSupplyByDenom
+      return [channel, denom].join(':')
     }
     default:
       throw new Error(`invalid subscription channel: ${params.channel}`)
@@ -250,6 +258,15 @@ export const parseChannelId = (rawChannelId: string): WsSubscriptionParams => {
         channel,
         address: param0,
       } as WsSubscribeRewardDebts
+    case WSChannel.cdp_token_supply:
+      return {
+        channel,
+      } as WsSubscribeCDPTokenSupply
+    case WSChannel.cdp_token_supply_by_denom:
+      return {
+        channel,
+        denom: param0,
+      } as WsSubscribeCDPTokenSupplyByDenom
     default:
       throw new Error('Error parsing channelId')
   }
