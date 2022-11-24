@@ -4,6 +4,8 @@ import { DEFAULT_FEE } from "@carbon-sdk/constant";
 import { StdFee } from "@cosmjs/amino";
 import { SignerData } from "@cosmjs/stargate";
 import { SWTHAddress, SWTHAddressOptions } from "./address";
+export { StdSignDoc } from "@cosmjs/amino";
+
 export interface TxBody extends Omit<CosmosModels.Tx.TxBody, "messages"> {
   messages: unknown[]
 }
