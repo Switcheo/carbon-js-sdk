@@ -20,6 +20,7 @@ const MsgCreatePool: AminoInit = {
     swapFee: ConvertEncType.Dec,
     tokenAWeight: ConvertEncType.Dec,
     tokenBWeight: ConvertEncType.Dec,
+    ampBps: ConvertEncType.Long,
   },
 };
 
@@ -30,6 +31,7 @@ const MsgCreatePoolWithLiquidity: AminoInit = {
     tokenBWeight: ConvertEncType.Dec,
     swapFee: ConvertEncType.Dec,
     numQuotes: ConvertEncType.Long,
+    ampBps: ConvertEncType.Long,
   },
 };
 

@@ -1,5 +1,4 @@
-import { Any, SettlementPriceParams } from "@carbon-sdk/codec";
-import { MsgCreateVaultType } from "@carbon-sdk/codec/cdp/tx";
+import { Any, MsgAddAsset, MsgAddRateStrategy, MsgRemoveRateStrategy, MsgSetInterestFee, MsgSetLiquidationFee, MsgSetStablecoinInterestRate, MsgUpdateAsset, MsgUpdateRateStrategy, SettlementPriceParams, MsgSetCompleteLiquidationThreshold, MsgSetMinimumCloseFactor, MsgSetSmallLiquidationSize, MsgCreateRewardScheme, MsgUpdateRewardScheme } from "@carbon-sdk/codec";
 import { MsgAuthorizeBridge, MsgBindToken, MsgCreateToken, MsgUpdateToken, MsgDeauthorizeBridge, MsgLinkToken, MsgSyncToken, MsgUnbindToken } from "@carbon-sdk/codec/coin/tx";
 import { Coin } from "@carbon-sdk/codec/cosmos/base/v1beta1/coin";
 import { Description } from "@carbon-sdk/codec/cosmos/staking/v1beta1/staking";
@@ -9,6 +8,7 @@ import { MsgLinkPool, MsgSetCommitmentCurve, MsgSetRewardCurve, MsgSetRewardsWei
 import { MsgCreateMarket } from "@carbon-sdk/codec/market/tx";
 import { MsgCreateOracle } from "@carbon-sdk/codec/oracle/tx";
 import { MsgSetTradingFlag } from "@carbon-sdk/codec/order/tx";
+import { CarbonWallet } from "@carbon-sdk/wallet";
 import { CarbonTx } from "@carbon-sdk/util";
 import BigNumber from "bignumber.js";
 import Long from "long";
@@ -179,17 +179,6 @@ export class AdminModule extends BaseModule {
     });
 
     return await wallet.sendTxs(msgs, opts);
-  }
-
-  public async createVaultType(params: AdminModule.CreateVaultTypeParams, opts?: CarbonTx.SignTxOpts) {
-    const wallet = this.getWallet();
-
-    const value = MsgCreateVaultType.fromPartial(transfromCreateVaultTypeParams(params, wallet.bech32Address))
-
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgCreateVaultType,
-      value,
-    }, opts);
   }
 
   public async linkPool(params: AdminModule.LinkPoolParams, opts?: CarbonTx.SignTxOpts) {
@@ -423,6 +412,221 @@ export class AdminModule extends BaseModule {
       value,
     }, opts);
   }
+
+  public async addRateStrategy(params: AdminModule.AddRateStrategyParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+
+    const value = MsgAddRateStrategy.fromPartial({
+      creator: wallet.bech32Address,
+      rateStrategyParams: {
+        name: params.rateStrategy.name,
+        optimalUsage: params.rateStrategy.optimalUsage.toString(10),
+        baseVariableBorrowRate: params.rateStrategy.baseVariableBorrowRate.toString(10),
+        variableRateSlope1: params.rateStrategy.variableRateSlope1.toString(10),
+        variableRateSlope2: params.rateStrategy.variableRateSlope2.toString(10),
+        baseStableBorrowRate: params.rateStrategy.baseStableBorrowRate.toString(10),
+        stableRateSlope1: params.rateStrategy.stableRateSlope1.toString(10),
+        stableRateSlope2: params.rateStrategy.stableRateSlope2.toString(10),
+        optimalStableToTotalDebtRatio: params.rateStrategy.optimalStableToTotalDebtRatio.toString(10),
+      },
+    })
+
+    return await wallet.sendTx({
+      typeUrl: CarbonTx.Types.MsgAddRateStrategy,
+      value
+    }, opts);
+  }
+
+  public async updateRateStrategy(params: AdminModule.UpdateRateStrategyParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+
+    const value = MsgUpdateRateStrategy.fromPartial({
+      creator: wallet.bech32Address,
+      rateStrategyParams: {
+        name: params.rateStrategy.name,
+        optimalUsage: params.rateStrategy.optimalUsage.toString(10),
+        baseVariableBorrowRate: params.rateStrategy.baseVariableBorrowRate.toString(10),
+        variableRateSlope1: params.rateStrategy.variableRateSlope1.toString(10),
+        variableRateSlope2: params.rateStrategy.variableRateSlope2.toString(10),
+        baseStableBorrowRate: params.rateStrategy.baseStableBorrowRate.toString(10),
+        stableRateSlope1: params.rateStrategy.stableRateSlope1.toString(10),
+        stableRateSlope2: params.rateStrategy.stableRateSlope2.toString(10),
+        optimalStableToTotalDebtRatio: params.rateStrategy.optimalStableToTotalDebtRatio.toString(10),
+      },
+    })
+
+    return await wallet.sendTx({
+      typeUrl: CarbonTx.Types.MsgUpdateRateStrategy,
+      value
+    }, opts);
+  }
+
+  public async removeRateStrategy(params: AdminModule.RemoveRateStrategyParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+
+    const value = MsgRemoveRateStrategy.fromPartial({
+      creator: wallet.bech32Address,
+      name: params.name,
+    })
+
+    return await wallet.sendTx({
+      typeUrl: CarbonTx.Types.MsgRemoveRateStrategy,
+      value
+    }, opts);
+  }
+
+  public async addAsset(params: AdminModule.AddAssetParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+
+    const value = MsgAddAsset.fromPartial({
+      creator: wallet.bech32Address,
+      assetParams: {
+        denom: params.asset.denom,
+        oracleId: params.asset.oracleId,
+        rateStrategyName: params.asset.rateStrategyName,
+        loanToValue: params.asset.loanToValue.toString(10),
+        liquidationThreshold: params.asset.liquidationThreshold.toString(10),
+        liquidationDiscount: params.asset.liquidationDiscount.toString(10),
+        supplyCap: params.asset.supplyCap.toString(10),
+        borrowCap: params.asset.borrowCap.toString(10),
+      }
+    })
+
+    return await wallet.sendTx({
+      typeUrl: CarbonTx.Types.MsgAddAsset,
+      value
+    }, opts);
+  }
+
+  public async updateAsset(params: AdminModule.UpdateAssetParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+
+    const value = MsgUpdateAsset.fromPartial({
+      creator: wallet.bech32Address,
+      assetParams: {
+        denom: params.asset.denom,
+        oracleId: params.asset.oracleId,
+        rateStrategyName: params.asset.rateStrategyName,
+        loanToValue: params.asset.loanToValue.toString(10),
+        liquidationThreshold: params.asset.liquidationThreshold.toString(10),
+        liquidationDiscount: params.asset.liquidationDiscount.toString(10),
+        supplyCap: params.asset.supplyCap.toString(10),
+        borrowCap: params.asset.borrowCap.toString(10),
+      }
+    })
+
+    return await wallet.sendTx({
+      typeUrl: CarbonTx.Types.MsgUpdateAsset,
+      value
+    }, opts);
+  }
+
+  public async setLiquidationFee(params: AdminModule.SetLiquidationFeeParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+
+    const value = MsgSetLiquidationFee.fromPartial({
+      creator: wallet.bech32Address,
+      liquidationFee: params.liquidationFee.toString(10),
+    })
+
+    return await wallet.sendTx({
+      typeUrl: CarbonTx.Types.MsgSetLiquidationFee,
+      value
+    }, opts);
+  }
+
+  public async setInterestFee(params: AdminModule.SetInterestFeeParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+
+    const value = MsgSetInterestFee.fromPartial({
+      creator: wallet.bech32Address,
+      interestFee: params.interestFee.toString(10),
+    })
+
+    return await wallet.sendTx({
+      typeUrl: CarbonTx.Types.MsgSetInterestFee,
+      value
+    }, opts);
+  }
+
+  public async setStableCoinInterestRate(params: AdminModule.SetStableCoinInterestRateParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+
+    const value = MsgSetStablecoinInterestRate.fromPartial({
+      creator: wallet.bech32Address,
+      stablecoinInterestRate: params.stablecoinInterestRate.toString(10),
+    })
+
+    return await wallet.sendTx({
+      typeUrl: CarbonTx.Types.MsgSetStablecoinInterestRate,
+      value
+    }, opts);
+  }
+
+  public async setCompleteLiquidationThreshold(params: AdminModule.SetCompleteLiquidationThresholdParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+    const value = MsgSetCompleteLiquidationThreshold.fromPartial({
+      creator: wallet.bech32Address,
+      completeLiquidationThreshold: params.completeLiquidationThreshold.shiftedBy(18).toString(10),
+    });
+
+    return await wallet.sendTx({
+      typeUrl: CarbonTx.Types.MsgSetCompleteLiquidationThreshold,
+      value,
+    }, opts);
+  }
+
+  public async setMinimumCloseFactor(params: AdminModule.SetMinimumCloseFactorParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+    const value = MsgSetMinimumCloseFactor.fromPartial({
+      creator: wallet.bech32Address,
+      minimumCloseFactor: params.minimumCloseFactor.shiftedBy(18).toString(10),
+    });
+
+    return await wallet.sendTx({
+      typeUrl: CarbonTx.Types.MsgSetMinimumCloseFactor,
+      value,
+    }, opts);
+  }
+
+  public async setSmallLiquidationSize(params: AdminModule.SetSmallLiquidationSizeParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+    const value = MsgSetSmallLiquidationSize.fromPartial({
+      creator: wallet.bech32Address,
+      smallLiquidationSize: params.smallLiquidationSize.shiftedBy(18).toString(10),
+    });
+
+    return await wallet.sendTx({
+      typeUrl: CarbonTx.Types.MsgSetSmallLiquidationSize,
+      value,
+    }, opts);
+  }
+
+  public async createRewardScheme(params: AdminModule.CreateRewardSchemeParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+    const value = MsgCreateRewardScheme.fromPartial({
+      creator: wallet.bech32Address,
+      createRewardSchemeParams: transformCreateRewardScheme(params),
+    });
+
+    return await wallet.sendTx({
+      typeUrl: CarbonTx.Types.MsgCreateRewardScheme,
+      value,
+    }, opts);
+  }
+
+  public async updateRewardScheme(params: AdminModule.UpdateRewardSchemeParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+    const value = MsgUpdateRewardScheme.fromPartial({
+      updator: wallet.bech32Address,
+      updateRewardSchemeParams: transformUpdateRewardScheme(params),
+    });
+
+    return await wallet.sendTx({
+      typeUrl: CarbonTx.Types.MsgUpdateRewardScheme,
+      value,
+    }, opts);
+  }
 }
 
 export namespace AdminModule {
@@ -598,6 +802,91 @@ export namespace AdminModule {
     commissionRate: BigNumber;
     minSelfDelegation: BigNumber;
   }
+  export interface RateStrategy {
+    name: string
+    optimalUsage: BigNumber
+    baseVariableBorrowRate: BigNumber
+    variableRateSlope1: BigNumber
+    variableRateSlope2: BigNumber
+    baseStableBorrowRate: BigNumber
+    stableRateSlope1: BigNumber
+    stableRateSlope2: BigNumber
+    optimalStableToTotalDebtRatio: BigNumber
+  } 
+  export interface Asset {
+    denom: string
+    oracleId: string
+    rateStrategyName: string
+    loanToValue: BigNumber
+    liquidationThreshold: BigNumber
+    liquidationDiscount: BigNumber
+    supplyCap: BigNumber
+    borrowCap: BigNumber
+  }
+  export interface AddRateStrategyParams {
+    rateStrategy: RateStrategy
+  }
+  export interface UpdateRateStrategyParams {
+    rateStrategy: RateStrategy
+  }
+  export interface RemoveRateStrategyParams {
+    name: string
+  }
+  export interface AddAssetParams {
+    asset: Asset
+  }
+  export interface UpdateAssetParams {
+    asset: Asset
+  }
+  export interface SetLiquidationFeeParams {
+    liquidationFee: BigNumber
+  }
+
+  export interface SetInterestFeeParams {
+    interestFee: BigNumber
+  }
+
+  export interface SetStableCoinInterestRateParams {
+    stablecoinInterestRate: BigNumber
+  }
+  
+  export interface SetCompleteLiquidationThresholdParams {
+    completeLiquidationThreshold: BigNumber
+  }
+
+  export interface SetMinimumCloseFactorParams {
+    minimumCloseFactor: BigNumber;
+  }
+
+  export interface SetSmallLiquidationSizeParams {
+    smallLiquidationSize: BigNumber;
+  }
+
+  export interface CreateRewardSchemeParams {
+    rewardDenom: string;
+    assetDenom: string;
+    rewardType: string;
+    rewardAmountPerSecond: BigNumber;
+    startTime?: Date;
+    endTime?: Date;
+  }
+
+  export interface UpdateRewardSchemeParams {
+    rewardSchemeId: number;
+    rewardDenom?: string;
+    assetDenom?: string;
+    rewardType?: string;
+    rewardAmountPerSecond: BigNumber;
+    startTime?: Date;
+    endTime?: Date;
+  }
+
+  export interface AddRewardReserveParams {
+    creator?: string;
+    rewardSchemeId: number;
+    amount: BigNumber;
+    denom: string;
+  }
 };
 
 export function transfromCreateOracleParams(msg: AdminModule.CreateOracleParams, address: string) {
@@ -631,15 +920,6 @@ export function transfromSyncTokenParams(msg: AdminModule.SyncTokenParams, addre
   return {
     syncer: address,
     denom: msg.denom,
-  }
-}
-
-export function transfromCreateVaultTypeParams(msg: AdminModule.CreateVaultTypeParams, address: string) {
-  return {
-    creator: address,
-    collateralDenom: msg.collateralDenom,
-    debtDenom: msg.debtDenom,
-    collateralizationRatio: msg.collateralizationRatio.shiftedBy(18).toString(10),
   }
 }
 
@@ -732,4 +1012,36 @@ export function transformCommunityPoolSpendAmount(amount: Coin[]) {
     } as Coin
   })
   return amounts
+}
+
+export function transformCreateRewardScheme(msg: AdminModule.CreateRewardSchemeParams) {
+  return {
+    rewardDenom: msg.rewardDenom,
+    assetDenom: msg.assetDenom,
+    rewardType: msg.rewardType,
+    rewardAmountPerSecond: msg.rewardAmountPerSecond.toString(10),
+    startTime: msg.startTime,
+    endTime: msg.endTime,
+  };
+}
+
+export function transformUpdateRewardScheme(msg: AdminModule.UpdateRewardSchemeParams) {
+  return {
+    rewardSchemeId: new Long(msg.rewardSchemeId),
+    rewardDenom: msg.rewardDenom,
+    assetDenom: msg.assetDenom,
+    rewardType: msg.rewardType,
+    rewardAmountPerSecond: msg.rewardAmountPerSecond?.toString(10),
+    startTime: msg.startTime,
+    endTime: msg.endTime,
+  };
+}
+
+export function transformAddRewardReserve(msg: AdminModule.AddRewardReserveParams, wallet: CarbonWallet) {
+  return {
+    creator: msg.creator ?? wallet.bech32Address,
+    rewardSchemeId: new Long(msg.rewardSchemeId),
+    amount: msg.amount.toString(10),
+    denom: msg.denom,
+  };
 }

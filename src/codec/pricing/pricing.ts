@@ -11,6 +11,7 @@ export interface Params {
   smoothenBand: number;
   impactBand: number;
   staleIndexAllowance?: Duration;
+  backfillTimeInterval?: Duration;
 }
 
 export interface PriceSet {
@@ -28,6 +29,13 @@ export interface PriceSet {
   premiumRate: string;
   premiumRateCounter: string;
   lastFundingAt?: Date;
+}
+
+export interface TokenPrice {
+  denom: string;
+  index: string;
+  twap: string;
+  indexUpdatedAt?: Date;
 }
 
 const baseParams: object = { smoothenBand: 0, impactBand: 0 };
@@ -49,6 +57,12 @@ export const Params = {
         writer.uint32(26).fork()
       ).ldelim();
     }
+    if (message.backfillTimeInterval !== undefined) {
+      Duration.encode(
+        message.backfillTimeInterval,
+        writer.uint32(34).fork()
+      ).ldelim();
+    }
     return writer;
   },
 
@@ -67,6 +81,12 @@ export const Params = {
           break;
         case 3:
           message.staleIndexAllowance = Duration.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 4:
+          message.backfillTimeInterval = Duration.decode(
             reader,
             reader.uint32()
           );
@@ -94,6 +114,11 @@ export const Params = {
       object.staleIndexAllowance !== null
         ? Duration.fromJSON(object.staleIndexAllowance)
         : undefined;
+    message.backfillTimeInterval =
+      object.backfillTimeInterval !== undefined &&
+      object.backfillTimeInterval !== null
+        ? Duration.fromJSON(object.backfillTimeInterval)
+        : undefined;
     return message;
   },
 
@@ -106,6 +131,10 @@ export const Params = {
       (obj.staleIndexAllowance = message.staleIndexAllowance
         ? Duration.toJSON(message.staleIndexAllowance)
         : undefined);
+    message.backfillTimeInterval !== undefined &&
+      (obj.backfillTimeInterval = message.backfillTimeInterval
+        ? Duration.toJSON(message.backfillTimeInterval)
+        : undefined);
     return obj;
   },
 
@@ -117,6 +146,11 @@ export const Params = {
       object.staleIndexAllowance !== undefined &&
       object.staleIndexAllowance !== null
         ? Duration.fromPartial(object.staleIndexAllowance)
+        : undefined;
+    message.backfillTimeInterval =
+      object.backfillTimeInterval !== undefined &&
+      object.backfillTimeInterval !== null
+        ? Duration.fromPartial(object.backfillTimeInterval)
         : undefined;
     return message;
   },
@@ -360,6 +394,101 @@ export const PriceSet = {
     message.premiumRate = object.premiumRate ?? "";
     message.premiumRateCounter = object.premiumRateCounter ?? "";
     message.lastFundingAt = object.lastFundingAt ?? undefined;
+    return message;
+  },
+};
+
+const baseTokenPrice: object = { denom: "", index: "", twap: "" };
+
+export const TokenPrice = {
+  encode(
+    message: TokenPrice,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.denom !== "") {
+      writer.uint32(10).string(message.denom);
+    }
+    if (message.index !== "") {
+      writer.uint32(18).string(message.index);
+    }
+    if (message.twap !== "") {
+      writer.uint32(26).string(message.twap);
+    }
+    if (message.indexUpdatedAt !== undefined) {
+      Timestamp.encode(
+        toTimestamp(message.indexUpdatedAt),
+        writer.uint32(34).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): TokenPrice {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseTokenPrice } as TokenPrice;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.denom = reader.string();
+          break;
+        case 2:
+          message.index = reader.string();
+          break;
+        case 3:
+          message.twap = reader.string();
+          break;
+        case 4:
+          message.indexUpdatedAt = fromTimestamp(
+            Timestamp.decode(reader, reader.uint32())
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): TokenPrice {
+    const message = { ...baseTokenPrice } as TokenPrice;
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
+    message.index =
+      object.index !== undefined && object.index !== null
+        ? String(object.index)
+        : "";
+    message.twap =
+      object.twap !== undefined && object.twap !== null
+        ? String(object.twap)
+        : "";
+    message.indexUpdatedAt =
+      object.indexUpdatedAt !== undefined && object.indexUpdatedAt !== null
+        ? fromJsonTimestamp(object.indexUpdatedAt)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: TokenPrice): unknown {
+    const obj: any = {};
+    message.denom !== undefined && (obj.denom = message.denom);
+    message.index !== undefined && (obj.index = message.index);
+    message.twap !== undefined && (obj.twap = message.twap);
+    message.indexUpdatedAt !== undefined &&
+      (obj.indexUpdatedAt = message.indexUpdatedAt.toISOString());
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<TokenPrice>): TokenPrice {
+    const message = { ...baseTokenPrice } as TokenPrice;
+    message.denom = object.denom ?? "";
+    message.index = object.index ?? "";
+    message.twap = object.twap ?? "";
+    message.indexUpdatedAt = object.indexUpdatedAt ?? undefined;
     return message;
   },
 };

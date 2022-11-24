@@ -24,6 +24,9 @@ export interface Pool {
   numQuotes: Long;
   sharesAmount: string;
   market: string;
+  ampBps: Long;
+  vAmountA: string;
+  vAmountB: string;
 }
 
 export interface Pools {
@@ -128,6 +131,9 @@ const basePool: object = {
   numQuotes: Long.ZERO,
   sharesAmount: "",
   market: "",
+  ampBps: Long.UZERO,
+  vAmountA: "",
+  vAmountB: "",
 };
 
 export const Pool = {
@@ -173,6 +179,15 @@ export const Pool = {
     }
     if (message.market !== "") {
       writer.uint32(114).string(message.market);
+    }
+    if (!message.ampBps.isZero()) {
+      writer.uint32(120).uint64(message.ampBps);
+    }
+    if (message.vAmountA !== "") {
+      writer.uint32(130).string(message.vAmountA);
+    }
+    if (message.vAmountB !== "") {
+      writer.uint32(138).string(message.vAmountB);
     }
     return writer;
   },
@@ -225,6 +240,15 @@ export const Pool = {
           break;
         case 14:
           message.market = reader.string();
+          break;
+        case 15:
+          message.ampBps = reader.uint64() as Long;
+          break;
+        case 16:
+          message.vAmountA = reader.string();
+          break;
+        case 17:
+          message.vAmountB = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -292,6 +316,18 @@ export const Pool = {
       object.market !== undefined && object.market !== null
         ? String(object.market)
         : "";
+    message.ampBps =
+      object.ampBps !== undefined && object.ampBps !== null
+        ? Long.fromString(object.ampBps)
+        : Long.UZERO;
+    message.vAmountA =
+      object.vAmountA !== undefined && object.vAmountA !== null
+        ? String(object.vAmountA)
+        : "";
+    message.vAmountB =
+      object.vAmountB !== undefined && object.vAmountB !== null
+        ? String(object.vAmountB)
+        : "";
     return message;
   },
 
@@ -314,6 +350,10 @@ export const Pool = {
     message.sharesAmount !== undefined &&
       (obj.sharesAmount = message.sharesAmount);
     message.market !== undefined && (obj.market = message.market);
+    message.ampBps !== undefined &&
+      (obj.ampBps = (message.ampBps || Long.UZERO).toString());
+    message.vAmountA !== undefined && (obj.vAmountA = message.vAmountA);
+    message.vAmountB !== undefined && (obj.vAmountB = message.vAmountB);
     return obj;
   },
 
@@ -339,6 +379,12 @@ export const Pool = {
         : Long.ZERO;
     message.sharesAmount = object.sharesAmount ?? "";
     message.market = object.market ?? "";
+    message.ampBps =
+      object.ampBps !== undefined && object.ampBps !== null
+        ? Long.fromValue(object.ampBps)
+        : Long.UZERO;
+    message.vAmountA = object.vAmountA ?? "";
+    message.vAmountB = object.vAmountB ?? "";
     return message;
   },
 };

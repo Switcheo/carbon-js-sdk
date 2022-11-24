@@ -1,48 +1,131 @@
 import { TypeUtils } from "@carbon-sdk/util";
 import * as CarbonTx from "@carbon-sdk/util/tx";
 import { AminoConverter } from "@cosmjs/stargate";
-import { AminoInit, ConvertEncType, generateAminoType } from "../utils";
+import { AminoInit, generateAminoType } from "../utils";
 
 const TxTypes: TypeUtils.SimpleMap<string> = {
-  AddCollateral: "cdp/AddCollateral",
-  RemoveCollateral: "cdp/removeCollateral",
-  AddDebt: "cdp/AddDebt",
-  RemoveDebt: "cdp/RemoveDebt",
+  SupplyAsset: "cdp/SupplyAsset",
+  WithdrawAsset: "cdp/WithdrawAsset",
+  LockCollateral: "cdp/LockCollateral",
+  UnlockCollateral: "cdp/UnlockCollateral",
+  BorrowAsset: "cdp/BorrowAsset",
+  RepayAsset: "cdp/RepayAsset",
+  SupplyAssetAndLockCollateral: "cdp/SupplyAssetAndLockCollateral",
+  UnlockCollateralAndWithdrawAsset: "cdp/UnlockCollateralAndWithdrawAsset",
+  LiquidateCollateral: "cdp/LiquidateCollateral",
+  RepayAssetWithCdpTokens: "cdp/RepayAssetWithCdpTokens",
+  RepayAssetWithCollateral: "cdp/RepayAssetWithCollateral",
+  MintStablecoin: "cdp/MintStablecoin",
+  ReturnStablecoin: "cdp/ReturnStablecoin",
+  LiquidateCollateralWithCdpTokens: "cdp/LiquidateCollateralWithCdpTokens",
+  LiquidateCollateralWithCollateral: "cdp/LiquidateCollateralWithCollateral",
+  LiquidateCollateralWithStablecoin: "cdp/LiquidateCollateralWithStablecoin",
+  ClaimRewards: "cdp/ClaimRewards",
 };
 
-const MsgAddCollateral: AminoInit = {
-  aminoType: TxTypes.AddCollateral,
-  valueMap: {
-    vaultTypeId: ConvertEncType.Long,
-  },
+const MsgSupplyAsset: AminoInit = {
+  aminoType: TxTypes.SupplyAsset,
+  valueMap: {},
 };
 
-const MsgRemoveCollateral: AminoInit = {
-  aminoType: TxTypes.RemoveCollateral,
-  valueMap: {
-    vaultTypeId: ConvertEncType.Long,
-  },
+const MsgWithdrawAsset: AminoInit = {
+  aminoType: TxTypes.WithdrawAsset,
+  valueMap: {},
 };
 
-const MsgAddDebt: AminoInit = {
-  aminoType: TxTypes.AddDebt,
-  valueMap: {
-    vaultTypeId: ConvertEncType.Long,
-  },
+const MsgLockCollateral: AminoInit = {
+  aminoType: TxTypes.LockCollateral,
+  valueMap: {},
 };
 
-const MsgRemoveDebt: AminoInit = {
-  aminoType: TxTypes.RemoveDebt,
-  valueMap: {
-    vaultTypeId: ConvertEncType.Long,
-  },
+const MsgUnlockCollateral: AminoInit = {
+  aminoType: TxTypes.UnlockCollateral,
+  valueMap: {},
 };
+
+const MsgBorrowAsset: AminoInit = {
+  aminoType: TxTypes.BorrowAsset,
+  valueMap: {},
+};
+
+const MsgRepayAsset: AminoInit = {
+  aminoType: TxTypes.RepayAsset,
+  valueMap: {},
+};
+
+const MsgSupplyAssetAndLockCollateral: AminoInit = {
+  aminoType: TxTypes.SupplyAssetAndLockCollateral,
+  valueMap: {},
+};
+
+const MsgUnlockCollateralAndWithdrawAsset: AminoInit = {
+  aminoType: TxTypes.UnlockCollateralAndWithdrawAsset,
+  valueMap: {},
+};
+
+const MsgLiquidateCollateral: AminoInit = {
+  aminoType: TxTypes.LiquidateCollateral,
+  valueMap: {},
+};
+
+const MsgRepayAssetWithCdpTokens: AminoInit = {
+  aminoType: TxTypes.RepayAssetWithCdpTokens,
+  valueMap: {},
+};
+
+const MsgRepayAssetWithCollateral: AminoInit = {
+  aminoType: TxTypes.RepayAssetWithCollateral,
+  valueMap: {},
+};
+
+const MsgMintStablecoin: AminoInit = {
+  aminoType: TxTypes.MintStablecoin,
+  valueMap: {},
+};
+
+const MsgReturnStablecoin: AminoInit = {
+  aminoType: TxTypes.ReturnStablecoin,
+  valueMap: {},
+}
+
+const MsgLiquidateCollateralWithCdpTokens: AminoInit = {
+  aminoType: TxTypes.LiquidateCollateralWithCdpTokens,
+  valueMap: {},
+}
+
+const MsgLiquidateCollateralWithCollateral: AminoInit = {
+  aminoType: TxTypes.LiquidateCollateralWithCollateral,
+  valueMap: {},
+}
+
+const MsgLiquidateCollateralWithStablecoin: AminoInit = {
+  aminoType: TxTypes.LiquidateCollateralWithStablecoin,
+  valueMap: {},
+}
+
+const MsgClaimRewards: AminoInit = {
+  aminoType: TxTypes.ClaimRewards,
+  valueMap: {},
+}
 
 const CdpAmino: TypeUtils.SimpleMap<AminoConverter> = {
-  [CarbonTx.Types.MsgAddCollateral]: generateAminoType(MsgAddCollateral),
-  [CarbonTx.Types.MsgRemoveCollateral]: generateAminoType(MsgRemoveCollateral),
-  [CarbonTx.Types.MsgAddDebt]: generateAminoType(MsgAddDebt),
-  [CarbonTx.Types.MsgRemoveDebt]: generateAminoType(MsgRemoveDebt),
+  [CarbonTx.Types.MsgSupplyAsset]: generateAminoType(MsgSupplyAsset),
+  [CarbonTx.Types.MsgWithdrawAsset]: generateAminoType(MsgWithdrawAsset),
+  [CarbonTx.Types.MsgLockCollateral]: generateAminoType(MsgLockCollateral),
+  [CarbonTx.Types.MsgUnlockCollateral]: generateAminoType(MsgUnlockCollateral),
+  [CarbonTx.Types.MsgBorrowAsset]: generateAminoType(MsgBorrowAsset),
+  [CarbonTx.Types.MsgRepayAsset]: generateAminoType(MsgRepayAsset),
+  [CarbonTx.Types.MsgSupplyAssetAndLockCollateral]: generateAminoType(MsgSupplyAssetAndLockCollateral),
+  [CarbonTx.Types.MsgUnlockCollateralAndWithdrawAsset]: generateAminoType(MsgUnlockCollateralAndWithdrawAsset),
+  [CarbonTx.Types.MsgLiquidateCollateral]: generateAminoType(MsgLiquidateCollateral),
+  [CarbonTx.Types.MsgRepayAssetWithCdpTokens]: generateAminoType(MsgRepayAssetWithCdpTokens),
+  [CarbonTx.Types.MsgRepayAssetWithCollateral]: generateAminoType(MsgRepayAssetWithCollateral),
+  [CarbonTx.Types.MsgMintStablecoin]: generateAminoType(MsgMintStablecoin),
+  [CarbonTx.Types.MsgReturnStablecoin]: generateAminoType(MsgReturnStablecoin),
+  [CarbonTx.Types.MsgLiquidateCollateralWithCdpTokens]: generateAminoType(MsgLiquidateCollateralWithCdpTokens),
+  [CarbonTx.Types.MsgLiquidateCollateralWithCollateral]: generateAminoType(MsgLiquidateCollateralWithCollateral),
+  [CarbonTx.Types.MsgLiquidateCollateralWithStablecoin]: generateAminoType(MsgLiquidateCollateralWithStablecoin),
+  [CarbonTx.Types.MsgClaimRewards]: generateAminoType(MsgClaimRewards),
 };
 
 export default CdpAmino;

@@ -16,9 +16,20 @@ import "./_setup";
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
 
-  const result = await connectedSDK.cdp.removeDebt({
-    vaultTypeId: 1,
-    amount: new BigNumber(100), // human
-  })
-  console.log(result)
+  const ethToken = sdk.token.tokenForDenom("eth");
+  if (!ethToken) return;
+
+  const amount = new BigNumber(0.01).shiftedBy(ethToken.decimals.toNumber());
+
+  await connectedSDK.cdp.supplyAssetAndLockCollateral({
+    denom: "eth",
+    supplyAmount: amount,
+    lockAmount: amount,
+  });
+
+  const result = await connectedSDK.cdp.borrowAsset({
+    denom: "eth",
+    amount: amount,
+  });
+  console.log(result);
 })().catch(console.error).finally(() => process.exit(0));

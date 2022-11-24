@@ -1,7 +1,8 @@
-import { DEFAULT_NETWORK, Network, Network as _Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
+import { DEFAULT_NETWORK, DenomPrefix, Network, Network as _Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
 import { GenericUtils, NetworkUtils } from "@carbon-sdk/util";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import { CarbonQueryClient, ETHClient, HydrogenClient, InsightsQueryClient, NEOClient, TokenClient, ZILClient } from "./clients";
+import * as clients from "./clients";
 import N3Client from "./clients/N3Client";
 import { AdminModule, BankModule, BrokerModule, CDPModule, CoinModule, FeeModule, GovModule, IBCModule, LeverageModule, LiquidityPoolModule, MarketModule, OracleModule, OrderModule, PositionModule, ProfileModule, SubAccountModule, XChainModule } from "./modules";
 import { StakingModule } from "./modules/staking";
@@ -11,6 +12,7 @@ import { CarbonSigner, CarbonWallet, CarbonWalletGenericOpts } from "./wallet";
 
 export { CarbonTx } from "@carbon-sdk/util";
 export { CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletGenericOpts, CarbonWalletInitOpts } from "@carbon-sdk/wallet";
+export { DenomPrefix } from "./constant";
 
 export interface CarbonSDKOpts {
   network: Network;
@@ -40,7 +42,7 @@ const DEFAULT_SDK_INIT_OPTS: CarbonSDKInitOpts = {
  */
 class CarbonSDK {
   public static DEFAULT_NETWORK = DEFAULT_NETWORK;
-  public static TokenClient = TokenClient
+  public static DenomPrefix = DenomPrefix;
 
   public readonly query: CarbonQueryClient;
   insights: InsightsQueryClient;
@@ -393,6 +395,13 @@ export class ConnectedCarbonSDK extends CarbonSDK {
 
 namespace CarbonSDK {
   export import Network = _Network;
+  export import CarbonQueryClient = clients.CarbonQueryClient;
+  export import ETHClient = clients.ETHClient;
+  export import HydrogenClient = clients.HydrogenClient;
+  export import InsightsQueryClient = clients.InsightsQueryClient;
+  export import NEOClient = clients.NEOClient;
+  export import TokenClient = clients.TokenClient;
+  export import ZILClient = clients.ZILClient;
 }
 
 export default CarbonSDK;

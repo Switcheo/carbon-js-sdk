@@ -1,7 +1,7 @@
 import { SignDoc } from '@carbon-sdk/codec/cosmos/tx/v1beta1/tx';
 import { CosmosLedger } from '@carbon-sdk/provider';
 import { sortObject } from '@carbon-sdk/util/generic';
-import { AminoSignResponse, encodeSecp256k1Signature, OfflineAminoSigner, StdSignDoc } from "@cosmjs/amino";
+import { AminoSignResponse, encodeSecp256k1Signature, OfflineAminoSigner, Secp256k1Wallet, StdSignDoc } from "@cosmjs/amino";
 import { AccountData, DirectSecp256k1Wallet, DirectSignResponse, OfflineDirectSigner } from '@cosmjs/proto-signing';
 
 export enum CarbonSignerTypes {
@@ -15,9 +15,10 @@ export type CarbonSigner = DirectCarbonSigner | AminoCarbonSigner
 export type DirectCarbonSigner = OfflineDirectSigner & { type: CarbonSignerTypes }
 export type AminoCarbonSigner = OfflineAminoSigner & { type: CarbonSignerTypes }
 
-export class CarbonPrivateKeySigner implements DirectCarbonSigner {
+export class CarbonPrivateKeySigner implements DirectCarbonSigner, AminoCarbonSigner {
   type = CarbonSignerTypes.PrivateKey
   wallet?: DirectSecp256k1Wallet
+  aminoWallet?: Secp256k1Wallet
 
   constructor(
     readonly privateKey: Buffer,
@@ -26,18 +27,29 @@ export class CarbonPrivateKeySigner implements DirectCarbonSigner {
 
   async initWallet() {
     if (!this.wallet)
-      this.wallet = await DirectSecp256k1Wallet.fromKey(this.privateKey, this.prefix)
+      this.wallet = await DirectSecp256k1Wallet.fromKey(this.privateKey, this.prefix);
 
-    return this.wallet
+    return this.wallet;
+  }
+
+  async initAminoWallet() {
+    if (!this.aminoWallet)
+      this.aminoWallet = await Secp256k1Wallet.fromKey(this.privateKey, this.prefix);
+    return this.aminoWallet;
   }
 
   async getAccounts() {
-    const wallet = await this.initWallet()
-    return wallet.getAccounts()
+    const wallet = await this.initWallet();
+    return wallet.getAccounts();
+  }
+
+  async signAmino(signerAddress: string, signDoc: StdSignDoc): Promise<AminoSignResponse> {
+    const aminoWallet = await this.initAminoWallet()
+    return await aminoWallet.signAmino(signerAddress, signDoc);
   }
 
   async signDirect(signerAddress: string, signDoc: SignDoc): Promise<DirectSignResponse> {
-    const wallet = await this.initWallet()
+    const wallet = await this.initWallet();
     return await wallet.signDirect(signerAddress, signDoc);
   }
 }

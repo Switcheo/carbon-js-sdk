@@ -1,6 +1,4 @@
 import { Models } from "@carbon-sdk/index"
-import { RewardHistoryRecord } from "@carbon-sdk/codec/liquiditypool/reward"
-import { DecCoin } from "@carbon-sdk/codec/cosmos/base/v1beta1/coin"
 import { CarbonTx, NumberUtils } from "@carbon-sdk/util"
 import { BigNumber } from "bignumber.js"
 import dayjs from "dayjs"
@@ -227,16 +225,16 @@ export namespace LiquidityPoolModule {
   }
 
   export interface ClaimMultiPoolRewards {
-    pools: string[],
-    creator?: string,
+    pools: string[];
+    creator?: string;
   }
 
   export interface UnclaimedRewards {
-    [key: string]: BigNumber
+    [key: string]: BigNumber;
   }
 
   export interface EstimateUnclaimedRewardsMsg {
-    poolId: string
-    address: string
+    poolId: string;
+    address: string;
   }
 };
