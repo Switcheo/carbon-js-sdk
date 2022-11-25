@@ -22,6 +22,7 @@ import "./_setup";
     tokenAWeight: new BigNumber(0.5), // human
     tokenBWeight: new BigNumber(0.5), // human
     swapFee: new BigNumber(0.002),
+    ampBps: new BigNumber(100000),
     numQuotes: 5,
   })
   console.log(result)

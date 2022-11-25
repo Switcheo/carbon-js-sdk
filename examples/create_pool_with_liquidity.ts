@@ -24,6 +24,7 @@ import "./_setup";
     amountA: new BigNumber(100), // human
     amountB: new BigNumber(100), // human
     swapFee: new BigNumber(0.002),
+    ampBps: new BigNumber(100000),
     numQuotes: 5,
   })
   console.log(result)

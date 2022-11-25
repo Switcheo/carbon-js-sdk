@@ -17,7 +17,7 @@ export class LiquidityPoolModule extends BaseModule {
       tokenAWeight: params.tokenAWeight.shiftedBy(18).toString(10),
       tokenBWeight: params.tokenBWeight.shiftedBy(18).toString(10),
       swapFee: params.swapFee.shiftedBy(18).toString(10),
-      ampBps: new Long(params.ampBps.shiftedBy(4).toNumber()),
+      ampBps: params.ampBps,
       numQuotes: new Long(params.numQuotes),
     })
 
@@ -39,7 +39,7 @@ export class LiquidityPoolModule extends BaseModule {
       amountA: params.amountA.toString(10),
       amountB: params.amountB.toString(10),
       swapFee: params.swapFee.shiftedBy(18).toString(10),
-      ampBps: new Long(params.ampBps.shiftedBy(4).toNumber()),
+      ampBps: params.ampBps,
       numQuotes: new Long(params.numQuotes),
     })
 
@@ -182,7 +182,7 @@ export namespace LiquidityPoolModule {
     tokenAWeight: BigNumber
     tokenBWeight: BigNumber
     swapFee: BigNumber
-    ampBps: BigNumber
+    ampBps: Long
     numQuotes: number
   }
 
@@ -194,7 +194,7 @@ export namespace LiquidityPoolModule {
     amountA: BigNumber
     amountB: BigNumber
     swapFee: BigNumber
-    ampBps: BigNumber
+    ampBps: Long
     numQuotes: number
   }
 
