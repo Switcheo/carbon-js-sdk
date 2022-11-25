@@ -346,6 +346,7 @@ export interface RewardDebt {
   user_address: string;
   reward_scheme_id: number;
   reward_debt: string; // string representation of number
+  last_updated_at: string; // string representation of timestamp
 }
 
 export interface CDPTokenSupply {

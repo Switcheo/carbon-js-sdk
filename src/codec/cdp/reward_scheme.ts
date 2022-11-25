@@ -42,6 +42,7 @@ export interface RewardDebt {
   userAddress: string;
   rewardSchemeId: Long;
   rewardDebt: string;
+  lastUpdatedAt?: Date;
 }
 
 const baseRewardScheme: object = {
@@ -582,6 +583,12 @@ export const RewardDebt = {
     if (message.rewardDebt !== "") {
       writer.uint32(26).string(message.rewardDebt);
     }
+    if (message.lastUpdatedAt !== undefined) {
+      Timestamp.encode(
+        toTimestamp(message.lastUpdatedAt),
+        writer.uint32(34).fork()
+      ).ldelim();
+    }
     return writer;
   },
 
@@ -600,6 +607,11 @@ export const RewardDebt = {
           break;
         case 3:
           message.rewardDebt = reader.string();
+          break;
+        case 4:
+          message.lastUpdatedAt = fromTimestamp(
+            Timestamp.decode(reader, reader.uint32())
+          );
           break;
         default:
           reader.skipType(tag & 7);
@@ -623,6 +635,10 @@ export const RewardDebt = {
       object.rewardDebt !== undefined && object.rewardDebt !== null
         ? String(object.rewardDebt)
         : "";
+    message.lastUpdatedAt =
+      object.lastUpdatedAt !== undefined && object.lastUpdatedAt !== null
+        ? fromJsonTimestamp(object.lastUpdatedAt)
+        : undefined;
     return message;
   },
 
@@ -633,6 +649,8 @@ export const RewardDebt = {
     message.rewardSchemeId !== undefined &&
       (obj.rewardSchemeId = (message.rewardSchemeId || Long.UZERO).toString());
     message.rewardDebt !== undefined && (obj.rewardDebt = message.rewardDebt);
+    message.lastUpdatedAt !== undefined &&
+      (obj.lastUpdatedAt = message.lastUpdatedAt.toISOString());
     return obj;
   },
 
@@ -644,6 +662,7 @@ export const RewardDebt = {
         ? Long.fromValue(object.rewardSchemeId)
         : Long.UZERO;
     message.rewardDebt = object.rewardDebt ?? "";
+    message.lastUpdatedAt = object.lastUpdatedAt ?? undefined;
     return message;
   },
 };
