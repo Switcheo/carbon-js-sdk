@@ -1,7 +1,7 @@
 import { TypeUtils } from "@carbon-sdk/util";
 import * as CarbonTx from "@carbon-sdk/util/tx";
 import { AminoConverter } from "@cosmjs/stargate";
-import { AminoInit, generateAminoType } from "../utils";
+import { AminoInit, ConvertEncType, generateAminoType } from "../utils";
 
 const TxTypes: TypeUtils.SimpleMap<string> = {
   SupplyAsset: "cdp/SupplyAsset",
@@ -20,6 +20,11 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
   LiquidateCollateralWithCdpTokens: "cdp/LiquidateCollateralWithCdpTokens",
   LiquidateCollateralWithCollateral: "cdp/LiquidateCollateralWithCollateral",
   LiquidateCollateralWithStablecoin: "cdp/LiquidateCollateralWithStablecoin",
+  CreateRewardScheme: "cdp/CreateRewardScheme",
+  UpdateRewardScheme: "cdp/UpdateRewardScheme",
+  SetStablecoinMintCap: "cdp/SetStablecoinMintCap",
+  SetStalePriceGracePeriod: "cdp/SetStalePriceGracePeriod",
+  SetCdpPaused: "cdp/SetCdpPaused",
   ClaimRewards: "cdp/ClaimRewards",
 };
 
@@ -103,8 +108,44 @@ const MsgLiquidateCollateralWithStablecoin: AminoInit = {
   valueMap: {},
 }
 
+const MsgCreateRewardScheme: AminoInit = {
+  aminoType: TxTypes.CreateRewardScheme,
+  valueMap: {
+    createRewardSchemeParams: {
+      startTime: ConvertEncType.Date,
+      endTime: ConvertEncType.Date,
+    },
+  },
+}
+
+const MsgUpdateRewardScheme: AminoInit = {
+  aminoType: TxTypes.UpdateRewardScheme,
+  valueMap: {
+    updateRewardSchemeParams: {
+      rewardSchemeId: ConvertEncType.Long,
+      startTime: ConvertEncType.Date,
+      endTime: ConvertEncType.Date,
+    },
+  },
+}
+
 const MsgClaimRewards: AminoInit = {
   aminoType: TxTypes.ClaimRewards,
+  valueMap: {},
+}
+
+const MsgSetStablecoinMintCap: AminoInit = {
+  aminoType: TxTypes.SetStablecoinMintCap,
+  valueMap: {},
+}
+
+const MsgSetStalePriceGracePeriod: AminoInit = {
+  aminoType: TxTypes.SetStalePriceGracePeriod,
+  valueMap: {},
+}
+
+const MsgSetCdpPaused: AminoInit = {
+  aminoType: TxTypes.SetCdpPaused,
   valueMap: {},
 }
 
@@ -125,7 +166,12 @@ const CdpAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgLiquidateCollateralWithCdpTokens]: generateAminoType(MsgLiquidateCollateralWithCdpTokens),
   [CarbonTx.Types.MsgLiquidateCollateralWithCollateral]: generateAminoType(MsgLiquidateCollateralWithCollateral),
   [CarbonTx.Types.MsgLiquidateCollateralWithStablecoin]: generateAminoType(MsgLiquidateCollateralWithStablecoin),
+  [CarbonTx.Types.MsgCreateRewardScheme]: generateAminoType(MsgCreateRewardScheme),
+  [CarbonTx.Types.MsgUpdateRewardScheme]: generateAminoType(MsgUpdateRewardScheme),
   [CarbonTx.Types.MsgClaimRewards]: generateAminoType(MsgClaimRewards),
+  [CarbonTx.Types.MsgSetStablecoinMintCap]: generateAminoType(MsgSetStablecoinMintCap),
+  [CarbonTx.Types.MsgSetStalePriceGracePeriod]: generateAminoType(MsgSetStalePriceGracePeriod),
+  [CarbonTx.Types.MsgSetCdpPaused]: generateAminoType(MsgSetCdpPaused),
 };
 
 export default CdpAmino;
