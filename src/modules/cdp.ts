@@ -620,15 +620,17 @@ export class CDPModule extends BaseModule {
 
   public static calculateInterestAPY = (debtInfo: DebtInfo, rateStrategy: RateStrategyParams) => {
     const utilizationRate = bnOrZero(debtInfo.utilizationRate).shiftedBy(-18)
-    const optimalUsage = bnOrZero(rateStrategy.optimalUsage).div(BN_10000)
-    const variableRate1 = bnOrZero(rateStrategy.variableRateSlope1).div(BN_10000)
-    const variableRate2 = bnOrZero(rateStrategy.variableRateSlope2).div(BN_10000)
-    const baseVariableBorrowRate = bnOrZero(rateStrategy.baseVariableBorrowRate).div(BN_10000)
+    const optimalUsage = bnOrZero(rateStrategy.optimalUsage).shiftedBy(-4)
+    const variableRate1 = bnOrZero(rateStrategy.variableRateSlope1).shiftedBy(-4)
+    const variableRate2 = bnOrZero(rateStrategy.variableRateSlope2).shiftedBy(-4)
+    const baseVariableBorrowRate = bnOrZero(rateStrategy.baseVariableBorrowRate).shiftedBy(-4)
     if (utilizationRate.lte(optimalUsage)) {
-      return utilizationRate.times(variableRate1).div(optimalUsage).plus(baseVariableBorrowRate)
+      const vRate = utilizationRate.times(variableRate1).div(optimalUsage).dp(4, BigNumber.ROUND_CEIL)
+      return vRate.plus(baseVariableBorrowRate)
     } else {
       const ratio = utilizationRate.minus(optimalUsage).div(BN_ONE.minus(optimalUsage))
-      return ratio.times(variableRate2).plus(variableRate1).plus(baseVariableBorrowRate)
+      const vRate = ratio.times(variableRate2).plus(variableRate1).dp(4, BigNumber.ROUND_CEIL)
+      return vRate.plus(baseVariableBorrowRate)
     }
   }
 
@@ -669,12 +671,15 @@ export class CDPModule extends BaseModule {
   }
 
   public static calculateInterestForTimePeriod(apy: BigNumber, start: Date, end: Date) {
-    const diff = end.getTime() - start.getTime();
-    if (diff <= 0) {
+    const diffMs = end.getTime() - start.getTime();
+    if (diffMs <= 0) {
       return BN_ZERO
     }
-    const millisecondsAYear = bnOrZero(31536000000)
-    return bnOrZero(diff).div(millisecondsAYear).times(apy)
+
+    const diffSeconds = new BigNumber(diffMs).shiftedBy(-3).dp(0, BigNumber.ROUND_CEIL)
+    const secondsAYear = bnOrZero(31536000)
+    const numPeriods = secondsAYear.div(diffSeconds).dp(18)
+    return apy.div(numPeriods).dp(18) // carbon backend sdk.dec max 18 dp
   }
 
   public async calculateLendAPY(
