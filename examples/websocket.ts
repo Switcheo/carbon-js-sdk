@@ -27,6 +27,17 @@ import "./_setup";
   console.log(await wsConnector.request(WSConnectorTypes.WSRequest.Positions, {
     address: connectedSDK.wallet.bech32Address,
   }));
+
+  const subscribeParams: WSConnectorTypes.WsSubscribeWalletBalanceParams = {
+    channel: WSConnectorTypes.WSChannel.balances,
+    address: connectedSDK.wallet.bech32Address,
+  }
+  await wsConnector.subscribe(subscribeParams, (result) => {
+    console.log("balance update", result)
+  })
+
+  console.log("waiting 5s for balance update")
+  await new Promise((resolve) => setTimeout(resolve, 5000))
   
   await wsConnector.disconnect();
 })().catch(console.error).finally(() => process.exit(0));
