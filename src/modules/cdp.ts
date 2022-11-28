@@ -558,12 +558,12 @@ export class CDPModule extends BaseModule {
     if (!debtInfo)
       throw new Error("unable to retrieve debt info");
     const principal = bnOrZero(debtInfo.totalPrincipal)
-    const interest = principal.multipliedBy(bnOrZero(debtInfo.cumulativeInterestMultiplier).shiftedBy(-18).minus(1))
+    const accumInterest = bnOrZero(debtInfo.totalAccumulatedInterest)
     const cdpParamsRsp = await this.sdkProvider.query.cdp.Params(QueryParamsRequest.fromPartial({}))
     const interestFee = bnOrZero(cdpParamsRsp.params?.interestFee)
-    const interestWithoutFee = interest.times(BN_10000.minus(interestFee)).dividedToIntegerBy(BN_10000);
+    const interest = accumInterest.times(BN_10000.minus(interestFee)).dividedToIntegerBy(BN_10000);
 
-    return principal.plus(interestWithoutFee);
+    return principal.plus(interest);
   }
 
   public async getTotalAccountTokenDebt(account: string, denom: string, debt?: Debt, debtInfo?: DebtInfo) {
