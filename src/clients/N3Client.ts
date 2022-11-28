@@ -117,11 +117,12 @@ export class N3Client {
     for (const token of tokens) {
       if (!token.tokenAddress.match(/^[0-9a-f]+$/i)) continue;
       if (whitelistDenoms && !whitelistDenoms.includes(token.denom)) continue
-      if (!balances[token.tokenAddress]) continue;
+      const tokenScriptHash = u.reverseHex(token.tokenAddress);
+      if (!balances[tokenScriptHash]) continue;
 
       tokensWithBalance.push({
         ...token,
-        externalBalance: balances[token.tokenAddress],
+        externalBalance: balances[tokenScriptHash],
       });
     }
 
