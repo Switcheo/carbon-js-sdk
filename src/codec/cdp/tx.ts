@@ -8,7 +8,6 @@ import {
   UpdateRewardSchemeParams,
 } from "./reward_scheme";
 import { Timestamp } from "../google/protobuf/timestamp";
-
 export const protobufPackage = "Switcheo.carbon.cdp";
 
 export interface MsgAddRateStrategy {
@@ -262,15 +261,7 @@ export interface MsgCreateRewardScheme {
   createRewardSchemeParams?: CreateRewardSchemeParams;
 }
 
-export interface MsgCreateRewardSchemeResponse {
-  id: Long;
-  rewardDenom: string;
-  assetDenom: string;
-  rewardType: string;
-  rewardAmountPerSecond: string;
-  startTime?: Date;
-  endTime?: Date;
-}
+export interface MsgCreateRewardSchemeResponse {}
 
 export interface MsgUpdateRewardScheme {
   updator: string;
@@ -4521,46 +4512,13 @@ export const MsgCreateRewardScheme = {
   },
 };
 
-const baseMsgCreateRewardSchemeResponse: object = {
-  id: Long.UZERO,
-  rewardDenom: "",
-  assetDenom: "",
-  rewardType: "",
-  rewardAmountPerSecond: "",
-};
+const baseMsgCreateRewardSchemeResponse: object = {};
 
 export const MsgCreateRewardSchemeResponse = {
   encode(
-    message: MsgCreateRewardSchemeResponse,
+    _: MsgCreateRewardSchemeResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (!message.id.isZero()) {
-      writer.uint32(8).uint64(message.id);
-    }
-    if (message.rewardDenom !== "") {
-      writer.uint32(18).string(message.rewardDenom);
-    }
-    if (message.assetDenom !== "") {
-      writer.uint32(26).string(message.assetDenom);
-    }
-    if (message.rewardType !== "") {
-      writer.uint32(34).string(message.rewardType);
-    }
-    if (message.rewardAmountPerSecond !== "") {
-      writer.uint32(42).string(message.rewardAmountPerSecond);
-    }
-    if (message.startTime !== undefined) {
-      Timestamp.encode(
-        toTimestamp(message.startTime),
-        writer.uint32(50).fork()
-      ).ldelim();
-    }
-    if (message.endTime !== undefined) {
-      Timestamp.encode(
-        toTimestamp(message.endTime),
-        writer.uint32(58).fork()
-      ).ldelim();
-    }
     return writer;
   },
 
@@ -4576,31 +4534,6 @@ export const MsgCreateRewardSchemeResponse = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        case 1:
-          message.id = reader.uint64() as Long;
-          break;
-        case 2:
-          message.rewardDenom = reader.string();
-          break;
-        case 3:
-          message.assetDenom = reader.string();
-          break;
-        case 4:
-          message.rewardType = reader.string();
-          break;
-        case 5:
-          message.rewardAmountPerSecond = reader.string();
-          break;
-        case 6:
-          message.startTime = fromTimestamp(
-            Timestamp.decode(reader, reader.uint32())
-          );
-          break;
-        case 7:
-          message.endTime = fromTimestamp(
-            Timestamp.decode(reader, reader.uint32())
-          );
-          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -4609,75 +4542,24 @@ export const MsgCreateRewardSchemeResponse = {
     return message;
   },
 
-  fromJSON(object: any): MsgCreateRewardSchemeResponse {
+  fromJSON(_: any): MsgCreateRewardSchemeResponse {
     const message = {
       ...baseMsgCreateRewardSchemeResponse,
     } as MsgCreateRewardSchemeResponse;
-    message.id =
-      object.id !== undefined && object.id !== null
-        ? Long.fromString(object.id)
-        : Long.UZERO;
-    message.rewardDenom =
-      object.rewardDenom !== undefined && object.rewardDenom !== null
-        ? String(object.rewardDenom)
-        : "";
-    message.assetDenom =
-      object.assetDenom !== undefined && object.assetDenom !== null
-        ? String(object.assetDenom)
-        : "";
-    message.rewardType =
-      object.rewardType !== undefined && object.rewardType !== null
-        ? String(object.rewardType)
-        : "";
-    message.rewardAmountPerSecond =
-      object.rewardAmountPerSecond !== undefined &&
-      object.rewardAmountPerSecond !== null
-        ? String(object.rewardAmountPerSecond)
-        : "";
-    message.startTime =
-      object.startTime !== undefined && object.startTime !== null
-        ? fromJsonTimestamp(object.startTime)
-        : undefined;
-    message.endTime =
-      object.endTime !== undefined && object.endTime !== null
-        ? fromJsonTimestamp(object.endTime)
-        : undefined;
     return message;
   },
 
-  toJSON(message: MsgCreateRewardSchemeResponse): unknown {
+  toJSON(_: MsgCreateRewardSchemeResponse): unknown {
     const obj: any = {};
-    message.id !== undefined &&
-      (obj.id = (message.id || Long.UZERO).toString());
-    message.rewardDenom !== undefined &&
-      (obj.rewardDenom = message.rewardDenom);
-    message.assetDenom !== undefined && (obj.assetDenom = message.assetDenom);
-    message.rewardType !== undefined && (obj.rewardType = message.rewardType);
-    message.rewardAmountPerSecond !== undefined &&
-      (obj.rewardAmountPerSecond = message.rewardAmountPerSecond);
-    message.startTime !== undefined &&
-      (obj.startTime = message.startTime.toISOString());
-    message.endTime !== undefined &&
-      (obj.endTime = message.endTime.toISOString());
     return obj;
   },
 
   fromPartial(
-    object: DeepPartial<MsgCreateRewardSchemeResponse>
+    _: DeepPartial<MsgCreateRewardSchemeResponse>
   ): MsgCreateRewardSchemeResponse {
     const message = {
       ...baseMsgCreateRewardSchemeResponse,
     } as MsgCreateRewardSchemeResponse;
-    message.id =
-      object.id !== undefined && object.id !== null
-        ? Long.fromValue(object.id)
-        : Long.UZERO;
-    message.rewardDenom = object.rewardDenom ?? "";
-    message.assetDenom = object.assetDenom ?? "";
-    message.rewardType = object.rewardType ?? "";
-    message.rewardAmountPerSecond = object.rewardAmountPerSecond ?? "";
-    message.startTime = object.startTime ?? undefined;
-    message.endTime = object.endTime ?? undefined;
     return message;
   },
 };
@@ -5779,32 +5661,6 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
-
-function toTimestamp(date: Date): Timestamp {
-  const seconds = numberToLong(date.getTime() / 1_000);
-  const nanos = (date.getTime() % 1_000) * 1_000_000;
-  return { seconds, nanos };
-}
-
-function fromTimestamp(t: Timestamp): Date {
-  let millis = t.seconds.toNumber() * 1_000;
-  millis += t.nanos / 1_000_000;
-  return new Date(millis);
-}
-
-function fromJsonTimestamp(o: any): Date {
-  if (o instanceof Date) {
-    return o;
-  } else if (typeof o === "string") {
-    return new Date(o);
-  } else {
-    return fromTimestamp(Timestamp.fromJSON(o));
-  }
-}
-
-function numberToLong(number: number) {
-  return Long.fromNumber(number);
-}
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
