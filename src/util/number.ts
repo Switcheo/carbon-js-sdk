@@ -40,5 +40,5 @@ export const toUnitless = (value?: null | BigNumber | string | number, decimals?
 }
 
 export const generateNonce = (): number => {
-  return Math.floor(Math.random() * 100000)
+  return Math.floor(Math.random() * 1000000)
 }
