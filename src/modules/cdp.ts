@@ -557,11 +557,18 @@ export class CDPModule extends BaseModule {
     }
     if (!debtInfo)
       throw new Error("unable to retrieve debt info");
+    const cimRsp = await this.recalculateCIM(denom, debtInfo)
+    const newInterestRate = cimRsp.interest
+
     const principal = bnOrZero(debtInfo.totalPrincipal)
     const accumInterest = bnOrZero(debtInfo.totalAccumulatedInterest)
+
+    const newInterest = principal.times(newInterestRate).plus(accumInterest.times(BN_ONE.plus(newInterestRate)))
+
     const cdpParamsRsp = await this.sdkProvider.query.cdp.Params(QueryParamsRequest.fromPartial({}))
     const interestFee = bnOrZero(cdpParamsRsp.params?.interestFee)
-    const interest = accumInterest.times(BN_10000.minus(interestFee)).dividedToIntegerBy(BN_10000);
+    
+    const interest = newInterest.times(BN_10000.minus(interestFee)).dividedToIntegerBy(BN_10000);
 
     return principal.plus(interest);
   }
@@ -584,7 +591,8 @@ export class CDPModule extends BaseModule {
     if (principalAmount.isZero() || initialCIM.isZero())
       return BN_ZERO;
 
-    const cim = await this.recalculateCIM(denom, debtInfo)
+    const cimRsp = await this.recalculateCIM(denom, debtInfo)
+    const cim = cimRsp.cim
     if (!cim)
       throw new Error("unable to retrieve account debt");
 
@@ -715,21 +723,21 @@ export class CDPModule extends BaseModule {
     return borrowInterest.times(utilizationRate).times(BN_ONE.minus(interestFeeRate))
   }
 
-  public async recalculateCIM(denom: string, debtInfo?: DebtInfo) {
+  public async recalculateCIM(denom: string, debtInfo?: DebtInfo): Promise<{ cim: BigNumber, interest: BigNumber }> {
     const sdk = this.sdkProvider
     if (!debtInfo) {
       const debtInfoResponse = await sdk.query.cdp.TokenDebt(QueryTokenDebtRequest.fromPartial({ denom }))
       debtInfo = debtInfoResponse.debtInfo
       if (!debtInfo) {
-        return BN_ZERO;
+        return { cim: BN_ZERO, interest: BN_ZERO };
       }
     }
     const cim = bnOrZero(debtInfo.cumulativeInterestMultiplier)
     const apy = await this.calculateAPY(denom, debtInfo)
-    const interest = CDPModule.calculateInterestForTimePeriod(apy, debtInfo.lastUpdatedTime ?? new Date(0), new Date())
-    const newCIM = cim.times(interest.plus(1))
+    const newInterest = CDPModule.calculateInterestForTimePeriod(apy, debtInfo.lastUpdatedTime ?? new Date(0), new Date())
+    const newCIM = cim.times(newInterest.plus(1))
 
-    return newCIM;
+    return { cim: newCIM, interest: newInterest };
   }
 
   public async recalculateStablecoinCIM(debtInfo?: StablecoinDebtInfo) {
@@ -842,12 +850,12 @@ export class CDPModule extends BaseModule {
     const minCloseFactor = bnOrZero(params.params.minimumCloseFactor)
     const completeLiqThreshold = bnOrZero(params.params.completeLiquidationThreshold)
     const closeFactor = this.computeCloseFactor(
-        debtorTotalDebtVal,
-        debtorTotalCollateralVal,
-        currentLiqThreshold,
-        smallLiqSize,
-        minCloseFactor,
-        completeLiqThreshold
+      debtorTotalDebtVal,
+      debtorTotalCollateralVal,
+      currentLiqThreshold,
+      smallLiqSize,
+      minCloseFactor,
+      completeLiqThreshold
     )
 
     // get max repayable amount given the debtor's debt and how much liquidator wants to repay
@@ -862,11 +870,11 @@ export class CDPModule extends BaseModule {
     // AND, recalculate debt repay amount if needed
     const cdpTokenDecimals = bnOrZero(await sdk.getTokenClient().getDecimals(cdpActualDenom))
     let collateralAmtToLiquidate = this.calculateCollateralRequiredForDebt(
-        BN_ONE, // assumes USC is $1
-        cdpTokenDiscountedPrice,
-        debtRepaymentAmount,
-        cdpTokenDecimals,
-        debtDecimals,
+      BN_ONE, // assumes USC is $1
+      cdpTokenDiscountedPrice,
+      debtRepaymentAmount,
+      cdpTokenDecimals,
+      debtDecimals,
     )
     const debtorAccountCollateral = await sdk.query.cdp.AccountCollateral({
       address: debtor,
@@ -879,21 +887,21 @@ export class CDPModule extends BaseModule {
     if (collateralAmtToLiquidate.isGreaterThan(debtorCollateralAmt)) {
       collateralAmtToLiquidate = debtorCollateralAmt
       debtRepaymentAmount = this.calculateDebtCoveredByCollateral(
-          BN_ONE,
-          cdpTokenDiscountedPrice,
-          collateralAmtToLiquidate,
-          cdpTokenDecimals,
-          debtDecimals,
+        BN_ONE,
+        cdpTokenDiscountedPrice,
+        collateralAmtToLiquidate,
+        cdpTokenDecimals,
+        debtDecimals,
       )
     }
 
     // get collateral amt without discount
     const collateralAmountWithoutDiscount = this.calculateCollateralRequiredForDebt(
-        BN_ONE,
-        cdpTokenPrice,
-        debtRepaymentAmount,
-        cdpTokenDecimals,
-        debtDecimals,
+      BN_ONE,
+      cdpTokenPrice,
+      debtRepaymentAmount,
+      cdpTokenDecimals,
+      debtDecimals,
     )
 
     // get liquidation profit
@@ -912,16 +920,16 @@ export class CDPModule extends BaseModule {
   }
 
   computeCloseFactor(
-      borrowedValue: BigNumber,
-      collateralValue: BigNumber,
-      liquidationThreshold: BigNumber,
-      smallLiquidationSize: BigNumber,
-      minimumCloseFactor: BigNumber,
-      completeLiquidationThreshold: BigNumber
+    borrowedValue: BigNumber,
+    collateralValue: BigNumber,
+    liquidationThreshold: BigNumber,
+    smallLiquidationSize: BigNumber,
+    minimumCloseFactor: BigNumber,
+    completeLiquidationThreshold: BigNumber
   ) {
     if (
-        borrowedValue.isLessThan(liquidationThreshold) ||
-        borrowedValue.isLessThan(smallLiquidationSize)
+      borrowedValue.isLessThan(liquidationThreshold) ||
+      borrowedValue.isLessThan(smallLiquidationSize)
     ) {
       return BN_ZERO
     }
@@ -949,11 +957,11 @@ export class CDPModule extends BaseModule {
   }
 
   calculateCollateralRequiredForDebt(
-      debtPrice: BigNumber,
-      collateralPrice: BigNumber,
-      debtAmount: BigNumber,
-      collateralTokenDecimals: BigNumber,
-      debtTokenDecimals: BigNumber,
+    debtPrice: BigNumber,
+    collateralPrice: BigNumber,
+    debtAmount: BigNumber,
+    collateralTokenDecimals: BigNumber,
+    debtTokenDecimals: BigNumber,
   ) {
     const decimalPower = collateralTokenDecimals.minus(debtTokenDecimals)
     const decimalMultiplier = this.getDecimalMultiplier(decimalPower)
@@ -962,11 +970,11 @@ export class CDPModule extends BaseModule {
   }
 
   calculateDebtCoveredByCollateral(
-      debtPrice: BigNumber,
-      collateralPrice: BigNumber,
-      collateralAmount: BigNumber,
-      collateralTokenDecimals: BigNumber,
-      debtTokenDecimals: BigNumber,
+    debtPrice: BigNumber,
+    collateralPrice: BigNumber,
+    collateralAmount: BigNumber,
+    collateralTokenDecimals: BigNumber,
+    debtTokenDecimals: BigNumber,
   ) {
     const decimalPower = debtTokenDecimals.minus(collateralTokenDecimals)
     const decimalMultiplier = this.getDecimalMultiplier(decimalPower)
