@@ -7,7 +7,7 @@ import { SWTHAddress } from "@carbon-sdk/util/address";
 import { fetch } from "@carbon-sdk/util/fetch";
 import { QueueManager } from "@carbon-sdk/util/generic";
 import { bnOrZero, BN_ZERO } from "@carbon-sdk/util/number";
-import { BroadcastTxMode, CarbonSignerData } from "@carbon-sdk/util/tx";
+import { BroadcastTxMode, CarbonSignerData, CarbonTxError } from "@carbon-sdk/util/tx";
 import { SimpleMap } from "@carbon-sdk/util/type";
 import { encodeSecp256k1Signature, StdSignature } from "@cosmjs/amino";
 import { EncodeObject, OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
@@ -317,7 +317,7 @@ export class CarbonWallet {
     const response = await carbonClient.broadcastTx(tx, timeoutMs, pollIntervalMs);
     if (isDeliverTxFailure(response)) {
       // tx failed
-      throw new Error(`[${response.code}] ${response.rawLog}`);
+      throw new CarbonTxError(`[${response.code}] ${response.rawLog}`, response);
     }
     return response;
   }
