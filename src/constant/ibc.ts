@@ -87,12 +87,13 @@ export enum ChainIds {
 	Certik = "shentu-2.2",
 	Carbon = "carbon-1",
 	Axelar = "axelar-dojo-1",
+	Stride = "stride-1",
 }
 
 // whitelisted networks for addition of swth as a currency
 export const swthIbcWhitelist: string[] = [ChainIds.Osmosis];
 // whitelisted networks for addition of transfer options
-export const ibcWhitelist: string[] = [ChainIds.Osmosis, ChainIds.Terra, ChainIds.CosmosHub, ChainIds.Juno, ChainIds.Evmos, ChainIds.Axelar];
+export const ibcWhitelist: string[] = [ChainIds.Osmosis, ChainIds.Terra, ChainIds.CosmosHub, ChainIds.Juno, ChainIds.Evmos, ChainIds.Axelar, ChainIds.Stride];
 
 export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
   [ChainIds.Osmosis]: {
@@ -1568,6 +1569,66 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
 		features: ["stargate", "ibc-transfer", "ibc-go", "no-legacy-stdTx"],
 		explorerUrlToTx: "https://axelarscan.io/tx/{txHash}",
 	},
+	[ChainIds.Stride]: {
+		rpc: "https://rpc-stride.keplr.app",
+		rest: "https://lcd-stride.keplr.app",
+		chainId: "stride-1",
+		chainName: "Stride",
+		stakeCurrency: {
+		  coinDenom: "STRD",
+		  coinMinimalDenom: "ustrd",
+		  coinDecimals: 6,
+		  coinGeckoId: "stride",
+		},
+		bip44: {
+		  coinType: 118,
+		},
+		bech32Config: IBCAddress.defaultBech32Config("stride"),
+		currencies: [
+			{
+			  coinDenom: "STRD",
+			  coinMinimalDenom: "ustrd",
+			  coinDecimals: 6,
+			  coinGeckoId: "stride",
+			},
+			{
+			  coinDenom: "stATOM",
+			  coinMinimalDenom: "stuatom",
+			  coinDecimals: 6,
+			},
+			{
+			  coinDenom: "stOSMO",
+			  coinMinimalDenom: "stuosmo",
+			  coinDecimals: 6,
+			},
+			{
+			  coinDenom: "stJUNO",
+			  coinMinimalDenom: "stujuno",
+			  coinDecimals: 6,
+			},
+			{
+			  coinDenom: "stSTARS",
+			  coinMinimalDenom: "stustars",
+			  coinDecimals: 6,
+			},
+		  ],
+		  feeCurrencies: [
+			{
+			  coinDenom: "STRD",
+			  coinMinimalDenom: "ustrd",
+			  coinDecimals: 6,
+			  coinGeckoId: "stride",
+			},
+		  ],
+		  gasPriceStep: {
+			low: 0,
+			average: 0,
+			high: 0.04,
+		  },
+		  features: ["stargate", "ibc-transfer", "no-legacy-stdTx", "ibc-go"],
+		explorerUrlToTx: "https://www.mintscan.io/stride/txs/{txHash}",
+		tmRpc: "https://stride.rpc.kjnodes.com/",
+	  },
 };
 
 export type AssetListObj = SimpleMap<SimpleMap<AppCurrency>>
@@ -1601,6 +1662,10 @@ export const swthChannels: SimpleMap<ChannelConfig> = {
 	[ChainIds.Axelar]: {
 		sourceChannel: "channel-7",
 		dstChannel: "channel-37",
+	},
+	[ChainIds.Stride]: {
+		sourceChannel: "channel-8",
+		dstChannel: "channel-47",
 	},
 };
 
