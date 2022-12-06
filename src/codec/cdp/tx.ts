@@ -7,7 +7,7 @@ import {
   CreateRewardSchemeParams,
   UpdateRewardSchemeParams,
 } from "./reward_scheme";
-import { Timestamp } from "../google/protobuf/timestamp";
+
 export const protobufPackage = "Switcheo.carbon.cdp";
 
 export interface MsgAddRateStrategy {

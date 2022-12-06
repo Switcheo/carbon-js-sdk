@@ -197,6 +197,8 @@ export interface QueryRewardDebtsResponse {
   rewardDebts: RewardDebt[];
 }
 
+export interface QueryRewardDebtsAllRequest {}
+
 const baseQueryParamsRequest: object = {};
 
 export const QueryParamsRequest = {
@@ -3150,6 +3152,58 @@ export const QueryRewardDebtsResponse = {
   },
 };
 
+const baseQueryRewardDebtsAllRequest: object = {};
+
+export const QueryRewardDebtsAllRequest = {
+  encode(
+    _: QueryRewardDebtsAllRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryRewardDebtsAllRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryRewardDebtsAllRequest,
+    } as QueryRewardDebtsAllRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryRewardDebtsAllRequest {
+    const message = {
+      ...baseQueryRewardDebtsAllRequest,
+    } as QueryRewardDebtsAllRequest;
+    return message;
+  },
+
+  toJSON(_: QueryRewardDebtsAllRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<QueryRewardDebtsAllRequest>
+  ): QueryRewardDebtsAllRequest {
+    const message = {
+      ...baseQueryRewardDebtsAllRequest,
+    } as QueryRewardDebtsAllRequest;
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Parameters queries the parameters of the module. */
@@ -3205,8 +3259,12 @@ export interface Query {
     request: QueryRewardSchemesAllRequest
   ): Promise<QueryRewardSchemesAllResponse>;
   /** Queries a list of RewardDebt items for an address */
-  RewardDebtsAll(
+  RewardDebts(
     request: QueryRewardDebtsRequest
+  ): Promise<QueryRewardDebtsResponse>;
+  /** Queries a list of all RewardDebts */
+  RewardDebtsAll(
+    request: QueryRewardDebtsAllRequest
   ): Promise<QueryRewardDebtsResponse>;
   /** Queries a list of CDP Positions */
   PositionsAll(
@@ -3233,6 +3291,7 @@ export class QueryClientImpl implements Query {
     this.TokenDebtAll = this.TokenDebtAll.bind(this);
     this.StablecoinDebt = this.StablecoinDebt.bind(this);
     this.RewardSchemesAll = this.RewardSchemesAll.bind(this);
+    this.RewardDebts = this.RewardDebts.bind(this);
     this.RewardDebtsAll = this.RewardDebtsAll.bind(this);
     this.PositionsAll = this.PositionsAll.bind(this);
   }
@@ -3438,10 +3497,24 @@ export class QueryClientImpl implements Query {
     );
   }
 
-  RewardDebtsAll(
+  RewardDebts(
     request: QueryRewardDebtsRequest
   ): Promise<QueryRewardDebtsResponse> {
     const data = QueryRewardDebtsRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Query",
+      "RewardDebts",
+      data
+    );
+    return promise.then((data) =>
+      QueryRewardDebtsResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  RewardDebtsAll(
+    request: QueryRewardDebtsAllRequest
+  ): Promise<QueryRewardDebtsResponse> {
+    const data = QueryRewardDebtsAllRequest.encode(request).finish();
     const promise = this.rpc.request(
       "Switcheo.carbon.cdp.Query",
       "RewardDebtsAll",
