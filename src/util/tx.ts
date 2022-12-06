@@ -2,7 +2,7 @@ import { registry, TxTypes } from "@carbon-sdk/codec";
 import * as CosmosModels from "@carbon-sdk/codec/cosmos-models";
 import { DEFAULT_FEE } from "@carbon-sdk/constant";
 import { StdFee } from "@cosmjs/amino";
-import { SignerData } from "@cosmjs/stargate";
+import { DeliverTxResponse, SignerData } from "@cosmjs/stargate";
 import { SWTHAddress, SWTHAddressOptions } from "./address";
 export { StdSignDoc } from "@cosmjs/amino";
 
@@ -137,6 +137,15 @@ export interface TxResponse {
   // only if tx fails
   code?: number;
   codespace?: string;
+}
+
+export class CarbonTxError extends Error {
+  constructor(
+    msg: string,
+    readonly response: DeliverTxResponse
+  ) {
+    super(msg);
+  }
 }
 
 export const Types = TxTypes;
