@@ -425,8 +425,10 @@ class TokenClient {
   }
 
   public getCdpUnderlyingToken(cdpDenom: string) {
-    if (!this.cdpTokens[cdpDenom])
-      throw new Error("not a CDP denom");
+    if (!this.cdpTokens[cdpDenom]) {
+      console.error("not a CDP denom");
+      return undefined;
+    }
     const tokenDenom = cdpDenom.replace(regexCdpDenom, "");
     return this.tokenForDenom(tokenDenom);
   }
