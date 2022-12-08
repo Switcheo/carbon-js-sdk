@@ -1,5 +1,5 @@
 import CarbonSDK from "@carbon-sdk/CarbonSDK"
-import { NeoNetworkConfig, NetworkConfig, NetworkConfigProvider } from "@carbon-sdk/constant"
+import { NeoNetworkConfig, NetworkConfig, NetworkConfigProvider, ZeroAddress } from "@carbon-sdk/constant"
 import { Models } from "@carbon-sdk/index"
 import { NeoLedgerAccount } from "@carbon-sdk/provider/account"
 import { O3Types, O3Wallet } from "@carbon-sdk/provider/o3"
@@ -141,7 +141,7 @@ export class NEOClient {
 
     const amount = ethers.BigNumber.from(token.externalBalance)
     const feeAmount = ethers.BigNumber.from(feeAmountInput ?? "100000000")
-    const feeAddress = networkConfig.feeAddress
+    const feeAddress = feeAmount.isZero() ? ZeroAddress : networkConfig.feeAddress;
     const nonce = Math.floor(Math.random() * 1000000)
 
     if (amount.lt(feeAmount)) {

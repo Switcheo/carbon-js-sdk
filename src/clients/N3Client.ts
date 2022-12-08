@@ -1,5 +1,5 @@
 import CarbonSDK from "@carbon-sdk/CarbonSDK"
-import { NetworkConfigProvider } from "@carbon-sdk/constant"
+import { NetworkConfigProvider, ZeroAddress } from "@carbon-sdk/constant"
 import { NeoLedgerAccount } from "@carbon-sdk/provider/account"
 import { O3Types, O3Wallet } from "@carbon-sdk/provider/o3"
 import { N3Address, SWTHAddress } from "@carbon-sdk/util/address"
@@ -232,13 +232,15 @@ export class N3Client {
     const publicKeyOutput = await o3Wallet.getPublicKeyOutput() as O3Types.PublicKeyOutput;
     const accountScriptHash = N3Address.publicKeyToScriptHash(publicKeyOutput.publicKey);
 
+    const feeAddress = feeAmount.isZero() ? "" : u.HexString.fromHex(networkConfig.feeAddress).toBase64();
+
     const args: O3Types.Argument[] = [
       { type: O3Types.ArgTypes.Hash160, value: tokenScriptHash },
       { type: O3Types.ArgTypes.Hash160, value: fromAddressHex },
       { type: O3Types.ArgTypes.ByteArray, value: u.HexString.fromHex(toAddressHex).toBase64() },
       { type: O3Types.ArgTypes.Integer, value: amount.toString(10) },
       { type: O3Types.ArgTypes.Integer, value: feeAmount.toString(10) },
-      { type: O3Types.ArgTypes.ByteArray, value: u.HexString.fromHex(networkConfig.feeAddress).toBase64() },
+      { type: O3Types.ArgTypes.ByteArray, value: feeAddress },
       { type: O3Types.ArgTypes.Integer, value: nonce.toString() },
     ];
 
