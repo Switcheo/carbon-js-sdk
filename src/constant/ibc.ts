@@ -11,38 +11,38 @@ export interface ChainInfoExplorerTmRpc extends ChainInfo {
 
 
 export const IBCAddress = {
-  getAddressBytes(bech32Address: string, prefix?: string): Uint8Array {
-    const decoded = bech32.decode(bech32Address);
-    if (prefix && decoded.prefix !== prefix) {
-      throw new Error("Unmatched prefix");
-    }
+	getAddressBytes(bech32Address: string, prefix?: string): Uint8Array {
+		const decoded = bech32.decode(bech32Address);
+		if (prefix && decoded.prefix !== prefix) {
+			throw new Error("Unmatched prefix");
+		}
 
-    return new Uint8Array(bech32.fromWords(decoded.words));
-  },
+		return new Uint8Array(bech32.fromWords(decoded.words));
+	},
 
-  defaultBech32Config(
-    mainPrefix: string,
-    validatorPrefix: string = "val",
-    consensusPrefix: string = "cons",
-    publicPrefix: string = "pub",
-    operatorPrefix: string = "oper"
-  ): Bech32Config {
-    return {
-      bech32PrefixAccAddr: mainPrefix,
-      bech32PrefixAccPub: mainPrefix + publicPrefix,
-      bech32PrefixValAddr: mainPrefix + validatorPrefix + operatorPrefix,
-      bech32PrefixValPub:
-        mainPrefix + validatorPrefix + operatorPrefix + publicPrefix,
-      bech32PrefixConsAddr: mainPrefix + validatorPrefix + consensusPrefix,
-      bech32PrefixConsPub:
-        mainPrefix + validatorPrefix + consensusPrefix + publicPrefix,
-    };
-  },
+	defaultBech32Config(
+		mainPrefix: string,
+		validatorPrefix: string = "val",
+		consensusPrefix: string = "cons",
+		publicPrefix: string = "pub",
+		operatorPrefix: string = "oper"
+	): Bech32Config {
+		return {
+			bech32PrefixAccAddr: mainPrefix,
+			bech32PrefixAccPub: mainPrefix + publicPrefix,
+			bech32PrefixValAddr: mainPrefix + validatorPrefix + operatorPrefix,
+			bech32PrefixValPub:
+				mainPrefix + validatorPrefix + operatorPrefix + publicPrefix,
+			bech32PrefixConsAddr: mainPrefix + validatorPrefix + consensusPrefix,
+			bech32PrefixConsPub:
+				mainPrefix + validatorPrefix + consensusPrefix + publicPrefix,
+		};
+	},
 
-  deriveAddressFromBytes(bytes: Uint8Array, prefix: string): string {
-    const words = bech32.toWords(bytes);
-    return bech32.encode(prefix, words);
-  },
+	deriveAddressFromBytes(bytes: Uint8Array, prefix: string): string {
+		const words = bech32.toWords(bytes);
+		return bech32.encode(prefix, words);
+	},
 };
 
 
@@ -88,6 +88,7 @@ export enum ChainIds {
 	Carbon = "carbon-1",
 	Axelar = "axelar-dojo-1",
 	Stride = "stride-1",
+	Kujira = "kaiyo-1",
 }
 
 // whitelisted networks for addition of swth as a currency
@@ -96,52 +97,52 @@ export const swthIbcWhitelist: string[] = [ChainIds.Osmosis];
 export const ibcWhitelist: string[] = [ChainIds.Osmosis, ChainIds.Terra, ChainIds.CosmosHub, ChainIds.Juno, ChainIds.Evmos, ChainIds.Axelar, ChainIds.Stride];
 
 export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
-  [ChainIds.Osmosis]: {
-    rpc: "https://rpc-osmosis.keplr.app",
-    rest: "https://lcd-osmosis.keplr.app",
-    chainId: "osmosis-1",
-    chainName: "Osmosis",
-    stakeCurrency: {
-      coinDenom: "OSMO",
-      coinMinimalDenom: "uosmo",
-      coinDecimals: 6,
-      coinGeckoId: "osmosis",
-    },
-    bip44: {
-      coinType: 118,
-    },
-    bech32Config: IBCAddress.defaultBech32Config("osmo"),
-    currencies: [
-      {
-        coinDenom: "OSMO",
-        coinMinimalDenom: "uosmo",
-        coinDecimals: 6,
-        coinGeckoId: "osmosis",
-      },
-      {
-        coinDenom: "ION",
-        coinMinimalDenom: "uion",
-        coinDecimals: 6,
-        coinGeckoId: "ion",
-      },
-    ],
-    feeCurrencies: [
-      {
-        coinDenom: "OSMO",
-        coinMinimalDenom: "uosmo",
-        coinDecimals: 6,
-        coinGeckoId: "osmosis",
-      },
-    ],
-    gasPriceStep: {
-      low: 0,
+	[ChainIds.Osmosis]: {
+		rpc: "https://rpc-osmosis.keplr.app",
+		rest: "https://lcd-osmosis.keplr.app",
+		chainId: "osmosis-1",
+		chainName: "Osmosis",
+		stakeCurrency: {
+			coinDenom: "OSMO",
+			coinMinimalDenom: "uosmo",
+			coinDecimals: 6,
+			coinGeckoId: "osmosis",
+		},
+		bip44: {
+			coinType: 118,
+		},
+		bech32Config: IBCAddress.defaultBech32Config("osmo"),
+		currencies: [
+			{
+				coinDenom: "OSMO",
+				coinMinimalDenom: "uosmo",
+				coinDecimals: 6,
+				coinGeckoId: "osmosis",
+			},
+			{
+				coinDenom: "ION",
+				coinMinimalDenom: "uion",
+				coinDecimals: 6,
+				coinGeckoId: "ion",
+			},
+		],
+		feeCurrencies: [
+			{
+				coinDenom: "OSMO",
+				coinMinimalDenom: "uosmo",
+				coinDecimals: 6,
+				coinGeckoId: "osmosis",
+			},
+		],
+		gasPriceStep: {
+			low: 0,
 			average: 0.025,
 			high: 0.04,
-    },
-    features: ["stargate", "ibc-transfer", "no-legacy-stdTx", "ibc-go"],
-    explorerUrlToTx: "https://www.mintscan.io/osmosis/txs/{txHash}",
+		},
+		features: ["stargate", "ibc-transfer", "no-legacy-stdTx", "ibc-go"],
+		explorerUrlToTx: "https://www.mintscan.io/osmosis/txs/{txHash}",
 		tmRpc: "https://rpc-osmosis.blockapsis.com/",
-  },
+	},
 	[ChainIds.CosmosHub]: {
 		rpc: "https://rpc-cosmoshub.keplr.app",
 		rest: "https://lcd-cosmoshub.keplr.app",
@@ -589,10 +590,10 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
 			},
 		],
 		gasPriceStep: {
-      low: 0.001,
+			low: 0.001,
 			average: 0.0025,
 			high: 0.004,
-    },
+		},
 		features: ["stargate", "ibc-transfer", "no-legacy-stdTx"],
 		explorerUrlToTx: "https://www.mintscan.io/juno/txs/{txHash}",
 	},
@@ -627,11 +628,11 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
 				coinGeckoId: "evmos",
 			},
 		],
-    gasPriceStep: {
-      low: 25000000000,
-      average: 25000000000,
-      high: 40000000000,
-    },
+		gasPriceStep: {
+			low: 25000000000,
+			average: 25000000000,
+			high: 40000000000,
+		},
 		features: ["stargate", "ibc-transfer", "no-legacy-stdTx", "ibc-go"],
 		explorerUrlToTx: "https://www.mintscan.io/evmos/txs/{txHash}",
 	},
@@ -1511,10 +1512,10 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
 			coinGeckoId: "switcheo",
 		}],
 		gasPriceStep: {
-      low: CURRENT_GAS_PRICE,
-      average: CURRENT_GAS_PRICE,
-      high: CURRENT_GAS_PRICE,
-    },
+			low: CURRENT_GAS_PRICE,
+			average: CURRENT_GAS_PRICE,
+			high: CURRENT_GAS_PRICE,
+		},
 		bip44: { coinType: 118 },
 		currencies: [{
 			coinDenom: "SWTH",
@@ -1575,60 +1576,111 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
 		chainId: "stride-1",
 		chainName: "Stride",
 		stakeCurrency: {
-		  coinDenom: "STRD",
-		  coinMinimalDenom: "ustrd",
-		  coinDecimals: 6,
-		  coinGeckoId: "stride",
+			coinDenom: "STRD",
+			coinMinimalDenom: "ustrd",
+			coinDecimals: 6,
+			coinGeckoId: "stride",
 		},
 		bip44: {
-		  coinType: 118,
+			coinType: 118,
 		},
 		bech32Config: IBCAddress.defaultBech32Config("stride"),
 		currencies: [
 			{
-			  coinDenom: "STRD",
-			  coinMinimalDenom: "ustrd",
-			  coinDecimals: 6,
-			  coinGeckoId: "stride",
+				coinDenom: "STRD",
+				coinMinimalDenom: "ustrd",
+				coinDecimals: 6,
+				coinGeckoId: "stride",
 			},
 			{
-			  coinDenom: "stATOM",
-			  coinMinimalDenom: "stuatom",
-			  coinDecimals: 6,
+				coinDenom: "stATOM",
+				coinMinimalDenom: "stuatom",
+				coinDecimals: 6,
 			},
 			{
-			  coinDenom: "stOSMO",
-			  coinMinimalDenom: "stuosmo",
-			  coinDecimals: 6,
+				coinDenom: "stOSMO",
+				coinMinimalDenom: "stuosmo",
+				coinDecimals: 6,
 			},
 			{
-			  coinDenom: "stJUNO",
-			  coinMinimalDenom: "stujuno",
-			  coinDecimals: 6,
+				coinDenom: "stJUNO",
+				coinMinimalDenom: "stujuno",
+				coinDecimals: 6,
 			},
 			{
-			  coinDenom: "stSTARS",
-			  coinMinimalDenom: "stustars",
-			  coinDecimals: 6,
+				coinDenom: "stSTARS",
+				coinMinimalDenom: "stustars",
+				coinDecimals: 6,
 			},
-		  ],
-		  feeCurrencies: [
+		],
+		feeCurrencies: [
 			{
-			  coinDenom: "STRD",
-			  coinMinimalDenom: "ustrd",
-			  coinDecimals: 6,
-			  coinGeckoId: "stride",
+				coinDenom: "STRD",
+				coinMinimalDenom: "ustrd",
+				coinDecimals: 6,
+				coinGeckoId: "stride",
 			},
-		  ],
-		  gasPriceStep: {
+		],
+		gasPriceStep: {
 			low: 0,
 			average: 0,
 			high: 0.04,
-		  },
-		  features: ["stargate", "ibc-transfer", "no-legacy-stdTx", "ibc-go"],
+		},
+		features: ["stargate", "ibc-transfer", "no-legacy-stdTx", "ibc-go"],
 		explorerUrlToTx: "https://www.mintscan.io/stride/txs/{txHash}",
 		tmRpc: "https://stride.rpc.kjnodes.com/",
-	  },
+	},
+	[ChainIds.Kujira]: {
+		rpc: "https://rpc.kaiyo.kujira.setten.io",
+		rest: "https://lcd.kaiyo.kujira.setten.io",
+		chainId: "kaiyo-1",
+		chainName: "Kujira",
+		bip44: {
+			coinType: 118,
+		},
+		bech32Config: IBCAddress.defaultBech32Config("kujira"),
+		stakeCurrency: {
+			coinDenom: "KUJI",
+			coinMinimalDenom: "ukuji",
+			coinDecimals: 6,
+			// coinGeckoId: "kujira",
+			coinGeckoId: "pool:ukuji",
+		},
+		currencies: [
+			{
+				coinDenom: "KUJI",
+				coinMinimalDenom: "ukuji",
+				coinDecimals: 6,
+				// coinGeckoId: "kujira",
+				coinGeckoId: "pool:ukuji",
+				coinImageUrl: "/tokens/kuji.png",
+			},
+			{
+				coinDenom: "USK",
+				coinMinimalDenom:
+					"factory:kujira1qk00h5atutpsv900x202pxx42npjr9thg58dnqpa72f2p7m2luase444a7:uusk",
+				coinDecimals: 6,
+				coinGeckoId: "usk",
+				coinImageUrl: "/tokens/usk.png",
+			},
+		],
+		feeCurrencies: [
+			{
+				coinDenom: "KUJI",
+				coinMinimalDenom: "ukuji",
+				coinDecimals: 6,
+				// coinGeckoId: "kujira",
+				coinGeckoId: "pool:ukuji",
+			},
+		],
+		gasPriceStep: {
+			low: 0.01,
+			average: 0.025,
+			high: 0.03,
+		},
+		features: ["ibc-transfer", "ibc-go"],
+		explorerUrlToTx: "https://finder.kujira.app/kaiyo-1/tx/{txHash}",
+	},
 };
 
 export type AssetListObj = SimpleMap<SimpleMap<AppCurrency>>
@@ -1667,6 +1719,10 @@ export const swthChannels: SimpleMap<ChannelConfig> = {
 		sourceChannel: "channel-8",
 		dstChannel: "channel-47",
 	},
+	[ChainIds.Kujira]: {
+		sourceChannel: "channel-9",
+		dstChannel: "channel-46",
+	},
 };
 
 export const ibcTokenRegex = /^ibc\/([a-f\d]+)$/i
@@ -1677,12 +1733,12 @@ export const ibcDefaultGas: number = 150000;
 
 export interface GasPriceStep {
 	low: number;
-  average: number;
-  high: number;
+	average: number;
+	high: number;
 }
 
 export const DefaultGasPriceStep: GasPriceStep = {
-  low: 0.01,
-  average: 0.025,
-  high: 0.04,
+	low: 0.01,
+	average: 0.025,
+	high: 0.04,
 };
