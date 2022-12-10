@@ -154,7 +154,7 @@ export class N3Client {
       sc.ContractParam.byteArray(u.HexString.fromHex(toAddressHex, true)),
       sc.ContractParam.integer(amount.toString(10)),
       sc.ContractParam.integer(feeAmount.toString(10)),
-      sc.ContractParam.byteArray(u.HexString.fromHex(networkConfig.feeAddress, true)),
+      sc.ContractParam.byteArray(u.HexString.fromHex(feeAmount.isZero() ? "" : networkConfig.feeAddress, true)),
       sc.ContractParam.integer(nonce),
     ];
 
