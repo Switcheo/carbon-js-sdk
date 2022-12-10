@@ -147,7 +147,7 @@ export class N3Client {
 
     const nonce = Math.floor(Math.random() * 1000000)
 
-    const networkConfig = this.configProvider.getConfig(); 
+    const networkConfig = this.configProvider.getConfig();
     const args = [
       sc.ContractParam.hash160(tokenScriptHash),
       sc.ContractParam.hash160(fromAddressHex),
