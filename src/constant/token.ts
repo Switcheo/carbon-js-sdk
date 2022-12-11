@@ -1,10 +1,13 @@
 import { OptionalNetworkMap, SimpleMap } from "@carbon-sdk/util/type";
+import BigNumber from "bignumber.js";
 import { Network } from "./network";
 
 export const DenomPrefix = {
   LPToken: "clpt",
   CDPToken: "cibt",
 }
+
+export const uscUsdValue = new BigNumber(1);
 
 export const CommonAssetName: SimpleMap<string> = {
   swth: 'swth',
