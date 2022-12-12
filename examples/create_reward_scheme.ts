@@ -17,10 +17,10 @@ import BigNumber from "bignumber.js";
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk", connectedSDK.wallet.bech32Address);
 
-  const nowDate = dayjs().add(10, 's'); // add delay of 10 seconds to startTime so that ErrRewardSchemeDurationInvalidType error is not thrown
+  const nowDate = dayjs().add(1000, 'm'); // add delay of 10 seconds to startTime so that ErrRewardSchemeDurationInvalidType error is not thrown
   const endDate = nowDate.add(2, "w");
 
-  const response = await sdk.admin.createRewardScheme({
+  const response = await sdk.cdp.createRewardScheme({
     rewardDenom: "swth",
     assetDenom: "cibt/usdc",
     rewardType: "lend",
@@ -29,4 +29,6 @@ import BigNumber from "bignumber.js";
     endTime: endDate.toDate(),
   });
   console.log("response", response);
+
+  //To check if it works, http://localhost:1317/carbon/cdp/v1/reward_schemes
 })().catch(console.error).finally(() => process.exit(0));
