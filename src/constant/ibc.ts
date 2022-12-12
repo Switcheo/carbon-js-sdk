@@ -1643,16 +1643,14 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
 			coinDenom: "KUJI",
 			coinMinimalDenom: "ukuji",
 			coinDecimals: 6,
-			// coinGeckoId: "kujira",
-			coinGeckoId: "pool:ukuji",
+			coinGeckoId: "kujira",
 		},
 		currencies: [
 			{
 				coinDenom: "KUJI",
 				coinMinimalDenom: "ukuji",
 				coinDecimals: 6,
-				// coinGeckoId: "kujira",
-				coinGeckoId: "pool:ukuji",
+				coinGeckoId: "kujira",
 				coinImageUrl: "/tokens/kuji.png",
 			},
 			{
@@ -1669,8 +1667,7 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
 				coinDenom: "KUJI",
 				coinMinimalDenom: "ukuji",
 				coinDecimals: 6,
-				// coinGeckoId: "kujira",
-				coinGeckoId: "pool:ukuji",
+				coinGeckoId: "kujira",
 			},
 		],
 		gasPriceStep: {

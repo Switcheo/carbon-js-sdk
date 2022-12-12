@@ -56,7 +56,7 @@ export const CHAIN_IDS: ChainIds = {
   'evmos': 248,
   'axelar': 249,
   'stride': 313,
-  'kujira': 10
+  'kujira': 314
 };
 
 export const CHAIN_IDS_DEV: ChainIds = {
@@ -124,7 +124,6 @@ export const blockchainForChainId = (chainId?: number): Blockchain | undefined =
       return Blockchain.BinanceSmartChain
     case 9: // mainnet
     case 10:
-      return Blockchain.Kujira
     case 18:
     case 110: // testnet
     case 111:
@@ -146,6 +145,8 @@ export const blockchainForChainId = (chainId?: number): Blockchain | undefined =
       return Blockchain.Axelar
     case 313: // mainnet
       return Blockchain.Stride
+    case 314: //mainnet
+      return Blockchain.Kujira
     default:
       return undefined
   }
