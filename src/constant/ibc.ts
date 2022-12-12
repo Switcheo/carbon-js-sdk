@@ -98,6 +98,7 @@ export const ibcWhitelist: string[] = [
   ChainIds.Evmos,
   ChainIds.Axelar,
   ChainIds.Stride,
+  ChainIds.Kujira,
 ];
 
 export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
