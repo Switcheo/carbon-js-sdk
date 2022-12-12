@@ -1,4 +1,4 @@
-import { Any, MsgAddAsset, MsgAddRateStrategy, MsgRemoveRateStrategy, MsgSetInterestFee, MsgSetLiquidationFee, MsgSetStablecoinInterestRate, MsgUpdateAsset, MsgUpdateRateStrategy, SettlementPriceParams, MsgSetCompleteLiquidationThreshold, MsgSetMinimumCloseFactor, MsgSetSmallLiquidationSize, MsgCreateRewardScheme, MsgUpdateRewardScheme } from "@carbon-sdk/codec";
+import { Any, MsgAddAsset, MsgAddRateStrategy, MsgRemoveRateStrategy, MsgSetInterestFee, MsgSetLiquidationFee, MsgSetStablecoinInterestRate, MsgUpdateAsset, MsgUpdateRateStrategy, SettlementPriceParams, MsgSetCompleteLiquidationThreshold, MsgSetMinimumCloseFactor, MsgSetSmallLiquidationSize } from "@carbon-sdk/codec";
 import { MsgAuthorizeBridge, MsgBindToken, MsgCreateToken, MsgUpdateToken, MsgDeauthorizeBridge, MsgLinkToken, MsgSyncToken, MsgUnbindToken } from "@carbon-sdk/codec/coin/tx";
 import { Coin } from "@carbon-sdk/codec/cosmos/base/v1beta1/coin";
 import { Description } from "@carbon-sdk/codec/cosmos/staking/v1beta1/staking";
@@ -601,32 +601,6 @@ export class AdminModule extends BaseModule {
       value,
     }, opts);
   }
-
-  public async createRewardScheme(params: AdminModule.CreateRewardSchemeParams, opts?: CarbonTx.SignTxOpts) {
-    const wallet = this.getWallet();
-    const value = MsgCreateRewardScheme.fromPartial({
-      creator: wallet.bech32Address,
-      createRewardSchemeParams: transformCreateRewardScheme(params),
-    });
-
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgCreateRewardScheme,
-      value,
-    }, opts);
-  }
-
-  public async updateRewardScheme(params: AdminModule.UpdateRewardSchemeParams, opts?: CarbonTx.SignTxOpts) {
-    const wallet = this.getWallet();
-    const value = MsgUpdateRewardScheme.fromPartial({
-      updator: wallet.bech32Address,
-      updateRewardSchemeParams: transformUpdateRewardScheme(params),
-    });
-
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgUpdateRewardScheme,
-      value,
-    }, opts);
-  }
 }
 
 export namespace AdminModule {
@@ -1014,34 +988,7 @@ export function transformCommunityPoolSpendAmount(amount: Coin[]) {
   return amounts
 }
 
-export function transformCreateRewardScheme(msg: AdminModule.CreateRewardSchemeParams) {
-  return {
-    rewardDenom: msg.rewardDenom,
-    assetDenom: msg.assetDenom,
-    rewardType: msg.rewardType,
-    rewardAmountPerSecond: msg.rewardAmountPerSecond.toString(10),
-    startTime: msg.startTime,
-    endTime: msg.endTime,
-  };
-}
 
-export function transformUpdateRewardScheme(msg: AdminModule.UpdateRewardSchemeParams) {
-  return {
-    rewardSchemeId: new Long(msg.rewardSchemeId),
-    rewardDenom: msg.rewardDenom,
-    assetDenom: msg.assetDenom,
-    rewardType: msg.rewardType,
-    rewardAmountPerSecond: msg.rewardAmountPerSecond?.toString(10),
-    startTime: msg.startTime,
-    endTime: msg.endTime,
-  };
-}
 
-export function transformAddRewardReserve(msg: AdminModule.AddRewardReserveParams, wallet: CarbonWallet) {
-  return {
-    creator: msg.creator ?? wallet.bech32Address,
-    rewardSchemeId: new Long(msg.rewardSchemeId),
-    amount: msg.amount.toString(10),
-    denom: msg.denom,
-  };
-}
+
+
