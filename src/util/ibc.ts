@@ -19,13 +19,13 @@ export function makeIBCMinimalDenom(sourceChannelId: string, coinMinimalDenom: s
 };
 
 export const EmbedChainInfos = Object.values(EmbedChainInfosInit).reduce((prev: SimpleMap<ChainInfoExplorerTmRpc>, chainInfo: ChainInfoExplorerTmRpc) => {
-  if (swthIbcWhitelist.includes(chainInfo.chainId)) {
+	if (swthIbcWhitelist.includes(chainInfo.chainId)) {
 		const chainChannels = swthChannels[chainInfo.chainId]
 		chainInfo.currencies.push({
 			...KeplrAccount.SWTH_CURRENCY,
-      coinMinimalDenom: makeIBCMinimalDenom(chainChannels?.dstChannel ?? "channel-0", KeplrAccount.SWTH_CURRENCY.coinMinimalDenom),
+			coinMinimalDenom: makeIBCMinimalDenom(chainChannels?.dstChannel ?? "channel-0", KeplrAccount.SWTH_CURRENCY.coinMinimalDenom),
 		})
-  }
+	}
 	prev[chainInfo.chainId] = chainInfo;
 	return prev;
 }, {});
@@ -54,6 +54,7 @@ export const ChainIdBlockchainMap: SimpleMap<Blockchain> = {
 	[ChainIds.Evmos]: Blockchain.Evmos,
 	[ChainIds.Axelar]: Blockchain.Axelar,
 	[ChainIds.Stride]: Blockchain.Stride,
+	[ChainIds.Kujira]: Blockchain.Kujira,
 };
 
 export const getIbcChainFromBlockchain = (blockchain: Blockchain | undefined): ChainIds | undefined => {
