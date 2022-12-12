@@ -35,6 +35,7 @@ import {
   MsgWithdrawAsset,
   MsgClaimRewards,
   MsgCreateRewardScheme,
+  MsgUpdateRewardScheme
 } from "@carbon-sdk/codec/cdp/tx";
 import { QueryBalanceRequest, QuerySupplyOfRequest } from '@carbon-sdk/codec/cosmos/bank/v1beta1/query';
 import { CarbonTx } from "@carbon-sdk/util";
@@ -363,6 +364,28 @@ export class CDPModule extends BaseModule {
       value,
     }, opts)
   }
+
+  public async updateRewardScheme(params: CDPModule.UpdateRewardSchemeParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet()
+    const value = MsgUpdateRewardScheme.fromPartial({
+      updator: wallet.bech32Address,
+      updateRewardSchemeParams: {
+        rewardSchemeId: params.rewardSchemeId,
+        rewardDenom: params.rewardDenom,
+        rewardType: params.rewardType,
+        assetDenom: params.assetDenom,
+        rewardAmountPerSecond: params.rewardAmountPerSecond ? params.rewardAmountPerSecond.toString(10) : undefined,
+        startTime: params.startTime,
+        endTime: params.endTime,
+      }
+    })
+
+    return await wallet.sendTx({
+      typeUrl: CarbonTx.Types.MsgUpdateRewardScheme,
+      value,
+    }, opts)
+  }
+
 
   // start of cdp calculations
 
@@ -1101,6 +1124,15 @@ export namespace CDPModule {
     rewardAmountPerSecond: BigNumber
     startTime: Date
     endTime: Date
+  }
+  export interface UpdateRewardSchemeParams {
+    rewardSchemeId: Long
+    rewardDenom?: string
+    assetDenom?: string
+    rewardType?: string
+    rewardAmountPerSecond?: BigNumber
+    startTime?: Date
+    endTime?: Date
   }
 
 };
