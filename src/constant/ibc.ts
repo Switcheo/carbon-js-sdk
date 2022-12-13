@@ -2,6 +2,7 @@ import { SimpleMap } from "@carbon-sdk/util/type";
 import { AppCurrency, Bech32Config, ChainInfo } from "@keplr-wallet/types";
 import * as bech32 from "bech32";
 import { CURRENT_GAS_PRICE } from "./generic";
+import { DenomPrefix } from "./token";
 
 export interface ChainInfoExplorerTmRpc extends ChainInfo {
   // Formed as "https://explorer.com/{txHash}"
@@ -1733,6 +1734,8 @@ export const swthChannels: SimpleMap<ChannelConfig> = {
     dstChannel: "channel-46",
   },
 };
+
+export const cibtIbcTokenRegex = RegExp(`^${DenomPrefix.CDPToken}/ibc/([a-f\\d]+)$`, "i");
 
 export const ibcTokenRegex = /^ibc\/([a-f\d]+)$/i;
 

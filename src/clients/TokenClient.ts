@@ -1,6 +1,6 @@
 import { Token } from "@carbon-sdk/codec";
 import { CoinGeckoTokenNames, CommonAssetName, DenomPrefix, NetworkConfigProvider, TokenBlacklist, uscUsdValue } from "@carbon-sdk/constant";
-import { ibcTokenRegex, ibcWhitelist, swthChannels, swthIbcWhitelist } from "@carbon-sdk/constant/ibc";
+import { cibtIbcTokenRegex, ibcTokenRegex, ibcWhitelist, swthChannels, swthIbcWhitelist } from "@carbon-sdk/constant/ibc";
 import { Network } from "@carbon-sdk/constant/network";
 import { FeeQuote } from "@carbon-sdk/hydrogen/feeQuote";
 import KeplrAccount from "@carbon-sdk/provider/keplr/KeplrAccount";
@@ -141,7 +141,7 @@ class TokenClient {
 
   public getTokenName(denom: string, overrideMap?: TypeUtils.SimpleMap<string>): string {
     if (typeof denom !== 'string') return '';
-    if (!TokenClient.isIBCDenom(denom)) {
+    if (!TokenClient.isIBCDenom(denom) && !TokenClient.isCdpIbcDenom(denom)) {
       denom = denom.toLowerCase();
     }
 
@@ -221,6 +221,10 @@ class TokenClient {
 
   public static isIBCDenom(denom: string): boolean {
     return denom.match(ibcTokenRegex) !== null;
+  }
+
+  public static isCdpIbcDenom(denom: string): boolean {
+    return cibtIbcTokenRegex.test(denom);
   }
 
   public isWrappedToken(denom?: string) {
