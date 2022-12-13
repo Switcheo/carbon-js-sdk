@@ -35,7 +35,9 @@ import {
   MsgWithdrawAsset,
   MsgClaimRewards,
   MsgCreateRewardScheme,
-  MsgUpdateRewardScheme
+  MsgUpdateRewardScheme,
+  MsgReturnStablecoinWithInterestInCdpTokens,
+  MsgReturnStablecoinWithInterestInCollateral,
 } from "@carbon-sdk/codec/cdp/tx";
 import { QueryBalanceRequest, QuerySupplyOfRequest } from '@carbon-sdk/codec/cosmos/bank/v1beta1/query';
 import { CarbonTx } from "@carbon-sdk/util";
@@ -139,6 +141,7 @@ export class CDPModule extends BaseModule {
       creator: wallet.bech32Address,
       denom: params.denom,
       amount: params.amount.toString(10),
+      debtor: params.debtor,
     })
 
     return await wallet.sendTx({
@@ -312,6 +315,7 @@ export class CDPModule extends BaseModule {
       principalAmount: params.principalAmount.toString(10),
       interestDenom: params.interestDenom,
       interestAmount: params.interestAmount.toString(10),
+      debtor: params.debtor,
     });
 
     return await wallet.sendTx({
@@ -386,6 +390,35 @@ export class CDPModule extends BaseModule {
     }, opts)
   }
 
+  public async returnStablecoinWithInterestInCdpTokens(params: CDPModule.ReturnStablecoinWithInterestInCdpTokensParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet()
+    const value = MsgReturnStablecoinWithInterestInCdpTokens.fromPartial({
+      creator: wallet.bech32Address,
+      principalAmount: params.principalAmount.toString(10),
+      interestCdpDenom: params.interestCdpDenom,
+      interestCdpAmount: params.interestCdpAmount.toString(10),
+      debtor: params.debtor,
+    })
+    return await wallet.sendTx({
+      typeUrl: CarbonTx.Types.MsgReturnStablecoinWithInterestInCdpTokens,
+      value,
+    }, opts)
+  }
+
+  public async returnStablecoinWithInterestInCollateral(params: CDPModule.ReturnStablecoinWithInterestInCollateralParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet()
+    const value = MsgReturnStablecoinWithInterestInCollateral.fromPartial({
+      creator: wallet.bech32Address,
+      principalAmount: params.principalAmount.toString(10),
+      interestCdpDenom: params.interestCdpDenom,
+      interestCdpAmount: params.interestCdpAmount.toString(10),
+      debtor: params.debtor,
+    })
+    return await wallet.sendTx({
+      typeUrl: CarbonTx.Types.MsgReturnStablecoinWithInterestInCollateral,
+      value,
+    }, opts)
+  }
 
   // start of cdp calculations
 
@@ -1042,6 +1075,7 @@ export namespace CDPModule {
   export interface RepayAssetParams {
     denom: string
     amount: BigNumber
+    debtor: string
   }
   export interface SupplyAssetAndLockCollateralParams {
     denom: string
@@ -1107,6 +1141,7 @@ export namespace CDPModule {
     principalAmount: BigNumber
     interestDenom: string
     interestAmount: BigNumber
+    debtor: string
   }
 
   export interface UpdateRateStrategyParams {
@@ -1135,4 +1170,18 @@ export namespace CDPModule {
     endTime?: Date
   }
 
-};
+  export interface ReturnStablecoinWithInterestInCdpTokensParams {
+    principalAmount: BigNumber
+    interestCdpDenom: string
+    interestCdpAmount: BigNumber
+    debtor: string
+  }
+
+  export interface ReturnStablecoinWithInterestInCollateralParams {
+    principalAmount: BigNumber
+    interestCdpDenom: string
+    interestCdpAmount: BigNumber
+    debtor: string
+  }
+
+}

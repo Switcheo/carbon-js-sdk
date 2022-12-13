@@ -40,14 +40,17 @@ import Long from "long";
   const tokenDebts = await sdk.query.cdp.TokenDebtAll({})
   console.log("\nTokenDebtsAll", JSON.stringify(tokenDebts))
 
-  const tokenDebt = await sdk.cdp.getTotalAccountTokenDebt(address, denom)
+  const tokenDebt = await sdk.query.cdp.TokenDebt({denom})
+  console.log("\nTokenDebt", JSON.stringify(tokenDebt))
+
+  const accountTokenDebt = await sdk.cdp.getTotalAccountTokenDebt(address, denom)
   console.log("\ngetTotalAccountTokenDebt", JSON.stringify(tokenDebt))
 
   const tokenDebtUSD = await sdk.cdp.getTotalAccountTokenDebtUsdVal(address, denom)
   console.log("\ngetTotalAccountTokenDebtUsdVal", JSON.stringify(tokenDebtUSD))
 
   const cim = await sdk.cdp.recalculateCIM("eth")
-  console.log("\nrecalculateCIM", cim.toNumber())
+  console.log("\nrecalculateCIM", cim.cim.toNumber())
 
   const stablecoinDebt = await sdk.query.cdp.StablecoinDebt({})
   console.log("\nStablecoinDebt", JSON.stringify(stablecoinDebt))
@@ -90,7 +93,7 @@ import Long from "long";
   const asset = await sdk.query.cdp.Asset({denom: denom})
   console.log(`\nAsset ${JSON.stringify(asset)}`)
 
-  const getCollateralReceivableForLiquidation = await sdk.cdp.getCollateralReceivableForLiquidation(denom, new BigNumber(1000000), cdpDenom)
-  console.log(`\ngetCollateralReceivableForLiquidation ${getCollateralReceivableForLiquidation?.toNumber()}`)
+  const params = await sdk.query.cdp.Params({})
+  console.log(`\nParams ${JSON.stringify(params)}`)
 
 })().catch(console.error).finally(() => process.exit(0));
