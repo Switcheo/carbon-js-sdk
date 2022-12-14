@@ -290,7 +290,12 @@ export class WSConnector {
     const channelIds: string[] = []
     for (const param of params) {
       const channelId = generateChannelId(param)
+      const shouldUnsubscribe = this.channelHandlers[channelId] !== undefined
       delete this.channelHandlers[channelId]
+
+      if (shouldUnsubscribe) {
+        channelIds.push(channelId)
+      }
     }
 
     this.send('unsubscribe', {
