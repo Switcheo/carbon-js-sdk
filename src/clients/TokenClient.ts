@@ -1,5 +1,5 @@
 import { Token } from "@carbon-sdk/codec";
-import { CoinGeckoTokenNames, CommonAssetName, DenomPrefix, NetworkConfigProvider, TokenBlacklist, uscUsdValue } from "@carbon-sdk/constant";
+import { CoinGeckoTokenNames, CommonAssetName, DenomPrefix, NetworkConfigProvider, TokenBlacklist } from "@carbon-sdk/constant";
 import { cibtIbcTokenRegex, ibcTokenRegex, ibcWhitelist, swthChannels, swthIbcWhitelist } from "@carbon-sdk/constant/ibc";
 import { Network } from "@carbon-sdk/constant/network";
 import { FeeQuote } from "@carbon-sdk/hydrogen/feeQuote";
@@ -465,17 +465,12 @@ class TokenClient {
     }, [] as string[]);
 
     const geckoIdToUsdPriceMap = await this.getUSDValuesFromCoinGecko(geckoIds);
-    const uscStablecoin = this.getNativeStablecoin();
 
     //store price based on denoms
     for (const denom of denoms) {
       const coinId = this.geckoTokenNames[denom] ?? denom;
       const price = NumberUtils.bnOrZero(geckoIdToUsdPriceMap?.[coinId]?.usd)!;
       if (price.gt(0)) {
-        if (denom === uscStablecoin?.denom) {
-          this.usdValues[denom] = uscUsdValue;
-          continue;
-        }
         this.usdValues[denom] = price;
       }
     }
