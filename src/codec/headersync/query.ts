@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { ConsensusPeers } from "./consensus_peers";
+import { ConsensusPeers, ZionConsensusPeers } from "./consensus_peers";
 
 export const protobufPackage = "Switcheo.carbon.headersync";
 
@@ -18,7 +18,7 @@ export interface QueryGetZionConsensusPeersRequest {
 }
 
 export interface QueryGetZionConsensusPeersResponse {
-  consensusPeers?: ConsensusPeers;
+  zionConsensusPeers?: ZionConsensusPeers;
 }
 
 const baseQueryGetConsensusPeersRequest: object = { chainId: Long.UZERO };
@@ -240,9 +240,9 @@ export const QueryGetZionConsensusPeersResponse = {
     message: QueryGetZionConsensusPeersResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.consensusPeers !== undefined) {
-      ConsensusPeers.encode(
-        message.consensusPeers,
+    if (message.zionConsensusPeers !== undefined) {
+      ZionConsensusPeers.encode(
+        message.zionConsensusPeers,
         writer.uint32(10).fork()
       ).ldelim();
     }
@@ -262,7 +262,7 @@ export const QueryGetZionConsensusPeersResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.consensusPeers = ConsensusPeers.decode(
+          message.zionConsensusPeers = ZionConsensusPeers.decode(
             reader,
             reader.uint32()
           );
@@ -279,18 +279,19 @@ export const QueryGetZionConsensusPeersResponse = {
     const message = {
       ...baseQueryGetZionConsensusPeersResponse,
     } as QueryGetZionConsensusPeersResponse;
-    message.consensusPeers =
-      object.consensusPeers !== undefined && object.consensusPeers !== null
-        ? ConsensusPeers.fromJSON(object.consensusPeers)
+    message.zionConsensusPeers =
+      object.zionConsensusPeers !== undefined &&
+      object.zionConsensusPeers !== null
+        ? ZionConsensusPeers.fromJSON(object.zionConsensusPeers)
         : undefined;
     return message;
   },
 
   toJSON(message: QueryGetZionConsensusPeersResponse): unknown {
     const obj: any = {};
-    message.consensusPeers !== undefined &&
-      (obj.consensusPeers = message.consensusPeers
-        ? ConsensusPeers.toJSON(message.consensusPeers)
+    message.zionConsensusPeers !== undefined &&
+      (obj.zionConsensusPeers = message.zionConsensusPeers
+        ? ZionConsensusPeers.toJSON(message.zionConsensusPeers)
         : undefined);
     return obj;
   },
@@ -301,9 +302,10 @@ export const QueryGetZionConsensusPeersResponse = {
     const message = {
       ...baseQueryGetZionConsensusPeersResponse,
     } as QueryGetZionConsensusPeersResponse;
-    message.consensusPeers =
-      object.consensusPeers !== undefined && object.consensusPeers !== null
-        ? ConsensusPeers.fromPartial(object.consensusPeers)
+    message.zionConsensusPeers =
+      object.zionConsensusPeers !== undefined &&
+      object.zionConsensusPeers !== null
+        ? ZionConsensusPeers.fromPartial(object.zionConsensusPeers)
         : undefined;
     return message;
   },

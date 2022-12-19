@@ -9,6 +9,17 @@ import {
 
 export const protobufPackage = "Switcheo.carbon.book";
 
+export interface QueryImpactPriceRequest {
+  market: string;
+  quoteAmount: string;
+}
+
+export interface QueryImpactPriceResponse {
+  impactPrice: string;
+  baseAmount: string;
+  quoteAmount: string;
+}
+
 /** this line is used by starport scaffolding # 3 */
 export interface QueryGetBookRequest {
   market: string;
@@ -26,6 +37,177 @@ export interface QueryAllBookResponse {
   books: OrderBook[];
   pagination?: PageResponse;
 }
+
+const baseQueryImpactPriceRequest: object = { market: "", quoteAmount: "" };
+
+export const QueryImpactPriceRequest = {
+  encode(
+    message: QueryImpactPriceRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.market !== "") {
+      writer.uint32(10).string(message.market);
+    }
+    if (message.quoteAmount !== "") {
+      writer.uint32(18).string(message.quoteAmount);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryImpactPriceRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryImpactPriceRequest,
+    } as QueryImpactPriceRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.market = reader.string();
+          break;
+        case 2:
+          message.quoteAmount = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryImpactPriceRequest {
+    const message = {
+      ...baseQueryImpactPriceRequest,
+    } as QueryImpactPriceRequest;
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? String(object.market)
+        : "";
+    message.quoteAmount =
+      object.quoteAmount !== undefined && object.quoteAmount !== null
+        ? String(object.quoteAmount)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryImpactPriceRequest): unknown {
+    const obj: any = {};
+    message.market !== undefined && (obj.market = message.market);
+    message.quoteAmount !== undefined &&
+      (obj.quoteAmount = message.quoteAmount);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryImpactPriceRequest>
+  ): QueryImpactPriceRequest {
+    const message = {
+      ...baseQueryImpactPriceRequest,
+    } as QueryImpactPriceRequest;
+    message.market = object.market ?? "";
+    message.quoteAmount = object.quoteAmount ?? "";
+    return message;
+  },
+};
+
+const baseQueryImpactPriceResponse: object = {
+  impactPrice: "",
+  baseAmount: "",
+  quoteAmount: "",
+};
+
+export const QueryImpactPriceResponse = {
+  encode(
+    message: QueryImpactPriceResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.impactPrice !== "") {
+      writer.uint32(10).string(message.impactPrice);
+    }
+    if (message.baseAmount !== "") {
+      writer.uint32(18).string(message.baseAmount);
+    }
+    if (message.quoteAmount !== "") {
+      writer.uint32(26).string(message.quoteAmount);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryImpactPriceResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryImpactPriceResponse,
+    } as QueryImpactPriceResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.impactPrice = reader.string();
+          break;
+        case 2:
+          message.baseAmount = reader.string();
+          break;
+        case 3:
+          message.quoteAmount = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryImpactPriceResponse {
+    const message = {
+      ...baseQueryImpactPriceResponse,
+    } as QueryImpactPriceResponse;
+    message.impactPrice =
+      object.impactPrice !== undefined && object.impactPrice !== null
+        ? String(object.impactPrice)
+        : "";
+    message.baseAmount =
+      object.baseAmount !== undefined && object.baseAmount !== null
+        ? String(object.baseAmount)
+        : "";
+    message.quoteAmount =
+      object.quoteAmount !== undefined && object.quoteAmount !== null
+        ? String(object.quoteAmount)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryImpactPriceResponse): unknown {
+    const obj: any = {};
+    message.impactPrice !== undefined &&
+      (obj.impactPrice = message.impactPrice);
+    message.baseAmount !== undefined && (obj.baseAmount = message.baseAmount);
+    message.quoteAmount !== undefined &&
+      (obj.quoteAmount = message.quoteAmount);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryImpactPriceResponse>
+  ): QueryImpactPriceResponse {
+    const message = {
+      ...baseQueryImpactPriceResponse,
+    } as QueryImpactPriceResponse;
+    message.impactPrice = object.impactPrice ?? "";
+    message.baseAmount = object.baseAmount ?? "";
+    message.quoteAmount = object.quoteAmount ?? "";
+    return message;
+  },
+};
 
 const baseQueryGetBookRequest: object = { market: "" };
 
@@ -282,6 +464,10 @@ export const QueryAllBookResponse = {
 
 /** Query defines the gRPC querier service. */
 export interface Query {
+  /** Get impact price for a market */
+  ImpactPrice(
+    request: QueryImpactPriceRequest
+  ): Promise<QueryImpactPriceResponse>;
   /** Get order book for a market */
   Book(request: QueryGetBookRequest): Promise<QueryGetBookResponse>;
   /** Get order books for all markets */
@@ -292,9 +478,24 @@ export class QueryClientImpl implements Query {
   private readonly rpc: Rpc;
   constructor(rpc: Rpc) {
     this.rpc = rpc;
+    this.ImpactPrice = this.ImpactPrice.bind(this);
     this.Book = this.Book.bind(this);
     this.BookAll = this.BookAll.bind(this);
   }
+  ImpactPrice(
+    request: QueryImpactPriceRequest
+  ): Promise<QueryImpactPriceResponse> {
+    const data = QueryImpactPriceRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.book.Query",
+      "ImpactPrice",
+      data
+    );
+    return promise.then((data) =>
+      QueryImpactPriceResponse.decode(new _m0.Reader(data))
+    );
+  }
+
   Book(request: QueryGetBookRequest): Promise<QueryGetBookResponse> {
     const data = QueryGetBookRequest.encode(request).finish();
     const promise = this.rpc.request(
