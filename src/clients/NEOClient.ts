@@ -138,10 +138,11 @@ export class NEOClient {
     const toAssetHash = Neon.u.str2hexstring(token.id)
     const addressBytes = SWTHAddress.getAddressBytes(swthAddress, networkConfig.network)
     const toAddress = stripHexPrefix(ethers.utils.hexlify(addressBytes))
+    const zeroAddressHex = stripHexPrefix(ethers.utils.hexlify(ZeroAddress))
 
     const amount = ethers.BigNumber.from(token.externalBalance)
     const feeAmount = ethers.BigNumber.from(feeAmountInput ?? "100000000")
-    const feeAddress = feeAmount.isZero() ? ZeroAddress : networkConfig.feeAddress;
+    const feeAddress = feeAmount.isZero() ? zeroAddressHex : networkConfig.feeAddress;
     const nonce = Math.floor(Math.random() * 1000000)
 
     if (amount.lt(feeAmount)) {
