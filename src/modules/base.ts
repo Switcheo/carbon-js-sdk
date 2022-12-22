@@ -4,9 +4,7 @@ import { CarbonWallet } from "@carbon-sdk/wallet";
 import { EncodeObject } from "@cosmjs/proto-signing";
 
 class BaseModule {
-  constructor(
-    public readonly sdkProvider: SDKProvider,
-  ) { }
+  constructor(public readonly sdkProvider: SDKProvider) {}
 
   protected getWallet(): CarbonWallet {
     return this.sdkProvider.getConnectedWallet();

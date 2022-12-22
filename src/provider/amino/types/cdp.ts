@@ -91,22 +91,22 @@ const MsgMintStablecoin: AminoInit = {
 const MsgReturnStablecoin: AminoInit = {
   aminoType: TxTypes.ReturnStablecoin,
   valueMap: {},
-}
+};
 
 const MsgLiquidateCollateralWithCdpTokens: AminoInit = {
   aminoType: TxTypes.LiquidateCollateralWithCdpTokens,
   valueMap: {},
-}
+};
 
 const MsgLiquidateCollateralWithCollateral: AminoInit = {
   aminoType: TxTypes.LiquidateCollateralWithCollateral,
   valueMap: {},
-}
+};
 
 const MsgLiquidateCollateralWithStablecoin: AminoInit = {
   aminoType: TxTypes.LiquidateCollateralWithStablecoin,
   valueMap: {},
-}
+};
 
 const MsgCreateRewardScheme: AminoInit = {
   aminoType: TxTypes.CreateRewardScheme,
@@ -116,7 +116,7 @@ const MsgCreateRewardScheme: AminoInit = {
       endTime: ConvertEncType.Date,
     },
   },
-}
+};
 
 const MsgUpdateRewardScheme: AminoInit = {
   aminoType: TxTypes.UpdateRewardScheme,
@@ -127,27 +127,27 @@ const MsgUpdateRewardScheme: AminoInit = {
       endTime: ConvertEncType.Date,
     },
   },
-}
+};
 
 const MsgClaimRewards: AminoInit = {
   aminoType: TxTypes.ClaimRewards,
   valueMap: {},
-}
+};
 
 const MsgSetStablecoinMintCap: AminoInit = {
   aminoType: TxTypes.SetStablecoinMintCap,
   valueMap: {},
-}
+};
 
 const MsgSetStalePriceGracePeriod: AminoInit = {
   aminoType: TxTypes.SetStalePriceGracePeriod,
   valueMap: {},
-}
+};
 
 const MsgSetCdpPaused: AminoInit = {
   aminoType: TxTypes.SetCdpPaused,
   valueMap: {},
-}
+};
 
 const CdpAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgSupplyAsset]: generateAminoType(MsgSupplyAsset),

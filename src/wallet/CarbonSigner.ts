@@ -1,8 +1,8 @@
-import { SignDoc } from '@carbon-sdk/codec/cosmos/tx/v1beta1/tx';
-import { CosmosLedger } from '@carbon-sdk/provider';
-import { sortObject } from '@carbon-sdk/util/generic';
+import { SignDoc } from "@carbon-sdk/codec/cosmos/tx/v1beta1/tx";
+import { CosmosLedger } from "@carbon-sdk/provider";
+import { sortObject } from "@carbon-sdk/util/generic";
 import { AminoSignResponse, encodeSecp256k1Signature, OfflineAminoSigner, Secp256k1Wallet, StdSignDoc } from "@cosmjs/amino";
-import { AccountData, DirectSecp256k1Wallet, DirectSignResponse, OfflineDirectSigner } from '@cosmjs/proto-signing';
+import { AccountData, DirectSecp256k1Wallet, DirectSignResponse, OfflineDirectSigner } from "@cosmjs/proto-signing";
 
 export enum CarbonSignerTypes {
   Ledger,
@@ -11,30 +11,25 @@ export enum CarbonSignerTypes {
   PublicKey,
 }
 
-export type CarbonSigner = DirectCarbonSigner | AminoCarbonSigner
-export type DirectCarbonSigner = OfflineDirectSigner & { type: CarbonSignerTypes }
-export type AminoCarbonSigner = OfflineAminoSigner & { type: CarbonSignerTypes }
+export type CarbonSigner = DirectCarbonSigner | AminoCarbonSigner;
+export type DirectCarbonSigner = OfflineDirectSigner & { type: CarbonSignerTypes };
+export type AminoCarbonSigner = OfflineAminoSigner & { type: CarbonSignerTypes };
 
 export class CarbonPrivateKeySigner implements DirectCarbonSigner, AminoCarbonSigner {
-  type = CarbonSignerTypes.PrivateKey
-  wallet?: DirectSecp256k1Wallet
-  aminoWallet?: Secp256k1Wallet
+  type = CarbonSignerTypes.PrivateKey;
+  wallet?: DirectSecp256k1Wallet;
+  aminoWallet?: Secp256k1Wallet;
 
-  constructor(
-    readonly privateKey: Buffer,
-    readonly prefix: string
-  ) { }
+  constructor(readonly privateKey: Buffer, readonly prefix: string) {}
 
   async initWallet() {
-    if (!this.wallet)
-      this.wallet = await DirectSecp256k1Wallet.fromKey(this.privateKey, this.prefix);
+    if (!this.wallet) this.wallet = await DirectSecp256k1Wallet.fromKey(this.privateKey, this.prefix);
 
     return this.wallet;
   }
 
   async initAminoWallet() {
-    if (!this.aminoWallet)
-      this.aminoWallet = await Secp256k1Wallet.fromKey(this.privateKey, this.prefix);
+    if (!this.aminoWallet) this.aminoWallet = await Secp256k1Wallet.fromKey(this.privateKey, this.prefix);
     return this.aminoWallet;
   }
 
@@ -44,7 +39,7 @@ export class CarbonPrivateKeySigner implements DirectCarbonSigner, AminoCarbonSi
   }
 
   async signAmino(signerAddress: string, signDoc: StdSignDoc): Promise<AminoSignResponse> {
-    const aminoWallet = await this.initAminoWallet()
+    const aminoWallet = await this.initAminoWallet();
     return await aminoWallet.signAmino(signerAddress, signDoc);
   }
 
@@ -55,7 +50,7 @@ export class CarbonPrivateKeySigner implements DirectCarbonSigner, AminoCarbonSi
 }
 
 export class CarbonNonSigner implements DirectCarbonSigner {
-  type = CarbonSignerTypes.PublicKey
+  type = CarbonSignerTypes.PublicKey;
 
   async getAccounts(): Promise<readonly AccountData[]> {
     throw new Error("signing not available");
@@ -68,7 +63,7 @@ export class CarbonNonSigner implements DirectCarbonSigner {
 
 // Uses amino because ledger does not work with protobuf yet
 export class CarbonLedgerSigner implements AminoCarbonSigner {
-  type = CarbonSignerTypes.Ledger
+  type = CarbonSignerTypes.Ledger;
 
   account?: AccountData;
 
@@ -104,7 +99,5 @@ export class CarbonLedgerSigner implements AminoCarbonSigner {
     };
   }
 
-  constructor(
-    readonly ledger: CosmosLedger
-  ) { }
+  constructor(readonly ledger: CosmosLedger) {}
 }

@@ -4,7 +4,6 @@ import BaseModule from "./base";
 import Long from "long";
 
 export class OracleModule extends BaseModule {
-
   public async createVote(params: OracleModule.CreateVoteParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
@@ -13,12 +12,15 @@ export class OracleModule extends BaseModule {
       oracleId: params.oracleId,
       timestamp: new Long(params.timestamp),
       data: params.data,
-    })
+    });
 
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgCreateVote,
-      value,
-    }, opts);
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgCreateVote,
+        value,
+      },
+      opts
+    );
   }
 }
 
@@ -28,4 +30,4 @@ export namespace OracleModule {
     timestamp: number;
     data: string;
   }
-};
+}

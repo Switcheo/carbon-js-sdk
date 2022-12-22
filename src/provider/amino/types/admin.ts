@@ -36,7 +36,7 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
   SetCompleteLiquidationThreshold: "cdp/SetCompleteLiquidationThreshold",
   SetMinimumCloseFactor: "cdp/SetMinimumCloseFactor",
   SetSmallLiquidationSize: "cdp/SetSmallLiquidationSize",
-}
+};
 
 const MsgCreateOracle: AminoInit = {
   aminoType: TxTypes.CreateOracle,
@@ -52,7 +52,7 @@ const MsgCreateOracle: AminoInit = {
 const MsgBindToken: AminoInit = {
   aminoType: TxTypes.BindToken,
   valueMap: {},
-}
+};
 
 const MsgCreateToken: AminoInit = {
   aminoType: TxTypes.CreateToken,
@@ -187,63 +187,63 @@ const MsgEditValidator: AminoInit = {
 const MsgAddRateStrategy: AminoInit = {
   aminoType: TxTypes.AddRateStrategy,
   valueMap: {},
-}
+};
 
 const MsgUpdateRateStrategy: AminoInit = {
   aminoType: TxTypes.UpdateRateStrategy,
   valueMap: {},
-}
+};
 
 const MsgRemoveRateStrategy: AminoInit = {
   aminoType: TxTypes.RemoveRateStrategy,
   valueMap: {},
-}
+};
 
 const MsgAddAsset: AminoInit = {
   aminoType: TxTypes.AddAsset,
   valueMap: {},
-}
+};
 
 const MsgUpdateAsset: AminoInit = {
   aminoType: TxTypes.UpdateAsset,
   valueMap: {},
-}
+};
 
 const MsgSetLiquidationFee: AminoInit = {
   aminoType: TxTypes.SetLiquidationFee,
   valueMap: {},
-}
+};
 
 const MsgSetInterestFee: AminoInit = {
   aminoType: TxTypes.SetInterestFee,
   valueMap: {},
-}
+};
 
 const MsgSetStablecoinInterestRate: AminoInit = {
   aminoType: TxTypes.SetStablecoinInterestRate,
   valueMap: {},
-}
+};
 
 const MsgSetCompleteLiquidationThreshold: AminoInit = {
   aminoType: TxTypes.SetCompleteLiquidationThreshold,
   valueMap: {
     completeLiquidationThreshold: ConvertEncType.Dec,
   },
-}
+};
 
 const MsgSetMinimumCloseFactor: AminoInit = {
   aminoType: TxTypes.SetMinimumCloseFactor,
   valueMap: {
     minimumCloseFactor: ConvertEncType.Dec,
   },
-}
+};
 
 const MsgSetSmallLiquidationSize: AminoInit = {
   aminoType: TxTypes.SetSmallLiquidationSize,
   valueMap: {
     smallLiquidationSize: ConvertEncType.Dec,
   },
-}
+};
 
 const AdminAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgCreateOracle]: generateAminoType(MsgCreateOracle),

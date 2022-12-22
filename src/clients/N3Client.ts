@@ -1,50 +1,50 @@
-import CarbonSDK from "@carbon-sdk/CarbonSDK"
-import { NetworkConfigProvider, ZeroAddress } from "@carbon-sdk/constant"
-import { NeoLedgerAccount } from "@carbon-sdk/provider/account"
-import { O3Types, O3Wallet } from "@carbon-sdk/provider/o3"
-import { N3Address, SWTHAddress } from "@carbon-sdk/util/address"
-import { Blockchain } from "@carbon-sdk/util/blockchain"
-import { TokensWithExternalBalance } from "@carbon-sdk/util/external"
-import { SimpleMap } from "@carbon-sdk/util/type"
-import { CONST, rpc, sc, tx, u, wallet } from "@cityofzion/neon-core-next"
-import { GetContractStateResult, InvokeResult } from "@cityofzion/neon-core-next/lib/rpc"
-import BigNumber from "bignumber.js"
+import CarbonSDK from "@carbon-sdk/CarbonSDK";
+import { NetworkConfigProvider, ZeroAddress } from "@carbon-sdk/constant";
+import { NeoLedgerAccount } from "@carbon-sdk/provider/account";
+import { O3Types, O3Wallet } from "@carbon-sdk/provider/o3";
+import { N3Address, SWTHAddress } from "@carbon-sdk/util/address";
+import { Blockchain } from "@carbon-sdk/util/blockchain";
+import { TokensWithExternalBalance } from "@carbon-sdk/util/external";
+import { SimpleMap } from "@carbon-sdk/util/type";
+import { CONST, rpc, sc, tx, u, wallet } from "@cityofzion/neon-core-next";
+import { GetContractStateResult, InvokeResult } from "@cityofzion/neon-core-next/lib/rpc";
+import BigNumber from "bignumber.js";
 
 export interface N3ClientOpts {
-  configProvider: NetworkConfigProvider,
-  blockchain?: Blockchain,
+  configProvider: NetworkConfigProvider;
+  blockchain?: Blockchain;
 }
 
 export interface LockLedgerDepositParams {
-  token: TokensWithExternalBalance
+  token: TokensWithExternalBalance;
 
-  toAddressHex: string
+  toAddressHex: string;
 
-  feeAmount: BigNumber
-  amount: BigNumber
+  feeAmount: BigNumber;
+  amount: BigNumber;
 
-  signCompleteCallback?: () => void
-  ledger: NeoLedgerAccount
+  signCompleteCallback?: () => void;
+  ledger: NeoLedgerAccount;
 }
 
 export interface LockO3DepositParams {
-  token: TokensWithExternalBalance
+  token: TokensWithExternalBalance;
 
-  toAddressHex: string
+  toAddressHex: string;
 
-  feeAmount: BigNumber
-  amount: BigNumber
+  feeAmount: BigNumber;
+  amount: BigNumber;
 
-  signCompleteCallback?: () => void
-  o3Wallet: O3Wallet
+  signCompleteCallback?: () => void;
+  o3Wallet: O3Wallet;
 }
 
 export interface NeoDapiInvokeArgs {
   scriptHash: string;
-  args?: any[]
+  args?: any[];
   operation: string;
   fee?: string;
-  signers: any[]
+  signers: any[];
 }
 
 export interface NeoDapiInvokeOutput {
@@ -55,22 +55,19 @@ export interface NeoDapiInvokeOutput {
 export interface N3Signer {
   scriptHash: string;
   sign: (txn: tx.Transaction, networkMagic?: number, k?: string | number) => Promise<tx.Transaction>;
-};
+}
 
 export class N3Client {
-  static SUPPORTED_BLOCKCHAINS = [Blockchain.Neo3]
+  static SUPPORTED_BLOCKCHAINS = [Blockchain.Neo3];
   static BLOCKCHAIN_KEY = {
     [Blockchain.Neo3]: "Neo3",
-  }
+  };
 
   private rpcClient: rpc.RPCClient;
 
-  private constructor(
-    public readonly configProvider: NetworkConfigProvider,
-    public readonly blockchain: Blockchain,
-  ) {
+  private constructor(public readonly configProvider: NetworkConfigProvider, public readonly blockchain: Blockchain) {
     const config = configProvider.getConfig();
-    const isValidNeoRpcUrl = config.n3.rpcURL?.length > 0
+    const isValidNeoRpcUrl = config.n3.rpcURL?.length > 0;
     this.rpcClient = isValidNeoRpcUrl ? new rpc.RPCClient(config.n3.rpcURL) : null!;
   }
 
@@ -97,15 +94,11 @@ export class N3Client {
   }
 
   public static instance(opts: N3ClientOpts) {
-    const {
-      configProvider,
-      blockchain = Blockchain.Neo3,
-    } = opts
+    const { configProvider, blockchain = Blockchain.Neo3 } = opts;
 
-    if (!N3Client.SUPPORTED_BLOCKCHAINS.includes(blockchain))
-      throw new Error(`unsupported blockchain - ${blockchain}`)
+    if (!N3Client.SUPPORTED_BLOCKCHAINS.includes(blockchain)) throw new Error(`unsupported blockchain - ${blockchain}`);
 
-    return new N3Client(configProvider, blockchain)
+    return new N3Client(configProvider, blockchain);
   }
 
   public async getExternalBalances(sdk: CarbonSDK, address: string, whitelistDenoms?: string[]): Promise<TokensWithExternalBalance[]> {
@@ -116,7 +109,7 @@ export class N3Client {
 
     for (const token of tokens) {
       if (!token.tokenAddress.match(/^[0-9a-f]+$/i)) continue;
-      if (whitelistDenoms && !whitelistDenoms.includes(token.denom)) continue
+      if (whitelistDenoms && !whitelistDenoms.includes(token.denom)) continue;
       const tokenScriptHash = u.reverseHex(token.tokenAddress);
       if (!balances[tokenScriptHash]) continue;
 
@@ -130,10 +123,12 @@ export class N3Client {
   }
 
   public async getAllN3Balances(address: string): Promise<SimpleMap<string>> {
-    const response: any = await this.rpcClient.execute(new rpc.Query({
-      method: "getnep17balances",
-      params: [address],
-    }));
+    const response: any = await this.rpcClient.execute(
+      new rpc.Query({
+        method: "getnep17balances",
+        params: [address],
+      })
+    );
 
     const balances: SimpleMap<string> = {};
     for (const balanceResult of response?.balance ?? []) {
@@ -143,9 +138,16 @@ export class N3Client {
     return balances;
   }
 
-  public async lock(lockProxyScriptHash: string, tokenScriptHash: string, fromAddressHex: string, toAddressHex: string, amount: BigNumber, feeAmount: BigNumber, signer: N3Signer) {
-
-    const nonce = Math.floor(Math.random() * 1000000)
+  public async lock(
+    lockProxyScriptHash: string,
+    tokenScriptHash: string,
+    fromAddressHex: string,
+    toAddressHex: string,
+    amount: BigNumber,
+    feeAmount: BigNumber,
+    signer: N3Signer
+  ) {
+    const nonce = Math.floor(Math.random() * 1000000);
 
     const networkConfig = this.configProvider.getConfig();
     const args = [
@@ -167,23 +169,26 @@ export class N3Client {
     const txn = new tx.Transaction({
       script,
       validUntilBlock: currentHeight + 100,
-      signers: [{
-        account: signer.scriptHash,
-        scopes: tx.WitnessScope.Global,
-      }]
+      signers: [
+        {
+          account: signer.scriptHash,
+          scopes: tx.WitnessScope.Global,
+        },
+      ],
     });
     const networkFee = await this.getNetworkFee(txn, 0);
     txn.networkFee = networkFee;
 
-    const systemFee = await this.getSystemFee(txn, 0, [{
-      account: signer.scriptHash,
-      scopes: tx.WitnessScope.Global.toString(),
-    }]);
+    const systemFee = await this.getSystemFee(txn, 0, [
+      {
+        account: signer.scriptHash,
+        scopes: tx.WitnessScope.Global.toString(),
+      },
+    ]);
     txn.systemFee = systemFee;
 
-
     if (amount.lt(feeAmount)) {
-      return false
+      return false;
     }
 
     const config = this.configProvider.getConfig();
@@ -192,22 +197,20 @@ export class N3Client {
     // console.log("magic", config.n3.networkMagic)
     // console.log("txn", txn.toJson());
     // console.log("txn", u.HexString.fromHex(txn.serialize(true)).toString());
-    const txHash = await this.rpcClient.sendRawTransaction(
-      u.HexString.fromHex(txn.serialize(true))
-    );
+    const txHash = await this.rpcClient.sendRawTransaction(u.HexString.fromHex(txn.serialize(true)));
 
     return txHash;
   }
 
   public async lockDeposit(token: TokensWithExternalBalance, feeAmountInput: string, swthAddress: string, neoPrivateKey: string) {
-    const networkConfig = this.configProvider.getConfig()
-    const scriptHash = u.reverseHex(token.bridgeAddress)
+    const networkConfig = this.configProvider.getConfig();
+    const scriptHash = u.reverseHex(token.bridgeAddress);
     const tokenScriptHash = u.reverseHex(token.tokenAddress);
 
-    const addressBytes = SWTHAddress.getAddressBytes(swthAddress, networkConfig.network)
+    const addressBytes = SWTHAddress.getAddressBytes(swthAddress, networkConfig.network);
     const toAddress = Buffer.from(addressBytes).toString("hex");
-    const amount = new BigNumber(token.externalBalance)
-    const feeAmount = new BigNumber(feeAmountInput ?? "100000000")
+    const amount = new BigNumber(token.externalBalance);
+    const feeAmount = new BigNumber(feeAmountInput ?? "100000000");
 
     const n3Signer = N3Client.signerFromPrivateKey(neoPrivateKey);
     const fromAddress = N3Address.privateKeyToAddress(neoPrivateKey);
@@ -215,21 +218,19 @@ export class N3Client {
   }
 
   public async lockO3Deposit(params: LockO3DepositParams): Promise<string> {
-    const {
-      feeAmount, toAddressHex, amount, token, o3Wallet, signCompleteCallback,
-    } = params
+    const { feeAmount, toAddressHex, amount, token, o3Wallet, signCompleteCallback } = params;
     if (!o3Wallet.isConnected()) {
-      throw new Error("O3 wallet not connected. Please reconnect and try again.")
+      throw new Error("O3 wallet not connected. Please reconnect and try again.");
     }
 
-    const nonce = Math.floor(Math.random() * 1000000)
+    const nonce = Math.floor(Math.random() * 1000000);
     const networkConfig = this.configProvider.getConfig();
 
-    const lockProxyScriptHash = u.reverseHex(token.bridgeAddress)
+    const lockProxyScriptHash = u.reverseHex(token.bridgeAddress);
     const tokenScriptHash = u.reverseHex(token.tokenAddress);
     const fromAddressHex = o3Wallet.address;
 
-    const publicKeyOutput = await o3Wallet.getPublicKeyOutput() as O3Types.PublicKeyOutput;
+    const publicKeyOutput = (await o3Wallet.getPublicKeyOutput()) as O3Types.PublicKeyOutput;
     const accountScriptHash = N3Address.publicKeyToScriptHash(publicKeyOutput.publicKey);
 
     const feeAddress = feeAmount.isZero() ? "" : u.HexString.fromHex(networkConfig.feeAddress).toBase64();
@@ -249,32 +250,29 @@ export class N3Client {
       scriptHash: lockProxyScriptHash,
       args,
       network: o3Wallet.neoNetwork,
-      signers: [{
-        account: accountScriptHash,
-        scopes: tx.WitnessScope.Global,
-      }],
-    })
+      signers: [
+        {
+          account: accountScriptHash,
+          scopes: tx.WitnessScope.Global,
+        },
+      ],
+    });
     return result.txid;
   }
 
   public async lockLedgerDeposit(params: LockLedgerDepositParams) {
-    const {
-      feeAmount, toAddressHex, amount, token, ledger, signCompleteCallback,
-    } = params
+    const { feeAmount, toAddressHex, amount, token, ledger, signCompleteCallback } = params;
 
-    const scriptHash = u.reverseHex(token.bridgeAddress)
+    const scriptHash = u.reverseHex(token.bridgeAddress);
     const tokenScriptHash = u.reverseHex(token.tokenAddress);
-    const fromAddressHex = ledger.displayAddress
+    const fromAddressHex = ledger.displayAddress;
 
     const n3Signer = N3Client.signerFromLedger(ledger);
     return await this.lock(scriptHash, tokenScriptHash, fromAddressHex, toAddressHex, amount, feeAmount, n3Signer);
   }
 
   public async getNetworkFee(txn: tx.Transaction, networkFee: number) {
-    const feePerByteInvokeResponse = await this.rpcClient.invokeFunction(
-      CONST.NATIVE_CONTRACT_HASH.PolicyContract,
-      "getFeePerByte"
-    );
+    const feePerByteInvokeResponse = await this.rpcClient.invokeFunction(CONST.NATIVE_CONTRACT_HASH.PolicyContract, "getFeePerByte");
 
     if (feePerByteInvokeResponse.state !== "HALT") {
       if (networkFee === 0) {
@@ -283,14 +281,12 @@ export class N3Client {
         txn.networkFee = u.BigInteger.fromNumber(networkFee);
       }
     }
-    const feePerByte = new BigNumber(feePerByteInvokeResponse.stack[0].value as number)
+    const feePerByte = new BigNumber(feePerByteInvokeResponse.stack[0].value as number);
     // Account for witness size
     const transactionByteSize = txn.serialize().length / 2 + 109;
     // Hardcoded. Running a witness is always the same cost for the basic account.
     const witnessProcessingFee = new BigNumber(1000390);
-    const networkFeeEstimate = feePerByte
-      .times(transactionByteSize)
-      .plus(witnessProcessingFee);
+    const networkFeeEstimate = feePerByte.times(transactionByteSize).plus(witnessProcessingFee);
 
     if (networkFee && networkFee >= networkFeeEstimate.toNumber()) {
       return u.BigInteger.fromNumber(networkFee);
@@ -324,34 +320,34 @@ export class N3Client {
   }
 
   public async retrieveNEP17Info(address: string) {
-    const result: [ InvokeResult, InvokeResult, GetContractStateResult ] = await this.rpcClient.executeAll([
+    const result: [InvokeResult, InvokeResult, GetContractStateResult] = await this.rpcClient.executeAll([
       new rpc.Query({
-        method: 'invokefunction',
-        params: [address, 'decimals'],
+        method: "invokefunction",
+        params: [address, "decimals"],
       }),
       new rpc.Query({
-        method: 'invokefunction',
-        params: [address, 'symbol'],
+        method: "invokefunction",
+        params: [address, "symbol"],
       }),
       new rpc.Query({
-        method: 'getcontractstate',
+        method: "getcontractstate",
         params: [address],
       }),
-    ])
-    const [decimalRaw, symbolRaw, nameRaw] = result
-    let decimals: number = 0
-    let symbol: string = ''
-    let name : string = ''
-    if (typeof decimalRaw.stack[0].value ==='string') {
-      decimals = Number(decimalRaw.stack[0].value)
+    ]);
+    const [decimalRaw, symbolRaw, nameRaw] = result;
+    let decimals: number = 0;
+    let symbol: string = "";
+    let name: string = "";
+    if (typeof decimalRaw.stack[0].value === "string") {
+      decimals = Number(decimalRaw.stack[0].value);
     }
-    if (typeof symbolRaw.stack[0].value ==='string') {
-      symbol = Buffer.from(symbolRaw.stack[0].value, 'base64').toString('ascii')
-    } 
-    if (typeof nameRaw.manifest.name ==='string') {
-      name = nameRaw.manifest.name
-    } 
-    return {name, symbol, address, decimals}
+    if (typeof symbolRaw.stack[0].value === "string") {
+      symbol = Buffer.from(symbolRaw.stack[0].value, "base64").toString("ascii");
+    }
+    if (typeof nameRaw.manifest.name === "string") {
+      name = nameRaw.manifest.name;
+    }
+    return { name, symbol, address, decimals };
   }
 }
 

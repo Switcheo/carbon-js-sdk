@@ -12,10 +12,10 @@ const SWTH = {
   coinMinimalDenom: "swth",
   coinDecimals: 8,
   coinGeckoId: "switcheo",
-}
+};
 
 class KeplrAccount {
-  static SWTH_CURRENCY: AppCurrency = SWTH
+  static SWTH_CURRENCY: AppCurrency = SWTH;
   static BASE_CHAIN_INFO = {
     bip44: { coinType: AddressUtils.SWTHAddress.coinType() },
     currencies: [],
@@ -37,11 +37,13 @@ class KeplrAccount {
       return await keplr!.signAmino(chainInfo.chainId, signerAddress, doc, signOpts);
     };
 
-    const getAccounts = async () => [{
-      algo: 'secp256k1' as Algo,
-      address: account.bech32Address,
-      pubkey: account.pubKey,
-    }];
+    const getAccounts = async () => [
+      {
+        algo: "secp256k1" as Algo,
+        address: account.bech32Address,
+        pubkey: account.pubKey,
+      },
+    ];
 
     return {
       type: CarbonSignerTypes.BrowserInjected,
@@ -61,7 +63,7 @@ class KeplrAccount {
     const coingeckoIdMap = tokenClient.geckoTokenNames;
     const feeCurrencies: AppCurrency[] = gasPricesResult.minGasPrices.reduce((result: AppCurrency[], price: MinGasPrice) => {
       const token = tokenClient.tokenForDenom(price.denom);
-      if (!token || token.denom === 'swth') return result;
+      if (!token || token.denom === "swth") return result;
       result.push({
         coinDenom: token.symbol ?? token.denom,
         coinMinimalDenom: token.denom,
@@ -90,12 +92,10 @@ class KeplrAccount {
         bech32PrefixConsPub: `${bech32Prefix}valconspub`,
       },
       features: ["stargate", "ibc-transfer", "ibc-go"],
-    }
+    };
   }
 }
 
-namespace KeplrAccount {
-
-}
+namespace KeplrAccount {}
 
 export default KeplrAccount;

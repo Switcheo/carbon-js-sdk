@@ -1,5 +1,5 @@
-import Transport, { getAltStatusMessage } from "@ledgerhq/hw-transport"
-import { u } from "@cityofzion/neon-core"
+import Transport, { getAltStatusMessage } from "@ledgerhq/hw-transport";
+import { u } from "@cityofzion/neon-core";
 
 /**
  * Duplicated from @cityofzion/neon-ledger due to package incompatibility:
@@ -32,8 +32,7 @@ export function evalTransportError(err: Error): Error {
       transportErr.message = "Your NEO app is closed! Please login.";
       break;
     case ErrorCode.MSG_TOO_BIG:
-      transportErr.message =
-        "Your transaction is too big for the ledger to sign!";
+      transportErr.message = "Your transaction is too big for the ledger to sign!";
       break;
     case ErrorCode.TX_DENIED:
       transportErr.message = "Transaction signing denied";
@@ -50,18 +49,8 @@ const DEFAULT_STATUSLIST = [ErrorCode.VALID_STATUS];
  * Appends data to the Ledger for signature.
  * @param msg A string up to 510 characters (256 bytes)
  */
-async function appendDataForSignature(
-  ledger: Transport,
-  msg: string
-): Promise<Buffer> {
-  return await ledger.send(
-    0x80,
-    0x02,
-    0x00,
-    0x00,
-    Buffer.from(msg, "hex"),
-    DEFAULT_STATUSLIST
-  );
+async function appendDataForSignature(ledger: Transport, msg: string): Promise<Buffer> {
+  return await ledger.send(0x80, 0x02, 0x00, 0x00, Buffer.from(msg, "hex"), DEFAULT_STATUSLIST);
 }
 
 /**
@@ -69,18 +58,8 @@ async function appendDataForSignature(
  * @param ledger
  * @param msg A string up to 510 characters (256 bytes)
  */
-async function finalizeDataForSignature(
-  ledger: Transport,
-  msg: string
-): Promise<Buffer> {
-  return await ledger.send(
-    0x80,
-    0x02,
-    0x80,
-    0x00,
-    Buffer.from(msg, "hex"),
-    DEFAULT_STATUSLIST
-  );
+async function finalizeDataForSignature(ledger: Transport, msg: string): Promise<Buffer> {
+  return await ledger.send(0x80, 0x02, 0x80, 0x00, Buffer.from(msg, "hex"), DEFAULT_STATUSLIST);
 }
 
 /**
@@ -97,9 +76,7 @@ export function getNEOBIP44String(address = 0, change = 0, account = 0): string 
  * Returns the list of connected Ledger devices. Throw if Ledger is not supported by the computer.
  * @param ledgerLibrary
  */
-export async function getDevicePaths(
-  ledgerLibrary: typeof Transport
-): Promise<ReadonlyArray<string>> {
+export async function getDevicePaths(ledgerLibrary: typeof Transport): Promise<ReadonlyArray<string>> {
   const supported = await ledgerLibrary.isSupported();
   if (!supported) {
     throw new Error(`Your computer does not support the ledger!`);
@@ -113,19 +90,9 @@ export async function getDevicePaths(
  * @param bip44String The BIP44 string (40 bytes)
  * @returns An unencoded public key (65 bytes)
  */
-export async function getPublicKey(
-  ledger: Transport,
-  bip44String: string
-): Promise<string> {
+export async function getPublicKey(ledger: Transport, bip44String: string): Promise<string> {
   try {
-    const response = await ledger.send(
-      0x80,
-      0x04,
-      0x00,
-      0x00,
-      Buffer.from(bip44String, "hex"),
-      DEFAULT_STATUSLIST
-    );
+    const response = await ledger.send(0x80, 0x04, 0x00, 0x00, Buffer.from(bip44String, "hex"), DEFAULT_STATUSLIST);
     return response.toString("hex").substring(0, 130);
   } catch (e) {
     if ((e as TransportStatusError).statusCode) {
@@ -142,21 +109,14 @@ export async function getPublicKey(
  * @param bip44String The BIP44 string (40 bytes)
  * @returns Signature as a hexstring (64 bytes)
  */
-export async function getSignature(
-  ledger: Transport,
-  hex: string,
-  bip44String: string
-): Promise<string> {
+export async function getSignature(ledger: Transport, hex: string, bip44String: string): Promise<string> {
   const payload = hex + bip44String;
   const chunks = payload.match(/.{1,510}/g) || [];
   try {
     for (let i = 0; i < chunks.length - 1; i++) {
       await appendDataForSignature(ledger, chunks[i]);
     }
-    const response = await finalizeDataForSignature(
-      ledger,
-      chunks[chunks.length - 1]
-    );
+    const response = await finalizeDataForSignature(ledger, chunks[chunks.length - 1]);
     if (response.readUIntBE(0, 2) === ErrorCode.VALID_STATUS) {
       throw new Error(`No more data but Ledger did not return signature!`);
     }
@@ -209,4 +169,4 @@ export default {
   getDevicePaths,
   getPublicKey,
   getSignature,
-}
+};

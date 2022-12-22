@@ -1,27 +1,36 @@
 import { Network, NetworkConfig } from "@carbon-sdk/constant";
 import { APIUtils, BlockchainUtils } from "@carbon-sdk/util";
 import dayjs from "dayjs";
-import { ChainTransaction, CrossChainTransfer, CrossChainTransferDetailed, GetDetailedTransfersResponse, GetRelaysRequest, GetStatsResponse, GetTransfersRequest, GetTransfersResponse } from "../hydrogen";
+import {
+  ChainTransaction,
+  CrossChainTransfer,
+  CrossChainTransferDetailed,
+  GetDetailedTransfersResponse,
+  GetRelaysRequest,
+  GetStatsResponse,
+  GetTransfersRequest,
+  GetTransfersResponse,
+} from "../hydrogen";
 import { FeeQuote, GetFeeQuoteRequest, GetFeeQuoteResponse } from "@carbon-sdk/hydrogen/feeQuote";
 
 export const HydrogenEndpoints = {
   // Status api
-  'stats': '/stats',
+  stats: "/stats",
 
   // Transfer Payloads api
-  'transfer_payloads': '/transfer_payloads',
+  transfer_payloads: "/transfer_payloads",
 
   // Relays api
-  'relays': '/relays',
+  relays: "/relays",
 
   // Fee service api
-  'fee_quote': '/fee_quote',
-}
+  fee_quote: "/fee_quote",
+};
 
 const formatDateField = (value?: string | null) => {
   if (typeof value !== "string") return null;
   return dayjs(value);
-}
+};
 
 const formatCrossChainTransfer = (value: any): CrossChainTransfer => {
   if (typeof value !== "object") return value;
@@ -32,8 +41,8 @@ const formatCrossChainTransfer = (value: any): CrossChainTransfer => {
     source_blockchain: BlockchainUtils.parseBlockchain(value.source_blockchain),
     bridging_blockchain: BlockchainUtils.parseBlockchain(value.bridging_blockchain),
     destination_blockchain: BlockchainUtils.parseBlockchain(value.destination_blockchain),
-  }
-}
+  };
+};
 
 const formatCrossChainTransferDetailed = (value: any): CrossChainTransferDetailed => {
   if (!value || typeof value !== "object") return value;
@@ -42,8 +51,8 @@ const formatCrossChainTransferDetailed = (value: any): CrossChainTransferDetaile
     source_event: formatChainEvent(value.source_event),
     bridging_event: formatChainEvent(value.bridging_event),
     destination_event: formatChainEvent(value.destination_event),
-  }
-}
+  };
+};
 
 const formatChainEvent = (value: any): ChainTransaction | null => {
   if (!value || typeof value !== "object") return value;
@@ -55,7 +64,7 @@ const formatChainEvent = (value: any): ChainTransaction | null => {
     destination_blockchain: BlockchainUtils.parseBlockchain(value.destination_blockchain),
     blockchain: BlockchainUtils.parseBlockchain(value.blockchain),
   } as ChainTransaction;
-}
+};
 
 const formatFeeQuote = (value: any): FeeQuote => {
   if (typeof value !== "object") return value;
@@ -64,16 +73,14 @@ const formatFeeQuote = (value: any): FeeQuote => {
     blockchain: BlockchainUtils.parseBlockchain(value.blockchain),
     created_at: formatDateField(value.created_at?.toString()),
     expires_at: formatDateField(value.expires_at?.toString()),
-  }
-}
+  };
+};
 
 class HydrogenClient {
-  private readonly apiManager: APIUtils.APIManager<typeof HydrogenEndpoints>
+  private readonly apiManager: APIUtils.APIManager<typeof HydrogenEndpoints>;
 
-  constructor(
-    private config: NetworkConfig
-  ) {
-    this.apiManager = new APIUtils.APIManager(config.hydrogenUrl, HydrogenEndpoints)
+  constructor(private config: NetworkConfig) {
+    this.apiManager = new APIUtils.APIManager(config.hydrogenUrl, HydrogenEndpoints);
   }
 
   checkState() {
@@ -87,61 +94,77 @@ class HydrogenClient {
   // Status api
   async getStats(): Promise<GetStatsResponse> {
     this.checkState();
-    const request = this.apiManager.path('stats')
-    const response = await request.get()
-    return response.data as GetStatsResponse
+    const request = this.apiManager.path("stats");
+    const response = await request.get();
+    return response.data as GetStatsResponse;
   }
 
   async getTransfers(req: GetTransfersRequest): Promise<GetTransfersResponse> {
     this.checkState();
-    const request = this.apiManager.path('transfer_payloads', {}, {
-      ...req,
-      include_tx: false,
-    })
+    const request = this.apiManager.path(
+      "transfer_payloads",
+      {},
+      {
+        ...req,
+        include_tx: false,
+      }
+    );
     const response = await request.get();
     const result = response.data;
 
     return {
       ...result,
       data: result.data.map(formatCrossChainTransfer),
-    }
+    };
   }
 
   async getDetailedTransfers(req: GetTransfersRequest): Promise<GetDetailedTransfersResponse> {
     this.checkState();
-    const request = this.apiManager.path('transfer_payloads', {}, {
-      ...req,
-      include_tx: true,
-    })
+    const request = this.apiManager.path(
+      "transfer_payloads",
+      {},
+      {
+        ...req,
+        include_tx: true,
+      }
+    );
     const response = await request.get();
     const result = response.data;
 
     return {
       ...result,
       data: result.data.map(formatCrossChainTransferDetailed),
-    }
+    };
   }
 
   async getRelaysTransfers(req: GetRelaysRequest): Promise<GetDetailedTransfersResponse> {
     this.checkState();
-    const request = this.apiManager.path('relays', {}, {
-      ...req,
-      include_tx: true,
-    })
+    const request = this.apiManager.path(
+      "relays",
+      {},
+      {
+        ...req,
+        include_tx: true,
+      }
+    );
     const response = await request.get();
     const result = response.data;
 
     return {
       ...result,
       data: result.data.map(formatCrossChainTransferDetailed),
-    }
+    };
   }
 
   async getFeeQuote(req: GetFeeQuoteRequest): Promise<GetFeeQuoteResponse> {
     this.checkState();
-    const request = this.apiManager.path('fee_quote', {}, {
-      ...req,
-    });
+    const request = this.apiManager.path(
+      "fee_quote",
+      {},
+      {
+        ...req,
+      }
+    );
     const response = await request.get();
     const result = response.data;
 
@@ -149,4 +172,4 @@ class HydrogenClient {
   }
 }
 
-export default HydrogenClient
+export default HydrogenClient;

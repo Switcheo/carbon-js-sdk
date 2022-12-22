@@ -2,7 +2,7 @@ import { Network } from "@carbon-sdk/constant";
 import Long from "long";
 
 export interface SimpleMap<T = unknown> {
-  [index: string]: T
+  [index: string]: T;
 }
 
 export interface NetworkMap<T> {
@@ -18,19 +18,17 @@ export type OptionalNetworkMap<T> = Partial<NetworkMap<T>>;
  * converts snakecase strings to camelcase
  * @param snakeStr string to convert to camelcase
  */
- export const snakeToCamel = (snakeStr: string): string => {
-  if (!snakeStr.includes('_')) {
-    return snakeStr    
+export const snakeToCamel = (snakeStr: string): string => {
+  if (!snakeStr.includes("_")) {
+    return snakeStr;
   }
-  const camelArr = snakeStr.split('_').map((snakeItem: string, index: number) => {
+  const camelArr = snakeStr.split("_").map((snakeItem: string, index: number) => {
     if (index === 0) {
-      return snakeItem
+      return snakeItem;
     }
-    return snakeItem.length > 1
-      ? `${snakeItem[0].toUpperCase()}${snakeItem.substr(1)}`
-      : snakeItem.toUpperCase()
-  })
-  return camelArr.join('')
+    return snakeItem.length > 1 ? `${snakeItem[0].toUpperCase()}${snakeItem.substr(1)}` : snakeItem.toUpperCase();
+  });
+  return camelArr.join("");
 };
 
 /**
@@ -39,16 +37,14 @@ export type OptionalNetworkMap<T> = Partial<NetworkMap<T>>;
  */
 export const camelToSnake = (camelStr: string): string => {
   if (camelStr.length <= 1) {
-    return camelStr
+    return camelStr;
   }
-  let newSnake: string = ''
+  let newSnake: string = "";
   for (let letter of camelStr) {
-    const newLetter = letter !== letter.toLowerCase()
-      ? `_${letter.toLowerCase()}`
-      : letter
-    newSnake = `${newSnake}${newLetter}`
+    const newLetter = letter !== letter.toLowerCase() ? `_${letter.toLowerCase()}` : letter;
+    newSnake = `${newSnake}${newLetter}`;
   }
-  return newSnake
+  return newSnake;
 };
 
 export const isDurationType = (value: any): boolean => {

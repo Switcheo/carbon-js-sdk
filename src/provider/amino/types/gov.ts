@@ -1,18 +1,24 @@
 import { MsgSubmitProposal } from "@carbon-sdk/codec/cosmos/gov/v1beta1/tx";
 import {
   CreateOracleProposal,
-  CreateTokenProposal, LinkPoolProposal, SetCommitmentCurveProposal, 
-  SetMsgGasCostProposal, SetMinGasPriceProposal, RemoveMsgGasCostProposal,
-  RemoveMinGasPriceProposal, SetRewardCurveProposal, SetRewardsWeightsProposal,
-  UnlinkPoolProposal, SettlementPriceProposal, UpdateMarketProposal, UpdatePoolProposal,
+  CreateTokenProposal,
+  LinkPoolProposal,
+  SetCommitmentCurveProposal,
+  SetMsgGasCostProposal,
+  SetMinGasPriceProposal,
+  RemoveMsgGasCostProposal,
+  RemoveMinGasPriceProposal,
+  SetRewardCurveProposal,
+  SetRewardsWeightsProposal,
+  UnlinkPoolProposal,
+  SettlementPriceProposal,
+  UpdateMarketProposal,
+  UpdatePoolProposal,
 } from "@carbon-sdk/codec";
 import { GovUtils, TypeUtils } from "@carbon-sdk/util";
 import * as CarbonTx from "@carbon-sdk/util/tx";
 import { AminoConverter } from "@cosmjs/stargate";
-import {
-  AminoInit, ConvertEncType, AminoProcess, AminoValueMap,
-  generateAminoType, mapEachIndiv,
-} from "../utils";
+import { AminoInit, ConvertEncType, AminoProcess, AminoValueMap, generateAminoType, mapEachIndiv } from "../utils";
 
 const TxTypes: TypeUtils.SimpleMap<string> = {
   SubmitProposal: "cosmos-sdk/MsgSubmitProposal",
@@ -26,9 +32,9 @@ const ContentTypes: TypeUtils.SimpleMap<string> = {
   [GovUtils.ProposalTypes.SetMinGasPrice]: "fee/SetMinGasPriceProposal",
   [GovUtils.ProposalTypes.RemoveMsgGasCost]: "fee/RemoveMsgGasCostProposal",
   [GovUtils.ProposalTypes.RemoveMinGasPrice]: "fee/RemoveMinGasPriceProposal",
-  [GovUtils.ProposalTypes.SetCommitmentCurve]: 'liquiditypool/SetCommitmentCurveProposal',
-  [GovUtils.ProposalTypes.SetRewardCurve]: 'liquiditypool/SetRewardCurveProposal',
-  [GovUtils.ProposalTypes.SetRewardsWeights]: 'liquiditypool/SetRewardsWeightsProposal',
+  [GovUtils.ProposalTypes.SetCommitmentCurve]: "liquiditypool/SetCommitmentCurveProposal",
+  [GovUtils.ProposalTypes.SetRewardCurve]: "liquiditypool/SetRewardCurveProposal",
+  [GovUtils.ProposalTypes.SetRewardsWeights]: "liquiditypool/SetRewardsWeightsProposal",
   [GovUtils.ProposalTypes.UpdatePool]: "liquiditypool/UpdatePoolProposal",
   [GovUtils.ProposalTypes.LinkPool]: "liquiditypool/LinkPoolProposal",
   [GovUtils.ProposalTypes.UnlinkPool]: "liquiditypool/UnlinkPoolProposal",
@@ -184,20 +190,17 @@ interface AminoProposalRes {
     value: any;
   };
   newAmino: AminoValueMap;
-};
+}
 
 interface DirectProposalRes {
   newContent: {
     typeUrl: string;
     value: Uint8Array;
-  },
+  };
   newAmino: AminoValueMap;
 }
 
-const preProcessAmino = (
-  value: TypeUtils.SimpleMap<any>,
-  valueMap: AminoValueMap
-): TypeUtils.SimpleMap<any> | null | undefined => {
+const preProcessAmino = (value: TypeUtils.SimpleMap<any>, valueMap: AminoValueMap): TypeUtils.SimpleMap<any> | null | undefined => {
   return mapEachIndiv(value, valueMap, false);
 };
 
@@ -206,7 +209,7 @@ const checkDecodeProposal = (content: any, amino: AminoValueMap): AminoProposalR
   const newContent = {
     type: ContentTypes[content.typeUrl],
     value: decodedValue.value,
-  }
+  };
   const newAmino = { ...amino };
 
   switch (content.typeUrl) {
@@ -509,7 +512,7 @@ const proposalAminoProcess: AminoProcess = {
       },
     };
   },
-}
+};
 
 const GovAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgSubmitProposal]: generateAminoType(SubmitProposalMsg, proposalAminoProcess),

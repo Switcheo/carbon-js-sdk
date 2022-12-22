@@ -42,41 +42,41 @@ export interface CarbonWalletGenericOpts {
 export type CarbonWalletInitOpts = CarbonWalletGenericOpts &
   (
     | {
-      // connect with mnemonic
-      mnemonic: string;
-      privateKey?: string | Buffer;
-      signer?: CarbonSigner;
-      publicKeyBase64?: string;
-      bech32Address?: string;
-      customSigner?: OfflineSigner & OfflineDirectSigner;
-    }
+        // connect with mnemonic
+        mnemonic: string;
+        privateKey?: string | Buffer;
+        signer?: CarbonSigner;
+        publicKeyBase64?: string;
+        bech32Address?: string;
+        customSigner?: OfflineSigner & OfflineDirectSigner;
+      }
     | {
-      // connect with private key
-      mnemonic?: string;
-      privateKey: string | Buffer;
-      signer?: CarbonSigner;
-      publicKeyBase64?: string;
-      bech32Address?: string;
-      customSigner?: OfflineSigner & OfflineDirectSigner;
-    }
+        // connect with private key
+        mnemonic?: string;
+        privateKey: string | Buffer;
+        signer?: CarbonSigner;
+        publicKeyBase64?: string;
+        bech32Address?: string;
+        customSigner?: OfflineSigner & OfflineDirectSigner;
+      }
     | {
-      // connect with custom signer
-      mnemonic?: string;
-      privateKey?: string | Buffer;
-      signer: CarbonSigner;
-      publicKeyBase64: string;
-      bech32Address?: string;
-      customSigner?: OfflineSigner & OfflineDirectSigner; // to allow adding of keplr offline signer
-    }
+        // connect with custom signer
+        mnemonic?: string;
+        privateKey?: string | Buffer;
+        signer: CarbonSigner;
+        publicKeyBase64: string;
+        bech32Address?: string;
+        customSigner?: OfflineSigner & OfflineDirectSigner; // to allow adding of keplr offline signer
+      }
     | {
-      // connect with address (view only)
-      mnemonic?: string;
-      privateKey?: string | Buffer;
-      signer?: CarbonSigner;
-      publicKeyBase64?: string;
-      bech32Address: string;
-      customSigner?: OfflineSigner & OfflineDirectSigner;
-    }
+        // connect with address (view only)
+        mnemonic?: string;
+        privateKey?: string | Buffer;
+        signer?: CarbonSigner;
+        publicKeyBase64?: string;
+        bech32Address: string;
+        customSigner?: OfflineSigner & OfflineDirectSigner;
+      }
   );
 
 export interface AccountInfo extends Account {
@@ -253,11 +253,7 @@ export class CarbonWallet {
   public async initialize(queryClient: CarbonQueryClient): Promise<CarbonWallet> {
     this.query = queryClient;
 
-    await Promise.all([
-      this.reconnectTmClient(),
-      this.reloadTxFees(),
-      this.reloadAccountSequence(),
-    ]);
+    await Promise.all([this.reconnectTmClient(), this.reloadTxFees(), this.reloadAccountSequence()]);
 
     this.initialized = true;
     return this;
@@ -277,11 +273,7 @@ export class CarbonWallet {
     sequence: number,
     opts: Omit<CarbonTx.SignTxOpts, "sequence">
   ): Promise<CarbonWallet.TxRaw> {
-    const {
-      memo = "",
-      explicitSignerData,
-      feeDenom,
-    } = opts;
+    const { memo = "", explicitSignerData, feeDenom } = opts;
 
     const signingClient = this.getSigningClient();
     const [account] = await this.signer.getAccounts();
@@ -524,7 +516,7 @@ export class CarbonWallet {
     }, {} as SimpleMap<BigNumber>);
 
     if (!this.txGasPrices[this.defaultFeeDenom]) {
-      const newDefaultFeeDenom = minGasPrices[0]?.denom
+      const newDefaultFeeDenom = minGasPrices[0]?.denom;
       if (newDefaultFeeDenom) {
         console.warn(`default fee denom ${this.defaultFeeDenom} not supported, using ${newDefaultFeeDenom} instead.`);
         this.defaultFeeDenom = newDefaultFeeDenom;
@@ -542,7 +534,7 @@ export class CarbonWallet {
         value: this.publicKey.toString("base64"),
       };
 
-      const chainId = this.accountInfo?.chainId ?? this.chainId ?? await this.getQueryClient().chain.getChainId();
+      const chainId = this.accountInfo?.chainId ?? this.chainId ?? (await this.getQueryClient().chain.getChainId());
 
       this.accountInfo = {
         ...info,
@@ -551,16 +543,12 @@ export class CarbonWallet {
         chainId,
       };
     } catch (error: any) {
-      if (!this.isNewAccountError(error))
-        throw error;
+      if (!this.isNewAccountError(error)) throw error;
     }
   }
 
-  private estimateTxFee(
-    messages: readonly EncodeObject[],
-    feeDenom: string = this.defaultFeeDenom,
-  ) {
-    const denomGasPrice = this.getGasPrice(feeDenom);;
+  private estimateTxFee(messages: readonly EncodeObject[], feeDenom: string = this.defaultFeeDenom) {
+    const denomGasPrice = this.getGasPrice(feeDenom);
     let totalGasCost = messages.reduce((result, message) => {
       const gasCost = this.getGasCost(message.typeUrl);
       return result.plus(gasCost);
@@ -575,17 +563,19 @@ export class CarbonWallet {
     }
 
     return {
-      amount: [{
-        amount: totalFees.toString(10),
-        denom: feeDenom,
-      }],
+      amount: [
+        {
+          amount: totalFees.toString(10),
+          denom: feeDenom,
+        },
+      ],
       gas: totalGasCost.toString(10),
     };
   }
 
   private isNewAccountError = (error?: Error) => {
     return error?.message?.includes("Account does not exist on chain. Send some tokens there before trying to query sequence.");
-  }
+  };
 
   private isNonceMismatchError = (error?: Error) => {
     const regex =
@@ -614,6 +604,6 @@ export namespace CarbonWallet {
   export type OnSignCompleteCallback = (signature: StdSignature | null) => void | Promise<void>;
 
   // workaround to re-export interface mixed const type
-  export interface TxRaw extends StargateTxRaw { }
+  export interface TxRaw extends StargateTxRaw {}
   export const TxRaw: typeof StargateTxRaw = { ...StargateTxRaw };
 }

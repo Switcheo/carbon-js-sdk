@@ -4,7 +4,6 @@ import BigNumber from "bignumber.js";
 import BaseModule from "./base";
 
 export class IBCModule extends BaseModule {
-
   public async sendIBCTransfer(params: IBCModule.SendIBCTransferParams, msgOpts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
@@ -27,29 +26,31 @@ export class IBCModule extends BaseModule {
         revisionHeight: params.revisionHeight,
         revisionNumber: params.revisionNumber ?? 1,
       },
-      ...params.timeoutTimestamp && {
+      ...(params.timeoutTimestamp && {
         timeoutTimestamp: params.timeoutTimestamp,
-      },
+      }),
     });
 
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgTransfer,
-      value,
-    }, msgOpts);
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgTransfer,
+        value,
+      },
+      msgOpts
+    );
   }
-
 }
 
 export namespace IBCModule {
   export interface SendIBCTransferParams {
-    sender?: string
-    receiver: string
-    amount: BigNumber
-    denom: string
-    sourceChannel: string
-    sourcePort: string
-    revisionHeight?: number
-    revisionNumber?: number
-    timeoutTimestamp?: number
+    sender?: string;
+    receiver: string;
+    amount: BigNumber;
+    denom: string;
+    sourceChannel: string;
+    sourcePort: string;
+    revisionHeight?: number;
+    revisionNumber?: number;
+    timeoutTimestamp?: number;
   }
-};
+}

@@ -152,7 +152,7 @@ export interface Pool {
     denom: string;
     denom_a: string;
     amount_a: string; // string representation of number
-    weight_a: string;  // string representation of number
+    weight_a: string; // string representation of number
     denom_b: string;
     amount_b: string; // string representation of number
     weight_b: string; // string representation of number
@@ -163,9 +163,9 @@ export interface Pool {
     amp_bps: string;
     v_amount_a: string;
     v_amount_b: string;
-  },
-  rewards_weight: string // string representation of number
-  total_commitment: string // string representation of number
+  };
+  rewards_weight: string; // string representation of number
+  total_commitment: string; // string representation of number
 }
 
 export interface Commitment {
@@ -200,7 +200,8 @@ export interface CDPParams {
   small_liquidation_size: string; // string representation of number
 }
 
-export interface RateStrategy { // CDP
+export interface RateStrategy {
+  // CDP
   name: string;
   optimal_usage: string; // string representation of number
   base_variable_borrow_rate: string; // string representation of number
@@ -215,8 +216,9 @@ export interface RateStrategy { // CDP
 /**
  * @deprecated old websocket response struct for get_cdp_assets_all
  * use AssetParams instead
-*/
-export interface Asset { // CDP
+ */
+export interface Asset {
+  // CDP
   asset_params: {
     denom: string;
     oracle_id: string;
@@ -226,16 +228,17 @@ export interface Asset { // CDP
     liquidation_bonus: string; // string representation of number
     supply_cap: string; // string representation of number
     borrow_cap: string; // string representation of number
-  },
+  };
   asset_utilization: {
     denom: string;
     total_borrowed: string;
     total_amount: string;
     utilization_rate: string;
-  },
+  };
 }
 
-export interface AssetParams { // CDP
+export interface AssetParams {
+  // CDP
   denom: string;
   oracle_id: string;
   rate_strategy_name: string;
@@ -247,13 +250,15 @@ export interface AssetParams { // CDP
   borrow_cap: string; // string representation of number
 }
 
-export interface Collateral { // CDP
+export interface Collateral {
+  // CDP
   cdp_denom: string;
   denom: string;
   collateral_amount: string; // string representation of number
 }
 
-export interface Debt { // CDP
+export interface Debt {
+  // CDP
   denom: string;
   principal_debt: string; // string representation of number
   initial_cumulative_interest_multiplier: string; // string representation of number
@@ -261,10 +266,10 @@ export interface Debt { // CDP
 
 export interface AccountData {
   total_collaterals_usd: string; // string representation of number
-	total_debts_usd: string; // string representation of number
-	available_borrows_usd: string; // string representation of number
-	curr_liquidation_threshold: string; // string representation of number
-	health_factor: string; // string representation of number
+  total_debts_usd: string; // string representation of number
+  available_borrows_usd: string; // string representation of number
+  curr_liquidation_threshold: string; // string representation of number
+  health_factor: string; // string representation of number
 }
 
 export interface CDPAccountStablecoin {
@@ -276,11 +281,11 @@ export interface CDPAccountStablecoin {
 /**
  * Response for get_cdp_total_borrows and get_cdp_borrows
  * Do not confuse with Debt
-*/
+ */
 export interface CDPBorrow {
   address: string;
-	amount: string; // string representation of number
-	denom: string;
+  amount: string; // string representation of number
+  denom: string;
   type: string;
   initial_cumulative_interest_multiplier?: string; // string representation of number
 }
@@ -288,7 +293,7 @@ export interface CDPBorrow {
 /**
  * Response for get_cdp_total_collaterals and get_cdp_collaterals
  * Do not confuse with Collateral
-*/
+ */
 export interface CDPCollateral {
   address: string;
   amount: string; // string representation of number
@@ -350,6 +355,6 @@ export interface RewardDebt {
 }
 
 export interface CDPTokenSupply {
-  cdp_denom: string
-  amount: string // string representation of number
+  cdp_denom: string;
+  amount: string; // string representation of number
 }

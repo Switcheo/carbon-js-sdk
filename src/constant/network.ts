@@ -10,29 +10,29 @@ export enum Network {
 export const DEFAULT_NETWORK = Network.MainNet;
 
 export interface EthNetworkConfig {
-  rpcURL: string
-  wsURL: string
-  payerURL: string
-  lockProxyAddr: string
-  bridgeEntranceAddr: string
-  balanceReader: string
-  byteCodeHash: string
+  rpcURL: string;
+  wsURL: string;
+  payerURL: string;
+  lockProxyAddr: string;
+  bridgeEntranceAddr: string;
+  balanceReader: string;
+  byteCodeHash: string;
 }
 
 export interface NeoNetworkConfig {
-  rpcURL: string
-  wrapperScriptHash: string
+  rpcURL: string;
+  wrapperScriptHash: string;
 }
 export interface N3NetworkConfig {
-  rpcURL: string
+  rpcURL: string;
   networkMagic: number;
 }
 
 export interface ZilNetworkConfig {
-  rpcURL: string
-  chainId: number
-  lockProxyAddr: string
-  bridgeEntranceAddr: string
+  rpcURL: string;
+  chainId: number;
+  lockProxyAddr: string;
+  bridgeEntranceAddr: string;
 }
 
 export interface NetworkConfig {
@@ -49,20 +49,20 @@ export interface NetworkConfig {
 
   /**
    * @deprecated on-chain fee service has been removed, please use the hydrogen fee_quote endpoint to query deposit/withdraw fees (please see HydrogenClient for the required query)
-  */
-  feeURL: string
-  feeAddress: string
+   */
+  feeURL: string;
+  feeAddress: string;
 
-  eth: EthNetworkConfig
-  bsc: EthNetworkConfig
+  eth: EthNetworkConfig;
+  bsc: EthNetworkConfig;
 
-  neo: NeoNetworkConfig
-  n3: N3NetworkConfig
-  zil: ZilNetworkConfig
+  neo: NeoNetworkConfig;
+  n3: N3NetworkConfig;
+  zil: ZilNetworkConfig;
 }
 
 export interface NetworkConfigProvider {
-  getConfig(): NetworkConfig
+  getConfig(): NetworkConfig;
 }
 
 export const NetworkConfigs: {
@@ -82,8 +82,8 @@ export const NetworkConfigs: {
     Bech32Prefix: "swth",
 
     /**
-      * @deprecated on-chain fee service has been removed, please use the hydrogen fee_quote endpoint to query deposit/withdraw fees (please see HydrogenClient for the required query)
-    */
+     * @deprecated on-chain fee service has been removed, please use the hydrogen fee_quote endpoint to query deposit/withdraw fees (please see HydrogenClient for the required query)
+     */
     feeURL: "https://fees.carbon.network",
     feeAddress: "08d8f59e475830d9a1bb97d74285c4d34c6dac08", // swth1prv0t8j8tqcdngdmjlt59pwy6dxxmtqgycy2h7
 
@@ -122,7 +122,7 @@ export const NetworkConfigs: {
       lockProxyAddr: "0xd73c6b871b4d0e130d64581993b745fc938a5be7",
       bridgeEntranceAddr: "0x3fd798e7fc7c5817bae8d06da8050e37ae45a739",
       chainId: 1,
-    }
+    },
   },
 
   [Network.TestNet]: {
@@ -139,8 +139,8 @@ export const NetworkConfigs: {
     Bech32Prefix: "tswth",
 
     /**
-      * @deprecated on-chain fee service has been removed, please use the hydrogen fee_quote endpoint to query deposit/withdraw fees (please see HydrogenClient for the required query)
-    */
+     * @deprecated on-chain fee service has been removed, please use the hydrogen fee_quote endpoint to query deposit/withdraw fees (please see HydrogenClient for the required query)
+     */
     feeURL: `http://54.255.42.175:9001`,
     feeAddress: "989761fb0c0eb0c05605e849cae77d239f98ac7f", // swth1nztkr7cvp6cvq4s9apyu4emayw0e3trl9ezyzs
 
@@ -179,7 +179,7 @@ export const NetworkConfigs: {
       lockProxyAddr: "0xa5a43eecd29534edf80792a9889f52c77455245d",
       bridgeEntranceAddr: "0x347b8478093f7a3ed5bcaec968349538eac6ef98",
       chainId: 333,
-    }
+    },
   },
 
   [Network.DevNet]: {
@@ -196,8 +196,8 @@ export const NetworkConfigs: {
     Bech32Prefix: "swth",
 
     /**
-      * @deprecated on-chain fee service has been removed, please use the hydrogen fee_quote endpoint to query deposit/withdraw fees (please see HydrogenClient for the required query)
-    */
+     * @deprecated on-chain fee service has been removed, please use the hydrogen fee_quote endpoint to query deposit/withdraw fees (please see HydrogenClient for the required query)
+     */
     feeURL: `https://dev-fees.carbon.network`,
     feeAddress: "989761fb0c0eb0c05605e849cae77d239f98ac7f", // swth1nztkr7cvp6cvq4s9apyu4emayw0e3trl9ezyzs
 
@@ -236,7 +236,7 @@ export const NetworkConfigs: {
       lockProxyAddr: "0xa5a43eecd29534edf80792a9889f52c77455245d",
       bridgeEntranceAddr: "0xbbe98D54689c96D0278a1222594533e8C5fa551e",
       chainId: 333,
-    }
+    },
   },
 
   [Network.LocalHost]: {
@@ -253,8 +253,8 @@ export const NetworkConfigs: {
     Bech32Prefix: "tswth",
 
     /**
-      * @deprecated on-chain fee service has been removed, please use the hydrogen fee_quote endpoint to query deposit/withdraw fees (please see HydrogenClient for the required query)
-    */
+     * @deprecated on-chain fee service has been removed, please use the hydrogen fee_quote endpoint to query deposit/withdraw fees (please see HydrogenClient for the required query)
+     */
     feeURL: `http://localhost:9001`,
     feeAddress: "989761fb0c0eb0c05605e849cae77d239f98ac7f",
 
@@ -293,6 +293,6 @@ export const NetworkConfigs: {
       lockProxyAddr: "",
       bridgeEntranceAddr: "",
       chainId: 1,
-    }
+    },
   },
 } as const;
