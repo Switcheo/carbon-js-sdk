@@ -121,9 +121,10 @@ export class RootStore {
 }
 
 export function createRootStore(getKeplr: () => Promise<any>, additionalChains?: ChainInfo[]): RootStore | null {
-  if (iOS()) {
-    return null
-  }
+  // TODO: Un-comment if Safari iOS mobile crashes the page
+  // if (iOS()) {
+  //   return null
+  // }
 
   return new RootStore(getKeplr, additionalChains);
 }
