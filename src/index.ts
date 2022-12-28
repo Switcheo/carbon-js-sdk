@@ -4,7 +4,7 @@ export * as Models from "./codec";
 export * from "./util";
 export { Blockchain } from "./util/blockchain";
 export * from "./websocket";
-export { AminoTypesMap, CoinPretty, SDKProvider, KeplrAccount, KeplrWindow, CosmosLedger, Keplr, ChainInfo, EVMChain, MetaMaskChangeNetworkParam, CallContractArgs, MetaMaskSyncResult, MetaMask, EthLedgerAccount, EthLedgerSigner, NeoLedgerAccount, Zilpay, ZilPayChangeNetworkParam, O3Types, O3Wallet } from "./provider";
+export { AminoTypesMap, CoinPretty, SDKProvider, KeplrAccount, KeplrWindow, CosmosLedger, Keplr, ChainInfo, EVMChain, MetaMaskChangeNetworkParam, CallContractArgs, MetaMaskSyncResult, MetaMask, EthLedgerAccount, EthLedgerSigner, NeoLedgerAccount, Zilpay, ZilPayChangeNetworkParam, O3Types, O3Wallet, LeapAccount, Leap } from "./provider";
 export { default as CarbonSDK } from "./CarbonSDK";
 export { ProviderAgent } from "./constant";
 export * as Insights from "./insights";
