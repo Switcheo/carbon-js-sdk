@@ -1,4 +1,4 @@
-import { ChainIds, DEFAULT_NETWORK, DenomPrefix, Network, Network as _Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
+import { DEFAULT_NETWORK, DenomPrefix, Network, Network as _Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
 import { GenericUtils, NetworkUtils } from "@carbon-sdk/util";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import { CarbonQueryClient, ETHClient, HydrogenClient, InsightsQueryClient, NEOClient, TokenClient, ZILClient } from "./clients";
@@ -149,7 +149,7 @@ class CarbonSDK {
     const networkConfig = GenericUtils.overrideConfig(NetworkConfigs[network], configOverride);
     const tmClient = opts.tmClient ?? GenericUtils.modifyTmClient(await Tendermint34Client.connect(networkConfig.tmRpcUrl));
     const defaultTimeoutBlocks = opts.defaultTimeoutBlocks;
-    const chainId = ChainIds.Carbon
+    const chainId = await new CarbonQueryClient(tmClient).chain.getChainId()
     const sdk = new CarbonSDK({ network, config: configOverride, tmClient, defaultTimeoutBlocks, chainId });
 
     if (opts.wallet) {
