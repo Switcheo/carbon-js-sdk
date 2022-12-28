@@ -312,6 +312,32 @@ export interface MsgReturnStablecoinWithInterestInCdpTokens {
 
 export interface MsgReturnStablecoinWithInterestInCdpTokensResponse {}
 
+export interface MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens {
+  creator: string;
+  debtor: string;
+  collateralDenom: string;
+  minCollateralAmount: string;
+  debtDenom: string;
+  debtAmount: string;
+  interestCdpDenom: string;
+  interestCdpAmount: string;
+}
+
+export interface MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse {}
+
+export interface MsgLiquidateCollateralWithStablecoinAndInterestInCollateral {
+  creator: string;
+  debtor: string;
+  collateralDenom: string;
+  minCollateralAmount: string;
+  debtDenom: string;
+  debtAmount: string;
+  interestCdpDenom: string;
+  interestCdpAmount: string;
+}
+
+export interface MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse {}
+
 const baseMsgAddRateStrategy: object = { creator: "" };
 
 export const MsgAddRateStrategy = {
@@ -5455,6 +5481,459 @@ export const MsgReturnStablecoinWithInterestInCdpTokensResponse = {
   },
 };
 
+const baseMsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens: object = {
+  creator: "",
+  debtor: "",
+  collateralDenom: "",
+  minCollateralAmount: "",
+  debtDenom: "",
+  debtAmount: "",
+  interestCdpDenom: "",
+  interestCdpAmount: "",
+};
+
+export const MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens = {
+  encode(
+    message: MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.debtor !== "") {
+      writer.uint32(18).string(message.debtor);
+    }
+    if (message.collateralDenom !== "") {
+      writer.uint32(26).string(message.collateralDenom);
+    }
+    if (message.minCollateralAmount !== "") {
+      writer.uint32(34).string(message.minCollateralAmount);
+    }
+    if (message.debtDenom !== "") {
+      writer.uint32(42).string(message.debtDenom);
+    }
+    if (message.debtAmount !== "") {
+      writer.uint32(50).string(message.debtAmount);
+    }
+    if (message.interestCdpDenom !== "") {
+      writer.uint32(58).string(message.interestCdpDenom);
+    }
+    if (message.interestCdpAmount !== "") {
+      writer.uint32(66).string(message.interestCdpAmount);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens,
+    } as MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.debtor = reader.string();
+          break;
+        case 3:
+          message.collateralDenom = reader.string();
+          break;
+        case 4:
+          message.minCollateralAmount = reader.string();
+          break;
+        case 5:
+          message.debtDenom = reader.string();
+          break;
+        case 6:
+          message.debtAmount = reader.string();
+          break;
+        case 7:
+          message.interestCdpDenom = reader.string();
+          break;
+        case 8:
+          message.interestCdpAmount = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(
+    object: any
+  ): MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens {
+    const message = {
+      ...baseMsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens,
+    } as MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.debtor =
+      object.debtor !== undefined && object.debtor !== null
+        ? String(object.debtor)
+        : "";
+    message.collateralDenom =
+      object.collateralDenom !== undefined && object.collateralDenom !== null
+        ? String(object.collateralDenom)
+        : "";
+    message.minCollateralAmount =
+      object.minCollateralAmount !== undefined &&
+      object.minCollateralAmount !== null
+        ? String(object.minCollateralAmount)
+        : "";
+    message.debtDenom =
+      object.debtDenom !== undefined && object.debtDenom !== null
+        ? String(object.debtDenom)
+        : "";
+    message.debtAmount =
+      object.debtAmount !== undefined && object.debtAmount !== null
+        ? String(object.debtAmount)
+        : "";
+    message.interestCdpDenom =
+      object.interestCdpDenom !== undefined && object.interestCdpDenom !== null
+        ? String(object.interestCdpDenom)
+        : "";
+    message.interestCdpAmount =
+      object.interestCdpAmount !== undefined &&
+      object.interestCdpAmount !== null
+        ? String(object.interestCdpAmount)
+        : "";
+    return message;
+  },
+
+  toJSON(
+    message: MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens
+  ): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.debtor !== undefined && (obj.debtor = message.debtor);
+    message.collateralDenom !== undefined &&
+      (obj.collateralDenom = message.collateralDenom);
+    message.minCollateralAmount !== undefined &&
+      (obj.minCollateralAmount = message.minCollateralAmount);
+    message.debtDenom !== undefined && (obj.debtDenom = message.debtDenom);
+    message.debtAmount !== undefined && (obj.debtAmount = message.debtAmount);
+    message.interestCdpDenom !== undefined &&
+      (obj.interestCdpDenom = message.interestCdpDenom);
+    message.interestCdpAmount !== undefined &&
+      (obj.interestCdpAmount = message.interestCdpAmount);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens>
+  ): MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens {
+    const message = {
+      ...baseMsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens,
+    } as MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens;
+    message.creator = object.creator ?? "";
+    message.debtor = object.debtor ?? "";
+    message.collateralDenom = object.collateralDenom ?? "";
+    message.minCollateralAmount = object.minCollateralAmount ?? "";
+    message.debtDenom = object.debtDenom ?? "";
+    message.debtAmount = object.debtAmount ?? "";
+    message.interestCdpDenom = object.interestCdpDenom ?? "";
+    message.interestCdpAmount = object.interestCdpAmount ?? "";
+    return message;
+  },
+};
+
+const baseMsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse: object =
+  {};
+
+export const MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse =
+  {
+    encode(
+      _: MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse,
+      writer: _m0.Writer = _m0.Writer.create()
+    ): _m0.Writer {
+      return writer;
+    },
+
+    decode(
+      input: _m0.Reader | Uint8Array,
+      length?: number
+    ): MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse {
+      const reader =
+        input instanceof _m0.Reader ? input : new _m0.Reader(input);
+      let end = length === undefined ? reader.len : reader.pos + length;
+      const message = {
+        ...baseMsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse,
+      } as MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse;
+      while (reader.pos < end) {
+        const tag = reader.uint32();
+        switch (tag >>> 3) {
+          default:
+            reader.skipType(tag & 7);
+            break;
+        }
+      }
+      return message;
+    },
+
+    fromJSON(
+      _: any
+    ): MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse {
+      const message = {
+        ...baseMsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse,
+      } as MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse;
+      return message;
+    },
+
+    toJSON(
+      _: MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse
+    ): unknown {
+      const obj: any = {};
+      return obj;
+    },
+
+    fromPartial(
+      _: DeepPartial<MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse>
+    ): MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse {
+      const message = {
+        ...baseMsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse,
+      } as MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse;
+      return message;
+    },
+  };
+
+const baseMsgLiquidateCollateralWithStablecoinAndInterestInCollateral: object =
+  {
+    creator: "",
+    debtor: "",
+    collateralDenom: "",
+    minCollateralAmount: "",
+    debtDenom: "",
+    debtAmount: "",
+    interestCdpDenom: "",
+    interestCdpAmount: "",
+  };
+
+export const MsgLiquidateCollateralWithStablecoinAndInterestInCollateral = {
+  encode(
+    message: MsgLiquidateCollateralWithStablecoinAndInterestInCollateral,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.debtor !== "") {
+      writer.uint32(18).string(message.debtor);
+    }
+    if (message.collateralDenom !== "") {
+      writer.uint32(26).string(message.collateralDenom);
+    }
+    if (message.minCollateralAmount !== "") {
+      writer.uint32(34).string(message.minCollateralAmount);
+    }
+    if (message.debtDenom !== "") {
+      writer.uint32(42).string(message.debtDenom);
+    }
+    if (message.debtAmount !== "") {
+      writer.uint32(50).string(message.debtAmount);
+    }
+    if (message.interestCdpDenom !== "") {
+      writer.uint32(58).string(message.interestCdpDenom);
+    }
+    if (message.interestCdpAmount !== "") {
+      writer.uint32(66).string(message.interestCdpAmount);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgLiquidateCollateralWithStablecoinAndInterestInCollateral {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgLiquidateCollateralWithStablecoinAndInterestInCollateral,
+    } as MsgLiquidateCollateralWithStablecoinAndInterestInCollateral;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.debtor = reader.string();
+          break;
+        case 3:
+          message.collateralDenom = reader.string();
+          break;
+        case 4:
+          message.minCollateralAmount = reader.string();
+          break;
+        case 5:
+          message.debtDenom = reader.string();
+          break;
+        case 6:
+          message.debtAmount = reader.string();
+          break;
+        case 7:
+          message.interestCdpDenom = reader.string();
+          break;
+        case 8:
+          message.interestCdpAmount = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(
+    object: any
+  ): MsgLiquidateCollateralWithStablecoinAndInterestInCollateral {
+    const message = {
+      ...baseMsgLiquidateCollateralWithStablecoinAndInterestInCollateral,
+    } as MsgLiquidateCollateralWithStablecoinAndInterestInCollateral;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.debtor =
+      object.debtor !== undefined && object.debtor !== null
+        ? String(object.debtor)
+        : "";
+    message.collateralDenom =
+      object.collateralDenom !== undefined && object.collateralDenom !== null
+        ? String(object.collateralDenom)
+        : "";
+    message.minCollateralAmount =
+      object.minCollateralAmount !== undefined &&
+      object.minCollateralAmount !== null
+        ? String(object.minCollateralAmount)
+        : "";
+    message.debtDenom =
+      object.debtDenom !== undefined && object.debtDenom !== null
+        ? String(object.debtDenom)
+        : "";
+    message.debtAmount =
+      object.debtAmount !== undefined && object.debtAmount !== null
+        ? String(object.debtAmount)
+        : "";
+    message.interestCdpDenom =
+      object.interestCdpDenom !== undefined && object.interestCdpDenom !== null
+        ? String(object.interestCdpDenom)
+        : "";
+    message.interestCdpAmount =
+      object.interestCdpAmount !== undefined &&
+      object.interestCdpAmount !== null
+        ? String(object.interestCdpAmount)
+        : "";
+    return message;
+  },
+
+  toJSON(
+    message: MsgLiquidateCollateralWithStablecoinAndInterestInCollateral
+  ): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.debtor !== undefined && (obj.debtor = message.debtor);
+    message.collateralDenom !== undefined &&
+      (obj.collateralDenom = message.collateralDenom);
+    message.minCollateralAmount !== undefined &&
+      (obj.minCollateralAmount = message.minCollateralAmount);
+    message.debtDenom !== undefined && (obj.debtDenom = message.debtDenom);
+    message.debtAmount !== undefined && (obj.debtAmount = message.debtAmount);
+    message.interestCdpDenom !== undefined &&
+      (obj.interestCdpDenom = message.interestCdpDenom);
+    message.interestCdpAmount !== undefined &&
+      (obj.interestCdpAmount = message.interestCdpAmount);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgLiquidateCollateralWithStablecoinAndInterestInCollateral>
+  ): MsgLiquidateCollateralWithStablecoinAndInterestInCollateral {
+    const message = {
+      ...baseMsgLiquidateCollateralWithStablecoinAndInterestInCollateral,
+    } as MsgLiquidateCollateralWithStablecoinAndInterestInCollateral;
+    message.creator = object.creator ?? "";
+    message.debtor = object.debtor ?? "";
+    message.collateralDenom = object.collateralDenom ?? "";
+    message.minCollateralAmount = object.minCollateralAmount ?? "";
+    message.debtDenom = object.debtDenom ?? "";
+    message.debtAmount = object.debtAmount ?? "";
+    message.interestCdpDenom = object.interestCdpDenom ?? "";
+    message.interestCdpAmount = object.interestCdpAmount ?? "";
+    return message;
+  },
+};
+
+const baseMsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse: object =
+  {};
+
+export const MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse =
+  {
+    encode(
+      _: MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse,
+      writer: _m0.Writer = _m0.Writer.create()
+    ): _m0.Writer {
+      return writer;
+    },
+
+    decode(
+      input: _m0.Reader | Uint8Array,
+      length?: number
+    ): MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse {
+      const reader =
+        input instanceof _m0.Reader ? input : new _m0.Reader(input);
+      let end = length === undefined ? reader.len : reader.pos + length;
+      const message = {
+        ...baseMsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse,
+      } as MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse;
+      while (reader.pos < end) {
+        const tag = reader.uint32();
+        switch (tag >>> 3) {
+          default:
+            reader.skipType(tag & 7);
+            break;
+        }
+      }
+      return message;
+    },
+
+    fromJSON(
+      _: any
+    ): MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse {
+      const message = {
+        ...baseMsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse,
+      } as MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse;
+      return message;
+    },
+
+    toJSON(
+      _: MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse
+    ): unknown {
+      const obj: any = {};
+      return obj;
+    },
+
+    fromPartial(
+      _: DeepPartial<MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse>
+    ): MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse {
+      const message = {
+        ...baseMsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse,
+      } as MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse;
+      return message;
+    },
+  };
+
 /** Msg defines the Msg service. */
 export interface Msg {
   AddRateStrategy(
@@ -5543,10 +6022,16 @@ export interface Msg {
   ReturnStablecoinWithInterestInCdpTokens(
     request: MsgReturnStablecoinWithInterestInCdpTokens
   ): Promise<MsgReturnStablecoinWithInterestInCdpTokensResponse>;
-  /** this line is used by starport scaffolding # proto/tx/rpc */
   ReturnStablecoinWithInterestInCollateral(
     request: MsgReturnStablecoinWithInterestInCollateral
   ): Promise<MsgReturnStablecoinWithInterestInCollateralResponse>;
+  LiquidateCollateralWithStablecoinAndInterestInCdpTokens(
+    request: MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens
+  ): Promise<MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse>;
+  /** this line is used by starport scaffolding # proto/tx/rpc */
+  LiquidateCollateralWithStablecoinAndInterestInCollateral(
+    request: MsgLiquidateCollateralWithStablecoinAndInterestInCollateral
+  ): Promise<MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -5596,6 +6081,10 @@ export class MsgClientImpl implements Msg {
       this.ReturnStablecoinWithInterestInCdpTokens.bind(this);
     this.ReturnStablecoinWithInterestInCollateral =
       this.ReturnStablecoinWithInterestInCollateral.bind(this);
+    this.LiquidateCollateralWithStablecoinAndInterestInCdpTokens =
+      this.LiquidateCollateralWithStablecoinAndInterestInCdpTokens.bind(this);
+    this.LiquidateCollateralWithStablecoinAndInterestInCollateral =
+      this.LiquidateCollateralWithStablecoinAndInterestInCollateral.bind(this);
   }
   AddRateStrategy(
     request: MsgAddRateStrategy
@@ -6072,6 +6561,44 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgReturnStablecoinWithInterestInCollateralResponse.decode(
+        new _m0.Reader(data)
+      )
+    );
+  }
+
+  LiquidateCollateralWithStablecoinAndInterestInCdpTokens(
+    request: MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens
+  ): Promise<MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse> {
+    const data =
+      MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens.encode(
+        request
+      ).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Msg",
+      "LiquidateCollateralWithStablecoinAndInterestInCdpTokens",
+      data
+    );
+    return promise.then((data) =>
+      MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse.decode(
+        new _m0.Reader(data)
+      )
+    );
+  }
+
+  LiquidateCollateralWithStablecoinAndInterestInCollateral(
+    request: MsgLiquidateCollateralWithStablecoinAndInterestInCollateral
+  ): Promise<MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse> {
+    const data =
+      MsgLiquidateCollateralWithStablecoinAndInterestInCollateral.encode(
+        request
+      ).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Msg",
+      "LiquidateCollateralWithStablecoinAndInterestInCollateral",
+      data
+    );
+    return promise.then((data) =>
+      MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse.decode(
         new _m0.Reader(data)
       )
     );
