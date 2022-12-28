@@ -20,6 +20,7 @@ export interface CarbonSDKOpts {
   token?: TokenClient;
   config?: Partial<NetworkConfig>;
   defaultTimeoutBlocks?: number; // tx mempool ttl (timeoutHeight)
+  chainId: string;
 }
 export interface CarbonSDKInitOpts {
   network: Network;
@@ -138,7 +139,7 @@ class CarbonSDK {
       configProvider: this,
       blockchain: Blockchain.Zilliqa,
     })
-    this.chainId = ChainIds.Carbon
+    this.chainId = opts.chainId
   }
 
   public static async instance(opts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS) {
@@ -148,7 +149,8 @@ class CarbonSDK {
     const networkConfig = GenericUtils.overrideConfig(NetworkConfigs[network], configOverride);
     const tmClient = opts.tmClient ?? GenericUtils.modifyTmClient(await Tendermint34Client.connect(networkConfig.tmRpcUrl));
     const defaultTimeoutBlocks = opts.defaultTimeoutBlocks;
-    const sdk = new CarbonSDK({ network, config: configOverride, tmClient, defaultTimeoutBlocks });
+    const chainId = ChainIds.Carbon
+    const sdk = new CarbonSDK({ network, config: configOverride, tmClient, defaultTimeoutBlocks, chainId });
 
     if (opts.wallet) {
       await sdk.connect(opts.wallet);
@@ -253,6 +255,7 @@ class CarbonSDK {
       network: this.network,
       config: this.configOverride,
       tmClient: this.tmClient,
+      chainId: this.chainId,
     }
   }
 
