@@ -1,5 +1,5 @@
 import { ChainInfoExplorerTmRpc, ibcDefaultGas } from "@carbon-sdk/constant/ibc";
-import { iOS } from "@carbon-sdk/util/external";
+// import { iOS } from "@carbon-sdk/util/external";
 import { EmbedChainInfos } from "@carbon-sdk/util/ibc";
 import { IndexedDBKVStore } from "@keplr-wallet/common";
 import {
