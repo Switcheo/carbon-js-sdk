@@ -6,11 +6,10 @@ import * as clients from "./clients";
 import N3Client from "./clients/N3Client";
 import { AdminModule, BankModule, BrokerModule, CDPModule, CoinModule, FeeModule, GovModule, IBCModule, LeverageModule, LiquidityPoolModule, MarketModule, OracleModule, OrderModule, PositionModule, ProfileModule, SubAccountModule, XChainModule } from "./modules";
 import { StakingModule } from "./modules/staking";
-import { CosmosLedger, Keplr, KeplrAccount } from "./provider";
+import { CosmosLedger, Keplr, KeplrAccount, LeapAccount } from "./provider";
 import { Blockchain } from "./util/blockchain";
 import { CarbonSigner, CarbonWallet, CarbonWalletGenericOpts } from "./wallet";
 import { Leap } from "@cosmos-kit/leap";
-import LeapAccount from "./provider/leap/LeapAccount";
 
 export { CarbonTx } from "@carbon-sdk/util";
 export { CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletGenericOpts, CarbonWalletInitOpts } from "@carbon-sdk/wallet";
@@ -82,6 +81,7 @@ class CarbonSDK {
   bsc: ETHClient;
   zil: ZILClient;
   n3: N3Client;
+  ibcChainId: string;
 
   constructor(opts: CarbonSDKOpts) {
     this.network = opts.network ?? DEFAULT_NETWORK;
@@ -139,6 +139,7 @@ class CarbonSDK {
       configProvider: this,
       blockchain: Blockchain.Zilliqa,
     })
+    this.ibcChainId = ''
   }
 
   public static async instance(opts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS) {
@@ -234,6 +235,8 @@ class CarbonSDK {
   }
 
   public async initialize(): Promise<CarbonSDK> {
+    const chainId = await this.query.chain.getChainId()
+    this.ibcChainId = chainId;
     await this.token.initialize();
     if (this.wallet) {
       await this.wallet.initialize(this.query);
@@ -355,7 +358,7 @@ class CarbonSDK {
     leap: Leap,
     opts?: CarbonWalletGenericOpts,
   ) {
-    const chainId = await LeapAccount.getChainId(this);
+    const chainId = this.ibcChainId;
     const leapKey = await leap.getKey(chainId);
 
     await leap.enable(chainId);

@@ -1,8 +1,7 @@
 import { CarbonQueryClient } from "@carbon-sdk/clients";
 import { DEFAULT_FEE_DENOM, DEFAULT_GAS, DEFAULT_NETWORK, Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
 import { ProviderAgent } from "@carbon-sdk/constant/walletProvider";
-import { ChainInfo, CosmosLedger, Keplr, KeplrAccount } from "@carbon-sdk/provider";
-import LeapAccount from "@carbon-sdk/provider/leap/LeapAccount";
+import { ChainInfo, CosmosLedger, Keplr, KeplrAccount, LeapAccount } from "@carbon-sdk/provider";
 import { AddressUtils, CarbonTx, GenericUtils } from "@carbon-sdk/util";
 import { SWTHAddress } from "@carbon-sdk/util/address";
 import { fetch } from "@carbon-sdk/util/fetch";
