@@ -7,6 +7,13 @@ export enum Network {
   LocalHost = "localhost",
 }
 
+export const CarbonChainIDs = {
+  [Network.MainNet]: "carbon-1",
+  [Network.TestNet]: "carbon-testnet-42069",
+  [Network.DevNet]: "carbon-devnet-39911",
+  [Network.LocalHost]: "carbon",
+} as const;
+
 export const DEFAULT_NETWORK = Network.MainNet;
 
 export interface EthNetworkConfig {

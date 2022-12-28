@@ -1,4 +1,4 @@
-import { DEFAULT_NETWORK, DenomPrefix, Network, Network as _Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
+import { CarbonChainIDs, DEFAULT_NETWORK, DenomPrefix, Network, Network as _Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
 import { GenericUtils, NetworkUtils } from "@carbon-sdk/util";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import { CarbonQueryClient, ETHClient, HydrogenClient, InsightsQueryClient, NEOClient, TokenClient, ZILClient } from "./clients";
@@ -17,10 +17,10 @@ export { DenomPrefix } from "./constant";
 export interface CarbonSDKOpts {
   network: Network;
   tmClient: Tendermint34Client;
+  chainId?: string;
   token?: TokenClient;
   config?: Partial<NetworkConfig>;
   defaultTimeoutBlocks?: number; // tx mempool ttl (timeoutHeight)
-  chainId: string;
 }
 export interface CarbonSDKInitOpts {
   network: Network;
@@ -89,6 +89,7 @@ class CarbonSDK {
     this.networkConfig = GenericUtils.overrideConfig(NetworkConfigs[this.network], this.configOverride);
 
     this.tmClient = opts.tmClient;
+    this.chainId = opts.chainId ?? CarbonChainIDs[this.network] ?? CarbonChainIDs[Network.MainNet];
     this.query = new CarbonQueryClient(opts.tmClient);
     this.insights = new InsightsQueryClient(this.networkConfig);
     this.hydrogen = new HydrogenClient(this.networkConfig);
@@ -139,7 +140,6 @@ class CarbonSDK {
       configProvider: this,
       blockchain: Blockchain.Zilliqa,
     })
-    this.chainId = opts.chainId
   }
 
   public static async instance(opts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS) {
@@ -149,7 +149,8 @@ class CarbonSDK {
     const networkConfig = GenericUtils.overrideConfig(NetworkConfigs[network], configOverride);
     const tmClient = opts.tmClient ?? GenericUtils.modifyTmClient(await Tendermint34Client.connect(networkConfig.tmRpcUrl));
     const defaultTimeoutBlocks = opts.defaultTimeoutBlocks;
-    const chainId = await new CarbonQueryClient(tmClient).chain.getChainId()
+    const chainId = (await tmClient.status())?.nodeInfo.network;
+
     const sdk = new CarbonSDK({ network, config: configOverride, tmClient, defaultTimeoutBlocks, chainId });
 
     if (opts.wallet) {
