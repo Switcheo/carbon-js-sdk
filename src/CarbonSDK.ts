@@ -9,6 +9,8 @@ import { StakingModule } from "./modules/staking";
 import { CosmosLedger, Keplr, KeplrAccount } from "./provider";
 import { Blockchain } from "./util/blockchain";
 import { CarbonSigner, CarbonWallet, CarbonWalletGenericOpts } from "./wallet";
+import { Leap } from "@cosmos-kit/leap";
+import LeapAccount from "./provider/leap/LeapAccount";
 
 export { CarbonTx } from "@carbon-sdk/util";
 export { CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletGenericOpts, CarbonWalletInitOpts } from "@carbon-sdk/wallet";
@@ -213,6 +215,15 @@ class CarbonSDK {
     return sdk.connectWithKeplr(keplr, walletOpts);
   }
 
+  public static async instanceWithLeap(
+    leap: Leap,
+    sdkOpts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS,
+    walletOpts?: CarbonWalletGenericOpts,
+  ) {
+    const sdk = await CarbonSDK.instance(sdkOpts);
+    return sdk.connectWithLeap(leap, walletOpts)
+  }
+
   public static async instanceViewOnly(
     bech32Address: string,
     sdkOpts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS,
@@ -333,6 +344,22 @@ class CarbonSDK {
     await keplr.enable(chainId);
 
     const wallet = CarbonWallet.withKeplr(keplr, chainInfo, keplrKey, {
+      ...opts,
+      network: this.network,
+      config: this.configOverride,
+    });
+    return this.connect(wallet);
+  }
+
+  public async connectWithLeap(
+    leap: Leap,
+    opts?: CarbonWalletGenericOpts,
+  ) {
+    const chainId = await LeapAccount.getChainId(this);
+    const leapKey = await leap.getKey(chainId);
+
+    await leap.enable(chainId);
+    const wallet = CarbonWallet.withLeap(leap, chainId, leapKey, {
       ...opts,
       network: this.network,
       config: this.configOverride,

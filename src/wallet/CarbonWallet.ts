@@ -2,6 +2,7 @@ import { CarbonQueryClient } from "@carbon-sdk/clients";
 import { DEFAULT_FEE_DENOM, DEFAULT_GAS, DEFAULT_NETWORK, Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
 import { ProviderAgent } from "@carbon-sdk/constant/walletProvider";
 import { ChainInfo, CosmosLedger, Keplr, KeplrAccount } from "@carbon-sdk/provider";
+import LeapAccount from "@carbon-sdk/provider/leap/LeapAccount";
 import { AddressUtils, CarbonTx, GenericUtils } from "@carbon-sdk/util";
 import { SWTHAddress } from "@carbon-sdk/util/address";
 import { fetch } from "@carbon-sdk/util/fetch";
@@ -14,7 +15,9 @@ import { EncodeObject, OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-
 import { Account, DeliverTxResponse, isDeliverTxFailure } from "@cosmjs/stargate";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import { BroadcastTxSyncResponse } from "@cosmjs/tendermint-rpc/build/tendermint34/responses";
+import { Leap } from "@cosmos-kit/leap";
 import { Key } from "@keplr-wallet/types";
+import { Key as LeapKey } from "@cosmos-kit/core";
 import BigNumber from "bignumber.js";
 import { TxRaw as StargateTxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import { CarbonLedgerSigner, CarbonNonSigner, CarbonPrivateKeySigner, CarbonSigner, CarbonSignerTypes } from "./CarbonSigner";
@@ -241,6 +244,14 @@ export class CarbonWallet {
 
     const wallet = CarbonWallet.withSigner(signer, publicKeyBase64, opts);
     return wallet;
+  }
+
+  public static withLeap(leap: Leap, chainId: string, leapKey: LeapKey, opts: Omit<CarbonWalletInitOpts, "signer"> = {}) {
+    const signer = LeapAccount.createLeapSigner(leap, chainId);
+    const publicKeyBase64 = Buffer.from(leapKey.pubKey).toString("base64");
+
+    const wallet = CarbonWallet.withSigner(signer, publicKeyBase64, opts);
+    return wallet
   }
 
   public static withAddress(bech32Address: string, opts: Partial<CarbonWalletInitOpts> = {}) {
