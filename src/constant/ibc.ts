@@ -86,6 +86,7 @@ export enum ChainIds {
   Axelar = "axelar-dojo-1",
   Stride = "stride-1",
   Kujira = "kaiyo-1",
+  Terra2 = "phoenix-1",
 }
 
 // whitelisted networks for addition of swth as a currency
@@ -100,6 +101,7 @@ export const ibcWhitelist: string[] = [
   ChainIds.Axelar,
   ChainIds.Stride,
   ChainIds.Kujira,
+  ChainIds.Terra2,
 ];
 
 export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
@@ -1665,14 +1667,12 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         coinMinimalDenom: "ukuji",
         coinDecimals: 6,
         coinGeckoId: "kujira",
-        coinImageUrl: "/tokens/kuji.png",
       },
       {
         coinDenom: "USK",
         coinMinimalDenom: "factory/kujira1qk00h5atutpsv900x202pxx42npjr9thg58dnqpa72f2p7m2luase444a7/uusk",
         coinDecimals: 6,
         coinGeckoId: "usk",
-        coinImageUrl: "/tokens/usk.png",
       },
     ],
     feeCurrencies: [
@@ -1690,6 +1690,48 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
     },
     features: ["ibc-transfer", "ibc-go", "no-legacy-stdTx", "ibc-go"],
     explorerUrlToTx: "https://finder.kujira.app/kaiyo-1/tx/{txHash}",
+  },
+  [ChainIds.Terra2]: {
+    rpc: "https://rpc.terrav2.ccvalidators.com/",
+    rest: "https://phoenix-lcd.terra.dev/",
+    chainId: "phoenix-1",
+    chainName: "Terra 2.0",
+    bip44: {
+      coinType: 118,
+    },
+    bech32Config: IBCAddress.defaultBech32Config("terra"),
+    stakeCurrency: {
+      coinDenom: "LUNA",
+      coinMinimalDenom: "uluna",
+      coinDecimals: 6,
+      // coinGeckoId: "terra-luna-2",
+      coinGeckoId: "pool:uluna",
+    },
+    currencies: [
+      {
+        coinDenom: "LUNA",
+        coinMinimalDenom: "uluna",
+        coinDecimals: 6,
+        // coinGeckoId: "terra-luna-2",
+        coinGeckoId: "pool:uluna",
+      },
+    ],
+    feeCurrencies: [
+      {
+        coinDenom: "LUNA",
+        coinMinimalDenom: "uluna",
+        coinDecimals: 6,
+        // coinGeckoId: "terra-luna-2",
+        coinGeckoId: "pool:uluna",
+      },
+    ],
+    gasPriceStep: {
+      low: 0.15,
+      average: 0.2,
+      high: 0.25,
+    },
+    features: ["ibc-transfer", "ibc-go", "no-legacy-stdTx"],
+    explorerUrlToTx: "https://finder.terra.money/phoenix-1/tx/{txHash}",
   },
 };
 
@@ -1732,6 +1774,10 @@ export const swthChannels: SimpleMap<ChannelConfig> = {
   [ChainIds.Kujira]: {
     sourceChannel: "channel-9",
     dstChannel: "channel-46",
+  },
+  [ChainIds.Terra2]: {
+    sourceChannel: "channel-12",
+    dstChannel: "channel-36",
   },
 };
 
