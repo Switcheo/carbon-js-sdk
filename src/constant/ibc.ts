@@ -964,7 +964,7 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         coinGeckoId: "comdex",
       },
     ],
-    features: ["stargate", "ibc-transfer", "no-legacy-stdTx"],
+    features: ["stargate", "ibc-transfer", "no-legacy-stdTx", "ibc-go"],
     explorerUrlToTx: "https://www.mintscan.io/comdex/txs/{txHash}",
     tmRpc: "https://rpc.comdex.one/",
   },
@@ -1039,7 +1039,7 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         coinGeckoId: "pool:ustars",
       },
     ],
-    features: ["stargate", "ibc-transfer", "no-legacy-stdTx"],
+    features: ["stargate", "ibc-transfer", "no-legacy-stdTx", "ibc-go"],
     explorerUrlToTx: "https://www.mintscan.io/stargaze/txs/{txHash}",
     tmRpc: "https://rpc.stargaze-apis.com/",
   },
@@ -1773,7 +1773,7 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
       average: 0.0001,
       high: 0.00025,
     },
-    features: [],
+    features: ["ibc-transfer", "ibc-go", "no-legacy-stdTx"],
     explorerUrlToTx: "https://www.mintscan.io/quicksilver/txs/{txHash}",
   },
   [ChainIds.StafiHub]: {
@@ -1824,6 +1824,7 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
       average: 0.025,
       high: 0.04
     },
+    features: ["ibc-transfer", "ibc-go", "no-legacy-stdTx"],
     explorerUrlToTx: "https://www.mintscan.io/stafi/txs/{txHash}",
   }
 };
