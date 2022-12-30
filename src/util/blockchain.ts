@@ -22,6 +22,12 @@ export enum Blockchain {
   Axelar = 'axelar',
   Stride = 'stride',
   Kujira = 'kujira',
+  Terra2 = 'terra2',
+  Quicksilver = 'quicksilver',
+  Comdex = 'comdex',
+  StafiHub = 'stafihub',
+  Persistence = 'persistence',
+  Stargaze = 'stargaze',
 };
 
 export const BRIDGE_IDS = {
@@ -56,7 +62,13 @@ export const CHAIN_IDS: ChainIds = {
   'evmos': 248,
   'axelar': 249,
   'stride': 313,
-  'kujira': 314
+  'kujira': 314,
+  'terra2': 315,
+  'quicksilver': 316,
+  'comdex': 317,
+  'stafihub': 318,
+  'persistence': 319,
+  'stargaze': 320,
 };
 
 export const CHAIN_IDS_DEV: ChainIds = {
@@ -147,6 +159,18 @@ export const blockchainForChainId = (chainId?: number): Blockchain | undefined =
       return Blockchain.Stride
     case 314: // mainnnet
       return Blockchain.Kujira
+    case 315: // mainnnet
+      return Blockchain.Terra2
+    case 316: // mainnnet
+      return Blockchain.Quicksilver
+    case 317: // mainnnet
+      return Blockchain.Comdex
+    case 318: // mainnnet
+      return Blockchain.StafiHub
+    case 319: // mainnnet
+      return Blockchain.Persistence
+    case 320: // mainnnet
+      return Blockchain.Stargaze
     default:
       return undefined
   }
