@@ -59,6 +59,7 @@ export const ChainIdBlockchainMap: SimpleMap<Blockchain> = {
 	[ChainIds.Quicksilver]: Blockchain.Quicksilver,
 	[ChainIds.Comdex]: Blockchain.Comdex,
 	[ChainIds.StafiHub]: Blockchain.StafiHub,
+	[ChainIds.Persistence]: Blockchain.Persistence,
 };
 
 export const getIbcChainFromBlockchain = (blockchain: Blockchain | undefined): ChainIds | undefined => {
