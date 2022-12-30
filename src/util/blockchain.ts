@@ -24,6 +24,7 @@ export enum Blockchain {
   Kujira = 'kujira',
   Terra2 = 'terra2',
   Quicksilver = 'quicksilver',
+  Comdex = 'comdex',
 };
 
 export const BRIDGE_IDS = {
@@ -61,6 +62,7 @@ export const CHAIN_IDS: ChainIds = {
   'kujira': 314,
   'terra2': 315,
   'quicksilver': 316,
+  'comdex': 317,
 };
 
 export const CHAIN_IDS_DEV: ChainIds = {
@@ -155,6 +157,8 @@ export const blockchainForChainId = (chainId?: number): Blockchain | undefined =
       return Blockchain.Terra2
     case 316: // mainnnet
       return Blockchain.Quicksilver
+    case 317: // mainnnet
+      return Blockchain.Comdex
     default:
       return undefined
   }

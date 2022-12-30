@@ -104,6 +104,7 @@ export const ibcWhitelist: string[] = [
   ChainIds.Kujira,
   ChainIds.Terra2,
   ChainIds.Quicksilver,
+  ChainIds.Comdex,
 ];
 
 export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
@@ -1816,6 +1817,10 @@ export const swthChannels: SimpleMap<ChannelConfig> = {
   [ChainIds.Terra2]: {
     sourceChannel: "channel-12",
     dstChannel: "channel-36",
+  },
+  [ChainIds.Comdex]: {
+    sourceChannel: "channel-11",
+    dstChannel: "channel-50",
   },
   [ChainIds.Quicksilver]: {
     sourceChannel: "channel-10",
