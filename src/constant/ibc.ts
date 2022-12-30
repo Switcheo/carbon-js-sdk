@@ -87,6 +87,7 @@ export enum ChainIds {
   Stride = "stride-1",
   Kujira = "kaiyo-1",
   Terra2 = "phoenix-1",
+  Quicksilver = "quicksilver-1",
 }
 
 // whitelisted networks for addition of swth as a currency
@@ -102,6 +103,7 @@ export const ibcWhitelist: string[] = [
   ChainIds.Stride,
   ChainIds.Kujira,
   ChainIds.Terra2,
+  ChainIds.Quicksilver,
 ];
 
 export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
@@ -1733,6 +1735,42 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
     features: ["ibc-transfer", "ibc-go", "no-legacy-stdTx"],
     explorerUrlToTx: "https://finder.terra.money/phoenix-1/tx/{txHash}",
   },
+  [ChainIds.Quicksilver]: {
+    rpc: "https://rpc-quicksilver.keplr.app",
+    rest: "https://lcd-quicksilver.keplr.app",
+    chainId: "quicksilver-1",
+    chainName: "Quicksilver",
+    stakeCurrency: {
+      coinDenom: "QCK",
+      coinMinimalDenom: "uqck",
+      coinDecimals: 6,
+    },
+    bip44: {
+      coinType: 118,
+    },
+    bech32Config: IBCAddress.defaultBech32Config("quick"),
+    currencies: [
+      {
+        coinDenom: "QCK",
+        coinMinimalDenom: "uqck",
+        coinDecimals: 6,
+      },
+    ],
+    feeCurrencies: [
+      {
+        coinDenom: "QCK",
+        coinMinimalDenom: "uqck",
+        coinDecimals: 6,
+      },
+    ],
+    gasPriceStep: {
+      low: 0,
+      average: 0.0001,
+      high: 0.00025,
+    },
+    features: [],
+    explorerUrlToTx: "https://www.mintscan.io/quicksilver/txs/{txHash}",
+  },
 };
 
 export type AssetListObj = SimpleMap<SimpleMap<AppCurrency>>;
@@ -1778,6 +1816,10 @@ export const swthChannels: SimpleMap<ChannelConfig> = {
   [ChainIds.Terra2]: {
     sourceChannel: "channel-12",
     dstChannel: "channel-36",
+  },
+  [ChainIds.Quicksilver]: {
+    sourceChannel: "channel-10",
+    dstChannel: "channel-0",
   },
 };
 

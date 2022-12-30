@@ -23,6 +23,7 @@ export enum Blockchain {
   Stride = 'stride',
   Kujira = 'kujira',
   Terra2 = 'terra2',
+  Quicksilver = 'quicksilver',
 };
 
 export const BRIDGE_IDS = {
@@ -59,6 +60,7 @@ export const CHAIN_IDS: ChainIds = {
   'stride': 313,
   'kujira': 314,
   'terra2': 315,
+  'quicksilver': 316,
 };
 
 export const CHAIN_IDS_DEV: ChainIds = {
@@ -151,6 +153,8 @@ export const blockchainForChainId = (chainId?: number): Blockchain | undefined =
       return Blockchain.Kujira
     case 315: // mainnnet
       return Blockchain.Terra2
+    case 316: // mainnnet
+      return Blockchain.Quicksilver
     default:
       return undefined
   }
