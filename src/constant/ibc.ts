@@ -108,6 +108,7 @@ export const ibcWhitelist: string[] = [
   ChainIds.Comdex,
   ChainIds.StafiHub,
   ChainIds.Persistence,
+  ChainIds.Stargaze,
 ];
 
 export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
@@ -1886,6 +1887,10 @@ export const swthChannels: SimpleMap<ChannelConfig> = {
   [ChainIds.Persistence]: {
     sourceChannel: "channel-14",
     dstChannel: "channel-62",
+  },
+  [ChainIds.Stargaze]: {
+    sourceChannel: "channel-15",
+    dstChannel: "channel-123",
   },
 };
 
