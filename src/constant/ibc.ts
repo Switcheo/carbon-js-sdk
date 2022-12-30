@@ -88,6 +88,7 @@ export enum ChainIds {
   Kujira = "kaiyo-1",
   Terra2 = "phoenix-1",
   Quicksilver = "quicksilver-1",
+  StafiHub = "stafihub-1",
 }
 
 // whitelisted networks for addition of swth as a currency
@@ -105,6 +106,7 @@ export const ibcWhitelist: string[] = [
   ChainIds.Terra2,
   ChainIds.Quicksilver,
   ChainIds.Comdex,
+  ChainIds.StafiHub,
 ];
 
 export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
@@ -1772,6 +1774,56 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
     features: [],
     explorerUrlToTx: "https://www.mintscan.io/quicksilver/txs/{txHash}",
   },
+  [ChainIds.StafiHub]: {
+    rpc: "https://public-rpc1.stafihub.io",
+    rest: "https://public-rest-rpc1.stafihub.io",
+    chainId: "stafihub-1",
+    chainName: "StaFi Hub",
+    stakeCurrency: {
+      coinDenom: "FIS",
+      coinMinimalDenom: "ufis",
+      coinDecimals: 6
+    },
+    bip44: {
+      coinType: 118
+    },
+    bech32Config: IBCAddress.defaultBech32Config("stafi"),
+    currencies: [
+      {
+        coinDenom: "FIS",
+        coinMinimalDenom: "ufis",
+        coinDecimals: 6
+      },
+      {
+        coinDenom: "rATOM",
+        coinMinimalDenom: "uratom",
+        coinDecimals: 6
+      },
+      {
+        coinDenom: "rIRIS",
+        coinMinimalDenom: "uriris",
+        coinDecimals: 6
+      },
+      {
+        coinDenom: "rHUAHUA",
+        coinMinimalDenom: "urhuahua",
+        coinDecimals: 6
+      }
+    ],
+    feeCurrencies: [
+      {
+        coinDenom: "FIS",
+        coinMinimalDenom: "ufis",
+        coinDecimals: 6,
+      }
+    ],
+    gasPriceStep: {
+      low: 0.01,
+      average: 0.025,
+      high: 0.04
+    },
+    explorerUrlToTx: "https://www.mintscan.io/stafi/txs/{txHash}",
+  }
 };
 
 export type AssetListObj = SimpleMap<SimpleMap<AppCurrency>>;
@@ -1825,6 +1877,10 @@ export const swthChannels: SimpleMap<ChannelConfig> = {
   [ChainIds.Quicksilver]: {
     sourceChannel: "channel-10",
     dstChannel: "channel-0",
+  },
+  [ChainIds.StafiHub]: {
+    sourceChannel: "channel-13",
+    dstChannel: "channel-5",
   },
 };
 
