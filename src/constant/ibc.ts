@@ -86,6 +86,9 @@ export enum ChainIds {
   Axelar = "axelar-dojo-1",
   Stride = "stride-1",
   Kujira = "kaiyo-1",
+  Terra2 = "phoenix-1",
+  Quicksilver = "quicksilver-1",
+  StafiHub = "stafihub-1",
 }
 
 // whitelisted networks for addition of swth as a currency
@@ -100,6 +103,12 @@ export const ibcWhitelist: string[] = [
   ChainIds.Axelar,
   ChainIds.Stride,
   ChainIds.Kujira,
+  ChainIds.Terra2,
+  ChainIds.Quicksilver,
+  ChainIds.Comdex,
+  ChainIds.StafiHub,
+  ChainIds.Persistence,
+  ChainIds.Stargaze,
 ];
 
 export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
@@ -1665,14 +1674,12 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         coinMinimalDenom: "ukuji",
         coinDecimals: 6,
         coinGeckoId: "kujira",
-        coinImageUrl: "/tokens/kuji.png",
       },
       {
         coinDenom: "USK",
         coinMinimalDenom: "factory/kujira1qk00h5atutpsv900x202pxx42npjr9thg58dnqpa72f2p7m2luase444a7/uusk",
         coinDecimals: 6,
         coinGeckoId: "usk",
-        coinImageUrl: "/tokens/usk.png",
       },
     ],
     feeCurrencies: [
@@ -1691,6 +1698,135 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
     features: ["ibc-transfer", "ibc-go"],
     explorerUrlToTx: "https://finder.kujira.app/kaiyo-1/tx/{txHash}",
   },
+  [ChainIds.Terra2]: {
+    rpc: "https://rpc.terrav2.ccvalidators.com/",
+    rest: "https://phoenix-lcd.terra.dev/",
+    chainId: "phoenix-1",
+    chainName: "Terra 2.0",
+    bip44: {
+      coinType: 118,
+    },
+    bech32Config: IBCAddress.defaultBech32Config("terra"),
+    stakeCurrency: {
+      coinDenom: "LUNA",
+      coinMinimalDenom: "uluna",
+      coinDecimals: 6,
+      // coinGeckoId: "terra-luna-2",
+      coinGeckoId: "pool:uluna",
+    },
+    currencies: [
+      {
+        coinDenom: "LUNA",
+        coinMinimalDenom: "uluna",
+        coinDecimals: 6,
+        // coinGeckoId: "terra-luna-2",
+        coinGeckoId: "pool:uluna",
+      },
+    ],
+    feeCurrencies: [
+      {
+        coinDenom: "LUNA",
+        coinMinimalDenom: "uluna",
+        coinDecimals: 6,
+        // coinGeckoId: "terra-luna-2",
+        coinGeckoId: "pool:uluna",
+      },
+    ],
+    gasPriceStep: {
+      low: 0.15,
+      average: 0.2,
+      high: 0.25,
+    },
+    features: ["ibc-transfer", "ibc-go", "no-legacy-stdTx"],
+    explorerUrlToTx: "https://finder.terra.money/phoenix-1/tx/{txHash}",
+  },
+  [ChainIds.Quicksilver]: {
+    rpc: "https://rpc-quicksilver.keplr.app",
+    rest: "https://lcd-quicksilver.keplr.app",
+    chainId: "quicksilver-1",
+    chainName: "Quicksilver",
+    stakeCurrency: {
+      coinDenom: "QCK",
+      coinMinimalDenom: "uqck",
+      coinDecimals: 6,
+    },
+    bip44: {
+      coinType: 118,
+    },
+    bech32Config: IBCAddress.defaultBech32Config("quick"),
+    currencies: [
+      {
+        coinDenom: "QCK",
+        coinMinimalDenom: "uqck",
+        coinDecimals: 6,
+      },
+    ],
+    feeCurrencies: [
+      {
+        coinDenom: "QCK",
+        coinMinimalDenom: "uqck",
+        coinDecimals: 6,
+      },
+    ],
+    gasPriceStep: {
+      low: 0,
+      average: 0.0001,
+      high: 0.00025,
+    },
+    features: ["ibc-transfer", "ibc-go", "no-legacy-stdTx"],
+    explorerUrlToTx: "https://www.mintscan.io/quicksilver/txs/{txHash}",
+  },
+  [ChainIds.StafiHub]: {
+    rpc: "https://public-rpc1.stafihub.io",
+    rest: "https://public-rest-rpc1.stafihub.io",
+    chainId: "stafihub-1",
+    chainName: "StaFi Hub",
+    stakeCurrency: {
+      coinDenom: "FIS",
+      coinMinimalDenom: "ufis",
+      coinDecimals: 6
+    },
+    bip44: {
+      coinType: 118
+    },
+    bech32Config: IBCAddress.defaultBech32Config("stafi"),
+    currencies: [
+      {
+        coinDenom: "FIS",
+        coinMinimalDenom: "ufis",
+        coinDecimals: 6
+      },
+      {
+        coinDenom: "rATOM",
+        coinMinimalDenom: "uratom",
+        coinDecimals: 6
+      },
+      {
+        coinDenom: "rIRIS",
+        coinMinimalDenom: "uriris",
+        coinDecimals: 6
+      },
+      {
+        coinDenom: "rHUAHUA",
+        coinMinimalDenom: "urhuahua",
+        coinDecimals: 6
+      }
+    ],
+    feeCurrencies: [
+      {
+        coinDenom: "FIS",
+        coinMinimalDenom: "ufis",
+        coinDecimals: 6,
+      }
+    ],
+    gasPriceStep: {
+      low: 0.01,
+      average: 0.025,
+      high: 0.04
+    },
+    features: ["ibc-transfer", "ibc-go", "no-legacy-stdTx"],
+    explorerUrlToTx: "https://www.mintscan.io/stafi/txs/{txHash}",
+  }
 };
 
 export type AssetListObj = SimpleMap<SimpleMap<AppCurrency>>;
@@ -1732,6 +1868,30 @@ export const swthChannels: SimpleMap<ChannelConfig> = {
   [ChainIds.Kujira]: {
     sourceChannel: "channel-9",
     dstChannel: "channel-46",
+  },
+  [ChainIds.Terra2]: {
+    sourceChannel: "channel-12",
+    dstChannel: "channel-36",
+  },
+  [ChainIds.Comdex]: {
+    sourceChannel: "channel-11",
+    dstChannel: "channel-50",
+  },
+  [ChainIds.Quicksilver]: {
+    sourceChannel: "channel-10",
+    dstChannel: "channel-0",
+  },
+  [ChainIds.StafiHub]: {
+    sourceChannel: "channel-13",
+    dstChannel: "channel-5",
+  },
+  [ChainIds.Persistence]: {
+    sourceChannel: "channel-14",
+    dstChannel: "channel-62",
+  },
+  [ChainIds.Stargaze]: {
+    sourceChannel: "channel-15",
+    dstChannel: "channel-123",
   },
 };
 
