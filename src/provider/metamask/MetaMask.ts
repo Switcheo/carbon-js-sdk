@@ -79,6 +79,59 @@ export interface MetaMaskSyncResult {
   chainId?: number
 }
 
+const BSC_MAINNET: MetaMaskChangeNetworkParam = {
+  chainId: '0x38',
+  blockExplorerUrls: ['https://bscscan.com'],
+  chainName: 'BSC Mainnet',
+  rpcUrls: [
+    'https://bsc-dataseed2.binance.org/',
+    'https://bsc-dataseed3.binance.org/',
+    'https://bsc-dataseed4.binance.org/',
+    'https://bsc-dataseed1.defibit.io/',
+    'https://bsc-dataseed2.defibit.io/',
+    'https://bsc-dataseed3.defibit.io/',
+    'https://bsc-dataseed4.defibit.io/',
+    'https://bsc-dataseed1.ninicoin.io/',
+    'https://bsc-dataseed2.ninicoin.io/',
+    'https://bsc-dataseed3.ninicoin.io/',
+    'https://bsc-dataseed4.ninicoin.io/',
+    'https://bsc-dataseed1.binance.org/',
+  ],
+  nativeCurrency: {
+    decimals: 18,
+    name: 'Binance Coin',
+    symbol: 'BNB',
+  },
+};
+
+const BSC_TESTNET: MetaMaskChangeNetworkParam = {
+  chainId: '0x61',
+  blockExplorerUrls: ['https://testnet.bscscan.com'],
+  chainName: 'BSC Testnet',
+  rpcUrls: [
+    'https://data-seed-prebsc-2-s1.binance.org:8545/',
+    'http://data-seed-prebsc-1-s2.binance.org:8545/',
+    'http://data-seed-prebsc-2-s2.binance.org:8545/',
+    'https://data-seed-prebsc-1-s3.binance.org:8545/',
+    'https://data-seed-prebsc-2-s3.binance.org:8545/',
+    'https://data-seed-prebsc-1-s1.binance.org:8545/',
+  ],
+  nativeCurrency: {
+    decimals: 18,
+    name: 'Binance Coin',
+    symbol: 'BNB',
+  },
+};
+
+const ETH_MAINNET: MetaMaskChangeNetworkParam = {
+  chainId: '0x1',
+  rpcUrls: ['https://mainnet.infura.io/v3/'],
+};
+const ETH_TESTNET: MetaMaskChangeNetworkParam = {
+  chainId: '0x4',
+  rpcUrls: ['https://rinkeby.infura.io/v3/'],
+};
+
 /**
  * TODO: Add docs
  */
@@ -89,59 +142,19 @@ export class MetaMask {
     if (network === Network.MainNet) {
       switch (blockchain) {
         case Blockchain.BinanceSmartChain:
-          return {
-            chainId: '0x38',
-            blockExplorerUrls: ['https://bscscan.com'],
-            chainName: 'BSC Mainnet',
-            rpcUrls: [
-              'https://bsc-dataseed2.binance.org/',
-              'https://bsc-dataseed3.binance.org/',
-              'https://bsc-dataseed4.binance.org/',
-              'https://bsc-dataseed1.defibit.io/',
-              'https://bsc-dataseed2.defibit.io/',
-              'https://bsc-dataseed3.defibit.io/',
-              'https://bsc-dataseed4.defibit.io/',
-              'https://bsc-dataseed1.ninicoin.io/',
-              'https://bsc-dataseed2.ninicoin.io/',
-              'https://bsc-dataseed3.ninicoin.io/',
-              'https://bsc-dataseed4.ninicoin.io/',
-              'https://bsc-dataseed1.binance.org/',
-            ],
-            nativeCurrency: {
-              decimals: 18,
-              name: 'Binance Coin',
-              symbol: 'BNB',
-            },
-          }
+          return BSC_MAINNET;
         default:
           // metamask should come with Ethereum configs
-          return { chainId: '0x1' }
+          return ETH_MAINNET;
       }
     }
 
     switch (blockchain) {
       case Blockchain.BinanceSmartChain:
-        return {
-          chainId: '0x61',
-          blockExplorerUrls: ['https://testnet.bscscan.com'],
-          chainName: 'BSC Testnet',
-          rpcUrls: [
-            'https://data-seed-prebsc-2-s1.binance.org:8545/',
-            'http://data-seed-prebsc-1-s2.binance.org:8545/',
-            'http://data-seed-prebsc-2-s2.binance.org:8545/',
-            'https://data-seed-prebsc-1-s3.binance.org:8545/',
-            'https://data-seed-prebsc-2-s3.binance.org:8545/',
-            'https://data-seed-prebsc-1-s1.binance.org:8545/',
-          ],
-          nativeCurrency: {
-            decimals: 18,
-            name: 'Binance Coin',
-            symbol: 'BNB',
-          },
-        }
+        return BSC_TESTNET;
       default:
         // metamask should come with Ethereum configs
-        return { chainId: '0x3' }
+        return ETH_TESTNET;
     }
   }
 
