@@ -6,6 +6,7 @@ export enum Blockchain {
   Ethereum = 'eth',
   BinanceSmartChain = 'bsc',
   Zilliqa = 'zil',
+  Arbitrum = 'arbitrum',
   Native = 'native',
   Btc = 'btc',
   Carbon = 'carbon',
@@ -45,6 +46,8 @@ export const ChainNames = {
   97: 'BSC TestNet',
   110: 'ZIL DevNet',
   111: 'ZIL TestNet',
+  42161: 'Arbitrum MainNet',
+  421611: 'Arbitrum TestNet',
 } as const
 
 export const CHAIN_IDS: ChainIds = {
@@ -55,6 +58,7 @@ export const CHAIN_IDS: ChainIds = {
   'bsc': 6,
   'neo3': 14,
   'zil': 18,
+  'arbitrum': 19,
   'osmosis': 244,
   'terra': 245,
   'cosmoshub': 246,
@@ -115,6 +119,9 @@ export const getBlockchainFromChain = (chainId?: number) => {
     case 110:
     case 111:
       return Blockchain.Zilliqa
+    case 42161:
+    case 421611:
+      return Blockchain.Arbitrum
   }
   return undefined
 }
@@ -143,6 +150,8 @@ export const blockchainForChainId = (chainId?: number): Blockchain | undefined =
     case 14: // mainnet
     case 88: // testnet
       return Blockchain.Neo3
+    case 19: // mainnet
+      return Blockchain.Arbitrum
     case 244: // mainnet
       return Blockchain.Osmosis
     case 245: // mainnet
