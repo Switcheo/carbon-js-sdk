@@ -79,6 +79,7 @@ class CarbonSDK {
   neo: NEOClient;
   eth: ETHClient;
   bsc: ETHClient;
+  arbitrum: ETHClient;
   zil: ZILClient;
   n3: N3Client;
   chainId: string;
@@ -133,6 +134,12 @@ class CarbonSDK {
     this.bsc = ETHClient.instance({
       configProvider: this,
       blockchain: Blockchain.BinanceSmartChain,
+      tokenClient: this.token,
+    });
+
+    this.arbitrum = ETHClient.instance({
+      configProvider: this,
+      blockchain: Blockchain.Arbitrum,
       tokenClient: this.token,
     });
 
