@@ -1578,6 +1578,12 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         coinDecimals: 6,
         coinGeckoId: "", // TODO: fill in when available
       },
+      {
+        coinDenom: "USDC",
+        coinMinimalDenom: "uusdc",
+        coinDecimals: 6,
+        coinGeckoId: "usd-coin",
+      },
     ],
     stakeCurrency: {
       coinDenom: "AXL",
