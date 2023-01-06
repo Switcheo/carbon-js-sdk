@@ -25,7 +25,9 @@ import { MsgConnectionOpenInit, MsgConnectionOpenInitResponse, MsgConnectionOpen
 import { MsgChannelOpenInit, MsgChannelOpenInitResponse, MsgChannelOpenTry, MsgChannelOpenTryResponse, MsgChannelOpenAck, MsgChannelOpenAckResponse, MsgChannelOpenConfirm, MsgChannelOpenConfirmResponse, MsgChannelCloseInit, MsgChannelCloseInitResponse, MsgChannelCloseConfirm, MsgChannelCloseConfirmResponse, MsgRecvPacket, MsgRecvPacketResponse, MsgTimeout, MsgTimeoutResponse, MsgTimeoutOnClose, MsgTimeoutOnCloseResponse, MsgAcknowledgement, MsgAcknowledgementResponse } from "./ibc/core/channel/v1/tx";
 import { MsgCreateClient, MsgCreateClientResponse, MsgUpdateClient, MsgUpdateClientResponse, MsgUpgradeClient, MsgUpgradeClientResponse, MsgSubmitMisbehaviour, MsgSubmitMisbehaviourResponse } from "./ibc/core/client/v1/tx";
 import { Header } from "./ibc/lightclients/tendermint/v1/tendermint";
+import { MsgRegisterPayee, MsgRegisterPayeeResponse, MsgRegisterCounterpartyPayee, MsgRegisterCounterpartyPayeeResponse, MsgPayPacketFee, MsgPayPacketFeeResponse, MsgPayPacketFeeAsync, MsgPayPacketFeeAsyncResponse } from "./ibc/applications/fee/v1/tx";
 import { MsgTransfer, MsgTransferResponse } from "./ibc/applications/transfer/v1/tx";
+import { MsgRegisterInterchainAccount, MsgRegisterInterchainAccountResponse, MsgSendTx, MsgSendTxResponse } from "./ibc/applications/interchain_accounts/controller/v1/tx";
 import { MsgCreateToken, MsgCreateTokenResponse, MsgSyncToken, MsgSyncTokenResponse, MsgMintToken, MsgMintTokenResponse, MsgBindToken, MsgBindTokenResponse, MsgUnbindToken, MsgUnbindTokenResponse, MsgLinkToken, MsgLinkTokenResponse, MsgWithdraw, MsgWithdrawResponse, MsgAuthorizeBridge, MsgAuthorizeBridgeResponse, MsgDeauthorizeBridge, MsgDeauthorizeBridgeResponse, MsgEditBridgeName, MsgEditBridgeNameResponse, MsgRemoveBridge, MsgRemoveBridgeResponse, MsgUpdateToken, MsgUpdateTokenResponse, MsgAddBridgeAddress, MsgAddBridgeAddressResponse, MsgRemoveBridgeAddress, MsgRemoveBridgeAddressResponse } from "./coin/tx";
 import { CreateTokenProposal } from "./coin/proposal";
 import { MsgSetLeverage, MsgSetLeverageResponse } from "./leverage/tx";
@@ -294,8 +296,22 @@ registry.register("/ibc.core.client.v1.UpgradeProposal", UpgradeProposal);
 
 registry.register("/ibc.lightclients.tendermint.v1.Header", Header);
 
+registry.register("/ibc.applications.fee.v1.MsgRegisterPayee", MsgRegisterPayee);
+registry.register("/ibc.applications.fee.v1.MsgRegisterPayeeResponse", MsgRegisterPayeeResponse);
+registry.register("/ibc.applications.fee.v1.MsgRegisterCounterpartyPayee", MsgRegisterCounterpartyPayee);
+registry.register("/ibc.applications.fee.v1.MsgRegisterCounterpartyPayeeResponse", MsgRegisterCounterpartyPayeeResponse);
+registry.register("/ibc.applications.fee.v1.MsgPayPacketFee", MsgPayPacketFee);
+registry.register("/ibc.applications.fee.v1.MsgPayPacketFeeResponse", MsgPayPacketFeeResponse);
+registry.register("/ibc.applications.fee.v1.MsgPayPacketFeeAsync", MsgPayPacketFeeAsync);
+registry.register("/ibc.applications.fee.v1.MsgPayPacketFeeAsyncResponse", MsgPayPacketFeeAsyncResponse);
+
 registry.register("/ibc.applications.transfer.v1.MsgTransfer", MsgTransfer);
 registry.register("/ibc.applications.transfer.v1.MsgTransferResponse", MsgTransferResponse);
+
+registry.register("/ibc.applications.interchain_accounts.controller.v1.MsgRegisterInterchainAccount", MsgRegisterInterchainAccount);
+registry.register("/ibc.applications.interchain_accounts.controller.v1.MsgRegisterInterchainAccountResponse", MsgRegisterInterchainAccountResponse);
+registry.register("/ibc.applications.interchain_accounts.controller.v1.MsgSendTx", MsgSendTx);
+registry.register("/ibc.applications.interchain_accounts.controller.v1.MsgSendTxResponse", MsgSendTxResponse);
 
 registry.register("/Switcheo.carbon.coin.MsgCreateToken", MsgCreateToken);
 registry.register("/Switcheo.carbon.coin.MsgCreateTokenResponse", MsgCreateTokenResponse);
@@ -625,8 +641,20 @@ export const TxTypes = {
   "ClientUpdateProposal": "/ibc.core.client.v1.ClientUpdateProposal",
   "UpgradeProposal": "/ibc.core.client.v1.UpgradeProposal",
   "Header": "/ibc.lightclients.tendermint.v1.Header",
+  "MsgRegisterPayee": "/ibc.applications.fee.v1.MsgRegisterPayee",
+  "MsgRegisterPayeeResponse": "/ibc.applications.fee.v1.MsgRegisterPayeeResponse",
+  "MsgRegisterCounterpartyPayee": "/ibc.applications.fee.v1.MsgRegisterCounterpartyPayee",
+  "MsgRegisterCounterpartyPayeeResponse": "/ibc.applications.fee.v1.MsgRegisterCounterpartyPayeeResponse",
+  "MsgPayPacketFee": "/ibc.applications.fee.v1.MsgPayPacketFee",
+  "MsgPayPacketFeeResponse": "/ibc.applications.fee.v1.MsgPayPacketFeeResponse",
+  "MsgPayPacketFeeAsync": "/ibc.applications.fee.v1.MsgPayPacketFeeAsync",
+  "MsgPayPacketFeeAsyncResponse": "/ibc.applications.fee.v1.MsgPayPacketFeeAsyncResponse",
   "MsgTransfer": "/ibc.applications.transfer.v1.MsgTransfer",
   "MsgTransferResponse": "/ibc.applications.transfer.v1.MsgTransferResponse",
+  "MsgRegisterInterchainAccount": "/ibc.applications.interchain_accounts.controller.v1.MsgRegisterInterchainAccount",
+  "MsgRegisterInterchainAccountResponse": "/ibc.applications.interchain_accounts.controller.v1.MsgRegisterInterchainAccountResponse",
+  "MsgSendTx": "/ibc.applications.interchain_accounts.controller.v1.MsgSendTx",
+  "MsgSendTxResponse": "/ibc.applications.interchain_accounts.controller.v1.MsgSendTxResponse",
   "MsgCreateToken": "/Switcheo.carbon.coin.MsgCreateToken",
   "MsgCreateTokenResponse": "/Switcheo.carbon.coin.MsgCreateTokenResponse",
   "MsgSyncToken": "/Switcheo.carbon.coin.MsgSyncToken",
@@ -729,7 +757,7 @@ export { Message } from "./misc/message";
 export { MessageType } from "./misc/message_type";
 export { Transaction, APITransaction } from "./misc/transaction";
 export { AccountTrade } from "./misc/trade";
-export { QuerySearchRequest, QuerySearchResponse, QueryAllMessageTypeRequest, QueryAllMessageTypeResponse, QueryAllTransactionRequest, QueryAllTransactionResponse, QueryAllBlockRequest, QueryAllBlockResponse, QueryAllModuleAddressRequest, QueryAllModuleAddressResponse, QueryAllModuleAddressResponse_AddressesEntry, QueryModuleAddressRequest, QueryModuleAddressResponse } from "./misc/query";
+export { QuerySearchRequest, QuerySearchResponse, QueryAllMessageTypeRequest, QueryAllMessageTypeResponse, QueryAllTransactionRequest, QueryAllTransactionResponse, QueryAllBlockRequest, QueryAllBlockResponse, QueryAllModuleAddressRequest, QueryAllModuleAddressResponse, QueryAllModuleAddressResponse_AddressesEntry, QueryModuleAddressRequest, QueryModuleAddressResponse, Address } from "./misc/query";
 export { MsgSetTradingFlag, MsgSetTradingFlagResponse, MsgCreateOrder, MsgCreateOrderResponse, MsgEditOrder, MsgEditOrderResponse, MsgCancelOrder, MsgCancelOrderResponse, MsgCancelAll, MsgCancelAllResponse } from "./order/tx";
 export { Params as OrderParams, Order, DBOrder, OrdersForMarket, OrderIDsForMarket, OrderIDs, Orders } from "./order/order";
 export { QueryGetOrderRequest, QueryGetOrderResponse, QueryAllOrderRequest, QueryAllOrderResponse, QueryAccountOpenOrdersRequest, QueryAccountOpenOrdersResponse, QueryParamsRequest as QueryOrderParamsRequest, QueryParamsResponse as QueryOrderParamsResponse, QueryOrderAllocatedMarginRequest, QueryOrderAllocatedMarginResponse } from "./order/query";
@@ -798,7 +826,7 @@ export { MsgCreateSubAccount, MsgCreateSubAccountResponse, MsgActivateSubAccount
 export { QueryGetSubAccountRequest, QueryGetSubAccountResponse, QueryAllSubAccountRequest, QueryAllSubAccountResponse, QuerySubAccountStatusRequest, QuerySubAccountStatusResponse, QuerySubAccountPowerRequest, QuerySubAccountPowerResponse } from "./subaccount/query";
 export { SubAccount, GenesisSubAccount } from "./subaccount/subaccount";
 export { OrderBookLevel, OrderBook, StopBook } from "./book/book";
-export { QueryGetBookRequest, QueryGetBookResponse, QueryAllBookRequest, QueryAllBookResponse } from "./book/query";
+export { QueryImpactPriceRequest, QueryImpactPriceResponse, QueryGetBookRequest, QueryGetBookResponse, QueryAllBookRequest, QueryAllBookResponse } from "./book/query";
 export { OrderBookEvent } from "./book/event";
 export { MsgCreateMarket, MsgCreateMarketResponse, MsgUpdateMarket, MsgUpdateMarketResponse, MsgUpdatePerpetualsFundingInterval, MsgUpdatePerpetualsFundingIntervalResponse } from "./market/tx";
 export { CreateMarketProposal, UpdateMarketProposal, UpdatePerpetualsFundingIntervalProposal } from "./market/proposal";

@@ -4,19 +4,21 @@ import _m0 from "protobufjs/minimal";
 import { PageRequest, PageResponse } from "../query/pagination";
 import { Transaction } from "./transaction";
 import { Order } from "../order/order";
-import { MessageType } from "./message_type";
 import { Block } from "./block";
+import { MessageType } from "./message_type";
 
 export const protobufPackage = "Switcheo.carbon.misc";
 
 export interface QuerySearchRequest {
   keyword: string;
-  limit: Long;
 }
 
 export interface QuerySearchResponse {
   transactions: Transaction[];
   orders: Order[];
+  messageTypes: string[];
+  blocks: Block[];
+  addresses: Address[];
 }
 
 export interface QueryAllMessageTypeRequest {}
@@ -65,7 +67,13 @@ export interface QueryModuleAddressResponse {
   address: string;
 }
 
-const baseQuerySearchRequest: object = { keyword: "", limit: Long.UZERO };
+export interface Address {
+  name: string;
+  address: string;
+  type: string;
+}
+
+const baseQuerySearchRequest: object = { keyword: "" };
 
 export const QuerySearchRequest = {
   encode(
@@ -74,9 +82,6 @@ export const QuerySearchRequest = {
   ): _m0.Writer {
     if (message.keyword !== "") {
       writer.uint32(10).string(message.keyword);
-    }
-    if (!message.limit.isZero()) {
-      writer.uint32(16).uint64(message.limit);
     }
     return writer;
   },
@@ -90,9 +95,6 @@ export const QuerySearchRequest = {
       switch (tag >>> 3) {
         case 1:
           message.keyword = reader.string();
-          break;
-        case 2:
-          message.limit = reader.uint64() as Long;
           break;
         default:
           reader.skipType(tag & 7);
@@ -108,33 +110,23 @@ export const QuerySearchRequest = {
       object.keyword !== undefined && object.keyword !== null
         ? String(object.keyword)
         : "";
-    message.limit =
-      object.limit !== undefined && object.limit !== null
-        ? Long.fromString(object.limit)
-        : Long.UZERO;
     return message;
   },
 
   toJSON(message: QuerySearchRequest): unknown {
     const obj: any = {};
     message.keyword !== undefined && (obj.keyword = message.keyword);
-    message.limit !== undefined &&
-      (obj.limit = (message.limit || Long.UZERO).toString());
     return obj;
   },
 
   fromPartial(object: DeepPartial<QuerySearchRequest>): QuerySearchRequest {
     const message = { ...baseQuerySearchRequest } as QuerySearchRequest;
     message.keyword = object.keyword ?? "";
-    message.limit =
-      object.limit !== undefined && object.limit !== null
-        ? Long.fromValue(object.limit)
-        : Long.UZERO;
     return message;
   },
 };
 
-const baseQuerySearchResponse: object = {};
+const baseQuerySearchResponse: object = { messageTypes: "" };
 
 export const QuerySearchResponse = {
   encode(
@@ -147,6 +139,15 @@ export const QuerySearchResponse = {
     for (const v of message.orders) {
       Order.encode(v!, writer.uint32(18).fork()).ldelim();
     }
+    for (const v of message.messageTypes) {
+      writer.uint32(26).string(v!);
+    }
+    for (const v of message.blocks) {
+      Block.encode(v!, writer.uint32(34).fork()).ldelim();
+    }
+    for (const v of message.addresses) {
+      Address.encode(v!, writer.uint32(42).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -156,6 +157,9 @@ export const QuerySearchResponse = {
     const message = { ...baseQuerySearchResponse } as QuerySearchResponse;
     message.transactions = [];
     message.orders = [];
+    message.messageTypes = [];
+    message.blocks = [];
+    message.addresses = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -166,6 +170,15 @@ export const QuerySearchResponse = {
           break;
         case 2:
           message.orders.push(Order.decode(reader, reader.uint32()));
+          break;
+        case 3:
+          message.messageTypes.push(reader.string());
+          break;
+        case 4:
+          message.blocks.push(Block.decode(reader, reader.uint32()));
+          break;
+        case 5:
+          message.addresses.push(Address.decode(reader, reader.uint32()));
           break;
         default:
           reader.skipType(tag & 7);
@@ -181,6 +194,13 @@ export const QuerySearchResponse = {
       Transaction.fromJSON(e)
     );
     message.orders = (object.orders ?? []).map((e: any) => Order.fromJSON(e));
+    message.messageTypes = (object.messageTypes ?? []).map((e: any) =>
+      String(e)
+    );
+    message.blocks = (object.blocks ?? []).map((e: any) => Block.fromJSON(e));
+    message.addresses = (object.addresses ?? []).map((e: any) =>
+      Address.fromJSON(e)
+    );
     return message;
   },
 
@@ -198,6 +218,23 @@ export const QuerySearchResponse = {
     } else {
       obj.orders = [];
     }
+    if (message.messageTypes) {
+      obj.messageTypes = message.messageTypes.map((e) => e);
+    } else {
+      obj.messageTypes = [];
+    }
+    if (message.blocks) {
+      obj.blocks = message.blocks.map((e) => (e ? Block.toJSON(e) : undefined));
+    } else {
+      obj.blocks = [];
+    }
+    if (message.addresses) {
+      obj.addresses = message.addresses.map((e) =>
+        e ? Address.toJSON(e) : undefined
+      );
+    } else {
+      obj.addresses = [];
+    }
     return obj;
   },
 
@@ -207,6 +244,11 @@ export const QuerySearchResponse = {
       Transaction.fromPartial(e)
     );
     message.orders = (object.orders ?? []).map((e) => Order.fromPartial(e));
+    message.messageTypes = (object.messageTypes ?? []).map((e) => e);
+    message.blocks = (object.blocks ?? []).map((e) => Block.fromPartial(e));
+    message.addresses = (object.addresses ?? []).map((e) =>
+      Address.fromPartial(e)
+    );
     return message;
   },
 };
@@ -1030,6 +1072,83 @@ export const QueryModuleAddressResponse = {
       ...baseQueryModuleAddressResponse,
     } as QueryModuleAddressResponse;
     message.address = object.address ?? "";
+    return message;
+  },
+};
+
+const baseAddress: object = { name: "", address: "", type: "" };
+
+export const Address = {
+  encode(
+    message: Address,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.name !== "") {
+      writer.uint32(10).string(message.name);
+    }
+    if (message.address !== "") {
+      writer.uint32(18).string(message.address);
+    }
+    if (message.type !== "") {
+      writer.uint32(26).string(message.type);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): Address {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseAddress } as Address;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.name = reader.string();
+          break;
+        case 2:
+          message.address = reader.string();
+          break;
+        case 3:
+          message.type = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Address {
+    const message = { ...baseAddress } as Address;
+    message.name =
+      object.name !== undefined && object.name !== null
+        ? String(object.name)
+        : "";
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    message.type =
+      object.type !== undefined && object.type !== null
+        ? String(object.type)
+        : "";
+    return message;
+  },
+
+  toJSON(message: Address): unknown {
+    const obj: any = {};
+    message.name !== undefined && (obj.name = message.name);
+    message.address !== undefined && (obj.address = message.address);
+    message.type !== undefined && (obj.type = message.type);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<Address>): Address {
+    const message = { ...baseAddress } as Address;
+    message.name = object.name ?? "";
+    message.address = object.address ?? "";
+    message.type = object.type ?? "";
     return message;
   },
 };
