@@ -260,11 +260,11 @@ class TokenClient {
   }
 
   public getWrappedToken(denom: string, blockchain?: BlockchainUtils.Blockchain): Token | null {
-    // check if denom is wrapped token
-    if (this.wrapperMap[denom]) {
+    // if denom is already a wrapped denom or no blockchain was specified,
+    // just return the input denom.
+    if (this.wrapperMap[denom] || !blockchain) {
       return this.tokens[denom];
     }
-
     // check if denom is source token
     if (Object.values(this.wrapperMap).includes(denom)) {
       for (const [wrappedDenom, sourceDenom] of Object.entries(this.wrapperMap)) {
@@ -272,14 +272,17 @@ class TokenClient {
         if (sourceDenom !== denom) {
           continue;
         }
-
         // check if wrapped denom is of correct blockchain
         const token = this.tokens[wrappedDenom];
         let tokenChain = BlockchainUtils.blockchainForChainId(token.chainId.toNumber());
+        
         if (TokenClient.isIBCDenom(wrappedDenom)) {
           tokenChain = IBCUtils.BlockchainMap[wrappedDenom]
         }
-        if (!blockchain || !tokenChain || tokenChain === blockchain) {
+        if (!tokenChain) {
+          continue; // unknown chain! just ignore this source token
+        }
+        if (tokenChain === blockchain) {
           return token;
         }
       }
