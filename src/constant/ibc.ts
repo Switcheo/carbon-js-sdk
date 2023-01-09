@@ -1844,8 +1844,8 @@ export interface ChannelConfig {
 
 export const swthChannels: SimpleMap<ChannelConfig> = {
   [ChainIds.Osmosis]: {
-    sourceChannel: "channel-0", // local (carbon)
-    dstChannel: "channel-188", // remote
+    sourceChannel: "channel-0",
+    dstChannel: "channel-188",
   },
   [ChainIds.Terra]: {
     sourceChannel: "channel-2",
