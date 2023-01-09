@@ -180,6 +180,8 @@ export const blockchainForChainId = (chainId?: number): Blockchain | undefined =
       return Blockchain.Persistence
     case 320: // mainnnet
       return Blockchain.Stargaze
+    case 42161: // mainnnet
+      return Blockchain.Arbitrum
     default:
       return undefined
   }

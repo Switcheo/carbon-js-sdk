@@ -146,7 +146,13 @@ class CarbonSDK {
     this.zil = ZILClient.instance({
       configProvider: this,
       blockchain: Blockchain.Zilliqa,
-    })
+    });
+
+    this.arbitrum = ETHClient.instance({
+      configProvider: this,
+      blockchain: Blockchain.Arbitrum,
+      tokenClient: this.token,
+    });
   }
 
   public static async instance(opts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS) {
