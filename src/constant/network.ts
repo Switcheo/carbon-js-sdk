@@ -62,6 +62,7 @@ export interface NetworkConfig {
 
   eth: EthNetworkConfig
   bsc: EthNetworkConfig
+  arbitrum: EthNetworkConfig
 
   neo: NeoNetworkConfig
   n3: N3NetworkConfig
@@ -112,6 +113,16 @@ export const NetworkConfigs: {
       lockProxyAddr: "0xb5d4f343412dc8efb6ff599d790074d0f1e8d430",
       balanceReader: "0x2b18c5e1edaa7e27d40fec8d0b7d96c5eefa35df",
       byteCodeHash: "0x1b147c1cef546fcbcc1284df778073d65b90f80d5b649a69d5f8a01e186c0ec1",
+    },
+
+    arbitrum: {
+      rpcURL: "https://arb1.arbitrum.io/rpc",
+      wsURL: "",
+      payerURL: "https://payer.carbon.network",
+      bridgeEntranceAddr: "0x7b1c7216c117cc62d875e3086518b238392cf04d",
+      lockProxyAddr: "0xb1e6f8820826491fcc5519f84ff4e2bdbb6e3cad",
+      balanceReader: "0x7e8d8c98a016877cb3103e837fc71d41b155af70",
+      byteCodeHash: "", // TODO: update when byteCodeHash is added
     },
 
     neo: {
@@ -171,6 +182,16 @@ export const NetworkConfigs: {
       byteCodeHash: "0x1b147c1cef546fcbcc1284df778073d65b90f80d5b649a69d5f8a01e186c0ec1",
     },
 
+    arbitrum: {
+      rpcURL: "https://rinkeby.arbitrum.io/rpc",
+      wsURL: "",
+      payerURL: "https://test-payer.carbon.network",
+      bridgeEntranceAddr: "",
+      lockProxyAddr: "",
+      balanceReader: "",
+      byteCodeHash: "",
+    },
+
     neo: {
       rpcURL: "https://g30trj885e.execute-api.ap-southeast-1.amazonaws.com",
       wrapperScriptHash: "f46719e2d16bf50cddcef9d4bbfece901f73cbb6",
@@ -228,6 +249,16 @@ export const NetworkConfigs: {
       byteCodeHash: "0x1b147c1cef546fcbcc1284df778073d65b90f80d5b649a69d5f8a01e186c0ec1",
     },
 
+    arbitrum: {
+      rpcURL: "https://rinkeby.arbitrum.io/rpc",
+      wsURL: "",
+      payerURL: "https://test-payer.carbon.network",
+      bridgeEntranceAddr: "",
+      lockProxyAddr: "",
+      balanceReader: "",
+      byteCodeHash: "",
+    },
+
     neo: {
       rpcURL: "https://g30trj885e.execute-api.ap-southeast-1.amazonaws.com",
       wrapperScriptHash: "f46719e2d16bf50cddcef9d4bbfece901f73cbb6",
@@ -279,6 +310,16 @@ export const NetworkConfigs: {
       rpcURL: "https://data-seed-prebsc-2-s3.binance.org:8545/",
       wsURL: "",
       payerURL: `http://localhost:8001`,
+      bridgeEntranceAddr: "",
+      lockProxyAddr: "",
+      balanceReader: "",
+      byteCodeHash: "",
+    },
+
+    arbitrum: {
+      rpcURL: "https://rinkeby.arbitrum.io/rpc",
+      wsURL: "",
+      payerURL: "https://test-payer.carbon.network",
       bridgeEntranceAddr: "",
       lockProxyAddr: "",
       balanceReader: "",

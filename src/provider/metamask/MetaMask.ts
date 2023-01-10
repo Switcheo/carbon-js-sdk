@@ -4,7 +4,7 @@ import { Blockchain, getBlockchainFromChain, ChainNames } from '@carbon-sdk/util
 import { ethers } from 'ethers'
 import * as ethSignUtils from 'eth-sig-util'
 
-export type EVMChain = Blockchain.Ethereum | Blockchain.BinanceSmartChain;
+export type EVMChain = Blockchain.Ethereum | Blockchain.BinanceSmartChain | Blockchain.Arbitrum;
 type ChainContracts = {
   [key in Network]: string;
 }
@@ -26,6 +26,14 @@ const CONTRACT_HASH: {
     [Network.LocalHost]: '0x06E949ec2d6737ff57859CdcE426C5b5CA2Fc085',
 
     [Network.MainNet]: '0x3786d94AC6B15FE2eaC72c3CA78cB82578Fc66f4',
+  } as const,
+  [Blockchain.Arbitrum]: {
+    // use same testnet contract for all non-mainnet uses
+    [Network.TestNet]: '',
+    [Network.DevNet]: '',
+    [Network.LocalHost]: '',
+
+    [Network.MainNet]: '0x43138036d1283413035b8eca403559737e8f7980',
   } as const,
 } as const
 
@@ -103,7 +111,6 @@ const BSC_MAINNET: MetaMaskChangeNetworkParam = {
     symbol: 'BNB',
   },
 };
-
 const BSC_TESTNET: MetaMaskChangeNetworkParam = {
   chainId: '0x61',
   blockExplorerUrls: ['https://testnet.bscscan.com'],
@@ -132,6 +139,29 @@ const ETH_TESTNET: MetaMaskChangeNetworkParam = {
   rpcUrls: ['https://rinkeby.infura.io/v3/'],
 };
 
+const ARBITRUM_MAINNET: MetaMaskChangeNetworkParam = {
+  chainId: '0xA4B1',
+  blockExplorerUrls: ['https://explorer.arbitrum.io'],
+  chainName: 'Arbitrum One',
+  rpcUrls: ['https://arb1.arbitrum.io/rpc'],
+  nativeCurrency: {
+    decimals: 18,
+    name: 'Ethereum',
+    symbol: 'ETH',
+  },
+};
+const ARBITRUM_TESTNET: MetaMaskChangeNetworkParam = {
+  chainId: '0x66EEB',
+  blockExplorerUrls: [''],
+  chainName: 'Arbitrum Testnet',
+  rpcUrls: ['https://rinkeby.arbitrum.io/rpc'],
+  nativeCurrency: {
+    decimals: 18,
+    name: 'Ethereum',
+    symbol: 'ETH',
+  },
+};
+
 /**
  * TODO: Add docs
  */
@@ -143,6 +173,8 @@ export class MetaMask {
       switch (blockchain) {
         case Blockchain.BinanceSmartChain:
           return BSC_MAINNET;
+        case Blockchain.Arbitrum:
+          return ARBITRUM_MAINNET;
         default:
           // metamask should come with Ethereum configs
           return ETH_MAINNET;
@@ -152,6 +184,8 @@ export class MetaMask {
     switch (blockchain) {
       case Blockchain.BinanceSmartChain:
         return BSC_TESTNET;
+      case Blockchain.Arbitrum:
+        return ARBITRUM_TESTNET;
       default:
         // metamask should come with Ethereum configs
         return ETH_TESTNET;
@@ -161,14 +195,16 @@ export class MetaMask {
   static getRequiredChainId(network: Network, blockchain: Blockchain = Blockchain.Ethereum) {
     if (network === Network.MainNet) {
       switch (blockchain) {
-        case Blockchain.BinanceSmartChain: return 56
-        default: return 1
+        case Blockchain.BinanceSmartChain: return 56;
+        case Blockchain.Arbitrum: return 42161;
+        default: return 1;
       }
     }
 
     switch (blockchain) {
-      case Blockchain.BinanceSmartChain: return 97
-      default: return 4
+      case Blockchain.BinanceSmartChain: return 97;
+      case Blockchain.Arbitrum: return 421611;
+      default: return 4;
     }
   }
 
@@ -365,30 +401,39 @@ export class MetaMask {
     // set correct blockchain given the chain ID
     if (network === Network.MainNet) {
       if (currentChainId === 1) {
-        this.blockchain = Blockchain.Ethereum
-        return currentChainId
+        this.blockchain = Blockchain.Ethereum;
+        return currentChainId;
       }
       if (currentChainId === 56) {
-        this.blockchain = Blockchain.BinanceSmartChain
-        return currentChainId
+        this.blockchain = Blockchain.BinanceSmartChain;
+        return currentChainId;
       }
+      if (currentChainId === 42161) {
+        this.blockchain = Blockchain.Arbitrum;
+        return currentChainId;
+      }
+
       return 1
     }
 
     if (currentChainId === 4) {
-      this.blockchain = Blockchain.Ethereum
-      return currentChainId
+      this.blockchain = Blockchain.Ethereum;
+      return currentChainId;
     }
     if (currentChainId === 97) {
-      this.blockchain = Blockchain.BinanceSmartChain
-      return currentChainId
+      this.blockchain = Blockchain.BinanceSmartChain;
+      return currentChainId;
+    }
+    if (currentChainId === 421611) {
+      this.blockchain = Blockchain.Arbitrum;
+      return currentChainId;
     }
 
     // Deal with cases where users are logging in to devnet using mainnet chains
     if (currentChainId === 56) {
-      return 97
+      return 97;
     }
-    return 4
+    return 4;
   }
 
   private getContractHash(blockchain: EVMChain = this.blockchain) {
