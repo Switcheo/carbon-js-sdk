@@ -6,7 +6,7 @@ import * as clients from "./clients";
 import N3Client from "./clients/N3Client";
 import { AdminModule, BankModule, BrokerModule, CDPModule, CoinModule, FeeModule, GovModule, IBCModule, LeverageModule, LiquidityPoolModule, MarketModule, OracleModule, OrderModule, PositionModule, ProfileModule, SubAccountModule, XChainModule } from "./modules";
 import { StakingModule } from "./modules/staking";
-import { CosmosLedger, Keplr, KeplrAccount, Leap } from "./provider";
+import { CosmosLedger, Keplr, KeplrAccount, Leap, LeapAccount, LeapExtended } from "./provider";
 import { Blockchain } from "./util/blockchain";
 import { CarbonSigner, CarbonWallet, CarbonWalletGenericOpts } from "./wallet";
 
@@ -219,7 +219,7 @@ class CarbonSDK {
   }
 
   public static async instanceWithLeap(
-    leap: Leap,
+    leap: LeapExtended,
     sdkOpts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS,
     walletOpts?: CarbonWalletGenericOpts,
   ) {
@@ -358,13 +358,16 @@ class CarbonSDK {
   }
 
   public async connectWithLeap(
-    leap: Leap,
+    leap: LeapExtended,
     opts?: CarbonWalletGenericOpts,
   ) {
     const chainId = this.chainId;
+    const chainInfo = await LeapAccount.getChainInfo(this);
     const leapKey = await leap.getKey(chainId);
 
+    await leap.experimentalSuggestChain(chainInfo)
     await leap.enable(chainId);
+    
     const wallet = CarbonWallet.withLeap(leap, chainId, leapKey, {
       ...opts,
       network: this.network,
