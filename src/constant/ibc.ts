@@ -964,6 +964,11 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         coinGeckoId: "comdex",
       },
     ],
+    gasPriceStep: {
+      "low": 0.0125,
+      "average": 0.025,
+      "high": 0.04
+    },
     features: ["ibc-transfer", "ibc-go"],
     explorerUrlToTx: "https://www.mintscan.io/comdex/txs/{txHash}",
     tmRpc: "https://rpc.comdex.one/",
@@ -1578,6 +1583,12 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         coinDecimals: 6,
         coinGeckoId: "", // TODO: fill in when available
       },
+      {
+        coinDenom: "USDC",
+        coinMinimalDenom: "uusdc",
+        coinDecimals: 6,
+        coinGeckoId: "usd-coin",
+      },
     ],
     stakeCurrency: {
       coinDenom: "AXL",
@@ -1901,7 +1912,7 @@ export const ibcTokenRegex = /^ibc\/([a-f\d]+)$/i;
 
 export const ibcNetworkRegex = /^([a-z\d_-]+)-([\d]+)$/i;
 
-export const ibcDefaultGas: number = 200000;
+export const ibcDefaultGas: number = 210000;
 
 export interface GasPriceStep {
   low: number;
