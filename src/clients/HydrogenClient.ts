@@ -1,7 +1,7 @@
 import { Network, NetworkConfig } from "@carbon-sdk/constant";
 import { APIUtils, BlockchainUtils } from "@carbon-sdk/util";
 import dayjs from "dayjs";
-import { ChainTransaction, CrossChainTransfer, CrossChainTransferDetailed, GetDetailedTransfersResponse, GetRelaysRequest, GetStatsResponse, GetTransfersRequest, GetTransfersResponse } from "../hydrogen";
+import { ChainTransaction, CrossChainTransfer, CrossChainTransferDetailed, GetDetailedTransfersResponse, GetRelaysRequest, GetRelaysResponse, GetStatsResponse, GetTransfersRequest, GetTransfersResponse, RelaysResponse } from "../hydrogen";
 import { FeeQuote, GetFeeQuoteRequest, GetFeeQuoteResponse } from "@carbon-sdk/hydrogen/feeQuote";
 
 export const HydrogenEndpoints = {
@@ -42,6 +42,18 @@ const formatCrossChainTransferDetailed = (value: any): CrossChainTransferDetaile
     source_event: formatChainEvent(value.source_event),
     bridging_event: formatChainEvent(value.bridging_event),
     destination_event: formatChainEvent(value.destination_event),
+  }
+}
+
+const formatRelaysTransfers = (value: any): RelaysResponse => {
+  if (!value || typeof value !== "object") return value;
+  return {
+    ...value,
+    created_at: formatDateField(value.created_at?.toString()),
+    updated_at: formatDateField(value.updated_at?.toString()),
+    source_blockchain: BlockchainUtils.parseBlockchain(value.source_blockchain),
+    bridging_blockchain: BlockchainUtils.parseBlockchain(value.bridging_blockchain),
+    destination_blockchain: BlockchainUtils.parseBlockchain(value.destination_blockchain),
   }
 }
 
@@ -122,7 +134,7 @@ class HydrogenClient {
     }
   }
 
-  async getRelaysTransfers(req: GetRelaysRequest): Promise<GetDetailedTransfersResponse> {
+  async getRelaysTransfers(req: GetRelaysRequest): Promise<GetRelaysResponse> {
     this.checkState();
     const request = this.apiManager.path('relays', {}, {
       ...req,
@@ -133,7 +145,7 @@ class HydrogenClient {
 
     return {
       ...result,
-      data: result.data.map(formatCrossChainTransferDetailed),
+      data: result.data.map(formatRelaysTransfers),
     }
   }
 
