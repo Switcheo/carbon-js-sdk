@@ -26,7 +26,7 @@ export enum Blockchain {
   Terra2 = 'terra2',
   Quicksilver = 'quicksilver',
   Comdex = 'comdex',
-  StafiHub = 'stafi',
+  StafiHub = 'stafihub',
   Persistence = 'persistence',
   Stargaze = 'stargaze',
 };
