@@ -79,6 +79,7 @@ class CarbonSDK {
   neo: NEOClient;
   eth: ETHClient;
   bsc: ETHClient;
+  arbitrum: ETHClient;
   zil: ZILClient;
   n3: N3Client;
   chainId: string;
@@ -136,10 +137,22 @@ class CarbonSDK {
       tokenClient: this.token,
     });
 
+    this.arbitrum = ETHClient.instance({
+      configProvider: this,
+      blockchain: Blockchain.Arbitrum,
+      tokenClient: this.token,
+    });
+
     this.zil = ZILClient.instance({
       configProvider: this,
       blockchain: Blockchain.Zilliqa,
-    })
+    });
+
+    this.arbitrum = ETHClient.instance({
+      configProvider: this,
+      blockchain: Blockchain.Arbitrum,
+      tokenClient: this.token,
+    });
   }
 
   public static async instance(opts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS) {
