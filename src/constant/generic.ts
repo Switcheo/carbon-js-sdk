@@ -14,4 +14,14 @@ export const DEFAULT_FEE: StdFee = {
   gas: DEFAULT_GAS.toString(10),
 };
 
-export const CURRENT_GAS_PRICE = 769.23077;
+export interface GasPriceStep {
+  low: number;
+  average: number;
+  high: number;
+}
+
+export const CARBON_GAS_PRICE: GasPriceStep = {
+  low: 1,
+  average: 1.5,
+  high: 2,
+};

@@ -1,7 +1,7 @@
 import { SimpleMap } from "@carbon-sdk/util/type";
 import { AppCurrency, Bech32Config, ChainInfo } from "@keplr-wallet/types";
 import * as bech32 from "bech32";
-import { CURRENT_GAS_PRICE } from "./generic";
+import { CARBON_GAS_PRICE, GasPriceStep } from "./generic";
 import { DenomPrefix } from "./token";
 
 export interface ChainInfoExplorerTmRpc extends ChainInfo {
@@ -147,13 +147,13 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         coinMinimalDenom: "uosmo",
         coinDecimals: 6,
         coinGeckoId: "osmosis",
+        gasPriceStep: {
+          low: 0,
+          average: 0.025,
+          high: 0.04,
+        },
       },
     ],
-    gasPriceStep: {
-      low: 0,
-      average: 0.025,
-      high: 0.04,
-    },
     features: ["ibc-transfer", "ibc-go"],
     explorerUrlToTx: "https://www.mintscan.io/osmosis/txs/{txHash}",
     tmRpc: "https://rpc-osmosis.blockapsis.com/",
@@ -235,19 +235,24 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         coinMinimalDenom: "uluna",
         coinDecimals: 6,
         coinGeckoId: "terra-luna",
+        gasPriceStep: {
+          low: 0.15,
+          average: 0.2,
+          high: 0.25,
+        },
       },
       {
         coinDenom: "UST",
         coinMinimalDenom: "uusd",
         coinDecimals: 6,
         coinGeckoId: "terrausd",
+        gasPriceStep: {
+          low: 0.15,
+          average: 0.2,
+          high: 0.25,
+        },
       },
     ],
-    gasPriceStep: {
-      low: 0.15,
-      average: 0.2,
-      high: 0.25,
-    },
     features: ["ibc-transfer", "ibc-go"],
     explorerUrlToTx: "https://finder.terra.money/columbus-5/tx/{txHash}",
     tmRpc: "https://terra-rpc.easy2stake.com/",
@@ -563,13 +568,13 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         coinMinimalDenom: "ungm",
         coinDecimals: 6,
         coinGeckoId: "e-money",
+        gasPriceStep: {
+          low: 1,
+          average: 1,
+          high: 1,
+        },
       },
     ],
-    gasPriceStep: {
-      low: 1,
-      average: 1,
-      high: 1,
-    },
     features: ["ibc-transfer", "ibc-go"],
     explorerUrlToTx: "https://emoney.bigdipper.live/transactions/{txHash}",
   },
@@ -602,13 +607,13 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         coinMinimalDenom: "ujuno",
         coinDecimals: 6,
         coinGeckoId: "juno-network",
+        gasPriceStep: {
+          low: 0.001,
+          average: 0.0025,
+          high: 0.004,
+        },
       },
     ],
-    gasPriceStep: {
-      low: 0.001,
-      average: 0.0025,
-      high: 0.004,
-    },
     features: ["ibc-transfer", "ibc-go"],
     explorerUrlToTx: "https://www.mintscan.io/juno/txs/{txHash}",
   },
@@ -641,13 +646,13 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         coinMinimalDenom: "aevmos",
         coinDecimals: 18,
         coinGeckoId: "evmos",
+        gasPriceStep: {
+          low: 25000000000,
+          average: 25000000000,
+          high: 40000000000,
+        },
       },
     ],
-    gasPriceStep: {
-      low: 25000000000,
-      average: 25000000000,
-      high: 40000000000,
-    },
     features: ["ibc-transfer", "ibc-go"],
     explorerUrlToTx: "https://www.mintscan.io/evmos/txs/{txHash}",
   },
@@ -887,13 +892,13 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         coinMinimalDenom: "umed",
         coinDecimals: 6,
         coinGeckoId: "medibloc",
+        gasPriceStep: {
+          low: 5,
+          average: 7,
+          high: 9,
+        },
       },
     ],
-    gasPriceStep: {
-      low: 5,
-      average: 7,
-      high: 9,
-    },
     features: ["ibc-transfer", "ibc-go"],
     explorerUrlToTx: "https://www.mintscan.io/medibloc/txs/{txHash}",
     tmRpc: "https://rpc.gopanacea.org/",
@@ -962,13 +967,13 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         coinMinimalDenom: "ucmdx",
         coinDecimals: 6,
         coinGeckoId: "comdex",
+        gasPriceStep: {
+          "low": 0.0125,
+          "average": 0.025,
+          "high": 0.04
+        },
       },
     ],
-    gasPriceStep: {
-      "low": 0.0125,
-      "average": 0.025,
-      "high": 0.04
-    },
     features: ["ibc-transfer", "ibc-go"],
     explorerUrlToTx: "https://www.mintscan.io/comdex/txs/{txHash}",
     tmRpc: "https://rpc.comdex.one/",
@@ -1002,13 +1007,13 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         coinMinimalDenom: "ncheq",
         coinDecimals: 9,
         coinGeckoId: "cheqd-network",
+        gasPriceStep: {
+          low: 25,
+          average: 30,
+          high: 50,
+        },
       },
     ],
-    gasPriceStep: {
-      low: 25,
-      average: 30,
-      high: 50,
-    },
     features: ["ibc-transfer", "ibc-go"],
     explorerUrlToTx: "https://explorer.cheqd.io/transactions/{txHash}",
     tmRpc: "https://rpc.cheqd.net/",
@@ -1077,13 +1082,13 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         coinMinimalDenom: "uhuahua",
         coinDecimals: 6,
         coinGeckoId: "pool:uhuahua",
+        gasPriceStep: {
+          low: 0.025,
+          average: 0.03,
+          high: 0.035,
+        },
       },
     ],
-    gasPriceStep: {
-      low: 0.025,
-      average: 0.03,
-      high: 0.035,
-    },
     features: ["ibc-transfer", "ibc-go"],
     explorerUrlToTx: "https://ping.pub/chihuahua/tx/{txHash}",
   },
@@ -1223,13 +1228,13 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         coinMinimalDenom: "udig",
         coinDecimals: 6,
         coinGeckoId: "pool:udig",
+        gasPriceStep: {
+          low: 0.025,
+          average: 0.03,
+          high: 0.035,
+        },
       },
     ],
-    gasPriceStep: {
-      low: 0.025,
-      average: 0.03,
-      high: 0.035,
-    },
     features: ["ibc-transfer", "ibc-go"],
     explorerUrlToTx: "https://ping.pub/dig/tx/{txHash}",
     tmRpc: "https://rpc-1-dig.notional.ventures/",
@@ -1443,13 +1448,13 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         coinMinimalDenom: "ugraviton",
         coinDecimals: 6,
         coinGeckoId: "pool:ugraviton",
+        gasPriceStep: {
+          low: 0,
+          average: 0,
+          high: 0.035,
+        },
       },
     ],
-    gasPriceStep: {
-      low: 0,
-      average: 0,
-      high: 0.035,
-    },
     features: ["ibc-transfer", "ibc-go"],
     explorerUrlToTx: "https://www.mintscan.io/gravity-bridge/txs/{txHash}",
     tmRpc: "https://gravitychain.io:26657/",
@@ -1531,13 +1536,9 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         coinMinimalDenom: "swth",
         coinDecimals: 8,
         coinGeckoId: "switcheo",
+        gasPriceStep: CARBON_GAS_PRICE,
       },
     ],
-    gasPriceStep: {
-      low: CURRENT_GAS_PRICE,
-      average: CURRENT_GAS_PRICE,
-      high: CURRENT_GAS_PRICE,
-    },
     bip44: { coinType: 118 },
     currencies: [
       {
@@ -1568,13 +1569,13 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         coinMinimalDenom: "uaxl",
         coinDecimals: 6,
         coinGeckoId: "", // TODO: fill in when available
+        gasPriceStep: {
+          low: 0.007,
+          average: 0.007,
+          high: 0.01,
+        },
       },
     ],
-    gasPriceStep: {
-      low: 0.007,
-      average: 0.007,
-      high: 0.01,
-    },
     bip44: { coinType: 118 },
     currencies: [
       {
@@ -1653,13 +1654,13 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         coinMinimalDenom: "ustrd",
         coinDecimals: 6,
         coinGeckoId: "stride",
+        gasPriceStep: {
+          low: 0,
+          average: 0,
+          high: 0.04,
+        },
       },
     ],
-    gasPriceStep: {
-      low: 0,
-      average: 0,
-      high: 0.04,
-    },
     features: ["ibc-transfer", "ibc-go"],
     explorerUrlToTx: "https://www.mintscan.io/stride/txs/{txHash}",
     tmRpc: "https://stride.rpc.kjnodes.com/",
@@ -1699,13 +1700,13 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         coinMinimalDenom: "ukuji",
         coinDecimals: 6,
         coinGeckoId: "kujira",
+        gasPriceStep: {
+          low: 0.01,
+          average: 0.025,
+          high: 0.03,
+        },
       },
     ],
-    gasPriceStep: {
-      low: 0.01,
-      average: 0.025,
-      high: 0.03,
-    },
     features: ["ibc-transfer", "ibc-go"],
     explorerUrlToTx: "https://finder.kujira.app/kaiyo-1/tx/{txHash}",
   },
@@ -1741,13 +1742,13 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         coinDecimals: 6,
         // coinGeckoId: "terra-luna-2",
         coinGeckoId: "pool:uluna",
+        gasPriceStep: {
+          low: 0.15,
+          average: 0.2,
+          high: 0.25,
+        },
       },
     ],
-    gasPriceStep: {
-      low: 0.15,
-      average: 0.2,
-      high: 0.25,
-    },
     features: ["ibc-transfer", "ibc-go", "no-legacy-stdTx"],
     explorerUrlToTx: "https://finder.terra.money/phoenix-1/tx/{txHash}",
   },
@@ -1777,13 +1778,13 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         coinDenom: "QCK",
         coinMinimalDenom: "uqck",
         coinDecimals: 6,
+        gasPriceStep: {
+          low: 0,
+          average: 0.0001,
+          high: 0.00025,
+        },
       },
     ],
-    gasPriceStep: {
-      low: 0,
-      average: 0.0001,
-      high: 0.00025,
-    },
     features: ["ibc-transfer", "ibc-go", "no-legacy-stdTx"],
     explorerUrlToTx: "https://www.mintscan.io/quicksilver/txs/{txHash}",
   },
@@ -1828,13 +1829,13 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         coinDenom: "FIS",
         coinMinimalDenom: "ufis",
         coinDecimals: 6,
+        gasPriceStep: {
+          low: 0.01,
+          average: 0.025,
+          high: 0.04
+        },
       }
     ],
-    gasPriceStep: {
-      low: 0.01,
-      average: 0.025,
-      high: 0.04
-    },
     features: ["ibc-transfer", "ibc-go", "no-legacy-stdTx"],
     explorerUrlToTx: "https://www.mintscan.io/stafi/txs/{txHash}",
   }
@@ -1913,12 +1914,6 @@ export const ibcTokenRegex = /^ibc\/([a-f\d]+)$/i;
 export const ibcNetworkRegex = /^([a-z\d_-]+)-([\d]+)$/i;
 
 export const ibcDefaultGas: number = 210000;
-
-export interface GasPriceStep {
-  low: number;
-  average: number;
-  high: number;
-}
 
 export const DefaultGasPriceStep: GasPriceStep = {
   low: 0.01,
