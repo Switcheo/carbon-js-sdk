@@ -137,12 +137,6 @@ class CarbonSDK {
       tokenClient: this.token,
     });
 
-    this.arbitrum = ETHClient.instance({
-      configProvider: this,
-      blockchain: Blockchain.Arbitrum,
-      tokenClient: this.token,
-    });
-
     this.zil = ZILClient.instance({
       configProvider: this,
       blockchain: Blockchain.Zilliqa,

@@ -2,6 +2,8 @@ import { OptionalNetworkMap, SimpleMap } from "@carbon-sdk/util/type";
 import BigNumber from "bignumber.js";
 import { Network } from "./network";
 
+export const decTypeDecimals = 18
+
 export const DenomPrefix = {
   LPToken: "clpt",
   CDPToken: "cibt",
