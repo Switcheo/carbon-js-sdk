@@ -1716,23 +1716,21 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
     chainId: "phoenix-1",
     chainName: "Terra 2.0",
     bip44: {
-      coinType: 118,
+      coinType: 330,
     },
     bech32Config: IBCAddress.defaultBech32Config("terra"),
     stakeCurrency: {
       coinDenom: "LUNA",
       coinMinimalDenom: "uluna",
       coinDecimals: 6,
-      // coinGeckoId: "terra-luna-2",
-      coinGeckoId: "pool:uluna",
+      coinGeckoId: "terra-luna-2",
     },
     currencies: [
       {
         coinDenom: "LUNA",
         coinMinimalDenom: "uluna",
         coinDecimals: 6,
-        // coinGeckoId: "terra-luna-2",
-        coinGeckoId: "pool:uluna",
+        coinGeckoId: "terra-luna-2",
       },
     ],
     feeCurrencies: [
@@ -1740,8 +1738,7 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         coinDenom: "LUNA",
         coinMinimalDenom: "uluna",
         coinDecimals: 6,
-        // coinGeckoId: "terra-luna-2",
-        coinGeckoId: "pool:uluna",
+        coinGeckoId: "terra-luna-2",
         gasPriceStep: {
           low: 0.15,
           average: 0.2,
@@ -1749,7 +1746,7 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         },
       },
     ],
-    features: ["ibc-transfer", "ibc-go", "no-legacy-stdTx"],
+    features: ["ibc-transfer", "ibc-go"],
     explorerUrlToTx: "https://finder.terra.money/phoenix-1/tx/{txHash}",
   },
   [ChainIds.Quicksilver]: {
