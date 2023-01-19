@@ -1559,7 +1559,7 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
     chainName: "Carbon",
     chainId: "carbon-1",
     bech32Config: IBCAddress.defaultBech32Config("swth"),
-    features: ["stargate", "ibc-transfer", "ibc-go"],
+    features: ["ibc-transfer", "ibc-go"],
     explorerUrlToTx: "https://scan.carbon.network/transaction/{txHash}?net=main",
   },
   [ChainIds.Axelar]: {
@@ -1782,7 +1782,7 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         },
       },
     ],
-    features: ["ibc-transfer", "ibc-go", "no-legacy-stdTx"],
+    features: ["ibc-transfer", "ibc-go"],
     explorerUrlToTx: "https://www.mintscan.io/quicksilver/txs/{txHash}",
   },
   [ChainIds.StafiHub]: {
@@ -1833,7 +1833,7 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         },
       }
     ],
-    features: ["ibc-transfer", "ibc-go", "no-legacy-stdTx"],
+    features: ["ibc-transfer", "ibc-go"],
     explorerUrlToTx: "https://www.mintscan.io/stafi/txs/{txHash}",
   }
 };
