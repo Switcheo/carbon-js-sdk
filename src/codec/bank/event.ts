@@ -15,6 +15,12 @@ export interface CoinReceived {
   amount: Coin[];
 }
 
+export interface CoinSent {
+  sender: string;
+  receiver: string;
+  amount: Coin[];
+}
+
 const baseCoinSpent: object = { spender: "" };
 
 export const CoinSpent = {
@@ -143,6 +149,85 @@ export const CoinReceived = {
 
   fromPartial(object: DeepPartial<CoinReceived>): CoinReceived {
     const message = { ...baseCoinReceived } as CoinReceived;
+    message.receiver = object.receiver ?? "";
+    message.amount = (object.amount ?? []).map((e) => Coin.fromPartial(e));
+    return message;
+  },
+};
+
+const baseCoinSent: object = { sender: "", receiver: "" };
+
+export const CoinSent = {
+  encode(
+    message: CoinSent,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.sender !== "") {
+      writer.uint32(10).string(message.sender);
+    }
+    if (message.receiver !== "") {
+      writer.uint32(18).string(message.receiver);
+    }
+    for (const v of message.amount) {
+      Coin.encode(v!, writer.uint32(26).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): CoinSent {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseCoinSent } as CoinSent;
+    message.amount = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.sender = reader.string();
+          break;
+        case 2:
+          message.receiver = reader.string();
+          break;
+        case 3:
+          message.amount.push(Coin.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CoinSent {
+    const message = { ...baseCoinSent } as CoinSent;
+    message.sender =
+      object.sender !== undefined && object.sender !== null
+        ? String(object.sender)
+        : "";
+    message.receiver =
+      object.receiver !== undefined && object.receiver !== null
+        ? String(object.receiver)
+        : "";
+    message.amount = (object.amount ?? []).map((e: any) => Coin.fromJSON(e));
+    return message;
+  },
+
+  toJSON(message: CoinSent): unknown {
+    const obj: any = {};
+    message.sender !== undefined && (obj.sender = message.sender);
+    message.receiver !== undefined && (obj.receiver = message.receiver);
+    if (message.amount) {
+      obj.amount = message.amount.map((e) => (e ? Coin.toJSON(e) : undefined));
+    } else {
+      obj.amount = [];
+    }
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<CoinSent>): CoinSent {
+    const message = { ...baseCoinSent } as CoinSent;
+    message.sender = object.sender ?? "";
     message.receiver = object.receiver ?? "";
     message.amount = (object.amount ?? []).map((e) => Coin.fromPartial(e));
     return message;

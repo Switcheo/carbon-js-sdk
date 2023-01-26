@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { ConsensusPeers } from "./consensus_peers";
+import { ConsensusPeers, ZionConsensusPeers } from "./consensus_peers";
 
 export const protobufPackage = "Switcheo.carbon.headersync";
 
@@ -12,7 +12,7 @@ export interface GenesisState {
   /** Header hash for blocks where consensus public keys is updated for PoS chain by chain ID. */
   checkpointHashes: { [key: string]: Uint8Array };
   /** Peers for each Zion PoS chain by chain ID. */
-  zionConsensusPeers: { [key: string]: ConsensusPeers };
+  zionConsensusPeers: { [key: string]: ZionConsensusPeers };
   /** Header Hash for Zion blocks where consensus public keys is updated for PoS chain by chain ID. */
   zionCheckpointHashes: { [key: string]: Uint8Array };
 }
@@ -29,7 +29,7 @@ export interface GenesisState_CheckpointHashesEntry {
 
 export interface GenesisState_ZionConsensusPeersEntry {
   key: string;
-  value?: ConsensusPeers;
+  value?: ZionConsensusPeers;
 }
 
 export interface GenesisState_ZionCheckpointHashesEntry {
@@ -142,8 +142,8 @@ export const GenesisState = {
     }, {});
     message.zionConsensusPeers = Object.entries(
       object.zionConsensusPeers ?? {}
-    ).reduce<{ [key: string]: ConsensusPeers }>((acc, [key, value]) => {
-      acc[key] = ConsensusPeers.fromJSON(value);
+    ).reduce<{ [key: string]: ZionConsensusPeers }>((acc, [key, value]) => {
+      acc[key] = ZionConsensusPeers.fromJSON(value);
       return acc;
     }, {});
     message.zionCheckpointHashes = Object.entries(
@@ -172,7 +172,7 @@ export const GenesisState = {
     obj.zionConsensusPeers = {};
     if (message.zionConsensusPeers) {
       Object.entries(message.zionConsensusPeers).forEach(([k, v]) => {
-        obj.zionConsensusPeers[k] = ConsensusPeers.toJSON(v);
+        obj.zionConsensusPeers[k] = ZionConsensusPeers.toJSON(v);
       });
     }
     obj.zionCheckpointHashes = {};
@@ -204,9 +204,9 @@ export const GenesisState = {
     }, {});
     message.zionConsensusPeers = Object.entries(
       object.zionConsensusPeers ?? {}
-    ).reduce<{ [key: string]: ConsensusPeers }>((acc, [key, value]) => {
+    ).reduce<{ [key: string]: ZionConsensusPeers }>((acc, [key, value]) => {
       if (value !== undefined) {
-        acc[key] = ConsensusPeers.fromPartial(value);
+        acc[key] = ZionConsensusPeers.fromPartial(value);
       }
       return acc;
     }, {});
@@ -391,7 +391,10 @@ export const GenesisState_ZionConsensusPeersEntry = {
       writer.uint32(10).string(message.key);
     }
     if (message.value !== undefined) {
-      ConsensusPeers.encode(message.value, writer.uint32(18).fork()).ldelim();
+      ZionConsensusPeers.encode(
+        message.value,
+        writer.uint32(18).fork()
+      ).ldelim();
     }
     return writer;
   },
@@ -412,7 +415,7 @@ export const GenesisState_ZionConsensusPeersEntry = {
           message.key = reader.string();
           break;
         case 2:
-          message.value = ConsensusPeers.decode(reader, reader.uint32());
+          message.value = ZionConsensusPeers.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -430,7 +433,7 @@ export const GenesisState_ZionConsensusPeersEntry = {
       object.key !== undefined && object.key !== null ? String(object.key) : "";
     message.value =
       object.value !== undefined && object.value !== null
-        ? ConsensusPeers.fromJSON(object.value)
+        ? ZionConsensusPeers.fromJSON(object.value)
         : undefined;
     return message;
   },
@@ -440,7 +443,7 @@ export const GenesisState_ZionConsensusPeersEntry = {
     message.key !== undefined && (obj.key = message.key);
     message.value !== undefined &&
       (obj.value = message.value
-        ? ConsensusPeers.toJSON(message.value)
+        ? ZionConsensusPeers.toJSON(message.value)
         : undefined);
     return obj;
   },
@@ -454,7 +457,7 @@ export const GenesisState_ZionConsensusPeersEntry = {
     message.key = object.key ?? "";
     message.value =
       object.value !== undefined && object.value !== null
-        ? ConsensusPeers.fromPartial(object.value)
+        ? ZionConsensusPeers.fromPartial(object.value)
         : undefined;
     return message;
   },
