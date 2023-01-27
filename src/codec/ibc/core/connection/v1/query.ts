@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { ConnectionEnd, Params, IdentifiedConnection } from "./connection";
+import { ConnectionEnd, IdentifiedConnection } from "./connection";
 import { Height, IdentifiedClientState } from "../../client/v1/client";
 import {
   PageRequest,
@@ -123,15 +123,6 @@ export interface QueryConnectionConsensusStateResponse {
   proof: Uint8Array;
   /** height at which the proof was retrieved */
   proofHeight?: Height;
-}
-
-/** QueryConnectionParamsRequest is the request type for the Query/ConnectionParams RPC method. */
-export interface QueryConnectionParamsRequest {}
-
-/** QueryConnectionParamsResponse is the response type for the Query/ConnectionParams RPC method. */
-export interface QueryConnectionParamsResponse {
-  /** params defines the parameters of the module. */
-  params?: Params;
 }
 
 const baseQueryConnectionRequest: object = { connectionId: "" };
@@ -1041,126 +1032,6 @@ export const QueryConnectionConsensusStateResponse = {
   },
 };
 
-const baseQueryConnectionParamsRequest: object = {};
-
-export const QueryConnectionParamsRequest = {
-  encode(
-    _: QueryConnectionParamsRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryConnectionParamsRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryConnectionParamsRequest,
-    } as QueryConnectionParamsRequest;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(_: any): QueryConnectionParamsRequest {
-    const message = {
-      ...baseQueryConnectionParamsRequest,
-    } as QueryConnectionParamsRequest;
-    return message;
-  },
-
-  toJSON(_: QueryConnectionParamsRequest): unknown {
-    const obj: any = {};
-    return obj;
-  },
-
-  fromPartial(
-    _: DeepPartial<QueryConnectionParamsRequest>
-  ): QueryConnectionParamsRequest {
-    const message = {
-      ...baseQueryConnectionParamsRequest,
-    } as QueryConnectionParamsRequest;
-    return message;
-  },
-};
-
-const baseQueryConnectionParamsResponse: object = {};
-
-export const QueryConnectionParamsResponse = {
-  encode(
-    message: QueryConnectionParamsResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.params !== undefined) {
-      Params.encode(message.params, writer.uint32(10).fork()).ldelim();
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryConnectionParamsResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryConnectionParamsResponse,
-    } as QueryConnectionParamsResponse;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.params = Params.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): QueryConnectionParamsResponse {
-    const message = {
-      ...baseQueryConnectionParamsResponse,
-    } as QueryConnectionParamsResponse;
-    message.params =
-      object.params !== undefined && object.params !== null
-        ? Params.fromJSON(object.params)
-        : undefined;
-    return message;
-  },
-
-  toJSON(message: QueryConnectionParamsResponse): unknown {
-    const obj: any = {};
-    message.params !== undefined &&
-      (obj.params = message.params ? Params.toJSON(message.params) : undefined);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<QueryConnectionParamsResponse>
-  ): QueryConnectionParamsResponse {
-    const message = {
-      ...baseQueryConnectionParamsResponse,
-    } as QueryConnectionParamsResponse;
-    message.params =
-      object.params !== undefined && object.params !== null
-        ? Params.fromPartial(object.params)
-        : undefined;
-    return message;
-  },
-};
-
 /** Query provides defines the gRPC querier service */
 export interface Query {
   /** Connection queries an IBC connection end. */
@@ -1190,10 +1061,6 @@ export interface Query {
   ConnectionConsensusState(
     request: QueryConnectionConsensusStateRequest
   ): Promise<QueryConnectionConsensusStateResponse>;
-  /** ConnectionParams queries all parameters of the ibc connection submodule. */
-  ConnectionParams(
-    request: QueryConnectionParamsRequest
-  ): Promise<QueryConnectionParamsResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -1205,7 +1072,6 @@ export class QueryClientImpl implements Query {
     this.ClientConnections = this.ClientConnections.bind(this);
     this.ConnectionClientState = this.ConnectionClientState.bind(this);
     this.ConnectionConsensusState = this.ConnectionConsensusState.bind(this);
-    this.ConnectionParams = this.ConnectionParams.bind(this);
   }
   Connection(
     request: QueryConnectionRequest
@@ -1274,20 +1140,6 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryConnectionConsensusStateResponse.decode(new _m0.Reader(data))
-    );
-  }
-
-  ConnectionParams(
-    request: QueryConnectionParamsRequest
-  ): Promise<QueryConnectionParamsResponse> {
-    const data = QueryConnectionParamsRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "ibc.core.connection.v1.Query",
-      "ConnectionParams",
-      data
-    );
-    return promise.then((data) =>
-      QueryConnectionParamsResponse.decode(new _m0.Reader(data))
     );
   }
 }
