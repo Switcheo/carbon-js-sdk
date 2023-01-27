@@ -68,7 +68,7 @@ Install `buf` if you have not:
 
 Run script to generate codec:
 ```bash
-  make gen-proto
+  make gen-codecs
 ```
 
 The tar file will be generated at `<Carbon Project>/gen/proto-ts.tar.gz`. You can copy that file to `<Carbon SDK Project>/proto-ts.tar.gz` and proceed with above `sync-proto` step.

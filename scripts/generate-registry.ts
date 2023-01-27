@@ -13,13 +13,13 @@ const modules: { [name: string]: string[] } = {};
 for (const moduleFile of codecFiles) {
 
   if (
-    !["/tx.ts", 
-    "/tendermint.ts", 
-    "/proposal.ts", 
-    "/distribution.ts", 
-    "/upgrade.ts",
-    "/params.ts"]
-  .some(fileName => moduleFile.endsWith(fileName))
+    !["/tx.ts",
+      "/tendermint.ts",
+      "/proposal.ts",
+      "/distribution.ts",
+      "/upgrade.ts",
+      "/params.ts"]
+      .some(fileName => moduleFile.endsWith(fileName))
   ) {
     continue
   }
@@ -104,6 +104,8 @@ console.log("");
 console.log('// Exported for convenience');
 const directoryBlacklist = ['cosmos', 'ibc', 'tendermint', 'btcx', 'ccm', 'headersync', 'lockproxy']
 const fileNameBlacklist = ['genesis.ts', 'keys.ts']
+const ethermintDirectory = 'ethermint'
+
 
 const modelBlacklist: string[] = ['MsgClientImpl', 'protobufPackage', 'GenesisState', 'QueryClientImpl'];
 const labelOverride: { [key: string]: string } = {
@@ -134,14 +136,19 @@ for (const moduleFile of codecFiles) {
     const firstDirName = capitalize(firstDirectory);
     const fileNameNoSuffix = fileName.replace('.ts', '');
     const newLabel = fileNameNoSuffix === 'query' ? firstDirName : `${firstDirName}${capitalize(fileNameNoSuffix)}`;
-
-    if (key === "Params") {
-      newKey = `Params as ${labelOverride[`${firstDirName}Params`] ?? firstDirName}Params`;
-    } else if (key === "QueryParamsRequest") {
-      newKey = `QueryParamsRequest as Query${labelOverride[newLabel] ?? newLabel}ParamsRequest`;
-    } else if (key === "QueryParamsResponse") {
-      newKey = `QueryParamsResponse as Query${labelOverride[newLabel] ?? newLabel}ParamsResponse`;
+    if (firstDirectory === ethermintDirectory) {
+      newKey = updateGeneratedEthermintCodecs(key, file)
     }
+    else {
+      if (key === "Params") {
+        newKey = `Params as ${labelOverride[`${firstDirName}Params`] ?? firstDirName}Params`;
+      } else if (key === "QueryParamsRequest") {
+        newKey = `QueryParamsRequest as Query${labelOverride[newLabel] ?? newLabel}ParamsRequest`;
+      } else if (key === "QueryParamsResponse") {
+        newKey = `QueryParamsResponse as Query${labelOverride[newLabel] ?? newLabel}ParamsResponse`;
+      }
+    }
+
     messagePrev.push(newKey);
     return messagePrev;
   }, []);
@@ -156,3 +163,29 @@ for (const moduleFile of codecFiles) {
     console.log(`export { ${messages.join(", ")} } from "${relativePath}";`)
   }
 }
+
+
+function updateGeneratedEthermintCodecs(key: string, file: string[]): string {
+  const fileName = file[file.length - 1].replace('.ts', '');
+  const secondDirectory = file[3]
+  if (key === "Params") {
+    return `Params as ${capitalize(fileName)}Params`;
+  }
+  if (key === "QueryParamsRequest") {
+    return `QueryParamsRequest as Query${capitalize(secondDirectory)}ParamsRequest`;
+  }
+  if (key === "QueryParamsResponse") {
+    return `QueryParamsResponse as Query${capitalize(secondDirectory)}ParamsResponse`;
+  }
+  if (key === "QueryBaseFeeRequest") {
+    return `QueryBaseFeeRequest as Query${capitalize(secondDirectory)}BaseFeeRequest`;
+  }
+  if (key === "QueryBaseFeeResponse") {
+    return `QueryBaseFeeResponse as Query${capitalize(secondDirectory)}BaseFeeResponse`;
+  }
+  if (key === "TxResult" && fileName == "indexer") {
+    return `TxResult as Tx${capitalize(fileName)}Result`;
+  }
+  return key
+}
+
