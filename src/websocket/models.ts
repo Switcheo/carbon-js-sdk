@@ -49,11 +49,10 @@ export interface HistoryOrder {
 
 // This is added to account for the updated data model
 // Use this for order history websocket queries
-export interface BaseHistoryOrder {
+export interface BaseHistoryOrder extends HistoryOrder {
   allocated_margin_amount: string;
   allocated_margin_denom: string;
   last_updated_block_height: number;
-  order: HistoryOrder;
   username?: string;
 }
 
