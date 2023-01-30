@@ -83,9 +83,7 @@ class CarbonQueryClient {
 
   private baseClient: QueryClient;
 
-  constructor(
-    private readonly tmClient: Tendermint34Client
-  ) {
+  constructor(private readonly tmClient: Tendermint34Client) {
     this.baseClient = new QueryClient(this.tmClient);
     const rpcClient = createProtobufRpcClient(this.baseClient);
 
@@ -129,7 +127,7 @@ class CarbonQueryClient {
       controller: new IBCInterchainControlQueryClient(rpcClient),
       host: new IBCInterchainHostQueryClient(rpcClient),
       transfer: new IBCTransferQueryClient(rpcClient),
-    }
+    };
   }
 
   getProtobufRpcClient() {

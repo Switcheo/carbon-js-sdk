@@ -3,7 +3,6 @@ import { CarbonTx } from "@carbon-sdk/util";
 import BaseModule from "./base";
 
 export class ProfileModule extends BaseModule {
-
   public async update(params: ProfileModule.UpdateProfileParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
@@ -11,18 +10,21 @@ export class ProfileModule extends BaseModule {
       creator: wallet.bech32Address,
       username: params.username,
       twitter: params.twitter,
-    })
+    });
 
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgUpdateProfile,
-      value,
-    }, opts);
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgUpdateProfile,
+        value,
+      },
+      opts
+    );
   }
 }
 
 export namespace ProfileModule {
   export interface UpdateProfileParams {
-    username: string
-    twitter?: string
+    username: string;
+    twitter?: string;
   }
-};
+}

@@ -5,7 +5,6 @@ import { BigNumber } from "bignumber.js";
 import BaseModule from "./base";
 
 export class OrderModule extends BaseModule {
-
   public async create(params: OrderModule.CreateOrderParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
@@ -24,18 +23,21 @@ export class OrderModule extends BaseModule {
       referralAddress: params.referralAddress,
       referralCommission: params.referralCommission,
       referralKickback: params.referralKickback,
-    })
+    });
 
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgCreateOrder,
-      value,
-    }, opts);
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgCreateOrder,
+        value,
+      },
+      opts
+    );
   }
 
   public async createOrders(params: OrderModule.CreateOrderParams[], opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const msgs = params.map(params => {
+    const msgs = params.map((params) => {
       const value = MsgCreateOrder.fromPartial({
         creator: wallet.bech32Address,
         isPostOnly: params.isPostOnly,
@@ -51,35 +53,38 @@ export class OrderModule extends BaseModule {
         referralAddress: params.referralAddress,
         referralCommission: params.referralCommission,
         referralKickback: params.referralKickback,
-      })
+      });
 
       return {
         typeUrl: CarbonTx.Types.MsgCreateOrder,
         value,
-      }
+      };
     });
-    
+
     return await wallet.sendTxs(msgs, opts);
   }
 
   public async cancel(orderId: string, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
-    
+
     const value: MsgCancelOrder = {
       creator: wallet.bech32Address,
       id: orderId,
     };
-    
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgCancelOrder,
-      value,
-    }, opts);
+
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgCancelOrder,
+        value,
+      },
+      opts
+    );
   }
 
   public async cancelOrders(orderIds: string[], opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const msgs = orderIds.map(id => {
+    const msgs = orderIds.map((id) => {
       const value: MsgCancelOrder = {
         creator: wallet.bech32Address,
         id,
@@ -88,9 +93,9 @@ export class OrderModule extends BaseModule {
       return {
         typeUrl: CarbonTx.Types.MsgCancelOrder,
         value,
-      }
-    })
-    
+      };
+    });
+
     return await wallet.sendTxs(msgs, opts);
   }
 
@@ -103,31 +108,34 @@ export class OrderModule extends BaseModule {
       price: params.price.shiftedBy(18).toString(10),
       quantity: params.quantity.toString(10),
       stopPrice: (params.stopPrice?.shiftedBy(18) ?? BN_ZERO).toString(10),
-    })
+    });
 
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgEditOrder,
-      value,
-    }, opts);
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgEditOrder,
+        value,
+      },
+      opts
+    );
   }
 
   public async editOrders(params: OrderModule.EditOrderParams[], opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const msgs = params.map(param => {
+    const msgs = params.map((param) => {
       const value = MsgEditOrder.fromPartial({
         creator: wallet.bech32Address,
         id: param.id,
         price: param.price.shiftedBy(18).toString(10),
         quantity: param.quantity.toString(10),
         stopPrice: (param.stopPrice?.shiftedBy(18) ?? BN_ZERO).toString(10),
-      })
+      });
 
       return {
         typeUrl: CarbonTx.Types.MsgEditOrder,
         value,
-      }
-    })
+      };
+    });
 
     return await wallet.sendTxs(msgs, opts);
   }
@@ -137,48 +145,51 @@ export class OrderModule extends BaseModule {
 
     const value = MsgCancelAll.fromPartial({
       creator: wallet.bech32Address,
-      market: params.market
-    })
+      market: params.market,
+    });
 
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgCancelAll,
-      value,
-    }, opts);
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgCancelAll,
+        value,
+      },
+      opts
+    );
   }
 }
 
 export namespace OrderModule {
   export interface CreateOrderParams {
-    market: string
+    market: string;
 
-    side: OrderSide
-    orderType: OrderType
+    side: OrderSide;
+    orderType: OrderType;
 
-    price?: BigNumber
-    quantity: BigNumber
-    stopPrice?: BigNumber
+    price?: BigNumber;
+    quantity: BigNumber;
+    stopPrice?: BigNumber;
 
-    timeInForce?: TimeInForce
-    triggerType?: TriggerType
+    timeInForce?: TimeInForce;
+    triggerType?: TriggerType;
 
-    isPostOnly?: boolean
-    isReduceOnly?: boolean
+    isPostOnly?: boolean;
+    isReduceOnly?: boolean;
 
-    referralAddress?: string
+    referralAddress?: string;
     /** commission percents, input 10 for 10% */
-    referralCommission?: number
-    referralKickback?: number
+    referralCommission?: number;
+    referralKickback?: number;
   }
 
   export interface EditOrderParams {
-    id: string
-    quantity: BigNumber
-    price: BigNumber
-    stopPrice?: BigNumber
+    id: string;
+    quantity: BigNumber;
+    price: BigNumber;
+    stopPrice?: BigNumber;
   }
 
   export interface CancelAllParams {
-    market: string
+    market: string;
   }
 
   export enum OrderType {
@@ -205,4 +216,4 @@ export namespace OrderModule {
     Fok = "fok",
     Ioc = "ioc",
   }
-};
+}

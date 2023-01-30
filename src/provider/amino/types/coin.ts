@@ -16,7 +16,7 @@ const MsgWithdraw: AminoInit = {
 const MsgMintToken: AminoInit = {
   aminoType: TxTypes.MintToken,
   valueMap: {},
-}
+};
 
 const CoinAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgWithdraw]: generateAminoType(MsgWithdraw),

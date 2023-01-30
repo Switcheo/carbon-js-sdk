@@ -1,12 +1,11 @@
-import { Models } from "@carbon-sdk/index"
-import { CarbonTx, NumberUtils } from "@carbon-sdk/util"
-import { BigNumber } from "bignumber.js"
-import dayjs from "dayjs"
-import Long from "long"
-import BaseModule from "./base"
+import { Models } from "@carbon-sdk/index";
+import { CarbonTx, NumberUtils } from "@carbon-sdk/util";
+import { BigNumber } from "bignumber.js";
+import dayjs from "dayjs";
+import Long from "long";
+import BaseModule from "./base";
 
 export class LiquidityPoolModule extends BaseModule {
-
   public async create(params: LiquidityPoolModule.CreatePoolParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
@@ -19,12 +18,15 @@ export class LiquidityPoolModule extends BaseModule {
       swapFee: params.swapFee.shiftedBy(18).toString(10),
       ampBps: params.ampBps,
       numQuotes: new Long(params.numQuotes),
-    })
+    });
 
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgCreatePool,
-      value,
-    }, opts);
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgCreatePool,
+        value,
+      },
+      opts
+    );
   }
 
   public async createWithLiquidity(params: LiquidityPoolModule.CreatePoolWithLiquidityParams, opts?: CarbonTx.SignTxOpts) {
@@ -41,12 +43,15 @@ export class LiquidityPoolModule extends BaseModule {
       swapFee: params.swapFee.shiftedBy(18).toString(10),
       ampBps: params.ampBps,
       numQuotes: new Long(params.numQuotes),
-    })
+    });
 
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgCreatePoolWithLiquidity,
-      value,
-    }, opts);
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgCreatePoolWithLiquidity,
+        value,
+      },
+      opts
+    );
   }
 
   public async addLiquidity(params: LiquidityPoolModule.AddLiquidityParams, opts?: CarbonTx.SignTxOpts) {
@@ -58,12 +63,15 @@ export class LiquidityPoolModule extends BaseModule {
       amountA: params.amountA.toString(10),
       amountB: params.amountB.toString(10),
       minShares: params.minShares.toString(10),
-    })
+    });
 
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgAddLiquidity,
-      value,
-    }, opts);
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgAddLiquidity,
+        value,
+      },
+      opts
+    );
   }
 
   public async removeLiquidity(params: LiquidityPoolModule.RemoveLiquidityParams, opts?: CarbonTx.SignTxOpts) {
@@ -73,12 +81,15 @@ export class LiquidityPoolModule extends BaseModule {
       creator: wallet.bech32Address,
       poolId: new Long(params.poolId),
       shares: params.shares.toString(10),
-    })
+    });
 
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgRemoveLiquidity,
-      value,
-    }, opts);
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgRemoveLiquidity,
+        value,
+      },
+      opts
+    );
   }
 
   public async stakePoolToken(params: LiquidityPoolModule.StakePoolTokenParams, opts?: CarbonTx.SignTxOpts) {
@@ -88,13 +99,16 @@ export class LiquidityPoolModule extends BaseModule {
       creator: wallet.bech32Address,
       denom: params.denom,
       amount: params.amount.toString(10),
-      duration: new Long(params.duration)
-    })
+      duration: new Long(params.duration),
+    });
 
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgStakePoolToken,
-      value,
-    }, opts);
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgStakePoolToken,
+        value,
+      },
+      opts
+    );
   }
 
   public async unstakePoolToken(params: LiquidityPoolModule.UnstakePoolTokenParams, opts?: CarbonTx.SignTxOpts) {
@@ -104,12 +118,15 @@ export class LiquidityPoolModule extends BaseModule {
       creator: wallet.bech32Address,
       denom: params.denom,
       amount: params.amount.toString(10),
-    })
+    });
 
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgUnstakePoolToken,
-      value,
-    }, opts);
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgUnstakePoolToken,
+        value,
+      },
+      opts
+    );
   }
 
   public async claimPoolRewards(params: LiquidityPoolModule.ClaimPoolRewardsParams, opts?: CarbonTx.SignTxOpts) {
@@ -118,12 +135,15 @@ export class LiquidityPoolModule extends BaseModule {
     const value = Models.MsgClaimPoolRewards.fromPartial({
       creator: wallet.bech32Address,
       poolId: new Long(params.poolId),
-    })
+    });
 
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgClaimPoolRewards,
-      value,
-    }, opts);
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgClaimPoolRewards,
+        value,
+      },
+      opts
+    );
   }
 
   /**
@@ -131,98 +151,100 @@ export class LiquidityPoolModule extends BaseModule {
    * weeklySWTHRewards = ((INITIAL_SUPPLY) * (WEEKLY_DECAY)^(weeksFromInitalRewardsStart)) / 52
    * weeklySWTHLPRewards = weeklySWTHRewards * liquidityRewardRatio
    * @returns weekly SWTH rewards allocated to liquidityProviders (BigNumber)
-  */
+   */
   public async getWeeklyRewards(): Promise<BigNumber> {
-    const WEEKLY_DECAY = new BigNumber(0.9835)
-    const MIN_RATE = new BigNumber(0.0003)
-    const INITIAL_SUPPLY = new BigNumber(1000000000)
-    const SECONDS_IN_A_WEEK = new BigNumber(604800)
+    const WEEKLY_DECAY = new BigNumber(0.9835);
+    const MIN_RATE = new BigNumber(0.0003);
+    const INITIAL_SUPPLY = new BigNumber(1000000000);
+    const SECONDS_IN_A_WEEK = new BigNumber(604800);
 
-    const mintDataResponse: Models.QueryMintDataResponse = await this.sdkProvider.query.inflation.MintData({})
-    const mintData = mintDataResponse.mintData
+    const mintDataResponse: Models.QueryMintDataResponse = await this.sdkProvider.query.inflation.MintData({});
+    const mintData = mintDataResponse.mintData;
 
-    const nowTime = new BigNumber(dayjs().unix())
-    const firstBlockTime = mintData?.firstBlockTime.toNumber() ?? 0
-    const difference = nowTime.minus(firstBlockTime)
-    const currentWeek = difference.div(SECONDS_IN_A_WEEK).dp(0, BigNumber.ROUND_DOWN)
+    const nowTime = new BigNumber(dayjs().unix());
+    const firstBlockTime = mintData?.firstBlockTime.toNumber() ?? 0;
+    const difference = nowTime.minus(firstBlockTime);
+    const currentWeek = difference.div(SECONDS_IN_A_WEEK).dp(0, BigNumber.ROUND_DOWN);
 
-    let inflationRate = WEEKLY_DECAY.pow(currentWeek)
+    let inflationRate = WEEKLY_DECAY.pow(currentWeek);
     if (inflationRate.lt(MIN_RATE)) {
-      inflationRate = MIN_RATE
+      inflationRate = MIN_RATE;
     }
-    const weeklyRewards = INITIAL_SUPPLY.div(52).times(inflationRate)
+    const weeklyRewards = INITIAL_SUPPLY.div(52).times(inflationRate);
 
     // Calculate weekly rewards earned by liquidity providers
     // Weekly LP Rewards = liquidityRewardRatio * weeklyRewards
     const distributionParams = await this.sdkProvider.query.distribution.Params({});
-    const liquidityRewardRatio = NumberUtils.bnOrZero(distributionParams.params?.liquidityProviderReward).shiftedBy(-18)
-    return liquidityRewardRatio.times(weeklyRewards)
+    const liquidityRewardRatio = NumberUtils.bnOrZero(distributionParams.params?.liquidityProviderReward).shiftedBy(-18);
+    return liquidityRewardRatio.times(weeklyRewards);
   }
 
   public async claimMultiPoolRewards(params: LiquidityPoolModule.ClaimMultiPoolRewards, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    if (!params.creator)
-      params.creator = wallet.bech32Address;
+    if (!params.creator) params.creator = wallet.bech32Address;
 
-    return await wallet.sendTxs(params.pools.map((poolId) => ({
-      typeUrl: CarbonTx.Types.MsgClaimPoolRewards,
-      value: {
-        poolId: poolId,
-        creator: params.creator,
-      },
-    })), opts);
+    return await wallet.sendTxs(
+      params.pools.map((poolId) => ({
+        typeUrl: CarbonTx.Types.MsgClaimPoolRewards,
+        value: {
+          poolId: poolId,
+          creator: params.creator,
+        },
+      })),
+      opts
+    );
   }
 }
 
 export namespace LiquidityPoolModule {
   export interface CreatePoolParams {
-    tokenADenom: string
-    tokenBDenom: string
-    tokenAWeight: BigNumber
-    tokenBWeight: BigNumber
-    swapFee: BigNumber
-    ampBps: Long
-    numQuotes: number
+    tokenADenom: string;
+    tokenBDenom: string;
+    tokenAWeight: BigNumber;
+    tokenBWeight: BigNumber;
+    swapFee: BigNumber;
+    ampBps: Long;
+    numQuotes: number;
   }
 
   export interface CreatePoolWithLiquidityParams {
-    tokenADenom: string
-    tokenBDenom: string
-    tokenAWeight: BigNumber
-    tokenBWeight: BigNumber
-    amountA: BigNumber
-    amountB: BigNumber
-    swapFee: BigNumber
-    ampBps: Long
-    numQuotes: number
+    tokenADenom: string;
+    tokenBDenom: string;
+    tokenAWeight: BigNumber;
+    tokenBWeight: BigNumber;
+    amountA: BigNumber;
+    amountB: BigNumber;
+    swapFee: BigNumber;
+    ampBps: Long;
+    numQuotes: number;
   }
 
   export interface AddLiquidityParams {
-    poolId: number
-    amountA: BigNumber
-    amountB: BigNumber
-    minShares: BigNumber
+    poolId: number;
+    amountA: BigNumber;
+    amountB: BigNumber;
+    minShares: BigNumber;
   }
 
   export interface RemoveLiquidityParams {
-    poolId: number
-    shares: BigNumber
+    poolId: number;
+    shares: BigNumber;
   }
 
   export interface StakePoolTokenParams {
-    denom: string
-    amount: BigNumber
-    duration: number
+    denom: string;
+    amount: BigNumber;
+    duration: number;
   }
 
   export interface UnstakePoolTokenParams {
-    denom: string
-    amount: BigNumber
+    denom: string;
+    amount: BigNumber;
   }
 
   export interface ClaimPoolRewardsParams {
-    poolId: number
+    poolId: number;
   }
 
   export interface ClaimMultiPoolRewards {
@@ -238,4 +260,4 @@ export namespace LiquidityPoolModule {
     poolId: string;
     address: string;
   }
-};
+}

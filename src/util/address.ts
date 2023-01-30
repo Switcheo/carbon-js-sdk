@@ -54,7 +54,7 @@ export class BIP44Path {
     public account: number = 0,
     public change: number = 0,
     public index: number = 0
-  ) { }
+  ) {}
 
   static generateBIP44String(index: number = 0, change: number = 0, account: number = 0, coinType: number = 0, purpose: number = 0) {
     return `m/${purpose}'/${coinType}'/${account}'/${change}/${index}`;
@@ -77,13 +77,7 @@ export class BIP44Path {
   }
 
   toArray(): number[] {
-    return [
-      this.purpose,
-      this.coinType,
-      this.account,
-      this.change,
-      this.index,
-    ]
+    return [this.purpose, this.coinType, this.account, this.change, this.index];
   }
 
   generate(): string {
@@ -99,7 +93,7 @@ export const wifEncodePrivateKey = (privateKey: string | Buffer, iter: number = 
   return wif.encode(iter, privateKeyBuf, true);
 };
 
-export interface AddressOptions { }
+export interface AddressOptions {}
 
 export interface AddressBuilder<T extends AddressOptions = AddressOptions> {
   /**
@@ -143,7 +137,7 @@ type SWTHAddressType = AddressBuilder<SWTHAddressOptions> & {
   getAddressBytes(bech32Address: string, networkConfig: Network): Uint8Array;
   keyDerivationPath(index?: number, change?: number, account?: number): number[];
   encode(hash: string | Buffer, opts?: SWTHAddressOptions): string;
-  getModuleAddress(moduleKey: string, network?: Network): string
+  getModuleAddress(moduleKey: string, network?: Network): string;
 };
 
 export const SWTHAddress: SWTHAddressType = {
@@ -156,7 +150,7 @@ export const SWTHAddress: SWTHAddressType = {
   },
 
   keyDerivationPath: (index: number = 0, change: number = 0, account: number = 0): number[] => {
-    const coinType = SWTHAddress.coinType()
+    const coinType = SWTHAddress.coinType();
     return new BIP44Path(BIP44_PURPOSE, coinType).update(index, change, account).toArray();
   },
 
@@ -206,7 +200,7 @@ export const SWTHAddress: SWTHAddressType = {
   },
 
   encode: (hash: string | Buffer, opts?: SWTHAddressOptions): string => {
-    const hashBuff = stringOrBufferToBuffer(hash, 'hex')!
+    const hashBuff = stringOrBufferToBuffer(hash, "hex")!;
     const words = bech32.toWords(hashBuff.slice(0, 20));
     const addressPrefix = SWTHAddress.getBech32Prefix(opts?.network, opts?.bech32Prefix, opts?.type);
     const address = bech32.encode(addressPrefix, words);
@@ -349,7 +343,7 @@ export const N3Address: N3AddressType = {
 
   publicKeyToScriptHash: (publicKey: string | Buffer): string => {
     const publicKeyHex = stringOrBufferToBuffer(publicKey)!.toString("hex");
-    return wallet.getScriptHashFromPublicKey(publicKeyHex)
+    return wallet.getScriptHashFromPublicKey(publicKeyHex);
   },
 
   publicKeyToAddress: (publicKey: string | Buffer): string => {
@@ -376,7 +370,7 @@ export const N3Address: N3AddressType = {
   encode: (addressScript: string | Buffer, version = "35"): string => {
     return Base58Check.encode(addressScript, version);
   },
-}
+};
 
 export const ETHAddress: AddressBuilder<AddressOptions> = {
   coinType: (): number => {

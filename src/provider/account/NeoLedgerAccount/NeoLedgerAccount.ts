@@ -1,12 +1,12 @@
-import { AddressOptions, N3Address, NEOAddress } from "@carbon-sdk/util/address"
-import { getLedgerTransport } from "@carbon-sdk/util/ledger"
-import { CONST, wallet } from "@cityofzion/neon-core-next"
-import * as NeonN3Ledger from './N3Ledger'
-import Transport from "@ledgerhq/hw-transport"
-import NeonLedger, { getNEOBIP44String } from "./NeonLedger"
+import { AddressOptions, N3Address, NEOAddress } from "@carbon-sdk/util/address";
+import { getLedgerTransport } from "@carbon-sdk/util/ledger";
+import { CONST, wallet } from "@cityofzion/neon-core-next";
+import * as NeonN3Ledger from "./N3Ledger";
+import Transport from "@ledgerhq/hw-transport";
+import NeonLedger, { getNEOBIP44String } from "./NeonLedger";
 
-const CONNECT_POLL_INTERVAL = 3000 // ms
-const CONNECT_POLL_ATTEMPTS = 10 // attempts
+const CONNECT_POLL_INTERVAL = 3000; // ms
+const CONNECT_POLL_ATTEMPTS = 10; // attempts
 
 type NeoVersion = "neo" | "n3";
 
@@ -17,89 +17,91 @@ interface NeoLedgerAdapter {
 
 const addressUtilForVersion = (version: NeoVersion) => {
   if (version === "n3") return N3Address;
-  return NEOAddress
-}
+  return NEOAddress;
+};
 const adapterForVersion = (version: NeoVersion): NeoLedgerAdapter => {
   if (version === "n3") return NeonN3Ledger;
   return NeonLedger;
-}
+};
 
 export class NeoLedgerAccount {
-  public options: AddressOptions = {}
-  public readonly ledger: Transport
-  public readonly publicKey: string
-  public readonly scriptHash: string
-  public readonly displayAddress: string
-  public readonly version: NeoVersion
+  public options: AddressOptions = {};
+  public readonly ledger: Transport;
+  public readonly publicKey: string;
+  public readonly scriptHash: string;
+  public readonly displayAddress: string;
+  public readonly version: NeoVersion;
 
-  private static _connectPolling = false
+  private static _connectPolling = false;
 
   private constructor(ledger: Transport, publicKey: string, version: "neo" | "n3" = "neo") {
-    this.ledger = ledger
-    this.publicKey = publicKey
+    this.ledger = ledger;
+    this.publicKey = publicKey;
     this.version = version;
 
     const neoAddressUtil = addressUtilForVersion(version);
 
-    this.scriptHash = neoAddressUtil.publicKeyToScriptHash(publicKey)
-    this.displayAddress = neoAddressUtil.publicKeyToAddress(publicKey)
+    this.scriptHash = neoAddressUtil.publicKeyToScriptHash(publicKey);
+    this.displayAddress = neoAddressUtil.publicKeyToAddress(publicKey);
   }
 
   static async connect(version: "neo" | "n3" = "neo") {
-    let connectResult: [Transport, string] | null = null
-    let connectionAttempts = 0
+    let connectResult: [Transport, string] | null = null;
+    let connectionAttempts = 0;
 
-    NeoLedgerAccount._connectPolling = true
+    NeoLedgerAccount._connectPolling = true;
 
     while (connectionAttempts < CONNECT_POLL_ATTEMPTS) {
-      connectionAttempts++
+      connectionAttempts++;
 
       // external signal to stop polling (e.g. timeout)
       // exit loop
       if (!NeoLedgerAccount._connectPolling) {
-        break
+        break;
       }
 
       // attempt ccnnect
       connectResult = await new Promise((resolve, reject) => {
-        let timedOut = false
+        let timedOut = false;
 
         // start timeout to kill connection when interval duration
-        // is reached. Kills connection by resolving 
+        // is reached. Kills connection by resolving
         let timeoutId = setTimeout(() => {
           // set timeout to true so that if connection is successful
           // after timeout, it can be ignored.
-          timedOut = true
+          timedOut = true;
 
           // returns null result to indicate connection failure
-          resolve(null)
-        }, CONNECT_POLL_INTERVAL)
+          resolve(null);
+        }, CONNECT_POLL_INTERVAL);
 
-        NeoLedgerAccount.tryConnect().then(result => {
-          // check for timeout signal, abandon result if timed out
-          if (timedOut) return
+        NeoLedgerAccount.tryConnect()
+          .then((result) => {
+            // check for timeout signal, abandon result if timed out
+            if (timedOut) return;
 
-          // clear timeout timer, so it doesn't trigger timeout action
-          clearTimeout(timeoutId)
+            // clear timeout timer, so it doesn't trigger timeout action
+            clearTimeout(timeoutId);
 
-          // return positive connection result
-          resolve(result)
-        }).catch(reject)
-      })
+            // return positive connection result
+            resolve(result);
+          })
+          .catch(reject);
+      });
 
       // connection successful, exit loop
       if (connectResult) {
-        break
+        break;
       }
     }
 
     // failed to connect after specified timeout
     if (!connectResult) {
-      throw new Error("Failed to connect with USB device, please try again.")
+      throw new Error("Failed to connect with USB device, please try again.");
     }
 
-    const [ledger, publicKey] = connectResult
-    return new NeoLedgerAccount(ledger, publicKey, version)
+    const [ledger, publicKey] = connectResult;
+    return new NeoLedgerAccount(ledger, publicKey, version);
   }
 
   /**
@@ -107,41 +109,41 @@ export class NeoLedgerAccount {
    * on USB device to detect NEO app connection
    */
   private static async tryConnect(version: NeoVersion = "neo"): Promise<[Transport, string]> {
-    const bipString = getNEOBIP44String()
-    const ledger = await getLedgerTransport()
+    const bipString = getNEOBIP44String();
+    const ledger = await getLedgerTransport();
 
     // get public key to assert that NEO app is open
     const ledgerAdapter = adapterForVersion(version);
-    const publicKey = await ledgerAdapter.getPublicKey(ledger, bipString)
+    const publicKey = await ledgerAdapter.getPublicKey(ledger, bipString);
 
-    return [ledger, publicKey]
+    return [ledger, publicKey];
   }
 
   configureAddress(options: AddressOptions) {
-    this.options = options
+    this.options = options;
   }
 
   async privateKey(): Promise<string> {
-    throw new Error("Cannot retrieve private key from Ledger")
+    throw new Error("Cannot retrieve private key from Ledger");
   }
 
   async sign(msg: string, magic: number = CONST.MAGIC_NUMBER.MainNet) {
-    const bipString = getNEOBIP44String()
-    const ledger = this.useLedger()
+    const bipString = getNEOBIP44String();
+    const ledger = this.useLedger();
     const ledgerAdapter = adapterForVersion(this.version);
-    console.log("getsignature", ledgerAdapter, ledger, msg, bipString, magic)
-    const publicKey = this.publicKey
+    console.log("getsignature", ledgerAdapter, ledger, msg, bipString, magic);
+    const publicKey = this.publicKey;
     const scriptHash = wallet.getScriptHashFromPublicKey(publicKey);
-    const address = wallet.getAddressFromScriptHash(scriptHash)
-    console.log(publicKey, scriptHash, address)
-    return await ledgerAdapter.getSignature(ledger, msg, bipString, magic)
+    const address = wallet.getAddressFromScriptHash(scriptHash);
+    console.log(publicKey, scriptHash, address);
+    return await ledgerAdapter.getSignature(ledger, msg, bipString, magic);
   }
 
   private useLedger() {
     if (!this.ledger) {
-      throw new Error("Ledger is not initialized")
+      throw new Error("Ledger is not initialized");
     }
 
-    return this.ledger
+    return this.ledger;
   }
 }

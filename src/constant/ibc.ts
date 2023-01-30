@@ -968,9 +968,9 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         coinDecimals: 6,
         coinGeckoId: "comdex",
         gasPriceStep: {
-          "low": 0.0125,
-          "average": 0.025,
-          "high": 0.04
+          low: 0.0125,
+          average: 0.025,
+          high: 0.04,
         },
       },
     ],
@@ -1793,33 +1793,33 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
     stakeCurrency: {
       coinDenom: "FIS",
       coinMinimalDenom: "ufis",
-      coinDecimals: 6
+      coinDecimals: 6,
     },
     bip44: {
-      coinType: 118
+      coinType: 118,
     },
     bech32Config: IBCAddress.defaultBech32Config("stafi"),
     currencies: [
       {
         coinDenom: "FIS",
         coinMinimalDenom: "ufis",
-        coinDecimals: 6
+        coinDecimals: 6,
       },
       {
         coinDenom: "rATOM",
         coinMinimalDenom: "uratom",
-        coinDecimals: 6
+        coinDecimals: 6,
       },
       {
         coinDenom: "rIRIS",
         coinMinimalDenom: "uriris",
-        coinDecimals: 6
+        coinDecimals: 6,
       },
       {
         coinDenom: "rHUAHUA",
         coinMinimalDenom: "urhuahua",
-        coinDecimals: 6
-      }
+        coinDecimals: 6,
+      },
     ],
     feeCurrencies: [
       {
@@ -1829,13 +1829,13 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         gasPriceStep: {
           low: 0.01,
           average: 0.025,
-          high: 0.04
+          high: 0.04,
         },
-      }
+      },
     ],
     features: ["ibc-transfer", "ibc-go"],
     explorerUrlToTx: "https://www.mintscan.io/stafi/txs/{txHash}",
-  }
+  },
 };
 
 export type AssetListObj = SimpleMap<SimpleMap<AppCurrency>>;

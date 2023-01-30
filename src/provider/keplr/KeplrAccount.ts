@@ -13,10 +13,10 @@ const SWTH: FeeCurrency = {
   coinDecimals: 8,
   coinGeckoId: "switcheo",
   gasPriceStep: CARBON_GAS_PRICE,
-}
+};
 
 class KeplrAccount {
-  static SWTH_CURRENCY: AppCurrency = SWTH
+  static SWTH_CURRENCY: AppCurrency = SWTH;
   static BASE_CHAIN_INFO = {
     bip44: { coinType: AddressUtils.SWTHAddress.coinType() },
     currencies: [],
@@ -34,11 +34,13 @@ class KeplrAccount {
       return await keplr!.signAmino(chainInfo.chainId, signerAddress, doc, signOpts);
     };
 
-    const getAccounts = async () => [{
-      algo: 'secp256k1' as Algo,
-      address: account.bech32Address,
-      pubkey: account.pubKey,
-    }];
+    const getAccounts = async () => [
+      {
+        algo: "secp256k1" as Algo,
+        address: account.bech32Address,
+        pubkey: account.pubKey,
+      },
+    ];
 
     return {
       type: CarbonSignerTypes.BrowserInjected,
@@ -58,12 +60,13 @@ class KeplrAccount {
     const coingeckoIdMap = tokenClient.geckoTokenNames;
     const feeCurrencies: FeeCurrency[] = gasPricesResult.minGasPrices.reduce((result: FeeCurrency[], price: MinGasPrice) => {
       const token = tokenClient.tokenForDenom(price.denom);
-      if (!token || token.denom === 'swth') return result;
+      if (!token || token.denom === "swth") return result;
       // Check if gas price is valid, else add default
       const gasPriceAdjusted = NumberUtils.bnOrZero(price.gasPrice).shiftedBy(-decTypeDecimals);
-      const minGasPrice = gasPriceAdjusted.isNaN() || gasPriceAdjusted.isZero()
-        ? (KeplrAccount.BASE_CHAIN_INFO.gasPriceStep?.low ?? CARBON_GAS_PRICE.low)
-        : gasPriceAdjusted.toNumber();
+      const minGasPrice =
+        gasPriceAdjusted.isNaN() || gasPriceAdjusted.isZero()
+          ? KeplrAccount.BASE_CHAIN_INFO.gasPriceStep?.low ?? CARBON_GAS_PRICE.low
+          : gasPriceAdjusted.toNumber();
       result.push({
         coinDenom: token.symbol ?? token.denom,
         coinMinimalDenom: token.denom,
@@ -96,12 +99,10 @@ class KeplrAccount {
         bech32PrefixConsPub: `${bech32Prefix}valconspub`,
       },
       features: ["ibc-transfer", "ibc-go"],
-    }
+    };
   }
 }
 
-namespace KeplrAccount {
-
-}
+namespace KeplrAccount {}
 
 export default KeplrAccount;

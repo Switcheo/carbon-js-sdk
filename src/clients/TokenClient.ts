@@ -1,5 +1,12 @@
 import { Token } from "@carbon-sdk/codec";
-import { CoinGeckoTokenNames, CommonAssetName, DenomPrefix, NetworkConfigProvider, TokenBlacklist, uscUsdValue } from "@carbon-sdk/constant";
+import {
+  CoinGeckoTokenNames,
+  CommonAssetName,
+  DenomPrefix,
+  NetworkConfigProvider,
+  TokenBlacklist,
+  uscUsdValue,
+} from "@carbon-sdk/constant";
 import { cibtIbcTokenRegex, ibcTokenRegex, ibcWhitelist, swthChannels, swthIbcWhitelist } from "@carbon-sdk/constant/ibc";
 import { Network } from "@carbon-sdk/constant/network";
 import { FeeQuote } from "@carbon-sdk/hydrogen/feeQuote";
@@ -14,22 +21,22 @@ import InsightsQueryClient from "./InsightsQueryClient";
 import { SimpleMap } from "@carbon-sdk/util/type";
 
 const SYMBOL_OVERRIDE: {
-  [symbol: string]: string
+  [symbol: string]: string;
 } = {
-  swth: 'SWTH',
-  NNEO: 'nNEO',
-  YAM1: 'YAM',
-  YAM2: 'YAM',
-  ASA1: 'ASA',
-  ASA2: 'ASA',
-  DBC1: 'DBC',
-  DBC2: 'DBC',
-  AVA1: 'AVA',
-  TSWTH: 'tSWTH',
+  swth: "SWTH",
+  NNEO: "nNEO",
+  YAM1: "YAM",
+  YAM2: "YAM",
+  ASA1: "ASA",
+  ASA2: "ASA",
+  DBC1: "DBC",
+  DBC2: "DBC",
+  AVA1: "AVA",
+  TSWTH: "tSWTH",
 };
 
-const regexCdpDenom = RegExp(`^${DenomPrefix.CDPToken}/`, "i")
-const regexLPDenom = RegExp(`^${DenomPrefix.LPToken}/(\\d+)$`, "i")
+const regexCdpDenom = RegExp(`^${DenomPrefix.CDPToken}/`, "i");
+const regexLPDenom = RegExp(`^${DenomPrefix.LPToken}/(\\d+)$`, "i");
 
 class TokenClient {
   public static Blacklist = TokenBlacklist;
@@ -44,11 +51,7 @@ class TokenClient {
 
   private additionalGeckoDenoms: TypeUtils.SimpleMap<string> = {};
 
-  private constructor(
-    public readonly query: CarbonQueryClient,
-    public readonly configProvider: NetworkConfigProvider,
-  ) {
-  }
+  private constructor(public readonly query: CarbonQueryClient, public readonly configProvider: NetworkConfigProvider) {}
 
   public static instance(query: CarbonQueryClient, configProvider: NetworkConfigProvider) {
     return new TokenClient(query, configProvider);
@@ -124,7 +127,7 @@ class TokenClient {
   }
 
   public tokenForId(id: string): Token | undefined {
-    return Object.values(this.tokens).find(token => token.id === id);
+    return Object.values(this.tokens).find((token) => token.id === id);
   }
 
   public tokenForDenom(denom: string): Token | undefined {
@@ -133,14 +136,14 @@ class TokenClient {
 
   public async getFeeInfo(denom: string): Promise<FeeQuote> {
     const config = this.configProvider.getConfig();
-    const url = `${config.hydrogenUrl}/fee_quote?token_denom=${denom}`
-    const result = await fetch(url).then(res => res.json())
+    const url = `${config.hydrogenUrl}/fee_quote?token_denom=${denom}`;
+    const result = await fetch(url).then((res) => res.json());
 
     return result as FeeQuote;
   }
 
   public getTokenName(denom: string, overrideMap?: TypeUtils.SimpleMap<string>): string {
-    if (typeof denom !== 'string') return '';
+    if (typeof denom !== "string") return "";
     if (!TokenClient.isIBCDenom(denom) && !TokenClient.isCdpIbcDenom(denom)) {
       denom = denom.toLowerCase();
     }
@@ -161,9 +164,9 @@ class TokenClient {
     }
 
     if (TokenClient.isIBCDenom(denom)) {
-      const splitDenom = denom.split('/')
-      denom = `${splitDenom[0].toLowerCase()}/${splitDenom[1].toUpperCase()}`
-      return this.symbols[denom] ?? denom.toUpperCase()
+      const splitDenom = denom.split("/");
+      denom = `${splitDenom[0].toLowerCase()}/${splitDenom[1].toUpperCase()}`;
+      return this.symbols[denom] ?? denom.toUpperCase();
     }
 
     if (SYMBOL_OVERRIDE[symbol]) {
@@ -178,7 +181,7 @@ class TokenClient {
   }
 
   public getTokenDesc(denom: string) {
-    if (typeof denom !== 'string') return '';
+    if (typeof denom !== "string") return "";
     denom = denom.toLowerCase();
     if (TokenClient.isPoolTokenLegacy(denom)) {
       const match = denom.match(/^([a-z\d.-\/]+)-(\d+)-([a-z\d.-\/]+)-(\d+)-lp\d+$/i);
@@ -212,7 +215,7 @@ class TokenClient {
   }
 
   public static isCdpToken(denom: string): boolean {
-    return denom.match(regexCdpDenom) !== null
+    return denom.match(regexCdpDenom) !== null;
   }
 
   public static isPoolToken(denom: string): boolean {
@@ -275,9 +278,9 @@ class TokenClient {
         // check if wrapped denom is of correct blockchain
         const token = this.tokens[wrappedDenom];
         let tokenChain = BlockchainUtils.blockchainForChainId(token.chainId.toNumber());
-        
+
         if (TokenClient.isIBCDenom(wrappedDenom)) {
-          tokenChain = IBCUtils.BlockchainMap[wrappedDenom]
+          tokenChain = IBCUtils.BlockchainMap[wrappedDenom];
         }
         if (!tokenChain) {
           continue; // unknown chain! just ignore this source token
@@ -325,8 +328,8 @@ class TokenClient {
   public getDepositTokenFor(tokenDenom: string, chain: BlockchainUtils.Blockchain): Token | undefined {
     const token = this.tokenForDenom(tokenDenom);
     if (!token) {
-      console.error('getDepositTokenFor token not found for', tokenDenom)
-      return
+      console.error("getDepositTokenFor token not found for", tokenDenom);
+      return;
     }
 
     // check if selected token is a source token
@@ -334,14 +337,13 @@ class TokenClient {
     if (TokenClient.isIBCDenom(token.denom)) {
       targetChain = IBCUtils.BlockchainMap[token.denom];
     }
-    const isSourceToken = targetChain === chain
-      && token.denom !== "swth";
+    const isSourceToken = targetChain === chain && token.denom !== "swth";
 
     // if not source token find wrapped token for chain
-    const depositToken = isSourceToken ? token : this.getWrappedToken(token.denom, chain)
+    const depositToken = isSourceToken ? token : this.getWrappedToken(token.denom, chain);
     if (!depositToken) {
-      console.error(`getDepositTokenFor wrapped token not found for "${token.denom}"`)
-      return
+      console.error(`getDepositTokenFor wrapped token not found for "${token.denom}"`);
+      return;
     }
 
     return depositToken;
@@ -360,7 +362,7 @@ class TokenClient {
 
     const networkConfig = this.configProvider.getConfig();
     const tokenBlacklist = TokenBlacklist[networkConfig.network] ?? [];
-    return result.tokens.filter(token => !tokenBlacklist.includes(token.denom));
+    return result.tokens.filter((token) => !tokenBlacklist.includes(token.denom));
   }
 
   public async reloadTokens(): Promise<TypeUtils.SimpleMap<Token>> {
@@ -375,7 +377,7 @@ class TokenClient {
       } else {
         if (this.isNativeToken(token.denom)) {
           // Change token name to Carbon
-          token.name = 'Carbon';
+          token.name = "Carbon";
         }
         this.tokens[token.denom] = token;
         this.symbols[token.denom] = token.symbol;
@@ -390,10 +392,8 @@ class TokenClient {
 
       carbonIbc.forEach((token: Token) => {
         const index = symbolMap.indexOf("swth");
-        if (!this.tokens[token.denom])
-          this.tokens[token.denom] = token;
-        if (!this.symbols[token.denom])
-          this.symbols[token.denom] = token.symbol;
+        if (!this.tokens[token.denom]) this.tokens[token.denom] = token;
+        if (!this.symbols[token.denom]) this.symbols[token.denom] = token.symbol;
         if (index > -1) {
           const similarDenom = symbolDenoms[index];
           if (similarDenom && !this.wrapperMap[token.denom] && similarDenom !== token.denom) {
@@ -408,10 +408,10 @@ class TokenClient {
 
   public getCarbonIbcTokens(): Token[] {
     const swthTokens = swthIbcWhitelist.map((chainId: string) => {
-      const blockchain = IBCUtils.BlockchainMap[chainId]
-      const carbonBlockchain = IBCUtils.ChainIdBlockchainMap[blockchain ?? ''];
-      const blockchainNum = BlockchainUtils.CHAIN_IDS[carbonBlockchain ?? ''] ?? 0
-      const swthChannel = swthChannels[chainId]
+      const blockchain = IBCUtils.BlockchainMap[chainId];
+      const carbonBlockchain = IBCUtils.ChainIdBlockchainMap[blockchain ?? ""];
+      const blockchainNum = BlockchainUtils.CHAIN_IDS[carbonBlockchain ?? ""] ?? 0;
+      const swthChannel = swthChannels[chainId];
       const assetDenom = IBCUtils.makeIBCMinimalDenom(swthChannel.dstChannel ?? "channel-0", KeplrAccount.SWTH_CURRENCY.coinMinimalDenom);
       return {
         id: assetDenom,
@@ -493,7 +493,7 @@ class TokenClient {
   async getDenomToGeckoIdMap(): Promise<TypeUtils.SimpleMap<string>> {
     const networkConfig = this.configProvider.getConfig();
     const insights = new InsightsQueryClient(networkConfig);
-    let tokens : SimpleMap<string> = {};
+    let tokens: SimpleMap<string> = {};
     try {
       const response = await insights.DenomToGeckoIdMap();
       tokens = response.result.gecko;
@@ -508,20 +508,17 @@ class TokenClient {
     // whitelisted ibc tokens
     ibcWhitelist.forEach((chainId: string) => {
       const currencies = IBCUtils.EmbedChainInfos[chainId].currencies;
-      const channelObj = swthChannels[chainId]
+      const channelObj = swthChannels[chainId];
       currencies.forEach((asset: AppCurrency) => {
-        const channel = asset.coinMinimalDenom !== "swth"
-          ? (channelObj?.sourceChannel ?? "channel-0")
-          : (channelObj?.dstChannel ?? "channel-0");
+        const channel =
+          asset.coinMinimalDenom !== "swth" ? channelObj?.sourceChannel ?? "channel-0" : channelObj?.dstChannel ?? "channel-0";
         const assetDenom = TokenClient.isIBCDenom(asset.coinMinimalDenom)
           ? asset.coinMinimalDenom
           : IBCUtils.makeIBCMinimalDenom(channel, asset.coinMinimalDenom);
         const symbolSmall = asset.coinDenom.toLowerCase();
-        if (!this.commonAssetNames[assetDenom])
-          this.commonAssetNames[assetDenom] = symbolSmall;
-        if (asset.coinGeckoId && !this.geckoTokenNames[symbolSmall])
-          this.geckoTokenNames[symbolSmall] = asset.coinGeckoId;
-      })
+        if (!this.commonAssetNames[assetDenom]) this.commonAssetNames[assetDenom] = symbolSmall;
+        if (asset.coinGeckoId && !this.geckoTokenNames[symbolSmall]) this.geckoTokenNames[symbolSmall] = asset.coinGeckoId;
+      });
     });
   }
 }

@@ -27,7 +27,7 @@ const updateProfileProcess: AminoProcess = {
     }
     return { amino, input: newInput };
   },
-}
+};
 
 const ProfileAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgUpdateProfile]: generateAminoType(MsgUpdateProfile, updateProfileProcess),
