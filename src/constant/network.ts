@@ -163,11 +163,11 @@ export const NetworkConfigs: {
     feeAddress: "989761fb0c0eb0c05605e849cae77d239f98ac7f", // swth1nztkr7cvp6cvq4s9apyu4emayw0e3trl9ezyzs
 
     eth: {
-      rpcURL: "https://eth-rinkeby.alchemyapi.io/v2/2KD9F3mFPNMfflSqZsPuTKmK_w7fFfut",
+      rpcURL: "https://eth-goerli.g.alchemy.com/v2/OTTRiEhTje49mmrrm4WbuPbZmuZMivEu",
       wsURL: "",
       payerURL: `https://dev-payer.carbon.network`,
-      lockProxyAddr: "0x7f7317167e90afa38972e46b031bb4da0b1f6f73",
-      bridgeEntranceAddr: "0xd942ba20a58543878335108aac8c811f1f92fa33",
+      lockProxyAddr: "0xa06569e48fed18ed840c3f064ffd9bbf95debce7",
+      bridgeEntranceAddr: "0x23D969345788bE24e5110F4c5D7B978DacDe8B1C",
       balanceReader: "0xf6fBa7Bbc806F55dA52af17203d84C61FfFa18c2",
       byteCodeHash: "0xeb1f732f12a0448d8692018a6d6d381cc7afc84d7e0729007931d966c0c9dc6d",
     },
@@ -204,9 +204,9 @@ export const NetworkConfigs: {
 
     zil: {
       rpcURL: "",
-      lockProxyAddr: "0xa5a43eecd29534edf80792a9889f52c77455245d",
-      bridgeEntranceAddr: "0x347b8478093f7a3ed5bcaec968349538eac6ef98",
-      chainId: 333,
+      lockProxyAddr: "0xe7bef341044f1b8d5ab1a25172e2678a1e75479a",
+      bridgeEntranceAddr: "0xccf798e633d6fb6505b494fc010903f9be3bc99b",
+      chainId: 111,
     }
   },
 
