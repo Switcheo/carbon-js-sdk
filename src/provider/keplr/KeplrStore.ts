@@ -1,16 +1,16 @@
-import { ChainInfoExplorerTmRpc, ibcDefaultGas } from "@carbon-sdk/constant/ibc";
+import { ChainInfoExplorerTmRpc, ChainInfo, ibcDefaultGas } from "@carbon-sdk/constant/ibc";
 // import { iOS } from "@carbon-sdk/util/external";
 import { EmbedChainInfos } from "@carbon-sdk/util/ibc";
 import { IndexedDBKVStore } from "@keplr-wallet/common";
 import {
   AccountStore, ChainStore, CosmosAccount, CosmosQueries, CosmwasmAccount, CosmwasmQueries, QueriesStore,
 } from "@keplr-wallet/stores";
-import { ChainInfo, Keplr } from "@keplr-wallet/types";
+import { Keplr } from "@keplr-wallet/types";
 import EventEmitter from "eventemitter3";
 import semver from "semver";
 
 export class RootStore {
-  public readonly chainStore: ChainStore;
+  public readonly chainStore: ChainStore<ChainInfo>;
 
   public readonly queriesStore: QueriesStore<
     [CosmosQueries, CosmwasmQueries]

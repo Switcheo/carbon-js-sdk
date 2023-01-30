@@ -1,11 +1,11 @@
 import { MinGasPrice } from "@carbon-sdk/codec";
-import { CARBON_GAS_PRICE, Network, decTypeDecimals } from "@carbon-sdk/constant";
+import { CARBON_GAS_PRICE, ChainInfo, FeeCurrency, Network, decTypeDecimals } from "@carbon-sdk/constant";
 import { Models } from "@carbon-sdk/index";
 import { AddressUtils, CarbonTx, NumberUtils } from "@carbon-sdk/util";
 import { CarbonSigner, CarbonSignerTypes } from "@carbon-sdk/wallet";
 import { Algo } from "@cosmjs/proto-signing";
 import { Leap } from "@cosmos-kit/leap";
-import { AppCurrency, ChainInfo, FeeCurrency } from "@keplr-wallet/types";
+import { AppCurrency } from "@keplr-wallet/types";
 import SDKProvider from "../sdk";
 
 
