@@ -89,6 +89,7 @@ export enum ChainIds {
   Terra2 = "phoenix-1",
   Quicksilver = "quicksilver-2",
   StafiHub = "stafihub-1",
+  Canto = "canto_7700-1",
 }
 
 // whitelisted networks for addition of swth as a currency
@@ -109,6 +110,7 @@ export const ibcWhitelist: string[] = [
   ChainIds.StafiHub,
   ChainIds.Persistence,
   ChainIds.Stargaze,
+  ChainIds.Canto,
 ];
 
 export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
@@ -1836,6 +1838,37 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
     features: ["ibc-transfer", "ibc-go"],
     explorerUrlToTx: "https://www.mintscan.io/stafi/txs/{txHash}",
   },
+  [ChainIds.Canto]: {
+    rpc: "https://canto-rpc.polkachu.com",
+    rest: "https://canto-api.polkachu.com",
+    chainId: "canto_7700-1",
+    chainName: "Canto",
+    bip44: {
+      coinType: 60,
+    },
+    bech32Config: IBCAddress.defaultBech32Config("canto"),
+    currencies: [
+      {
+        coinDenom: "CANTO",
+        coinMinimalDenom: "acanto",
+        coinDecimals: 18,
+      },
+    ],
+    feeCurrencies: [
+      {
+        coinDenom: "CANTO",
+        coinMinimalDenom: "acanto",
+        coinDecimals: 18,
+        gasPriceStep: {
+          low: 125000000000,
+          average: 250000000000,
+          high: 375000000000,
+        },
+      },
+    ],
+    features: ["ibc-transfer", "ibc-go"],
+    explorerUrlToTx: "https://cosmos.explorer.canto.io/transactions/{txHash}",
+  },
 };
 
 export type AssetListObj = SimpleMap<SimpleMap<AppCurrency>>;
@@ -1901,6 +1934,10 @@ export const swthChannels: SimpleMap<ChannelConfig> = {
   [ChainIds.Stargaze]: {
     sourceChannel: "channel-15",
     dstChannel: "channel-123",
+  },
+  [ChainIds.Canto]: {
+    sourceChannel: "channel-18",
+    dstChannel: "channel-6",
   },
 };
 
