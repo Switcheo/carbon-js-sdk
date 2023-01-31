@@ -126,63 +126,139 @@ export const getBlockchainFromChain = (chainId?: number) => {
   return undefined;
 };
 
-export const blockchainForChainId = (chainId?: number): Blockchain | undefined => {
-  switch (chainId) {
-    case 0:
-      return Blockchain.Native;
-    case 1:
-      return Blockchain.Btc;
-    case 2:
-    case 350: // devnet
-      return Blockchain.Ethereum;
-    case 4:
-    case 5: // devnet
-      return Blockchain.Neo;
-    case 6:
-    case 79: // devnet
-      return Blockchain.BinanceSmartChain;
-    case 9: // mainnet
-    case 10:
-    case 18:
-    case 110: // testnet
-    case 111:
-      return Blockchain.Zilliqa;
-    case 14: // mainnet
-    case 88: // testnet
-      return Blockchain.Neo3;
-    case 19: // mainnet
-      return Blockchain.Arbitrum;
-    case 244: // mainnet
-      return Blockchain.Osmosis;
-    case 245: // mainnet
-      return Blockchain.Terra;
-    case 246: // mainnet
-      return Blockchain.CosmosHub;
-    case 247: // mainnet
-      return Blockchain.Juno;
-    case 248: // mainnet
-      return Blockchain.Evmos;
-    case 249: // mainnet
-      return Blockchain.Axelar;
-    case 313: // mainnet
-      return Blockchain.Stride;
-    case 314: // mainnnet
-      return Blockchain.Kujira;
-    case 315: // mainnnet
-      return Blockchain.Terra2;
-    case 316: // mainnnet
-      return Blockchain.Quicksilver;
-    case 317: // mainnnet
-      return Blockchain.Comdex;
-    case 318: // mainnnet
-      return Blockchain.StafiHub;
-    case 319: // mainnnet
-      return Blockchain.Persistence;
-    case 320: // mainnnet
-      return Blockchain.Stargaze;
-    case 42161: // mainnnet
-      return Blockchain.Arbitrum;
-    default:
-      return undefined;
+export const blockchainForChainId = (chainId?: number, network?: Network): Blockchain | undefined => {
+  if (!network) { //default list if no network is specified
+    switch (chainId) {
+      case 0:
+        return Blockchain.Native
+      case 1:
+        return Blockchain.Btc
+      case 2:
+      case 350: // devnet
+        return Blockchain.Ethereum
+      case 4:
+      case 5: // devnet
+        return Blockchain.Neo
+      case 6:
+      case 79: // devnet
+        return Blockchain.BinanceSmartChain
+      case 9: // mainnet
+      case 10:
+      case 18:
+      case 110: // testnet
+      case 111:
+        return Blockchain.Zilliqa
+      case 14: // mainnet
+      case 88: // testnet
+        return Blockchain.Neo3
+      case 19: // mainnet
+        return Blockchain.Arbitrum
+      case 244: // mainnet
+        return Blockchain.Osmosis
+      case 245: // mainnet
+        return Blockchain.Terra
+      case 246: // mainnet
+        return Blockchain.CosmosHub
+      case 247: // mainnet
+        return Blockchain.Juno
+      case 248: // mainnet
+        return Blockchain.Evmos
+      case 249: // mainnet
+        return Blockchain.Axelar
+      case 313: // mainnet
+        return Blockchain.Stride
+      case 314: // mainnnet
+        return Blockchain.Kujira
+      case 315: // mainnnet
+        return Blockchain.Terra2
+      case 316: // mainnnet
+        return Blockchain.Quicksilver
+      case 317: // mainnnet
+        return Blockchain.Comdex
+      case 318: // mainnnet
+        return Blockchain.StafiHub
+      case 319: // mainnnet
+        return Blockchain.Persistence
+      case 320: // mainnnet
+        return Blockchain.Stargaze
+      case 42161: // mainnnet
+        return Blockchain.Arbitrum
+      default:
+        return undefined
+    }
+  } else {
+    switch (network) {
+      case Network.MainNet:
+        switch (chainId) {
+          case 0:
+            return Blockchain.Native
+          case 1:
+            return Blockchain.Btc
+          case 4:
+            return Blockchain.Carbon
+          case 111:
+            return Blockchain.Zilliqa
+          case 19:
+            return Blockchain.Arbitrum
+          case 244:
+            return Blockchain.Osmosis
+          case 245:
+            return Blockchain.Terra
+          case 246:
+            return Blockchain.CosmosHub
+          case 247:
+            return Blockchain.Juno
+          case 248:
+            return Blockchain.Evmos
+          case 249:
+            return Blockchain.Axelar
+          case 313:
+            return Blockchain.Stride
+          case 314:
+            return Blockchain.Kujira
+          case 315:
+            return Blockchain.Terra2
+          case 316:
+            return Blockchain.Quicksilver
+          case 317:
+            return Blockchain.Comdex
+          case 318:
+            return Blockchain.StafiHub
+          case 319:
+            return Blockchain.Persistence
+          case 320:
+            return Blockchain.Stargaze
+          case 42161:
+            return Blockchain.Arbitrum
+          default:
+            return undefined
+        }
+      case Network.TestNet:
+        switch (chainId) {
+          case 5:
+            return Blockchain.Carbon
+          case 88:
+            return Blockchain.Neo3
+          case 111:
+            return Blockchain.Zilliqa
+          case 502:
+            return Blockchain.Ethereum
+          default:
+            return undefined
+        }
+      case Network.DevNet:
+        switch (chainId) {
+          case 350:
+            return Blockchain.Ethereum
+          case 5:
+            return Blockchain.Neo
+          case 79:
+            return Blockchain.BinanceSmartChain
+        }
+      case Network.LocalHost:
+        return undefined
+      default:
+        return undefined
+    }
   }
 };
