@@ -91,6 +91,7 @@ export enum ChainIds {
   StafiHub = "stafihub-1",
   Canto = "canto_7700-1",
   OmniFlixHub = "omniflixhub-1",
+  Agoric = "agoric-3",
 }
 
 // whitelisted networks for addition of swth as a currency
@@ -113,6 +114,7 @@ export const ibcWhitelist: string[] = [
   ChainIds.Stargaze,
   ChainIds.Canto,
   ChainIds.OmniFlixHub,
+  ChainIds.Agoric,
 ];
 
 export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
@@ -1905,7 +1907,61 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
       }
     }],
     features: ["ibc-transfer", "ibc-go"],
-  }
+  },
+  [ChainIds.Agoric]: {
+    rpc: "https://rpc-agoric.keplr.app",
+    rest: "https://lcd-agoric.keplr.app",
+    chainId: "agoric-3",
+    chainName: "Agoric",
+    stakeCurrency: {
+      coinDenom: "BLD",
+      coinMinimalDenom: "ubld",
+      coinDecimals: 6,
+      coinGeckoId: "agoric"
+    },
+    bip44: {
+      coinType: 564
+    },
+    bech32Config: IBCAddress.defaultBech32Config("agoric"),
+    currencies: [
+      {
+        coinDenom: "BLD",
+        coinMinimalDenom: "ubld",
+        coinDecimals: 6,
+        coinGeckoId: "agoric"
+      },
+      {
+        coinDenom: "IST",
+        coinMinimalDenom: "uist",
+        coinDecimals: 6
+      }
+    ],
+    feeCurrencies: [
+      {
+        coinDenom: "BLD",
+        coinMinimalDenom: "ubld",
+        coinDecimals: 6,
+        coinGeckoId: "agoric",
+        gasPriceStep: {
+          low: 0.03,
+          average: 0.05,
+          high: 0.07
+        }
+      },
+      {
+        "coinDenom": "IST",
+        "coinMinimalDenom": "uist",
+        "coinDecimals": 6,
+        "coinGeckoId": "inter-stable-token",
+        "gasPriceStep": {
+          "low": 0.0034,
+          "average": 0.007,
+          "high": 0.02
+        }
+      }
+    ],
+    features: ["ibc-transfer", "ibc-go"],
+  },
 };
 
 export type AssetListObj = SimpleMap<SimpleMap<AppCurrency>>;
@@ -1979,6 +2035,10 @@ export const swthChannels: SimpleMap<ChannelConfig> = {
   [ChainIds.OmniFlixHub]: {
     sourceChannel: "channel-19",
     dstChannel: "channel-24",
+  },
+  [ChainIds.Agoric]: {
+    sourceChannel: "channel-20",
+    dstChannel: "channel-12",
   },
 };
 

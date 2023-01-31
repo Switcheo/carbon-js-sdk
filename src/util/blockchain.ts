@@ -31,6 +31,7 @@ export enum Blockchain {
   Stargaze = "stargaze",
   Canto = "canto",
   OmniFlixHub = "omniflixhub",
+  Agoric = "agoric",
 }
 
 export const BRIDGE_IDS = {
@@ -77,6 +78,7 @@ export const CHAIN_IDS: ChainIds = {
   stargaze: 320,
   canto: 321,
   omniflixhub: 322,
+  agoric: 323,
 };
 
 export const CHAIN_IDS_DEV: ChainIds = {
@@ -188,6 +190,8 @@ export const blockchainForChainId = (chainId?: number): Blockchain | undefined =
       return Blockchain.Canto;
     case 322: // mainnnet
       return Blockchain.OmniFlixHub;
+    case 323: // mainnnet
+      return Blockchain.Agoric;
     case 42161: // mainnnet
       return Blockchain.Arbitrum;
     default:
