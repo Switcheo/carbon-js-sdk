@@ -90,6 +90,7 @@ export enum ChainIds {
   Quicksilver = "quicksilver-2",
   StafiHub = "stafihub-1",
   Canto = "canto_7700-1",
+  OmniFlixHub = "omniflixhub-1",
 }
 
 // whitelisted networks for addition of swth as a currency
@@ -111,6 +112,7 @@ export const ibcWhitelist: string[] = [
   ChainIds.Persistence,
   ChainIds.Stargaze,
   ChainIds.Canto,
+  ChainIds.OmniFlixHub,
 ];
 
 export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
@@ -1852,6 +1854,7 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         coinDenom: "CANTO",
         coinMinimalDenom: "acanto",
         coinDecimals: 18,
+        coinGeckoId: "pool:acanto",
       },
     ],
     feeCurrencies: [
@@ -1869,6 +1872,40 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
     features: ["ibc-transfer", "ibc-go"],
     explorerUrlToTx: "https://cosmos.explorer.canto.io/transactions/{txHash}",
   },
+  [ChainIds.OmniFlixHub]: {
+    rpc: "https://rpc.omniflix.network",
+    rest: "https://rest.omniflix.network",
+    chainId: "omniflixhub-1",
+    chainName: "OmniFlix Hub",
+    stakeCurrency: {
+      coinDenom: "FLIX",
+      coinMinimalDenom: "uflix",
+      coinDecimals: 6,
+      coinGeckoId: "omniflix-network"
+    },
+    bip44: {
+      coinType: 118
+    },
+    bech32Config: IBCAddress.defaultBech32Config("omniflix"),
+    currencies: [{
+      coinDenom: "FLIX",
+      coinMinimalDenom: "uflix",
+      coinDecimals: 6,
+      coinGeckoId: "omniflix-network"
+    }],
+    feeCurrencies: [{
+      coinDenom: "FLIX",
+      coinMinimalDenom: "uflix",
+      coinDecimals: 6,
+      coinGeckoId: "omniflix-network",
+      gasPriceStep: {
+        low: 0.001,
+        average: 0.0025,
+        high: 0.025,
+      }
+    }],
+    features: ["ibc-transfer", "ibc-go"],
+  }
 };
 
 export type AssetListObj = SimpleMap<SimpleMap<AppCurrency>>;
@@ -1938,6 +1975,10 @@ export const swthChannels: SimpleMap<ChannelConfig> = {
   [ChainIds.Canto]: {
     sourceChannel: "channel-18",
     dstChannel: "channel-6",
+  },
+  [ChainIds.OmniFlixHub]: {
+    sourceChannel: "channel-19",
+    dstChannel: "channel-24",
   },
 };
 
