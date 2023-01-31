@@ -87,7 +87,7 @@ export enum ChainIds {
   Stride = "stride-1",
   Kujira = "kaiyo-1",
   Terra2 = "phoenix-1",
-  Quicksilver = "quicksilver-1",
+  Quicksilver = "quicksilver-2",
   StafiHub = "stafihub-1",
 }
 
@@ -1752,7 +1752,7 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
   [ChainIds.Quicksilver]: {
     rpc: "https://rpc-quicksilver.keplr.app",
     rest: "https://lcd-quicksilver.keplr.app",
-    chainId: "quicksilver-1",
+    chainId: "quicksilver-2",
     chainName: "Quicksilver",
     stakeCurrency: {
       coinDenom: "QCK",
@@ -1776,7 +1776,7 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         coinMinimalDenom: "uqck",
         coinDecimals: 6,
         gasPriceStep: {
-          low: 0,
+          low: 0.0001,
           average: 0.0001,
           high: 0.00025,
         },
@@ -1887,8 +1887,8 @@ export const swthChannels: SimpleMap<ChannelConfig> = {
     dstChannel: "channel-50",
   },
   [ChainIds.Quicksilver]: {
-    sourceChannel: "channel-10",
-    dstChannel: "channel-0",
+    sourceChannel: "channel-17",
+    dstChannel: "channel-10",
   },
   [ChainIds.StafiHub]: {
     sourceChannel: "channel-13",
