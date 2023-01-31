@@ -1847,6 +1847,12 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
     rest: "https://canto-api.polkachu.com",
     chainId: "canto_7700-1",
     chainName: "Canto",
+    stakeCurrency: {
+      coinDenom: "CANTO",
+      coinMinimalDenom: "acanto",
+      coinDecimals: 18,
+      coinGeckoId: "pool:acanto",
+    },
     bip44: {
       coinType: 60,
     },
@@ -1907,6 +1913,7 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
       }
     }],
     features: ["ibc-transfer", "ibc-go"],
+    explorerUrlToTx: "https://www.mintscan.io/omniflix/txs/{txHash}",
   },
   [ChainIds.Agoric]: {
     rpc: "https://rpc-agoric.keplr.app",
@@ -1949,18 +1956,19 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         }
       },
       {
-        "coinDenom": "IST",
-        "coinMinimalDenom": "uist",
-        "coinDecimals": 6,
-        "coinGeckoId": "inter-stable-token",
-        "gasPriceStep": {
-          "low": 0.0034,
-          "average": 0.007,
-          "high": 0.02
+        coinDenom: "IST",
+        coinMinimalDenom: "uist",
+        coinDecimals: 6,
+        coinGeckoId: "inter-stable-token",
+        gasPriceStep: {
+          low: 0.0034,
+          average: 0.007,
+          high: 0.02
         }
       }
     ],
     features: ["ibc-transfer", "ibc-go"],
+    explorerUrlToTx: "https://www.atomscan.com/agoric/transactions/{txHash}",
   },
 };
 
