@@ -87,8 +87,11 @@ export enum ChainIds {
   Stride = "stride-1",
   Kujira = "kaiyo-1",
   Terra2 = "phoenix-1",
-  Quicksilver = "quicksilver-1",
+  Quicksilver = "quicksilver-2",
   StafiHub = "stafihub-1",
+  Canto = "canto_7700-1",
+  OmniFlixHub = "omniflixhub-1",
+  Agoric = "agoric-3",
 }
 
 // whitelisted networks for addition of swth as a currency
@@ -109,6 +112,9 @@ export const ibcWhitelist: string[] = [
   ChainIds.StafiHub,
   ChainIds.Persistence,
   ChainIds.Stargaze,
+  ChainIds.Canto,
+  ChainIds.OmniFlixHub,
+  ChainIds.Agoric,
 ];
 
 export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
@@ -1752,7 +1758,7 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
   [ChainIds.Quicksilver]: {
     rpc: "https://rpc-quicksilver.keplr.app",
     rest: "https://lcd-quicksilver.keplr.app",
-    chainId: "quicksilver-1",
+    chainId: "quicksilver-2",
     chainName: "Quicksilver",
     stakeCurrency: {
       coinDenom: "QCK",
@@ -1776,7 +1782,7 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         coinMinimalDenom: "uqck",
         coinDecimals: 6,
         gasPriceStep: {
-          low: 0,
+          low: 0.0001,
           average: 0.0001,
           high: 0.00025,
         },
@@ -1836,6 +1842,134 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
     features: ["ibc-transfer", "ibc-go"],
     explorerUrlToTx: "https://www.mintscan.io/stafi/txs/{txHash}",
   },
+  [ChainIds.Canto]: {
+    rpc: "https://canto-rpc.polkachu.com",
+    rest: "https://canto-api.polkachu.com",
+    chainId: "canto_7700-1",
+    chainName: "Canto",
+    stakeCurrency: {
+      coinDenom: "CANTO",
+      coinMinimalDenom: "acanto",
+      coinDecimals: 18,
+      coinGeckoId: "canto",
+    },
+    bip44: {
+      coinType: 60,
+    },
+    bech32Config: IBCAddress.defaultBech32Config("canto"),
+    currencies: [
+      {
+        coinDenom: "CANTO",
+        coinMinimalDenom: "acanto",
+        coinDecimals: 18,
+        coinGeckoId: "canto",
+      },
+    ],
+    feeCurrencies: [
+      {
+        coinDenom: "CANTO",
+        coinMinimalDenom: "acanto",
+        coinDecimals: 18,
+        gasPriceStep: {
+          low: 125000000000,
+          average: 250000000000,
+          high: 375000000000,
+        },
+      },
+    ],
+    features: ["ibc-transfer", "ibc-go"],
+    explorerUrlToTx: "https://cosmos.explorer.canto.io/transactions/{txHash}",
+  },
+  [ChainIds.OmniFlixHub]: {
+    rpc: "https://rpc.omniflix.network",
+    rest: "https://rest.omniflix.network",
+    chainId: "omniflixhub-1",
+    chainName: "OmniFlix Hub",
+    stakeCurrency: {
+      coinDenom: "FLIX",
+      coinMinimalDenom: "uflix",
+      coinDecimals: 6,
+      coinGeckoId: "omniflix-network"
+    },
+    bip44: {
+      coinType: 118
+    },
+    bech32Config: IBCAddress.defaultBech32Config("omniflix"),
+    currencies: [{
+      coinDenom: "FLIX",
+      coinMinimalDenom: "uflix",
+      coinDecimals: 6,
+      coinGeckoId: "omniflix-network"
+    }],
+    feeCurrencies: [{
+      coinDenom: "FLIX",
+      coinMinimalDenom: "uflix",
+      coinDecimals: 6,
+      coinGeckoId: "omniflix-network",
+      gasPriceStep: {
+        low: 0.001,
+        average: 0.0025,
+        high: 0.025,
+      }
+    }],
+    features: ["ibc-transfer", "ibc-go"],
+    explorerUrlToTx: "https://www.mintscan.io/omniflix/txs/{txHash}",
+  },
+  [ChainIds.Agoric]: {
+    rpc: "https://rpc-agoric.keplr.app",
+    rest: "https://lcd-agoric.keplr.app",
+    chainId: "agoric-3",
+    chainName: "Agoric",
+    stakeCurrency: {
+      coinDenom: "BLD",
+      coinMinimalDenom: "ubld",
+      coinDecimals: 6,
+      coinGeckoId: "agoric"
+    },
+    bip44: {
+      coinType: 564
+    },
+    bech32Config: IBCAddress.defaultBech32Config("agoric"),
+    currencies: [
+      {
+        coinDenom: "BLD",
+        coinMinimalDenom: "ubld",
+        coinDecimals: 6,
+        coinGeckoId: "agoric"
+      },
+      {
+        coinDenom: "IST",
+        coinMinimalDenom: "uist",
+        coinDecimals: 6
+      }
+    ],
+    feeCurrencies: [
+      {
+        coinDenom: "BLD",
+        coinMinimalDenom: "ubld",
+        coinDecimals: 6,
+        coinGeckoId: "agoric",
+        gasPriceStep: {
+          low: 0.03,
+          average: 0.05,
+          high: 0.07
+        }
+      },
+      {
+        coinDenom: "IST",
+        coinMinimalDenom: "uist",
+        coinDecimals: 6,
+        coinGeckoId: "inter-stable-token",
+        gasPriceStep: {
+          low: 0.0034,
+          average: 0.007,
+          high: 0.02
+        }
+      }
+    ],
+    features: ["ibc-transfer", "ibc-go"],
+    explorerUrlToTx: "https://www.atomscan.com/agoric/transactions/{txHash}",
+  },
 };
 
 export type AssetListObj = SimpleMap<SimpleMap<AppCurrency>>;
@@ -1887,8 +2021,8 @@ export const swthChannels: SimpleMap<ChannelConfig> = {
     dstChannel: "channel-50",
   },
   [ChainIds.Quicksilver]: {
-    sourceChannel: "channel-10",
-    dstChannel: "channel-0",
+    sourceChannel: "channel-17",
+    dstChannel: "channel-10",
   },
   [ChainIds.StafiHub]: {
     sourceChannel: "channel-13",
@@ -1901,6 +2035,18 @@ export const swthChannels: SimpleMap<ChannelConfig> = {
   [ChainIds.Stargaze]: {
     sourceChannel: "channel-15",
     dstChannel: "channel-123",
+  },
+  [ChainIds.Canto]: {
+    sourceChannel: "channel-18",
+    dstChannel: "channel-6",
+  },
+  [ChainIds.OmniFlixHub]: {
+    sourceChannel: "channel-19",
+    dstChannel: "channel-24",
+  },
+  [ChainIds.Agoric]: {
+    sourceChannel: "channel-20",
+    dstChannel: "channel-12",
   },
 };
 
