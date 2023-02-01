@@ -158,11 +158,12 @@ export class ETHClient {
     const networkConfig = this.getNetworkConfig();
     const rpcProvider = this.getProvider();
 
-    if (!recoveryAddress.match(/^swth[a-z0-9]{39}$/) && !recoveryAddress.match(/^tswth[a-z0-9]{39}$/)) {
+    const recoveryAddrRegex = new RegExp(`^${networkConfig.Bech32Prefix}[a-z0-9]{39}$`)
+    if (!recoveryAddress.match(recoveryAddrRegex)) {
       throw new Error("Invalid recovery address");
     }
 
-    const carbonNetwork = recoveryAddress.match(/^tswth[a-z0-9]{39}$/) ? CarbonSDK.Network.TestNet : CarbonSDK.Network.MainNet
+    const carbonNetwork = networkConfig.network;
 
     const fromTokenId = fromToken.id;
     const fromTokenAddress = appendHexPrefix(fromToken.tokenAddress);
