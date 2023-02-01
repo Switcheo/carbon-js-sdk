@@ -1,14 +1,14 @@
 import { PageMeta, QueryByPageRequest } from "./common";
 
-export interface QueryGetNodesRequest extends QueryByPageRequest { }
+export interface QueryGetNodesRequest extends QueryByPageRequest {}
 
 export interface NodeItem {
   nodeId: string;
   rpcUrl: string;
   wsUrl: string;
-  faucetUrl: string,
+  faucetUrl: string;
   insightsUrl: string;
-  restUrl: string
+  restUrl: string;
   moniker: string;
   appBuild: string;
   lastupdated: string; // string representation of timestamp
@@ -30,6 +30,6 @@ export interface Creator {
 }
 
 export interface QueryGetNodesResponse {
-  models: NodeItem[]
-  meta: PageMeta
+  models: NodeItem[];
+  meta: PageMeta;
 }

@@ -7,10 +7,10 @@ import { SWTHAddress, SWTHAddressOptions } from "./address";
 export { StdSignDoc } from "@cosmjs/amino";
 
 export interface TxBody extends Omit<CosmosModels.Tx.TxBody, "messages"> {
-  messages: unknown[]
+  messages: unknown[];
 }
 export interface Tx extends Omit<CosmosModels.Tx.Tx, "body"> {
-  body?: TxBody
+  body?: TxBody;
 }
 
 const msgUpdateClientInnerFields = [
@@ -29,28 +29,28 @@ const msgUpdateClientInnerFields = [
   "address",
   "ed25519",
   "data",
-]
+];
 
-const msgRecvPacketInnerFields = [
-  "proofCommitment",
-  "data",
-]
+const msgRecvPacketInnerFields = ["proofCommitment", "data"];
 
 const decodeHexList = [...msgUpdateClientInnerFields, ...msgRecvPacketInnerFields];
 
 const decodeNestedMsg = (obj: any) => {
   for (const key in obj) {
-
     let value = obj[key];
     if (decodeHexList.includes(key) && value instanceof Uint8Array) {
       obj[key] = Buffer.from(value).toString("hex");
-    } else if (typeof value === "object" && value?.typeUrl !== undefined && value?.value !== undefined && Object.values(TxTypes).includes(value?.typeUrl)) {
-      obj[key].value = registry.decode(value)
+    } else if (
+      typeof value === "object" &&
+      value?.typeUrl !== undefined &&
+      value?.value !== undefined &&
+      Object.values(TxTypes).includes(value?.typeUrl)
+    ) {
+      obj[key].value = registry.decode(value);
       obj[key] = decodeNestedMsg(value);
     } else if (value instanceof Object) {
       obj[key] = decodeNestedMsg(value);
     }
-
   }
   return obj;
 };
@@ -68,7 +68,7 @@ export const decode = (bytes?: Uint8Array | Buffer): Tx | undefined => {
         carbonTx.body.messages.push({
           typeUrl: message.typeUrl,
           value: decodeNestedMsg(registry.decode(message)),
-        })
+        });
       } catch (error) {
         console.error(`failed to decode tx message: ${message?.typeUrl}`);
         console.error(error);
@@ -80,22 +80,21 @@ export const decode = (bytes?: Uint8Array | Buffer): Tx | undefined => {
   }
 
   return carbonTx;
-}
+};
 
 export const getSender = (decodedTx: Tx, opts?: SWTHAddressOptions): string => {
-  const publicKey = decodedTx.authInfo?.signerInfos?.[0].publicKey?.value
+  const publicKey = decodedTx.authInfo?.signerInfos?.[0].publicKey?.value;
   if (!publicKey) {
-    throw new Error(`could not get signer public key`)
+    throw new Error(`could not get signer public key`);
   }
-  const keyBuffer = Buffer.from(publicKey).slice(2)
-  return SWTHAddress.publicKeyToAddress(keyBuffer, opts)
-}
+  const keyBuffer = Buffer.from(publicKey).slice(2);
+  return SWTHAddress.publicKeyToAddress(keyBuffer, opts);
+};
 
 export enum BroadcastTxMode {
-  BroadcastTxSync = 'sync',
-  BroadcastTxBlock = 'block',
+  BroadcastTxSync = "sync",
+  BroadcastTxBlock = "block",
 }
-
 
 export interface CarbonSignerData extends SignerData {
   timeoutHeight?: number;
@@ -110,17 +109,17 @@ export interface SignTxOpts {
 }
 
 export interface BroadcastTxOpts {
-  mode?: BroadcastTxMode
-  timeoutMs?: number
-  pollIntervalMs?: number
+  mode?: BroadcastTxMode;
+  timeoutMs?: number;
+  pollIntervalMs?: number;
 }
 
-export type SignAndBroadcastOpts = Partial<SignTxOpts & BroadcastTxOpts>
+export type SignAndBroadcastOpts = Partial<SignTxOpts & BroadcastTxOpts>;
 
 export interface TxLog {
   msg_index: number;
   log: string;
-  events: unknown[]
+  events: unknown[];
 }
 
 export interface TxResponse {
@@ -140,10 +139,7 @@ export interface TxResponse {
 }
 
 export class CarbonTxError extends Error {
-  constructor(
-    msg: string,
-    readonly response: DeliverTxResponse
-  ) {
+  constructor(msg: string, readonly response: DeliverTxResponse) {
     super(msg);
   }
 }
@@ -153,7 +149,7 @@ export const Types = TxTypes;
 export const DEFAULT_SIGN_OPTS: SignTxOpts = {
   fee: DEFAULT_FEE,
   memo: "",
-}
+};
 
 export const TxGasCostTypeDefaultKey = "default_fee";
 export const TxMinGasPriceTypeDefaultKey = "swth";
@@ -165,4 +161,4 @@ export const TxGasCostTypeMap = {
   [TxTypes.MsgCreatePoolWithLiquidity]: "create_pool",
   [TxTypes.MsgStakePoolToken]: "stake_pool_token",
   [TxTypes.MsgUnstakePoolToken]: "unstake_pool_token",
-}
+};

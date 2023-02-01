@@ -8,16 +8,15 @@ import { Leap } from "@cosmos-kit/leap";
 import { AppCurrency, ChainInfo, FeeCurrency } from "@keplr-wallet/types";
 import SDKProvider from "../sdk";
 
-
 const SWTH: FeeCurrency = {
   coinDenom: "SWTH",
   coinMinimalDenom: "swth",
   coinDecimals: 8,
   coinGeckoId: "switcheo",
   gasPriceStep: CARBON_GAS_PRICE,
-}
+};
 class LeapAccount {
-  static SWTH_CURRENCY: AppCurrency = SWTH
+  static SWTH_CURRENCY: AppCurrency = SWTH;
   static BASE_CHAIN_INFO = {
     bip44: { coinType: AddressUtils.SWTHAddress.coinType() },
     currencies: [],
@@ -26,24 +25,25 @@ class LeapAccount {
   } as const;
 
   static createLeapSigner(leap: Leap, chainId: string): CarbonSigner {
-    
     const signDirect = async (signerAddress: string, doc: Models.Tx.SignDoc) => {
       const signOpts = { preferNoSetFee: true };
       return await leap!.signDirect(chainId, signerAddress, doc, signOpts);
     };
-    
+
     const signAmino = async (signerAddress: string, doc: CarbonTx.StdSignDoc) => {
       const signOpts = { preferNoSetFee: true };
-      return await leap!.signAmino(chainId, signerAddress, doc, signOpts)
+      return await leap!.signAmino(chainId, signerAddress, doc, signOpts);
     };
 
     const getAccounts = async () => {
-      const account = await leap.getKey(chainId)
-      return [{
-        algo: 'secp256k1' as Algo,
-        address: account.bech32Address,
-        pubkey: account.pubKey,
-      }]
+      const account = await leap.getKey(chainId);
+      return [
+        {
+          algo: "secp256k1" as Algo,
+          address: account.bech32Address,
+          pubkey: account.pubKey,
+        },
+      ];
     };
 
     return {
@@ -56,7 +56,7 @@ class LeapAccount {
 
   static async getChainId(configProvider: SDKProvider): Promise<string> {
     const chainId = await configProvider.query.chain.getChainId();
-    return chainId
+    return chainId;
   }
 
   static async getChainInfo(configProvider: SDKProvider): Promise<ChainInfo> {
@@ -69,12 +69,13 @@ class LeapAccount {
     const coingeckoIdMap = tokenClient.geckoTokenNames;
     const feeCurrencies: FeeCurrency[] = gasPricesResult.minGasPrices.reduce((result: FeeCurrency[], price: MinGasPrice) => {
       const token = tokenClient.tokenForDenom(price.denom);
-      if (!token || token.denom === 'swth') return result;
+      if (!token || token.denom === "swth") return result;
       // Check if gas price is valid, else add default
       const gasPriceAdjusted = NumberUtils.bnOrZero(price.gasPrice).shiftedBy(-decTypeDecimals);
-      const minGasPrice = gasPriceAdjusted.isNaN() || gasPriceAdjusted.isZero()
-        ? (LeapAccount.BASE_CHAIN_INFO.gasPriceStep?.low ?? CARBON_GAS_PRICE.low)
-        : gasPriceAdjusted.toNumber();
+      const minGasPrice =
+        gasPriceAdjusted.isNaN() || gasPriceAdjusted.isZero()
+          ? LeapAccount.BASE_CHAIN_INFO.gasPriceStep?.low ?? CARBON_GAS_PRICE.low
+          : gasPriceAdjusted.toNumber();
       result.push({
         coinDenom: token.symbol ?? token.denom,
         coinMinimalDenom: token.denom,
@@ -107,16 +108,14 @@ class LeapAccount {
         bech32PrefixConsPub: `${bech32Prefix}valconspub`,
       },
       features: ["stargate", "ibc-transfer", "ibc-go"],
-    }
+    };
   }
 }
 
-namespace LeapAccount {
-
-}
+namespace LeapAccount {}
 
 export interface LeapExtended extends Leap {
-  experimentalSuggestChain(chainInfo: ChainInfo): Promise<void>
+  experimentalSuggestChain(chainInfo: ChainInfo): Promise<void>;
 }
 
-export default LeapAccount
+export default LeapAccount;

@@ -1,2 +1,2 @@
-export * from './EthLedgerAccount'
-export * from './EthLedgerSigner'
+export * from "./EthLedgerAccount";
+export * from "./EthLedgerSigner";

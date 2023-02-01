@@ -3,7 +3,13 @@ import { ChainInfoExplorerTmRpc, ibcDefaultGas } from "@carbon-sdk/constant/ibc"
 import { EmbedChainInfos } from "@carbon-sdk/util/ibc";
 import { IndexedDBKVStore } from "@keplr-wallet/common";
 import {
-  AccountStore, ChainStore, CosmosAccount, CosmosQueries, CosmwasmAccount, CosmwasmQueries, QueriesStore,
+  AccountStore,
+  ChainStore,
+  CosmosAccount,
+  CosmosQueries,
+  CosmwasmAccount,
+  CosmwasmQueries,
+  QueriesStore,
 } from "@keplr-wallet/stores";
 import { ChainInfo, Keplr } from "@keplr-wallet/types";
 import EventEmitter from "eventemitter3";
@@ -12,23 +18,19 @@ import semver from "semver";
 export class RootStore {
   public readonly chainStore: ChainStore;
 
-  public readonly queriesStore: QueriesStore<
-    [CosmosQueries, CosmwasmQueries]
-  >;
+  public readonly queriesStore: QueriesStore<[CosmosQueries, CosmwasmQueries]>;
 
-  public readonly accountStore: AccountStore<
-    [CosmosAccount, CosmwasmAccount]
-  >;
+  public readonly accountStore: AccountStore<[CosmosAccount, CosmwasmAccount]>;
 
   constructor(getKeplr: () => Promise<any>, additionalChains?: ChainInfo[]) {
     const embedChainInfos = Object.values(EmbedChainInfos).map((chainInfo: ChainInfoExplorerTmRpc) => {
       const newChainInfo: any = chainInfo;
       if (newChainInfo.tmRpc) delete newChainInfo.tmRpc;
       if (newChainInfo.explorerUrlToTx) delete newChainInfo.explorerUrlToTx;
-      return newChainInfo as ChainInfo
+      return newChainInfo as ChainInfo;
     }) as ChainInfo[];
     if (additionalChains && additionalChains?.length > 0) {
-      embedChainInfos.push(...additionalChains)
+      embedChainInfos.push(...additionalChains);
     }
 
     const eventListener = (() => {
@@ -50,29 +52,20 @@ export class RootStore {
       };
     })();
 
-    async function suggestChainFromWindow(
-      keplr: Keplr,
-      chainInfo: ChainInfo
-    ) {
+    async function suggestChainFromWindow(keplr: Keplr, chainInfo: ChainInfo) {
       const info = {
         ...chainInfo,
         stakeCurrency: {
           ...chainInfo.stakeCurrency,
-          coinImageUrl: chainInfo.stakeCurrency.coinImageUrl
-            ? window.origin + chainInfo.stakeCurrency.coinImageUrl
-            : undefined,
+          coinImageUrl: chainInfo.stakeCurrency.coinImageUrl ? window.origin + chainInfo.stakeCurrency.coinImageUrl : undefined,
         },
         currencies: chainInfo.currencies.map((currency) => ({
           ...currency,
-          coinImageUrl: currency.coinImageUrl
-            ? window.origin + currency.coinImageUrl
-            : undefined,
+          coinImageUrl: currency.coinImageUrl ? window.origin + currency.coinImageUrl : undefined,
         })),
         feeCurrencies: chainInfo.feeCurrencies.map((currency) => ({
           ...currency,
-          coinImageUrl: currency.coinImageUrl
-            ? window.origin + currency.coinImageUrl
-            : undefined,
+          coinImageUrl: currency.coinImageUrl ? window.origin + currency.coinImageUrl : undefined,
         })),
       };
       await keplr.experimentalSuggestChain(info);
@@ -84,7 +77,7 @@ export class RootStore {
       new IndexedDBKVStore("store_web_queries"),
       this.chainStore,
       CosmosQueries.use(),
-      CosmwasmQueries.use(),
+      CosmwasmQueries.use()
     );
 
     this.accountStore = new AccountStore(
@@ -115,7 +108,7 @@ export class RootStore {
         queriesStore: this.queriesStore,
         msgOptsCreator: () => ({ ibcTransfer: { gas: ibcDefaultGas } }),
       }),
-      CosmwasmAccount.use({ queriesStore: this.queriesStore }),
+      CosmwasmAccount.use({ queriesStore: this.queriesStore })
     );
   }
 }

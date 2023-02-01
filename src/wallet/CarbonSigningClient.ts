@@ -4,7 +4,17 @@ import { CarbonSignerData } from "@carbon-sdk/util/tx";
 import { AminoMsg, encodeSecp256k1Pubkey, OfflineAminoSigner } from "@cosmjs/amino";
 import { fromBase64 } from "@cosmjs/encoding";
 import { Int53, Uint53 } from "@cosmjs/math";
-import { EncodeObject, encodePubkey, isOfflineDirectSigner, makeAuthInfoBytes, makeSignDoc, OfflineDirectSigner, OfflineSigner, Registry, TxBodyEncodeObject } from "@cosmjs/proto-signing";
+import {
+  EncodeObject,
+  encodePubkey,
+  isOfflineDirectSigner,
+  makeAuthInfoBytes,
+  makeSignDoc,
+  OfflineDirectSigner,
+  OfflineSigner,
+  Registry,
+  TxBodyEncodeObject,
+} from "@cosmjs/proto-signing";
 import { AminoTypes, GasPrice, SigningStargateClientOptions, StargateClient, StdFee } from "@cosmjs/stargate";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import Long from "long";
@@ -33,7 +43,7 @@ enum SignMode {
    * Amino JSON and will be removed in the future
    */
   SIGN_MODE_LEGACY_AMINO_JSON = 127,
-  UNRECOGNIZED = -1
+  UNRECOGNIZED = -1,
 }
 
 export interface StdSignDoc {
@@ -53,7 +63,7 @@ export function makeSignDocAmino(
   memo: string | undefined,
   accountNumber: number | string,
   sequence: number | string,
-  timeoutHeight: number | string = 0,
+  timeoutHeight: number | string = 0
 ): StdSignDoc {
   const timeoutHeightStr = typeof timeoutHeight === "number" ? timeoutHeight.toString(10) : timeoutHeight;
   return {
@@ -77,7 +87,7 @@ export class CarbonSigningClient extends StargateClient {
   constructor(
     tmClient: Tendermint34Client,
     public readonly signer: OfflineSigner,
-    public readonly options: SigningStargateClientOptions = {},
+    public readonly options: SigningStargateClientOptions = {}
   ) {
     super(tmClient, options);
     const { registry = TypesRegistry, aminoTypes = AminoTypesMap } = options;
@@ -105,7 +115,7 @@ export class CarbonSigningClient extends StargateClient {
     messages: readonly EncodeObject[],
     fee: StdFee,
     memo: string,
-    signerData: CarbonSignerData,
+    signerData: CarbonSignerData
   ): Promise<TxRaw> {
     return isOfflineDirectSigner(this.signer)
       ? this.signDirect(signerAddress, messages, fee, memo, signerData)
@@ -117,13 +127,11 @@ export class CarbonSigningClient extends StargateClient {
     messages: readonly EncodeObject[],
     fee: StdFee,
     memo: string,
-    { accountNumber, sequence, chainId, timeoutHeight }: CarbonSignerData,
+    { accountNumber, sequence, chainId, timeoutHeight }: CarbonSignerData
   ): Promise<TxRaw> {
     const signer = this.signer as OfflineDirectSigner;
 
-    const accountFromSigner = (await this.signer.getAccounts()).find(
-      (account) => account.address === signerAddress,
-    );
+    const accountFromSigner = (await this.signer.getAccounts()).find((account) => account.address === signerAddress);
     if (!accountFromSigner) {
       throw new Error("Failed to retrieve account from signer");
     }
@@ -133,9 +141,9 @@ export class CarbonSigningClient extends StargateClient {
       value: {
         messages: messages,
         memo: memo,
-        ...timeoutHeight && {
+        ...(timeoutHeight && {
           timeoutHeight: Long.fromNumber(timeoutHeight),
-        }
+        }),
       },
     };
     const txBodyBytes = this.registry.encode(txBodyEncodeObject);
@@ -155,13 +163,11 @@ export class CarbonSigningClient extends StargateClient {
     messages: readonly EncodeObject[],
     fee: StdFee,
     memo: string,
-    { accountNumber, sequence, chainId, timeoutHeight }: CarbonSignerData,
+    { accountNumber, sequence, chainId, timeoutHeight }: CarbonSignerData
   ): Promise<TxRaw> {
     const signer = this.signer as OfflineAminoSigner;
 
-    const accountFromSigner = (await this.signer.getAccounts()).find(
-      (account) => account.address === signerAddress,
-    );
+    const accountFromSigner = (await this.signer.getAccounts()).find((account) => account.address === signerAddress);
     if (!accountFromSigner) {
       throw new Error("Failed to retrieve account from signer");
     }
@@ -173,9 +179,9 @@ export class CarbonSigningClient extends StargateClient {
     const signedTxBody = {
       messages: signed.msgs.map((msg) => this.aminoTypes.fromAmino(msg)),
       memo: signed.memo,
-      ...timeoutHeight && {
+      ...(timeoutHeight && {
         timeoutHeight: Long.fromNumber(timeoutHeight),
-      }
+      }),
     };
     const signedTxBodyEncodeObject: TxBodyEncodeObject = {
       typeUrl: "/cosmos.tx.v1beta1.TxBody",
@@ -184,16 +190,11 @@ export class CarbonSigningClient extends StargateClient {
     const signedTxBodyBytes = this.registry.encode(signedTxBodyEncodeObject);
     const signedGasLimit = Int53.fromString(signed.fee.gas).toNumber();
     const signedSequence = Int53.fromString(signed.sequence).toNumber();
-    const signedAuthInfoBytes = makeAuthInfoBytes(
-      [{ pubkey, sequence: signedSequence }],
-      signed.fee.amount,
-      signedGasLimit,
-      signMode,
-    );
+    const signedAuthInfoBytes = makeAuthInfoBytes([{ pubkey, sequence: signedSequence }], signed.fee.amount, signedGasLimit, signMode);
     return TxRaw.fromPartial({
       bodyBytes: signedTxBodyBytes,
       authInfoBytes: signedAuthInfoBytes,
       signatures: [fromBase64(signature.signature)],
     });
   }
-};
+}

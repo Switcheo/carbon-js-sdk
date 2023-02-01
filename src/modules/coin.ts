@@ -4,7 +4,6 @@ import BigNumber from "bignumber.js";
 import BaseModule from "./base";
 
 export class CoinModule extends BaseModule {
-
   public async createWithdrawal(params: CoinModule.CreateWithdrawalParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
@@ -15,12 +14,15 @@ export class CoinModule extends BaseModule {
       amount: params.amount.toString(10),
       feeAmount: params.feeAmount.toString(10),
       feeAddress: params.feeAddress,
-    })
+    });
 
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgWithdraw,
-      value,
-    }, opts);
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgWithdraw,
+        value,
+      },
+      opts
+    );
   }
 
   public async mintToken(params: CoinModule.MintTokenParams, opts?: CarbonTx.SignTxOpts) {
@@ -31,28 +33,31 @@ export class CoinModule extends BaseModule {
       denom: params.denom,
       amount: params.amount.toString(10),
       to: params.to ?? wallet.bech32Address,
-    })
+    });
 
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgMintToken,
-      value,
-    }, opts)
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgMintToken,
+        value,
+      },
+      opts
+    );
   }
 }
 
 export namespace CoinModule {
   export interface CreateWithdrawalParams {
-    toAddress: string,
-    denom: string,
-    amount: BigNumber,
-    feeAmount: BigNumber,
-    feeAddress: string,
+    toAddress: string;
+    denom: string;
+    amount: BigNumber;
+    feeAmount: BigNumber;
+    feeAddress: string;
   }
 
   export interface MintTokenParams {
-    creator?: string,
-    denom: string,
-    amount: BigNumber,
-    to?: string,
+    creator?: string;
+    denom: string;
+    amount: BigNumber;
+    to?: string;
   }
-};
+}

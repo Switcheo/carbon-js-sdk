@@ -49,19 +49,19 @@ export const computeTxHash = (bytes?: Uint8Array | Buffer): string | undefined =
   if (!bytes) return bytes;
 
   return toTxHash(sha256(bytes));
-}
+};
 export const toTxHash = (bytes?: Uint8Array | Buffer): string | undefined => {
   if (!bytes) return bytes;
 
   return Buffer.from(bytes).toString("hex").toUpperCase();
-}
+};
 
 /**
  * Make tendermint client send RPC requests with the same request
  * ID instead of using a random id that is unread in the client.
- * 
+ *
  * Motivation: enhanced cache-ability on API providers.
- * 
+ *
  * Broadcast methods are untouched to ensure retries don't hit cache.
  */
 export const modifyTmClient = (tmClient: Tendermint34Client) => {
@@ -69,8 +69,8 @@ export const modifyTmClient = (tmClient: Tendermint34Client) => {
     const p = (tmClient as any).p;
     const newEncoder = { ...p };
     for (const method of Object.getOwnPropertyNames(p)) {
-      if (method === "encodeBroadcastTx" || typeof p[method] !== 'function') continue;
-      const ogHandler = p[method]
+      if (method === "encodeBroadcastTx" || typeof p[method] !== "function") continue;
+      const ogHandler = p[method];
       newEncoder[method] = (req: any) => {
         const result = ogHandler(req);
         if (req.method === "abci_query" && req.params.path === "/cosmos.auth.v1beta1.Query/Account") {
@@ -85,12 +85,12 @@ export const modifyTmClient = (tmClient: Tendermint34Client) => {
     }
     (tmClient as any).p = newEncoder;
   } catch (error) {
-    console.error('failed to modify tm client');
-    console.error(error)
+    console.error("failed to modify tm client");
+    console.error(error);
   }
 
   return tmClient;
-}
+};
 
 export const callIgnoreError = <T = any>(runnable: () => T) => {
   return runnable();
@@ -107,25 +107,21 @@ export class QueueManager<T = void, V = void> {
 
   private queue: T[] = [];
 
-  constructor(
-    private readonly processor: (input: T) => V,
-    options: QueueManager.Options = {},
-  ) {
-    this.triggerDelay = options.triggerDelay ?? 300
-    this.maxDelayThreshold = options.maxDelayThreshold ?? 1000
+  constructor(private readonly processor: (input: T) => V, options: QueueManager.Options = {}) {
+    this.triggerDelay = options.triggerDelay ?? 300;
+    this.maxDelayThreshold = options.maxDelayThreshold ?? 1000;
   }
 
   public enqueue(task: T, skipTrigger = false) {
     this.queue.unshift(task);
-    if (!skipTrigger)
-      this.trigger();
+    if (!skipTrigger) this.trigger();
   }
 
   public trigger() {
     const currentTimeMillis = new Date().getTime();
 
     // do not shift delay later if next schedule
-    if (this.currTriggerThreshold && (currentTimeMillis + this.triggerDelay) > this.currTriggerThreshold) {
+    if (this.currTriggerThreshold && currentTimeMillis + this.triggerDelay > this.currTriggerThreshold) {
       return;
     }
 

@@ -5,9 +5,9 @@ import { Zilliqa } from "@zilliqa-js/zilliqa";
 import { Wallet, Account } from "@zilliqa-js/account";
 
 export interface ZilPayChangeNetworkParam {
-  chainId: number,
-  chainname: string,
-  rpcUrl?: string,
+  chainId: number;
+  chainname: string;
+  rpcUrl?: string;
 }
 
 interface ZilPayAccount extends Account {
@@ -23,79 +23,74 @@ interface ZilPayAPI extends Zilliqa {
 }
 
 export class Zilpay {
-  private blockchain: BlockchainUtils.Blockchain = BlockchainUtils.Blockchain.Zilliqa
+  private blockchain: BlockchainUtils.Blockchain = BlockchainUtils.Blockchain.Zilliqa;
 
   static getNetworkParams(network: Network): ZilPayChangeNetworkParam {
     if (network === Network.MainNet) {
       // currently zilpay only used by zilliqa
       return {
         chainId: Number(1),
-        chainname: 'Zilliqa Mainnet',
-        rpcUrl: 'https://api.zilliqa.com'
-      }
+        chainname: "Zilliqa Mainnet",
+        rpcUrl: "https://api.zilliqa.com",
+      };
     }
-
 
     if (network == Network.DevNet) {
       return {
         chainId: Number(999),
-        chainname: 'Zilliqa Devnet',
-        rpcUrl: 'https://poly-api.zilliqa.com'
-      }
+        chainname: "Zilliqa Devnet",
+        rpcUrl: "https://poly-api.zilliqa.com",
+      };
     }
 
     return {
       chainId: Number(333),
-      chainname: 'Zilliqa Testnet',
-      rpcUrl: 'https://dev-api.zilliqa.com'
-    }
+      chainname: "Zilliqa Testnet",
+      rpcUrl: "https://dev-api.zilliqa.com",
+    };
   }
 
   static getRequiredChainId(network: Network) {
     if (network === Network.MainNet) {
-      return 1
+      return 1;
     }
 
     if (network === Network.DevNet) {
-      return 888
+      return 888;
     }
 
     // Testnet
-    return 333
+    return 333;
   }
 
-  constructor(
-    public readonly network: Network,
-  ) { }
+  constructor(public readonly network: Network) {}
 
   public getBlockchain(): BlockchainUtils.Blockchain {
-    return this.blockchain
+    return this.blockchain;
   }
 
   async getSigner(): Promise<Signer> {
-    const zil = await this.getConnectedAPI()
+    const zil = await this.getConnectedAPI();
     if (!zil) {
-      throw new Error('ZilPay not connected, please check that your extension is enabled')
+      throw new Error("ZilPay not connected, please check that your extension is enabled");
     }
-    return (zil as any).wallet
+    return (zil as any).wallet;
   }
 
   async getConnectedAPI(): Promise<ZilPayAPI | null> {
-    const zilPayAPI = this.getAPI()
+    const zilPayAPI = this.getAPI();
     if (!zilPayAPI) {
-      throw new Error('ZilPay not connected, please check that your extension is enabled')
+      throw new Error("ZilPay not connected, please check that your extension is enabled");
     }
 
-    const isConnect = await (zilPayAPI as any).wallet.connect()
+    const isConnect = await (zilPayAPI as any).wallet.connect();
     if (!isConnect) {
-      throw new Error('user reject')
+      throw new Error("user reject");
     }
-    return this.getAPI()
-
+    return this.getAPI();
   }
 
   getAPI(): ZilPayAPI | null {
-    return (window as any).zilPay as ZilPayAPI | null ?? null
+    return ((window as any).zilPay as ZilPayAPI | null) ?? null;
   }
-
 }

@@ -3,9 +3,9 @@ import BaseModule from "./base";
 
 export class FeeModule extends BaseModule {
   public async getDepositWithdrawalFees(denom: string): Promise<GetFeeQuoteResponse> {
-    const feeInfo = await this.sdkProvider.hydrogen.getFeeQuote({
+    const feeInfo = (await this.sdkProvider.hydrogen.getFeeQuote({
       token_denom: denom,
-    }) as GetFeeQuoteResponse;
+    })) as GetFeeQuoteResponse;
     return feeInfo;
   }
 }

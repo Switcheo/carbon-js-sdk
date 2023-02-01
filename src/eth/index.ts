@@ -1,1 +1,1 @@
-export * as ABIs from './abis'
+export * as ABIs from "./abis";

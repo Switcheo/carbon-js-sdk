@@ -1,17 +1,11 @@
 import Transport from "@ledgerhq/hw-transport";
 import { u } from "@cityofzion/neon-core";
-import {
-  StatusWord,
-  evalTransportError,
-  TransportStatusError,
-  looksLikeTransportStatusError,
-} from "./ErrorCode";
+import { StatusWord, evalTransportError, TransportStatusError, looksLikeTransportStatusError } from "./ErrorCode";
 
 /**
  * Duplicated from @cityofzion/neon-ledger due to package incompatibility:
  * transpiled JS version throws "Cannot find module './main'"
  */
-
 
 const DEFAULT_STATUSLIST = [StatusWord.OK];
 
@@ -29,20 +23,8 @@ enum Command {
  * @param chunk - data sequence number. Start at 0, increase by 1
  * @param finalChunk - set to true if this is the last chunk for the command
  */
-async function sendDataToSign(
-  ledger: Transport,
-  msg: string,
-  chunk: number,
-  finalChunk = false
-): Promise<Buffer> {
-  return await ledger.send(
-    0x80,
-    Command.SIGN_TX,
-    chunk,
-    finalChunk ? 0x00 : 0x80,
-    Buffer.from(msg, "hex"),
-    DEFAULT_STATUSLIST
-  );
+async function sendDataToSign(ledger: Transport, msg: string, chunk: number, finalChunk = false): Promise<Buffer> {
+  return await ledger.send(0x80, Command.SIGN_TX, chunk, finalChunk ? 0x00 : 0x80, Buffer.from(msg, "hex"), DEFAULT_STATUSLIST);
 }
 
 /**
@@ -52,14 +34,7 @@ async function sendDataToSign(
  */
 export async function getAppName(ledger: Transport): Promise<string> {
   try {
-    const response = await ledger.send(
-      0x80,
-      Command.GET_APP_NAME,
-      0x00,
-      0x00,
-      undefined,
-      DEFAULT_STATUSLIST
-    );
+    const response = await ledger.send(0x80, Command.GET_APP_NAME, 0x00, 0x00, undefined, DEFAULT_STATUSLIST);
     const version = response.toString("ascii");
     return version.substring(0, version.length - 2); // take of status word
   } catch (e) {
@@ -77,14 +52,7 @@ export async function getAppName(ledger: Transport): Promise<string> {
  */
 export async function getAppVersion(ledger: Transport): Promise<string> {
   try {
-    const response = await ledger.send(
-      0x80,
-      Command.GET_VERSION,
-      0x00,
-      0x00,
-      undefined,
-      DEFAULT_STATUSLIST
-    );
+    const response = await ledger.send(0x80, Command.GET_VERSION, 0x00, 0x00, undefined, DEFAULT_STATUSLIST);
     const major = response.readUInt8(0);
     const minor = response.readUInt8(1);
     const patch = response.readUInt8(2);
@@ -101,9 +69,7 @@ export async function getAppVersion(ledger: Transport): Promise<string> {
  * Returns the list of connected Ledger devices. Throw if Ledger is not supported by the computer.
  * @param ledgerLibrary - Ledger library
  */
-export async function getDevicePaths(
-  ledgerLibrary: typeof Transport
-): Promise<ReadonlyArray<string>> {
+export async function getDevicePaths(ledgerLibrary: typeof Transport): Promise<ReadonlyArray<string>> {
   const supported = await ledgerLibrary.isSupported();
   if (!supported) {
     throw new Error(`Your computer does not support the ledger!`);
@@ -119,11 +85,7 @@ export async function getDevicePaths(
  * on the Ledger
  * @returns An unencoded public key (65 bytes)
  */
-export async function getPublicKey(
-  ledger: Transport,
-  bip44String: string,
-  showAddressOnDevice = false
-): Promise<string> {
+export async function getPublicKey(ledger: Transport, bip44String: string, showAddressOnDevice = false): Promise<string> {
   try {
     const response = await ledger.send(
       0x80,
@@ -150,12 +112,7 @@ export async function getPublicKey(
  * @param network - MainNet, TestNet or custom network number
  * @returns Signature as a hexstring (64 bytes)
  */
-export async function getSignature(
-  ledger: Transport,
-  payload: string,
-  bip44String: string,
-  network: number
-): Promise<string> {
+export async function getSignature(ledger: Transport, payload: string, bip44String: string, network: number): Promise<string> {
   await sendDataToSign(ledger, bip44String, 0);
   await sendDataToSign(ledger, u.num2hexstring(network, 4, true), 1);
 
@@ -164,12 +121,7 @@ export async function getSignature(
     for (let i = 0; i < chunks.length - 1; i++) {
       await sendDataToSign(ledger, chunks[i], 2 + i);
     }
-    const response = await sendDataToSign(
-      ledger,
-      chunks[chunks.length - 1],
-      2 + chunks.length,
-      true
-    );
+    const response = await sendDataToSign(ledger, chunks[chunks.length - 1], 2 + chunks.length, true);
     // Expected signature + 2 status bytes to be returned here upon completion
     if (response.length <= 2) {
       throw new Error(`No more data but Ledger did not return signature!`);
@@ -187,7 +139,7 @@ export async function getSignature(
  * @param response - signature in DER format
  * @returns Signature in HEX format (64 bytes)
  */
- export function DerToHexSignature(response: string): string {
+export function DerToHexSignature(response: string): string {
   const ss = new u.StringStream(response);
   // The first byte is format. It is usually 0x30 (SEQ) or 0x31 (SET)
   // The second byte represents the total length of the DER module.
