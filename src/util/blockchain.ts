@@ -134,6 +134,8 @@ export const blockchainForChainId = (chainId?: number, network = Network.MainNet
           return Blockchain.Native
         case 1:
           return Blockchain.Btc
+        case 2:
+          return Blockchain.Ethereum
         case 4:
           return Blockchain.Neo
         case 6:
@@ -141,8 +143,7 @@ export const blockchainForChainId = (chainId?: number, network = Network.MainNet
         case 14:
           return Blockchain.Neo3
         case 9:  /* FALLTHROUGH */
-        case 18: /* FALLTHROUGH */
-        case 111:
+        case 18:
           return Blockchain.Zilliqa
         case 244:
           return Blockchain.Osmosis
@@ -189,8 +190,6 @@ export const blockchainForChainId = (chainId?: number, network = Network.MainNet
       switch (chainId) {
         case 1:
           return Blockchain.Terra
-        case 2:
-          return Blockchain.Ethereum
         case 5:
           return Blockchain.Carbon
         case 79:
@@ -199,6 +198,7 @@ export const blockchainForChainId = (chainId?: number, network = Network.MainNet
           return Blockchain.Neo3
         case 111:
           return Blockchain.Zilliqa
+        case 2: /* FALLTHROUGH */
         case 502:
           return Blockchain.Ethereum
         default:
