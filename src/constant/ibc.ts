@@ -1851,7 +1851,7 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
       coinDenom: "CANTO",
       coinMinimalDenom: "acanto",
       coinDecimals: 18,
-      coinGeckoId: "pool:acanto",
+      coinGeckoId: "canto",
     },
     bip44: {
       coinType: 60,
@@ -1862,7 +1862,7 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         coinDenom: "CANTO",
         coinMinimalDenom: "acanto",
         coinDecimals: 18,
-        coinGeckoId: "pool:acanto",
+        coinGeckoId: "canto",
       },
     ],
     feeCurrencies: [
