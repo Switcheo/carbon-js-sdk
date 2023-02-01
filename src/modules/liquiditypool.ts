@@ -4,6 +4,7 @@ import { BigNumber } from "bignumber.js";
 import dayjs from "dayjs";
 import Long from "long";
 import BaseModule from "./base";
+import {MsgCreatePoolRoute, MsgRemovePoolRoute} from "@carbon-sdk/codec";
 
 export class LiquidityPoolModule extends BaseModule {
   public async create(params: LiquidityPoolModule.CreatePoolParams, opts?: CarbonTx.SignTxOpts) {
@@ -195,6 +196,44 @@ export class LiquidityPoolModule extends BaseModule {
       opts
     );
   }
+
+  public async createPoolRoute(params: LiquidityPoolModule.CreatePoolRouteParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+    const value = Models.MsgCreatePoolRoute.fromPartial({
+      creator: wallet.bech32Address,
+      createPoolRouteParams: {
+        marketName: params.marketName,
+        poolIds: params.poolIds,
+        numQuotes: params.numQuotes,
+      }
+    })
+    return await wallet.sendTx(
+        {
+          typeUrl: CarbonTx.Types.MsgCreatePoolRoute,
+          value,
+        },
+        opts
+    );
+  }
+
+  public async removePoolRoute(params: LiquidityPoolModule.RemovePoolRouteParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+    const value = Models.MsgRemovePoolRoute.fromPartial({
+      creator: wallet.bech32Address,
+      removePoolRouteParams: {
+        marketName: params.marketName,
+        poolIds: params.poolIds,
+      }
+    })
+    return await wallet.sendTx(
+        {
+          typeUrl: CarbonTx.Types.MsgRemovePoolRoute,
+          value,
+        },
+        opts
+    );
+  }
+
 }
 
 export namespace LiquidityPoolModule {
@@ -259,5 +298,16 @@ export namespace LiquidityPoolModule {
   export interface EstimateUnclaimedRewardsMsg {
     poolId: string;
     address: string;
+  }
+
+  export interface CreatePoolRouteParams {
+    marketName: string;
+    poolIds: Long[];
+    numQuotes: Long;
+  }
+
+  export interface RemovePoolRouteParams {
+    marketName: string;
+    poolIds: Long[];
   }
 }

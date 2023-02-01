@@ -34,8 +34,8 @@ import { MsgCreateSubAccount, MsgCreateSubAccountResponse, MsgActivateSubAccount
 import { MsgCreateMarket, MsgCreateMarketResponse, MsgUpdateMarket, MsgUpdateMarketResponse, MsgUpdatePerpetualsFundingInterval, MsgUpdatePerpetualsFundingIntervalResponse } from "./market/tx";
 import { CreateMarketProposal, UpdateMarketProposal, UpdatePerpetualsFundingIntervalProposal } from "./market/proposal";
 import { MsgSetSequence, MsgSetSequenceResponse } from "./sequence/tx";
-import { MsgCreatePool, MsgCreatePoolResponse, MsgCreatePoolWithLiquidity, MsgCreatePoolWithLiquidityResponse, MsgAddLiquidity, MsgAddLiquidityResponse, MsgRemoveLiquidity, MsgRemoveLiquidityResponse, MsgLinkPool, MsgLinkPoolResponse, MsgUnlinkPool, MsgUnlinkPoolResponse, MsgSetRewardsWeights, MsgSetRewardsWeightsResponse, MsgStakePoolToken, MsgStakePoolTokenResponse, MsgUnstakePoolToken, MsgUnstakePoolTokenResponse, MsgClaimPoolRewards, MsgClaimPoolRewardsResponse, MsgSetRewardCurve, MsgSetRewardCurveResponse, MsgSetCommitmentCurve, MsgSetCommitmentCurveResponse, MsgUpdatePool, MsgUpdatePoolResponse } from "./liquiditypool/tx";
-import { LinkPoolProposal, UnlinkPoolProposal, SetRewardCurveProposal, SetCommitmentCurveProposal, SetRewardsWeightsProposal, UpdatePoolProposal } from "./liquiditypool/proposal";
+import { MsgCreatePool, MsgCreatePoolResponse, MsgCreatePoolWithLiquidity, MsgCreatePoolWithLiquidityResponse, MsgAddLiquidity, MsgAddLiquidityResponse, MsgRemoveLiquidity, MsgRemoveLiquidityResponse, MsgSetRewardsWeights, MsgSetRewardsWeightsResponse, MsgStakePoolToken, MsgStakePoolTokenResponse, MsgUnstakePoolToken, MsgUnstakePoolTokenResponse, MsgClaimPoolRewards, MsgClaimPoolRewardsResponse, MsgSetRewardCurve, MsgSetRewardCurveResponse, MsgSetCommitmentCurve, MsgSetCommitmentCurveResponse, MsgUpdatePool, MsgUpdatePoolResponse, MsgCreatePoolRoute, MsgCreatePoolRouteResponse, MsgRemovePoolRoute, MsgRemovePoolRouteResponse } from "./liquiditypool/tx";
+import { SetRewardCurveProposal, SetCommitmentCurveProposal, SetRewardsWeightsProposal, UpdatePoolProposal, CreatePoolRouteProposal, RemovePoolRouteProposal } from "./liquiditypool/proposal";
 import { MsgSetBackfillTimeInterval, MsgSetBackfillTimeIntervalResponse, MsgSetSmoothenBand, MsgSetSmoothenBandResponse, MsgSetImpactBand, MsgSetImpactBandResponse, MsgSetStaleIndexAllowance, MsgSetStaleIndexAllowanceResponse } from "./pricing/tx";
 import { SettlementPriceProposal } from "./pricing/proposal";
 import { TextProposal, Proposal } from "./cosmos/gov/v1beta1/gov";
@@ -362,10 +362,6 @@ registry.register("/Switcheo.carbon.liquiditypool.MsgAddLiquidity", MsgAddLiquid
 registry.register("/Switcheo.carbon.liquiditypool.MsgAddLiquidityResponse", MsgAddLiquidityResponse);
 registry.register("/Switcheo.carbon.liquiditypool.MsgRemoveLiquidity", MsgRemoveLiquidity);
 registry.register("/Switcheo.carbon.liquiditypool.MsgRemoveLiquidityResponse", MsgRemoveLiquidityResponse);
-registry.register("/Switcheo.carbon.liquiditypool.MsgLinkPool", MsgLinkPool);
-registry.register("/Switcheo.carbon.liquiditypool.MsgLinkPoolResponse", MsgLinkPoolResponse);
-registry.register("/Switcheo.carbon.liquiditypool.MsgUnlinkPool", MsgUnlinkPool);
-registry.register("/Switcheo.carbon.liquiditypool.MsgUnlinkPoolResponse", MsgUnlinkPoolResponse);
 registry.register("/Switcheo.carbon.liquiditypool.MsgSetRewardsWeights", MsgSetRewardsWeights);
 registry.register("/Switcheo.carbon.liquiditypool.MsgSetRewardsWeightsResponse", MsgSetRewardsWeightsResponse);
 registry.register("/Switcheo.carbon.liquiditypool.MsgStakePoolToken", MsgStakePoolToken);
@@ -380,12 +376,16 @@ registry.register("/Switcheo.carbon.liquiditypool.MsgSetCommitmentCurve", MsgSet
 registry.register("/Switcheo.carbon.liquiditypool.MsgSetCommitmentCurveResponse", MsgSetCommitmentCurveResponse);
 registry.register("/Switcheo.carbon.liquiditypool.MsgUpdatePool", MsgUpdatePool);
 registry.register("/Switcheo.carbon.liquiditypool.MsgUpdatePoolResponse", MsgUpdatePoolResponse);
-registry.register("/Switcheo.carbon.liquiditypool.LinkPoolProposal", LinkPoolProposal);
-registry.register("/Switcheo.carbon.liquiditypool.UnlinkPoolProposal", UnlinkPoolProposal);
+registry.register("/Switcheo.carbon.liquiditypool.MsgCreatePoolRoute", MsgCreatePoolRoute);
+registry.register("/Switcheo.carbon.liquiditypool.MsgCreatePoolRouteResponse", MsgCreatePoolRouteResponse);
+registry.register("/Switcheo.carbon.liquiditypool.MsgRemovePoolRoute", MsgRemovePoolRoute);
+registry.register("/Switcheo.carbon.liquiditypool.MsgRemovePoolRouteResponse", MsgRemovePoolRouteResponse);
 registry.register("/Switcheo.carbon.liquiditypool.SetRewardCurveProposal", SetRewardCurveProposal);
 registry.register("/Switcheo.carbon.liquiditypool.SetCommitmentCurveProposal", SetCommitmentCurveProposal);
 registry.register("/Switcheo.carbon.liquiditypool.SetRewardsWeightsProposal", SetRewardsWeightsProposal);
 registry.register("/Switcheo.carbon.liquiditypool.UpdatePoolProposal", UpdatePoolProposal);
+registry.register("/Switcheo.carbon.liquiditypool.CreatePoolRouteProposal", CreatePoolRouteProposal);
+registry.register("/Switcheo.carbon.liquiditypool.RemovePoolRouteProposal", RemovePoolRouteProposal);
 
 registry.register("/Switcheo.carbon.pricing.MsgSetBackfillTimeInterval", MsgSetBackfillTimeInterval);
 registry.register("/Switcheo.carbon.pricing.MsgSetBackfillTimeIntervalResponse", MsgSetBackfillTimeIntervalResponse);
@@ -689,10 +689,6 @@ export const TxTypes = {
   "MsgAddLiquidityResponse": "/Switcheo.carbon.liquiditypool.MsgAddLiquidityResponse",
   "MsgRemoveLiquidity": "/Switcheo.carbon.liquiditypool.MsgRemoveLiquidity",
   "MsgRemoveLiquidityResponse": "/Switcheo.carbon.liquiditypool.MsgRemoveLiquidityResponse",
-  "MsgLinkPool": "/Switcheo.carbon.liquiditypool.MsgLinkPool",
-  "MsgLinkPoolResponse": "/Switcheo.carbon.liquiditypool.MsgLinkPoolResponse",
-  "MsgUnlinkPool": "/Switcheo.carbon.liquiditypool.MsgUnlinkPool",
-  "MsgUnlinkPoolResponse": "/Switcheo.carbon.liquiditypool.MsgUnlinkPoolResponse",
   "MsgSetRewardsWeights": "/Switcheo.carbon.liquiditypool.MsgSetRewardsWeights",
   "MsgSetRewardsWeightsResponse": "/Switcheo.carbon.liquiditypool.MsgSetRewardsWeightsResponse",
   "MsgStakePoolToken": "/Switcheo.carbon.liquiditypool.MsgStakePoolToken",
@@ -707,12 +703,16 @@ export const TxTypes = {
   "MsgSetCommitmentCurveResponse": "/Switcheo.carbon.liquiditypool.MsgSetCommitmentCurveResponse",
   "MsgUpdatePool": "/Switcheo.carbon.liquiditypool.MsgUpdatePool",
   "MsgUpdatePoolResponse": "/Switcheo.carbon.liquiditypool.MsgUpdatePoolResponse",
-  "LinkPoolProposal": "/Switcheo.carbon.liquiditypool.LinkPoolProposal",
-  "UnlinkPoolProposal": "/Switcheo.carbon.liquiditypool.UnlinkPoolProposal",
+  "MsgCreatePoolRoute": "/Switcheo.carbon.liquiditypool.MsgCreatePoolRoute",
+  "MsgCreatePoolRouteResponse": "/Switcheo.carbon.liquiditypool.MsgCreatePoolRouteResponse",
+  "MsgRemovePoolRoute": "/Switcheo.carbon.liquiditypool.MsgRemovePoolRoute",
+  "MsgRemovePoolRouteResponse": "/Switcheo.carbon.liquiditypool.MsgRemovePoolRouteResponse",
   "SetRewardCurveProposal": "/Switcheo.carbon.liquiditypool.SetRewardCurveProposal",
   "SetCommitmentCurveProposal": "/Switcheo.carbon.liquiditypool.SetCommitmentCurveProposal",
   "SetRewardsWeightsProposal": "/Switcheo.carbon.liquiditypool.SetRewardsWeightsProposal",
   "UpdatePoolProposal": "/Switcheo.carbon.liquiditypool.UpdatePoolProposal",
+  "CreatePoolRouteProposal": "/Switcheo.carbon.liquiditypool.CreatePoolRouteProposal",
+  "RemovePoolRouteProposal": "/Switcheo.carbon.liquiditypool.RemovePoolRouteProposal",
   "MsgSetBackfillTimeInterval": "/Switcheo.carbon.pricing.MsgSetBackfillTimeInterval",
   "MsgSetBackfillTimeIntervalResponse": "/Switcheo.carbon.pricing.MsgSetBackfillTimeIntervalResponse",
   "MsgSetSmoothenBand": "/Switcheo.carbon.pricing.MsgSetSmoothenBand",
@@ -757,7 +757,6 @@ export { Candlestick } from "./broker/candlestick";
 export { Amm } from "./broker/amm";
 export { QueryCandlesticksRequest, QueryCandlesticksResponse, QueryTradesRequest, QueryTradesResponse, QueryTradesForPositionRequest, QueryTradesForPositionResponse } from "./broker/query";
 export { TradeEvent } from "./broker/event";
-export { IncomingPoolSwap } from "./broker/incoming_pool_swap";
 export { MsgSetGasCost, MsgSetGasCostResponse, MsgSetMinGasPrice, MsgSetMinGasPriceResponse, MsgRemoveGasCost, MsgRemoveGasCostResponse, MsgRemoveMinGasPrice, MsgRemoveMinGasPriceResponse } from "./fee/tx";
 export { MsgFee, MsgGasCost, MinGasPrice } from "./fee/fee";
 export { SetMsgGasCostProposal, SetMinGasPriceProposal, RemoveMsgGasCostProposal, RemoveMinGasPriceProposal } from "./fee/proposal";
@@ -818,11 +817,12 @@ export { QueryMintDataRequest, QueryMintDataResponse } from "./inflation/query";
 export { MsgSetSequence, MsgSetSequenceResponse } from "./sequence/tx";
 export { QuerySequenceRequest, QuerySequenceResponse, QuerySequenceAllRequest, QuerySequenceAllResponse } from "./sequence/query";
 export { PageRequest, PageResponse } from "./query/pagination";
-export { MsgCreatePool, MsgCreatePoolResponse, MsgCreatePoolWithLiquidity, MsgCreatePoolWithLiquidityResponse, MsgAddLiquidity, MsgAddLiquidityResponse, MsgRemoveLiquidity, MsgRemoveLiquidityResponse, MsgLinkPool, LinkPoolParams, MsgLinkPoolResponse, MsgUnlinkPool, UnlinkPoolParams, MsgUnlinkPoolResponse, MsgSetRewardsWeights, SetRewardsWeightsParams, MsgSetRewardsWeightsResponse, MsgStakePoolToken, MsgStakePoolTokenResponse, MsgUnstakePoolToken, MsgUnstakePoolTokenResponse, MsgClaimPoolRewards, MsgClaimPoolRewardsResponse, MsgSetRewardCurve, SetRewardCurveParams, MsgSetRewardCurveResponse, MsgSetCommitmentCurve, SetCommitmentCurveParams, MsgSetCommitmentCurveResponse, MsgUpdatePool, UpdatePoolParams, MsgUpdatePoolResponse } from "./liquiditypool/tx";
+export { MsgCreatePool, MsgCreatePoolResponse, MsgCreatePoolWithLiquidity, MsgCreatePoolWithLiquidityResponse, MsgAddLiquidity, MsgAddLiquidityResponse, MsgRemoveLiquidity, MsgRemoveLiquidityResponse, MsgSetRewardsWeights, SetRewardsWeightsParams, MsgSetRewardsWeightsResponse, MsgStakePoolToken, MsgStakePoolTokenResponse, MsgUnstakePoolToken, MsgUnstakePoolTokenResponse, MsgClaimPoolRewards, MsgClaimPoolRewardsResponse, MsgSetRewardCurve, SetRewardCurveParams, MsgSetRewardCurveResponse, MsgSetCommitmentCurve, SetCommitmentCurveParams, MsgSetCommitmentCurveResponse, MsgUpdatePool, UpdatePoolParams, MsgUpdatePoolResponse, MsgCreatePoolRoute, MsgCreatePoolRouteResponse, CreatePoolRouteParams, MsgRemovePoolRoute, MsgRemovePoolRouteResponse, RemovePoolRouteParams } from "./liquiditypool/tx";
 export { RewardCurve, CommitmentCurve, RewardWeight, RewardWeights, Commitment, CommitmentRecord, TotalCommitment, TotalCommitmentRecord, CommitmentResponse, RewardHistory, RewardHistoryRecord, CommitmentExpiry, CommitmentExpiries, CommitmentExpiriesRecord, LastClaimRecord, AllocatedRewards } from "./liquiditypool/reward";
-export { Params as LiquiditypoolParams, Pool, Pools, AddLiquidity, AddLiquidities, RemoveLiquidity, RemoveLiquidities } from "./liquiditypool/liquiditypool";
-export { LinkPoolProposal, UnlinkPoolProposal, SetRewardCurveProposal, SetCommitmentCurveProposal, SetRewardsWeightsProposal, UpdatePoolProposal } from "./liquiditypool/proposal";
+export { Params as LiquiditypoolParams, Pool, Pools, PoolRoute, AddLiquidity, AddLiquidities, RemoveLiquidity, RemoveLiquidities, RemovePoolRoutes, PoolReserve } from "./liquiditypool/liquiditypool";
+export { SetRewardCurveProposal, SetCommitmentCurveProposal, SetRewardsWeightsProposal, UpdatePoolProposal, CreatePoolRouteProposal, RemovePoolRouteProposal } from "./liquiditypool/proposal";
 export { QueryGetPoolRequest, QueryGetPoolResponse, QueryAllPoolRequest, QueryAllPoolResponse, QueryRewardHistoryRequest, ExtendedPool, QueryRewardHistoryResponse, QueryCommitmentRequest, QueryCommitmentResponse, QueryAllCommitmentRequest, QueryAllCommitmentResponse, QueryLastClaimRequest, QueryLastClaimResponse, QueryCommitmentCurveRequest, QueryCommitmentCurveResponse, QueryRewardCurveRequest, QueryRewardCurveResponse, QueryTotalCommitmentRequest, QueryTotalCommitmentResponse, QueryAllTotalCommitmentRequest, QueryAllTotalCommitmentResponse, QueryClaimableRewardsRequest, QueryClaimableRewardsResponse, QueryParamsRequest as QueryLiquiditypoolParamsRequest, QueryParamsResponse as QueryLiquiditypoolParamsResponse, QueryAllPoolAddressRequest, QueryAllPoolAddressResponse, QueryAllPoolAddressResponse_AddressesEntry } from "./liquiditypool/query";
+export { ParamsV2170 } from "./liquiditypool/legacy";
 export { PoolEvent, TotalCommitmentChangeEvent, RewardsWeightChangeEvent, CommitmentCurveEvent, CommitmentEvent } from "./liquiditypool/event";
 export { QueryCoinBalancesRequest, QueryCoinBalancesResponse } from "./insurance/query";
 export { EventDataInsuranceFundTransfer } from "./insurance/event";

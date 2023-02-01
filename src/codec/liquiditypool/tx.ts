@@ -55,29 +55,6 @@ export interface MsgRemoveLiquidity {
 
 export interface MsgRemoveLiquidityResponse {}
 
-export interface MsgLinkPool {
-  creator: string;
-  linkPoolParams?: LinkPoolParams;
-}
-
-export interface LinkPoolParams {
-  poolId: Long;
-  market: string;
-}
-
-export interface MsgLinkPoolResponse {}
-
-export interface MsgUnlinkPool {
-  creator: string;
-  unlinkPoolParams?: UnlinkPoolParams;
-}
-
-export interface UnlinkPoolParams {
-  poolId: Long;
-}
-
-export interface MsgUnlinkPoolResponse {}
-
 export interface MsgSetRewardsWeights {
   creator: string;
   setRewardsWeightsParams?: SetRewardsWeightsParams;
@@ -153,6 +130,31 @@ export interface UpdatePoolParams {
 }
 
 export interface MsgUpdatePoolResponse {}
+
+export interface MsgCreatePoolRoute {
+  creator: string;
+  createPoolRouteParams?: CreatePoolRouteParams;
+}
+
+export interface MsgCreatePoolRouteResponse {}
+
+export interface CreatePoolRouteParams {
+  marketName: string;
+  poolIds: Long[];
+  numQuotes: Long;
+}
+
+export interface MsgRemovePoolRoute {
+  creator: string;
+  removePoolRouteParams?: RemovePoolRouteParams;
+}
+
+export interface MsgRemovePoolRouteResponse {}
+
+export interface RemovePoolRouteParams {
+  marketName: string;
+  poolIds: Long[];
+}
 
 const baseMsgCreatePool: object = {
   creator: "",
@@ -917,371 +919,6 @@ export const MsgRemoveLiquidityResponse = {
     const message = {
       ...baseMsgRemoveLiquidityResponse,
     } as MsgRemoveLiquidityResponse;
-    return message;
-  },
-};
-
-const baseMsgLinkPool: object = { creator: "" };
-
-export const MsgLinkPool = {
-  encode(
-    message: MsgLinkPool,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.creator !== "") {
-      writer.uint32(10).string(message.creator);
-    }
-    if (message.linkPoolParams !== undefined) {
-      LinkPoolParams.encode(
-        message.linkPoolParams,
-        writer.uint32(18).fork()
-      ).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgLinkPool {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgLinkPool } as MsgLinkPool;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.creator = reader.string();
-          break;
-        case 2:
-          message.linkPoolParams = LinkPoolParams.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): MsgLinkPool {
-    const message = { ...baseMsgLinkPool } as MsgLinkPool;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.linkPoolParams =
-      object.linkPoolParams !== undefined && object.linkPoolParams !== null
-        ? LinkPoolParams.fromJSON(object.linkPoolParams)
-        : undefined;
-    return message;
-  },
-
-  toJSON(message: MsgLinkPool): unknown {
-    const obj: any = {};
-    message.creator !== undefined && (obj.creator = message.creator);
-    message.linkPoolParams !== undefined &&
-      (obj.linkPoolParams = message.linkPoolParams
-        ? LinkPoolParams.toJSON(message.linkPoolParams)
-        : undefined);
-    return obj;
-  },
-
-  fromPartial(object: DeepPartial<MsgLinkPool>): MsgLinkPool {
-    const message = { ...baseMsgLinkPool } as MsgLinkPool;
-    message.creator = object.creator ?? "";
-    message.linkPoolParams =
-      object.linkPoolParams !== undefined && object.linkPoolParams !== null
-        ? LinkPoolParams.fromPartial(object.linkPoolParams)
-        : undefined;
-    return message;
-  },
-};
-
-const baseLinkPoolParams: object = { poolId: Long.UZERO, market: "" };
-
-export const LinkPoolParams = {
-  encode(
-    message: LinkPoolParams,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (!message.poolId.isZero()) {
-      writer.uint32(8).uint64(message.poolId);
-    }
-    if (message.market !== "") {
-      writer.uint32(18).string(message.market);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): LinkPoolParams {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseLinkPoolParams } as LinkPoolParams;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.poolId = reader.uint64() as Long;
-          break;
-        case 2:
-          message.market = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): LinkPoolParams {
-    const message = { ...baseLinkPoolParams } as LinkPoolParams;
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromString(object.poolId)
-        : Long.UZERO;
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? String(object.market)
-        : "";
-    return message;
-  },
-
-  toJSON(message: LinkPoolParams): unknown {
-    const obj: any = {};
-    message.poolId !== undefined &&
-      (obj.poolId = (message.poolId || Long.UZERO).toString());
-    message.market !== undefined && (obj.market = message.market);
-    return obj;
-  },
-
-  fromPartial(object: DeepPartial<LinkPoolParams>): LinkPoolParams {
-    const message = { ...baseLinkPoolParams } as LinkPoolParams;
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromValue(object.poolId)
-        : Long.UZERO;
-    message.market = object.market ?? "";
-    return message;
-  },
-};
-
-const baseMsgLinkPoolResponse: object = {};
-
-export const MsgLinkPoolResponse = {
-  encode(
-    _: MsgLinkPoolResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgLinkPoolResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgLinkPoolResponse } as MsgLinkPoolResponse;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(_: any): MsgLinkPoolResponse {
-    const message = { ...baseMsgLinkPoolResponse } as MsgLinkPoolResponse;
-    return message;
-  },
-
-  toJSON(_: MsgLinkPoolResponse): unknown {
-    const obj: any = {};
-    return obj;
-  },
-
-  fromPartial(_: DeepPartial<MsgLinkPoolResponse>): MsgLinkPoolResponse {
-    const message = { ...baseMsgLinkPoolResponse } as MsgLinkPoolResponse;
-    return message;
-  },
-};
-
-const baseMsgUnlinkPool: object = { creator: "" };
-
-export const MsgUnlinkPool = {
-  encode(
-    message: MsgUnlinkPool,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.creator !== "") {
-      writer.uint32(10).string(message.creator);
-    }
-    if (message.unlinkPoolParams !== undefined) {
-      UnlinkPoolParams.encode(
-        message.unlinkPoolParams,
-        writer.uint32(18).fork()
-      ).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUnlinkPool {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgUnlinkPool } as MsgUnlinkPool;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.creator = reader.string();
-          break;
-        case 2:
-          message.unlinkPoolParams = UnlinkPoolParams.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): MsgUnlinkPool {
-    const message = { ...baseMsgUnlinkPool } as MsgUnlinkPool;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.unlinkPoolParams =
-      object.unlinkPoolParams !== undefined && object.unlinkPoolParams !== null
-        ? UnlinkPoolParams.fromJSON(object.unlinkPoolParams)
-        : undefined;
-    return message;
-  },
-
-  toJSON(message: MsgUnlinkPool): unknown {
-    const obj: any = {};
-    message.creator !== undefined && (obj.creator = message.creator);
-    message.unlinkPoolParams !== undefined &&
-      (obj.unlinkPoolParams = message.unlinkPoolParams
-        ? UnlinkPoolParams.toJSON(message.unlinkPoolParams)
-        : undefined);
-    return obj;
-  },
-
-  fromPartial(object: DeepPartial<MsgUnlinkPool>): MsgUnlinkPool {
-    const message = { ...baseMsgUnlinkPool } as MsgUnlinkPool;
-    message.creator = object.creator ?? "";
-    message.unlinkPoolParams =
-      object.unlinkPoolParams !== undefined && object.unlinkPoolParams !== null
-        ? UnlinkPoolParams.fromPartial(object.unlinkPoolParams)
-        : undefined;
-    return message;
-  },
-};
-
-const baseUnlinkPoolParams: object = { poolId: Long.UZERO };
-
-export const UnlinkPoolParams = {
-  encode(
-    message: UnlinkPoolParams,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (!message.poolId.isZero()) {
-      writer.uint32(8).uint64(message.poolId);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): UnlinkPoolParams {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseUnlinkPoolParams } as UnlinkPoolParams;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.poolId = reader.uint64() as Long;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): UnlinkPoolParams {
-    const message = { ...baseUnlinkPoolParams } as UnlinkPoolParams;
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromString(object.poolId)
-        : Long.UZERO;
-    return message;
-  },
-
-  toJSON(message: UnlinkPoolParams): unknown {
-    const obj: any = {};
-    message.poolId !== undefined &&
-      (obj.poolId = (message.poolId || Long.UZERO).toString());
-    return obj;
-  },
-
-  fromPartial(object: DeepPartial<UnlinkPoolParams>): UnlinkPoolParams {
-    const message = { ...baseUnlinkPoolParams } as UnlinkPoolParams;
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromValue(object.poolId)
-        : Long.UZERO;
-    return message;
-  },
-};
-
-const baseMsgUnlinkPoolResponse: object = {};
-
-export const MsgUnlinkPoolResponse = {
-  encode(
-    _: MsgUnlinkPoolResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgUnlinkPoolResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgUnlinkPoolResponse } as MsgUnlinkPoolResponse;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(_: any): MsgUnlinkPoolResponse {
-    const message = { ...baseMsgUnlinkPoolResponse } as MsgUnlinkPoolResponse;
-    return message;
-  },
-
-  toJSON(_: MsgUnlinkPoolResponse): unknown {
-    const obj: any = {};
-    return obj;
-  },
-
-  fromPartial(_: DeepPartial<MsgUnlinkPoolResponse>): MsgUnlinkPoolResponse {
-    const message = { ...baseMsgUnlinkPoolResponse } as MsgUnlinkPoolResponse;
     return message;
   },
 };
@@ -2594,6 +2231,457 @@ export const MsgUpdatePoolResponse = {
   },
 };
 
+const baseMsgCreatePoolRoute: object = { creator: "" };
+
+export const MsgCreatePoolRoute = {
+  encode(
+    message: MsgCreatePoolRoute,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.createPoolRouteParams !== undefined) {
+      CreatePoolRouteParams.encode(
+        message.createPoolRouteParams,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreatePoolRoute {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgCreatePoolRoute } as MsgCreatePoolRoute;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.createPoolRouteParams = CreatePoolRouteParams.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgCreatePoolRoute {
+    const message = { ...baseMsgCreatePoolRoute } as MsgCreatePoolRoute;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.createPoolRouteParams =
+      object.createPoolRouteParams !== undefined &&
+      object.createPoolRouteParams !== null
+        ? CreatePoolRouteParams.fromJSON(object.createPoolRouteParams)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: MsgCreatePoolRoute): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.createPoolRouteParams !== undefined &&
+      (obj.createPoolRouteParams = message.createPoolRouteParams
+        ? CreatePoolRouteParams.toJSON(message.createPoolRouteParams)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgCreatePoolRoute>): MsgCreatePoolRoute {
+    const message = { ...baseMsgCreatePoolRoute } as MsgCreatePoolRoute;
+    message.creator = object.creator ?? "";
+    message.createPoolRouteParams =
+      object.createPoolRouteParams !== undefined &&
+      object.createPoolRouteParams !== null
+        ? CreatePoolRouteParams.fromPartial(object.createPoolRouteParams)
+        : undefined;
+    return message;
+  },
+};
+
+const baseMsgCreatePoolRouteResponse: object = {};
+
+export const MsgCreatePoolRouteResponse = {
+  encode(
+    _: MsgCreatePoolRouteResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgCreatePoolRouteResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgCreatePoolRouteResponse,
+    } as MsgCreatePoolRouteResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgCreatePoolRouteResponse {
+    const message = {
+      ...baseMsgCreatePoolRouteResponse,
+    } as MsgCreatePoolRouteResponse;
+    return message;
+  },
+
+  toJSON(_: MsgCreatePoolRouteResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgCreatePoolRouteResponse>
+  ): MsgCreatePoolRouteResponse {
+    const message = {
+      ...baseMsgCreatePoolRouteResponse,
+    } as MsgCreatePoolRouteResponse;
+    return message;
+  },
+};
+
+const baseCreatePoolRouteParams: object = {
+  marketName: "",
+  poolIds: Long.UZERO,
+  numQuotes: Long.ZERO,
+};
+
+export const CreatePoolRouteParams = {
+  encode(
+    message: CreatePoolRouteParams,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.marketName !== "") {
+      writer.uint32(10).string(message.marketName);
+    }
+    writer.uint32(18).fork();
+    for (const v of message.poolIds) {
+      writer.uint64(v);
+    }
+    writer.ldelim();
+    if (!message.numQuotes.isZero()) {
+      writer.uint32(24).int64(message.numQuotes);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): CreatePoolRouteParams {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseCreatePoolRouteParams } as CreatePoolRouteParams;
+    message.poolIds = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.marketName = reader.string();
+          break;
+        case 2:
+          if ((tag & 7) === 2) {
+            const end2 = reader.uint32() + reader.pos;
+            while (reader.pos < end2) {
+              message.poolIds.push(reader.uint64() as Long);
+            }
+          } else {
+            message.poolIds.push(reader.uint64() as Long);
+          }
+          break;
+        case 3:
+          message.numQuotes = reader.int64() as Long;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CreatePoolRouteParams {
+    const message = { ...baseCreatePoolRouteParams } as CreatePoolRouteParams;
+    message.marketName =
+      object.marketName !== undefined && object.marketName !== null
+        ? String(object.marketName)
+        : "";
+    message.poolIds = (object.poolIds ?? []).map((e: any) =>
+      Long.fromString(e)
+    );
+    message.numQuotes =
+      object.numQuotes !== undefined && object.numQuotes !== null
+        ? Long.fromString(object.numQuotes)
+        : Long.ZERO;
+    return message;
+  },
+
+  toJSON(message: CreatePoolRouteParams): unknown {
+    const obj: any = {};
+    message.marketName !== undefined && (obj.marketName = message.marketName);
+    if (message.poolIds) {
+      obj.poolIds = message.poolIds.map((e) => (e || Long.UZERO).toString());
+    } else {
+      obj.poolIds = [];
+    }
+    message.numQuotes !== undefined &&
+      (obj.numQuotes = (message.numQuotes || Long.ZERO).toString());
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<CreatePoolRouteParams>
+  ): CreatePoolRouteParams {
+    const message = { ...baseCreatePoolRouteParams } as CreatePoolRouteParams;
+    message.marketName = object.marketName ?? "";
+    message.poolIds = (object.poolIds ?? []).map((e) => Long.fromValue(e));
+    message.numQuotes =
+      object.numQuotes !== undefined && object.numQuotes !== null
+        ? Long.fromValue(object.numQuotes)
+        : Long.ZERO;
+    return message;
+  },
+};
+
+const baseMsgRemovePoolRoute: object = { creator: "" };
+
+export const MsgRemovePoolRoute = {
+  encode(
+    message: MsgRemovePoolRoute,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.removePoolRouteParams !== undefined) {
+      RemovePoolRouteParams.encode(
+        message.removePoolRouteParams,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgRemovePoolRoute {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgRemovePoolRoute } as MsgRemovePoolRoute;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.removePoolRouteParams = RemovePoolRouteParams.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgRemovePoolRoute {
+    const message = { ...baseMsgRemovePoolRoute } as MsgRemovePoolRoute;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.removePoolRouteParams =
+      object.removePoolRouteParams !== undefined &&
+      object.removePoolRouteParams !== null
+        ? RemovePoolRouteParams.fromJSON(object.removePoolRouteParams)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: MsgRemovePoolRoute): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.removePoolRouteParams !== undefined &&
+      (obj.removePoolRouteParams = message.removePoolRouteParams
+        ? RemovePoolRouteParams.toJSON(message.removePoolRouteParams)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgRemovePoolRoute>): MsgRemovePoolRoute {
+    const message = { ...baseMsgRemovePoolRoute } as MsgRemovePoolRoute;
+    message.creator = object.creator ?? "";
+    message.removePoolRouteParams =
+      object.removePoolRouteParams !== undefined &&
+      object.removePoolRouteParams !== null
+        ? RemovePoolRouteParams.fromPartial(object.removePoolRouteParams)
+        : undefined;
+    return message;
+  },
+};
+
+const baseMsgRemovePoolRouteResponse: object = {};
+
+export const MsgRemovePoolRouteResponse = {
+  encode(
+    _: MsgRemovePoolRouteResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgRemovePoolRouteResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgRemovePoolRouteResponse,
+    } as MsgRemovePoolRouteResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgRemovePoolRouteResponse {
+    const message = {
+      ...baseMsgRemovePoolRouteResponse,
+    } as MsgRemovePoolRouteResponse;
+    return message;
+  },
+
+  toJSON(_: MsgRemovePoolRouteResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgRemovePoolRouteResponse>
+  ): MsgRemovePoolRouteResponse {
+    const message = {
+      ...baseMsgRemovePoolRouteResponse,
+    } as MsgRemovePoolRouteResponse;
+    return message;
+  },
+};
+
+const baseRemovePoolRouteParams: object = {
+  marketName: "",
+  poolIds: Long.UZERO,
+};
+
+export const RemovePoolRouteParams = {
+  encode(
+    message: RemovePoolRouteParams,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.marketName !== "") {
+      writer.uint32(10).string(message.marketName);
+    }
+    writer.uint32(18).fork();
+    for (const v of message.poolIds) {
+      writer.uint64(v);
+    }
+    writer.ldelim();
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): RemovePoolRouteParams {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseRemovePoolRouteParams } as RemovePoolRouteParams;
+    message.poolIds = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.marketName = reader.string();
+          break;
+        case 2:
+          if ((tag & 7) === 2) {
+            const end2 = reader.uint32() + reader.pos;
+            while (reader.pos < end2) {
+              message.poolIds.push(reader.uint64() as Long);
+            }
+          } else {
+            message.poolIds.push(reader.uint64() as Long);
+          }
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): RemovePoolRouteParams {
+    const message = { ...baseRemovePoolRouteParams } as RemovePoolRouteParams;
+    message.marketName =
+      object.marketName !== undefined && object.marketName !== null
+        ? String(object.marketName)
+        : "";
+    message.poolIds = (object.poolIds ?? []).map((e: any) =>
+      Long.fromString(e)
+    );
+    return message;
+  },
+
+  toJSON(message: RemovePoolRouteParams): unknown {
+    const obj: any = {};
+    message.marketName !== undefined && (obj.marketName = message.marketName);
+    if (message.poolIds) {
+      obj.poolIds = message.poolIds.map((e) => (e || Long.UZERO).toString());
+    } else {
+      obj.poolIds = [];
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<RemovePoolRouteParams>
+  ): RemovePoolRouteParams {
+    const message = { ...baseRemovePoolRouteParams } as RemovePoolRouteParams;
+    message.marketName = object.marketName ?? "";
+    message.poolIds = (object.poolIds ?? []).map((e) => Long.fromValue(e));
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
   /** this line is used by starport scaffolding # proto/tx/rpc */
@@ -2607,8 +2695,6 @@ export interface Msg {
   HandleRemoveLiquidity(
     request: MsgRemoveLiquidity
   ): Promise<MsgRemoveLiquidityResponse>;
-  HandleLinkPool(request: MsgLinkPool): Promise<MsgLinkPoolResponse>;
-  HandleUnlinkPool(request: MsgUnlinkPool): Promise<MsgUnlinkPoolResponse>;
   HandleSetRewardsWeights(
     request: MsgSetRewardsWeights
   ): Promise<MsgSetRewardsWeightsResponse>;
@@ -2628,6 +2714,12 @@ export interface Msg {
     request: MsgSetCommitmentCurve
   ): Promise<MsgSetCommitmentCurveResponse>;
   HandleUpdatePool(request: MsgUpdatePool): Promise<MsgUpdatePoolResponse>;
+  HandleCreatePoolRoute(
+    request: MsgCreatePoolRoute
+  ): Promise<MsgCreatePoolRouteResponse>;
+  HandleRemovePoolRoute(
+    request: MsgRemovePoolRoute
+  ): Promise<MsgRemovePoolRouteResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -2639,8 +2731,6 @@ export class MsgClientImpl implements Msg {
       this.HandleCreatePoolWithLiquidity.bind(this);
     this.HandleAddLiquidity = this.HandleAddLiquidity.bind(this);
     this.HandleRemoveLiquidity = this.HandleRemoveLiquidity.bind(this);
-    this.HandleLinkPool = this.HandleLinkPool.bind(this);
-    this.HandleUnlinkPool = this.HandleUnlinkPool.bind(this);
     this.HandleSetRewardsWeights = this.HandleSetRewardsWeights.bind(this);
     this.HandleStakePoolToken = this.HandleStakePoolToken.bind(this);
     this.HandleUnstakePoolToken = this.HandleUnstakePoolToken.bind(this);
@@ -2648,6 +2738,8 @@ export class MsgClientImpl implements Msg {
     this.HandleSetRewardCurve = this.HandleSetRewardCurve.bind(this);
     this.HandleSetCommitmentCurve = this.HandleSetCommitmentCurve.bind(this);
     this.HandleUpdatePool = this.HandleUpdatePool.bind(this);
+    this.HandleCreatePoolRoute = this.HandleCreatePoolRoute.bind(this);
+    this.HandleRemovePoolRoute = this.HandleRemovePoolRoute.bind(this);
   }
   HandleCreatePool(request: MsgCreatePool): Promise<MsgCreatePoolResponse> {
     const data = MsgCreatePool.encode(request).finish();
@@ -2700,30 +2792,6 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgRemoveLiquidityResponse.decode(new _m0.Reader(data))
-    );
-  }
-
-  HandleLinkPool(request: MsgLinkPool): Promise<MsgLinkPoolResponse> {
-    const data = MsgLinkPool.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.liquiditypool.Msg",
-      "HandleLinkPool",
-      data
-    );
-    return promise.then((data) =>
-      MsgLinkPoolResponse.decode(new _m0.Reader(data))
-    );
-  }
-
-  HandleUnlinkPool(request: MsgUnlinkPool): Promise<MsgUnlinkPoolResponse> {
-    const data = MsgUnlinkPool.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.liquiditypool.Msg",
-      "HandleUnlinkPool",
-      data
-    );
-    return promise.then((data) =>
-      MsgUnlinkPoolResponse.decode(new _m0.Reader(data))
     );
   }
 
@@ -2820,6 +2888,34 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgUpdatePoolResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  HandleCreatePoolRoute(
+    request: MsgCreatePoolRoute
+  ): Promise<MsgCreatePoolRouteResponse> {
+    const data = MsgCreatePoolRoute.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.liquiditypool.Msg",
+      "HandleCreatePoolRoute",
+      data
+    );
+    return promise.then((data) =>
+      MsgCreatePoolRouteResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  HandleRemovePoolRoute(
+    request: MsgRemovePoolRoute
+  ): Promise<MsgRemovePoolRouteResponse> {
+    const data = MsgRemovePoolRoute.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.liquiditypool.Msg",
+      "HandleRemovePoolRoute",
+      data
+    );
+    return promise.then((data) =>
+      MsgRemovePoolRouteResponse.decode(new _m0.Reader(data))
     );
   }
 }
