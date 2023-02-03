@@ -1871,13 +1871,13 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         coinMinimalDenom: "acanto",
         coinDecimals: 18,
         gasPriceStep: {
-          low: 125000000000,
-          average: 250000000000,
-          high: 375000000000,
+          low: 1250000000000,
+          average: 2500000000000,
+          high: 3750000000000,
         },
       },
     ],
-    features: ["ibc-transfer", "ibc-go"],
+    features: ["ibc-transfer", "ibc-go", "eth-address-gen", "eth-key-sign"],
     explorerUrlToTx: "https://cosmos.explorer.canto.io/transactions/{txHash}",
   },
   [ChainIds.OmniFlixHub]: {
