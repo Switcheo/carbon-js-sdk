@@ -158,15 +158,18 @@ export class ETHClient {
     const networkConfig = this.getNetworkConfig();
     const rpcProvider = this.getProvider();
 
-    if (!recoveryAddress.match(/^swth[a-z0-9]{39}$/)) {
+    const recoveryAddrRegex = new RegExp(`^${networkConfig.Bech32Prefix}[a-z0-9]{39}$`)
+    if (!recoveryAddress.match(recoveryAddrRegex)) {
       throw new Error("Invalid recovery address");
     }
+
+    const carbonNetwork = networkConfig.network;
 
     const fromTokenId = fromToken.id;
     const fromTokenAddress = appendHexPrefix(fromToken.tokenAddress);
     const toTokenDenom = toToken.denom;
 
-    const recoveryAddressHex = ethers.utils.hexlify(AddressUtils.SWTHAddress.getAddressBytes(recoveryAddress, CarbonSDK.Network.MainNet));
+    const recoveryAddressHex = ethers.utils.hexlify(AddressUtils.SWTHAddress.getAddressBytes(recoveryAddress, carbonNetwork));
 
     const fromAssetHash = ethers.utils.hexlify(ethers.utils.toUtf8Bytes(fromTokenId));
     const toAssetHash = ethers.utils.hexlify(ethers.utils.toUtf8Bytes(toTokenDenom));
@@ -177,7 +180,7 @@ export class ETHClient {
 
     const tokenCreator = fromToken.creator;
 
-    const targetAddressBytes = AddressUtils.SWTHAddress.getAddressBytes(tokenCreator, CarbonSDK.Network.MainNet);
+    const targetAddressBytes = AddressUtils.SWTHAddress.getAddressBytes(tokenCreator, carbonNetwork);
     const targetProxyHash = ethers.utils.hexlify(targetAddressBytes);
 
     const ethAmount = fromToken.tokenAddress === NativeTokenHash ? amount : BN_ZERO;
