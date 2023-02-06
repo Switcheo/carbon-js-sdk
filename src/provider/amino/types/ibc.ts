@@ -34,7 +34,7 @@ const pruneTransferProcess: AminoProcess = {
     }
     return { amino, input: newInput };
   },
-}
+};
 
 const IbcAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgTransfer]: generateAminoType(MsgTransfer, pruneTransferProcess),

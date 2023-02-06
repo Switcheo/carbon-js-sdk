@@ -1,14 +1,14 @@
 export interface FeeAmount {
-  fee: string
+  fee: string;
 }
 
 export interface FeeInfoDetails {
-  [index: string]: FeeAmount
+  [index: string]: FeeAmount;
 }
 
 export interface FeeResult {
-  prev_update_time: number
-  details: FeeInfoDetails
+  prev_update_time: number;
+  details: FeeInfoDetails;
 }
 
 export enum FeeResultType {
@@ -18,5 +18,5 @@ export enum FeeResultType {
 }
 
 export interface FeeInfo extends FeeResult {
-  denom: string
+  denom: string;
 }

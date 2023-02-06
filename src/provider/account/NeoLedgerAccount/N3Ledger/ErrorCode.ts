@@ -35,9 +35,7 @@ export interface TransportStatusError extends Error {
   statusText: string;
 }
 
-export function looksLikeTransportStatusError(
-  err: unknown
-): err is TransportStatusError {
+export function looksLikeTransportStatusError(err: unknown): err is TransportStatusError {
   return (err as TransportStatusError).statusCode != undefined;
 }
 /**
@@ -60,9 +58,7 @@ export function evalTransportError(err: Error): Error {
       transportErr.message = "Transaction signing denied";
       break;
     default:
-      transportErr.message = `Unknown status 0x${transportErr.statusCode.toString(
-        16
-      )}`;
+      transportErr.message = `Unknown status 0x${transportErr.statusCode.toString(16)}`;
   }
   return err;
 }

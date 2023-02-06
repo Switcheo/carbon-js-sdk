@@ -83,7 +83,7 @@ const commitTokensProcess: AminoProcess = {
     }
     return { amino, input: newInput };
   },
-}
+};
 
 const LiquidityPoolAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgCreatePool]: generateAminoType(MsgCreatePool),

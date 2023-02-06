@@ -2,7 +2,7 @@ import { AminoSignResponse, encodeSecp256k1Signature, StdSignDoc } from "@cosmjs
 import { NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
 import { AminoCarbonSigner, CarbonSDK, CarbonSignerTypes, Models } from "@carbon-sdk/index";
 import { sortObject } from "@carbon-sdk/util/generic";
-import * as Neon from "@cityofzion/neon-core-next"
+import * as Neon from "@cityofzion/neon-core-next";
 import neoDapi from "neo-dapi";
 import neo3Dapi from "neo3-dapi";
 import { AddressUtils, ExternalUtils, TypeUtils } from "@carbon-sdk/util";
@@ -14,13 +14,11 @@ export class O3Wallet {
   public neo2Dapi: any; // for Neo Legacy
   public neoNetwork: O3Types.AcceptedNets | undefined;
 
-  public networkConfig: NetworkConfig
+  public networkConfig: NetworkConfig;
   public address: string = "";
   private publicKey: string = "";
 
-  private constructor(
-    public readonly network: CarbonSDK.Network,
-  ) {
+  private constructor(public readonly network: CarbonSDK.Network) {
     const networkConfig = NetworkConfigs[network];
     this.networkConfig = networkConfig;
 
@@ -61,7 +59,7 @@ export class O3Wallet {
 
   async connectWallet() {
     try {
-      const publicKeyOutput = await this.getPublicKeyOutput() as O3Types.PublicKeyOutput;
+      const publicKeyOutput = (await this.getPublicKeyOutput()) as O3Types.PublicKeyOutput;
       this.address = publicKeyOutput.address;
       this.publicKey = publicKeyOutput.publicKey;
       return publicKeyOutput;
@@ -92,9 +90,10 @@ export class O3Wallet {
       const scriptHash = Neon.u.reverseHex(token.bridgeAddress);
       const tokenScriptHash = Neon.u.reverseHex(token.tokenAddress);
       const nonce = Math.floor(Math.random() * 1000000);
-      const scriptHashAccount = this.neoNetwork === "N3MainNet"
-        ? AddressUtils.N3Address.publicKeyToScriptHash(this.publicKey)
-        : AddressUtils.NEOAddress.publicKeyToScriptHash(this.publicKey);
+      const scriptHashAccount =
+        this.neoNetwork === "N3MainNet"
+          ? AddressUtils.N3Address.publicKeyToScriptHash(this.publicKey)
+          : AddressUtils.NEOAddress.publicKeyToScriptHash(this.publicKey);
 
       const args: O3Types.Argument[] = [
         { type: O3Types.ArgTypes.Hash160, value: tokenScriptHash },
@@ -106,10 +105,12 @@ export class O3Wallet {
         { type: O3Types.ArgTypes.Integer, value: nonce.toString() },
       ];
 
-      const signers: O3Types.Signers[] = [{
-        account: scriptHashAccount,
-        scopes: 16,
-      }]
+      const signers: O3Types.Signers[] = [
+        {
+          account: scriptHashAccount,
+          scopes: 16,
+        },
+      ];
       const output = await this.assembleAndInvoke("lock", scriptHash, args, false, signers);
       return output;
     } catch (err) {
@@ -118,7 +119,13 @@ export class O3Wallet {
     }
   }
 
-  async assembleAndInvoke(operation: string, scriptHash: string, args: O3Types.Argument[], broadcastOverride: boolean = false, signers: O3Types.Signers[]) {
+  async assembleAndInvoke(
+    operation: string,
+    scriptHash: string,
+    args: O3Types.Argument[],
+    broadcastOverride: boolean = false,
+    signers: O3Types.Signers[]
+  ) {
     try {
       const dApi = this.getDAPI();
       const invokeMsg = {
@@ -127,7 +134,7 @@ export class O3Wallet {
         args,
         network: this.neoNetwork,
         broadcastOverride: broadcastOverride,
-        ...this.neoNetwork === "N3MainNet" && { signers },
+        ...(this.neoNetwork === "N3MainNet" && { signers }),
       };
       return dApi.invoke(invokeMsg);
     } catch (err) {
@@ -149,22 +156,24 @@ export class O3Wallet {
         return newTokens;
       }, {});
       const argsBalance: O3Types.GetBalanceArgs = {
-        params: [{
-          address: this.address,
-          contracts: Object.keys(tokenMap).map((token: string) => `0x${token}`),
-        }],
+        params: [
+          {
+            address: this.address,
+            contracts: Object.keys(tokenMap).map((token: string) => `0x${token}`),
+          },
+        ],
       };
       const dapi = this.getDAPI();
-      const response = await dapi.getBalance(argsBalance) as O3Types.BalanceResults;
+      const response = (await dapi.getBalance(argsBalance)) as O3Types.BalanceResults;
 
       const balanceMap: TypeUtils.SimpleMap<ExternalUtils.TokensWithExternalBalance> = {};
       const balances: O3Types.Balance[] = response[this.address];
       balances.forEach((balance: O3Types.Balance) => {
-        const assetId = balance.assetID?.replace('0x', '') ?? balance.contract.replace('0x', '');
+        const assetId = balance.assetID?.replace("0x", "") ?? balance.contract.replace("0x", "");
         const tokenContract = Neon.u.reverseHex(assetId);
         const tokenInfo = tokenMap[tokenContract];
         if (!tokenInfo) {
-          return
+          return;
         }
 
         balanceMap[tokenInfo.denom] = {

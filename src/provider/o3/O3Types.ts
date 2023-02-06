@@ -13,7 +13,7 @@ export enum Events {
   Disconnected = neo3Dapi.Constants.EventName.DISCONNECTED,
   NetworkChanged = neo3Dapi.Constants.EventName.NETWORK_CHANGED,
   BlockChanged = neo3Dapi.Constants.EventName.BLOCK_HEIGHT_CHANGED,
-  TxConfirmed = neo3Dapi.Constants.EventName.TRANSACTION_CONFIRMED
+  TxConfirmed = neo3Dapi.Constants.EventName.TRANSACTION_CONFIRMED,
 }
 
 // O3 Wallet Error Map
@@ -29,7 +29,7 @@ export enum Errors {
 
 // Get Networks Query Types
 export interface GetNetworksOutput {
-  chainId?: number
+  chainId?: number;
   networks: string[];
   defaultNetwork: string;
 }
@@ -48,14 +48,14 @@ export interface PublicKeyOutput {
 
 // Invoke Function Types
 export enum ArgTypes {
-  String = 'String',
-  Boolean = 'Boolean',
-  Hash160 = 'Hash160',
-  Hash256 = 'Hash256',
-  Integer = 'Integer',
-  ByteArray = 'ByteArray',
-  Array = 'Array',
-  Address = 'Address',
+  String = "String",
+  Boolean = "Boolean",
+  Hash160 = "Hash160",
+  Hash256 = "Hash256",
+  Integer = "Integer",
+  ByteArray = "ByteArray",
+  Array = "Array",
+  Address = "Address",
 }
 
 export interface Argument {

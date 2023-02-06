@@ -1,273 +1,297 @@
 import {
-  WSChannel, WsSubscribeAccountTradesAllParams, WsSubscribeAccountTradesByMarketParams, WsSubscribeTokenDebts, WsSubscribeAllTokenPrices, WsSubscribeBooksParams,
-  WsSubscribeCandlesticksParams, WsSubscribeCDPBorrows, WsSubscribeCDPCollaterals, WsSubscribeCDPLiquidateCollaterals,
-  WsSubscribeCommitmentParams, WsSubscribeLeveragesAllParams, WsSubscribeLeveragesByMarketParams,
-  WsSubscribeMarketStatsAllParams, WsSubscribeMarketStatsByMarketParams, WsSubscribeOrdersAllParams,
-  WsSubscribeOrdersByMarketParams, WsSubscribePoolsAllParams, WsSubscribePoolsByIdParams, WsSubscribePositionsAllParams,
-  WsSubscribePositionsByMarketParams, WsSubscribeRecentTradesParams, WsSubscribeRewardDebts, WsSubscribeRewardSchemes, WsSubscribeTokenDebtByDenom, WsSubscribeTokenPrices, WsSubscribeWalletBalanceParams, WsSubscriptionParams, WsSubscribeCDPTokenSupply, WsSubscribeCDPTokenSupplyByDenom
-} from './types'
+  WSChannel,
+  WsSubscribeAccountTradesAllParams,
+  WsSubscribeAccountTradesByMarketParams,
+  WsSubscribeTokenDebts,
+  WsSubscribeAllTokenPrices,
+  WsSubscribeBooksParams,
+  WsSubscribeCandlesticksParams,
+  WsSubscribeCDPBorrows,
+  WsSubscribeCDPCollaterals,
+  WsSubscribeCDPLiquidateCollaterals,
+  WsSubscribeCommitmentParams,
+  WsSubscribeLeveragesAllParams,
+  WsSubscribeLeveragesByMarketParams,
+  WsSubscribeMarketStatsAllParams,
+  WsSubscribeMarketStatsByMarketParams,
+  WsSubscribeOrdersAllParams,
+  WsSubscribeOrdersByMarketParams,
+  WsSubscribePoolsAllParams,
+  WsSubscribePoolsByIdParams,
+  WsSubscribePositionsAllParams,
+  WsSubscribePositionsByMarketParams,
+  WsSubscribeRecentTradesParams,
+  WsSubscribeRewardDebts,
+  WsSubscribeRewardSchemes,
+  WsSubscribeTokenDebtByDenom,
+  WsSubscribeTokenPrices,
+  WsSubscribeWalletBalanceParams,
+  WsSubscriptionParams,
+  WsSubscribeCDPTokenSupply,
+  WsSubscribeCDPTokenSupplyByDenom,
+} from "./types";
 
 export const generateChannelId = (params: WsSubscriptionParams): string => {
   switch (params.channel) {
     case WSChannel.candlesticks: {
-      const { channel, market, resolution } = params as WsSubscribeCandlesticksParams
-      return [channel, market, resolution].join(':')
+      const { channel, market, resolution } = params as WsSubscribeCandlesticksParams;
+      return [channel, market, resolution].join(":");
     }
     case WSChannel.books: {
-      const { channel, market } = params as WsSubscribeBooksParams
-      return [channel, market].join(':')
+      const { channel, market } = params as WsSubscribeBooksParams;
+      return [channel, market].join(":");
     }
     case WSChannel.recent_trades: {
-      const { channel, market } = params as WsSubscribeRecentTradesParams
-      return [channel, market].join(':')
+      const { channel, market } = params as WsSubscribeRecentTradesParams;
+      return [channel, market].join(":");
     }
     case WSChannel.orders: {
-      const { channel, address } = params as WsSubscribeOrdersAllParams
-      return [channel, address].join(':')
+      const { channel, address } = params as WsSubscribeOrdersAllParams;
+      return [channel, address].join(":");
     }
     case WSChannel.orders_by_market: {
-      const { channel, market, address } = params as WsSubscribeOrdersByMarketParams
-      return [channel, market, address].join(':')
+      const { channel, market, address } = params as WsSubscribeOrdersByMarketParams;
+      return [channel, market, address].join(":");
     }
     case WSChannel.balances: {
-      const { channel, address } = params as WsSubscribeWalletBalanceParams
-      return [channel, address].join(':')
+      const { channel, address } = params as WsSubscribeWalletBalanceParams;
+      return [channel, address].join(":");
     }
     case WSChannel.account_trades: {
-      const { channel, address } = params as WsSubscribeAccountTradesAllParams
-      return [channel, address].join(':')
+      const { channel, address } = params as WsSubscribeAccountTradesAllParams;
+      return [channel, address].join(":");
     }
     case WSChannel.account_trades_by_market: {
-      const { channel, market, address } = params as WsSubscribeAccountTradesByMarketParams
-      return [channel, market, address].join(':')
+      const { channel, market, address } = params as WsSubscribeAccountTradesByMarketParams;
+      return [channel, market, address].join(":");
     }
     case WSChannel.market_stats: {
-      const { channel } = params as WsSubscribeMarketStatsAllParams
-      return [channel].join(':')
+      const { channel } = params as WsSubscribeMarketStatsAllParams;
+      return [channel].join(":");
     }
     case WSChannel.market_stats_by_market: {
-      const { channel, market } = params as WsSubscribeMarketStatsByMarketParams
-      return [channel, market].join(':')
+      const { channel, market } = params as WsSubscribeMarketStatsByMarketParams;
+      return [channel, market].join(":");
     }
     case WSChannel.leverages: {
-      const { channel, address } = params as WsSubscribeLeveragesAllParams
-      return [channel, address].join(':')
+      const { channel, address } = params as WsSubscribeLeveragesAllParams;
+      return [channel, address].join(":");
     }
     case WSChannel.leverages_by_market: {
-      const { channel, market, address } = params as WsSubscribeLeveragesByMarketParams
-      return [channel, market, address].join(':')
+      const { channel, market, address } = params as WsSubscribeLeveragesByMarketParams;
+      return [channel, market, address].join(":");
     }
     case WSChannel.positions: {
-      const { channel, address } = params as WsSubscribePositionsAllParams
-      return [channel, address].join(':')
+      const { channel, address } = params as WsSubscribePositionsAllParams;
+      return [channel, address].join(":");
     }
     case WSChannel.positions_by_market: {
-      const { channel, market, address } = params as WsSubscribePositionsByMarketParams
-      return [channel, market, address].join(':')
+      const { channel, market, address } = params as WsSubscribePositionsByMarketParams;
+      return [channel, market, address].join(":");
     }
     case WSChannel.pools: {
-      const { channel } = params as WsSubscribePoolsAllParams
-      return [channel].join(':')
+      const { channel } = params as WsSubscribePoolsAllParams;
+      return [channel].join(":");
     }
     case WSChannel.pools_by_id: {
-      const { channel, id } = params as WsSubscribePoolsByIdParams
-      return [channel, id].join(':')
+      const { channel, id } = params as WsSubscribePoolsByIdParams;
+      return [channel, id].join(":");
     }
     case WSChannel.token_prices: {
-      const { channel } = params as WsSubscribeAllTokenPrices
-      return [channel].join(':')
+      const { channel } = params as WsSubscribeAllTokenPrices;
+      return [channel].join(":");
     }
     case WSChannel.token_prices_by_denom: {
-      const { channel, denom } = params as WsSubscribeTokenPrices
-      return [channel, denom].join(':')
+      const { channel, denom } = params as WsSubscribeTokenPrices;
+      return [channel, denom].join(":");
     }
     case WSChannel.commitments: {
-      const { channel, address } = params as WsSubscribeCommitmentParams
-      return [channel, address].join(':')
+      const { channel, address } = params as WsSubscribeCommitmentParams;
+      return [channel, address].join(":");
     }
     case WSChannel.cdp_borrows: {
-      const { channel, address } = params as WsSubscribeCDPBorrows
-      return [channel, address].join(':')
+      const { channel, address } = params as WsSubscribeCDPBorrows;
+      return [channel, address].join(":");
     }
     case WSChannel.cdp_collaterals: {
-      const { channel, address } = params as WsSubscribeCDPCollaterals
-      return [channel, address].join(':')
+      const { channel, address } = params as WsSubscribeCDPCollaterals;
+      return [channel, address].join(":");
     }
     case WSChannel.cdp_liquidate_collaterals: {
-      const { channel } = params as WsSubscribeCDPLiquidateCollaterals
-      return [channel].join(':')
+      const { channel } = params as WsSubscribeCDPLiquidateCollaterals;
+      return [channel].join(":");
     }
     case WSChannel.cdp_token_debts: {
-      const { channel } = params as WsSubscribeTokenDebts
-      return [channel].join(':')
+      const { channel } = params as WsSubscribeTokenDebts;
+      return [channel].join(":");
     }
     case WSChannel.cdp_token_debts_by_denom: {
-      const { channel, denom } = params as WsSubscribeTokenDebtByDenom
-      return [channel, denom].join(':')
+      const { channel, denom } = params as WsSubscribeTokenDebtByDenom;
+      return [channel, denom].join(":");
     }
     case WSChannel.cdp_reward_schemes: {
-      const { channel } = params as WsSubscribeRewardSchemes
-      return [channel].join(':')
+      const { channel } = params as WsSubscribeRewardSchemes;
+      return [channel].join(":");
     }
     case WSChannel.cdp_reward_debts: {
-      const { channel, address } = params as WsSubscribeRewardDebts
-      return [channel, address].join(':')
+      const { channel, address } = params as WsSubscribeRewardDebts;
+      return [channel, address].join(":");
     }
     case WSChannel.cdp_token_supply: {
-      const { channel } = params as WsSubscribeCDPTokenSupply
-      return [channel].join(':')
+      const { channel } = params as WsSubscribeCDPTokenSupply;
+      return [channel].join(":");
     }
     case WSChannel.cdp_token_supply_by_denom: {
-      const { channel, denom } = params as WsSubscribeCDPTokenSupplyByDenom
-      return [channel, denom].join(':')
+      const { channel, denom } = params as WsSubscribeCDPTokenSupplyByDenom;
+      return [channel, denom].join(":");
     }
     default:
-      throw new Error(`invalid subscription channel: ${params.channel}`)
+      throw new Error(`invalid subscription channel: ${params.channel}`);
   }
-}
+};
 
 export const parseChannelId = (rawChannelId: string): WsSubscriptionParams => {
-  const [channel, param0, param1] = rawChannelId.split(':')
+  const [channel, param0, param1] = rawChannelId.split(":");
   switch (channel) {
     case WSChannel.candlesticks:
       return {
         channel,
         market: param0,
         resolution: param1,
-      } as WsSubscribeCandlesticksParams
+      } as WsSubscribeCandlesticksParams;
     case WSChannel.books:
       return {
         channel,
         market: param0,
-      } as WsSubscribeBooksParams
+      } as WsSubscribeBooksParams;
     case WSChannel.recent_trades:
       return {
         channel,
         market: param0,
-      } as WsSubscribeRecentTradesParams
+      } as WsSubscribeRecentTradesParams;
     case WSChannel.orders:
       return {
         channel,
         address: param0,
-      } as WsSubscribeOrdersAllParams
+      } as WsSubscribeOrdersAllParams;
     case WSChannel.orders_by_market:
       return {
         channel,
         market: param0,
         address: param1,
-      } as WsSubscribeOrdersByMarketParams
+      } as WsSubscribeOrdersByMarketParams;
     case WSChannel.balances:
       return {
         channel,
         address: param0,
-      } as WsSubscribeWalletBalanceParams
+      } as WsSubscribeWalletBalanceParams;
     case WSChannel.account_trades:
       return {
         channel,
         address: param0,
-      } as WsSubscribeAccountTradesAllParams
+      } as WsSubscribeAccountTradesAllParams;
     case WSChannel.account_trades_by_market:
       return {
         channel,
         market: param0,
         address: param1,
-      } as WsSubscribeAccountTradesByMarketParams
+      } as WsSubscribeAccountTradesByMarketParams;
     case WSChannel.market_stats:
       return {
         channel,
-      } as WsSubscribeMarketStatsAllParams
+      } as WsSubscribeMarketStatsAllParams;
     case WSChannel.market_stats_by_market:
       return {
         channel,
         market: param0,
-      } as WsSubscribeMarketStatsByMarketParams
+      } as WsSubscribeMarketStatsByMarketParams;
     case WSChannel.leverages:
       return {
         channel,
         address: param0,
-      } as WsSubscribeLeveragesAllParams
+      } as WsSubscribeLeveragesAllParams;
     case WSChannel.leverages_by_market:
       return {
         channel,
         market: param0,
         address: param1,
-      } as WsSubscribeLeveragesByMarketParams
+      } as WsSubscribeLeveragesByMarketParams;
     case WSChannel.positions:
       return {
         channel,
         address: param0,
-      } as WsSubscribePositionsAllParams
+      } as WsSubscribePositionsAllParams;
     case WSChannel.positions_by_market:
       return {
         channel,
         market: param0,
         address: param1,
-      } as WsSubscribePositionsByMarketParams
+      } as WsSubscribePositionsByMarketParams;
     case WSChannel.pools:
       return {
         channel,
-      } as WsSubscribePoolsAllParams
+      } as WsSubscribePoolsAllParams;
     case WSChannel.pools_by_id:
       return {
         channel,
         id: param0,
-      } as WsSubscribePoolsByIdParams
+      } as WsSubscribePoolsByIdParams;
     case WSChannel.commitments:
       return {
         channel,
         address: param0,
-      } as WsSubscribeCommitmentParams
+      } as WsSubscribeCommitmentParams;
     case WSChannel.token_prices:
       return {
         channel,
-      } as WsSubscribeAllTokenPrices
+      } as WsSubscribeAllTokenPrices;
     case WSChannel.token_prices:
       return {
         channel,
         denom: param0,
-      } as WsSubscribeTokenPrices
+      } as WsSubscribeTokenPrices;
     case WSChannel.cdp_borrows:
       return {
         channel,
         address: param0,
-      } as WsSubscribeCDPBorrows
+      } as WsSubscribeCDPBorrows;
     case WSChannel.cdp_collaterals:
       return {
         channel,
         address: param0,
-      } as WsSubscribeCDPCollaterals
+      } as WsSubscribeCDPCollaterals;
     case WSChannel.cdp_liquidate_collaterals:
       return {
         channel,
-      } as WsSubscribeCDPLiquidateCollaterals
+      } as WsSubscribeCDPLiquidateCollaterals;
     case WSChannel.cdp_token_debts:
       return {
         channel,
-      } as WsSubscribeTokenDebts
+      } as WsSubscribeTokenDebts;
     case WSChannel.cdp_token_debts_by_denom:
       return {
         channel,
         denom: param0,
-      } as WsSubscribeTokenDebtByDenom
+      } as WsSubscribeTokenDebtByDenom;
     case WSChannel.cdp_reward_schemes:
       return {
         channel,
-      } as WsSubscribeRewardSchemes
+      } as WsSubscribeRewardSchemes;
     case WSChannel.cdp_reward_debts:
       return {
         channel,
         address: param0,
-      } as WsSubscribeRewardDebts
+      } as WsSubscribeRewardDebts;
     case WSChannel.cdp_token_supply:
       return {
         channel,
-      } as WsSubscribeCDPTokenSupply
+      } as WsSubscribeCDPTokenSupply;
     case WSChannel.cdp_token_supply_by_denom:
       return {
         channel,
         denom: param0,
-      } as WsSubscribeCDPTokenSupplyByDenom
+      } as WsSubscribeCDPTokenSupplyByDenom;
     default:
-      throw new Error('Error parsing channelId')
+      throw new Error("Error parsing channelId");
   }
-}
+};

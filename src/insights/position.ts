@@ -21,80 +21,80 @@ export interface LeaderboardResult {
   meta: PageMeta;
 }
 
-export type QueryGetLeaderboardResponse = Entries<LeaderboardResult>
+export type QueryGetLeaderboardResponse = Entries<LeaderboardResult>;
 
 //Liquidation And ADL
 export interface LiquidationEntry {
-  id:                        string;
-  block_height:              string;
-  triggered_block_height:    string;
-  address:                   string;
-  market:                    string;
-  side:                      string;
-  price:                     string;
-  quantity:                  string;
-  available:                 string;
-  filled:                    string;
-  allocated_margin_amount:   string;
-  allocated_margin_denom:    string;
-  status:                    string;
-  order_type:                string;
-  initiator:                 string;
-  time_in_force:             string;
-  stop_price:                string;
-  trigger_type:              string;
-  is_liquidation:            boolean;
-  is_post_only:              boolean;
-  is_reduce_only:            boolean;
-  block_created_at:          string;
-  pool_id:                   string;
-  avg_filled_price:          string;
+  id: string;
+  block_height: string;
+  triggered_block_height: string;
+  address: string;
+  market: string;
+  side: string;
+  price: string;
+  quantity: string;
+  available: string;
+  filled: string;
+  allocated_margin_amount: string;
+  allocated_margin_denom: string;
+  status: string;
+  order_type: string;
+  initiator: string;
+  time_in_force: string;
+  stop_price: string;
+  trigger_type: string;
+  is_liquidation: boolean;
+  is_post_only: boolean;
+  is_reduce_only: boolean;
+  block_created_at: string;
+  pool_id: string;
+  avg_filled_price: string;
   last_updated_block_height: string;
 }
 
 export interface GetLiquidationAndADLQueryParams extends QueryByPageRequest {}
 
 export interface QueryGetLiquidationAndADLResponse {
-  entries: LiquidationEntry[]
-  meta: PageMeta
+  entries: LiquidationEntry[];
+  meta: PageMeta;
 }
 
 //Liquidation Engine
 export interface GetLiquidationEngineParams extends QueryByPageRequest {}
 
 export interface QueryGetLiquidationEngineResponse {
-  entries: LiquidationEntry[]
-  meta: PageMeta
+  entries: LiquidationEntry[];
+  meta: PageMeta;
 }
 
 //position view | profit size risk
 export enum PositionViewOptions {
   RISK = "risk",
   PROFIT = "profit",
-  SIZE = "size"
+  SIZE = "size",
 }
 export interface GetPositionsViewPathParams {
-  view: PositionViewOptions
+  view: PositionViewOptions;
 }
 
 export interface GetPositionsViewQueryParams extends QueryByPageRequest {
-  market?: string
+  market?: string;
 }
 
 export interface GetPositionsViewEntry {
-  address:               string;
-  username:              string;
-  lots:                  string;
-  entryPrice:            string;
-  realizedPnl:           string;
-  allocatedMarginDenom:  string;
+  address: string;
+  username: string;
+  lots: string;
+  entryPrice: string;
+  realizedPnl: string;
+  allocatedMarginDenom: string;
   allocatedMarginAmount: string;
-  openedBlockHeight:     number;
-  estLiquidationPrice:   string;
-  market:                string;
+  openedBlockHeight: number;
+  estLiquidationPrice: string;
+  market: string;
 }
 
 export interface QueryGetPositionsViewResponse {
-  entries: GetPositionsViewEntry[]
-  meta: PageMeta
+  entries: GetPositionsViewEntry[];
+  meta: PageMeta;
 }

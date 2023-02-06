@@ -67,199 +67,197 @@ export enum WSRequest {
 }
 
 export interface WsGetRecentTradesParams {
-  market: string
+  market: string;
 }
 
 export interface WsGetCandlesticksParams {
-  market: string
-  resolution: string
-  from?: string
-  to?: string
+  market: string;
+  resolution: string;
+  from?: string;
+  to?: string;
 }
 
 export interface WsGetOrderHistoryParams {
-  market: string
-  address: string
+  market: string;
+  address: string;
 }
 
 export interface WsGetOpenOrdersParams {
-  market: string
-  address: string
+  market: string;
+  address: string;
 }
 
 export interface WsGetAccountTradesParams {
-  market: string
-  address: string
-  page?: number
+  market: string;
+  address: string;
+  page?: number;
 }
 
 export interface WsGetMarketStatsParams {
-  market: string
+  market: string;
 }
 
 export interface WsGetLeveragesParams {
-  market: string
-  address: string
+  market: string;
+  address: string;
 }
 
 export interface WsGetPositionsParams {
-  market: string
-  address: string
-  status?: string
-  order_by?: string
+  market: string;
+  address: string;
+  status?: string;
+  order_by?: string;
   pagination?: {
-    page?: string
-    page_size?: string
-  }
+    page?: string;
+    page_size?: string;
+  };
 }
 
 export interface WsGetCommitmentsParams {
-  address: string
+  address: string;
 }
 
-export interface WsGetCDPParams { }
+export interface WsGetCDPParams {}
 
 export interface WsGetCDPAssetParams {
-  denom: string
+  denom: string;
 }
 
 export interface WsGetCDPAccountParams {
-  address: string
+  address: string;
 }
 
 export interface WsGetCDPRateStrategiesParams {
-  name: string
+  name: string;
 }
 
 export interface WsGetCdpTokenDebt {
-  denom: string
+  denom: string;
 }
 
-export interface WsGetCdpAllTokenDebts { }
+export interface WsGetCdpAllTokenDebts {}
 
-export interface WsGetCdpStablecoinDebt { }
+export interface WsGetCdpStablecoinDebt {}
 
-export interface WsGetCdpLiquidations { }
+export interface WsGetCdpLiquidations {}
 
-export interface WsGetCdpRewardSchemes { }
+export interface WsGetCdpRewardSchemes {}
 
 export interface WsGetCdpRewardDebts {
   address: string;
 }
 
 export interface WsSubscribeParams {
-  channel: WSChannel
+  channel: WSChannel;
 }
 
 export interface WsSubscribeCandlesticksParams extends WsSubscribeParams {
-  market: string
-  resolution: string
-  subscribeUID: string
+  market: string;
+  resolution: string;
+  subscribeUID: string;
 }
 
 export interface WsSubscribeBooksParams extends WsSubscribeParams {
-  market: string
+  market: string;
 }
 
 export interface WsSubscribeRecentTradesParams extends WsSubscribeParams {
-  market: string
+  market: string;
 }
 
 export interface WsSubscribeOrdersAllParams extends WsSubscribeParams {
-  address: string
+  address: string;
 }
 
 export interface WsSubscribeOrdersByMarketParams extends WsSubscribeParams {
-  market: string
-  address: string
+  market: string;
+  address: string;
 }
 
 export interface WsSubscribeWalletBalanceParams extends WsSubscribeParams {
-  address: string
+  address: string;
 }
 
 export interface WsSubscribeAccountTradesAllParams extends WsSubscribeParams {
-  address: string
+  address: string;
 }
 
 export interface WsSubscribeAccountTradesByMarketParams extends WsSubscribeParams {
-  market: string
-  address: string
+  market: string;
+  address: string;
 }
 
-export interface WsSubscribeMarketStatsAllParams extends WsSubscribeParams { }
+export interface WsSubscribeMarketStatsAllParams extends WsSubscribeParams {}
 
 export interface WsSubscribeMarketStatsByMarketParams extends WsSubscribeParams {
-  market: string
+  market: string;
 }
 
 export interface WsSubscribeLeveragesAllParams extends WsSubscribeParams {
-  address: string
+  address: string;
 }
 
 export interface WsSubscribeLeveragesByMarketParams extends WsSubscribeParams {
-  market: string
-  address: string
+  market: string;
+  address: string;
 }
 
 export interface WsSubscribePositionsAllParams extends WsSubscribeParams {
-  address: string
+  address: string;
 }
 
 export interface WsSubscribePositionsByMarketParams extends WsSubscribeParams {
-  market: string
-  address: string
+  market: string;
+  address: string;
 }
 
-export interface WsSubscribePoolsAllParams extends WsSubscribeParams { }
+export interface WsSubscribePoolsAllParams extends WsSubscribeParams {}
 
 export interface WsSubscribePoolsByIdParams extends WsSubscribeParams {
-  id: string
+  id: string;
 }
 
 export interface WsSubscribeCommitmentParams extends WsSubscribeParams {
-  address: string
+  address: string;
 }
 
 export interface WsUnsubscribeCandlesticksParams extends WsSubscribeParams {
-  market: string
-  resolution: string
+  market: string;
+  resolution: string;
 }
 
 export interface WsSubscribeCDPBorrows extends WsSubscribeParams {
-  address: string
+  address: string;
 }
 
 export interface WsSubscribeCDPCollaterals extends WsSubscribeParams {
-  address: string
+  address: string;
 }
 
-export interface WsSubscribeCDPLiquidateCollaterals extends WsSubscribeParams { }
+export interface WsSubscribeCDPLiquidateCollaterals extends WsSubscribeParams {}
 
-export interface WsSubscribeTokenDebts extends WsSubscribeParams { }
+export interface WsSubscribeTokenDebts extends WsSubscribeParams {}
 
 export interface WsSubscribeTokenDebtByDenom extends WsSubscribeParams {
-  denom: string
+  denom: string;
 }
 
-export interface WsSubscribeRewardSchemes extends WsSubscribeParams { }
+export interface WsSubscribeRewardSchemes extends WsSubscribeParams {}
 
 export interface WsSubscribeRewardDebts extends WsSubscribeParams {
-  address?: string
+  address?: string;
 }
 
 export interface WsSubscribeTokenPrices extends WsSubscribeParams {
-  denom: string
+  denom: string;
 }
 
-export interface WsSubscribeAllTokenPrices extends WsSubscribeParams {
-}
+export interface WsSubscribeAllTokenPrices extends WsSubscribeParams {}
 export interface WsSubscribeCDPTokenSupplyByDenom extends WsSubscribeParams {
-  denom: string
+  denom: string;
 }
 
-export interface WsSubscribeCDPTokenSupply extends WsSubscribeParams {
-}
+export interface WsSubscribeCDPTokenSupply extends WsSubscribeParams {}
 
 export type WsSubscriptionParams =
   | WsSubscribeCandlesticksParams
@@ -290,4 +288,4 @@ export type WsSubscriptionParams =
   | WsSubscribeRewardSchemes
   | WsSubscribeRewardDebts
   | WsSubscribeCDPTokenSupply
-  | WsSubscribeCDPTokenSupplyByDenom
+  | WsSubscribeCDPTokenSupplyByDenom;
