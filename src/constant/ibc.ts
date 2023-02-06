@@ -1857,6 +1857,7 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
       coinType: 60,
     },
     bech32Config: IBCAddress.defaultBech32Config("canto"),
+    coinType: 60,
     currencies: [
       {
         coinDenom: "CANTO",
