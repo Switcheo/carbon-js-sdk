@@ -1,4 +1,4 @@
-import { Token } from "@carbon-sdk/codec";
+import { Bridge, Token } from "@carbon-sdk/codec";
 import {
   CoinGeckoTokenNames,
   CommonAssetName,
@@ -19,6 +19,7 @@ import Long from "long";
 import CarbonQueryClient from "./CarbonQueryClient";
 import InsightsQueryClient from "./InsightsQueryClient";
 import { SimpleMap } from "@carbon-sdk/util/type";
+import { BRIDGE_IDS } from '@carbon-sdk/util/blockchain'
 
 const SYMBOL_OVERRIDE: {
   [symbol: string]: string;
@@ -44,6 +45,9 @@ class TokenClient {
   public readonly wrapperMap: TypeUtils.SimpleMap<string> = {};
   public readonly poolTokens: TypeUtils.SimpleMap<Token> = {};
   public readonly cdpTokens: TypeUtils.SimpleMap<Token> = {};
+  public readonly bridges: TypeUtils.SimpleMap<Bridge[]> = {};
+  public readonly ibcTokens: TypeUtils.SimpleMap<Token> = {};
+  public readonly polyNetworkTokens: TypeUtils.SimpleMap<Token> = {};
   public readonly symbols: TypeUtils.SimpleMap<string> = {};
   public readonly usdValues: TypeUtils.SimpleMap<BigNumber> = {};
   public readonly commonAssetNames: TypeUtils.SimpleMap<string> = CommonAssetName;
@@ -62,6 +66,7 @@ class TokenClient {
     await this.reloadWrapperMap();
     await this.reloadTokens();
     await this.reloadDenomGeckoMap();
+    await this.getBridges();
 
     // non-blocking reload
     try {
@@ -404,6 +409,74 @@ class TokenClient {
     }
 
     return this.tokens;
+  }
+
+  public async getBridges(): Promise<TypeUtils.SimpleMap<Bridge[]>> {
+    const allBridges = await this.query.coin.BridgeAll({
+      pagination: {
+        key: new Uint8Array(),
+        limit: new Long(100),
+        offset: Long.UZERO,
+        countTotal: true,
+        reverse: false,
+      },
+    })
+    const ibcBridges = allBridges.bridges.filter(bridge => {
+      if (!bridge.enabled) return
+      return bridge.bridgeId.toNumber() === BRIDGE_IDS.ibc
+    })
+    const polynetworkBridges = allBridges.bridges.filter(bridge => {
+      if (!bridge.enabled) return
+      return bridge.bridgeId.toNumber() === BRIDGE_IDS.polynetwork
+    })
+    Object.assign(this.bridges, {"ibc": ibcBridges, "polynetwork": polynetworkBridges})
+    return this.bridges
+  }
+
+  public getIbcBlockchainNames(): string[] {
+    return this.bridges["ibc"].map(bridge => bridge.chainName)
+  }
+
+  public getPolynetworkBlockchainNames(): string[] {
+    return this.bridges["polynetwork"].map(bridge => bridge.chainName)
+  }
+
+  public getAllBlockchainNames(): string[] {
+    return this.getIbcBlockchainNames().concat(this.getPolynetworkBlockchainNames())
+  }
+
+  public getIbcTokens(): TypeUtils.SimpleMap<Token> {
+    Object.values(this.tokens).forEach(token => {
+      if (token.bridgeId.toNumber() === BRIDGE_IDS.ibc) {
+        this.ibcTokens[token.denom] = token
+      }
+    })
+    return this.ibcTokens
+  }
+
+  public getPolyNetworkTokens(): TypeUtils.SimpleMap<Token> {
+    Object.values(this.tokens).forEach(token => {
+      if (token.bridgeId.toNumber() === BRIDGE_IDS.polynetwork) {
+        this.polyNetworkTokens[token.denom] = token
+      }
+    })
+    return this.polyNetworkTokens
+  }
+
+  public getBridgeFromToken(token: Token): Bridge | undefined {
+    let bridgeList: Bridge[] = []
+    if (!token.bridgeId) return undefined
+    switch (token.bridgeId.toNumber()) {
+      case BRIDGE_IDS.polynetwork:
+        bridgeList = this.bridges["polynetwork"]
+        break
+      case BRIDGE_IDS.ibc:
+        bridgeList = this.bridges["ibc"]
+        break
+      default:
+        return undefined
+    }
+    return bridgeList.find(bridge => token.chainId.equals(bridge.chainId))
   }
 
   public getCarbonIbcTokens(): Token[] {
