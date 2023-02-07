@@ -33,6 +33,7 @@ const SYMBOL_OVERRIDE: {
   DBC2: "DBC",
   AVA1: "AVA",
   TSWTH: "tSWTH",
+  "cibStride Liquid Staked LUNA": "cibstLUNA",
 };
 
 const regexCdpDenom = RegExp(`^${DenomPrefix.CDPToken}/`, "i");
