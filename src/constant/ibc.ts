@@ -1653,6 +1653,11 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         coinMinimalDenom: "stustars",
         coinDecimals: 6,
       },
+      {
+        coinDenom: "stLUNA",
+        coinMinimalDenom: "stuluna",
+        coinDecimals: 6,
+      },
     ],
     feeCurrencies: [
       {
