@@ -2,6 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Bridge } from "./bridge";
+import { TokenGroup, GroupedTokenConfig } from "./group";
 import {
   BoolValue,
   StringValue,
@@ -162,6 +163,88 @@ export interface MsgRemoveBridgeAddress {
 export interface MsgRemoveBridgeAddressResponse {
   id: string;
   bridge?: Bridge;
+}
+
+export interface MsgCreateGroup {
+  creator: string;
+  /** name of group */
+  name: string;
+  /** name of the cheque token that represents any tokens in the group 1-to-1 */
+  chequeTokenName: string;
+  /** oracle_id that helps to get the reference price for this group */
+  oracleId: string;
+}
+
+export interface MsgCreateGroupResponse {
+  tokenGroup?: TokenGroup;
+}
+
+export interface MsgUpdateGroup {
+  creator: string;
+  groupId: Long;
+  updateGroupParams?: UpdateGroupParams;
+}
+
+export interface UpdateGroupParams {
+  name?: string;
+}
+
+export interface MsgUpdateGroupResponse {
+  tokenGroup?: TokenGroup;
+}
+
+export interface MsgRegisterToGroup {
+  creator: string;
+  groupId: Long;
+  denom: string;
+}
+
+export interface MsgRegisterToGroupResponse {}
+
+export interface MsgDeregisterFromGroup {
+  creator: string;
+  groupId: Long;
+  denom: string;
+}
+
+export interface MsgDeregisterFromGroupResponse {}
+
+export interface MsgDepositToGroup {
+  creator: string;
+  /** the token and amount to deposit into it's group */
+  depositCoin: string;
+}
+
+export interface MsgDepositToGroupResponse {
+  groupId: Long;
+  tokensDeposited: string;
+  tokensMinted: string;
+}
+
+export interface MsgWithdrawFromGroup {
+  creator: string;
+  /** the amount and denom to withdraw into */
+  sourceCoin: string;
+}
+
+export interface MsgWithdrawFromGroupResponse {
+  groupId: Long;
+  tokensBurnt: string;
+  tokensWithdrawn: string;
+}
+
+export interface MsgUpdateGroupedTokenConfig {
+  creator: string;
+  denom: string;
+  updateGroupedTokenConfigParams?: UpdateGroupedTokenConfigParams;
+}
+
+export interface UpdateGroupedTokenConfigParams {
+  isActive?: boolean;
+}
+
+export interface MsgUpdateGroupedTokenConfigResponse {
+  groupedTokenConfig?: GroupedTokenConfig;
 }
 
 const baseMsgCreateToken: object = { creator: "" };
@@ -2518,9 +2601,1243 @@ export const MsgRemoveBridgeAddressResponse = {
   },
 };
 
+const baseMsgCreateGroup: object = {
+  creator: "",
+  name: "",
+  chequeTokenName: "",
+  oracleId: "",
+};
+
+export const MsgCreateGroup = {
+  encode(
+    message: MsgCreateGroup,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.name !== "") {
+      writer.uint32(18).string(message.name);
+    }
+    if (message.chequeTokenName !== "") {
+      writer.uint32(26).string(message.chequeTokenName);
+    }
+    if (message.oracleId !== "") {
+      writer.uint32(34).string(message.oracleId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreateGroup {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgCreateGroup } as MsgCreateGroup;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.name = reader.string();
+          break;
+        case 3:
+          message.chequeTokenName = reader.string();
+          break;
+        case 4:
+          message.oracleId = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgCreateGroup {
+    const message = { ...baseMsgCreateGroup } as MsgCreateGroup;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.name =
+      object.name !== undefined && object.name !== null
+        ? String(object.name)
+        : "";
+    message.chequeTokenName =
+      object.chequeTokenName !== undefined && object.chequeTokenName !== null
+        ? String(object.chequeTokenName)
+        : "";
+    message.oracleId =
+      object.oracleId !== undefined && object.oracleId !== null
+        ? String(object.oracleId)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgCreateGroup): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.name !== undefined && (obj.name = message.name);
+    message.chequeTokenName !== undefined &&
+      (obj.chequeTokenName = message.chequeTokenName);
+    message.oracleId !== undefined && (obj.oracleId = message.oracleId);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgCreateGroup>): MsgCreateGroup {
+    const message = { ...baseMsgCreateGroup } as MsgCreateGroup;
+    message.creator = object.creator ?? "";
+    message.name = object.name ?? "";
+    message.chequeTokenName = object.chequeTokenName ?? "";
+    message.oracleId = object.oracleId ?? "";
+    return message;
+  },
+};
+
+const baseMsgCreateGroupResponse: object = {};
+
+export const MsgCreateGroupResponse = {
+  encode(
+    message: MsgCreateGroupResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.tokenGroup !== undefined) {
+      TokenGroup.encode(message.tokenGroup, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgCreateGroupResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgCreateGroupResponse } as MsgCreateGroupResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.tokenGroup = TokenGroup.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgCreateGroupResponse {
+    const message = { ...baseMsgCreateGroupResponse } as MsgCreateGroupResponse;
+    message.tokenGroup =
+      object.tokenGroup !== undefined && object.tokenGroup !== null
+        ? TokenGroup.fromJSON(object.tokenGroup)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: MsgCreateGroupResponse): unknown {
+    const obj: any = {};
+    message.tokenGroup !== undefined &&
+      (obj.tokenGroup = message.tokenGroup
+        ? TokenGroup.toJSON(message.tokenGroup)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgCreateGroupResponse>
+  ): MsgCreateGroupResponse {
+    const message = { ...baseMsgCreateGroupResponse } as MsgCreateGroupResponse;
+    message.tokenGroup =
+      object.tokenGroup !== undefined && object.tokenGroup !== null
+        ? TokenGroup.fromPartial(object.tokenGroup)
+        : undefined;
+    return message;
+  },
+};
+
+const baseMsgUpdateGroup: object = { creator: "", groupId: Long.UZERO };
+
+export const MsgUpdateGroup = {
+  encode(
+    message: MsgUpdateGroup,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (!message.groupId.isZero()) {
+      writer.uint32(16).uint64(message.groupId);
+    }
+    if (message.updateGroupParams !== undefined) {
+      UpdateGroupParams.encode(
+        message.updateGroupParams,
+        writer.uint32(26).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateGroup {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgUpdateGroup } as MsgUpdateGroup;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.groupId = reader.uint64() as Long;
+          break;
+        case 3:
+          message.updateGroupParams = UpdateGroupParams.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdateGroup {
+    const message = { ...baseMsgUpdateGroup } as MsgUpdateGroup;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.groupId =
+      object.groupId !== undefined && object.groupId !== null
+        ? Long.fromString(object.groupId)
+        : Long.UZERO;
+    message.updateGroupParams =
+      object.updateGroupParams !== undefined &&
+      object.updateGroupParams !== null
+        ? UpdateGroupParams.fromJSON(object.updateGroupParams)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: MsgUpdateGroup): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.groupId !== undefined &&
+      (obj.groupId = (message.groupId || Long.UZERO).toString());
+    message.updateGroupParams !== undefined &&
+      (obj.updateGroupParams = message.updateGroupParams
+        ? UpdateGroupParams.toJSON(message.updateGroupParams)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgUpdateGroup>): MsgUpdateGroup {
+    const message = { ...baseMsgUpdateGroup } as MsgUpdateGroup;
+    message.creator = object.creator ?? "";
+    message.groupId =
+      object.groupId !== undefined && object.groupId !== null
+        ? Long.fromValue(object.groupId)
+        : Long.UZERO;
+    message.updateGroupParams =
+      object.updateGroupParams !== undefined &&
+      object.updateGroupParams !== null
+        ? UpdateGroupParams.fromPartial(object.updateGroupParams)
+        : undefined;
+    return message;
+  },
+};
+
+const baseUpdateGroupParams: object = {};
+
+export const UpdateGroupParams = {
+  encode(
+    message: UpdateGroupParams,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.name !== undefined) {
+      StringValue.encode(
+        { value: message.name! },
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): UpdateGroupParams {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseUpdateGroupParams } as UpdateGroupParams;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.name = StringValue.decode(reader, reader.uint32()).value;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UpdateGroupParams {
+    const message = { ...baseUpdateGroupParams } as UpdateGroupParams;
+    message.name =
+      object.name !== undefined && object.name !== null
+        ? String(object.name)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: UpdateGroupParams): unknown {
+    const obj: any = {};
+    message.name !== undefined && (obj.name = message.name);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<UpdateGroupParams>): UpdateGroupParams {
+    const message = { ...baseUpdateGroupParams } as UpdateGroupParams;
+    message.name = object.name ?? undefined;
+    return message;
+  },
+};
+
+const baseMsgUpdateGroupResponse: object = {};
+
+export const MsgUpdateGroupResponse = {
+  encode(
+    message: MsgUpdateGroupResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.tokenGroup !== undefined) {
+      TokenGroup.encode(message.tokenGroup, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUpdateGroupResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgUpdateGroupResponse } as MsgUpdateGroupResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.tokenGroup = TokenGroup.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdateGroupResponse {
+    const message = { ...baseMsgUpdateGroupResponse } as MsgUpdateGroupResponse;
+    message.tokenGroup =
+      object.tokenGroup !== undefined && object.tokenGroup !== null
+        ? TokenGroup.fromJSON(object.tokenGroup)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: MsgUpdateGroupResponse): unknown {
+    const obj: any = {};
+    message.tokenGroup !== undefined &&
+      (obj.tokenGroup = message.tokenGroup
+        ? TokenGroup.toJSON(message.tokenGroup)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgUpdateGroupResponse>
+  ): MsgUpdateGroupResponse {
+    const message = { ...baseMsgUpdateGroupResponse } as MsgUpdateGroupResponse;
+    message.tokenGroup =
+      object.tokenGroup !== undefined && object.tokenGroup !== null
+        ? TokenGroup.fromPartial(object.tokenGroup)
+        : undefined;
+    return message;
+  },
+};
+
+const baseMsgRegisterToGroup: object = {
+  creator: "",
+  groupId: Long.UZERO,
+  denom: "",
+};
+
+export const MsgRegisterToGroup = {
+  encode(
+    message: MsgRegisterToGroup,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (!message.groupId.isZero()) {
+      writer.uint32(16).uint64(message.groupId);
+    }
+    if (message.denom !== "") {
+      writer.uint32(26).string(message.denom);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgRegisterToGroup {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgRegisterToGroup } as MsgRegisterToGroup;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.groupId = reader.uint64() as Long;
+          break;
+        case 3:
+          message.denom = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgRegisterToGroup {
+    const message = { ...baseMsgRegisterToGroup } as MsgRegisterToGroup;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.groupId =
+      object.groupId !== undefined && object.groupId !== null
+        ? Long.fromString(object.groupId)
+        : Long.UZERO;
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgRegisterToGroup): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.groupId !== undefined &&
+      (obj.groupId = (message.groupId || Long.UZERO).toString());
+    message.denom !== undefined && (obj.denom = message.denom);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgRegisterToGroup>): MsgRegisterToGroup {
+    const message = { ...baseMsgRegisterToGroup } as MsgRegisterToGroup;
+    message.creator = object.creator ?? "";
+    message.groupId =
+      object.groupId !== undefined && object.groupId !== null
+        ? Long.fromValue(object.groupId)
+        : Long.UZERO;
+    message.denom = object.denom ?? "";
+    return message;
+  },
+};
+
+const baseMsgRegisterToGroupResponse: object = {};
+
+export const MsgRegisterToGroupResponse = {
+  encode(
+    _: MsgRegisterToGroupResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgRegisterToGroupResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgRegisterToGroupResponse,
+    } as MsgRegisterToGroupResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgRegisterToGroupResponse {
+    const message = {
+      ...baseMsgRegisterToGroupResponse,
+    } as MsgRegisterToGroupResponse;
+    return message;
+  },
+
+  toJSON(_: MsgRegisterToGroupResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgRegisterToGroupResponse>
+  ): MsgRegisterToGroupResponse {
+    const message = {
+      ...baseMsgRegisterToGroupResponse,
+    } as MsgRegisterToGroupResponse;
+    return message;
+  },
+};
+
+const baseMsgDeregisterFromGroup: object = {
+  creator: "",
+  groupId: Long.UZERO,
+  denom: "",
+};
+
+export const MsgDeregisterFromGroup = {
+  encode(
+    message: MsgDeregisterFromGroup,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (!message.groupId.isZero()) {
+      writer.uint32(16).uint64(message.groupId);
+    }
+    if (message.denom !== "") {
+      writer.uint32(26).string(message.denom);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgDeregisterFromGroup {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgDeregisterFromGroup } as MsgDeregisterFromGroup;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.groupId = reader.uint64() as Long;
+          break;
+        case 3:
+          message.denom = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgDeregisterFromGroup {
+    const message = { ...baseMsgDeregisterFromGroup } as MsgDeregisterFromGroup;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.groupId =
+      object.groupId !== undefined && object.groupId !== null
+        ? Long.fromString(object.groupId)
+        : Long.UZERO;
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgDeregisterFromGroup): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.groupId !== undefined &&
+      (obj.groupId = (message.groupId || Long.UZERO).toString());
+    message.denom !== undefined && (obj.denom = message.denom);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgDeregisterFromGroup>
+  ): MsgDeregisterFromGroup {
+    const message = { ...baseMsgDeregisterFromGroup } as MsgDeregisterFromGroup;
+    message.creator = object.creator ?? "";
+    message.groupId =
+      object.groupId !== undefined && object.groupId !== null
+        ? Long.fromValue(object.groupId)
+        : Long.UZERO;
+    message.denom = object.denom ?? "";
+    return message;
+  },
+};
+
+const baseMsgDeregisterFromGroupResponse: object = {};
+
+export const MsgDeregisterFromGroupResponse = {
+  encode(
+    _: MsgDeregisterFromGroupResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgDeregisterFromGroupResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgDeregisterFromGroupResponse,
+    } as MsgDeregisterFromGroupResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgDeregisterFromGroupResponse {
+    const message = {
+      ...baseMsgDeregisterFromGroupResponse,
+    } as MsgDeregisterFromGroupResponse;
+    return message;
+  },
+
+  toJSON(_: MsgDeregisterFromGroupResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgDeregisterFromGroupResponse>
+  ): MsgDeregisterFromGroupResponse {
+    const message = {
+      ...baseMsgDeregisterFromGroupResponse,
+    } as MsgDeregisterFromGroupResponse;
+    return message;
+  },
+};
+
+const baseMsgDepositToGroup: object = { creator: "", depositCoin: "" };
+
+export const MsgDepositToGroup = {
+  encode(
+    message: MsgDepositToGroup,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.depositCoin !== "") {
+      writer.uint32(18).string(message.depositCoin);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgDepositToGroup {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgDepositToGroup } as MsgDepositToGroup;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.depositCoin = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgDepositToGroup {
+    const message = { ...baseMsgDepositToGroup } as MsgDepositToGroup;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.depositCoin =
+      object.depositCoin !== undefined && object.depositCoin !== null
+        ? String(object.depositCoin)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgDepositToGroup): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.depositCoin !== undefined &&
+      (obj.depositCoin = message.depositCoin);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgDepositToGroup>): MsgDepositToGroup {
+    const message = { ...baseMsgDepositToGroup } as MsgDepositToGroup;
+    message.creator = object.creator ?? "";
+    message.depositCoin = object.depositCoin ?? "";
+    return message;
+  },
+};
+
+const baseMsgDepositToGroupResponse: object = {
+  groupId: Long.UZERO,
+  tokensDeposited: "",
+  tokensMinted: "",
+};
+
+export const MsgDepositToGroupResponse = {
+  encode(
+    message: MsgDepositToGroupResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (!message.groupId.isZero()) {
+      writer.uint32(8).uint64(message.groupId);
+    }
+    if (message.tokensDeposited !== "") {
+      writer.uint32(18).string(message.tokensDeposited);
+    }
+    if (message.tokensMinted !== "") {
+      writer.uint32(26).string(message.tokensMinted);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgDepositToGroupResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgDepositToGroupResponse,
+    } as MsgDepositToGroupResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.groupId = reader.uint64() as Long;
+          break;
+        case 2:
+          message.tokensDeposited = reader.string();
+          break;
+        case 3:
+          message.tokensMinted = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgDepositToGroupResponse {
+    const message = {
+      ...baseMsgDepositToGroupResponse,
+    } as MsgDepositToGroupResponse;
+    message.groupId =
+      object.groupId !== undefined && object.groupId !== null
+        ? Long.fromString(object.groupId)
+        : Long.UZERO;
+    message.tokensDeposited =
+      object.tokensDeposited !== undefined && object.tokensDeposited !== null
+        ? String(object.tokensDeposited)
+        : "";
+    message.tokensMinted =
+      object.tokensMinted !== undefined && object.tokensMinted !== null
+        ? String(object.tokensMinted)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgDepositToGroupResponse): unknown {
+    const obj: any = {};
+    message.groupId !== undefined &&
+      (obj.groupId = (message.groupId || Long.UZERO).toString());
+    message.tokensDeposited !== undefined &&
+      (obj.tokensDeposited = message.tokensDeposited);
+    message.tokensMinted !== undefined &&
+      (obj.tokensMinted = message.tokensMinted);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgDepositToGroupResponse>
+  ): MsgDepositToGroupResponse {
+    const message = {
+      ...baseMsgDepositToGroupResponse,
+    } as MsgDepositToGroupResponse;
+    message.groupId =
+      object.groupId !== undefined && object.groupId !== null
+        ? Long.fromValue(object.groupId)
+        : Long.UZERO;
+    message.tokensDeposited = object.tokensDeposited ?? "";
+    message.tokensMinted = object.tokensMinted ?? "";
+    return message;
+  },
+};
+
+const baseMsgWithdrawFromGroup: object = { creator: "", sourceCoin: "" };
+
+export const MsgWithdrawFromGroup = {
+  encode(
+    message: MsgWithdrawFromGroup,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.sourceCoin !== "") {
+      writer.uint32(18).string(message.sourceCoin);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgWithdrawFromGroup {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgWithdrawFromGroup } as MsgWithdrawFromGroup;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.sourceCoin = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgWithdrawFromGroup {
+    const message = { ...baseMsgWithdrawFromGroup } as MsgWithdrawFromGroup;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.sourceCoin =
+      object.sourceCoin !== undefined && object.sourceCoin !== null
+        ? String(object.sourceCoin)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgWithdrawFromGroup): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.sourceCoin !== undefined && (obj.sourceCoin = message.sourceCoin);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgWithdrawFromGroup>): MsgWithdrawFromGroup {
+    const message = { ...baseMsgWithdrawFromGroup } as MsgWithdrawFromGroup;
+    message.creator = object.creator ?? "";
+    message.sourceCoin = object.sourceCoin ?? "";
+    return message;
+  },
+};
+
+const baseMsgWithdrawFromGroupResponse: object = {
+  groupId: Long.UZERO,
+  tokensBurnt: "",
+  tokensWithdrawn: "",
+};
+
+export const MsgWithdrawFromGroupResponse = {
+  encode(
+    message: MsgWithdrawFromGroupResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (!message.groupId.isZero()) {
+      writer.uint32(8).uint64(message.groupId);
+    }
+    if (message.tokensBurnt !== "") {
+      writer.uint32(18).string(message.tokensBurnt);
+    }
+    if (message.tokensWithdrawn !== "") {
+      writer.uint32(26).string(message.tokensWithdrawn);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgWithdrawFromGroupResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgWithdrawFromGroupResponse,
+    } as MsgWithdrawFromGroupResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.groupId = reader.uint64() as Long;
+          break;
+        case 2:
+          message.tokensBurnt = reader.string();
+          break;
+        case 3:
+          message.tokensWithdrawn = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgWithdrawFromGroupResponse {
+    const message = {
+      ...baseMsgWithdrawFromGroupResponse,
+    } as MsgWithdrawFromGroupResponse;
+    message.groupId =
+      object.groupId !== undefined && object.groupId !== null
+        ? Long.fromString(object.groupId)
+        : Long.UZERO;
+    message.tokensBurnt =
+      object.tokensBurnt !== undefined && object.tokensBurnt !== null
+        ? String(object.tokensBurnt)
+        : "";
+    message.tokensWithdrawn =
+      object.tokensWithdrawn !== undefined && object.tokensWithdrawn !== null
+        ? String(object.tokensWithdrawn)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgWithdrawFromGroupResponse): unknown {
+    const obj: any = {};
+    message.groupId !== undefined &&
+      (obj.groupId = (message.groupId || Long.UZERO).toString());
+    message.tokensBurnt !== undefined &&
+      (obj.tokensBurnt = message.tokensBurnt);
+    message.tokensWithdrawn !== undefined &&
+      (obj.tokensWithdrawn = message.tokensWithdrawn);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgWithdrawFromGroupResponse>
+  ): MsgWithdrawFromGroupResponse {
+    const message = {
+      ...baseMsgWithdrawFromGroupResponse,
+    } as MsgWithdrawFromGroupResponse;
+    message.groupId =
+      object.groupId !== undefined && object.groupId !== null
+        ? Long.fromValue(object.groupId)
+        : Long.UZERO;
+    message.tokensBurnt = object.tokensBurnt ?? "";
+    message.tokensWithdrawn = object.tokensWithdrawn ?? "";
+    return message;
+  },
+};
+
+const baseMsgUpdateGroupedTokenConfig: object = { creator: "", denom: "" };
+
+export const MsgUpdateGroupedTokenConfig = {
+  encode(
+    message: MsgUpdateGroupedTokenConfig,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.denom !== "") {
+      writer.uint32(18).string(message.denom);
+    }
+    if (message.updateGroupedTokenConfigParams !== undefined) {
+      UpdateGroupedTokenConfigParams.encode(
+        message.updateGroupedTokenConfigParams,
+        writer.uint32(26).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUpdateGroupedTokenConfig {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgUpdateGroupedTokenConfig,
+    } as MsgUpdateGroupedTokenConfig;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.denom = reader.string();
+          break;
+        case 3:
+          message.updateGroupedTokenConfigParams =
+            UpdateGroupedTokenConfigParams.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdateGroupedTokenConfig {
+    const message = {
+      ...baseMsgUpdateGroupedTokenConfig,
+    } as MsgUpdateGroupedTokenConfig;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
+    message.updateGroupedTokenConfigParams =
+      object.updateGroupedTokenConfigParams !== undefined &&
+      object.updateGroupedTokenConfigParams !== null
+        ? UpdateGroupedTokenConfigParams.fromJSON(
+            object.updateGroupedTokenConfigParams
+          )
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: MsgUpdateGroupedTokenConfig): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.denom !== undefined && (obj.denom = message.denom);
+    message.updateGroupedTokenConfigParams !== undefined &&
+      (obj.updateGroupedTokenConfigParams =
+        message.updateGroupedTokenConfigParams
+          ? UpdateGroupedTokenConfigParams.toJSON(
+              message.updateGroupedTokenConfigParams
+            )
+          : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgUpdateGroupedTokenConfig>
+  ): MsgUpdateGroupedTokenConfig {
+    const message = {
+      ...baseMsgUpdateGroupedTokenConfig,
+    } as MsgUpdateGroupedTokenConfig;
+    message.creator = object.creator ?? "";
+    message.denom = object.denom ?? "";
+    message.updateGroupedTokenConfigParams =
+      object.updateGroupedTokenConfigParams !== undefined &&
+      object.updateGroupedTokenConfigParams !== null
+        ? UpdateGroupedTokenConfigParams.fromPartial(
+            object.updateGroupedTokenConfigParams
+          )
+        : undefined;
+    return message;
+  },
+};
+
+const baseUpdateGroupedTokenConfigParams: object = {};
+
+export const UpdateGroupedTokenConfigParams = {
+  encode(
+    message: UpdateGroupedTokenConfigParams,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.isActive !== undefined) {
+      BoolValue.encode(
+        { value: message.isActive! },
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): UpdateGroupedTokenConfigParams {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseUpdateGroupedTokenConfigParams,
+    } as UpdateGroupedTokenConfigParams;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.isActive = BoolValue.decode(reader, reader.uint32()).value;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UpdateGroupedTokenConfigParams {
+    const message = {
+      ...baseUpdateGroupedTokenConfigParams,
+    } as UpdateGroupedTokenConfigParams;
+    message.isActive =
+      object.isActive !== undefined && object.isActive !== null
+        ? Boolean(object.isActive)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: UpdateGroupedTokenConfigParams): unknown {
+    const obj: any = {};
+    message.isActive !== undefined && (obj.isActive = message.isActive);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<UpdateGroupedTokenConfigParams>
+  ): UpdateGroupedTokenConfigParams {
+    const message = {
+      ...baseUpdateGroupedTokenConfigParams,
+    } as UpdateGroupedTokenConfigParams;
+    message.isActive = object.isActive ?? undefined;
+    return message;
+  },
+};
+
+const baseMsgUpdateGroupedTokenConfigResponse: object = {};
+
+export const MsgUpdateGroupedTokenConfigResponse = {
+  encode(
+    message: MsgUpdateGroupedTokenConfigResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.groupedTokenConfig !== undefined) {
+      GroupedTokenConfig.encode(
+        message.groupedTokenConfig,
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUpdateGroupedTokenConfigResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgUpdateGroupedTokenConfigResponse,
+    } as MsgUpdateGroupedTokenConfigResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.groupedTokenConfig = GroupedTokenConfig.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdateGroupedTokenConfigResponse {
+    const message = {
+      ...baseMsgUpdateGroupedTokenConfigResponse,
+    } as MsgUpdateGroupedTokenConfigResponse;
+    message.groupedTokenConfig =
+      object.groupedTokenConfig !== undefined &&
+      object.groupedTokenConfig !== null
+        ? GroupedTokenConfig.fromJSON(object.groupedTokenConfig)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: MsgUpdateGroupedTokenConfigResponse): unknown {
+    const obj: any = {};
+    message.groupedTokenConfig !== undefined &&
+      (obj.groupedTokenConfig = message.groupedTokenConfig
+        ? GroupedTokenConfig.toJSON(message.groupedTokenConfig)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgUpdateGroupedTokenConfigResponse>
+  ): MsgUpdateGroupedTokenConfigResponse {
+    const message = {
+      ...baseMsgUpdateGroupedTokenConfigResponse,
+    } as MsgUpdateGroupedTokenConfigResponse;
+    message.groupedTokenConfig =
+      object.groupedTokenConfig !== undefined &&
+      object.groupedTokenConfig !== null
+        ? GroupedTokenConfig.fromPartial(object.groupedTokenConfig)
+        : undefined;
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
-  /** this line is used by starport scaffolding # proto/tx/rpc */
   CreateToken(request: MsgCreateToken): Promise<MsgCreateTokenResponse>;
   SyncToken(request: MsgSyncToken): Promise<MsgSyncTokenResponse>;
   MintToken(request: MsgMintToken): Promise<MsgMintTokenResponse>;
@@ -2545,6 +3862,24 @@ export interface Msg {
   RemoveBridgeAddress(
     request: MsgRemoveBridgeAddress
   ): Promise<MsgRemoveBridgeAddressResponse>;
+  CreateGroup(request: MsgCreateGroup): Promise<MsgCreateGroupResponse>;
+  UpdateGroup(request: MsgUpdateGroup): Promise<MsgUpdateGroupResponse>;
+  RegisterToGroup(
+    request: MsgRegisterToGroup
+  ): Promise<MsgRegisterToGroupResponse>;
+  DeregisterFromGroup(
+    request: MsgDeregisterFromGroup
+  ): Promise<MsgDeregisterFromGroupResponse>;
+  DepositToGroup(
+    request: MsgDepositToGroup
+  ): Promise<MsgDepositToGroupResponse>;
+  WithdrawFromGroup(
+    request: MsgWithdrawFromGroup
+  ): Promise<MsgWithdrawFromGroupResponse>;
+  /** this line is used by starport scaffolding # proto/tx/rpc */
+  UpdateGroupedTokenConfig(
+    request: MsgUpdateGroupedTokenConfig
+  ): Promise<MsgUpdateGroupedTokenConfigResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -2565,6 +3900,13 @@ export class MsgClientImpl implements Msg {
     this.UpdateToken = this.UpdateToken.bind(this);
     this.AddBridgeAddress = this.AddBridgeAddress.bind(this);
     this.RemoveBridgeAddress = this.RemoveBridgeAddress.bind(this);
+    this.CreateGroup = this.CreateGroup.bind(this);
+    this.UpdateGroup = this.UpdateGroup.bind(this);
+    this.RegisterToGroup = this.RegisterToGroup.bind(this);
+    this.DeregisterFromGroup = this.DeregisterFromGroup.bind(this);
+    this.DepositToGroup = this.DepositToGroup.bind(this);
+    this.WithdrawFromGroup = this.WithdrawFromGroup.bind(this);
+    this.UpdateGroupedTokenConfig = this.UpdateGroupedTokenConfig.bind(this);
   }
   CreateToken(request: MsgCreateToken): Promise<MsgCreateTokenResponse> {
     const data = MsgCreateToken.encode(request).finish();
@@ -2741,6 +4083,100 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgRemoveBridgeAddressResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  CreateGroup(request: MsgCreateGroup): Promise<MsgCreateGroupResponse> {
+    const data = MsgCreateGroup.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.coin.Msg",
+      "CreateGroup",
+      data
+    );
+    return promise.then((data) =>
+      MsgCreateGroupResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  UpdateGroup(request: MsgUpdateGroup): Promise<MsgUpdateGroupResponse> {
+    const data = MsgUpdateGroup.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.coin.Msg",
+      "UpdateGroup",
+      data
+    );
+    return promise.then((data) =>
+      MsgUpdateGroupResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  RegisterToGroup(
+    request: MsgRegisterToGroup
+  ): Promise<MsgRegisterToGroupResponse> {
+    const data = MsgRegisterToGroup.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.coin.Msg",
+      "RegisterToGroup",
+      data
+    );
+    return promise.then((data) =>
+      MsgRegisterToGroupResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  DeregisterFromGroup(
+    request: MsgDeregisterFromGroup
+  ): Promise<MsgDeregisterFromGroupResponse> {
+    const data = MsgDeregisterFromGroup.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.coin.Msg",
+      "DeregisterFromGroup",
+      data
+    );
+    return promise.then((data) =>
+      MsgDeregisterFromGroupResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  DepositToGroup(
+    request: MsgDepositToGroup
+  ): Promise<MsgDepositToGroupResponse> {
+    const data = MsgDepositToGroup.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.coin.Msg",
+      "DepositToGroup",
+      data
+    );
+    return promise.then((data) =>
+      MsgDepositToGroupResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  WithdrawFromGroup(
+    request: MsgWithdrawFromGroup
+  ): Promise<MsgWithdrawFromGroupResponse> {
+    const data = MsgWithdrawFromGroup.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.coin.Msg",
+      "WithdrawFromGroup",
+      data
+    );
+    return promise.then((data) =>
+      MsgWithdrawFromGroupResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  UpdateGroupedTokenConfig(
+    request: MsgUpdateGroupedTokenConfig
+  ): Promise<MsgUpdateGroupedTokenConfigResponse> {
+    const data = MsgUpdateGroupedTokenConfig.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.coin.Msg",
+      "UpdateGroupedTokenConfig",
+      data
+    );
+    return promise.then((data) =>
+      MsgUpdateGroupedTokenConfigResponse.decode(new _m0.Reader(data))
     );
   }
 }

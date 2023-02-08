@@ -8,9 +8,6 @@ import "./_setup";
 
   const sdk = await CarbonSDK.instance({
     network: CarbonSDK.Network.LocalHost,
-    config: {
-      tmRpcUrl: process.env.TRPC_ENDPOINT,
-    },
   });
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");

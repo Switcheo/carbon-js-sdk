@@ -15,6 +15,8 @@ export interface InternalTransfer {
 
 export interface QueryInternalTransfersRequest {
   address: string;
+  sender: string;
+  receiver: string;
   denom: string;
   pagination?: PageRequest;
 }
@@ -132,7 +134,12 @@ export const InternalTransfer = {
   },
 };
 
-const baseQueryInternalTransfersRequest: object = { address: "", denom: "" };
+const baseQueryInternalTransfersRequest: object = {
+  address: "",
+  sender: "",
+  receiver: "",
+  denom: "",
+};
 
 export const QueryInternalTransfersRequest = {
   encode(
@@ -142,11 +149,17 @@ export const QueryInternalTransfersRequest = {
     if (message.address !== "") {
       writer.uint32(10).string(message.address);
     }
+    if (message.sender !== "") {
+      writer.uint32(18).string(message.sender);
+    }
+    if (message.receiver !== "") {
+      writer.uint32(26).string(message.receiver);
+    }
     if (message.denom !== "") {
-      writer.uint32(18).string(message.denom);
+      writer.uint32(34).string(message.denom);
     }
     if (message.pagination !== undefined) {
-      PageRequest.encode(message.pagination, writer.uint32(26).fork()).ldelim();
+      PageRequest.encode(message.pagination, writer.uint32(42).fork()).ldelim();
     }
     return writer;
   },
@@ -167,9 +180,15 @@ export const QueryInternalTransfersRequest = {
           message.address = reader.string();
           break;
         case 2:
-          message.denom = reader.string();
+          message.sender = reader.string();
           break;
         case 3:
+          message.receiver = reader.string();
+          break;
+        case 4:
+          message.denom = reader.string();
+          break;
+        case 5:
           message.pagination = PageRequest.decode(reader, reader.uint32());
           break;
         default:
@@ -188,6 +207,14 @@ export const QueryInternalTransfersRequest = {
       object.address !== undefined && object.address !== null
         ? String(object.address)
         : "";
+    message.sender =
+      object.sender !== undefined && object.sender !== null
+        ? String(object.sender)
+        : "";
+    message.receiver =
+      object.receiver !== undefined && object.receiver !== null
+        ? String(object.receiver)
+        : "";
     message.denom =
       object.denom !== undefined && object.denom !== null
         ? String(object.denom)
@@ -202,6 +229,8 @@ export const QueryInternalTransfersRequest = {
   toJSON(message: QueryInternalTransfersRequest): unknown {
     const obj: any = {};
     message.address !== undefined && (obj.address = message.address);
+    message.sender !== undefined && (obj.sender = message.sender);
+    message.receiver !== undefined && (obj.receiver = message.receiver);
     message.denom !== undefined && (obj.denom = message.denom);
     message.pagination !== undefined &&
       (obj.pagination = message.pagination
@@ -217,6 +246,8 @@ export const QueryInternalTransfersRequest = {
       ...baseQueryInternalTransfersRequest,
     } as QueryInternalTransfersRequest;
     message.address = object.address ?? "";
+    message.sender = object.sender ?? "";
+    message.receiver = object.receiver ?? "";
     message.denom = object.denom ?? "";
     message.pagination =
       object.pagination !== undefined && object.pagination !== null

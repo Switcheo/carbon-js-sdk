@@ -1,4 +1,5 @@
-import { MsgMintToken, MsgWithdraw } from "@carbon-sdk/codec/coin/tx";
+import { WithdrawFromGroupEvent } from "@carbon-sdk/codec";
+import { MsgMintToken, MsgWithdraw, MsgDepositToGroup, MsgWithdrawFromGroup } from "@carbon-sdk/codec/coin/tx";
 import { CarbonTx } from "@carbon-sdk/util";
 import BigNumber from "bignumber.js";
 import BaseModule from "./base";
@@ -43,6 +44,40 @@ export class CoinModule extends BaseModule {
       opts
     );
   }
+    /// call 
+  public async depositToGroup(params: CoinModule.DepositToGroupParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+
+    const value = MsgDepositToGroup.fromPartial({
+      creator: params.creator ?? wallet.bech32Address,
+      depositCoin: params.depositCoin
+    })
+
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgDepositToGroup,
+        value,
+      },
+      opts
+    )
+  }
+
+  public async WithdrawFromGroupEvent(params: CoinModule.WithdrawFromGroupParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+
+    const value = MsgWithdrawFromGroup.fromPartial({
+      creator: params.creator ?? wallet.bech32Address,
+      sourceCoin: params.sourceCoin
+    })
+
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgWithdrawFromGroup,
+        value,
+      },
+      opts
+    )
+  }
 }
 
 export namespace CoinModule {
@@ -59,5 +94,15 @@ export namespace CoinModule {
     denom: string;
     amount: BigNumber;
     to?: string;
+  }
+
+  export interface DepositToGroupParams {
+    creator?: string;
+    depositCoin: string;
+  }
+
+  export interface WithdrawFromGroupParams {
+    creator?: string;
+    sourceCoin: string;
   }
 }

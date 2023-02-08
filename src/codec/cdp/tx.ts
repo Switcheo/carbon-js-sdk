@@ -338,6 +338,13 @@ export interface MsgLiquidateCollateralWithStablecoinAndInterestInCollateral {
 
 export interface MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse {}
 
+export interface MsgConvertTokenInCdpToGroupTokens {
+  creator: string;
+  denom: string;
+}
+
+export interface MsgConvertTokenInCdpToGroupTokensResponse {}
+
 const baseMsgAddRateStrategy: object = { creator: "" };
 
 export const MsgAddRateStrategy = {
@@ -5934,6 +5941,137 @@ export const MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse
     },
   };
 
+const baseMsgConvertTokenInCdpToGroupTokens: object = {
+  creator: "",
+  denom: "",
+};
+
+export const MsgConvertTokenInCdpToGroupTokens = {
+  encode(
+    message: MsgConvertTokenInCdpToGroupTokens,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.denom !== "") {
+      writer.uint32(18).string(message.denom);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgConvertTokenInCdpToGroupTokens {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgConvertTokenInCdpToGroupTokens,
+    } as MsgConvertTokenInCdpToGroupTokens;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.denom = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgConvertTokenInCdpToGroupTokens {
+    const message = {
+      ...baseMsgConvertTokenInCdpToGroupTokens,
+    } as MsgConvertTokenInCdpToGroupTokens;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgConvertTokenInCdpToGroupTokens): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.denom !== undefined && (obj.denom = message.denom);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgConvertTokenInCdpToGroupTokens>
+  ): MsgConvertTokenInCdpToGroupTokens {
+    const message = {
+      ...baseMsgConvertTokenInCdpToGroupTokens,
+    } as MsgConvertTokenInCdpToGroupTokens;
+    message.creator = object.creator ?? "";
+    message.denom = object.denom ?? "";
+    return message;
+  },
+};
+
+const baseMsgConvertTokenInCdpToGroupTokensResponse: object = {};
+
+export const MsgConvertTokenInCdpToGroupTokensResponse = {
+  encode(
+    _: MsgConvertTokenInCdpToGroupTokensResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgConvertTokenInCdpToGroupTokensResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgConvertTokenInCdpToGroupTokensResponse,
+    } as MsgConvertTokenInCdpToGroupTokensResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgConvertTokenInCdpToGroupTokensResponse {
+    const message = {
+      ...baseMsgConvertTokenInCdpToGroupTokensResponse,
+    } as MsgConvertTokenInCdpToGroupTokensResponse;
+    return message;
+  },
+
+  toJSON(_: MsgConvertTokenInCdpToGroupTokensResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgConvertTokenInCdpToGroupTokensResponse>
+  ): MsgConvertTokenInCdpToGroupTokensResponse {
+    const message = {
+      ...baseMsgConvertTokenInCdpToGroupTokensResponse,
+    } as MsgConvertTokenInCdpToGroupTokensResponse;
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
   AddRateStrategy(
@@ -6028,10 +6166,13 @@ export interface Msg {
   LiquidateCollateralWithStablecoinAndInterestInCdpTokens(
     request: MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens
   ): Promise<MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse>;
-  /** this line is used by starport scaffolding # proto/tx/rpc */
   LiquidateCollateralWithStablecoinAndInterestInCollateral(
     request: MsgLiquidateCollateralWithStablecoinAndInterestInCollateral
   ): Promise<MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse>;
+  /** this line is used by starport scaffolding # proto/tx/rpc */
+  ConvertTokenInCdpToGroupTokens(
+    request: MsgConvertTokenInCdpToGroupTokens
+  ): Promise<MsgConvertTokenInCdpToGroupTokensResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -6085,6 +6226,8 @@ export class MsgClientImpl implements Msg {
       this.LiquidateCollateralWithStablecoinAndInterestInCdpTokens.bind(this);
     this.LiquidateCollateralWithStablecoinAndInterestInCollateral =
       this.LiquidateCollateralWithStablecoinAndInterestInCollateral.bind(this);
+    this.ConvertTokenInCdpToGroupTokens =
+      this.ConvertTokenInCdpToGroupTokens.bind(this);
   }
   AddRateStrategy(
     request: MsgAddRateStrategy
@@ -6601,6 +6744,20 @@ export class MsgClientImpl implements Msg {
       MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse.decode(
         new _m0.Reader(data)
       )
+    );
+  }
+
+  ConvertTokenInCdpToGroupTokens(
+    request: MsgConvertTokenInCdpToGroupTokens
+  ): Promise<MsgConvertTokenInCdpToGroupTokensResponse> {
+    const data = MsgConvertTokenInCdpToGroupTokens.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Msg",
+      "ConvertTokenInCdpToGroupTokens",
+      data
+    );
+    return promise.then((data) =>
+      MsgConvertTokenInCdpToGroupTokensResponse.decode(new _m0.Reader(data))
     );
   }
 }
