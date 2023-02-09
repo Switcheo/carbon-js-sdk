@@ -7,7 +7,10 @@ import "./_setup";
   console.log("mnemonics", mnemonics);
 
   const sdk = await CarbonSDK.instance({
-    network: CarbonSDK.Network.DevNet,
+    network: CarbonSDK.Network.LocalHost,
+    config: {
+      tmRpcUrl: process.env.TRPC_ENDPOINT,
+    },
   });
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
