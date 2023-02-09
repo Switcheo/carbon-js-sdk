@@ -1,5 +1,5 @@
-import { Network } from "@carbon-sdk/constant/network";
-import { SimpleMap } from "./type";
+import { Network } from "@carbon-sdk/constant/network"
+import { SimpleMap } from "./type"
 
 export enum Blockchain {
   Neo = "neo",
@@ -37,9 +37,9 @@ export enum Blockchain {
 export const BRIDGE_IDS = {
   polynetwork: 1,
   ibc: 2,
-};
+}
 
-export type ChainIds = SimpleMap<number>;
+export type ChainIds = SimpleMap<number>
 
 export const ChainNames = {
   1: "MainNet",
@@ -51,7 +51,7 @@ export const ChainNames = {
   111: "ZIL TestNet",
   42161: "Arbitrum MainNet",
   421611: "Arbitrum TestNet",
-} as const;
+} as const
 
 export const CHAIN_IDS: ChainIds = {
   native: 0,
@@ -79,7 +79,7 @@ export const CHAIN_IDS: ChainIds = {
   canto: 321,
   omniflixhub: 322,
   agoric: 323,
-};
+}
 
 export const CHAIN_IDS_DEV: ChainIds = {
   eth: 350,
@@ -87,7 +87,7 @@ export const CHAIN_IDS_DEV: ChainIds = {
   neo3: 88,
   bsc: 79,
   zil: 111,
-};
+}
 
 export const CHAIN_IDS_TEST: ChainIds = {
   eth: 2,
@@ -95,22 +95,22 @@ export const CHAIN_IDS_TEST: ChainIds = {
   neo3: 88,
   bsc: 79,
   zil: 111,
-};
+}
 
 export const chainIdsByBlockchain: SimpleMap<ChainIds> = {
   [Network.MainNet]: CHAIN_IDS,
   [Network.DevNet]: CHAIN_IDS_DEV,
   [Network.TestNet]: CHAIN_IDS_TEST,
   [Network.LocalHost]: CHAIN_IDS_TEST,
-};
+}
 
 export function parseBlockchain(value: string | null): Blockchain | null {
-  if (value === null || value === undefined) return null;
-  return Object.values(Blockchain).find((enumMember) => enumMember.toLowerCase() === value.toLowerCase()) ?? null;
+  if (value === null || value === undefined) return null
+  return Object.values(Blockchain).find((enumMember) => enumMember.toLowerCase() === value.toLowerCase()) ?? null
 }
 
 export function getChainFromID(id: number): string | undefined {
-  return Object.keys(CHAIN_IDS).find((key) => CHAIN_IDS[key] === id);
+  return Object.keys(CHAIN_IDS).find((key) => CHAIN_IDS[key] === id)
 }
 
 export const getBlockchainFromChain = (chainId?: number) => {
@@ -118,83 +118,116 @@ export const getBlockchainFromChain = (chainId?: number) => {
     case 1:
     case 3:
     case 4:
-      return Blockchain.Ethereum;
+      return Blockchain.Ethereum
     case 56:
     case 97:
-      return Blockchain.BinanceSmartChain;
+      return Blockchain.BinanceSmartChain
     case 110:
     case 111:
-      return Blockchain.Zilliqa;
+      return Blockchain.Zilliqa
     case 42161:
     case 421611:
-      return Blockchain.Arbitrum;
+      return Blockchain.Arbitrum
   }
-  return undefined;
-};
+  return undefined
+}
 
-export const blockchainForChainId = (chainId?: number): Blockchain | undefined => {
-  switch (chainId) {
-    case 0:
-      return Blockchain.Native;
-    case 1:
-      return Blockchain.Btc;
-    case 2:
-    case 350: // devnet
-      return Blockchain.Ethereum;
-    case 4:
-    case 5: // devnet
-      return Blockchain.Neo;
-    case 6:
-    case 79: // devnet
-      return Blockchain.BinanceSmartChain;
-    case 9: // mainnet
-    case 10:
-    case 18:
-    case 110: // testnet
-    case 111:
-      return Blockchain.Zilliqa;
-    case 14: // mainnet
-    case 88: // testnet
-      return Blockchain.Neo3;
-    case 19: // mainnet
-      return Blockchain.Arbitrum;
-    case 244: // mainnet
-      return Blockchain.Osmosis;
-    case 245: // mainnet
-      return Blockchain.Terra;
-    case 246: // mainnet
-      return Blockchain.CosmosHub;
-    case 247: // mainnet
-      return Blockchain.Juno;
-    case 248: // mainnet
-      return Blockchain.Evmos;
-    case 249: // mainnet
-      return Blockchain.Axelar;
-    case 313: // mainnet
-      return Blockchain.Stride;
-    case 314: // mainnnet
-      return Blockchain.Kujira;
-    case 315: // mainnnet
-      return Blockchain.Terra2;
-    case 316: // mainnnet
-      return Blockchain.Quicksilver;
-    case 317: // mainnnet
-      return Blockchain.Comdex;
-    case 318: // mainnnet
-      return Blockchain.StafiHub;
-    case 319: // mainnnet
-      return Blockchain.Persistence;
-    case 320: // mainnnet
-      return Blockchain.Stargaze;
-    case 321: // mainnnet
-      return Blockchain.Canto;
-    case 322: // mainnnet
-      return Blockchain.OmniFlixHub;
-    case 323: // mainnnet
-      return Blockchain.Agoric;
-    case 42161: // mainnnet
-      return Blockchain.Arbitrum;
+export const blockchainForChainId = (chainId?: number, network = Network.MainNet): Blockchain | undefined => {
+  switch (network) {
+    case Network.MainNet:
+      switch (chainId) {
+        case 0:
+          return Blockchain.Native
+        case 1:
+          return Blockchain.Btc
+        case 2:
+          return Blockchain.Ethereum
+        case 4:
+          return Blockchain.Neo
+        case 6:
+          return Blockchain.BinanceSmartChain
+        case 14:
+          return Blockchain.Neo3
+        case 9:  /* FALLTHROUGH */
+        case 18:
+          return Blockchain.Zilliqa
+        case 244:
+          return Blockchain.Osmosis
+        case 13: /* FALLTHROUGH */
+        case 245:
+          return Blockchain.Terra
+        case 246:
+          return Blockchain.CosmosHub
+        case 5: /* FALLTHROUGH */
+        case 247:
+          return Blockchain.Juno
+        case 7: /* FALLTHROUGH */
+        case 248:
+          return Blockchain.Evmos
+        case 8: /* FALLTHROUGH */
+        case 249:
+          return Blockchain.Axelar
+        case 313:
+          return Blockchain.Stride
+        case 314:
+          return Blockchain.Kujira
+        case 315:
+          return Blockchain.Terra2
+        case 316:
+          return Blockchain.Quicksilver
+        case 12: /* FALLTHROUGH */
+        case 317:
+          return Blockchain.Comdex
+        case 318:
+          return Blockchain.StafiHub
+        case 15: /* FALLTHROUGH */
+        case 319:
+          return Blockchain.Persistence
+        case 16: /* FALLTHROUGH */
+        case 320:
+          return Blockchain.Stargaze
+        case 321:
+          return Blockchain.Canto
+        case 322:
+          return Blockchain.OmniFlixHub
+        case 323:
+          return Blockchain.Agoric
+        case 19: /* FALLTHROUGH */
+        case 42161:
+          return Blockchain.Arbitrum
+        default:
+          return undefined
+      }
+    case Network.TestNet:
+      switch (chainId) {
+        case 1:
+          return Blockchain.Btc
+        case 5:
+          return Blockchain.Carbon
+        case 79:
+          return Blockchain.BinanceSmartChain
+        case 88:
+          return Blockchain.Neo3
+        case 111:
+          return Blockchain.Zilliqa
+        case 2: /* FALLTHROUGH */
+        case 502:
+          return Blockchain.Ethereum
+        default:
+          return undefined
+      }
+    case Network.DevNet:
+      switch (chainId) {
+        case 350:
+          return Blockchain.Ethereum
+        case 5:
+          return Blockchain.Neo
+        case 79:
+          return Blockchain.BinanceSmartChain
+      }
+    case Network.LocalHost:
+      return undefined
     default:
-      return undefined;
+      return undefined
   }
-};
+}

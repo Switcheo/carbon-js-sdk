@@ -300,16 +300,19 @@ export class ZILClient {
     } = params;
     const networkConfig = this.getNetworkConfig();
 
-    if (!recoveryAddress.match(/^swth[a-z0-9]{39}$/)) {
+    const recoveryAddrRegex = new RegExp(`^${networkConfig.Bech32Prefix}[a-z0-9]{39}$`)
+    if (!recoveryAddress.match(recoveryAddrRegex)) {
       throw new Error("Invalid recovery address");
     }
+
+    const carbonNetwork = networkConfig.network;
 
     const fromTokenId = fromToken.id;
     const fromTokenAddr = appendHexPrefix(fromToken.tokenAddress);
     const toTokenDenom = toToken.denom;
     const targetProxyHash = appendHexPrefix(this.getTargetProxyHash(fromToken));
 
-    const recoveryAddressHex = ethers.utils.hexlify(AddressUtils.SWTHAddress.getAddressBytes(recoveryAddress, CarbonSDK.Network.MainNet));
+    const recoveryAddressHex = ethers.utils.hexlify(AddressUtils.SWTHAddress.getAddressBytes(recoveryAddress, carbonNetwork));
 
     const fromAssetHash = ethers.utils.hexlify(ethers.utils.toUtf8Bytes(fromTokenId));
     const toAssetHash = ethers.utils.hexlify(ethers.utils.toUtf8Bytes(toTokenDenom));
