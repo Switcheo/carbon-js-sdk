@@ -8,7 +8,7 @@ import "./_setup";
   console.log("mnemonics:", mnemonics);
 
   const sdk = await CarbonSDK.instance({
-    network: CarbonSDK.Network.DevNet,
+    network: CarbonSDK.Network.LocalHost,
   });
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
@@ -16,7 +16,7 @@ import "./_setup";
   const result = await connectedSDK.wallet.sendTxs([{
     typeUrl: CarbonTx.Types.MsgCreateGroup,
     value: MsgCreateGroup.fromPartial({
-      creator: 'swth1ex0e3g7zkwxntcw4qv803rm7yjsc9grjynfad6',
+      creator: 'tswth1ex0e3g7zkwxntcw4qv803rm7yjsc9grjqycd5l',
       name: 'USD',
       chequeTokenSymbol: 'USD',
       oracleId: 'DXBT2'
