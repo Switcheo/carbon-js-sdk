@@ -3,6 +3,7 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Bridge } from "./bridge";
 import { TokenGroup, GroupedTokenConfig } from "./group";
+import { Coin } from "../cosmos/base/v1beta1/coin";
 import {
   BoolValue,
   StringValue,
@@ -211,25 +212,25 @@ export interface MsgDeregisterFromGroupResponse {}
 export interface MsgDepositToGroup {
   creator: string;
   /** the token and amount to deposit into it's group */
-  depositCoin: string;
+  depositCoin?: Coin;
 }
 
 export interface MsgDepositToGroupResponse {
   groupId: Long;
-  tokensDeposited: string;
-  tokensMinted: string;
+  tokensDeposited?: Coin;
+  tokensMinted?: Coin;
 }
 
 export interface MsgWithdrawFromGroup {
   creator: string;
   /** the amount and denom to withdraw into */
-  sourceCoin: string;
+  sourceCoin?: Coin;
 }
 
 export interface MsgWithdrawFromGroupResponse {
   groupId: Long;
-  tokensBurnt: string;
-  tokensWithdrawn: string;
+  tokensBurnt?: Coin;
+  tokensWithdrawn?: Coin;
 }
 
 export interface MsgUpdateGroupedTokenConfig {
@@ -3235,7 +3236,7 @@ export const MsgDeregisterFromGroupResponse = {
   },
 };
 
-const baseMsgDepositToGroup: object = { creator: "", depositCoin: "" };
+const baseMsgDepositToGroup: object = { creator: "" };
 
 export const MsgDepositToGroup = {
   encode(
@@ -3245,8 +3246,8 @@ export const MsgDepositToGroup = {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
-    if (message.depositCoin !== "") {
-      writer.uint32(18).string(message.depositCoin);
+    if (message.depositCoin !== undefined) {
+      Coin.encode(message.depositCoin, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
@@ -3262,7 +3263,7 @@ export const MsgDepositToGroup = {
           message.creator = reader.string();
           break;
         case 2:
-          message.depositCoin = reader.string();
+          message.depositCoin = Coin.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -3280,8 +3281,8 @@ export const MsgDepositToGroup = {
         : "";
     message.depositCoin =
       object.depositCoin !== undefined && object.depositCoin !== null
-        ? String(object.depositCoin)
-        : "";
+        ? Coin.fromJSON(object.depositCoin)
+        : undefined;
     return message;
   },
 
@@ -3289,23 +3290,24 @@ export const MsgDepositToGroup = {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
     message.depositCoin !== undefined &&
-      (obj.depositCoin = message.depositCoin);
+      (obj.depositCoin = message.depositCoin
+        ? Coin.toJSON(message.depositCoin)
+        : undefined);
     return obj;
   },
 
   fromPartial(object: DeepPartial<MsgDepositToGroup>): MsgDepositToGroup {
     const message = { ...baseMsgDepositToGroup } as MsgDepositToGroup;
     message.creator = object.creator ?? "";
-    message.depositCoin = object.depositCoin ?? "";
+    message.depositCoin =
+      object.depositCoin !== undefined && object.depositCoin !== null
+        ? Coin.fromPartial(object.depositCoin)
+        : undefined;
     return message;
   },
 };
 
-const baseMsgDepositToGroupResponse: object = {
-  groupId: Long.UZERO,
-  tokensDeposited: "",
-  tokensMinted: "",
-};
+const baseMsgDepositToGroupResponse: object = { groupId: Long.UZERO };
 
 export const MsgDepositToGroupResponse = {
   encode(
@@ -3315,11 +3317,11 @@ export const MsgDepositToGroupResponse = {
     if (!message.groupId.isZero()) {
       writer.uint32(8).uint64(message.groupId);
     }
-    if (message.tokensDeposited !== "") {
-      writer.uint32(18).string(message.tokensDeposited);
+    if (message.tokensDeposited !== undefined) {
+      Coin.encode(message.tokensDeposited, writer.uint32(18).fork()).ldelim();
     }
-    if (message.tokensMinted !== "") {
-      writer.uint32(26).string(message.tokensMinted);
+    if (message.tokensMinted !== undefined) {
+      Coin.encode(message.tokensMinted, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
@@ -3340,10 +3342,10 @@ export const MsgDepositToGroupResponse = {
           message.groupId = reader.uint64() as Long;
           break;
         case 2:
-          message.tokensDeposited = reader.string();
+          message.tokensDeposited = Coin.decode(reader, reader.uint32());
           break;
         case 3:
-          message.tokensMinted = reader.string();
+          message.tokensMinted = Coin.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -3363,12 +3365,12 @@ export const MsgDepositToGroupResponse = {
         : Long.UZERO;
     message.tokensDeposited =
       object.tokensDeposited !== undefined && object.tokensDeposited !== null
-        ? String(object.tokensDeposited)
-        : "";
+        ? Coin.fromJSON(object.tokensDeposited)
+        : undefined;
     message.tokensMinted =
       object.tokensMinted !== undefined && object.tokensMinted !== null
-        ? String(object.tokensMinted)
-        : "";
+        ? Coin.fromJSON(object.tokensMinted)
+        : undefined;
     return message;
   },
 
@@ -3377,9 +3379,13 @@ export const MsgDepositToGroupResponse = {
     message.groupId !== undefined &&
       (obj.groupId = (message.groupId || Long.UZERO).toString());
     message.tokensDeposited !== undefined &&
-      (obj.tokensDeposited = message.tokensDeposited);
+      (obj.tokensDeposited = message.tokensDeposited
+        ? Coin.toJSON(message.tokensDeposited)
+        : undefined);
     message.tokensMinted !== undefined &&
-      (obj.tokensMinted = message.tokensMinted);
+      (obj.tokensMinted = message.tokensMinted
+        ? Coin.toJSON(message.tokensMinted)
+        : undefined);
     return obj;
   },
 
@@ -3393,13 +3399,19 @@ export const MsgDepositToGroupResponse = {
       object.groupId !== undefined && object.groupId !== null
         ? Long.fromValue(object.groupId)
         : Long.UZERO;
-    message.tokensDeposited = object.tokensDeposited ?? "";
-    message.tokensMinted = object.tokensMinted ?? "";
+    message.tokensDeposited =
+      object.tokensDeposited !== undefined && object.tokensDeposited !== null
+        ? Coin.fromPartial(object.tokensDeposited)
+        : undefined;
+    message.tokensMinted =
+      object.tokensMinted !== undefined && object.tokensMinted !== null
+        ? Coin.fromPartial(object.tokensMinted)
+        : undefined;
     return message;
   },
 };
 
-const baseMsgWithdrawFromGroup: object = { creator: "", sourceCoin: "" };
+const baseMsgWithdrawFromGroup: object = { creator: "" };
 
 export const MsgWithdrawFromGroup = {
   encode(
@@ -3409,8 +3421,8 @@ export const MsgWithdrawFromGroup = {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
-    if (message.sourceCoin !== "") {
-      writer.uint32(18).string(message.sourceCoin);
+    if (message.sourceCoin !== undefined) {
+      Coin.encode(message.sourceCoin, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
@@ -3429,7 +3441,7 @@ export const MsgWithdrawFromGroup = {
           message.creator = reader.string();
           break;
         case 2:
-          message.sourceCoin = reader.string();
+          message.sourceCoin = Coin.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -3447,31 +3459,33 @@ export const MsgWithdrawFromGroup = {
         : "";
     message.sourceCoin =
       object.sourceCoin !== undefined && object.sourceCoin !== null
-        ? String(object.sourceCoin)
-        : "";
+        ? Coin.fromJSON(object.sourceCoin)
+        : undefined;
     return message;
   },
 
   toJSON(message: MsgWithdrawFromGroup): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.sourceCoin !== undefined && (obj.sourceCoin = message.sourceCoin);
+    message.sourceCoin !== undefined &&
+      (obj.sourceCoin = message.sourceCoin
+        ? Coin.toJSON(message.sourceCoin)
+        : undefined);
     return obj;
   },
 
   fromPartial(object: DeepPartial<MsgWithdrawFromGroup>): MsgWithdrawFromGroup {
     const message = { ...baseMsgWithdrawFromGroup } as MsgWithdrawFromGroup;
     message.creator = object.creator ?? "";
-    message.sourceCoin = object.sourceCoin ?? "";
+    message.sourceCoin =
+      object.sourceCoin !== undefined && object.sourceCoin !== null
+        ? Coin.fromPartial(object.sourceCoin)
+        : undefined;
     return message;
   },
 };
 
-const baseMsgWithdrawFromGroupResponse: object = {
-  groupId: Long.UZERO,
-  tokensBurnt: "",
-  tokensWithdrawn: "",
-};
+const baseMsgWithdrawFromGroupResponse: object = { groupId: Long.UZERO };
 
 export const MsgWithdrawFromGroupResponse = {
   encode(
@@ -3481,11 +3495,11 @@ export const MsgWithdrawFromGroupResponse = {
     if (!message.groupId.isZero()) {
       writer.uint32(8).uint64(message.groupId);
     }
-    if (message.tokensBurnt !== "") {
-      writer.uint32(18).string(message.tokensBurnt);
+    if (message.tokensBurnt !== undefined) {
+      Coin.encode(message.tokensBurnt, writer.uint32(18).fork()).ldelim();
     }
-    if (message.tokensWithdrawn !== "") {
-      writer.uint32(26).string(message.tokensWithdrawn);
+    if (message.tokensWithdrawn !== undefined) {
+      Coin.encode(message.tokensWithdrawn, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
@@ -3506,10 +3520,10 @@ export const MsgWithdrawFromGroupResponse = {
           message.groupId = reader.uint64() as Long;
           break;
         case 2:
-          message.tokensBurnt = reader.string();
+          message.tokensBurnt = Coin.decode(reader, reader.uint32());
           break;
         case 3:
-          message.tokensWithdrawn = reader.string();
+          message.tokensWithdrawn = Coin.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -3529,12 +3543,12 @@ export const MsgWithdrawFromGroupResponse = {
         : Long.UZERO;
     message.tokensBurnt =
       object.tokensBurnt !== undefined && object.tokensBurnt !== null
-        ? String(object.tokensBurnt)
-        : "";
+        ? Coin.fromJSON(object.tokensBurnt)
+        : undefined;
     message.tokensWithdrawn =
       object.tokensWithdrawn !== undefined && object.tokensWithdrawn !== null
-        ? String(object.tokensWithdrawn)
-        : "";
+        ? Coin.fromJSON(object.tokensWithdrawn)
+        : undefined;
     return message;
   },
 
@@ -3543,9 +3557,13 @@ export const MsgWithdrawFromGroupResponse = {
     message.groupId !== undefined &&
       (obj.groupId = (message.groupId || Long.UZERO).toString());
     message.tokensBurnt !== undefined &&
-      (obj.tokensBurnt = message.tokensBurnt);
+      (obj.tokensBurnt = message.tokensBurnt
+        ? Coin.toJSON(message.tokensBurnt)
+        : undefined);
     message.tokensWithdrawn !== undefined &&
-      (obj.tokensWithdrawn = message.tokensWithdrawn);
+      (obj.tokensWithdrawn = message.tokensWithdrawn
+        ? Coin.toJSON(message.tokensWithdrawn)
+        : undefined);
     return obj;
   },
 
@@ -3559,8 +3577,14 @@ export const MsgWithdrawFromGroupResponse = {
       object.groupId !== undefined && object.groupId !== null
         ? Long.fromValue(object.groupId)
         : Long.UZERO;
-    message.tokensBurnt = object.tokensBurnt ?? "";
-    message.tokensWithdrawn = object.tokensWithdrawn ?? "";
+    message.tokensBurnt =
+      object.tokensBurnt !== undefined && object.tokensBurnt !== null
+        ? Coin.fromPartial(object.tokensBurnt)
+        : undefined;
+    message.tokensWithdrawn =
+      object.tokensWithdrawn !== undefined && object.tokensWithdrawn !== null
+        ? Coin.fromPartial(object.tokensWithdrawn)
+        : undefined;
     return message;
   },
 };

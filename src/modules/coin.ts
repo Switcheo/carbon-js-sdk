@@ -3,6 +3,7 @@ import { MsgMintToken, MsgWithdraw, MsgDepositToGroup, MsgWithdrawFromGroup } fr
 import { CarbonTx } from "@carbon-sdk/util";
 import { EncodeObject } from "@cosmjs/proto-signing";
 import BigNumber from "bignumber.js";
+import { Coin } from "cosmjs-types/cosmos/base/v1beta1/coin";
 import BaseModule from "./base";
 
 export class CoinModule extends BaseModule {
@@ -65,19 +66,15 @@ export class CoinModule extends BaseModule {
 
   public async convertToGroup(params: CoinModule.DepositToGroupParams[], opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
-    const messages:EncodeObject[] = []
-    params.forEach((param) => {
-      const value = MsgDepositToGroup.fromPartial({
+    const messages: EncodeObject[] = params.map(param => ({
+      typeUrl: CarbonTx.Types.MsgDepositToGroup,
+      value: MsgDepositToGroup.fromPartial({
         creator: param.creator ?? wallet.bech32Address,
-        depositCoin: param.depositCoin
-      })
-      const message:EncodeObject = {
-        typeUrl: CarbonTx.Types.MsgDepositToGroup,
-        value
-      }
-      
-      messages.push(message)
-    })
+        depositCoin: param.depositCoin,
+      }),
+    }));
+
+    console.log("xx", JSON.stringify(messages))
     return await wallet.sendTxs(
       messages,
       opts
@@ -120,11 +117,11 @@ export namespace CoinModule {
 
   export interface DepositToGroupParams {
     creator?: string;
-    depositCoin: string;
+    depositCoin: Coin;
   }
 
   export interface WithdrawFromGroupParams {
     creator?: string;
-    sourceCoin: string;
+    sourceCoin: Coin;
   }
 }
