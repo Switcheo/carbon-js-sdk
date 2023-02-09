@@ -47,7 +47,7 @@ export interface DeregisterFromGroupEvent {
   denom: string;
 }
 
-export interface UpdateGroupedTokenConfigEvent {
+export interface SetGroupedTokenConfigEvent {
   groupedTokenConfig?: GroupedTokenConfig;
 }
 
@@ -653,11 +653,11 @@ export const DeregisterFromGroupEvent = {
   },
 };
 
-const baseUpdateGroupedTokenConfigEvent: object = {};
+const baseSetGroupedTokenConfigEvent: object = {};
 
-export const UpdateGroupedTokenConfigEvent = {
+export const SetGroupedTokenConfigEvent = {
   encode(
-    message: UpdateGroupedTokenConfigEvent,
+    message: SetGroupedTokenConfigEvent,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.groupedTokenConfig !== undefined) {
@@ -672,12 +672,12 @@ export const UpdateGroupedTokenConfigEvent = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): UpdateGroupedTokenConfigEvent {
+  ): SetGroupedTokenConfigEvent {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseUpdateGroupedTokenConfigEvent,
-    } as UpdateGroupedTokenConfigEvent;
+      ...baseSetGroupedTokenConfigEvent,
+    } as SetGroupedTokenConfigEvent;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -695,10 +695,10 @@ export const UpdateGroupedTokenConfigEvent = {
     return message;
   },
 
-  fromJSON(object: any): UpdateGroupedTokenConfigEvent {
+  fromJSON(object: any): SetGroupedTokenConfigEvent {
     const message = {
-      ...baseUpdateGroupedTokenConfigEvent,
-    } as UpdateGroupedTokenConfigEvent;
+      ...baseSetGroupedTokenConfigEvent,
+    } as SetGroupedTokenConfigEvent;
     message.groupedTokenConfig =
       object.groupedTokenConfig !== undefined &&
       object.groupedTokenConfig !== null
@@ -707,7 +707,7 @@ export const UpdateGroupedTokenConfigEvent = {
     return message;
   },
 
-  toJSON(message: UpdateGroupedTokenConfigEvent): unknown {
+  toJSON(message: SetGroupedTokenConfigEvent): unknown {
     const obj: any = {};
     message.groupedTokenConfig !== undefined &&
       (obj.groupedTokenConfig = message.groupedTokenConfig
@@ -717,11 +717,11 @@ export const UpdateGroupedTokenConfigEvent = {
   },
 
   fromPartial(
-    object: DeepPartial<UpdateGroupedTokenConfigEvent>
-  ): UpdateGroupedTokenConfigEvent {
+    object: DeepPartial<SetGroupedTokenConfigEvent>
+  ): SetGroupedTokenConfigEvent {
     const message = {
-      ...baseUpdateGroupedTokenConfigEvent,
-    } as UpdateGroupedTokenConfigEvent;
+      ...baseSetGroupedTokenConfigEvent,
+    } as SetGroupedTokenConfigEvent;
     message.groupedTokenConfig =
       object.groupedTokenConfig !== undefined &&
       object.groupedTokenConfig !== null

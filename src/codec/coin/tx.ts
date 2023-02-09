@@ -133,7 +133,6 @@ export interface MsgUpdateToken {
 
 export interface UpdateTokenParams {
   isActive?: boolean;
-  isCollateral?: boolean;
   name?: string;
   symbol?: string;
   decimals?: Long;
@@ -169,8 +168,8 @@ export interface MsgCreateGroup {
   creator: string;
   /** name of group */
   name: string;
-  /** name of the cheque token that represents any tokens in the group 1-to-1 */
-  chequeTokenName: string;
+  /** symbol of the cheque token that represents any tokens in the group 1-to-1 */
+  chequeTokenSymbol: string;
   /** oracle_id that helps to get the reference price for this group */
   oracleId: string;
 }
@@ -2080,12 +2079,6 @@ export const UpdateTokenParams = {
         writer.uint32(10).fork()
       ).ldelim();
     }
-    if (message.isCollateral !== undefined) {
-      BoolValue.encode(
-        { value: message.isCollateral! },
-        writer.uint32(18).fork()
-      ).ldelim();
-    }
     if (message.name !== undefined) {
       StringValue.encode(
         { value: message.name! },
@@ -2117,12 +2110,6 @@ export const UpdateTokenParams = {
         case 1:
           message.isActive = BoolValue.decode(reader, reader.uint32()).value;
           break;
-        case 2:
-          message.isCollateral = BoolValue.decode(
-            reader,
-            reader.uint32()
-          ).value;
-          break;
         case 3:
           message.name = StringValue.decode(reader, reader.uint32()).value;
           break;
@@ -2146,10 +2133,6 @@ export const UpdateTokenParams = {
       object.isActive !== undefined && object.isActive !== null
         ? Boolean(object.isActive)
         : undefined;
-    message.isCollateral =
-      object.isCollateral !== undefined && object.isCollateral !== null
-        ? Boolean(object.isCollateral)
-        : undefined;
     message.name =
       object.name !== undefined && object.name !== null
         ? String(object.name)
@@ -2168,8 +2151,6 @@ export const UpdateTokenParams = {
   toJSON(message: UpdateTokenParams): unknown {
     const obj: any = {};
     message.isActive !== undefined && (obj.isActive = message.isActive);
-    message.isCollateral !== undefined &&
-      (obj.isCollateral = message.isCollateral);
     message.name !== undefined && (obj.name = message.name);
     message.symbol !== undefined && (obj.symbol = message.symbol);
     message.decimals !== undefined && (obj.decimals = message.decimals);
@@ -2179,7 +2160,6 @@ export const UpdateTokenParams = {
   fromPartial(object: DeepPartial<UpdateTokenParams>): UpdateTokenParams {
     const message = { ...baseUpdateTokenParams } as UpdateTokenParams;
     message.isActive = object.isActive ?? undefined;
-    message.isCollateral = object.isCollateral ?? undefined;
     message.name = object.name ?? undefined;
     message.symbol = object.symbol ?? undefined;
     message.decimals =
@@ -2604,7 +2584,7 @@ export const MsgRemoveBridgeAddressResponse = {
 const baseMsgCreateGroup: object = {
   creator: "",
   name: "",
-  chequeTokenName: "",
+  chequeTokenSymbol: "",
   oracleId: "",
 };
 
@@ -2619,8 +2599,8 @@ export const MsgCreateGroup = {
     if (message.name !== "") {
       writer.uint32(18).string(message.name);
     }
-    if (message.chequeTokenName !== "") {
-      writer.uint32(26).string(message.chequeTokenName);
+    if (message.chequeTokenSymbol !== "") {
+      writer.uint32(26).string(message.chequeTokenSymbol);
     }
     if (message.oracleId !== "") {
       writer.uint32(34).string(message.oracleId);
@@ -2642,7 +2622,7 @@ export const MsgCreateGroup = {
           message.name = reader.string();
           break;
         case 3:
-          message.chequeTokenName = reader.string();
+          message.chequeTokenSymbol = reader.string();
           break;
         case 4:
           message.oracleId = reader.string();
@@ -2665,9 +2645,10 @@ export const MsgCreateGroup = {
       object.name !== undefined && object.name !== null
         ? String(object.name)
         : "";
-    message.chequeTokenName =
-      object.chequeTokenName !== undefined && object.chequeTokenName !== null
-        ? String(object.chequeTokenName)
+    message.chequeTokenSymbol =
+      object.chequeTokenSymbol !== undefined &&
+      object.chequeTokenSymbol !== null
+        ? String(object.chequeTokenSymbol)
         : "";
     message.oracleId =
       object.oracleId !== undefined && object.oracleId !== null
@@ -2680,8 +2661,8 @@ export const MsgCreateGroup = {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
     message.name !== undefined && (obj.name = message.name);
-    message.chequeTokenName !== undefined &&
-      (obj.chequeTokenName = message.chequeTokenName);
+    message.chequeTokenSymbol !== undefined &&
+      (obj.chequeTokenSymbol = message.chequeTokenSymbol);
     message.oracleId !== undefined && (obj.oracleId = message.oracleId);
     return obj;
   },
@@ -2690,7 +2671,7 @@ export const MsgCreateGroup = {
     const message = { ...baseMsgCreateGroup } as MsgCreateGroup;
     message.creator = object.creator ?? "";
     message.name = object.name ?? "";
-    message.chequeTokenName = object.chequeTokenName ?? "";
+    message.chequeTokenSymbol = object.chequeTokenSymbol ?? "";
     message.oracleId = object.oracleId ?? "";
     return message;
   },

@@ -24,7 +24,6 @@ export interface TokenGroupDetails {
 
 /** GroupedTokenConfig config for each token in the group */
 export interface GroupedTokenConfig {
-  groupId: Long;
   denom: string;
   isActive: boolean;
 }
@@ -210,25 +209,18 @@ export const TokenGroupDetails = {
   },
 };
 
-const baseGroupedTokenConfig: object = {
-  groupId: Long.UZERO,
-  denom: "",
-  isActive: false,
-};
+const baseGroupedTokenConfig: object = { denom: "", isActive: false };
 
 export const GroupedTokenConfig = {
   encode(
     message: GroupedTokenConfig,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (!message.groupId.isZero()) {
-      writer.uint32(8).uint64(message.groupId);
-    }
     if (message.denom !== "") {
-      writer.uint32(18).string(message.denom);
+      writer.uint32(10).string(message.denom);
     }
     if (message.isActive === true) {
-      writer.uint32(24).bool(message.isActive);
+      writer.uint32(16).bool(message.isActive);
     }
     return writer;
   },
@@ -241,12 +233,9 @@ export const GroupedTokenConfig = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.groupId = reader.uint64() as Long;
-          break;
-        case 2:
           message.denom = reader.string();
           break;
-        case 3:
+        case 2:
           message.isActive = reader.bool();
           break;
         default:
@@ -259,10 +248,6 @@ export const GroupedTokenConfig = {
 
   fromJSON(object: any): GroupedTokenConfig {
     const message = { ...baseGroupedTokenConfig } as GroupedTokenConfig;
-    message.groupId =
-      object.groupId !== undefined && object.groupId !== null
-        ? Long.fromString(object.groupId)
-        : Long.UZERO;
     message.denom =
       object.denom !== undefined && object.denom !== null
         ? String(object.denom)
@@ -276,8 +261,6 @@ export const GroupedTokenConfig = {
 
   toJSON(message: GroupedTokenConfig): unknown {
     const obj: any = {};
-    message.groupId !== undefined &&
-      (obj.groupId = (message.groupId || Long.UZERO).toString());
     message.denom !== undefined && (obj.denom = message.denom);
     message.isActive !== undefined && (obj.isActive = message.isActive);
     return obj;
@@ -285,10 +268,6 @@ export const GroupedTokenConfig = {
 
   fromPartial(object: DeepPartial<GroupedTokenConfig>): GroupedTokenConfig {
     const message = { ...baseGroupedTokenConfig } as GroupedTokenConfig;
-    message.groupId =
-      object.groupId !== undefined && object.groupId !== null
-        ? Long.fromValue(object.groupId)
-        : Long.UZERO;
     message.denom = object.denom ?? "";
     message.isActive = object.isActive ?? false;
     return message;

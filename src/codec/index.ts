@@ -829,7 +829,7 @@ export { CreateTokenProposal } from "./coin/proposal";
 export { Bridge } from "./coin/bridge";
 export { QueryGetTokenRequest, QueryGetTokenResponse, QueryAllTokenRequest, QueryAllTokenResponse, QueryGetLockedCoinsRequest, QueryGetLockedCoinsResponse, QueryAllWrapperMappingsRequest, QueryAllWrapperMappingsResponse, QueryAllWrapperMappingsResponse_WrapperMappingsEntry, QueryGetBalancesRequest, QueryGetBalancesResponse, QueryTotalBalancesRequest, QueryTotalBalancesResponse, QueryGetBridgeRequest, QueryGetBridgeResponse, QueryAllBridgeRequest, QueryAllBridgeResponse, QueryGetTokenGroupRequest, QueryGetTokenGroupResponse, QueryAllTokenGroupsRequest, QueryAllTokenGroupsResponse, QueryTokenGroupMappingsRequest, QueryTokenGroupMappingsResponse, QueryTokenGroupMappingsResponse_TokenGroupMappingsEntry } from "./coin/query";
 export { Token, BalanceChange, Metadata, LockedCoins, LockedCoinsRecord, PositionPool, TokenBalance } from "./coin/token";
-export { NewTokenEvent, SyncTokenEvent, BindTokenEvent, UnbindTokenEvent, LinkTokenEvent, NewGroupEvent, UpdateGroupEvent, RegisterToGroupEvent, DeregisterFromGroupEvent, UpdateGroupedTokenConfigEvent, DepositToGroupEvent, WithdrawFromGroupEvent } from "./coin/event";
+export { NewTokenEvent, SyncTokenEvent, BindTokenEvent, UnbindTokenEvent, LinkTokenEvent, NewGroupEvent, UpdateGroupEvent, RegisterToGroupEvent, DeregisterFromGroupEvent, SetGroupedTokenConfigEvent, DepositToGroupEvent, WithdrawFromGroupEvent } from "./coin/event";
 export { MarketLeverage, MarketLeverageRecord } from "./leverage/leverage";
 export { MsgSetLeverage, MsgSetLeverageResponse } from "./leverage/tx";
 export { QueryGetLeverageRequest, QueryGetLeverageResponse, QueryAllLeverageRequest, QueryAllLeverageResponse } from "./leverage/query";

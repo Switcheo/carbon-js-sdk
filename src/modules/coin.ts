@@ -62,7 +62,7 @@ export class CoinModule extends BaseModule {
     )
   }
 
-  public async WithdrawFromGroupEvent(params: CoinModule.WithdrawFromGroupParams, opts?: CarbonTx.SignTxOpts) {
+  public async withdrawFromGroup(params: CoinModule.WithdrawFromGroupParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgWithdrawFromGroup.fromPartial({

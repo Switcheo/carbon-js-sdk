@@ -7,19 +7,20 @@ import "./_setup";
   const mnemonics = process.env.MNEMONICS ?? BIP39.generateMnemonic();
   console.log("mnemonics:", mnemonics);
 
-  const sdk = await CarbonSDK.instanceWithMnemonic(mnemonics, {
-    network: CarbonSDK.Network.LocalHost,
+  const sdk = await CarbonSDK.instance({
+    network: CarbonSDK.Network.DevNet,
   });
-  console.log("connectedSDK")
+  const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
+  console.log("connected sdk");
 
-  await sdk.wallet.sendTxs([{
+  const result = await connectedSDK.wallet.sendTxs([{
     typeUrl: CarbonTx.Types.MsgCreateGroup,
     value: MsgCreateGroup.fromPartial({
-      creator: 'tswth1ex0e3g7zkwxntcw4qv803rm7yjsc9grjqycd5l',
+      creator: 'swth1ex0e3g7zkwxntcw4qv803rm7yjsc9grjynfad6',
       name: 'USD',
-      chequeTokenName: 'USD',
+      chequeTokenSymbol: 'USD',
       oracleId: 'DXBT2'
     }),
   }]);
-
+  console.log(result)
 })().catch(console.error).finally(() => process.exit(0));

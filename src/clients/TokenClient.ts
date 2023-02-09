@@ -325,16 +325,6 @@ class TokenClient {
     return denom === "usc";
   }
 
-  public isUSD(denom: string): boolean {
-    return denom === "usc"; //TODO update to USD denom when token added
-  }
-
-  public isGroupedUSDC(denom: string): boolean {
-    const usdcDenomsArr = ['busd.1.6.754a80', 'usdc.1.2.343151', 'usdc.1.6.53ff75', 'cibt/usdc.1.2.343151', 'ibc/7C0807A56073C4A27B0DE1C21BA3EB75DF75FD763F4AD37BC159917FC01145F0']
-    const stableCoinCheck = usdcDenomsArr.includes(denom)
-    return stableCoinCheck
-  }
-
   public getDepositTokenFor(tokenDenom: string, chain: BlockchainUtils.Blockchain): Token | undefined {
     const token = this.tokenForDenom(tokenDenom);
     if (!token) {
