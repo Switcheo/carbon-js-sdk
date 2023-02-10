@@ -1,9 +1,9 @@
-import { WithdrawFromGroupEvent } from "@carbon-sdk/codec";
 import { MsgMintToken, MsgWithdraw, MsgDepositToGroup, MsgWithdrawFromGroup } from "@carbon-sdk/codec/coin/tx";
+import { Coin } from "@carbon-sdk/codec/cosmos/base/v1beta1/coin";
 import { CarbonTx } from "@carbon-sdk/util";
 import { EncodeObject } from "@cosmjs/proto-signing";
 import BigNumber from "bignumber.js";
-import { Coin } from "cosmjs-types/cosmos/base/v1beta1/coin";
+
 import BaseModule from "./base";
 
 export class CoinModule extends BaseModule {
@@ -46,7 +46,7 @@ export class CoinModule extends BaseModule {
       opts
     );
   }
-    /// call 
+
   public async depositToGroup(params: CoinModule.DepositToGroupParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
@@ -74,7 +74,6 @@ export class CoinModule extends BaseModule {
       }),
     }));
 
-    console.log("xx", JSON.stringify(messages))
     return await wallet.sendTxs(
       messages,
       opts

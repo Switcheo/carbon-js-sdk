@@ -11,11 +11,6 @@ import "./_setup";
 
   const sdk = await CarbonSDK.instanceWithMnemonic(mnemonics, { network: CarbonSDK.Network.LocalHost});
 
-  // const result = await sdk.coin.convertToGroup([{
-  //   creator: sdk.wallet.bech32Address,
-  //   depositCoin: "10000usdc"
-  // }])
-
   const result = await sdk.wallet.sendTxs([{
     typeUrl: CarbonTx.Types.MsgDepositToGroup,
     value: MsgDepositToGroup.fromPartial({

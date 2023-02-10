@@ -426,7 +426,6 @@ export class CarbonWallet {
           handler: { resolve, reject },
         });
       } else {
-        console.log({error})
         reject(error);
       }
     }
