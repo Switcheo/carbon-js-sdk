@@ -3,6 +3,7 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Token, LockedCoinsRecord, PositionPool } from "./token";
 import { Bridge } from "./bridge";
+import { TokenGroupDetails } from "./group";
 
 export const protobufPackage = "Switcheo.carbon.coin";
 
@@ -13,8 +14,9 @@ export interface GenesisState {
   wrapperMappings: { [key: string]: string };
   lockedCoins: LockedCoinsRecord[];
   positionPools: PositionPool[];
-  /** this line is used by starport scaffolding # ibc/genesis/proto */
   bridges: Bridge[];
+  /** this line is used by starport scaffolding # ibc/genesis/proto */
+  groups: TokenGroupDetails[];
 }
 
 export interface GenesisState_WrapperMappingsEntry {
@@ -47,6 +49,9 @@ export const GenesisState = {
     for (const v of message.bridges) {
       Bridge.encode(v!, writer.uint32(42).fork()).ldelim();
     }
+    for (const v of message.groups) {
+      TokenGroupDetails.encode(v!, writer.uint32(50).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -59,6 +64,7 @@ export const GenesisState = {
     message.lockedCoins = [];
     message.positionPools = [];
     message.bridges = [];
+    message.groups = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -87,6 +93,11 @@ export const GenesisState = {
         case 5:
           message.bridges.push(Bridge.decode(reader, reader.uint32()));
           break;
+        case 6:
+          message.groups.push(
+            TokenGroupDetails.decode(reader, reader.uint32())
+          );
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -112,6 +123,9 @@ export const GenesisState = {
     );
     message.bridges = (object.bridges ?? []).map((e: any) =>
       Bridge.fromJSON(e)
+    );
+    message.groups = (object.groups ?? []).map((e: any) =>
+      TokenGroupDetails.fromJSON(e)
     );
     return message;
   },
@@ -150,6 +164,13 @@ export const GenesisState = {
     } else {
       obj.bridges = [];
     }
+    if (message.groups) {
+      obj.groups = message.groups.map((e) =>
+        e ? TokenGroupDetails.toJSON(e) : undefined
+      );
+    } else {
+      obj.groups = [];
+    }
     return obj;
   },
 
@@ -171,6 +192,9 @@ export const GenesisState = {
       PositionPool.fromPartial(e)
     );
     message.bridges = (object.bridges ?? []).map((e) => Bridge.fromPartial(e));
+    message.groups = (object.groups ?? []).map((e) =>
+      TokenGroupDetails.fromPartial(e)
+    );
     return message;
   },
 };
