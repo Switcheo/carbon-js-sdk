@@ -45,6 +45,7 @@ export const ChainNames = {
   1: "MainNet",
   3: "Ropsten",
   4: "Rinkeby",
+  5: "Goerli",
   56: "BSC MainNet",
   97: "BSC TestNet",
   110: "ZIL DevNet",
@@ -118,6 +119,7 @@ export const getBlockchainFromChain = (chainId?: number) => {
     case 1:
     case 3:
     case 4:
+    case 5:
       return Blockchain.Ethereum
     case 56:
     case 97:
