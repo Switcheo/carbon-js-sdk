@@ -7,7 +7,6 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
   MintToken: "carbon/MsgMintToken",
   Withdraw: "carbon/MsgWithdraw",
   DepositToGroup: "carbon/MsgDepositToGroup",
-  ConvertToGroup: "carbon/MsgConvertToGroup",
   WithdrawFromGroup: "carbon/MsgWithdrawFromGroup",
 };
 
