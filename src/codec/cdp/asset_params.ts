@@ -6,6 +6,7 @@ export const protobufPackage = "Switcheo.carbon.cdp";
 
 export interface AssetParams {
   denom: string;
+  /** deprecated: oracle_id is now on pricing */
   oracleId: string;
   rateStrategyName: string;
   allowRepayStablecoinInterestDebt: boolean;

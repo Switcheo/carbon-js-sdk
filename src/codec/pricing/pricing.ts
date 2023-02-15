@@ -36,6 +36,7 @@ export interface TokenPrice {
   index: string;
   twap: string;
   indexUpdatedAt?: Date;
+  oracleId: string;
 }
 
 const baseParams: object = { smoothenBand: 0, impactBand: 0 };
@@ -398,7 +399,7 @@ export const PriceSet = {
   },
 };
 
-const baseTokenPrice: object = { denom: "", index: "", twap: "" };
+const baseTokenPrice: object = { denom: "", index: "", twap: "", oracleId: "" };
 
 export const TokenPrice = {
   encode(
@@ -419,6 +420,9 @@ export const TokenPrice = {
         toTimestamp(message.indexUpdatedAt),
         writer.uint32(34).fork()
       ).ldelim();
+    }
+    if (message.oracleId !== "") {
+      writer.uint32(42).string(message.oracleId);
     }
     return writer;
   },
@@ -443,6 +447,9 @@ export const TokenPrice = {
           message.indexUpdatedAt = fromTimestamp(
             Timestamp.decode(reader, reader.uint32())
           );
+          break;
+        case 5:
+          message.oracleId = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -470,6 +477,10 @@ export const TokenPrice = {
       object.indexUpdatedAt !== undefined && object.indexUpdatedAt !== null
         ? fromJsonTimestamp(object.indexUpdatedAt)
         : undefined;
+    message.oracleId =
+      object.oracleId !== undefined && object.oracleId !== null
+        ? String(object.oracleId)
+        : "";
     return message;
   },
 
@@ -480,6 +491,7 @@ export const TokenPrice = {
     message.twap !== undefined && (obj.twap = message.twap);
     message.indexUpdatedAt !== undefined &&
       (obj.indexUpdatedAt = message.indexUpdatedAt.toISOString());
+    message.oracleId !== undefined && (obj.oracleId = message.oracleId);
     return obj;
   },
 
@@ -489,6 +501,7 @@ export const TokenPrice = {
     message.index = object.index ?? "";
     message.twap = object.twap ?? "";
     message.indexUpdatedAt = object.indexUpdatedAt ?? undefined;
+    message.oracleId = object.oracleId ?? "";
     return message;
   },
 };
