@@ -495,7 +495,7 @@ class TokenClient {
   }
 
   async getUSDValuesFromCoinGecko(geckoIds: string[]) {
-    const response = await FetchUtils.fetch(`https://coingecko-proxy.dem.exchange/price?ids=${geckoIds.join(",")}&vs_currencies=usd`);
+    const response = await FetchUtils.fetch(`https://coingecko-proxy.dem.exchange/api/v3/simple/price?ids=${geckoIds.join(",")}&vs_currencies=usd`);
     return await response.json();
   }
 
