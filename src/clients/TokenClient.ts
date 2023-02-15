@@ -5,6 +5,7 @@ import {
   DenomPrefix,
   NetworkConfigProvider,
   TokenBlacklist,
+  decTypeDecimals,
   uscUsdValue,
 } from "@carbon-sdk/constant";
 import { cibtIbcTokenRegex, ibcTokenRegex, ibcWhitelist, swthChannels, swthIbcWhitelist } from "@carbon-sdk/constant/ibc";
@@ -501,7 +502,7 @@ class TokenClient {
   processTokenPrices(tokenPrices: TokenPrice[]) {
     return tokenPrices.reduce((prevPrices: TypeUtils.SimpleMap<BigNumber>, price: TokenPrice) => {
       const newPrev = prevPrices;
-      newPrev[price.denom] = bnOrZero(price.twap);
+      newPrev[price.denom] = bnOrZero(price.twap).shiftedBy(-decTypeDecimals);
       return newPrev;
     }, {});
   }
