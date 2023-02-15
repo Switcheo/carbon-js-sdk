@@ -1658,6 +1658,11 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         coinMinimalDenom: "stuluna",
         coinDecimals: 6,
       },
+      {
+        "coinDenom": "stEVMOS",
+        "coinMinimalDenom": "staevmos",
+        "coinDecimals": 18
+      },
     ],
     feeCurrencies: [
       {
