@@ -7,6 +7,7 @@ import {
   PageResponse,
 } from "../cosmos/base/query/v1beta1/pagination";
 import { Bridge } from "./bridge";
+import { TokenGroupDetails } from "./group";
 
 export const protobufPackage = "Switcheo.carbon.coin";
 
@@ -84,6 +85,37 @@ export interface QueryAllBridgeRequest {
 export interface QueryAllBridgeResponse {
   bridges: Bridge[];
   pagination?: PageResponse;
+}
+
+export interface QueryGetTokenGroupRequest {
+  groupId: string;
+}
+
+export interface QueryGetTokenGroupResponse {
+  tokenGroup?: TokenGroupDetails;
+}
+
+export interface QueryAllTokenGroupsRequest {
+  pagination?: PageRequest;
+}
+
+export interface QueryAllTokenGroupsResponse {
+  tokenGroups: TokenGroupDetails[];
+  pagination?: PageResponse;
+}
+
+export interface QueryTokenGroupMappingsRequest {
+  pagination?: PageRequest;
+}
+
+export interface QueryTokenGroupMappingsResponse {
+  tokenGroupMappings: { [key: string]: Long };
+  pagination?: PageResponse;
+}
+
+export interface QueryTokenGroupMappingsResponse_TokenGroupMappingsEntry {
+  key: string;
+  value: Long;
 }
 
 const baseQueryGetTokenRequest: object = { denom: "" };
@@ -1348,6 +1380,576 @@ export const QueryAllBridgeResponse = {
   },
 };
 
+const baseQueryGetTokenGroupRequest: object = { groupId: "" };
+
+export const QueryGetTokenGroupRequest = {
+  encode(
+    message: QueryGetTokenGroupRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.groupId !== "") {
+      writer.uint32(10).string(message.groupId);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryGetTokenGroupRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryGetTokenGroupRequest,
+    } as QueryGetTokenGroupRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.groupId = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryGetTokenGroupRequest {
+    const message = {
+      ...baseQueryGetTokenGroupRequest,
+    } as QueryGetTokenGroupRequest;
+    message.groupId =
+      object.groupId !== undefined && object.groupId !== null
+        ? String(object.groupId)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryGetTokenGroupRequest): unknown {
+    const obj: any = {};
+    message.groupId !== undefined && (obj.groupId = message.groupId);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryGetTokenGroupRequest>
+  ): QueryGetTokenGroupRequest {
+    const message = {
+      ...baseQueryGetTokenGroupRequest,
+    } as QueryGetTokenGroupRequest;
+    message.groupId = object.groupId ?? "";
+    return message;
+  },
+};
+
+const baseQueryGetTokenGroupResponse: object = {};
+
+export const QueryGetTokenGroupResponse = {
+  encode(
+    message: QueryGetTokenGroupResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.tokenGroup !== undefined) {
+      TokenGroupDetails.encode(
+        message.tokenGroup,
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryGetTokenGroupResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryGetTokenGroupResponse,
+    } as QueryGetTokenGroupResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.tokenGroup = TokenGroupDetails.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryGetTokenGroupResponse {
+    const message = {
+      ...baseQueryGetTokenGroupResponse,
+    } as QueryGetTokenGroupResponse;
+    message.tokenGroup =
+      object.tokenGroup !== undefined && object.tokenGroup !== null
+        ? TokenGroupDetails.fromJSON(object.tokenGroup)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryGetTokenGroupResponse): unknown {
+    const obj: any = {};
+    message.tokenGroup !== undefined &&
+      (obj.tokenGroup = message.tokenGroup
+        ? TokenGroupDetails.toJSON(message.tokenGroup)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryGetTokenGroupResponse>
+  ): QueryGetTokenGroupResponse {
+    const message = {
+      ...baseQueryGetTokenGroupResponse,
+    } as QueryGetTokenGroupResponse;
+    message.tokenGroup =
+      object.tokenGroup !== undefined && object.tokenGroup !== null
+        ? TokenGroupDetails.fromPartial(object.tokenGroup)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryAllTokenGroupsRequest: object = {};
+
+export const QueryAllTokenGroupsRequest = {
+  encode(
+    message: QueryAllTokenGroupsRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAllTokenGroupsRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAllTokenGroupsRequest,
+    } as QueryAllTokenGroupsRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllTokenGroupsRequest {
+    const message = {
+      ...baseQueryAllTokenGroupsRequest,
+    } as QueryAllTokenGroupsRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryAllTokenGroupsRequest): unknown {
+    const obj: any = {};
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAllTokenGroupsRequest>
+  ): QueryAllTokenGroupsRequest {
+    const message = {
+      ...baseQueryAllTokenGroupsRequest,
+    } as QueryAllTokenGroupsRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryAllTokenGroupsResponse: object = {};
+
+export const QueryAllTokenGroupsResponse = {
+  encode(
+    message: QueryAllTokenGroupsResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.tokenGroups) {
+      TokenGroupDetails.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAllTokenGroupsResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAllTokenGroupsResponse,
+    } as QueryAllTokenGroupsResponse;
+    message.tokenGroups = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.tokenGroups.push(
+            TokenGroupDetails.decode(reader, reader.uint32())
+          );
+          break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllTokenGroupsResponse {
+    const message = {
+      ...baseQueryAllTokenGroupsResponse,
+    } as QueryAllTokenGroupsResponse;
+    message.tokenGroups = (object.tokenGroups ?? []).map((e: any) =>
+      TokenGroupDetails.fromJSON(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryAllTokenGroupsResponse): unknown {
+    const obj: any = {};
+    if (message.tokenGroups) {
+      obj.tokenGroups = message.tokenGroups.map((e) =>
+        e ? TokenGroupDetails.toJSON(e) : undefined
+      );
+    } else {
+      obj.tokenGroups = [];
+    }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAllTokenGroupsResponse>
+  ): QueryAllTokenGroupsResponse {
+    const message = {
+      ...baseQueryAllTokenGroupsResponse,
+    } as QueryAllTokenGroupsResponse;
+    message.tokenGroups = (object.tokenGroups ?? []).map((e) =>
+      TokenGroupDetails.fromPartial(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryTokenGroupMappingsRequest: object = {};
+
+export const QueryTokenGroupMappingsRequest = {
+  encode(
+    message: QueryTokenGroupMappingsRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryTokenGroupMappingsRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryTokenGroupMappingsRequest,
+    } as QueryTokenGroupMappingsRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryTokenGroupMappingsRequest {
+    const message = {
+      ...baseQueryTokenGroupMappingsRequest,
+    } as QueryTokenGroupMappingsRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryTokenGroupMappingsRequest): unknown {
+    const obj: any = {};
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryTokenGroupMappingsRequest>
+  ): QueryTokenGroupMappingsRequest {
+    const message = {
+      ...baseQueryTokenGroupMappingsRequest,
+    } as QueryTokenGroupMappingsRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryTokenGroupMappingsResponse: object = {};
+
+export const QueryTokenGroupMappingsResponse = {
+  encode(
+    message: QueryTokenGroupMappingsResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    Object.entries(message.tokenGroupMappings).forEach(([key, value]) => {
+      QueryTokenGroupMappingsResponse_TokenGroupMappingsEntry.encode(
+        { key: key as any, value },
+        writer.uint32(10).fork()
+      ).ldelim();
+    });
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryTokenGroupMappingsResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryTokenGroupMappingsResponse,
+    } as QueryTokenGroupMappingsResponse;
+    message.tokenGroupMappings = {};
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          const entry1 =
+            QueryTokenGroupMappingsResponse_TokenGroupMappingsEntry.decode(
+              reader,
+              reader.uint32()
+            );
+          if (entry1.value !== undefined) {
+            message.tokenGroupMappings[entry1.key] = entry1.value;
+          }
+          break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryTokenGroupMappingsResponse {
+    const message = {
+      ...baseQueryTokenGroupMappingsResponse,
+    } as QueryTokenGroupMappingsResponse;
+    message.tokenGroupMappings = Object.entries(
+      object.tokenGroupMappings ?? {}
+    ).reduce<{ [key: string]: Long }>((acc, [key, value]) => {
+      acc[key] = Long.fromString(value as string);
+      return acc;
+    }, {});
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryTokenGroupMappingsResponse): unknown {
+    const obj: any = {};
+    obj.tokenGroupMappings = {};
+    if (message.tokenGroupMappings) {
+      Object.entries(message.tokenGroupMappings).forEach(([k, v]) => {
+        obj.tokenGroupMappings[k] = v.toString();
+      });
+    }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryTokenGroupMappingsResponse>
+  ): QueryTokenGroupMappingsResponse {
+    const message = {
+      ...baseQueryTokenGroupMappingsResponse,
+    } as QueryTokenGroupMappingsResponse;
+    message.tokenGroupMappings = Object.entries(
+      object.tokenGroupMappings ?? {}
+    ).reduce<{ [key: string]: Long }>((acc, [key, value]) => {
+      if (value !== undefined) {
+        acc[key] = Long.fromValue(value);
+      }
+      return acc;
+    }, {});
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryTokenGroupMappingsResponse_TokenGroupMappingsEntry: object = {
+  key: "",
+  value: Long.UZERO,
+};
+
+export const QueryTokenGroupMappingsResponse_TokenGroupMappingsEntry = {
+  encode(
+    message: QueryTokenGroupMappingsResponse_TokenGroupMappingsEntry,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (!message.value.isZero()) {
+      writer.uint32(16).uint64(message.value);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryTokenGroupMappingsResponse_TokenGroupMappingsEntry {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryTokenGroupMappingsResponse_TokenGroupMappingsEntry,
+    } as QueryTokenGroupMappingsResponse_TokenGroupMappingsEntry;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.key = reader.string();
+          break;
+        case 2:
+          message.value = reader.uint64() as Long;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(
+    object: any
+  ): QueryTokenGroupMappingsResponse_TokenGroupMappingsEntry {
+    const message = {
+      ...baseQueryTokenGroupMappingsResponse_TokenGroupMappingsEntry,
+    } as QueryTokenGroupMappingsResponse_TokenGroupMappingsEntry;
+    message.key =
+      object.key !== undefined && object.key !== null ? String(object.key) : "";
+    message.value =
+      object.value !== undefined && object.value !== null
+        ? Long.fromString(object.value)
+        : Long.UZERO;
+    return message;
+  },
+
+  toJSON(
+    message: QueryTokenGroupMappingsResponse_TokenGroupMappingsEntry
+  ): unknown {
+    const obj: any = {};
+    message.key !== undefined && (obj.key = message.key);
+    message.value !== undefined &&
+      (obj.value = (message.value || Long.UZERO).toString());
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryTokenGroupMappingsResponse_TokenGroupMappingsEntry>
+  ): QueryTokenGroupMappingsResponse_TokenGroupMappingsEntry {
+    const message = {
+      ...baseQueryTokenGroupMappingsResponse_TokenGroupMappingsEntry,
+    } as QueryTokenGroupMappingsResponse_TokenGroupMappingsEntry;
+    message.key = object.key ?? "";
+    message.value =
+      object.value !== undefined && object.value !== null
+        ? Long.fromValue(object.value)
+        : Long.UZERO;
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Get token details for a denom */
@@ -1372,6 +1974,18 @@ export interface Query {
   Bridge(request: QueryGetBridgeRequest): Promise<QueryGetBridgeResponse>;
   /** Get details for all cross-chain bridges */
   BridgeAll(request: QueryAllBridgeRequest): Promise<QueryAllBridgeResponse>;
+  /** Get TokenGroup details for a particular id */
+  TokenGroup(
+    request: QueryGetTokenGroupRequest
+  ): Promise<QueryGetTokenGroupResponse>;
+  /** Get all TokenGroup details */
+  TokenGroupAll(
+    request: QueryAllTokenGroupsRequest
+  ): Promise<QueryAllTokenGroupsResponse>;
+  /** Get denom => group_id mappings */
+  TokenGroupMappings(
+    request: QueryTokenGroupMappingsRequest
+  ): Promise<QueryTokenGroupMappingsResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -1386,6 +2000,9 @@ export class QueryClientImpl implements Query {
     this.BalancesTotal = this.BalancesTotal.bind(this);
     this.Bridge = this.Bridge.bind(this);
     this.BridgeAll = this.BridgeAll.bind(this);
+    this.TokenGroup = this.TokenGroup.bind(this);
+    this.TokenGroupAll = this.TokenGroupAll.bind(this);
+    this.TokenGroupMappings = this.TokenGroupMappings.bind(this);
   }
   Token(request: QueryGetTokenRequest): Promise<QueryGetTokenResponse> {
     const data = QueryGetTokenRequest.encode(request).finish();
@@ -1488,6 +2105,48 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryAllBridgeResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  TokenGroup(
+    request: QueryGetTokenGroupRequest
+  ): Promise<QueryGetTokenGroupResponse> {
+    const data = QueryGetTokenGroupRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.coin.Query",
+      "TokenGroup",
+      data
+    );
+    return promise.then((data) =>
+      QueryGetTokenGroupResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  TokenGroupAll(
+    request: QueryAllTokenGroupsRequest
+  ): Promise<QueryAllTokenGroupsResponse> {
+    const data = QueryAllTokenGroupsRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.coin.Query",
+      "TokenGroupAll",
+      data
+    );
+    return promise.then((data) =>
+      QueryAllTokenGroupsResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  TokenGroupMappings(
+    request: QueryTokenGroupMappingsRequest
+  ): Promise<QueryTokenGroupMappingsResponse> {
+    const data = QueryTokenGroupMappingsRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.coin.Query",
+      "TokenGroupMappings",
+      data
+    );
+    return promise.then((data) =>
+      QueryTokenGroupMappingsResponse.decode(new _m0.Reader(data))
     );
   }
 }
