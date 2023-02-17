@@ -1,10 +1,11 @@
-import { Token } from "@carbon-sdk/codec";
+import { Token, TokenPrice, QueryTokenPriceAllResponse } from "@carbon-sdk/codec";
 import {
   CoinGeckoTokenNames,
   CommonAssetName,
   DenomPrefix,
   NetworkConfigProvider,
   TokenBlacklist,
+  decTypeDecimals,
   uscUsdValue,
 } from "@carbon-sdk/constant";
 import { cibtIbcTokenRegex, ibcTokenRegex, ibcWhitelist, swthChannels, swthIbcWhitelist } from "@carbon-sdk/constant/ibc";
@@ -13,7 +14,7 @@ import { FeeQuote } from "@carbon-sdk/hydrogen/feeQuote";
 import KeplrAccount from "@carbon-sdk/provider/keplr/KeplrAccount";
 import { BlockchainUtils, FetchUtils, IBCUtils, NumberUtils, TypeUtils } from "@carbon-sdk/util";
 import { AppCurrency } from "@keplr-wallet/types";
-import { BN_ONE, BN_ZERO } from "@carbon-sdk/util/number";
+import { bnOrZero, BN_ONE, BN_ZERO } from "@carbon-sdk/util/number";
 import BigNumber from "bignumber.js";
 import Long from "long";
 import CarbonQueryClient from "./CarbonQueryClient";
@@ -33,6 +34,7 @@ const SYMBOL_OVERRIDE: {
   DBC2: "DBC",
   AVA1: "AVA",
   TSWTH: "tSWTH",
+  "cibStride Liquid Staked LUNA": "cibstLUNA",
 };
 
 const regexCdpDenom = RegExp(`^${DenomPrefix.CDPToken}/`, "i");
@@ -88,6 +90,7 @@ class TokenClient {
   }
 
   public getBlockchain(denom: string): BlockchainUtils.Blockchain | undefined {
+    const networkConfig = this.configProvider.getConfig();
     // chainId defaults to 3 so that blockchain will be undefined
     let chainId = this.tokens[denom]?.chainId?.toNumber() ?? 3;
     if (this.isNativeToken(denom) || this.isNativeStablecoin(denom) || TokenClient.isPoolToken(denom) || TokenClient.isCdpToken(denom)) {
@@ -99,7 +102,7 @@ class TokenClient {
       return IBCUtils.BlockchainMap[denom];
     }
 
-    const blockchain = BlockchainUtils.blockchainForChainId(chainId);
+    const blockchain = BlockchainUtils.blockchainForChainId(chainId, networkConfig.network);
     return blockchain;
   }
 
@@ -263,6 +266,8 @@ class TokenClient {
   }
 
   public getWrappedToken(denom: string, blockchain?: BlockchainUtils.Blockchain): Token | null {
+    const networkConfig = this.configProvider.getConfig();
+
     // if denom is already a wrapped denom or no blockchain was specified,
     // just return the input denom.
     if (this.wrapperMap[denom] || !blockchain) {
@@ -277,7 +282,7 @@ class TokenClient {
         }
         // check if wrapped denom is of correct blockchain
         const token = this.tokens[wrappedDenom];
-        let tokenChain = BlockchainUtils.blockchainForChainId(token.chainId.toNumber());
+        let tokenChain = BlockchainUtils.blockchainForChainId(token.chainId.toNumber(), networkConfig.network);
 
         if (TokenClient.isIBCDenom(wrappedDenom)) {
           tokenChain = IBCUtils.BlockchainMap[wrappedDenom];
@@ -326,6 +331,7 @@ class TokenClient {
   }
 
   public getDepositTokenFor(tokenDenom: string, chain: BlockchainUtils.Blockchain): Token | undefined {
+    const networkConfig = this.configProvider.getConfig();
     const token = this.tokenForDenom(tokenDenom);
     if (!token) {
       console.error("getDepositTokenFor token not found for", tokenDenom);
@@ -333,7 +339,7 @@ class TokenClient {
     }
 
     // check if selected token is a source token
-    let targetChain = BlockchainUtils.blockchainForChainId(token.chainId.toNumber());
+    let targetChain = BlockchainUtils.blockchainForChainId(token.chainId.toNumber(), networkConfig.network);
     if (TokenClient.isIBCDenom(token.denom)) {
       targetChain = IBCUtils.BlockchainMap[token.denom];
     }
@@ -459,7 +465,8 @@ class TokenClient {
 
     //Get corresponding geckoId for denoms and removes any duplicated geckoIds (espeically for different wrapped tokens as they correspond to the same geckoId(same price))
     const geckoIds = denoms.reduce((coinIds, denom) => {
-      const geckoId = this.geckoTokenNames[denom] ?? denom;
+      // To ensure that ibc denoms are not added to the gecko ids list, the default is removed.
+      const geckoId = this.geckoTokenNames[denom];
 
       if (geckoId && !coinIds.includes(geckoId)) {
         coinIds.push(geckoId);
@@ -468,26 +475,67 @@ class TokenClient {
     }, [] as string[]);
 
     const geckoIdToUsdPriceMap = await this.getUSDValuesFromCoinGecko(geckoIds);
+    const carbonTokenPrices = await this.getUSDValuesFromPricingModule();
     const uscStablecoin = this.getNativeStablecoin();
 
     //store price based on denoms
     for (const denom of denoms) {
+      const carbonTokenPrice = carbonTokenPrices[denom];
+      // if token price in pricing module exists for denom, return that as usd price first
+      // else check coingecko
+      if (carbonTokenPrice) {
+        this.usdValues[denom] = carbonTokenPrice;
+        continue;
+      }
+
       const coinId = this.geckoTokenNames[denom] ?? denom;
       const price = NumberUtils.bnOrZero(geckoIdToUsdPriceMap?.[coinId]?.usd)!;
       if (price.gt(0)) {
-        if (denom === uscStablecoin?.denom) {
-          this.usdValues[denom] = uscUsdValue;
-          continue;
-        }
-        this.usdValues[denom] = price;
+        // if denom is usc, then return uscUsdValue, else return coingecko usd price
+        this.usdValues[denom] = denom === uscStablecoin?.denom ? uscUsdValue : price;
       }
     }
     return this.usdValues;
   }
 
   async getUSDValuesFromCoinGecko(geckoIds: string[]) {
-    const response = await FetchUtils.fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${geckoIds.join(",")}&vs_currencies=usd`);
+    const response = await FetchUtils.fetch(`https://coingecko-proxy.dem.exchange/api/v3/simple/price?ids=${geckoIds.join(",")}&vs_currencies=usd`);
     return await response.json();
+  }
+
+  processTokenPrices(tokenPrices: TokenPrice[]) {
+    return tokenPrices.reduce((prevPrices: TypeUtils.SimpleMap<BigNumber>, price: TokenPrice) => {
+      const newPrev = prevPrices;
+      newPrev[price.denom] = bnOrZero(price.twap).shiftedBy(-decTypeDecimals);
+      return newPrev;
+    }, {});
+  }
+
+  async getUSDValuesFromPricingModule() {
+    const initTokenPrices = await this.query.pricing.TokenPriceAll({
+      pagination: {
+        limit: new Long(10000),
+        offset: new Long(0),
+        key: new Uint8Array(),
+        countTotal: true,
+        reverse: false,
+      },
+    }) as QueryTokenPriceAllResponse;
+    if (initTokenPrices.pagination?.total && initTokenPrices.pagination?.total.lt(10000)) {
+      const tokenPricesMap = this.processTokenPrices(initTokenPrices.tokenPrices);
+      return tokenPricesMap;
+    }
+
+    const fullTokenPrices = await this.query.pricing.TokenPriceAll({
+      pagination: {
+        limit: initTokenPrices.pagination?.total ?? new Long(0),
+        offset: new Long(0),
+        key: new Uint8Array(),
+        countTotal: true,
+        reverse: false,
+      },
+    }) as QueryTokenPriceAllResponse;
+    return this.processTokenPrices(fullTokenPrices.tokenPrices);
   }
 
   async getDenomToGeckoIdMap(): Promise<TypeUtils.SimpleMap<string>> {

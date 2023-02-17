@@ -74,7 +74,7 @@ export class NEOClient {
     const account = new Neon.wallet.Account(address);
     const tokens = tokenQueryResults.filter(
       (token) =>
-        blockchainForChainId(token.chainId.toNumber()) == this.blockchain &&
+        blockchainForChainId(token.chainId.toNumber(), sdk.network) == this.blockchain &&
         token.tokenAddress.length == 40 &&
         token.bridgeAddress.length == 40
     );
