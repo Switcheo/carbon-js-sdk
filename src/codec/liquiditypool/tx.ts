@@ -14,7 +14,6 @@ export interface MsgCreatePool {
   tokenAWeight: string;
   tokenBWeight: string;
   swapFee: string;
-  numQuotes: Long;
   ampBps: Long;
 }
 
@@ -156,6 +155,19 @@ export interface RemovePoolRouteParams {
   poolIds: Long[];
 }
 
+export interface MsgUpdatePoolRoute {
+  creator: string;
+  updatePoolRouteParams?: UpdatePoolRouteParams;
+}
+
+export interface MsgUpdatePoolRouteResponse {}
+
+export interface UpdatePoolRouteParams {
+  marketName: string;
+  poolIds: Long[];
+  numQuotes: Long;
+}
+
 const baseMsgCreatePool: object = {
   creator: "",
   tokenADenom: "",
@@ -163,7 +175,6 @@ const baseMsgCreatePool: object = {
   tokenAWeight: "",
   tokenBWeight: "",
   swapFee: "",
-  numQuotes: Long.ZERO,
   ampBps: Long.UZERO,
 };
 
@@ -190,11 +201,8 @@ export const MsgCreatePool = {
     if (message.swapFee !== "") {
       writer.uint32(50).string(message.swapFee);
     }
-    if (!message.numQuotes.isZero()) {
-      writer.uint32(56).int64(message.numQuotes);
-    }
     if (!message.ampBps.isZero()) {
-      writer.uint32(64).uint64(message.ampBps);
+      writer.uint32(56).uint64(message.ampBps);
     }
     return writer;
   },
@@ -225,9 +233,6 @@ export const MsgCreatePool = {
           message.swapFee = reader.string();
           break;
         case 7:
-          message.numQuotes = reader.int64() as Long;
-          break;
-        case 8:
           message.ampBps = reader.uint64() as Long;
           break;
         default:
@@ -264,10 +269,6 @@ export const MsgCreatePool = {
       object.swapFee !== undefined && object.swapFee !== null
         ? String(object.swapFee)
         : "";
-    message.numQuotes =
-      object.numQuotes !== undefined && object.numQuotes !== null
-        ? Long.fromString(object.numQuotes)
-        : Long.ZERO;
     message.ampBps =
       object.ampBps !== undefined && object.ampBps !== null
         ? Long.fromString(object.ampBps)
@@ -287,8 +288,6 @@ export const MsgCreatePool = {
     message.tokenBWeight !== undefined &&
       (obj.tokenBWeight = message.tokenBWeight);
     message.swapFee !== undefined && (obj.swapFee = message.swapFee);
-    message.numQuotes !== undefined &&
-      (obj.numQuotes = (message.numQuotes || Long.ZERO).toString());
     message.ampBps !== undefined &&
       (obj.ampBps = (message.ampBps || Long.UZERO).toString());
     return obj;
@@ -302,10 +301,6 @@ export const MsgCreatePool = {
     message.tokenAWeight = object.tokenAWeight ?? "";
     message.tokenBWeight = object.tokenBWeight ?? "";
     message.swapFee = object.swapFee ?? "";
-    message.numQuotes =
-      object.numQuotes !== undefined && object.numQuotes !== null
-        ? Long.fromValue(object.numQuotes)
-        : Long.ZERO;
     message.ampBps =
       object.ampBps !== undefined && object.ampBps !== null
         ? Long.fromValue(object.ampBps)
@@ -2682,6 +2677,240 @@ export const RemovePoolRouteParams = {
   },
 };
 
+const baseMsgUpdatePoolRoute: object = { creator: "" };
+
+export const MsgUpdatePoolRoute = {
+  encode(
+    message: MsgUpdatePoolRoute,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.updatePoolRouteParams !== undefined) {
+      UpdatePoolRouteParams.encode(
+        message.updatePoolRouteParams,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdatePoolRoute {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgUpdatePoolRoute } as MsgUpdatePoolRoute;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.updatePoolRouteParams = UpdatePoolRouteParams.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdatePoolRoute {
+    const message = { ...baseMsgUpdatePoolRoute } as MsgUpdatePoolRoute;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.updatePoolRouteParams =
+      object.updatePoolRouteParams !== undefined &&
+      object.updatePoolRouteParams !== null
+        ? UpdatePoolRouteParams.fromJSON(object.updatePoolRouteParams)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: MsgUpdatePoolRoute): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.updatePoolRouteParams !== undefined &&
+      (obj.updatePoolRouteParams = message.updatePoolRouteParams
+        ? UpdatePoolRouteParams.toJSON(message.updatePoolRouteParams)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgUpdatePoolRoute>): MsgUpdatePoolRoute {
+    const message = { ...baseMsgUpdatePoolRoute } as MsgUpdatePoolRoute;
+    message.creator = object.creator ?? "";
+    message.updatePoolRouteParams =
+      object.updatePoolRouteParams !== undefined &&
+      object.updatePoolRouteParams !== null
+        ? UpdatePoolRouteParams.fromPartial(object.updatePoolRouteParams)
+        : undefined;
+    return message;
+  },
+};
+
+const baseMsgUpdatePoolRouteResponse: object = {};
+
+export const MsgUpdatePoolRouteResponse = {
+  encode(
+    _: MsgUpdatePoolRouteResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUpdatePoolRouteResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgUpdatePoolRouteResponse,
+    } as MsgUpdatePoolRouteResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgUpdatePoolRouteResponse {
+    const message = {
+      ...baseMsgUpdatePoolRouteResponse,
+    } as MsgUpdatePoolRouteResponse;
+    return message;
+  },
+
+  toJSON(_: MsgUpdatePoolRouteResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgUpdatePoolRouteResponse>
+  ): MsgUpdatePoolRouteResponse {
+    const message = {
+      ...baseMsgUpdatePoolRouteResponse,
+    } as MsgUpdatePoolRouteResponse;
+    return message;
+  },
+};
+
+const baseUpdatePoolRouteParams: object = {
+  marketName: "",
+  poolIds: Long.UZERO,
+  numQuotes: Long.ZERO,
+};
+
+export const UpdatePoolRouteParams = {
+  encode(
+    message: UpdatePoolRouteParams,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.marketName !== "") {
+      writer.uint32(10).string(message.marketName);
+    }
+    writer.uint32(18).fork();
+    for (const v of message.poolIds) {
+      writer.uint64(v);
+    }
+    writer.ldelim();
+    if (!message.numQuotes.isZero()) {
+      writer.uint32(24).int64(message.numQuotes);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): UpdatePoolRouteParams {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseUpdatePoolRouteParams } as UpdatePoolRouteParams;
+    message.poolIds = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.marketName = reader.string();
+          break;
+        case 2:
+          if ((tag & 7) === 2) {
+            const end2 = reader.uint32() + reader.pos;
+            while (reader.pos < end2) {
+              message.poolIds.push(reader.uint64() as Long);
+            }
+          } else {
+            message.poolIds.push(reader.uint64() as Long);
+          }
+          break;
+        case 3:
+          message.numQuotes = reader.int64() as Long;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UpdatePoolRouteParams {
+    const message = { ...baseUpdatePoolRouteParams } as UpdatePoolRouteParams;
+    message.marketName =
+      object.marketName !== undefined && object.marketName !== null
+        ? String(object.marketName)
+        : "";
+    message.poolIds = (object.poolIds ?? []).map((e: any) =>
+      Long.fromString(e)
+    );
+    message.numQuotes =
+      object.numQuotes !== undefined && object.numQuotes !== null
+        ? Long.fromString(object.numQuotes)
+        : Long.ZERO;
+    return message;
+  },
+
+  toJSON(message: UpdatePoolRouteParams): unknown {
+    const obj: any = {};
+    message.marketName !== undefined && (obj.marketName = message.marketName);
+    if (message.poolIds) {
+      obj.poolIds = message.poolIds.map((e) => (e || Long.UZERO).toString());
+    } else {
+      obj.poolIds = [];
+    }
+    message.numQuotes !== undefined &&
+      (obj.numQuotes = (message.numQuotes || Long.ZERO).toString());
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<UpdatePoolRouteParams>
+  ): UpdatePoolRouteParams {
+    const message = { ...baseUpdatePoolRouteParams } as UpdatePoolRouteParams;
+    message.marketName = object.marketName ?? "";
+    message.poolIds = (object.poolIds ?? []).map((e) => Long.fromValue(e));
+    message.numQuotes =
+      object.numQuotes !== undefined && object.numQuotes !== null
+        ? Long.fromValue(object.numQuotes)
+        : Long.ZERO;
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
   /** this line is used by starport scaffolding # proto/tx/rpc */
@@ -2720,6 +2949,9 @@ export interface Msg {
   HandleRemovePoolRoute(
     request: MsgRemovePoolRoute
   ): Promise<MsgRemovePoolRouteResponse>;
+  HandleUpdatePoolRoute(
+    request: MsgUpdatePoolRoute
+  ): Promise<MsgUpdatePoolRouteResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -2740,6 +2972,7 @@ export class MsgClientImpl implements Msg {
     this.HandleUpdatePool = this.HandleUpdatePool.bind(this);
     this.HandleCreatePoolRoute = this.HandleCreatePoolRoute.bind(this);
     this.HandleRemovePoolRoute = this.HandleRemovePoolRoute.bind(this);
+    this.HandleUpdatePoolRoute = this.HandleUpdatePoolRoute.bind(this);
   }
   HandleCreatePool(request: MsgCreatePool): Promise<MsgCreatePoolResponse> {
     const data = MsgCreatePool.encode(request).finish();
@@ -2916,6 +3149,20 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgRemovePoolRouteResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  HandleUpdatePoolRoute(
+    request: MsgUpdatePoolRoute
+  ): Promise<MsgUpdatePoolRouteResponse> {
+    const data = MsgUpdatePoolRoute.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.liquiditypool.Msg",
+      "HandleUpdatePoolRoute",
+      data
+    );
+    return promise.then((data) =>
+      MsgUpdatePoolRouteResponse.decode(new _m0.Reader(data))
     );
   }
 }
