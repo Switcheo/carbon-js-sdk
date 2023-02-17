@@ -103,13 +103,16 @@ class KeplrAccount {
 
     // Query fee currencies from keplr-chain-registry
     const keplrChainInfo = await (await FetchUtils.fetch("https://raw.githubusercontent.com/chainapsis/keplr-chain-registry/master/cosmos/carbon.json")).json();
-    const keplrFeeCurrencies = (keplrChainInfo?.feeCurrencies ?? []) as FeeCurrency[];
+    if (config.network === Network.MainNet) {
+      if (keplrChainInfo.nodeProvider) {
+        delete keplrChainInfo.nodeProvider;
+      }
+      return keplrChainInfo as ChainInfo
+    }
 
     const feeCurrencies = await this.queryFeeCurrencies(configProvider);
 
-    const networkFees = configProvider.getConfig().network === CarbonSDK.Network.MainNet
-      ? keplrFeeCurrencies
-      : [KeplrAccount.SWTH_CURRENCY, ...feeCurrencies];
+    const networkFees = [KeplrAccount.SWTH_CURRENCY, ...feeCurrencies];
     const currencies = this.processCurrencies(networkFees);
 
     return {
@@ -119,7 +122,7 @@ class KeplrAccount {
       stakeCurrency: KeplrAccount.SWTH_CURRENCY,
       rest: config.restUrl,
       rpc: config.tmRpcUrl,
-      chainName: config.network === Network.MainNet ? `Carbon` : `Carbon (${config.network})`,
+      chainName: `Carbon (${config.network})`,
       chainId: chainId,
       bech32Config: {
         bech32PrefixAccAddr: `${bech32Prefix}`,
