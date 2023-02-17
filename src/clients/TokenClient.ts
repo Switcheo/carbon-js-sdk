@@ -90,6 +90,7 @@ class TokenClient {
   }
 
   public getBlockchain(denom: string): BlockchainUtils.Blockchain | undefined {
+    const networkConfig = this.configProvider.getConfig();
     // chainId defaults to 3 so that blockchain will be undefined
     let chainId = this.tokens[denom]?.chainId?.toNumber() ?? 3;
     if (this.isNativeToken(denom) || this.isNativeStablecoin(denom) || TokenClient.isPoolToken(denom) || TokenClient.isCdpToken(denom)) {
@@ -101,7 +102,7 @@ class TokenClient {
       return IBCUtils.BlockchainMap[denom];
     }
 
-    const blockchain = BlockchainUtils.blockchainForChainId(chainId);
+    const blockchain = BlockchainUtils.blockchainForChainId(chainId, networkConfig.network);
     return blockchain;
   }
 
@@ -265,6 +266,8 @@ class TokenClient {
   }
 
   public getWrappedToken(denom: string, blockchain?: BlockchainUtils.Blockchain): Token | null {
+    const networkConfig = this.configProvider.getConfig();
+
     // if denom is already a wrapped denom or no blockchain was specified,
     // just return the input denom.
     if (this.wrapperMap[denom] || !blockchain) {
@@ -279,7 +282,7 @@ class TokenClient {
         }
         // check if wrapped denom is of correct blockchain
         const token = this.tokens[wrappedDenom];
-        let tokenChain = BlockchainUtils.blockchainForChainId(token.chainId.toNumber());
+        let tokenChain = BlockchainUtils.blockchainForChainId(token.chainId.toNumber(), networkConfig.network);
 
         if (TokenClient.isIBCDenom(wrappedDenom)) {
           tokenChain = IBCUtils.BlockchainMap[wrappedDenom];
@@ -328,6 +331,7 @@ class TokenClient {
   }
 
   public getDepositTokenFor(tokenDenom: string, chain: BlockchainUtils.Blockchain): Token | undefined {
+    const networkConfig = this.configProvider.getConfig();
     const token = this.tokenForDenom(tokenDenom);
     if (!token) {
       console.error("getDepositTokenFor token not found for", tokenDenom);
@@ -335,7 +339,7 @@ class TokenClient {
     }
 
     // check if selected token is a source token
-    let targetChain = BlockchainUtils.blockchainForChainId(token.chainId.toNumber());
+    let targetChain = BlockchainUtils.blockchainForChainId(token.chainId.toNumber(), networkConfig.network);
     if (TokenClient.isIBCDenom(token.denom)) {
       targetChain = IBCUtils.BlockchainMap[token.denom];
     }
