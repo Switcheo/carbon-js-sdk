@@ -86,7 +86,7 @@ export class ETHClient {
     const lockProxyAddress = this.getLockProxyAddress().toLowerCase();
     const tokens = tokenQueryResults.filter(
       (token) =>
-        blockchainForChainId(token.chainId.toNumber()) == this.blockchain &&
+        blockchainForChainId(token.chainId.toNumber(), api.network) == this.blockchain &&
         token.tokenAddress.length == 40 &&
         token.bridgeAddress.toLowerCase() == stripHexPrefix(lockProxyAddress) &&
         (!whitelistDenoms || whitelistDenoms.includes(token.denom)) &&
@@ -364,7 +364,7 @@ export class ETHClient {
     if (!feeInfo.deposit_fee) {
       throw new Error("unsupported token");
     }
-    if (blockchainForChainId(token.chainId.toNumber()) !== this.blockchain) {
+    if (blockchainForChainId(token.chainId.toNumber(), this.configProvider.getConfig().network) !== this.blockchain) {
       throw new Error("unsupported token");
     }
 

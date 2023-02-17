@@ -142,7 +142,7 @@ export class ZILClient {
     const tokenQueryResults = await sdk.token.getAllTokens();
     const tokens = tokenQueryResults.filter(
       (token) =>
-        blockchainForChainId(token.chainId.toNumber()) == this.blockchain &&
+        blockchainForChainId(token.chainId.toNumber(), sdk.network) == this.blockchain &&
         token.tokenAddress.length == 40 &&
         (!whitelistDenoms || whitelistDenoms.includes(token.denom))
     );
