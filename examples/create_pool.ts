@@ -24,7 +24,6 @@ import "./_setup";
     tokenBWeight: new BigNumber(0.5), // human
     swapFee: new BigNumber(0.002),
     ampBps: new Long(100000),
-    numQuotes: 5,
   })
   console.log(result)
 })().catch(console.error).finally(() => process.exit(0));

@@ -243,7 +243,6 @@ export namespace LiquidityPoolModule {
     tokenBWeight: BigNumber;
     swapFee: BigNumber;
     ampBps: Long;
-    numQuotes: number;
   }
 
   export interface CreatePoolWithLiquidityParams {
