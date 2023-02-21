@@ -4,7 +4,6 @@ import { BigNumber } from "bignumber.js";
 import dayjs from "dayjs";
 import Long from "long";
 import BaseModule from "./base";
-import {MsgCreatePoolRoute, MsgRemovePoolRoute} from "@carbon-sdk/codec";
 
 export class LiquidityPoolModule extends BaseModule {
   public async create(params: LiquidityPoolModule.CreatePoolParams, opts?: CarbonTx.SignTxOpts) {
@@ -42,7 +41,6 @@ export class LiquidityPoolModule extends BaseModule {
       amountB: params.amountB.toString(10),
       swapFee: params.swapFee.shiftedBy(18).toString(10),
       ampBps: params.ampBps,
-      numQuotes: new Long(params.numQuotes),
     });
 
     return await wallet.sendTx(
@@ -254,7 +252,6 @@ export namespace LiquidityPoolModule {
     amountB: BigNumber;
     swapFee: BigNumber;
     ampBps: Long;
-    numQuotes: number;
   }
 
   export interface AddLiquidityParams {

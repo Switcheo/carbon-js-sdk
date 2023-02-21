@@ -150,15 +150,6 @@ const UpdateGroupConfig: AminoValueMap = {
   }
 }
 
-const ChangeNumQuotes: AminoValueMap = {
-  value: {
-    msg: {
-      poolId: ConvertEncType.Long,
-      numQuotes: ConvertEncType.Long,
-    },
-  },
-};
-
 const UpdatePool: AminoValueMap = {
   value: {
     msg: {

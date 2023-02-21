@@ -35,6 +35,14 @@ export interface CommitmentEvent {
   type: string;
 }
 
+export interface SwapEvent {
+  poolId: Long;
+  inputDenom: string;
+  inputAmount: string;
+  outputDenom: string;
+  outputAmount: string;
+}
+
 const basePoolEvent: object = {
   creator: "",
   type: "",
@@ -485,6 +493,120 @@ export const CommitmentEvent = {
         ? Commitment.fromPartial(object.commitment)
         : undefined;
     message.type = object.type ?? "";
+    return message;
+  },
+};
+
+const baseSwapEvent: object = {
+  poolId: Long.UZERO,
+  inputDenom: "",
+  inputAmount: "",
+  outputDenom: "",
+  outputAmount: "",
+};
+
+export const SwapEvent = {
+  encode(
+    message: SwapEvent,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (!message.poolId.isZero()) {
+      writer.uint32(8).uint64(message.poolId);
+    }
+    if (message.inputDenom !== "") {
+      writer.uint32(18).string(message.inputDenom);
+    }
+    if (message.inputAmount !== "") {
+      writer.uint32(26).string(message.inputAmount);
+    }
+    if (message.outputDenom !== "") {
+      writer.uint32(34).string(message.outputDenom);
+    }
+    if (message.outputAmount !== "") {
+      writer.uint32(42).string(message.outputAmount);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): SwapEvent {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseSwapEvent } as SwapEvent;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.poolId = reader.uint64() as Long;
+          break;
+        case 2:
+          message.inputDenom = reader.string();
+          break;
+        case 3:
+          message.inputAmount = reader.string();
+          break;
+        case 4:
+          message.outputDenom = reader.string();
+          break;
+        case 5:
+          message.outputAmount = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SwapEvent {
+    const message = { ...baseSwapEvent } as SwapEvent;
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromString(object.poolId)
+        : Long.UZERO;
+    message.inputDenom =
+      object.inputDenom !== undefined && object.inputDenom !== null
+        ? String(object.inputDenom)
+        : "";
+    message.inputAmount =
+      object.inputAmount !== undefined && object.inputAmount !== null
+        ? String(object.inputAmount)
+        : "";
+    message.outputDenom =
+      object.outputDenom !== undefined && object.outputDenom !== null
+        ? String(object.outputDenom)
+        : "";
+    message.outputAmount =
+      object.outputAmount !== undefined && object.outputAmount !== null
+        ? String(object.outputAmount)
+        : "";
+    return message;
+  },
+
+  toJSON(message: SwapEvent): unknown {
+    const obj: any = {};
+    message.poolId !== undefined &&
+      (obj.poolId = (message.poolId || Long.UZERO).toString());
+    message.inputDenom !== undefined && (obj.inputDenom = message.inputDenom);
+    message.inputAmount !== undefined &&
+      (obj.inputAmount = message.inputAmount);
+    message.outputDenom !== undefined &&
+      (obj.outputDenom = message.outputDenom);
+    message.outputAmount !== undefined &&
+      (obj.outputAmount = message.outputAmount);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<SwapEvent>): SwapEvent {
+    const message = { ...baseSwapEvent } as SwapEvent;
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromValue(object.poolId)
+        : Long.UZERO;
+    message.inputDenom = object.inputDenom ?? "";
+    message.inputAmount = object.inputAmount ?? "";
+    message.outputDenom = object.outputDenom ?? "";
+    message.outputAmount = object.outputAmount ?? "";
     return message;
   },
 };

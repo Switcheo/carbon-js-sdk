@@ -30,7 +30,6 @@ export interface MsgCreatePoolWithLiquidity {
   amountA: string;
   amountB: string;
   swapFee: string;
-  numQuotes: Long;
   ampBps: Long;
 }
 
@@ -380,7 +379,6 @@ const baseMsgCreatePoolWithLiquidity: object = {
   amountA: "",
   amountB: "",
   swapFee: "",
-  numQuotes: Long.ZERO,
   ampBps: Long.UZERO,
 };
 
@@ -413,11 +411,8 @@ export const MsgCreatePoolWithLiquidity = {
     if (message.swapFee !== "") {
       writer.uint32(66).string(message.swapFee);
     }
-    if (!message.numQuotes.isZero()) {
-      writer.uint32(72).int64(message.numQuotes);
-    }
     if (!message.ampBps.isZero()) {
-      writer.uint32(80).uint64(message.ampBps);
+      writer.uint32(72).uint64(message.ampBps);
     }
     return writer;
   },
@@ -459,9 +454,6 @@ export const MsgCreatePoolWithLiquidity = {
           message.swapFee = reader.string();
           break;
         case 9:
-          message.numQuotes = reader.int64() as Long;
-          break;
-        case 10:
           message.ampBps = reader.uint64() as Long;
           break;
         default:
@@ -508,10 +500,6 @@ export const MsgCreatePoolWithLiquidity = {
       object.swapFee !== undefined && object.swapFee !== null
         ? String(object.swapFee)
         : "";
-    message.numQuotes =
-      object.numQuotes !== undefined && object.numQuotes !== null
-        ? Long.fromString(object.numQuotes)
-        : Long.ZERO;
     message.ampBps =
       object.ampBps !== undefined && object.ampBps !== null
         ? Long.fromString(object.ampBps)
@@ -533,8 +521,6 @@ export const MsgCreatePoolWithLiquidity = {
     message.amountA !== undefined && (obj.amountA = message.amountA);
     message.amountB !== undefined && (obj.amountB = message.amountB);
     message.swapFee !== undefined && (obj.swapFee = message.swapFee);
-    message.numQuotes !== undefined &&
-      (obj.numQuotes = (message.numQuotes || Long.ZERO).toString());
     message.ampBps !== undefined &&
       (obj.ampBps = (message.ampBps || Long.UZERO).toString());
     return obj;
@@ -554,10 +540,6 @@ export const MsgCreatePoolWithLiquidity = {
     message.amountA = object.amountA ?? "";
     message.amountB = object.amountB ?? "";
     message.swapFee = object.swapFee ?? "";
-    message.numQuotes =
-      object.numQuotes !== undefined && object.numQuotes !== null
-        ? Long.fromValue(object.numQuotes)
-        : Long.ZERO;
     message.ampBps =
       object.ampBps !== undefined && object.ampBps !== null
         ? Long.fromValue(object.ampBps)
