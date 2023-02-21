@@ -160,6 +160,8 @@ export interface CdpPositionItem {
   healthFactor: string;
   collateralAmount: string;
   borrowAmount: string;
+  mintDenom: string;
+  mintAmount: string;
 }
 
 export interface CdpPosition {
@@ -167,6 +169,7 @@ export interface CdpPosition {
   healthFactor: string;
   collateral: Coin[];
   borrow: Coin[];
+  mint: Coin[];
 }
 
 export interface QueryCdpPositionsRequest {
@@ -2443,6 +2446,8 @@ const baseCdpPositionItem: object = {
   healthFactor: "",
   collateralAmount: "",
   borrowAmount: "",
+  mintDenom: "",
+  mintAmount: "",
 };
 
 export const CdpPositionItem = {
@@ -2467,6 +2472,12 @@ export const CdpPositionItem = {
     }
     if (message.borrowAmount !== "") {
       writer.uint32(50).string(message.borrowAmount);
+    }
+    if (message.mintDenom !== "") {
+      writer.uint32(58).string(message.mintDenom);
+    }
+    if (message.mintAmount !== "") {
+      writer.uint32(66).string(message.mintAmount);
     }
     return writer;
   },
@@ -2495,6 +2506,12 @@ export const CdpPositionItem = {
           break;
         case 6:
           message.borrowAmount = reader.string();
+          break;
+        case 7:
+          message.mintDenom = reader.string();
+          break;
+        case 8:
+          message.mintAmount = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -2530,6 +2547,14 @@ export const CdpPositionItem = {
       object.borrowAmount !== undefined && object.borrowAmount !== null
         ? String(object.borrowAmount)
         : "";
+    message.mintDenom =
+      object.mintDenom !== undefined && object.mintDenom !== null
+        ? String(object.mintDenom)
+        : "";
+    message.mintAmount =
+      object.mintAmount !== undefined && object.mintAmount !== null
+        ? String(object.mintAmount)
+        : "";
     return message;
   },
 
@@ -2544,6 +2569,8 @@ export const CdpPositionItem = {
       (obj.collateralAmount = message.collateralAmount);
     message.borrowAmount !== undefined &&
       (obj.borrowAmount = message.borrowAmount);
+    message.mintDenom !== undefined && (obj.mintDenom = message.mintDenom);
+    message.mintAmount !== undefined && (obj.mintAmount = message.mintAmount);
     return obj;
   },
 
@@ -2555,6 +2582,8 @@ export const CdpPositionItem = {
     message.healthFactor = object.healthFactor ?? "";
     message.collateralAmount = object.collateralAmount ?? "";
     message.borrowAmount = object.borrowAmount ?? "";
+    message.mintDenom = object.mintDenom ?? "";
+    message.mintAmount = object.mintAmount ?? "";
     return message;
   },
 };
@@ -2578,6 +2607,9 @@ export const CdpPosition = {
     for (const v of message.borrow) {
       Coin.encode(v!, writer.uint32(34).fork()).ldelim();
     }
+    for (const v of message.mint) {
+      Coin.encode(v!, writer.uint32(42).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -2587,6 +2619,7 @@ export const CdpPosition = {
     const message = { ...baseCdpPosition } as CdpPosition;
     message.collateral = [];
     message.borrow = [];
+    message.mint = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -2601,6 +2634,9 @@ export const CdpPosition = {
           break;
         case 4:
           message.borrow.push(Coin.decode(reader, reader.uint32()));
+          break;
+        case 5:
+          message.mint.push(Coin.decode(reader, reader.uint32()));
           break;
         default:
           reader.skipType(tag & 7);
@@ -2624,6 +2660,7 @@ export const CdpPosition = {
       Coin.fromJSON(e)
     );
     message.borrow = (object.borrow ?? []).map((e: any) => Coin.fromJSON(e));
+    message.mint = (object.mint ?? []).map((e: any) => Coin.fromJSON(e));
     return message;
   },
 
@@ -2644,6 +2681,11 @@ export const CdpPosition = {
     } else {
       obj.borrow = [];
     }
+    if (message.mint) {
+      obj.mint = message.mint.map((e) => (e ? Coin.toJSON(e) : undefined));
+    } else {
+      obj.mint = [];
+    }
     return obj;
   },
 
@@ -2655,6 +2697,7 @@ export const CdpPosition = {
       Coin.fromPartial(e)
     );
     message.borrow = (object.borrow ?? []).map((e) => Coin.fromPartial(e));
+    message.mint = (object.mint ?? []).map((e) => Coin.fromPartial(e));
     return message;
   },
 };

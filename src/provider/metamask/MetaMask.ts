@@ -13,9 +13,9 @@ const CONTRACT_HASH: {
 } = {
   [Blockchain.Ethereum]: {
     // use same rinkeby contract for all non-mainnet uses
-    [Network.TestNet]: "0xec8BC20687FfA944F57EB1aAa6F98FEDA30bcA65",
-    [Network.DevNet]: "0xec8BC20687FfA944F57EB1aAa6F98FEDA30bcA65",
-    [Network.LocalHost]: "0xec8BC20687FfA944F57EB1aAa6F98FEDA30bcA65",
+    [Network.TestNet]: "0x086e1b5f67c0f7ca8eb202d35553e27e964899e2",
+    [Network.DevNet]: "0x086e1b5f67c0f7ca8eb202d35553e27e964899e2",
+    [Network.LocalHost]: "0x086e1b5f67c0f7ca8eb202d35553e27e964899e2",
 
     [Network.MainNet]: "0xf4552877A40c1527D38970F170993660084D4541",
   } as const,
@@ -137,8 +137,8 @@ const ETH_MAINNET: MetaMaskChangeNetworkParam = {
   rpcUrls: ["https://mainnet.infura.io/v3/"],
 };
 const ETH_TESTNET: MetaMaskChangeNetworkParam = {
-  chainId: "0x4",
-  rpcUrls: ["https://rinkeby.infura.io/v3/"],
+  chainId: "0x5",
+  rpcUrls: ["https://goerli.infura.io/v3/"],
 };
 
 const ARBITRUM_MAINNET: MetaMaskChangeNetworkParam = {
@@ -212,7 +212,7 @@ export class MetaMask {
       case Blockchain.Arbitrum:
         return 421611;
       default:
-        return 4;
+        return 5;
     }
   }
 
@@ -420,7 +420,7 @@ export class MetaMask {
       return 1;
     }
 
-    if (currentChainId === 4) {
+    if (currentChainId === 5) {
       this.blockchain = Blockchain.Ethereum;
       return currentChainId;
     }
@@ -437,7 +437,7 @@ export class MetaMask {
     if (currentChainId === 56) {
       return 97;
     }
-    return 4;
+    return 5;
   }
 
   private getContractHash(blockchain: EVMChain = this.blockchain) {
