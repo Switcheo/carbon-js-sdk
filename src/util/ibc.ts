@@ -13,7 +13,7 @@ import {
 import { KeplrAccount } from "@carbon-sdk/provider";
 import { Hash } from "@keplr-wallet/crypto";
 import { AppCurrency } from "@keplr-wallet/types";
-import { Blockchain } from "./blockchain";
+import { BlockchainV2 } from "./blockchain";
 import { SimpleMap } from "./type";
 
 // Create IBC minimal denom
@@ -63,27 +63,27 @@ export const totalAssetObj: AssetListObj = Object.values(EmbedChainInfos).reduce
   {}
 );
 
-export const ChainIdBlockchainMap: SimpleMap<Blockchain> = {
-  [ChainIds.Osmosis]: Blockchain.Osmosis,
-  [ChainIds.Terra]: Blockchain.Terra,
-  [ChainIds.CosmosHub]: Blockchain.CosmosHub,
-  [ChainIds.Juno]: Blockchain.Juno,
-  [ChainIds.Evmos]: Blockchain.Evmos,
-  [ChainIds.Axelar]: Blockchain.Axelar,
-  [ChainIds.Stride]: Blockchain.Stride,
-  [ChainIds.Kujira]: Blockchain.Kujira,
-  [ChainIds.Terra2]: Blockchain.Terra2,
-  [ChainIds.Quicksilver]: Blockchain.Quicksilver,
-  [ChainIds.Comdex]: Blockchain.Comdex,
-  [ChainIds.StafiHub]: Blockchain.StafiHub,
-  [ChainIds.Persistence]: Blockchain.Persistence,
-  [ChainIds.Stargaze]: Blockchain.Stargaze,
-  [ChainIds.Canto]: Blockchain.Canto,
-  [ChainIds.OmniFlixHub]: Blockchain.OmniFlixHub,
-  [ChainIds.Agoric]: Blockchain.Agoric,
+export const ChainIdBlockchainMap: SimpleMap<BlockchainV2> = {
+  [ChainIds.Osmosis]: "Osmosis",
+  [ChainIds.Terra]: "Terra",
+  [ChainIds.CosmosHub]: "Cosmos Hub",
+  [ChainIds.Juno]: "Juno",
+  [ChainIds.Evmos]: "Evmos",
+  [ChainIds.Axelar]: "Axelar",
+  [ChainIds.Stride]: "Stride",
+  [ChainIds.Kujira]: "Kujira",
+  [ChainIds.Terra2]: "Terra (CW20)",
+  [ChainIds.Quicksilver]: "Quicksilver",
+  [ChainIds.Comdex]: "Comdex",
+  [ChainIds.StafiHub]: "Stafihub",
+  [ChainIds.Persistence]: "Persistence Core",
+  [ChainIds.Stargaze]: "Stargaze",
+  [ChainIds.Canto]: "Canto",
+  [ChainIds.OmniFlixHub]: "Omniflix Hub",
+  [ChainIds.Agoric]: "Agoric",
 };
 
-export const getIbcChainFromBlockchain = (blockchain: Blockchain | undefined): ChainIds | undefined => {
+export const getIbcChainFromBlockchain = (blockchain: BlockchainV2 | undefined): ChainIds | undefined => {
   let ibcChain: ChainIds | undefined = undefined;
   Object.entries(ChainIdBlockchainMap).forEach(([key, value]) => {
     if (blockchain && blockchain.includes(value)) {
@@ -94,7 +94,7 @@ export const getIbcChainFromBlockchain = (blockchain: Blockchain | undefined): C
 };
 
 export const BlockchainMap = Object.values(EmbedChainInfos).reduce(
-  (prev: SimpleMap<Blockchain | undefined>, chainInfo: ChainInfoExplorerTmRpc) => {
+  (prev: SimpleMap<string | undefined>, chainInfo: ChainInfoExplorerTmRpc) => {
     if (!ibcWhitelist.includes(chainInfo.chainId)) {
       return prev;
     }

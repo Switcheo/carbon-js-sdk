@@ -19,7 +19,7 @@ import Long from "long";
 import CarbonQueryClient from "./CarbonQueryClient";
 import InsightsQueryClient from "./InsightsQueryClient";
 import { SimpleMap } from "@carbon-sdk/util/type";
-import { BRIDGE_IDS } from '@carbon-sdk/util/blockchain'
+import { BridgeMap, BRIDGE_IDS } from '@carbon-sdk/util/blockchain'
 
 const SYMBOL_OVERRIDE: {
   [symbol: string]: string;
@@ -45,9 +45,7 @@ class TokenClient {
   public readonly wrapperMap: TypeUtils.SimpleMap<string> = {};
   public readonly poolTokens: TypeUtils.SimpleMap<Token> = {};
   public readonly cdpTokens: TypeUtils.SimpleMap<Token> = {};
-  public readonly bridges: TypeUtils.SimpleMap<Bridge[]> = {};
-  public readonly ibcTokens: TypeUtils.SimpleMap<Token> = {};
-  public readonly polyNetworkTokens: TypeUtils.SimpleMap<Token> = {};
+  public readonly bridges: BridgeMap = { polynetwork: [], ibc: []} ;
   public readonly symbols: TypeUtils.SimpleMap<string> = {};
   public readonly usdValues: TypeUtils.SimpleMap<BigNumber> = {};
   public readonly commonAssetNames: TypeUtils.SimpleMap<string> = CommonAssetName;
@@ -92,7 +90,7 @@ class TokenClient {
     return (this.tokens[denom] ?? this.poolTokens[denom] ?? this.cdpTokens[denom])?.decimals.toNumber();
   }
 
-  public getBlockchain(denom: string): BlockchainUtils.Blockchain | undefined {
+  public getBlockchain(denom: string): BlockchainUtils.Blockchain | BlockchainUtils.BlockchainV2 | undefined {
     // chainId defaults to 3 so that blockchain will be undefined
     let chainId = this.tokens[denom]?.chainId?.toNumber() ?? 3;
     if (this.isNativeToken(denom) || this.isNativeStablecoin(denom) || TokenClient.isPoolToken(denom) || TokenClient.isCdpToken(denom)) {
@@ -267,7 +265,7 @@ class TokenClient {
     return result;
   }
 
-  public getWrappedToken(denom: string, blockchain?: BlockchainUtils.Blockchain): Token | null {
+  public getWrappedToken(denom: string, blockchain?: BlockchainUtils.Blockchain | BlockchainUtils.BlockchainV2): Token | null {
     // if denom is already a wrapped denom or no blockchain was specified,
     // just return the input denom.
     if (this.wrapperMap[denom] || !blockchain) {
@@ -330,7 +328,7 @@ class TokenClient {
     return denom === "usc";
   }
 
-  public getDepositTokenFor(tokenDenom: string, chain: BlockchainUtils.Blockchain): Token | undefined {
+  public getDepositTokenFor(tokenDenom: string, chain: BlockchainUtils.Blockchain | BlockchainUtils.BlockchainV2): Token | undefined {
     const token = this.tokenForDenom(tokenDenom);
     if (!token) {
       console.error("getDepositTokenFor token not found for", tokenDenom);
@@ -411,11 +409,11 @@ class TokenClient {
     return this.tokens;
   }
 
-  public async getBridges(): Promise<TypeUtils.SimpleMap<Bridge[]>> {
+  public async getBridges(): Promise<BridgeMap> {
     const allBridges = await this.query.coin.BridgeAll({
       pagination: {
         key: new Uint8Array(),
-        limit: new Long(100),
+        limit: new Long(10000),
         offset: Long.UZERO,
         countTotal: true,
         reverse: false,
@@ -429,16 +427,19 @@ class TokenClient {
       if (!bridge.enabled) return
       return bridge.bridgeId.toNumber() === BRIDGE_IDS.polynetwork
     })
-    Object.assign(this.bridges, {"ibc": ibcBridges, "polynetwork": polynetworkBridges})
+    Object.assign(this.bridges, {
+      polynetwork: polynetworkBridges,
+      ibc: ibcBridges
+    })
     return this.bridges
   }
 
   public getIbcBlockchainNames(): string[] {
-    return this.bridges["ibc"].map(bridge => bridge.chainName)
+    return this.bridges.ibc.map(bridge => bridge.chainName)
   }
 
   public getPolynetworkBlockchainNames(): string[] {
-    return this.bridges["polynetwork"].map(bridge => bridge.chainName)
+    return this.bridges.polynetwork.map(bridge => bridge.chainName)
   }
 
   public getAllBlockchainNames(): string[] {
@@ -446,21 +447,25 @@ class TokenClient {
   }
 
   public getIbcTokens(): TypeUtils.SimpleMap<Token> {
-    Object.values(this.tokens).forEach(token => {
+    const ibcTokens = Object.values(this.tokens).reduce((prev: TypeUtils.SimpleMap<Token> , token: Token) => {
+      const newPrev = prev
       if (token.bridgeId.toNumber() === BRIDGE_IDS.ibc) {
-        this.ibcTokens[token.denom] = token
+        newPrev[token.denom] = token
       }
-    })
-    return this.ibcTokens
+      return newPrev
+    }, {})
+    return ibcTokens
   }
 
   public getPolyNetworkTokens(): TypeUtils.SimpleMap<Token> {
-    Object.values(this.tokens).forEach(token => {
+    const polynetworkTokens = Object.values(this.tokens).reduce((prev: TypeUtils.SimpleMap<Token> , token: Token) => {
+      const newPrev = prev
       if (token.bridgeId.toNumber() === BRIDGE_IDS.polynetwork) {
-        this.polyNetworkTokens[token.denom] = token
+        newPrev[token.denom] = token
       }
-    })
-    return this.polyNetworkTokens
+      return newPrev
+    }, {})
+    return polynetworkTokens
   }
 
   public getBridgeFromToken(token: Token): Bridge | undefined {

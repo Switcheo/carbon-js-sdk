@@ -1,17 +1,17 @@
 import { EthNetworkConfig, Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
 import { ABIs } from "@carbon-sdk/eth";
-import { Blockchain, getBlockchainFromChain, ChainNames } from "@carbon-sdk/util/blockchain";
+import { Blockchain, getBlockchainFromChain, ChainNames, BlockchainV2 } from "@carbon-sdk/util/blockchain";
 import { ethers } from "ethers";
 import * as ethSignUtils from "eth-sig-util";
 
-export type EVMChain = Blockchain.Ethereum | Blockchain.BinanceSmartChain | Blockchain.Arbitrum;
+export type EVMChain = 'Ethereum' | 'Binance Smart Chain' | 'Arbitrum';
 type ChainContracts = {
   [key in Network]: string;
 };
 const CONTRACT_HASH: {
   [key in EVMChain]: ChainContracts;
 } = {
-  [Blockchain.Ethereum]: {
+  ['Ethereum']: {
     // use same rinkeby contract for all non-mainnet uses
     [Network.TestNet]: "0xec8BC20687FfA944F57EB1aAa6F98FEDA30bcA65",
     [Network.DevNet]: "0xec8BC20687FfA944F57EB1aAa6F98FEDA30bcA65",
@@ -19,7 +19,7 @@ const CONTRACT_HASH: {
 
     [Network.MainNet]: "0xf4552877A40c1527D38970F170993660084D4541",
   } as const,
-  [Blockchain.BinanceSmartChain]: {
+  ['Binance Smart Chain']: {
     // use same testnet contract for all non-mainnet uses
     [Network.TestNet]: "0x06E949ec2d6737ff57859CdcE426C5b5CA2Fc085",
     [Network.DevNet]: "0x06E949ec2d6737ff57859CdcE426C5b5CA2Fc085",
@@ -27,7 +27,7 @@ const CONTRACT_HASH: {
 
     [Network.MainNet]: "0x3786d94AC6B15FE2eaC72c3CA78cB82578Fc66f4",
   } as const,
-  [Blockchain.Arbitrum]: {
+  ['Arbitrum']: {
     // use same testnet contract for all non-mainnet uses
     [Network.TestNet]: "",
     [Network.DevNet]: "",
@@ -85,7 +85,7 @@ export interface CallContractArgs {
 }
 
 export interface MetaMaskSyncResult {
-  blockchain?: Blockchain;
+  blockchain?: Blockchain | BlockchainV2;
   chainId?: number;
 }
 
@@ -168,14 +168,14 @@ const ARBITRUM_TESTNET: MetaMaskChangeNetworkParam = {
  * TODO: Add docs
  */
 export class MetaMask {
-  private blockchain: EVMChain = Blockchain.Ethereum;
+  private blockchain: EVMChain = 'Ethereum';
 
-  static getNetworkParams(network: Network, blockchain: EVMChain = Blockchain.Ethereum): MetaMaskChangeNetworkParam {
+  static getNetworkParams(network: Network, blockchain: EVMChain = 'Ethereum'): MetaMaskChangeNetworkParam {
     if (network === Network.MainNet) {
       switch (blockchain) {
-        case Blockchain.BinanceSmartChain:
+        case 'Binance Smart Chain':
           return BSC_MAINNET;
-        case Blockchain.Arbitrum:
+        case 'Arbitrum':
           return ARBITRUM_MAINNET;
         default:
           // metamask should come with Ethereum configs
@@ -184,9 +184,9 @@ export class MetaMask {
     }
 
     switch (blockchain) {
-      case Blockchain.BinanceSmartChain:
+      case 'Binance Smart Chain':
         return BSC_TESTNET;
-      case Blockchain.Arbitrum:
+      case 'Arbitrum':
         return ARBITRUM_TESTNET;
       default:
         // metamask should come with Ethereum configs
@@ -194,12 +194,12 @@ export class MetaMask {
     }
   }
 
-  static getRequiredChainId(network: Network, blockchain: Blockchain = Blockchain.Ethereum) {
+  static getRequiredChainId(network: Network, blockchain: BlockchainV2 = 'Ethereum') {
     if (network === Network.MainNet) {
       switch (blockchain) {
-        case Blockchain.BinanceSmartChain:
+        case 'Binance Smart Chain':
           return 56;
-        case Blockchain.Arbitrum:
+        case 'Arbitrum':
           return 42161;
         default:
           return 1;
@@ -207,9 +207,9 @@ export class MetaMask {
     }
 
     switch (blockchain) {
-      case Blockchain.BinanceSmartChain:
+      case 'Binance Smart Chain':
         return 97;
-      case Blockchain.Arbitrum:
+      case 'Arbitrum':
         return 421611;
       default:
         return 4;
@@ -218,7 +218,7 @@ export class MetaMask {
 
   constructor(public readonly network: Network) {}
 
-  private checkProvider(blockchain: Blockchain = this.blockchain): ethers.providers.Provider {
+  private checkProvider(blockchain: BlockchainV2 = this.blockchain): ethers.providers.Provider {
     const config: any = NetworkConfigs[this.network];
 
     if (!config[blockchain]) {
@@ -232,7 +232,7 @@ export class MetaMask {
     return provider;
   }
 
-  public getBlockchain(): Blockchain {
+  public getBlockchain(): BlockchainV2 {
     return this.blockchain;
   }
 
@@ -405,15 +405,15 @@ export class MetaMask {
     // set correct blockchain given the chain ID
     if (network === Network.MainNet) {
       if (currentChainId === 1) {
-        this.blockchain = Blockchain.Ethereum;
+        this.blockchain = 'Ethereum';
         return currentChainId;
       }
       if (currentChainId === 56) {
-        this.blockchain = Blockchain.BinanceSmartChain;
+        this.blockchain = 'Binance Smart Chain';
         return currentChainId;
       }
       if (currentChainId === 42161) {
-        this.blockchain = Blockchain.Arbitrum;
+        this.blockchain = 'Arbitrum';
         return currentChainId;
       }
 
@@ -421,15 +421,15 @@ export class MetaMask {
     }
 
     if (currentChainId === 4) {
-      this.blockchain = Blockchain.Ethereum;
+      this.blockchain = 'Ethereum';
       return currentChainId;
     }
     if (currentChainId === 97) {
-      this.blockchain = Blockchain.BinanceSmartChain;
+      this.blockchain = 'Binance Smart Chain';
       return currentChainId;
     }
     if (currentChainId === 421611) {
-      this.blockchain = Blockchain.Arbitrum;
+      this.blockchain = 'Arbitrum';
       return currentChainId;
     }
 

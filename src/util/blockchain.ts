@@ -1,3 +1,5 @@
+import { TokenClient } from '@carbon-sdk/clients'
+import { Bridge } from '@carbon-sdk/codec'
 import { Network } from "@carbon-sdk/constant/network"
 import { SimpleMap } from "./type"
 
@@ -34,9 +36,16 @@ export enum Blockchain {
   Agoric = "agoric",
 }
 
+export type BlockchainV2 = ReturnType<TokenClient['getAllBlockchainNames']>[number] | "Native" | "Carbon" | "Tradehub" | "Ibc"
+
 export const BRIDGE_IDS = {
   polynetwork: 1,
   ibc: 2,
+}
+
+export interface BridgeMap {
+  polynetwork: Bridge[]
+  ibc: Bridge[]
 }
 
 export type ChainIds = SimpleMap<number>
@@ -118,112 +127,112 @@ export const getBlockchainFromChain = (chainId?: number) => {
     case 1:
     case 3:
     case 4:
-      return Blockchain.Ethereum
+      return 'Ethereum'
     case 56:
     case 97:
-      return Blockchain.BinanceSmartChain
+      return 'Binance Smart Chain'
     case 110:
     case 111:
-      return Blockchain.Zilliqa
+      return 'Zilliqa'
     case 42161:
     case 421611:
-      return Blockchain.Arbitrum
+      return 'Arbitrum'
   }
   return undefined
 }
 
-export const blockchainForChainId = (chainId?: number, network = Network.MainNet): Blockchain | undefined => {
+export const blockchainForChainId = (chainId?: number, network = Network.MainNet): Blockchain | BlockchainV2 | undefined => {
   switch (network) {
     case Network.MainNet:
       switch (chainId) {
         case 0:
-          return Blockchain.Native
+          return "Native"
         case 1:
-          return Blockchain.Btc
+          return "Bitcoin"
         case 2:
-          return Blockchain.Ethereum
+          return "Ethereum"
         case 4:
-          return Blockchain.Neo
+          return "Neo"
         case 6:
-          return Blockchain.BinanceSmartChain
+          return "Binance Smart Chain"
         case 14:
-          return Blockchain.Neo3
+          return "Neo3"
         case 9:  /* FALLTHROUGH */
         case 18:
-          return Blockchain.Zilliqa
+          return "Zilliqa"
         case 244:
-          return Blockchain.Osmosis
+          return "Osmosis"
         case 13: /* FALLTHROUGH */
         case 245:
-          return Blockchain.Terra
+          return "Terra Classic"
         case 246:
-          return Blockchain.CosmosHub
+          return "Cosmos Hub"
         case 5: /* FALLTHROUGH */
         case 247:
-          return Blockchain.Juno
+          return "Juno"
         case 7: /* FALLTHROUGH */
         case 248:
-          return Blockchain.Evmos
+          return "Evmos"
         case 8: /* FALLTHROUGH */
         case 249:
-          return Blockchain.Axelar
+          return "Axelar"
         case 313:
-          return Blockchain.Stride
+          return "Stride"
         case 314:
-          return Blockchain.Kujira
+          return "Kujira"
         case 315:
-          return Blockchain.Terra2
+          return "Terra"
         case 316:
-          return Blockchain.Quicksilver
+          return "Quicksilver"
         case 12: /* FALLTHROUGH */
         case 317:
-          return Blockchain.Comdex
+          return "Comdex"
         case 318:
-          return Blockchain.StafiHub
+          return "Stafihub"
         case 15: /* FALLTHROUGH */
         case 319:
-          return Blockchain.Persistence
+          return "Persistence Core"
         case 16: /* FALLTHROUGH */
         case 320:
-          return Blockchain.Stargaze
+          return "Stargaze"
         case 321:
-          return Blockchain.Canto
+          return "Canto"
         case 322:
-          return Blockchain.OmniFlixHub
+          return "OmniFlix Hub"
         case 323:
-          return Blockchain.Agoric
+          return "Agoric"
         case 19: /* FALLTHROUGH */
         case 42161:
-          return Blockchain.Arbitrum
+          return "Arbitrum"
         default:
           return undefined
       }
     case Network.TestNet:
       switch (chainId) {
         case 1:
-          return Blockchain.Btc
+          return "Bitcoin"
         case 5:
-          return Blockchain.Carbon
+          return "Carbon"
         case 79:
-          return Blockchain.BinanceSmartChain
+          return "Binance Smart Chain"
         case 88:
-          return Blockchain.Neo3
+          return "Neo3"
         case 111:
-          return Blockchain.Zilliqa
+          return "Zilliqa"
         case 2: /* FALLTHROUGH */
         case 502:
-          return Blockchain.Ethereum
+          return "Ethereum"
         default:
           return undefined
       }
     case Network.DevNet:
       switch (chainId) {
         case 350:
-          return Blockchain.Ethereum
+          return "Ethereum"
         case 5:
-          return Blockchain.Neo
+          return "Neo"
         case 79:
-          return Blockchain.BinanceSmartChain
+          return "Binance Smart Chain"
       }
     case Network.LocalHost:
       return undefined
