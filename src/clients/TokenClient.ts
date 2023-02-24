@@ -1,4 +1,5 @@
 import { Token, TokenPrice, QueryTokenPriceAllResponse } from "@carbon-sdk/codec";
+import { DenomTrace } from "@carbon-sdk/codec/ibc/applications/transfer/v1/transfer";
 import {
   CoinGeckoTokenNames,
   CommonAssetName,
@@ -51,6 +52,9 @@ class TokenClient {
   public readonly commonAssetNames: TypeUtils.SimpleMap<string> = CommonAssetName;
   public readonly geckoTokenNames: TypeUtils.SimpleMap<string> = CoinGeckoTokenNames;
 
+  // ibc apis
+  public readonly denomTraces: TypeUtils.SimpleMap<DenomTrace> = {};
+
   private additionalGeckoDenoms: TypeUtils.SimpleMap<string> = {};
 
   private constructor(public readonly query: CarbonQueryClient, public readonly configProvider: NetworkConfigProvider) {}
@@ -64,6 +68,7 @@ class TokenClient {
     await this.reloadWrapperMap();
     await this.reloadTokens();
     await this.reloadDenomGeckoMap();
+    await this.reloadDenomTraces();
 
     // non-blocking reload
     try {
@@ -91,15 +96,17 @@ class TokenClient {
 
   public getBlockchain(denom: string): BlockchainUtils.Blockchain | undefined {
     const networkConfig = this.configProvider.getConfig();
+    const tokenData = this.tokens[denom]
+
     // chainId defaults to 3 so that blockchain will be undefined
-    let chainId = this.tokens[denom]?.chainId?.toNumber() ?? 3;
+    let chainId = tokenData?.chainId?.toNumber() ?? 3;
     if (this.isNativeToken(denom) || this.isNativeStablecoin(denom) || TokenClient.isPoolToken(denom) || TokenClient.isCdpToken(denom)) {
       // native denoms "swth" and "usc" should be native.
       // pool and cdp tokens are on the Native blockchain, hence 0
       chainId = 0;
     }
     if (TokenClient.isIBCDenom(denom)) {
-      return IBCUtils.BlockchainMap[denom];
+      return IBCUtils.getBlockchainFromSourceChain(tokenData);
     }
 
     const blockchain = BlockchainUtils.blockchainForChainId(chainId, networkConfig.network);
@@ -285,7 +292,7 @@ class TokenClient {
         let tokenChain = BlockchainUtils.blockchainForChainId(token.chainId.toNumber(), networkConfig.network);
 
         if (TokenClient.isIBCDenom(wrappedDenom)) {
-          tokenChain = IBCUtils.BlockchainMap[wrappedDenom];
+          tokenChain = IBCUtils.getBlockchainFromSourceChain(token);
         }
         if (!tokenChain) {
           continue; // unknown chain! just ignore this source token
@@ -341,7 +348,7 @@ class TokenClient {
     // check if selected token is a source token
     let targetChain = BlockchainUtils.blockchainForChainId(token.chainId.toNumber(), networkConfig.network);
     if (TokenClient.isIBCDenom(token.denom)) {
-      targetChain = IBCUtils.BlockchainMap[token.denom];
+      targetChain = IBCUtils.getBlockchainFromSourceChain(token);
     }
     const isSourceToken = targetChain === chain && token.denom !== "swth";
 
@@ -410,6 +417,27 @@ class TokenClient {
     }
 
     return this.tokens;
+  }
+
+  public async reloadDenomTraces(): Promise<TypeUtils.SimpleMap<DenomTrace>> {
+    const result = await this.query.ibc.transfer.DenomTraces({
+      pagination: {
+        limit: new Long(1000000),
+        offset: Long.UZERO,
+        key: new Uint8Array(),
+        countTotal: false,
+        reverse: false,
+      },
+    });
+    result.denomTraces.forEach((denomTrace: DenomTrace) => {
+      const ibcDenom = IBCUtils.makeIBCMinimalDenom(denomTrace.path, denomTrace.baseDenom);
+      this.denomTraces[ibcDenom] = denomTrace;
+    });
+    return this.denomTraces;
+  }
+
+  public getDenomTraceData(denom: string): DenomTrace | undefined {
+    return this.denomTraces[denom];
   }
 
   public getCarbonIbcTokens(): Token[] {

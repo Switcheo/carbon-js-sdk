@@ -1,3 +1,4 @@
+import { Token } from '@carbon-sdk/codec'
 import {
   ChainInfoExplorerTmRpc,
   ChainIds,
@@ -9,8 +10,10 @@ import {
   swthChannels,
   swthIbcWhitelist,
   ibcNetworkRegex,
+  ChannelConfig,
 } from "@carbon-sdk/constant";
 import { KeplrAccount } from "@carbon-sdk/provider";
+import { BRIDGE_IDS } from "@carbon-sdk/util/blockchain";
 import { Hash } from "@keplr-wallet/crypto";
 import { AppCurrency } from "@keplr-wallet/types";
 import { Blockchain } from "./blockchain";
@@ -92,6 +95,22 @@ export const getIbcChainFromBlockchain = (blockchain: Blockchain | undefined): C
   });
   return ibcChain;
 };
+
+export const getBlockchainFromSourceChain = (token?: Token): Blockchain | undefined => {
+  if (!token || token?.bridgeId.toNumber() !== BRIDGE_IDS.ibc) return undefined;
+  const sourceChainId = Math.max(token.chainId.toNumber() - 1, 0);
+  const sourceChannelId = `channel-${sourceChainId}`;
+  let chainId: ChainIds | undefined
+
+  Object.entries(swthChannels).forEach(([key, value]: [string, ChannelConfig]) => {
+    if (chainId) return
+
+    if (value.sourceChannel === sourceChannelId) {
+      chainId = key as ChainIds
+    }
+  });
+  return chainId ? ChainIdBlockchainMap[chainId] : undefined;
+}
 
 export const BlockchainMap = Object.values(EmbedChainInfos).reduce(
   (prev: SimpleMap<Blockchain | undefined>, chainInfo: ChainInfoExplorerTmRpc) => {
