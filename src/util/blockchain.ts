@@ -204,6 +204,7 @@ export const blockchainForChainId = (chainId?: number, network = Network.MainNet
       switch (chainId) {
         case 1:
           return Blockchain.Btc
+        case 0:
         case 5:
           return Blockchain.Carbon
         case 79:
@@ -220,12 +221,21 @@ export const blockchainForChainId = (chainId?: number, network = Network.MainNet
       }
     case Network.DevNet:
       switch (chainId) {
+        case 0:
+          return Blockchain.Carbon
+        case 1:
+          return Blockchain.Btc
+        case 2:
         case 350:
           return Blockchain.Ethereum
         case 5:
           return Blockchain.Neo
         case 79:
           return Blockchain.BinanceSmartChain
+        case 111:
+          return Blockchain.Zilliqa
+        default:
+          return undefined
       }
     case Network.LocalHost:
       return undefined

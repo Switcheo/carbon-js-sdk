@@ -358,9 +358,9 @@ class CarbonSDK {
   public async connectWithKeplr(keplr: Keplr, opts?: CarbonWalletGenericOpts) {
     const chainInfo = await KeplrAccount.getChainInfo(this);
     const chainId = chainInfo.chainId;
-    const keplrKey = await keplr.getKey(chainId);
-
     await keplr.experimentalSuggestChain(chainInfo);
+
+    const keplrKey = await keplr.getKey(chainId);
     await keplr.enable(chainId);
 
     const wallet = CarbonWallet.withKeplr(keplr, chainInfo, keplrKey, {
@@ -374,9 +374,9 @@ class CarbonSDK {
   public async connectWithLeap(leap: LeapExtended, opts?: CarbonWalletGenericOpts) {
     const chainId = this.chainId;
     const chainInfo = await LeapAccount.getChainInfo(this);
-    const leapKey = await leap.getKey(chainId);
-
     await leap.experimentalSuggestChain(chainInfo);
+
+    const leapKey = await leap.getKey(chainId);
     await leap.enable(chainId);
 
     const wallet = CarbonWallet.withLeap(leap, chainId, leapKey, {
