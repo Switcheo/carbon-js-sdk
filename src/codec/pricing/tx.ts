@@ -33,6 +33,14 @@ export interface MsgSetStaleIndexAllowance {
 
 export interface MsgSetStaleIndexAllowanceResponse {}
 
+export interface MsgUpdateTokenPriceOracle {
+  creator: string;
+  denom: string;
+  oracleId: string;
+}
+
+export interface MsgUpdateTokenPriceOracleResponse {}
+
 const baseMsgSetBackfillTimeInterval: object = { creator: "" };
 
 export const MsgSetBackfillTimeInterval = {
@@ -552,6 +560,150 @@ export const MsgSetStaleIndexAllowanceResponse = {
   },
 };
 
+const baseMsgUpdateTokenPriceOracle: object = {
+  creator: "",
+  denom: "",
+  oracleId: "",
+};
+
+export const MsgUpdateTokenPriceOracle = {
+  encode(
+    message: MsgUpdateTokenPriceOracle,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.denom !== "") {
+      writer.uint32(18).string(message.denom);
+    }
+    if (message.oracleId !== "") {
+      writer.uint32(26).string(message.oracleId);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUpdateTokenPriceOracle {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgUpdateTokenPriceOracle,
+    } as MsgUpdateTokenPriceOracle;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.denom = reader.string();
+          break;
+        case 3:
+          message.oracleId = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdateTokenPriceOracle {
+    const message = {
+      ...baseMsgUpdateTokenPriceOracle,
+    } as MsgUpdateTokenPriceOracle;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
+    message.oracleId =
+      object.oracleId !== undefined && object.oracleId !== null
+        ? String(object.oracleId)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgUpdateTokenPriceOracle): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.denom !== undefined && (obj.denom = message.denom);
+    message.oracleId !== undefined && (obj.oracleId = message.oracleId);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgUpdateTokenPriceOracle>
+  ): MsgUpdateTokenPriceOracle {
+    const message = {
+      ...baseMsgUpdateTokenPriceOracle,
+    } as MsgUpdateTokenPriceOracle;
+    message.creator = object.creator ?? "";
+    message.denom = object.denom ?? "";
+    message.oracleId = object.oracleId ?? "";
+    return message;
+  },
+};
+
+const baseMsgUpdateTokenPriceOracleResponse: object = {};
+
+export const MsgUpdateTokenPriceOracleResponse = {
+  encode(
+    _: MsgUpdateTokenPriceOracleResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUpdateTokenPriceOracleResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgUpdateTokenPriceOracleResponse,
+    } as MsgUpdateTokenPriceOracleResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgUpdateTokenPriceOracleResponse {
+    const message = {
+      ...baseMsgUpdateTokenPriceOracleResponse,
+    } as MsgUpdateTokenPriceOracleResponse;
+    return message;
+  },
+
+  toJSON(_: MsgUpdateTokenPriceOracleResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgUpdateTokenPriceOracleResponse>
+  ): MsgUpdateTokenPriceOracleResponse {
+    const message = {
+      ...baseMsgUpdateTokenPriceOracleResponse,
+    } as MsgUpdateTokenPriceOracleResponse;
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
   /** this line is used by starport scaffolding # proto/tx/rpc */
@@ -565,6 +717,9 @@ export interface Msg {
   SetStaleIndexAllowance(
     request: MsgSetStaleIndexAllowance
   ): Promise<MsgSetStaleIndexAllowanceResponse>;
+  UpdateTokenPriceOracle(
+    request: MsgUpdateTokenPriceOracle
+  ): Promise<MsgUpdateTokenPriceOracleResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -575,6 +730,7 @@ export class MsgClientImpl implements Msg {
     this.SetSmoothenBand = this.SetSmoothenBand.bind(this);
     this.SetImpactBand = this.SetImpactBand.bind(this);
     this.SetStaleIndexAllowance = this.SetStaleIndexAllowance.bind(this);
+    this.UpdateTokenPriceOracle = this.UpdateTokenPriceOracle.bind(this);
   }
   SetBackfillTimeInterval(
     request: MsgSetBackfillTimeInterval
@@ -627,6 +783,20 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgSetStaleIndexAllowanceResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  UpdateTokenPriceOracle(
+    request: MsgUpdateTokenPriceOracle
+  ): Promise<MsgUpdateTokenPriceOracleResponse> {
+    const data = MsgUpdateTokenPriceOracle.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.pricing.Msg",
+      "UpdateTokenPriceOracle",
+      data
+    );
+    return promise.then((data) =>
+      MsgUpdateTokenPriceOracleResponse.decode(new _m0.Reader(data))
     );
   }
 }

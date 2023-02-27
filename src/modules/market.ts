@@ -2,22 +2,24 @@ import { MsgUpdateMarket } from "@carbon-sdk/codec/market/tx";
 import { CarbonTx } from "@carbon-sdk/util";
 import BaseModule from "./base";
 import { BigNumber } from "bignumber.js";
-import {Duration} from "@carbon-sdk/codec/google/protobuf/duration";
+import { Duration } from "@carbon-sdk/codec/google/protobuf/duration";
 
 export class MarketModule extends BaseModule {
-
   public async update(params: MarketModule.UpdateMarketParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgUpdateMarket.fromPartial({
       updater: wallet.bech32Address,
-      marketParams: transfromUpdateMarketParams(params)
-    })
+      marketParams: transfromUpdateMarketParams(params),
+    });
 
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgUpdateMarket,
-      value,
-    }, opts);
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgUpdateMarket,
+        value,
+      },
+      opts
+    );
   }
 }
 
@@ -43,7 +45,7 @@ export namespace MarketModule {
     lastPriceProtectedBand?: number;
     isActive?: boolean;
   }
-};
+}
 
 export function transfromUpdateMarketParams(msg: MarketModule.UpdateMarketParams) {
   return {
@@ -65,5 +67,5 @@ export function transfromUpdateMarketParams(msg: MarketModule.UpdateMarketParams
     markPriceBand: msg.markPriceBand,
     lastPriceProtectedBand: msg.lastPriceProtectedBand,
     isActive: msg.isActive,
-  }
+  };
 }

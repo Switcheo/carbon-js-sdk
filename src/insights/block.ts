@@ -1,31 +1,31 @@
 import { PageMeta, QueryByPageRequest } from "./common";
 
 export interface Block {
-  id: string
-  height: number
-  time: string
-  proposerAddress: string
+  id: string;
+  height: number;
+  time: string;
+  proposerAddress: string;
 }
 
-export interface QueryGetBlocksRequest extends QueryByPageRequest { }
+export interface QueryGetBlocksRequest extends QueryByPageRequest {}
 
 export interface QueryGetBlocksResponse {
-  models: Block[]
-  meta: PageMeta
+  models: Block[];
+  meta: PageMeta;
 }
 
 export interface QueryGetBlockRequest {
-  height: number
+  height: number;
 }
 
 export interface QueryGetBlockAtUnixRequest {
-  unix: number
+  unix: number;
 }
 
 export interface QueryGetBlockResponse {
-  model: Block
+  model: Block;
 }
 
 export interface QueryGetBlockTimeResponse {
-  data: number
+  data: number;
 }

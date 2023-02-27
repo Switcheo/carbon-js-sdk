@@ -51,12 +51,8 @@ const createOrderProcess: AminoProcess = {
     if (input.triggerType === "") {
       delete newInput.triggerType;
     }
-    newInput.stopPrice = input.stopPrice === ""
-      ? "0"
-      : input.stopPrice;
-    newInput.price = input.price === ""
-      ? "0"
-      : input.price;
+    newInput.stopPrice = input.stopPrice === "" ? "0" : input.stopPrice;
+    newInput.price = input.price === "" ? "0" : input.price;
     return { amino, input: newInput };
   },
   fromAminoProcess: (amino: AminoValueMap, input: any) => {

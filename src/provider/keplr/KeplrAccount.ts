@@ -1,7 +1,7 @@
 import { MinGasPrice } from "@carbon-sdk/codec";
 import { CARBON_GAS_PRICE, Network, decTypeDecimals } from "@carbon-sdk/constant";
-import { Models } from "@carbon-sdk/index";
-import { AddressUtils, CarbonTx, NumberUtils } from "@carbon-sdk/util";
+import { CarbonSDK, Models } from "@carbon-sdk/index";
+import { AddressUtils, CarbonTx, FetchUtils, NumberUtils } from "@carbon-sdk/util";
 import { CarbonSigner, CarbonSignerTypes } from "@carbon-sdk/wallet";
 import { Algo } from "@cosmjs/proto-signing";
 import { AppCurrency, ChainInfo, FeeCurrency, Keplr, Key } from "@keplr-wallet/types";
@@ -13,10 +13,10 @@ const SWTH: FeeCurrency = {
   coinDecimals: 8,
   coinGeckoId: "switcheo",
   gasPriceStep: CARBON_GAS_PRICE,
-}
+};
 
 class KeplrAccount {
-  static SWTH_CURRENCY: AppCurrency = SWTH
+  static SWTH_CURRENCY: AppCurrency = SWTH;
   static BASE_CHAIN_INFO = {
     bip44: { coinType: AddressUtils.SWTHAddress.coinType() },
     currencies: [],
@@ -34,11 +34,13 @@ class KeplrAccount {
       return await keplr!.signAmino(chainInfo.chainId, signerAddress, doc, signOpts);
     };
 
-    const getAccounts = async () => [{
-      algo: 'secp256k1' as Algo,
-      address: account.bech32Address,
-      pubkey: account.pubKey,
-    }];
+    const getAccounts = async () => [
+      {
+        algo: "secp256k1" as Algo,
+        address: account.bech32Address,
+        pubkey: account.pubKey,
+      },
+    ];
 
     return {
       type: CarbonSignerTypes.BrowserInjected,
@@ -48,22 +50,21 @@ class KeplrAccount {
     };
   }
 
-  static async getChainInfo(configProvider: SDKProvider): Promise<ChainInfo> {
-    const config = configProvider.getConfig();
-    const bech32Prefix = config.Bech32Prefix;
-
-    const chainId = await configProvider.query.chain.getChainId();
-    const gasPricesResult = await configProvider.query.fee.MinGasPriceAll({});
+  static async queryFeeCurrencies(configProvider: SDKProvider): Promise<FeeCurrency[]> {
     const tokenClient = configProvider.getTokenClient();
     const coingeckoIdMap = tokenClient.geckoTokenNames;
+
+    // Query minGasPrices from on-chain (for testnet/devnet/localhost)
+    const gasPricesResult = await configProvider.query.fee.MinGasPriceAll({});
     const feeCurrencies: FeeCurrency[] = gasPricesResult.minGasPrices.reduce((result: FeeCurrency[], price: MinGasPrice) => {
       const token = tokenClient.tokenForDenom(price.denom);
-      if (!token || token.denom === 'swth') return result;
+      if (!token || token.denom === "swth") return result;
       // Check if gas price is valid, else add default
       const gasPriceAdjusted = NumberUtils.bnOrZero(price.gasPrice).shiftedBy(-decTypeDecimals);
-      const minGasPrice = gasPriceAdjusted.isNaN() || gasPriceAdjusted.isZero()
-        ? (KeplrAccount.BASE_CHAIN_INFO.gasPriceStep?.low ?? CARBON_GAS_PRICE.low)
-        : gasPriceAdjusted.toNumber();
+      const minGasPrice =
+        gasPriceAdjusted.isNaN() || gasPriceAdjusted.isZero()
+          ? KeplrAccount.BASE_CHAIN_INFO.gasPriceStep?.low ?? CARBON_GAS_PRICE.low
+          : gasPriceAdjusted.toNumber();
       result.push({
         coinDenom: token.symbol ?? token.denom,
         coinMinimalDenom: token.denom,
@@ -78,14 +79,50 @@ class KeplrAccount {
       return result;
     }, [] as FeeCurrency[]);
 
+    return feeCurrencies;
+  }
+
+  static processCurrencies(feeCurrencies: FeeCurrency[]): AppCurrency[] {
+    return feeCurrencies.reduce((prevCurrencies: AppCurrency[], feeCurrency: FeeCurrency) => {
+      const currentFeeCurrency: AppCurrency = {
+        coinDenom: feeCurrency.coinDenom,
+        coinMinimalDenom: feeCurrency.coinMinimalDenom,
+        coinDecimals: feeCurrency.coinDecimals,
+        coinGeckoId: feeCurrency.coinGeckoId,
+      };
+      prevCurrencies.push(currentFeeCurrency);
+      return prevCurrencies;
+    }, []);
+  }
+
+  static async getChainInfo(configProvider: SDKProvider): Promise<ChainInfo> {
+    const config = configProvider.getConfig();
+    const bech32Prefix = config.Bech32Prefix;
+
+    const chainId = await configProvider.query.chain.getChainId();
+
+    // Query fee currencies from keplr-chain-registry
+    const keplrChainInfo = await (await FetchUtils.fetch("https://raw.githubusercontent.com/chainapsis/keplr-chain-registry/master/cosmos/carbon.json")).json();
+    if (config.network === Network.MainNet) {
+      if (keplrChainInfo.nodeProvider) {
+        delete keplrChainInfo.nodeProvider;
+      }
+      return keplrChainInfo as ChainInfo
+    }
+
+    const feeCurrencies = await this.queryFeeCurrencies(configProvider);
+
+    const networkFees = [KeplrAccount.SWTH_CURRENCY, ...feeCurrencies];
+    const currencies = this.processCurrencies(networkFees);
+
     return {
-      feeCurrencies: [KeplrAccount.SWTH_CURRENCY, ...feeCurrencies],
+      feeCurrencies: networkFees,
       bip44: KeplrAccount.BASE_CHAIN_INFO.bip44,
-      currencies: [KeplrAccount.SWTH_CURRENCY, ...feeCurrencies] as AppCurrency[],
+      currencies: currencies,
       stakeCurrency: KeplrAccount.SWTH_CURRENCY,
       rest: config.restUrl,
       rpc: config.tmRpcUrl,
-      chainName: config.network === Network.MainNet ? `Carbon` : `Carbon (${config.network})`,
+      chainName: `Carbon (${config.network})`,
       chainId: chainId,
       bech32Config: {
         bech32PrefixAccAddr: `${bech32Prefix}`,
@@ -96,12 +133,10 @@ class KeplrAccount {
         bech32PrefixConsPub: `${bech32Prefix}valconspub`,
       },
       features: ["ibc-transfer", "ibc-go"],
-    }
+    };
   }
 }
 
-namespace KeplrAccount {
-
-}
+namespace KeplrAccount {}
 
 export default KeplrAccount;

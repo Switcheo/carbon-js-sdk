@@ -1,10 +1,45 @@
-import { Any, MsgAddAsset, MsgAddRateStrategy, MsgRemoveRateStrategy, MsgSetInterestFee, MsgSetLiquidationFee, MsgSetStablecoinInterestRate, MsgUpdateAsset, MsgUpdateRateStrategy, SettlementPriceParams, MsgSetCompleteLiquidationThreshold, MsgSetMinimumCloseFactor, MsgSetSmallLiquidationSize } from "@carbon-sdk/codec";
-import { MsgAuthorizeBridge, MsgBindToken, MsgCreateToken, MsgUpdateToken, MsgDeauthorizeBridge, MsgLinkToken, MsgSyncToken, MsgUnbindToken } from "@carbon-sdk/codec/coin/tx";
+import {
+  Any,
+  MsgAddAsset,
+  MsgAddRateStrategy,
+  MsgRemoveRateStrategy,
+  MsgSetInterestFee,
+  MsgSetLiquidationFee,
+  MsgSetStablecoinInterestRate,
+  MsgUpdateAsset,
+  MsgUpdateRateStrategy,
+  SettlementPriceParams,
+  MsgSetCompleteLiquidationThreshold,
+  MsgSetMinimumCloseFactor,
+  MsgSetSmallLiquidationSize,
+} from "@carbon-sdk/codec";
+import {
+  MsgAuthorizeBridge,
+  MsgBindToken,
+  MsgCreateToken,
+  MsgUpdateToken,
+  MsgDeauthorizeBridge,
+  MsgLinkToken,
+  MsgSyncToken,
+  MsgUnbindToken,
+  MsgCreateGroup,
+  MsgRegisterToGroup,
+  MsgDeregisterFromGroup,
+  MsgUpdateGroup,
+  MsgUpdateGroupedTokenConfig,
+} from "@carbon-sdk/codec/coin/tx";
 import { Coin } from "@carbon-sdk/codec/cosmos/base/v1beta1/coin";
 import { Description } from "@carbon-sdk/codec/cosmos/staking/v1beta1/staking";
 import { MsgCreateValidator, MsgEditValidator } from "@carbon-sdk/codec/cosmos/staking/v1beta1/tx";
 import { MsgSetGasCost, MsgSetMinGasPrice, MsgRemoveGasCost, MsgRemoveMinGasPrice } from "@carbon-sdk/codec/fee/tx";
-import { MsgLinkPool, MsgSetCommitmentCurve, MsgSetRewardCurve, MsgSetRewardsWeights, MsgUnlinkPool, MsgUpdatePool } from "@carbon-sdk/codec/liquiditypool/tx";
+import {
+  MsgLinkPool,
+  MsgSetCommitmentCurve,
+  MsgSetRewardCurve,
+  MsgSetRewardsWeights,
+  MsgUnlinkPool,
+  MsgUpdatePool,
+} from "@carbon-sdk/codec/liquiditypool/tx";
 import { MsgCreateMarket } from "@carbon-sdk/codec/market/tx";
 import { MsgCreateOracle } from "@carbon-sdk/codec/oracle/tx";
 import { MsgSetTradingFlag } from "@carbon-sdk/codec/order/tx";
@@ -15,19 +50,21 @@ import Long from "long";
 import BaseModule from "./base";
 
 export class AdminModule extends BaseModule {
-
   public async createOracle(params: AdminModule.CreateOracleParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgCreateOracle.fromPartial({
       creator: wallet.bech32Address,
       createOracleParams: transfromCreateOracleParams(params, wallet.bech32Address),
-    })
+    });
 
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgCreateOracle,
-      value,
-    }, opts);
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgCreateOracle,
+        value,
+      },
+      opts
+    );
   }
 
   public async createToken(params: AdminModule.CreateTokenParams, opts?: CarbonTx.SignTxOpts) {
@@ -36,28 +73,31 @@ export class AdminModule extends BaseModule {
     const value = MsgCreateToken.fromPartial({
       creator: wallet.bech32Address,
       createTokenParams: transfromCreateTokenParams(params, wallet.bech32Address),
-    })
+    });
 
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgCreateToken,
-      value,
-    }, opts);
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgCreateToken,
+        value,
+      },
+      opts
+    );
   }
 
   public async createTokens(params: AdminModule.CreateTokenParams[], opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const msgs = params.map(param => {
+    const msgs = params.map((param) => {
       const value = MsgCreateToken.fromPartial({
         creator: wallet.bech32Address,
         createTokenParams: transfromCreateTokenParams(param, wallet.bech32Address),
-      })
+      });
 
       return {
         typeUrl: CarbonTx.Types.MsgCreateToken,
         value,
-      }
-    })
+      };
+    });
 
     return await wallet.sendTxs(msgs, opts);
   }
@@ -65,12 +105,15 @@ export class AdminModule extends BaseModule {
   public async syncToken(params: AdminModule.SyncTokenParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = MsgSyncToken.fromPartial(transfromSyncTokenParams(params, wallet.bech32Address))
+    const value = MsgSyncToken.fromPartial(transfromSyncTokenParams(params, wallet.bech32Address));
 
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgSyncToken,
-      value,
-    }, opts);
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgSyncToken,
+        value,
+      },
+      opts
+    );
   }
 
   public async bindToken(params: AdminModule.BindTokenParams, opts?: CarbonTx.SignTxOpts) {
@@ -80,12 +123,15 @@ export class AdminModule extends BaseModule {
       creator: wallet.bech32Address,
       sourceDenom: params.sourceDenom,
       wrappedDenom: params.wrappedDenom,
-    })
+    });
 
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgBindToken,
-      value,
-    }, opts);
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgBindToken,
+        value,
+      },
+      opts
+    );
   }
 
   public async unbindToken(params: AdminModule.UnbindTokenParams, opts?: CarbonTx.SignTxOpts) {
@@ -94,12 +140,15 @@ export class AdminModule extends BaseModule {
     const value = MsgUnbindToken.fromPartial({
       creator: wallet.bech32Address,
       wrappedDenom: params.wrappedDenom,
-    })
+    });
 
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgUnbindToken,
-      value,
-    }, opts);
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgUnbindToken,
+        value,
+      },
+      opts
+    );
   }
 
   public async updateToken(params: AdminModule.UpdateTokenParams, opts?: CarbonTx.SignTxOpts) {
@@ -113,13 +162,16 @@ export class AdminModule extends BaseModule {
         symbol: params.symbol,
         decimals: params.decimals,
         isActive: params.isActive,
-      }
-    })
+      },
+    });
 
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgUpdateToken,
-      value,
-    }, opts);
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgUpdateToken,
+        value,
+      },
+      opts
+    );
   }
 
   public async linkToken(params: AdminModule.LinkTokenParams, opts?: CarbonTx.SignTxOpts) {
@@ -131,10 +183,13 @@ export class AdminModule extends BaseModule {
       bridgeAddress: params.bridgeAddress,
     });
 
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgLinkToken,
-      value,
-    }, opts);
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgLinkToken,
+        value,
+      },
+      opts
+    );
   }
 
   public async createMarket(params: AdminModule.CreateMarketParams, opts?: CarbonTx.SignTxOpts) {
@@ -151,10 +206,13 @@ export class AdminModule extends BaseModule {
       expiryTime: params.expiryTime ?? new Date(0),
     });
 
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgCreateMarket,
-      value,
-    }, opts);
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgCreateMarket,
+        value,
+      },
+      opts
+    );
   }
 
   public async createMarkets(params: AdminModule.CreateMarketParams[], opts?: CarbonTx.SignTxOpts) {
@@ -169,7 +227,7 @@ export class AdminModule extends BaseModule {
         currentBasePriceUsd: param.currentBasePriceUsd.toString(10),
         currentQuotePriceUsd: param.currentQuotePriceUsd.toString(10),
         indexOracleId: param.indexOracleId ?? "",
-        ...param.expiryTime && { expiryTime: param.expiryTime },
+        ...(param.expiryTime && { expiryTime: param.expiryTime }),
       });
 
       return {
@@ -185,70 +243,85 @@ export class AdminModule extends BaseModule {
     const wallet = this.getWallet();
 
     const value = MsgLinkPool.fromPartial({
-        creator: wallet.bech32Address,
-        linkPoolParams: transfromLinkPoolParams(params)
-    })
+      creator: wallet.bech32Address,
+      linkPoolParams: transfromLinkPoolParams(params),
+    });
 
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgLinkPool,
-      value,
-    }, opts);
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgLinkPool,
+        value,
+      },
+      opts
+    );
   }
 
   public async unlinkPool(params: AdminModule.UnlinkPoolParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgUnlinkPool.fromPartial({
-        creator: wallet.bech32Address,
-        unlinkPoolParams: transfromUnlinkPoolParams(params)
-    })
+      creator: wallet.bech32Address,
+      unlinkPoolParams: transfromUnlinkPoolParams(params),
+    });
 
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgUnlinkPool,
-      value,
-    }, opts);
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgUnlinkPool,
+        value,
+      },
+      opts
+    );
   }
 
   public async setRewardsWeights(params: AdminModule.SetRewardsWeightsParams[], opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgSetRewardsWeights.fromPartial({
-        creator: wallet.bech32Address,
-        setRewardsWeightsParams: transfromSetRewardsWeightsParams(params)
-    })
+      creator: wallet.bech32Address,
+      setRewardsWeightsParams: transfromSetRewardsWeightsParams(params),
+    });
 
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgSetRewardsWeights,
-      value,
-    }, opts);
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgSetRewardsWeights,
+        value,
+      },
+      opts
+    );
   }
 
   public async setRewardCurve(params: AdminModule.SetRewardCurveParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgSetRewardCurve.fromPartial({
-        creator: wallet.bech32Address,
-        setRewardCurveParams: transfromSetRewardCurveParams(params)
-    })
+      creator: wallet.bech32Address,
+      setRewardCurveParams: transfromSetRewardCurveParams(params),
+    });
 
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgSetRewardCurve,
-      value,
-    }, opts);
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgSetRewardCurve,
+        value,
+      },
+      opts
+    );
   }
 
   public async setCommitmentCurve(params: AdminModule.SetCommitmentCurveParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = MsgSetCommitmentCurve.fromPartial({
-        creator: wallet.bech32Address,
-        setCommitmentCurveParams: transfromSetCommitmentCurveParams(params)
-    })
+      creator: wallet.bech32Address,
+      setCommitmentCurveParams: transfromSetCommitmentCurveParams(params),
+    });
 
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgSetCommitmentCurve,
-      value,
-    }, opts);
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgSetCommitmentCurve,
+        value,
+      },
+      opts
+    );
   }
 
   public async updatePool(params: AdminModule.UpdatePoolParams, opts?: CarbonTx.SignTxOpts) {
@@ -257,23 +330,29 @@ export class AdminModule extends BaseModule {
     const value = MsgUpdatePool.fromPartial({
       creator: wallet.bech32Address,
       updatePoolParams: transfromUpdatePoolParams(params),
-    })
+    });
 
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgUpdatePool,
-      value,
-    }, opts);
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgUpdatePool,
+        value,
+      },
+      opts
+    );
   }
 
   public async setTradingFlag(params: AdminModule.SetTradingFlagParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = MsgSetTradingFlag.fromPartial(transfromSetTradingFlagParams(params, wallet.bech32Address))
+    const value = MsgSetTradingFlag.fromPartial(transfromSetTradingFlagParams(params, wallet.bech32Address));
 
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgSetTradingFlag,
-      value,
-    }, opts);
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgSetTradingFlag,
+        value,
+      },
+      opts
+    );
   }
 
   public async setMsgFee(params: AdminModule.SetMsgFeeParams) {
@@ -285,13 +364,16 @@ export class AdminModule extends BaseModule {
 
     const value = MsgSetGasCost.fromPartial({
       creator: wallet.bech32Address,
-      setGasCostParams: transfromSetMsgGasCostParams(params)
-    })
+      setGasCostParams: transfromSetMsgGasCostParams(params),
+    });
 
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgSetGasCost,
-      value,
-    }, opts);
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgSetGasCost,
+        value,
+      },
+      opts
+    );
   }
 
   public async setMinGasPrice(params: AdminModule.SetMinGasPriceParams, opts?: CarbonTx.SignTxOpts) {
@@ -299,13 +381,16 @@ export class AdminModule extends BaseModule {
 
     const value = MsgSetMinGasPrice.fromPartial({
       creator: wallet.bech32Address,
-      setMinGasPriceParams: transfromSetMinGasPriceParams(params)
-    })
+      setMinGasPriceParams: transfromSetMinGasPriceParams(params),
+    });
 
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgSetMinGasPrice,
-      value,
-    }, opts);
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgSetMinGasPrice,
+        value,
+      },
+      opts
+    );
   }
 
   public async removeMsgGasCost(params: AdminModule.RemoveMsgGasCostParams, opts?: CarbonTx.SignTxOpts) {
@@ -314,12 +399,15 @@ export class AdminModule extends BaseModule {
     const value = MsgRemoveGasCost.fromPartial({
       creator: wallet.bech32Address,
       msgType: params.msgType,
-    })
+    });
 
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgRemoveGasCost,
-      value,
-    }, opts);
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgRemoveGasCost,
+        value,
+      },
+      opts
+    );
   }
 
   public async removeMinGasPrice(params: AdminModule.RemoveMinGasPriceParams, opts?: CarbonTx.SignTxOpts) {
@@ -328,12 +416,15 @@ export class AdminModule extends BaseModule {
     const value = MsgRemoveMinGasPrice.fromPartial({
       creator: wallet.bech32Address,
       denom: params.denom,
-    })
+    });
 
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgRemoveMinGasPrice,
-      value,
-    }, opts);
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgRemoveMinGasPrice,
+        value,
+      },
+      opts
+    );
   }
 
   public async createValidator(params: AdminModule.CreateValidatorParams, opts?: CarbonTx.SignTxOpts) {
@@ -345,25 +436,28 @@ export class AdminModule extends BaseModule {
       minSelfDelegation: params.minSelfDelegation.toString(10),
       description: params.description,
       pubkey: params.pubkey,
-      ...params.commission && {
+      ...(params.commission && {
         commission: {
           rate: params.commission.rate.shiftedBy(18).toString(10),
           maxRate: params.commission.maxRate.shiftedBy(18).toString(10),
           maxChangeRate: params.commission.maxChangeRate.shiftedBy(18).toString(10),
         },
-      },
-      ...params.value && {
+      }),
+      ...(params.value && {
         value: {
           denom: params.value.denom,
           amount: params.value.amount.toString(10),
         },
-      },
+      }),
     });
 
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgCreateValidator,
-      value,
-    }, opts);
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgCreateValidator,
+        value,
+      },
+      opts
+    );
   }
 
   public async editValidator(params: AdminModule.EditValidatorParams, opts?: CarbonTx.SignTxOpts) {
@@ -376,10 +470,13 @@ export class AdminModule extends BaseModule {
       minSelfDelegation: params.minSelfDelegation.toString(10),
     });
 
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgEditValidator,
-      value,
-    }, opts);
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgEditValidator,
+        value,
+      },
+      opts
+    );
   }
 
   public async authorizeBridge(params: AdminModule.AuthorizeBridgeParams, opts?: CarbonTx.SignTxOpts) {
@@ -392,10 +489,13 @@ export class AdminModule extends BaseModule {
       chainName: params.chainName,
     });
 
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgAuthorizeBridge,
-      value,
-    }, opts);
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgAuthorizeBridge,
+        value,
+      },
+      opts
+    );
   }
 
   public async deauthorizeBridge(params: AdminModule.DeauthorizeBridgeParams, opts?: CarbonTx.SignTxOpts) {
@@ -407,10 +507,13 @@ export class AdminModule extends BaseModule {
       chainId: new Long(params.chainId),
     });
 
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgDeauthorizeBridge,
-      value,
-    }, opts);
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgDeauthorizeBridge,
+        value,
+      },
+      opts
+    );
   }
 
   public async addRateStrategy(params: AdminModule.AddRateStrategyParams, opts?: CarbonTx.SignTxOpts) {
@@ -429,12 +532,15 @@ export class AdminModule extends BaseModule {
         stableRateSlope2: params.rateStrategy.stableRateSlope2.toString(10),
         optimalStableToTotalDebtRatio: params.rateStrategy.optimalStableToTotalDebtRatio.toString(10),
       },
-    })
+    });
 
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgAddRateStrategy,
-      value
-    }, opts);
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgAddRateStrategy,
+        value,
+      },
+      opts
+    );
   }
 
   public async updateRateStrategy(params: AdminModule.UpdateRateStrategyParams, opts?: CarbonTx.SignTxOpts) {
@@ -453,12 +559,15 @@ export class AdminModule extends BaseModule {
         stableRateSlope2: params.rateStrategy.stableRateSlope2.toString(10),
         optimalStableToTotalDebtRatio: params.rateStrategy.optimalStableToTotalDebtRatio.toString(10),
       },
-    })
+    });
 
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgUpdateRateStrategy,
-      value
-    }, opts);
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgUpdateRateStrategy,
+        value,
+      },
+      opts
+    );
   }
 
   public async removeRateStrategy(params: AdminModule.RemoveRateStrategyParams, opts?: CarbonTx.SignTxOpts) {
@@ -467,12 +576,15 @@ export class AdminModule extends BaseModule {
     const value = MsgRemoveRateStrategy.fromPartial({
       creator: wallet.bech32Address,
       name: params.name,
-    })
+    });
 
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgRemoveRateStrategy,
-      value
-    }, opts);
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgRemoveRateStrategy,
+        value,
+      },
+      opts
+    );
   }
 
   public async addAsset(params: AdminModule.AddAssetParams, opts?: CarbonTx.SignTxOpts) {
@@ -489,13 +601,16 @@ export class AdminModule extends BaseModule {
         liquidationDiscount: params.asset.liquidationDiscount.toString(10),
         supplyCap: params.asset.supplyCap.toString(10),
         borrowCap: params.asset.borrowCap.toString(10),
-      }
-    })
+      },
+    });
 
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgAddAsset,
-      value
-    }, opts);
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgAddAsset,
+        value,
+      },
+      opts
+    );
   }
 
   public async updateAsset(params: AdminModule.UpdateAssetParams, opts?: CarbonTx.SignTxOpts) {
@@ -512,13 +627,16 @@ export class AdminModule extends BaseModule {
         liquidationDiscount: params.asset.liquidationDiscount.toString(10),
         supplyCap: params.asset.supplyCap.toString(10),
         borrowCap: params.asset.borrowCap.toString(10),
-      }
-    })
+      },
+    });
 
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgUpdateAsset,
-      value
-    }, opts);
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgUpdateAsset,
+        value,
+      },
+      opts
+    );
   }
 
   public async setLiquidationFee(params: AdminModule.SetLiquidationFeeParams, opts?: CarbonTx.SignTxOpts) {
@@ -527,12 +645,15 @@ export class AdminModule extends BaseModule {
     const value = MsgSetLiquidationFee.fromPartial({
       creator: wallet.bech32Address,
       liquidationFee: params.liquidationFee.toString(10),
-    })
+    });
 
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgSetLiquidationFee,
-      value
-    }, opts);
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgSetLiquidationFee,
+        value,
+      },
+      opts
+    );
   }
 
   public async setInterestFee(params: AdminModule.SetInterestFeeParams, opts?: CarbonTx.SignTxOpts) {
@@ -541,12 +662,15 @@ export class AdminModule extends BaseModule {
     const value = MsgSetInterestFee.fromPartial({
       creator: wallet.bech32Address,
       interestFee: params.interestFee.toString(10),
-    })
+    });
 
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgSetInterestFee,
-      value
-    }, opts);
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgSetInterestFee,
+        value,
+      },
+      opts
+    );
   }
 
   public async setStableCoinInterestRate(params: AdminModule.SetStableCoinInterestRateParams, opts?: CarbonTx.SignTxOpts) {
@@ -555,12 +679,15 @@ export class AdminModule extends BaseModule {
     const value = MsgSetStablecoinInterestRate.fromPartial({
       creator: wallet.bech32Address,
       stablecoinInterestRate: params.stablecoinInterestRate.toString(10),
-    })
+    });
 
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgSetStablecoinInterestRate,
-      value
-    }, opts);
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgSetStablecoinInterestRate,
+        value,
+      },
+      opts
+    );
   }
 
   public async setCompleteLiquidationThreshold(params: AdminModule.SetCompleteLiquidationThresholdParams, opts?: CarbonTx.SignTxOpts) {
@@ -570,10 +697,13 @@ export class AdminModule extends BaseModule {
       completeLiquidationThreshold: params.completeLiquidationThreshold.shiftedBy(18).toString(10),
     });
 
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgSetCompleteLiquidationThreshold,
-      value,
-    }, opts);
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgSetCompleteLiquidationThreshold,
+        value,
+      },
+      opts
+    );
   }
 
   public async setMinimumCloseFactor(params: AdminModule.SetMinimumCloseFactorParams, opts?: CarbonTx.SignTxOpts) {
@@ -583,10 +713,13 @@ export class AdminModule extends BaseModule {
       minimumCloseFactor: params.minimumCloseFactor.shiftedBy(18).toString(10),
     });
 
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgSetMinimumCloseFactor,
-      value,
-    }, opts);
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgSetMinimumCloseFactor,
+        value,
+      },
+      opts
+    );
   }
 
   public async setSmallLiquidationSize(params: AdminModule.SetSmallLiquidationSizeParams, opts?: CarbonTx.SignTxOpts) {
@@ -596,10 +729,99 @@ export class AdminModule extends BaseModule {
       smallLiquidationSize: params.smallLiquidationSize.shiftedBy(18).toString(10),
     });
 
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgSetSmallLiquidationSize,
-      value,
-    }, opts);
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgSetSmallLiquidationSize,
+        value,
+      },
+      opts
+    );
+  }
+
+  public async createNewGroup(params: AdminModule.CreateNewGroupParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+    const value = MsgCreateGroup.fromPartial({
+      creator: params.creator ?? wallet.bech32Address,
+      name: params.name,
+      chequeTokenSymbol: params.chequeTokenSymbol,
+      oracleId: params.oracleId,
+    });
+
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgCreateGroup,
+        value,
+      },
+      opts
+    );
+  }
+
+  public async updateGroup(params: AdminModule.UpdateGroupParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+    const value = MsgUpdateGroup.fromPartial({
+      creator: params.creator ?? wallet.bech32Address,
+      groupId: params.groupId,
+      updateGroupParams: params.updateGroupParams
+    });
+
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgUpdateGroup,
+        value,
+      },
+      opts
+    );
+  }
+
+  public async registerToGroup(params: AdminModule.RegisterDeregisterToGroupParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+    const value = MsgRegisterToGroup.fromPartial({
+      creator: params.creator ?? wallet.bech32Address,
+      groupId: params.groupId,
+      denom: params.denom,
+    });
+
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgRegisterToGroup,
+        value,
+      },
+      opts
+    );
+  }
+
+  public async deregisterFromGroup(params: AdminModule.RegisterDeregisterToGroupParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+    const value = MsgDeregisterFromGroup.fromPartial({
+      creator: params.creator ?? wallet.bech32Address,
+      groupId: params.groupId,
+      denom: params.denom,
+    });
+
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgDeregisterFromGroup,
+        value,
+      },
+      opts
+    );
+  }
+
+  public async updateGroupConfig(params: AdminModule.UpdateGroupConfigParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+    const value = MsgUpdateGroupedTokenConfig.fromPartial({
+      creator: params.creator ?? wallet.bech32Address,
+      denom: params.denom,
+      updateGroupedTokenConfigParams: params.updateGroupedTokenConfigParams,
+    });
+
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgUpdateGroupedTokenConfig,
+        value,
+      },
+      opts
+    );
   }
 }
 
@@ -617,14 +839,14 @@ export namespace AdminModule {
   }
 
   export interface CreateOracleParams {
-    id: string
-    description: string
-    minTurnoutPercentage: number
-    maxResultAge: number
-    securityType: string
-    resultStrategy: string
-    resolution: number
-    spec: string
+    id: string;
+    description: string;
+    minTurnoutPercentage: number;
+    maxResultAge: number;
+    securityType: string;
+    resultStrategy: string;
+    resolution: number;
+    spec: string;
   }
 
   export interface CreateTokenParams {
@@ -643,11 +865,11 @@ export namespace AdminModule {
     name?: string;
     symbol?: string;
     decimals?: number;
-    isActive?: boolean,
+    isActive?: boolean;
   }
 
   export interface SyncTokenParams {
-    denom: string
+    denom: string;
   }
 
   export interface BindTokenParams {
@@ -677,80 +899,80 @@ export namespace AdminModule {
   }
 
   export interface CreateVaultTypeParams {
-    collateralDenom: string
-    debtDenom: string
-    collateralizationRatio: BigNumber
+    collateralDenom: string;
+    debtDenom: string;
+    collateralizationRatio: BigNumber;
   }
 
   export interface LinkPoolParams {
-    poolId: number
-    market: string
+    poolId: number;
+    market: string;
   }
 
   export interface UnlinkPoolParams {
-    poolId: number
+    poolId: number;
   }
 
   export interface UpdatePoolParams {
-    poolId: number
-    swapFee: BigNumber
-    numQuotes: number
+    poolId: number;
+    swapFee: BigNumber;
+    numQuotes: number;
   }
 
   export interface SetRewardsWeightsParams {
-    poolId: number
-    weight: number
+    poolId: number;
+    weight: number;
   }
 
   export interface SetRewardCurveParams {
-    startTime: Date
-    initialRewardBps: number
-    reductionMultiplierBps: number
-    reductionIntervalSeconds: number
-    reductions: number
-    finalRewardBps: number
+    startTime: Date;
+    initialRewardBps: number;
+    reductionMultiplierBps: number;
+    reductionIntervalSeconds: number;
+    reductions: number;
+    finalRewardBps: number;
   }
 
   export interface SetCommitmentCurveParams {
-    maxDuration: number
-    maxRewardMultiplier: number
+    maxDuration: number;
+    maxRewardMultiplier: number;
   }
 
   export interface ChangeNumQuotesParams {
-    poolId: number
-    numQuotes: number
+    poolId: number;
+    numQuotes: number;
   }
 
   export interface SetTradingFlagParams {
-    isEnabled: boolean
-    blockchain: string
+    isEnabled: boolean;
+    blockchain: string;
   }
 
   export interface SetMsgFeeParams {
-    msgType: string
-    fee: BigNumber
+    msgType: string;
+    fee: BigNumber;
   }
 
   export interface SetMsgGasCostParams {
-    msgType: string
-    gasCost: BigNumber
+    msgType: string;
+    gasCost: BigNumber;
   }
 
   export interface SetMinGasPriceParams {
-    denom: string
-    gasPrice: BigNumber
+    denom: string;
+    gasPrice: BigNumber;
   }
 
   export interface RemoveMsgGasCostParams {
-    msgType: string
+    msgType: string;
   }
   export interface RemoveMinGasPriceParams {
-    denom: string
+    denom: string;
   }
 
   export interface SetMsgGasCostParams {
-    msgType: string
-    gasCost: BigNumber
+    msgType: string;
+    gasCost: BigNumber;
   }
 
   export interface CreateValidatorParams {
@@ -777,55 +999,55 @@ export namespace AdminModule {
     minSelfDelegation: BigNumber;
   }
   export interface RateStrategy {
-    name: string
-    optimalUsage: BigNumber
-    baseVariableBorrowRate: BigNumber
-    variableRateSlope1: BigNumber
-    variableRateSlope2: BigNumber
-    baseStableBorrowRate: BigNumber
-    stableRateSlope1: BigNumber
-    stableRateSlope2: BigNumber
-    optimalStableToTotalDebtRatio: BigNumber
-  } 
+    name: string;
+    optimalUsage: BigNumber;
+    baseVariableBorrowRate: BigNumber;
+    variableRateSlope1: BigNumber;
+    variableRateSlope2: BigNumber;
+    baseStableBorrowRate: BigNumber;
+    stableRateSlope1: BigNumber;
+    stableRateSlope2: BigNumber;
+    optimalStableToTotalDebtRatio: BigNumber;
+  }
   export interface Asset {
-    denom: string
-    oracleId: string
-    rateStrategyName: string
-    loanToValue: BigNumber
-    liquidationThreshold: BigNumber
-    liquidationDiscount: BigNumber
-    supplyCap: BigNumber
-    borrowCap: BigNumber
+    denom: string;
+    oracleId: string;
+    rateStrategyName: string;
+    loanToValue: BigNumber;
+    liquidationThreshold: BigNumber;
+    liquidationDiscount: BigNumber;
+    supplyCap: BigNumber;
+    borrowCap: BigNumber;
   }
   export interface AddRateStrategyParams {
-    rateStrategy: RateStrategy
+    rateStrategy: RateStrategy;
   }
   export interface UpdateRateStrategyParams {
-    rateStrategy: RateStrategy
+    rateStrategy: RateStrategy;
   }
   export interface RemoveRateStrategyParams {
-    name: string
+    name: string;
   }
   export interface AddAssetParams {
-    asset: Asset
+    asset: Asset;
   }
   export interface UpdateAssetParams {
-    asset: Asset
+    asset: Asset;
   }
   export interface SetLiquidationFeeParams {
-    liquidationFee: BigNumber
+    liquidationFee: BigNumber;
   }
 
   export interface SetInterestFeeParams {
-    interestFee: BigNumber
+    interestFee: BigNumber;
   }
 
   export interface SetStableCoinInterestRateParams {
-    stablecoinInterestRate: BigNumber
+    stablecoinInterestRate: BigNumber;
   }
-  
+
   export interface SetCompleteLiquidationThresholdParams {
-    completeLiquidationThreshold: BigNumber
+    completeLiquidationThreshold: BigNumber;
   }
 
   export interface SetMinimumCloseFactorParams {
@@ -861,7 +1083,40 @@ export namespace AdminModule {
     amount: BigNumber;
     denom: string;
   }
-};
+
+  export interface CreateNewGroupParams {
+    creator?: string;
+    name: string;
+    chequeTokenSymbol: string;
+    oracleId: string;
+  }
+
+  export interface UpdateGroupParams {
+    creator?: string;
+    groupId?: string;
+    updateGroupParams?: GroupName;
+  }
+
+  export interface GroupName {
+    name: string
+  }
+
+  export interface RegisterDeregisterToGroupParams {
+    creator?: string;
+    groupId: string;
+    denom: string;
+  }
+
+  export interface UpdateGroupConfigParams {
+    creator?: string;
+    denom: string;
+    updateGroupedTokenConfigParams: IsGroupActive;
+  }
+
+  export interface IsGroupActive {
+    isActive: boolean
+  }
+}
 
 export function transfromCreateOracleParams(msg: AdminModule.CreateOracleParams, address: string) {
   return {
@@ -874,7 +1129,7 @@ export function transfromCreateOracleParams(msg: AdminModule.CreateOracleParams,
     resultStrategy: msg.resultStrategy,
     resolution: new Long(msg.resolution),
     spec: msg.spec,
-  }
+  };
 }
 
 export function transfromCreateTokenParams(msg: AdminModule.CreateTokenParams, address: string) {
@@ -887,40 +1142,40 @@ export function transfromCreateTokenParams(msg: AdminModule.CreateTokenParams, a
     bridgeId: new Long(msg.bridgeId),
     bridgeAddress: msg.bridgeAddress,
     tokenAddress: msg.tokenAddress,
-  }
+  };
 }
 
 export function transfromSyncTokenParams(msg: AdminModule.SyncTokenParams, address: string) {
   return {
     syncer: address,
     denom: msg.denom,
-  }
+  };
 }
 
 export function transfromLinkPoolParams(msg: AdminModule.LinkPoolParams) {
   return {
     poolId: new Long(msg.poolId),
     market: msg.market,
-  }
+  };
 }
 
 export function transfromUnlinkPoolParams(msg: AdminModule.UnlinkPoolParams) {
   return {
     poolId: new Long(msg.poolId),
-  }
+  };
 }
 
 export function transfromSetRewardsWeightsParams(msg: AdminModule.SetRewardsWeightsParams[]) {
-  const weights = msg.map(param => {
+  const weights = msg.map((param) => {
     return {
       poolId: new Long(param.poolId),
-      weight: param.weight.toString(10)
-    }
-  })
+      weight: param.weight.toString(10),
+    };
+  });
 
   return {
-    weights: weights
-  }
+    weights: weights,
+  };
 }
 
 export function transfromSetRewardCurveParams(msg: AdminModule.SetRewardCurveParams) {
@@ -931,14 +1186,14 @@ export function transfromSetRewardCurveParams(msg: AdminModule.SetRewardCurvePar
     reductionIntervalSeconds: new Long(msg.reductionIntervalSeconds),
     reductions: msg.reductions,
     finalRewardBps: msg.finalRewardBps,
-  }
+  };
 }
 
 export function transfromSetCommitmentCurveParams(msg: AdminModule.SetCommitmentCurveParams) {
   return {
     maxDuration: new Long(msg.maxDuration),
     maxRewardMultiplier: msg.maxRewardMultiplier,
-  }
+  };
 }
 
 export function transfromUpdatePoolParams(msg: AdminModule.UpdatePoolParams) {
@@ -946,49 +1201,44 @@ export function transfromUpdatePoolParams(msg: AdminModule.UpdatePoolParams) {
     poolId: new Long(msg.poolId),
     numQuotes: new Long(msg.numQuotes),
     swapFee: msg.swapFee.shiftedBy(18).toString(10),
-  }
+  };
 }
 
 export function transfromSetTradingFlagParams(msg: AdminModule.SetTradingFlagParams, address: string) {
   return {
     creator: address,
     isEnabled: msg.isEnabled,
-    blockchain: msg.blockchain
-  }
+    blockchain: msg.blockchain,
+  };
 }
 
 export function transfromSetMsgGasCostParams(msg: AdminModule.SetMsgGasCostParams) {
   return {
     msgType: msg.msgType,
     gasCost: msg.gasCost.toString(10),
-  }
+  };
 }
 
 export function transfromSetMinGasPriceParams(msg: AdminModule.SetMinGasPriceParams) {
   return {
     denom: msg.denom,
     gasPrice: new BigNumber(msg.gasPrice).shiftedBy(18).toString(10),
-  }
+  };
 }
 
 export function transformSetSettlementPriceParams(msg: SettlementPriceParams) {
   return {
     market: msg.market,
     settlementPrice: new BigNumber(msg.settlementPrice).shiftedBy(18).toString(10),
-  }
+  };
 }
 
 export function transformCommunityPoolSpendAmount(amount: Coin[]) {
-  const amounts = amount.map(param => {
+  const amounts = amount.map((param) => {
     return {
       denom: param.denom,
-      amount: new BigNumber(param.amount).toString(10)
-    } as Coin
-  })
-  return amounts
+      amount: new BigNumber(param.amount).toString(10),
+    } as Coin;
+  });
+  return amounts;
 }
-
-
-
-
-

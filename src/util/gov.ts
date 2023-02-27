@@ -1,9 +1,18 @@
 import {
-  CreateOracleProposal, CreateTokenProposal, LinkPoolProposal,
-  SetCommitmentCurveProposal, SetMsgGasCostProposal, SetMinGasPriceProposal,
-  RemoveMsgGasCostProposal, RemoveMinGasPriceProposal, SetRewardCurveProposal,
-  SetRewardsWeightsProposal, SettlementPriceProposal, UnlinkPoolProposal,
-  UpdateMarketProposal, UpdatePoolProposal
+  CreateOracleProposal,
+  CreateTokenProposal,
+  LinkPoolProposal,
+  SetCommitmentCurveProposal,
+  SetMsgGasCostProposal,
+  SetMinGasPriceProposal,
+  RemoveMsgGasCostProposal,
+  RemoveMinGasPriceProposal,
+  SetRewardCurveProposal,
+  SetRewardsWeightsProposal,
+  SettlementPriceProposal,
+  UnlinkPoolProposal,
+  UpdateMarketProposal,
+  UpdatePoolProposal,
 } from "@carbon-sdk/codec";
 import { CommunityPoolSpendProposal } from "@carbon-sdk/codec/cosmos/distribution/v1beta1/distribution";
 import { TextProposal } from "@carbon-sdk/codec/cosmos/gov/v1beta1/gov";
@@ -32,7 +41,14 @@ export enum ProposalTypes {
   SetCommitmentCurve = "/Switcheo.carbon.liquiditypool.SetCommitmentCurveProposal",
   UpdateMarket = "/Switcheo.carbon.market.UpdateMarketProposal",
   SettlementPrice = "/Switcheo.carbon.pricing.SettlementPriceProposal",
-};
+  CreateGroup = "/Switcheo.carbon.coin.CreateGroupProposal",
+  UpdateGroup = "/Switcheo.carbon.coin.UpdateGroupProposal",
+  RegisterToGroup = "/Switcheo.carbon.coin.RegisterToGroupProposal",
+  DeregisterFromGroup = "/Switcheo.carbon.coin.DeregisterFromGroupProposal",
+  DepositToGroup = "/Switcheo.carbon.coin.DepositToGroupProposal",
+  WithdrawFromGroup = "/Switcheo.carbon.coin.WithdrawFromGroupProposal",
+  UpdateGroupTokenConfig = "/Switcheo.carbon.coin.UpdateGroupTokenConfigProposal"
+}
 
 export interface PropDecoded {
   typeUrl: string;
@@ -40,7 +56,7 @@ export interface PropDecoded {
 }
 
 export const emptyProposal = {
-  typeUrl: '',
+  typeUrl: "",
   value: {},
 };
 
