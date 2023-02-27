@@ -659,7 +659,7 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         },
       },
     ],
-    features: ["ibc-transfer", "ibc-go"],
+    features: ["ibc-transfer", "ibc-go", "eth-address-gen", "eth-key-sign"],
     explorerUrlToTx: "https://www.mintscan.io/evmos/txs/{txHash}",
   },
   [ChainIds.Microtick]: {
