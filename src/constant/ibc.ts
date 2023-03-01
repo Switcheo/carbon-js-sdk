@@ -2123,7 +2123,7 @@ export const ibcTokenRegex = /^ibc\/([a-f\d]+)$/i;
 
 export const ibcNetworkRegex = /^([a-z\d_-]+)-([\d]+)$/i;
 
-export const ibcDefaultGas: number = 250000;
+export const ibcDefaultGas: number = 300000;
 
 export const DefaultGasPriceStep: GasPriceStep = {
   low: 0.01,
