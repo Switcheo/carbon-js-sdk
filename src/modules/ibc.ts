@@ -1,5 +1,5 @@
 import { MsgTransfer } from "@carbon-sdk/codec/ibc/applications/transfer/v1/tx";
-import { CarbonTx } from "@carbon-sdk/util";
+import { CarbonTx, GenericUtils } from "@carbon-sdk/util";
 import BigNumber from "bignumber.js";
 import BaseModule from "./base";
 

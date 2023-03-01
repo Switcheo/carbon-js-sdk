@@ -3,6 +3,7 @@ export * from "./bank";
 export * from "./broker";
 export * from "./cdp";
 export * from "./coin";
+export * from "./cosmwasm";
 export * from "./gov";
 export * from "./ibc";
 export * from "./leverage";
