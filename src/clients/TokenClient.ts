@@ -417,8 +417,8 @@ class TokenClient {
       const blockchain = IBCUtils.BlockchainMap[chainId];
       const carbonBlockchain = IBCUtils.ChainIdBlockchainMap[blockchain ?? ""];
       const blockchainNum = BlockchainUtils.CHAIN_IDS[carbonBlockchain ?? ""] ?? 0;
-      const swthChannel = swthChannels[chainId];
-      const assetDenom = IBCUtils.makeIBCMinimalDenom(swthChannel.dstChannel ?? "channel-0", KeplrAccount.SWTH_CURRENCY.coinMinimalDenom);
+      const swthChannel = swthChannels[chainId]?.ibc;
+      const assetDenom = IBCUtils.makeIBCMinimalDenom(swthChannel?.dstChannel ?? "channel-0", KeplrAccount.SWTH_CURRENCY.coinMinimalDenom);
       return {
         id: assetDenom,
         creator: "",
@@ -556,7 +556,7 @@ class TokenClient {
     // whitelisted ibc tokens
     ibcWhitelist.forEach((chainId: string) => {
       const currencies = IBCUtils.EmbedChainInfos[chainId].currencies;
-      const channelObj = swthChannels[chainId];
+      const channelObj = swthChannels[chainId]?.ibc;
       currencies.forEach((asset: AppCurrency) => {
         const channel =
           asset.coinMinimalDenom !== "swth" ? channelObj?.sourceChannel ?? "channel-0" : channelObj?.dstChannel ?? "channel-0";
