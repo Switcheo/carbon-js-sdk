@@ -58,6 +58,11 @@ export const totalAssetObj: AssetListObj = Object.values(EmbedChainInfos).reduce
       let ibcAddr = currency.coinDenom.toLowerCase() === "swth"
         ? currency.coinMinimalDenom
         : makeIBCMinimalDenom(channelSet?.sourceChannel ?? "channel-0", currency.coinMinimalDenom);
+
+      // TODO: Remove when implementing dynamic ibc chain info
+      if (currency.coinMinimalDenom === "ibc/D189335C6E4A68B513C10AB227BF1C1D38C746766278BA3EEB4FB14124F1D858") {
+        ibcAddr = "ibc/7FBDBEEEBA9C50C4BCDF7BF438EAB99E64360833D240B32655C96E319559E911";
+      }
       assetsObj[ibcAddr] = currency;
     });
     newAssetObj[chainInfo.chainId] = assetsObj;
@@ -104,6 +109,12 @@ export const BlockchainMap = Object.values(EmbedChainInfos).reduce(
     const newPrev = prev;
     const channelsObj = swthChannels[chainInfo.chainId];
     chainInfo.currencies.forEach((currency: AppCurrency) => {
+      // TODO: Remove when implementing dynamic ibc chain info
+      if (currency.coinMinimalDenom === "ibc/D189335C6E4A68B513C10AB227BF1C1D38C746766278BA3EEB4FB14124F1D858") {
+        newPrev["ibc/7FBDBEEEBA9C50C4BCDF7BF438EAB99E64360833D240B32655C96E319559E911"] = ChainIdBlockchainMap[chainInfo.chainId];
+        return;
+      }
+
       if (currency.coinDenom.toLowerCase() === "swth") {
         newPrev[currency.coinMinimalDenom] = ChainIdBlockchainMap[chainInfo.chainId];
       } else {

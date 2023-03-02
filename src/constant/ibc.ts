@@ -146,6 +146,12 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         coinDecimals: 6,
         coinGeckoId: "ion",
       },
+      {
+        coinDenom: "axlUSDC",
+        coinMinimalDenom: "ibc/D189335C6E4A68B513C10AB227BF1C1D38C746766278BA3EEB4FB14124F1D858",
+        coinDecimals: 6,
+        coinGeckoId: "usd-coin",
+      },
     ],
     feeCurrencies: [
       {
