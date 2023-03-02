@@ -15,7 +15,7 @@ import TokenClient from "./TokenClient";
 export interface ETHClientOpts {
   configProvider: NetworkConfigProvider;
   tokenClient: TokenClient;
-  blockchain: Blockchain;
+  blockchain: typeof ETHClient.SUPPORTED_BLOCKCHAINS[number];
 }
 
 interface ETHTxParams {
@@ -60,16 +60,22 @@ export const FEE_MULTIPLIER = ethers.BigNumber.from(2);
 type SupportedBlockchains = Blockchain.BinanceSmartChain | Blockchain.Ethereum | Blockchain.Arbitrum;
 
 export class ETHClient {
-  static SUPPORTED_BLOCKCHAINS = [Blockchain.BinanceSmartChain, Blockchain.Ethereum, Blockchain.Arbitrum];
+  static SUPPORTED_BLOCKCHAINS = [Blockchain.BinanceSmartChain, Blockchain.Ethereum, Blockchain.Arbitrum] as const;
   static BLOCKCHAIN_KEY = {
     [Blockchain.BinanceSmartChain]: "bsc",
     [Blockchain.Ethereum]: "eth",
     [Blockchain.Arbitrum]: "arbitrum",
   };
 
+  static BLOCKCHAINV2_MAPPING = {
+    [Blockchain.BinanceSmartChain]: "Binance Smart Chain",
+    [Blockchain.Ethereum]: "Ethereum",
+    [Blockchain.Arbitrum]: "Arbitrum",
+  };
+
   private constructor(
     public readonly configProvider: NetworkConfigProvider,
-    public readonly blockchain: Blockchain,
+    public readonly blockchain: typeof ETHClient.SUPPORTED_BLOCKCHAINS[number],
     public readonly tokenClient: TokenClient
   ) {}
 
@@ -81,16 +87,30 @@ export class ETHClient {
     return new ETHClient(configProvider, blockchain, tokenClient);
   }
 
-  public async getExternalBalances(api: CarbonSDK, address: string, whitelistDenoms?: string[]): Promise<TokensWithExternalBalance[]> {
+  public async getExternalBalances(api: CarbonSDK, address: string, whitelistDenoms?: string[], version = "V1"): Promise<TokensWithExternalBalance[]> {
     const tokenQueryResults = await api.token.getAllTokens();
     const lockProxyAddress = this.getLockProxyAddress().toLowerCase();
     const tokens = tokenQueryResults.filter(
       (token) =>
-        blockchainForChainId(token.chainId.toNumber()) == this.blockchain &&
-        token.tokenAddress.length == 40 &&
-        token.bridgeAddress.toLowerCase() == stripHexPrefix(lockProxyAddress) &&
-        (!whitelistDenoms || whitelistDenoms.includes(token.denom)) &&
-        this.verifyChecksum(appendHexPrefix(token.tokenAddress))
+        {
+          if (version === "V2") {
+            return (
+              this.tokenClient.getBlockchainV2(token.denom) == ETHClient.BLOCKCHAINV2_MAPPING[this.blockchain] &&
+              token.tokenAddress.length == 40 &&
+              token.bridgeAddress.toLowerCase() == stripHexPrefix(lockProxyAddress) &&
+              (!whitelistDenoms || whitelistDenoms.includes(token.denom)) &&
+              this.verifyChecksum(appendHexPrefix(token.tokenAddress))
+            )
+          } else {
+            return (
+              blockchainForChainId(token.chainId.toNumber()) == this.blockchain &&
+              token.tokenAddress.length == 40 &&
+              token.bridgeAddress.toLowerCase() == stripHexPrefix(lockProxyAddress) &&
+              (!whitelistDenoms || whitelistDenoms.includes(token.denom)) &&
+              this.verifyChecksum(appendHexPrefix(token.tokenAddress))
+            )
+          }
+        }
     );
     const assetIds = tokens.map((token) => {
       return this.verifyChecksum(appendHexPrefix(token.tokenAddress));

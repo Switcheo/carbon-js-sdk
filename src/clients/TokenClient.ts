@@ -106,6 +106,18 @@ class TokenClient {
     return blockchain;
   }
 
+  public getBlockchainV2(denom: string): BlockchainUtils.BlockchainV2 | undefined {
+    // chainId defaults to 3 so that blockchain will be undefined
+    let token = this.tokens[denom]
+    if (this.isNativeToken(denom) || this.isNativeStablecoin(denom) || TokenClient.isPoolToken(denom) || TokenClient.isCdpToken(denom)) {
+      // native denoms "swth" and "usc" should be native.
+      // pool and cdp tokens are on the Native blockchain, hence 0
+      return 'Native'
+    }
+    const bridge = this.getBridgeFromToken(token)
+    return bridge?.chainName;
+  }
+
   public getSymbol(denom: string): string {
     if (TokenClient.isCdpToken(denom)) {
       return this.symbols[denom] ?? denom;
@@ -328,7 +340,7 @@ class TokenClient {
     return denom === "usc";
   }
 
-  public getDepositTokenFor(tokenDenom: string, chain: BlockchainUtils.Blockchain | BlockchainUtils.BlockchainV2): Token | undefined {
+  public getDepositTokenForV2(tokenDenom: string, chain: BlockchainUtils.Blockchain | BlockchainUtils.BlockchainV2): Token | undefined {
     const token = this.tokenForDenom(tokenDenom);
     if (!token) {
       console.error("getDepositTokenFor token not found for", tokenDenom);
@@ -336,10 +348,8 @@ class TokenClient {
     }
 
     // check if selected token is a source token
-    let targetChain = BlockchainUtils.blockchainForChainId(token.chainId.toNumber());
-    if (TokenClient.isIBCDenom(token.denom)) {
-      targetChain = IBCUtils.BlockchainMap[token.denom];
-    }
+    let targetChain = this.getBlockchainV2(token.denom);
+    
     const isSourceToken = targetChain === chain && token.denom !== "swth";
 
     // if not source token find wrapped token for chain

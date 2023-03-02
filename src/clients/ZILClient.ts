@@ -138,13 +138,25 @@ export class ZILClient {
     return new ZILClient(configProvider, blockchain);
   }
 
-  public async getExternalBalances(sdk: CarbonSDK, address: string, whitelistDenoms?: string[]): Promise<TokensWithExternalBalance[]> {
+  public async getExternalBalances(sdk: CarbonSDK, address: string, whitelistDenoms?: string[], version = "V1"): Promise<TokensWithExternalBalance[]> {
     const tokenQueryResults = await sdk.token.getAllTokens();
     const tokens = tokenQueryResults.filter(
       (token) =>
-        blockchainForChainId(token.chainId.toNumber()) == this.blockchain &&
-        token.tokenAddress.length == 40 &&
-        (!whitelistDenoms || whitelistDenoms.includes(token.denom))
+        {
+          if (version === "V2") {
+            return (
+              sdk.token.getBlockchainV2(token.denom) == this.blockchain &&
+              token.tokenAddress.length == 40 &&
+              (!whitelistDenoms || whitelistDenoms.includes(token.denom))
+            )
+          } else {
+            return (
+              blockchainForChainId(token.chainId.toNumber()) == this.blockchain &&
+              token.tokenAddress.length == 40 &&
+              (!whitelistDenoms || whitelistDenoms.includes(token.denom))
+            )
+          }
+        }
     );
 
     const requests = tokens.map((token) =>

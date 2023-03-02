@@ -68,15 +68,28 @@ export class NEOClient {
     sdk: CarbonSDK,
     address: string,
     url: string,
-    whitelistDenoms?: string[]
+    whitelistDenoms?: string[],
+    version = "V1",
   ): Promise<TokensWithExternalBalance[]> {
     const tokenQueryResults = await sdk.token.getAllTokens();
     const account = new Neon.wallet.Account(address);
     const tokens = tokenQueryResults.filter(
       (token) =>
-        blockchainForChainId(token.chainId.toNumber()) == this.blockchain &&
-        token.tokenAddress.length == 40 &&
-        token.bridgeAddress.length == 40
+        {
+          if (version === "V2") {
+            return (
+              sdk.token.getBlockchainV2(token.denom) == this.blockchain &&
+              token.tokenAddress.length == 40 &&
+              token.bridgeAddress.length == 40
+            )
+          } else {
+            return (
+              blockchainForChainId(token.chainId.toNumber()) == this.blockchain &&
+              token.tokenAddress.length == 40 &&
+              token.bridgeAddress.length == 40
+            )
+          }
+        }
     );
 
     const client: Neon.rpc.RPCClient = new Neon.rpc.RPCClient(url, "2.5.2"); // TODO: should we change the RPC version??
