@@ -138,7 +138,7 @@ export const NetworkConfigs: {
     zil: {
       rpcURL: "https://api.zilliqa.com",
       lockProxyAddr: "0xd73c6b871b4d0e130d64581993b745fc938a5be7",
-      bridgeEntranceAddr: "0x3fd798e7fc7c5817bae8d06da8050e37ae45a739",
+      bridgeEntranceAddr: "0x5d78b51a1ceae202a793f4e87478253f41a22956",
       chainId: 1,
     },
   },
