@@ -619,14 +619,14 @@ export class AdminModule extends BaseModule {
     const value = MsgUpdateAsset.fromPartial({
       creator: wallet.bech32Address,
       assetParams: {
-        denom: params.asset.denom,
-        oracleId: params.asset.oracleId,
-        rateStrategyName: params.asset.rateStrategyName,
-        loanToValue: params.asset.loanToValue.toString(10),
-        liquidationThreshold: params.asset.liquidationThreshold.toString(10),
-        liquidationDiscount: params.asset.liquidationDiscount.toString(10),
-        supplyCap: params.asset.supplyCap.toString(10),
-        borrowCap: params.asset.borrowCap.toString(10),
+        denom: params.denom,
+        rateStrategyName: params.rateStrategyName,
+        allowRepayStablecoinInterestDebt: params.allowRepayStablecoinInterestDebt,
+        loanToValue: params.loanToValue.toString(10),
+        liquidationThreshold: params.liquidationThreshold.toString(10),
+        liquidationDiscount: params.liquidationDiscount.toString(10),
+        supplyCap: params.supplyCap.toString(10),
+        borrowCap: params.borrowCap.toString(10),
       },
     });
 
@@ -1032,7 +1032,14 @@ export namespace AdminModule {
     asset: Asset;
   }
   export interface UpdateAssetParams {
-    asset: Asset;
+    denom: string;
+    rateStrategyName?: string;
+    allowRepayStablecoinInterestDebt?: boolean;
+    loanToValue: BigNumber;
+    liquidationThreshold: BigNumber;
+    liquidationDiscount: BigNumber;
+    supplyCap: BigNumber;
+    borrowCap: BigNumber;
   }
   export interface SetLiquidationFeeParams {
     liquidationFee: BigNumber;
