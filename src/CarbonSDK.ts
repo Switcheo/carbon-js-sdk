@@ -106,6 +106,8 @@ class CarbonSDK {
   eth: ETHClient;
   bsc: ETHClient;
   arbitrum: ETHClient;
+  polygon: ETHClient;
+  okc: ETHClient;
   zil: ZILClient;
   n3: N3Client;
   chainId: string;
@@ -171,6 +173,18 @@ class CarbonSDK {
     this.arbitrum = ETHClient.instance({
       configProvider: this,
       blockchain: Blockchain.Arbitrum,
+      tokenClient: this.token,
+    });
+
+    this.polygon = ETHClient.instance({
+      configProvider: this,
+      blockchain: Blockchain.Polygon,
+      tokenClient: this.token,
+    });
+
+    this.okc = ETHClient.instance({
+      configProvider: this,
+      blockchain: Blockchain.Okc,
       tokenClient: this.token,
     });
   }
