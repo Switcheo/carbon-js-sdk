@@ -185,7 +185,7 @@ export class ETHClient {
     const targetAddressBytes = AddressUtils.SWTHAddress.getAddressBytes(tokenCreator, carbonNetwork);
     const targetProxyHash = ethers.utils.hexlify(targetAddressBytes);
 
-    const ethAmount = fromToken.tokenAddress === NativeTokenHash ? amount : BN_ZERO;
+    const ethAmount = NativeTokenHash.includes(fromToken.tokenAddress) ? amount : BN_ZERO;
     const bridgeResultTx = await contract.connect(signer).lock(
       fromTokenAddress, // the asset to deposit (from) (0x00 if eth)
       [
@@ -254,7 +254,7 @@ export class ETHClient {
         gasLimit: gasLimit.toString(10),
 
         // add tx value for ETH deposits, omit if ERC20 token
-        ...(token.tokenAddress === "0000000000000000000000000000000000000000" && {
+        ...(NativeTokenHash.includes(token.tokenAddress) && {
           value: amount.toString(),
         }),
       }
