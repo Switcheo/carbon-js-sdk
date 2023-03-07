@@ -1,11 +1,13 @@
 import { TypeUtils } from "@carbon-sdk/util";
 import * as CarbonTx from "@carbon-sdk/util/tx";
 import { AminoConverter } from "@cosmjs/stargate";
-import { AminoInit, ConvertEncType, generateAminoType } from "../utils";
+import { AminoInit, generateAminoType } from "../utils";
 
 const TxTypes: TypeUtils.SimpleMap<string> = {
   MintToken: "carbon/MsgMintToken",
   Withdraw: "carbon/MsgWithdraw",
+  DepositToGroup: "coin/DepositToGroup",
+  WithdrawFromGroup: "coin/WithdrawFromGroup",
 };
 
 const MsgWithdraw: AminoInit = {
@@ -18,9 +20,21 @@ const MsgMintToken: AminoInit = {
   valueMap: {},
 };
 
+const MsgDepositToGroup: AminoInit = {
+  aminoType: TxTypes.DepositToGroup,
+  valueMap: {},
+}
+
+const MsgWithdrawFromGroup: AminoInit = {
+  aminoType: TxTypes.WithdrawFromGroup,
+  valueMap: {},
+}
+
 const CoinAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgWithdraw]: generateAminoType(MsgWithdraw),
   [CarbonTx.Types.MsgMintToken]: generateAminoType(MsgMintToken),
+  [CarbonTx.Types.MsgDepositToGroup]: generateAminoType(MsgDepositToGroup),
+  [CarbonTx.Types.MsgWithdrawFromGroup]: generateAminoType(MsgWithdrawFromGroup),
 };
 
 export default CoinAmino;

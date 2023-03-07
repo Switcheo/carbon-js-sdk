@@ -1,3 +1,4 @@
+import { Block } from '@carbon-sdk/codec'
 import { TokenClient } from '@carbon-sdk/clients'
 import { Bridge } from '@carbon-sdk/codec'
 import { Network } from "@carbon-sdk/constant/network"
@@ -9,6 +10,8 @@ export enum Blockchain {
   BinanceSmartChain = "bsc",
   Zilliqa = "zil",
   Arbitrum = "arbitrum",
+  Polygon = "polygon",
+  Okc = "okc",
   Native = "native",
   Btc = "btc",
   Carbon = "carbon",
@@ -54,10 +57,15 @@ export const ChainNames = {
   1: "MainNet",
   3: "Ropsten",
   4: "Rinkeby",
+  5: "Goerli",
   56: "BSC MainNet",
   97: "BSC TestNet",
   110: "ZIL DevNet",
   111: "ZIL TestNet",
+  65: "Okc TestNet",
+  66: "Okc MainNet",
+  137: "Polygon MainNet",
+  80001: "Polygon Mumbai",
   42161: "Arbitrum MainNet",
   421611: "Arbitrum TestNet",
 } as const
@@ -71,6 +79,8 @@ export const CHAIN_IDS: ChainIds = {
   neo3: 14,
   zil: 18,
   arbitrum: 19,
+  okc: 66,
+  polygon: 137,
   osmosis: 244,
   terra: 245,
   cosmoshub: 246,
@@ -127,10 +137,17 @@ export const getBlockchainFromChain = (chainId?: number) => {
     case 1:
     case 3:
     case 4:
+    case 5:
       return 'Ethereum'
     case 56:
     case 97:
       return 'Binance Smart Chain'
+    case 65:
+    case 66:
+      return Blockchain.Okc
+    case 137:
+    case 80001:
+      return Blockchain.Polygon
     case 110:
     case 111:
       return 'Zilliqa'
@@ -160,6 +177,12 @@ export const blockchainForChainId = (chainId?: number, network = Network.MainNet
         case 9:  /* FALLTHROUGH */
         case 18:
           return "Zilliqa"
+        case 12: /* FALLTHROUGH */
+        case 66:
+          return Blockchain.Okc
+        case 17: /* FALLTHROUGH */
+        case 137:
+          return Blockchain.Polygon
         case 244:
           return "Osmosis"
         case 13: /* FALLTHROUGH */
@@ -211,6 +234,7 @@ export const blockchainForChainId = (chainId?: number, network = Network.MainNet
       switch (chainId) {
         case 1:
           return "Bitcoin"
+        case 0:
         case 5:
           return "Carbon"
         case 79:
@@ -227,12 +251,21 @@ export const blockchainForChainId = (chainId?: number, network = Network.MainNet
       }
     case Network.DevNet:
       switch (chainId) {
+        case 0:
+          return Blockchain.Carbon
+        case 1:
+          return Blockchain.Btc
+        case 2:
         case 350:
           return "Ethereum"
         case 5:
           return "Neo"
         case 79:
           return "Binance Smart Chain"
+        case 111:
+          return Blockchain.Zilliqa
+        default:
+          return undefined
       }
     case Network.LocalHost:
       return undefined

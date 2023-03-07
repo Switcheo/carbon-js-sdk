@@ -57,20 +57,24 @@ export interface EthersTransactionResponse extends ethers.Transaction {
 
 export const FEE_MULTIPLIER = ethers.BigNumber.from(2);
 
-type SupportedBlockchains = Blockchain.BinanceSmartChain | Blockchain.Ethereum | Blockchain.Arbitrum;
+type SupportedBlockchains = Blockchain.BinanceSmartChain | Blockchain.Ethereum | Blockchain.Arbitrum | Blockchain.Polygon | Blockchain.Okc;
 
 export class ETHClient {
-  static SUPPORTED_BLOCKCHAINS = [Blockchain.BinanceSmartChain, Blockchain.Ethereum, Blockchain.Arbitrum] as const;
+  static SUPPORTED_BLOCKCHAINS = [Blockchain.BinanceSmartChain, Blockchain.Ethereum, Blockchain.Arbitrum, Blockchain.Polygon, Blockchain.Okc] as const;
   static BLOCKCHAIN_KEY = {
     [Blockchain.BinanceSmartChain]: "bsc",
     [Blockchain.Ethereum]: "eth",
     [Blockchain.Arbitrum]: "arbitrum",
+    [Blockchain.Polygon]: "polygon",
+    [Blockchain.Okc]: "okc",
   };
 
   static BLOCKCHAINV2_MAPPING = {
     [Blockchain.BinanceSmartChain]: "Binance Smart Chain",
     [Blockchain.Ethereum]: "Ethereum",
     [Blockchain.Arbitrum]: "Arbitrum",
+    [Blockchain.Polygon]: "Polygon",
+    [Blockchain.Okc]: "Okc",
   };
 
   private constructor(
@@ -103,7 +107,7 @@ export class ETHClient {
             )
           } else {
             return (
-              blockchainForChainId(token.chainId.toNumber()) == this.blockchain &&
+              blockchainForChainId(token.chainId.toNumber(), api.network) == this.blockchain &&
               token.tokenAddress.length == 40 &&
               token.bridgeAddress.toLowerCase() == stripHexPrefix(lockProxyAddress) &&
               (!whitelistDenoms || whitelistDenoms.includes(token.denom)) &&
@@ -384,7 +388,7 @@ export class ETHClient {
     if (!feeInfo.deposit_fee) {
       throw new Error("unsupported token");
     }
-    if (blockchainForChainId(token.chainId.toNumber()) !== this.blockchain) {
+    if (blockchainForChainId(token.chainId.toNumber(), this.configProvider.getConfig().network) !== this.blockchain) {
       throw new Error("unsupported token");
     }
 

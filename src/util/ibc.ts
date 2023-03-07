@@ -1,6 +1,7 @@
 import {
   ChainInfoExplorerTmRpc,
   ChainIds,
+  ChannelSet,
   DefaultGasPriceStep,
   EmbedChainInfosInit,
   GasPriceStep,
@@ -12,7 +13,7 @@ import {
 } from "@carbon-sdk/constant";
 import { KeplrAccount } from "@carbon-sdk/provider";
 import { Hash } from "@keplr-wallet/crypto";
-import { AppCurrency } from "@keplr-wallet/types";
+import { AppCurrency, CW20Currency, Secret20Currency } from "@keplr-wallet/types";
 import { BlockchainV2 } from "./blockchain";
 import { SimpleMap } from "./type";
 
@@ -31,7 +32,7 @@ export function makeIBCMinimalDenom(sourceChannelId: string, coinMinimalDenom: s
 export const EmbedChainInfos = Object.values(EmbedChainInfosInit).reduce(
   (prev: SimpleMap<ChainInfoExplorerTmRpc>, chainInfo: ChainInfoExplorerTmRpc) => {
     if (swthIbcWhitelist.includes(chainInfo.chainId)) {
-      const chainChannels = swthChannels[chainInfo.chainId];
+      const chainChannels = swthChannels[chainInfo.chainId]?.ibc;
       chainInfo.currencies.push({
         ...KeplrAccount.SWTH_CURRENCY,
         coinMinimalDenom: makeIBCMinimalDenom(chainChannels?.dstChannel ?? "channel-0", KeplrAccount.SWTH_CURRENCY.coinMinimalDenom),
@@ -51,10 +52,17 @@ export const totalAssetObj: AssetListObj = Object.values(EmbedChainInfos).reduce
     const assetsObj: SimpleMap<AppCurrency> = {};
     const channelsObj = swthChannels[chainInfo.chainId];
     chainInfo.currencies.forEach((currency: AppCurrency) => {
-      const ibcAddr =
-        currency.coinDenom.toLowerCase() === "swth"
-          ? currency.coinMinimalDenom
-          : makeIBCMinimalDenom(channelsObj?.sourceChannel ?? "channel-0", currency.coinMinimalDenom);
+      const channelSet: ChannelSet | undefined = currency.hasOwnProperty('type') && channelsObj.cw20
+        ? channelsObj.cw20 as ChannelSet
+        : channelsObj.ibc;
+      let ibcAddr = currency.coinDenom.toLowerCase() === "swth"
+        ? currency.coinMinimalDenom
+        : makeIBCMinimalDenom(channelSet?.sourceChannel ?? "channel-0", currency.coinMinimalDenom);
+
+      // TODO: Remove when implementing dynamic ibc chain info
+      if (currency.coinMinimalDenom === "ibc/D189335C6E4A68B513C10AB227BF1C1D38C746766278BA3EEB4FB14124F1D858") {
+        ibcAddr = "ibc/7FBDBEEEBA9C50C4BCDF7BF438EAB99E64360833D240B32655C96E319559E911";
+      }
       assetsObj[ibcAddr] = currency;
     });
     newAssetObj[chainInfo.chainId] = assetsObj;
@@ -101,10 +109,19 @@ export const BlockchainMap = Object.values(EmbedChainInfos).reduce(
     const newPrev = prev;
     const channelsObj = swthChannels[chainInfo.chainId];
     chainInfo.currencies.forEach((currency: AppCurrency) => {
+      // TODO: Remove when implementing dynamic ibc chain info
+      if (currency.coinMinimalDenom === "ibc/D189335C6E4A68B513C10AB227BF1C1D38C746766278BA3EEB4FB14124F1D858") {
+        newPrev["ibc/7FBDBEEEBA9C50C4BCDF7BF438EAB99E64360833D240B32655C96E319559E911"] = ChainIdBlockchainMap[chainInfo.chainId];
+        return;
+      }
+
       if (currency.coinDenom.toLowerCase() === "swth") {
         newPrev[currency.coinMinimalDenom] = ChainIdBlockchainMap[chainInfo.chainId];
       } else {
-        const ibcAddr = makeIBCMinimalDenom(channelsObj?.sourceChannel ?? "channel-0", currency.coinMinimalDenom);
+        const channelSet: ChannelSet | undefined = currency.hasOwnProperty('type') && channelsObj.cw20
+          ? channelsObj.cw20 as ChannelSet
+          : channelsObj.ibc;
+        const ibcAddr = makeIBCMinimalDenom(channelSet?.sourceChannel ?? "channel-0", currency.coinMinimalDenom);
         newPrev[ibcAddr] = ChainIdBlockchainMap[chainInfo.chainId];
       }
     });
@@ -128,4 +145,11 @@ export const parseChainId = (chainId: string): ChainIdOutput => {
 
 export const calculateMaxFee = (gasStep: GasPriceStep = DefaultGasPriceStep, gas: number = 0): number => {
   return gasStep.high * gas;
+};
+
+export const isCw20Token = (currency: AppCurrency): boolean => {
+  if (!currency.hasOwnProperty("type")) return false;
+
+  const depositCurrency = currency as CW20Currency | Secret20Currency;
+  return depositCurrency.type === "cw20";
 };
