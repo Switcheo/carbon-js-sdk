@@ -15,7 +15,6 @@ import {
 } from "../hydrogen";
 import { FeeQuote, GetFeeQuoteRequest, GetFeeQuoteResponse } from "@carbon-sdk/hydrogen/feeQuote";
 import TokenClient from './TokenClient'
-import { BlockchainV2 } from '@carbon-sdk/util/blockchain'
 
 export const HydrogenEndpoints = {
   // Status api
@@ -92,7 +91,7 @@ const formatFeeQuote = (value: any): FeeQuote => {
   };
 };
 
-const getBridgeBlockchainFromId = (bridgeId: number): BlockchainV2 => {
+const getBridgeBlockchainFromId = (bridgeId: number): BlockchainUtils.BlockchainV2 => {
   switch (bridgeId) {
     case 1:
       return 'Polynetwork'
@@ -161,7 +160,7 @@ class HydrogenClient {
     };
   };
   
-  public formatChainEventV2 = (value: any, blockchain: BlockchainV2): ChainTransaction | null => {
+  public formatChainEventV2 = (value: any, blockchain: BlockchainUtils.BlockchainV2): ChainTransaction | null => {
     if (!value || typeof value !== "object") return value;
     return {
       ...value,
@@ -172,7 +171,7 @@ class HydrogenClient {
     } as ChainTransaction;
   };
   
-  public formatFeeQuoteV2 = (value: any, blockchain: BlockchainV2): FeeQuote => {
+  public formatFeeQuoteV2 = (value: any, blockchain: BlockchainUtils.BlockchainV2): FeeQuote => {
     if (typeof value !== "object") return value;
     return {
       ...value,
@@ -247,7 +246,7 @@ class HydrogenClient {
     };
   }
 
-  async getFeeQuote(req: GetFeeQuoteRequest, blockchain: BlockchainV2 | undefined = undefined, version = "V1"): Promise<GetFeeQuoteResponse> {
+  async getFeeQuote(req: GetFeeQuoteRequest, blockchain: BlockchainUtils.Blockchain | BlockchainUtils.BlockchainV2 | undefined = undefined, version = "V1"): Promise<GetFeeQuoteResponse> {
     this.checkState();
     const request = this.apiManager.path(
       "fee_quote",

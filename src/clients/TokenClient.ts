@@ -354,7 +354,7 @@ class TokenClient {
     return !!denom.match("cgt/1")
   }
 
-  public getDepositTokenFor(tokenDenom: string, chain: BlockchainUtils.Blockchain, version = "V1"): Token | undefined {
+  public getDepositTokenFor(tokenDenom: string, chain: BlockchainUtils.Blockchain | BlockchainUtils.BlockchainV2, version = "V1"): Token | undefined {
     const networkConfig = this.configProvider.getConfig();
     const token = this.tokenForDenom(tokenDenom);
     if (!token) {
