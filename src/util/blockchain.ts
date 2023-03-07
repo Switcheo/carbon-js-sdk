@@ -138,16 +138,158 @@ export const getBlockchainFromChain = (chainId?: number) => {
     case 3:
     case 4:
     case 5:
-      return 'Ethereum'
+      return Blockchain.Ethereum
     case 56:
     case 97:
-      return 'Binance Smart Chain'
+      return Blockchain.BinanceSmartChain
     case 65:
     case 66:
       return Blockchain.Okc
     case 137:
     case 80001:
       return Blockchain.Polygon
+    case 110:
+    case 111:
+      return Blockchain.Zilliqa
+    case 42161:
+    case 421611:
+      return Blockchain.Arbitrum
+  }
+  return undefined
+}
+
+export const blockchainForChainId = (chainId?: number, network = Network.MainNet): Blockchain | undefined => {
+  switch (network) {
+    case Network.MainNet:
+      switch (chainId) {
+        case 0:
+          return Blockchain.Native
+        case 1:
+          return Blockchain.Btc
+        case 2:
+          return Blockchain.Ethereum
+        case 4:
+          return Blockchain.Neo
+        case 6:
+          return Blockchain.BinanceSmartChain
+        case 14:
+          return Blockchain.Neo3
+        case 9:  /* FALLTHROUGH */
+        case 18:
+          return Blockchain.Zilliqa
+        case 12: /* FALLTHROUGH */
+        case 66:
+          return Blockchain.Okc
+        case 17: /* FALLTHROUGH */
+        case 137:
+          return Blockchain.Polygon
+        case 244:
+          return Blockchain.Osmosis
+        case 13: /* FALLTHROUGH */
+        case 245:
+          return Blockchain.Terra
+        case 246:
+          return Blockchain.CosmosHub
+        case 5: /* FALLTHROUGH */
+        case 247:
+          return Blockchain.Juno
+        case 7: /* FALLTHROUGH */
+        case 248:
+          return Blockchain.Evmos
+        case 8: /* FALLTHROUGH */
+        case 249:
+          return Blockchain.Axelar
+        case 313:
+          return Blockchain.Stride
+        case 314:
+          return Blockchain.Kujira
+        case 315:
+          return Blockchain.Terra2
+        case 316:
+          return Blockchain.Quicksilver
+        case 12: /* FALLTHROUGH */
+        case 317:
+          return Blockchain.Comdex
+        case 318:
+          return Blockchain.StafiHub
+        case 15: /* FALLTHROUGH */
+        case 319:
+          return Blockchain.Persistence
+        case 16: /* FALLTHROUGH */
+        case 320:
+          return Blockchain.Stargaze
+        case 321:
+          return Blockchain.Canto
+        case 322:
+          return Blockchain.OmniFlixHub
+        case 323:
+          return Blockchain.Agoric
+        case 19: /* FALLTHROUGH */
+        case 42161:
+          return Blockchain.Arbitrum
+        default:
+          return undefined
+      }
+    case Network.TestNet:
+      switch (chainId) {
+        case 1:
+          return Blockchain.Btc
+        case 0:
+        case 5:
+          return Blockchain.Carbon
+        case 79:
+          return Blockchain.BinanceSmartChain
+        case 88:
+          return Blockchain.Neo3
+        case 111:
+          return Blockchain.Zilliqa
+        case 2: /* FALLTHROUGH */
+        case 502:
+          return Blockchain.Ethereum
+        default:
+          return undefined
+      }
+    case Network.DevNet:
+      switch (chainId) {
+        case 0:
+          return Blockchain.Carbon
+        case 1:
+          return Blockchain.Btc
+        case 2:
+        case 350:
+          return Blockchain.Ethereum
+        case 5:
+          return Blockchain.Neo
+        case 79:
+          return Blockchain.BinanceSmartChain
+        case 111:
+          return Blockchain.Zilliqa
+        default:
+          return undefined
+      }
+    case Network.LocalHost:
+      return undefined
+    default:
+      return undefined
+  }
+}
+
+export const getBlockchainFromChainV2 = (chainId?: number) => {
+  switch (chainId) {
+    case 1:
+    case 3:
+    case 4:
+    case 5:
+      return 'Ethereum'
+    case 56:
+    case 97:
+      return 'Binance Smart Chain'
+    case 65:
+    case 66:
+      return 'Okc'
+    case 137:
+    case 80001:
+      return 'Polygon'
     case 110:
     case 111:
       return 'Zilliqa'
@@ -158,7 +300,7 @@ export const getBlockchainFromChain = (chainId?: number) => {
   return undefined
 }
 
-export const blockchainForChainId = (chainId?: number, network = Network.MainNet): Blockchain | BlockchainV2 | undefined => {
+export const blockchainForChainIdV2 = (chainId?: number, network = Network.MainNet): Blockchain | BlockchainV2 | undefined => {
   switch (network) {
     case Network.MainNet:
       switch (chainId) {
@@ -179,10 +321,10 @@ export const blockchainForChainId = (chainId?: number, network = Network.MainNet
           return "Zilliqa"
         case 12: /* FALLTHROUGH */
         case 66:
-          return Blockchain.Okc
+          return 'Okc'
         case 17: /* FALLTHROUGH */
         case 137:
-          return Blockchain.Polygon
+          return 'Polygon'
         case 244:
           return "Osmosis"
         case 13: /* FALLTHROUGH */
@@ -252,9 +394,9 @@ export const blockchainForChainId = (chainId?: number, network = Network.MainNet
     case Network.DevNet:
       switch (chainId) {
         case 0:
-          return Blockchain.Carbon
+          return 'Carbon'
         case 1:
-          return Blockchain.Btc
+          return 'Bitcoin'
         case 2:
         case 350:
           return "Ethereum"
@@ -263,7 +405,7 @@ export const blockchainForChainId = (chainId?: number, network = Network.MainNet
         case 79:
           return "Binance Smart Chain"
         case 111:
-          return Blockchain.Zilliqa
+          return 'Zilliqa'
         default:
           return undefined
       }

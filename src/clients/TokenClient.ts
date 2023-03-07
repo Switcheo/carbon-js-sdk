@@ -365,7 +365,7 @@ class TokenClient {
     let targetChain: string | undefined = ""
     // check if selected token is a source token
     if (version === "V1") {
-      targetChain = BlockchainUtils.blockchainForChainId(token.chainId.toNumber(), networkConfig.network, networkConfig.network);
+      targetChain = BlockchainUtils.blockchainForChainId(token.chainId.toNumber(), networkConfig.network);
       if (TokenClient.isIBCDenom(token.denom)) {
         targetChain = IBCUtils.BlockchainMap[token.denom];
       }
