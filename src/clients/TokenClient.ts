@@ -106,10 +106,10 @@ class TokenClient {
     return blockchain;
   }
 
-  public getBlockchainV2(denom: string): BlockchainUtils.BlockchainV2 | undefined {
-    // chainId defaults to 3 so that blockchain will be undefined
+  public getBlockchainV2(denom: string | undefined): BlockchainUtils.BlockchainV2 | undefined {
+    if (!denom) return undefined
     let token = this.tokens[denom]
-    if (this.isNativeToken(denom) || this.isNativeStablecoin(denom) || TokenClient.isPoolToken(denom) || TokenClient.isCdpToken(denom)) {
+    if (this.isNativeToken(denom) || this.isNativeStablecoin(denom) || TokenClient.isPoolToken(denom) || TokenClient.isCdpToken(denom) || this.isNativeUSD(denom)) {
       // native denoms "swth" and "usc" should be native.
       // pool and cdp tokens are on the Native blockchain, hence 0
       return 'Native'
@@ -277,7 +277,7 @@ class TokenClient {
     return result;
   }
 
-  public getWrappedToken(denom: string, blockchain?: BlockchainUtils.Blockchain | BlockchainUtils.BlockchainV2): Token | null {
+  public getWrappedToken(denom: string, blockchain?: BlockchainUtils.Blockchain | BlockchainUtils.BlockchainV2, version='V1'): Token | null {
     // if denom is already a wrapped denom or no blockchain was specified,
     // just return the input denom.
     if (this.wrapperMap[denom] || !blockchain) {
@@ -292,10 +292,15 @@ class TokenClient {
         }
         // check if wrapped denom is of correct blockchain
         const token = this.tokens[wrappedDenom];
-        let tokenChain = BlockchainUtils.blockchainForChainId(token.chainId.toNumber());
+        let tokenChain: string | undefined = ''
 
-        if (TokenClient.isIBCDenom(wrappedDenom)) {
-          tokenChain = IBCUtils.BlockchainMap[wrappedDenom];
+        if (version === "V1") {
+          tokenChain = BlockchainUtils.blockchainForChainId(token.chainId.toNumber());
+          if (TokenClient.isIBCDenom(token.denom)) {
+            tokenChain = IBCUtils.BlockchainMap[wrappedDenom];
+          }
+        } else {
+          tokenChain = this.getBlockchainV2(token.denom);
         }
         if (!tokenChain) {
           continue; // unknown chain! just ignore this source token
@@ -340,15 +345,28 @@ class TokenClient {
     return denom === "usc";
   }
 
-  public getDepositTokenForV2(tokenDenom: string, chain: BlockchainUtils.Blockchain | BlockchainUtils.BlockchainV2): Token | undefined {
+  public isNativeUSD(denom: string): boolean {
+    return !!denom.match("cgt/1")
+  }
+
+  public getDepositTokenFor(tokenDenom: string, chain: BlockchainUtils.Blockchain, version = "V1"): Token | undefined {
+    const networkConfig = this.configProvider.getConfig();
     const token = this.tokenForDenom(tokenDenom);
     if (!token) {
       console.error("getDepositTokenFor token not found for", tokenDenom);
       return;
     }
 
+    let targetChain: string | undefined = ""
     // check if selected token is a source token
-    let targetChain = this.getBlockchainV2(token.denom);
+    if (version === "V1") {
+      targetChain = BlockchainUtils.blockchainForChainId(token.chainId.toNumber(), networkConfig.network);
+      if (TokenClient.isIBCDenom(token.denom)) {
+        targetChain = IBCUtils.BlockchainMap[token.denom];
+      }
+    } else {
+      targetChain = this.getBlockchainV2(token.denom);
+    }
     
     const isSourceToken = targetChain === chain && token.denom !== "swth";
 
@@ -463,7 +481,7 @@ class TokenClient {
       case BRIDGE_IDS.ibc:
         return this.bridges.ibc
       default:
-        return this.bridges.polynetwork
+      return this.bridges.polynetwork
     }
   }
 
@@ -490,6 +508,7 @@ class TokenClient {
   }
 
   public getBlockchainV2FromIDs(chainId: string, bridgeId: string): BlockchainV2 | undefined {
+    if ((Number(chainId) === 5 && Number(bridgeId) === 1) || (Number(chainId) === 0 && Number(bridgeId) === 0)) return "Carbon"
     const bridgeList = this.getBridgesFromBridgeId(Number(bridgeId))
     return bridgeList.find(bridge => bridge.chainId.toNumber() === Number(chainId))?.chainName ?? undefined
   }
