@@ -19,7 +19,7 @@ import Long from "long";
 import CarbonQueryClient from "./CarbonQueryClient";
 import InsightsQueryClient from "./InsightsQueryClient";
 import { SimpleMap } from "@carbon-sdk/util/type";
-import { BridgeMap, BRIDGE_IDS } from '@carbon-sdk/util/blockchain'
+import { BlockchainV2, BridgeMap, BRIDGE_IDS } from '@carbon-sdk/util/blockchain'
 
 const SYMBOL_OVERRIDE: {
   [symbol: string]: string;
@@ -456,6 +456,17 @@ class TokenClient {
     return this.getIbcBlockchainNames().concat(this.getPolynetworkBlockchainNames())
   }
 
+  public getBridgesFromBridgeId(bridgeId: number): Bridge[] {
+    switch (bridgeId) {
+      case BRIDGE_IDS.polynetwork:
+        return this.bridges.polynetwork
+      case BRIDGE_IDS.ibc:
+        return this.bridges.ibc
+      default:
+        return this.bridges.polynetwork
+    }
+  }
+
   public getIbcTokens(): TypeUtils.SimpleMap<Token> {
     const ibcTokens = Object.values(this.tokens).reduce((prev: TypeUtils.SimpleMap<Token> , token: Token) => {
       const newPrev = prev
@@ -478,19 +489,14 @@ class TokenClient {
     return polynetworkTokens
   }
 
+  public getBlockchainV2FromIDs(chainId: string, bridgeId: string): BlockchainV2 | undefined {
+    const bridgeList = this.getBridgesFromBridgeId(Number(bridgeId))
+    return bridgeList.find(bridge => bridge.chainId.toNumber() === Number(chainId))?.chainName ?? undefined
+  }
+
   public getBridgeFromToken(token: Token): Bridge | undefined {
-    let bridgeList: Bridge[] = []
     if (!token.bridgeId) return undefined
-    switch (token.bridgeId.toNumber()) {
-      case BRIDGE_IDS.polynetwork:
-        bridgeList = this.bridges["polynetwork"]
-        break
-      case BRIDGE_IDS.ibc:
-        bridgeList = this.bridges["ibc"]
-        break
-      default:
-        return undefined
-    }
+    const bridgeList = this.getBridgesFromBridgeId(token.bridgeId.toNumber())
     return bridgeList.find(bridge => token.chainId.equals(bridge.chainId))
   }
 

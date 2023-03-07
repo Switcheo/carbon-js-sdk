@@ -36,7 +36,7 @@ export enum Blockchain {
   Agoric = "agoric",
 }
 
-export type BlockchainV2 = ReturnType<TokenClient['getAllBlockchainNames']>[number] | "Native" | "Carbon" | "Tradehub" | "Ibc"
+export type BlockchainV2 = ReturnType<TokenClient['getAllBlockchainNames']>[number] | "Native" | "Carbon" | "Tradehub" | "Ibc" | "Polynetwork"
 
 export const BRIDGE_IDS = {
   polynetwork: 1,
