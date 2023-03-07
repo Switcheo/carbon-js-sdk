@@ -431,6 +431,12 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         coinDecimals: 18,
         coinGeckoId: "pstake-finance",
       },
+      {
+        coinDenom: "stkATOM",
+        coinMinimalDenom: "stk/uatom",
+        coinDecimals: 6,
+        coinGeckoId: "stkatom",
+      },
     ],
     feeCurrencies: [
       {
