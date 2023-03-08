@@ -97,23 +97,17 @@ export class ETHClient {
     const tokens = tokenQueryResults.filter(
       (token) =>
         {
-          if (version === "V2") {
-            return (
-              this.tokenClient.getBlockchainV2(token.denom) == ETHClient.BLOCKCHAINV2_MAPPING[this.blockchain] &&
-              token.tokenAddress.length == 40 &&
-              token.bridgeAddress.toLowerCase() == stripHexPrefix(lockProxyAddress) &&
-              (!whitelistDenoms || whitelistDenoms.includes(token.denom)) &&
-              this.verifyChecksum(appendHexPrefix(token.tokenAddress))
-            )
-          } else {
-            return (
-              blockchainForChainId(token.chainId.toNumber(), api.network) == this.blockchain &&
-              token.tokenAddress.length == 40 &&
-              token.bridgeAddress.toLowerCase() == stripHexPrefix(lockProxyAddress) &&
-              (!whitelistDenoms || whitelistDenoms.includes(token.denom)) &&
-              this.verifyChecksum(appendHexPrefix(token.tokenAddress))
-            )
-          }
+          const isCorrectBlockchain = 
+          version === "V2" 
+            ? 
+            this.tokenClient.getBlockchainV2(token.denom) == ETHClient.BLOCKCHAINV2_MAPPING[this.blockchain]
+            : 
+            blockchainForChainId(token.chainId.toNumber(), api.network) == this.blockchain
+          return isCorrectBlockchain && 
+          token.tokenAddress.length == 40 &&
+          token.bridgeAddress.toLowerCase() == stripHexPrefix(lockProxyAddress) &&
+          (!whitelistDenoms || whitelistDenoms.includes(token.denom)) &&
+          this.verifyChecksum(appendHexPrefix(token.tokenAddress))
         }
     );
     const assetIds = tokens.map((token) => {

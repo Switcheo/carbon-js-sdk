@@ -1,17 +1,17 @@
-import { EthNetworkConfig, Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
+import { EthNetworkConfig, Network, NetworkConfigs } from "@carbon-sdk/constant";
 import { ABIs } from "@carbon-sdk/eth";
-import { Blockchain, getBlockchainFromChain, ChainNames, BlockchainV2 } from "@carbon-sdk/util/blockchain";
+import { Blockchain, ChainNames, BlockchainV2, getBlockchainFromChainV2 } from "@carbon-sdk/util/blockchain";
 import { ethers } from "ethers";
 import * as ethSignUtils from "eth-sig-util";
 
-export type EVMChain = 'Ethereum' | 'Binance Smart Chain' | 'Arbitrum' | Blockchain.Polygon | Blockchain.Okc;
+export type EVMChain = 'Ethereum' | 'Binance Smart Chain' | 'Arbitrum' | 'Polygon' | 'OKC';
 type ChainContracts = {
   [key in Network]: string;
 };
 const CONTRACT_HASH: {
   [key in EVMChain]: ChainContracts;
 } = {
-  ['Ethereum']: {
+  Ethereum: {
     // use same rinkeby contract for all non-mainnet uses
     [Network.TestNet]: "0x086e1b5f67c0f7ca8eb202d35553e27e964899e2",
     [Network.DevNet]: "0x086e1b5f67c0f7ca8eb202d35553e27e964899e2",
@@ -27,7 +27,7 @@ const CONTRACT_HASH: {
 
     [Network.MainNet]: "0x3786d94AC6B15FE2eaC72c3CA78cB82578Fc66f4",
   } as const,
-  ['Arbitrum']: {
+  Arbitrum: {
     // use same testnet contract for all non-mainnet uses
     [Network.TestNet]: "",
     [Network.DevNet]: "",
@@ -35,7 +35,7 @@ const CONTRACT_HASH: {
 
     [Network.MainNet]: "0x43138036d1283413035b8eca403559737e8f7980",
   } as const,
-  [Blockchain.Polygon]: {
+  Polygon: {
     // use same testnet contract for all non-mainnet uses
     [Network.TestNet]: "",
     [Network.DevNet]: "",
@@ -43,7 +43,7 @@ const CONTRACT_HASH: {
 
     [Network.MainNet]: "0x61B9503Fe023E1F1Dd0ab7417923cB0A41DD9E0c",
   } as const,
-  [Blockchain.Okc]: {
+  OKC: {
     // use same testnet contract for all non-mainnet uses
     [Network.TestNet]: "",
     [Network.DevNet]: "",
@@ -237,9 +237,9 @@ export class MetaMask {
           return BSC_MAINNET;
         case 'Arbitrum':
           return ARBITRUM_MAINNET;
-        case Blockchain.Polygon:
+        case 'Polygon':
           return POLYGON_MAINNET;
-        case Blockchain.Okc:
+        case 'OKC':
           return OKC_MAINNET;
         default:
           // metamask should come with Ethereum configs
@@ -252,9 +252,9 @@ export class MetaMask {
         return BSC_TESTNET;
       case 'Arbitrum':
         return ARBITRUM_TESTNET;
-      case Blockchain.Polygon:
+      case 'Polygon':
         return POLYGON_TESTNET;
-      case Blockchain.Okc:
+      case 'OKC':
         return OKC_TESTNET;
       default:
         // metamask should come with Ethereum configs
@@ -269,9 +269,9 @@ export class MetaMask {
           return 56;
         case 'Arbitrum':
           return 42161;
-        case Blockchain.Polygon:
+        case 'Polygon':
           return 137;
-        case Blockchain.Okc:
+        case 'OKC':
           return 66;
         default:
           return 1;
@@ -283,9 +283,9 @@ export class MetaMask {
         return 97;
       case 'Arbitrum':
         return 421611;
-      case Blockchain.Polygon:
+      case 'Polygon':
         return 80001;
-      case Blockchain.Okc:
+      case 'OKC':
         return 65;
       default:
         return 5;
@@ -315,7 +315,7 @@ export class MetaMask {
   async syncBlockchain(): Promise<MetaMaskSyncResult> {
     const chainIdHex = (await this.getAPI()?.request({ method: "eth_chainId" })) as string;
     const chainId = !!chainIdHex ? parseInt(chainIdHex, 16) : undefined;
-    const blockchain = getBlockchainFromChain(chainId) as EVMChain;
+    const blockchain = getBlockchainFromChainV2(chainId) as EVMChain;
     this.blockchain = blockchain!;
 
     return { chainId, blockchain };
@@ -493,19 +493,11 @@ export class MetaMask {
         return currentChainId;
       }
       if (currentChainId === 137) {
-        this.blockchain = Blockchain.Polygon;
+        this.blockchain = 'Polygon';
         return currentChainId;
       }
       if (currentChainId === 66) {
-        this.blockchain = Blockchain.Okc;
-        return currentChainId;
-      }
-      if (currentChainId === 137) {
-        this.blockchain = Blockchain.Polygon;
-        return currentChainId;
-      }
-      if (currentChainId === 66) {
-        this.blockchain = Blockchain.Okc;
+        this.blockchain = 'OKC';
         return currentChainId;
       }
 
@@ -525,19 +517,11 @@ export class MetaMask {
       return currentChainId;
     }
     if (currentChainId === 80001) {
-      this.blockchain = Blockchain.Polygon;
+      this.blockchain = 'Polygon';
       return currentChainId;
     }
     if (currentChainId === 65) {
-      this.blockchain = Blockchain.Okc;
-      return currentChainId;
-    }
-    if (currentChainId === 80001) {
-      this.blockchain = Blockchain.Polygon;
-      return currentChainId;
-    }
-    if (currentChainId === 65) {
-      this.blockchain = Blockchain.Okc;
+      this.blockchain = 'OKC';
       return currentChainId;
     }
 

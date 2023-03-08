@@ -112,7 +112,7 @@ class TokenClient {
   public getBlockchainV2(denom: string | undefined): BlockchainUtils.BlockchainV2 | undefined {
     if (!denom) return undefined
     let token = this.tokens[denom]
-    if (this.isNativeToken(denom) || this.isNativeStablecoin(denom) || TokenClient.isPoolToken(denom) || TokenClient.isCdpToken(denom) || this.isNativeUSD(denom)) {
+    if (this.isNativeToken(denom) || this.isNativeStablecoin(denom) || TokenClient.isPoolToken(denom) || TokenClient.isCdpToken(denom) || this.isGroupedToken(denom)) {
       // native denoms "swth" and "usc" should be native.
       // pool and cdp tokens are on the Native blockchain, hence 0
       return 'Native'
@@ -350,7 +350,7 @@ class TokenClient {
     return denom === "usc";
   }
 
-  public isNativeUSD(denom: string): boolean {
+  public isGroupedToken(denom: string): boolean {
     return !!denom.match("cgt/1")
   }
 
@@ -513,9 +513,11 @@ class TokenClient {
   }
 
   public getBlockchainV2FromIDs(chainId: string, bridgeId: string): BlockchainV2 | undefined {
-    if ((Number(chainId) === 5 && Number(bridgeId) === 1) || (Number(chainId) === 0 && Number(bridgeId) === 0)) return "Carbon"
-    const bridgeList = this.getBridgesFromBridgeId(Number(bridgeId))
-    return bridgeList.find(bridge => bridge.chainId.toNumber() === Number(chainId))?.chainName ?? undefined
+    const chainIdNum = Number(chainId)
+    const bridgeIdNum = Number(bridgeId)
+    if ((chainIdNum === 5 && bridgeIdNum === 1) || (chainIdNum === 0 && bridgeIdNum === 0)) return "Carbon"
+    const bridgeList = this.getBridgesFromBridgeId(bridgeIdNum)
+    return bridgeList.find(bridge => bridge.chainId.toNumber() === chainIdNum)?.chainName ?? undefined
   }
 
   public getBridgeFromToken(token: Token): Bridge | undefined {
