@@ -515,7 +515,7 @@ class TokenClient {
   public getBlockchainV2FromIDs(chainId: string, bridgeId: string): BlockchainV2 | undefined {
     const chainIdNum = Number(chainId)
     const bridgeIdNum = Number(bridgeId)
-    if ((chainIdNum === 5 && bridgeIdNum === 1) || (chainIdNum === 0 && bridgeIdNum === 0)) return "Carbon"
+    if ((chainIdNum === 5 && bridgeIdNum === 1) || (chainIdNum === 0 && bridgeIdNum === 2)) return "Carbon"
     const bridgeList = this.getBridgesFromBridgeId(bridgeIdNum)
     return bridgeList.find(bridge => bridge.chainId.toNumber() === chainIdNum)?.chainName ?? undefined
   }
