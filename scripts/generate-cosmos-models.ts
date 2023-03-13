@@ -14,6 +14,7 @@ for (const exportName in whitelistCosmosExports) {
   const directory = path.join(pwd, 'src/codec', directoryPath);
   const files = fs.readdirSync(directory);
 
+  let nameModels: string[] = []
   for (const file of files) {
     const codecModule = require(`${directory}/${file}`);
 
@@ -22,10 +23,13 @@ for (const exportName in whitelistCosmosExports) {
     );
     if (!modelNames.length) continue;
 
+    nameModels = modelNames;
     const exportLine = `export { ${modelNames.join(", ")} } from "./${file.replace(/\.ts$/i, '')}"\n`;
     fs.appendFileSync(path.join(directory, 'export.ts'), exportLine);
   }
 
-  const exportLine = `export * as ${exportName} from "./${directoryPath}/export"\n`;
-  fs.appendFileSync(modelsFile, exportLine);
+  if (nameModels.length > 0) {
+    const exportLine = `export * as ${exportName} from "./${directoryPath}/export";\n`;
+    fs.appendFileSync(modelsFile, exportLine);
+  }
 }

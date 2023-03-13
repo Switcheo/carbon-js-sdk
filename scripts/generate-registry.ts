@@ -43,6 +43,7 @@ for (const moduleFile of codecFiles) {
       || moduleFile.includes('src/codec/ccm/')
       || moduleFile.includes('src/codec/headersync/')
       || moduleFile.includes('src/codec/lockproxy/')
+      || moduleFile.includes('/codec/cosmos/')
     )) {
       console.log(`import { ${messages.join(", ")} } from "${relativePath}";`)
     }
@@ -50,7 +51,7 @@ for (const moduleFile of codecFiles) {
 }
 
 // List of proposal files (for cosmos and ibc)
-const proposalWhitelist: string[] = [`${whitelistCosmosExports.Gov}/gov.ts`, `${whitelistIbcExports.Client[0]}/client.ts`]
+const proposalWhitelist: string[] = [`${whitelistCosmosExports.GovV1beta1}/gov.ts`, `${whitelistIbcExports.Client[0]}/client.ts`]
 
 proposalWhitelist.forEach((file: string) => {
   const codecModule = require(path.join(pwd, 'src/codec', file));
@@ -68,6 +69,7 @@ proposalWhitelist.forEach((file: string) => {
 
 console.log("");
 const cosmosModelsImportPath = path.relative(registryFile, cosmosModelsFile);
+console.log(`import * as Cosmos from '${cosmosModelsImportPath.replace(/^\.\./i, '.').replace(/\.ts$/i, '')}';`);
 console.log(`export * from '${cosmosModelsImportPath.replace(/^\.\./i, '.').replace(/\.ts$/i, '')}';`);
 
 console.log("");
@@ -89,6 +91,14 @@ for (const packageName in modules) {
   for (const key of modules[packageName]) {
     const typeUrl = `/${packageName}.${key}`;
     typeMap[key] = typeUrl;
+
+    const cosmosStructRegex = /^\/cosmos.([a-z]+).([a-z\d]+).([a-z]+)/i
+    const cosmosMatch = typeUrl.match(cosmosStructRegex);
+    if (cosmosMatch?.[3]) {
+      const cosmosKey = ["gov", "orm"].includes(cosmosMatch[1].toLowerCase()) ? `${capitalize(cosmosMatch[1])}${capitalize(cosmosMatch[2])}` : capitalize(cosmosMatch[1]);
+      console.log(`registry.register("${typeUrl}", Cosmos.${cosmosKey}.${key});`);
+      continue;
+    }
 
     const match = typeUrl.match(/^\/Switcheo.carbon.([a-z]+).([A-Za-z]+)$/i);
     if (match?.[1] && polynetworkFolders.includes(match?.[1])) {
