@@ -27,6 +27,7 @@ export const whitelistCosmosExports: { [name: string]: string } = {
 
 export const whitelistIbcExports: { [name: string]: string[] } = {
   'Controller': ['ibc/applications/interchain_accounts/controller/v1'],
+  'Fee': ['ibc/applications/fee/v1'],
   'Host': ['ibc/applications/interchain_accounts/host/v1'],
   'InterchainTypes': ['ibc/applications/interchain_accounts/v1'],
   'TranferV1': ['ibc/applications/transfer/v1'],

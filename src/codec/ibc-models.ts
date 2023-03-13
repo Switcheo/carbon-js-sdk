@@ -1,4 +1,5 @@
 export * as Controller from "./ibc/applications/interchain_accounts/controller/export";
+export * as Fee from "./ibc/applications/fee/v1/export";
 export * as Host from "./ibc/applications/interchain_accounts/host/export";
 export * as InterchainTypes from "./ibc/applications/interchain_accounts/v1/export";
 export * as TranferV1 from "./ibc/applications/transfer/v1/export";
