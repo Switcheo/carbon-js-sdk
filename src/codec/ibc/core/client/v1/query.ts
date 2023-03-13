@@ -1635,7 +1635,7 @@ export interface Query {
   ClientStatus(
     request: QueryClientStatusRequest
   ): Promise<QueryClientStatusResponse>;
-  /** ClientParams queries all parameters of the ibc client. */
+  /** ClientParams queries all parameters of the ibc client submodule. */
   ClientParams(
     request: QueryClientParamsRequest
   ): Promise<QueryClientParamsResponse>;

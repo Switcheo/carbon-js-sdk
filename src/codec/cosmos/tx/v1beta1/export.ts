@@ -1,2 +1,2 @@
 export { OrderBy, orderByFromJSON, orderByToJSON, BroadcastMode, broadcastModeFromJSON, broadcastModeToJSON, GetTxsEventRequest, GetTxsEventResponse, BroadcastTxRequest, BroadcastTxResponse, SimulateRequest, SimulateResponse, GetTxRequest, GetTxResponse, GetBlockWithTxsRequest, GetBlockWithTxsResponse, ServiceClientImpl } from "./service"
-export { Tx, TxRaw, SignDoc, TxBody, AuthInfo, SignerInfo, ModeInfo, ModeInfo_Single, ModeInfo_Multi, Fee } from "./tx"
+export { Tx, TxRaw, SignDoc, SignDocDirectAux, TxBody, AuthInfo, SignerInfo, ModeInfo, ModeInfo_Single, ModeInfo_Multi, Fee, Tip, AuxSignerData } from "./tx"

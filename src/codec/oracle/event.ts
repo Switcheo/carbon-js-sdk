@@ -18,6 +18,7 @@ export interface OracleSlashEvent {
   infractionHeight: Long;
   power: Long;
   slashFactor: string;
+  burnedCoins: string;
 }
 
 const baseResultEvent: object = { resultId: "", type: "" };
@@ -108,6 +109,7 @@ const baseOracleSlashEvent: object = {
   infractionHeight: Long.UZERO,
   power: Long.UZERO,
   slashFactor: "",
+  burnedCoins: "",
 };
 
 export const OracleSlashEvent = {
@@ -132,6 +134,9 @@ export const OracleSlashEvent = {
     }
     if (message.slashFactor !== "") {
       writer.uint32(50).string(message.slashFactor);
+    }
+    if (message.burnedCoins !== "") {
+      writer.uint32(58).string(message.burnedCoins);
     }
     return writer;
   },
@@ -160,6 +165,9 @@ export const OracleSlashEvent = {
           break;
         case 6:
           message.slashFactor = reader.string();
+          break;
+        case 7:
+          message.burnedCoins = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -195,6 +203,10 @@ export const OracleSlashEvent = {
       object.slashFactor !== undefined && object.slashFactor !== null
         ? String(object.slashFactor)
         : "";
+    message.burnedCoins =
+      object.burnedCoins !== undefined && object.burnedCoins !== null
+        ? String(object.burnedCoins)
+        : "";
     return message;
   },
 
@@ -213,6 +225,8 @@ export const OracleSlashEvent = {
       (obj.power = (message.power || Long.UZERO).toString());
     message.slashFactor !== undefined &&
       (obj.slashFactor = message.slashFactor);
+    message.burnedCoins !== undefined &&
+      (obj.burnedCoins = message.burnedCoins);
     return obj;
   },
 
@@ -233,6 +247,7 @@ export const OracleSlashEvent = {
         ? Long.fromValue(object.power)
         : Long.UZERO;
     message.slashFactor = object.slashFactor ?? "";
+    message.burnedCoins = object.burnedCoins ?? "";
     return message;
   },
 };

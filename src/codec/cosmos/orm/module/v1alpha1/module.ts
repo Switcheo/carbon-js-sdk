@@ -2,25 +2,26 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 
-export const protobufPackage = "Switcheo.carbon.crisis";
+export const protobufPackage = "cosmos.orm.module.v1alpha1";
 
-/** GenesisState defines the crisis module's genesis state. */
-export interface GenesisState {}
+/**
+ * Module defines the ORM module which adds providers to the app container for
+ * module-scoped DB's. In the future it may provide gRPC services for interacting
+ * with ORM data.
+ */
+export interface Module {}
 
-const baseGenesisState: object = {};
+const baseModule: object = {};
 
-export const GenesisState = {
-  encode(
-    _: GenesisState,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+export const Module = {
+  encode(_: Module, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): GenesisState {
+  decode(input: _m0.Reader | Uint8Array, length?: number): Module {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseGenesisState } as GenesisState;
+    const message = { ...baseModule } as Module;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -32,18 +33,18 @@ export const GenesisState = {
     return message;
   },
 
-  fromJSON(_: any): GenesisState {
-    const message = { ...baseGenesisState } as GenesisState;
+  fromJSON(_: any): Module {
+    const message = { ...baseModule } as Module;
     return message;
   },
 
-  toJSON(_: GenesisState): unknown {
+  toJSON(_: Module): unknown {
     const obj: any = {};
     return obj;
   },
 
-  fromPartial(_: DeepPartial<GenesisState>): GenesisState {
-    const message = { ...baseGenesisState } as GenesisState;
+  fromPartial(_: DeepPartial<Module>): Module {
+    const message = { ...baseModule } as Module;
     return message;
   },
 };
