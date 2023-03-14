@@ -17,7 +17,6 @@ export class LiquidityPoolModule extends BaseModule {
       tokenBWeight: params.tokenBWeight.shiftedBy(18).toString(10),
       swapFee: params.swapFee.shiftedBy(18).toString(10),
       ampBps: params.ampBps,
-      numQuotes: new Long(params.numQuotes),
     });
 
     return await wallet.sendTx(
@@ -42,7 +41,6 @@ export class LiquidityPoolModule extends BaseModule {
       amountB: params.amountB.toString(10),
       swapFee: params.swapFee.shiftedBy(18).toString(10),
       ampBps: params.ampBps,
-      numQuotes: new Long(params.numQuotes),
     });
 
     return await wallet.sendTx(

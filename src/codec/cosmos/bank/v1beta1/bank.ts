@@ -53,7 +53,7 @@ export interface DenomUnit {
   /**
    * exponent represents power of 10 exponent that one must
    * raise the base_denom to in order to equal the given DenomUnit's denom
-   * 1 denom = 1^exponent base_denom
+   * 1 denom = 10^exponent base_denom
    * (e.g. with a base_denom of uatom, one can create a DenomUnit of 'atom' with
    * exponent = 6, thus: 1 atom = 10^6 uatom).
    */
@@ -90,6 +90,19 @@ export interface Metadata {
    * Since: cosmos-sdk 0.43
    */
   symbol: string;
+  /**
+   * URI to a document (on or off-chain) that contains additional information. Optional.
+   *
+   * Since: cosmos-sdk 0.46
+   */
+  uri: string;
+  /**
+   * URIHash is a sha256 hash of a document pointed by URI. It's used to verify that
+   * the document didn't change. Optional.
+   *
+   * Since: cosmos-sdk 0.46
+   */
+  uriHash: string;
 }
 
 const baseParams: object = { defaultSendEnabled: false };
@@ -503,6 +516,8 @@ const baseMetadata: object = {
   display: "",
   name: "",
   symbol: "",
+  uri: "",
+  uriHash: "",
 };
 
 export const Metadata = {
@@ -527,6 +542,12 @@ export const Metadata = {
     }
     if (message.symbol !== "") {
       writer.uint32(50).string(message.symbol);
+    }
+    if (message.uri !== "") {
+      writer.uint32(58).string(message.uri);
+    }
+    if (message.uriHash !== "") {
+      writer.uint32(66).string(message.uriHash);
     }
     return writer;
   },
@@ -556,6 +577,12 @@ export const Metadata = {
           break;
         case 6:
           message.symbol = reader.string();
+          break;
+        case 7:
+          message.uri = reader.string();
+          break;
+        case 8:
+          message.uriHash = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -590,6 +617,12 @@ export const Metadata = {
       object.symbol !== undefined && object.symbol !== null
         ? String(object.symbol)
         : "";
+    message.uri =
+      object.uri !== undefined && object.uri !== null ? String(object.uri) : "";
+    message.uriHash =
+      object.uriHash !== undefined && object.uriHash !== null
+        ? String(object.uriHash)
+        : "";
     return message;
   },
 
@@ -608,6 +641,8 @@ export const Metadata = {
     message.display !== undefined && (obj.display = message.display);
     message.name !== undefined && (obj.name = message.name);
     message.symbol !== undefined && (obj.symbol = message.symbol);
+    message.uri !== undefined && (obj.uri = message.uri);
+    message.uriHash !== undefined && (obj.uriHash = message.uriHash);
     return obj;
   },
 
@@ -621,6 +656,8 @@ export const Metadata = {
     message.display = object.display ?? "";
     message.name = object.name ?? "";
     message.symbol = object.symbol ?? "";
+    message.uri = object.uri ?? "";
+    message.uriHash = object.uriHash ?? "";
     return message;
   },
 };

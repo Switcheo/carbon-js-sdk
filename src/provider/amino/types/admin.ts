@@ -252,8 +252,6 @@ const AdminAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgLinkToken]: generateAminoType(MsgLinkToken),
   [CarbonTx.Types.MsgSyncToken]: generateAminoType(MsgSyncToken),
   [CarbonTx.Types.MsgCreateMarket]: generateAminoType(MsgCreateMarket),
-  [CarbonTx.Types.MsgLinkPool]: generateAminoType(MsgLinkPool),
-  [CarbonTx.Types.MsgUnlinkPool]: generateAminoType(MsgUnlinkPool),
   [CarbonTx.Types.MsgUpdatePool]: generateAminoType(MsgUpdatePool),
   [CarbonTx.Types.MsgSetRewardsWeights]: generateAminoType(MsgSetRewardsWeights),
   [CarbonTx.Types.MsgSetRewardCurve]: generateAminoType(MsgSetRewardCurve),

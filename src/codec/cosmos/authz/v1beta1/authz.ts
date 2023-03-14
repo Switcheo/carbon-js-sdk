@@ -23,20 +23,29 @@ export interface GenericAuthorization {
  */
 export interface Grant {
   authorization?: Any;
+  /**
+   * time when the grant will expire and will be pruned. If null, then the grant
+   * doesn't have a time expiration (other conditions  in `authorization`
+   * may apply to invalidate the grant)
+   */
   expiration?: Date;
 }
 
 /**
  * GrantAuthorization extends a grant with both the addresses of the grantee and granter.
  * It is used in genesis.proto and query.proto
- *
- * Since: cosmos-sdk 0.45.2
  */
 export interface GrantAuthorization {
   granter: string;
   grantee: string;
   authorization?: Any;
   expiration?: Date;
+}
+
+/** GrantQueueItem contains the list of TypeURL of a sdk.Msg. */
+export interface GrantQueueItem {
+  /** msg_type_urls contains the list of TypeURL of a sdk.Msg. */
+  msgTypeUrls: string[];
 }
 
 const baseGenericAuthorization: object = { msg: "" };
@@ -264,6 +273,61 @@ export const GrantAuthorization = {
         ? Any.fromPartial(object.authorization)
         : undefined;
     message.expiration = object.expiration ?? undefined;
+    return message;
+  },
+};
+
+const baseGrantQueueItem: object = { msgTypeUrls: "" };
+
+export const GrantQueueItem = {
+  encode(
+    message: GrantQueueItem,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.msgTypeUrls) {
+      writer.uint32(10).string(v!);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): GrantQueueItem {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseGrantQueueItem } as GrantQueueItem;
+    message.msgTypeUrls = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.msgTypeUrls.push(reader.string());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GrantQueueItem {
+    const message = { ...baseGrantQueueItem } as GrantQueueItem;
+    message.msgTypeUrls = (object.msgTypeUrls ?? []).map((e: any) => String(e));
+    return message;
+  },
+
+  toJSON(message: GrantQueueItem): unknown {
+    const obj: any = {};
+    if (message.msgTypeUrls) {
+      obj.msgTypeUrls = message.msgTypeUrls.map((e) => e);
+    } else {
+      obj.msgTypeUrls = [];
+    }
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<GrantQueueItem>): GrantQueueItem {
+    const message = { ...baseGrantQueueItem } as GrantQueueItem;
+    message.msgTypeUrls = (object.msgTypeUrls ?? []).map((e) => e);
     return message;
   },
 };

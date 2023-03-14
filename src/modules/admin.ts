@@ -33,11 +33,9 @@ import { Description } from "@carbon-sdk/codec/cosmos/staking/v1beta1/staking";
 import { MsgCreateValidator, MsgEditValidator } from "@carbon-sdk/codec/cosmos/staking/v1beta1/tx";
 import { MsgSetGasCost, MsgSetMinGasPrice, MsgRemoveGasCost, MsgRemoveMinGasPrice } from "@carbon-sdk/codec/fee/tx";
 import {
-  MsgLinkPool,
   MsgSetCommitmentCurve,
   MsgSetRewardCurve,
   MsgSetRewardsWeights,
-  MsgUnlinkPool,
   MsgUpdatePool,
 } from "@carbon-sdk/codec/liquiditypool/tx";
 import { MsgCreateMarket } from "@carbon-sdk/codec/market/tx";
@@ -239,39 +237,6 @@ export class AdminModule extends BaseModule {
     return await wallet.sendTxs(msgs, opts);
   }
 
-  public async linkPool(params: AdminModule.LinkPoolParams, opts?: CarbonTx.SignTxOpts) {
-    const wallet = this.getWallet();
-
-    const value = MsgLinkPool.fromPartial({
-      creator: wallet.bech32Address,
-      linkPoolParams: transfromLinkPoolParams(params),
-    });
-
-    return await wallet.sendTx(
-      {
-        typeUrl: CarbonTx.Types.MsgLinkPool,
-        value,
-      },
-      opts
-    );
-  }
-
-  public async unlinkPool(params: AdminModule.UnlinkPoolParams, opts?: CarbonTx.SignTxOpts) {
-    const wallet = this.getWallet();
-
-    const value = MsgUnlinkPool.fromPartial({
-      creator: wallet.bech32Address,
-      unlinkPoolParams: transfromUnlinkPoolParams(params),
-    });
-
-    return await wallet.sendTx(
-      {
-        typeUrl: CarbonTx.Types.MsgUnlinkPool,
-        value,
-      },
-      opts
-    );
-  }
 
   public async setRewardsWeights(params: AdminModule.SetRewardsWeightsParams[], opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();

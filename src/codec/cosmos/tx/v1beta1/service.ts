@@ -116,9 +116,21 @@ export function broadcastModeToJSON(object: BroadcastMode): string {
 export interface GetTxsEventRequest {
   /** events is the list of transaction event type. */
   events: string[];
-  /** pagination defines a pagination for the request. */
+  /**
+   * pagination defines a pagination for the request.
+   * Deprecated post v0.46.x: use page and limit instead.
+   *
+   * @deprecated
+   */
   pagination?: PageRequest;
   orderBy: OrderBy;
+  /** page is the page number to query, starts at 1. If not provided, will default to first page. */
+  page: Long;
+  /**
+   * limit is the total number of results to be returned in the result page.
+   * If left empty it will default to a value to be set by each app.
+   */
+  limit: Long;
 }
 
 /**
@@ -130,8 +142,15 @@ export interface GetTxsEventResponse {
   txs: Tx[];
   /** tx_responses is the list of queried TxResponses. */
   txResponses: TxResponse[];
-  /** pagination defines a pagination for the response. */
+  /**
+   * pagination defines a pagination for the response.
+   * Deprecated post v0.46.x: use total instead.
+   *
+   * @deprecated
+   */
   pagination?: PageResponse;
+  /** total is total number of results available */
+  total: Long;
 }
 
 /**
@@ -228,7 +247,12 @@ export interface GetBlockWithTxsResponse {
   pagination?: PageResponse;
 }
 
-const baseGetTxsEventRequest: object = { events: "", orderBy: 0 };
+const baseGetTxsEventRequest: object = {
+  events: "",
+  orderBy: 0,
+  page: Long.UZERO,
+  limit: Long.UZERO,
+};
 
 export const GetTxsEventRequest = {
   encode(
@@ -243,6 +267,12 @@ export const GetTxsEventRequest = {
     }
     if (message.orderBy !== 0) {
       writer.uint32(24).int32(message.orderBy);
+    }
+    if (!message.page.isZero()) {
+      writer.uint32(32).uint64(message.page);
+    }
+    if (!message.limit.isZero()) {
+      writer.uint32(40).uint64(message.limit);
     }
     return writer;
   },
@@ -264,6 +294,12 @@ export const GetTxsEventRequest = {
         case 3:
           message.orderBy = reader.int32() as any;
           break;
+        case 4:
+          message.page = reader.uint64() as Long;
+          break;
+        case 5:
+          message.limit = reader.uint64() as Long;
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -283,6 +319,14 @@ export const GetTxsEventRequest = {
       object.orderBy !== undefined && object.orderBy !== null
         ? orderByFromJSON(object.orderBy)
         : 0;
+    message.page =
+      object.page !== undefined && object.page !== null
+        ? Long.fromString(object.page)
+        : Long.UZERO;
+    message.limit =
+      object.limit !== undefined && object.limit !== null
+        ? Long.fromString(object.limit)
+        : Long.UZERO;
     return message;
   },
 
@@ -299,6 +343,10 @@ export const GetTxsEventRequest = {
         : undefined);
     message.orderBy !== undefined &&
       (obj.orderBy = orderByToJSON(message.orderBy));
+    message.page !== undefined &&
+      (obj.page = (message.page || Long.UZERO).toString());
+    message.limit !== undefined &&
+      (obj.limit = (message.limit || Long.UZERO).toString());
     return obj;
   },
 
@@ -310,11 +358,19 @@ export const GetTxsEventRequest = {
         ? PageRequest.fromPartial(object.pagination)
         : undefined;
     message.orderBy = object.orderBy ?? 0;
+    message.page =
+      object.page !== undefined && object.page !== null
+        ? Long.fromValue(object.page)
+        : Long.UZERO;
+    message.limit =
+      object.limit !== undefined && object.limit !== null
+        ? Long.fromValue(object.limit)
+        : Long.UZERO;
     return message;
   },
 };
 
-const baseGetTxsEventResponse: object = {};
+const baseGetTxsEventResponse: object = { total: Long.UZERO };
 
 export const GetTxsEventResponse = {
   encode(
@@ -332,6 +388,9 @@ export const GetTxsEventResponse = {
         message.pagination,
         writer.uint32(26).fork()
       ).ldelim();
+    }
+    if (!message.total.isZero()) {
+      writer.uint32(32).uint64(message.total);
     }
     return writer;
   },
@@ -354,6 +413,9 @@ export const GetTxsEventResponse = {
         case 3:
           message.pagination = PageResponse.decode(reader, reader.uint32());
           break;
+        case 4:
+          message.total = reader.uint64() as Long;
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -372,6 +434,10 @@ export const GetTxsEventResponse = {
       object.pagination !== undefined && object.pagination !== null
         ? PageResponse.fromJSON(object.pagination)
         : undefined;
+    message.total =
+      object.total !== undefined && object.total !== null
+        ? Long.fromString(object.total)
+        : Long.UZERO;
     return message;
   },
 
@@ -393,6 +459,8 @@ export const GetTxsEventResponse = {
       (obj.pagination = message.pagination
         ? PageResponse.toJSON(message.pagination)
         : undefined);
+    message.total !== undefined &&
+      (obj.total = (message.total || Long.UZERO).toString());
     return obj;
   },
 
@@ -406,6 +474,10 @@ export const GetTxsEventResponse = {
       object.pagination !== undefined && object.pagination !== null
         ? PageResponse.fromPartial(object.pagination)
         : undefined;
+    message.total =
+      object.total !== undefined && object.total !== null
+        ? Long.fromValue(object.total)
+        : Long.UZERO;
     return message;
   },
 };
