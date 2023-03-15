@@ -39,6 +39,7 @@ export interface Order {
   referralAddress: string;
   referralCommission: number;
   referralKickback: number;
+  poolRoute: Uint8Array;
 }
 
 export interface DBOrder {
@@ -232,6 +233,9 @@ export const Order = {
     if (message.referralKickback !== 0) {
       writer.uint32(208).uint32(message.referralKickback);
     }
+    if (message.poolRoute.length !== 0) {
+      writer.uint32(218).bytes(message.poolRoute);
+    }
     return writer;
   },
 
@@ -239,6 +243,7 @@ export const Order = {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseOrder } as Order;
+    message.poolRoute = new Uint8Array();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -321,6 +326,9 @@ export const Order = {
           break;
         case 26:
           message.referralKickback = reader.uint32();
+          break;
+        case 27:
+          message.poolRoute = reader.bytes();
           break;
         default:
           reader.skipType(tag & 7);
@@ -436,6 +444,10 @@ export const Order = {
       object.referralKickback !== undefined && object.referralKickback !== null
         ? Number(object.referralKickback)
         : 0;
+    message.poolRoute =
+      object.poolRoute !== undefined && object.poolRoute !== null
+        ? bytesFromBase64(object.poolRoute)
+        : new Uint8Array();
     return message;
   },
 
@@ -484,6 +496,10 @@ export const Order = {
       (obj.referralCommission = message.referralCommission);
     message.referralKickback !== undefined &&
       (obj.referralKickback = message.referralKickback);
+    message.poolRoute !== undefined &&
+      (obj.poolRoute = base64FromBytes(
+        message.poolRoute !== undefined ? message.poolRoute : new Uint8Array()
+      ));
     return obj;
   },
 
@@ -528,6 +544,7 @@ export const Order = {
     message.referralAddress = object.referralAddress ?? "";
     message.referralCommission = object.referralCommission ?? 0;
     message.referralKickback = object.referralKickback ?? 0;
+    message.poolRoute = object.poolRoute ?? new Uint8Array();
     return message;
   },
 };
@@ -897,6 +914,40 @@ export const Orders = {
     return message;
   },
 };
+
+declare var self: any | undefined;
+declare var window: any | undefined;
+declare var global: any | undefined;
+var globalThis: any = (() => {
+  if (typeof globalThis !== "undefined") return globalThis;
+  if (typeof self !== "undefined") return self;
+  if (typeof window !== "undefined") return window;
+  if (typeof global !== "undefined") return global;
+  throw "Unable to locate global object";
+})();
+
+const atob: (b64: string) => string =
+  globalThis.atob ||
+  ((b64) => globalThis.Buffer.from(b64, "base64").toString("binary"));
+function bytesFromBase64(b64: string): Uint8Array {
+  const bin = atob(b64);
+  const arr = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; ++i) {
+    arr[i] = bin.charCodeAt(i);
+  }
+  return arr;
+}
+
+const btoa: (bin: string) => string =
+  globalThis.btoa ||
+  ((bin) => globalThis.Buffer.from(bin, "binary").toString("base64"));
+function base64FromBytes(arr: Uint8Array): string {
+  const bin: string[] = [];
+  for (const byte of arr) {
+    bin.push(String.fromCharCode(byte));
+  }
+  return btoa(bin.join(""));
+}
 
 type Builtin =
   | Date
