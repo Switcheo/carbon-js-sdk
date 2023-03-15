@@ -55,6 +55,8 @@ export interface PNLLeaderboardEntry {
   initialBalance: string;
   totalPnl: string;
   PnlPercent: string;
+  finalPnlPercent: string;
+  refereeBonusPercent: string;
   rank: string;
   username: string | null;
   twitter: string | null;

@@ -6,8 +6,8 @@ import { AminoInit, generateAminoType } from "../utils";
 const TxTypes: TypeUtils.SimpleMap<string> = {
   MintToken: "carbon/MsgMintToken",
   Withdraw: "carbon/MsgWithdraw",
-  DepositToGroup: "carbon/MsgDepositToGroup",
-  WithdrawFromGroup: "carbon/MsgWithdrawFromGroup",
+  DepositToGroup: "coin/DepositToGroup",
+  WithdrawFromGroup: "coin/WithdrawFromGroup",
 };
 
 const MsgWithdraw: AminoInit = {

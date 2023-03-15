@@ -8,6 +8,8 @@ const [pwd, registryFile, polynetworkModelsFile, cosmosModelsFile, ibcModelsFile
 const codecFiles = files.slice(2, files.length - 5);
 
 console.log(`import { Registry } from "@cosmjs/proto-signing";`);
+// TODO: Remove hardcoded statement when upgrading cosmwasm codecs
+console.log(`import { MsgExecuteContract } from "cosmjs-types/cosmwasm/wasm/v1/tx";`);
 
 const modules: { [name: string]: string[] } = {};
 for (const moduleFile of codecFiles) {
@@ -96,6 +98,9 @@ for (const packageName in modules) {
     }
   }
 }
+// TODO: Remove hardcoded statement when upgrading cosmwasm codecs
+console.log("registry.register(\"/cosmwasm.wasm.v1.MsgExecuteContract\", MsgExecuteContract);");
+typeMap.MsgExecuteContract = "/cosmwasm.wasm.v1.MsgExecuteContract";
 
 console.log("");
 console.log(`export const TxTypes = ${JSON.stringify(typeMap, null, 2)};\n`);
@@ -163,6 +168,8 @@ for (const moduleFile of codecFiles) {
     console.log(`export { ${messages.join(", ")} } from "${relativePath}";`)
   }
 }
+// TODO: Remove hardcoded statement when upgrading cosmwasm codecs
+console.log("export { MsgExecuteContract } from \"cosmjs-types/cosmwasm/wasm/v1/tx\";");
 
 
 function updateGeneratedEthermintCodecs(key: string, file: string[]): string {
