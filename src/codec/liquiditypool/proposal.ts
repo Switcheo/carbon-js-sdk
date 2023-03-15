@@ -2,6 +2,8 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import {
+  LinkPoolParams,
+  UnlinkPoolParams,
   SetRewardCurveParams,
   SetCommitmentCurveParams,
   SetRewardsWeightsParams,
@@ -12,6 +14,18 @@ import {
 } from "./tx";
 
 export const protobufPackage = "Switcheo.carbon.liquiditypool";
+
+export interface LinkPoolProposal {
+  title: string;
+  description: string;
+  msg?: LinkPoolParams;
+}
+
+export interface UnlinkPoolProposal {
+  title: string;
+  description: string;
+  msg?: UnlinkPoolParams;
+}
 
 export interface SetRewardCurveProposal {
   title: string;
@@ -54,6 +68,172 @@ export interface UpdatePoolRouteProposal {
   description: string;
   msg?: UpdatePoolRouteParams;
 }
+
+const baseLinkPoolProposal: object = { title: "", description: "" };
+
+export const LinkPoolProposal = {
+  encode(
+    message: LinkPoolProposal,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.title !== "") {
+      writer.uint32(10).string(message.title);
+    }
+    if (message.description !== "") {
+      writer.uint32(18).string(message.description);
+    }
+    if (message.msg !== undefined) {
+      LinkPoolParams.encode(message.msg, writer.uint32(26).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): LinkPoolProposal {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseLinkPoolProposal } as LinkPoolProposal;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.title = reader.string();
+          break;
+        case 2:
+          message.description = reader.string();
+          break;
+        case 3:
+          message.msg = LinkPoolParams.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): LinkPoolProposal {
+    const message = { ...baseLinkPoolProposal } as LinkPoolProposal;
+    message.title =
+      object.title !== undefined && object.title !== null
+        ? String(object.title)
+        : "";
+    message.description =
+      object.description !== undefined && object.description !== null
+        ? String(object.description)
+        : "";
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? LinkPoolParams.fromJSON(object.msg)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: LinkPoolProposal): unknown {
+    const obj: any = {};
+    message.title !== undefined && (obj.title = message.title);
+    message.description !== undefined &&
+      (obj.description = message.description);
+    message.msg !== undefined &&
+      (obj.msg = message.msg ? LinkPoolParams.toJSON(message.msg) : undefined);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<LinkPoolProposal>): LinkPoolProposal {
+    const message = { ...baseLinkPoolProposal } as LinkPoolProposal;
+    message.title = object.title ?? "";
+    message.description = object.description ?? "";
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? LinkPoolParams.fromPartial(object.msg)
+        : undefined;
+    return message;
+  },
+};
+
+const baseUnlinkPoolProposal: object = { title: "", description: "" };
+
+export const UnlinkPoolProposal = {
+  encode(
+    message: UnlinkPoolProposal,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.title !== "") {
+      writer.uint32(10).string(message.title);
+    }
+    if (message.description !== "") {
+      writer.uint32(18).string(message.description);
+    }
+    if (message.msg !== undefined) {
+      UnlinkPoolParams.encode(message.msg, writer.uint32(26).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): UnlinkPoolProposal {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseUnlinkPoolProposal } as UnlinkPoolProposal;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.title = reader.string();
+          break;
+        case 2:
+          message.description = reader.string();
+          break;
+        case 3:
+          message.msg = UnlinkPoolParams.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UnlinkPoolProposal {
+    const message = { ...baseUnlinkPoolProposal } as UnlinkPoolProposal;
+    message.title =
+      object.title !== undefined && object.title !== null
+        ? String(object.title)
+        : "";
+    message.description =
+      object.description !== undefined && object.description !== null
+        ? String(object.description)
+        : "";
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? UnlinkPoolParams.fromJSON(object.msg)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: UnlinkPoolProposal): unknown {
+    const obj: any = {};
+    message.title !== undefined && (obj.title = message.title);
+    message.description !== undefined &&
+      (obj.description = message.description);
+    message.msg !== undefined &&
+      (obj.msg = message.msg
+        ? UnlinkPoolParams.toJSON(message.msg)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<UnlinkPoolProposal>): UnlinkPoolProposal {
+    const message = { ...baseUnlinkPoolProposal } as UnlinkPoolProposal;
+    message.title = object.title ?? "";
+    message.description = object.description ?? "";
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? UnlinkPoolParams.fromPartial(object.msg)
+        : undefined;
+    return message;
+  },
+};
 
 const baseSetRewardCurveProposal: object = { title: "", description: "" };
 

@@ -37,10 +37,8 @@ export interface CommitmentEvent {
 
 export interface SwapEvent {
   poolId: Long;
-  inputDenom: string;
-  inputAmount: string;
-  outputDenom: string;
-  outputAmount: string;
+  input: string;
+  output: string;
 }
 
 const basePoolEvent: object = {
@@ -497,13 +495,7 @@ export const CommitmentEvent = {
   },
 };
 
-const baseSwapEvent: object = {
-  poolId: Long.UZERO,
-  inputDenom: "",
-  inputAmount: "",
-  outputDenom: "",
-  outputAmount: "",
-};
+const baseSwapEvent: object = { poolId: Long.UZERO, input: "", output: "" };
 
 export const SwapEvent = {
   encode(
@@ -513,17 +505,11 @@ export const SwapEvent = {
     if (!message.poolId.isZero()) {
       writer.uint32(8).uint64(message.poolId);
     }
-    if (message.inputDenom !== "") {
-      writer.uint32(18).string(message.inputDenom);
+    if (message.input !== "") {
+      writer.uint32(18).string(message.input);
     }
-    if (message.inputAmount !== "") {
-      writer.uint32(26).string(message.inputAmount);
-    }
-    if (message.outputDenom !== "") {
-      writer.uint32(34).string(message.outputDenom);
-    }
-    if (message.outputAmount !== "") {
-      writer.uint32(42).string(message.outputAmount);
+    if (message.output !== "") {
+      writer.uint32(26).string(message.output);
     }
     return writer;
   },
@@ -539,16 +525,10 @@ export const SwapEvent = {
           message.poolId = reader.uint64() as Long;
           break;
         case 2:
-          message.inputDenom = reader.string();
+          message.input = reader.string();
           break;
         case 3:
-          message.inputAmount = reader.string();
-          break;
-        case 4:
-          message.outputDenom = reader.string();
-          break;
-        case 5:
-          message.outputAmount = reader.string();
+          message.output = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -564,21 +544,13 @@ export const SwapEvent = {
       object.poolId !== undefined && object.poolId !== null
         ? Long.fromString(object.poolId)
         : Long.UZERO;
-    message.inputDenom =
-      object.inputDenom !== undefined && object.inputDenom !== null
-        ? String(object.inputDenom)
+    message.input =
+      object.input !== undefined && object.input !== null
+        ? String(object.input)
         : "";
-    message.inputAmount =
-      object.inputAmount !== undefined && object.inputAmount !== null
-        ? String(object.inputAmount)
-        : "";
-    message.outputDenom =
-      object.outputDenom !== undefined && object.outputDenom !== null
-        ? String(object.outputDenom)
-        : "";
-    message.outputAmount =
-      object.outputAmount !== undefined && object.outputAmount !== null
-        ? String(object.outputAmount)
+    message.output =
+      object.output !== undefined && object.output !== null
+        ? String(object.output)
         : "";
     return message;
   },
@@ -587,13 +559,8 @@ export const SwapEvent = {
     const obj: any = {};
     message.poolId !== undefined &&
       (obj.poolId = (message.poolId || Long.UZERO).toString());
-    message.inputDenom !== undefined && (obj.inputDenom = message.inputDenom);
-    message.inputAmount !== undefined &&
-      (obj.inputAmount = message.inputAmount);
-    message.outputDenom !== undefined &&
-      (obj.outputDenom = message.outputDenom);
-    message.outputAmount !== undefined &&
-      (obj.outputAmount = message.outputAmount);
+    message.input !== undefined && (obj.input = message.input);
+    message.output !== undefined && (obj.output = message.output);
     return obj;
   },
 
@@ -603,10 +570,8 @@ export const SwapEvent = {
       object.poolId !== undefined && object.poolId !== null
         ? Long.fromValue(object.poolId)
         : Long.UZERO;
-    message.inputDenom = object.inputDenom ?? "";
-    message.inputAmount = object.inputAmount ?? "";
-    message.outputDenom = object.outputDenom ?? "";
-    message.outputAmount = object.outputAmount ?? "";
+    message.input = object.input ?? "";
+    message.output = object.output ?? "";
     return message;
   },
 };

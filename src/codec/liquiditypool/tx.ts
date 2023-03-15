@@ -53,6 +53,15 @@ export interface MsgRemoveLiquidity {
 
 export interface MsgRemoveLiquidityResponse {}
 
+export interface LinkPoolParams {
+  poolId: Long;
+  market: string;
+}
+
+export interface UnlinkPoolParams {
+  poolId: Long;
+}
+
 export interface MsgSetRewardsWeights {
   creator: string;
   setRewardsWeightsParams?: SetRewardsWeightsParams;
@@ -896,6 +905,132 @@ export const MsgRemoveLiquidityResponse = {
     const message = {
       ...baseMsgRemoveLiquidityResponse,
     } as MsgRemoveLiquidityResponse;
+    return message;
+  },
+};
+
+const baseLinkPoolParams: object = { poolId: Long.UZERO, market: "" };
+
+export const LinkPoolParams = {
+  encode(
+    message: LinkPoolParams,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (!message.poolId.isZero()) {
+      writer.uint32(8).uint64(message.poolId);
+    }
+    if (message.market !== "") {
+      writer.uint32(18).string(message.market);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): LinkPoolParams {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseLinkPoolParams } as LinkPoolParams;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.poolId = reader.uint64() as Long;
+          break;
+        case 2:
+          message.market = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): LinkPoolParams {
+    const message = { ...baseLinkPoolParams } as LinkPoolParams;
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromString(object.poolId)
+        : Long.UZERO;
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? String(object.market)
+        : "";
+    return message;
+  },
+
+  toJSON(message: LinkPoolParams): unknown {
+    const obj: any = {};
+    message.poolId !== undefined &&
+      (obj.poolId = (message.poolId || Long.UZERO).toString());
+    message.market !== undefined && (obj.market = message.market);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<LinkPoolParams>): LinkPoolParams {
+    const message = { ...baseLinkPoolParams } as LinkPoolParams;
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromValue(object.poolId)
+        : Long.UZERO;
+    message.market = object.market ?? "";
+    return message;
+  },
+};
+
+const baseUnlinkPoolParams: object = { poolId: Long.UZERO };
+
+export const UnlinkPoolParams = {
+  encode(
+    message: UnlinkPoolParams,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (!message.poolId.isZero()) {
+      writer.uint32(8).uint64(message.poolId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): UnlinkPoolParams {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseUnlinkPoolParams } as UnlinkPoolParams;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.poolId = reader.uint64() as Long;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UnlinkPoolParams {
+    const message = { ...baseUnlinkPoolParams } as UnlinkPoolParams;
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromString(object.poolId)
+        : Long.UZERO;
+    return message;
+  },
+
+  toJSON(message: UnlinkPoolParams): unknown {
+    const obj: any = {};
+    message.poolId !== undefined &&
+      (obj.poolId = (message.poolId || Long.UZERO).toString());
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<UnlinkPoolParams>): UnlinkPoolParams {
+    const message = { ...baseUnlinkPoolParams } as UnlinkPoolParams;
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromValue(object.poolId)
+        : Long.UZERO;
     return message;
   },
 };

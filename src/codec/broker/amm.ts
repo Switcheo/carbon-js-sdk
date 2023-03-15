@@ -5,16 +5,20 @@ import _m0 from "protobufjs/minimal";
 export const protobufPackage = "Switcheo.carbon.broker";
 
 export interface Amm {
+  poolId: Long;
   market: string;
   reservesHash: Uint8Array;
   orders: string[];
   poolRoute: Uint8Array;
 }
 
-const baseAmm: object = { market: "", orders: "" };
+const baseAmm: object = { poolId: Long.UZERO, market: "", orders: "" };
 
 export const Amm = {
   encode(message: Amm, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (!message.poolId.isZero()) {
+      writer.uint32(8).uint64(message.poolId);
+    }
     if (message.market !== "") {
       writer.uint32(18).string(message.market);
     }
@@ -40,6 +44,9 @@ export const Amm = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.poolId = reader.uint64() as Long;
+          break;
         case 2:
           message.market = reader.string();
           break;
@@ -62,6 +69,10 @@ export const Amm = {
 
   fromJSON(object: any): Amm {
     const message = { ...baseAmm } as Amm;
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromString(object.poolId)
+        : Long.UZERO;
     message.market =
       object.market !== undefined && object.market !== null
         ? String(object.market)
@@ -80,6 +91,8 @@ export const Amm = {
 
   toJSON(message: Amm): unknown {
     const obj: any = {};
+    message.poolId !== undefined &&
+      (obj.poolId = (message.poolId || Long.UZERO).toString());
     message.market !== undefined && (obj.market = message.market);
     message.reservesHash !== undefined &&
       (obj.reservesHash = base64FromBytes(
@@ -101,6 +114,10 @@ export const Amm = {
 
   fromPartial(object: DeepPartial<Amm>): Amm {
     const message = { ...baseAmm } as Amm;
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromValue(object.poolId)
+        : Long.UZERO;
     message.market = object.market ?? "";
     message.reservesHash = object.reservesHash ?? new Uint8Array();
     message.orders = (object.orders ?? []).map((e) => e);
