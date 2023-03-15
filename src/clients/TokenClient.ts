@@ -351,7 +351,8 @@ class TokenClient {
   }
 
   public isGroupedToken(denom: string): boolean {
-    return !!denom.match("cgt/1")
+    const groupedTokenRegex = new RegExp(/^cgt\/\d+$/)
+    return groupedTokenRegex.test(denom)
   }
 
   public getDepositTokenFor(tokenDenom: string, chain: BlockchainUtils.Blockchain | BlockchainUtils.BlockchainV2, version = "V1"): Token | undefined {
