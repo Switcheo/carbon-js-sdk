@@ -63,6 +63,8 @@ export interface NetworkConfig {
   eth: EthNetworkConfig;
   bsc: EthNetworkConfig;
   arbitrum: EthNetworkConfig;
+  polygon: EthNetworkConfig;
+  okc: EthNetworkConfig;
 
   neo: NeoNetworkConfig;
   n3: N3NetworkConfig;
@@ -125,6 +127,26 @@ export const NetworkConfigs: {
       byteCodeHash: "", // TODO: update when byteCodeHash is added
     },
 
+    polygon: {
+      rpcURL: "https://polygon-rpc.com",
+      wsURL: "",
+      payerURL: "https://payer.carbon.network",
+      bridgeEntranceAddr: "0x75d302266926CB34B7564AAF3102c258234A35F2",
+      lockProxyAddr: "0x43138036d1283413035B8eca403559737E8f7980",
+      balanceReader: "0x7F31D17944a3147C31C3b55B71ebDcC57B6aCC84",
+      byteCodeHash: "", // TODO: update when byteCodeHash is added
+    },
+
+    okc: {
+      rpcURL: "https://exchainrpc.okex.org",
+      wsURL: "",
+      payerURL: "https://payer.carbon.network",
+      bridgeEntranceAddr: "0x7b1c7216c117cc62d875e3086518b238392cf04d",
+      lockProxyAddr: "0xb1e6f8820826491fcc5519f84ff4e2bdbb6e3cad",
+      balanceReader: "0x43138036d1283413035B8eca403559737E8f7980",
+      byteCodeHash: "", // TODO: update when byteCodeHash is added
+    },
+
     neo: {
       rpcURL: "https://mainnet2.neo2.coz.io:443",
       wrapperScriptHash: "f46719e2d16bf50cddcef9d4bbfece901f73cbb6",
@@ -138,7 +160,7 @@ export const NetworkConfigs: {
     zil: {
       rpcURL: "https://api.zilliqa.com",
       lockProxyAddr: "0xd73c6b871b4d0e130d64581993b745fc938a5be7",
-      bridgeEntranceAddr: "0x3fd798e7fc7c5817bae8d06da8050e37ae45a739",
+      bridgeEntranceAddr: "0x5d78b51a1ceae202a793f4e87478253f41a22956",
       chainId: 1,
     },
   },
@@ -190,6 +212,26 @@ export const NetworkConfigs: {
       lockProxyAddr: "",
       balanceReader: "",
       byteCodeHash: "",
+    },
+
+    polygon: {
+      rpcURL: "https://rpc-mumbai.maticvigil.com",
+      wsURL: "",
+      payerURL: "https://test-payer.carbon.network",
+      bridgeEntranceAddr: "",
+      lockProxyAddr: "",
+      balanceReader: "",
+      byteCodeHash: "",
+    },
+
+    okc: {
+      rpcURL: "https://exchaintestrpc.okex.org",
+      wsURL: "",
+      payerURL: "https://test-payer.carbon.network",
+      bridgeEntranceAddr: "",
+      lockProxyAddr: "",
+      balanceReader: "",
+      byteCodeHash: "", 
     },
 
     neo: {
@@ -259,6 +301,27 @@ export const NetworkConfigs: {
       byteCodeHash: "",
     },
 
+    polygon: {
+      rpcURL: "https://rpc-mumbai.maticvigil.com",
+      wsURL: "",
+      payerURL: "https://test-payer.carbon.network",
+      bridgeEntranceAddr: "",
+      lockProxyAddr: "",
+      balanceReader: "",
+      byteCodeHash: "",
+    },
+
+    okc: {
+      rpcURL: "https://exchaintestrpc.okex.org",
+      wsURL: "",
+      payerURL: "https://test-payer.carbon.network",
+      bridgeEntranceAddr: "",
+      lockProxyAddr: "",
+      balanceReader: "",
+      byteCodeHash: "", 
+    },
+
+
     neo: {
       rpcURL: "https://g30trj885e.execute-api.ap-southeast-1.amazonaws.com",
       wrapperScriptHash: "f46719e2d16bf50cddcef9d4bbfece901f73cbb6",
@@ -325,6 +388,27 @@ export const NetworkConfigs: {
       balanceReader: "",
       byteCodeHash: "",
     },
+
+    polygon: {
+      rpcURL: "https://rpc-mumbai.maticvigil.com",
+      wsURL: "",
+      payerURL: "https://test-payer.carbon.network",
+      bridgeEntranceAddr: "",
+      lockProxyAddr: "",
+      balanceReader: "",
+      byteCodeHash: "",
+    },
+
+    okc: {
+      rpcURL: "https://exchaintestrpc.okex.org",
+      wsURL: "",
+      payerURL: "https://test-payer.carbon.network",
+      bridgeEntranceAddr: "",
+      lockProxyAddr: "",
+      balanceReader: "",
+      byteCodeHash: "", 
+    },
+
 
     neo: {
       rpcURL: "https://g30trj885e.execute-api.ap-southeast-1.amazonaws.com",

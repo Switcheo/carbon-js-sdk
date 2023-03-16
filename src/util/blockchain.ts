@@ -1,3 +1,4 @@
+import { Block } from '@carbon-sdk/codec'
 import { Network } from "@carbon-sdk/constant/network"
 import { SimpleMap } from "./type"
 
@@ -7,6 +8,8 @@ export enum Blockchain {
   BinanceSmartChain = "bsc",
   Zilliqa = "zil",
   Arbitrum = "arbitrum",
+  Polygon = "polygon",
+  Okc = "okc",
   Native = "native",
   Btc = "btc",
   Carbon = "carbon",
@@ -50,6 +53,10 @@ export const ChainNames = {
   97: "BSC TestNet",
   110: "ZIL DevNet",
   111: "ZIL TestNet",
+  65: "Okc TestNet",
+  66: "Okc MainNet",
+  137: "Polygon MainNet",
+  80001: "Polygon Mumbai",
   42161: "Arbitrum MainNet",
   421611: "Arbitrum TestNet",
 } as const
@@ -63,6 +70,8 @@ export const CHAIN_IDS: ChainIds = {
   neo3: 14,
   zil: 18,
   arbitrum: 19,
+  okc: 66,
+  polygon: 137,
   osmosis: 244,
   terra: 245,
   cosmoshub: 246,
@@ -124,6 +133,12 @@ export const getBlockchainFromChain = (chainId?: number) => {
     case 56:
     case 97:
       return Blockchain.BinanceSmartChain
+    case 65:
+    case 66:
+      return Blockchain.Okc
+    case 137:
+    case 80001:
+      return Blockchain.Polygon
     case 110:
     case 111:
       return Blockchain.Zilliqa
@@ -153,6 +168,12 @@ export const blockchainForChainId = (chainId?: number, network = Network.MainNet
         case 9:  /* FALLTHROUGH */
         case 18:
           return Blockchain.Zilliqa
+        case 12: /* FALLTHROUGH */
+        case 66:
+          return Blockchain.Okc
+        case 17: /* FALLTHROUGH */
+        case 137:
+          return Blockchain.Polygon
         case 244:
           return Blockchain.Osmosis
         case 13: /* FALLTHROUGH */
