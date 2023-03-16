@@ -272,7 +272,6 @@ const AdminAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgUpdateAsset]: generateAminoType(MsgUpdateAsset),
   [CarbonTx.Types.MsgSetLiquidationFee]: generateAminoType(MsgSetLiquidationFee),
   [CarbonTx.Types.MsgSetInterestFee]: generateAminoType(MsgSetInterestFee),
-  [CarbonTx.Types.MsgSetStablecoinInterestRate]: generateAminoType(MsgSetStablecoinInterestRate),
   [CarbonTx.Types.MsgSetCompleteLiquidationThreshold]: generateAminoType(MsgSetCompleteLiquidationThreshold),
   [CarbonTx.Types.MsgSetMinimumCloseFactor]: generateAminoType(MsgSetMinimumCloseFactor),
   [CarbonTx.Types.MsgSetSmallLiquidationSize]: generateAminoType(MsgSetSmallLiquidationSize),

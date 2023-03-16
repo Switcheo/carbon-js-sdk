@@ -5,7 +5,6 @@ import {
   MsgRemoveRateStrategy,
   MsgSetInterestFee,
   MsgSetLiquidationFee,
-  MsgSetStablecoinInterestRate,
   MsgUpdateAsset,
   MsgUpdateRateStrategy,
   SettlementPriceParams,
@@ -667,23 +666,6 @@ export class AdminModule extends BaseModule {
     return await wallet.sendTx(
       {
         typeUrl: CarbonTx.Types.MsgSetInterestFee,
-        value,
-      },
-      opts
-    );
-  }
-
-  public async setStableCoinInterestRate(params: AdminModule.SetStableCoinInterestRateParams, opts?: CarbonTx.SignTxOpts) {
-    const wallet = this.getWallet();
-
-    const value = MsgSetStablecoinInterestRate.fromPartial({
-      creator: wallet.bech32Address,
-      stablecoinInterestRate: params.stablecoinInterestRate.toString(10),
-    });
-
-    return await wallet.sendTx(
-      {
-        typeUrl: CarbonTx.Types.MsgSetStablecoinInterestRate,
         value,
       },
       opts
