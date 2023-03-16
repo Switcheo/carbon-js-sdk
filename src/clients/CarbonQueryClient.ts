@@ -19,6 +19,9 @@ import { QueryClientImpl as HeadersyncQueryClient } from "@carbon-sdk/codec/head
 import { QueryClientImpl as IBCInterchainControlQueryClient } from "@carbon-sdk/codec/ibc/applications/interchain_accounts/controller/v1/query";
 import { QueryClientImpl as IBCInterchainHostQueryClient } from "@carbon-sdk/codec/ibc/applications/interchain_accounts/host/v1/query";
 import { QueryClientImpl as IBCTransferQueryClient } from "@carbon-sdk/codec/ibc/applications/transfer/v1/query";
+import { QueryClientImpl as IBCClientQueryClient } from "@carbon-sdk/codec/ibc/core/client/v1/query";
+import { QueryClientImpl as IBCConnectionQueryClient } from "@carbon-sdk/codec/ibc/core/connection/v1/query";
+import { QueryClientImpl as IBCChannelQueryClient } from "@carbon-sdk/codec/ibc/core/channel/v1/query";
 import { QueryClientImpl as InflationQueryClient } from "@carbon-sdk/codec/inflation/query";
 import { QueryClientImpl as InsuranceQueryClient } from "@carbon-sdk/codec/insurance/query";
 import { QueryClientImpl as LeverageQueryClient } from "@carbon-sdk/codec/leverage/query";
@@ -41,6 +44,10 @@ export interface IBCClientGroup {
   controller: IBCInterchainControlQueryClient;
   host: IBCInterchainHostQueryClient;
   transfer: IBCTransferQueryClient;
+
+  client: IBCClientQueryClient;
+  connection: IBCConnectionQueryClient;
+  channel: IBCChannelQueryClient;
 }
 
 class CarbonQueryClient {
@@ -127,6 +134,9 @@ class CarbonQueryClient {
       controller: new IBCInterchainControlQueryClient(rpcClient),
       host: new IBCInterchainHostQueryClient(rpcClient),
       transfer: new IBCTransferQueryClient(rpcClient),
+      client: new IBCClientQueryClient(rpcClient),
+      connection: new IBCConnectionQueryClient(rpcClient),
+      channel: new IBCChannelQueryClient(rpcClient),
     };
   }
 
