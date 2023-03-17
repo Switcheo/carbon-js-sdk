@@ -1,4 +1,4 @@
-import { Any, } from "@carbon-sdk/codec";
+import { Any, registry, } from "@carbon-sdk/codec";
 import { ChainConfig, Params } from "@carbon-sdk/codec/ethermint/evm/v1/evm";
 import { AccessListTx, DynamicFeeTx, LegacyTx, MsgEthereumTx, MsgUpdateParams } from "@carbon-sdk/codec/ethermint/evm/v1/tx";
 import { CarbonTx } from "@carbon-sdk/util";
@@ -76,10 +76,10 @@ export class EvmModule extends BaseModule {
 // Referenced from ethermint v0.21.0 Switcheo/ethermint/x/evm/types/msg.go 
 export function constructTxDataAny(req: ethers.providers.TransactionRequest): Any {
     const accessList = req?.accessList && req.accessList.length > 0
-    let txDataBz = new Uint8Array()
+    let txData: TxData = LegacyTx.fromPartial({})
     let txType = ""
     if (!accessList) {
-        txDataBz = LegacyTx.encode(LegacyTx.fromPartial({
+        txData = LegacyTx.fromPartial({
             nonce: req.nonce?.toString() ?? "0",
             to: req.to,
             value: req.value?.toString() ?? "0",
@@ -87,11 +87,11 @@ export function constructTxDataAny(req: ethers.providers.TransactionRequest): An
             gasPrice: req.gasPrice?.toString() ?? "0",
             data: req.data ? arrayify(req.data) : undefined
 
-        })).finish()
+        })
         txType = 'LegacyTx'
     }
     if (accessList && req?.maxPriorityFeePerGas && req?.maxFeePerGas) {
-        txDataBz = DynamicFeeTx.encode(DynamicFeeTx.fromPartial({
+        txData = DynamicFeeTx.fromPartial({
             chainId: req.chainId?.toString() ?? "0",
             nonce: req.nonce?.toString() ?? "0",
             to: req.to,
@@ -101,11 +101,11 @@ export function constructTxDataAny(req: ethers.providers.TransactionRequest): An
             gasFeeCap: req.maxFeePerGas?.toString() ?? "0",
             data: req.data ? arrayify(req.data) : undefined,
             accesses: req.accessList ? accessListify(req.accessList) : undefined
-        })).finish()
+        })
         txType = 'DynamicFeeTx'
     }
     if (accessList) {
-        txDataBz = AccessListTx.encode(AccessListTx.fromPartial({
+        txData = AccessListTx.fromPartial({
             chainId: req.chainId?.toString() ?? "0",
             nonce: req.nonce?.toString() ?? "0",
             to: req.to,
@@ -114,13 +114,13 @@ export function constructTxDataAny(req: ethers.providers.TransactionRequest): An
             gasPrice: req.gasPrice?.toString() ?? "0",
             data: req.data ? arrayify(req.data) : undefined,
             accesses: req.accessList ? accessListify(req.accessList) : undefined
-        })).finish()
+        })
         txType = 'AccessListTx'
 
     }
-    return Any.fromPartial({
+    return registry.encodeAsAny({
         typeUrl: `/${evmTxProtobufPackage}.${txType}`,
-        value: txDataBz
+        value: txData
     });
 }
 
