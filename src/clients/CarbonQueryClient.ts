@@ -14,6 +14,8 @@ import { QueryClientImpl as ParamsQueryClient } from "@carbon-sdk/codec/cosmos/p
 import { QueryClientImpl as SlashingQueryClient } from "@carbon-sdk/codec/cosmos/slashing/v1beta1/query";
 import { QueryClientImpl as StakingQueryClient } from "@carbon-sdk/codec/cosmos/staking/v1beta1/query";
 import { QueryClientImpl as UpgradeQueryClient } from "@carbon-sdk/codec/cosmos/upgrade/v1beta1/query";
+import { QueryClientImpl as EthermintEVMQueryClient } from "@carbon-sdk/codec/ethermint/evm/v1/query";
+import { QueryClientImpl as EthermintFeeMarketQueryClient } from "@carbon-sdk/codec/ethermint/feemarket/v1/query";
 import { QueryClientImpl as FeeQueryClient } from "@carbon-sdk/codec/fee/query";
 import { QueryClientImpl as HeadersyncQueryClient } from "@carbon-sdk/codec/headersync/query";
 import { QueryClientImpl as IBCInterchainControlQueryClient } from "@carbon-sdk/codec/ibc/applications/interchain_accounts/controller/v1/query";
@@ -48,6 +50,11 @@ export interface IBCClientGroup {
   client: IBCClientQueryClient;
   connection: IBCConnectionQueryClient;
   channel: IBCChannelQueryClient;
+}
+
+export interface EthermintClientGroup {
+  evm: EthermintEVMQueryClient;
+  feeMarket: EthermintFeeMarketQueryClient;
 }
 
 class CarbonQueryClient {
@@ -87,6 +94,7 @@ class CarbonQueryClient {
 
   chain: BlockchainClient;
   ibc: IBCClientGroup;
+  ethermint: EthermintClientGroup;
 
   private baseClient: QueryClient;
 
@@ -138,6 +146,11 @@ class CarbonQueryClient {
       connection: new IBCConnectionQueryClient(rpcClient),
       channel: new IBCChannelQueryClient(rpcClient),
     };
+
+    this.ethermint = {
+      evm: new EthermintEVMQueryClient(rpcClient),
+      feeMarket: new EthermintFeeMarketQueryClient(rpcClient),
+    }
   }
 
   getProtobufRpcClient() {

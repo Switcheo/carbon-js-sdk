@@ -1,6 +1,7 @@
 import { EthNetworkConfig, Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
 import { ABIs } from "@carbon-sdk/eth";
 import { Blockchain, getBlockchainFromChain, ChainNames } from "@carbon-sdk/util/blockchain";
+import { appendHexPrefix } from "@carbon-sdk/util/generic";
 import { ethers } from "ethers";
 import * as ethSignUtils from "eth-sig-util";
 
@@ -350,7 +351,9 @@ export class MetaMask {
 
   async defaultAccount() {
     const metamaskAPI = await this.getConnectedAPI();
-    const [defaultAccount] = (await metamaskAPI.request({ method: "eth_requestAccounts" })) as string[];
+    const accounts = (await metamaskAPI.request({ method: "eth_requestAccounts" })) as string[];
+    console.log("accounts", accounts);
+    const [defaultAccount] = accounts;
 
     if (!defaultAccount) {
       throw new Error("No default account on MetaMask, please create one first");
@@ -374,10 +377,7 @@ export class MetaMask {
   async encryptMnemonic(mnemonic: string): Promise<string> {
     const metamaskAPI = await this.getConnectedAPI();
     const defaultAccount = await this.defaultAccount();
-    const publicKey = (await metamaskAPI.request({
-      method: "eth_getEncryptionPublicKey",
-      params: [defaultAccount],
-    })) as string;
+    const publicKey = await this.getPublicKey(defaultAccount, metamaskAPI) as string;
 
     const messageToEncrypt = getEncryptMessage(mnemonic);
 
@@ -393,6 +393,28 @@ export class MetaMask {
     const encryptedMnemonic = ethers.utils.toUtf8Bytes([version, nonce, ephemPublicKey, ciphertext].join("."));
 
     return Buffer.from(encryptedMnemonic).toString("hex");
+  }
+
+  // create signed public key for merging of cosmos and ethereum accounts (Metamask V2)
+  async signMergeAccount(publicKey: string, address: string, metamaskAPI?: MetaMaskAPI): Promise<string> {
+    const api = metamaskAPI ?? await this.getConnectedAPI();
+    const message= `Sign your public key to merge your Carbon account: ${publicKey}`;
+    const ethAddress = ethers.utils.getAddress(address);
+    const publicKeySign = (await api.request({
+      method: "personal_sign",
+      params: [appendHexPrefix(Buffer.from(message, "utf-8").toString("hex")), ethAddress],
+    })) as string;
+    return publicKeySign;
+  }
+
+  // query public key from Metamask (need to be updated as is deprecated)
+  async getPublicKey(address: string, metamaskAPI?: MetaMaskAPI): Promise<string> {
+    const api = metamaskAPI ?? await this.getConnectedAPI();
+    const publicKey = (await api.request({
+      method: "eth_getEncryptionPublicKey",
+      params: [address],
+    })) as string;
+    return publicKey;
   }
 
   async storeMnemonic(encryptedMnemonic: string, blockchain?: EVMChain) {
