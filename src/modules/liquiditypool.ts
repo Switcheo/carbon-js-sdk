@@ -193,6 +193,44 @@ export class LiquidityPoolModule extends BaseModule {
       opts
     );
   }
+
+  public async createPoolRoute(params: LiquidityPoolModule.CreatePoolRouteParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+    const value = Models.MsgCreatePoolRoute.fromPartial({
+      creator: wallet.bech32Address,
+      createPoolRouteParams: {
+        marketName: params.marketName,
+        poolIds: params.poolIds,
+        numQuotes: params.numQuotes,
+      }
+    })
+    return await wallet.sendTx(
+        {
+          typeUrl: CarbonTx.Types.MsgCreatePoolRoute,
+          value,
+        },
+        opts
+    );
+  }
+
+  public async removePoolRoute(params: LiquidityPoolModule.RemovePoolRouteParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+    const value = Models.MsgRemovePoolRoute.fromPartial({
+      creator: wallet.bech32Address,
+      removePoolRouteParams: {
+        marketName: params.marketName,
+        poolIds: params.poolIds,
+      }
+    })
+    return await wallet.sendTx(
+        {
+          typeUrl: CarbonTx.Types.MsgRemovePoolRoute,
+          value,
+        },
+        opts
+    );
+  }
+
 }
 
 export namespace LiquidityPoolModule {
@@ -203,7 +241,6 @@ export namespace LiquidityPoolModule {
     tokenBWeight: BigNumber;
     swapFee: BigNumber;
     ampBps: Long;
-    numQuotes: number;
   }
 
   export interface CreatePoolWithLiquidityParams {
@@ -215,7 +252,6 @@ export namespace LiquidityPoolModule {
     amountB: BigNumber;
     swapFee: BigNumber;
     ampBps: Long;
-    numQuotes: number;
   }
 
   export interface AddLiquidityParams {
@@ -257,5 +293,16 @@ export namespace LiquidityPoolModule {
   export interface EstimateUnclaimedRewardsMsg {
     poolId: string;
     address: string;
+  }
+
+  export interface CreatePoolRouteParams {
+    marketName: string;
+    poolIds: Long[];
+    numQuotes: Long;
+  }
+
+  export interface RemovePoolRouteParams {
+    marketName: string;
+    poolIds: Long[];
   }
 }

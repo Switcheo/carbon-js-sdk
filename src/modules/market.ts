@@ -1,8 +1,9 @@
-import { MsgUpdateMarket } from "@carbon-sdk/codec/market/tx";
+import { MsgUpdateMarket, MsgCreateMarket } from "@carbon-sdk/codec/market/tx";
 import { CarbonTx } from "@carbon-sdk/util";
 import BaseModule from "./base";
 import { BigNumber } from "bignumber.js";
 import { Duration } from "@carbon-sdk/codec/google/protobuf/duration";
+import Long from "long";
 
 export class MarketModule extends BaseModule {
   public async update(params: MarketModule.UpdateMarketParams, opts?: CarbonTx.SignTxOpts) {
@@ -19,6 +20,27 @@ export class MarketModule extends BaseModule {
         value,
       },
       opts
+    );
+  }
+
+  public async createMarket(params: MarketModule.CreateMarketParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+    const value = MsgCreateMarket.fromPartial({
+      creator: params.creator,
+      marketType: params.marketType,
+      base: params.base,
+      quote: params.quote,
+      currentBasePriceUsd: params.currentBasePriceUsd,
+      currentQuotePriceUsd: params.currentQuotePriceUsd,
+      indexOracleId: params.indexOracleId,
+      expiryTime: params.expiryTime,
+    })
+    return await wallet.sendTx(
+        {
+          typeUrl: CarbonTx.Types.MsgCreateMarket,
+          value,
+        },
+        opts
     );
   }
 }
@@ -45,6 +67,17 @@ export namespace MarketModule {
     lastPriceProtectedBand?: number;
     isActive?: boolean;
   }
+
+  export interface CreateMarketParams {
+    creator: string;
+    marketType: string;
+    base: string;
+    quote: string;
+    currentBasePriceUsd: string;
+    currentQuotePriceUsd: string;
+    indexOracleId: string;
+    expiryTime?: Date;
+  }
 }
 
 export function transfromUpdateMarketParams(msg: MarketModule.UpdateMarketParams) {
@@ -69,3 +102,5 @@ export function transfromUpdateMarketParams(msg: MarketModule.UpdateMarketParams
     isActive: msg.isActive,
   };
 }
+
+

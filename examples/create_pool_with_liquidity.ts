@@ -26,7 +26,6 @@ import "./_setup";
     amountB: new BigNumber(100), // human
     swapFee: new BigNumber(0.002),
     ampBps: new Long(100000),
-    numQuotes: 5,
   })
   console.log(result)
 })().catch(console.error).finally(() => process.exit(0));

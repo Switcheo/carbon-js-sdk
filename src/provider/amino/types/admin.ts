@@ -11,8 +11,6 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
   SyncToken: "carbon/MsgSyncToken",
   CreateMarket: "market/CreateMarket",
   CreateVaultType: "cdp/CreateVaultType",
-  LinkPool: "liquiditypool/LinkPool",
-  UnlinkPool: "liquiditypool/UnlinkPool",
   ChangeSwapFee: "liquiditypool/ChangeSwapFee",
   SetRewardsWeights: "liquiditypool/SetRewardsWeights",
   SetRewardCurve: "liquiditypool/SetRewardCurve",

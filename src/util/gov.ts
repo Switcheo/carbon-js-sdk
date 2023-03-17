@@ -1,7 +1,6 @@
 import {
   CreateOracleProposal,
   CreateTokenProposal,
-  LinkPoolProposal,
   SetCommitmentCurveProposal,
   SetMsgGasCostProposal,
   SetMinGasPriceProposal,
@@ -10,7 +9,6 @@ import {
   SetRewardCurveProposal,
   SetRewardsWeightsProposal,
   SettlementPriceProposal,
-  UnlinkPoolProposal,
   UpdateMarketProposal,
   UpdatePoolProposal,
 } from "@carbon-sdk/codec";
@@ -33,8 +31,6 @@ export enum ProposalTypes {
   RemoveMinGasPrice = "/Switcheo.carbon.fee.RemoveMinGasPriceProposal",
   CreateToken = "/Switcheo.carbon.coin.CreateTokenProposal",
   CreateOracle = "/Switcheo.carbon.oracle.CreateOracleProposal",
-  LinkPool = "/Switcheo.carbon.liquiditypool.LinkPoolProposal",
-  UnlinkPool = "/Switcheo.carbon.liquiditypool.UnlinkPoolProposal",
   UpdatePool = "/Switcheo.carbon.liquiditypool.UpdatePoolProposal",
   SetRewardCurve = "/Switcheo.carbon.liquiditypool.SetRewardCurveProposal",
   SetRewardsWeights = "/Switcheo.carbon.liquiditypool.SetRewardsWeightsProposal",
@@ -105,11 +101,6 @@ export const decodeContent = (content?: Any): PropDecoded => {
         ...content,
         value: CreateTokenProposal.decode(content.value),
       };
-    case ProposalTypes.LinkPool:
-      return {
-        ...content,
-        value: LinkPoolProposal.decode(content.value),
-      };
     case ProposalTypes.SetCommitmentCurve:
       return {
         ...content,
@@ -149,11 +140,6 @@ export const decodeContent = (content?: Any): PropDecoded => {
       return {
         ...content,
         value: SettlementPriceProposal.decode(content.value),
-      };
-    case ProposalTypes.UnlinkPool:
-      return {
-        ...content,
-        value: UnlinkPoolProposal.decode(content.value),
       };
     case ProposalTypes.UpdateMarket:
       return {
