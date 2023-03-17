@@ -1,5 +1,5 @@
 import { Any, } from "@carbon-sdk/codec";
-import { Params } from "@carbon-sdk/codec/ethermint/evm/v1/evm";
+import { ChainConfig, Params } from "@carbon-sdk/codec/ethermint/evm/v1/evm";
 import { AccessListTx, DynamicFeeTx, LegacyTx, MsgEthereumTx, MsgUpdateParams } from "@carbon-sdk/codec/ethermint/evm/v1/tx";
 import { CarbonTx } from "@carbon-sdk/util";
 import { ethers } from "ethers";
@@ -33,8 +33,33 @@ export class EvmModule extends BaseModule {
         const value = MsgUpdateParams.fromPartial({
             authority: p.creator,
             params: Params.fromPartial({
-                ...p.params,
-                ...p.chainConfig
+                evmDenom: p.params.evmDenom,
+                enableCreate: p.params.enableCreate,
+                enableCall: p.params.enableCall,
+                extraEips: p.params.extraEIPs,
+                allowUnprotectedTxs: p.params.allowUnprotectedTxs,
+                chainConfig: ChainConfig.fromPartial({
+                    homesteadBlock: p.chainConfig.homesteadBlock.toString(10),
+                    daoForkBlock: p.chainConfig.daoForkBlock.toString(10),
+                    daoForkSupport: p.chainConfig.daoForkSupport,
+                    eip150Block: p.chainConfig.eip150Block.toString(10),
+                    eip150Hash: p.chainConfig.eip150Hash,
+                    eip155Block: p.chainConfig.eip155Block.toString(10),
+                    eip158Block: p.chainConfig.eip158Block.toString(10),
+                    byzantiumBlock: p.chainConfig.byzantiumBlock.toString(10),
+                    constantinopleBlock: p.chainConfig.constantinopleBlock.toString(10),
+                    petersburgBlock: p.chainConfig.petersburgBlock.toString(10),
+                    istanbulBlock: p.chainConfig.istanbulBlock.toString(10),
+                    muirGlacierBlock: p.chainConfig.muirGlacierBlock.toString(10),
+                    berlinBlock: p.chainConfig.berlinBlock.toString(10),
+                    londonBlock: p.chainConfig.londonBlock.toString(10),
+                    arrowGlacierBlock: p.chainConfig.arrowGlacierBlock.toString(10),
+                    grayGlacierBlock: p.chainConfig.grayGlacierBlock.toString(10),
+                    mergeNetsplitBlock: p.chainConfig.mergeNetsplitBlock.toString(10),
+                    shanghaiBlock: p.chainConfig.shanghaiBlock.toString(10),
+                    cancunBlock: p.chainConfig.cancunBlock.toString(10)
+                })
+
             })
         })
 
@@ -109,7 +134,7 @@ export namespace EvmModule {
         evmDenom: string;
         enableCreate: boolean;
         enableCall: boolean;
-        extraEIPs: Uint8Array;
+        extraEIPs: Array<number>;
         allowUnprotectedTxs: boolean;
     }
     export interface ChainConfig {
@@ -124,6 +149,8 @@ export namespace EvmModule {
         constantinopleBlock: number;
         petersburgBlock: number;
         istanbulBlock: number;
+        muirGlacierBlock: number;
+        berlinBlock: number;
         londonBlock: number;
         arrowGlacierBlock: number;
         grayGlacierBlock: number;
