@@ -2,7 +2,6 @@ import { MsgSubmitProposal } from "@carbon-sdk/codec/cosmos/gov/v1beta1/tx";
 import {
   CreateOracleProposal,
   CreateTokenProposal,
-  LinkPoolProposal,
   SetCommitmentCurveProposal,
   SetMsgGasCostProposal,
   SetMinGasPriceProposal,
@@ -10,7 +9,6 @@ import {
   RemoveMinGasPriceProposal,
   SetRewardCurveProposal,
   SetRewardsWeightsProposal,
-  UnlinkPoolProposal,
   SettlementPriceProposal,
   UpdateMarketProposal,
   UpdatePoolProposal,
@@ -37,8 +35,6 @@ const ContentTypes: TypeUtils.SimpleMap<string> = {
   [GovUtils.ProposalTypes.SetRewardCurve]: "liquiditypool/SetRewardCurveProposal",
   [GovUtils.ProposalTypes.SetRewardsWeights]: "liquiditypool/SetRewardsWeightsProposal",
   [GovUtils.ProposalTypes.UpdatePool]: "liquiditypool/UpdatePoolProposal",
-  [GovUtils.ProposalTypes.LinkPool]: "liquiditypool/LinkPoolProposal",
-  [GovUtils.ProposalTypes.UnlinkPool]: "liquiditypool/UnlinkPoolProposal",
   [GovUtils.ProposalTypes.UpdateMarket]: "market/UpdateMarketProposal",
   [GovUtils.ProposalTypes.CreateOracle]: "oracle/CreateOracleProposal",
   [GovUtils.ProposalTypes.SettlementPrice]: "pricing/SettlementPriceProposal",
@@ -153,15 +149,6 @@ const UpdateGroupConfig: AminoValueMap = {
     }
   }
 }
-
-const ChangeNumQuotes: AminoValueMap = {
-  value: {
-    msg: {
-      poolId: ConvertEncType.Long,
-      numQuotes: ConvertEncType.Long,
-    },
-  },
-};
 
 const UpdatePool: AminoValueMap = {
   value: {
@@ -322,12 +309,6 @@ const checkDecodeProposal = (content: any, amino: AminoValueMap): AminoProposalR
       break;
     case GovUtils.ProposalTypes.CreateOracle:
       newAmino.content = { ...CreateOracle };
-      break;
-    case GovUtils.ProposalTypes.LinkPool:
-      newAmino.content = { ...LinkPool };
-      break;
-    case GovUtils.ProposalTypes.UnlinkPool:
-      newAmino.content = { ...UnlinkPool };
       break;
     case GovUtils.ProposalTypes.UpdateMarket:
       newAmino.content = { ...UpdateMarket };
@@ -503,36 +484,6 @@ const checkEncodeProposal = (content: any, amino: AminoValueMap): DirectProposal
         newContent: {
           typeUrl: GovUtils.ProposalTypes.CreateOracle,
           value: CreateOracleProposal.encode(createOracleProp).finish(),
-        },
-        newAmino: {
-          ...amino,
-        },
-      };
-    case ContentTypes[GovUtils.ProposalTypes.LinkPool]:
-      const linkPoolMsg = preProcessAmino(content.value.msg, LinkPool.value.msg);
-      const linkPoolProp = LinkPoolProposal.fromPartial({
-        ...content.value,
-        msg: linkPoolMsg,
-      });
-      return {
-        newContent: {
-          typeUrl: GovUtils.ProposalTypes.LinkPool,
-          value: LinkPoolProposal.encode(linkPoolProp).finish(),
-        },
-        newAmino: {
-          ...amino,
-        },
-      };
-    case ContentTypes[GovUtils.ProposalTypes.UnlinkPool]:
-      const unlinkPoolMsg = preProcessAmino(content.value.msg, UnlinkPool.value.msg);
-      const unlinkPoolProp = LinkPoolProposal.fromPartial({
-        ...content.value,
-        msg: unlinkPoolMsg,
-      });
-      return {
-        newContent: {
-          typeUrl: GovUtils.ProposalTypes.UnlinkPool,
-          value: UnlinkPoolProposal.encode(unlinkPoolProp).finish(),
         },
         newAmino: {
           ...amino,

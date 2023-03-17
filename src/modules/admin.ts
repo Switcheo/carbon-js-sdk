@@ -237,7 +237,6 @@ export class AdminModule extends BaseModule {
     return await wallet.sendTxs(msgs, opts);
   }
 
-
   public async setRewardsWeights(params: AdminModule.SetRewardsWeightsParams[], opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
