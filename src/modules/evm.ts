@@ -129,7 +129,7 @@ export namespace EvmModule {
         grayGlacierBlock: number;
         mergeNetsplitBlock: number;
         shanghaiBlock: number;
-        cancunBlock: number
+        cancunBlock: number;
     }
 }
 
