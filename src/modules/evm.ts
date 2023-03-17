@@ -27,7 +27,7 @@ export class EvmModule extends BaseModule {
         )
     }
 
-    public async UpdateParams(p: EvmModule.UpdateParams, opts?: CarbonTx.SignTxOpts) {
+    public async updateParams(p: EvmModule.UpdateParams, opts?: CarbonTx.SignTxOpts) {
 
         const wallet = this.getWallet();
         const value = MsgUpdateParams.fromPartial({
