@@ -16,7 +16,6 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
 const MsgCreatePool: AminoInit = {
   aminoType: TxTypes.CreatePool,
   valueMap: {
-    numQuotes: ConvertEncType.Long,
     swapFee: ConvertEncType.Dec,
     tokenAWeight: ConvertEncType.Dec,
     tokenBWeight: ConvertEncType.Dec,
@@ -30,7 +29,6 @@ const MsgCreatePoolWithLiquidity: AminoInit = {
     tokenAWeight: ConvertEncType.Dec,
     tokenBWeight: ConvertEncType.Dec,
     swapFee: ConvertEncType.Dec,
-    numQuotes: ConvertEncType.Long,
     ampBps: ConvertEncType.Long,
   },
 };
