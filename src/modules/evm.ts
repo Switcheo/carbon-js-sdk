@@ -24,7 +24,7 @@ export class EvmModule extends BaseModule {
                 value,
             },
             opts
-        )
+        );
     }
 
     public async updateParams(p: EvmModule.UpdateParams, opts?: CarbonTx.SignTxOpts) {
@@ -44,7 +44,7 @@ export class EvmModule extends BaseModule {
                 value,
             },
             opts
-        )
+        );
     }
 }
 
@@ -96,39 +96,39 @@ export function constructTxDataAny(req: ethers.providers.TransactionRequest): An
     return Any.fromPartial({
         typeUrl: `/${evmTxProtobufPackage}.${txType}`,
         value: txDataBz
-    })
+    });
 }
 
 export namespace EvmModule {
     export interface UpdateParams {
         creator: string;
-        params: Params,
-        chainConfig: ChainConfig
+        params: Params;
+        chainConfig: ChainConfig;
     }
     export interface Params {
-        evmDenom: string,
-        enableCreate: boolean,
-        enableCall: boolean,
-        extraEIPs: Uint8Array,
-        allowUnprotectedTxs: boolean,
+        evmDenom: string;
+        enableCreate: boolean;
+        enableCall: boolean;
+        extraEIPs: Uint8Array;
+        allowUnprotectedTxs: boolean;
     }
     export interface ChainConfig {
-        homesteadBlock: number,
-        daoForkBlock: number,
-        daoForkSupport: boolean,
-        eip150Block: number,
-        eip150Hash: string,
-        eip155Block: number,
-        eip158Block: number,
-        byzantiumBlock: number,
-        constantinopleBlock: number,
-        petersburgBlock: number,
-        istanbulBlock: number,
-        londonBlock: number,
-        arrowGlacierBlock: number,
-        grayGlacierBlock: number,
-        mergeNetsplitBlock: number,
-        shanghaiBlock: number,
+        homesteadBlock: number;
+        daoForkBlock: number;
+        daoForkSupport: boolean;
+        eip150Block: number;
+        eip150Hash: string;
+        eip155Block: number;
+        eip158Block: number;
+        byzantiumBlock: number;
+        constantinopleBlock: number;
+        petersburgBlock: number;
+        istanbulBlock: number;
+        londonBlock: number;
+        arrowGlacierBlock: number;
+        grayGlacierBlock: number;
+        mergeNetsplitBlock: number;
+        shanghaiBlock: number;
         cancunBlock: number
     }
 }
