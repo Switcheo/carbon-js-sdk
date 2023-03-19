@@ -11,11 +11,9 @@ import {
   RemoveMinGasPriceProposal,
 } from "@carbon-sdk/codec/fee/proposal";
 import {
-  LinkPoolProposal,
   SetCommitmentCurveProposal,
   SetRewardCurveProposal,
   SetRewardsWeightsProposal,
-  UnlinkPoolProposal,
   UpdatePoolProposal,
 } from "@carbon-sdk/codec/liquiditypool/proposal";
 import { UpdateMarketProposal } from "@carbon-sdk/codec/market/proposal";
@@ -134,20 +132,6 @@ export class GovModule extends BaseModule {
           denom: proposalMsg.denom,
         };
         return RemoveMinGasPriceProposal.encode(removeMinGasPriceMsg).finish();
-      case "LinkPoolProposal":
-        const linkPoolMsg = {
-          title: title,
-          description: description,
-          msg: transfromLinkPoolParams(msg),
-        };
-        return LinkPoolProposal.encode(linkPoolMsg).finish();
-      case "UnlinkPoolProposal":
-        const unlinkPoolMsg = {
-          title: title,
-          description: description,
-          msg: transfromUnlinkPoolParams(msg),
-        };
-        return UnlinkPoolProposal.encode(unlinkPoolMsg).finish();
       case "SetRewardCurveProposal":
         const setRewardCurveMsg = {
           title: title,

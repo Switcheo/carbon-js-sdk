@@ -1,4 +1,3 @@
-import { Block } from '@carbon-sdk/codec'
 import { TokenClient } from '@carbon-sdk/clients'
 import { Bridge } from '@carbon-sdk/codec'
 import { Network } from "@carbon-sdk/constant/network"
@@ -46,9 +45,13 @@ export const BRIDGE_IDS = {
   ibc: 2,
 }
 
+export type ChainIdName = {
+  chain_id_name: string
+}
+
 export interface BridgeMap {
   polynetwork: Bridge[]
-  ibc: Bridge[]
+  ibc: (Bridge & ChainIdName)[]
 }
 
 export type ChainIds = SimpleMap<number>

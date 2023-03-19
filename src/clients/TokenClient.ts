@@ -20,7 +20,10 @@ import Long from "long";
 import CarbonQueryClient from "./CarbonQueryClient";
 import InsightsQueryClient from "./InsightsQueryClient";
 import { SimpleMap } from "@carbon-sdk/util/type";
-import { BlockchainV2, BridgeMap, BRIDGE_IDS } from '@carbon-sdk/util/blockchain'
+import { BlockchainV2, BridgeMap, BRIDGE_IDS, ChainIdName } from '@carbon-sdk/util/blockchain'
+import { ClientToChainIdState } from '@carbon-sdk/codec/ibc/core/client/v1/client'
+import { PageRequest } from '@carbon-sdk/codec/cosmos/base/query/v1beta1/pagination'
+import { ClientState } from '@carbon-sdk/codec/ibc/lightclients/tendermint/v1/tendermint'
 
 const SYMBOL_OVERRIDE: {
   [symbol: string]: string;
@@ -453,10 +456,11 @@ class TokenClient {
         reverse: false,
       },
     })
-    const ibcBridges = allBridges.bridges.filter(bridge => {
+    const unmatchedIbcBridgeList = allBridges.bridges.filter(bridge => {
       if (!bridge.enabled) return
       return bridge.bridgeId.toNumber() === BRIDGE_IDS.ibc
     })
+    const ibcBridges = await this.matchChainsWithDifferentChainIds(unmatchedIbcBridgeList) 
     const polynetworkBridges = allBridges.bridges.filter(bridge => {
       if (!bridge.enabled) return
       return bridge.bridgeId.toNumber() === BRIDGE_IDS.polynetwork
@@ -468,9 +472,74 @@ class TokenClient {
     return this.bridges
   }
 
+  async matchChainsWithDifferentChainIds(bridges: Bridge[]): Promise<(Bridge & ChainIdName)[]> {
+    let newBridges: (Bridge & ChainIdName)[] = []
+    try {
+      const channels_to_connection = await this.query.ibc.channel.Channels({
+        pagination: PageRequest.fromPartial({
+          limit: new Long(1000000)
+        })
+      });
+      const connection_to_clientId = await this.query.ibc.connection.Connections({
+        pagination: PageRequest.fromPartial({
+          limit: new Long(1000000)
+        })
+      });
+      const clientId_to_chainIdName = await this.query.ibc.client.ClientStates({
+        pagination: PageRequest.fromPartial({
+          limit: new Long(1000000)
+        })
+      });
+
+      clientId_to_chainIdName.clientStates.forEach((clientState, index) => {
+        if (clientState.clientState.value) {
+          const decoded = ClientState.decode(clientState.clientState.value)
+          clientId_to_chainIdName.clientStates[index].clientState = decoded
+        }
+      })
+      newBridges = bridges.map(bridge => {
+        const connectionId = channels_to_connection.channels.find(channel => channel.channelId === ("channel-" + (bridge.chainId.toNumber() - 1)))?.connectionHops[0]
+        const clientId = connection_to_clientId.connections.find(connection => connection.id === connectionId)?.clientId
+        const chainIdName = (clientId_to_chainIdName.clientStates.find(client => client.clientId === clientId)?.clientState as ClientToChainIdState).chainId
+        return {...bridge, chain_id_name: chainIdName ?? ""}
+      })
+    } finally {
+      const checkedBefore = new Array(newBridges.length).fill(false)
+      const chainMap : {[index: string]: string} = {}
+
+      for (let i = 0; i < newBridges.length; i++) {
+        if (checkedBefore[i]) continue
+        
+        const bridge = newBridges[i]
+        const chainId = bridge.chain_id_name
+    
+        if (chainMap[chainId]) {
+          const chainName = chainMap[chainId]
+      
+          for (let j = i; j < newBridges.length; j++) {
+            const subBridge = newBridges[j]
+        
+            if (subBridge.chain_id_name === chainId) {
+              subBridge.chainName = chainName
+              checkedBefore[j] = true
+            }
+          }
+        } else {
+          chainMap[chainId] = bridge.chainName
+        }
+      }
+      return newBridges
+    }
+  }
+
   public getIbcBlockchainNames(): string[] {
     return this.bridges.ibc.map(bridge => bridge.chainName)
   }
+
+  public getIbcChainFromBlockchainV2 = (blockchain: BlockchainV2 | undefined): string | undefined => {
+    const ibcBridge = this.bridges.ibc.find(bridge => (bridge.chainName === blockchain || bridge.chainName.toLowerCase() === blockchain));
+    return ibcBridge?.chain_id_name;
+  };
 
   public getPolynetworkBlockchainNames(): string[] {
     return this.bridges.polynetwork.map(bridge => bridge.chainName)
