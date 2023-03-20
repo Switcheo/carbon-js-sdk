@@ -380,7 +380,7 @@ class TokenClient {
     const isSourceToken = targetChain === chain && token.denom !== "swth";
 
     // if not source token find wrapped token for chain
-    const depositToken = isSourceToken ? token : this.getWrappedToken(token.denom, chain);
+    const depositToken = isSourceToken ? token : this.getWrappedToken(token.denom, chain, version);
     if (!depositToken) {
       console.error(`getDepositTokenFor wrapped token not found for "${token.denom}"`);
       return;
@@ -590,8 +590,8 @@ class TokenClient {
     return bridgeList.find(bridge => bridge.chainId.toNumber() === chainIdNum)?.chainName ?? undefined
   }
 
-  public getBridgeFromToken(token: Token): Bridge | undefined {
-    if (!token.bridgeId) return undefined
+  public getBridgeFromToken(token: Token | undefined): Bridge | undefined {
+    if (!token || !token.bridgeId) return undefined
     const bridgeList = this.getBridgesFromBridgeId(token.bridgeId.toNumber())
     return bridgeList.find(bridge => token.chainId.equals(bridge.chainId))
   }
