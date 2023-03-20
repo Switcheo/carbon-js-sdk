@@ -20,7 +20,7 @@ import {
   QueryTokenDebtRequest
 } from "@carbon-sdk/codec/cdp/query";
 import {
-  MsgBorrowAsset, MsgClaimRewards,
+  MsgBorrowAsset, MsgChangeAccountEMode, MsgClaimRewards,
   MsgCreateRewardScheme, MsgLiquidateCollateral,
   MsgLiquidateCollateralWithCdpTokens,
   MsgLiquidateCollateralWithCollateral,
@@ -553,6 +553,23 @@ export class CDPModule extends BaseModule {
     return await wallet.sendTx(
       {
         typeUrl: CarbonTx.Types.MsgLiquidateCollateralWithStablecoinAndInterestInCollateral,
+        value,
+      },
+      opts
+    );
+  }
+
+  public async changeEMode(params: CDPModule.ChangeEModeParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+
+    const value = MsgChangeAccountEMode.fromPartial({
+      creator: wallet.bech32Address,
+      eModeCategoryName: params.eModeCategoryName,
+    });
+
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgChangeAccountEMode,
         value,
       },
       opts
@@ -1332,5 +1349,9 @@ export namespace CDPModule {
     interestCdpDenom: string;
     interestCdpAmount: BigNumber;
     debtor: string;
+  }
+
+  export interface ChangeEModeParams {
+    eModeCategoryName: string;
   }
 }
