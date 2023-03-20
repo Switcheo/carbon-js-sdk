@@ -38,7 +38,6 @@ const SYMBOL_OVERRIDE: {
 };
 
 const regexCdpDenom = RegExp(`^${DenomPrefix.CDPToken}/`, "i");
-const regexLPDenomPrefix = RegExp(`^${DenomPrefix.LPToken}/$`, "i");
 const regexLPDenom = RegExp(`^${DenomPrefix.LPToken}/(\\d+)$`, "i");
 
 class TokenClient {
