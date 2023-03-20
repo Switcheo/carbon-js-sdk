@@ -6,10 +6,6 @@ import { Plan } from "../../../../cosmos/upgrade/v1beta1/upgrade";
 
 export const protobufPackage = "ibc.core.client.v1";
 
-export interface ClientToChainIdState {
-    chainId: string;
-}
-
 /**
  * IdentifiedClientState defines a client state with an additional client
  * identifier field.
@@ -18,7 +14,7 @@ export interface IdentifiedClientState {
   /** client identifier */
   clientId: string;
   /** client state */
-  clientState?: any;
+  clientState?: Any;
 }
 
 /**

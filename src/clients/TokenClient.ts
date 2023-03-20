@@ -21,7 +21,6 @@ import CarbonQueryClient from "./CarbonQueryClient";
 import InsightsQueryClient from "./InsightsQueryClient";
 import { SimpleMap } from "@carbon-sdk/util/type";
 import { BlockchainV2, BridgeMap, BRIDGE_IDS, ChainIdName } from '@carbon-sdk/util/blockchain'
-import { ClientToChainIdState } from '@carbon-sdk/codec/ibc/core/client/v1/client'
 import { PageRequest } from '@carbon-sdk/codec/cosmos/base/query/v1beta1/pagination'
 import { ClientState } from '@carbon-sdk/codec/ibc/lightclients/tendermint/v1/tendermint'
 
@@ -491,16 +490,16 @@ class TokenClient {
         })
       });
 
-      clientId_to_chainIdName.clientStates.forEach((clientState, index) => {
-        if (clientState.clientState.value) {
-          const decoded = ClientState.decode(clientState.clientState.value)
-          clientId_to_chainIdName.clientStates[index].clientState = decoded
-        }
-      })
+      const clientStates = clientId_to_chainIdName.clientStates.map(s => ({
+        clientState: {...ClientState.decode(s.clientState!.value)},
+        clientId: s.clientId,
+      }));
+
+      
       newBridges = bridges.map(bridge => {
         const connectionId = channels_to_connection.channels.find(channel => channel.channelId === ("channel-" + (bridge.chainId.toNumber() - 1)))?.connectionHops[0]
         const clientId = connection_to_clientId.connections.find(connection => connection.id === connectionId)?.clientId
-        const chainIdName = (clientId_to_chainIdName.clientStates.find(client => client.clientId === clientId)?.clientState as ClientToChainIdState).chainId
+        const chainIdName = (clientStates.find(client => client.clientId === clientId)?.clientState)?.chainId
         return {...bridge, chain_id_name: chainIdName ?? ""}
       })
     } finally {
