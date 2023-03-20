@@ -14,6 +14,14 @@ export const CarbonChainIDs = {
   [Network.LocalHost]: "carbon",
 } as const;
 
+
+export const CarbonEvmChainIDs = {
+  [Network.MainNet]: "carbon_9790-1",
+  [Network.TestNet]: "carbon_9792-1",
+  [Network.DevNet]: "carbon_9791-1",
+  [Network.LocalHost]: "carbon_9999-1",
+} as const;
+
 export const DEFAULT_NETWORK = Network.MainNet;
 
 export interface EthNetworkConfig {
@@ -231,7 +239,7 @@ export const NetworkConfigs: {
       bridgeEntranceAddr: "",
       lockProxyAddr: "",
       balanceReader: "",
-      byteCodeHash: "", 
+      byteCodeHash: "",
     },
 
     neo: {
@@ -318,7 +326,7 @@ export const NetworkConfigs: {
       bridgeEntranceAddr: "",
       lockProxyAddr: "",
       balanceReader: "",
-      byteCodeHash: "", 
+      byteCodeHash: "",
     },
 
 
@@ -406,7 +414,7 @@ export const NetworkConfigs: {
       bridgeEntranceAddr: "",
       lockProxyAddr: "",
       balanceReader: "",
-      byteCodeHash: "", 
+      byteCodeHash: "",
     },
 
 
