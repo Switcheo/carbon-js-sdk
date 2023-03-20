@@ -3,6 +3,7 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { RateStrategyParams } from "./rate_strategy_params";
 import { AssetParams } from "./asset_params";
+import { EModeCategory } from "./e_mode_category";
 import { DebtInfo } from "./debt_info";
 import { StablecoinDebtInfo } from "./stablecoin_debt_info";
 import { RewardDebt, RewardScheme } from "./reward_scheme";
@@ -32,6 +33,21 @@ export interface NewAssetParamsEvent {
 export interface UpdateAssetParamsEvent {
   assetParams?: AssetParams;
   type: string;
+}
+
+export interface NewEModeCategoryEvent {
+  eModeCategory?: EModeCategory;
+  type: string;
+}
+
+export interface UpdateEModeCategoryEvent {
+  eModeCategory?: EModeCategory;
+  type: string;
+}
+
+export interface UpdateAccountEModeCategoryNameEvent {
+  account: string;
+  eModeCategoryName: string;
 }
 
 export interface SetInterestFeeEvent {
@@ -630,6 +646,251 @@ export const UpdateAssetParamsEvent = {
         ? AssetParams.fromPartial(object.assetParams)
         : undefined;
     message.type = object.type ?? "";
+    return message;
+  },
+};
+
+const baseNewEModeCategoryEvent: object = { type: "" };
+
+export const NewEModeCategoryEvent = {
+  encode(
+    message: NewEModeCategoryEvent,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.eModeCategory !== undefined) {
+      EModeCategory.encode(
+        message.eModeCategory,
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    if (message.type !== "") {
+      writer.uint32(18).string(message.type);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): NewEModeCategoryEvent {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseNewEModeCategoryEvent } as NewEModeCategoryEvent;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.eModeCategory = EModeCategory.decode(reader, reader.uint32());
+          break;
+        case 2:
+          message.type = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): NewEModeCategoryEvent {
+    const message = { ...baseNewEModeCategoryEvent } as NewEModeCategoryEvent;
+    message.eModeCategory =
+      object.eModeCategory !== undefined && object.eModeCategory !== null
+        ? EModeCategory.fromJSON(object.eModeCategory)
+        : undefined;
+    message.type =
+      object.type !== undefined && object.type !== null
+        ? String(object.type)
+        : "";
+    return message;
+  },
+
+  toJSON(message: NewEModeCategoryEvent): unknown {
+    const obj: any = {};
+    message.eModeCategory !== undefined &&
+      (obj.eModeCategory = message.eModeCategory
+        ? EModeCategory.toJSON(message.eModeCategory)
+        : undefined);
+    message.type !== undefined && (obj.type = message.type);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<NewEModeCategoryEvent>
+  ): NewEModeCategoryEvent {
+    const message = { ...baseNewEModeCategoryEvent } as NewEModeCategoryEvent;
+    message.eModeCategory =
+      object.eModeCategory !== undefined && object.eModeCategory !== null
+        ? EModeCategory.fromPartial(object.eModeCategory)
+        : undefined;
+    message.type = object.type ?? "";
+    return message;
+  },
+};
+
+const baseUpdateEModeCategoryEvent: object = { type: "" };
+
+export const UpdateEModeCategoryEvent = {
+  encode(
+    message: UpdateEModeCategoryEvent,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.eModeCategory !== undefined) {
+      EModeCategory.encode(
+        message.eModeCategory,
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    if (message.type !== "") {
+      writer.uint32(18).string(message.type);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): UpdateEModeCategoryEvent {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseUpdateEModeCategoryEvent,
+    } as UpdateEModeCategoryEvent;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.eModeCategory = EModeCategory.decode(reader, reader.uint32());
+          break;
+        case 2:
+          message.type = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UpdateEModeCategoryEvent {
+    const message = {
+      ...baseUpdateEModeCategoryEvent,
+    } as UpdateEModeCategoryEvent;
+    message.eModeCategory =
+      object.eModeCategory !== undefined && object.eModeCategory !== null
+        ? EModeCategory.fromJSON(object.eModeCategory)
+        : undefined;
+    message.type =
+      object.type !== undefined && object.type !== null
+        ? String(object.type)
+        : "";
+    return message;
+  },
+
+  toJSON(message: UpdateEModeCategoryEvent): unknown {
+    const obj: any = {};
+    message.eModeCategory !== undefined &&
+      (obj.eModeCategory = message.eModeCategory
+        ? EModeCategory.toJSON(message.eModeCategory)
+        : undefined);
+    message.type !== undefined && (obj.type = message.type);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<UpdateEModeCategoryEvent>
+  ): UpdateEModeCategoryEvent {
+    const message = {
+      ...baseUpdateEModeCategoryEvent,
+    } as UpdateEModeCategoryEvent;
+    message.eModeCategory =
+      object.eModeCategory !== undefined && object.eModeCategory !== null
+        ? EModeCategory.fromPartial(object.eModeCategory)
+        : undefined;
+    message.type = object.type ?? "";
+    return message;
+  },
+};
+
+const baseUpdateAccountEModeCategoryNameEvent: object = {
+  account: "",
+  eModeCategoryName: "",
+};
+
+export const UpdateAccountEModeCategoryNameEvent = {
+  encode(
+    message: UpdateAccountEModeCategoryNameEvent,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.account !== "") {
+      writer.uint32(10).string(message.account);
+    }
+    if (message.eModeCategoryName !== "") {
+      writer.uint32(18).string(message.eModeCategoryName);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): UpdateAccountEModeCategoryNameEvent {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseUpdateAccountEModeCategoryNameEvent,
+    } as UpdateAccountEModeCategoryNameEvent;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.account = reader.string();
+          break;
+        case 2:
+          message.eModeCategoryName = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UpdateAccountEModeCategoryNameEvent {
+    const message = {
+      ...baseUpdateAccountEModeCategoryNameEvent,
+    } as UpdateAccountEModeCategoryNameEvent;
+    message.account =
+      object.account !== undefined && object.account !== null
+        ? String(object.account)
+        : "";
+    message.eModeCategoryName =
+      object.eModeCategoryName !== undefined &&
+      object.eModeCategoryName !== null
+        ? String(object.eModeCategoryName)
+        : "";
+    return message;
+  },
+
+  toJSON(message: UpdateAccountEModeCategoryNameEvent): unknown {
+    const obj: any = {};
+    message.account !== undefined && (obj.account = message.account);
+    message.eModeCategoryName !== undefined &&
+      (obj.eModeCategoryName = message.eModeCategoryName);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<UpdateAccountEModeCategoryNameEvent>
+  ): UpdateAccountEModeCategoryNameEvent {
+    const message = {
+      ...baseUpdateAccountEModeCategoryNameEvent,
+    } as UpdateAccountEModeCategoryNameEvent;
+    message.account = object.account ?? "";
+    message.eModeCategoryName = object.eModeCategoryName ?? "";
     return message;
   },
 };
