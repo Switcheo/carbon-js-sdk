@@ -445,8 +445,7 @@ class TokenClient {
     }
     const tokenDenom = cdpDenom.replace(regexCdpDenom, "");
     if (TokenClient.isPoolToken(tokenDenom)) {
-      const poolTokenDenom = tokenDenom.replace(regexLPDenomPrefix, "");
-      return this.poolTokens[poolTokenDenom];
+      return this.poolTokens[tokenDenom];
     }
 
     return this.tokenForDenom(tokenDenom);
