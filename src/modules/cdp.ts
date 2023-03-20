@@ -11,6 +11,7 @@ import {
 import { Params } from "@carbon-sdk/codec/cdp/params";
 import {
   QueryAccountDebtAllRequest,
+  QueryAccountEModeRequest,
   QueryAccountStablecoinRequest,
   QueryAssetRequest,
   QueryParamsRequest,
@@ -590,9 +591,16 @@ export class CDPModule extends BaseModule {
       if (!assetParam) {
         continue;
       }
-      const ltv = bnOrZero(assetParam.loanToValue).div(BN_10000);
+      let ltvBps = bnOrZero(assetParam.loanToValue);
+      let liquidationThresholdBps = bnOrZero(assetParam.liquidationThreshold).div(BN_10000);
+      const accountEModeRsp = await sdk.query.cdp.AccountEMode(QueryAccountEModeRequest.fromPartial({ address: account }));
+      if (accountEModeRsp.eModeCategory && accountEModeRsp.eModeCategory.name != "") {
+        ltvBps = bnOrZero(accountEModeRsp.eModeCategory.loanToValue)
+        liquidationThresholdBps = bnOrZero(accountEModeRsp.eModeCategory.liquidationThreshold)
+      }
+      const ltv = ltvBps.div(BN_10000);
+      const liquidationThreshold = liquidationThresholdBps.div(BN_10000);
       const availableBorrowUsd = collateralUsdVal.times(ltv);
-      const liquidationThreshold = bnOrZero(assetParam.liquidationThreshold).div(BN_10000);
       const liquidationThresholdVal = collateralUsdVal.times(liquidationThreshold);
       totalCollateralsUsd = totalCollateralsUsd.plus(collateralUsdVal);
       availableBorrowsUsd = availableBorrowsUsd.plus(availableBorrowUsd);
