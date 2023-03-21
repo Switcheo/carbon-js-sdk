@@ -108,7 +108,9 @@ export class RootStore {
         queriesStore: this.queriesStore,
         msgOptsCreator: () => ({ ibcTransfer: { gas: ibcDefaultGas } }),
       }),
-      CosmwasmAccount.use({ queriesStore: this.queriesStore })
+      CosmwasmAccount.use({
+        queriesStore: this.queriesStore,
+      }),
     );
   }
 }

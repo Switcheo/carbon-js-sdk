@@ -57,14 +57,16 @@ export interface EthersTransactionResponse extends ethers.Transaction {
 
 export const FEE_MULTIPLIER = ethers.BigNumber.from(2);
 
-type SupportedBlockchains = Blockchain.BinanceSmartChain | Blockchain.Ethereum | Blockchain.Arbitrum;
+type SupportedBlockchains = Blockchain.BinanceSmartChain | Blockchain.Ethereum | Blockchain.Arbitrum | Blockchain.Polygon | Blockchain.Okc;
 
 export class ETHClient {
-  static SUPPORTED_BLOCKCHAINS = [Blockchain.BinanceSmartChain, Blockchain.Ethereum, Blockchain.Arbitrum];
+  static SUPPORTED_BLOCKCHAINS = [Blockchain.BinanceSmartChain, Blockchain.Ethereum, Blockchain.Arbitrum, Blockchain.Polygon, Blockchain.Okc];
   static BLOCKCHAIN_KEY = {
     [Blockchain.BinanceSmartChain]: "bsc",
     [Blockchain.Ethereum]: "eth",
     [Blockchain.Arbitrum]: "arbitrum",
+    [Blockchain.Polygon]: "polygon",
+    [Blockchain.Okc]: "okc",
   };
 
   private constructor(
@@ -86,7 +88,7 @@ export class ETHClient {
     const lockProxyAddress = this.getLockProxyAddress().toLowerCase();
     const tokens = tokenQueryResults.filter(
       (token) =>
-        blockchainForChainId(token.chainId.toNumber()) == this.blockchain &&
+        blockchainForChainId(token.chainId.toNumber(), api.network) == this.blockchain &&
         token.tokenAddress.length == 40 &&
         token.bridgeAddress.toLowerCase() == stripHexPrefix(lockProxyAddress) &&
         (!whitelistDenoms || whitelistDenoms.includes(token.denom)) &&
@@ -158,15 +160,18 @@ export class ETHClient {
     const networkConfig = this.getNetworkConfig();
     const rpcProvider = this.getProvider();
 
-    if (!recoveryAddress.match(/^swth[a-z0-9]{39}$/)) {
+    const recoveryAddrRegex = new RegExp(`^${networkConfig.Bech32Prefix}[a-z0-9]{39}$`)
+    if (!recoveryAddress.match(recoveryAddrRegex)) {
       throw new Error("Invalid recovery address");
     }
+
+    const carbonNetwork = networkConfig.network;
 
     const fromTokenId = fromToken.id;
     const fromTokenAddress = appendHexPrefix(fromToken.tokenAddress);
     const toTokenDenom = toToken.denom;
 
-    const recoveryAddressHex = ethers.utils.hexlify(AddressUtils.SWTHAddress.getAddressBytes(recoveryAddress, CarbonSDK.Network.MainNet));
+    const recoveryAddressHex = ethers.utils.hexlify(AddressUtils.SWTHAddress.getAddressBytes(recoveryAddress, carbonNetwork));
 
     const fromAssetHash = ethers.utils.hexlify(ethers.utils.toUtf8Bytes(fromTokenId));
     const toAssetHash = ethers.utils.hexlify(ethers.utils.toUtf8Bytes(toTokenDenom));
@@ -177,7 +182,7 @@ export class ETHClient {
 
     const tokenCreator = fromToken.creator;
 
-    const targetAddressBytes = AddressUtils.SWTHAddress.getAddressBytes(tokenCreator, CarbonSDK.Network.MainNet);
+    const targetAddressBytes = AddressUtils.SWTHAddress.getAddressBytes(tokenCreator, carbonNetwork);
     const targetProxyHash = ethers.utils.hexlify(targetAddressBytes);
 
     const ethAmount = fromToken.tokenAddress === NativeTokenHash ? amount : BN_ZERO;
@@ -361,7 +366,7 @@ export class ETHClient {
     if (!feeInfo.deposit_fee) {
       throw new Error("unsupported token");
     }
-    if (blockchainForChainId(token.chainId.toNumber()) !== this.blockchain) {
+    if (blockchainForChainId(token.chainId.toNumber(), this.configProvider.getConfig().network) !== this.blockchain) {
       throw new Error("unsupported token");
     }
 

@@ -12,7 +12,7 @@ import {
   RewardHistoryRecord,
   LastClaimRecord,
 } from "./reward";
-import { Params, Pool } from "./liquiditypool";
+import { Params, Pool, PoolRoute } from "./liquiditypool";
 
 export const protobufPackage = "Switcheo.carbon.liquiditypool";
 
@@ -30,6 +30,7 @@ export interface GenesisState {
   allocatedRewards?: AllocatedRewards;
   /** params defines all the paramaters of the module. */
   params?: Params;
+  poolRoutes: PoolRoute[];
 }
 
 const baseGenesisState: object = {};
@@ -84,6 +85,9 @@ export const GenesisState = {
     if (message.params !== undefined) {
       Params.encode(message.params, writer.uint32(90).fork()).ldelim();
     }
+    for (const v of message.poolRoutes) {
+      PoolRoute.encode(v!, writer.uint32(98).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -97,6 +101,7 @@ export const GenesisState = {
     message.commitmentExpiries = [];
     message.rewardHistories = [];
     message.lastClaims = [];
+    message.poolRoutes = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -149,6 +154,9 @@ export const GenesisState = {
         case 11:
           message.params = Params.decode(reader, reader.uint32());
           break;
+        case 12:
+          message.poolRoutes.push(PoolRoute.decode(reader, reader.uint32()));
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -195,6 +203,9 @@ export const GenesisState = {
       object.params !== undefined && object.params !== null
         ? Params.fromJSON(object.params)
         : undefined;
+    message.poolRoutes = (object.poolRoutes ?? []).map((e: any) =>
+      PoolRoute.fromJSON(e)
+    );
     return message;
   },
 
@@ -258,6 +269,13 @@ export const GenesisState = {
         : undefined);
     message.params !== undefined &&
       (obj.params = message.params ? Params.toJSON(message.params) : undefined);
+    if (message.poolRoutes) {
+      obj.poolRoutes = message.poolRoutes.map((e) =>
+        e ? PoolRoute.toJSON(e) : undefined
+      );
+    } else {
+      obj.poolRoutes = [];
+    }
     return obj;
   },
 
@@ -299,6 +317,9 @@ export const GenesisState = {
       object.params !== undefined && object.params !== null
         ? Params.fromPartial(object.params)
         : undefined;
+    message.poolRoutes = (object.poolRoutes ?? []).map((e) =>
+      PoolRoute.fromPartial(e)
+    );
     return message;
   },
 };

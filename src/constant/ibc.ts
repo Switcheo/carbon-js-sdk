@@ -146,6 +146,12 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         coinDecimals: 6,
         coinGeckoId: "ion",
       },
+      {
+        coinDenom: "axlUSDC",
+        coinMinimalDenom: "ibc/D189335C6E4A68B513C10AB227BF1C1D38C746766278BA3EEB4FB14124F1D858",
+        coinDecimals: 6,
+        coinGeckoId: "usd-coin",
+      },
     ],
     feeCurrencies: [
       {
@@ -659,7 +665,7 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         },
       },
     ],
-    features: ["ibc-transfer", "ibc-go"],
+    features: ["ibc-transfer", "ibc-go", "eth-address-gen", "eth-key-sign"],
     explorerUrlToTx: "https://www.mintscan.io/evmos/txs/{txHash}",
   },
   [ChainIds.Microtick]: {
@@ -1658,6 +1664,11 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         coinMinimalDenom: "stuluna",
         coinDecimals: 6,
       },
+      {
+        "coinDenom": "stEVMOS",
+        "coinMinimalDenom": "staevmos",
+        "coinDecimals": 18
+      },
     ],
     feeCurrencies: [
       {
@@ -1722,7 +1733,7 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
     explorerUrlToTx: "https://finder.kujira.app/kaiyo-1/tx/{txHash}",
   },
   [ChainIds.Terra2]: {
-    rpc: "https://rpc.terrav2.ccvalidators.com/",
+    rpc: "https://terra-rpc.lavenderfive.com:443/",
     rest: "https://phoenix-lcd.terra.dev/",
     chainId: "phoenix-1",
     chainName: "Terra 2.0",
@@ -1743,6 +1754,14 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         coinDecimals: 6,
         coinGeckoId: "terra-luna-2",
       },
+      {
+        coinDenom: "ampLUNA",
+        coinMinimalDenom: "cw20:terra1ecgazyd0waaj3g7l9cmy5gulhxkps2gmxu9ghducvuypjq68mq2s5lvsct",
+        coinDecimals: 6,
+        coinGeckoId: "terra-luna-2",
+        type: "cw20",
+        contractAddress: "terra1ecgazyd0waaj3g7l9cmy5gulhxkps2gmxu9ghducvuypjq68mq2s5lvsct",
+      },
     ],
     feeCurrencies: [
       {
@@ -1757,7 +1776,7 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         },
       },
     ],
-    features: ["ibc-transfer", "ibc-go"],
+    features: ["ibc-transfer", "ibc-go", "cosmwasm", "wasmd_0.24+"],
     explorerUrlToTx: "https://finder.terra.money/phoenix-1/tx/{txHash}",
   },
   [ChainIds.Quicksilver]: {
@@ -1981,78 +2000,126 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
 export type AssetListObj = SimpleMap<SimpleMap<AppCurrency>>;
 
 export interface ChannelConfig {
+  ibc: ChannelSet;
+  cw20?: CosmWasmChannelSet;
+}
+
+export interface ChannelSet {
   sourceChannel: string;
   dstChannel: string;
 }
 
+export interface CosmWasmChannelSet extends ChannelSet {
+  portId: string;
+}
+
 export const swthChannels: SimpleMap<ChannelConfig> = {
   [ChainIds.Osmosis]: {
-    sourceChannel: "channel-0",
-    dstChannel: "channel-188",
+    ibc: {
+      sourceChannel: "channel-0",
+      dstChannel: "channel-188",
+    },
   },
   [ChainIds.Terra]: {
-    sourceChannel: "channel-2",
-    dstChannel: "channel-48",
+    ibc: {
+      sourceChannel: "channel-2",
+      dstChannel: "channel-48",
+    },
   },
   [ChainIds.CosmosHub]: {
-    sourceChannel: "channel-3",
-    dstChannel: "channel-342",
+    ibc: {
+      sourceChannel: "channel-3",
+      dstChannel: "channel-342",
+    },
   },
   [ChainIds.Juno]: {
-    sourceChannel: "channel-4",
-    dstChannel: "channel-92",
+    ibc: {
+      sourceChannel: "channel-4",
+      dstChannel: "channel-92",
+    },
   },
   [ChainIds.Evmos]: {
-    sourceChannel: "channel-6",
-    dstChannel: "channel-23",
+    ibc: {
+      sourceChannel: "channel-6",
+      dstChannel: "channel-23",
+    },
   },
   [ChainIds.Axelar]: {
-    sourceChannel: "channel-7",
-    dstChannel: "channel-37",
+    ibc: {
+      sourceChannel: "channel-7",
+      dstChannel: "channel-37",
+    },
   },
   [ChainIds.Stride]: {
-    sourceChannel: "channel-8",
-    dstChannel: "channel-47",
+    ibc: {
+      sourceChannel: "channel-8",
+      dstChannel: "channel-47",
+    },
   },
   [ChainIds.Kujira]: {
-    sourceChannel: "channel-9",
-    dstChannel: "channel-46",
+    ibc: {
+      sourceChannel: "channel-9",
+      dstChannel: "channel-46",
+    },
   },
   [ChainIds.Terra2]: {
-    sourceChannel: "channel-12",
-    dstChannel: "channel-36",
+    ibc: {
+      sourceChannel: "channel-12",
+      dstChannel: "channel-36",
+    },
+    cw20: {
+      sourceChannel: "channel-16",
+      dstChannel: "channel-41",
+      portId: "terra1e0mrzy8077druuu42vs0hu7ugguade0cj65dgtauyaw4gsl4kv0qtdf2au",
+    },
   },
   [ChainIds.Comdex]: {
-    sourceChannel: "channel-11",
-    dstChannel: "channel-50",
+    ibc: {
+      sourceChannel: "channel-11",
+      dstChannel: "channel-50",
+    },
   },
   [ChainIds.Quicksilver]: {
-    sourceChannel: "channel-17",
-    dstChannel: "channel-10",
+    ibc: {
+      sourceChannel: "channel-17",
+      dstChannel: "channel-10",
+    },
   },
   [ChainIds.StafiHub]: {
-    sourceChannel: "channel-13",
-    dstChannel: "channel-5",
+    ibc: {
+      sourceChannel: "channel-13",
+      dstChannel: "channel-5",
+    },
   },
   [ChainIds.Persistence]: {
-    sourceChannel: "channel-14",
-    dstChannel: "channel-62",
+    ibc: {
+      sourceChannel: "channel-14",
+      dstChannel: "channel-62",
+    },
   },
   [ChainIds.Stargaze]: {
-    sourceChannel: "channel-15",
-    dstChannel: "channel-123",
+    ibc: {
+      sourceChannel: "channel-15",
+      dstChannel: "channel-123",
+    },
   },
   [ChainIds.Canto]: {
-    sourceChannel: "channel-18",
-    dstChannel: "channel-6",
+    ibc: {
+      sourceChannel: "channel-18",
+      dstChannel: "channel-6",
+    },
   },
   [ChainIds.OmniFlixHub]: {
-    sourceChannel: "channel-19",
-    dstChannel: "channel-24",
+    ibc: {
+      sourceChannel: "channel-19",
+      dstChannel: "channel-24",
+    },
   },
   [ChainIds.Agoric]: {
-    sourceChannel: "channel-20",
-    dstChannel: "channel-12",
+    ibc: {
+      sourceChannel: "channel-20",
+      dstChannel: "channel-12",
+    },
   },
 };
 
@@ -2062,7 +2129,7 @@ export const ibcTokenRegex = /^ibc\/([a-f\d]+)$/i;
 
 export const ibcNetworkRegex = /^([a-z\d_-]+)-([\d]+)$/i;
 
-export const ibcDefaultGas: number = 210000;
+export const ibcDefaultGas: number = 300000;
 
 export const DefaultGasPriceStep: GasPriceStep = {
   low: 0.01,

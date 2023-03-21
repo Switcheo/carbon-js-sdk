@@ -2,7 +2,6 @@ import { MsgSubmitProposal } from "@carbon-sdk/codec/cosmos/gov/v1beta1/tx";
 import {
   CreateOracleProposal,
   CreateTokenProposal,
-  LinkPoolProposal,
   SetCommitmentCurveProposal,
   SetMsgGasCostProposal,
   SetMinGasPriceProposal,
@@ -10,10 +9,10 @@ import {
   RemoveMinGasPriceProposal,
   SetRewardCurveProposal,
   SetRewardsWeightsProposal,
-  UnlinkPoolProposal,
   SettlementPriceProposal,
   UpdateMarketProposal,
   UpdatePoolProposal,
+  UpdateGroupedTokenConfigParams,
 } from "@carbon-sdk/codec";
 import { GovUtils, TypeUtils } from "@carbon-sdk/util";
 import * as CarbonTx from "@carbon-sdk/util/tx";
@@ -36,11 +35,15 @@ const ContentTypes: TypeUtils.SimpleMap<string> = {
   [GovUtils.ProposalTypes.SetRewardCurve]: "liquiditypool/SetRewardCurveProposal",
   [GovUtils.ProposalTypes.SetRewardsWeights]: "liquiditypool/SetRewardsWeightsProposal",
   [GovUtils.ProposalTypes.UpdatePool]: "liquiditypool/UpdatePoolProposal",
-  [GovUtils.ProposalTypes.LinkPool]: "liquiditypool/LinkPoolProposal",
-  [GovUtils.ProposalTypes.UnlinkPool]: "liquiditypool/UnlinkPoolProposal",
   [GovUtils.ProposalTypes.UpdateMarket]: "market/UpdateMarketProposal",
   [GovUtils.ProposalTypes.CreateOracle]: "oracle/CreateOracleProposal",
   [GovUtils.ProposalTypes.SettlementPrice]: "pricing/SettlementPriceProposal",
+  [GovUtils.ProposalTypes.CreateGroup]: "coin/CreateGroupProposal",
+  [GovUtils.ProposalTypes.UpdateGroup]: "coin.UpdateGroupProposal",
+  [GovUtils.ProposalTypes.RegisterToGroup]: "coin/RegisterToGroupProposal",
+  [GovUtils.ProposalTypes.DeregisterFromGroup]: "coin.DeregisterFromGroupProposal",
+  [GovUtils.ProposalTypes.WithdrawFromGroup]: "coin/WithdrawFromGroupProposal",
+  [GovUtils.ProposalTypes.UpdateGroupTokenConfig]: "coin.UpdateGroupTokenConfigProposal",
 };
 
 const SubmitProposalMsg: AminoInit = {
@@ -92,14 +95,60 @@ const CreateToken: AminoValueMap = {
   },
 };
 
-const ChangeNumQuotes: AminoValueMap = {
+const CreateGroup: AminoValueMap = {
   value: {
     msg: {
-      poolId: ConvertEncType.Long,
-      numQuotes: ConvertEncType.Long,
-    },
-  },
-};
+      creator: ConvertEncType.Long,
+      name: ConvertEncType.Long,
+      chequeTokenSymbol: ConvertEncType.Long,
+      oraclieId: ConvertEncType.Long,
+    }
+  }
+}
+
+const UpdateGroup: AminoValueMap = {
+  value: {
+    msg: {
+      creator: ConvertEncType.Long,
+      groupId: ConvertEncType.Long,
+      updateGroupParams: {
+        name: ConvertEncType.Long,
+      },
+    }
+  }
+}
+
+const RegisterToGroup: AminoValueMap = {
+  value: {
+    msg: {
+      creator: ConvertEncType.Long,
+      groupId: ConvertEncType.Long,
+      denom: ConvertEncType.Long,
+    }
+  }
+}
+
+const DeregisterFromGroup: AminoValueMap = {
+  value: {
+    msg: {
+      creator: ConvertEncType.Long,
+      groupId: ConvertEncType.Long,
+      denom: ConvertEncType.Long,
+    }
+  }
+}
+
+const UpdateGroupConfig: AminoValueMap = {
+  value: {
+    msg: {
+      creator: ConvertEncType.Long,
+      denom: ConvertEncType.Long,
+      updatedGroupedTokenConfigParams: {
+        isActive: ConvertEncType.Long,
+      }
+    }
+  }
+}
 
 const UpdatePool: AminoValueMap = {
   value: {
@@ -219,6 +268,21 @@ const checkDecodeProposal = (content: any, amino: AminoValueMap): AminoProposalR
     case GovUtils.ProposalTypes.CreateToken:
       newAmino.content = { ...CreateToken };
       break;
+    case GovUtils.ProposalTypes.CreateGroup: 
+      newAmino.content = { ...CreateGroup };
+      break;
+    case GovUtils.ProposalTypes.UpdateGroup:
+      newAmino.content = { ...UpdateGroup };
+      break;
+    case GovUtils.ProposalTypes.RegisterToGroup: 
+      newAmino.content = { ...RegisterToGroup };
+      break;
+    case GovUtils.ProposalTypes.DeregisterFromGroup: 
+      newAmino.content = { ...DeregisterFromGroup };
+      break;
+    case GovUtils.ProposalTypes.UpdateGroupTokenConfig:
+      newAmino.content = { ...UpdateGroupConfig };
+      break;
     case GovUtils.ProposalTypes.SetCommitmentCurve:
       newAmino.content = { ...SetCommitmentCurve };
       break;
@@ -245,12 +309,6 @@ const checkDecodeProposal = (content: any, amino: AminoValueMap): AminoProposalR
       break;
     case GovUtils.ProposalTypes.CreateOracle:
       newAmino.content = { ...CreateOracle };
-      break;
-    case GovUtils.ProposalTypes.LinkPool:
-      newAmino.content = { ...LinkPool };
-      break;
-    case GovUtils.ProposalTypes.UnlinkPool:
-      newAmino.content = { ...UnlinkPool };
       break;
     case GovUtils.ProposalTypes.UpdateMarket:
       newAmino.content = { ...UpdateMarket };
@@ -426,36 +484,6 @@ const checkEncodeProposal = (content: any, amino: AminoValueMap): DirectProposal
         newContent: {
           typeUrl: GovUtils.ProposalTypes.CreateOracle,
           value: CreateOracleProposal.encode(createOracleProp).finish(),
-        },
-        newAmino: {
-          ...amino,
-        },
-      };
-    case ContentTypes[GovUtils.ProposalTypes.LinkPool]:
-      const linkPoolMsg = preProcessAmino(content.value.msg, LinkPool.value.msg);
-      const linkPoolProp = LinkPoolProposal.fromPartial({
-        ...content.value,
-        msg: linkPoolMsg,
-      });
-      return {
-        newContent: {
-          typeUrl: GovUtils.ProposalTypes.LinkPool,
-          value: LinkPoolProposal.encode(linkPoolProp).finish(),
-        },
-        newAmino: {
-          ...amino,
-        },
-      };
-    case ContentTypes[GovUtils.ProposalTypes.UnlinkPool]:
-      const unlinkPoolMsg = preProcessAmino(content.value.msg, UnlinkPool.value.msg);
-      const unlinkPoolProp = LinkPoolProposal.fromPartial({
-        ...content.value,
-        msg: unlinkPoolMsg,
-      });
-      return {
-        newContent: {
-          typeUrl: GovUtils.ProposalTypes.UnlinkPool,
-          value: UnlinkPoolProposal.encode(unlinkPoolProp).finish(),
         },
         newAmino: {
           ...amino,

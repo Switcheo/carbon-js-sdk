@@ -4,7 +4,7 @@ import { Blockchain, getBlockchainFromChain, ChainNames } from "@carbon-sdk/util
 import { ethers } from "ethers";
 import * as ethSignUtils from "eth-sig-util";
 
-export type EVMChain = Blockchain.Ethereum | Blockchain.BinanceSmartChain | Blockchain.Arbitrum;
+export type EVMChain = Blockchain.Ethereum | Blockchain.BinanceSmartChain | Blockchain.Arbitrum | Blockchain.Polygon | Blockchain.Okc;
 type ChainContracts = {
   [key in Network]: string;
 };
@@ -13,9 +13,9 @@ const CONTRACT_HASH: {
 } = {
   [Blockchain.Ethereum]: {
     // use same rinkeby contract for all non-mainnet uses
-    [Network.TestNet]: "0xec8BC20687FfA944F57EB1aAa6F98FEDA30bcA65",
-    [Network.DevNet]: "0xec8BC20687FfA944F57EB1aAa6F98FEDA30bcA65",
-    [Network.LocalHost]: "0xec8BC20687FfA944F57EB1aAa6F98FEDA30bcA65",
+    [Network.TestNet]: "0x086e1b5f67c0f7ca8eb202d35553e27e964899e2",
+    [Network.DevNet]: "0x086e1b5f67c0f7ca8eb202d35553e27e964899e2",
+    [Network.LocalHost]: "0x086e1b5f67c0f7ca8eb202d35553e27e964899e2",
 
     [Network.MainNet]: "0xf4552877A40c1527D38970F170993660084D4541",
   } as const,
@@ -34,6 +34,22 @@ const CONTRACT_HASH: {
     [Network.LocalHost]: "",
 
     [Network.MainNet]: "0x43138036d1283413035b8eca403559737e8f7980",
+  } as const,
+  [Blockchain.Polygon]: {
+    // use same testnet contract for all non-mainnet uses
+    [Network.TestNet]: "",
+    [Network.DevNet]: "",
+    [Network.LocalHost]: "",
+
+    [Network.MainNet]: "0x61B9503Fe023E1F1Dd0ab7417923cB0A41DD9E0c",
+  } as const,
+  [Blockchain.Okc]: {
+    // use same testnet contract for all non-mainnet uses
+    [Network.TestNet]: "",
+    [Network.DevNet]: "",
+    [Network.LocalHost]: "",
+
+    [Network.MainNet]: "0x7e8D8c98a016877Cb3103e837Fc71D41b155aF70",
   } as const,
 } as const;
 
@@ -137,8 +153,8 @@ const ETH_MAINNET: MetaMaskChangeNetworkParam = {
   rpcUrls: ["https://mainnet.infura.io/v3/"],
 };
 const ETH_TESTNET: MetaMaskChangeNetworkParam = {
-  chainId: "0x4",
-  rpcUrls: ["https://rinkeby.infura.io/v3/"],
+  chainId: "0x5",
+  rpcUrls: ["https://goerli.infura.io/v3/"],
 };
 
 const ARBITRUM_MAINNET: MetaMaskChangeNetworkParam = {
@@ -163,6 +179,50 @@ const ARBITRUM_TESTNET: MetaMaskChangeNetworkParam = {
     symbol: "ETH",
   },
 };
+const POLYGON_MAINNET: MetaMaskChangeNetworkParam = {
+  chainId: "0x89",
+  blockExplorerUrls: ["https://polygonscan.com/"],
+  chainName: "Polygon Mainnet",
+  rpcUrls: ["https://polygon-rpc.com"],
+  nativeCurrency: {
+    decimals: 18,
+    name: "Matic",
+    symbol: "MATIC",
+  },
+};
+const POLYGON_TESTNET: MetaMaskChangeNetworkParam = {
+  chainId: "0x13881",
+  blockExplorerUrls: ["https://mumbai.polygonscan.com"],
+  chainName: "Polygon Mumbai",
+  rpcUrls: ["https://polygon-mumbai.infura.io/v3/4458cf4d1689497b9a38b1d6bbf05e78"],
+  nativeCurrency: {
+    decimals: 18,
+    name: "Matic",
+    symbol: "MATIC",
+  },
+};
+const OKC_MAINNET: MetaMaskChangeNetworkParam = {
+  chainId: "0x42",
+  blockExplorerUrls: ["https://www.oklink.com/okc"],
+  chainName: "OKC Mainnet",
+  rpcUrls: ["https://exchainrpc.okex.org"],
+  nativeCurrency: {
+    decimals: 18,
+    name: "OKT",
+    symbol: "OKT",
+  },
+};
+const OKC_TESTNET: MetaMaskChangeNetworkParam = {
+  chainId: "0x41",
+  blockExplorerUrls: ["https://www.oklink.com/okc-test"],
+  chainName: "OKC Testnet",
+  rpcUrls: ["https://exchaintestrpc.okex.org"],
+  nativeCurrency: {
+    decimals: 18,
+    name: "OKT",
+    symbol: "OKT",
+  },
+};
 
 /**
  * TODO: Add docs
@@ -177,6 +237,10 @@ export class MetaMask {
           return BSC_MAINNET;
         case Blockchain.Arbitrum:
           return ARBITRUM_MAINNET;
+        case Blockchain.Polygon:
+          return POLYGON_MAINNET;
+        case Blockchain.Okc:
+          return OKC_MAINNET;
         default:
           // metamask should come with Ethereum configs
           return ETH_MAINNET;
@@ -188,6 +252,10 @@ export class MetaMask {
         return BSC_TESTNET;
       case Blockchain.Arbitrum:
         return ARBITRUM_TESTNET;
+      case Blockchain.Polygon:
+        return POLYGON_TESTNET;
+      case Blockchain.Okc:
+        return OKC_TESTNET;
       default:
         // metamask should come with Ethereum configs
         return ETH_TESTNET;
@@ -201,6 +269,10 @@ export class MetaMask {
           return 56;
         case Blockchain.Arbitrum:
           return 42161;
+        case Blockchain.Polygon:
+          return 137;
+        case Blockchain.Okc:
+          return 66;
         default:
           return 1;
       }
@@ -211,8 +283,12 @@ export class MetaMask {
         return 97;
       case Blockchain.Arbitrum:
         return 421611;
+      case Blockchain.Polygon:
+        return 80001;
+      case Blockchain.Okc:
+        return 65;
       default:
-        return 4;
+        return 5;
     }
   }
 
@@ -416,11 +492,19 @@ export class MetaMask {
         this.blockchain = Blockchain.Arbitrum;
         return currentChainId;
       }
+      if (currentChainId === 137) {
+        this.blockchain = Blockchain.Polygon;
+        return currentChainId;
+      }
+      if (currentChainId === 66) {
+        this.blockchain = Blockchain.Okc;
+        return currentChainId;
+      }
 
       return 1;
     }
 
-    if (currentChainId === 4) {
+    if (currentChainId === 5) {
       this.blockchain = Blockchain.Ethereum;
       return currentChainId;
     }
@@ -432,12 +516,20 @@ export class MetaMask {
       this.blockchain = Blockchain.Arbitrum;
       return currentChainId;
     }
+    if (currentChainId === 80001) {
+      this.blockchain = Blockchain.Polygon;
+      return currentChainId;
+    }
+    if (currentChainId === 65) {
+      this.blockchain = Blockchain.Okc;
+      return currentChainId;
+    }
 
     // Deal with cases where users are logging in to devnet using mainnet chains
     if (currentChainId === 56) {
       return 97;
     }
-    return 4;
+    return 5;
   }
 
   private getContractHash(blockchain: EVMChain = this.blockchain) {

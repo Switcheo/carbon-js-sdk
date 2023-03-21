@@ -22,17 +22,20 @@ import {
   MsgLinkToken,
   MsgSyncToken,
   MsgUnbindToken,
+  MsgCreateGroup,
+  MsgRegisterToGroup,
+  MsgDeregisterFromGroup,
+  MsgUpdateGroup,
+  MsgUpdateGroupedTokenConfig,
 } from "@carbon-sdk/codec/coin/tx";
 import { Coin } from "@carbon-sdk/codec/cosmos/base/v1beta1/coin";
 import { Description } from "@carbon-sdk/codec/cosmos/staking/v1beta1/staking";
 import { MsgCreateValidator, MsgEditValidator } from "@carbon-sdk/codec/cosmos/staking/v1beta1/tx";
 import { MsgSetGasCost, MsgSetMinGasPrice, MsgRemoveGasCost, MsgRemoveMinGasPrice } from "@carbon-sdk/codec/fee/tx";
 import {
-  MsgLinkPool,
   MsgSetCommitmentCurve,
   MsgSetRewardCurve,
   MsgSetRewardsWeights,
-  MsgUnlinkPool,
   MsgUpdatePool,
 } from "@carbon-sdk/codec/liquiditypool/tx";
 import { MsgCreateMarket } from "@carbon-sdk/codec/market/tx";
@@ -232,40 +235,6 @@ export class AdminModule extends BaseModule {
     });
 
     return await wallet.sendTxs(msgs, opts);
-  }
-
-  public async linkPool(params: AdminModule.LinkPoolParams, opts?: CarbonTx.SignTxOpts) {
-    const wallet = this.getWallet();
-
-    const value = MsgLinkPool.fromPartial({
-      creator: wallet.bech32Address,
-      linkPoolParams: transfromLinkPoolParams(params),
-    });
-
-    return await wallet.sendTx(
-      {
-        typeUrl: CarbonTx.Types.MsgLinkPool,
-        value,
-      },
-      opts
-    );
-  }
-
-  public async unlinkPool(params: AdminModule.UnlinkPoolParams, opts?: CarbonTx.SignTxOpts) {
-    const wallet = this.getWallet();
-
-    const value = MsgUnlinkPool.fromPartial({
-      creator: wallet.bech32Address,
-      unlinkPoolParams: transfromUnlinkPoolParams(params),
-    });
-
-    return await wallet.sendTx(
-      {
-        typeUrl: CarbonTx.Types.MsgUnlinkPool,
-        value,
-      },
-      opts
-    );
   }
 
   public async setRewardsWeights(params: AdminModule.SetRewardsWeightsParams[], opts?: CarbonTx.SignTxOpts) {
@@ -614,14 +583,14 @@ export class AdminModule extends BaseModule {
     const value = MsgUpdateAsset.fromPartial({
       creator: wallet.bech32Address,
       assetParams: {
-        denom: params.asset.denom,
-        oracleId: params.asset.oracleId,
-        rateStrategyName: params.asset.rateStrategyName,
-        loanToValue: params.asset.loanToValue.toString(10),
-        liquidationThreshold: params.asset.liquidationThreshold.toString(10),
-        liquidationDiscount: params.asset.liquidationDiscount.toString(10),
-        supplyCap: params.asset.supplyCap.toString(10),
-        borrowCap: params.asset.borrowCap.toString(10),
+        denom: params.denom,
+        rateStrategyName: params.rateStrategyName,
+        allowRepayStablecoinInterestDebt: params.allowRepayStablecoinInterestDebt,
+        loanToValue: params.loanToValue.toString(10),
+        liquidationThreshold: params.liquidationThreshold.toString(10),
+        liquidationDiscount: params.liquidationDiscount.toString(10),
+        supplyCap: params.supplyCap.toString(10),
+        borrowCap: params.borrowCap.toString(10),
       },
     });
 
@@ -727,6 +696,92 @@ export class AdminModule extends BaseModule {
     return await wallet.sendTx(
       {
         typeUrl: CarbonTx.Types.MsgSetSmallLiquidationSize,
+        value,
+      },
+      opts
+    );
+  }
+
+  public async createNewGroup(params: AdminModule.CreateNewGroupParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+    const value = MsgCreateGroup.fromPartial({
+      creator: params.creator ?? wallet.bech32Address,
+      name: params.name,
+      chequeTokenSymbol: params.chequeTokenSymbol,
+      oracleId: params.oracleId,
+    });
+
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgCreateGroup,
+        value,
+      },
+      opts
+    );
+  }
+
+  public async updateGroup(params: AdminModule.UpdateGroupParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+    const value = MsgUpdateGroup.fromPartial({
+      creator: params.creator ?? wallet.bech32Address,
+      groupId: params.groupId,
+      updateGroupParams: params.updateGroupParams
+    });
+
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgUpdateGroup,
+        value,
+      },
+      opts
+    );
+  }
+
+  public async registerToGroup(params: AdminModule.RegisterDeregisterToGroupParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+    const value = MsgRegisterToGroup.fromPartial({
+      creator: params.creator ?? wallet.bech32Address,
+      groupId: params.groupId,
+      denom: params.denom,
+    });
+
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgRegisterToGroup,
+        value,
+      },
+      opts
+    );
+  }
+
+  public async deregisterFromGroup(params: AdminModule.RegisterDeregisterToGroupParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+    const value = MsgDeregisterFromGroup.fromPartial({
+      creator: params.creator ?? wallet.bech32Address,
+      groupId: params.groupId,
+      denom: params.denom,
+    });
+
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgDeregisterFromGroup,
+        value,
+      },
+      opts
+    );
+  }
+
+  public async updateGroupConfig(params: AdminModule.UpdateGroupConfigParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+    const value = MsgUpdateGroupedTokenConfig.fromPartial({
+      creator: params.creator ?? wallet.bech32Address,
+      denom: params.denom,
+      updateGroupedTokenConfigParams: params.updateGroupedTokenConfigParams,
+    });
+
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgUpdateGroupedTokenConfig,
         value,
       },
       opts
@@ -941,7 +996,14 @@ export namespace AdminModule {
     asset: Asset;
   }
   export interface UpdateAssetParams {
-    asset: Asset;
+    denom: string;
+    rateStrategyName?: string;
+    allowRepayStablecoinInterestDebt?: boolean;
+    loanToValue: BigNumber;
+    liquidationThreshold: BigNumber;
+    liquidationDiscount: BigNumber;
+    supplyCap: BigNumber;
+    borrowCap: BigNumber;
   }
   export interface SetLiquidationFeeParams {
     liquidationFee: BigNumber;
@@ -991,6 +1053,39 @@ export namespace AdminModule {
     rewardSchemeId: number;
     amount: BigNumber;
     denom: string;
+  }
+
+  export interface CreateNewGroupParams {
+    creator?: string;
+    name: string;
+    chequeTokenSymbol: string;
+    oracleId: string;
+  }
+
+  export interface UpdateGroupParams {
+    creator?: string;
+    groupId?: string;
+    updateGroupParams?: GroupName;
+  }
+
+  export interface GroupName {
+    name: string
+  }
+
+  export interface RegisterDeregisterToGroupParams {
+    creator?: string;
+    groupId: string;
+    denom: string;
+  }
+
+  export interface UpdateGroupConfigParams {
+    creator?: string;
+    denom: string;
+    updateGroupedTokenConfigParams: IsGroupActive;
+  }
+
+  export interface IsGroupActive {
+    isActive: boolean
   }
 }
 
