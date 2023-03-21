@@ -76,9 +76,10 @@
   },
   "resolutions": {
     "bignumber.js": "9.0.1",
+    "@ledgerhq/hw-app-eth": "6.31.0",
     "@ledgerhq/hw-transport": "6.28.1",
-    "@ledgerhq/hw-transport-webhid": "^6.27.12",
-    "@ledgerhq/hw-transport-webusb": "^6.27.12"
+    "@ledgerhq/hw-transport-webhid": "6.24.1",
+    "@ledgerhq/hw-transport-webusb": "6.24.1"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.174",
