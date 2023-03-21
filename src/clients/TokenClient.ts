@@ -626,6 +626,10 @@ class TokenClient {
       return undefined;
     }
     const tokenDenom = cdpDenom.replace(regexCdpDenom, "");
+    if (TokenClient.isPoolToken(tokenDenom)) {
+      return this.poolTokens[tokenDenom];
+    }
+
     return this.tokenForDenom(tokenDenom);
   }
 
