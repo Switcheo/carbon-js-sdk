@@ -40,6 +40,14 @@ export enum Blockchain {
 
 export type BlockchainV2 = ReturnType<TokenClient['getAllBlockchainNames']>[number] | "Native" | "Carbon" | "Tradehub" | "Ibc" | "Polynetwork"
 
+export const EVM_BLOCKCHAIN_V2_TO_V1_MAPPING: SimpleMap<Blockchain> = {
+  "Binance Smart Chain": Blockchain.BinanceSmartChain,
+  "Ethereum": Blockchain.Ethereum,
+  "Arbitrum": Blockchain.Arbitrum,
+  "Polygon": Blockchain.Polygon,
+  "OKC": Blockchain.Okc,
+};
+
 export const BRIDGE_IDS = {
   polynetwork: 1,
   ibc: 2,
