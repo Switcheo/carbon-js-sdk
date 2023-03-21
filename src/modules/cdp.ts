@@ -979,8 +979,17 @@ export class CDPModule extends BaseModule {
     const assetParams = await sdk.query.cdp.Asset({ denom: denom });
     if (!assetParams.assetParams) return;
     let unlockRatio = new BigNumber(assetParams.assetParams.loanToValue);
+
+    const accountEModeRsp = await sdk.query.cdp.AccountEMode(QueryAccountEModeRequest.fromPartial({ address: account }));
     if (sdk.getConfig().network === Network.LocalHost || sdk.getConfig().network === Network.DevNet) {
-      unlockRatio = new BigNumber(assetParams.assetParams.liquidationThreshold);
+      if (accountEModeRsp.eModeCategory && accountEModeRsp.eModeCategory.name != "") {
+        unlockRatio = new BigNumber(accountEModeRsp.eModeCategory.liquidationThreshold)
+      } else {
+        unlockRatio = new BigNumber(assetParams.assetParams.liquidationThreshold);
+      }
+    }
+    if (accountEModeRsp.eModeCategory && accountEModeRsp.eModeCategory.name != "") {
+      unlockRatio = new BigNumber(accountEModeRsp.eModeCategory.loanToValue)
     }
 
     const accountData = await this.getAccountData(account);
