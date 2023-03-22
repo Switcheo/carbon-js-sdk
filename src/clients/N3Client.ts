@@ -194,9 +194,6 @@ export class N3Client {
     const config = this.configProvider.getConfig();
     await signer.sign(txn, config.n3.networkMagic);
 
-    // console.log("magic", config.n3.networkMagic)
-    // console.log("txn", txn.toJson());
-    // console.log("txn", u.HexString.fromHex(txn.serialize(true)).toString());
     const txHash = await this.rpcClient.sendRawTransaction(u.HexString.fromHex(txn.serialize(true)));
 
     return txHash;
