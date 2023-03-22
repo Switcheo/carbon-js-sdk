@@ -106,6 +106,10 @@ console.log("registry.register(\"/cosmwasm.wasm.v1.MsgExecuteContract\", MsgExec
 typeMap.MsgExecuteContract = "/cosmwasm.wasm.v1.MsgExecuteContract";
 
 console.log("");
+console.log(
+`/* 
+Key in TxTypes may not match the actual type definition due to duplicates in Msg names.
+*/`);
 console.log(`export const TxTypes = ${JSON.stringify(typeMap, null, 2)};\n`);
 
 console.log("");
