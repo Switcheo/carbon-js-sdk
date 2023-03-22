@@ -34,15 +34,22 @@ const formatDateField = (value?: string | null) => {
   return dayjs(value);
 };
 
+// temporary function to parse okt/okc blockchain
+// to remove when automatic deposit/withdraw feature is deployed
+const parseHydrogenBlockchain = (blockchain: string): BlockchainUtils.Blockchain | null => {
+  if (blockchain === "okx") return BlockchainUtils.Blockchain.Okc;
+  return BlockchainUtils.parseBlockchain(blockchain);
+};
+
 const formatCrossChainTransfer = (value: any): CrossChainTransfer => {
   if (typeof value !== "object") return value;
   return {
     ...value,
     created_at: formatDateField(value.created_at?.toString()),
     updated_at: formatDateField(value.updated_at?.toString()),
-    source_blockchain: BlockchainUtils.parseBlockchain(value.source_blockchain),
-    bridging_blockchain: BlockchainUtils.parseBlockchain(value.bridging_blockchain),
-    destination_blockchain: BlockchainUtils.parseBlockchain(value.destination_blockchain),
+    source_blockchain: parseHydrogenBlockchain(value.source_blockchain),
+    bridging_blockchain: parseHydrogenBlockchain(value.bridging_blockchain),
+    destination_blockchain: parseHydrogenBlockchain(value.destination_blockchain),
   };
 };
 
@@ -62,9 +69,9 @@ const formatRelaysTransfers = (value: any): RelaysResponse => {
     ...value,
     created_at: formatDateField(value.created_at?.toString()),
     updated_at: formatDateField(value.updated_at?.toString()),
-    source_blockchain: BlockchainUtils.parseBlockchain(value.source_blockchain),
-    bridging_blockchain: BlockchainUtils.parseBlockchain(value.bridging_blockchain),
-    destination_blockchain: BlockchainUtils.parseBlockchain(value.destination_blockchain),
+    source_blockchain: parseHydrogenBlockchain(value.source_blockchain),
+    bridging_blockchain: parseHydrogenBlockchain(value.bridging_blockchain),
+    destination_blockchain: parseHydrogenBlockchain(value.destination_blockchain),
   };
 };
 
@@ -75,8 +82,8 @@ const formatChainEvent = (value: any): ChainTransaction | null => {
     confirmed_at: formatDateField(value.confirmed_at?.toString()),
     created_at: formatDateField(value.created_at?.toString()),
     updated_at: formatDateField(value.updated_at?.toString()),
-    destination_blockchain: BlockchainUtils.parseBlockchain(value.destination_blockchain),
-    blockchain: BlockchainUtils.parseBlockchain(value.blockchain),
+    destination_blockchain: parseHydrogenBlockchain(value.destination_blockchain),
+    blockchain: parseHydrogenBlockchain(value.blockchain),
   } as ChainTransaction;
 };
 
@@ -84,7 +91,7 @@ const formatFeeQuote = (value: any): FeeQuote => {
   if (typeof value !== "object") return value;
   return {
     ...value,
-    blockchain: BlockchainUtils.parseBlockchain(value.blockchain),
+    blockchain: parseHydrogenBlockchain(value.blockchain),
     created_at: formatDateField(value.created_at?.toString()),
     expires_at: formatDateField(value.expires_at?.toString()),
   };
