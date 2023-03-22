@@ -1,6 +1,7 @@
 import { capitalize } from "lodash";
 import path from "path";
 import { whitelistCosmosExports, whitelistIbcExports } from "./config";
+import { generateEIP712types } from "./generate-eip712-types";
 
 const files = process.argv;
 
@@ -172,6 +173,13 @@ for (const moduleFile of codecFiles) {
 }
 // TODO: Remove hardcoded statement when upgrading cosmwasm codecs
 console.log("export { MsgExecuteContract } from \"cosmjs-types/cosmwasm/wasm/v1/tx\";");
+
+console.log("");
+console.log(
+`/* 
+EIP712Types mapping generated here should only be used for sending EIP-712 msgs.
+*/`);
+console.log(`export const EIP712Types = ${JSON.stringify(generateEIP712types(), null, 2)};\n`);
 
 function updateImportsAlias(messages: string[], protobufPackage: string, currentMsgDefinitions: string[]) {
   const modulePath = getModulePathFromProtobufPackage(protobufPackage)
