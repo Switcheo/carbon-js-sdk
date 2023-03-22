@@ -1,7 +1,7 @@
 import { CarbonQueryClient } from "@carbon-sdk/clients";
 import { DEFAULT_FEE_DENOM, DEFAULT_GAS, DEFAULT_NETWORK, Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
 import { ProviderAgent } from "@carbon-sdk/constant/walletProvider";
-import { ChainInfo, CosmosLedger, Keplr, KeplrAccount, LeapAccount } from "@carbon-sdk/provider";
+import { ChainInfo, CosmosLedger, Keplr, KeplrAccount, LeapAccount, MetaMask } from "@carbon-sdk/provider";
 import { AddressUtils, CarbonTx, GenericUtils } from "@carbon-sdk/util";
 import { SWTHAddress } from "@carbon-sdk/util/address";
 import { fetch } from "@carbon-sdk/util/fetch";
@@ -21,6 +21,7 @@ import BigNumber from "bignumber.js";
 import { TxRaw as StargateTxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import { CarbonLedgerSigner, CarbonNonSigner, CarbonPrivateKeySigner, CarbonSigner, CarbonSignerTypes } from "./CarbonSigner";
 import { CarbonSigningClient } from "./CarbonSigningClient";
+import { ETH_SECP256K1_TYPE } from "@carbon-sdk/util/ethermint";
 
 export interface CarbonWalletGenericOpts {
   tmClient?: Tendermint34Client;
@@ -243,7 +244,7 @@ export class CarbonWallet {
 
     const wallet = CarbonWallet.withSigner(signer, publicKeyBase64, {
       ...opts,
-      providerAgent: 'keplr-extension',
+      providerAgent: ProviderAgent.KeplrExtension,
     });
     return wallet;
   }
@@ -254,7 +255,16 @@ export class CarbonWallet {
 
     const wallet = CarbonWallet.withSigner(signer, publicKeyBase64, {
       ...opts,
-      providerAgent: 'leap-extension',
+      providerAgent: ProviderAgent.LeapExtension,
+    });
+    return wallet;
+  }
+
+  public static withMetamask(metamask: MetaMask, evmChainId: string, compressedPubKeyBase64: string, opts: Omit<CarbonWalletInitOpts, "signer"> = {}) {
+    const signer = MetaMask.createMetamaskSigner(metamask, evmChainId, compressedPubKeyBase64);
+    const wallet = CarbonWallet.withSigner(signer, compressedPubKeyBase64, {
+      ...opts,
+      providerAgent: ProviderAgent.MetamaskExtension,
     });
     return wallet;
   }
@@ -307,6 +317,12 @@ export class CarbonWallet {
       const fee = opts?.fee ?? this.estimateTxFee(messages, feeDenom);
       const txRaw = await signingClient.sign(signerAddress, messages, fee, memo, signerData);
       signature = encodeSecp256k1Signature(account.pubkey, txRaw.signatures[0]);
+      if (this.signer instanceof MetaMask) {
+        signature = {
+          ...signature,
+          pub_key: { ...signature.pub_key, type: ETH_SECP256K1_TYPE }
+        }
+      }
       return txRaw;
     } finally {
       await GenericUtils.callIgnoreError(() => this.onSignComplete?.(signature));

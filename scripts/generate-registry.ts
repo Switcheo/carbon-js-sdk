@@ -108,7 +108,7 @@ typeMap.MsgExecuteContract = "/cosmwasm.wasm.v1.MsgExecuteContract";
 
 console.log("");
 console.log(
-`/* 
+  `/* 
 Key in TxTypes may not match the actual type definition due to duplicates in Msg names.
 */`);
 console.log(`export const TxTypes = ${JSON.stringify(typeMap, null, 2)};\n`);
@@ -176,10 +176,10 @@ console.log("export { MsgExecuteContract } from \"cosmjs-types/cosmwasm/wasm/v1/
 
 console.log("");
 console.log(
-`/* 
+  `/* 
 EIP712Types mapping generated here should only be used for sending EIP-712 msgs.
 */`);
-console.log(`export const EIP712Types = ${JSON.stringify(generateEIP712types(), null, 2)};\n`);
+console.log(`export const EIP712Types: { [index: string]: any } = ${JSON.stringify(generateEIP712types(), null, 2)};\n`);
 
 function updateImportsAlias(messages: string[], protobufPackage: string, currentMsgDefinitions: string[]) {
   const modulePath = getModulePathFromProtobufPackage(protobufPackage)

@@ -2,7 +2,7 @@ import { SignDoc } from "@carbon-sdk/codec/cosmos/tx/v1beta1/tx";
 import { CosmosLedger } from "@carbon-sdk/provider";
 import { sortObject } from "@carbon-sdk/util/generic";
 import { AminoSignResponse, encodeSecp256k1Signature, OfflineAminoSigner, Secp256k1Wallet, StdSignDoc } from "@cosmjs/amino";
-import { AccountData, DirectSecp256k1Wallet, DirectSignResponse, OfflineDirectSigner } from "@cosmjs/proto-signing";
+import { AccountData, DirectSecp256k1Wallet, DirectSignResponse, OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
 
 export enum CarbonSignerTypes {
   Ledger,
@@ -10,17 +10,26 @@ export enum CarbonSignerTypes {
   BrowserInjected,
   PublicKey,
 }
+export interface EIP712Signer {
+  legacyEip712SignMode: boolean
+  readonly signLegacyEip712: (signerAddress: string, signDoc: StdSignDoc) => Promise<AminoSignResponse>;
+}
 
-export type CarbonSigner = DirectCarbonSigner | AminoCarbonSigner;
+export type CarbonSigner = DirectCarbonSigner | AminoCarbonSigner | CarbonEIP712Signer;
+export type CarbonEIP712Signer = (DirectCarbonSigner | AminoCarbonSigner) & EIP712Signer
 export type DirectCarbonSigner = OfflineDirectSigner & { type: CarbonSignerTypes };
-export type AminoCarbonSigner = OfflineAminoSigner & { type: CarbonSignerTypes };
+export type AminoCarbonSigner = OfflineAminoSigner & { type: CarbonSignerTypes }
 
+
+export function isCarbonEIP712Signer(signer: OfflineSigner): boolean {
+  return (signer as CarbonEIP712Signer).signLegacyEip712 !== undefined
+}
 export class CarbonPrivateKeySigner implements DirectCarbonSigner, AminoCarbonSigner {
   type = CarbonSignerTypes.PrivateKey;
   wallet?: DirectSecp256k1Wallet;
   aminoWallet?: Secp256k1Wallet;
 
-  constructor(readonly privateKey: Buffer, readonly prefix: string) {}
+  constructor(readonly privateKey: Buffer, readonly prefix: string) { }
 
   async initWallet() {
     if (!this.wallet) this.wallet = await DirectSecp256k1Wallet.fromKey(this.privateKey, this.prefix);

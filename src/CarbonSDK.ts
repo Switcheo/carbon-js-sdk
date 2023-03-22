@@ -1,5 +1,6 @@
 import {
   CarbonChainIDs,
+  CarbonEvmChainIDs,
   DEFAULT_NETWORK,
   DenomPrefix,
   Network,
@@ -32,9 +33,10 @@ import {
   XChainModule,
 } from "./modules";
 import { StakingModule } from "./modules/staking";
-import { CosmosLedger, Keplr, KeplrAccount, Leap, LeapAccount, LeapExtended } from "./provider";
+import { CosmosLedger, Keplr, KeplrAccount, LeapAccount, LeapExtended } from "./provider";
 import { Blockchain } from "./util/blockchain";
 import { CarbonSigner, CarbonWallet, CarbonWalletGenericOpts } from "./wallet";
+import { MetaMask } from "./provider/metamask/MetaMask";
 
 export { CarbonTx } from "@carbon-sdk/util";
 export { CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletGenericOpts, CarbonWalletInitOpts } from "@carbon-sdk/wallet";
@@ -44,6 +46,7 @@ export interface CarbonSDKOpts {
   network: Network;
   tmClient: Tendermint34Client;
   chainId?: string;
+  evmChainId?: string;
   token?: TokenClient;
   config?: Partial<NetworkConfig>;
   defaultTimeoutBlocks?: number; // tx mempool ttl (timeoutHeight)
@@ -111,7 +114,7 @@ class CarbonSDK {
   zil: ZILClient;
   n3: N3Client;
   chainId: string;
-
+  evmChainId: string;
   constructor(opts: CarbonSDKOpts) {
     this.network = opts.network ?? DEFAULT_NETWORK;
     this.configOverride = opts.config ?? {};
@@ -119,6 +122,7 @@ class CarbonSDK {
 
     this.tmClient = opts.tmClient;
     this.chainId = opts.chainId ?? CarbonChainIDs[this.network] ?? CarbonChainIDs[Network.MainNet];
+    this.evmChainId = opts.evmChainId ?? CarbonEvmChainIDs[this.network] ?? CarbonEvmChainIDs[Network.MainNet];
     this.query = new CarbonQueryClient(opts.tmClient);
     this.insights = new InsightsQueryClient(this.networkConfig);
     this.hydrogen = new HydrogenClient(this.networkConfig);
@@ -271,6 +275,16 @@ class CarbonSDK {
     return sdk.connectWithLeap(leap, walletOpts);
   }
 
+  public static async instanceWithMetamask(
+    metamask: MetaMask,
+    sdkOpts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS,
+    walletOpts?: CarbonWalletGenericOpts
+  ) {
+    const sdk = await CarbonSDK.instance(sdkOpts);
+    return sdk.connectWithMetamask(metamask, walletOpts);
+  }
+
+
   public static async instanceViewOnly(
     bech32Address: string,
     sdkOpts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS,
@@ -394,6 +408,19 @@ class CarbonSDK {
     await leap.enable(chainId);
 
     const wallet = CarbonWallet.withLeap(leap, chainId, leapKey, {
+      ...opts,
+      network: this.network,
+      config: this.configOverride,
+    });
+    return this.connect(wallet);
+  }
+
+
+  public async connectWithMetamask(metamask: MetaMask, opts?: CarbonWalletGenericOpts) {
+    const evmChainId = this.evmChainId;
+    const address = await metamask.defaultAccount()
+    const publicKey = await metamask.getCompressedPublicKey(address)
+    const wallet = CarbonWallet.withMetamask(metamask, evmChainId, publicKey, {
       ...opts,
       network: this.network,
       config: this.configOverride,

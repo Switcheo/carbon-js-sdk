@@ -1051,7 +1051,7 @@ export { MsgExecuteContract } from "cosmjs-types/cosmwasm/wasm/v1/tx";
 /* 
 EIP712Types mapping generated here should only be used for sending EIP-712 msgs.
 */
-export const EIP712Types = {
+export const EIP712Types: { [index: string]: any } = {
   "/google.protobuf": {
     "FileDescriptorSet": [
       {
