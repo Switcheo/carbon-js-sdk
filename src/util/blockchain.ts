@@ -57,7 +57,11 @@ export const BRIDGE_IDS = {
 }
 
 export interface IbcBridge extends Bridge {
-  chain_id_name: string
+  chain_id_name: string,
+  channels: {
+    src_channel: string,
+    dst_channel: string,
+  }
 }
 
 export function isIbcBridge(object: Bridge): object is IbcBridge {
