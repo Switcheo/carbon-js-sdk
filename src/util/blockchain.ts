@@ -35,6 +35,7 @@ export enum Blockchain {
   Canto = "canto",
   OmniFlixHub = "omniflixhub",
   Agoric = "agoric",
+  Sommelier = "sommelier",
 }
 
 export const BRIDGE_IDS = {
