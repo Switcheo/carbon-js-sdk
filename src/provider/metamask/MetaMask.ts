@@ -1,6 +1,6 @@
 import { EthNetworkConfig, Network, NetworkConfigs } from "@carbon-sdk/constant";
 import { ABIs } from "@carbon-sdk/eth";
-import { Blockchain, ChainNames, BlockchainV2, getBlockchainFromChainV2, EVM_BLOCKCHAIN_V2_TO_V1_MAPPING } from "@carbon-sdk/util/blockchain";
+import { Blockchain, ChainNames, BlockchainV2, getBlockchainFromChainV2, BLOCKCHAIN_V2_TO_V1_MAPPING } from "@carbon-sdk/util/blockchain";
 import { ethers } from "ethers";
 import * as ethSignUtils from "eth-sig-util";
 
@@ -297,11 +297,11 @@ export class MetaMask {
   private checkProvider(blockchain: BlockchainV2 = this.blockchain): ethers.providers.Provider {
     const config: any = NetworkConfigs[this.network];
 
-    if (!config[EVM_BLOCKCHAIN_V2_TO_V1_MAPPING[blockchain!]]) {
+    if (!config[BLOCKCHAIN_V2_TO_V1_MAPPING[blockchain!]]) {
       throw new Error(`MetaMask login not supported for this network ${this.network}`);
     }
 
-    const ethNetworkConfig: EthNetworkConfig = config[EVM_BLOCKCHAIN_V2_TO_V1_MAPPING[blockchain!]];
+    const ethNetworkConfig: EthNetworkConfig = config[BLOCKCHAIN_V2_TO_V1_MAPPING[blockchain!]];
 
     const provider = new ethers.providers.JsonRpcProvider(ethNetworkConfig.rpcURL);
 

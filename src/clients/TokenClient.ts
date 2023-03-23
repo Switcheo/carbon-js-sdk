@@ -20,7 +20,7 @@ import Long from "long";
 import CarbonQueryClient from "./CarbonQueryClient";
 import InsightsQueryClient from "./InsightsQueryClient";
 import { SimpleMap } from "@carbon-sdk/util/type";
-import { BlockchainV2, BridgeMap, BRIDGE_IDS, ChainIdName } from '@carbon-sdk/util/blockchain'
+import { BlockchainV2, BridgeMap, BRIDGE_IDS, IbcBridge, isIbcBridge } from '@carbon-sdk/util/blockchain'
 import { PageRequest } from '@carbon-sdk/codec/cosmos/base/query/v1beta1/pagination'
 import { ClientState } from '@carbon-sdk/codec/ibc/lightclients/tendermint/v1/tendermint'
 
@@ -471,8 +471,8 @@ class TokenClient {
     return this.bridges
   }
 
-  async matchChainsWithDifferentChainIds(bridges: Bridge[]): Promise<(Bridge & ChainIdName)[]> {
-    let newBridges: (Bridge & ChainIdName)[] = []
+  async matchChainsWithDifferentChainIds(bridges: Bridge[]): Promise<IbcBridge[]> {
+    let newBridges: IbcBridge[] = []
     try {
       const channels_to_connection = await this.query.ibc.channel.Channels({
         pagination: PageRequest.fromPartial({
@@ -589,10 +589,17 @@ class TokenClient {
     return bridgeList.find(bridge => bridge.chainId.toNumber() === chainIdNum)?.chainName ?? undefined
   }
 
-  public getBridgeFromToken(token: Token | undefined): Bridge | undefined {
+  public getBridgeFromToken(token: Token | null): Bridge | IbcBridge | undefined {
     if (!token || !token.bridgeId) return undefined
     const bridgeList = this.getBridgesFromBridgeId(token.bridgeId.toNumber())
     return bridgeList.find(bridge => token.chainId.equals(bridge.chainId))
+  }
+
+  public getIbcChainIdFromToken(token: Token | null): string | undefined {
+    if (!token) return undefined
+    const bridge = this.getBridgeFromToken(token)
+    if (!bridge || !isIbcBridge(bridge)) return undefined
+    return bridge.chain_id_name
   }
 
   public getCarbonIbcTokens(): Token[] {
@@ -626,10 +633,6 @@ class TokenClient {
       return undefined;
     }
     const tokenDenom = cdpDenom.replace(regexCdpDenom, "");
-    if (TokenClient.isPoolToken(tokenDenom)) {
-      return this.poolTokens[tokenDenom];
-    }
-
     return this.tokenForDenom(tokenDenom);
   }
 

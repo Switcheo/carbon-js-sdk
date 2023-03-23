@@ -5,7 +5,7 @@ import { NeoLedgerAccount } from "@carbon-sdk/provider/account";
 import { O3Types, O3Wallet } from "@carbon-sdk/provider/o3";
 import { AddressUtils } from "@carbon-sdk/util";
 import { SWTHAddress } from "@carbon-sdk/util/address";
-import { Blockchain, blockchainForChainId } from "@carbon-sdk/util/blockchain";
+import { Blockchain, blockchainForChainId, BLOCKCHAIN_V2_TO_V1_MAPPING } from "@carbon-sdk/util/blockchain";
 import { TokenInitInfo, TokensWithExternalBalance } from "@carbon-sdk/util/external";
 import { stripHexPrefix } from "@carbon-sdk/util/generic";
 import { SimpleMap } from "@carbon-sdk/util/type";
@@ -79,7 +79,7 @@ export class NEOClient {
           const isCorrectBlockchain = 
           version === "V2" 
             ? 
-            sdk.token.getBlockchainV2(token.denom) == this.blockchain 
+            !!sdk.token.getBlockchainV2(token.denom) && (BLOCKCHAIN_V2_TO_V1_MAPPING[sdk.token.getBlockchainV2(token.denom)!] == this.blockchain) 
             : 
             blockchainForChainId(token.chainId.toNumber(), sdk.network) == this.blockchain
           return isCorrectBlockchain && token.tokenAddress.length == 40 && token.bridgeAddress.length == 40

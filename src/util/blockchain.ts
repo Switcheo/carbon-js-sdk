@@ -40,12 +40,15 @@ export enum Blockchain {
 
 export type BlockchainV2 = ReturnType<TokenClient['getAllBlockchainNames']>[number] | "Native" | "Carbon" | "Tradehub" | "Ibc" | "Polynetwork"
 
-export const EVM_BLOCKCHAIN_V2_TO_V1_MAPPING: SimpleMap<Blockchain> = {
+export const BLOCKCHAIN_V2_TO_V1_MAPPING: SimpleMap<Blockchain> = {
   "Binance Smart Chain": Blockchain.BinanceSmartChain,
   "Ethereum": Blockchain.Ethereum,
   "Arbitrum": Blockchain.Arbitrum,
   "Polygon": Blockchain.Polygon,
   "OKC": Blockchain.Okc,
+  "Zilliqa": Blockchain.Zilliqa,
+  "Neo": Blockchain.Neo,
+  "Neo3": Blockchain.Neo3
 };
 
 export const BRIDGE_IDS = {
@@ -53,13 +56,17 @@ export const BRIDGE_IDS = {
   ibc: 2,
 }
 
-export type ChainIdName = {
+export interface IbcBridge extends Bridge {
   chain_id_name: string
+}
+
+export function isIbcBridge(object: Bridge): object is IbcBridge {
+  return Object.prototype.hasOwnProperty.call(object, "chain_id_name")
 }
 
 export interface BridgeMap {
   polynetwork: Bridge[]
-  ibc: (Bridge & ChainIdName)[]
+  ibc: IbcBridge[]
 }
 
 export type ChainIds = SimpleMap<number>
