@@ -497,10 +497,13 @@ class TokenClient {
 
       
       newBridges = bridges.map(bridge => {
-        const connectionId = channels_to_connection.channels.find(channel => channel.channelId === ("channel-" + (bridge.chainId.toNumber() - 1)))?.connectionHops[0]
+        const connection = channels_to_connection.channels.find(channel => channel.channelId === ("channel-" + (bridge.chainId.toNumber() - 1)))
+        const connectionId = connection?.connectionHops[0]
+        const src_channel = connection?.channelId ?? ""
+        const dst_channel = connection?.counterparty?.channelId ?? ""
         const clientId = connection_to_clientId.connections.find(connection => connection.id === connectionId)?.clientId
         const chainIdName = (clientStates.find(client => client.clientId === clientId)?.clientState)?.chainId
-        return {...bridge, chain_id_name: chainIdName ?? ""}
+        return {...bridge, chain_id_name: chainIdName ?? "", channels: {src_channel, dst_channel}}
       })
     } finally {
       const checkedBefore = new Array(newBridges.length).fill(false)
@@ -548,7 +551,7 @@ class TokenClient {
     return this.getIbcBlockchainNames().concat(this.getPolynetworkBlockchainNames())
   }
 
-  public getBridgesFromBridgeId(bridgeId: number): Bridge[] {
+  public getBridgesFromBridgeId(bridgeId: number): Bridge[] | IbcBridge[] {
     switch (bridgeId) {
       case BRIDGE_IDS.polynetwork:
         return this.bridges.polynetwork
