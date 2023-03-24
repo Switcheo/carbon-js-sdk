@@ -2,7 +2,7 @@
 import { Registry } from "@cosmjs/proto-signing";
 import { MsgExecuteContract } from "cosmjs-types/cosmwasm/wasm/v1/tx";
 import { MsgSetTradingFlag, MsgSetTradingFlagResponse, MsgCreateOrder, MsgCreateOrderResponse, MsgEditOrder, MsgEditOrderResponse, MsgCancelOrder, MsgCancelOrderResponse, MsgCancelAll, MsgCancelAllResponse } from "./order/tx";
-import { MsgAddRateStrategy, MsgAddRateStrategyResponse, MsgUpdateRateStrategy, MsgUpdateRateStrategyResponse, MsgRemoveRateStrategy, MsgRemoveRateStrategyResponse, MsgAddAsset, MsgAddAssetResponse, MsgUpdateAsset, MsgUpdateAssetResponse, MsgSupplyAsset, MsgSupplyAssetResponse, MsgWithdrawAsset, MsgWithdrawAssetResponse, MsgLockCollateral, MsgLockCollateralResponse, MsgUnlockCollateral, MsgUnlockCollateralResponse, MsgBorrowAsset, MsgBorrowAssetResponse, MsgRepayAsset, MsgRepayAssetResponse, MsgSupplyAssetAndLockCollateral, MsgSupplyAssetAndLockCollateralResponse, MsgUnlockCollateralAndWithdrawAsset, MsgUnlockCollateralAndWithdrawAssetResponse, MsgLiquidateCollateral, MsgLiquidateCollateralResponse, MsgSetLiquidationFee, MsgSetLiquidationFeeResponse, MsgSetInterestFee, MsgSetInterestFeeResponse, MsgRepayAssetWithCdpTokens, MsgRepayAssetWithCdpTokensResponse, MsgRepayAssetWithCollateral, MsgRepayAssetWithCollateralResponse, MsgSetStablecoinInterestRate, MsgSetStablecoinInterestRateResponse, MsgSetStablecoinMintCap, MsgSetStablecoinMintCapResponse, MsgMintStablecoin, MsgMintStablecoinResponse, MsgReturnStablecoin, MsgReturnStablecoinResponse, MsgSetCompleteLiquidationThreshold, MsgSetCompleteLiquidationThresholdResponse, MsgSetMinimumCloseFactor, MsgSetMinimumCloseFactorResponse, MsgSetSmallLiquidationSize, MsgSetSmallLiquidationSizeResponse, MsgLiquidateCollateralWithCdpTokens, MsgLiquidateCollateralWithCdpTokensResponse, MsgLiquidateCollateralWithCollateral, MsgLiquidateCollateralWithCollateralResponse, MsgLiquidateCollateralWithStablecoin, MsgLiquidateCollateralWithStablecoinResponse, MsgCreateRewardScheme, MsgCreateRewardSchemeResponse, MsgUpdateRewardScheme, MsgUpdateRewardSchemeResponse, MsgClaimRewards, MsgClaimRewardsResponse, MsgSetStalePriceGracePeriod, MsgSetStalePriceGracePeriodResponse, MsgSetCdpPaused, MsgSetCdpPausedResponse, MsgReturnStablecoinWithInterestInCollateral, MsgReturnStablecoinWithInterestInCollateralResponse, MsgReturnStablecoinWithInterestInCdpTokens, MsgReturnStablecoinWithInterestInCdpTokensResponse, MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens, MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse, MsgLiquidateCollateralWithStablecoinAndInterestInCollateral, MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse, MsgConvertTokenInCdpToGroupTokens, MsgConvertTokenInCdpToGroupTokensResponse } from "./cdp/tx";
+import { MsgAddRateStrategy, MsgAddRateStrategyResponse, MsgUpdateRateStrategy, MsgUpdateRateStrategyResponse, MsgRemoveRateStrategy, MsgRemoveRateStrategyResponse, MsgAddAsset, MsgAddAssetResponse, MsgUpdateAsset, MsgUpdateAssetResponse, MsgSupplyAsset, MsgSupplyAssetResponse, MsgWithdrawAsset, MsgWithdrawAssetResponse, MsgLockCollateral, MsgLockCollateralResponse, MsgUnlockCollateral, MsgUnlockCollateralResponse, MsgBorrowAsset, MsgBorrowAssetResponse, MsgRepayAsset, MsgRepayAssetResponse, MsgSupplyAssetAndLockCollateral, MsgSupplyAssetAndLockCollateralResponse, MsgUnlockCollateralAndWithdrawAsset, MsgUnlockCollateralAndWithdrawAssetResponse, MsgLiquidateCollateral, MsgLiquidateCollateralResponse, MsgSetLiquidationFee, MsgSetLiquidationFeeResponse, MsgSetInterestFee, MsgSetInterestFeeResponse, MsgRepayAssetWithCdpTokens, MsgRepayAssetWithCdpTokensResponse, MsgRepayAssetWithCollateral, MsgRepayAssetWithCollateralResponse, MsgSetStablecoinMintCap, MsgSetStablecoinMintCapResponse, MsgSetStablecoinInterestRate, MsgSetStablecoinInterestRateResponse, MsgMintStablecoin, MsgMintStablecoinResponse, MsgReturnStablecoin, MsgReturnStablecoinResponse, MsgSetCompleteLiquidationThreshold, MsgSetCompleteLiquidationThresholdResponse, MsgSetMinimumCloseFactor, MsgSetMinimumCloseFactorResponse, MsgSetSmallLiquidationSize, MsgSetSmallLiquidationSizeResponse, MsgLiquidateCollateralWithCdpTokens, MsgLiquidateCollateralWithCdpTokensResponse, MsgLiquidateCollateralWithCollateral, MsgLiquidateCollateralWithCollateralResponse, MsgLiquidateCollateralWithStablecoin, MsgLiquidateCollateralWithStablecoinResponse, MsgCreateRewardScheme, MsgCreateRewardSchemeResponse, MsgUpdateRewardScheme, MsgUpdateRewardSchemeResponse, MsgClaimRewards, MsgClaimRewardsResponse, MsgSetStalePriceGracePeriod, MsgSetStalePriceGracePeriodResponse, MsgSetCdpPaused, MsgSetCdpPausedResponse, MsgReturnStablecoinWithInterestInCollateral, MsgReturnStablecoinWithInterestInCollateralResponse, MsgReturnStablecoinWithInterestInCdpTokens, MsgReturnStablecoinWithInterestInCdpTokensResponse, MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens, MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse, MsgLiquidateCollateralWithStablecoinAndInterestInCollateral, MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse, MsgConvertTokenInCdpToGroupTokens, MsgConvertTokenInCdpToGroupTokensResponse } from "./cdp/tx";
 import { MsgInitiateLiquidation, MsgInitiateLiquidationResponse } from "./broker/tx";
 import { MsgSetGasCost, MsgSetGasCostResponse, MsgSetMinGasPrice, MsgSetMinGasPriceResponse, MsgRemoveGasCost, MsgRemoveGasCostResponse, MsgRemoveMinGasPrice, MsgRemoveMinGasPriceResponse } from "./fee/tx";
 import { SetMsgGasCostProposal, SetMinGasPriceProposal, RemoveMsgGasCostProposal, RemoveMinGasPriceProposal } from "./fee/proposal";
@@ -107,10 +107,10 @@ registry.register("/Switcheo.carbon.cdp.MsgRepayAssetWithCdpTokens", MsgRepayAss
 registry.register("/Switcheo.carbon.cdp.MsgRepayAssetWithCdpTokensResponse", MsgRepayAssetWithCdpTokensResponse);
 registry.register("/Switcheo.carbon.cdp.MsgRepayAssetWithCollateral", MsgRepayAssetWithCollateral);
 registry.register("/Switcheo.carbon.cdp.MsgRepayAssetWithCollateralResponse", MsgRepayAssetWithCollateralResponse);
-registry.register("/Switcheo.carbon.cdp.MsgSetStablecoinInterestRate", MsgSetStablecoinInterestRate);
-registry.register("/Switcheo.carbon.cdp.MsgSetStablecoinInterestRateResponse", MsgSetStablecoinInterestRateResponse);
 registry.register("/Switcheo.carbon.cdp.MsgSetStablecoinMintCap", MsgSetStablecoinMintCap);
 registry.register("/Switcheo.carbon.cdp.MsgSetStablecoinMintCapResponse", MsgSetStablecoinMintCapResponse);
+registry.register("/Switcheo.carbon.cdp.MsgSetStablecoinInterestRate", MsgSetStablecoinInterestRate);
+registry.register("/Switcheo.carbon.cdp.MsgSetStablecoinInterestRateResponse", MsgSetStablecoinInterestRateResponse);
 registry.register("/Switcheo.carbon.cdp.MsgMintStablecoin", MsgMintStablecoin);
 registry.register("/Switcheo.carbon.cdp.MsgMintStablecoinResponse", MsgMintStablecoinResponse);
 registry.register("/Switcheo.carbon.cdp.MsgReturnStablecoin", MsgReturnStablecoin);
@@ -570,10 +570,10 @@ export const TxTypes = {
   "MsgRepayAssetWithCdpTokensResponse": "/Switcheo.carbon.cdp.MsgRepayAssetWithCdpTokensResponse",
   "MsgRepayAssetWithCollateral": "/Switcheo.carbon.cdp.MsgRepayAssetWithCollateral",
   "MsgRepayAssetWithCollateralResponse": "/Switcheo.carbon.cdp.MsgRepayAssetWithCollateralResponse",
-  "MsgSetStablecoinInterestRate": "/Switcheo.carbon.cdp.MsgSetStablecoinInterestRate",
-  "MsgSetStablecoinInterestRateResponse": "/Switcheo.carbon.cdp.MsgSetStablecoinInterestRateResponse",
   "MsgSetStablecoinMintCap": "/Switcheo.carbon.cdp.MsgSetStablecoinMintCap",
   "MsgSetStablecoinMintCapResponse": "/Switcheo.carbon.cdp.MsgSetStablecoinMintCapResponse",
+  "MsgSetStablecoinInterestRate": "/Switcheo.carbon.cdp.MsgSetStablecoinInterestRate",
+  "MsgSetStablecoinInterestRateResponse": "/Switcheo.carbon.cdp.MsgSetStablecoinInterestRateResponse",
   "MsgMintStablecoin": "/Switcheo.carbon.cdp.MsgMintStablecoin",
   "MsgMintStablecoinResponse": "/Switcheo.carbon.cdp.MsgMintStablecoinResponse",
   "MsgReturnStablecoin": "/Switcheo.carbon.cdp.MsgReturnStablecoin",
@@ -949,13 +949,14 @@ export { MsgSetTradingFlag, MsgSetTradingFlagResponse, MsgCreateOrder, MsgCreate
 export { Params as OrderParams, Order, DBOrder, OrdersForMarket, OrderIDsForMarket, OrderIDs, Orders } from "./order/order";
 export { QueryGetOrderRequest, QueryGetOrderResponse, QueryAllOrderRequest, QueryAllOrderResponse, QueryAccountOpenOrdersRequest, QueryAccountOpenOrdersResponse, QueryParamsRequest as QueryOrderParamsRequest, QueryParamsResponse as QueryOrderParamsResponse, QueryOrderAllocatedMarginRequest, QueryOrderAllocatedMarginResponse } from "./order/query";
 export { OrderEvent } from "./order/event";
+export { StablecoinInterestInfo } from "./cdp/stablecoin_interest_info";
 export { DebtInfo } from "./cdp/debt_info";
-export { MsgAddRateStrategy, MsgAddRateStrategyResponse, MsgUpdateRateStrategy, MsgUpdateRateStrategyResponse, MsgRemoveRateStrategy, MsgRemoveRateStrategyResponse, MsgAddAsset, MsgAddAssetResponse, MsgUpdateAsset, MsgUpdateAssetResponse, MsgSupplyAsset, MsgSupplyAssetResponse, MsgWithdrawAsset, MsgWithdrawAssetResponse, MsgLockCollateral, MsgLockCollateralResponse, MsgUnlockCollateral, MsgUnlockCollateralResponse, MsgBorrowAsset, MsgBorrowAssetResponse, MsgRepayAsset, MsgRepayAssetResponse, MsgSupplyAssetAndLockCollateral, MsgSupplyAssetAndLockCollateralResponse, MsgUnlockCollateralAndWithdrawAsset, MsgUnlockCollateralAndWithdrawAssetResponse, MsgLiquidateCollateral, MsgLiquidateCollateralResponse, MsgSetLiquidationFee, MsgSetLiquidationFeeResponse, MsgSetInterestFee, MsgSetInterestFeeResponse, MsgRepayAssetWithCdpTokens, MsgRepayAssetWithCdpTokensResponse, MsgRepayAssetWithCollateral, MsgRepayAssetWithCollateralResponse, MsgSetStablecoinInterestRate, MsgSetStablecoinInterestRateResponse, MsgSetStablecoinMintCap, MsgSetStablecoinMintCapResponse, MsgMintStablecoin, MsgMintStablecoinResponse, MsgReturnStablecoin, MsgReturnStablecoinResponse, MsgSetCompleteLiquidationThreshold, MsgSetCompleteLiquidationThresholdResponse, MsgSetMinimumCloseFactor, MsgSetMinimumCloseFactorResponse, MsgSetSmallLiquidationSize, MsgSetSmallLiquidationSizeResponse, MsgLiquidateCollateralWithCdpTokens, MsgLiquidateCollateralWithCdpTokensResponse, MsgLiquidateCollateralWithCollateral, MsgLiquidateCollateralWithCollateralResponse, MsgLiquidateCollateralWithStablecoin, MsgLiquidateCollateralWithStablecoinResponse, MsgCreateRewardScheme, MsgCreateRewardSchemeResponse, MsgUpdateRewardScheme, MsgUpdateRewardSchemeResponse, MsgClaimRewards, MsgClaimRewardsResponse, MsgSetStalePriceGracePeriod, MsgSetStalePriceGracePeriodResponse, MsgSetCdpPaused, MsgSetCdpPausedResponse, MsgReturnStablecoinWithInterestInCollateral, MsgReturnStablecoinWithInterestInCollateralResponse, MsgReturnStablecoinWithInterestInCdpTokens, MsgReturnStablecoinWithInterestInCdpTokensResponse, MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens, MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse, MsgLiquidateCollateralWithStablecoinAndInterestInCollateral, MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse, MsgConvertTokenInCdpToGroupTokens, MsgConvertTokenInCdpToGroupTokensResponse } from "./cdp/tx";
+export { MsgAddRateStrategy, MsgAddRateStrategyResponse, MsgUpdateRateStrategy, MsgUpdateRateStrategyResponse, MsgRemoveRateStrategy, MsgRemoveRateStrategyResponse, MsgAddAsset, MsgAddAssetResponse, MsgUpdateAsset, MsgUpdateAssetResponse, MsgSupplyAsset, MsgSupplyAssetResponse, MsgWithdrawAsset, MsgWithdrawAssetResponse, MsgLockCollateral, MsgLockCollateralResponse, MsgUnlockCollateral, MsgUnlockCollateralResponse, MsgBorrowAsset, MsgBorrowAssetResponse, MsgRepayAsset, MsgRepayAssetResponse, MsgSupplyAssetAndLockCollateral, MsgSupplyAssetAndLockCollateralResponse, MsgUnlockCollateralAndWithdrawAsset, MsgUnlockCollateralAndWithdrawAssetResponse, MsgLiquidateCollateral, MsgLiquidateCollateralResponse, MsgSetLiquidationFee, MsgSetLiquidationFeeResponse, MsgSetInterestFee, MsgSetInterestFeeResponse, MsgRepayAssetWithCdpTokens, MsgRepayAssetWithCdpTokensResponse, MsgRepayAssetWithCollateral, MsgRepayAssetWithCollateralResponse, MsgSetStablecoinMintCap, MsgSetStablecoinMintCapResponse, MsgSetStablecoinInterestRate, MsgSetStablecoinInterestRateResponse, MsgMintStablecoin, MsgMintStablecoinResponse, MsgReturnStablecoin, MsgReturnStablecoinResponse, MsgSetCompleteLiquidationThreshold, MsgSetCompleteLiquidationThresholdResponse, MsgSetMinimumCloseFactor, MsgSetMinimumCloseFactorResponse, MsgSetSmallLiquidationSize, MsgSetSmallLiquidationSizeResponse, MsgLiquidateCollateralWithCdpTokens, MsgLiquidateCollateralWithCdpTokensResponse, MsgLiquidateCollateralWithCollateral, MsgLiquidateCollateralWithCollateralResponse, MsgLiquidateCollateralWithStablecoin, MsgLiquidateCollateralWithStablecoinResponse, MsgCreateRewardScheme, MsgCreateRewardSchemeResponse, MsgUpdateRewardScheme, MsgUpdateRewardSchemeResponse, MsgClaimRewards, MsgClaimRewardsResponse, MsgSetStalePriceGracePeriod, MsgSetStalePriceGracePeriodResponse, MsgSetCdpPaused, MsgSetCdpPausedResponse, MsgReturnStablecoinWithInterestInCollateral, MsgReturnStablecoinWithInterestInCollateralResponse, MsgReturnStablecoinWithInterestInCdpTokens, MsgReturnStablecoinWithInterestInCdpTokensResponse, MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens, MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse, MsgLiquidateCollateralWithStablecoinAndInterestInCollateral, MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse, MsgConvertTokenInCdpToGroupTokens, MsgConvertTokenInCdpToGroupTokensResponse } from "./cdp/tx";
 export { AssetParams, AssetUtilization, UpdateAssetParams } from "./cdp/asset_params";
 export { RateStrategyParams } from "./cdp/rate_strategy_params";
 export { StablecoinDebtInfo } from "./cdp/stablecoin_debt_info";
 export { RewardScheme, CreateRewardSchemeParams, UpdateRewardSchemeParams, RewardDebt } from "./cdp/reward_scheme";
-export { QueryParamsRequest as QueryCdpParamsRequest, QueryParamsResponse as QueryCdpParamsResponse, QueryRateStrategyRequest, QueryRateStrategyResponse, QueryRateStrategyAllRequest, QueryRateStrategyAllResponse, QueryAccountDataRequest, QueryAccountDataResponse, QueryAccountCollateralRequest, QueryAccountCollateralResponse, QueryAccountCollateralAllRequest, QueryAccountCollateralAllResponse, Collateral, QueryAccountDebtRequest, QueryAccountDebtResponse, QueryAccountDebtAllRequest, QueryAccountDebtAllResponse, Debt, QueryAccountStablecoinRequest, QueryAccountStablecoinResponse, QueryAssetRequest, QueryAssetResponse, QueryAssetAllRequest, QueryAssetAllResponse, QueryTokenDebtRequest, QueryTokenDebtResponse, QueryTokenDebtAllRequest, QueryTokenDebtAllResponse, QueryStablecoinDebtRequest, QueryStablecoinDebtResponse, CdpPositionItem, CdpPosition, QueryCdpPositionsRequest, QueryCdpPositionsResponse, QueryRewardSchemesAllRequest, QueryRewardSchemesAllResponse, QueryRewardDebtsRequest, QueryRewardDebtsResponse, QueryRewardDebtsAllRequest } from "./cdp/query";
+export { QueryParamsRequest as QueryCdpParamsRequest, QueryParamsResponse as QueryCdpParamsResponse, QueryRateStrategyRequest, QueryRateStrategyResponse, QueryRateStrategyAllRequest, QueryRateStrategyAllResponse, QueryAccountDataRequest, QueryAccountDataResponse, QueryAccountCollateralRequest, QueryAccountCollateralResponse, QueryAccountCollateralAllRequest, QueryAccountCollateralAllResponse, Collateral, QueryAccountDebtRequest, QueryAccountDebtResponse, QueryAccountDebtAllRequest, QueryAccountDebtAllResponse, Debt, QueryAccountStablecoinRequest, QueryAccountStablecoinResponse, QueryAssetRequest, QueryAssetResponse, QueryAssetAllRequest, QueryAssetAllResponse, QueryTokenDebtRequest, QueryTokenDebtResponse, QueryTokenDebtAllRequest, QueryTokenDebtAllResponse, QueryStablecoinDebtRequest, QueryStablecoinDebtResponse, CdpPositionItem, CdpPosition, QueryCdpPositionsRequest, QueryCdpPositionsResponse, QueryRewardSchemesAllRequest, QueryRewardSchemesAllResponse, QueryRewardDebtsRequest, QueryRewardDebtsResponse, QueryRewardDebtsAllRequest, QueryStablecoinInterestRequest, QueryStablecoinInterestResponse } from "./cdp/query";
 export { NewRateStrategyParamsEvent, UpdateRateStrategyParamsEvent, RemoveRateStrategyParamsEvent, NewAssetParamsEvent, UpdateAssetParamsEvent, SetInterestFeeEvent, SetLiquidationFeeEvent, SetStablecoinInterestRateEvent, SetStablecoinMintCapEvent, SetCompleteLiquidationThresholdEvent, SetMinimumCloseFactorEvent, SetSmallLiquidationSizeEvent, SetStalePriceGracePeriodEvent, SetCdpPausedEvent, SupplyAssetEvent, WithdrawAssetEvent, BorrowAssetEvent, RepayAssetEvent, LockCollateralEvent, UnlockCollateralEvent, UpdateDebtInfoEvent, UpdateStablecoinDebtInfoEvent, MintStablecoinEvent, ReturnStablecoinEvent, LiquidateCollateralEvent, LiquidateCollateralWithStablecoinEvent, ClaimRewardEvent, RewardDebtEvent, RewardSchemeEvent, AddReserveEvent, RefundReserveEvent } from "./cdp/event";
 export { Params as CdpParams } from "./cdp/params";
 export { HashOp, hashOpFromJSON, hashOpToJSON, LengthOp, lengthOpFromJSON, lengthOpToJSON, ExistenceProof, NonExistenceProof, CommitmentProof, LeafOp, InnerOp, ProofSpec, InnerSpec, BatchProof, BatchEntry, CompressedBatchProof, CompressedBatchEntry, CompressedExistenceProof, CompressedNonExistenceProof } from "./proofs";
@@ -1024,13 +1025,11 @@ export { MsgCreateMarket, MsgCreateMarketResponse, MsgUpdateMarket, MsgUpdateMar
 export { CreateMarketProposal, UpdateMarketProposal, UpdatePerpetualsFundingIntervalProposal } from "./market/proposal";
 export { Params as MarketDefaultsParams, ControlledParams, Market, MarketParams } from "./market/market";
 export { QueryGetMarketRequest, QueryGetMarketResponse, QueryAllMarketRequest, QueryAllMarketResponse, QueryParamsRequest as QueryMarketParamsRequest, QueryParamsResponse as QueryMarketParamsResponse } from "./market/query";
-export { ParamsV270, ParamsV280 } from "./market/legacy";
 export { MarketEvent } from "./market/event";
 export { MintData } from "./inflation/inflation";
 export { QueryMintDataRequest, QueryMintDataResponse } from "./inflation/query";
 export { MsgSetSequence, MsgSetSequenceResponse } from "./sequence/tx";
 export { QuerySequenceRequest, QuerySequenceResponse, QuerySequenceAllRequest, QuerySequenceAllResponse } from "./sequence/query";
-export { PageRequest, PageResponse } from "./query/pagination";
 export { MsgCreatePool, MsgCreatePoolResponse, MsgCreatePoolWithLiquidity, MsgCreatePoolWithLiquidityResponse, MsgAddLiquidity, MsgAddLiquidityResponse, MsgRemoveLiquidity, MsgRemoveLiquidityResponse, LinkPoolParams, UnlinkPoolParams, MsgSetRewardsWeights, SetRewardsWeightsParams, MsgSetRewardsWeightsResponse, MsgStakePoolToken, MsgStakePoolTokenResponse, MsgUnstakePoolToken, MsgUnstakePoolTokenResponse, MsgClaimPoolRewards, MsgClaimPoolRewardsResponse, MsgSetRewardCurve, SetRewardCurveParams, MsgSetRewardCurveResponse, MsgSetCommitmentCurve, SetCommitmentCurveParams, MsgSetCommitmentCurveResponse, MsgUpdatePool, UpdatePoolParams, MsgUpdatePoolResponse, MsgCreatePoolRoute, MsgCreatePoolRouteResponse, CreatePoolRouteParams, MsgRemovePoolRoute, MsgRemovePoolRouteResponse, RemovePoolRouteParams, MsgUpdatePoolRoute, MsgUpdatePoolRouteResponse, UpdatePoolRouteParams } from "./liquiditypool/tx";
 export { RewardCurve, CommitmentCurve, RewardWeight, RewardWeights, Commitment, CommitmentRecord, TotalCommitment, TotalCommitmentRecord, CommitmentResponse, RewardHistory, RewardHistoryRecord, CommitmentExpiry, CommitmentExpiries, CommitmentExpiriesRecord, LastClaimRecord, AllocatedRewards } from "./liquiditypool/reward";
 export { Params as LiquiditypoolParams, Pool, Pools, PoolRoute, AddLiquidity, AddLiquidities, RemoveLiquidity, RemoveLiquidities, RemovePoolRoutes, PoolReserve } from "./liquiditypool/liquiditypool";
@@ -1926,7 +1925,7 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "pagination",
         "type": "PageRequest",
-        "packageName": "/Switcheo.carbon.query"
+        "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
     "QueryInternalTransfersResponse": [
@@ -1938,25 +1937,7 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "pagination",
         "type": "PageResponse",
-        "packageName": "/Switcheo.carbon.query"
-      }
-    ]
-  },
-  "/Switcheo.carbon.query": {
-    "PageRequest": [
-      {
-        "name": "page",
-        "type": "uint64"
-      },
-      {
-        "name": "page_size",
-        "type": "uint64"
-      }
-    ],
-    "PageResponse": [
-      {
-        "name": "total_pages",
-        "type": "uint64"
+        "packageName": "/cosmos.base.query.v1beta1"
       }
     ]
   },
@@ -2311,20 +2292,12 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "limit",
-        "type": "uint64"
-      },
-      {
         "name": "before_id",
         "type": "uint64"
       },
       {
         "name": "after_id",
         "type": "uint64"
-      },
-      {
-        "name": "order_by",
-        "type": "string"
       },
       {
         "name": "order_id",
@@ -2341,7 +2314,7 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "pagination",
         "type": "PageRequest",
-        "packageName": "/Switcheo.carbon.query"
+        "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
     "QueryTradesResponse": [
@@ -2358,7 +2331,7 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "pagination",
         "type": "PageResponse",
-        "packageName": "/Switcheo.carbon.query"
+        "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
     "QueryTradesForPositionRequest": [
@@ -2375,13 +2348,9 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "uint64"
       },
       {
-        "name": "order_by",
-        "type": "string"
-      },
-      {
         "name": "pagination",
         "type": "PageRequest",
-        "packageName": "/Switcheo.carbon.query"
+        "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
     "QueryTradesForPositionResponse": [
@@ -2393,7 +2362,7 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "pagination",
         "type": "PageResponse",
-        "packageName": "/Switcheo.carbon.query"
+        "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
     "LiquidatorPosition": [
@@ -3090,6 +3059,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "type",
         "type": "string"
+      },
+      {
+        "name": "stablecoin_interest_rate_dec",
+        "type": "string"
       }
     ],
     "SetStablecoinMintCapEvent": [
@@ -3552,6 +3525,26 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "cdp_paused",
         "type": "bool"
+      },
+      {
+        "name": "stablecoin_interest_rate_epoch",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "stablecoin_interest_rate_adjuster_coefficient",
+        "type": "string"
+      }
+    ],
+    "StablecoinInterestInfo": [
+      {
+        "name": "last_updated_time",
+        "type": "Timestamp",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "stablecoin_interest_rate",
+        "type": "string"
       }
     ],
     "GenesisState": [
@@ -3618,6 +3611,11 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "account_to_reward_debt",
         "type": "AccountToRewardDebtEntry[]",
         "packageName": "/Switcheo.carbon.cdp.GenesisState"
+      },
+      {
+        "name": "stablecoin_interest_info",
+        "type": "StablecoinInterestInfo",
+        "packageName": "/Switcheo.carbon.cdp"
       }
     ],
     "QueryParamsRequest": [],
@@ -4007,6 +4005,14 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ],
     "QueryRewardDebtsAllRequest": [],
+    "QueryStablecoinInterestRequest": [],
+    "QueryStablecoinInterestResponse": [
+      {
+        "name": "stablecoin_interest_info",
+        "type": "StablecoinInterestInfo",
+        "packageName": "/Switcheo.carbon.cdp"
+      }
+    ],
     "MsgAddRateStrategy": [
       {
         "name": "creator",
@@ -4322,17 +4328,6 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ],
     "MsgRepayAssetWithCollateralResponse": [],
-    "MsgSetStablecoinInterestRate": [
-      {
-        "name": "creator",
-        "type": "string"
-      },
-      {
-        "name": "stablecoin_interest_rate",
-        "type": "string"
-      }
-    ],
-    "MsgSetStablecoinInterestRateResponse": [],
     "MsgSetStablecoinMintCap": [
       {
         "name": "creator",
@@ -4344,6 +4339,17 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ],
     "MsgSetStablecoinMintCapResponse": [],
+    "MsgSetStablecoinInterestRate": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "stablecoin_interest_rate",
+        "type": "string"
+      }
+    ],
+    "MsgSetStablecoinInterestRateResponse": [],
     "MsgMintStablecoin": [
       {
         "name": "creator",
@@ -18572,20 +18578,12 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "limit",
-        "type": "uint64"
-      },
-      {
         "name": "before_id",
         "type": "uint64"
       },
       {
         "name": "after_id",
         "type": "uint64"
-      },
-      {
-        "name": "order_by",
-        "type": "string"
       },
       {
         "name": "order_id",
@@ -18598,6 +18596,11 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "before_block",
         "type": "uint64"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
     "QueryAllLiquidationResponse": [
@@ -18605,6 +18608,11 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "trades",
         "type": "AccountTrade[]",
         "packageName": "/Switcheo.carbon.misc"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
     "QueryParamsRequest": [],
@@ -18859,7 +18867,7 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "pagination",
         "type": "PageRequest",
-        "packageName": "/Switcheo.carbon.query"
+        "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
     "QueryAllTransactionResponse": [
@@ -18871,14 +18879,14 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "pagination",
         "type": "PageResponse",
-        "packageName": "/Switcheo.carbon.query"
+        "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
     "QueryAllBlockRequest": [
       {
         "name": "pagination",
         "type": "PageRequest",
-        "packageName": "/Switcheo.carbon.query"
+        "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
     "QueryAllBlockResponse": [
@@ -18890,7 +18898,7 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "pagination",
         "type": "PageResponse",
-        "packageName": "/Switcheo.carbon.query"
+        "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
     "QueryAllModuleAddressRequest": [],
@@ -19223,7 +19231,7 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "pagination",
         "type": "PageRequest",
-        "packageName": "/Switcheo.carbon.query"
+        "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
     "QueryAllOrderResponse": [
@@ -19235,7 +19243,7 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "pagination",
         "type": "PageResponse",
-        "packageName": "/Switcheo.carbon.query"
+        "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
     "QueryAccountOpenOrdersRequest": [
@@ -21313,152 +21321,6 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "int64"
       }
     ],
-    "Params_V2_7_0": [
-      {
-        "name": "default_lot_size_usd",
-        "type": "string"
-      },
-      {
-        "name": "default_tick_size_usd",
-        "type": "string"
-      },
-      {
-        "name": "default_min_quantity_usd",
-        "type": "string"
-      },
-      {
-        "name": "default_spot_maker_fee",
-        "type": "string"
-      },
-      {
-        "name": "default_spot_taker_fee",
-        "type": "string"
-      },
-      {
-        "name": "default_futures_maker_fee",
-        "type": "string"
-      },
-      {
-        "name": "default_futures_taker_fee",
-        "type": "string"
-      },
-      {
-        "name": "default_risk_step_size_usd",
-        "type": "string"
-      },
-      {
-        "name": "default_initial_margin_base",
-        "type": "string"
-      },
-      {
-        "name": "default_initial_margin_step",
-        "type": "string"
-      },
-      {
-        "name": "default_maintenance_margin_ratio",
-        "type": "string"
-      },
-      {
-        "name": "default_max_liquidation_order_ticket_usd",
-        "type": "string"
-      },
-      {
-        "name": "default_max_liquidation_order_duration",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
-      },
-      {
-        "name": "default_impact_size_usd",
-        "type": "string"
-      },
-      {
-        "name": "default_mark_price_band",
-        "type": "uint32"
-      },
-      {
-        "name": "default_last_price_protected_band",
-        "type": "uint32"
-      },
-      {
-        "name": "max_active_markets",
-        "type": "uint32"
-      }
-    ],
-    "Params_V2_8_0": [
-      {
-        "name": "default_lot_size_usd",
-        "type": "string"
-      },
-      {
-        "name": "default_tick_size_usd",
-        "type": "string"
-      },
-      {
-        "name": "default_min_quantity_usd",
-        "type": "string"
-      },
-      {
-        "name": "default_spot_maker_fee",
-        "type": "string"
-      },
-      {
-        "name": "default_spot_taker_fee",
-        "type": "string"
-      },
-      {
-        "name": "default_futures_maker_fee",
-        "type": "string"
-      },
-      {
-        "name": "default_futures_taker_fee",
-        "type": "string"
-      },
-      {
-        "name": "default_risk_step_size_usd",
-        "type": "string"
-      },
-      {
-        "name": "default_initial_margin_base",
-        "type": "string"
-      },
-      {
-        "name": "default_initial_margin_step",
-        "type": "string"
-      },
-      {
-        "name": "default_maintenance_margin_ratio",
-        "type": "string"
-      },
-      {
-        "name": "default_max_liquidation_order_ticket_usd",
-        "type": "string"
-      },
-      {
-        "name": "default_max_liquidation_order_duration",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
-      },
-      {
-        "name": "default_impact_size_usd",
-        "type": "string"
-      },
-      {
-        "name": "default_mark_price_band",
-        "type": "uint32"
-      },
-      {
-        "name": "default_last_price_protected_band",
-        "type": "uint32"
-      },
-      {
-        "name": "max_active_markets",
-        "type": "uint32"
-      },
-      {
-        "name": "default_trading_bandwidth",
-        "type": "uint32"
-      }
-    ],
     "CreateMarketProposal": [
       {
         "name": "title",
@@ -22468,17 +22330,13 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "order_by",
-        "type": "string"
-      },
-      {
         "name": "status",
         "type": "string"
       },
       {
         "name": "pagination",
         "type": "PageRequest",
-        "packageName": "/Switcheo.carbon.query"
+        "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
     "QueryAllPositionResponse": [
@@ -22490,7 +22348,7 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "pagination",
         "type": "PageResponse",
-        "packageName": "/Switcheo.carbon.query"
+        "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
     "QueryPositionAllocatedMarginRequest": [

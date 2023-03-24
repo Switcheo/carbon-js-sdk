@@ -45,8 +45,10 @@ export interface SetLiquidationFeeEvent {
 }
 
 export interface SetStablecoinInterestRateEvent {
+  /** Deprecated for stablecoin_interest_rate_dec */
   stablecoinInterestRate: string;
   type: string;
+  stablecoinInterestRateDec: string;
 }
 
 export interface SetStablecoinMintCapEvent {
@@ -774,6 +776,7 @@ export const SetLiquidationFeeEvent = {
 const baseSetStablecoinInterestRateEvent: object = {
   stablecoinInterestRate: "",
   type: "",
+  stablecoinInterestRateDec: "",
 };
 
 export const SetStablecoinInterestRateEvent = {
@@ -786,6 +789,9 @@ export const SetStablecoinInterestRateEvent = {
     }
     if (message.type !== "") {
       writer.uint32(18).string(message.type);
+    }
+    if (message.stablecoinInterestRateDec !== "") {
+      writer.uint32(26).string(message.stablecoinInterestRateDec);
     }
     return writer;
   },
@@ -808,6 +814,9 @@ export const SetStablecoinInterestRateEvent = {
         case 2:
           message.type = reader.string();
           break;
+        case 3:
+          message.stablecoinInterestRateDec = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -829,6 +838,11 @@ export const SetStablecoinInterestRateEvent = {
       object.type !== undefined && object.type !== null
         ? String(object.type)
         : "";
+    message.stablecoinInterestRateDec =
+      object.stablecoinInterestRateDec !== undefined &&
+      object.stablecoinInterestRateDec !== null
+        ? String(object.stablecoinInterestRateDec)
+        : "";
     return message;
   },
 
@@ -837,6 +851,8 @@ export const SetStablecoinInterestRateEvent = {
     message.stablecoinInterestRate !== undefined &&
       (obj.stablecoinInterestRate = message.stablecoinInterestRate);
     message.type !== undefined && (obj.type = message.type);
+    message.stablecoinInterestRateDec !== undefined &&
+      (obj.stablecoinInterestRateDec = message.stablecoinInterestRateDec);
     return obj;
   },
 
@@ -848,6 +864,7 @@ export const SetStablecoinInterestRateEvent = {
     } as SetStablecoinInterestRateEvent;
     message.stablecoinInterestRate = object.stablecoinInterestRate ?? "";
     message.type = object.type ?? "";
+    message.stablecoinInterestRateDec = object.stablecoinInterestRateDec ?? "";
     return message;
   },
 };
