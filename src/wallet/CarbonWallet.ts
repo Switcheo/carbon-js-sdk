@@ -241,7 +241,10 @@ export class CarbonWallet {
     const signer = KeplrAccount.createKeplrSigner(keplr, chainInfo, keplrKey);
     const publicKeyBase64 = Buffer.from(keplrKey.pubKey).toString("base64");
 
-    const wallet = CarbonWallet.withSigner(signer, publicKeyBase64, opts);
+    const wallet = CarbonWallet.withSigner(signer, publicKeyBase64, {
+      ...opts,
+      providerAgent: 'keplr-extension',
+    });
     return wallet;
   }
 
@@ -249,7 +252,10 @@ export class CarbonWallet {
     const signer = LeapAccount.createLeapSigner(leap, chainId);
     const publicKeyBase64 = Buffer.from(leapKey.pubKey).toString("base64");
 
-    const wallet = CarbonWallet.withSigner(signer, publicKeyBase64, opts);
+    const wallet = CarbonWallet.withSigner(signer, publicKeyBase64, {
+      ...opts,
+      providerAgent: 'leap-extension',
+    });
     return wallet;
   }
 

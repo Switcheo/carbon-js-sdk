@@ -1,11 +1,14 @@
+import tokenClient from "@carbon-sdk/clients/TokenClient";
 import {
   AssetParams,
   DebtInfo,
+  MsgWithdrawFromGroup,
   QueryCdpParamsRequest,
   QueryTokenPriceRequest,
   RateStrategyParams,
-  StablecoinDebtInfo,
+  StablecoinDebtInfo
 } from "@carbon-sdk/codec";
+import { Params } from "@carbon-sdk/codec/cdp/params";
 import {
   QueryAccountDebtAllRequest,
   QueryAccountStablecoinRequest,
@@ -13,44 +16,34 @@ import {
   QueryParamsRequest,
   QueryRateStrategyRequest,
   QueryStablecoinDebtRequest,
-  QueryTokenDebtRequest,
+  QueryTokenDebtRequest
 } from "@carbon-sdk/codec/cdp/query";
 import {
-  MsgBorrowAsset,
-  MsgLiquidateCollateral,
+  MsgBorrowAsset, MsgClaimRewards,
+  MsgCreateRewardScheme, MsgLiquidateCollateral,
   MsgLiquidateCollateralWithCdpTokens,
   MsgLiquidateCollateralWithCollateral,
-  MsgLiquidateCollateralWithStablecoin,
-  MsgLockCollateral,
+  MsgLiquidateCollateralWithStablecoin, MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens,
+  MsgLiquidateCollateralWithStablecoinAndInterestInCollateral, MsgLockCollateral,
   MsgMintStablecoin,
   MsgRepayAsset,
   MsgRepayAssetWithCdpTokens,
   MsgRepayAssetWithCollateral,
-  MsgReturnStablecoin,
-  MsgSupplyAsset,
+  MsgReturnStablecoin, MsgReturnStablecoinWithInterestInCdpTokens,
+  MsgReturnStablecoinWithInterestInCollateral, MsgSupplyAsset,
   MsgSupplyAssetAndLockCollateral,
   MsgUnlockCollateral,
   MsgUnlockCollateralAndWithdrawAsset,
-  MsgUpdateRateStrategy,
-  MsgWithdrawAsset,
-  MsgClaimRewards,
-  MsgCreateRewardScheme,
-  MsgUpdateRewardScheme,
-  MsgReturnStablecoinWithInterestInCdpTokens,
-  MsgReturnStablecoinWithInterestInCollateral,
-  MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens,
-  MsgLiquidateCollateralWithStablecoinAndInterestInCollateral,
+  MsgUpdateRateStrategy, MsgUpdateRewardScheme, MsgWithdrawAsset
 } from "@carbon-sdk/codec/cdp/tx";
 import { QueryBalanceRequest, QuerySupplyOfRequest } from "@carbon-sdk/codec/cosmos/bank/v1beta1/query";
+import { Network } from "@carbon-sdk/constant";
 import { CarbonTx } from "@carbon-sdk/util";
-import { BN_10000, BN_ONE, BN_ZERO, bnOrZero } from "@carbon-sdk/util/number";
+import { SWTHAddress } from "@carbon-sdk/util/address";
+import { bnOrZero, BN_10000, BN_ONE, BN_ZERO } from "@carbon-sdk/util/number";
 import { BigNumber } from "bignumber.js";
 import { Debt, QueryAccountCollateralAllRequest, QueryAssetAllRequest, QueryTokenDebtAllRequest } from "./../codec/cdp/query";
 import BaseModule from "./base";
-import { Network } from "@carbon-sdk/constant";
-import tokenClient from "@carbon-sdk/clients/TokenClient";
-import { SWTHAddress } from "@carbon-sdk/util/address";
-import { Params } from "@carbon-sdk/codec/cdp/params";
 
 export class CDPModule extends BaseModule {
   private cdpModuleAddress: string | undefined;
@@ -139,25 +132,6 @@ export class CDPModule extends BaseModule {
     return await wallet.sendTx(
       {
         typeUrl: CarbonTx.Types.MsgBorrowAsset,
-        value,
-      },
-      opts
-    );
-  }
-
-  public async repayAsset(params: CDPModule.RepayAssetParams, opts?: CarbonTx.SignTxOpts) {
-    const wallet = this.getWallet();
-
-    const value = MsgRepayAsset.fromPartial({
-      creator: wallet.bech32Address,
-      denom: params.denom,
-      amount: params.amount.toString(10),
-      debtor: params.debtor,
-    });
-
-    return await wallet.sendTx(
-      {
-        typeUrl: CarbonTx.Types.MsgRepayAsset,
         value,
       },
       opts
@@ -287,6 +261,54 @@ export class CDPModule extends BaseModule {
       },
       opts
     );
+  }
+
+  public async repayAsset(params: CDPModule.RepayAssetParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+
+    const value = MsgRepayAsset.fromPartial({
+      creator: wallet.bech32Address,
+      denom: params.denom,
+      amount: params.amount.toString(10),
+      debtor: params.debtor,
+    });
+
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgRepayAsset,
+        value,
+      },
+      opts
+    );
+  }
+
+  /**
+   * Uses grouped token balance to repay for existing CDP asset debt.
+   * Calls 2 msg in 1 tx, MsgWithdrawFromGroup and MsgRepayAsset.
+   * Ensure that grouped token balance is sufficient.
+   */
+  public async repayAssetWithGroupedToken(params: CDPModule.RepayAssetWithGroupedToken, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+    const debtor = params.debtor ? params.debtor : wallet.bech32Address;
+
+    return await wallet.sendTxs([{
+      typeUrl: CarbonTx.Types.MsgWithdrawFromGroup,
+      value: MsgWithdrawFromGroup.fromPartial({
+        creator: wallet.bech32Address,
+        sourceCoin: {
+          amount: params.amount.toString(10),
+          denom: params.denom,
+        },
+      }),
+    }, {
+      typeUrl: CarbonTx.Types.MsgRepayAsset,
+      value: MsgRepayAsset.fromPartial({
+        creator: wallet.bech32Address,
+        debtor: debtor,
+        denom: params.denom,
+        amount: params.amount.toString(10),
+      }),
+    }], opts);
   }
 
   public async repayAssetWithCdpTokens(params: CDPModule.RepayAssetWithCdpTokensParams, opts?: CarbonTx.SignTxOpts) {
@@ -1241,6 +1263,11 @@ export namespace CDPModule {
     debtDenom: string;
     cdpDenom: string;
     cdpAmount: BigNumber;
+  }
+  export interface RepayAssetWithGroupedToken {
+    denom: string;
+    amount: BigNumber;
+    debtor?: string;
   }
   export interface RepayAssetWithCollateralParams {
     debtor?: string;

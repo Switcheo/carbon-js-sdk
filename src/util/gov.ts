@@ -1,7 +1,6 @@
 import {
   CreateOracleProposal,
   CreateTokenProposal,
-  LinkPoolProposal,
   SetCommitmentCurveProposal,
   SetMsgGasCostProposal,
   SetMinGasPriceProposal,
@@ -10,7 +9,6 @@ import {
   SetRewardCurveProposal,
   SetRewardsWeightsProposal,
   SettlementPriceProposal,
-  UnlinkPoolProposal,
   UpdateMarketProposal,
   UpdatePoolProposal,
 } from "@carbon-sdk/codec";
@@ -19,6 +17,7 @@ import { TextProposal } from "@carbon-sdk/codec/cosmos/gov/v1beta1/gov";
 import { ParameterChangeProposal } from "@carbon-sdk/codec/cosmos/params/v1beta1/params";
 import { CancelSoftwareUpgradeProposal, SoftwareUpgradeProposal } from "@carbon-sdk/codec/cosmos/upgrade/v1beta1/upgrade";
 import { Any } from "@carbon-sdk/codec/google/protobuf/any";
+import { ClientUpdateProposal } from "@carbon-sdk/codec/ibc/core/client/v1/client";
 
 export enum ProposalTypes {
   ParameterChange = "/cosmos.params.v1beta1.ParameterChangeProposal",
@@ -33,14 +32,13 @@ export enum ProposalTypes {
   RemoveMinGasPrice = "/Switcheo.carbon.fee.RemoveMinGasPriceProposal",
   CreateToken = "/Switcheo.carbon.coin.CreateTokenProposal",
   CreateOracle = "/Switcheo.carbon.oracle.CreateOracleProposal",
-  LinkPool = "/Switcheo.carbon.liquiditypool.LinkPoolProposal",
-  UnlinkPool = "/Switcheo.carbon.liquiditypool.UnlinkPoolProposal",
   UpdatePool = "/Switcheo.carbon.liquiditypool.UpdatePoolProposal",
   SetRewardCurve = "/Switcheo.carbon.liquiditypool.SetRewardCurveProposal",
   SetRewardsWeights = "/Switcheo.carbon.liquiditypool.SetRewardsWeightsProposal",
   SetCommitmentCurve = "/Switcheo.carbon.liquiditypool.SetCommitmentCurveProposal",
   UpdateMarket = "/Switcheo.carbon.market.UpdateMarketProposal",
   SettlementPrice = "/Switcheo.carbon.pricing.SettlementPriceProposal",
+  ClientUpdateProposal = "/ibc.core.client.v1.ClientUpdateProposal",
   CreateGroup = "/Switcheo.carbon.coin.CreateGroupProposal",
   UpdateGroup = "/Switcheo.carbon.coin.UpdateGroupProposal",
   RegisterToGroup = "/Switcheo.carbon.coin.RegisterToGroupProposal",
@@ -105,11 +103,6 @@ export const decodeContent = (content?: Any): PropDecoded => {
         ...content,
         value: CreateTokenProposal.decode(content.value),
       };
-    case ProposalTypes.LinkPool:
-      return {
-        ...content,
-        value: LinkPoolProposal.decode(content.value),
-      };
     case ProposalTypes.SetCommitmentCurve:
       return {
         ...content,
@@ -150,15 +143,15 @@ export const decodeContent = (content?: Any): PropDecoded => {
         ...content,
         value: SettlementPriceProposal.decode(content.value),
       };
-    case ProposalTypes.UnlinkPool:
-      return {
-        ...content,
-        value: UnlinkPoolProposal.decode(content.value),
-      };
     case ProposalTypes.UpdateMarket:
       return {
         ...content,
         value: UpdateMarketProposal.decode(content.value),
+      };
+    case ProposalTypes.ClientUpdateProposal:
+      return {
+        ...content,
+        value: ClientUpdateProposal.decode(content.value),
       };
     default:
       return emptyProposal;

@@ -8,6 +8,9 @@ import {
   SetCommitmentCurveParams,
   SetRewardsWeightsParams,
   UpdatePoolParams,
+  CreatePoolRouteParams,
+  RemovePoolRouteParams,
+  UpdatePoolRouteParams,
 } from "./tx";
 
 export const protobufPackage = "Switcheo.carbon.liquiditypool";
@@ -46,6 +49,24 @@ export interface UpdatePoolProposal {
   title: string;
   description: string;
   msg?: UpdatePoolParams;
+}
+
+export interface CreatePoolRouteProposal {
+  title: string;
+  description: string;
+  msg?: CreatePoolRouteParams;
+}
+
+export interface RemovePoolRouteProposal {
+  title: string;
+  description: string;
+  msg?: RemovePoolRouteParams;
+}
+
+export interface UpdatePoolRouteProposal {
+  title: string;
+  description: string;
+  msg?: UpdatePoolRouteParams;
 }
 
 const baseLinkPoolProposal: object = { title: "", description: "" };
@@ -584,6 +605,300 @@ export const UpdatePoolProposal = {
     message.msg =
       object.msg !== undefined && object.msg !== null
         ? UpdatePoolParams.fromPartial(object.msg)
+        : undefined;
+    return message;
+  },
+};
+
+const baseCreatePoolRouteProposal: object = { title: "", description: "" };
+
+export const CreatePoolRouteProposal = {
+  encode(
+    message: CreatePoolRouteProposal,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.title !== "") {
+      writer.uint32(10).string(message.title);
+    }
+    if (message.description !== "") {
+      writer.uint32(18).string(message.description);
+    }
+    if (message.msg !== undefined) {
+      CreatePoolRouteParams.encode(
+        message.msg,
+        writer.uint32(26).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): CreatePoolRouteProposal {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseCreatePoolRouteProposal,
+    } as CreatePoolRouteProposal;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.title = reader.string();
+          break;
+        case 2:
+          message.description = reader.string();
+          break;
+        case 3:
+          message.msg = CreatePoolRouteParams.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CreatePoolRouteProposal {
+    const message = {
+      ...baseCreatePoolRouteProposal,
+    } as CreatePoolRouteProposal;
+    message.title =
+      object.title !== undefined && object.title !== null
+        ? String(object.title)
+        : "";
+    message.description =
+      object.description !== undefined && object.description !== null
+        ? String(object.description)
+        : "";
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? CreatePoolRouteParams.fromJSON(object.msg)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: CreatePoolRouteProposal): unknown {
+    const obj: any = {};
+    message.title !== undefined && (obj.title = message.title);
+    message.description !== undefined &&
+      (obj.description = message.description);
+    message.msg !== undefined &&
+      (obj.msg = message.msg
+        ? CreatePoolRouteParams.toJSON(message.msg)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<CreatePoolRouteProposal>
+  ): CreatePoolRouteProposal {
+    const message = {
+      ...baseCreatePoolRouteProposal,
+    } as CreatePoolRouteProposal;
+    message.title = object.title ?? "";
+    message.description = object.description ?? "";
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? CreatePoolRouteParams.fromPartial(object.msg)
+        : undefined;
+    return message;
+  },
+};
+
+const baseRemovePoolRouteProposal: object = { title: "", description: "" };
+
+export const RemovePoolRouteProposal = {
+  encode(
+    message: RemovePoolRouteProposal,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.title !== "") {
+      writer.uint32(10).string(message.title);
+    }
+    if (message.description !== "") {
+      writer.uint32(18).string(message.description);
+    }
+    if (message.msg !== undefined) {
+      RemovePoolRouteParams.encode(
+        message.msg,
+        writer.uint32(26).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): RemovePoolRouteProposal {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseRemovePoolRouteProposal,
+    } as RemovePoolRouteProposal;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.title = reader.string();
+          break;
+        case 2:
+          message.description = reader.string();
+          break;
+        case 3:
+          message.msg = RemovePoolRouteParams.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): RemovePoolRouteProposal {
+    const message = {
+      ...baseRemovePoolRouteProposal,
+    } as RemovePoolRouteProposal;
+    message.title =
+      object.title !== undefined && object.title !== null
+        ? String(object.title)
+        : "";
+    message.description =
+      object.description !== undefined && object.description !== null
+        ? String(object.description)
+        : "";
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? RemovePoolRouteParams.fromJSON(object.msg)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: RemovePoolRouteProposal): unknown {
+    const obj: any = {};
+    message.title !== undefined && (obj.title = message.title);
+    message.description !== undefined &&
+      (obj.description = message.description);
+    message.msg !== undefined &&
+      (obj.msg = message.msg
+        ? RemovePoolRouteParams.toJSON(message.msg)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<RemovePoolRouteProposal>
+  ): RemovePoolRouteProposal {
+    const message = {
+      ...baseRemovePoolRouteProposal,
+    } as RemovePoolRouteProposal;
+    message.title = object.title ?? "";
+    message.description = object.description ?? "";
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? RemovePoolRouteParams.fromPartial(object.msg)
+        : undefined;
+    return message;
+  },
+};
+
+const baseUpdatePoolRouteProposal: object = { title: "", description: "" };
+
+export const UpdatePoolRouteProposal = {
+  encode(
+    message: UpdatePoolRouteProposal,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.title !== "") {
+      writer.uint32(10).string(message.title);
+    }
+    if (message.description !== "") {
+      writer.uint32(18).string(message.description);
+    }
+    if (message.msg !== undefined) {
+      UpdatePoolRouteParams.encode(
+        message.msg,
+        writer.uint32(26).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): UpdatePoolRouteProposal {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseUpdatePoolRouteProposal,
+    } as UpdatePoolRouteProposal;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.title = reader.string();
+          break;
+        case 2:
+          message.description = reader.string();
+          break;
+        case 3:
+          message.msg = UpdatePoolRouteParams.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UpdatePoolRouteProposal {
+    const message = {
+      ...baseUpdatePoolRouteProposal,
+    } as UpdatePoolRouteProposal;
+    message.title =
+      object.title !== undefined && object.title !== null
+        ? String(object.title)
+        : "";
+    message.description =
+      object.description !== undefined && object.description !== null
+        ? String(object.description)
+        : "";
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? UpdatePoolRouteParams.fromJSON(object.msg)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: UpdatePoolRouteProposal): unknown {
+    const obj: any = {};
+    message.title !== undefined && (obj.title = message.title);
+    message.description !== undefined &&
+      (obj.description = message.description);
+    message.msg !== undefined &&
+      (obj.msg = message.msg
+        ? UpdatePoolRouteParams.toJSON(message.msg)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<UpdatePoolRouteProposal>
+  ): UpdatePoolRouteProposal {
+    const message = {
+      ...baseUpdatePoolRouteProposal,
+    } as UpdatePoolRouteProposal;
+    message.title = object.title ?? "";
+    message.description = object.description ?? "";
+    message.msg =
+      object.msg !== undefined && object.msg !== null
+        ? UpdatePoolRouteParams.fromPartial(object.msg)
         : undefined;
     return message;
   },

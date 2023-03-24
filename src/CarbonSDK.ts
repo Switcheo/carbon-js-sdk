@@ -106,6 +106,8 @@ class CarbonSDK {
   eth: ETHClient;
   bsc: ETHClient;
   arbitrum: ETHClient;
+  polygon: ETHClient;
+  okc: ETHClient;
   zil: ZILClient;
   n3: N3Client;
   chainId: string;
@@ -119,8 +121,8 @@ class CarbonSDK {
     this.chainId = opts.chainId ?? CarbonChainIDs[this.network] ?? CarbonChainIDs[Network.MainNet];
     this.query = new CarbonQueryClient(opts.tmClient);
     this.insights = new InsightsQueryClient(this.networkConfig);
-    this.hydrogen = new HydrogenClient(this.networkConfig);
     this.token = opts.token ?? TokenClient.instance(this.query, this);
+    this.hydrogen = HydrogenClient.instance(this.networkConfig, this.token);
 
     this.admin = new AdminModule(this);
     this.order = new OrderModule(this);
@@ -171,6 +173,18 @@ class CarbonSDK {
     this.arbitrum = ETHClient.instance({
       configProvider: this,
       blockchain: Blockchain.Arbitrum,
+      tokenClient: this.token,
+    });
+
+    this.polygon = ETHClient.instance({
+      configProvider: this,
+      blockchain: Blockchain.Polygon,
+      tokenClient: this.token,
+    });
+
+    this.okc = ETHClient.instance({
+      configProvider: this,
+      blockchain: Blockchain.Okc,
       tokenClient: this.token,
     });
   }
@@ -358,9 +372,9 @@ class CarbonSDK {
   public async connectWithKeplr(keplr: Keplr, opts?: CarbonWalletGenericOpts) {
     const chainInfo = await KeplrAccount.getChainInfo(this);
     const chainId = chainInfo.chainId;
-    const keplrKey = await keplr.getKey(chainId);
-
     await keplr.experimentalSuggestChain(chainInfo);
+
+    const keplrKey = await keplr.getKey(chainId);
     await keplr.enable(chainId);
 
     const wallet = CarbonWallet.withKeplr(keplr, chainInfo, keplrKey, {
@@ -374,9 +388,9 @@ class CarbonSDK {
   public async connectWithLeap(leap: LeapExtended, opts?: CarbonWalletGenericOpts) {
     const chainId = this.chainId;
     const chainInfo = await LeapAccount.getChainInfo(this);
-    const leapKey = await leap.getKey(chainId);
-
     await leap.experimentalSuggestChain(chainInfo);
+
+    const leapKey = await leap.getKey(chainId);
     await leap.enable(chainId);
 
     const wallet = CarbonWallet.withLeap(leap, chainId, leapKey, {

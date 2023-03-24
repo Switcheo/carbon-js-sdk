@@ -2,7 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { RateStrategyParams } from "./rate_strategy_params";
-import { AssetParams } from "./asset_params";
+import { AssetParams, UpdateAssetParams } from "./asset_params";
 import {
   CreateRewardSchemeParams,
   UpdateRewardSchemeParams,
@@ -48,7 +48,7 @@ export interface MsgAddAssetResponse {
 
 export interface MsgUpdateAsset {
   creator: string;
-  assetParams?: AssetParams;
+  assetParams?: UpdateAssetParams;
 }
 
 export interface MsgUpdateAssetResponse {
@@ -945,7 +945,7 @@ export const MsgUpdateAsset = {
       writer.uint32(10).string(message.creator);
     }
     if (message.assetParams !== undefined) {
-      AssetParams.encode(
+      UpdateAssetParams.encode(
         message.assetParams,
         writer.uint32(18).fork()
       ).ldelim();
@@ -964,7 +964,10 @@ export const MsgUpdateAsset = {
           message.creator = reader.string();
           break;
         case 2:
-          message.assetParams = AssetParams.decode(reader, reader.uint32());
+          message.assetParams = UpdateAssetParams.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         default:
           reader.skipType(tag & 7);
@@ -982,7 +985,7 @@ export const MsgUpdateAsset = {
         : "";
     message.assetParams =
       object.assetParams !== undefined && object.assetParams !== null
-        ? AssetParams.fromJSON(object.assetParams)
+        ? UpdateAssetParams.fromJSON(object.assetParams)
         : undefined;
     return message;
   },
@@ -992,7 +995,7 @@ export const MsgUpdateAsset = {
     message.creator !== undefined && (obj.creator = message.creator);
     message.assetParams !== undefined &&
       (obj.assetParams = message.assetParams
-        ? AssetParams.toJSON(message.assetParams)
+        ? UpdateAssetParams.toJSON(message.assetParams)
         : undefined);
     return obj;
   },
@@ -1002,7 +1005,7 @@ export const MsgUpdateAsset = {
     message.creator = object.creator ?? "";
     message.assetParams =
       object.assetParams !== undefined && object.assetParams !== null
-        ? AssetParams.fromPartial(object.assetParams)
+        ? UpdateAssetParams.fromPartial(object.assetParams)
         : undefined;
     return message;
   },

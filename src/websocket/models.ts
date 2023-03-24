@@ -85,6 +85,24 @@ export interface AccountTrade {
   quantity: string;
   side: string;
   trade_id: number;
+  id?: string;
+  liquidation?: string;
+  taker_id?: string;
+  taker_side?: string;
+  taker_address?: string;
+  taker_fee_amount?: string;
+  taker_fee_denom?: string;
+  taker_fee_kickback?: string;
+  taker_fee_commission?: string;
+  taker_fee_commission_address?: string;
+  maker_id?: string;
+  maker_side?: string;
+  maker_address?: string;
+  maker_fee_amount?: string;
+  maker_fee_denom?: string;
+  maker_fee_kickback?: string;
+  maker_fee_commission?: string;
+  maker_fee_commission_address?: string;
 }
 
 export interface Position {
@@ -156,12 +174,18 @@ export interface Pool {
     amount_b: string; // string representation of number
     weight_b: string; // string representation of number
     swap_fee: string; // string representation of number
-    num_quotes: number;
     shares_amount: string; // string representation of number
-    market: string;
     amp_bps: string;
     v_amount_a: string;
     v_amount_b: string;
+
+    /**
+     * @deprecated num_quotes and market fields have been removed in websocket data
+     * Use Pool Routes API to retrieve numQuotes value for market, as well as the attached pool ids
+     * i.e. sdk.query.liquiditypool.PoolRoutesAll({})
+     **/
+    num_quotes?: number;
+    market?: string;
   };
   rewards_weight: string; // string representation of number
   total_commitment: string; // string representation of number
