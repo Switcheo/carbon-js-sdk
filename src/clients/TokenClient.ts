@@ -110,8 +110,8 @@ class TokenClient {
       // pool and cdp tokens are on the Native blockchain, hence 0
       chainId = 0;
     }
-    if (TokenClient.isIBCDenom(denom)) {
-      return IBCUtils.getBlockchainFromSourceChain(tokenData);
+    if (TokenClient.isIBCDenom(denom)) {  
+      return IBCUtils.BlockchainMap[denom];
     }
 
     const blockchain = BlockchainUtils.blockchainForChainId(chainId, networkConfig.network);

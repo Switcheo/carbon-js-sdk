@@ -104,22 +104,6 @@ export const getIbcChainFromBlockchain = (blockchain: BlockchainV2 | undefined):
   return ibcChain;
 };
 
-export const getBlockchainFromSourceChain = (token?: Token): Blockchain | undefined => {
-  if (!token || token?.bridgeId.toNumber() !== BRIDGE_IDS.ibc) return undefined;
-  const sourceChainId = Math.max(token.chainId.toNumber() - 1, 0);
-  const sourceChannelId = `channel-${sourceChainId}`;
-  let chainId: ChainIds | undefined
-
-  Object.entries(swthChannels).forEach(([key, value]: [string, ChannelConfig]) => {
-    if (chainId) return
-
-    if (value.sourceChannel === sourceChannelId) {
-      chainId = key as ChainIds
-    }
-  });
-  return chainId ? ChainIdBlockchainMap[chainId] : undefined;
-}
-
 export const BlockchainMap = Object.values(EmbedChainInfos).reduce(
   (prev: SimpleMap<string | undefined>, chainInfo: ChainInfoExplorerTmRpc) => {
     if (!ibcWhitelist.includes(chainInfo.chainId)) {
