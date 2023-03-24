@@ -538,7 +538,7 @@ export class MetaMask {
   // get uncompressed public key from Metamask (need to be updated as is deprecated)
   async getCompressedPublicKey(address: string, metamaskAPI?: MetaMaskAPI): Promise<string> {
     const api = metamaskAPI ?? await this.getConnectedAPI();
-    const uncompressedPubKey = await this.getPublicKey(address, metamaskAPI)
+    const uncompressedPubKey = await this.getPublicKey(address, api)
     return EthCrypto.publicKey.compress(uncompressedPubKey)
   }
 
