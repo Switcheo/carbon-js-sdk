@@ -1,6 +1,10 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
+import {
+  PageRequest,
+  PageResponse,
+} from "../cosmos/base/query/v1beta1/pagination";
 import { Params } from "./liquidation";
 import { AccountTrade } from "../misc/trade";
 
@@ -10,17 +14,17 @@ export const protobufPackage = "Switcheo.carbon.liquidation";
 export interface QueryAllLiquidationRequest {
   address: string;
   market: string;
-  limit: Long;
   beforeId: Long;
   afterId: Long;
-  orderBy: string;
   orderId: string;
   afterBlock: Long;
   beforeBlock: Long;
+  pagination?: PageRequest;
 }
 
 export interface QueryAllLiquidationResponse {
   trades: AccountTrade[];
+  pagination?: PageResponse;
 }
 
 /** QueryParamsRequest is request type for the Query/Params RPC method. */
@@ -35,10 +39,8 @@ export interface QueryParamsResponse {
 const baseQueryAllLiquidationRequest: object = {
   address: "",
   market: "",
-  limit: Long.UZERO,
   beforeId: Long.UZERO,
   afterId: Long.UZERO,
-  orderBy: "",
   orderId: "",
   afterBlock: Long.UZERO,
   beforeBlock: Long.UZERO,
@@ -55,17 +57,11 @@ export const QueryAllLiquidationRequest = {
     if (message.market !== "") {
       writer.uint32(18).string(message.market);
     }
-    if (!message.limit.isZero()) {
-      writer.uint32(24).uint64(message.limit);
-    }
     if (!message.beforeId.isZero()) {
       writer.uint32(32).uint64(message.beforeId);
     }
     if (!message.afterId.isZero()) {
       writer.uint32(40).uint64(message.afterId);
-    }
-    if (message.orderBy !== "") {
-      writer.uint32(50).string(message.orderBy);
     }
     if (message.orderId !== "") {
       writer.uint32(58).string(message.orderId);
@@ -75,6 +71,9 @@ export const QueryAllLiquidationRequest = {
     }
     if (!message.beforeBlock.isZero()) {
       writer.uint32(72).uint64(message.beforeBlock);
+    }
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(82).fork()).ldelim();
     }
     return writer;
   },
@@ -97,17 +96,11 @@ export const QueryAllLiquidationRequest = {
         case 2:
           message.market = reader.string();
           break;
-        case 3:
-          message.limit = reader.uint64() as Long;
-          break;
         case 4:
           message.beforeId = reader.uint64() as Long;
           break;
         case 5:
           message.afterId = reader.uint64() as Long;
-          break;
-        case 6:
-          message.orderBy = reader.string();
           break;
         case 7:
           message.orderId = reader.string();
@@ -117,6 +110,9 @@ export const QueryAllLiquidationRequest = {
           break;
         case 9:
           message.beforeBlock = reader.uint64() as Long;
+          break;
+        case 10:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -138,10 +134,6 @@ export const QueryAllLiquidationRequest = {
       object.market !== undefined && object.market !== null
         ? String(object.market)
         : "";
-    message.limit =
-      object.limit !== undefined && object.limit !== null
-        ? Long.fromString(object.limit)
-        : Long.UZERO;
     message.beforeId =
       object.beforeId !== undefined && object.beforeId !== null
         ? Long.fromString(object.beforeId)
@@ -150,10 +142,6 @@ export const QueryAllLiquidationRequest = {
       object.afterId !== undefined && object.afterId !== null
         ? Long.fromString(object.afterId)
         : Long.UZERO;
-    message.orderBy =
-      object.orderBy !== undefined && object.orderBy !== null
-        ? String(object.orderBy)
-        : "";
     message.orderId =
       object.orderId !== undefined && object.orderId !== null
         ? String(object.orderId)
@@ -166,6 +154,10 @@ export const QueryAllLiquidationRequest = {
       object.beforeBlock !== undefined && object.beforeBlock !== null
         ? Long.fromString(object.beforeBlock)
         : Long.UZERO;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -173,18 +165,19 @@ export const QueryAllLiquidationRequest = {
     const obj: any = {};
     message.address !== undefined && (obj.address = message.address);
     message.market !== undefined && (obj.market = message.market);
-    message.limit !== undefined &&
-      (obj.limit = (message.limit || Long.UZERO).toString());
     message.beforeId !== undefined &&
       (obj.beforeId = (message.beforeId || Long.UZERO).toString());
     message.afterId !== undefined &&
       (obj.afterId = (message.afterId || Long.UZERO).toString());
-    message.orderBy !== undefined && (obj.orderBy = message.orderBy);
     message.orderId !== undefined && (obj.orderId = message.orderId);
     message.afterBlock !== undefined &&
       (obj.afterBlock = (message.afterBlock || Long.UZERO).toString());
     message.beforeBlock !== undefined &&
       (obj.beforeBlock = (message.beforeBlock || Long.UZERO).toString());
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
     return obj;
   },
 
@@ -196,10 +189,6 @@ export const QueryAllLiquidationRequest = {
     } as QueryAllLiquidationRequest;
     message.address = object.address ?? "";
     message.market = object.market ?? "";
-    message.limit =
-      object.limit !== undefined && object.limit !== null
-        ? Long.fromValue(object.limit)
-        : Long.UZERO;
     message.beforeId =
       object.beforeId !== undefined && object.beforeId !== null
         ? Long.fromValue(object.beforeId)
@@ -208,7 +197,6 @@ export const QueryAllLiquidationRequest = {
       object.afterId !== undefined && object.afterId !== null
         ? Long.fromValue(object.afterId)
         : Long.UZERO;
-    message.orderBy = object.orderBy ?? "";
     message.orderId = object.orderId ?? "";
     message.afterBlock =
       object.afterBlock !== undefined && object.afterBlock !== null
@@ -218,6 +206,10 @@ export const QueryAllLiquidationRequest = {
       object.beforeBlock !== undefined && object.beforeBlock !== null
         ? Long.fromValue(object.beforeBlock)
         : Long.UZERO;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -231,6 +223,12 @@ export const QueryAllLiquidationResponse = {
   ): _m0.Writer {
     for (const v of message.trades) {
       AccountTrade.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
     }
     return writer;
   },
@@ -251,6 +249,9 @@ export const QueryAllLiquidationResponse = {
         case 1:
           message.trades.push(AccountTrade.decode(reader, reader.uint32()));
           break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -266,6 +267,10 @@ export const QueryAllLiquidationResponse = {
     message.trades = (object.trades ?? []).map((e: any) =>
       AccountTrade.fromJSON(e)
     );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -278,6 +283,10 @@ export const QueryAllLiquidationResponse = {
     } else {
       obj.trades = [];
     }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
     return obj;
   },
 
@@ -290,6 +299,10 @@ export const QueryAllLiquidationResponse = {
     message.trades = (object.trades ?? []).map((e) =>
       AccountTrade.fromPartial(e)
     );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };

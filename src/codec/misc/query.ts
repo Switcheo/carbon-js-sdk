@@ -1,7 +1,10 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { PageRequest, PageResponse } from "../query/pagination";
+import {
+  PageRequest,
+  PageResponse,
+} from "../cosmos/base/query/v1beta1/pagination";
 import { Transaction } from "./transaction";
 import { Order } from "../order/order";
 import { Block } from "./block";

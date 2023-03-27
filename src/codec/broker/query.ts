@@ -1,7 +1,10 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { PageRequest, PageResponse } from "../query/pagination";
+import {
+  PageRequest,
+  PageResponse,
+} from "../cosmos/base/query/v1beta1/pagination";
 import { MinMaxBoundary } from "./pagination";
 import { Candlestick } from "./candlestick";
 import { TradeEvent } from "./event";
@@ -22,10 +25,8 @@ export interface QueryCandlesticksResponse {
 export interface QueryTradesRequest {
   address: string;
   market: string;
-  limit: Long;
   beforeId: Long;
   afterId: Long;
-  orderBy: string;
   orderId: string;
   afterBlock: Long;
   beforeBlock: Long;
@@ -42,7 +43,6 @@ export interface QueryTradesForPositionRequest {
   address: string;
   market: string;
   openedBlockHeight: Long;
-  orderBy: string;
   pagination?: PageRequest;
 }
 
@@ -245,10 +245,8 @@ export const QueryCandlesticksResponse = {
 const baseQueryTradesRequest: object = {
   address: "",
   market: "",
-  limit: Long.UZERO,
   beforeId: Long.UZERO,
   afterId: Long.UZERO,
-  orderBy: "",
   orderId: "",
   afterBlock: Long.UZERO,
   beforeBlock: Long.UZERO,
@@ -265,17 +263,11 @@ export const QueryTradesRequest = {
     if (message.market !== "") {
       writer.uint32(18).string(message.market);
     }
-    if (!message.limit.isZero()) {
-      writer.uint32(24).uint64(message.limit);
-    }
     if (!message.beforeId.isZero()) {
       writer.uint32(32).uint64(message.beforeId);
     }
     if (!message.afterId.isZero()) {
       writer.uint32(40).uint64(message.afterId);
-    }
-    if (message.orderBy !== "") {
-      writer.uint32(50).string(message.orderBy);
     }
     if (message.orderId !== "") {
       writer.uint32(58).string(message.orderId);
@@ -305,17 +297,11 @@ export const QueryTradesRequest = {
         case 2:
           message.market = reader.string();
           break;
-        case 3:
-          message.limit = reader.uint64() as Long;
-          break;
         case 4:
           message.beforeId = reader.uint64() as Long;
           break;
         case 5:
           message.afterId = reader.uint64() as Long;
-          break;
-        case 6:
-          message.orderBy = reader.string();
           break;
         case 7:
           message.orderId = reader.string();
@@ -347,10 +333,6 @@ export const QueryTradesRequest = {
       object.market !== undefined && object.market !== null
         ? String(object.market)
         : "";
-    message.limit =
-      object.limit !== undefined && object.limit !== null
-        ? Long.fromString(object.limit)
-        : Long.UZERO;
     message.beforeId =
       object.beforeId !== undefined && object.beforeId !== null
         ? Long.fromString(object.beforeId)
@@ -359,10 +341,6 @@ export const QueryTradesRequest = {
       object.afterId !== undefined && object.afterId !== null
         ? Long.fromString(object.afterId)
         : Long.UZERO;
-    message.orderBy =
-      object.orderBy !== undefined && object.orderBy !== null
-        ? String(object.orderBy)
-        : "";
     message.orderId =
       object.orderId !== undefined && object.orderId !== null
         ? String(object.orderId)
@@ -386,13 +364,10 @@ export const QueryTradesRequest = {
     const obj: any = {};
     message.address !== undefined && (obj.address = message.address);
     message.market !== undefined && (obj.market = message.market);
-    message.limit !== undefined &&
-      (obj.limit = (message.limit || Long.UZERO).toString());
     message.beforeId !== undefined &&
       (obj.beforeId = (message.beforeId || Long.UZERO).toString());
     message.afterId !== undefined &&
       (obj.afterId = (message.afterId || Long.UZERO).toString());
-    message.orderBy !== undefined && (obj.orderBy = message.orderBy);
     message.orderId !== undefined && (obj.orderId = message.orderId);
     message.afterBlock !== undefined &&
       (obj.afterBlock = (message.afterBlock || Long.UZERO).toString());
@@ -409,10 +384,6 @@ export const QueryTradesRequest = {
     const message = { ...baseQueryTradesRequest } as QueryTradesRequest;
     message.address = object.address ?? "";
     message.market = object.market ?? "";
-    message.limit =
-      object.limit !== undefined && object.limit !== null
-        ? Long.fromValue(object.limit)
-        : Long.UZERO;
     message.beforeId =
       object.beforeId !== undefined && object.beforeId !== null
         ? Long.fromValue(object.beforeId)
@@ -421,7 +392,6 @@ export const QueryTradesRequest = {
       object.afterId !== undefined && object.afterId !== null
         ? Long.fromValue(object.afterId)
         : Long.UZERO;
-    message.orderBy = object.orderBy ?? "";
     message.orderId = object.orderId ?? "";
     message.afterBlock =
       object.afterBlock !== undefined && object.afterBlock !== null
@@ -549,7 +519,6 @@ const baseQueryTradesForPositionRequest: object = {
   address: "",
   market: "",
   openedBlockHeight: Long.UZERO,
-  orderBy: "",
 };
 
 export const QueryTradesForPositionRequest = {
@@ -565,9 +534,6 @@ export const QueryTradesForPositionRequest = {
     }
     if (!message.openedBlockHeight.isZero()) {
       writer.uint32(24).uint64(message.openedBlockHeight);
-    }
-    if (message.orderBy !== "") {
-      writer.uint32(34).string(message.orderBy);
     }
     if (message.pagination !== undefined) {
       PageRequest.encode(message.pagination, writer.uint32(42).fork()).ldelim();
@@ -595,9 +561,6 @@ export const QueryTradesForPositionRequest = {
           break;
         case 3:
           message.openedBlockHeight = reader.uint64() as Long;
-          break;
-        case 4:
-          message.orderBy = reader.string();
           break;
         case 5:
           message.pagination = PageRequest.decode(reader, reader.uint32());
@@ -627,10 +590,6 @@ export const QueryTradesForPositionRequest = {
       object.openedBlockHeight !== null
         ? Long.fromString(object.openedBlockHeight)
         : Long.UZERO;
-    message.orderBy =
-      object.orderBy !== undefined && object.orderBy !== null
-        ? String(object.orderBy)
-        : "";
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
         ? PageRequest.fromJSON(object.pagination)
@@ -646,7 +605,6 @@ export const QueryTradesForPositionRequest = {
       (obj.openedBlockHeight = (
         message.openedBlockHeight || Long.UZERO
       ).toString());
-    message.orderBy !== undefined && (obj.orderBy = message.orderBy);
     message.pagination !== undefined &&
       (obj.pagination = message.pagination
         ? PageRequest.toJSON(message.pagination)
@@ -667,7 +625,6 @@ export const QueryTradesForPositionRequest = {
       object.openedBlockHeight !== null
         ? Long.fromValue(object.openedBlockHeight)
         : Long.UZERO;
-    message.orderBy = object.orderBy ?? "";
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
         ? PageRequest.fromPartial(object.pagination)
