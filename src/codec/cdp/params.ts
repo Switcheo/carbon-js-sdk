@@ -1,6 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
+import { Duration } from "../google/protobuf/duration";
 
 export const protobufPackage = "Switcheo.carbon.cdp";
 
@@ -8,6 +9,7 @@ export const protobufPackage = "Switcheo.carbon.cdp";
 export interface Params {
   interestFee: string;
   liquidationFee: string;
+  /** Stablecoin interest rate deprecated. Moved to stablecoin_interest_info.proto */
   stablecoinInterestRate: string;
   stablecoinMintCap: string;
   /**
@@ -52,6 +54,10 @@ export interface Params {
   stalePriceGracePeriod: string;
   /** cdp_paused if true, causes all supply, locking, lending, borrowing and liquidations to be paused */
   cdpPaused: boolean;
+  /** time interval in between each adjustment of stablecoin interest rate to help stablecoin price stability */
+  stablecoinInterestRateEpoch?: Duration;
+  /** used in formula to calculate stablecoin interest rate to help stablecoin price stability */
+  stablecoinInterestRateAdjusterCoefficient: string;
 }
 
 const baseParams: object = {
@@ -64,6 +70,7 @@ const baseParams: object = {
   smallLiquidationSize: "",
   stalePriceGracePeriod: "",
   cdpPaused: false,
+  stablecoinInterestRateAdjusterCoefficient: "",
 };
 
 export const Params = {
@@ -97,6 +104,17 @@ export const Params = {
     }
     if (message.cdpPaused === true) {
       writer.uint32(72).bool(message.cdpPaused);
+    }
+    if (message.stablecoinInterestRateEpoch !== undefined) {
+      Duration.encode(
+        message.stablecoinInterestRateEpoch,
+        writer.uint32(82).fork()
+      ).ldelim();
+    }
+    if (message.stablecoinInterestRateAdjusterCoefficient !== "") {
+      writer
+        .uint32(90)
+        .string(message.stablecoinInterestRateAdjusterCoefficient);
     }
     return writer;
   },
@@ -134,6 +152,15 @@ export const Params = {
           break;
         case 9:
           message.cdpPaused = reader.bool();
+          break;
+        case 10:
+          message.stablecoinInterestRateEpoch = Duration.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 11:
+          message.stablecoinInterestRateAdjusterCoefficient = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -187,6 +214,16 @@ export const Params = {
       object.cdpPaused !== undefined && object.cdpPaused !== null
         ? Boolean(object.cdpPaused)
         : false;
+    message.stablecoinInterestRateEpoch =
+      object.stablecoinInterestRateEpoch !== undefined &&
+      object.stablecoinInterestRateEpoch !== null
+        ? Duration.fromJSON(object.stablecoinInterestRateEpoch)
+        : undefined;
+    message.stablecoinInterestRateAdjusterCoefficient =
+      object.stablecoinInterestRateAdjusterCoefficient !== undefined &&
+      object.stablecoinInterestRateAdjusterCoefficient !== null
+        ? String(object.stablecoinInterestRateAdjusterCoefficient)
+        : "";
     return message;
   },
 
@@ -209,6 +246,13 @@ export const Params = {
     message.stalePriceGracePeriod !== undefined &&
       (obj.stalePriceGracePeriod = message.stalePriceGracePeriod);
     message.cdpPaused !== undefined && (obj.cdpPaused = message.cdpPaused);
+    message.stablecoinInterestRateEpoch !== undefined &&
+      (obj.stablecoinInterestRateEpoch = message.stablecoinInterestRateEpoch
+        ? Duration.toJSON(message.stablecoinInterestRateEpoch)
+        : undefined);
+    message.stablecoinInterestRateAdjusterCoefficient !== undefined &&
+      (obj.stablecoinInterestRateAdjusterCoefficient =
+        message.stablecoinInterestRateAdjusterCoefficient);
     return obj;
   },
 
@@ -224,6 +268,13 @@ export const Params = {
     message.smallLiquidationSize = object.smallLiquidationSize ?? "";
     message.stalePriceGracePeriod = object.stalePriceGracePeriod ?? "";
     message.cdpPaused = object.cdpPaused ?? false;
+    message.stablecoinInterestRateEpoch =
+      object.stablecoinInterestRateEpoch !== undefined &&
+      object.stablecoinInterestRateEpoch !== null
+        ? Duration.fromPartial(object.stablecoinInterestRateEpoch)
+        : undefined;
+    message.stablecoinInterestRateAdjusterCoefficient =
+      object.stablecoinInterestRateAdjusterCoefficient ?? "";
     return message;
   },
 };
