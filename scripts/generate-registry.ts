@@ -12,6 +12,7 @@ console.log(`import { Registry } from "@cosmjs/proto-signing";`);
 console.log(`import { MsgExecuteContract } from "cosmjs-types/cosmwasm/wasm/v1/tx";`);
 
 const modules: { [name: string]: string[] } = {};
+const currentMsgDefinitions: string[] = []
 for (const moduleFile of codecFiles) {
 
   if (
@@ -27,8 +28,7 @@ for (const moduleFile of codecFiles) {
   }
 
   const codecModule = require(`${pwd}/${moduleFile}`);
-  const messages = Object.keys(codecModule).filter((key) => (key.startsWith("Msg") && key !== "MsgClientImpl") || key.startsWith("Header") || key.endsWith("Proposal"));
-
+  let messages = Object.keys(codecModule).filter((key) => (key.startsWith("Msg") && key !== "MsgClientImpl") || key.startsWith("Header") || key.endsWith("Proposal"));
   if (messages.length) {
     if (modules[codecModule.protobufPackage]) {
       modules[codecModule.protobufPackage] = [...modules[codecModule.protobufPackage], ...messages];
@@ -44,6 +44,8 @@ for (const moduleFile of codecFiles) {
       || moduleFile.includes('src/codec/headersync/')
       || moduleFile.includes('src/codec/lockproxy/')
     )) {
+      updateImportsAlias(messages, codecModule.protobufPackage, currentMsgDefinitions)
+
       console.log(`import { ${messages.join(", ")} } from "${relativePath}";`)
     }
   }
@@ -87,14 +89,15 @@ const typeMap: { [msg: string]: string } = {};
 for (const packageName in modules) {
   console.log("");
   for (const key of modules[packageName]) {
-    const typeUrl = `/${packageName}.${key}`;
-    typeMap[key] = typeUrl;
-
+    const messageAlias = key.split(" ")[2] // "XXX as XXXXX"
+    const typeUrl = messageAlias ? `/${packageName}.${key.split(" ")[0].trim()}` : `/${packageName}.${key}`;
+    const messageType = messageAlias ? messageAlias.trim() : key
+    typeMap[messageType] = typeUrl;
     const match = typeUrl.match(/^\/Switcheo.carbon.([a-z]+).([A-Za-z]+)$/i);
     if (match?.[1] && polynetworkFolders.includes(match?.[1])) {
-      console.log(`registry.register("${typeUrl}", PolyNetwork.${capitalize(match[1])}.${key});`);
+      console.log(`registry.register("${typeUrl}", PolyNetwork.${capitalize(match[1])}.${messageType});`);
     } else {
-      console.log(`registry.register("${typeUrl}", ${key});`);
+      console.log(`registry.register("${typeUrl}", ${messageType});`);
     }
   }
 }
@@ -107,9 +110,8 @@ console.log(`export const TxTypes = ${JSON.stringify(typeMap, null, 2)};\n`);
 
 console.log("");
 console.log('// Exported for convenience');
-const directoryBlacklist = ['cosmos', 'ibc', 'tendermint', 'btcx', 'ccm', 'headersync', 'lockproxy']
+const directoryBlacklist = ['cosmos', 'ibc', 'tendermint', 'btcx', 'ccm', 'headersync', 'lockproxy', 'ethermint']
 const fileNameBlacklist = ['genesis.ts', 'keys.ts']
-const ethermintDirectory = 'ethermint'
 
 
 const modelBlacklist: string[] = ['MsgClientImpl', 'protobufPackage', 'GenesisState', 'QueryClientImpl'];
@@ -141,18 +143,14 @@ for (const moduleFile of codecFiles) {
     const firstDirName = capitalize(firstDirectory);
     const fileNameNoSuffix = fileName.replace('.ts', '');
     const newLabel = fileNameNoSuffix === 'query' ? firstDirName : `${firstDirName}${capitalize(fileNameNoSuffix)}`;
-    if (firstDirectory === ethermintDirectory) {
-      newKey = updateGeneratedEthermintCodecs(key, file)
+    if (key === "Params") {
+      newKey = `Params as ${labelOverride[`${firstDirName}Params`] ?? firstDirName}Params`;
+    } else if (key === "QueryParamsRequest") {
+      newKey = `QueryParamsRequest as Query${labelOverride[newLabel] ?? newLabel}ParamsRequest`;
+    } else if (key === "QueryParamsResponse") {
+      newKey = `QueryParamsResponse as Query${labelOverride[newLabel] ?? newLabel}ParamsResponse`;
     }
-    else {
-      if (key === "Params") {
-        newKey = `Params as ${labelOverride[`${firstDirName}Params`] ?? firstDirName}Params`;
-      } else if (key === "QueryParamsRequest") {
-        newKey = `QueryParamsRequest as Query${labelOverride[newLabel] ?? newLabel}ParamsRequest`;
-      } else if (key === "QueryParamsResponse") {
-        newKey = `QueryParamsResponse as Query${labelOverride[newLabel] ?? newLabel}ParamsResponse`;
-      }
-    }
+
 
     messagePrev.push(newKey);
     return messagePrev;
@@ -171,28 +169,36 @@ for (const moduleFile of codecFiles) {
 // TODO: Remove hardcoded statement when upgrading cosmwasm codecs
 console.log("export { MsgExecuteContract } from \"cosmjs-types/cosmwasm/wasm/v1/tx\";");
 
+function updateImportsAlias(messages: string[], protobufPackage: string, currentMsgDefinitions: string[]) {
+  const modulePath = getModulePathFromProtobufPackage(protobufPackage)
+  let customModuleName = ""
+  let index = 0
+  messages.forEach((msg, i) => {
+    if (!currentMsgDefinitions.includes(msg)) {
+      currentMsgDefinitions.push(msg)
+      return
+    }
+    let msgAlias = `Msg${customModuleName}${msg.substring(3)}`
+    while (currentMsgDefinitions.includes(msgAlias) && index < modulePath.length) {
+      customModuleName += capitalize(modulePath[index])
+        msgAlias = `Msg${customModuleName}${msg.substring(3)}`
+      index++
+    }
+      messages[i] = `${msg} as ${msgAlias}`
+      currentMsgDefinitions.push(msgAlias)
+  });
+}
+function getModulePathFromProtobufPackage(protobufPackage: string): string[] {
+  // Switcheo.carbon.xxxx
+  // "ibc.applications.xxxx.v1" / "ibc.core.xxxx.v1"
+  if (protobufPackage.startsWith("Switcheo") || protobufPackage.startsWith("ibc")) {
+    return protobufPackage.split(".").slice(2)
+  }
+  // "cosmos.xxx.v1beta1" or "ethermint.xxx.v1" 
+  if (protobufPackage.startsWith("cosmos") || protobufPackage.startsWith("ethermint")) {
+    return protobufPackage.split(".").slice(1)
+  }
 
-function updateGeneratedEthermintCodecs(key: string, file: string[]): string {
-  const fileName = file[file.length - 1].replace('.ts', '');
-  const secondDirectory = file[3]
-  if (key === "Params") {
-    return `Params as ${capitalize(fileName)}Params`;
-  }
-  if (key === "QueryParamsRequest") {
-    return `QueryParamsRequest as Query${capitalize(secondDirectory)}ParamsRequest`;
-  }
-  if (key === "QueryParamsResponse") {
-    return `QueryParamsResponse as Query${capitalize(secondDirectory)}ParamsResponse`;
-  }
-  if (key === "QueryBaseFeeRequest") {
-    return `QueryBaseFeeRequest as Query${capitalize(secondDirectory)}BaseFeeRequest`;
-  }
-  if (key === "QueryBaseFeeResponse") {
-    return `QueryBaseFeeResponse as Query${capitalize(secondDirectory)}BaseFeeResponse`;
-  }
-  if (key === "TxResult" && fileName == "indexer") {
-    return `TxResult as Tx${capitalize(fileName)}Result`;
-  }
-  return key
+  return protobufPackage.split(".")
 }
 

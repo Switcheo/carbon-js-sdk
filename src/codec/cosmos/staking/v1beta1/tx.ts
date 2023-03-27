@@ -83,6 +83,27 @@ export interface MsgUndelegateResponse {
   completionTime?: Date;
 }
 
+/**
+ * MsgCancelUnbondingDelegation defines the SDK message for performing a cancel unbonding delegation for delegator
+ *
+ * Since: cosmos-sdk 0.46
+ */
+export interface MsgCancelUnbondingDelegation {
+  delegatorAddress: string;
+  validatorAddress: string;
+  /** amount is always less than or equal to unbonding delegation entry balance */
+  amount?: Coin;
+  /** creation_height is the height which the unbonding took place. */
+  creationHeight: Long;
+}
+
+/**
+ * MsgCancelUnbondingDelegationResponse
+ *
+ * Since: cosmos-sdk 0.46
+ */
+export interface MsgCancelUnbondingDelegationResponse {}
+
 const baseMsgCreateValidator: object = {
   minSelfDelegation: "",
   delegatorAddress: "",
@@ -898,6 +919,172 @@ export const MsgUndelegateResponse = {
   },
 };
 
+const baseMsgCancelUnbondingDelegation: object = {
+  delegatorAddress: "",
+  validatorAddress: "",
+  creationHeight: Long.ZERO,
+};
+
+export const MsgCancelUnbondingDelegation = {
+  encode(
+    message: MsgCancelUnbondingDelegation,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.delegatorAddress !== "") {
+      writer.uint32(10).string(message.delegatorAddress);
+    }
+    if (message.validatorAddress !== "") {
+      writer.uint32(18).string(message.validatorAddress);
+    }
+    if (message.amount !== undefined) {
+      Coin.encode(message.amount, writer.uint32(26).fork()).ldelim();
+    }
+    if (!message.creationHeight.isZero()) {
+      writer.uint32(32).int64(message.creationHeight);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgCancelUnbondingDelegation {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgCancelUnbondingDelegation,
+    } as MsgCancelUnbondingDelegation;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.delegatorAddress = reader.string();
+          break;
+        case 2:
+          message.validatorAddress = reader.string();
+          break;
+        case 3:
+          message.amount = Coin.decode(reader, reader.uint32());
+          break;
+        case 4:
+          message.creationHeight = reader.int64() as Long;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgCancelUnbondingDelegation {
+    const message = {
+      ...baseMsgCancelUnbondingDelegation,
+    } as MsgCancelUnbondingDelegation;
+    message.delegatorAddress =
+      object.delegatorAddress !== undefined && object.delegatorAddress !== null
+        ? String(object.delegatorAddress)
+        : "";
+    message.validatorAddress =
+      object.validatorAddress !== undefined && object.validatorAddress !== null
+        ? String(object.validatorAddress)
+        : "";
+    message.amount =
+      object.amount !== undefined && object.amount !== null
+        ? Coin.fromJSON(object.amount)
+        : undefined;
+    message.creationHeight =
+      object.creationHeight !== undefined && object.creationHeight !== null
+        ? Long.fromString(object.creationHeight)
+        : Long.ZERO;
+    return message;
+  },
+
+  toJSON(message: MsgCancelUnbondingDelegation): unknown {
+    const obj: any = {};
+    message.delegatorAddress !== undefined &&
+      (obj.delegatorAddress = message.delegatorAddress);
+    message.validatorAddress !== undefined &&
+      (obj.validatorAddress = message.validatorAddress);
+    message.amount !== undefined &&
+      (obj.amount = message.amount ? Coin.toJSON(message.amount) : undefined);
+    message.creationHeight !== undefined &&
+      (obj.creationHeight = (message.creationHeight || Long.ZERO).toString());
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgCancelUnbondingDelegation>
+  ): MsgCancelUnbondingDelegation {
+    const message = {
+      ...baseMsgCancelUnbondingDelegation,
+    } as MsgCancelUnbondingDelegation;
+    message.delegatorAddress = object.delegatorAddress ?? "";
+    message.validatorAddress = object.validatorAddress ?? "";
+    message.amount =
+      object.amount !== undefined && object.amount !== null
+        ? Coin.fromPartial(object.amount)
+        : undefined;
+    message.creationHeight =
+      object.creationHeight !== undefined && object.creationHeight !== null
+        ? Long.fromValue(object.creationHeight)
+        : Long.ZERO;
+    return message;
+  },
+};
+
+const baseMsgCancelUnbondingDelegationResponse: object = {};
+
+export const MsgCancelUnbondingDelegationResponse = {
+  encode(
+    _: MsgCancelUnbondingDelegationResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgCancelUnbondingDelegationResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgCancelUnbondingDelegationResponse,
+    } as MsgCancelUnbondingDelegationResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgCancelUnbondingDelegationResponse {
+    const message = {
+      ...baseMsgCancelUnbondingDelegationResponse,
+    } as MsgCancelUnbondingDelegationResponse;
+    return message;
+  },
+
+  toJSON(_: MsgCancelUnbondingDelegationResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgCancelUnbondingDelegationResponse>
+  ): MsgCancelUnbondingDelegationResponse {
+    const message = {
+      ...baseMsgCancelUnbondingDelegationResponse,
+    } as MsgCancelUnbondingDelegationResponse;
+    return message;
+  },
+};
+
 /** Msg defines the staking Msg service. */
 export interface Msg {
   /** CreateValidator defines a method for creating a new validator. */
@@ -923,6 +1110,15 @@ export interface Msg {
    * delegate and a validator.
    */
   Undelegate(request: MsgUndelegate): Promise<MsgUndelegateResponse>;
+  /**
+   * CancelUnbondingDelegation defines a method for performing canceling the unbonding delegation
+   * and delegate back to previous validator.
+   *
+   * Since: cosmos-sdk 0.46
+   */
+  CancelUnbondingDelegation(
+    request: MsgCancelUnbondingDelegation
+  ): Promise<MsgCancelUnbondingDelegationResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -934,6 +1130,7 @@ export class MsgClientImpl implements Msg {
     this.Delegate = this.Delegate.bind(this);
     this.BeginRedelegate = this.BeginRedelegate.bind(this);
     this.Undelegate = this.Undelegate.bind(this);
+    this.CancelUnbondingDelegation = this.CancelUnbondingDelegation.bind(this);
   }
   CreateValidator(
     request: MsgCreateValidator
@@ -996,6 +1193,20 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgUndelegateResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  CancelUnbondingDelegation(
+    request: MsgCancelUnbondingDelegation
+  ): Promise<MsgCancelUnbondingDelegationResponse> {
+    const data = MsgCancelUnbondingDelegation.encode(request).finish();
+    const promise = this.rpc.request(
+      "cosmos.staking.v1beta1.Msg",
+      "CancelUnbondingDelegation",
+      data
+    );
+    return promise.then((data) =>
+      MsgCancelUnbondingDelegationResponse.decode(new _m0.Reader(data))
     );
   }
 }
