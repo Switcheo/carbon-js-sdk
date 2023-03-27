@@ -9,7 +9,6 @@ export interface Amm {
   market: string;
   reservesHash: Uint8Array;
   orders: string[];
-  poolRoute: Uint8Array;
 }
 
 const baseAmm: object = { poolId: Long.UZERO, market: "", orders: "" };
@@ -28,9 +27,6 @@ export const Amm = {
     for (const v of message.orders) {
       writer.uint32(34).string(v!);
     }
-    if (message.poolRoute.length !== 0) {
-      writer.uint32(42).bytes(message.poolRoute);
-    }
     return writer;
   },
 
@@ -40,7 +36,6 @@ export const Amm = {
     const message = { ...baseAmm } as Amm;
     message.orders = [];
     message.reservesHash = new Uint8Array();
-    message.poolRoute = new Uint8Array();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -55,9 +50,6 @@ export const Amm = {
           break;
         case 4:
           message.orders.push(reader.string());
-          break;
-        case 5:
-          message.poolRoute = reader.bytes();
           break;
         default:
           reader.skipType(tag & 7);
@@ -82,10 +74,6 @@ export const Amm = {
         ? bytesFromBase64(object.reservesHash)
         : new Uint8Array();
     message.orders = (object.orders ?? []).map((e: any) => String(e));
-    message.poolRoute =
-      object.poolRoute !== undefined && object.poolRoute !== null
-        ? bytesFromBase64(object.poolRoute)
-        : new Uint8Array();
     return message;
   },
 
@@ -105,10 +93,6 @@ export const Amm = {
     } else {
       obj.orders = [];
     }
-    message.poolRoute !== undefined &&
-      (obj.poolRoute = base64FromBytes(
-        message.poolRoute !== undefined ? message.poolRoute : new Uint8Array()
-      ));
     return obj;
   },
 
@@ -121,7 +105,6 @@ export const Amm = {
     message.market = object.market ?? "";
     message.reservesHash = object.reservesHash ?? new Uint8Array();
     message.orders = (object.orders ?? []).map((e) => e);
-    message.poolRoute = object.poolRoute ?? new Uint8Array();
     return message;
   },
 };

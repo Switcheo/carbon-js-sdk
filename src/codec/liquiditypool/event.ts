@@ -35,12 +35,6 @@ export interface CommitmentEvent {
   type: string;
 }
 
-export interface SwapEvent {
-  poolId: Long;
-  input: string;
-  output: string;
-}
-
 const basePoolEvent: object = {
   creator: "",
   type: "",
@@ -491,87 +485,6 @@ export const CommitmentEvent = {
         ? Commitment.fromPartial(object.commitment)
         : undefined;
     message.type = object.type ?? "";
-    return message;
-  },
-};
-
-const baseSwapEvent: object = { poolId: Long.UZERO, input: "", output: "" };
-
-export const SwapEvent = {
-  encode(
-    message: SwapEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (!message.poolId.isZero()) {
-      writer.uint32(8).uint64(message.poolId);
-    }
-    if (message.input !== "") {
-      writer.uint32(18).string(message.input);
-    }
-    if (message.output !== "") {
-      writer.uint32(26).string(message.output);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): SwapEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseSwapEvent } as SwapEvent;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.poolId = reader.uint64() as Long;
-          break;
-        case 2:
-          message.input = reader.string();
-          break;
-        case 3:
-          message.output = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): SwapEvent {
-    const message = { ...baseSwapEvent } as SwapEvent;
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromString(object.poolId)
-        : Long.UZERO;
-    message.input =
-      object.input !== undefined && object.input !== null
-        ? String(object.input)
-        : "";
-    message.output =
-      object.output !== undefined && object.output !== null
-        ? String(object.output)
-        : "";
-    return message;
-  },
-
-  toJSON(message: SwapEvent): unknown {
-    const obj: any = {};
-    message.poolId !== undefined &&
-      (obj.poolId = (message.poolId || Long.UZERO).toString());
-    message.input !== undefined && (obj.input = message.input);
-    message.output !== undefined && (obj.output = message.output);
-    return obj;
-  },
-
-  fromPartial(object: DeepPartial<SwapEvent>): SwapEvent {
-    const message = { ...baseSwapEvent } as SwapEvent;
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? Long.fromValue(object.poolId)
-        : Long.UZERO;
-    message.input = object.input ?? "";
-    message.output = object.output ?? "";
     return message;
   },
 };

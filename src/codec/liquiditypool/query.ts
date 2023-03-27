@@ -5,7 +5,7 @@ import {
   PageRequest,
   PageResponse,
 } from "../cosmos/base/query/v1beta1/pagination";
-import { Pool, Params, PoolRoute } from "./liquiditypool";
+import { Pool, Params } from "./liquiditypool";
 import {
   CommitmentResponse,
   CommitmentCurve,
@@ -35,20 +35,6 @@ export interface QueryAllPoolRequest {
 export interface QueryAllPoolResponse {
   pools: ExtendedPool[];
   pagination?: PageResponse;
-}
-
-export interface QueryAllPoolAddressRequest {
-  pagination?: PageRequest;
-}
-
-export interface QueryAllPoolAddressResponse {
-  addresses: { [key: string]: string };
-  pagination?: PageResponse;
-}
-
-export interface QueryAllPoolAddressResponse_AddressesEntry {
-  key: string;
-  value: string;
 }
 
 export interface QueryRewardHistoryRequest {
@@ -144,25 +130,16 @@ export interface QueryParamsResponse {
   params?: Params;
 }
 
-export interface QueryAllPoolRouteRequest {
+export interface QueryAllPoolAddressRequest {
   pagination?: PageRequest;
 }
 
-export interface QueryAllPoolRouteResponse {
-  poolRoutes: PoolRoute[];
-  pagination?: PageResponse;
-}
-
-export interface QueryAllPoolRouteAddressRequest {
-  pagination?: PageRequest;
-}
-
-export interface QueryAllPoolRouteAddressResponse {
+export interface QueryAllPoolAddressResponse {
   addresses: { [key: string]: string };
   pagination?: PageResponse;
 }
 
-export interface QueryAllPoolRouteAddressResponse_AddressesEntry {
+export interface QueryAllPoolAddressResponse_AddressesEntry {
   key: string;
   value: string;
 }
@@ -424,262 +401,6 @@ export const QueryAllPoolResponse = {
       object.pagination !== undefined && object.pagination !== null
         ? PageResponse.fromPartial(object.pagination)
         : undefined;
-    return message;
-  },
-};
-
-const baseQueryAllPoolAddressRequest: object = {};
-
-export const QueryAllPoolAddressRequest = {
-  encode(
-    message: QueryAllPoolAddressRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.pagination !== undefined) {
-      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryAllPoolAddressRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryAllPoolAddressRequest,
-    } as QueryAllPoolAddressRequest;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.pagination = PageRequest.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): QueryAllPoolAddressRequest {
-    const message = {
-      ...baseQueryAllPoolAddressRequest,
-    } as QueryAllPoolAddressRequest;
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromJSON(object.pagination)
-        : undefined;
-    return message;
-  },
-
-  toJSON(message: QueryAllPoolAddressRequest): unknown {
-    const obj: any = {};
-    message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageRequest.toJSON(message.pagination)
-        : undefined);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<QueryAllPoolAddressRequest>
-  ): QueryAllPoolAddressRequest {
-    const message = {
-      ...baseQueryAllPoolAddressRequest,
-    } as QueryAllPoolAddressRequest;
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromPartial(object.pagination)
-        : undefined;
-    return message;
-  },
-};
-
-const baseQueryAllPoolAddressResponse: object = {};
-
-export const QueryAllPoolAddressResponse = {
-  encode(
-    message: QueryAllPoolAddressResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    Object.entries(message.addresses).forEach(([key, value]) => {
-      QueryAllPoolAddressResponse_AddressesEntry.encode(
-        { key: key as any, value },
-        writer.uint32(10).fork()
-      ).ldelim();
-    });
-    if (message.pagination !== undefined) {
-      PageResponse.encode(
-        message.pagination,
-        writer.uint32(18).fork()
-      ).ldelim();
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryAllPoolAddressResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryAllPoolAddressResponse,
-    } as QueryAllPoolAddressResponse;
-    message.addresses = {};
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          const entry1 = QueryAllPoolAddressResponse_AddressesEntry.decode(
-            reader,
-            reader.uint32()
-          );
-          if (entry1.value !== undefined) {
-            message.addresses[entry1.key] = entry1.value;
-          }
-          break;
-        case 2:
-          message.pagination = PageResponse.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): QueryAllPoolAddressResponse {
-    const message = {
-      ...baseQueryAllPoolAddressResponse,
-    } as QueryAllPoolAddressResponse;
-    message.addresses = Object.entries(object.addresses ?? {}).reduce<{
-      [key: string]: string;
-    }>((acc, [key, value]) => {
-      acc[key] = String(value);
-      return acc;
-    }, {});
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageResponse.fromJSON(object.pagination)
-        : undefined;
-    return message;
-  },
-
-  toJSON(message: QueryAllPoolAddressResponse): unknown {
-    const obj: any = {};
-    obj.addresses = {};
-    if (message.addresses) {
-      Object.entries(message.addresses).forEach(([k, v]) => {
-        obj.addresses[k] = v;
-      });
-    }
-    message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageResponse.toJSON(message.pagination)
-        : undefined);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<QueryAllPoolAddressResponse>
-  ): QueryAllPoolAddressResponse {
-    const message = {
-      ...baseQueryAllPoolAddressResponse,
-    } as QueryAllPoolAddressResponse;
-    message.addresses = Object.entries(object.addresses ?? {}).reduce<{
-      [key: string]: string;
-    }>((acc, [key, value]) => {
-      if (value !== undefined) {
-        acc[key] = String(value);
-      }
-      return acc;
-    }, {});
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageResponse.fromPartial(object.pagination)
-        : undefined;
-    return message;
-  },
-};
-
-const baseQueryAllPoolAddressResponse_AddressesEntry: object = {
-  key: "",
-  value: "",
-};
-
-export const QueryAllPoolAddressResponse_AddressesEntry = {
-  encode(
-    message: QueryAllPoolAddressResponse_AddressesEntry,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.key !== "") {
-      writer.uint32(10).string(message.key);
-    }
-    if (message.value !== "") {
-      writer.uint32(18).string(message.value);
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryAllPoolAddressResponse_AddressesEntry {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryAllPoolAddressResponse_AddressesEntry,
-    } as QueryAllPoolAddressResponse_AddressesEntry;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.key = reader.string();
-          break;
-        case 2:
-          message.value = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): QueryAllPoolAddressResponse_AddressesEntry {
-    const message = {
-      ...baseQueryAllPoolAddressResponse_AddressesEntry,
-    } as QueryAllPoolAddressResponse_AddressesEntry;
-    message.key =
-      object.key !== undefined && object.key !== null ? String(object.key) : "";
-    message.value =
-      object.value !== undefined && object.value !== null
-        ? String(object.value)
-        : "";
-    return message;
-  },
-
-  toJSON(message: QueryAllPoolAddressResponse_AddressesEntry): unknown {
-    const obj: any = {};
-    message.key !== undefined && (obj.key = message.key);
-    message.value !== undefined && (obj.value = message.value);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<QueryAllPoolAddressResponse_AddressesEntry>
-  ): QueryAllPoolAddressResponse_AddressesEntry {
-    const message = {
-      ...baseQueryAllPoolAddressResponse_AddressesEntry,
-    } as QueryAllPoolAddressResponse_AddressesEntry;
-    message.key = object.key ?? "";
-    message.value = object.value ?? "";
     return message;
   },
 };
@@ -2233,11 +1954,11 @@ export const QueryParamsResponse = {
   },
 };
 
-const baseQueryAllPoolRouteRequest: object = {};
+const baseQueryAllPoolAddressRequest: object = {};
 
-export const QueryAllPoolRouteRequest = {
+export const QueryAllPoolAddressRequest = {
   encode(
-    message: QueryAllPoolRouteRequest,
+    message: QueryAllPoolAddressRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.pagination !== undefined) {
@@ -2249,12 +1970,12 @@ export const QueryAllPoolRouteRequest = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): QueryAllPoolRouteRequest {
+  ): QueryAllPoolAddressRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseQueryAllPoolRouteRequest,
-    } as QueryAllPoolRouteRequest;
+      ...baseQueryAllPoolAddressRequest,
+    } as QueryAllPoolAddressRequest;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -2269,10 +1990,10 @@ export const QueryAllPoolRouteRequest = {
     return message;
   },
 
-  fromJSON(object: any): QueryAllPoolRouteRequest {
+  fromJSON(object: any): QueryAllPoolAddressRequest {
     const message = {
-      ...baseQueryAllPoolRouteRequest,
-    } as QueryAllPoolRouteRequest;
+      ...baseQueryAllPoolAddressRequest,
+    } as QueryAllPoolAddressRequest;
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
         ? PageRequest.fromJSON(object.pagination)
@@ -2280,7 +2001,7 @@ export const QueryAllPoolRouteRequest = {
     return message;
   },
 
-  toJSON(message: QueryAllPoolRouteRequest): unknown {
+  toJSON(message: QueryAllPoolAddressRequest): unknown {
     const obj: any = {};
     message.pagination !== undefined &&
       (obj.pagination = message.pagination
@@ -2290,11 +2011,11 @@ export const QueryAllPoolRouteRequest = {
   },
 
   fromPartial(
-    object: DeepPartial<QueryAllPoolRouteRequest>
-  ): QueryAllPoolRouteRequest {
+    object: DeepPartial<QueryAllPoolAddressRequest>
+  ): QueryAllPoolAddressRequest {
     const message = {
-      ...baseQueryAllPoolRouteRequest,
-    } as QueryAllPoolRouteRequest;
+      ...baseQueryAllPoolAddressRequest,
+    } as QueryAllPoolAddressRequest;
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
         ? PageRequest.fromPartial(object.pagination)
@@ -2303,178 +2024,15 @@ export const QueryAllPoolRouteRequest = {
   },
 };
 
-const baseQueryAllPoolRouteResponse: object = {};
+const baseQueryAllPoolAddressResponse: object = {};
 
-export const QueryAllPoolRouteResponse = {
+export const QueryAllPoolAddressResponse = {
   encode(
-    message: QueryAllPoolRouteResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    for (const v of message.poolRoutes) {
-      PoolRoute.encode(v!, writer.uint32(10).fork()).ldelim();
-    }
-    if (message.pagination !== undefined) {
-      PageResponse.encode(
-        message.pagination,
-        writer.uint32(18).fork()
-      ).ldelim();
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryAllPoolRouteResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryAllPoolRouteResponse,
-    } as QueryAllPoolRouteResponse;
-    message.poolRoutes = [];
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.poolRoutes.push(PoolRoute.decode(reader, reader.uint32()));
-          break;
-        case 2:
-          message.pagination = PageResponse.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): QueryAllPoolRouteResponse {
-    const message = {
-      ...baseQueryAllPoolRouteResponse,
-    } as QueryAllPoolRouteResponse;
-    message.poolRoutes = (object.poolRoutes ?? []).map((e: any) =>
-      PoolRoute.fromJSON(e)
-    );
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageResponse.fromJSON(object.pagination)
-        : undefined;
-    return message;
-  },
-
-  toJSON(message: QueryAllPoolRouteResponse): unknown {
-    const obj: any = {};
-    if (message.poolRoutes) {
-      obj.poolRoutes = message.poolRoutes.map((e) =>
-        e ? PoolRoute.toJSON(e) : undefined
-      );
-    } else {
-      obj.poolRoutes = [];
-    }
-    message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageResponse.toJSON(message.pagination)
-        : undefined);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<QueryAllPoolRouteResponse>
-  ): QueryAllPoolRouteResponse {
-    const message = {
-      ...baseQueryAllPoolRouteResponse,
-    } as QueryAllPoolRouteResponse;
-    message.poolRoutes = (object.poolRoutes ?? []).map((e) =>
-      PoolRoute.fromPartial(e)
-    );
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageResponse.fromPartial(object.pagination)
-        : undefined;
-    return message;
-  },
-};
-
-const baseQueryAllPoolRouteAddressRequest: object = {};
-
-export const QueryAllPoolRouteAddressRequest = {
-  encode(
-    message: QueryAllPoolRouteAddressRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.pagination !== undefined) {
-      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryAllPoolRouteAddressRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryAllPoolRouteAddressRequest,
-    } as QueryAllPoolRouteAddressRequest;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.pagination = PageRequest.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): QueryAllPoolRouteAddressRequest {
-    const message = {
-      ...baseQueryAllPoolRouteAddressRequest,
-    } as QueryAllPoolRouteAddressRequest;
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromJSON(object.pagination)
-        : undefined;
-    return message;
-  },
-
-  toJSON(message: QueryAllPoolRouteAddressRequest): unknown {
-    const obj: any = {};
-    message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageRequest.toJSON(message.pagination)
-        : undefined);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<QueryAllPoolRouteAddressRequest>
-  ): QueryAllPoolRouteAddressRequest {
-    const message = {
-      ...baseQueryAllPoolRouteAddressRequest,
-    } as QueryAllPoolRouteAddressRequest;
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromPartial(object.pagination)
-        : undefined;
-    return message;
-  },
-};
-
-const baseQueryAllPoolRouteAddressResponse: object = {};
-
-export const QueryAllPoolRouteAddressResponse = {
-  encode(
-    message: QueryAllPoolRouteAddressResponse,
+    message: QueryAllPoolAddressResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     Object.entries(message.addresses).forEach(([key, value]) => {
-      QueryAllPoolRouteAddressResponse_AddressesEntry.encode(
+      QueryAllPoolAddressResponse_AddressesEntry.encode(
         { key: key as any, value },
         writer.uint32(10).fork()
       ).ldelim();
@@ -2491,18 +2049,18 @@ export const QueryAllPoolRouteAddressResponse = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): QueryAllPoolRouteAddressResponse {
+  ): QueryAllPoolAddressResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseQueryAllPoolRouteAddressResponse,
-    } as QueryAllPoolRouteAddressResponse;
+      ...baseQueryAllPoolAddressResponse,
+    } as QueryAllPoolAddressResponse;
     message.addresses = {};
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          const entry1 = QueryAllPoolRouteAddressResponse_AddressesEntry.decode(
+          const entry1 = QueryAllPoolAddressResponse_AddressesEntry.decode(
             reader,
             reader.uint32()
           );
@@ -2521,10 +2079,10 @@ export const QueryAllPoolRouteAddressResponse = {
     return message;
   },
 
-  fromJSON(object: any): QueryAllPoolRouteAddressResponse {
+  fromJSON(object: any): QueryAllPoolAddressResponse {
     const message = {
-      ...baseQueryAllPoolRouteAddressResponse,
-    } as QueryAllPoolRouteAddressResponse;
+      ...baseQueryAllPoolAddressResponse,
+    } as QueryAllPoolAddressResponse;
     message.addresses = Object.entries(object.addresses ?? {}).reduce<{
       [key: string]: string;
     }>((acc, [key, value]) => {
@@ -2538,7 +2096,7 @@ export const QueryAllPoolRouteAddressResponse = {
     return message;
   },
 
-  toJSON(message: QueryAllPoolRouteAddressResponse): unknown {
+  toJSON(message: QueryAllPoolAddressResponse): unknown {
     const obj: any = {};
     obj.addresses = {};
     if (message.addresses) {
@@ -2554,11 +2112,11 @@ export const QueryAllPoolRouteAddressResponse = {
   },
 
   fromPartial(
-    object: DeepPartial<QueryAllPoolRouteAddressResponse>
-  ): QueryAllPoolRouteAddressResponse {
+    object: DeepPartial<QueryAllPoolAddressResponse>
+  ): QueryAllPoolAddressResponse {
     const message = {
-      ...baseQueryAllPoolRouteAddressResponse,
-    } as QueryAllPoolRouteAddressResponse;
+      ...baseQueryAllPoolAddressResponse,
+    } as QueryAllPoolAddressResponse;
     message.addresses = Object.entries(object.addresses ?? {}).reduce<{
       [key: string]: string;
     }>((acc, [key, value]) => {
@@ -2575,14 +2133,14 @@ export const QueryAllPoolRouteAddressResponse = {
   },
 };
 
-const baseQueryAllPoolRouteAddressResponse_AddressesEntry: object = {
+const baseQueryAllPoolAddressResponse_AddressesEntry: object = {
   key: "",
   value: "",
 };
 
-export const QueryAllPoolRouteAddressResponse_AddressesEntry = {
+export const QueryAllPoolAddressResponse_AddressesEntry = {
   encode(
-    message: QueryAllPoolRouteAddressResponse_AddressesEntry,
+    message: QueryAllPoolAddressResponse_AddressesEntry,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.key !== "") {
@@ -2597,12 +2155,12 @@ export const QueryAllPoolRouteAddressResponse_AddressesEntry = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): QueryAllPoolRouteAddressResponse_AddressesEntry {
+  ): QueryAllPoolAddressResponse_AddressesEntry {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseQueryAllPoolRouteAddressResponse_AddressesEntry,
-    } as QueryAllPoolRouteAddressResponse_AddressesEntry;
+      ...baseQueryAllPoolAddressResponse_AddressesEntry,
+    } as QueryAllPoolAddressResponse_AddressesEntry;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -2620,10 +2178,10 @@ export const QueryAllPoolRouteAddressResponse_AddressesEntry = {
     return message;
   },
 
-  fromJSON(object: any): QueryAllPoolRouteAddressResponse_AddressesEntry {
+  fromJSON(object: any): QueryAllPoolAddressResponse_AddressesEntry {
     const message = {
-      ...baseQueryAllPoolRouteAddressResponse_AddressesEntry,
-    } as QueryAllPoolRouteAddressResponse_AddressesEntry;
+      ...baseQueryAllPoolAddressResponse_AddressesEntry,
+    } as QueryAllPoolAddressResponse_AddressesEntry;
     message.key =
       object.key !== undefined && object.key !== null ? String(object.key) : "";
     message.value =
@@ -2633,7 +2191,7 @@ export const QueryAllPoolRouteAddressResponse_AddressesEntry = {
     return message;
   },
 
-  toJSON(message: QueryAllPoolRouteAddressResponse_AddressesEntry): unknown {
+  toJSON(message: QueryAllPoolAddressResponse_AddressesEntry): unknown {
     const obj: any = {};
     message.key !== undefined && (obj.key = message.key);
     message.value !== undefined && (obj.value = message.value);
@@ -2641,11 +2199,11 @@ export const QueryAllPoolRouteAddressResponse_AddressesEntry = {
   },
 
   fromPartial(
-    object: DeepPartial<QueryAllPoolRouteAddressResponse_AddressesEntry>
-  ): QueryAllPoolRouteAddressResponse_AddressesEntry {
+    object: DeepPartial<QueryAllPoolAddressResponse_AddressesEntry>
+  ): QueryAllPoolAddressResponse_AddressesEntry {
     const message = {
-      ...baseQueryAllPoolRouteAddressResponse_AddressesEntry,
-    } as QueryAllPoolRouteAddressResponse_AddressesEntry;
+      ...baseQueryAllPoolAddressResponse_AddressesEntry,
+    } as QueryAllPoolAddressResponse_AddressesEntry;
     message.key = object.key ?? "";
     message.value = object.value ?? "";
     return message;
@@ -2654,10 +2212,6 @@ export const QueryAllPoolRouteAddressResponse_AddressesEntry = {
 
 /** Query defines the gRPC querier service. */
 export interface Query {
-  /** Get addresses for all pools */
-  PoolAddressAll(
-    request: QueryAllPoolAddressRequest
-  ): Promise<QueryAllPoolAddressResponse>;
   /** Get pool details */
   Pool(request: QueryGetPoolRequest): Promise<QueryGetPoolResponse>;
   /** Get details for all pools */
@@ -2696,20 +2250,15 @@ export interface Query {
   ): Promise<QueryClaimableRewardsResponse>;
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse>;
   /** Get liquidity pool addresses for all pools */
-  PoolRouteAll(
-    request: QueryAllPoolRouteRequest
-  ): Promise<QueryAllPoolRouteResponse>;
-  /** Get addresses for all pool route */
-  PoolRouteAddressAll(
-    request: QueryAllPoolRouteAddressRequest
-  ): Promise<QueryAllPoolRouteAddressResponse>;
+  PoolAddressAll(
+    request: QueryAllPoolAddressRequest
+  ): Promise<QueryAllPoolAddressResponse>;
 }
 
 export class QueryClientImpl implements Query {
   private readonly rpc: Rpc;
   constructor(rpc: Rpc) {
     this.rpc = rpc;
-    this.PoolAddressAll = this.PoolAddressAll.bind(this);
     this.Pool = this.Pool.bind(this);
     this.PoolAll = this.PoolAll.bind(this);
     this.RewardHistory = this.RewardHistory.bind(this);
@@ -2722,23 +2271,8 @@ export class QueryClientImpl implements Query {
     this.TotalCommitmentAll = this.TotalCommitmentAll.bind(this);
     this.ClaimableRewards = this.ClaimableRewards.bind(this);
     this.Params = this.Params.bind(this);
-    this.PoolRouteAll = this.PoolRouteAll.bind(this);
-    this.PoolRouteAddressAll = this.PoolRouteAddressAll.bind(this);
+    this.PoolAddressAll = this.PoolAddressAll.bind(this);
   }
-  PoolAddressAll(
-    request: QueryAllPoolAddressRequest
-  ): Promise<QueryAllPoolAddressResponse> {
-    const data = QueryAllPoolAddressRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.liquiditypool.Query",
-      "PoolAddressAll",
-      data
-    );
-    return promise.then((data) =>
-      QueryAllPoolAddressResponse.decode(new _m0.Reader(data))
-    );
-  }
-
   Pool(request: QueryGetPoolRequest): Promise<QueryGetPoolResponse> {
     const data = QueryGetPoolRequest.encode(request).finish();
     const promise = this.rpc.request(
@@ -2899,31 +2433,17 @@ export class QueryClientImpl implements Query {
     );
   }
 
-  PoolRouteAll(
-    request: QueryAllPoolRouteRequest
-  ): Promise<QueryAllPoolRouteResponse> {
-    const data = QueryAllPoolRouteRequest.encode(request).finish();
+  PoolAddressAll(
+    request: QueryAllPoolAddressRequest
+  ): Promise<QueryAllPoolAddressResponse> {
+    const data = QueryAllPoolAddressRequest.encode(request).finish();
     const promise = this.rpc.request(
       "Switcheo.carbon.liquiditypool.Query",
-      "PoolRouteAll",
+      "PoolAddressAll",
       data
     );
     return promise.then((data) =>
-      QueryAllPoolRouteResponse.decode(new _m0.Reader(data))
-    );
-  }
-
-  PoolRouteAddressAll(
-    request: QueryAllPoolRouteAddressRequest
-  ): Promise<QueryAllPoolRouteAddressResponse> {
-    const data = QueryAllPoolRouteAddressRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.liquiditypool.Query",
-      "PoolRouteAddressAll",
-      data
-    );
-    return promise.then((data) =>
-      QueryAllPoolRouteAddressResponse.decode(new _m0.Reader(data))
+      QueryAllPoolAddressResponse.decode(new _m0.Reader(data))
     );
   }
 }

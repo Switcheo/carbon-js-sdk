@@ -3,6 +3,7 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Params } from "./params";
 import { StablecoinDebtInfo } from "./stablecoin_debt_info";
+import { StablecoinInterestInfo } from "./stablecoin_interest_info";
 import { RateStrategyParams } from "./rate_strategy_params";
 import { AssetParams } from "./asset_params";
 import { DebtInfo } from "./debt_info";
@@ -26,8 +27,9 @@ export interface GenesisState {
   accountToStablecoinInitialCumulativeInterestMultiplier: {
     [key: string]: Uint8Array;
   };
-  /** this line is used by starport scaffolding # genesis/proto/state */
   accountToRewardDebt: { [key: string]: Uint8Array };
+  /** this line is used by starport scaffolding # genesis/proto/state */
+  stablecoinInterestInfo?: StablecoinInterestInfo;
 }
 
 export interface GenesisState_AccountToCollateralizedEntry {
@@ -133,6 +135,12 @@ export const GenesisState = {
         writer.uint32(106).fork()
       ).ldelim();
     });
+    if (message.stablecoinInterestInfo !== undefined) {
+      StablecoinInterestInfo.encode(
+        message.stablecoinInterestInfo,
+        writer.uint32(114).fork()
+      ).ldelim();
+    }
     return writer;
   },
 
@@ -242,6 +250,12 @@ export const GenesisState = {
             message.accountToRewardDebt[entry13.key] = entry13.value;
           }
           break;
+        case 14:
+          message.stablecoinInterestInfo = StablecoinInterestInfo.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -314,6 +328,11 @@ export const GenesisState = {
       acc[key] = bytesFromBase64(value as string);
       return acc;
     }, {});
+    message.stablecoinInterestInfo =
+      object.stablecoinInterestInfo !== undefined &&
+      object.stablecoinInterestInfo !== null
+        ? StablecoinInterestInfo.fromJSON(object.stablecoinInterestInfo)
+        : undefined;
     return message;
   },
 
@@ -399,6 +418,10 @@ export const GenesisState = {
         obj.accountToRewardDebt[k] = base64FromBytes(v);
       });
     }
+    message.stablecoinInterestInfo !== undefined &&
+      (obj.stablecoinInterestInfo = message.stablecoinInterestInfo
+        ? StablecoinInterestInfo.toJSON(message.stablecoinInterestInfo)
+        : undefined);
     return obj;
   },
 
@@ -478,6 +501,11 @@ export const GenesisState = {
       }
       return acc;
     }, {});
+    message.stablecoinInterestInfo =
+      object.stablecoinInterestInfo !== undefined &&
+      object.stablecoinInterestInfo !== null
+        ? StablecoinInterestInfo.fromPartial(object.stablecoinInterestInfo)
+        : undefined;
     return message;
   },
 };
