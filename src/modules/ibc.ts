@@ -48,7 +48,6 @@ export class IBCModule extends BaseModule {
     const tokenClient = this.sdkProvider.getTokenClient();
     const ibcBridges = tokenClient.bridges.ibc;
     const denomTracesArr = Object.values(tokenClient.denomTraces);
-    console.log("denomTracesArr", denomTracesArr);
 
     const chainInfoMap: TypeUtils.SimpleMap<ChainInfo> = {};
     for (let ibc = 0; ibc < ibcBridges.length; ibc++) {
@@ -60,21 +59,28 @@ export class IBCModule extends BaseModule {
         const extraCurrencies = denomTracesArr.reduce((prev: AppCurrency[], denomTrace: DenomTrace) => {
           const firstTransferChannel = denomTrace.path.match(ibcTransferChannelRegex)?.[0]?.replace("transfer/", "");
           const rootPath = denomTrace.path.replace(ibcTransferChannelRegex, "");
-          if (!(rootPath.length > 0 && firstTransferChannel === ibcBridge.channels.src_channel)) {
+          if (!(
+            (rootPath.length > 0 && firstTransferChannel === ibcBridge.channels.src_channel)
+              || (firstTransferChannel === ibcBridge.channels.dst_channel && denomTrace.baseDenom === "swth")
+          )) {
             return prev;
           }
 
           const coinMinimalDenom = IBCUtils.makeIBCMinimalDenom(denomTrace.path, denomTrace.baseDenom);
+          const tokenInfo = tokenClient.tokenForDenom(coinMinimalDenom) ?? tokenClient.tokenForDenom(denomTrace.baseDenom);
           prev.push({
-            coinDenom: tokenClient?.getTokenName(coinMinimalDenom) ?? "",
-            coinMinimalDenom: IBCUtils.makeIBCMinimalDenom(rootPath, denomTrace.baseDenom),
-            coinDecimals: tokenClient?.getDecimals(coinMinimalDenom) ?? "0",
+            coinDenom: tokenInfo?.symbol ?? "",
+            coinMinimalDenom: denomTrace.baseDenom === 'swth' ? coinMinimalDenom : IBCUtils.makeIBCMinimalDenom(rootPath, denomTrace.baseDenom),
+            coinDecimals: tokenInfo?.decimals.toNumber() ?? 0,
             coinGeckoId: tokenClient?.geckoTokenNames?.[coinMinimalDenom] ?? tokenClient?.geckoTokenNames?.[denomTrace.baseDenom] ?? "",
           } as AppCurrency)
           return prev;
         }, []);
-        console.log("extraCurrencies", extraCurrencies);
-        chainInfoMap[ibcBridge.chain_id_name] = chainInfo; 
+        const newChainInfo: ChainInfo = {
+          ...chainInfo,
+          currencies: chainInfo.currencies.concat(extraCurrencies),
+        }
+        chainInfoMap[ibcBridge.chain_id_name] = newChainInfo; 
       }
     }
     return chainInfoMap;
