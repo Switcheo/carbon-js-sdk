@@ -11,6 +11,7 @@ import { AssetParams } from "./asset_params";
 import { DebtInfo } from "./debt_info";
 import { StablecoinDebtInfo } from "./stablecoin_debt_info";
 import { StablecoinInterestInfo } from "./stablecoin_interest_info";
+import { EModeCategory } from "./e_mode_category";
 import { Coin } from "../cosmos/base/v1beta1/coin";
 import { RewardScheme, RewardDebt } from "./reward_scheme";
 
@@ -203,10 +204,35 @@ export interface QueryRewardDebtsResponse {
 
 export interface QueryRewardDebtsAllRequest {}
 
+export interface QueryEModeAllRequest {
+  pagination?: PageRequest;
+}
+
+export interface QueryEModeAllResponse {
+  eModeCategories: EModeCategory[];
+  pagination?: PageResponse;
+}
+
 export interface QueryStablecoinInterestRequest {}
 
 export interface QueryStablecoinInterestResponse {
   stablecoinInterestInfo?: StablecoinInterestInfo;
+}
+
+export interface QueryEModeRequest {
+  name: string;
+}
+
+export interface QueryEModeResponse {
+  eModeCategory?: EModeCategory;
+}
+
+export interface QueryAccountEModeRequest {
+  address: string;
+}
+
+export interface QueryAccountEModeResponse {
+  eModeCategory?: EModeCategory;
 }
 
 const baseQueryParamsRequest: object = {};
@@ -3254,6 +3280,157 @@ export const QueryRewardDebtsAllRequest = {
   },
 };
 
+const baseQueryEModeAllRequest: object = {};
+
+export const QueryEModeAllRequest = {
+  encode(
+    message: QueryEModeAllRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryEModeAllRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseQueryEModeAllRequest } as QueryEModeAllRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryEModeAllRequest {
+    const message = { ...baseQueryEModeAllRequest } as QueryEModeAllRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryEModeAllRequest): unknown {
+    const obj: any = {};
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<QueryEModeAllRequest>): QueryEModeAllRequest {
+    const message = { ...baseQueryEModeAllRequest } as QueryEModeAllRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryEModeAllResponse: object = {};
+
+export const QueryEModeAllResponse = {
+  encode(
+    message: QueryEModeAllResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.eModeCategories) {
+      EModeCategory.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryEModeAllResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseQueryEModeAllResponse } as QueryEModeAllResponse;
+    message.eModeCategories = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.eModeCategories.push(
+            EModeCategory.decode(reader, reader.uint32())
+          );
+          break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryEModeAllResponse {
+    const message = { ...baseQueryEModeAllResponse } as QueryEModeAllResponse;
+    message.eModeCategories = (object.eModeCategories ?? []).map((e: any) =>
+      EModeCategory.fromJSON(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryEModeAllResponse): unknown {
+    const obj: any = {};
+    if (message.eModeCategories) {
+      obj.eModeCategories = message.eModeCategories.map((e) =>
+        e ? EModeCategory.toJSON(e) : undefined
+      );
+    } else {
+      obj.eModeCategories = [];
+    }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryEModeAllResponse>
+  ): QueryEModeAllResponse {
+    const message = { ...baseQueryEModeAllResponse } as QueryEModeAllResponse;
+    message.eModeCategories = (object.eModeCategories ?? []).map((e) =>
+      EModeCategory.fromPartial(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
 const baseQueryStablecoinInterestRequest: object = {};
 
 export const QueryStablecoinInterestRequest = {
@@ -3384,6 +3561,258 @@ export const QueryStablecoinInterestResponse = {
   },
 };
 
+const baseQueryEModeRequest: object = { name: "" };
+
+export const QueryEModeRequest = {
+  encode(
+    message: QueryEModeRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.name !== "") {
+      writer.uint32(10).string(message.name);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryEModeRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseQueryEModeRequest } as QueryEModeRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.name = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryEModeRequest {
+    const message = { ...baseQueryEModeRequest } as QueryEModeRequest;
+    message.name =
+      object.name !== undefined && object.name !== null
+        ? String(object.name)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryEModeRequest): unknown {
+    const obj: any = {};
+    message.name !== undefined && (obj.name = message.name);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<QueryEModeRequest>): QueryEModeRequest {
+    const message = { ...baseQueryEModeRequest } as QueryEModeRequest;
+    message.name = object.name ?? "";
+    return message;
+  },
+};
+
+const baseQueryEModeResponse: object = {};
+
+export const QueryEModeResponse = {
+  encode(
+    message: QueryEModeResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.eModeCategory !== undefined) {
+      EModeCategory.encode(
+        message.eModeCategory,
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryEModeResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseQueryEModeResponse } as QueryEModeResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.eModeCategory = EModeCategory.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryEModeResponse {
+    const message = { ...baseQueryEModeResponse } as QueryEModeResponse;
+    message.eModeCategory =
+      object.eModeCategory !== undefined && object.eModeCategory !== null
+        ? EModeCategory.fromJSON(object.eModeCategory)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryEModeResponse): unknown {
+    const obj: any = {};
+    message.eModeCategory !== undefined &&
+      (obj.eModeCategory = message.eModeCategory
+        ? EModeCategory.toJSON(message.eModeCategory)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<QueryEModeResponse>): QueryEModeResponse {
+    const message = { ...baseQueryEModeResponse } as QueryEModeResponse;
+    message.eModeCategory =
+      object.eModeCategory !== undefined && object.eModeCategory !== null
+        ? EModeCategory.fromPartial(object.eModeCategory)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryAccountEModeRequest: object = { address: "" };
+
+export const QueryAccountEModeRequest = {
+  encode(
+    message: QueryAccountEModeRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.address !== "") {
+      writer.uint32(10).string(message.address);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAccountEModeRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAccountEModeRequest,
+    } as QueryAccountEModeRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.address = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAccountEModeRequest {
+    const message = {
+      ...baseQueryAccountEModeRequest,
+    } as QueryAccountEModeRequest;
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryAccountEModeRequest): unknown {
+    const obj: any = {};
+    message.address !== undefined && (obj.address = message.address);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAccountEModeRequest>
+  ): QueryAccountEModeRequest {
+    const message = {
+      ...baseQueryAccountEModeRequest,
+    } as QueryAccountEModeRequest;
+    message.address = object.address ?? "";
+    return message;
+  },
+};
+
+const baseQueryAccountEModeResponse: object = {};
+
+export const QueryAccountEModeResponse = {
+  encode(
+    message: QueryAccountEModeResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.eModeCategory !== undefined) {
+      EModeCategory.encode(
+        message.eModeCategory,
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAccountEModeResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAccountEModeResponse,
+    } as QueryAccountEModeResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.eModeCategory = EModeCategory.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAccountEModeResponse {
+    const message = {
+      ...baseQueryAccountEModeResponse,
+    } as QueryAccountEModeResponse;
+    message.eModeCategory =
+      object.eModeCategory !== undefined && object.eModeCategory !== null
+        ? EModeCategory.fromJSON(object.eModeCategory)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryAccountEModeResponse): unknown {
+    const obj: any = {};
+    message.eModeCategory !== undefined &&
+      (obj.eModeCategory = message.eModeCategory
+        ? EModeCategory.toJSON(message.eModeCategory)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAccountEModeResponse>
+  ): QueryAccountEModeResponse {
+    const message = {
+      ...baseQueryAccountEModeResponse,
+    } as QueryAccountEModeResponse;
+    message.eModeCategory =
+      object.eModeCategory !== undefined && object.eModeCategory !== null
+        ? EModeCategory.fromPartial(object.eModeCategory)
+        : undefined;
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Parameters queries the parameters of the module. */
@@ -3450,6 +3879,14 @@ export interface Query {
   PositionsAll(
     request: QueryCdpPositionsRequest
   ): Promise<QueryCdpPositionsResponse>;
+  /** Queries a list of EMode items. */
+  EMode(request: QueryEModeRequest): Promise<QueryEModeResponse>;
+  /** Queries a list of EModeAll items. */
+  EModeAll(request: QueryEModeAllRequest): Promise<QueryEModeAllResponse>;
+  /** Queries a list of AccountEMode items. */
+  AccountEMode(
+    request: QueryAccountEModeRequest
+  ): Promise<QueryAccountEModeResponse>;
   /** Queries StablecoinInterest. */
   StablecoinInterest(
     request: QueryStablecoinInterestRequest
@@ -3478,6 +3915,9 @@ export class QueryClientImpl implements Query {
     this.RewardDebts = this.RewardDebts.bind(this);
     this.RewardDebtsAll = this.RewardDebtsAll.bind(this);
     this.PositionsAll = this.PositionsAll.bind(this);
+    this.EMode = this.EMode.bind(this);
+    this.EModeAll = this.EModeAll.bind(this);
+    this.AccountEMode = this.AccountEMode.bind(this);
     this.StablecoinInterest = this.StablecoinInterest.bind(this);
   }
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
@@ -3721,6 +4161,44 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryCdpPositionsResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  EMode(request: QueryEModeRequest): Promise<QueryEModeResponse> {
+    const data = QueryEModeRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Query",
+      "EMode",
+      data
+    );
+    return promise.then((data) =>
+      QueryEModeResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  EModeAll(request: QueryEModeAllRequest): Promise<QueryEModeAllResponse> {
+    const data = QueryEModeAllRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Query",
+      "EModeAll",
+      data
+    );
+    return promise.then((data) =>
+      QueryEModeAllResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  AccountEMode(
+    request: QueryAccountEModeRequest
+  ): Promise<QueryAccountEModeResponse> {
+    const data = QueryAccountEModeRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Query",
+      "AccountEMode",
+      data
+    );
+    return promise.then((data) =>
+      QueryAccountEModeResponse.decode(new _m0.Reader(data))
     );
   }
 
