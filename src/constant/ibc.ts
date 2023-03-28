@@ -2129,7 +2129,7 @@ export const ibcTokenRegex = /^ibc\/([a-f\d]+)$/i;
 
 export const ibcNetworkRegex = /^([a-z\d_-]+)-([\d]+)$/i;
 
-export const ibcTransferChannelRegex = //i;
+export const ibcTransferChannelRegex = /^transfer\/channel-(\d+)/i;
 
 export const ibcDefaultGas: number = 300000;
 

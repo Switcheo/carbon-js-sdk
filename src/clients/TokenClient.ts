@@ -9,9 +9,8 @@ import {
   TokenBlacklist, uscUsdValue
 } from "@carbon-sdk/constant";
 import { cibtIbcTokenRegex, ibcTokenRegex, ibcWhitelist, swthChannels, swthIbcWhitelist } from "@carbon-sdk/constant/ibc";
-import { Network, publicRpcNodes } from "@carbon-sdk/constant/network";
+import { publicRpcNodes } from "@carbon-sdk/constant/network";
 import { FeeQuote } from "@carbon-sdk/hydrogen/feeQuote";
-import KeplrAccount from "@carbon-sdk/provider/keplr/KeplrAccount";
 import { BlockchainUtils, FetchUtils, IBCUtils, NumberUtils, TypeUtils } from "@carbon-sdk/util";
 import { BlockchainV2, BridgeMap, BRIDGE_IDS, IbcBridge, isIbcBridge } from '@carbon-sdk/util/blockchain';
 import { bnOrZero, BN_ONE, BN_ZERO } from "@carbon-sdk/util/number";
@@ -22,7 +21,6 @@ import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import { AppCurrency } from "@keplr-wallet/types";
 import BigNumber from "bignumber.js";
 import Long from "long";
-import util from "util";
 import CarbonQueryClient from "./CarbonQueryClient";
 import InsightsQueryClient from "./InsightsQueryClient";
 

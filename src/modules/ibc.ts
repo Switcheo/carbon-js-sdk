@@ -3,6 +3,7 @@ import { MsgTransfer } from "@carbon-sdk/codec/ibc/applications/transfer/v1/tx";
 import { ibcNetworkRegex, ibcTransferChannelRegex } from "@carbon-sdk/constant";
 import { ChainInfo } from "@carbon-sdk/provider";
 import { CarbonTx, IBCUtils, TypeUtils } from "@carbon-sdk/util";
+import { AppCurrency } from "@keplr-wallet/types";
 import BigNumber from "bignumber.js";
 import BaseModule from "./base";
 
@@ -47,6 +48,7 @@ export class IBCModule extends BaseModule {
     const tokenClient = this.sdkProvider.getTokenClient();
     const ibcBridges = tokenClient.bridges.ibc;
     const denomTracesArr = Object.values(tokenClient.denomTraces);
+    console.log("denomTracesArr", denomTracesArr);
 
     const chainInfoMap: TypeUtils.SimpleMap<ChainInfo> = {};
     for (let ibc = 0; ibc < ibcBridges.length; ibc++) {
@@ -55,10 +57,23 @@ export class IBCModule extends BaseModule {
       const chainInfo = await this.getChainInfo(chainName, ibcBridge.chain_id_name);
 
       if (chainInfo) {
-        const extraCurrencies = denomTracesArr.filter((denomTrace: DenomTrace) => {
+        const extraCurrencies = denomTracesArr.reduce((prev: AppCurrency[], denomTrace: DenomTrace) => {
+          const firstTransferChannel = denomTrace.path.match(ibcTransferChannelRegex)?.[0]?.replace("transfer/", "");
           const rootPath = denomTrace.path.replace(ibcTransferChannelRegex, "");
-          return rootPath.length > 0;
-        })
+          if (!(rootPath.length > 0 && firstTransferChannel === ibcBridge.channels.src_channel)) {
+            return prev;
+          }
+
+          const coinMinimalDenom = IBCUtils.makeIBCMinimalDenom(denomTrace.path, denomTrace.baseDenom);
+          prev.push({
+            coinDenom: tokenClient?.getTokenName(coinMinimalDenom) ?? "",
+            coinMinimalDenom: IBCUtils.makeIBCMinimalDenom(rootPath, denomTrace.baseDenom),
+            coinDecimals: tokenClient?.getDecimals(coinMinimalDenom) ?? "0",
+            coinGeckoId: tokenClient?.geckoTokenNames?.[coinMinimalDenom] ?? tokenClient?.geckoTokenNames?.[denomTrace.baseDenom] ?? "",
+          } as AppCurrency)
+          return prev;
+        }, []);
+        console.log("extraCurrencies", extraCurrencies);
         chainInfoMap[ibcBridge.chain_id_name] = chainInfo; 
       }
     }
