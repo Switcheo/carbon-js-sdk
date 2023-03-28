@@ -10,6 +10,7 @@ import { QueryClientImpl as DistributionQueryClient } from "@carbon-sdk/codec/co
 import { QueryClientImpl as EvidenceQueryClient } from "@carbon-sdk/codec/cosmos/evidence/v1beta1/query";
 import { QueryClientImpl as GovQueryClient } from "@carbon-sdk/codec/cosmos/gov/v1beta1/query";
 import { QueryClientImpl as MintQueryClient } from "@carbon-sdk/codec/cosmos/mint/v1beta1/query";
+import { QueryClientImpl as NativeBankQueryClient } from "@carbon-sdk/codec/bank/query";
 import { QueryClientImpl as ParamsQueryClient } from "@carbon-sdk/codec/cosmos/params/v1beta1/query";
 import { QueryClientImpl as SlashingQueryClient } from "@carbon-sdk/codec/cosmos/slashing/v1beta1/query";
 import { QueryClientImpl as StakingQueryClient } from "@carbon-sdk/codec/cosmos/staking/v1beta1/query";
@@ -65,6 +66,7 @@ class CarbonQueryClient {
   market: MarketQueryClient;
   marketstats: MarketStatsQueryClient;
   misc: MiscQueryClient;
+  nativebank: NativeBankQueryClient;
   oracle: OracleQueryClient;
   order: OrderQueryClient;
   position: PositionQueryClient;
@@ -110,6 +112,7 @@ class CarbonQueryClient {
     this.market = new MarketQueryClient(rpcClient);
     this.marketstats = new MarketStatsQueryClient(rpcClient);
     this.misc = new MiscQueryClient(rpcClient);
+    this.nativebank = new NativeBankQueryClient(rpcClient);
     this.oracle = new OracleQueryClient(rpcClient);
     this.order = new OrderQueryClient(rpcClient);
     this.position = new PositionQueryClient(rpcClient);
