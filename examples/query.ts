@@ -1,5 +1,6 @@
 import Long from "long";
 import { QueryAllTransactionRequest } from "../lib/codec";
+import { PageRequest } from "../lib/codec/cosmos/base/query/v1beta1/pagination";
 import { CarbonSDK, CarbonTx, GenericUtils } from "./_sdk";
 import "./_setup";
 
@@ -27,13 +28,9 @@ import "./_setup";
 
   // query all tokens
   const tokens = await sdk.query.coin.TokenAll({
-    pagination: {
-      reverse: false,
+    pagination: PageRequest.fromPartial({
       limit: new Long(100),
-      offset: new Long(0),
-      key: new Uint8Array(),
-      countTotal: true,
-    },
+    }),
   });
   console.log("tokens", tokens);
 
@@ -62,20 +59,18 @@ import "./_setup";
 
   // query 10 latest blocks
   const blocksResponse = await sdk.query.misc.BlockAll({
-    pagination: {
-      page: new Long(1),
-      pageSize: new Long(10),
-    },
+    pagination: PageRequest.fromPartial({
+      limit: new Long(10),
+    }),
   });
   console.log("latest block", blocksResponse.blocks[0]);
 
   // query 10 latest transactions
   const txnsResponse = await sdk.query.misc.TransactionAll(
     QueryAllTransactionRequest.fromPartial({
-      pagination: {
-        page: new Long(1),
-        pageSize: new Long(10),
-      },
+      pagination: PageRequest.fromPartial({
+        limit: new Long(10),
+      }),
     })
   );
   console.log("latest txn", txnsResponse.transactions[0]);
@@ -90,10 +85,9 @@ import "./_setup";
   const filteredTxns = await sdk.query.misc.TransactionAll(
     QueryAllTransactionRequest.fromPartial({
       msgTypeFilters: [firstMessageType],
-      pagination: {
-        page: new Long(1),
-        pageSize: new Long(10),
-      },
+      pagination: PageRequest.fromPartial({
+        limit: new Long(10),
+      }),
     })
   );
   console.log("filtered txns by messageType:", firstMessageType, filteredTxns.transactions[0]);
