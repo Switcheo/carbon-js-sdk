@@ -232,7 +232,7 @@ export interface QueryAccountEModeRequest {
 }
 
 export interface QueryAccountEModeResponse {
-  eModeCategory?: EModeCategory;
+  eModeCategory: string;
 }
 
 const baseQueryParamsRequest: object = {};
@@ -3740,18 +3740,15 @@ export const QueryAccountEModeRequest = {
   },
 };
 
-const baseQueryAccountEModeResponse: object = {};
+const baseQueryAccountEModeResponse: object = { eModeCategory: "" };
 
 export const QueryAccountEModeResponse = {
   encode(
     message: QueryAccountEModeResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.eModeCategory !== undefined) {
-      EModeCategory.encode(
-        message.eModeCategory,
-        writer.uint32(10).fork()
-      ).ldelim();
+    if (message.eModeCategory !== "") {
+      writer.uint32(10).string(message.eModeCategory);
     }
     return writer;
   },
@@ -3769,7 +3766,7 @@ export const QueryAccountEModeResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.eModeCategory = EModeCategory.decode(reader, reader.uint32());
+          message.eModeCategory = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -3784,18 +3781,17 @@ export const QueryAccountEModeResponse = {
       ...baseQueryAccountEModeResponse,
     } as QueryAccountEModeResponse;
     message.eModeCategory =
-      object.eModeCategory !== undefined && object.eModeCategory !== null
-        ? EModeCategory.fromJSON(object.eModeCategory)
-        : undefined;
+      object.eModeCategory !== undefined &&
+      object.eModeCategory !== null
+        ? String(object.eModeCategory)
+        : "";
     return message;
   },
 
   toJSON(message: QueryAccountEModeResponse): unknown {
     const obj: any = {};
     message.eModeCategory !== undefined &&
-      (obj.eModeCategory = message.eModeCategory
-        ? EModeCategory.toJSON(message.eModeCategory)
-        : undefined);
+      (obj.eModeCategory = message.eModeCategory);
     return obj;
   },
 
@@ -3805,10 +3801,7 @@ export const QueryAccountEModeResponse = {
     const message = {
       ...baseQueryAccountEModeResponse,
     } as QueryAccountEModeResponse;
-    message.eModeCategory =
-      object.eModeCategory !== undefined && object.eModeCategory !== null
-        ? EModeCategory.fromPartial(object.eModeCategory)
-        : undefined;
+    message.eModeCategory = object.eModeCategory ?? "";
     return message;
   },
 };

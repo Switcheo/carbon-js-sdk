@@ -611,9 +611,12 @@ export class CDPModule extends BaseModule {
       let ltvBps = bnOrZero(assetParam.loanToValue);
       let liquidationThresholdBps = bnOrZero(assetParam.liquidationThreshold).div(BN_10000);
       const accountEModeRsp = await sdk.query.cdp.AccountEMode(QueryAccountEModeRequest.fromPartial({ address: account }));
-      if (accountEModeRsp.eModeCategory && accountEModeRsp.eModeCategory.name != "") {
-        ltvBps = bnOrZero(accountEModeRsp.eModeCategory.loanToValue)
-        liquidationThresholdBps = bnOrZero(accountEModeRsp.eModeCategory.liquidationThreshold)
+      if (accountEModeRsp.eModeCategory && accountEModeRsp.eModeCategory != "") {
+        const eModeRsp = await sdk.query.cdp.EMode({name: accountEModeRsp.eModeCategory})
+        if (eModeRsp.eModeCategory) {
+          ltvBps = bnOrZero(eModeRsp.eModeCategory.loanToValue)
+          liquidationThresholdBps = bnOrZero(eModeRsp.eModeCategory.liquidationThreshold)
+        }
       }
       const ltv = ltvBps.div(BN_10000);
       const liquidationThreshold = liquidationThresholdBps.div(BN_10000);
@@ -982,14 +985,20 @@ export class CDPModule extends BaseModule {
 
     const accountEModeRsp = await sdk.query.cdp.AccountEMode(QueryAccountEModeRequest.fromPartial({ address: account }));
     if (sdk.getConfig().network === Network.LocalHost || sdk.getConfig().network === Network.DevNet) {
-      if (accountEModeRsp.eModeCategory && accountEModeRsp.eModeCategory.name != "") {
-        unlockRatio = new BigNumber(accountEModeRsp.eModeCategory.liquidationThreshold)
+      if (accountEModeRsp.eModeCategory && accountEModeRsp.eModeCategory != "") {
+          const eModeRsp = await sdk.query.cdp.EMode({name: accountEModeRsp.eModeCategory})
+          if (eModeRsp.eModeCategory) {
+            unlockRatio = new BigNumber(eModeRsp.eModeCategory.liquidationThreshold)
+          }
       } else {
         unlockRatio = new BigNumber(assetParams.assetParams.liquidationThreshold);
       }
     }
-    if (accountEModeRsp.eModeCategory && accountEModeRsp.eModeCategory.name != "") {
-      unlockRatio = new BigNumber(accountEModeRsp.eModeCategory.loanToValue)
+    if (accountEModeRsp.eModeCategory && accountEModeRsp.eModeCategory != "") {
+      const eModeRsp = await sdk.query.cdp.EMode({name: accountEModeRsp.eModeCategory})
+      if (eModeRsp.eModeCategory) {
+        unlockRatio = new BigNumber(eModeRsp.eModeCategory.loanToValue)
+      }
     }
 
     const accountData = await this.getAccountData(account);
