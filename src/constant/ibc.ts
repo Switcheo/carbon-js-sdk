@@ -2124,8 +2124,10 @@ export const swthChannels: SimpleMap<ChannelConfig> = {
 };
 
 export const cibtIbcTokenRegex = RegExp(`^${DenomPrefix.CDPToken}/ibc/([a-f\\d]+)$`, "i");
-
 export const ibcTokenRegex = /^ibc\/([a-f\d]+)$/i;
+export const cw20TokenRegex = /^cw20:([a-z\d]+)$/i;
+
+export const cosmBridgeRegex = /^wasm\.([a-z\d]+)$/i;
 
 export const ibcNetworkRegex = /^([a-z\d_-]+)-([\d]+)$/i;
 
@@ -2138,3 +2140,9 @@ export const DefaultGasPriceStep: GasPriceStep = {
   average: 0.025,
   high: 0.04,
 };
+
+export type MinimalDenomMap = SimpleMap<string>;
+
+export interface ExtendedChainInfo extends ChainInfo {
+  minimalDenomMap: MinimalDenomMap;
+}

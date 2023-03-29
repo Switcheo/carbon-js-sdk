@@ -1,7 +1,7 @@
 import { DenomTrace } from "@carbon-sdk/codec/ibc/applications/transfer/v1/transfer";
 import { MsgTransfer } from "@carbon-sdk/codec/ibc/applications/transfer/v1/tx";
-import { ibcNetworkRegex, ibcTransferChannelRegex } from "@carbon-sdk/constant";
-import { ChainInfo } from "@carbon-sdk/provider";
+import { ExtendedChainInfo, cw20TokenRegex, ibcNetworkRegex, ibcTransferChannelRegex } from "@carbon-sdk/constant";
+import { ChainInfo, KeplrAccount } from "@carbon-sdk/provider";
 import { CarbonTx, IBCUtils, TypeUtils } from "@carbon-sdk/util";
 import { AppCurrency } from "@keplr-wallet/types";
 import BigNumber from "bignumber.js";
@@ -44,44 +44,76 @@ export class IBCModule extends BaseModule {
     );
   }
 
-  async getChainInfoMap(): Promise<TypeUtils.SimpleMap<ChainInfo>> {
+  async getChainInfoMap(): Promise<TypeUtils.SimpleMap<ExtendedChainInfo>> {
     const tokenClient = this.sdkProvider.getTokenClient();
     const ibcBridges = tokenClient.bridges.ibc;
     const denomTracesArr = Object.values(tokenClient.denomTraces);
 
-    const chainInfoMap: TypeUtils.SimpleMap<ChainInfo> = {};
+    const chainInfoMap: TypeUtils.SimpleMap<ExtendedChainInfo> = {};
     for (let ibc = 0; ibc < ibcBridges.length; ibc++) {
       const ibcBridge = ibcBridges[ibc];
       const chainName = ibcBridge.chain_id_name.match(ibcNetworkRegex)?.[1] ?? "";
       const chainInfo = await this.getChainInfo(chainName, ibcBridge.chain_id_name);
 
       if (chainInfo) {
+        const extendedChainInfo: ExtendedChainInfo = {
+          ...chainInfo,
+          minimalDenomMap: {},
+        };
+
         const extraCurrencies = denomTracesArr.reduce((prev: AppCurrency[], denomTrace: DenomTrace) => {
           const firstTransferChannel = denomTrace.path.match(ibcTransferChannelRegex)?.[0]?.replace("transfer/", "");
-          const rootPath = denomTrace.path.replace(ibcTransferChannelRegex, "");
+          const cw20RegexArr = denomTrace.baseDenom.match(cw20TokenRegex);
+          const rootPath = denomTrace.path.replace(ibcTransferChannelRegex, "").replace(/^\//, '');
+          const isNativeDenom = tokenClient.isNativeToken(denomTrace.baseDenom) || tokenClient.isNativeStablecoin(denomTrace.baseDenom);
+          const coinMinimalDenom = IBCUtils.makeIBCMinimalDenom(denomTrace.path, denomTrace.baseDenom);
           if (!(
-            (rootPath.length > 0 && firstTransferChannel === ibcBridge.channels.src_channel)
-              || (firstTransferChannel === ibcBridge.channels.dst_channel && denomTrace.baseDenom === "swth")
+            ((rootPath.length > 0 || cw20RegexArr?.length) && firstTransferChannel === ibcBridge.channels.src_channel)
+              || (firstTransferChannel === ibcBridge.channels.dst_channel && isNativeDenom)
           )) {
+            if (firstTransferChannel === ibcBridge.channels.src_channel && rootPath.length === 0) {
+              extendedChainInfo.minimalDenomMap[coinMinimalDenom] = denomTrace.baseDenom;
+            }
             return prev;
           }
 
-          const coinMinimalDenom = IBCUtils.makeIBCMinimalDenom(denomTrace.path, denomTrace.baseDenom);
           const tokenInfo = tokenClient.tokenForDenom(coinMinimalDenom) ?? tokenClient.tokenForDenom(denomTrace.baseDenom);
-          prev.push({
-            coinDenom: tokenInfo?.symbol ?? "",
-            coinMinimalDenom: denomTrace.baseDenom === 'swth' ? coinMinimalDenom : IBCUtils.makeIBCMinimalDenom(rootPath, denomTrace.baseDenom),
-            coinDecimals: tokenInfo?.decimals.toNumber() ?? 0,
-            coinGeckoId: tokenClient?.geckoTokenNames?.[coinMinimalDenom] ?? tokenClient?.geckoTokenNames?.[denomTrace.baseDenom] ?? "",
-          } as AppCurrency)
+          let initCoinMinimalDenom = denomTrace.baseDenom;
+          if (cw20RegexArr?.length) {
+            prev.push({
+              coinDenom: tokenInfo?.symbol ?? "",
+              coinMinimalDenom: initCoinMinimalDenom,
+              coinDecimals: tokenInfo?.decimals.toNumber() ?? 0,
+              coinGeckoId: tokenClient?.geckoTokenNames?.[coinMinimalDenom] ?? tokenClient?.geckoTokenNames?.[denomTrace.baseDenom] ?? "",
+              type: "cw20",
+              contractAddress: cw20RegexArr[1] ?? "",
+            } as AppCurrency);
+          } else {
+            initCoinMinimalDenom = isNativeDenom ? coinMinimalDenom : IBCUtils.makeIBCMinimalDenom(rootPath, denomTrace.baseDenom);
+            prev.push({
+              coinDenom: tokenInfo?.symbol ?? "",
+              coinMinimalDenom: initCoinMinimalDenom,
+              coinDecimals: tokenInfo?.decimals.toNumber() ?? 0,
+              coinGeckoId: tokenClient?.geckoTokenNames?.[coinMinimalDenom] ?? tokenClient?.geckoTokenNames?.[denomTrace.baseDenom] ?? "",
+            } as AppCurrency);
+          }
+          extendedChainInfo.minimalDenomMap[coinMinimalDenom] = initCoinMinimalDenom;
           return prev;
         }, []);
-        const newChainInfo: ChainInfo = {
-          ...chainInfo,
+
+        chainInfoMap[ibcBridge.chain_id_name] = {
+          ...extendedChainInfo,
           currencies: chainInfo.currencies.concat(extraCurrencies),
-        }
-        chainInfoMap[ibcBridge.chain_id_name] = newChainInfo; 
+        } as ExtendedChainInfo;
       }
+    }
+
+    const swthChainInfo = await KeplrAccount.getChainInfo(this.sdkProvider);
+    if (swthChainInfo) {
+      chainInfoMap[swthChainInfo.chainId] = {
+        ...swthChainInfo,
+        minimalDenomMap: {},
+      };
     }
     return chainInfoMap;
   }

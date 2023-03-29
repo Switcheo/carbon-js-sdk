@@ -8,7 +8,7 @@ import {
   NetworkConfigProvider,
   TokenBlacklist, uscUsdValue
 } from "@carbon-sdk/constant";
-import { cibtIbcTokenRegex, ibcTokenRegex, ibcWhitelist, swthChannels, swthIbcWhitelist } from "@carbon-sdk/constant/ibc";
+import { cibtIbcTokenRegex, ibcTokenRegex, ibcWhitelist, swthChannels, cosmBridgeRegex } from "@carbon-sdk/constant/ibc";
 import { publicRpcNodes } from "@carbon-sdk/constant/network";
 import { FeeQuote } from "@carbon-sdk/hydrogen/feeQuote";
 import { BlockchainUtils, FetchUtils, IBCUtils, NumberUtils, TypeUtils } from "@carbon-sdk/util";
@@ -509,9 +509,11 @@ class TokenClient {
         const connectionId = connection?.connectionHops[0]
         const src_channel = connection?.channelId ?? ""
         const dst_channel = connection?.counterparty?.channelId ?? ""
+        const cosmRegexArr = connection?.counterparty?.portId?.match(cosmBridgeRegex)
+        const portId = cosmRegexArr?.[1] ?? "transfer";
         const clientId = connection_to_clientId.connections.find(connection => connection.id === connectionId)?.clientId
         const chainIdName = (clientStates.find(client => client.clientId === clientId)?.clientState)?.chainId
-        return {...bridge, chain_id_name: chainIdName ?? "", channels: {src_channel, dst_channel}}
+        return {...bridge, chain_id_name: chainIdName ?? "", channels: { src_channel, dst_channel, port_id: portId }}
       })
     } finally {
       const checkedBefore = new Array(newBridges.length).fill(false)
