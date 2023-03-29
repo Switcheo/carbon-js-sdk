@@ -1,5 +1,5 @@
-import { DenomTrace } from "@carbon-sdk/codec/ibc/applications/transfer/v1/transfer";
 import { MsgTransfer } from "@carbon-sdk/codec/ibc/applications/transfer/v1/tx";
+import { DenomTraceExtended } from "@carbon-sdk/clients/TokenClient";
 import { ExtendedChainInfo, cw20TokenRegex, ibcNetworkRegex, ibcTransferChannelRegex } from "@carbon-sdk/constant";
 import { ChainInfo, KeplrAccount } from "@carbon-sdk/provider";
 import { CarbonTx, IBCUtils, TypeUtils } from "@carbon-sdk/util";
@@ -61,12 +61,13 @@ export class IBCModule extends BaseModule {
           minimalDenomMap: {},
         };
 
-        const extraCurrencies = denomTracesArr.reduce((prev: AppCurrency[], denomTrace: DenomTrace) => {
+        const extraCurrencies = denomTracesArr.reduce((prev: AppCurrency[], denomTrace: DenomTraceExtended) => {
           const firstTransferChannel = denomTrace.path.match(ibcTransferChannelRegex)?.[0]?.replace("transfer/", "");
           const cw20RegexArr = denomTrace.baseDenom.match(cw20TokenRegex);
           const rootPath = denomTrace.path.replace(ibcTransferChannelRegex, "").replace(/^\//, '');
-          const isNativeDenom = tokenClient.isNativeToken(denomTrace.baseDenom) || tokenClient.isNativeStablecoin(denomTrace.baseDenom);
           const coinMinimalDenom = IBCUtils.makeIBCMinimalDenom(denomTrace.path, denomTrace.baseDenom);
+          const tokenInfo = denomTrace.token;
+          const isNativeDenom = tokenClient.isCarbonToken(tokenInfo);
           if (!(
             ((rootPath.length > 0 || cw20RegexArr?.length) && firstTransferChannel === ibcBridge.channels.src_channel)
               || (firstTransferChannel === ibcBridge.channels.dst_channel && isNativeDenom)
@@ -77,7 +78,6 @@ export class IBCModule extends BaseModule {
             return prev;
           }
 
-          const tokenInfo = tokenClient.tokenForDenom(coinMinimalDenom) ?? tokenClient.tokenForDenom(denomTrace.baseDenom);
           let initCoinMinimalDenom = denomTrace.baseDenom;
           if (cw20RegexArr?.length) {
             prev.push({

@@ -6,7 +6,7 @@ import {
   CoinGeckoTokenNames,
   CommonAssetName, decTypeDecimals, DenomPrefix,
   NetworkConfigProvider,
-  TokenBlacklist, uscUsdValue
+  TokenBlacklist, uscUsdValue,
 } from "@carbon-sdk/constant";
 import { cibtIbcTokenRegex, ibcTokenRegex, ibcWhitelist, swthChannels, cosmBridgeRegex } from "@carbon-sdk/constant/ibc";
 import { publicRpcNodes } from "@carbon-sdk/constant/network";
@@ -23,6 +23,10 @@ import BigNumber from "bignumber.js";
 import Long from "long";
 import CarbonQueryClient from "./CarbonQueryClient";
 import InsightsQueryClient from "./InsightsQueryClient";
+
+export interface DenomTraceExtended extends DenomTrace {
+  token?: Token;
+}
 
 const SYMBOL_OVERRIDE: {
   [symbol: string]: string;
@@ -56,7 +60,7 @@ class TokenClient {
   public readonly geckoTokenNames: TypeUtils.SimpleMap<string> = CoinGeckoTokenNames;
 
   // ibc apis
-  public readonly denomTraces: TypeUtils.SimpleMap<DenomTrace> = {};
+  public readonly denomTraces: TypeUtils.SimpleMap<DenomTraceExtended> = {};
 
   private additionalGeckoDenoms: TypeUtils.SimpleMap<string> = {};
 
@@ -363,6 +367,10 @@ class TokenClient {
     return groupedTokenRegex.test(denom)
   }
 
+  public isCarbonToken(token?: Token): boolean {
+    return Boolean(token && (this.isNativeToken(token.denom) || token.bridgeId.eq(0)));
+  }
+
   public getDepositTokenFor(tokenDenom: string, chain: BlockchainUtils.Blockchain | BlockchainUtils.BlockchainV2, version = "V1"): Token | undefined {
     const networkConfig = this.configProvider.getConfig();
     const token = this.tokenForDenom(tokenDenom);
@@ -431,7 +439,7 @@ class TokenClient {
     return this.tokens;
   }
 
-  public async reloadDenomTraces(): Promise<TypeUtils.SimpleMap<DenomTrace>> {
+  public async reloadDenomTraces(): Promise<TypeUtils.SimpleMap<DenomTraceExtended>> {
     const result = await this.query.ibc.transfer.DenomTraces({
       pagination: {
         limit: new Long(1000000),
@@ -443,7 +451,11 @@ class TokenClient {
     });
     result.denomTraces.forEach((denomTrace: DenomTrace) => {
       const ibcDenom = IBCUtils.makeIBCMinimalDenom(denomTrace.path, denomTrace.baseDenom);
-      this.denomTraces[ibcDenom] = denomTrace;
+      const token: Token | undefined = this.tokenForDenom(ibcDenom);
+      this.denomTraces[ibcDenom] = {
+        ...denomTrace,
+        token,
+      };
     });
     const swthTraces = await this.getCarbonDenomTraces();
     return { ...this.denomTraces, ...swthTraces };
@@ -632,8 +644,10 @@ class TokenClient {
     });
     return osmoSwthDenomTrace.reduce((prev: TypeUtils.SimpleMap<DenomTrace>, trace: DenomTrace) => {
       const coinMinimalDenom = IBCUtils.makeIBCMinimalDenom(trace.path, trace.baseDenom);
-      this.denomTraces[coinMinimalDenom] = trace;
-      prev[coinMinimalDenom] = trace;
+      const token: Token | undefined = this.tokenForDenom(coinMinimalDenom) ?? this.tokenForDenom(trace.baseDenom);
+      const traceExtended: DenomTraceExtended = { ...trace, token };
+      this.denomTraces[coinMinimalDenom] = traceExtended;
+      prev[coinMinimalDenom] = traceExtended;
       return prev;
     }, {});
   }
