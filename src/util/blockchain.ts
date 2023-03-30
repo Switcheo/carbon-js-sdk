@@ -36,6 +36,7 @@ export enum Blockchain {
   Canto = "canto",
   OmniFlixHub = "omniflixhub",
   Agoric = "agoric",
+  Sommelier = "sommelier",
 }
 
 export type BlockchainV2 = ReturnType<TokenClient['getAllBlockchainNames']>[number] | "Native" | "Carbon" | "Tradehub" | "Ibc" | "Polynetwork"

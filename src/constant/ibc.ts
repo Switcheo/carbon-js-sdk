@@ -115,6 +115,7 @@ export const ibcWhitelist: string[] = [
   ChainIds.Canto,
   ChainIds.OmniFlixHub,
   ChainIds.Agoric,
+  ChainIds.Sommelier,
 ];
 
 export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
@@ -2119,6 +2120,12 @@ export const swthChannels: SimpleMap<ChannelConfig> = {
     ibc: {
       sourceChannel: "channel-20",
       dstChannel: "channel-12",
+    },
+  },
+  [ChainIds.Sommelier]: {
+    ibc: {
+      sourceChannel: "channel-23",
+      dstChannel: "channel-3",
     },
   },
 };

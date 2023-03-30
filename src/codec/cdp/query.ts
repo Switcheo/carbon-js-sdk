@@ -10,6 +10,7 @@ import {
 import { AssetParams } from "./asset_params";
 import { DebtInfo } from "./debt_info";
 import { StablecoinDebtInfo } from "./stablecoin_debt_info";
+import { StablecoinInterestInfo } from "./stablecoin_interest_info";
 import { Coin } from "../cosmos/base/v1beta1/coin";
 import { RewardScheme, RewardDebt } from "./reward_scheme";
 
@@ -201,6 +202,12 @@ export interface QueryRewardDebtsResponse {
 }
 
 export interface QueryRewardDebtsAllRequest {}
+
+export interface QueryStablecoinInterestRequest {}
+
+export interface QueryStablecoinInterestResponse {
+  stablecoinInterestInfo?: StablecoinInterestInfo;
+}
 
 const baseQueryParamsRequest: object = {};
 
@@ -3247,6 +3254,136 @@ export const QueryRewardDebtsAllRequest = {
   },
 };
 
+const baseQueryStablecoinInterestRequest: object = {};
+
+export const QueryStablecoinInterestRequest = {
+  encode(
+    _: QueryStablecoinInterestRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryStablecoinInterestRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryStablecoinInterestRequest,
+    } as QueryStablecoinInterestRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryStablecoinInterestRequest {
+    const message = {
+      ...baseQueryStablecoinInterestRequest,
+    } as QueryStablecoinInterestRequest;
+    return message;
+  },
+
+  toJSON(_: QueryStablecoinInterestRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<QueryStablecoinInterestRequest>
+  ): QueryStablecoinInterestRequest {
+    const message = {
+      ...baseQueryStablecoinInterestRequest,
+    } as QueryStablecoinInterestRequest;
+    return message;
+  },
+};
+
+const baseQueryStablecoinInterestResponse: object = {};
+
+export const QueryStablecoinInterestResponse = {
+  encode(
+    message: QueryStablecoinInterestResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.stablecoinInterestInfo !== undefined) {
+      StablecoinInterestInfo.encode(
+        message.stablecoinInterestInfo,
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryStablecoinInterestResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryStablecoinInterestResponse,
+    } as QueryStablecoinInterestResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.stablecoinInterestInfo = StablecoinInterestInfo.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryStablecoinInterestResponse {
+    const message = {
+      ...baseQueryStablecoinInterestResponse,
+    } as QueryStablecoinInterestResponse;
+    message.stablecoinInterestInfo =
+      object.stablecoinInterestInfo !== undefined &&
+      object.stablecoinInterestInfo !== null
+        ? StablecoinInterestInfo.fromJSON(object.stablecoinInterestInfo)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryStablecoinInterestResponse): unknown {
+    const obj: any = {};
+    message.stablecoinInterestInfo !== undefined &&
+      (obj.stablecoinInterestInfo = message.stablecoinInterestInfo
+        ? StablecoinInterestInfo.toJSON(message.stablecoinInterestInfo)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryStablecoinInterestResponse>
+  ): QueryStablecoinInterestResponse {
+    const message = {
+      ...baseQueryStablecoinInterestResponse,
+    } as QueryStablecoinInterestResponse;
+    message.stablecoinInterestInfo =
+      object.stablecoinInterestInfo !== undefined &&
+      object.stablecoinInterestInfo !== null
+        ? StablecoinInterestInfo.fromPartial(object.stablecoinInterestInfo)
+        : undefined;
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Parameters queries the parameters of the module. */
@@ -3313,6 +3450,10 @@ export interface Query {
   PositionsAll(
     request: QueryCdpPositionsRequest
   ): Promise<QueryCdpPositionsResponse>;
+  /** Queries StablecoinInterest. */
+  StablecoinInterest(
+    request: QueryStablecoinInterestRequest
+  ): Promise<QueryStablecoinInterestResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -3337,6 +3478,7 @@ export class QueryClientImpl implements Query {
     this.RewardDebts = this.RewardDebts.bind(this);
     this.RewardDebtsAll = this.RewardDebtsAll.bind(this);
     this.PositionsAll = this.PositionsAll.bind(this);
+    this.StablecoinInterest = this.StablecoinInterest.bind(this);
   }
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
@@ -3579,6 +3721,20 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryCdpPositionsResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  StablecoinInterest(
+    request: QueryStablecoinInterestRequest
+  ): Promise<QueryStablecoinInterestResponse> {
+    const data = QueryStablecoinInterestRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Query",
+      "StablecoinInterest",
+      data
+    );
+    return promise.then((data) =>
+      QueryStablecoinInterestResponse.decode(new _m0.Reader(data))
     );
   }
 }

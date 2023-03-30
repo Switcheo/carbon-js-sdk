@@ -2,7 +2,10 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Position, APIPosition, PositionAllocatedMargin } from "./position";
-import { PageRequest, PageResponse } from "../query/pagination";
+import {
+  PageRequest,
+  PageResponse,
+} from "../cosmos/base/query/v1beta1/pagination";
 
 export const protobufPackage = "Switcheo.carbon.position";
 
@@ -18,7 +21,6 @@ export interface QueryGetPositionResponse {
 export interface QueryAllPositionRequest {
   address: string;
   market: string;
-  orderBy: string;
   status: string;
   pagination?: PageRequest;
 }
@@ -185,7 +187,6 @@ export const QueryGetPositionResponse = {
 const baseQueryAllPositionRequest: object = {
   address: "",
   market: "",
-  orderBy: "",
   status: "",
 };
 
@@ -199,9 +200,6 @@ export const QueryAllPositionRequest = {
     }
     if (message.market !== "") {
       writer.uint32(18).string(message.market);
-    }
-    if (message.orderBy !== "") {
-      writer.uint32(26).string(message.orderBy);
     }
     if (message.status !== "") {
       writer.uint32(34).string(message.status);
@@ -230,9 +228,6 @@ export const QueryAllPositionRequest = {
         case 2:
           message.market = reader.string();
           break;
-        case 3:
-          message.orderBy = reader.string();
-          break;
         case 4:
           message.status = reader.string();
           break;
@@ -259,10 +254,6 @@ export const QueryAllPositionRequest = {
       object.market !== undefined && object.market !== null
         ? String(object.market)
         : "";
-    message.orderBy =
-      object.orderBy !== undefined && object.orderBy !== null
-        ? String(object.orderBy)
-        : "";
     message.status =
       object.status !== undefined && object.status !== null
         ? String(object.status)
@@ -278,7 +269,6 @@ export const QueryAllPositionRequest = {
     const obj: any = {};
     message.address !== undefined && (obj.address = message.address);
     message.market !== undefined && (obj.market = message.market);
-    message.orderBy !== undefined && (obj.orderBy = message.orderBy);
     message.status !== undefined && (obj.status = message.status);
     message.pagination !== undefined &&
       (obj.pagination = message.pagination
@@ -295,7 +285,6 @@ export const QueryAllPositionRequest = {
     } as QueryAllPositionRequest;
     message.address = object.address ?? "";
     message.market = object.market ?? "";
-    message.orderBy = object.orderBy ?? "";
     message.status = object.status ?? "";
     message.pagination =
       object.pagination !== undefined && object.pagination !== null

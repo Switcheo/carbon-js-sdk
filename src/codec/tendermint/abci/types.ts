@@ -263,6 +263,13 @@ export interface ResponseCheckTx {
   gasUsed: Long;
   events: Event[];
   codespace: string;
+  sender: string;
+  priority: Long;
+  /**
+   * mempool_error is set by Tendermint.
+   * ABCI applictions creating a ResponseCheckTX should not set mempool_error.
+   */
+  mempoolError: string;
 }
 
 export interface ResponseDeliverTx {
@@ -274,6 +281,7 @@ export interface ResponseDeliverTx {
   info: string;
   gasWanted: Long;
   gasUsed: Long;
+  /** nondeterministic */
   events: Event[];
   codespace: string;
 }
@@ -3104,6 +3112,9 @@ const baseResponseCheckTx: object = {
   gasWanted: Long.ZERO,
   gasUsed: Long.ZERO,
   codespace: "",
+  sender: "",
+  priority: Long.ZERO,
+  mempoolError: "",
 };
 
 export const ResponseCheckTx = {
@@ -3134,6 +3145,15 @@ export const ResponseCheckTx = {
     }
     if (message.codespace !== "") {
       writer.uint32(66).string(message.codespace);
+    }
+    if (message.sender !== "") {
+      writer.uint32(74).string(message.sender);
+    }
+    if (!message.priority.isZero()) {
+      writer.uint32(80).int64(message.priority);
+    }
+    if (message.mempoolError !== "") {
+      writer.uint32(90).string(message.mempoolError);
     }
     return writer;
   },
@@ -3170,6 +3190,15 @@ export const ResponseCheckTx = {
           break;
         case 8:
           message.codespace = reader.string();
+          break;
+        case 9:
+          message.sender = reader.string();
+          break;
+        case 10:
+          message.priority = reader.int64() as Long;
+          break;
+        case 11:
+          message.mempoolError = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -3208,6 +3237,18 @@ export const ResponseCheckTx = {
       object.codespace !== undefined && object.codespace !== null
         ? String(object.codespace)
         : "";
+    message.sender =
+      object.sender !== undefined && object.sender !== null
+        ? String(object.sender)
+        : "";
+    message.priority =
+      object.priority !== undefined && object.priority !== null
+        ? Long.fromString(object.priority)
+        : Long.ZERO;
+    message.mempoolError =
+      object.mempoolError !== undefined && object.mempoolError !== null
+        ? String(object.mempoolError)
+        : "";
     return message;
   },
 
@@ -3230,6 +3271,11 @@ export const ResponseCheckTx = {
       obj.events = [];
     }
     message.codespace !== undefined && (obj.codespace = message.codespace);
+    message.sender !== undefined && (obj.sender = message.sender);
+    message.priority !== undefined &&
+      (obj.priority = (message.priority || Long.ZERO).toString());
+    message.mempoolError !== undefined &&
+      (obj.mempoolError = message.mempoolError);
     return obj;
   },
 
@@ -3249,6 +3295,12 @@ export const ResponseCheckTx = {
         : Long.ZERO;
     message.events = (object.events ?? []).map((e) => Event.fromPartial(e));
     message.codespace = object.codespace ?? "";
+    message.sender = object.sender ?? "";
+    message.priority =
+      object.priority !== undefined && object.priority !== null
+        ? Long.fromValue(object.priority)
+        : Long.ZERO;
+    message.mempoolError = object.mempoolError ?? "";
     return message;
   },
 };

@@ -17,7 +17,7 @@ import { KeplrAccount } from "@carbon-sdk/provider";
 import { BRIDGE_IDS } from "@carbon-sdk/util/blockchain";
 import { Hash } from "@keplr-wallet/crypto";
 import { AppCurrency, CW20Currency, Secret20Currency } from "@keplr-wallet/types";
-import { BlockchainV2 } from "./blockchain";
+import { Blockchain, BlockchainV2 } from "./blockchain";
 import { SimpleMap } from "./type";
 
 // Create IBC minimal denom
@@ -74,7 +74,7 @@ export const totalAssetObj: AssetListObj = Object.values(EmbedChainInfos).reduce
   {}
 );
 
-export const ChainIdBlockchainMap: SimpleMap<BlockchainV2> = {
+export const ChainIdBlockchainMapV2: SimpleMap<BlockchainV2> = {
   [ChainIds.Osmosis]: "Osmosis",
   [ChainIds.Terra]: "Terra",
   [ChainIds.CosmosHub]: "Cosmos Hub",
@@ -92,6 +92,27 @@ export const ChainIdBlockchainMap: SimpleMap<BlockchainV2> = {
   [ChainIds.Canto]: "Canto",
   [ChainIds.OmniFlixHub]: "Omniflix Hub",
   [ChainIds.Agoric]: "Agoric",
+};
+
+export const ChainIdBlockchainMap: SimpleMap<Blockchain> = {
+  [ChainIds.Osmosis]: Blockchain.Osmosis,
+  [ChainIds.Terra]: Blockchain.Terra,
+  [ChainIds.CosmosHub]: Blockchain.CosmosHub,
+  [ChainIds.Juno]: Blockchain.Juno,
+  [ChainIds.Evmos]: Blockchain.Evmos,
+  [ChainIds.Axelar]: Blockchain.Axelar,
+  [ChainIds.Stride]: Blockchain.Stride,
+  [ChainIds.Kujira]: Blockchain.Kujira,
+  [ChainIds.Terra2]: Blockchain.Terra2,
+  [ChainIds.Quicksilver]: Blockchain.Quicksilver,
+  [ChainIds.Comdex]: Blockchain.Comdex,
+  [ChainIds.StafiHub]: Blockchain.StafiHub,
+  [ChainIds.Persistence]: Blockchain.Persistence,
+  [ChainIds.Stargaze]: Blockchain.Stargaze,
+  [ChainIds.Canto]: Blockchain.Canto,
+  [ChainIds.OmniFlixHub]: Blockchain.OmniFlixHub,
+  [ChainIds.Agoric]: Blockchain.Agoric,
+  [ChainIds.Sommelier]: Blockchain.Sommelier,
 };
 
 export const getIbcChainFromBlockchain = (blockchain: BlockchainV2 | undefined): ChainIds | undefined => {
