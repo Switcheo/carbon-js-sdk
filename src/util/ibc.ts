@@ -171,6 +171,11 @@ export const calculateMaxFee = (gasStep: GasPriceStep = DefaultGasPriceStep, gas
   return gasStep.high * gas;
 };
 
+export const estimateFeeStep = (gasStep: GasPriceStep = DefaultGasPriceStep, gas: number = 0, stepId: keyof GasPriceStep = 'average') => {
+  const currentGasStep = gasStep[stepId] ?? 0;
+  return currentGasStep * gas;
+}
+
 export const isCw20Token = (currency: AppCurrency): boolean => {
   if (!currency.hasOwnProperty("type")) return false;
 
