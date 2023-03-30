@@ -14,9 +14,9 @@ import { MsgSoftwareUpgrade, MsgSoftwareUpgradeResponse, MsgCancelUpgrade, MsgCa
 import { SoftwareUpgradeProposal, CancelSoftwareUpgradeProposal } from "./cosmos/upgrade/v1beta1/upgrade";
 import { MsgGrantAllowance, MsgGrantAllowanceResponse, MsgRevokeAllowance, MsgRevokeAllowanceResponse } from "./cosmos/feegrant/v1beta1/tx";
 import { MsgSubmitEvidence, MsgSubmitEvidenceResponse } from "./cosmos/evidence/v1beta1/tx";
-import { MsgSend, MsgSendResponse } from "./cosmos/nft/v1beta1/tx";
+import { MsgSend as MsgSendNft, MsgSendResponse as MsgSendNftResponse } from "./cosmos/nft/v1beta1/tx";
 import { MsgCreateGroup, MsgCreateGroupResponse, MsgUpdateGroupMembers, MsgUpdateGroupMembersResponse, MsgUpdateGroupAdmin, MsgUpdateGroupAdminResponse, MsgUpdateGroupMetadata, MsgUpdateGroupMetadataResponse, MsgCreateGroupPolicy, MsgCreateGroupPolicyResponse, MsgUpdateGroupPolicyAdmin, MsgCreateGroupWithPolicy, MsgCreateGroupWithPolicyResponse, MsgUpdateGroupPolicyAdminResponse, MsgUpdateGroupPolicyDecisionPolicy, MsgUpdateGroupPolicyDecisionPolicyResponse, MsgUpdateGroupPolicyMetadata, MsgUpdateGroupPolicyMetadataResponse, MsgSubmitProposal, MsgSubmitProposalResponse, MsgWithdrawProposal, MsgWithdrawProposalResponse, MsgVote, MsgVoteResponse, MsgExec, MsgExecResponse, MsgLeaveGroup, MsgLeaveGroupResponse } from "./cosmos/group/v1/tx";
-import { MsgSend as MsgBankSend, MsgSendResponse as MsgBankSendResponse, MsgMultiSend, MsgMultiSendResponse } from "./cosmos/bank/v1beta1/tx";
+import { MsgSend, MsgSendResponse, MsgMultiSend, MsgMultiSendResponse } from "./cosmos/bank/v1beta1/tx";
 import { MsgSetWithdrawAddress, MsgSetWithdrawAddressResponse, MsgWithdrawDelegatorReward, MsgWithdrawDelegatorRewardResponse, MsgWithdrawValidatorCommission, MsgWithdrawValidatorCommissionResponse, MsgFundCommunityPool, MsgFundCommunityPoolResponse } from "./cosmos/distribution/v1beta1/tx";
 import { CommunityPoolSpendProposal } from "./cosmos/distribution/v1beta1/distribution";
 import { MsgVerifyInvariant, MsgVerifyInvariantResponse } from "./cosmos/crisis/v1beta1/tx";
@@ -209,8 +209,8 @@ registry.register("/cosmos.feegrant.v1beta1.MsgRevokeAllowanceResponse", MsgRevo
 registry.register("/cosmos.evidence.v1beta1.MsgSubmitEvidence", MsgSubmitEvidence);
 registry.register("/cosmos.evidence.v1beta1.MsgSubmitEvidenceResponse", MsgSubmitEvidenceResponse);
 
-registry.register("/cosmos.nft.v1beta1.MsgSend", MsgSend);
-registry.register("/cosmos.nft.v1beta1.MsgSendResponse", MsgSendResponse);
+registry.register("/cosmos.nft.v1beta1.MsgSend", MsgSendNft);
+registry.register("/cosmos.nft.v1beta1.MsgSendResponse", MsgSendNftResponse);
 
 registry.register("/cosmos.group.v1.MsgCreateGroup", MsgCreateGroup);
 registry.register("/cosmos.group.v1.MsgCreateGroupResponse", MsgCreateGroupResponse);
@@ -241,8 +241,8 @@ registry.register("/cosmos.group.v1.MsgExecResponse", MsgExecResponse);
 registry.register("/cosmos.group.v1.MsgLeaveGroup", MsgLeaveGroup);
 registry.register("/cosmos.group.v1.MsgLeaveGroupResponse", MsgLeaveGroupResponse);
 
-registry.register("/cosmos.bank.v1beta1.MsgSend", MsgBankSend);
-registry.register("/cosmos.bank.v1beta1.MsgSendResponse", MsgBankSendResponse);
+registry.register("/cosmos.bank.v1beta1.MsgSend", MsgSend);
+registry.register("/cosmos.bank.v1beta1.MsgSendResponse", MsgSendResponse);
 registry.register("/cosmos.bank.v1beta1.MsgMultiSend", MsgMultiSend);
 registry.register("/cosmos.bank.v1beta1.MsgMultiSendResponse", MsgMultiSendResponse);
 
@@ -658,8 +658,8 @@ export const TxTypes = {
   "MsgRevokeAllowanceResponse": "/cosmos.feegrant.v1beta1.MsgRevokeAllowanceResponse",
   "MsgSubmitEvidence": "/cosmos.evidence.v1beta1.MsgSubmitEvidence",
   "MsgSubmitEvidenceResponse": "/cosmos.evidence.v1beta1.MsgSubmitEvidenceResponse",
-  "MsgSend": "/cosmos.nft.v1beta1.MsgSend",
-  "MsgSendResponse": "/cosmos.nft.v1beta1.MsgSendResponse",
+  "MsgSendNft": "/cosmos.nft.v1beta1.MsgSend",
+  "MsgSendNftResponse": "/cosmos.nft.v1beta1.MsgSendResponse",
   "MsgCreateGroup": "/cosmos.group.v1.MsgCreateGroup",
   "MsgCreateGroupResponse": "/cosmos.group.v1.MsgCreateGroupResponse",
   "MsgUpdateGroupMembers": "/cosmos.group.v1.MsgUpdateGroupMembers",
@@ -688,8 +688,8 @@ export const TxTypes = {
   "MsgExecResponse": "/cosmos.group.v1.MsgExecResponse",
   "MsgLeaveGroup": "/cosmos.group.v1.MsgLeaveGroup",
   "MsgLeaveGroupResponse": "/cosmos.group.v1.MsgLeaveGroupResponse",
-  "MsgBankSend": "/cosmos.bank.v1beta1.MsgSend",
-  "MsgBankSendResponse": "/cosmos.bank.v1beta1.MsgSendResponse",
+  "MsgSend": "/cosmos.bank.v1beta1.MsgSend",
+  "MsgSendResponse": "/cosmos.bank.v1beta1.MsgSendResponse",
   "MsgMultiSend": "/cosmos.bank.v1beta1.MsgMultiSend",
   "MsgMultiSendResponse": "/cosmos.bank.v1beta1.MsgMultiSendResponse",
   "MsgSetWithdrawAddress": "/cosmos.distribution.v1beta1.MsgSetWithdrawAddress",
