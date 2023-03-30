@@ -22,16 +22,13 @@ export class RootStore {
 
   public readonly accountStore: AccountStore<[CosmosAccount, CosmwasmAccount]>;
 
-  constructor(getKeplr: () => Promise<any>, additionalChains?: ChainInfo[]) {
+  constructor(getKeplr: () => Promise<any>, overrideChainInfos?: ChainInfo[]) {
     const embedChainInfos = Object.values(EmbedChainInfos).map((chainInfo: ChainInfoExplorerTmRpc) => {
       const newChainInfo: any = chainInfo;
       if (newChainInfo.tmRpc) delete newChainInfo.tmRpc;
       if (newChainInfo.explorerUrlToTx) delete newChainInfo.explorerUrlToTx;
       return newChainInfo as ChainInfo;
     }) as ChainInfo[];
-    if (additionalChains && additionalChains?.length > 0) {
-      embedChainInfos.push(...additionalChains);
-    }
 
     const eventListener = (() => {
       // On client-side (web browser), use the global window object.
@@ -71,7 +68,7 @@ export class RootStore {
       await keplr.experimentalSuggestChain(info);
     }
 
-    this.chainStore = new ChainStore<ChainInfo>(embedChainInfos);
+    this.chainStore = new ChainStore<ChainInfo>(overrideChainInfos ?? embedChainInfos);
 
     this.queriesStore = new QueriesStore(
       new IndexedDBKVStore("store_web_queries"),

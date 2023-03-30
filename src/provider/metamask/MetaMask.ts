@@ -1,10 +1,11 @@
 import { EthNetworkConfig, Network, NetworkConfigs } from "@carbon-sdk/constant";
 import { ABIs } from "@carbon-sdk/eth";
-import { Blockchain, ChainNames, BlockchainV2, getBlockchainFromChainV2, BLOCKCHAIN_V2_TO_V1_MAPPING } from "@carbon-sdk/util/blockchain";
+import { Blockchain, ChainNames, BlockchainV2, EVMChain as EVMChainV2, getBlockchainFromChainV2, BLOCKCHAIN_V2_TO_V1_MAPPING } from "@carbon-sdk/util/blockchain";
 import { ethers } from "ethers";
 import * as ethSignUtils from "eth-sig-util";
 
-export type EVMChain = 'Ethereum' | 'Binance Smart Chain' | 'Arbitrum' | 'Polygon' | 'OKC';
+export type EVMChain = EVMChainV2;
+
 type ChainContracts = {
   [key in Network]: string;
 };

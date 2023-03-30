@@ -1,3 +1,4 @@
+import { Token } from '@carbon-sdk/codec'
 import {
   ChainInfoExplorerTmRpc,
   ChainIds,
@@ -10,8 +11,10 @@ import {
   swthChannels,
   swthIbcWhitelist,
   ibcNetworkRegex,
+  ChannelConfig,
 } from "@carbon-sdk/constant";
 import { KeplrAccount } from "@carbon-sdk/provider";
+import { BRIDGE_IDS } from "@carbon-sdk/util/blockchain";
 import { Hash } from "@keplr-wallet/crypto";
 import { AppCurrency, CW20Currency, Secret20Currency } from "@keplr-wallet/types";
 import { BlockchainV2 } from "./blockchain";
