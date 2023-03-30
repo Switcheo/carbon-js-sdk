@@ -56,6 +56,10 @@ export const BRIDGE_IDS = {
   ibc: 2,
 }
 
+export interface PolyNetworkBridge extends Bridge {
+  isEvmChain: boolean;
+}
+
 export interface IbcBridge extends Bridge {
   chain_id_name: string;
   channels: {
@@ -70,7 +74,7 @@ export function isIbcBridge(object: Bridge): object is IbcBridge {
 }
 
 export interface BridgeMap {
-  polynetwork: Bridge[]
+  polynetwork: PolyNetworkBridge[]
   ibc: IbcBridge[]
 }
 
@@ -438,3 +442,7 @@ export const blockchainForChainIdV2 = (chainId?: number, network = Network.MainN
       return undefined
   }
 }
+
+const evmChains = ['Ethereum', 'Binance Smart Chain', 'Arbitrum', 'Polygon', 'OKC'] as const;
+export type EVMChain = (typeof evmChains)[number];
+export const isEvmChain = (chain: string): chain is EVMChain => evmChains.includes(chain as any);

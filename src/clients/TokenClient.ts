@@ -12,7 +12,7 @@ import { cibtIbcTokenRegex, ibcTokenRegex, ibcWhitelist, swthChannels, cosmBridg
 import { publicRpcNodes } from "@carbon-sdk/constant/network";
 import { FeeQuote } from "@carbon-sdk/hydrogen/feeQuote";
 import { BlockchainUtils, FetchUtils, IBCUtils, NumberUtils, TypeUtils } from "@carbon-sdk/util";
-import { BlockchainV2, BridgeMap, BRIDGE_IDS, IbcBridge, isIbcBridge } from '@carbon-sdk/util/blockchain';
+import { BlockchainV2, BridgeMap, BRIDGE_IDS, EVMChain, IbcBridge, PolyNetworkBridge, isIbcBridge } from '@carbon-sdk/util/blockchain';
 import { bnOrZero, BN_ONE, BN_ZERO } from "@carbon-sdk/util/number";
 import { QueryClientImpl as IBCTransferQueryClient } from "@carbon-sdk/codec/ibc/applications/transfer/v1/query";
 import { SimpleMap } from "@carbon-sdk/util/type";
@@ -367,7 +367,7 @@ class TokenClient {
     return groupedTokenRegex.test(denom)
   }
 
-  public isCarbonToken(token?: Token): boolean {
+  public isCarbonToken(token?: Token | null): boolean {
     return Boolean(token && (this.isNativeToken(token.denom) || token.bridgeId.eq(0)));
   }
 
@@ -480,10 +480,14 @@ class TokenClient {
       return bridge.bridgeId.toNumber() === BRIDGE_IDS.ibc
     })
     const ibcBridges = await this.matchChainsWithDifferentChainIds(unmatchedIbcBridgeList) 
-    const polynetworkBridges = allBridges.bridges.filter(bridge => {
-      if (!bridge.enabled) return
-      return bridge.bridgeId.toNumber() === BRIDGE_IDS.polynetwork
-    })
+    const polynetworkBridges = allBridges.bridges.reduce((prev: PolyNetworkBridge[], bridge: Bridge) => {
+      if (!bridge.enabled || bridge.bridgeId.toNumber() !== BRIDGE_IDS.polynetwork) return prev;
+      prev.push({
+        ...bridge,
+        isEvmChain: BlockchainUtils.isEvmChain(bridge.chainName),
+      } as PolyNetworkBridge)
+      return prev;
+    }, [])
     Object.assign(this.bridges, {
       polynetwork: polynetworkBridges,
       ibc: ibcBridges

@@ -432,4 +432,5 @@ export const NetworkConfigs: {
 
 export const publicRpcNodes: SimpleMap<string> = {
   Osmosis: "https://rpc.osmosis.zone/",
+  Terra: "https://terra-rpc.lavenderfive.com:443/",
 };

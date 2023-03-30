@@ -1,6 +1,6 @@
 import { MsgTransfer } from "@carbon-sdk/codec/ibc/applications/transfer/v1/tx";
 import { DenomTraceExtended } from "@carbon-sdk/clients/TokenClient";
-import { ExtendedChainInfo, cw20TokenRegex, ibcNetworkRegex, ibcTransferChannelRegex } from "@carbon-sdk/constant";
+import { ExtendedChainInfo, cw20TokenRegex, ibcNetworkRegex, ibcTransferChannelRegex, publicRpcNodes } from "@carbon-sdk/constant";
 import { ChainInfo, KeplrAccount } from "@carbon-sdk/provider";
 import { CarbonTx, IBCUtils, TypeUtils } from "@carbon-sdk/util";
 import { AppCurrency } from "@keplr-wallet/types";
@@ -56,8 +56,10 @@ export class IBCModule extends BaseModule {
       const chainInfo = await this.getChainInfo(chainName, ibcBridge.chain_id_name);
 
       if (chainInfo) {
+        const isCosmWasm = chainInfo.features?.includes("cosmwasm");
         const extendedChainInfo: ExtendedChainInfo = {
           ...chainInfo,
+          rpc: isCosmWasm ? publicRpcNodes[ibcBridge.chainName] : chainInfo.rpc,
           minimalDenomMap: {},
         };
 
@@ -97,7 +99,7 @@ export class IBCModule extends BaseModule {
               coinGeckoId: tokenClient?.geckoTokenNames?.[coinMinimalDenom] ?? tokenClient?.geckoTokenNames?.[denomTrace.baseDenom] ?? "",
             } as AppCurrency);
           }
-          extendedChainInfo.minimalDenomMap[coinMinimalDenom] = initCoinMinimalDenom;
+          extendedChainInfo.minimalDenomMap[isNativeDenom ? denomTrace.baseDenom : coinMinimalDenom] = initCoinMinimalDenom;
           return prev;
         }, []);
 
