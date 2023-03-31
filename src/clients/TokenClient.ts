@@ -130,11 +130,17 @@ class TokenClient {
   }
 
   public tokenForId(id: string): Token | undefined {
-    return Object.values(this.tokens).find((token) => token.id === id);
+    let tokensList = Object.values(this.tokens);
+    if (TokenClient.isPoolToken(id)) {
+      tokensList = Object.values(this.poolTokens);
+    } else if (TokenClient.isCdpToken(id)) {
+      tokensList = Object.values(this.cdpTokens);
+    }
+    return tokensList.find((token) => token.id === id);
   }
 
   public tokenForDenom(denom: string): Token | undefined {
-    return this.tokens[denom];
+    return this.poolTokens[denom] ?? this.cdpTokens[denom] ?? this.tokens[denom];
   }
 
   public async getFeeInfo(denom: string): Promise<FeeQuote> {

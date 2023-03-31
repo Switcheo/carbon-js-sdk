@@ -319,12 +319,13 @@ export class WSConnector {
    * options: subscribe, unsubscribe, get_recent_trades, get_candlesticks, get_open_orders,
    * get_account_trades, get_market_stats, get_leverages, get_open_positions, get_closed_positions
    * @param {any} params - parameters based on the specified method
+   * @param {any} extras - additional args to be sent in the request
    *
    * @returns {Promise<WSResult<T>>} - a Promise resolving to the response from the endpoint
    *
    * @see WSConnector documentation for usage example
    */
-  public async request<T = unknown>(method: string, params: any): Promise<WSResult<T> | undefined> {
+  public async request<T = unknown>(method: string, params: any, extras: any = {}): Promise<WSResult<T> | undefined> {
     const requestId = `r${++this.requestIdCounter}`;
 
     this.sendMessage(
@@ -332,6 +333,7 @@ export class WSConnector {
         id: requestId,
         method,
         params,
+        ...extras,
       })
     );
 

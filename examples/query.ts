@@ -1,5 +1,6 @@
 import Long from "long";
 import { QueryAllTransactionRequest } from "../lib/codec";
+import { PageRequest } from "../lib/codec/cosmos/base/query/v1beta1/pagination";
 import { CarbonSDK, CarbonTx, GenericUtils } from "./_sdk";
 import "./_setup";
 
@@ -14,35 +15,51 @@ import "./_setup";
   // GRPC Queries
 
   // query market stats
-  const marketStats = await sdk.query.marketstats.MarketStats({});
+  const marketStats = await sdk.query.marketstats.MarketStats({
+    pagination: PageRequest.fromPartial({
+      limit: new Long(5),
+    }),
+  });
   console.log("marketStats", marketStats);
 
   // query msg type gas costs
-  const msgGasCosts = await sdk.query.fee.MsgGasCostAll({});
+  const msgGasCosts = await sdk.query.fee.MsgGasCostAll({
+    pagination: PageRequest.fromPartial({
+      limit: new Long(5),
+    }),
+  });
   console.log("msg gas costs", msgGasCosts);
 
   // query txn min gas price
-  const minGasPrices = await sdk.query.fee.MinGasPriceAll({});
+  const minGasPrices = await sdk.query.fee.MinGasPriceAll({
+    pagination: PageRequest.fromPartial({
+      limit: new Long(5),
+    }),
+  });
   console.log("min gas prices", minGasPrices);
 
   // query all tokens
   const tokens = await sdk.query.coin.TokenAll({
-    pagination: {
-      reverse: false,
-      limit: new Long(100),
-      offset: new Long(0),
-      key: new Uint8Array(),
-      countTotal: true,
-    },
+    pagination: PageRequest.fromPartial({
+      limit: new Long(20),
+    }),
   });
   console.log("tokens", tokens);
 
   // query all token mappings
-  const mappings = await sdk.query.coin.WrapperMappings({});
+  const mappings = await sdk.query.coin.WrapperMappings({
+    pagination: PageRequest.fromPartial({
+      limit: new Long(5),
+    }),
+  });
   console.log("mappings", mappings);
 
   // query all markets
-  const markets = await sdk.query.market.MarketAll({});
+  const markets = await sdk.query.market.MarketAll({
+    pagination: PageRequest.fromPartial({
+      limit: new Long(5),
+    }),
+  });
   console.log("markets", markets);
 
   // query all orders;
@@ -51,49 +68,56 @@ import "./_setup";
     market: "",
     orderType: "",
     orderStatus: "",
+    pagination: PageRequest.fromPartial({
+      limit: new Long(5),
+    }),
   });
   console.log("orders", orders);
 
   // query all profiles with pagination
   const profiles = await sdk.query.profile.ProfileAll({
     username: "",
+    pagination: PageRequest.fromPartial({
+      limit: new Long(5),
+    }),
   });
   console.log("profiles", profiles);
 
   // query 10 latest blocks
   const blocksResponse = await sdk.query.misc.BlockAll({
-    pagination: {
-      page: new Long(1),
-      pageSize: new Long(10),
-    },
+    pagination: PageRequest.fromPartial({
+      limit: new Long(5),
+    }),
   });
   console.log("latest block", blocksResponse.blocks[0]);
 
   // query 10 latest transactions
   const txnsResponse = await sdk.query.misc.TransactionAll(
     QueryAllTransactionRequest.fromPartial({
-      pagination: {
-        page: new Long(1),
-        pageSize: new Long(10),
-      },
+      pagination: PageRequest.fromPartial({
+        limit: new Long(5),
+      }),
     })
   );
   console.log("latest txn", txnsResponse.transactions[0]);
 
   // query all transaction MessageTypes
-  const messageTypeReponse = await sdk.query.misc.MessageTypeAll({});
+  const messageTypeReponse = await sdk.query.misc.MessageTypeAll({
+    pagination: PageRequest.fromPartial({
+      limit: new Long(5),
+    }),
+  });
   console.log("message types", messageTypeReponse.messageTypes);
 
-  const firstMessageType = messageTypeReponse.messageTypes[0].messageType;
+  const firstMessageType = messageTypeReponse.messageTypes[0]?.messageType;
 
   // filter transactions with MessageType
   const filteredTxns = await sdk.query.misc.TransactionAll(
     QueryAllTransactionRequest.fromPartial({
       msgTypeFilters: [firstMessageType],
-      pagination: {
-        page: new Long(1),
-        pageSize: new Long(10),
-      },
+      pagination: PageRequest.fromPartial({
+        limit: new Long(5),
+      }),
     })
   );
   console.log("filtered txns by messageType:", firstMessageType, filteredTxns.transactions[0]);
