@@ -5,8 +5,8 @@ import { generateEIP712types } from "./generate-eip712-types";
 
 const files = process.argv;
 
-const [pwd, registryFile, polynetworkModelsFile, cosmosModelsFile, ibcModelsFile] = files.slice(-5);
-const codecFiles = files.slice(2, files.length - 5);
+const [pwd, registryFile, polynetworkModelsFile, cosmosModelsFile, ibcModelsFile, ethermintModelsFile] = files.slice(-6);
+const codecFiles = files.slice(2, files.length - 6);
 
 console.log(`import { Registry } from "@cosmjs/proto-signing";`);
 // TODO: Remove hardcoded statement when upgrading cosmwasm codecs
@@ -15,21 +15,20 @@ console.log(`import { MsgExecuteContract } from "cosmjs-types/cosmwasm/wasm/v1/t
 const modules: { [name: string]: string[] } = {};
 const currentMsgDefinitions: string[] = []
 for (const moduleFile of codecFiles) {
-
-  if (
-    !["/tx.ts",
-      "/tendermint.ts",
-      "/proposal.ts",
-      "/distribution.ts",
-      "/upgrade.ts",
-      "/params.ts"]
-      .some(fileName => moduleFile.endsWith(fileName))
-  ) {
-    continue
-  }
+  // if (
+  //   !["/tx.ts",
+  //     "/tendermint.ts",
+  //     "/proposal.ts",
+  //     "/distribution.ts",
+  //     "/upgrade.ts",
+  //     "/params.ts"]
+  //     .some(fileName => moduleFile.endsWith(fileName))
+  // ) {
+  //   continue
+  // }
 
   const codecModule = require(`${pwd}/${moduleFile}`);
-  let messages = Object.keys(codecModule).filter((key) => (key.startsWith("Msg") && key !== "MsgClientImpl") || key.startsWith("Header") || key.endsWith("Proposal"));
+  let messages = Object.keys(codecModule).filter((key) => !((key.startsWith("Msg") && key === "MsgClientImpl") || key === "protobufPackage"));
   if (messages.length) {
     if (modules[codecModule.protobufPackage]) {
       modules[codecModule.protobufPackage] = [...modules[codecModule.protobufPackage], ...messages];

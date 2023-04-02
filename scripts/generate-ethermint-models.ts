@@ -1,6 +1,6 @@
 import path from "path";
 import fs from "fs";
-import { whitelistCosmosExports } from "./config";
+import { whitelistEthermintExports } from "./config";
 
 const files = process.argv;
 
@@ -8,8 +8,8 @@ const [pwd, modelsFile] = files.splice(files.length - 2, 2);
 
 const MODEL_BLACKLIST = ['MsgClientImpl', 'protobufPackage', 'GenesisState', 'QueryClientImpl']
 
-for (const exportName in whitelistCosmosExports) {
-  const directoryPath = whitelistCosmosExports[exportName];
+for (const exportName in whitelistEthermintExports) {
+  const directoryPath = whitelistEthermintExports[exportName];
   const directory = path.join(pwd, 'src/codec', directoryPath);
   const files = fs.readdirSync(directory);
 
