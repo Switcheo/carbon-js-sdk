@@ -8,7 +8,6 @@ import { RateStrategyParams } from "./rate_strategy_params";
 import { AssetParams } from "./asset_params";
 import { DebtInfo } from "./debt_info";
 import { RewardScheme } from "./reward_scheme";
-import { EModeCategory } from "./e_mode_category";
 
 export const protobufPackage = "Switcheo.carbon.cdp";
 
@@ -29,10 +28,8 @@ export interface GenesisState {
     [key: string]: Uint8Array;
   };
   accountToRewardDebt: { [key: string]: Uint8Array };
-  stablecoinInterestInfo?: StablecoinInterestInfo;
-  eModeCategories: EModeCategory[];
   /** this line is used by starport scaffolding # genesis/proto/state */
-  accountToEModeCategory: { [key: string]: string };
+  stablecoinInterestInfo?: StablecoinInterestInfo;
 }
 
 export interface GenesisState_AccountToCollateralizedEntry {
@@ -63,11 +60,6 @@ export interface GenesisState_AccountToStablecoinInitialCumulativeInterestMultip
 export interface GenesisState_AccountToRewardDebtEntry {
   key: string;
   value: Uint8Array;
-}
-
-export interface GenesisState_AccountToEModeCategoryEntry {
-  key: string;
-  value: string;
 }
 
 const baseGenesisState: object = { sequenceNumber: Long.UZERO };
@@ -149,15 +141,6 @@ export const GenesisState = {
         writer.uint32(114).fork()
       ).ldelim();
     }
-    for (const v of message.eModeCategories) {
-      EModeCategory.encode(v!, writer.uint32(122).fork()).ldelim();
-    }
-    Object.entries(message.accountToEModeCategory).forEach(([key, value]) => {
-      GenesisState_AccountToEModeCategoryEntry.encode(
-        { key: key as any, value },
-        writer.uint32(130).fork()
-      ).ldelim();
-    });
     return writer;
   },
 
@@ -175,8 +158,6 @@ export const GenesisState = {
     message.accountToPrincipalStablecoinDebt = {};
     message.accountToStablecoinInitialCumulativeInterestMultiplier = {};
     message.accountToRewardDebt = {};
-    message.eModeCategories = [];
-    message.accountToEModeCategory = {};
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -275,20 +256,6 @@ export const GenesisState = {
             reader.uint32()
           );
           break;
-        case 15:
-          message.eModeCategories.push(
-            EModeCategory.decode(reader, reader.uint32())
-          );
-          break;
-        case 16:
-          const entry16 = GenesisState_AccountToEModeCategoryEntry.decode(
-            reader,
-            reader.uint32()
-          );
-          if (entry16.value !== undefined) {
-            message.accountToEModeCategory[entry16.key] = entry16.value;
-          }
-          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -366,15 +333,6 @@ export const GenesisState = {
       object.stablecoinInterestInfo !== null
         ? StablecoinInterestInfo.fromJSON(object.stablecoinInterestInfo)
         : undefined;
-    message.eModeCategories = (object.eModeCategories ?? []).map((e: any) =>
-      EModeCategory.fromJSON(e)
-    );
-    message.accountToEModeCategory = Object.entries(
-      object.accountToEModeCategory ?? {}
-    ).reduce<{ [key: string]: string }>((acc, [key, value]) => {
-      acc[key] = String(value);
-      return acc;
-    }, {});
     return message;
   },
 
@@ -464,19 +422,6 @@ export const GenesisState = {
       (obj.stablecoinInterestInfo = message.stablecoinInterestInfo
         ? StablecoinInterestInfo.toJSON(message.stablecoinInterestInfo)
         : undefined);
-    if (message.eModeCategories) {
-      obj.eModeCategories = message.eModeCategories.map((e) =>
-        e ? EModeCategory.toJSON(e) : undefined
-      );
-    } else {
-      obj.eModeCategories = [];
-    }
-    obj.accountToEModeCategory = {};
-    if (message.accountToEModeCategory) {
-      Object.entries(message.accountToEModeCategory).forEach(([k, v]) => {
-        obj.accountToEModeCategory[k] = v;
-      });
-    }
     return obj;
   },
 
@@ -561,17 +506,6 @@ export const GenesisState = {
       object.stablecoinInterestInfo !== null
         ? StablecoinInterestInfo.fromPartial(object.stablecoinInterestInfo)
         : undefined;
-    message.eModeCategories = (object.eModeCategories ?? []).map((e) =>
-      EModeCategory.fromPartial(e)
-    );
-    message.accountToEModeCategory = Object.entries(
-      object.accountToEModeCategory ?? {}
-    ).reduce<{ [key: string]: string }>((acc, [key, value]) => {
-      if (value !== undefined) {
-        acc[key] = String(value);
-      }
-      return acc;
-    }, {});
     return message;
   },
 };
@@ -1056,83 +990,6 @@ export const GenesisState_AccountToRewardDebtEntry = {
     } as GenesisState_AccountToRewardDebtEntry;
     message.key = object.key ?? "";
     message.value = object.value ?? new Uint8Array();
-    return message;
-  },
-};
-
-const baseGenesisState_AccountToEModeCategoryEntry: object = {
-  key: "",
-  value: "",
-};
-
-export const GenesisState_AccountToEModeCategoryEntry = {
-  encode(
-    message: GenesisState_AccountToEModeCategoryEntry,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.key !== "") {
-      writer.uint32(10).string(message.key);
-    }
-    if (message.value !== "") {
-      writer.uint32(18).string(message.value);
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): GenesisState_AccountToEModeCategoryEntry {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseGenesisState_AccountToEModeCategoryEntry,
-    } as GenesisState_AccountToEModeCategoryEntry;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.key = reader.string();
-          break;
-        case 2:
-          message.value = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): GenesisState_AccountToEModeCategoryEntry {
-    const message = {
-      ...baseGenesisState_AccountToEModeCategoryEntry,
-    } as GenesisState_AccountToEModeCategoryEntry;
-    message.key =
-      object.key !== undefined && object.key !== null ? String(object.key) : "";
-    message.value =
-      object.value !== undefined && object.value !== null
-        ? String(object.value)
-        : "";
-    return message;
-  },
-
-  toJSON(message: GenesisState_AccountToEModeCategoryEntry): unknown {
-    const obj: any = {};
-    message.key !== undefined && (obj.key = message.key);
-    message.value !== undefined && (obj.value = message.value);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<GenesisState_AccountToEModeCategoryEntry>
-  ): GenesisState_AccountToEModeCategoryEntry {
-    const message = {
-      ...baseGenesisState_AccountToEModeCategoryEntry,
-    } as GenesisState_AccountToEModeCategoryEntry;
-    message.key = object.key ?? "";
-    message.value = object.value ?? "";
     return message;
   },
 };

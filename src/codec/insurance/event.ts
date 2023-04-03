@@ -8,7 +8,7 @@ export const protobufPackage = "Switcheo.carbon.insurance";
  * TODO: ADD CORRECT THINGS
  * BlockHeight    int64     `json:"block_height"`
  * BlockCreatedAt time.Time `json:"block_created_at"`
- * Amount sdkmath.Int   `json:"amount"`
+ * Amount sdk.Int   `json:"amount"`
  * Denom  string    `json:"denom"`
  */
 export interface EventDataInsuranceFundTransfer {}
