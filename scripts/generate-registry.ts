@@ -12,7 +12,8 @@ console.log(`import { Registry } from "@cosmjs/proto-signing";`);
 console.log(`import { MsgExecuteContract } from "cosmjs-types/cosmwasm/wasm/v1/tx";`);
 
 const modules: { [name: string]: string[] } = {};
-const currentMsgDefinitions: string[] = []
+// TODO: To remove hardcode conditional once a better way to fix MsgSend import is found
+const currentMsgDefinitions: string[] = ['MsgSend', 'MsgSendResponse'] 
 for (const moduleFile of codecFiles) {
 
   if (
@@ -89,7 +90,10 @@ const typeMap: { [msg: string]: string } = {};
 for (const packageName in modules) {
   console.log("");
   for (const key of modules[packageName]) {
-    const messageAlias = key.split(" ")[2] // "XXX as XXXXX"
+    let messageAlias = key.split(" ")[2] // "XXX as XXXXX"
+    // if (messageAlias && messageAlias.includes("MsgBankSend")) {
+    //   messageAlias = ''
+    // }
     const typeUrl = messageAlias ? `/${packageName}.${key.split(" ")[0].trim()}` : `/${packageName}.${key}`;
     const messageType = messageAlias ? messageAlias.trim() : key
     typeMap[messageType] = typeUrl;
@@ -181,9 +185,17 @@ function updateImportsAlias(messages: string[], protobufPackage: string, current
     let msgAlias = `Msg${customModuleName}${msg.substring(3)}`
     while (currentMsgDefinitions.includes(msgAlias) && index < modulePath.length) {
       customModuleName += capitalize(modulePath[index])
-        msgAlias = `Msg${customModuleName}${msg.substring(3)}`
+      msgAlias = `Msg${customModuleName}${msg.substring(3)}`
       index++
     }
+    // TODO: To remove hardcode conditional once a better way to remove alias for MsgBankSend is found
+      if (
+        msg === 'MsgSend' && msgAlias === 'MsgBankSend' ||
+        msg === 'MsgSendResponse' && msgAlias === 'MsgBankSendResponse'
+      ) {
+        currentMsgDefinitions.push(msg)
+        return
+      }
       messages[i] = `${msg} as ${msgAlias}`
       currentMsgDefinitions.push(msgAlias)
   });
