@@ -232,7 +232,7 @@ export interface QueryAccountEModeRequest {
 }
 
 export interface QueryAccountEModeResponse {
-  eModeCategory: string;
+  eModeCategoryName: string;
 }
 
 const baseQueryParamsRequest: object = {};
@@ -3740,15 +3740,15 @@ export const QueryAccountEModeRequest = {
   },
 };
 
-const baseQueryAccountEModeResponse: object = { eModeCategory: "" };
+const baseQueryAccountEModeResponse: object = { eModeCategoryName: "" };
 
 export const QueryAccountEModeResponse = {
   encode(
     message: QueryAccountEModeResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.eModeCategory !== "") {
-      writer.uint32(10).string(message.eModeCategory);
+    if (message.eModeCategoryName !== "") {
+      writer.uint32(10).string(message.eModeCategoryName);
     }
     return writer;
   },
@@ -3766,7 +3766,7 @@ export const QueryAccountEModeResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.eModeCategory = reader.string();
+          message.eModeCategoryName = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -3780,18 +3780,18 @@ export const QueryAccountEModeResponse = {
     const message = {
       ...baseQueryAccountEModeResponse,
     } as QueryAccountEModeResponse;
-    message.eModeCategory =
-      object.eModeCategory !== undefined &&
-      object.eModeCategory !== null
-        ? String(object.eModeCategory)
+    message.eModeCategoryName =
+      object.eModeCategoryName !== undefined &&
+      object.eModeCategoryName !== null
+        ? String(object.eModeCategoryName)
         : "";
     return message;
   },
 
   toJSON(message: QueryAccountEModeResponse): unknown {
     const obj: any = {};
-    message.eModeCategory !== undefined &&
-      (obj.eModeCategory = message.eModeCategory);
+    message.eModeCategoryName !== undefined &&
+      (obj.eModeCategoryName = message.eModeCategoryName);
     return obj;
   },
 
@@ -3801,7 +3801,7 @@ export const QueryAccountEModeResponse = {
     const message = {
       ...baseQueryAccountEModeResponse,
     } as QueryAccountEModeResponse;
-    message.eModeCategory = object.eModeCategory ?? "";
+    message.eModeCategoryName = object.eModeCategoryName ?? "";
     return message;
   },
 };
