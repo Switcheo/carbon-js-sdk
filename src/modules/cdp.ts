@@ -11,6 +11,7 @@ import {
 import { Params } from "@carbon-sdk/codec/cdp/params";
 import {
   QueryAccountDebtAllRequest,
+  QueryAccountEModeRequest,
   QueryAccountStablecoinRequest,
   QueryAssetRequest,
   QueryParamsRequest,
@@ -19,7 +20,7 @@ import {
   QueryTokenDebtRequest
 } from "@carbon-sdk/codec/cdp/query";
 import {
-  MsgBorrowAsset, MsgClaimRewards,
+  MsgBorrowAsset, MsgChangeAccountEMode, MsgClaimRewards,
   MsgCreateRewardScheme, MsgLiquidateCollateral,
   MsgLiquidateCollateralWithCdpTokens,
   MsgLiquidateCollateralWithCollateral,
@@ -558,6 +559,23 @@ export class CDPModule extends BaseModule {
     );
   }
 
+  public async changeEMode(params: CDPModule.ChangeEModeParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+
+    const value = MsgChangeAccountEMode.fromPartial({
+      creator: wallet.bech32Address,
+      eModeCategoryName: params.eModeCategoryName,
+    });
+
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgChangeAccountEMode,
+        value,
+      },
+      opts
+    );
+  }
+
   // start of cdp calculations
 
   public async getAccountData(account: string) {
@@ -590,9 +608,19 @@ export class CDPModule extends BaseModule {
       if (!assetParam) {
         continue;
       }
-      const ltv = bnOrZero(assetParam.loanToValue).div(BN_10000);
+      let ltvBps = bnOrZero(assetParam.loanToValue);
+      let liquidationThresholdBps = bnOrZero(assetParam.liquidationThreshold).div(BN_10000);
+      const accountEModeRsp = await sdk.query.cdp.AccountEMode(QueryAccountEModeRequest.fromPartial({ address: account }));
+      if (accountEModeRsp.eModeCategoryName && accountEModeRsp.eModeCategoryName != "") {
+        const eModeRsp = await sdk.query.cdp.EMode({name: accountEModeRsp.eModeCategoryName})
+        if (eModeRsp.eModeCategory) {
+          ltvBps = bnOrZero(eModeRsp.eModeCategory.loanToValue)
+          liquidationThresholdBps = bnOrZero(eModeRsp.eModeCategory.liquidationThreshold)
+        }
+      }
+      const ltv = ltvBps.div(BN_10000);
+      const liquidationThreshold = liquidationThresholdBps.div(BN_10000);
       const availableBorrowUsd = collateralUsdVal.times(ltv);
-      const liquidationThreshold = bnOrZero(assetParam.liquidationThreshold).div(BN_10000);
       const liquidationThresholdVal = collateralUsdVal.times(liquidationThreshold);
       totalCollateralsUsd = totalCollateralsUsd.plus(collateralUsdVal);
       availableBorrowsUsd = availableBorrowsUsd.plus(availableBorrowUsd);
@@ -954,8 +982,23 @@ export class CDPModule extends BaseModule {
     const assetParams = await sdk.query.cdp.Asset({ denom: denom });
     if (!assetParams.assetParams) return;
     let unlockRatio = new BigNumber(assetParams.assetParams.loanToValue);
+
+    const accountEModeRsp = await sdk.query.cdp.AccountEMode(QueryAccountEModeRequest.fromPartial({ address: account }));
     if (sdk.getConfig().network === Network.LocalHost || sdk.getConfig().network === Network.DevNet) {
-      unlockRatio = new BigNumber(assetParams.assetParams.liquidationThreshold);
+      if (accountEModeRsp.eModeCategoryName && accountEModeRsp.eModeCategoryName != "") {
+          const eModeRsp = await sdk.query.cdp.EMode({name: accountEModeRsp.eModeCategoryName})
+          if (eModeRsp.eModeCategory) {
+            unlockRatio = new BigNumber(eModeRsp.eModeCategory.liquidationThreshold)
+          }
+      } else {
+        unlockRatio = new BigNumber(assetParams.assetParams.liquidationThreshold);
+      }
+    }
+    if (accountEModeRsp.eModeCategoryName && accountEModeRsp.eModeCategoryName != "") {
+      const eModeRsp = await sdk.query.cdp.EMode({name: accountEModeRsp.eModeCategoryName})
+      if (eModeRsp.eModeCategory) {
+        unlockRatio = new BigNumber(eModeRsp.eModeCategory.loanToValue)
+      }
     }
 
     const accountData = await this.getAccountData(account);
@@ -1324,5 +1367,9 @@ export namespace CDPModule {
     interestCdpDenom: string;
     interestCdpAmount: BigNumber;
     debtor: string;
+  }
+
+  export interface ChangeEModeParams {
+    eModeCategoryName: string;
   }
 }

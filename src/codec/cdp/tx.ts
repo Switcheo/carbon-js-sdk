@@ -7,6 +7,12 @@ import {
   CreateRewardSchemeParams,
   UpdateRewardSchemeParams,
 } from "./reward_scheme";
+import { EModeCategory } from "./e_mode_category";
+import {
+  StringValue,
+  Int64Value,
+  BoolValue,
+} from "../google/protobuf/wrappers";
 
 export const protobufPackage = "Switcheo.carbon.cdp";
 
@@ -344,6 +350,36 @@ export interface MsgConvertTokenInCdpToGroupTokens {
 }
 
 export interface MsgConvertTokenInCdpToGroupTokensResponse {}
+
+export interface MsgAddEModeCategory {
+  creator: string;
+  eModeCategory?: EModeCategory;
+}
+
+export interface MsgAddEModeCategoryResponse {}
+
+export interface MsgUpdateEModeCategory {
+  creator: string;
+  eModeCategoryName: string;
+  updateEModeCategoryParams?: UpdateEModeCategoryParams;
+}
+
+export interface UpdateEModeCategoryParams {
+  denoms: string[];
+  loanToValue?: Long;
+  liquidationThreshold?: Long;
+  liquidationDiscount?: Long;
+  isActive?: boolean;
+}
+
+export interface MsgUpdateEModeCategoryResponse {}
+
+export interface MsgChangeAccountEMode {
+  creator: string;
+  eModeCategoryName: string;
+}
+
+export interface MsgChangeAccountEModeResponse {}
 
 const baseMsgAddRateStrategy: object = { creator: "" };
 
@@ -6075,6 +6111,567 @@ export const MsgConvertTokenInCdpToGroupTokensResponse = {
   },
 };
 
+const baseMsgAddEModeCategory: object = { creator: "" };
+
+export const MsgAddEModeCategory = {
+  encode(
+    message: MsgAddEModeCategory,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.eModeCategory !== undefined) {
+      EModeCategory.encode(
+        message.eModeCategory,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgAddEModeCategory {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgAddEModeCategory } as MsgAddEModeCategory;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.eModeCategory = EModeCategory.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgAddEModeCategory {
+    const message = { ...baseMsgAddEModeCategory } as MsgAddEModeCategory;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.eModeCategory =
+      object.eModeCategory !== undefined && object.eModeCategory !== null
+        ? EModeCategory.fromJSON(object.eModeCategory)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: MsgAddEModeCategory): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.eModeCategory !== undefined &&
+      (obj.eModeCategory = message.eModeCategory
+        ? EModeCategory.toJSON(message.eModeCategory)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgAddEModeCategory>): MsgAddEModeCategory {
+    const message = { ...baseMsgAddEModeCategory } as MsgAddEModeCategory;
+    message.creator = object.creator ?? "";
+    message.eModeCategory =
+      object.eModeCategory !== undefined && object.eModeCategory !== null
+        ? EModeCategory.fromPartial(object.eModeCategory)
+        : undefined;
+    return message;
+  },
+};
+
+const baseMsgAddEModeCategoryResponse: object = {};
+
+export const MsgAddEModeCategoryResponse = {
+  encode(
+    _: MsgAddEModeCategoryResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgAddEModeCategoryResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgAddEModeCategoryResponse,
+    } as MsgAddEModeCategoryResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgAddEModeCategoryResponse {
+    const message = {
+      ...baseMsgAddEModeCategoryResponse,
+    } as MsgAddEModeCategoryResponse;
+    return message;
+  },
+
+  toJSON(_: MsgAddEModeCategoryResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgAddEModeCategoryResponse>
+  ): MsgAddEModeCategoryResponse {
+    const message = {
+      ...baseMsgAddEModeCategoryResponse,
+    } as MsgAddEModeCategoryResponse;
+    return message;
+  },
+};
+
+const baseMsgUpdateEModeCategory: object = {
+  creator: "",
+  eModeCategoryName: "",
+};
+
+export const MsgUpdateEModeCategory = {
+  encode(
+    message: MsgUpdateEModeCategory,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.eModeCategoryName !== "") {
+      writer.uint32(18).string(message.eModeCategoryName);
+    }
+    if (message.updateEModeCategoryParams !== undefined) {
+      UpdateEModeCategoryParams.encode(
+        message.updateEModeCategoryParams,
+        writer.uint32(26).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUpdateEModeCategory {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgUpdateEModeCategory } as MsgUpdateEModeCategory;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.eModeCategoryName = reader.string();
+          break;
+        case 3:
+          message.updateEModeCategoryParams = UpdateEModeCategoryParams.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdateEModeCategory {
+    const message = { ...baseMsgUpdateEModeCategory } as MsgUpdateEModeCategory;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.eModeCategoryName =
+      object.eModeCategoryName !== undefined &&
+      object.eModeCategoryName !== null
+        ? String(object.eModeCategoryName)
+        : "";
+    message.updateEModeCategoryParams =
+      object.updateEModeCategoryParams !== undefined &&
+      object.updateEModeCategoryParams !== null
+        ? UpdateEModeCategoryParams.fromJSON(object.updateEModeCategoryParams)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: MsgUpdateEModeCategory): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.eModeCategoryName !== undefined &&
+      (obj.eModeCategoryName = message.eModeCategoryName);
+    message.updateEModeCategoryParams !== undefined &&
+      (obj.updateEModeCategoryParams = message.updateEModeCategoryParams
+        ? UpdateEModeCategoryParams.toJSON(message.updateEModeCategoryParams)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgUpdateEModeCategory>
+  ): MsgUpdateEModeCategory {
+    const message = { ...baseMsgUpdateEModeCategory } as MsgUpdateEModeCategory;
+    message.creator = object.creator ?? "";
+    message.eModeCategoryName = object.eModeCategoryName ?? "";
+    message.updateEModeCategoryParams =
+      object.updateEModeCategoryParams !== undefined &&
+      object.updateEModeCategoryParams !== null
+        ? UpdateEModeCategoryParams.fromPartial(
+            object.updateEModeCategoryParams
+          )
+        : undefined;
+    return message;
+  },
+};
+
+const baseUpdateEModeCategoryParams: object = {};
+
+export const UpdateEModeCategoryParams = {
+  encode(
+    message: UpdateEModeCategoryParams,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.denoms) {
+      StringValue.encode({ value: v!! }, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.loanToValue !== undefined) {
+      Int64Value.encode(
+        { value: message.loanToValue! },
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    if (message.liquidationThreshold !== undefined) {
+      Int64Value.encode(
+        { value: message.liquidationThreshold! },
+        writer.uint32(26).fork()
+      ).ldelim();
+    }
+    if (message.liquidationDiscount !== undefined) {
+      Int64Value.encode(
+        { value: message.liquidationDiscount! },
+        writer.uint32(34).fork()
+      ).ldelim();
+    }
+    if (message.isActive !== undefined) {
+      BoolValue.encode(
+        { value: message.isActive! },
+        writer.uint32(50).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): UpdateEModeCategoryParams {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseUpdateEModeCategoryParams,
+    } as UpdateEModeCategoryParams;
+    message.denoms = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.denoms.push(
+            StringValue.decode(reader, reader.uint32()).value
+          );
+          break;
+        case 2:
+          message.loanToValue = Int64Value.decode(
+            reader,
+            reader.uint32()
+          ).value;
+          break;
+        case 3:
+          message.liquidationThreshold = Int64Value.decode(
+            reader,
+            reader.uint32()
+          ).value;
+          break;
+        case 4:
+          message.liquidationDiscount = Int64Value.decode(
+            reader,
+            reader.uint32()
+          ).value;
+          break;
+        case 6:
+          message.isActive = BoolValue.decode(reader, reader.uint32()).value;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UpdateEModeCategoryParams {
+    const message = {
+      ...baseUpdateEModeCategoryParams,
+    } as UpdateEModeCategoryParams;
+    message.denoms = (object.denoms ?? []).map((e: any) => String(e));
+    message.loanToValue =
+      object.loanToValue !== undefined && object.loanToValue !== null
+        ? Long.fromValue(object.loanToValue)
+        : undefined;
+    message.liquidationThreshold =
+      object.liquidationThreshold !== undefined &&
+      object.liquidationThreshold !== null
+        ? Long.fromValue(object.liquidationThreshold)
+        : undefined;
+    message.liquidationDiscount =
+      object.liquidationDiscount !== undefined &&
+      object.liquidationDiscount !== null
+        ? Long.fromValue(object.liquidationDiscount)
+        : undefined;
+    message.isActive =
+      object.isActive !== undefined && object.isActive !== null
+        ? Boolean(object.isActive)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: UpdateEModeCategoryParams): unknown {
+    const obj: any = {};
+    if (message.denoms) {
+      obj.denoms = message.denoms.map((e) => e);
+    } else {
+      obj.denoms = [];
+    }
+    message.loanToValue !== undefined &&
+      (obj.loanToValue = message.loanToValue);
+    message.liquidationThreshold !== undefined &&
+      (obj.liquidationThreshold = message.liquidationThreshold);
+    message.liquidationDiscount !== undefined &&
+      (obj.liquidationDiscount = message.liquidationDiscount);
+    message.isActive !== undefined && (obj.isActive = message.isActive);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<UpdateEModeCategoryParams>
+  ): UpdateEModeCategoryParams {
+    const message = {
+      ...baseUpdateEModeCategoryParams,
+    } as UpdateEModeCategoryParams;
+    message.denoms = (object.denoms ?? []).map((e) => e);
+    message.loanToValue =
+      object.loanToValue !== undefined && object.loanToValue !== null
+        ? Long.fromValue(object.loanToValue)
+        : undefined;
+    message.liquidationThreshold =
+      object.liquidationThreshold !== undefined &&
+      object.liquidationThreshold !== null
+        ? Long.fromValue(object.liquidationThreshold)
+        : undefined;
+    message.liquidationDiscount =
+      object.liquidationDiscount !== undefined &&
+      object.liquidationDiscount !== null
+        ? Long.fromValue(object.liquidationDiscount)
+        : undefined;
+    message.isActive = object.isActive ?? undefined;
+    return message;
+  },
+};
+
+const baseMsgUpdateEModeCategoryResponse: object = {};
+
+export const MsgUpdateEModeCategoryResponse = {
+  encode(
+    _: MsgUpdateEModeCategoryResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUpdateEModeCategoryResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgUpdateEModeCategoryResponse,
+    } as MsgUpdateEModeCategoryResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgUpdateEModeCategoryResponse {
+    const message = {
+      ...baseMsgUpdateEModeCategoryResponse,
+    } as MsgUpdateEModeCategoryResponse;
+    return message;
+  },
+
+  toJSON(_: MsgUpdateEModeCategoryResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgUpdateEModeCategoryResponse>
+  ): MsgUpdateEModeCategoryResponse {
+    const message = {
+      ...baseMsgUpdateEModeCategoryResponse,
+    } as MsgUpdateEModeCategoryResponse;
+    return message;
+  },
+};
+
+const baseMsgChangeAccountEMode: object = {
+  creator: "",
+  eModeCategoryName: "",
+};
+
+export const MsgChangeAccountEMode = {
+  encode(
+    message: MsgChangeAccountEMode,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.eModeCategoryName !== "") {
+      writer.uint32(18).string(message.eModeCategoryName);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgChangeAccountEMode {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgChangeAccountEMode } as MsgChangeAccountEMode;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.eModeCategoryName = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgChangeAccountEMode {
+    const message = { ...baseMsgChangeAccountEMode } as MsgChangeAccountEMode;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.eModeCategoryName =
+      object.eModeCategoryName !== undefined &&
+      object.eModeCategoryName !== null
+        ? String(object.eModeCategoryName)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgChangeAccountEMode): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.eModeCategoryName !== undefined &&
+      (obj.eModeCategoryName = message.eModeCategoryName);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgChangeAccountEMode>
+  ): MsgChangeAccountEMode {
+    const message = { ...baseMsgChangeAccountEMode } as MsgChangeAccountEMode;
+    message.creator = object.creator ?? "";
+    message.eModeCategoryName = object.eModeCategoryName ?? "";
+    return message;
+  },
+};
+
+const baseMsgChangeAccountEModeResponse: object = {};
+
+export const MsgChangeAccountEModeResponse = {
+  encode(
+    _: MsgChangeAccountEModeResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgChangeAccountEModeResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgChangeAccountEModeResponse,
+    } as MsgChangeAccountEModeResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgChangeAccountEModeResponse {
+    const message = {
+      ...baseMsgChangeAccountEModeResponse,
+    } as MsgChangeAccountEModeResponse;
+    return message;
+  },
+
+  toJSON(_: MsgChangeAccountEModeResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgChangeAccountEModeResponse>
+  ): MsgChangeAccountEModeResponse {
+    const message = {
+      ...baseMsgChangeAccountEModeResponse,
+    } as MsgChangeAccountEModeResponse;
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
   AddRateStrategy(
@@ -6172,10 +6769,19 @@ export interface Msg {
   LiquidateCollateralWithStablecoinAndInterestInCollateral(
     request: MsgLiquidateCollateralWithStablecoinAndInterestInCollateral
   ): Promise<MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse>;
-  /** this line is used by starport scaffolding # proto/tx/rpc */
   ConvertTokenInCdpToGroupTokens(
     request: MsgConvertTokenInCdpToGroupTokens
   ): Promise<MsgConvertTokenInCdpToGroupTokensResponse>;
+  AddEModeCategory(
+    request: MsgAddEModeCategory
+  ): Promise<MsgAddEModeCategoryResponse>;
+  UpdateEModeCategory(
+    request: MsgUpdateEModeCategory
+  ): Promise<MsgUpdateEModeCategoryResponse>;
+  /** this line is used by starport scaffolding # proto/tx/rpc */
+  ChangeAccountEMode(
+    request: MsgChangeAccountEMode
+  ): Promise<MsgChangeAccountEModeResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -6231,6 +6837,9 @@ export class MsgClientImpl implements Msg {
       this.LiquidateCollateralWithStablecoinAndInterestInCollateral.bind(this);
     this.ConvertTokenInCdpToGroupTokens =
       this.ConvertTokenInCdpToGroupTokens.bind(this);
+    this.AddEModeCategory = this.AddEModeCategory.bind(this);
+    this.UpdateEModeCategory = this.UpdateEModeCategory.bind(this);
+    this.ChangeAccountEMode = this.ChangeAccountEMode.bind(this);
   }
   AddRateStrategy(
     request: MsgAddRateStrategy
@@ -6761,6 +7370,48 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgConvertTokenInCdpToGroupTokensResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  AddEModeCategory(
+    request: MsgAddEModeCategory
+  ): Promise<MsgAddEModeCategoryResponse> {
+    const data = MsgAddEModeCategory.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Msg",
+      "AddEModeCategory",
+      data
+    );
+    return promise.then((data) =>
+      MsgAddEModeCategoryResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  UpdateEModeCategory(
+    request: MsgUpdateEModeCategory
+  ): Promise<MsgUpdateEModeCategoryResponse> {
+    const data = MsgUpdateEModeCategory.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Msg",
+      "UpdateEModeCategory",
+      data
+    );
+    return promise.then((data) =>
+      MsgUpdateEModeCategoryResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  ChangeAccountEMode(
+    request: MsgChangeAccountEMode
+  ): Promise<MsgChangeAccountEModeResponse> {
+    const data = MsgChangeAccountEMode.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Msg",
+      "ChangeAccountEMode",
+      data
+    );
+    return promise.then((data) =>
+      MsgChangeAccountEModeResponse.decode(new _m0.Reader(data))
     );
   }
 }
