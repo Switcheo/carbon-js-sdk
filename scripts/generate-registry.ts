@@ -91,9 +91,6 @@ for (const packageName in modules) {
   console.log("");
   for (const key of modules[packageName]) {
     let messageAlias = key.split(" ")[2] // "XXX as XXXXX"
-    // if (messageAlias && messageAlias.includes("MsgBankSend")) {
-    //   messageAlias = ''
-    // }
     const typeUrl = messageAlias ? `/${packageName}.${key.split(" ")[0].trim()}` : `/${packageName}.${key}`;
     const messageType = messageAlias ? messageAlias.trim() : key
     typeMap[messageType] = typeUrl;
