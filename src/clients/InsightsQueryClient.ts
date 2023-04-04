@@ -171,6 +171,18 @@ class InsightsQueryClient {
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetPNLCompetitionLeaderboardResponse>;
   }
 
+  async LotteryCompetitionLeaderboard(
+    req: Insights.QueryGetLotteryCompetitionLeaderboardRequest
+  ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetLotteryCompetitionLeaderboardResponse>> {
+    const queryParams = {
+      competitionId: req.competitionId,
+      ...(req.market && { market: req.market }),
+    };
+    const request = this.apiManager.path("competition/leaderboardlottery", {}, queryParams);
+    const response = await request.get();
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetLotteryCompetitionLeaderboardResponse>;
+  }
+
   async PoolsLiquidity(
     req: Insights.QueryGetPoolsLiquidityRequest = {}
   ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetPoolsLiquidityResponse>> {
