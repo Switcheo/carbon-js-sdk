@@ -61,7 +61,7 @@ export class IBCModule extends BaseModule {
         },
       }),
       ...params.timeoutTimestamp && ({
-        timeoutTimestamp: params.timeoutTimestamp.toNumber(),
+        timeoutTimestamp: params.timeoutTimestamp.toString(10),
       }),
     });
 

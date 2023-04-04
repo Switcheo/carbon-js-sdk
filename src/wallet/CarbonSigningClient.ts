@@ -19,6 +19,7 @@ import { AminoTypes, GasPrice, SigningStargateClientOptions, StargateClient, Std
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import Long from "long";
 import { AminoTypesMap } from "../provider";
+import { sortedObject } from "../util/type";
 
 // Added SignMode enum from cosmjs-types to resolve build error
 enum SignMode {
@@ -174,8 +175,10 @@ export class CarbonSigningClient extends StargateClient {
     const pubkey = encodePubkey(encodeSecp256k1Pubkey(accountFromSigner.pubkey));
     const signMode: SignMode = SignMode.SIGN_MODE_LEGACY_AMINO_JSON;
     const msgs = messages.map((msg) => this.aminoTypes.toAmino(msg));
-    const signDoc = makeSignDocAmino(msgs, fee, chainId, memo, accountNumber, sequence, timeoutHeight ?? 0);
+    const signDoc = sortedObject(makeSignDocAmino(msgs, fee, chainId, memo, accountNumber, sequence, timeoutHeight ?? 0));
+    console.log("signDoc", JSON.stringify(signDoc));
     const { signature, signed } = await signer.signAmino(signerAddress, signDoc);
+    console.log("signed", signed);
     const signedTxBody = {
       messages: signed.msgs.map((msg) => this.aminoTypes.fromAmino(msg)),
       memo: signed.memo,

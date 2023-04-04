@@ -1,6 +1,7 @@
 import { TypeUtils } from "@carbon-sdk/util";
 import * as CarbonTx from "@carbon-sdk/util/tx";
 import { AminoConverter } from "@cosmjs/stargate";
+import BigNumber from "bignumber.js";
 import Long from "long";
 import { AminoInit, AminoProcess, AminoValueMap, ConvertEncType, generateAminoType } from "../utils";
 
@@ -22,15 +23,22 @@ const MsgTransfer: AminoInit = {
 const pruneTransferProcess: AminoProcess = {
   toAminoProcess: (amino: AminoValueMap, input: any) => {
     const newInput = input;
-    if (Long.isLong(input.timeoutTimestamp) && new Long(0).eq(input.timeoutTimestamp)) {
-      delete newInput.timeoutTimestamp;
+    if (!newInput.timeoutHeight) {
+      newInput.timeoutHeight = {};
+    }
+    if (newInput.timeoutTimestamp && newInput.timeoutTimestamp.gt(0)) {
+      const shiftedTimestamp = new BigNumber(newInput.timeoutTimestamp.toString(10)).shiftedBy(-9)
+      newInput.timeoutTimestamp = BigNumber.max(1, shiftedTimestamp);
     }
     return { amino, input: newInput };
   },
   fromAminoProcess: (amino: AminoValueMap, input: any) => {
     const newInput = input;
-    if (!input.timeoutTimestamp) {
-      newInput.timeoutTimestamp = new Long(0);
+    if (Object.values(newInput.timeout_height)?.length === 0) {
+      newInput.timeout_height = {};
+    }
+    if (newInput.timeout_timestamp) {
+      newInput.timeout_timestamp = new BigNumber(newInput.timeout_timestamp).shiftedBy(9);
     }
     return { amino, input: newInput };
   },
