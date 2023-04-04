@@ -67,8 +67,8 @@ export interface LotteryLeaderboardEntry {
   rank: string;
   competitionId: string;
   address: string;
-  twitter: string;
-  username: string;
+  twitter: string | null;
+  username: string | null;
   longestPosition: string;
   maxLeverage: string;
   referralTickets: string;
@@ -89,7 +89,6 @@ export interface QueryGetPNLCompetitionLeaderboardRequest {
 
 export interface QueryGetLotteryCompetitionLeaderboardResponse {
   entries: LotteryLeaderboardEntry[];
-  meta: TimeMeta;
 }
 
 export interface QueryGetLotteryCompetitionLeaderboardRequest {
