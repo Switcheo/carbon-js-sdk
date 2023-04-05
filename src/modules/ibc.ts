@@ -45,7 +45,7 @@ export class IBCModule extends BaseModule {
   public async sendIbcTransferV2(params: IBCModule.SendIBCTransferV2Params, msgOpts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = MsgTransfer.fromPartial({
+    const value = {
       sourcePort: params.sourcePort,
       sourceChannel: params.sourceChannel,
       token: {
@@ -54,16 +54,14 @@ export class IBCModule extends BaseModule {
       },
       sender: params.sender ?? wallet.bech32Address,
       receiver: params.receiver,
-      ...params.timeoutHeight && ({
-        timeoutHeight: {
-          revisionHeight: new Long(params.timeoutHeight.revisionHeight.toNumber()),
-          revisionNumber: new Long(params.timeoutHeight.revisionNumber.toNumber()),          
-        },
-      }),
+      timeoutHeight: params.timeoutHeight ? {
+        revisionHeight: Long.fromValue(params.timeoutHeight.revisionHeight.toString(10)),
+        revisionNumber: Long.fromValue(params.timeoutHeight.revisionNumber.toString(10)),          
+      } : {},
       ...params.timeoutTimestamp && ({
         timeoutTimestamp: params.timeoutTimestamp.toString(10),
       }),
-    });
+    };
 
     return await wallet.sendTx(
       {

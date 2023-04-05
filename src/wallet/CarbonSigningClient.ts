@@ -186,6 +186,7 @@ export class CarbonSigningClient extends StargateClient {
         timeoutHeight: Long.fromNumber(timeoutHeight),
       }),
     };
+    console.log("signedTxBody", signedTxBody);
     const signedTxBodyEncodeObject: TxBodyEncodeObject = {
       typeUrl: "/cosmos.tx.v1beta1.TxBody",
       value: signedTxBody,

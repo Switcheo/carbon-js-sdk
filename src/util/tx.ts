@@ -1,8 +1,10 @@
 import { registry, TxTypes } from "@carbon-sdk/codec";
 import * as CosmosModels from "@carbon-sdk/codec/cosmos-models";
 import { DEFAULT_FEE } from "@carbon-sdk/constant";
-import { StdFee } from "@cosmjs/amino";
+import { AminoMsg, StdFee } from "@cosmjs/amino";
+import { EncodeObject } from "@cosmjs/proto-signing";
 import { DeliverTxResponse, SignerData } from "@cosmjs/stargate";
+import { BigNumber } from "bignumber.js"
 import { SWTHAddress, SWTHAddressOptions } from "./address";
 export { StdSignDoc } from "@cosmjs/amino";
 
@@ -161,4 +163,41 @@ export const TxGasCostTypeMap = {
   [TxTypes.MsgCreatePoolWithLiquidity]: "create_pool",
   [TxTypes.MsgStakePoolToken]: "stake_pool_token",
   [TxTypes.MsgUnstakePoolToken]: "unstake_pool_token",
+};
+
+export const processToAmino = (msg: AminoMsg): AminoMsg => {
+  switch (msg.type) {
+    case "cosmos-sdk/MsgTransfer":
+      const aminoMsgValue = { ...msg.value };
+      if (!msg.value.timeout_height) {
+        aminoMsgValue.value.timeout_height = {};
+      }
+      return {
+        ...msg,
+        value: aminoMsgValue,
+      };
+    default:
+      return msg;
+  }
+};
+
+export const processFromAmino = (msg: EncodeObject): EncodeObject => {
+  switch (msg.typeUrl) {
+    case Types.MsgTransfer:
+      const protoMsgValue = {
+        ...msg.value,
+        ...msg.value.timeoutTimestamp && ({
+          timeoutTimestamp: new BigNumber(msg.value.timeoutTimestamp).shiftedBy(9).toString(10),
+        })
+      };
+      if (protoMsgValue.timeoutHeight) {
+        delete protoMsgValue.timeoutHeight;
+      }
+      return {
+        ...msg,
+        value: protoMsgValue,
+      };
+    default:
+      return msg;
+  }
 };
