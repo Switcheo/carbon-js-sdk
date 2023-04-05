@@ -64,6 +64,12 @@ import { CarbonSDK } from "./_sdk";
     });
     console.log("pnlLeaderboard", pnlLeaderboard);
 
+    // lottery leaderboard (competition)
+    const lotteryLeaderboard = await sdk.insights.LotteryCompetitionLeaderboard({
+      competitionId: "tradingcomp7",
+    });
+    console.log("lotteryLeaderboard", lotteryLeaderboard);
+
     //Position Views
     const positionViews = await sdk.insights.PositionsView({ view: "risk" as PositionViewOptions },{})
     console.log("PositionsView", positionViews)
