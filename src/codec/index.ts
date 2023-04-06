@@ -14,7 +14,7 @@ import { MsgSoftwareUpgrade, MsgSoftwareUpgradeResponse, MsgCancelUpgrade, MsgCa
 import { SoftwareUpgradeProposal, CancelSoftwareUpgradeProposal } from "./cosmos/upgrade/v1beta1/upgrade";
 import { MsgGrantAllowance, MsgGrantAllowanceResponse, MsgRevokeAllowance, MsgRevokeAllowanceResponse } from "./cosmos/feegrant/v1beta1/tx";
 import { MsgSubmitEvidence, MsgSubmitEvidenceResponse } from "./cosmos/evidence/v1beta1/tx";
-import { MsgSend as MsgSendNft, MsgSendResponse as MsgSendNftResponse } from "./cosmos/nft/v1beta1/tx";
+import { MsgSend as MsgNftSend, MsgSendResponse as MsgNftSendResponse } from "./cosmos/nft/v1beta1/tx";
 import { MsgCreateGroup, MsgCreateGroupResponse, MsgUpdateGroupMembers, MsgUpdateGroupMembersResponse, MsgUpdateGroupAdmin, MsgUpdateGroupAdminResponse, MsgUpdateGroupMetadata, MsgUpdateGroupMetadataResponse, MsgCreateGroupPolicy, MsgCreateGroupPolicyResponse, MsgUpdateGroupPolicyAdmin, MsgCreateGroupWithPolicy, MsgCreateGroupWithPolicyResponse, MsgUpdateGroupPolicyAdminResponse, MsgUpdateGroupPolicyDecisionPolicy, MsgUpdateGroupPolicyDecisionPolicyResponse, MsgUpdateGroupPolicyMetadata, MsgUpdateGroupPolicyMetadataResponse, MsgSubmitProposal, MsgSubmitProposalResponse, MsgWithdrawProposal, MsgWithdrawProposalResponse, MsgVote, MsgVoteResponse, MsgExec, MsgExecResponse, MsgLeaveGroup, MsgLeaveGroupResponse } from "./cosmos/group/v1/tx";
 import { MsgSend, MsgSendResponse, MsgMultiSend, MsgMultiSendResponse } from "./cosmos/bank/v1beta1/tx";
 import { MsgSetWithdrawAddress, MsgSetWithdrawAddressResponse, MsgWithdrawDelegatorReward, MsgWithdrawDelegatorRewardResponse, MsgWithdrawValidatorCommission, MsgWithdrawValidatorCommissionResponse, MsgFundCommunityPool, MsgFundCommunityPoolResponse } from "./cosmos/distribution/v1beta1/tx";
@@ -209,8 +209,8 @@ registry.register("/cosmos.feegrant.v1beta1.MsgRevokeAllowanceResponse", MsgRevo
 registry.register("/cosmos.evidence.v1beta1.MsgSubmitEvidence", MsgSubmitEvidence);
 registry.register("/cosmos.evidence.v1beta1.MsgSubmitEvidenceResponse", MsgSubmitEvidenceResponse);
 
-registry.register("/cosmos.nft.v1beta1.MsgSend", MsgSendNft);
-registry.register("/cosmos.nft.v1beta1.MsgSendResponse", MsgSendNftResponse);
+registry.register("/cosmos.nft.v1beta1.MsgSend", MsgNftSend);
+registry.register("/cosmos.nft.v1beta1.MsgSendResponse", MsgNftSendResponse);
 
 registry.register("/cosmos.group.v1.MsgCreateGroup", MsgCreateGroup);
 registry.register("/cosmos.group.v1.MsgCreateGroupResponse", MsgCreateGroupResponse);
@@ -658,8 +658,8 @@ export const TxTypes = {
   "MsgRevokeAllowanceResponse": "/cosmos.feegrant.v1beta1.MsgRevokeAllowanceResponse",
   "MsgSubmitEvidence": "/cosmos.evidence.v1beta1.MsgSubmitEvidence",
   "MsgSubmitEvidenceResponse": "/cosmos.evidence.v1beta1.MsgSubmitEvidenceResponse",
-  "MsgSendNft": "/cosmos.nft.v1beta1.MsgSend",
-  "MsgSendNftResponse": "/cosmos.nft.v1beta1.MsgSendResponse",
+  "MsgNftSend": "/cosmos.nft.v1beta1.MsgSend",
+  "MsgNftSendResponse": "/cosmos.nft.v1beta1.MsgSendResponse",
   "MsgCreateGroup": "/cosmos.group.v1.MsgCreateGroup",
   "MsgCreateGroupResponse": "/cosmos.group.v1.MsgCreateGroupResponse",
   "MsgUpdateGroupMembers": "/cosmos.group.v1.MsgUpdateGroupMembers",
