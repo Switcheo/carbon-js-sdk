@@ -15,20 +15,28 @@ console.log(`import { MsgExecuteContract } from "cosmjs-types/cosmwasm/wasm/v1/t
 const modules: { [name: string]: string[] } = {};
 const currentMsgDefinitions: string[] = []
 for (const moduleFile of codecFiles) {
-  // if (
-  //   !["/tx.ts",
-  //     "/tendermint.ts",
-  //     "/proposal.ts",
-  //     "/distribution.ts",
-  //     "/upgrade.ts",
-  //     "/params.ts"]
-  //     .some(fileName => moduleFile.endsWith(fileName))
-  // ) {
-  //   continue
-  // }
+
+  if (
+    !moduleFile.includes("ethermint") &&
+    !["/tx.ts",
+      "/tendermint.ts",
+      "/proposal.ts",
+      "/distribution.ts",
+      "/upgrade.ts",
+      "/params.ts"]
+      .some(fileName => moduleFile.endsWith(fileName))
+  ) {
+    continue
+  }
 
   const codecModule = require(`${pwd}/${moduleFile}`);
-  let messages = Object.keys(codecModule).filter((key) => !((key.startsWith("Msg") && key === "MsgClientImpl") || key === "protobufPackage"));
+  let messages = Object.keys(codecModule).filter((key) => {
+    if (moduleFile.includes("ethermint")) {
+      return (!["protobufPackage", "GenesisState"].includes(key) && !key.endsWith("ClientImpl"));
+    } else {
+      return (key.startsWith("Msg") && key !== "MsgClientImpl") || key.startsWith("Header") || key.endsWith("Proposal")
+    }
+  });
   if (messages.length) {
     if (modules[codecModule.protobufPackage]) {
       modules[codecModule.protobufPackage] = [...modules[codecModule.protobufPackage], ...messages];
@@ -43,6 +51,7 @@ for (const moduleFile of codecFiles) {
       || moduleFile.includes('src/codec/ccm/')
       || moduleFile.includes('src/codec/headersync/')
       || moduleFile.includes('src/codec/lockproxy/')
+      || moduleFile.includes("ethermint")
     )) {
       updateImportsAlias(messages, codecModule.protobufPackage, currentMsgDefinitions)
 
@@ -73,6 +82,11 @@ const cosmosModelsImportPath = path.relative(registryFile, cosmosModelsFile);
 console.log(`export * from '${cosmosModelsImportPath.replace(/^\.\./i, '.').replace(/\.ts$/i, '')}';`);
 
 console.log("");
+const ethermintModelsImportPath = path.relative(registryFile, ethermintModelsFile);
+console.log(`import * as Ethermint from '${ethermintModelsImportPath.replace(/^\.\./i, '.').replace(/\.ts$/i, '')}';`);
+console.log(`export * as Ethermint from '${ethermintModelsImportPath.replace(/^\.\./i, '.').replace(/\.ts$/i, '')}';`);
+
+console.log("");
 const ibcModelsImportPath = path.relative(registryFile, ibcModelsFile);
 console.log(`export * as IBC from '${ibcModelsImportPath.replace(/^\.\./i, '.').replace(/\.ts$/i, '')}';`);
 
@@ -93,8 +107,11 @@ for (const packageName in modules) {
     const typeUrl = messageAlias ? `/${packageName}.${key.split(" ")[0].trim()}` : `/${packageName}.${key}`;
     const messageType = messageAlias ? messageAlias.trim() : key
     typeMap[messageType] = typeUrl;
+    const ethermint = typeUrl.match(/^\/ethermint.([a-z]+).([a-z0-9]+).([a-z0-9]+)(?:\.([a-z0-9]+))?$/i);
     const match = typeUrl.match(/^\/Switcheo.carbon.([a-z]+).([A-Za-z]+)$/i);
-    if (match?.[1] && polynetworkFolders.includes(match?.[1])) {
+    if (ethermint?.[1]) {
+      console.log(`registry.register("${typeUrl}", Ethermint.${capitalize(ethermint?.[1])}.${messageType});`);
+    } else if (match?.[1] && polynetworkFolders.includes(match?.[1])) {
       console.log(`registry.register("${typeUrl}", PolyNetwork.${capitalize(match[1])}.${messageType});`);
     } else {
       console.log(`registry.register("${typeUrl}", ${messageType});`);

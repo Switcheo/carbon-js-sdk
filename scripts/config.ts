@@ -14,7 +14,7 @@ export const whitelistCosmosExports: { [name: string]: string } = {
 export const whitelistEthermintExports: { [name: string]: string } = {
   'Crypto': 'ethermint/crypto/v1/ethsecp256k1',
   'Evm': 'ethermint/evm/v1',
-  'FeeMarket': 'ethermint/feemarket/v1',
+  'Feemarket': 'ethermint/feemarket/v1',
   'Types': 'ethermint/types/v1',
 };
 
