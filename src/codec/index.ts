@@ -38,8 +38,6 @@ import { MsgCreateToken, MsgCreateTokenResponse, MsgSyncToken, MsgSyncTokenRespo
 import { CreateTokenProposal } from "./coin/proposal";
 import { MsgSetLeverage, MsgSetLeverageResponse } from "./leverage/tx";
 import { MsgUpdateProfile, MsgUpdateProfileResponse } from "./profile/tx";
-import { MsgUpdateParams, MsgUpdateParamsResponse } from "./ethermint/feemarket/v1/tx";
-import { MsgEthereumTx, MsgEthereumTxResponse, MsgUpdateParams as MsgEvmUpdateParams, MsgUpdateParamsResponse as MsgEvmUpdateParamsResponse } from "./ethermint/evm/v1/tx";
 import { MsgCreateSubAccount, MsgCreateSubAccountResponse, MsgActivateSubAccount, MsgActivateSubAccountResponse, MsgRemoveSubAccount, MsgRemoveSubAccountResponse } from "./subaccount/tx";
 import { MsgCreateMarket, MsgCreateMarketResponse, MsgUpdateMarket, MsgUpdateMarketResponse, MsgUpdatePerpetualsFundingInterval, MsgUpdatePerpetualsFundingIntervalResponse } from "./market/tx";
 import { CreateMarketProposal, UpdateMarketProposal, UpdatePerpetualsFundingIntervalProposal } from "./market/proposal";
@@ -52,6 +50,9 @@ import { TextProposal, Proposal } from "./cosmos/gov/v1beta1/gov";
 import { ClientUpdateProposal, UpgradeProposal } from "./ibc/core/client/v1/client";
 
 export * from './cosmos-models';
+
+import * as Ethermint from './ethermint-models';
+export * as Ethermint from './ethermint-models';
 
 export * as IBC from './ibc-models';
 
@@ -430,13 +431,71 @@ registry.register("/Switcheo.carbon.leverage.MsgSetLeverageResponse", MsgSetLeve
 registry.register("/Switcheo.carbon.profile.MsgUpdateProfile", MsgUpdateProfile);
 registry.register("/Switcheo.carbon.profile.MsgUpdateProfileResponse", MsgUpdateProfileResponse);
 
-registry.register("/ethermint.feemarket.v1.MsgUpdateParams", MsgUpdateParams);
-registry.register("/ethermint.feemarket.v1.MsgUpdateParamsResponse", MsgUpdateParamsResponse);
+registry.register("/ethermint.crypto.v1.ethsecp256k1.PubKey", Ethermint.Crypto.PubKey);
+registry.register("/ethermint.crypto.v1.ethsecp256k1.PrivKey", Ethermint.Crypto.PrivKey);
 
-registry.register("/ethermint.evm.v1.MsgEthereumTx", MsgEthereumTx);
-registry.register("/ethermint.evm.v1.MsgEthereumTxResponse", MsgEthereumTxResponse);
-registry.register("/ethermint.evm.v1.MsgUpdateParams", MsgEvmUpdateParams);
-registry.register("/ethermint.evm.v1.MsgUpdateParamsResponse", MsgEvmUpdateParamsResponse);
+registry.register("/ethermint.types.v1.EthAccount", Ethermint.Types.EthAccount);
+registry.register("/ethermint.types.v1.TxResult", Ethermint.Types.TxResult);
+registry.register("/ethermint.types.v1.ExtensionOptionsWeb3Tx", Ethermint.Types.ExtensionOptionsWeb3Tx);
+registry.register("/ethermint.types.v1.ExtensionOptionDynamicFeeTx", Ethermint.Types.ExtensionOptionDynamicFeeTx);
+
+registry.register("/ethermint.feemarket.v1.MsgUpdateParams", Ethermint.Feemarket.MsgUpdateParams);
+registry.register("/ethermint.feemarket.v1.MsgUpdateParamsResponse", Ethermint.Feemarket.MsgUpdateParamsResponse);
+registry.register("/ethermint.feemarket.v1.Params", Ethermint.Feemarket.Params);
+registry.register("/ethermint.feemarket.v1.EventFeeMarket", Ethermint.Feemarket.EventFeeMarket);
+registry.register("/ethermint.feemarket.v1.EventBlockGas", Ethermint.Feemarket.EventBlockGas);
+registry.register("/ethermint.feemarket.v1.QueryParamsRequest", Ethermint.Feemarket.QueryParamsRequest);
+registry.register("/ethermint.feemarket.v1.QueryParamsResponse", Ethermint.Feemarket.QueryParamsResponse);
+registry.register("/ethermint.feemarket.v1.QueryBaseFeeRequest", Ethermint.Feemarket.QueryBaseFeeRequest);
+registry.register("/ethermint.feemarket.v1.QueryBaseFeeResponse", Ethermint.Feemarket.QueryBaseFeeResponse);
+registry.register("/ethermint.feemarket.v1.QueryBlockGasRequest", Ethermint.Feemarket.QueryBlockGasRequest);
+registry.register("/ethermint.feemarket.v1.QueryBlockGasResponse", Ethermint.Feemarket.QueryBlockGasResponse);
+
+registry.register("/ethermint.evm.v1.GenesisAccount", Ethermint.Evm.GenesisAccount);
+registry.register("/ethermint.evm.v1.MsgEthereumTx", Ethermint.Evm.MsgEthereumTx);
+registry.register("/ethermint.evm.v1.LegacyTx", Ethermint.Evm.LegacyTx);
+registry.register("/ethermint.evm.v1.AccessListTx", Ethermint.Evm.AccessListTx);
+registry.register("/ethermint.evm.v1.DynamicFeeTx", Ethermint.Evm.DynamicFeeTx);
+registry.register("/ethermint.evm.v1.ExtensionOptionsEthereumTx", Ethermint.Evm.ExtensionOptionsEthereumTx);
+registry.register("/ethermint.evm.v1.MsgEthereumTxResponse", Ethermint.Evm.MsgEthereumTxResponse);
+registry.register("/ethermint.evm.v1.MsgUpdateParams", Ethermint.Evm.MsgUpdateParams);
+registry.register("/ethermint.evm.v1.MsgUpdateParamsResponse", Ethermint.Evm.MsgUpdateParamsResponse);
+registry.register("/ethermint.evm.v1.EventEthereumTx", Ethermint.Evm.EventEthereumTx);
+registry.register("/ethermint.evm.v1.EventTxLog", Ethermint.Evm.EventTxLog);
+registry.register("/ethermint.evm.v1.EventMessage", Ethermint.Evm.EventMessage);
+registry.register("/ethermint.evm.v1.EventBlockBloom", Ethermint.Evm.EventBlockBloom);
+registry.register("/ethermint.evm.v1.QueryAccountRequest", Ethermint.Evm.QueryAccountRequest);
+registry.register("/ethermint.evm.v1.QueryAccountResponse", Ethermint.Evm.QueryAccountResponse);
+registry.register("/ethermint.evm.v1.QueryCosmosAccountRequest", Ethermint.Evm.QueryCosmosAccountRequest);
+registry.register("/ethermint.evm.v1.QueryCosmosAccountResponse", Ethermint.Evm.QueryCosmosAccountResponse);
+registry.register("/ethermint.evm.v1.QueryValidatorAccountRequest", Ethermint.Evm.QueryValidatorAccountRequest);
+registry.register("/ethermint.evm.v1.QueryValidatorAccountResponse", Ethermint.Evm.QueryValidatorAccountResponse);
+registry.register("/ethermint.evm.v1.QueryBalanceRequest", Ethermint.Evm.QueryBalanceRequest);
+registry.register("/ethermint.evm.v1.QueryBalanceResponse", Ethermint.Evm.QueryBalanceResponse);
+registry.register("/ethermint.evm.v1.QueryStorageRequest", Ethermint.Evm.QueryStorageRequest);
+registry.register("/ethermint.evm.v1.QueryStorageResponse", Ethermint.Evm.QueryStorageResponse);
+registry.register("/ethermint.evm.v1.QueryCodeRequest", Ethermint.Evm.QueryCodeRequest);
+registry.register("/ethermint.evm.v1.QueryCodeResponse", Ethermint.Evm.QueryCodeResponse);
+registry.register("/ethermint.evm.v1.QueryTxLogsRequest", Ethermint.Evm.QueryTxLogsRequest);
+registry.register("/ethermint.evm.v1.QueryTxLogsResponse", Ethermint.Evm.QueryTxLogsResponse);
+registry.register("/ethermint.evm.v1.QueryParamsRequest", Ethermint.Evm.QueryParamsRequest);
+registry.register("/ethermint.evm.v1.QueryParamsResponse", Ethermint.Evm.QueryParamsResponse);
+registry.register("/ethermint.evm.v1.EthCallRequest", Ethermint.Evm.EthCallRequest);
+registry.register("/ethermint.evm.v1.EstimateGasResponse", Ethermint.Evm.EstimateGasResponse);
+registry.register("/ethermint.evm.v1.QueryTraceTxRequest", Ethermint.Evm.QueryTraceTxRequest);
+registry.register("/ethermint.evm.v1.QueryTraceTxResponse", Ethermint.Evm.QueryTraceTxResponse);
+registry.register("/ethermint.evm.v1.QueryTraceBlockRequest", Ethermint.Evm.QueryTraceBlockRequest);
+registry.register("/ethermint.evm.v1.QueryTraceBlockResponse", Ethermint.Evm.QueryTraceBlockResponse);
+registry.register("/ethermint.evm.v1.QueryBaseFeeRequest", Ethermint.Evm.QueryBaseFeeRequest);
+registry.register("/ethermint.evm.v1.QueryBaseFeeResponse", Ethermint.Evm.QueryBaseFeeResponse);
+registry.register("/ethermint.evm.v1.Params", Ethermint.Evm.Params);
+registry.register("/ethermint.evm.v1.ChainConfig", Ethermint.Evm.ChainConfig);
+registry.register("/ethermint.evm.v1.State", Ethermint.Evm.State);
+registry.register("/ethermint.evm.v1.TransactionLogs", Ethermint.Evm.TransactionLogs);
+registry.register("/ethermint.evm.v1.Log", Ethermint.Evm.Log);
+registry.register("/ethermint.evm.v1.TxResult", Ethermint.Evm.TxResult);
+registry.register("/ethermint.evm.v1.AccessTuple", Ethermint.Evm.AccessTuple);
+registry.register("/ethermint.evm.v1.TraceConfig", Ethermint.Evm.TraceConfig);
 
 registry.register("/Switcheo.carbon.subaccount.MsgCreateSubAccount", MsgCreateSubAccount);
 registry.register("/Switcheo.carbon.subaccount.MsgCreateSubAccountResponse", MsgCreateSubAccountResponse);
@@ -1113,10 +1172,6 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "syntax",
         "type": "string"
-      },
-      {
-        "name": "edition",
-        "type": "string"
       }
     ],
     "DescriptorProto": [
@@ -1425,10 +1480,6 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "bool"
       },
       {
-        "name": "deprecated_legacy_json_field_conflicts",
-        "type": "bool"
-      },
-      {
         "name": "uninterpreted_option",
         "type": "UninterpretedOption[]",
         "packageName": "/google.protobuf"
@@ -1466,20 +1517,6 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "bool"
       },
       {
-        "name": "debug_redact",
-        "type": "bool"
-      },
-      {
-        "name": "retention",
-        "type": "",
-        "packageName": "/google.protobuf.FieldOptions"
-      },
-      {
-        "name": "target",
-        "type": "",
-        "packageName": "/google.protobuf.FieldOptions"
-      },
-      {
         "name": "uninterpreted_option",
         "type": "UninterpretedOption[]",
         "packageName": "/google.protobuf"
@@ -1499,10 +1536,6 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "deprecated",
-        "type": "bool"
-      },
-      {
-        "name": "deprecated_legacy_json_field_conflicts",
         "type": "bool"
       },
       {
