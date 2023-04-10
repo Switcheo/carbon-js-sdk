@@ -121,8 +121,8 @@ class CarbonSDK {
     this.chainId = opts.chainId ?? CarbonChainIDs[this.network] ?? CarbonChainIDs[Network.MainNet];
     this.query = new CarbonQueryClient(opts.tmClient);
     this.insights = new InsightsQueryClient(this.networkConfig);
-    this.hydrogen = new HydrogenClient(this.networkConfig);
     this.token = opts.token ?? TokenClient.instance(this.query, this);
+    this.hydrogen = HydrogenClient.instance(this.networkConfig, this.token);
 
     this.admin = new AdminModule(this);
     this.order = new OrderModule(this);
