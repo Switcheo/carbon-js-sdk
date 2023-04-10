@@ -31,13 +31,15 @@ import {
   ProfileModule,
   SubAccountModule,
   XChainModule,
+  EvmModule,
+  FeemarketModule,
+  EvmMergeModule,
 } from "./modules";
 import { StakingModule } from "./modules/staking";
 import { CosmosLedger, Keplr, KeplrAccount, LeapAccount, LeapExtended } from "./provider";
 import { Blockchain } from "./util/blockchain";
 import { CarbonSigner, CarbonWallet, CarbonWalletGenericOpts } from "./wallet";
 import { MetaMask } from "./provider/metamask/MetaMask";
-
 export { CarbonTx } from "@carbon-sdk/util";
 export { CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletGenericOpts, CarbonWalletInitOpts } from "@carbon-sdk/wallet";
 export { DenomPrefix } from "./constant";
@@ -104,6 +106,10 @@ class CarbonSDK {
   fee: FeeModule;
   ibc: IBCModule;
   xchain: XChainModule;
+  evm: EvmModule;
+  evmmerge: EvmMergeModule;
+  feemarket: FeemarketModule;
+
 
   neo: NEOClient;
   eth: ETHClient;
@@ -146,6 +152,9 @@ class CarbonSDK {
     this.fee = new FeeModule(this);
     this.ibc = new IBCModule(this);
     this.xchain = new XChainModule(this);
+    this.evm = new EvmModule(this);
+    this.evmmerge = new EvmMergeModule(this);
+    this.feemarket = new FeemarketModule(this);
 
     this.neo = NEOClient.instance({
       configProvider: this,
@@ -419,8 +428,9 @@ class CarbonSDK {
   public async connectWithMetamask(metamask: MetaMask, opts?: CarbonWalletGenericOpts) {
     const evmChainId = this.evmChainId;
     const address = await metamask.defaultAccount()
-    const publicKey = await metamask.getCompressedPublicKey(address)
-    const wallet = CarbonWallet.withMetamask(metamask, evmChainId, publicKey, {
+    const publicKeyHex = await metamask.getPublicKey(address)
+    const publicKeyBase64 = Buffer.from(publicKeyHex, 'hex').toString('base64')
+    const wallet = CarbonWallet.withMetamask(metamask, evmChainId, publicKeyBase64, {
       ...opts,
       network: this.network,
       config: this.configOverride,

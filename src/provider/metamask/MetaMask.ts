@@ -242,7 +242,6 @@ const OKC_TESTNET: MetaMaskChangeNetworkParam = {
  */
 export class MetaMask {
   private blockchain: EVMChain = Blockchain.Ethereum;
-  public legacyEip712SignMode: boolean = false
 
   static createMetamaskSigner(metamask: MetaMask, evmChainId: string, pubKeyBase64: string): CarbonSigner {
     const signDirect = async (_: string, doc: Models.Tx.SignDoc) => {
@@ -288,13 +287,12 @@ export class MetaMask {
         memo,
         sequence)
       const api = await metamask.getConnectedAPI()
-      const pubKey = await metamask.getCompressedPublicKey(signerAddress, api)
       return {
         signed: doc,
         signature: {
           pub_key: {
             type: ETH_SECP256K1_TYPE,
-            value: Buffer.from(pubKey, 'hex').toString('base64')
+            value: pubKeyBase64
           },
           signature: sig
         }
@@ -303,13 +301,12 @@ export class MetaMask {
     const getAccounts = async () => {
       const address = await metamask.defaultAccount()
       const api = await metamask.getConnectedAPI()
-      const pubKey = await metamask.getCompressedPublicKey(address, api)
       return [
         {
-          //Possible to change to "ethsecp256k1" ?
+          // Possible to change to "ethsecp256k1" ?
           algo: "secp256k1" as Algo,
           address,
-          pubkey: Uint8Array.from(Buffer.from(pubKey, 'hex'))
+          pubkey: Uint8Array.from(Buffer.from(pubKeyBase64, 'base64'))
         },
       ]
     }
@@ -408,11 +405,7 @@ export class MetaMask {
     }
   }
 
-  constructor(public readonly network: Network, public readonly useLegacyEip712?: boolean) {
-    if (useLegacyEip712) {
-      this.legacyEip712SignMode = useLegacyEip712
-    }
-  }
+  constructor(public readonly network: Network, public readonly legacyEip712SignMode: boolean = false) {}
 
   private checkProvider(blockchain: Blockchain = this.blockchain): ethers.providers.Provider {
     const config: any = NetworkConfigs[this.network];
@@ -471,7 +464,6 @@ export class MetaMask {
   async defaultAccount() {
     const metamaskAPI = await this.getConnectedAPI();
     const accounts = (await metamaskAPI.request({ method: "eth_requestAccounts" })) as string[];
-    console.log("accounts", accounts);
     const [defaultAccount] = accounts;
 
     if (!defaultAccount) {
@@ -496,7 +488,7 @@ export class MetaMask {
   async encryptMnemonic(mnemonic: string): Promise<string> {
     const metamaskAPI = await this.getConnectedAPI();
     const defaultAccount = await this.defaultAccount();
-    const publicKey = await this.getPublicKey(defaultAccount, metamaskAPI) as string;
+    const publicKey = await this.getEncryptionPublicKey(defaultAccount, metamaskAPI) as string;
 
     const messageToEncrypt = getEncryptMessage(mnemonic);
 
@@ -518,16 +510,19 @@ export class MetaMask {
   async signMergeAccount(publicKey: string, address: string, metamaskAPI?: MetaMaskAPI): Promise<string> {
     const api = metamaskAPI ?? await this.getConnectedAPI();
     const message = `Sign your public key to merge your Carbon account: ${publicKey}`;
+    return this.personalSign(address, message, api)
+  }
+
+  async personalSign(address: string, message: string, metamaskAPI?: MetaMaskAPI): Promise<string> {
+    const api = metamaskAPI ?? await this.getConnectedAPI();
     const ethAddress = ethers.utils.getAddress(address);
-    const publicKeySign = (await api.request({
+    return (await api.request({
       method: "personal_sign",
       params: [appendHexPrefix(Buffer.from(message, "utf-8").toString("hex")), ethAddress],
     })) as string;
-    return publicKeySign;
   }
 
-  // get uncompressed public key from Metamask (need to be updated as is deprecated)
-  async getPublicKey(address: string, metamaskAPI?: MetaMaskAPI): Promise<string> {
+  async getEncryptionPublicKey(address: string, metamaskAPI?: MetaMaskAPI): Promise<string> {
     const api = metamaskAPI ?? await this.getConnectedAPI();
     const publicKey = (await api.request({
       method: "eth_getEncryptionPublicKey",
@@ -535,11 +530,13 @@ export class MetaMask {
     })) as string;
     return publicKey;
   }
-  // get uncompressed public key from Metamask (need to be updated as is deprecated)
-  async getCompressedPublicKey(address: string, metamaskAPI?: MetaMaskAPI): Promise<string> {
-    const api = metamaskAPI ?? await this.getConnectedAPI();
-    const uncompressedPubKey = await this.getPublicKey(address, api)
-    return EthCrypto.publicKey.compress(uncompressedPubKey)
+  // get public key from Metamask
+  async getPublicKey(address: string, metamaskAPI?: MetaMaskAPI): Promise<string> {
+    const message = "Initialise your account with carbon"
+    const signedMessage = await this.personalSign(address, message, metamaskAPI)
+    const uncompressedPubKey = EthCrypto.recoverPublicKey(signedMessage, EthCrypto.hash.keccak256(`\x19Ethereum Signed Message:\n${message.length}${message}`))
+    const pubKey = EthCrypto.publicKey.compress(uncompressedPubKey)
+    return pubKey
   }
 
   async signEip712(accountNumber: string, evmChainId: string, msgs: readonly AminoMsg[], fee: StdFee, memo: string, sequence: string): Promise<string> {
