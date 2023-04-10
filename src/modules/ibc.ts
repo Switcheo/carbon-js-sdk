@@ -94,7 +94,7 @@ export class IBCModule extends BaseModule {
         const extendedChainInfo: ExtendedChainInfo = {
           ...chainInfo,
           rpc: isCosmWasm ? publicRpcNodes[ibcBridge.chainName] : chainInfo.rpc,
-          minimalDenomMap: {},
+          minimalDenomMap: chainInfoMap[chainInfo.chainId]?.minimalDenomMap ?? {},
         };
 
         const extraCurrencies = denomTracesArr.reduce((prev: AppCurrency[], denomTrace: DenomTraceExtended) => {
@@ -108,7 +108,7 @@ export class IBCModule extends BaseModule {
             ((rootPath.length > 0 || cw20RegexArr?.length) && firstTransferChannel === ibcBridge.channels.src_channel)
               || (firstTransferChannel === ibcBridge.channels.dst_channel && isNativeDenom)
           )) {
-            if (firstTransferChannel === ibcBridge.channels.src_channel && rootPath.length === 0) {
+            if (rootPath.length === 0 && firstTransferChannel === ibcBridge.channels.src_channel) {
               extendedChainInfo.minimalDenomMap[coinMinimalDenom] = denomTrace.baseDenom;
             }
             return prev;
