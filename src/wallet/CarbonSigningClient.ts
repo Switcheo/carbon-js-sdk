@@ -141,7 +141,7 @@ export class CarbonSigningClient extends StargateClient {
       throw new Error("Failed to retrieve account from signer");
     }
     const pubKeyBz = accountFromSigner ? accountFromSigner.pubkey : (await this.signer.getAccounts())[0].pubkey
-    const pubkey = !isCarbonEIP712Signer(this.signer) ? encodeAnyEthSecp256k1PubKey(pubKeyBz) : encodePubkey(encodeSecp256k1Pubkey(pubKeyBz));
+    const pubkey = isCarbonEIP712Signer(this.signer) ? encodeAnyEthSecp256k1PubKey(pubKeyBz) : encodePubkey(encodeSecp256k1Pubkey(pubKeyBz));
     const txBodyEncodeObject: TxBodyEncodeObject = {
       typeUrl: "/cosmos.tx.v1beta1.TxBody",
       value: {
@@ -178,7 +178,7 @@ export class CarbonSigningClient extends StargateClient {
       throw new Error("Failed to retrieve account from signer");
     }
     const pubKeyBz = accountFromSigner ? accountFromSigner.pubkey : (await this.signer.getAccounts())[0].pubkey
-    const pubkey = !isCarbonEIP712Signer(this.signer) ? encodeAnyEthSecp256k1PubKey(pubKeyBz) : encodePubkey(encodeSecp256k1Pubkey(pubKeyBz));
+    const pubkey = isCarbonEIP712Signer(this.signer) ? encodeAnyEthSecp256k1PubKey(pubKeyBz) : encodePubkey(encodeSecp256k1Pubkey(pubKeyBz));
     const signMode: SignMode = SignMode.SIGN_MODE_LEGACY_AMINO_JSON;
     const msgs = messages.map((msg) => this.aminoTypes.toAmino(msg));
     const signDoc = makeSignDocAmino(msgs, fee, chainId, memo, accountNumber, sequence, timeoutHeight ?? 0);
@@ -221,12 +221,13 @@ export class CarbonSigningClient extends StargateClient {
     const signMode: SignMode = SignMode.SIGN_MODE_LEGACY_AMINO_JSON;
     const msgs = messages.map((msg) => this.aminoTypes.toAmino(msg));
     const signDoc = makeSignDocAmino(msgs, fee, evmChainId!, memo, accountNumber, sequence);
-    const { signature, signed } = await signer.signLegacyEip712(signerAddress, signDoc);
+    const { signature, signed, feePayer } = await signer.signLegacyEip712(signerAddress, signDoc);
+
     const eip712ExtensionOptions: EncodeObject = {
       typeUrl: "/ethermint.types.v1.ExtensionOptionsWeb3Tx",
       value: ExtensionOptionsWeb3Tx.encode(ExtensionOptionsWeb3Tx.fromPartial({
         typedDataChainId: evmChainId,
-        feePayer: signerAddress,
+        feePayer,
         feePayerSig: fromBase64(signature.signature),
       })).finish(),
     }

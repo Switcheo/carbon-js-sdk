@@ -4,12 +4,14 @@ import { PubKey as EthSecp256k1PubKey } from "@carbon-sdk/codec/ethermint/crypto
 export const ETH_SECP256K1_TYPE = '/ethermint.crypto.v1.ethsecp256k1.PubKey'
 
 export function encodeAnyEthSecp256k1PubKey(pubkey: Uint8Array): Any {
-    return registry.encodeAsAny({
+    const ethPubKey = EthSecp256k1PubKey.fromPartial({
+        key: pubkey,
+    })
+    return Any.fromPartial({
         typeUrl: ETH_SECP256K1_TYPE,
-        value: EthSecp256k1PubKey.fromPartial({
-            key: pubkey,
-        }),
-    });
+        value: EthSecp256k1PubKey.encode(ethPubKey).finish(),
+    })
+
 }
 
 export function parseChainId(evmChainId: string): string {
@@ -19,7 +21,7 @@ export function parseChainId(evmChainId: string): string {
         throw new Error(`chain-id '${chainId}' cannot exceed 48 chars`)
     }
 
-    if (!chainId.match(/^[0-9a-f]+$/i)) {
+    if (!chainId.match(/^[a-z]+_\d+-\d+$/)) {
         throw new Error(`chain-id '${chainId}' does not conform to the required format`)
     }
     return chainId.split("_")[1].split("-")[0]

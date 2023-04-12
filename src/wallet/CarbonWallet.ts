@@ -3,7 +3,7 @@ import { DEFAULT_FEE_DENOM, DEFAULT_GAS, DEFAULT_NETWORK, Network, NetworkConfig
 import { ProviderAgent } from "@carbon-sdk/constant/walletProvider";
 import { ChainInfo, CosmosLedger, Keplr, KeplrAccount, LeapAccount, MetaMask } from "@carbon-sdk/provider";
 import { AddressUtils, CarbonTx, GenericUtils } from "@carbon-sdk/util";
-import { SWTHAddress } from "@carbon-sdk/util/address";
+import { SWTHAddress, SWTHAddressOptions } from "@carbon-sdk/util/address";
 import { fetch } from "@carbon-sdk/util/fetch";
 import { QueueManager } from "@carbon-sdk/util/generic";
 import { bnOrZero, BN_ZERO } from "@carbon-sdk/util/number";
@@ -19,7 +19,7 @@ import { Key } from "@keplr-wallet/types";
 import { Key as LeapKey } from "@cosmos-kit/core";
 import BigNumber from "bignumber.js";
 import { TxRaw as StargateTxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx";
-import { CarbonLedgerSigner, CarbonNonSigner, CarbonPrivateKeySigner, CarbonSigner, CarbonSignerTypes } from "./CarbonSigner";
+import { CarbonLedgerSigner, CarbonNonSigner, CarbonPrivateKeySigner, CarbonSigner, CarbonSignerTypes, isCarbonEIP712Signer } from "./CarbonSigner";
 import { CarbonSigningClient } from "./CarbonSigningClient";
 import { ETH_SECP256K1_TYPE } from "@carbon-sdk/util/ethermint";
 
@@ -260,8 +260,8 @@ export class CarbonWallet {
     return wallet;
   }
 
-  public static withMetamask(metamask: MetaMask, evmChainId: string, compressedPubKeyBase64: string, opts: Omit<CarbonWalletInitOpts, "signer"> = {}) {
-    const signer = MetaMask.createMetamaskSigner(metamask, evmChainId, compressedPubKeyBase64);
+  public static withMetamask(metamask: MetaMask, evmChainId: string, compressedPubKeyBase64: string, addressOptions: SWTHAddressOptions, opts: Omit<CarbonWalletInitOpts, "signer"> = {}) {
+    const signer = MetaMask.createMetamaskSigner(metamask, evmChainId, compressedPubKeyBase64, addressOptions);
     const wallet = CarbonWallet.withSigner(signer, compressedPubKeyBase64, {
       ...opts,
       providerAgent: ProviderAgent.MetamaskExtension,
@@ -389,7 +389,11 @@ export class CarbonWallet {
       const heightResponse = await fetch(`${this.networkConfig.tmRpcUrl}/blockchain?cache=${new Date().getTime()}`);
       const heightRes = await heightResponse.json();
       const height = bnOrZero(heightRes.result?.last_height);
-      const timeoutHeight = height.isZero() ? undefined : height.toNumber() + this.defaultTimeoutBlocks;
+      let timeoutHeight;
+      // timeoutHeight is not supported for EIP-712
+      if(!isCarbonEIP712Signer(this.signer)) {
+        timeoutHeight = height.isZero() ? undefined : height.toNumber() + this.defaultTimeoutBlocks;
+      }     
 
       const sequence = this.accountInfo!.sequence;
       this.accountInfo = {

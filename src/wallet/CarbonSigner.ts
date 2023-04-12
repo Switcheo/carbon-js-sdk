@@ -12,13 +12,16 @@ export enum CarbonSignerTypes {
 }
 export interface EIP712Signer {
   legacyEip712SignMode: boolean
-  readonly signLegacyEip712: (signerAddress: string, signDoc: StdSignDoc) => Promise<AminoSignResponse>;
+  readonly signLegacyEip712: (signerAddress: string, signDoc: StdSignDoc) => Promise<LegacyEIP712AminoSignResponse>;
 }
 
 export type CarbonSigner = DirectCarbonSigner | AminoCarbonSigner | CarbonEIP712Signer;
 export type CarbonEIP712Signer = (DirectCarbonSigner | AminoCarbonSigner) & EIP712Signer
 export type DirectCarbonSigner = OfflineDirectSigner & { type: CarbonSignerTypes };
 export type AminoCarbonSigner = OfflineAminoSigner & { type: CarbonSignerTypes }
+
+
+export type LegacyEIP712AminoSignResponse = AminoSignResponse & { feePayer: string }
 
 
 export function isCarbonEIP712Signer(signer: OfflineSigner): boolean {

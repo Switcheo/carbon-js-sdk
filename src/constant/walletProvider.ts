@@ -5,3 +5,7 @@ export enum ProviderAgent {
   LeapExtension = "leap-extension",
   MetamaskExtension = "metamask-extension",
 }
+
+export function isEvmWallet(providerAgent?: string) {
+  return ProviderAgent.MetamaskExtension.toString() === providerAgent
+}
