@@ -5,6 +5,7 @@ import { AminoInit, ConvertEncType, generateAminoType } from "../utils";
 
 const TxTypes: TypeUtils.SimpleMap<string> = {
   UpdateMarket: "market/UpdateMarket",
+  DisableSpotMarket: "market/DisableSpotMarket",
 };
 
 const MsgUpdateMarket: AminoInit = {
@@ -24,8 +25,14 @@ const MsgUpdateMarket: AminoInit = {
   },
 };
 
+const MsgDisableSpotMarket: AminoInit = {
+  aminoType: TxTypes.DisableSpotMarket,
+  valueMap: {},
+};
+
 const MarketAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgUpdateMarket]: generateAminoType(MsgUpdateMarket),
+  [CarbonTx.Types.MsgDisableSpotMarket]: generateAminoType(MsgDisableSpotMarket),
 };
 
 export default MarketAmino;
