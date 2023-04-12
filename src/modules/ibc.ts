@@ -1,6 +1,6 @@
 import { MsgTransfer } from "@carbon-sdk/codec/ibc/applications/transfer/v1/tx";
 import { DenomTraceExtended } from "@carbon-sdk/clients/TokenClient";
-import { ExtendedChainInfo, cw20TokenRegex, ibcNetworkRegex, ibcTransferChannelRegex, publicRpcNodes } from "@carbon-sdk/constant";
+import { ExtendedChainInfo, cw20TokenRegex, factoryIbcMinimalDenomRegex, ibcNetworkRegex, ibcTransferChannelRegex, publicRpcNodes } from "@carbon-sdk/constant";
 import { ChainInfo, KeplrAccount } from "@carbon-sdk/provider";
 import { CarbonTx, IBCUtils, TypeUtils } from "@carbon-sdk/util";
 import { AppCurrency } from "@keplr-wallet/types";
@@ -101,6 +101,7 @@ export class IBCModule extends BaseModule {
           const firstTransferChannel = denomTrace.path.match(ibcTransferChannelRegex)?.[0]?.replace("transfer/", "");
           const cw20RegexArr = denomTrace.baseDenom.match(cw20TokenRegex);
           const rootPath = denomTrace.path.replace(ibcTransferChannelRegex, "").replace(/^\//, '');
+          const checkedBaseDenom = denomTrace.baseDenom.match(factoryIbcMinimalDenomRegex) ? denomTrace.baseDenom.replace(/:/g, '/') : denomTrace.baseDenom;
           const coinMinimalDenom = IBCUtils.makeIBCMinimalDenom(denomTrace.path, denomTrace.baseDenom);
           const tokenInfo = denomTrace.token;
           const isNativeDenom = tokenClient.isCarbonToken(tokenInfo);
@@ -109,7 +110,7 @@ export class IBCModule extends BaseModule {
               || (firstTransferChannel === ibcBridge.channels.dst_channel && isNativeDenom)
           )) {
             if (rootPath.length === 0 && firstTransferChannel === ibcBridge.channels.src_channel) {
-              extendedChainInfo.minimalDenomMap[coinMinimalDenom] = denomTrace.baseDenom;
+              extendedChainInfo.minimalDenomMap[coinMinimalDenom] = checkedBaseDenom;
             }
             return prev;
           }
