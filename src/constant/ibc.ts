@@ -1735,7 +1735,7 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         },
       },
     ],
-    features: ["ibc-transfer", "ibc-go", "cosmwasm"],
+    features: ["ibc-transfer", "ibc-go"],
     explorerUrlToTx: "https://finder.kujira.app/kaiyo-1/tx/{txHash}",
   },
   [ChainIds.Terra2]: {
