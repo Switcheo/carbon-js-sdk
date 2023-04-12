@@ -1712,9 +1712,14 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
       },
       {
         coinDenom: "USK",
-        coinMinimalDenom: "factory/kujira1qk00h5atutpsv900x202pxx42npjr9thg58dnqpa72f2p7m2luase444a7/uusk",
+        coinMinimalDenom: "factory:kujira1qk00h5atutpsv900x202pxx42npjr9thg58dnqpa72f2p7m2luase444a7:uusk",
         coinDecimals: 6,
         coinGeckoId: "usk",
+      },
+      {
+        coinDenom: "ampKUJI",
+        coinMinimalDenom: "factory:kujira1n3fr5f56r2ce0s37wdvwrk98yhhq3unnxgcqus8nzsfxvllk0yxquurqty:ampKUJI",
+        coinDecimals: 6,
       },
     ],
     feeCurrencies: [
@@ -1730,7 +1735,7 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         },
       },
     ],
-    features: ["ibc-transfer", "ibc-go"],
+    features: ["ibc-transfer", "ibc-go", "cosmwasm"],
     explorerUrlToTx: "https://finder.kujira.app/kaiyo-1/tx/{txHash}",
   },
   [ChainIds.Terra2]: {
