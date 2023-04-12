@@ -8,7 +8,6 @@ export type TypeDefinition = {
 }
 export type EIP712TypesDefinition = TypeUtils.SimpleMap<TypeUtils.SimpleMap<Array<TypeDefinition>>>
 
-const pointerMessageFieldTypes = ['stringvalue', 'boolvalue']
 
 
 export function generateEIP712types(): EIP712TypesDefinition {
@@ -60,33 +59,46 @@ function generateFieldDescription(field: any): TypeDefinition {
         name: fieldName,
         type: fieldType,
     }
-    if (field.typeName) {
-        // Remove type definition from package path
-        const packageDirectories = field.typeName.substring(1).split(".")
-        packageDirectories.pop()
-        const packageName = packageDirectories.join(".")
-        fieldDescriptor.packageName = `/${packageName}`
+    const packageName = getPackageName(field.typeName)
+    const fieldTypeName = field.typeName?.split('.').pop()
+    if (packageName) {
+        if (packageName !== "google.protobuf") {
+            fieldDescriptor.packageName = `/${packageName}`
+        }
+        else if (!getGoogleProtobufTyping(fieldTypeName.toLowerCase())) {
+            fieldDescriptor.packageName = `/${packageName}`
+        }
     }
     return fieldDescriptor
 }
 
 
+
 function getFieldType(field: any): string {
     const fieldLabelRepeated = field.label == 'LABEL_REPEATED' ? true : false
     const fieldTypeName = field.typeName?.split('.').pop()
-    if (pointerMessageFieldTypes.includes(fieldTypeName?.toLowerCase())) {
-        return `string${fieldTypeName
-            ?.toLowerCase()
-            .substring(0, fieldTypeName?.toLowerCase().length - 5)
-            ? '[]'
-            : ''
-            }`
-    }
+
     if (field.type === 'TYPE_MESSAGE') {
+        const packageName = getPackageName(field.typeName)
+        if (packageName && packageName == "google.protobuf") {
+            const googleProtobufType = getGoogleProtobufTyping(fieldTypeName.toLowerCase())
+            const typeName = googleProtobufType ? googleProtobufType : fieldTypeName
+            return `${typeName}${fieldLabelRepeated ? '[]' : ''}`
+        }
         return `${fieldTypeName}${fieldLabelRepeated ? '[]' : ''}`
     }
-    return `${getSolidityTyping(field.type.split('_').pop().toLowerCase())}${fieldLabelRepeated ? '[]' : ''
-        }`
+    return `${getSolidityTyping(field.type.split('_').pop().toLowerCase())}${fieldLabelRepeated ? '[]' : ''}`
+}
+
+function getPackageName(typeName: string): string {
+    if (typeName) {
+        // Remove type definition from package path
+        const packageDirectories = typeName.substring(1).split(".")
+        packageDirectories.pop()
+        return packageDirectories.join(".")
+    }
+    return ""
+
 }
 
 function getSolidityTyping(fieldType: string): string {
@@ -118,6 +130,28 @@ function getSolidityTyping(fieldType: string): string {
             return 'uint32'
         case 'uint64':
             return 'uint64'
+        default:
+    }
+    return ''
+}
+
+function getGoogleProtobufTyping(fieldType: string): string {
+    switch (fieldType) {
+        case 'timestamp':
+        case 'stringvalue':
+            return 'string'
+        case 'int64value':
+            return 'int64'
+        case 'uint64value':
+            return 'uint64'
+        case 'int32value':
+            return 'int32'
+        case 'uint32value':
+            return 'uint32'
+        case 'boolvalue':
+            return 'bool'
+        case 'bytesvalue':
+            return 'uint8[]'
         default:
     }
     return ''

@@ -2,7 +2,7 @@
 import { Registry } from "@cosmjs/proto-signing";
 import { MsgExecuteContract } from "cosmjs-types/cosmwasm/wasm/v1/tx";
 import { MsgSetTradingFlag, MsgSetTradingFlagResponse, MsgCreateOrder, MsgCreateOrderResponse, MsgEditOrder, MsgEditOrderResponse, MsgCancelOrder, MsgCancelOrderResponse, MsgCancelAll, MsgCancelAllResponse } from "./order/tx";
-import { MsgAddRateStrategy, MsgAddRateStrategyResponse, MsgUpdateRateStrategy, MsgUpdateRateStrategyResponse, MsgRemoveRateStrategy, MsgRemoveRateStrategyResponse, MsgAddAsset, MsgAddAssetResponse, MsgUpdateAsset, MsgUpdateAssetResponse, MsgSupplyAsset, MsgSupplyAssetResponse, MsgWithdrawAsset, MsgWithdrawAssetResponse, MsgLockCollateral, MsgLockCollateralResponse, MsgUnlockCollateral, MsgUnlockCollateralResponse, MsgBorrowAsset, MsgBorrowAssetResponse, MsgRepayAsset, MsgRepayAssetResponse, MsgSupplyAssetAndLockCollateral, MsgSupplyAssetAndLockCollateralResponse, MsgUnlockCollateralAndWithdrawAsset, MsgUnlockCollateralAndWithdrawAssetResponse, MsgLiquidateCollateral, MsgLiquidateCollateralResponse, MsgSetLiquidationFee, MsgSetLiquidationFeeResponse, MsgSetInterestFee, MsgSetInterestFeeResponse, MsgRepayAssetWithCdpTokens, MsgRepayAssetWithCdpTokensResponse, MsgRepayAssetWithCollateral, MsgRepayAssetWithCollateralResponse, MsgSetStablecoinMintCap, MsgSetStablecoinMintCapResponse, MsgSetStablecoinInterestRate, MsgSetStablecoinInterestRateResponse, MsgMintStablecoin, MsgMintStablecoinResponse, MsgReturnStablecoin, MsgReturnStablecoinResponse, MsgSetCompleteLiquidationThreshold, MsgSetCompleteLiquidationThresholdResponse, MsgSetMinimumCloseFactor, MsgSetMinimumCloseFactorResponse, MsgSetSmallLiquidationSize, MsgSetSmallLiquidationSizeResponse, MsgLiquidateCollateralWithCdpTokens, MsgLiquidateCollateralWithCdpTokensResponse, MsgLiquidateCollateralWithCollateral, MsgLiquidateCollateralWithCollateralResponse, MsgLiquidateCollateralWithStablecoin, MsgLiquidateCollateralWithStablecoinResponse, MsgCreateRewardScheme, MsgCreateRewardSchemeResponse, MsgUpdateRewardScheme, MsgUpdateRewardSchemeResponse, MsgClaimRewards, MsgClaimRewardsResponse, MsgSetStalePriceGracePeriod, MsgSetStalePriceGracePeriodResponse, MsgSetCdpPaused, MsgSetCdpPausedResponse, MsgReturnStablecoinWithInterestInCollateral, MsgReturnStablecoinWithInterestInCollateralResponse, MsgReturnStablecoinWithInterestInCdpTokens, MsgReturnStablecoinWithInterestInCdpTokensResponse, MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens, MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse, MsgLiquidateCollateralWithStablecoinAndInterestInCollateral, MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse, MsgConvertTokenInCdpToGroupTokens, MsgConvertTokenInCdpToGroupTokensResponse } from "./cdp/tx";
+import { MsgAddRateStrategy, MsgAddRateStrategyResponse, MsgUpdateRateStrategy, MsgUpdateRateStrategyResponse, MsgRemoveRateStrategy, MsgRemoveRateStrategyResponse, MsgAddAsset, MsgAddAssetResponse, MsgUpdateAsset, MsgUpdateAssetResponse, MsgSupplyAsset, MsgSupplyAssetResponse, MsgWithdrawAsset, MsgWithdrawAssetResponse, MsgLockCollateral, MsgLockCollateralResponse, MsgUnlockCollateral, MsgUnlockCollateralResponse, MsgBorrowAsset, MsgBorrowAssetResponse, MsgRepayAsset, MsgRepayAssetResponse, MsgSupplyAssetAndLockCollateral, MsgSupplyAssetAndLockCollateralResponse, MsgUnlockCollateralAndWithdrawAsset, MsgUnlockCollateralAndWithdrawAssetResponse, MsgLiquidateCollateral, MsgLiquidateCollateralResponse, MsgSetLiquidationFee, MsgSetLiquidationFeeResponse, MsgSetInterestFee, MsgSetInterestFeeResponse, MsgRepayAssetWithCdpTokens, MsgRepayAssetWithCdpTokensResponse, MsgRepayAssetWithCollateral, MsgRepayAssetWithCollateralResponse, MsgSetStablecoinMintCap, MsgSetStablecoinMintCapResponse, MsgSetStablecoinInterestRate, MsgSetStablecoinInterestRateResponse, MsgMintStablecoin, MsgMintStablecoinResponse, MsgReturnStablecoin, MsgReturnStablecoinResponse, MsgSetCompleteLiquidationThreshold, MsgSetCompleteLiquidationThresholdResponse, MsgSetMinimumCloseFactor, MsgSetMinimumCloseFactorResponse, MsgSetSmallLiquidationSize, MsgSetSmallLiquidationSizeResponse, MsgLiquidateCollateralWithCdpTokens, MsgLiquidateCollateralWithCdpTokensResponse, MsgLiquidateCollateralWithCollateral, MsgLiquidateCollateralWithCollateralResponse, MsgLiquidateCollateralWithStablecoin, MsgLiquidateCollateralWithStablecoinResponse, MsgCreateRewardScheme, MsgCreateRewardSchemeResponse, MsgUpdateRewardScheme, MsgUpdateRewardSchemeResponse, MsgClaimRewards, MsgClaimRewardsResponse, MsgSetStalePriceGracePeriod, MsgSetStalePriceGracePeriodResponse, MsgSetCdpPaused, MsgSetCdpPausedResponse, MsgReturnStablecoinWithInterestInCollateral, MsgReturnStablecoinWithInterestInCollateralResponse, MsgReturnStablecoinWithInterestInCdpTokens, MsgReturnStablecoinWithInterestInCdpTokensResponse, MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens, MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse, MsgLiquidateCollateralWithStablecoinAndInterestInCollateral, MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse, MsgConvertTokenInCdpToGroupTokens, MsgConvertTokenInCdpToGroupTokensResponse, MsgAddEModeCategory, MsgAddEModeCategoryResponse, MsgUpdateEModeCategory, MsgUpdateEModeCategoryResponse, MsgChangeAccountEMode, MsgChangeAccountEModeResponse } from "./cdp/tx";
 import { MsgInitiateLiquidation, MsgInitiateLiquidationResponse } from "./broker/tx";
 import { MsgSetGasCost, MsgSetGasCostResponse, MsgSetMinGasPrice, MsgSetMinGasPriceResponse, MsgRemoveGasCost, MsgRemoveGasCostResponse, MsgRemoveMinGasPrice, MsgRemoveMinGasPriceResponse } from "./fee/tx";
 import { SetMsgGasCostProposal, SetMinGasPriceProposal, RemoveMsgGasCostProposal, RemoveMinGasPriceProposal } from "./fee/proposal";
@@ -41,7 +41,7 @@ import { MsgUpdateProfile, MsgUpdateProfileResponse } from "./profile/tx";
 import { MsgUpdateParams, MsgUpdateParamsResponse } from "./ethermint/feemarket/v1/tx";
 import { MsgEthereumTx, MsgEthereumTxResponse, MsgUpdateParams as MsgEvmUpdateParams, MsgUpdateParamsResponse as MsgEvmUpdateParamsResponse } from "./ethermint/evm/v1/tx";
 import { MsgCreateSubAccount, MsgCreateSubAccountResponse, MsgActivateSubAccount, MsgActivateSubAccountResponse, MsgRemoveSubAccount, MsgRemoveSubAccountResponse } from "./subaccount/tx";
-import { MsgCreateMarket, MsgCreateMarketResponse, MsgUpdateMarket, MsgUpdateMarketResponse, MsgUpdatePerpetualsFundingInterval, MsgUpdatePerpetualsFundingIntervalResponse } from "./market/tx";
+import { MsgDisableSpotMarket, MsgDisableSpotMarketResponse, MsgCreateMarket, MsgCreateMarketResponse, MsgUpdateMarket, MsgUpdateMarketResponse, MsgUpdatePerpetualsFundingInterval, MsgUpdatePerpetualsFundingIntervalResponse } from "./market/tx";
 import { CreateMarketProposal, UpdateMarketProposal, UpdatePerpetualsFundingIntervalProposal } from "./market/proposal";
 import { MsgSetSequence, MsgSetSequenceResponse } from "./sequence/tx";
 import { MsgCreatePool, MsgCreatePoolResponse, MsgCreatePoolWithLiquidity, MsgCreatePoolWithLiquidityResponse, MsgAddLiquidity, MsgAddLiquidityResponse, MsgRemoveLiquidity, MsgRemoveLiquidityResponse, MsgSetRewardsWeights, MsgSetRewardsWeightsResponse, MsgStakePoolToken, MsgStakePoolTokenResponse, MsgUnstakePoolToken, MsgUnstakePoolTokenResponse, MsgClaimPoolRewards, MsgClaimPoolRewardsResponse, MsgSetRewardCurve, MsgSetRewardCurveResponse, MsgSetCommitmentCurve, MsgSetCommitmentCurveResponse, MsgUpdatePool, MsgUpdatePoolResponse, MsgCreatePoolRoute, MsgCreatePoolRouteResponse, MsgRemovePoolRoute, MsgRemovePoolRouteResponse, MsgUpdatePoolRoute, MsgUpdatePoolRouteResponse } from "./liquiditypool/tx";
@@ -147,6 +147,12 @@ registry.register("/Switcheo.carbon.cdp.MsgLiquidateCollateralWithStablecoinAndI
 registry.register("/Switcheo.carbon.cdp.MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse", MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse);
 registry.register("/Switcheo.carbon.cdp.MsgConvertTokenInCdpToGroupTokens", MsgConvertTokenInCdpToGroupTokens);
 registry.register("/Switcheo.carbon.cdp.MsgConvertTokenInCdpToGroupTokensResponse", MsgConvertTokenInCdpToGroupTokensResponse);
+registry.register("/Switcheo.carbon.cdp.MsgAddEModeCategory", MsgAddEModeCategory);
+registry.register("/Switcheo.carbon.cdp.MsgAddEModeCategoryResponse", MsgAddEModeCategoryResponse);
+registry.register("/Switcheo.carbon.cdp.MsgUpdateEModeCategory", MsgUpdateEModeCategory);
+registry.register("/Switcheo.carbon.cdp.MsgUpdateEModeCategoryResponse", MsgUpdateEModeCategoryResponse);
+registry.register("/Switcheo.carbon.cdp.MsgChangeAccountEMode", MsgChangeAccountEMode);
+registry.register("/Switcheo.carbon.cdp.MsgChangeAccountEModeResponse", MsgChangeAccountEModeResponse);
 
 registry.register("/Switcheo.carbon.headersync.MsgSyncGenesis", PolyNetwork.Headersync.MsgSyncGenesis);
 registry.register("/Switcheo.carbon.headersync.MsgSyncGenesisResponse", PolyNetwork.Headersync.MsgSyncGenesisResponse);
@@ -445,6 +451,8 @@ registry.register("/Switcheo.carbon.subaccount.MsgActivateSubAccountResponse", M
 registry.register("/Switcheo.carbon.subaccount.MsgRemoveSubAccount", MsgRemoveSubAccount);
 registry.register("/Switcheo.carbon.subaccount.MsgRemoveSubAccountResponse", MsgRemoveSubAccountResponse);
 
+registry.register("/Switcheo.carbon.market.MsgDisableSpotMarket", MsgDisableSpotMarket);
+registry.register("/Switcheo.carbon.market.MsgDisableSpotMarketResponse", MsgDisableSpotMarketResponse);
 registry.register("/Switcheo.carbon.market.MsgCreateMarket", MsgCreateMarket);
 registry.register("/Switcheo.carbon.market.MsgCreateMarketResponse", MsgCreateMarketResponse);
 registry.register("/Switcheo.carbon.market.MsgUpdateMarket", MsgUpdateMarket);
@@ -610,6 +618,12 @@ export const TxTypes = {
   "MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse": "/Switcheo.carbon.cdp.MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse",
   "MsgConvertTokenInCdpToGroupTokens": "/Switcheo.carbon.cdp.MsgConvertTokenInCdpToGroupTokens",
   "MsgConvertTokenInCdpToGroupTokensResponse": "/Switcheo.carbon.cdp.MsgConvertTokenInCdpToGroupTokensResponse",
+  "MsgAddEModeCategory": "/Switcheo.carbon.cdp.MsgAddEModeCategory",
+  "MsgAddEModeCategoryResponse": "/Switcheo.carbon.cdp.MsgAddEModeCategoryResponse",
+  "MsgUpdateEModeCategory": "/Switcheo.carbon.cdp.MsgUpdateEModeCategory",
+  "MsgUpdateEModeCategoryResponse": "/Switcheo.carbon.cdp.MsgUpdateEModeCategoryResponse",
+  "MsgChangeAccountEMode": "/Switcheo.carbon.cdp.MsgChangeAccountEMode",
+  "MsgChangeAccountEModeResponse": "/Switcheo.carbon.cdp.MsgChangeAccountEModeResponse",
   "MsgSyncGenesis": "/Switcheo.carbon.headersync.MsgSyncGenesis",
   "MsgSyncGenesisResponse": "/Switcheo.carbon.headersync.MsgSyncGenesisResponse",
   "MsgSyncHeaders": "/Switcheo.carbon.headersync.MsgSyncHeaders",
@@ -871,6 +885,8 @@ export const TxTypes = {
   "MsgActivateSubAccountResponse": "/Switcheo.carbon.subaccount.MsgActivateSubAccountResponse",
   "MsgRemoveSubAccount": "/Switcheo.carbon.subaccount.MsgRemoveSubAccount",
   "MsgRemoveSubAccountResponse": "/Switcheo.carbon.subaccount.MsgRemoveSubAccountResponse",
+  "MsgDisableSpotMarket": "/Switcheo.carbon.market.MsgDisableSpotMarket",
+  "MsgDisableSpotMarketResponse": "/Switcheo.carbon.market.MsgDisableSpotMarketResponse",
   "MsgCreateMarket": "/Switcheo.carbon.market.MsgCreateMarket",
   "MsgCreateMarketResponse": "/Switcheo.carbon.market.MsgCreateMarketResponse",
   "MsgUpdateMarket": "/Switcheo.carbon.market.MsgUpdateMarket",
@@ -951,13 +967,14 @@ export { QueryGetOrderRequest, QueryGetOrderResponse, QueryAllOrderRequest, Quer
 export { OrderEvent } from "./order/event";
 export { StablecoinInterestInfo } from "./cdp/stablecoin_interest_info";
 export { DebtInfo } from "./cdp/debt_info";
-export { MsgAddRateStrategy, MsgAddRateStrategyResponse, MsgUpdateRateStrategy, MsgUpdateRateStrategyResponse, MsgRemoveRateStrategy, MsgRemoveRateStrategyResponse, MsgAddAsset, MsgAddAssetResponse, MsgUpdateAsset, MsgUpdateAssetResponse, MsgSupplyAsset, MsgSupplyAssetResponse, MsgWithdrawAsset, MsgWithdrawAssetResponse, MsgLockCollateral, MsgLockCollateralResponse, MsgUnlockCollateral, MsgUnlockCollateralResponse, MsgBorrowAsset, MsgBorrowAssetResponse, MsgRepayAsset, MsgRepayAssetResponse, MsgSupplyAssetAndLockCollateral, MsgSupplyAssetAndLockCollateralResponse, MsgUnlockCollateralAndWithdrawAsset, MsgUnlockCollateralAndWithdrawAssetResponse, MsgLiquidateCollateral, MsgLiquidateCollateralResponse, MsgSetLiquidationFee, MsgSetLiquidationFeeResponse, MsgSetInterestFee, MsgSetInterestFeeResponse, MsgRepayAssetWithCdpTokens, MsgRepayAssetWithCdpTokensResponse, MsgRepayAssetWithCollateral, MsgRepayAssetWithCollateralResponse, MsgSetStablecoinMintCap, MsgSetStablecoinMintCapResponse, MsgSetStablecoinInterestRate, MsgSetStablecoinInterestRateResponse, MsgMintStablecoin, MsgMintStablecoinResponse, MsgReturnStablecoin, MsgReturnStablecoinResponse, MsgSetCompleteLiquidationThreshold, MsgSetCompleteLiquidationThresholdResponse, MsgSetMinimumCloseFactor, MsgSetMinimumCloseFactorResponse, MsgSetSmallLiquidationSize, MsgSetSmallLiquidationSizeResponse, MsgLiquidateCollateralWithCdpTokens, MsgLiquidateCollateralWithCdpTokensResponse, MsgLiquidateCollateralWithCollateral, MsgLiquidateCollateralWithCollateralResponse, MsgLiquidateCollateralWithStablecoin, MsgLiquidateCollateralWithStablecoinResponse, MsgCreateRewardScheme, MsgCreateRewardSchemeResponse, MsgUpdateRewardScheme, MsgUpdateRewardSchemeResponse, MsgClaimRewards, MsgClaimRewardsResponse, MsgSetStalePriceGracePeriod, MsgSetStalePriceGracePeriodResponse, MsgSetCdpPaused, MsgSetCdpPausedResponse, MsgReturnStablecoinWithInterestInCollateral, MsgReturnStablecoinWithInterestInCollateralResponse, MsgReturnStablecoinWithInterestInCdpTokens, MsgReturnStablecoinWithInterestInCdpTokensResponse, MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens, MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse, MsgLiquidateCollateralWithStablecoinAndInterestInCollateral, MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse, MsgConvertTokenInCdpToGroupTokens, MsgConvertTokenInCdpToGroupTokensResponse } from "./cdp/tx";
+export { MsgAddRateStrategy, MsgAddRateStrategyResponse, MsgUpdateRateStrategy, MsgUpdateRateStrategyResponse, MsgRemoveRateStrategy, MsgRemoveRateStrategyResponse, MsgAddAsset, MsgAddAssetResponse, MsgUpdateAsset, MsgUpdateAssetResponse, MsgSupplyAsset, MsgSupplyAssetResponse, MsgWithdrawAsset, MsgWithdrawAssetResponse, MsgLockCollateral, MsgLockCollateralResponse, MsgUnlockCollateral, MsgUnlockCollateralResponse, MsgBorrowAsset, MsgBorrowAssetResponse, MsgRepayAsset, MsgRepayAssetResponse, MsgSupplyAssetAndLockCollateral, MsgSupplyAssetAndLockCollateralResponse, MsgUnlockCollateralAndWithdrawAsset, MsgUnlockCollateralAndWithdrawAssetResponse, MsgLiquidateCollateral, MsgLiquidateCollateralResponse, MsgSetLiquidationFee, MsgSetLiquidationFeeResponse, MsgSetInterestFee, MsgSetInterestFeeResponse, MsgRepayAssetWithCdpTokens, MsgRepayAssetWithCdpTokensResponse, MsgRepayAssetWithCollateral, MsgRepayAssetWithCollateralResponse, MsgSetStablecoinMintCap, MsgSetStablecoinMintCapResponse, MsgSetStablecoinInterestRate, MsgSetStablecoinInterestRateResponse, MsgMintStablecoin, MsgMintStablecoinResponse, MsgReturnStablecoin, MsgReturnStablecoinResponse, MsgSetCompleteLiquidationThreshold, MsgSetCompleteLiquidationThresholdResponse, MsgSetMinimumCloseFactor, MsgSetMinimumCloseFactorResponse, MsgSetSmallLiquidationSize, MsgSetSmallLiquidationSizeResponse, MsgLiquidateCollateralWithCdpTokens, MsgLiquidateCollateralWithCdpTokensResponse, MsgLiquidateCollateralWithCollateral, MsgLiquidateCollateralWithCollateralResponse, MsgLiquidateCollateralWithStablecoin, MsgLiquidateCollateralWithStablecoinResponse, MsgCreateRewardScheme, MsgCreateRewardSchemeResponse, MsgUpdateRewardScheme, MsgUpdateRewardSchemeResponse, MsgClaimRewards, MsgClaimRewardsResponse, MsgSetStalePriceGracePeriod, MsgSetStalePriceGracePeriodResponse, MsgSetCdpPaused, MsgSetCdpPausedResponse, MsgReturnStablecoinWithInterestInCollateral, MsgReturnStablecoinWithInterestInCollateralResponse, MsgReturnStablecoinWithInterestInCdpTokens, MsgReturnStablecoinWithInterestInCdpTokensResponse, MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens, MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse, MsgLiquidateCollateralWithStablecoinAndInterestInCollateral, MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse, MsgConvertTokenInCdpToGroupTokens, MsgConvertTokenInCdpToGroupTokensResponse, MsgAddEModeCategory, MsgAddEModeCategoryResponse, MsgUpdateEModeCategory, UpdateEModeCategoryParams, MsgUpdateEModeCategoryResponse, MsgChangeAccountEMode, MsgChangeAccountEModeResponse } from "./cdp/tx";
 export { AssetParams, AssetUtilization, UpdateAssetParams } from "./cdp/asset_params";
 export { RateStrategyParams } from "./cdp/rate_strategy_params";
 export { StablecoinDebtInfo } from "./cdp/stablecoin_debt_info";
 export { RewardScheme, CreateRewardSchemeParams, UpdateRewardSchemeParams, RewardDebt } from "./cdp/reward_scheme";
-export { QueryParamsRequest as QueryCdpParamsRequest, QueryParamsResponse as QueryCdpParamsResponse, QueryRateStrategyRequest, QueryRateStrategyResponse, QueryRateStrategyAllRequest, QueryRateStrategyAllResponse, QueryAccountDataRequest, QueryAccountDataResponse, QueryAccountCollateralRequest, QueryAccountCollateralResponse, QueryAccountCollateralAllRequest, QueryAccountCollateralAllResponse, Collateral, QueryAccountDebtRequest, QueryAccountDebtResponse, QueryAccountDebtAllRequest, QueryAccountDebtAllResponse, Debt, QueryAccountStablecoinRequest, QueryAccountStablecoinResponse, QueryAssetRequest, QueryAssetResponse, QueryAssetAllRequest, QueryAssetAllResponse, QueryTokenDebtRequest, QueryTokenDebtResponse, QueryTokenDebtAllRequest, QueryTokenDebtAllResponse, QueryStablecoinDebtRequest, QueryStablecoinDebtResponse, CdpPositionItem, CdpPosition, QueryCdpPositionsRequest, QueryCdpPositionsResponse, QueryRewardSchemesAllRequest, QueryRewardSchemesAllResponse, QueryRewardDebtsRequest, QueryRewardDebtsResponse, QueryRewardDebtsAllRequest, QueryStablecoinInterestRequest, QueryStablecoinInterestResponse } from "./cdp/query";
-export { NewRateStrategyParamsEvent, UpdateRateStrategyParamsEvent, RemoveRateStrategyParamsEvent, NewAssetParamsEvent, UpdateAssetParamsEvent, SetInterestFeeEvent, SetLiquidationFeeEvent, SetStablecoinInterestRateEvent, SetStablecoinMintCapEvent, SetCompleteLiquidationThresholdEvent, SetMinimumCloseFactorEvent, SetSmallLiquidationSizeEvent, SetStalePriceGracePeriodEvent, SetCdpPausedEvent, SupplyAssetEvent, WithdrawAssetEvent, BorrowAssetEvent, RepayAssetEvent, LockCollateralEvent, UnlockCollateralEvent, UpdateDebtInfoEvent, UpdateStablecoinDebtInfoEvent, MintStablecoinEvent, ReturnStablecoinEvent, LiquidateCollateralEvent, LiquidateCollateralWithStablecoinEvent, ClaimRewardEvent, RewardDebtEvent, RewardSchemeEvent, AddReserveEvent, RefundReserveEvent } from "./cdp/event";
+export { EModeCategory } from "./cdp/e_mode_category";
+export { QueryParamsRequest as QueryCdpParamsRequest, QueryParamsResponse as QueryCdpParamsResponse, QueryRateStrategyRequest, QueryRateStrategyResponse, QueryRateStrategyAllRequest, QueryRateStrategyAllResponse, QueryAccountDataRequest, QueryAccountDataResponse, QueryAccountCollateralRequest, QueryAccountCollateralResponse, QueryAccountCollateralAllRequest, QueryAccountCollateralAllResponse, Collateral, QueryAccountDebtRequest, QueryAccountDebtResponse, QueryAccountDebtAllRequest, QueryAccountDebtAllResponse, Debt, QueryAccountStablecoinRequest, QueryAccountStablecoinResponse, QueryAssetRequest, QueryAssetResponse, QueryAssetAllRequest, QueryAssetAllResponse, QueryTokenDebtRequest, QueryTokenDebtResponse, QueryTokenDebtAllRequest, QueryTokenDebtAllResponse, QueryStablecoinDebtRequest, QueryStablecoinDebtResponse, CdpPositionItem, CdpPosition, QueryCdpPositionsRequest, QueryCdpPositionsResponse, QueryRewardSchemesAllRequest, QueryRewardSchemesAllResponse, QueryRewardDebtsRequest, QueryRewardDebtsResponse, QueryRewardDebtsAllRequest, QueryEModeAllRequest, QueryEModeAllResponse, QueryStablecoinInterestRequest, QueryStablecoinInterestResponse, QueryEModeRequest, QueryEModeResponse, QueryAccountEModeRequest, QueryAccountEModeResponse } from "./cdp/query";
+export { NewRateStrategyParamsEvent, UpdateRateStrategyParamsEvent, RemoveRateStrategyParamsEvent, NewAssetParamsEvent, UpdateAssetParamsEvent, NewEModeCategoryEvent, UpdateEModeCategoryEvent, UpdateAccountEModeCategoryNameEvent, SetInterestFeeEvent, SetLiquidationFeeEvent, SetStablecoinInterestRateEvent, SetStablecoinMintCapEvent, SetCompleteLiquidationThresholdEvent, SetMinimumCloseFactorEvent, SetSmallLiquidationSizeEvent, SetStalePriceGracePeriodEvent, SetCdpPausedEvent, SupplyAssetEvent, WithdrawAssetEvent, BorrowAssetEvent, RepayAssetEvent, LockCollateralEvent, UnlockCollateralEvent, UpdateDebtInfoEvent, UpdateStablecoinDebtInfoEvent, MintStablecoinEvent, ReturnStablecoinEvent, LiquidateCollateralEvent, LiquidateCollateralWithStablecoinEvent, ClaimRewardEvent, RewardDebtEvent, RewardSchemeEvent, AddReserveEvent, RefundReserveEvent } from "./cdp/event";
 export { Params as CdpParams } from "./cdp/params";
 export { HashOp, hashOpFromJSON, hashOpToJSON, LengthOp, lengthOpFromJSON, lengthOpToJSON, ExistenceProof, NonExistenceProof, CommitmentProof, LeafOp, InnerOp, ProofSpec, InnerSpec, BatchProof, BatchEntry, CompressedBatchProof, CompressedBatchEntry, CompressedExistenceProof, CompressedNonExistenceProof } from "./proofs";
 export { LiquidatorPosition, MsgInitiateLiquidation, MsgInitiateLiquidationResponse } from "./broker/tx";
@@ -1021,9 +1038,9 @@ export { SubAccount, GenesisSubAccount } from "./subaccount/subaccount";
 export { OrderBookLevel, OrderBook, StopBook } from "./book/book";
 export { QueryImpactPriceRequest, QueryImpactPriceResponse, QueryGetBookRequest, QueryGetBookResponse, QueryAllBookRequest, QueryAllBookResponse } from "./book/query";
 export { OrderBookEvent } from "./book/event";
-export { MsgCreateMarket, MsgCreateMarketResponse, MsgUpdateMarket, MsgUpdateMarketResponse, MsgUpdatePerpetualsFundingInterval, MsgUpdatePerpetualsFundingIntervalResponse } from "./market/tx";
+export { MsgDisableSpotMarket, MsgDisableSpotMarketResponse, MsgCreateMarket, MsgCreateMarketResponse, MsgUpdateMarket, MsgUpdateMarketResponse, MsgUpdatePerpetualsFundingInterval, MsgUpdatePerpetualsFundingIntervalResponse } from "./market/tx";
 export { CreateMarketProposal, UpdateMarketProposal, UpdatePerpetualsFundingIntervalProposal } from "./market/proposal";
-export { Params as MarketDefaultsParams, ControlledParams, Market, MarketParams } from "./market/market";
+export { Params as MarketDefaultsParams, ControlledParams, Market, MarketParams, IncomingDisableSpotMarketNames } from "./market/market";
 export { QueryGetMarketRequest, QueryGetMarketResponse, QueryAllMarketRequest, QueryAllMarketResponse, QueryParamsRequest as QueryMarketParamsRequest, QueryParamsResponse as QueryMarketParamsResponse } from "./market/query";
 export { MarketEvent } from "./market/event";
 export { MintData } from "./inflation/inflation";
@@ -2107,8 +2124,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "time",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "resolution",
@@ -2150,8 +2166,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "block_created_at",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "market",
@@ -2732,13 +2747,11 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "rate_strategy_name",
-        "type": "string[]",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "allow_repay_stablecoin_interest_debt",
-        "type": "string[]",
-        "packageName": "/google.protobuf"
+        "type": "bool"
       },
       {
         "name": "loan_to_value",
@@ -2768,8 +2781,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "last_updated_time",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "total_principal",
@@ -2788,6 +2800,32 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
+    "EModeCategory": [
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "denoms",
+        "type": "string[]"
+      },
+      {
+        "name": "loan_to_value",
+        "type": "string"
+      },
+      {
+        "name": "liquidation_threshold",
+        "type": "string"
+      },
+      {
+        "name": "liquidation_discount",
+        "type": "string"
+      },
+      {
+        "name": "is_active",
+        "type": "bool"
+      }
+    ],
     "StablecoinDebtInfo": [
       {
         "name": "denom",
@@ -2795,8 +2833,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "last_updated_time",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "total_principal",
@@ -2876,18 +2913,15 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "start_time",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "end_time",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "reward_per_share_last_updated_at",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "reward_per_share",
@@ -2913,13 +2947,11 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "start_time",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "end_time",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "UpdateRewardSchemeParams": [
@@ -2929,18 +2961,15 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "reward_denom",
-        "type": "string[]",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "asset_denom",
-        "type": "string[]",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "reward_type",
-        "type": "string[]",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "reward_amount_per_second",
@@ -2948,13 +2977,11 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "start_time",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "end_time",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "RewardDebt": [
@@ -2972,8 +2999,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "last_updated_at",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "NewRateStrategyParamsEvent": [
@@ -3028,6 +3054,38 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "type",
+        "type": "string"
+      }
+    ],
+    "NewEModeCategoryEvent": [
+      {
+        "name": "e_mode_category",
+        "type": "EModeCategory",
+        "packageName": "/Switcheo.carbon.cdp"
+      },
+      {
+        "name": "type",
+        "type": "string"
+      }
+    ],
+    "UpdateEModeCategoryEvent": [
+      {
+        "name": "e_mode_category",
+        "type": "EModeCategory",
+        "packageName": "/Switcheo.carbon.cdp"
+      },
+      {
+        "name": "type",
+        "type": "string"
+      }
+    ],
+    "UpdateAccountEModeCategoryNameEvent": [
+      {
+        "name": "account",
+        "type": "string"
+      },
+      {
+        "name": "e_mode_category_name",
         "type": "string"
       }
     ],
@@ -3539,8 +3597,7 @@ export const EIP712Types: { [index: string]: any } = {
     "StablecoinInterestInfo": [
       {
         "name": "last_updated_time",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "stablecoin_interest_rate",
@@ -3616,6 +3673,16 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "stablecoin_interest_info",
         "type": "StablecoinInterestInfo",
         "packageName": "/Switcheo.carbon.cdp"
+      },
+      {
+        "name": "e_mode_categories",
+        "type": "EModeCategory[]",
+        "packageName": "/Switcheo.carbon.cdp"
+      },
+      {
+        "name": "account_to_e_mode_category",
+        "type": "AccountToEModeCategoryEntry[]",
+        "packageName": "/Switcheo.carbon.cdp.GenesisState"
       }
     ],
     "QueryParamsRequest": [],
@@ -4005,12 +4072,56 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ],
     "QueryRewardDebtsAllRequest": [],
+    "QueryEModeAllRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryEModeAllResponse": [
+      {
+        "name": "e_mode_categories",
+        "type": "EModeCategory[]",
+        "packageName": "/Switcheo.carbon.cdp"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
     "QueryStablecoinInterestRequest": [],
     "QueryStablecoinInterestResponse": [
       {
         "name": "stablecoin_interest_info",
         "type": "StablecoinInterestInfo",
         "packageName": "/Switcheo.carbon.cdp"
+      }
+    ],
+    "QueryEModeRequest": [
+      {
+        "name": "name",
+        "type": "string"
+      }
+    ],
+    "QueryEModeResponse": [
+      {
+        "name": "e_mode_category",
+        "type": "EModeCategory",
+        "packageName": "/Switcheo.carbon.cdp"
+      }
+    ],
+    "QueryAccountEModeRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "QueryAccountEModeResponse": [
+      {
+        "name": "e_mode_category_name",
+        "type": "string"
       }
     ],
     "MsgAddRateStrategy": [
@@ -4701,7 +4812,68 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
-    "MsgConvertTokenInCdpToGroupTokensResponse": []
+    "MsgConvertTokenInCdpToGroupTokensResponse": [],
+    "MsgAddEModeCategory": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "e_mode_category",
+        "type": "EModeCategory",
+        "packageName": "/Switcheo.carbon.cdp"
+      }
+    ],
+    "MsgAddEModeCategoryResponse": [],
+    "MsgUpdateEModeCategory": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "e_mode_category_name",
+        "type": "string"
+      },
+      {
+        "name": "update_e_mode_category_params",
+        "type": "UpdateEModeCategoryParams",
+        "packageName": "/Switcheo.carbon.cdp"
+      }
+    ],
+    "UpdateEModeCategoryParams": [
+      {
+        "name": "denoms",
+        "type": "string[]"
+      },
+      {
+        "name": "loan_to_value",
+        "type": "int64"
+      },
+      {
+        "name": "liquidation_threshold",
+        "type": "int64"
+      },
+      {
+        "name": "liquidation_discount",
+        "type": "int64"
+      },
+      {
+        "name": "is_active",
+        "type": "bool"
+      }
+    ],
+    "MsgUpdateEModeCategoryResponse": [],
+    "MsgChangeAccountEMode": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "e_mode_category_name",
+        "type": "string"
+      }
+    ],
+    "MsgChangeAccountEModeResponse": []
   },
   "/Switcheo.carbon.coin": {
     "Bridge": [
@@ -4858,8 +5030,7 @@ export const EIP712Types: { [index: string]: any } = {
     "Metadata": [
       {
         "name": "order_id",
-        "type": "string[]",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "LockedCoins": [
@@ -5351,23 +5522,19 @@ export const EIP712Types: { [index: string]: any } = {
     "UpdateTokenParams": [
       {
         "name": "is_active",
-        "type": "string[]",
-        "packageName": "/google.protobuf"
+        "type": "bool"
       },
       {
         "name": "name",
-        "type": "string[]",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "symbol",
-        "type": "string[]",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "decimals",
-        "type": "Int64Value",
-        "packageName": "/google.protobuf"
+        "type": "int64"
       }
     ],
     "MsgUpdateTokenResponse": [],
@@ -5472,8 +5639,7 @@ export const EIP712Types: { [index: string]: any } = {
     "UpdateGroupParams": [
       {
         "name": "name",
-        "type": "string[]",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "MsgUpdateGroupResponse": [
@@ -5585,8 +5751,7 @@ export const EIP712Types: { [index: string]: any } = {
     "UpdateGroupedTokenConfigParams": [
       {
         "name": "is_active",
-        "type": "string[]",
-        "packageName": "/google.protobuf"
+        "type": "bool"
       }
     ],
     "MsgUpdateGroupedTokenConfigResponse": [
@@ -6051,8 +6216,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "expiration",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "GrantAuthorization": [
@@ -6071,8 +6235,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "expiration",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "GrantQueueItem": [
@@ -6778,8 +6941,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "time",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "last_block_id",
@@ -6850,8 +7012,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "timestamp",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "validator_address",
@@ -6898,8 +7059,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "timestamp",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "signature",
@@ -6931,8 +7091,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "timestamp",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "signature",
@@ -7104,8 +7263,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "timestamp",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "LightClientAttackEvidence": [
@@ -7129,8 +7287,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "timestamp",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "EvidenceList": [
@@ -7275,8 +7432,7 @@ export const EIP712Types: { [index: string]: any } = {
     "RequestInitChain": [
       {
         "name": "time",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "chain_id",
@@ -7877,8 +8033,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "time",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "total_voting_power",
@@ -8668,8 +8823,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "time",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "last_block_id",
@@ -9671,8 +9825,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "time",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "power",
@@ -9749,8 +9902,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "expiration",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "PeriodicAllowance": [
@@ -9776,8 +9928,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "period_reset",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "AllowedMsgAllowance": [
@@ -9961,13 +10112,11 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "submit_time",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "deposit_end_time",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "total_deposit",
@@ -9976,13 +10125,11 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "voting_start_time",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "voting_end_time",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "metadata",
@@ -10410,13 +10557,11 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "submit_time",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "deposit_end_time",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "total_deposit",
@@ -10425,13 +10570,11 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "voting_start_time",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "voting_end_time",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "TallyResult": [
@@ -10789,8 +10932,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "added_at",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "MemberRequest": [
@@ -10864,8 +11006,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "created_at",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "GroupMember": [
@@ -10907,8 +11048,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "created_at",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "Proposal": [
@@ -10930,8 +11070,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "submit_time",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "group_version",
@@ -10953,8 +11092,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "voting_period_end",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "executor_result",
@@ -11005,8 +11143,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "submit_time",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "EventCreateGroup": [
@@ -12121,8 +12258,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "jailed_until",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "tombstoned",
@@ -12310,8 +12446,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "update_time",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "Description": [
@@ -12374,8 +12509,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "unbonding_time",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "commission",
@@ -12467,8 +12601,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "completion_time",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "initial_balance",
@@ -12486,8 +12619,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "completion_time",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "initial_balance",
@@ -12994,8 +13126,7 @@ export const EIP712Types: { [index: string]: any } = {
     "MsgBeginRedelegateResponse": [
       {
         "name": "completion_time",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "MsgUndelegate": [
@@ -13016,8 +13147,7 @@ export const EIP712Types: { [index: string]: any } = {
     "MsgUndelegateResponse": [
       {
         "name": "completion_time",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "MsgCancelUnbondingDelegation": [
@@ -13409,8 +13539,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "time",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "height",
@@ -14391,8 +14520,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "block_time",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "proposer_address",
@@ -14430,8 +14558,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "block_time",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "proposer_address",
@@ -14711,8 +14838,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "pub_key_sig",
-        "type": "string[]",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "MsgMergeAccountResponse": []
@@ -18296,8 +18422,7 @@ export const EIP712Types: { [index: string]: any } = {
     "ConsensusState": [
       {
         "name": "timestamp",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "root",
@@ -18545,8 +18670,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "block_created_at",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "tick_size",
@@ -18680,8 +18804,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "block_created_at",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "trade_id",
@@ -18728,8 +18851,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "block_created_at",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "Transaction": [
@@ -18763,8 +18885,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "block_created_at",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "messages",
@@ -18803,8 +18924,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "block_created_at",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "messages",
@@ -18954,8 +19074,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "block_created_at",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "triggered_block_height",
@@ -19132,8 +19251,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "block_created_at",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "GenesisState": [
@@ -19595,8 +19713,7 @@ export const EIP712Types: { [index: string]: any } = {
     "RewardCurve": [
       {
         "name": "start_time",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "initial_reward",
@@ -19662,8 +19779,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "start_time",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "duration",
@@ -19709,13 +19825,11 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "start_time",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "end_time",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "duration",
@@ -20161,8 +20275,7 @@ export const EIP712Types: { [index: string]: any } = {
     "SetRewardCurveParams": [
       {
         "name": "start_time",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "initial_reward_bps",
@@ -20577,8 +20690,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "block_time",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "QueryLastClaimRequest": [
@@ -21179,8 +21291,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "expiry_time",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "is_active",
@@ -21206,13 +21317,11 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "display_name",
-        "type": "string[]",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "description",
-        "type": "string[]",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "lot_size",
@@ -21265,28 +21374,29 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "mark_price_band",
-        "type": "UInt32Value",
-        "packageName": "/google.protobuf"
+        "type": "uint32"
       },
       {
         "name": "last_price_protected_band",
-        "type": "UInt32Value",
-        "packageName": "/google.protobuf"
+        "type": "uint32"
       },
       {
         "name": "is_active",
-        "type": "string[]",
-        "packageName": "/google.protobuf"
+        "type": "bool"
       },
       {
         "name": "trading_bandwidth",
-        "type": "UInt32Value",
-        "packageName": "/google.protobuf"
+        "type": "uint32"
       },
       {
         "name": "expiry_time",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
+      }
+    ],
+    "IncomingDisableSpotMarketNames": [
+      {
+        "name": "ids",
+        "type": "string[]"
       }
     ],
     "MarketEvent": [
@@ -21406,6 +21516,17 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/Switcheo.carbon.market"
       }
     ],
+    "MsgDisableSpotMarket": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "market_name",
+        "type": "string"
+      }
+    ],
+    "MsgDisableSpotMarketResponse": [],
     "MsgCreateMarket": [
       {
         "name": "creator",
@@ -21437,8 +21558,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "expiry_time",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "MsgCreateMarketResponse": [
@@ -21532,8 +21652,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "last_funding_at",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "open_interest",
@@ -21882,43 +22001,35 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "description",
-        "type": "string[]",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "status",
-        "type": "string[]",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "minTurnoutPercentage",
-        "type": "Int64Value",
-        "packageName": "/google.protobuf"
+        "type": "int64"
       },
       {
         "name": "maxResultAge",
-        "type": "Int64Value",
-        "packageName": "/google.protobuf"
+        "type": "int64"
       },
       {
         "name": "securityType",
-        "type": "string[]",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "resultStrategy",
-        "type": "string[]",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "resolution",
-        "type": "Int64Value",
-        "packageName": "/google.protobuf"
+        "type": "int64"
       },
       {
         "name": "spec",
-        "type": "string[]",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "MsgUpdateOracleResponse": [],
@@ -22242,13 +22353,11 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "opened_at",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "closed_at",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "PositionAllocatedMargin": [
@@ -22440,8 +22549,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "index_updated_at",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "settlement_counter",
@@ -22457,8 +22565,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "last_funding_at",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       }
     ],
     "TokenPrice": [
@@ -22476,8 +22583,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "index_updated_at",
-        "type": "Timestamp",
-        "packageName": "/google.protobuf"
+        "type": "string"
       },
       {
         "name": "oracle_id",
