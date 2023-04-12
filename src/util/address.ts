@@ -372,7 +372,12 @@ export const N3Address: N3AddressType = {
   },
 };
 
-export const ETHAddress: AddressBuilder<AddressOptions> = {
+type ETHAddressType = AddressBuilder<AddressOptions> & {
+  encode(hash: string | Buffer, opts?: SWTHAddressOptions): string;
+  publicKeyToBech32Address(publicKey: string | Buffer, opts?: SWTHAddressOptions): string;
+}
+
+export const ETHAddress: ETHAddressType = {
   coinType: (): number => {
     return ETH_COIN_TYPE;
   },
@@ -385,6 +390,11 @@ export const ETHAddress: AddressBuilder<AddressOptions> = {
   publicKeyToAddress: (publicKey: string | Buffer): string => {
     const publicKeyBuff = stringOrBufferToBuffer(publicKey)!;
     return ethers.utils.computeAddress(publicKeyBuff);
+  },
+
+  publicKeyToBech32Address: (publicKey: string | Buffer, opts?: SWTHAddressOptions): string => {
+    const hexAddress = ETHAddress.publicKeyToAddress(publicKey)
+    return ETHAddress.encode(hexAddress.split('0x')[1], opts)
   },
 
   encodePublicKey: (unencodedPublicKey: string | Buffer): Buffer => {
@@ -414,5 +424,12 @@ export const ETHAddress: AddressBuilder<AddressOptions> = {
   generateAddress: (mnemonic: string, account: number = 0) => {
     const privateKey = ETHAddress.mnemonicToPrivateKey(mnemonic, account);
     return ETHAddress.privateKeyToAddress(privateKey);
+  },
+  encode: (hash: string | Buffer, opts?: SWTHAddressOptions): string => {
+    const hashBuff = stringOrBufferToBuffer(hash, "hex")!;
+    const words = bech32.toWords(hashBuff.slice(0, 20));
+    const addressPrefix = SWTHAddress.getBech32Prefix(opts?.network, opts?.bech32Prefix, opts?.type);
+    const address = bech32.encode(addressPrefix, words);
+    return address;
   },
 };
