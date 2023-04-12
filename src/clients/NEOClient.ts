@@ -82,7 +82,7 @@ export class NEOClient {
             !!sdk.token.getBlockchainV2(token.denom) && (BLOCKCHAIN_V2_TO_V1_MAPPING[sdk.token.getBlockchainV2(token.denom)!] == this.blockchain) 
             : 
             blockchainForChainId(token.chainId.toNumber(), sdk.network) == this.blockchain
-          return isCorrectBlockchain && token.tokenAddress.length == 40 && token.bridgeAddress.length == 40
+          return (isCorrectBlockchain || token.denom === "swth") && token.tokenAddress.length == 40 && token.bridgeAddress.length == 40
         }
     );
 
