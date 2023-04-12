@@ -1,6 +1,6 @@
 import { CarbonQueryClient } from "@carbon-sdk/clients";
-import { DEFAULT_FEE_DENOM, DEFAULT_GAS, DEFAULT_NETWORK, Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
-import { ProviderAgent } from "@carbon-sdk/constant/walletProvider";
+import { CarbonEvmChainIDs, DEFAULT_FEE_DENOM, DEFAULT_GAS, DEFAULT_NETWORK, Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
+import { ProviderAgent, isEvmWallet } from "@carbon-sdk/constant/walletProvider";
 import { ChainInfo, CosmosLedger, Keplr, KeplrAccount, LeapAccount, MetaMask } from "@carbon-sdk/provider";
 import { AddressUtils, CarbonTx, GenericUtils } from "@carbon-sdk/util";
 import { SWTHAddress, SWTHAddressOptions } from "@carbon-sdk/util/address";
@@ -120,7 +120,9 @@ export class CarbonWallet {
   privateKey?: Buffer;
   signer: CarbonSigner;
   bech32Address: string;
+  evmBech32Address: string;
   hexAddress: string;
+  evmHexAddress: string;
   publicKey: Buffer;
   query?: CarbonQueryClient;
 
@@ -146,6 +148,7 @@ export class CarbonWallet {
   private tmClient?: Tendermint34Client;
   private signingClient?: CarbonSigningClient;
   private chainId?: string;
+  private evmChainId?: string;
 
   private sequenceInvalidated: boolean = false;
   private txSignManager: QueueManager<SignTxRequest>;
@@ -208,6 +211,9 @@ export class CarbonWallet {
 
     const addressBytes = AddressUtils.SWTHAddress.getAddressBytes(this.bech32Address, this.network);
     this.hexAddress = `0x${Buffer.from(addressBytes).toString("hex")}`;
+    this.evmHexAddress = AddressUtils.ETHAddress.publicKeyToAddress(this.publicKey, addressOpts);;
+    this.evmBech32Address = AddressUtils.ETHAddress.publicKeyToBech32Address(this.publicKey, addressOpts)
+
   }
 
   public static withPrivateKey(privateKey: string | Buffer, opts: Omit<CarbonWalletInitOpts, "privateKey"> = {}) {
@@ -535,6 +541,7 @@ export class CarbonWallet {
     this.tmClient = await Tendermint34Client.connect(this.networkConfig.tmRpcUrl);
     const status = await this.tmClient.status();
     this.chainId = status.nodeInfo.network;
+    this.evmChainId = CarbonEvmChainIDs[this.network]
   }
 
   public async reloadTxFees() {
@@ -564,7 +571,9 @@ export class CarbonWallet {
     if (this.sequenceInvalidated) this.sequenceInvalidated = false;
 
     try {
-      const info = await this.getQueryClient().chain.getSequence(this.bech32Address);
+      const evmWallet = isEvmWallet(this.providerAgent)
+      const address = evmWallet ? this.evmBech32Address : this.bech32Address
+      const info = await this.getQueryClient().chain.getSequence(address);
       const pubkey = this.accountInfo?.pubkey ?? {
         type: "tendermint/PubKeySecp256k1",
         value: this.publicKey.toString("base64"),
@@ -574,7 +583,7 @@ export class CarbonWallet {
 
       this.accountInfo = {
         ...info,
-        address: this.bech32Address,
+        address,
         pubkey,
         chainId,
       };
