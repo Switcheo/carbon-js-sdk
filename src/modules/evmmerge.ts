@@ -21,7 +21,7 @@ export class EvmMergeModule extends BaseModule {
 
         return await wallet.sendTx(
             {
-                typeUrl: CarbonTx.Types.MsgEvmUpdateParams,
+                typeUrl: CarbonTx.Types.MsgMergeAccount,
                 value,
             },
             opts

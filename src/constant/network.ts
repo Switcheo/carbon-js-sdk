@@ -11,7 +11,7 @@ export const CarbonChainIDs = {
   [Network.MainNet]: "carbon-1",
   [Network.TestNet]: "carbon-testnet-42069",
   [Network.DevNet]: "carbon-devnet-39911",
-  [Network.LocalHost]: "carbon",
+  [Network.LocalHost]: "carbon-localhost",
 } as const;
 
 
