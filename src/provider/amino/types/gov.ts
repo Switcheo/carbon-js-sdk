@@ -543,7 +543,7 @@ const proposalAminoProcess: AminoProcess = {
 };
 
 const GovAmino: TypeUtils.SimpleMap<AminoConverter> = {
-  [CarbonTx.Types.MsgSubmitProposal]: generateAminoType(SubmitProposalMsg, proposalAminoProcess),
+  [CarbonTx.Types.MsgGovV1beta1SubmitProposal]: generateAminoType(SubmitProposalMsg, proposalAminoProcess),
   [CarbonTx.Types.MsgDeposit]: generateAminoType(MsgDeposit),
   [CarbonTx.Types.MsgVote]: generateAminoType(MsgVote),
 };

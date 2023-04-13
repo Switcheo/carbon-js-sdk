@@ -13,7 +13,7 @@ const MsgSend: AminoInit = {
 };
 
 const BankAmino: TypeUtils.SimpleMap<AminoConverter> = {
-  [CarbonTx.Types.MsgSend]: generateAminoType(MsgSend),
+  [CarbonTx.Types.MsgBankSend]: generateAminoType(MsgSend),
 };
 
 export default BankAmino;

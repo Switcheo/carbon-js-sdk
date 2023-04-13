@@ -15,7 +15,7 @@ export class BankModule extends BaseModule {
 
     return await wallet.sendTx(
       {
-        typeUrl: CarbonTx.Types.MsgSend,
+        typeUrl: CarbonTx.Types.MsgBankSend,
         value,
       },
       { memo: params.memo, ...opts }
