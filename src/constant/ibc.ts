@@ -1,4 +1,5 @@
 import { SimpleMap } from "@carbon-sdk/util/type";
+import { Updated } from "@chain-registry/types";
 import { AppCurrency, Bech32Config, ChainInfo } from "@keplr-wallet/types";
 import * as bech32 from "bech32";
 import { CARBON_GAS_PRICE, GasPriceStep } from "./generic";
@@ -2158,4 +2159,66 @@ export type MinimalDenomMap = SimpleMap<string>;
 
 export interface ExtendedChainInfo extends ChainInfo {
   minimalDenomMap: MinimalDenomMap;
+}
+
+export interface URLProviderObj {
+  address: string;
+  provider: string;
+}
+
+export interface ExplorerObj {
+  kind?: string;
+  tx_page: string;
+  url: string;
+}
+
+export interface ChainRegistryItem {
+  name: string;
+  path: string;
+  chain_name: string;
+  network_type: string;
+  pretty_name: string;
+  chain_id: string;
+  cosmwasm_enabled?: boolean;
+  status: string;
+  bech32_prefix: string;
+  symbol: string;
+  display: string;
+  denom: string;
+  decimals: number;
+  coingecko_id: string;
+  image: string;
+  website: string;
+  height: number;
+  best_apis: {
+    rpc: URLProviderObj[];
+    rest: URLProviderObj[];
+  };
+  proxy_status: {
+    rest: boolean;
+    rpc: boolean;
+  };
+  versions: {
+    application_version: string;
+    cosmos_sdk_version: string;
+    tendermint_version: string;
+  };
+  explorers: ExplorerObj[];
+  params: any;
+  services?: any;
+  prices?: {
+    coingecko: SimpleMap<SimpleMap<number>>;
+  };
+  assets: Updated[];
+  keywords: any[];
+}
+
+export interface CosmosChainsObj {
+  chains: ChainRegistryItem[];
+  repository: {
+    branch: string;
+    commit: string;
+    timestamp: string;
+    url: string;
+  };
 }

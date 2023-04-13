@@ -1,6 +1,6 @@
 import { MsgTransfer } from "@carbon-sdk/codec/ibc/applications/transfer/v1/tx";
 import { DenomTraceExtended } from "@carbon-sdk/clients/TokenClient";
-import { ExtendedChainInfo, cw20TokenRegex, factoryIbcMinimalDenomRegex, ibcNetworkRegex, ibcTransferChannelRegex, publicRpcNodes } from "@carbon-sdk/constant";
+import { ChainRegistryItem, CosmosChainsObj, ExtendedChainInfo, cw20TokenRegex, factoryIbcMinimalDenomRegex, ibcNetworkRegex, ibcTransferChannelRegex, publicRpcNodes } from "@carbon-sdk/constant";
 import { ChainInfo, KeplrAccount } from "@carbon-sdk/provider";
 import { CarbonTx, IBCUtils, TypeUtils } from "@carbon-sdk/util";
 import { AppCurrency } from "@keplr-wallet/types";
@@ -82,12 +82,23 @@ export class IBCModule extends BaseModule {
     const tokenClient = this.sdkProvider.getTokenClient();
     const ibcBridges = tokenClient.bridges.ibc;
     const denomTracesArr = Object.values(tokenClient.denomTraces);
+    const chainsResponse = await fetch(`https://chains.cosmos.directory/`);
+    const chainsData = (await chainsResponse.json() as CosmosChainsObj);
+    // chainsData.chains.forEach((chainData: ChainRegistryItem) => {
+    //   console.log(chainData.chain_id, chainData.prices);
+    // })
 
     const chainInfoMap: TypeUtils.SimpleMap<ExtendedChainInfo> = {};
     for (let ibc = 0; ibc < ibcBridges.length; ibc++) {
       const ibcBridge = ibcBridges[ibc];
       const chainName = ibcBridge.chain_id_name.match(ibcNetworkRegex)?.[1] ?? "";
-      const chainInfo = await this.getChainInfo(chainName, ibcBridge.chain_id_name);
+      const fallbackChainInfo = await this.getAssembledChainInfo(chainsData.chains, ibcBridge.chain_id_name, ibcBridge.chainName);
+      let chainInfo: ChainInfo | undefined;
+      try {
+        chainInfo = await this.getChainInfo(chainName);
+      } catch (err) {
+        chainInfo = fallbackChainInfo;
+      }
 
       if (chainInfo) {
         const isCosmWasm = chainInfo.features?.includes("cosmwasm");
@@ -155,14 +166,73 @@ export class IBCModule extends BaseModule {
     return chainInfoMap;
   }
 
-  async getChainInfo(chainName: string, chainId: string): Promise<ChainInfo | undefined> {
+  async getChainInfo(chainName: string): Promise<ChainInfo | undefined> {
     if (!chainName) return undefined
-  
-    try {
-      const chainInfoResponse = await fetch(`https://raw.githubusercontent.com/chainapsis/keplr-chain-registry/master/cosmos/${chainName}.json`);
-      const chainInfoJson = await chainInfoResponse.json();
-      return chainInfoJson as ChainInfo;
-    } catch (err) {
+    const chainInfoResponse = await fetch(`https://raw.githubusercontent.com/chainapsis/keplr-chain-registry/master/cosmos/${chainName}.json`);
+    const chainInfoJson = await chainInfoResponse.json();
+    return chainInfoJson as ChainInfo;
+    // try {
+    //   const chainInfoResponse = await fetch(`https://raw.githubusercontent.com/chainapsis/keplr-chain-registry/master/cosmos/${chainName}.json`);
+    //   const chainInfoJson = await chainInfoResponse.json();
+    //   return chainInfoJson as ChainInfo;
+    // } catch (err) { }
+    // console.log("this happens");
+    // try {
+    //   const assetListResponse = await fetch(`https://registry.ping.pub/${bridgeChainName}/assetlist.json`);
+    //   const assetListJson = await assetListResponse.json();
+    //   const chainResponse = await fetch(`https://registry.ping.pub/${bridgeChainName}/chain.json`);
+    //   const chainJson = await chainResponse.json();
+    //   console.log("assetListJson", assetListJson);
+    //   console.log("chainJson", chainJson);
+    // } catch (err) { }
+
+    // return IBCUtils.EmbedChainInfos[chainId];
+  }
+
+  async getAssembledChainInfo(chainsData: ChainRegistryItem[], chainId: string, bridgeChainName: string): Promise<ChainInfo | undefined> {
+    const selectedChainData = chainsData.find((chainData: ChainRegistryItem) => {
+      return chainData.chain_name.includes(bridgeChainName.toLowerCase()) || chainData.chain_id.includes(bridgeChainName.toLowerCase());
+    });
+    if (selectedChainData && selectedChainData.chain_name === "kujira") {
+      const features: string[] = [];
+      if (selectedChainData.cosmwasm_enabled) {
+        features.push("cosmwasm");
+      }
+      return {
+        rpc: string;
+        readonly rpcConfig?: AxiosRequestConfig;
+        readonly rest: string;
+        readonly restConfig?: AxiosRequestConfig;
+        readonly chainId: string;
+        readonly chainName: string;
+        /**
+         * This indicates the type of coin that can be used for stake.
+         * You can get actual currency information from Currencies.
+         */
+        readonly stakeCurrency: Currency;
+        readonly walletUrl?: string;
+        readonly walletUrlForStaking?: string;
+        readonly bip44: BIP44;
+        readonly alternativeBIP44s?: BIP44[];
+        readonly bech32Config: Bech32Config;
+        readonly currencies: AppCurrency[];
+        /**
+         * This indicates which coin or token can be used for fee to send transaction.
+         * You can get actual currency information from Currencies.
+         */
+        readonly feeCurrencies: FeeCurrency[];
+        /**
+         * This is the coin type in slip-044.
+         * This is used for fetching address from ENS if this field is set.
+         *
+         * ** Use the `bip44.coinType` field to set the coin type to generate the address. **
+         *
+         * @deprecated This field is likely to be changed. ENS will continue to be supported, but will change in the future to use other methods than this field. Because of the low usage of the ENS feature, the change is a low priority and it is not yet clear how it will change.
+         */
+        readonly coinType?: number;
+        features,
+      }
+    } else {
       return IBCUtils.EmbedChainInfos[chainId];
     }
   }
