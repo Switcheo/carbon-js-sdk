@@ -18,10 +18,11 @@ import { Leap } from "@cosmos-kit/leap";
 import { Key } from "@keplr-wallet/types";
 import { Key as LeapKey } from "@cosmos-kit/core";
 import BigNumber from "bignumber.js";
-import { TxRaw as StargateTxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx";
+import { TxRaw as StargateTxRaw, TxBody } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import { CarbonLedgerSigner, CarbonNonSigner, CarbonPrivateKeySigner, CarbonSigner, CarbonSignerTypes, isCarbonEIP712Signer } from "./CarbonSigner";
 import { CarbonSigningClient } from "./CarbonSigningClient";
 import { ETH_SECP256K1_TYPE } from "@carbon-sdk/util/ethermint";
+import { ExtensionOptionsWeb3Tx } from "@carbon-sdk/codec/ethermint/types/v1/web3";
 
 export interface CarbonWalletGenericOpts {
   tmClient?: Tendermint34Client;
@@ -311,6 +312,7 @@ export class CarbonWallet {
     const [account] = await this.signer.getAccounts();
 
     let signature: StdSignature | null = null;
+    const evmChainId = this.evmChainId
     try {
       await GenericUtils.callIgnoreError(() => this.onRequestSign?.(messages));
       const signerData: CarbonSignerData = {
@@ -318,17 +320,23 @@ export class CarbonWallet {
         chainId: this.getChainId(),
         sequence,
         ...explicitSignerData,
+        evmChainId
       };
 
       const fee = opts?.fee ?? this.estimateTxFee(messages, feeDenom);
       const txRaw = await signingClient.sign(signerAddress, messages, fee, memo, signerData);
-      signature = encodeSecp256k1Signature(account.pubkey, txRaw.signatures[0]);
-      if (this.signer instanceof MetaMask) {
+      let sig;
+      if (isCarbonEIP712Signer(this.signer)) {
+        const feePayerSigBz = ExtensionOptionsWeb3Tx.decode(TxBody.decode(txRaw.bodyBytes).extensionOptions[0].value).feePayerSig
+        sig = Uint8Array.from(Buffer.from(feePayerSigBz.slice(0, -1)))
+        signature = encodeSecp256k1Signature(account.pubkey, sig);
         signature = {
           ...signature,
           pub_key: { ...signature.pub_key, type: ETH_SECP256K1_TYPE }
         }
+        return txRaw;
       }
+      signature = encodeSecp256k1Signature(account.pubkey, txRaw.signatures[0]);
       return txRaw;
     } finally {
       await GenericUtils.callIgnoreError(() => this.onSignComplete?.(signature));

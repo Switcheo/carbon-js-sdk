@@ -273,6 +273,7 @@ export class MetaMask {
         feePayer,
         txBody.memo,
         authInfo.signerInfos[0].sequence.toString())
+      const sigBz = Uint8Array.from(Buffer.from(sig, 'hex'))
       return {
         signed: doc,
         signature: {
@@ -280,23 +281,25 @@ export class MetaMask {
             type: ETH_SECP256K1_TYPE,
             value: pubKeyBase64
           },
-          signature: sig
+          // Remove recovery `v` from signature
+          signature: Buffer.from(sigBz.slice(0, -1)).toString('base64')
         }
       }
     };
     const signAmino = async (signerAddress: string, doc: CarbonTx.StdSignDoc) => {
-      const { account_number, chain_id, msgs, fee, memo, sequence } = doc
+      const { account_number, msgs, fee, memo, sequence } = doc
       // EIP-712 can only accept batch msgs of the same type
       // Only MsgMergeAccount will have an Eth address signer, other generic transaction will be cosmos address signer
       const feePayer = AminoTypesMap.fromAmino(msgs[0]).typeUrl === TxTypes.MsgMergeAccount ? AddressUtils.ETHAddress.publicKeyToBech32Address(Buffer.from(pubKeyBase64, "base64"), addressOptions) : signerAddress
       const sig = await metamask.signEip712(
         account_number,
-        chain_id,
+        evmChainId,
         msgs,
         fee,
         feePayer,
         memo,
         sequence)
+      const sigBz = Uint8Array.from(Buffer.from(sig, 'hex'))
       return {
         signed: doc,
         signature: {
@@ -304,7 +307,8 @@ export class MetaMask {
             type: ETH_SECP256K1_TYPE,
             value: pubKeyBase64
           },
-          signature: sig
+          // Remove recovery `v` from signature
+          signature: Buffer.from(sigBz.slice(0, -1)).toString('base64')
         }
       }
     }
@@ -342,7 +346,7 @@ export class MetaMask {
             type: ETH_SECP256K1_TYPE,
             value: pubKeyBase64
           },
-          signature: sig
+          signature: Buffer.from(sig, 'hex').toString('base64')
         },
         feePayer
       }
@@ -567,9 +571,7 @@ export class MetaMask {
         JSON.stringify(eip712Tx),
       ],
     })) as string
-    const signatureBz = Uint8Array.from(Buffer.from(signature.split('0x')[1], 'hex'))
-    // Remove recovery 'v' from signature
-    return Buffer.from(signatureBz.slice(0, -1)).toString('base64')
+    return signature.split('0x')[1]
   }
 
   async storeMnemonic(encryptedMnemonic: string, blockchain?: EVMChain) {

@@ -1,7 +1,7 @@
 import { registry as TypesRegistry } from "@carbon-sdk/codec";
 import { TxRaw } from "@carbon-sdk/codec/cosmos/tx/v1beta1/tx";
 import { ExtensionOptionsWeb3Tx } from "@carbon-sdk/codec/ethermint/types/v1/web3";
-import { encodeAnyEthSecp256k1PubKey } from "@carbon-sdk/util/ethermint";
+import { encodeAnyEthSecp256k1PubKey, parseChainId } from "@carbon-sdk/util/ethermint";
 import { CarbonSignerData } from "@carbon-sdk/util/tx";
 import { AminoMsg, encodeSecp256k1Pubkey, OfflineAminoSigner } from "@cosmjs/amino";
 import { fromBase64 } from "@cosmjs/encoding";
@@ -212,7 +212,7 @@ export class CarbonSigningClient extends StargateClient {
     memo: string,
     { accountNumber, sequence, evmChainId }: CarbonSignerData,
   ): Promise<TxRaw> {
-    if (evmChainId) {
+    if (!evmChainId) {
       throw new Error("evmChainId required for legacyEip712 tx");
     }
     const signer = this.signer as CarbonEIP712Signer;
@@ -226,7 +226,7 @@ export class CarbonSigningClient extends StargateClient {
     const eip712ExtensionOptions: EncodeObject = {
       typeUrl: "/ethermint.types.v1.ExtensionOptionsWeb3Tx",
       value: ExtensionOptionsWeb3Tx.encode(ExtensionOptionsWeb3Tx.fromPartial({
-        typedDataChainId: evmChainId,
+        typedDataChainId: parseChainId(evmChainId),
         feePayer,
         feePayerSig: fromBase64(signature.signature),
       })).finish(),
