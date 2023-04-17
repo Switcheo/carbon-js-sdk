@@ -44,6 +44,7 @@ export interface LockParams extends ETHTxParams {
   amount: BigNumber;
   token: Models.Token;
   signCompleteCallback?: () => void;
+  nonce?: number
 }
 export interface ApproveERC20Params extends ETHTxParams {
   token: Models.Token;
@@ -249,7 +250,10 @@ export class ETHClient {
 
     const rpcProvider = this.getProvider();
 
-    const nonce = await rpcProvider.getTransactionCount(ethAddress);
+    let nonce: number | undefined = params.nonce;
+    if (!nonce) {
+      nonce = await rpcProvider.getTransactionCount(ethAddress);
+    }
     const contract = new ethers.Contract(contractAddress, ABIs.lockProxy, rpcProvider);
     const lockResultTx = await contract.connect(signer).lock(
       assetId, // _assetHash
