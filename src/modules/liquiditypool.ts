@@ -193,44 +193,6 @@ export class LiquidityPoolModule extends BaseModule {
       opts
     );
   }
-
-  public async createPoolRoute(params: LiquidityPoolModule.CreatePoolRouteParams, opts?: CarbonTx.SignTxOpts) {
-    const wallet = this.getWallet();
-    const value = Models.MsgCreatePoolRoute.fromPartial({
-      creator: wallet.bech32Address,
-      createPoolRouteParams: {
-        marketName: params.marketName,
-        poolIds: params.poolIds,
-        numQuotes: params.numQuotes,
-      }
-    })
-    return await wallet.sendTx(
-        {
-          typeUrl: CarbonTx.Types.MsgCreatePoolRoute,
-          value,
-        },
-        opts
-    );
-  }
-
-  public async removePoolRoute(params: LiquidityPoolModule.RemovePoolRouteParams, opts?: CarbonTx.SignTxOpts) {
-    const wallet = this.getWallet();
-    const value = Models.MsgRemovePoolRoute.fromPartial({
-      creator: wallet.bech32Address,
-      removePoolRouteParams: {
-        marketName: params.marketName,
-        poolIds: params.poolIds,
-      }
-    })
-    return await wallet.sendTx(
-        {
-          typeUrl: CarbonTx.Types.MsgRemovePoolRoute,
-          value,
-        },
-        opts
-    );
-  }
-
 }
 
 export namespace LiquidityPoolModule {

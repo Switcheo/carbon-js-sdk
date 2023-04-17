@@ -131,11 +131,9 @@ export class NeoLedgerAccount {
     const bipString = getNEOBIP44String();
     const ledger = this.useLedger();
     const ledgerAdapter = adapterForVersion(this.version);
-    console.log("getsignature", ledgerAdapter, ledger, msg, bipString, magic);
     const publicKey = this.publicKey;
     const scriptHash = wallet.getScriptHashFromPublicKey(publicKey);
     const address = wallet.getAddressFromScriptHash(scriptHash);
-    console.log(publicKey, scriptHash, address);
     return await ledgerAdapter.getSignature(ledger, msg, bipString, magic);
   }
 

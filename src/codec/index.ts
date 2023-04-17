@@ -2,7 +2,7 @@
 import { Registry } from "@cosmjs/proto-signing";
 import { MsgExecuteContract } from "cosmjs-types/cosmwasm/wasm/v1/tx";
 import { MsgSetTradingFlag, MsgSetTradingFlagResponse, MsgCreateOrder, MsgCreateOrderResponse, MsgEditOrder, MsgEditOrderResponse, MsgCancelOrder, MsgCancelOrderResponse, MsgCancelAll, MsgCancelAllResponse } from "./order/tx";
-import { MsgAddRateStrategy, MsgAddRateStrategyResponse, MsgUpdateRateStrategy, MsgUpdateRateStrategyResponse, MsgRemoveRateStrategy, MsgRemoveRateStrategyResponse, MsgAddAsset, MsgAddAssetResponse, MsgUpdateAsset, MsgUpdateAssetResponse, MsgSupplyAsset, MsgSupplyAssetResponse, MsgWithdrawAsset, MsgWithdrawAssetResponse, MsgLockCollateral, MsgLockCollateralResponse, MsgUnlockCollateral, MsgUnlockCollateralResponse, MsgBorrowAsset, MsgBorrowAssetResponse, MsgRepayAsset, MsgRepayAssetResponse, MsgSupplyAssetAndLockCollateral, MsgSupplyAssetAndLockCollateralResponse, MsgUnlockCollateralAndWithdrawAsset, MsgUnlockCollateralAndWithdrawAssetResponse, MsgLiquidateCollateral, MsgLiquidateCollateralResponse, MsgSetLiquidationFee, MsgSetLiquidationFeeResponse, MsgSetInterestFee, MsgSetInterestFeeResponse, MsgRepayAssetWithCdpTokens, MsgRepayAssetWithCdpTokensResponse, MsgRepayAssetWithCollateral, MsgRepayAssetWithCollateralResponse, MsgSetStablecoinMintCap, MsgSetStablecoinMintCapResponse, MsgSetStablecoinInterestRate, MsgSetStablecoinInterestRateResponse, MsgMintStablecoin, MsgMintStablecoinResponse, MsgReturnStablecoin, MsgReturnStablecoinResponse, MsgSetCompleteLiquidationThreshold, MsgSetCompleteLiquidationThresholdResponse, MsgSetMinimumCloseFactor, MsgSetMinimumCloseFactorResponse, MsgSetSmallLiquidationSize, MsgSetSmallLiquidationSizeResponse, MsgLiquidateCollateralWithCdpTokens, MsgLiquidateCollateralWithCdpTokensResponse, MsgLiquidateCollateralWithCollateral, MsgLiquidateCollateralWithCollateralResponse, MsgLiquidateCollateralWithStablecoin, MsgLiquidateCollateralWithStablecoinResponse, MsgCreateRewardScheme, MsgCreateRewardSchemeResponse, MsgUpdateRewardScheme, MsgUpdateRewardSchemeResponse, MsgClaimRewards, MsgClaimRewardsResponse, MsgSetStalePriceGracePeriod, MsgSetStalePriceGracePeriodResponse, MsgSetCdpPaused, MsgSetCdpPausedResponse, MsgReturnStablecoinWithInterestInCollateral, MsgReturnStablecoinWithInterestInCollateralResponse, MsgReturnStablecoinWithInterestInCdpTokens, MsgReturnStablecoinWithInterestInCdpTokensResponse, MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens, MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse, MsgLiquidateCollateralWithStablecoinAndInterestInCollateral, MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse, MsgConvertTokenInCdpToGroupTokens, MsgConvertTokenInCdpToGroupTokensResponse } from "./cdp/tx";
+import { MsgAddRateStrategy, MsgAddRateStrategyResponse, MsgUpdateRateStrategy, MsgUpdateRateStrategyResponse, MsgRemoveRateStrategy, MsgRemoveRateStrategyResponse, MsgAddAsset, MsgAddAssetResponse, MsgUpdateAsset, MsgUpdateAssetResponse, MsgSupplyAsset, MsgSupplyAssetResponse, MsgWithdrawAsset, MsgWithdrawAssetResponse, MsgLockCollateral, MsgLockCollateralResponse, MsgUnlockCollateral, MsgUnlockCollateralResponse, MsgBorrowAsset, MsgBorrowAssetResponse, MsgRepayAsset, MsgRepayAssetResponse, MsgSupplyAssetAndLockCollateral, MsgSupplyAssetAndLockCollateralResponse, MsgUnlockCollateralAndWithdrawAsset, MsgUnlockCollateralAndWithdrawAssetResponse, MsgLiquidateCollateral, MsgLiquidateCollateralResponse, MsgSetLiquidationFee, MsgSetLiquidationFeeResponse, MsgSetInterestFee, MsgSetInterestFeeResponse, MsgRepayAssetWithCdpTokens, MsgRepayAssetWithCdpTokensResponse, MsgRepayAssetWithCollateral, MsgRepayAssetWithCollateralResponse, MsgSetStablecoinMintCap, MsgSetStablecoinMintCapResponse, MsgSetStablecoinInterestRate, MsgSetStablecoinInterestRateResponse, MsgMintStablecoin, MsgMintStablecoinResponse, MsgReturnStablecoin, MsgReturnStablecoinResponse, MsgSetCompleteLiquidationThreshold, MsgSetCompleteLiquidationThresholdResponse, MsgSetMinimumCloseFactor, MsgSetMinimumCloseFactorResponse, MsgSetSmallLiquidationSize, MsgSetSmallLiquidationSizeResponse, MsgLiquidateCollateralWithCdpTokens, MsgLiquidateCollateralWithCdpTokensResponse, MsgLiquidateCollateralWithCollateral, MsgLiquidateCollateralWithCollateralResponse, MsgLiquidateCollateralWithStablecoin, MsgLiquidateCollateralWithStablecoinResponse, MsgCreateRewardScheme, MsgCreateRewardSchemeResponse, MsgUpdateRewardScheme, MsgUpdateRewardSchemeResponse, MsgClaimRewards, MsgClaimRewardsResponse, MsgSetStalePriceGracePeriod, MsgSetStalePriceGracePeriodResponse, MsgSetCdpPaused, MsgSetCdpPausedResponse, MsgReturnStablecoinWithInterestInCollateral, MsgReturnStablecoinWithInterestInCollateralResponse, MsgReturnStablecoinWithInterestInCdpTokens, MsgReturnStablecoinWithInterestInCdpTokensResponse, MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens, MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse, MsgLiquidateCollateralWithStablecoinAndInterestInCollateral, MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse, MsgConvertTokenInCdpToGroupTokens, MsgConvertTokenInCdpToGroupTokensResponse, MsgAddEModeCategory, MsgAddEModeCategoryResponse, MsgUpdateEModeCategory, MsgUpdateEModeCategoryResponse, MsgChangeAccountEMode, MsgChangeAccountEModeResponse } from "./cdp/tx";
 import { MsgInitiateLiquidation, MsgInitiateLiquidationResponse } from "./broker/tx";
 import { MsgSetGasCost, MsgSetGasCostResponse, MsgSetMinGasPrice, MsgSetMinGasPriceResponse, MsgRemoveGasCost, MsgRemoveGasCostResponse, MsgRemoveMinGasPrice, MsgRemoveMinGasPriceResponse } from "./fee/tx";
 import { SetMsgGasCostProposal, SetMinGasPriceProposal, RemoveMsgGasCostProposal, RemoveMinGasPriceProposal } from "./fee/proposal";
@@ -14,9 +14,9 @@ import { MsgSoftwareUpgrade, MsgSoftwareUpgradeResponse, MsgCancelUpgrade, MsgCa
 import { SoftwareUpgradeProposal, CancelSoftwareUpgradeProposal } from "./cosmos/upgrade/v1beta1/upgrade";
 import { MsgGrantAllowance, MsgGrantAllowanceResponse, MsgRevokeAllowance, MsgRevokeAllowanceResponse } from "./cosmos/feegrant/v1beta1/tx";
 import { MsgSubmitEvidence, MsgSubmitEvidenceResponse } from "./cosmos/evidence/v1beta1/tx";
-import { MsgSend, MsgSendResponse } from "./cosmos/nft/v1beta1/tx";
+import { MsgSend as MsgNftSend, MsgSendResponse as MsgNftSendResponse } from "./cosmos/nft/v1beta1/tx";
 import { MsgCreateGroup, MsgCreateGroupResponse, MsgUpdateGroupMembers, MsgUpdateGroupMembersResponse, MsgUpdateGroupAdmin, MsgUpdateGroupAdminResponse, MsgUpdateGroupMetadata, MsgUpdateGroupMetadataResponse, MsgCreateGroupPolicy, MsgCreateGroupPolicyResponse, MsgUpdateGroupPolicyAdmin, MsgCreateGroupWithPolicy, MsgCreateGroupWithPolicyResponse, MsgUpdateGroupPolicyAdminResponse, MsgUpdateGroupPolicyDecisionPolicy, MsgUpdateGroupPolicyDecisionPolicyResponse, MsgUpdateGroupPolicyMetadata, MsgUpdateGroupPolicyMetadataResponse, MsgSubmitProposal, MsgSubmitProposalResponse, MsgWithdrawProposal, MsgWithdrawProposalResponse, MsgVote, MsgVoteResponse, MsgExec, MsgExecResponse, MsgLeaveGroup, MsgLeaveGroupResponse } from "./cosmos/group/v1/tx";
-import { MsgSend as MsgBankSend, MsgSendResponse as MsgBankSendResponse, MsgMultiSend, MsgMultiSendResponse } from "./cosmos/bank/v1beta1/tx";
+import { MsgSend, MsgSendResponse, MsgMultiSend, MsgMultiSendResponse } from "./cosmos/bank/v1beta1/tx";
 import { MsgSetWithdrawAddress, MsgSetWithdrawAddressResponse, MsgWithdrawDelegatorReward, MsgWithdrawDelegatorRewardResponse, MsgWithdrawValidatorCommission, MsgWithdrawValidatorCommissionResponse, MsgFundCommunityPool, MsgFundCommunityPoolResponse } from "./cosmos/distribution/v1beta1/tx";
 import { CommunityPoolSpendProposal } from "./cosmos/distribution/v1beta1/distribution";
 import { MsgVerifyInvariant, MsgVerifyInvariantResponse } from "./cosmos/crisis/v1beta1/tx";
@@ -38,8 +38,10 @@ import { MsgCreateToken, MsgCreateTokenResponse, MsgSyncToken, MsgSyncTokenRespo
 import { CreateTokenProposal } from "./coin/proposal";
 import { MsgSetLeverage, MsgSetLeverageResponse } from "./leverage/tx";
 import { MsgUpdateProfile, MsgUpdateProfileResponse } from "./profile/tx";
+import { MsgUpdateParams, MsgUpdateParamsResponse } from "./ethermint/feemarket/v1/tx";
+import { MsgEthereumTx, MsgEthereumTxResponse, MsgUpdateParams as MsgEvmUpdateParams, MsgUpdateParamsResponse as MsgEvmUpdateParamsResponse } from "./ethermint/evm/v1/tx";
 import { MsgCreateSubAccount, MsgCreateSubAccountResponse, MsgActivateSubAccount, MsgActivateSubAccountResponse, MsgRemoveSubAccount, MsgRemoveSubAccountResponse } from "./subaccount/tx";
-import { MsgCreateMarket, MsgCreateMarketResponse, MsgUpdateMarket, MsgUpdateMarketResponse, MsgUpdatePerpetualsFundingInterval, MsgUpdatePerpetualsFundingIntervalResponse } from "./market/tx";
+import { MsgDisableSpotMarket, MsgDisableSpotMarketResponse, MsgCreateMarket, MsgCreateMarketResponse, MsgUpdateMarket, MsgUpdateMarketResponse, MsgUpdatePerpetualsFundingInterval, MsgUpdatePerpetualsFundingIntervalResponse } from "./market/tx";
 import { CreateMarketProposal, UpdateMarketProposal, UpdatePerpetualsFundingIntervalProposal } from "./market/proposal";
 import { MsgSetSequence, MsgSetSequenceResponse } from "./sequence/tx";
 import { MsgCreatePool, MsgCreatePoolResponse, MsgCreatePoolWithLiquidity, MsgCreatePoolWithLiquidityResponse, MsgAddLiquidity, MsgAddLiquidityResponse, MsgRemoveLiquidity, MsgRemoveLiquidityResponse, MsgSetRewardsWeights, MsgSetRewardsWeightsResponse, MsgStakePoolToken, MsgStakePoolTokenResponse, MsgUnstakePoolToken, MsgUnstakePoolTokenResponse, MsgClaimPoolRewards, MsgClaimPoolRewardsResponse, MsgSetRewardCurve, MsgSetRewardCurveResponse, MsgSetCommitmentCurve, MsgSetCommitmentCurveResponse, MsgUpdatePool, MsgUpdatePoolResponse, MsgCreatePoolRoute, MsgCreatePoolRouteResponse, MsgRemovePoolRoute, MsgRemovePoolRouteResponse, MsgUpdatePoolRoute, MsgUpdatePoolRouteResponse } from "./liquiditypool/tx";
@@ -148,6 +150,12 @@ registry.register("/Switcheo.carbon.cdp.MsgLiquidateCollateralWithStablecoinAndI
 registry.register("/Switcheo.carbon.cdp.MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse", MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse);
 registry.register("/Switcheo.carbon.cdp.MsgConvertTokenInCdpToGroupTokens", MsgConvertTokenInCdpToGroupTokens);
 registry.register("/Switcheo.carbon.cdp.MsgConvertTokenInCdpToGroupTokensResponse", MsgConvertTokenInCdpToGroupTokensResponse);
+registry.register("/Switcheo.carbon.cdp.MsgAddEModeCategory", MsgAddEModeCategory);
+registry.register("/Switcheo.carbon.cdp.MsgAddEModeCategoryResponse", MsgAddEModeCategoryResponse);
+registry.register("/Switcheo.carbon.cdp.MsgUpdateEModeCategory", MsgUpdateEModeCategory);
+registry.register("/Switcheo.carbon.cdp.MsgUpdateEModeCategoryResponse", MsgUpdateEModeCategoryResponse);
+registry.register("/Switcheo.carbon.cdp.MsgChangeAccountEMode", MsgChangeAccountEMode);
+registry.register("/Switcheo.carbon.cdp.MsgChangeAccountEModeResponse", MsgChangeAccountEModeResponse);
 
 registry.register("/Switcheo.carbon.headersync.MsgSyncGenesis", PolyNetwork.Headersync.MsgSyncGenesis);
 registry.register("/Switcheo.carbon.headersync.MsgSyncGenesisResponse", PolyNetwork.Headersync.MsgSyncGenesisResponse);
@@ -210,8 +218,8 @@ registry.register("/cosmos.feegrant.v1beta1.MsgRevokeAllowanceResponse", MsgRevo
 registry.register("/cosmos.evidence.v1beta1.MsgSubmitEvidence", MsgSubmitEvidence);
 registry.register("/cosmos.evidence.v1beta1.MsgSubmitEvidenceResponse", MsgSubmitEvidenceResponse);
 
-registry.register("/cosmos.nft.v1beta1.MsgSend", MsgSend);
-registry.register("/cosmos.nft.v1beta1.MsgSendResponse", MsgSendResponse);
+registry.register("/cosmos.nft.v1beta1.MsgSend", MsgNftSend);
+registry.register("/cosmos.nft.v1beta1.MsgSendResponse", MsgNftSendResponse);
 
 registry.register("/cosmos.group.v1.MsgCreateGroup", MsgCreateGroup);
 registry.register("/cosmos.group.v1.MsgCreateGroupResponse", MsgCreateGroupResponse);
@@ -242,8 +250,8 @@ registry.register("/cosmos.group.v1.MsgExecResponse", MsgExecResponse);
 registry.register("/cosmos.group.v1.MsgLeaveGroup", MsgLeaveGroup);
 registry.register("/cosmos.group.v1.MsgLeaveGroupResponse", MsgLeaveGroupResponse);
 
-registry.register("/cosmos.bank.v1beta1.MsgSend", MsgBankSend);
-registry.register("/cosmos.bank.v1beta1.MsgSendResponse", MsgBankSendResponse);
+registry.register("/cosmos.bank.v1beta1.MsgSend", MsgSend);
+registry.register("/cosmos.bank.v1beta1.MsgSendResponse", MsgSendResponse);
 registry.register("/cosmos.bank.v1beta1.MsgMultiSend", MsgMultiSend);
 registry.register("/cosmos.bank.v1beta1.MsgMultiSendResponse", MsgMultiSendResponse);
 
@@ -504,6 +512,8 @@ registry.register("/Switcheo.carbon.subaccount.MsgActivateSubAccountResponse", M
 registry.register("/Switcheo.carbon.subaccount.MsgRemoveSubAccount", MsgRemoveSubAccount);
 registry.register("/Switcheo.carbon.subaccount.MsgRemoveSubAccountResponse", MsgRemoveSubAccountResponse);
 
+registry.register("/Switcheo.carbon.market.MsgDisableSpotMarket", MsgDisableSpotMarket);
+registry.register("/Switcheo.carbon.market.MsgDisableSpotMarketResponse", MsgDisableSpotMarketResponse);
 registry.register("/Switcheo.carbon.market.MsgCreateMarket", MsgCreateMarket);
 registry.register("/Switcheo.carbon.market.MsgCreateMarketResponse", MsgCreateMarketResponse);
 registry.register("/Switcheo.carbon.market.MsgUpdateMarket", MsgUpdateMarket);
@@ -669,6 +679,12 @@ export const TxTypes = {
   "MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse": "/Switcheo.carbon.cdp.MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse",
   "MsgConvertTokenInCdpToGroupTokens": "/Switcheo.carbon.cdp.MsgConvertTokenInCdpToGroupTokens",
   "MsgConvertTokenInCdpToGroupTokensResponse": "/Switcheo.carbon.cdp.MsgConvertTokenInCdpToGroupTokensResponse",
+  "MsgAddEModeCategory": "/Switcheo.carbon.cdp.MsgAddEModeCategory",
+  "MsgAddEModeCategoryResponse": "/Switcheo.carbon.cdp.MsgAddEModeCategoryResponse",
+  "MsgUpdateEModeCategory": "/Switcheo.carbon.cdp.MsgUpdateEModeCategory",
+  "MsgUpdateEModeCategoryResponse": "/Switcheo.carbon.cdp.MsgUpdateEModeCategoryResponse",
+  "MsgChangeAccountEMode": "/Switcheo.carbon.cdp.MsgChangeAccountEMode",
+  "MsgChangeAccountEModeResponse": "/Switcheo.carbon.cdp.MsgChangeAccountEModeResponse",
   "MsgSyncGenesis": "/Switcheo.carbon.headersync.MsgSyncGenesis",
   "MsgSyncGenesisResponse": "/Switcheo.carbon.headersync.MsgSyncGenesisResponse",
   "MsgSyncHeaders": "/Switcheo.carbon.headersync.MsgSyncHeaders",
@@ -720,8 +736,8 @@ export const TxTypes = {
   "MsgRevokeAllowanceResponse": "/cosmos.feegrant.v1beta1.MsgRevokeAllowanceResponse",
   "MsgSubmitEvidence": "/cosmos.evidence.v1beta1.MsgSubmitEvidence",
   "MsgSubmitEvidenceResponse": "/cosmos.evidence.v1beta1.MsgSubmitEvidenceResponse",
-  "MsgSend": "/cosmos.nft.v1beta1.MsgSend",
-  "MsgSendResponse": "/cosmos.nft.v1beta1.MsgSendResponse",
+  "MsgNftSend": "/cosmos.nft.v1beta1.MsgSend",
+  "MsgNftSendResponse": "/cosmos.nft.v1beta1.MsgSendResponse",
   "MsgCreateGroup": "/cosmos.group.v1.MsgCreateGroup",
   "MsgCreateGroupResponse": "/cosmos.group.v1.MsgCreateGroupResponse",
   "MsgUpdateGroupMembers": "/cosmos.group.v1.MsgUpdateGroupMembers",
@@ -750,8 +766,8 @@ export const TxTypes = {
   "MsgExecResponse": "/cosmos.group.v1.MsgExecResponse",
   "MsgLeaveGroup": "/cosmos.group.v1.MsgLeaveGroup",
   "MsgLeaveGroupResponse": "/cosmos.group.v1.MsgLeaveGroupResponse",
-  "MsgBankSend": "/cosmos.bank.v1beta1.MsgSend",
-  "MsgBankSendResponse": "/cosmos.bank.v1beta1.MsgSendResponse",
+  "MsgSend": "/cosmos.bank.v1beta1.MsgSend",
+  "MsgSendResponse": "/cosmos.bank.v1beta1.MsgSendResponse",
   "MsgMultiSend": "/cosmos.bank.v1beta1.MsgMultiSend",
   "MsgMultiSendResponse": "/cosmos.bank.v1beta1.MsgMultiSendResponse",
   "MsgSetWithdrawAddress": "/cosmos.distribution.v1beta1.MsgSetWithdrawAddress",
@@ -930,6 +946,8 @@ export const TxTypes = {
   "MsgActivateSubAccountResponse": "/Switcheo.carbon.subaccount.MsgActivateSubAccountResponse",
   "MsgRemoveSubAccount": "/Switcheo.carbon.subaccount.MsgRemoveSubAccount",
   "MsgRemoveSubAccountResponse": "/Switcheo.carbon.subaccount.MsgRemoveSubAccountResponse",
+  "MsgDisableSpotMarket": "/Switcheo.carbon.market.MsgDisableSpotMarket",
+  "MsgDisableSpotMarketResponse": "/Switcheo.carbon.market.MsgDisableSpotMarketResponse",
   "MsgCreateMarket": "/Switcheo.carbon.market.MsgCreateMarket",
   "MsgCreateMarketResponse": "/Switcheo.carbon.market.MsgCreateMarketResponse",
   "MsgUpdateMarket": "/Switcheo.carbon.market.MsgUpdateMarket",
@@ -1010,13 +1028,14 @@ export { QueryGetOrderRequest, QueryGetOrderResponse, QueryAllOrderRequest, Quer
 export { OrderEvent } from "./order/event";
 export { StablecoinInterestInfo } from "./cdp/stablecoin_interest_info";
 export { DebtInfo } from "./cdp/debt_info";
-export { MsgAddRateStrategy, MsgAddRateStrategyResponse, MsgUpdateRateStrategy, MsgUpdateRateStrategyResponse, MsgRemoveRateStrategy, MsgRemoveRateStrategyResponse, MsgAddAsset, MsgAddAssetResponse, MsgUpdateAsset, MsgUpdateAssetResponse, MsgSupplyAsset, MsgSupplyAssetResponse, MsgWithdrawAsset, MsgWithdrawAssetResponse, MsgLockCollateral, MsgLockCollateralResponse, MsgUnlockCollateral, MsgUnlockCollateralResponse, MsgBorrowAsset, MsgBorrowAssetResponse, MsgRepayAsset, MsgRepayAssetResponse, MsgSupplyAssetAndLockCollateral, MsgSupplyAssetAndLockCollateralResponse, MsgUnlockCollateralAndWithdrawAsset, MsgUnlockCollateralAndWithdrawAssetResponse, MsgLiquidateCollateral, MsgLiquidateCollateralResponse, MsgSetLiquidationFee, MsgSetLiquidationFeeResponse, MsgSetInterestFee, MsgSetInterestFeeResponse, MsgRepayAssetWithCdpTokens, MsgRepayAssetWithCdpTokensResponse, MsgRepayAssetWithCollateral, MsgRepayAssetWithCollateralResponse, MsgSetStablecoinMintCap, MsgSetStablecoinMintCapResponse, MsgSetStablecoinInterestRate, MsgSetStablecoinInterestRateResponse, MsgMintStablecoin, MsgMintStablecoinResponse, MsgReturnStablecoin, MsgReturnStablecoinResponse, MsgSetCompleteLiquidationThreshold, MsgSetCompleteLiquidationThresholdResponse, MsgSetMinimumCloseFactor, MsgSetMinimumCloseFactorResponse, MsgSetSmallLiquidationSize, MsgSetSmallLiquidationSizeResponse, MsgLiquidateCollateralWithCdpTokens, MsgLiquidateCollateralWithCdpTokensResponse, MsgLiquidateCollateralWithCollateral, MsgLiquidateCollateralWithCollateralResponse, MsgLiquidateCollateralWithStablecoin, MsgLiquidateCollateralWithStablecoinResponse, MsgCreateRewardScheme, MsgCreateRewardSchemeResponse, MsgUpdateRewardScheme, MsgUpdateRewardSchemeResponse, MsgClaimRewards, MsgClaimRewardsResponse, MsgSetStalePriceGracePeriod, MsgSetStalePriceGracePeriodResponse, MsgSetCdpPaused, MsgSetCdpPausedResponse, MsgReturnStablecoinWithInterestInCollateral, MsgReturnStablecoinWithInterestInCollateralResponse, MsgReturnStablecoinWithInterestInCdpTokens, MsgReturnStablecoinWithInterestInCdpTokensResponse, MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens, MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse, MsgLiquidateCollateralWithStablecoinAndInterestInCollateral, MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse, MsgConvertTokenInCdpToGroupTokens, MsgConvertTokenInCdpToGroupTokensResponse } from "./cdp/tx";
+export { MsgAddRateStrategy, MsgAddRateStrategyResponse, MsgUpdateRateStrategy, MsgUpdateRateStrategyResponse, MsgRemoveRateStrategy, MsgRemoveRateStrategyResponse, MsgAddAsset, MsgAddAssetResponse, MsgUpdateAsset, MsgUpdateAssetResponse, MsgSupplyAsset, MsgSupplyAssetResponse, MsgWithdrawAsset, MsgWithdrawAssetResponse, MsgLockCollateral, MsgLockCollateralResponse, MsgUnlockCollateral, MsgUnlockCollateralResponse, MsgBorrowAsset, MsgBorrowAssetResponse, MsgRepayAsset, MsgRepayAssetResponse, MsgSupplyAssetAndLockCollateral, MsgSupplyAssetAndLockCollateralResponse, MsgUnlockCollateralAndWithdrawAsset, MsgUnlockCollateralAndWithdrawAssetResponse, MsgLiquidateCollateral, MsgLiquidateCollateralResponse, MsgSetLiquidationFee, MsgSetLiquidationFeeResponse, MsgSetInterestFee, MsgSetInterestFeeResponse, MsgRepayAssetWithCdpTokens, MsgRepayAssetWithCdpTokensResponse, MsgRepayAssetWithCollateral, MsgRepayAssetWithCollateralResponse, MsgSetStablecoinMintCap, MsgSetStablecoinMintCapResponse, MsgSetStablecoinInterestRate, MsgSetStablecoinInterestRateResponse, MsgMintStablecoin, MsgMintStablecoinResponse, MsgReturnStablecoin, MsgReturnStablecoinResponse, MsgSetCompleteLiquidationThreshold, MsgSetCompleteLiquidationThresholdResponse, MsgSetMinimumCloseFactor, MsgSetMinimumCloseFactorResponse, MsgSetSmallLiquidationSize, MsgSetSmallLiquidationSizeResponse, MsgLiquidateCollateralWithCdpTokens, MsgLiquidateCollateralWithCdpTokensResponse, MsgLiquidateCollateralWithCollateral, MsgLiquidateCollateralWithCollateralResponse, MsgLiquidateCollateralWithStablecoin, MsgLiquidateCollateralWithStablecoinResponse, MsgCreateRewardScheme, MsgCreateRewardSchemeResponse, MsgUpdateRewardScheme, MsgUpdateRewardSchemeResponse, MsgClaimRewards, MsgClaimRewardsResponse, MsgSetStalePriceGracePeriod, MsgSetStalePriceGracePeriodResponse, MsgSetCdpPaused, MsgSetCdpPausedResponse, MsgReturnStablecoinWithInterestInCollateral, MsgReturnStablecoinWithInterestInCollateralResponse, MsgReturnStablecoinWithInterestInCdpTokens, MsgReturnStablecoinWithInterestInCdpTokensResponse, MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens, MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse, MsgLiquidateCollateralWithStablecoinAndInterestInCollateral, MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse, MsgConvertTokenInCdpToGroupTokens, MsgConvertTokenInCdpToGroupTokensResponse, MsgAddEModeCategory, MsgAddEModeCategoryResponse, MsgUpdateEModeCategory, UpdateEModeCategoryParams, MsgUpdateEModeCategoryResponse, MsgChangeAccountEMode, MsgChangeAccountEModeResponse } from "./cdp/tx";
 export { AssetParams, AssetUtilization, UpdateAssetParams } from "./cdp/asset_params";
 export { RateStrategyParams } from "./cdp/rate_strategy_params";
 export { StablecoinDebtInfo } from "./cdp/stablecoin_debt_info";
 export { RewardScheme, CreateRewardSchemeParams, UpdateRewardSchemeParams, RewardDebt } from "./cdp/reward_scheme";
-export { QueryParamsRequest as QueryCdpParamsRequest, QueryParamsResponse as QueryCdpParamsResponse, QueryRateStrategyRequest, QueryRateStrategyResponse, QueryRateStrategyAllRequest, QueryRateStrategyAllResponse, QueryAccountDataRequest, QueryAccountDataResponse, QueryAccountCollateralRequest, QueryAccountCollateralResponse, QueryAccountCollateralAllRequest, QueryAccountCollateralAllResponse, Collateral, QueryAccountDebtRequest, QueryAccountDebtResponse, QueryAccountDebtAllRequest, QueryAccountDebtAllResponse, Debt, QueryAccountStablecoinRequest, QueryAccountStablecoinResponse, QueryAssetRequest, QueryAssetResponse, QueryAssetAllRequest, QueryAssetAllResponse, QueryTokenDebtRequest, QueryTokenDebtResponse, QueryTokenDebtAllRequest, QueryTokenDebtAllResponse, QueryStablecoinDebtRequest, QueryStablecoinDebtResponse, CdpPositionItem, CdpPosition, QueryCdpPositionsRequest, QueryCdpPositionsResponse, QueryRewardSchemesAllRequest, QueryRewardSchemesAllResponse, QueryRewardDebtsRequest, QueryRewardDebtsResponse, QueryRewardDebtsAllRequest, QueryStablecoinInterestRequest, QueryStablecoinInterestResponse } from "./cdp/query";
-export { NewRateStrategyParamsEvent, UpdateRateStrategyParamsEvent, RemoveRateStrategyParamsEvent, NewAssetParamsEvent, UpdateAssetParamsEvent, SetInterestFeeEvent, SetLiquidationFeeEvent, SetStablecoinInterestRateEvent, SetStablecoinMintCapEvent, SetCompleteLiquidationThresholdEvent, SetMinimumCloseFactorEvent, SetSmallLiquidationSizeEvent, SetStalePriceGracePeriodEvent, SetCdpPausedEvent, SupplyAssetEvent, WithdrawAssetEvent, BorrowAssetEvent, RepayAssetEvent, LockCollateralEvent, UnlockCollateralEvent, UpdateDebtInfoEvent, UpdateStablecoinDebtInfoEvent, MintStablecoinEvent, ReturnStablecoinEvent, LiquidateCollateralEvent, LiquidateCollateralWithStablecoinEvent, ClaimRewardEvent, RewardDebtEvent, RewardSchemeEvent, AddReserveEvent, RefundReserveEvent } from "./cdp/event";
+export { EModeCategory } from "./cdp/e_mode_category";
+export { QueryParamsRequest as QueryCdpParamsRequest, QueryParamsResponse as QueryCdpParamsResponse, QueryRateStrategyRequest, QueryRateStrategyResponse, QueryRateStrategyAllRequest, QueryRateStrategyAllResponse, QueryAccountDataRequest, QueryAccountDataResponse, QueryAccountCollateralRequest, QueryAccountCollateralResponse, QueryAccountCollateralAllRequest, QueryAccountCollateralAllResponse, Collateral, QueryAccountDebtRequest, QueryAccountDebtResponse, QueryAccountDebtAllRequest, QueryAccountDebtAllResponse, Debt, QueryAccountStablecoinRequest, QueryAccountStablecoinResponse, QueryAssetRequest, QueryAssetResponse, QueryAssetAllRequest, QueryAssetAllResponse, QueryTokenDebtRequest, QueryTokenDebtResponse, QueryTokenDebtAllRequest, QueryTokenDebtAllResponse, QueryStablecoinDebtRequest, QueryStablecoinDebtResponse, CdpPositionItem, CdpPosition, QueryCdpPositionsRequest, QueryCdpPositionsResponse, QueryRewardSchemesAllRequest, QueryRewardSchemesAllResponse, QueryRewardDebtsRequest, QueryRewardDebtsResponse, QueryRewardDebtsAllRequest, QueryEModeAllRequest, QueryEModeAllResponse, QueryStablecoinInterestRequest, QueryStablecoinInterestResponse, QueryEModeRequest, QueryEModeResponse, QueryAccountEModeRequest, QueryAccountEModeResponse } from "./cdp/query";
+export { NewRateStrategyParamsEvent, UpdateRateStrategyParamsEvent, RemoveRateStrategyParamsEvent, NewAssetParamsEvent, UpdateAssetParamsEvent, NewEModeCategoryEvent, UpdateEModeCategoryEvent, UpdateAccountEModeCategoryNameEvent, SetInterestFeeEvent, SetLiquidationFeeEvent, SetStablecoinInterestRateEvent, SetStablecoinMintCapEvent, SetCompleteLiquidationThresholdEvent, SetMinimumCloseFactorEvent, SetSmallLiquidationSizeEvent, SetStalePriceGracePeriodEvent, SetCdpPausedEvent, SupplyAssetEvent, WithdrawAssetEvent, BorrowAssetEvent, RepayAssetEvent, LockCollateralEvent, UnlockCollateralEvent, UpdateDebtInfoEvent, UpdateStablecoinDebtInfoEvent, MintStablecoinEvent, ReturnStablecoinEvent, LiquidateCollateralEvent, LiquidateCollateralWithStablecoinEvent, ClaimRewardEvent, RewardDebtEvent, RewardSchemeEvent, AddReserveEvent, RefundReserveEvent } from "./cdp/event";
 export { Params as CdpParams } from "./cdp/params";
 export { HashOp, hashOpFromJSON, hashOpToJSON, LengthOp, lengthOpFromJSON, lengthOpToJSON, ExistenceProof, NonExistenceProof, CommitmentProof, LeafOp, InnerOp, ProofSpec, InnerSpec, BatchProof, BatchEntry, CompressedBatchProof, CompressedBatchEntry, CompressedExistenceProof, CompressedNonExistenceProof } from "./proofs";
 export { LiquidatorPosition, MsgInitiateLiquidation, MsgInitiateLiquidationResponse } from "./broker/tx";
@@ -1080,9 +1099,9 @@ export { SubAccount, GenesisSubAccount } from "./subaccount/subaccount";
 export { OrderBookLevel, OrderBook, StopBook } from "./book/book";
 export { QueryImpactPriceRequest, QueryImpactPriceResponse, QueryGetBookRequest, QueryGetBookResponse, QueryAllBookRequest, QueryAllBookResponse } from "./book/query";
 export { OrderBookEvent } from "./book/event";
-export { MsgCreateMarket, MsgCreateMarketResponse, MsgUpdateMarket, MsgUpdateMarketResponse, MsgUpdatePerpetualsFundingInterval, MsgUpdatePerpetualsFundingIntervalResponse } from "./market/tx";
+export { MsgDisableSpotMarket, MsgDisableSpotMarketResponse, MsgCreateMarket, MsgCreateMarketResponse, MsgUpdateMarket, MsgUpdateMarketResponse, MsgUpdatePerpetualsFundingInterval, MsgUpdatePerpetualsFundingIntervalResponse } from "./market/tx";
 export { CreateMarketProposal, UpdateMarketProposal, UpdatePerpetualsFundingIntervalProposal } from "./market/proposal";
-export { Params as MarketDefaultsParams, ControlledParams, Market, MarketParams } from "./market/market";
+export { Params as MarketDefaultsParams, ControlledParams, Market, MarketParams, IncomingDisableSpotMarketNames } from "./market/market";
 export { QueryGetMarketRequest, QueryGetMarketResponse, QueryAllMarketRequest, QueryAllMarketResponse, QueryParamsRequest as QueryMarketParamsRequest, QueryParamsResponse as QueryMarketParamsResponse } from "./market/query";
 export { MarketEvent } from "./market/event";
 export { MintData } from "./inflation/inflation";

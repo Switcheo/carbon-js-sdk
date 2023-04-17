@@ -1,3 +1,4 @@
+import { Token } from '@carbon-sdk/codec'
 import {
   ChainInfoExplorerTmRpc,
   ChainIds,
@@ -10,11 +11,13 @@ import {
   swthChannels,
   swthIbcWhitelist,
   ibcNetworkRegex,
+  ChannelConfig,
 } from "@carbon-sdk/constant";
 import { KeplrAccount } from "@carbon-sdk/provider";
+import { BRIDGE_IDS } from "@carbon-sdk/util/blockchain";
 import { Hash } from "@keplr-wallet/crypto";
 import { AppCurrency, CW20Currency, Secret20Currency } from "@keplr-wallet/types";
-import { Blockchain } from "./blockchain";
+import { Blockchain, BlockchainV2 } from "./blockchain";
 import { SimpleMap } from "./type";
 
 // Create IBC minimal denom
@@ -71,6 +74,26 @@ export const totalAssetObj: AssetListObj = Object.values(EmbedChainInfos).reduce
   {}
 );
 
+export const ChainIdBlockchainMapV2: SimpleMap<BlockchainV2> = {
+  [ChainIds.Osmosis]: "Osmosis",
+  [ChainIds.Terra]: "Terra",
+  [ChainIds.CosmosHub]: "Cosmos Hub",
+  [ChainIds.Juno]: "Juno",
+  [ChainIds.Evmos]: "Evmos",
+  [ChainIds.Axelar]: "Axelar",
+  [ChainIds.Stride]: "Stride",
+  [ChainIds.Kujira]: "Kujira",
+  [ChainIds.Terra2]: "Terra (CW20)",
+  [ChainIds.Quicksilver]: "Quicksilver",
+  [ChainIds.Comdex]: "Comdex",
+  [ChainIds.StafiHub]: "Stafihub",
+  [ChainIds.Persistence]: "Persistence Core",
+  [ChainIds.Stargaze]: "Stargaze",
+  [ChainIds.Canto]: "Canto",
+  [ChainIds.OmniFlixHub]: "Omniflix Hub",
+  [ChainIds.Agoric]: "Agoric",
+};
+
 export const ChainIdBlockchainMap: SimpleMap<Blockchain> = {
   [ChainIds.Osmosis]: Blockchain.Osmosis,
   [ChainIds.Terra]: Blockchain.Terra,
@@ -89,9 +112,10 @@ export const ChainIdBlockchainMap: SimpleMap<Blockchain> = {
   [ChainIds.Canto]: Blockchain.Canto,
   [ChainIds.OmniFlixHub]: Blockchain.OmniFlixHub,
   [ChainIds.Agoric]: Blockchain.Agoric,
+  [ChainIds.Sommelier]: Blockchain.Sommelier,
 };
 
-export const getIbcChainFromBlockchain = (blockchain: Blockchain | undefined): ChainIds | undefined => {
+export const getIbcChainFromBlockchain = (blockchain: BlockchainV2 | undefined): ChainIds | undefined => {
   let ibcChain: ChainIds | undefined = undefined;
   Object.entries(ChainIdBlockchainMap).forEach(([key, value]) => {
     if (blockchain && blockchain.includes(value)) {
@@ -102,7 +126,7 @@ export const getIbcChainFromBlockchain = (blockchain: Blockchain | undefined): C
 };
 
 export const BlockchainMap = Object.values(EmbedChainInfos).reduce(
-  (prev: SimpleMap<Blockchain | undefined>, chainInfo: ChainInfoExplorerTmRpc) => {
+  (prev: SimpleMap<string | undefined>, chainInfo: ChainInfoExplorerTmRpc) => {
     if (!ibcWhitelist.includes(chainInfo.chainId)) {
       return prev;
     }
@@ -146,6 +170,11 @@ export const parseChainId = (chainId: string): ChainIdOutput => {
 export const calculateMaxFee = (gasStep: GasPriceStep = DefaultGasPriceStep, gas: number = 0): number => {
   return gasStep.high * gas;
 };
+
+export const estimateFeeStep = (gasStep: GasPriceStep = DefaultGasPriceStep, gas: number = 0, stepId: keyof GasPriceStep = 'average') => {
+  const currentGasStep = gasStep[stepId] ?? 0;
+  return currentGasStep * gas;
+}
 
 export const isCw20Token = (currency: AppCurrency): boolean => {
   if (!currency.hasOwnProperty("type")) return false;

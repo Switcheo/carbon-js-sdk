@@ -13,7 +13,8 @@ console.log(`import { Registry } from "@cosmjs/proto-signing";`);
 console.log(`import { MsgExecuteContract } from "cosmjs-types/cosmwasm/wasm/v1/tx";`);
 
 const modules: { [name: string]: string[] } = {};
-const currentMsgDefinitions: string[] = []
+// TODO: To remove hardcode conditional once a better way to fix MsgSend import is found
+const currentMsgDefinitions: string[] = ['MsgSend', 'MsgSendResponse'] 
 for (const moduleFile of codecFiles) {
 
   if (
@@ -211,9 +212,17 @@ function updateImportsAlias(messages: string[], protobufPackage: string, current
     let msgAlias = `Msg${customModuleName}${msg.substring(3)}`
     while (currentMsgDefinitions.includes(msgAlias) && index < modulePath.length) {
       customModuleName += capitalize(modulePath[index])
-        msgAlias = `Msg${customModuleName}${msg.substring(3)}`
+      msgAlias = `Msg${customModuleName}${msg.substring(3)}`
       index++
     }
+    // TODO: To remove hardcode conditional once a better way to remove alias for MsgBankSend is found
+      if (
+        msg === 'MsgSend' && msgAlias === 'MsgBankSend' ||
+        msg === 'MsgSendResponse' && msgAlias === 'MsgBankSendResponse'
+      ) {
+        currentMsgDefinitions.push(msg)
+        return
+      }
       messages[i] = `${msg} as ${msgAlias}`
       currentMsgDefinitions.push(msgAlias)
   });
