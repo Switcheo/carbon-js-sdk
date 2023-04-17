@@ -50,7 +50,7 @@
     "@ledgerhq/hw-app-eth": "^6.20.0",
     "@ledgerhq/hw-transport": "^6.20.0",
     "@ledgerhq/hw-transport-webhid": "^6.20.0",
-    "@ledgerhq/hw-transport-webusb": "^6.20.0",
+    "@ledgerhq/hw-transport-webusb": "^6.27.13",
     "@zilliqa-js/zilliqa": "^2.2.0",
     "base58check": "^2.0.0",
     "bignumber.js": "^9.0.1",
