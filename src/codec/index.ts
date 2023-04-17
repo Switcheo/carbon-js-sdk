@@ -38,8 +38,6 @@ import { MsgCreateToken, MsgCreateTokenResponse, MsgSyncToken, MsgSyncTokenRespo
 import { CreateTokenProposal } from "./coin/proposal";
 import { MsgSetLeverage, MsgSetLeverageResponse } from "./leverage/tx";
 import { MsgUpdateProfile, MsgUpdateProfileResponse } from "./profile/tx";
-import { MsgUpdateParams, MsgUpdateParamsResponse } from "./ethermint/feemarket/v1/tx";
-import { MsgEthereumTx, MsgEthereumTxResponse, MsgUpdateParams as MsgEvmUpdateParams, MsgUpdateParamsResponse as MsgEvmUpdateParamsResponse } from "./ethermint/evm/v1/tx";
 import { MsgCreateSubAccount, MsgCreateSubAccountResponse, MsgActivateSubAccount, MsgActivateSubAccountResponse, MsgRemoveSubAccount, MsgRemoveSubAccountResponse } from "./subaccount/tx";
 import { MsgDisableSpotMarket, MsgDisableSpotMarketResponse, MsgCreateMarket, MsgCreateMarketResponse, MsgUpdateMarket, MsgUpdateMarketResponse, MsgUpdatePerpetualsFundingInterval, MsgUpdatePerpetualsFundingIntervalResponse } from "./market/tx";
 import { CreateMarketProposal, UpdateMarketProposal, UpdatePerpetualsFundingIntervalProposal } from "./market/proposal";
@@ -934,12 +932,10 @@ export const TxTypes = {
   "MsgSetLeverageResponse": "/Switcheo.carbon.leverage.MsgSetLeverageResponse",
   "MsgUpdateProfile": "/Switcheo.carbon.profile.MsgUpdateProfile",
   "MsgUpdateProfileResponse": "/Switcheo.carbon.profile.MsgUpdateProfileResponse",
-  "MsgUpdateParams": "/ethermint.feemarket.v1.MsgUpdateParams",
-  "MsgUpdateParamsResponse": "/ethermint.feemarket.v1.MsgUpdateParamsResponse",
+  "MsgUpdateParams": "/ethermint.evm.v1.MsgUpdateParams",
+  "MsgUpdateParamsResponse": "/ethermint.evm.v1.MsgUpdateParamsResponse",
   "MsgEthereumTx": "/ethermint.evm.v1.MsgEthereumTx",
   "MsgEthereumTxResponse": "/ethermint.evm.v1.MsgEthereumTxResponse",
-  "MsgEvmUpdateParams": "/ethermint.evm.v1.MsgUpdateParams",
-  "MsgEvmUpdateParamsResponse": "/ethermint.evm.v1.MsgUpdateParamsResponse",
   "MsgCreateSubAccount": "/Switcheo.carbon.subaccount.MsgCreateSubAccount",
   "MsgCreateSubAccountResponse": "/Switcheo.carbon.subaccount.MsgCreateSubAccountResponse",
   "MsgActivateSubAccount": "/Switcheo.carbon.subaccount.MsgActivateSubAccount",
@@ -2840,6 +2836,32 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
+    "EModeCategory": [
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "denoms",
+        "type": "string[]"
+      },
+      {
+        "name": "loan_to_value",
+        "type": "string"
+      },
+      {
+        "name": "liquidation_threshold",
+        "type": "string"
+      },
+      {
+        "name": "liquidation_discount",
+        "type": "string"
+      },
+      {
+        "name": "is_active",
+        "type": "bool"
+      }
+    ],
     "StablecoinDebtInfo": [
       {
         "name": "denom",
@@ -3080,6 +3102,38 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "type",
+        "type": "string"
+      }
+    ],
+    "NewEModeCategoryEvent": [
+      {
+        "name": "e_mode_category",
+        "type": "EModeCategory",
+        "packageName": "/Switcheo.carbon.cdp"
+      },
+      {
+        "name": "type",
+        "type": "string"
+      }
+    ],
+    "UpdateEModeCategoryEvent": [
+      {
+        "name": "e_mode_category",
+        "type": "EModeCategory",
+        "packageName": "/Switcheo.carbon.cdp"
+      },
+      {
+        "name": "type",
+        "type": "string"
+      }
+    ],
+    "UpdateAccountEModeCategoryNameEvent": [
+      {
+        "name": "account",
+        "type": "string"
+      },
+      {
+        "name": "e_mode_category_name",
         "type": "string"
       }
     ],
@@ -3668,6 +3722,16 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "stablecoin_interest_info",
         "type": "StablecoinInterestInfo",
         "packageName": "/Switcheo.carbon.cdp"
+      },
+      {
+        "name": "e_mode_categories",
+        "type": "EModeCategory[]",
+        "packageName": "/Switcheo.carbon.cdp"
+      },
+      {
+        "name": "account_to_e_mode_category",
+        "type": "AccountToEModeCategoryEntry[]",
+        "packageName": "/Switcheo.carbon.cdp.GenesisState"
       }
     ],
     "QueryParamsRequest": [],
@@ -4057,12 +4121,56 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ],
     "QueryRewardDebtsAllRequest": [],
+    "QueryEModeAllRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryEModeAllResponse": [
+      {
+        "name": "e_mode_categories",
+        "type": "EModeCategory[]",
+        "packageName": "/Switcheo.carbon.cdp"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
     "QueryStablecoinInterestRequest": [],
     "QueryStablecoinInterestResponse": [
       {
         "name": "stablecoin_interest_info",
         "type": "StablecoinInterestInfo",
         "packageName": "/Switcheo.carbon.cdp"
+      }
+    ],
+    "QueryEModeRequest": [
+      {
+        "name": "name",
+        "type": "string"
+      }
+    ],
+    "QueryEModeResponse": [
+      {
+        "name": "e_mode_category",
+        "type": "EModeCategory",
+        "packageName": "/Switcheo.carbon.cdp"
+      }
+    ],
+    "QueryAccountEModeRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "QueryAccountEModeResponse": [
+      {
+        "name": "e_mode_category_name",
+        "type": "string"
       }
     ],
     "MsgAddRateStrategy": [
@@ -4753,7 +4861,73 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
-    "MsgConvertTokenInCdpToGroupTokensResponse": []
+    "MsgConvertTokenInCdpToGroupTokensResponse": [],
+    "MsgAddEModeCategory": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "e_mode_category",
+        "type": "EModeCategory",
+        "packageName": "/Switcheo.carbon.cdp"
+      }
+    ],
+    "MsgAddEModeCategoryResponse": [],
+    "MsgUpdateEModeCategory": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "e_mode_category_name",
+        "type": "string"
+      },
+      {
+        "name": "update_e_mode_category_params",
+        "type": "UpdateEModeCategoryParams",
+        "packageName": "/Switcheo.carbon.cdp"
+      }
+    ],
+    "UpdateEModeCategoryParams": [
+      {
+        "name": "denoms",
+        "type": "string[]",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "loan_to_value",
+        "type": "Int64Value",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "liquidation_threshold",
+        "type": "Int64Value",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "liquidation_discount",
+        "type": "Int64Value",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "is_active",
+        "type": "string[]",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "MsgUpdateEModeCategoryResponse": [],
+    "MsgChangeAccountEMode": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "e_mode_category_name",
+        "type": "string"
+      }
+    ],
+    "MsgChangeAccountEModeResponse": []
   },
   "/Switcheo.carbon.coin": {
     "Bridge": [
@@ -21341,6 +21515,12 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/google.protobuf"
       }
     ],
+    "IncomingDisableSpotMarketNames": [
+      {
+        "name": "ids",
+        "type": "string[]"
+      }
+    ],
     "MarketEvent": [
       {
         "name": "market",
@@ -21458,6 +21638,17 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/Switcheo.carbon.market"
       }
     ],
+    "MsgDisableSpotMarket": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "market_name",
+        "type": "string"
+      }
+    ],
+    "MsgDisableSpotMarketResponse": [],
     "MsgCreateMarket": [
       {
         "name": "creator",
