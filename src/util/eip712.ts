@@ -89,9 +89,15 @@ function isGoogleProtobufAnyPackage(packageName: string, type: string): boolean 
 }
 
 function isNonZeroField(fieldValue: any): boolean {
+    // zero fields are considered falsey
+    if (fieldValue == "0") {
+        return false;
+    }
+    // empty arrays are considered truthy
     if (Array.isArray(fieldValue)) {
         return fieldValue.length !== 0
     }
+    // empty objects are considered truthy
     if (fieldValue && typeof fieldValue === 'object' && Object.keys(fieldValue).length === 0) {
         return false
     }
