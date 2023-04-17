@@ -65,7 +65,7 @@ function generateFieldDescription(field: any): TypeDefinition {
         if (packageName !== "google.protobuf") {
             fieldDescriptor.packageName = `/${packageName}`
         }
-        else if (!getGoogleProtobufTyping(fieldTypeName.toLowerCase())) {
+        else if (!convertGoogleProtobufTypingToPrimitive(fieldTypeName.toLowerCase())) {
             fieldDescriptor.packageName = `/${packageName}`
         }
     }
@@ -81,7 +81,7 @@ function getFieldType(field: any): string {
     if (field.type === 'TYPE_MESSAGE') {
         const packageName = getPackageName(field.typeName)
         if (packageName && packageName == "google.protobuf") {
-            const googleProtobufType = getGoogleProtobufTyping(fieldTypeName.toLowerCase())
+            const googleProtobufType = convertGoogleProtobufTypingToPrimitive(fieldTypeName.toLowerCase())
             const typeName = googleProtobufType ? googleProtobufType : fieldTypeName
             return `${typeName}${fieldLabelRepeated ? '[]' : ''}`
         }
@@ -135,7 +135,7 @@ function getSolidityTyping(fieldType: string): string {
     return ''
 }
 
-function getGoogleProtobufTyping(fieldType: string): string {
+function convertGoogleProtobufTypingToPrimitive(fieldType: string): string {
     switch (fieldType) {
         case 'timestamp':
         case 'stringvalue':

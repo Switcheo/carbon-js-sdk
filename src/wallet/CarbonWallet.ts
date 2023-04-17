@@ -11,7 +11,7 @@ import { BroadcastTxMode, CarbonSignerData, CarbonTxError } from "@carbon-sdk/ut
 import { SimpleMap } from "@carbon-sdk/util/type";
 import { encodeSecp256k1Signature, StdSignature } from "@cosmjs/amino";
 import { EncodeObject, OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
-import { Account, DeliverTxResponse, isDeliverTxFailure, StargateClient } from "@cosmjs/stargate";
+import { Account, DeliverTxResponse, isDeliverTxFailure, SequenceResponse, StargateClient } from "@cosmjs/stargate";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import { BroadcastTxSyncResponse } from "@cosmjs/tendermint-rpc/build/tendermint34/responses";
 import { Leap } from "@cosmos-kit/leap";
@@ -19,10 +19,11 @@ import { Key } from "@keplr-wallet/types";
 import { Key as LeapKey } from "@cosmos-kit/core";
 import BigNumber from "bignumber.js";
 import { TxRaw as StargateTxRaw, TxBody } from "cosmjs-types/cosmos/tx/v1beta1/tx";
-import { CarbonLedgerSigner, CarbonNonSigner, CarbonPrivateKeySigner, CarbonSigner, CarbonSignerTypes, isCarbonEIP712Signer } from "./CarbonSigner";
+import { CarbonEIP712Signer, CarbonLedgerSigner, CarbonNonSigner, CarbonPrivateKeySigner, CarbonSigner, CarbonSignerTypes, isCarbonEIP712Signer } from "./CarbonSigner";
 import { CarbonSigningClient } from "./CarbonSigningClient";
 import { ETH_SECP256K1_TYPE } from "@carbon-sdk/util/ethermint";
 import { ExtensionOptionsWeb3Tx } from "@carbon-sdk/codec/ethermint/types/v1/web3";
+import { BaseAccount } from "@carbon-sdk/codec/cosmos/auth/v1beta1/auth";
 
 export interface CarbonWalletGenericOpts {
   tmClient?: Tendermint34Client;
@@ -327,8 +328,13 @@ export class CarbonWallet {
       const txRaw = await signingClient.sign(signerAddress, messages, fee, memo, signerData);
       let sig;
       if (isCarbonEIP712Signer(this.signer)) {
-        const feePayerSigBz = ExtensionOptionsWeb3Tx.decode(TxBody.decode(txRaw.bodyBytes).extensionOptions[0].value).feePayerSig
-        sig = Uint8Array.from(Buffer.from(feePayerSigBz.slice(0, -1)))
+        if ((this.signer as CarbonEIP712Signer).legacyEip712SignMode) {
+          const feePayerSigBz = ExtensionOptionsWeb3Tx.decode(TxBody.decode(txRaw.bodyBytes).extensionOptions[0].value).feePayerSig
+          sig = Uint8Array.from(Buffer.from(feePayerSigBz.slice(0, -1)))
+        }
+        else {
+          sig = txRaw.signatures[0]
+        }
         signature = encodeSecp256k1Signature(account.pubkey, sig);
         signature = {
           ...signature,
@@ -405,7 +411,7 @@ export class CarbonWallet {
       const height = bnOrZero(heightRes.result?.last_height);
       let timeoutHeight;
       // timeoutHeight is not supported for EIP-712
-      if(!isCarbonEIP712Signer(this.signer)) {
+      if (!isCarbonEIP712Signer(this.signer)) {
         timeoutHeight = height.isZero() ? undefined : height.toNumber() + this.defaultTimeoutBlocks;
       }     
 
@@ -581,7 +587,22 @@ export class CarbonWallet {
     try {
       const evmWallet = isEvmWallet(this.providerAgent)
       const address = evmWallet ? this.evmBech32Address : this.bech32Address
-      const info = await this.getQueryClient().chain.getSequence(address);
+      // Alternative way to get account info since cosmjs dont support eth pub key for now
+      const info = await this.getQueryClient().chain.getSequence(address).then(res => res).catch(async (err: Error) => {
+        if (this.EthPublicKeyError(err)) {
+          const accountAny = (await this.getQueryClient().auth.Account({ address })).account
+          if (!accountAny) {
+            throw new Error("Account does not exist on chain. Send some tokens there before trying to query sequence.")
+          }
+          const { accountNumber, sequence } = BaseAccount.decode(accountAny!.value)
+          const sequenceResponse: SequenceResponse = {
+            accountNumber: accountNumber.toNumber(),
+            sequence: sequence.toNumber()
+          }
+          return sequenceResponse
+        }
+        throw err
+      });
       const pubkey = this.accountInfo?.pubkey ?? {
         type: "tendermint/PubKeySecp256k1",
         value: this.publicKey.toString("base64"),
@@ -630,6 +651,9 @@ export class CarbonWallet {
     return error?.message?.includes("Account does not exist on chain. Send some tokens there before trying to query sequence.");
   };
 
+  private EthPublicKeyError = (error?: Error) => {
+    return error?.message?.includes("Pubkey type_url /ethermint.crypto.v1.ethsecp256k1.PubKey not recognized");
+  }
   private isNonceMismatchError = (error?: Error) => {
     const regex =
       /^Broadcasting transaction failed with code 32 \(codespace: sdk\)\. Log: account sequence mismatch, expected (\d+), got (\d+): incorrect account sequence/;
