@@ -503,7 +503,7 @@ export class ETHClient {
   }
 
   public async getTxNonce(ethAddress: string, customNonce?: number, provider?: ethers.providers.JsonRpcProvider): Promise<number> {
-    if (customNonce) return customNonce;
+    if (customNonce && isFinite(customNonce)) return customNonce;
 
     const rpcProvider = provider ?? this.getProvider();
     const nonce = await rpcProvider.getTransactionCount(ethAddress);
