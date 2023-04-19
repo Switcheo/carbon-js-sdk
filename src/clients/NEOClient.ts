@@ -5,7 +5,7 @@ import { NeoLedgerAccount } from "@carbon-sdk/provider/account";
 import { O3Types, O3Wallet } from "@carbon-sdk/provider/o3";
 import { AddressUtils } from "@carbon-sdk/util";
 import { SWTHAddress } from "@carbon-sdk/util/address";
-import { Blockchain, blockchainForChainId } from "@carbon-sdk/util/blockchain";
+import { Blockchain, blockchainForChainId, BLOCKCHAIN_V2_TO_V1_MAPPING } from "@carbon-sdk/util/blockchain";
 import { TokenInitInfo, TokensWithExternalBalance } from "@carbon-sdk/util/external";
 import { stripHexPrefix } from "@carbon-sdk/util/generic";
 import { SimpleMap } from "@carbon-sdk/util/type";
@@ -68,15 +68,22 @@ export class NEOClient {
     sdk: CarbonSDK,
     address: string,
     url: string,
-    whitelistDenoms?: string[]
+    whitelistDenoms?: string[],
+    version = "V1",
   ): Promise<TokensWithExternalBalance[]> {
     const tokenQueryResults = await sdk.token.getAllTokens();
     const account = new Neon.wallet.Account(address);
     const tokens = tokenQueryResults.filter(
       (token) =>
-        blockchainForChainId(token.chainId.toNumber(), sdk.network) == this.blockchain &&
-        token.tokenAddress.length == 40 &&
-        token.bridgeAddress.length == 40
+        {
+          const isCorrectBlockchain = 
+          version === "V2" 
+            ? 
+            !!sdk.token.getBlockchainV2(token.denom) && (BLOCKCHAIN_V2_TO_V1_MAPPING[sdk.token.getBlockchainV2(token.denom)!] == this.blockchain) 
+            : 
+            blockchainForChainId(token.chainId.toNumber(), sdk.network) == this.blockchain
+          return (isCorrectBlockchain || token.denom === "swth") && token.tokenAddress.length == 40 && token.bridgeAddress.length == 40
+        }
     );
 
     const client: Neon.rpc.RPCClient = new Neon.rpc.RPCClient(url, "2.5.2"); // TODO: should we change the RPC version??

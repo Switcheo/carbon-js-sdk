@@ -1,4 +1,4 @@
-import { MsgUpdateMarket, MsgCreateMarket } from "@carbon-sdk/codec/market/tx";
+import { MsgUpdateMarket, MsgCreateMarket, MsgDisableSpotMarket } from "@carbon-sdk/codec/market/tx";
 import { CarbonTx } from "@carbon-sdk/util";
 import BaseModule from "./base";
 import { BigNumber } from "bignumber.js";
@@ -43,6 +43,21 @@ export class MarketModule extends BaseModule {
         opts
     );
   }
+
+  public async disableSpotMarket(params: MarketModule.DisableSpotMarketParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+    const value = MsgDisableSpotMarket.fromPartial({
+      creator: params.creator,
+      marketName: params.marketName,
+    })
+    return await wallet.sendTx(
+        {
+          typeUrl: CarbonTx.Types.MsgDisableSpotMarket,
+          value,
+        },
+        opts
+    );
+  }
 }
 
 export namespace MarketModule {
@@ -77,6 +92,11 @@ export namespace MarketModule {
     currentQuotePriceUsd: string;
     indexOracleId: string;
     expiryTime?: Date;
+  }
+
+  export interface DisableSpotMarketParams {
+    creator: string;
+    marketName: string;
   }
 }
 

@@ -1,4 +1,4 @@
-import { Blockchain } from "../util/blockchain";
+import { Blockchain, BlockchainV2 } from "../util/blockchain";
 
 export interface GetTransfersRequest {
   bridging_blockchain?: string;
@@ -58,9 +58,9 @@ export interface CrossChainTransfer {
   nonce: string;
   created_at: Date;
   updated_at: Date;
-  source_blockchain: Blockchain | null;
-  bridging_blockchain: Blockchain | null;
-  destination_blockchain: Blockchain | null;
+  source_blockchain: Blockchain | BlockchainV2 | null;
+  bridging_blockchain: Blockchain | BlockchainV2 | null;
+  destination_blockchain: Blockchain | BlockchainV2 | null;
   status: CrossChainFlowStatus;
   carbon_token_id: string;
   recovery_address_hash: string;
@@ -75,7 +75,7 @@ export interface CrossChainTransferDetailed extends CrossChainTransfer {
 
 export interface ChainTransaction {
   id: string;
-  blockchain: Blockchain;
+  blockchain: Blockchain | BlockchainV2;
   contract: string;
   block_height: number;
   tx_hash: string;

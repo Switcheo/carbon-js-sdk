@@ -7,6 +7,13 @@ import { Timestamp } from "../google/protobuf/timestamp";
 
 export const protobufPackage = "Switcheo.carbon.market";
 
+export interface MsgDisableSpotMarket {
+  creator: string;
+  marketName: string;
+}
+
+export interface MsgDisableSpotMarketResponse {}
+
 /** this line is used by starport scaffolding # proto/tx/message */
 export interface MsgCreateMarket {
   creator: string;
@@ -37,6 +44,126 @@ export interface MsgUpdatePerpetualsFundingInterval {
 }
 
 export interface MsgUpdatePerpetualsFundingIntervalResponse {}
+
+const baseMsgDisableSpotMarket: object = { creator: "", marketName: "" };
+
+export const MsgDisableSpotMarket = {
+  encode(
+    message: MsgDisableSpotMarket,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.marketName !== "") {
+      writer.uint32(18).string(message.marketName);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgDisableSpotMarket {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgDisableSpotMarket } as MsgDisableSpotMarket;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.marketName = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgDisableSpotMarket {
+    const message = { ...baseMsgDisableSpotMarket } as MsgDisableSpotMarket;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.marketName =
+      object.marketName !== undefined && object.marketName !== null
+        ? String(object.marketName)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgDisableSpotMarket): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.marketName !== undefined && (obj.marketName = message.marketName);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgDisableSpotMarket>): MsgDisableSpotMarket {
+    const message = { ...baseMsgDisableSpotMarket } as MsgDisableSpotMarket;
+    message.creator = object.creator ?? "";
+    message.marketName = object.marketName ?? "";
+    return message;
+  },
+};
+
+const baseMsgDisableSpotMarketResponse: object = {};
+
+export const MsgDisableSpotMarketResponse = {
+  encode(
+    _: MsgDisableSpotMarketResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgDisableSpotMarketResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgDisableSpotMarketResponse,
+    } as MsgDisableSpotMarketResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgDisableSpotMarketResponse {
+    const message = {
+      ...baseMsgDisableSpotMarketResponse,
+    } as MsgDisableSpotMarketResponse;
+    return message;
+  },
+
+  toJSON(_: MsgDisableSpotMarketResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgDisableSpotMarketResponse>
+  ): MsgDisableSpotMarketResponse {
+    const message = {
+      ...baseMsgDisableSpotMarketResponse,
+    } as MsgDisableSpotMarketResponse;
+    return message;
+  },
+};
 
 const baseMsgCreateMarket: object = {
   creator: "",
@@ -528,6 +655,9 @@ export const MsgUpdatePerpetualsFundingIntervalResponse = {
 
 /** Msg defines the Msg service. */
 export interface Msg {
+  DisableSpotMarket(
+    request: MsgDisableSpotMarket
+  ): Promise<MsgDisableSpotMarketResponse>;
   /** this line is used by starport scaffolding # proto/tx/rpc */
   CreateMarket(request: MsgCreateMarket): Promise<MsgCreateMarketResponse>;
   UpdateMarket(request: MsgUpdateMarket): Promise<MsgUpdateMarketResponse>;
@@ -540,11 +670,26 @@ export class MsgClientImpl implements Msg {
   private readonly rpc: Rpc;
   constructor(rpc: Rpc) {
     this.rpc = rpc;
+    this.DisableSpotMarket = this.DisableSpotMarket.bind(this);
     this.CreateMarket = this.CreateMarket.bind(this);
     this.UpdateMarket = this.UpdateMarket.bind(this);
     this.UpdatePerpetualsFundingInterval =
       this.UpdatePerpetualsFundingInterval.bind(this);
   }
+  DisableSpotMarket(
+    request: MsgDisableSpotMarket
+  ): Promise<MsgDisableSpotMarketResponse> {
+    const data = MsgDisableSpotMarket.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.market.Msg",
+      "DisableSpotMarket",
+      data
+    );
+    return promise.then((data) =>
+      MsgDisableSpotMarketResponse.decode(new _m0.Reader(data))
+    );
+  }
+
   CreateMarket(request: MsgCreateMarket): Promise<MsgCreateMarketResponse> {
     const data = MsgCreateMarket.encode(request).finish();
     const promise = this.rpc.request(

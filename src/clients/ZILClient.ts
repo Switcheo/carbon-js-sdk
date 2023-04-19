@@ -2,7 +2,7 @@ import CarbonSDK from "@carbon-sdk/CarbonSDK";
 import { NetworkConfig, NetworkConfigProvider, ZilNetworkConfig } from "@carbon-sdk/constant";
 import { Models, AddressUtils } from "@carbon-sdk/index";
 import { SWTHAddress } from "@carbon-sdk/util/address";
-import { Blockchain, blockchainForChainId } from "@carbon-sdk/util/blockchain";
+import { Blockchain, blockchainForChainId, BLOCKCHAIN_V2_TO_V1_MAPPING } from "@carbon-sdk/util/blockchain";
 import { TokensWithExternalBalance } from "@carbon-sdk/util/external";
 import { appendHexPrefix, stripHexPrefix } from "@carbon-sdk/util/generic";
 import { Transaction, Wallet } from "@zilliqa-js/account";
@@ -138,13 +138,18 @@ export class ZILClient {
     return new ZILClient(configProvider, blockchain);
   }
 
-  public async getExternalBalances(sdk: CarbonSDK, address: string, whitelistDenoms?: string[]): Promise<TokensWithExternalBalance[]> {
+  public async getExternalBalances(sdk: CarbonSDK, address: string, whitelistDenoms?: string[], version = "V1"): Promise<TokensWithExternalBalance[]> {
     const tokenQueryResults = await sdk.token.getAllTokens();
     const tokens = tokenQueryResults.filter(
-      (token) =>
-        blockchainForChainId(token.chainId.toNumber(), sdk.network) == this.blockchain &&
-        token.tokenAddress.length == 40 &&
-        (!whitelistDenoms || whitelistDenoms.includes(token.denom))
+      (token) => {
+        const isCorrectBlockchain = 
+          version === "V2" 
+            ? 
+            !!sdk.token.getBlockchainV2(token.denom) && (BLOCKCHAIN_V2_TO_V1_MAPPING[sdk.token.getBlockchainV2(token.denom)!] == this.blockchain)
+            : 
+            blockchainForChainId(token.chainId.toNumber(), sdk.network) == this.blockchain
+        return isCorrectBlockchain && token.tokenAddress.length == 40 && (!whitelistDenoms || whitelistDenoms.includes(token.denom))
+      }
     );
 
     const requests = tokens.map((token) =>
