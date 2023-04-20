@@ -11505,6 +11505,25 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/cosmos.group.v1"
       }
     ],
+    "QueryGroupsRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryGroupsResponse": [
+      {
+        "name": "groups",
+        "type": "GroupInfo[]",
+        "packageName": "/cosmos.group.v1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
     "MsgCreateGroup": [
       {
         "name": "admin",

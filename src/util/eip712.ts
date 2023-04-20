@@ -1,75 +1,164 @@
 import { DEFAULT_CARBON_DOMAIN_FIELDS, DEFAULT_EIP712_TYPES } from "@carbon-sdk/constant/eip712";
-import { StdSignDoc } from "@cosmjs/amino/build";
 import { TypedDataDomain, TypedDataField } from "@ethersproject/abstract-signer";
 import { TypeUtils } from ".";
 import { parseChainId } from "@carbon-sdk/util/ethermint";
-import { EIP712Types, registry } from "@carbon-sdk/codec";
+import { EIP712Types } from "@carbon-sdk/codec";
 import AminoTypesMap from "@carbon-sdk/provider/amino/AminoTypesMap";
-import { Coin } from "@cosmjs/proto-signing";
-import { capitalize } from "lodash";
-import { AminoMsg } from "@cosmjs/amino";
+import { capitalize, create } from "lodash";
+import { CarbonTx } from "@carbon-sdk/util";
+import { AminoMsg } from "@cosmjs/amino/build";
 
 
 export interface EIP712Tx {
     readonly types: TypeUtils.SimpleMap<TypedDataField[]>;
     readonly primaryType: string;
     readonly domain: TypedDataDomain;
-    readonly message: Eip712StdSignDoc;
-}
-export type EIP712Fee = {
-    readonly amount: readonly Coin[];
-    readonly gas: string;
-    readonly feePayer: string;
+    readonly message: any;
 }
 
-type Eip712StdSignDoc = StdSignDoc & { fee: EIP712Fee }
-function getTypes(msgTypeUrl: string, aminoMsgValue: any): TypeUtils.SimpleMap<TypedDataField[]> {
-    return {
-        ...DEFAULT_EIP712_TYPES,
-        ...getMsgValueType(msgTypeUrl, aminoMsgValue, "MsgValue")
+function getTypes(msgs: readonly AminoMsg[]): TypeUtils.SimpleMap<TypedDataField[]> {
+    let types: TypeUtils.SimpleMap<TypedDataField[]> = { ...DEFAULT_EIP712_TYPES }
+    const includedTypes: string[] = []
+    let valueIndex = 0
+    msgs.forEach((msg: AminoMsg, index: number) => {
+        const typeUrl = AminoTypesMap.fromAmino(msg).typeUrl
+        const msgType = msg.type.split('/')[1]
+        const msgTypeIndex = getLatestMsgTypeIndex(`Type${msgType}`, types)
+        //cosmos-sdk/MsgSend => TypeMsgSend1
+        const typeKey = `Type${msgType}${msgTypeIndex}`
+        if (!includedTypes.includes(msg.type)) {
+            types['Tx'] = [...types['Tx'], { name: `msg${index}`, type: typeKey }]
+            types[typeKey] = [{ name: 'value', type: `TypeValue${valueIndex}` }, { name: 'type', type: 'string' }]
+            //cosmos-sdk/MsgSend => Msg_Send
+            types = { ...types, ...sortByNameDescending(getMsgValueType(typeUrl, msg.value, `TypeValue${valueIndex}`, valueIndex, types)) }
+            includedTypes.push(msg.type)
+            valueIndex++
+            return
+        }
+        const typeFound = matchingType(msg, types)
+        if (typeFound) {
+            types['Tx'] = [...types['Tx'], { name: `msg${index}`, type: typeFound }]
+            return
+        }
+        //same type, but different fields populated, so new type defnition is required
+        types['Tx'] = [...types['Tx'], { name: `msg${index}`, type: typeKey }]
+        types[typeKey] = [{ name: 'value', type: `TypeValue${valueIndex}` }, { name: 'type', type: 'string' }]
+        types = { ...types, ...sortByNameDescending(getMsgValueType(typeUrl, msg.value, `TypeValue${valueIndex}`, valueIndex, types)) }
+        valueIndex++
+
+    })
+
+    return types
+}
+
+function getLatestMsgTypeIndex(typeName: string, types: TypeUtils.SimpleMap<TypedDataField[]>): number {
+    let index = 0;
+    Object.entries(types).forEach(([key, _]) => {
+
+        if (key.includes(typeName)) {
+            index++
+
+        }
+    });
+
+    return index
+}
+function sortByNameDescending(types: TypeUtils.SimpleMap<TypedDataField[]>): TypeUtils.SimpleMap<TypedDataField[]> {
+    Object.entries(types).forEach(([key, _]) => {
+        types[key].sort((a, b) => b.name.localeCompare(a.name));
+    });
+    return types
+
+}
+
+// Checks if there is a need to create new type for the same message type because of different populated fields 
+function matchingType(msg: AminoMsg, eipTypes: TypeUtils.SimpleMap<TypedDataField[]>): string {
+    const msgType = msg.type.split('/')[1]
+    let match = false
+
+    for (const key in eipTypes) {
+        if (key.includes(msgType)) {
+            match = compareValues(msg, key, eipTypes)
+        }
+        if (match) {
+            return key
+        }
     }
+    return ''
+
+
+
 }
 
-function getMsgValueType(msgTypeUrl: string, aminoMsgValue: any, msgTypeName: string, objectName?: string, nestedType: boolean = false, msgTypeDefinitions: TypeUtils.SimpleMap<TypedDataField[]> = {}): TypeUtils.SimpleMap<TypedDataField[]> {
+function compareValues(msg: any, key: string, eipTypes: TypeUtils.SimpleMap<TypedDataField[]>): boolean {
+    let match = true
+    for (let { name, type } of eipTypes[key]) {
+        if (Object.keys(msg).length > eipTypes[key].length) {
+            return false
+        }
+        let value = msg[name]
+        if (!isNonZeroField(value)) {
+            return false
+        }
+        const typeIsArray = type.includes('[]')
+        if (typeIsArray) {
+            type = type.split('[]')[0]
+            //Assumption: Take first value in array to determine which fields are populated
+            value = value[0]
+        }
+        if (eipTypes[type]) {
+            match = compareValues(value, type, eipTypes)
+        }
+    }
+    return match
+}
+
+function getMsgValueType(msgTypeUrl: string, msgValue: any, msgTypeName: string, msgTypeIndex: number, types: TypeUtils.SimpleMap<TypedDataField[]>, objectName?: string, nestedType: boolean = false, msgTypeDefinitions: TypeUtils.SimpleMap<TypedDataField[]> = {}): TypeUtils.SimpleMap<TypedDataField[]> {
     const packageName = msgTypeUrl.split(".").slice(0, -1).join(".")
     const msgFieldType = msgTypeUrl.split(".").pop()!
-    const typeName = getTypeName(msgTypeName, objectName, nestedType, false)
+    const typeName = getTypeName(msgTypeName, msgTypeIndex, objectName, nestedType, false)
     const fieldsDefinition = EIP712Types[packageName][msgFieldType]
-
-    const objectValue = getFieldValue(aminoMsgValue)
-    if (isNonZeroField(objectValue)) {
+    if (isNonZeroField(msgValue)) {
         if (!msgTypeDefinitions[typeName]) {
             msgTypeDefinitions[typeName] = [];
         }
         fieldsDefinition.forEach(({ packageName, name, type }: any) => {
+            if (Array.isArray(msgValue) && msgValue.length === 0) {
+                msgTypeDefinitions[typeName] = [...msgTypeDefinitions[typeName], { name, type: 'string[]' }]
+                return
+            }
+
             //Assumption: Take first value in array to determine which fields are populated
-            const fieldValue = Array.isArray(aminoMsgValue) ? aminoMsgValue[0][name] : aminoMsgValue[name]
+            const fieldValue = Array.isArray(msgValue) && msgValue.length > 0 ? msgValue[0][name] : msgValue[name]
             if (isNonZeroField(fieldValue)) {
                 //For nested structs
                 if (packageName) {
                     const isArray = type.includes('[]') ? true : false
-                    const objectName = typeName === 'MsgValue' ? 'MsgValue' : typeName.split('Type')[1]
-                    const nestedType = getTypeName(name, objectName, true, isArray)
+                    // TypeValue0 --> Value
+                    const objectName = typeName.split('Type')[1].split(`${msgTypeIndex}`)[0]
+                    const nestedTypeName = `Type${objectName ? objectName : ''}${name.split('_').map((subName: string) => capitalize(subName)).join('')}`
+                    const nestedMsgTypeIndex = getLatestMsgTypeIndex(nestedTypeName, types)
+                    const nestedType = getTypeName(name, nestedMsgTypeIndex, objectName, true, isArray)
                     msgTypeDefinitions[typeName] = [...msgTypeDefinitions[typeName], { name, type: nestedType }]
-                    const objectNameSplit = typeName === 'MsgValue' ? 'MsgValue' : objectName.split(/(?=[A-Z])/).join('')
                     //Special logic if nested struct is google protobuf's Any type
                     if (isGoogleProtobufAnyPackage(packageName, type)) {
-                        const nestedAnyTypeName = isArray ? nestedType.split('[]')[0] : nestedType
-                        const nestedAnyValueType = `${nestedAnyTypeName}Value`
-                        msgTypeDefinitions[nestedAnyTypeName] = [{ name: "type", type: "string" }, { name: "value", type: nestedAnyValueType }]
-                        const anyObjectTypeNameSplit = nestedAnyTypeName.split('Type')[1].split(/(?=[A-Z])/).join('')
+                        const nestedAnyTypeName = isArray ? nestedType.split('[]')[0].split(`${msgTypeIndex}`)[0] : nestedType.split(`${msgTypeIndex}`)[0]
+                        const nestedMsgTypeIndex = getLatestMsgTypeIndex(`${nestedAnyTypeName}Value`, types)
+                        const nestedAnyValueType = `${nestedAnyTypeName}Value${nestedMsgTypeIndex}`
+                        msgTypeDefinitions[`${nestedAnyTypeName}${msgTypeIndex}`] = [{ name: "type", type: "string" }, { name: "value", type: nestedAnyValueType }]
+                        const anyObjectTypeNameSplit = nestedAnyTypeName.split('Type')[1].split(`${msgTypeIndex}`)[0]
                         const messageTypeUrl = AminoTypesMap.fromAmino(fieldValue).typeUrl
-                        getMsgValueType(messageTypeUrl, fieldValue.value, "value", anyObjectTypeNameSplit, true, msgTypeDefinitions)
+                        getMsgValueType(messageTypeUrl, fieldValue.value, "value", nestedMsgTypeIndex, types, anyObjectTypeNameSplit, true, msgTypeDefinitions)
                     }
                     else {
-                        const typeStructName = type.includes('[]') ? type.split('[]')[0] : type
+                        const typeStructName = type.includes('[]') ? type.split('[]')[0].split(`${nestedMsgTypeIndex}`)[0] : type.split(`${nestedMsgTypeIndex}`)[0]
                         const messageTypeUrl = `${packageName}.${typeStructName}`
-                        getMsgValueType(messageTypeUrl, fieldValue, name, objectNameSplit, true, msgTypeDefinitions)
+                        getMsgValueType(messageTypeUrl, fieldValue, name, nestedMsgTypeIndex, types, objectName, true, msgTypeDefinitions)
 
                     }
                 }
                 else {
-                    msgTypeDefinitions[typeName] = [...msgTypeDefinitions[typeName], { name, type }]
+                    msgTypeDefinitions[typeName] = [...msgTypeDefinitions[typeName], { name, type: getGjsonPrimitiveType(fieldValue) }]
                 }
             }
         })
@@ -77,9 +166,19 @@ function getMsgValueType(msgTypeUrl: string, aminoMsgValue: any, msgTypeName: st
     return msgTypeDefinitions
 }
 
-function getTypeName(name: string, objectName?: string, nestedType: boolean = false, isArray: boolean = false) {
+function getGjsonPrimitiveType(value: any) {
+    if (typeof value === 'number') {
+        return 'number'
+    }
+    if (typeof value === 'boolean') {
+        return 'boolean'
+    }
+    return 'string'
+}
+
+function getTypeName(name: string, index: number, objectName?: string, nestedType: boolean = false, isArray: boolean = false) {
     if (nestedType) {
-        return `Type${objectName === 'MsgValue' ? '' : objectName}${name.split('_').map(subName => capitalize(subName)).join('')}${isArray ? '[]' : ''}`
+        return `Type${objectName ? objectName : ''}${name.split('_').map(subName => capitalize(subName)).join('')}${index}${isArray ? '[]' : ''}`
     }
     return name
 }
@@ -104,22 +203,22 @@ function isNonZeroField(fieldValue: any): boolean {
     return fieldValue
 }
 
-function getFieldValue(aminoMsgValue: any): any {
-    if (Array.isArray(aminoMsgValue)) {
-        //Assumption: Take first value in array to determine fieldType later on
-        return aminoMsgValue[0]
-    }
-    return aminoMsgValue
-}
-
-export function constructEIP712Tx(doc: Eip712StdSignDoc): EIP712Tx {
+export function constructEIP712Tx(doc: CarbonTx.StdSignDoc): EIP712Tx {
+    const { account_number, chain_id, fee, memo, sequence } = doc
     // EIP-712 can only accept batch msgs of the same type
-    const msg = doc.msgs[0]
     const eip712Tx = {
-        types: getTypes(AminoTypesMap.fromAmino(msg).typeUrl, msg.value),
+        types: getTypes(doc.msgs),
         primaryType: "Tx",
         domain: { ...DEFAULT_CARBON_DOMAIN_FIELDS, chainId: parseChainId(doc.chain_id) },
-        message: doc
+        message: { account_number, chain_id, fee, memo, sequence, ...convertMsgs(doc.msgs) }
     }
     return eip712Tx
+}
+
+function convertMsgs(msgs: readonly AminoMsg[]): any {
+    const convertedMsgs: any = {}
+    msgs.forEach((msg, index) => {
+        convertedMsgs[`msg${index}`] = msg
+    })
+    return convertedMsgs
 }

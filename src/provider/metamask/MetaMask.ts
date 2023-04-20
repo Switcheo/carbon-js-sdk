@@ -10,7 +10,7 @@ import { AddressUtils, CarbonTx } from "@carbon-sdk/util";
 import { CarbonSigner, CarbonSignerTypes } from "@carbon-sdk/wallet";
 import { Algo, EncodeObject } from "@cosmjs/proto-signing";
 import { AuthInfo } from "@carbon-sdk/codec/cosmos/tx/v1beta1/tx";
-import { EIP712Fee, constructEIP712Tx } from "@carbon-sdk/util/eip712";
+import { legacyConstructEIP712Tx } from "@carbon-sdk/util/legacyEIP712";
 import { AminoTypesMap, Models } from "@carbon-sdk/index";
 import { StdFee } from "@cosmjs/stargate";
 import { AminoMsg } from "@cosmjs/amino";
@@ -18,6 +18,7 @@ import { ETH_SECP256K1_TYPE } from "@carbon-sdk/util/ethermint";
 import { TxTypes, registry } from "@carbon-sdk/codec";
 import { TxBody } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import { SWTHAddressOptions } from "@carbon-sdk/util/address";
+import { constructEIP712Tx } from "@carbon-sdk/util/eip712";
 
 export type EVMChain = Blockchain.Ethereum | Blockchain.BinanceSmartChain | Blockchain.Arbitrum | Blockchain.Polygon | Blockchain.Okc;
 type ChainContracts = {
@@ -246,7 +247,7 @@ export class MetaMask {
   private blockchain: EVMChain = Blockchain.Ethereum;
 
   static createMetamaskSigner(metamask: MetaMask, evmChainId: string, pubKeyBase64: string, addressOptions: SWTHAddressOptions): CarbonSigner {
-    const signDirect = async (signerAddress: string, doc: Models.Tx.SignDoc) => {
+    const signDirect = async (_: string, doc: Models.Tx.SignDoc) => {
       const txBody = TxBody.decode(doc.bodyBytes)
       const authInfo = AuthInfo.decode(doc.authInfoBytes)
       const msgs: EncodeObject[] = txBody.messages.map(message => {
@@ -256,13 +257,9 @@ export class MetaMask {
           value: msg
         }
       })
-      // EIP-712 can only accept batch msgs of the same type
-      // Only MsgMergeAccount will have an Eth address signer, other generic transaction will be cosmos address signer
-      const feePayer = msgs[0].typeUrl === TxTypes.MsgMergeAccount ? AddressUtils.ETHAddress.publicKeyToBech32Address(Buffer.from(pubKeyBase64, "base64"), addressOptions) : signerAddress
-      const fee: EIP712Fee = {
+      const fee: StdFee = {
         amount: authInfo.fee?.amount ?? [],
         gas: authInfo.fee?.gasLimit.toString() ?? "0",
-        feePayer
       }
       const aminoMsgs = msgs.map(msg => AminoTypesMap.toAmino(msg))
       const sig = await metamask.signEip712(
@@ -270,7 +267,6 @@ export class MetaMask {
         evmChainId,
         aminoMsgs,
         fee,
-        feePayer,
         txBody.memo,
         authInfo.signerInfos[0].sequence.toString())
       const sigBz = Uint8Array.from(Buffer.from(sig, 'hex'))
@@ -286,17 +282,13 @@ export class MetaMask {
         }
       }
     };
-    const signAmino = async (signerAddress: string, doc: CarbonTx.StdSignDoc) => {
+    const signAmino = async (_: string, doc: CarbonTx.StdSignDoc) => {
       const { account_number, msgs, fee, memo, sequence } = doc
-      // EIP-712 can only accept batch msgs of the same type
-      // Only MsgMergeAccount will have an Eth address signer, other generic transaction will be cosmos address signer
-      const feePayer = AminoTypesMap.fromAmino(msgs[0]).typeUrl === TxTypes.MsgMergeAccount ? AddressUtils.ETHAddress.publicKeyToBech32Address(Buffer.from(pubKeyBase64, "base64"), addressOptions) : signerAddress
       const sig = await metamask.signEip712(
         account_number,
         evmChainId,
         msgs,
         fee,
-        feePayer,
         memo,
         sequence)
       const sigBz = Uint8Array.from(Buffer.from(sig, 'hex'))
@@ -314,7 +306,6 @@ export class MetaMask {
     }
     const getAccounts = async () => {
       const address = await metamask.defaultAccount()
-      const api = await metamask.getConnectedAPI()
       return [
         {
           // Possible to change to "ethsecp256k1" ?
@@ -328,17 +319,18 @@ export class MetaMask {
 
     const signLegacyEip712 = async (signerAddress: string, doc: CarbonTx.StdSignDoc) => {
       const { account_number, chain_id, msgs, fee, memo, sequence } = doc
-      // EIP-712 can only accept batch msgs of the same type
+      // Legacy EIP-712 can only accept batch msgs of the same type
       // Only MsgMergeAccount will have an Eth address signer, other generic transaction will be cosmos address signer
+      // FeePayer here is only used for legacy EIP-712
       const feePayer = AminoTypesMap.fromAmino(msgs[0]).typeUrl === TxTypes.MsgMergeAccount ? AddressUtils.ETHAddress.publicKeyToBech32Address(Buffer.from(pubKeyBase64, "base64"), addressOptions) : signerAddress
       const sig = await metamask.signEip712(
         account_number,
         chain_id,
         msgs,
         fee,
-        feePayer,
         memo,
-        sequence)
+        sequence,
+        feePayer)
       return {
         signed: doc,
         signature: {
@@ -558,12 +550,11 @@ export class MetaMask {
     return pubKey
   }
 
-  async signEip712(accountNumber: string, evmChainId: string, msgs: readonly AminoMsg[], fee: StdFee, feePayer: string, memo: string, sequence: string): Promise<string> {
+  async signEip712(accountNumber: string, evmChainId: string, msgs: readonly AminoMsg[], fee: StdFee, memo: string, sequence: string, feePayer: string = ''): Promise<string> {
     const metamaskAPI = await this.getConnectedAPI();
     const defaultAccount = await this.defaultAccount();
     const stdSignDoc = makeSignDoc(msgs, fee, evmChainId, memo, accountNumber, sequence)
-    const eip712SignDoc = { ...stdSignDoc, fee: { ...fee, feePayer } }
-    const eip712Tx = constructEIP712Tx(eip712SignDoc)
+    const eip712Tx = this.legacyEip712SignMode ? legacyConstructEIP712Tx({ ...stdSignDoc, fee: { ...fee, feePayer } }) : constructEIP712Tx(stdSignDoc)
     const signature = (await metamaskAPI.request({
       method: 'eth_signTypedData_v4',
       params: [
