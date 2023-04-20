@@ -41,6 +41,7 @@ import { Blockchain } from "./util/blockchain";
 import { CarbonSigner, CarbonWallet, CarbonWalletGenericOpts } from "./wallet";
 import { MetaMask } from "./provider/metamask/MetaMask";
 import { SWTHAddressOptions } from "./util/address";
+import { ethers } from "ethers";
 export { CarbonTx } from "@carbon-sdk/util";
 export { CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletGenericOpts, CarbonWalletInitOpts } from "@carbon-sdk/wallet";
 export { DenomPrefix } from "./constant";
@@ -80,6 +81,7 @@ class CarbonSDK {
   public readonly query: CarbonQueryClient;
   insights: InsightsQueryClient;
   hydrogen: HydrogenClient;
+  evmJsonRpc: ethers.providers.JsonRpcProvider;
 
   wallet?: CarbonWallet;
 
@@ -133,6 +135,7 @@ class CarbonSDK {
     this.query = new CarbonQueryClient(opts.tmClient);
     this.insights = new InsightsQueryClient(this.networkConfig);
     this.hydrogen = new HydrogenClient(this.networkConfig);
+    this.evmJsonRpc = new ethers.providers.JsonRpcProvider(NetworkConfigs[this.network].evmJsonRpcUrl)
     this.token = opts.token ?? TokenClient.instance(this.query, this);
 
     this.admin = new AdminModule(this);
