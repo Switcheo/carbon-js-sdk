@@ -54,6 +54,9 @@ export class O3Wallet {
           },
         ];
       },
+      sendEvmTransaction: async () => {
+        throw new Error("signing not available");
+      }
     };
   }
 

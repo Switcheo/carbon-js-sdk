@@ -11,10 +11,10 @@ import { CarbonSigner, CarbonSignerTypes } from "@carbon-sdk/wallet";
 import { Algo, EncodeObject } from "@cosmjs/proto-signing";
 import { AuthInfo } from "@carbon-sdk/codec/cosmos/tx/v1beta1/tx";
 import { legacyConstructEIP712Tx } from "@carbon-sdk/util/legacyEIP712";
-import { AminoTypesMap, Models } from "@carbon-sdk/index";
+import { AminoTypesMap, CarbonSDK, Models } from "@carbon-sdk/index";
 import { StdFee } from "@cosmjs/stargate";
 import { AminoMsg } from "@cosmjs/amino";
-import { ETH_SECP256K1_TYPE } from "@carbon-sdk/util/ethermint";
+import { ETH_SECP256K1_TYPE, populateEvmTransactionDetails } from "@carbon-sdk/util/ethermint";
 import { TxTypes, registry } from "@carbon-sdk/codec";
 import { TxBody } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import { SWTHAddressOptions } from "@carbon-sdk/util/address";
@@ -344,13 +344,20 @@ export class MetaMask {
       }
     };
 
+    const sendEvmTransaction = async (api: CarbonSDK, req: ethers.providers.TransactionRequest) => {
+      const request = await populateEvmTransactionDetails(api, req)
+      const response = await metamask!.sendEvmTransaction(request)
+      return response
+    }
+
     return {
       type: CarbonSignerTypes.BrowserInjected,
       legacyEip712SignMode: metamask.legacyEip712SignMode,
       signDirect,
       signAmino,
       getAccounts,
-      signLegacyEip712
+      signLegacyEip712,
+      sendEvmTransaction
     };
   }
 
@@ -563,6 +570,26 @@ export class MetaMask {
       ],
     })) as string
     return signature.split('0x')[1]
+  }
+
+  async sendEvmTransaction(req: ethers.providers.TransactionRequest, metamaskAPI?: MetaMaskAPI) {
+    const api = metamaskAPI ?? await this.getConnectedAPI();
+    const tx = {
+      from: req.from,
+      to: req.to,
+      value: req.value,
+      gasPrice: req.gasPrice,
+      gas: req.gasLimit,
+      data: req.data,
+      // type can only be 0 or 1 or 2
+      type: `0x${req.type}`,
+      chainId: req.chainId
+    }
+    const txHash = (await api.request({
+      method: "eth_sendTransaction",
+      params: [tx],
+    })) as string
+    return txHash
   }
 
   async storeMnemonic(encryptedMnemonic: string, blockchain?: EVMChain) {

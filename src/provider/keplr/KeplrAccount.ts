@@ -4,8 +4,10 @@ import { CarbonSDK, Models } from "@carbon-sdk/index";
 import { AddressUtils, CarbonTx, FetchUtils, NumberUtils } from "@carbon-sdk/util";
 import { CarbonSigner, CarbonSignerTypes } from "@carbon-sdk/wallet";
 import { Algo } from "@cosmjs/proto-signing";
-import { AppCurrency, ChainInfo, FeeCurrency, Keplr, Key } from "@keplr-wallet/types";
+import { AppCurrency, ChainInfo, EthSignType, FeeCurrency, Keplr, Key } from "@keplr-wallet/types";
 import SDKProvider from "../sdk";
+import { ethers } from "ethers";
+import { populateEvmTransactionDetails } from "@carbon-sdk/util/ethermint";
 
 const SWTH: FeeCurrency = {
   coinDenom: "SWTH",
@@ -42,11 +44,26 @@ class KeplrAccount {
       },
     ];
 
+    const sendEvmTransaction = async (api: CarbonSDK, req: ethers.providers.TransactionRequest): Promise<ethers.providers.TransactionResponse> => {
+      const request = await populateEvmTransactionDetails(api, req)
+      const signedTx = await keplr!.signEthereum(
+        // carbon chain id
+        api.wallet?.getChainId()!,
+        // cosmos address
+        api.wallet?.bech32Address!,
+        JSON.stringify(request),
+        EthSignType.TRANSACTION,
+      )
+      const rlpEncodedHex = `0x${Buffer.from(signedTx).toString('hex')}`;
+      return await api.evmJsonRpc.sendTransaction(rlpEncodedHex)
+    }
+
     return {
       type: CarbonSignerTypes.BrowserInjected,
       signDirect,
       signAmino,
       getAccounts,
+      sendEvmTransaction
     };
   }
 

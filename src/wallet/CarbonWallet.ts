@@ -509,6 +509,11 @@ export class CarbonWallet {
     return this.chainId;
   }
 
+  getEvmChainId(): string {
+    if (!this.evmChainId) throw new Error("CarbonWallet is not initialized");
+    return this.evmChainId;
+  }
+
   isSigner(signerType: CarbonSignerTypes) {
     return this.signer.type === signerType;
   }

@@ -1,8 +1,10 @@
+import CarbonSDK from "@carbon-sdk/CarbonSDK";
 import { SignDoc } from "@carbon-sdk/codec/cosmos/tx/v1beta1/tx";
 import { CosmosLedger } from "@carbon-sdk/provider";
 import { sortObject } from "@carbon-sdk/util/generic";
 import { AminoSignResponse, encodeSecp256k1Signature, OfflineAminoSigner, Secp256k1Wallet, StdSignDoc } from "@cosmjs/amino";
 import { AccountData, DirectSecp256k1Wallet, DirectSignResponse, OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
+import { ethers } from "ethers";
 
 export enum CarbonSignerTypes {
   Ledger,
@@ -10,15 +12,20 @@ export enum CarbonSignerTypes {
   BrowserInjected,
   PublicKey,
 }
-export interface EIP712Signer {
+
+
+export interface EvmSigner {
+  readonly sendEvmTransaction: (api: CarbonSDK, req: ethers.providers.TransactionRequest) => void
+}
+
+export interface EIP712Signer extends EvmSigner {
   legacyEip712SignMode: boolean
   readonly signLegacyEip712: (signerAddress: string, signDoc: StdSignDoc) => Promise<LegacyEIP712AminoSignResponse>;
 }
-
 export type CarbonSigner = DirectCarbonSigner | AminoCarbonSigner | CarbonEIP712Signer;
 export type CarbonEIP712Signer = (DirectCarbonSigner | AminoCarbonSigner) & EIP712Signer
-export type DirectCarbonSigner = OfflineDirectSigner & { type: CarbonSignerTypes };
-export type AminoCarbonSigner = OfflineAminoSigner & { type: CarbonSignerTypes }
+export type DirectCarbonSigner = OfflineDirectSigner & EvmSigner & { type: CarbonSignerTypes };
+export type AminoCarbonSigner = OfflineAminoSigner & EvmSigner & { type: CarbonSignerTypes }
 
 
 export type LegacyEIP712AminoSignResponse = AminoSignResponse & { feePayer: string }
@@ -59,6 +66,10 @@ export class CarbonPrivateKeySigner implements DirectCarbonSigner, AminoCarbonSi
     const wallet = await this.initWallet();
     return await wallet.signDirect(signerAddress, signDoc);
   }
+
+  async sendEvmTransaction(api: CarbonSDK, req: ethers.providers.TransactionRequest) {
+    throw new Error("signing not available");
+  }
 }
 
 export class CarbonNonSigner implements DirectCarbonSigner {
@@ -69,6 +80,9 @@ export class CarbonNonSigner implements DirectCarbonSigner {
   }
 
   async signDirect(): Promise<DirectSignResponse> {
+    throw new Error("signing not available");
+  }
+  async sendEvmTransaction(api: CarbonSDK, req: ethers.providers.TransactionRequest) {
     throw new Error("signing not available");
   }
 }
@@ -109,6 +123,9 @@ export class CarbonLedgerSigner implements AminoCarbonSigner {
       signed: doc,
       signature,
     };
+  }
+  async sendEvmTransaction(api: CarbonSDK, req: ethers.providers.TransactionRequest) {
+    throw new Error("signing not available");
   }
 
   constructor(readonly ledger: CosmosLedger) {}
