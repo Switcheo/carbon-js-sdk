@@ -5,6 +5,8 @@ import { ethers } from "ethers";
 
 export const ETH_SECP256K1_TYPE = '/ethermint.crypto.v1.ethsecp256k1.PubKey'
 
+export const PUBLIC_KEY_SIGNING_TEXT = 'Sign your public key to merge your Carbon account: '
+
 export function encodeAnyEthSecp256k1PubKey(pubkey: Uint8Array): Any {
     const ethPubKey = EthSecp256k1PubKey.fromPartial({
         key: pubkey,

@@ -14,7 +14,7 @@ import { legacyConstructEIP712Tx } from "@carbon-sdk/util/legacyEIP712";
 import { AminoTypesMap, CarbonSDK, Models } from "@carbon-sdk/index";
 import { StdFee } from "@cosmjs/stargate";
 import { AminoMsg } from "@cosmjs/amino";
-import { ETH_SECP256K1_TYPE, populateEvmTransactionDetails } from "@carbon-sdk/util/ethermint";
+import { ETH_SECP256K1_TYPE, PUBLIC_KEY_SIGNING_TEXT, populateEvmTransactionDetails } from "@carbon-sdk/util/ethermint";
 import { TxTypes, registry } from "@carbon-sdk/codec";
 import { TxBody } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import { SWTHAddressOptions } from "@carbon-sdk/util/address";
@@ -527,7 +527,7 @@ export class MetaMask {
   // create signed public key for merging of cosmos and ethereum accounts (Metamask V2)
   async signPublicKeyMergeAccount(publicKey: string, address: string, metamaskAPI?: MetaMaskAPI): Promise<string> {
     const api = metamaskAPI ?? await this.getConnectedAPI();
-    const message = `Sign your public key to merge your Carbon account: ${publicKey}`;
+    const message = `${PUBLIC_KEY_SIGNING_TEXT}${publicKey}`;
     return (await this.personalSign(address, message, api)).split("0x")[1]
   }
 

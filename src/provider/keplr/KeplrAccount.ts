@@ -7,7 +7,7 @@ import { Algo } from "@cosmjs/proto-signing";
 import { AppCurrency, ChainInfo, EthSignType, FeeCurrency, Keplr, Key } from "@keplr-wallet/types";
 import SDKProvider from "../sdk";
 import { ethers } from "ethers";
-import { populateEvmTransactionDetails } from "@carbon-sdk/util/ethermint";
+import { PUBLIC_KEY_SIGNING_TEXT, populateEvmTransactionDetails } from "@carbon-sdk/util/ethermint";
 
 const SWTH: FeeCurrency = {
   coinDenom: "SWTH",
@@ -151,6 +151,20 @@ class KeplrAccount {
       },
       features: ["ibc-transfer", "ibc-go"],
     };
+  }
+
+  static async signPublicKeyMergeAccount(publicKey: string, address: string, chainId: string, keplr: Keplr) {
+    const message = `${PUBLIC_KEY_SIGNING_TEXT}${publicKey}`;
+    return KeplrAccount.signArbitrary(address, chainId, message, keplr)
+  }
+
+  static async signArbitrary(signerAddress: string, chainId: string, message: string, keplr: Keplr) {
+    const signature = await keplr.signArbitrary(
+      chainId,
+      signerAddress,
+      message,
+    )
+    return Buffer.from(signature.signature, 'base64').toString('hex')
   }
 }
 
