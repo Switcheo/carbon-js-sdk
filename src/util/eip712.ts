@@ -205,7 +205,6 @@ function isNonZeroField(fieldValue: any): boolean {
 
 export function constructEIP712Tx(doc: CarbonTx.StdSignDoc): EIP712Tx {
     const { account_number, chain_id, fee, memo, sequence } = doc
-    // EIP-712 can only accept batch msgs of the same type
     const eip712Tx = {
         types: getTypes(doc.msgs),
         primaryType: "Tx",

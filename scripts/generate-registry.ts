@@ -107,11 +107,20 @@ for (const packageName in modules) {
     const messageAlias = key.split(" ")[2] // "XXX as XXXXX"
     const typeUrl = messageAlias ? `/${packageName}.${key.split(" ")[0].trim()}` : `/${packageName}.${key}`;
     const messageType = messageAlias ? messageAlias.trim() : key
-    if ((key.startsWith("Msg") && key !== "MsgClientImpl") || key.startsWith("Header") || key.endsWith("Proposal")) {
-      typeMap[messageType] = typeUrl;
-    }
     const ethermint = typeUrl.match(/^\/ethermint.([a-z]+).([a-z0-9]+).([a-z0-9]+)(?:\.([a-z0-9]+))?$/i);
     const match = typeUrl.match(/^\/Switcheo.carbon.([a-z]+).([A-Za-z]+)$/i);
+
+    if ((key.startsWith("Msg") && key !== "MsgClientImpl") || key.startsWith("Header") || key.endsWith("Proposal")) {
+      // To resolve message type with same name
+      if (typeMap[messageType]) {
+        const pkgName = ethermint ? capitalize(ethermint?.[1]) : capitalize(packageName.split('.')[2])
+        const newMsgName = `Msg${pkgName}${messageType.split('Msg')[1]}`
+        typeMap[newMsgName] = typeUrl;
+      }
+      else {
+        typeMap[messageType] = typeUrl;
+      }
+    }
     if (ethermint?.[1]) {
       console.log(`registry.register("${typeUrl}", Ethermint.${capitalize(ethermint?.[1])}.${messageType});`);
     } else if (match?.[1] && polynetworkFolders.includes(match?.[1])) {
