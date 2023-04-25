@@ -134,9 +134,9 @@ class CarbonSDK {
     this.evmChainId = opts.evmChainId ?? CarbonEvmChainIDs[this.network] ?? CarbonEvmChainIDs[Network.MainNet];
     this.query = new CarbonQueryClient(opts.tmClient);
     this.insights = new InsightsQueryClient(this.networkConfig);
-    this.hydrogen = new HydrogenClient(this.networkConfig);
-    this.evmJsonRpc = new ethers.providers.JsonRpcProvider(NetworkConfigs[this.network].evmJsonRpcUrl)
     this.token = opts.token ?? TokenClient.instance(this.query, this);
+    this.hydrogen = new HydrogenClient(this.networkConfig, this.token);
+    this.evmJsonRpc = new ethers.providers.JsonRpcProvider(NetworkConfigs[this.network].evmJsonRpcUrl)
     this.hydrogen = HydrogenClient.instance(this.networkConfig, this.token);
 
     this.admin = new AdminModule(this);

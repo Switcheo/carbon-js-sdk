@@ -245,7 +245,7 @@ const OKC_TESTNET: MetaMaskChangeNetworkParam = {
  * TODO: Add docs
  */
 export class MetaMask {
-  private blockchain: EVMChain = Blockchain.Ethereum;
+  private blockchain: EVMChain = 'Ethereum';
 
   static createMetamaskSigner(metamask: MetaMask, evmChainId: string, pubKeyBase64: string, addressOptions: SWTHAddressOptions): CarbonSigner {
     const signDirect = async (_: string, doc: Models.Tx.SignDoc) => {

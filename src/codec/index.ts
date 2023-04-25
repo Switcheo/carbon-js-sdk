@@ -1187,6 +1187,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "syntax",
         "type": "string"
+      },
+      {
+        "name": "edition",
+        "type": "string"
       }
     ],
     "DescriptorProto": [
@@ -1495,6 +1499,10 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "bool"
       },
       {
+        "name": "deprecated_legacy_json_field_conflicts",
+        "type": "bool"
+      },
+      {
         "name": "uninterpreted_option",
         "type": "UninterpretedOption[]",
         "packageName": "/google.protobuf"
@@ -1532,6 +1540,20 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "bool"
       },
       {
+        "name": "debug_redact",
+        "type": "bool"
+      },
+      {
+        "name": "retention",
+        "type": "",
+        "packageName": "/google.protobuf.FieldOptions"
+      },
+      {
+        "name": "target",
+        "type": "",
+        "packageName": "/google.protobuf.FieldOptions"
+      },
+      {
         "name": "uninterpreted_option",
         "type": "UninterpretedOption[]",
         "packageName": "/google.protobuf"
@@ -1551,6 +1573,10 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "deprecated",
+        "type": "bool"
+      },
+      {
+        "name": "deprecated_legacy_json_field_conflicts",
         "type": "bool"
       },
       {
@@ -2857,32 +2883,6 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "bool"
       }
     ],
-    "EModeCategory": [
-      {
-        "name": "name",
-        "type": "string"
-      },
-      {
-        "name": "denoms",
-        "type": "string[]"
-      },
-      {
-        "name": "loan_to_value",
-        "type": "string"
-      },
-      {
-        "name": "liquidation_threshold",
-        "type": "string"
-      },
-      {
-        "name": "liquidation_discount",
-        "type": "string"
-      },
-      {
-        "name": "is_active",
-        "type": "bool"
-      }
-    ],
     "StablecoinDebtInfo": [
       {
         "name": "denom",
@@ -3111,38 +3111,6 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "type",
-        "type": "string"
-      }
-    ],
-    "NewEModeCategoryEvent": [
-      {
-        "name": "e_mode_category",
-        "type": "EModeCategory",
-        "packageName": "/Switcheo.carbon.cdp"
-      },
-      {
-        "name": "type",
-        "type": "string"
-      }
-    ],
-    "UpdateEModeCategoryEvent": [
-      {
-        "name": "e_mode_category",
-        "type": "EModeCategory",
-        "packageName": "/Switcheo.carbon.cdp"
-      },
-      {
-        "name": "type",
-        "type": "string"
-      }
-    ],
-    "UpdateAccountEModeCategoryNameEvent": [
-      {
-        "name": "account",
-        "type": "string"
-      },
-      {
-        "name": "e_mode_category_name",
         "type": "string"
       }
     ],
@@ -21499,12 +21467,6 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "expiry_time",
         "type": "string"
-      }
-    ],
-    "IncomingDisableSpotMarketNames": [
-      {
-        "name": "ids",
-        "type": "string[]"
       }
     ],
     "IncomingDisableSpotMarketNames": [
