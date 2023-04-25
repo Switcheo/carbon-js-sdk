@@ -86,8 +86,8 @@ export interface LeaderboardLeagueEntry {
   spotsVolume: string;
   derVolume: string;
   freq: string;
-  username: string;
-  twitter: string;
+  username: string | null;
+  twitter: string | null;
   spotsPoint: string;
   derPoints: string;
   freqFactor: string;
