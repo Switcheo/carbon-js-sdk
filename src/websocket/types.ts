@@ -139,6 +139,8 @@ export interface WsGetCdpAllTokenDebts {}
 
 export interface WsGetCdpStablecoinDebt {}
 
+export interface WsGetCdpStablecoinInterest {}
+
 export interface WsGetCdpLiquidations {}
 
 export interface WsGetCdpRewardSchemes {}

@@ -1,21 +1,15 @@
-export interface RecentTrade {
-  block_created_at: string; // string representation of timestamp
-  block_height: number;
-  id: number;
-  liquidation?: string;
-  maker_address: string;
-  maker_fee_amount: string; // string representation of number
-  maker_fee_denom: string;
-  maker_id: string;
-  maker_side: string;
+export interface AccountTrade {
+  order_id: string;
   market: string;
+  side: string;
   price: string; // string representation of number
   quantity: string; // string representation of number
-  taker_address: string;
-  taker_fee_amount: string; // string representation of number
-  taker_fee_denom: string;
-  taker_id: string;
-  taker_side: string;
+  fee_amount: string; // string representation of number
+  fee_denom: string; // string representation of number
+  address: string;
+  block_height: number;
+  block_created_at: string; // string representation of timestamp
+  trade_id: number;
 }
 
 export interface HistoryOrder {
@@ -73,18 +67,12 @@ export interface Candlestick {
   resolution: number;
 }
 
-export interface AccountTrade {
-  address: string;
+export interface RecentTrade {
   block_created_at: string;
   block_height: number;
-  fee_amount: string;
-  fee_denom: string;
   market: string;
-  order_id: string;
   price: string;
   quantity: string;
-  side: string;
-  trade_id: number;
   id?: string;
   liquidation?: string;
   taker_id?: string;
@@ -218,9 +206,19 @@ export interface CDPParams {
   interest_fee: string; // string representation of number
   liquidation_fee: string; // string representation of number
   stablecoin_interest_rate: string; // string representation of number
+  stablecoin_mint_cap: string; // string representation of number
   complete_liquidation_threshold: string; // string representation of number
   minimum_close_factor: string; // string representation of number
   small_liquidation_size: string; // string representation of number
+  stale_price_grace_period: string;
+  cdp_paused: boolean;
+  stablecoin_interest_rate_epoch: string;
+  stablecoin_interest_rate_adjuster_coefficient?: string;
+}
+
+export interface StablecoinInterestInfo {
+  last_updated_time: string;
+  stablecoin_interest_rate: string; // string representation of number
 }
 
 export interface RateStrategy {

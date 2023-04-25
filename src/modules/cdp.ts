@@ -34,7 +34,8 @@ import {
   MsgSupplyAssetAndLockCollateral,
   MsgUnlockCollateral,
   MsgUnlockCollateralAndWithdrawAsset,
-  MsgUpdateRateStrategy, MsgUpdateRewardScheme, MsgWithdrawAsset
+  MsgUpdateRateStrategy, MsgUpdateRewardScheme, MsgWithdrawAsset,
+  MsgAddEModeCategory, MsgUpdateEModeCategory, MsgChangeAccountEMode,
 } from "@carbon-sdk/codec/cdp/tx";
 import { QueryBalanceRequest, QuerySupplyOfRequest } from "@carbon-sdk/codec/cosmos/bank/v1beta1/query";
 import { Network } from "@carbon-sdk/constant";
@@ -552,6 +553,74 @@ export class CDPModule extends BaseModule {
     return await wallet.sendTx(
       {
         typeUrl: CarbonTx.Types.MsgLiquidateCollateralWithStablecoinAndInterestInCollateral,
+        value,
+      },
+      opts
+    );
+  }
+
+  public async addEModeCategory(
+    params: CDPModule.AddEModeCategoryParams,
+    opts?: CarbonTx.SignTxOpts
+  ) {
+    const wallet = this.getWallet();
+    const value = MsgAddEModeCategory.fromPartial({
+      creator: wallet.bech32Address,
+      eModeCategory: {
+        name: params.eModeCategory?.name,
+        denoms: params.eModeCategory?.denoms,
+        loanToValue: params.eModeCategory?.loanToValue.toString(10),
+        liquidationThreshold: params.eModeCategory?.liquidationThreshold.toString(10),
+        liquidationDiscount: params.eModeCategory?.liquidationDiscount.toString(10),
+        isActive: params.eModeCategory?.isActive,
+      },
+    });
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgAddEModeCategory,
+        value,
+      },
+      opts
+    );
+  }
+
+  public async updateEModeCategory(
+    params: CDPModule.UpdateEModeCategoryParams,
+    opts?: CarbonTx.SignTxOpts
+  ) {
+    const wallet = this.getWallet();
+    const value = MsgUpdateEModeCategory.fromPartial({
+      creator: wallet.bech32Address,
+      eModeCategoryName: params.eModeCategoryName,
+      updateEModeCategoryParams: {
+        denoms: params.updateEModeCategoryParams?.denoms,
+        loanToValue: params.updateEModeCategoryParams?.loanToValue?.toNumber(),
+        liquidationThreshold: params.updateEModeCategoryParams?.liquidationThreshold?.toNumber(),
+        liquidationDiscount: params.updateEModeCategoryParams?.liquidationDiscount?.toNumber(),
+        isActive: params.updateEModeCategoryParams?.isActive,
+      }
+    });
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgUpdateEModeCategory,
+        value,
+      },
+      opts
+    );
+  }
+
+  public async changeAccountEMode(
+    params: CDPModule.ChangeAccountEModeParams,
+    opts?: CarbonTx.SignTxOpts
+  ) {
+    const wallet = this.getWallet();
+    const value = MsgChangeAccountEMode.fromPartial({
+      creator: wallet.bech32Address,
+      eModeCategoryName: params.eModeCategoryName,
+    });
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgChangeAccountEMode,
         value,
       },
       opts
@@ -1324,5 +1393,37 @@ export namespace CDPModule {
     interestCdpDenom: string;
     interestCdpAmount: BigNumber;
     debtor: string;
+  }
+
+  interface EmodeCategoryParams {
+    name: string;
+    denoms: string[];
+    loanToValue: BigNumber;
+    liquidationThreshold: BigNumber;
+    liquidationDiscount: BigNumber;
+    isActive: boolean;
+  }
+  export interface AddEModeCategoryParams {
+    creator: string;
+    eModeCategory?: EmodeCategoryParams;
+  }
+
+  interface UpdateEModeCategoryStruct {
+    denoms: string[];
+    loanToValue?: BigNumber;
+    liquidationThreshold?: BigNumber;
+    liquidationDiscount?: BigNumber;
+    isActive?: boolean;
+  }
+
+  export interface UpdateEModeCategoryParams {
+    creator: string;
+    eModeCategoryName: string;
+    updateEModeCategoryParams?: UpdateEModeCategoryStruct;
+  }
+
+  export interface ChangeAccountEModeParams {
+    creator: string;
+    eModeCategoryName: string;
   }
 }

@@ -1,6 +1,6 @@
 import { EthNetworkConfig, Network, NetworkConfigs } from "@carbon-sdk/constant";
 import { ABIs } from "@carbon-sdk/eth";
-import { Blockchain, getBlockchainFromChain, ChainNames } from "@carbon-sdk/util/blockchain";
+import { Blockchain, ChainNames, BlockchainV2, EVMChain as EVMChainV2, getBlockchainFromChainV2, BLOCKCHAIN_V2_TO_V1_MAPPING } from "@carbon-sdk/util/blockchain";
 import { appendHexPrefix } from "@carbon-sdk/util/generic";
 import { ethers } from "ethers";
 import { makeSignDoc } from "@cosmjs/amino/build";
@@ -20,14 +20,15 @@ import { TxBody } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import { SWTHAddressOptions } from "@carbon-sdk/util/address";
 import { constructEIP712Tx } from "@carbon-sdk/util/eip712";
 
-export type EVMChain = Blockchain.Ethereum | Blockchain.BinanceSmartChain | Blockchain.Arbitrum | Blockchain.Polygon | Blockchain.Okc;
+export type EVMChain = EVMChainV2;
+
 type ChainContracts = {
   [key in Network]: string;
 };
 const CONTRACT_HASH: {
   [key in EVMChain]: ChainContracts;
 } = {
-  [Blockchain.Ethereum]: {
+  Ethereum: {
     // use same rinkeby contract for all non-mainnet uses
     [Network.TestNet]: "0x086e1b5f67c0f7ca8eb202d35553e27e964899e2",
     [Network.DevNet]: "0x086e1b5f67c0f7ca8eb202d35553e27e964899e2",
@@ -35,7 +36,7 @@ const CONTRACT_HASH: {
 
     [Network.MainNet]: "0xf4552877A40c1527D38970F170993660084D4541",
   } as const,
-  [Blockchain.BinanceSmartChain]: {
+  ['Binance Smart Chain']: {
     // use same testnet contract for all non-mainnet uses
     [Network.TestNet]: "0x06E949ec2d6737ff57859CdcE426C5b5CA2Fc085",
     [Network.DevNet]: "0x06E949ec2d6737ff57859CdcE426C5b5CA2Fc085",
@@ -43,7 +44,7 @@ const CONTRACT_HASH: {
 
     [Network.MainNet]: "0x3786d94AC6B15FE2eaC72c3CA78cB82578Fc66f4",
   } as const,
-  [Blockchain.Arbitrum]: {
+  Arbitrum: {
     // use same testnet contract for all non-mainnet uses
     [Network.TestNet]: "",
     [Network.DevNet]: "",
@@ -51,7 +52,7 @@ const CONTRACT_HASH: {
 
     [Network.MainNet]: "0x43138036d1283413035b8eca403559737e8f7980",
   } as const,
-  [Blockchain.Polygon]: {
+  Polygon: {
     // use same testnet contract for all non-mainnet uses
     [Network.TestNet]: "",
     [Network.DevNet]: "",
@@ -59,7 +60,7 @@ const CONTRACT_HASH: {
 
     [Network.MainNet]: "0x61B9503Fe023E1F1Dd0ab7417923cB0A41DD9E0c",
   } as const,
-  [Blockchain.Okc]: {
+  OKC: {
     // use same testnet contract for all non-mainnet uses
     [Network.TestNet]: "",
     [Network.DevNet]: "",
@@ -117,7 +118,7 @@ export interface CallContractArgs {
 }
 
 export interface MetaMaskSyncResult {
-  blockchain?: Blockchain;
+  blockchain?: Blockchain | BlockchainV2;
   chainId?: number;
 }
 
@@ -361,16 +362,16 @@ export class MetaMask {
     };
   }
 
-  static getNetworkParams(network: Network, blockchain: EVMChain = Blockchain.Ethereum): MetaMaskChangeNetworkParam {
+  static getNetworkParams(network: Network, blockchain: EVMChain = 'Ethereum'): MetaMaskChangeNetworkParam {
     if (network === Network.MainNet) {
       switch (blockchain) {
-        case Blockchain.BinanceSmartChain:
+        case 'Binance Smart Chain':
           return BSC_MAINNET;
-        case Blockchain.Arbitrum:
+        case 'Arbitrum':
           return ARBITRUM_MAINNET;
-        case Blockchain.Polygon:
+        case 'Polygon':
           return POLYGON_MAINNET;
-        case Blockchain.Okc:
+        case 'OKC':
           return OKC_MAINNET;
         default:
           // metamask should come with Ethereum configs
@@ -379,13 +380,13 @@ export class MetaMask {
     }
 
     switch (blockchain) {
-      case Blockchain.BinanceSmartChain:
+      case 'Binance Smart Chain':
         return BSC_TESTNET;
-      case Blockchain.Arbitrum:
+      case 'Arbitrum':
         return ARBITRUM_TESTNET;
-      case Blockchain.Polygon:
+      case 'Polygon':
         return POLYGON_TESTNET;
-      case Blockchain.Okc:
+      case 'OKC':
         return OKC_TESTNET;
       default:
         // metamask should come with Ethereum configs
@@ -393,16 +394,16 @@ export class MetaMask {
     }
   }
 
-  static getRequiredChainId(network: Network, blockchain: Blockchain = Blockchain.Ethereum) {
+  static getRequiredChainId(network: Network, blockchain: BlockchainV2 = 'Ethereum') {
     if (network === Network.MainNet) {
       switch (blockchain) {
-        case Blockchain.BinanceSmartChain:
+        case 'Binance Smart Chain':
           return 56;
-        case Blockchain.Arbitrum:
+        case 'Arbitrum':
           return 42161;
-        case Blockchain.Polygon:
+        case 'Polygon':
           return 137;
-        case Blockchain.Okc:
+        case 'OKC':
           return 66;
         default:
           return 1;
@@ -410,13 +411,13 @@ export class MetaMask {
     }
 
     switch (blockchain) {
-      case Blockchain.BinanceSmartChain:
+      case 'Binance Smart Chain':
         return 97;
-      case Blockchain.Arbitrum:
+      case 'Arbitrum':
         return 421611;
-      case Blockchain.Polygon:
+      case 'Polygon':
         return 80001;
-      case Blockchain.Okc:
+      case 'OKC':
         return 65;
       default:
         return 5;
@@ -425,28 +426,28 @@ export class MetaMask {
 
   constructor(public readonly network: Network, public readonly legacyEip712SignMode: boolean = false) {}
 
-  private checkProvider(blockchain: Blockchain = this.blockchain): ethers.providers.Provider {
+  private checkProvider(blockchain: BlockchainV2 = this.blockchain): ethers.providers.Provider {
     const config: any = NetworkConfigs[this.network];
 
-    if (!config[blockchain]) {
+    if (!config[BLOCKCHAIN_V2_TO_V1_MAPPING[blockchain!]]) {
       throw new Error(`MetaMask login not supported for this network ${this.network}`);
     }
 
-    const ethNetworkConfig: EthNetworkConfig = config[blockchain];
+    const ethNetworkConfig: EthNetworkConfig = config[BLOCKCHAIN_V2_TO_V1_MAPPING[blockchain!]];
 
     const provider = new ethers.providers.JsonRpcProvider(ethNetworkConfig.rpcURL);
 
     return provider;
   }
 
-  public getBlockchain(): Blockchain {
+  public getBlockchain(): BlockchainV2 {
     return this.blockchain;
   }
 
   async syncBlockchain(): Promise<MetaMaskSyncResult> {
     const chainIdHex = (await this.getAPI()?.request({ method: "eth_chainId" })) as string;
     const chainId = !!chainIdHex ? parseInt(chainIdHex, 16) : undefined;
-    const blockchain = getBlockchainFromChain(chainId) as EVMChain;
+    const blockchain = getBlockchainFromChainV2(chainId) as EVMChain;
     this.blockchain = blockchain!;
 
     return { chainId, blockchain };
@@ -678,23 +679,23 @@ export class MetaMask {
     // set correct blockchain given the chain ID
     if (network === Network.MainNet) {
       if (currentChainId === 1) {
-        this.blockchain = Blockchain.Ethereum;
+        this.blockchain = 'Ethereum';
         return currentChainId;
       }
       if (currentChainId === 56) {
-        this.blockchain = Blockchain.BinanceSmartChain;
+        this.blockchain = 'Binance Smart Chain';
         return currentChainId;
       }
       if (currentChainId === 42161) {
-        this.blockchain = Blockchain.Arbitrum;
+        this.blockchain = 'Arbitrum';
         return currentChainId;
       }
       if (currentChainId === 137) {
-        this.blockchain = Blockchain.Polygon;
+        this.blockchain = 'Polygon';
         return currentChainId;
       }
       if (currentChainId === 66) {
-        this.blockchain = Blockchain.Okc;
+        this.blockchain = 'OKC';
         return currentChainId;
       }
 
@@ -702,23 +703,23 @@ export class MetaMask {
     }
 
     if (currentChainId === 5) {
-      this.blockchain = Blockchain.Ethereum;
+      this.blockchain = 'Ethereum';
       return currentChainId;
     }
     if (currentChainId === 97) {
-      this.blockchain = Blockchain.BinanceSmartChain;
+      this.blockchain = 'Binance Smart Chain';
       return currentChainId;
     }
     if (currentChainId === 421611) {
-      this.blockchain = Blockchain.Arbitrum;
+      this.blockchain = 'Arbitrum';
       return currentChainId;
     }
     if (currentChainId === 80001) {
-      this.blockchain = Blockchain.Polygon;
+      this.blockchain = 'Polygon';
       return currentChainId;
     }
     if (currentChainId === 65) {
-      this.blockchain = Blockchain.Okc;
+      this.blockchain = 'OKC';
       return currentChainId;
     }
 

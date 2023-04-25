@@ -137,6 +137,7 @@ class CarbonSDK {
     this.hydrogen = new HydrogenClient(this.networkConfig);
     this.evmJsonRpc = new ethers.providers.JsonRpcProvider(NetworkConfigs[this.network].evmJsonRpcUrl)
     this.token = opts.token ?? TokenClient.instance(this.query, this);
+    this.hydrogen = HydrogenClient.instance(this.networkConfig, this.token);
 
     this.admin = new AdminModule(this);
     this.order = new OrderModule(this);

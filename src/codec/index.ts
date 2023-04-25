@@ -14,9 +14,9 @@ import { MsgSoftwareUpgrade, MsgSoftwareUpgradeResponse, MsgCancelUpgrade, MsgCa
 import { SoftwareUpgradeProposal, CancelSoftwareUpgradeProposal } from "./cosmos/upgrade/v1beta1/upgrade";
 import { MsgGrantAllowance, MsgGrantAllowanceResponse, MsgRevokeAllowance, MsgRevokeAllowanceResponse } from "./cosmos/feegrant/v1beta1/tx";
 import { MsgSubmitEvidence, MsgSubmitEvidenceResponse } from "./cosmos/evidence/v1beta1/tx";
-import { MsgSend, MsgSendResponse } from "./cosmos/nft/v1beta1/tx";
+import { MsgSend as MsgNftSend, MsgSendResponse as MsgNftSendResponse } from "./cosmos/nft/v1beta1/tx";
 import { MsgCreateGroup, MsgCreateGroupResponse, MsgUpdateGroupMembers, MsgUpdateGroupMembersResponse, MsgUpdateGroupAdmin, MsgUpdateGroupAdminResponse, MsgUpdateGroupMetadata, MsgUpdateGroupMetadataResponse, MsgCreateGroupPolicy, MsgCreateGroupPolicyResponse, MsgUpdateGroupPolicyAdmin, MsgCreateGroupWithPolicy, MsgCreateGroupWithPolicyResponse, MsgUpdateGroupPolicyAdminResponse, MsgUpdateGroupPolicyDecisionPolicy, MsgUpdateGroupPolicyDecisionPolicyResponse, MsgUpdateGroupPolicyMetadata, MsgUpdateGroupPolicyMetadataResponse, MsgSubmitProposal, MsgSubmitProposalResponse, MsgWithdrawProposal, MsgWithdrawProposalResponse, MsgVote, MsgVoteResponse, MsgExec, MsgExecResponse, MsgLeaveGroup, MsgLeaveGroupResponse } from "./cosmos/group/v1/tx";
-import { MsgSend as MsgBankSend, MsgSendResponse as MsgBankSendResponse, MsgMultiSend, MsgMultiSendResponse } from "./cosmos/bank/v1beta1/tx";
+import { MsgSend, MsgSendResponse, MsgMultiSend, MsgMultiSendResponse } from "./cosmos/bank/v1beta1/tx";
 import { MsgSetWithdrawAddress, MsgSetWithdrawAddressResponse, MsgWithdrawDelegatorReward, MsgWithdrawDelegatorRewardResponse, MsgWithdrawValidatorCommission, MsgWithdrawValidatorCommissionResponse, MsgFundCommunityPool, MsgFundCommunityPoolResponse } from "./cosmos/distribution/v1beta1/tx";
 import { CommunityPoolSpendProposal } from "./cosmos/distribution/v1beta1/distribution";
 import { MsgVerifyInvariant, MsgVerifyInvariantResponse } from "./cosmos/crisis/v1beta1/tx";
@@ -38,8 +38,6 @@ import { MsgCreateToken, MsgCreateTokenResponse, MsgSyncToken, MsgSyncTokenRespo
 import { CreateTokenProposal } from "./coin/proposal";
 import { MsgSetLeverage, MsgSetLeverageResponse } from "./leverage/tx";
 import { MsgUpdateProfile, MsgUpdateProfileResponse } from "./profile/tx";
-import { MsgUpdateParams, MsgUpdateParamsResponse } from "./ethermint/feemarket/v1/tx";
-import { MsgEthereumTx, MsgEthereumTxResponse, MsgUpdateParams as MsgEvmUpdateParams, MsgUpdateParamsResponse as MsgEvmUpdateParamsResponse } from "./ethermint/evm/v1/tx";
 import { MsgCreateSubAccount, MsgCreateSubAccountResponse, MsgActivateSubAccount, MsgActivateSubAccountResponse, MsgRemoveSubAccount, MsgRemoveSubAccountResponse } from "./subaccount/tx";
 import { MsgDisableSpotMarket, MsgDisableSpotMarketResponse, MsgCreateMarket, MsgCreateMarketResponse, MsgUpdateMarket, MsgUpdateMarketResponse, MsgUpdatePerpetualsFundingInterval, MsgUpdatePerpetualsFundingIntervalResponse } from "./market/tx";
 import { CreateMarketProposal, UpdateMarketProposal, UpdatePerpetualsFundingIntervalProposal } from "./market/proposal";
@@ -52,6 +50,9 @@ import { TextProposal, Proposal } from "./cosmos/gov/v1beta1/gov";
 import { ClientUpdateProposal, UpgradeProposal } from "./ibc/core/client/v1/client";
 
 export * from './cosmos-models';
+
+import * as Ethermint from './ethermint-models';
+export * as Ethermint from './ethermint-models';
 
 export * as IBC from './ibc-models';
 
@@ -215,8 +216,8 @@ registry.register("/cosmos.feegrant.v1beta1.MsgRevokeAllowanceResponse", MsgRevo
 registry.register("/cosmos.evidence.v1beta1.MsgSubmitEvidence", MsgSubmitEvidence);
 registry.register("/cosmos.evidence.v1beta1.MsgSubmitEvidenceResponse", MsgSubmitEvidenceResponse);
 
-registry.register("/cosmos.nft.v1beta1.MsgSend", MsgSend);
-registry.register("/cosmos.nft.v1beta1.MsgSendResponse", MsgSendResponse);
+registry.register("/cosmos.nft.v1beta1.MsgSend", MsgNftSend);
+registry.register("/cosmos.nft.v1beta1.MsgSendResponse", MsgNftSendResponse);
 
 registry.register("/cosmos.group.v1.MsgCreateGroup", MsgCreateGroup);
 registry.register("/cosmos.group.v1.MsgCreateGroupResponse", MsgCreateGroupResponse);
@@ -247,8 +248,8 @@ registry.register("/cosmos.group.v1.MsgExecResponse", MsgExecResponse);
 registry.register("/cosmos.group.v1.MsgLeaveGroup", MsgLeaveGroup);
 registry.register("/cosmos.group.v1.MsgLeaveGroupResponse", MsgLeaveGroupResponse);
 
-registry.register("/cosmos.bank.v1beta1.MsgSend", MsgBankSend);
-registry.register("/cosmos.bank.v1beta1.MsgSendResponse", MsgBankSendResponse);
+registry.register("/cosmos.bank.v1beta1.MsgSend", MsgSend);
+registry.register("/cosmos.bank.v1beta1.MsgSendResponse", MsgSendResponse);
 registry.register("/cosmos.bank.v1beta1.MsgMultiSend", MsgMultiSend);
 registry.register("/cosmos.bank.v1beta1.MsgMultiSendResponse", MsgMultiSendResponse);
 
@@ -436,13 +437,71 @@ registry.register("/Switcheo.carbon.leverage.MsgSetLeverageResponse", MsgSetLeve
 registry.register("/Switcheo.carbon.profile.MsgUpdateProfile", MsgUpdateProfile);
 registry.register("/Switcheo.carbon.profile.MsgUpdateProfileResponse", MsgUpdateProfileResponse);
 
-registry.register("/ethermint.feemarket.v1.MsgUpdateParams", MsgUpdateParams);
-registry.register("/ethermint.feemarket.v1.MsgUpdateParamsResponse", MsgUpdateParamsResponse);
+registry.register("/ethermint.crypto.v1.ethsecp256k1.PubKey", Ethermint.Crypto.PubKey);
+registry.register("/ethermint.crypto.v1.ethsecp256k1.PrivKey", Ethermint.Crypto.PrivKey);
 
-registry.register("/ethermint.evm.v1.MsgEthereumTx", MsgEthereumTx);
-registry.register("/ethermint.evm.v1.MsgEthereumTxResponse", MsgEthereumTxResponse);
-registry.register("/ethermint.evm.v1.MsgUpdateParams", MsgEvmUpdateParams);
-registry.register("/ethermint.evm.v1.MsgUpdateParamsResponse", MsgEvmUpdateParamsResponse);
+registry.register("/ethermint.types.v1.EthAccount", Ethermint.Types.EthAccount);
+registry.register("/ethermint.types.v1.TxResult", Ethermint.Types.TxResult);
+registry.register("/ethermint.types.v1.ExtensionOptionsWeb3Tx", Ethermint.Types.ExtensionOptionsWeb3Tx);
+registry.register("/ethermint.types.v1.ExtensionOptionDynamicFeeTx", Ethermint.Types.ExtensionOptionDynamicFeeTx);
+
+registry.register("/ethermint.feemarket.v1.MsgUpdateParams", Ethermint.Feemarket.MsgUpdateParams);
+registry.register("/ethermint.feemarket.v1.MsgUpdateParamsResponse", Ethermint.Feemarket.MsgUpdateParamsResponse);
+registry.register("/ethermint.feemarket.v1.Params", Ethermint.Feemarket.Params);
+registry.register("/ethermint.feemarket.v1.EventFeeMarket", Ethermint.Feemarket.EventFeeMarket);
+registry.register("/ethermint.feemarket.v1.EventBlockGas", Ethermint.Feemarket.EventBlockGas);
+registry.register("/ethermint.feemarket.v1.QueryParamsRequest", Ethermint.Feemarket.QueryParamsRequest);
+registry.register("/ethermint.feemarket.v1.QueryParamsResponse", Ethermint.Feemarket.QueryParamsResponse);
+registry.register("/ethermint.feemarket.v1.QueryBaseFeeRequest", Ethermint.Feemarket.QueryBaseFeeRequest);
+registry.register("/ethermint.feemarket.v1.QueryBaseFeeResponse", Ethermint.Feemarket.QueryBaseFeeResponse);
+registry.register("/ethermint.feemarket.v1.QueryBlockGasRequest", Ethermint.Feemarket.QueryBlockGasRequest);
+registry.register("/ethermint.feemarket.v1.QueryBlockGasResponse", Ethermint.Feemarket.QueryBlockGasResponse);
+
+registry.register("/ethermint.evm.v1.GenesisAccount", Ethermint.Evm.GenesisAccount);
+registry.register("/ethermint.evm.v1.MsgEthereumTx", Ethermint.Evm.MsgEthereumTx);
+registry.register("/ethermint.evm.v1.LegacyTx", Ethermint.Evm.LegacyTx);
+registry.register("/ethermint.evm.v1.AccessListTx", Ethermint.Evm.AccessListTx);
+registry.register("/ethermint.evm.v1.DynamicFeeTx", Ethermint.Evm.DynamicFeeTx);
+registry.register("/ethermint.evm.v1.ExtensionOptionsEthereumTx", Ethermint.Evm.ExtensionOptionsEthereumTx);
+registry.register("/ethermint.evm.v1.MsgEthereumTxResponse", Ethermint.Evm.MsgEthereumTxResponse);
+registry.register("/ethermint.evm.v1.MsgUpdateParams", Ethermint.Evm.MsgUpdateParams);
+registry.register("/ethermint.evm.v1.MsgUpdateParamsResponse", Ethermint.Evm.MsgUpdateParamsResponse);
+registry.register("/ethermint.evm.v1.EventEthereumTx", Ethermint.Evm.EventEthereumTx);
+registry.register("/ethermint.evm.v1.EventTxLog", Ethermint.Evm.EventTxLog);
+registry.register("/ethermint.evm.v1.EventMessage", Ethermint.Evm.EventMessage);
+registry.register("/ethermint.evm.v1.EventBlockBloom", Ethermint.Evm.EventBlockBloom);
+registry.register("/ethermint.evm.v1.QueryAccountRequest", Ethermint.Evm.QueryAccountRequest);
+registry.register("/ethermint.evm.v1.QueryAccountResponse", Ethermint.Evm.QueryAccountResponse);
+registry.register("/ethermint.evm.v1.QueryCosmosAccountRequest", Ethermint.Evm.QueryCosmosAccountRequest);
+registry.register("/ethermint.evm.v1.QueryCosmosAccountResponse", Ethermint.Evm.QueryCosmosAccountResponse);
+registry.register("/ethermint.evm.v1.QueryValidatorAccountRequest", Ethermint.Evm.QueryValidatorAccountRequest);
+registry.register("/ethermint.evm.v1.QueryValidatorAccountResponse", Ethermint.Evm.QueryValidatorAccountResponse);
+registry.register("/ethermint.evm.v1.QueryBalanceRequest", Ethermint.Evm.QueryBalanceRequest);
+registry.register("/ethermint.evm.v1.QueryBalanceResponse", Ethermint.Evm.QueryBalanceResponse);
+registry.register("/ethermint.evm.v1.QueryStorageRequest", Ethermint.Evm.QueryStorageRequest);
+registry.register("/ethermint.evm.v1.QueryStorageResponse", Ethermint.Evm.QueryStorageResponse);
+registry.register("/ethermint.evm.v1.QueryCodeRequest", Ethermint.Evm.QueryCodeRequest);
+registry.register("/ethermint.evm.v1.QueryCodeResponse", Ethermint.Evm.QueryCodeResponse);
+registry.register("/ethermint.evm.v1.QueryTxLogsRequest", Ethermint.Evm.QueryTxLogsRequest);
+registry.register("/ethermint.evm.v1.QueryTxLogsResponse", Ethermint.Evm.QueryTxLogsResponse);
+registry.register("/ethermint.evm.v1.QueryParamsRequest", Ethermint.Evm.QueryParamsRequest);
+registry.register("/ethermint.evm.v1.QueryParamsResponse", Ethermint.Evm.QueryParamsResponse);
+registry.register("/ethermint.evm.v1.EthCallRequest", Ethermint.Evm.EthCallRequest);
+registry.register("/ethermint.evm.v1.EstimateGasResponse", Ethermint.Evm.EstimateGasResponse);
+registry.register("/ethermint.evm.v1.QueryTraceTxRequest", Ethermint.Evm.QueryTraceTxRequest);
+registry.register("/ethermint.evm.v1.QueryTraceTxResponse", Ethermint.Evm.QueryTraceTxResponse);
+registry.register("/ethermint.evm.v1.QueryTraceBlockRequest", Ethermint.Evm.QueryTraceBlockRequest);
+registry.register("/ethermint.evm.v1.QueryTraceBlockResponse", Ethermint.Evm.QueryTraceBlockResponse);
+registry.register("/ethermint.evm.v1.QueryBaseFeeRequest", Ethermint.Evm.QueryBaseFeeRequest);
+registry.register("/ethermint.evm.v1.QueryBaseFeeResponse", Ethermint.Evm.QueryBaseFeeResponse);
+registry.register("/ethermint.evm.v1.Params", Ethermint.Evm.Params);
+registry.register("/ethermint.evm.v1.ChainConfig", Ethermint.Evm.ChainConfig);
+registry.register("/ethermint.evm.v1.State", Ethermint.Evm.State);
+registry.register("/ethermint.evm.v1.TransactionLogs", Ethermint.Evm.TransactionLogs);
+registry.register("/ethermint.evm.v1.Log", Ethermint.Evm.Log);
+registry.register("/ethermint.evm.v1.TxResult", Ethermint.Evm.TxResult);
+registry.register("/ethermint.evm.v1.AccessTuple", Ethermint.Evm.AccessTuple);
+registry.register("/ethermint.evm.v1.TraceConfig", Ethermint.Evm.TraceConfig);
 
 registry.register("/Switcheo.carbon.subaccount.MsgCreateSubAccount", MsgCreateSubAccount);
 registry.register("/Switcheo.carbon.subaccount.MsgCreateSubAccountResponse", MsgCreateSubAccountResponse);
@@ -675,8 +734,8 @@ export const TxTypes = {
   "MsgRevokeAllowanceResponse": "/cosmos.feegrant.v1beta1.MsgRevokeAllowanceResponse",
   "MsgSubmitEvidence": "/cosmos.evidence.v1beta1.MsgSubmitEvidence",
   "MsgSubmitEvidenceResponse": "/cosmos.evidence.v1beta1.MsgSubmitEvidenceResponse",
-  "MsgSend": "/cosmos.nft.v1beta1.MsgSend",
-  "MsgSendResponse": "/cosmos.nft.v1beta1.MsgSendResponse",
+  "MsgNftSend": "/cosmos.nft.v1beta1.MsgSend",
+  "MsgNftSendResponse": "/cosmos.nft.v1beta1.MsgSendResponse",
   "MsgCreateGroup": "/cosmos.group.v1.MsgCreateGroup",
   "MsgCreateGroupResponse": "/cosmos.group.v1.MsgCreateGroupResponse",
   "MsgUpdateGroupMembers": "/cosmos.group.v1.MsgUpdateGroupMembers",
@@ -705,8 +764,8 @@ export const TxTypes = {
   "MsgExecResponse": "/cosmos.group.v1.MsgExecResponse",
   "MsgLeaveGroup": "/cosmos.group.v1.MsgLeaveGroup",
   "MsgLeaveGroupResponse": "/cosmos.group.v1.MsgLeaveGroupResponse",
-  "MsgBankSend": "/cosmos.bank.v1beta1.MsgSend",
-  "MsgBankSendResponse": "/cosmos.bank.v1beta1.MsgSendResponse",
+  "MsgSend": "/cosmos.bank.v1beta1.MsgSend",
+  "MsgSendResponse": "/cosmos.bank.v1beta1.MsgSendResponse",
   "MsgMultiSend": "/cosmos.bank.v1beta1.MsgMultiSend",
   "MsgMultiSendResponse": "/cosmos.bank.v1beta1.MsgMultiSendResponse",
   "MsgSetWithdrawAddress": "/cosmos.distribution.v1beta1.MsgSetWithdrawAddress",
@@ -873,12 +932,10 @@ export const TxTypes = {
   "MsgSetLeverageResponse": "/Switcheo.carbon.leverage.MsgSetLeverageResponse",
   "MsgUpdateProfile": "/Switcheo.carbon.profile.MsgUpdateProfile",
   "MsgUpdateProfileResponse": "/Switcheo.carbon.profile.MsgUpdateProfileResponse",
-  "MsgUpdateParams": "/ethermint.feemarket.v1.MsgUpdateParams",
-  "MsgUpdateParamsResponse": "/ethermint.feemarket.v1.MsgUpdateParamsResponse",
+  "MsgUpdateParams": "/ethermint.evm.v1.MsgUpdateParams",
+  "MsgUpdateParamsResponse": "/ethermint.evm.v1.MsgUpdateParamsResponse",
   "MsgEthereumTx": "/ethermint.evm.v1.MsgEthereumTx",
   "MsgEthereumTxResponse": "/ethermint.evm.v1.MsgEthereumTxResponse",
-  "MsgEvmUpdateParams": "/ethermint.evm.v1.MsgUpdateParams",
-  "MsgEvmUpdateParamsResponse": "/ethermint.evm.v1.MsgUpdateParamsResponse",
   "MsgCreateSubAccount": "/Switcheo.carbon.subaccount.MsgCreateSubAccount",
   "MsgCreateSubAccountResponse": "/Switcheo.carbon.subaccount.MsgCreateSubAccountResponse",
   "MsgActivateSubAccount": "/Switcheo.carbon.subaccount.MsgActivateSubAccount",
@@ -1129,10 +1186,6 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "syntax",
-        "type": "string"
-      },
-      {
-        "name": "edition",
         "type": "string"
       }
     ],
@@ -1442,10 +1495,6 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "bool"
       },
       {
-        "name": "deprecated_legacy_json_field_conflicts",
-        "type": "bool"
-      },
-      {
         "name": "uninterpreted_option",
         "type": "UninterpretedOption[]",
         "packageName": "/google.protobuf"
@@ -1483,20 +1532,6 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "bool"
       },
       {
-        "name": "debug_redact",
-        "type": "bool"
-      },
-      {
-        "name": "retention",
-        "type": "",
-        "packageName": "/google.protobuf.FieldOptions"
-      },
-      {
-        "name": "target",
-        "type": "",
-        "packageName": "/google.protobuf.FieldOptions"
-      },
-      {
         "name": "uninterpreted_option",
         "type": "UninterpretedOption[]",
         "packageName": "/google.protobuf"
@@ -1516,10 +1551,6 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "deprecated",
-        "type": "bool"
-      },
-      {
-        "name": "deprecated_legacy_json_field_conflicts",
         "type": "bool"
       },
       {
@@ -2826,6 +2857,32 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "bool"
       }
     ],
+    "EModeCategory": [
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "denoms",
+        "type": "string[]"
+      },
+      {
+        "name": "loan_to_value",
+        "type": "string"
+      },
+      {
+        "name": "liquidation_threshold",
+        "type": "string"
+      },
+      {
+        "name": "liquidation_discount",
+        "type": "string"
+      },
+      {
+        "name": "is_active",
+        "type": "bool"
+      }
+    ],
     "StablecoinDebtInfo": [
       {
         "name": "denom",
@@ -3054,6 +3111,38 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "type",
+        "type": "string"
+      }
+    ],
+    "NewEModeCategoryEvent": [
+      {
+        "name": "e_mode_category",
+        "type": "EModeCategory",
+        "packageName": "/Switcheo.carbon.cdp"
+      },
+      {
+        "name": "type",
+        "type": "string"
+      }
+    ],
+    "UpdateEModeCategoryEvent": [
+      {
+        "name": "e_mode_category",
+        "type": "EModeCategory",
+        "packageName": "/Switcheo.carbon.cdp"
+      },
+      {
+        "name": "type",
+        "type": "string"
+      }
+    ],
+    "UpdateAccountEModeCategoryNameEvent": [
+      {
+        "name": "account",
+        "type": "string"
+      },
+      {
+        "name": "e_mode_category_name",
         "type": "string"
       }
     ],
@@ -21410,6 +21499,12 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "expiry_time",
         "type": "string"
+      }
+    ],
+    "IncomingDisableSpotMarketNames": [
+      {
+        "name": "ids",
+        "type": "string[]"
       }
     ],
     "IncomingDisableSpotMarketNames": [

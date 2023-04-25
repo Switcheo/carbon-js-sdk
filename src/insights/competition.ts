@@ -62,12 +62,36 @@ export interface PNLLeaderboardEntry {
   twitter: string | null;
 }
 
+// Lottery Rankings
+export interface LotteryLeaderboardEntry {
+  rank: string;
+  competitionId: string;
+  address: string;
+  twitter: string | null;
+  username: string | null;
+  longestPosition: string;
+  maxLeverage: string;
+  referralTickets: string;
+  liquidationTickets: string;
+  positionTickets: string;
+  totalTickets: string;
+}
+
 export interface QueryGetPNLCompetitionLeaderboardResponse {
   entries: PNLLeaderboardEntry[];
   meta: TimeMeta;
 }
 
 export interface QueryGetPNLCompetitionLeaderboardRequest {
+  competitionId: string;
+  market?: string;
+}
+
+export interface QueryGetLotteryCompetitionLeaderboardResponse {
+  entries: LotteryLeaderboardEntry[];
+}
+
+export interface QueryGetLotteryCompetitionLeaderboardRequest {
   competitionId: string;
   market?: string;
 }
