@@ -238,12 +238,12 @@ export class CarbonWallet {
   }
 
   public static withKeplr(keplr: Keplr, chainInfo: ChainInfo, keplrKey: Key, opts: Omit<CarbonWalletInitOpts, "signer"> = {}) {
-    const signer = KeplrAccount.createKeplrSigner(keplr, chainInfo, keplrKey);
+    const signer = keplrKey.isNanoLedger ? KeplrAccount.createKeplrSignerAmino(keplr, chainInfo, keplrKey) : KeplrAccount.createKeplrSigner(keplr, chainInfo, keplrKey);
     const publicKeyBase64 = Buffer.from(keplrKey.pubKey).toString("base64");
-
+    
     const wallet = CarbonWallet.withSigner(signer, publicKeyBase64, {
       ...opts,
-      providerAgent: 'keplr-extension',
+      providerAgent: keplrKey.isNanoLedger ? 'keplr-ledger' : 'keplr-extension',
     });
     return wallet;
   }
