@@ -243,7 +243,7 @@ export class CarbonWallet {
     
     const wallet = CarbonWallet.withSigner(signer, publicKeyBase64, {
       ...opts,
-      providerAgent: keplrKey.isNanoLedger ? 'keplr-ledger' : 'keplr-extension',
+      providerAgent: 'keplr-extension',
     });
     return wallet;
   }
