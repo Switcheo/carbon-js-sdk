@@ -138,18 +138,21 @@ const CarbonEvmNativeCurrency = {
 
 const CARBON_EVM_LOCALHOST: MetaMaskChangeNetworkParam = {
   chainId: `0x${Number(parseChainId(CarbonEvmChainIDs[Network.LocalHost])).toString(16)}`,
+  blockExplorerUrls: ["https://evm-scan.carbon.network"],
   chainName: "Carbon EVM Localhost",
   rpcUrls: [`${NetworkConfigs[Network.LocalHost].evmJsonRpcUrl}`],
   nativeCurrency: CarbonEvmNativeCurrency
 }
 const CARBON_EVM_DEVNET: MetaMaskChangeNetworkParam = {
   chainId: `0x${Number(parseChainId(CarbonEvmChainIDs[Network.DevNet])).toString(16)}`,
+  blockExplorerUrls: ["https://evm-scan.carbon.network"],
   chainName: "Carbon EVM Devnet",
   rpcUrls: [`${NetworkConfigs[Network.DevNet].evmJsonRpcUrl}`],
   nativeCurrency: CarbonEvmNativeCurrency,
 }
 const CARBON_EVM_TESTNET: MetaMaskChangeNetworkParam = {
   chainId: `0x${Number(parseChainId(CarbonEvmChainIDs[Network.TestNet])).toString(16)}`,
+  blockExplorerUrls: ["https://evm-scan.carbon.network"],
   chainName: "Carbon EVM Testnet",
   rpcUrls: [`${NetworkConfigs[Network.TestNet].evmJsonRpcUrl}`],
   nativeCurrency: CarbonEvmNativeCurrency,
@@ -157,6 +160,7 @@ const CARBON_EVM_TESTNET: MetaMaskChangeNetworkParam = {
 
 const CARBON_EVM_MAINNET: MetaMaskChangeNetworkParam = {
   chainId: `0x${Number(parseChainId(CarbonEvmChainIDs[Network.MainNet])).toString(16)}`,
+  blockExplorerUrls: ["https://evm-scan.carbon.network"],
   chainName: "Carbon EVM Mainnet",
   rpcUrls: [`${NetworkConfigs[Network.MainNet].evmJsonRpcUrl}`],
   nativeCurrency: CarbonEvmNativeCurrency,
