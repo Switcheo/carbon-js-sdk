@@ -55,7 +55,7 @@ class KeplrAccount {
         EthSignType.TRANSACTION,
       )
       const rlpEncodedHex = `0x${Buffer.from(signedTx).toString('hex')}`;
-      return await api.evmJsonRpc.sendTransaction(rlpEncodedHex)
+      return api.evmJsonRpc.sendTransaction(rlpEncodedHex)
     }
 
     return {

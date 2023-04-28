@@ -4,6 +4,8 @@ export enum ProviderAgent {
   Mnemonic = "mnemonic",
   LeapExtension = "leap-extension",
   MetamaskExtension = "metamask-extension",
+  // For legacy metamask
+  Metamask = "metamask"
 }
 
 export function isEvmWallet(providerAgent?: string) {

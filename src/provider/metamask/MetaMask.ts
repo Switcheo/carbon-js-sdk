@@ -1,4 +1,4 @@
-import { EthNetworkConfig, Network, NetworkConfigs } from "@carbon-sdk/constant";
+import { CarbonEvmChainIDs, EthNetworkConfig, Network, NetworkConfigs } from "@carbon-sdk/constant";
 import { ABIs } from "@carbon-sdk/eth";
 import { Blockchain, ChainNames, BlockchainV2, EVMChain as EVMChainV2, getBlockchainFromChainV2, BLOCKCHAIN_V2_TO_V1_MAPPING } from "@carbon-sdk/util/blockchain";
 import { appendHexPrefix } from "@carbon-sdk/util/generic";
@@ -14,7 +14,7 @@ import { legacyConstructEIP712Tx } from "@carbon-sdk/util/legacyEIP712";
 import { AminoTypesMap, CarbonSDK, Models } from "@carbon-sdk/index";
 import { StdFee } from "@cosmjs/stargate";
 import { AminoMsg } from "@cosmjs/amino";
-import { ETH_SECP256K1_TYPE, PUBLIC_KEY_SIGNING_TEXT, populateEvmTransactionDetails } from "@carbon-sdk/util/ethermint";
+import { ETH_SECP256K1_TYPE, PUBLIC_KEY_SIGNING_TEXT, parseChainId, populateEvmTransactionDetails } from "@carbon-sdk/util/ethermint";
 import { TxTypes, registry } from "@carbon-sdk/codec";
 import { TxBody } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import { SWTHAddressOptions } from "@carbon-sdk/util/address";
@@ -68,7 +68,15 @@ const CONTRACT_HASH: {
 
     [Network.MainNet]: "0x7e8D8c98a016877Cb3103e837Fc71D41b155aF70",
   } as const,
-} as const;
+  Carbon: {
+    //Carbon does not support Metamask legacy mnemonic sign in 
+    [Network.TestNet]: "",
+    [Network.DevNet]: "",
+    [Network.LocalHost]: "",
+
+    [Network.MainNet]: "",
+  } as const
+} as const; 
 
 const REGISTRY_CONTRACT_ABI = ABIs.keyStorage;
 
@@ -120,6 +128,38 @@ export interface CallContractArgs {
 export interface MetaMaskSyncResult {
   blockchain?: Blockchain | BlockchainV2;
   chainId?: number;
+}
+
+const CarbonEvmNativeCurrency = {
+  decimals: 18,
+  name: "SWTH",
+  symbol: "SWTH",
+}
+
+const CARBON_EVM_LOCALHOST: MetaMaskChangeNetworkParam = {
+  chainId: `0x${Number(parseChainId(CarbonEvmChainIDs[Network.LocalHost])).toString(16)}`,
+  chainName: "Carbon EVM Localhost",
+  rpcUrls: [`${NetworkConfigs[Network.LocalHost].evmJsonRpcUrl}`],
+  nativeCurrency: CarbonEvmNativeCurrency
+}
+const CARBON_EVM_DEVNET: MetaMaskChangeNetworkParam = {
+  chainId: `0x${Number(parseChainId(CarbonEvmChainIDs[Network.DevNet])).toString(16)}`,
+  chainName: "Carbon EVM Devnet",
+  rpcUrls: [`${NetworkConfigs[Network.DevNet].evmJsonRpcUrl}`],
+  nativeCurrency: CarbonEvmNativeCurrency,
+}
+const CARBON_EVM_TESTNET: MetaMaskChangeNetworkParam = {
+  chainId: `0x${Number(parseChainId(CarbonEvmChainIDs[Network.TestNet])).toString(16)}`,
+  chainName: "Carbon EVM Testnet",
+  rpcUrls: [`${NetworkConfigs[Network.TestNet].evmJsonRpcUrl}`],
+  nativeCurrency: CarbonEvmNativeCurrency,
+}
+
+const CARBON_EVM_MAINNET: MetaMaskChangeNetworkParam = {
+  chainId: `0x${Number(parseChainId(CarbonEvmChainIDs[Network.MainNet])).toString(16)}`,
+  chainName: "Carbon EVM Mainnet",
+  rpcUrls: [`${NetworkConfigs[Network.MainNet].evmJsonRpcUrl}`],
+  nativeCurrency: CarbonEvmNativeCurrency,
 }
 
 const BSC_MAINNET: MetaMaskChangeNetworkParam = {
@@ -363,6 +403,11 @@ export class MetaMask {
   }
 
   static getNetworkParams(network: Network, blockchain: EVMChain = 'Ethereum'): MetaMaskChangeNetworkParam {
+    if (blockchain === 'Carbon') {
+      return MetaMask.getCarbonEvmNetworkParams(network)
+    }
+
+
     if (network === Network.MainNet) {
       switch (blockchain) {
         case 'Binance Smart Chain':
@@ -393,8 +438,23 @@ export class MetaMask {
         return ETH_TESTNET;
     }
   }
+  static getCarbonEvmNetworkParams(network: Network): MetaMaskChangeNetworkParam {
+    switch (network) {
+      case Network.LocalHost:
+        return CARBON_EVM_LOCALHOST;
+      case Network.DevNet:
+        return CARBON_EVM_DEVNET;
+      case Network.TestNet:
+        return CARBON_EVM_TESTNET;
+      default:
+        return CARBON_EVM_MAINNET;
+    }
+  }
 
   static getRequiredChainId(network: Network, blockchain: BlockchainV2 = 'Ethereum') {
+    if (blockchain === 'Carbon') {
+      return Number(parseChainId(CarbonEvmChainIDs[network]))
+    }
     if (network === Network.MainNet) {
       switch (blockchain) {
         case 'Binance Smart Chain':
@@ -424,7 +484,7 @@ export class MetaMask {
     }
   }
 
-  constructor(public readonly network: Network, public readonly legacyEip712SignMode: boolean = false) {}
+  constructor(public readonly network: Network, public readonly legacyEip712SignMode: boolean = false) { }
 
   private checkProvider(blockchain: BlockchainV2 = this.blockchain): ethers.providers.Provider {
     const config: any = NetworkConfigs[this.network];
@@ -623,6 +683,9 @@ export class MetaMask {
   }
 
   async login(blockchain?: EVMChain): Promise<string | null> {
+    if (blockchain === 'Carbon') {
+      throw new Error('Carbon EVM does not support Metamask Legacy')
+    }
     const metamaskAPI = await this.getConnectedAPI();
     const defaultAccount = await this.defaultAccount();
     const cipherTextHex: string | undefined = await this.getStoredMnemonicCipher(defaultAccount, blockchain);

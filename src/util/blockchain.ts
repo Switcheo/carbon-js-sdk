@@ -1,7 +1,8 @@
 import { TokenClient } from '@carbon-sdk/clients'
 import { Bridge } from '@carbon-sdk/codec'
-import { Network } from "@carbon-sdk/constant/network"
+import { CarbonEvmChainIDs, Network } from "@carbon-sdk/constant/network"
 import { SimpleMap } from "./type"
+import { parseChainId } from './ethermint'
 
 export enum Blockchain {
   Neo = "neo",
@@ -324,6 +325,11 @@ export const getBlockchainFromChainV2 = (chainId?: number) => {
     case 42161:
     case 421611:
       return 'Arbitrum'
+    case Number(parseChainId((CarbonEvmChainIDs[Network.LocalHost]))):
+    case Number(parseChainId((CarbonEvmChainIDs[Network.DevNet]))):
+    case Number(parseChainId((CarbonEvmChainIDs[Network.TestNet]))):
+    case Number(parseChainId((CarbonEvmChainIDs[Network.MainNet]))):
+      return 'Carbon'
   }
   return undefined
 }
@@ -444,6 +450,6 @@ export const blockchainForChainIdV2 = (chainId?: number, network = Network.MainN
   }
 }
 
-const evmChains = ['Ethereum', 'Binance Smart Chain', 'Arbitrum', 'Polygon', 'OKC'] as const;
+const evmChains = ['Ethereum', 'Binance Smart Chain', 'Arbitrum', 'Polygon', 'OKC', 'Carbon'] as const;
 export type EVMChain = (typeof evmChains)[number];
 export const isEvmChain = (chain: string): chain is EVMChain => evmChains.includes(chain as any);
