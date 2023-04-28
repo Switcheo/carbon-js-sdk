@@ -266,7 +266,7 @@ export interface ResponseCheckTx {
   sender: string;
   priority: Long;
   /**
-   * mempool_error is set by Tendermint.
+   * mempool_error is set by CometBFT.
    * ABCI applictions creating a ResponseCheckTX should not set mempool_error.
    */
   mempoolError: string;

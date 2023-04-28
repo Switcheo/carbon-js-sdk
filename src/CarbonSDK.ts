@@ -35,6 +35,7 @@ import { StakingModule } from "./modules/staking";
 import { CosmosLedger, Keplr, KeplrAccount, Leap, LeapAccount, LeapExtended } from "./provider";
 import { Blockchain } from "./util/blockchain";
 import { CarbonSigner, CarbonWallet, CarbonWalletGenericOpts } from "./wallet";
+import { PerpsLiquidityPoolModule } from "./modules/perpsLiquidity";
 
 export { CarbonTx } from "@carbon-sdk/util";
 export { CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletGenericOpts, CarbonWalletInitOpts } from "@carbon-sdk/wallet";
@@ -101,6 +102,7 @@ class CarbonSDK {
   fee: FeeModule;
   ibc: IBCModule;
   xchain: XChainModule;
+  perpsLiquidity: PerpsLiquidityPoolModule;
 
   neo: NEOClient;
   eth: ETHClient;
@@ -142,6 +144,7 @@ class CarbonSDK {
     this.fee = new FeeModule(this);
     this.ibc = new IBCModule(this);
     this.xchain = new XChainModule(this);
+    this.perpsLiquidity = new PerpsLiquidityPoolModule(this);
 
     this.neo = NEOClient.instance({
       configProvider: this,
