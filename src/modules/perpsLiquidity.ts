@@ -22,6 +22,24 @@ export class PerpsLiquidityPoolModule extends BaseModule {
       opts
     );
   }
+  public async removeLiquidity(params: PerpsLiquidityPoolModule.RemoveLiquidityParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+
+    const value = Models.MsgWithdrawFromPerpetualsLiquidityPool.fromPartial({
+      creator: wallet.bech32Address,
+      perpetualsLiquidityPoolId: new Long(params.perpetualsLiquidityPoolId),
+      shareAmount: params.shareAmount.toString(10),
+      minReceiveAmount: params.minReceiveAmount.toString(10),
+    });
+
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgRemoveLiquidity,
+        value,
+      },
+      opts
+    );
+  }
 }
 
 export namespace PerpsLiquidityPoolModule {
@@ -31,7 +49,8 @@ export namespace PerpsLiquidityPoolModule {
     minShareAmount: BigNumber;
   }
   export interface RemoveLiquidityParams {
-    poolId: number;
-    shares: BigNumber;
+    perpetualsLiquidityPoolId: number;
+    shareAmount: BigNumber;
+    minReceiveAmount: BigNumber;
   }
 }
