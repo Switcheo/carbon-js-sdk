@@ -235,7 +235,7 @@ export class ETHClient {
   public async lockDeposit(params: LockParams): Promise<EthersTransactionResponse> {
     const { address, token, amount, gasPriceGwei, gasLimit, ethAddress, signer, signCompleteCallback } = params;
 
-    if (gasLimit && gasLimit.lt(150000)) {
+    if (gasLimit?.lt(150000)) {
       throw new Error("Minimum gas required: 150,000");
     }
 
