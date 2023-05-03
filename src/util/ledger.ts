@@ -8,8 +8,9 @@ export function isBrowserSupported(): boolean {
   const ua = navigator.userAgent.toLowerCase();
   const isChrome = /chrome|crios/.test(ua) && !/edge|opr\//.test(ua);
   const isBrave = isChrome && !windowObject.google;
+  const isOpera = /opr/.test(ua);
 
-  if (!isChrome && !isBrave) {
+  if (!isChrome && !isBrave && !isOpera) {
     throw new Error("Your browser doesn't support Ledger devices.");
   }
 

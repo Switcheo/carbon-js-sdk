@@ -70,6 +70,12 @@ import { CarbonSDK } from "./_sdk";
     });
     console.log("lotteryLeaderboard", lotteryLeaderboard);
 
+    // lottery leaderboard (competition)
+    const leagueLeaderboard = await sdk.insights.LeagueCompetitionLeaderboard({
+      competitionId: "tradingcomp8",
+    });
+    console.log("leagueLeaderboard", leagueLeaderboard);
+
     //Position Views
     const positionViews = await sdk.insights.PositionsView({ view: "risk" as PositionViewOptions },{})
     console.log("PositionsView", positionViews)

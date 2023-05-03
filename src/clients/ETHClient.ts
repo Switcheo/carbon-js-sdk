@@ -19,10 +19,11 @@ export interface ETHClientOpts {
 }
 
 interface ETHTxParams {
-  gasPriceGwei: BigNumber;
-  gasLimit: BigNumber;
+  gasPriceGwei?: BigNumber;
+  gasLimit?: BigNumber;
   ethAddress: string;
   signer: ethers.Signer;
+  nonce?: number
 }
 
 export interface BridgeParams {
@@ -33,10 +34,11 @@ export interface BridgeParams {
   recoveryAddress: string;
   toAddress: string;
   feeAmount: BigNumber;
-  gasPriceGwei: BigNumber;
-  gasLimit: BigNumber;
+  gasPriceGwei?: BigNumber;
+  gasLimit?: BigNumber;
   signer: ethers.Signer;
   signCompleteCallback?: () => void;
+  nonce?: number;
 }
 
 export interface LockParams extends ETHTxParams {
@@ -140,11 +142,11 @@ export class ETHClient {
     const rpcProvider = this.getProvider();
     const contract = new ethers.Contract(contractAddress, ABIs.erc20, rpcProvider);
 
-    const nonce = await rpcProvider.getTransactionCount(ethAddress);
+    const nonce = await this.getTxNonce(ethAddress, params.nonce, rpcProvider);
     const approveResultTx = await contract.connect(signer).approve(spenderAddress ?? token.bridgeAddress, ethers.constants.MaxUint256, {
       nonce,
-      gasPrice: gasPriceGwei.shiftedBy(9).toString(10),
-      gasLimit: gasLimit.toString(10),
+      ...gasPriceGwei && ({ gasPrice: gasPriceGwei.shiftedBy(9).toString(10) }),
+      ...gasLimit && ({ gasLimit: gasLimit.toString(10) })
     });
 
     return approveResultTx;
@@ -191,7 +193,7 @@ export class ETHClient {
 
     const fromAssetHash = ethers.utils.hexlify(ethers.utils.toUtf8Bytes(fromTokenId));
     const toAssetHash = ethers.utils.hexlify(ethers.utils.toUtf8Bytes(toTokenDenom));
-    const nonce = await rpcProvider.getTransactionCount(fromAddress);
+    const nonce = await this.getTxNonce(fromAddress, params.nonce, rpcProvider);
 
     const contract = new ethers.Contract(this.getBridgeEntranceAddr(), ABIs.bridgeEntrance, rpcProvider);
     const feeAddress = appendHexPrefix(networkConfig.feeAddress);
@@ -218,8 +220,8 @@ export class ETHClient {
         amount.toString(10),
       ], // callAmount
       {
-        gasLimit: gasLimit.toString(10),
-        gasPrice: gasPriceGwei.shiftedBy(9).toString(10),
+        ...gasPriceGwei && ({ gasPrice: gasPriceGwei.shiftedBy(9).toString(10) }),
+        ...gasLimit && ({ gasLimit: gasLimit.toString(10) }),
         nonce,
         value: ethAmount.toString(10),
       }
@@ -233,7 +235,7 @@ export class ETHClient {
   public async lockDeposit(params: LockParams): Promise<EthersTransactionResponse> {
     const { address, token, amount, gasPriceGwei, gasLimit, ethAddress, signer, signCompleteCallback } = params;
 
-    if (gasLimit.lt(150000)) {
+    if (gasLimit?.lt(150000)) {
       throw new Error("Minimum gas required: 150,000");
     }
 
@@ -249,7 +251,7 @@ export class ETHClient {
 
     const rpcProvider = this.getProvider();
 
-    const nonce = await rpcProvider.getTransactionCount(ethAddress);
+    const nonce: number = await this.getTxNonce(ethAddress, params.nonce, rpcProvider);
     const contract = new ethers.Contract(contractAddress, ABIs.lockProxy, rpcProvider);
     const lockResultTx = await contract.connect(signer).lock(
       assetId, // _assetHash
@@ -266,8 +268,8 @@ export class ETHClient {
       {
         nonce,
         value: "0",
-        gasPrice: gasPriceGwei.shiftedBy(9).toString(10),
-        gasLimit: gasLimit.toString(10),
+        ...gasPriceGwei && ({ gasPrice: gasPriceGwei.shiftedBy(9).toString(10) }),
+        ...gasLimit && ({ gasLimit: gasLimit.toString(10) }),
 
         // add tx value for ETH deposits, omit if ERC20 token
         ...(token.tokenAddress === "0000000000000000000000000000000000000000" && {
@@ -498,6 +500,14 @@ export class ETHClient {
     try {
       return ethers.utils.getAddress(input);
     } catch {}
+  }
+
+  public async getTxNonce(ethAddress: string, customNonce?: number, provider?: ethers.providers.JsonRpcProvider): Promise<number> {
+    if (customNonce && isFinite(customNonce)) return customNonce;
+
+    const rpcProvider = provider ?? this.getProvider();
+    const nonce = await rpcProvider.getTransactionCount(ethAddress);
+    return nonce;
   }
 }
 

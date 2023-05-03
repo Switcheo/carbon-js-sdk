@@ -1716,6 +1716,11 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         coinDecimals: 6,
         coinGeckoId: "usk",
       },
+      {
+        coinDenom: "ampKUJI",
+        coinMinimalDenom: "factory/kujira1n3fr5f56r2ce0s37wdvwrk98yhhq3unnxgcqus8nzsfxvllk0yxquurqty/ampKUJI",
+        coinDecimals: 6,
+      },
     ],
     feeCurrencies: [
       {
@@ -2133,6 +2138,7 @@ export const swthChannels: SimpleMap<ChannelConfig> = {
 export const cibtIbcTokenRegex = RegExp(`^${DenomPrefix.CDPToken}/ibc/([a-f\\d]+)$`, "i");
 export const ibcTokenRegex = /^ibc\/([a-f\d]+)$/i;
 export const cw20TokenRegex = /^cw20:([a-z\d]+)$/i;
+export const factoryIbcMinimalDenomRegex = /^factory:([a-z\d]+):([a-z\d]+)$/i;
 
 export const cosmBridgeRegex = /^wasm\.([a-z\d]+)$/i;
 
