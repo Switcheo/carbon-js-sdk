@@ -19,8 +19,8 @@ export interface ETHClientOpts {
 }
 
 interface ETHTxParams {
-  gasPriceGwei: BigNumber;
-  gasLimit: BigNumber;
+  gasPriceGwei?: BigNumber;
+  gasLimit?: BigNumber;
   ethAddress: string;
   signer: ethers.Signer;
   nonce?: number
@@ -34,8 +34,8 @@ export interface BridgeParams {
   recoveryAddress: string;
   toAddress: string;
   feeAmount: BigNumber;
-  gasPriceGwei: BigNumber;
-  gasLimit: BigNumber;
+  gasPriceGwei?: BigNumber;
+  gasLimit?: BigNumber;
   signer: ethers.Signer;
   signCompleteCallback?: () => void;
   nonce?: number;
@@ -145,8 +145,8 @@ export class ETHClient {
     const nonce = await this.getTxNonce(ethAddress, params.nonce, rpcProvider);
     const approveResultTx = await contract.connect(signer).approve(spenderAddress ?? token.bridgeAddress, ethers.constants.MaxUint256, {
       nonce,
-      gasPrice: gasPriceGwei.shiftedBy(9).toString(10),
-      gasLimit: gasLimit.toString(10),
+      ...gasPriceGwei && ({ gasPrice: gasPriceGwei.shiftedBy(9).toString(10) }),
+      ...gasLimit && ({ gasLimit: gasLimit.toString(10) })
     });
 
     return approveResultTx;
@@ -220,8 +220,8 @@ export class ETHClient {
         amount.toString(10),
       ], // callAmount
       {
-        gasLimit: gasLimit.toString(10),
-        gasPrice: gasPriceGwei.shiftedBy(9).toString(10),
+        ...gasPriceGwei && ({ gasPrice: gasPriceGwei.shiftedBy(9).toString(10) }),
+        ...gasLimit && ({ gasLimit: gasLimit.toString(10) }),
         nonce,
         value: ethAmount.toString(10),
       }
@@ -235,7 +235,7 @@ export class ETHClient {
   public async lockDeposit(params: LockParams): Promise<EthersTransactionResponse> {
     const { address, token, amount, gasPriceGwei, gasLimit, ethAddress, signer, signCompleteCallback } = params;
 
-    if (gasLimit.lt(150000)) {
+    if (gasLimit && gasLimit.lt(150000)) {
       throw new Error("Minimum gas required: 150,000");
     }
 
@@ -268,8 +268,8 @@ export class ETHClient {
       {
         nonce,
         value: "0",
-        gasPrice: gasPriceGwei.shiftedBy(9).toString(10),
-        gasLimit: gasLimit.toString(10),
+        ...gasPriceGwei && ({ gasPrice: gasPriceGwei.shiftedBy(9).toString(10) }),
+        ...gasLimit && ({ gasLimit: gasLimit.toString(10) }),
 
         // add tx value for ETH deposits, omit if ERC20 token
         ...(token.tokenAddress === "0000000000000000000000000000000000000000" && {
