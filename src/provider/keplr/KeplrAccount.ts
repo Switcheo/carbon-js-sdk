@@ -50,6 +50,27 @@ class KeplrAccount {
     };
   }
 
+  static createKeplrSignerAmino(keplr: Keplr, chainInfo: ChainInfo, account: Key): CarbonSigner {
+    const signAmino = async (signerAddress: string, doc: CarbonTx.StdSignDoc) => {
+      const signOpts = { preferNoSetFee: true };
+      return await keplr!.signAmino(chainInfo.chainId, signerAddress, doc, signOpts);
+    };
+
+    const getAccounts = async () => [
+      {
+        algo: "secp256k1" as Algo,
+        address: account.bech32Address,
+        pubkey: account.pubKey,
+      },
+    ];
+
+    return {
+      type: CarbonSignerTypes.BrowserInjected,
+      signAmino,
+      getAccounts,
+    };
+  }
+
   static async queryFeeCurrencies(configProvider: SDKProvider): Promise<FeeCurrency[]> {
     const tokenClient = configProvider.getTokenClient();
     const coingeckoIdMap = tokenClient.geckoTokenNames;
