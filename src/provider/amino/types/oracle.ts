@@ -5,6 +5,7 @@ import { AminoInit, ConvertEncType, generateAminoType } from "../utils";
 
 const TxTypes: TypeUtils.SimpleMap<string> = {
   CreateVote: "oracle/CreateVote",
+  CreateOracleProposal: "oracle/CreateOracleProposal"
 };
 
 const MsgCreateVote: AminoInit = {
@@ -13,9 +14,15 @@ const MsgCreateVote: AminoInit = {
     timestamp: ConvertEncType.Long,
   },
 };
+const CreateOracleProposal: AminoInit = {
+  aminoType: TxTypes.CreateOracleProposal,
+  valueMap: {
+  },
+};
 
 const OracleAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgCreateVote]: generateAminoType(MsgCreateVote),
+  [CarbonTx.Types.CreateOracleProposal]: generateAminoType(CreateOracleProposal),
 };
 
 export default OracleAmino;

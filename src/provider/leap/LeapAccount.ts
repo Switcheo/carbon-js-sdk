@@ -1,12 +1,13 @@
 import { MinGasPrice } from "@carbon-sdk/codec";
 import { CARBON_GAS_PRICE, Network, decTypeDecimals } from "@carbon-sdk/constant";
-import { Models } from "@carbon-sdk/index";
+import { CarbonSDK, Models } from "@carbon-sdk/index";
 import { AddressUtils, CarbonTx, NumberUtils } from "@carbon-sdk/util";
 import { CarbonSigner, CarbonSignerTypes } from "@carbon-sdk/wallet";
 import { Algo } from "@cosmjs/proto-signing";
 import { Leap } from "@cosmos-kit/leap";
 import { AppCurrency, ChainInfo, FeeCurrency } from "@keplr-wallet/types";
 import SDKProvider from "../sdk";
+import { ethers } from "ethers";
 
 const SWTH: FeeCurrency = {
   coinDenom: "SWTH",
@@ -46,11 +47,16 @@ class LeapAccount {
       ];
     };
 
+    const sendEvmTransaction = async (api: CarbonSDK, req: ethers.providers.TransactionRequest) => {
+      throw new Error("signing not available");
+    }
+
     return {
       type: CarbonSignerTypes.BrowserInjected,
       signDirect,
       signAmino,
       getAccounts,
+      sendEvmTransaction
     };
   }
 

@@ -98,6 +98,7 @@ export enum BroadcastTxMode {
 
 export interface CarbonSignerData extends SignerData {
   timeoutHeight?: number;
+  evmChainId?: string;
 }
 
 export interface SignTxOpts {

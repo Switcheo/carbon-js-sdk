@@ -1,9 +1,9 @@
 import { CarbonQueryClient } from "@carbon-sdk/clients";
-import { DEFAULT_FEE_DENOM, DEFAULT_GAS, DEFAULT_NETWORK, Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
-import { ProviderAgent } from "@carbon-sdk/constant/walletProvider";
-import { ChainInfo, CosmosLedger, Keplr, KeplrAccount, LeapAccount } from "@carbon-sdk/provider";
+import { CarbonEvmChainIDs, DEFAULT_FEE_DENOM, DEFAULT_GAS, DEFAULT_NETWORK, Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
+import { ProviderAgent, isEvmWallet } from "@carbon-sdk/constant/walletProvider";
+import { ChainInfo, CosmosLedger, Keplr, KeplrAccount, LeapAccount, MetaMask } from "@carbon-sdk/provider";
 import { AddressUtils, CarbonTx, GenericUtils } from "@carbon-sdk/util";
-import { SWTHAddress } from "@carbon-sdk/util/address";
+import { SWTHAddress, SWTHAddressOptions } from "@carbon-sdk/util/address";
 import { fetch } from "@carbon-sdk/util/fetch";
 import { QueueManager } from "@carbon-sdk/util/generic";
 import { bnOrZero, BN_ZERO } from "@carbon-sdk/util/number";
@@ -11,16 +11,19 @@ import { BroadcastTxMode, CarbonSignerData, CarbonTxError } from "@carbon-sdk/ut
 import { SimpleMap } from "@carbon-sdk/util/type";
 import { encodeSecp256k1Signature, StdSignature } from "@cosmjs/amino";
 import { EncodeObject, OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
-import { Account, DeliverTxResponse, isDeliverTxFailure, StargateClient } from "@cosmjs/stargate";
+import { Account, DeliverTxResponse, isDeliverTxFailure, SequenceResponse, StargateClient } from "@cosmjs/stargate";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import { BroadcastTxSyncResponse } from "@cosmjs/tendermint-rpc/build/tendermint34/responses";
 import { Leap } from "@cosmos-kit/leap";
 import { Key } from "@keplr-wallet/types";
 import { Key as LeapKey } from "@cosmos-kit/core";
 import BigNumber from "bignumber.js";
-import { TxRaw as StargateTxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx";
-import { CarbonLedgerSigner, CarbonNonSigner, CarbonPrivateKeySigner, CarbonSigner, CarbonSignerTypes } from "./CarbonSigner";
+import { TxRaw as StargateTxRaw, TxBody } from "cosmjs-types/cosmos/tx/v1beta1/tx";
+import { CarbonEIP712Signer, CarbonLedgerSigner, CarbonNonSigner, CarbonPrivateKeySigner, CarbonSigner, CarbonSignerTypes, isCarbonEIP712Signer } from "./CarbonSigner";
 import { CarbonSigningClient } from "./CarbonSigningClient";
+import { ETH_SECP256K1_TYPE } from "@carbon-sdk/util/ethermint";
+import { ExtensionOptionsWeb3Tx } from "@carbon-sdk/codec/ethermint/types/v1/web3";
+import { BaseAccount } from "@carbon-sdk/codec/cosmos/auth/v1beta1/auth";
 
 export interface CarbonWalletGenericOpts {
   tmClient?: Tendermint34Client;
@@ -119,7 +122,9 @@ export class CarbonWallet {
   privateKey?: Buffer;
   signer: CarbonSigner;
   bech32Address: string;
+  evmBech32Address: string;
   hexAddress: string;
+  evmHexAddress: string;
   publicKey: Buffer;
   query?: CarbonQueryClient;
 
@@ -145,6 +150,7 @@ export class CarbonWallet {
   private tmClient?: Tendermint34Client;
   private signingClient?: CarbonSigningClient;
   private chainId?: string;
+  private evmChainId?: string;
 
   private sequenceInvalidated: boolean = false;
   private txSignManager: QueueManager<SignTxRequest>;
@@ -207,6 +213,9 @@ export class CarbonWallet {
 
     const addressBytes = AddressUtils.SWTHAddress.getAddressBytes(this.bech32Address, this.network);
     this.hexAddress = `0x${Buffer.from(addressBytes).toString("hex")}`;
+    this.evmHexAddress = AddressUtils.ETHAddress.publicKeyToAddress(this.publicKey, addressOpts);
+    this.evmBech32Address = AddressUtils.ETHAddress.publicKeyToBech32Address(this.publicKey, addressOpts)
+
   }
 
   public static withPrivateKey(privateKey: string | Buffer, opts: Omit<CarbonWalletInitOpts, "privateKey"> = {}) {
@@ -243,7 +252,7 @@ export class CarbonWallet {
     
     const wallet = CarbonWallet.withSigner(signer, publicKeyBase64, {
       ...opts,
-      providerAgent: 'keplr-extension',
+      providerAgent: ProviderAgent.KeplrExtension,
     });
     return wallet;
   }
@@ -254,7 +263,16 @@ export class CarbonWallet {
 
     const wallet = CarbonWallet.withSigner(signer, publicKeyBase64, {
       ...opts,
-      providerAgent: 'leap-extension',
+      providerAgent: ProviderAgent.LeapExtension,
+    });
+    return wallet;
+  }
+
+  public static withMetamask(metamask: MetaMask, evmChainId: string, compressedPubKeyBase64: string, addressOptions: SWTHAddressOptions, opts: Omit<CarbonWalletInitOpts, "signer"> = {}) {
+    const signer = MetaMask.createMetamaskSigner(metamask, evmChainId, compressedPubKeyBase64, addressOptions);
+    const wallet = CarbonWallet.withSigner(signer, compressedPubKeyBase64, {
+      ...opts,
+      providerAgent: ProviderAgent.MetamaskExtension,
     });
     return wallet;
   }
@@ -295,6 +313,7 @@ export class CarbonWallet {
     const [account] = await this.signer.getAccounts();
 
     let signature: StdSignature | null = null;
+    const evmChainId = this.evmChainId
     try {
       await GenericUtils.callIgnoreError(() => this.onRequestSign?.(messages));
       const signerData: CarbonSignerData = {
@@ -302,10 +321,27 @@ export class CarbonWallet {
         chainId: this.getChainId(),
         sequence,
         ...explicitSignerData,
+        evmChainId
       };
 
       const fee = opts?.fee ?? this.estimateTxFee(messages, feeDenom);
       const txRaw = await signingClient.sign(signerAddress, messages, fee, memo, signerData);
+      let sig;
+      if (isCarbonEIP712Signer(this.signer)) {
+        if ((this.signer as CarbonEIP712Signer).legacyEip712SignMode) {
+          const feePayerSigBz = ExtensionOptionsWeb3Tx.decode(TxBody.decode(txRaw.bodyBytes).extensionOptions[0].value).feePayerSig
+          sig = Uint8Array.from(Buffer.from(feePayerSigBz.slice(0, -1)))
+        }
+        else {
+          sig = txRaw.signatures[0]
+        }
+        signature = encodeSecp256k1Signature(account.pubkey, sig);
+        signature = {
+          ...signature,
+          pub_key: { ...signature.pub_key, type: ETH_SECP256K1_TYPE }
+        }
+        return txRaw;
+      }
       signature = encodeSecp256k1Signature(account.pubkey, txRaw.signatures[0]);
       return txRaw;
     } finally {
@@ -373,7 +409,11 @@ export class CarbonWallet {
       const heightResponse = await fetch(`${this.networkConfig.tmRpcUrl}/blockchain?cache=${new Date().getTime()}`);
       const heightRes = await heightResponse.json();
       const height = bnOrZero(heightRes.result?.last_height);
-      const timeoutHeight = height.isZero() ? undefined : height.toNumber() + this.defaultTimeoutBlocks;
+      let timeoutHeight;
+      // timeoutHeight is not supported for EIP-712
+      if (!isCarbonEIP712Signer(this.signer)) {
+        timeoutHeight = height.isZero() ? undefined : height.toNumber() + this.defaultTimeoutBlocks;
+      }     
 
       const sequence = this.accountInfo!.sequence;
       this.accountInfo = {
@@ -469,6 +509,11 @@ export class CarbonWallet {
     return this.chainId;
   }
 
+  getEvmChainId(): string {
+    if (!this.evmChainId) throw new Error("CarbonWallet is not initialized");
+    return this.evmChainId;
+  }
+
   isSigner(signerType: CarbonSignerTypes) {
     return this.signer.type === signerType;
   }
@@ -515,6 +560,7 @@ export class CarbonWallet {
     this.tmClient = await Tendermint34Client.connect(this.networkConfig.tmRpcUrl);
     const status = await this.tmClient.status();
     this.chainId = status.nodeInfo.network;
+    this.evmChainId = CarbonEvmChainIDs[this.network]
   }
 
   public async reloadTxFees() {
@@ -544,7 +590,24 @@ export class CarbonWallet {
     if (this.sequenceInvalidated) this.sequenceInvalidated = false;
 
     try {
-      const info = await this.getQueryClient().chain.getSequence(this.bech32Address);
+      const evmWallet = isEvmWallet(this.providerAgent)
+      const address = evmWallet ? this.evmBech32Address : this.bech32Address
+      // Alternative way to get account info since cosmjs dont support eth pub key for now
+      const info = await this.getQueryClient().chain.getSequence(address).then(res => res).catch(async (err: Error) => {
+        if (this.EthPublicKeyError(err)) {
+          const accountAny = (await this.getQueryClient().auth.Account({ address })).account
+          if (!accountAny) {
+            throw new Error("Account does not exist on chain. Send some tokens there before trying to query sequence.")
+          }
+          const { accountNumber, sequence } = BaseAccount.decode(accountAny!.value)
+          const sequenceResponse: SequenceResponse = {
+            accountNumber: accountNumber.toNumber(),
+            sequence: sequence.toNumber()
+          }
+          return sequenceResponse
+        }
+        throw err
+      });
       const pubkey = this.accountInfo?.pubkey ?? {
         type: "tendermint/PubKeySecp256k1",
         value: this.publicKey.toString("base64"),
@@ -554,7 +617,7 @@ export class CarbonWallet {
 
       this.accountInfo = {
         ...info,
-        address: this.bech32Address,
+        address,
         pubkey,
         chainId,
       };
@@ -593,6 +656,9 @@ export class CarbonWallet {
     return error?.message?.includes("Account does not exist on chain. Send some tokens there before trying to query sequence.");
   };
 
+  private EthPublicKeyError = (error?: Error) => {
+    return error?.message?.includes("Pubkey type_url /ethermint.crypto.v1.ethsecp256k1.PubKey not recognized");
+  }
   private isNonceMismatchError = (error?: Error) => {
     const regex =
       /^Broadcasting transaction failed with code 32 \(codespace: sdk\)\. Log: account sequence mismatch, expected (\d+), got (\d+): incorrect account sequence/;

@@ -5,6 +5,9 @@ import {
   BrokerAmino,
   CdpAmino,
   CoinAmino,
+  EvmAmino,
+  EvmMergeAmino,
+  FeeMarketAmino,
   GovAmino,
   IbcAmino,
   LeverageAmino,
@@ -35,6 +38,9 @@ const AminoTypesMap = new AminoTypes({
   ...ProfileAmino,
   ...StakingAmino,
   ...SubAccountAmino,
+  ...EvmAmino,
+  ...EvmMergeAmino,
+  ...FeeMarketAmino,
 });
 
 export default AminoTypesMap;
