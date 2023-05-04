@@ -102,8 +102,11 @@ interface RequestArguments {
 }
 
 interface MetaMaskAPI {
+  isMetaMask: boolean;
+  chainId: string | null;
   isConnected: () => boolean;
   request: (args: RequestArguments) => Promise<unknown>;
+  on: (eventName: string, listener: (...args: unknown[]) => void) => any;
 }
 
 export interface MetaMaskChangeNetworkParam {

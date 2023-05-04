@@ -38,7 +38,7 @@ import {
 import { StakingModule } from "./modules/staking";
 import { CosmosLedger, Keplr, KeplrAccount, LeapAccount, LeapExtended } from "./provider";
 import { Blockchain } from "./util/blockchain";
-import { CarbonSigner, CarbonWallet, CarbonWalletGenericOpts } from "./wallet";
+import { CarbonLedgerSigner, CarbonSigner, CarbonWallet, CarbonWalletGenericOpts } from "./wallet";
 import { MetaMask } from "./provider/metamask/MetaMask";
 import { SWTHAddressOptions } from "./util/address";
 import { ethers } from "ethers";
@@ -351,6 +351,9 @@ class CarbonSDK {
   }
 
   public disconnect(): CarbonSDK {
+    if (this.wallet?.isLedgerSigner()) {
+      (this.wallet.signer as CarbonLedgerSigner).ledger.disconnect()
+    }
     return new CarbonSDK({
       ...this,
       wallet: null,
