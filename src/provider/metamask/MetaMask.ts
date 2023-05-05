@@ -1,6 +1,6 @@
 import { CarbonEvmChainIDs, EthNetworkConfig, Network, NetworkConfigs } from "@carbon-sdk/constant";
 import { ABIs } from "@carbon-sdk/eth";
-import { Blockchain, ChainNames, BlockchainV2, EVMChain as EVMChainV2, getBlockchainFromChainV2, BLOCKCHAIN_V2_TO_V1_MAPPING } from "@carbon-sdk/util/blockchain";
+import { Blockchain, ChainNames, BlockchainV2, EVMChain as EVMChainV2, getBlockchainFromChainV2, BLOCKCHAIN_V2_TO_V1_MAPPING, EvmChains } from "@carbon-sdk/util/blockchain";
 import { appendHexPrefix } from "@carbon-sdk/util/generic";
 import { ethers } from "ethers";
 import { makeSignDoc } from "@cosmjs/amino/build";
@@ -558,6 +558,19 @@ export class MetaMask {
     }
 
     return defaultAccount;
+  }
+  
+  async encryptedLegacyAccountExists() {
+    const defaultAccount = await this.defaultAccount();
+    for (const blockchain of EvmChains) {
+      if (blockchain !== 'Carbon') {
+        const storedMnemonicCipher = await this.getStoredMnemonicCipher(defaultAccount, blockchain);
+        if (storedMnemonicCipher) {
+          return true
+        }
+      }
+    }
+    return false
   }
 
   async getStoredMnemonicCipher(account: string, blockchain?: EVMChain): Promise<string | undefined> {
