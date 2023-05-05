@@ -15,6 +15,8 @@ import { QueryClientImpl as SlashingQueryClient } from "@carbon-sdk/codec/cosmos
 import { QueryClientImpl as StakingQueryClient } from "@carbon-sdk/codec/cosmos/staking/v1beta1/query";
 import { QueryClientImpl as UpgradeQueryClient } from "@carbon-sdk/codec/cosmos/upgrade/v1beta1/query";
 import { QueryClientImpl as EthermintEVMQueryClient } from "@carbon-sdk/codec/ethermint/evm/v1/query";
+import { QueryClientImpl as EvmMergeQueryClient } from "@carbon-sdk/codec/evmmerge/query";
+import { QueryClientImpl as EvmBankQueryClient } from "@carbon-sdk/codec/evmbank/query";
 import { QueryClientImpl as EthermintFeeMarketQueryClient } from "@carbon-sdk/codec/ethermint/feemarket/v1/query";
 import { QueryClientImpl as FeeQueryClient } from "@carbon-sdk/codec/fee/query";
 import { QueryClientImpl as HeadersyncQueryClient } from "@carbon-sdk/codec/headersync/query";
@@ -95,6 +97,8 @@ class CarbonQueryClient {
   chain: BlockchainClient;
   ibc: IBCClientGroup;
   ethermint: EthermintClientGroup;
+  evmmerge: EvmMergeQueryClient;
+  evmbank: EvmBankQueryClient;
 
   private baseClient: QueryClient;
 
@@ -125,6 +129,8 @@ class CarbonQueryClient {
     this.profile = new ProfileQueryClient(rpcClient);
     this.subaccount = new SubaccountQueryClient(rpcClient);
     this.headersync = new HeadersyncQueryClient(rpcClient);
+    this.evmmerge = new EvmMergeQueryClient(rpcClient);
+    this.evmbank = new EvmBankQueryClient(rpcClient);
 
     this.auth = new AuthQueryClient(rpcClient);
     this.bank = new BankQueryClient(rpcClient);
