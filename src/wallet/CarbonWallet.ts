@@ -487,13 +487,15 @@ export class CarbonWallet {
   async sendTxs(msgs: EncodeObject[], opts?: CarbonTx.SignTxOpts): Promise<CarbonWallet.SendTxResponse> {
     await this.reloadMergeAccountStatus()
     if (!this.accountMerged && msgs[0].typeUrl !== CarbonTx.Types.MsgMergeAccount) {
-      await this.sendMergeAccountTx(opts)
+      await this.sendInitialMergeAccountTx(opts)
+      // refresh accountInfo after merging is done
+      await this.reloadAccountSequence()
     }
     const result = await this.signAndBroadcast(msgs, opts, { mode: BroadcastTxMode.BroadcastTxBlock });
     return result as DeliverTxResponse;
   }
 
-  async sendMergeAccountTx(opts?: CarbonTx.SignTxOpts): Promise<CarbonWallet.SendTxResponse> {
+  async sendInitialMergeAccountTx(opts?: CarbonTx.SignTxOpts) {
     try {
       const account = await this.getQueryClient().auth.Account({ address: this.bech32Address }).then(res => res.account).catch(async (err: Error) => {
         return (await this.getQueryClient().auth.Account({ address: this.evmBech32Address })).account
@@ -511,7 +513,7 @@ export class CarbonWallet {
         sequence: sequence.toNumber(),
         accountNumber: accountNumber.toNumber()
       }
-      return await this.signAndBroadcast([msg], modifiedOpts, { mode: BroadcastTxMode.BroadcastTxBlock }) as DeliverTxResponse
+      await this.signAndBroadcast([msg], modifiedOpts, { mode: BroadcastTxMode.BroadcastTxBlock })
     }
     catch (error) {
       throw error
