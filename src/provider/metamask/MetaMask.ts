@@ -562,18 +562,17 @@ export class MetaMask {
 
   async encryptedLegacyAccountExists() {
     const defaultAccount = await this.defaultAccount();
-    for (const blockchain of EvmChains) {
-      const contractHash = CONTRACT_HASH[blockchain][this.network];
-      if (blockchain !== 'Carbon' && contractHash) {
+    const promises = EvmChains.map(async (blockchain) => {
+      if (blockchain !== 'Carbon' && CONTRACT_HASH[blockchain][this.network]) {
         const storedMnemonicCipher = await this.getStoredMnemonicCipher(defaultAccount, blockchain);
-        if (storedMnemonicCipher) {
-          return true
-        }
+        return !!storedMnemonicCipher;
       }
-    }
-    return false
+      return false;
+    });
+    const results = await Promise.all(promises);
+    return results.some((result) => result);
   }
-
+  
   async getStoredMnemonicCipher(account: string, blockchain?: EVMChain): Promise<string | undefined> {
     const contractHash = this.getContractHash(blockchain);
     const provider = this.checkProvider(blockchain);

@@ -106,6 +106,7 @@ export interface SignTxOpts {
   feeDenom?: string;
   memo?: string;
   sequence?: number;
+  accountNumber?: number;
   explicitSignerData?: Partial<CarbonSignerData>;
 }
 
