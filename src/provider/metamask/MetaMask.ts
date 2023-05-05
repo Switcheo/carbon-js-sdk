@@ -69,14 +69,14 @@ const CONTRACT_HASH: {
     [Network.MainNet]: "0x7e8D8c98a016877Cb3103e837Fc71D41b155aF70",
   } as const,
   Carbon: {
-    //Carbon does not support Metamask legacy mnemonic sign in 
+    //Carbon does not support Metamask legacy mnemonic sign in
     [Network.TestNet]: "",
     [Network.DevNet]: "",
     [Network.LocalHost]: "",
 
     [Network.MainNet]: "",
   } as const
-} as const; 
+} as const;
 
 const REGISTRY_CONTRACT_ABI = ABIs.keyStorage;
 
@@ -293,6 +293,7 @@ const OKC_TESTNET: MetaMaskChangeNetworkParam = {
  */
 export class MetaMask {
   private blockchain: EVMChain = 'Ethereum';
+  private isLegacyMetamaskWallet: boolean = false
 
   static createMetamaskSigner(metamask: MetaMask, evmChainId: string, pubKeyBase64: string, addressOptions: SWTHAddressOptions): CarbonSigner {
     const signDirect = async (_: string, doc: Models.Tx.SignDoc) => {
@@ -741,6 +742,7 @@ export class MetaMask {
       console.error(decryptedCipherText);
       throw new Error("Retrieved invalid account on blockchain, please check console for more information.");
     }
+    this.isLegacyMetamaskWallet = true
 
     return match[1]?.trim();
   }
@@ -807,5 +809,9 @@ export class MetaMask {
     }
 
     return contractHash;
+  }
+
+  public isLegacyMetamask() {
+    return this.isLegacyMetamaskWallet
   }
 }
