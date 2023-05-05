@@ -564,7 +564,7 @@ export class MetaMask {
     const defaultAccount = await this.defaultAccount();
     for (const blockchain of EvmChains) {
       const contractHash = CONTRACT_HASH[blockchain][this.network];
-      if (blockchain !== 'Carbon' && !contractHash) {
+      if (blockchain !== 'Carbon' && contractHash) {
         const storedMnemonicCipher = await this.getStoredMnemonicCipher(defaultAccount, blockchain);
         if (storedMnemonicCipher) {
           return true
