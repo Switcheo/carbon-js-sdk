@@ -293,7 +293,7 @@ const OKC_TESTNET: MetaMaskChangeNetworkParam = {
  */
 export class MetaMask {
   private blockchain: EVMChain = 'Ethereum';
-  private isLegacyMetamaskWallet: boolean = false
+  private legacyEncryptedLogin: boolean = false
 
   static createMetamaskSigner(metamask: MetaMask, evmChainId: string, pubKeyBase64: string, addressOptions: SWTHAddressOptions): CarbonSigner {
     const signDirect = async (_: string, doc: Models.Tx.SignDoc) => {
@@ -742,7 +742,7 @@ export class MetaMask {
       console.error(decryptedCipherText);
       throw new Error("Retrieved invalid account on blockchain, please check console for more information.");
     }
-    this.isLegacyMetamaskWallet = true
+    this.legacyEncryptedLogin = true
 
     return match[1]?.trim();
   }
@@ -811,7 +811,7 @@ export class MetaMask {
     return contractHash;
   }
 
-  public isLegacyMetamask() {
-    return this.isLegacyMetamaskWallet
+  public isLegacyEncryptedLogin() {
+    return this.legacyEncryptedLogin
   }
 }
