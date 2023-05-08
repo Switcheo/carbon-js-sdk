@@ -492,6 +492,7 @@ export class CarbonWallet {
       await this.reloadAccountSequence()
     }
     const result = await this.signAndBroadcast(msgs, opts, { mode: BroadcastTxMode.BroadcastTxBlock });
+    await this.reloadMergeAccountStatus()
     return result as DeliverTxResponse;
   }
 
