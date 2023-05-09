@@ -644,7 +644,16 @@ export class CarbonWallet {
   }
 
   private async getAccount(address: string) {
-    return (await this.getQueryClient().auth.Account({ address })).account
+    let account;
+    try {
+      account = (await this.getQueryClient().auth.Account({ address })).account
+    } catch (error: any) {
+      if (!this.isAccountNotFoundError(error, address))
+        throw error
+    }
+    finally {
+      return account
+    }
   }
 
   public async reloadAccountSequence() {
@@ -706,6 +715,11 @@ export class CarbonWallet {
       gas: totalGasCost.toString(10),
     };
   }
+
+  private isAccountNotFoundError = (error?: Error, address?: string) => {
+    return error?.message?.includes(`account ${address} not found: key not found`);
+  };
+
 
   private isNonceMismatchError = (error?: Error) => {
     const regex =

@@ -133,6 +133,11 @@ export interface MetaMaskSyncResult {
   chainId?: number;
 }
 
+export interface StoredMnemonicInfo {
+  chain: EVMChainV2,
+  mnemonics: string
+}
+
 const CarbonEvmNativeCurrency = {
   decimals: 18,
   name: "SWTH",
@@ -460,9 +465,6 @@ export class MetaMask {
   }
 
   static getRequiredChainId(network: Network, blockchain: BlockchainV2 = 'Ethereum') {
-    if (blockchain === 'Carbon') {
-      return Number(parseChainId(CarbonEvmChainIDs[network]))
-    }
     if (network === Network.MainNet) {
       switch (blockchain) {
         case 'Binance Smart Chain':
@@ -560,19 +562,42 @@ export class MetaMask {
     return defaultAccount;
   }
 
-  async encryptedLegacyAccountExists() {
-    const defaultAccount = await this.defaultAccount();
-    const promises = EvmChains.map(async (blockchain) => {
-      if (blockchain !== 'Carbon' && CONTRACT_HASH[blockchain][this.network]) {
-        const storedMnemonicCipher = await this.getStoredMnemonicCipher(defaultAccount, blockchain);
-        return !!storedMnemonicCipher;
+  async getEncryptedLegacyAccount(connectedBlockchain?: EVMChainV2): Promise<StoredMnemonicInfo | undefined> {
+    if (connectedBlockchain && connectedBlockchain !== 'Carbon') {
+      const mnemonicInfo = await this.getMnemonicInfo(connectedBlockchain)
+      if (mnemonicInfo) {
+        return mnemonicInfo
       }
-      return false;
+    }
+
+    const chainMnemonicSearch = EvmChains.map(async (blockchain) => {
+      if (blockchain !== 'Carbon' && CONTRACT_HASH[blockchain][this.network]) {
+        return await this.getMnemonicInfo(blockchain)
+      }
     });
-    const results = await Promise.all(promises);
-    return results.some((result) => result);
+    const results = await Promise.all(chainMnemonicSearch);
+    return results.find(result => !result);
   }
-  
+
+  async getMnemonicInfo(connectedBlockchain: EVMChainV2): Promise<StoredMnemonicInfo | undefined> {
+    const defaultAccount = await this.defaultAccount();
+    let result: StoredMnemonicInfo | undefined
+    if (connectedBlockchain !== 'Carbon' && connectedBlockchain) {
+      await this.getStoredMnemonicCipher(defaultAccount, connectedBlockchain).then(mnemonics => {
+        if (mnemonics) {
+          result = {
+            chain: connectedBlockchain,
+            mnemonics
+          }
+        }
+      }).catch(err => {
+        console.error('Unable to retrieve stored mnemonic cipher from ', connectedBlockchain)
+        console.error(err)
+      }).finally(() => { return result })
+    }
+    return result
+  }
+
   async getStoredMnemonicCipher(account: string, blockchain?: EVMChain): Promise<string | undefined> {
     const contractHash = this.getContractHash(blockchain);
     const provider = this.checkProvider(blockchain);
