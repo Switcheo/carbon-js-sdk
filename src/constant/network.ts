@@ -210,7 +210,7 @@ export const NetworkConfigs: {
     },
 
     bsc: {
-      rpcURL: "https://data-seed-prebsc-2-s3.binance.org:8545/",
+      rpcURL: "https://data-seed-prebsc-1-s2.binance.org:8545/",
       wsURL: "",
       payerURL: `https://test-payer.carbon.network`,
       bridgeEntranceAddr: "",
@@ -289,7 +289,7 @@ export const NetworkConfigs: {
     feeAddress: "989761fb0c0eb0c05605e849cae77d239f98ac7f", // swth1nztkr7cvp6cvq4s9apyu4emayw0e3trl9ezyzs
 
     eth: {
-      rpcURL: "https://eth-rinkeby.alchemyapi.io/v2/2KD9F3mFPNMfflSqZsPuTKmK_w7fFfut",
+      rpcURL: "https://eth-goerli.g.alchemy.com/v2/OTTRiEhTje49mmrrm4WbuPbZmuZMivEu",
       wsURL: "",
       payerURL: `https://dev-payer.carbon.network`,
       lockProxyAddr: "0x7f7317167e90afa38972e46b031bb4da0b1f6f73",
@@ -299,7 +299,7 @@ export const NetworkConfigs: {
     },
 
     bsc: {
-      rpcURL: "https://data-seed-prebsc-2-s3.binance.org:8545/",
+      rpcURL: "https://data-seed-prebsc-1-s2.binance.org:8545/",
       wsURL: "",
       payerURL: `https://dev-payer.carbon.network`,
       bridgeEntranceAddr: "",
@@ -379,7 +379,7 @@ export const NetworkConfigs: {
     feeAddress: "989761fb0c0eb0c05605e849cae77d239f98ac7f",
 
     eth: {
-      rpcURL: "https://ropsten.infura.io/v3/e4dd457b33124bbda7e17500e6efbc27",
+      rpcURL: "https://eth-goerli.g.alchemy.com/v2/OTTRiEhTje49mmrrm4WbuPbZmuZMivEu",
       wsURL: "wss://ropsten.dagger.matic.network",
       payerURL: `http://localhost:8001`,
       bridgeEntranceAddr: "",
@@ -389,7 +389,7 @@ export const NetworkConfigs: {
     },
 
     bsc: {
-      rpcURL: "https://data-seed-prebsc-2-s3.binance.org:8545/",
+      rpcURL: "https://data-seed-prebsc-1-s2.binance.org:8545/",
       wsURL: "",
       payerURL: `http://localhost:8001`,
       bridgeEntranceAddr: "",

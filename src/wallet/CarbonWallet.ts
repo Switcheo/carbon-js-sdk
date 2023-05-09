@@ -1,6 +1,6 @@
 import { CarbonQueryClient } from "@carbon-sdk/clients";
 import { CarbonEvmChainIDs, DEFAULT_FEE_DENOM, DEFAULT_GAS, DEFAULT_NETWORK, Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
-import { ProviderAgent, isEvmWallet } from "@carbon-sdk/constant/walletProvider";
+import { ProviderAgent } from "@carbon-sdk/constant/walletProvider";
 import { ChainInfo, CosmosLedger, Keplr, KeplrAccount, LeapAccount, MetaMask } from "@carbon-sdk/provider";
 import { AddressUtils, CarbonTx, GenericUtils } from "@carbon-sdk/util";
 import { SWTHAddress, SWTHAddressOptions } from "@carbon-sdk/util/address";
@@ -24,6 +24,7 @@ import { CarbonSigningClient } from "./CarbonSigningClient";
 import { ETH_SECP256K1_TYPE } from "@carbon-sdk/util/ethermint";
 import { ExtensionOptionsWeb3Tx } from "@carbon-sdk/codec/ethermint/types/v1/web3";
 import { BaseAccount } from "@carbon-sdk/codec/cosmos/auth/v1beta1/auth";
+import { MsgMergeAccount } from "@carbon-sdk/codec";
 
 export interface CarbonWalletGenericOpts {
   tmClient?: Tendermint34Client;
@@ -125,6 +126,7 @@ export class CarbonWallet {
   evmBech32Address: string;
   hexAddress: string;
   evmHexAddress: string;
+  accountMerged: boolean = false;
   publicKey: Buffer;
   query?: CarbonQueryClient;
 
@@ -249,7 +251,7 @@ export class CarbonWallet {
   public static withKeplr(keplr: Keplr, chainInfo: ChainInfo, keplrKey: Key, opts: Omit<CarbonWalletInitOpts, "signer"> = {}) {
     const signer = keplrKey.isNanoLedger ? KeplrAccount.createKeplrSignerAmino(keplr, chainInfo, keplrKey) : KeplrAccount.createKeplrSigner(keplr, chainInfo, keplrKey);
     const publicKeyBase64 = Buffer.from(keplrKey.pubKey).toString("base64");
-    
+
     const wallet = CarbonWallet.withSigner(signer, publicKeyBase64, {
       ...opts,
       providerAgent: ProviderAgent.KeplrExtension,
@@ -287,7 +289,7 @@ export class CarbonWallet {
   public async initialize(queryClient: CarbonQueryClient): Promise<CarbonWallet> {
     this.query = queryClient;
 
-    await Promise.all([this.reconnectTmClient(), this.reloadTxFees(), this.reloadAccountSequence()]);
+    await Promise.all([this.reconnectTmClient(), this.reloadTxFees(), this.reloadAccountSequence(), this.reloadMergeAccountStatus()]);
 
     this.initialized = true;
     return this;
@@ -307,7 +309,7 @@ export class CarbonWallet {
     sequence: number,
     opts: Omit<CarbonTx.SignTxOpts, "sequence">
   ): Promise<CarbonWallet.TxRaw> {
-    const { memo = "", explicitSignerData, feeDenom } = opts;
+    const { memo = "", accountNumber, explicitSignerData, feeDenom } = opts;
 
     const signingClient = this.getSigningClient();
     const [account] = await this.signer.getAccounts();
@@ -317,7 +319,7 @@ export class CarbonWallet {
     try {
       await GenericUtils.callIgnoreError(() => this.onRequestSign?.(messages));
       const signerData: CarbonSignerData = {
-        accountNumber: this.accountInfo!.accountNumber,
+        accountNumber: accountNumber ?? this.accountInfo!.accountNumber,
         chainId: this.getChainId(),
         sequence,
         ...explicitSignerData,
@@ -413,13 +415,18 @@ export class CarbonWallet {
       // timeoutHeight is not supported for EIP-712
       if (!isCarbonEIP712Signer(this.signer)) {
         timeoutHeight = height.isZero() ? undefined : height.toNumber() + this.defaultTimeoutBlocks;
-      }     
-
-      const sequence = this.accountInfo!.sequence;
-      this.accountInfo = {
-        ...this.accountInfo!,
-        sequence: sequence + 1,
-      };
+      }
+      let sequence: number
+      if (!this.accountInfo) {
+        sequence = signOpts?.sequence ?? 0
+      }
+      else {
+        sequence = this.accountInfo!.sequence;
+        this.accountInfo = {
+          ...this.accountInfo!,
+          sequence: sequence + 1,
+        };
+      }
 
       const _signOpts: CarbonTx.SignTxOpts = {
         ...signOpts,
@@ -478,8 +485,40 @@ export class CarbonWallet {
   }
 
   async sendTxs(msgs: EncodeObject[], opts?: CarbonTx.SignTxOpts): Promise<CarbonWallet.SendTxResponse> {
+    await this.reloadMergeAccountStatus()
+    if (!this.accountMerged && msgs[0].typeUrl !== CarbonTx.Types.MsgMergeAccount) {
+      await this.sendInitialMergeAccountTx(opts)
+      // refresh accountInfo after merging is done
+      await this.reloadAccountSequence()
+    }
     const result = await this.signAndBroadcast(msgs, opts, { mode: BroadcastTxMode.BroadcastTxBlock });
+    await this.reloadMergeAccountStatus()
     return result as DeliverTxResponse;
+  }
+
+  async sendInitialMergeAccountTx(opts?: CarbonTx.SignTxOpts) {
+    try {
+      const account = await this.getQueryClient().auth.Account({ address: this.bech32Address }).then(res => res.account).catch(async (err: Error) => {
+        return (await this.getQueryClient().auth.Account({ address: this.evmBech32Address })).account
+      });
+      const { address, sequence, accountNumber } = BaseAccount.decode(account!.value)
+      const msg: EncodeObject = {
+        typeUrl: CarbonTx.Types.MsgMergeAccount,
+        value: MsgMergeAccount.fromPartial({
+          creator: address,
+          pubKey: this.publicKey.toString('hex')
+        })
+      }
+      const modifiedOpts = {
+        ...opts,
+        sequence: sequence.toNumber(),
+        accountNumber: accountNumber.toNumber()
+      }
+      await this.signAndBroadcast([msg], modifiedOpts, { mode: BroadcastTxMode.BroadcastTxBlock })
+    }
+    catch (error) {
+      throw error
+    }
   }
 
   async sendTxsWithoutConfirm(msgs: EncodeObject[], opts?: CarbonTx.SignTxOpts): Promise<CarbonWallet.SendTxWithoutConfirmResponse> {
@@ -586,43 +625,68 @@ export class CarbonWallet {
     }
   }
 
+  private async reloadAccountInfo() {
+    try {
+      //carbon account always takes priority
+      const accountAny = await this.getAccount(this.bech32Address) ?? await this.getAccount(this.evmBech32Address)
+      if (!accountAny) return undefined
+      const { accountNumber, sequence, address } = BaseAccount.decode(accountAny.value)
+      return {
+        address,
+        accountNumber: accountNumber.toNumber(),
+        sequence: sequence.toNumber()
+      }
+    }
+    catch (error: any) {
+      throw error
+    }
+
+  }
+
+  private async getAccount(address: string) {
+    let account;
+    try {
+      account = (await this.getQueryClient().auth.Account({ address })).account
+    } catch (error: any) {
+      if (!this.isAccountNotFoundError(error, address))
+        throw error
+    }
+    finally {
+      return account
+    }
+  }
+
   public async reloadAccountSequence() {
     if (this.sequenceInvalidated) this.sequenceInvalidated = false;
 
     try {
-      const evmWallet = isEvmWallet(this.providerAgent)
-      const address = evmWallet ? this.evmBech32Address : this.bech32Address
-      // Alternative way to get account info since cosmjs dont support eth pub key for now
-      const info = await this.getQueryClient().chain.getSequence(address).then(res => res).catch(async (err: Error) => {
-        if (this.EthPublicKeyError(err)) {
-          const accountAny = (await this.getQueryClient().auth.Account({ address })).account
-          if (!accountAny) {
-            throw new Error("Account does not exist on chain. Send some tokens there before trying to query sequence.")
-          }
-          const { accountNumber, sequence } = BaseAccount.decode(accountAny!.value)
-          const sequenceResponse: SequenceResponse = {
-            accountNumber: accountNumber.toNumber(),
-            sequence: sequence.toNumber()
-          }
-          return sequenceResponse
-        }
-        throw err
-      });
+      const info = await this.reloadAccountInfo()
       const pubkey = this.accountInfo?.pubkey ?? {
         type: "tendermint/PubKeySecp256k1",
         value: this.publicKey.toString("base64"),
       };
-
       const chainId = this.accountInfo?.chainId ?? this.chainId ?? (await this.getQueryClient().chain.getChainId());
-
-      this.accountInfo = {
-        ...info,
-        address,
-        pubkey,
-        chainId,
-      };
+      if (info) {
+        this.accountInfo = {
+          ...info,
+          pubkey,
+          chainId,
+        };
+      }
     } catch (error: any) {
-      if (!this.isNewAccountError(error)) throw error;
+      throw error;
+    }
+  }
+  public async reloadMergeAccountStatus() {
+    try {
+      if (this.accountMerged) return
+      const queryClient = this.getQueryClient()
+      const response = await queryClient.evmmerge.MappedAddress({ address: this.bech32Address })
+      if (response && response.mappedAddress) {
+        this.accountMerged = true
+      }
+    } catch (error: any) {
+      throw error;
     }
   }
 
@@ -652,13 +716,11 @@ export class CarbonWallet {
     };
   }
 
-  private isNewAccountError = (error?: Error) => {
-    return error?.message?.includes("Account does not exist on chain. Send some tokens there before trying to query sequence.");
+  private isAccountNotFoundError = (error?: Error, address?: string) => {
+    return error?.message?.includes(`account ${address} not found: key not found`);
   };
 
-  private EthPublicKeyError = (error?: Error) => {
-    return error?.message?.includes("Pubkey type_url /ethermint.crypto.v1.ethsecp256k1.PubKey not recognized");
-  }
+
   private isNonceMismatchError = (error?: Error) => {
     const regex =
       /^Broadcasting transaction failed with code 32 \(codespace: sdk\)\. Log: account sequence mismatch, expected (\d+), got (\d+): incorrect account sequence/;

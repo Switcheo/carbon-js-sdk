@@ -1,6 +1,6 @@
 import { CarbonEvmChainIDs, EthNetworkConfig, Network, NetworkConfigs } from "@carbon-sdk/constant";
 import { ABIs } from "@carbon-sdk/eth";
-import { Blockchain, ChainNames, BlockchainV2, EVMChain as EVMChainV2, getBlockchainFromChainV2, BLOCKCHAIN_V2_TO_V1_MAPPING } from "@carbon-sdk/util/blockchain";
+import { Blockchain, ChainNames, BlockchainV2, EVMChain as EVMChainV2, getBlockchainFromChainV2, BLOCKCHAIN_V2_TO_V1_MAPPING, EvmChains } from "@carbon-sdk/util/blockchain";
 import { appendHexPrefix } from "@carbon-sdk/util/generic";
 import { ethers } from "ethers";
 import { makeSignDoc } from "@cosmjs/amino/build";
@@ -69,14 +69,14 @@ const CONTRACT_HASH: {
     [Network.MainNet]: "0x7e8D8c98a016877Cb3103e837Fc71D41b155aF70",
   } as const,
   Carbon: {
-    //Carbon does not support Metamask legacy mnemonic sign in 
+    //Carbon does not support Metamask legacy mnemonic sign in
     [Network.TestNet]: "",
     [Network.DevNet]: "",
     [Network.LocalHost]: "",
 
     [Network.MainNet]: "",
   } as const
-} as const; 
+} as const;
 
 const REGISTRY_CONTRACT_ABI = ABIs.keyStorage;
 
@@ -131,6 +131,11 @@ export interface CallContractArgs {
 export interface MetaMaskSyncResult {
   blockchain?: Blockchain | BlockchainV2;
   chainId?: number;
+}
+
+export interface StoredMnemonicInfo {
+  chain: EVMChainV2,
+  mnemonics: string
 }
 
 const CarbonEvmNativeCurrency = {
@@ -293,6 +298,7 @@ const OKC_TESTNET: MetaMaskChangeNetworkParam = {
  */
 export class MetaMask {
   private blockchain: EVMChain = 'Ethereum';
+  private legacyEncryptedLogin: boolean = false
 
   static createMetamaskSigner(metamask: MetaMask, evmChainId: string, pubKeyBase64: string, addressOptions: SWTHAddressOptions): CarbonSigner {
     const signDirect = async (_: string, doc: Models.Tx.SignDoc) => {
@@ -459,9 +465,6 @@ export class MetaMask {
   }
 
   static getRequiredChainId(network: Network, blockchain: BlockchainV2 = 'Ethereum') {
-    if (blockchain === 'Carbon') {
-      return Number(parseChainId(CarbonEvmChainIDs[network]))
-    }
     if (network === Network.MainNet) {
       switch (blockchain) {
         case 'Binance Smart Chain':
@@ -557,6 +560,42 @@ export class MetaMask {
     }
 
     return defaultAccount;
+  }
+
+  async getEncryptedLegacyAccount(connectedBlockchain?: EVMChainV2): Promise<StoredMnemonicInfo | undefined> {
+    if (connectedBlockchain && connectedBlockchain !== 'Carbon') {
+      const mnemonicInfo = await this.getMnemonicInfo(connectedBlockchain)
+      if (mnemonicInfo) {
+        return mnemonicInfo
+      }
+    }
+
+    const chainMnemonicSearch = EvmChains.map(async (blockchain) => {
+      if (blockchain !== 'Carbon' && CONTRACT_HASH[blockchain][this.network]) {
+        return await this.getMnemonicInfo(blockchain)
+      }
+    });
+    const results = await Promise.all(chainMnemonicSearch);
+    return results.find(result => !result);
+  }
+
+  async getMnemonicInfo(connectedBlockchain: EVMChainV2): Promise<StoredMnemonicInfo | undefined> {
+    const defaultAccount = await this.defaultAccount();
+    let result: StoredMnemonicInfo | undefined
+    if (connectedBlockchain !== 'Carbon' && connectedBlockchain) {
+      await this.getStoredMnemonicCipher(defaultAccount, connectedBlockchain).then(mnemonics => {
+        if (mnemonics) {
+          result = {
+            chain: connectedBlockchain,
+            mnemonics
+          }
+        }
+      }).catch(err => {
+        console.error('Unable to retrieve stored mnemonic cipher from ', connectedBlockchain)
+        console.error(err)
+      }).finally(() => { return result })
+    }
+    return result
   }
 
   async getStoredMnemonicCipher(account: string, blockchain?: EVMChain): Promise<string | undefined> {
@@ -741,6 +780,7 @@ export class MetaMask {
       console.error(decryptedCipherText);
       throw new Error("Retrieved invalid account on blockchain, please check console for more information.");
     }
+    this.legacyEncryptedLogin = true
 
     return match[1]?.trim();
   }
@@ -807,5 +847,9 @@ export class MetaMask {
     }
 
     return contractHash;
+  }
+
+  public isLegacyEncryptedLogin() {
+    return this.legacyEncryptedLogin
   }
 }

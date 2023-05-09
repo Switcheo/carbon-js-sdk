@@ -7,7 +7,3 @@ export enum ProviderAgent {
   // For legacy metamask
   Metamask = "metamask"
 }
-
-export function isEvmWallet(providerAgent?: string) {
-  return ProviderAgent.MetamaskExtension.toString() === providerAgent
-}
