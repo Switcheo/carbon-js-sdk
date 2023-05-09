@@ -210,7 +210,7 @@ export const NetworkConfigs: {
     },
 
     bsc: {
-      rpcURL: "https://data-seed-prebsc-2-s3.binance.org:8545/",
+      rpcURL: "https://data-seed-prebsc-1-s2.binance.org:8545/",
       wsURL: "",
       payerURL: `https://test-payer.carbon.network`,
       bridgeEntranceAddr: "",
@@ -299,7 +299,7 @@ export const NetworkConfigs: {
     },
 
     bsc: {
-      rpcURL: "https://data-seed-prebsc-2-s3.binance.org:8545/",
+      rpcURL: "https://data-seed-prebsc-1-s2.binance.org:8545/",
       wsURL: "",
       payerURL: `https://dev-payer.carbon.network`,
       bridgeEntranceAddr: "",
@@ -389,7 +389,7 @@ export const NetworkConfigs: {
     },
 
     bsc: {
-      rpcURL: "https://data-seed-prebsc-2-s3.binance.org:8545/",
+      rpcURL: "https://data-seed-prebsc-1-s2.binance.org:8545/",
       wsURL: "",
       payerURL: `http://localhost:8001`,
       bridgeEntranceAddr: "",

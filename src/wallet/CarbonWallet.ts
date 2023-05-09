@@ -1,6 +1,6 @@
 import { CarbonQueryClient } from "@carbon-sdk/clients";
 import { CarbonEvmChainIDs, DEFAULT_FEE_DENOM, DEFAULT_GAS, DEFAULT_NETWORK, Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
-import { ProviderAgent, isEvmWallet } from "@carbon-sdk/constant/walletProvider";
+import { ProviderAgent } from "@carbon-sdk/constant/walletProvider";
 import { ChainInfo, CosmosLedger, Keplr, KeplrAccount, LeapAccount, MetaMask } from "@carbon-sdk/provider";
 import { AddressUtils, CarbonTx, GenericUtils } from "@carbon-sdk/util";
 import { SWTHAddress, SWTHAddressOptions } from "@carbon-sdk/util/address";
@@ -625,43 +625,47 @@ export class CarbonWallet {
     }
   }
 
+  private async reloadAccountInfo() {
+    try {
+      //carbon account always takes priority
+      const accountAny = await this.getAccount(this.bech32Address) ?? await this.getAccount(this.evmBech32Address)
+      if (!accountAny) return undefined
+      const { accountNumber, sequence, address } = BaseAccount.decode(accountAny.value)
+      return {
+        address,
+        accountNumber: accountNumber.toNumber(),
+        sequence: sequence.toNumber()
+      }
+    }
+    catch (error: any) {
+      throw error
+    }
+
+  }
+
+  private async getAccount(address: string) {
+    return (await this.getQueryClient().auth.Account({ address })).account
+  }
+
   public async reloadAccountSequence() {
     if (this.sequenceInvalidated) this.sequenceInvalidated = false;
 
     try {
-      const evmWallet = isEvmWallet(this.providerAgent)
-      const address = evmWallet ? this.evmBech32Address : this.bech32Address
-      // Alternative way to get account info since cosmjs dont support eth pub key for now
-      const info = await this.getQueryClient().chain.getSequence(address).then(res => res).catch(async (err: Error) => {
-        if (this.EthPublicKeyError(err)) {
-          const accountAny = (await this.getQueryClient().auth.Account({ address })).account
-          if (!accountAny) {
-            throw new Error("Account does not exist on chain. Send some tokens there before trying to query sequence.")
-          }
-          const { accountNumber, sequence } = BaseAccount.decode(accountAny!.value)
-          const sequenceResponse: SequenceResponse = {
-            accountNumber: accountNumber.toNumber(),
-            sequence: sequence.toNumber()
-          }
-          return sequenceResponse
-        }
-        throw err
-      });
+      const info = await this.reloadAccountInfo()
       const pubkey = this.accountInfo?.pubkey ?? {
         type: "tendermint/PubKeySecp256k1",
         value: this.publicKey.toString("base64"),
       };
-
       const chainId = this.accountInfo?.chainId ?? this.chainId ?? (await this.getQueryClient().chain.getChainId());
-
-      this.accountInfo = {
-        ...info,
-        address,
-        pubkey,
-        chainId,
-      };
+      if (info) {
+        this.accountInfo = {
+          ...info,
+          pubkey,
+          chainId,
+        };
+      }
     } catch (error: any) {
-      if (!this.isNewAccountError(error)) throw error;
+      throw error;
     }
   }
   public async reloadMergeAccountStatus() {
@@ -703,13 +707,6 @@ export class CarbonWallet {
     };
   }
 
-  private isNewAccountError = (error?: Error) => {
-    return error?.message?.includes("Account does not exist on chain. Send some tokens there before trying to query sequence.");
-  };
-
-  private EthPublicKeyError = (error?: Error) => {
-    return error?.message?.includes("Pubkey type_url /ethermint.crypto.v1.ethsecp256k1.PubKey not recognized");
-  }
   private isNonceMismatchError = (error?: Error) => {
     const regex =
       /^Broadcasting transaction failed with code 32 \(codespace: sdk\)\. Log: account sequence mismatch, expected (\d+), got (\d+): incorrect account sequence/;
