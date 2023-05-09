@@ -205,7 +205,7 @@ class CosmosLedger {
   }
 
   async changeBIP44Path(hdPath: Array<number>, hrp: string) {
-    await this.isReady()
+    await this.isReady();
     try {
       this.hdPath = hdPath;
       this.hrp = hrp;
