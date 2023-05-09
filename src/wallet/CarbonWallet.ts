@@ -48,41 +48,41 @@ export interface CarbonWalletGenericOpts {
 export type CarbonWalletInitOpts = CarbonWalletGenericOpts &
   (
     | {
-        // connect with mnemonic
-        mnemonic: string;
-        privateKey?: string | Buffer;
-        signer?: CarbonSigner;
-        publicKeyBase64?: string;
-        bech32Address?: string;
-        customSigner?: OfflineSigner & OfflineDirectSigner;
-      }
+      // connect with mnemonic
+      mnemonic: string;
+      privateKey?: string | Buffer;
+      signer?: CarbonSigner;
+      publicKeyBase64?: string;
+      bech32Address?: string;
+      customSigner?: OfflineSigner & OfflineDirectSigner;
+    }
     | {
-        // connect with private key
-        mnemonic?: string;
-        privateKey: string | Buffer;
-        signer?: CarbonSigner;
-        publicKeyBase64?: string;
-        bech32Address?: string;
-        customSigner?: OfflineSigner & OfflineDirectSigner;
-      }
+      // connect with private key
+      mnemonic?: string;
+      privateKey: string | Buffer;
+      signer?: CarbonSigner;
+      publicKeyBase64?: string;
+      bech32Address?: string;
+      customSigner?: OfflineSigner & OfflineDirectSigner;
+    }
     | {
-        // connect with custom signer
-        mnemonic?: string;
-        privateKey?: string | Buffer;
-        signer: CarbonSigner;
-        publicKeyBase64: string;
-        bech32Address?: string;
-        customSigner?: OfflineSigner & OfflineDirectSigner; // to allow adding of keplr offline signer
-      }
+      // connect with custom signer
+      mnemonic?: string;
+      privateKey?: string | Buffer;
+      signer: CarbonSigner;
+      publicKeyBase64: string;
+      bech32Address?: string;
+      customSigner?: OfflineSigner & OfflineDirectSigner; // to allow adding of keplr offline signer
+    }
     | {
-        // connect with address (view only)
-        mnemonic?: string;
-        privateKey?: string | Buffer;
-        signer?: CarbonSigner;
-        publicKeyBase64?: string;
-        bech32Address: string;
-        customSigner?: OfflineSigner & OfflineDirectSigner;
-      }
+      // connect with address (view only)
+      mnemonic?: string;
+      privateKey?: string | Buffer;
+      signer?: CarbonSigner;
+      publicKeyBase64?: string;
+      bech32Address: string;
+      customSigner?: OfflineSigner & OfflineDirectSigner;
+    }
   );
 
 export interface AccountInfo extends Account {
@@ -651,9 +651,7 @@ export class CarbonWallet {
       if (!this.isAccountNotFoundError(error, address))
         throw error
     }
-    finally {
-      return account
-    }
+    return account
   }
 
   public async reloadAccountSequence() {
@@ -748,6 +746,6 @@ export namespace CarbonWallet {
   export type OnSignCompleteCallback = (signature: StdSignature | null) => void | Promise<void>;
 
   // workaround to re-export interface mixed const type
-  export interface TxRaw extends StargateTxRaw {}
+  export interface TxRaw extends StargateTxRaw { }
   export const TxRaw: typeof StargateTxRaw = { ...StargateTxRaw };
 }
