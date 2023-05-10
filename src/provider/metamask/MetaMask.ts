@@ -135,7 +135,7 @@ export interface MetaMaskSyncResult {
 
 export interface StoredMnemonicInfo {
   chain: EVMChainV2,
-  mnemonics: string
+  mnemonicCipher: string
 }
 
 const CarbonEvmNativeCurrency = {
@@ -576,24 +576,25 @@ export class MetaMask {
       }
     });
     const results = await Promise.all(chainMnemonicSearch);
-    return results.find(result => !result);
+    return results.find(result => result);
   }
 
   async getMnemonicInfo(connectedBlockchain: EVMChainV2): Promise<StoredMnemonicInfo | undefined> {
     const defaultAccount = await this.defaultAccount();
     let result: StoredMnemonicInfo | undefined
     if (connectedBlockchain !== 'Carbon' && connectedBlockchain) {
-      await this.getStoredMnemonicCipher(defaultAccount, connectedBlockchain).then(mnemonics => {
-        if (mnemonics) {
+      await this.getStoredMnemonicCipher(defaultAccount, connectedBlockchain).then(mnemonicCipher => {
+        if (mnemonicCipher) {
           result = {
             chain: connectedBlockchain,
-            mnemonics
+            mnemonicCipher
           }
         }
       }).catch(err => {
         console.error('Unable to retrieve stored mnemonic cipher from ', connectedBlockchain)
         console.error(err)
-      }).finally(() => { return result })
+        return result
+      })
     }
     return result
   }
