@@ -27,13 +27,12 @@ import { MsgGrant, MsgExecResponse as MsgAuthzExecResponse, MsgExec as MsgAuthzE
 import { MsgUnjail, MsgUnjailResponse } from "./cosmos/slashing/v1beta1/tx";
 import { MsgSubmitProposal as MsgGovSubmitProposal, MsgSubmitProposalResponse as MsgGovSubmitProposalResponse, MsgExecLegacyContent, MsgExecLegacyContentResponse, MsgVote as MsgGovVote, MsgVoteResponse as MsgGovVoteResponse, MsgVoteWeighted, MsgVoteWeightedResponse, MsgDeposit, MsgDepositResponse } from "./cosmos/gov/v1/tx";
 import { MsgSubmitProposal as MsgGovV1beta1SubmitProposal, MsgSubmitProposalResponse as MsgGovV1beta1SubmitProposalResponse, MsgVote as MsgGovV1beta1Vote, MsgVoteResponse as MsgGovV1beta1VoteResponse, MsgVoteWeighted as MsgGovV1beta1VoteWeighted, MsgVoteWeightedResponse as MsgGovV1beta1VoteWeightedResponse, MsgDeposit as MsgGovV1beta1Deposit, MsgDepositResponse as MsgGovV1beta1DepositResponse } from "./cosmos/gov/v1beta1/tx";
+import { MsgCreatePerpetualsLiquidityPool, MsgCreatePerpetualsLiquidityPoolResponse, MsgUpdatePerpetualsLiquidityPool, MsgUpdatePerpetualsLiquidityPoolResponse, MsgRegisterToPerpetualsLiquidityPool, MsgRegisterToPerpetualsLiquidityPoolResponse, MsgDeregisterFromPerpetualsLiquidityPool, MsgDeregisterFromPerpetualsLiquidityPoolResponse, MsgDepositToPerpetualsLiquidityPool, MsgDepositToPerpetualsLiquidityPoolResponse, MsgWithdrawFromPerpetualsLiquidityPool, MsgWithdrawFromPerpetualsLiquidityPoolResponse, MsgUpdatePLPMarketConfig, MsgUpdatePLPMarketConfigResponse } from "./perpsliquidity/tx";
 import { MsgConnectionOpenInit, MsgConnectionOpenInitResponse, MsgConnectionOpenTry, MsgConnectionOpenTryResponse, MsgConnectionOpenAck, MsgConnectionOpenAckResponse, MsgConnectionOpenConfirm, MsgConnectionOpenConfirmResponse } from "./ibc/core/connection/v1/tx";
 import { MsgChannelOpenInit, MsgChannelOpenInitResponse, MsgChannelOpenTry, MsgChannelOpenTryResponse, MsgChannelOpenAck, MsgChannelOpenAckResponse, MsgChannelOpenConfirm, MsgChannelOpenConfirmResponse, MsgChannelCloseInit, MsgChannelCloseInitResponse, MsgChannelCloseConfirm, MsgChannelCloseConfirmResponse, MsgRecvPacket, MsgRecvPacketResponse, MsgTimeout, MsgTimeoutResponse, MsgTimeoutOnClose, MsgTimeoutOnCloseResponse, MsgAcknowledgement, MsgAcknowledgementResponse } from "./ibc/core/channel/v1/tx";
 import { MsgCreateClient, MsgCreateClientResponse, MsgUpdateClient, MsgUpdateClientResponse, MsgUpgradeClient, MsgUpgradeClientResponse, MsgSubmitMisbehaviour, MsgSubmitMisbehaviourResponse } from "./ibc/core/client/v1/tx";
 import { Header } from "./ibc/lightclients/tendermint/v1/tendermint";
-import { MsgRegisterPayee, MsgRegisterPayeeResponse, MsgRegisterCounterpartyPayee, MsgRegisterCounterpartyPayeeResponse, MsgPayPacketFee, MsgPayPacketFeeResponse, MsgPayPacketFeeAsync, MsgPayPacketFeeAsyncResponse } from "./ibc/applications/fee/v1/tx";
 import { MsgTransfer, MsgTransferResponse } from "./ibc/applications/transfer/v1/tx";
-import { MsgRegisterInterchainAccount, MsgRegisterInterchainAccountResponse, MsgSendTx, MsgSendTxResponse } from "./ibc/applications/interchain_accounts/controller/v1/tx";
 import { MsgCreateToken, MsgCreateTokenResponse, MsgSyncToken, MsgSyncTokenResponse, MsgMintToken, MsgMintTokenResponse, MsgBindToken, MsgBindTokenResponse, MsgUnbindToken, MsgUnbindTokenResponse, MsgLinkToken, MsgLinkTokenResponse, MsgWithdraw, MsgWithdrawResponse, MsgAuthorizeBridge, MsgAuthorizeBridgeResponse, MsgDeauthorizeBridge, MsgDeauthorizeBridgeResponse, MsgEditBridgeName, MsgEditBridgeNameResponse, MsgRemoveBridge, MsgRemoveBridgeResponse, MsgUpdateToken, MsgUpdateTokenResponse, MsgAddBridgeAddress, MsgAddBridgeAddressResponse, MsgRemoveBridgeAddress, MsgRemoveBridgeAddressResponse, MsgCreateGroup as MsgCoinCreateGroup, MsgCreateGroupResponse as MsgCoinCreateGroupResponse, MsgUpdateGroup, MsgUpdateGroupResponse, MsgRegisterToGroup, MsgRegisterToGroupResponse, MsgDeregisterFromGroup, MsgDeregisterFromGroupResponse, MsgDepositToGroup, MsgDepositToGroupResponse, MsgWithdrawFromGroup, MsgWithdrawFromGroupResponse, MsgUpdateGroupedTokenConfig, MsgUpdateGroupedTokenConfigResponse } from "./coin/tx";
 import { CreateTokenProposal } from "./coin/proposal";
 import { MsgSetLeverage, MsgSetLeverageResponse } from "./leverage/tx";
@@ -327,6 +326,21 @@ registry.register("/Switcheo.carbon.ccm.MsgProcessZionCrossChainTxResponse", Pol
 registry.register("/Switcheo.carbon.ccm.MsgCreateEmitEvent", PolyNetwork.Ccm.MsgCreateEmitEvent);
 registry.register("/Switcheo.carbon.ccm.MsgToggleEmitZionEvents", PolyNetwork.Ccm.MsgToggleEmitZionEvents);
 
+registry.register("/Switcheo.carbon.perpsliquidity.MsgCreatePerpetualsLiquidityPool", MsgCreatePerpetualsLiquidityPool);
+registry.register("/Switcheo.carbon.perpsliquidity.MsgCreatePerpetualsLiquidityPoolResponse", MsgCreatePerpetualsLiquidityPoolResponse);
+registry.register("/Switcheo.carbon.perpsliquidity.MsgUpdatePerpetualsLiquidityPool", MsgUpdatePerpetualsLiquidityPool);
+registry.register("/Switcheo.carbon.perpsliquidity.MsgUpdatePerpetualsLiquidityPoolResponse", MsgUpdatePerpetualsLiquidityPoolResponse);
+registry.register("/Switcheo.carbon.perpsliquidity.MsgRegisterToPerpetualsLiquidityPool", MsgRegisterToPerpetualsLiquidityPool);
+registry.register("/Switcheo.carbon.perpsliquidity.MsgRegisterToPerpetualsLiquidityPoolResponse", MsgRegisterToPerpetualsLiquidityPoolResponse);
+registry.register("/Switcheo.carbon.perpsliquidity.MsgDeregisterFromPerpetualsLiquidityPool", MsgDeregisterFromPerpetualsLiquidityPool);
+registry.register("/Switcheo.carbon.perpsliquidity.MsgDeregisterFromPerpetualsLiquidityPoolResponse", MsgDeregisterFromPerpetualsLiquidityPoolResponse);
+registry.register("/Switcheo.carbon.perpsliquidity.MsgDepositToPerpetualsLiquidityPool", MsgDepositToPerpetualsLiquidityPool);
+registry.register("/Switcheo.carbon.perpsliquidity.MsgDepositToPerpetualsLiquidityPoolResponse", MsgDepositToPerpetualsLiquidityPoolResponse);
+registry.register("/Switcheo.carbon.perpsliquidity.MsgWithdrawFromPerpetualsLiquidityPool", MsgWithdrawFromPerpetualsLiquidityPool);
+registry.register("/Switcheo.carbon.perpsliquidity.MsgWithdrawFromPerpetualsLiquidityPoolResponse", MsgWithdrawFromPerpetualsLiquidityPoolResponse);
+registry.register("/Switcheo.carbon.perpsliquidity.MsgUpdatePLPMarketConfig", MsgUpdatePLPMarketConfig);
+registry.register("/Switcheo.carbon.perpsliquidity.MsgUpdatePLPMarketConfigResponse", MsgUpdatePLPMarketConfigResponse);
+
 registry.register("/ibc.core.connection.v1.MsgConnectionOpenInit", MsgConnectionOpenInit);
 registry.register("/ibc.core.connection.v1.MsgConnectionOpenInitResponse", MsgConnectionOpenInitResponse);
 registry.register("/ibc.core.connection.v1.MsgConnectionOpenTry", MsgConnectionOpenTry);
@@ -370,22 +384,8 @@ registry.register("/ibc.core.client.v1.UpgradeProposal", UpgradeProposal);
 
 registry.register("/ibc.lightclients.tendermint.v1.Header", Header);
 
-registry.register("/ibc.applications.fee.v1.MsgRegisterPayee", MsgRegisterPayee);
-registry.register("/ibc.applications.fee.v1.MsgRegisterPayeeResponse", MsgRegisterPayeeResponse);
-registry.register("/ibc.applications.fee.v1.MsgRegisterCounterpartyPayee", MsgRegisterCounterpartyPayee);
-registry.register("/ibc.applications.fee.v1.MsgRegisterCounterpartyPayeeResponse", MsgRegisterCounterpartyPayeeResponse);
-registry.register("/ibc.applications.fee.v1.MsgPayPacketFee", MsgPayPacketFee);
-registry.register("/ibc.applications.fee.v1.MsgPayPacketFeeResponse", MsgPayPacketFeeResponse);
-registry.register("/ibc.applications.fee.v1.MsgPayPacketFeeAsync", MsgPayPacketFeeAsync);
-registry.register("/ibc.applications.fee.v1.MsgPayPacketFeeAsyncResponse", MsgPayPacketFeeAsyncResponse);
-
 registry.register("/ibc.applications.transfer.v1.MsgTransfer", MsgTransfer);
 registry.register("/ibc.applications.transfer.v1.MsgTransferResponse", MsgTransferResponse);
-
-registry.register("/ibc.applications.interchain_accounts.controller.v1.MsgRegisterInterchainAccount", MsgRegisterInterchainAccount);
-registry.register("/ibc.applications.interchain_accounts.controller.v1.MsgRegisterInterchainAccountResponse", MsgRegisterInterchainAccountResponse);
-registry.register("/ibc.applications.interchain_accounts.controller.v1.MsgSendTx", MsgSendTx);
-registry.register("/ibc.applications.interchain_accounts.controller.v1.MsgSendTxResponse", MsgSendTxResponse);
 
 registry.register("/Switcheo.carbon.coin.MsgCreateToken", MsgCreateToken);
 registry.register("/Switcheo.carbon.coin.MsgCreateTokenResponse", MsgCreateTokenResponse);
@@ -832,6 +832,20 @@ export const TxTypes = {
   "MsgProcessZionCrossChainTxResponse": "/Switcheo.carbon.ccm.MsgProcessZionCrossChainTxResponse",
   "MsgCreateEmitEvent": "/Switcheo.carbon.ccm.MsgCreateEmitEvent",
   "MsgToggleEmitZionEvents": "/Switcheo.carbon.ccm.MsgToggleEmitZionEvents",
+  "MsgCreatePerpetualsLiquidityPool": "/Switcheo.carbon.perpsliquidity.MsgCreatePerpetualsLiquidityPool",
+  "MsgCreatePerpetualsLiquidityPoolResponse": "/Switcheo.carbon.perpsliquidity.MsgCreatePerpetualsLiquidityPoolResponse",
+  "MsgUpdatePerpetualsLiquidityPool": "/Switcheo.carbon.perpsliquidity.MsgUpdatePerpetualsLiquidityPool",
+  "MsgUpdatePerpetualsLiquidityPoolResponse": "/Switcheo.carbon.perpsliquidity.MsgUpdatePerpetualsLiquidityPoolResponse",
+  "MsgRegisterToPerpetualsLiquidityPool": "/Switcheo.carbon.perpsliquidity.MsgRegisterToPerpetualsLiquidityPool",
+  "MsgRegisterToPerpetualsLiquidityPoolResponse": "/Switcheo.carbon.perpsliquidity.MsgRegisterToPerpetualsLiquidityPoolResponse",
+  "MsgDeregisterFromPerpetualsLiquidityPool": "/Switcheo.carbon.perpsliquidity.MsgDeregisterFromPerpetualsLiquidityPool",
+  "MsgDeregisterFromPerpetualsLiquidityPoolResponse": "/Switcheo.carbon.perpsliquidity.MsgDeregisterFromPerpetualsLiquidityPoolResponse",
+  "MsgDepositToPerpetualsLiquidityPool": "/Switcheo.carbon.perpsliquidity.MsgDepositToPerpetualsLiquidityPool",
+  "MsgDepositToPerpetualsLiquidityPoolResponse": "/Switcheo.carbon.perpsliquidity.MsgDepositToPerpetualsLiquidityPoolResponse",
+  "MsgWithdrawFromPerpetualsLiquidityPool": "/Switcheo.carbon.perpsliquidity.MsgWithdrawFromPerpetualsLiquidityPool",
+  "MsgWithdrawFromPerpetualsLiquidityPoolResponse": "/Switcheo.carbon.perpsliquidity.MsgWithdrawFromPerpetualsLiquidityPoolResponse",
+  "MsgUpdatePLPMarketConfig": "/Switcheo.carbon.perpsliquidity.MsgUpdatePLPMarketConfig",
+  "MsgUpdatePLPMarketConfigResponse": "/Switcheo.carbon.perpsliquidity.MsgUpdatePLPMarketConfigResponse",
   "MsgConnectionOpenInit": "/ibc.core.connection.v1.MsgConnectionOpenInit",
   "MsgConnectionOpenInitResponse": "/ibc.core.connection.v1.MsgConnectionOpenInitResponse",
   "MsgConnectionOpenTry": "/ibc.core.connection.v1.MsgConnectionOpenTry",
@@ -871,20 +885,8 @@ export const TxTypes = {
   "ClientUpdateProposal": "/ibc.core.client.v1.ClientUpdateProposal",
   "UpgradeProposal": "/ibc.core.client.v1.UpgradeProposal",
   "Header": "/ibc.lightclients.tendermint.v1.Header",
-  "MsgRegisterPayee": "/ibc.applications.fee.v1.MsgRegisterPayee",
-  "MsgRegisterPayeeResponse": "/ibc.applications.fee.v1.MsgRegisterPayeeResponse",
-  "MsgRegisterCounterpartyPayee": "/ibc.applications.fee.v1.MsgRegisterCounterpartyPayee",
-  "MsgRegisterCounterpartyPayeeResponse": "/ibc.applications.fee.v1.MsgRegisterCounterpartyPayeeResponse",
-  "MsgPayPacketFee": "/ibc.applications.fee.v1.MsgPayPacketFee",
-  "MsgPayPacketFeeResponse": "/ibc.applications.fee.v1.MsgPayPacketFeeResponse",
-  "MsgPayPacketFeeAsync": "/ibc.applications.fee.v1.MsgPayPacketFeeAsync",
-  "MsgPayPacketFeeAsyncResponse": "/ibc.applications.fee.v1.MsgPayPacketFeeAsyncResponse",
   "MsgTransfer": "/ibc.applications.transfer.v1.MsgTransfer",
   "MsgTransferResponse": "/ibc.applications.transfer.v1.MsgTransferResponse",
-  "MsgRegisterInterchainAccount": "/ibc.applications.interchain_accounts.controller.v1.MsgRegisterInterchainAccount",
-  "MsgRegisterInterchainAccountResponse": "/ibc.applications.interchain_accounts.controller.v1.MsgRegisterInterchainAccountResponse",
-  "MsgSendTx": "/ibc.applications.interchain_accounts.controller.v1.MsgSendTx",
-  "MsgSendTxResponse": "/ibc.applications.interchain_accounts.controller.v1.MsgSendTxResponse",
   "MsgCreateToken": "/Switcheo.carbon.coin.MsgCreateToken",
   "MsgCreateTokenResponse": "/Switcheo.carbon.coin.MsgCreateTokenResponse",
   "MsgSyncToken": "/Switcheo.carbon.coin.MsgSyncToken",
@@ -1046,7 +1048,7 @@ export { LiquidatorPosition, MsgInitiateLiquidation, MsgInitiateLiquidationRespo
 export { IncomingLiquidations } from "./broker/incoming_liquidations";
 export { MinMaxBoundary } from "./broker/pagination";
 export { Candlestick } from "./broker/candlestick";
-export { Amm } from "./broker/amm";
+export { SpotAmm, PerpsPoolAmm, PerpsMarketAmm } from "./broker/amm";
 export { QueryCandlesticksRequest, QueryCandlesticksResponse, QueryTradesRequest, QueryTradesResponse, QueryTradesForPositionRequest, QueryTradesForPositionResponse } from "./broker/query";
 export { TradeEvent } from "./broker/event";
 export { MsgSetGasCost, MsgSetGasCostResponse, MsgSetMinGasPrice, MsgSetMinGasPriceResponse, MsgRemoveGasCost, MsgRemoveGasCostResponse, MsgRemoveMinGasPrice, MsgRemoveMinGasPriceResponse } from "./fee/tx";
@@ -1081,6 +1083,11 @@ export { ResultEvent, OracleSlashEvent } from "./oracle/event";
 export { QueryParamsRequest as QueryMarketstatsParamsRequest, QueryParamsResponse as QueryMarketstatsParamsResponse, QueryMarketStatsRequest, QueryMarketStatsResponse } from "./marketstats/query";
 export { Params as MarketstatsParams } from "./marketstats/params";
 export { MarketStats } from "./marketstats/marketstats";
+export { MsgCreatePerpetualsLiquidityPool, MsgCreatePerpetualsLiquidityPoolResponse, MsgUpdatePerpetualsLiquidityPool, MsgUpdatePerpetualsLiquidityPoolResponse, MsgRegisterToPerpetualsLiquidityPool, MsgRegisterToPerpetualsLiquidityPoolResponse, MsgDeregisterFromPerpetualsLiquidityPool, MsgDeregisterFromPerpetualsLiquidityPoolResponse, MsgDepositToPerpetualsLiquidityPool, MsgDepositToPerpetualsLiquidityPoolResponse, MsgWithdrawFromPerpetualsLiquidityPool, MsgWithdrawFromPerpetualsLiquidityPoolResponse, MsgUpdatePLPMarketConfig, MsgUpdatePLPMarketConfigResponse } from "./perpsliquidity/tx";
+export { PerpetualsLiquidityPool, UpdatePerpetualsLiquidityPoolParams, PerpetualsLiquidityPoolDetails, Quote, PLPMarketConfig, UpdatePLPMarketConfigParams, DepositToPerpetualLiquidityPoolParams, WithdrawFromPerpetualLiquidityPoolParams } from "./perpsliquidity/perpetuals_liquidity_pool";
+export { QueryParamsRequest as QueryPerpsliquidityParamsRequest, QueryParamsResponse as QueryPerpsliquidityParamsResponse, QueryGetPerpetualsLiquidityPoolRequest, QueryGetPerpetualsLiquidityPoolResponse, QueryAllPerpetualsLiquidityPoolsRequest, QueryAllPerpetualsLiquidityPoolsResponse, QueryPerpetualsLiquidityPoolMappingsRequest, QueryPerpetualsLiquidityPoolMappingsResponse, QueryPerpetualsLiquidityPoolMappingsResponse_PerpetualsLiquidityPoolMappingsEntry } from "./perpsliquidity/query";
+export { SetPerpetualsLiquidityPoolEvent, NewPerpetualsLiquidityPoolEvent, UpdatePerpetualsLiquidityPoolEvent, RegisterToPerpetualsLiquidityPoolEvent, DeregisterFromPerpetualsLiquidityPoolEvent, SetPLPMarketConfigEvent, DepositToPerpetualsLiquidityPoolEvent, WithdrawFromPerpetualsLiquidityPoolEvent } from "./perpsliquidity/event";
+export { Params as PerpsliquidityParams } from "./perpsliquidity/params";
 export { QueryAccountBalanceRequest, QueryAccountBalanceResponse } from "./evmbank/query";
 export { MsgCreateToken, CreateTokenParams, MsgCreateTokenResponse, MsgSyncToken, MsgSyncTokenResponse, MsgMintToken, MsgMintTokenResponse, MsgBindToken, MsgBindTokenResponse, MsgUnbindToken, MsgUnbindTokenResponse, MsgLinkToken, MsgLinkTokenResponse, MsgWithdraw, MsgWithdrawResponse, MsgAuthorizeBridge, MsgAuthorizeBridgeResponse, MsgDeauthorizeBridge, MsgDeauthorizeBridgeResponse, MsgEditBridgeName, MsgEditBridgeNameResponse, MsgRemoveBridge, MsgRemoveBridgeResponse, MsgUpdateToken, UpdateTokenParams, MsgUpdateTokenResponse, MsgAddBridgeAddress, MsgAddBridgeAddressResponse, MsgRemoveBridgeAddress, MsgRemoveBridgeAddressResponse, MsgCreateGroup, MsgCreateGroupResponse, MsgUpdateGroup, UpdateGroupParams, MsgUpdateGroupResponse, MsgRegisterToGroup, MsgRegisterToGroupResponse, MsgDeregisterFromGroup, MsgDeregisterFromGroupResponse, MsgDepositToGroup, MsgDepositToGroupResponse, MsgWithdrawFromGroup, MsgWithdrawFromGroupResponse, MsgUpdateGroupedTokenConfig, UpdateGroupedTokenConfigParams, MsgUpdateGroupedTokenConfigResponse } from "./coin/tx";
 export { TokenGroup, TokenGroupDetails, GroupedTokenConfig } from "./coin/group";
@@ -1194,10 +1201,6 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "syntax",
-        "type": "string"
-      },
-      {
-        "name": "edition",
         "type": "string"
       }
     ],
@@ -1507,10 +1510,6 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "bool"
       },
       {
-        "name": "deprecated_legacy_json_field_conflicts",
-        "type": "bool"
-      },
-      {
         "name": "uninterpreted_option",
         "type": "UninterpretedOption[]",
         "packageName": "/google.protobuf"
@@ -1548,20 +1547,6 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "bool"
       },
       {
-        "name": "debug_redact",
-        "type": "bool"
-      },
-      {
-        "name": "retention",
-        "type": "",
-        "packageName": "/google.protobuf.FieldOptions"
-      },
-      {
-        "name": "target",
-        "type": "",
-        "packageName": "/google.protobuf.FieldOptions"
-      },
-      {
         "name": "uninterpreted_option",
         "type": "UninterpretedOption[]",
         "packageName": "/google.protobuf"
@@ -1581,10 +1566,6 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "deprecated",
-        "type": "bool"
-      },
-      {
-        "name": "deprecated_legacy_json_field_conflicts",
         "type": "bool"
       },
       {
@@ -2160,7 +2141,7 @@ export const EIP712Types: { [index: string]: any } = {
     ]
   },
   "/Switcheo.carbon.broker": {
-    "Amm": [
+    "SpotAmm": [
       {
         "name": "pool_id",
         "type": "uint64"
@@ -2180,6 +2161,30 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "pool_route",
         "type": "uint8[]"
+      }
+    ],
+    "PerpsPoolAmm": [
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "quoting_hash",
+        "type": "uint8[]"
+      }
+    ],
+    "PerpsMarketAmm": [
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "market",
+        "type": "string"
+      },
+      {
+        "name": "orders",
+        "type": "string[]"
       }
     ],
     "Candlestick": [
@@ -2316,8 +2321,8 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "GenesisState": [
       {
-        "name": "amms",
-        "type": "Amm[]",
+        "name": "spot_amms",
+        "type": "SpotAmm[]",
         "packageName": "/Switcheo.carbon.broker"
       }
     ],
@@ -15269,100 +15274,113 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "MsgSyncHeadersResponse": []
   },
-  "/ibc.applications.fee.v1": {
-    "IncentivizedAcknowledgement": [
+  "/ibc.applications.interchain_accounts.controller.v1": {
+    "Params": [
       {
-        "name": "app_acknowledgement",
-        "type": "uint8[]"
-      },
-      {
-        "name": "forward_relayer_address",
-        "type": "string"
-      },
-      {
-        "name": "underlying_app_success",
+        "name": "controller_enabled",
         "type": "bool"
       }
     ],
-    "Fee": [
+    "QueryParamsRequest": [],
+    "QueryParamsResponse": [
       {
-        "name": "recv_fee",
-        "type": "Coin[]",
-        "packageName": "/cosmos.base.v1beta1"
-      },
-      {
-        "name": "ack_fee",
-        "type": "Coin[]",
-        "packageName": "/cosmos.base.v1beta1"
-      },
-      {
-        "name": "timeout_fee",
-        "type": "Coin[]",
-        "packageName": "/cosmos.base.v1beta1"
+        "name": "params",
+        "type": "Params",
+        "packageName": "/ibc.applications.interchain_accounts.controller.v1"
       }
-    ],
-    "PacketFee": [
+    ]
+  },
+  "/ibc.applications.interchain_accounts.host.v1": {
+    "Params": [
       {
-        "name": "fee",
-        "type": "Fee",
-        "packageName": "/ibc.applications.fee.v1"
+        "name": "host_enabled",
+        "type": "bool"
       },
       {
-        "name": "refund_address",
-        "type": "string"
-      },
-      {
-        "name": "relayers",
+        "name": "allow_messages",
         "type": "string[]"
       }
     ],
-    "PacketFees": [
+    "QueryParamsRequest": [],
+    "QueryParamsResponse": [
       {
-        "name": "packet_fees",
-        "type": "PacketFee[]",
-        "packageName": "/ibc.applications.fee.v1"
+        "name": "params",
+        "type": "Params",
+        "packageName": "/ibc.applications.interchain_accounts.host.v1"
       }
-    ],
-    "IdentifiedPacketFees": [
+    ]
+  },
+  "/ibc.applications.interchain_accounts.v1": {
+    "InterchainAccount": [
       {
-        "name": "packet_id",
-        "type": "PacketId",
-        "packageName": "/ibc.core.channel.v1"
+        "name": "base_account",
+        "type": "BaseAccount",
+        "packageName": "/cosmos.auth.v1beta1"
       },
       {
-        "name": "packet_fees",
-        "type": "PacketFee[]",
-        "packageName": "/ibc.applications.fee.v1"
+        "name": "account_owner",
+        "type": "string"
       }
     ],
     "GenesisState": [
       {
-        "name": "identified_fees",
-        "type": "IdentifiedPacketFees[]",
-        "packageName": "/ibc.applications.fee.v1"
+        "name": "controller_genesis_state",
+        "type": "ControllerGenesisState",
+        "packageName": "/ibc.applications.interchain_accounts.v1"
       },
       {
-        "name": "fee_enabled_channels",
-        "type": "FeeEnabledChannel[]",
-        "packageName": "/ibc.applications.fee.v1"
-      },
-      {
-        "name": "registered_payees",
-        "type": "RegisteredPayee[]",
-        "packageName": "/ibc.applications.fee.v1"
-      },
-      {
-        "name": "registered_counterparty_payees",
-        "type": "RegisteredCounterpartyPayee[]",
-        "packageName": "/ibc.applications.fee.v1"
-      },
-      {
-        "name": "forward_relayers",
-        "type": "ForwardRelayerAddress[]",
-        "packageName": "/ibc.applications.fee.v1"
+        "name": "host_genesis_state",
+        "type": "HostGenesisState",
+        "packageName": "/ibc.applications.interchain_accounts.v1"
       }
     ],
-    "FeeEnabledChannel": [
+    "ControllerGenesisState": [
+      {
+        "name": "active_channels",
+        "type": "ActiveChannel[]",
+        "packageName": "/ibc.applications.interchain_accounts.v1"
+      },
+      {
+        "name": "interchain_accounts",
+        "type": "RegisteredInterchainAccount[]",
+        "packageName": "/ibc.applications.interchain_accounts.v1"
+      },
+      {
+        "name": "ports",
+        "type": "string[]"
+      },
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/ibc.applications.interchain_accounts.controller.v1"
+      }
+    ],
+    "HostGenesisState": [
+      {
+        "name": "active_channels",
+        "type": "ActiveChannel[]",
+        "packageName": "/ibc.applications.interchain_accounts.v1"
+      },
+      {
+        "name": "interchain_accounts",
+        "type": "RegisteredInterchainAccount[]",
+        "packageName": "/ibc.applications.interchain_accounts.v1"
+      },
+      {
+        "name": "port",
+        "type": "string"
+      },
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/ibc.applications.interchain_accounts.host.v1"
+      }
+    ],
+    "ActiveChannel": [
+      {
+        "name": "connection_id",
+        "type": "string"
+      },
       {
         "name": "port_id",
         "type": "string"
@@ -15372,300 +15390,191 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
-    "RegisteredPayee": [
+    "RegisteredInterchainAccount": [
       {
-        "name": "channel_id",
+        "name": "connection_id",
         "type": "string"
       },
       {
-        "name": "relayer",
+        "name": "port_id",
         "type": "string"
       },
       {
-        "name": "payee",
+        "name": "account_address",
         "type": "string"
       }
     ],
-    "RegisteredCounterpartyPayee": [
+    "Metadata": [
       {
-        "name": "channel_id",
+        "name": "version",
         "type": "string"
       },
       {
-        "name": "relayer",
+        "name": "controller_connection_id",
         "type": "string"
       },
       {
-        "name": "counterparty_payee",
+        "name": "host_connection_id",
         "type": "string"
-      }
-    ],
-    "ForwardRelayerAddress": [
+      },
       {
         "name": "address",
         "type": "string"
       },
       {
-        "name": "packet_id",
-        "type": "PacketId",
-        "packageName": "/ibc.core.channel.v1"
-      }
-    ],
-    "Metadata": [
-      {
-        "name": "fee_version",
+        "name": "encoding",
         "type": "string"
       },
       {
-        "name": "app_version",
+        "name": "tx_type",
         "type": "string"
       }
     ],
-    "QueryIncentivizedPacketsRequest": [
+    "InterchainAccountPacketData": [
       {
-        "name": "pagination",
-        "type": "PageRequest",
-        "packageName": "/cosmos.base.query.v1beta1"
+        "name": "type",
+        "type": "",
+        "packageName": "/ibc.applications.interchain_accounts.v1"
       },
       {
-        "name": "query_height",
-        "type": "uint64"
-      }
-    ],
-    "QueryIncentivizedPacketsResponse": [
-      {
-        "name": "incentivized_packets",
-        "type": "IdentifiedPacketFees[]",
-        "packageName": "/ibc.applications.fee.v1"
-      }
-    ],
-    "QueryIncentivizedPacketRequest": [
-      {
-        "name": "packet_id",
-        "type": "PacketId",
-        "packageName": "/ibc.core.channel.v1"
+        "name": "data",
+        "type": "uint8[]"
       },
       {
-        "name": "query_height",
-        "type": "uint64"
+        "name": "memo",
+        "type": "string"
       }
     ],
-    "QueryIncentivizedPacketResponse": [
+    "CosmosTx": [
       {
-        "name": "incentivized_packet",
-        "type": "IdentifiedPacketFees",
-        "packageName": "/ibc.applications.fee.v1"
+        "name": "messages",
+        "type": "Any[]",
+        "packageName": "/google.protobuf"
       }
-    ],
-    "QueryIncentivizedPacketsForChannelRequest": [
+    ]
+  },
+  "/ibc.applications.transfer.v1": {
+    "DenomTrace": [
       {
-        "name": "pagination",
-        "type": "PageRequest",
-        "packageName": "/cosmos.base.query.v1beta1"
-      },
-      {
-        "name": "port_id",
+        "name": "path",
         "type": "string"
       },
       {
-        "name": "channel_id",
+        "name": "base_denom",
         "type": "string"
+      }
+    ],
+    "Params": [
+      {
+        "name": "send_enabled",
+        "type": "bool"
       },
       {
-        "name": "query_height",
-        "type": "uint64"
-      }
-    ],
-    "QueryIncentivizedPacketsForChannelResponse": [
-      {
-        "name": "incentivized_packets",
-        "type": "IdentifiedPacketFees[]",
-        "packageName": "/ibc.applications.fee.v1"
-      }
-    ],
-    "QueryTotalRecvFeesRequest": [
-      {
-        "name": "packet_id",
-        "type": "PacketId",
-        "packageName": "/ibc.core.channel.v1"
-      }
-    ],
-    "QueryTotalRecvFeesResponse": [
-      {
-        "name": "recv_fees",
-        "type": "Coin[]",
-        "packageName": "/cosmos.base.v1beta1"
-      }
-    ],
-    "QueryTotalAckFeesRequest": [
-      {
-        "name": "packet_id",
-        "type": "PacketId",
-        "packageName": "/ibc.core.channel.v1"
-      }
-    ],
-    "QueryTotalAckFeesResponse": [
-      {
-        "name": "ack_fees",
-        "type": "Coin[]",
-        "packageName": "/cosmos.base.v1beta1"
-      }
-    ],
-    "QueryTotalTimeoutFeesRequest": [
-      {
-        "name": "packet_id",
-        "type": "PacketId",
-        "packageName": "/ibc.core.channel.v1"
-      }
-    ],
-    "QueryTotalTimeoutFeesResponse": [
-      {
-        "name": "timeout_fees",
-        "type": "Coin[]",
-        "packageName": "/cosmos.base.v1beta1"
-      }
-    ],
-    "QueryPayeeRequest": [
-      {
-        "name": "channel_id",
-        "type": "string"
-      },
-      {
-        "name": "relayer",
-        "type": "string"
-      }
-    ],
-    "QueryPayeeResponse": [
-      {
-        "name": "payee_address",
-        "type": "string"
-      }
-    ],
-    "QueryCounterpartyPayeeRequest": [
-      {
-        "name": "channel_id",
-        "type": "string"
-      },
-      {
-        "name": "relayer",
-        "type": "string"
-      }
-    ],
-    "QueryCounterpartyPayeeResponse": [
-      {
-        "name": "counterparty_payee",
-        "type": "string"
-      }
-    ],
-    "QueryFeeEnabledChannelsRequest": [
-      {
-        "name": "pagination",
-        "type": "PageRequest",
-        "packageName": "/cosmos.base.query.v1beta1"
-      },
-      {
-        "name": "query_height",
-        "type": "uint64"
-      }
-    ],
-    "QueryFeeEnabledChannelsResponse": [
-      {
-        "name": "fee_enabled_channels",
-        "type": "FeeEnabledChannel[]",
-        "packageName": "/ibc.applications.fee.v1"
-      }
-    ],
-    "QueryFeeEnabledChannelRequest": [
-      {
-        "name": "port_id",
-        "type": "string"
-      },
-      {
-        "name": "channel_id",
-        "type": "string"
-      }
-    ],
-    "QueryFeeEnabledChannelResponse": [
-      {
-        "name": "fee_enabled",
+        "name": "receive_enabled",
         "type": "bool"
       }
     ],
-    "MsgRegisterPayee": [
+    "GenesisState": [
       {
         "name": "port_id",
         "type": "string"
       },
       {
-        "name": "channel_id",
-        "type": "string"
+        "name": "denom_traces",
+        "type": "DenomTrace[]",
+        "packageName": "/ibc.applications.transfer.v1"
       },
       {
-        "name": "relayer",
-        "type": "string"
-      },
+        "name": "params",
+        "type": "Params",
+        "packageName": "/ibc.applications.transfer.v1"
+      }
+    ],
+    "QueryDenomTraceRequest": [
       {
-        "name": "payee",
+        "name": "hash",
         "type": "string"
       }
     ],
-    "MsgRegisterPayeeResponse": [],
-    "MsgRegisterCounterpartyPayee": [
+    "QueryDenomTraceResponse": [
       {
-        "name": "port_id",
-        "type": "string"
+        "name": "denom_trace",
+        "type": "DenomTrace",
+        "packageName": "/ibc.applications.transfer.v1"
+      }
+    ],
+    "QueryDenomTracesRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryDenomTracesResponse": [
+      {
+        "name": "denom_traces",
+        "type": "DenomTrace[]",
+        "packageName": "/ibc.applications.transfer.v1"
       },
       {
-        "name": "channel_id",
-        "type": "string"
-      },
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryParamsRequest": [],
+    "QueryParamsResponse": [
       {
-        "name": "relayer",
-        "type": "string"
-      },
+        "name": "params",
+        "type": "Params",
+        "packageName": "/ibc.applications.transfer.v1"
+      }
+    ],
+    "QueryDenomHashRequest": [
       {
-        "name": "counterparty_payee",
+        "name": "trace",
         "type": "string"
       }
     ],
-    "MsgRegisterCounterpartyPayeeResponse": [],
-    "MsgPayPacketFee": [
+    "QueryDenomHashResponse": [
       {
-        "name": "fee",
-        "type": "Fee",
-        "packageName": "/ibc.applications.fee.v1"
-      },
-      {
-        "name": "source_port_id",
+        "name": "hash",
         "type": "string"
-      },
-      {
-        "name": "source_channel_id",
-        "type": "string"
-      },
-      {
-        "name": "signer",
-        "type": "string"
-      },
-      {
-        "name": "relayers",
-        "type": "string[]"
       }
     ],
-    "MsgPayPacketFeeResponse": [],
-    "MsgPayPacketFeeAsync": [
+    "MsgTransfer": [
       {
-        "name": "packet_id",
-        "type": "PacketId",
-        "packageName": "/ibc.core.channel.v1"
+        "name": "source_port",
+        "type": "string"
       },
       {
-        "name": "packet_fee",
-        "type": "PacketFee",
-        "packageName": "/ibc.applications.fee.v1"
+        "name": "source_channel",
+        "type": "string"
+      },
+      {
+        "name": "token",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "sender",
+        "type": "string"
+      },
+      {
+        "name": "receiver",
+        "type": "string"
+      },
+      {
+        "name": "timeout_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      },
+      {
+        "name": "timeout_timestamp",
+        "type": "uint64"
       }
     ],
-    "MsgPayPacketFeeAsyncResponse": []
+    "MsgTransferResponse": []
   },
   "/ibc.core.client.v1": {
     "IdentifiedClientState": [
@@ -15905,29 +15814,6 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
-    "QueryConsensusStateHeightsRequest": [
-      {
-        "name": "client_id",
-        "type": "string"
-      },
-      {
-        "name": "pagination",
-        "type": "PageRequest",
-        "packageName": "/cosmos.base.query.v1beta1"
-      }
-    ],
-    "QueryConsensusStateHeightsResponse": [
-      {
-        "name": "consensus_state_heights",
-        "type": "Height[]",
-        "packageName": "/ibc.core.client.v1"
-      },
-      {
-        "name": "pagination",
-        "type": "PageResponse",
-        "packageName": "/cosmos.base.query.v1beta1"
-      }
-    ],
     "QueryClientStatusRequest": [
       {
         "name": "client_id",
@@ -16042,6 +15928,26 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ],
     "MsgSubmitMisbehaviourResponse": []
+  },
+  "/ibc.applications.transfer.v2": {
+    "FungibleTokenPacketData": [
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "string"
+      },
+      {
+        "name": "sender",
+        "type": "string"
+      },
+      {
+        "name": "receiver",
+        "type": "string"
+      }
+    ]
   },
   "/ibc.core.channel.v1": {
     "Channel": [
@@ -16163,20 +16069,6 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "data",
         "type": "uint8[]"
-      }
-    ],
-    "PacketId": [
-      {
-        "name": "port_id",
-        "type": "string"
-      },
-      {
-        "name": "channel_id",
-        "type": "string"
-      },
-      {
-        "name": "sequence",
-        "type": "uint64"
       }
     ],
     "Acknowledgement": [
@@ -16635,10 +16527,6 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "channel_id",
         "type": "string"
-      },
-      {
-        "name": "version",
-        "type": "string"
       }
     ],
     "MsgChannelOpenTry": [
@@ -16673,12 +16561,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
-    "MsgChannelOpenTryResponse": [
-      {
-        "name": "version",
-        "type": "string"
-      }
-    ],
+    "MsgChannelOpenTryResponse": [],
     "MsgChannelOpenAck": [
       {
         "name": "port_id",
@@ -16896,424 +16779,6 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "result",
         "type": "",
         "packageName": "/ibc.core.channel.v1"
-      }
-    ]
-  },
-  "/ibc.applications.interchain_accounts.controller.v1": {
-    "Params": [
-      {
-        "name": "controller_enabled",
-        "type": "bool"
-      }
-    ],
-    "QueryInterchainAccountRequest": [
-      {
-        "name": "owner",
-        "type": "string"
-      },
-      {
-        "name": "connection_id",
-        "type": "string"
-      }
-    ],
-    "QueryInterchainAccountResponse": [
-      {
-        "name": "address",
-        "type": "string"
-      }
-    ],
-    "QueryParamsRequest": [],
-    "QueryParamsResponse": [
-      {
-        "name": "params",
-        "type": "Params",
-        "packageName": "/ibc.applications.interchain_accounts.controller.v1"
-      }
-    ],
-    "MsgRegisterInterchainAccount": [
-      {
-        "name": "owner",
-        "type": "string"
-      },
-      {
-        "name": "connection_id",
-        "type": "string"
-      },
-      {
-        "name": "version",
-        "type": "string"
-      }
-    ],
-    "MsgRegisterInterchainAccountResponse": [
-      {
-        "name": "channel_id",
-        "type": "string"
-      }
-    ],
-    "MsgSendTx": [
-      {
-        "name": "owner",
-        "type": "string"
-      },
-      {
-        "name": "connection_id",
-        "type": "string"
-      },
-      {
-        "name": "packet_data",
-        "type": "InterchainAccountPacketData",
-        "packageName": "/ibc.applications.interchain_accounts.v1"
-      },
-      {
-        "name": "relative_timeout",
-        "type": "uint64"
-      }
-    ],
-    "MsgSendTxResponse": [
-      {
-        "name": "sequence",
-        "type": "uint64"
-      }
-    ]
-  },
-  "/ibc.applications.interchain_accounts.v1": {
-    "InterchainAccountPacketData": [
-      {
-        "name": "type",
-        "type": "",
-        "packageName": "/ibc.applications.interchain_accounts.v1"
-      },
-      {
-        "name": "data",
-        "type": "uint8[]"
-      },
-      {
-        "name": "memo",
-        "type": "string"
-      }
-    ],
-    "CosmosTx": [
-      {
-        "name": "messages",
-        "type": "Any[]",
-        "packageName": "/google.protobuf"
-      }
-    ],
-    "InterchainAccount": [
-      {
-        "name": "base_account",
-        "type": "BaseAccount",
-        "packageName": "/cosmos.auth.v1beta1"
-      },
-      {
-        "name": "account_owner",
-        "type": "string"
-      }
-    ],
-    "Metadata": [
-      {
-        "name": "version",
-        "type": "string"
-      },
-      {
-        "name": "controller_connection_id",
-        "type": "string"
-      },
-      {
-        "name": "host_connection_id",
-        "type": "string"
-      },
-      {
-        "name": "address",
-        "type": "string"
-      },
-      {
-        "name": "encoding",
-        "type": "string"
-      },
-      {
-        "name": "tx_type",
-        "type": "string"
-      }
-    ]
-  },
-  "/ibc.applications.interchain_accounts.host.v1": {
-    "Params": [
-      {
-        "name": "host_enabled",
-        "type": "bool"
-      },
-      {
-        "name": "allow_messages",
-        "type": "string[]"
-      }
-    ],
-    "QueryParamsRequest": [],
-    "QueryParamsResponse": [
-      {
-        "name": "params",
-        "type": "Params",
-        "packageName": "/ibc.applications.interchain_accounts.host.v1"
-      }
-    ]
-  },
-  "/ibc.applications.interchain_accounts.genesis.v1": {
-    "GenesisState": [
-      {
-        "name": "controller_genesis_state",
-        "type": "ControllerGenesisState",
-        "packageName": "/ibc.applications.interchain_accounts.genesis.v1"
-      },
-      {
-        "name": "host_genesis_state",
-        "type": "HostGenesisState",
-        "packageName": "/ibc.applications.interchain_accounts.genesis.v1"
-      }
-    ],
-    "ControllerGenesisState": [
-      {
-        "name": "active_channels",
-        "type": "ActiveChannel[]",
-        "packageName": "/ibc.applications.interchain_accounts.genesis.v1"
-      },
-      {
-        "name": "interchain_accounts",
-        "type": "RegisteredInterchainAccount[]",
-        "packageName": "/ibc.applications.interchain_accounts.genesis.v1"
-      },
-      {
-        "name": "ports",
-        "type": "string[]"
-      },
-      {
-        "name": "params",
-        "type": "Params",
-        "packageName": "/ibc.applications.interchain_accounts.controller.v1"
-      }
-    ],
-    "HostGenesisState": [
-      {
-        "name": "active_channels",
-        "type": "ActiveChannel[]",
-        "packageName": "/ibc.applications.interchain_accounts.genesis.v1"
-      },
-      {
-        "name": "interchain_accounts",
-        "type": "RegisteredInterchainAccount[]",
-        "packageName": "/ibc.applications.interchain_accounts.genesis.v1"
-      },
-      {
-        "name": "port",
-        "type": "string"
-      },
-      {
-        "name": "params",
-        "type": "Params",
-        "packageName": "/ibc.applications.interchain_accounts.host.v1"
-      }
-    ],
-    "ActiveChannel": [
-      {
-        "name": "connection_id",
-        "type": "string"
-      },
-      {
-        "name": "port_id",
-        "type": "string"
-      },
-      {
-        "name": "channel_id",
-        "type": "string"
-      },
-      {
-        "name": "is_middleware_enabled",
-        "type": "bool"
-      }
-    ],
-    "RegisteredInterchainAccount": [
-      {
-        "name": "connection_id",
-        "type": "string"
-      },
-      {
-        "name": "port_id",
-        "type": "string"
-      },
-      {
-        "name": "account_address",
-        "type": "string"
-      }
-    ]
-  },
-  "/ibc.applications.transfer.v1": {
-    "DenomTrace": [
-      {
-        "name": "path",
-        "type": "string"
-      },
-      {
-        "name": "base_denom",
-        "type": "string"
-      }
-    ],
-    "Params": [
-      {
-        "name": "send_enabled",
-        "type": "bool"
-      },
-      {
-        "name": "receive_enabled",
-        "type": "bool"
-      }
-    ],
-    "GenesisState": [
-      {
-        "name": "port_id",
-        "type": "string"
-      },
-      {
-        "name": "denom_traces",
-        "type": "DenomTrace[]",
-        "packageName": "/ibc.applications.transfer.v1"
-      },
-      {
-        "name": "params",
-        "type": "Params",
-        "packageName": "/ibc.applications.transfer.v1"
-      }
-    ],
-    "QueryDenomTraceRequest": [
-      {
-        "name": "hash",
-        "type": "string"
-      }
-    ],
-    "QueryDenomTraceResponse": [
-      {
-        "name": "denom_trace",
-        "type": "DenomTrace",
-        "packageName": "/ibc.applications.transfer.v1"
-      }
-    ],
-    "QueryDenomTracesRequest": [
-      {
-        "name": "pagination",
-        "type": "PageRequest",
-        "packageName": "/cosmos.base.query.v1beta1"
-      }
-    ],
-    "QueryDenomTracesResponse": [
-      {
-        "name": "denom_traces",
-        "type": "DenomTrace[]",
-        "packageName": "/ibc.applications.transfer.v1"
-      },
-      {
-        "name": "pagination",
-        "type": "PageResponse",
-        "packageName": "/cosmos.base.query.v1beta1"
-      }
-    ],
-    "QueryParamsRequest": [],
-    "QueryParamsResponse": [
-      {
-        "name": "params",
-        "type": "Params",
-        "packageName": "/ibc.applications.transfer.v1"
-      }
-    ],
-    "QueryDenomHashRequest": [
-      {
-        "name": "trace",
-        "type": "string"
-      }
-    ],
-    "QueryDenomHashResponse": [
-      {
-        "name": "hash",
-        "type": "string"
-      }
-    ],
-    "QueryEscrowAddressRequest": [
-      {
-        "name": "port_id",
-        "type": "string"
-      },
-      {
-        "name": "channel_id",
-        "type": "string"
-      }
-    ],
-    "QueryEscrowAddressResponse": [
-      {
-        "name": "escrow_address",
-        "type": "string"
-      }
-    ],
-    "MsgTransfer": [
-      {
-        "name": "source_port",
-        "type": "string"
-      },
-      {
-        "name": "source_channel",
-        "type": "string"
-      },
-      {
-        "name": "token",
-        "type": "Coin",
-        "packageName": "/cosmos.base.v1beta1"
-      },
-      {
-        "name": "sender",
-        "type": "string"
-      },
-      {
-        "name": "receiver",
-        "type": "string"
-      },
-      {
-        "name": "timeout_height",
-        "type": "Height",
-        "packageName": "/ibc.core.client.v1"
-      },
-      {
-        "name": "timeout_timestamp",
-        "type": "uint64"
-      },
-      {
-        "name": "memo",
-        "type": "string"
-      }
-    ],
-    "MsgTransferResponse": [
-      {
-        "name": "sequence",
-        "type": "uint64"
-      }
-    ]
-  },
-  "/ibc.applications.transfer.v2": {
-    "FungibleTokenPacketData": [
-      {
-        "name": "denom",
-        "type": "string"
-      },
-      {
-        "name": "amount",
-        "type": "string"
-      },
-      {
-        "name": "sender",
-        "type": "string"
-      },
-      {
-        "name": "receiver",
-        "type": "string"
-      },
-      {
-        "name": "memo",
-        "type": "string"
       }
     ]
   },
@@ -17814,14 +17279,6 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "proof_height",
         "type": "Height",
         "packageName": "/ibc.core.client.v1"
-      }
-    ],
-    "QueryConnectionParamsRequest": [],
-    "QueryConnectionParamsResponse": [
-      {
-        "name": "params",
-        "type": "Params",
-        "packageName": "/ibc.core.connection.v1"
       }
     ],
     "MsgConnectionOpenInit": [
@@ -22332,6 +21789,506 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "params",
         "type": "Params",
         "packageName": "/Switcheo.carbon.oracle"
+      }
+    ]
+  },
+  "/Switcheo.carbon.perpsliquidity": {
+    "PerpetualsLiquidityPool": [
+      {
+        "name": "id",
+        "type": "uint64"
+      },
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "deposit_denom",
+        "type": "string"
+      },
+      {
+        "name": "share_denom",
+        "type": "string"
+      },
+      {
+        "name": "vault_address",
+        "type": "string"
+      },
+      {
+        "name": "supply_cap",
+        "type": "string"
+      },
+      {
+        "name": "deposit_fee_bps",
+        "type": "string"
+      },
+      {
+        "name": "withdrawal_fee_bps",
+        "type": "string"
+      }
+    ],
+    "UpdatePerpetualsLiquidityPoolParams": [
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "supply_cap",
+        "type": "uint64"
+      },
+      {
+        "name": "deposit_fee_bps",
+        "type": "uint64"
+      },
+      {
+        "name": "withdrawal_fee_bps",
+        "type": "uint64"
+      }
+    ],
+    "PerpetualsLiquidityPoolDetails": [
+      {
+        "name": "perpetuals_liquidity_pool",
+        "type": "PerpetualsLiquidityPool",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      },
+      {
+        "name": "registered_markets",
+        "type": "PLPMarketConfig[]",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      }
+    ],
+    "Quote": [
+      {
+        "name": "quote_price_type",
+        "type": "string"
+      },
+      {
+        "name": "quote_price_value",
+        "type": "string"
+      },
+      {
+        "name": "amount_ratio",
+        "type": "string"
+      }
+    ],
+    "PLPMarketConfig": [
+      {
+        "name": "market_id",
+        "type": "string"
+      },
+      {
+        "name": "max_quotable_liquidity_ratio",
+        "type": "string"
+      },
+      {
+        "name": "mode",
+        "type": "string"
+      },
+      {
+        "name": "quote_shape",
+        "type": "Quote[]",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      }
+    ],
+    "UpdatePLPMarketConfigParams": [
+      {
+        "name": "max_quotable_liquidity_ratio",
+        "type": "string"
+      },
+      {
+        "name": "mode",
+        "type": "string"
+      },
+      {
+        "name": "quote_shape",
+        "type": "Quote[]",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      }
+    ],
+    "DepositToPerpetualLiquidityPoolParams": [
+      {
+        "name": "perpetuals_liquidity_pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "from_account",
+        "type": "string"
+      },
+      {
+        "name": "deposit_amount",
+        "type": "string"
+      },
+      {
+        "name": "min_shares_to_receive",
+        "type": "string"
+      }
+    ],
+    "WithdrawFromPerpetualLiquidityPoolParams": [
+      {
+        "name": "perpetuals_liquidity_pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "to_account",
+        "type": "string"
+      },
+      {
+        "name": "share_amount",
+        "type": "string"
+      },
+      {
+        "name": "min_withdraw_amount",
+        "type": "string"
+      }
+    ],
+    "SetPerpetualsLiquidityPoolEvent": [
+      {
+        "name": "perpetuals_liquidity_pool",
+        "type": "PerpetualsLiquidityPool",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      },
+      {
+        "name": "type",
+        "type": "string"
+      }
+    ],
+    "NewPerpetualsLiquidityPoolEvent": [
+      {
+        "name": "perpetuals_liquidity_pool",
+        "type": "PerpetualsLiquidityPool",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      }
+    ],
+    "UpdatePerpetualsLiquidityPoolEvent": [
+      {
+        "name": "perpetuals_liquidity_pool",
+        "type": "PerpetualsLiquidityPool",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      }
+    ],
+    "RegisterToPerpetualsLiquidityPoolEvent": [
+      {
+        "name": "perpetuals_liquidity_pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "market_id",
+        "type": "string"
+      }
+    ],
+    "DeregisterFromPerpetualsLiquidityPoolEvent": [
+      {
+        "name": "perpetuals_liquidity_pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "market_id",
+        "type": "string"
+      }
+    ],
+    "SetPLPMarketConfigEvent": [
+      {
+        "name": "plp_market_config",
+        "type": "PLPMarketConfig",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      }
+    ],
+    "DepositToPerpetualsLiquidityPoolEvent": [
+      {
+        "name": "perpetuals_liquidity_pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "string"
+      },
+      {
+        "name": "share_denom",
+        "type": "string"
+      },
+      {
+        "name": "share_amount",
+        "type": "string"
+      },
+      {
+        "name": "depositor",
+        "type": "string"
+      }
+    ],
+    "WithdrawFromPerpetualsLiquidityPoolEvent": [
+      {
+        "name": "perpetuals_liquidity_pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "string"
+      },
+      {
+        "name": "share_denom",
+        "type": "string"
+      },
+      {
+        "name": "share_amount",
+        "type": "string"
+      },
+      {
+        "name": "withdrawer",
+        "type": "string"
+      }
+    ],
+    "Params": [
+      {
+        "name": "quote_index_price_fluctuation_tolerance_bps",
+        "type": "string"
+      },
+      {
+        "name": "quote_expiry_seconds",
+        "type": "string"
+      },
+      {
+        "name": "lp_open_position_fluctuation_tolerance_bps",
+        "type": "string"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      },
+      {
+        "name": "perpetuals_liquidity_pools",
+        "type": "PerpetualsLiquidityPool[]",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      },
+      {
+        "name": "plp_market_config_with_pool_ids",
+        "type": "PLPMarketConfigWithPoolId[]",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      }
+    ],
+    "PLPMarketConfigWithPoolId": [
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "plp_market_config",
+        "type": "PLPMarketConfig",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      }
+    ],
+    "QueryParamsRequest": [],
+    "QueryParamsResponse": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      }
+    ],
+    "QueryGetPerpetualsLiquidityPoolRequest": [
+      {
+        "name": "perpetuals_liquidity_pool_id",
+        "type": "string"
+      }
+    ],
+    "QueryGetPerpetualsLiquidityPoolResponse": [
+      {
+        "name": "perpetuals_liquidity_pool",
+        "type": "PerpetualsLiquidityPoolDetails",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      }
+    ],
+    "QueryAllPerpetualsLiquidityPoolsRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllPerpetualsLiquidityPoolsResponse": [
+      {
+        "name": "perpetuals_liquidity_pools",
+        "type": "PerpetualsLiquidityPoolDetails[]",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryPerpetualsLiquidityPoolMappingsRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryPerpetualsLiquidityPoolMappingsResponse": [
+      {
+        "name": "perpetuals_liquidity_pool_mappings",
+        "type": "PerpetualsLiquidityPoolMappingsEntry[]",
+        "packageName": "/Switcheo.carbon.perpsliquidity.QueryPerpetualsLiquidityPoolMappingsResponse"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "MsgCreatePerpetualsLiquidityPool": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "deposit_denom",
+        "type": "string"
+      },
+      {
+        "name": "share_token_symbol",
+        "type": "string"
+      },
+      {
+        "name": "supply_cap",
+        "type": "string"
+      },
+      {
+        "name": "deposit_fee_bps",
+        "type": "string"
+      },
+      {
+        "name": "withdrawal_fee_bps",
+        "type": "string"
+      }
+    ],
+    "MsgCreatePerpetualsLiquidityPoolResponse": [
+      {
+        "name": "perpetuals_liquidity_pool",
+        "type": "PerpetualsLiquidityPool",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      }
+    ],
+    "MsgUpdatePerpetualsLiquidityPool": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "perpetuals_liquidity_pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "update_perpetuals_liquidity_pool_params",
+        "type": "UpdatePerpetualsLiquidityPoolParams",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      }
+    ],
+    "MsgUpdatePerpetualsLiquidityPoolResponse": [
+      {
+        "name": "perpetuals_liquidity_pool",
+        "type": "PerpetualsLiquidityPool",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      }
+    ],
+    "MsgRegisterToPerpetualsLiquidityPool": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "perpetuals_liquidity_pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "market_id",
+        "type": "string"
+      }
+    ],
+    "MsgRegisterToPerpetualsLiquidityPoolResponse": [],
+    "MsgDeregisterFromPerpetualsLiquidityPool": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "market_id",
+        "type": "string"
+      }
+    ],
+    "MsgDeregisterFromPerpetualsLiquidityPoolResponse": [],
+    "MsgDepositToPerpetualsLiquidityPool": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "perpetuals_liquidity_pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "deposit_amount",
+        "type": "string"
+      },
+      {
+        "name": "min_share_amount",
+        "type": "string"
+      }
+    ],
+    "MsgDepositToPerpetualsLiquidityPoolResponse": [],
+    "MsgWithdrawFromPerpetualsLiquidityPool": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "perpetuals_liquidity_pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "share_amount",
+        "type": "string"
+      },
+      {
+        "name": "min_receive_amount",
+        "type": "string"
+      }
+    ],
+    "MsgWithdrawFromPerpetualsLiquidityPoolResponse": [],
+    "MsgUpdatePLPMarketConfig": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "market_id",
+        "type": "string"
+      },
+      {
+        "name": "update_market_config_params",
+        "type": "UpdatePLPMarketConfigParams",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      }
+    ],
+    "MsgUpdatePLPMarketConfigResponse": [
+      {
+        "name": "market_config",
+        "type": "PLPMarketConfig",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
       }
     ]
   },
