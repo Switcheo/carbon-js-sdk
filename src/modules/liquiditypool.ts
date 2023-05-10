@@ -193,6 +193,66 @@ export class LiquidityPoolModule extends BaseModule {
       opts
     );
   }
+
+  public async createPerpertualsPool(params: LiquidityPoolModule.CreatePerpetualPoolParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+
+    const value = Models.MsgCreatePerpetualsLiquidityPool.fromPartial({
+      creator: params.creator,
+      name: params.name,
+      depositDenom: params.depositDenom,
+      shareTokenSymbol: params.shareTokenSymbol,
+      supplyCap: params.supplyCap,
+      depositFeeBps: params.depositFeeBps,
+      withdrawalFeeBps: params.withdrawalFeeBps,
+    })
+
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgCreatePerpetualsLiquidityPool,
+        value,
+      },
+      opts
+    );
+  }
+
+  public async depositToPerpetualsPool(params: LiquidityPoolModule.DepositToPerpetualsPoolParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+    
+    const value = Models.MsgDepositToPerpetualsLiquidityPool.fromPartial({
+      creator: params.creator,
+      perpetualsLiquidityPoolId: params.perpetualsLiquidityPoolId,
+      depositAmount: params.depositAmount,
+      minShareAmount: params.minShareAmount,
+    })
+
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgDepositToPerpetualsLiquidityPool,
+        value,
+      },
+      opts
+    );
+  }
+
+  public async WithdrawFromPerpetualsLiquidityPoolEvent(params: LiquidityPoolModule.WithdrawFromPerpetualsPoolParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+    
+    const value = Models.MsgWithdrawFromPerpetualsLiquidityPool.fromPartial({
+      creator: params.creator,
+      perpetualsLiquidityPoolId: params.perpetualsLiquidityPoolId,
+      shareAmount: params.shareAmount,
+      minReceiveAmount: params.minReceiveAmount,
+    })
+
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgDepositToPerpetualsLiquidityPool,
+        value,
+      },
+      opts
+    );
+  }
 }
 
 export namespace LiquidityPoolModule {
@@ -266,5 +326,29 @@ export namespace LiquidityPoolModule {
   export interface RemovePoolRouteParams {
     marketName: string;
     poolIds: Long[];
+  }
+
+  export interface CreatePerpetualPoolParams {
+    creator: string;
+    name: string;
+    depositDenom: string;
+    shareTokenSymbol: string;
+    supplyCap: string;
+    depositFeeBps: string;
+    withdrawalFeeBps: string;
+  }
+
+  export interface DepositToPerpetualsPoolParams {
+    creator: string;
+    perpetualsLiquidityPoolId: Long;
+    depositAmount: string;
+    minShareAmount: string;
+  }
+
+  export interface WithdrawFromPerpetualsPoolParams {
+    creator: string;
+    perpetualsLiquidityPoolId: Long;
+    shareAmount: string;
+    minReceiveAmount: string;
   }
 }
