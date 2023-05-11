@@ -235,7 +235,7 @@ export class LiquidityPoolModule extends BaseModule {
     );
   }
 
-  public async WithdrawFromPerpetualsLiquidityPoolEvent(params: LiquidityPoolModule.WithdrawFromPerpetualsPoolParams, opts?: CarbonTx.SignTxOpts) {
+  public async withdrawFromPerpetualsPool(params: LiquidityPoolModule.WithdrawFromPerpetualsPoolParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
     
     const value = Models.MsgWithdrawFromPerpetualsLiquidityPool.fromPartial({
@@ -247,7 +247,7 @@ export class LiquidityPoolModule extends BaseModule {
 
     return await wallet.sendTx(
       {
-        typeUrl: CarbonTx.Types.MsgDepositToPerpetualsLiquidityPool,
+        typeUrl: CarbonTx.Types.MsgWithdrawFromPerpetualsLiquidityPool,
         value,
       },
       opts

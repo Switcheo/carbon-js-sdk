@@ -16,11 +16,11 @@ import "./_setup";
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
 
-  const result = await connectedSDK.lp.depositToPerpetualsPool({
+  const result = await connectedSDK.lp.withdrawFromPerpetualsPool({
       creator: connectedSDK.wallet.bech32Address,
       perpetualsLiquidityPoolId: new Long(2),
-      depositAmount: '10000',
-      minShareAmount: '1',
+      shareAmount: '10',
+      minReceiveAmount: '1',
     });
   console.log(result)
 })().catch(console.error).finally(() => process.exit(0));
