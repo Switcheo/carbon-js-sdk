@@ -710,7 +710,7 @@ class TokenClient {
     // add carbon token prices first
     Object.entries(carbonTokenPrices).forEach(([key, value]: [string, BigNumber]) => {
       this.usdValues[key] = value;
-    })
+    });
 
     //store price based on denoms
     for (const denom of denoms) {
