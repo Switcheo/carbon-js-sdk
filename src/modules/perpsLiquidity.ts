@@ -5,6 +5,27 @@ import Long from "long";
 import BaseModule from "./base";
 
 export class PerpsLiquidityPoolModule extends BaseModule {
+  public async create(params: PerpsLiquidityPoolModule.CreatePoolParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+
+    const value = Models.MsgCreatePerpetualsLiquidityPool.fromPartial({
+      creator: wallet.bech32Address,
+      name: params.name,
+      depositDenom: params.depositDenom,
+      shareTokenSymbol: params.shareTokenSymbol,
+      supplyCap: params.supplyCap,
+      depositFeeBps: params.depositFeeBps,
+      withdrawalFeeBps: params.withdrawalFeeBps,
+    });
+
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgCreatePerpetualsLiquidityPool,
+        value,
+      },
+      opts
+    );
+  }
   public async addLiquidity(params: PerpsLiquidityPoolModule.AddLiquidityParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
     const value = Models.MsgDepositToPerpetualsLiquidityPool.fromPartial({
@@ -34,7 +55,7 @@ export class PerpsLiquidityPoolModule extends BaseModule {
 
     return await wallet.sendTx(
       {
-        typeUrl: CarbonTx.Types.MsgRemoveLiquidity,
+        typeUrl: CarbonTx.Types.MsgWithdrawFromPerpetualsLiquidityPool,
         value,
       },
       opts
@@ -43,6 +64,14 @@ export class PerpsLiquidityPoolModule extends BaseModule {
 }
 
 export namespace PerpsLiquidityPoolModule {
+  export interface CreatePoolParams {
+    name: string;
+    depositDenom: string;
+    shareTokenSymbol: string;
+    supplyCap: string;
+    depositFeeBps: string;
+    withdrawalFeeBps: string;
+  }
   export interface AddLiquidityParams {
     perpetualsLiquidityPoolId: number;
     depositAmount: BigNumber;
