@@ -1085,7 +1085,7 @@ export { Params as MarketstatsParams } from "./marketstats/params";
 export { MarketStats } from "./marketstats/marketstats";
 export { MsgCreatePerpetualsLiquidityPool, MsgCreatePerpetualsLiquidityPoolResponse, MsgUpdatePerpetualsLiquidityPool, MsgUpdatePerpetualsLiquidityPoolResponse, MsgRegisterToPerpetualsLiquidityPool, MsgRegisterToPerpetualsLiquidityPoolResponse, MsgDeregisterFromPerpetualsLiquidityPool, MsgDeregisterFromPerpetualsLiquidityPoolResponse, MsgDepositToPerpetualsLiquidityPool, MsgDepositToPerpetualsLiquidityPoolResponse, MsgWithdrawFromPerpetualsLiquidityPool, MsgWithdrawFromPerpetualsLiquidityPoolResponse, MsgUpdatePLPMarketConfig, MsgUpdatePLPMarketConfigResponse } from "./perpsliquidity/tx";
 export { PerpetualsLiquidityPool, UpdatePerpetualsLiquidityPoolParams, PerpetualsLiquidityPoolDetails, Quote, PLPMarketConfig, UpdatePLPMarketConfigParams, DepositToPerpetualLiquidityPoolParams, WithdrawFromPerpetualLiquidityPoolParams } from "./perpsliquidity/perpetuals_liquidity_pool";
-export { QueryParamsRequest as QueryPerpsliquidityParamsRequest, QueryParamsResponse as QueryPerpsliquidityParamsResponse, QueryGetPerpetualsLiquidityPoolRequest, QueryGetPerpetualsLiquidityPoolResponse, QueryAllPerpetualsLiquidityPoolsRequest, QueryAllPerpetualsLiquidityPoolsResponse, QueryPerpetualsLiquidityPoolMappingsRequest, QueryPerpetualsLiquidityPoolMappingsResponse, QueryPerpetualsLiquidityPoolMappingsResponse_PerpetualsLiquidityPoolMappingsEntry } from "./perpsliquidity/query";
+export { QueryParamsRequest as QueryPerpsliquidityParamsRequest, QueryParamsResponse as QueryPerpsliquidityParamsResponse, QueryGetPerpetualsLiquidityPoolRequest, QueryGetPerpetualsLiquidityPoolResponse, QueryAllPerpetualsLiquidityPoolsRequest, QueryAllPerpetualsLiquidityPoolsResponse, QueryPerpetualsLiquidityPoolMappingsRequest, QueryPerpetualsLiquidityPoolMappingsResponse, QueryPerpetualsLiquidityPoolMappingsResponse_PerpetualsLiquidityPoolMappingsEntry, QueryAllPlpPoolAddressRequest, QueryAllPlpPoolAddressResponse, QueryAllPlpPoolAddressResponse_AddressesEntry } from "./perpsliquidity/query";
 export { SetPerpetualsLiquidityPoolEvent, NewPerpetualsLiquidityPoolEvent, UpdatePerpetualsLiquidityPoolEvent, RegisterToPerpetualsLiquidityPoolEvent, DeregisterFromPerpetualsLiquidityPoolEvent, SetPLPMarketConfigEvent, DepositToPerpetualsLiquidityPoolEvent, WithdrawFromPerpetualsLiquidityPoolEvent } from "./perpsliquidity/event";
 export { Params as PerpsliquidityParams } from "./perpsliquidity/params";
 export { QueryAccountBalanceRequest, QueryAccountBalanceResponse } from "./evmbank/query";
@@ -22139,6 +22139,25 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "perpetuals_liquidity_pool_mappings",
         "type": "PerpetualsLiquidityPoolMappingsEntry[]",
         "packageName": "/Switcheo.carbon.perpsliquidity.QueryPerpetualsLiquidityPoolMappingsResponse"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllPlpPoolAddressRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllPlpPoolAddressResponse": [
+      {
+        "name": "addresses",
+        "type": "AddressesEntry[]",
+        "packageName": "/Switcheo.carbon.perpsliquidity.QueryAllPlpPoolAddressResponse"
       },
       {
         "name": "pagination",
