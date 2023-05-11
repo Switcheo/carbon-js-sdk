@@ -168,10 +168,10 @@ function getMsgValueType(msgTypeUrl: string, msgValue: any, msgTypeName: string,
 
 function getGjsonPrimitiveType(value: any) {
     if (typeof value === 'number') {
-        return 'number'
+        return 'int64'
     }
     if (typeof value === 'boolean') {
-        return 'boolean'
+        return 'bool'
     }
     return 'string'
 }
@@ -188,8 +188,8 @@ function isGoogleProtobufAnyPackage(packageName: string, type: string): boolean 
 }
 
 function isNonZeroField(fieldValue: any): boolean {
-    // zero fields are considered falsey
-    if (fieldValue == "0") {
+    // zero fields are considered falsey,except if it is string "0"
+    if (fieldValue == "0" && typeof fieldValue !== "string") {
         return false;
     }
     // empty arrays are considered truthy
