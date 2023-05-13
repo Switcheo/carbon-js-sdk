@@ -8,7 +8,7 @@ export class PerpsLiquidityPoolModule extends BaseModule {
   public async create(params: PerpsLiquidityPoolModule.CreatePoolParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Models.MsgCreatePerpetualsLiquidityPool.fromPartial({
+    const value = Models.MsgCreatePlPool.fromPartial({
       creator: wallet.bech32Address,
       name: params.name,
       depositDenom: params.depositDenom,
@@ -20,7 +20,7 @@ export class PerpsLiquidityPoolModule extends BaseModule {
 
     return await wallet.sendTx(
       {
-        typeUrl: CarbonTx.Types.MsgCreatePerpetualsLiquidityPool,
+        typeUrl: CarbonTx.Types.MsgCreatePlPool,
         value,
       },
       opts
@@ -28,16 +28,16 @@ export class PerpsLiquidityPoolModule extends BaseModule {
   }
   public async addLiquidity(params: PerpsLiquidityPoolModule.AddLiquidityParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
-    const value = Models.MsgDepositToPerpetualsLiquidityPool.fromPartial({
+    const value = Models.MsgDepositToPlPool.fromPartial({
       creator: wallet.bech32Address,
-      perpetualsLiquidityPoolId: new Long(params.perpetualsLiquidityPoolId),
+      poolId: new Long(params.perpetualsLiquidityPoolId),
       depositAmount: params.depositAmount.toString(10),
       minShareAmount: params.minShareAmount.toString(10),
     });
 
     return await wallet.sendTx(
       {
-        typeUrl: CarbonTx.Types.MsgDepositToPerpetualsLiquidityPool,
+        typeUrl: CarbonTx.Types.MsgDepositToPlPool,
         value,
       },
       opts
@@ -46,16 +46,16 @@ export class PerpsLiquidityPoolModule extends BaseModule {
   public async removeLiquidity(params: PerpsLiquidityPoolModule.RemoveLiquidityParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Models.MsgWithdrawFromPerpetualsLiquidityPool.fromPartial({
+    const value = Models.MsgWithdrawFromPlPool.fromPartial({
       creator: wallet.bech32Address,
-      perpetualsLiquidityPoolId: new Long(params.perpetualsLiquidityPoolId),
+      poolId: new Long(params.perpetualsLiquidityPoolId),
       shareAmount: params.shareAmount.toString(10),
       minReceiveAmount: params.minReceiveAmount.toString(10),
     });
 
     return await wallet.sendTx(
       {
-        typeUrl: CarbonTx.Types.MsgWithdrawFromPerpetualsLiquidityPool,
+        typeUrl: CarbonTx.Types.MsgWithdrawFromPlPool,
         value,
       },
       opts

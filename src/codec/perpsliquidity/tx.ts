@@ -2,21 +2,21 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import {
-  PerpetualsLiquidityPool,
-  UpdatePerpetualsLiquidityPoolParams,
-  UpdatePLPMarketConfigParams,
-  PLPMarketConfig,
-} from "./perpetuals_liquidity_pool";
+  PlPool,
+  UpdatePlPoolParams,
+  UpdateMarketConfigParams,
+  MarketConfig,
+} from "./pool";
 
 export const protobufPackage = "Switcheo.carbon.perpsliquidity";
 
-export interface MsgCreatePerpetualsLiquidityPool {
+export interface MsgCreatePlPool {
   creator: string;
-  /** name of perpetuals_liquidity_pool */
+  /** name of pool */
   name: string;
-  /** denom of the underlying token in the perpetuals_liquidity_pool that is used to provide liquidity */
+  /** denom of the underlying token in the pool that is used to provide liquidity */
   depositDenom: string;
-  /** symbol of the share token that represents any tokens in the perpetuals_liquidity_pool 1-to-1 */
+  /** symbol of the share token that represents any tokens in the pool 1-to-1 */
   shareTokenSymbol: string;
   /** the maximum amount that can be supplied into the pool */
   supplyCap: string;
@@ -26,68 +26,68 @@ export interface MsgCreatePerpetualsLiquidityPool {
   withdrawalFeeBps: string;
 }
 
-export interface MsgCreatePerpetualsLiquidityPoolResponse {
-  perpetualsLiquidityPool?: PerpetualsLiquidityPool;
+export interface MsgCreatePlPoolResponse {
+  pool?: PlPool;
 }
 
-export interface MsgUpdatePerpetualsLiquidityPool {
+export interface MsgUpdatePlPool {
   creator: string;
-  perpetualsLiquidityPoolId: Long;
-  updatePerpetualsLiquidityPoolParams?: UpdatePerpetualsLiquidityPoolParams;
+  poolId: Long;
+  updatePoolParams?: UpdatePlPoolParams;
 }
 
-export interface MsgUpdatePerpetualsLiquidityPoolResponse {
-  perpetualsLiquidityPool?: PerpetualsLiquidityPool;
+export interface MsgUpdatePlPoolResponse {
+  pool?: PlPool;
 }
 
-export interface MsgRegisterToPerpetualsLiquidityPool {
+export interface MsgRegisterToPlPool {
   creator: string;
-  perpetualsLiquidityPoolId: Long;
+  poolId: Long;
   marketId: string;
 }
 
-export interface MsgRegisterToPerpetualsLiquidityPoolResponse {}
+export interface MsgRegisterToPlPoolResponse {}
 
-export interface MsgDeregisterFromPerpetualsLiquidityPool {
+export interface MsgDeregisterFromPlPool {
   creator: string;
   marketId: string;
 }
 
-export interface MsgDeregisterFromPerpetualsLiquidityPoolResponse {}
+export interface MsgDeregisterFromPlPoolResponse {}
 
-export interface MsgDepositToPerpetualsLiquidityPool {
+export interface MsgDepositToPlPool {
   creator: string;
-  perpetualsLiquidityPoolId: Long;
+  poolId: Long;
   /** the amount to deposit */
   depositAmount: string;
   /** min amount of share to receive */
   minShareAmount: string;
 }
 
-export interface MsgDepositToPerpetualsLiquidityPoolResponse {}
+export interface MsgDepositToPlPoolResponse {}
 
-export interface MsgWithdrawFromPerpetualsLiquidityPool {
+export interface MsgWithdrawFromPlPool {
   creator: string;
-  perpetualsLiquidityPoolId: Long;
+  poolId: Long;
   /** the amount of share to use for withdrawal */
   shareAmount: string;
   /** min amount to receive */
   minReceiveAmount: string;
 }
 
-export interface MsgWithdrawFromPerpetualsLiquidityPoolResponse {}
+export interface MsgWithdrawFromPlPoolResponse {}
 
-export interface MsgUpdatePLPMarketConfig {
+export interface MsgUpdateMarketConfig {
   creator: string;
   marketId: string;
-  updateMarketConfigParams?: UpdatePLPMarketConfigParams;
+  updateMarketConfigParams?: UpdateMarketConfigParams;
 }
 
-export interface MsgUpdatePLPMarketConfigResponse {
-  marketConfig?: PLPMarketConfig;
+export interface MsgUpdateMarketConfigResponse {
+  marketConfig?: MarketConfig;
 }
 
-const baseMsgCreatePerpetualsLiquidityPool: object = {
+const baseMsgCreatePlPool: object = {
   creator: "",
   name: "",
   depositDenom: "",
@@ -97,9 +97,9 @@ const baseMsgCreatePerpetualsLiquidityPool: object = {
   withdrawalFeeBps: "",
 };
 
-export const MsgCreatePerpetualsLiquidityPool = {
+export const MsgCreatePlPool = {
   encode(
-    message: MsgCreatePerpetualsLiquidityPool,
+    message: MsgCreatePlPool,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.creator !== "") {
@@ -126,15 +126,10 @@ export const MsgCreatePerpetualsLiquidityPool = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgCreatePerpetualsLiquidityPool {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreatePlPool {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgCreatePerpetualsLiquidityPool,
-    } as MsgCreatePerpetualsLiquidityPool;
+    const message = { ...baseMsgCreatePlPool } as MsgCreatePlPool;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -167,10 +162,8 @@ export const MsgCreatePerpetualsLiquidityPool = {
     return message;
   },
 
-  fromJSON(object: any): MsgCreatePerpetualsLiquidityPool {
-    const message = {
-      ...baseMsgCreatePerpetualsLiquidityPool,
-    } as MsgCreatePerpetualsLiquidityPool;
+  fromJSON(object: any): MsgCreatePlPool {
+    const message = { ...baseMsgCreatePlPool } as MsgCreatePlPool;
     message.creator =
       object.creator !== undefined && object.creator !== null
         ? String(object.creator)
@@ -202,7 +195,7 @@ export const MsgCreatePerpetualsLiquidityPool = {
     return message;
   },
 
-  toJSON(message: MsgCreatePerpetualsLiquidityPool): unknown {
+  toJSON(message: MsgCreatePlPool): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
     message.name !== undefined && (obj.name = message.name);
@@ -218,12 +211,8 @@ export const MsgCreatePerpetualsLiquidityPool = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<MsgCreatePerpetualsLiquidityPool>
-  ): MsgCreatePerpetualsLiquidityPool {
-    const message = {
-      ...baseMsgCreatePerpetualsLiquidityPool,
-    } as MsgCreatePerpetualsLiquidityPool;
+  fromPartial(object: DeepPartial<MsgCreatePlPool>): MsgCreatePlPool {
+    const message = { ...baseMsgCreatePlPool } as MsgCreatePlPool;
     message.creator = object.creator ?? "";
     message.name = object.name ?? "";
     message.depositDenom = object.depositDenom ?? "";
@@ -235,18 +224,15 @@ export const MsgCreatePerpetualsLiquidityPool = {
   },
 };
 
-const baseMsgCreatePerpetualsLiquidityPoolResponse: object = {};
+const baseMsgCreatePlPoolResponse: object = {};
 
-export const MsgCreatePerpetualsLiquidityPoolResponse = {
+export const MsgCreatePlPoolResponse = {
   encode(
-    message: MsgCreatePerpetualsLiquidityPoolResponse,
+    message: MsgCreatePlPoolResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.perpetualsLiquidityPool !== undefined) {
-      PerpetualsLiquidityPool.encode(
-        message.perpetualsLiquidityPool,
-        writer.uint32(10).fork()
-      ).ldelim();
+    if (message.pool !== undefined) {
+      PlPool.encode(message.pool, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -254,20 +240,17 @@ export const MsgCreatePerpetualsLiquidityPoolResponse = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): MsgCreatePerpetualsLiquidityPoolResponse {
+  ): MsgCreatePlPoolResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseMsgCreatePerpetualsLiquidityPoolResponse,
-    } as MsgCreatePerpetualsLiquidityPoolResponse;
+      ...baseMsgCreatePlPoolResponse,
+    } as MsgCreatePlPoolResponse;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.perpetualsLiquidityPool = PerpetualsLiquidityPool.decode(
-            reader,
-            reader.uint32()
-          );
+          message.pool = PlPool.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -277,76 +260,64 @@ export const MsgCreatePerpetualsLiquidityPoolResponse = {
     return message;
   },
 
-  fromJSON(object: any): MsgCreatePerpetualsLiquidityPoolResponse {
+  fromJSON(object: any): MsgCreatePlPoolResponse {
     const message = {
-      ...baseMsgCreatePerpetualsLiquidityPoolResponse,
-    } as MsgCreatePerpetualsLiquidityPoolResponse;
-    message.perpetualsLiquidityPool =
-      object.perpetualsLiquidityPool !== undefined &&
-      object.perpetualsLiquidityPool !== null
-        ? PerpetualsLiquidityPool.fromJSON(object.perpetualsLiquidityPool)
+      ...baseMsgCreatePlPoolResponse,
+    } as MsgCreatePlPoolResponse;
+    message.pool =
+      object.pool !== undefined && object.pool !== null
+        ? PlPool.fromJSON(object.pool)
         : undefined;
     return message;
   },
 
-  toJSON(message: MsgCreatePerpetualsLiquidityPoolResponse): unknown {
+  toJSON(message: MsgCreatePlPoolResponse): unknown {
     const obj: any = {};
-    message.perpetualsLiquidityPool !== undefined &&
-      (obj.perpetualsLiquidityPool = message.perpetualsLiquidityPool
-        ? PerpetualsLiquidityPool.toJSON(message.perpetualsLiquidityPool)
-        : undefined);
+    message.pool !== undefined &&
+      (obj.pool = message.pool ? PlPool.toJSON(message.pool) : undefined);
     return obj;
   },
 
   fromPartial(
-    object: DeepPartial<MsgCreatePerpetualsLiquidityPoolResponse>
-  ): MsgCreatePerpetualsLiquidityPoolResponse {
+    object: DeepPartial<MsgCreatePlPoolResponse>
+  ): MsgCreatePlPoolResponse {
     const message = {
-      ...baseMsgCreatePerpetualsLiquidityPoolResponse,
-    } as MsgCreatePerpetualsLiquidityPoolResponse;
-    message.perpetualsLiquidityPool =
-      object.perpetualsLiquidityPool !== undefined &&
-      object.perpetualsLiquidityPool !== null
-        ? PerpetualsLiquidityPool.fromPartial(object.perpetualsLiquidityPool)
+      ...baseMsgCreatePlPoolResponse,
+    } as MsgCreatePlPoolResponse;
+    message.pool =
+      object.pool !== undefined && object.pool !== null
+        ? PlPool.fromPartial(object.pool)
         : undefined;
     return message;
   },
 };
 
-const baseMsgUpdatePerpetualsLiquidityPool: object = {
-  creator: "",
-  perpetualsLiquidityPoolId: Long.UZERO,
-};
+const baseMsgUpdatePlPool: object = { creator: "", poolId: Long.UZERO };
 
-export const MsgUpdatePerpetualsLiquidityPool = {
+export const MsgUpdatePlPool = {
   encode(
-    message: MsgUpdatePerpetualsLiquidityPool,
+    message: MsgUpdatePlPool,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
-    if (!message.perpetualsLiquidityPoolId.isZero()) {
-      writer.uint32(16).uint64(message.perpetualsLiquidityPoolId);
+    if (!message.poolId.isZero()) {
+      writer.uint32(16).uint64(message.poolId);
     }
-    if (message.updatePerpetualsLiquidityPoolParams !== undefined) {
-      UpdatePerpetualsLiquidityPoolParams.encode(
-        message.updatePerpetualsLiquidityPoolParams,
+    if (message.updatePoolParams !== undefined) {
+      UpdatePlPoolParams.encode(
+        message.updatePoolParams,
         writer.uint32(26).fork()
       ).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgUpdatePerpetualsLiquidityPool {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdatePlPool {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgUpdatePerpetualsLiquidityPool,
-    } as MsgUpdatePerpetualsLiquidityPool;
+    const message = { ...baseMsgUpdatePlPool } as MsgUpdatePlPool;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -354,113 +325,10 @@ export const MsgUpdatePerpetualsLiquidityPool = {
           message.creator = reader.string();
           break;
         case 2:
-          message.perpetualsLiquidityPoolId = reader.uint64() as Long;
+          message.poolId = reader.uint64() as Long;
           break;
         case 3:
-          message.updatePerpetualsLiquidityPoolParams =
-            UpdatePerpetualsLiquidityPoolParams.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): MsgUpdatePerpetualsLiquidityPool {
-    const message = {
-      ...baseMsgUpdatePerpetualsLiquidityPool,
-    } as MsgUpdatePerpetualsLiquidityPool;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.perpetualsLiquidityPoolId =
-      object.perpetualsLiquidityPoolId !== undefined &&
-      object.perpetualsLiquidityPoolId !== null
-        ? Long.fromString(object.perpetualsLiquidityPoolId)
-        : Long.UZERO;
-    message.updatePerpetualsLiquidityPoolParams =
-      object.updatePerpetualsLiquidityPoolParams !== undefined &&
-      object.updatePerpetualsLiquidityPoolParams !== null
-        ? UpdatePerpetualsLiquidityPoolParams.fromJSON(
-            object.updatePerpetualsLiquidityPoolParams
-          )
-        : undefined;
-    return message;
-  },
-
-  toJSON(message: MsgUpdatePerpetualsLiquidityPool): unknown {
-    const obj: any = {};
-    message.creator !== undefined && (obj.creator = message.creator);
-    message.perpetualsLiquidityPoolId !== undefined &&
-      (obj.perpetualsLiquidityPoolId = (
-        message.perpetualsLiquidityPoolId || Long.UZERO
-      ).toString());
-    message.updatePerpetualsLiquidityPoolParams !== undefined &&
-      (obj.updatePerpetualsLiquidityPoolParams =
-        message.updatePerpetualsLiquidityPoolParams
-          ? UpdatePerpetualsLiquidityPoolParams.toJSON(
-              message.updatePerpetualsLiquidityPoolParams
-            )
-          : undefined);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<MsgUpdatePerpetualsLiquidityPool>
-  ): MsgUpdatePerpetualsLiquidityPool {
-    const message = {
-      ...baseMsgUpdatePerpetualsLiquidityPool,
-    } as MsgUpdatePerpetualsLiquidityPool;
-    message.creator = object.creator ?? "";
-    message.perpetualsLiquidityPoolId =
-      object.perpetualsLiquidityPoolId !== undefined &&
-      object.perpetualsLiquidityPoolId !== null
-        ? Long.fromValue(object.perpetualsLiquidityPoolId)
-        : Long.UZERO;
-    message.updatePerpetualsLiquidityPoolParams =
-      object.updatePerpetualsLiquidityPoolParams !== undefined &&
-      object.updatePerpetualsLiquidityPoolParams !== null
-        ? UpdatePerpetualsLiquidityPoolParams.fromPartial(
-            object.updatePerpetualsLiquidityPoolParams
-          )
-        : undefined;
-    return message;
-  },
-};
-
-const baseMsgUpdatePerpetualsLiquidityPoolResponse: object = {};
-
-export const MsgUpdatePerpetualsLiquidityPoolResponse = {
-  encode(
-    message: MsgUpdatePerpetualsLiquidityPoolResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.perpetualsLiquidityPool !== undefined) {
-      PerpetualsLiquidityPool.encode(
-        message.perpetualsLiquidityPool,
-        writer.uint32(10).fork()
-      ).ldelim();
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgUpdatePerpetualsLiquidityPoolResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgUpdatePerpetualsLiquidityPoolResponse,
-    } as MsgUpdatePerpetualsLiquidityPoolResponse;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.perpetualsLiquidityPool = PerpetualsLiquidityPool.decode(
+          message.updatePoolParams = UpdatePlPoolParams.decode(
             reader,
             reader.uint32()
           );
@@ -473,58 +341,134 @@ export const MsgUpdatePerpetualsLiquidityPoolResponse = {
     return message;
   },
 
-  fromJSON(object: any): MsgUpdatePerpetualsLiquidityPoolResponse {
-    const message = {
-      ...baseMsgUpdatePerpetualsLiquidityPoolResponse,
-    } as MsgUpdatePerpetualsLiquidityPoolResponse;
-    message.perpetualsLiquidityPool =
-      object.perpetualsLiquidityPool !== undefined &&
-      object.perpetualsLiquidityPool !== null
-        ? PerpetualsLiquidityPool.fromJSON(object.perpetualsLiquidityPool)
+  fromJSON(object: any): MsgUpdatePlPool {
+    const message = { ...baseMsgUpdatePlPool } as MsgUpdatePlPool;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromString(object.poolId)
+        : Long.UZERO;
+    message.updatePoolParams =
+      object.updatePoolParams !== undefined && object.updatePoolParams !== null
+        ? UpdatePlPoolParams.fromJSON(object.updatePoolParams)
         : undefined;
     return message;
   },
 
-  toJSON(message: MsgUpdatePerpetualsLiquidityPoolResponse): unknown {
+  toJSON(message: MsgUpdatePlPool): unknown {
     const obj: any = {};
-    message.perpetualsLiquidityPool !== undefined &&
-      (obj.perpetualsLiquidityPool = message.perpetualsLiquidityPool
-        ? PerpetualsLiquidityPool.toJSON(message.perpetualsLiquidityPool)
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.poolId !== undefined &&
+      (obj.poolId = (message.poolId || Long.UZERO).toString());
+    message.updatePoolParams !== undefined &&
+      (obj.updatePoolParams = message.updatePoolParams
+        ? UpdatePlPoolParams.toJSON(message.updatePoolParams)
         : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<MsgUpdatePerpetualsLiquidityPoolResponse>
-  ): MsgUpdatePerpetualsLiquidityPoolResponse {
-    const message = {
-      ...baseMsgUpdatePerpetualsLiquidityPoolResponse,
-    } as MsgUpdatePerpetualsLiquidityPoolResponse;
-    message.perpetualsLiquidityPool =
-      object.perpetualsLiquidityPool !== undefined &&
-      object.perpetualsLiquidityPool !== null
-        ? PerpetualsLiquidityPool.fromPartial(object.perpetualsLiquidityPool)
+  fromPartial(object: DeepPartial<MsgUpdatePlPool>): MsgUpdatePlPool {
+    const message = { ...baseMsgUpdatePlPool } as MsgUpdatePlPool;
+    message.creator = object.creator ?? "";
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromValue(object.poolId)
+        : Long.UZERO;
+    message.updatePoolParams =
+      object.updatePoolParams !== undefined && object.updatePoolParams !== null
+        ? UpdatePlPoolParams.fromPartial(object.updatePoolParams)
         : undefined;
     return message;
   },
 };
 
-const baseMsgRegisterToPerpetualsLiquidityPool: object = {
+const baseMsgUpdatePlPoolResponse: object = {};
+
+export const MsgUpdatePlPoolResponse = {
+  encode(
+    message: MsgUpdatePlPoolResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.pool !== undefined) {
+      PlPool.encode(message.pool, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUpdatePlPoolResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgUpdatePlPoolResponse,
+    } as MsgUpdatePlPoolResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.pool = PlPool.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdatePlPoolResponse {
+    const message = {
+      ...baseMsgUpdatePlPoolResponse,
+    } as MsgUpdatePlPoolResponse;
+    message.pool =
+      object.pool !== undefined && object.pool !== null
+        ? PlPool.fromJSON(object.pool)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: MsgUpdatePlPoolResponse): unknown {
+    const obj: any = {};
+    message.pool !== undefined &&
+      (obj.pool = message.pool ? PlPool.toJSON(message.pool) : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgUpdatePlPoolResponse>
+  ): MsgUpdatePlPoolResponse {
+    const message = {
+      ...baseMsgUpdatePlPoolResponse,
+    } as MsgUpdatePlPoolResponse;
+    message.pool =
+      object.pool !== undefined && object.pool !== null
+        ? PlPool.fromPartial(object.pool)
+        : undefined;
+    return message;
+  },
+};
+
+const baseMsgRegisterToPlPool: object = {
   creator: "",
-  perpetualsLiquidityPoolId: Long.UZERO,
+  poolId: Long.UZERO,
   marketId: "",
 };
 
-export const MsgRegisterToPerpetualsLiquidityPool = {
+export const MsgRegisterToPlPool = {
   encode(
-    message: MsgRegisterToPerpetualsLiquidityPool,
+    message: MsgRegisterToPlPool,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
-    if (!message.perpetualsLiquidityPoolId.isZero()) {
-      writer.uint32(16).uint64(message.perpetualsLiquidityPoolId);
+    if (!message.poolId.isZero()) {
+      writer.uint32(16).uint64(message.poolId);
     }
     if (message.marketId !== "") {
       writer.uint32(26).string(message.marketId);
@@ -532,15 +476,10 @@ export const MsgRegisterToPerpetualsLiquidityPool = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgRegisterToPerpetualsLiquidityPool {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgRegisterToPlPool {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgRegisterToPerpetualsLiquidityPool,
-    } as MsgRegisterToPerpetualsLiquidityPool;
+    const message = { ...baseMsgRegisterToPlPool } as MsgRegisterToPlPool;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -548,7 +487,7 @@ export const MsgRegisterToPerpetualsLiquidityPool = {
           message.creator = reader.string();
           break;
         case 2:
-          message.perpetualsLiquidityPoolId = reader.uint64() as Long;
+          message.poolId = reader.uint64() as Long;
           break;
         case 3:
           message.marketId = reader.string();
@@ -561,18 +500,15 @@ export const MsgRegisterToPerpetualsLiquidityPool = {
     return message;
   },
 
-  fromJSON(object: any): MsgRegisterToPerpetualsLiquidityPool {
-    const message = {
-      ...baseMsgRegisterToPerpetualsLiquidityPool,
-    } as MsgRegisterToPerpetualsLiquidityPool;
+  fromJSON(object: any): MsgRegisterToPlPool {
+    const message = { ...baseMsgRegisterToPlPool } as MsgRegisterToPlPool;
     message.creator =
       object.creator !== undefined && object.creator !== null
         ? String(object.creator)
         : "";
-    message.perpetualsLiquidityPoolId =
-      object.perpetualsLiquidityPoolId !== undefined &&
-      object.perpetualsLiquidityPoolId !== null
-        ? Long.fromString(object.perpetualsLiquidityPoolId)
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromString(object.poolId)
         : Long.UZERO;
     message.marketId =
       object.marketId !== undefined && object.marketId !== null
@@ -581,39 +517,32 @@ export const MsgRegisterToPerpetualsLiquidityPool = {
     return message;
   },
 
-  toJSON(message: MsgRegisterToPerpetualsLiquidityPool): unknown {
+  toJSON(message: MsgRegisterToPlPool): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.perpetualsLiquidityPoolId !== undefined &&
-      (obj.perpetualsLiquidityPoolId = (
-        message.perpetualsLiquidityPoolId || Long.UZERO
-      ).toString());
+    message.poolId !== undefined &&
+      (obj.poolId = (message.poolId || Long.UZERO).toString());
     message.marketId !== undefined && (obj.marketId = message.marketId);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<MsgRegisterToPerpetualsLiquidityPool>
-  ): MsgRegisterToPerpetualsLiquidityPool {
-    const message = {
-      ...baseMsgRegisterToPerpetualsLiquidityPool,
-    } as MsgRegisterToPerpetualsLiquidityPool;
+  fromPartial(object: DeepPartial<MsgRegisterToPlPool>): MsgRegisterToPlPool {
+    const message = { ...baseMsgRegisterToPlPool } as MsgRegisterToPlPool;
     message.creator = object.creator ?? "";
-    message.perpetualsLiquidityPoolId =
-      object.perpetualsLiquidityPoolId !== undefined &&
-      object.perpetualsLiquidityPoolId !== null
-        ? Long.fromValue(object.perpetualsLiquidityPoolId)
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromValue(object.poolId)
         : Long.UZERO;
     message.marketId = object.marketId ?? "";
     return message;
   },
 };
 
-const baseMsgRegisterToPerpetualsLiquidityPoolResponse: object = {};
+const baseMsgRegisterToPlPoolResponse: object = {};
 
-export const MsgRegisterToPerpetualsLiquidityPoolResponse = {
+export const MsgRegisterToPlPoolResponse = {
   encode(
-    _: MsgRegisterToPerpetualsLiquidityPoolResponse,
+    _: MsgRegisterToPlPoolResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     return writer;
@@ -622,12 +551,12 @@ export const MsgRegisterToPerpetualsLiquidityPoolResponse = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): MsgRegisterToPerpetualsLiquidityPoolResponse {
+  ): MsgRegisterToPlPoolResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseMsgRegisterToPerpetualsLiquidityPoolResponse,
-    } as MsgRegisterToPerpetualsLiquidityPoolResponse;
+      ...baseMsgRegisterToPlPoolResponse,
+    } as MsgRegisterToPlPoolResponse;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -639,36 +568,33 @@ export const MsgRegisterToPerpetualsLiquidityPoolResponse = {
     return message;
   },
 
-  fromJSON(_: any): MsgRegisterToPerpetualsLiquidityPoolResponse {
+  fromJSON(_: any): MsgRegisterToPlPoolResponse {
     const message = {
-      ...baseMsgRegisterToPerpetualsLiquidityPoolResponse,
-    } as MsgRegisterToPerpetualsLiquidityPoolResponse;
+      ...baseMsgRegisterToPlPoolResponse,
+    } as MsgRegisterToPlPoolResponse;
     return message;
   },
 
-  toJSON(_: MsgRegisterToPerpetualsLiquidityPoolResponse): unknown {
+  toJSON(_: MsgRegisterToPlPoolResponse): unknown {
     const obj: any = {};
     return obj;
   },
 
   fromPartial(
-    _: DeepPartial<MsgRegisterToPerpetualsLiquidityPoolResponse>
-  ): MsgRegisterToPerpetualsLiquidityPoolResponse {
+    _: DeepPartial<MsgRegisterToPlPoolResponse>
+  ): MsgRegisterToPlPoolResponse {
     const message = {
-      ...baseMsgRegisterToPerpetualsLiquidityPoolResponse,
-    } as MsgRegisterToPerpetualsLiquidityPoolResponse;
+      ...baseMsgRegisterToPlPoolResponse,
+    } as MsgRegisterToPlPoolResponse;
     return message;
   },
 };
 
-const baseMsgDeregisterFromPerpetualsLiquidityPool: object = {
-  creator: "",
-  marketId: "",
-};
+const baseMsgDeregisterFromPlPool: object = { creator: "", marketId: "" };
 
-export const MsgDeregisterFromPerpetualsLiquidityPool = {
+export const MsgDeregisterFromPlPool = {
   encode(
-    message: MsgDeregisterFromPerpetualsLiquidityPool,
+    message: MsgDeregisterFromPlPool,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.creator !== "") {
@@ -683,12 +609,12 @@ export const MsgDeregisterFromPerpetualsLiquidityPool = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): MsgDeregisterFromPerpetualsLiquidityPool {
+  ): MsgDeregisterFromPlPool {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseMsgDeregisterFromPerpetualsLiquidityPool,
-    } as MsgDeregisterFromPerpetualsLiquidityPool;
+      ...baseMsgDeregisterFromPlPool,
+    } as MsgDeregisterFromPlPool;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -706,10 +632,10 @@ export const MsgDeregisterFromPerpetualsLiquidityPool = {
     return message;
   },
 
-  fromJSON(object: any): MsgDeregisterFromPerpetualsLiquidityPool {
+  fromJSON(object: any): MsgDeregisterFromPlPool {
     const message = {
-      ...baseMsgDeregisterFromPerpetualsLiquidityPool,
-    } as MsgDeregisterFromPerpetualsLiquidityPool;
+      ...baseMsgDeregisterFromPlPool,
+    } as MsgDeregisterFromPlPool;
     message.creator =
       object.creator !== undefined && object.creator !== null
         ? String(object.creator)
@@ -721,7 +647,7 @@ export const MsgDeregisterFromPerpetualsLiquidityPool = {
     return message;
   },
 
-  toJSON(message: MsgDeregisterFromPerpetualsLiquidityPool): unknown {
+  toJSON(message: MsgDeregisterFromPlPool): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
     message.marketId !== undefined && (obj.marketId = message.marketId);
@@ -729,22 +655,22 @@ export const MsgDeregisterFromPerpetualsLiquidityPool = {
   },
 
   fromPartial(
-    object: DeepPartial<MsgDeregisterFromPerpetualsLiquidityPool>
-  ): MsgDeregisterFromPerpetualsLiquidityPool {
+    object: DeepPartial<MsgDeregisterFromPlPool>
+  ): MsgDeregisterFromPlPool {
     const message = {
-      ...baseMsgDeregisterFromPerpetualsLiquidityPool,
-    } as MsgDeregisterFromPerpetualsLiquidityPool;
+      ...baseMsgDeregisterFromPlPool,
+    } as MsgDeregisterFromPlPool;
     message.creator = object.creator ?? "";
     message.marketId = object.marketId ?? "";
     return message;
   },
 };
 
-const baseMsgDeregisterFromPerpetualsLiquidityPoolResponse: object = {};
+const baseMsgDeregisterFromPlPoolResponse: object = {};
 
-export const MsgDeregisterFromPerpetualsLiquidityPoolResponse = {
+export const MsgDeregisterFromPlPoolResponse = {
   encode(
-    _: MsgDeregisterFromPerpetualsLiquidityPoolResponse,
+    _: MsgDeregisterFromPlPoolResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     return writer;
@@ -753,12 +679,12 @@ export const MsgDeregisterFromPerpetualsLiquidityPoolResponse = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): MsgDeregisterFromPerpetualsLiquidityPoolResponse {
+  ): MsgDeregisterFromPlPoolResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseMsgDeregisterFromPerpetualsLiquidityPoolResponse,
-    } as MsgDeregisterFromPerpetualsLiquidityPoolResponse;
+      ...baseMsgDeregisterFromPlPoolResponse,
+    } as MsgDeregisterFromPlPoolResponse;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -770,45 +696,45 @@ export const MsgDeregisterFromPerpetualsLiquidityPoolResponse = {
     return message;
   },
 
-  fromJSON(_: any): MsgDeregisterFromPerpetualsLiquidityPoolResponse {
+  fromJSON(_: any): MsgDeregisterFromPlPoolResponse {
     const message = {
-      ...baseMsgDeregisterFromPerpetualsLiquidityPoolResponse,
-    } as MsgDeregisterFromPerpetualsLiquidityPoolResponse;
+      ...baseMsgDeregisterFromPlPoolResponse,
+    } as MsgDeregisterFromPlPoolResponse;
     return message;
   },
 
-  toJSON(_: MsgDeregisterFromPerpetualsLiquidityPoolResponse): unknown {
+  toJSON(_: MsgDeregisterFromPlPoolResponse): unknown {
     const obj: any = {};
     return obj;
   },
 
   fromPartial(
-    _: DeepPartial<MsgDeregisterFromPerpetualsLiquidityPoolResponse>
-  ): MsgDeregisterFromPerpetualsLiquidityPoolResponse {
+    _: DeepPartial<MsgDeregisterFromPlPoolResponse>
+  ): MsgDeregisterFromPlPoolResponse {
     const message = {
-      ...baseMsgDeregisterFromPerpetualsLiquidityPoolResponse,
-    } as MsgDeregisterFromPerpetualsLiquidityPoolResponse;
+      ...baseMsgDeregisterFromPlPoolResponse,
+    } as MsgDeregisterFromPlPoolResponse;
     return message;
   },
 };
 
-const baseMsgDepositToPerpetualsLiquidityPool: object = {
+const baseMsgDepositToPlPool: object = {
   creator: "",
-  perpetualsLiquidityPoolId: Long.UZERO,
+  poolId: Long.UZERO,
   depositAmount: "",
   minShareAmount: "",
 };
 
-export const MsgDepositToPerpetualsLiquidityPool = {
+export const MsgDepositToPlPool = {
   encode(
-    message: MsgDepositToPerpetualsLiquidityPool,
+    message: MsgDepositToPlPool,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
-    if (!message.perpetualsLiquidityPoolId.isZero()) {
-      writer.uint32(16).uint64(message.perpetualsLiquidityPoolId);
+    if (!message.poolId.isZero()) {
+      writer.uint32(16).uint64(message.poolId);
     }
     if (message.depositAmount !== "") {
       writer.uint32(26).string(message.depositAmount);
@@ -819,15 +745,10 @@ export const MsgDepositToPerpetualsLiquidityPool = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgDepositToPerpetualsLiquidityPool {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgDepositToPlPool {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgDepositToPerpetualsLiquidityPool,
-    } as MsgDepositToPerpetualsLiquidityPool;
+    const message = { ...baseMsgDepositToPlPool } as MsgDepositToPlPool;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -835,7 +756,7 @@ export const MsgDepositToPerpetualsLiquidityPool = {
           message.creator = reader.string();
           break;
         case 2:
-          message.perpetualsLiquidityPoolId = reader.uint64() as Long;
+          message.poolId = reader.uint64() as Long;
           break;
         case 3:
           message.depositAmount = reader.string();
@@ -851,18 +772,15 @@ export const MsgDepositToPerpetualsLiquidityPool = {
     return message;
   },
 
-  fromJSON(object: any): MsgDepositToPerpetualsLiquidityPool {
-    const message = {
-      ...baseMsgDepositToPerpetualsLiquidityPool,
-    } as MsgDepositToPerpetualsLiquidityPool;
+  fromJSON(object: any): MsgDepositToPlPool {
+    const message = { ...baseMsgDepositToPlPool } as MsgDepositToPlPool;
     message.creator =
       object.creator !== undefined && object.creator !== null
         ? String(object.creator)
         : "";
-    message.perpetualsLiquidityPoolId =
-      object.perpetualsLiquidityPoolId !== undefined &&
-      object.perpetualsLiquidityPoolId !== null
-        ? Long.fromString(object.perpetualsLiquidityPoolId)
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromString(object.poolId)
         : Long.UZERO;
     message.depositAmount =
       object.depositAmount !== undefined && object.depositAmount !== null
@@ -875,13 +793,11 @@ export const MsgDepositToPerpetualsLiquidityPool = {
     return message;
   },
 
-  toJSON(message: MsgDepositToPerpetualsLiquidityPool): unknown {
+  toJSON(message: MsgDepositToPlPool): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.perpetualsLiquidityPoolId !== undefined &&
-      (obj.perpetualsLiquidityPoolId = (
-        message.perpetualsLiquidityPoolId || Long.UZERO
-      ).toString());
+    message.poolId !== undefined &&
+      (obj.poolId = (message.poolId || Long.UZERO).toString());
     message.depositAmount !== undefined &&
       (obj.depositAmount = message.depositAmount);
     message.minShareAmount !== undefined &&
@@ -889,17 +805,12 @@ export const MsgDepositToPerpetualsLiquidityPool = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<MsgDepositToPerpetualsLiquidityPool>
-  ): MsgDepositToPerpetualsLiquidityPool {
-    const message = {
-      ...baseMsgDepositToPerpetualsLiquidityPool,
-    } as MsgDepositToPerpetualsLiquidityPool;
+  fromPartial(object: DeepPartial<MsgDepositToPlPool>): MsgDepositToPlPool {
+    const message = { ...baseMsgDepositToPlPool } as MsgDepositToPlPool;
     message.creator = object.creator ?? "";
-    message.perpetualsLiquidityPoolId =
-      object.perpetualsLiquidityPoolId !== undefined &&
-      object.perpetualsLiquidityPoolId !== null
-        ? Long.fromValue(object.perpetualsLiquidityPoolId)
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromValue(object.poolId)
         : Long.UZERO;
     message.depositAmount = object.depositAmount ?? "";
     message.minShareAmount = object.minShareAmount ?? "";
@@ -907,11 +818,11 @@ export const MsgDepositToPerpetualsLiquidityPool = {
   },
 };
 
-const baseMsgDepositToPerpetualsLiquidityPoolResponse: object = {};
+const baseMsgDepositToPlPoolResponse: object = {};
 
-export const MsgDepositToPerpetualsLiquidityPoolResponse = {
+export const MsgDepositToPlPoolResponse = {
   encode(
-    _: MsgDepositToPerpetualsLiquidityPoolResponse,
+    _: MsgDepositToPlPoolResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     return writer;
@@ -920,12 +831,12 @@ export const MsgDepositToPerpetualsLiquidityPoolResponse = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): MsgDepositToPerpetualsLiquidityPoolResponse {
+  ): MsgDepositToPlPoolResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseMsgDepositToPerpetualsLiquidityPoolResponse,
-    } as MsgDepositToPerpetualsLiquidityPoolResponse;
+      ...baseMsgDepositToPlPoolResponse,
+    } as MsgDepositToPlPoolResponse;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -937,45 +848,45 @@ export const MsgDepositToPerpetualsLiquidityPoolResponse = {
     return message;
   },
 
-  fromJSON(_: any): MsgDepositToPerpetualsLiquidityPoolResponse {
+  fromJSON(_: any): MsgDepositToPlPoolResponse {
     const message = {
-      ...baseMsgDepositToPerpetualsLiquidityPoolResponse,
-    } as MsgDepositToPerpetualsLiquidityPoolResponse;
+      ...baseMsgDepositToPlPoolResponse,
+    } as MsgDepositToPlPoolResponse;
     return message;
   },
 
-  toJSON(_: MsgDepositToPerpetualsLiquidityPoolResponse): unknown {
+  toJSON(_: MsgDepositToPlPoolResponse): unknown {
     const obj: any = {};
     return obj;
   },
 
   fromPartial(
-    _: DeepPartial<MsgDepositToPerpetualsLiquidityPoolResponse>
-  ): MsgDepositToPerpetualsLiquidityPoolResponse {
+    _: DeepPartial<MsgDepositToPlPoolResponse>
+  ): MsgDepositToPlPoolResponse {
     const message = {
-      ...baseMsgDepositToPerpetualsLiquidityPoolResponse,
-    } as MsgDepositToPerpetualsLiquidityPoolResponse;
+      ...baseMsgDepositToPlPoolResponse,
+    } as MsgDepositToPlPoolResponse;
     return message;
   },
 };
 
-const baseMsgWithdrawFromPerpetualsLiquidityPool: object = {
+const baseMsgWithdrawFromPlPool: object = {
   creator: "",
-  perpetualsLiquidityPoolId: Long.UZERO,
+  poolId: Long.UZERO,
   shareAmount: "",
   minReceiveAmount: "",
 };
 
-export const MsgWithdrawFromPerpetualsLiquidityPool = {
+export const MsgWithdrawFromPlPool = {
   encode(
-    message: MsgWithdrawFromPerpetualsLiquidityPool,
+    message: MsgWithdrawFromPlPool,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
-    if (!message.perpetualsLiquidityPoolId.isZero()) {
-      writer.uint32(16).uint64(message.perpetualsLiquidityPoolId);
+    if (!message.poolId.isZero()) {
+      writer.uint32(16).uint64(message.poolId);
     }
     if (message.shareAmount !== "") {
       writer.uint32(26).string(message.shareAmount);
@@ -989,12 +900,10 @@ export const MsgWithdrawFromPerpetualsLiquidityPool = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): MsgWithdrawFromPerpetualsLiquidityPool {
+  ): MsgWithdrawFromPlPool {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgWithdrawFromPerpetualsLiquidityPool,
-    } as MsgWithdrawFromPerpetualsLiquidityPool;
+    const message = { ...baseMsgWithdrawFromPlPool } as MsgWithdrawFromPlPool;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1002,7 +911,7 @@ export const MsgWithdrawFromPerpetualsLiquidityPool = {
           message.creator = reader.string();
           break;
         case 2:
-          message.perpetualsLiquidityPoolId = reader.uint64() as Long;
+          message.poolId = reader.uint64() as Long;
           break;
         case 3:
           message.shareAmount = reader.string();
@@ -1018,18 +927,15 @@ export const MsgWithdrawFromPerpetualsLiquidityPool = {
     return message;
   },
 
-  fromJSON(object: any): MsgWithdrawFromPerpetualsLiquidityPool {
-    const message = {
-      ...baseMsgWithdrawFromPerpetualsLiquidityPool,
-    } as MsgWithdrawFromPerpetualsLiquidityPool;
+  fromJSON(object: any): MsgWithdrawFromPlPool {
+    const message = { ...baseMsgWithdrawFromPlPool } as MsgWithdrawFromPlPool;
     message.creator =
       object.creator !== undefined && object.creator !== null
         ? String(object.creator)
         : "";
-    message.perpetualsLiquidityPoolId =
-      object.perpetualsLiquidityPoolId !== undefined &&
-      object.perpetualsLiquidityPoolId !== null
-        ? Long.fromString(object.perpetualsLiquidityPoolId)
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromString(object.poolId)
         : Long.UZERO;
     message.shareAmount =
       object.shareAmount !== undefined && object.shareAmount !== null
@@ -1042,13 +948,11 @@ export const MsgWithdrawFromPerpetualsLiquidityPool = {
     return message;
   },
 
-  toJSON(message: MsgWithdrawFromPerpetualsLiquidityPool): unknown {
+  toJSON(message: MsgWithdrawFromPlPool): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.perpetualsLiquidityPoolId !== undefined &&
-      (obj.perpetualsLiquidityPoolId = (
-        message.perpetualsLiquidityPoolId || Long.UZERO
-      ).toString());
+    message.poolId !== undefined &&
+      (obj.poolId = (message.poolId || Long.UZERO).toString());
     message.shareAmount !== undefined &&
       (obj.shareAmount = message.shareAmount);
     message.minReceiveAmount !== undefined &&
@@ -1057,16 +961,13 @@ export const MsgWithdrawFromPerpetualsLiquidityPool = {
   },
 
   fromPartial(
-    object: DeepPartial<MsgWithdrawFromPerpetualsLiquidityPool>
-  ): MsgWithdrawFromPerpetualsLiquidityPool {
-    const message = {
-      ...baseMsgWithdrawFromPerpetualsLiquidityPool,
-    } as MsgWithdrawFromPerpetualsLiquidityPool;
+    object: DeepPartial<MsgWithdrawFromPlPool>
+  ): MsgWithdrawFromPlPool {
+    const message = { ...baseMsgWithdrawFromPlPool } as MsgWithdrawFromPlPool;
     message.creator = object.creator ?? "";
-    message.perpetualsLiquidityPoolId =
-      object.perpetualsLiquidityPoolId !== undefined &&
-      object.perpetualsLiquidityPoolId !== null
-        ? Long.fromValue(object.perpetualsLiquidityPoolId)
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromValue(object.poolId)
         : Long.UZERO;
     message.shareAmount = object.shareAmount ?? "";
     message.minReceiveAmount = object.minReceiveAmount ?? "";
@@ -1074,11 +975,11 @@ export const MsgWithdrawFromPerpetualsLiquidityPool = {
   },
 };
 
-const baseMsgWithdrawFromPerpetualsLiquidityPoolResponse: object = {};
+const baseMsgWithdrawFromPlPoolResponse: object = {};
 
-export const MsgWithdrawFromPerpetualsLiquidityPoolResponse = {
+export const MsgWithdrawFromPlPoolResponse = {
   encode(
-    _: MsgWithdrawFromPerpetualsLiquidityPoolResponse,
+    _: MsgWithdrawFromPlPoolResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     return writer;
@@ -1087,12 +988,12 @@ export const MsgWithdrawFromPerpetualsLiquidityPoolResponse = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): MsgWithdrawFromPerpetualsLiquidityPoolResponse {
+  ): MsgWithdrawFromPlPoolResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseMsgWithdrawFromPerpetualsLiquidityPoolResponse,
-    } as MsgWithdrawFromPerpetualsLiquidityPoolResponse;
+      ...baseMsgWithdrawFromPlPoolResponse,
+    } as MsgWithdrawFromPlPoolResponse;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1104,33 +1005,33 @@ export const MsgWithdrawFromPerpetualsLiquidityPoolResponse = {
     return message;
   },
 
-  fromJSON(_: any): MsgWithdrawFromPerpetualsLiquidityPoolResponse {
+  fromJSON(_: any): MsgWithdrawFromPlPoolResponse {
     const message = {
-      ...baseMsgWithdrawFromPerpetualsLiquidityPoolResponse,
-    } as MsgWithdrawFromPerpetualsLiquidityPoolResponse;
+      ...baseMsgWithdrawFromPlPoolResponse,
+    } as MsgWithdrawFromPlPoolResponse;
     return message;
   },
 
-  toJSON(_: MsgWithdrawFromPerpetualsLiquidityPoolResponse): unknown {
+  toJSON(_: MsgWithdrawFromPlPoolResponse): unknown {
     const obj: any = {};
     return obj;
   },
 
   fromPartial(
-    _: DeepPartial<MsgWithdrawFromPerpetualsLiquidityPoolResponse>
-  ): MsgWithdrawFromPerpetualsLiquidityPoolResponse {
+    _: DeepPartial<MsgWithdrawFromPlPoolResponse>
+  ): MsgWithdrawFromPlPoolResponse {
     const message = {
-      ...baseMsgWithdrawFromPerpetualsLiquidityPoolResponse,
-    } as MsgWithdrawFromPerpetualsLiquidityPoolResponse;
+      ...baseMsgWithdrawFromPlPoolResponse,
+    } as MsgWithdrawFromPlPoolResponse;
     return message;
   },
 };
 
-const baseMsgUpdatePLPMarketConfig: object = { creator: "", marketId: "" };
+const baseMsgUpdateMarketConfig: object = { creator: "", marketId: "" };
 
-export const MsgUpdatePLPMarketConfig = {
+export const MsgUpdateMarketConfig = {
   encode(
-    message: MsgUpdatePLPMarketConfig,
+    message: MsgUpdateMarketConfig,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.creator !== "") {
@@ -1140,7 +1041,7 @@ export const MsgUpdatePLPMarketConfig = {
       writer.uint32(18).string(message.marketId);
     }
     if (message.updateMarketConfigParams !== undefined) {
-      UpdatePLPMarketConfigParams.encode(
+      UpdateMarketConfigParams.encode(
         message.updateMarketConfigParams,
         writer.uint32(26).fork()
       ).ldelim();
@@ -1151,12 +1052,10 @@ export const MsgUpdatePLPMarketConfig = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): MsgUpdatePLPMarketConfig {
+  ): MsgUpdateMarketConfig {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgUpdatePLPMarketConfig,
-    } as MsgUpdatePLPMarketConfig;
+    const message = { ...baseMsgUpdateMarketConfig } as MsgUpdateMarketConfig;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1167,7 +1066,7 @@ export const MsgUpdatePLPMarketConfig = {
           message.marketId = reader.string();
           break;
         case 3:
-          message.updateMarketConfigParams = UpdatePLPMarketConfigParams.decode(
+          message.updateMarketConfigParams = UpdateMarketConfigParams.decode(
             reader,
             reader.uint32()
           );
@@ -1180,10 +1079,8 @@ export const MsgUpdatePLPMarketConfig = {
     return message;
   },
 
-  fromJSON(object: any): MsgUpdatePLPMarketConfig {
-    const message = {
-      ...baseMsgUpdatePLPMarketConfig,
-    } as MsgUpdatePLPMarketConfig;
+  fromJSON(object: any): MsgUpdateMarketConfig {
+    const message = { ...baseMsgUpdateMarketConfig } as MsgUpdateMarketConfig;
     message.creator =
       object.creator !== undefined && object.creator !== null
         ? String(object.creator)
@@ -1195,50 +1092,46 @@ export const MsgUpdatePLPMarketConfig = {
     message.updateMarketConfigParams =
       object.updateMarketConfigParams !== undefined &&
       object.updateMarketConfigParams !== null
-        ? UpdatePLPMarketConfigParams.fromJSON(object.updateMarketConfigParams)
+        ? UpdateMarketConfigParams.fromJSON(object.updateMarketConfigParams)
         : undefined;
     return message;
   },
 
-  toJSON(message: MsgUpdatePLPMarketConfig): unknown {
+  toJSON(message: MsgUpdateMarketConfig): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
     message.marketId !== undefined && (obj.marketId = message.marketId);
     message.updateMarketConfigParams !== undefined &&
       (obj.updateMarketConfigParams = message.updateMarketConfigParams
-        ? UpdatePLPMarketConfigParams.toJSON(message.updateMarketConfigParams)
+        ? UpdateMarketConfigParams.toJSON(message.updateMarketConfigParams)
         : undefined);
     return obj;
   },
 
   fromPartial(
-    object: DeepPartial<MsgUpdatePLPMarketConfig>
-  ): MsgUpdatePLPMarketConfig {
-    const message = {
-      ...baseMsgUpdatePLPMarketConfig,
-    } as MsgUpdatePLPMarketConfig;
+    object: DeepPartial<MsgUpdateMarketConfig>
+  ): MsgUpdateMarketConfig {
+    const message = { ...baseMsgUpdateMarketConfig } as MsgUpdateMarketConfig;
     message.creator = object.creator ?? "";
     message.marketId = object.marketId ?? "";
     message.updateMarketConfigParams =
       object.updateMarketConfigParams !== undefined &&
       object.updateMarketConfigParams !== null
-        ? UpdatePLPMarketConfigParams.fromPartial(
-            object.updateMarketConfigParams
-          )
+        ? UpdateMarketConfigParams.fromPartial(object.updateMarketConfigParams)
         : undefined;
     return message;
   },
 };
 
-const baseMsgUpdatePLPMarketConfigResponse: object = {};
+const baseMsgUpdateMarketConfigResponse: object = {};
 
-export const MsgUpdatePLPMarketConfigResponse = {
+export const MsgUpdateMarketConfigResponse = {
   encode(
-    message: MsgUpdatePLPMarketConfigResponse,
+    message: MsgUpdateMarketConfigResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.marketConfig !== undefined) {
-      PLPMarketConfig.encode(
+      MarketConfig.encode(
         message.marketConfig,
         writer.uint32(10).fork()
       ).ldelim();
@@ -1249,20 +1142,17 @@ export const MsgUpdatePLPMarketConfigResponse = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): MsgUpdatePLPMarketConfigResponse {
+  ): MsgUpdateMarketConfigResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseMsgUpdatePLPMarketConfigResponse,
-    } as MsgUpdatePLPMarketConfigResponse;
+      ...baseMsgUpdateMarketConfigResponse,
+    } as MsgUpdateMarketConfigResponse;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.marketConfig = PLPMarketConfig.decode(
-            reader,
-            reader.uint32()
-          );
+          message.marketConfig = MarketConfig.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -1272,35 +1162,35 @@ export const MsgUpdatePLPMarketConfigResponse = {
     return message;
   },
 
-  fromJSON(object: any): MsgUpdatePLPMarketConfigResponse {
+  fromJSON(object: any): MsgUpdateMarketConfigResponse {
     const message = {
-      ...baseMsgUpdatePLPMarketConfigResponse,
-    } as MsgUpdatePLPMarketConfigResponse;
+      ...baseMsgUpdateMarketConfigResponse,
+    } as MsgUpdateMarketConfigResponse;
     message.marketConfig =
       object.marketConfig !== undefined && object.marketConfig !== null
-        ? PLPMarketConfig.fromJSON(object.marketConfig)
+        ? MarketConfig.fromJSON(object.marketConfig)
         : undefined;
     return message;
   },
 
-  toJSON(message: MsgUpdatePLPMarketConfigResponse): unknown {
+  toJSON(message: MsgUpdateMarketConfigResponse): unknown {
     const obj: any = {};
     message.marketConfig !== undefined &&
       (obj.marketConfig = message.marketConfig
-        ? PLPMarketConfig.toJSON(message.marketConfig)
+        ? MarketConfig.toJSON(message.marketConfig)
         : undefined);
     return obj;
   },
 
   fromPartial(
-    object: DeepPartial<MsgUpdatePLPMarketConfigResponse>
-  ): MsgUpdatePLPMarketConfigResponse {
+    object: DeepPartial<MsgUpdateMarketConfigResponse>
+  ): MsgUpdateMarketConfigResponse {
     const message = {
-      ...baseMsgUpdatePLPMarketConfigResponse,
-    } as MsgUpdatePLPMarketConfigResponse;
+      ...baseMsgUpdateMarketConfigResponse,
+    } as MsgUpdateMarketConfigResponse;
     message.marketConfig =
       object.marketConfig !== undefined && object.marketConfig !== null
-        ? PLPMarketConfig.fromPartial(object.marketConfig)
+        ? MarketConfig.fromPartial(object.marketConfig)
         : undefined;
     return message;
   },
@@ -1308,149 +1198,129 @@ export const MsgUpdatePLPMarketConfigResponse = {
 
 /** Msg defines the Msg service. */
 export interface Msg {
-  CreatePerpetualsLiquidityPool(
-    request: MsgCreatePerpetualsLiquidityPool
-  ): Promise<MsgCreatePerpetualsLiquidityPoolResponse>;
-  UpdatePerpetualsLiquidityPool(
-    request: MsgUpdatePerpetualsLiquidityPool
-  ): Promise<MsgUpdatePerpetualsLiquidityPoolResponse>;
-  RegisterToPerpetualsLiquidityPool(
-    request: MsgRegisterToPerpetualsLiquidityPool
-  ): Promise<MsgRegisterToPerpetualsLiquidityPoolResponse>;
-  DeregisterFromPerpetualsLiquidityPool(
-    request: MsgDeregisterFromPerpetualsLiquidityPool
-  ): Promise<MsgDeregisterFromPerpetualsLiquidityPoolResponse>;
-  DepositToPerpetualsLiquidityPool(
-    request: MsgDepositToPerpetualsLiquidityPool
-  ): Promise<MsgDepositToPerpetualsLiquidityPoolResponse>;
-  WithdrawFromPerpetualsLiquidityPool(
-    request: MsgWithdrawFromPerpetualsLiquidityPool
-  ): Promise<MsgWithdrawFromPerpetualsLiquidityPoolResponse>;
+  CreatePlPool(request: MsgCreatePlPool): Promise<MsgCreatePlPoolResponse>;
+  UpdatePlPool(request: MsgUpdatePlPool): Promise<MsgUpdatePlPoolResponse>;
+  RegisterToPlPool(
+    request: MsgRegisterToPlPool
+  ): Promise<MsgRegisterToPlPoolResponse>;
+  DeregisterFromPlPool(
+    request: MsgDeregisterFromPlPool
+  ): Promise<MsgDeregisterFromPlPoolResponse>;
+  DepositToPlPool(
+    request: MsgDepositToPlPool
+  ): Promise<MsgDepositToPlPoolResponse>;
+  WithdrawFromPlPool(
+    request: MsgWithdrawFromPlPool
+  ): Promise<MsgWithdrawFromPlPoolResponse>;
   /** this line is used by starport scaffolding # proto/tx/rpc */
-  UpdatePLPMarketConfig(
-    request: MsgUpdatePLPMarketConfig
-  ): Promise<MsgUpdatePLPMarketConfigResponse>;
+  UpdateMarketConfig(
+    request: MsgUpdateMarketConfig
+  ): Promise<MsgUpdateMarketConfigResponse>;
 }
 
 export class MsgClientImpl implements Msg {
   private readonly rpc: Rpc;
   constructor(rpc: Rpc) {
     this.rpc = rpc;
-    this.CreatePerpetualsLiquidityPool =
-      this.CreatePerpetualsLiquidityPool.bind(this);
-    this.UpdatePerpetualsLiquidityPool =
-      this.UpdatePerpetualsLiquidityPool.bind(this);
-    this.RegisterToPerpetualsLiquidityPool =
-      this.RegisterToPerpetualsLiquidityPool.bind(this);
-    this.DeregisterFromPerpetualsLiquidityPool =
-      this.DeregisterFromPerpetualsLiquidityPool.bind(this);
-    this.DepositToPerpetualsLiquidityPool =
-      this.DepositToPerpetualsLiquidityPool.bind(this);
-    this.WithdrawFromPerpetualsLiquidityPool =
-      this.WithdrawFromPerpetualsLiquidityPool.bind(this);
-    this.UpdatePLPMarketConfig = this.UpdatePLPMarketConfig.bind(this);
+    this.CreatePlPool = this.CreatePlPool.bind(this);
+    this.UpdatePlPool = this.UpdatePlPool.bind(this);
+    this.RegisterToPlPool = this.RegisterToPlPool.bind(this);
+    this.DeregisterFromPlPool = this.DeregisterFromPlPool.bind(this);
+    this.DepositToPlPool = this.DepositToPlPool.bind(this);
+    this.WithdrawFromPlPool = this.WithdrawFromPlPool.bind(this);
+    this.UpdateMarketConfig = this.UpdateMarketConfig.bind(this);
   }
-  CreatePerpetualsLiquidityPool(
-    request: MsgCreatePerpetualsLiquidityPool
-  ): Promise<MsgCreatePerpetualsLiquidityPoolResponse> {
-    const data = MsgCreatePerpetualsLiquidityPool.encode(request).finish();
+  CreatePlPool(request: MsgCreatePlPool): Promise<MsgCreatePlPoolResponse> {
+    const data = MsgCreatePlPool.encode(request).finish();
     const promise = this.rpc.request(
       "Switcheo.carbon.perpsliquidity.Msg",
-      "CreatePerpetualsLiquidityPool",
+      "CreatePlPool",
       data
     );
     return promise.then((data) =>
-      MsgCreatePerpetualsLiquidityPoolResponse.decode(new _m0.Reader(data))
+      MsgCreatePlPoolResponse.decode(new _m0.Reader(data))
     );
   }
 
-  UpdatePerpetualsLiquidityPool(
-    request: MsgUpdatePerpetualsLiquidityPool
-  ): Promise<MsgUpdatePerpetualsLiquidityPoolResponse> {
-    const data = MsgUpdatePerpetualsLiquidityPool.encode(request).finish();
+  UpdatePlPool(request: MsgUpdatePlPool): Promise<MsgUpdatePlPoolResponse> {
+    const data = MsgUpdatePlPool.encode(request).finish();
     const promise = this.rpc.request(
       "Switcheo.carbon.perpsliquidity.Msg",
-      "UpdatePerpetualsLiquidityPool",
+      "UpdatePlPool",
       data
     );
     return promise.then((data) =>
-      MsgUpdatePerpetualsLiquidityPoolResponse.decode(new _m0.Reader(data))
+      MsgUpdatePlPoolResponse.decode(new _m0.Reader(data))
     );
   }
 
-  RegisterToPerpetualsLiquidityPool(
-    request: MsgRegisterToPerpetualsLiquidityPool
-  ): Promise<MsgRegisterToPerpetualsLiquidityPoolResponse> {
-    const data = MsgRegisterToPerpetualsLiquidityPool.encode(request).finish();
+  RegisterToPlPool(
+    request: MsgRegisterToPlPool
+  ): Promise<MsgRegisterToPlPoolResponse> {
+    const data = MsgRegisterToPlPool.encode(request).finish();
     const promise = this.rpc.request(
       "Switcheo.carbon.perpsliquidity.Msg",
-      "RegisterToPerpetualsLiquidityPool",
+      "RegisterToPlPool",
       data
     );
     return promise.then((data) =>
-      MsgRegisterToPerpetualsLiquidityPoolResponse.decode(new _m0.Reader(data))
+      MsgRegisterToPlPoolResponse.decode(new _m0.Reader(data))
     );
   }
 
-  DeregisterFromPerpetualsLiquidityPool(
-    request: MsgDeregisterFromPerpetualsLiquidityPool
-  ): Promise<MsgDeregisterFromPerpetualsLiquidityPoolResponse> {
-    const data =
-      MsgDeregisterFromPerpetualsLiquidityPool.encode(request).finish();
+  DeregisterFromPlPool(
+    request: MsgDeregisterFromPlPool
+  ): Promise<MsgDeregisterFromPlPoolResponse> {
+    const data = MsgDeregisterFromPlPool.encode(request).finish();
     const promise = this.rpc.request(
       "Switcheo.carbon.perpsliquidity.Msg",
-      "DeregisterFromPerpetualsLiquidityPool",
+      "DeregisterFromPlPool",
       data
     );
     return promise.then((data) =>
-      MsgDeregisterFromPerpetualsLiquidityPoolResponse.decode(
-        new _m0.Reader(data)
-      )
+      MsgDeregisterFromPlPoolResponse.decode(new _m0.Reader(data))
     );
   }
 
-  DepositToPerpetualsLiquidityPool(
-    request: MsgDepositToPerpetualsLiquidityPool
-  ): Promise<MsgDepositToPerpetualsLiquidityPoolResponse> {
-    const data = MsgDepositToPerpetualsLiquidityPool.encode(request).finish();
+  DepositToPlPool(
+    request: MsgDepositToPlPool
+  ): Promise<MsgDepositToPlPoolResponse> {
+    const data = MsgDepositToPlPool.encode(request).finish();
     const promise = this.rpc.request(
       "Switcheo.carbon.perpsliquidity.Msg",
-      "DepositToPerpetualsLiquidityPool",
+      "DepositToPlPool",
       data
     );
     return promise.then((data) =>
-      MsgDepositToPerpetualsLiquidityPoolResponse.decode(new _m0.Reader(data))
+      MsgDepositToPlPoolResponse.decode(new _m0.Reader(data))
     );
   }
 
-  WithdrawFromPerpetualsLiquidityPool(
-    request: MsgWithdrawFromPerpetualsLiquidityPool
-  ): Promise<MsgWithdrawFromPerpetualsLiquidityPoolResponse> {
-    const data =
-      MsgWithdrawFromPerpetualsLiquidityPool.encode(request).finish();
+  WithdrawFromPlPool(
+    request: MsgWithdrawFromPlPool
+  ): Promise<MsgWithdrawFromPlPoolResponse> {
+    const data = MsgWithdrawFromPlPool.encode(request).finish();
     const promise = this.rpc.request(
       "Switcheo.carbon.perpsliquidity.Msg",
-      "WithdrawFromPerpetualsLiquidityPool",
+      "WithdrawFromPlPool",
       data
     );
     return promise.then((data) =>
-      MsgWithdrawFromPerpetualsLiquidityPoolResponse.decode(
-        new _m0.Reader(data)
-      )
+      MsgWithdrawFromPlPoolResponse.decode(new _m0.Reader(data))
     );
   }
 
-  UpdatePLPMarketConfig(
-    request: MsgUpdatePLPMarketConfig
-  ): Promise<MsgUpdatePLPMarketConfigResponse> {
-    const data = MsgUpdatePLPMarketConfig.encode(request).finish();
+  UpdateMarketConfig(
+    request: MsgUpdateMarketConfig
+  ): Promise<MsgUpdateMarketConfigResponse> {
+    const data = MsgUpdateMarketConfig.encode(request).finish();
     const promise = this.rpc.request(
       "Switcheo.carbon.perpsliquidity.Msg",
-      "UpdatePLPMarketConfig",
+      "UpdateMarketConfig",
       data
     );
     return promise.then((data) =>
-      MsgUpdatePLPMarketConfigResponse.decode(new _m0.Reader(data))
+      MsgUpdateMarketConfigResponse.decode(new _m0.Reader(data))
     );
   }
 }
