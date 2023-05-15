@@ -1,4 +1,4 @@
-import { PoolDetails, QueryAllPlPoolsResponse } from "@carbon-sdk/codec";
+import { PoolDetails, QueryAllPlPoolsResponse, UpdatePlPoolParams } from "@carbon-sdk/codec";
 import { CarbonTx, Models } from "..";
 import BaseModule from "./base";
 
@@ -24,6 +24,32 @@ export class VaultModule extends BaseModule {
     return await wallet.sendTx(
       {
         typeUrl: CarbonTx.Types.MsgCreatePlPool,
+        value,
+      },
+      opts
+    );
+  }
+
+
+  public async updatePerpetualsPool(params: VaultModule.UpdatePerpetualPoolParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+
+    const updatePoolParam: UpdatePlPoolParams = {
+      name: params.name,
+      supplyCap: params.supplyCap,
+      depositFeeBps: params.depositFeeBps,
+      withdrawalFeeBps: params.withdrawalFeeBps,
+    }
+
+    const value = Models.MsgUpdatePlPool.fromPartial({
+      creator: params.creator,
+      poolId: params.poolId,
+      updatePoolParams: updatePoolParam,
+    })
+
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgUpdatePlPool,
         value,
       },
       opts
@@ -78,6 +104,17 @@ export namespace VaultModule {
     supplyCap: string;
     depositFeeBps: string;
     withdrawalFeeBps: string;
+  }
+
+  export interface UpdatePerpetualPoolParams {
+    creator: string;
+    name: string;
+    poolId: Long;
+    depositDenom: string;
+    shareTokenSymbol: string;
+    supplyCap: Long;
+    depositFeeBps: Long;
+    withdrawalFeeBps: Long;
   }
 
   export interface DepositToPerpetualsPoolParams {

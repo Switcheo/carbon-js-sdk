@@ -1,4 +1,5 @@
 import * as BIP39 from "bip39";
+import Long from "long";
 import { CarbonSDK } from "./_sdk";
 import "./_setup";
 
@@ -15,14 +16,15 @@ import "./_setup";
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
 
-  const result = await connectedSDK.vault.createPerpertualsPool({
+  const result = await connectedSDK.vault.updatePerpetualsPool({
       creator: connectedSDK.wallet.bech32Address,
-      name: 'USD Perp Pool 2',
+      name: 'USD Perp Pool 3',
+      poolId: new Long(3),
       depositDenom: 'cgusd',
-      shareTokenSymbol: 'testUSD',
-      supplyCap: '1000000000000000000000000',
-      depositFeeBps: '1000',
-      withdrawalFeeBps: '1000',
+      shareTokenSymbol: 'testUSD2',
+      supplyCap: new Long(10000000000000000000000000000),
+      depositFeeBps: new Long(1000),
+      withdrawalFeeBps: new Long(1000),
     });
   console.log(result)
 })().catch(console.error).finally(() => process.exit(0));

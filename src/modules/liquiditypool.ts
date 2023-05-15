@@ -1,4 +1,3 @@
-import { QueryAllPlPoolsResponse, PoolDetails } from "@carbon-sdk/codec";
 import { Models } from "@carbon-sdk/index";
 import { CarbonTx, NumberUtils } from "@carbon-sdk/util";
 import { BigNumber } from "bignumber.js";
@@ -195,70 +194,6 @@ export class LiquidityPoolModule extends BaseModule {
     );
   }
 
-  public async getPerpPools(): Promise<PoolDetails[]> {
-    const fetchDataResponse: QueryAllPlPoolsResponse = await this.sdkProvider.query.perpetualpool.PoolAll({});
-    return fetchDataResponse?.pools ?? []
-  }
-
-  public async createPerpertualsPool(params: LiquidityPoolModule.CreatePerpetualPoolParams, opts?: CarbonTx.SignTxOpts) {
-    const wallet = this.getWallet();
-
-    const value = Models.MsgCreatePlPool.fromPartial({
-      creator: params.creator,
-      name: params.name,
-      depositDenom: params.depositDenom,
-      shareTokenSymbol: params.shareTokenSymbol,
-      supplyCap: params.supplyCap,
-      depositFeeBps: params.depositFeeBps,
-      withdrawalFeeBps: params.withdrawalFeeBps,
-    })
-
-    return await wallet.sendTx(
-      {
-        typeUrl: CarbonTx.Types.MsgCreatePlPool,
-        value,
-      },
-      opts
-    );
-  }
-
-  public async depositToPerpetualsPool(params: LiquidityPoolModule.DepositToPerpetualsPoolParams, opts?: CarbonTx.SignTxOpts) {
-    const wallet = this.getWallet();
-    
-    const value = Models.MsgDepositToPlPool.fromPartial({
-      creator: params.creator,
-      poolId: params.poolId,
-      depositAmount: params.depositAmount,
-      minShareAmount: params.minShareAmount,
-    })
-
-    return await wallet.sendTx(
-      {
-        typeUrl: CarbonTx.Types.MsgDepositToPlPool,
-        value,
-      },
-      opts
-    );
-  }
-
-  public async withdrawFromPerpetualsPool(params: LiquidityPoolModule.WithdrawFromPerpetualsPoolParams, opts?: CarbonTx.SignTxOpts) {
-    const wallet = this.getWallet();
-    
-    const value = Models.MsgWithdrawFromPlPool.fromPartial({
-      creator: params.creator,
-      poolId: params.poolId,
-      shareAmount: params.shareAmount,
-      minReceiveAmount: params.minReceiveAmount,
-    })
-
-    return await wallet.sendTx(
-      {
-        typeUrl: CarbonTx.Types.MsgWithdrawFromPlPool,
-        value,
-      },
-      opts
-    );
-  }
 }
 
 export namespace LiquidityPoolModule {
@@ -334,27 +269,4 @@ export namespace LiquidityPoolModule {
     poolIds: Long[];
   }
 
-  export interface CreatePerpetualPoolParams {
-    creator: string;
-    name: string;
-    depositDenom: string;
-    shareTokenSymbol: string;
-    supplyCap: string;
-    depositFeeBps: string;
-    withdrawalFeeBps: string;
-  }
-
-  export interface DepositToPerpetualsPoolParams {
-    creator: string;
-    poolId: Long;
-    depositAmount: string;
-    minShareAmount: string;
-  }
-
-  export interface WithdrawFromPerpetualsPoolParams {
-    creator: string;
-    poolId: Long;
-    shareAmount: string;
-    minReceiveAmount: string;
-  }
 }

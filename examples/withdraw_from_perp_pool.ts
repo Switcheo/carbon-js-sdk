@@ -16,7 +16,7 @@ import "./_setup";
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
 
-  const result = await connectedSDK.lp.withdrawFromPerpetualsPool({
+  const result = await connectedSDK.vault.withdrawFromPerpetualsPool({
       creator: connectedSDK.wallet.bech32Address,
       poolId: new Long(2),
       shareAmount: '10',
