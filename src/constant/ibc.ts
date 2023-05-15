@@ -1,5 +1,5 @@
 import { SimpleMap } from "@carbon-sdk/util/type";
-import { Updated } from "@chain-registry/types";
+// import { Updated } from "@chain-registry/types";
 import { AppCurrency, Bech32Config, ChainInfo } from "@keplr-wallet/types";
 import * as bech32 from "bech32";
 import { CARBON_GAS_PRICE, GasPriceStep } from "./generic";
@@ -2172,6 +2172,40 @@ export interface ExplorerObj {
   url: string;
 }
 
+interface Asset {
+  name: string;
+  description: string;
+  symbol: string;
+  denom: string;
+  decimals: number;
+  coingecko_id: string;
+  base: DenomUnit;
+  display: DenomUnit;
+  denom_units: DenomUnit[];
+  logo_URIs: LogoURIs;
+  image: string;
+  prices?: Prices;
+}
+
+interface DenomUnit {
+  denom: string;
+  exponent: number;
+}
+
+interface LogoURIs {
+  png: string;
+  svg: string;
+}
+
+interface Prices {
+  coingecko: Coingecko;
+}
+
+interface Coingecko {
+  usd: number;
+}
+
+
 export interface ChainRegistryItem {
   name: string;
   path: string;
@@ -2209,7 +2243,7 @@ export interface ChainRegistryItem {
   prices?: {
     coingecko: SimpleMap<SimpleMap<number>>;
   };
-  assets: Updated[];
+  assets: Asset[];
   keywords: any[];
 }
 
