@@ -197,7 +197,7 @@ export class LiquidityPoolModule extends BaseModule {
 
   public async getPerpPools(): Promise<PoolDetails[]> {
     const fetchDataResponse: QueryAllPlPoolsResponse = await this.sdkProvider.query.perpetualpool.PoolAll({});
-    return fetchDataResponse?.pools
+    return fetchDataResponse?.pools ?? []
   }
 
   public async createPerpertualsPool(params: LiquidityPoolModule.CreatePerpetualPoolParams, opts?: CarbonTx.SignTxOpts) {
