@@ -92,11 +92,12 @@ export class IBCModule extends BaseModule {
     for (let ibc = 0; ibc < ibcBridges.length; ibc++) {
       const ibcBridge = ibcBridges[ibc];
       const chainName = ibcBridge.chain_id_name.match(ibcNetworkRegex)?.[1] ?? "";
-      const fallbackChainInfo = await this.getAssembledChainInfo(chainsData.chains, ibcBridge.chain_id_name, ibcBridge.chainName);
+      
       let chainInfo: ChainInfo | undefined;
       try {
         chainInfo = await this.getChainInfo(chainName);
       } catch (err) {
+        const fallbackChainInfo = await this.getAssembledChainInfo(chainsData.chains, ibcBridge.chain_id_name, ibcBridge.chainName);
         chainInfo = fallbackChainInfo;
       }
 
@@ -191,48 +192,28 @@ export class IBCModule extends BaseModule {
 
   async getAssembledChainInfo(chainsData: ChainRegistryItem[], chainId: string, bridgeChainName: string): Promise<ChainInfo | undefined> {
     const selectedChainData = chainsData.find((chainData: ChainRegistryItem) => {
+
+      const d = chainData.chain_name.includes(bridgeChainName.toLowerCase()) || chainData.chain_id.includes(bridgeChainName.toLowerCase())
+
       return chainData.chain_name.includes(bridgeChainName.toLowerCase()) || chainData.chain_id.includes(bridgeChainName.toLowerCase());
     });
-    if (selectedChainData && selectedChainData.chain_name === "kujira") {
+
+    if (selectedChainData) {
+
+      console.log("INFO: selectedChainDataName",selectedChainData.chain_name);
+
 
       const chainInfoResponse = await fetch(`https://raw.githubusercontent.com/cosmos/chain-registry/master/kujira/chain.json`);
       const chainInfoJson = await chainInfoResponse.json();
 
-      const chainAssetListResponse = await fetch(`https://raw.githubusercontent.com/cosmos/chain-registry/master/kujira/chain.json`);
-      const chainAssetListJson = await chainAssetListResponse.json();
+      const chainAssetListResponse = await fetch(`https://raw.githubusercontent.com/cosmos/chain-registry/master/kujira/assetlist.json`);
+      const assetListJson = await chainAssetListResponse.json();
 
-
-      // interface Asset {
-      //   description: string;
-      //   denom_units: { denom: string; exponent: number }[];
-      //   base: string;
-      //   name: string;
-      //   display: string;
-      //   symbol: string;
-      //   coingecko_id: string;
-      //   logo_URIs: { png: string; svg: string };
-      // }
-
-      interface Asset {
-        denom_units: Currency[];
-        base: string;
-        display: string;
-        coingecko_id: string;
-      }
-      interface DenomUnit {
+  
+      interface StakingToken {
         denom: string;
-        exponent: number;
+        // Define other properties here if any
       }
-
-      
-      const currencies = chainAssetListJson.assets.map((asset: Asset) => ({
-        coinMinimalDenom: asset.base,
-        coinDenom: asset.display.toUpperCase(),
-        coinDecimals: asset.denom_units.find((unit: Currency) => unit.coinMinimalDenom === asset.display)?.coinDecimals,
-        coinGeckoId: asset.coingecko_id,
-      }));
-      
-      console.log("INFO: ", chainInfoJson)
       const features: string[] = [];
       if (selectedChainData.cosmwasm_enabled) {
         features.push("cosmwasm");
@@ -241,30 +222,69 @@ export class IBCModule extends BaseModule {
       // Extract the staking currency denomination from chainInfoJson
       const stakingCurrencyDenom = chainInfoJson['staking']['staking_tokens'][0]['denom'];
 
-      // Find the matching staking currency in the assetList
-      const stakingCurrencyAsset = chainAssetListJson.assets.find((asset: Asset) => 
-        asset.denom_units.some((unit: Currency) => unit.coinMinimalDenom === stakingCurrencyDenom)
-    );
-  
-    
+      let stakeCurrency: Currency = {
+        coinDenom: "",
+        coinMinimalDenom: "",
+        coinDecimals: 0,
+        coinGeckoId: "",
+        coinImageUrl: "",
+      };
+      interface Asset {
+        denom_units: Currency[];
+        base: string;
+        display: string;
+        coingecko_id: string;
+      }
+      const currencies = assetListJson.assets.map((asset: Asset) => {
+        // Find the denom_unit with the maximum exponent
+        const denomUnit = asset.denom_units.reduce((prev, current) => {
+          return (prev.coinDecimals > current.coinDecimals) ? prev : current
+        });
+      
+        return {
+          coinMinimalDenom: asset.base,
+          coinDenom: asset.display,
+          coinDecimals: denomUnit.coinDecimals, // use the exponent of the denom_unit with the maximum exponent
+          coinGeckoId: asset.coingecko_id,
+        }
+      });
+      
+      
+
+      let stakeDenoms = chainInfoJson.staking.staking_tokens.map((token: StakingToken) => token.denom);
+      
+      for (let i = 0; i < assetListJson.assets.length; i++) {
+          let asset = assetListJson.assets[i];
+          for (let j = 0; j < asset.denom_units.length; j++) {
+              let denomUnit = asset.denom_units[j];
+              if (stakeDenoms.includes(denomUnit.denom)) {
+                  stakeCurrency = {
+                      coinDenom: asset.display.toUpperCase(),
+                      coinMinimalDenom: denomUnit.denom,
+                      coinDecimals: denomUnit.exponent,
+                      coinGeckoId: asset.coingecko_id,
+
+                  };
+                  break;
+              }
+          }
+          if (Object.keys(stakeCurrency).length > 0) {
+              break;
+          }
+      }
+        return {
+          rpc: chainInfoJson['apis']['rpc'][0]['address'],
+          rest: chainInfoJson['apis']['rest'][0]['address'],
+          chainId: chainInfoJson['chain_id'],
+          chainName: chainInfoJson['chain_name'],
+          stakeCurrency: stakeCurrency,
+          bip44: chainInfoJson['slip44'],
+          bech32Config:  IBCAddress.defaultBech32Config(chainInfoJson['bech32_prefix']) ,
+          currencies: currencies,
+          feeCurrencies: currencies,
 
     
-      return {
-        rpc: chainInfoJson['apis']['rpc'][0]['address'],
-        rest: chainInfoJson['apis']['rest'][0]['address'],
-        chainId: chainInfoJson['chain_id'],
-        chainName: chainInfoJson['chain_name'],
-        stakeCurrency: {
-          coinMinimalDenom: stakingCurrencyAsset.base,
-          coinDenom: stakingCurrencyAsset.display.toUpperCase(),
-          coinDecimals: stakingCurrencyAsset.denom_units.find((unit: Currency) => unit.coinMinimalDenom === stakingCurrencyAsset.base)?.exponent,
-          coinGeckoId: stakingCurrencyAsset.coingecko_id,
-      },
-        bip44: chainInfoJson['slip44'],
-        bech32Config:  IBCAddress.defaultBech32Config(chainInfoJson['bech32_prefix']) ,
-        currencies: currencies,
-        feeCurrencies: currencies
-      }
+     }
     } else {
       return IBCUtils.EmbedChainInfos[chainId];
     }
