@@ -1,42 +1,39 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import {
-  PerpetualsLiquidityPool,
-  PLPMarketConfig,
-} from "./perpetuals_liquidity_pool";
+import { PlPool, MarketConfig } from "./pool";
 
 export const protobufPackage = "Switcheo.carbon.perpsliquidity";
 
-export interface SetPerpetualsLiquidityPoolEvent {
-  perpetualsLiquidityPool?: PerpetualsLiquidityPool;
+export interface SetPoolEvent {
+  pool?: PlPool;
   type: string;
 }
 
-export interface NewPerpetualsLiquidityPoolEvent {
-  perpetualsLiquidityPool?: PerpetualsLiquidityPool;
+export interface NewPoolEvent {
+  pool?: PlPool;
 }
 
-export interface UpdatePerpetualsLiquidityPoolEvent {
-  perpetualsLiquidityPool?: PerpetualsLiquidityPool;
+export interface UpdatePoolEvent {
+  pool?: PlPool;
 }
 
-export interface RegisterToPerpetualsLiquidityPoolEvent {
-  perpetualsLiquidityPoolId: Long;
+export interface RegisterToPoolEvent {
+  poolId: Long;
   marketId: string;
 }
 
-export interface DeregisterFromPerpetualsLiquidityPoolEvent {
-  perpetualsLiquidityPoolId: Long;
+export interface DeregisterFromPoolEvent {
+  poolId: Long;
   marketId: string;
 }
 
-export interface SetPLPMarketConfigEvent {
-  plpMarketConfig?: PLPMarketConfig;
+export interface SetMarketConfigEvent {
+  marketConfig?: MarketConfig;
 }
 
-export interface DepositToPerpetualsLiquidityPoolEvent {
-  perpetualsLiquidityPoolId: Long;
+export interface DepositToPoolEvent {
+  poolId: Long;
   denom: string;
   amount: string;
   shareDenom: string;
@@ -44,8 +41,8 @@ export interface DepositToPerpetualsLiquidityPoolEvent {
   depositor: string;
 }
 
-export interface WithdrawFromPerpetualsLiquidityPoolEvent {
-  perpetualsLiquidityPoolId: Long;
+export interface WithdrawFromPoolEvent {
+  poolId: Long;
   denom: string;
   amount: string;
   shareDenom: string;
@@ -53,18 +50,15 @@ export interface WithdrawFromPerpetualsLiquidityPoolEvent {
   withdrawer: string;
 }
 
-const baseSetPerpetualsLiquidityPoolEvent: object = { type: "" };
+const baseSetPoolEvent: object = { type: "" };
 
-export const SetPerpetualsLiquidityPoolEvent = {
+export const SetPoolEvent = {
   encode(
-    message: SetPerpetualsLiquidityPoolEvent,
+    message: SetPoolEvent,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.perpetualsLiquidityPool !== undefined) {
-      PerpetualsLiquidityPool.encode(
-        message.perpetualsLiquidityPool,
-        writer.uint32(10).fork()
-      ).ldelim();
+    if (message.pool !== undefined) {
+      PlPool.encode(message.pool, writer.uint32(10).fork()).ldelim();
     }
     if (message.type !== "") {
       writer.uint32(18).string(message.type);
@@ -72,23 +66,15 @@ export const SetPerpetualsLiquidityPoolEvent = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): SetPerpetualsLiquidityPoolEvent {
+  decode(input: _m0.Reader | Uint8Array, length?: number): SetPoolEvent {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseSetPerpetualsLiquidityPoolEvent,
-    } as SetPerpetualsLiquidityPoolEvent;
+    const message = { ...baseSetPoolEvent } as SetPoolEvent;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.perpetualsLiquidityPool = PerpetualsLiquidityPool.decode(
-            reader,
-            reader.uint32()
-          );
+          message.pool = PlPool.decode(reader, reader.uint32());
           break;
         case 2:
           message.type = reader.string();
@@ -101,14 +87,11 @@ export const SetPerpetualsLiquidityPoolEvent = {
     return message;
   },
 
-  fromJSON(object: any): SetPerpetualsLiquidityPoolEvent {
-    const message = {
-      ...baseSetPerpetualsLiquidityPoolEvent,
-    } as SetPerpetualsLiquidityPoolEvent;
-    message.perpetualsLiquidityPool =
-      object.perpetualsLiquidityPool !== undefined &&
-      object.perpetualsLiquidityPool !== null
-        ? PerpetualsLiquidityPool.fromJSON(object.perpetualsLiquidityPool)
+  fromJSON(object: any): SetPoolEvent {
+    const message = { ...baseSetPoolEvent } as SetPoolEvent;
+    message.pool =
+      object.pool !== undefined && object.pool !== null
+        ? PlPool.fromJSON(object.pool)
         : undefined;
     message.type =
       object.type !== undefined && object.type !== null
@@ -117,65 +100,47 @@ export const SetPerpetualsLiquidityPoolEvent = {
     return message;
   },
 
-  toJSON(message: SetPerpetualsLiquidityPoolEvent): unknown {
+  toJSON(message: SetPoolEvent): unknown {
     const obj: any = {};
-    message.perpetualsLiquidityPool !== undefined &&
-      (obj.perpetualsLiquidityPool = message.perpetualsLiquidityPool
-        ? PerpetualsLiquidityPool.toJSON(message.perpetualsLiquidityPool)
-        : undefined);
+    message.pool !== undefined &&
+      (obj.pool = message.pool ? PlPool.toJSON(message.pool) : undefined);
     message.type !== undefined && (obj.type = message.type);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<SetPerpetualsLiquidityPoolEvent>
-  ): SetPerpetualsLiquidityPoolEvent {
-    const message = {
-      ...baseSetPerpetualsLiquidityPoolEvent,
-    } as SetPerpetualsLiquidityPoolEvent;
-    message.perpetualsLiquidityPool =
-      object.perpetualsLiquidityPool !== undefined &&
-      object.perpetualsLiquidityPool !== null
-        ? PerpetualsLiquidityPool.fromPartial(object.perpetualsLiquidityPool)
+  fromPartial(object: DeepPartial<SetPoolEvent>): SetPoolEvent {
+    const message = { ...baseSetPoolEvent } as SetPoolEvent;
+    message.pool =
+      object.pool !== undefined && object.pool !== null
+        ? PlPool.fromPartial(object.pool)
         : undefined;
     message.type = object.type ?? "";
     return message;
   },
 };
 
-const baseNewPerpetualsLiquidityPoolEvent: object = {};
+const baseNewPoolEvent: object = {};
 
-export const NewPerpetualsLiquidityPoolEvent = {
+export const NewPoolEvent = {
   encode(
-    message: NewPerpetualsLiquidityPoolEvent,
+    message: NewPoolEvent,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.perpetualsLiquidityPool !== undefined) {
-      PerpetualsLiquidityPool.encode(
-        message.perpetualsLiquidityPool,
-        writer.uint32(10).fork()
-      ).ldelim();
+    if (message.pool !== undefined) {
+      PlPool.encode(message.pool, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): NewPerpetualsLiquidityPoolEvent {
+  decode(input: _m0.Reader | Uint8Array, length?: number): NewPoolEvent {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseNewPerpetualsLiquidityPoolEvent,
-    } as NewPerpetualsLiquidityPoolEvent;
+    const message = { ...baseNewPoolEvent } as NewPoolEvent;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.perpetualsLiquidityPool = PerpetualsLiquidityPool.decode(
-            reader,
-            reader.uint32()
-          );
+          message.pool = PlPool.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -185,75 +150,54 @@ export const NewPerpetualsLiquidityPoolEvent = {
     return message;
   },
 
-  fromJSON(object: any): NewPerpetualsLiquidityPoolEvent {
-    const message = {
-      ...baseNewPerpetualsLiquidityPoolEvent,
-    } as NewPerpetualsLiquidityPoolEvent;
-    message.perpetualsLiquidityPool =
-      object.perpetualsLiquidityPool !== undefined &&
-      object.perpetualsLiquidityPool !== null
-        ? PerpetualsLiquidityPool.fromJSON(object.perpetualsLiquidityPool)
+  fromJSON(object: any): NewPoolEvent {
+    const message = { ...baseNewPoolEvent } as NewPoolEvent;
+    message.pool =
+      object.pool !== undefined && object.pool !== null
+        ? PlPool.fromJSON(object.pool)
         : undefined;
     return message;
   },
 
-  toJSON(message: NewPerpetualsLiquidityPoolEvent): unknown {
+  toJSON(message: NewPoolEvent): unknown {
     const obj: any = {};
-    message.perpetualsLiquidityPool !== undefined &&
-      (obj.perpetualsLiquidityPool = message.perpetualsLiquidityPool
-        ? PerpetualsLiquidityPool.toJSON(message.perpetualsLiquidityPool)
-        : undefined);
+    message.pool !== undefined &&
+      (obj.pool = message.pool ? PlPool.toJSON(message.pool) : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<NewPerpetualsLiquidityPoolEvent>
-  ): NewPerpetualsLiquidityPoolEvent {
-    const message = {
-      ...baseNewPerpetualsLiquidityPoolEvent,
-    } as NewPerpetualsLiquidityPoolEvent;
-    message.perpetualsLiquidityPool =
-      object.perpetualsLiquidityPool !== undefined &&
-      object.perpetualsLiquidityPool !== null
-        ? PerpetualsLiquidityPool.fromPartial(object.perpetualsLiquidityPool)
+  fromPartial(object: DeepPartial<NewPoolEvent>): NewPoolEvent {
+    const message = { ...baseNewPoolEvent } as NewPoolEvent;
+    message.pool =
+      object.pool !== undefined && object.pool !== null
+        ? PlPool.fromPartial(object.pool)
         : undefined;
     return message;
   },
 };
 
-const baseUpdatePerpetualsLiquidityPoolEvent: object = {};
+const baseUpdatePoolEvent: object = {};
 
-export const UpdatePerpetualsLiquidityPoolEvent = {
+export const UpdatePoolEvent = {
   encode(
-    message: UpdatePerpetualsLiquidityPoolEvent,
+    message: UpdatePoolEvent,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.perpetualsLiquidityPool !== undefined) {
-      PerpetualsLiquidityPool.encode(
-        message.perpetualsLiquidityPool,
-        writer.uint32(10).fork()
-      ).ldelim();
+    if (message.pool !== undefined) {
+      PlPool.encode(message.pool, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): UpdatePerpetualsLiquidityPoolEvent {
+  decode(input: _m0.Reader | Uint8Array, length?: number): UpdatePoolEvent {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseUpdatePerpetualsLiquidityPoolEvent,
-    } as UpdatePerpetualsLiquidityPoolEvent;
+    const message = { ...baseUpdatePoolEvent } as UpdatePoolEvent;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.perpetualsLiquidityPool = PerpetualsLiquidityPool.decode(
-            reader,
-            reader.uint32()
-          );
+          message.pool = PlPool.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -263,54 +207,41 @@ export const UpdatePerpetualsLiquidityPoolEvent = {
     return message;
   },
 
-  fromJSON(object: any): UpdatePerpetualsLiquidityPoolEvent {
-    const message = {
-      ...baseUpdatePerpetualsLiquidityPoolEvent,
-    } as UpdatePerpetualsLiquidityPoolEvent;
-    message.perpetualsLiquidityPool =
-      object.perpetualsLiquidityPool !== undefined &&
-      object.perpetualsLiquidityPool !== null
-        ? PerpetualsLiquidityPool.fromJSON(object.perpetualsLiquidityPool)
+  fromJSON(object: any): UpdatePoolEvent {
+    const message = { ...baseUpdatePoolEvent } as UpdatePoolEvent;
+    message.pool =
+      object.pool !== undefined && object.pool !== null
+        ? PlPool.fromJSON(object.pool)
         : undefined;
     return message;
   },
 
-  toJSON(message: UpdatePerpetualsLiquidityPoolEvent): unknown {
+  toJSON(message: UpdatePoolEvent): unknown {
     const obj: any = {};
-    message.perpetualsLiquidityPool !== undefined &&
-      (obj.perpetualsLiquidityPool = message.perpetualsLiquidityPool
-        ? PerpetualsLiquidityPool.toJSON(message.perpetualsLiquidityPool)
-        : undefined);
+    message.pool !== undefined &&
+      (obj.pool = message.pool ? PlPool.toJSON(message.pool) : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<UpdatePerpetualsLiquidityPoolEvent>
-  ): UpdatePerpetualsLiquidityPoolEvent {
-    const message = {
-      ...baseUpdatePerpetualsLiquidityPoolEvent,
-    } as UpdatePerpetualsLiquidityPoolEvent;
-    message.perpetualsLiquidityPool =
-      object.perpetualsLiquidityPool !== undefined &&
-      object.perpetualsLiquidityPool !== null
-        ? PerpetualsLiquidityPool.fromPartial(object.perpetualsLiquidityPool)
+  fromPartial(object: DeepPartial<UpdatePoolEvent>): UpdatePoolEvent {
+    const message = { ...baseUpdatePoolEvent } as UpdatePoolEvent;
+    message.pool =
+      object.pool !== undefined && object.pool !== null
+        ? PlPool.fromPartial(object.pool)
         : undefined;
     return message;
   },
 };
 
-const baseRegisterToPerpetualsLiquidityPoolEvent: object = {
-  perpetualsLiquidityPoolId: Long.UZERO,
-  marketId: "",
-};
+const baseRegisterToPoolEvent: object = { poolId: Long.UZERO, marketId: "" };
 
-export const RegisterToPerpetualsLiquidityPoolEvent = {
+export const RegisterToPoolEvent = {
   encode(
-    message: RegisterToPerpetualsLiquidityPoolEvent,
+    message: RegisterToPoolEvent,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (!message.perpetualsLiquidityPoolId.isZero()) {
-      writer.uint32(8).uint64(message.perpetualsLiquidityPoolId);
+    if (!message.poolId.isZero()) {
+      writer.uint32(8).uint64(message.poolId);
     }
     if (message.marketId !== "") {
       writer.uint32(18).string(message.marketId);
@@ -318,20 +249,15 @@ export const RegisterToPerpetualsLiquidityPoolEvent = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): RegisterToPerpetualsLiquidityPoolEvent {
+  decode(input: _m0.Reader | Uint8Array, length?: number): RegisterToPoolEvent {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseRegisterToPerpetualsLiquidityPoolEvent,
-    } as RegisterToPerpetualsLiquidityPoolEvent;
+    const message = { ...baseRegisterToPoolEvent } as RegisterToPoolEvent;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.perpetualsLiquidityPoolId = reader.uint64() as Long;
+          message.poolId = reader.uint64() as Long;
           break;
         case 2:
           message.marketId = reader.string();
@@ -344,14 +270,11 @@ export const RegisterToPerpetualsLiquidityPoolEvent = {
     return message;
   },
 
-  fromJSON(object: any): RegisterToPerpetualsLiquidityPoolEvent {
-    const message = {
-      ...baseRegisterToPerpetualsLiquidityPoolEvent,
-    } as RegisterToPerpetualsLiquidityPoolEvent;
-    message.perpetualsLiquidityPoolId =
-      object.perpetualsLiquidityPoolId !== undefined &&
-      object.perpetualsLiquidityPoolId !== null
-        ? Long.fromString(object.perpetualsLiquidityPoolId)
+  fromJSON(object: any): RegisterToPoolEvent {
+    const message = { ...baseRegisterToPoolEvent } as RegisterToPoolEvent;
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromString(object.poolId)
         : Long.UZERO;
     message.marketId =
       object.marketId !== undefined && object.marketId !== null
@@ -360,44 +283,37 @@ export const RegisterToPerpetualsLiquidityPoolEvent = {
     return message;
   },
 
-  toJSON(message: RegisterToPerpetualsLiquidityPoolEvent): unknown {
+  toJSON(message: RegisterToPoolEvent): unknown {
     const obj: any = {};
-    message.perpetualsLiquidityPoolId !== undefined &&
-      (obj.perpetualsLiquidityPoolId = (
-        message.perpetualsLiquidityPoolId || Long.UZERO
-      ).toString());
+    message.poolId !== undefined &&
+      (obj.poolId = (message.poolId || Long.UZERO).toString());
     message.marketId !== undefined && (obj.marketId = message.marketId);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<RegisterToPerpetualsLiquidityPoolEvent>
-  ): RegisterToPerpetualsLiquidityPoolEvent {
-    const message = {
-      ...baseRegisterToPerpetualsLiquidityPoolEvent,
-    } as RegisterToPerpetualsLiquidityPoolEvent;
-    message.perpetualsLiquidityPoolId =
-      object.perpetualsLiquidityPoolId !== undefined &&
-      object.perpetualsLiquidityPoolId !== null
-        ? Long.fromValue(object.perpetualsLiquidityPoolId)
+  fromPartial(object: DeepPartial<RegisterToPoolEvent>): RegisterToPoolEvent {
+    const message = { ...baseRegisterToPoolEvent } as RegisterToPoolEvent;
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromValue(object.poolId)
         : Long.UZERO;
     message.marketId = object.marketId ?? "";
     return message;
   },
 };
 
-const baseDeregisterFromPerpetualsLiquidityPoolEvent: object = {
-  perpetualsLiquidityPoolId: Long.UZERO,
+const baseDeregisterFromPoolEvent: object = {
+  poolId: Long.UZERO,
   marketId: "",
 };
 
-export const DeregisterFromPerpetualsLiquidityPoolEvent = {
+export const DeregisterFromPoolEvent = {
   encode(
-    message: DeregisterFromPerpetualsLiquidityPoolEvent,
+    message: DeregisterFromPoolEvent,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (!message.perpetualsLiquidityPoolId.isZero()) {
-      writer.uint32(8).uint64(message.perpetualsLiquidityPoolId);
+    if (!message.poolId.isZero()) {
+      writer.uint32(8).uint64(message.poolId);
     }
     if (message.marketId !== "") {
       writer.uint32(18).string(message.marketId);
@@ -408,17 +324,17 @@ export const DeregisterFromPerpetualsLiquidityPoolEvent = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): DeregisterFromPerpetualsLiquidityPoolEvent {
+  ): DeregisterFromPoolEvent {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseDeregisterFromPerpetualsLiquidityPoolEvent,
-    } as DeregisterFromPerpetualsLiquidityPoolEvent;
+      ...baseDeregisterFromPoolEvent,
+    } as DeregisterFromPoolEvent;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.perpetualsLiquidityPoolId = reader.uint64() as Long;
+          message.poolId = reader.uint64() as Long;
           break;
         case 2:
           message.marketId = reader.string();
@@ -431,14 +347,13 @@ export const DeregisterFromPerpetualsLiquidityPoolEvent = {
     return message;
   },
 
-  fromJSON(object: any): DeregisterFromPerpetualsLiquidityPoolEvent {
+  fromJSON(object: any): DeregisterFromPoolEvent {
     const message = {
-      ...baseDeregisterFromPerpetualsLiquidityPoolEvent,
-    } as DeregisterFromPerpetualsLiquidityPoolEvent;
-    message.perpetualsLiquidityPoolId =
-      object.perpetualsLiquidityPoolId !== undefined &&
-      object.perpetualsLiquidityPoolId !== null
-        ? Long.fromString(object.perpetualsLiquidityPoolId)
+      ...baseDeregisterFromPoolEvent,
+    } as DeregisterFromPoolEvent;
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromString(object.poolId)
         : Long.UZERO;
     message.marketId =
       object.marketId !== undefined && object.marketId !== null
@@ -447,42 +362,39 @@ export const DeregisterFromPerpetualsLiquidityPoolEvent = {
     return message;
   },
 
-  toJSON(message: DeregisterFromPerpetualsLiquidityPoolEvent): unknown {
+  toJSON(message: DeregisterFromPoolEvent): unknown {
     const obj: any = {};
-    message.perpetualsLiquidityPoolId !== undefined &&
-      (obj.perpetualsLiquidityPoolId = (
-        message.perpetualsLiquidityPoolId || Long.UZERO
-      ).toString());
+    message.poolId !== undefined &&
+      (obj.poolId = (message.poolId || Long.UZERO).toString());
     message.marketId !== undefined && (obj.marketId = message.marketId);
     return obj;
   },
 
   fromPartial(
-    object: DeepPartial<DeregisterFromPerpetualsLiquidityPoolEvent>
-  ): DeregisterFromPerpetualsLiquidityPoolEvent {
+    object: DeepPartial<DeregisterFromPoolEvent>
+  ): DeregisterFromPoolEvent {
     const message = {
-      ...baseDeregisterFromPerpetualsLiquidityPoolEvent,
-    } as DeregisterFromPerpetualsLiquidityPoolEvent;
-    message.perpetualsLiquidityPoolId =
-      object.perpetualsLiquidityPoolId !== undefined &&
-      object.perpetualsLiquidityPoolId !== null
-        ? Long.fromValue(object.perpetualsLiquidityPoolId)
+      ...baseDeregisterFromPoolEvent,
+    } as DeregisterFromPoolEvent;
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromValue(object.poolId)
         : Long.UZERO;
     message.marketId = object.marketId ?? "";
     return message;
   },
 };
 
-const baseSetPLPMarketConfigEvent: object = {};
+const baseSetMarketConfigEvent: object = {};
 
-export const SetPLPMarketConfigEvent = {
+export const SetMarketConfigEvent = {
   encode(
-    message: SetPLPMarketConfigEvent,
+    message: SetMarketConfigEvent,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.plpMarketConfig !== undefined) {
-      PLPMarketConfig.encode(
-        message.plpMarketConfig,
+    if (message.marketConfig !== undefined) {
+      MarketConfig.encode(
+        message.marketConfig,
         writer.uint32(10).fork()
       ).ldelim();
     }
@@ -492,20 +404,15 @@ export const SetPLPMarketConfigEvent = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): SetPLPMarketConfigEvent {
+  ): SetMarketConfigEvent {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseSetPLPMarketConfigEvent,
-    } as SetPLPMarketConfigEvent;
+    const message = { ...baseSetMarketConfigEvent } as SetMarketConfigEvent;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.plpMarketConfig = PLPMarketConfig.decode(
-            reader,
-            reader.uint32()
-          );
+          message.marketConfig = MarketConfig.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -515,42 +422,36 @@ export const SetPLPMarketConfigEvent = {
     return message;
   },
 
-  fromJSON(object: any): SetPLPMarketConfigEvent {
-    const message = {
-      ...baseSetPLPMarketConfigEvent,
-    } as SetPLPMarketConfigEvent;
-    message.plpMarketConfig =
-      object.plpMarketConfig !== undefined && object.plpMarketConfig !== null
-        ? PLPMarketConfig.fromJSON(object.plpMarketConfig)
+  fromJSON(object: any): SetMarketConfigEvent {
+    const message = { ...baseSetMarketConfigEvent } as SetMarketConfigEvent;
+    message.marketConfig =
+      object.marketConfig !== undefined && object.marketConfig !== null
+        ? MarketConfig.fromJSON(object.marketConfig)
         : undefined;
     return message;
   },
 
-  toJSON(message: SetPLPMarketConfigEvent): unknown {
+  toJSON(message: SetMarketConfigEvent): unknown {
     const obj: any = {};
-    message.plpMarketConfig !== undefined &&
-      (obj.plpMarketConfig = message.plpMarketConfig
-        ? PLPMarketConfig.toJSON(message.plpMarketConfig)
+    message.marketConfig !== undefined &&
+      (obj.marketConfig = message.marketConfig
+        ? MarketConfig.toJSON(message.marketConfig)
         : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<SetPLPMarketConfigEvent>
-  ): SetPLPMarketConfigEvent {
-    const message = {
-      ...baseSetPLPMarketConfigEvent,
-    } as SetPLPMarketConfigEvent;
-    message.plpMarketConfig =
-      object.plpMarketConfig !== undefined && object.plpMarketConfig !== null
-        ? PLPMarketConfig.fromPartial(object.plpMarketConfig)
+  fromPartial(object: DeepPartial<SetMarketConfigEvent>): SetMarketConfigEvent {
+    const message = { ...baseSetMarketConfigEvent } as SetMarketConfigEvent;
+    message.marketConfig =
+      object.marketConfig !== undefined && object.marketConfig !== null
+        ? MarketConfig.fromPartial(object.marketConfig)
         : undefined;
     return message;
   },
 };
 
-const baseDepositToPerpetualsLiquidityPoolEvent: object = {
-  perpetualsLiquidityPoolId: Long.UZERO,
+const baseDepositToPoolEvent: object = {
+  poolId: Long.UZERO,
   denom: "",
   amount: "",
   shareDenom: "",
@@ -558,13 +459,13 @@ const baseDepositToPerpetualsLiquidityPoolEvent: object = {
   depositor: "",
 };
 
-export const DepositToPerpetualsLiquidityPoolEvent = {
+export const DepositToPoolEvent = {
   encode(
-    message: DepositToPerpetualsLiquidityPoolEvent,
+    message: DepositToPoolEvent,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (!message.perpetualsLiquidityPoolId.isZero()) {
-      writer.uint32(8).uint64(message.perpetualsLiquidityPoolId);
+    if (!message.poolId.isZero()) {
+      writer.uint32(8).uint64(message.poolId);
     }
     if (message.denom !== "") {
       writer.uint32(18).string(message.denom);
@@ -584,20 +485,15 @@ export const DepositToPerpetualsLiquidityPoolEvent = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): DepositToPerpetualsLiquidityPoolEvent {
+  decode(input: _m0.Reader | Uint8Array, length?: number): DepositToPoolEvent {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseDepositToPerpetualsLiquidityPoolEvent,
-    } as DepositToPerpetualsLiquidityPoolEvent;
+    const message = { ...baseDepositToPoolEvent } as DepositToPoolEvent;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.perpetualsLiquidityPoolId = reader.uint64() as Long;
+          message.poolId = reader.uint64() as Long;
           break;
         case 2:
           message.denom = reader.string();
@@ -622,14 +518,11 @@ export const DepositToPerpetualsLiquidityPoolEvent = {
     return message;
   },
 
-  fromJSON(object: any): DepositToPerpetualsLiquidityPoolEvent {
-    const message = {
-      ...baseDepositToPerpetualsLiquidityPoolEvent,
-    } as DepositToPerpetualsLiquidityPoolEvent;
-    message.perpetualsLiquidityPoolId =
-      object.perpetualsLiquidityPoolId !== undefined &&
-      object.perpetualsLiquidityPoolId !== null
-        ? Long.fromString(object.perpetualsLiquidityPoolId)
+  fromJSON(object: any): DepositToPoolEvent {
+    const message = { ...baseDepositToPoolEvent } as DepositToPoolEvent;
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromString(object.poolId)
         : Long.UZERO;
     message.denom =
       object.denom !== undefined && object.denom !== null
@@ -654,12 +547,10 @@ export const DepositToPerpetualsLiquidityPoolEvent = {
     return message;
   },
 
-  toJSON(message: DepositToPerpetualsLiquidityPoolEvent): unknown {
+  toJSON(message: DepositToPoolEvent): unknown {
     const obj: any = {};
-    message.perpetualsLiquidityPoolId !== undefined &&
-      (obj.perpetualsLiquidityPoolId = (
-        message.perpetualsLiquidityPoolId || Long.UZERO
-      ).toString());
+    message.poolId !== undefined &&
+      (obj.poolId = (message.poolId || Long.UZERO).toString());
     message.denom !== undefined && (obj.denom = message.denom);
     message.amount !== undefined && (obj.amount = message.amount);
     message.shareDenom !== undefined && (obj.shareDenom = message.shareDenom);
@@ -669,16 +560,11 @@ export const DepositToPerpetualsLiquidityPoolEvent = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<DepositToPerpetualsLiquidityPoolEvent>
-  ): DepositToPerpetualsLiquidityPoolEvent {
-    const message = {
-      ...baseDepositToPerpetualsLiquidityPoolEvent,
-    } as DepositToPerpetualsLiquidityPoolEvent;
-    message.perpetualsLiquidityPoolId =
-      object.perpetualsLiquidityPoolId !== undefined &&
-      object.perpetualsLiquidityPoolId !== null
-        ? Long.fromValue(object.perpetualsLiquidityPoolId)
+  fromPartial(object: DeepPartial<DepositToPoolEvent>): DepositToPoolEvent {
+    const message = { ...baseDepositToPoolEvent } as DepositToPoolEvent;
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromValue(object.poolId)
         : Long.UZERO;
     message.denom = object.denom ?? "";
     message.amount = object.amount ?? "";
@@ -689,8 +575,8 @@ export const DepositToPerpetualsLiquidityPoolEvent = {
   },
 };
 
-const baseWithdrawFromPerpetualsLiquidityPoolEvent: object = {
-  perpetualsLiquidityPoolId: Long.UZERO,
+const baseWithdrawFromPoolEvent: object = {
+  poolId: Long.UZERO,
   denom: "",
   amount: "",
   shareDenom: "",
@@ -698,13 +584,13 @@ const baseWithdrawFromPerpetualsLiquidityPoolEvent: object = {
   withdrawer: "",
 };
 
-export const WithdrawFromPerpetualsLiquidityPoolEvent = {
+export const WithdrawFromPoolEvent = {
   encode(
-    message: WithdrawFromPerpetualsLiquidityPoolEvent,
+    message: WithdrawFromPoolEvent,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (!message.perpetualsLiquidityPoolId.isZero()) {
-      writer.uint32(8).uint64(message.perpetualsLiquidityPoolId);
+    if (!message.poolId.isZero()) {
+      writer.uint32(8).uint64(message.poolId);
     }
     if (message.denom !== "") {
       writer.uint32(18).string(message.denom);
@@ -727,17 +613,15 @@ export const WithdrawFromPerpetualsLiquidityPoolEvent = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): WithdrawFromPerpetualsLiquidityPoolEvent {
+  ): WithdrawFromPoolEvent {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseWithdrawFromPerpetualsLiquidityPoolEvent,
-    } as WithdrawFromPerpetualsLiquidityPoolEvent;
+    const message = { ...baseWithdrawFromPoolEvent } as WithdrawFromPoolEvent;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.perpetualsLiquidityPoolId = reader.uint64() as Long;
+          message.poolId = reader.uint64() as Long;
           break;
         case 2:
           message.denom = reader.string();
@@ -762,14 +646,11 @@ export const WithdrawFromPerpetualsLiquidityPoolEvent = {
     return message;
   },
 
-  fromJSON(object: any): WithdrawFromPerpetualsLiquidityPoolEvent {
-    const message = {
-      ...baseWithdrawFromPerpetualsLiquidityPoolEvent,
-    } as WithdrawFromPerpetualsLiquidityPoolEvent;
-    message.perpetualsLiquidityPoolId =
-      object.perpetualsLiquidityPoolId !== undefined &&
-      object.perpetualsLiquidityPoolId !== null
-        ? Long.fromString(object.perpetualsLiquidityPoolId)
+  fromJSON(object: any): WithdrawFromPoolEvent {
+    const message = { ...baseWithdrawFromPoolEvent } as WithdrawFromPoolEvent;
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromString(object.poolId)
         : Long.UZERO;
     message.denom =
       object.denom !== undefined && object.denom !== null
@@ -794,12 +675,10 @@ export const WithdrawFromPerpetualsLiquidityPoolEvent = {
     return message;
   },
 
-  toJSON(message: WithdrawFromPerpetualsLiquidityPoolEvent): unknown {
+  toJSON(message: WithdrawFromPoolEvent): unknown {
     const obj: any = {};
-    message.perpetualsLiquidityPoolId !== undefined &&
-      (obj.perpetualsLiquidityPoolId = (
-        message.perpetualsLiquidityPoolId || Long.UZERO
-      ).toString());
+    message.poolId !== undefined &&
+      (obj.poolId = (message.poolId || Long.UZERO).toString());
     message.denom !== undefined && (obj.denom = message.denom);
     message.amount !== undefined && (obj.amount = message.amount);
     message.shareDenom !== undefined && (obj.shareDenom = message.shareDenom);
@@ -810,15 +689,12 @@ export const WithdrawFromPerpetualsLiquidityPoolEvent = {
   },
 
   fromPartial(
-    object: DeepPartial<WithdrawFromPerpetualsLiquidityPoolEvent>
-  ): WithdrawFromPerpetualsLiquidityPoolEvent {
-    const message = {
-      ...baseWithdrawFromPerpetualsLiquidityPoolEvent,
-    } as WithdrawFromPerpetualsLiquidityPoolEvent;
-    message.perpetualsLiquidityPoolId =
-      object.perpetualsLiquidityPoolId !== undefined &&
-      object.perpetualsLiquidityPoolId !== null
-        ? Long.fromValue(object.perpetualsLiquidityPoolId)
+    object: DeepPartial<WithdrawFromPoolEvent>
+  ): WithdrawFromPoolEvent {
+    const message = { ...baseWithdrawFromPoolEvent } as WithdrawFromPoolEvent;
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromValue(object.poolId)
         : Long.UZERO;
     message.denom = object.denom ?? "";
     message.amount = object.amount ?? "";

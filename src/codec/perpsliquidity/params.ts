@@ -6,18 +6,18 @@ export const protobufPackage = "Switcheo.carbon.perpsliquidity";
 
 /** Params defines the parameters for the module. */
 export interface Params {
-  /** requotes when index price fluctuation threshold exceeded (in bps) */
-  quoteIndexPriceFluctuationToleranceBps: string;
+  /** requotes when index price fluctuation threshold exceeded (in ratio) */
+  quoteIndexPriceFluctuationToleranceRatio: string;
   /** requotes after orders are x seconds old */
-  quoteExpirySeconds: string;
-  /** requotes when open position change threshold exceeded (in bps) */
-  lpOpenPositionFluctuationToleranceBps: string;
+  quoteExpirySeconds: Long;
+  /** requotes when open position change threshold exceeded (in ratio) */
+  lpOpenPositionFluctuationToleranceRatio: string;
 }
 
 const baseParams: object = {
-  quoteIndexPriceFluctuationToleranceBps: "",
-  quoteExpirySeconds: "",
-  lpOpenPositionFluctuationToleranceBps: "",
+  quoteIndexPriceFluctuationToleranceRatio: "",
+  quoteExpirySeconds: Long.UZERO,
+  lpOpenPositionFluctuationToleranceRatio: "",
 };
 
 export const Params = {
@@ -25,14 +25,16 @@ export const Params = {
     message: Params,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.quoteIndexPriceFluctuationToleranceBps !== "") {
-      writer.uint32(10).string(message.quoteIndexPriceFluctuationToleranceBps);
+    if (message.quoteIndexPriceFluctuationToleranceRatio !== "") {
+      writer
+        .uint32(10)
+        .string(message.quoteIndexPriceFluctuationToleranceRatio);
     }
-    if (message.quoteExpirySeconds !== "") {
-      writer.uint32(18).string(message.quoteExpirySeconds);
+    if (!message.quoteExpirySeconds.isZero()) {
+      writer.uint32(16).uint64(message.quoteExpirySeconds);
     }
-    if (message.lpOpenPositionFluctuationToleranceBps !== "") {
-      writer.uint32(26).string(message.lpOpenPositionFluctuationToleranceBps);
+    if (message.lpOpenPositionFluctuationToleranceRatio !== "") {
+      writer.uint32(26).string(message.lpOpenPositionFluctuationToleranceRatio);
     }
     return writer;
   },
@@ -45,13 +47,13 @@ export const Params = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.quoteIndexPriceFluctuationToleranceBps = reader.string();
+          message.quoteIndexPriceFluctuationToleranceRatio = reader.string();
           break;
         case 2:
-          message.quoteExpirySeconds = reader.string();
+          message.quoteExpirySeconds = reader.uint64() as Long;
           break;
         case 3:
-          message.lpOpenPositionFluctuationToleranceBps = reader.string();
+          message.lpOpenPositionFluctuationToleranceRatio = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -63,44 +65,50 @@ export const Params = {
 
   fromJSON(object: any): Params {
     const message = { ...baseParams } as Params;
-    message.quoteIndexPriceFluctuationToleranceBps =
-      object.quoteIndexPriceFluctuationToleranceBps !== undefined &&
-      object.quoteIndexPriceFluctuationToleranceBps !== null
-        ? String(object.quoteIndexPriceFluctuationToleranceBps)
+    message.quoteIndexPriceFluctuationToleranceRatio =
+      object.quoteIndexPriceFluctuationToleranceRatio !== undefined &&
+      object.quoteIndexPriceFluctuationToleranceRatio !== null
+        ? String(object.quoteIndexPriceFluctuationToleranceRatio)
         : "";
     message.quoteExpirySeconds =
       object.quoteExpirySeconds !== undefined &&
       object.quoteExpirySeconds !== null
-        ? String(object.quoteExpirySeconds)
-        : "";
-    message.lpOpenPositionFluctuationToleranceBps =
-      object.lpOpenPositionFluctuationToleranceBps !== undefined &&
-      object.lpOpenPositionFluctuationToleranceBps !== null
-        ? String(object.lpOpenPositionFluctuationToleranceBps)
+        ? Long.fromString(object.quoteExpirySeconds)
+        : Long.UZERO;
+    message.lpOpenPositionFluctuationToleranceRatio =
+      object.lpOpenPositionFluctuationToleranceRatio !== undefined &&
+      object.lpOpenPositionFluctuationToleranceRatio !== null
+        ? String(object.lpOpenPositionFluctuationToleranceRatio)
         : "";
     return message;
   },
 
   toJSON(message: Params): unknown {
     const obj: any = {};
-    message.quoteIndexPriceFluctuationToleranceBps !== undefined &&
-      (obj.quoteIndexPriceFluctuationToleranceBps =
-        message.quoteIndexPriceFluctuationToleranceBps);
+    message.quoteIndexPriceFluctuationToleranceRatio !== undefined &&
+      (obj.quoteIndexPriceFluctuationToleranceRatio =
+        message.quoteIndexPriceFluctuationToleranceRatio);
     message.quoteExpirySeconds !== undefined &&
-      (obj.quoteExpirySeconds = message.quoteExpirySeconds);
-    message.lpOpenPositionFluctuationToleranceBps !== undefined &&
-      (obj.lpOpenPositionFluctuationToleranceBps =
-        message.lpOpenPositionFluctuationToleranceBps);
+      (obj.quoteExpirySeconds = (
+        message.quoteExpirySeconds || Long.UZERO
+      ).toString());
+    message.lpOpenPositionFluctuationToleranceRatio !== undefined &&
+      (obj.lpOpenPositionFluctuationToleranceRatio =
+        message.lpOpenPositionFluctuationToleranceRatio);
     return obj;
   },
 
   fromPartial(object: DeepPartial<Params>): Params {
     const message = { ...baseParams } as Params;
-    message.quoteIndexPriceFluctuationToleranceBps =
-      object.quoteIndexPriceFluctuationToleranceBps ?? "";
-    message.quoteExpirySeconds = object.quoteExpirySeconds ?? "";
-    message.lpOpenPositionFluctuationToleranceBps =
-      object.lpOpenPositionFluctuationToleranceBps ?? "";
+    message.quoteIndexPriceFluctuationToleranceRatio =
+      object.quoteIndexPriceFluctuationToleranceRatio ?? "";
+    message.quoteExpirySeconds =
+      object.quoteExpirySeconds !== undefined &&
+      object.quoteExpirySeconds !== null
+        ? Long.fromValue(object.quoteExpirySeconds)
+        : Long.UZERO;
+    message.lpOpenPositionFluctuationToleranceRatio =
+      object.lpOpenPositionFluctuationToleranceRatio ?? "";
     return message;
   },
 };

@@ -17,6 +17,7 @@ export interface SpotAmm {
 export interface PerpsPoolAmm {
   poolId: Long;
   quotingHash: Uint8Array;
+  lastQuotedAt: Long;
 }
 
 /** PerpsMarketAmm exists when it is active or when there's orders or open position */
@@ -24,6 +25,7 @@ export interface PerpsMarketAmm {
   poolId: Long;
   market: string;
   orders: string[];
+  lastIndexPrice: string;
 }
 
 const baseSpotAmm: object = { poolId: Long.UZERO, market: "", orders: "" };
@@ -143,7 +145,10 @@ export const SpotAmm = {
   },
 };
 
-const basePerpsPoolAmm: object = { poolId: Long.UZERO };
+const basePerpsPoolAmm: object = {
+  poolId: Long.UZERO,
+  lastQuotedAt: Long.UZERO,
+};
 
 export const PerpsPoolAmm = {
   encode(
@@ -155,6 +160,9 @@ export const PerpsPoolAmm = {
     }
     if (message.quotingHash.length !== 0) {
       writer.uint32(18).bytes(message.quotingHash);
+    }
+    if (!message.lastQuotedAt.isZero()) {
+      writer.uint32(24).uint64(message.lastQuotedAt);
     }
     return writer;
   },
@@ -172,6 +180,9 @@ export const PerpsPoolAmm = {
           break;
         case 2:
           message.quotingHash = reader.bytes();
+          break;
+        case 3:
+          message.lastQuotedAt = reader.uint64() as Long;
           break;
         default:
           reader.skipType(tag & 7);
@@ -191,6 +202,10 @@ export const PerpsPoolAmm = {
       object.quotingHash !== undefined && object.quotingHash !== null
         ? bytesFromBase64(object.quotingHash)
         : new Uint8Array();
+    message.lastQuotedAt =
+      object.lastQuotedAt !== undefined && object.lastQuotedAt !== null
+        ? Long.fromString(object.lastQuotedAt)
+        : Long.UZERO;
     return message;
   },
 
@@ -204,6 +219,8 @@ export const PerpsPoolAmm = {
           ? message.quotingHash
           : new Uint8Array()
       ));
+    message.lastQuotedAt !== undefined &&
+      (obj.lastQuotedAt = (message.lastQuotedAt || Long.UZERO).toString());
     return obj;
   },
 
@@ -214,6 +231,10 @@ export const PerpsPoolAmm = {
         ? Long.fromValue(object.poolId)
         : Long.UZERO;
     message.quotingHash = object.quotingHash ?? new Uint8Array();
+    message.lastQuotedAt =
+      object.lastQuotedAt !== undefined && object.lastQuotedAt !== null
+        ? Long.fromValue(object.lastQuotedAt)
+        : Long.UZERO;
     return message;
   },
 };
@@ -222,6 +243,7 @@ const basePerpsMarketAmm: object = {
   poolId: Long.UZERO,
   market: "",
   orders: "",
+  lastIndexPrice: "",
 };
 
 export const PerpsMarketAmm = {
@@ -237,6 +259,9 @@ export const PerpsMarketAmm = {
     }
     for (const v of message.orders) {
       writer.uint32(26).string(v!);
+    }
+    if (message.lastIndexPrice !== "") {
+      writer.uint32(34).string(message.lastIndexPrice);
     }
     return writer;
   },
@@ -258,6 +283,9 @@ export const PerpsMarketAmm = {
         case 3:
           message.orders.push(reader.string());
           break;
+        case 4:
+          message.lastIndexPrice = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -277,6 +305,10 @@ export const PerpsMarketAmm = {
         ? String(object.market)
         : "";
     message.orders = (object.orders ?? []).map((e: any) => String(e));
+    message.lastIndexPrice =
+      object.lastIndexPrice !== undefined && object.lastIndexPrice !== null
+        ? String(object.lastIndexPrice)
+        : "";
     return message;
   },
 
@@ -290,6 +322,8 @@ export const PerpsMarketAmm = {
     } else {
       obj.orders = [];
     }
+    message.lastIndexPrice !== undefined &&
+      (obj.lastIndexPrice = message.lastIndexPrice);
     return obj;
   },
 
@@ -301,6 +335,7 @@ export const PerpsMarketAmm = {
         : Long.UZERO;
     message.market = object.market ?? "";
     message.orders = (object.orders ?? []).map((e) => e);
+    message.lastIndexPrice = object.lastIndexPrice ?? "";
     return message;
   },
 };

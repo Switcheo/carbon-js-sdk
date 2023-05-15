@@ -18,7 +18,7 @@ import "./_setup";
 
   const result = await connectedSDK.lp.depositToPerpetualsPool({
       creator: connectedSDK.wallet.bech32Address,
-      perpetualsLiquidityPoolId: new Long(2),
+      poolId: new Long(2),
       depositAmount: '10000',
       minShareAmount: '1',
     });

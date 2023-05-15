@@ -1,3 +1,4 @@
+import { QueryAllPlPoolsResponse, PoolDetails } from "@carbon-sdk/codec";
 import { Models } from "@carbon-sdk/index";
 import { CarbonTx, NumberUtils } from "@carbon-sdk/util";
 import { BigNumber } from "bignumber.js";
@@ -194,10 +195,15 @@ export class LiquidityPoolModule extends BaseModule {
     );
   }
 
+  public async getPerpPools(): Promise<PoolDetails[]> {
+    const fetchDataResponse: QueryAllPlPoolsResponse = await this.sdkProvider.query.perpetualpool.PoolAll({});
+    return fetchDataResponse?.pools
+  }
+
   public async createPerpertualsPool(params: LiquidityPoolModule.CreatePerpetualPoolParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Models.MsgCreatePerpetualsLiquidityPool.fromPartial({
+    const value = Models.MsgCreatePlPool.fromPartial({
       creator: params.creator,
       name: params.name,
       depositDenom: params.depositDenom,
@@ -209,7 +215,7 @@ export class LiquidityPoolModule extends BaseModule {
 
     return await wallet.sendTx(
       {
-        typeUrl: CarbonTx.Types.MsgCreatePerpetualsLiquidityPool,
+        typeUrl: CarbonTx.Types.MsgCreatePlPool,
         value,
       },
       opts
@@ -219,16 +225,16 @@ export class LiquidityPoolModule extends BaseModule {
   public async depositToPerpetualsPool(params: LiquidityPoolModule.DepositToPerpetualsPoolParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
     
-    const value = Models.MsgDepositToPerpetualsLiquidityPool.fromPartial({
+    const value = Models.MsgDepositToPlPool.fromPartial({
       creator: params.creator,
-      perpetualsLiquidityPoolId: params.perpetualsLiquidityPoolId,
+      poolId: params.poolId,
       depositAmount: params.depositAmount,
       minShareAmount: params.minShareAmount,
     })
 
     return await wallet.sendTx(
       {
-        typeUrl: CarbonTx.Types.MsgDepositToPerpetualsLiquidityPool,
+        typeUrl: CarbonTx.Types.MsgDepositToPlPool,
         value,
       },
       opts
@@ -238,16 +244,16 @@ export class LiquidityPoolModule extends BaseModule {
   public async withdrawFromPerpetualsPool(params: LiquidityPoolModule.WithdrawFromPerpetualsPoolParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
     
-    const value = Models.MsgWithdrawFromPerpetualsLiquidityPool.fromPartial({
+    const value = Models.MsgWithdrawFromPlPool.fromPartial({
       creator: params.creator,
-      perpetualsLiquidityPoolId: params.perpetualsLiquidityPoolId,
+      poolId: params.poolId,
       shareAmount: params.shareAmount,
       minReceiveAmount: params.minReceiveAmount,
     })
 
     return await wallet.sendTx(
       {
-        typeUrl: CarbonTx.Types.MsgWithdrawFromPerpetualsLiquidityPool,
+        typeUrl: CarbonTx.Types.MsgWithdrawFromPlPool,
         value,
       },
       opts
@@ -340,14 +346,14 @@ export namespace LiquidityPoolModule {
 
   export interface DepositToPerpetualsPoolParams {
     creator: string;
-    perpetualsLiquidityPoolId: Long;
+    poolId: Long;
     depositAmount: string;
     minShareAmount: string;
   }
 
   export interface WithdrawFromPerpetualsPoolParams {
     creator: string;
-    perpetualsLiquidityPoolId: Long;
+    poolId: Long;
     shareAmount: string;
     minReceiveAmount: string;
   }
