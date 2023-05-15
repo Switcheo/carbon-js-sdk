@@ -15,7 +15,7 @@ import { SoftwareUpgradeProposal, CancelSoftwareUpgradeProposal } from "./cosmos
 import { MsgGrantAllowance, MsgGrantAllowanceResponse, MsgRevokeAllowance, MsgRevokeAllowanceResponse } from "./cosmos/feegrant/v1beta1/tx";
 import { MsgSubmitEvidence, MsgSubmitEvidenceResponse } from "./cosmos/evidence/v1beta1/tx";
 import { MsgSend as MsgNftSend, MsgSendResponse as MsgNftSendResponse } from "./cosmos/nft/v1beta1/tx";
-import { MsgCreateGroup, MsgCreateGroupResponse, MsgUpdateGroupMembers, MsgUpdateGroupMembersResponse, MsgUpdateGroupAdmin, MsgUpdateGroupAdminResponse, MsgUpdateGroupMetadata, MsgUpdateGroupMetadataResponse, MsgCreateGroupPolicy, MsgCreateGroupPolicyResponse, MsgUpdateGroupPolicyAdmin, MsgCreateGroupWithPolicy, MsgCreateGroupWithPolicyResponse, MsgUpdateGroupPolicyAdminResponse, MsgUpdateGroupPolicyDecisionPolicy, MsgUpdateGroupPolicyDecisionPolicyResponse, MsgUpdateGroupPolicyMetadata, MsgUpdateGroupPolicyMetadataResponse, MsgSubmitProposal, MsgSubmitProposalResponse, MsgWithdrawProposal, MsgWithdrawProposalResponse, MsgVote, MsgVoteResponse, MsgExec, MsgExecResponse, MsgLeaveGroup, MsgLeaveGroupResponse } from "./cosmos/group/v1/tx";
+import { MsgCreateGroup, MsgCreateGroupResponse, MsgUpdateGroupMembers, MsgUpdateGroupMembersResponse, MsgUpdateGroupAdmin, MsgUpdateGroupAdminResponse, MsgUpdateGroupMetadata, MsgUpdateGroupMetadataResponse, MsgCreateGroupPolicy, MsgCreateGroupPolicyResponse, MsgUpdateGroupPolicyAdmin, MsgCreateGroupWithPolicy, MsgCreateGroupWithPolicyResponse, MsgUpdateGroupPolicyAdminResponse, MsgUpdateGroupPolicyDecisionPolicy, MsgUpdateGroupPolicyDecisionPolicyResponse, MsgUpdateGroupPolicyMetadata, MsgUpdateGroupPolicyMetadataResponse, MsgSubmitProposal as MsgGroupSubmitProposal, MsgSubmitProposalResponse as MsgGroupSubmitProposalResponse, MsgWithdrawProposal, MsgWithdrawProposalResponse, MsgVote as MsgGroupVote, MsgVoteResponse as MsgGroupVoteResponse, MsgExec, MsgExecResponse, MsgLeaveGroup, MsgLeaveGroupResponse } from "./cosmos/group/v1/tx";
 import { MsgSend, MsgSendResponse, MsgMultiSend, MsgMultiSendResponse } from "./cosmos/bank/v1beta1/tx";
 import { MsgSetWithdrawAddress, MsgSetWithdrawAddressResponse, MsgWithdrawDelegatorReward, MsgWithdrawDelegatorRewardResponse, MsgWithdrawValidatorCommission, MsgWithdrawValidatorCommissionResponse, MsgFundCommunityPool, MsgFundCommunityPoolResponse } from "./cosmos/distribution/v1beta1/tx";
 import { CommunityPoolSpendProposal } from "./cosmos/distribution/v1beta1/distribution";
@@ -25,8 +25,7 @@ import { MsgCreateValidator, MsgCreateValidatorResponse, MsgEditValidator, MsgEd
 import { ParameterChangeProposal } from "./cosmos/params/v1beta1/params";
 import { MsgGrant, MsgExecResponse as MsgAuthzExecResponse, MsgExec as MsgAuthzExec, MsgGrantResponse, MsgRevoke, MsgRevokeResponse } from "./cosmos/authz/v1beta1/tx";
 import { MsgUnjail, MsgUnjailResponse } from "./cosmos/slashing/v1beta1/tx";
-import { MsgSubmitProposal as MsgGovSubmitProposal, MsgSubmitProposalResponse as MsgGovSubmitProposalResponse, MsgExecLegacyContent, MsgExecLegacyContentResponse, MsgVote as MsgGovVote, MsgVoteResponse as MsgGovVoteResponse, MsgVoteWeighted, MsgVoteWeightedResponse, MsgDeposit, MsgDepositResponse } from "./cosmos/gov/v1/tx";
-import { MsgSubmitProposal as MsgGovV1beta1SubmitProposal, MsgSubmitProposalResponse as MsgGovV1beta1SubmitProposalResponse, MsgVote as MsgGovV1beta1Vote, MsgVoteResponse as MsgGovV1beta1VoteResponse, MsgVoteWeighted as MsgGovV1beta1VoteWeighted, MsgVoteWeightedResponse as MsgGovV1beta1VoteWeightedResponse, MsgDeposit as MsgGovV1beta1Deposit, MsgDepositResponse as MsgGovV1beta1DepositResponse } from "./cosmos/gov/v1beta1/tx";
+import { MsgSubmitProposal, MsgSubmitProposalResponse, MsgVote, MsgVoteResponse, MsgVoteWeighted, MsgVoteWeightedResponse, MsgDeposit, MsgDepositResponse } from "./cosmos/gov/v1beta1/tx";
 import { MsgConnectionOpenInit, MsgConnectionOpenInitResponse, MsgConnectionOpenTry, MsgConnectionOpenTryResponse, MsgConnectionOpenAck, MsgConnectionOpenAckResponse, MsgConnectionOpenConfirm, MsgConnectionOpenConfirmResponse } from "./ibc/core/connection/v1/tx";
 import { MsgChannelOpenInit, MsgChannelOpenInitResponse, MsgChannelOpenTry, MsgChannelOpenTryResponse, MsgChannelOpenAck, MsgChannelOpenAckResponse, MsgChannelOpenConfirm, MsgChannelOpenConfirmResponse, MsgChannelCloseInit, MsgChannelCloseInitResponse, MsgChannelCloseConfirm, MsgChannelCloseConfirmResponse, MsgRecvPacket, MsgRecvPacketResponse, MsgTimeout, MsgTimeoutResponse, MsgTimeoutOnClose, MsgTimeoutOnCloseResponse, MsgAcknowledgement, MsgAcknowledgementResponse } from "./ibc/core/channel/v1/tx";
 import { MsgCreateClient, MsgCreateClientResponse, MsgUpdateClient, MsgUpdateClientResponse, MsgUpgradeClient, MsgUpgradeClientResponse, MsgSubmitMisbehaviour, MsgSubmitMisbehaviourResponse } from "./ibc/core/client/v1/tx";
@@ -48,8 +47,8 @@ import { MsgCreatePool, MsgCreatePoolResponse, MsgCreatePoolWithLiquidity, MsgCr
 import { LinkPoolProposal, UnlinkPoolProposal, SetRewardCurveProposal, SetCommitmentCurveProposal, SetRewardsWeightsProposal, UpdatePoolProposal, CreatePoolRouteProposal, RemovePoolRouteProposal, UpdatePoolRouteProposal } from "./liquiditypool/proposal";
 import { MsgSetBackfillTimeInterval, MsgSetBackfillTimeIntervalResponse, MsgSetSmoothenBand, MsgSetSmoothenBandResponse, MsgSetImpactBand, MsgSetImpactBandResponse, MsgSetStaleIndexAllowance, MsgSetStaleIndexAllowanceResponse, MsgUpdateTokenPriceOracle, MsgUpdateTokenPriceOracleResponse } from "./pricing/tx";
 import { SettlementPriceProposal } from "./pricing/proposal";
-import { TextProposal, Proposal } from "./cosmos/gov/v1beta1/gov";
 import { ClientUpdateProposal, UpgradeProposal } from "./ibc/core/client/v1/client";
+import { TextProposal } from "./cosmos/gov/v1beta1/gov";
 
 export * from './cosmos-models';
 
@@ -236,12 +235,12 @@ registry.register("/cosmos.group.v1.MsgUpdateGroupPolicyDecisionPolicy", MsgUpda
 registry.register("/cosmos.group.v1.MsgUpdateGroupPolicyDecisionPolicyResponse", MsgUpdateGroupPolicyDecisionPolicyResponse);
 registry.register("/cosmos.group.v1.MsgUpdateGroupPolicyMetadata", MsgUpdateGroupPolicyMetadata);
 registry.register("/cosmos.group.v1.MsgUpdateGroupPolicyMetadataResponse", MsgUpdateGroupPolicyMetadataResponse);
-registry.register("/cosmos.group.v1.MsgSubmitProposal", MsgSubmitProposal);
-registry.register("/cosmos.group.v1.MsgSubmitProposalResponse", MsgSubmitProposalResponse);
+registry.register("/cosmos.group.v1.MsgGroupSubmitProposal", MsgGroupSubmitProposal);
+registry.register("/cosmos.group.v1.MsgGroupSubmitProposalResponse", MsgGroupSubmitProposalResponse);
 registry.register("/cosmos.group.v1.MsgWithdrawProposal", MsgWithdrawProposal);
 registry.register("/cosmos.group.v1.MsgWithdrawProposalResponse", MsgWithdrawProposalResponse);
-registry.register("/cosmos.group.v1.MsgVote", MsgVote);
-registry.register("/cosmos.group.v1.MsgVoteResponse", MsgVoteResponse);
+registry.register("/cosmos.group.v1.MsgGroupVote", MsgGroupVote);
+registry.register("/cosmos.group.v1.MsgGroupVoteResponse", MsgGroupVoteResponse);
 registry.register("/cosmos.group.v1.MsgExec", MsgExec);
 registry.register("/cosmos.group.v1.MsgExecResponse", MsgExecResponse);
 registry.register("/cosmos.group.v1.MsgLeaveGroup", MsgLeaveGroup);
@@ -297,27 +296,16 @@ registry.register("/cosmos.authz.v1beta1.MsgRevokeResponse", MsgRevokeResponse);
 registry.register("/cosmos.slashing.v1beta1.MsgUnjail", MsgUnjail);
 registry.register("/cosmos.slashing.v1beta1.MsgUnjailResponse", MsgUnjailResponse);
 
-registry.register("/cosmos.gov.v1.MsgSubmitProposal", MsgGovSubmitProposal);
-registry.register("/cosmos.gov.v1.MsgSubmitProposalResponse", MsgGovSubmitProposalResponse);
-registry.register("/cosmos.gov.v1.MsgExecLegacyContent", MsgExecLegacyContent);
-registry.register("/cosmos.gov.v1.MsgExecLegacyContentResponse", MsgExecLegacyContentResponse);
-registry.register("/cosmos.gov.v1.MsgVote", MsgGovVote);
-registry.register("/cosmos.gov.v1.MsgVoteResponse", MsgGovVoteResponse);
-registry.register("/cosmos.gov.v1.MsgVoteWeighted", MsgVoteWeighted);
-registry.register("/cosmos.gov.v1.MsgVoteWeightedResponse", MsgVoteWeightedResponse);
-registry.register("/cosmos.gov.v1.MsgDeposit", MsgDeposit);
-registry.register("/cosmos.gov.v1.MsgDepositResponse", MsgDepositResponse);
+registry.register("/cosmos.gov.v1beta1.MsgSubmitProposal", MsgSubmitProposal);
+registry.register("/cosmos.gov.v1beta1.MsgSubmitProposalResponse", MsgSubmitProposalResponse);
+registry.register("/cosmos.gov.v1beta1.MsgVote", MsgVote);
+registry.register("/cosmos.gov.v1beta1.MsgVoteResponse", MsgVoteResponse);
+registry.register("/cosmos.gov.v1beta1.MsgVoteWeighted", MsgVoteWeighted);
+registry.register("/cosmos.gov.v1beta1.MsgVoteWeightedResponse", MsgVoteWeightedResponse);
+registry.register("/cosmos.gov.v1beta1.MsgDeposit", MsgDeposit);
+registry.register("/cosmos.gov.v1beta1.MsgDepositResponse", MsgDepositResponse);
 
-registry.register("/cosmos.gov.v1beta1.MsgSubmitProposal", MsgGovV1beta1SubmitProposal);
-registry.register("/cosmos.gov.v1beta1.MsgSubmitProposalResponse", MsgGovV1beta1SubmitProposalResponse);
-registry.register("/cosmos.gov.v1beta1.MsgVote", MsgGovV1beta1Vote);
-registry.register("/cosmos.gov.v1beta1.MsgVoteResponse", MsgGovV1beta1VoteResponse);
-registry.register("/cosmos.gov.v1beta1.MsgVoteWeighted", MsgGovV1beta1VoteWeighted);
-registry.register("/cosmos.gov.v1beta1.MsgVoteWeightedResponse", MsgGovV1beta1VoteWeightedResponse);
-registry.register("/cosmos.gov.v1beta1.MsgDeposit", MsgGovV1beta1Deposit);
-registry.register("/cosmos.gov.v1beta1.MsgDepositResponse", MsgGovV1beta1DepositResponse);
 registry.register("/cosmos.gov.v1beta1.TextProposal", TextProposal);
-registry.register("/cosmos.gov.v1beta1.Proposal", Proposal);
 
 registry.register("/Switcheo.carbon.ccm.MsgProcessCrossChainTx", PolyNetwork.Ccm.MsgProcessCrossChainTx);
 registry.register("/Switcheo.carbon.ccm.MsgProcessZionCrossChainTx", PolyNetwork.Ccm.MsgProcessZionCrossChainTx);
@@ -692,12 +680,12 @@ export const TxTypes = {
   "MsgUpdateGroupPolicyDecisionPolicyResponse": "/cosmos.group.v1.MsgUpdateGroupPolicyDecisionPolicyResponse",
   "MsgUpdateGroupPolicyMetadata": "/cosmos.group.v1.MsgUpdateGroupPolicyMetadata",
   "MsgUpdateGroupPolicyMetadataResponse": "/cosmos.group.v1.MsgUpdateGroupPolicyMetadataResponse",
-  "MsgSubmitProposal": "/cosmos.group.v1.MsgSubmitProposal",
-  "MsgSubmitProposalResponse": "/cosmos.group.v1.MsgSubmitProposalResponse",
+  "MsgGroupSubmitProposal": "/cosmos.group.v1.MsgSubmitProposal",
+  "MsgGroupSubmitProposalResponse": "/cosmos.group.v1.MsgSubmitProposalResponse",
   "MsgWithdrawProposal": "/cosmos.group.v1.MsgWithdrawProposal",
   "MsgWithdrawProposalResponse": "/cosmos.group.v1.MsgWithdrawProposalResponse",
-  "MsgVote": "/cosmos.group.v1.MsgVote",
-  "MsgVoteResponse": "/cosmos.group.v1.MsgVoteResponse",
+  "MsgGroupVote": "/cosmos.group.v1.MsgVote",
+  "MsgGroupVoteResponse": "/cosmos.group.v1.MsgVoteResponse",
   "MsgExec": "/cosmos.group.v1.MsgExec",
   "MsgExecResponse": "/cosmos.group.v1.MsgExecResponse",
   "MsgLeaveGroup": "/cosmos.group.v1.MsgLeaveGroup",
@@ -744,26 +732,17 @@ export const TxTypes = {
   "MsgRevokeResponse": "/cosmos.authz.v1beta1.MsgRevokeResponse",
   "MsgUnjail": "/cosmos.slashing.v1beta1.MsgUnjail",
   "MsgUnjailResponse": "/cosmos.slashing.v1beta1.MsgUnjailResponse",
-  "MsgGovSubmitProposal": "/cosmos.gov.v1.MsgSubmitProposal",
-  "MsgGovSubmitProposalResponse": "/cosmos.gov.v1.MsgSubmitProposalResponse",
-  "MsgExecLegacyContent": "/cosmos.gov.v1.MsgExecLegacyContent",
-  "MsgExecLegacyContentResponse": "/cosmos.gov.v1.MsgExecLegacyContentResponse",
-  "MsgGovVote": "/cosmos.gov.v1.MsgVote",
-  "MsgGovVoteResponse": "/cosmos.gov.v1.MsgVoteResponse",
-  "MsgVoteWeighted": "/cosmos.gov.v1.MsgVoteWeighted",
-  "MsgVoteWeightedResponse": "/cosmos.gov.v1.MsgVoteWeightedResponse",
-  "MsgDeposit": "/cosmos.gov.v1.MsgDeposit",
-  "MsgDepositResponse": "/cosmos.gov.v1.MsgDepositResponse",
-  "MsgGovV1beta1SubmitProposal": "/cosmos.gov.v1beta1.MsgSubmitProposal",
-  "MsgGovV1beta1SubmitProposalResponse": "/cosmos.gov.v1beta1.MsgSubmitProposalResponse",
-  "MsgGovV1beta1Vote": "/cosmos.gov.v1beta1.MsgVote",
-  "MsgGovV1beta1VoteResponse": "/cosmos.gov.v1beta1.MsgVoteResponse",
-  "MsgGovV1beta1VoteWeighted": "/cosmos.gov.v1beta1.MsgVoteWeighted",
-  "MsgGovV1beta1VoteWeightedResponse": "/cosmos.gov.v1beta1.MsgVoteWeightedResponse",
-  "MsgGovV1beta1Deposit": "/cosmos.gov.v1beta1.MsgDeposit",
-  "MsgGovV1beta1DepositResponse": "/cosmos.gov.v1beta1.MsgDepositResponse",
+  "MsgSubmitProposal": "/cosmos.gov.v1beta1.MsgSubmitProposal",
+  "MsgSubmitProposalResponse": "/cosmos.gov.v1beta1.MsgSubmitProposalResponse",
+  "MsgExecLegacyContent": "/cosmos.gov.v1beta1.MsgExecLegacyContent",
+  "MsgExecLegacyContentResponse": "/cosmos.gov.v1beta1.MsgExecLegacyContentResponse",
+  "MsgVote": "/cosmos.gov.v1beta1.MsgVote",
+  "MsgVoteResponse": "/cosmos.gov.v1beta1.MsgVoteResponse",
+  "MsgVoteWeighted": "/cosmos.gov.v1beta1.MsgVoteWeighted",
+  "MsgVoteWeightedResponse": "/cosmos.gov.v1beta1.MsgVoteWeightedResponse",
+  "MsgDeposit": "/cosmos.gov.v1beta1.MsgDeposit",
+  "MsgDepositResponse": "/cosmos.gov.v1beta1.MsgDepositResponse",
   "TextProposal": "/cosmos.gov.v1beta1.TextProposal",
-  "Proposal": "/cosmos.gov.v1beta1.Proposal",
   "MsgProcessCrossChainTx": "/Switcheo.carbon.ccm.MsgProcessCrossChainTx",
   "MsgProcessZionCrossChainTx": "/Switcheo.carbon.ccm.MsgProcessZionCrossChainTx",
   "MsgProcessCrossChainTxResponse": "/Switcheo.carbon.ccm.MsgProcessCrossChainTxResponse",
@@ -1060,3 +1039,4 @@ export { QueryPriceTokenRequest, QueryPriceTokenResponse, QueryPriceSetRequest, 
 export { ParamsV2130 } from "./pricing/legacy";
 export { PriceUpdateEvent, TokenPriceUpdateEvent, SetImpactBandEvent, SetSmoothenBandEvent, SetStaleIndexAllowanceEvent, SetBackfillTimeIntervalEvent } from "./pricing/event";
 export { MsgExecuteContract } from "cosmjs-types/cosmwasm/wasm/v1/tx";
+export { TextProposal, Proposal } from "./cosmos/gov/v1beta1/gov";

@@ -182,6 +182,16 @@ class InsightsQueryClient {
     const response = await request.get();
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetLotteryCompetitionLeaderboardResponse>;
   }
+  async LeagueCompetitionLeaderboard(
+    req: Insights.QueryGetLeagueCompetitionLeaderboardRequest
+  ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetLeagueCompetitionLeaderboardResponse>> {
+    const queryParams = {
+      competitionId: req.competitionId,
+    };
+    const request = this.apiManager.path("competition/leaderboardleague", {}, queryParams);
+    const response = await request.get();
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetLeagueCompetitionLeaderboardResponse>;
+  }
 
   async PoolsLiquidity(
     req: Insights.QueryGetPoolsLiquidityRequest = {}
