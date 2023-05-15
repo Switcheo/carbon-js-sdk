@@ -1,9 +1,9 @@
 import { MsgTransfer } from "@carbon-sdk/codec/ibc/applications/transfer/v1/tx";
 import { DenomTraceExtended } from "@carbon-sdk/clients/TokenClient";
-import { ChainRegistryItem, CosmosChainsObj, ExtendedChainInfo, cw20TokenRegex, factoryIbcMinimalDenomRegex, ibcNetworkRegex, ibcTransferChannelRegex, publicRpcNodes } from "@carbon-sdk/constant";
+import { ChainRegistryItem, CosmosChainsObj, ExtendedChainInfo, IBCAddress, cw20TokenRegex, factoryIbcMinimalDenomRegex, ibcNetworkRegex, ibcTransferChannelRegex, publicRpcNodes } from "@carbon-sdk/constant";
 import { ChainInfo, KeplrAccount } from "@carbon-sdk/provider";
 import { CarbonTx, IBCUtils, TypeUtils } from "@carbon-sdk/util";
-import { AppCurrency } from "@keplr-wallet/types";
+import { AppCurrency, Currency } from "@keplr-wallet/types";
 import BigNumber from "bignumber.js";
 import Long from "long";
 import BaseModule from "./base";
@@ -194,43 +194,76 @@ export class IBCModule extends BaseModule {
       return chainData.chain_name.includes(bridgeChainName.toLowerCase()) || chainData.chain_id.includes(bridgeChainName.toLowerCase());
     });
     if (selectedChainData && selectedChainData.chain_name === "kujira") {
+
+      const chainInfoResponse = await fetch(`https://raw.githubusercontent.com/cosmos/chain-registry/master/kujira/chain.json`);
+      const chainInfoJson = await chainInfoResponse.json();
+
+      const chainAssetListResponse = await fetch(`https://raw.githubusercontent.com/cosmos/chain-registry/master/kujira/chain.json`);
+      const chainAssetListJson = await chainAssetListResponse.json();
+
+
+      // interface Asset {
+      //   description: string;
+      //   denom_units: { denom: string; exponent: number }[];
+      //   base: string;
+      //   name: string;
+      //   display: string;
+      //   symbol: string;
+      //   coingecko_id: string;
+      //   logo_URIs: { png: string; svg: string };
+      // }
+
+      interface Asset {
+        denom_units: Currency[];
+        base: string;
+        display: string;
+        coingecko_id: string;
+      }
+      interface DenomUnit {
+        denom: string;
+        exponent: number;
+      }
+
+      
+      const currencies = chainAssetListJson.assets.map((asset: Asset) => ({
+        coinMinimalDenom: asset.base,
+        coinDenom: asset.display.toUpperCase(),
+        coinDecimals: asset.denom_units.find((unit: Currency) => unit.coinMinimalDenom === asset.display)?.coinDecimals,
+        coinGeckoId: asset.coingecko_id,
+      }));
+      
+      console.log("INFO: ", chainInfoJson)
       const features: string[] = [];
       if (selectedChainData.cosmwasm_enabled) {
         features.push("cosmwasm");
       }
+
+      // Extract the staking currency denomination from chainInfoJson
+      const stakingCurrencyDenom = chainInfoJson['staking']['staking_tokens'][0]['denom'];
+
+      // Find the matching staking currency in the assetList
+      const stakingCurrencyAsset = chainAssetListJson.assets.find((asset: Asset) => 
+        asset.denom_units.some((unit: Currency) => unit.coinMinimalDenom === stakingCurrencyDenom)
+    );
+  
+    
+
+    
       return {
-        rpc: string;
-        readonly rpcConfig?: AxiosRequestConfig;
-        readonly rest: string;
-        readonly restConfig?: AxiosRequestConfig;
-        readonly chainId: string;
-        readonly chainName: string;
-        /**
-         * This indicates the type of coin that can be used for stake.
-         * You can get actual currency information from Currencies.
-         */
-        readonly stakeCurrency: Currency;
-        readonly walletUrl?: string;
-        readonly walletUrlForStaking?: string;
-        readonly bip44: BIP44;
-        readonly alternativeBIP44s?: BIP44[];
-        readonly bech32Config: Bech32Config;
-        readonly currencies: AppCurrency[];
-        /**
-         * This indicates which coin or token can be used for fee to send transaction.
-         * You can get actual currency information from Currencies.
-         */
-        readonly feeCurrencies: FeeCurrency[];
-        /**
-         * This is the coin type in slip-044.
-         * This is used for fetching address from ENS if this field is set.
-         *
-         * ** Use the `bip44.coinType` field to set the coin type to generate the address. **
-         *
-         * @deprecated This field is likely to be changed. ENS will continue to be supported, but will change in the future to use other methods than this field. Because of the low usage of the ENS feature, the change is a low priority and it is not yet clear how it will change.
-         */
-        readonly coinType?: number;
-        features,
+        rpc: chainInfoJson['apis']['rpc'][0]['address'],
+        rest: chainInfoJson['apis']['rest'][0]['address'],
+        chainId: chainInfoJson['chain_id'],
+        chainName: chainInfoJson['chain_name'],
+        stakeCurrency: {
+          coinMinimalDenom: stakingCurrencyAsset.base,
+          coinDenom: stakingCurrencyAsset.display.toUpperCase(),
+          coinDecimals: stakingCurrencyAsset.denom_units.find((unit: Currency) => unit.coinMinimalDenom === stakingCurrencyAsset.base)?.exponent,
+          coinGeckoId: stakingCurrencyAsset.coingecko_id,
+      },
+        bip44: chainInfoJson['slip44'],
+        bech32Config:  IBCAddress.defaultBech32Config(chainInfoJson['bech32_prefix']) ,
+        currencies: currencies,
+        feeCurrencies: currencies
       }
     } else {
       return IBCUtils.EmbedChainInfos[chainId];
