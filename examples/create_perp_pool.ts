@@ -7,7 +7,7 @@ import "./_setup";
   console.log("mnemonics:", mnemonics);
 
   const sdk = await CarbonSDK.instance({
-    network: CarbonSDK.Network.LocalHost,
+    network: CarbonSDK.Network.DevNet,
     config: {
       tmRpcUrl: process.env.TRPC_ENDPOINT,
     },
@@ -17,10 +17,10 @@ import "./_setup";
 
   const result = await connectedSDK.lp.createPerpertualsPool({
       creator: connectedSDK.wallet.bech32Address,
-      name: 'USD',
+      name: 'USD Perp Pool 2',
       depositDenom: 'cgusd',
-      shareTokenSymbol: 'testUSD',
-      supplyCap: '200000',
+      shareTokenSymbol: 'testUSD2',
+      supplyCap: '100000000000000000000000000',
       depositFeeBps: '1000',
       withdrawalFeeBps: '1000',
     });
