@@ -167,7 +167,12 @@ export class IBCModule extends BaseModule {
 
   async getChainInfo(chainName: string): Promise<ChainInfo | undefined> {
     if (!chainName) return undefined
-    const chainInfoResponse = await fetch(`https://raw.githubusercontent.com/chainapsis/keplr-chain-registry/master/cosmos/${chainName}.json`);
+    const chainInfoResponse = await fetch(`https://raw.githubusercontent.com/chainapsis/keplr-chain-registry/master/cosmos/${chainName}.json`)
+    if (!chainInfoResponse.ok) {
+      if (chainInfoResponse.status === 404){
+        return undefined;
+      } 
+    }
     const chainInfoJson = await chainInfoResponse.json();
     return chainInfoJson as ChainInfo;
   }
