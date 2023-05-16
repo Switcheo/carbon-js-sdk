@@ -16,9 +16,13 @@ export interface Params {
   defaultLotSizeUsd: string;
   defaultTickSizeUsd: string;
   defaultMinQuantityUsd: string;
+  /** @deprecated */
   defaultSpotMakerFee: string;
+  /** @deprecated */
   defaultSpotTakerFee: string;
+  /** @deprecated */
   defaultFuturesMakerFee: string;
+  /** @deprecated */
   defaultFuturesTakerFee: string;
   defaultRiskStepSizeUsd: string;
   defaultInitialMarginBase: string;
@@ -50,7 +54,9 @@ export interface Market {
   lotSize: string;
   tickSize: string;
   minQuantity: string;
+  /** @deprecated */
   makerFee: string;
+  /** @deprecated */
   takerFee: string;
   createdBlockHeight: Long;
   /** futures only */
@@ -78,7 +84,9 @@ export interface MarketParams {
   lotSize: string;
   tickSize: string;
   minQuantity: string;
+  /** @deprecated */
   makerFee: string;
+  /** @deprecated */
   takerFee: string;
   /** futures only */
   riskStepSize: string;

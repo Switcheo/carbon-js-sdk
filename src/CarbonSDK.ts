@@ -34,6 +34,7 @@ import {
   EvmModule,
   FeemarketModule,
   EvmMergeModule,
+  VaultModule,
 } from "./modules";
 import { StakingModule } from "./modules/staking";
 import { CosmosLedger, Keplr, KeplrAccount, LeapAccount, LeapExtended } from "./provider";
@@ -94,6 +95,7 @@ class CarbonSDK {
   admin: AdminModule;
   order: OrderModule;
   lp: LiquidityPoolModule;
+  vault: VaultModule;
   subaccount: SubAccountModule;
   profile: ProfileModule;
   cdp: CDPModule;
@@ -142,6 +144,7 @@ class CarbonSDK {
     this.admin = new AdminModule(this);
     this.order = new OrderModule(this);
     this.lp = new LiquidityPoolModule(this);
+    this.vault = new VaultModule(this);
     this.subaccount = new SubAccountModule(this);
     this.profile = new ProfileModule(this);
     this.cdp = new CDPModule(this);

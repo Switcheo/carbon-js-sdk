@@ -6,6 +6,7 @@ import {
   PageRequest,
   PageResponse,
 } from "../cosmos/base/query/v1beta1/pagination";
+import { TradingFees, FeeTier, StakeEquivalence, FeeStructure } from "./fee";
 
 export const protobufPackage = "Switcheo.carbon.market";
 
@@ -25,6 +26,37 @@ export interface QueryAllMarketRequest {
 export interface QueryAllMarketResponse {
   markets: Market[];
   pagination?: PageResponse;
+}
+
+export interface QueryGetTradingFeesRequest {
+  marketName: string;
+  userAddress: string;
+}
+
+export interface QueryGetTradingFeesResponse {
+  fees?: TradingFees;
+}
+
+export interface QueryGetFeeTiersRequest {
+  marketType: string;
+  marketName: string;
+  userAddress: string;
+}
+
+export interface QueryGetFeeTiersResponse {
+  feeTiers: FeeTier[];
+}
+
+export interface QueryAllStakeEquivalenceRequest {}
+
+export interface QueryAllStakeEquivalenceResponse {
+  stakeEquivalence: StakeEquivalence[];
+}
+
+export interface QueryAllFeeStructuresRequest {}
+
+export interface QueryAllFeeStructuresResponse {
+  feeStructures: FeeStructure[];
 }
 
 /** QueryParamsRequest is request type for the Query/Params RPC method. */
@@ -305,6 +337,571 @@ export const QueryAllMarketResponse = {
   },
 };
 
+const baseQueryGetTradingFeesRequest: object = {
+  marketName: "",
+  userAddress: "",
+};
+
+export const QueryGetTradingFeesRequest = {
+  encode(
+    message: QueryGetTradingFeesRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.marketName !== "") {
+      writer.uint32(10).string(message.marketName);
+    }
+    if (message.userAddress !== "") {
+      writer.uint32(18).string(message.userAddress);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryGetTradingFeesRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryGetTradingFeesRequest,
+    } as QueryGetTradingFeesRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.marketName = reader.string();
+          break;
+        case 2:
+          message.userAddress = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryGetTradingFeesRequest {
+    const message = {
+      ...baseQueryGetTradingFeesRequest,
+    } as QueryGetTradingFeesRequest;
+    message.marketName =
+      object.marketName !== undefined && object.marketName !== null
+        ? String(object.marketName)
+        : "";
+    message.userAddress =
+      object.userAddress !== undefined && object.userAddress !== null
+        ? String(object.userAddress)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryGetTradingFeesRequest): unknown {
+    const obj: any = {};
+    message.marketName !== undefined && (obj.marketName = message.marketName);
+    message.userAddress !== undefined &&
+      (obj.userAddress = message.userAddress);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryGetTradingFeesRequest>
+  ): QueryGetTradingFeesRequest {
+    const message = {
+      ...baseQueryGetTradingFeesRequest,
+    } as QueryGetTradingFeesRequest;
+    message.marketName = object.marketName ?? "";
+    message.userAddress = object.userAddress ?? "";
+    return message;
+  },
+};
+
+const baseQueryGetTradingFeesResponse: object = {};
+
+export const QueryGetTradingFeesResponse = {
+  encode(
+    message: QueryGetTradingFeesResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.fees !== undefined) {
+      TradingFees.encode(message.fees, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryGetTradingFeesResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryGetTradingFeesResponse,
+    } as QueryGetTradingFeesResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.fees = TradingFees.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryGetTradingFeesResponse {
+    const message = {
+      ...baseQueryGetTradingFeesResponse,
+    } as QueryGetTradingFeesResponse;
+    message.fees =
+      object.fees !== undefined && object.fees !== null
+        ? TradingFees.fromJSON(object.fees)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryGetTradingFeesResponse): unknown {
+    const obj: any = {};
+    message.fees !== undefined &&
+      (obj.fees = message.fees ? TradingFees.toJSON(message.fees) : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryGetTradingFeesResponse>
+  ): QueryGetTradingFeesResponse {
+    const message = {
+      ...baseQueryGetTradingFeesResponse,
+    } as QueryGetTradingFeesResponse;
+    message.fees =
+      object.fees !== undefined && object.fees !== null
+        ? TradingFees.fromPartial(object.fees)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryGetFeeTiersRequest: object = {
+  marketType: "",
+  marketName: "",
+  userAddress: "",
+};
+
+export const QueryGetFeeTiersRequest = {
+  encode(
+    message: QueryGetFeeTiersRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.marketType !== "") {
+      writer.uint32(10).string(message.marketType);
+    }
+    if (message.marketName !== "") {
+      writer.uint32(18).string(message.marketName);
+    }
+    if (message.userAddress !== "") {
+      writer.uint32(26).string(message.userAddress);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryGetFeeTiersRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryGetFeeTiersRequest,
+    } as QueryGetFeeTiersRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.marketType = reader.string();
+          break;
+        case 2:
+          message.marketName = reader.string();
+          break;
+        case 3:
+          message.userAddress = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryGetFeeTiersRequest {
+    const message = {
+      ...baseQueryGetFeeTiersRequest,
+    } as QueryGetFeeTiersRequest;
+    message.marketType =
+      object.marketType !== undefined && object.marketType !== null
+        ? String(object.marketType)
+        : "";
+    message.marketName =
+      object.marketName !== undefined && object.marketName !== null
+        ? String(object.marketName)
+        : "";
+    message.userAddress =
+      object.userAddress !== undefined && object.userAddress !== null
+        ? String(object.userAddress)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryGetFeeTiersRequest): unknown {
+    const obj: any = {};
+    message.marketType !== undefined && (obj.marketType = message.marketType);
+    message.marketName !== undefined && (obj.marketName = message.marketName);
+    message.userAddress !== undefined &&
+      (obj.userAddress = message.userAddress);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryGetFeeTiersRequest>
+  ): QueryGetFeeTiersRequest {
+    const message = {
+      ...baseQueryGetFeeTiersRequest,
+    } as QueryGetFeeTiersRequest;
+    message.marketType = object.marketType ?? "";
+    message.marketName = object.marketName ?? "";
+    message.userAddress = object.userAddress ?? "";
+    return message;
+  },
+};
+
+const baseQueryGetFeeTiersResponse: object = {};
+
+export const QueryGetFeeTiersResponse = {
+  encode(
+    message: QueryGetFeeTiersResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.feeTiers) {
+      FeeTier.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryGetFeeTiersResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryGetFeeTiersResponse,
+    } as QueryGetFeeTiersResponse;
+    message.feeTiers = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.feeTiers.push(FeeTier.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryGetFeeTiersResponse {
+    const message = {
+      ...baseQueryGetFeeTiersResponse,
+    } as QueryGetFeeTiersResponse;
+    message.feeTiers = (object.feeTiers ?? []).map((e: any) =>
+      FeeTier.fromJSON(e)
+    );
+    return message;
+  },
+
+  toJSON(message: QueryGetFeeTiersResponse): unknown {
+    const obj: any = {};
+    if (message.feeTiers) {
+      obj.feeTiers = message.feeTiers.map((e) =>
+        e ? FeeTier.toJSON(e) : undefined
+      );
+    } else {
+      obj.feeTiers = [];
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryGetFeeTiersResponse>
+  ): QueryGetFeeTiersResponse {
+    const message = {
+      ...baseQueryGetFeeTiersResponse,
+    } as QueryGetFeeTiersResponse;
+    message.feeTiers = (object.feeTiers ?? []).map((e) =>
+      FeeTier.fromPartial(e)
+    );
+    return message;
+  },
+};
+
+const baseQueryAllStakeEquivalenceRequest: object = {};
+
+export const QueryAllStakeEquivalenceRequest = {
+  encode(
+    _: QueryAllStakeEquivalenceRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAllStakeEquivalenceRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAllStakeEquivalenceRequest,
+    } as QueryAllStakeEquivalenceRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryAllStakeEquivalenceRequest {
+    const message = {
+      ...baseQueryAllStakeEquivalenceRequest,
+    } as QueryAllStakeEquivalenceRequest;
+    return message;
+  },
+
+  toJSON(_: QueryAllStakeEquivalenceRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<QueryAllStakeEquivalenceRequest>
+  ): QueryAllStakeEquivalenceRequest {
+    const message = {
+      ...baseQueryAllStakeEquivalenceRequest,
+    } as QueryAllStakeEquivalenceRequest;
+    return message;
+  },
+};
+
+const baseQueryAllStakeEquivalenceResponse: object = {};
+
+export const QueryAllStakeEquivalenceResponse = {
+  encode(
+    message: QueryAllStakeEquivalenceResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.stakeEquivalence) {
+      StakeEquivalence.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAllStakeEquivalenceResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAllStakeEquivalenceResponse,
+    } as QueryAllStakeEquivalenceResponse;
+    message.stakeEquivalence = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.stakeEquivalence.push(
+            StakeEquivalence.decode(reader, reader.uint32())
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllStakeEquivalenceResponse {
+    const message = {
+      ...baseQueryAllStakeEquivalenceResponse,
+    } as QueryAllStakeEquivalenceResponse;
+    message.stakeEquivalence = (object.stakeEquivalence ?? []).map((e: any) =>
+      StakeEquivalence.fromJSON(e)
+    );
+    return message;
+  },
+
+  toJSON(message: QueryAllStakeEquivalenceResponse): unknown {
+    const obj: any = {};
+    if (message.stakeEquivalence) {
+      obj.stakeEquivalence = message.stakeEquivalence.map((e) =>
+        e ? StakeEquivalence.toJSON(e) : undefined
+      );
+    } else {
+      obj.stakeEquivalence = [];
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAllStakeEquivalenceResponse>
+  ): QueryAllStakeEquivalenceResponse {
+    const message = {
+      ...baseQueryAllStakeEquivalenceResponse,
+    } as QueryAllStakeEquivalenceResponse;
+    message.stakeEquivalence = (object.stakeEquivalence ?? []).map((e) =>
+      StakeEquivalence.fromPartial(e)
+    );
+    return message;
+  },
+};
+
+const baseQueryAllFeeStructuresRequest: object = {};
+
+export const QueryAllFeeStructuresRequest = {
+  encode(
+    _: QueryAllFeeStructuresRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAllFeeStructuresRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAllFeeStructuresRequest,
+    } as QueryAllFeeStructuresRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryAllFeeStructuresRequest {
+    const message = {
+      ...baseQueryAllFeeStructuresRequest,
+    } as QueryAllFeeStructuresRequest;
+    return message;
+  },
+
+  toJSON(_: QueryAllFeeStructuresRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<QueryAllFeeStructuresRequest>
+  ): QueryAllFeeStructuresRequest {
+    const message = {
+      ...baseQueryAllFeeStructuresRequest,
+    } as QueryAllFeeStructuresRequest;
+    return message;
+  },
+};
+
+const baseQueryAllFeeStructuresResponse: object = {};
+
+export const QueryAllFeeStructuresResponse = {
+  encode(
+    message: QueryAllFeeStructuresResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.feeStructures) {
+      FeeStructure.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAllFeeStructuresResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAllFeeStructuresResponse,
+    } as QueryAllFeeStructuresResponse;
+    message.feeStructures = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.feeStructures.push(
+            FeeStructure.decode(reader, reader.uint32())
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllFeeStructuresResponse {
+    const message = {
+      ...baseQueryAllFeeStructuresResponse,
+    } as QueryAllFeeStructuresResponse;
+    message.feeStructures = (object.feeStructures ?? []).map((e: any) =>
+      FeeStructure.fromJSON(e)
+    );
+    return message;
+  },
+
+  toJSON(message: QueryAllFeeStructuresResponse): unknown {
+    const obj: any = {};
+    if (message.feeStructures) {
+      obj.feeStructures = message.feeStructures.map((e) =>
+        e ? FeeStructure.toJSON(e) : undefined
+      );
+    } else {
+      obj.feeStructures = [];
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAllFeeStructuresResponse>
+  ): QueryAllFeeStructuresResponse {
+    const message = {
+      ...baseQueryAllFeeStructuresResponse,
+    } as QueryAllFeeStructuresResponse;
+    message.feeStructures = (object.feeStructures ?? []).map((e) =>
+      FeeStructure.fromPartial(e)
+    );
+    return message;
+  },
+};
+
 const baseQueryParamsRequest: object = {};
 
 export const QueryParamsRequest = {
@@ -409,6 +1006,19 @@ export interface Query {
   Market(request: QueryGetMarketRequest): Promise<QueryGetMarketResponse>;
   /** Get details for all markets */
   MarketAll(request: QueryAllMarketRequest): Promise<QueryAllMarketResponse>;
+  /** Get the trading fees for market and user */
+  TradingFees(
+    request: QueryGetTradingFeesRequest
+  ): Promise<QueryGetTradingFeesResponse>;
+  /** Get Fee structure of the market */
+  FeeTiers(request: QueryGetFeeTiersRequest): Promise<QueryGetFeeTiersResponse>;
+  /** Get all stake equivalences as an array */
+  StakeEquivalenceAll(
+    request: QueryAllStakeEquivalenceRequest
+  ): Promise<QueryAllStakeEquivalenceResponse>;
+  FeeStructuresAll(
+    request: QueryAllFeeStructuresRequest
+  ): Promise<QueryAllFeeStructuresResponse>;
   /** Parameters queries the staking parameters. */
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse>;
 }
@@ -419,6 +1029,10 @@ export class QueryClientImpl implements Query {
     this.rpc = rpc;
     this.Market = this.Market.bind(this);
     this.MarketAll = this.MarketAll.bind(this);
+    this.TradingFees = this.TradingFees.bind(this);
+    this.FeeTiers = this.FeeTiers.bind(this);
+    this.StakeEquivalenceAll = this.StakeEquivalenceAll.bind(this);
+    this.FeeStructuresAll = this.FeeStructuresAll.bind(this);
     this.Params = this.Params.bind(this);
   }
   Market(request: QueryGetMarketRequest): Promise<QueryGetMarketResponse> {
@@ -442,6 +1056,62 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryAllMarketResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  TradingFees(
+    request: QueryGetTradingFeesRequest
+  ): Promise<QueryGetTradingFeesResponse> {
+    const data = QueryGetTradingFeesRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.market.Query",
+      "TradingFees",
+      data
+    );
+    return promise.then((data) =>
+      QueryGetTradingFeesResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  FeeTiers(
+    request: QueryGetFeeTiersRequest
+  ): Promise<QueryGetFeeTiersResponse> {
+    const data = QueryGetFeeTiersRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.market.Query",
+      "FeeTiers",
+      data
+    );
+    return promise.then((data) =>
+      QueryGetFeeTiersResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  StakeEquivalenceAll(
+    request: QueryAllStakeEquivalenceRequest
+  ): Promise<QueryAllStakeEquivalenceResponse> {
+    const data = QueryAllStakeEquivalenceRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.market.Query",
+      "StakeEquivalenceAll",
+      data
+    );
+    return promise.then((data) =>
+      QueryAllStakeEquivalenceResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  FeeStructuresAll(
+    request: QueryAllFeeStructuresRequest
+  ): Promise<QueryAllFeeStructuresResponse> {
+    const data = QueryAllFeeStructuresRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.market.Query",
+      "FeeStructuresAll",
+      data
+    );
+    return promise.then((data) =>
+      QueryAllFeeStructuresResponse.decode(new _m0.Reader(data))
     );
   }
 
