@@ -2172,14 +2172,14 @@ export interface ExplorerObj {
   url: string;
 }
 
-interface Asset {
+export interface Asset {
   name: string;
   description: string;
   symbol: string;
   denom: string;
   decimals: number;
   coingecko_id: string;
-  base: DenomUnit;
+  base: string;
   display: DenomUnit;
   denom_units: DenomUnit[];
   logo_URIs: LogoURIs;
@@ -2187,9 +2187,17 @@ interface Asset {
   prices?: Prices;
 }
 
-interface DenomUnit {
+export interface DenomUnit {
   denom: string;
   exponent: number;
+}
+
+export interface FeeToken{
+  denom: string,
+  fixed_min_gas_price: number,
+  low_gas_price: number,
+  average_gas_price: number,
+  high_gas_price: number
 }
 
 interface LogoURIs {
