@@ -17,9 +17,8 @@ import { AminoMsg } from "@cosmjs/amino";
 import { ETH_SECP256K1_TYPE, PUBLIC_KEY_SIGNING_TEXT, parseChainId, populateEvmTransactionDetails } from "@carbon-sdk/util/ethermint";
 import { TxTypes, registry } from "@carbon-sdk/codec";
 import { TxBody } from "cosmjs-types/cosmos/tx/v1beta1/tx";
-import { SWTHAddressOptions } from "@carbon-sdk/util/address";
+import { ETHAddress, SWTHAddressOptions } from "@carbon-sdk/util/address";
 import { constructEIP712Tx } from "@carbon-sdk/util/eip712";
-import { SimpleMap } from "@carbon-sdk/util/type";
 import { SWTHAddress } from '@carbon-sdk/util/address'
 import { LEGACY_ACCOUNTS_MAINNET, LEGACY_ACCOUNTS_TESTNET } from "./legacy-accounts";
 
@@ -142,6 +141,7 @@ export interface StoredMnemonicInfo {
   chain: EVMChainV2,
   privateKey: string,
   bech32Address: string
+  hexAddress: string
 }
 
 type LegacyAccounts = {
@@ -308,7 +308,7 @@ const OKC_TESTNET: MetaMaskChangeNetworkParam = {
  */
 export class MetaMask {
   private blockchain: EVMChain = 'Ethereum';
-  private legacyEncryptedLogin: boolean = false
+  private connectedAccount: string = ''
 
   static createMetamaskSigner(metamask: MetaMask, evmChainId: string, pubKeyBase64: string, addressOptions: SWTHAddressOptions): CarbonSigner {
     const signDirect = async (_: string, doc: Models.Tx.SignDoc) => {
@@ -524,6 +524,11 @@ export class MetaMask {
     return this.blockchain;
   }
 
+  async syncConnectedAccount() {
+    this.connectedAccount = await this.defaultAccount()
+    return this.connectedAccount
+  }
+
   async syncBlockchain(): Promise<MetaMaskSyncResult> {
     const chainIdHex = (await this.getAPI()?.request({ method: "eth_chainId" })) as string;
     const chainId = !!chainIdHex ? parseInt(chainIdHex, 16) : undefined;
@@ -604,11 +609,12 @@ export class MetaMask {
         const mnemonic = await this.decryptCipher(mnemonicCipher) ?? ''
         const privateKey = `0x${SWTHAddress.mnemonicToPrivateKey(mnemonic).toString('hex').toLowerCase()}`
         const bech32Address = SWTHAddress.privateKeyToAddress(SWTHAddress.mnemonicToPrivateKey(mnemonic), { network: this.network })
-
+        const hexAddress = ETHAddress.privateKeyToAddress(SWTHAddress.mnemonicToPrivateKey(mnemonic))
         result = {
           chain: connectedBlockchain,
           privateKey,
-          bech32Address
+          bech32Address,
+          hexAddress,
         }
       }
     }
@@ -765,8 +771,6 @@ export class MetaMask {
 
     const mnemonic = this.decryptCipher(cipherTextHex)
 
-    this.legacyEncryptedLogin = true
-
     return mnemonic;
   }
 
@@ -875,9 +879,5 @@ export class MetaMask {
     }
 
     return contractHash;
-  }
-
-  public isLegacyEncryptedLogin() {
-    return this.legacyEncryptedLogin
   }
 }
