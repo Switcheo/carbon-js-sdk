@@ -7,7 +7,7 @@ import { AppCurrency, Currency } from "@keplr-wallet/types";
 import BigNumber from "bignumber.js";
 import Long from "long";
 import BaseModule from "./base";
-
+import { FeeToken, Asset, DenomUnit } from "@carbon-sdk/constant";
 export class IBCModule extends BaseModule {
   /** @deprecated please use sendIbcTransferUpdated instead */
   public async sendIBCTransfer(params: IBCModule.SendIBCTransferParams, msgOpts?: CarbonTx.SignTxOpts) {
@@ -84,11 +84,9 @@ export class IBCModule extends BaseModule {
     const denomTracesArr = Object.values(tokenClient.denomTraces);
     const chainsResponse = await fetch(`https://chains.cosmos.directory/`);
     const chainsData = (await chainsResponse.json() as CosmosChainsObj);
-    // chainsData.chains.forEach((chainData: ChainRegistryItem) => {
-    //   console.log(chainData.chain_id, chainData.prices);
-    // })
-
     const chainInfoMap: TypeUtils.SimpleMap<ExtendedChainInfo> = {};
+
+
     for (let ibc = 0; ibc < ibcBridges.length; ibc++) {
       const ibcBridge = ibcBridges[ibc];
       const chainName = ibcBridge.chain_id_name.match(ibcNetworkRegex)?.[1] ?? "";
@@ -172,22 +170,6 @@ export class IBCModule extends BaseModule {
     const chainInfoResponse = await fetch(`https://raw.githubusercontent.com/chainapsis/keplr-chain-registry/master/cosmos/${chainName}.json`);
     const chainInfoJson = await chainInfoResponse.json();
     return chainInfoJson as ChainInfo;
-    // try {
-    //   const chainInfoResponse = await fetch(`https://raw.githubusercontent.com/chainapsis/keplr-chain-registry/master/cosmos/${chainName}.json`);
-    //   const chainInfoJson = await chainInfoResponse.json();
-    //   return chainInfoJson as ChainInfo;
-    // } catch (err) { }
-    // console.log("this happens");
-    // try {
-    //   const assetListResponse = await fetch(`https://registry.ping.pub/${bridgeChainName}/assetlist.json`);
-    //   const assetListJson = await assetListResponse.json();
-    //   const chainResponse = await fetch(`https://registry.ping.pub/${bridgeChainName}/chain.json`);
-    //   const chainJson = await chainResponse.json();
-    //   console.log("assetListJson", assetListJson);
-    //   console.log("chainJson", chainJson);
-    // } catch (err) { }
-
-    // return IBCUtils.EmbedChainInfos[chainId];
   }
 
   async getAssembledChainInfo(chainsData: ChainRegistryItem[], chainId: string, bridgeChainName: string): Promise<ChainInfo | undefined> {
@@ -200,88 +182,88 @@ export class IBCModule extends BaseModule {
 
     if (selectedChainData) {
 
-      console.log("INFO: selectedChainDataName",selectedChainData.chain_name);
-
-
-      const chainInfoResponse = await fetch(`https://raw.githubusercontent.com/cosmos/chain-registry/master/kujira/chain.json`);
+      const chainInfoResponse = await fetch(`https://raw.githubusercontent.com/cosmos/chain-registry/master/${selectedChainData.chain_name}/chain.json`);
       const chainInfoJson = await chainInfoResponse.json();
 
-      const chainAssetListResponse = await fetch(`https://raw.githubusercontent.com/cosmos/chain-registry/master/kujira/assetlist.json`);
+      const chainAssetListResponse = await fetch(`https://raw.githubusercontent.com/cosmos/chain-registry/master/${selectedChainData.chain_name}/assetlist.json`);
       const assetListJson = await chainAssetListResponse.json();
-
-  
-      interface StakingToken {
-        denom: string;
-        // Define other properties here if any
-      }
       const features: string[] = [];
       if (selectedChainData.cosmwasm_enabled) {
         features.push("cosmwasm");
       }
 
-      // Extract the staking currency denomination from chainInfoJson
+      // Extract the staking currency denomination from chainInfoJson (min. denom)
       const stakingCurrencyDenom = chainInfoJson['staking']['staking_tokens'][0]['denom'];
+      
+      // Find the asset that matches the stakingCurrencyDenom
+      const stakingAsset = assetListJson.assets.find((asset: Asset) => {
+        return asset.denom_units.some((unit: any) => unit.denom === stakingCurrencyDenom);
+      });
+
+      // Find the highest denom unit
+      const maxExponentDenomUnit = stakingAsset.denom_units.reduce((prev: DenomUnit, current: DenomUnit) => {
+        return (prev.exponent > current.exponent) ? prev : current;
+      });
 
       let stakeCurrency: Currency = {
-        coinDenom: "",
-        coinMinimalDenom: "",
-        coinDecimals: 0,
-        coinGeckoId: "",
-        coinImageUrl: "",
+        coinDenom: maxExponentDenomUnit.denom.toUpperCase(),
+        coinMinimalDenom: stakingCurrencyDenom,
+        coinDecimals: maxExponentDenomUnit.exponent,
+        coinGeckoId: stakingAsset.coingecko_id,
       };
-      interface Asset {
-        denom_units: Currency[];
-        base: string;
-        display: string;
-        coingecko_id: string;
-      }
+
+
       const currencies = assetListJson.assets.map((asset: Asset) => {
         // Find the denom_unit with the maximum exponent
-        const denomUnit = asset.denom_units.reduce((prev, current) => {
-          return (prev.coinDecimals > current.coinDecimals) ? prev : current
+        const maxExponentDenomUnit = asset.denom_units.reduce((prev, current) => {
+          return (prev.exponent > current.exponent) ? prev : current;
         });
       
         return {
+          coinDenom: maxExponentDenomUnit.denom.toUpperCase(),
           coinMinimalDenom: asset.base,
-          coinDenom: asset.display,
-          coinDecimals: denomUnit.coinDecimals, // use the exponent of the denom_unit with the maximum exponent
+          coinDecimals: maxExponentDenomUnit.exponent,
           coinGeckoId: asset.coingecko_id,
-        }
+        };
       });
       
-      
 
-      let stakeDenoms = chainInfoJson.staking.staking_tokens.map((token: StakingToken) => token.denom);
+      const feeCurrencies = chainInfoJson.fees.fee_tokens.map((feeToken: FeeToken) => {
+        // Find the corresponding asset for the fee token
+        const correspondingAsset = assetListJson.assets.find((asset: Asset) => asset.base === feeToken.denom);
+        if (!correspondingAsset) {
+          throw new Error(`No corresponding asset found for fee token denom: ${feeToken.denom}`);
+        }
+        // Find the denom_unit with the maximum exponent
+        const maxExponentDenomUnit = correspondingAsset.denom_units.reduce((prev: DenomUnit, current:DenomUnit) => {
+          return (prev.exponent > current.exponent) ? prev : current;
+        });
+        return {
+          coinDenom: maxExponentDenomUnit.denom.toUpperCase(),
+          coinMinimalDenom: feeToken.denom,
+          coinDecimals: maxExponentDenomUnit.exponent,
+          coinGeckoId: correspondingAsset.coingecko_id,
+          gasPriceStep: {
+            low: feeToken.low_gas_price,
+            average: feeToken.average_gas_price,
+            high: feeToken.high_gas_price,
+          }
+        };
+      });
       
-      for (let i = 0; i < assetListJson.assets.length; i++) {
-          let asset = assetListJson.assets[i];
-          for (let j = 0; j < asset.denom_units.length; j++) {
-              let denomUnit = asset.denom_units[j];
-              if (stakeDenoms.includes(denomUnit.denom)) {
-                  stakeCurrency = {
-                      coinDenom: asset.display.toUpperCase(),
-                      coinMinimalDenom: denomUnit.denom,
-                      coinDecimals: denomUnit.exponent,
-                      coinGeckoId: asset.coingecko_id,
-
-                  };
-                  break;
-              }
-          }
-          if (Object.keys(stakeCurrency).length > 0) {
-              break;
-          }
-      }
         return {
           rpc: chainInfoJson['apis']['rpc'][0]['address'],
           rest: chainInfoJson['apis']['rest'][0]['address'],
           chainId: chainInfoJson['chain_id'],
           chainName: chainInfoJson['chain_name'],
           stakeCurrency: stakeCurrency,
-          bip44: chainInfoJson['slip44'],
+          bip44: 
+          {
+            coinType: chainInfoJson['slip44']
+          },
           bech32Config:  IBCAddress.defaultBech32Config(chainInfoJson['bech32_prefix']) ,
           currencies: currencies,
-          feeCurrencies: currencies,
+          feeCurrencies: feeCurrencies,
 
     
      }
