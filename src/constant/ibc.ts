@@ -1,5 +1,4 @@
 import { SimpleMap } from "@carbon-sdk/util/type";
-// import { Updated } from "@chain-registry/types";
 import { AppCurrency, Bech32Config, ChainInfo } from "@keplr-wallet/types";
 import * as bech32 from "bech32";
 import { CARBON_GAS_PRICE, GasPriceStep } from "./generic";
@@ -2192,7 +2191,7 @@ export interface DenomUnit {
   exponent: number;
 }
 
-export interface FeeToken{
+export interface FeeToken {
   denom: string,
   fixed_min_gas_price: number,
   low_gas_price: number,
