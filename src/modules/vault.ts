@@ -98,6 +98,24 @@ export class VaultModule extends BaseModule {
       opts
     );
   }
+
+  public async registerToPlPool(params: VaultModule.RegisterToPlPoolParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+    
+    const value = Models.MsgRegisterToPlPool.fromPartial({
+      creator: params.creator,
+      poolId: params.poolId,
+      marketId: params.marketId,
+    })
+
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgRegisterToPlPool,
+        value,
+      },
+      opts
+    );
+  }
 }
 
 export namespace VaultModule {
@@ -134,5 +152,11 @@ export namespace VaultModule {
     poolId: Long;
     shareAmount: string;
     minReceiveAmount: string;
+  }
+
+  export interface RegisterToPlPoolParams {
+    creator: string;
+    poolId: Long;
+    marketId: string;
   }
 }
