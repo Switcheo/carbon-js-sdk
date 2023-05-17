@@ -688,6 +688,10 @@ export class CarbonWallet {
     }
   }
 
+  public isEvmWallet() {
+    return this.providerAgent === ProviderAgent.MetamaskExtension
+  }
+
   private estimateTxFee(messages: readonly EncodeObject[], feeDenom: string = this.defaultFeeDenom) {
     const denomGasPrice = this.getGasPrice(feeDenom);
     let totalGasCost = messages.reduce((result, message) => {

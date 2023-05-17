@@ -2,6 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Params, ControlledParams, Market } from "./market";
+import { StakeEquivalence, FeeStructure } from "./fee";
 
 export const protobufPackage = "Switcheo.carbon.market";
 
@@ -16,6 +17,8 @@ export interface GenesisState {
   params?: Params;
   controlledParams?: ControlledParams;
   marketNameSequence: Long;
+  stakeEquivalences: StakeEquivalence[];
+  feeStructures: FeeStructure[];
 }
 
 const baseGenesisState: object = { marketNameSequence: Long.ZERO };
@@ -40,6 +43,12 @@ export const GenesisState = {
     if (!message.marketNameSequence.isZero()) {
       writer.uint32(32).int64(message.marketNameSequence);
     }
+    for (const v of message.stakeEquivalences) {
+      StakeEquivalence.encode(v!, writer.uint32(42).fork()).ldelim();
+    }
+    for (const v of message.feeStructures) {
+      FeeStructure.encode(v!, writer.uint32(50).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -48,6 +57,8 @@ export const GenesisState = {
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseGenesisState } as GenesisState;
     message.markets = [];
+    message.stakeEquivalences = [];
+    message.feeStructures = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -65,6 +76,16 @@ export const GenesisState = {
           break;
         case 4:
           message.marketNameSequence = reader.int64() as Long;
+          break;
+        case 5:
+          message.stakeEquivalences.push(
+            StakeEquivalence.decode(reader, reader.uint32())
+          );
+          break;
+        case 6:
+          message.feeStructures.push(
+            FeeStructure.decode(reader, reader.uint32())
+          );
           break;
         default:
           reader.skipType(tag & 7);
@@ -92,6 +113,12 @@ export const GenesisState = {
       object.marketNameSequence !== null
         ? Long.fromString(object.marketNameSequence)
         : Long.ZERO;
+    message.stakeEquivalences = (object.stakeEquivalences ?? []).map((e: any) =>
+      StakeEquivalence.fromJSON(e)
+    );
+    message.feeStructures = (object.feeStructures ?? []).map((e: any) =>
+      FeeStructure.fromJSON(e)
+    );
     return message;
   },
 
@@ -114,6 +141,20 @@ export const GenesisState = {
       (obj.marketNameSequence = (
         message.marketNameSequence || Long.ZERO
       ).toString());
+    if (message.stakeEquivalences) {
+      obj.stakeEquivalences = message.stakeEquivalences.map((e) =>
+        e ? StakeEquivalence.toJSON(e) : undefined
+      );
+    } else {
+      obj.stakeEquivalences = [];
+    }
+    if (message.feeStructures) {
+      obj.feeStructures = message.feeStructures.map((e) =>
+        e ? FeeStructure.toJSON(e) : undefined
+      );
+    } else {
+      obj.feeStructures = [];
+    }
     return obj;
   },
 
@@ -133,6 +174,12 @@ export const GenesisState = {
       object.marketNameSequence !== null
         ? Long.fromValue(object.marketNameSequence)
         : Long.ZERO;
+    message.stakeEquivalences = (object.stakeEquivalences ?? []).map((e) =>
+      StakeEquivalence.fromPartial(e)
+    );
+    message.feeStructures = (object.feeStructures ?? []).map((e) =>
+      FeeStructure.fromPartial(e)
+    );
     return message;
   },
 };
