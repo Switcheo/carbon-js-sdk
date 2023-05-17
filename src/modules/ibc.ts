@@ -178,22 +178,16 @@ export class IBCModule extends BaseModule {
 
   async getAssembledChainInfo(chainsData: ChainRegistryItem[], chainId: string, bridgeChainName: string): Promise<ChainInfo | undefined> {
     const selectedChainData = chainsData.find((chainData: ChainRegistryItem) => {
-
-      const d = chainData.chain_name.includes(bridgeChainName.toLowerCase()) || chainData.chain_id.includes(bridgeChainName.toLowerCase())
-
       return chainData.chain_name.includes(bridgeChainName.toLowerCase()) || chainData.chain_id.includes(bridgeChainName.toLowerCase());
     });
 
     if (selectedChainData) {
-
-
       try {
-        
-      const chainInfoResponse = await fetch(`https://raw.githubusercontent.com/cosmos/chain-registry/master/${selectedChainData.chain_name}/chain.json`);
-      const chainInfoJson = await chainInfoResponse.json();
-      const chainAssetListResponse = await fetch(`https://raw.githubusercontent.com/cosmos/chain-registry/master/${selectedChainData.chain_name}/assetlist.json`);
-      const assetListJson = await chainAssetListResponse.json();
-      const features: string[] = [];
+        const chainInfoResponse = await fetch(`https://raw.githubusercontent.com/cosmos/chain-registry/master/${selectedChainData.chain_name}/chain.json`);
+        const chainInfoJson = await chainInfoResponse.json();
+        const chainAssetListResponse = await fetch(`https://raw.githubusercontent.com/cosmos/chain-registry/master/${selectedChainData.chain_name}/assetlist.json`);
+        const assetListJson = await chainAssetListResponse.json();
+        const features: string[] = [];
       if (selectedChainData.cosmwasm_enabled) {
         features.push("cosmwasm");
       }
