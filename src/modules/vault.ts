@@ -1,5 +1,4 @@
-import { PoolDetails, QueryAllPlPoolsResponse, QueryPLPoolInfoResponse, UpdatePlPoolParams } from "@carbon-sdk/codec";
-import { SimpleMap } from "@carbon-sdk/util/type";
+import { PoolDetails, QueryAllPlPoolsResponse, UpdatePlPoolParams } from "@carbon-sdk/codec";
 import { CarbonTx, Models } from "..";
 import BaseModule from "./base";
 
@@ -7,11 +6,6 @@ export class VaultModule extends BaseModule {
   public async getPerpPools(): Promise<PoolDetails[]> {
     const fetchDataResponse: QueryAllPlPoolsResponse = await this.sdkProvider.query.perpetualpool.PoolAll({});
     return fetchDataResponse?.pools ?? []
-  }
-
-  public async getPerpPoolInfo(poolId: string): Promise<QueryPLPoolInfoResponse> {
-    const fetchDataResponse: QueryPLPoolInfoResponse = await this.sdkProvider.query.perpetualpool.PoolInfo({poolId});
-    return fetchDataResponse
   }
 
   public async createPerpertualsPool(params: VaultModule.CreatePerpetualPoolParams, opts?: CarbonTx.SignTxOpts) {
