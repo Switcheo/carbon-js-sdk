@@ -10,7 +10,7 @@ export class VaultModule extends BaseModule {
 
   public async getPerpPoolInfo(poolId: string): Promise<QueryPLPoolInfoResponse> {
     const fetchDataResponse: QueryPLPoolInfoResponse = await this.sdkProvider.query.perpetualpool.PoolInfo({poolId});
-    return fetchDataResponse
+    return fetchDataResponse ?? []
   }
 
   public async createPerpertualsPool(params: VaultModule.CreatePerpetualPoolParams, opts?: CarbonTx.SignTxOpts) {
