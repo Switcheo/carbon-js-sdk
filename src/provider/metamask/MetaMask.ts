@@ -582,9 +582,11 @@ export class MetaMask {
     const legacyAccounts: any = network === Network.MainNet ? LEGACY_ACCOUNTS_MAINNET : LEGACY_ACCOUNTS_TESTNET
     const legacyAccBlockchains = []
     for (const [blockchain] of Object.entries(legacyAccounts)) {
-      const legacyAccountExists = legacyAccounts[blockchain].includes(defaultAccount)
-      if (legacyAccountExists) {
-        legacyAccBlockchains.push(blockchain)
+      for (const address of legacyAccounts[blockchain]) {
+        if (address.toLowerCase() === defaultAccount.toLowerCase()) {
+          legacyAccBlockchains.push(blockchain)
+          break
+        }
       }
     }
     if (legacyAccBlockchains.length > 0) {
