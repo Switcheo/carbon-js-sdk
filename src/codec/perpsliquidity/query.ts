@@ -64,6 +64,18 @@ export interface QueryAllPlPoolAddressResponse_AddressesEntry {
   value: string;
 }
 
+export interface QueryPLPoolInfoRequest {
+  poolId: string;
+}
+
+export interface QueryPLPoolInfoResponse {
+  totalShareAmount: string;
+  totalUnderlyingAmount: string;
+  availableAmount: string;
+  totalInPositionAmount: string;
+  totalUpnlAmount: string;
+}
+
 const baseQueryParamsRequest: object = {};
 
 export const QueryParamsRequest = {
@@ -953,12 +965,197 @@ export const QueryAllPlPoolAddressResponse_AddressesEntry = {
   },
 };
 
+const baseQueryPLPoolInfoRequest: object = { poolId: "" };
+
+export const QueryPLPoolInfoRequest = {
+  encode(
+    message: QueryPLPoolInfoRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.poolId !== "") {
+      writer.uint32(10).string(message.poolId);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryPLPoolInfoRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseQueryPLPoolInfoRequest } as QueryPLPoolInfoRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.poolId = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryPLPoolInfoRequest {
+    const message = { ...baseQueryPLPoolInfoRequest } as QueryPLPoolInfoRequest;
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? String(object.poolId)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryPLPoolInfoRequest): unknown {
+    const obj: any = {};
+    message.poolId !== undefined && (obj.poolId = message.poolId);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryPLPoolInfoRequest>
+  ): QueryPLPoolInfoRequest {
+    const message = { ...baseQueryPLPoolInfoRequest } as QueryPLPoolInfoRequest;
+    message.poolId = object.poolId ?? "";
+    return message;
+  },
+};
+
+const baseQueryPLPoolInfoResponse: object = {
+  totalShareAmount: "",
+  totalUnderlyingAmount: "",
+  availableAmount: "",
+  totalInPositionAmount: "",
+  totalUpnlAmount: "",
+};
+
+export const QueryPLPoolInfoResponse = {
+  encode(
+    message: QueryPLPoolInfoResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.totalShareAmount !== "") {
+      writer.uint32(10).string(message.totalShareAmount);
+    }
+    if (message.totalUnderlyingAmount !== "") {
+      writer.uint32(18).string(message.totalUnderlyingAmount);
+    }
+    if (message.availableAmount !== "") {
+      writer.uint32(26).string(message.availableAmount);
+    }
+    if (message.totalInPositionAmount !== "") {
+      writer.uint32(34).string(message.totalInPositionAmount);
+    }
+    if (message.totalUpnlAmount !== "") {
+      writer.uint32(42).string(message.totalUpnlAmount);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryPLPoolInfoResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryPLPoolInfoResponse,
+    } as QueryPLPoolInfoResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.totalShareAmount = reader.string();
+          break;
+        case 2:
+          message.totalUnderlyingAmount = reader.string();
+          break;
+        case 3:
+          message.availableAmount = reader.string();
+          break;
+        case 4:
+          message.totalInPositionAmount = reader.string();
+          break;
+        case 5:
+          message.totalUpnlAmount = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryPLPoolInfoResponse {
+    const message = {
+      ...baseQueryPLPoolInfoResponse,
+    } as QueryPLPoolInfoResponse;
+    message.totalShareAmount =
+      object.totalShareAmount !== undefined && object.totalShareAmount !== null
+        ? String(object.totalShareAmount)
+        : "";
+    message.totalUnderlyingAmount =
+      object.totalUnderlyingAmount !== undefined &&
+      object.totalUnderlyingAmount !== null
+        ? String(object.totalUnderlyingAmount)
+        : "";
+    message.availableAmount =
+      object.availableAmount !== undefined && object.availableAmount !== null
+        ? String(object.availableAmount)
+        : "";
+    message.totalInPositionAmount =
+      object.totalInPositionAmount !== undefined &&
+      object.totalInPositionAmount !== null
+        ? String(object.totalInPositionAmount)
+        : "";
+    message.totalUpnlAmount =
+      object.totalUpnlAmount !== undefined && object.totalUpnlAmount !== null
+        ? String(object.totalUpnlAmount)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryPLPoolInfoResponse): unknown {
+    const obj: any = {};
+    message.totalShareAmount !== undefined &&
+      (obj.totalShareAmount = message.totalShareAmount);
+    message.totalUnderlyingAmount !== undefined &&
+      (obj.totalUnderlyingAmount = message.totalUnderlyingAmount);
+    message.availableAmount !== undefined &&
+      (obj.availableAmount = message.availableAmount);
+    message.totalInPositionAmount !== undefined &&
+      (obj.totalInPositionAmount = message.totalInPositionAmount);
+    message.totalUpnlAmount !== undefined &&
+      (obj.totalUpnlAmount = message.totalUpnlAmount);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryPLPoolInfoResponse>
+  ): QueryPLPoolInfoResponse {
+    const message = {
+      ...baseQueryPLPoolInfoResponse,
+    } as QueryPLPoolInfoResponse;
+    message.totalShareAmount = object.totalShareAmount ?? "";
+    message.totalUnderlyingAmount = object.totalUnderlyingAmount ?? "";
+    message.availableAmount = object.availableAmount ?? "";
+    message.totalInPositionAmount = object.totalInPositionAmount ?? "";
+    message.totalUpnlAmount = object.totalUpnlAmount ?? "";
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Parameters queries the parameters of the module. */
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse>;
   /** Get Pool details for a particular id */
   Pool(request: QueryGetPlPoolRequest): Promise<QueryGetPlPoolResponse>;
+  /** Get statistical amounts for a particular pool id */
+  PoolInfo(request: QueryPLPoolInfoRequest): Promise<QueryPLPoolInfoResponse>;
   /** Get all Pool details */
   PoolAll(request: QueryAllPlPoolsRequest): Promise<QueryAllPlPoolsResponse>;
   /** Get denom => pool_id mappings */
@@ -977,6 +1174,7 @@ export class QueryClientImpl implements Query {
     this.rpc = rpc;
     this.Params = this.Params.bind(this);
     this.Pool = this.Pool.bind(this);
+    this.PoolInfo = this.PoolInfo.bind(this);
     this.PoolAll = this.PoolAll.bind(this);
     this.PoolMappings = this.PoolMappings.bind(this);
     this.PoolAddressAll = this.PoolAddressAll.bind(this);
@@ -1002,6 +1200,18 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryGetPlPoolResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  PoolInfo(request: QueryPLPoolInfoRequest): Promise<QueryPLPoolInfoResponse> {
+    const data = QueryPLPoolInfoRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.perpsliquidity.Query",
+      "PoolInfo",
+      data
+    );
+    return promise.then((data) =>
+      QueryPLPoolInfoResponse.decode(new _m0.Reader(data))
     );
   }
 
