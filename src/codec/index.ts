@@ -1129,7 +1129,7 @@ export { Params as MarketstatsParams } from "./marketstats/params";
 export { MarketStats } from "./marketstats/marketstats";
 export { MsgCreatePlPool, MsgCreatePlPoolResponse, MsgUpdatePlPool, MsgUpdatePlPoolResponse, MsgRegisterToPlPool, MsgRegisterToPlPoolResponse, MsgDeregisterFromPlPool, MsgDeregisterFromPlPoolResponse, MsgDepositToPlPool, MsgDepositToPlPoolResponse, MsgWithdrawFromPlPool, MsgWithdrawFromPlPoolResponse, MsgUpdateMarketConfig, MsgUpdateMarketConfigResponse } from "./perpsliquidity/tx";
 export { PlPool, UpdatePlPoolParams, PoolDetails, Quote, MarketConfig, UpdateMarketConfigParams, DepositToPoolParams, WithdrawFromPoolParams } from "./perpsliquidity/pool";
-export { QueryParamsRequest as QueryPerpsliquidityParamsRequest, QueryParamsResponse as QueryPerpsliquidityParamsResponse, QueryGetPlPoolRequest, QueryGetPlPoolResponse, QueryAllPlPoolsRequest, QueryAllPlPoolsResponse, QueryPlPoolMappingsRequest, QueryPlPoolMappingsResponse, QueryPlPoolMappingsResponse_PoolMappingsEntry, QueryAllPlPoolAddressRequest, QueryAllPlPoolAddressResponse, QueryAllPlPoolAddressResponse_AddressesEntry } from "./perpsliquidity/query";
+export { QueryParamsRequest as QueryPerpsliquidityParamsRequest, QueryParamsResponse as QueryPerpsliquidityParamsResponse, QueryGetPlPoolRequest, QueryGetPlPoolResponse, QueryAllPlPoolsRequest, QueryAllPlPoolsResponse, QueryPlPoolMappingsRequest, QueryPlPoolMappingsResponse, QueryPlPoolMappingsResponse_PoolMappingsEntry, QueryAllPlPoolAddressRequest, QueryAllPlPoolAddressResponse, QueryAllPlPoolAddressResponse_AddressesEntry, QueryPLPoolInfoRequest, QueryPLPoolInfoResponse } from "./perpsliquidity/query";
 export { SetPoolEvent, NewPoolEvent, UpdatePoolEvent, RegisterToPoolEvent, DeregisterFromPoolEvent, SetMarketConfigEvent, DepositToPoolEvent, WithdrawFromPoolEvent } from "./perpsliquidity/event";
 export { Params as PerpsliquidityParams } from "./perpsliquidity/params";
 export { QueryAccountBalanceRequest, QueryAccountBalanceResponse } from "./evmbank/query";
@@ -22692,7 +22692,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "max_quotable_liquidity_ratio",
+        "name": "max_liquidity_ratio",
         "type": "string"
       },
       {
@@ -22707,7 +22707,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "UpdateMarketConfigParams": [
       {
-        "name": "max_quotable_liquidity_ratio",
+        "name": "max_liquidity_ratio",
         "type": "string"
       },
       {
@@ -22978,6 +22978,34 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "pagination",
         "type": "PageResponse",
         "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryPLPoolInfoRequest": [
+      {
+        "name": "pool_id",
+        "type": "string"
+      }
+    ],
+    "QueryPLPoolInfoResponse": [
+      {
+        "name": "total_share_amount",
+        "type": "string"
+      },
+      {
+        "name": "total_underlying_amount",
+        "type": "string"
+      },
+      {
+        "name": "available_amount",
+        "type": "string"
+      },
+      {
+        "name": "total_in_position_amount",
+        "type": "string"
+      },
+      {
+        "name": "total_upnl_amount",
+        "type": "string"
       }
     ],
     "MsgCreatePlPool": [
