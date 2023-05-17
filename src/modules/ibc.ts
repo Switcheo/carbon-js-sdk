@@ -90,14 +90,13 @@ export class IBCModule extends BaseModule {
     for (let ibc = 0; ibc < ibcBridges.length; ibc++) {
       const ibcBridge = ibcBridges[ibc];
       const chainName = ibcBridge.chain_id_name.match(ibcNetworkRegex)?.[1] ?? "";
-      
       let chainInfo: ChainInfo | undefined;
-      try {
-        chainInfo = await this.getChainInfo(chainName);
-      } catch (err) {
+      chainInfo = await this.getChainInfo(chainName);
+      if (chainInfo === undefined){
         const fallbackChainInfo = await this.getAssembledChainInfo(chainsData.chains, ibcBridge.chain_id_name, ibcBridge.chainName);
         chainInfo = fallbackChainInfo;
       }
+
 
       if (chainInfo) {
         const isCosmWasm = chainInfo.features?.includes("cosmwasm");
@@ -187,9 +186,11 @@ export class IBCModule extends BaseModule {
 
     if (selectedChainData) {
 
+
+      try {
+        
       const chainInfoResponse = await fetch(`https://raw.githubusercontent.com/cosmos/chain-registry/master/${selectedChainData.chain_name}/chain.json`);
       const chainInfoJson = await chainInfoResponse.json();
-
       const chainAssetListResponse = await fetch(`https://raw.githubusercontent.com/cosmos/chain-registry/master/${selectedChainData.chain_name}/assetlist.json`);
       const assetListJson = await chainAssetListResponse.json();
       const features: string[] = [];
@@ -223,7 +224,6 @@ export class IBCModule extends BaseModule {
         const maxExponentDenomUnit = asset.denom_units.reduce((prev, current) => {
           return (prev.exponent > current.exponent) ? prev : current;
         });
-      
         return {
           coinDenom: maxExponentDenomUnit.denom.toUpperCase(),
           coinMinimalDenom: asset.base,
@@ -261,17 +261,24 @@ export class IBCModule extends BaseModule {
           rest: chainInfoJson['apis']['rest'][0]['address'],
           chainId: chainInfoJson['chain_id'],
           chainName: chainInfoJson['chain_name'],
-          stakeCurrency: stakeCurrency,
           bip44: 
           {
             coinType: chainInfoJson['slip44']
           },
           bech32Config:  IBCAddress.defaultBech32Config(chainInfoJson['bech32_prefix']) ,
+          stakeCurrency: stakeCurrency,
           currencies: currencies,
           feeCurrencies: feeCurrencies,
 
-    
+          features: [
+            "ibc-transfer",
+            "ibc-go"
+        ]
      }
+    } catch(error){
+      return IBCUtils.EmbedChainInfos[chainId];
+    }
+
     } else {
       return IBCUtils.EmbedChainInfos[chainId];
     }
