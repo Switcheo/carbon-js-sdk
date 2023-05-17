@@ -1,5 +1,4 @@
 import { PoolDetails, QueryAllPlPoolsResponse, QueryPLPoolInfoResponse, UpdatePlPoolParams } from "@carbon-sdk/codec";
-import { SimpleMap } from "@carbon-sdk/util/type";
 import { CarbonTx, Models } from "..";
 import BaseModule from "./base";
 
