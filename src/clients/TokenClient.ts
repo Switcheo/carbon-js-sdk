@@ -74,13 +74,12 @@ class TokenClient {
     this.setCommonAssetConfig();
     await this.reloadWrapperMap();
     await this.reloadTokens();
-    await this.reloadDenomGeckoMap();
     await this.reloadDenomTraces();
     await this.getBridges();
 
     // non-blocking reload
     try {
-      this.reloadUSDValues();
+      this.reloadDenomGeckoMap().finally(() => this.reloadUSDValues());
     } catch (error) {
       console.error("failed to reload usd values");
       console.error(error);
@@ -707,15 +706,16 @@ class TokenClient {
     const carbonTokenPrices = await this.getUSDValuesFromPricingModule();
     const uscStablecoin = this.getNativeStablecoin();
 
+    // add carbon token prices first
+    Object.entries(carbonTokenPrices).forEach(([key, value]: [string, BigNumber]) => {
+      this.usdValues[key] = value;
+    });
+
     //store price based on denoms
     for (const denom of denoms) {
-      const carbonTokenPrice = carbonTokenPrices[denom];
       // if token price in pricing module exists for denom, return that as usd price first
       // else check coingecko
-      if (carbonTokenPrice) {
-        this.usdValues[denom] = carbonTokenPrice;
-        continue;
-      }
+      if (this.usdValues[denom]) continue;
 
       const coinId = this.geckoTokenNames[denom] ?? denom;
       const price = NumberUtils.bnOrZero(geckoIdToUsdPriceMap?.[coinId]?.usd)!;

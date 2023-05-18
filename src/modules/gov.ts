@@ -49,7 +49,7 @@ export class GovModule extends BaseModule {
 
     return await wallet.sendTx(
       {
-        typeUrl: CarbonTx.Types.MsgGovV1beta1SubmitProposal,
+        typeUrl: CarbonTx.Types.MsgSubmitProposal,
         value: params,
       },
       opts
