@@ -3,9 +3,7 @@ import { CarbonTx } from "@carbon-sdk/util";
 import BaseModule from "./base";
 import { BigNumber } from "bignumber.js";
 import { Duration } from "@carbon-sdk/codec/google/protobuf/duration";
-import Long from "long";
-import { FeeCategory, FeeTier, StakeEquivalence } from "@carbon-sdk/codec";
-import { StringChain } from "lodash";
+import { FeeCategory, FeeTier } from "@carbon-sdk/codec";
 
 export class MarketModule extends BaseModule {
   public async update(params: MarketModule.UpdateMarketParams, opts?: CarbonTx.SignTxOpts) {
