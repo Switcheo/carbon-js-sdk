@@ -14,7 +14,7 @@ console.log(`import { MsgExecuteContract } from "cosmjs-types/cosmwasm/wasm/v1/t
 
 const modules: { [name: string]: string[] } = {};
 // TODO: To remove hardcode conditional once a better way to fix MsgSend import is found
-const currentMsgDefinitions: string[] = ['MsgSend', 'MsgSendResponse'] 
+const currentMsgDefinitions: string[] = ['MsgSend', 'MsgSendResponse']
 for (const moduleFile of codecFiles) {
 
   if (
@@ -32,11 +32,7 @@ for (const moduleFile of codecFiles) {
 
   const codecModule = require(`${pwd}/${moduleFile}`);
   let messages = Object.keys(codecModule).filter((key) => {
-    if (moduleFile.includes("ethermint")) {
-      return (!["protobufPackage", "GenesisState"].includes(key) && !key.endsWith("ClientImpl"));
-    } else {
-      return (key.startsWith("Msg") && key !== "MsgClientImpl") || key.startsWith("Header") || key.endsWith("Proposal")
-    }
+    return (key.startsWith("Msg") && key !== "MsgClientImpl") || key.startsWith("Header") || key.endsWith("Proposal")
   });
   if (messages.length) {
     if (modules[codecModule.protobufPackage]) {
@@ -52,7 +48,6 @@ for (const moduleFile of codecFiles) {
       || moduleFile.includes('src/codec/ccm/')
       || moduleFile.includes('src/codec/headersync/')
       || moduleFile.includes('src/codec/lockproxy/')
-      || moduleFile.includes("ethermint")
     )) {
       updateImportsAlias(messages, codecModule.protobufPackage, currentMsgDefinitions)
 
@@ -83,10 +78,6 @@ const cosmosModelsImportPath = path.relative(registryFile, cosmosModelsFile);
 console.log(`export * from '${cosmosModelsImportPath.replace(/^\.\./i, '.').replace(/\.ts$/i, '')}';`);
 
 console.log("");
-const ethermintModelsImportPath = path.relative(registryFile, ethermintModelsFile);
-console.log(`import * as Ethermint from '${ethermintModelsImportPath.replace(/^\.\./i, '.').replace(/\.ts$/i, '')}';`);
-console.log(`export * as Ethermint from '${ethermintModelsImportPath.replace(/^\.\./i, '.').replace(/\.ts$/i, '')}';`);
-
 console.log("");
 const ibcModelsImportPath = path.relative(registryFile, ibcModelsFile);
 console.log(`export * as IBC from '${ibcModelsImportPath.replace(/^\.\./i, '.').replace(/\.ts$/i, '')}';`);
@@ -107,26 +98,15 @@ for (const packageName in modules) {
     const messageAlias = key.split(" ")[2] // "XXX as XXXXX"
     const typeUrl = messageAlias ? `/${packageName}.${key.split(" ")[0].trim()}` : `/${packageName}.${key}`;
     const messageType = messageAlias ? messageAlias.trim() : key
-    const ethermint = typeUrl.match(/^\/ethermint.([a-z]+).([a-z0-9]+).([a-z0-9]+)(?:\.([a-z0-9]+))?$/i);
     const match = typeUrl.match(/^\/Switcheo.carbon.([a-z]+).([A-Za-z]+)$/i);
 
     if ((key.startsWith("Msg") && key !== "MsgClientImpl") || key.startsWith("Header") || key.endsWith("Proposal")) {
-      // To resolve message type with same name
-      if (typeMap[messageType]) {
-        const pkgName = ethermint ? capitalize(ethermint?.[1]) : capitalize(packageName.split('.')[2])
-        const newMsgName = `Msg${pkgName}${messageType.split('Msg')[1]}`
-        typeMap[newMsgName] = typeUrl;
+      typeMap[messageType] = typeUrl;
+      if (match?.[1] && polynetworkFolders.includes(match?.[1])) {
+        console.log(`registry.register("${typeUrl}", PolyNetwork.${capitalize(match[1])}.${messageType});`);
+      } else {
+        console.log(`registry.register("${typeUrl}", ${messageType});`);
       }
-      else {
-        typeMap[messageType] = typeUrl;
-      }
-    }
-    if (ethermint?.[1]) {
-      console.log(`registry.register("${typeUrl}", Ethermint.${capitalize(ethermint?.[1])}.${messageType});`);
-    } else if (match?.[1] && polynetworkFolders.includes(match?.[1])) {
-      console.log(`registry.register("${typeUrl}", PolyNetwork.${capitalize(match[1])}.${messageType});`);
-    } else {
-      console.log(`registry.register("${typeUrl}", ${messageType});`);
     }
   }
 }
@@ -211,29 +191,16 @@ console.log(`export const EIP712Types: { [index: string]: any } = ${JSON.stringi
 
 function updateImportsAlias(messages: string[], protobufPackage: string, currentMsgDefinitions: string[]) {
   const modulePath = getModulePathFromProtobufPackage(protobufPackage)
-  let customModuleName = ""
-  let index = 0
   messages.forEach((msg, i) => {
-    if (!currentMsgDefinitions.includes(msg)) {
-      currentMsgDefinitions.push(msg)
-      return
+    let msgAlias = ''
+    const pkg = modulePath[0]
+    const innerPkg = modulePath[1]
+    if (pkg === 'nft' || pkg === 'group' || (pkg === 'gov' && innerPkg === 'v1') || (pkg === 'evm' || pkg === 'feemarket')) {
+      msgAlias = `Msg${capitalize(pkg)}${msg.split('Msg')[1]}`
     }
-    let msgAlias = `Msg${customModuleName}${msg.substring(3)}`
-    while (currentMsgDefinitions.includes(msgAlias) && index < modulePath.length) {
-      customModuleName += capitalize(modulePath[index])
-      msgAlias = `Msg${customModuleName}${msg.substring(3)}`
-      index++
-    }
-    // TODO: To remove hardcode conditional once a better way to remove alias for MsgBankSend is found
-      if (
-        msg === 'MsgSend' && msgAlias === 'MsgBankSend' ||
-        msg === 'MsgSendResponse' && msgAlias === 'MsgBankSendResponse'
-      ) {
-        currentMsgDefinitions.push(msg)
-        return
-      }
+    if (msgAlias) {
       messages[i] = `${msg} as ${msgAlias}`
-      currentMsgDefinitions.push(msgAlias)
+    }
   });
 }
 function getModulePathFromProtobufPackage(protobufPackage: string): string[] {
