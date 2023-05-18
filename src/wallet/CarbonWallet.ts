@@ -486,7 +486,7 @@ export class CarbonWallet {
 
   async sendTxs(msgs: EncodeObject[], opts?: CarbonTx.SignTxOpts): Promise<CarbonWallet.SendTxResponse> {
     await this.reloadMergeAccountStatus()
-    if (!this.accountMerged && msgs[0].typeUrl !== CarbonTx.Types.MsgMergeAccount) {
+    if (!this.accountMerged && this.isEvmWallet() && msgs[0].typeUrl !== CarbonTx.Types.MsgMergeAccount) {
       await this.sendInitialMergeAccountTx(opts)
       // refresh accountInfo after merging is done
       await this.reloadAccountSequence()
