@@ -15,18 +15,15 @@ import Long from "long";
   });
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
 
-  // TODO: Dynamically get markets that needs to be registered
-  const markets = ["BTC_PERP.USDC", "ETH_PERP.USDC", "ARB_PERP.USDC"]
-  const poolId = new Long(3)
+  const markets = ["ETH_PERP.USDC"]
 
   for (const market of markets) {
     try {
-      const result = await connectedSDK.vault.registerToPlPool({
+      const result = await connectedSDK.vault.deregisterFromPlPool({
         creator: connectedSDK.wallet.bech32Address,
-        poolId: poolId,
         marketId: market,
       })
-      console.log("Successfully registered market: ", market)
+      console.log("Successfully deregistered market: ", market)
     } catch (error) {
       console.error(error?.response?.rawLog ?? error)
     }

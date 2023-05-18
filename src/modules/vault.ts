@@ -116,6 +116,23 @@ export class VaultModule extends BaseModule {
       opts
     );
   }
+
+  public async deregisterFromPlPool(params: VaultModule.DeregisterFromPlPoolParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+
+    const value = Models.MsgDeregisterFromPlPool.fromPartial({
+      creator: params.creator,
+      marketId: params.marketId,
+    })
+
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgDeregisterFromPlPool,
+        value,
+      },
+      opts
+    );
+  }
 }
 
 export namespace VaultModule {
@@ -157,6 +174,11 @@ export namespace VaultModule {
   export interface RegisterToPlPoolParams {
     creator: string;
     poolId: Long;
+    marketId: string;
+  }
+  
+  export interface DeregisterFromPlPoolParams {
+    creator: string;
     marketId: string;
   }
 }
