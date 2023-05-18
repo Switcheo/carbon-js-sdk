@@ -10,7 +10,6 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
   RegisterToPlPool: "perpsliquidity/RegisterToPlPool",
   DeregisterToPlPool: "perpsliquidity/DeregisterToPlPool",
   WithdrawToPlPool: "perpsliquidity/WithdrawToPlPool",
-  UpdateMarketConfig: "perpsliquidity/UpdateMarketConfig",
 };
 
 
@@ -52,18 +51,6 @@ const MsgWithdrawFromPlPool: AminoInit = {
   },
 };
 
-const MsgUpdateMarketConfig: AminoInit = {
-  aminoType: TxTypes.MsgUpdateMarketConfig,
-  valueMap: {
-    updateMarketConfigParams: {
-      maxLiquidityRatio: ConvertEncType.Dec,
-      quoteShape: {
-        quotePriceValue: ConvertEncType.Dec,
-        amountRatio: ConvertEncType.Dec,
-      }
-    },
-  },
-};
 
 const PerpsliquidityAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgCreatePlPool]: generateAminoType(MsgCreatePlPool),
@@ -72,7 +59,6 @@ const PerpsliquidityAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgDeregisterFromPlPool]: generateAminoType(MsgDeregisterFromPlPool),
   [CarbonTx.Types.MsgDepositToPlPool]: generateAminoType(MsgDepositToPlPool),
   [CarbonTx.Types.MsgWithdrawFromPlPool]: generateAminoType(MsgWithdrawFromPlPool),
-  [CarbonTx.Types.MsgUpdateMarketConfig]: generateAminoType(MsgUpdateMarketConfig)
 };
 
 export default PerpsliquidityAmino;

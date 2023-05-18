@@ -24,7 +24,6 @@ export type AminoValueMap =
   | SimpleMap<SimpleMap<ConvertEncType> | ConvertEncType>
   | SimpleMap<SimpleMap<SimpleMap<SimpleMap<ConvertEncType> | ConvertEncType>>>
   | SimpleMap<SimpleMap<SimpleMap<SimpleMap<SimpleMap<ConvertEncType> | ConvertEncType>>>>
-  | SimpleMap<SimpleMap<ConvertEncType | SimpleMap<ConvertEncType>>>
 export interface AminoInit {
   aminoType: string;
   valueMap: AminoValueMap;
