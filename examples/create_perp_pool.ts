@@ -17,8 +17,8 @@ import "./_setup";
 
   const result = await connectedSDK.vault.createPerpertualsPool({
       creator: connectedSDK.wallet.bech32Address,
-      name: 'USD Perp Pool 2',
-      depositDenom: 'cgusd',
+      name: 'USD Perp Pool 5',
+      depositDenom: 'usdc',
       shareTokenSymbol: 'testUSD',
       supplyCap: '1000000000000000000000000',
       depositFeeBps: '1000',
