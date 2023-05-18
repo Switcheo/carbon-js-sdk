@@ -5,17 +5,15 @@ import Long from "long";
 
 (async () => {
   const mnemonics = process.env.MNEMONICS ?? BIP39.generateMnemonic();
-  console.log("🚀 ~ file: create_perp_pool_registered_markets.ts:7 ~ mnemonics:", mnemonics)
 
   const sdk = await CarbonSDK.instance({
-    network: CarbonSDK.Network.DevNet,
+    network: CarbonSDK.Network.LocalHost,
     config: {
       tmRpcUrl: process.env.TRPC_ENDPOINT,
     },
   });
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
 
-  // TODO: Dynamically get markets that needs to be registered
   const markets = ["BTC_PERP.USDC", "ETH_PERP.USDC", "ARB_PERP.USDC"]
   const poolId = new Long(3)
 
@@ -26,7 +24,7 @@ import Long from "long";
         poolId: poolId,
         marketId: market,
       })
-      console.log("Successfully registered market: ", market)
+      console.log(result)
     } catch (error) {
       console.error(error?.response?.rawLog ?? error)
     }

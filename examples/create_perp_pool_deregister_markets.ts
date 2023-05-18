@@ -5,10 +5,9 @@ import Long from "long";
 
 (async () => {
   const mnemonics = process.env.MNEMONICS ?? BIP39.generateMnemonic();
-  console.log("🚀 ~ file: create_perp_pool_registered_markets.ts:7 ~ mnemonics:", mnemonics)
 
   const sdk = await CarbonSDK.instance({
-    network: CarbonSDK.Network.DevNet,
+    network: CarbonSDK.Network.LocalHost,
     config: {
       tmRpcUrl: process.env.TRPC_ENDPOINT,
     },
@@ -23,7 +22,7 @@ import Long from "long";
         creator: connectedSDK.wallet.bech32Address,
         marketId: market,
       })
-      console.log("Successfully deregistered market: ", market)
+      console.log(result)
     } catch (error) {
       console.error(error?.response?.rawLog ?? error)
     }
