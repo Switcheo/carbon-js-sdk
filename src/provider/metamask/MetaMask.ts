@@ -138,6 +138,7 @@ export interface MetaMaskSyncResult {
 }
 
 export interface StoredMnemonicInfo {
+  mnemonic: string,
   chain: EVMChainV2,
   privateKey: string,
   bech32Address: string
@@ -613,6 +614,7 @@ export class MetaMask {
         const bech32Address = SWTHAddress.privateKeyToAddress(SWTHAddress.mnemonicToPrivateKey(mnemonic), { network: this.network })
         const hexAddress = ETHAddress.privateKeyToAddress(SWTHAddress.mnemonicToPrivateKey(mnemonic))
         result = {
+          mnemonic,
           chain: connectedBlockchain,
           privateKey,
           bech32Address,
