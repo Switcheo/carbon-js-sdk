@@ -6,6 +6,9 @@ import { AminoInit, ConvertEncType, generateAminoType } from "../utils";
 const TxTypes: TypeUtils.SimpleMap<string> = {
   UpdateMarket: "market/UpdateMarket",
   DisableSpotMarket: "market/DisableSpotMarket",
+  AddFeeTier: "market/AddFeeTier",
+  RemoveFeeTier: "market/RemoveFeeTier",
+  SetStakeEquivalence: "market/SetStakeEquivalence"
 };
 
 const MsgUpdateMarket: AminoInit = {
@@ -30,9 +33,45 @@ const MsgDisableSpotMarket: AminoInit = {
   valueMap: {},
 };
 
+const MsgAddFeeTier: AminoInit = {
+  aminoType: TxTypes.AddFeeTier,
+  valueMap: {
+    feeTier: {
+      tradingFees: {
+        makerFee: ConvertEncType.Dec,
+        takerFee: ConvertEncType.Dec,
+      }
+    }
+  },
+}
+const MsgRemoveFeeTier: AminoInit = {
+  aminoType: TxTypes.RemoveFeeTier,
+  valueMap: {},
+}
+const MsgUpdateFeeTier: AminoInit = {
+  aminoType: TxTypes.UpdateFeeTier,
+  valueMap: {
+    makerFee: ConvertEncType.Dec,
+    takerFee: ConvertEncType.Dec,
+  },
+}
+const MsgSetStakeEquivalence: AminoInit = {
+  aminoType: TxTypes.UpdateFeeTier,
+  valueMap: {
+    stakeEquivalence: {
+      ratio: ConvertEncType.Dec,
+    }
+  },
+}
+
+
 const MarketAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgUpdateMarket]: generateAminoType(MsgUpdateMarket),
   [CarbonTx.Types.MsgDisableSpotMarket]: generateAminoType(MsgDisableSpotMarket),
+  [CarbonTx.Types.MsgAddFeeTier]: generateAminoType(MsgAddFeeTier),
+  [CarbonTx.Types.MsgRemoveFeeTier]: generateAminoType(MsgRemoveFeeTier),
+  [CarbonTx.Types.MsgUpdateFeeTier]: generateAminoType(MsgUpdateFeeTier),
+  [CarbonTx.Types.MsgSetStakeEquivalence]: generateAminoType(MsgSetStakeEquivalence)
 };
 
 export default MarketAmino;

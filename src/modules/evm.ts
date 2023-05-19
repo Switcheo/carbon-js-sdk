@@ -1,4 +1,4 @@
-import { Any, registry, } from "@carbon-sdk/codec";
+import { Any, registry } from "@carbon-sdk/codec";
 import { ChainConfig, Params } from "@carbon-sdk/codec/ethermint/evm/v1/evm";
 import { AccessListTx, DynamicFeeTx, LegacyTx, MsgEthereumTx, MsgUpdateParams } from "@carbon-sdk/codec/ethermint/evm/v1/tx";
 import { CarbonTx } from "@carbon-sdk/util";
@@ -19,8 +19,8 @@ export class EvmModule extends BaseModule {
     })
 
     return await wallet.sendTx({
-        typeUrl: CarbonTx.Types.MsgEthereumTx,
-        value,
+      typeUrl: CarbonTx.Types.MsgEvmEthereumTx,
+      value,
     }, opts);
   }
 
