@@ -200,15 +200,13 @@ export namespace MarketModule {
 }
 
 export function transformFeeTierParams(msg: MarketModule.FeeTierParams): FeeTier {
-  const transform = {
+  return {
     requiredStake: msg.requiredStake,
     tradingFees: {
       makerFee: msg.makerFee.shiftedBy(18).toString(10),
       takerFee: msg.takerFee.shiftedBy(18).toString(10),
     }
   }
-  console.log("transform: ", transform)
-  return transform
 }
 
 export function transfromUpdateMarketParams(msg: MarketModule.UpdateMarketParams) {

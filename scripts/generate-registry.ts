@@ -13,8 +13,6 @@ console.log(`import { Registry } from "@cosmjs/proto-signing";`);
 console.log(`import { MsgExecuteContract } from "cosmjs-types/cosmwasm/wasm/v1/tx";`);
 
 const modules: { [name: string]: string[] } = {};
-// TODO: To remove hardcode conditional once a better way to fix MsgSend import is found
-const currentMsgDefinitions: string[] = ['MsgSend', 'MsgSendResponse']
 for (const moduleFile of codecFiles) {
 
   if (
@@ -49,7 +47,7 @@ for (const moduleFile of codecFiles) {
       || moduleFile.includes('src/codec/headersync/')
       || moduleFile.includes('src/codec/lockproxy/')
     )) {
-      updateImportsAlias(messages, codecModule.protobufPackage, currentMsgDefinitions)
+      updateImportsAlias(messages, codecModule.protobufPackage)
 
       console.log(`import { ${messages.join(", ")} } from "${relativePath}";`)
     }
@@ -189,7 +187,7 @@ EIP712Types mapping generated here should only be used for sending EIP-712 msgs.
 */`);
 console.log(`export const EIP712Types: { [index: string]: any } = ${JSON.stringify(generateEIP712types(), null, 2)};\n`);
 
-function updateImportsAlias(messages: string[], protobufPackage: string, currentMsgDefinitions: string[]) {
+function updateImportsAlias(messages: string[], protobufPackage: string) {
   const modulePath = getModulePathFromProtobufPackage(protobufPackage)
   messages.forEach((msg, i) => {
     let msgAlias = ''
