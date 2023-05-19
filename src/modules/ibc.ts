@@ -227,13 +227,14 @@ export class IBCModule extends BaseModule {
           };
         });
         
-
-        const feeCurrencies = chainInfoJson.fees.fee_tokens.map((feeToken: FeeToken) => {
+        // Filter out fee tokens which do not have a corresponding asset
+        const validFeeTokens = chainInfoJson.fees.fee_tokens.filter((feeToken: FeeToken) => {
+          const correspondingAsset = assetListJson.assets.find((asset: Asset) => asset.base === feeToken.denom);
+          return correspondingAsset !== undefined;
+        });
+        const feeCurrencies = validFeeTokens.map((feeToken: FeeToken) => {
           // Find the corresponding asset for the fee token
           const correspondingAsset = assetListJson.assets.find((asset: Asset) => asset.base === feeToken.denom);
-          if (!correspondingAsset) {
-            return IBCUtils.EmbedChainInfos[chainId];
-          }
           // Find the denom_unit with the maximum exponent
           const maxExponentDenomUnit = correspondingAsset.denom_units.reduce((prev: DenomUnit, current:DenomUnit) => {
             return (prev.exponent > current.exponent) ? prev : current;
