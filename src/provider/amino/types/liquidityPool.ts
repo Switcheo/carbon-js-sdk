@@ -86,20 +86,7 @@ const commitTokensProcess: AminoProcess = {
   },
 };
 
-const MsgCreatePlPool: AminoInit = {
-  aminoType: TxTypes.CreatePerpPool,
-  valueMap: {},
-}
 
-const MsgDepositToPerpPool: AminoInit = {
-  aminoType: TxTypes.DepositToPerpPool,
-  valueMap: {},
-}
-
-const MsgWithdrawFromPerpPool: AminoInit = {
-  aminoType: TxTypes.WithdrawFromPerpPool,
-  valueMap: {},
-}
 
 const LiquidityPoolAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgCreatePool]: generateAminoType(MsgCreatePool),
@@ -109,9 +96,6 @@ const LiquidityPoolAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgStakePoolToken]: generateAminoType(MsgStakePoolToken, commitTokensProcess),
   [CarbonTx.Types.MsgUnstakePoolToken]: generateAminoType(MsgUnstakePoolToken),
   [CarbonTx.Types.MsgClaimPoolRewards]: generateAminoType(MsgClaimPoolRewards),
-  [CarbonTx.Types.MsgCreatePlPool]: generateAminoType(MsgCreatePlPool),
-  [CarbonTx.Types.MsgDepositToPlPool]: generateAminoType(MsgDepositToPerpPool),
-  [CarbonTx.Types.MsgWithdrawFromPlPool]: generateAminoType(MsgWithdrawFromPerpPool),
 };
 
 export default LiquidityPoolAmino;

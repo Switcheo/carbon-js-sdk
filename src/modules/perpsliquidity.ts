@@ -1,14 +1,19 @@
-import { PoolDetails, QueryAllPlPoolsResponse, UpdatePlPoolParams } from "@carbon-sdk/codec";
+import { PoolDetails, QueryAllPlPoolsResponse, QueryPLPoolInfoResponse, UpdatePlPoolParams } from "@carbon-sdk/codec";
 import { CarbonTx, Models } from "..";
 import BaseModule from "./base";
 
-export class VaultModule extends BaseModule {
+export class PerpsLiquidityModule extends BaseModule {
   public async getPerpPools(): Promise<PoolDetails[]> {
     const fetchDataResponse: QueryAllPlPoolsResponse = await this.sdkProvider.query.perpetualpool.PoolAll({});
     return fetchDataResponse?.pools ?? []
   }
 
-  public async createPerpertualsPool(params: VaultModule.CreatePerpetualPoolParams, opts?: CarbonTx.SignTxOpts) {
+  public async getPerpPoolInfo(poolId: string): Promise<QueryPLPoolInfoResponse> {
+    const fetchDataResponse: QueryPLPoolInfoResponse = await this.sdkProvider.query.perpetualpool.PoolInfo({ poolId });
+    return fetchDataResponse ?? []
+  }
+
+  public async createPerpertualsPool(params: PerpsLiquidityModule.CreatePerpetualPoolParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const value = Models.MsgCreatePlPool.fromPartial({
@@ -31,7 +36,7 @@ export class VaultModule extends BaseModule {
   }
 
 
-  public async updatePerpetualsPool(params: VaultModule.UpdatePerpetualPoolParams, opts?: CarbonTx.SignTxOpts) {
+  public async updatePerpetualsPool(params: PerpsLiquidityModule.UpdatePerpetualPoolParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
     const updatePoolParam: UpdatePlPoolParams = {
@@ -56,9 +61,9 @@ export class VaultModule extends BaseModule {
     );
   }
 
-  public async depositToPerpetualsPool(params: VaultModule.DepositToPerpetualsPoolParams, opts?: CarbonTx.SignTxOpts) {
+  public async depositToPerpetualsPool(params: PerpsLiquidityModule.DepositToPerpetualsPoolParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
-    
+
     const value = Models.MsgDepositToPlPool.fromPartial({
       creator: params.creator,
       poolId: params.poolId,
@@ -75,9 +80,9 @@ export class VaultModule extends BaseModule {
     );
   }
 
-  public async withdrawFromPerpetualsPool(params: VaultModule.WithdrawFromPerpetualsPoolParams, opts?: CarbonTx.SignTxOpts) {
+  public async withdrawFromPerpetualsPool(params: PerpsLiquidityModule.WithdrawFromPerpetualsPoolParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
-    
+
     const value = Models.MsgWithdrawFromPlPool.fromPartial({
       creator: params.creator,
       poolId: params.poolId,
@@ -93,9 +98,44 @@ export class VaultModule extends BaseModule {
       opts
     );
   }
+
+  public async registerToPlPool(params: PerpsLiquidityModule.RegisterToPlPoolParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+
+    const value = Models.MsgRegisterToPlPool.fromPartial({
+      creator: params.creator,
+      poolId: params.poolId,
+      marketId: params.marketId,
+    })
+
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgRegisterToPlPool,
+        value,
+      },
+      opts
+    );
+  }
+
+  public async deregisterFromPlPool(params: PerpsLiquidityModule.DeregisterFromPlPoolParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+
+    const value = Models.MsgDeregisterFromPlPool.fromPartial({
+      creator: params.creator,
+      marketId: params.marketId,
+    })
+
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgDeregisterFromPlPool,
+        value,
+      },
+      opts
+    );
+  }
 }
 
-export namespace VaultModule {
+export namespace PerpsLiquidityModule {
   export interface CreatePerpetualPoolParams {
     creator: string;
     name: string;
@@ -129,5 +169,16 @@ export namespace VaultModule {
     poolId: Long;
     shareAmount: string;
     minReceiveAmount: string;
+  }
+
+  export interface RegisterToPlPoolParams {
+    creator: string;
+    poolId: Long;
+    marketId: string;
+  }
+
+  export interface DeregisterFromPlPoolParams {
+    creator: string;
+    marketId: string;
   }
 }

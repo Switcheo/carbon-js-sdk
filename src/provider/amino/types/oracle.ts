@@ -16,8 +16,7 @@ const MsgCreateVote: AminoInit = {
 };
 const CreateOracleProposal: AminoInit = {
   aminoType: TxTypes.CreateOracleProposal,
-  valueMap: {
-  },
+  valueMap: {},
 };
 
 const OracleAmino: TypeUtils.SimpleMap<AminoConverter> = {
