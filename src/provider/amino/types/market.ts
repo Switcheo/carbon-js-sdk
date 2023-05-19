@@ -8,6 +8,7 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
   DisableSpotMarket: "market/DisableSpotMarket",
   AddFeeTier: "market/AddFeeTier",
   RemoveFeeTier: "market/RemoveFeeTier",
+  UpdateFeeTier: "market/UpdateFeeTier",
   SetStakeEquivalence: "market/SetStakeEquivalence"
 };
 

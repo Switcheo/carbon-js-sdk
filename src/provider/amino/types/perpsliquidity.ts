@@ -15,37 +15,37 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
 
 
 const MsgCreatePlPool: AminoInit = {
-  aminoType: TxTypes.MsgCreatePlPool,
+  aminoType: TxTypes.CreatePlPool,
   valueMap: {},
 };
 const MsgUpdatePlPool: AminoInit = {
-  aminoType: TxTypes.MsgUpdatePlPool,
+  aminoType: TxTypes.UpdatePlPool,
   valueMap: {
     poolId: ConvertEncType.Long,
   },
 };
 
 const MsgRegisterToPlPool: AminoInit = {
-  aminoType: TxTypes.MsgRegisterToPlPool,
+  aminoType: TxTypes.RegisterToPlPool,
   valueMap: {
     poolId: ConvertEncType.Long,
   },
 };
 
 const MsgDeregisterFromPlPool: AminoInit = {
-  aminoType: TxTypes.MsgDeregisterFromPlPool,
+  aminoType: TxTypes.DeregisterFromPlPool,
   valueMap: {},
 };
 
 const MsgDepositToPlPool: AminoInit = {
-  aminoType: TxTypes.MsgDepositToPlPool,
+  aminoType: TxTypes.DepositToPlPool,
   valueMap: {
     poolId: ConvertEncType.Long,
   },
 };
 
 const MsgWithdrawFromPlPool: AminoInit = {
-  aminoType: TxTypes.MsgWithdrawFromPlPool,
+  aminoType: TxTypes.WithdrawFromPlPool,
   valueMap: {
     poolId: ConvertEncType.Long,
   },
