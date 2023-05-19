@@ -188,68 +188,68 @@ export class IBCModule extends BaseModule {
         const chainAssetListResponse = await fetch(`https://raw.githubusercontent.com/cosmos/chain-registry/master/${selectedChainData.chain_name}/assetlist.json`);
         const assetListJson = await chainAssetListResponse.json();
         const features: string[] = [];
-      if (selectedChainData.cosmwasm_enabled) {
-        features.push("cosmwasm");
-      }
-
-      // Extract the staking currency denomination from chainInfoJson (min. denom)
-      const stakingCurrencyDenom = chainInfoJson['staking']['staking_tokens'][0]['denom'];
-      
-      // Find the asset that matches the stakingCurrencyDenom
-      const stakingAsset = assetListJson.assets.find((asset: Asset) => {
-        return asset.denom_units.some((unit: any) => unit.denom === stakingCurrencyDenom);
-      });
-
-      // Find the highest denom unit
-      const maxExponentDenomUnit = stakingAsset.denom_units.reduce((prev: DenomUnit, current: DenomUnit) => {
-        return (prev.exponent > current.exponent) ? prev : current;
-      });
-
-      let stakeCurrency: Currency = {
-        coinDenom: maxExponentDenomUnit.denom.toUpperCase(),
-        coinMinimalDenom: stakingCurrencyDenom,
-        coinDecimals: maxExponentDenomUnit.exponent,
-        coinGeckoId: stakingAsset.coingecko_id,
-      };
-
-
-      const currencies = assetListJson.assets.map((asset: Asset) => {
-        // Find the denom_unit with the maximum exponent
-        const maxExponentDenomUnit = asset.denom_units.reduce((prev, current) => {
-          return (prev.exponent > current.exponent) ? prev : current;
-        });
-        return {
-          coinDenom: maxExponentDenomUnit.denom.toUpperCase(),
-          coinMinimalDenom: asset.base,
-          coinDecimals: maxExponentDenomUnit.exponent,
-          coinGeckoId: asset.coingecko_id,
-        };
-      });
-      
-
-      const feeCurrencies = chainInfoJson.fees.fee_tokens.map((feeToken: FeeToken) => {
-        // Find the corresponding asset for the fee token
-        const correspondingAsset = assetListJson.assets.find((asset: Asset) => asset.base === feeToken.denom);
-        if (!correspondingAsset) {
-          throw new Error(`No corresponding asset found for fee token denom: ${feeToken.denom}`);
+        if (selectedChainData.cosmwasm_enabled) {
+          features.push("cosmwasm");
         }
-        // Find the denom_unit with the maximum exponent
-        const maxExponentDenomUnit = correspondingAsset.denom_units.reduce((prev: DenomUnit, current:DenomUnit) => {
+
+        // Extract the staking currency denomination from chainInfoJson (min. denom)
+        const stakingCurrencyDenom = chainInfoJson['staking']['staking_tokens'][0]['denom'];
+        
+        // Find the asset that matches the stakingCurrencyDenom
+        const stakingAsset = assetListJson.assets.find((asset: Asset) => {
+          return asset.denom_units.some((unit: any) => unit.denom === stakingCurrencyDenom);
+        });
+
+        // Find the highest denom unit
+        const maxExponentDenomUnit = stakingAsset.denom_units.reduce((prev: DenomUnit, current: DenomUnit) => {
           return (prev.exponent > current.exponent) ? prev : current;
         });
-        return {
+
+        let stakeCurrency: Currency = {
           coinDenom: maxExponentDenomUnit.denom.toUpperCase(),
-          coinMinimalDenom: feeToken.denom,
+          coinMinimalDenom: stakingCurrencyDenom,
           coinDecimals: maxExponentDenomUnit.exponent,
-          coinGeckoId: correspondingAsset.coingecko_id,
-          gasPriceStep: {
-            low: feeToken.low_gas_price,
-            average: feeToken.average_gas_price,
-            high: feeToken.high_gas_price,
-          }
+          coinGeckoId: stakingAsset.coingecko_id,
         };
-      });
-      
+
+
+        const currencies = assetListJson.assets.map((asset: Asset) => {
+          // Find the denom_unit with the maximum exponent
+          const maxExponentDenomUnit = asset.denom_units.reduce((prev, current) => {
+            return (prev.exponent > current.exponent) ? prev : current;
+          });
+          return {
+            coinDenom: maxExponentDenomUnit.denom.toUpperCase(),
+            coinMinimalDenom: asset.base,
+            coinDecimals: maxExponentDenomUnit.exponent,
+            coinGeckoId: asset.coingecko_id,
+          };
+        });
+        
+
+        const feeCurrencies = chainInfoJson.fees.fee_tokens.map((feeToken: FeeToken) => {
+          // Find the corresponding asset for the fee token
+          const correspondingAsset = assetListJson.assets.find((asset: Asset) => asset.base === feeToken.denom);
+          if (!correspondingAsset) {
+            throw new Error(`No corresponding asset found for fee token denom: ${feeToken.denom}`);
+          }
+          // Find the denom_unit with the maximum exponent
+          const maxExponentDenomUnit = correspondingAsset.denom_units.reduce((prev: DenomUnit, current:DenomUnit) => {
+            return (prev.exponent > current.exponent) ? prev : current;
+          });
+          return {
+            coinDenom: maxExponentDenomUnit.denom.toUpperCase(),
+            coinMinimalDenom: feeToken.denom,
+            coinDecimals: maxExponentDenomUnit.exponent,
+            coinGeckoId: correspondingAsset.coingecko_id,
+            gasPriceStep: {
+              low: feeToken.low_gas_price,
+              average: feeToken.average_gas_price,
+              high: feeToken.high_gas_price,
+            }
+          };
+        });
+        
         return {
           rpc: chainInfoJson['apis']['rpc'][0]['address'],
           rest: chainInfoJson['apis']['rest'][0]['address'],
@@ -263,12 +263,11 @@ export class IBCModule extends BaseModule {
           stakeCurrency: stakeCurrency,
           currencies: currencies,
           feeCurrencies: feeCurrencies,
-
           features: [
             "ibc-transfer",
             "ibc-go"
         ]
-     }
+        }
     } catch(error){
       return IBCUtils.EmbedChainInfos[chainId];
     }
