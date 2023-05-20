@@ -24,7 +24,7 @@ import { CarbonSigningClient } from "./CarbonSigningClient";
 import { ETH_SECP256K1_TYPE } from "@carbon-sdk/util/ethermint";
 import { ExtensionOptionsWeb3Tx } from "@carbon-sdk/codec/ethermint/types/v1/web3";
 import { BaseAccount } from "@carbon-sdk/codec/cosmos/auth/v1beta1/auth";
-import { MsgMergeAccount } from "@carbon-sdk/codec";
+import { MsgMergeAccount, registry } from "@carbon-sdk/codec";
 
 export interface CarbonWalletGenericOpts {
   tmClient?: Tendermint34Client;
@@ -43,6 +43,11 @@ export interface CarbonWalletGenericOpts {
    * Optional callback that will be called when signing is complete.
    */
   onSignComplete?: CarbonWallet.OnSignCompleteCallback;
+
+  /**
+   * Optional callback that will be called after tx is broadcasted.
+   */
+  onBroadcastTxComplete?: CarbonWallet.OnRequestSignCallback;
 }
 
 export type CarbonWalletInitOpts = CarbonWalletGenericOpts &
@@ -116,6 +121,7 @@ export class CarbonWallet {
 
   onRequestSign?: CarbonWallet.OnRequestSignCallback;
   onSignComplete?: CarbonWallet.OnSignCompleteCallback;
+  onBroadcastTxComplete?: CarbonWallet.OnBroadcastTxCompleteCallback
 
   defaultTimeoutBlocks: number;
 
@@ -170,6 +176,7 @@ export class CarbonWallet {
 
     this.onRequestSign = opts.onRequestSign;
     this.onSignComplete = opts.onSignComplete;
+    this.onBroadcastTxComplete = opts.onBroadcastTxComplete;
 
     this.txDispatchManager = new QueueManager(this.dispatchTx.bind(this));
     this.txSignManager = new QueueManager(this.signTx.bind(this));
@@ -318,6 +325,7 @@ export class CarbonWallet {
     const evmChainId = this.evmChainId
     try {
       await GenericUtils.callIgnoreError(() => this.onRequestSign?.(messages));
+      await this.checkWalletSignatureCompatibility()
       const signerData: CarbonSignerData = {
         accountNumber: accountNumber ?? this.accountInfo!.accountNumber,
         chainId: this.getChainId(),
@@ -352,6 +360,26 @@ export class CarbonWallet {
   }
 
   /**
+  * Non EVM wallets (Keplr, Leap, Ledger, Legacy Metamask,Encrypted Key) current mode of signing
+  * does not support submiting transaction with only eth accounts.
+  * This method assumes that if a transaction is carried out by a non evm wallet with only funds in eth address
+  * as submitting the msg with an eth address as the signer because it is impossible to get the signer field at this stage.
+  *
+  * Keplr technically can support submiting transaction with only eth accounts via EIP-712 eth signature but is blocked by
+  * keplr wallet extension due to incompability of carbon's chain-id. Keplr requires EIP-712 signing chains to have a chain id of {chainname_XXXX-X}
+  */
+  async checkWalletSignatureCompatibility() {
+    const query = this.getQueryClient()
+    const hasCarbonBalances = (await query.bank.AllBalances({ address: this.bech32Address })).balances.length > 0
+    const hasEvmAddressBalances = (await query.bank.AllBalances({ address: this.evmBech32Address })).balances.length > 0
+    const isEvmWallet = this.isEvmWallet()
+    if (hasEvmAddressBalances && !hasCarbonBalances && !isEvmWallet) {
+      this.sequenceInvalidated = true
+      throw new Error('To activate your account, please reconnect using MetaMask.')
+    }
+  }
+
+  /**
    * broadcast TX and wait for block confirmation
    *
    */
@@ -365,6 +393,15 @@ export class CarbonWallet {
       // tx failed
       throw new CarbonTxError(`[${response.code}] ${response.rawLog}`, response);
     }
+    const txBody = TxBody.decode(txRaw.bodyBytes)
+    const msgs: EncodeObject[] = txBody.messages.map(message => {
+      const msg = registry.decode({ ...message })
+      return {
+        typeUrl: message.typeUrl,
+        value: msg
+      }
+    })
+    await GenericUtils.callIgnoreError(() => this.onBroadcastTxComplete?.(msgs));
     return response;
   }
 
@@ -486,10 +523,11 @@ export class CarbonWallet {
 
   async sendTxs(msgs: EncodeObject[], opts?: CarbonTx.SignTxOpts): Promise<CarbonWallet.SendTxResponse> {
     await this.reloadMergeAccountStatus()
-    if (!this.accountMerged && this.isEvmWallet() && msgs[0].typeUrl !== CarbonTx.Types.MsgMergeAccount) {
+    if (!this.accountMerged && msgs[0].typeUrl !== CarbonTx.Types.MsgMergeAccount) {
       await this.sendInitialMergeAccountTx(opts)
-      // refresh accountInfo after merging is done
-      await this.reloadAccountSequence()
+      await this.reloadMergeAccountStatus()
+      // invalidate sequence after merging
+      this.sequenceInvalidated = true
     }
     const result = await this.signAndBroadcast(msgs, opts, { mode: BroadcastTxMode.BroadcastTxBlock });
     await this.reloadMergeAccountStatus()
@@ -748,6 +786,7 @@ export namespace CarbonWallet {
   export type SendTxWithoutConfirmResponse = BroadcastTxSyncResponse;
   export type OnRequestSignCallback = (msgs: readonly EncodeObject[]) => void | Promise<void>;
   export type OnSignCompleteCallback = (signature: StdSignature | null) => void | Promise<void>;
+  export type OnBroadcastTxCompleteCallback = (msgs: readonly EncodeObject[]) => void | Promise<void>;
 
   // workaround to re-export interface mixed const type
   export interface TxRaw extends StargateTxRaw { }
