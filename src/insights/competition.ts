@@ -62,6 +62,37 @@ export interface PNLLeaderboardEntry {
   twitter: string | null;
 }
 
+// Lottery Rankings
+export interface LotteryLeaderboardEntry {
+  rank: string;
+  competitionId: string;
+  address: string;
+  twitter: string | null;
+  username: string | null;
+  longestPosition: string;
+  maxLeverage: string;
+  referralTickets: string;
+  liquidationTickets: string;
+  positionTickets: string;
+  totalTickets: string;
+}
+
+// Demex Trading League
+export interface LeaderboardLeagueEntry {
+  rank: string;
+  totalPoints: string;
+  address: string;
+  volume: string;
+  spotsVolume: string;
+  derVolume: string;
+  freq: string;
+  username: string | null;
+  twitter: string | null;
+  spotsPoint: string;
+  derPoints: string;
+  freqFactor: string;
+}
+
 export interface QueryGetPNLCompetitionLeaderboardResponse {
   entries: PNLLeaderboardEntry[];
   meta: TimeMeta;
@@ -70,4 +101,20 @@ export interface QueryGetPNLCompetitionLeaderboardResponse {
 export interface QueryGetPNLCompetitionLeaderboardRequest {
   competitionId: string;
   market?: string;
+}
+
+export interface QueryGetLotteryCompetitionLeaderboardResponse {
+  entries: LotteryLeaderboardEntry[];
+}
+
+export interface QueryGetLeagueCompetitionLeaderboardResponse {
+  entries: LeaderboardLeagueEntry[];
+}
+
+export interface QueryGetLotteryCompetitionLeaderboardRequest {
+  competitionId: string;
+  market?: string;
+}
+export interface QueryGetLeagueCompetitionLeaderboardRequest {
+  competitionId: string;
 }

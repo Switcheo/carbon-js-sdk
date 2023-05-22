@@ -193,6 +193,7 @@ export class LiquidityPoolModule extends BaseModule {
       opts
     );
   }
+
 }
 
 export namespace LiquidityPoolModule {
@@ -267,4 +268,5 @@ export namespace LiquidityPoolModule {
     marketName: string;
     poolIds: Long[];
   }
+
 }

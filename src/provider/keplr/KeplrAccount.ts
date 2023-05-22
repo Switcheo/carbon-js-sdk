@@ -4,8 +4,10 @@ import { CarbonSDK, Models } from "@carbon-sdk/index";
 import { AddressUtils, CarbonTx, FetchUtils, NumberUtils } from "@carbon-sdk/util";
 import { CarbonSigner, CarbonSignerTypes } from "@carbon-sdk/wallet";
 import { Algo } from "@cosmjs/proto-signing";
-import { AppCurrency, ChainInfo, FeeCurrency, Keplr, Key } from "@keplr-wallet/types";
+import { AppCurrency, ChainInfo, EthSignType, FeeCurrency, Keplr, Key } from "@keplr-wallet/types";
 import SDKProvider from "../sdk";
+import { ethers } from "ethers";
+import { PUBLIC_KEY_SIGNING_TEXT, populateEvmTransactionDetails } from "@carbon-sdk/util/ethermint";
 
 const SWTH: FeeCurrency = {
   coinDenom: "SWTH",
@@ -42,11 +44,62 @@ class KeplrAccount {
       },
     ];
 
+    const sendEvmTransaction = async (api: CarbonSDK, req: ethers.providers.TransactionRequest): Promise<ethers.providers.TransactionResponse> => {
+      const request = await populateEvmTransactionDetails(api, req)
+      const signedTx = await keplr!.signEthereum(
+        // carbon chain id
+        api.wallet?.getChainId()!,
+        // cosmos address
+        api.wallet?.bech32Address!,
+        JSON.stringify(request),
+        EthSignType.TRANSACTION,
+      )
+      const rlpEncodedHex = `0x${Buffer.from(signedTx).toString('hex')}`;
+      return api.evmJsonRpc.sendTransaction(rlpEncodedHex)
+    }
+
     return {
       type: CarbonSignerTypes.BrowserInjected,
       signDirect,
       signAmino,
       getAccounts,
+      sendEvmTransaction,
+    };
+  }
+
+  static createKeplrSignerAmino(keplr: Keplr, chainInfo: ChainInfo, account: Key): CarbonSigner {
+    const signAmino = async (signerAddress: string, doc: CarbonTx.StdSignDoc) => {
+      const signOpts = { preferNoSetFee: true };
+      return await keplr!.signAmino(chainInfo.chainId, signerAddress, doc, signOpts);
+    };
+
+    const getAccounts = async () => [
+      {
+        algo: "secp256k1" as Algo,
+        address: account.bech32Address,
+        pubkey: account.pubKey,
+      },
+    ];
+
+    const sendEvmTransaction = async (api: CarbonSDK, req: ethers.providers.TransactionRequest): Promise<ethers.providers.TransactionResponse> => {
+      const request = await populateEvmTransactionDetails(api, req)
+      const signedTx = await keplr!.signEthereum(
+        // carbon chain id
+        api.wallet?.getChainId()!,
+        // cosmos address
+        api.wallet?.bech32Address!,
+        JSON.stringify(request),
+        EthSignType.TRANSACTION,
+      )
+      const rlpEncodedHex = `0x${Buffer.from(signedTx).toString('hex')}`;
+      return api.evmJsonRpc.sendTransaction(rlpEncodedHex)
+    }
+
+    return {
+      type: CarbonSignerTypes.BrowserInjected,
+      signAmino,
+      getAccounts,
+      sendEvmTransaction,
     };
   }
 
@@ -134,6 +187,20 @@ class KeplrAccount {
       },
       features: ["ibc-transfer", "ibc-go"],
     };
+  }
+
+  static async signPublicKeyMergeAccount(publicKey: string, address: string, chainId: string, keplr: Keplr) {
+    const message = `${PUBLIC_KEY_SIGNING_TEXT}${publicKey}`;
+    return KeplrAccount.signArbitrary(address, chainId, message, keplr)
+  }
+
+  static async signArbitrary(signerAddress: string, chainId: string, message: string, keplr: Keplr) {
+    const signature = await keplr.signArbitrary(
+      chainId,
+      signerAddress,
+      message,
+    )
+    return Buffer.from(signature.signature, 'base64').toString('hex')
   }
 }
 

@@ -15,6 +15,10 @@ import { QueryClientImpl as ParamsQueryClient } from "@carbon-sdk/codec/cosmos/p
 import { QueryClientImpl as SlashingQueryClient } from "@carbon-sdk/codec/cosmos/slashing/v1beta1/query";
 import { QueryClientImpl as StakingQueryClient } from "@carbon-sdk/codec/cosmos/staking/v1beta1/query";
 import { QueryClientImpl as UpgradeQueryClient } from "@carbon-sdk/codec/cosmos/upgrade/v1beta1/query";
+import { QueryClientImpl as EthermintEVMQueryClient } from "@carbon-sdk/codec/ethermint/evm/v1/query";
+import { QueryClientImpl as EvmMergeQueryClient } from "@carbon-sdk/codec/evmmerge/query";
+import { QueryClientImpl as EvmBankQueryClient } from "@carbon-sdk/codec/evmbank/query";
+import { QueryClientImpl as EthermintFeeMarketQueryClient } from "@carbon-sdk/codec/ethermint/feemarket/v1/query";
 import { QueryClientImpl as FeeQueryClient } from "@carbon-sdk/codec/fee/query";
 import { QueryClientImpl as HeadersyncQueryClient } from "@carbon-sdk/codec/headersync/query";
 import { QueryClientImpl as IBCInterchainControlQueryClient } from "@carbon-sdk/codec/ibc/applications/interchain_accounts/controller/v1/query";
@@ -28,6 +32,7 @@ import { QueryClientImpl as InsuranceQueryClient } from "@carbon-sdk/codec/insur
 import { QueryClientImpl as LeverageQueryClient } from "@carbon-sdk/codec/leverage/query";
 import { QueryClientImpl as LiquidationQueryClient } from "@carbon-sdk/codec/liquidation/query";
 import { QueryClientImpl as LiquidityPoolQueryClient } from "@carbon-sdk/codec/liquiditypool/query";
+import { QueryClientImpl as PerpLiquidityPoolQueryClient } from "@carbon-sdk/codec/perpsliquidity/query";
 import { QueryClientImpl as MarketQueryClient } from "@carbon-sdk/codec/market/query";
 import { QueryClientImpl as MarketStatsQueryClient } from "@carbon-sdk/codec/marketstats/query";
 import { QueryClientImpl as MiscQueryClient } from "@carbon-sdk/codec/misc/query";
@@ -51,6 +56,11 @@ export interface IBCClientGroup {
   channel: IBCChannelQueryClient;
 }
 
+export interface EthermintClientGroup {
+  evm: EthermintEVMQueryClient;
+  feeMarket: EthermintFeeMarketQueryClient;
+}
+
 class CarbonQueryClient {
   adl: ADLQueryClient;
   book: BookQueryClient;
@@ -63,6 +73,7 @@ class CarbonQueryClient {
   leverage: LeverageQueryClient;
   liquidation: LiquidationQueryClient;
   liquiditypool: LiquidityPoolQueryClient;
+  perpetualpool: PerpLiquidityPoolQueryClient;
   market: MarketQueryClient;
   marketstats: MarketStatsQueryClient;
   misc: MiscQueryClient;
@@ -89,6 +100,9 @@ class CarbonQueryClient {
 
   chain: BlockchainClient;
   ibc: IBCClientGroup;
+  ethermint: EthermintClientGroup;
+  evmmerge: EvmMergeQueryClient;
+  evmbank: EvmBankQueryClient;
 
   private baseClient: QueryClient;
 
@@ -109,6 +123,7 @@ class CarbonQueryClient {
     this.leverage = new LeverageQueryClient(rpcClient);
     this.liquidation = new LiquidationQueryClient(rpcClient);
     this.liquiditypool = new LiquidityPoolQueryClient(rpcClient);
+    this.perpetualpool = new PerpLiquidityPoolQueryClient(rpcClient);
     this.market = new MarketQueryClient(rpcClient);
     this.marketstats = new MarketStatsQueryClient(rpcClient);
     this.misc = new MiscQueryClient(rpcClient);
@@ -120,6 +135,8 @@ class CarbonQueryClient {
     this.profile = new ProfileQueryClient(rpcClient);
     this.subaccount = new SubaccountQueryClient(rpcClient);
     this.headersync = new HeadersyncQueryClient(rpcClient);
+    this.evmmerge = new EvmMergeQueryClient(rpcClient);
+    this.evmbank = new EvmBankQueryClient(rpcClient);
 
     this.auth = new AuthQueryClient(rpcClient);
     this.bank = new BankQueryClient(rpcClient);
@@ -141,6 +158,11 @@ class CarbonQueryClient {
       connection: new IBCConnectionQueryClient(rpcClient),
       channel: new IBCChannelQueryClient(rpcClient),
     };
+
+    this.ethermint = {
+      evm: new EthermintEVMQueryClient(rpcClient),
+      feeMarket: new EthermintFeeMarketQueryClient(rpcClient),
+    }
   }
 
   getProtobufRpcClient() {

@@ -77,9 +77,10 @@ class CosmosLedger {
     getBrowser(this.userAgent);
 
     const isChrome91 = parseInt(this.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./)?.[2] ?? "0") >= 91;
+    const isOpera95 = parseInt(this.userAgent.match(/OPR\/([0-9]+)\./)?.[1] ?? "0") >= 95;
 
     let transport;
-    if (isWindows(this.platform) || isChrome91) {
+    if (isWindows(this.platform) || (isChrome91 && !isOpera95)) {
       if (!navigator.hid) {
         throw new Error(
           `Your browser doesn't have HID enabled. Please enable this feature by visiting: chrome://flags/#enable-experimental-web-platform-features`
@@ -131,8 +132,12 @@ class CosmosLedger {
 
     // checks if the Ledger is connected and the app is open
     await this.isReady();
-
+  
     return this;
+  }
+
+  async disconnect() {
+    await this.cosmosApp.transport.close()
   }
 
   // returns the cosmos app version as a string like "1.1.0"
@@ -297,14 +302,16 @@ function isWindows(platform: string) {
 
 function getBrowser(userAgent: string) {
   const ua = userAgent.toLowerCase();
-  const isChrome = /chrome|crios/.test(ua) && !/edge|opr\//.test(ua);
+  const isChrome = /chrome|crios/.test(ua) && !/edge\//.test(ua);
   const isBrave = isChrome && !(window as any)?.google;
+  const isOpera = /opr/.test(ua);
 
-  if (!isChrome && !isBrave) {
+  if (!isChrome && !isBrave && !isOpera) {
     throw new Error("Your browser doesn't support Ledger devices.");
   }
 
   if (isBrave) return "brave";
+  else if (isOpera) return "opera";
   else return "chrome";
 }
 

@@ -1,25 +1,32 @@
-import { Token, TokenPrice, QueryTokenPriceAllResponse } from "@carbon-sdk/codec";
+import { Bridge, QueryTokenPriceAllResponse, Token, TokenPrice } from "@carbon-sdk/codec";
+import { PageRequest } from '@carbon-sdk/codec/cosmos/base/query/v1beta1/pagination';
+import { DenomTrace } from "@carbon-sdk/codec/ibc/applications/transfer/v1/transfer";
+import { ClientState } from '@carbon-sdk/codec/ibc/lightclients/tendermint/v1/tendermint';
 import {
   CoinGeckoTokenNames,
-  CommonAssetName,
-  DenomPrefix,
+  CommonAssetName, decTypeDecimals, DenomPrefix,
   NetworkConfigProvider,
-  TokenBlacklist,
-  decTypeDecimals,
-  uscUsdValue,
+  TokenBlacklist, uscUsdValue,
 } from "@carbon-sdk/constant";
-import { cibtIbcTokenRegex, ibcTokenRegex, ibcWhitelist, swthChannels, swthIbcWhitelist } from "@carbon-sdk/constant/ibc";
-import { Network } from "@carbon-sdk/constant/network";
+import { cibtIbcTokenRegex, ibcTokenRegex, ibcWhitelist, swthChannels, cosmBridgeRegex } from "@carbon-sdk/constant/ibc";
+import { publicRpcNodes } from "@carbon-sdk/constant/network";
 import { FeeQuote } from "@carbon-sdk/hydrogen/feeQuote";
-import KeplrAccount from "@carbon-sdk/provider/keplr/KeplrAccount";
 import { BlockchainUtils, FetchUtils, IBCUtils, NumberUtils, TypeUtils } from "@carbon-sdk/util";
-import { AppCurrency } from "@keplr-wallet/types";
+import { BlockchainV2, BridgeMap, BRIDGE_IDS, EVMChain, IbcBridge, PolyNetworkBridge, isIbcBridge } from '@carbon-sdk/util/blockchain';
 import { bnOrZero, BN_ONE, BN_ZERO } from "@carbon-sdk/util/number";
+import { QueryClientImpl as IBCTransferQueryClient } from "@carbon-sdk/codec/ibc/applications/transfer/v1/query";
+import { SimpleMap } from "@carbon-sdk/util/type";
+import { createProtobufRpcClient, QueryClient } from "@cosmjs/stargate";
+import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
+import { AppCurrency } from "@keplr-wallet/types";
 import BigNumber from "bignumber.js";
 import Long from "long";
 import CarbonQueryClient from "./CarbonQueryClient";
 import InsightsQueryClient from "./InsightsQueryClient";
-import { SimpleMap } from "@carbon-sdk/util/type";
+
+export interface DenomTraceExtended extends DenomTrace {
+  token?: Token;
+}
 
 const SYMBOL_OVERRIDE: {
   [symbol: string]: string;
@@ -46,10 +53,14 @@ class TokenClient {
   public readonly wrapperMap: TypeUtils.SimpleMap<string> = {};
   public readonly poolTokens: TypeUtils.SimpleMap<Token> = {};
   public readonly cdpTokens: TypeUtils.SimpleMap<Token> = {};
+  public readonly bridges: BridgeMap = { polynetwork: [], ibc: []} ;
   public readonly symbols: TypeUtils.SimpleMap<string> = {};
   public readonly usdValues: TypeUtils.SimpleMap<BigNumber> = {};
   public readonly commonAssetNames: TypeUtils.SimpleMap<string> = CommonAssetName;
   public readonly geckoTokenNames: TypeUtils.SimpleMap<string> = CoinGeckoTokenNames;
+
+  // ibc apis
+  public readonly denomTraces: TypeUtils.SimpleMap<DenomTraceExtended> = {};
 
   private additionalGeckoDenoms: TypeUtils.SimpleMap<string> = {};
 
@@ -63,11 +74,12 @@ class TokenClient {
     this.setCommonAssetConfig();
     await this.reloadWrapperMap();
     await this.reloadTokens();
-    await this.reloadDenomGeckoMap();
+    await this.reloadDenomTraces();
+    await this.getBridges();
 
     // non-blocking reload
     try {
-      this.reloadUSDValues();
+      this.reloadDenomGeckoMap().finally(() => this.reloadUSDValues());
     } catch (error) {
       console.error("failed to reload usd values");
       console.error(error);
@@ -89,21 +101,35 @@ class TokenClient {
     return (this.tokens[denom] ?? this.poolTokens[denom] ?? this.cdpTokens[denom])?.decimals.toNumber();
   }
 
-  public getBlockchain(denom: string): BlockchainUtils.Blockchain | undefined {
+  public getBlockchain(denom: string): BlockchainUtils.Blockchain | BlockchainUtils.BlockchainV2 | undefined {
     const networkConfig = this.configProvider.getConfig();
+    const tokenData = this.tokens[denom]
+
     // chainId defaults to 3 so that blockchain will be undefined
-    let chainId = this.tokens[denom]?.chainId?.toNumber() ?? 3;
+    let chainId = tokenData?.chainId?.toNumber() ?? 3;
     if (this.isNativeToken(denom) || this.isNativeStablecoin(denom) || TokenClient.isPoolToken(denom) || TokenClient.isCdpToken(denom)) {
       // native denoms "swth" and "usc" should be native.
       // pool and cdp tokens are on the Native blockchain, hence 0
       chainId = 0;
     }
-    if (TokenClient.isIBCDenom(denom)) {
+    if (TokenClient.isIBCDenom(denom)) {  
       return IBCUtils.BlockchainMap[denom];
     }
 
     const blockchain = BlockchainUtils.blockchainForChainId(chainId, networkConfig.network);
     return blockchain;
+  }
+
+  public getBlockchainV2(denom: string | undefined): BlockchainUtils.BlockchainV2 | undefined {
+    if (!denom) return undefined
+    let token = this.tokens[denom]
+    if (this.isNativeToken(denom) || this.isNativeStablecoin(denom) || TokenClient.isPoolToken(denom) || TokenClient.isCdpToken(denom) || this.isGroupedToken(denom)) {
+      // native denoms "swth" and "usc" should be native.
+      // pool and cdp tokens are on the Native blockchain, hence 0
+      return 'Native'
+    }
+    const bridge = this.getBridgeFromToken(token)
+    return bridge?.chainName;
   }
 
   public getSymbol(denom: string): string {
@@ -130,11 +156,17 @@ class TokenClient {
   }
 
   public tokenForId(id: string): Token | undefined {
-    return Object.values(this.tokens).find((token) => token.id === id);
+    let tokensList = Object.values(this.tokens);
+    if (TokenClient.isPoolToken(id)) {
+      tokensList = Object.values(this.poolTokens);
+    } else if (TokenClient.isCdpToken(id)) {
+      tokensList = Object.values(this.cdpTokens);
+    }
+    return tokensList.find((token) => token.id === id);
   }
 
   public tokenForDenom(denom: string): Token | undefined {
-    return this.tokens[denom];
+    return this.poolTokens[denom] ?? this.cdpTokens[denom] ?? this.tokens[denom];
   }
 
   public async getFeeInfo(denom: string): Promise<FeeQuote> {
@@ -265,7 +297,7 @@ class TokenClient {
     return result;
   }
 
-  public getWrappedToken(denom: string, blockchain?: BlockchainUtils.Blockchain): Token | null {
+  public getWrappedToken(denom: string, blockchain?: BlockchainUtils.Blockchain | BlockchainUtils.BlockchainV2, version='V1'): Token | null {
     const networkConfig = this.configProvider.getConfig();
 
     // if denom is already a wrapped denom or no blockchain was specified,
@@ -282,10 +314,15 @@ class TokenClient {
         }
         // check if wrapped denom is of correct blockchain
         const token = this.tokens[wrappedDenom];
-        let tokenChain = BlockchainUtils.blockchainForChainId(token.chainId.toNumber(), networkConfig.network);
+        let tokenChain: string | undefined = ''
 
-        if (TokenClient.isIBCDenom(wrappedDenom)) {
-          tokenChain = IBCUtils.BlockchainMap[wrappedDenom];
+        if (version === "V1") {
+          tokenChain = BlockchainUtils.blockchainForChainId(token.chainId.toNumber());
+          if (TokenClient.isIBCDenom(token.denom)) {
+            tokenChain = IBCUtils.BlockchainMap[wrappedDenom];
+          }
+        } else {
+          tokenChain = this.getBlockchainV2(token.denom);
         }
         if (!tokenChain) {
           continue; // unknown chain! just ignore this source token
@@ -330,7 +367,16 @@ class TokenClient {
     return denom === "usc";
   }
 
-  public getDepositTokenFor(tokenDenom: string, chain: BlockchainUtils.Blockchain): Token | undefined {
+  public isGroupedToken(denom: string): boolean {
+    const groupedTokenRegex = new RegExp(/^cgt\/\d+$/)
+    return groupedTokenRegex.test(denom)
+  }
+
+  public isCarbonToken(token?: Token | null): boolean {
+    return Boolean(token && (this.isNativeToken(token.denom) || token.bridgeId.eq(0)));
+  }
+
+  public getDepositTokenFor(tokenDenom: string, chain: BlockchainUtils.Blockchain | BlockchainUtils.BlockchainV2, version = "V1"): Token | undefined {
     const networkConfig = this.configProvider.getConfig();
     const token = this.tokenForDenom(tokenDenom);
     if (!token) {
@@ -338,15 +384,21 @@ class TokenClient {
       return;
     }
 
+    let targetChain: string | undefined = ""
     // check if selected token is a source token
-    let targetChain = BlockchainUtils.blockchainForChainId(token.chainId.toNumber(), networkConfig.network);
-    if (TokenClient.isIBCDenom(token.denom)) {
-      targetChain = IBCUtils.BlockchainMap[token.denom];
+    if (version === "V1") {
+      targetChain = BlockchainUtils.blockchainForChainId(token.chainId.toNumber(), networkConfig.network);
+      if (TokenClient.isIBCDenom(token.denom)) {
+        targetChain = IBCUtils.BlockchainMap[token.denom];
+      }
+    } else {
+      targetChain = this.getBlockchainV2(token.denom);
     }
+    
     const isSourceToken = targetChain === chain && token.denom !== "swth";
 
     // if not source token find wrapped token for chain
-    const depositToken = isSourceToken ? token : this.getWrappedToken(token.denom, chain);
+    const depositToken = isSourceToken ? token : this.getWrappedToken(token.denom, chain, version);
     if (!depositToken) {
       console.error(`getDepositTokenFor wrapped token not found for "${token.denom}"`);
       return;
@@ -389,52 +441,224 @@ class TokenClient {
         this.symbols[token.denom] = token.symbol;
       }
     }
-
-    const networkConfig = this.configProvider.getConfig();
-    if (networkConfig.network === Network.MainNet) {
-      const symbolDenoms = Object.keys(this.symbols);
-      const symbolMap = Object.values(this.symbols);
-      const carbonIbc = this.getCarbonIbcTokens();
-
-      carbonIbc.forEach((token: Token) => {
-        const index = symbolMap.indexOf("swth");
-        if (!this.tokens[token.denom]) this.tokens[token.denom] = token;
-        if (!this.symbols[token.denom]) this.symbols[token.denom] = token.symbol;
-        if (index > -1) {
-          const similarDenom = symbolDenoms[index];
-          if (similarDenom && !this.wrapperMap[token.denom] && similarDenom !== token.denom) {
-            this.wrapperMap[token.denom] = similarDenom;
-          }
-        }
-      });
-    }
-
     return this.tokens;
   }
 
-  public getCarbonIbcTokens(): Token[] {
-    const swthTokens = swthIbcWhitelist.map((chainId: string) => {
-      const blockchain = IBCUtils.BlockchainMap[chainId];
-      const carbonBlockchain = IBCUtils.ChainIdBlockchainMap[blockchain ?? ""];
-      const blockchainNum = BlockchainUtils.CHAIN_IDS[carbonBlockchain ?? ""] ?? 0;
-      const swthChannel = swthChannels[chainId]?.ibc;
-      const assetDenom = IBCUtils.makeIBCMinimalDenom(swthChannel?.dstChannel ?? "channel-0", KeplrAccount.SWTH_CURRENCY.coinMinimalDenom);
-      return {
-        id: assetDenom,
-        creator: "",
-        denom: assetDenom,
-        name: "Carbon",
-        symbol: KeplrAccount.SWTH_CURRENCY.coinDenom,
-        decimals: new Long(KeplrAccount.SWTH_CURRENCY.coinDecimals),
-        bridgeId: new Long(BlockchainUtils.BRIDGE_IDS.ibc), // ibc = 2
-        chainId: new Long(blockchainNum),
-        tokenAddress: "",
-        bridgeAddress: "",
-        isActive: true,
-        isCollateral: false,
+  public async reloadDenomTraces(): Promise<TypeUtils.SimpleMap<DenomTraceExtended>> {
+    const result = await this.query.ibc.transfer.DenomTraces({
+      pagination: {
+        limit: new Long(1000000),
+        offset: Long.UZERO,
+        key: new Uint8Array(),
+        countTotal: false,
+        reverse: false,
+      },
+    });
+    result.denomTraces.forEach((denomTrace: DenomTrace) => {
+      const ibcDenom = IBCUtils.makeIBCMinimalDenom(denomTrace.path, denomTrace.baseDenom);
+      const token: Token | undefined = this.tokenForDenom(ibcDenom);
+      this.denomTraces[ibcDenom] = {
+        ...denomTrace,
+        token,
       };
     });
-    return swthTokens;
+    const swthTraces = await this.getCarbonDenomTraces();
+    return { ...this.denomTraces, ...swthTraces };
+  }
+
+  public getDenomTraceData(denom: string): DenomTrace | undefined {
+    return this.denomTraces[denom];
+  }
+
+  public async getBridges(): Promise<BridgeMap> {
+    const allBridges = await this.query.coin.BridgeAll({
+      pagination: {
+        key: new Uint8Array(),
+        limit: new Long(10000),
+        offset: Long.UZERO,
+        countTotal: true,
+        reverse: false,
+      },
+    })
+    const unmatchedIbcBridgeList = allBridges.bridges.filter(bridge => {
+      if (!bridge.enabled) return
+      return bridge.bridgeId.toNumber() === BRIDGE_IDS.ibc
+    })
+    const ibcBridges = await this.matchChainsWithDifferentChainIds(unmatchedIbcBridgeList) 
+    const polynetworkBridges = allBridges.bridges.reduce((prev: PolyNetworkBridge[], bridge: Bridge) => {
+      if (!bridge.enabled || bridge.bridgeId.toNumber() !== BRIDGE_IDS.polynetwork) return prev;
+      prev.push({
+        ...bridge,
+        isEvmChain: BlockchainUtils.isEvmChain(bridge.chainName),
+      } as PolyNetworkBridge)
+      return prev;
+    }, [])
+    Object.assign(this.bridges, {
+      polynetwork: polynetworkBridges,
+      ibc: ibcBridges
+    })
+    return this.bridges
+  }
+
+  async matchChainsWithDifferentChainIds(bridges: Bridge[]): Promise<IbcBridge[]> {
+    let newBridges: IbcBridge[] = []
+    try {
+      const channels_to_connection = await this.query.ibc.channel.Channels({
+        pagination: PageRequest.fromPartial({
+          limit: new Long(1000000)
+        })
+      });
+      const connection_to_clientId = await this.query.ibc.connection.Connections({
+        pagination: PageRequest.fromPartial({
+          limit: new Long(1000000)
+        })
+      });
+      const clientId_to_chainIdName = await this.query.ibc.client.ClientStates({
+        pagination: PageRequest.fromPartial({
+          limit: new Long(1000000)
+        })
+      });
+
+      const clientStates = clientId_to_chainIdName.clientStates.map(s => ({
+        clientState: {...ClientState.decode(s.clientState!.value)},
+        clientId: s.clientId,
+      }));
+
+      
+      newBridges = bridges.map(bridge => {
+        const connection = channels_to_connection.channels.find(channel => channel.channelId === ("channel-" + (bridge.chainId.toNumber() - 1)))
+        const connectionId = connection?.connectionHops[0]
+        const src_channel = connection?.channelId ?? ""
+        const dst_channel = connection?.counterparty?.channelId ?? ""
+        const cosmRegexArr = connection?.counterparty?.portId?.match(cosmBridgeRegex)
+        const portId = cosmRegexArr?.[1] ?? "transfer";
+        const clientId = connection_to_clientId.connections.find(connection => connection.id === connectionId)?.clientId
+        const chainIdName = (clientStates.find(client => client.clientId === clientId)?.clientState)?.chainId
+        return {...bridge, chain_id_name: chainIdName ?? "", channels: { src_channel, dst_channel, port_id: portId }}
+      })
+    } finally {
+      const checkedBefore = new Array(newBridges.length).fill(false)
+      const chainMap : {[index: string]: string} = {}
+
+      for (let i = 0; i < newBridges.length; i++) {
+        if (checkedBefore[i]) continue
+        
+        const bridge = newBridges[i]
+        const chainId = bridge.chain_id_name
+    
+        if (chainMap[chainId]) {
+          const chainName = chainMap[chainId]
+      
+          for (let j = i; j < newBridges.length; j++) {
+            const subBridge = newBridges[j]
+        
+            if (subBridge.chain_id_name === chainId) {
+              subBridge.chainName = chainName
+              checkedBefore[j] = true
+            }
+          }
+        } else {
+          chainMap[chainId] = bridge.chainName
+        }
+      }
+      return newBridges
+    }
+  }
+
+  public getIbcBlockchainNames(): string[] {
+    return this.bridges.ibc.map(bridge => bridge.chainName)
+  }
+
+  public getIbcChainFromBlockchainV2 = (blockchain: BlockchainV2 | undefined): string | undefined => {
+    const ibcBridge = this.bridges.ibc.find(bridge => (bridge.chainName === blockchain || bridge.chainName.toLowerCase() === blockchain));
+    return ibcBridge?.chain_id_name;
+  };
+
+  public getPolynetworkBlockchainNames(): string[] {
+    return this.bridges.polynetwork.map(bridge => bridge.chainName)
+  }
+
+  public getAllBlockchainNames(): string[] {
+    return this.getIbcBlockchainNames().concat(this.getPolynetworkBlockchainNames())
+  }
+
+  public getBridgesFromBridgeId(bridgeId: number): Bridge[] | IbcBridge[] {
+    switch (bridgeId) {
+      case BRIDGE_IDS.polynetwork:
+        return this.bridges.polynetwork
+      case BRIDGE_IDS.ibc:
+        return this.bridges.ibc
+      default:
+      return this.bridges.polynetwork
+    }
+  }
+
+  public getIbcTokens(): TypeUtils.SimpleMap<Token> {
+    const ibcTokens = Object.values(this.tokens).reduce((prev: TypeUtils.SimpleMap<Token> , token: Token) => {
+      const newPrev = prev
+      if (token.bridgeId.toNumber() === BRIDGE_IDS.ibc) {
+        newPrev[token.denom] = token
+      }
+      return newPrev
+    }, {})
+    return ibcTokens
+  }
+
+  public getPolyNetworkTokens(): TypeUtils.SimpleMap<Token> {
+    const polynetworkTokens = Object.values(this.tokens).reduce((prev: TypeUtils.SimpleMap<Token> , token: Token) => {
+      const newPrev = prev
+      if (token.bridgeId.toNumber() === BRIDGE_IDS.polynetwork) {
+        newPrev[token.denom] = token
+      }
+      return newPrev
+    }, {})
+    return polynetworkTokens
+  }
+
+  public getBlockchainV2FromIDs(chainId: string, bridgeId: string): BlockchainV2 | undefined {
+    const chainIdNum = Number(chainId)
+    const bridgeIdNum = Number(bridgeId)
+    if ((chainIdNum === 5 && bridgeIdNum === 1) || (chainIdNum === 0 && bridgeIdNum === 2)) return "Carbon"
+    const bridgeList = this.getBridgesFromBridgeId(bridgeIdNum)
+    return bridgeList.find(bridge => bridge.chainId.toNumber() === chainIdNum)?.chainName ?? undefined
+  }
+
+  public getBridgeFromToken(token: Token | null): Bridge | IbcBridge | undefined {
+    if (!token || !token.bridgeId) return undefined
+    const bridgeList = this.getBridgesFromBridgeId(token.bridgeId.toNumber())
+    return bridgeList.find(bridge => token.chainId.equals(bridge.chainId))
+  }
+
+  public getIbcChainIdFromToken(token: Token | null): string | undefined {
+    if (!token) return undefined
+    const bridge = this.getBridgeFromToken(token)
+    if (!bridge || !isIbcBridge(bridge)) return undefined
+    return bridge.chain_id_name
+  }
+
+  public async getCarbonDenomTraces(): Promise<TypeUtils.SimpleMap<DenomTrace>> {
+    // get swth on osmosis
+    const osmoTmClient = await Tendermint34Client.connect(publicRpcNodes.Osmosis);
+    const osmoClient = new QueryClient(osmoTmClient);
+    const osmosRpcClient = createProtobufRpcClient(osmoClient);
+    const osmoIbcClient = new IBCTransferQueryClient(osmosRpcClient);
+    const osmoDenomTraces = await osmoIbcClient.DenomTraces({
+      pagination: PageRequest.fromPartial({
+        limit: new Long(1000000),
+      }),
+    });
+
+    const osmoSwthDenomTrace = osmoDenomTraces.denomTraces.filter((trace: DenomTrace) => {
+      return trace.baseDenom === "swth";
+    });
+    return osmoSwthDenomTrace.reduce((prev: TypeUtils.SimpleMap<DenomTrace>, trace: DenomTrace) => {
+      const coinMinimalDenom = IBCUtils.makeIBCMinimalDenom(trace.path, trace.baseDenom);
+      const token: Token | undefined = this.tokenForDenom(coinMinimalDenom) ?? this.tokenForDenom(trace.baseDenom);
+      const traceExtended: DenomTraceExtended = { ...trace, token };
+      this.denomTraces[coinMinimalDenom] = traceExtended;
+      prev[coinMinimalDenom] = traceExtended;
+      return prev;
+    }, {});
   }
 
   public getCdpUnderlyingToken(cdpDenom: string) {
@@ -446,7 +670,7 @@ class TokenClient {
     if (TokenClient.isPoolToken(tokenDenom)) {
       return this.poolTokens[tokenDenom];
     }
-
+    
     return this.tokenForDenom(tokenDenom);
   }
 
@@ -482,15 +706,16 @@ class TokenClient {
     const carbonTokenPrices = await this.getUSDValuesFromPricingModule();
     const uscStablecoin = this.getNativeStablecoin();
 
+    // add carbon token prices first
+    Object.entries(carbonTokenPrices).forEach(([key, value]: [string, BigNumber]) => {
+      this.usdValues[key] = value;
+    });
+
     //store price based on denoms
     for (const denom of denoms) {
-      const carbonTokenPrice = carbonTokenPrices[denom];
       // if token price in pricing module exists for denom, return that as usd price first
       // else check coingecko
-      if (carbonTokenPrice) {
-        this.usdValues[denom] = carbonTokenPrice;
-        continue;
-      }
+      if (this.usdValues[denom]) continue;
 
       const coinId = this.geckoTokenNames[denom] ?? denom;
       const price = NumberUtils.bnOrZero(geckoIdToUsdPriceMap?.[coinId]?.usd)!;

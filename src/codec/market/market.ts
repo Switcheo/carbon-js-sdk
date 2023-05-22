@@ -16,9 +16,13 @@ export interface Params {
   defaultLotSizeUsd: string;
   defaultTickSizeUsd: string;
   defaultMinQuantityUsd: string;
+  /** @deprecated */
   defaultSpotMakerFee: string;
+  /** @deprecated */
   defaultSpotTakerFee: string;
+  /** @deprecated */
   defaultFuturesMakerFee: string;
+  /** @deprecated */
   defaultFuturesTakerFee: string;
   defaultRiskStepSizeUsd: string;
   defaultInitialMarginBase: string;
@@ -50,7 +54,9 @@ export interface Market {
   lotSize: string;
   tickSize: string;
   minQuantity: string;
+  /** @deprecated */
   makerFee: string;
+  /** @deprecated */
   takerFee: string;
   createdBlockHeight: Long;
   /** futures only */
@@ -78,7 +84,9 @@ export interface MarketParams {
   lotSize: string;
   tickSize: string;
   minQuantity: string;
+  /** @deprecated */
   makerFee: string;
+  /** @deprecated */
   takerFee: string;
   /** futures only */
   riskStepSize: string;
@@ -93,6 +101,10 @@ export interface MarketParams {
   isActive?: boolean;
   tradingBandwidth?: number;
   expiryTime?: Date;
+}
+
+export interface IncomingDisableSpotMarketNames {
+  ids: string[];
 }
 
 const baseParams: object = {
@@ -1342,6 +1354,72 @@ export const MarketParams = {
     message.isActive = object.isActive ?? undefined;
     message.tradingBandwidth = object.tradingBandwidth ?? undefined;
     message.expiryTime = object.expiryTime ?? undefined;
+    return message;
+  },
+};
+
+const baseIncomingDisableSpotMarketNames: object = { ids: "" };
+
+export const IncomingDisableSpotMarketNames = {
+  encode(
+    message: IncomingDisableSpotMarketNames,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.ids) {
+      writer.uint32(10).string(v!);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): IncomingDisableSpotMarketNames {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseIncomingDisableSpotMarketNames,
+    } as IncomingDisableSpotMarketNames;
+    message.ids = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.ids.push(reader.string());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): IncomingDisableSpotMarketNames {
+    const message = {
+      ...baseIncomingDisableSpotMarketNames,
+    } as IncomingDisableSpotMarketNames;
+    message.ids = (object.ids ?? []).map((e: any) => String(e));
+    return message;
+  },
+
+  toJSON(message: IncomingDisableSpotMarketNames): unknown {
+    const obj: any = {};
+    if (message.ids) {
+      obj.ids = message.ids.map((e) => e);
+    } else {
+      obj.ids = [];
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<IncomingDisableSpotMarketNames>
+  ): IncomingDisableSpotMarketNames {
+    const message = {
+      ...baseIncomingDisableSpotMarketNames,
+    } as IncomingDisableSpotMarketNames;
+    message.ids = (object.ids ?? []).map((e) => e);
     return message;
   },
 };

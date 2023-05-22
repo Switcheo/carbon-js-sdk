@@ -1,4 +1,5 @@
 import { CONST } from "@cityofzion/neon-core-next";
+import { SimpleMap } from "../util/type";
 
 export enum Network {
   MainNet = "mainnet",
@@ -11,7 +12,15 @@ export const CarbonChainIDs = {
   [Network.MainNet]: "carbon-1",
   [Network.TestNet]: "carbon-testnet-42069",
   [Network.DevNet]: "carbon-devnet-39911",
-  [Network.LocalHost]: "carbon",
+  [Network.LocalHost]: "carbon-localhost",
+} as const;
+
+
+export const CarbonEvmChainIDs = {
+  [Network.MainNet]: "carbon_9790-1",
+  [Network.TestNet]: "carbon_9792-1",
+  [Network.DevNet]: "carbon_9791-1",
+  [Network.LocalHost]: "carbon_9999-1",
 } as const;
 
 export const DEFAULT_NETWORK = Network.MainNet;
@@ -46,6 +55,8 @@ export interface NetworkConfig {
   tmRpcUrl: string;
   tmWsUrl: string;
   restUrl: string;
+  evmJsonRpcUrl: string;
+  evmWsUrl: string;
   insightsUrl: string;
   hydrogenUrl: string;
   wsUrl: string;
@@ -84,6 +95,8 @@ export const NetworkConfigs: {
     tmRpcUrl: "https://tm-api.carbon.network/",
     tmWsUrl: "wss://tm-api.carbon.network/",
     restUrl: "https://api.carbon.network",
+    evmJsonRpcUrl: "https://evm-api.carbon.network/",
+    evmWsUrl: "wss://evm-ws.carbon.network/",
     insightsUrl: "https://api-insights.carbon.network",
     hydrogenUrl: "https://hydrogen-api.carbon.network",
     wsUrl: "wss://ws-api.carbon.network/ws",
@@ -171,6 +184,8 @@ export const NetworkConfigs: {
     tmRpcUrl: "https://test-tm-api.carbon.network",
     tmWsUrl: "wss://test-tm-api.carbon.network",
     restUrl: "https://test-api.carbon.network",
+    evmJsonRpcUrl: "https://test-evm-api.carbon.network/",
+    evmWsUrl: "wss://test-evm-ws.carbon.network/",
     insightsUrl: "https://test-api-insights.carbon.network",
     hydrogenUrl: "https://test-hydrogen-api.carbon.network",
     wsUrl: "wss://test-ws-api.carbon.network/ws",
@@ -195,7 +210,7 @@ export const NetworkConfigs: {
     },
 
     bsc: {
-      rpcURL: "https://data-seed-prebsc-2-s3.binance.org:8545/",
+      rpcURL: "https://data-seed-prebsc-1-s2.binance.org:8545/",
       wsURL: "",
       payerURL: `https://test-payer.carbon.network`,
       bridgeEntranceAddr: "",
@@ -231,7 +246,7 @@ export const NetworkConfigs: {
       bridgeEntranceAddr: "",
       lockProxyAddr: "",
       balanceReader: "",
-      byteCodeHash: "", 
+      byteCodeHash: "",
     },
 
     neo: {
@@ -258,6 +273,8 @@ export const NetworkConfigs: {
     tmRpcUrl: "https://dev-tm-api.carbon.network",
     tmWsUrl: "wss://dev-tm-api.carbon.network",
     restUrl: "https://dev-api.carbon.network",
+    evmJsonRpcUrl: "https://dev-evm-api.carbon.network/",
+    evmWsUrl: "wss://dev-evm-ws.carbon.network/",
     insightsUrl: "https://dev-api-insights.carbon.network",
     hydrogenUrl: "https://dev-hydrogen-api.carbon.network",
     wsUrl: "wss://dev-ws-api.carbon.network/ws",
@@ -272,7 +289,7 @@ export const NetworkConfigs: {
     feeAddress: "989761fb0c0eb0c05605e849cae77d239f98ac7f", // swth1nztkr7cvp6cvq4s9apyu4emayw0e3trl9ezyzs
 
     eth: {
-      rpcURL: "https://eth-rinkeby.alchemyapi.io/v2/2KD9F3mFPNMfflSqZsPuTKmK_w7fFfut",
+      rpcURL: "https://eth-goerli.g.alchemy.com/v2/OTTRiEhTje49mmrrm4WbuPbZmuZMivEu",
       wsURL: "",
       payerURL: `https://dev-payer.carbon.network`,
       lockProxyAddr: "0x7f7317167e90afa38972e46b031bb4da0b1f6f73",
@@ -282,7 +299,7 @@ export const NetworkConfigs: {
     },
 
     bsc: {
-      rpcURL: "https://data-seed-prebsc-2-s3.binance.org:8545/",
+      rpcURL: "https://data-seed-prebsc-1-s2.binance.org:8545/",
       wsURL: "",
       payerURL: `https://dev-payer.carbon.network`,
       bridgeEntranceAddr: "",
@@ -318,7 +335,7 @@ export const NetworkConfigs: {
       bridgeEntranceAddr: "",
       lockProxyAddr: "",
       balanceReader: "",
-      byteCodeHash: "", 
+      byteCodeHash: "",
     },
 
 
@@ -346,6 +363,8 @@ export const NetworkConfigs: {
     tmRpcUrl: "http://localhost:26657",
     tmWsUrl: "ws://localhost:26657",
     restUrl: "http://localhost:1317",
+    evmJsonRpcUrl: "http://localhost:8545/",
+    evmWsUrl: "ws://localhost:8546/",
     insightsUrl: "http://localhost:8181",
     hydrogenUrl: "",
     wsUrl: "ws://localhost:5000/ws",
@@ -360,7 +379,7 @@ export const NetworkConfigs: {
     feeAddress: "989761fb0c0eb0c05605e849cae77d239f98ac7f",
 
     eth: {
-      rpcURL: "https://ropsten.infura.io/v3/e4dd457b33124bbda7e17500e6efbc27",
+      rpcURL: "https://eth-goerli.g.alchemy.com/v2/OTTRiEhTje49mmrrm4WbuPbZmuZMivEu",
       wsURL: "wss://ropsten.dagger.matic.network",
       payerURL: `http://localhost:8001`,
       bridgeEntranceAddr: "",
@@ -370,7 +389,7 @@ export const NetworkConfigs: {
     },
 
     bsc: {
-      rpcURL: "https://data-seed-prebsc-2-s3.binance.org:8545/",
+      rpcURL: "https://data-seed-prebsc-1-s2.binance.org:8545/",
       wsURL: "",
       payerURL: `http://localhost:8001`,
       bridgeEntranceAddr: "",
@@ -406,7 +425,7 @@ export const NetworkConfigs: {
       bridgeEntranceAddr: "",
       lockProxyAddr: "",
       balanceReader: "",
-      byteCodeHash: "", 
+      byteCodeHash: "",
     },
 
 
@@ -428,3 +447,8 @@ export const NetworkConfigs: {
     },
   },
 } as const;
+
+export const publicRpcNodes: SimpleMap<string> = {
+  Osmosis: "https://rpc.osmosis.zone/",
+  Terra: "https://terra-rpc.lavenderfive.com:443/",
+};
