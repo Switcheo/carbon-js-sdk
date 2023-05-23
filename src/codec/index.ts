@@ -11,6 +11,7 @@ import { MsgMergeAccount, MsgMergeAccountResponse } from "./evmmerge/tx";
 import { MsgSetMargin, MsgSetMarginResponse } from "./position/tx";
 import { MsgCreateOracle, MsgCreateOracleResponse, MsgCreateVote, MsgCreateVoteResponse, MsgUpdateOracle, MsgUpdateOracleResponse, MsgRemoveOracle, MsgRemoveOracleResponse, MsgSetOracleSlashEnabled, MsgSetOracleSlashEnabledResponse } from "./oracle/tx";
 import { CreateOracleProposal } from "./oracle/proposal";
+import { MsgDelegate as MsgAllianceDelegate, MsgDelegateResponse as MsgAllianceDelegateResponse, MsgUndelegate as MsgAllianceUndelegate, MsgUndelegateResponse as MsgAllianceUndelegateResponse, MsgRedelegate as MsgAllianceRedelegate, MsgRedelegateResponse as MsgAllianceRedelegateResponse, MsgClaimDelegationRewards as MsgAllianceClaimDelegationRewards, MsgClaimDelegationRewardsResponse as MsgAllianceClaimDelegationRewardsResponse } from "./alliance/tx";
 import { MsgSoftwareUpgrade, MsgSoftwareUpgradeResponse, MsgCancelUpgrade, MsgCancelUpgradeResponse } from "./cosmos/upgrade/v1beta1/tx";
 import { SoftwareUpgradeProposal, CancelSoftwareUpgradeProposal } from "./cosmos/upgrade/v1beta1/upgrade";
 import { MsgGrantAllowance, MsgGrantAllowanceResponse, MsgRevokeAllowance, MsgRevokeAllowanceResponse } from "./cosmos/feegrant/v1beta1/tx";
@@ -217,6 +218,15 @@ registry.register("/Switcheo.carbon.oracle.MsgRemoveOracleResponse", MsgRemoveOr
 registry.register("/Switcheo.carbon.oracle.MsgSetOracleSlashEnabled", MsgSetOracleSlashEnabled);
 registry.register("/Switcheo.carbon.oracle.MsgSetOracleSlashEnabledResponse", MsgSetOracleSlashEnabledResponse);
 registry.register("/Switcheo.carbon.oracle.CreateOracleProposal", CreateOracleProposal);
+
+registry.register("/alliance.alliance.MsgDelegate", MsgAllianceDelegate);
+registry.register("/alliance.alliance.MsgDelegateResponse", MsgAllianceDelegateResponse);
+registry.register("/alliance.alliance.MsgUndelegate", MsgAllianceUndelegate);
+registry.register("/alliance.alliance.MsgUndelegateResponse", MsgAllianceUndelegateResponse);
+registry.register("/alliance.alliance.MsgRedelegate", MsgAllianceRedelegate);
+registry.register("/alliance.alliance.MsgRedelegateResponse", MsgAllianceRedelegateResponse);
+registry.register("/alliance.alliance.MsgClaimDelegationRewards", MsgAllianceClaimDelegationRewards);
+registry.register("/alliance.alliance.MsgClaimDelegationRewardsResponse", MsgAllianceClaimDelegationRewardsResponse);
 
 registry.register("/cosmos.upgrade.v1beta1.MsgSoftwareUpgrade", MsgSoftwareUpgrade);
 registry.register("/cosmos.upgrade.v1beta1.MsgSoftwareUpgradeResponse", MsgSoftwareUpgradeResponse);
@@ -718,6 +728,14 @@ export const TxTypes = {
   "MsgSetOracleSlashEnabled": "/Switcheo.carbon.oracle.MsgSetOracleSlashEnabled",
   "MsgSetOracleSlashEnabledResponse": "/Switcheo.carbon.oracle.MsgSetOracleSlashEnabledResponse",
   "CreateOracleProposal": "/Switcheo.carbon.oracle.CreateOracleProposal",
+  "MsgAllianceDelegate": "/alliance.alliance.MsgDelegate",
+  "MsgAllianceDelegateResponse": "/alliance.alliance.MsgDelegateResponse",
+  "MsgAllianceUndelegate": "/alliance.alliance.MsgUndelegate",
+  "MsgAllianceUndelegateResponse": "/alliance.alliance.MsgUndelegateResponse",
+  "MsgAllianceRedelegate": "/alliance.alliance.MsgRedelegate",
+  "MsgAllianceRedelegateResponse": "/alliance.alliance.MsgRedelegateResponse",
+  "MsgAllianceClaimDelegationRewards": "/alliance.alliance.MsgClaimDelegationRewards",
+  "MsgAllianceClaimDelegationRewardsResponse": "/alliance.alliance.MsgClaimDelegationRewardsResponse",
   "MsgSoftwareUpgrade": "/cosmos.upgrade.v1beta1.MsgSoftwareUpgrade",
   "MsgSoftwareUpgradeResponse": "/cosmos.upgrade.v1beta1.MsgSoftwareUpgradeResponse",
   "MsgCancelUpgrade": "/cosmos.upgrade.v1beta1.MsgCancelUpgrade",
@@ -1074,7 +1092,7 @@ export { MsgSignData } from "./evmmerge/offchain";
 export { MsgMergeAccount, MsgMergeAccountResponse } from "./evmmerge/tx";
 export { QueryMappedAddressRequest, QueryMappedAddressResponse } from "./evmmerge/query";
 export { MergeAccountEvent } from "./evmmerge/event";
-export { InternalTransfer, QueryInternalTransfersRequest, QueryInternalTransfersResponse } from "./bank/query";
+export { InternalTransfer, Coin, QueryInternalTransfersRequest, QueryInternalTransfersResponse } from "./bank/query";
 export { CoinSpent, CoinReceived, CoinSent } from "./bank/event";
 export { Params as LiquidationParams } from "./liquidation/liquidation";
 export { QuoteChanges } from "./liquidation/quote_changes";
@@ -1094,6 +1112,13 @@ export { OracleVotesWindow, SlashCounter } from "./oracle/slashing";
 export { CreateOracleProposal } from "./oracle/proposal";
 export { QueryOracleRequest, QueryOracleResponse, QueryAllOracleRequest, QueryAllOracleResponse, QueryAllResultRequest, QueryAllResultResponse, QueryAllVoteRequest, QueryAllVoteResponse, QueryVoterPowerRequest, QueryVoterPowerResponse, QueryAllSlashCounterRequest, QueryAllSlashCounterResponse, QuerySlashCounterRequest, QuerySlashCounterResponse, QueryAllOracleVotesWindowRequest, QueryAllOracleVotesWindowResponse, QueryOracleVotesWindowRequest, QueryOracleVotesWindowResponse, QueryParamsRequest as QueryOracleParamsRequest, QueryParamsResponse as QueryOracleParamsResponse } from "./oracle/query";
 export { ResultEvent, OracleSlashEvent } from "./oracle/event";
+export { RewardWeightRange, AllianceAsset, RewardWeightChangeSnapshot } from "./alliance/alliance";
+export { MsgCreateAllianceProposal, MsgUpdateAllianceProposal, MsgDeleteAllianceProposal } from "./alliance/gov";
+export { MsgDelegate, MsgDelegateResponse, MsgUndelegate, MsgUndelegateResponse, MsgRedelegate, MsgRedelegateResponse, MsgClaimDelegationRewards, MsgClaimDelegationRewardsResponse } from "./alliance/tx";
+export { Delegation, Redelegation, QueuedRedelegation, Undelegation, QueuedUndelegation, AllianceValidatorInfo } from "./alliance/delegations";
+export { DelegateAllianceEvent, UndelegateAllianceEvent, RedelegateAllianceEvent, ClaimAllianceRewardsEvent } from "./alliance/events";
+export { QueryParamsRequest as QueryAllianceParamsRequest, QueryParamsResponse as QueryAllianceParamsResponse, QueryAlliancesRequest, QueryAlliancesResponse, QueryAllianceRequest, QueryAllianceResponse, QueryIBCAllianceRequest, QueryAllianceValidatorRequest, QueryAllAllianceValidatorsRequest, QueryAllAlliancesDelegationsRequest, QueryAlliancesDelegationsRequest, QueryAlliancesDelegationByValidatorRequest, DelegationResponse, QueryAlliancesDelegationsResponse, QueryAllianceDelegationRequest, QueryIBCAllianceDelegationRequest, QueryAllianceDelegationResponse, QueryAllianceDelegationRewardsRequest, QueryIBCAllianceDelegationRewardsRequest, QueryAllianceDelegationRewardsResponse, QueryAllianceValidatorResponse, QueryAllianceValidatorsResponse } from "./alliance/query";
+export { Params as AllianceParams, RewardHistory } from "./alliance/params";
 export { QueryParamsRequest as QueryMarketstatsParamsRequest, QueryParamsResponse as QueryMarketstatsParamsResponse, QueryMarketStatsRequest, QueryMarketStatsResponse } from "./marketstats/query";
 export { Params as MarketstatsParams } from "./marketstats/params";
 export { MarketStats } from "./marketstats/marketstats";
@@ -1698,7 +1723,7 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/google.protobuf.GeneratedCodeInfo"
       }
     ],
-    "Timestamp": [
+    "Duration": [
       {
         "name": "seconds",
         "type": "int64"
@@ -1708,7 +1733,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "int32"
       }
     ],
-    "Duration": [
+    "Timestamp": [
       {
         "name": "seconds",
         "type": "int64"
@@ -1914,6 +1939,747 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ]
   },
+  "/alliance.alliance": {
+    "Params": [
+      {
+        "name": "reward_delay_time",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "take_rate_claim_interval",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "last_take_rate_claim_time",
+        "type": "string"
+      }
+    ],
+    "RewardHistory": [
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "index",
+        "type": "string"
+      }
+    ],
+    "RewardWeightRange": [
+      {
+        "name": "min",
+        "type": "string"
+      },
+      {
+        "name": "max",
+        "type": "string"
+      }
+    ],
+    "AllianceAsset": [
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "reward_weight",
+        "type": "string"
+      },
+      {
+        "name": "take_rate",
+        "type": "string"
+      },
+      {
+        "name": "total_tokens",
+        "type": "string"
+      },
+      {
+        "name": "total_validator_shares",
+        "type": "string"
+      },
+      {
+        "name": "reward_start_time",
+        "type": "string"
+      },
+      {
+        "name": "reward_change_rate",
+        "type": "string"
+      },
+      {
+        "name": "reward_change_interval",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "last_reward_change_time",
+        "type": "string"
+      },
+      {
+        "name": "reward_weight_range",
+        "type": "RewardWeightRange",
+        "packageName": "/alliance.alliance"
+      },
+      {
+        "name": "is_initialized",
+        "type": "bool"
+      }
+    ],
+    "RewardWeightChangeSnapshot": [
+      {
+        "name": "prev_reward_weight",
+        "type": "string"
+      },
+      {
+        "name": "reward_histories",
+        "type": "RewardHistory[]",
+        "packageName": "/alliance.alliance"
+      }
+    ],
+    "Delegation": [
+      {
+        "name": "delegator_address",
+        "type": "string"
+      },
+      {
+        "name": "validator_address",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "shares",
+        "type": "string"
+      },
+      {
+        "name": "reward_history",
+        "type": "RewardHistory[]",
+        "packageName": "/alliance.alliance"
+      },
+      {
+        "name": "last_reward_claim_height",
+        "type": "uint64"
+      }
+    ],
+    "Redelegation": [
+      {
+        "name": "delegator_address",
+        "type": "string"
+      },
+      {
+        "name": "src_validator_address",
+        "type": "string"
+      },
+      {
+        "name": "dst_validator_address",
+        "type": "string"
+      },
+      {
+        "name": "balance",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "QueuedRedelegation": [
+      {
+        "name": "entries",
+        "type": "Redelegation[]",
+        "packageName": "/alliance.alliance"
+      }
+    ],
+    "Undelegation": [
+      {
+        "name": "delegator_address",
+        "type": "string"
+      },
+      {
+        "name": "validator_address",
+        "type": "string"
+      },
+      {
+        "name": "balance",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "QueuedUndelegation": [
+      {
+        "name": "entries",
+        "type": "Undelegation[]",
+        "packageName": "/alliance.alliance"
+      }
+    ],
+    "AllianceValidatorInfo": [
+      {
+        "name": "global_reward_history",
+        "type": "RewardHistory[]",
+        "packageName": "/alliance.alliance"
+      },
+      {
+        "name": "total_delegator_shares",
+        "type": "DecCoin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "validator_shares",
+        "type": "DecCoin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "DelegateAllianceEvent": [
+      {
+        "name": "allianceSender",
+        "type": "string"
+      },
+      {
+        "name": "validator",
+        "type": "string"
+      },
+      {
+        "name": "coin",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "newShares",
+        "type": "string"
+      }
+    ],
+    "UndelegateAllianceEvent": [
+      {
+        "name": "allianceSender",
+        "type": "string"
+      },
+      {
+        "name": "validator",
+        "type": "string"
+      },
+      {
+        "name": "coin",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "completionTime",
+        "type": "string"
+      }
+    ],
+    "RedelegateAllianceEvent": [
+      {
+        "name": "allianceSender",
+        "type": "string"
+      },
+      {
+        "name": "sourceValidator",
+        "type": "string"
+      },
+      {
+        "name": "destinationValidator",
+        "type": "string"
+      },
+      {
+        "name": "coin",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "completionTime",
+        "type": "string"
+      }
+    ],
+    "ClaimAllianceRewardsEvent": [
+      {
+        "name": "allianceSender",
+        "type": "string"
+      },
+      {
+        "name": "validator",
+        "type": "string"
+      },
+      {
+        "name": "coins",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "ValidatorInfoState": [
+      {
+        "name": "validator_address",
+        "type": "string"
+      },
+      {
+        "name": "validator",
+        "type": "AllianceValidatorInfo",
+        "packageName": "/alliance.alliance"
+      }
+    ],
+    "RedelegationState": [
+      {
+        "name": "completion_time",
+        "type": "string"
+      },
+      {
+        "name": "redelegation",
+        "type": "Redelegation",
+        "packageName": "/alliance.alliance"
+      }
+    ],
+    "UndelegationState": [
+      {
+        "name": "completion_time",
+        "type": "string"
+      },
+      {
+        "name": "undelegation",
+        "type": "QueuedUndelegation",
+        "packageName": "/alliance.alliance"
+      }
+    ],
+    "RewardWeightChangeSnapshotState": [
+      {
+        "name": "height",
+        "type": "uint64"
+      },
+      {
+        "name": "validator",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "snapshot",
+        "type": "RewardWeightChangeSnapshot",
+        "packageName": "/alliance.alliance"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/alliance.alliance"
+      },
+      {
+        "name": "assets",
+        "type": "AllianceAsset[]",
+        "packageName": "/alliance.alliance"
+      },
+      {
+        "name": "validator_infos",
+        "type": "ValidatorInfoState[]",
+        "packageName": "/alliance.alliance"
+      },
+      {
+        "name": "reward_weight_change_snaphots",
+        "type": "RewardWeightChangeSnapshotState[]",
+        "packageName": "/alliance.alliance"
+      },
+      {
+        "name": "delegations",
+        "type": "Delegation[]",
+        "packageName": "/alliance.alliance"
+      },
+      {
+        "name": "redelegations",
+        "type": "RedelegationState[]",
+        "packageName": "/alliance.alliance"
+      },
+      {
+        "name": "undelegations",
+        "type": "UndelegationState[]",
+        "packageName": "/alliance.alliance"
+      }
+    ],
+    "MsgCreateAllianceProposal": [
+      {
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "reward_weight",
+        "type": "string"
+      },
+      {
+        "name": "take_rate",
+        "type": "string"
+      },
+      {
+        "name": "reward_change_rate",
+        "type": "string"
+      },
+      {
+        "name": "reward_change_interval",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "reward_weight_range",
+        "type": "RewardWeightRange",
+        "packageName": "/alliance.alliance"
+      }
+    ],
+    "MsgUpdateAllianceProposal": [
+      {
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "reward_weight",
+        "type": "string"
+      },
+      {
+        "name": "take_rate",
+        "type": "string"
+      },
+      {
+        "name": "reward_change_rate",
+        "type": "string"
+      },
+      {
+        "name": "reward_change_interval",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "MsgDeleteAllianceProposal": [
+      {
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      }
+    ],
+    "QueryParamsRequest": [],
+    "QueryParamsResponse": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/alliance.alliance"
+      }
+    ],
+    "QueryAlliancesRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAlliancesResponse": [
+      {
+        "name": "alliances",
+        "type": "AllianceAsset[]",
+        "packageName": "/alliance.alliance"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllianceRequest": [
+      {
+        "name": "denom",
+        "type": "string"
+      }
+    ],
+    "QueryAllianceResponse": [
+      {
+        "name": "alliance",
+        "type": "AllianceAsset",
+        "packageName": "/alliance.alliance"
+      }
+    ],
+    "QueryIBCAllianceRequest": [
+      {
+        "name": "hash",
+        "type": "string"
+      }
+    ],
+    "QueryAllianceValidatorRequest": [
+      {
+        "name": "validator_addr",
+        "type": "string"
+      }
+    ],
+    "QueryAllAllianceValidatorsRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllAlliancesDelegationsRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAlliancesDelegationsRequest": [
+      {
+        "name": "delegator_addr",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAlliancesDelegationByValidatorRequest": [
+      {
+        "name": "delegator_addr",
+        "type": "string"
+      },
+      {
+        "name": "validator_addr",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "DelegationResponse": [
+      {
+        "name": "delegation",
+        "type": "Delegation",
+        "packageName": "/alliance.alliance"
+      },
+      {
+        "name": "balance",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "QueryAlliancesDelegationsResponse": [
+      {
+        "name": "delegations",
+        "type": "DelegationResponse[]",
+        "packageName": "/alliance.alliance"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllianceDelegationRequest": [
+      {
+        "name": "delegator_addr",
+        "type": "string"
+      },
+      {
+        "name": "validator_addr",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryIBCAllianceDelegationRequest": [
+      {
+        "name": "delegator_addr",
+        "type": "string"
+      },
+      {
+        "name": "validator_addr",
+        "type": "string"
+      },
+      {
+        "name": "hash",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllianceDelegationResponse": [
+      {
+        "name": "delegation",
+        "type": "DelegationResponse",
+        "packageName": "/alliance.alliance"
+      }
+    ],
+    "QueryAllianceDelegationRewardsRequest": [
+      {
+        "name": "delegator_addr",
+        "type": "string"
+      },
+      {
+        "name": "validator_addr",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryIBCAllianceDelegationRewardsRequest": [
+      {
+        "name": "delegator_addr",
+        "type": "string"
+      },
+      {
+        "name": "validator_addr",
+        "type": "string"
+      },
+      {
+        "name": "hash",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllianceDelegationRewardsResponse": [
+      {
+        "name": "rewards",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "QueryAllianceValidatorResponse": [
+      {
+        "name": "validator_addr",
+        "type": "string"
+      },
+      {
+        "name": "total_delegation_shares",
+        "type": "DecCoin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "validator_shares",
+        "type": "DecCoin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "total_staked",
+        "type": "DecCoin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "QueryAllianceValidatorsResponse": [
+      {
+        "name": "validators",
+        "type": "QueryAllianceValidatorResponse[]",
+        "packageName": "/alliance.alliance"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "MsgDelegate": [
+      {
+        "name": "delegator_address",
+        "type": "string"
+      },
+      {
+        "name": "validator_address",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "MsgDelegateResponse": [],
+    "MsgUndelegate": [
+      {
+        "name": "delegator_address",
+        "type": "string"
+      },
+      {
+        "name": "validator_address",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "MsgUndelegateResponse": [],
+    "MsgRedelegate": [
+      {
+        "name": "delegator_address",
+        "type": "string"
+      },
+      {
+        "name": "validator_src_address",
+        "type": "string"
+      },
+      {
+        "name": "validator_dst_address",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "MsgRedelegateResponse": [],
+    "MsgClaimDelegationRewards": [
+      {
+        "name": "delegator_address",
+        "type": "string"
+      },
+      {
+        "name": "validator_address",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      }
+    ],
+    "MsgClaimDelegationRewardsResponse": []
+  },
   "/cosmos.base.v1beta1": {
     "Coin": [
       {
@@ -1997,15 +2763,34 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
+        "name": "transaction_hash",
+        "type": "string"
+      },
+      {
+        "name": "coins",
+        "type": "Coin[]",
+        "packageName": "/Switcheo.carbon.bank"
+      },
+      {
+        "name": "transaction_memo",
+        "type": "string"
+      },
+      {
+        "name": "transaction_block_height",
+        "type": "uint64"
+      },
+      {
+        "name": "transaction_block_time",
+        "type": "string"
+      }
+    ],
+    "Coin": [
+      {
         "name": "denom",
         "type": "string"
       },
       {
         "name": "amount",
-        "type": "string"
-      },
-      {
-        "name": "transaction_hash",
         "type": "string"
       }
     ],
@@ -22926,7 +23711,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "amount_ratio",
+        "name": "quote_amount_ratio",
         "type": "string"
       }
     ],
