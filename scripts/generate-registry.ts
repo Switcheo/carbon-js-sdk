@@ -5,7 +5,7 @@ import { generateEIP712types } from "./generate-eip712-types";
 
 const files = process.argv;
 
-const [pwd, registryFile, polynetworkModelsFile, cosmosModelsFile, ibcModelsFile, ethermintModelsFile] = files.slice(-6);
+const [pwd, registryFile, polynetworkModelsFile, cosmosModelsFile, ibcModelsFile] = files.slice(-6);
 const codecFiles = files.slice(2, files.length - 6);
 
 console.log(`import { Registry } from "@cosmjs/proto-signing";`);
@@ -160,6 +160,8 @@ for (const moduleFile of codecFiles) {
       newKey = `QueryParamsRequest as Query${labelOverride[newLabel] ?? newLabel}ParamsRequest`;
     } else if (key === "QueryParamsResponse") {
       newKey = `QueryParamsResponse as Query${labelOverride[newLabel] ?? newLabel}ParamsResponse`;
+    } else if (key === "RewardHistory" && firstDirName === "Alliance") {
+      newKey = `RewardHistory as ${labelOverride[`${firstDirName}RewardHistory`] ?? firstDirName}RewardHistory`;
     }
 
 
