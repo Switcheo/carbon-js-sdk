@@ -13,7 +13,7 @@ console.log(`import { MsgExecuteContract } from "cosmjs-types/cosmwasm/wasm/v1/t
 
 const modules: { [name: string]: string[] } = {};
 // TODO: To remove hardcode conditional once a better way to fix MsgSend import is found
-const currentMsgDefinitions: string[] = ['MsgSend', 'MsgSendResponse'] 
+const currentMsgDefinitions: string[] = ['MsgSend', 'MsgSendResponse']
 for (const moduleFile of codecFiles) {
 
   if (
@@ -45,7 +45,7 @@ for (const moduleFile of codecFiles) {
       || moduleFile.includes('src/codec/headersync/')
       || moduleFile.includes('src/codec/lockproxy/')
     )) {
-      updateImportsAlias(messages, codecModule.protobufPackage, currentMsgDefinitions)
+      updateImportsAlias(messages, codecModule.protobufPackage)
 
       console.log(`import { ${messages.join(", ")} } from "${relativePath}";`)
     }
@@ -170,33 +170,26 @@ for (const moduleFile of codecFiles) {
 // TODO: Remove hardcoded statement when upgrading cosmwasm codecs
 console.log("export { MsgExecuteContract } from \"cosmjs-types/cosmwasm/wasm/v1/tx\";");
 
-function updateImportsAlias(messages: string[], protobufPackage: string, currentMsgDefinitions: string[]) {
+
+function updateImportsAlias(messages: string[], protobufPackage: string) {
   const modulePath = getModulePathFromProtobufPackage(protobufPackage)
-  let customModuleName = ""
-  let index = 0
   messages.forEach((msg, i) => {
-    if (!currentMsgDefinitions.includes(msg)) {
-      currentMsgDefinitions.push(msg)
-      return
+    let msgAlias = ''
+    const pkg = modulePath[0]
+    const innerPkg = modulePath[1]
+    if (pkg === 'nft' 
+    || pkg === 'group' 
+    || (pkg === 'gov' && innerPkg === 'v1') 
+    || (pkg === 'evm' || pkg === 'feemarket')
+    || pkg === 'alliance') {
+      msgAlias = `Msg${capitalize(pkg)}${msg.split('Msg')[1]}`
     }
-    let msgAlias = `Msg${customModuleName}${msg.substring(3)}`
-    while (currentMsgDefinitions.includes(msgAlias) && index < modulePath.length) {
-      customModuleName += capitalize(modulePath[index])
-      msgAlias = `Msg${customModuleName}${msg.substring(3)}`
-      index++
-    }
-    // TODO: To remove hardcode conditional once a better way to remove alias for MsgBankSend is found
-      if (
-        msg === 'MsgSend' && msgAlias === 'MsgBankSend' ||
-        msg === 'MsgSendResponse' && msgAlias === 'MsgBankSendResponse'
-      ) {
-        currentMsgDefinitions.push(msg)
-        return
-      }
+    if (msgAlias) {
       messages[i] = `${msg} as ${msgAlias}`
-      currentMsgDefinitions.push(msgAlias)
+    }
   });
 }
+
 function getModulePathFromProtobufPackage(protobufPackage: string): string[] {
   // Switcheo.carbon.xxxx
   // "ibc.applications.xxxx.v1" / "ibc.core.xxxx.v1"
