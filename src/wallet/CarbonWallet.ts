@@ -324,8 +324,8 @@ export class CarbonWallet {
     let signature: StdSignature | null = null;
     const evmChainId = this.evmChainId
     try {
-      await GenericUtils.callIgnoreError(() => this.onRequestSign?.(messages));
       await this.checkWalletSignatureCompatibility()
+      await GenericUtils.callIgnoreError(() => this.onRequestSign?.(messages));
       const signerData: CarbonSignerData = {
         accountNumber: accountNumber ?? this.accountInfo!.accountNumber,
         chainId: this.getChainId(),
