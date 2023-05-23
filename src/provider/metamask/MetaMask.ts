@@ -685,7 +685,7 @@ export class MetaMask {
   }
   // get public key from Metamask
   async getPublicKey(address: string, metamaskAPI?: MetaMaskAPI): Promise<string> {
-    const message = "Initialise your account with carbon"
+    const message = "Initialize your account with Carbon"
     const signedMessage = await this.personalSign(address, message, metamaskAPI)
     const uncompressedPubKey = EthCrypto.recoverPublicKey(signedMessage, EthCrypto.hash.keccak256(`\x19Ethereum Signed Message:\n${message.length}${message}`))
     const pubKey = EthCrypto.publicKey.compress(uncompressedPubKey)
