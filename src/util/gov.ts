@@ -11,6 +11,9 @@ import {
   SettlementPriceProposal,
   UpdateMarketProposal,
   UpdatePoolProposal,
+  MsgCreateAllianceProposal,
+  MsgUpdateAllianceProposal,
+  MsgDeleteAllianceProposal,
 } from "@carbon-sdk/codec";
 import { CommunityPoolSpendProposal } from "@carbon-sdk/codec/cosmos/distribution/v1beta1/distribution";
 import { TextProposal } from "@carbon-sdk/codec/cosmos/gov/v1beta1/gov";
@@ -45,7 +48,11 @@ export enum ProposalTypes {
   DeregisterFromGroup = "/Switcheo.carbon.coin.DeregisterFromGroupProposal",
   DepositToGroup = "/Switcheo.carbon.coin.DepositToGroupProposal",
   WithdrawFromGroup = "/Switcheo.carbon.coin.WithdrawFromGroupProposal",
-  UpdateGroupTokenConfig = "/Switcheo.carbon.coin.UpdateGroupTokenConfigProposal"
+  UpdateGroupTokenConfig = "/Switcheo.carbon.coin.UpdateGroupTokenConfigProposal",
+
+  CreateAlliance = "/alliance.alliance.MsgCreateAllianceProposal",
+  UpdateAlliance = "/alliance.alliance.MsgUpdateAllianceProposal",
+  DeleteAlliance = "/alliance.alliance.MsgDeleteAllianceProposal"
 }
 
 export interface PropDecoded {
@@ -153,6 +160,21 @@ export const decodeContent = (content?: Any): PropDecoded => {
         ...content,
         value: ClientUpdateProposal.decode(content.value),
       };
+    case ProposalTypes.CreateAlliance:
+      return {
+        ...content,
+        value: MsgCreateAllianceProposal.decode(content.value)
+      };
+    case ProposalTypes.UpdateAlliance:
+      return {
+        ...content,
+        value: MsgUpdateAllianceProposal.decode(content.value)
+      }
+    case ProposalTypes.DeleteAlliance:
+      return {
+        ...content,
+        value: MsgDeleteAllianceProposal.decode(content.value)
+      }
     default:
       return emptyProposal;
   }
