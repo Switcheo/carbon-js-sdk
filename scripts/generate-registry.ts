@@ -150,6 +150,8 @@ for (const moduleFile of codecFiles) {
       newKey = `QueryParamsRequest as Query${labelOverride[newLabel] ?? newLabel}ParamsRequest`;
     } else if (key === "QueryParamsResponse") {
       newKey = `QueryParamsResponse as Query${labelOverride[newLabel] ?? newLabel}ParamsResponse`;
+    } else if (key === "RewardHistory" && firstDirName === "Alliance") {
+      newKey = `RewardHistory as ${labelOverride[`${firstDirName}RewardHistory`] ?? firstDirName}RewardHistory`;
     }
 
 
@@ -177,11 +179,11 @@ function updateImportsAlias(messages: string[], protobufPackage: string) {
     let msgAlias = ''
     const pkg = modulePath[0]
     const innerPkg = modulePath[1]
-    if (pkg === 'nft' 
-    || pkg === 'group' 
-    || (pkg === 'gov' && innerPkg === 'v1') 
-    || (pkg === 'evm' || pkg === 'feemarket')
-    || pkg === 'alliance') {
+    if (pkg === 'nft'
+      || pkg === 'group'
+      || (pkg === 'gov' && innerPkg === 'v1')
+      || (pkg === 'evm' || pkg === 'feemarket')
+      || pkg === 'alliance') {
       msgAlias = `Msg${capitalize(pkg)}${msg.split('Msg')[1]}`
     }
     if (msgAlias) {
