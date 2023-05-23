@@ -41,7 +41,7 @@ export interface PoolDetails {
 export interface Quote {
   quotePriceType: string;
   quotePriceValue: string;
-  amountRatio: string;
+  quoteAmountRatio: string;
 }
 
 /** MarketConfig config for each market in the Pool */
@@ -440,7 +440,7 @@ export const PoolDetails = {
 const baseQuote: object = {
   quotePriceType: "",
   quotePriceValue: "",
-  amountRatio: "",
+  quoteAmountRatio: "",
 };
 
 export const Quote = {
@@ -451,8 +451,8 @@ export const Quote = {
     if (message.quotePriceValue !== "") {
       writer.uint32(18).string(message.quotePriceValue);
     }
-    if (message.amountRatio !== "") {
-      writer.uint32(26).string(message.amountRatio);
+    if (message.quoteAmountRatio !== "") {
+      writer.uint32(26).string(message.quoteAmountRatio);
     }
     return writer;
   },
@@ -471,7 +471,7 @@ export const Quote = {
           message.quotePriceValue = reader.string();
           break;
         case 3:
-          message.amountRatio = reader.string();
+          message.quoteAmountRatio = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -491,9 +491,9 @@ export const Quote = {
       object.quotePriceValue !== undefined && object.quotePriceValue !== null
         ? String(object.quotePriceValue)
         : "";
-    message.amountRatio =
-      object.amountRatio !== undefined && object.amountRatio !== null
-        ? String(object.amountRatio)
+    message.quoteAmountRatio =
+      object.quoteAmountRatio !== undefined && object.quoteAmountRatio !== null
+        ? String(object.quoteAmountRatio)
         : "";
     return message;
   },
@@ -504,8 +504,8 @@ export const Quote = {
       (obj.quotePriceType = message.quotePriceType);
     message.quotePriceValue !== undefined &&
       (obj.quotePriceValue = message.quotePriceValue);
-    message.amountRatio !== undefined &&
-      (obj.amountRatio = message.amountRatio);
+    message.quoteAmountRatio !== undefined &&
+      (obj.quoteAmountRatio = message.quoteAmountRatio);
     return obj;
   },
 
@@ -513,7 +513,7 @@ export const Quote = {
     const message = { ...baseQuote } as Quote;
     message.quotePriceType = object.quotePriceType ?? "";
     message.quotePriceValue = object.quotePriceValue ?? "";
-    message.amountRatio = object.amountRatio ?? "";
+    message.quoteAmountRatio = object.quoteAmountRatio ?? "";
     return message;
   },
 };

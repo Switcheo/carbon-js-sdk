@@ -5,7 +5,7 @@ import { generateEIP712types } from "./generate-eip712-types";
 
 const files = process.argv;
 
-const [pwd, registryFile, polynetworkModelsFile, cosmosModelsFile, ibcModelsFile, ethermintModelsFile] = files.slice(-6);
+const [pwd, registryFile, polynetworkModelsFile, cosmosModelsFile, ibcModelsFile] = files.slice(-6);
 const codecFiles = files.slice(2, files.length - 6);
 
 console.log(`import { Registry } from "@cosmjs/proto-signing";`);
@@ -160,6 +160,8 @@ for (const moduleFile of codecFiles) {
       newKey = `QueryParamsRequest as Query${labelOverride[newLabel] ?? newLabel}ParamsRequest`;
     } else if (key === "QueryParamsResponse") {
       newKey = `QueryParamsResponse as Query${labelOverride[newLabel] ?? newLabel}ParamsResponse`;
+    } else if (key === "RewardHistory" && firstDirName === "Alliance") {
+      newKey = `RewardHistory as ${labelOverride[`${firstDirName}RewardHistory`] ?? firstDirName}RewardHistory`;
     }
 
 
@@ -193,7 +195,10 @@ function updateImportsAlias(messages: string[], protobufPackage: string) {
     let msgAlias = ''
     const pkg = modulePath[0]
     const innerPkg = modulePath[1]
-    if (pkg === 'nft' || pkg === 'group' || (pkg === 'gov' && innerPkg === 'v1') || (pkg === 'evm' || pkg === 'feemarket')) {
+    if (pkg === 'nft' || pkg === 'group'
+      || (pkg === 'gov' && innerPkg === 'v1')
+      || (pkg === 'evm' || pkg === 'feemarket')
+      || (pkg === 'alliance')) {
       msgAlias = `Msg${capitalize(pkg)}${msg.split('Msg')[1]}`
     }
     if (msgAlias) {
