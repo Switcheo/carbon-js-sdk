@@ -52,7 +52,7 @@ export enum ProposalTypes {
 
   CreateAlliance = "/alliance.alliance.MsgCreateAllianceProposal",
   UpdateAlliance = "/alliance.alliance.MsgUpdateAllianceProposal",
-  DeleteAlliance = "/alliance.alliance.MsgDeleteAllianceProposal"
+  DeleteAlliance = "/alliance.alliance.MsgDeleteAllianceProposal",
 }
 
 export interface PropDecoded {
