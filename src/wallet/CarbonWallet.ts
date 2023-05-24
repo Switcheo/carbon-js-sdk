@@ -33,6 +33,7 @@ export interface CarbonWalletGenericOpts {
   providerAgent?: ProviderAgent | string;
   defaultTimeoutBlocks?: number; // tx mempool ttl (timeoutHeight)
   disableRetryOnSequenceError?: boolean; // disable auto retry on nonce error
+  triggerMerge?: boolean
 
   /**
    * Optional callback that will be called before signing is requested/executed.
@@ -132,7 +133,8 @@ export class CarbonWallet {
   evmBech32Address: string;
   hexAddress: string;
   evmHexAddress: string;
-  accountMerged: boolean = false;
+  accountMerged?: boolean;
+  triggerMerge?: boolean;
   publicKey: Buffer;
   query?: CarbonQueryClient;
 
@@ -172,6 +174,7 @@ export class CarbonWallet {
     this.providerAgent = opts.providerAgent;
     this.defaultTimeoutBlocks = opts.defaultTimeoutBlocks ?? 30; // default ~1 minute
     this.disableRetryOnSequenceError = opts.disableRetryOnSequenceError ?? false;
+    this.triggerMerge = opts.triggerMerge ?? false
     this.updateNetwork(network);
 
     this.onRequestSign = opts.onRequestSign;
@@ -443,7 +446,10 @@ export class CarbonWallet {
       handler: { resolve, reject },
     } = txRequest;
     try {
-      if (!this.accountInfo || this.sequenceInvalidated) await this.reloadAccountSequence();
+      if (!this.accountInfo
+        || this.accountInfo?.address === this.evmBech32Address // refresh to check if carbon acc is present
+        || this.sequenceInvalidated)
+        await this.reloadAccountSequence();
 
       const heightResponse = await fetch(`${this.networkConfig.tmRpcUrl}/blockchain?cache=${new Date().getTime()}`);
       const heightRes = await heightResponse.json();
@@ -523,36 +529,38 @@ export class CarbonWallet {
 
   async sendTxs(msgs: EncodeObject[], opts?: CarbonTx.SignTxOpts): Promise<CarbonWallet.SendTxResponse> {
     await this.reloadMergeAccountStatus()
-    if (!this.accountMerged && msgs[0].typeUrl !== CarbonTx.Types.MsgMergeAccount) {
-      await this.sendInitialMergeAccountTx(opts)
-      await this.reloadMergeAccountStatus()
-      // invalidate sequence after merging
-      this.sequenceInvalidated = true
+    if (this.triggerMerge) {
+      await this.sendInitialMergeAccountTx(msgs, opts)
     }
     const result = await this.signAndBroadcast(msgs, opts, { mode: BroadcastTxMode.BroadcastTxBlock });
     await this.reloadMergeAccountStatus()
     return result as DeliverTxResponse;
   }
 
-  async sendInitialMergeAccountTx(opts?: CarbonTx.SignTxOpts) {
+  async sendInitialMergeAccountTx(msgs: EncodeObject[], opts?: CarbonTx.SignTxOpts) {
     try {
-      const account = await this.getQueryClient().auth.Account({ address: this.bech32Address }).then(res => res.account).catch(async (err: Error) => {
-        return (await this.getQueryClient().auth.Account({ address: this.evmBech32Address })).account
-      });
-      const { address, sequence, accountNumber } = BaseAccount.decode(account!.value)
-      const msg: EncodeObject = {
-        typeUrl: CarbonTx.Types.MsgMergeAccount,
-        value: MsgMergeAccount.fromPartial({
-          creator: address,
-          pubKey: this.publicKey.toString('hex')
-        })
+      if (!this.accountMerged && msgs[0].typeUrl !== CarbonTx.Types.MsgMergeAccount) {
+        const account = await this.getQueryClient().auth.Account({ address: this.bech32Address }).then(res => res.account).catch(async (err: Error) => {
+          return (await this.getQueryClient().auth.Account({ address: this.evmBech32Address })).account
+        });
+        const { address, sequence, accountNumber } = BaseAccount.decode(account!.value)
+        const msg: EncodeObject = {
+          typeUrl: CarbonTx.Types.MsgMergeAccount,
+          value: MsgMergeAccount.fromPartial({
+            creator: address,
+            pubKey: this.publicKey.toString('hex')
+          })
+        }
+        const modifiedOpts = {
+          ...opts,
+          sequence: sequence.toNumber(),
+          accountNumber: accountNumber.toNumber()
+        }
+        await this.signAndBroadcast([msg], modifiedOpts, { mode: BroadcastTxMode.BroadcastTxBlock })
+        await this.reloadMergeAccountStatus()
+        // invalidate sequence after merging
+        this.sequenceInvalidated = true
       }
-      const modifiedOpts = {
-        ...opts,
-        sequence: sequence.toNumber(),
-        accountNumber: accountNumber.toNumber()
-      }
-      await this.signAndBroadcast([msg], modifiedOpts, { mode: BroadcastTxMode.BroadcastTxBlock })
     }
     catch (error) {
       throw error
@@ -560,6 +568,10 @@ export class CarbonWallet {
   }
 
   async sendTxsWithoutConfirm(msgs: EncodeObject[], opts?: CarbonTx.SignTxOpts): Promise<CarbonWallet.SendTxWithoutConfirmResponse> {
+    await this.reloadMergeAccountStatus()
+    if (this.triggerMerge) {
+      await this.sendInitialMergeAccountTx(msgs, opts)
+    }
     const result = await this.signAndBroadcast(msgs, opts, { mode: BroadcastTxMode.BroadcastTxSync });
     return result as BroadcastTxSyncResponse;
   }
@@ -665,7 +677,7 @@ export class CarbonWallet {
 
   private async reloadAccountInfo() {
     try {
-      //carbon account always takes priority
+      // carbon account always takes priority
       const accountAny = await this.getAccount(this.bech32Address) ?? await this.getAccount(this.evmBech32Address)
       if (!accountAny) return undefined
       const { accountNumber, sequence, address } = BaseAccount.decode(accountAny.value)
@@ -720,6 +732,8 @@ export class CarbonWallet {
       const response = await queryClient.evmmerge.MappedAddress({ address: this.bech32Address })
       if (response && response.mappedAddress) {
         this.accountMerged = true
+      } else {
+        this.accountMerged = false
       }
     } catch (error: any) {
       throw error;
