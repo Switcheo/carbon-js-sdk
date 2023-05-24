@@ -181,6 +181,7 @@ export class IBCModule extends BaseModule {
       return chainData.chain_name.includes(bridgeChainName.toLowerCase()) || chainData.chain_id.includes(bridgeChainName.toLowerCase());
     });
 
+    const defaultChainInfo = IBCUtils.EmbedChainInfos[chainId];
     if (selectedChainData) {
       try {
         const chainInfoResponse = await fetch(`https://raw.githubusercontent.com/cosmos/chain-registry/master/${selectedChainData.chain_name}/chain.json`);
@@ -253,8 +254,8 @@ export class IBCModule extends BaseModule {
         });
         
         return {
-          rpc: chainInfoJson.apis.rpc[0].address,
-          rest: chainInfoJson.apis.rest[0].address,
+          rpc: defaultChainInfo.rpc ?? chainInfoJson.apis.rpc[0].address,
+          rest: defaultChainInfo.rest ?? chainInfoJson.apis.rest[0].address,
           chainId: chainInfoJson.chain_id,
           chainName: chainInfoJson.chain_name,
           bip44: 
@@ -271,11 +272,11 @@ export class IBCModule extends BaseModule {
           ]
         };
     } catch(error){
-      return IBCUtils.EmbedChainInfos[chainId];
+      return defaultChainInfo;
     }
 
     } else {
-      return IBCUtils.EmbedChainInfos[chainId];
+      return defaultChainInfo;
     }
   }
 }
