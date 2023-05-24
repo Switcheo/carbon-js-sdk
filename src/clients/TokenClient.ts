@@ -74,11 +74,11 @@ class TokenClient {
     this.setCommonAssetConfig();
     await this.reloadWrapperMap();
     await this.reloadTokens();
-    await this.reloadDenomTraces();
     await this.getBridges();
 
     // non-blocking reload
     try {
+      this.reloadDenomTraces();
       this.reloadDenomGeckoMap().finally(() => this.reloadUSDValues());
     } catch (error) {
       console.error("failed to reload usd values");
