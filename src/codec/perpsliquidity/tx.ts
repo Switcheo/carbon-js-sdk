@@ -24,6 +24,8 @@ export interface MsgCreatePlPool {
   depositFeeBps: string;
   /** withdrawal fee to charge on a successful withdrawal from PLP in bps */
   withdrawalFeeBps: string;
+  /** borrow fee in bps per time period to charge on use of liquidity in pool */
+  borrowFeeBps: string;
 }
 
 export interface MsgCreatePlPoolResponse {
@@ -95,6 +97,7 @@ const baseMsgCreatePlPool: object = {
   supplyCap: "",
   depositFeeBps: "",
   withdrawalFeeBps: "",
+  borrowFeeBps: "",
 };
 
 export const MsgCreatePlPool = {
@@ -122,6 +125,9 @@ export const MsgCreatePlPool = {
     }
     if (message.withdrawalFeeBps !== "") {
       writer.uint32(66).string(message.withdrawalFeeBps);
+    }
+    if (message.borrowFeeBps !== "") {
+      writer.uint32(74).string(message.borrowFeeBps);
     }
     return writer;
   },
@@ -153,6 +159,9 @@ export const MsgCreatePlPool = {
           break;
         case 8:
           message.withdrawalFeeBps = reader.string();
+          break;
+        case 9:
+          message.borrowFeeBps = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -192,6 +201,10 @@ export const MsgCreatePlPool = {
       object.withdrawalFeeBps !== undefined && object.withdrawalFeeBps !== null
         ? String(object.withdrawalFeeBps)
         : "";
+    message.borrowFeeBps =
+      object.borrowFeeBps !== undefined && object.borrowFeeBps !== null
+        ? String(object.borrowFeeBps)
+        : "";
     return message;
   },
 
@@ -208,6 +221,8 @@ export const MsgCreatePlPool = {
       (obj.depositFeeBps = message.depositFeeBps);
     message.withdrawalFeeBps !== undefined &&
       (obj.withdrawalFeeBps = message.withdrawalFeeBps);
+    message.borrowFeeBps !== undefined &&
+      (obj.borrowFeeBps = message.borrowFeeBps);
     return obj;
   },
 
@@ -220,6 +235,7 @@ export const MsgCreatePlPool = {
     message.supplyCap = object.supplyCap ?? "";
     message.depositFeeBps = object.depositFeeBps ?? "";
     message.withdrawalFeeBps = object.withdrawalFeeBps ?? "";
+    message.borrowFeeBps = object.borrowFeeBps ?? "";
     return message;
   },
 };

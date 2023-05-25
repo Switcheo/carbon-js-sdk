@@ -23,6 +23,8 @@ export interface PlPool {
   depositFeeBps: string;
   /** withdrawal fee to charge on a successful withdrawal from PLP in bps */
   withdrawalFeeBps: string;
+  /** borrow fee in bps per time period to charge on use of liquidity in pool */
+  borrowFeeBps: string;
 }
 
 export interface UpdatePlPoolParams {
@@ -30,6 +32,7 @@ export interface UpdatePlPoolParams {
   supplyCap?: Long;
   depositFeeBps?: Long;
   withdrawalFeeBps?: Long;
+  borrowFeeBps?: Long;
 }
 
 /** PoolDetails used for for querying. same as Pool but appended with registered_markets */
@@ -53,6 +56,8 @@ export interface MarketConfig {
    * ratio where 0 < max_liquidity_ratio <= 1
    */
   maxLiquidityRatio: string;
+  /** borrow_fee_multiplier controls the multiplier for the base borrow fee charged on the pool. riskier markets should have a higher multiplier */
+  borrowFeeMultiplier: string;
   /**
    * Available modes:
    * active - market is active for quoting
@@ -66,6 +71,7 @@ export interface MarketConfig {
 
 export interface UpdateMarketConfigParams {
   maxLiquidityRatio: string;
+  borrowFeeMultiplier: string;
   mode?: string;
   quoteShape: Quote[];
 }
@@ -95,6 +101,7 @@ const basePlPool: object = {
   supplyCap: "",
   depositFeeBps: "",
   withdrawalFeeBps: "",
+  borrowFeeBps: "",
 };
 
 export const PlPool = {
@@ -125,6 +132,9 @@ export const PlPool = {
     }
     if (message.withdrawalFeeBps !== "") {
       writer.uint32(66).string(message.withdrawalFeeBps);
+    }
+    if (message.borrowFeeBps !== "") {
+      writer.uint32(74).string(message.borrowFeeBps);
     }
     return writer;
   },
@@ -159,6 +169,9 @@ export const PlPool = {
           break;
         case 8:
           message.withdrawalFeeBps = reader.string();
+          break;
+        case 9:
+          message.borrowFeeBps = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -202,6 +215,10 @@ export const PlPool = {
       object.withdrawalFeeBps !== undefined && object.withdrawalFeeBps !== null
         ? String(object.withdrawalFeeBps)
         : "";
+    message.borrowFeeBps =
+      object.borrowFeeBps !== undefined && object.borrowFeeBps !== null
+        ? String(object.borrowFeeBps)
+        : "";
     return message;
   },
 
@@ -220,6 +237,8 @@ export const PlPool = {
       (obj.depositFeeBps = message.depositFeeBps);
     message.withdrawalFeeBps !== undefined &&
       (obj.withdrawalFeeBps = message.withdrawalFeeBps);
+    message.borrowFeeBps !== undefined &&
+      (obj.borrowFeeBps = message.borrowFeeBps);
     return obj;
   },
 
@@ -236,6 +255,7 @@ export const PlPool = {
     message.supplyCap = object.supplyCap ?? "";
     message.depositFeeBps = object.depositFeeBps ?? "";
     message.withdrawalFeeBps = object.withdrawalFeeBps ?? "";
+    message.borrowFeeBps = object.borrowFeeBps ?? "";
     return message;
   },
 };
@@ -271,6 +291,12 @@ export const UpdatePlPoolParams = {
         writer.uint32(34).fork()
       ).ldelim();
     }
+    if (message.borrowFeeBps !== undefined) {
+      UInt64Value.encode(
+        { value: message.borrowFeeBps! },
+        writer.uint32(42).fork()
+      ).ldelim();
+    }
     return writer;
   },
 
@@ -295,6 +321,12 @@ export const UpdatePlPoolParams = {
           break;
         case 4:
           message.withdrawalFeeBps = UInt64Value.decode(
+            reader,
+            reader.uint32()
+          ).value;
+          break;
+        case 5:
+          message.borrowFeeBps = UInt64Value.decode(
             reader,
             reader.uint32()
           ).value;
@@ -325,6 +357,10 @@ export const UpdatePlPoolParams = {
       object.withdrawalFeeBps !== undefined && object.withdrawalFeeBps !== null
         ? Long.fromValue(object.withdrawalFeeBps)
         : undefined;
+    message.borrowFeeBps =
+      object.borrowFeeBps !== undefined && object.borrowFeeBps !== null
+        ? Long.fromValue(object.borrowFeeBps)
+        : undefined;
     return message;
   },
 
@@ -336,6 +372,8 @@ export const UpdatePlPoolParams = {
       (obj.depositFeeBps = message.depositFeeBps);
     message.withdrawalFeeBps !== undefined &&
       (obj.withdrawalFeeBps = message.withdrawalFeeBps);
+    message.borrowFeeBps !== undefined &&
+      (obj.borrowFeeBps = message.borrowFeeBps);
     return obj;
   },
 
@@ -353,6 +391,10 @@ export const UpdatePlPoolParams = {
     message.withdrawalFeeBps =
       object.withdrawalFeeBps !== undefined && object.withdrawalFeeBps !== null
         ? Long.fromValue(object.withdrawalFeeBps)
+        : undefined;
+    message.borrowFeeBps =
+      object.borrowFeeBps !== undefined && object.borrowFeeBps !== null
+        ? Long.fromValue(object.borrowFeeBps)
         : undefined;
     return message;
   },
@@ -521,6 +563,7 @@ export const Quote = {
 const baseMarketConfig: object = {
   marketId: "",
   maxLiquidityRatio: "",
+  borrowFeeMultiplier: "",
   mode: "",
 };
 
@@ -535,11 +578,14 @@ export const MarketConfig = {
     if (message.maxLiquidityRatio !== "") {
       writer.uint32(18).string(message.maxLiquidityRatio);
     }
+    if (message.borrowFeeMultiplier !== "") {
+      writer.uint32(26).string(message.borrowFeeMultiplier);
+    }
     if (message.mode !== "") {
-      writer.uint32(26).string(message.mode);
+      writer.uint32(34).string(message.mode);
     }
     for (const v of message.quoteShape) {
-      Quote.encode(v!, writer.uint32(34).fork()).ldelim();
+      Quote.encode(v!, writer.uint32(42).fork()).ldelim();
     }
     return writer;
   },
@@ -559,9 +605,12 @@ export const MarketConfig = {
           message.maxLiquidityRatio = reader.string();
           break;
         case 3:
-          message.mode = reader.string();
+          message.borrowFeeMultiplier = reader.string();
           break;
         case 4:
+          message.mode = reader.string();
+          break;
+        case 5:
           message.quoteShape.push(Quote.decode(reader, reader.uint32()));
           break;
         default:
@@ -583,6 +632,11 @@ export const MarketConfig = {
       object.maxLiquidityRatio !== null
         ? String(object.maxLiquidityRatio)
         : "";
+    message.borrowFeeMultiplier =
+      object.borrowFeeMultiplier !== undefined &&
+      object.borrowFeeMultiplier !== null
+        ? String(object.borrowFeeMultiplier)
+        : "";
     message.mode =
       object.mode !== undefined && object.mode !== null
         ? String(object.mode)
@@ -598,6 +652,8 @@ export const MarketConfig = {
     message.marketId !== undefined && (obj.marketId = message.marketId);
     message.maxLiquidityRatio !== undefined &&
       (obj.maxLiquidityRatio = message.maxLiquidityRatio);
+    message.borrowFeeMultiplier !== undefined &&
+      (obj.borrowFeeMultiplier = message.borrowFeeMultiplier);
     message.mode !== undefined && (obj.mode = message.mode);
     if (message.quoteShape) {
       obj.quoteShape = message.quoteShape.map((e) =>
@@ -613,6 +669,7 @@ export const MarketConfig = {
     const message = { ...baseMarketConfig } as MarketConfig;
     message.marketId = object.marketId ?? "";
     message.maxLiquidityRatio = object.maxLiquidityRatio ?? "";
+    message.borrowFeeMultiplier = object.borrowFeeMultiplier ?? "";
     message.mode = object.mode ?? "";
     message.quoteShape = (object.quoteShape ?? []).map((e) =>
       Quote.fromPartial(e)
@@ -621,7 +678,10 @@ export const MarketConfig = {
   },
 };
 
-const baseUpdateMarketConfigParams: object = { maxLiquidityRatio: "" };
+const baseUpdateMarketConfigParams: object = {
+  maxLiquidityRatio: "",
+  borrowFeeMultiplier: "",
+};
 
 export const UpdateMarketConfigParams = {
   encode(
@@ -631,14 +691,17 @@ export const UpdateMarketConfigParams = {
     if (message.maxLiquidityRatio !== "") {
       writer.uint32(10).string(message.maxLiquidityRatio);
     }
+    if (message.borrowFeeMultiplier !== "") {
+      writer.uint32(18).string(message.borrowFeeMultiplier);
+    }
     if (message.mode !== undefined) {
       StringValue.encode(
         { value: message.mode! },
-        writer.uint32(18).fork()
+        writer.uint32(26).fork()
       ).ldelim();
     }
     for (const v of message.quoteShape) {
-      Quote.encode(v!, writer.uint32(26).fork()).ldelim();
+      Quote.encode(v!, writer.uint32(34).fork()).ldelim();
     }
     return writer;
   },
@@ -660,9 +723,12 @@ export const UpdateMarketConfigParams = {
           message.maxLiquidityRatio = reader.string();
           break;
         case 2:
-          message.mode = StringValue.decode(reader, reader.uint32()).value;
+          message.borrowFeeMultiplier = reader.string();
           break;
         case 3:
+          message.mode = StringValue.decode(reader, reader.uint32()).value;
+          break;
+        case 4:
           message.quoteShape.push(Quote.decode(reader, reader.uint32()));
           break;
         default:
@@ -682,6 +748,11 @@ export const UpdateMarketConfigParams = {
       object.maxLiquidityRatio !== null
         ? String(object.maxLiquidityRatio)
         : "";
+    message.borrowFeeMultiplier =
+      object.borrowFeeMultiplier !== undefined &&
+      object.borrowFeeMultiplier !== null
+        ? String(object.borrowFeeMultiplier)
+        : "";
     message.mode =
       object.mode !== undefined && object.mode !== null
         ? String(object.mode)
@@ -696,6 +767,8 @@ export const UpdateMarketConfigParams = {
     const obj: any = {};
     message.maxLiquidityRatio !== undefined &&
       (obj.maxLiquidityRatio = message.maxLiquidityRatio);
+    message.borrowFeeMultiplier !== undefined &&
+      (obj.borrowFeeMultiplier = message.borrowFeeMultiplier);
     message.mode !== undefined && (obj.mode = message.mode);
     if (message.quoteShape) {
       obj.quoteShape = message.quoteShape.map((e) =>
@@ -714,6 +787,7 @@ export const UpdateMarketConfigParams = {
       ...baseUpdateMarketConfigParams,
     } as UpdateMarketConfigParams;
     message.maxLiquidityRatio = object.maxLiquidityRatio ?? "";
+    message.borrowFeeMultiplier = object.borrowFeeMultiplier ?? "";
     message.mode = object.mode ?? undefined;
     message.quoteShape = (object.quoteShape ?? []).map((e) =>
       Quote.fromPartial(e)

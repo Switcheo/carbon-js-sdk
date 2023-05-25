@@ -43,7 +43,6 @@ import { CarbonLedgerSigner, CarbonSigner, CarbonWallet, CarbonWalletGenericOpts
 import { MetaMask } from "./provider/metamask/MetaMask";
 import { SWTHAddressOptions } from "./util/address";
 import { ethers } from "ethers";
-import { PerpsLiquidityPoolModule } from "./modules/perpsLiquidity";
 
 export { CarbonTx } from "@carbon-sdk/util";
 export { CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletGenericOpts, CarbonWalletInitOpts } from "@carbon-sdk/wallet";
@@ -116,7 +115,7 @@ class CarbonSDK {
   evm: EvmModule;
   evmmerge: EvmMergeModule;
   feemarket: FeemarketModule;
-  perpsLiquidity: PerpsLiquidityPoolModule;
+  perpsLiquidity: PerpsLiquidityModule;
 
   neo: NEOClient;
   eth: ETHClient;
@@ -165,7 +164,7 @@ class CarbonSDK {
     this.evm = new EvmModule(this);
     this.evmmerge = new EvmMergeModule(this);
     this.feemarket = new FeemarketModule(this);
-    this.perpsLiquidity = new PerpsLiquidityPoolModule(this);
+    this.perpsLiquidity = new PerpsLiquidityModule(this);
 
     this.neo = NEOClient.instance({
       configProvider: this,

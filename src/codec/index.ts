@@ -579,7 +579,7 @@ registry.register("/Switcheo.carbon.lockproxy.MsgDeleteWrapperMapping", PolyNetw
 registry.register("/Switcheo.carbon.lockproxy.MsgDeleteWrapperMappingResponse", PolyNetwork.Lockproxy.MsgDeleteWrapperMappingResponse);
 registry.register("/cosmwasm.wasm.v1.MsgExecuteContract", MsgExecuteContract);
 
-/*
+/* 
 Key in TxTypes may not match the actual type definition due to duplicates in Msg names.
 */
 export const TxTypes = {
@@ -1176,7 +1176,7 @@ export { ParamsV2130 } from "./pricing/legacy";
 export { PriceUpdateEvent, TokenPriceUpdateEvent, SetImpactBandEvent, SetSmoothenBandEvent, SetStaleIndexAllowanceEvent, SetBackfillTimeIntervalEvent } from "./pricing/event";
 export { MsgExecuteContract } from "cosmjs-types/cosmwasm/wasm/v1/tx";
 
-/*
+/* 
 EIP712Types mapping generated here should only be used for sending EIP-712 msgs.
 */
 export const EIP712Types: { [index: string]: any } = {
@@ -1241,10 +1241,6 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "syntax",
-        "type": "string"
-      },
-      {
-        "name": "edition",
         "type": "string"
       }
     ],
@@ -1554,10 +1550,6 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "bool"
       },
       {
-        "name": "deprecated_legacy_json_field_conflicts",
-        "type": "bool"
-      },
-      {
         "name": "uninterpreted_option",
         "type": "UninterpretedOption[]",
         "packageName": "/google.protobuf"
@@ -1595,20 +1587,6 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "bool"
       },
       {
-        "name": "debug_redact",
-        "type": "bool"
-      },
-      {
-        "name": "retention",
-        "type": "",
-        "packageName": "/google.protobuf.FieldOptions"
-      },
-      {
-        "name": "target",
-        "type": "",
-        "packageName": "/google.protobuf.FieldOptions"
-      },
-      {
         "name": "uninterpreted_option",
         "type": "UninterpretedOption[]",
         "packageName": "/google.protobuf"
@@ -1628,10 +1606,6 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "deprecated",
-        "type": "bool"
-      },
-      {
-        "name": "deprecated_legacy_json_field_conflicts",
         "type": "bool"
       },
       {
@@ -5894,10 +5868,6 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "is_active",
         "type": "bool"
-      },
-      {
-        "name": "is_collateral",
-        "type": "bool"
       }
     ],
     "BalanceChange": [
@@ -5948,10 +5918,6 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "position_margin",
-        "type": "string"
-      },
-      {
-        "name": "collateral",
         "type": "string"
       }
     ],
@@ -23669,6 +23635,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "withdrawal_fee_bps",
         "type": "string"
+      },
+      {
+        "name": "borrow_fee_bps",
+        "type": "string"
       }
     ],
     "UpdatePlPoolParams": [
@@ -23686,6 +23656,10 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "withdrawal_fee_bps",
+        "type": "uint64"
+      },
+      {
+        "name": "borrow_fee_bps",
         "type": "uint64"
       }
     ],
@@ -23725,6 +23699,10 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
+        "name": "borrow_fee_multiplier",
+        "type": "string"
+      },
+      {
         "name": "mode",
         "type": "string"
       },
@@ -23737,6 +23715,10 @@ export const EIP712Types: { [index: string]: any } = {
     "UpdateMarketConfigParams": [
       {
         "name": "max_liquidity_ratio",
+        "type": "string"
+      },
+      {
+        "name": "borrow_fee_multiplier",
         "type": "string"
       },
       {
@@ -24064,6 +24046,10 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "withdrawal_fee_bps",
+        "type": "string"
+      },
+      {
+        "name": "borrow_fee_bps",
         "type": "string"
       }
     ],
