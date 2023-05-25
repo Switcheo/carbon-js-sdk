@@ -128,7 +128,7 @@ export class CarbonWallet {
   onRequestSign?: CarbonWallet.OnRequestSignCallback;
   onSignComplete?: CarbonWallet.OnSignCompleteCallback;
   onBroadcastTxComplete?: CarbonWallet.OnBroadcastTxCompleteCallback
-  onFail?: CarbonWallet.OnFailCallback
+  onSendTxFail?: CarbonWallet.OnSendTxFailCallback
 
   defaultTimeoutBlocks: number;
 
@@ -186,7 +186,7 @@ export class CarbonWallet {
     this.onRequestSign = opts.onRequestSign;
     this.onSignComplete = opts.onSignComplete;
     this.onBroadcastTxComplete = opts.onBroadcastTxComplete;
-    this.onFail = opts.onFail
+    this.onSendTxFail = opts.onSendTxFail
 
     this.txDispatchManager = new QueueManager(this.dispatchTx.bind(this));
     this.txSignManager = new QueueManager(this.signTx.bind(this));
@@ -537,14 +537,14 @@ export class CarbonWallet {
   async sendTxs(msgs: EncodeObject[], opts?: CarbonTx.SignTxOpts): Promise<CarbonWallet.SendTxResponse> {
     try {
       await this.reloadMergeAccountStatus()
-      if (this.triggerMerge) {
+      if (this.triggerMerge || opts?.triggerMerge) {
         await this.sendInitialMergeAccountTx(msgs, opts)
       }
       const result = await this.signAndBroadcast(msgs, opts, { mode: BroadcastTxMode.BroadcastTxBlock });
       await this.reloadMergeAccountStatus()
       return result as DeliverTxResponse;
     } catch (error) {
-      await GenericUtils.callIgnoreError(() => this.onFail?.(msgs));
+      await GenericUtils.callIgnoreError(() => this.onSendTxFail?.(msgs));
       throw error
     }
 
@@ -582,7 +582,7 @@ export class CarbonWallet {
 
   async sendTxsWithoutConfirm(msgs: EncodeObject[], opts?: CarbonTx.SignTxOpts): Promise<CarbonWallet.SendTxWithoutConfirmResponse> {
     await this.reloadMergeAccountStatus()
-    if (this.triggerMerge) {
+    if (this.triggerMerge || opts?.triggerMerge) {
       await this.sendInitialMergeAccountTx(msgs, opts)
     }
     const result = await this.signAndBroadcast(msgs, opts, { mode: BroadcastTxMode.BroadcastTxSync });
@@ -814,7 +814,7 @@ export namespace CarbonWallet {
   export type OnRequestSignCallback = (msgs: readonly EncodeObject[]) => void | Promise<void>;
   export type OnSignCompleteCallback = (signature: StdSignature | null) => void | Promise<void>;
   export type OnBroadcastTxCompleteCallback = (msgs: readonly EncodeObject[]) => void | Promise<void>;
-  export type OnFailCallback = (msgs: readonly EncodeObject[]) => void | Promise<void>;
+  export type OnSendTxFailCallback = (msgs: readonly EncodeObject[]) => void | Promise<void>;
 
   // workaround to re-export interface mixed const type
   export interface TxRaw extends StargateTxRaw { }
