@@ -750,6 +750,6 @@ export namespace CarbonWallet {
   export type OnSignCompleteCallback = (signature: StdSignature | null) => void | Promise<void>;
 
   // workaround to re-export interface mixed const type
-  export interface TxRaw extends StargateTxRaw { }
+  export type TxRaw = StargateTxRaw
   export const TxRaw: typeof StargateTxRaw = { ...StargateTxRaw };
 }

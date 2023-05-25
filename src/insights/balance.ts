@@ -72,7 +72,7 @@ export interface QueryGetBalanceSupplyResponse {
   entries: TokenBalance[];
 }
 
-export interface QueryGetBalanceDistributionRequest extends QueryByTimeRequest {}
+export type QueryGetBalanceDistributionRequest = QueryByTimeRequest
 
 export interface QueryGetBalanceDistributionResponse {
   entries: {

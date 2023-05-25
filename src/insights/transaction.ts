@@ -28,7 +28,7 @@ export interface QueryGetTransactionTypesResponse {
   data: string[];
 }
 
-export interface QueryGetTransactionActivityRequest extends QueryByTimeRequest {}
+export type QueryGetTransactionActivityRequest = QueryByTimeRequest
 
 export interface QueryGetTransactionActivityResponse {
   entries: TxActivity[];

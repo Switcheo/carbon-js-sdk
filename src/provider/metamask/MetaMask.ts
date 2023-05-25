@@ -531,7 +531,7 @@ export class MetaMask {
 
   async syncBlockchain(): Promise<MetaMaskSyncResult> {
     const chainIdHex = (await this.getAPI()?.request({ method: "eth_chainId" })) as string;
-    const chainId = !!chainIdHex ? parseInt(chainIdHex, 16) : undefined;
+    const chainId = chainIdHex ? parseInt(chainIdHex, 16) : undefined;
     const blockchain = getBlockchainFromChainV2(chainId) as EVMChain;
     this.blockchain = blockchain!;
 

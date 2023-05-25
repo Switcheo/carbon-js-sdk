@@ -37,7 +37,7 @@ const decodeHexList = [...msgUpdateClientInnerFields, ...msgRecvPacketInnerField
 
 const decodeNestedMsg = (obj: any) => {
   for (const key in obj) {
-    let value = obj[key];
+    const value = obj[key];
     if (decodeHexList.includes(key) && value instanceof Uint8Array) {
       obj[key] = Buffer.from(value).toString("hex");
     } else if (

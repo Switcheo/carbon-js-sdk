@@ -189,7 +189,7 @@ export interface WsSubscribeAccountTradesByMarketParams extends WsSubscribeParam
   address: string;
 }
 
-export interface WsSubscribeMarketStatsAllParams extends WsSubscribeParams {}
+export type WsSubscribeMarketStatsAllParams = WsSubscribeParams
 
 export interface WsSubscribeMarketStatsByMarketParams extends WsSubscribeParams {
   market: string;
@@ -213,7 +213,7 @@ export interface WsSubscribePositionsByMarketParams extends WsSubscribeParams {
   address: string;
 }
 
-export interface WsSubscribePoolsAllParams extends WsSubscribeParams {}
+export type WsSubscribePoolsAllParams = WsSubscribeParams
 
 export interface WsSubscribePoolsByIdParams extends WsSubscribeParams {
   id: string;
@@ -236,15 +236,15 @@ export interface WsSubscribeCDPCollaterals extends WsSubscribeParams {
   address: string;
 }
 
-export interface WsSubscribeCDPLiquidateCollaterals extends WsSubscribeParams {}
+export type WsSubscribeCDPLiquidateCollaterals = WsSubscribeParams
 
-export interface WsSubscribeTokenDebts extends WsSubscribeParams {}
+export type WsSubscribeTokenDebts = WsSubscribeParams
 
 export interface WsSubscribeTokenDebtByDenom extends WsSubscribeParams {
   denom: string;
 }
 
-export interface WsSubscribeRewardSchemes extends WsSubscribeParams {}
+export type WsSubscribeRewardSchemes = WsSubscribeParams
 
 export interface WsSubscribeRewardDebts extends WsSubscribeParams {
   address?: string;
@@ -254,12 +254,12 @@ export interface WsSubscribeTokenPrices extends WsSubscribeParams {
   denom: string;
 }
 
-export interface WsSubscribeAllTokenPrices extends WsSubscribeParams {}
+export type WsSubscribeAllTokenPrices = WsSubscribeParams
 export interface WsSubscribeCDPTokenSupplyByDenom extends WsSubscribeParams {
   denom: string;
 }
 
-export interface WsSubscribeCDPTokenSupply extends WsSubscribeParams {}
+export type WsSubscribeCDPTokenSupply = WsSubscribeParams
 
 export type WsSubscriptionParams =
   | WsSubscribeCandlesticksParams

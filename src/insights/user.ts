@@ -43,21 +43,21 @@ export interface QueryGetUserProfileResponse {
   entries: Profile;
 }
 
-export interface QueryGetActiveAccountsRequest extends QueryByTimeRequest {}
+export type QueryGetActiveAccountsRequest = QueryByTimeRequest
 
 export interface QueryGetActiveAccountsResponse {
   entries: ActiveAccounts[];
   meta: TimeMeta;
 }
 
-export interface QueryGetUserGrowthRequest extends QueryByTimeRequest {}
+export type QueryGetUserGrowthRequest = QueryByTimeRequest
 
 export interface QueryGetUserGrowthResponse {
   entries: UserGrowth[];
   meta: TimeMeta;
 }
 
-export interface QueryGetTotalUsersRequest extends QueryByTimeRequest {}
+export type QueryGetTotalUsersRequest = QueryByTimeRequest
 
 export interface QueryGetTotalUsersResponse {
   entries: TotalUser[];

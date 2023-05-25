@@ -1,6 +1,6 @@
 import { PageMeta, QueryByPageRequest } from "./common";
 
-export interface QueryGetNodesRequest extends QueryByPageRequest {}
+export type QueryGetNodesRequest = QueryByPageRequest
 
 export interface NodeItem {
   nodeId: string;

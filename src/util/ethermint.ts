@@ -34,7 +34,7 @@ export function parseChainId(evmChainId: string): string {
 export async function populateEvmTransactionDetails(api: CarbonSDK, req: ethers.providers.TransactionRequest): Promise<ethers.providers.TransactionRequest> {
     const provider = api.evmJsonRpc
     const evmHexAddress = api.wallet?.evmHexAddress ?? ''
-    let request: ethers.providers.TransactionRequest = {
+    const request: ethers.providers.TransactionRequest = {
         to: req.to ?? '',
         from: req.from ?? api.wallet?.evmHexAddress,
         nonce: req.nonce ?? (await provider.getTransactionCount(evmHexAddress)),

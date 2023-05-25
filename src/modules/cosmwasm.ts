@@ -54,5 +54,5 @@ export class CosmWasmModule extends BaseModule {
       prev[balance.contractAddress] = balance.balance;
       return prev;
     }, {});
-  };
+  }
 }
