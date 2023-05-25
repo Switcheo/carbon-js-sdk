@@ -2159,3 +2159,107 @@ export type MinimalDenomMap = SimpleMap<string>;
 export interface ExtendedChainInfo extends ChainInfo {
   minimalDenomMap: MinimalDenomMap;
 }
+
+export interface URLProviderObj {
+  address: string;
+  provider: string;
+}
+
+export interface ExplorerObj {
+  kind?: string;
+  tx_page: string;
+  url: string;
+}
+
+export interface Asset {
+  name: string;
+  description: string;
+  symbol: string;
+  denom: string;
+  decimals: number;
+  coingecko_id: string;
+  base: string;
+  display: DenomUnit;
+  denom_units: DenomUnit[];
+  logo_URIs: LogoURIs;
+  image: string;
+  prices?: Prices;
+}
+
+export interface DenomUnit {
+  denom: string;
+  exponent: number;
+}
+
+export interface FeeToken {
+  denom: string,
+  fixed_min_gas_price: number,
+  low_gas_price: number,
+  average_gas_price: number,
+  high_gas_price: number
+}
+
+interface LogoURIs {
+  png: string;
+  svg: string;
+}
+
+interface Prices {
+  coingecko: Coingecko;
+}
+
+interface Coingecko {
+  usd: number;
+}
+
+
+export interface ChainRegistryItem {
+  name: string;
+  path: string;
+  chain_name: string;
+  network_type: string;
+  pretty_name: string;
+  chain_id: string;
+  cosmwasm_enabled?: boolean;
+  status: string;
+  bech32_prefix: string;
+  symbol: string;
+  display: string;
+  denom: string;
+  decimals: number;
+  coingecko_id: string;
+  image: string;
+  website: string;
+  height: number;
+  best_apis: {
+    rpc: URLProviderObj[];
+    rest: URLProviderObj[];
+  };
+  proxy_status: {
+    rest: boolean;
+    rpc: boolean;
+  };
+  versions: {
+    application_version: string;
+    cosmos_sdk_version: string;
+    tendermint_version: string;
+  };
+  explorers: ExplorerObj[];
+  params: any;
+  services?: any;
+  prices?: {
+    coingecko: SimpleMap<SimpleMap<number>>;
+  };
+  assets: Asset[];
+  keywords: any[];
+}
+
+export interface CosmosChainsObj {
+  chains: ChainRegistryItem[];
+  repository: {
+    branch: string;
+    commit: string;
+    timestamp: string;
+    url: string;
+  };
+}
