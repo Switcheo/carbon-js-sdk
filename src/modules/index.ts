@@ -16,3 +16,7 @@ export * from "./profile";
 export * from "./subaccount";
 export * from "./fee";
 export * from "./xchain";
+export * from "./evm";
+export * from "./evmmerge";
+export * from "./feemarket";
+export * from "./perpsliquidity";

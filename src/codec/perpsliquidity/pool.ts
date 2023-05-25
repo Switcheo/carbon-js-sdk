@@ -41,7 +41,7 @@ export interface PoolDetails {
 export interface Quote {
   quotePriceType: string;
   quotePriceValue: string;
-  amountRatio: string;
+  quoteAmountRatio: string;
 }
 
 /** MarketConfig config for each market in the Pool */
@@ -49,10 +49,10 @@ export interface MarketConfig {
   /** unique id representing the market */
   marketId: string;
   /**
-   * percentage of the pool liquidity that can be used to quote on a market in
-   * ratio where 0 < max_quotable_liquidity_ratio <= 1
+   * ratio of the pool liquidity that can be used for the market
+   * ratio where 0 < max_liquidity_ratio <= 1
    */
-  maxQuotableLiquidityRatio: string;
+  maxLiquidityRatio: string;
   /**
    * Available modes:
    * active - market is active for quoting
@@ -65,7 +65,7 @@ export interface MarketConfig {
 }
 
 export interface UpdateMarketConfigParams {
-  maxQuotableLiquidityRatio: string;
+  maxLiquidityRatio: string;
   mode?: string;
   quoteShape: Quote[];
 }
@@ -440,7 +440,7 @@ export const PoolDetails = {
 const baseQuote: object = {
   quotePriceType: "",
   quotePriceValue: "",
-  amountRatio: "",
+  quoteAmountRatio: "",
 };
 
 export const Quote = {
@@ -451,8 +451,8 @@ export const Quote = {
     if (message.quotePriceValue !== "") {
       writer.uint32(18).string(message.quotePriceValue);
     }
-    if (message.amountRatio !== "") {
-      writer.uint32(26).string(message.amountRatio);
+    if (message.quoteAmountRatio !== "") {
+      writer.uint32(26).string(message.quoteAmountRatio);
     }
     return writer;
   },
@@ -471,7 +471,7 @@ export const Quote = {
           message.quotePriceValue = reader.string();
           break;
         case 3:
-          message.amountRatio = reader.string();
+          message.quoteAmountRatio = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -491,9 +491,9 @@ export const Quote = {
       object.quotePriceValue !== undefined && object.quotePriceValue !== null
         ? String(object.quotePriceValue)
         : "";
-    message.amountRatio =
-      object.amountRatio !== undefined && object.amountRatio !== null
-        ? String(object.amountRatio)
+    message.quoteAmountRatio =
+      object.quoteAmountRatio !== undefined && object.quoteAmountRatio !== null
+        ? String(object.quoteAmountRatio)
         : "";
     return message;
   },
@@ -504,8 +504,8 @@ export const Quote = {
       (obj.quotePriceType = message.quotePriceType);
     message.quotePriceValue !== undefined &&
       (obj.quotePriceValue = message.quotePriceValue);
-    message.amountRatio !== undefined &&
-      (obj.amountRatio = message.amountRatio);
+    message.quoteAmountRatio !== undefined &&
+      (obj.quoteAmountRatio = message.quoteAmountRatio);
     return obj;
   },
 
@@ -513,14 +513,14 @@ export const Quote = {
     const message = { ...baseQuote } as Quote;
     message.quotePriceType = object.quotePriceType ?? "";
     message.quotePriceValue = object.quotePriceValue ?? "";
-    message.amountRatio = object.amountRatio ?? "";
+    message.quoteAmountRatio = object.quoteAmountRatio ?? "";
     return message;
   },
 };
 
 const baseMarketConfig: object = {
   marketId: "",
-  maxQuotableLiquidityRatio: "",
+  maxLiquidityRatio: "",
   mode: "",
 };
 
@@ -532,8 +532,8 @@ export const MarketConfig = {
     if (message.marketId !== "") {
       writer.uint32(10).string(message.marketId);
     }
-    if (message.maxQuotableLiquidityRatio !== "") {
-      writer.uint32(18).string(message.maxQuotableLiquidityRatio);
+    if (message.maxLiquidityRatio !== "") {
+      writer.uint32(18).string(message.maxLiquidityRatio);
     }
     if (message.mode !== "") {
       writer.uint32(26).string(message.mode);
@@ -556,7 +556,7 @@ export const MarketConfig = {
           message.marketId = reader.string();
           break;
         case 2:
-          message.maxQuotableLiquidityRatio = reader.string();
+          message.maxLiquidityRatio = reader.string();
           break;
         case 3:
           message.mode = reader.string();
@@ -578,10 +578,10 @@ export const MarketConfig = {
       object.marketId !== undefined && object.marketId !== null
         ? String(object.marketId)
         : "";
-    message.maxQuotableLiquidityRatio =
-      object.maxQuotableLiquidityRatio !== undefined &&
-      object.maxQuotableLiquidityRatio !== null
-        ? String(object.maxQuotableLiquidityRatio)
+    message.maxLiquidityRatio =
+      object.maxLiquidityRatio !== undefined &&
+      object.maxLiquidityRatio !== null
+        ? String(object.maxLiquidityRatio)
         : "";
     message.mode =
       object.mode !== undefined && object.mode !== null
@@ -596,8 +596,8 @@ export const MarketConfig = {
   toJSON(message: MarketConfig): unknown {
     const obj: any = {};
     message.marketId !== undefined && (obj.marketId = message.marketId);
-    message.maxQuotableLiquidityRatio !== undefined &&
-      (obj.maxQuotableLiquidityRatio = message.maxQuotableLiquidityRatio);
+    message.maxLiquidityRatio !== undefined &&
+      (obj.maxLiquidityRatio = message.maxLiquidityRatio);
     message.mode !== undefined && (obj.mode = message.mode);
     if (message.quoteShape) {
       obj.quoteShape = message.quoteShape.map((e) =>
@@ -612,7 +612,7 @@ export const MarketConfig = {
   fromPartial(object: DeepPartial<MarketConfig>): MarketConfig {
     const message = { ...baseMarketConfig } as MarketConfig;
     message.marketId = object.marketId ?? "";
-    message.maxQuotableLiquidityRatio = object.maxQuotableLiquidityRatio ?? "";
+    message.maxLiquidityRatio = object.maxLiquidityRatio ?? "";
     message.mode = object.mode ?? "";
     message.quoteShape = (object.quoteShape ?? []).map((e) =>
       Quote.fromPartial(e)
@@ -621,15 +621,15 @@ export const MarketConfig = {
   },
 };
 
-const baseUpdateMarketConfigParams: object = { maxQuotableLiquidityRatio: "" };
+const baseUpdateMarketConfigParams: object = { maxLiquidityRatio: "" };
 
 export const UpdateMarketConfigParams = {
   encode(
     message: UpdateMarketConfigParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.maxQuotableLiquidityRatio !== "") {
-      writer.uint32(10).string(message.maxQuotableLiquidityRatio);
+    if (message.maxLiquidityRatio !== "") {
+      writer.uint32(10).string(message.maxLiquidityRatio);
     }
     if (message.mode !== undefined) {
       StringValue.encode(
@@ -657,7 +657,7 @@ export const UpdateMarketConfigParams = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.maxQuotableLiquidityRatio = reader.string();
+          message.maxLiquidityRatio = reader.string();
           break;
         case 2:
           message.mode = StringValue.decode(reader, reader.uint32()).value;
@@ -677,10 +677,10 @@ export const UpdateMarketConfigParams = {
     const message = {
       ...baseUpdateMarketConfigParams,
     } as UpdateMarketConfigParams;
-    message.maxQuotableLiquidityRatio =
-      object.maxQuotableLiquidityRatio !== undefined &&
-      object.maxQuotableLiquidityRatio !== null
-        ? String(object.maxQuotableLiquidityRatio)
+    message.maxLiquidityRatio =
+      object.maxLiquidityRatio !== undefined &&
+      object.maxLiquidityRatio !== null
+        ? String(object.maxLiquidityRatio)
         : "";
     message.mode =
       object.mode !== undefined && object.mode !== null
@@ -694,8 +694,8 @@ export const UpdateMarketConfigParams = {
 
   toJSON(message: UpdateMarketConfigParams): unknown {
     const obj: any = {};
-    message.maxQuotableLiquidityRatio !== undefined &&
-      (obj.maxQuotableLiquidityRatio = message.maxQuotableLiquidityRatio);
+    message.maxLiquidityRatio !== undefined &&
+      (obj.maxLiquidityRatio = message.maxLiquidityRatio);
     message.mode !== undefined && (obj.mode = message.mode);
     if (message.quoteShape) {
       obj.quoteShape = message.quoteShape.map((e) =>
@@ -713,7 +713,7 @@ export const UpdateMarketConfigParams = {
     const message = {
       ...baseUpdateMarketConfigParams,
     } as UpdateMarketConfigParams;
-    message.maxQuotableLiquidityRatio = object.maxQuotableLiquidityRatio ?? "";
+    message.maxLiquidityRatio = object.maxLiquidityRatio ?? "";
     message.mode = object.mode ?? undefined;
     message.quoteShape = (object.quoteShape ?? []).map((e) =>
       Quote.fromPartial(e)

@@ -132,8 +132,12 @@ class CosmosLedger {
 
     // checks if the Ledger is connected and the app is open
     await this.isReady();
-
+  
     return this;
+  }
+
+  async disconnect() {
+    await this.cosmosApp.transport.close()
   }
 
   // returns the cosmos app version as a string like "1.1.0"

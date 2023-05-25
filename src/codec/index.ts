@@ -6,16 +6,18 @@ import { MsgAddRateStrategy, MsgAddRateStrategyResponse, MsgUpdateRateStrategy, 
 import { MsgInitiateLiquidation, MsgInitiateLiquidationResponse } from "./broker/tx";
 import { MsgSetGasCost, MsgSetGasCostResponse, MsgSetMinGasPrice, MsgSetMinGasPriceResponse, MsgRemoveGasCost, MsgRemoveGasCostResponse, MsgRemoveMinGasPrice, MsgRemoveMinGasPriceResponse } from "./fee/tx";
 import { SetMsgGasCostProposal, SetMinGasPriceProposal, RemoveMsgGasCostProposal, RemoveMinGasPriceProposal } from "./fee/proposal";
+import { MsgConvertCoin, MsgConvertCoinResponse, MsgConvertERC20, MsgConvertERC20Response, MsgUpdateParams, MsgUpdateParamsResponse, MsgRegisterToken, MsgRegisterTokenResponse, MsgRegisterERC20, MsgRegisterERC20Response, MsgUpdateERC20Enabled, MsgUpdateERC20EnabledResponse, MsgUpdateEVMHookEnabled, MsgUpdateEVMHookEnabledResponse } from "./erc20/tx";
 import { MsgMergeAccount, MsgMergeAccountResponse } from "./evmmerge/tx";
 import { MsgSetMargin, MsgSetMarginResponse } from "./position/tx";
 import { MsgCreateOracle, MsgCreateOracleResponse, MsgCreateVote, MsgCreateVoteResponse, MsgUpdateOracle, MsgUpdateOracleResponse, MsgRemoveOracle, MsgRemoveOracleResponse, MsgSetOracleSlashEnabled, MsgSetOracleSlashEnabledResponse } from "./oracle/tx";
 import { CreateOracleProposal } from "./oracle/proposal";
+import { MsgDelegate as MsgAllianceDelegate, MsgDelegateResponse as MsgAllianceDelegateResponse, MsgUndelegate as MsgAllianceUndelegate, MsgUndelegateResponse as MsgAllianceUndelegateResponse, MsgRedelegate as MsgAllianceRedelegate, MsgRedelegateResponse as MsgAllianceRedelegateResponse, MsgClaimDelegationRewards as MsgAllianceClaimDelegationRewards, MsgClaimDelegationRewardsResponse as MsgAllianceClaimDelegationRewardsResponse } from "./alliance/tx";
 import { MsgSoftwareUpgrade, MsgSoftwareUpgradeResponse, MsgCancelUpgrade, MsgCancelUpgradeResponse } from "./cosmos/upgrade/v1beta1/tx";
 import { SoftwareUpgradeProposal, CancelSoftwareUpgradeProposal } from "./cosmos/upgrade/v1beta1/upgrade";
 import { MsgGrantAllowance, MsgGrantAllowanceResponse, MsgRevokeAllowance, MsgRevokeAllowanceResponse } from "./cosmos/feegrant/v1beta1/tx";
 import { MsgSubmitEvidence, MsgSubmitEvidenceResponse } from "./cosmos/evidence/v1beta1/tx";
 import { MsgSend as MsgNftSend, MsgSendResponse as MsgNftSendResponse } from "./cosmos/nft/v1beta1/tx";
-import { MsgCreateGroup, MsgCreateGroupResponse, MsgUpdateGroupMembers, MsgUpdateGroupMembersResponse, MsgUpdateGroupAdmin, MsgUpdateGroupAdminResponse, MsgUpdateGroupMetadata, MsgUpdateGroupMetadataResponse, MsgCreateGroupPolicy, MsgCreateGroupPolicyResponse, MsgUpdateGroupPolicyAdmin, MsgCreateGroupWithPolicy, MsgCreateGroupWithPolicyResponse, MsgUpdateGroupPolicyAdminResponse, MsgUpdateGroupPolicyDecisionPolicy, MsgUpdateGroupPolicyDecisionPolicyResponse, MsgUpdateGroupPolicyMetadata, MsgUpdateGroupPolicyMetadataResponse, MsgSubmitProposal, MsgSubmitProposalResponse, MsgWithdrawProposal, MsgWithdrawProposalResponse, MsgVote, MsgVoteResponse, MsgExec, MsgExecResponse, MsgLeaveGroup, MsgLeaveGroupResponse } from "./cosmos/group/v1/tx";
+import { MsgCreateGroup as MsgGroupCreateGroup, MsgCreateGroupResponse as MsgGroupCreateGroupResponse, MsgUpdateGroupMembers as MsgGroupUpdateGroupMembers, MsgUpdateGroupMembersResponse as MsgGroupUpdateGroupMembersResponse, MsgUpdateGroupAdmin as MsgGroupUpdateGroupAdmin, MsgUpdateGroupAdminResponse as MsgGroupUpdateGroupAdminResponse, MsgUpdateGroupMetadata as MsgGroupUpdateGroupMetadata, MsgUpdateGroupMetadataResponse as MsgGroupUpdateGroupMetadataResponse, MsgCreateGroupPolicy as MsgGroupCreateGroupPolicy, MsgCreateGroupPolicyResponse as MsgGroupCreateGroupPolicyResponse, MsgUpdateGroupPolicyAdmin as MsgGroupUpdateGroupPolicyAdmin, MsgCreateGroupWithPolicy as MsgGroupCreateGroupWithPolicy, MsgCreateGroupWithPolicyResponse as MsgGroupCreateGroupWithPolicyResponse, MsgUpdateGroupPolicyAdminResponse as MsgGroupUpdateGroupPolicyAdminResponse, MsgUpdateGroupPolicyDecisionPolicy as MsgGroupUpdateGroupPolicyDecisionPolicy, MsgUpdateGroupPolicyDecisionPolicyResponse as MsgGroupUpdateGroupPolicyDecisionPolicyResponse, MsgUpdateGroupPolicyMetadata as MsgGroupUpdateGroupPolicyMetadata, MsgUpdateGroupPolicyMetadataResponse as MsgGroupUpdateGroupPolicyMetadataResponse, MsgSubmitProposal as MsgGroupSubmitProposal, MsgSubmitProposalResponse as MsgGroupSubmitProposalResponse, MsgWithdrawProposal as MsgGroupWithdrawProposal, MsgWithdrawProposalResponse as MsgGroupWithdrawProposalResponse, MsgVote as MsgGroupVote, MsgVoteResponse as MsgGroupVoteResponse, MsgExec as MsgGroupExec, MsgExecResponse as MsgGroupExecResponse, MsgLeaveGroup as MsgGroupLeaveGroup, MsgLeaveGroupResponse as MsgGroupLeaveGroupResponse } from "./cosmos/group/v1/tx";
 import { MsgSend, MsgSendResponse, MsgMultiSend, MsgMultiSendResponse } from "./cosmos/bank/v1beta1/tx";
 import { MsgSetWithdrawAddress, MsgSetWithdrawAddressResponse, MsgWithdrawDelegatorReward, MsgWithdrawDelegatorRewardResponse, MsgWithdrawValidatorCommission, MsgWithdrawValidatorCommissionResponse, MsgFundCommunityPool, MsgFundCommunityPoolResponse } from "./cosmos/distribution/v1beta1/tx";
 import { CommunityPoolSpendProposal } from "./cosmos/distribution/v1beta1/distribution";
@@ -23,10 +25,10 @@ import { MsgVerifyInvariant, MsgVerifyInvariantResponse } from "./cosmos/crisis/
 import { MsgCreateVestingAccount, MsgCreateVestingAccountResponse, MsgCreatePermanentLockedAccount, MsgCreatePermanentLockedAccountResponse, MsgCreatePeriodicVestingAccount, MsgCreatePeriodicVestingAccountResponse } from "./cosmos/vesting/v1beta1/tx";
 import { MsgCreateValidator, MsgCreateValidatorResponse, MsgEditValidator, MsgEditValidatorResponse, MsgDelegate, MsgDelegateResponse, MsgBeginRedelegate, MsgBeginRedelegateResponse, MsgUndelegate, MsgUndelegateResponse, MsgCancelUnbondingDelegation, MsgCancelUnbondingDelegationResponse } from "./cosmos/staking/v1beta1/tx";
 import { ParameterChangeProposal } from "./cosmos/params/v1beta1/params";
-import { MsgGrant, MsgExecResponse as MsgAuthzExecResponse, MsgExec as MsgAuthzExec, MsgGrantResponse, MsgRevoke, MsgRevokeResponse } from "./cosmos/authz/v1beta1/tx";
+import { MsgGrant, MsgExecResponse, MsgExec, MsgGrantResponse, MsgRevoke, MsgRevokeResponse } from "./cosmos/authz/v1beta1/tx";
 import { MsgUnjail, MsgUnjailResponse } from "./cosmos/slashing/v1beta1/tx";
-import { MsgSubmitProposal as MsgGovSubmitProposal, MsgSubmitProposalResponse as MsgGovSubmitProposalResponse, MsgExecLegacyContent, MsgExecLegacyContentResponse, MsgVote as MsgGovVote, MsgVoteResponse as MsgGovVoteResponse, MsgVoteWeighted, MsgVoteWeightedResponse, MsgDeposit, MsgDepositResponse } from "./cosmos/gov/v1/tx";
-import { MsgSubmitProposal as MsgGovV1beta1SubmitProposal, MsgSubmitProposalResponse as MsgGovV1beta1SubmitProposalResponse, MsgVote as MsgGovV1beta1Vote, MsgVoteResponse as MsgGovV1beta1VoteResponse, MsgVoteWeighted as MsgGovV1beta1VoteWeighted, MsgVoteWeightedResponse as MsgGovV1beta1VoteWeightedResponse, MsgDeposit as MsgGovV1beta1Deposit, MsgDepositResponse as MsgGovV1beta1DepositResponse } from "./cosmos/gov/v1beta1/tx";
+import { MsgSubmitProposal as MsgGovSubmitProposal, MsgSubmitProposalResponse as MsgGovSubmitProposalResponse, MsgExecLegacyContent as MsgGovExecLegacyContent, MsgExecLegacyContentResponse as MsgGovExecLegacyContentResponse, MsgVote as MsgGovVote, MsgVoteResponse as MsgGovVoteResponse, MsgVoteWeighted as MsgGovVoteWeighted, MsgVoteWeightedResponse as MsgGovVoteWeightedResponse, MsgDeposit as MsgGovDeposit, MsgDepositResponse as MsgGovDepositResponse } from "./cosmos/gov/v1/tx";
+import { MsgSubmitProposal, MsgSubmitProposalResponse, MsgVote, MsgVoteResponse, MsgVoteWeighted, MsgVoteWeightedResponse, MsgDeposit, MsgDepositResponse } from "./cosmos/gov/v1beta1/tx";
 import { MsgCreatePlPool, MsgCreatePlPoolResponse, MsgUpdatePlPool, MsgUpdatePlPoolResponse, MsgRegisterToPlPool, MsgRegisterToPlPoolResponse, MsgDeregisterFromPlPool, MsgDeregisterFromPlPoolResponse, MsgDepositToPlPool, MsgDepositToPlPoolResponse, MsgWithdrawFromPlPool, MsgWithdrawFromPlPoolResponse, MsgUpdateMarketConfig, MsgUpdateMarketConfigResponse } from "./perpsliquidity/tx";
 import { MsgConnectionOpenInit, MsgConnectionOpenInitResponse, MsgConnectionOpenTry, MsgConnectionOpenTryResponse, MsgConnectionOpenAck, MsgConnectionOpenAckResponse, MsgConnectionOpenConfirm, MsgConnectionOpenConfirmResponse } from "./ibc/core/connection/v1/tx";
 import { MsgChannelOpenInit, MsgChannelOpenInitResponse, MsgChannelOpenTry, MsgChannelOpenTryResponse, MsgChannelOpenAck, MsgChannelOpenAckResponse, MsgChannelOpenConfirm, MsgChannelOpenConfirmResponse, MsgChannelCloseInit, MsgChannelCloseInitResponse, MsgChannelCloseConfirm, MsgChannelCloseConfirmResponse, MsgRecvPacket, MsgRecvPacketResponse, MsgTimeout, MsgTimeoutResponse, MsgTimeoutOnClose, MsgTimeoutOnCloseResponse, MsgAcknowledgement, MsgAcknowledgementResponse } from "./ibc/core/channel/v1/tx";
@@ -35,12 +37,12 @@ import { Header } from "./ibc/lightclients/tendermint/v1/tendermint";
 import { MsgRegisterPayee, MsgRegisterPayeeResponse, MsgRegisterCounterpartyPayee, MsgRegisterCounterpartyPayeeResponse, MsgPayPacketFee, MsgPayPacketFeeResponse, MsgPayPacketFeeAsync, MsgPayPacketFeeAsyncResponse } from "./ibc/applications/fee/v1/tx";
 import { MsgTransfer, MsgTransferResponse } from "./ibc/applications/transfer/v1/tx";
 import { MsgRegisterInterchainAccount, MsgRegisterInterchainAccountResponse, MsgSendTx, MsgSendTxResponse } from "./ibc/applications/interchain_accounts/controller/v1/tx";
-import { MsgCreateToken, MsgCreateTokenResponse, MsgSyncToken, MsgSyncTokenResponse, MsgMintToken, MsgMintTokenResponse, MsgBindToken, MsgBindTokenResponse, MsgUnbindToken, MsgUnbindTokenResponse, MsgLinkToken, MsgLinkTokenResponse, MsgWithdraw, MsgWithdrawResponse, MsgAuthorizeBridge, MsgAuthorizeBridgeResponse, MsgDeauthorizeBridge, MsgDeauthorizeBridgeResponse, MsgEditBridgeName, MsgEditBridgeNameResponse, MsgRemoveBridge, MsgRemoveBridgeResponse, MsgUpdateToken, MsgUpdateTokenResponse, MsgAddBridgeAddress, MsgAddBridgeAddressResponse, MsgRemoveBridgeAddress, MsgRemoveBridgeAddressResponse, MsgCreateGroup as MsgCoinCreateGroup, MsgCreateGroupResponse as MsgCoinCreateGroupResponse, MsgUpdateGroup, MsgUpdateGroupResponse, MsgRegisterToGroup, MsgRegisterToGroupResponse, MsgDeregisterFromGroup, MsgDeregisterFromGroupResponse, MsgDepositToGroup, MsgDepositToGroupResponse, MsgWithdrawFromGroup, MsgWithdrawFromGroupResponse, MsgUpdateGroupedTokenConfig, MsgUpdateGroupedTokenConfigResponse } from "./coin/tx";
+import { MsgCreateToken, MsgCreateTokenResponse, MsgSyncToken, MsgSyncTokenResponse, MsgMintToken, MsgMintTokenResponse, MsgBindToken, MsgBindTokenResponse, MsgUnbindToken, MsgUnbindTokenResponse, MsgLinkToken, MsgLinkTokenResponse, MsgWithdraw, MsgWithdrawResponse, MsgAuthorizeBridge, MsgAuthorizeBridgeResponse, MsgDeauthorizeBridge, MsgDeauthorizeBridgeResponse, MsgEditBridgeName, MsgEditBridgeNameResponse, MsgRemoveBridge, MsgRemoveBridgeResponse, MsgUpdateToken, MsgUpdateTokenResponse, MsgAddBridgeAddress, MsgAddBridgeAddressResponse, MsgRemoveBridgeAddress, MsgRemoveBridgeAddressResponse, MsgCreateGroup, MsgCreateGroupResponse, MsgUpdateGroup, MsgUpdateGroupResponse, MsgRegisterToGroup, MsgRegisterToGroupResponse, MsgDeregisterFromGroup, MsgDeregisterFromGroupResponse, MsgDepositToGroup, MsgDepositToGroupResponse, MsgWithdrawFromGroup, MsgWithdrawFromGroupResponse, MsgUpdateGroupedTokenConfig, MsgUpdateGroupedTokenConfigResponse } from "./coin/tx";
 import { CreateTokenProposal } from "./coin/proposal";
 import { MsgSetLeverage, MsgSetLeverageResponse } from "./leverage/tx";
 import { MsgUpdateProfile, MsgUpdateProfileResponse } from "./profile/tx";
-import { MsgUpdateParams, MsgUpdateParamsResponse } from "./ethermint/feemarket/v1/tx";
-import { MsgEthereumTx, MsgEthereumTxResponse, MsgUpdateParams as MsgEvmUpdateParams, MsgUpdateParamsResponse as MsgEvmUpdateParamsResponse } from "./ethermint/evm/v1/tx";
+import { MsgUpdateParams as MsgFeemarketUpdateParams, MsgUpdateParamsResponse as MsgFeemarketUpdateParamsResponse } from "./ethermint/feemarket/v1/tx";
+import { MsgEthereumTx as MsgEvmEthereumTx, MsgEthereumTxResponse as MsgEvmEthereumTxResponse, MsgUpdateParams as MsgEvmUpdateParams, MsgUpdateParamsResponse as MsgEvmUpdateParamsResponse } from "./ethermint/evm/v1/tx";
 import { MsgCreateSubAccount, MsgCreateSubAccountResponse, MsgActivateSubAccount, MsgActivateSubAccountResponse, MsgRemoveSubAccount, MsgRemoveSubAccountResponse } from "./subaccount/tx";
 import { MsgDisableSpotMarket, MsgDisableSpotMarketResponse, MsgCreateMarket, MsgCreateMarketResponse, MsgUpdateMarket, MsgUpdateMarketResponse, MsgUpdatePerpetualsFundingInterval, MsgUpdatePerpetualsFundingIntervalResponse, MsgAddFeeTier, MsgAddFeeTierResponse, MsgUpdateFeeTier, MsgUpdateFeeTierResponse, MsgRemoveFeeTier, MsgRemoveFeeTierResponse, MsgSetStakeEquivalence, MsgSetStakeEquivalenceResponse } from "./market/tx";
 import { CreateMarketProposal, UpdateMarketProposal, UpdatePerpetualsFundingIntervalProposal } from "./market/proposal";
@@ -53,6 +55,7 @@ import { TextProposal, Proposal } from "./cosmos/gov/v1beta1/gov";
 import { ClientUpdateProposal, UpgradeProposal } from "./ibc/core/client/v1/client";
 
 export * from './cosmos-models';
+
 
 export * as IBC from './ibc-models';
 
@@ -176,6 +179,21 @@ registry.register("/Switcheo.carbon.fee.SetMinGasPriceProposal", SetMinGasPriceP
 registry.register("/Switcheo.carbon.fee.RemoveMsgGasCostProposal", RemoveMsgGasCostProposal);
 registry.register("/Switcheo.carbon.fee.RemoveMinGasPriceProposal", RemoveMinGasPriceProposal);
 
+registry.register("/Switcheo.carbon.erc20.MsgConvertCoin", MsgConvertCoin);
+registry.register("/Switcheo.carbon.erc20.MsgConvertCoinResponse", MsgConvertCoinResponse);
+registry.register("/Switcheo.carbon.erc20.MsgConvertERC20", MsgConvertERC20);
+registry.register("/Switcheo.carbon.erc20.MsgConvertERC20Response", MsgConvertERC20Response);
+registry.register("/Switcheo.carbon.erc20.MsgUpdateParams", MsgUpdateParams);
+registry.register("/Switcheo.carbon.erc20.MsgUpdateParamsResponse", MsgUpdateParamsResponse);
+registry.register("/Switcheo.carbon.erc20.MsgRegisterToken", MsgRegisterToken);
+registry.register("/Switcheo.carbon.erc20.MsgRegisterTokenResponse", MsgRegisterTokenResponse);
+registry.register("/Switcheo.carbon.erc20.MsgRegisterERC20", MsgRegisterERC20);
+registry.register("/Switcheo.carbon.erc20.MsgRegisterERC20Response", MsgRegisterERC20Response);
+registry.register("/Switcheo.carbon.erc20.MsgUpdateERC20Enabled", MsgUpdateERC20Enabled);
+registry.register("/Switcheo.carbon.erc20.MsgUpdateERC20EnabledResponse", MsgUpdateERC20EnabledResponse);
+registry.register("/Switcheo.carbon.erc20.MsgUpdateEVMHookEnabled", MsgUpdateEVMHookEnabled);
+registry.register("/Switcheo.carbon.erc20.MsgUpdateEVMHookEnabledResponse", MsgUpdateEVMHookEnabledResponse);
+
 registry.register("/Switcheo.carbon.evmmerge.MsgMergeAccount", MsgMergeAccount);
 registry.register("/Switcheo.carbon.evmmerge.MsgMergeAccountResponse", MsgMergeAccountResponse);
 
@@ -201,6 +219,15 @@ registry.register("/Switcheo.carbon.oracle.MsgSetOracleSlashEnabled", MsgSetOrac
 registry.register("/Switcheo.carbon.oracle.MsgSetOracleSlashEnabledResponse", MsgSetOracleSlashEnabledResponse);
 registry.register("/Switcheo.carbon.oracle.CreateOracleProposal", CreateOracleProposal);
 
+registry.register("/alliance.alliance.MsgDelegate", MsgAllianceDelegate);
+registry.register("/alliance.alliance.MsgDelegateResponse", MsgAllianceDelegateResponse);
+registry.register("/alliance.alliance.MsgUndelegate", MsgAllianceUndelegate);
+registry.register("/alliance.alliance.MsgUndelegateResponse", MsgAllianceUndelegateResponse);
+registry.register("/alliance.alliance.MsgRedelegate", MsgAllianceRedelegate);
+registry.register("/alliance.alliance.MsgRedelegateResponse", MsgAllianceRedelegateResponse);
+registry.register("/alliance.alliance.MsgClaimDelegationRewards", MsgAllianceClaimDelegationRewards);
+registry.register("/alliance.alliance.MsgClaimDelegationRewardsResponse", MsgAllianceClaimDelegationRewardsResponse);
+
 registry.register("/cosmos.upgrade.v1beta1.MsgSoftwareUpgrade", MsgSoftwareUpgrade);
 registry.register("/cosmos.upgrade.v1beta1.MsgSoftwareUpgradeResponse", MsgSoftwareUpgradeResponse);
 registry.register("/cosmos.upgrade.v1beta1.MsgCancelUpgrade", MsgCancelUpgrade);
@@ -219,34 +246,34 @@ registry.register("/cosmos.evidence.v1beta1.MsgSubmitEvidenceResponse", MsgSubmi
 registry.register("/cosmos.nft.v1beta1.MsgSend", MsgNftSend);
 registry.register("/cosmos.nft.v1beta1.MsgSendResponse", MsgNftSendResponse);
 
-registry.register("/cosmos.group.v1.MsgCreateGroup", MsgCreateGroup);
-registry.register("/cosmos.group.v1.MsgCreateGroupResponse", MsgCreateGroupResponse);
-registry.register("/cosmos.group.v1.MsgUpdateGroupMembers", MsgUpdateGroupMembers);
-registry.register("/cosmos.group.v1.MsgUpdateGroupMembersResponse", MsgUpdateGroupMembersResponse);
-registry.register("/cosmos.group.v1.MsgUpdateGroupAdmin", MsgUpdateGroupAdmin);
-registry.register("/cosmos.group.v1.MsgUpdateGroupAdminResponse", MsgUpdateGroupAdminResponse);
-registry.register("/cosmos.group.v1.MsgUpdateGroupMetadata", MsgUpdateGroupMetadata);
-registry.register("/cosmos.group.v1.MsgUpdateGroupMetadataResponse", MsgUpdateGroupMetadataResponse);
-registry.register("/cosmos.group.v1.MsgCreateGroupPolicy", MsgCreateGroupPolicy);
-registry.register("/cosmos.group.v1.MsgCreateGroupPolicyResponse", MsgCreateGroupPolicyResponse);
-registry.register("/cosmos.group.v1.MsgUpdateGroupPolicyAdmin", MsgUpdateGroupPolicyAdmin);
-registry.register("/cosmos.group.v1.MsgCreateGroupWithPolicy", MsgCreateGroupWithPolicy);
-registry.register("/cosmos.group.v1.MsgCreateGroupWithPolicyResponse", MsgCreateGroupWithPolicyResponse);
-registry.register("/cosmos.group.v1.MsgUpdateGroupPolicyAdminResponse", MsgUpdateGroupPolicyAdminResponse);
-registry.register("/cosmos.group.v1.MsgUpdateGroupPolicyDecisionPolicy", MsgUpdateGroupPolicyDecisionPolicy);
-registry.register("/cosmos.group.v1.MsgUpdateGroupPolicyDecisionPolicyResponse", MsgUpdateGroupPolicyDecisionPolicyResponse);
-registry.register("/cosmos.group.v1.MsgUpdateGroupPolicyMetadata", MsgUpdateGroupPolicyMetadata);
-registry.register("/cosmos.group.v1.MsgUpdateGroupPolicyMetadataResponse", MsgUpdateGroupPolicyMetadataResponse);
-registry.register("/cosmos.group.v1.MsgSubmitProposal", MsgSubmitProposal);
-registry.register("/cosmos.group.v1.MsgSubmitProposalResponse", MsgSubmitProposalResponse);
-registry.register("/cosmos.group.v1.MsgWithdrawProposal", MsgWithdrawProposal);
-registry.register("/cosmos.group.v1.MsgWithdrawProposalResponse", MsgWithdrawProposalResponse);
-registry.register("/cosmos.group.v1.MsgVote", MsgVote);
-registry.register("/cosmos.group.v1.MsgVoteResponse", MsgVoteResponse);
-registry.register("/cosmos.group.v1.MsgExec", MsgExec);
-registry.register("/cosmos.group.v1.MsgExecResponse", MsgExecResponse);
-registry.register("/cosmos.group.v1.MsgLeaveGroup", MsgLeaveGroup);
-registry.register("/cosmos.group.v1.MsgLeaveGroupResponse", MsgLeaveGroupResponse);
+registry.register("/cosmos.group.v1.MsgCreateGroup", MsgGroupCreateGroup);
+registry.register("/cosmos.group.v1.MsgCreateGroupResponse", MsgGroupCreateGroupResponse);
+registry.register("/cosmos.group.v1.MsgUpdateGroupMembers", MsgGroupUpdateGroupMembers);
+registry.register("/cosmos.group.v1.MsgUpdateGroupMembersResponse", MsgGroupUpdateGroupMembersResponse);
+registry.register("/cosmos.group.v1.MsgUpdateGroupAdmin", MsgGroupUpdateGroupAdmin);
+registry.register("/cosmos.group.v1.MsgUpdateGroupAdminResponse", MsgGroupUpdateGroupAdminResponse);
+registry.register("/cosmos.group.v1.MsgUpdateGroupMetadata", MsgGroupUpdateGroupMetadata);
+registry.register("/cosmos.group.v1.MsgUpdateGroupMetadataResponse", MsgGroupUpdateGroupMetadataResponse);
+registry.register("/cosmos.group.v1.MsgCreateGroupPolicy", MsgGroupCreateGroupPolicy);
+registry.register("/cosmos.group.v1.MsgCreateGroupPolicyResponse", MsgGroupCreateGroupPolicyResponse);
+registry.register("/cosmos.group.v1.MsgUpdateGroupPolicyAdmin", MsgGroupUpdateGroupPolicyAdmin);
+registry.register("/cosmos.group.v1.MsgCreateGroupWithPolicy", MsgGroupCreateGroupWithPolicy);
+registry.register("/cosmos.group.v1.MsgCreateGroupWithPolicyResponse", MsgGroupCreateGroupWithPolicyResponse);
+registry.register("/cosmos.group.v1.MsgUpdateGroupPolicyAdminResponse", MsgGroupUpdateGroupPolicyAdminResponse);
+registry.register("/cosmos.group.v1.MsgUpdateGroupPolicyDecisionPolicy", MsgGroupUpdateGroupPolicyDecisionPolicy);
+registry.register("/cosmos.group.v1.MsgUpdateGroupPolicyDecisionPolicyResponse", MsgGroupUpdateGroupPolicyDecisionPolicyResponse);
+registry.register("/cosmos.group.v1.MsgUpdateGroupPolicyMetadata", MsgGroupUpdateGroupPolicyMetadata);
+registry.register("/cosmos.group.v1.MsgUpdateGroupPolicyMetadataResponse", MsgGroupUpdateGroupPolicyMetadataResponse);
+registry.register("/cosmos.group.v1.MsgSubmitProposal", MsgGroupSubmitProposal);
+registry.register("/cosmos.group.v1.MsgSubmitProposalResponse", MsgGroupSubmitProposalResponse);
+registry.register("/cosmos.group.v1.MsgWithdrawProposal", MsgGroupWithdrawProposal);
+registry.register("/cosmos.group.v1.MsgWithdrawProposalResponse", MsgGroupWithdrawProposalResponse);
+registry.register("/cosmos.group.v1.MsgVote", MsgGroupVote);
+registry.register("/cosmos.group.v1.MsgVoteResponse", MsgGroupVoteResponse);
+registry.register("/cosmos.group.v1.MsgExec", MsgGroupExec);
+registry.register("/cosmos.group.v1.MsgExecResponse", MsgGroupExecResponse);
+registry.register("/cosmos.group.v1.MsgLeaveGroup", MsgGroupLeaveGroup);
+registry.register("/cosmos.group.v1.MsgLeaveGroupResponse", MsgGroupLeaveGroupResponse);
 
 registry.register("/cosmos.bank.v1beta1.MsgSend", MsgSend);
 registry.register("/cosmos.bank.v1beta1.MsgSendResponse", MsgSendResponse);
@@ -289,8 +316,8 @@ registry.register("/cosmos.staking.v1beta1.MsgCancelUnbondingDelegationResponse"
 registry.register("/cosmos.params.v1beta1.ParameterChangeProposal", ParameterChangeProposal);
 
 registry.register("/cosmos.authz.v1beta1.MsgGrant", MsgGrant);
-registry.register("/cosmos.authz.v1beta1.MsgExecResponse", MsgAuthzExecResponse);
-registry.register("/cosmos.authz.v1beta1.MsgExec", MsgAuthzExec);
+registry.register("/cosmos.authz.v1beta1.MsgExecResponse", MsgExecResponse);
+registry.register("/cosmos.authz.v1beta1.MsgExec", MsgExec);
 registry.register("/cosmos.authz.v1beta1.MsgGrantResponse", MsgGrantResponse);
 registry.register("/cosmos.authz.v1beta1.MsgRevoke", MsgRevoke);
 registry.register("/cosmos.authz.v1beta1.MsgRevokeResponse", MsgRevokeResponse);
@@ -300,23 +327,23 @@ registry.register("/cosmos.slashing.v1beta1.MsgUnjailResponse", MsgUnjailRespons
 
 registry.register("/cosmos.gov.v1.MsgSubmitProposal", MsgGovSubmitProposal);
 registry.register("/cosmos.gov.v1.MsgSubmitProposalResponse", MsgGovSubmitProposalResponse);
-registry.register("/cosmos.gov.v1.MsgExecLegacyContent", MsgExecLegacyContent);
-registry.register("/cosmos.gov.v1.MsgExecLegacyContentResponse", MsgExecLegacyContentResponse);
+registry.register("/cosmos.gov.v1.MsgExecLegacyContent", MsgGovExecLegacyContent);
+registry.register("/cosmos.gov.v1.MsgExecLegacyContentResponse", MsgGovExecLegacyContentResponse);
 registry.register("/cosmos.gov.v1.MsgVote", MsgGovVote);
 registry.register("/cosmos.gov.v1.MsgVoteResponse", MsgGovVoteResponse);
-registry.register("/cosmos.gov.v1.MsgVoteWeighted", MsgVoteWeighted);
-registry.register("/cosmos.gov.v1.MsgVoteWeightedResponse", MsgVoteWeightedResponse);
-registry.register("/cosmos.gov.v1.MsgDeposit", MsgDeposit);
-registry.register("/cosmos.gov.v1.MsgDepositResponse", MsgDepositResponse);
+registry.register("/cosmos.gov.v1.MsgVoteWeighted", MsgGovVoteWeighted);
+registry.register("/cosmos.gov.v1.MsgVoteWeightedResponse", MsgGovVoteWeightedResponse);
+registry.register("/cosmos.gov.v1.MsgDeposit", MsgGovDeposit);
+registry.register("/cosmos.gov.v1.MsgDepositResponse", MsgGovDepositResponse);
 
-registry.register("/cosmos.gov.v1beta1.MsgSubmitProposal", MsgGovV1beta1SubmitProposal);
-registry.register("/cosmos.gov.v1beta1.MsgSubmitProposalResponse", MsgGovV1beta1SubmitProposalResponse);
-registry.register("/cosmos.gov.v1beta1.MsgVote", MsgGovV1beta1Vote);
-registry.register("/cosmos.gov.v1beta1.MsgVoteResponse", MsgGovV1beta1VoteResponse);
-registry.register("/cosmos.gov.v1beta1.MsgVoteWeighted", MsgGovV1beta1VoteWeighted);
-registry.register("/cosmos.gov.v1beta1.MsgVoteWeightedResponse", MsgGovV1beta1VoteWeightedResponse);
-registry.register("/cosmos.gov.v1beta1.MsgDeposit", MsgGovV1beta1Deposit);
-registry.register("/cosmos.gov.v1beta1.MsgDepositResponse", MsgGovV1beta1DepositResponse);
+registry.register("/cosmos.gov.v1beta1.MsgSubmitProposal", MsgSubmitProposal);
+registry.register("/cosmos.gov.v1beta1.MsgSubmitProposalResponse", MsgSubmitProposalResponse);
+registry.register("/cosmos.gov.v1beta1.MsgVote", MsgVote);
+registry.register("/cosmos.gov.v1beta1.MsgVoteResponse", MsgVoteResponse);
+registry.register("/cosmos.gov.v1beta1.MsgVoteWeighted", MsgVoteWeighted);
+registry.register("/cosmos.gov.v1beta1.MsgVoteWeightedResponse", MsgVoteWeightedResponse);
+registry.register("/cosmos.gov.v1beta1.MsgDeposit", MsgDeposit);
+registry.register("/cosmos.gov.v1beta1.MsgDepositResponse", MsgDepositResponse);
 registry.register("/cosmos.gov.v1beta1.TextProposal", TextProposal);
 registry.register("/cosmos.gov.v1beta1.Proposal", Proposal);
 
@@ -430,8 +457,8 @@ registry.register("/Switcheo.carbon.coin.MsgAddBridgeAddress", MsgAddBridgeAddre
 registry.register("/Switcheo.carbon.coin.MsgAddBridgeAddressResponse", MsgAddBridgeAddressResponse);
 registry.register("/Switcheo.carbon.coin.MsgRemoveBridgeAddress", MsgRemoveBridgeAddress);
 registry.register("/Switcheo.carbon.coin.MsgRemoveBridgeAddressResponse", MsgRemoveBridgeAddressResponse);
-registry.register("/Switcheo.carbon.coin.MsgCreateGroup", MsgCoinCreateGroup);
-registry.register("/Switcheo.carbon.coin.MsgCreateGroupResponse", MsgCoinCreateGroupResponse);
+registry.register("/Switcheo.carbon.coin.MsgCreateGroup", MsgCreateGroup);
+registry.register("/Switcheo.carbon.coin.MsgCreateGroupResponse", MsgCreateGroupResponse);
 registry.register("/Switcheo.carbon.coin.MsgUpdateGroup", MsgUpdateGroup);
 registry.register("/Switcheo.carbon.coin.MsgUpdateGroupResponse", MsgUpdateGroupResponse);
 registry.register("/Switcheo.carbon.coin.MsgRegisterToGroup", MsgRegisterToGroup);
@@ -452,11 +479,11 @@ registry.register("/Switcheo.carbon.leverage.MsgSetLeverageResponse", MsgSetLeve
 registry.register("/Switcheo.carbon.profile.MsgUpdateProfile", MsgUpdateProfile);
 registry.register("/Switcheo.carbon.profile.MsgUpdateProfileResponse", MsgUpdateProfileResponse);
 
-registry.register("/ethermint.feemarket.v1.MsgUpdateParams", MsgUpdateParams);
-registry.register("/ethermint.feemarket.v1.MsgUpdateParamsResponse", MsgUpdateParamsResponse);
+registry.register("/ethermint.feemarket.v1.MsgUpdateParams", MsgFeemarketUpdateParams);
+registry.register("/ethermint.feemarket.v1.MsgUpdateParamsResponse", MsgFeemarketUpdateParamsResponse);
 
-registry.register("/ethermint.evm.v1.MsgEthereumTx", MsgEthereumTx);
-registry.register("/ethermint.evm.v1.MsgEthereumTxResponse", MsgEthereumTxResponse);
+registry.register("/ethermint.evm.v1.MsgEthereumTx", MsgEvmEthereumTx);
+registry.register("/ethermint.evm.v1.MsgEthereumTxResponse", MsgEvmEthereumTxResponse);
 registry.register("/ethermint.evm.v1.MsgUpdateParams", MsgEvmUpdateParams);
 registry.register("/ethermint.evm.v1.MsgUpdateParamsResponse", MsgEvmUpdateParamsResponse);
 
@@ -552,6 +579,9 @@ registry.register("/Switcheo.carbon.lockproxy.MsgDeleteWrapperMapping", PolyNetw
 registry.register("/Switcheo.carbon.lockproxy.MsgDeleteWrapperMappingResponse", PolyNetwork.Lockproxy.MsgDeleteWrapperMappingResponse);
 registry.register("/cosmwasm.wasm.v1.MsgExecuteContract", MsgExecuteContract);
 
+/*
+Key in TxTypes may not match the actual type definition due to duplicates in Msg names.
+*/
 export const TxTypes = {
   "MsgSetTradingFlag": "/Switcheo.carbon.order.MsgSetTradingFlag",
   "MsgSetTradingFlagResponse": "/Switcheo.carbon.order.MsgSetTradingFlagResponse",
@@ -663,6 +693,20 @@ export const TxTypes = {
   "SetMinGasPriceProposal": "/Switcheo.carbon.fee.SetMinGasPriceProposal",
   "RemoveMsgGasCostProposal": "/Switcheo.carbon.fee.RemoveMsgGasCostProposal",
   "RemoveMinGasPriceProposal": "/Switcheo.carbon.fee.RemoveMinGasPriceProposal",
+  "MsgConvertCoin": "/Switcheo.carbon.erc20.MsgConvertCoin",
+  "MsgConvertCoinResponse": "/Switcheo.carbon.erc20.MsgConvertCoinResponse",
+  "MsgConvertERC20": "/Switcheo.carbon.erc20.MsgConvertERC20",
+  "MsgConvertERC20Response": "/Switcheo.carbon.erc20.MsgConvertERC20Response",
+  "MsgUpdateParams": "/Switcheo.carbon.erc20.MsgUpdateParams",
+  "MsgUpdateParamsResponse": "/Switcheo.carbon.erc20.MsgUpdateParamsResponse",
+  "MsgRegisterToken": "/Switcheo.carbon.erc20.MsgRegisterToken",
+  "MsgRegisterTokenResponse": "/Switcheo.carbon.erc20.MsgRegisterTokenResponse",
+  "MsgRegisterERC20": "/Switcheo.carbon.erc20.MsgRegisterERC20",
+  "MsgRegisterERC20Response": "/Switcheo.carbon.erc20.MsgRegisterERC20Response",
+  "MsgUpdateERC20Enabled": "/Switcheo.carbon.erc20.MsgUpdateERC20Enabled",
+  "MsgUpdateERC20EnabledResponse": "/Switcheo.carbon.erc20.MsgUpdateERC20EnabledResponse",
+  "MsgUpdateEVMHookEnabled": "/Switcheo.carbon.erc20.MsgUpdateEVMHookEnabled",
+  "MsgUpdateEVMHookEnabledResponse": "/Switcheo.carbon.erc20.MsgUpdateEVMHookEnabledResponse",
   "MsgMergeAccount": "/Switcheo.carbon.evmmerge.MsgMergeAccount",
   "MsgMergeAccountResponse": "/Switcheo.carbon.evmmerge.MsgMergeAccountResponse",
   "MsgCreate": "/Switcheo.carbon.lockproxy.MsgCreate",
@@ -684,6 +728,14 @@ export const TxTypes = {
   "MsgSetOracleSlashEnabled": "/Switcheo.carbon.oracle.MsgSetOracleSlashEnabled",
   "MsgSetOracleSlashEnabledResponse": "/Switcheo.carbon.oracle.MsgSetOracleSlashEnabledResponse",
   "CreateOracleProposal": "/Switcheo.carbon.oracle.CreateOracleProposal",
+  "MsgAllianceDelegate": "/alliance.alliance.MsgDelegate",
+  "MsgAllianceDelegateResponse": "/alliance.alliance.MsgDelegateResponse",
+  "MsgAllianceUndelegate": "/alliance.alliance.MsgUndelegate",
+  "MsgAllianceUndelegateResponse": "/alliance.alliance.MsgUndelegateResponse",
+  "MsgAllianceRedelegate": "/alliance.alliance.MsgRedelegate",
+  "MsgAllianceRedelegateResponse": "/alliance.alliance.MsgRedelegateResponse",
+  "MsgAllianceClaimDelegationRewards": "/alliance.alliance.MsgClaimDelegationRewards",
+  "MsgAllianceClaimDelegationRewardsResponse": "/alliance.alliance.MsgClaimDelegationRewardsResponse",
   "MsgSoftwareUpgrade": "/cosmos.upgrade.v1beta1.MsgSoftwareUpgrade",
   "MsgSoftwareUpgradeResponse": "/cosmos.upgrade.v1beta1.MsgSoftwareUpgradeResponse",
   "MsgCancelUpgrade": "/cosmos.upgrade.v1beta1.MsgCancelUpgrade",
@@ -698,34 +750,34 @@ export const TxTypes = {
   "MsgSubmitEvidenceResponse": "/cosmos.evidence.v1beta1.MsgSubmitEvidenceResponse",
   "MsgNftSend": "/cosmos.nft.v1beta1.MsgSend",
   "MsgNftSendResponse": "/cosmos.nft.v1beta1.MsgSendResponse",
-  "MsgCreateGroup": "/cosmos.group.v1.MsgCreateGroup",
-  "MsgCreateGroupResponse": "/cosmos.group.v1.MsgCreateGroupResponse",
-  "MsgUpdateGroupMembers": "/cosmos.group.v1.MsgUpdateGroupMembers",
-  "MsgUpdateGroupMembersResponse": "/cosmos.group.v1.MsgUpdateGroupMembersResponse",
-  "MsgUpdateGroupAdmin": "/cosmos.group.v1.MsgUpdateGroupAdmin",
-  "MsgUpdateGroupAdminResponse": "/cosmos.group.v1.MsgUpdateGroupAdminResponse",
-  "MsgUpdateGroupMetadata": "/cosmos.group.v1.MsgUpdateGroupMetadata",
-  "MsgUpdateGroupMetadataResponse": "/cosmos.group.v1.MsgUpdateGroupMetadataResponse",
-  "MsgCreateGroupPolicy": "/cosmos.group.v1.MsgCreateGroupPolicy",
-  "MsgCreateGroupPolicyResponse": "/cosmos.group.v1.MsgCreateGroupPolicyResponse",
-  "MsgUpdateGroupPolicyAdmin": "/cosmos.group.v1.MsgUpdateGroupPolicyAdmin",
-  "MsgCreateGroupWithPolicy": "/cosmos.group.v1.MsgCreateGroupWithPolicy",
-  "MsgCreateGroupWithPolicyResponse": "/cosmos.group.v1.MsgCreateGroupWithPolicyResponse",
-  "MsgUpdateGroupPolicyAdminResponse": "/cosmos.group.v1.MsgUpdateGroupPolicyAdminResponse",
-  "MsgUpdateGroupPolicyDecisionPolicy": "/cosmos.group.v1.MsgUpdateGroupPolicyDecisionPolicy",
-  "MsgUpdateGroupPolicyDecisionPolicyResponse": "/cosmos.group.v1.MsgUpdateGroupPolicyDecisionPolicyResponse",
-  "MsgUpdateGroupPolicyMetadata": "/cosmos.group.v1.MsgUpdateGroupPolicyMetadata",
-  "MsgUpdateGroupPolicyMetadataResponse": "/cosmos.group.v1.MsgUpdateGroupPolicyMetadataResponse",
-  "MsgSubmitProposal": "/cosmos.group.v1.MsgSubmitProposal",
-  "MsgSubmitProposalResponse": "/cosmos.group.v1.MsgSubmitProposalResponse",
-  "MsgWithdrawProposal": "/cosmos.group.v1.MsgWithdrawProposal",
-  "MsgWithdrawProposalResponse": "/cosmos.group.v1.MsgWithdrawProposalResponse",
-  "MsgVote": "/cosmos.group.v1.MsgVote",
-  "MsgVoteResponse": "/cosmos.group.v1.MsgVoteResponse",
-  "MsgExec": "/cosmos.group.v1.MsgExec",
-  "MsgExecResponse": "/cosmos.group.v1.MsgExecResponse",
-  "MsgLeaveGroup": "/cosmos.group.v1.MsgLeaveGroup",
-  "MsgLeaveGroupResponse": "/cosmos.group.v1.MsgLeaveGroupResponse",
+  "MsgGroupCreateGroup": "/cosmos.group.v1.MsgCreateGroup",
+  "MsgGroupCreateGroupResponse": "/cosmos.group.v1.MsgCreateGroupResponse",
+  "MsgGroupUpdateGroupMembers": "/cosmos.group.v1.MsgUpdateGroupMembers",
+  "MsgGroupUpdateGroupMembersResponse": "/cosmos.group.v1.MsgUpdateGroupMembersResponse",
+  "MsgGroupUpdateGroupAdmin": "/cosmos.group.v1.MsgUpdateGroupAdmin",
+  "MsgGroupUpdateGroupAdminResponse": "/cosmos.group.v1.MsgUpdateGroupAdminResponse",
+  "MsgGroupUpdateGroupMetadata": "/cosmos.group.v1.MsgUpdateGroupMetadata",
+  "MsgGroupUpdateGroupMetadataResponse": "/cosmos.group.v1.MsgUpdateGroupMetadataResponse",
+  "MsgGroupCreateGroupPolicy": "/cosmos.group.v1.MsgCreateGroupPolicy",
+  "MsgGroupCreateGroupPolicyResponse": "/cosmos.group.v1.MsgCreateGroupPolicyResponse",
+  "MsgGroupUpdateGroupPolicyAdmin": "/cosmos.group.v1.MsgUpdateGroupPolicyAdmin",
+  "MsgGroupCreateGroupWithPolicy": "/cosmos.group.v1.MsgCreateGroupWithPolicy",
+  "MsgGroupCreateGroupWithPolicyResponse": "/cosmos.group.v1.MsgCreateGroupWithPolicyResponse",
+  "MsgGroupUpdateGroupPolicyAdminResponse": "/cosmos.group.v1.MsgUpdateGroupPolicyAdminResponse",
+  "MsgGroupUpdateGroupPolicyDecisionPolicy": "/cosmos.group.v1.MsgUpdateGroupPolicyDecisionPolicy",
+  "MsgGroupUpdateGroupPolicyDecisionPolicyResponse": "/cosmos.group.v1.MsgUpdateGroupPolicyDecisionPolicyResponse",
+  "MsgGroupUpdateGroupPolicyMetadata": "/cosmos.group.v1.MsgUpdateGroupPolicyMetadata",
+  "MsgGroupUpdateGroupPolicyMetadataResponse": "/cosmos.group.v1.MsgUpdateGroupPolicyMetadataResponse",
+  "MsgGroupSubmitProposal": "/cosmos.group.v1.MsgSubmitProposal",
+  "MsgGroupSubmitProposalResponse": "/cosmos.group.v1.MsgSubmitProposalResponse",
+  "MsgGroupWithdrawProposal": "/cosmos.group.v1.MsgWithdrawProposal",
+  "MsgGroupWithdrawProposalResponse": "/cosmos.group.v1.MsgWithdrawProposalResponse",
+  "MsgGroupVote": "/cosmos.group.v1.MsgVote",
+  "MsgGroupVoteResponse": "/cosmos.group.v1.MsgVoteResponse",
+  "MsgGroupExec": "/cosmos.group.v1.MsgExec",
+  "MsgGroupExecResponse": "/cosmos.group.v1.MsgExecResponse",
+  "MsgGroupLeaveGroup": "/cosmos.group.v1.MsgLeaveGroup",
+  "MsgGroupLeaveGroupResponse": "/cosmos.group.v1.MsgLeaveGroupResponse",
   "MsgSend": "/cosmos.bank.v1beta1.MsgSend",
   "MsgSendResponse": "/cosmos.bank.v1beta1.MsgSendResponse",
   "MsgMultiSend": "/cosmos.bank.v1beta1.MsgMultiSend",
@@ -761,8 +813,8 @@ export const TxTypes = {
   "MsgCancelUnbondingDelegationResponse": "/cosmos.staking.v1beta1.MsgCancelUnbondingDelegationResponse",
   "ParameterChangeProposal": "/cosmos.params.v1beta1.ParameterChangeProposal",
   "MsgGrant": "/cosmos.authz.v1beta1.MsgGrant",
-  "MsgAuthzExecResponse": "/cosmos.authz.v1beta1.MsgExecResponse",
-  "MsgAuthzExec": "/cosmos.authz.v1beta1.MsgExec",
+  "MsgExecResponse": "/cosmos.authz.v1beta1.MsgExecResponse",
+  "MsgExec": "/cosmos.authz.v1beta1.MsgExec",
   "MsgGrantResponse": "/cosmos.authz.v1beta1.MsgGrantResponse",
   "MsgRevoke": "/cosmos.authz.v1beta1.MsgRevoke",
   "MsgRevokeResponse": "/cosmos.authz.v1beta1.MsgRevokeResponse",
@@ -770,22 +822,22 @@ export const TxTypes = {
   "MsgUnjailResponse": "/cosmos.slashing.v1beta1.MsgUnjailResponse",
   "MsgGovSubmitProposal": "/cosmos.gov.v1.MsgSubmitProposal",
   "MsgGovSubmitProposalResponse": "/cosmos.gov.v1.MsgSubmitProposalResponse",
-  "MsgExecLegacyContent": "/cosmos.gov.v1.MsgExecLegacyContent",
-  "MsgExecLegacyContentResponse": "/cosmos.gov.v1.MsgExecLegacyContentResponse",
+  "MsgGovExecLegacyContent": "/cosmos.gov.v1.MsgExecLegacyContent",
+  "MsgGovExecLegacyContentResponse": "/cosmos.gov.v1.MsgExecLegacyContentResponse",
   "MsgGovVote": "/cosmos.gov.v1.MsgVote",
   "MsgGovVoteResponse": "/cosmos.gov.v1.MsgVoteResponse",
-  "MsgVoteWeighted": "/cosmos.gov.v1.MsgVoteWeighted",
-  "MsgVoteWeightedResponse": "/cosmos.gov.v1.MsgVoteWeightedResponse",
-  "MsgDeposit": "/cosmos.gov.v1.MsgDeposit",
-  "MsgDepositResponse": "/cosmos.gov.v1.MsgDepositResponse",
-  "MsgGovV1beta1SubmitProposal": "/cosmos.gov.v1beta1.MsgSubmitProposal",
-  "MsgGovV1beta1SubmitProposalResponse": "/cosmos.gov.v1beta1.MsgSubmitProposalResponse",
-  "MsgGovV1beta1Vote": "/cosmos.gov.v1beta1.MsgVote",
-  "MsgGovV1beta1VoteResponse": "/cosmos.gov.v1beta1.MsgVoteResponse",
-  "MsgGovV1beta1VoteWeighted": "/cosmos.gov.v1beta1.MsgVoteWeighted",
-  "MsgGovV1beta1VoteWeightedResponse": "/cosmos.gov.v1beta1.MsgVoteWeightedResponse",
-  "MsgGovV1beta1Deposit": "/cosmos.gov.v1beta1.MsgDeposit",
-  "MsgGovV1beta1DepositResponse": "/cosmos.gov.v1beta1.MsgDepositResponse",
+  "MsgGovVoteWeighted": "/cosmos.gov.v1.MsgVoteWeighted",
+  "MsgGovVoteWeightedResponse": "/cosmos.gov.v1.MsgVoteWeightedResponse",
+  "MsgGovDeposit": "/cosmos.gov.v1.MsgDeposit",
+  "MsgGovDepositResponse": "/cosmos.gov.v1.MsgDepositResponse",
+  "MsgSubmitProposal": "/cosmos.gov.v1beta1.MsgSubmitProposal",
+  "MsgSubmitProposalResponse": "/cosmos.gov.v1beta1.MsgSubmitProposalResponse",
+  "MsgVote": "/cosmos.gov.v1beta1.MsgVote",
+  "MsgVoteResponse": "/cosmos.gov.v1beta1.MsgVoteResponse",
+  "MsgVoteWeighted": "/cosmos.gov.v1beta1.MsgVoteWeighted",
+  "MsgVoteWeightedResponse": "/cosmos.gov.v1beta1.MsgVoteWeightedResponse",
+  "MsgDeposit": "/cosmos.gov.v1beta1.MsgDeposit",
+  "MsgDepositResponse": "/cosmos.gov.v1beta1.MsgDepositResponse",
   "TextProposal": "/cosmos.gov.v1beta1.TextProposal",
   "Proposal": "/cosmos.gov.v1beta1.Proposal",
   "MsgProcessCrossChainTx": "/Switcheo.carbon.ccm.MsgProcessCrossChainTx",
@@ -889,8 +941,8 @@ export const TxTypes = {
   "MsgAddBridgeAddressResponse": "/Switcheo.carbon.coin.MsgAddBridgeAddressResponse",
   "MsgRemoveBridgeAddress": "/Switcheo.carbon.coin.MsgRemoveBridgeAddress",
   "MsgRemoveBridgeAddressResponse": "/Switcheo.carbon.coin.MsgRemoveBridgeAddressResponse",
-  "MsgCoinCreateGroup": "/Switcheo.carbon.coin.MsgCreateGroup",
-  "MsgCoinCreateGroupResponse": "/Switcheo.carbon.coin.MsgCreateGroupResponse",
+  "MsgCreateGroup": "/Switcheo.carbon.coin.MsgCreateGroup",
+  "MsgCreateGroupResponse": "/Switcheo.carbon.coin.MsgCreateGroupResponse",
   "MsgUpdateGroup": "/Switcheo.carbon.coin.MsgUpdateGroup",
   "MsgUpdateGroupResponse": "/Switcheo.carbon.coin.MsgUpdateGroupResponse",
   "MsgRegisterToGroup": "/Switcheo.carbon.coin.MsgRegisterToGroup",
@@ -908,10 +960,10 @@ export const TxTypes = {
   "MsgSetLeverageResponse": "/Switcheo.carbon.leverage.MsgSetLeverageResponse",
   "MsgUpdateProfile": "/Switcheo.carbon.profile.MsgUpdateProfile",
   "MsgUpdateProfileResponse": "/Switcheo.carbon.profile.MsgUpdateProfileResponse",
-  "MsgUpdateParams": "/ethermint.feemarket.v1.MsgUpdateParams",
-  "MsgUpdateParamsResponse": "/ethermint.feemarket.v1.MsgUpdateParamsResponse",
-  "MsgEthereumTx": "/ethermint.evm.v1.MsgEthereumTx",
-  "MsgEthereumTxResponse": "/ethermint.evm.v1.MsgEthereumTxResponse",
+  "MsgFeemarketUpdateParams": "/ethermint.feemarket.v1.MsgUpdateParams",
+  "MsgFeemarketUpdateParamsResponse": "/ethermint.feemarket.v1.MsgUpdateParamsResponse",
+  "MsgEvmEthereumTx": "/ethermint.evm.v1.MsgEthereumTx",
+  "MsgEvmEthereumTxResponse": "/ethermint.evm.v1.MsgEthereumTxResponse",
   "MsgEvmUpdateParams": "/ethermint.evm.v1.MsgUpdateParams",
   "MsgEvmUpdateParamsResponse": "/ethermint.evm.v1.MsgUpdateParamsResponse",
   "MsgCreateSubAccount": "/Switcheo.carbon.subaccount.MsgCreateSubAccount",
@@ -1032,11 +1084,15 @@ export { MsgFee, MsgGasCost, MinGasPrice } from "./fee/fee";
 export { SetMsgGasCostProposal, SetMinGasPriceProposal, RemoveMsgGasCostProposal, RemoveMinGasPriceProposal } from "./fee/proposal";
 export { QueryGetMsgGasCostRequest, QueryGetMsgGasCostResponse, QueryAllMsgGasCostRequest, QueryAllMsgGasCostResponse, QueryGetMinGasPriceRequest, QueryGetMinGasPriceResponse, QueryAllMinGasPriceRequest, QueryAllMinGasPriceResponse } from "./fee/query";
 export { FeeDeductionEvent } from "./fee/event";
+export { MsgConvertCoin, MsgConvertCoinResponse, MsgConvertERC20, MsgConvertERC20Response, MsgUpdateParams, MsgUpdateParamsResponse, MsgRegisterToken, MsgRegisterTokenResponse, MsgRegisterERC20, MsgRegisterERC20Response, MsgUpdateERC20Enabled, MsgUpdateERC20EnabledResponse, MsgUpdateEVMHookEnabled, MsgUpdateEVMHookEnabledResponse } from "./erc20/tx";
+export { Owner, ownerFromJSON, ownerToJSON, TokenPair } from "./erc20/erc20";
+export { EventRegisterPair, EventToggleTokenConversion, EventConvertCoin, EventConvertERC20 } from "./erc20/events";
+export { QueryTokenPairsRequest, QueryTokenPairsResponse, QueryTokenPairRequest, QueryTokenPairResponse, QueryParamsRequest as QueryErc20ParamsRequest, QueryParamsResponse as QueryErc20ParamsResponse } from "./erc20/query";
 export { MsgSignData } from "./evmmerge/offchain";
 export { MsgMergeAccount, MsgMergeAccountResponse } from "./evmmerge/tx";
 export { QueryMappedAddressRequest, QueryMappedAddressResponse } from "./evmmerge/query";
 export { MergeAccountEvent } from "./evmmerge/event";
-export { InternalTransfer, QueryInternalTransfersRequest, QueryInternalTransfersResponse } from "./bank/query";
+export { InternalTransfer, Coin, QueryInternalTransfersRequest, QueryInternalTransfersResponse } from "./bank/query";
 export { CoinSpent, CoinReceived, CoinSent } from "./bank/event";
 export { Params as LiquidationParams } from "./liquidation/liquidation";
 export { QuoteChanges } from "./liquidation/quote_changes";
@@ -1056,12 +1112,19 @@ export { OracleVotesWindow, SlashCounter } from "./oracle/slashing";
 export { CreateOracleProposal } from "./oracle/proposal";
 export { QueryOracleRequest, QueryOracleResponse, QueryAllOracleRequest, QueryAllOracleResponse, QueryAllResultRequest, QueryAllResultResponse, QueryAllVoteRequest, QueryAllVoteResponse, QueryVoterPowerRequest, QueryVoterPowerResponse, QueryAllSlashCounterRequest, QueryAllSlashCounterResponse, QuerySlashCounterRequest, QuerySlashCounterResponse, QueryAllOracleVotesWindowRequest, QueryAllOracleVotesWindowResponse, QueryOracleVotesWindowRequest, QueryOracleVotesWindowResponse, QueryParamsRequest as QueryOracleParamsRequest, QueryParamsResponse as QueryOracleParamsResponse } from "./oracle/query";
 export { ResultEvent, OracleSlashEvent } from "./oracle/event";
+export { RewardWeightRange, AllianceAsset, RewardWeightChangeSnapshot } from "./alliance/alliance";
+export { MsgCreateAllianceProposal, MsgUpdateAllianceProposal, MsgDeleteAllianceProposal } from "./alliance/gov";
+export { MsgDelegate, MsgDelegateResponse, MsgUndelegate, MsgUndelegateResponse, MsgRedelegate, MsgRedelegateResponse, MsgClaimDelegationRewards, MsgClaimDelegationRewardsResponse } from "./alliance/tx";
+export { Delegation, Redelegation, QueuedRedelegation, Undelegation, QueuedUndelegation, AllianceValidatorInfo } from "./alliance/delegations";
+export { DelegateAllianceEvent, UndelegateAllianceEvent, RedelegateAllianceEvent, ClaimAllianceRewardsEvent } from "./alliance/events";
+export { QueryParamsRequest as QueryAllianceParamsRequest, QueryParamsResponse as QueryAllianceParamsResponse, QueryAlliancesRequest, QueryAlliancesResponse, QueryAllianceRequest, QueryAllianceResponse, QueryIBCAllianceRequest, QueryAllianceValidatorRequest, QueryAllAllianceValidatorsRequest, QueryAllAlliancesDelegationsRequest, QueryAlliancesDelegationsRequest, QueryAlliancesDelegationByValidatorRequest, DelegationResponse, QueryAlliancesDelegationsResponse, QueryAllianceDelegationRequest, QueryIBCAllianceDelegationRequest, QueryAllianceDelegationResponse, QueryAllianceDelegationRewardsRequest, QueryIBCAllianceDelegationRewardsRequest, QueryAllianceDelegationRewardsResponse, QueryAllianceValidatorResponse, QueryAllianceValidatorsResponse } from "./alliance/query";
+export { Params as AllianceParams, RewardHistory as AllianceRewardHistory } from "./alliance/params";
 export { QueryParamsRequest as QueryMarketstatsParamsRequest, QueryParamsResponse as QueryMarketstatsParamsResponse, QueryMarketStatsRequest, QueryMarketStatsResponse } from "./marketstats/query";
 export { Params as MarketstatsParams } from "./marketstats/params";
 export { MarketStats } from "./marketstats/marketstats";
 export { MsgCreatePlPool, MsgCreatePlPoolResponse, MsgUpdatePlPool, MsgUpdatePlPoolResponse, MsgRegisterToPlPool, MsgRegisterToPlPoolResponse, MsgDeregisterFromPlPool, MsgDeregisterFromPlPoolResponse, MsgDepositToPlPool, MsgDepositToPlPoolResponse, MsgWithdrawFromPlPool, MsgWithdrawFromPlPoolResponse, MsgUpdateMarketConfig, MsgUpdateMarketConfigResponse } from "./perpsliquidity/tx";
 export { PlPool, UpdatePlPoolParams, PoolDetails, Quote, MarketConfig, UpdateMarketConfigParams, DepositToPoolParams, WithdrawFromPoolParams } from "./perpsliquidity/pool";
-export { QueryParamsRequest as QueryPerpsliquidityParamsRequest, QueryParamsResponse as QueryPerpsliquidityParamsResponse, QueryGetPlPoolRequest, QueryGetPlPoolResponse, QueryAllPlPoolsRequest, QueryAllPlPoolsResponse, QueryPlPoolMappingsRequest, QueryPlPoolMappingsResponse, QueryPlPoolMappingsResponse_PoolMappingsEntry, QueryAllPlPoolAddressRequest, QueryAllPlPoolAddressResponse, QueryAllPlPoolAddressResponse_AddressesEntry } from "./perpsliquidity/query";
+export { QueryParamsRequest as QueryPerpsliquidityParamsRequest, QueryParamsResponse as QueryPerpsliquidityParamsResponse, QueryGetPlPoolRequest, QueryGetPlPoolResponse, QueryAllPlPoolsRequest, QueryAllPlPoolsResponse, QueryPlPoolMappingsRequest, QueryPlPoolMappingsResponse, QueryPlPoolMappingsResponse_PoolMappingsEntry, QueryAllPlPoolAddressRequest, QueryAllPlPoolAddressResponse, QueryAllPlPoolAddressResponse_AddressesEntry, QueryPLPoolInfoRequest, QueryPLPoolInfoResponse } from "./perpsliquidity/query";
 export { SetPoolEvent, NewPoolEvent, UpdatePoolEvent, RegisterToPoolEvent, DeregisterFromPoolEvent, SetMarketConfigEvent, DepositToPoolEvent, WithdrawFromPoolEvent } from "./perpsliquidity/event";
 export { Params as PerpsliquidityParams } from "./perpsliquidity/params";
 export { QueryAccountBalanceRequest, QueryAccountBalanceResponse } from "./evmbank/query";
@@ -1112,3 +1175,23910 @@ export { QueryPriceTokenRequest, QueryPriceTokenResponse, QueryPriceSetRequest, 
 export { ParamsV2130 } from "./pricing/legacy";
 export { PriceUpdateEvent, TokenPriceUpdateEvent, SetImpactBandEvent, SetSmoothenBandEvent, SetStaleIndexAllowanceEvent, SetBackfillTimeIntervalEvent } from "./pricing/event";
 export { MsgExecuteContract } from "cosmjs-types/cosmwasm/wasm/v1/tx";
+
+/*
+EIP712Types mapping generated here should only be used for sending EIP-712 msgs.
+*/
+export const EIP712Types: { [index: string]: any } = {
+  "/google.protobuf": {
+    "FileDescriptorSet": [
+      {
+        "name": "file",
+        "type": "FileDescriptorProto[]",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "FileDescriptorProto": [
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "package",
+        "type": "string"
+      },
+      {
+        "name": "dependency",
+        "type": "string[]"
+      },
+      {
+        "name": "public_dependency",
+        "type": "int32[]"
+      },
+      {
+        "name": "weak_dependency",
+        "type": "int32[]"
+      },
+      {
+        "name": "message_type",
+        "type": "DescriptorProto[]",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "enum_type",
+        "type": "EnumDescriptorProto[]",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "service",
+        "type": "ServiceDescriptorProto[]",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "extension",
+        "type": "FieldDescriptorProto[]",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "options",
+        "type": "FileOptions",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "source_code_info",
+        "type": "SourceCodeInfo",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "syntax",
+        "type": "string"
+      },
+      {
+        "name": "edition",
+        "type": "string"
+      }
+    ],
+    "DescriptorProto": [
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "field",
+        "type": "FieldDescriptorProto[]",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "extension",
+        "type": "FieldDescriptorProto[]",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "nested_type",
+        "type": "DescriptorProto[]",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "enum_type",
+        "type": "EnumDescriptorProto[]",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "extension_range",
+        "type": "ExtensionRange[]",
+        "packageName": "/google.protobuf.DescriptorProto"
+      },
+      {
+        "name": "oneof_decl",
+        "type": "OneofDescriptorProto[]",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "options",
+        "type": "MessageOptions",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "reserved_range",
+        "type": "ReservedRange[]",
+        "packageName": "/google.protobuf.DescriptorProto"
+      },
+      {
+        "name": "reserved_name",
+        "type": "string[]"
+      }
+    ],
+    "ExtensionRangeOptions": [
+      {
+        "name": "uninterpreted_option",
+        "type": "UninterpretedOption[]",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "FieldDescriptorProto": [
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "number",
+        "type": "int32"
+      },
+      {
+        "name": "label",
+        "type": "",
+        "packageName": "/google.protobuf.FieldDescriptorProto"
+      },
+      {
+        "name": "type",
+        "type": "",
+        "packageName": "/google.protobuf.FieldDescriptorProto"
+      },
+      {
+        "name": "type_name",
+        "type": "string"
+      },
+      {
+        "name": "extendee",
+        "type": "string"
+      },
+      {
+        "name": "default_value",
+        "type": "string"
+      },
+      {
+        "name": "oneof_index",
+        "type": "int32"
+      },
+      {
+        "name": "json_name",
+        "type": "string"
+      },
+      {
+        "name": "options",
+        "type": "FieldOptions",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "proto3_optional",
+        "type": "bool"
+      }
+    ],
+    "OneofDescriptorProto": [
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "options",
+        "type": "OneofOptions",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "EnumDescriptorProto": [
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "value",
+        "type": "EnumValueDescriptorProto[]",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "options",
+        "type": "EnumOptions",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "reserved_range",
+        "type": "EnumReservedRange[]",
+        "packageName": "/google.protobuf.EnumDescriptorProto"
+      },
+      {
+        "name": "reserved_name",
+        "type": "string[]"
+      }
+    ],
+    "EnumValueDescriptorProto": [
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "number",
+        "type": "int32"
+      },
+      {
+        "name": "options",
+        "type": "EnumValueOptions",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "ServiceDescriptorProto": [
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "method",
+        "type": "MethodDescriptorProto[]",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "options",
+        "type": "ServiceOptions",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "MethodDescriptorProto": [
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "input_type",
+        "type": "string"
+      },
+      {
+        "name": "output_type",
+        "type": "string"
+      },
+      {
+        "name": "options",
+        "type": "MethodOptions",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "client_streaming",
+        "type": "bool"
+      },
+      {
+        "name": "server_streaming",
+        "type": "bool"
+      }
+    ],
+    "FileOptions": [
+      {
+        "name": "java_package",
+        "type": "string"
+      },
+      {
+        "name": "java_outer_classname",
+        "type": "string"
+      },
+      {
+        "name": "java_multiple_files",
+        "type": "bool"
+      },
+      {
+        "name": "java_generate_equals_and_hash",
+        "type": "bool"
+      },
+      {
+        "name": "java_string_check_utf8",
+        "type": "bool"
+      },
+      {
+        "name": "optimize_for",
+        "type": "",
+        "packageName": "/google.protobuf.FileOptions"
+      },
+      {
+        "name": "go_package",
+        "type": "string"
+      },
+      {
+        "name": "cc_generic_services",
+        "type": "bool"
+      },
+      {
+        "name": "java_generic_services",
+        "type": "bool"
+      },
+      {
+        "name": "py_generic_services",
+        "type": "bool"
+      },
+      {
+        "name": "php_generic_services",
+        "type": "bool"
+      },
+      {
+        "name": "deprecated",
+        "type": "bool"
+      },
+      {
+        "name": "cc_enable_arenas",
+        "type": "bool"
+      },
+      {
+        "name": "objc_class_prefix",
+        "type": "string"
+      },
+      {
+        "name": "csharp_namespace",
+        "type": "string"
+      },
+      {
+        "name": "swift_prefix",
+        "type": "string"
+      },
+      {
+        "name": "php_class_prefix",
+        "type": "string"
+      },
+      {
+        "name": "php_namespace",
+        "type": "string"
+      },
+      {
+        "name": "php_metadata_namespace",
+        "type": "string"
+      },
+      {
+        "name": "ruby_package",
+        "type": "string"
+      },
+      {
+        "name": "uninterpreted_option",
+        "type": "UninterpretedOption[]",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "MessageOptions": [
+      {
+        "name": "message_set_wire_format",
+        "type": "bool"
+      },
+      {
+        "name": "no_standard_descriptor_accessor",
+        "type": "bool"
+      },
+      {
+        "name": "deprecated",
+        "type": "bool"
+      },
+      {
+        "name": "map_entry",
+        "type": "bool"
+      },
+      {
+        "name": "deprecated_legacy_json_field_conflicts",
+        "type": "bool"
+      },
+      {
+        "name": "uninterpreted_option",
+        "type": "UninterpretedOption[]",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "FieldOptions": [
+      {
+        "name": "ctype",
+        "type": "",
+        "packageName": "/google.protobuf.FieldOptions"
+      },
+      {
+        "name": "packed",
+        "type": "bool"
+      },
+      {
+        "name": "jstype",
+        "type": "",
+        "packageName": "/google.protobuf.FieldOptions"
+      },
+      {
+        "name": "lazy",
+        "type": "bool"
+      },
+      {
+        "name": "unverified_lazy",
+        "type": "bool"
+      },
+      {
+        "name": "deprecated",
+        "type": "bool"
+      },
+      {
+        "name": "weak",
+        "type": "bool"
+      },
+      {
+        "name": "debug_redact",
+        "type": "bool"
+      },
+      {
+        "name": "retention",
+        "type": "",
+        "packageName": "/google.protobuf.FieldOptions"
+      },
+      {
+        "name": "target",
+        "type": "",
+        "packageName": "/google.protobuf.FieldOptions"
+      },
+      {
+        "name": "uninterpreted_option",
+        "type": "UninterpretedOption[]",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "OneofOptions": [
+      {
+        "name": "uninterpreted_option",
+        "type": "UninterpretedOption[]",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "EnumOptions": [
+      {
+        "name": "allow_alias",
+        "type": "bool"
+      },
+      {
+        "name": "deprecated",
+        "type": "bool"
+      },
+      {
+        "name": "deprecated_legacy_json_field_conflicts",
+        "type": "bool"
+      },
+      {
+        "name": "uninterpreted_option",
+        "type": "UninterpretedOption[]",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "EnumValueOptions": [
+      {
+        "name": "deprecated",
+        "type": "bool"
+      },
+      {
+        "name": "uninterpreted_option",
+        "type": "UninterpretedOption[]",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "ServiceOptions": [
+      {
+        "name": "deprecated",
+        "type": "bool"
+      },
+      {
+        "name": "uninterpreted_option",
+        "type": "UninterpretedOption[]",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "MethodOptions": [
+      {
+        "name": "deprecated",
+        "type": "bool"
+      },
+      {
+        "name": "idempotency_level",
+        "type": "",
+        "packageName": "/google.protobuf.MethodOptions"
+      },
+      {
+        "name": "uninterpreted_option",
+        "type": "UninterpretedOption[]",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "UninterpretedOption": [
+      {
+        "name": "name",
+        "type": "NamePart[]",
+        "packageName": "/google.protobuf.UninterpretedOption"
+      },
+      {
+        "name": "identifier_value",
+        "type": "string"
+      },
+      {
+        "name": "positive_int_value",
+        "type": "uint64"
+      },
+      {
+        "name": "negative_int_value",
+        "type": "int64"
+      },
+      {
+        "name": "double_value",
+        "type": ""
+      },
+      {
+        "name": "string_value",
+        "type": "uint8[]"
+      },
+      {
+        "name": "aggregate_value",
+        "type": "string"
+      }
+    ],
+    "SourceCodeInfo": [
+      {
+        "name": "location",
+        "type": "Location[]",
+        "packageName": "/google.protobuf.SourceCodeInfo"
+      }
+    ],
+    "GeneratedCodeInfo": [
+      {
+        "name": "annotation",
+        "type": "Annotation[]",
+        "packageName": "/google.protobuf.GeneratedCodeInfo"
+      }
+    ],
+    "Duration": [
+      {
+        "name": "seconds",
+        "type": "int64"
+      },
+      {
+        "name": "nanos",
+        "type": "int32"
+      }
+    ],
+    "Timestamp": [
+      {
+        "name": "seconds",
+        "type": "int64"
+      },
+      {
+        "name": "nanos",
+        "type": "int32"
+      }
+    ],
+    "DoubleValue": [
+      {
+        "name": "value",
+        "type": ""
+      }
+    ],
+    "FloatValue": [
+      {
+        "name": "value",
+        "type": ""
+      }
+    ],
+    "Int64Value": [
+      {
+        "name": "value",
+        "type": "int64"
+      }
+    ],
+    "UInt64Value": [
+      {
+        "name": "value",
+        "type": "uint64"
+      }
+    ],
+    "Int32Value": [
+      {
+        "name": "value",
+        "type": "int32"
+      }
+    ],
+    "UInt32Value": [
+      {
+        "name": "value",
+        "type": "uint32"
+      }
+    ],
+    "BoolValue": [
+      {
+        "name": "value",
+        "type": "bool"
+      }
+    ],
+    "StringValue": [
+      {
+        "name": "value",
+        "type": "string"
+      }
+    ],
+    "BytesValue": [
+      {
+        "name": "value",
+        "type": "uint8[]"
+      }
+    ],
+    "Any": [
+      {
+        "name": "type_url",
+        "type": "string"
+      },
+      {
+        "name": "value",
+        "type": "uint8[]"
+      }
+    ]
+  },
+  "/Switcheo.carbon.adl": {
+    "GenesisState": []
+  },
+  "/google.api": {
+    "Http": [
+      {
+        "name": "rules",
+        "type": "HttpRule[]",
+        "packageName": "/google.api"
+      },
+      {
+        "name": "fully_decode_reserved_expansion",
+        "type": "bool"
+      }
+    ],
+    "HttpRule": [
+      {
+        "name": "selector",
+        "type": "string"
+      },
+      {
+        "name": "get",
+        "type": "string"
+      },
+      {
+        "name": "put",
+        "type": "string"
+      },
+      {
+        "name": "post",
+        "type": "string"
+      },
+      {
+        "name": "delete",
+        "type": "string"
+      },
+      {
+        "name": "patch",
+        "type": "string"
+      },
+      {
+        "name": "custom",
+        "type": "CustomHttpPattern",
+        "packageName": "/google.api"
+      },
+      {
+        "name": "body",
+        "type": "string"
+      },
+      {
+        "name": "response_body",
+        "type": "string"
+      },
+      {
+        "name": "additional_bindings",
+        "type": "HttpRule[]",
+        "packageName": "/google.api"
+      }
+    ],
+    "CustomHttpPattern": [
+      {
+        "name": "kind",
+        "type": "string"
+      },
+      {
+        "name": "path",
+        "type": "string"
+      }
+    ]
+  },
+  "/cosmos.base.query.v1beta1": {
+    "PageRequest": [
+      {
+        "name": "key",
+        "type": "uint8[]"
+      },
+      {
+        "name": "offset",
+        "type": "uint64"
+      },
+      {
+        "name": "limit",
+        "type": "uint64"
+      },
+      {
+        "name": "count_total",
+        "type": "bool"
+      },
+      {
+        "name": "reverse",
+        "type": "bool"
+      }
+    ],
+    "PageResponse": [
+      {
+        "name": "next_key",
+        "type": "uint8[]"
+      },
+      {
+        "name": "total",
+        "type": "uint64"
+      }
+    ]
+  },
+  "/cosmos_proto": {
+    "InterfaceDescriptor": [
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      }
+    ],
+    "ScalarDescriptor": [
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "field_type",
+        "type": "[]",
+        "packageName": "/cosmos_proto"
+      }
+    ]
+  },
+  "/alliance.alliance": {
+    "Params": [
+      {
+        "name": "reward_delay_time",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "take_rate_claim_interval",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "last_take_rate_claim_time",
+        "type": "string"
+      }
+    ],
+    "RewardHistory": [
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "index",
+        "type": "string"
+      }
+    ],
+    "RewardWeightRange": [
+      {
+        "name": "min",
+        "type": "string"
+      },
+      {
+        "name": "max",
+        "type": "string"
+      }
+    ],
+    "AllianceAsset": [
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "reward_weight",
+        "type": "string"
+      },
+      {
+        "name": "take_rate",
+        "type": "string"
+      },
+      {
+        "name": "total_tokens",
+        "type": "string"
+      },
+      {
+        "name": "total_validator_shares",
+        "type": "string"
+      },
+      {
+        "name": "reward_start_time",
+        "type": "string"
+      },
+      {
+        "name": "reward_change_rate",
+        "type": "string"
+      },
+      {
+        "name": "reward_change_interval",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "last_reward_change_time",
+        "type": "string"
+      },
+      {
+        "name": "reward_weight_range",
+        "type": "RewardWeightRange",
+        "packageName": "/alliance.alliance"
+      },
+      {
+        "name": "is_initialized",
+        "type": "bool"
+      }
+    ],
+    "RewardWeightChangeSnapshot": [
+      {
+        "name": "prev_reward_weight",
+        "type": "string"
+      },
+      {
+        "name": "reward_histories",
+        "type": "RewardHistory[]",
+        "packageName": "/alliance.alliance"
+      }
+    ],
+    "Delegation": [
+      {
+        "name": "delegator_address",
+        "type": "string"
+      },
+      {
+        "name": "validator_address",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "shares",
+        "type": "string"
+      },
+      {
+        "name": "reward_history",
+        "type": "RewardHistory[]",
+        "packageName": "/alliance.alliance"
+      },
+      {
+        "name": "last_reward_claim_height",
+        "type": "uint64"
+      }
+    ],
+    "Redelegation": [
+      {
+        "name": "delegator_address",
+        "type": "string"
+      },
+      {
+        "name": "src_validator_address",
+        "type": "string"
+      },
+      {
+        "name": "dst_validator_address",
+        "type": "string"
+      },
+      {
+        "name": "balance",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "QueuedRedelegation": [
+      {
+        "name": "entries",
+        "type": "Redelegation[]",
+        "packageName": "/alliance.alliance"
+      }
+    ],
+    "Undelegation": [
+      {
+        "name": "delegator_address",
+        "type": "string"
+      },
+      {
+        "name": "validator_address",
+        "type": "string"
+      },
+      {
+        "name": "balance",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "QueuedUndelegation": [
+      {
+        "name": "entries",
+        "type": "Undelegation[]",
+        "packageName": "/alliance.alliance"
+      }
+    ],
+    "AllianceValidatorInfo": [
+      {
+        "name": "global_reward_history",
+        "type": "RewardHistory[]",
+        "packageName": "/alliance.alliance"
+      },
+      {
+        "name": "total_delegator_shares",
+        "type": "DecCoin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "validator_shares",
+        "type": "DecCoin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "DelegateAllianceEvent": [
+      {
+        "name": "allianceSender",
+        "type": "string"
+      },
+      {
+        "name": "validator",
+        "type": "string"
+      },
+      {
+        "name": "coin",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "newShares",
+        "type": "string"
+      }
+    ],
+    "UndelegateAllianceEvent": [
+      {
+        "name": "allianceSender",
+        "type": "string"
+      },
+      {
+        "name": "validator",
+        "type": "string"
+      },
+      {
+        "name": "coin",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "completionTime",
+        "type": "string"
+      }
+    ],
+    "RedelegateAllianceEvent": [
+      {
+        "name": "allianceSender",
+        "type": "string"
+      },
+      {
+        "name": "sourceValidator",
+        "type": "string"
+      },
+      {
+        "name": "destinationValidator",
+        "type": "string"
+      },
+      {
+        "name": "coin",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "completionTime",
+        "type": "string"
+      }
+    ],
+    "ClaimAllianceRewardsEvent": [
+      {
+        "name": "allianceSender",
+        "type": "string"
+      },
+      {
+        "name": "validator",
+        "type": "string"
+      },
+      {
+        "name": "coins",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "ValidatorInfoState": [
+      {
+        "name": "validator_address",
+        "type": "string"
+      },
+      {
+        "name": "validator",
+        "type": "AllianceValidatorInfo",
+        "packageName": "/alliance.alliance"
+      }
+    ],
+    "RedelegationState": [
+      {
+        "name": "completion_time",
+        "type": "string"
+      },
+      {
+        "name": "redelegation",
+        "type": "Redelegation",
+        "packageName": "/alliance.alliance"
+      }
+    ],
+    "UndelegationState": [
+      {
+        "name": "completion_time",
+        "type": "string"
+      },
+      {
+        "name": "undelegation",
+        "type": "QueuedUndelegation",
+        "packageName": "/alliance.alliance"
+      }
+    ],
+    "RewardWeightChangeSnapshotState": [
+      {
+        "name": "height",
+        "type": "uint64"
+      },
+      {
+        "name": "validator",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "snapshot",
+        "type": "RewardWeightChangeSnapshot",
+        "packageName": "/alliance.alliance"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/alliance.alliance"
+      },
+      {
+        "name": "assets",
+        "type": "AllianceAsset[]",
+        "packageName": "/alliance.alliance"
+      },
+      {
+        "name": "validator_infos",
+        "type": "ValidatorInfoState[]",
+        "packageName": "/alliance.alliance"
+      },
+      {
+        "name": "reward_weight_change_snaphots",
+        "type": "RewardWeightChangeSnapshotState[]",
+        "packageName": "/alliance.alliance"
+      },
+      {
+        "name": "delegations",
+        "type": "Delegation[]",
+        "packageName": "/alliance.alliance"
+      },
+      {
+        "name": "redelegations",
+        "type": "RedelegationState[]",
+        "packageName": "/alliance.alliance"
+      },
+      {
+        "name": "undelegations",
+        "type": "UndelegationState[]",
+        "packageName": "/alliance.alliance"
+      }
+    ],
+    "MsgCreateAllianceProposal": [
+      {
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "reward_weight",
+        "type": "string"
+      },
+      {
+        "name": "take_rate",
+        "type": "string"
+      },
+      {
+        "name": "reward_change_rate",
+        "type": "string"
+      },
+      {
+        "name": "reward_change_interval",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "reward_weight_range",
+        "type": "RewardWeightRange",
+        "packageName": "/alliance.alliance"
+      }
+    ],
+    "MsgUpdateAllianceProposal": [
+      {
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "reward_weight",
+        "type": "string"
+      },
+      {
+        "name": "take_rate",
+        "type": "string"
+      },
+      {
+        "name": "reward_change_rate",
+        "type": "string"
+      },
+      {
+        "name": "reward_change_interval",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "MsgDeleteAllianceProposal": [
+      {
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      }
+    ],
+    "QueryParamsRequest": [],
+    "QueryParamsResponse": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/alliance.alliance"
+      }
+    ],
+    "QueryAlliancesRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAlliancesResponse": [
+      {
+        "name": "alliances",
+        "type": "AllianceAsset[]",
+        "packageName": "/alliance.alliance"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllianceRequest": [
+      {
+        "name": "denom",
+        "type": "string"
+      }
+    ],
+    "QueryAllianceResponse": [
+      {
+        "name": "alliance",
+        "type": "AllianceAsset",
+        "packageName": "/alliance.alliance"
+      }
+    ],
+    "QueryIBCAllianceRequest": [
+      {
+        "name": "hash",
+        "type": "string"
+      }
+    ],
+    "QueryAllianceValidatorRequest": [
+      {
+        "name": "validator_addr",
+        "type": "string"
+      }
+    ],
+    "QueryAllAllianceValidatorsRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllAlliancesDelegationsRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAlliancesDelegationsRequest": [
+      {
+        "name": "delegator_addr",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAlliancesDelegationByValidatorRequest": [
+      {
+        "name": "delegator_addr",
+        "type": "string"
+      },
+      {
+        "name": "validator_addr",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "DelegationResponse": [
+      {
+        "name": "delegation",
+        "type": "Delegation",
+        "packageName": "/alliance.alliance"
+      },
+      {
+        "name": "balance",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "QueryAlliancesDelegationsResponse": [
+      {
+        "name": "delegations",
+        "type": "DelegationResponse[]",
+        "packageName": "/alliance.alliance"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllianceDelegationRequest": [
+      {
+        "name": "delegator_addr",
+        "type": "string"
+      },
+      {
+        "name": "validator_addr",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryIBCAllianceDelegationRequest": [
+      {
+        "name": "delegator_addr",
+        "type": "string"
+      },
+      {
+        "name": "validator_addr",
+        "type": "string"
+      },
+      {
+        "name": "hash",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllianceDelegationResponse": [
+      {
+        "name": "delegation",
+        "type": "DelegationResponse",
+        "packageName": "/alliance.alliance"
+      }
+    ],
+    "QueryAllianceDelegationRewardsRequest": [
+      {
+        "name": "delegator_addr",
+        "type": "string"
+      },
+      {
+        "name": "validator_addr",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryIBCAllianceDelegationRewardsRequest": [
+      {
+        "name": "delegator_addr",
+        "type": "string"
+      },
+      {
+        "name": "validator_addr",
+        "type": "string"
+      },
+      {
+        "name": "hash",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllianceDelegationRewardsResponse": [
+      {
+        "name": "rewards",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "QueryAllianceValidatorResponse": [
+      {
+        "name": "validator_addr",
+        "type": "string"
+      },
+      {
+        "name": "total_delegation_shares",
+        "type": "DecCoin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "validator_shares",
+        "type": "DecCoin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "total_staked",
+        "type": "DecCoin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "QueryAllianceValidatorsResponse": [
+      {
+        "name": "validators",
+        "type": "QueryAllianceValidatorResponse[]",
+        "packageName": "/alliance.alliance"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "MsgDelegate": [
+      {
+        "name": "delegator_address",
+        "type": "string"
+      },
+      {
+        "name": "validator_address",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "MsgDelegateResponse": [],
+    "MsgUndelegate": [
+      {
+        "name": "delegator_address",
+        "type": "string"
+      },
+      {
+        "name": "validator_address",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "MsgUndelegateResponse": [],
+    "MsgRedelegate": [
+      {
+        "name": "delegator_address",
+        "type": "string"
+      },
+      {
+        "name": "validator_src_address",
+        "type": "string"
+      },
+      {
+        "name": "validator_dst_address",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "MsgRedelegateResponse": [],
+    "MsgClaimDelegationRewards": [
+      {
+        "name": "delegator_address",
+        "type": "string"
+      },
+      {
+        "name": "validator_address",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      }
+    ],
+    "MsgClaimDelegationRewardsResponse": []
+  },
+  "/cosmos.base.v1beta1": {
+    "Coin": [
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "string"
+      }
+    ],
+    "DecCoin": [
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "string"
+      }
+    ],
+    "IntProto": [
+      {
+        "name": "int",
+        "type": "string"
+      }
+    ],
+    "DecProto": [
+      {
+        "name": "dec",
+        "type": "string"
+      }
+    ]
+  },
+  "/Switcheo.carbon.bank": {
+    "CoinSpent": [
+      {
+        "name": "spender",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "CoinReceived": [
+      {
+        "name": "receiver",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "CoinSent": [
+      {
+        "name": "sender",
+        "type": "string"
+      },
+      {
+        "name": "receiver",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "GenesisState": [],
+    "InternalTransfer": [
+      {
+        "name": "sender",
+        "type": "string"
+      },
+      {
+        "name": "receiver",
+        "type": "string"
+      },
+      {
+        "name": "transaction_hash",
+        "type": "string"
+      },
+      {
+        "name": "coins",
+        "type": "Coin[]",
+        "packageName": "/Switcheo.carbon.bank"
+      },
+      {
+        "name": "transaction_memo",
+        "type": "string"
+      },
+      {
+        "name": "transaction_block_height",
+        "type": "uint64"
+      },
+      {
+        "name": "transaction_block_time",
+        "type": "string"
+      }
+    ],
+    "Coin": [
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "string"
+      }
+    ],
+    "QueryInternalTransfersRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "sender",
+        "type": "string"
+      },
+      {
+        "name": "receiver",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryInternalTransfersResponse": [
+      {
+        "name": "internalTransfers",
+        "type": "InternalTransfer[]",
+        "packageName": "/Switcheo.carbon.bank"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ]
+  },
+  "/Switcheo.carbon.book": {
+    "OrderBookLevel": [
+      {
+        "name": "price",
+        "type": "string"
+      },
+      {
+        "name": "total_quantity",
+        "type": "string"
+      },
+      {
+        "name": "orders",
+        "type": "string[]"
+      }
+    ],
+    "OrderBook": [
+      {
+        "name": "market",
+        "type": "string"
+      },
+      {
+        "name": "asks",
+        "type": "OrderBookLevel[]",
+        "packageName": "/Switcheo.carbon.book"
+      },
+      {
+        "name": "bids",
+        "type": "OrderBookLevel[]",
+        "packageName": "/Switcheo.carbon.book"
+      }
+    ],
+    "StopBook": [
+      {
+        "name": "market",
+        "type": "string"
+      },
+      {
+        "name": "asks",
+        "type": "string[]"
+      },
+      {
+        "name": "bids",
+        "type": "string[]"
+      }
+    ],
+    "OrderBookEvent": [
+      {
+        "name": "type",
+        "type": "string"
+      },
+      {
+        "name": "market",
+        "type": "string"
+      },
+      {
+        "name": "side",
+        "type": "string"
+      },
+      {
+        "name": "price",
+        "type": "string"
+      },
+      {
+        "name": "quantity",
+        "type": "string"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "order_books",
+        "type": "OrderBook[]",
+        "packageName": "/Switcheo.carbon.book"
+      },
+      {
+        "name": "stop_books",
+        "type": "StopBook[]",
+        "packageName": "/Switcheo.carbon.book"
+      }
+    ],
+    "QueryImpactPriceRequest": [
+      {
+        "name": "market",
+        "type": "string"
+      },
+      {
+        "name": "quote_amount",
+        "type": "string"
+      }
+    ],
+    "QueryImpactPriceResponse": [
+      {
+        "name": "impact_price",
+        "type": "string"
+      },
+      {
+        "name": "base_amount",
+        "type": "string"
+      },
+      {
+        "name": "quote_amount",
+        "type": "string"
+      }
+    ],
+    "QueryGetBookRequest": [
+      {
+        "name": "market",
+        "type": "string"
+      }
+    ],
+    "QueryGetBookResponse": [
+      {
+        "name": "book",
+        "type": "OrderBook",
+        "packageName": "/Switcheo.carbon.book"
+      }
+    ],
+    "QueryAllBookRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllBookResponse": [
+      {
+        "name": "books",
+        "type": "OrderBook[]",
+        "packageName": "/Switcheo.carbon.book"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ]
+  },
+  "/Switcheo.carbon.broker": {
+    "SpotAmm": [
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "market",
+        "type": "string"
+      },
+      {
+        "name": "reserves_hash",
+        "type": "uint8[]"
+      },
+      {
+        "name": "orders",
+        "type": "string[]"
+      },
+      {
+        "name": "pool_route",
+        "type": "uint8[]"
+      }
+    ],
+    "PerpsPoolAmm": [
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "quoting_hash",
+        "type": "uint8[]"
+      },
+      {
+        "name": "last_quoted_at",
+        "type": "uint64"
+      }
+    ],
+    "PerpsMarketAmm": [
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "market",
+        "type": "string"
+      },
+      {
+        "name": "orders",
+        "type": "string[]"
+      },
+      {
+        "name": "last_index_price",
+        "type": "string"
+      }
+    ],
+    "Candlestick": [
+      {
+        "name": "market",
+        "type": "string"
+      },
+      {
+        "name": "time",
+        "type": "string"
+      },
+      {
+        "name": "resolution",
+        "type": "uint64"
+      },
+      {
+        "name": "open",
+        "type": "string"
+      },
+      {
+        "name": "close",
+        "type": "string"
+      },
+      {
+        "name": "high",
+        "type": "string"
+      },
+      {
+        "name": "low",
+        "type": "string"
+      },
+      {
+        "name": "volume",
+        "type": "string"
+      },
+      {
+        "name": "quote_volume",
+        "type": "string"
+      }
+    ],
+    "TradeEvent": [
+      {
+        "name": "id",
+        "type": "uint64"
+      },
+      {
+        "name": "block_height",
+        "type": "int64"
+      },
+      {
+        "name": "block_created_at",
+        "type": "string"
+      },
+      {
+        "name": "market",
+        "type": "string"
+      },
+      {
+        "name": "price",
+        "type": "string"
+      },
+      {
+        "name": "quantity",
+        "type": "string"
+      },
+      {
+        "name": "liquidation",
+        "type": "string"
+      },
+      {
+        "name": "taker_id",
+        "type": "string"
+      },
+      {
+        "name": "taker_side",
+        "type": "string"
+      },
+      {
+        "name": "taker_address",
+        "type": "string"
+      },
+      {
+        "name": "taker_fee_amount",
+        "type": "string"
+      },
+      {
+        "name": "taker_fee_denom",
+        "type": "string"
+      },
+      {
+        "name": "taker_fee_kickback",
+        "type": "string"
+      },
+      {
+        "name": "taker_fee_commission",
+        "type": "string"
+      },
+      {
+        "name": "taker_fee_commission_address",
+        "type": "string"
+      },
+      {
+        "name": "maker_id",
+        "type": "string"
+      },
+      {
+        "name": "maker_side",
+        "type": "string"
+      },
+      {
+        "name": "maker_address",
+        "type": "string"
+      },
+      {
+        "name": "maker_fee_amount",
+        "type": "string"
+      },
+      {
+        "name": "maker_fee_denom",
+        "type": "string"
+      },
+      {
+        "name": "maker_fee_kickback",
+        "type": "string"
+      },
+      {
+        "name": "maker_fee_commission",
+        "type": "string"
+      },
+      {
+        "name": "maker_fee_commission_address",
+        "type": "string"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "spot_amms",
+        "type": "SpotAmm[]",
+        "packageName": "/Switcheo.carbon.broker"
+      }
+    ],
+    "IncomingLiquidations": [
+      {
+        "name": "addresses",
+        "type": "uint8[][]"
+      }
+    ],
+    "MinMaxBoundary": [
+      {
+        "name": "min",
+        "type": "uint64"
+      },
+      {
+        "name": "max",
+        "type": "uint64"
+      }
+    ],
+    "QueryCandlesticksRequest": [
+      {
+        "name": "market",
+        "type": "string"
+      },
+      {
+        "name": "resolution",
+        "type": "uint64"
+      },
+      {
+        "name": "from",
+        "type": "uint64"
+      },
+      {
+        "name": "to",
+        "type": "uint64"
+      }
+    ],
+    "QueryCandlesticksResponse": [
+      {
+        "name": "candlesticks",
+        "type": "Candlestick[]",
+        "packageName": "/Switcheo.carbon.broker"
+      }
+    ],
+    "QueryTradesRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "market",
+        "type": "string"
+      },
+      {
+        "name": "before_id",
+        "type": "uint64"
+      },
+      {
+        "name": "after_id",
+        "type": "uint64"
+      },
+      {
+        "name": "order_id",
+        "type": "string"
+      },
+      {
+        "name": "after_block",
+        "type": "uint64"
+      },
+      {
+        "name": "before_block",
+        "type": "uint64"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryTradesResponse": [
+      {
+        "name": "trades",
+        "type": "TradeEvent[]",
+        "packageName": "/Switcheo.carbon.broker"
+      },
+      {
+        "name": "MinMaxBoundary",
+        "type": "MinMaxBoundary",
+        "packageName": "/Switcheo.carbon.broker"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryTradesForPositionRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "market",
+        "type": "string"
+      },
+      {
+        "name": "opened_block_height",
+        "type": "uint64"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryTradesForPositionResponse": [
+      {
+        "name": "trades",
+        "type": "TradeEvent[]",
+        "packageName": "/Switcheo.carbon.broker"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "LiquidatorPosition": [
+      {
+        "name": "market",
+        "type": "string"
+      },
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "MsgInitiateLiquidation": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "positions",
+        "type": "LiquidatorPosition[]",
+        "packageName": "/Switcheo.carbon.broker"
+      }
+    ],
+    "MsgInitiateLiquidationResponse": []
+  },
+  "/Switcheo.carbon.btcx": {
+    "DenomInfo": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "id",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "asset_hash",
+        "type": "string"
+      },
+      {
+        "name": "total_supply",
+        "type": "string"
+      },
+      {
+        "name": "redeem_script",
+        "type": "string"
+      },
+      {
+        "name": "redeem_script_hash",
+        "type": "string"
+      }
+    ],
+    "DenomCrossChainInfo": [
+      {
+        "name": "denom_info",
+        "type": "DenomInfo",
+        "packageName": "/Switcheo.carbon.btcx"
+      },
+      {
+        "name": "to_chain_id",
+        "type": "uint64"
+      },
+      {
+        "name": "to_asset_hash",
+        "type": "string"
+      }
+    ],
+    "GenesisState": [],
+    "QueryGetDenomInfoRequest": [
+      {
+        "name": "denom",
+        "type": "string"
+      }
+    ],
+    "QueryGetDenomInfoResponse": [
+      {
+        "name": "denom_info",
+        "type": "DenomInfo",
+        "packageName": "/Switcheo.carbon.btcx"
+      }
+    ],
+    "QueryGetDenomCrossChainInfoRequest": [
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "chain_id",
+        "type": "uint64"
+      }
+    ],
+    "QueryGetDenomCrossChainInfoResponse": [
+      {
+        "name": "denom_info",
+        "type": "DenomInfo",
+        "packageName": "/Switcheo.carbon.btcx"
+      },
+      {
+        "name": "to_chain_id",
+        "type": "uint64"
+      },
+      {
+        "name": "to_asset_hash",
+        "type": "string"
+      }
+    ],
+    "MsgCreate": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "redeem_script",
+        "type": "string"
+      }
+    ],
+    "MsgCreateResponse": [],
+    "MsgBind": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "source_asset_denom",
+        "type": "string"
+      },
+      {
+        "name": "to_chain_id",
+        "type": "uint64"
+      },
+      {
+        "name": "to_asset_hash",
+        "type": "uint8[]"
+      }
+    ],
+    "MsgBindResponse": [],
+    "MsgLock": [
+      {
+        "name": "from_address",
+        "type": "string"
+      },
+      {
+        "name": "source_asset_denom",
+        "type": "string"
+      },
+      {
+        "name": "to_chain_id",
+        "type": "uint64"
+      },
+      {
+        "name": "to_address_bytes",
+        "type": "uint8[]"
+      },
+      {
+        "name": "value",
+        "type": "string"
+      }
+    ],
+    "MsgLockResponse": []
+  },
+  "/Switcheo.carbon.ccm": {
+    "Params": [
+      {
+        "name": "emit_zion_events",
+        "type": "bool"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "created_tx_count",
+        "type": "string"
+      },
+      {
+        "name": "created_tx_details",
+        "type": "CreatedTxDetailsEntry[]",
+        "packageName": "/Switcheo.carbon.ccm.GenesisState"
+      },
+      {
+        "name": "received_tx_ids",
+        "type": "ReceivedTxIdsEntry[]",
+        "packageName": "/Switcheo.carbon.ccm.GenesisState"
+      },
+      {
+        "name": "denom_creators",
+        "type": "DenomCreatorsEntry[]",
+        "packageName": "/Switcheo.carbon.ccm.GenesisState"
+      },
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.ccm"
+      },
+      {
+        "name": "zion_created_tx_details",
+        "type": "ZionCreatedTxDetailsEntry[]",
+        "packageName": "/Switcheo.carbon.ccm.GenesisState"
+      }
+    ],
+    "QueryCheckModuleContractRequest": [
+      {
+        "name": "module_name",
+        "type": "string"
+      },
+      {
+        "name": "to_contract_address",
+        "type": "uint8[]"
+      },
+      {
+        "name": "from_chain_id",
+        "type": "uint64"
+      }
+    ],
+    "QueryCheckModuleContractResponse": [
+      {
+        "name": "module_name",
+        "type": "string"
+      },
+      {
+        "name": "exist",
+        "type": "bool"
+      }
+    ],
+    "MsgProcessCrossChainTx": [
+      {
+        "name": "submitter",
+        "type": "string"
+      },
+      {
+        "name": "from_chain_id",
+        "type": "uint64"
+      },
+      {
+        "name": "proof",
+        "type": "string"
+      },
+      {
+        "name": "header",
+        "type": "string"
+      },
+      {
+        "name": "header_proof",
+        "type": "string"
+      },
+      {
+        "name": "current_header",
+        "type": "string"
+      }
+    ],
+    "MsgProcessZionCrossChainTx": [
+      {
+        "name": "submitter",
+        "type": "string"
+      },
+      {
+        "name": "from_chain_id",
+        "type": "uint64"
+      },
+      {
+        "name": "proof",
+        "type": "string"
+      },
+      {
+        "name": "header",
+        "type": "string"
+      },
+      {
+        "name": "raw_cross_tx",
+        "type": "string"
+      }
+    ],
+    "MsgProcessCrossChainTxResponse": [],
+    "MsgProcessZionCrossChainTxResponse": [],
+    "MsgCreateEmitEvent": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "to_chain_id",
+        "type": "uint64"
+      },
+      {
+        "name": "cross_chain_id",
+        "type": "uint64"
+      }
+    ],
+    "MsgToggleEmitZionEvents": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "toggle_to",
+        "type": "bool"
+      }
+    ]
+  },
+  "/Switcheo.carbon.cdp": {
+    "AssetParams": [
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "oracle_id",
+        "type": "string"
+      },
+      {
+        "name": "rate_strategy_name",
+        "type": "string"
+      },
+      {
+        "name": "allow_repay_stablecoin_interest_debt",
+        "type": "bool"
+      },
+      {
+        "name": "loan_to_value",
+        "type": "string"
+      },
+      {
+        "name": "liquidation_threshold",
+        "type": "string"
+      },
+      {
+        "name": "liquidation_discount",
+        "type": "string"
+      },
+      {
+        "name": "supply_cap",
+        "type": "string"
+      },
+      {
+        "name": "borrow_cap",
+        "type": "string"
+      }
+    ],
+    "AssetUtilization": [
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "total_borrowed",
+        "type": "string"
+      },
+      {
+        "name": "total_amount",
+        "type": "string"
+      },
+      {
+        "name": "utilization_rate",
+        "type": "string"
+      }
+    ],
+    "UpdateAssetParams": [
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "rate_strategy_name",
+        "type": "string"
+      },
+      {
+        "name": "allow_repay_stablecoin_interest_debt",
+        "type": "bool"
+      },
+      {
+        "name": "loan_to_value",
+        "type": "string"
+      },
+      {
+        "name": "liquidation_threshold",
+        "type": "string"
+      },
+      {
+        "name": "liquidation_discount",
+        "type": "string"
+      },
+      {
+        "name": "supply_cap",
+        "type": "string"
+      },
+      {
+        "name": "borrow_cap",
+        "type": "string"
+      }
+    ],
+    "DebtInfo": [
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "last_updated_time",
+        "type": "string"
+      },
+      {
+        "name": "total_principal",
+        "type": "string"
+      },
+      {
+        "name": "cumulative_interest_multiplier",
+        "type": "string"
+      },
+      {
+        "name": "total_accumulated_interest",
+        "type": "string"
+      },
+      {
+        "name": "utilization_rate",
+        "type": "string"
+      }
+    ],
+    "EModeCategory": [
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "denoms",
+        "type": "string[]"
+      },
+      {
+        "name": "loan_to_value",
+        "type": "string"
+      },
+      {
+        "name": "liquidation_threshold",
+        "type": "string"
+      },
+      {
+        "name": "liquidation_discount",
+        "type": "string"
+      },
+      {
+        "name": "is_active",
+        "type": "bool"
+      }
+    ],
+    "StablecoinDebtInfo": [
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "last_updated_time",
+        "type": "string"
+      },
+      {
+        "name": "total_principal",
+        "type": "string"
+      },
+      {
+        "name": "cumulative_interest_multiplier",
+        "type": "string"
+      },
+      {
+        "name": "total_accumulated_interest",
+        "type": "string"
+      }
+    ],
+    "RateStrategyParams": [
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "optimal_usage",
+        "type": "string"
+      },
+      {
+        "name": "base_variable_borrow_rate",
+        "type": "string"
+      },
+      {
+        "name": "variable_rate_slope_1",
+        "type": "string"
+      },
+      {
+        "name": "variable_rate_slope_2",
+        "type": "string"
+      },
+      {
+        "name": "base_stable_borrow_rate",
+        "type": "string"
+      },
+      {
+        "name": "stable_rate_slope_1",
+        "type": "string"
+      },
+      {
+        "name": "stable_rate_slope_2",
+        "type": "string"
+      },
+      {
+        "name": "optimal_stable_to_total_debt_ratio",
+        "type": "string"
+      }
+    ],
+    "RewardScheme": [
+      {
+        "name": "id",
+        "type": "uint64"
+      },
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "reward_denom",
+        "type": "string"
+      },
+      {
+        "name": "asset_denom",
+        "type": "string"
+      },
+      {
+        "name": "reward_type",
+        "type": "string"
+      },
+      {
+        "name": "reward_amount_per_second",
+        "type": "string"
+      },
+      {
+        "name": "start_time",
+        "type": "string"
+      },
+      {
+        "name": "end_time",
+        "type": "string"
+      },
+      {
+        "name": "reward_per_share_last_updated_at",
+        "type": "string"
+      },
+      {
+        "name": "reward_per_share",
+        "type": "string"
+      }
+    ],
+    "CreateRewardSchemeParams": [
+      {
+        "name": "reward_denom",
+        "type": "string"
+      },
+      {
+        "name": "asset_denom",
+        "type": "string"
+      },
+      {
+        "name": "reward_type",
+        "type": "string"
+      },
+      {
+        "name": "reward_amount_per_second",
+        "type": "string"
+      },
+      {
+        "name": "start_time",
+        "type": "string"
+      },
+      {
+        "name": "end_time",
+        "type": "string"
+      }
+    ],
+    "UpdateRewardSchemeParams": [
+      {
+        "name": "reward_scheme_id",
+        "type": "uint64"
+      },
+      {
+        "name": "reward_denom",
+        "type": "string"
+      },
+      {
+        "name": "asset_denom",
+        "type": "string"
+      },
+      {
+        "name": "reward_type",
+        "type": "string"
+      },
+      {
+        "name": "reward_amount_per_second",
+        "type": "string"
+      },
+      {
+        "name": "start_time",
+        "type": "string"
+      },
+      {
+        "name": "end_time",
+        "type": "string"
+      }
+    ],
+    "RewardDebt": [
+      {
+        "name": "user_address",
+        "type": "string"
+      },
+      {
+        "name": "reward_scheme_id",
+        "type": "uint64"
+      },
+      {
+        "name": "reward_debt",
+        "type": "string"
+      },
+      {
+        "name": "last_updated_at",
+        "type": "string"
+      }
+    ],
+    "NewRateStrategyParamsEvent": [
+      {
+        "name": "rate_strategy_params",
+        "type": "RateStrategyParams",
+        "packageName": "/Switcheo.carbon.cdp"
+      },
+      {
+        "name": "type",
+        "type": "string"
+      }
+    ],
+    "UpdateRateStrategyParamsEvent": [
+      {
+        "name": "rate_strategy_params",
+        "type": "RateStrategyParams",
+        "packageName": "/Switcheo.carbon.cdp"
+      },
+      {
+        "name": "type",
+        "type": "string"
+      }
+    ],
+    "RemoveRateStrategyParamsEvent": [
+      {
+        "name": "rate_strategy_params",
+        "type": "RateStrategyParams",
+        "packageName": "/Switcheo.carbon.cdp"
+      },
+      {
+        "name": "type",
+        "type": "string"
+      }
+    ],
+    "NewAssetParamsEvent": [
+      {
+        "name": "asset_params",
+        "type": "AssetParams",
+        "packageName": "/Switcheo.carbon.cdp"
+      },
+      {
+        "name": "type",
+        "type": "string"
+      }
+    ],
+    "UpdateAssetParamsEvent": [
+      {
+        "name": "asset_params",
+        "type": "AssetParams",
+        "packageName": "/Switcheo.carbon.cdp"
+      },
+      {
+        "name": "type",
+        "type": "string"
+      }
+    ],
+    "NewEModeCategoryEvent": [
+      {
+        "name": "e_mode_category",
+        "type": "EModeCategory",
+        "packageName": "/Switcheo.carbon.cdp"
+      },
+      {
+        "name": "type",
+        "type": "string"
+      }
+    ],
+    "UpdateEModeCategoryEvent": [
+      {
+        "name": "e_mode_category",
+        "type": "EModeCategory",
+        "packageName": "/Switcheo.carbon.cdp"
+      },
+      {
+        "name": "type",
+        "type": "string"
+      }
+    ],
+    "UpdateAccountEModeCategoryNameEvent": [
+      {
+        "name": "account",
+        "type": "string"
+      },
+      {
+        "name": "e_mode_category_name",
+        "type": "string"
+      }
+    ],
+    "SetInterestFeeEvent": [
+      {
+        "name": "interest_fee",
+        "type": "string"
+      },
+      {
+        "name": "type",
+        "type": "string"
+      }
+    ],
+    "SetLiquidationFeeEvent": [
+      {
+        "name": "liquidation_fee",
+        "type": "string"
+      },
+      {
+        "name": "type",
+        "type": "string"
+      }
+    ],
+    "SetStablecoinInterestRateEvent": [
+      {
+        "name": "stablecoin_interest_rate",
+        "type": "string"
+      },
+      {
+        "name": "type",
+        "type": "string"
+      },
+      {
+        "name": "stablecoin_interest_rate_dec",
+        "type": "string"
+      }
+    ],
+    "SetStablecoinMintCapEvent": [
+      {
+        "name": "stablecoin_mint_cap",
+        "type": "string"
+      },
+      {
+        "name": "type",
+        "type": "string"
+      }
+    ],
+    "SetCompleteLiquidationThresholdEvent": [
+      {
+        "name": "complete_liquidation_threshold",
+        "type": "string"
+      },
+      {
+        "name": "type",
+        "type": "string"
+      }
+    ],
+    "SetMinimumCloseFactorEvent": [
+      {
+        "name": "minimum_close_factor",
+        "type": "string"
+      },
+      {
+        "name": "type",
+        "type": "string"
+      }
+    ],
+    "SetSmallLiquidationSizeEvent": [
+      {
+        "name": "small_liquidation_size",
+        "type": "string"
+      },
+      {
+        "name": "type",
+        "type": "string"
+      }
+    ],
+    "SetStalePriceGracePeriodEvent": [
+      {
+        "name": "stale_price_grace_period",
+        "type": "string"
+      },
+      {
+        "name": "type",
+        "type": "string"
+      }
+    ],
+    "SetCdpPausedEvent": [
+      {
+        "name": "cdp_paused",
+        "type": "bool"
+      },
+      {
+        "name": "type",
+        "type": "string"
+      }
+    ],
+    "SupplyAssetEvent": [
+      {
+        "name": "supplier",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "amount_supplied",
+        "type": "string"
+      },
+      {
+        "name": "cdp_denom",
+        "type": "string"
+      },
+      {
+        "name": "amount_minted",
+        "type": "string"
+      }
+    ],
+    "WithdrawAssetEvent": [
+      {
+        "name": "withdrawer",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "amount_withdrawed",
+        "type": "string"
+      },
+      {
+        "name": "cdp_denom",
+        "type": "string"
+      },
+      {
+        "name": "amount_burned",
+        "type": "string"
+      }
+    ],
+    "BorrowAssetEvent": [
+      {
+        "name": "borrower",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "amount_borrowed",
+        "type": "string"
+      },
+      {
+        "name": "health_factor",
+        "type": "string"
+      },
+      {
+        "name": "initial_cumulative_interest_multiplier",
+        "type": "string"
+      }
+    ],
+    "RepayAssetEvent": [
+      {
+        "name": "repayer",
+        "type": "string"
+      },
+      {
+        "name": "debtor",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "principal_repaid",
+        "type": "string"
+      },
+      {
+        "name": "interest_repaid",
+        "type": "string"
+      },
+      {
+        "name": "health_factor",
+        "type": "string"
+      }
+    ],
+    "LockCollateralEvent": [
+      {
+        "name": "locker",
+        "type": "string"
+      },
+      {
+        "name": "cdp_denom",
+        "type": "string"
+      },
+      {
+        "name": "amount_locked",
+        "type": "string"
+      },
+      {
+        "name": "health_factor",
+        "type": "string"
+      }
+    ],
+    "UnlockCollateralEvent": [
+      {
+        "name": "unlocker",
+        "type": "string"
+      },
+      {
+        "name": "cdp_denom",
+        "type": "string"
+      },
+      {
+        "name": "amount_unlocked",
+        "type": "string"
+      },
+      {
+        "name": "health_factor",
+        "type": "string"
+      }
+    ],
+    "UpdateDebtInfoEvent": [
+      {
+        "name": "debt_info",
+        "type": "DebtInfo",
+        "packageName": "/Switcheo.carbon.cdp"
+      },
+      {
+        "name": "type",
+        "type": "string"
+      }
+    ],
+    "UpdateStablecoinDebtInfoEvent": [
+      {
+        "name": "stablecoin_debt_info",
+        "type": "StablecoinDebtInfo",
+        "packageName": "/Switcheo.carbon.cdp"
+      },
+      {
+        "name": "type",
+        "type": "string"
+      }
+    ],
+    "MintStablecoinEvent": [
+      {
+        "name": "minter",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "amount_minted",
+        "type": "string"
+      },
+      {
+        "name": "health_factor",
+        "type": "string"
+      },
+      {
+        "name": "initial_cumulative_interest_multiplier",
+        "type": "string"
+      }
+    ],
+    "ReturnStablecoinEvent": [
+      {
+        "name": "returner",
+        "type": "string"
+      },
+      {
+        "name": "debtor",
+        "type": "string"
+      },
+      {
+        "name": "interest_denom",
+        "type": "string"
+      },
+      {
+        "name": "interest_repaid",
+        "type": "string"
+      },
+      {
+        "name": "principal_repaid",
+        "type": "string"
+      },
+      {
+        "name": "health_factor",
+        "type": "string"
+      }
+    ],
+    "LiquidateCollateralEvent": [
+      {
+        "name": "liquidator",
+        "type": "string"
+      },
+      {
+        "name": "debtor",
+        "type": "string"
+      },
+      {
+        "name": "collateral_denom",
+        "type": "string"
+      },
+      {
+        "name": "collateral_amount_liquidated",
+        "type": "string"
+      },
+      {
+        "name": "collateral_amount_liquidator",
+        "type": "string"
+      },
+      {
+        "name": "collateral_amount_fee",
+        "type": "string"
+      },
+      {
+        "name": "liquidation_price",
+        "type": "string"
+      },
+      {
+        "name": "market_price",
+        "type": "string"
+      },
+      {
+        "name": "discount",
+        "type": "string"
+      },
+      {
+        "name": "debt_denom",
+        "type": "string"
+      },
+      {
+        "name": "debt_amount",
+        "type": "string"
+      }
+    ],
+    "LiquidateCollateralWithStablecoinEvent": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "liquidator",
+        "type": "string"
+      },
+      {
+        "name": "debtor",
+        "type": "string"
+      },
+      {
+        "name": "collateral_denom",
+        "type": "string"
+      },
+      {
+        "name": "collateral_amount_liquidated",
+        "type": "string"
+      },
+      {
+        "name": "collateral_amount_liquidator",
+        "type": "string"
+      },
+      {
+        "name": "collateral_amount_fee",
+        "type": "string"
+      },
+      {
+        "name": "liquidation_price",
+        "type": "string"
+      },
+      {
+        "name": "market_price",
+        "type": "string"
+      },
+      {
+        "name": "discount",
+        "type": "string"
+      },
+      {
+        "name": "debt_denom",
+        "type": "string"
+      },
+      {
+        "name": "debt_amount",
+        "type": "string"
+      },
+      {
+        "name": "principal_amount",
+        "type": "string"
+      },
+      {
+        "name": "interest_denom",
+        "type": "string"
+      },
+      {
+        "name": "interest_amount",
+        "type": "string"
+      }
+    ],
+    "ClaimRewardEvent": [
+      {
+        "name": "receiver",
+        "type": "string"
+      },
+      {
+        "name": "reward_scheme_id",
+        "type": "string"
+      },
+      {
+        "name": "reward_claimed",
+        "type": "string"
+      }
+    ],
+    "RewardDebtEvent": [
+      {
+        "name": "reward_debt",
+        "type": "RewardDebt",
+        "packageName": "/Switcheo.carbon.cdp"
+      },
+      {
+        "name": "type",
+        "type": "string"
+      }
+    ],
+    "RewardSchemeEvent": [
+      {
+        "name": "reward_scheme",
+        "type": "RewardScheme",
+        "packageName": "/Switcheo.carbon.cdp"
+      },
+      {
+        "name": "type",
+        "type": "string"
+      }
+    ],
+    "AddReserveEvent": [
+      {
+        "name": "reward_scheme",
+        "type": "RewardScheme",
+        "packageName": "/Switcheo.carbon.cdp"
+      },
+      {
+        "name": "amount_added",
+        "type": "string"
+      }
+    ],
+    "RefundReserveEvent": [
+      {
+        "name": "reward_scheme",
+        "type": "RewardScheme",
+        "packageName": "/Switcheo.carbon.cdp"
+      },
+      {
+        "name": "amount_refunded",
+        "type": "string"
+      }
+    ],
+    "Params": [
+      {
+        "name": "interest_fee",
+        "type": "string"
+      },
+      {
+        "name": "liquidation_fee",
+        "type": "string"
+      },
+      {
+        "name": "stablecoin_interest_rate",
+        "type": "string"
+      },
+      {
+        "name": "stablecoin_mint_cap",
+        "type": "string"
+      },
+      {
+        "name": "complete_liquidation_threshold",
+        "type": "string"
+      },
+      {
+        "name": "minimum_close_factor",
+        "type": "string"
+      },
+      {
+        "name": "small_liquidation_size",
+        "type": "string"
+      },
+      {
+        "name": "stale_price_grace_period",
+        "type": "string"
+      },
+      {
+        "name": "cdp_paused",
+        "type": "bool"
+      },
+      {
+        "name": "stablecoin_interest_rate_epoch",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "stablecoin_interest_rate_adjuster_coefficient",
+        "type": "string"
+      }
+    ],
+    "StablecoinInterestInfo": [
+      {
+        "name": "last_updated_time",
+        "type": "string"
+      },
+      {
+        "name": "stablecoin_interest_rate",
+        "type": "string"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.cdp"
+      },
+      {
+        "name": "rate_strategies",
+        "type": "RateStrategyParams[]",
+        "packageName": "/Switcheo.carbon.cdp"
+      },
+      {
+        "name": "assets",
+        "type": "AssetParams[]",
+        "packageName": "/Switcheo.carbon.cdp"
+      },
+      {
+        "name": "debt_infos",
+        "type": "DebtInfo[]",
+        "packageName": "/Switcheo.carbon.cdp"
+      },
+      {
+        "name": "reward_schemes",
+        "type": "RewardScheme[]",
+        "packageName": "/Switcheo.carbon.cdp"
+      },
+      {
+        "name": "sequence_number",
+        "type": "uint64"
+      },
+      {
+        "name": "account_to_collateralized",
+        "type": "AccountToCollateralizedEntry[]",
+        "packageName": "/Switcheo.carbon.cdp.GenesisState"
+      },
+      {
+        "name": "account_to_principal_debt",
+        "type": "AccountToPrincipalDebtEntry[]",
+        "packageName": "/Switcheo.carbon.cdp.GenesisState"
+      },
+      {
+        "name": "account_to_initial_cumulative_interest_multiplier",
+        "type": "AccountToInitialCumulativeInterestMultiplierEntry[]",
+        "packageName": "/Switcheo.carbon.cdp.GenesisState"
+      },
+      {
+        "name": "stablecoin_debt_info",
+        "type": "StablecoinDebtInfo",
+        "packageName": "/Switcheo.carbon.cdp"
+      },
+      {
+        "name": "account_to_principal_stablecoin_debt",
+        "type": "AccountToPrincipalStablecoinDebtEntry[]",
+        "packageName": "/Switcheo.carbon.cdp.GenesisState"
+      },
+      {
+        "name": "account_to_stablecoin_initial_cumulative_interest_multiplier",
+        "type": "AccountToStablecoinInitialCumulativeInterestMultiplierEntry[]",
+        "packageName": "/Switcheo.carbon.cdp.GenesisState"
+      },
+      {
+        "name": "account_to_reward_debt",
+        "type": "AccountToRewardDebtEntry[]",
+        "packageName": "/Switcheo.carbon.cdp.GenesisState"
+      },
+      {
+        "name": "stablecoin_interest_info",
+        "type": "StablecoinInterestInfo",
+        "packageName": "/Switcheo.carbon.cdp"
+      },
+      {
+        "name": "e_mode_categories",
+        "type": "EModeCategory[]",
+        "packageName": "/Switcheo.carbon.cdp"
+      },
+      {
+        "name": "account_to_e_mode_category",
+        "type": "AccountToEModeCategoryEntry[]",
+        "packageName": "/Switcheo.carbon.cdp.GenesisState"
+      }
+    ],
+    "QueryParamsRequest": [],
+    "QueryParamsResponse": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.cdp"
+      }
+    ],
+    "QueryRateStrategyRequest": [
+      {
+        "name": "name",
+        "type": "string"
+      }
+    ],
+    "QueryRateStrategyResponse": [
+      {
+        "name": "rate_strategy_params",
+        "type": "RateStrategyParams",
+        "packageName": "/Switcheo.carbon.cdp"
+      }
+    ],
+    "QueryRateStrategyAllRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryRateStrategyAllResponse": [
+      {
+        "name": "rate_strategy_params_all",
+        "type": "RateStrategyParams[]",
+        "packageName": "/Switcheo.carbon.cdp"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAccountDataRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "QueryAccountDataResponse": [
+      {
+        "name": "total_collaterals_usd",
+        "type": "string"
+      },
+      {
+        "name": "total_debts_usd",
+        "type": "string"
+      },
+      {
+        "name": "available_borrows_usd",
+        "type": "string"
+      },
+      {
+        "name": "curr_liquidation_threshold",
+        "type": "string"
+      },
+      {
+        "name": "health_factor",
+        "type": "string"
+      }
+    ],
+    "QueryAccountCollateralRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "cdp_denom",
+        "type": "string"
+      }
+    ],
+    "QueryAccountCollateralResponse": [
+      {
+        "name": "collateral",
+        "type": "Collateral",
+        "packageName": "/Switcheo.carbon.cdp"
+      }
+    ],
+    "QueryAccountCollateralAllRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAccountCollateralAllResponse": [
+      {
+        "name": "collaterals",
+        "type": "Collateral[]",
+        "packageName": "/Switcheo.carbon.cdp"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "Collateral": [
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "cdp_denom",
+        "type": "string"
+      },
+      {
+        "name": "collateral_amount",
+        "type": "string"
+      }
+    ],
+    "QueryAccountDebtRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      }
+    ],
+    "QueryAccountDebtResponse": [
+      {
+        "name": "debt",
+        "type": "Debt",
+        "packageName": "/Switcheo.carbon.cdp"
+      }
+    ],
+    "QueryAccountDebtAllRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAccountDebtAllResponse": [
+      {
+        "name": "debts",
+        "type": "Debt[]",
+        "packageName": "/Switcheo.carbon.cdp"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "Debt": [
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "principal_debt",
+        "type": "string"
+      },
+      {
+        "name": "initial_cumulative_interest_multiplier",
+        "type": "string"
+      }
+    ],
+    "QueryAccountStablecoinRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "QueryAccountStablecoinResponse": [
+      {
+        "name": "principal_debt",
+        "type": "string"
+      },
+      {
+        "name": "interest_debt",
+        "type": "string"
+      },
+      {
+        "name": "initial_cumulative_interest_multiplier",
+        "type": "string"
+      }
+    ],
+    "QueryAssetRequest": [
+      {
+        "name": "denom",
+        "type": "string"
+      }
+    ],
+    "QueryAssetResponse": [
+      {
+        "name": "asset_params",
+        "type": "AssetParams",
+        "packageName": "/Switcheo.carbon.cdp"
+      }
+    ],
+    "QueryAssetAllRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAssetAllResponse": [
+      {
+        "name": "asset_params_all",
+        "type": "AssetParams[]",
+        "packageName": "/Switcheo.carbon.cdp"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryTokenDebtRequest": [
+      {
+        "name": "denom",
+        "type": "string"
+      }
+    ],
+    "QueryTokenDebtResponse": [
+      {
+        "name": "debt_info",
+        "type": "DebtInfo",
+        "packageName": "/Switcheo.carbon.cdp"
+      }
+    ],
+    "QueryTokenDebtAllRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryTokenDebtAllResponse": [
+      {
+        "name": "debt_infos_all",
+        "type": "DebtInfo[]",
+        "packageName": "/Switcheo.carbon.cdp"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryStablecoinDebtRequest": [],
+    "QueryStablecoinDebtResponse": [
+      {
+        "name": "stablecoin_debt_info",
+        "type": "StablecoinDebtInfo",
+        "packageName": "/Switcheo.carbon.cdp"
+      }
+    ],
+    "CdpPositionItem": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "cdp_denom",
+        "type": "string"
+      },
+      {
+        "name": "health_factor",
+        "type": "string"
+      },
+      {
+        "name": "collateral_amount",
+        "type": "string"
+      },
+      {
+        "name": "borrow_amount",
+        "type": "string"
+      },
+      {
+        "name": "mint_denom",
+        "type": "string"
+      },
+      {
+        "name": "mint_amount",
+        "type": "string"
+      }
+    ],
+    "CdpPosition": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "health_factor",
+        "type": "string"
+      },
+      {
+        "name": "collateral",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "borrow",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "mint",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "QueryCdpPositionsRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      },
+      {
+        "name": "max_health_factor",
+        "type": "string"
+      },
+      {
+        "name": "min_health_factor",
+        "type": "string"
+      }
+    ],
+    "QueryCdpPositionsResponse": [
+      {
+        "name": "positions",
+        "type": "CdpPosition[]",
+        "packageName": "/Switcheo.carbon.cdp"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryRewardSchemesAllRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryRewardSchemesAllResponse": [
+      {
+        "name": "reward_schemes",
+        "type": "RewardScheme[]",
+        "packageName": "/Switcheo.carbon.cdp"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryRewardDebtsRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "QueryRewardDebtsResponse": [
+      {
+        "name": "reward_debts",
+        "type": "RewardDebt[]",
+        "packageName": "/Switcheo.carbon.cdp"
+      }
+    ],
+    "QueryRewardDebtsAllRequest": [],
+    "QueryEModeAllRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryEModeAllResponse": [
+      {
+        "name": "e_mode_categories",
+        "type": "EModeCategory[]",
+        "packageName": "/Switcheo.carbon.cdp"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryStablecoinInterestRequest": [],
+    "QueryStablecoinInterestResponse": [
+      {
+        "name": "stablecoin_interest_info",
+        "type": "StablecoinInterestInfo",
+        "packageName": "/Switcheo.carbon.cdp"
+      }
+    ],
+    "QueryEModeRequest": [
+      {
+        "name": "name",
+        "type": "string"
+      }
+    ],
+    "QueryEModeResponse": [
+      {
+        "name": "e_mode_category",
+        "type": "EModeCategory",
+        "packageName": "/Switcheo.carbon.cdp"
+      }
+    ],
+    "QueryAccountEModeRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "QueryAccountEModeResponse": [
+      {
+        "name": "e_mode_category_name",
+        "type": "string"
+      }
+    ],
+    "MsgAddRateStrategy": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "rate_strategy_params",
+        "type": "RateStrategyParams",
+        "packageName": "/Switcheo.carbon.cdp"
+      }
+    ],
+    "MsgAddRateStrategyResponse": [
+      {
+        "name": "rate_strategy_params",
+        "type": "RateStrategyParams",
+        "packageName": "/Switcheo.carbon.cdp"
+      }
+    ],
+    "MsgUpdateRateStrategy": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "rate_strategy_params",
+        "type": "RateStrategyParams",
+        "packageName": "/Switcheo.carbon.cdp"
+      }
+    ],
+    "MsgUpdateRateStrategyResponse": [
+      {
+        "name": "rate_strategy_params",
+        "type": "RateStrategyParams",
+        "packageName": "/Switcheo.carbon.cdp"
+      }
+    ],
+    "MsgRemoveRateStrategy": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "name",
+        "type": "string"
+      }
+    ],
+    "MsgRemoveRateStrategyResponse": [
+      {
+        "name": "name",
+        "type": "string"
+      }
+    ],
+    "MsgAddAsset": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "asset_params",
+        "type": "AssetParams",
+        "packageName": "/Switcheo.carbon.cdp"
+      }
+    ],
+    "MsgAddAssetResponse": [
+      {
+        "name": "asset_params",
+        "type": "AssetParams",
+        "packageName": "/Switcheo.carbon.cdp"
+      }
+    ],
+    "MsgUpdateAsset": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "asset_params",
+        "type": "UpdateAssetParams",
+        "packageName": "/Switcheo.carbon.cdp"
+      }
+    ],
+    "MsgUpdateAssetResponse": [
+      {
+        "name": "asset_params",
+        "type": "AssetParams",
+        "packageName": "/Switcheo.carbon.cdp"
+      }
+    ],
+    "MsgSupplyAsset": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "string"
+      }
+    ],
+    "MsgSupplyAssetResponse": [],
+    "MsgWithdrawAsset": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "cdp_denom",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "string"
+      }
+    ],
+    "MsgWithdrawAssetResponse": [],
+    "MsgLockCollateral": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "cdp_denom",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "string"
+      }
+    ],
+    "MsgLockCollateralResponse": [],
+    "MsgUnlockCollateral": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "cdp_denom",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "string"
+      }
+    ],
+    "MsgUnlockCollateralResponse": [],
+    "MsgBorrowAsset": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "string"
+      }
+    ],
+    "MsgBorrowAssetResponse": [],
+    "MsgRepayAsset": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "string"
+      },
+      {
+        "name": "debtor",
+        "type": "string"
+      }
+    ],
+    "MsgRepayAssetResponse": [],
+    "MsgSupplyAssetAndLockCollateral": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "supply_amount",
+        "type": "string"
+      },
+      {
+        "name": "lock_amount",
+        "type": "string"
+      }
+    ],
+    "MsgSupplyAssetAndLockCollateralResponse": [],
+    "MsgUnlockCollateralAndWithdrawAsset": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "cdp_denom",
+        "type": "string"
+      },
+      {
+        "name": "unlock_amount",
+        "type": "string"
+      },
+      {
+        "name": "withdraw_amount",
+        "type": "string"
+      }
+    ],
+    "MsgUnlockCollateralAndWithdrawAssetResponse": [],
+    "MsgLiquidateCollateral": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "debtor",
+        "type": "string"
+      },
+      {
+        "name": "collateral_denom",
+        "type": "string"
+      },
+      {
+        "name": "min_collateral_amount",
+        "type": "string"
+      },
+      {
+        "name": "debt_denom",
+        "type": "string"
+      },
+      {
+        "name": "debt_amount",
+        "type": "string"
+      }
+    ],
+    "MsgLiquidateCollateralResponse": [],
+    "MsgSetLiquidationFee": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "liquidation_fee",
+        "type": "string"
+      }
+    ],
+    "MsgSetLiquidationFeeResponse": [],
+    "MsgSetInterestFee": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "interest_fee",
+        "type": "string"
+      }
+    ],
+    "MsgSetInterestFeeResponse": [],
+    "MsgRepayAssetWithCdpTokens": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "debtor",
+        "type": "string"
+      },
+      {
+        "name": "debt_denom",
+        "type": "string"
+      },
+      {
+        "name": "cdp_denom",
+        "type": "string"
+      },
+      {
+        "name": "cdp_amount",
+        "type": "string"
+      }
+    ],
+    "MsgRepayAssetWithCdpTokensResponse": [],
+    "MsgRepayAssetWithCollateral": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "debtor",
+        "type": "string"
+      },
+      {
+        "name": "debt_denom",
+        "type": "string"
+      },
+      {
+        "name": "cdp_denom",
+        "type": "string"
+      },
+      {
+        "name": "cdp_amount",
+        "type": "string"
+      }
+    ],
+    "MsgRepayAssetWithCollateralResponse": [],
+    "MsgSetStablecoinMintCap": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "stablecoin_mint_cap",
+        "type": "string"
+      }
+    ],
+    "MsgSetStablecoinMintCapResponse": [],
+    "MsgSetStablecoinInterestRate": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "stablecoin_interest_rate",
+        "type": "string"
+      }
+    ],
+    "MsgSetStablecoinInterestRateResponse": [],
+    "MsgMintStablecoin": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "string"
+      }
+    ],
+    "MsgMintStablecoinResponse": [],
+    "MsgReturnStablecoin": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "principal_amount",
+        "type": "string"
+      },
+      {
+        "name": "interest_denom",
+        "type": "string"
+      },
+      {
+        "name": "interest_amount",
+        "type": "string"
+      },
+      {
+        "name": "debtor",
+        "type": "string"
+      }
+    ],
+    "MsgReturnStablecoinResponse": [],
+    "MsgSetCompleteLiquidationThreshold": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "complete_liquidation_threshold",
+        "type": "string"
+      }
+    ],
+    "MsgSetCompleteLiquidationThresholdResponse": [],
+    "MsgSetMinimumCloseFactor": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "minimum_close_factor",
+        "type": "string"
+      }
+    ],
+    "MsgSetMinimumCloseFactorResponse": [],
+    "MsgSetSmallLiquidationSize": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "small_liquidation_size",
+        "type": "string"
+      }
+    ],
+    "MsgSetSmallLiquidationSizeResponse": [],
+    "MsgLiquidateCollateralWithCdpTokens": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "debtor",
+        "type": "string"
+      },
+      {
+        "name": "collateral_denom",
+        "type": "string"
+      },
+      {
+        "name": "min_collateral_amount",
+        "type": "string"
+      },
+      {
+        "name": "debt_denom",
+        "type": "string"
+      },
+      {
+        "name": "debt_amount",
+        "type": "string"
+      },
+      {
+        "name": "debt_collateral_denom",
+        "type": "string"
+      },
+      {
+        "name": "debt_collateral_amount",
+        "type": "string"
+      }
+    ],
+    "MsgLiquidateCollateralWithCdpTokensResponse": [],
+    "MsgLiquidateCollateralWithCollateral": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "debtor",
+        "type": "string"
+      },
+      {
+        "name": "collateral_denom",
+        "type": "string"
+      },
+      {
+        "name": "min_collateral_amount",
+        "type": "string"
+      },
+      {
+        "name": "debt_denom",
+        "type": "string"
+      },
+      {
+        "name": "debt_amount",
+        "type": "string"
+      },
+      {
+        "name": "debt_collateral_denom",
+        "type": "string"
+      },
+      {
+        "name": "debt_collateral_amount",
+        "type": "string"
+      }
+    ],
+    "MsgLiquidateCollateralWithCollateralResponse": [],
+    "MsgLiquidateCollateralWithStablecoin": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "debtor",
+        "type": "string"
+      },
+      {
+        "name": "collateral_denom",
+        "type": "string"
+      },
+      {
+        "name": "min_collateral_amount",
+        "type": "string"
+      },
+      {
+        "name": "debt_denom",
+        "type": "string"
+      },
+      {
+        "name": "debt_amount",
+        "type": "string"
+      },
+      {
+        "name": "interest_denom",
+        "type": "string"
+      },
+      {
+        "name": "interest_amount",
+        "type": "string"
+      }
+    ],
+    "MsgLiquidateCollateralWithStablecoinResponse": [],
+    "MsgCreateRewardScheme": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "create_reward_scheme_params",
+        "type": "CreateRewardSchemeParams",
+        "packageName": "/Switcheo.carbon.cdp"
+      }
+    ],
+    "MsgCreateRewardSchemeResponse": [],
+    "MsgUpdateRewardScheme": [
+      {
+        "name": "updator",
+        "type": "string"
+      },
+      {
+        "name": "update_reward_scheme_params",
+        "type": "UpdateRewardSchemeParams",
+        "packageName": "/Switcheo.carbon.cdp"
+      }
+    ],
+    "MsgUpdateRewardSchemeResponse": [],
+    "MsgClaimRewards": [
+      {
+        "name": "creator",
+        "type": "string"
+      }
+    ],
+    "MsgClaimRewardsResponse": [],
+    "MsgSetStalePriceGracePeriod": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "stale_price_grace_period",
+        "type": "string"
+      }
+    ],
+    "MsgSetStalePriceGracePeriodResponse": [],
+    "MsgSetCdpPaused": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "cdpPaused",
+        "type": "bool"
+      }
+    ],
+    "MsgSetCdpPausedResponse": [],
+    "MsgReturnStablecoinWithInterestInCollateral": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "principal_amount",
+        "type": "string"
+      },
+      {
+        "name": "interest_cdp_denom",
+        "type": "string"
+      },
+      {
+        "name": "interest_cdp_amount",
+        "type": "string"
+      },
+      {
+        "name": "debtor",
+        "type": "string"
+      }
+    ],
+    "MsgReturnStablecoinWithInterestInCollateralResponse": [],
+    "MsgReturnStablecoinWithInterestInCdpTokens": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "principal_amount",
+        "type": "string"
+      },
+      {
+        "name": "interest_cdp_denom",
+        "type": "string"
+      },
+      {
+        "name": "interest_cdp_amount",
+        "type": "string"
+      },
+      {
+        "name": "debtor",
+        "type": "string"
+      }
+    ],
+    "MsgReturnStablecoinWithInterestInCdpTokensResponse": [],
+    "MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "debtor",
+        "type": "string"
+      },
+      {
+        "name": "collateral_denom",
+        "type": "string"
+      },
+      {
+        "name": "min_collateral_amount",
+        "type": "string"
+      },
+      {
+        "name": "debt_denom",
+        "type": "string"
+      },
+      {
+        "name": "debt_amount",
+        "type": "string"
+      },
+      {
+        "name": "interest_cdp_denom",
+        "type": "string"
+      },
+      {
+        "name": "interest_cdp_amount",
+        "type": "string"
+      }
+    ],
+    "MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse": [],
+    "MsgLiquidateCollateralWithStablecoinAndInterestInCollateral": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "debtor",
+        "type": "string"
+      },
+      {
+        "name": "collateral_denom",
+        "type": "string"
+      },
+      {
+        "name": "min_collateral_amount",
+        "type": "string"
+      },
+      {
+        "name": "debt_denom",
+        "type": "string"
+      },
+      {
+        "name": "debt_amount",
+        "type": "string"
+      },
+      {
+        "name": "interest_cdp_denom",
+        "type": "string"
+      },
+      {
+        "name": "interest_cdp_amount",
+        "type": "string"
+      }
+    ],
+    "MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse": [],
+    "MsgConvertTokenInCdpToGroupTokens": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      }
+    ],
+    "MsgConvertTokenInCdpToGroupTokensResponse": [],
+    "MsgAddEModeCategory": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "e_mode_category",
+        "type": "EModeCategory",
+        "packageName": "/Switcheo.carbon.cdp"
+      }
+    ],
+    "MsgAddEModeCategoryResponse": [],
+    "MsgUpdateEModeCategory": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "e_mode_category_name",
+        "type": "string"
+      },
+      {
+        "name": "update_e_mode_category_params",
+        "type": "UpdateEModeCategoryParams",
+        "packageName": "/Switcheo.carbon.cdp"
+      }
+    ],
+    "UpdateEModeCategoryParams": [
+      {
+        "name": "denoms",
+        "type": "string[]"
+      },
+      {
+        "name": "loan_to_value",
+        "type": "int64"
+      },
+      {
+        "name": "liquidation_threshold",
+        "type": "int64"
+      },
+      {
+        "name": "liquidation_discount",
+        "type": "int64"
+      },
+      {
+        "name": "is_active",
+        "type": "bool"
+      }
+    ],
+    "MsgUpdateEModeCategoryResponse": [],
+    "MsgChangeAccountEMode": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "e_mode_category_name",
+        "type": "string"
+      }
+    ],
+    "MsgChangeAccountEModeResponse": []
+  },
+  "/Switcheo.carbon.coin": {
+    "Bridge": [
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "bridge_id",
+        "type": "uint64"
+      },
+      {
+        "name": "chain_id",
+        "type": "uint64"
+      },
+      {
+        "name": "bridge_name",
+        "type": "string"
+      },
+      {
+        "name": "chain_name",
+        "type": "string"
+      },
+      {
+        "name": "enabled",
+        "type": "bool"
+      },
+      {
+        "name": "bridge_addresses",
+        "type": "string[]"
+      }
+    ],
+    "TokenGroup": [
+      {
+        "name": "id",
+        "type": "uint64"
+      },
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "cheque_denom",
+        "type": "string"
+      },
+      {
+        "name": "vault_address",
+        "type": "string"
+      }
+    ],
+    "TokenGroupDetails": [
+      {
+        "name": "token_group",
+        "type": "TokenGroup",
+        "packageName": "/Switcheo.carbon.coin"
+      },
+      {
+        "name": "registered_tokens",
+        "type": "GroupedTokenConfig[]",
+        "packageName": "/Switcheo.carbon.coin"
+      }
+    ],
+    "GroupedTokenConfig": [
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "is_active",
+        "type": "bool"
+      }
+    ],
+    "Token": [
+      {
+        "name": "id",
+        "type": "string"
+      },
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "symbol",
+        "type": "string"
+      },
+      {
+        "name": "decimals",
+        "type": "int64"
+      },
+      {
+        "name": "bridge_id",
+        "type": "uint64"
+      },
+      {
+        "name": "chain_id",
+        "type": "uint64"
+      },
+      {
+        "name": "token_address",
+        "type": "string"
+      },
+      {
+        "name": "bridge_address",
+        "type": "string"
+      },
+      {
+        "name": "is_active",
+        "type": "bool"
+      },
+      {
+        "name": "is_collateral",
+        "type": "bool"
+      }
+    ],
+    "BalanceChange": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "block_height",
+        "type": "uint64"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "string"
+      },
+      {
+        "name": "type",
+        "type": "string"
+      },
+      {
+        "name": "location",
+        "type": "string"
+      },
+      {
+        "name": "metadata",
+        "type": "Metadata",
+        "packageName": "/Switcheo.carbon.coin"
+      }
+    ],
+    "Metadata": [
+      {
+        "name": "order_id",
+        "type": "string"
+      }
+    ],
+    "LockedCoins": [
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "order_margin",
+        "type": "string"
+      },
+      {
+        "name": "position_margin",
+        "type": "string"
+      },
+      {
+        "name": "collateral",
+        "type": "string"
+      }
+    ],
+    "LockedCoinsRecord": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "market",
+        "type": "string"
+      },
+      {
+        "name": "locked_coins",
+        "type": "LockedCoins",
+        "packageName": "/Switcheo.carbon.coin"
+      }
+    ],
+    "PositionPool": [
+      {
+        "name": "market",
+        "type": "string"
+      },
+      {
+        "name": "coins",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "TokenBalance": [
+      {
+        "name": "available",
+        "type": "string"
+      },
+      {
+        "name": "order",
+        "type": "string"
+      },
+      {
+        "name": "position",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      }
+    ],
+    "NewTokenEvent": [
+      {
+        "name": "token",
+        "type": "Token",
+        "packageName": "/Switcheo.carbon.coin"
+      },
+      {
+        "name": "type",
+        "type": "string"
+      }
+    ],
+    "SyncTokenEvent": [
+      {
+        "name": "token",
+        "type": "Token",
+        "packageName": "/Switcheo.carbon.coin"
+      }
+    ],
+    "BindTokenEvent": [
+      {
+        "name": "source_denom",
+        "type": "string"
+      },
+      {
+        "name": "wrapped_denom",
+        "type": "string"
+      }
+    ],
+    "UnbindTokenEvent": [
+      {
+        "name": "wrapped_denom",
+        "type": "string"
+      }
+    ],
+    "LinkTokenEvent": [
+      {
+        "name": "token",
+        "type": "Token",
+        "packageName": "/Switcheo.carbon.coin"
+      },
+      {
+        "name": "type",
+        "type": "string"
+      }
+    ],
+    "NewGroupEvent": [
+      {
+        "name": "token_group",
+        "type": "TokenGroup",
+        "packageName": "/Switcheo.carbon.coin"
+      }
+    ],
+    "UpdateGroupEvent": [
+      {
+        "name": "token_group",
+        "type": "TokenGroup",
+        "packageName": "/Switcheo.carbon.coin"
+      }
+    ],
+    "RegisterToGroupEvent": [
+      {
+        "name": "group_id",
+        "type": "uint64"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      }
+    ],
+    "DeregisterFromGroupEvent": [
+      {
+        "name": "group_id",
+        "type": "uint64"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      }
+    ],
+    "SetGroupedTokenConfigEvent": [
+      {
+        "name": "grouped_token_config",
+        "type": "GroupedTokenConfig",
+        "packageName": "/Switcheo.carbon.coin"
+      }
+    ],
+    "DepositToGroupEvent": [
+      {
+        "name": "group_id",
+        "type": "uint64"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "string"
+      },
+      {
+        "name": "cheque_denom",
+        "type": "string"
+      },
+      {
+        "name": "cheque_amount",
+        "type": "string"
+      }
+    ],
+    "WithdrawFromGroupEvent": [
+      {
+        "name": "group_id",
+        "type": "uint64"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "string"
+      },
+      {
+        "name": "cheque_denom",
+        "type": "string"
+      },
+      {
+        "name": "cheque_amount",
+        "type": "string"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "tokens",
+        "type": "Token[]",
+        "packageName": "/Switcheo.carbon.coin"
+      },
+      {
+        "name": "wrapper_mappings",
+        "type": "WrapperMappingsEntry[]",
+        "packageName": "/Switcheo.carbon.coin.GenesisState"
+      },
+      {
+        "name": "locked_coins",
+        "type": "LockedCoinsRecord[]",
+        "packageName": "/Switcheo.carbon.coin"
+      },
+      {
+        "name": "position_pools",
+        "type": "PositionPool[]",
+        "packageName": "/Switcheo.carbon.coin"
+      },
+      {
+        "name": "bridges",
+        "type": "Bridge[]",
+        "packageName": "/Switcheo.carbon.coin"
+      },
+      {
+        "name": "groups",
+        "type": "TokenGroupDetails[]",
+        "packageName": "/Switcheo.carbon.coin"
+      }
+    ],
+    "MsgCreateToken": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "create_token_params",
+        "type": "CreateTokenParams",
+        "packageName": "/Switcheo.carbon.coin"
+      }
+    ],
+    "CreateTokenParams": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "symbol",
+        "type": "string"
+      },
+      {
+        "name": "decimals",
+        "type": "int64"
+      },
+      {
+        "name": "chain_id",
+        "type": "uint64"
+      },
+      {
+        "name": "bridge_id",
+        "type": "uint64"
+      },
+      {
+        "name": "bridge_address",
+        "type": "string"
+      },
+      {
+        "name": "token_address",
+        "type": "string"
+      }
+    ],
+    "MsgCreateTokenResponse": [
+      {
+        "name": "denom",
+        "type": "string"
+      }
+    ],
+    "MsgSyncToken": [
+      {
+        "name": "syncer",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      }
+    ],
+    "MsgSyncTokenResponse": [],
+    "MsgMintToken": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "string"
+      },
+      {
+        "name": "to",
+        "type": "string"
+      }
+    ],
+    "MsgMintTokenResponse": [],
+    "MsgBindToken": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "source_denom",
+        "type": "string"
+      },
+      {
+        "name": "wrapped_denom",
+        "type": "string"
+      }
+    ],
+    "MsgBindTokenResponse": [],
+    "MsgUnbindToken": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "wrapped_denom",
+        "type": "string"
+      }
+    ],
+    "MsgUnbindTokenResponse": [],
+    "MsgLinkToken": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "bridge_address",
+        "type": "string"
+      }
+    ],
+    "MsgLinkTokenResponse": [],
+    "MsgWithdraw": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "to_address",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "string"
+      },
+      {
+        "name": "fee_amount",
+        "type": "string"
+      },
+      {
+        "name": "fee_address",
+        "type": "string"
+      }
+    ],
+    "MsgWithdrawResponse": [],
+    "MsgAuthorizeBridge": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "bridge_id",
+        "type": "uint64"
+      },
+      {
+        "name": "chain_id",
+        "type": "uint64"
+      },
+      {
+        "name": "chain_name",
+        "type": "string"
+      }
+    ],
+    "MsgAuthorizeBridgeResponse": [
+      {
+        "name": "id",
+        "type": "string"
+      },
+      {
+        "name": "bridge",
+        "type": "Bridge",
+        "packageName": "/Switcheo.carbon.coin"
+      }
+    ],
+    "MsgDeauthorizeBridge": [
+      {
+        "name": "initiator",
+        "type": "string"
+      },
+      {
+        "name": "bridge_id",
+        "type": "uint64"
+      },
+      {
+        "name": "chain_id",
+        "type": "uint64"
+      }
+    ],
+    "MsgDeauthorizeBridgeResponse": [
+      {
+        "name": "id",
+        "type": "string"
+      },
+      {
+        "name": "bridge",
+        "type": "Bridge",
+        "packageName": "/Switcheo.carbon.coin"
+      }
+    ],
+    "MsgEditBridgeName": [
+      {
+        "name": "initiator",
+        "type": "string"
+      },
+      {
+        "name": "bridge_id",
+        "type": "uint64"
+      },
+      {
+        "name": "chain_id",
+        "type": "uint64"
+      },
+      {
+        "name": "new_bridge_name",
+        "type": "string"
+      }
+    ],
+    "MsgEditBridgeNameResponse": [
+      {
+        "name": "id",
+        "type": "string"
+      },
+      {
+        "name": "bridge",
+        "type": "Bridge",
+        "packageName": "/Switcheo.carbon.coin"
+      }
+    ],
+    "MsgRemoveBridge": [
+      {
+        "name": "initiator",
+        "type": "string"
+      },
+      {
+        "name": "bridge_id",
+        "type": "uint64"
+      },
+      {
+        "name": "chain_id",
+        "type": "uint64"
+      }
+    ],
+    "MsgRemoveBridgeResponse": [],
+    "MsgUpdateToken": [
+      {
+        "name": "updater",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "update_token_params",
+        "type": "UpdateTokenParams",
+        "packageName": "/Switcheo.carbon.coin"
+      }
+    ],
+    "UpdateTokenParams": [
+      {
+        "name": "is_active",
+        "type": "bool"
+      },
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "symbol",
+        "type": "string"
+      },
+      {
+        "name": "decimals",
+        "type": "int64"
+      }
+    ],
+    "MsgUpdateTokenResponse": [],
+    "MsgAddBridgeAddress": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "chain_id",
+        "type": "uint64"
+      },
+      {
+        "name": "bridge_id",
+        "type": "uint64"
+      },
+      {
+        "name": "bridge_address",
+        "type": "string"
+      }
+    ],
+    "MsgAddBridgeAddressResponse": [
+      {
+        "name": "id",
+        "type": "string"
+      },
+      {
+        "name": "bridge",
+        "type": "Bridge",
+        "packageName": "/Switcheo.carbon.coin"
+      }
+    ],
+    "MsgRemoveBridgeAddress": [
+      {
+        "name": "initiator",
+        "type": "string"
+      },
+      {
+        "name": "chain_id",
+        "type": "uint64"
+      },
+      {
+        "name": "bridge_id",
+        "type": "uint64"
+      },
+      {
+        "name": "bridge_address",
+        "type": "string"
+      }
+    ],
+    "MsgRemoveBridgeAddressResponse": [
+      {
+        "name": "id",
+        "type": "string"
+      },
+      {
+        "name": "bridge",
+        "type": "Bridge",
+        "packageName": "/Switcheo.carbon.coin"
+      }
+    ],
+    "MsgCreateGroup": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "cheque_token_symbol",
+        "type": "string"
+      },
+      {
+        "name": "oracle_id",
+        "type": "string"
+      }
+    ],
+    "MsgCreateGroupResponse": [
+      {
+        "name": "token_group",
+        "type": "TokenGroup",
+        "packageName": "/Switcheo.carbon.coin"
+      }
+    ],
+    "MsgUpdateGroup": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "group_id",
+        "type": "uint64"
+      },
+      {
+        "name": "update_group_params",
+        "type": "UpdateGroupParams",
+        "packageName": "/Switcheo.carbon.coin"
+      }
+    ],
+    "UpdateGroupParams": [
+      {
+        "name": "name",
+        "type": "string"
+      }
+    ],
+    "MsgUpdateGroupResponse": [
+      {
+        "name": "token_group",
+        "type": "TokenGroup",
+        "packageName": "/Switcheo.carbon.coin"
+      }
+    ],
+    "MsgRegisterToGroup": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "group_id",
+        "type": "uint64"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      }
+    ],
+    "MsgRegisterToGroupResponse": [],
+    "MsgDeregisterFromGroup": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "group_id",
+        "type": "uint64"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      }
+    ],
+    "MsgDeregisterFromGroupResponse": [],
+    "MsgDepositToGroup": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "deposit_coin",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "MsgDepositToGroupResponse": [
+      {
+        "name": "group_id",
+        "type": "uint64"
+      },
+      {
+        "name": "tokens_deposited",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "tokens_minted",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "MsgWithdrawFromGroup": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "source_coin",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "MsgWithdrawFromGroupResponse": [
+      {
+        "name": "group_id",
+        "type": "uint64"
+      },
+      {
+        "name": "tokens_burnt",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "tokens_withdrawn",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "MsgUpdateGroupedTokenConfig": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "update_grouped_token_config_params",
+        "type": "UpdateGroupedTokenConfigParams",
+        "packageName": "/Switcheo.carbon.coin"
+      }
+    ],
+    "UpdateGroupedTokenConfigParams": [
+      {
+        "name": "is_active",
+        "type": "bool"
+      }
+    ],
+    "MsgUpdateGroupedTokenConfigResponse": [
+      {
+        "name": "grouped_token_config",
+        "type": "GroupedTokenConfig",
+        "packageName": "/Switcheo.carbon.coin"
+      }
+    ],
+    "CreateTokenProposal": [
+      {
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "msg",
+        "type": "CreateTokenParams",
+        "packageName": "/Switcheo.carbon.coin"
+      }
+    ],
+    "QueryGetTokenRequest": [
+      {
+        "name": "denom",
+        "type": "string"
+      }
+    ],
+    "QueryGetTokenResponse": [
+      {
+        "name": "token",
+        "type": "Token",
+        "packageName": "/Switcheo.carbon.coin"
+      }
+    ],
+    "QueryAllTokenRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllTokenResponse": [
+      {
+        "name": "tokens",
+        "type": "Token[]",
+        "packageName": "/Switcheo.carbon.coin"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryGetLockedCoinsRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryGetLockedCoinsResponse": [
+      {
+        "name": "locked_coins",
+        "type": "LockedCoins[]",
+        "packageName": "/Switcheo.carbon.coin"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllWrapperMappingsRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllWrapperMappingsResponse": [
+      {
+        "name": "wrapper_mappings",
+        "type": "WrapperMappingsEntry[]",
+        "packageName": "/Switcheo.carbon.coin.QueryAllWrapperMappingsResponse"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryGetBalancesRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "QueryGetBalancesResponse": [
+      {
+        "name": "token_balances",
+        "type": "TokenBalance[]",
+        "packageName": "/Switcheo.carbon.coin"
+      }
+    ],
+    "QueryTotalBalancesRequest": [
+      {
+        "name": "end_block_height",
+        "type": "string"
+      }
+    ],
+    "QueryTotalBalancesResponse": [
+      {
+        "name": "balances",
+        "type": "TokenBalance[]",
+        "packageName": "/Switcheo.carbon.coin"
+      }
+    ],
+    "QueryGetBridgeRequest": [
+      {
+        "name": "bridge_id",
+        "type": "uint64"
+      },
+      {
+        "name": "chain_id",
+        "type": "uint64"
+      }
+    ],
+    "QueryGetBridgeResponse": [
+      {
+        "name": "bridge",
+        "type": "Bridge",
+        "packageName": "/Switcheo.carbon.coin"
+      }
+    ],
+    "QueryAllBridgeRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllBridgeResponse": [
+      {
+        "name": "bridges",
+        "type": "Bridge[]",
+        "packageName": "/Switcheo.carbon.coin"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryGetTokenGroupRequest": [
+      {
+        "name": "group_id",
+        "type": "string"
+      }
+    ],
+    "QueryGetTokenGroupResponse": [
+      {
+        "name": "token_group",
+        "type": "TokenGroupDetails",
+        "packageName": "/Switcheo.carbon.coin"
+      }
+    ],
+    "QueryAllTokenGroupsRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllTokenGroupsResponse": [
+      {
+        "name": "token_groups",
+        "type": "TokenGroupDetails[]",
+        "packageName": "/Switcheo.carbon.coin"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryTokenGroupMappingsRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryTokenGroupMappingsResponse": [
+      {
+        "name": "token_group_mappings",
+        "type": "TokenGroupMappingsEntry[]",
+        "packageName": "/Switcheo.carbon.coin.QueryTokenGroupMappingsResponse"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ]
+  },
+  "/cosmos.app.v1alpha1": {
+    "ModuleDescriptor": [
+      {
+        "name": "go_import",
+        "type": "string"
+      },
+      {
+        "name": "use_package",
+        "type": "PackageReference[]",
+        "packageName": "/cosmos.app.v1alpha1"
+      },
+      {
+        "name": "can_migrate_from",
+        "type": "MigrateFromInfo[]",
+        "packageName": "/cosmos.app.v1alpha1"
+      }
+    ],
+    "PackageReference": [
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "revision",
+        "type": "uint32"
+      }
+    ],
+    "MigrateFromInfo": [
+      {
+        "name": "module",
+        "type": "string"
+      }
+    ],
+    "Config": [
+      {
+        "name": "modules",
+        "type": "ModuleConfig[]",
+        "packageName": "/cosmos.app.v1alpha1"
+      }
+    ],
+    "ModuleConfig": [
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "config",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "QueryConfigRequest": [],
+    "QueryConfigResponse": [
+      {
+        "name": "config",
+        "type": "Config",
+        "packageName": "/cosmos.app.v1alpha1"
+      }
+    ]
+  },
+  "/cosmos.app.module.v1alpha1": {
+    "Module": []
+  },
+  "/cosmos.auth.v1beta1": {
+    "BaseAccount": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "pub_key",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "account_number",
+        "type": "uint64"
+      },
+      {
+        "name": "sequence",
+        "type": "uint64"
+      }
+    ],
+    "ModuleAccount": [
+      {
+        "name": "base_account",
+        "type": "BaseAccount",
+        "packageName": "/cosmos.auth.v1beta1"
+      },
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "permissions",
+        "type": "string[]"
+      }
+    ],
+    "Params": [
+      {
+        "name": "max_memo_characters",
+        "type": "uint64"
+      },
+      {
+        "name": "tx_sig_limit",
+        "type": "uint64"
+      },
+      {
+        "name": "tx_size_cost_per_byte",
+        "type": "uint64"
+      },
+      {
+        "name": "sig_verify_cost_ed25519",
+        "type": "uint64"
+      },
+      {
+        "name": "sig_verify_cost_secp256k1",
+        "type": "uint64"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/cosmos.auth.v1beta1"
+      },
+      {
+        "name": "accounts",
+        "type": "Any[]",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "QueryAccountsRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAccountsResponse": [
+      {
+        "name": "accounts",
+        "type": "Any[]",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAccountRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "QueryAccountResponse": [
+      {
+        "name": "account",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "QueryParamsRequest": [],
+    "QueryParamsResponse": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/cosmos.auth.v1beta1"
+      }
+    ],
+    "QueryModuleAccountsRequest": [],
+    "QueryModuleAccountsResponse": [
+      {
+        "name": "accounts",
+        "type": "Any[]",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "QueryModuleAccountByNameRequest": [
+      {
+        "name": "name",
+        "type": "string"
+      }
+    ],
+    "QueryModuleAccountByNameResponse": [
+      {
+        "name": "account",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "Bech32PrefixRequest": [],
+    "Bech32PrefixResponse": [
+      {
+        "name": "bech32_prefix",
+        "type": "string"
+      }
+    ],
+    "AddressBytesToStringRequest": [
+      {
+        "name": "address_bytes",
+        "type": "uint8[]"
+      }
+    ],
+    "AddressBytesToStringResponse": [
+      {
+        "name": "address_string",
+        "type": "string"
+      }
+    ],
+    "AddressStringToBytesRequest": [
+      {
+        "name": "address_string",
+        "type": "string"
+      }
+    ],
+    "AddressStringToBytesResponse": [
+      {
+        "name": "address_bytes",
+        "type": "uint8[]"
+      }
+    ],
+    "QueryAccountAddressByIDRequest": [
+      {
+        "name": "id",
+        "type": "int64"
+      }
+    ],
+    "QueryAccountAddressByIDResponse": [
+      {
+        "name": "account_address",
+        "type": "string"
+      }
+    ]
+  },
+  "/cosmos.authz.v1beta1": {
+    "GenericAuthorization": [
+      {
+        "name": "msg",
+        "type": "string"
+      }
+    ],
+    "Grant": [
+      {
+        "name": "authorization",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "expiration",
+        "type": "string"
+      }
+    ],
+    "GrantAuthorization": [
+      {
+        "name": "granter",
+        "type": "string"
+      },
+      {
+        "name": "grantee",
+        "type": "string"
+      },
+      {
+        "name": "authorization",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "expiration",
+        "type": "string"
+      }
+    ],
+    "GrantQueueItem": [
+      {
+        "name": "msg_type_urls",
+        "type": "string[]"
+      }
+    ],
+    "EventGrant": [
+      {
+        "name": "msg_type_url",
+        "type": "string"
+      },
+      {
+        "name": "granter",
+        "type": "string"
+      },
+      {
+        "name": "grantee",
+        "type": "string"
+      }
+    ],
+    "EventRevoke": [
+      {
+        "name": "msg_type_url",
+        "type": "string"
+      },
+      {
+        "name": "granter",
+        "type": "string"
+      },
+      {
+        "name": "grantee",
+        "type": "string"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "authorization",
+        "type": "GrantAuthorization[]",
+        "packageName": "/cosmos.authz.v1beta1"
+      }
+    ],
+    "QueryGrantsRequest": [
+      {
+        "name": "granter",
+        "type": "string"
+      },
+      {
+        "name": "grantee",
+        "type": "string"
+      },
+      {
+        "name": "msg_type_url",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryGrantsResponse": [
+      {
+        "name": "grants",
+        "type": "Grant[]",
+        "packageName": "/cosmos.authz.v1beta1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryGranterGrantsRequest": [
+      {
+        "name": "granter",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryGranterGrantsResponse": [
+      {
+        "name": "grants",
+        "type": "GrantAuthorization[]",
+        "packageName": "/cosmos.authz.v1beta1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryGranteeGrantsRequest": [
+      {
+        "name": "grantee",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryGranteeGrantsResponse": [
+      {
+        "name": "grants",
+        "type": "GrantAuthorization[]",
+        "packageName": "/cosmos.authz.v1beta1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "MsgGrant": [
+      {
+        "name": "granter",
+        "type": "string"
+      },
+      {
+        "name": "grantee",
+        "type": "string"
+      },
+      {
+        "name": "grant",
+        "type": "Grant",
+        "packageName": "/cosmos.authz.v1beta1"
+      }
+    ],
+    "MsgExecResponse": [
+      {
+        "name": "results",
+        "type": "uint8[][]"
+      }
+    ],
+    "MsgExec": [
+      {
+        "name": "grantee",
+        "type": "string"
+      },
+      {
+        "name": "msgs",
+        "type": "Any[]",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "MsgGrantResponse": [],
+    "MsgRevoke": [
+      {
+        "name": "granter",
+        "type": "string"
+      },
+      {
+        "name": "grantee",
+        "type": "string"
+      },
+      {
+        "name": "msg_type_url",
+        "type": "string"
+      }
+    ],
+    "MsgRevokeResponse": []
+  },
+  "/cosmos.bank.v1beta1": {
+    "SendAuthorization": [
+      {
+        "name": "spend_limit",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "Params": [
+      {
+        "name": "send_enabled",
+        "type": "SendEnabled[]",
+        "packageName": "/cosmos.bank.v1beta1"
+      },
+      {
+        "name": "default_send_enabled",
+        "type": "bool"
+      }
+    ],
+    "SendEnabled": [
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "enabled",
+        "type": "bool"
+      }
+    ],
+    "Input": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "coins",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "Output": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "coins",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "Supply": [
+      {
+        "name": "total",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "DenomUnit": [
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "exponent",
+        "type": "uint32"
+      },
+      {
+        "name": "aliases",
+        "type": "string[]"
+      }
+    ],
+    "Metadata": [
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "denom_units",
+        "type": "DenomUnit[]",
+        "packageName": "/cosmos.bank.v1beta1"
+      },
+      {
+        "name": "base",
+        "type": "string"
+      },
+      {
+        "name": "display",
+        "type": "string"
+      },
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "symbol",
+        "type": "string"
+      },
+      {
+        "name": "uri",
+        "type": "string"
+      },
+      {
+        "name": "uri_hash",
+        "type": "string"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/cosmos.bank.v1beta1"
+      },
+      {
+        "name": "balances",
+        "type": "Balance[]",
+        "packageName": "/cosmos.bank.v1beta1"
+      },
+      {
+        "name": "supply",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "denom_metadata",
+        "type": "Metadata[]",
+        "packageName": "/cosmos.bank.v1beta1"
+      }
+    ],
+    "Balance": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "coins",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "QueryBalanceRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      }
+    ],
+    "QueryBalanceResponse": [
+      {
+        "name": "balance",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "QueryAllBalancesRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllBalancesResponse": [
+      {
+        "name": "balances",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QuerySpendableBalancesRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QuerySpendableBalancesResponse": [
+      {
+        "name": "balances",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryTotalSupplyRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryTotalSupplyResponse": [
+      {
+        "name": "supply",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QuerySupplyOfRequest": [
+      {
+        "name": "denom",
+        "type": "string"
+      }
+    ],
+    "QuerySupplyOfResponse": [
+      {
+        "name": "amount",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "QueryParamsRequest": [],
+    "QueryParamsResponse": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/cosmos.bank.v1beta1"
+      }
+    ],
+    "QueryDenomsMetadataRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryDenomsMetadataResponse": [
+      {
+        "name": "metadatas",
+        "type": "Metadata[]",
+        "packageName": "/cosmos.bank.v1beta1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryDenomMetadataRequest": [
+      {
+        "name": "denom",
+        "type": "string"
+      }
+    ],
+    "QueryDenomMetadataResponse": [
+      {
+        "name": "metadata",
+        "type": "Metadata",
+        "packageName": "/cosmos.bank.v1beta1"
+      }
+    ],
+    "QueryDenomOwnersRequest": [
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "DenomOwner": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "balance",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "QueryDenomOwnersResponse": [
+      {
+        "name": "denom_owners",
+        "type": "DenomOwner[]",
+        "packageName": "/cosmos.bank.v1beta1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "MsgSend": [
+      {
+        "name": "from_address",
+        "type": "string"
+      },
+      {
+        "name": "to_address",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "MsgSendResponse": [],
+    "MsgMultiSend": [
+      {
+        "name": "inputs",
+        "type": "Input[]",
+        "packageName": "/cosmos.bank.v1beta1"
+      },
+      {
+        "name": "outputs",
+        "type": "Output[]",
+        "packageName": "/cosmos.bank.v1beta1"
+      }
+    ],
+    "MsgMultiSendResponse": []
+  },
+  "/tendermint.crypto": {
+    "Proof": [
+      {
+        "name": "total",
+        "type": "int64"
+      },
+      {
+        "name": "index",
+        "type": "int64"
+      },
+      {
+        "name": "leaf_hash",
+        "type": "uint8[]"
+      },
+      {
+        "name": "aunts",
+        "type": "uint8[][]"
+      }
+    ],
+    "ValueOp": [
+      {
+        "name": "key",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof",
+        "type": "Proof",
+        "packageName": "/tendermint.crypto"
+      }
+    ],
+    "DominoOp": [
+      {
+        "name": "key",
+        "type": "string"
+      },
+      {
+        "name": "input",
+        "type": "string"
+      },
+      {
+        "name": "output",
+        "type": "string"
+      }
+    ],
+    "ProofOp": [
+      {
+        "name": "type",
+        "type": "string"
+      },
+      {
+        "name": "key",
+        "type": "uint8[]"
+      },
+      {
+        "name": "data",
+        "type": "uint8[]"
+      }
+    ],
+    "ProofOps": [
+      {
+        "name": "ops",
+        "type": "ProofOp[]",
+        "packageName": "/tendermint.crypto"
+      }
+    ],
+    "PublicKey": [
+      {
+        "name": "ed25519",
+        "type": "uint8[]"
+      },
+      {
+        "name": "secp256k1",
+        "type": "uint8[]"
+      }
+    ]
+  },
+  "/tendermint.version": {
+    "App": [
+      {
+        "name": "protocol",
+        "type": "uint64"
+      },
+      {
+        "name": "software",
+        "type": "string"
+      }
+    ],
+    "Consensus": [
+      {
+        "name": "block",
+        "type": "uint64"
+      },
+      {
+        "name": "app",
+        "type": "uint64"
+      }
+    ]
+  },
+  "/tendermint.types": {
+    "ValidatorSet": [
+      {
+        "name": "validators",
+        "type": "Validator[]",
+        "packageName": "/tendermint.types"
+      },
+      {
+        "name": "proposer",
+        "type": "Validator",
+        "packageName": "/tendermint.types"
+      },
+      {
+        "name": "total_voting_power",
+        "type": "int64"
+      }
+    ],
+    "Validator": [
+      {
+        "name": "address",
+        "type": "uint8[]"
+      },
+      {
+        "name": "pub_key",
+        "type": "PublicKey",
+        "packageName": "/tendermint.crypto"
+      },
+      {
+        "name": "voting_power",
+        "type": "int64"
+      },
+      {
+        "name": "proposer_priority",
+        "type": "int64"
+      }
+    ],
+    "SimpleValidator": [
+      {
+        "name": "pub_key",
+        "type": "PublicKey",
+        "packageName": "/tendermint.crypto"
+      },
+      {
+        "name": "voting_power",
+        "type": "int64"
+      }
+    ],
+    "PartSetHeader": [
+      {
+        "name": "total",
+        "type": "uint32"
+      },
+      {
+        "name": "hash",
+        "type": "uint8[]"
+      }
+    ],
+    "Part": [
+      {
+        "name": "index",
+        "type": "uint32"
+      },
+      {
+        "name": "bytes",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof",
+        "type": "Proof",
+        "packageName": "/tendermint.crypto"
+      }
+    ],
+    "BlockID": [
+      {
+        "name": "hash",
+        "type": "uint8[]"
+      },
+      {
+        "name": "part_set_header",
+        "type": "PartSetHeader",
+        "packageName": "/tendermint.types"
+      }
+    ],
+    "Header": [
+      {
+        "name": "version",
+        "type": "Consensus",
+        "packageName": "/tendermint.version"
+      },
+      {
+        "name": "chain_id",
+        "type": "string"
+      },
+      {
+        "name": "height",
+        "type": "int64"
+      },
+      {
+        "name": "time",
+        "type": "string"
+      },
+      {
+        "name": "last_block_id",
+        "type": "BlockID",
+        "packageName": "/tendermint.types"
+      },
+      {
+        "name": "last_commit_hash",
+        "type": "uint8[]"
+      },
+      {
+        "name": "data_hash",
+        "type": "uint8[]"
+      },
+      {
+        "name": "validators_hash",
+        "type": "uint8[]"
+      },
+      {
+        "name": "next_validators_hash",
+        "type": "uint8[]"
+      },
+      {
+        "name": "consensus_hash",
+        "type": "uint8[]"
+      },
+      {
+        "name": "app_hash",
+        "type": "uint8[]"
+      },
+      {
+        "name": "last_results_hash",
+        "type": "uint8[]"
+      },
+      {
+        "name": "evidence_hash",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proposer_address",
+        "type": "uint8[]"
+      }
+    ],
+    "Data": [
+      {
+        "name": "txs",
+        "type": "uint8[][]"
+      }
+    ],
+    "Vote": [
+      {
+        "name": "type",
+        "type": "",
+        "packageName": "/tendermint.types"
+      },
+      {
+        "name": "height",
+        "type": "int64"
+      },
+      {
+        "name": "round",
+        "type": "int32"
+      },
+      {
+        "name": "block_id",
+        "type": "BlockID",
+        "packageName": "/tendermint.types"
+      },
+      {
+        "name": "timestamp",
+        "type": "string"
+      },
+      {
+        "name": "validator_address",
+        "type": "uint8[]"
+      },
+      {
+        "name": "validator_index",
+        "type": "int32"
+      },
+      {
+        "name": "signature",
+        "type": "uint8[]"
+      }
+    ],
+    "Commit": [
+      {
+        "name": "height",
+        "type": "int64"
+      },
+      {
+        "name": "round",
+        "type": "int32"
+      },
+      {
+        "name": "block_id",
+        "type": "BlockID",
+        "packageName": "/tendermint.types"
+      },
+      {
+        "name": "signatures",
+        "type": "CommitSig[]",
+        "packageName": "/tendermint.types"
+      }
+    ],
+    "CommitSig": [
+      {
+        "name": "block_id_flag",
+        "type": "",
+        "packageName": "/tendermint.types"
+      },
+      {
+        "name": "validator_address",
+        "type": "uint8[]"
+      },
+      {
+        "name": "timestamp",
+        "type": "string"
+      },
+      {
+        "name": "signature",
+        "type": "uint8[]"
+      }
+    ],
+    "Proposal": [
+      {
+        "name": "type",
+        "type": "",
+        "packageName": "/tendermint.types"
+      },
+      {
+        "name": "height",
+        "type": "int64"
+      },
+      {
+        "name": "round",
+        "type": "int32"
+      },
+      {
+        "name": "pol_round",
+        "type": "int32"
+      },
+      {
+        "name": "block_id",
+        "type": "BlockID",
+        "packageName": "/tendermint.types"
+      },
+      {
+        "name": "timestamp",
+        "type": "string"
+      },
+      {
+        "name": "signature",
+        "type": "uint8[]"
+      }
+    ],
+    "SignedHeader": [
+      {
+        "name": "header",
+        "type": "Header",
+        "packageName": "/tendermint.types"
+      },
+      {
+        "name": "commit",
+        "type": "Commit",
+        "packageName": "/tendermint.types"
+      }
+    ],
+    "LightBlock": [
+      {
+        "name": "signed_header",
+        "type": "SignedHeader",
+        "packageName": "/tendermint.types"
+      },
+      {
+        "name": "validator_set",
+        "type": "ValidatorSet",
+        "packageName": "/tendermint.types"
+      }
+    ],
+    "BlockMeta": [
+      {
+        "name": "block_id",
+        "type": "BlockID",
+        "packageName": "/tendermint.types"
+      },
+      {
+        "name": "block_size",
+        "type": "int64"
+      },
+      {
+        "name": "header",
+        "type": "Header",
+        "packageName": "/tendermint.types"
+      },
+      {
+        "name": "num_txs",
+        "type": "int64"
+      }
+    ],
+    "TxProof": [
+      {
+        "name": "root_hash",
+        "type": "uint8[]"
+      },
+      {
+        "name": "data",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof",
+        "type": "Proof",
+        "packageName": "/tendermint.crypto"
+      }
+    ],
+    "ConsensusParams": [
+      {
+        "name": "block",
+        "type": "BlockParams",
+        "packageName": "/tendermint.types"
+      },
+      {
+        "name": "evidence",
+        "type": "EvidenceParams",
+        "packageName": "/tendermint.types"
+      },
+      {
+        "name": "validator",
+        "type": "ValidatorParams",
+        "packageName": "/tendermint.types"
+      },
+      {
+        "name": "version",
+        "type": "VersionParams",
+        "packageName": "/tendermint.types"
+      }
+    ],
+    "BlockParams": [
+      {
+        "name": "max_bytes",
+        "type": "int64"
+      },
+      {
+        "name": "max_gas",
+        "type": "int64"
+      },
+      {
+        "name": "time_iota_ms",
+        "type": "int64"
+      }
+    ],
+    "EvidenceParams": [
+      {
+        "name": "max_age_num_blocks",
+        "type": "int64"
+      },
+      {
+        "name": "max_age_duration",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "max_bytes",
+        "type": "int64"
+      }
+    ],
+    "ValidatorParams": [
+      {
+        "name": "pub_key_types",
+        "type": "string[]"
+      }
+    ],
+    "VersionParams": [
+      {
+        "name": "app_version",
+        "type": "uint64"
+      }
+    ],
+    "HashedParams": [
+      {
+        "name": "block_max_bytes",
+        "type": "int64"
+      },
+      {
+        "name": "block_max_gas",
+        "type": "int64"
+      }
+    ],
+    "Evidence": [
+      {
+        "name": "duplicate_vote_evidence",
+        "type": "DuplicateVoteEvidence",
+        "packageName": "/tendermint.types"
+      },
+      {
+        "name": "light_client_attack_evidence",
+        "type": "LightClientAttackEvidence",
+        "packageName": "/tendermint.types"
+      }
+    ],
+    "DuplicateVoteEvidence": [
+      {
+        "name": "vote_a",
+        "type": "Vote",
+        "packageName": "/tendermint.types"
+      },
+      {
+        "name": "vote_b",
+        "type": "Vote",
+        "packageName": "/tendermint.types"
+      },
+      {
+        "name": "total_voting_power",
+        "type": "int64"
+      },
+      {
+        "name": "validator_power",
+        "type": "int64"
+      },
+      {
+        "name": "timestamp",
+        "type": "string"
+      }
+    ],
+    "LightClientAttackEvidence": [
+      {
+        "name": "conflicting_block",
+        "type": "LightBlock",
+        "packageName": "/tendermint.types"
+      },
+      {
+        "name": "common_height",
+        "type": "int64"
+      },
+      {
+        "name": "byzantine_validators",
+        "type": "Validator[]",
+        "packageName": "/tendermint.types"
+      },
+      {
+        "name": "total_voting_power",
+        "type": "int64"
+      },
+      {
+        "name": "timestamp",
+        "type": "string"
+      }
+    ],
+    "EvidenceList": [
+      {
+        "name": "evidence",
+        "type": "Evidence[]",
+        "packageName": "/tendermint.types"
+      }
+    ],
+    "Block": [
+      {
+        "name": "header",
+        "type": "Header",
+        "packageName": "/tendermint.types"
+      },
+      {
+        "name": "data",
+        "type": "Data",
+        "packageName": "/tendermint.types"
+      },
+      {
+        "name": "evidence",
+        "type": "EvidenceList",
+        "packageName": "/tendermint.types"
+      },
+      {
+        "name": "last_commit",
+        "type": "Commit",
+        "packageName": "/tendermint.types"
+      }
+    ]
+  },
+  "/tendermint.abci": {
+    "Request": [
+      {
+        "name": "echo",
+        "type": "RequestEcho",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "flush",
+        "type": "RequestFlush",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "info",
+        "type": "RequestInfo",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "set_option",
+        "type": "RequestSetOption",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "init_chain",
+        "type": "RequestInitChain",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "query",
+        "type": "RequestQuery",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "begin_block",
+        "type": "RequestBeginBlock",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "check_tx",
+        "type": "RequestCheckTx",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "deliver_tx",
+        "type": "RequestDeliverTx",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "end_block",
+        "type": "RequestEndBlock",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "commit",
+        "type": "RequestCommit",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "list_snapshots",
+        "type": "RequestListSnapshots",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "offer_snapshot",
+        "type": "RequestOfferSnapshot",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "load_snapshot_chunk",
+        "type": "RequestLoadSnapshotChunk",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "apply_snapshot_chunk",
+        "type": "RequestApplySnapshotChunk",
+        "packageName": "/tendermint.abci"
+      }
+    ],
+    "RequestEcho": [
+      {
+        "name": "message",
+        "type": "string"
+      }
+    ],
+    "RequestFlush": [],
+    "RequestInfo": [
+      {
+        "name": "version",
+        "type": "string"
+      },
+      {
+        "name": "block_version",
+        "type": "uint64"
+      },
+      {
+        "name": "p2p_version",
+        "type": "uint64"
+      }
+    ],
+    "RequestSetOption": [
+      {
+        "name": "key",
+        "type": "string"
+      },
+      {
+        "name": "value",
+        "type": "string"
+      }
+    ],
+    "RequestInitChain": [
+      {
+        "name": "time",
+        "type": "string"
+      },
+      {
+        "name": "chain_id",
+        "type": "string"
+      },
+      {
+        "name": "consensus_params",
+        "type": "ConsensusParams",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "validators",
+        "type": "ValidatorUpdate[]",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "app_state_bytes",
+        "type": "uint8[]"
+      },
+      {
+        "name": "initial_height",
+        "type": "int64"
+      }
+    ],
+    "RequestQuery": [
+      {
+        "name": "data",
+        "type": "uint8[]"
+      },
+      {
+        "name": "path",
+        "type": "string"
+      },
+      {
+        "name": "height",
+        "type": "int64"
+      },
+      {
+        "name": "prove",
+        "type": "bool"
+      }
+    ],
+    "RequestBeginBlock": [
+      {
+        "name": "hash",
+        "type": "uint8[]"
+      },
+      {
+        "name": "header",
+        "type": "Header",
+        "packageName": "/tendermint.types"
+      },
+      {
+        "name": "last_commit_info",
+        "type": "LastCommitInfo",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "byzantine_validators",
+        "type": "Evidence[]",
+        "packageName": "/tendermint.abci"
+      }
+    ],
+    "RequestCheckTx": [
+      {
+        "name": "tx",
+        "type": "uint8[]"
+      },
+      {
+        "name": "type",
+        "type": "",
+        "packageName": "/tendermint.abci"
+      }
+    ],
+    "RequestDeliverTx": [
+      {
+        "name": "tx",
+        "type": "uint8[]"
+      }
+    ],
+    "RequestEndBlock": [
+      {
+        "name": "height",
+        "type": "int64"
+      }
+    ],
+    "RequestCommit": [],
+    "RequestListSnapshots": [],
+    "RequestOfferSnapshot": [
+      {
+        "name": "snapshot",
+        "type": "Snapshot",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "app_hash",
+        "type": "uint8[]"
+      }
+    ],
+    "RequestLoadSnapshotChunk": [
+      {
+        "name": "height",
+        "type": "uint64"
+      },
+      {
+        "name": "format",
+        "type": "uint32"
+      },
+      {
+        "name": "chunk",
+        "type": "uint32"
+      }
+    ],
+    "RequestApplySnapshotChunk": [
+      {
+        "name": "index",
+        "type": "uint32"
+      },
+      {
+        "name": "chunk",
+        "type": "uint8[]"
+      },
+      {
+        "name": "sender",
+        "type": "string"
+      }
+    ],
+    "Response": [
+      {
+        "name": "exception",
+        "type": "ResponseException",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "echo",
+        "type": "ResponseEcho",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "flush",
+        "type": "ResponseFlush",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "info",
+        "type": "ResponseInfo",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "set_option",
+        "type": "ResponseSetOption",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "init_chain",
+        "type": "ResponseInitChain",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "query",
+        "type": "ResponseQuery",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "begin_block",
+        "type": "ResponseBeginBlock",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "check_tx",
+        "type": "ResponseCheckTx",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "deliver_tx",
+        "type": "ResponseDeliverTx",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "end_block",
+        "type": "ResponseEndBlock",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "commit",
+        "type": "ResponseCommit",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "list_snapshots",
+        "type": "ResponseListSnapshots",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "offer_snapshot",
+        "type": "ResponseOfferSnapshot",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "load_snapshot_chunk",
+        "type": "ResponseLoadSnapshotChunk",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "apply_snapshot_chunk",
+        "type": "ResponseApplySnapshotChunk",
+        "packageName": "/tendermint.abci"
+      }
+    ],
+    "ResponseException": [
+      {
+        "name": "error",
+        "type": "string"
+      }
+    ],
+    "ResponseEcho": [
+      {
+        "name": "message",
+        "type": "string"
+      }
+    ],
+    "ResponseFlush": [],
+    "ResponseInfo": [
+      {
+        "name": "data",
+        "type": "string"
+      },
+      {
+        "name": "version",
+        "type": "string"
+      },
+      {
+        "name": "app_version",
+        "type": "uint64"
+      },
+      {
+        "name": "last_block_height",
+        "type": "int64"
+      },
+      {
+        "name": "last_block_app_hash",
+        "type": "uint8[]"
+      }
+    ],
+    "ResponseSetOption": [
+      {
+        "name": "code",
+        "type": "uint32"
+      },
+      {
+        "name": "log",
+        "type": "string"
+      },
+      {
+        "name": "info",
+        "type": "string"
+      }
+    ],
+    "ResponseInitChain": [
+      {
+        "name": "consensus_params",
+        "type": "ConsensusParams",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "validators",
+        "type": "ValidatorUpdate[]",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "app_hash",
+        "type": "uint8[]"
+      }
+    ],
+    "ResponseQuery": [
+      {
+        "name": "code",
+        "type": "uint32"
+      },
+      {
+        "name": "log",
+        "type": "string"
+      },
+      {
+        "name": "info",
+        "type": "string"
+      },
+      {
+        "name": "index",
+        "type": "int64"
+      },
+      {
+        "name": "key",
+        "type": "uint8[]"
+      },
+      {
+        "name": "value",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_ops",
+        "type": "ProofOps",
+        "packageName": "/tendermint.crypto"
+      },
+      {
+        "name": "height",
+        "type": "int64"
+      },
+      {
+        "name": "codespace",
+        "type": "string"
+      }
+    ],
+    "ResponseBeginBlock": [
+      {
+        "name": "events",
+        "type": "Event[]",
+        "packageName": "/tendermint.abci"
+      }
+    ],
+    "ResponseCheckTx": [
+      {
+        "name": "code",
+        "type": "uint32"
+      },
+      {
+        "name": "data",
+        "type": "uint8[]"
+      },
+      {
+        "name": "log",
+        "type": "string"
+      },
+      {
+        "name": "info",
+        "type": "string"
+      },
+      {
+        "name": "gas_wanted",
+        "type": "int64"
+      },
+      {
+        "name": "gas_used",
+        "type": "int64"
+      },
+      {
+        "name": "events",
+        "type": "Event[]",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "codespace",
+        "type": "string"
+      },
+      {
+        "name": "sender",
+        "type": "string"
+      },
+      {
+        "name": "priority",
+        "type": "int64"
+      },
+      {
+        "name": "mempool_error",
+        "type": "string"
+      }
+    ],
+    "ResponseDeliverTx": [
+      {
+        "name": "code",
+        "type": "uint32"
+      },
+      {
+        "name": "data",
+        "type": "uint8[]"
+      },
+      {
+        "name": "log",
+        "type": "string"
+      },
+      {
+        "name": "info",
+        "type": "string"
+      },
+      {
+        "name": "gas_wanted",
+        "type": "int64"
+      },
+      {
+        "name": "gas_used",
+        "type": "int64"
+      },
+      {
+        "name": "events",
+        "type": "Event[]",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "codespace",
+        "type": "string"
+      }
+    ],
+    "ResponseEndBlock": [
+      {
+        "name": "validator_updates",
+        "type": "ValidatorUpdate[]",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "consensus_param_updates",
+        "type": "ConsensusParams",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "events",
+        "type": "Event[]",
+        "packageName": "/tendermint.abci"
+      }
+    ],
+    "ResponseCommit": [
+      {
+        "name": "data",
+        "type": "uint8[]"
+      },
+      {
+        "name": "retain_height",
+        "type": "int64"
+      }
+    ],
+    "ResponseListSnapshots": [
+      {
+        "name": "snapshots",
+        "type": "Snapshot[]",
+        "packageName": "/tendermint.abci"
+      }
+    ],
+    "ResponseOfferSnapshot": [
+      {
+        "name": "result",
+        "type": "",
+        "packageName": "/tendermint.abci.ResponseOfferSnapshot"
+      }
+    ],
+    "ResponseLoadSnapshotChunk": [
+      {
+        "name": "chunk",
+        "type": "uint8[]"
+      }
+    ],
+    "ResponseApplySnapshotChunk": [
+      {
+        "name": "result",
+        "type": "",
+        "packageName": "/tendermint.abci.ResponseApplySnapshotChunk"
+      },
+      {
+        "name": "refetch_chunks",
+        "type": "uint32[]"
+      },
+      {
+        "name": "reject_senders",
+        "type": "string[]"
+      }
+    ],
+    "ConsensusParams": [
+      {
+        "name": "block",
+        "type": "BlockParams",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "evidence",
+        "type": "EvidenceParams",
+        "packageName": "/tendermint.types"
+      },
+      {
+        "name": "validator",
+        "type": "ValidatorParams",
+        "packageName": "/tendermint.types"
+      },
+      {
+        "name": "version",
+        "type": "VersionParams",
+        "packageName": "/tendermint.types"
+      }
+    ],
+    "BlockParams": [
+      {
+        "name": "max_bytes",
+        "type": "int64"
+      },
+      {
+        "name": "max_gas",
+        "type": "int64"
+      }
+    ],
+    "LastCommitInfo": [
+      {
+        "name": "round",
+        "type": "int32"
+      },
+      {
+        "name": "votes",
+        "type": "VoteInfo[]",
+        "packageName": "/tendermint.abci"
+      }
+    ],
+    "Event": [
+      {
+        "name": "type",
+        "type": "string"
+      },
+      {
+        "name": "attributes",
+        "type": "EventAttribute[]",
+        "packageName": "/tendermint.abci"
+      }
+    ],
+    "EventAttribute": [
+      {
+        "name": "key",
+        "type": "uint8[]"
+      },
+      {
+        "name": "value",
+        "type": "uint8[]"
+      },
+      {
+        "name": "index",
+        "type": "bool"
+      }
+    ],
+    "TxResult": [
+      {
+        "name": "height",
+        "type": "int64"
+      },
+      {
+        "name": "index",
+        "type": "uint32"
+      },
+      {
+        "name": "tx",
+        "type": "uint8[]"
+      },
+      {
+        "name": "result",
+        "type": "ResponseDeliverTx",
+        "packageName": "/tendermint.abci"
+      }
+    ],
+    "Validator": [
+      {
+        "name": "address",
+        "type": "uint8[]"
+      },
+      {
+        "name": "power",
+        "type": "int64"
+      }
+    ],
+    "ValidatorUpdate": [
+      {
+        "name": "pub_key",
+        "type": "PublicKey",
+        "packageName": "/tendermint.crypto"
+      },
+      {
+        "name": "power",
+        "type": "int64"
+      }
+    ],
+    "VoteInfo": [
+      {
+        "name": "validator",
+        "type": "Validator",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "signed_last_block",
+        "type": "bool"
+      }
+    ],
+    "Evidence": [
+      {
+        "name": "type",
+        "type": "",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "validator",
+        "type": "Validator",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "height",
+        "type": "int64"
+      },
+      {
+        "name": "time",
+        "type": "string"
+      },
+      {
+        "name": "total_voting_power",
+        "type": "int64"
+      }
+    ],
+    "Snapshot": [
+      {
+        "name": "height",
+        "type": "uint64"
+      },
+      {
+        "name": "format",
+        "type": "uint32"
+      },
+      {
+        "name": "chunks",
+        "type": "uint32"
+      },
+      {
+        "name": "hash",
+        "type": "uint8[]"
+      },
+      {
+        "name": "metadata",
+        "type": "uint8[]"
+      }
+    ]
+  },
+  "/cosmos.base.abci.v1beta1": {
+    "TxResponse": [
+      {
+        "name": "height",
+        "type": "int64"
+      },
+      {
+        "name": "txhash",
+        "type": "string"
+      },
+      {
+        "name": "codespace",
+        "type": "string"
+      },
+      {
+        "name": "code",
+        "type": "uint32"
+      },
+      {
+        "name": "data",
+        "type": "string"
+      },
+      {
+        "name": "raw_log",
+        "type": "string"
+      },
+      {
+        "name": "logs",
+        "type": "ABCIMessageLog[]",
+        "packageName": "/cosmos.base.abci.v1beta1"
+      },
+      {
+        "name": "info",
+        "type": "string"
+      },
+      {
+        "name": "gas_wanted",
+        "type": "int64"
+      },
+      {
+        "name": "gas_used",
+        "type": "int64"
+      },
+      {
+        "name": "tx",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "timestamp",
+        "type": "string"
+      },
+      {
+        "name": "events",
+        "type": "Event[]",
+        "packageName": "/tendermint.abci"
+      }
+    ],
+    "ABCIMessageLog": [
+      {
+        "name": "msg_index",
+        "type": "uint32"
+      },
+      {
+        "name": "log",
+        "type": "string"
+      },
+      {
+        "name": "events",
+        "type": "StringEvent[]",
+        "packageName": "/cosmos.base.abci.v1beta1"
+      }
+    ],
+    "StringEvent": [
+      {
+        "name": "type",
+        "type": "string"
+      },
+      {
+        "name": "attributes",
+        "type": "Attribute[]",
+        "packageName": "/cosmos.base.abci.v1beta1"
+      }
+    ],
+    "Attribute": [
+      {
+        "name": "key",
+        "type": "string"
+      },
+      {
+        "name": "value",
+        "type": "string"
+      }
+    ],
+    "GasInfo": [
+      {
+        "name": "gas_wanted",
+        "type": "uint64"
+      },
+      {
+        "name": "gas_used",
+        "type": "uint64"
+      }
+    ],
+    "Result": [
+      {
+        "name": "data",
+        "type": "uint8[]"
+      },
+      {
+        "name": "log",
+        "type": "string"
+      },
+      {
+        "name": "events",
+        "type": "Event[]",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "msg_responses",
+        "type": "Any[]",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "SimulationResponse": [
+      {
+        "name": "gas_info",
+        "type": "GasInfo",
+        "packageName": "/cosmos.base.abci.v1beta1"
+      },
+      {
+        "name": "result",
+        "type": "Result",
+        "packageName": "/cosmos.base.abci.v1beta1"
+      }
+    ],
+    "MsgData": [
+      {
+        "name": "msg_type",
+        "type": "string"
+      },
+      {
+        "name": "data",
+        "type": "uint8[]"
+      }
+    ],
+    "TxMsgData": [
+      {
+        "name": "data",
+        "type": "MsgData[]",
+        "packageName": "/cosmos.base.abci.v1beta1"
+      },
+      {
+        "name": "msg_responses",
+        "type": "Any[]",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "SearchTxsResult": [
+      {
+        "name": "total_count",
+        "type": "uint64"
+      },
+      {
+        "name": "count",
+        "type": "uint64"
+      },
+      {
+        "name": "page_number",
+        "type": "uint64"
+      },
+      {
+        "name": "page_total",
+        "type": "uint64"
+      },
+      {
+        "name": "limit",
+        "type": "uint64"
+      },
+      {
+        "name": "txs",
+        "type": "TxResponse[]",
+        "packageName": "/cosmos.base.abci.v1beta1"
+      }
+    ]
+  },
+  "/cosmos.base.kv.v1beta1": {
+    "Pairs": [
+      {
+        "name": "pairs",
+        "type": "Pair[]",
+        "packageName": "/cosmos.base.kv.v1beta1"
+      }
+    ],
+    "Pair": [
+      {
+        "name": "key",
+        "type": "uint8[]"
+      },
+      {
+        "name": "value",
+        "type": "uint8[]"
+      }
+    ]
+  },
+  "/cosmos.base.node.v1beta1": {
+    "ConfigRequest": [],
+    "ConfigResponse": [
+      {
+        "name": "minimum_gas_price",
+        "type": "string"
+      }
+    ]
+  },
+  "/cosmos.base.reflection.v1beta1": {
+    "ListAllInterfacesRequest": [],
+    "ListAllInterfacesResponse": [
+      {
+        "name": "interface_names",
+        "type": "string[]"
+      }
+    ],
+    "ListImplementationsRequest": [
+      {
+        "name": "interface_name",
+        "type": "string"
+      }
+    ],
+    "ListImplementationsResponse": [
+      {
+        "name": "implementation_message_names",
+        "type": "string[]"
+      }
+    ]
+  },
+  "/cosmos.base.reflection.v2alpha1": {
+    "AppDescriptor": [
+      {
+        "name": "authn",
+        "type": "AuthnDescriptor",
+        "packageName": "/cosmos.base.reflection.v2alpha1"
+      },
+      {
+        "name": "chain",
+        "type": "ChainDescriptor",
+        "packageName": "/cosmos.base.reflection.v2alpha1"
+      },
+      {
+        "name": "codec",
+        "type": "CodecDescriptor",
+        "packageName": "/cosmos.base.reflection.v2alpha1"
+      },
+      {
+        "name": "configuration",
+        "type": "ConfigurationDescriptor",
+        "packageName": "/cosmos.base.reflection.v2alpha1"
+      },
+      {
+        "name": "query_services",
+        "type": "QueryServicesDescriptor",
+        "packageName": "/cosmos.base.reflection.v2alpha1"
+      },
+      {
+        "name": "tx",
+        "type": "TxDescriptor",
+        "packageName": "/cosmos.base.reflection.v2alpha1"
+      }
+    ],
+    "TxDescriptor": [
+      {
+        "name": "fullname",
+        "type": "string"
+      },
+      {
+        "name": "msgs",
+        "type": "MsgDescriptor[]",
+        "packageName": "/cosmos.base.reflection.v2alpha1"
+      }
+    ],
+    "AuthnDescriptor": [
+      {
+        "name": "sign_modes",
+        "type": "SigningModeDescriptor[]",
+        "packageName": "/cosmos.base.reflection.v2alpha1"
+      }
+    ],
+    "SigningModeDescriptor": [
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "number",
+        "type": "int32"
+      },
+      {
+        "name": "authn_info_provider_method_fullname",
+        "type": "string"
+      }
+    ],
+    "ChainDescriptor": [
+      {
+        "name": "id",
+        "type": "string"
+      }
+    ],
+    "CodecDescriptor": [
+      {
+        "name": "interfaces",
+        "type": "InterfaceDescriptor[]",
+        "packageName": "/cosmos.base.reflection.v2alpha1"
+      }
+    ],
+    "InterfaceDescriptor": [
+      {
+        "name": "fullname",
+        "type": "string"
+      },
+      {
+        "name": "interface_accepting_messages",
+        "type": "InterfaceAcceptingMessageDescriptor[]",
+        "packageName": "/cosmos.base.reflection.v2alpha1"
+      },
+      {
+        "name": "interface_implementers",
+        "type": "InterfaceImplementerDescriptor[]",
+        "packageName": "/cosmos.base.reflection.v2alpha1"
+      }
+    ],
+    "InterfaceImplementerDescriptor": [
+      {
+        "name": "fullname",
+        "type": "string"
+      },
+      {
+        "name": "type_url",
+        "type": "string"
+      }
+    ],
+    "InterfaceAcceptingMessageDescriptor": [
+      {
+        "name": "fullname",
+        "type": "string"
+      },
+      {
+        "name": "field_descriptor_names",
+        "type": "string[]"
+      }
+    ],
+    "ConfigurationDescriptor": [
+      {
+        "name": "bech32_account_address_prefix",
+        "type": "string"
+      }
+    ],
+    "MsgDescriptor": [
+      {
+        "name": "msg_type_url",
+        "type": "string"
+      }
+    ],
+    "GetAuthnDescriptorRequest": [],
+    "GetAuthnDescriptorResponse": [
+      {
+        "name": "authn",
+        "type": "AuthnDescriptor",
+        "packageName": "/cosmos.base.reflection.v2alpha1"
+      }
+    ],
+    "GetChainDescriptorRequest": [],
+    "GetChainDescriptorResponse": [
+      {
+        "name": "chain",
+        "type": "ChainDescriptor",
+        "packageName": "/cosmos.base.reflection.v2alpha1"
+      }
+    ],
+    "GetCodecDescriptorRequest": [],
+    "GetCodecDescriptorResponse": [
+      {
+        "name": "codec",
+        "type": "CodecDescriptor",
+        "packageName": "/cosmos.base.reflection.v2alpha1"
+      }
+    ],
+    "GetConfigurationDescriptorRequest": [],
+    "GetConfigurationDescriptorResponse": [
+      {
+        "name": "config",
+        "type": "ConfigurationDescriptor",
+        "packageName": "/cosmos.base.reflection.v2alpha1"
+      }
+    ],
+    "GetQueryServicesDescriptorRequest": [],
+    "GetQueryServicesDescriptorResponse": [
+      {
+        "name": "queries",
+        "type": "QueryServicesDescriptor",
+        "packageName": "/cosmos.base.reflection.v2alpha1"
+      }
+    ],
+    "GetTxDescriptorRequest": [],
+    "GetTxDescriptorResponse": [
+      {
+        "name": "tx",
+        "type": "TxDescriptor",
+        "packageName": "/cosmos.base.reflection.v2alpha1"
+      }
+    ],
+    "QueryServicesDescriptor": [
+      {
+        "name": "query_services",
+        "type": "QueryServiceDescriptor[]",
+        "packageName": "/cosmos.base.reflection.v2alpha1"
+      }
+    ],
+    "QueryServiceDescriptor": [
+      {
+        "name": "fullname",
+        "type": "string"
+      },
+      {
+        "name": "is_module",
+        "type": "bool"
+      },
+      {
+        "name": "methods",
+        "type": "QueryMethodDescriptor[]",
+        "packageName": "/cosmos.base.reflection.v2alpha1"
+      }
+    ],
+    "QueryMethodDescriptor": [
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "full_query_path",
+        "type": "string"
+      }
+    ]
+  },
+  "/cosmos.base.snapshots.v1beta1": {
+    "Snapshot": [
+      {
+        "name": "height",
+        "type": "uint64"
+      },
+      {
+        "name": "format",
+        "type": "uint32"
+      },
+      {
+        "name": "chunks",
+        "type": "uint32"
+      },
+      {
+        "name": "hash",
+        "type": "uint8[]"
+      },
+      {
+        "name": "metadata",
+        "type": "Metadata",
+        "packageName": "/cosmos.base.snapshots.v1beta1"
+      }
+    ],
+    "Metadata": [
+      {
+        "name": "chunk_hashes",
+        "type": "uint8[][]"
+      }
+    ],
+    "SnapshotItem": [
+      {
+        "name": "store",
+        "type": "SnapshotStoreItem",
+        "packageName": "/cosmos.base.snapshots.v1beta1"
+      },
+      {
+        "name": "iavl",
+        "type": "SnapshotIAVLItem",
+        "packageName": "/cosmos.base.snapshots.v1beta1"
+      },
+      {
+        "name": "extension",
+        "type": "SnapshotExtensionMeta",
+        "packageName": "/cosmos.base.snapshots.v1beta1"
+      },
+      {
+        "name": "extension_payload",
+        "type": "SnapshotExtensionPayload",
+        "packageName": "/cosmos.base.snapshots.v1beta1"
+      },
+      {
+        "name": "kv",
+        "type": "SnapshotKVItem",
+        "packageName": "/cosmos.base.snapshots.v1beta1"
+      },
+      {
+        "name": "schema",
+        "type": "SnapshotSchema",
+        "packageName": "/cosmos.base.snapshots.v1beta1"
+      }
+    ],
+    "SnapshotStoreItem": [
+      {
+        "name": "name",
+        "type": "string"
+      }
+    ],
+    "SnapshotIAVLItem": [
+      {
+        "name": "key",
+        "type": "uint8[]"
+      },
+      {
+        "name": "value",
+        "type": "uint8[]"
+      },
+      {
+        "name": "version",
+        "type": "int64"
+      },
+      {
+        "name": "height",
+        "type": "int32"
+      }
+    ],
+    "SnapshotExtensionMeta": [
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "format",
+        "type": "uint32"
+      }
+    ],
+    "SnapshotExtensionPayload": [
+      {
+        "name": "payload",
+        "type": "uint8[]"
+      }
+    ],
+    "SnapshotKVItem": [
+      {
+        "name": "key",
+        "type": "uint8[]"
+      },
+      {
+        "name": "value",
+        "type": "uint8[]"
+      }
+    ],
+    "SnapshotSchema": [
+      {
+        "name": "keys",
+        "type": "uint8[][]"
+      }
+    ]
+  },
+  "/cosmos.base.store.v1beta1": {
+    "CommitInfo": [
+      {
+        "name": "version",
+        "type": "int64"
+      },
+      {
+        "name": "store_infos",
+        "type": "StoreInfo[]",
+        "packageName": "/cosmos.base.store.v1beta1"
+      }
+    ],
+    "StoreInfo": [
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "commit_id",
+        "type": "CommitID",
+        "packageName": "/cosmos.base.store.v1beta1"
+      }
+    ],
+    "CommitID": [
+      {
+        "name": "version",
+        "type": "int64"
+      },
+      {
+        "name": "hash",
+        "type": "uint8[]"
+      }
+    ],
+    "StoreKVPair": [
+      {
+        "name": "store_key",
+        "type": "string"
+      },
+      {
+        "name": "delete",
+        "type": "bool"
+      },
+      {
+        "name": "key",
+        "type": "uint8[]"
+      },
+      {
+        "name": "value",
+        "type": "uint8[]"
+      }
+    ],
+    "BlockMetadata": [
+      {
+        "name": "request_begin_block",
+        "type": "RequestBeginBlock",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "response_begin_block",
+        "type": "ResponseBeginBlock",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "deliver_txs",
+        "type": "DeliverTx[]",
+        "packageName": "/cosmos.base.store.v1beta1.BlockMetadata"
+      },
+      {
+        "name": "request_end_block",
+        "type": "RequestEndBlock",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "response_end_block",
+        "type": "ResponseEndBlock",
+        "packageName": "/tendermint.abci"
+      },
+      {
+        "name": "response_commit",
+        "type": "ResponseCommit",
+        "packageName": "/tendermint.abci"
+      }
+    ]
+  },
+  "/tendermint.p2p": {
+    "NetAddress": [
+      {
+        "name": "id",
+        "type": "string"
+      },
+      {
+        "name": "ip",
+        "type": "string"
+      },
+      {
+        "name": "port",
+        "type": "uint32"
+      }
+    ],
+    "ProtocolVersion": [
+      {
+        "name": "p2p",
+        "type": "uint64"
+      },
+      {
+        "name": "block",
+        "type": "uint64"
+      },
+      {
+        "name": "app",
+        "type": "uint64"
+      }
+    ],
+    "DefaultNodeInfo": [
+      {
+        "name": "protocol_version",
+        "type": "ProtocolVersion",
+        "packageName": "/tendermint.p2p"
+      },
+      {
+        "name": "default_node_id",
+        "type": "string"
+      },
+      {
+        "name": "listen_addr",
+        "type": "string"
+      },
+      {
+        "name": "network",
+        "type": "string"
+      },
+      {
+        "name": "version",
+        "type": "string"
+      },
+      {
+        "name": "channels",
+        "type": "uint8[]"
+      },
+      {
+        "name": "moniker",
+        "type": "string"
+      },
+      {
+        "name": "other",
+        "type": "DefaultNodeInfoOther",
+        "packageName": "/tendermint.p2p"
+      }
+    ],
+    "DefaultNodeInfoOther": [
+      {
+        "name": "tx_index",
+        "type": "string"
+      },
+      {
+        "name": "rpc_address",
+        "type": "string"
+      }
+    ]
+  },
+  "/cosmos.base.tendermint.v1beta1": {
+    "Block": [
+      {
+        "name": "header",
+        "type": "Header",
+        "packageName": "/cosmos.base.tendermint.v1beta1"
+      },
+      {
+        "name": "data",
+        "type": "Data",
+        "packageName": "/tendermint.types"
+      },
+      {
+        "name": "evidence",
+        "type": "EvidenceList",
+        "packageName": "/tendermint.types"
+      },
+      {
+        "name": "last_commit",
+        "type": "Commit",
+        "packageName": "/tendermint.types"
+      }
+    ],
+    "Header": [
+      {
+        "name": "version",
+        "type": "Consensus",
+        "packageName": "/tendermint.version"
+      },
+      {
+        "name": "chain_id",
+        "type": "string"
+      },
+      {
+        "name": "height",
+        "type": "int64"
+      },
+      {
+        "name": "time",
+        "type": "string"
+      },
+      {
+        "name": "last_block_id",
+        "type": "BlockID",
+        "packageName": "/tendermint.types"
+      },
+      {
+        "name": "last_commit_hash",
+        "type": "uint8[]"
+      },
+      {
+        "name": "data_hash",
+        "type": "uint8[]"
+      },
+      {
+        "name": "validators_hash",
+        "type": "uint8[]"
+      },
+      {
+        "name": "next_validators_hash",
+        "type": "uint8[]"
+      },
+      {
+        "name": "consensus_hash",
+        "type": "uint8[]"
+      },
+      {
+        "name": "app_hash",
+        "type": "uint8[]"
+      },
+      {
+        "name": "last_results_hash",
+        "type": "uint8[]"
+      },
+      {
+        "name": "evidence_hash",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proposer_address",
+        "type": "string"
+      }
+    ],
+    "GetValidatorSetByHeightRequest": [
+      {
+        "name": "height",
+        "type": "int64"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "GetValidatorSetByHeightResponse": [
+      {
+        "name": "block_height",
+        "type": "int64"
+      },
+      {
+        "name": "validators",
+        "type": "Validator[]",
+        "packageName": "/cosmos.base.tendermint.v1beta1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "GetLatestValidatorSetRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "GetLatestValidatorSetResponse": [
+      {
+        "name": "block_height",
+        "type": "int64"
+      },
+      {
+        "name": "validators",
+        "type": "Validator[]",
+        "packageName": "/cosmos.base.tendermint.v1beta1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "Validator": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "pub_key",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "voting_power",
+        "type": "int64"
+      },
+      {
+        "name": "proposer_priority",
+        "type": "int64"
+      }
+    ],
+    "GetBlockByHeightRequest": [
+      {
+        "name": "height",
+        "type": "int64"
+      }
+    ],
+    "GetBlockByHeightResponse": [
+      {
+        "name": "block_id",
+        "type": "BlockID",
+        "packageName": "/tendermint.types"
+      },
+      {
+        "name": "block",
+        "type": "Block",
+        "packageName": "/tendermint.types"
+      },
+      {
+        "name": "sdk_block",
+        "type": "Block",
+        "packageName": "/cosmos.base.tendermint.v1beta1"
+      }
+    ],
+    "GetLatestBlockRequest": [],
+    "GetLatestBlockResponse": [
+      {
+        "name": "block_id",
+        "type": "BlockID",
+        "packageName": "/tendermint.types"
+      },
+      {
+        "name": "block",
+        "type": "Block",
+        "packageName": "/tendermint.types"
+      },
+      {
+        "name": "sdk_block",
+        "type": "Block",
+        "packageName": "/cosmos.base.tendermint.v1beta1"
+      }
+    ],
+    "GetSyncingRequest": [],
+    "GetSyncingResponse": [
+      {
+        "name": "syncing",
+        "type": "bool"
+      }
+    ],
+    "GetNodeInfoRequest": [],
+    "GetNodeInfoResponse": [
+      {
+        "name": "default_node_info",
+        "type": "DefaultNodeInfo",
+        "packageName": "/tendermint.p2p"
+      },
+      {
+        "name": "application_version",
+        "type": "VersionInfo",
+        "packageName": "/cosmos.base.tendermint.v1beta1"
+      }
+    ],
+    "VersionInfo": [
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "app_name",
+        "type": "string"
+      },
+      {
+        "name": "version",
+        "type": "string"
+      },
+      {
+        "name": "git_commit",
+        "type": "string"
+      },
+      {
+        "name": "build_tags",
+        "type": "string"
+      },
+      {
+        "name": "go_version",
+        "type": "string"
+      },
+      {
+        "name": "build_deps",
+        "type": "Module[]",
+        "packageName": "/cosmos.base.tendermint.v1beta1"
+      },
+      {
+        "name": "cosmos_sdk_version",
+        "type": "string"
+      }
+    ],
+    "Module": [
+      {
+        "name": "path",
+        "type": "string"
+      },
+      {
+        "name": "version",
+        "type": "string"
+      },
+      {
+        "name": "sum",
+        "type": "string"
+      }
+    ],
+    "ABCIQueryRequest": [
+      {
+        "name": "data",
+        "type": "uint8[]"
+      },
+      {
+        "name": "path",
+        "type": "string"
+      },
+      {
+        "name": "height",
+        "type": "int64"
+      },
+      {
+        "name": "prove",
+        "type": "bool"
+      }
+    ],
+    "ABCIQueryResponse": [
+      {
+        "name": "code",
+        "type": "uint32"
+      },
+      {
+        "name": "log",
+        "type": "string"
+      },
+      {
+        "name": "info",
+        "type": "string"
+      },
+      {
+        "name": "index",
+        "type": "int64"
+      },
+      {
+        "name": "key",
+        "type": "uint8[]"
+      },
+      {
+        "name": "value",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_ops",
+        "type": "ProofOps",
+        "packageName": "/cosmos.base.tendermint.v1beta1"
+      },
+      {
+        "name": "height",
+        "type": "int64"
+      },
+      {
+        "name": "codespace",
+        "type": "string"
+      }
+    ],
+    "ProofOp": [
+      {
+        "name": "type",
+        "type": "string"
+      },
+      {
+        "name": "key",
+        "type": "uint8[]"
+      },
+      {
+        "name": "data",
+        "type": "uint8[]"
+      }
+    ],
+    "ProofOps": [
+      {
+        "name": "ops",
+        "type": "ProofOp[]",
+        "packageName": "/cosmos.base.tendermint.v1beta1"
+      }
+    ]
+  },
+  "/cosmos.capability.v1beta1": {
+    "Capability": [
+      {
+        "name": "index",
+        "type": "uint64"
+      }
+    ],
+    "Owner": [
+      {
+        "name": "module",
+        "type": "string"
+      },
+      {
+        "name": "name",
+        "type": "string"
+      }
+    ],
+    "CapabilityOwners": [
+      {
+        "name": "owners",
+        "type": "Owner[]",
+        "packageName": "/cosmos.capability.v1beta1"
+      }
+    ],
+    "GenesisOwners": [
+      {
+        "name": "index",
+        "type": "uint64"
+      },
+      {
+        "name": "index_owners",
+        "type": "CapabilityOwners",
+        "packageName": "/cosmos.capability.v1beta1"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "index",
+        "type": "uint64"
+      },
+      {
+        "name": "owners",
+        "type": "GenesisOwners[]",
+        "packageName": "/cosmos.capability.v1beta1"
+      }
+    ]
+  },
+  "/cosmos.crisis.v1beta1": {
+    "GenesisState": [
+      {
+        "name": "constant_fee",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "MsgVerifyInvariant": [
+      {
+        "name": "sender",
+        "type": "string"
+      },
+      {
+        "name": "invariant_module_name",
+        "type": "string"
+      },
+      {
+        "name": "invariant_route",
+        "type": "string"
+      }
+    ],
+    "MsgVerifyInvariantResponse": []
+  },
+  "/cosmos.crypto.ed25519": {
+    "PubKey": [
+      {
+        "name": "key",
+        "type": "uint8[]"
+      }
+    ],
+    "PrivKey": [
+      {
+        "name": "key",
+        "type": "uint8[]"
+      }
+    ]
+  },
+  "/cosmos.crypto.hd.v1": {
+    "BIP44Params": [
+      {
+        "name": "purpose",
+        "type": "uint32"
+      },
+      {
+        "name": "coin_type",
+        "type": "uint32"
+      },
+      {
+        "name": "account",
+        "type": "uint32"
+      },
+      {
+        "name": "change",
+        "type": "bool"
+      },
+      {
+        "name": "address_index",
+        "type": "uint32"
+      }
+    ]
+  },
+  "/cosmos.crypto.keyring.v1": {
+    "Record": [
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "pub_key",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "local",
+        "type": "Local",
+        "packageName": "/cosmos.crypto.keyring.v1.Record"
+      },
+      {
+        "name": "ledger",
+        "type": "Ledger",
+        "packageName": "/cosmos.crypto.keyring.v1.Record"
+      },
+      {
+        "name": "multi",
+        "type": "Multi",
+        "packageName": "/cosmos.crypto.keyring.v1.Record"
+      },
+      {
+        "name": "offline",
+        "type": "Offline",
+        "packageName": "/cosmos.crypto.keyring.v1.Record"
+      }
+    ]
+  },
+  "/cosmos.crypto.multisig": {
+    "LegacyAminoPubKey": [
+      {
+        "name": "threshold",
+        "type": "uint32"
+      },
+      {
+        "name": "public_keys",
+        "type": "Any[]",
+        "packageName": "/google.protobuf"
+      }
+    ]
+  },
+  "/cosmos.crypto.multisig.v1beta1": {
+    "MultiSignature": [
+      {
+        "name": "signatures",
+        "type": "uint8[][]"
+      }
+    ],
+    "CompactBitArray": [
+      {
+        "name": "extra_bits_stored",
+        "type": "uint32"
+      },
+      {
+        "name": "elems",
+        "type": "uint8[]"
+      }
+    ]
+  },
+  "/cosmos.crypto.secp256k1": {
+    "PubKey": [
+      {
+        "name": "key",
+        "type": "uint8[]"
+      }
+    ],
+    "PrivKey": [
+      {
+        "name": "key",
+        "type": "uint8[]"
+      }
+    ]
+  },
+  "/cosmos.crypto.secp256r1": {
+    "PubKey": [
+      {
+        "name": "key",
+        "type": "uint8[]"
+      }
+    ],
+    "PrivKey": [
+      {
+        "name": "secret",
+        "type": "uint8[]"
+      }
+    ]
+  },
+  "/cosmos.distribution.v1beta1": {
+    "Params": [
+      {
+        "name": "community_tax",
+        "type": "string"
+      },
+      {
+        "name": "base_proposer_reward",
+        "type": "string"
+      },
+      {
+        "name": "bonus_proposer_reward",
+        "type": "string"
+      },
+      {
+        "name": "liquidity_provider_reward",
+        "type": "string"
+      },
+      {
+        "name": "withdraw_addr_enabled",
+        "type": "bool"
+      }
+    ],
+    "ValidatorHistoricalRewards": [
+      {
+        "name": "cumulative_reward_ratio",
+        "type": "DecCoin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "reference_count",
+        "type": "uint32"
+      }
+    ],
+    "ValidatorCurrentRewards": [
+      {
+        "name": "rewards",
+        "type": "DecCoin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "period",
+        "type": "uint64"
+      }
+    ],
+    "ValidatorAccumulatedCommission": [
+      {
+        "name": "commission",
+        "type": "DecCoin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "ValidatorOutstandingRewards": [
+      {
+        "name": "rewards",
+        "type": "DecCoin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "ValidatorSlashEvent": [
+      {
+        "name": "validator_period",
+        "type": "uint64"
+      },
+      {
+        "name": "fraction",
+        "type": "string"
+      }
+    ],
+    "ValidatorSlashEvents": [
+      {
+        "name": "validator_slash_events",
+        "type": "ValidatorSlashEvent[]",
+        "packageName": "/cosmos.distribution.v1beta1"
+      }
+    ],
+    "FeePool": [
+      {
+        "name": "community_pool",
+        "type": "DecCoin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "liquidity_provider_pool",
+        "type": "DecCoin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "CommunityPoolSpendProposal": [
+      {
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "recipient",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "DelegatorStartingInfo": [
+      {
+        "name": "previous_period",
+        "type": "uint64"
+      },
+      {
+        "name": "stake",
+        "type": "string"
+      },
+      {
+        "name": "height",
+        "type": "uint64"
+      }
+    ],
+    "DelegationDelegatorReward": [
+      {
+        "name": "validator_address",
+        "type": "string"
+      },
+      {
+        "name": "reward",
+        "type": "DecCoin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "CommunityPoolSpendProposalWithDeposit": [
+      {
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "recipient",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "string"
+      },
+      {
+        "name": "deposit",
+        "type": "string"
+      }
+    ],
+    "DelegatorWithdrawInfo": [
+      {
+        "name": "delegator_address",
+        "type": "string"
+      },
+      {
+        "name": "withdraw_address",
+        "type": "string"
+      }
+    ],
+    "ValidatorOutstandingRewardsRecord": [
+      {
+        "name": "validator_address",
+        "type": "string"
+      },
+      {
+        "name": "outstanding_rewards",
+        "type": "DecCoin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "ValidatorAccumulatedCommissionRecord": [
+      {
+        "name": "validator_address",
+        "type": "string"
+      },
+      {
+        "name": "accumulated",
+        "type": "ValidatorAccumulatedCommission",
+        "packageName": "/cosmos.distribution.v1beta1"
+      }
+    ],
+    "ValidatorHistoricalRewardsRecord": [
+      {
+        "name": "validator_address",
+        "type": "string"
+      },
+      {
+        "name": "period",
+        "type": "uint64"
+      },
+      {
+        "name": "rewards",
+        "type": "ValidatorHistoricalRewards",
+        "packageName": "/cosmos.distribution.v1beta1"
+      }
+    ],
+    "ValidatorCurrentRewardsRecord": [
+      {
+        "name": "validator_address",
+        "type": "string"
+      },
+      {
+        "name": "rewards",
+        "type": "ValidatorCurrentRewards",
+        "packageName": "/cosmos.distribution.v1beta1"
+      }
+    ],
+    "DelegatorStartingInfoRecord": [
+      {
+        "name": "delegator_address",
+        "type": "string"
+      },
+      {
+        "name": "validator_address",
+        "type": "string"
+      },
+      {
+        "name": "starting_info",
+        "type": "DelegatorStartingInfo",
+        "packageName": "/cosmos.distribution.v1beta1"
+      }
+    ],
+    "ValidatorSlashEventRecord": [
+      {
+        "name": "validator_address",
+        "type": "string"
+      },
+      {
+        "name": "height",
+        "type": "uint64"
+      },
+      {
+        "name": "period",
+        "type": "uint64"
+      },
+      {
+        "name": "validator_slash_event",
+        "type": "ValidatorSlashEvent",
+        "packageName": "/cosmos.distribution.v1beta1"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/cosmos.distribution.v1beta1"
+      },
+      {
+        "name": "fee_pool",
+        "type": "FeePool",
+        "packageName": "/cosmos.distribution.v1beta1"
+      },
+      {
+        "name": "delegator_withdraw_infos",
+        "type": "DelegatorWithdrawInfo[]",
+        "packageName": "/cosmos.distribution.v1beta1"
+      },
+      {
+        "name": "previous_proposer",
+        "type": "string"
+      },
+      {
+        "name": "outstanding_rewards",
+        "type": "ValidatorOutstandingRewardsRecord[]",
+        "packageName": "/cosmos.distribution.v1beta1"
+      },
+      {
+        "name": "validator_accumulated_commissions",
+        "type": "ValidatorAccumulatedCommissionRecord[]",
+        "packageName": "/cosmos.distribution.v1beta1"
+      },
+      {
+        "name": "validator_historical_rewards",
+        "type": "ValidatorHistoricalRewardsRecord[]",
+        "packageName": "/cosmos.distribution.v1beta1"
+      },
+      {
+        "name": "validator_current_rewards",
+        "type": "ValidatorCurrentRewardsRecord[]",
+        "packageName": "/cosmos.distribution.v1beta1"
+      },
+      {
+        "name": "delegator_starting_infos",
+        "type": "DelegatorStartingInfoRecord[]",
+        "packageName": "/cosmos.distribution.v1beta1"
+      },
+      {
+        "name": "validator_slash_events",
+        "type": "ValidatorSlashEventRecord[]",
+        "packageName": "/cosmos.distribution.v1beta1"
+      }
+    ],
+    "QueryParamsRequest": [],
+    "QueryParamsResponse": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/cosmos.distribution.v1beta1"
+      }
+    ],
+    "QueryValidatorOutstandingRewardsRequest": [
+      {
+        "name": "validator_address",
+        "type": "string"
+      }
+    ],
+    "QueryValidatorOutstandingRewardsResponse": [
+      {
+        "name": "rewards",
+        "type": "ValidatorOutstandingRewards",
+        "packageName": "/cosmos.distribution.v1beta1"
+      }
+    ],
+    "QueryValidatorCommissionRequest": [
+      {
+        "name": "validator_address",
+        "type": "string"
+      }
+    ],
+    "QueryValidatorCommissionResponse": [
+      {
+        "name": "commission",
+        "type": "ValidatorAccumulatedCommission",
+        "packageName": "/cosmos.distribution.v1beta1"
+      }
+    ],
+    "QueryValidatorSlashesRequest": [
+      {
+        "name": "validator_address",
+        "type": "string"
+      },
+      {
+        "name": "starting_height",
+        "type": "uint64"
+      },
+      {
+        "name": "ending_height",
+        "type": "uint64"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryValidatorSlashesResponse": [
+      {
+        "name": "slashes",
+        "type": "ValidatorSlashEvent[]",
+        "packageName": "/cosmos.distribution.v1beta1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryDelegationRewardsRequest": [
+      {
+        "name": "delegator_address",
+        "type": "string"
+      },
+      {
+        "name": "validator_address",
+        "type": "string"
+      }
+    ],
+    "QueryDelegationRewardsResponse": [
+      {
+        "name": "rewards",
+        "type": "DecCoin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "QueryDelegationTotalRewardsRequest": [
+      {
+        "name": "delegator_address",
+        "type": "string"
+      }
+    ],
+    "QueryDelegationTotalRewardsResponse": [
+      {
+        "name": "rewards",
+        "type": "DelegationDelegatorReward[]",
+        "packageName": "/cosmos.distribution.v1beta1"
+      },
+      {
+        "name": "total",
+        "type": "DecCoin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "QueryDelegatorValidatorsRequest": [
+      {
+        "name": "delegator_address",
+        "type": "string"
+      }
+    ],
+    "QueryDelegatorValidatorsResponse": [
+      {
+        "name": "validators",
+        "type": "string[]"
+      }
+    ],
+    "QueryDelegatorWithdrawAddressRequest": [
+      {
+        "name": "delegator_address",
+        "type": "string"
+      }
+    ],
+    "QueryDelegatorWithdrawAddressResponse": [
+      {
+        "name": "withdraw_address",
+        "type": "string"
+      }
+    ],
+    "QueryCommunityPoolRequest": [],
+    "QueryCommunityPoolResponse": [
+      {
+        "name": "pool",
+        "type": "DecCoin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "QueryLiquidityProviderRewardsRequest": [],
+    "QueryLiquidityProviderRewardsResponse": [
+      {
+        "name": "pool",
+        "type": "DecCoin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "MsgSetWithdrawAddress": [
+      {
+        "name": "delegator_address",
+        "type": "string"
+      },
+      {
+        "name": "withdraw_address",
+        "type": "string"
+      }
+    ],
+    "MsgSetWithdrawAddressResponse": [],
+    "MsgWithdrawDelegatorReward": [
+      {
+        "name": "delegator_address",
+        "type": "string"
+      },
+      {
+        "name": "validator_address",
+        "type": "string"
+      }
+    ],
+    "MsgWithdrawDelegatorRewardResponse": [
+      {
+        "name": "amount",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "MsgWithdrawValidatorCommission": [
+      {
+        "name": "validator_address",
+        "type": "string"
+      }
+    ],
+    "MsgWithdrawValidatorCommissionResponse": [
+      {
+        "name": "amount",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "MsgFundCommunityPool": [
+      {
+        "name": "amount",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "depositor",
+        "type": "string"
+      }
+    ],
+    "MsgFundCommunityPoolResponse": []
+  },
+  "/cosmos.evidence.v1beta1": {
+    "Equivocation": [
+      {
+        "name": "height",
+        "type": "int64"
+      },
+      {
+        "name": "time",
+        "type": "string"
+      },
+      {
+        "name": "power",
+        "type": "int64"
+      },
+      {
+        "name": "consensus_address",
+        "type": "string"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "evidence",
+        "type": "Any[]",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "QueryEvidenceRequest": [
+      {
+        "name": "evidence_hash",
+        "type": "uint8[]"
+      }
+    ],
+    "QueryEvidenceResponse": [
+      {
+        "name": "evidence",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "QueryAllEvidenceRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllEvidenceResponse": [
+      {
+        "name": "evidence",
+        "type": "Any[]",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "MsgSubmitEvidence": [
+      {
+        "name": "submitter",
+        "type": "string"
+      },
+      {
+        "name": "evidence",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "MsgSubmitEvidenceResponse": [
+      {
+        "name": "hash",
+        "type": "uint8[]"
+      }
+    ]
+  },
+  "/cosmos.feegrant.v1beta1": {
+    "BasicAllowance": [
+      {
+        "name": "spend_limit",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "expiration",
+        "type": "string"
+      }
+    ],
+    "PeriodicAllowance": [
+      {
+        "name": "basic",
+        "type": "BasicAllowance",
+        "packageName": "/cosmos.feegrant.v1beta1"
+      },
+      {
+        "name": "period",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "period_spend_limit",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "period_can_spend",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "period_reset",
+        "type": "string"
+      }
+    ],
+    "AllowedMsgAllowance": [
+      {
+        "name": "allowance",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "allowed_messages",
+        "type": "string[]"
+      }
+    ],
+    "Grant": [
+      {
+        "name": "granter",
+        "type": "string"
+      },
+      {
+        "name": "grantee",
+        "type": "string"
+      },
+      {
+        "name": "allowance",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "allowances",
+        "type": "Grant[]",
+        "packageName": "/cosmos.feegrant.v1beta1"
+      }
+    ],
+    "QueryAllowanceRequest": [
+      {
+        "name": "granter",
+        "type": "string"
+      },
+      {
+        "name": "grantee",
+        "type": "string"
+      }
+    ],
+    "QueryAllowanceResponse": [
+      {
+        "name": "allowance",
+        "type": "Grant",
+        "packageName": "/cosmos.feegrant.v1beta1"
+      }
+    ],
+    "QueryAllowancesRequest": [
+      {
+        "name": "grantee",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllowancesResponse": [
+      {
+        "name": "allowances",
+        "type": "Grant[]",
+        "packageName": "/cosmos.feegrant.v1beta1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllowancesByGranterRequest": [
+      {
+        "name": "granter",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllowancesByGranterResponse": [
+      {
+        "name": "allowances",
+        "type": "Grant[]",
+        "packageName": "/cosmos.feegrant.v1beta1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "MsgGrantAllowance": [
+      {
+        "name": "granter",
+        "type": "string"
+      },
+      {
+        "name": "grantee",
+        "type": "string"
+      },
+      {
+        "name": "allowance",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "MsgGrantAllowanceResponse": [],
+    "MsgRevokeAllowance": [
+      {
+        "name": "granter",
+        "type": "string"
+      },
+      {
+        "name": "grantee",
+        "type": "string"
+      }
+    ],
+    "MsgRevokeAllowanceResponse": []
+  },
+  "/cosmos.genutil.v1beta1": {
+    "GenesisState": [
+      {
+        "name": "gen_txs",
+        "type": "uint8[][]"
+      }
+    ]
+  },
+  "/cosmos.gov.v1": {
+    "WeightedVoteOption": [
+      {
+        "name": "option",
+        "type": "",
+        "packageName": "/cosmos.gov.v1"
+      },
+      {
+        "name": "weight",
+        "type": "string"
+      }
+    ],
+    "Deposit": [
+      {
+        "name": "proposal_id",
+        "type": "uint64"
+      },
+      {
+        "name": "depositor",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "Proposal": [
+      {
+        "name": "id",
+        "type": "uint64"
+      },
+      {
+        "name": "messages",
+        "type": "Any[]",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "status",
+        "type": "",
+        "packageName": "/cosmos.gov.v1"
+      },
+      {
+        "name": "final_tally_result",
+        "type": "TallyResult",
+        "packageName": "/cosmos.gov.v1"
+      },
+      {
+        "name": "submit_time",
+        "type": "string"
+      },
+      {
+        "name": "deposit_end_time",
+        "type": "string"
+      },
+      {
+        "name": "total_deposit",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "voting_start_time",
+        "type": "string"
+      },
+      {
+        "name": "voting_end_time",
+        "type": "string"
+      },
+      {
+        "name": "metadata",
+        "type": "string"
+      }
+    ],
+    "TallyResult": [
+      {
+        "name": "yes_count",
+        "type": "string"
+      },
+      {
+        "name": "abstain_count",
+        "type": "string"
+      },
+      {
+        "name": "no_count",
+        "type": "string"
+      },
+      {
+        "name": "no_with_veto_count",
+        "type": "string"
+      }
+    ],
+    "Vote": [
+      {
+        "name": "proposal_id",
+        "type": "uint64"
+      },
+      {
+        "name": "voter",
+        "type": "string"
+      },
+      {
+        "name": "options",
+        "type": "WeightedVoteOption[]",
+        "packageName": "/cosmos.gov.v1"
+      },
+      {
+        "name": "metadata",
+        "type": "string"
+      }
+    ],
+    "DepositParams": [
+      {
+        "name": "min_deposit",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "max_deposit_period",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "VotingParams": [
+      {
+        "name": "voting_period",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "TallyParams": [
+      {
+        "name": "quorum",
+        "type": "string"
+      },
+      {
+        "name": "threshold",
+        "type": "string"
+      },
+      {
+        "name": "veto_threshold",
+        "type": "string"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "starting_proposal_id",
+        "type": "uint64"
+      },
+      {
+        "name": "deposits",
+        "type": "Deposit[]",
+        "packageName": "/cosmos.gov.v1"
+      },
+      {
+        "name": "votes",
+        "type": "Vote[]",
+        "packageName": "/cosmos.gov.v1"
+      },
+      {
+        "name": "proposals",
+        "type": "Proposal[]",
+        "packageName": "/cosmos.gov.v1"
+      },
+      {
+        "name": "deposit_params",
+        "type": "DepositParams",
+        "packageName": "/cosmos.gov.v1"
+      },
+      {
+        "name": "voting_params",
+        "type": "VotingParams",
+        "packageName": "/cosmos.gov.v1"
+      },
+      {
+        "name": "tally_params",
+        "type": "TallyParams",
+        "packageName": "/cosmos.gov.v1"
+      }
+    ],
+    "QueryProposalRequest": [
+      {
+        "name": "proposal_id",
+        "type": "uint64"
+      }
+    ],
+    "QueryProposalResponse": [
+      {
+        "name": "proposal",
+        "type": "Proposal",
+        "packageName": "/cosmos.gov.v1"
+      }
+    ],
+    "QueryProposalsRequest": [
+      {
+        "name": "proposal_status",
+        "type": "",
+        "packageName": "/cosmos.gov.v1"
+      },
+      {
+        "name": "voter",
+        "type": "string"
+      },
+      {
+        "name": "depositor",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryProposalsResponse": [
+      {
+        "name": "proposals",
+        "type": "Proposal[]",
+        "packageName": "/cosmos.gov.v1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryVoteRequest": [
+      {
+        "name": "proposal_id",
+        "type": "uint64"
+      },
+      {
+        "name": "voter",
+        "type": "string"
+      }
+    ],
+    "QueryVoteResponse": [
+      {
+        "name": "vote",
+        "type": "Vote",
+        "packageName": "/cosmos.gov.v1"
+      }
+    ],
+    "QueryVotesRequest": [
+      {
+        "name": "proposal_id",
+        "type": "uint64"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryVotesResponse": [
+      {
+        "name": "votes",
+        "type": "Vote[]",
+        "packageName": "/cosmos.gov.v1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryParamsRequest": [
+      {
+        "name": "params_type",
+        "type": "string"
+      }
+    ],
+    "QueryParamsResponse": [
+      {
+        "name": "voting_params",
+        "type": "VotingParams",
+        "packageName": "/cosmos.gov.v1"
+      },
+      {
+        "name": "deposit_params",
+        "type": "DepositParams",
+        "packageName": "/cosmos.gov.v1"
+      },
+      {
+        "name": "tally_params",
+        "type": "TallyParams",
+        "packageName": "/cosmos.gov.v1"
+      }
+    ],
+    "QueryDepositRequest": [
+      {
+        "name": "proposal_id",
+        "type": "uint64"
+      },
+      {
+        "name": "depositor",
+        "type": "string"
+      }
+    ],
+    "QueryDepositResponse": [
+      {
+        "name": "deposit",
+        "type": "Deposit",
+        "packageName": "/cosmos.gov.v1"
+      }
+    ],
+    "QueryDepositsRequest": [
+      {
+        "name": "proposal_id",
+        "type": "uint64"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryDepositsResponse": [
+      {
+        "name": "deposits",
+        "type": "Deposit[]",
+        "packageName": "/cosmos.gov.v1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryTallyResultRequest": [
+      {
+        "name": "proposal_id",
+        "type": "uint64"
+      }
+    ],
+    "QueryTallyResultResponse": [
+      {
+        "name": "tally",
+        "type": "TallyResult",
+        "packageName": "/cosmos.gov.v1"
+      }
+    ],
+    "MsgSubmitProposal": [
+      {
+        "name": "messages",
+        "type": "Any[]",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "initial_deposit",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "proposer",
+        "type": "string"
+      },
+      {
+        "name": "metadata",
+        "type": "string"
+      }
+    ],
+    "MsgSubmitProposalResponse": [
+      {
+        "name": "proposal_id",
+        "type": "uint64"
+      }
+    ],
+    "MsgExecLegacyContent": [
+      {
+        "name": "content",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "authority",
+        "type": "string"
+      }
+    ],
+    "MsgExecLegacyContentResponse": [],
+    "MsgVote": [
+      {
+        "name": "proposal_id",
+        "type": "uint64"
+      },
+      {
+        "name": "voter",
+        "type": "string"
+      },
+      {
+        "name": "option",
+        "type": "",
+        "packageName": "/cosmos.gov.v1"
+      },
+      {
+        "name": "metadata",
+        "type": "string"
+      }
+    ],
+    "MsgVoteResponse": [],
+    "MsgVoteWeighted": [
+      {
+        "name": "proposal_id",
+        "type": "uint64"
+      },
+      {
+        "name": "voter",
+        "type": "string"
+      },
+      {
+        "name": "options",
+        "type": "WeightedVoteOption[]",
+        "packageName": "/cosmos.gov.v1"
+      },
+      {
+        "name": "metadata",
+        "type": "string"
+      }
+    ],
+    "MsgVoteWeightedResponse": [],
+    "MsgDeposit": [
+      {
+        "name": "proposal_id",
+        "type": "uint64"
+      },
+      {
+        "name": "depositor",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "MsgDepositResponse": []
+  },
+  "/cosmos.gov.v1beta1": {
+    "WeightedVoteOption": [
+      {
+        "name": "option",
+        "type": "",
+        "packageName": "/cosmos.gov.v1beta1"
+      },
+      {
+        "name": "weight",
+        "type": "string"
+      }
+    ],
+    "TextProposal": [
+      {
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      }
+    ],
+    "Deposit": [
+      {
+        "name": "proposal_id",
+        "type": "uint64"
+      },
+      {
+        "name": "depositor",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "Proposal": [
+      {
+        "name": "proposal_id",
+        "type": "uint64"
+      },
+      {
+        "name": "content",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "status",
+        "type": "",
+        "packageName": "/cosmos.gov.v1beta1"
+      },
+      {
+        "name": "final_tally_result",
+        "type": "TallyResult",
+        "packageName": "/cosmos.gov.v1beta1"
+      },
+      {
+        "name": "submit_time",
+        "type": "string"
+      },
+      {
+        "name": "deposit_end_time",
+        "type": "string"
+      },
+      {
+        "name": "total_deposit",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "voting_start_time",
+        "type": "string"
+      },
+      {
+        "name": "voting_end_time",
+        "type": "string"
+      }
+    ],
+    "TallyResult": [
+      {
+        "name": "yes",
+        "type": "string"
+      },
+      {
+        "name": "abstain",
+        "type": "string"
+      },
+      {
+        "name": "no",
+        "type": "string"
+      },
+      {
+        "name": "no_with_veto",
+        "type": "string"
+      }
+    ],
+    "Vote": [
+      {
+        "name": "proposal_id",
+        "type": "uint64"
+      },
+      {
+        "name": "voter",
+        "type": "string"
+      },
+      {
+        "name": "option",
+        "type": "",
+        "packageName": "/cosmos.gov.v1beta1"
+      },
+      {
+        "name": "options",
+        "type": "WeightedVoteOption[]",
+        "packageName": "/cosmos.gov.v1beta1"
+      }
+    ],
+    "DepositParams": [
+      {
+        "name": "min_deposit",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "max_deposit_period",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "VotingParams": [
+      {
+        "name": "voting_period",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "TallyParams": [
+      {
+        "name": "quorum",
+        "type": "uint8[]"
+      },
+      {
+        "name": "threshold",
+        "type": "uint8[]"
+      },
+      {
+        "name": "veto_threshold",
+        "type": "uint8[]"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "starting_proposal_id",
+        "type": "uint64"
+      },
+      {
+        "name": "deposits",
+        "type": "Deposit[]",
+        "packageName": "/cosmos.gov.v1beta1"
+      },
+      {
+        "name": "votes",
+        "type": "Vote[]",
+        "packageName": "/cosmos.gov.v1beta1"
+      },
+      {
+        "name": "proposals",
+        "type": "Proposal[]",
+        "packageName": "/cosmos.gov.v1beta1"
+      },
+      {
+        "name": "deposit_params",
+        "type": "DepositParams",
+        "packageName": "/cosmos.gov.v1beta1"
+      },
+      {
+        "name": "voting_params",
+        "type": "VotingParams",
+        "packageName": "/cosmos.gov.v1beta1"
+      },
+      {
+        "name": "tally_params",
+        "type": "TallyParams",
+        "packageName": "/cosmos.gov.v1beta1"
+      }
+    ],
+    "QueryProposalRequest": [
+      {
+        "name": "proposal_id",
+        "type": "uint64"
+      }
+    ],
+    "QueryProposalResponse": [
+      {
+        "name": "proposal",
+        "type": "Proposal",
+        "packageName": "/cosmos.gov.v1beta1"
+      }
+    ],
+    "QueryProposalsRequest": [
+      {
+        "name": "proposal_status",
+        "type": "",
+        "packageName": "/cosmos.gov.v1beta1"
+      },
+      {
+        "name": "voter",
+        "type": "string"
+      },
+      {
+        "name": "depositor",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryProposalsResponse": [
+      {
+        "name": "proposals",
+        "type": "Proposal[]",
+        "packageName": "/cosmos.gov.v1beta1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryVoteRequest": [
+      {
+        "name": "proposal_id",
+        "type": "uint64"
+      },
+      {
+        "name": "voter",
+        "type": "string"
+      }
+    ],
+    "QueryVoteResponse": [
+      {
+        "name": "vote",
+        "type": "Vote",
+        "packageName": "/cosmos.gov.v1beta1"
+      }
+    ],
+    "QueryVotesRequest": [
+      {
+        "name": "proposal_id",
+        "type": "uint64"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryVotesResponse": [
+      {
+        "name": "votes",
+        "type": "Vote[]",
+        "packageName": "/cosmos.gov.v1beta1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryParamsRequest": [
+      {
+        "name": "params_type",
+        "type": "string"
+      }
+    ],
+    "QueryParamsResponse": [
+      {
+        "name": "voting_params",
+        "type": "VotingParams",
+        "packageName": "/cosmos.gov.v1beta1"
+      },
+      {
+        "name": "deposit_params",
+        "type": "DepositParams",
+        "packageName": "/cosmos.gov.v1beta1"
+      },
+      {
+        "name": "tally_params",
+        "type": "TallyParams",
+        "packageName": "/cosmos.gov.v1beta1"
+      }
+    ],
+    "QueryDepositRequest": [
+      {
+        "name": "proposal_id",
+        "type": "uint64"
+      },
+      {
+        "name": "depositor",
+        "type": "string"
+      }
+    ],
+    "QueryDepositResponse": [
+      {
+        "name": "deposit",
+        "type": "Deposit",
+        "packageName": "/cosmos.gov.v1beta1"
+      }
+    ],
+    "QueryDepositsRequest": [
+      {
+        "name": "proposal_id",
+        "type": "uint64"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryDepositsResponse": [
+      {
+        "name": "deposits",
+        "type": "Deposit[]",
+        "packageName": "/cosmos.gov.v1beta1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryTallyResultRequest": [
+      {
+        "name": "proposal_id",
+        "type": "uint64"
+      }
+    ],
+    "QueryTallyResultResponse": [
+      {
+        "name": "tally",
+        "type": "TallyResult",
+        "packageName": "/cosmos.gov.v1beta1"
+      }
+    ],
+    "MsgSubmitProposal": [
+      {
+        "name": "content",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "initial_deposit",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "proposer",
+        "type": "string"
+      }
+    ],
+    "MsgSubmitProposalResponse": [
+      {
+        "name": "proposal_id",
+        "type": "uint64"
+      }
+    ],
+    "MsgVote": [
+      {
+        "name": "proposal_id",
+        "type": "uint64"
+      },
+      {
+        "name": "voter",
+        "type": "string"
+      },
+      {
+        "name": "option",
+        "type": "",
+        "packageName": "/cosmos.gov.v1beta1"
+      }
+    ],
+    "MsgVoteResponse": [],
+    "MsgVoteWeighted": [
+      {
+        "name": "proposal_id",
+        "type": "uint64"
+      },
+      {
+        "name": "voter",
+        "type": "string"
+      },
+      {
+        "name": "options",
+        "type": "WeightedVoteOption[]",
+        "packageName": "/cosmos.gov.v1beta1"
+      }
+    ],
+    "MsgVoteWeightedResponse": [],
+    "MsgDeposit": [
+      {
+        "name": "proposal_id",
+        "type": "uint64"
+      },
+      {
+        "name": "depositor",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "MsgDepositResponse": []
+  },
+  "/cosmos.group.v1": {
+    "Member": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "weight",
+        "type": "string"
+      },
+      {
+        "name": "metadata",
+        "type": "string"
+      },
+      {
+        "name": "added_at",
+        "type": "string"
+      }
+    ],
+    "MemberRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "weight",
+        "type": "string"
+      },
+      {
+        "name": "metadata",
+        "type": "string"
+      }
+    ],
+    "ThresholdDecisionPolicy": [
+      {
+        "name": "threshold",
+        "type": "string"
+      },
+      {
+        "name": "windows",
+        "type": "DecisionPolicyWindows",
+        "packageName": "/cosmos.group.v1"
+      }
+    ],
+    "PercentageDecisionPolicy": [
+      {
+        "name": "percentage",
+        "type": "string"
+      },
+      {
+        "name": "windows",
+        "type": "DecisionPolicyWindows",
+        "packageName": "/cosmos.group.v1"
+      }
+    ],
+    "DecisionPolicyWindows": [
+      {
+        "name": "voting_period",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "min_execution_period",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "GroupInfo": [
+      {
+        "name": "id",
+        "type": "uint64"
+      },
+      {
+        "name": "admin",
+        "type": "string"
+      },
+      {
+        "name": "metadata",
+        "type": "string"
+      },
+      {
+        "name": "version",
+        "type": "uint64"
+      },
+      {
+        "name": "total_weight",
+        "type": "string"
+      },
+      {
+        "name": "created_at",
+        "type": "string"
+      }
+    ],
+    "GroupMember": [
+      {
+        "name": "group_id",
+        "type": "uint64"
+      },
+      {
+        "name": "member",
+        "type": "Member",
+        "packageName": "/cosmos.group.v1"
+      }
+    ],
+    "GroupPolicyInfo": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "group_id",
+        "type": "uint64"
+      },
+      {
+        "name": "admin",
+        "type": "string"
+      },
+      {
+        "name": "metadata",
+        "type": "string"
+      },
+      {
+        "name": "version",
+        "type": "uint64"
+      },
+      {
+        "name": "decision_policy",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "created_at",
+        "type": "string"
+      }
+    ],
+    "Proposal": [
+      {
+        "name": "id",
+        "type": "uint64"
+      },
+      {
+        "name": "group_policy_address",
+        "type": "string"
+      },
+      {
+        "name": "metadata",
+        "type": "string"
+      },
+      {
+        "name": "proposers",
+        "type": "string[]"
+      },
+      {
+        "name": "submit_time",
+        "type": "string"
+      },
+      {
+        "name": "group_version",
+        "type": "uint64"
+      },
+      {
+        "name": "group_policy_version",
+        "type": "uint64"
+      },
+      {
+        "name": "status",
+        "type": "",
+        "packageName": "/cosmos.group.v1"
+      },
+      {
+        "name": "final_tally_result",
+        "type": "TallyResult",
+        "packageName": "/cosmos.group.v1"
+      },
+      {
+        "name": "voting_period_end",
+        "type": "string"
+      },
+      {
+        "name": "executor_result",
+        "type": "",
+        "packageName": "/cosmos.group.v1"
+      },
+      {
+        "name": "messages",
+        "type": "Any[]",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "TallyResult": [
+      {
+        "name": "yes_count",
+        "type": "string"
+      },
+      {
+        "name": "abstain_count",
+        "type": "string"
+      },
+      {
+        "name": "no_count",
+        "type": "string"
+      },
+      {
+        "name": "no_with_veto_count",
+        "type": "string"
+      }
+    ],
+    "Vote": [
+      {
+        "name": "proposal_id",
+        "type": "uint64"
+      },
+      {
+        "name": "voter",
+        "type": "string"
+      },
+      {
+        "name": "option",
+        "type": "",
+        "packageName": "/cosmos.group.v1"
+      },
+      {
+        "name": "metadata",
+        "type": "string"
+      },
+      {
+        "name": "submit_time",
+        "type": "string"
+      }
+    ],
+    "EventCreateGroup": [
+      {
+        "name": "group_id",
+        "type": "uint64"
+      }
+    ],
+    "EventUpdateGroup": [
+      {
+        "name": "group_id",
+        "type": "uint64"
+      }
+    ],
+    "EventCreateGroupPolicy": [
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "EventUpdateGroupPolicy": [
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "EventSubmitProposal": [
+      {
+        "name": "proposal_id",
+        "type": "uint64"
+      }
+    ],
+    "EventWithdrawProposal": [
+      {
+        "name": "proposal_id",
+        "type": "uint64"
+      }
+    ],
+    "EventVote": [
+      {
+        "name": "proposal_id",
+        "type": "uint64"
+      }
+    ],
+    "EventExec": [
+      {
+        "name": "proposal_id",
+        "type": "uint64"
+      },
+      {
+        "name": "result",
+        "type": "",
+        "packageName": "/cosmos.group.v1"
+      },
+      {
+        "name": "logs",
+        "type": "string"
+      }
+    ],
+    "EventLeaveGroup": [
+      {
+        "name": "group_id",
+        "type": "uint64"
+      },
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "group_seq",
+        "type": "uint64"
+      },
+      {
+        "name": "groups",
+        "type": "GroupInfo[]",
+        "packageName": "/cosmos.group.v1"
+      },
+      {
+        "name": "group_members",
+        "type": "GroupMember[]",
+        "packageName": "/cosmos.group.v1"
+      },
+      {
+        "name": "group_policy_seq",
+        "type": "uint64"
+      },
+      {
+        "name": "group_policies",
+        "type": "GroupPolicyInfo[]",
+        "packageName": "/cosmos.group.v1"
+      },
+      {
+        "name": "proposal_seq",
+        "type": "uint64"
+      },
+      {
+        "name": "proposals",
+        "type": "Proposal[]",
+        "packageName": "/cosmos.group.v1"
+      },
+      {
+        "name": "votes",
+        "type": "Vote[]",
+        "packageName": "/cosmos.group.v1"
+      }
+    ],
+    "QueryGroupInfoRequest": [
+      {
+        "name": "group_id",
+        "type": "uint64"
+      }
+    ],
+    "QueryGroupInfoResponse": [
+      {
+        "name": "info",
+        "type": "GroupInfo",
+        "packageName": "/cosmos.group.v1"
+      }
+    ],
+    "QueryGroupPolicyInfoRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "QueryGroupPolicyInfoResponse": [
+      {
+        "name": "info",
+        "type": "GroupPolicyInfo",
+        "packageName": "/cosmos.group.v1"
+      }
+    ],
+    "QueryGroupMembersRequest": [
+      {
+        "name": "group_id",
+        "type": "uint64"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryGroupMembersResponse": [
+      {
+        "name": "members",
+        "type": "GroupMember[]",
+        "packageName": "/cosmos.group.v1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryGroupsByAdminRequest": [
+      {
+        "name": "admin",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryGroupsByAdminResponse": [
+      {
+        "name": "groups",
+        "type": "GroupInfo[]",
+        "packageName": "/cosmos.group.v1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryGroupPoliciesByGroupRequest": [
+      {
+        "name": "group_id",
+        "type": "uint64"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryGroupPoliciesByGroupResponse": [
+      {
+        "name": "group_policies",
+        "type": "GroupPolicyInfo[]",
+        "packageName": "/cosmos.group.v1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryGroupPoliciesByAdminRequest": [
+      {
+        "name": "admin",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryGroupPoliciesByAdminResponse": [
+      {
+        "name": "group_policies",
+        "type": "GroupPolicyInfo[]",
+        "packageName": "/cosmos.group.v1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryProposalRequest": [
+      {
+        "name": "proposal_id",
+        "type": "uint64"
+      }
+    ],
+    "QueryProposalResponse": [
+      {
+        "name": "proposal",
+        "type": "Proposal",
+        "packageName": "/cosmos.group.v1"
+      }
+    ],
+    "QueryProposalsByGroupPolicyRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryProposalsByGroupPolicyResponse": [
+      {
+        "name": "proposals",
+        "type": "Proposal[]",
+        "packageName": "/cosmos.group.v1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryVoteByProposalVoterRequest": [
+      {
+        "name": "proposal_id",
+        "type": "uint64"
+      },
+      {
+        "name": "voter",
+        "type": "string"
+      }
+    ],
+    "QueryVoteByProposalVoterResponse": [
+      {
+        "name": "vote",
+        "type": "Vote",
+        "packageName": "/cosmos.group.v1"
+      }
+    ],
+    "QueryVotesByProposalRequest": [
+      {
+        "name": "proposal_id",
+        "type": "uint64"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryVotesByProposalResponse": [
+      {
+        "name": "votes",
+        "type": "Vote[]",
+        "packageName": "/cosmos.group.v1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryVotesByVoterRequest": [
+      {
+        "name": "voter",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryVotesByVoterResponse": [
+      {
+        "name": "votes",
+        "type": "Vote[]",
+        "packageName": "/cosmos.group.v1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryGroupsByMemberRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryGroupsByMemberResponse": [
+      {
+        "name": "groups",
+        "type": "GroupInfo[]",
+        "packageName": "/cosmos.group.v1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryTallyResultRequest": [
+      {
+        "name": "proposal_id",
+        "type": "uint64"
+      }
+    ],
+    "QueryTallyResultResponse": [
+      {
+        "name": "tally",
+        "type": "TallyResult",
+        "packageName": "/cosmos.group.v1"
+      }
+    ],
+    "QueryGroupsRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryGroupsResponse": [
+      {
+        "name": "groups",
+        "type": "GroupInfo[]",
+        "packageName": "/cosmos.group.v1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "MsgCreateGroup": [
+      {
+        "name": "admin",
+        "type": "string"
+      },
+      {
+        "name": "members",
+        "type": "MemberRequest[]",
+        "packageName": "/cosmos.group.v1"
+      },
+      {
+        "name": "metadata",
+        "type": "string"
+      }
+    ],
+    "MsgCreateGroupResponse": [
+      {
+        "name": "group_id",
+        "type": "uint64"
+      }
+    ],
+    "MsgUpdateGroupMembers": [
+      {
+        "name": "admin",
+        "type": "string"
+      },
+      {
+        "name": "group_id",
+        "type": "uint64"
+      },
+      {
+        "name": "member_updates",
+        "type": "MemberRequest[]",
+        "packageName": "/cosmos.group.v1"
+      }
+    ],
+    "MsgUpdateGroupMembersResponse": [],
+    "MsgUpdateGroupAdmin": [
+      {
+        "name": "admin",
+        "type": "string"
+      },
+      {
+        "name": "group_id",
+        "type": "uint64"
+      },
+      {
+        "name": "new_admin",
+        "type": "string"
+      }
+    ],
+    "MsgUpdateGroupAdminResponse": [],
+    "MsgUpdateGroupMetadata": [
+      {
+        "name": "admin",
+        "type": "string"
+      },
+      {
+        "name": "group_id",
+        "type": "uint64"
+      },
+      {
+        "name": "metadata",
+        "type": "string"
+      }
+    ],
+    "MsgUpdateGroupMetadataResponse": [],
+    "MsgCreateGroupPolicy": [
+      {
+        "name": "admin",
+        "type": "string"
+      },
+      {
+        "name": "group_id",
+        "type": "uint64"
+      },
+      {
+        "name": "metadata",
+        "type": "string"
+      },
+      {
+        "name": "decision_policy",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "MsgCreateGroupPolicyResponse": [
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "MsgUpdateGroupPolicyAdmin": [
+      {
+        "name": "admin",
+        "type": "string"
+      },
+      {
+        "name": "group_policy_address",
+        "type": "string"
+      },
+      {
+        "name": "new_admin",
+        "type": "string"
+      }
+    ],
+    "MsgCreateGroupWithPolicy": [
+      {
+        "name": "admin",
+        "type": "string"
+      },
+      {
+        "name": "members",
+        "type": "MemberRequest[]",
+        "packageName": "/cosmos.group.v1"
+      },
+      {
+        "name": "group_metadata",
+        "type": "string"
+      },
+      {
+        "name": "group_policy_metadata",
+        "type": "string"
+      },
+      {
+        "name": "group_policy_as_admin",
+        "type": "bool"
+      },
+      {
+        "name": "decision_policy",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "MsgCreateGroupWithPolicyResponse": [
+      {
+        "name": "group_id",
+        "type": "uint64"
+      },
+      {
+        "name": "group_policy_address",
+        "type": "string"
+      }
+    ],
+    "MsgUpdateGroupPolicyAdminResponse": [],
+    "MsgUpdateGroupPolicyDecisionPolicy": [
+      {
+        "name": "admin",
+        "type": "string"
+      },
+      {
+        "name": "group_policy_address",
+        "type": "string"
+      },
+      {
+        "name": "decision_policy",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "MsgUpdateGroupPolicyDecisionPolicyResponse": [],
+    "MsgUpdateGroupPolicyMetadata": [
+      {
+        "name": "admin",
+        "type": "string"
+      },
+      {
+        "name": "group_policy_address",
+        "type": "string"
+      },
+      {
+        "name": "metadata",
+        "type": "string"
+      }
+    ],
+    "MsgUpdateGroupPolicyMetadataResponse": [],
+    "MsgSubmitProposal": [
+      {
+        "name": "group_policy_address",
+        "type": "string"
+      },
+      {
+        "name": "proposers",
+        "type": "string[]"
+      },
+      {
+        "name": "metadata",
+        "type": "string"
+      },
+      {
+        "name": "messages",
+        "type": "Any[]",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "exec",
+        "type": "",
+        "packageName": "/cosmos.group.v1"
+      }
+    ],
+    "MsgSubmitProposalResponse": [
+      {
+        "name": "proposal_id",
+        "type": "uint64"
+      }
+    ],
+    "MsgWithdrawProposal": [
+      {
+        "name": "proposal_id",
+        "type": "uint64"
+      },
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "MsgWithdrawProposalResponse": [],
+    "MsgVote": [
+      {
+        "name": "proposal_id",
+        "type": "uint64"
+      },
+      {
+        "name": "voter",
+        "type": "string"
+      },
+      {
+        "name": "option",
+        "type": "",
+        "packageName": "/cosmos.group.v1"
+      },
+      {
+        "name": "metadata",
+        "type": "string"
+      },
+      {
+        "name": "exec",
+        "type": "",
+        "packageName": "/cosmos.group.v1"
+      }
+    ],
+    "MsgVoteResponse": [],
+    "MsgExec": [
+      {
+        "name": "proposal_id",
+        "type": "uint64"
+      },
+      {
+        "name": "executor",
+        "type": "string"
+      }
+    ],
+    "MsgExecResponse": [
+      {
+        "name": "result",
+        "type": "",
+        "packageName": "/cosmos.group.v1"
+      }
+    ],
+    "MsgLeaveGroup": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "group_id",
+        "type": "uint64"
+      }
+    ],
+    "MsgLeaveGroupResponse": []
+  },
+  "/cosmos.mint.v1beta1": {
+    "Minter": [
+      {
+        "name": "inflation",
+        "type": "string"
+      },
+      {
+        "name": "annual_provisions",
+        "type": "string"
+      }
+    ],
+    "Params": [
+      {
+        "name": "mint_denom",
+        "type": "string"
+      },
+      {
+        "name": "inflation_rate_change",
+        "type": "string"
+      },
+      {
+        "name": "inflation_max",
+        "type": "string"
+      },
+      {
+        "name": "inflation_min",
+        "type": "string"
+      },
+      {
+        "name": "goal_bonded",
+        "type": "string"
+      },
+      {
+        "name": "blocks_per_year",
+        "type": "uint64"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "minter",
+        "type": "Minter",
+        "packageName": "/cosmos.mint.v1beta1"
+      },
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/cosmos.mint.v1beta1"
+      }
+    ],
+    "QueryParamsRequest": [],
+    "QueryParamsResponse": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/cosmos.mint.v1beta1"
+      }
+    ],
+    "QueryInflationRequest": [],
+    "QueryInflationResponse": [
+      {
+        "name": "inflation",
+        "type": "uint8[]"
+      }
+    ],
+    "QueryAnnualProvisionsRequest": [],
+    "QueryAnnualProvisionsResponse": [
+      {
+        "name": "annual_provisions",
+        "type": "uint8[]"
+      }
+    ]
+  },
+  "/cosmos.nft.v1beta1": {
+    "EventSend": [
+      {
+        "name": "class_id",
+        "type": "string"
+      },
+      {
+        "name": "id",
+        "type": "string"
+      },
+      {
+        "name": "sender",
+        "type": "string"
+      },
+      {
+        "name": "receiver",
+        "type": "string"
+      }
+    ],
+    "EventMint": [
+      {
+        "name": "class_id",
+        "type": "string"
+      },
+      {
+        "name": "id",
+        "type": "string"
+      },
+      {
+        "name": "owner",
+        "type": "string"
+      }
+    ],
+    "EventBurn": [
+      {
+        "name": "class_id",
+        "type": "string"
+      },
+      {
+        "name": "id",
+        "type": "string"
+      },
+      {
+        "name": "owner",
+        "type": "string"
+      }
+    ],
+    "Class": [
+      {
+        "name": "id",
+        "type": "string"
+      },
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "symbol",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "uri",
+        "type": "string"
+      },
+      {
+        "name": "uri_hash",
+        "type": "string"
+      },
+      {
+        "name": "data",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "NFT": [
+      {
+        "name": "class_id",
+        "type": "string"
+      },
+      {
+        "name": "id",
+        "type": "string"
+      },
+      {
+        "name": "uri",
+        "type": "string"
+      },
+      {
+        "name": "uri_hash",
+        "type": "string"
+      },
+      {
+        "name": "data",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "classes",
+        "type": "Class[]",
+        "packageName": "/cosmos.nft.v1beta1"
+      },
+      {
+        "name": "entries",
+        "type": "Entry[]",
+        "packageName": "/cosmos.nft.v1beta1"
+      }
+    ],
+    "Entry": [
+      {
+        "name": "owner",
+        "type": "string"
+      },
+      {
+        "name": "nfts",
+        "type": "NFT[]",
+        "packageName": "/cosmos.nft.v1beta1"
+      }
+    ],
+    "QueryBalanceRequest": [
+      {
+        "name": "class_id",
+        "type": "string"
+      },
+      {
+        "name": "owner",
+        "type": "string"
+      }
+    ],
+    "QueryBalanceResponse": [
+      {
+        "name": "amount",
+        "type": "uint64"
+      }
+    ],
+    "QueryOwnerRequest": [
+      {
+        "name": "class_id",
+        "type": "string"
+      },
+      {
+        "name": "id",
+        "type": "string"
+      }
+    ],
+    "QueryOwnerResponse": [
+      {
+        "name": "owner",
+        "type": "string"
+      }
+    ],
+    "QuerySupplyRequest": [
+      {
+        "name": "class_id",
+        "type": "string"
+      }
+    ],
+    "QuerySupplyResponse": [
+      {
+        "name": "amount",
+        "type": "uint64"
+      }
+    ],
+    "QueryNFTsRequest": [
+      {
+        "name": "class_id",
+        "type": "string"
+      },
+      {
+        "name": "owner",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryNFTsResponse": [
+      {
+        "name": "nfts",
+        "type": "NFT[]",
+        "packageName": "/cosmos.nft.v1beta1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryNFTRequest": [
+      {
+        "name": "class_id",
+        "type": "string"
+      },
+      {
+        "name": "id",
+        "type": "string"
+      }
+    ],
+    "QueryNFTResponse": [
+      {
+        "name": "nft",
+        "type": "NFT",
+        "packageName": "/cosmos.nft.v1beta1"
+      }
+    ],
+    "QueryClassRequest": [
+      {
+        "name": "class_id",
+        "type": "string"
+      }
+    ],
+    "QueryClassResponse": [
+      {
+        "name": "class",
+        "type": "Class",
+        "packageName": "/cosmos.nft.v1beta1"
+      }
+    ],
+    "QueryClassesRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryClassesResponse": [
+      {
+        "name": "classes",
+        "type": "Class[]",
+        "packageName": "/cosmos.nft.v1beta1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "MsgSend": [
+      {
+        "name": "class_id",
+        "type": "string"
+      },
+      {
+        "name": "id",
+        "type": "string"
+      },
+      {
+        "name": "sender",
+        "type": "string"
+      },
+      {
+        "name": "receiver",
+        "type": "string"
+      }
+    ],
+    "MsgSendResponse": []
+  },
+  "/cosmos.orm.module.v1alpha1": {
+    "Module": []
+  },
+  "/cosmos.orm.v1": {
+    "TableDescriptor": [
+      {
+        "name": "primary_key",
+        "type": "PrimaryKeyDescriptor",
+        "packageName": "/cosmos.orm.v1"
+      },
+      {
+        "name": "index",
+        "type": "SecondaryIndexDescriptor[]",
+        "packageName": "/cosmos.orm.v1"
+      },
+      {
+        "name": "id",
+        "type": "uint32"
+      }
+    ],
+    "PrimaryKeyDescriptor": [
+      {
+        "name": "fields",
+        "type": "string"
+      },
+      {
+        "name": "auto_increment",
+        "type": "bool"
+      }
+    ],
+    "SecondaryIndexDescriptor": [
+      {
+        "name": "fields",
+        "type": "string"
+      },
+      {
+        "name": "id",
+        "type": "uint32"
+      },
+      {
+        "name": "unique",
+        "type": "bool"
+      }
+    ],
+    "SingletonDescriptor": [
+      {
+        "name": "id",
+        "type": "uint32"
+      }
+    ]
+  },
+  "/cosmos.orm.v1alpha1": {
+    "ModuleSchemaDescriptor": [
+      {
+        "name": "schema_file",
+        "type": "FileEntry[]",
+        "packageName": "/cosmos.orm.v1alpha1.ModuleSchemaDescriptor"
+      },
+      {
+        "name": "prefix",
+        "type": "uint8[]"
+      }
+    ]
+  },
+  "/cosmos.params.v1beta1": {
+    "ParameterChangeProposal": [
+      {
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "changes",
+        "type": "ParamChange[]",
+        "packageName": "/cosmos.params.v1beta1"
+      }
+    ],
+    "ParamChange": [
+      {
+        "name": "subspace",
+        "type": "string"
+      },
+      {
+        "name": "key",
+        "type": "string"
+      },
+      {
+        "name": "value",
+        "type": "string"
+      }
+    ],
+    "QueryParamsRequest": [
+      {
+        "name": "subspace",
+        "type": "string"
+      },
+      {
+        "name": "key",
+        "type": "string"
+      }
+    ],
+    "QueryParamsResponse": [
+      {
+        "name": "param",
+        "type": "ParamChange",
+        "packageName": "/cosmos.params.v1beta1"
+      }
+    ],
+    "QuerySubspacesRequest": [],
+    "QuerySubspacesResponse": [
+      {
+        "name": "subspaces",
+        "type": "Subspace[]",
+        "packageName": "/cosmos.params.v1beta1"
+      }
+    ],
+    "Subspace": [
+      {
+        "name": "subspace",
+        "type": "string"
+      },
+      {
+        "name": "keys",
+        "type": "string[]"
+      }
+    ]
+  },
+  "/cosmos.slashing.v1beta1": {
+    "ValidatorSigningInfo": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "start_height",
+        "type": "int64"
+      },
+      {
+        "name": "index_offset",
+        "type": "int64"
+      },
+      {
+        "name": "jailed_until",
+        "type": "string"
+      },
+      {
+        "name": "tombstoned",
+        "type": "bool"
+      },
+      {
+        "name": "missed_blocks_counter",
+        "type": "int64"
+      }
+    ],
+    "Params": [
+      {
+        "name": "signed_blocks_window",
+        "type": "int64"
+      },
+      {
+        "name": "min_signed_per_window",
+        "type": "uint8[]"
+      },
+      {
+        "name": "downtime_jail_duration",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "slash_fraction_double_sign",
+        "type": "uint8[]"
+      },
+      {
+        "name": "slash_fraction_downtime",
+        "type": "uint8[]"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/cosmos.slashing.v1beta1"
+      },
+      {
+        "name": "signing_infos",
+        "type": "SigningInfo[]",
+        "packageName": "/cosmos.slashing.v1beta1"
+      },
+      {
+        "name": "missed_blocks",
+        "type": "ValidatorMissedBlocks[]",
+        "packageName": "/cosmos.slashing.v1beta1"
+      }
+    ],
+    "SigningInfo": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "validator_signing_info",
+        "type": "ValidatorSigningInfo",
+        "packageName": "/cosmos.slashing.v1beta1"
+      }
+    ],
+    "ValidatorMissedBlocks": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "missed_blocks",
+        "type": "MissedBlock[]",
+        "packageName": "/cosmos.slashing.v1beta1"
+      }
+    ],
+    "MissedBlock": [
+      {
+        "name": "index",
+        "type": "int64"
+      },
+      {
+        "name": "missed",
+        "type": "bool"
+      }
+    ],
+    "QueryParamsRequest": [],
+    "QueryParamsResponse": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/cosmos.slashing.v1beta1"
+      }
+    ],
+    "QuerySigningInfoRequest": [
+      {
+        "name": "cons_address",
+        "type": "string"
+      }
+    ],
+    "QuerySigningInfoResponse": [
+      {
+        "name": "val_signing_info",
+        "type": "ValidatorSigningInfo",
+        "packageName": "/cosmos.slashing.v1beta1"
+      }
+    ],
+    "QuerySigningInfosRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QuerySigningInfosResponse": [
+      {
+        "name": "info",
+        "type": "ValidatorSigningInfo[]",
+        "packageName": "/cosmos.slashing.v1beta1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "MsgUnjail": [
+      {
+        "name": "validator_addr",
+        "type": "string"
+      }
+    ],
+    "MsgUnjailResponse": []
+  },
+  "/cosmos.staking.v1beta1": {
+    "StakeAuthorization": [
+      {
+        "name": "max_tokens",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "allow_list",
+        "type": "Validators",
+        "packageName": "/cosmos.staking.v1beta1.StakeAuthorization"
+      },
+      {
+        "name": "deny_list",
+        "type": "Validators",
+        "packageName": "/cosmos.staking.v1beta1.StakeAuthorization"
+      },
+      {
+        "name": "authorization_type",
+        "type": "",
+        "packageName": "/cosmos.staking.v1beta1"
+      }
+    ],
+    "HistoricalInfo": [
+      {
+        "name": "header",
+        "type": "Header",
+        "packageName": "/tendermint.types"
+      },
+      {
+        "name": "valset",
+        "type": "Validator[]",
+        "packageName": "/cosmos.staking.v1beta1"
+      }
+    ],
+    "CommissionRates": [
+      {
+        "name": "rate",
+        "type": "string"
+      },
+      {
+        "name": "max_rate",
+        "type": "string"
+      },
+      {
+        "name": "max_change_rate",
+        "type": "string"
+      }
+    ],
+    "Commission": [
+      {
+        "name": "commission_rates",
+        "type": "CommissionRates",
+        "packageName": "/cosmos.staking.v1beta1"
+      },
+      {
+        "name": "update_time",
+        "type": "string"
+      }
+    ],
+    "Description": [
+      {
+        "name": "moniker",
+        "type": "string"
+      },
+      {
+        "name": "identity",
+        "type": "string"
+      },
+      {
+        "name": "website",
+        "type": "string"
+      },
+      {
+        "name": "security_contact",
+        "type": "string"
+      },
+      {
+        "name": "details",
+        "type": "string"
+      }
+    ],
+    "Validator": [
+      {
+        "name": "operator_address",
+        "type": "string"
+      },
+      {
+        "name": "consensus_pubkey",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "jailed",
+        "type": "bool"
+      },
+      {
+        "name": "status",
+        "type": "",
+        "packageName": "/cosmos.staking.v1beta1"
+      },
+      {
+        "name": "tokens",
+        "type": "string"
+      },
+      {
+        "name": "delegator_shares",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "Description",
+        "packageName": "/cosmos.staking.v1beta1"
+      },
+      {
+        "name": "unbonding_height",
+        "type": "int64"
+      },
+      {
+        "name": "unbonding_time",
+        "type": "string"
+      },
+      {
+        "name": "commission",
+        "type": "Commission",
+        "packageName": "/cosmos.staking.v1beta1"
+      },
+      {
+        "name": "min_self_delegation",
+        "type": "string"
+      }
+    ],
+    "ValAddresses": [
+      {
+        "name": "addresses",
+        "type": "string[]"
+      }
+    ],
+    "DVPair": [
+      {
+        "name": "delegator_address",
+        "type": "string"
+      },
+      {
+        "name": "validator_address",
+        "type": "string"
+      }
+    ],
+    "DVPairs": [
+      {
+        "name": "pairs",
+        "type": "DVPair[]",
+        "packageName": "/cosmos.staking.v1beta1"
+      }
+    ],
+    "DVVTriplet": [
+      {
+        "name": "delegator_address",
+        "type": "string"
+      },
+      {
+        "name": "validator_src_address",
+        "type": "string"
+      },
+      {
+        "name": "validator_dst_address",
+        "type": "string"
+      }
+    ],
+    "DVVTriplets": [
+      {
+        "name": "triplets",
+        "type": "DVVTriplet[]",
+        "packageName": "/cosmos.staking.v1beta1"
+      }
+    ],
+    "Delegation": [
+      {
+        "name": "delegator_address",
+        "type": "string"
+      },
+      {
+        "name": "validator_address",
+        "type": "string"
+      },
+      {
+        "name": "shares",
+        "type": "string"
+      }
+    ],
+    "UnbondingDelegation": [
+      {
+        "name": "delegator_address",
+        "type": "string"
+      },
+      {
+        "name": "validator_address",
+        "type": "string"
+      },
+      {
+        "name": "entries",
+        "type": "UnbondingDelegationEntry[]",
+        "packageName": "/cosmos.staking.v1beta1"
+      }
+    ],
+    "UnbondingDelegationEntry": [
+      {
+        "name": "creation_height",
+        "type": "int64"
+      },
+      {
+        "name": "completion_time",
+        "type": "string"
+      },
+      {
+        "name": "initial_balance",
+        "type": "string"
+      },
+      {
+        "name": "balance",
+        "type": "string"
+      }
+    ],
+    "RedelegationEntry": [
+      {
+        "name": "creation_height",
+        "type": "int64"
+      },
+      {
+        "name": "completion_time",
+        "type": "string"
+      },
+      {
+        "name": "initial_balance",
+        "type": "string"
+      },
+      {
+        "name": "shares_dst",
+        "type": "string"
+      }
+    ],
+    "Redelegation": [
+      {
+        "name": "delegator_address",
+        "type": "string"
+      },
+      {
+        "name": "validator_src_address",
+        "type": "string"
+      },
+      {
+        "name": "validator_dst_address",
+        "type": "string"
+      },
+      {
+        "name": "entries",
+        "type": "RedelegationEntry[]",
+        "packageName": "/cosmos.staking.v1beta1"
+      }
+    ],
+    "Params": [
+      {
+        "name": "unbonding_time",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "max_validators",
+        "type": "uint32"
+      },
+      {
+        "name": "max_entries",
+        "type": "uint32"
+      },
+      {
+        "name": "historical_entries",
+        "type": "uint32"
+      },
+      {
+        "name": "bond_denom",
+        "type": "string"
+      },
+      {
+        "name": "min_commission_rate",
+        "type": "string"
+      }
+    ],
+    "DelegationResponse": [
+      {
+        "name": "delegation",
+        "type": "Delegation",
+        "packageName": "/cosmos.staking.v1beta1"
+      },
+      {
+        "name": "balance",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "RedelegationEntryResponse": [
+      {
+        "name": "redelegation_entry",
+        "type": "RedelegationEntry",
+        "packageName": "/cosmos.staking.v1beta1"
+      },
+      {
+        "name": "balance",
+        "type": "string"
+      }
+    ],
+    "RedelegationResponse": [
+      {
+        "name": "redelegation",
+        "type": "Redelegation",
+        "packageName": "/cosmos.staking.v1beta1"
+      },
+      {
+        "name": "entries",
+        "type": "RedelegationEntryResponse[]",
+        "packageName": "/cosmos.staking.v1beta1"
+      }
+    ],
+    "Pool": [
+      {
+        "name": "not_bonded_tokens",
+        "type": "string"
+      },
+      {
+        "name": "bonded_tokens",
+        "type": "string"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/cosmos.staking.v1beta1"
+      },
+      {
+        "name": "last_total_power",
+        "type": "uint8[]"
+      },
+      {
+        "name": "last_validator_powers",
+        "type": "LastValidatorPower[]",
+        "packageName": "/cosmos.staking.v1beta1"
+      },
+      {
+        "name": "validators",
+        "type": "Validator[]",
+        "packageName": "/cosmos.staking.v1beta1"
+      },
+      {
+        "name": "delegations",
+        "type": "Delegation[]",
+        "packageName": "/cosmos.staking.v1beta1"
+      },
+      {
+        "name": "unbonding_delegations",
+        "type": "UnbondingDelegation[]",
+        "packageName": "/cosmos.staking.v1beta1"
+      },
+      {
+        "name": "redelegations",
+        "type": "Redelegation[]",
+        "packageName": "/cosmos.staking.v1beta1"
+      },
+      {
+        "name": "exported",
+        "type": "bool"
+      }
+    ],
+    "LastValidatorPower": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "power",
+        "type": "int64"
+      }
+    ],
+    "QueryValidatorsRequest": [
+      {
+        "name": "status",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryValidatorsResponse": [
+      {
+        "name": "validators",
+        "type": "Validator[]",
+        "packageName": "/cosmos.staking.v1beta1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryValidatorRequest": [
+      {
+        "name": "validator_addr",
+        "type": "string"
+      }
+    ],
+    "QueryValidatorResponse": [
+      {
+        "name": "validator",
+        "type": "Validator",
+        "packageName": "/cosmos.staking.v1beta1"
+      }
+    ],
+    "QueryValidatorDelegationsRequest": [
+      {
+        "name": "validator_addr",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryValidatorDelegationsResponse": [
+      {
+        "name": "delegation_responses",
+        "type": "DelegationResponse[]",
+        "packageName": "/cosmos.staking.v1beta1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryValidatorUnbondingDelegationsRequest": [
+      {
+        "name": "validator_addr",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryValidatorUnbondingDelegationsResponse": [
+      {
+        "name": "unbonding_responses",
+        "type": "UnbondingDelegation[]",
+        "packageName": "/cosmos.staking.v1beta1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryDelegationRequest": [
+      {
+        "name": "delegator_addr",
+        "type": "string"
+      },
+      {
+        "name": "validator_addr",
+        "type": "string"
+      }
+    ],
+    "QueryDelegationResponse": [
+      {
+        "name": "delegation_response",
+        "type": "DelegationResponse",
+        "packageName": "/cosmos.staking.v1beta1"
+      }
+    ],
+    "QueryUnbondingDelegationRequest": [
+      {
+        "name": "delegator_addr",
+        "type": "string"
+      },
+      {
+        "name": "validator_addr",
+        "type": "string"
+      }
+    ],
+    "QueryUnbondingDelegationResponse": [
+      {
+        "name": "unbond",
+        "type": "UnbondingDelegation",
+        "packageName": "/cosmos.staking.v1beta1"
+      }
+    ],
+    "QueryDelegatorDelegationsRequest": [
+      {
+        "name": "delegator_addr",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryDelegatorDelegationsResponse": [
+      {
+        "name": "delegation_responses",
+        "type": "DelegationResponse[]",
+        "packageName": "/cosmos.staking.v1beta1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryDelegatorUnbondingDelegationsRequest": [
+      {
+        "name": "delegator_addr",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryDelegatorUnbondingDelegationsResponse": [
+      {
+        "name": "unbonding_responses",
+        "type": "UnbondingDelegation[]",
+        "packageName": "/cosmos.staking.v1beta1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryRedelegationsRequest": [
+      {
+        "name": "delegator_addr",
+        "type": "string"
+      },
+      {
+        "name": "src_validator_addr",
+        "type": "string"
+      },
+      {
+        "name": "dst_validator_addr",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryRedelegationsResponse": [
+      {
+        "name": "redelegation_responses",
+        "type": "RedelegationResponse[]",
+        "packageName": "/cosmos.staking.v1beta1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryDelegatorValidatorsRequest": [
+      {
+        "name": "delegator_addr",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryDelegatorValidatorsResponse": [
+      {
+        "name": "validators",
+        "type": "Validator[]",
+        "packageName": "/cosmos.staking.v1beta1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryDelegatorValidatorRequest": [
+      {
+        "name": "delegator_addr",
+        "type": "string"
+      },
+      {
+        "name": "validator_addr",
+        "type": "string"
+      }
+    ],
+    "QueryDelegatorValidatorResponse": [
+      {
+        "name": "validator",
+        "type": "Validator",
+        "packageName": "/cosmos.staking.v1beta1"
+      }
+    ],
+    "QueryHistoricalInfoRequest": [
+      {
+        "name": "height",
+        "type": "int64"
+      }
+    ],
+    "QueryHistoricalInfoResponse": [
+      {
+        "name": "hist",
+        "type": "HistoricalInfo",
+        "packageName": "/cosmos.staking.v1beta1"
+      }
+    ],
+    "QueryPoolRequest": [],
+    "QueryPoolResponse": [
+      {
+        "name": "pool",
+        "type": "Pool",
+        "packageName": "/cosmos.staking.v1beta1"
+      }
+    ],
+    "QueryParamsRequest": [],
+    "QueryParamsResponse": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/cosmos.staking.v1beta1"
+      }
+    ],
+    "MsgCreateValidator": [
+      {
+        "name": "description",
+        "type": "Description",
+        "packageName": "/cosmos.staking.v1beta1"
+      },
+      {
+        "name": "commission",
+        "type": "CommissionRates",
+        "packageName": "/cosmos.staking.v1beta1"
+      },
+      {
+        "name": "min_self_delegation",
+        "type": "string"
+      },
+      {
+        "name": "delegator_address",
+        "type": "string"
+      },
+      {
+        "name": "validator_address",
+        "type": "string"
+      },
+      {
+        "name": "pubkey",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "value",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "MsgCreateValidatorResponse": [],
+    "MsgEditValidator": [
+      {
+        "name": "description",
+        "type": "Description",
+        "packageName": "/cosmos.staking.v1beta1"
+      },
+      {
+        "name": "validator_address",
+        "type": "string"
+      },
+      {
+        "name": "commission_rate",
+        "type": "string"
+      },
+      {
+        "name": "min_self_delegation",
+        "type": "string"
+      }
+    ],
+    "MsgEditValidatorResponse": [],
+    "MsgDelegate": [
+      {
+        "name": "delegator_address",
+        "type": "string"
+      },
+      {
+        "name": "validator_address",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "MsgDelegateResponse": [],
+    "MsgBeginRedelegate": [
+      {
+        "name": "delegator_address",
+        "type": "string"
+      },
+      {
+        "name": "validator_src_address",
+        "type": "string"
+      },
+      {
+        "name": "validator_dst_address",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "MsgBeginRedelegateResponse": [
+      {
+        "name": "completion_time",
+        "type": "string"
+      }
+    ],
+    "MsgUndelegate": [
+      {
+        "name": "delegator_address",
+        "type": "string"
+      },
+      {
+        "name": "validator_address",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "MsgUndelegateResponse": [
+      {
+        "name": "completion_time",
+        "type": "string"
+      }
+    ],
+    "MsgCancelUnbondingDelegation": [
+      {
+        "name": "delegator_address",
+        "type": "string"
+      },
+      {
+        "name": "validator_address",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "creation_height",
+        "type": "int64"
+      }
+    ],
+    "MsgCancelUnbondingDelegationResponse": []
+  },
+  "/cosmos.tx.signing.v1beta1": {
+    "SignatureDescriptors": [
+      {
+        "name": "signatures",
+        "type": "SignatureDescriptor[]",
+        "packageName": "/cosmos.tx.signing.v1beta1"
+      }
+    ],
+    "SignatureDescriptor": [
+      {
+        "name": "public_key",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "data",
+        "type": "Data",
+        "packageName": "/cosmos.tx.signing.v1beta1.SignatureDescriptor"
+      },
+      {
+        "name": "sequence",
+        "type": "uint64"
+      }
+    ]
+  },
+  "/cosmos.tx.v1beta1": {
+    "Tx": [
+      {
+        "name": "body",
+        "type": "TxBody",
+        "packageName": "/cosmos.tx.v1beta1"
+      },
+      {
+        "name": "auth_info",
+        "type": "AuthInfo",
+        "packageName": "/cosmos.tx.v1beta1"
+      },
+      {
+        "name": "signatures",
+        "type": "uint8[][]"
+      }
+    ],
+    "TxRaw": [
+      {
+        "name": "body_bytes",
+        "type": "uint8[]"
+      },
+      {
+        "name": "auth_info_bytes",
+        "type": "uint8[]"
+      },
+      {
+        "name": "signatures",
+        "type": "uint8[][]"
+      }
+    ],
+    "SignDoc": [
+      {
+        "name": "body_bytes",
+        "type": "uint8[]"
+      },
+      {
+        "name": "auth_info_bytes",
+        "type": "uint8[]"
+      },
+      {
+        "name": "chain_id",
+        "type": "string"
+      },
+      {
+        "name": "account_number",
+        "type": "uint64"
+      }
+    ],
+    "SignDocDirectAux": [
+      {
+        "name": "body_bytes",
+        "type": "uint8[]"
+      },
+      {
+        "name": "public_key",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "chain_id",
+        "type": "string"
+      },
+      {
+        "name": "account_number",
+        "type": "uint64"
+      },
+      {
+        "name": "sequence",
+        "type": "uint64"
+      },
+      {
+        "name": "tip",
+        "type": "Tip",
+        "packageName": "/cosmos.tx.v1beta1"
+      }
+    ],
+    "TxBody": [
+      {
+        "name": "messages",
+        "type": "Any[]",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "memo",
+        "type": "string"
+      },
+      {
+        "name": "timeout_height",
+        "type": "uint64"
+      },
+      {
+        "name": "extension_options",
+        "type": "Any[]",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "non_critical_extension_options",
+        "type": "Any[]",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "AuthInfo": [
+      {
+        "name": "signer_infos",
+        "type": "SignerInfo[]",
+        "packageName": "/cosmos.tx.v1beta1"
+      },
+      {
+        "name": "fee",
+        "type": "Fee",
+        "packageName": "/cosmos.tx.v1beta1"
+      },
+      {
+        "name": "tip",
+        "type": "Tip",
+        "packageName": "/cosmos.tx.v1beta1"
+      }
+    ],
+    "SignerInfo": [
+      {
+        "name": "public_key",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "mode_info",
+        "type": "ModeInfo",
+        "packageName": "/cosmos.tx.v1beta1"
+      },
+      {
+        "name": "sequence",
+        "type": "uint64"
+      }
+    ],
+    "ModeInfo": [
+      {
+        "name": "single",
+        "type": "Single",
+        "packageName": "/cosmos.tx.v1beta1.ModeInfo"
+      },
+      {
+        "name": "multi",
+        "type": "Multi",
+        "packageName": "/cosmos.tx.v1beta1.ModeInfo"
+      }
+    ],
+    "Fee": [
+      {
+        "name": "amount",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "gas_limit",
+        "type": "uint64"
+      },
+      {
+        "name": "payer",
+        "type": "string"
+      },
+      {
+        "name": "granter",
+        "type": "string"
+      }
+    ],
+    "Tip": [
+      {
+        "name": "amount",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "tipper",
+        "type": "string"
+      }
+    ],
+    "AuxSignerData": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "sign_doc",
+        "type": "SignDocDirectAux",
+        "packageName": "/cosmos.tx.v1beta1"
+      },
+      {
+        "name": "mode",
+        "type": "",
+        "packageName": "/cosmos.tx.signing.v1beta1"
+      },
+      {
+        "name": "sig",
+        "type": "uint8[]"
+      }
+    ],
+    "GetTxsEventRequest": [
+      {
+        "name": "events",
+        "type": "string[]"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      },
+      {
+        "name": "order_by",
+        "type": "",
+        "packageName": "/cosmos.tx.v1beta1"
+      },
+      {
+        "name": "page",
+        "type": "uint64"
+      },
+      {
+        "name": "limit",
+        "type": "uint64"
+      }
+    ],
+    "GetTxsEventResponse": [
+      {
+        "name": "txs",
+        "type": "Tx[]",
+        "packageName": "/cosmos.tx.v1beta1"
+      },
+      {
+        "name": "tx_responses",
+        "type": "TxResponse[]",
+        "packageName": "/cosmos.base.abci.v1beta1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      },
+      {
+        "name": "total",
+        "type": "uint64"
+      }
+    ],
+    "BroadcastTxRequest": [
+      {
+        "name": "tx_bytes",
+        "type": "uint8[]"
+      },
+      {
+        "name": "mode",
+        "type": "",
+        "packageName": "/cosmos.tx.v1beta1"
+      }
+    ],
+    "BroadcastTxResponse": [
+      {
+        "name": "tx_response",
+        "type": "TxResponse",
+        "packageName": "/cosmos.base.abci.v1beta1"
+      }
+    ],
+    "SimulateRequest": [
+      {
+        "name": "tx",
+        "type": "Tx",
+        "packageName": "/cosmos.tx.v1beta1"
+      },
+      {
+        "name": "tx_bytes",
+        "type": "uint8[]"
+      }
+    ],
+    "SimulateResponse": [
+      {
+        "name": "gas_info",
+        "type": "GasInfo",
+        "packageName": "/cosmos.base.abci.v1beta1"
+      },
+      {
+        "name": "result",
+        "type": "Result",
+        "packageName": "/cosmos.base.abci.v1beta1"
+      }
+    ],
+    "GetTxRequest": [
+      {
+        "name": "hash",
+        "type": "string"
+      }
+    ],
+    "GetTxResponse": [
+      {
+        "name": "tx",
+        "type": "Tx",
+        "packageName": "/cosmos.tx.v1beta1"
+      },
+      {
+        "name": "tx_response",
+        "type": "TxResponse",
+        "packageName": "/cosmos.base.abci.v1beta1"
+      }
+    ],
+    "GetBlockWithTxsRequest": [
+      {
+        "name": "height",
+        "type": "int64"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "GetBlockWithTxsResponse": [
+      {
+        "name": "txs",
+        "type": "Tx[]",
+        "packageName": "/cosmos.tx.v1beta1"
+      },
+      {
+        "name": "block_id",
+        "type": "BlockID",
+        "packageName": "/tendermint.types"
+      },
+      {
+        "name": "block",
+        "type": "Block",
+        "packageName": "/tendermint.types"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ]
+  },
+  "/cosmos.upgrade.v1beta1": {
+    "Plan": [
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "time",
+        "type": "string"
+      },
+      {
+        "name": "height",
+        "type": "int64"
+      },
+      {
+        "name": "info",
+        "type": "string"
+      },
+      {
+        "name": "upgraded_client_state",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "SoftwareUpgradeProposal": [
+      {
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "plan",
+        "type": "Plan",
+        "packageName": "/cosmos.upgrade.v1beta1"
+      }
+    ],
+    "CancelSoftwareUpgradeProposal": [
+      {
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      }
+    ],
+    "ModuleVersion": [
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "version",
+        "type": "uint64"
+      }
+    ],
+    "QueryCurrentPlanRequest": [],
+    "QueryCurrentPlanResponse": [
+      {
+        "name": "plan",
+        "type": "Plan",
+        "packageName": "/cosmos.upgrade.v1beta1"
+      }
+    ],
+    "QueryAppliedPlanRequest": [
+      {
+        "name": "name",
+        "type": "string"
+      }
+    ],
+    "QueryAppliedPlanResponse": [
+      {
+        "name": "height",
+        "type": "int64"
+      }
+    ],
+    "QueryUpgradedConsensusStateRequest": [
+      {
+        "name": "last_height",
+        "type": "int64"
+      }
+    ],
+    "QueryUpgradedConsensusStateResponse": [
+      {
+        "name": "upgraded_consensus_state",
+        "type": "uint8[]"
+      }
+    ],
+    "QueryModuleVersionsRequest": [
+      {
+        "name": "module_name",
+        "type": "string"
+      }
+    ],
+    "QueryModuleVersionsResponse": [
+      {
+        "name": "module_versions",
+        "type": "ModuleVersion[]",
+        "packageName": "/cosmos.upgrade.v1beta1"
+      }
+    ],
+    "QueryAuthorityRequest": [],
+    "QueryAuthorityResponse": [
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "MsgSoftwareUpgrade": [
+      {
+        "name": "authority",
+        "type": "string"
+      },
+      {
+        "name": "plan",
+        "type": "Plan",
+        "packageName": "/cosmos.upgrade.v1beta1"
+      }
+    ],
+    "MsgSoftwareUpgradeResponse": [],
+    "MsgCancelUpgrade": [
+      {
+        "name": "authority",
+        "type": "string"
+      }
+    ],
+    "MsgCancelUpgradeResponse": []
+  },
+  "/cosmos.vesting.v1beta1": {
+    "BaseVestingAccount": [
+      {
+        "name": "base_account",
+        "type": "BaseAccount",
+        "packageName": "/cosmos.auth.v1beta1"
+      },
+      {
+        "name": "original_vesting",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "delegated_free",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "delegated_vesting",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "end_time",
+        "type": "int64"
+      }
+    ],
+    "ContinuousVestingAccount": [
+      {
+        "name": "base_vesting_account",
+        "type": "BaseVestingAccount",
+        "packageName": "/cosmos.vesting.v1beta1"
+      },
+      {
+        "name": "start_time",
+        "type": "int64"
+      }
+    ],
+    "DelayedVestingAccount": [
+      {
+        "name": "base_vesting_account",
+        "type": "BaseVestingAccount",
+        "packageName": "/cosmos.vesting.v1beta1"
+      }
+    ],
+    "Period": [
+      {
+        "name": "length",
+        "type": "int64"
+      },
+      {
+        "name": "amount",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "PeriodicVestingAccount": [
+      {
+        "name": "base_vesting_account",
+        "type": "BaseVestingAccount",
+        "packageName": "/cosmos.vesting.v1beta1"
+      },
+      {
+        "name": "start_time",
+        "type": "int64"
+      },
+      {
+        "name": "vesting_periods",
+        "type": "Period[]",
+        "packageName": "/cosmos.vesting.v1beta1"
+      }
+    ],
+    "PermanentLockedAccount": [
+      {
+        "name": "base_vesting_account",
+        "type": "BaseVestingAccount",
+        "packageName": "/cosmos.vesting.v1beta1"
+      }
+    ],
+    "MsgCreateVestingAccount": [
+      {
+        "name": "from_address",
+        "type": "string"
+      },
+      {
+        "name": "to_address",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "end_time",
+        "type": "int64"
+      },
+      {
+        "name": "delayed",
+        "type": "bool"
+      }
+    ],
+    "MsgCreateVestingAccountResponse": [],
+    "MsgCreatePermanentLockedAccount": [
+      {
+        "name": "from_address",
+        "type": "string"
+      },
+      {
+        "name": "to_address",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "MsgCreatePermanentLockedAccountResponse": [],
+    "MsgCreatePeriodicVestingAccount": [
+      {
+        "name": "from_address",
+        "type": "string"
+      },
+      {
+        "name": "to_address",
+        "type": "string"
+      },
+      {
+        "name": "start_time",
+        "type": "int64"
+      },
+      {
+        "name": "vesting_periods",
+        "type": "Period[]",
+        "packageName": "/cosmos.vesting.v1beta1"
+      }
+    ],
+    "MsgCreatePeriodicVestingAccountResponse": []
+  },
+  "/Switcheo.carbon.erc20": {
+    "TokenPair": [
+      {
+        "name": "erc20_address",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "enabled",
+        "type": "bool"
+      },
+      {
+        "name": "contract_owner",
+        "type": "",
+        "packageName": "/Switcheo.carbon.erc20"
+      }
+    ],
+    "EventRegisterPair": [
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "erc20_address",
+        "type": "string"
+      }
+    ],
+    "EventToggleTokenConversion": [
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "erc20_address",
+        "type": "string"
+      }
+    ],
+    "EventConvertCoin": [
+      {
+        "name": "sender",
+        "type": "string"
+      },
+      {
+        "name": "receiver",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "erc20_address",
+        "type": "string"
+      }
+    ],
+    "EventConvertERC20": [
+      {
+        "name": "sender",
+        "type": "string"
+      },
+      {
+        "name": "receiver",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "contract_address",
+        "type": "string"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.erc20"
+      },
+      {
+        "name": "token_pairs",
+        "type": "TokenPair[]",
+        "packageName": "/Switcheo.carbon.erc20"
+      }
+    ],
+    "Params": [
+      {
+        "name": "enable_erc20",
+        "type": "bool"
+      },
+      {
+        "name": "enable_evm_hook",
+        "type": "bool"
+      }
+    ],
+    "QueryTokenPairsRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryTokenPairsResponse": [
+      {
+        "name": "token_pairs",
+        "type": "TokenPair[]",
+        "packageName": "/Switcheo.carbon.erc20"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryTokenPairRequest": [
+      {
+        "name": "token",
+        "type": "string"
+      }
+    ],
+    "QueryTokenPairResponse": [
+      {
+        "name": "token_pair",
+        "type": "TokenPair",
+        "packageName": "/Switcheo.carbon.erc20"
+      }
+    ],
+    "QueryParamsRequest": [],
+    "QueryParamsResponse": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.erc20"
+      }
+    ],
+    "MsgConvertCoin": [
+      {
+        "name": "coin",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "receiver",
+        "type": "string"
+      },
+      {
+        "name": "sender",
+        "type": "string"
+      }
+    ],
+    "MsgConvertCoinResponse": [],
+    "MsgConvertERC20": [
+      {
+        "name": "contract_address",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "string"
+      },
+      {
+        "name": "receiver",
+        "type": "string"
+      },
+      {
+        "name": "sender",
+        "type": "string"
+      }
+    ],
+    "MsgConvertERC20Response": [],
+    "MsgUpdateParams": [
+      {
+        "name": "authority",
+        "type": "string"
+      },
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.erc20"
+      }
+    ],
+    "MsgUpdateParamsResponse": [],
+    "MsgRegisterToken": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      }
+    ],
+    "MsgRegisterTokenResponse": [
+      {
+        "name": "contract_address",
+        "type": "string"
+      }
+    ],
+    "MsgRegisterERC20": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "contract_address",
+        "type": "string"
+      }
+    ],
+    "MsgRegisterERC20Response": [
+      {
+        "name": "denom",
+        "type": "string"
+      }
+    ],
+    "MsgUpdateERC20Enabled": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "is_enabled",
+        "type": "bool"
+      }
+    ],
+    "MsgUpdateERC20EnabledResponse": [],
+    "MsgUpdateEVMHookEnabled": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "is_enabled",
+        "type": "bool"
+      }
+    ],
+    "MsgUpdateEVMHookEnabledResponse": []
+  },
+  "/ethermint.crypto.v1.ethsecp256k1": {
+    "PubKey": [
+      {
+        "name": "key",
+        "type": "uint8[]"
+      }
+    ],
+    "PrivKey": [
+      {
+        "name": "key",
+        "type": "uint8[]"
+      }
+    ]
+  },
+  "/ethermint.evm.v1": {
+    "EventEthereumTx": [
+      {
+        "name": "amount",
+        "type": "string"
+      },
+      {
+        "name": "eth_hash",
+        "type": "string"
+      },
+      {
+        "name": "index",
+        "type": "string"
+      },
+      {
+        "name": "gas_used",
+        "type": "string"
+      },
+      {
+        "name": "hash",
+        "type": "string"
+      },
+      {
+        "name": "recipient",
+        "type": "string"
+      },
+      {
+        "name": "eth_tx_failed",
+        "type": "string"
+      }
+    ],
+    "EventTxLog": [
+      {
+        "name": "tx_logs",
+        "type": "string[]"
+      }
+    ],
+    "EventMessage": [
+      {
+        "name": "module",
+        "type": "string"
+      },
+      {
+        "name": "sender",
+        "type": "string"
+      },
+      {
+        "name": "tx_type",
+        "type": "string"
+      }
+    ],
+    "EventBlockBloom": [
+      {
+        "name": "bloom",
+        "type": "string"
+      }
+    ],
+    "Params": [
+      {
+        "name": "evm_denom",
+        "type": "string"
+      },
+      {
+        "name": "enable_create",
+        "type": "bool"
+      },
+      {
+        "name": "enable_call",
+        "type": "bool"
+      },
+      {
+        "name": "extra_eips",
+        "type": "int64[]"
+      },
+      {
+        "name": "chain_config",
+        "type": "ChainConfig",
+        "packageName": "/ethermint.evm.v1"
+      },
+      {
+        "name": "allow_unprotected_txs",
+        "type": "bool"
+      }
+    ],
+    "ChainConfig": [
+      {
+        "name": "homestead_block",
+        "type": "string"
+      },
+      {
+        "name": "dao_fork_block",
+        "type": "string"
+      },
+      {
+        "name": "dao_fork_support",
+        "type": "bool"
+      },
+      {
+        "name": "eip150_block",
+        "type": "string"
+      },
+      {
+        "name": "eip150_hash",
+        "type": "string"
+      },
+      {
+        "name": "eip155_block",
+        "type": "string"
+      },
+      {
+        "name": "eip158_block",
+        "type": "string"
+      },
+      {
+        "name": "byzantium_block",
+        "type": "string"
+      },
+      {
+        "name": "constantinople_block",
+        "type": "string"
+      },
+      {
+        "name": "petersburg_block",
+        "type": "string"
+      },
+      {
+        "name": "istanbul_block",
+        "type": "string"
+      },
+      {
+        "name": "muir_glacier_block",
+        "type": "string"
+      },
+      {
+        "name": "berlin_block",
+        "type": "string"
+      },
+      {
+        "name": "london_block",
+        "type": "string"
+      },
+      {
+        "name": "arrow_glacier_block",
+        "type": "string"
+      },
+      {
+        "name": "gray_glacier_block",
+        "type": "string"
+      },
+      {
+        "name": "merge_netsplit_block",
+        "type": "string"
+      },
+      {
+        "name": "shanghai_block",
+        "type": "string"
+      },
+      {
+        "name": "cancun_block",
+        "type": "string"
+      }
+    ],
+    "State": [
+      {
+        "name": "key",
+        "type": "string"
+      },
+      {
+        "name": "value",
+        "type": "string"
+      }
+    ],
+    "TransactionLogs": [
+      {
+        "name": "hash",
+        "type": "string"
+      },
+      {
+        "name": "logs",
+        "type": "Log[]",
+        "packageName": "/ethermint.evm.v1"
+      }
+    ],
+    "Log": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "topics",
+        "type": "string[]"
+      },
+      {
+        "name": "data",
+        "type": "uint8[]"
+      },
+      {
+        "name": "block_number",
+        "type": "uint64"
+      },
+      {
+        "name": "tx_hash",
+        "type": "string"
+      },
+      {
+        "name": "tx_index",
+        "type": "uint64"
+      },
+      {
+        "name": "block_hash",
+        "type": "string"
+      },
+      {
+        "name": "index",
+        "type": "uint64"
+      },
+      {
+        "name": "removed",
+        "type": "bool"
+      }
+    ],
+    "TxResult": [
+      {
+        "name": "contract_address",
+        "type": "string"
+      },
+      {
+        "name": "bloom",
+        "type": "uint8[]"
+      },
+      {
+        "name": "tx_logs",
+        "type": "TransactionLogs",
+        "packageName": "/ethermint.evm.v1"
+      },
+      {
+        "name": "ret",
+        "type": "uint8[]"
+      },
+      {
+        "name": "reverted",
+        "type": "bool"
+      },
+      {
+        "name": "gas_used",
+        "type": "uint64"
+      }
+    ],
+    "AccessTuple": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "storage_keys",
+        "type": "string[]"
+      }
+    ],
+    "TraceConfig": [
+      {
+        "name": "tracer",
+        "type": "string"
+      },
+      {
+        "name": "timeout",
+        "type": "string"
+      },
+      {
+        "name": "reexec",
+        "type": "uint64"
+      },
+      {
+        "name": "disable_stack",
+        "type": "bool"
+      },
+      {
+        "name": "disable_storage",
+        "type": "bool"
+      },
+      {
+        "name": "debug",
+        "type": "bool"
+      },
+      {
+        "name": "limit",
+        "type": "int32"
+      },
+      {
+        "name": "overrides",
+        "type": "ChainConfig",
+        "packageName": "/ethermint.evm.v1"
+      },
+      {
+        "name": "enable_memory",
+        "type": "bool"
+      },
+      {
+        "name": "enable_return_data",
+        "type": "bool"
+      },
+      {
+        "name": "tracer_json_config",
+        "type": "string"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "accounts",
+        "type": "GenesisAccount[]",
+        "packageName": "/ethermint.evm.v1"
+      },
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/ethermint.evm.v1"
+      }
+    ],
+    "GenesisAccount": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "code",
+        "type": "string"
+      },
+      {
+        "name": "storage",
+        "type": "State[]",
+        "packageName": "/ethermint.evm.v1"
+      }
+    ],
+    "MsgEthereumTx": [
+      {
+        "name": "data",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "size",
+        "type": ""
+      },
+      {
+        "name": "hash",
+        "type": "string"
+      },
+      {
+        "name": "from",
+        "type": "string"
+      }
+    ],
+    "LegacyTx": [
+      {
+        "name": "nonce",
+        "type": "uint64"
+      },
+      {
+        "name": "gas_price",
+        "type": "string"
+      },
+      {
+        "name": "gas",
+        "type": "uint64"
+      },
+      {
+        "name": "to",
+        "type": "string"
+      },
+      {
+        "name": "value",
+        "type": "string"
+      },
+      {
+        "name": "data",
+        "type": "uint8[]"
+      },
+      {
+        "name": "v",
+        "type": "uint8[]"
+      },
+      {
+        "name": "r",
+        "type": "uint8[]"
+      },
+      {
+        "name": "s",
+        "type": "uint8[]"
+      }
+    ],
+    "AccessListTx": [
+      {
+        "name": "chain_id",
+        "type": "string"
+      },
+      {
+        "name": "nonce",
+        "type": "uint64"
+      },
+      {
+        "name": "gas_price",
+        "type": "string"
+      },
+      {
+        "name": "gas",
+        "type": "uint64"
+      },
+      {
+        "name": "to",
+        "type": "string"
+      },
+      {
+        "name": "value",
+        "type": "string"
+      },
+      {
+        "name": "data",
+        "type": "uint8[]"
+      },
+      {
+        "name": "accesses",
+        "type": "AccessTuple[]",
+        "packageName": "/ethermint.evm.v1"
+      },
+      {
+        "name": "v",
+        "type": "uint8[]"
+      },
+      {
+        "name": "r",
+        "type": "uint8[]"
+      },
+      {
+        "name": "s",
+        "type": "uint8[]"
+      }
+    ],
+    "DynamicFeeTx": [
+      {
+        "name": "chain_id",
+        "type": "string"
+      },
+      {
+        "name": "nonce",
+        "type": "uint64"
+      },
+      {
+        "name": "gas_tip_cap",
+        "type": "string"
+      },
+      {
+        "name": "gas_fee_cap",
+        "type": "string"
+      },
+      {
+        "name": "gas",
+        "type": "uint64"
+      },
+      {
+        "name": "to",
+        "type": "string"
+      },
+      {
+        "name": "value",
+        "type": "string"
+      },
+      {
+        "name": "data",
+        "type": "uint8[]"
+      },
+      {
+        "name": "accesses",
+        "type": "AccessTuple[]",
+        "packageName": "/ethermint.evm.v1"
+      },
+      {
+        "name": "v",
+        "type": "uint8[]"
+      },
+      {
+        "name": "r",
+        "type": "uint8[]"
+      },
+      {
+        "name": "s",
+        "type": "uint8[]"
+      }
+    ],
+    "ExtensionOptionsEthereumTx": [],
+    "MsgEthereumTxResponse": [
+      {
+        "name": "hash",
+        "type": "string"
+      },
+      {
+        "name": "logs",
+        "type": "Log[]",
+        "packageName": "/ethermint.evm.v1"
+      },
+      {
+        "name": "ret",
+        "type": "uint8[]"
+      },
+      {
+        "name": "vm_error",
+        "type": "string"
+      },
+      {
+        "name": "gas_used",
+        "type": "uint64"
+      }
+    ],
+    "MsgUpdateParams": [
+      {
+        "name": "authority",
+        "type": "string"
+      },
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/ethermint.evm.v1"
+      }
+    ],
+    "MsgUpdateParamsResponse": [],
+    "QueryAccountRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "QueryAccountResponse": [
+      {
+        "name": "balance",
+        "type": "string"
+      },
+      {
+        "name": "code_hash",
+        "type": "string"
+      },
+      {
+        "name": "nonce",
+        "type": "uint64"
+      }
+    ],
+    "QueryCosmosAccountRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "QueryCosmosAccountResponse": [
+      {
+        "name": "cosmos_address",
+        "type": "string"
+      },
+      {
+        "name": "sequence",
+        "type": "uint64"
+      },
+      {
+        "name": "account_number",
+        "type": "uint64"
+      }
+    ],
+    "QueryValidatorAccountRequest": [
+      {
+        "name": "cons_address",
+        "type": "string"
+      }
+    ],
+    "QueryValidatorAccountResponse": [
+      {
+        "name": "account_address",
+        "type": "string"
+      },
+      {
+        "name": "sequence",
+        "type": "uint64"
+      },
+      {
+        "name": "account_number",
+        "type": "uint64"
+      }
+    ],
+    "QueryBalanceRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "QueryBalanceResponse": [
+      {
+        "name": "balance",
+        "type": "string"
+      }
+    ],
+    "QueryStorageRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "key",
+        "type": "string"
+      }
+    ],
+    "QueryStorageResponse": [
+      {
+        "name": "value",
+        "type": "string"
+      }
+    ],
+    "QueryCodeRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "QueryCodeResponse": [
+      {
+        "name": "code",
+        "type": "uint8[]"
+      }
+    ],
+    "QueryTxLogsRequest": [
+      {
+        "name": "hash",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryTxLogsResponse": [
+      {
+        "name": "logs",
+        "type": "Log[]",
+        "packageName": "/ethermint.evm.v1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryParamsRequest": [],
+    "QueryParamsResponse": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/ethermint.evm.v1"
+      }
+    ],
+    "EthCallRequest": [
+      {
+        "name": "args",
+        "type": "uint8[]"
+      },
+      {
+        "name": "gas_cap",
+        "type": "uint64"
+      },
+      {
+        "name": "proposer_address",
+        "type": "uint8[]"
+      },
+      {
+        "name": "chain_id",
+        "type": "int64"
+      }
+    ],
+    "EstimateGasResponse": [
+      {
+        "name": "gas",
+        "type": "uint64"
+      }
+    ],
+    "QueryTraceTxRequest": [
+      {
+        "name": "msg",
+        "type": "MsgEthereumTx",
+        "packageName": "/ethermint.evm.v1"
+      },
+      {
+        "name": "trace_config",
+        "type": "TraceConfig",
+        "packageName": "/ethermint.evm.v1"
+      },
+      {
+        "name": "predecessors",
+        "type": "MsgEthereumTx[]",
+        "packageName": "/ethermint.evm.v1"
+      },
+      {
+        "name": "block_number",
+        "type": "int64"
+      },
+      {
+        "name": "block_hash",
+        "type": "string"
+      },
+      {
+        "name": "block_time",
+        "type": "string"
+      },
+      {
+        "name": "proposer_address",
+        "type": "uint8[]"
+      },
+      {
+        "name": "chain_id",
+        "type": "int64"
+      }
+    ],
+    "QueryTraceTxResponse": [
+      {
+        "name": "data",
+        "type": "uint8[]"
+      }
+    ],
+    "QueryTraceBlockRequest": [
+      {
+        "name": "txs",
+        "type": "MsgEthereumTx[]",
+        "packageName": "/ethermint.evm.v1"
+      },
+      {
+        "name": "trace_config",
+        "type": "TraceConfig",
+        "packageName": "/ethermint.evm.v1"
+      },
+      {
+        "name": "block_number",
+        "type": "int64"
+      },
+      {
+        "name": "block_hash",
+        "type": "string"
+      },
+      {
+        "name": "block_time",
+        "type": "string"
+      },
+      {
+        "name": "proposer_address",
+        "type": "uint8[]"
+      },
+      {
+        "name": "chain_id",
+        "type": "int64"
+      }
+    ],
+    "QueryTraceBlockResponse": [
+      {
+        "name": "data",
+        "type": "uint8[]"
+      }
+    ],
+    "QueryBaseFeeRequest": [],
+    "QueryBaseFeeResponse": [
+      {
+        "name": "base_fee",
+        "type": "string"
+      }
+    ]
+  },
+  "/ethermint.feemarket.v1": {
+    "EventFeeMarket": [
+      {
+        "name": "base_fee",
+        "type": "string"
+      }
+    ],
+    "EventBlockGas": [
+      {
+        "name": "height",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "string"
+      }
+    ],
+    "Params": [
+      {
+        "name": "no_base_fee",
+        "type": "bool"
+      },
+      {
+        "name": "base_fee_change_denominator",
+        "type": "uint32"
+      },
+      {
+        "name": "elasticity_multiplier",
+        "type": "uint32"
+      },
+      {
+        "name": "enable_height",
+        "type": "int64"
+      },
+      {
+        "name": "base_fee",
+        "type": "string"
+      },
+      {
+        "name": "min_gas_price",
+        "type": "string"
+      },
+      {
+        "name": "min_gas_multiplier",
+        "type": "string"
+      },
+      {
+        "name": "gas_limit_per_block",
+        "type": "string"
+      },
+      {
+        "name": "max_base_fee",
+        "type": "string"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/ethermint.feemarket.v1"
+      },
+      {
+        "name": "block_gas",
+        "type": "uint64"
+      }
+    ],
+    "QueryParamsRequest": [],
+    "QueryParamsResponse": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/ethermint.feemarket.v1"
+      }
+    ],
+    "QueryBaseFeeRequest": [],
+    "QueryBaseFeeResponse": [
+      {
+        "name": "base_fee",
+        "type": "string"
+      }
+    ],
+    "QueryBlockGasRequest": [],
+    "QueryBlockGasResponse": [
+      {
+        "name": "gas",
+        "type": "int64"
+      }
+    ],
+    "MsgUpdateParams": [
+      {
+        "name": "authority",
+        "type": "string"
+      },
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/ethermint.feemarket.v1"
+      }
+    ],
+    "MsgUpdateParamsResponse": []
+  },
+  "/ethermint.types.v1": {
+    "EthAccount": [
+      {
+        "name": "base_account",
+        "type": "BaseAccount",
+        "packageName": "/cosmos.auth.v1beta1"
+      },
+      {
+        "name": "code_hash",
+        "type": "string"
+      }
+    ],
+    "ExtensionOptionDynamicFeeTx": [
+      {
+        "name": "max_priority_price",
+        "type": "string"
+      }
+    ],
+    "TxResult": [
+      {
+        "name": "height",
+        "type": "int64"
+      },
+      {
+        "name": "tx_index",
+        "type": "uint32"
+      },
+      {
+        "name": "msg_index",
+        "type": "uint32"
+      },
+      {
+        "name": "eth_tx_index",
+        "type": "int32"
+      },
+      {
+        "name": "failed",
+        "type": "bool"
+      },
+      {
+        "name": "gas_used",
+        "type": "uint64"
+      },
+      {
+        "name": "cumulative_gas_used",
+        "type": "uint64"
+      }
+    ],
+    "ExtensionOptionsWeb3Tx": [
+      {
+        "name": "typed_data_chain_id",
+        "type": "uint64"
+      },
+      {
+        "name": "fee_payer",
+        "type": "string"
+      },
+      {
+        "name": "fee_payer_sig",
+        "type": "uint8[]"
+      }
+    ]
+  },
+  "/Switcheo.carbon.evmbank": {
+    "GenesisState": [
+      {
+        "name": "accounts",
+        "type": "Account[]",
+        "packageName": "/Switcheo.carbon.evmbank"
+      }
+    ],
+    "Account": [
+      {
+        "name": "address",
+        "type": "uint8[]"
+      },
+      {
+        "name": "balance",
+        "type": "string"
+      }
+    ],
+    "QueryAccountBalanceRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "QueryAccountBalanceResponse": [
+      {
+        "name": "balance",
+        "type": "string"
+      }
+    ]
+  },
+  "/Switcheo.carbon.evmmerge": {
+    "MergeAccountEvent": [
+      {
+        "name": "eth_address",
+        "type": "string"
+      },
+      {
+        "name": "cosmos_address",
+        "type": "string"
+      },
+      {
+        "name": "new_cosmos_acc_created",
+        "type": "bool"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "eth_to_cosmos_address_map",
+        "type": "EthToCosmosAddressMapEntry[]",
+        "packageName": "/Switcheo.carbon.evmmerge.GenesisState"
+      },
+      {
+        "name": "cosmos_to_eth_address_map",
+        "type": "CosmosToEthAddressMapEntry[]",
+        "packageName": "/Switcheo.carbon.evmmerge.GenesisState"
+      }
+    ],
+    "MsgSignData": [
+      {
+        "name": "signer",
+        "type": "uint8[]"
+      },
+      {
+        "name": "data",
+        "type": "uint8[]"
+      }
+    ],
+    "QueryMappedAddressRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "QueryMappedAddressResponse": [
+      {
+        "name": "mapped_address",
+        "type": "string"
+      }
+    ],
+    "MsgMergeAccount": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "pub_key",
+        "type": "string"
+      },
+      {
+        "name": "pub_key_sig",
+        "type": "string"
+      }
+    ],
+    "MsgMergeAccountResponse": []
+  },
+  "/Switcheo.carbon.fee": {
+    "FeeDeductionEvent": [
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "fee_amount",
+        "type": "string"
+      },
+      {
+        "name": "gas_cost",
+        "type": "string"
+      }
+    ],
+    "MsgFee": [
+      {
+        "name": "msg_type",
+        "type": "string"
+      },
+      {
+        "name": "fee",
+        "type": "string"
+      }
+    ],
+    "MsgGasCost": [
+      {
+        "name": "msg_type",
+        "type": "string"
+      },
+      {
+        "name": "gas_cost",
+        "type": "string"
+      }
+    ],
+    "MinGasPrice": [
+      {
+        "name": "gas_price",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "msg_gas_costs",
+        "type": "MsgGasCost[]",
+        "packageName": "/Switcheo.carbon.fee"
+      },
+      {
+        "name": "min_gas_prices",
+        "type": "MinGasPrice[]",
+        "packageName": "/Switcheo.carbon.fee"
+      }
+    ],
+    "SetMsgGasCostProposal": [
+      {
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "msg",
+        "type": "MsgGasCost",
+        "packageName": "/Switcheo.carbon.fee"
+      }
+    ],
+    "SetMinGasPriceProposal": [
+      {
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "msg",
+        "type": "MinGasPrice",
+        "packageName": "/Switcheo.carbon.fee"
+      }
+    ],
+    "RemoveMsgGasCostProposal": [
+      {
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "msgType",
+        "type": "string"
+      }
+    ],
+    "RemoveMinGasPriceProposal": [
+      {
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      }
+    ],
+    "QueryGetMsgGasCostRequest": [
+      {
+        "name": "msg_type",
+        "type": "string"
+      }
+    ],
+    "QueryGetMsgGasCostResponse": [
+      {
+        "name": "msg_gas_cost",
+        "type": "MsgGasCost",
+        "packageName": "/Switcheo.carbon.fee"
+      }
+    ],
+    "QueryAllMsgGasCostRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllMsgGasCostResponse": [
+      {
+        "name": "msg_gas_costs",
+        "type": "MsgGasCost[]",
+        "packageName": "/Switcheo.carbon.fee"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryGetMinGasPriceRequest": [
+      {
+        "name": "denom",
+        "type": "string"
+      }
+    ],
+    "QueryGetMinGasPriceResponse": [
+      {
+        "name": "min_gas_price",
+        "type": "MinGasPrice",
+        "packageName": "/Switcheo.carbon.fee"
+      }
+    ],
+    "QueryAllMinGasPriceRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllMinGasPriceResponse": [
+      {
+        "name": "min_gas_prices",
+        "type": "MinGasPrice[]",
+        "packageName": "/Switcheo.carbon.fee"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "MsgSetGasCost": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "set_gas_cost_params",
+        "type": "MsgGasCost",
+        "packageName": "/Switcheo.carbon.fee"
+      }
+    ],
+    "MsgSetGasCostResponse": [],
+    "MsgSetMinGasPrice": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "set_min_gas_price_params",
+        "type": "MinGasPrice",
+        "packageName": "/Switcheo.carbon.fee"
+      }
+    ],
+    "MsgSetMinGasPriceResponse": [],
+    "MsgRemoveGasCost": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "msg_type",
+        "type": "string"
+      }
+    ],
+    "MsgRemoveGasCostResponse": [],
+    "MsgRemoveMinGasPrice": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      }
+    ],
+    "MsgRemoveMinGasPriceResponse": []
+  },
+  "/Switcheo.carbon.headersync": {
+    "Peer": [
+      {
+        "name": "index",
+        "type": "uint32"
+      },
+      {
+        "name": "pubkey",
+        "type": "string"
+      }
+    ],
+    "ConsensusPeers": [
+      {
+        "name": "chain_id",
+        "type": "uint64"
+      },
+      {
+        "name": "height",
+        "type": "uint32"
+      },
+      {
+        "name": "peers",
+        "type": "PeersEntry[]",
+        "packageName": "/Switcheo.carbon.headersync.ConsensusPeers"
+      }
+    ],
+    "ZionConsensusPeers": [
+      {
+        "name": "chain_id",
+        "type": "uint64"
+      },
+      {
+        "name": "epoch_start_height",
+        "type": "uint32"
+      },
+      {
+        "name": "epoch_end_height",
+        "type": "uint32"
+      },
+      {
+        "name": "peers",
+        "type": "PeersEntry[]",
+        "packageName": "/Switcheo.carbon.headersync.ZionConsensusPeers"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "consensus_peers",
+        "type": "ConsensusPeersEntry[]",
+        "packageName": "/Switcheo.carbon.headersync.GenesisState"
+      },
+      {
+        "name": "checkpoint_hashes",
+        "type": "CheckpointHashesEntry[]",
+        "packageName": "/Switcheo.carbon.headersync.GenesisState"
+      },
+      {
+        "name": "zion_consensus_peers",
+        "type": "ZionConsensusPeersEntry[]",
+        "packageName": "/Switcheo.carbon.headersync.GenesisState"
+      },
+      {
+        "name": "zion_checkpoint_hashes",
+        "type": "ZionCheckpointHashesEntry[]",
+        "packageName": "/Switcheo.carbon.headersync.GenesisState"
+      }
+    ],
+    "QueryGetConsensusPeersRequest": [
+      {
+        "name": "chain_id",
+        "type": "uint64"
+      }
+    ],
+    "QueryGetConsensusPeersResponse": [
+      {
+        "name": "consensus_peers",
+        "type": "ConsensusPeers",
+        "packageName": "/Switcheo.carbon.headersync"
+      }
+    ],
+    "QueryGetZionConsensusPeersRequest": [
+      {
+        "name": "chain_id",
+        "type": "uint64"
+      }
+    ],
+    "QueryGetZionConsensusPeersResponse": [
+      {
+        "name": "zion_consensus_peers",
+        "type": "ZionConsensusPeers",
+        "packageName": "/Switcheo.carbon.headersync"
+      }
+    ],
+    "MsgSyncGenesis": [
+      {
+        "name": "syncer",
+        "type": "string"
+      },
+      {
+        "name": "genesis_header",
+        "type": "string"
+      }
+    ],
+    "MsgSyncGenesisResponse": [],
+    "MsgSyncHeaders": [
+      {
+        "name": "syncer",
+        "type": "string"
+      },
+      {
+        "name": "headers",
+        "type": "string[]"
+      }
+    ],
+    "MsgSyncHeadersResponse": []
+  },
+  "/ibc.applications.fee.v1": {
+    "IncentivizedAcknowledgement": [
+      {
+        "name": "app_acknowledgement",
+        "type": "uint8[]"
+      },
+      {
+        "name": "forward_relayer_address",
+        "type": "string"
+      },
+      {
+        "name": "underlying_app_success",
+        "type": "bool"
+      }
+    ],
+    "Fee": [
+      {
+        "name": "recv_fee",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "ack_fee",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "timeout_fee",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "PacketFee": [
+      {
+        "name": "fee",
+        "type": "Fee",
+        "packageName": "/ibc.applications.fee.v1"
+      },
+      {
+        "name": "refund_address",
+        "type": "string"
+      },
+      {
+        "name": "relayers",
+        "type": "string[]"
+      }
+    ],
+    "PacketFees": [
+      {
+        "name": "packet_fees",
+        "type": "PacketFee[]",
+        "packageName": "/ibc.applications.fee.v1"
+      }
+    ],
+    "IdentifiedPacketFees": [
+      {
+        "name": "packet_id",
+        "type": "PacketId",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "packet_fees",
+        "type": "PacketFee[]",
+        "packageName": "/ibc.applications.fee.v1"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "identified_fees",
+        "type": "IdentifiedPacketFees[]",
+        "packageName": "/ibc.applications.fee.v1"
+      },
+      {
+        "name": "fee_enabled_channels",
+        "type": "FeeEnabledChannel[]",
+        "packageName": "/ibc.applications.fee.v1"
+      },
+      {
+        "name": "registered_payees",
+        "type": "RegisteredPayee[]",
+        "packageName": "/ibc.applications.fee.v1"
+      },
+      {
+        "name": "registered_counterparty_payees",
+        "type": "RegisteredCounterpartyPayee[]",
+        "packageName": "/ibc.applications.fee.v1"
+      },
+      {
+        "name": "forward_relayers",
+        "type": "ForwardRelayerAddress[]",
+        "packageName": "/ibc.applications.fee.v1"
+      }
+    ],
+    "FeeEnabledChannel": [
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "channel_id",
+        "type": "string"
+      }
+    ],
+    "RegisteredPayee": [
+      {
+        "name": "channel_id",
+        "type": "string"
+      },
+      {
+        "name": "relayer",
+        "type": "string"
+      },
+      {
+        "name": "payee",
+        "type": "string"
+      }
+    ],
+    "RegisteredCounterpartyPayee": [
+      {
+        "name": "channel_id",
+        "type": "string"
+      },
+      {
+        "name": "relayer",
+        "type": "string"
+      },
+      {
+        "name": "counterparty_payee",
+        "type": "string"
+      }
+    ],
+    "ForwardRelayerAddress": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "packet_id",
+        "type": "PacketId",
+        "packageName": "/ibc.core.channel.v1"
+      }
+    ],
+    "Metadata": [
+      {
+        "name": "fee_version",
+        "type": "string"
+      },
+      {
+        "name": "app_version",
+        "type": "string"
+      }
+    ],
+    "QueryIncentivizedPacketsRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      },
+      {
+        "name": "query_height",
+        "type": "uint64"
+      }
+    ],
+    "QueryIncentivizedPacketsResponse": [
+      {
+        "name": "incentivized_packets",
+        "type": "IdentifiedPacketFees[]",
+        "packageName": "/ibc.applications.fee.v1"
+      }
+    ],
+    "QueryIncentivizedPacketRequest": [
+      {
+        "name": "packet_id",
+        "type": "PacketId",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "query_height",
+        "type": "uint64"
+      }
+    ],
+    "QueryIncentivizedPacketResponse": [
+      {
+        "name": "incentivized_packet",
+        "type": "IdentifiedPacketFees",
+        "packageName": "/ibc.applications.fee.v1"
+      }
+    ],
+    "QueryIncentivizedPacketsForChannelRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      },
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "channel_id",
+        "type": "string"
+      },
+      {
+        "name": "query_height",
+        "type": "uint64"
+      }
+    ],
+    "QueryIncentivizedPacketsForChannelResponse": [
+      {
+        "name": "incentivized_packets",
+        "type": "IdentifiedPacketFees[]",
+        "packageName": "/ibc.applications.fee.v1"
+      }
+    ],
+    "QueryTotalRecvFeesRequest": [
+      {
+        "name": "packet_id",
+        "type": "PacketId",
+        "packageName": "/ibc.core.channel.v1"
+      }
+    ],
+    "QueryTotalRecvFeesResponse": [
+      {
+        "name": "recv_fees",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "QueryTotalAckFeesRequest": [
+      {
+        "name": "packet_id",
+        "type": "PacketId",
+        "packageName": "/ibc.core.channel.v1"
+      }
+    ],
+    "QueryTotalAckFeesResponse": [
+      {
+        "name": "ack_fees",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "QueryTotalTimeoutFeesRequest": [
+      {
+        "name": "packet_id",
+        "type": "PacketId",
+        "packageName": "/ibc.core.channel.v1"
+      }
+    ],
+    "QueryTotalTimeoutFeesResponse": [
+      {
+        "name": "timeout_fees",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "QueryPayeeRequest": [
+      {
+        "name": "channel_id",
+        "type": "string"
+      },
+      {
+        "name": "relayer",
+        "type": "string"
+      }
+    ],
+    "QueryPayeeResponse": [
+      {
+        "name": "payee_address",
+        "type": "string"
+      }
+    ],
+    "QueryCounterpartyPayeeRequest": [
+      {
+        "name": "channel_id",
+        "type": "string"
+      },
+      {
+        "name": "relayer",
+        "type": "string"
+      }
+    ],
+    "QueryCounterpartyPayeeResponse": [
+      {
+        "name": "counterparty_payee",
+        "type": "string"
+      }
+    ],
+    "QueryFeeEnabledChannelsRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      },
+      {
+        "name": "query_height",
+        "type": "uint64"
+      }
+    ],
+    "QueryFeeEnabledChannelsResponse": [
+      {
+        "name": "fee_enabled_channels",
+        "type": "FeeEnabledChannel[]",
+        "packageName": "/ibc.applications.fee.v1"
+      }
+    ],
+    "QueryFeeEnabledChannelRequest": [
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "channel_id",
+        "type": "string"
+      }
+    ],
+    "QueryFeeEnabledChannelResponse": [
+      {
+        "name": "fee_enabled",
+        "type": "bool"
+      }
+    ],
+    "MsgRegisterPayee": [
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "channel_id",
+        "type": "string"
+      },
+      {
+        "name": "relayer",
+        "type": "string"
+      },
+      {
+        "name": "payee",
+        "type": "string"
+      }
+    ],
+    "MsgRegisterPayeeResponse": [],
+    "MsgRegisterCounterpartyPayee": [
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "channel_id",
+        "type": "string"
+      },
+      {
+        "name": "relayer",
+        "type": "string"
+      },
+      {
+        "name": "counterparty_payee",
+        "type": "string"
+      }
+    ],
+    "MsgRegisterCounterpartyPayeeResponse": [],
+    "MsgPayPacketFee": [
+      {
+        "name": "fee",
+        "type": "Fee",
+        "packageName": "/ibc.applications.fee.v1"
+      },
+      {
+        "name": "source_port_id",
+        "type": "string"
+      },
+      {
+        "name": "source_channel_id",
+        "type": "string"
+      },
+      {
+        "name": "signer",
+        "type": "string"
+      },
+      {
+        "name": "relayers",
+        "type": "string[]"
+      }
+    ],
+    "MsgPayPacketFeeResponse": [],
+    "MsgPayPacketFeeAsync": [
+      {
+        "name": "packet_id",
+        "type": "PacketId",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "packet_fee",
+        "type": "PacketFee",
+        "packageName": "/ibc.applications.fee.v1"
+      }
+    ],
+    "MsgPayPacketFeeAsyncResponse": []
+  },
+  "/ibc.core.client.v1": {
+    "IdentifiedClientState": [
+      {
+        "name": "client_id",
+        "type": "string"
+      },
+      {
+        "name": "client_state",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "ConsensusStateWithHeight": [
+      {
+        "name": "height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      },
+      {
+        "name": "consensus_state",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "ClientConsensusStates": [
+      {
+        "name": "client_id",
+        "type": "string"
+      },
+      {
+        "name": "consensus_states",
+        "type": "ConsensusStateWithHeight[]",
+        "packageName": "/ibc.core.client.v1"
+      }
+    ],
+    "ClientUpdateProposal": [
+      {
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "subject_client_id",
+        "type": "string"
+      },
+      {
+        "name": "substitute_client_id",
+        "type": "string"
+      }
+    ],
+    "UpgradeProposal": [
+      {
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "plan",
+        "type": "Plan",
+        "packageName": "/cosmos.upgrade.v1beta1"
+      },
+      {
+        "name": "upgraded_client_state",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "Height": [
+      {
+        "name": "revision_number",
+        "type": "uint64"
+      },
+      {
+        "name": "revision_height",
+        "type": "uint64"
+      }
+    ],
+    "Params": [
+      {
+        "name": "allowed_clients",
+        "type": "string[]"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "clients",
+        "type": "IdentifiedClientState[]",
+        "packageName": "/ibc.core.client.v1"
+      },
+      {
+        "name": "clients_consensus",
+        "type": "ClientConsensusStates[]",
+        "packageName": "/ibc.core.client.v1"
+      },
+      {
+        "name": "clients_metadata",
+        "type": "IdentifiedGenesisMetadata[]",
+        "packageName": "/ibc.core.client.v1"
+      },
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/ibc.core.client.v1"
+      },
+      {
+        "name": "create_localhost",
+        "type": "bool"
+      },
+      {
+        "name": "next_client_sequence",
+        "type": "uint64"
+      }
+    ],
+    "GenesisMetadata": [
+      {
+        "name": "key",
+        "type": "uint8[]"
+      },
+      {
+        "name": "value",
+        "type": "uint8[]"
+      }
+    ],
+    "IdentifiedGenesisMetadata": [
+      {
+        "name": "client_id",
+        "type": "string"
+      },
+      {
+        "name": "client_metadata",
+        "type": "GenesisMetadata[]",
+        "packageName": "/ibc.core.client.v1"
+      }
+    ],
+    "QueryClientStateRequest": [
+      {
+        "name": "client_id",
+        "type": "string"
+      }
+    ],
+    "QueryClientStateResponse": [
+      {
+        "name": "client_state",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "proof",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      }
+    ],
+    "QueryClientStatesRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryClientStatesResponse": [
+      {
+        "name": "client_states",
+        "type": "IdentifiedClientState[]",
+        "packageName": "/ibc.core.client.v1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryConsensusStateRequest": [
+      {
+        "name": "client_id",
+        "type": "string"
+      },
+      {
+        "name": "revision_number",
+        "type": "uint64"
+      },
+      {
+        "name": "revision_height",
+        "type": "uint64"
+      },
+      {
+        "name": "latest_height",
+        "type": "bool"
+      }
+    ],
+    "QueryConsensusStateResponse": [
+      {
+        "name": "consensus_state",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "proof",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      }
+    ],
+    "QueryConsensusStatesRequest": [
+      {
+        "name": "client_id",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryConsensusStatesResponse": [
+      {
+        "name": "consensus_states",
+        "type": "ConsensusStateWithHeight[]",
+        "packageName": "/ibc.core.client.v1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryConsensusStateHeightsRequest": [
+      {
+        "name": "client_id",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryConsensusStateHeightsResponse": [
+      {
+        "name": "consensus_state_heights",
+        "type": "Height[]",
+        "packageName": "/ibc.core.client.v1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryClientStatusRequest": [
+      {
+        "name": "client_id",
+        "type": "string"
+      }
+    ],
+    "QueryClientStatusResponse": [
+      {
+        "name": "status",
+        "type": "string"
+      }
+    ],
+    "QueryClientParamsRequest": [],
+    "QueryClientParamsResponse": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/ibc.core.client.v1"
+      }
+    ],
+    "QueryUpgradedClientStateRequest": [],
+    "QueryUpgradedClientStateResponse": [
+      {
+        "name": "upgraded_client_state",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "QueryUpgradedConsensusStateRequest": [],
+    "QueryUpgradedConsensusStateResponse": [
+      {
+        "name": "upgraded_consensus_state",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "MsgCreateClient": [
+      {
+        "name": "client_state",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "consensus_state",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "signer",
+        "type": "string"
+      }
+    ],
+    "MsgCreateClientResponse": [],
+    "MsgUpdateClient": [
+      {
+        "name": "client_id",
+        "type": "string"
+      },
+      {
+        "name": "header",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "signer",
+        "type": "string"
+      }
+    ],
+    "MsgUpdateClientResponse": [],
+    "MsgUpgradeClient": [
+      {
+        "name": "client_id",
+        "type": "string"
+      },
+      {
+        "name": "client_state",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "consensus_state",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "proof_upgrade_client",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_upgrade_consensus_state",
+        "type": "uint8[]"
+      },
+      {
+        "name": "signer",
+        "type": "string"
+      }
+    ],
+    "MsgUpgradeClientResponse": [],
+    "MsgSubmitMisbehaviour": [
+      {
+        "name": "client_id",
+        "type": "string"
+      },
+      {
+        "name": "misbehaviour",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "signer",
+        "type": "string"
+      }
+    ],
+    "MsgSubmitMisbehaviourResponse": []
+  },
+  "/ibc.core.channel.v1": {
+    "Channel": [
+      {
+        "name": "state",
+        "type": "",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "ordering",
+        "type": "",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "counterparty",
+        "type": "Counterparty",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "connection_hops",
+        "type": "string[]"
+      },
+      {
+        "name": "version",
+        "type": "string"
+      }
+    ],
+    "IdentifiedChannel": [
+      {
+        "name": "state",
+        "type": "",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "ordering",
+        "type": "",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "counterparty",
+        "type": "Counterparty",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "connection_hops",
+        "type": "string[]"
+      },
+      {
+        "name": "version",
+        "type": "string"
+      },
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "channel_id",
+        "type": "string"
+      }
+    ],
+    "Counterparty": [
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "channel_id",
+        "type": "string"
+      }
+    ],
+    "Packet": [
+      {
+        "name": "sequence",
+        "type": "uint64"
+      },
+      {
+        "name": "source_port",
+        "type": "string"
+      },
+      {
+        "name": "source_channel",
+        "type": "string"
+      },
+      {
+        "name": "destination_port",
+        "type": "string"
+      },
+      {
+        "name": "destination_channel",
+        "type": "string"
+      },
+      {
+        "name": "data",
+        "type": "uint8[]"
+      },
+      {
+        "name": "timeout_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      },
+      {
+        "name": "timeout_timestamp",
+        "type": "uint64"
+      }
+    ],
+    "PacketState": [
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "channel_id",
+        "type": "string"
+      },
+      {
+        "name": "sequence",
+        "type": "uint64"
+      },
+      {
+        "name": "data",
+        "type": "uint8[]"
+      }
+    ],
+    "PacketId": [
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "channel_id",
+        "type": "string"
+      },
+      {
+        "name": "sequence",
+        "type": "uint64"
+      }
+    ],
+    "Acknowledgement": [
+      {
+        "name": "result",
+        "type": "uint8[]"
+      },
+      {
+        "name": "error",
+        "type": "string"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "channels",
+        "type": "IdentifiedChannel[]",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "acknowledgements",
+        "type": "PacketState[]",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "commitments",
+        "type": "PacketState[]",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "receipts",
+        "type": "PacketState[]",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "send_sequences",
+        "type": "PacketSequence[]",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "recv_sequences",
+        "type": "PacketSequence[]",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "ack_sequences",
+        "type": "PacketSequence[]",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "next_channel_sequence",
+        "type": "uint64"
+      }
+    ],
+    "PacketSequence": [
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "channel_id",
+        "type": "string"
+      },
+      {
+        "name": "sequence",
+        "type": "uint64"
+      }
+    ],
+    "QueryChannelRequest": [
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "channel_id",
+        "type": "string"
+      }
+    ],
+    "QueryChannelResponse": [
+      {
+        "name": "channel",
+        "type": "Channel",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "proof",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      }
+    ],
+    "QueryChannelsRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryChannelsResponse": [
+      {
+        "name": "channels",
+        "type": "IdentifiedChannel[]",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      },
+      {
+        "name": "height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      }
+    ],
+    "QueryConnectionChannelsRequest": [
+      {
+        "name": "connection",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryConnectionChannelsResponse": [
+      {
+        "name": "channels",
+        "type": "IdentifiedChannel[]",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      },
+      {
+        "name": "height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      }
+    ],
+    "QueryChannelClientStateRequest": [
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "channel_id",
+        "type": "string"
+      }
+    ],
+    "QueryChannelClientStateResponse": [
+      {
+        "name": "identified_client_state",
+        "type": "IdentifiedClientState",
+        "packageName": "/ibc.core.client.v1"
+      },
+      {
+        "name": "proof",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      }
+    ],
+    "QueryChannelConsensusStateRequest": [
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "channel_id",
+        "type": "string"
+      },
+      {
+        "name": "revision_number",
+        "type": "uint64"
+      },
+      {
+        "name": "revision_height",
+        "type": "uint64"
+      }
+    ],
+    "QueryChannelConsensusStateResponse": [
+      {
+        "name": "consensus_state",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "client_id",
+        "type": "string"
+      },
+      {
+        "name": "proof",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      }
+    ],
+    "QueryPacketCommitmentRequest": [
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "channel_id",
+        "type": "string"
+      },
+      {
+        "name": "sequence",
+        "type": "uint64"
+      }
+    ],
+    "QueryPacketCommitmentResponse": [
+      {
+        "name": "commitment",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      }
+    ],
+    "QueryPacketCommitmentsRequest": [
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "channel_id",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryPacketCommitmentsResponse": [
+      {
+        "name": "commitments",
+        "type": "PacketState[]",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      },
+      {
+        "name": "height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      }
+    ],
+    "QueryPacketReceiptRequest": [
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "channel_id",
+        "type": "string"
+      },
+      {
+        "name": "sequence",
+        "type": "uint64"
+      }
+    ],
+    "QueryPacketReceiptResponse": [
+      {
+        "name": "received",
+        "type": "bool"
+      },
+      {
+        "name": "proof",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      }
+    ],
+    "QueryPacketAcknowledgementRequest": [
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "channel_id",
+        "type": "string"
+      },
+      {
+        "name": "sequence",
+        "type": "uint64"
+      }
+    ],
+    "QueryPacketAcknowledgementResponse": [
+      {
+        "name": "acknowledgement",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      }
+    ],
+    "QueryPacketAcknowledgementsRequest": [
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "channel_id",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      },
+      {
+        "name": "packet_commitment_sequences",
+        "type": "uint64[]"
+      }
+    ],
+    "QueryPacketAcknowledgementsResponse": [
+      {
+        "name": "acknowledgements",
+        "type": "PacketState[]",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      },
+      {
+        "name": "height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      }
+    ],
+    "QueryUnreceivedPacketsRequest": [
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "channel_id",
+        "type": "string"
+      },
+      {
+        "name": "packet_commitment_sequences",
+        "type": "uint64[]"
+      }
+    ],
+    "QueryUnreceivedPacketsResponse": [
+      {
+        "name": "sequences",
+        "type": "uint64[]"
+      },
+      {
+        "name": "height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      }
+    ],
+    "QueryUnreceivedAcksRequest": [
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "channel_id",
+        "type": "string"
+      },
+      {
+        "name": "packet_ack_sequences",
+        "type": "uint64[]"
+      }
+    ],
+    "QueryUnreceivedAcksResponse": [
+      {
+        "name": "sequences",
+        "type": "uint64[]"
+      },
+      {
+        "name": "height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      }
+    ],
+    "QueryNextSequenceReceiveRequest": [
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "channel_id",
+        "type": "string"
+      }
+    ],
+    "QueryNextSequenceReceiveResponse": [
+      {
+        "name": "next_sequence_receive",
+        "type": "uint64"
+      },
+      {
+        "name": "proof",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      }
+    ],
+    "MsgChannelOpenInit": [
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "channel",
+        "type": "Channel",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "signer",
+        "type": "string"
+      }
+    ],
+    "MsgChannelOpenInitResponse": [
+      {
+        "name": "channel_id",
+        "type": "string"
+      },
+      {
+        "name": "version",
+        "type": "string"
+      }
+    ],
+    "MsgChannelOpenTry": [
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "previous_channel_id",
+        "type": "string"
+      },
+      {
+        "name": "channel",
+        "type": "Channel",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "counterparty_version",
+        "type": "string"
+      },
+      {
+        "name": "proof_init",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      },
+      {
+        "name": "signer",
+        "type": "string"
+      }
+    ],
+    "MsgChannelOpenTryResponse": [
+      {
+        "name": "version",
+        "type": "string"
+      }
+    ],
+    "MsgChannelOpenAck": [
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "channel_id",
+        "type": "string"
+      },
+      {
+        "name": "counterparty_channel_id",
+        "type": "string"
+      },
+      {
+        "name": "counterparty_version",
+        "type": "string"
+      },
+      {
+        "name": "proof_try",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      },
+      {
+        "name": "signer",
+        "type": "string"
+      }
+    ],
+    "MsgChannelOpenAckResponse": [],
+    "MsgChannelOpenConfirm": [
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "channel_id",
+        "type": "string"
+      },
+      {
+        "name": "proof_ack",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      },
+      {
+        "name": "signer",
+        "type": "string"
+      }
+    ],
+    "MsgChannelOpenConfirmResponse": [],
+    "MsgChannelCloseInit": [
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "channel_id",
+        "type": "string"
+      },
+      {
+        "name": "signer",
+        "type": "string"
+      }
+    ],
+    "MsgChannelCloseInitResponse": [],
+    "MsgChannelCloseConfirm": [
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "channel_id",
+        "type": "string"
+      },
+      {
+        "name": "proof_init",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      },
+      {
+        "name": "signer",
+        "type": "string"
+      }
+    ],
+    "MsgChannelCloseConfirmResponse": [],
+    "MsgRecvPacket": [
+      {
+        "name": "packet",
+        "type": "Packet",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "proof_commitment",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      },
+      {
+        "name": "signer",
+        "type": "string"
+      }
+    ],
+    "MsgRecvPacketResponse": [
+      {
+        "name": "result",
+        "type": "",
+        "packageName": "/ibc.core.channel.v1"
+      }
+    ],
+    "MsgTimeout": [
+      {
+        "name": "packet",
+        "type": "Packet",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "proof_unreceived",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      },
+      {
+        "name": "next_sequence_recv",
+        "type": "uint64"
+      },
+      {
+        "name": "signer",
+        "type": "string"
+      }
+    ],
+    "MsgTimeoutResponse": [
+      {
+        "name": "result",
+        "type": "",
+        "packageName": "/ibc.core.channel.v1"
+      }
+    ],
+    "MsgTimeoutOnClose": [
+      {
+        "name": "packet",
+        "type": "Packet",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "proof_unreceived",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_close",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      },
+      {
+        "name": "next_sequence_recv",
+        "type": "uint64"
+      },
+      {
+        "name": "signer",
+        "type": "string"
+      }
+    ],
+    "MsgTimeoutOnCloseResponse": [
+      {
+        "name": "result",
+        "type": "",
+        "packageName": "/ibc.core.channel.v1"
+      }
+    ],
+    "MsgAcknowledgement": [
+      {
+        "name": "packet",
+        "type": "Packet",
+        "packageName": "/ibc.core.channel.v1"
+      },
+      {
+        "name": "acknowledgement",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_acked",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      },
+      {
+        "name": "signer",
+        "type": "string"
+      }
+    ],
+    "MsgAcknowledgementResponse": [
+      {
+        "name": "result",
+        "type": "",
+        "packageName": "/ibc.core.channel.v1"
+      }
+    ]
+  },
+  "/ibc.applications.interchain_accounts.controller.v1": {
+    "Params": [
+      {
+        "name": "controller_enabled",
+        "type": "bool"
+      }
+    ],
+    "QueryInterchainAccountRequest": [
+      {
+        "name": "owner",
+        "type": "string"
+      },
+      {
+        "name": "connection_id",
+        "type": "string"
+      }
+    ],
+    "QueryInterchainAccountResponse": [
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "QueryParamsRequest": [],
+    "QueryParamsResponse": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/ibc.applications.interchain_accounts.controller.v1"
+      }
+    ],
+    "MsgRegisterInterchainAccount": [
+      {
+        "name": "owner",
+        "type": "string"
+      },
+      {
+        "name": "connection_id",
+        "type": "string"
+      },
+      {
+        "name": "version",
+        "type": "string"
+      }
+    ],
+    "MsgRegisterInterchainAccountResponse": [
+      {
+        "name": "channel_id",
+        "type": "string"
+      }
+    ],
+    "MsgSendTx": [
+      {
+        "name": "owner",
+        "type": "string"
+      },
+      {
+        "name": "connection_id",
+        "type": "string"
+      },
+      {
+        "name": "packet_data",
+        "type": "InterchainAccountPacketData",
+        "packageName": "/ibc.applications.interchain_accounts.v1"
+      },
+      {
+        "name": "relative_timeout",
+        "type": "uint64"
+      }
+    ],
+    "MsgSendTxResponse": [
+      {
+        "name": "sequence",
+        "type": "uint64"
+      }
+    ]
+  },
+  "/ibc.applications.interchain_accounts.v1": {
+    "InterchainAccountPacketData": [
+      {
+        "name": "type",
+        "type": "",
+        "packageName": "/ibc.applications.interchain_accounts.v1"
+      },
+      {
+        "name": "data",
+        "type": "uint8[]"
+      },
+      {
+        "name": "memo",
+        "type": "string"
+      }
+    ],
+    "CosmosTx": [
+      {
+        "name": "messages",
+        "type": "Any[]",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "InterchainAccount": [
+      {
+        "name": "base_account",
+        "type": "BaseAccount",
+        "packageName": "/cosmos.auth.v1beta1"
+      },
+      {
+        "name": "account_owner",
+        "type": "string"
+      }
+    ],
+    "Metadata": [
+      {
+        "name": "version",
+        "type": "string"
+      },
+      {
+        "name": "controller_connection_id",
+        "type": "string"
+      },
+      {
+        "name": "host_connection_id",
+        "type": "string"
+      },
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "encoding",
+        "type": "string"
+      },
+      {
+        "name": "tx_type",
+        "type": "string"
+      }
+    ]
+  },
+  "/ibc.applications.interchain_accounts.host.v1": {
+    "Params": [
+      {
+        "name": "host_enabled",
+        "type": "bool"
+      },
+      {
+        "name": "allow_messages",
+        "type": "string[]"
+      }
+    ],
+    "QueryParamsRequest": [],
+    "QueryParamsResponse": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/ibc.applications.interchain_accounts.host.v1"
+      }
+    ]
+  },
+  "/ibc.applications.interchain_accounts.genesis.v1": {
+    "GenesisState": [
+      {
+        "name": "controller_genesis_state",
+        "type": "ControllerGenesisState",
+        "packageName": "/ibc.applications.interchain_accounts.genesis.v1"
+      },
+      {
+        "name": "host_genesis_state",
+        "type": "HostGenesisState",
+        "packageName": "/ibc.applications.interchain_accounts.genesis.v1"
+      }
+    ],
+    "ControllerGenesisState": [
+      {
+        "name": "active_channels",
+        "type": "ActiveChannel[]",
+        "packageName": "/ibc.applications.interchain_accounts.genesis.v1"
+      },
+      {
+        "name": "interchain_accounts",
+        "type": "RegisteredInterchainAccount[]",
+        "packageName": "/ibc.applications.interchain_accounts.genesis.v1"
+      },
+      {
+        "name": "ports",
+        "type": "string[]"
+      },
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/ibc.applications.interchain_accounts.controller.v1"
+      }
+    ],
+    "HostGenesisState": [
+      {
+        "name": "active_channels",
+        "type": "ActiveChannel[]",
+        "packageName": "/ibc.applications.interchain_accounts.genesis.v1"
+      },
+      {
+        "name": "interchain_accounts",
+        "type": "RegisteredInterchainAccount[]",
+        "packageName": "/ibc.applications.interchain_accounts.genesis.v1"
+      },
+      {
+        "name": "port",
+        "type": "string"
+      },
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/ibc.applications.interchain_accounts.host.v1"
+      }
+    ],
+    "ActiveChannel": [
+      {
+        "name": "connection_id",
+        "type": "string"
+      },
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "channel_id",
+        "type": "string"
+      },
+      {
+        "name": "is_middleware_enabled",
+        "type": "bool"
+      }
+    ],
+    "RegisteredInterchainAccount": [
+      {
+        "name": "connection_id",
+        "type": "string"
+      },
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "account_address",
+        "type": "string"
+      }
+    ]
+  },
+  "/ibc.applications.transfer.v1": {
+    "DenomTrace": [
+      {
+        "name": "path",
+        "type": "string"
+      },
+      {
+        "name": "base_denom",
+        "type": "string"
+      }
+    ],
+    "Params": [
+      {
+        "name": "send_enabled",
+        "type": "bool"
+      },
+      {
+        "name": "receive_enabled",
+        "type": "bool"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "denom_traces",
+        "type": "DenomTrace[]",
+        "packageName": "/ibc.applications.transfer.v1"
+      },
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/ibc.applications.transfer.v1"
+      }
+    ],
+    "QueryDenomTraceRequest": [
+      {
+        "name": "hash",
+        "type": "string"
+      }
+    ],
+    "QueryDenomTraceResponse": [
+      {
+        "name": "denom_trace",
+        "type": "DenomTrace",
+        "packageName": "/ibc.applications.transfer.v1"
+      }
+    ],
+    "QueryDenomTracesRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryDenomTracesResponse": [
+      {
+        "name": "denom_traces",
+        "type": "DenomTrace[]",
+        "packageName": "/ibc.applications.transfer.v1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryParamsRequest": [],
+    "QueryParamsResponse": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/ibc.applications.transfer.v1"
+      }
+    ],
+    "QueryDenomHashRequest": [
+      {
+        "name": "trace",
+        "type": "string"
+      }
+    ],
+    "QueryDenomHashResponse": [
+      {
+        "name": "hash",
+        "type": "string"
+      }
+    ],
+    "QueryEscrowAddressRequest": [
+      {
+        "name": "port_id",
+        "type": "string"
+      },
+      {
+        "name": "channel_id",
+        "type": "string"
+      }
+    ],
+    "QueryEscrowAddressResponse": [
+      {
+        "name": "escrow_address",
+        "type": "string"
+      }
+    ],
+    "MsgTransfer": [
+      {
+        "name": "source_port",
+        "type": "string"
+      },
+      {
+        "name": "source_channel",
+        "type": "string"
+      },
+      {
+        "name": "token",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "sender",
+        "type": "string"
+      },
+      {
+        "name": "receiver",
+        "type": "string"
+      },
+      {
+        "name": "timeout_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      },
+      {
+        "name": "timeout_timestamp",
+        "type": "uint64"
+      },
+      {
+        "name": "memo",
+        "type": "string"
+      }
+    ],
+    "MsgTransferResponse": [
+      {
+        "name": "sequence",
+        "type": "uint64"
+      }
+    ]
+  },
+  "/ibc.applications.transfer.v2": {
+    "FungibleTokenPacketData": [
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "string"
+      },
+      {
+        "name": "sender",
+        "type": "string"
+      },
+      {
+        "name": "receiver",
+        "type": "string"
+      },
+      {
+        "name": "memo",
+        "type": "string"
+      }
+    ]
+  },
+  "/ics23": {
+    "ExistenceProof": [
+      {
+        "name": "key",
+        "type": "uint8[]"
+      },
+      {
+        "name": "value",
+        "type": "uint8[]"
+      },
+      {
+        "name": "leaf",
+        "type": "LeafOp",
+        "packageName": "/ics23"
+      },
+      {
+        "name": "path",
+        "type": "InnerOp[]",
+        "packageName": "/ics23"
+      }
+    ],
+    "NonExistenceProof": [
+      {
+        "name": "key",
+        "type": "uint8[]"
+      },
+      {
+        "name": "left",
+        "type": "ExistenceProof",
+        "packageName": "/ics23"
+      },
+      {
+        "name": "right",
+        "type": "ExistenceProof",
+        "packageName": "/ics23"
+      }
+    ],
+    "CommitmentProof": [
+      {
+        "name": "exist",
+        "type": "ExistenceProof",
+        "packageName": "/ics23"
+      },
+      {
+        "name": "nonexist",
+        "type": "NonExistenceProof",
+        "packageName": "/ics23"
+      },
+      {
+        "name": "batch",
+        "type": "BatchProof",
+        "packageName": "/ics23"
+      },
+      {
+        "name": "compressed",
+        "type": "CompressedBatchProof",
+        "packageName": "/ics23"
+      }
+    ],
+    "LeafOp": [
+      {
+        "name": "hash",
+        "type": "",
+        "packageName": "/ics23"
+      },
+      {
+        "name": "prehash_key",
+        "type": "",
+        "packageName": "/ics23"
+      },
+      {
+        "name": "prehash_value",
+        "type": "",
+        "packageName": "/ics23"
+      },
+      {
+        "name": "length",
+        "type": "",
+        "packageName": "/ics23"
+      },
+      {
+        "name": "prefix",
+        "type": "uint8[]"
+      }
+    ],
+    "InnerOp": [
+      {
+        "name": "hash",
+        "type": "",
+        "packageName": "/ics23"
+      },
+      {
+        "name": "prefix",
+        "type": "uint8[]"
+      },
+      {
+        "name": "suffix",
+        "type": "uint8[]"
+      }
+    ],
+    "ProofSpec": [
+      {
+        "name": "leaf_spec",
+        "type": "LeafOp",
+        "packageName": "/ics23"
+      },
+      {
+        "name": "inner_spec",
+        "type": "InnerSpec",
+        "packageName": "/ics23"
+      },
+      {
+        "name": "max_depth",
+        "type": "int32"
+      },
+      {
+        "name": "min_depth",
+        "type": "int32"
+      }
+    ],
+    "InnerSpec": [
+      {
+        "name": "child_order",
+        "type": "int32[]"
+      },
+      {
+        "name": "child_size",
+        "type": "int32"
+      },
+      {
+        "name": "min_prefix_length",
+        "type": "int32"
+      },
+      {
+        "name": "max_prefix_length",
+        "type": "int32"
+      },
+      {
+        "name": "empty_child",
+        "type": "uint8[]"
+      },
+      {
+        "name": "hash",
+        "type": "",
+        "packageName": "/ics23"
+      }
+    ],
+    "BatchProof": [
+      {
+        "name": "entries",
+        "type": "BatchEntry[]",
+        "packageName": "/ics23"
+      }
+    ],
+    "BatchEntry": [
+      {
+        "name": "exist",
+        "type": "ExistenceProof",
+        "packageName": "/ics23"
+      },
+      {
+        "name": "nonexist",
+        "type": "NonExistenceProof",
+        "packageName": "/ics23"
+      }
+    ],
+    "CompressedBatchProof": [
+      {
+        "name": "entries",
+        "type": "CompressedBatchEntry[]",
+        "packageName": "/ics23"
+      },
+      {
+        "name": "lookup_inners",
+        "type": "InnerOp[]",
+        "packageName": "/ics23"
+      }
+    ],
+    "CompressedBatchEntry": [
+      {
+        "name": "exist",
+        "type": "CompressedExistenceProof",
+        "packageName": "/ics23"
+      },
+      {
+        "name": "nonexist",
+        "type": "CompressedNonExistenceProof",
+        "packageName": "/ics23"
+      }
+    ],
+    "CompressedExistenceProof": [
+      {
+        "name": "key",
+        "type": "uint8[]"
+      },
+      {
+        "name": "value",
+        "type": "uint8[]"
+      },
+      {
+        "name": "leaf",
+        "type": "LeafOp",
+        "packageName": "/ics23"
+      },
+      {
+        "name": "path",
+        "type": "int32[]"
+      }
+    ],
+    "CompressedNonExistenceProof": [
+      {
+        "name": "key",
+        "type": "uint8[]"
+      },
+      {
+        "name": "left",
+        "type": "CompressedExistenceProof",
+        "packageName": "/ics23"
+      },
+      {
+        "name": "right",
+        "type": "CompressedExistenceProof",
+        "packageName": "/ics23"
+      }
+    ]
+  },
+  "/ibc.core.commitment.v1": {
+    "MerkleRoot": [
+      {
+        "name": "hash",
+        "type": "uint8[]"
+      }
+    ],
+    "MerklePrefix": [
+      {
+        "name": "key_prefix",
+        "type": "uint8[]"
+      }
+    ],
+    "MerklePath": [
+      {
+        "name": "key_path",
+        "type": "string[]"
+      }
+    ],
+    "MerkleProof": [
+      {
+        "name": "proofs",
+        "type": "CommitmentProof[]",
+        "packageName": "/ics23"
+      }
+    ]
+  },
+  "/ibc.core.connection.v1": {
+    "ConnectionEnd": [
+      {
+        "name": "client_id",
+        "type": "string"
+      },
+      {
+        "name": "versions",
+        "type": "Version[]",
+        "packageName": "/ibc.core.connection.v1"
+      },
+      {
+        "name": "state",
+        "type": "",
+        "packageName": "/ibc.core.connection.v1"
+      },
+      {
+        "name": "counterparty",
+        "type": "Counterparty",
+        "packageName": "/ibc.core.connection.v1"
+      },
+      {
+        "name": "delay_period",
+        "type": "uint64"
+      }
+    ],
+    "IdentifiedConnection": [
+      {
+        "name": "id",
+        "type": "string"
+      },
+      {
+        "name": "client_id",
+        "type": "string"
+      },
+      {
+        "name": "versions",
+        "type": "Version[]",
+        "packageName": "/ibc.core.connection.v1"
+      },
+      {
+        "name": "state",
+        "type": "",
+        "packageName": "/ibc.core.connection.v1"
+      },
+      {
+        "name": "counterparty",
+        "type": "Counterparty",
+        "packageName": "/ibc.core.connection.v1"
+      },
+      {
+        "name": "delay_period",
+        "type": "uint64"
+      }
+    ],
+    "Counterparty": [
+      {
+        "name": "client_id",
+        "type": "string"
+      },
+      {
+        "name": "connection_id",
+        "type": "string"
+      },
+      {
+        "name": "prefix",
+        "type": "MerklePrefix",
+        "packageName": "/ibc.core.commitment.v1"
+      }
+    ],
+    "ClientPaths": [
+      {
+        "name": "paths",
+        "type": "string[]"
+      }
+    ],
+    "ConnectionPaths": [
+      {
+        "name": "client_id",
+        "type": "string"
+      },
+      {
+        "name": "paths",
+        "type": "string[]"
+      }
+    ],
+    "Version": [
+      {
+        "name": "identifier",
+        "type": "string"
+      },
+      {
+        "name": "features",
+        "type": "string[]"
+      }
+    ],
+    "Params": [
+      {
+        "name": "max_expected_time_per_block",
+        "type": "uint64"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "connections",
+        "type": "IdentifiedConnection[]",
+        "packageName": "/ibc.core.connection.v1"
+      },
+      {
+        "name": "client_connection_paths",
+        "type": "ConnectionPaths[]",
+        "packageName": "/ibc.core.connection.v1"
+      },
+      {
+        "name": "next_connection_sequence",
+        "type": "uint64"
+      },
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/ibc.core.connection.v1"
+      }
+    ],
+    "QueryConnectionRequest": [
+      {
+        "name": "connection_id",
+        "type": "string"
+      }
+    ],
+    "QueryConnectionResponse": [
+      {
+        "name": "connection",
+        "type": "ConnectionEnd",
+        "packageName": "/ibc.core.connection.v1"
+      },
+      {
+        "name": "proof",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      }
+    ],
+    "QueryConnectionsRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryConnectionsResponse": [
+      {
+        "name": "connections",
+        "type": "IdentifiedConnection[]",
+        "packageName": "/ibc.core.connection.v1"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      },
+      {
+        "name": "height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      }
+    ],
+    "QueryClientConnectionsRequest": [
+      {
+        "name": "client_id",
+        "type": "string"
+      }
+    ],
+    "QueryClientConnectionsResponse": [
+      {
+        "name": "connection_paths",
+        "type": "string[]"
+      },
+      {
+        "name": "proof",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      }
+    ],
+    "QueryConnectionClientStateRequest": [
+      {
+        "name": "connection_id",
+        "type": "string"
+      }
+    ],
+    "QueryConnectionClientStateResponse": [
+      {
+        "name": "identified_client_state",
+        "type": "IdentifiedClientState",
+        "packageName": "/ibc.core.client.v1"
+      },
+      {
+        "name": "proof",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      }
+    ],
+    "QueryConnectionConsensusStateRequest": [
+      {
+        "name": "connection_id",
+        "type": "string"
+      },
+      {
+        "name": "revision_number",
+        "type": "uint64"
+      },
+      {
+        "name": "revision_height",
+        "type": "uint64"
+      }
+    ],
+    "QueryConnectionConsensusStateResponse": [
+      {
+        "name": "consensus_state",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "client_id",
+        "type": "string"
+      },
+      {
+        "name": "proof",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      }
+    ],
+    "QueryConnectionParamsRequest": [],
+    "QueryConnectionParamsResponse": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/ibc.core.connection.v1"
+      }
+    ],
+    "MsgConnectionOpenInit": [
+      {
+        "name": "client_id",
+        "type": "string"
+      },
+      {
+        "name": "counterparty",
+        "type": "Counterparty",
+        "packageName": "/ibc.core.connection.v1"
+      },
+      {
+        "name": "version",
+        "type": "Version",
+        "packageName": "/ibc.core.connection.v1"
+      },
+      {
+        "name": "delay_period",
+        "type": "uint64"
+      },
+      {
+        "name": "signer",
+        "type": "string"
+      }
+    ],
+    "MsgConnectionOpenInitResponse": [],
+    "MsgConnectionOpenTry": [
+      {
+        "name": "client_id",
+        "type": "string"
+      },
+      {
+        "name": "previous_connection_id",
+        "type": "string"
+      },
+      {
+        "name": "client_state",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "counterparty",
+        "type": "Counterparty",
+        "packageName": "/ibc.core.connection.v1"
+      },
+      {
+        "name": "delay_period",
+        "type": "uint64"
+      },
+      {
+        "name": "counterparty_versions",
+        "type": "Version[]",
+        "packageName": "/ibc.core.connection.v1"
+      },
+      {
+        "name": "proof_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      },
+      {
+        "name": "proof_init",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_client",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_consensus",
+        "type": "uint8[]"
+      },
+      {
+        "name": "consensus_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      },
+      {
+        "name": "signer",
+        "type": "string"
+      }
+    ],
+    "MsgConnectionOpenTryResponse": [],
+    "MsgConnectionOpenAck": [
+      {
+        "name": "connection_id",
+        "type": "string"
+      },
+      {
+        "name": "counterparty_connection_id",
+        "type": "string"
+      },
+      {
+        "name": "version",
+        "type": "Version",
+        "packageName": "/ibc.core.connection.v1"
+      },
+      {
+        "name": "client_state",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "proof_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      },
+      {
+        "name": "proof_try",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_client",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_consensus",
+        "type": "uint8[]"
+      },
+      {
+        "name": "consensus_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      },
+      {
+        "name": "signer",
+        "type": "string"
+      }
+    ],
+    "MsgConnectionOpenAckResponse": [],
+    "MsgConnectionOpenConfirm": [
+      {
+        "name": "connection_id",
+        "type": "string"
+      },
+      {
+        "name": "proof_ack",
+        "type": "uint8[]"
+      },
+      {
+        "name": "proof_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      },
+      {
+        "name": "signer",
+        "type": "string"
+      }
+    ],
+    "MsgConnectionOpenConfirmResponse": []
+  },
+  "/ibc.core.types.v1": {
+    "GenesisState": [
+      {
+        "name": "client_genesis",
+        "type": "GenesisState",
+        "packageName": "/ibc.core.client.v1"
+      },
+      {
+        "name": "connection_genesis",
+        "type": "GenesisState",
+        "packageName": "/ibc.core.connection.v1"
+      },
+      {
+        "name": "channel_genesis",
+        "type": "GenesisState",
+        "packageName": "/ibc.core.channel.v1"
+      }
+    ]
+  },
+  "/ibc.lightclients.localhost.v1": {
+    "ClientState": [
+      {
+        "name": "chain_id",
+        "type": "string"
+      },
+      {
+        "name": "height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      }
+    ]
+  },
+  "/ibc.lightclients.solomachine.v1": {
+    "ClientState": [
+      {
+        "name": "sequence",
+        "type": "uint64"
+      },
+      {
+        "name": "frozen_sequence",
+        "type": "uint64"
+      },
+      {
+        "name": "consensus_state",
+        "type": "ConsensusState",
+        "packageName": "/ibc.lightclients.solomachine.v1"
+      },
+      {
+        "name": "allow_update_after_proposal",
+        "type": "bool"
+      }
+    ],
+    "ConsensusState": [
+      {
+        "name": "public_key",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "diversifier",
+        "type": "string"
+      },
+      {
+        "name": "timestamp",
+        "type": "uint64"
+      }
+    ],
+    "Header": [
+      {
+        "name": "sequence",
+        "type": "uint64"
+      },
+      {
+        "name": "timestamp",
+        "type": "uint64"
+      },
+      {
+        "name": "signature",
+        "type": "uint8[]"
+      },
+      {
+        "name": "new_public_key",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "new_diversifier",
+        "type": "string"
+      }
+    ],
+    "Misbehaviour": [
+      {
+        "name": "client_id",
+        "type": "string"
+      },
+      {
+        "name": "sequence",
+        "type": "uint64"
+      },
+      {
+        "name": "signature_one",
+        "type": "SignatureAndData",
+        "packageName": "/ibc.lightclients.solomachine.v1"
+      },
+      {
+        "name": "signature_two",
+        "type": "SignatureAndData",
+        "packageName": "/ibc.lightclients.solomachine.v1"
+      }
+    ],
+    "SignatureAndData": [
+      {
+        "name": "signature",
+        "type": "uint8[]"
+      },
+      {
+        "name": "data_type",
+        "type": "",
+        "packageName": "/ibc.lightclients.solomachine.v1"
+      },
+      {
+        "name": "data",
+        "type": "uint8[]"
+      },
+      {
+        "name": "timestamp",
+        "type": "uint64"
+      }
+    ],
+    "TimestampedSignatureData": [
+      {
+        "name": "signature_data",
+        "type": "uint8[]"
+      },
+      {
+        "name": "timestamp",
+        "type": "uint64"
+      }
+    ],
+    "SignBytes": [
+      {
+        "name": "sequence",
+        "type": "uint64"
+      },
+      {
+        "name": "timestamp",
+        "type": "uint64"
+      },
+      {
+        "name": "diversifier",
+        "type": "string"
+      },
+      {
+        "name": "data_type",
+        "type": "",
+        "packageName": "/ibc.lightclients.solomachine.v1"
+      },
+      {
+        "name": "data",
+        "type": "uint8[]"
+      }
+    ],
+    "HeaderData": [
+      {
+        "name": "new_pub_key",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "new_diversifier",
+        "type": "string"
+      }
+    ],
+    "ClientStateData": [
+      {
+        "name": "path",
+        "type": "uint8[]"
+      },
+      {
+        "name": "client_state",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "ConsensusStateData": [
+      {
+        "name": "path",
+        "type": "uint8[]"
+      },
+      {
+        "name": "consensus_state",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "ConnectionStateData": [
+      {
+        "name": "path",
+        "type": "uint8[]"
+      },
+      {
+        "name": "connection",
+        "type": "ConnectionEnd",
+        "packageName": "/ibc.core.connection.v1"
+      }
+    ],
+    "ChannelStateData": [
+      {
+        "name": "path",
+        "type": "uint8[]"
+      },
+      {
+        "name": "channel",
+        "type": "Channel",
+        "packageName": "/ibc.core.channel.v1"
+      }
+    ],
+    "PacketCommitmentData": [
+      {
+        "name": "path",
+        "type": "uint8[]"
+      },
+      {
+        "name": "commitment",
+        "type": "uint8[]"
+      }
+    ],
+    "PacketAcknowledgementData": [
+      {
+        "name": "path",
+        "type": "uint8[]"
+      },
+      {
+        "name": "acknowledgement",
+        "type": "uint8[]"
+      }
+    ],
+    "PacketReceiptAbsenceData": [
+      {
+        "name": "path",
+        "type": "uint8[]"
+      }
+    ],
+    "NextSequenceRecvData": [
+      {
+        "name": "path",
+        "type": "uint8[]"
+      },
+      {
+        "name": "next_seq_recv",
+        "type": "uint64"
+      }
+    ]
+  },
+  "/ibc.lightclients.solomachine.v2": {
+    "ClientState": [
+      {
+        "name": "sequence",
+        "type": "uint64"
+      },
+      {
+        "name": "is_frozen",
+        "type": "bool"
+      },
+      {
+        "name": "consensus_state",
+        "type": "ConsensusState",
+        "packageName": "/ibc.lightclients.solomachine.v2"
+      },
+      {
+        "name": "allow_update_after_proposal",
+        "type": "bool"
+      }
+    ],
+    "ConsensusState": [
+      {
+        "name": "public_key",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "diversifier",
+        "type": "string"
+      },
+      {
+        "name": "timestamp",
+        "type": "uint64"
+      }
+    ],
+    "Header": [
+      {
+        "name": "sequence",
+        "type": "uint64"
+      },
+      {
+        "name": "timestamp",
+        "type": "uint64"
+      },
+      {
+        "name": "signature",
+        "type": "uint8[]"
+      },
+      {
+        "name": "new_public_key",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "new_diversifier",
+        "type": "string"
+      }
+    ],
+    "Misbehaviour": [
+      {
+        "name": "client_id",
+        "type": "string"
+      },
+      {
+        "name": "sequence",
+        "type": "uint64"
+      },
+      {
+        "name": "signature_one",
+        "type": "SignatureAndData",
+        "packageName": "/ibc.lightclients.solomachine.v2"
+      },
+      {
+        "name": "signature_two",
+        "type": "SignatureAndData",
+        "packageName": "/ibc.lightclients.solomachine.v2"
+      }
+    ],
+    "SignatureAndData": [
+      {
+        "name": "signature",
+        "type": "uint8[]"
+      },
+      {
+        "name": "data_type",
+        "type": "",
+        "packageName": "/ibc.lightclients.solomachine.v2"
+      },
+      {
+        "name": "data",
+        "type": "uint8[]"
+      },
+      {
+        "name": "timestamp",
+        "type": "uint64"
+      }
+    ],
+    "TimestampedSignatureData": [
+      {
+        "name": "signature_data",
+        "type": "uint8[]"
+      },
+      {
+        "name": "timestamp",
+        "type": "uint64"
+      }
+    ],
+    "SignBytes": [
+      {
+        "name": "sequence",
+        "type": "uint64"
+      },
+      {
+        "name": "timestamp",
+        "type": "uint64"
+      },
+      {
+        "name": "diversifier",
+        "type": "string"
+      },
+      {
+        "name": "data_type",
+        "type": "",
+        "packageName": "/ibc.lightclients.solomachine.v2"
+      },
+      {
+        "name": "data",
+        "type": "uint8[]"
+      }
+    ],
+    "HeaderData": [
+      {
+        "name": "new_pub_key",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "new_diversifier",
+        "type": "string"
+      }
+    ],
+    "ClientStateData": [
+      {
+        "name": "path",
+        "type": "uint8[]"
+      },
+      {
+        "name": "client_state",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "ConsensusStateData": [
+      {
+        "name": "path",
+        "type": "uint8[]"
+      },
+      {
+        "name": "consensus_state",
+        "type": "Any",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "ConnectionStateData": [
+      {
+        "name": "path",
+        "type": "uint8[]"
+      },
+      {
+        "name": "connection",
+        "type": "ConnectionEnd",
+        "packageName": "/ibc.core.connection.v1"
+      }
+    ],
+    "ChannelStateData": [
+      {
+        "name": "path",
+        "type": "uint8[]"
+      },
+      {
+        "name": "channel",
+        "type": "Channel",
+        "packageName": "/ibc.core.channel.v1"
+      }
+    ],
+    "PacketCommitmentData": [
+      {
+        "name": "path",
+        "type": "uint8[]"
+      },
+      {
+        "name": "commitment",
+        "type": "uint8[]"
+      }
+    ],
+    "PacketAcknowledgementData": [
+      {
+        "name": "path",
+        "type": "uint8[]"
+      },
+      {
+        "name": "acknowledgement",
+        "type": "uint8[]"
+      }
+    ],
+    "PacketReceiptAbsenceData": [
+      {
+        "name": "path",
+        "type": "uint8[]"
+      }
+    ],
+    "NextSequenceRecvData": [
+      {
+        "name": "path",
+        "type": "uint8[]"
+      },
+      {
+        "name": "next_seq_recv",
+        "type": "uint64"
+      }
+    ]
+  },
+  "/ibc.lightclients.tendermint.v1": {
+    "ClientState": [
+      {
+        "name": "chain_id",
+        "type": "string"
+      },
+      {
+        "name": "trust_level",
+        "type": "Fraction",
+        "packageName": "/ibc.lightclients.tendermint.v1"
+      },
+      {
+        "name": "trusting_period",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "unbonding_period",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "max_clock_drift",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "frozen_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      },
+      {
+        "name": "latest_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      },
+      {
+        "name": "proof_specs",
+        "type": "ProofSpec[]",
+        "packageName": "/ics23"
+      },
+      {
+        "name": "upgrade_path",
+        "type": "string[]"
+      },
+      {
+        "name": "allow_update_after_expiry",
+        "type": "bool"
+      },
+      {
+        "name": "allow_update_after_misbehaviour",
+        "type": "bool"
+      }
+    ],
+    "ConsensusState": [
+      {
+        "name": "timestamp",
+        "type": "string"
+      },
+      {
+        "name": "root",
+        "type": "MerkleRoot",
+        "packageName": "/ibc.core.commitment.v1"
+      },
+      {
+        "name": "next_validators_hash",
+        "type": "uint8[]"
+      }
+    ],
+    "Misbehaviour": [
+      {
+        "name": "client_id",
+        "type": "string"
+      },
+      {
+        "name": "header_1",
+        "type": "Header",
+        "packageName": "/ibc.lightclients.tendermint.v1"
+      },
+      {
+        "name": "header_2",
+        "type": "Header",
+        "packageName": "/ibc.lightclients.tendermint.v1"
+      }
+    ],
+    "Header": [
+      {
+        "name": "signed_header",
+        "type": "SignedHeader",
+        "packageName": "/tendermint.types"
+      },
+      {
+        "name": "validator_set",
+        "type": "ValidatorSet",
+        "packageName": "/tendermint.types"
+      },
+      {
+        "name": "trusted_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      },
+      {
+        "name": "trusted_validators",
+        "type": "ValidatorSet",
+        "packageName": "/tendermint.types"
+      }
+    ],
+    "Fraction": [
+      {
+        "name": "numerator",
+        "type": "uint64"
+      },
+      {
+        "name": "denominator",
+        "type": "uint64"
+      }
+    ]
+  },
+  "/Switcheo.carbon.inflation": {
+    "MintData": [
+      {
+        "name": "first_block_time",
+        "type": "int64"
+      },
+      {
+        "name": "prev_block_time",
+        "type": "int64"
+      },
+      {
+        "name": "current_supply",
+        "type": "string"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "mint_data",
+        "type": "MintData",
+        "packageName": "/Switcheo.carbon.inflation"
+      },
+      {
+        "name": "inflation_enabled",
+        "type": "bool"
+      }
+    ],
+    "QueryMintDataRequest": [],
+    "QueryMintDataResponse": [
+      {
+        "name": "mint_data",
+        "type": "MintData",
+        "packageName": "/Switcheo.carbon.inflation"
+      }
+    ]
+  },
+  "/Switcheo.carbon.insurance": {
+    "EventDataInsuranceFundTransfer": [],
+    "FundByMarket": [
+      {
+        "name": "amount",
+        "type": "string"
+      },
+      {
+        "name": "key",
+        "type": "uint8[]"
+      }
+    ],
+    "Fund": [
+      {
+        "name": "amount",
+        "type": "string"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "fund_in_by_markets",
+        "type": "FundByMarket[]",
+        "packageName": "/Switcheo.carbon.insurance"
+      },
+      {
+        "name": "fund_out_by_markets",
+        "type": "FundByMarket[]",
+        "packageName": "/Switcheo.carbon.insurance"
+      }
+    ],
+    "QueryCoinBalancesRequest": [],
+    "QueryCoinBalancesResponse": [
+      {
+        "name": "coins",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ]
+  },
+  "/Switcheo.carbon.leverage": {
+    "LeverageEvent": [
+      {
+        "name": "leverage",
+        "type": "string"
+      },
+      {
+        "name": "type",
+        "type": "string"
+      },
+      {
+        "name": "market",
+        "type": "string"
+      },
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "MarketLeverage": [
+      {
+        "name": "market",
+        "type": "string"
+      },
+      {
+        "name": "leverage",
+        "type": "string"
+      }
+    ],
+    "MarketLeverageRecord": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "marketLeverage",
+        "type": "MarketLeverage",
+        "packageName": "/Switcheo.carbon.leverage"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "market_leverage_records",
+        "type": "MarketLeverageRecord[]",
+        "packageName": "/Switcheo.carbon.leverage"
+      }
+    ],
+    "QueryGetLeverageRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "market",
+        "type": "string"
+      }
+    ],
+    "QueryGetLeverageResponse": [
+      {
+        "name": "market_leverage",
+        "type": "MarketLeverage",
+        "packageName": "/Switcheo.carbon.leverage"
+      }
+    ],
+    "QueryAllLeverageRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "QueryAllLeverageResponse": [
+      {
+        "name": "market_leverages",
+        "type": "MarketLeverage[]",
+        "packageName": "/Switcheo.carbon.leverage"
+      }
+    ],
+    "MsgSetLeverage": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "market",
+        "type": "string"
+      },
+      {
+        "name": "leverage",
+        "type": "string"
+      }
+    ],
+    "MsgSetLeverageResponse": []
+  },
+  "/Switcheo.carbon.liquidation": {
+    "OutstandingPosition": [
+      {
+        "name": "liquidation_order_id",
+        "type": "string"
+      },
+      {
+        "name": "market",
+        "type": "string"
+      },
+      {
+        "name": "bankruptcy_price",
+        "type": "string"
+      },
+      {
+        "name": "lots",
+        "type": "string"
+      },
+      {
+        "name": "block_created_at",
+        "type": "string"
+      },
+      {
+        "name": "tick_size",
+        "type": "string"
+      }
+    ],
+    "OutstandingPositions": [
+      {
+        "name": "outstanding_positions",
+        "type": "OutstandingPosition[]",
+        "packageName": "/Switcheo.carbon.liquidation"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "outstanding_positions",
+        "type": "OutstandingPositionsEntry[]",
+        "packageName": "/Switcheo.carbon.liquidation.GenesisState"
+      }
+    ],
+    "Params": [],
+    "QueryAllLiquidationRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "market",
+        "type": "string"
+      },
+      {
+        "name": "before_id",
+        "type": "uint64"
+      },
+      {
+        "name": "after_id",
+        "type": "uint64"
+      },
+      {
+        "name": "order_id",
+        "type": "string"
+      },
+      {
+        "name": "after_block",
+        "type": "uint64"
+      },
+      {
+        "name": "before_block",
+        "type": "uint64"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllLiquidationResponse": [
+      {
+        "name": "trades",
+        "type": "AccountTrade[]",
+        "packageName": "/Switcheo.carbon.misc"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryParamsRequest": [],
+    "QueryParamsResponse": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.liquidation"
+      }
+    ],
+    "QuoteChanges": [
+      {
+        "name": "create",
+        "type": "Order[]",
+        "packageName": "/Switcheo.carbon.order"
+      },
+      {
+        "name": "update",
+        "type": "OutstandingPosition[]",
+        "packageName": "/Switcheo.carbon.liquidation"
+      },
+      {
+        "name": "remove",
+        "type": "string[]"
+      }
+    ]
+  },
+  "/Switcheo.carbon.misc": {
+    "AccountTrade": [
+      {
+        "name": "order_id",
+        "type": "string"
+      },
+      {
+        "name": "market",
+        "type": "string"
+      },
+      {
+        "name": "side",
+        "type": "string"
+      },
+      {
+        "name": "quantity",
+        "type": "string"
+      },
+      {
+        "name": "price",
+        "type": "string"
+      },
+      {
+        "name": "fee_amount",
+        "type": "string"
+      },
+      {
+        "name": "fee_denom",
+        "type": "string"
+      },
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "block_height",
+        "type": "int64"
+      },
+      {
+        "name": "block_created_at",
+        "type": "string"
+      },
+      {
+        "name": "trade_id",
+        "type": "uint64"
+      }
+    ],
+    "Block": [
+      {
+        "name": "block_height",
+        "type": "uint64"
+      },
+      {
+        "name": "time",
+        "type": "string"
+      },
+      {
+        "name": "count",
+        "type": "uint32"
+      },
+      {
+        "name": "proposer_address",
+        "type": "string"
+      }
+    ],
+    "MessageType": [
+      {
+        "name": "message_type",
+        "type": "string"
+      }
+    ],
+    "Message": [
+      {
+        "name": "hash",
+        "type": "string"
+      },
+      {
+        "name": "message",
+        "type": "string"
+      },
+      {
+        "name": "message_type",
+        "type": "MessageType",
+        "packageName": "/Switcheo.carbon.misc"
+      },
+      {
+        "name": "block_created_at",
+        "type": "string"
+      }
+    ],
+    "Transaction": [
+      {
+        "name": "hash",
+        "type": "string"
+      },
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "code",
+        "type": "uint32"
+      },
+      {
+        "name": "memo",
+        "type": "string"
+      },
+      {
+        "name": "gas_used",
+        "type": "int64"
+      },
+      {
+        "name": "gas_wanted",
+        "type": "int64"
+      },
+      {
+        "name": "block_height",
+        "type": "uint64"
+      },
+      {
+        "name": "block_created_at",
+        "type": "string"
+      },
+      {
+        "name": "messages",
+        "type": "Message[]",
+        "packageName": "/Switcheo.carbon.misc"
+      }
+    ],
+    "APITransaction": [
+      {
+        "name": "hash",
+        "type": "string"
+      },
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "code",
+        "type": "uint32"
+      },
+      {
+        "name": "memo",
+        "type": "string"
+      },
+      {
+        "name": "gas_used",
+        "type": "int64"
+      },
+      {
+        "name": "gas_wanted",
+        "type": "int64"
+      },
+      {
+        "name": "block_height",
+        "type": "uint64"
+      },
+      {
+        "name": "block_created_at",
+        "type": "string"
+      },
+      {
+        "name": "messages",
+        "type": "string"
+      }
+    ],
+    "QuerySearchRequest": [
+      {
+        "name": "keyword",
+        "type": "string"
+      }
+    ],
+    "QuerySearchResponse": [
+      {
+        "name": "transactions",
+        "type": "Transaction[]",
+        "packageName": "/Switcheo.carbon.misc"
+      },
+      {
+        "name": "orders",
+        "type": "Order[]",
+        "packageName": "/Switcheo.carbon.order"
+      },
+      {
+        "name": "messageTypes",
+        "type": "string[]"
+      },
+      {
+        "name": "blocks",
+        "type": "Block[]",
+        "packageName": "/Switcheo.carbon.misc"
+      },
+      {
+        "name": "addresses",
+        "type": "Address[]",
+        "packageName": "/Switcheo.carbon.misc"
+      }
+    ],
+    "QueryAllMessageTypeRequest": [],
+    "QueryAllMessageTypeResponse": [
+      {
+        "name": "messageTypes",
+        "type": "MessageType[]",
+        "packageName": "/Switcheo.carbon.misc"
+      }
+    ],
+    "QueryAllTransactionRequest": [
+      {
+        "name": "hash",
+        "type": "string"
+      },
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "msgTypeFilters",
+        "type": "string[]"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllTransactionResponse": [
+      {
+        "name": "transactions",
+        "type": "Transaction[]",
+        "packageName": "/Switcheo.carbon.misc"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllBlockRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllBlockResponse": [
+      {
+        "name": "blocks",
+        "type": "Block[]",
+        "packageName": "/Switcheo.carbon.misc"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllModuleAddressRequest": [],
+    "QueryAllModuleAddressResponse": [
+      {
+        "name": "addresses",
+        "type": "AddressesEntry[]",
+        "packageName": "/Switcheo.carbon.misc.QueryAllModuleAddressResponse"
+      }
+    ],
+    "QueryModuleAddressRequest": [
+      {
+        "name": "module",
+        "type": "string"
+      }
+    ],
+    "QueryModuleAddressResponse": [
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "Address": [
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "type",
+        "type": "string"
+      }
+    ]
+  },
+  "/Switcheo.carbon.order": {
+    "Params": [
+      {
+        "name": "max_referral_commission",
+        "type": "uint32"
+      }
+    ],
+    "Order": [
+      {
+        "name": "id",
+        "type": "string"
+      },
+      {
+        "name": "block_height",
+        "type": "int64"
+      },
+      {
+        "name": "block_created_at",
+        "type": "string"
+      },
+      {
+        "name": "triggered_block_height",
+        "type": "int64"
+      },
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "market",
+        "type": "string"
+      },
+      {
+        "name": "side",
+        "type": "string"
+      },
+      {
+        "name": "price",
+        "type": "string"
+      },
+      {
+        "name": "quantity",
+        "type": "string"
+      },
+      {
+        "name": "available",
+        "type": "string"
+      },
+      {
+        "name": "filled",
+        "type": "string"
+      },
+      {
+        "name": "status",
+        "type": "string"
+      },
+      {
+        "name": "order_type",
+        "type": "string"
+      },
+      {
+        "name": "initiator",
+        "type": "string"
+      },
+      {
+        "name": "time_in_force",
+        "type": "string"
+      },
+      {
+        "name": "stop_price",
+        "type": "string"
+      },
+      {
+        "name": "trigger_type",
+        "type": "string"
+      },
+      {
+        "name": "allocated_margin",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "is_liquidation",
+        "type": "bool"
+      },
+      {
+        "name": "is_post_only",
+        "type": "bool"
+      },
+      {
+        "name": "is_reduce_only",
+        "type": "bool"
+      },
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "avg_filled_price",
+        "type": "string"
+      },
+      {
+        "name": "referral_address",
+        "type": "string"
+      },
+      {
+        "name": "referral_commission",
+        "type": "uint32"
+      },
+      {
+        "name": "referral_kickback",
+        "type": "uint32"
+      },
+      {
+        "name": "pool_route",
+        "type": "uint8[]"
+      }
+    ],
+    "DBOrder": [
+      {
+        "name": "order",
+        "type": "Order",
+        "packageName": "/Switcheo.carbon.order"
+      },
+      {
+        "name": "allocated_margin_denom",
+        "type": "string"
+      },
+      {
+        "name": "allocated_margin_amount",
+        "type": "string"
+      },
+      {
+        "name": "username",
+        "type": "string"
+      },
+      {
+        "name": "last_updated_block_height",
+        "type": "int64"
+      }
+    ],
+    "OrdersForMarket": [
+      {
+        "name": "market_id",
+        "type": "string"
+      },
+      {
+        "name": "orders",
+        "type": "Order[]",
+        "packageName": "/Switcheo.carbon.order"
+      }
+    ],
+    "OrderIDsForMarket": [
+      {
+        "name": "market_id",
+        "type": "string"
+      },
+      {
+        "name": "order_ids",
+        "type": "string[]"
+      }
+    ],
+    "OrderIDs": [
+      {
+        "name": "ids",
+        "type": "string[]"
+      }
+    ],
+    "Orders": [
+      {
+        "name": "orders",
+        "type": "Order[]",
+        "packageName": "/Switcheo.carbon.order"
+      }
+    ],
+    "OrderEvent": [
+      {
+        "name": "order",
+        "type": "Order",
+        "packageName": "/Switcheo.carbon.order"
+      },
+      {
+        "name": "type",
+        "type": "string"
+      },
+      {
+        "name": "allocated_margin_denom",
+        "type": "string"
+      },
+      {
+        "name": "allocated_margin_amount",
+        "type": "string"
+      },
+      {
+        "name": "block_created_at",
+        "type": "string"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "orders",
+        "type": "Order[]",
+        "packageName": "/Switcheo.carbon.order"
+      },
+      {
+        "name": "account_order_ids",
+        "type": "GenesisAccountOrderIDs[]",
+        "packageName": "/Switcheo.carbon.order"
+      },
+      {
+        "name": "account_sequences",
+        "type": "GenesisAccountSequence[]",
+        "packageName": "/Switcheo.carbon.order"
+      },
+      {
+        "name": "flags",
+        "type": "GenesisFlag[]",
+        "packageName": "/Switcheo.carbon.order"
+      },
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.order"
+      }
+    ],
+    "GenesisAccountOrderIDs": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "market",
+        "type": "string"
+      },
+      {
+        "name": "open_order_ids",
+        "type": "OrderIDs",
+        "packageName": "/Switcheo.carbon.order"
+      }
+    ],
+    "GenesisAccountSequence": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "sequence_number",
+        "type": "uint64"
+      }
+    ],
+    "GenesisFlag": [
+      {
+        "name": "blockchain",
+        "type": "string"
+      },
+      {
+        "name": "is_trading_enabled",
+        "type": "bool"
+      }
+    ],
+    "QueryGetOrderRequest": [
+      {
+        "name": "id",
+        "type": "string"
+      }
+    ],
+    "QueryGetOrderResponse": [
+      {
+        "name": "order",
+        "type": "Order",
+        "packageName": "/Switcheo.carbon.order"
+      }
+    ],
+    "QueryAllOrderRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "market",
+        "type": "string"
+      },
+      {
+        "name": "order_type",
+        "type": "string"
+      },
+      {
+        "name": "order_status",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllOrderResponse": [
+      {
+        "name": "orders",
+        "type": "Order[]",
+        "packageName": "/Switcheo.carbon.order"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAccountOpenOrdersRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "market",
+        "type": "string"
+      }
+    ],
+    "QueryAccountOpenOrdersResponse": [
+      {
+        "name": "orders",
+        "type": "Order[]",
+        "packageName": "/Switcheo.carbon.order"
+      }
+    ],
+    "QueryParamsRequest": [],
+    "QueryParamsResponse": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.order"
+      }
+    ],
+    "QueryOrderAllocatedMarginRequest": [
+      {
+        "name": "end_block_height",
+        "type": "string"
+      }
+    ],
+    "QueryOrderAllocatedMarginResponse": [
+      {
+        "name": "orders",
+        "type": "DBOrder[]",
+        "packageName": "/Switcheo.carbon.order"
+      }
+    ],
+    "MsgSetTradingFlag": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "is_enabled",
+        "type": "bool"
+      },
+      {
+        "name": "blockchain",
+        "type": "string"
+      }
+    ],
+    "MsgSetTradingFlagResponse": [],
+    "MsgCreateOrder": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "market",
+        "type": "string"
+      },
+      {
+        "name": "side",
+        "type": "string"
+      },
+      {
+        "name": "quantity",
+        "type": "string"
+      },
+      {
+        "name": "order_type",
+        "type": "string"
+      },
+      {
+        "name": "price",
+        "type": "string"
+      },
+      {
+        "name": "stop_price",
+        "type": "string"
+      },
+      {
+        "name": "time_in_force",
+        "type": "string"
+      },
+      {
+        "name": "trigger_type",
+        "type": "string"
+      },
+      {
+        "name": "is_post_only",
+        "type": "bool"
+      },
+      {
+        "name": "is_reduce_only",
+        "type": "bool"
+      },
+      {
+        "name": "referral_address",
+        "type": "string"
+      },
+      {
+        "name": "referral_commission",
+        "type": "uint32"
+      },
+      {
+        "name": "referral_kickback",
+        "type": "uint32"
+      }
+    ],
+    "MsgCreateOrderResponse": [],
+    "MsgEditOrder": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "id",
+        "type": "string"
+      },
+      {
+        "name": "quantity",
+        "type": "string"
+      },
+      {
+        "name": "price",
+        "type": "string"
+      },
+      {
+        "name": "stop_price",
+        "type": "string"
+      }
+    ],
+    "MsgEditOrderResponse": [],
+    "MsgCancelOrder": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "id",
+        "type": "string"
+      }
+    ],
+    "MsgCancelOrderResponse": [],
+    "MsgCancelAll": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "market",
+        "type": "string"
+      }
+    ],
+    "MsgCancelAllResponse": []
+  },
+  "/Switcheo.carbon.liquiditypool": {
+    "Params": [
+      {
+        "name": "reward_reduction_threshold",
+        "type": "uint64"
+      },
+      {
+        "name": "num_quotes",
+        "type": "uint64"
+      }
+    ],
+    "Pool": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "id",
+        "type": "uint64"
+      },
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "denom_a",
+        "type": "string"
+      },
+      {
+        "name": "amount_a",
+        "type": "string"
+      },
+      {
+        "name": "weight_a",
+        "type": "string"
+      },
+      {
+        "name": "denom_b",
+        "type": "string"
+      },
+      {
+        "name": "amount_b",
+        "type": "string"
+      },
+      {
+        "name": "weight_b",
+        "type": "string"
+      },
+      {
+        "name": "swap_fee",
+        "type": "string"
+      },
+      {
+        "name": "num_quotes",
+        "type": "int64"
+      },
+      {
+        "name": "shares_amount",
+        "type": "string"
+      },
+      {
+        "name": "market",
+        "type": "string"
+      },
+      {
+        "name": "amp_bps",
+        "type": "uint64"
+      },
+      {
+        "name": "v_amount_a",
+        "type": "string"
+      },
+      {
+        "name": "v_amount_b",
+        "type": "string"
+      }
+    ],
+    "Pools": [
+      {
+        "name": "pools",
+        "type": "Pool[]",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      }
+    ],
+    "PoolRoute": [
+      {
+        "name": "market",
+        "type": "string"
+      },
+      {
+        "name": "pool_ids",
+        "type": "uint64[]"
+      },
+      {
+        "name": "num_quotes",
+        "type": "int64"
+      }
+    ],
+    "AddLiquidity": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "id",
+        "type": "uint64"
+      },
+      {
+        "name": "amount_a",
+        "type": "string"
+      },
+      {
+        "name": "amount_b",
+        "type": "string"
+      },
+      {
+        "name": "min_shares",
+        "type": "string"
+      }
+    ],
+    "AddLiquidities": [
+      {
+        "name": "add_liquidities",
+        "type": "AddLiquidity[]",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      }
+    ],
+    "RemoveLiquidity": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "id",
+        "type": "uint64"
+      },
+      {
+        "name": "amount",
+        "type": "string"
+      }
+    ],
+    "RemoveLiquidities": [
+      {
+        "name": "remove_liquidities",
+        "type": "RemoveLiquidity[]",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      }
+    ],
+    "RemovePoolRoutes": [
+      {
+        "name": "remove_pool_routes",
+        "type": "uint8[][]"
+      }
+    ],
+    "PoolReserve": [
+      {
+        "name": "id",
+        "type": "uint64"
+      },
+      {
+        "name": "amount_a",
+        "type": "string"
+      },
+      {
+        "name": "weight_a",
+        "type": "string"
+      },
+      {
+        "name": "amount_b",
+        "type": "string"
+      },
+      {
+        "name": "weight_b",
+        "type": "string"
+      },
+      {
+        "name": "v_amount_a",
+        "type": "string"
+      },
+      {
+        "name": "v_amount_b",
+        "type": "string"
+      }
+    ],
+    "RewardCurve": [
+      {
+        "name": "start_time",
+        "type": "string"
+      },
+      {
+        "name": "initial_reward",
+        "type": "uint32"
+      },
+      {
+        "name": "interval",
+        "type": "uint64"
+      },
+      {
+        "name": "number_of_reductions",
+        "type": "uint32"
+      },
+      {
+        "name": "reduction",
+        "type": "uint32"
+      },
+      {
+        "name": "final_reward",
+        "type": "uint32"
+      },
+      {
+        "name": "reductions_made",
+        "type": "uint32"
+      }
+    ],
+    "CommitmentCurve": [
+      {
+        "name": "max_commitment_duration",
+        "type": "uint64"
+      },
+      {
+        "name": "max_reward_multiplier",
+        "type": "uint32"
+      }
+    ],
+    "RewardWeight": [
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "weight",
+        "type": "string"
+      }
+    ],
+    "RewardWeights": [
+      {
+        "name": "weights",
+        "type": "RewardWeight[]",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      }
+    ],
+    "Commitment": [
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "liquidity",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "start_time",
+        "type": "string"
+      },
+      {
+        "name": "duration",
+        "type": "uint64"
+      }
+    ],
+    "CommitmentRecord": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "commitment",
+        "type": "Commitment",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      }
+    ],
+    "TotalCommitment": [
+      {
+        "name": "total",
+        "type": "string"
+      }
+    ],
+    "TotalCommitmentRecord": [
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "total_commitment",
+        "type": "TotalCommitment",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      }
+    ],
+    "CommitmentResponse": [
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "string"
+      },
+      {
+        "name": "start_time",
+        "type": "string"
+      },
+      {
+        "name": "end_time",
+        "type": "string"
+      },
+      {
+        "name": "duration",
+        "type": "uint64"
+      },
+      {
+        "name": "is_locked",
+        "type": "bool"
+      },
+      {
+        "name": "commitment_power",
+        "type": "string"
+      },
+      {
+        "name": "boost_factor",
+        "type": "string"
+      }
+    ],
+    "RewardHistory": [
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "rewards",
+        "type": "DecCoin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "total_commitment",
+        "type": "string"
+      }
+    ],
+    "RewardHistoryRecord": [
+      {
+        "name": "height",
+        "type": "uint64"
+      },
+      {
+        "name": "reward_history",
+        "type": "RewardHistory",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      }
+    ],
+    "CommitmentExpiry": [
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "CommitmentExpiries": [
+      {
+        "name": "commitment_expiries",
+        "type": "CommitmentExpiry[]",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      }
+    ],
+    "CommitmentExpiriesRecord": [
+      {
+        "name": "expiry_time",
+        "type": "uint64"
+      },
+      {
+        "name": "commitment_expiries",
+        "type": "CommitmentExpiries",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      }
+    ],
+    "LastClaimRecord": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "height",
+        "type": "uint64"
+      }
+    ],
+    "AllocatedRewards": [
+      {
+        "name": "coins",
+        "type": "DecCoin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "PoolEvent": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "pool",
+        "type": "Pool",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      },
+      {
+        "name": "type",
+        "type": "string"
+      },
+      {
+        "name": "id",
+        "type": "uint64"
+      },
+      {
+        "name": "pool_address",
+        "type": "string"
+      }
+    ],
+    "TotalCommitmentChangeEvent": [
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "total_commitment",
+        "type": "string"
+      }
+    ],
+    "RewardsWeightChangeEvent": [
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "rewards_weight",
+        "type": "string"
+      }
+    ],
+    "CommitmentCurveEvent": [
+      {
+        "name": "commitment_curve",
+        "type": "CommitmentCurve",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      }
+    ],
+    "CommitmentEvent": [
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "commitment",
+        "type": "Commitment",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      },
+      {
+        "name": "type",
+        "type": "string"
+      }
+    ],
+    "SwapEvent": [
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "input",
+        "type": "string"
+      },
+      {
+        "name": "output",
+        "type": "string"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "pools",
+        "type": "Pool[]",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      },
+      {
+        "name": "reward_curve",
+        "type": "RewardCurve",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      },
+      {
+        "name": "commitment_curve",
+        "type": "CommitmentCurve",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      },
+      {
+        "name": "reward_weights",
+        "type": "RewardWeights",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      },
+      {
+        "name": "commitments",
+        "type": "CommitmentRecord[]",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      },
+      {
+        "name": "total_commitments",
+        "type": "TotalCommitmentRecord[]",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      },
+      {
+        "name": "commitment_expiries",
+        "type": "CommitmentExpiriesRecord[]",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      },
+      {
+        "name": "reward_histories",
+        "type": "RewardHistoryRecord[]",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      },
+      {
+        "name": "last_claims",
+        "type": "LastClaimRecord[]",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      },
+      {
+        "name": "allocated_rewards",
+        "type": "AllocatedRewards",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      },
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      },
+      {
+        "name": "pool_routes",
+        "type": "PoolRoute[]",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      }
+    ],
+    "MsgCreatePool": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "token_a_denom",
+        "type": "string"
+      },
+      {
+        "name": "token_b_denom",
+        "type": "string"
+      },
+      {
+        "name": "token_a_weight",
+        "type": "string"
+      },
+      {
+        "name": "token_b_weight",
+        "type": "string"
+      },
+      {
+        "name": "swap_fee",
+        "type": "string"
+      },
+      {
+        "name": "amp_bps",
+        "type": "uint64"
+      }
+    ],
+    "MsgCreatePoolResponse": [
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      }
+    ],
+    "MsgCreatePoolWithLiquidity": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "token_a_denom",
+        "type": "string"
+      },
+      {
+        "name": "token_b_denom",
+        "type": "string"
+      },
+      {
+        "name": "token_a_weight",
+        "type": "string"
+      },
+      {
+        "name": "token_b_weight",
+        "type": "string"
+      },
+      {
+        "name": "amount_a",
+        "type": "string"
+      },
+      {
+        "name": "amount_b",
+        "type": "string"
+      },
+      {
+        "name": "swap_fee",
+        "type": "string"
+      },
+      {
+        "name": "amp_bps",
+        "type": "uint64"
+      }
+    ],
+    "MsgCreatePoolWithLiquidityResponse": [],
+    "MsgAddLiquidity": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "amount_a",
+        "type": "string"
+      },
+      {
+        "name": "amount_b",
+        "type": "string"
+      },
+      {
+        "name": "min_shares",
+        "type": "string"
+      }
+    ],
+    "MsgAddLiquidityResponse": [],
+    "MsgRemoveLiquidity": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "shares",
+        "type": "string"
+      }
+    ],
+    "MsgRemoveLiquidityResponse": [],
+    "LinkPoolParams": [
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "market",
+        "type": "string"
+      }
+    ],
+    "UnlinkPoolParams": [
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      }
+    ],
+    "MsgSetRewardsWeights": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "set_rewards_weights_params",
+        "type": "SetRewardsWeightsParams",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      }
+    ],
+    "SetRewardsWeightsParams": [
+      {
+        "name": "weights",
+        "type": "RewardWeight[]",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      }
+    ],
+    "MsgSetRewardsWeightsResponse": [],
+    "MsgStakePoolToken": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "string"
+      },
+      {
+        "name": "duration",
+        "type": "uint64"
+      }
+    ],
+    "MsgStakePoolTokenResponse": [],
+    "MsgUnstakePoolToken": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "string"
+      }
+    ],
+    "MsgUnstakePoolTokenResponse": [],
+    "MsgClaimPoolRewards": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      }
+    ],
+    "MsgClaimPoolRewardsResponse": [],
+    "MsgSetRewardCurve": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "set_reward_curve_params",
+        "type": "SetRewardCurveParams",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      }
+    ],
+    "SetRewardCurveParams": [
+      {
+        "name": "start_time",
+        "type": "string"
+      },
+      {
+        "name": "initial_reward_bps",
+        "type": "uint32"
+      },
+      {
+        "name": "reduction_multiplier_bps",
+        "type": "uint32"
+      },
+      {
+        "name": "reduction_interval_seconds",
+        "type": "uint64"
+      },
+      {
+        "name": "reductions",
+        "type": "uint32"
+      },
+      {
+        "name": "final_reward_bps",
+        "type": "uint32"
+      }
+    ],
+    "MsgSetRewardCurveResponse": [],
+    "MsgSetCommitmentCurve": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "set_commitment_curve_params",
+        "type": "SetCommitmentCurveParams",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      }
+    ],
+    "SetCommitmentCurveParams": [
+      {
+        "name": "max_duration",
+        "type": "uint64"
+      },
+      {
+        "name": "max_reward_multiplier",
+        "type": "uint32"
+      }
+    ],
+    "MsgSetCommitmentCurveResponse": [],
+    "MsgUpdatePool": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "update_pool_params",
+        "type": "UpdatePoolParams",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      }
+    ],
+    "UpdatePoolParams": [
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "swap_fee",
+        "type": "string"
+      },
+      {
+        "name": "num_quotes",
+        "type": "int64"
+      }
+    ],
+    "MsgUpdatePoolResponse": [],
+    "MsgCreatePoolRoute": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "create_pool_route_params",
+        "type": "CreatePoolRouteParams",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      }
+    ],
+    "MsgCreatePoolRouteResponse": [],
+    "CreatePoolRouteParams": [
+      {
+        "name": "market_name",
+        "type": "string"
+      },
+      {
+        "name": "pool_ids",
+        "type": "uint64[]"
+      },
+      {
+        "name": "num_quotes",
+        "type": "int64"
+      }
+    ],
+    "MsgRemovePoolRoute": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "remove_pool_route_params",
+        "type": "RemovePoolRouteParams",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      }
+    ],
+    "MsgRemovePoolRouteResponse": [],
+    "RemovePoolRouteParams": [
+      {
+        "name": "market_name",
+        "type": "string"
+      },
+      {
+        "name": "pool_ids",
+        "type": "uint64[]"
+      }
+    ],
+    "MsgUpdatePoolRoute": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "update_pool_route_params",
+        "type": "UpdatePoolRouteParams",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      }
+    ],
+    "MsgUpdatePoolRouteResponse": [],
+    "UpdatePoolRouteParams": [
+      {
+        "name": "market_name",
+        "type": "string"
+      },
+      {
+        "name": "pool_ids",
+        "type": "uint64[]"
+      },
+      {
+        "name": "num_quotes",
+        "type": "int64"
+      }
+    ],
+    "LinkPoolProposal": [
+      {
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "msg",
+        "type": "LinkPoolParams",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      }
+    ],
+    "UnlinkPoolProposal": [
+      {
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "msg",
+        "type": "UnlinkPoolParams",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      }
+    ],
+    "SetRewardCurveProposal": [
+      {
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "msg",
+        "type": "SetRewardCurveParams",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      }
+    ],
+    "SetCommitmentCurveProposal": [
+      {
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "msg",
+        "type": "SetCommitmentCurveParams",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      }
+    ],
+    "SetRewardsWeightsProposal": [
+      {
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "msg",
+        "type": "SetRewardsWeightsParams",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      }
+    ],
+    "UpdatePoolProposal": [
+      {
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "msg",
+        "type": "UpdatePoolParams",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      }
+    ],
+    "CreatePoolRouteProposal": [
+      {
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "msg",
+        "type": "CreatePoolRouteParams",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      }
+    ],
+    "RemovePoolRouteProposal": [
+      {
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "msg",
+        "type": "RemovePoolRouteParams",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      }
+    ],
+    "UpdatePoolRouteProposal": [
+      {
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "msg",
+        "type": "UpdatePoolRouteParams",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      }
+    ],
+    "QueryGetPoolRequest": [
+      {
+        "name": "id",
+        "type": "uint64"
+      }
+    ],
+    "QueryGetPoolResponse": [
+      {
+        "name": "pool",
+        "type": "ExtendedPool",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      }
+    ],
+    "QueryAllPoolRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllPoolResponse": [
+      {
+        "name": "pools",
+        "type": "ExtendedPool[]",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllPoolAddressRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllPoolAddressResponse": [
+      {
+        "name": "addresses",
+        "type": "AddressesEntry[]",
+        "packageName": "/Switcheo.carbon.liquiditypool.QueryAllPoolAddressResponse"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryRewardHistoryRequest": [
+      {
+        "name": "pool_id",
+        "type": "string"
+      },
+      {
+        "name": "start_block_height",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "ExtendedPool": [
+      {
+        "name": "pool",
+        "type": "Pool",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      },
+      {
+        "name": "rewards_weight",
+        "type": "string"
+      },
+      {
+        "name": "total_commitment",
+        "type": "string"
+      }
+    ],
+    "QueryRewardHistoryResponse": [
+      {
+        "name": "reward_histories",
+        "type": "RewardHistoryRecord[]",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryCommitmentRequest": [
+      {
+        "name": "pool_id",
+        "type": "string"
+      },
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "QueryCommitmentResponse": [
+      {
+        "name": "commitment",
+        "type": "CommitmentResponse",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      }
+    ],
+    "QueryAllCommitmentRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllCommitmentResponse": [
+      {
+        "name": "commitments",
+        "type": "Commitment[]",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      },
+      {
+        "name": "block_time",
+        "type": "string"
+      }
+    ],
+    "QueryLastClaimRequest": [
+      {
+        "name": "pool_id",
+        "type": "string"
+      },
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "QueryLastClaimResponse": [
+      {
+        "name": "last_claim",
+        "type": "int64"
+      }
+    ],
+    "QueryCommitmentCurveRequest": [],
+    "QueryCommitmentCurveResponse": [
+      {
+        "name": "commitment_curve",
+        "type": "CommitmentCurve",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      }
+    ],
+    "QueryRewardCurveRequest": [],
+    "QueryRewardCurveResponse": [
+      {
+        "name": "reward_curve",
+        "type": "RewardCurve",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      }
+    ],
+    "QueryTotalCommitmentRequest": [
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      }
+    ],
+    "QueryTotalCommitmentResponse": [
+      {
+        "name": "total_commitment",
+        "type": "string"
+      }
+    ],
+    "QueryAllTotalCommitmentRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllTotalCommitmentResponse": [
+      {
+        "name": "total_commitments",
+        "type": "TotalCommitmentRecord[]",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryClaimableRewardsRequest": [
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "QueryClaimableRewardsResponse": [
+      {
+        "name": "rewards",
+        "type": "DecCoin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "QueryParamsRequest": [],
+    "QueryParamsResponse": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      }
+    ],
+    "QueryAllPoolRouteRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllPoolRouteResponse": [
+      {
+        "name": "pool_routes",
+        "type": "PoolRoute[]",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllPoolRouteAddressRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllPoolRouteAddressResponse": [
+      {
+        "name": "addresses",
+        "type": "AddressesEntry[]",
+        "packageName": "/Switcheo.carbon.liquiditypool.QueryAllPoolRouteAddressResponse"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ]
+  },
+  "/Switcheo.carbon.lockproxy": {
+    "LockEvent": [
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "from_lock_proxy",
+        "type": "string"
+      },
+      {
+        "name": "from_asset_id",
+        "type": "string"
+      },
+      {
+        "name": "from_address",
+        "type": "string"
+      },
+      {
+        "name": "to_chain_id",
+        "type": "string"
+      },
+      {
+        "name": "to_lock_proxy",
+        "type": "string"
+      },
+      {
+        "name": "to_asset_id",
+        "type": "string"
+      },
+      {
+        "name": "to_address",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "string"
+      },
+      {
+        "name": "fee_amount",
+        "type": "string"
+      },
+      {
+        "name": "fee_address",
+        "type": "string"
+      },
+      {
+        "name": "nonce",
+        "type": "string"
+      }
+    ],
+    "UnlockEvent": [
+      {
+        "name": "to_asset_id",
+        "type": "string"
+      },
+      {
+        "name": "to_address",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "string"
+      },
+      {
+        "name": "from_address",
+        "type": "string"
+      },
+      {
+        "name": "from_asset_id",
+        "type": "string"
+      },
+      {
+        "name": "fee_amount",
+        "type": "string"
+      },
+      {
+        "name": "fee_address",
+        "type": "string"
+      },
+      {
+        "name": "nonce",
+        "type": "string"
+      }
+    ],
+    "WrapperMapping": [
+      {
+        "name": "chain_id",
+        "type": "uint64"
+      },
+      {
+        "name": "from_contract_address",
+        "type": "uint8[]"
+      },
+      {
+        "name": "to_contract_address",
+        "type": "uint8[]"
+      },
+      {
+        "name": "lock_type",
+        "type": "uint64"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "nonce",
+        "type": "string"
+      },
+      {
+        "name": "chain_ids",
+        "type": "ChainIdsEntry[]",
+        "packageName": "/Switcheo.carbon.lockproxy.GenesisState"
+      },
+      {
+        "name": "registries",
+        "type": "RegistriesEntry[]",
+        "packageName": "/Switcheo.carbon.lockproxy.GenesisState"
+      },
+      {
+        "name": "operators",
+        "type": "OperatorsEntry[]",
+        "packageName": "/Switcheo.carbon.lockproxy.GenesisState"
+      },
+      {
+        "name": "wrapper_mappings",
+        "type": "WrapperMapping[]",
+        "packageName": "/Switcheo.carbon.lockproxy"
+      }
+    ],
+    "QueryGetProxyRequest": [
+      {
+        "name": "operator_address",
+        "type": "string"
+      }
+    ],
+    "QueryGetProxyResponse": [
+      {
+        "name": "proxy_hash",
+        "type": "uint8[]"
+      }
+    ],
+    "QueryListWrapperMappingRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryListWrapperMappingResponse": [
+      {
+        "name": "wrapper_mappings",
+        "type": "WrapperMapping[]",
+        "packageName": "/Switcheo.carbon.lockproxy"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "MsgCreate": [
+      {
+        "name": "creator",
+        "type": "string"
+      }
+    ],
+    "MsgCreateResponse": [],
+    "MsgBind": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "lock_proxy_hash",
+        "type": "uint8[]"
+      },
+      {
+        "name": "native_chain_id",
+        "type": "uint64"
+      },
+      {
+        "name": "native_lock_proxy_hash",
+        "type": "uint8[]"
+      },
+      {
+        "name": "native_asset_hash",
+        "type": "uint8[]"
+      }
+    ],
+    "MsgBindResponse": [],
+    "MsgLock": [
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "from_lock_proxy",
+        "type": "uint8[]"
+      },
+      {
+        "name": "from_address",
+        "type": "string"
+      },
+      {
+        "name": "from_asset_id",
+        "type": "uint8[]"
+      },
+      {
+        "name": "to_chain_id",
+        "type": "uint64"
+      },
+      {
+        "name": "to_lock_proxy",
+        "type": "uint8[]"
+      },
+      {
+        "name": "to_asset_id",
+        "type": "uint8[]"
+      },
+      {
+        "name": "to_address",
+        "type": "uint8[]"
+      },
+      {
+        "name": "amount",
+        "type": "string"
+      },
+      {
+        "name": "deduct_fee_in_lock",
+        "type": "bool"
+      },
+      {
+        "name": "fee_amount",
+        "type": "string"
+      },
+      {
+        "name": "fee_address",
+        "type": "string"
+      }
+    ],
+    "MsgLockResponse": [],
+    "MsgSetWrapperMapping": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "chain_id",
+        "type": "uint64"
+      },
+      {
+        "name": "from_contract_address",
+        "type": "string"
+      },
+      {
+        "name": "to_contract_address",
+        "type": "string"
+      },
+      {
+        "name": "lock_type",
+        "type": "uint64"
+      }
+    ],
+    "MsgSetWrapperMappingResponse": [],
+    "MsgDeleteWrapperMapping": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "chainId",
+        "type": "uint64"
+      },
+      {
+        "name": "contract_address",
+        "type": "string"
+      }
+    ],
+    "MsgDeleteWrapperMappingResponse": []
+  },
+  "/Switcheo.carbon.market": {
+    "Params": [
+      {
+        "name": "default_lot_size_usd",
+        "type": "string"
+      },
+      {
+        "name": "default_tick_size_usd",
+        "type": "string"
+      },
+      {
+        "name": "default_min_quantity_usd",
+        "type": "string"
+      },
+      {
+        "name": "default_spot_maker_fee",
+        "type": "string"
+      },
+      {
+        "name": "default_spot_taker_fee",
+        "type": "string"
+      },
+      {
+        "name": "default_futures_maker_fee",
+        "type": "string"
+      },
+      {
+        "name": "default_futures_taker_fee",
+        "type": "string"
+      },
+      {
+        "name": "default_risk_step_size_usd",
+        "type": "string"
+      },
+      {
+        "name": "default_initial_margin_base",
+        "type": "string"
+      },
+      {
+        "name": "default_initial_margin_step",
+        "type": "string"
+      },
+      {
+        "name": "default_maintenance_margin_ratio",
+        "type": "string"
+      },
+      {
+        "name": "default_max_liquidation_order_ticket_usd",
+        "type": "string"
+      },
+      {
+        "name": "default_max_liquidation_order_duration",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "default_impact_size_usd",
+        "type": "string"
+      },
+      {
+        "name": "default_mark_price_band",
+        "type": "uint32"
+      },
+      {
+        "name": "default_last_price_protected_band",
+        "type": "uint32"
+      },
+      {
+        "name": "max_active_markets",
+        "type": "uint32"
+      },
+      {
+        "name": "default_trading_bandwidth",
+        "type": "uint32"
+      },
+      {
+        "name": "funding_rate_band",
+        "type": "string"
+      }
+    ],
+    "ControlledParams": [
+      {
+        "name": "perpetuals_funding_interval",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "Market": [
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "display_name",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "market_type",
+        "type": "string"
+      },
+      {
+        "name": "base",
+        "type": "string"
+      },
+      {
+        "name": "quote",
+        "type": "string"
+      },
+      {
+        "name": "base_precision",
+        "type": "int64"
+      },
+      {
+        "name": "quote_precision",
+        "type": "int64"
+      },
+      {
+        "name": "lot_size",
+        "type": "string"
+      },
+      {
+        "name": "tick_size",
+        "type": "string"
+      },
+      {
+        "name": "min_quantity",
+        "type": "string"
+      },
+      {
+        "name": "maker_fee",
+        "type": "string"
+      },
+      {
+        "name": "taker_fee",
+        "type": "string"
+      },
+      {
+        "name": "created_block_height",
+        "type": "uint64"
+      },
+      {
+        "name": "risk_step_size",
+        "type": "string"
+      },
+      {
+        "name": "initial_margin_base",
+        "type": "string"
+      },
+      {
+        "name": "initial_margin_step",
+        "type": "string"
+      },
+      {
+        "name": "maintenance_margin_ratio",
+        "type": "string"
+      },
+      {
+        "name": "max_liquidation_order_ticket",
+        "type": "string"
+      },
+      {
+        "name": "max_liquidation_order_duration",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "impact_size",
+        "type": "string"
+      },
+      {
+        "name": "mark_price_band",
+        "type": "uint32"
+      },
+      {
+        "name": "last_price_protected_band",
+        "type": "uint32"
+      },
+      {
+        "name": "index_oracle_id",
+        "type": "string"
+      },
+      {
+        "name": "expiry_time",
+        "type": "string"
+      },
+      {
+        "name": "is_active",
+        "type": "bool"
+      },
+      {
+        "name": "is_settled",
+        "type": "bool"
+      },
+      {
+        "name": "closed_block_height",
+        "type": "uint64"
+      },
+      {
+        "name": "trading_bandwidth",
+        "type": "uint32"
+      }
+    ],
+    "MarketParams": [
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "display_name",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "lot_size",
+        "type": "string"
+      },
+      {
+        "name": "tick_size",
+        "type": "string"
+      },
+      {
+        "name": "min_quantity",
+        "type": "string"
+      },
+      {
+        "name": "maker_fee",
+        "type": "string"
+      },
+      {
+        "name": "taker_fee",
+        "type": "string"
+      },
+      {
+        "name": "risk_step_size",
+        "type": "string"
+      },
+      {
+        "name": "initial_margin_base",
+        "type": "string"
+      },
+      {
+        "name": "initial_margin_step",
+        "type": "string"
+      },
+      {
+        "name": "maintenance_margin_ratio",
+        "type": "string"
+      },
+      {
+        "name": "max_liquidation_order_ticket",
+        "type": "string"
+      },
+      {
+        "name": "max_liquidation_order_duration",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "impact_size",
+        "type": "string"
+      },
+      {
+        "name": "mark_price_band",
+        "type": "uint32"
+      },
+      {
+        "name": "last_price_protected_band",
+        "type": "uint32"
+      },
+      {
+        "name": "is_active",
+        "type": "bool"
+      },
+      {
+        "name": "trading_bandwidth",
+        "type": "uint32"
+      },
+      {
+        "name": "expiry_time",
+        "type": "string"
+      }
+    ],
+    "IncomingDisableSpotMarketNames": [
+      {
+        "name": "ids",
+        "type": "string[]"
+      }
+    ],
+    "FeeStructure": [
+      {
+        "name": "fee_category",
+        "type": "FeeCategory",
+        "packageName": "/Switcheo.carbon.market"
+      },
+      {
+        "name": "fee_tiers",
+        "type": "FeeTier[]",
+        "packageName": "/Switcheo.carbon.market"
+      }
+    ],
+    "FeeCategory": [
+      {
+        "name": "market_type",
+        "type": "string"
+      },
+      {
+        "name": "market_id",
+        "type": "string"
+      },
+      {
+        "name": "whitelisted_address",
+        "type": "string"
+      }
+    ],
+    "FeeTier": [
+      {
+        "name": "required_stake",
+        "type": "string"
+      },
+      {
+        "name": "trading_fees",
+        "type": "TradingFees",
+        "packageName": "/Switcheo.carbon.market"
+      }
+    ],
+    "TradingFees": [
+      {
+        "name": "taker_fee",
+        "type": "string"
+      },
+      {
+        "name": "maker_fee",
+        "type": "string"
+      }
+    ],
+    "StakeEquivalence": [
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "ratio",
+        "type": "string"
+      }
+    ],
+    "MarketEvent": [
+      {
+        "name": "market",
+        "type": "Market",
+        "packageName": "/Switcheo.carbon.market"
+      },
+      {
+        "name": "type",
+        "type": "string"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "markets",
+        "type": "Market[]",
+        "packageName": "/Switcheo.carbon.market"
+      },
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.market"
+      },
+      {
+        "name": "controlled_params",
+        "type": "ControlledParams",
+        "packageName": "/Switcheo.carbon.market"
+      },
+      {
+        "name": "market_name_sequence",
+        "type": "int64"
+      },
+      {
+        "name": "stake_equivalences",
+        "type": "StakeEquivalence[]",
+        "packageName": "/Switcheo.carbon.market"
+      },
+      {
+        "name": "fee_structures",
+        "type": "FeeStructure[]",
+        "packageName": "/Switcheo.carbon.market"
+      }
+    ],
+    "CreateMarketProposal": [
+      {
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "msg",
+        "type": "Market",
+        "packageName": "/Switcheo.carbon.market"
+      }
+    ],
+    "UpdateMarketProposal": [
+      {
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "msg",
+        "type": "MarketParams",
+        "packageName": "/Switcheo.carbon.market"
+      }
+    ],
+    "UpdatePerpetualsFundingIntervalProposal": [
+      {
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "perpetuals_funding_interval",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "QueryGetMarketRequest": [
+      {
+        "name": "name",
+        "type": "string"
+      }
+    ],
+    "QueryGetMarketResponse": [
+      {
+        "name": "market",
+        "type": "Market",
+        "packageName": "/Switcheo.carbon.market"
+      }
+    ],
+    "QueryAllMarketRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllMarketResponse": [
+      {
+        "name": "markets",
+        "type": "Market[]",
+        "packageName": "/Switcheo.carbon.market"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryGetTradingFeesRequest": [
+      {
+        "name": "market_name",
+        "type": "string"
+      },
+      {
+        "name": "user_address",
+        "type": "string"
+      }
+    ],
+    "QueryGetTradingFeesResponse": [
+      {
+        "name": "fees",
+        "type": "TradingFees",
+        "packageName": "/Switcheo.carbon.market"
+      }
+    ],
+    "QueryGetFeeTiersRequest": [
+      {
+        "name": "market_type",
+        "type": "string"
+      },
+      {
+        "name": "market_name",
+        "type": "string"
+      },
+      {
+        "name": "user_address",
+        "type": "string"
+      }
+    ],
+    "QueryGetFeeTiersResponse": [
+      {
+        "name": "fee_tiers",
+        "type": "FeeTier[]",
+        "packageName": "/Switcheo.carbon.market"
+      }
+    ],
+    "QueryAllStakeEquivalenceRequest": [],
+    "QueryAllStakeEquivalenceResponse": [
+      {
+        "name": "stake_equivalence",
+        "type": "StakeEquivalence[]",
+        "packageName": "/Switcheo.carbon.market"
+      }
+    ],
+    "QueryAllFeeStructuresRequest": [],
+    "QueryAllFeeStructuresResponse": [
+      {
+        "name": "fee_structures",
+        "type": "FeeStructure[]",
+        "packageName": "/Switcheo.carbon.market"
+      }
+    ],
+    "QueryParamsRequest": [],
+    "QueryParamsResponse": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.market"
+      }
+    ],
+    "MsgDisableSpotMarket": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "market_name",
+        "type": "string"
+      }
+    ],
+    "MsgDisableSpotMarketResponse": [],
+    "MsgCreateMarket": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "market_type",
+        "type": "string"
+      },
+      {
+        "name": "base",
+        "type": "string"
+      },
+      {
+        "name": "quote",
+        "type": "string"
+      },
+      {
+        "name": "current_base_price_usd",
+        "type": "string"
+      },
+      {
+        "name": "current_quote_price_usd",
+        "type": "string"
+      },
+      {
+        "name": "index_oracle_id",
+        "type": "string"
+      },
+      {
+        "name": "expiry_time",
+        "type": "string"
+      }
+    ],
+    "MsgCreateMarketResponse": [
+      {
+        "name": "name",
+        "type": "string"
+      }
+    ],
+    "MsgUpdateMarket": [
+      {
+        "name": "updater",
+        "type": "string"
+      },
+      {
+        "name": "market_params",
+        "type": "MarketParams",
+        "packageName": "/Switcheo.carbon.market"
+      }
+    ],
+    "MsgUpdateMarketResponse": [],
+    "MsgUpdatePerpetualsFundingInterval": [
+      {
+        "name": "updater",
+        "type": "string"
+      },
+      {
+        "name": "perpetuals_funding_interval",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "MsgUpdatePerpetualsFundingIntervalResponse": [],
+    "MsgAddFeeTier": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "fee_category",
+        "type": "FeeCategory",
+        "packageName": "/Switcheo.carbon.market"
+      },
+      {
+        "name": "fee_tier",
+        "type": "FeeTier",
+        "packageName": "/Switcheo.carbon.market"
+      }
+    ],
+    "MsgAddFeeTierResponse": [
+      {
+        "name": "fee_tiers",
+        "type": "FeeTier[]",
+        "packageName": "/Switcheo.carbon.market"
+      }
+    ],
+    "MsgUpdateFeeTier": [
+      {
+        "name": "updater",
+        "type": "string"
+      },
+      {
+        "name": "fee_category",
+        "type": "FeeCategory",
+        "packageName": "/Switcheo.carbon.market"
+      },
+      {
+        "name": "required_stake",
+        "type": "string"
+      },
+      {
+        "name": "taker_fee",
+        "type": "string"
+      },
+      {
+        "name": "maker_fee",
+        "type": "string"
+      }
+    ],
+    "MsgUpdateFeeTierResponse": [
+      {
+        "name": "fee_tiers",
+        "type": "FeeTier[]",
+        "packageName": "/Switcheo.carbon.market"
+      }
+    ],
+    "MsgRemoveFeeTier": [
+      {
+        "name": "remover",
+        "type": "string"
+      },
+      {
+        "name": "fee_category",
+        "type": "FeeCategory",
+        "packageName": "/Switcheo.carbon.market"
+      },
+      {
+        "name": "required_stake",
+        "type": "string"
+      }
+    ],
+    "MsgRemoveFeeTierResponse": [
+      {
+        "name": "fee_tiers",
+        "type": "FeeTier[]",
+        "packageName": "/Switcheo.carbon.market"
+      }
+    ],
+    "MsgSetStakeEquivalence": [
+      {
+        "name": "setter",
+        "type": "string"
+      },
+      {
+        "name": "stake_equivalence",
+        "type": "StakeEquivalence",
+        "packageName": "/Switcheo.carbon.market"
+      }
+    ],
+    "MsgSetStakeEquivalenceResponse": [
+      {
+        "name": "stake_equivalences",
+        "type": "StakeEquivalence[]",
+        "packageName": "/Switcheo.carbon.market"
+      }
+    ]
+  },
+  "/Switcheo.carbon.marketstats": {
+    "Params": [],
+    "GenesisState": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.marketstats"
+      }
+    ],
+    "MarketStats": [
+      {
+        "name": "market",
+        "type": "string"
+      },
+      {
+        "name": "market_type",
+        "type": "string"
+      },
+      {
+        "name": "day_open",
+        "type": "string"
+      },
+      {
+        "name": "day_high",
+        "type": "string"
+      },
+      {
+        "name": "day_low",
+        "type": "string"
+      },
+      {
+        "name": "day_close",
+        "type": "string"
+      },
+      {
+        "name": "day_volume",
+        "type": "string"
+      },
+      {
+        "name": "day_quote_volume",
+        "type": "string"
+      },
+      {
+        "name": "index_price",
+        "type": "string"
+      },
+      {
+        "name": "mark_price",
+        "type": "string"
+      },
+      {
+        "name": "last_price",
+        "type": "string"
+      },
+      {
+        "name": "premium_rate",
+        "type": "string"
+      },
+      {
+        "name": "last_funding_at",
+        "type": "string"
+      },
+      {
+        "name": "open_interest",
+        "type": "string"
+      }
+    ],
+    "QueryParamsRequest": [],
+    "QueryParamsResponse": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.marketstats"
+      }
+    ],
+    "QueryMarketStatsRequest": [],
+    "QueryMarketStatsResponse": [
+      {
+        "name": "marketstats",
+        "type": "MarketStats[]",
+        "packageName": "/Switcheo.carbon.marketstats"
+      }
+    ]
+  },
+  "/Switcheo.carbon.oracle": {
+    "Params": [
+      {
+        "name": "oracle_slash_enabled",
+        "type": "bool"
+      },
+      {
+        "name": "oracle_slash_window_block",
+        "type": "uint32"
+      },
+      {
+        "name": "oracle_slash_initial",
+        "type": "string"
+      },
+      {
+        "name": "oracle_slash_increment",
+        "type": "string"
+      },
+      {
+        "name": "oracle_continuous_slash_max",
+        "type": "uint32"
+      },
+      {
+        "name": "newly_bonded_window_allowance",
+        "type": "uint32"
+      },
+      {
+        "name": "vote_timestamp_future_allowance",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "oracle_min_vote_factor",
+        "type": "string"
+      },
+      {
+        "name": "max_power_to_slash_factor",
+        "type": "string"
+      }
+    ],
+    "Oracle": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "id",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "status",
+        "type": "string"
+      },
+      {
+        "name": "min_turnout_percentage",
+        "type": "int64"
+      },
+      {
+        "name": "max_result_age",
+        "type": "int64"
+      },
+      {
+        "name": "security_type",
+        "type": "string"
+      },
+      {
+        "name": "result_strategy",
+        "type": "string"
+      },
+      {
+        "name": "resolution",
+        "type": "int64"
+      },
+      {
+        "name": "spec",
+        "type": "string"
+      }
+    ],
+    "Vote": [
+      {
+        "name": "oracle_id",
+        "type": "string"
+      },
+      {
+        "name": "timestamp",
+        "type": "int64"
+      },
+      {
+        "name": "data",
+        "type": "string"
+      },
+      {
+        "name": "voter",
+        "type": "string"
+      }
+    ],
+    "Result": [
+      {
+        "name": "oracle_id",
+        "type": "string"
+      },
+      {
+        "name": "timestamp",
+        "type": "int64"
+      },
+      {
+        "name": "data",
+        "type": "string"
+      }
+    ],
+    "Mark": [
+      {
+        "name": "oracle_id",
+        "type": "string"
+      },
+      {
+        "name": "timestamp",
+        "type": "int64"
+      }
+    ],
+    "ResultEvent": [
+      {
+        "name": "result",
+        "type": "Result",
+        "packageName": "/Switcheo.carbon.oracle"
+      },
+      {
+        "name": "result_id",
+        "type": "string"
+      },
+      {
+        "name": "type",
+        "type": "string"
+      }
+    ],
+    "OracleSlashEvent": [
+      {
+        "name": "validator",
+        "type": "string"
+      },
+      {
+        "name": "cons_address",
+        "type": "string"
+      },
+      {
+        "name": "slash_count",
+        "type": "uint64"
+      },
+      {
+        "name": "infraction_height",
+        "type": "uint64"
+      },
+      {
+        "name": "power",
+        "type": "uint64"
+      },
+      {
+        "name": "slash_factor",
+        "type": "string"
+      },
+      {
+        "name": "burned_coins",
+        "type": "string"
+      }
+    ],
+    "OracleVotesWindow": [
+      {
+        "name": "validator",
+        "type": "string"
+      },
+      {
+        "name": "oracle_id",
+        "type": "string"
+      },
+      {
+        "name": "vote_count",
+        "type": "uint64"
+      }
+    ],
+    "SlashCounter": [
+      {
+        "name": "validator",
+        "type": "string"
+      },
+      {
+        "name": "slash_count",
+        "type": "uint64"
+      },
+      {
+        "name": "prev_slash_count",
+        "type": "uint64"
+      },
+      {
+        "name": "newly_bonded_window_allowance",
+        "type": "uint64"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "oracles",
+        "type": "Oracle[]",
+        "packageName": "/Switcheo.carbon.oracle"
+      },
+      {
+        "name": "results",
+        "type": "Result[]",
+        "packageName": "/Switcheo.carbon.oracle"
+      },
+      {
+        "name": "votes",
+        "type": "Vote[]",
+        "packageName": "/Switcheo.carbon.oracle"
+      },
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.oracle"
+      },
+      {
+        "name": "all_oracle_votes_window",
+        "type": "OracleVotesWindow[]",
+        "packageName": "/Switcheo.carbon.oracle"
+      },
+      {
+        "name": "slash_counters",
+        "type": "SlashCounter[]",
+        "packageName": "/Switcheo.carbon.oracle"
+      }
+    ],
+    "MsgCreateOracle": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "create_oracle_params",
+        "type": "CreateOracleParams",
+        "packageName": "/Switcheo.carbon.oracle"
+      }
+    ],
+    "CreateOracleParams": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "id",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "min_turnout_percentage",
+        "type": "int64"
+      },
+      {
+        "name": "max_result_age",
+        "type": "int64"
+      },
+      {
+        "name": "security_type",
+        "type": "string"
+      },
+      {
+        "name": "result_strategy",
+        "type": "string"
+      },
+      {
+        "name": "resolution",
+        "type": "int64"
+      },
+      {
+        "name": "spec",
+        "type": "string"
+      }
+    ],
+    "MsgCreateOracleResponse": [
+      {
+        "name": "id",
+        "type": "string"
+      }
+    ],
+    "MsgCreateVote": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "oracle_id",
+        "type": "string"
+      },
+      {
+        "name": "timestamp",
+        "type": "int64"
+      },
+      {
+        "name": "data",
+        "type": "string"
+      }
+    ],
+    "MsgCreateVoteResponse": [],
+    "MsgUpdateOracle": [
+      {
+        "name": "updater",
+        "type": "string"
+      },
+      {
+        "name": "update_oracle_params",
+        "type": "UpdateOracleParams",
+        "packageName": "/Switcheo.carbon.oracle"
+      }
+    ],
+    "UpdateOracleParams": [
+      {
+        "name": "id",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "status",
+        "type": "string"
+      },
+      {
+        "name": "minTurnoutPercentage",
+        "type": "int64"
+      },
+      {
+        "name": "maxResultAge",
+        "type": "int64"
+      },
+      {
+        "name": "securityType",
+        "type": "string"
+      },
+      {
+        "name": "resultStrategy",
+        "type": "string"
+      },
+      {
+        "name": "resolution",
+        "type": "int64"
+      },
+      {
+        "name": "spec",
+        "type": "string"
+      }
+    ],
+    "MsgUpdateOracleResponse": [],
+    "MsgRemoveOracle": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "oracle_id",
+        "type": "string"
+      }
+    ],
+    "MsgRemoveOracleResponse": [],
+    "MsgSetOracleSlashEnabled": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "enabled",
+        "type": "bool"
+      }
+    ],
+    "MsgSetOracleSlashEnabledResponse": [],
+    "CreateOracleProposal": [
+      {
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "msg",
+        "type": "CreateOracleParams",
+        "packageName": "/Switcheo.carbon.oracle"
+      }
+    ],
+    "QueryOracleRequest": [
+      {
+        "name": "id",
+        "type": "string"
+      }
+    ],
+    "QueryOracleResponse": [
+      {
+        "name": "oracle",
+        "type": "Oracle",
+        "packageName": "/Switcheo.carbon.oracle"
+      }
+    ],
+    "QueryAllOracleRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllOracleResponse": [
+      {
+        "name": "oracles",
+        "type": "Oracle[]",
+        "packageName": "/Switcheo.carbon.oracle"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllResultRequest": [
+      {
+        "name": "oracle_id",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllResultResponse": [
+      {
+        "name": "results",
+        "type": "Result[]",
+        "packageName": "/Switcheo.carbon.oracle"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllVoteRequest": [
+      {
+        "name": "oracle_id",
+        "type": "string"
+      },
+      {
+        "name": "timestamp",
+        "type": "int64"
+      },
+      {
+        "name": "voter",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllVoteResponse": [
+      {
+        "name": "votes",
+        "type": "Vote[]",
+        "packageName": "/Switcheo.carbon.oracle"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryVoterPowerRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "QueryVoterPowerResponse": [
+      {
+        "name": "power",
+        "type": "string"
+      }
+    ],
+    "QueryAllSlashCounterRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllSlashCounterResponse": [
+      {
+        "name": "slash_counters",
+        "type": "SlashCounter[]",
+        "packageName": "/Switcheo.carbon.oracle"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QuerySlashCounterRequest": [
+      {
+        "name": "valoper_address",
+        "type": "string"
+      }
+    ],
+    "QuerySlashCounterResponse": [
+      {
+        "name": "slash_counter",
+        "type": "SlashCounter",
+        "packageName": "/Switcheo.carbon.oracle"
+      }
+    ],
+    "QueryAllOracleVotesWindowRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllOracleVotesWindowResponse": [
+      {
+        "name": "oracle_votes_windows",
+        "type": "OracleVotesWindow[]",
+        "packageName": "/Switcheo.carbon.oracle"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryOracleVotesWindowRequest": [
+      {
+        "name": "valoper_address",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryOracleVotesWindowResponse": [
+      {
+        "name": "oracle_votes_windows",
+        "type": "OracleVotesWindow[]",
+        "packageName": "/Switcheo.carbon.oracle"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryParamsRequest": [],
+    "QueryParamsResponse": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.oracle"
+      }
+    ]
+  },
+  "/Switcheo.carbon.perpsliquidity": {
+    "PlPool": [
+      {
+        "name": "id",
+        "type": "uint64"
+      },
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "deposit_denom",
+        "type": "string"
+      },
+      {
+        "name": "share_denom",
+        "type": "string"
+      },
+      {
+        "name": "vault_address",
+        "type": "string"
+      },
+      {
+        "name": "supply_cap",
+        "type": "string"
+      },
+      {
+        "name": "deposit_fee_bps",
+        "type": "string"
+      },
+      {
+        "name": "withdrawal_fee_bps",
+        "type": "string"
+      }
+    ],
+    "UpdatePlPoolParams": [
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "supply_cap",
+        "type": "uint64"
+      },
+      {
+        "name": "deposit_fee_bps",
+        "type": "uint64"
+      },
+      {
+        "name": "withdrawal_fee_bps",
+        "type": "uint64"
+      }
+    ],
+    "PoolDetails": [
+      {
+        "name": "pool",
+        "type": "PlPool",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      },
+      {
+        "name": "registered_markets",
+        "type": "MarketConfig[]",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      }
+    ],
+    "Quote": [
+      {
+        "name": "quote_price_type",
+        "type": "string"
+      },
+      {
+        "name": "quote_price_value",
+        "type": "string"
+      },
+      {
+        "name": "quote_amount_ratio",
+        "type": "string"
+      }
+    ],
+    "MarketConfig": [
+      {
+        "name": "market_id",
+        "type": "string"
+      },
+      {
+        "name": "max_liquidity_ratio",
+        "type": "string"
+      },
+      {
+        "name": "mode",
+        "type": "string"
+      },
+      {
+        "name": "quote_shape",
+        "type": "Quote[]",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      }
+    ],
+    "UpdateMarketConfigParams": [
+      {
+        "name": "max_liquidity_ratio",
+        "type": "string"
+      },
+      {
+        "name": "mode",
+        "type": "string"
+      },
+      {
+        "name": "quote_shape",
+        "type": "Quote[]",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      }
+    ],
+    "DepositToPoolParams": [
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "from_account",
+        "type": "string"
+      },
+      {
+        "name": "deposit_amount",
+        "type": "string"
+      },
+      {
+        "name": "min_shares_to_receive",
+        "type": "string"
+      }
+    ],
+    "WithdrawFromPoolParams": [
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "to_account",
+        "type": "string"
+      },
+      {
+        "name": "share_amount",
+        "type": "string"
+      },
+      {
+        "name": "min_withdraw_amount",
+        "type": "string"
+      }
+    ],
+    "SetPoolEvent": [
+      {
+        "name": "pool",
+        "type": "PlPool",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      },
+      {
+        "name": "type",
+        "type": "string"
+      }
+    ],
+    "NewPoolEvent": [
+      {
+        "name": "pool",
+        "type": "PlPool",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      }
+    ],
+    "UpdatePoolEvent": [
+      {
+        "name": "pool",
+        "type": "PlPool",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      }
+    ],
+    "RegisterToPoolEvent": [
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "market_id",
+        "type": "string"
+      }
+    ],
+    "DeregisterFromPoolEvent": [
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "market_id",
+        "type": "string"
+      }
+    ],
+    "SetMarketConfigEvent": [
+      {
+        "name": "market_config",
+        "type": "MarketConfig",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      }
+    ],
+    "DepositToPoolEvent": [
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "string"
+      },
+      {
+        "name": "share_denom",
+        "type": "string"
+      },
+      {
+        "name": "share_amount",
+        "type": "string"
+      },
+      {
+        "name": "depositor",
+        "type": "string"
+      }
+    ],
+    "WithdrawFromPoolEvent": [
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "string"
+      },
+      {
+        "name": "share_denom",
+        "type": "string"
+      },
+      {
+        "name": "share_amount",
+        "type": "string"
+      },
+      {
+        "name": "withdrawer",
+        "type": "string"
+      }
+    ],
+    "Params": [
+      {
+        "name": "quote_index_price_fluctuation_tolerance_ratio",
+        "type": "string"
+      },
+      {
+        "name": "quote_expiry_seconds",
+        "type": "uint64"
+      },
+      {
+        "name": "lp_open_position_fluctuation_tolerance_ratio",
+        "type": "string"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      },
+      {
+        "name": "pools",
+        "type": "PlPool[]",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      },
+      {
+        "name": "market_config_with_pool_ids",
+        "type": "MarketConfigWithPoolId[]",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      }
+    ],
+    "MarketConfigWithPoolId": [
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "market_config",
+        "type": "MarketConfig",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      }
+    ],
+    "QueryParamsRequest": [],
+    "QueryParamsResponse": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      }
+    ],
+    "QueryGetPlPoolRequest": [
+      {
+        "name": "pool_id",
+        "type": "string"
+      }
+    ],
+    "QueryGetPlPoolResponse": [
+      {
+        "name": "pool",
+        "type": "PoolDetails",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      }
+    ],
+    "QueryAllPlPoolsRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllPlPoolsResponse": [
+      {
+        "name": "pools",
+        "type": "PoolDetails[]",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryPlPoolMappingsRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryPlPoolMappingsResponse": [
+      {
+        "name": "pool_mappings",
+        "type": "PoolMappingsEntry[]",
+        "packageName": "/Switcheo.carbon.perpsliquidity.QueryPlPoolMappingsResponse"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllPlPoolAddressRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllPlPoolAddressResponse": [
+      {
+        "name": "addresses",
+        "type": "AddressesEntry[]",
+        "packageName": "/Switcheo.carbon.perpsliquidity.QueryAllPlPoolAddressResponse"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryPLPoolInfoRequest": [
+      {
+        "name": "pool_id",
+        "type": "string"
+      }
+    ],
+    "QueryPLPoolInfoResponse": [
+      {
+        "name": "total_share_amount",
+        "type": "string"
+      },
+      {
+        "name": "total_underlying_amount",
+        "type": "string"
+      },
+      {
+        "name": "available_amount",
+        "type": "string"
+      },
+      {
+        "name": "total_in_position_amount",
+        "type": "string"
+      },
+      {
+        "name": "total_upnl_amount",
+        "type": "string"
+      }
+    ],
+    "MsgCreatePlPool": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "deposit_denom",
+        "type": "string"
+      },
+      {
+        "name": "share_token_symbol",
+        "type": "string"
+      },
+      {
+        "name": "supply_cap",
+        "type": "string"
+      },
+      {
+        "name": "deposit_fee_bps",
+        "type": "string"
+      },
+      {
+        "name": "withdrawal_fee_bps",
+        "type": "string"
+      }
+    ],
+    "MsgCreatePlPoolResponse": [
+      {
+        "name": "pool",
+        "type": "PlPool",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      }
+    ],
+    "MsgUpdatePlPool": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "update_pool_params",
+        "type": "UpdatePlPoolParams",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      }
+    ],
+    "MsgUpdatePlPoolResponse": [
+      {
+        "name": "pool",
+        "type": "PlPool",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      }
+    ],
+    "MsgRegisterToPlPool": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "market_id",
+        "type": "string"
+      }
+    ],
+    "MsgRegisterToPlPoolResponse": [],
+    "MsgDeregisterFromPlPool": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "market_id",
+        "type": "string"
+      }
+    ],
+    "MsgDeregisterFromPlPoolResponse": [],
+    "MsgDepositToPlPool": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "deposit_amount",
+        "type": "string"
+      },
+      {
+        "name": "min_share_amount",
+        "type": "string"
+      }
+    ],
+    "MsgDepositToPlPoolResponse": [],
+    "MsgWithdrawFromPlPool": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "share_amount",
+        "type": "string"
+      },
+      {
+        "name": "min_receive_amount",
+        "type": "string"
+      }
+    ],
+    "MsgWithdrawFromPlPoolResponse": [],
+    "MsgUpdateMarketConfig": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "market_id",
+        "type": "string"
+      },
+      {
+        "name": "update_market_config_params",
+        "type": "UpdateMarketConfigParams",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      }
+    ],
+    "MsgUpdateMarketConfigResponse": [
+      {
+        "name": "market_config",
+        "type": "MarketConfig",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      }
+    ]
+  },
+  "/Switcheo.carbon.position": {
+    "Position": [
+      {
+        "name": "market",
+        "type": "string"
+      },
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "lots",
+        "type": "string"
+      },
+      {
+        "name": "entry_price",
+        "type": "string"
+      },
+      {
+        "name": "realized_pnl",
+        "type": "string"
+      },
+      {
+        "name": "allocated_margin",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "opened_block_height",
+        "type": "uint64"
+      }
+    ],
+    "Positions": [
+      {
+        "name": "positions",
+        "type": "Position[]",
+        "packageName": "/Switcheo.carbon.position"
+      }
+    ],
+    "APIPosition": [
+      {
+        "name": "market",
+        "type": "string"
+      },
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "trade_id",
+        "type": "uint64"
+      },
+      {
+        "name": "side",
+        "type": "string"
+      },
+      {
+        "name": "opened_block_height",
+        "type": "uint64"
+      },
+      {
+        "name": "updated_block_height",
+        "type": "uint64"
+      },
+      {
+        "name": "closed_block_height",
+        "type": "uint64"
+      },
+      {
+        "name": "realized_pnl",
+        "type": "string"
+      },
+      {
+        "name": "max_lots",
+        "type": "string"
+      },
+      {
+        "name": "total_fee_amount",
+        "type": "string"
+      },
+      {
+        "name": "avg_allocated_margin",
+        "type": "string"
+      },
+      {
+        "name": "avg_entry_price",
+        "type": "string"
+      },
+      {
+        "name": "avg_exit_price",
+        "type": "string"
+      },
+      {
+        "name": "allocated_margin",
+        "type": "string"
+      },
+      {
+        "name": "lots",
+        "type": "string"
+      },
+      {
+        "name": "opened_at",
+        "type": "string"
+      },
+      {
+        "name": "closed_at",
+        "type": "string"
+      }
+    ],
+    "PositionAllocatedMargin": [
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "string"
+      }
+    ],
+    "PositionEvent": [
+      {
+        "name": "position",
+        "type": "Position",
+        "packageName": "/Switcheo.carbon.position"
+      },
+      {
+        "name": "id",
+        "type": "uint64"
+      },
+      {
+        "name": "type",
+        "type": "string"
+      },
+      {
+        "name": "allocated_margin_denom",
+        "type": "string"
+      },
+      {
+        "name": "allocated_margin_amount",
+        "type": "string"
+      },
+      {
+        "name": "updated_block_height",
+        "type": "uint64"
+      },
+      {
+        "name": "trade_id",
+        "type": "uint64"
+      },
+      {
+        "name": "update_reason",
+        "type": "uint64"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "open_positions",
+        "type": "Position[]",
+        "packageName": "/Switcheo.carbon.position"
+      }
+    ],
+    "QueryGetPositionRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "market",
+        "type": "string"
+      }
+    ],
+    "QueryGetPositionResponse": [
+      {
+        "name": "position",
+        "type": "Position",
+        "packageName": "/Switcheo.carbon.position"
+      }
+    ],
+    "QueryAllPositionRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "market",
+        "type": "string"
+      },
+      {
+        "name": "status",
+        "type": "string"
+      },
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllPositionResponse": [
+      {
+        "name": "positions",
+        "type": "APIPosition[]",
+        "packageName": "/Switcheo.carbon.position"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryPositionAllocatedMarginRequest": [
+      {
+        "name": "end_block_height",
+        "type": "string"
+      }
+    ],
+    "QueryPositionAllocatedMarginResponse": [
+      {
+        "name": "positions",
+        "type": "PositionAllocatedMargin[]",
+        "packageName": "/Switcheo.carbon.position"
+      }
+    ],
+    "MsgSetMargin": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "market",
+        "type": "string"
+      },
+      {
+        "name": "margin",
+        "type": "string"
+      }
+    ],
+    "MsgSetMarginResponse": []
+  },
+  "/Switcheo.carbon.pricing": {
+    "Params": [
+      {
+        "name": "smoothen_band",
+        "type": "uint32"
+      },
+      {
+        "name": "impact_band",
+        "type": "uint32"
+      },
+      {
+        "name": "stale_index_allowance",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "backfill_time_interval",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "PriceSet": [
+      {
+        "name": "last",
+        "type": "string"
+      },
+      {
+        "name": "index",
+        "type": "string"
+      },
+      {
+        "name": "fair",
+        "type": "string"
+      },
+      {
+        "name": "mark",
+        "type": "string"
+      },
+      {
+        "name": "mark_avg",
+        "type": "string"
+      },
+      {
+        "name": "settlement",
+        "type": "string"
+      },
+      {
+        "name": "fair_index_delta_avg",
+        "type": "string"
+      },
+      {
+        "name": "market",
+        "type": "string"
+      },
+      {
+        "name": "marking_strategy",
+        "type": "string"
+      },
+      {
+        "name": "index_updated_at",
+        "type": "string"
+      },
+      {
+        "name": "settlement_counter",
+        "type": "string"
+      },
+      {
+        "name": "premium_rate",
+        "type": "string"
+      },
+      {
+        "name": "premium_rate_counter",
+        "type": "string"
+      },
+      {
+        "name": "last_funding_at",
+        "type": "string"
+      }
+    ],
+    "TokenPrice": [
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "index",
+        "type": "string"
+      },
+      {
+        "name": "twap",
+        "type": "string"
+      },
+      {
+        "name": "index_updated_at",
+        "type": "string"
+      },
+      {
+        "name": "oracle_id",
+        "type": "string"
+      }
+    ],
+    "PriceUpdateEvent": [
+      {
+        "name": "prices",
+        "type": "PriceSet",
+        "packageName": "/Switcheo.carbon.pricing"
+      }
+    ],
+    "TokenPriceUpdateEvent": [
+      {
+        "name": "price",
+        "type": "TokenPrice",
+        "packageName": "/Switcheo.carbon.pricing"
+      }
+    ],
+    "SetImpactBandEvent": [
+      {
+        "name": "impact_band",
+        "type": "uint32"
+      },
+      {
+        "name": "type",
+        "type": "string"
+      }
+    ],
+    "SetSmoothenBandEvent": [
+      {
+        "name": "smoothen_band",
+        "type": "uint32"
+      },
+      {
+        "name": "type",
+        "type": "string"
+      }
+    ],
+    "SetStaleIndexAllowanceEvent": [
+      {
+        "name": "stale_index_allowance",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "type",
+        "type": "string"
+      }
+    ],
+    "SetBackfillTimeIntervalEvent": [
+      {
+        "name": "backfill_time_interval",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "type",
+        "type": "string"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "prices",
+        "type": "PriceSet[]",
+        "packageName": "/Switcheo.carbon.pricing"
+      },
+      {
+        "name": "token_prices",
+        "type": "TokenPrice[]",
+        "packageName": "/Switcheo.carbon.pricing"
+      },
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.pricing"
+      }
+    ],
+    "Params_V2_13_0": [
+      {
+        "name": "smoothen_band",
+        "type": "uint32"
+      },
+      {
+        "name": "impact_band",
+        "type": "uint32"
+      },
+      {
+        "name": "stale_index_allowance",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "SettlementPriceProposal": [
+      {
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "name": "msg",
+        "type": "SettlementPriceParams",
+        "packageName": "/Switcheo.carbon.pricing"
+      }
+    ],
+    "SettlementPriceParams": [
+      {
+        "name": "market",
+        "type": "string"
+      },
+      {
+        "name": "settlement_price",
+        "type": "string"
+      }
+    ],
+    "QueryPriceTokenRequest": [
+      {
+        "name": "denom",
+        "type": "string"
+      }
+    ],
+    "QueryPriceTokenResponse": [
+      {
+        "name": "token_price",
+        "type": "TokenPrice",
+        "packageName": "/Switcheo.carbon.pricing"
+      }
+    ],
+    "QueryPriceSetRequest": [
+      {
+        "name": "market",
+        "type": "string"
+      }
+    ],
+    "QueryPriceSetResponse": [
+      {
+        "name": "prices",
+        "type": "PriceSet",
+        "packageName": "/Switcheo.carbon.pricing"
+      }
+    ],
+    "QueryAllPriceSetRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllPriceSetResponse": [
+      {
+        "name": "prices",
+        "type": "PriceSet[]",
+        "packageName": "/Switcheo.carbon.pricing"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryRateRequest": [
+      {
+        "name": "denom_a",
+        "type": "string"
+      },
+      {
+        "name": "denom_b",
+        "type": "string"
+      }
+    ],
+    "QueryRateResponse": [
+      {
+        "name": "rate",
+        "type": "string"
+      }
+    ],
+    "QueryParamsRequest": [],
+    "QueryParamsResponse": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.pricing"
+      }
+    ],
+    "QueryTokenPriceRequest": [
+      {
+        "name": "denom",
+        "type": "string"
+      }
+    ],
+    "QueryTokenPriceResponse": [
+      {
+        "name": "token_price",
+        "type": "TokenPrice",
+        "packageName": "/Switcheo.carbon.pricing"
+      }
+    ],
+    "QueryTokenPriceAllRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryTokenPriceAllResponse": [
+      {
+        "name": "token_prices",
+        "type": "TokenPrice[]",
+        "packageName": "/Switcheo.carbon.pricing"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "MsgSetBackfillTimeInterval": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "backfill_time_interval",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "MsgSetBackfillTimeIntervalResponse": [],
+    "MsgSetSmoothenBand": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "smoothen_band",
+        "type": "uint32"
+      }
+    ],
+    "MsgSetSmoothenBandResponse": [],
+    "MsgSetImpactBand": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "impact_band",
+        "type": "uint32"
+      }
+    ],
+    "MsgSetImpactBandResponse": [],
+    "MsgSetStaleIndexAllowance": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "stale_index_allowance",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "MsgSetStaleIndexAllowanceResponse": [],
+    "MsgUpdateTokenPriceOracle": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "oracle_id",
+        "type": "string"
+      }
+    ],
+    "MsgUpdateTokenPriceOracleResponse": []
+  },
+  "/Switcheo.carbon.profile": {
+    "Profile": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "username",
+        "type": "string"
+      },
+      {
+        "name": "twitter",
+        "type": "string"
+      }
+    ],
+    "UpdateProfileEvent": [
+      {
+        "name": "profile",
+        "type": "Profile",
+        "packageName": "/Switcheo.carbon.profile"
+      },
+      {
+        "name": "type",
+        "type": "string"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "profiles",
+        "type": "Profile[]",
+        "packageName": "/Switcheo.carbon.profile"
+      }
+    ],
+    "QueryGetProfileRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "QueryGetProfileResponse": [
+      {
+        "name": "profile",
+        "type": "Profile",
+        "packageName": "/Switcheo.carbon.profile"
+      }
+    ],
+    "QueryAllProfileRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      },
+      {
+        "name": "username",
+        "type": "string"
+      }
+    ],
+    "QueryAllProfileResponse": [
+      {
+        "name": "profiles",
+        "type": "Profile[]",
+        "packageName": "/Switcheo.carbon.profile"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "MsgUpdateProfile": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "username",
+        "type": "string"
+      },
+      {
+        "name": "twitter",
+        "type": "string"
+      }
+    ],
+    "MsgUpdateProfileResponse": []
+  },
+  "/Switcheo.carbon.sequence": {
+    "GenesisState": [
+      {
+        "name": "sequences",
+        "type": "Sequence[]",
+        "packageName": "/Switcheo.carbon.sequence"
+      }
+    ],
+    "Sequence": [
+      {
+        "name": "key",
+        "type": "string"
+      },
+      {
+        "name": "sequence_number",
+        "type": "uint64"
+      }
+    ],
+    "QuerySequenceRequest": [
+      {
+        "name": "module",
+        "type": "string"
+      }
+    ],
+    "QuerySequenceResponse": [
+      {
+        "name": "sequences",
+        "type": "Sequence[]",
+        "packageName": "/Switcheo.carbon.sequence"
+      }
+    ],
+    "QuerySequenceAllRequest": [],
+    "QuerySequenceAllResponse": [
+      {
+        "name": "sequences",
+        "type": "Sequence[]",
+        "packageName": "/Switcheo.carbon.sequence"
+      }
+    ],
+    "MsgSetSequence": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "module_name",
+        "type": "string"
+      },
+      {
+        "name": "suffix",
+        "type": "string"
+      },
+      {
+        "name": "sequence_number",
+        "type": "uint64"
+      }
+    ],
+    "MsgSetSequenceResponse": []
+  },
+  "/Switcheo.carbon.subaccount": {
+    "SubAccount": [
+      {
+        "name": "main_account",
+        "type": "string"
+      },
+      {
+        "name": "active",
+        "type": "bool"
+      }
+    ],
+    "GenesisSubAccount": [
+      {
+        "name": "main_address",
+        "type": "string"
+      },
+      {
+        "name": "sub_address",
+        "type": "string"
+      },
+      {
+        "name": "active",
+        "type": "bool"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "sub_accounts",
+        "type": "GenesisSubAccount[]",
+        "packageName": "/Switcheo.carbon.subaccount"
+      }
+    ],
+    "QueryGetSubAccountRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "QueryGetSubAccountResponse": [
+      {
+        "name": "subaccount",
+        "type": "SubAccount",
+        "packageName": "/Switcheo.carbon.subaccount"
+      }
+    ],
+    "QueryAllSubAccountRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllSubAccountResponse": [
+      {
+        "name": "subaccounts",
+        "type": "GenesisSubAccount[]",
+        "packageName": "/Switcheo.carbon.subaccount"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QuerySubAccountStatusRequest": [
+      {
+        "name": "main_address",
+        "type": "string"
+      },
+      {
+        "name": "subaccount_address",
+        "type": "string"
+      }
+    ],
+    "QuerySubAccountStatusResponse": [
+      {
+        "name": "status",
+        "type": "string"
+      }
+    ],
+    "QuerySubAccountPowerRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "QuerySubAccountPowerResponse": [
+      {
+        "name": "power",
+        "type": "string"
+      }
+    ],
+    "MsgCreateSubAccount": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "sub_address",
+        "type": "string"
+      }
+    ],
+    "MsgCreateSubAccountResponse": [],
+    "MsgActivateSubAccount": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "expected_main_account",
+        "type": "string"
+      }
+    ],
+    "MsgActivateSubAccountResponse": [],
+    "MsgRemoveSubAccount": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "sub_address",
+        "type": "string"
+      }
+    ],
+    "MsgRemoveSubAccountResponse": []
+  },
+  "/tendermint.libs.bits": {
+    "BitArray": [
+      {
+        "name": "bits",
+        "type": "int64"
+      },
+      {
+        "name": "elems",
+        "type": "uint64[]"
+      }
+    ]
+  }
+};
+

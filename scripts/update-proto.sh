@@ -5,6 +5,8 @@ set -eo pipefail
 rm -rf ./src/codec
 mkdir ./src/codec
 tar -zxvf proto-ts.tar.gz --directory ./src/codec
+mv src/codec/protobuf-def.json ./scripts/
+
 
 # Remove unnecessary codec files
 rm -rf \
