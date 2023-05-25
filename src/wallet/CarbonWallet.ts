@@ -370,7 +370,7 @@ export class CarbonWallet {
   }
 
   /**
-  * Non EVM wallets (Keplr, Leap, Ledger, Legacy Metamask,Encrypted Key) current mode of signing
+  * Non EVM wallets (Keplr, Leap, Ledger, Legacy Metamask, Encrypted Key) current mode of signing
   * does not support submiting transaction with only eth accounts.
   * This method assumes that if a transaction is carried out by a non evm wallet with only funds in eth address
   * as submitting the msg with an eth address as the signer because it is impossible to get the signer field at this stage.
@@ -385,7 +385,7 @@ export class CarbonWallet {
     const isEvmWallet = this.isEvmWallet()
     if (hasEvmAddressBalances && !hasCarbonBalances && !isEvmWallet) {
       this.sequenceInvalidated = true
-      throw new Error('To activate your account, please reconnect using MetaMask.')
+      throw new Error('Request rejected.')
     }
   }
 
