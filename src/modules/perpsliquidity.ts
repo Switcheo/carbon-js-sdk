@@ -17,7 +17,7 @@ export class PerpsLiquidityModule extends BaseModule {
     const wallet = this.getWallet();
 
     const value = Models.MsgCreatePlPool.fromPartial({
-      creator: params.creator,
+      creator: wallet.bech32Address,
       name: params.name,
       depositDenom: params.depositDenom,
       shareTokenSymbol: params.shareTokenSymbol,
@@ -47,7 +47,7 @@ export class PerpsLiquidityModule extends BaseModule {
     }
 
     const value = Models.MsgUpdatePlPool.fromPartial({
-      creator: params.creator,
+      creator: wallet.bech32Address,
       poolId: params.poolId,
       updatePoolParams: updatePoolParam,
     })
@@ -65,7 +65,7 @@ export class PerpsLiquidityModule extends BaseModule {
     const wallet = this.getWallet();
 
     const value = Models.MsgDepositToPlPool.fromPartial({
-      creator: params.creator,
+      creator: wallet.bech32Address,
       poolId: params.poolId,
       depositAmount: params.depositAmount,
       minShareAmount: params.minShareAmount,
@@ -84,7 +84,7 @@ export class PerpsLiquidityModule extends BaseModule {
     const wallet = this.getWallet();
 
     const value = Models.MsgWithdrawFromPlPool.fromPartial({
-      creator: params.creator,
+      creator: wallet.bech32Address,
       poolId: params.poolId,
       shareAmount: params.shareAmount,
       minReceiveAmount: params.minReceiveAmount,
@@ -103,7 +103,7 @@ export class PerpsLiquidityModule extends BaseModule {
     const wallet = this.getWallet();
 
     const value = Models.MsgRegisterToPlPool.fromPartial({
-      creator: params.creator,
+      creator: wallet.bech32Address,
       poolId: params.poolId,
       marketId: params.marketId,
     })
@@ -121,7 +121,7 @@ export class PerpsLiquidityModule extends BaseModule {
     const wallet = this.getWallet();
 
     const value = Models.MsgDeregisterFromPlPool.fromPartial({
-      creator: params.creator,
+      creator: wallet.bech32Address,
       marketId: params.marketId,
     })
 
@@ -137,7 +137,6 @@ export class PerpsLiquidityModule extends BaseModule {
 
 export namespace PerpsLiquidityModule {
   export interface CreatePerpetualPoolParams {
-    creator: string;
     name: string;
     depositDenom: string;
     shareTokenSymbol: string;
@@ -147,7 +146,6 @@ export namespace PerpsLiquidityModule {
   }
 
   export interface UpdatePerpetualPoolParams {
-    creator: string;
     name: string;
     poolId: Long;
     depositDenom: string;
@@ -158,27 +156,23 @@ export namespace PerpsLiquidityModule {
   }
 
   export interface DepositToPerpetualsPoolParams {
-    creator: string;
     poolId: Long;
     depositAmount: string;
     minShareAmount: string;
   }
 
   export interface WithdrawFromPerpetualsPoolParams {
-    creator: string;
     poolId: Long;
     shareAmount: string;
     minReceiveAmount: string;
   }
 
   export interface RegisterToPlPoolParams {
-    creator: string;
     poolId: Long;
     marketId: string;
   }
 
   export interface DeregisterFromPlPoolParams {
-    creator: string;
     marketId: string;
   }
 }
