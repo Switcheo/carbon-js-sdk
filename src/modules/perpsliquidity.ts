@@ -24,6 +24,7 @@ export class PerpsLiquidityModule extends BaseModule {
       supplyCap: params.supplyCap,
       depositFeeBps: params.depositFeeBps,
       withdrawalFeeBps: params.withdrawalFeeBps,
+      borrowFeeBps: params.borrowFeeBps,
     })
 
     return await wallet.sendTx(
@@ -143,6 +144,7 @@ export namespace PerpsLiquidityModule {
     supplyCap: string;
     depositFeeBps: string;
     withdrawalFeeBps: string;
+    borrowFeeBps: string;
   }
 
   export interface UpdatePerpetualPoolParams {
