@@ -16,7 +16,6 @@ import "./_setup";
   console.log("connected sdk");
 
   const result = await connectedSDK.plp.createPerpertualsPool({
-      creator: connectedSDK.wallet.bech32Address,
       name: 'USD Perp Pool 5',
       depositDenom: 'usdc',
       shareTokenSymbol: 'testUSD',

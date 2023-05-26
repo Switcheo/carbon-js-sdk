@@ -17,7 +17,6 @@ import "./_setup";
   console.log("connected sdk");
 
   const result = await connectedSDK.plp.updatePerpetualsPool({
-      creator: connectedSDK.wallet.bech32Address,
       name: 'USD Perp Pool 3',
       poolId: new Long(3),
       depositDenom: 'cgusd',
