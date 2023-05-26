@@ -24,7 +24,7 @@ import { CarbonSigningClient } from "./CarbonSigningClient";
 import { ETH_SECP256K1_TYPE } from "@carbon-sdk/util/ethermint";
 import { ExtensionOptionsWeb3Tx } from "@carbon-sdk/codec/ethermint/types/v1/web3";
 import { BaseAccount } from "@carbon-sdk/codec/cosmos/auth/v1beta1/auth";
-import { MsgMergeAccount } from "@carbon-sdk/codec";
+import { MsgMergeAccount, registry } from "@carbon-sdk/codec";
 
 export interface CarbonWalletGenericOpts {
   tmClient?: Tendermint34Client;
@@ -33,6 +33,7 @@ export interface CarbonWalletGenericOpts {
   providerAgent?: ProviderAgent | string;
   defaultTimeoutBlocks?: number; // tx mempool ttl (timeoutHeight)
   disableRetryOnSequenceError?: boolean; // disable auto retry on nonce error
+  triggerMerge?: boolean
 
   /**
    * Optional callback that will be called before signing is requested/executed.
@@ -43,6 +44,16 @@ export interface CarbonWalletGenericOpts {
    * Optional callback that will be called when signing is complete.
    */
   onSignComplete?: CarbonWallet.OnSignCompleteCallback;
+
+  /**
+   * Optional callback that will be called after tx is broadcast successful.
+   */
+  onBroadcastTxSuccess?: CarbonWallet.OnBroadcastTxSuccessCallback;
+
+  /**
+   * Optional callback that will be called if tx broadcast fails.
+   */
+  onBroadcastTxFail?: CarbonWallet.OnBroadcastTxFailCallback;
 }
 
 export type CarbonWalletInitOpts = CarbonWalletGenericOpts &
@@ -116,6 +127,8 @@ export class CarbonWallet {
 
   onRequestSign?: CarbonWallet.OnRequestSignCallback;
   onSignComplete?: CarbonWallet.OnSignCompleteCallback;
+  onBroadcastTxSuccess?: CarbonWallet.OnBroadcastTxSuccessCallback;
+  onBroadcastTxFail?: CarbonWallet.OnBroadcastTxFailCallback;
 
   defaultTimeoutBlocks: number;
 
@@ -126,7 +139,8 @@ export class CarbonWallet {
   evmBech32Address: string;
   hexAddress: string;
   evmHexAddress: string;
-  accountMerged: boolean = false;
+  accountMerged?: boolean;
+  triggerMerge?: boolean;
   publicKey: Buffer;
   query?: CarbonQueryClient;
 
@@ -166,10 +180,13 @@ export class CarbonWallet {
     this.providerAgent = opts.providerAgent;
     this.defaultTimeoutBlocks = opts.defaultTimeoutBlocks ?? 30; // default ~1 minute
     this.disableRetryOnSequenceError = opts.disableRetryOnSequenceError ?? false;
+    this.triggerMerge = opts.triggerMerge ?? false
     this.updateNetwork(network);
 
     this.onRequestSign = opts.onRequestSign;
     this.onSignComplete = opts.onSignComplete;
+    this.onBroadcastTxSuccess = opts.onBroadcastTxSuccess;
+    this.onBroadcastTxFail = opts.onBroadcastTxFail;
 
     this.txDispatchManager = new QueueManager(this.dispatchTx.bind(this));
     this.txSignManager = new QueueManager(this.signTx.bind(this));
@@ -318,6 +335,7 @@ export class CarbonWallet {
     const evmChainId = this.evmChainId
     try {
       await GenericUtils.callIgnoreError(() => this.onRequestSign?.(messages));
+      await this.checkWalletSignatureCompatibility()
       const signerData: CarbonSignerData = {
         accountNumber: accountNumber ?? this.accountInfo!.accountNumber,
         chainId: this.getChainId(),
@@ -352,6 +370,26 @@ export class CarbonWallet {
   }
 
   /**
+  * Non EVM wallets (Keplr, Leap, Ledger, Legacy Metamask, Encrypted Key) current mode of signing
+  * does not support submiting transaction with only eth accounts.
+  * This method assumes that if a transaction is carried out by a non evm wallet with only funds in eth address
+  * as submitting the msg with an eth address as the signer because it is impossible to get the signer field at this stage.
+  *
+  * Keplr technically can support submiting transaction with only eth accounts via EIP-712 eth signature but is blocked by
+  * keplr wallet extension due to incompability of carbon's chain-id. Keplr requires EIP-712 signing chains to have a chain id of {chainname_XXXX-X}
+  */
+  async checkWalletSignatureCompatibility() {
+    const query = this.getQueryClient()
+    const hasCarbonBalances = (await query.bank.AllBalances({ address: this.bech32Address })).balances.length > 0
+    const hasEvmAddressBalances = (await query.bank.AllBalances({ address: this.evmBech32Address })).balances.length > 0
+    const isEvmWallet = this.isEvmWallet()
+    if (hasEvmAddressBalances && !hasCarbonBalances && !isEvmWallet) {
+      this.sequenceInvalidated = true
+      throw new Error('Request rejected.')
+    }
+  }
+
+  /**
    * broadcast TX and wait for block confirmation
    *
    */
@@ -365,6 +403,14 @@ export class CarbonWallet {
       // tx failed
       throw new CarbonTxError(`[${response.code}] ${response.rawLog}`, response);
     }
+    const txBody = TxBody.decode(txRaw.bodyBytes)
+    const msgs: EncodeObject[] = txBody.messages.map(message => {
+      const msg = registry.decode({ ...message })
+      return {
+        typeUrl: message.typeUrl,
+        value: msg
+      }
+    })
     return response;
   }
 
@@ -406,7 +452,10 @@ export class CarbonWallet {
       handler: { resolve, reject },
     } = txRequest;
     try {
-      if (!this.accountInfo || this.sequenceInvalidated) await this.reloadAccountSequence();
+      if (!this.accountInfo
+        || this.accountInfo?.address === this.evmBech32Address // refresh to check if carbon acc is present
+        || this.sequenceInvalidated)
+        await this.reloadAccountSequence();
 
       const heightResponse = await fetch(`${this.networkConfig.tmRpcUrl}/blockchain?cache=${new Date().getTime()}`);
       const heightRes = await heightResponse.json();
@@ -486,42 +535,59 @@ export class CarbonWallet {
 
   async sendTxs(msgs: EncodeObject[], opts?: CarbonTx.SignTxOpts): Promise<CarbonWallet.SendTxResponse> {
     await this.reloadMergeAccountStatus()
-    if (!this.accountMerged && msgs[0].typeUrl !== CarbonTx.Types.MsgMergeAccount) {
-      await this.sendInitialMergeAccountTx(opts)
-      // refresh accountInfo after merging is done
-      await this.reloadAccountSequence()
+    if (this.triggerMerge || opts?.triggerMerge) {
+      await this.sendInitialMergeAccountTx(msgs, opts)
     }
-    const result = await this.signAndBroadcast(msgs, opts, { mode: BroadcastTxMode.BroadcastTxBlock });
-    await this.reloadMergeAccountStatus()
-    return result as DeliverTxResponse;
-  }
-
-  async sendInitialMergeAccountTx(opts?: CarbonTx.SignTxOpts) {
     try {
-      const account = await this.getQueryClient().auth.Account({ address: this.bech32Address }).then(res => res.account).catch(async (err: Error) => {
-        return (await this.getQueryClient().auth.Account({ address: this.evmBech32Address })).account
-      });
-      const { address, sequence, accountNumber } = BaseAccount.decode(account!.value)
-      const msg: EncodeObject = {
-        typeUrl: CarbonTx.Types.MsgMergeAccount,
-        value: MsgMergeAccount.fromPartial({
-          creator: address,
-          pubKey: this.publicKey.toString('hex')
-        })
-      }
-      const modifiedOpts = {
-        ...opts,
-        sequence: sequence.toNumber(),
-        accountNumber: accountNumber.toNumber()
-      }
-      await this.signAndBroadcast([msg], modifiedOpts, { mode: BroadcastTxMode.BroadcastTxBlock })
+      const result = await this.signAndBroadcast(msgs, opts, { mode: BroadcastTxMode.BroadcastTxBlock });
+      await this.reloadMergeAccountStatus()
+      await GenericUtils.callIgnoreError(() => this.onBroadcastTxSuccess?.(msgs));
+      return result as DeliverTxResponse;
     }
     catch (error) {
+      await GenericUtils.callIgnoreError(() => this.onBroadcastTxFail?.(msgs));
+      throw error
+    }
+  }
+
+  async sendInitialMergeAccountTx(msgs: EncodeObject[], opts?: CarbonTx.SignTxOpts) {
+    let msg: EncodeObject
+    try {
+      if (!this.accountMerged && msgs[0].typeUrl !== CarbonTx.Types.MsgMergeAccount) {
+        const account = await this.getQueryClient().auth.Account({ address: this.bech32Address }).then(res => res.account).catch(async (err: Error) => {
+          return (await this.getQueryClient().auth.Account({ address: this.evmBech32Address })).account
+        });
+        const { address, sequence, accountNumber } = BaseAccount.decode(account!.value)
+        msg = {
+          typeUrl: CarbonTx.Types.MsgMergeAccount,
+          value: MsgMergeAccount.fromPartial({
+            creator: address,
+            pubKey: this.publicKey.toString('hex')
+          })
+        }
+        const modifiedOpts = {
+          ...opts,
+          sequence: sequence.toNumber(),
+          accountNumber: accountNumber.toNumber()
+        }
+        await this.signAndBroadcast([msg], modifiedOpts, { mode: BroadcastTxMode.BroadcastTxBlock })
+        await this.reloadMergeAccountStatus()
+        // invalidate sequence after merging
+        this.sequenceInvalidated = true
+        await GenericUtils.callIgnoreError(() => this.onBroadcastTxSuccess?.([msg]));
+      }
+    }
+    catch (error) {
+      await GenericUtils.callIgnoreError(() => this.onBroadcastTxFail?.([msg]));
       throw error
     }
   }
 
   async sendTxsWithoutConfirm(msgs: EncodeObject[], opts?: CarbonTx.SignTxOpts): Promise<CarbonWallet.SendTxWithoutConfirmResponse> {
+    await this.reloadMergeAccountStatus()
+    if (this.triggerMerge || opts?.triggerMerge) {
+      await this.sendInitialMergeAccountTx(msgs, opts)
+    }
     const result = await this.signAndBroadcast(msgs, opts, { mode: BroadcastTxMode.BroadcastTxSync });
     return result as BroadcastTxSyncResponse;
   }
@@ -627,7 +693,7 @@ export class CarbonWallet {
 
   private async reloadAccountInfo() {
     try {
-      //carbon account always takes priority
+      // carbon account always takes priority
       const accountAny = await this.getAccount(this.bech32Address) ?? await this.getAccount(this.evmBech32Address)
       if (!accountAny) return undefined
       const { accountNumber, sequence, address } = BaseAccount.decode(accountAny.value)
@@ -682,6 +748,8 @@ export class CarbonWallet {
       const response = await queryClient.evmmerge.MappedAddress({ address: this.bech32Address })
       if (response && response.mappedAddress) {
         this.accountMerged = true
+      } else {
+        this.accountMerged = false
       }
     } catch (error: any) {
       throw error;
@@ -748,6 +816,8 @@ export namespace CarbonWallet {
   export type SendTxWithoutConfirmResponse = BroadcastTxSyncResponse;
   export type OnRequestSignCallback = (msgs: readonly EncodeObject[]) => void | Promise<void>;
   export type OnSignCompleteCallback = (signature: StdSignature | null) => void | Promise<void>;
+  export type OnBroadcastTxFailCallback = (msgs: readonly EncodeObject[]) => void | Promise<void>;
+  export type OnBroadcastTxSuccessCallback = (msgs: readonly EncodeObject[]) => void | Promise<void>;
 
   // workaround to re-export interface mixed const type
   export interface TxRaw extends StargateTxRaw { }

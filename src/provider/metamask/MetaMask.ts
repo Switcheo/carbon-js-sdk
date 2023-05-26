@@ -138,10 +138,11 @@ export interface MetaMaskSyncResult {
 }
 
 export interface StoredMnemonicInfo {
+  mnemonic: string,
   chain: EVMChainV2,
   privateKey: string,
   bech32Address: string
-  hexAddress: string
+  evmHexAddress: string
 }
 
 type LegacyAccounts = {
@@ -582,9 +583,11 @@ export class MetaMask {
     const legacyAccounts: any = network === Network.MainNet ? LEGACY_ACCOUNTS_MAINNET : LEGACY_ACCOUNTS_TESTNET
     const legacyAccBlockchains = []
     for (const [blockchain] of Object.entries(legacyAccounts)) {
-      const legacyAccountExists = legacyAccounts[blockchain].includes(defaultAccount)
-      if (legacyAccountExists) {
-        legacyAccBlockchains.push(blockchain)
+      for (const address of legacyAccounts[blockchain]) {
+        if (address.toLowerCase() === defaultAccount.toLowerCase()) {
+          legacyAccBlockchains.push(blockchain)
+          break
+        }
       }
     }
     if (legacyAccBlockchains.length > 0) {
@@ -609,12 +612,13 @@ export class MetaMask {
         const mnemonic = await this.decryptCipher(mnemonicCipher) ?? ''
         const privateKey = `0x${SWTHAddress.mnemonicToPrivateKey(mnemonic).toString('hex').toLowerCase()}`
         const bech32Address = SWTHAddress.privateKeyToAddress(SWTHAddress.mnemonicToPrivateKey(mnemonic), { network: this.network })
-        const hexAddress = ETHAddress.privateKeyToAddress(SWTHAddress.mnemonicToPrivateKey(mnemonic))
+        const evmHexAddress = ETHAddress.privateKeyToAddress(SWTHAddress.mnemonicToPrivateKey(mnemonic))
         result = {
+          mnemonic,
           chain: connectedBlockchain,
           privateKey,
           bech32Address,
-          hexAddress,
+          evmHexAddress,
         }
       }
     }
@@ -681,7 +685,7 @@ export class MetaMask {
   }
   // get public key from Metamask
   async getPublicKey(address: string, metamaskAPI?: MetaMaskAPI): Promise<string> {
-    const message = "Initialise your account with carbon"
+    const message = "Initialize your wallet with Carbon"
     const signedMessage = await this.personalSign(address, message, metamaskAPI)
     const uncompressedPubKey = EthCrypto.recoverPublicKey(signedMessage, EthCrypto.hash.keccak256(`\x19Ethereum Signed Message:\n${message.length}${message}`))
     const pubKey = EthCrypto.publicKey.compress(uncompressedPubKey)
