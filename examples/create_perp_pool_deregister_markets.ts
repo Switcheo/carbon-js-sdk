@@ -18,7 +18,7 @@ import Long from "long";
 
   for (const market of markets) {
     try {
-      const result = await connectedSDK.vault.deregisterFromPlPool({
+      const result = await connectedSDK.plp.deregisterFromPlPool({
         creator: connectedSDK.wallet.bech32Address,
         marketId: market,
       })
