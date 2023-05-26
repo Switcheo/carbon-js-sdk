@@ -3,7 +3,7 @@ import { CarbonTx } from "@carbon-sdk/util";
 import BaseModule from "./base";
 import { BigNumber } from "bignumber.js";
 import { Duration } from "@carbon-sdk/codec/google/protobuf/duration";
-import { FeeCategory, FeeTier, QueryGetFeeTiersResponse } from "@carbon-sdk/codec";
+import { FeeCategory, FeeTier, QueryGetFeeTiersResponse, QueryGetTradingFeesResponse, TradingFees } from "@carbon-sdk/codec";
 
 export class MarketModule extends BaseModule {
 
@@ -15,6 +15,15 @@ export class MarketModule extends BaseModule {
     })
     return fetchDataResponse?.feeTiers ?? []
   }
+
+  public async getTradingFees(marketName: string, userAddress: string): Promise<TradingFees> {
+    const fetchDataResponse: QueryGetTradingFeesResponse = await this.sdkProvider.query.market.TradingFees({
+      marketName: marketName,
+      userAddress: userAddress,
+    })
+    return fetchDataResponse?.fees ?? { takerFee: '', makerFee: '' }
+  }
+  
   public async update(params: MarketModule.UpdateMarketParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
