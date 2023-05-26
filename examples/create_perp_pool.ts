@@ -15,7 +15,7 @@ import "./_setup";
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
 
-  const result = await connectedSDK.vault.createPerpertualsPool({
+  const result = await connectedSDK.perpsliquidity.createPerpertualsPool({
       creator: connectedSDK.wallet.bech32Address,
       name: 'USD Perp Pool 5',
       depositDenom: 'usdc',

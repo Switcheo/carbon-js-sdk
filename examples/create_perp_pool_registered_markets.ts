@@ -19,7 +19,7 @@ import Long from "long";
 
   for (const market of markets) {
     try {
-      const result = await connectedSDK.vault.registerToPlPool({
+      const result = await connectedSDK.perpsliquidity.registerToPlPool({
         creator: connectedSDK.wallet.bech32Address,
         poolId: poolId,
         marketId: market,
