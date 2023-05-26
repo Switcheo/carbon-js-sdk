@@ -16,7 +16,7 @@ import "./_setup";
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
 
-  const result = await connectedSDK.perpsliquidity.depositToPerpetualsPool({
+  const result = await connectedSDK.plp.depositToPerpetualsPool({
       creator: connectedSDK.wallet.bech32Address,
       poolId: new Long(2),
       depositAmount: '10000',
