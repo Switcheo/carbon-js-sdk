@@ -96,7 +96,7 @@ class CarbonSDK {
   admin: AdminModule;
   order: OrderModule;
   lp: LiquidityPoolModule;
-  perpsliquidity: PerpsLiquidityModule;
+  plp: PerpsLiquidityModule;
   subaccount: SubAccountModule;
   profile: ProfileModule;
   cdp: CDPModule;
@@ -115,7 +115,6 @@ class CarbonSDK {
   evm: EvmModule;
   evmmerge: EvmMergeModule;
   feemarket: FeemarketModule;
-  perpsLiquidity: PerpsLiquidityModule;
 
   neo: NEOClient;
   eth: ETHClient;
@@ -145,7 +144,7 @@ class CarbonSDK {
     this.admin = new AdminModule(this);
     this.order = new OrderModule(this);
     this.lp = new LiquidityPoolModule(this);
-    this.perpsliquidity = new PerpsLiquidityModule(this);
+    this.plp = new PerpsLiquidityModule(this);
     this.subaccount = new SubAccountModule(this);
     this.profile = new ProfileModule(this);
     this.cdp = new CDPModule(this);
@@ -164,7 +163,6 @@ class CarbonSDK {
     this.evm = new EvmModule(this);
     this.evmmerge = new EvmMergeModule(this);
     this.feemarket = new FeemarketModule(this);
-    this.perpsLiquidity = new PerpsLiquidityModule(this);
 
     this.neo = NEOClient.instance({
       configProvider: this,
