@@ -142,7 +142,7 @@ export interface StoredMnemonicInfo {
   chain: EVMChainV2,
   privateKey: string,
   bech32Address: string
-  hexAddress: string
+  evmHexAddress: string
 }
 
 type LegacyAccounts = {
@@ -612,13 +612,13 @@ export class MetaMask {
         const mnemonic = await this.decryptCipher(mnemonicCipher) ?? ''
         const privateKey = `0x${SWTHAddress.mnemonicToPrivateKey(mnemonic).toString('hex').toLowerCase()}`
         const bech32Address = SWTHAddress.privateKeyToAddress(SWTHAddress.mnemonicToPrivateKey(mnemonic), { network: this.network })
-        const hexAddress = ETHAddress.privateKeyToAddress(SWTHAddress.mnemonicToPrivateKey(mnemonic))
+        const evmHexAddress = ETHAddress.privateKeyToAddress(SWTHAddress.mnemonicToPrivateKey(mnemonic))
         result = {
           mnemonic,
           chain: connectedBlockchain,
           privateKey,
           bech32Address,
-          hexAddress,
+          evmHexAddress,
         }
       }
     }

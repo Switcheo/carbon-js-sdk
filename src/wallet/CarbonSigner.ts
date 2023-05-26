@@ -15,7 +15,7 @@ export enum CarbonSignerTypes {
 
 
 export interface EvmSigner {
-  readonly sendEvmTransaction: (api: CarbonSDK, req: ethers.providers.TransactionRequest) => void
+  readonly sendEvmTransaction: (api: CarbonSDK, req: ethers.providers.TransactionRequest) => any
 }
 
 export interface EIP712Signer extends EvmSigner {
