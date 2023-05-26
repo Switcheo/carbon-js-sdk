@@ -17,7 +17,6 @@ import "./_setup";
   console.log("connected sdk");
 
   const result = await connectedSDK.plp.withdrawFromPerpetualsPool({
-      creator: connectedSDK.wallet.bech32Address,
       poolId: new Long(2),
       shareAmount: '10',
       minReceiveAmount: '1',
