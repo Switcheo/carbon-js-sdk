@@ -44,7 +44,7 @@ import { QueryClientImpl as SubaccountQueryClient } from "@carbon-sdk/codec/suba
 import { QueryClientImpl as AlliancesClient } from "@carbon-sdk/codec/alliance/query";
 
 import { createProtobufRpcClient, QueryClient } from "@cosmjs/stargate";
-import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
+import { Tendermint34Client, HttpBatchClient } from "@cosmjs/tendermint-rpc";
 import BlockchainClient from "./BlockchainClient";
 
 export interface IBCClientGroup {
