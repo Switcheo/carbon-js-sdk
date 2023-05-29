@@ -311,7 +311,6 @@ const OKC_TESTNET: MetaMaskChangeNetworkParam = {
 export class MetaMask {
   private blockchain: EVMChain = 'Ethereum';
   private connectedAccount: string = ''
-  private api: MetaMaskAPI | undefined
 
   static createMetamaskSigner(metamask: MetaMask, evmChainId: string, pubKeyBase64: string, addressOptions: SWTHAddressOptions): CarbonSigner {
     const signDirect = async (_: string, doc: Models.Tx.SignDoc) => {
@@ -509,9 +508,6 @@ export class MetaMask {
 
   constructor(public readonly network: Network, public readonly legacyEip712SignMode: boolean = false) { }
 
-  public async initalizeApi() {
-    this.api = await detectEthereumProvider() as MetaMaskAPI
-  }
 
   private checkProvider(blockchain: BlockchainV2 = this.blockchain): ethers.providers.Provider {
     const config: any = NetworkConfigs[this.network];
