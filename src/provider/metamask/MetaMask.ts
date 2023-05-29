@@ -690,7 +690,7 @@ export class MetaMask {
     const message = "Initialize your wallet with Carbon"
     const signedMessage = await this.personalSign(address, message, metamaskAPI)
     const uncompressedPublicKey = ethers.utils.recoverPublicKey(ethers.utils.hashMessage(message), signedMessage)
-    return ethers.utils.computePublicKey(uncompressedPublicKey, false).split('0x')[1]
+    return ethers.utils.computePublicKey(uncompressedPublicKey, true).split('0x')[1]
   }
 
   async signEip712(accountNumber: string, evmChainId: string, msgs: readonly AminoMsg[], fee: StdFee, memo: string, sequence: string, feePayer: string = ''): Promise<string> {
