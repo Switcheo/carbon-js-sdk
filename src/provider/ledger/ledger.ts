@@ -140,6 +140,14 @@ class CosmosLedger {
     await this.cosmosApp.transport.close()
   }
 
+  async getDeviceName() {
+    const deviceName = await this.cosmosApp.transport?.deviceModel?.productName
+    if (deviceName) {
+      return deviceName
+    }
+    return undefined
+  }
+
   // returns the cosmos app version as a string like "1.1.0"
   async getCosmosAppVersion() {
     await this.connect();
