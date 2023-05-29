@@ -21,6 +21,7 @@ import { ETHAddress, SWTHAddressOptions } from "@carbon-sdk/util/address";
 import { constructEIP712Tx } from "@carbon-sdk/util/eip712";
 import { SWTHAddress } from '@carbon-sdk/util/address'
 import { LEGACY_ACCOUNTS_MAINNET, LEGACY_ACCOUNTS_TESTNET } from "./legacy-accounts";
+import detectEthereumProvider from "@metamask/detect-provider";
 
 
 
@@ -507,6 +508,7 @@ export class MetaMask {
 
   constructor(public readonly network: Network, public readonly legacyEip712SignMode: boolean = false) { }
 
+
   private checkProvider(blockchain: BlockchainV2 = this.blockchain): ethers.providers.Provider {
     const config: any = NetworkConfigs[this.network];
 
@@ -531,7 +533,8 @@ export class MetaMask {
   }
 
   async syncBlockchain(): Promise<MetaMaskSyncResult> {
-    const chainIdHex = (await this.getAPI()?.request({ method: "eth_chainId" })) as string;
+    const metamaskAPI = await this.getAPI()
+    const chainIdHex = (await metamaskAPI?.request({ method: "eth_chainId" })) as string;
     const chainId = !!chainIdHex ? parseInt(chainIdHex, 16) : undefined;
     const blockchain = getBlockchainFromChainV2(chainId) as EVMChain;
     this.blockchain = blockchain!;
@@ -544,12 +547,12 @@ export class MetaMask {
     return new ethers.providers.Web3Provider(ethereum).getSigner();
   }
 
-  getAPI(): MetaMaskAPI | null {
-    return ((window as any).ethereum as MetaMaskAPI | null) ?? null;
+  async getAPI(): Promise<MetaMaskAPI | null> {
+    return await detectEthereumProvider()
   }
 
   async getConnectedAPI(): Promise<MetaMaskAPI> {
-    const metamaskAPI = this.getAPI();
+    const metamaskAPI = await this.getAPI();
     if (!metamaskAPI) {
       throw new Error("MetaMask not connected, please check that your extension is enabled");
     }
