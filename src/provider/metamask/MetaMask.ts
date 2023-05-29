@@ -5,7 +5,6 @@ import { appendHexPrefix } from "@carbon-sdk/util/generic";
 import { ethers } from "ethers";
 import { makeSignDoc } from "@cosmjs/amino/build";
 import * as ethSignUtils from "eth-sig-util";
-import EthCrypto from 'eth-crypto';
 import { AddressUtils, CarbonTx } from "@carbon-sdk/util";
 import { CarbonSigner, CarbonSignerTypes } from "@carbon-sdk/wallet";
 import { Algo, EncodeObject } from "@cosmjs/proto-signing";
@@ -690,9 +689,8 @@ export class MetaMask {
   async getPublicKey(address: string, metamaskAPI?: MetaMaskAPI): Promise<string> {
     const message = "Initialize your wallet with Carbon"
     const signedMessage = await this.personalSign(address, message, metamaskAPI)
-    const uncompressedPubKey = EthCrypto.recoverPublicKey(signedMessage, EthCrypto.hash.keccak256(`\x19Ethereum Signed Message:\n${message.length}${message}`))
-    const pubKey = EthCrypto.publicKey.compress(uncompressedPubKey)
-    return pubKey
+    const compressedPubKey = ethers.utils.recoverPublicKey(signedMessage, ethers.utils.keccak256(`\x19Ethereum Signed Message:\n${message.length}${message}`))
+    return compressedPubKey
   }
 
   async signEip712(accountNumber: string, evmChainId: string, msgs: readonly AminoMsg[], fee: StdFee, memo: string, sequence: string, feePayer: string = ''): Promise<string> {
