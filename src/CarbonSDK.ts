@@ -9,7 +9,7 @@ import {
   NetworkConfigs,
 } from "@carbon-sdk/constant";
 import { GenericUtils, NetworkUtils } from "@carbon-sdk/util";
-import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
+import { Tendermint34Client, HttpBatchClient } from "@cosmjs/tendermint-rpc";
 import { CarbonQueryClient, ETHClient, HydrogenClient, InsightsQueryClient, NEOClient, TokenClient, ZILClient } from "./clients";
 import * as clients from "./clients";
 import N3Client from "./clients/N3Client";
@@ -217,7 +217,8 @@ class CarbonSDK {
     const configOverride = opts.config ?? {};
 
     const networkConfig = GenericUtils.overrideConfig(NetworkConfigs[network], configOverride);
-    const tmClient = opts.tmClient ?? GenericUtils.modifyTmClient(await Tendermint34Client.connect(networkConfig.tmRpcUrl));
+    const httpBatchClient = new HttpBatchClient(networkConfig.tmRpcUrl);
+    const tmClient = opts.tmClient ?? GenericUtils.modifyTmClient(await Tendermint34Client.create(httpBatchClient));
     const defaultTimeoutBlocks = opts.defaultTimeoutBlocks;
     const chainId = (await tmClient.status())?.nodeInfo.network;
 
