@@ -15,6 +15,7 @@ import * as clients from "./clients";
 import N3Client from "./clients/N3Client";
 import {
   AdminModule,
+  AllianceModule,
   BankModule,
   BrokerModule,
   CDPModule,
@@ -93,9 +94,10 @@ class CarbonSDK {
   token: TokenClient;
 
   admin: AdminModule;
+  alliance: AllianceModule;
   order: OrderModule;
   lp: LiquidityPoolModule;
-  perpsliquidity: PerpsLiquidityModule;
+  plp: PerpsLiquidityModule;
   subaccount: SubAccountModule;
   profile: ProfileModule;
   cdp: CDPModule;
@@ -114,7 +116,6 @@ class CarbonSDK {
   evm: EvmModule;
   evmmerge: EvmMergeModule;
   feemarket: FeemarketModule;
-
 
   neo: NEOClient;
   eth: ETHClient;
@@ -142,9 +143,10 @@ class CarbonSDK {
     this.hydrogen = HydrogenClient.instance(this.networkConfig, this.token);
 
     this.admin = new AdminModule(this);
+    this.alliance = new AllianceModule(this);
     this.order = new OrderModule(this);
     this.lp = new LiquidityPoolModule(this);
-    this.perpsliquidity = new PerpsLiquidityModule(this);
+    this.plp = new PerpsLiquidityModule(this);
     this.subaccount = new SubAccountModule(this);
     this.profile = new ProfileModule(this);
     this.cdp = new CDPModule(this);

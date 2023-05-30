@@ -5,6 +5,7 @@ import { QueryClientImpl as CDPQueryClient } from "@carbon-sdk/codec/cdp/query";
 import { QueryClientImpl as CoinQueryClient } from "@carbon-sdk/codec/coin/query";
 import { QueryClientImpl as AuthQueryClient } from "@carbon-sdk/codec/cosmos/auth/v1beta1/query";
 import { QueryClientImpl as BankQueryClient } from "@carbon-sdk/codec/cosmos/bank/v1beta1/query";
+import { QueryClientImpl as NativeBankQueryClient } from "@carbon-sdk/codec/bank/query";
 import { ServiceClientImpl as CosmosTmClient } from "@carbon-sdk/codec/cosmos/base/tendermint/v1beta1/query";
 import { QueryClientImpl as DistributionQueryClient } from "@carbon-sdk/codec/cosmos/distribution/v1beta1/query";
 import { QueryClientImpl as EvidenceQueryClient } from "@carbon-sdk/codec/cosmos/evidence/v1beta1/query";
@@ -41,6 +42,8 @@ import { QueryClientImpl as PositionQueryClient } from "@carbon-sdk/codec/positi
 import { QueryClientImpl as PricingQueryClient } from "@carbon-sdk/codec/pricing/query";
 import { QueryClientImpl as ProfileQueryClient } from "@carbon-sdk/codec/profile/query";
 import { QueryClientImpl as SubaccountQueryClient } from "@carbon-sdk/codec/subaccount/query";
+import { QueryClientImpl as AllianceClient } from "@carbon-sdk/codec/alliance/query";
+
 import { createProtobufRpcClient, QueryClient } from "@cosmjs/stargate";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import BlockchainClient from "./BlockchainClient";
@@ -86,6 +89,7 @@ class CarbonQueryClient {
 
   auth: AuthQueryClient;
   bank: BankQueryClient;
+  nativeBank: NativeBankQueryClient;
   distribution: DistributionQueryClient;
   evidence: EvidenceQueryClient;
   gov: GovQueryClient;
@@ -95,6 +99,8 @@ class CarbonQueryClient {
   staking: StakingQueryClient;
   upgrade: UpgradeQueryClient;
   cosmosTm: CosmosTmClient;
+
+  alliance: AllianceClient;
 
   chain: BlockchainClient;
   ibc: IBCClientGroup;
@@ -111,6 +117,7 @@ class CarbonQueryClient {
     this.chain = BlockchainClient.connectWithTm(this.tmClient);
 
     this.adl = new ADLQueryClient(rpcClient);
+    this.alliance = new AllianceClient(rpcClient);
     this.book = new BookQueryClient(rpcClient);
     this.broker = new BrokerQueryClient(rpcClient);
     this.coin = new CoinQueryClient(rpcClient);
@@ -137,6 +144,7 @@ class CarbonQueryClient {
 
     this.auth = new AuthQueryClient(rpcClient);
     this.bank = new BankQueryClient(rpcClient);
+    this.nativeBank = new NativeBankQueryClient(rpcClient);
     this.distribution = new DistributionQueryClient(rpcClient);
     this.evidence = new EvidenceQueryClient(rpcClient);
     this.gov = new GovQueryClient(rpcClient);
@@ -146,6 +154,8 @@ class CarbonQueryClient {
     this.staking = new StakingQueryClient(rpcClient);
     this.upgrade = new UpgradeQueryClient(rpcClient);
     this.cosmosTm = new CosmosTmClient(rpcClient);
+
+    this.alliance = new AllianceClient(rpcClient);
 
     this.ibc = {
       controller: new IBCInterchainControlQueryClient(rpcClient),

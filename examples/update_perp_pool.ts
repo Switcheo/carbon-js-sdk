@@ -16,8 +16,7 @@ import "./_setup";
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
 
-  const result = await connectedSDK.vault.updatePerpetualsPool({
-      creator: connectedSDK.wallet.bech32Address,
+  const result = await connectedSDK.plp.updatePerpetualsPool({
       name: 'USD Perp Pool 3',
       poolId: new Long(3),
       depositDenom: 'cgusd',
