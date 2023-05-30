@@ -18,7 +18,7 @@ export class OrderModule extends BaseModule {
       quantity: params.quantity.toString(10),
       side: params.side,
       stopPrice: params.stopPrice?.shiftedBy(18).toString(10),
-      timeInForce: params.timeInForce,
+      timeInForce: params.timeInForce ?? OrderModule.TimeInForce.Gtc,
       triggerType: params.triggerType,
       referralAddress: params.referralAddress,
       referralCommission: params.referralCommission,
@@ -48,7 +48,7 @@ export class OrderModule extends BaseModule {
         quantity: params.quantity.toString(10),
         side: params.side,
         stopPrice: params.stopPrice?.shiftedBy(18).toString(10),
-        timeInForce: params.timeInForce,
+        timeInForce: params.timeInForce ?? OrderModule.TimeInForce.Gtc,
         triggerType: params.triggerType,
         referralAddress: params.referralAddress,
         referralCommission: params.referralCommission,
@@ -185,6 +185,7 @@ export namespace OrderModule {
     id: string;
     quantity: BigNumber;
     price: BigNumber;
+    timeInForce?: OrderModule.TimeInForce;
     stopPrice?: BigNumber;
   }
 
