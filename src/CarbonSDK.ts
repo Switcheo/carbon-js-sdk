@@ -217,8 +217,8 @@ class CarbonSDK {
     const configOverride = opts.config ?? {};
 
     const networkConfig = GenericUtils.overrideConfig(NetworkConfigs[network], configOverride);
-    const httpBatchClient = new HttpBatchClient(networkConfig.tmRpcUrl);
-    const tmClient = opts.tmClient ?? GenericUtils.modifyTmClient(await Tendermint34Client.create(httpBatchClient));
+    const batchQueryClient = new clients.BatchQueryClient(networkConfig.tmRpcUrl);
+    const tmClient = opts.tmClient ?? GenericUtils.modifyTmClient(await Tendermint34Client.create(batchQueryClient));
     const defaultTimeoutBlocks = opts.defaultTimeoutBlocks;
     const chainId = (await tmClient.status())?.nodeInfo.network;
 
