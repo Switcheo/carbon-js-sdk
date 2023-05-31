@@ -15,6 +15,7 @@ export interface Candlestick {
   low: string;
   volume: string;
   quoteVolume: string;
+  lastUpdatedBlockHeight: Long;
 }
 
 const baseCandlestick: object = {
@@ -26,6 +27,7 @@ const baseCandlestick: object = {
   low: "",
   volume: "",
   quoteVolume: "",
+  lastUpdatedBlockHeight: Long.ZERO,
 };
 
 export const Candlestick = {
@@ -62,6 +64,9 @@ export const Candlestick = {
     }
     if (message.quoteVolume !== "") {
       writer.uint32(74).string(message.quoteVolume);
+    }
+    if (!message.lastUpdatedBlockHeight.isZero()) {
+      writer.uint32(80).int64(message.lastUpdatedBlockHeight);
     }
     return writer;
   },
@@ -101,6 +106,9 @@ export const Candlestick = {
           break;
         case 9:
           message.quoteVolume = reader.string();
+          break;
+        case 10:
+          message.lastUpdatedBlockHeight = reader.int64() as Long;
           break;
         default:
           reader.skipType(tag & 7);
@@ -146,6 +154,11 @@ export const Candlestick = {
       object.quoteVolume !== undefined && object.quoteVolume !== null
         ? String(object.quoteVolume)
         : "";
+    message.lastUpdatedBlockHeight =
+      object.lastUpdatedBlockHeight !== undefined &&
+      object.lastUpdatedBlockHeight !== null
+        ? Long.fromString(object.lastUpdatedBlockHeight)
+        : Long.ZERO;
     return message;
   },
 
@@ -162,6 +175,10 @@ export const Candlestick = {
     message.volume !== undefined && (obj.volume = message.volume);
     message.quoteVolume !== undefined &&
       (obj.quoteVolume = message.quoteVolume);
+    message.lastUpdatedBlockHeight !== undefined &&
+      (obj.lastUpdatedBlockHeight = (
+        message.lastUpdatedBlockHeight || Long.ZERO
+      ).toString());
     return obj;
   },
 
@@ -179,6 +196,11 @@ export const Candlestick = {
     message.low = object.low ?? "";
     message.volume = object.volume ?? "";
     message.quoteVolume = object.quoteVolume ?? "";
+    message.lastUpdatedBlockHeight =
+      object.lastUpdatedBlockHeight !== undefined &&
+      object.lastUpdatedBlockHeight !== null
+        ? Long.fromValue(object.lastUpdatedBlockHeight)
+        : Long.ZERO;
     return message;
   },
 };

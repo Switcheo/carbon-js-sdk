@@ -32,7 +32,6 @@ import { QueryClientImpl as InsuranceQueryClient } from "@carbon-sdk/codec/insur
 import { QueryClientImpl as LeverageQueryClient } from "@carbon-sdk/codec/leverage/query";
 import { QueryClientImpl as LiquidationQueryClient } from "@carbon-sdk/codec/liquidation/query";
 import { QueryClientImpl as LiquidityPoolQueryClient } from "@carbon-sdk/codec/liquiditypool/query";
-import { QueryClientImpl as PerpLiquidityPoolQueryClient } from "@carbon-sdk/codec/perpsliquidity/query";
 import { QueryClientImpl as MarketQueryClient } from "@carbon-sdk/codec/market/query";
 import { QueryClientImpl as MarketStatsQueryClient } from "@carbon-sdk/codec/marketstats/query";
 import { QueryClientImpl as MiscQueryClient } from "@carbon-sdk/codec/misc/query";
@@ -75,7 +74,6 @@ class CarbonQueryClient {
   leverage: LeverageQueryClient;
   liquidation: LiquidationQueryClient;
   liquiditypool: LiquidityPoolQueryClient;
-  perpetualpool: PerpLiquidityPoolQueryClient;
   market: MarketQueryClient;
   marketstats: MarketStatsQueryClient;
   misc: MiscQueryClient;
@@ -128,7 +126,6 @@ class CarbonQueryClient {
     this.leverage = new LeverageQueryClient(rpcClient);
     this.liquidation = new LiquidationQueryClient(rpcClient);
     this.liquiditypool = new LiquidityPoolQueryClient(rpcClient);
-    this.perpetualpool = new PerpLiquidityPoolQueryClient(rpcClient);
     this.market = new MarketQueryClient(rpcClient);
     this.marketstats = new MarketStatsQueryClient(rpcClient);
     this.misc = new MiscQueryClient(rpcClient);
