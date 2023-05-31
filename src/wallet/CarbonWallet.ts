@@ -232,8 +232,8 @@ export class CarbonWallet {
 
     const addressBytes = AddressUtils.SWTHAddress.getAddressBytes(this.bech32Address, this.network);
     this.hexAddress = `0x${Buffer.from(addressBytes).toString("hex")}`;
-    this.evmHexAddress = AddressUtils.ETHAddress.publicKeyToAddress(this.publicKey, addressOpts);
-    this.evmBech32Address = AddressUtils.ETHAddress.publicKeyToBech32Address(this.publicKey, addressOpts)
+    this.evmHexAddress = opts.bech32Address ? '' : AddressUtils.ETHAddress.publicKeyToAddress(this.publicKey, addressOpts);
+    this.evmBech32Address = opts.bech32Address ? '' : AddressUtils.ETHAddress.publicKeyToBech32Address(this.publicKey, addressOpts)
 
   }
 
