@@ -5,6 +5,13 @@ import { BigNumber } from "bignumber.js";
 import BaseModule from "./base";
 
 export class OrderModule extends BaseModule {
+  // helper method to set default TIF for v2.26
+  private getDefaultTimeInForce(orderType: OrderModule.OrderType) {
+    if (orderType === OrderModule.OrderType.Limit || orderType === OrderModule.OrderType.StopLimit) {
+      return OrderModule.TimeInForce.Gtc
+    }
+    return OrderModule.TimeInForce.Ioc
+  }
   public async create(params: OrderModule.CreateOrderParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
@@ -18,7 +25,7 @@ export class OrderModule extends BaseModule {
       quantity: params.quantity.toString(10),
       side: params.side,
       stopPrice: params.stopPrice?.shiftedBy(18).toString(10),
-      timeInForce: params.timeInForce ?? OrderModule.TimeInForce.Gtc,
+      timeInForce: params.timeInForce ?? this.getDefaultTimeInForce(params.orderType),
       triggerType: params.triggerType,
       referralAddress: params.referralAddress,
       referralCommission: params.referralCommission,
@@ -48,7 +55,7 @@ export class OrderModule extends BaseModule {
         quantity: params.quantity.toString(10),
         side: params.side,
         stopPrice: params.stopPrice?.shiftedBy(18).toString(10),
-        timeInForce: params.timeInForce ?? OrderModule.TimeInForce.Gtc,
+        timeInForce: params.timeInForce ?? this.getDefaultTimeInForce(params.orderType),
         triggerType: params.triggerType,
         referralAddress: params.referralAddress,
         referralCommission: params.referralCommission,

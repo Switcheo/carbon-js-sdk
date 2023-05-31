@@ -35,7 +35,6 @@ import {
   EvmModule,
   FeemarketModule,
   EvmMergeModule,
-  PerpsLiquidityModule,
 } from "./modules";
 import { StakingModule } from "./modules/staking";
 import { CosmosLedger, Keplr, KeplrAccount, LeapAccount, LeapExtended } from "./provider";
@@ -97,7 +96,6 @@ class CarbonSDK {
   alliance: AllianceModule;
   order: OrderModule;
   lp: LiquidityPoolModule;
-  plp: PerpsLiquidityModule;
   subaccount: SubAccountModule;
   profile: ProfileModule;
   cdp: CDPModule;
@@ -146,7 +144,6 @@ class CarbonSDK {
     this.alliance = new AllianceModule(this);
     this.order = new OrderModule(this);
     this.lp = new LiquidityPoolModule(this);
-    this.plp = new PerpsLiquidityModule(this);
     this.subaccount = new SubAccountModule(this);
     this.profile = new ProfileModule(this);
     this.cdp = new CDPModule(this);
