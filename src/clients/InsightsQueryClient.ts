@@ -380,6 +380,14 @@ class InsightsQueryClient {
     const response = await request.get();
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetDelegationsResponse>;
   }
+
+  async OraclePrices(
+    req: Insights.QueryGetOraclesPriceRequest = {}
+  ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetOraclesPriceResponse>> {
+    const request = this.apiManager.path("info/oracles_price", {}, req);
+    const response = await request.get();
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetOraclesPriceResponse>;
+  }
 }
 
 export default InsightsQueryClient;
