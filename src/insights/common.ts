@@ -52,6 +52,9 @@ export const InsightsEndpoints = {
 
   // Delegations api
   "delegations/delegator": "/delegations/:delegator",
+
+  // Oracles api
+  "info/oracles_price": "/info/oracles_price",
 };
 
 export type Interval = "millisecond" | "second" | "minute" | "hour" | "day" | "week" | "month" | "quarter";
