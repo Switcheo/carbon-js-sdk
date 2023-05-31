@@ -367,6 +367,19 @@ class InsightsQueryClient {
     const response = await request.get();
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetFundingRateResponse>;
   }
+
+  async Delegations(
+    req: Insights.GetDelegationsPathParams,
+    query: Insights.GetDelegationsQueryParams
+  ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetDelegationsResponse>> {
+    const request = this.apiManager.path(
+      "delegations/delegator",
+      req,
+      query
+    );
+    const response = await request.get();
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetDelegationsResponse>;
+  }
 }
 
 export default InsightsQueryClient;
