@@ -49,6 +49,9 @@ export const InsightsEndpoints = {
 
   //funding
   "market/funding": "/market/funding",
+
+  // Delegations api
+  "delegations/delegator": "/delegations/:delegator",
 };
 
 export type Interval = "millisecond" | "second" | "minute" | "hour" | "day" | "week" | "month" | "quarter";
