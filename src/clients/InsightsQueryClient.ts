@@ -375,14 +375,7 @@ class InsightsQueryClient {
     const request = this.apiManager.path(
       "delegations/delegator",
       req,
-      {
-        time: query.time ?? "",
-        type: query.type ?? "",
-        validator: query.validator ?? "",
-        denom: query.denom ?? "",
-        limit: query.limit ?? 100,
-        offset: query.offset ?? 0,
-      }
+      query
     );
     const response = await request.get();
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetDelegationsResponse>;
