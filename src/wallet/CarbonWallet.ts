@@ -56,6 +56,10 @@ export interface CarbonWalletGenericOpts {
   onBroadcastTxFail?: CarbonWallet.OnBroadcastTxFailCallback;
 }
 
+export interface MetaMaskWalletOpts {
+  publicKeyMessage?: string
+}
+
 export type CarbonWalletInitOpts = CarbonWalletGenericOpts &
   (
     | {
