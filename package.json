@@ -49,6 +49,7 @@
     "@ledgerhq/hw-transport-webhid": "^6.20.0",
     "@ledgerhq/hw-transport-webusb": "^6.20.0",
     "@metamask/detect-provider": "^2.0.0",
+    "@terra-money/wallet-controller": "^4.0.0",
     "@zilliqa-js/zilliqa": "^2.2.0",
     "base58check": "^2.0.0",
     "bignumber.js": "^9.1.0",
