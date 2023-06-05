@@ -10,3 +10,4 @@ export * from "./competition";
 export * from "./funding";
 export * from "./delegation";
 export * from "./oracles";
+export * from "./proposal";

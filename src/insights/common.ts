@@ -55,6 +55,9 @@ export const InsightsEndpoints = {
 
   // Oracles api
   "info/oracles_price": "/info/oracles_price",
+
+  // Proposal api
+  "proposal/votes": "/gov/proposal/:proposalId/votes",
 };
 
 export type Interval = "millisecond" | "second" | "minute" | "hour" | "day" | "week" | "month" | "quarter";

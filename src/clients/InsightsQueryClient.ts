@@ -388,6 +388,15 @@ class InsightsQueryClient {
     const response = await request.get();
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetOraclesPriceResponse>;
   }
+
+  async ProposalVotes(
+    req: Insights.GetProposalVotesPathParams,
+    query: Insights.GetProposalVotesQueryParams
+  ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetProposalVotesResponse>> {
+    const request = this.apiManager.path("proposal/votes", req, query);
+    const response = await request.get();
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetProposalVotesResponse>;
+  }
 }
 
 export default InsightsQueryClient;
