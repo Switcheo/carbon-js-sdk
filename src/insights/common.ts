@@ -49,6 +49,9 @@ export const InsightsEndpoints = {
 
   //funding
   "market/funding": "/market/funding",
+
+  // Proposal api
+  "proposal/votes": "/gov/proposal/:proposalId/votes",
 };
 
 export type Interval = "millisecond" | "second" | "minute" | "hour" | "day" | "week" | "month" | "quarter";
