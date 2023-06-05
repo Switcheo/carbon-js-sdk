@@ -39,7 +39,7 @@ import {
 import { StakingModule } from "./modules/staking";
 import { CosmosLedger, Keplr, KeplrAccount, LeapAccount, LeapExtended } from "./provider";
 import { Blockchain } from "./util/blockchain";
-import { CarbonLedgerSigner, CarbonSigner, CarbonWallet, CarbonWalletGenericOpts, MetaMaskWalletGenericOpts } from "./wallet";
+import { CarbonLedgerSigner, CarbonSigner, CarbonWallet, CarbonWalletGenericOpts, MetaMaskWalletOpts } from "./wallet";
 import { MetaMask } from "./provider/metamask/MetaMask";
 import { SWTHAddressOptions } from "./util/address";
 import { ethers } from "ethers";
@@ -295,10 +295,11 @@ class CarbonSDK {
   public static async instanceWithMetamask(
     metamask: MetaMask,
     sdkOpts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS,
-    walletOpts?: MetaMaskWalletGenericOpts
+    walletOpts?: CarbonWalletGenericOpts,
+    metamaskWalletOpts?: MetaMaskWalletOpts
   ) {
     const sdk = await CarbonSDK.instance(sdkOpts);
-    return sdk.connectWithMetamask(metamask, walletOpts);
+    return sdk.connectWithMetamask(metamask, walletOpts, metamaskWalletOpts);
   }
 
 
@@ -436,14 +437,14 @@ class CarbonSDK {
   }
 
 
-  public async connectWithMetamask(metamask: MetaMask, opts?: MetaMaskWalletGenericOpts) {
+  public async connectWithMetamask(metamask: MetaMask, opts?: CarbonWalletGenericOpts, metamaskWalletOpts?: MetaMaskWalletOpts) {
     const evmChainId = this.evmChainId;
     const addressOptions: SWTHAddressOptions = {
       network: this.networkConfig.network,
       bech32Prefix: this.networkConfig.Bech32Prefix
     };
     const address = await metamask.defaultAccount()
-    const publicKeyHex = await metamask.getPublicKey(address, opts?.publicKeyMessage)
+    const publicKeyHex = await metamask.getPublicKey(address, metamaskWalletOpts?.publicKeyMessage)
     const publicKeyBase64 = Buffer.from(publicKeyHex, 'hex').toString('base64')
     const wallet = CarbonWallet.withMetamask(metamask, evmChainId, publicKeyBase64, addressOptions, {
       ...opts,
