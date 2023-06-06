@@ -20,7 +20,6 @@ import {
   StakingAmino,
   SubAccountAmino,
 } from "./types";
-import PerpsliquidityAmino from "./types/perpsliquidity";
 
 const AminoTypesMap = new AminoTypes({
   ...AdminAmino,
@@ -42,7 +41,6 @@ const AminoTypesMap = new AminoTypes({
   ...EvmAmino,
   ...EvmMergeAmino,
   ...FeeMarketAmino,
-  ...PerpsliquidityAmino
 });
 
 export default AminoTypesMap;

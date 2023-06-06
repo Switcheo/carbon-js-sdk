@@ -9,12 +9,13 @@ import {
   NetworkConfigs,
 } from "@carbon-sdk/constant";
 import { GenericUtils, NetworkUtils } from "@carbon-sdk/util";
-import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
+import { Tendermint34Client, HttpBatchClient } from "@cosmjs/tendermint-rpc";
 import { CarbonQueryClient, ETHClient, HydrogenClient, InsightsQueryClient, NEOClient, TokenClient, ZILClient } from "./clients";
 import * as clients from "./clients";
 import N3Client from "./clients/N3Client";
 import {
   AdminModule,
+  AllianceModule,
   BankModule,
   BrokerModule,
   CDPModule,
@@ -34,12 +35,11 @@ import {
   EvmModule,
   FeemarketModule,
   EvmMergeModule,
-  PerpsLiquidityModule,
 } from "./modules";
 import { StakingModule } from "./modules/staking";
 import { CosmosLedger, Keplr, KeplrAccount, LeapAccount, LeapExtended } from "./provider";
 import { Blockchain } from "./util/blockchain";
-import { CarbonLedgerSigner, CarbonSigner, CarbonWallet, CarbonWalletGenericOpts } from "./wallet";
+import { CarbonLedgerSigner, CarbonSigner, CarbonWallet, CarbonWalletGenericOpts, MetaMaskWalletOpts } from "./wallet";
 import { MetaMask } from "./provider/metamask/MetaMask";
 import { SWTHAddressOptions } from "./util/address";
 import { ethers } from "ethers";
@@ -94,6 +94,7 @@ class CarbonSDK {
   token: TokenClient;
 
   admin: AdminModule;
+  alliance: AllianceModule;
   order: OrderModule;
   lp: LiquidityPoolModule;
   plp: PerpsLiquidityModule;
@@ -142,6 +143,7 @@ class CarbonSDK {
     this.hydrogen = HydrogenClient.instance(this.networkConfig, this.token);
 
     this.admin = new AdminModule(this);
+    this.alliance = new AllianceModule(this);
     this.order = new OrderModule(this);
     this.lp = new LiquidityPoolModule(this);
     this.plp = new PerpsLiquidityModule(this);
@@ -215,7 +217,8 @@ class CarbonSDK {
     const configOverride = opts.config ?? {};
 
     const networkConfig = GenericUtils.overrideConfig(NetworkConfigs[network], configOverride);
-    const tmClient = opts.tmClient ?? GenericUtils.modifyTmClient(await Tendermint34Client.connect(networkConfig.tmRpcUrl));
+    const batchQueryClient = new clients.BatchQueryClient(networkConfig.tmRpcUrl);
+    const tmClient = opts.tmClient ?? GenericUtils.modifyTmClient(await Tendermint34Client.create(batchQueryClient));
     const defaultTimeoutBlocks = opts.defaultTimeoutBlocks;
     const chainId = (await tmClient.status())?.nodeInfo.network;
 
@@ -295,10 +298,11 @@ class CarbonSDK {
   public static async instanceWithMetamask(
     metamask: MetaMask,
     sdkOpts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS,
-    walletOpts?: CarbonWalletGenericOpts
+    walletOpts?: CarbonWalletGenericOpts,
+    metamaskWalletOpts?: MetaMaskWalletOpts
   ) {
     const sdk = await CarbonSDK.instance(sdkOpts);
-    return sdk.connectWithMetamask(metamask, walletOpts);
+    return sdk.connectWithMetamask(metamask, walletOpts, metamaskWalletOpts);
   }
 
 
@@ -436,14 +440,14 @@ class CarbonSDK {
   }
 
 
-  public async connectWithMetamask(metamask: MetaMask, opts?: CarbonWalletGenericOpts) {
+  public async connectWithMetamask(metamask: MetaMask, opts?: CarbonWalletGenericOpts, metamaskWalletOpts?: MetaMaskWalletOpts) {
     const evmChainId = this.evmChainId;
     const addressOptions: SWTHAddressOptions = {
       network: this.networkConfig.network,
       bech32Prefix: this.networkConfig.Bech32Prefix
     };
     const address = await metamask.defaultAccount()
-    const publicKeyHex = await metamask.getPublicKey(address)
+    const publicKeyHex = await metamask.getPublicKey(address, metamaskWalletOpts?.publicKeyMessage)
     const publicKeyBase64 = Buffer.from(publicKeyHex, 'hex').toString('base64')
     const wallet = CarbonWallet.withMetamask(metamask, evmChainId, publicKeyBase64, addressOptions, {
       ...opts,

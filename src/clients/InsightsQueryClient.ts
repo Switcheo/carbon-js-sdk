@@ -367,6 +367,27 @@ class InsightsQueryClient {
     const response = await request.get();
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetFundingRateResponse>;
   }
+
+  async Delegations(
+    req: Insights.GetDelegationsPathParams,
+    query: Insights.GetDelegationsQueryParams
+  ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetDelegationsResponse>> {
+    const request = this.apiManager.path(
+      "delegations/delegator",
+      req,
+      query
+    );
+    const response = await request.get();
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetDelegationsResponse>;
+  }
+
+  async OraclePrices(
+    req: Insights.QueryGetOraclesPriceRequest = {}
+  ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetOraclesPriceResponse>> {
+    const request = this.apiManager.path("info/oracles_price", {}, req);
+    const response = await request.get();
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetOraclesPriceResponse>;
+  }
 }
 
 export default InsightsQueryClient;

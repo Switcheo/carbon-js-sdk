@@ -29,7 +29,6 @@ import { MsgGrant, MsgExecResponse, MsgExec, MsgGrantResponse, MsgRevoke, MsgRev
 import { MsgUnjail, MsgUnjailResponse } from "./cosmos/slashing/v1beta1/tx";
 import { MsgSubmitProposal as MsgGovSubmitProposal, MsgSubmitProposalResponse as MsgGovSubmitProposalResponse, MsgExecLegacyContent as MsgGovExecLegacyContent, MsgExecLegacyContentResponse as MsgGovExecLegacyContentResponse, MsgVote as MsgGovVote, MsgVoteResponse as MsgGovVoteResponse, MsgVoteWeighted as MsgGovVoteWeighted, MsgVoteWeightedResponse as MsgGovVoteWeightedResponse, MsgDeposit as MsgGovDeposit, MsgDepositResponse as MsgGovDepositResponse } from "./cosmos/gov/v1/tx";
 import { MsgSubmitProposal, MsgSubmitProposalResponse, MsgVote, MsgVoteResponse, MsgVoteWeighted, MsgVoteWeightedResponse, MsgDeposit, MsgDepositResponse } from "./cosmos/gov/v1beta1/tx";
-import { MsgCreatePlPool, MsgCreatePlPoolResponse, MsgUpdatePlPool, MsgUpdatePlPoolResponse, MsgRegisterToPlPool, MsgRegisterToPlPoolResponse, MsgDeregisterFromPlPool, MsgDeregisterFromPlPoolResponse, MsgDepositToPlPool, MsgDepositToPlPoolResponse, MsgWithdrawFromPlPool, MsgWithdrawFromPlPoolResponse, MsgUpdateMarketConfig, MsgUpdateMarketConfigResponse } from "./perpsliquidity/tx";
 import { MsgConnectionOpenInit, MsgConnectionOpenInitResponse, MsgConnectionOpenTry, MsgConnectionOpenTryResponse, MsgConnectionOpenAck, MsgConnectionOpenAckResponse, MsgConnectionOpenConfirm, MsgConnectionOpenConfirmResponse } from "./ibc/core/connection/v1/tx";
 import { MsgChannelOpenInit, MsgChannelOpenInitResponse, MsgChannelOpenTry, MsgChannelOpenTryResponse, MsgChannelOpenAck, MsgChannelOpenAckResponse, MsgChannelOpenConfirm, MsgChannelOpenConfirmResponse, MsgChannelCloseInit, MsgChannelCloseInitResponse, MsgChannelCloseConfirm, MsgChannelCloseConfirmResponse, MsgRecvPacket, MsgRecvPacketResponse, MsgTimeout, MsgTimeoutResponse, MsgTimeoutOnClose, MsgTimeoutOnCloseResponse, MsgAcknowledgement, MsgAcknowledgementResponse } from "./ibc/core/channel/v1/tx";
 import { MsgCreateClient, MsgCreateClientResponse, MsgUpdateClient, MsgUpdateClientResponse, MsgUpgradeClient, MsgUpgradeClientResponse, MsgSubmitMisbehaviour, MsgSubmitMisbehaviourResponse } from "./ibc/core/client/v1/tx";
@@ -44,7 +43,7 @@ import { MsgUpdateProfile, MsgUpdateProfileResponse } from "./profile/tx";
 import { MsgUpdateParams as MsgFeemarketUpdateParams, MsgUpdateParamsResponse as MsgFeemarketUpdateParamsResponse } from "./ethermint/feemarket/v1/tx";
 import { MsgEthereumTx as MsgEvmEthereumTx, MsgEthereumTxResponse as MsgEvmEthereumTxResponse, MsgUpdateParams as MsgEvmUpdateParams, MsgUpdateParamsResponse as MsgEvmUpdateParamsResponse } from "./ethermint/evm/v1/tx";
 import { MsgCreateSubAccount, MsgCreateSubAccountResponse, MsgActivateSubAccount, MsgActivateSubAccountResponse, MsgRemoveSubAccount, MsgRemoveSubAccountResponse } from "./subaccount/tx";
-import { MsgDisableSpotMarket, MsgDisableSpotMarketResponse, MsgCreateMarket, MsgCreateMarketResponse, MsgUpdateMarket, MsgUpdateMarketResponse, MsgUpdatePerpetualsFundingInterval, MsgUpdatePerpetualsFundingIntervalResponse, MsgAddFeeTier, MsgAddFeeTierResponse, MsgUpdateFeeTier, MsgUpdateFeeTierResponse, MsgRemoveFeeTier, MsgRemoveFeeTierResponse, MsgSetStakeEquivalence, MsgSetStakeEquivalenceResponse } from "./market/tx";
+import { MsgDisableSpotMarket, MsgDisableSpotMarketResponse, MsgCreateMarket, MsgCreateMarketResponse, MsgUpdateMarket, MsgUpdateMarketResponse, MsgUpdatePerpetualsFundingInterval, MsgUpdatePerpetualsFundingIntervalResponse, MsgAddFeeTier, MsgAddFeeTierResponse, MsgUpdateFeeTier, MsgUpdateFeeTierResponse, MsgRemoveFeeTier, MsgRemoveFeeTierResponse, MsgSetStakeEquivalence, MsgSetStakeEquivalenceResponse, MsgUpdateAllPoolTradingFees, MsgUpdateAllPoolTradingFeesResponse } from "./market/tx";
 import { CreateMarketProposal, UpdateMarketProposal, UpdatePerpetualsFundingIntervalProposal } from "./market/proposal";
 import { MsgSetSequence, MsgSetSequenceResponse } from "./sequence/tx";
 import { MsgCreatePool, MsgCreatePoolResponse, MsgCreatePoolWithLiquidity, MsgCreatePoolWithLiquidityResponse, MsgAddLiquidity, MsgAddLiquidityResponse, MsgRemoveLiquidity, MsgRemoveLiquidityResponse, MsgSetRewardsWeights, MsgSetRewardsWeightsResponse, MsgStakePoolToken, MsgStakePoolTokenResponse, MsgUnstakePoolToken, MsgUnstakePoolTokenResponse, MsgClaimPoolRewards, MsgClaimPoolRewardsResponse, MsgSetRewardCurve, MsgSetRewardCurveResponse, MsgSetCommitmentCurve, MsgSetCommitmentCurveResponse, MsgUpdatePool, MsgUpdatePoolResponse, MsgCreatePoolRoute, MsgCreatePoolRouteResponse, MsgRemovePoolRoute, MsgRemovePoolRouteResponse, MsgUpdatePoolRoute, MsgUpdatePoolRouteResponse } from "./liquiditypool/tx";
@@ -354,21 +353,6 @@ registry.register("/Switcheo.carbon.ccm.MsgProcessZionCrossChainTxResponse", Pol
 registry.register("/Switcheo.carbon.ccm.MsgCreateEmitEvent", PolyNetwork.Ccm.MsgCreateEmitEvent);
 registry.register("/Switcheo.carbon.ccm.MsgToggleEmitZionEvents", PolyNetwork.Ccm.MsgToggleEmitZionEvents);
 
-registry.register("/Switcheo.carbon.perpsliquidity.MsgCreatePlPool", MsgCreatePlPool);
-registry.register("/Switcheo.carbon.perpsliquidity.MsgCreatePlPoolResponse", MsgCreatePlPoolResponse);
-registry.register("/Switcheo.carbon.perpsliquidity.MsgUpdatePlPool", MsgUpdatePlPool);
-registry.register("/Switcheo.carbon.perpsliquidity.MsgUpdatePlPoolResponse", MsgUpdatePlPoolResponse);
-registry.register("/Switcheo.carbon.perpsliquidity.MsgRegisterToPlPool", MsgRegisterToPlPool);
-registry.register("/Switcheo.carbon.perpsliquidity.MsgRegisterToPlPoolResponse", MsgRegisterToPlPoolResponse);
-registry.register("/Switcheo.carbon.perpsliquidity.MsgDeregisterFromPlPool", MsgDeregisterFromPlPool);
-registry.register("/Switcheo.carbon.perpsliquidity.MsgDeregisterFromPlPoolResponse", MsgDeregisterFromPlPoolResponse);
-registry.register("/Switcheo.carbon.perpsliquidity.MsgDepositToPlPool", MsgDepositToPlPool);
-registry.register("/Switcheo.carbon.perpsliquidity.MsgDepositToPlPoolResponse", MsgDepositToPlPoolResponse);
-registry.register("/Switcheo.carbon.perpsliquidity.MsgWithdrawFromPlPool", MsgWithdrawFromPlPool);
-registry.register("/Switcheo.carbon.perpsliquidity.MsgWithdrawFromPlPoolResponse", MsgWithdrawFromPlPoolResponse);
-registry.register("/Switcheo.carbon.perpsliquidity.MsgUpdateMarketConfig", MsgUpdateMarketConfig);
-registry.register("/Switcheo.carbon.perpsliquidity.MsgUpdateMarketConfigResponse", MsgUpdateMarketConfigResponse);
-
 registry.register("/ibc.core.connection.v1.MsgConnectionOpenInit", MsgConnectionOpenInit);
 registry.register("/ibc.core.connection.v1.MsgConnectionOpenInitResponse", MsgConnectionOpenInitResponse);
 registry.register("/ibc.core.connection.v1.MsgConnectionOpenTry", MsgConnectionOpenTry);
@@ -510,6 +494,8 @@ registry.register("/Switcheo.carbon.market.MsgRemoveFeeTier", MsgRemoveFeeTier);
 registry.register("/Switcheo.carbon.market.MsgRemoveFeeTierResponse", MsgRemoveFeeTierResponse);
 registry.register("/Switcheo.carbon.market.MsgSetStakeEquivalence", MsgSetStakeEquivalence);
 registry.register("/Switcheo.carbon.market.MsgSetStakeEquivalenceResponse", MsgSetStakeEquivalenceResponse);
+registry.register("/Switcheo.carbon.market.MsgUpdateAllPoolTradingFees", MsgUpdateAllPoolTradingFees);
+registry.register("/Switcheo.carbon.market.MsgUpdateAllPoolTradingFeesResponse", MsgUpdateAllPoolTradingFeesResponse);
 registry.register("/Switcheo.carbon.market.CreateMarketProposal", CreateMarketProposal);
 registry.register("/Switcheo.carbon.market.UpdateMarketProposal", UpdateMarketProposal);
 registry.register("/Switcheo.carbon.market.UpdatePerpetualsFundingIntervalProposal", UpdatePerpetualsFundingIntervalProposal);
@@ -579,7 +565,7 @@ registry.register("/Switcheo.carbon.lockproxy.MsgDeleteWrapperMapping", PolyNetw
 registry.register("/Switcheo.carbon.lockproxy.MsgDeleteWrapperMappingResponse", PolyNetwork.Lockproxy.MsgDeleteWrapperMappingResponse);
 registry.register("/cosmwasm.wasm.v1.MsgExecuteContract", MsgExecuteContract);
 
-/* 
+/*
 Key in TxTypes may not match the actual type definition due to duplicates in Msg names.
 */
 export const TxTypes = {
@@ -846,20 +832,6 @@ export const TxTypes = {
   "MsgProcessZionCrossChainTxResponse": "/Switcheo.carbon.ccm.MsgProcessZionCrossChainTxResponse",
   "MsgCreateEmitEvent": "/Switcheo.carbon.ccm.MsgCreateEmitEvent",
   "MsgToggleEmitZionEvents": "/Switcheo.carbon.ccm.MsgToggleEmitZionEvents",
-  "MsgCreatePlPool": "/Switcheo.carbon.perpsliquidity.MsgCreatePlPool",
-  "MsgCreatePlPoolResponse": "/Switcheo.carbon.perpsliquidity.MsgCreatePlPoolResponse",
-  "MsgUpdatePlPool": "/Switcheo.carbon.perpsliquidity.MsgUpdatePlPool",
-  "MsgUpdatePlPoolResponse": "/Switcheo.carbon.perpsliquidity.MsgUpdatePlPoolResponse",
-  "MsgRegisterToPlPool": "/Switcheo.carbon.perpsliquidity.MsgRegisterToPlPool",
-  "MsgRegisterToPlPoolResponse": "/Switcheo.carbon.perpsliquidity.MsgRegisterToPlPoolResponse",
-  "MsgDeregisterFromPlPool": "/Switcheo.carbon.perpsliquidity.MsgDeregisterFromPlPool",
-  "MsgDeregisterFromPlPoolResponse": "/Switcheo.carbon.perpsliquidity.MsgDeregisterFromPlPoolResponse",
-  "MsgDepositToPlPool": "/Switcheo.carbon.perpsliquidity.MsgDepositToPlPool",
-  "MsgDepositToPlPoolResponse": "/Switcheo.carbon.perpsliquidity.MsgDepositToPlPoolResponse",
-  "MsgWithdrawFromPlPool": "/Switcheo.carbon.perpsliquidity.MsgWithdrawFromPlPool",
-  "MsgWithdrawFromPlPoolResponse": "/Switcheo.carbon.perpsliquidity.MsgWithdrawFromPlPoolResponse",
-  "MsgUpdateMarketConfig": "/Switcheo.carbon.perpsliquidity.MsgUpdateMarketConfig",
-  "MsgUpdateMarketConfigResponse": "/Switcheo.carbon.perpsliquidity.MsgUpdateMarketConfigResponse",
   "MsgConnectionOpenInit": "/ibc.core.connection.v1.MsgConnectionOpenInit",
   "MsgConnectionOpenInitResponse": "/ibc.core.connection.v1.MsgConnectionOpenInitResponse",
   "MsgConnectionOpenTry": "/ibc.core.connection.v1.MsgConnectionOpenTry",
@@ -988,6 +960,8 @@ export const TxTypes = {
   "MsgRemoveFeeTierResponse": "/Switcheo.carbon.market.MsgRemoveFeeTierResponse",
   "MsgSetStakeEquivalence": "/Switcheo.carbon.market.MsgSetStakeEquivalence",
   "MsgSetStakeEquivalenceResponse": "/Switcheo.carbon.market.MsgSetStakeEquivalenceResponse",
+  "MsgUpdateAllPoolTradingFees": "/Switcheo.carbon.market.MsgUpdateAllPoolTradingFees",
+  "MsgUpdateAllPoolTradingFeesResponse": "/Switcheo.carbon.market.MsgUpdateAllPoolTradingFeesResponse",
   "CreateMarketProposal": "/Switcheo.carbon.market.CreateMarketProposal",
   "UpdateMarketProposal": "/Switcheo.carbon.market.UpdateMarketProposal",
   "UpdatePerpetualsFundingIntervalProposal": "/Switcheo.carbon.market.UpdatePerpetualsFundingIntervalProposal",
@@ -1076,7 +1050,7 @@ export { LiquidatorPosition, MsgInitiateLiquidation, MsgInitiateLiquidationRespo
 export { IncomingLiquidations } from "./broker/incoming_liquidations";
 export { MinMaxBoundary } from "./broker/pagination";
 export { Candlestick } from "./broker/candlestick";
-export { SpotAmm, PerpsPoolAmm, PerpsMarketAmm } from "./broker/amm";
+export { Amm } from "./broker/amm";
 export { QueryCandlesticksRequest, QueryCandlesticksResponse, QueryTradesRequest, QueryTradesResponse, QueryTradesForPositionRequest, QueryTradesForPositionResponse } from "./broker/query";
 export { TradeEvent } from "./broker/event";
 export { MsgSetGasCost, MsgSetGasCostResponse, MsgSetMinGasPrice, MsgSetMinGasPriceResponse, MsgRemoveGasCost, MsgRemoveGasCostResponse, MsgRemoveMinGasPrice, MsgRemoveMinGasPriceResponse } from "./fee/tx";
@@ -1122,11 +1096,6 @@ export { Params as AllianceParams, RewardHistory as AllianceRewardHistory } from
 export { QueryParamsRequest as QueryMarketstatsParamsRequest, QueryParamsResponse as QueryMarketstatsParamsResponse, QueryMarketStatsRequest, QueryMarketStatsResponse } from "./marketstats/query";
 export { Params as MarketstatsParams } from "./marketstats/params";
 export { MarketStats } from "./marketstats/marketstats";
-export { MsgCreatePlPool, MsgCreatePlPoolResponse, MsgUpdatePlPool, MsgUpdatePlPoolResponse, MsgRegisterToPlPool, MsgRegisterToPlPoolResponse, MsgDeregisterFromPlPool, MsgDeregisterFromPlPoolResponse, MsgDepositToPlPool, MsgDepositToPlPoolResponse, MsgWithdrawFromPlPool, MsgWithdrawFromPlPoolResponse, MsgUpdateMarketConfig, MsgUpdateMarketConfigResponse } from "./perpsliquidity/tx";
-export { PlPool, UpdatePlPoolParams, PoolDetails, Quote, MarketConfig, UpdateMarketConfigParams, DepositToPoolParams, WithdrawFromPoolParams } from "./perpsliquidity/pool";
-export { QueryParamsRequest as QueryPerpsliquidityParamsRequest, QueryParamsResponse as QueryPerpsliquidityParamsResponse, QueryGetPlPoolRequest, QueryGetPlPoolResponse, QueryAllPlPoolsRequest, QueryAllPlPoolsResponse, QueryPlPoolMappingsRequest, QueryPlPoolMappingsResponse, QueryPlPoolMappingsResponse_PoolMappingsEntry, QueryAllPlPoolAddressRequest, QueryAllPlPoolAddressResponse, QueryAllPlPoolAddressResponse_AddressesEntry, QueryPLPoolInfoRequest, QueryPLPoolInfoResponse } from "./perpsliquidity/query";
-export { SetPoolEvent, NewPoolEvent, UpdatePoolEvent, RegisterToPoolEvent, DeregisterFromPoolEvent, SetMarketConfigEvent, DepositToPoolEvent, WithdrawFromPoolEvent } from "./perpsliquidity/event";
-export { Params as PerpsliquidityParams } from "./perpsliquidity/params";
 export { QueryAccountBalanceRequest, QueryAccountBalanceResponse } from "./evmbank/query";
 export { MsgCreateToken, CreateTokenParams, MsgCreateTokenResponse, MsgSyncToken, MsgSyncTokenResponse, MsgMintToken, MsgMintTokenResponse, MsgBindToken, MsgBindTokenResponse, MsgUnbindToken, MsgUnbindTokenResponse, MsgLinkToken, MsgLinkTokenResponse, MsgWithdraw, MsgWithdrawResponse, MsgAuthorizeBridge, MsgAuthorizeBridgeResponse, MsgDeauthorizeBridge, MsgDeauthorizeBridgeResponse, MsgEditBridgeName, MsgEditBridgeNameResponse, MsgRemoveBridge, MsgRemoveBridgeResponse, MsgUpdateToken, UpdateTokenParams, MsgUpdateTokenResponse, MsgAddBridgeAddress, MsgAddBridgeAddressResponse, MsgRemoveBridgeAddress, MsgRemoveBridgeAddressResponse, MsgCreateGroup, MsgCreateGroupResponse, MsgUpdateGroup, UpdateGroupParams, MsgUpdateGroupResponse, MsgRegisterToGroup, MsgRegisterToGroupResponse, MsgDeregisterFromGroup, MsgDeregisterFromGroupResponse, MsgDepositToGroup, MsgDepositToGroupResponse, MsgWithdrawFromGroup, MsgWithdrawFromGroupResponse, MsgUpdateGroupedTokenConfig, UpdateGroupedTokenConfigParams, MsgUpdateGroupedTokenConfigResponse } from "./coin/tx";
 export { TokenGroup, TokenGroupDetails, GroupedTokenConfig } from "./coin/group";
@@ -1149,7 +1118,7 @@ export { SubAccount, GenesisSubAccount } from "./subaccount/subaccount";
 export { OrderBookLevel, OrderBook, StopBook } from "./book/book";
 export { QueryImpactPriceRequest, QueryImpactPriceResponse, QueryGetBookRequest, QueryGetBookResponse, QueryAllBookRequest, QueryAllBookResponse } from "./book/query";
 export { OrderBookEvent } from "./book/event";
-export { MsgDisableSpotMarket, MsgDisableSpotMarketResponse, MsgCreateMarket, MsgCreateMarketResponse, MsgUpdateMarket, MsgUpdateMarketResponse, MsgUpdatePerpetualsFundingInterval, MsgUpdatePerpetualsFundingIntervalResponse, MsgAddFeeTier, MsgAddFeeTierResponse, MsgUpdateFeeTier, MsgUpdateFeeTierResponse, MsgRemoveFeeTier, MsgRemoveFeeTierResponse, MsgSetStakeEquivalence, MsgSetStakeEquivalenceResponse } from "./market/tx";
+export { MsgDisableSpotMarket, MsgDisableSpotMarketResponse, MsgCreateMarket, MsgCreateMarketResponse, MsgUpdateMarket, MsgUpdateMarketResponse, MsgUpdatePerpetualsFundingInterval, MsgUpdatePerpetualsFundingIntervalResponse, MsgAddFeeTier, MsgAddFeeTierResponse, MsgUpdateFeeTier, MsgUpdateFeeTierResponse, MsgRemoveFeeTier, MsgRemoveFeeTierResponse, MsgSetStakeEquivalence, MsgSetStakeEquivalenceResponse, MsgUpdateAllPoolTradingFees, MsgUpdateAllPoolTradingFeesResponse, UpdateAllPoolTradingFeesParams } from "./market/tx";
 export { FeeStructure, FeeCategory, FeeTier, TradingFees, StakeEquivalence } from "./market/fee";
 export { CreateMarketProposal, UpdateMarketProposal, UpdatePerpetualsFundingIntervalProposal } from "./market/proposal";
 export { Params as MarketDefaultsParams, ControlledParams, Market, MarketParams, IncomingDisableSpotMarketNames } from "./market/market";
@@ -1176,7 +1145,7 @@ export { ParamsV2130 } from "./pricing/legacy";
 export { PriceUpdateEvent, TokenPriceUpdateEvent, SetImpactBandEvent, SetSmoothenBandEvent, SetStaleIndexAllowanceEvent, SetBackfillTimeIntervalEvent } from "./pricing/event";
 export { MsgExecuteContract } from "cosmjs-types/cosmwasm/wasm/v1/tx";
 
-/* 
+/*
 EIP712Types mapping generated here should only be used for sending EIP-712 msgs.
 */
 export const EIP712Types: { [index: string]: any } = {
@@ -2941,7 +2910,7 @@ export const EIP712Types: { [index: string]: any } = {
     ]
   },
   "/Switcheo.carbon.broker": {
-    "SpotAmm": [
+    "Amm": [
       {
         "name": "pool_id",
         "type": "uint64"
@@ -2961,38 +2930,6 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "pool_route",
         "type": "uint8[]"
-      }
-    ],
-    "PerpsPoolAmm": [
-      {
-        "name": "pool_id",
-        "type": "uint64"
-      },
-      {
-        "name": "quoting_hash",
-        "type": "uint8[]"
-      },
-      {
-        "name": "last_quoted_at",
-        "type": "uint64"
-      }
-    ],
-    "PerpsMarketAmm": [
-      {
-        "name": "pool_id",
-        "type": "uint64"
-      },
-      {
-        "name": "market",
-        "type": "string"
-      },
-      {
-        "name": "orders",
-        "type": "string[]"
-      },
-      {
-        "name": "last_index_price",
-        "type": "string"
       }
     ],
     "Candlestick": [
@@ -3031,6 +2968,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "quote_volume",
         "type": "string"
+      },
+      {
+        "name": "last_updated_block_height",
+        "type": "int64"
       }
     ],
     "TradeEvent": [
@@ -3129,8 +3070,8 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "GenesisState": [
       {
-        "name": "spot_amms",
-        "type": "SpotAmm[]",
+        "name": "amms",
+        "type": "Amm[]",
         "packageName": "/Switcheo.carbon.broker"
       }
     ],
@@ -4303,6 +4244,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "debt_amount",
         "type": "string"
+      },
+      {
+        "name": "id",
+        "type": "uint64"
       }
     ],
     "LiquidateCollateralWithStablecoinEvent": [
@@ -4365,6 +4310,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "interest_amount",
         "type": "string"
+      },
+      {
+        "name": "id",
+        "type": "uint64"
       }
     ],
     "ClaimRewardEvent": [
@@ -5899,6 +5848,10 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "metadata",
         "type": "Metadata",
         "packageName": "/Switcheo.carbon.coin"
+      },
+      {
+        "name": "id",
+        "type": "uint64"
       }
     ],
     "Metadata": [
@@ -22319,6 +22272,22 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "funding_rate_band",
         "type": "string"
+      },
+      {
+        "name": "default_lp_spot_taker_fee",
+        "type": "string"
+      },
+      {
+        "name": "default_lp_spot_maker_fee",
+        "type": "string"
+      },
+      {
+        "name": "default_lp_futures_taker_fee",
+        "type": "string"
+      },
+      {
+        "name": "default_lp_futures_maker_fee",
+        "type": "string"
       }
     ],
     "ControlledParams": [
@@ -22940,6 +22909,32 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "stake_equivalences",
         "type": "StakeEquivalence[]",
         "packageName": "/Switcheo.carbon.market"
+      }
+    ],
+    "MsgUpdateAllPoolTradingFees": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "update_pool_trading_fees_params",
+        "type": "UpdateAllPoolTradingFeesParams",
+        "packageName": "/Switcheo.carbon.market"
+      }
+    ],
+    "MsgUpdateAllPoolTradingFeesResponse": [],
+    "UpdateAllPoolTradingFeesParams": [
+      {
+        "name": "market_type",
+        "type": "string"
+      },
+      {
+        "name": "maker_fee",
+        "type": "string"
+      },
+      {
+        "name": "taker_fee",
+        "type": "string"
       }
     ]
   },

@@ -1,11 +1,10 @@
 import { CarbonEvmChainIDs, EthNetworkConfig, Network, NetworkConfigs } from "@carbon-sdk/constant";
 import { ABIs } from "@carbon-sdk/eth";
-import { Blockchain, ChainNames, BlockchainV2, EVMChain as EVMChainV2, getBlockchainFromChainV2, BLOCKCHAIN_V2_TO_V1_MAPPING, EvmChains } from "@carbon-sdk/util/blockchain";
+import { Blockchain, ChainNames, BlockchainV2, EVMChain as EVMChainV2, getBlockchainFromChainV2, BLOCKCHAIN_V2_TO_V1_MAPPING } from "@carbon-sdk/util/blockchain";
 import { appendHexPrefix } from "@carbon-sdk/util/generic";
 import { ethers } from "ethers";
 import { makeSignDoc } from "@cosmjs/amino/build";
 import * as ethSignUtils from "eth-sig-util";
-import EthCrypto from 'eth-crypto';
 import { AddressUtils, CarbonTx } from "@carbon-sdk/util";
 import { CarbonSigner, CarbonSignerTypes } from "@carbon-sdk/wallet";
 import { Algo, EncodeObject } from "@cosmjs/proto-signing";
@@ -21,6 +20,7 @@ import { ETHAddress, SWTHAddressOptions } from "@carbon-sdk/util/address";
 import { constructEIP712Tx } from "@carbon-sdk/util/eip712";
 import { SWTHAddress } from '@carbon-sdk/util/address'
 import { LEGACY_ACCOUNTS_MAINNET, LEGACY_ACCOUNTS_TESTNET } from "./legacy-accounts";
+import detectEthereumProvider from "@metamask/detect-provider";
 
 
 
@@ -82,6 +82,8 @@ const CONTRACT_HASH: {
   } as const
 } as const;
 
+const DEFAULT_PUBLIC_KEY_MESSAGE = `By signing, I confirm that I have read and agreed to the terms and conditions outlined here (https://guide.dem.exchange/technical/terms-and-conditions).\nAdditionally, I verify that I am not a citizen of any of the following countries: Afghanistan, Angola, Central African Republic, China (Mainland), Côte d'Ivoire, Crimea, Cuba, Democratic Republic of Congo, Ethiopia, Guinea-Bissau, Haiti, Iran, Kuwait, Lebanon, Liberia, Libya, Mali, North Korea, Rwanda, Sevastopol, Sierra Leone, Singapore, Somalia, South Africa, Sudan, South Sudan, Syria, Quebec (Canada), U.S, Yemen, Zimbabwe.`
+
 const REGISTRY_CONTRACT_ABI = ABIs.keyStorage;
 
 const ENCRYPTION_VERSION = "x25519-xsalsa20-poly1305";
@@ -138,10 +140,11 @@ export interface MetaMaskSyncResult {
 }
 
 export interface StoredMnemonicInfo {
+  mnemonic: string,
   chain: EVMChainV2,
   privateKey: string,
   bech32Address: string
-  hexAddress: string
+  evmHexAddress: string
 }
 
 type LegacyAccounts = {
@@ -506,6 +509,7 @@ export class MetaMask {
 
   constructor(public readonly network: Network, public readonly legacyEip712SignMode: boolean = false) { }
 
+
   private checkProvider(blockchain: BlockchainV2 = this.blockchain): ethers.providers.Provider {
     const config: any = NetworkConfigs[this.network];
 
@@ -530,7 +534,8 @@ export class MetaMask {
   }
 
   async syncBlockchain(): Promise<MetaMaskSyncResult> {
-    const chainIdHex = (await this.getAPI()?.request({ method: "eth_chainId" })) as string;
+    const metamaskAPI = await this.getAPI()
+    const chainIdHex = (await metamaskAPI?.request({ method: "eth_chainId" })) as string;
     const chainId = !!chainIdHex ? parseInt(chainIdHex, 16) : undefined;
     const blockchain = getBlockchainFromChainV2(chainId) as EVMChain;
     this.blockchain = blockchain!;
@@ -543,12 +548,12 @@ export class MetaMask {
     return new ethers.providers.Web3Provider(ethereum).getSigner();
   }
 
-  getAPI(): MetaMaskAPI | null {
-    return ((window as any).ethereum as MetaMaskAPI | null) ?? null;
+  async getAPI(): Promise<MetaMaskAPI | null> {
+    return await detectEthereumProvider()
   }
 
   async getConnectedAPI(): Promise<MetaMaskAPI> {
-    const metamaskAPI = this.getAPI();
+    const metamaskAPI = await this.getAPI();
     if (!metamaskAPI) {
       throw new Error("MetaMask not connected, please check that your extension is enabled");
     }
@@ -582,9 +587,11 @@ export class MetaMask {
     const legacyAccounts: any = network === Network.MainNet ? LEGACY_ACCOUNTS_MAINNET : LEGACY_ACCOUNTS_TESTNET
     const legacyAccBlockchains = []
     for (const [blockchain] of Object.entries(legacyAccounts)) {
-      const legacyAccountExists = legacyAccounts[blockchain].includes(defaultAccount)
-      if (legacyAccountExists) {
-        legacyAccBlockchains.push(blockchain)
+      for (const address of legacyAccounts[blockchain]) {
+        if (address.toLowerCase() === defaultAccount.toLowerCase()) {
+          legacyAccBlockchains.push(blockchain)
+          break
+        }
       }
     }
     if (legacyAccBlockchains.length > 0) {
@@ -609,12 +616,13 @@ export class MetaMask {
         const mnemonic = await this.decryptCipher(mnemonicCipher) ?? ''
         const privateKey = `0x${SWTHAddress.mnemonicToPrivateKey(mnemonic).toString('hex').toLowerCase()}`
         const bech32Address = SWTHAddress.privateKeyToAddress(SWTHAddress.mnemonicToPrivateKey(mnemonic), { network: this.network })
-        const hexAddress = ETHAddress.privateKeyToAddress(SWTHAddress.mnemonicToPrivateKey(mnemonic))
+        const evmHexAddress = ETHAddress.privateKeyToAddress(SWTHAddress.mnemonicToPrivateKey(mnemonic))
         result = {
+          mnemonic,
           chain: connectedBlockchain,
           privateKey,
           bech32Address,
-          hexAddress,
+          evmHexAddress,
         }
       }
     }
@@ -680,12 +688,10 @@ export class MetaMask {
     return publicKey;
   }
   // get public key from Metamask
-  async getPublicKey(address: string, metamaskAPI?: MetaMaskAPI): Promise<string> {
-    const message = "Initialise your account with carbon"
+  async getPublicKey(address: string, message: string = DEFAULT_PUBLIC_KEY_MESSAGE, metamaskAPI?: MetaMaskAPI): Promise<string> {
     const signedMessage = await this.personalSign(address, message, metamaskAPI)
-    const uncompressedPubKey = EthCrypto.recoverPublicKey(signedMessage, EthCrypto.hash.keccak256(`\x19Ethereum Signed Message:\n${message.length}${message}`))
-    const pubKey = EthCrypto.publicKey.compress(uncompressedPubKey)
-    return pubKey
+    const uncompressedPublicKey = ethers.utils.recoverPublicKey(ethers.utils.hashMessage(message), signedMessage)
+    return ethers.utils.computePublicKey(uncompressedPublicKey, true).split('0x')[1]
   }
 
   async signEip712(accountNumber: string, evmChainId: string, msgs: readonly AminoMsg[], fee: StdFee, memo: string, sequence: string, feePayer: string = ''): Promise<string> {
