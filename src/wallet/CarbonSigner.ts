@@ -15,7 +15,7 @@ export enum CarbonSignerTypes {
 
 
 export interface EvmSigner {
-  readonly sendEvmTransaction: (api: CarbonSDK, req: ethers.providers.TransactionRequest) => any
+  readonly sendEvmTransaction: (api: CarbonSDK, req: ethers.providers.TransactionRequest) => string
 }
 
 export interface EIP712Signer extends EvmSigner {
@@ -128,5 +128,5 @@ export class CarbonLedgerSigner implements AminoCarbonSigner {
     throw new Error("signing not available");
   }
 
-  constructor(readonly ledger: CosmosLedger) {}
+  constructor(readonly ledger: CosmosLedger) { }
 }

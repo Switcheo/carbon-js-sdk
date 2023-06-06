@@ -81,7 +81,7 @@ class KeplrAccount {
       },
     ];
 
-    const sendEvmTransaction = async (api: CarbonSDK, req: ethers.providers.TransactionRequest): Promise<ethers.providers.TransactionResponse> => {
+    const sendEvmTransaction = async (api: CarbonSDK, req: ethers.providers.TransactionRequest): Promise<string> => {
       const request = await populateEvmTransactionDetails(api, req)
       const signedTx = await keplr!.signEthereum(
         // carbon chain id
@@ -92,7 +92,7 @@ class KeplrAccount {
         EthSignType.TRANSACTION,
       )
       const rlpEncodedHex = `0x${Buffer.from(signedTx).toString('hex')}`;
-      return api.evmJsonRpc.sendTransaction(rlpEncodedHex)
+      return (await api.evmJsonRpc.sendTransaction(rlpEncodedHex)).hash
     }
 
     return {

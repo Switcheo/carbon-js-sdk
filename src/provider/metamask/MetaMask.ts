@@ -411,7 +411,7 @@ export class MetaMask {
       }
     };
 
-    const sendEvmTransaction = async (api: CarbonSDK, req: ethers.providers.TransactionRequest) => {
+    const sendEvmTransaction = async (api: CarbonSDK, req: ethers.providers.TransactionRequest): Promise<string> => {
       const request = await populateEvmTransactionDetails(api, req)
       const response = await metamask!.sendEvmTransaction(request)
       return response
