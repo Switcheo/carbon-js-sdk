@@ -152,7 +152,7 @@ class CosmosLedger {
     await this.connect();
 
     const response = await this.cosmosApp.getVersion();
-    this.checkLedgerErrors(response);
+    await this.checkLedgerErrors(response);
     const { major, minor, patch, test_mode } = response;
     checkAppMode(this.testModeAllowed, test_mode);
     const version = versionString({ major, minor, patch });
@@ -177,7 +177,7 @@ class CosmosLedger {
     await this.connect();
 
     const response = await this.cosmosApp.appInfo();
-    this.checkLedgerErrors(response);
+    await this.checkLedgerErrors(response);
     const { appName } = response;
 
     return appName;
@@ -188,7 +188,7 @@ class CosmosLedger {
     await this.connect();
 
     const response = await this.cosmosApp.publicKey(this.hdPath);
-    this.checkLedgerErrors(response);
+    await this.checkLedgerErrors(response);
     return response.compressed_pk;
   }
 
@@ -204,7 +204,7 @@ class CosmosLedger {
   async generateCosmosAddress(hdPath: Array<number>) {
     await this.connect();
     const pubKey = await this.cosmosApp.publicKey(hdPath);
-    this.checkLedgerErrors(pubKey);
+    await this.checkLedgerErrors(pubKey);
     const compressedPk = pubKey.compressed_pk;
     const response = await getBech32FromPK(this.hrp, compressedPk);
 
@@ -232,7 +232,7 @@ class CosmosLedger {
     }
 
     const response = await this.cosmosApp.showAddressAndPubKey(this.hdPath, this.hrp);
-    this.checkLedgerErrors(response, {
+    await this.checkLedgerErrors(response, {
       rejectionMessage: "Displayed address was rejected",
     });
   }
@@ -244,7 +244,7 @@ class CosmosLedger {
     await this.connect();
 
     const response = await this.cosmosApp.sign(this.hdPath, signMessage);
-    this.checkLedgerErrors(response);
+    await this.checkLedgerErrors(response);
     // we have to parse the signature from Ledger as it's in DER format
     const parsedSignature = signatureImport(response.signature);
     return parsedSignature;
@@ -252,24 +252,29 @@ class CosmosLedger {
 
   // parse Ledger errors in a more user friendly format
   /* istanbul ignore next: maps a bunch of errors */
-  private checkLedgerErrors(
+  private async checkLedgerErrors(
     { error_message, device_locked }: { error_message: string; device_locked: Boolean },
     { timeoutMessag = "Connection timed out. Please try again.", rejectionMessage = "User rejected the transaction" } = {}
   ) {
     if (device_locked) {
       throw new Error(`Ledger's screensaver mode is on`);
     }
+    if (error_message !== 'No errors') {
+      await this.disconnect()
+    }
     switch (error_message) {
       case `U2F: Timeout`:
         throw new Error(timeoutMessag);
-      case `Cosmos app does not seem to be open`:
-        throw new Error(`Cosmos app is not open`);
+      case `App does not seem to be open`:
+        throw new Error(`Please open the Cosmos App on your Ledger device`);
       case `Command not allowed`:
         throw new Error(`Transaction rejected`);
       case `Transaction rejected`:
         throw new Error(rejectionMessage);
       case `Unknown Status Code: 26628`:
         throw new Error(`Ledger's screensaver mode is on`);
+      case `Unknown Status Code: 28161`:
+        throw new Error(`Please open the Cosmos App on your Ledger device`);
       case `Instruction not supported`:
         throw new Error(`Your Cosmos Ledger App is not up to date. Please update to version ${REQUIRED_COSMOS_APP_VERSION}.`);
       case `No errors`:
