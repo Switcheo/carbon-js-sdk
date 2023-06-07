@@ -4,12 +4,12 @@ import BaseModule from "./base";
 
 export class PerpsLiquidityModule extends BaseModule {
   public async getPerpPools(): Promise<PoolDetails[]> {
-    const fetchDataResponse: QueryAllPlPoolsResponse = await this.sdkProvider.query.perpetualpool.PoolAll({});
+    const fetchDataResponse: QueryAllPlPoolsResponse = await this.sdkProvider.query.perpsliquidity.PoolAll({});
     return fetchDataResponse?.pools ?? []
   }
 
   public async getPerpPoolInfo(poolId: string): Promise<QueryPLPoolInfoResponse> {
-    const fetchDataResponse: QueryPLPoolInfoResponse = await this.sdkProvider.query.perpetualpool.PoolInfo({ poolId });
+    const fetchDataResponse: QueryPLPoolInfoResponse = await this.sdkProvider.query.perpsliquidity.PoolInfo({ poolId });
     return fetchDataResponse ?? []
   }
 
@@ -152,7 +152,7 @@ export namespace PerpsLiquidityModule {
     poolId: Long;
     depositDenom: string;
     shareTokenSymbol: string;
-    supplyCap: Long;
+    supplyCap: string;
     depositFeeBps: Long;
     withdrawalFeeBps: Long;
   }

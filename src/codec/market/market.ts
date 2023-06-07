@@ -36,10 +36,6 @@ export interface Params {
   maxActiveMarkets: number;
   defaultTradingBandwidth: number;
   fundingRateBand: string;
-  defaultLpSpotTakerFee: string;
-  defaultLpSpotMakerFee: string;
-  defaultLpFuturesTakerFee: string;
-  defaultLpFuturesMakerFee: string;
 }
 
 export interface ControlledParams {
@@ -130,10 +126,6 @@ const baseParams: object = {
   maxActiveMarkets: 0,
   defaultTradingBandwidth: 0,
   fundingRateBand: "",
-  defaultLpSpotTakerFee: "",
-  defaultLpSpotMakerFee: "",
-  defaultLpFuturesTakerFee: "",
-  defaultLpFuturesMakerFee: "",
 };
 
 export const Params = {
@@ -200,18 +192,6 @@ export const Params = {
     }
     if (message.fundingRateBand !== "") {
       writer.uint32(154).string(message.fundingRateBand);
-    }
-    if (message.defaultLpSpotTakerFee !== "") {
-      writer.uint32(162).string(message.defaultLpSpotTakerFee);
-    }
-    if (message.defaultLpSpotMakerFee !== "") {
-      writer.uint32(170).string(message.defaultLpSpotMakerFee);
-    }
-    if (message.defaultLpFuturesTakerFee !== "") {
-      writer.uint32(178).string(message.defaultLpFuturesTakerFee);
-    }
-    if (message.defaultLpFuturesMakerFee !== "") {
-      writer.uint32(186).string(message.defaultLpFuturesMakerFee);
     }
     return writer;
   },
@@ -282,18 +262,6 @@ export const Params = {
           break;
         case 19:
           message.fundingRateBand = reader.string();
-          break;
-        case 20:
-          message.defaultLpSpotTakerFee = reader.string();
-          break;
-        case 21:
-          message.defaultLpSpotMakerFee = reader.string();
-          break;
-        case 22:
-          message.defaultLpFuturesTakerFee = reader.string();
-          break;
-        case 23:
-          message.defaultLpFuturesMakerFee = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -398,26 +366,6 @@ export const Params = {
       object.fundingRateBand !== undefined && object.fundingRateBand !== null
         ? String(object.fundingRateBand)
         : "";
-    message.defaultLpSpotTakerFee =
-      object.defaultLpSpotTakerFee !== undefined &&
-      object.defaultLpSpotTakerFee !== null
-        ? String(object.defaultLpSpotTakerFee)
-        : "";
-    message.defaultLpSpotMakerFee =
-      object.defaultLpSpotMakerFee !== undefined &&
-      object.defaultLpSpotMakerFee !== null
-        ? String(object.defaultLpSpotMakerFee)
-        : "";
-    message.defaultLpFuturesTakerFee =
-      object.defaultLpFuturesTakerFee !== undefined &&
-      object.defaultLpFuturesTakerFee !== null
-        ? String(object.defaultLpFuturesTakerFee)
-        : "";
-    message.defaultLpFuturesMakerFee =
-      object.defaultLpFuturesMakerFee !== undefined &&
-      object.defaultLpFuturesMakerFee !== null
-        ? String(object.defaultLpFuturesMakerFee)
-        : "";
     return message;
   },
 
@@ -467,14 +415,6 @@ export const Params = {
       (obj.defaultTradingBandwidth = message.defaultTradingBandwidth);
     message.fundingRateBand !== undefined &&
       (obj.fundingRateBand = message.fundingRateBand);
-    message.defaultLpSpotTakerFee !== undefined &&
-      (obj.defaultLpSpotTakerFee = message.defaultLpSpotTakerFee);
-    message.defaultLpSpotMakerFee !== undefined &&
-      (obj.defaultLpSpotMakerFee = message.defaultLpSpotMakerFee);
-    message.defaultLpFuturesTakerFee !== undefined &&
-      (obj.defaultLpFuturesTakerFee = message.defaultLpFuturesTakerFee);
-    message.defaultLpFuturesMakerFee !== undefined &&
-      (obj.defaultLpFuturesMakerFee = message.defaultLpFuturesMakerFee);
     return obj;
   },
 
@@ -506,10 +446,6 @@ export const Params = {
     message.maxActiveMarkets = object.maxActiveMarkets ?? 0;
     message.defaultTradingBandwidth = object.defaultTradingBandwidth ?? 0;
     message.fundingRateBand = object.fundingRateBand ?? "";
-    message.defaultLpSpotTakerFee = object.defaultLpSpotTakerFee ?? "";
-    message.defaultLpSpotMakerFee = object.defaultLpSpotMakerFee ?? "";
-    message.defaultLpFuturesTakerFee = object.defaultLpFuturesTakerFee ?? "";
-    message.defaultLpFuturesMakerFee = object.defaultLpFuturesMakerFee ?? "";
     return message;
   },
 };

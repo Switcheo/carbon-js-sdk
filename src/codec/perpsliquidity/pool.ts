@@ -29,7 +29,7 @@ export interface PlPool {
 
 export interface UpdatePlPoolParams {
   name?: string;
-  supplyCap?: Long;
+  supplyCap: string;
   depositFeeBps?: Long;
   withdrawalFeeBps?: Long;
   borrowFeeBps?: Long;
@@ -260,7 +260,7 @@ export const PlPool = {
   },
 };
 
-const baseUpdatePlPoolParams: object = {};
+const baseUpdatePlPoolParams: object = { supplyCap: "" };
 
 export const UpdatePlPoolParams = {
   encode(
@@ -273,11 +273,8 @@ export const UpdatePlPoolParams = {
         writer.uint32(10).fork()
       ).ldelim();
     }
-    if (message.supplyCap !== undefined) {
-      UInt64Value.encode(
-        { value: message.supplyCap! },
-        writer.uint32(18).fork()
-      ).ldelim();
+    if (message.supplyCap !== "") {
+      writer.uint32(18).string(message.supplyCap);
     }
     if (message.depositFeeBps !== undefined) {
       UInt64Value.encode(
@@ -311,7 +308,7 @@ export const UpdatePlPoolParams = {
           message.name = StringValue.decode(reader, reader.uint32()).value;
           break;
         case 2:
-          message.supplyCap = UInt64Value.decode(reader, reader.uint32()).value;
+          message.supplyCap = reader.string();
           break;
         case 3:
           message.depositFeeBps = UInt64Value.decode(
@@ -347,8 +344,8 @@ export const UpdatePlPoolParams = {
         : undefined;
     message.supplyCap =
       object.supplyCap !== undefined && object.supplyCap !== null
-        ? Long.fromValue(object.supplyCap)
-        : undefined;
+        ? String(object.supplyCap)
+        : "";
     message.depositFeeBps =
       object.depositFeeBps !== undefined && object.depositFeeBps !== null
         ? Long.fromValue(object.depositFeeBps)
@@ -380,10 +377,7 @@ export const UpdatePlPoolParams = {
   fromPartial(object: DeepPartial<UpdatePlPoolParams>): UpdatePlPoolParams {
     const message = { ...baseUpdatePlPoolParams } as UpdatePlPoolParams;
     message.name = object.name ?? undefined;
-    message.supplyCap =
-      object.supplyCap !== undefined && object.supplyCap !== null
-        ? Long.fromValue(object.supplyCap)
-        : undefined;
+    message.supplyCap = object.supplyCap ?? "";
     message.depositFeeBps =
       object.depositFeeBps !== undefined && object.depositFeeBps !== null
         ? Long.fromValue(object.depositFeeBps)
