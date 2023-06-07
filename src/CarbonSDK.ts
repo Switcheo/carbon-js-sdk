@@ -35,6 +35,7 @@ import {
   EvmModule,
   FeemarketModule,
   EvmMergeModule,
+  PerpsLiquidityModule,
 } from "./modules";
 import { StakingModule } from "./modules/staking";
 import { CosmosLedger, Keplr, KeplrAccount, LeapAccount, LeapExtended } from "./provider";
