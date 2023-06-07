@@ -1,5 +1,4 @@
 import { PoolDetails, QueryAllPlPoolsResponse, QueryPLPoolInfoResponse, UpdatePlPoolParams } from "@carbon-sdk/codec";
-import { Coin } from "@cosmjs/stargate";
 import { CarbonTx, Models } from "..";
 import BaseModule from "./base";
 
@@ -135,48 +134,6 @@ export class PerpsLiquidityModule extends BaseModule {
       opts
     );
   }
-
-  public async convertCoin(params: PerpsLiquidityModule.ConvertCoin, opts?: CarbonTx.SignTxOpts) {
-    const wallet = this.getWallet();
-    
-    const coinParams: Coin = {
-      denom: params.denom,
-      amount: params.amount,
-    }
-
-    const value = Models.MsgConvertCoin.fromPartial({
-      coin: coinParams,
-      receiver: wallet?.evmHexAddress ?? '',
-      sender: wallet?.evmHexAddress ?? '',
-    })
-
-    return await wallet.sendTx(
-      {
-        typeUrl: CarbonTx.Types.MsgConvertCoin,
-        value,
-      },
-      opts
-    );
-  }
-
-  public async convertERC20(params: PerpsLiquidityModule.ConvertERC20, opts?: CarbonTx.SignTxOpts) {
-    const wallet = this.getWallet();
-
-    const value = Models.MsgConvertERC20.fromPartial({
-      contractAddress: params.contractAddress,
-      amount: params.amount,
-      receiver: wallet?.evmHexAddress ?? '',
-      sender: wallet?.evmHexAddress ?? '',
-    })
-
-    return await wallet.sendTx(
-      {
-        typeUrl: CarbonTx.Types.MsgConvertERC20,
-        value,
-      },
-      opts
-    )
-  }
 }
 
 export namespace PerpsLiquidityModule {
@@ -219,15 +176,5 @@ export namespace PerpsLiquidityModule {
 
   export interface DeregisterFromPlPoolParams {
     marketId: string;
-  }
-
-  export interface ConvertCoin {
-    denom: string;
-    amount: string;
-  }
-
-  export interface ConvertERC20 {
-    contractAddress: string;
-    amount: string;
   }
 }
