@@ -18,3 +18,4 @@ export { default as EvmMergeAmino } from "./evmmerge";
 export { default as EvmAmino } from "./evm";
 export { default as FeeMarketAmino } from "./feemarket";
 export { default as PerpsliquidityAmino } from "./perpsliquidity";
+export { default as ERC20Amino } from "./erc20";
