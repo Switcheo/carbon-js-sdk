@@ -7,7 +7,7 @@ import "./_setup";
   console.log("mnemonics:", mnemonics);
 
   const sdk = await CarbonSDK.instance({
-    network: CarbonSDK.Network.DevNet,
+    network: CarbonSDK.Network.LocalHost,
     config: {
       tmRpcUrl: process.env.TRPC_ENDPOINT,
     },
@@ -22,6 +22,7 @@ import "./_setup";
       supplyCap: '1000000000000000000000000',
       depositFeeBps: '1000',
       withdrawalFeeBps: '1000',
+      borrowFeeBps: '1500',
     });
   console.log(result)
 })().catch(console.error).finally(() => process.exit(0));
