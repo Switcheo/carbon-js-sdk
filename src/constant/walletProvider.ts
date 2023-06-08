@@ -5,5 +5,7 @@ export enum ProviderAgent {
   LeapExtension = "leap-extension",
   MetamaskExtension = "metamask-extension",
   // For legacy metamask
-  Metamask = "metamask"
+  Metamask = "metamask",
+  StationExtension = "station-extension",
+
 }

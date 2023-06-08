@@ -25,6 +25,9 @@ import { ETH_SECP256K1_TYPE } from "@carbon-sdk/util/ethermint";
 import { ExtensionOptionsWeb3Tx } from "@carbon-sdk/codec/ethermint/types/v1/web3";
 import { BaseAccount } from "@carbon-sdk/codec/cosmos/auth/v1beta1/auth";
 import { MsgMergeAccount, registry } from "@carbon-sdk/codec";
+import { Station } from "@carbon-sdk/provider/station";
+import StationAccount from "@carbon-sdk/provider/station/StationAccount";
+import { stat } from "fs";
 
 export interface CarbonWalletGenericOpts {
   tmClient?: Tendermint34Client;
@@ -207,9 +210,18 @@ export class CarbonWallet {
 
     if (opts.signer) {
       this.signer = opts.signer;
+      
       this.publicKey = Buffer.from(opts.publicKeyBase64!, "base64");
 
+      console.log('INFO: ', this.network)
+      console.log('INFO: ', opts)
+      console.log('INFO: address opts ', addressOpts)
+
+      console.log('INFO: ', this.networkConfig)
+      
       this.bech32Address = AddressUtils.SWTHAddress.publicKeyToAddress(this.publicKey, addressOpts);
+      console.log('INFO: bech32address' , this.bech32Address)
+
     } else if (this.privateKey) {
       this.publicKey = AddressUtils.SWTHAddress.privateToPublicKey(this.privateKey);
 
@@ -234,6 +246,9 @@ export class CarbonWallet {
     this.hexAddress = `0x${Buffer.from(addressBytes).toString("hex")}`;
     this.evmHexAddress = opts.bech32Address ? '' : AddressUtils.ETHAddress.publicKeyToAddress(this.publicKey, addressOpts);
     this.evmBech32Address = opts.bech32Address ? '' : AddressUtils.ETHAddress.publicKeyToBech32Address(this.publicKey, addressOpts)
+    // console.log('INFO: hexaddress: ', this.hexAddress)
+    console.log('INFO: bech32: ', this.bech32Address)
+
 
   }
 
@@ -279,6 +294,7 @@ export class CarbonWallet {
   public static withLeap(leap: Leap, chainId: string, leapKey: LeapKey, opts: Omit<CarbonWalletInitOpts, "signer"> = {}) {
     const signer = LeapAccount.createLeapSigner(leap, chainId);
     const publicKeyBase64 = Buffer.from(leapKey.pubKey).toString("base64");
+    console.log('INFO: leap publickey ', publicKeyBase64)
 
     const wallet = CarbonWallet.withSigner(signer, publicKeyBase64, {
       ...opts,
@@ -292,6 +308,17 @@ export class CarbonWallet {
     const wallet = CarbonWallet.withSigner(signer, compressedPubKeyBase64, {
       ...opts,
       providerAgent: ProviderAgent.MetamaskExtension,
+    });
+    return wallet;
+  }
+  
+  public static withStation(station: Station, chainId: string, publicKey: string, address: string, opts: Omit<CarbonWalletInitOpts, "signer"> = {}) {
+    const signer = StationAccount.createStationSigner(station, chainId, publicKey, address);
+    console.log('INFO: withStation')
+
+    const wallet = CarbonWallet.withSigner(signer, publicKey, {
+      ...opts,
+      providerAgent: ProviderAgent.StationExtension,
     });
     return wallet;
   }
@@ -451,6 +478,8 @@ export class CarbonWallet {
       broadcastOpts,
       handler: { resolve, reject },
     } = txRequest;
+
+    console.log('INFO: hereree')
     try {
       if (!this.accountInfo
         || this.accountInfo?.address === this.evmBech32Address // refresh to check if carbon acc is present
@@ -693,6 +722,8 @@ export class CarbonWallet {
 
   private async reloadAccountInfo() {
     try {
+    console.log('INFO: here4')
+
       // carbon account always takes priority
       const accountAny = await this.getAccount(this.bech32Address) ?? await this.getAccount(this.evmBech32Address)
       if (!accountAny) return undefined
@@ -721,15 +752,20 @@ export class CarbonWallet {
   }
 
   public async reloadAccountSequence() {
+    console.log('INFO: here2')
     if (this.sequenceInvalidated) this.sequenceInvalidated = false;
 
     try {
       const info = await this.reloadAccountInfo()
+      console.log('INFO: info: ', info)
+      console.log('INFO: accountInfo: ', this.accountInfo)
+
       const pubkey = this.accountInfo?.pubkey ?? {
         type: "tendermint/PubKeySecp256k1",
         value: this.publicKey.toString("base64"),
       };
       const chainId = this.accountInfo?.chainId ?? this.chainId ?? (await this.getQueryClient().chain.getChainId());
+      console.log('INFO: chain id is: ', chainId)
       if (info) {
         this.accountInfo = {
           ...info,

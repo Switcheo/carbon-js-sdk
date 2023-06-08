@@ -43,6 +43,8 @@ import { CarbonLedgerSigner, CarbonSigner, CarbonWallet, CarbonWalletGenericOpts
 import { MetaMask } from "./provider/metamask/MetaMask";
 import { SWTHAddressOptions } from "./util/address";
 import { ethers } from "ethers";
+import { Station } from "./provider/station";
+import StationAccount from "./provider/station/StationAccount";
 export { CarbonTx } from "@carbon-sdk/util";
 export { CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletGenericOpts, CarbonWalletInitOpts } from "@carbon-sdk/wallet";
 export { DenomPrefix } from "./constant";
@@ -301,6 +303,14 @@ class CarbonSDK {
     return sdk.connectWithMetamask(metamask, walletOpts);
   }
 
+  public static async instanceWithStation(
+    station: Station,
+    sdkOpts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS,
+    walletOpts?: CarbonWalletGenericOpts
+  ) {
+    const sdk = await CarbonSDK.instance(sdkOpts);
+    return sdk.connectWithStation(station, walletOpts);
+  }
 
   public static async instanceViewOnly(
     bech32Address: string,
@@ -426,6 +436,8 @@ class CarbonSDK {
 
     const leapKey = await leap.getKey(chainId);
     await leap.enable(chainId);
+    console.log('INFO: leap chainid ', chainId)
+    console.log('INFO: leap network ', this.network)
 
     const wallet = CarbonWallet.withLeap(leap, chainId, leapKey, {
       ...opts,
@@ -442,9 +454,21 @@ class CarbonSDK {
       network: this.networkConfig.network,
       bech32Prefix: this.networkConfig.Bech32Prefix
     };
+
+    console.log('INFO: more ', addressOptions)
+    console.log('INFO: opts details', {
+      ...opts,
+      network: this.network,
+      config: this.configOverride,
+    })
+
     const address = await metamask.defaultAccount()
     const publicKeyHex = await metamask.getPublicKey(address)
+    console.log('INFO: CarbonSDK connectWithMestamask address: ', address)
     const publicKeyBase64 = Buffer.from(publicKeyHex, 'hex').toString('base64')
+    console.log('INFO: metamask public key ', publicKeyBase64)
+    console.log('INFO:  network ', this.network)
+
     const wallet = CarbonWallet.withMetamask(metamask, evmChainId, publicKeyBase64, addressOptions, {
       ...opts,
       network: this.network,
@@ -452,6 +476,25 @@ class CarbonSDK {
     });
     return this.connect(wallet);
   }
+
+
+  public async connectWithStation(station: Station, opts?: CarbonWalletGenericOpts) {
+    const { key, address }  = await StationAccount.getPublicKeyAndAddress(station)
+
+    console.log('INFO: opts details', {
+      ...opts,
+      network: this.network,
+      config: this.configOverride,
+    })
+    const wallet = CarbonWallet.withStation(station, this.chainId, key, address, {
+      ...opts,
+      network: this.network,
+      config: this.configOverride,
+    });
+
+    return this.connect(wallet);
+  }
+
 
   public async connectViewOnly(bech32Address: string, opts?: CarbonWalletGenericOpts) {
     const wallet = CarbonWallet.withAddress(bech32Address, {
