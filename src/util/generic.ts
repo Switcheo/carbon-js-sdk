@@ -1,22 +1,18 @@
 import { sha256 } from "@cosmjs/crypto";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 
-export const overrideConfig = <T = unknown>(defaults: T, override?: Partial<T>) => {
+export const overrideConfig = <T>(defaults: T, override?: Partial<T>) => {
   const result: T = { ...defaults };
 
   if (!override) return result;
 
-  for (const key of Object.keys(override)) {
-    // eslint can disable rule or create new type/interface that contains the keys and use override[key keyof newType]
-    // @ts-ignore
+  for (const key in override) {
     const member = override[key];
-    if (typeof member === "undefined") continue;
+    if (member === undefined || member === null) continue;
 
     if (typeof member === "object") {
-      // @ts-ignore
       result[key] = overrideConfig(result[key], member);
     } else {
-      // @ts-ignore
       result[key] = member;
     }
   }
@@ -24,18 +20,18 @@ export const overrideConfig = <T = unknown>(defaults: T, override?: Partial<T>) 
   return result;
 };
 
-export const sortObject = (input: any): unknown => {
+export const sortObject = <T>(input: T): T => {
   if (typeof input !== "object") return input;
-  if (Array.isArray(input)) return input.map(sortObject);
+  // prevent potential null error
+  if (input === null) return input
+  if (Array.isArray(input)) return input.map(sortObject) as T;
 
-  const output = {};
+  const output: Partial<T> = {};
   Object.keys(input)
     .sort()
+    .forEach((key) => (output[key as keyof T] = sortObject(input[key as keyof T])));
 
-    // @ts-ignore noImplicitAny
-    .forEach((key) => (output[key] = sortObject(input[key])));
-
-  return output;
+  return output as T;
 };
 
 export const stripHexPrefix = (input: string) => {
