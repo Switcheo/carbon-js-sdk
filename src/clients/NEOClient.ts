@@ -179,7 +179,6 @@ export class NEOClient {
   }
 
   public async lockO3Deposit(params: LockO3DepositParams) {
-    // eslint not used - signCompleteCallback 
     const { feeAmount, address, amount, token, o3Wallet } = params;
     if (!o3Wallet.isConnected()) {
       throw new Error("O3 wallet not connected. Please reconnect and try again.");

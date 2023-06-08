@@ -407,16 +407,6 @@ export class CarbonWallet {
       // tx failed
       throw new CarbonTxError(`[${response.code}] ${response.rawLog}`, response);
     }
-
-    // eslint not used
-    // const txBody = TxBody.decode(txRaw.bodyBytes)
-    // const msgs: EncodeObject[] = txBody.messages.map(message => {
-    //   const msg = registry.decode({ ...message })
-    //   return {
-    //     typeUrl: message.typeUrl,
-    //     value: msg
-    //   }
-    // })
     return response;
   }
 

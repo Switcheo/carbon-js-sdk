@@ -71,27 +71,6 @@ const MsgVote: AminoInit = {
   },
 };
 
-// eslint not used
-// const CreateMarket: AminoValueMap = {
-//   value: {
-//     msg: {
-//       basePrecision: ConvertEncType.Long,
-//       quotePrecision: ConvertEncType.Long,
-//       tickSize: ConvertEncType.Dec,
-//       makerFee: ConvertEncType.Dec,
-//       takerFee: ConvertEncType.Dec,
-//       createdBlockHeight: ConvertEncType.Long,
-//       initialMarginBase: ConvertEncType.Dec,
-//       initialMarginStep: ConvertEncType.Dec,
-//       maintenanceMarginRatio: ConvertEncType.Dec,
-//       maxLiquidationOrderDuration: ConvertEncType.Duration,
-//       expiryTime: ConvertEncType.Date,
-//       closedBlockHeight: ConvertEncType.Long,
-//       tradingBandwidth: ConvertEncType.NumToStr,
-//     },
-//   },
-// };
-
 const CreateToken: AminoValueMap = {
   value: {
     msg: {
@@ -177,15 +156,6 @@ const CreateOracle: AminoValueMap = {
   },
 };
 
-// eslint not used
-// const LinkPool: AminoValueMap = {
-//   value: {
-//     msg: {
-//       poolId: ConvertEncType.Long,
-//     },
-//   },
-// };
-
 const SetCommitmentCurve: AminoValueMap = {
   value: {
     msg: {
@@ -211,14 +181,6 @@ const SetRewardWeights: AminoValueMap = {
   },
 };
 
-// eslint not used
-// const UnlinkPool: AminoValueMap = {
-//   value: {
-//     msg: {
-//       poolId: ConvertEncType.Long,
-//     },
-//   },
-// };
 
 const UpdateMarket: AminoValueMap = {
   value: {

@@ -147,11 +147,6 @@ export interface StoredMnemonicInfo {
   evmHexAddress: string
 }
 
-// eslint not used
-// type LegacyAccounts = {
-//   [key in EVMChain]: string;
-// };
-
 const CarbonEvmNativeCurrency = {
   decimals: 18,
   name: "SWTH",

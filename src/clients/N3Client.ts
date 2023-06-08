@@ -215,7 +215,6 @@ export class N3Client {
   }
 
   public async lockO3Deposit(params: LockO3DepositParams): Promise<string> {
-    // eslint not used - signCompleteCallback
     const { feeAmount, toAddressHex, amount, token, o3Wallet } = params;
     if (!o3Wallet.isConnected()) {
       throw new Error("O3 wallet not connected. Please reconnect and try again.");
@@ -259,7 +258,6 @@ export class N3Client {
   }
 
   public async lockLedgerDeposit(params: LockLedgerDepositParams) {
-    // eslint not used - signCompleteCallback
     const { feeAmount, toAddressHex, amount, token, ledger } = params;
 
     const scriptHash = u.reverseHex(token.bridgeAddress);

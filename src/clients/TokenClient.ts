@@ -301,9 +301,6 @@ class TokenClient {
   }
 
   public getWrappedToken(denom: string, blockchain?: BlockchainUtils.Blockchain | BlockchainUtils.BlockchainV2, version='V1'): Token | null {
-    // eslint not used
-    // const networkConfig = this.configProvider.getConfig();
-
     // if denom is already a wrapped denom or no blockchain was specified,
     // just return the input denom.
     if (this.wrapperMap[denom] || !blockchain) {
