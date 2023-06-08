@@ -92,6 +92,12 @@ export interface WithdrawFromPoolParams {
   minWithdrawAmount: string;
 }
 
+/** DepositToBonusContractParams params required for enqueuing into deposit transient store */
+export interface DepositToBonusContractParams {
+  bonusVaultId: Long;
+  isLongUnbond: boolean;
+}
+
 const basePlPool: object = {
   id: Long.UZERO,
   name: "",
@@ -994,6 +1000,90 @@ export const WithdrawFromPoolParams = {
     message.toAccount = object.toAccount ?? "";
     message.shareAmount = object.shareAmount ?? "";
     message.minWithdrawAmount = object.minWithdrawAmount ?? "";
+    return message;
+  },
+};
+
+const baseDepositToBonusContractParams: object = {
+  bonusVaultId: Long.UZERO,
+  isLongUnbond: false,
+};
+
+export const DepositToBonusContractParams = {
+  encode(
+    message: DepositToBonusContractParams,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (!message.bonusVaultId.isZero()) {
+      writer.uint32(8).uint64(message.bonusVaultId);
+    }
+    if (message.isLongUnbond === true) {
+      writer.uint32(16).bool(message.isLongUnbond);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): DepositToBonusContractParams {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseDepositToBonusContractParams,
+    } as DepositToBonusContractParams;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.bonusVaultId = reader.uint64() as Long;
+          break;
+        case 2:
+          message.isLongUnbond = reader.bool();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): DepositToBonusContractParams {
+    const message = {
+      ...baseDepositToBonusContractParams,
+    } as DepositToBonusContractParams;
+    message.bonusVaultId =
+      object.bonusVaultId !== undefined && object.bonusVaultId !== null
+        ? Long.fromString(object.bonusVaultId)
+        : Long.UZERO;
+    message.isLongUnbond =
+      object.isLongUnbond !== undefined && object.isLongUnbond !== null
+        ? Boolean(object.isLongUnbond)
+        : false;
+    return message;
+  },
+
+  toJSON(message: DepositToBonusContractParams): unknown {
+    const obj: any = {};
+    message.bonusVaultId !== undefined &&
+      (obj.bonusVaultId = (message.bonusVaultId || Long.UZERO).toString());
+    message.isLongUnbond !== undefined &&
+      (obj.isLongUnbond = message.isLongUnbond);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<DepositToBonusContractParams>
+  ): DepositToBonusContractParams {
+    const message = {
+      ...baseDepositToBonusContractParams,
+    } as DepositToBonusContractParams;
+    message.bonusVaultId =
+      object.bonusVaultId !== undefined && object.bonusVaultId !== null
+        ? Long.fromValue(object.bonusVaultId)
+        : Long.UZERO;
+    message.isLongUnbond = object.isLongUnbond ?? false;
     return message;
   },
 };
