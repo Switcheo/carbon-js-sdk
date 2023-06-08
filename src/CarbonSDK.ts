@@ -9,7 +9,7 @@ import {
   NetworkConfigs,
 } from "@carbon-sdk/constant";
 import { GenericUtils, NetworkUtils } from "@carbon-sdk/util";
-import { Tendermint34Client, HttpBatchClient } from "@cosmjs/tendermint-rpc";
+import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import { CarbonQueryClient, ETHClient, HydrogenClient, InsightsQueryClient, NEOClient, TokenClient, ZILClient } from "./clients";
 import * as clients from "./clients";
 import N3Client from "./clients/N3Client";
@@ -502,7 +502,7 @@ export class ConnectedCarbonSDK extends CarbonSDK {
     return new ConnectedCarbonSDK(this.wallet, this.generateOpts());
   }
 }
-
+/*eslint-disable @typescript-eslint/no-unused-vars */
 namespace CarbonSDK {
   export import Network = _Network;
   export import CarbonQueryClient = clients.CarbonQueryClient;
@@ -513,5 +513,6 @@ namespace CarbonSDK {
   export import TokenClient = clients.TokenClient;
   export import ZILClient = clients.ZILClient;
 }
+/* esline-enable @typescript-eslint/no-unused-vars */
 
 export default CarbonSDK;

@@ -207,7 +207,7 @@ export class IBCModule extends BaseModule {
           return (prev.exponent > current.exponent) ? prev : current;
         });
 
-        let stakeCurrency: Currency = {
+        const stakeCurrency: Currency = {
           coinDenom: maxExponentDenomUnit.denom.toUpperCase(),
           coinMinimalDenom: stakingCurrencyDenom,
           coinDecimals: maxExponentDenomUnit.exponent,

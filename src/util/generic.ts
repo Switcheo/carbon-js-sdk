@@ -7,6 +7,7 @@ export const overrideConfig = <T = unknown>(defaults: T, override?: Partial<T>) 
   if (!override) return result;
 
   for (const key of Object.keys(override)) {
+    // eslint can disable rule or create new type/interface that contains the keys and use override[key keyof newType]
     // @ts-ignore
     const member = override[key];
     if (typeof member === "undefined") continue;
@@ -100,10 +101,10 @@ export class QueueManager<T = void, V = void> {
   triggerDelay: number;
   maxDelayThreshold: number;
 
-  currTriggerThreshold: number = 0;
+  currTriggerThreshold = 0;
   currQueueTrigger: NodeJS.Timeout | null = null;
 
-  isProcessingQueue: boolean = false;
+  isProcessingQueue = false;
 
   private queue: T[] = [];
 

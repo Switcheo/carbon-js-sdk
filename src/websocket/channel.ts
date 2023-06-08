@@ -245,11 +245,12 @@ export const parseChannelId = (rawChannelId: string): WsSubscriptionParams => {
       return {
         channel,
       } as WsSubscribeAllTokenPrices;
-    case WSChannel.token_prices:
-      return {
-        channel,
-        denom: param0,
-      } as WsSubscribeTokenPrices;
+      // eslint duplicate case
+    // case WSChannel.token_prices:
+    //   return {
+    //     channel,
+    //     denom: param0,
+    //   } as WsSubscribeTokenPrices;
     case WSChannel.cdp_borrows:
       return {
         channel,

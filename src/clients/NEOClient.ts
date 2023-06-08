@@ -58,7 +58,7 @@ export class NEOClient {
     return new NEOClient(configProvider, blockchain);
   }
 
-  public static parseHexNum(hex: string, exp: number = 0): string {
+  public static parseHexNum(hex: string, exp = 0): string {
     if (!hex || typeof hex !== "string") return "0";
     const res: string = hex.length % 2 !== 0 ? `0${hex}` : hex;
     return new BigNumber(res ? Neon.u.reverseHex(res) : "00", 16).shiftedBy(-exp).toString();
@@ -91,7 +91,7 @@ export class NEOClient {
     // NOTE: fetching of tokens is chunked in sets of 15 as we may hit
     // the gas limit on the RPC node and error out otherwise
     const promises: Promise<{}>[] = chunk(tokens, 75).map(async (partition: ReadonlyArray<Models.Token>) => { // tslint:disable-line
-      let acc: SimpleMap<string> = {};
+      const acc: SimpleMap<string> = {};
       for (const token of partition) {
         if (whitelistDenoms && !whitelistDenoms.includes(token.denom)) continue;
         const sb: Neon.sc.ScriptBuilder = new Neon.sc.ScriptBuilder();
@@ -179,7 +179,8 @@ export class NEOClient {
   }
 
   public async lockO3Deposit(params: LockO3DepositParams) {
-    const { feeAmount, address, amount, token, o3Wallet, signCompleteCallback } = params;
+    // eslint not used - signCompleteCallback 
+    const { feeAmount, address, amount, token, o3Wallet } = params;
     if (!o3Wallet.isConnected()) {
       throw new Error("O3 wallet not connected. Please reconnect and try again.");
     }

@@ -147,9 +147,10 @@ export interface StoredMnemonicInfo {
   evmHexAddress: string
 }
 
-type LegacyAccounts = {
-  [key in EVMChain]: string;
-};
+// eslint not used
+// type LegacyAccounts = {
+//   [key in EVMChain]: string;
+// };
 
 const CarbonEvmNativeCurrency = {
   decimals: 18,
@@ -311,7 +312,7 @@ const OKC_TESTNET: MetaMaskChangeNetworkParam = {
  */
 export class MetaMask {
   private blockchain: EVMChain = 'Ethereum';
-  private connectedAccount: string = ''
+  private connectedAccount = ''
 
   static createMetamaskSigner(metamask: MetaMask, evmChainId: string, pubKeyBase64: string, addressOptions: SWTHAddressOptions): CarbonSigner {
     const signDirect = async (_: string, doc: Models.Tx.SignDoc) => {
@@ -536,7 +537,7 @@ export class MetaMask {
   async syncBlockchain(): Promise<MetaMaskSyncResult> {
     const metamaskAPI = await this.getAPI()
     const chainIdHex = (await metamaskAPI?.request({ method: "eth_chainId" })) as string;
-    const chainId = !!chainIdHex ? parseInt(chainIdHex, 16) : undefined;
+    const chainId = chainIdHex ? parseInt(chainIdHex, 16) : undefined;
     const blockchain = getBlockchainFromChainV2(chainId) as EVMChain;
     this.blockchain = blockchain!;
 
@@ -694,7 +695,7 @@ export class MetaMask {
     return ethers.utils.computePublicKey(uncompressedPublicKey, true).split('0x')[1]
   }
 
-  async signEip712(accountNumber: string, evmChainId: string, msgs: readonly AminoMsg[], fee: StdFee, memo: string, sequence: string, feePayer: string = ''): Promise<string> {
+  async signEip712(accountNumber: string, evmChainId: string, msgs: readonly AminoMsg[], fee: StdFee, memo: string, sequence: string, feePayer = ''): Promise<string> {
     const metamaskAPI = await this.getConnectedAPI();
     const defaultAccount = await this.defaultAccount();
     const stdSignDoc = makeSignDoc(msgs, fee, evmChainId, memo, accountNumber, sequence)

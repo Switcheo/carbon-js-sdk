@@ -12,7 +12,7 @@ import { cibtIbcTokenRegex, ibcTokenRegex, ibcWhitelist, swthChannels, cosmBridg
 import { publicRpcNodes } from "@carbon-sdk/constant/network";
 import { FeeQuote } from "@carbon-sdk/hydrogen/feeQuote";
 import { BlockchainUtils, FetchUtils, IBCUtils, NumberUtils, TypeUtils } from "@carbon-sdk/util";
-import { BlockchainV2, BridgeMap, BRIDGE_IDS, EVMChain, IbcBridge, PolyNetworkBridge, isIbcBridge } from '@carbon-sdk/util/blockchain';
+import { BlockchainV2, BridgeMap, BRIDGE_IDS, IbcBridge, PolyNetworkBridge, isIbcBridge } from '@carbon-sdk/util/blockchain';
 import { bnOrZero, BN_ONE, BN_ZERO } from "@carbon-sdk/util/number";
 import { QueryClientImpl as IBCTransferQueryClient } from "@carbon-sdk/codec/ibc/applications/transfer/v1/query";
 import { SimpleMap } from "@carbon-sdk/util/type";
@@ -122,7 +122,7 @@ class TokenClient {
 
   public getBlockchainV2(denom: string | undefined): BlockchainUtils.BlockchainV2 | undefined {
     if (!denom) return undefined
-    let token = this.tokens[denom]
+    const token = this.tokens[denom]
     if (this.isNativeToken(denom) || this.isNativeStablecoin(denom) || TokenClient.isPoolToken(denom) || TokenClient.isCdpToken(denom) || this.isGroupedToken(denom)) {
       // native denoms "swth" and "usc" should be native.
       // pool and cdp tokens are on the Native blockchain, hence 0
@@ -185,6 +185,7 @@ class TokenClient {
 
     const symbol = this.getSymbol(denom);
     if (TokenClient.isPoolTokenLegacy(denom)) {
+      // eslint potential fix /^([a-z\d.-/]+)-(\d+)-([a-z\d.-/]+)-(\d+)-lp\d+$/i
       const match = symbol.match(/^([a-z\d.-\/]+)-(\d+)-([a-z\d.-\/]+)-(\d+)-lp\d+$/i);
       // inconsistent implementation of isPoolToken, exit
       if (match === null) return symbol;
@@ -219,6 +220,7 @@ class TokenClient {
     if (typeof denom !== "string") return "";
     denom = denom.toLowerCase();
     if (TokenClient.isPoolTokenLegacy(denom)) {
+      // eslint potential fix /^([a-z\d.-/]+)-(\d+)-([a-z\d.-/]+)-(\d+)-lp\d+$/i
       const match = denom.match(/^([a-z\d.-\/]+)-(\d+)-([a-z\d.-\/]+)-(\d+)-lp\d+$/i);
       // inconsistent implementation of isPoolToken, exit
       if (match === null) return this.getSymbol(denom);
@@ -246,6 +248,7 @@ class TokenClient {
   }
 
   public static isPoolTokenLegacy(denom: string): boolean {
+      // eslint potential fix /^([a-z\d.-/]+)-(\d+)-([a-z\d.-/]+)-(\d+)-lp\d+$/i
     return denom.match(/^([a-z\d.-]+)-(\d+)-([a-z\d.-]+)-(\d+)-lp\d+$/i) !== null;
   }
 
@@ -298,7 +301,8 @@ class TokenClient {
   }
 
   public getWrappedToken(denom: string, blockchain?: BlockchainUtils.Blockchain | BlockchainUtils.BlockchainV2, version='V1'): Token | null {
-    const networkConfig = this.configProvider.getConfig();
+    // eslint not used
+    // const networkConfig = this.configProvider.getConfig();
 
     // if denom is already a wrapped denom or no blockchain was specified,
     // just return the input denom.

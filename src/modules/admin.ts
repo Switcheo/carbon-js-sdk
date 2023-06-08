@@ -40,7 +40,6 @@ import {
 import { MsgCreateMarket } from "@carbon-sdk/codec/market/tx";
 import { MsgCreateOracle } from "@carbon-sdk/codec/oracle/tx";
 import { MsgSetTradingFlag } from "@carbon-sdk/codec/order/tx";
-import { CarbonWallet } from "@carbon-sdk/wallet";
 import { CarbonTx } from "@carbon-sdk/util";
 import BigNumber from "bignumber.js";
 import Long from "long";
@@ -318,7 +317,7 @@ export class AdminModule extends BaseModule {
     );
   }
 
-  public async setMsgFee(params: AdminModule.SetMsgFeeParams) {
+  public async setMsgFee(params: AdminModule.SetMsgFeeParams) { // eslint-disable-line
     throw new Error("deprecated");
   }
 

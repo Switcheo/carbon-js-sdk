@@ -332,14 +332,14 @@ export class ETHClient {
     );
     // logger("sendDeposit message", message)
 
-    let signatureResult:
-      | {
-          owner: string;
-          r: string;
-          s: string;
-          v: string;
-        }
-      | undefined;
+    // const signatureResult:
+    //   | {
+    //       owner: string;
+    //       r: string;
+    //       s: string;
+    //       v: string;
+    //     }
+    //   | undefined;
 
     const { address, signature } = await getSignatureCallback(message);
     const signatureBytes = ethers.utils.arrayify(appendHexPrefix(signature));
@@ -347,7 +347,7 @@ export class ETHClient {
 
     // logger("sign result", address, signature)
 
-    signatureResult = {
+    const signatureResult = {
       owner: address,
       v: rsv.v.toString(),
       r: rsv.r,
@@ -499,7 +499,9 @@ export class ETHClient {
   public verifyChecksum(input: string): string | undefined {
     try {
       return ethers.utils.getAddress(input);
-    } catch {}
+    } catch {
+      // empty catch
+    }
   }
 
   public async getTxNonce(ethAddress: string, customNonce?: number, provider?: ethers.providers.JsonRpcProvider): Promise<number> {

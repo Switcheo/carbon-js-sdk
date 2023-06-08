@@ -14,6 +14,7 @@ for (const exportName in whitelistCosmosExports) {
   const files = fs.readdirSync(directory);
 
   for (const file of files) {
+    // eslint const codecModule = await import(`${directory}/${file}`)
     const codecModule = require(`${directory}/${file}`);
 
     const modelNames = Object.keys(codecModule).filter((key) =>

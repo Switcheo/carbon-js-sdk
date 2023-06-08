@@ -82,23 +82,24 @@ const MsgCreateMarket: AminoInit = {
   },
 };
 
-const MsgLinkPool: AminoInit = {
-  aminoType: TxTypes.LinkPool,
-  valueMap: {
-    linkPoolParams: {
-      poolId: ConvertEncType.Long,
-    },
-  },
-};
+// eslint not used
+// const MsgLinkPool: AminoInit = {
+//   aminoType: TxTypes.LinkPool,
+//   valueMap: {
+//     linkPoolParams: {
+//       poolId: ConvertEncType.Long,
+//     },
+//   },
+// };
 
-const MsgUnlinkPool: AminoInit = {
-  aminoType: TxTypes.UnlinkPool,
-  valueMap: {
-    unlinkPoolParams: {
-      poolId: ConvertEncType.Long,
-    },
-  },
-};
+// const MsgUnlinkPool: AminoInit = {
+//   aminoType: TxTypes.UnlinkPool,
+//   valueMap: {
+//     unlinkPoolParams: {
+//       poolId: ConvertEncType.Long,
+//     },
+//   },
+// };
 
 const MsgUpdatePool: AminoInit = {
   aminoType: TxTypes.ChangeSwapFee,
@@ -217,10 +218,11 @@ const MsgSetInterestFee: AminoInit = {
   valueMap: {},
 };
 
-const MsgSetStablecoinInterestRate: AminoInit = {
-  aminoType: TxTypes.SetStablecoinInterestRate,
-  valueMap: {},
-};
+// eslint not used
+// const MsgSetStablecoinInterestRate: AminoInit = {
+//   aminoType: TxTypes.SetStablecoinInterestRate,
+//   valueMap: {},
+// };
 
 const MsgSetCompleteLiquidationThreshold: AminoInit = {
   aminoType: TxTypes.SetCompleteLiquidationThreshold,

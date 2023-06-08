@@ -143,14 +143,14 @@ export class WSConnector {
   websocket: WebSocket | NodeWebSocket | null = null;
 
   // used to tracking websocket messages, increment by 1 every request
-  requestIdCounter: number = 0;
+  requestIdCounter = 0;
 
   // true if connection initiated, even if connection is not established
   // will cause reconnect attempts if true.
-  shouldConnect: boolean = false;
+  shouldConnect = false;
 
   // true only if connection is established and ready to use
-  connected: boolean = false;
+  connected = false;
 
   // called whenever WSConnector.connected changes
   statusChangeListener?: WSStatusChangeListener;

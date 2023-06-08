@@ -1,5 +1,5 @@
 import CarbonSDK from "@carbon-sdk/CarbonSDK";
-import { Any, registry } from "@carbon-sdk/codec";
+import { Any } from "@carbon-sdk/codec";
 import { PubKey as EthSecp256k1PubKey } from "@carbon-sdk/codec/ethermint/crypto/v1/ethsecp256k1/keys";
 import { ethers } from "ethers";
 
@@ -18,7 +18,11 @@ export function encodeAnyEthSecp256k1PubKey(pubkey: Uint8Array): Any {
 
 }
 
-export function parseChainId(evmChainId: string): string {
+export function parseChainId(evmChainId?: string): string {
+    // eslint check if workaround is sound
+    if (!evmChainId) {
+        throw new Error("chain-id is undefined")
+    }
     const chainId = evmChainId.trim()
 
     if (chainId.length > 48) {
@@ -34,13 +38,13 @@ export function parseChainId(evmChainId: string): string {
 export async function populateEvmTransactionDetails(api: CarbonSDK, req: ethers.providers.TransactionRequest): Promise<ethers.providers.TransactionRequest> {
     const provider = api.evmJsonRpc
     const evmHexAddress = api.wallet?.evmHexAddress ?? ''
-    let request: ethers.providers.TransactionRequest = {
+    const request: ethers.providers.TransactionRequest = {
         to: req.to ?? '',
         from: req.from ?? api.wallet?.evmHexAddress,
         nonce: req.nonce ?? (await provider.getTransactionCount(evmHexAddress)),
         data: req.data,
         value: `0x${Number(req.value).toString(16)}`,
-        chainId: req.chainId ?? Number(parseChainId(await api.wallet?.getEvmChainId()!)),
+        chainId: req.chainId ?? Number(parseChainId(await api.wallet?.getEvmChainId())),
         // type = 0, 1 or 2 where 0 = legacyTx, 1 = AccessListTx, 2 = DynamicTx. Defaults to DynamicTx 
         type: req.type ?? 2,
         accessList: req.accessList,

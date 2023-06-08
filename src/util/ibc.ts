@@ -1,4 +1,3 @@
-import { Token } from '@carbon-sdk/codec'
 import {
   ChainInfoExplorerTmRpc,
   ChainIds,
@@ -11,10 +10,8 @@ import {
   swthChannels,
   swthIbcWhitelist,
   ibcNetworkRegex,
-  ChannelConfig,
 } from "@carbon-sdk/constant";
 import { KeplrAccount } from "@carbon-sdk/provider";
-import { BRIDGE_IDS } from "@carbon-sdk/util/blockchain";
 import { Hash } from "@keplr-wallet/crypto";
 import { AppCurrency, CW20Currency, Secret20Currency } from "@keplr-wallet/types";
 import { Blockchain, BlockchainV2 } from "./blockchain";
@@ -55,6 +52,7 @@ export const totalAssetObj: AssetListObj = Object.values(EmbedChainInfos).reduce
     const assetsObj: SimpleMap<AppCurrency> = {};
     const channelsObj = swthChannels[chainInfo.chainId];
     chainInfo.currencies.forEach((currency: AppCurrency) => {
+      // eslint can try Object.prototype.hasOwnProperty.call(currency, 'type')
       const channelSet: ChannelSet | undefined = currency.hasOwnProperty('type') && channelsObj.cw20
         ? channelsObj.cw20 as ChannelSet
         : channelsObj.ibc;
@@ -142,6 +140,7 @@ export const BlockchainMap = Object.values(EmbedChainInfos).reduce(
       if (currency.coinDenom.toLowerCase() === "swth") {
         newPrev[currency.coinMinimalDenom] = ChainIdBlockchainMap[chainInfo.chainId];
       } else {
+        // eslint can try Object.prototype.hasOwnProperty.call(currency, 'type')
         const channelSet: ChannelSet | undefined = currency.hasOwnProperty('type') && channelsObj.cw20
           ? channelsObj.cw20 as ChannelSet
           : channelsObj.ibc;
@@ -167,16 +166,17 @@ export const parseChainId = (chainId: string): ChainIdOutput => {
   };
 };
 
-export const calculateMaxFee = (gasStep: GasPriceStep = DefaultGasPriceStep, gas: number = 0): number => {
+export const calculateMaxFee = (gasStep: GasPriceStep = DefaultGasPriceStep, gas = 0): number => {
   return gasStep.high * gas;
 };
 
-export const estimateFeeStep = (gasStep: GasPriceStep = DefaultGasPriceStep, gas: number = 0, stepId: keyof GasPriceStep = 'average') => {
+export const estimateFeeStep = (gasStep: GasPriceStep = DefaultGasPriceStep, gas = 0, stepId: keyof GasPriceStep = 'average') => {
   const currentGasStep = gasStep[stepId] ?? 0;
   return currentGasStep * gas;
 }
 
 export const isCw20Token = (currency: AppCurrency): boolean => {
+  // eslint can try Object.prototype.hasOwnProperty.call(currency, 'type')
   if (!currency.hasOwnProperty("type")) return false;
 
   const depositCurrency = currency as CW20Currency | Secret20Currency;

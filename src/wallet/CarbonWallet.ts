@@ -11,7 +11,7 @@ import { BroadcastTxMode, CarbonSignerData, CarbonTxError } from "@carbon-sdk/ut
 import { SimpleMap } from "@carbon-sdk/util/type";
 import { encodeSecp256k1Signature, StdSignature } from "@cosmjs/amino";
 import { EncodeObject, OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
-import { Account, DeliverTxResponse, isDeliverTxFailure, SequenceResponse, StargateClient } from "@cosmjs/stargate";
+import { Account, DeliverTxResponse, isDeliverTxFailure } from "@cosmjs/stargate";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import { BroadcastTxSyncResponse } from "@cosmjs/tendermint-rpc/build/tendermint34/responses";
 import { Leap } from "@cosmos-kit/leap";
@@ -24,7 +24,7 @@ import { CarbonSigningClient } from "./CarbonSigningClient";
 import { ETH_SECP256K1_TYPE } from "@carbon-sdk/util/ethermint";
 import { ExtensionOptionsWeb3Tx } from "@carbon-sdk/codec/ethermint/types/v1/web3";
 import { BaseAccount } from "@carbon-sdk/codec/cosmos/auth/v1beta1/auth";
-import { MsgMergeAccount, registry } from "@carbon-sdk/codec";
+import { MsgMergeAccount } from "@carbon-sdk/codec";
 
 export interface CarbonWalletGenericOpts {
   tmClient?: Tendermint34Client;
@@ -158,7 +158,7 @@ export class CarbonWallet {
 
   defaultFeeDenom: string = DEFAULT_FEE_DENOM;
 
-  initialized: boolean = false;
+  initialized = false;
 
   accountInfo?: AccountInfo;
 
@@ -172,7 +172,7 @@ export class CarbonWallet {
   private chainId?: string;
   private evmChainId?: string;
 
-  private sequenceInvalidated: boolean = false;
+  private sequenceInvalidated = false;
   private txSignManager: QueueManager<SignTxRequest>;
   private txDispatchManager: QueueManager<BroadcastTxRequest>;
 
@@ -407,14 +407,16 @@ export class CarbonWallet {
       // tx failed
       throw new CarbonTxError(`[${response.code}] ${response.rawLog}`, response);
     }
-    const txBody = TxBody.decode(txRaw.bodyBytes)
-    const msgs: EncodeObject[] = txBody.messages.map(message => {
-      const msg = registry.decode({ ...message })
-      return {
-        typeUrl: message.typeUrl,
-        value: msg
-      }
-    })
+
+    // eslint not used
+    // const txBody = TxBody.decode(txRaw.bodyBytes)
+    // const msgs: EncodeObject[] = txBody.messages.map(message => {
+    //   const msg = registry.decode({ ...message })
+    //   return {
+    //     typeUrl: message.typeUrl,
+    //     value: msg
+    //   }
+    // })
     return response;
   }
 
@@ -558,7 +560,7 @@ export class CarbonWallet {
     let msg: EncodeObject
     try {
       if (!this.accountMerged && msgs[0].typeUrl !== CarbonTx.Types.MsgMergeAccount) {
-        const account = await this.getQueryClient().auth.Account({ address: this.bech32Address }).then(res => res.account).catch(async (err: Error) => {
+        const account = await this.getQueryClient().auth.Account({ address: this.bech32Address }).then(res => res.account).catch(async (err: Error) => { // eslint-disable-line
           return (await this.getQueryClient().auth.Account({ address: this.evmBech32Address })).account
         });
         const { address, sequence, accountNumber } = BaseAccount.decode(account!.value)
@@ -696,21 +698,15 @@ export class CarbonWallet {
   }
 
   private async reloadAccountInfo() {
-    try {
-      // carbon account always takes priority
-      const accountAny = await this.getAccount(this.bech32Address) ?? await this.getAccount(this.evmBech32Address)
-      if (!accountAny) return undefined
-      const { accountNumber, sequence, address } = BaseAccount.decode(accountAny.value)
-      return {
-        address,
-        accountNumber: accountNumber.toNumber(),
-        sequence: sequence.toNumber()
-      }
+    // carbon account always takes priority
+    const accountAny = await this.getAccount(this.bech32Address) ?? await this.getAccount(this.evmBech32Address)
+    if (!accountAny) return undefined
+    const { accountNumber, sequence, address } = BaseAccount.decode(accountAny.value)
+    return {
+      address,
+      accountNumber: accountNumber.toNumber(),
+      sequence: sequence.toNumber()
     }
-    catch (error: any) {
-      throw error
-    }
-
   }
 
   private async getAccount(address: string) {
@@ -727,36 +723,28 @@ export class CarbonWallet {
   public async reloadAccountSequence() {
     if (this.sequenceInvalidated) this.sequenceInvalidated = false;
 
-    try {
-      const info = await this.reloadAccountInfo()
-      const pubkey = this.accountInfo?.pubkey ?? {
-        type: "tendermint/PubKeySecp256k1",
-        value: this.publicKey.toString("base64"),
+    const info = await this.reloadAccountInfo()
+    const pubkey = this.accountInfo?.pubkey ?? {
+      type: "tendermint/PubKeySecp256k1",
+      value: this.publicKey.toString("base64"),
+    };
+    const chainId = this.accountInfo?.chainId ?? this.chainId ?? (await this.getQueryClient().chain.getChainId());
+    if (info) {
+      this.accountInfo = {
+        ...info,
+        pubkey,
+        chainId,
       };
-      const chainId = this.accountInfo?.chainId ?? this.chainId ?? (await this.getQueryClient().chain.getChainId());
-      if (info) {
-        this.accountInfo = {
-          ...info,
-          pubkey,
-          chainId,
-        };
-      }
-    } catch (error: any) {
-      throw error;
     }
   }
   public async reloadMergeAccountStatus() {
-    try {
-      if (this.accountMerged) return
-      const queryClient = this.getQueryClient()
-      const response = await queryClient.evmmerge.MappedAddress({ address: this.bech32Address })
-      if (response && response.mappedAddress) {
-        this.accountMerged = true
-      } else {
-        this.accountMerged = false
-      }
-    } catch (error: any) {
-      throw error;
+    if (this.accountMerged) return
+    const queryClient = this.getQueryClient()
+    const response = await queryClient.evmmerge.MappedAddress({ address: this.bech32Address })
+    if (response && response.mappedAddress) {
+      this.accountMerged = true
+    } else {
+      this.accountMerged = false
     }
   }
 
@@ -824,6 +812,6 @@ export namespace CarbonWallet {
   export type OnBroadcastTxSuccessCallback = (msgs: readonly EncodeObject[]) => void | Promise<void>;
 
   // workaround to re-export interface mixed const type
-  export interface TxRaw extends StargateTxRaw { }
+  export type TxRaw = StargateTxRaw
   export const TxRaw: typeof StargateTxRaw = { ...StargateTxRaw };
 }

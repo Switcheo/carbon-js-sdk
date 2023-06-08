@@ -3,7 +3,7 @@ import { StdSignDoc } from "@cosmjs/amino/build";
 import { TypedDataDomain, TypedDataField } from "@ethersproject/abstract-signer";
 import { TypeUtils } from ".";
 import { parseChainId } from "@carbon-sdk/util/ethermint";
-import { EIP712Types, registry } from "@carbon-sdk/codec";
+import { EIP712Types } from "@carbon-sdk/codec";
 import AminoTypesMap from "@carbon-sdk/provider/amino/AminoTypesMap";
 import { Coin } from "@cosmjs/proto-signing";
 import { capitalize } from "lodash";
@@ -29,7 +29,7 @@ function getTypes(msgTypeUrl: string, aminoMsgValue: any): TypeUtils.SimpleMap<T
     }
 }
 
-function getMsgValueType(msgTypeUrl: string, msgValue: any, msgTypeName: string, objectName?: string, nestedType: boolean = false, msgTypeDefinitions: TypeUtils.SimpleMap<TypedDataField[]> = {}): TypeUtils.SimpleMap<TypedDataField[]> {
+function getMsgValueType(msgTypeUrl: string, msgValue: any, msgTypeName: string, objectName?: string, nestedType = false, msgTypeDefinitions: TypeUtils.SimpleMap<TypedDataField[]> = {}): TypeUtils.SimpleMap<TypedDataField[]> {
     const packageName = msgTypeUrl.split(".").slice(0, -1).join(".")
     const msgFieldType = msgTypeUrl.split(".").pop()!
     const typeName = getTypeName(msgTypeName, objectName, nestedType, false)
@@ -79,7 +79,7 @@ function getMsgValueType(msgTypeUrl: string, msgValue: any, msgTypeName: string,
     return msgTypeDefinitions
 }
 
-function getTypeName(name: string, objectName?: string, nestedType: boolean = false, isArray: boolean = false) {
+function getTypeName(name: string, objectName?: string, nestedType = false, isArray = false) {
     if (nestedType) {
         return `Type${objectName === 'MsgValue' ? '' : objectName}${name.split('_').map(subName => capitalize(subName)).join('')}${isArray ? '[]' : ''}`
     }

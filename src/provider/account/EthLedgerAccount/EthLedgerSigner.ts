@@ -20,7 +20,7 @@ export class EthLedgerSigner extends ethers.Signer {
   }
 
   private parseTx(tx: ethers.providers.TransactionRequest): ethers.UnsignedTransaction {
-    const { from, ...txProps } = tx;
+    const { from, ...txProps } = tx; // eslint-disable-line
     return {
       ...txProps,
       nonce: parseInt(tx.nonce?.toString() ?? "0", 10),

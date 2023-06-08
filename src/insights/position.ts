@@ -52,7 +52,7 @@ export interface LiquidationEntry {
   last_updated_block_height: string;
 }
 
-export interface GetLiquidationAndADLQueryParams extends QueryByPageRequest {}
+export type GetLiquidationAndADLQueryParams = QueryByPageRequest
 
 export interface QueryGetLiquidationAndADLResponse {
   entries: LiquidationEntry[];
@@ -60,7 +60,7 @@ export interface QueryGetLiquidationAndADLResponse {
 }
 
 //Liquidation Engine
-export interface GetLiquidationEngineParams extends QueryByPageRequest {}
+export type GetLiquidationEngineParams = QueryByPageRequest
 
 export interface QueryGetLiquidationEngineResponse {
   entries: LiquidationEntry[];
