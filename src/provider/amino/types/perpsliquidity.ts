@@ -9,11 +9,9 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
   DepositToPlPool: "perpsliquidity/DepositToPlPool",
   RegisterToPlPool: "perpsliquidity/RegisterToPlPool",
   DeregisterToPlPool: "perpsliquidity/DeregisterToPlPool",
-  WithdrawToPlPool: "perpsliquidity/WithdrawToPlPool",
+  WithdrawFromPlPool: "perpsliquidity/WithdrawToPlPool",
   UpdateMarketConfig: "perpsliquidity/UpdateMarketConfig",
 };
-
-
 
 const MsgCreatePlPool: AminoInit = {
   aminoType: TxTypes.CreatePlPool,
