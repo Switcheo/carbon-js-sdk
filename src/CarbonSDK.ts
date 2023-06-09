@@ -37,7 +37,6 @@ import {
   FeemarketModule,
   EvmMergeModule,
   PerpsLiquidityModule,
-  ERC20Module,
 } from "./modules";
 import { StakingModule } from "./modules/staking";
 import { CosmosLedger, Keplr, KeplrAccount, LeapAccount, LeapExtended } from "./provider";
@@ -121,7 +120,6 @@ class CarbonSDK {
   evm: EvmModule;
   evmmerge: EvmMergeModule;
   feemarket: FeemarketModule;
-  erc20: ERC20Module;
 
   neo: NEOClient;
   eth: ETHClient;
@@ -173,7 +171,6 @@ class CarbonSDK {
     this.evm = new EvmModule(this);
     this.evmmerge = new EvmMergeModule(this);
     this.feemarket = new FeemarketModule(this);
-    this.erc20 = new ERC20Module(this);
 
     this.neo = NEOClient.instance({
       configProvider: this,
