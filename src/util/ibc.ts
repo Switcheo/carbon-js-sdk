@@ -52,8 +52,7 @@ export const totalAssetObj: AssetListObj = Object.values(EmbedChainInfos).reduce
     const assetsObj: SimpleMap<AppCurrency> = {};
     const channelsObj = swthChannels[chainInfo.chainId];
     chainInfo.currencies.forEach((currency: AppCurrency) => {
-      // eslint can try Object.prototype.hasOwnProperty.call(currency, 'type')
-      const channelSet: ChannelSet | undefined = currency.hasOwnProperty('type') && channelsObj.cw20
+      const channelSet: ChannelSet | undefined = ("type" in currency) && channelsObj.cw20
         ? channelsObj.cw20 as ChannelSet
         : channelsObj.ibc;
       let ibcAddr = currency.coinDenom.toLowerCase() === "swth"
@@ -140,8 +139,7 @@ export const BlockchainMap = Object.values(EmbedChainInfos).reduce(
       if (currency.coinDenom.toLowerCase() === "swth") {
         newPrev[currency.coinMinimalDenom] = ChainIdBlockchainMap[chainInfo.chainId];
       } else {
-        // eslint can try Object.prototype.hasOwnProperty.call(currency, 'type')
-        const channelSet: ChannelSet | undefined = currency.hasOwnProperty('type') && channelsObj.cw20
+        const channelSet: ChannelSet | undefined = ("type" in currency) && channelsObj.cw20
           ? channelsObj.cw20 as ChannelSet
           : channelsObj.ibc;
         const ibcAddr = makeIBCMinimalDenom(channelSet?.sourceChannel ?? "channel-0", currency.coinMinimalDenom);
@@ -176,8 +174,7 @@ export const estimateFeeStep = (gasStep: GasPriceStep = DefaultGasPriceStep, gas
 }
 
 export const isCw20Token = (currency: AppCurrency): boolean => {
-  // eslint can try Object.prototype.hasOwnProperty.call(currency, 'type')
-  if (!currency.hasOwnProperty("type")) return false;
+  if (!("type" in currency)) return false;
 
   const depositCurrency = currency as CW20Currency | Secret20Currency;
   return depositCurrency.type === "cw20";

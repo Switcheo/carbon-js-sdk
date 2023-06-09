@@ -336,7 +336,7 @@ export const NEOAddress: NEOAddressType = {
   },
 };
 
-type N3AddressType = NEOAddressType & {};
+type N3AddressType = NEOAddressType & object;
 
 export const N3Address: N3AddressType = {
   ...NEOAddress,

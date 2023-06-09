@@ -185,8 +185,7 @@ class TokenClient {
 
     const symbol = this.getSymbol(denom);
     if (TokenClient.isPoolTokenLegacy(denom)) {
-      // eslint potential fix /^([a-z\d.-/]+)-(\d+)-([a-z\d.-/]+)-(\d+)-lp\d+$/i
-      const match = symbol.match(/^([a-z\d.-\/]+)-(\d+)-([a-z\d.-\/]+)-(\d+)-lp\d+$/i);
+      const match = symbol.match(/^([a-z\d.-\/]+)-(\d+)-([a-z\d.-\/]+)-(\d+)-lp\d+$/i); // eslint-disable-line
       // inconsistent implementation of isPoolToken, exit
       if (match === null) return symbol;
 
@@ -220,8 +219,7 @@ class TokenClient {
     if (typeof denom !== "string") return "";
     denom = denom.toLowerCase();
     if (TokenClient.isPoolTokenLegacy(denom)) {
-      // eslint potential fix /^([a-z\d.-/]+)-(\d+)-([a-z\d.-/]+)-(\d+)-lp\d+$/i
-      const match = denom.match(/^([a-z\d.-\/]+)-(\d+)-([a-z\d.-\/]+)-(\d+)-lp\d+$/i);
+      const match = denom.match(/^([a-z\d.-\/]+)-(\d+)-([a-z\d.-\/]+)-(\d+)-lp\d+$/i); // eslint-disable-line
       // inconsistent implementation of isPoolToken, exit
       if (match === null) return this.getSymbol(denom);
 
@@ -562,8 +560,8 @@ class TokenClient {
           chainMap[chainId] = bridge.chainName
         }
       }
-      return newBridges
     }
+    return newBridges
   }
 
   public getIbcBlockchainNames(): string[] {
@@ -775,10 +773,9 @@ class TokenClient {
     try {
       const response = await insights.DenomToGeckoIdMap();
       tokens = response.result.gecko;
+      return tokens;
     } catch (err) {
       throw new Error((err as Error).message ?? "Unknown gecko query error");
-    } finally {
-      return tokens;
     }
   }
 

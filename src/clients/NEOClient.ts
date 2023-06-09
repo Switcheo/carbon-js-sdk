@@ -48,7 +48,7 @@ export class NEOClient {
     [Blockchain.Neo]: "Neo",
   };
 
-  private constructor(public readonly configProvider: NetworkConfigProvider, public readonly blockchain: Blockchain) {}
+  private constructor(public readonly configProvider: NetworkConfigProvider, public readonly blockchain: Blockchain) { }
 
   public static instance(opts: NEOClientOpts) {
     const { configProvider, blockchain = Blockchain.Neo } = opts;
@@ -74,23 +74,22 @@ export class NEOClient {
     const tokenQueryResults = await sdk.token.getAllTokens();
     const account = new Neon.wallet.Account(address);
     const tokens = tokenQueryResults.filter(
-      (token) =>
-        {
-          const isCorrectBlockchain = 
-          version === "V2" 
-            ? 
-            !!sdk.token.getBlockchainV2(token.denom) && (BLOCKCHAIN_V2_TO_V1_MAPPING[sdk.token.getBlockchainV2(token.denom)!] == this.blockchain) 
-            : 
+      (token) => {
+        const isCorrectBlockchain =
+          version === "V2"
+            ?
+            !!sdk.token.getBlockchainV2(token.denom) && (BLOCKCHAIN_V2_TO_V1_MAPPING[sdk.token.getBlockchainV2(token.denom)!] == this.blockchain)
+            :
             blockchainForChainId(token.chainId.toNumber(), sdk.network) == this.blockchain
-          return (isCorrectBlockchain || token.denom === "swth") && token.tokenAddress.length == 40 && token.bridgeAddress.length == 40
-        }
+        return (isCorrectBlockchain || token.denom === "swth") && token.tokenAddress.length == 40 && token.bridgeAddress.length == 40
+      }
     );
 
     const client: Neon.rpc.RPCClient = new Neon.rpc.RPCClient(url, "2.5.2"); // TODO: should we change the RPC version??
 
     // NOTE: fetching of tokens is chunked in sets of 15 as we may hit
     // the gas limit on the RPC node and error out otherwise
-    const promises: Promise<{}>[] = chunk(tokens, 75).map(async (partition: ReadonlyArray<Models.Token>) => { // tslint:disable-line
+    const promises: Promise<any>[] = chunk(tokens, 75).map(async (partition: ReadonlyArray<Models.Token>) => { // tslint:disable-line
       const acc: SimpleMap<string> = {};
       for (const token of partition) {
         if (whitelistDenoms && !whitelistDenoms.includes(token.denom)) continue;
@@ -113,7 +112,7 @@ export class NEOClient {
     });
 
     const result = await Promise.all(promises).then((results: any[]) => {
-      return results.reduce((acc: {}, res: {}) => ({ ...acc, ...res }), {});
+      return results.reduce((acc: object, res: object) => ({ ...acc, ...res }), {});
     });
 
     const TokensWithExternalBalance: TokensWithExternalBalance[] = [];
