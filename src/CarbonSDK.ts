@@ -33,6 +33,7 @@ import {
   SubAccountModule,
   XChainModule,
   EvmModule,
+  ERC20Module,
   FeemarketModule,
   EvmMergeModule,
   PerpsLiquidityModule,
@@ -99,6 +100,7 @@ class CarbonSDK {
   alliance: AllianceModule;
   order: OrderModule;
   lp: LiquidityPoolModule;
+  erc20: ERC20Module;
   plp: PerpsLiquidityModule;
   subaccount: SubAccountModule;
   profile: ProfileModule;
@@ -141,14 +143,15 @@ class CarbonSDK {
     this.insights = new InsightsQueryClient(this.networkConfig);
     this.token = opts.token ?? TokenClient.instance(this.query, this);
     this.hydrogen = new HydrogenClient(this.networkConfig, this.token);
-    this.evmJsonRpc = new ethers.providers.JsonRpcProvider(NetworkConfigs[this.network].evmJsonRpcUrl)
-    this.evmWs = new ethers.providers.WebSocketProvider(NetworkConfigs[this.network].evmWsUrl)
+    this.evmJsonRpc = new ethers.providers.JsonRpcProvider(NetworkConfigs[this.network].evmJsonRpcUrl);
+    this.evmWs = new ethers.providers.WebSocketProvider(NetworkConfigs[this.network].evmWsUrl);
     this.hydrogen = HydrogenClient.instance(this.networkConfig, this.token);
 
     this.admin = new AdminModule(this);
     this.alliance = new AllianceModule(this);
     this.order = new OrderModule(this);
     this.lp = new LiquidityPoolModule(this);
+    this.erc20 = new ERC20Module(this);
     this.plp = new PerpsLiquidityModule(this);
     this.subaccount = new SubAccountModule(this);
     this.profile = new ProfileModule(this);
@@ -308,7 +311,6 @@ class CarbonSDK {
     return sdk.connectWithMetamask(metamask, walletOpts, metamaskWalletOpts);
   }
 
-
   public static async instanceViewOnly(
     bech32Address: string,
     sdkOpts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS,
@@ -362,7 +364,7 @@ class CarbonSDK {
 
   public disconnect(): CarbonSDK {
     if (this.wallet?.isLedgerSigner()) {
-      (this.wallet.signer as CarbonLedgerSigner).ledger.disconnect()
+      (this.wallet.signer as CarbonLedgerSigner).ledger.disconnect();
     }
     return new CarbonSDK({
       ...this,
@@ -442,16 +444,15 @@ class CarbonSDK {
     return this.connect(wallet);
   }
 
-
   public async connectWithMetamask(metamask: MetaMask, opts?: CarbonWalletGenericOpts, metamaskWalletOpts?: MetaMaskWalletOpts) {
     const evmChainId = this.evmChainId;
     const addressOptions: SWTHAddressOptions = {
       network: this.networkConfig.network,
-      bech32Prefix: this.networkConfig.Bech32Prefix
+      bech32Prefix: this.networkConfig.Bech32Prefix,
     };
-    const address = await metamask.defaultAccount()
-    const publicKeyHex = await metamask.getPublicKey(address, metamaskWalletOpts?.publicKeyMessage)
-    const publicKeyBase64 = Buffer.from(publicKeyHex, 'hex').toString('base64')
+    const address = await metamask.defaultAccount();
+    const publicKeyHex = await metamask.getPublicKey(address, metamaskWalletOpts?.publicKeyMessage);
+    const publicKeyBase64 = Buffer.from(publicKeyHex, "hex").toString("base64");
     const wallet = CarbonWallet.withMetamask(metamask, evmChainId, publicKeyBase64, addressOptions, {
       ...opts,
       network: this.network,

@@ -9,13 +9,13 @@ export class ERC20Module extends BaseModule {
     const coin: Coin = {
       denom: params.denom,
       amount: params.amount,
-    }
+    };
 
     const value = Models.MsgConvertCoin.fromPartial({
       coin,
-      receiver: wallet.bech32Address,
-      sender: params.receiver,
-    })
+      receiver: params.receiver,
+      sender: wallet.bech32Address,
+    });
 
     return await wallet.sendTx(
       {
@@ -34,7 +34,7 @@ export class ERC20Module extends BaseModule {
       amount: params.amount,
       receiver: params.receiver,
       sender: wallet.bech32Address,
-    })
+    });
 
     return await wallet.sendTx(
       {
@@ -42,12 +42,45 @@ export class ERC20Module extends BaseModule {
         value,
       },
       opts
-    )
+    );
+  }
+
+  public async registerToken(params: ERC20Module.RegisterTokenParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+
+    const value = Models.MsgRegisterToken.fromPartial({
+      creator: params.creator,
+      denom: params.denom,
+    });
+
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgRegisterToken,
+        value,
+      },
+      opts
+    );
+  }
+
+  public async registerERC20(params: ERC20Module.RegisterERC20Params, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+
+    const value = Models.MsgRegisterERC20.fromPartial({
+      creator: params.creator,
+      contractAddress: params.contractAddress,
+    });
+
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgRegisterERC20,
+        value,
+      },
+      opts
+    );
   }
 }
 
 export namespace ERC20Module {
-
   export interface ConvertCoinParams {
     receiver: string;
     denom: string;
@@ -58,5 +91,15 @@ export namespace ERC20Module {
     receiver: string;
     contractAddress: string;
     amount: string;
+  }
+
+  export interface RegisterTokenParams {
+    creator: string;
+    denom: string;
+  }
+
+  export interface RegisterERC20Params {
+    creator: string;
+    contractAddress: string;
   }
 }
