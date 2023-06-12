@@ -1,15 +1,16 @@
-import { MinGasPrice } from "@carbon-sdk/codec";
+import { MinGasPrice, registry } from "@carbon-sdk/codec";
 import { CARBON_GAS_PRICE, Network, decTypeDecimals } from "@carbon-sdk/constant";
 import { CarbonSDK, Models } from "@carbon-sdk/index";
 import { AddressUtils, CarbonTx, NumberUtils } from "@carbon-sdk/util";
 import { CarbonSigner, CarbonSignerTypes } from "@carbon-sdk/wallet";
 import { Algo } from "@cosmjs/proto-signing";
-import { Leap } from "@cosmos-kit/leap";
-import { AccountData, AppCurrency, ChainInfo, FeeCurrency } from "@keplr-wallet/types";
+import { AppCurrency, ChainInfo, FeeCurrency } from "@keplr-wallet/types";
 import SDKProvider from "../sdk";
 import { ethers } from "ethers";
-import { WalletController as Station } from '@terra-money/wallet-controller'
-import { ExtensionOptions, SimplePublicKey } from '@terra-money/feather.js';
+import Station from '@terra-money/station-wallet';
+import { CreateTxOptions } from '@terra-money/feather.js';
+import { TxBody } from "cosmjs-types/cosmos/tx/v1beta1/tx";
+import { AuthInfo } from "@carbon-sdk/codec/cosmos/tx/v1beta1/tx";
 
 const SWTH: FeeCurrency = {
   coinDenom: "SWTH",
@@ -27,16 +28,19 @@ class StationAccount {
     gasPriceStep: SWTH.gasPriceStep,
   } as const;
 
-  static createStationSigner(station: Station, chainId: string, publicKey: string, address: string): CarbonSigner {
+  static createStationSigner(station: Station, chainId: string, publicKey: string): CarbonSigner {
     const signDirect = async (signerAddress: string, doc: Models.Tx.SignDoc) => {
-      const signOpts: ExtensionOptions = {
-          waitForConfirmation: false,
-          purgeQueue: false,
-          chainID: chainId,
-          msgs: []
+
+
+      const txBody = TxBody.decode(doc.bodyBytes)
+      const authInfo = AuthInfo.decode(doc.authInfoBytes)
+
+      const signOpts: CreateTxOptions = {
+          chainID: doc.chainId,
+          msgs: [], // TODO: encode messages
+          memo: txBody.memo,
       };
-      const signedResult = await station!.sign(signOpts, signerAddress );
-      console.log('INFO: the signed reusult is ',signedResult)
+      const signedResult = await station!.sign(signOpts);
       return {
         signed: doc,
         signature: {
@@ -44,8 +48,7 @@ class StationAccount {
             type: '/cosmos.crypto.secp256k1.PubKey',
             value: publicKey
           },
-          signature: signedResult.result.signatures[0]
-
+          signature: signedResult.signatures[0],
         }
       }
       
@@ -53,27 +56,22 @@ class StationAccount {
 
 
     const signAmino = async (signerAddress: string, doc: CarbonTx.StdSignDoc) => {
-        const signOpts: ExtensionOptions = {
-            waitForConfirmation: false,
-            purgeQueue: false,
-            chainID: chainId,
-            msgs: []
-        };
-        
-        return await station!.sign(signOpts, signerAddress );
+      const signOpts: CreateTxOptions = {
+        chainID: chainId,
+        msgs: []
+    };
+        return await station!.sign(signOpts);
       };
   
 
 
       const getAccounts = async () => {
 
-       console.log('INFO: station account getaccount')
-
+        const connectResponse = await station.getPubkey()
         return [
           {
-            // Possible to change to "ethsecp256k1" ?
             algo: "secp256k1" as Algo,
-            address,
+            address: connectResponse.addresses[chainId],
             pubkey: Uint8Array.from(Buffer.from(publicKey, 'base64'))
           },
         ]
@@ -152,38 +150,6 @@ class StationAccount {
     };
   }
 
-  static getPublicKeyAndAddress(station: Station): Promise<{ key: string, address: string }> {
-    console.log('INFO: getPublicKeyAndAddress')
-
-    return new Promise((resolve, reject) => {
-        const subscription = station.connectedWallet().subscribe(async (wallet) => {
-      console.log('INFO: wallet.address ',wallet?.addresses)
-      console.log('INFO: wallet.network ',wallet?.network)
-            if (wallet) {
-                console.log('INFO: Connected wallet: ', wallet)
-                const bytes = Buffer.from('sign message', 'utf-8')
-
-                try {
-                    console.log('INFO: signing using walletaddress: ', wallet.addresses['carbon-1'])
-                    const signResult = await station.signBytes(bytes, wallet.addresses['carbon-1'])
-                    console.log('INFO: signresult ', signResult)
-
-
-                    const publicKey = signResult.result.public_key as SimplePublicKey;
-                    const key = publicKey.toData().key;
-                    console.log('INFO: signinged key is: ', key)
-                    console.log('INFO: ', typeof(key))
-                    const address = wallet.addresses['carbon-1'];
-                    subscription?.unsubscribe()
-
-                    resolve({ key, address });
-                } catch (error) {
-                    reject(error);
-                }
-            } 
-        });
-    });
-}
 }
 
 namespace StationAccount {}

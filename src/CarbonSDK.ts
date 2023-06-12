@@ -43,7 +43,7 @@ import { CarbonLedgerSigner, CarbonSigner, CarbonWallet, CarbonWalletGenericOpts
 import { MetaMask } from "./provider/metamask/MetaMask";
 import { SWTHAddressOptions } from "./util/address";
 import { ethers } from "ethers";
-import { Station } from "./provider/station";
+import Station from '@terra-money/station-wallet';
 import StationAccount from "./provider/station/StationAccount";
 export { CarbonTx } from "@carbon-sdk/util";
 export { CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletGenericOpts, CarbonWalletInitOpts } from "@carbon-sdk/wallet";
@@ -436,9 +436,6 @@ class CarbonSDK {
 
     const leapKey = await leap.getKey(chainId);
     await leap.enable(chainId);
-    console.log('INFO: leap chainid ', chainId)
-    console.log('INFO: leap network ', this.network)
-
     const wallet = CarbonWallet.withLeap(leap, chainId, leapKey, {
       ...opts,
       network: this.network,
@@ -454,13 +451,6 @@ class CarbonSDK {
       network: this.networkConfig.network,
       bech32Prefix: this.networkConfig.Bech32Prefix
     };
-
-    console.log('INFO: more ', addressOptions)
-    console.log('INFO: opts details', {
-      ...opts,
-      network: this.network,
-      config: this.configOverride,
-    })
 
     const address = await metamask.defaultAccount()
     const publicKeyHex = await metamask.getPublicKey(address)
@@ -479,14 +469,11 @@ class CarbonSDK {
 
 
   public async connectWithStation(station: Station, opts?: CarbonWalletGenericOpts) {
-    const { key, address }  = await StationAccount.getPublicKeyAndAddress(station)
 
-    console.log('INFO: opts details', {
-      ...opts,
-      network: this.network,
-      config: this.configOverride,
-    })
-    const wallet = CarbonWallet.withStation(station, this.chainId, key, address, {
+    const connectResponse = await station.connect()
+    const key = connectResponse.pubkey![118]!
+
+    const wallet = CarbonWallet.withStation(station, this.chainId, key, {
       ...opts,
       network: this.network,
       config: this.configOverride,
