@@ -10,14 +10,11 @@ export interface Params {
   quoteIndexPriceFluctuationToleranceRatio: string;
   /** requotes after orders are x seconds old */
   quoteExpirySeconds: Long;
-  /** requotes when open position change threshold exceeded (in ratio) */
-  lpOpenPositionFluctuationToleranceRatio: string;
 }
 
 const baseParams: object = {
   quoteIndexPriceFluctuationToleranceRatio: "",
   quoteExpirySeconds: Long.UZERO,
-  lpOpenPositionFluctuationToleranceRatio: "",
 };
 
 export const Params = {
@@ -32,9 +29,6 @@ export const Params = {
     }
     if (!message.quoteExpirySeconds.isZero()) {
       writer.uint32(16).uint64(message.quoteExpirySeconds);
-    }
-    if (message.lpOpenPositionFluctuationToleranceRatio !== "") {
-      writer.uint32(26).string(message.lpOpenPositionFluctuationToleranceRatio);
     }
     return writer;
   },
@@ -51,9 +45,6 @@ export const Params = {
           break;
         case 2:
           message.quoteExpirySeconds = reader.uint64() as Long;
-          break;
-        case 3:
-          message.lpOpenPositionFluctuationToleranceRatio = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -75,11 +66,6 @@ export const Params = {
       object.quoteExpirySeconds !== null
         ? Long.fromString(object.quoteExpirySeconds)
         : Long.UZERO;
-    message.lpOpenPositionFluctuationToleranceRatio =
-      object.lpOpenPositionFluctuationToleranceRatio !== undefined &&
-      object.lpOpenPositionFluctuationToleranceRatio !== null
-        ? String(object.lpOpenPositionFluctuationToleranceRatio)
-        : "";
     return message;
   },
 
@@ -92,9 +78,6 @@ export const Params = {
       (obj.quoteExpirySeconds = (
         message.quoteExpirySeconds || Long.UZERO
       ).toString());
-    message.lpOpenPositionFluctuationToleranceRatio !== undefined &&
-      (obj.lpOpenPositionFluctuationToleranceRatio =
-        message.lpOpenPositionFluctuationToleranceRatio);
     return obj;
   },
 
@@ -107,8 +90,6 @@ export const Params = {
       object.quoteExpirySeconds !== null
         ? Long.fromValue(object.quoteExpirySeconds)
         : Long.UZERO;
-    message.lpOpenPositionFluctuationToleranceRatio =
-      object.lpOpenPositionFluctuationToleranceRatio ?? "";
     return message;
   },
 };

@@ -44,7 +44,7 @@ import { MsgUpdateProfile, MsgUpdateProfileResponse } from "./profile/tx";
 import { MsgUpdateParams as MsgFeemarketUpdateParams, MsgUpdateParamsResponse as MsgFeemarketUpdateParamsResponse } from "./ethermint/feemarket/v1/tx";
 import { MsgEthereumTx as MsgEvmEthereumTx, MsgEthereumTxResponse as MsgEvmEthereumTxResponse, MsgUpdateParams as MsgEvmUpdateParams, MsgUpdateParamsResponse as MsgEvmUpdateParamsResponse } from "./ethermint/evm/v1/tx";
 import { MsgCreateSubAccount, MsgCreateSubAccountResponse, MsgActivateSubAccount, MsgActivateSubAccountResponse, MsgRemoveSubAccount, MsgRemoveSubAccountResponse } from "./subaccount/tx";
-import { MsgDisableSpotMarket, MsgDisableSpotMarketResponse, MsgCreateMarket, MsgCreateMarketResponse, MsgUpdateMarket, MsgUpdateMarketResponse, MsgUpdatePerpetualsFundingInterval, MsgUpdatePerpetualsFundingIntervalResponse, MsgAddFeeTier, MsgAddFeeTierResponse, MsgUpdateFeeTier, MsgUpdateFeeTierResponse, MsgRemoveFeeTier, MsgRemoveFeeTierResponse, MsgSetStakeEquivalence, MsgSetStakeEquivalenceResponse } from "./market/tx";
+import { MsgDisableSpotMarket, MsgDisableSpotMarketResponse, MsgCreateMarket, MsgCreateMarketResponse, MsgUpdateMarket, MsgUpdateMarketResponse, MsgUpdatePerpetualsFundingInterval, MsgUpdatePerpetualsFundingIntervalResponse, MsgAddFeeTier, MsgAddFeeTierResponse, MsgUpdateFeeTier, MsgUpdateFeeTierResponse, MsgRemoveFeeTier, MsgRemoveFeeTierResponse, MsgSetStakeEquivalence, MsgSetStakeEquivalenceResponse, MsgUpdateAllPoolTradingFees, MsgUpdateAllPoolTradingFeesResponse } from "./market/tx";
 import { CreateMarketProposal, UpdateMarketProposal, UpdatePerpetualsFundingIntervalProposal } from "./market/proposal";
 import { MsgSetSequence, MsgSetSequenceResponse } from "./sequence/tx";
 import { MsgCreatePool, MsgCreatePoolResponse, MsgCreatePoolWithLiquidity, MsgCreatePoolWithLiquidityResponse, MsgAddLiquidity, MsgAddLiquidityResponse, MsgRemoveLiquidity, MsgRemoveLiquidityResponse, MsgSetRewardsWeights, MsgSetRewardsWeightsResponse, MsgStakePoolToken, MsgStakePoolTokenResponse, MsgUnstakePoolToken, MsgUnstakePoolTokenResponse, MsgClaimPoolRewards, MsgClaimPoolRewardsResponse, MsgSetRewardCurve, MsgSetRewardCurveResponse, MsgSetCommitmentCurve, MsgSetCommitmentCurveResponse, MsgUpdatePool, MsgUpdatePoolResponse, MsgCreatePoolRoute, MsgCreatePoolRouteResponse, MsgRemovePoolRoute, MsgRemovePoolRouteResponse, MsgUpdatePoolRoute, MsgUpdatePoolRouteResponse } from "./liquiditypool/tx";
@@ -510,6 +510,8 @@ registry.register("/Switcheo.carbon.market.MsgRemoveFeeTier", MsgRemoveFeeTier);
 registry.register("/Switcheo.carbon.market.MsgRemoveFeeTierResponse", MsgRemoveFeeTierResponse);
 registry.register("/Switcheo.carbon.market.MsgSetStakeEquivalence", MsgSetStakeEquivalence);
 registry.register("/Switcheo.carbon.market.MsgSetStakeEquivalenceResponse", MsgSetStakeEquivalenceResponse);
+registry.register("/Switcheo.carbon.market.MsgUpdateAllPoolTradingFees", MsgUpdateAllPoolTradingFees);
+registry.register("/Switcheo.carbon.market.MsgUpdateAllPoolTradingFeesResponse", MsgUpdateAllPoolTradingFeesResponse);
 registry.register("/Switcheo.carbon.market.CreateMarketProposal", CreateMarketProposal);
 registry.register("/Switcheo.carbon.market.UpdateMarketProposal", UpdateMarketProposal);
 registry.register("/Switcheo.carbon.market.UpdatePerpetualsFundingIntervalProposal", UpdatePerpetualsFundingIntervalProposal);
@@ -988,6 +990,8 @@ export const TxTypes = {
   "MsgRemoveFeeTierResponse": "/Switcheo.carbon.market.MsgRemoveFeeTierResponse",
   "MsgSetStakeEquivalence": "/Switcheo.carbon.market.MsgSetStakeEquivalence",
   "MsgSetStakeEquivalenceResponse": "/Switcheo.carbon.market.MsgSetStakeEquivalenceResponse",
+  "MsgUpdateAllPoolTradingFees": "/Switcheo.carbon.market.MsgUpdateAllPoolTradingFees",
+  "MsgUpdateAllPoolTradingFeesResponse": "/Switcheo.carbon.market.MsgUpdateAllPoolTradingFeesResponse",
   "CreateMarketProposal": "/Switcheo.carbon.market.CreateMarketProposal",
   "UpdateMarketProposal": "/Switcheo.carbon.market.UpdateMarketProposal",
   "UpdatePerpetualsFundingIntervalProposal": "/Switcheo.carbon.market.UpdatePerpetualsFundingIntervalProposal",
@@ -1149,7 +1153,7 @@ export { SubAccount, GenesisSubAccount } from "./subaccount/subaccount";
 export { OrderBookLevel, OrderBook, StopBook } from "./book/book";
 export { QueryImpactPriceRequest, QueryImpactPriceResponse, QueryGetBookRequest, QueryGetBookResponse, QueryAllBookRequest, QueryAllBookResponse } from "./book/query";
 export { OrderBookEvent } from "./book/event";
-export { MsgDisableSpotMarket, MsgDisableSpotMarketResponse, MsgCreateMarket, MsgCreateMarketResponse, MsgUpdateMarket, MsgUpdateMarketResponse, MsgUpdatePerpetualsFundingInterval, MsgUpdatePerpetualsFundingIntervalResponse, MsgAddFeeTier, MsgAddFeeTierResponse, MsgUpdateFeeTier, MsgUpdateFeeTierResponse, MsgRemoveFeeTier, MsgRemoveFeeTierResponse, MsgSetStakeEquivalence, MsgSetStakeEquivalenceResponse } from "./market/tx";
+export { MsgDisableSpotMarket, MsgDisableSpotMarketResponse, MsgCreateMarket, MsgCreateMarketResponse, MsgUpdateMarket, MsgUpdateMarketResponse, MsgUpdatePerpetualsFundingInterval, MsgUpdatePerpetualsFundingIntervalResponse, MsgAddFeeTier, MsgAddFeeTierResponse, MsgUpdateFeeTier, MsgUpdateFeeTierResponse, MsgRemoveFeeTier, MsgRemoveFeeTierResponse, MsgSetStakeEquivalence, MsgSetStakeEquivalenceResponse, MsgUpdateAllPoolTradingFees, MsgUpdateAllPoolTradingFeesResponse, UpdateAllPoolTradingFeesParams } from "./market/tx";
 export { FeeStructure, FeeCategory, FeeTier, TradingFees, StakeEquivalence } from "./market/fee";
 export { CreateMarketProposal, UpdateMarketProposal, UpdatePerpetualsFundingIntervalProposal } from "./market/proposal";
 export { Params as MarketDefaultsParams, ControlledParams, Market, MarketParams, IncomingDisableSpotMarketNames } from "./market/market";
@@ -1241,6 +1245,10 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "syntax",
+        "type": "string"
+      },
+      {
+        "name": "edition",
         "type": "string"
       }
     ],
@@ -1550,6 +1558,10 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "bool"
       },
       {
+        "name": "deprecated_legacy_json_field_conflicts",
+        "type": "bool"
+      },
+      {
         "name": "uninterpreted_option",
         "type": "UninterpretedOption[]",
         "packageName": "/google.protobuf"
@@ -1587,6 +1599,20 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "bool"
       },
       {
+        "name": "debug_redact",
+        "type": "bool"
+      },
+      {
+        "name": "retention",
+        "type": "",
+        "packageName": "/google.protobuf.FieldOptions"
+      },
+      {
+        "name": "target",
+        "type": "",
+        "packageName": "/google.protobuf.FieldOptions"
+      },
+      {
         "name": "uninterpreted_option",
         "type": "UninterpretedOption[]",
         "packageName": "/google.protobuf"
@@ -1606,6 +1632,10 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "deprecated",
+        "type": "bool"
+      },
+      {
+        "name": "deprecated_legacy_json_field_conflicts",
         "type": "bool"
       },
       {
@@ -22335,6 +22365,22 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "funding_rate_band",
         "type": "string"
+      },
+      {
+        "name": "default_lp_spot_taker_fee",
+        "type": "string"
+      },
+      {
+        "name": "default_lp_spot_maker_fee",
+        "type": "string"
+      },
+      {
+        "name": "default_lp_futures_taker_fee",
+        "type": "string"
+      },
+      {
+        "name": "default_lp_futures_maker_fee",
+        "type": "string"
       }
     ],
     "ControlledParams": [
@@ -22956,6 +23002,32 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "stake_equivalences",
         "type": "StakeEquivalence[]",
         "packageName": "/Switcheo.carbon.market"
+      }
+    ],
+    "MsgUpdateAllPoolTradingFees": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "update_pool_trading_fees_params",
+        "type": "UpdateAllPoolTradingFeesParams",
+        "packageName": "/Switcheo.carbon.market"
+      }
+    ],
+    "MsgUpdateAllPoolTradingFeesResponse": [],
+    "UpdateAllPoolTradingFeesParams": [
+      {
+        "name": "market_type",
+        "type": "string"
+      },
+      {
+        "name": "maker_fee",
+        "type": "string"
+      },
+      {
+        "name": "taker_fee",
+        "type": "string"
       }
     ]
   },
@@ -23909,10 +23981,6 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "quote_expiry_seconds",
         "type": "uint64"
-      },
-      {
-        "name": "lp_open_position_fluctuation_tolerance_ratio",
-        "type": "string"
       }
     ],
     "GenesisState": [
@@ -24124,6 +24192,11 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "market_id",
         "type": "string"
+      },
+      {
+        "name": "quote_shape",
+        "type": "Quote[]",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
       }
     ],
     "MsgRegisterToPlPoolResponse": [],

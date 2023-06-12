@@ -6,6 +6,7 @@ import {
   UpdatePlPoolParams,
   UpdateMarketConfigParams,
   MarketConfig,
+  Quote,
 } from "./pool";
 
 export const protobufPackage = "Switcheo.carbon.perpsliquidity";
@@ -46,6 +47,7 @@ export interface MsgRegisterToPlPool {
   creator: string;
   poolId: Long;
   marketId: string;
+  quoteShape: Quote[];
 }
 
 export interface MsgRegisterToPlPoolResponse {}
@@ -489,6 +491,9 @@ export const MsgRegisterToPlPool = {
     if (message.marketId !== "") {
       writer.uint32(26).string(message.marketId);
     }
+    for (const v of message.quoteShape) {
+      Quote.encode(v!, writer.uint32(34).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -496,6 +501,7 @@ export const MsgRegisterToPlPool = {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseMsgRegisterToPlPool } as MsgRegisterToPlPool;
+    message.quoteShape = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -507,6 +513,9 @@ export const MsgRegisterToPlPool = {
           break;
         case 3:
           message.marketId = reader.string();
+          break;
+        case 4:
+          message.quoteShape.push(Quote.decode(reader, reader.uint32()));
           break;
         default:
           reader.skipType(tag & 7);
@@ -530,6 +539,9 @@ export const MsgRegisterToPlPool = {
       object.marketId !== undefined && object.marketId !== null
         ? String(object.marketId)
         : "";
+    message.quoteShape = (object.quoteShape ?? []).map((e: any) =>
+      Quote.fromJSON(e)
+    );
     return message;
   },
 
@@ -539,6 +551,13 @@ export const MsgRegisterToPlPool = {
     message.poolId !== undefined &&
       (obj.poolId = (message.poolId || Long.UZERO).toString());
     message.marketId !== undefined && (obj.marketId = message.marketId);
+    if (message.quoteShape) {
+      obj.quoteShape = message.quoteShape.map((e) =>
+        e ? Quote.toJSON(e) : undefined
+      );
+    } else {
+      obj.quoteShape = [];
+    }
     return obj;
   },
 
@@ -550,6 +569,9 @@ export const MsgRegisterToPlPool = {
         ? Long.fromValue(object.poolId)
         : Long.UZERO;
     message.marketId = object.marketId ?? "";
+    message.quoteShape = (object.quoteShape ?? []).map((e) =>
+      Quote.fromPartial(e)
+    );
     return message;
   },
 };

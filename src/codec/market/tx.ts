@@ -87,6 +87,19 @@ export interface MsgSetStakeEquivalenceResponse {
   stakeEquivalences: StakeEquivalence[];
 }
 
+export interface MsgUpdateAllPoolTradingFees {
+  creator: string;
+  updatePoolTradingFeesParams?: UpdateAllPoolTradingFeesParams;
+}
+
+export interface MsgUpdateAllPoolTradingFeesResponse {}
+
+export interface UpdateAllPoolTradingFeesParams {
+  marketType: string;
+  makerFee: string;
+  takerFee: string;
+}
+
 const baseMsgDisableSpotMarket: object = { creator: "", marketName: "" };
 
 export const MsgDisableSpotMarket = {
@@ -1356,6 +1369,244 @@ export const MsgSetStakeEquivalenceResponse = {
   },
 };
 
+const baseMsgUpdateAllPoolTradingFees: object = { creator: "" };
+
+export const MsgUpdateAllPoolTradingFees = {
+  encode(
+    message: MsgUpdateAllPoolTradingFees,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.updatePoolTradingFeesParams !== undefined) {
+      UpdateAllPoolTradingFeesParams.encode(
+        message.updatePoolTradingFeesParams,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUpdateAllPoolTradingFees {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgUpdateAllPoolTradingFees,
+    } as MsgUpdateAllPoolTradingFees;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.updatePoolTradingFeesParams =
+            UpdateAllPoolTradingFeesParams.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdateAllPoolTradingFees {
+    const message = {
+      ...baseMsgUpdateAllPoolTradingFees,
+    } as MsgUpdateAllPoolTradingFees;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.updatePoolTradingFeesParams =
+      object.updatePoolTradingFeesParams !== undefined &&
+      object.updatePoolTradingFeesParams !== null
+        ? UpdateAllPoolTradingFeesParams.fromJSON(
+            object.updatePoolTradingFeesParams
+          )
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: MsgUpdateAllPoolTradingFees): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.updatePoolTradingFeesParams !== undefined &&
+      (obj.updatePoolTradingFeesParams = message.updatePoolTradingFeesParams
+        ? UpdateAllPoolTradingFeesParams.toJSON(
+            message.updatePoolTradingFeesParams
+          )
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgUpdateAllPoolTradingFees>
+  ): MsgUpdateAllPoolTradingFees {
+    const message = {
+      ...baseMsgUpdateAllPoolTradingFees,
+    } as MsgUpdateAllPoolTradingFees;
+    message.creator = object.creator ?? "";
+    message.updatePoolTradingFeesParams =
+      object.updatePoolTradingFeesParams !== undefined &&
+      object.updatePoolTradingFeesParams !== null
+        ? UpdateAllPoolTradingFeesParams.fromPartial(
+            object.updatePoolTradingFeesParams
+          )
+        : undefined;
+    return message;
+  },
+};
+
+const baseMsgUpdateAllPoolTradingFeesResponse: object = {};
+
+export const MsgUpdateAllPoolTradingFeesResponse = {
+  encode(
+    _: MsgUpdateAllPoolTradingFeesResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUpdateAllPoolTradingFeesResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgUpdateAllPoolTradingFeesResponse,
+    } as MsgUpdateAllPoolTradingFeesResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgUpdateAllPoolTradingFeesResponse {
+    const message = {
+      ...baseMsgUpdateAllPoolTradingFeesResponse,
+    } as MsgUpdateAllPoolTradingFeesResponse;
+    return message;
+  },
+
+  toJSON(_: MsgUpdateAllPoolTradingFeesResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgUpdateAllPoolTradingFeesResponse>
+  ): MsgUpdateAllPoolTradingFeesResponse {
+    const message = {
+      ...baseMsgUpdateAllPoolTradingFeesResponse,
+    } as MsgUpdateAllPoolTradingFeesResponse;
+    return message;
+  },
+};
+
+const baseUpdateAllPoolTradingFeesParams: object = {
+  marketType: "",
+  makerFee: "",
+  takerFee: "",
+};
+
+export const UpdateAllPoolTradingFeesParams = {
+  encode(
+    message: UpdateAllPoolTradingFeesParams,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.marketType !== "") {
+      writer.uint32(10).string(message.marketType);
+    }
+    if (message.makerFee !== "") {
+      writer.uint32(18).string(message.makerFee);
+    }
+    if (message.takerFee !== "") {
+      writer.uint32(26).string(message.takerFee);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): UpdateAllPoolTradingFeesParams {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseUpdateAllPoolTradingFeesParams,
+    } as UpdateAllPoolTradingFeesParams;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.marketType = reader.string();
+          break;
+        case 2:
+          message.makerFee = reader.string();
+          break;
+        case 3:
+          message.takerFee = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UpdateAllPoolTradingFeesParams {
+    const message = {
+      ...baseUpdateAllPoolTradingFeesParams,
+    } as UpdateAllPoolTradingFeesParams;
+    message.marketType =
+      object.marketType !== undefined && object.marketType !== null
+        ? String(object.marketType)
+        : "";
+    message.makerFee =
+      object.makerFee !== undefined && object.makerFee !== null
+        ? String(object.makerFee)
+        : "";
+    message.takerFee =
+      object.takerFee !== undefined && object.takerFee !== null
+        ? String(object.takerFee)
+        : "";
+    return message;
+  },
+
+  toJSON(message: UpdateAllPoolTradingFeesParams): unknown {
+    const obj: any = {};
+    message.marketType !== undefined && (obj.marketType = message.marketType);
+    message.makerFee !== undefined && (obj.makerFee = message.makerFee);
+    message.takerFee !== undefined && (obj.takerFee = message.takerFee);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<UpdateAllPoolTradingFeesParams>
+  ): UpdateAllPoolTradingFeesParams {
+    const message = {
+      ...baseUpdateAllPoolTradingFeesParams,
+    } as UpdateAllPoolTradingFeesParams;
+    message.marketType = object.marketType ?? "";
+    message.makerFee = object.makerFee ?? "";
+    message.takerFee = object.takerFee ?? "";
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
   CreateMarket(request: MsgCreateMarket): Promise<MsgCreateMarketResponse>;
@@ -1372,6 +1623,10 @@ export interface Msg {
   SetStakeEquivalence(
     request: MsgSetStakeEquivalence
   ): Promise<MsgSetStakeEquivalenceResponse>;
+  /** this line is used by starport scaffolding # proto/tx/rpc */
+  HandleUpdateAllPoolTradingFees(
+    request: MsgUpdateAllPoolTradingFees
+  ): Promise<MsgUpdateAllPoolTradingFeesResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -1387,6 +1642,8 @@ export class MsgClientImpl implements Msg {
     this.UpdateFeeTier = this.UpdateFeeTier.bind(this);
     this.RemoveFeeTier = this.RemoveFeeTier.bind(this);
     this.SetStakeEquivalence = this.SetStakeEquivalence.bind(this);
+    this.HandleUpdateAllPoolTradingFees =
+      this.HandleUpdateAllPoolTradingFees.bind(this);
   }
   CreateMarket(request: MsgCreateMarket): Promise<MsgCreateMarketResponse> {
     const data = MsgCreateMarket.encode(request).finish();
@@ -1487,6 +1744,20 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgSetStakeEquivalenceResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  HandleUpdateAllPoolTradingFees(
+    request: MsgUpdateAllPoolTradingFees
+  ): Promise<MsgUpdateAllPoolTradingFeesResponse> {
+    const data = MsgUpdateAllPoolTradingFees.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.market.Msg",
+      "HandleUpdateAllPoolTradingFees",
+      data
+    );
+    return promise.then((data) =>
+      MsgUpdateAllPoolTradingFeesResponse.decode(new _m0.Reader(data))
     );
   }
 }
