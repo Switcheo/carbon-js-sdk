@@ -82,7 +82,6 @@ class CarbonSDK {
   public readonly query: CarbonQueryClient;
   insights: InsightsQueryClient;
   hydrogen: HydrogenClient;
-  evmJsonRpc: ethers.providers.JsonRpcProvider;
 
   wallet?: CarbonWallet;
 
@@ -137,7 +136,6 @@ class CarbonSDK {
     this.insights = new InsightsQueryClient(this.networkConfig);
     this.token = opts.token ?? TokenClient.instance(this.query, this);
     this.hydrogen = new HydrogenClient(this.networkConfig, this.token);
-    this.evmJsonRpc = new ethers.providers.JsonRpcProvider(NetworkConfigs[this.network].evmJsonRpcUrl)
     this.hydrogen = HydrogenClient.instance(this.networkConfig, this.token);
 
     this.admin = new AdminModule(this);
