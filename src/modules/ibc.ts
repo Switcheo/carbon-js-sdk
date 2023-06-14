@@ -119,6 +119,15 @@ export class IBCModule extends BaseModule {
               || (firstTransferChannel === ibcBridge.channels.dst_channel && isNativeDenom)
           )) {
             if (rootPath.length === 0 && firstTransferChannel === ibcBridge.channels.src_channel) {
+              const hasCurrency = extendedChainInfo.currencies.find((currency: AppCurrency) => currency.coinMinimalDenom === checkedBaseDenom);
+              if (!hasCurrency) {
+                extendedChainInfo.currencies.push({
+                  coinDenom: tokenInfo?.symbol ?? "",
+                  coinMinimalDenom: checkedBaseDenom,
+                  coinDecimals: tokenInfo?.decimals.toNumber() ?? 0,
+                  coinGeckoId: tokenClient?.geckoTokenNames?.[coinMinimalDenom] ?? tokenClient?.geckoTokenNames?.[denomTrace.baseDenom] ?? "",
+                })
+              }
               extendedChainInfo.minimalDenomMap[coinMinimalDenom] = checkedBaseDenom;
             }
             return prev;
