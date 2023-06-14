@@ -15,7 +15,7 @@ export enum CarbonSignerTypes {
 
 
 export interface EvmSigner {
-  readonly sendEvmTransaction: (api: CarbonSDK, req: ethers.providers.TransactionRequest) => any
+  readonly sendEvmTransaction: (api: CarbonSDK, req: ethers.providers.TransactionRequest) => Promise<string>
 }
 
 export interface EIP712Signer extends EvmSigner {
@@ -67,7 +67,7 @@ export class CarbonPrivateKeySigner implements DirectCarbonSigner, AminoCarbonSi
     return await wallet.signDirect(signerAddress, signDoc);
   }
 
-  async sendEvmTransaction(api: CarbonSDK, req: ethers.providers.TransactionRequest) {
+  async sendEvmTransaction(api: CarbonSDK, req: ethers.providers.TransactionRequest): Promise<string> {
     throw new Error("signing not available");
   }
 }
@@ -82,7 +82,7 @@ export class CarbonNonSigner implements DirectCarbonSigner {
   async signDirect(): Promise<DirectSignResponse> {
     throw new Error("signing not available");
   }
-  async sendEvmTransaction(api: CarbonSDK, req: ethers.providers.TransactionRequest) {
+  async sendEvmTransaction(api: CarbonSDK, req: ethers.providers.TransactionRequest): Promise<string> {
     throw new Error("signing not available");
   }
 }
@@ -124,7 +124,7 @@ export class CarbonLedgerSigner implements AminoCarbonSigner {
       signature,
     };
   }
-  async sendEvmTransaction(api: CarbonSDK, req: ethers.providers.TransactionRequest) {
+  async sendEvmTransaction(api: CarbonSDK, req: ethers.providers.TransactionRequest): Promise<string> {
     throw new Error("signing not available");
   }
 
