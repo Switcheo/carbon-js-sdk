@@ -1064,8 +1064,9 @@ export { EventRegisterPair, EventToggleTokenConversion, EventConvertCoin, EventC
 export { QueryTokenPairsRequest, QueryTokenPairsResponse, QueryTokenPairRequest, QueryTokenPairResponse, QueryParamsRequest as QueryErc20ParamsRequest, QueryParamsResponse as QueryErc20ParamsResponse } from "./erc20/query";
 export { MsgSignData } from "./evmmerge/offchain";
 export { MsgMergeAccount, MsgMergeAccountResponse } from "./evmmerge/tx";
-export { QueryMappedAddressRequest, QueryMappedAddressResponse } from "./evmmerge/query";
+export { QueryMappedAddressRequest, QueryMappedAddressResponse, QueryAllMappedAddressRequest, QueryAllMappedAddressResponse } from "./evmmerge/query";
 export { MergeAccountEvent } from "./evmmerge/event";
+export { EthCosmosAddressWrapper } from "./evmmerge/address";
 export { InternalTransfer, Coin, QueryInternalTransfersRequest, QueryInternalTransfersResponse } from "./bank/query";
 export { CoinSpent, CoinReceived, CoinSent } from "./bank/event";
 export { Params as LiquidationParams } from "./liquidation/liquidation";
@@ -5874,10 +5875,6 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "metadata",
         "type": "Metadata",
         "packageName": "/Switcheo.carbon.coin"
-      },
-      {
-        "name": "id",
-        "type": "uint64"
       }
     ],
     "Metadata": [
@@ -15895,6 +15892,16 @@ export const EIP712Types: { [index: string]: any } = {
     ]
   },
   "/Switcheo.carbon.evmmerge": {
+    "EthCosmosAddressWrapper": [
+      {
+        "name": "eth_address",
+        "type": "string"
+      },
+      {
+        "name": "cosmos_address",
+        "type": "string"
+      }
+    ],
     "MergeAccountEvent": [
       {
         "name": "eth_address",
@@ -15941,6 +15948,25 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "mapped_address",
         "type": "string"
+      }
+    ],
+    "QueryAllMappedAddressRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllMappedAddressResponse": [
+      {
+        "name": "merged_account_addresses",
+        "type": "EthCosmosAddressWrapper[]",
+        "packageName": "/Switcheo.carbon.evmmerge"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
     "MsgMergeAccount": [
