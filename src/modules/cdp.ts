@@ -45,6 +45,7 @@ import { bnOrZero, BN_10000, BN_ONE, BN_ZERO } from "@carbon-sdk/util/number";
 import { BigNumber } from "bignumber.js";
 import { Debt, QueryAccountCollateralAllRequest, QueryAssetAllRequest, QueryTokenDebtAllRequest } from "./../codec/cdp/query";
 import BaseModule from "./base";
+import { Coin } from "@carbon-sdk/codec/cosmos/base/v1beta1/coin";
 
 export class CDPModule extends BaseModule {
   private cdpModuleAddress: string | undefined;
@@ -788,18 +789,22 @@ export class CDPModule extends BaseModule {
   public async getModuleTotalCollateralUsdVal() {
     const network = this.sdkProvider.getConfig().network;
     const collateralPoolAddress = SWTHAddress.getModuleAddress("collateral_pool", network);
-    const cdpBalances = await this.sdkProvider.query.bank.AllBalances({ address: collateralPoolAddress });
-    let allCollateralsUsdValue = BN_ZERO;
-    for (const balance of cdpBalances.balances) {
-      if (!tokenClient.isCdpToken(balance.denom)) {
-        continue;
-      }
+    const collateralPoolBalances = await this.sdkProvider.query.bank.AllBalances({ address: collateralPoolAddress });
 
-      const amount = bnOrZero(balance.amount);
-      const collateralUsdValue = await this.getCdpTokenUsdVal(balance.denom, amount);
-      allCollateralsUsdValue = allCollateralsUsdValue.plus(collateralUsdValue);
-    }
-    return allCollateralsUsdValue;
+    const cdpTokenBalances: Coin[] = (collateralPoolBalances?.balances ?? []).filter(balance => tokenClient.isCdpToken(balance.denom))
+    const cdpTokenBalancePromises: Promise<BigNumber>[] = cdpTokenBalances.map(balance => (
+      this.getCdpTokenUsdVal(balance.denom, bnOrZero(balance.amount))
+        .then((val) => bnOrZero(val))
+        .catch((err) => {
+          console.error(err);
+          return BN_ZERO
+        })
+    ))
+
+    const cdpBalances = (await Promise.all(cdpTokenBalancePromises)) ?? []
+    const totalCollateralsUsdValue = cdpBalances.reduce((prev: BigNumber, curr: BigNumber) => (prev.plus(curr)), BN_ZERO)
+
+    return totalCollateralsUsdValue;
   }
 
   public async getCdpTokenUsdVal(cdpDenom: string, amount: BigNumber) {
