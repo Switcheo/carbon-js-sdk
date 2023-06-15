@@ -3,7 +3,6 @@ import { CarbonTx } from "@carbon-sdk/util";
 import BaseModule from "./base";
 import { BigNumber } from "bignumber.js";
 import { Duration } from "@carbon-sdk/codec/google/protobuf/duration";
-import Long from "long";
 
 export class MarketModule extends BaseModule {
   public async update(params: MarketModule.UpdateMarketParams, opts?: CarbonTx.SignTxOpts) {
@@ -81,6 +80,7 @@ export namespace MarketModule {
     markPriceBand?: number;
     lastPriceProtectedBand?: number;
     isActive?: boolean;
+    tradingBandwidth?: number;
   }
 
   export interface CreateMarketParams {
@@ -120,6 +120,7 @@ export function transfromUpdateMarketParams(msg: MarketModule.UpdateMarketParams
     markPriceBand: msg.markPriceBand,
     lastPriceProtectedBand: msg.lastPriceProtectedBand,
     isActive: msg.isActive,
+    tradingBandwidth: msg.tradingBandwidth,
   };
 }
 
