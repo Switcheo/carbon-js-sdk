@@ -1123,7 +1123,7 @@ export { MsgDisableSpotMarket, MsgDisableSpotMarketResponse, MsgCreateMarket, Ms
 export { FeeStructure, FeeCategory, FeeTier, TradingFees, StakeEquivalence } from "./market/fee";
 export { CreateMarketProposal, UpdateMarketProposal, UpdatePerpetualsFundingIntervalProposal } from "./market/proposal";
 export { Params as MarketDefaultsParams, ControlledParams, Market, MarketParams, IncomingDisableSpotMarketNames } from "./market/market";
-export { QueryGetMarketRequest, QueryGetMarketResponse, QueryAllMarketRequest, QueryAllMarketResponse, QueryGetTradingFeesRequest, QueryGetTradingFeesResponse, QueryGetFeeTiersRequest, QueryGetFeeTiersResponse, QueryAllStakeEquivalenceRequest, QueryAllStakeEquivalenceResponse, QueryAllFeeStructuresRequest, QueryAllFeeStructuresResponse, QueryParamsRequest as QueryMarketParamsRequest, QueryParamsResponse as QueryMarketParamsResponse } from "./market/query";
+export { QueryGetMarketRequest, QueryGetMarketResponse, QueryAllMarketRequest, QueryAllMarketResponse, QueryGetTradingFeesRequest, QueryGetTradingFeesResponse, QueryGetFeeTiersRequest, QueryGetFeeTiersResponse, QueryAllStakeEquivalenceRequest, QueryAllStakeEquivalenceResponse, QueryAllFeeStructuresRequest, QueryAllFeeStructuresResponse, QueryUserFeeStructuresRequest, QueryUserFeeStructuresResponse, QueryParamsRequest as QueryMarketParamsRequest, QueryParamsResponse as QueryMarketParamsResponse } from "./market/query";
 export { MarketEvent } from "./market/event";
 export { MintData } from "./inflation/inflation";
 export { QueryMintDataRequest, QueryMintDataResponse } from "./inflation/query";
@@ -22781,6 +22781,19 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "QueryAllFeeStructuresRequest": [],
     "QueryAllFeeStructuresResponse": [
+      {
+        "name": "fee_structures",
+        "type": "FeeStructure[]",
+        "packageName": "/Switcheo.carbon.market"
+      }
+    ],
+    "QueryUserFeeStructuresRequest": [
+      {
+        "name": "user_address",
+        "type": "string"
+      }
+    ],
+    "QueryUserFeeStructuresResponse": [
       {
         "name": "fee_structures",
         "type": "FeeStructure[]",
