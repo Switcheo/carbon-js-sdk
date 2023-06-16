@@ -73,14 +73,7 @@ const commitTokensProcess: AminoProcess = {
       delete newInput.duration;
     }
     return { amino, input: newInput };
-  },
-  fromAminoProcess: (amino: AminoValueMap, input: any) => {
-    const newInput = input;
-    if (!input.duration) {
-      newInput.duration = "0";
-    }
-    return { amino, input: newInput };
-  },
+  }
 };
 
 const LiquidityPoolAmino: TypeUtils.SimpleMap<AminoConverter> = {
