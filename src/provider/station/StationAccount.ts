@@ -11,6 +11,8 @@ import Station from '@terra-money/station-wallet';
 import { CreateTxOptions } from '@terra-money/feather.js';
 import { TxBody } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import { AuthInfo } from "@carbon-sdk/codec/cosmos/tx/v1beta1/tx";
+import { EncodeObject } from "@cosmjs/proto-signing";
+import { Msg } from '@terra-money/feather.js/dist/core/index'
 
 const SWTH: FeeCurrency = {
   coinDenom: "SWTH",
@@ -35,11 +37,24 @@ class StationAccount {
       const txBody = TxBody.decode(doc.bodyBytes)
       const authInfo = AuthInfo.decode(doc.authInfoBytes)
 
+      const encodedMsgs: EncodeObject[] = txBody.messages.map(message => {
+        const msg = registry.decode({ ...message })
+        return {
+          typeUrl: message.typeUrl,
+          value: msg
+        }
+      })
+
+      const msgs: Msg[] = encodedMsgs.map(encodedMsg => {
+        return Msg.fromProto(encodedMsg as any);
+      });
+
       const signOpts: CreateTxOptions = {
           chainID: doc.chainId,
-          msgs: [], // TODO: encode messages
+          msgs: msgs,
           memo: txBody.memo,
       };
+
       const signedResult = await station!.sign(signOpts);
       return {
         signed: doc,
@@ -62,8 +77,6 @@ class StationAccount {
     };
         return await station!.sign(signOpts);
       };
-  
-
 
       const getAccounts = async () => {
 
