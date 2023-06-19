@@ -128,5 +128,5 @@ export class CarbonLedgerSigner implements AminoCarbonSigner {
     throw new Error("signing not available");
   }
 
-  constructor(readonly ledger: CosmosLedger) {}
+  constructor(readonly ledger: CosmosLedger) { }
 }

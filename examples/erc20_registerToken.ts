@@ -1,5 +1,5 @@
 import * as BIP39 from "bip39";
-import { CarbonSDK } from "./_sdk";
+import { CarbonTx, CarbonSDK, Models } from "./_sdk";
 import "./_setup";
 
 (async () => {
@@ -14,15 +14,18 @@ import "./_setup";
   });
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
+  const wallet = connectedSDK.wallet;
 
-  const result = await connectedSDK.plp.createPerpertualsPool({
-      name: 'USD Perp Pool 5',
-      depositDenom: 'usdc',
-      shareTokenSymbol: 'testUSD',
-      supplyCap: '1000000000000000000000000',
-      depositFeeBps: '1000',
-      withdrawalFeeBps: '1000',
-      borrowFeeBps: '1500',
-    });
+  const value = Models.MsgRegisterToken.fromPartial({
+    creator: wallet.bech32Address,
+    denom: 'cplt/1',
+  })
+
+  const result =  await wallet.sendTx(
+    {
+      typeUrl: CarbonTx.Types.MsgRegisterToken,
+      value,
+    },
+  );
   console.log(result)
 })().catch(console.error).finally(() => process.exit(0));
