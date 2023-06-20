@@ -38,6 +38,7 @@ export interface QueryAllianceResponse {
   alliance?: AllianceAsset;
 }
 
+/** @deprecated */
 export interface QueryIBCAllianceRequest {
   hash: string;
 }
@@ -89,6 +90,7 @@ export interface QueryAllianceDelegationRequest {
   pagination?: PageRequest;
 }
 
+/** @deprecated */
 export interface QueryIBCAllianceDelegationRequest {
   delegatorAddr: string;
   validatorAddr: string;
@@ -108,6 +110,7 @@ export interface QueryAllianceDelegationRewardsRequest {
   pagination?: PageRequest;
 }
 
+/** @deprecated */
 export interface QueryIBCAllianceDelegationRewardsRequest {
   delegatorAddr: string;
   validatorAddr: string;
@@ -1944,7 +1947,13 @@ export interface Query {
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse>;
   /** Query paginated alliances */
   Alliances(request: QueryAlliancesRequest): Promise<QueryAlliancesResponse>;
-  /** Query a specific alliance by ibc hash */
+  /**
+   * Query a specific alliance by ibc hash
+   * @deprecated: this endpoint will be replaced for by the encoded version
+   * of the denom e.g.: GET:/terra/alliances/ibc%2Falliance
+   *
+   * @deprecated
+   */
   IBCAlliance(request: QueryIBCAllianceRequest): Promise<QueryAllianceResponse>;
   /** Query all paginated alliance delegations */
   AllAlliancesDelegations(
@@ -1970,7 +1979,13 @@ export interface Query {
   AllianceDelegation(
     request: QueryAllianceDelegationRequest
   ): Promise<QueryAllianceDelegationResponse>;
-  /** Query a delegation to an alliance by delegator addr, validator_addr and denom */
+  /**
+   * Query a delegation to an alliance by delegator addr, validator_addr and denom
+   * @deprecated: this endpoint will be replaced for by the encoded version
+   * of the denom e.g.: GET:/terra/alliances/terradr1231/terravaloper41234/ibc%2Falliance
+   *
+   * @deprecated
+   */
   IBCAllianceDelegation(
     request: QueryIBCAllianceDelegationRequest
   ): Promise<QueryAllianceDelegationResponse>;
@@ -1978,7 +1993,13 @@ export interface Query {
   AllianceDelegationRewards(
     request: QueryAllianceDelegationRewardsRequest
   ): Promise<QueryAllianceDelegationRewardsResponse>;
-  /** Query for rewards by delegator addr, validator_addr and denom */
+  /**
+   * Query for rewards by delegator addr, validator_addr and denom
+   * @deprecated: this endpoint will be replaced for by the encoded version
+   * of the denom e.g.: GET:/terra/alliances/terradr1231/terravaloper41234/ibc%2Falliance
+   *
+   * @deprecated
+   */
   IBCAllianceDelegationRewards(
     request: QueryIBCAllianceDelegationRewardsRequest
   ): Promise<QueryAllianceDelegationRewardsResponse>;

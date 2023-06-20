@@ -14,6 +14,7 @@ import { StablecoinInterestInfo } from "./stablecoin_interest_info";
 import { EModeCategory } from "./e_mode_category";
 import { Coin } from "../cosmos/base/v1beta1/coin";
 import { RewardScheme, RewardDebt } from "./reward_scheme";
+import { CDPLiquidations } from "./cdp_liquidations";
 
 export const protobufPackage = "Switcheo.carbon.cdp";
 
@@ -233,6 +234,15 @@ export interface QueryAccountEModeRequest {
 
 export interface QueryAccountEModeResponse {
   eModeCategoryName: string;
+}
+
+export interface QueryCDPLiquidationsAllRequest {
+  pagination?: PageRequest;
+}
+
+export interface QueryCDPLiquidationsAllResponse {
+  cdpLiquidationsAll: CDPLiquidations[];
+  pagination?: PageResponse;
 }
 
 const baseQueryParamsRequest: object = {};
@@ -3806,6 +3816,171 @@ export const QueryAccountEModeResponse = {
   },
 };
 
+const baseQueryCDPLiquidationsAllRequest: object = {};
+
+export const QueryCDPLiquidationsAllRequest = {
+  encode(
+    message: QueryCDPLiquidationsAllRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryCDPLiquidationsAllRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryCDPLiquidationsAllRequest,
+    } as QueryCDPLiquidationsAllRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryCDPLiquidationsAllRequest {
+    const message = {
+      ...baseQueryCDPLiquidationsAllRequest,
+    } as QueryCDPLiquidationsAllRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryCDPLiquidationsAllRequest): unknown {
+    const obj: any = {};
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryCDPLiquidationsAllRequest>
+  ): QueryCDPLiquidationsAllRequest {
+    const message = {
+      ...baseQueryCDPLiquidationsAllRequest,
+    } as QueryCDPLiquidationsAllRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryCDPLiquidationsAllResponse: object = {};
+
+export const QueryCDPLiquidationsAllResponse = {
+  encode(
+    message: QueryCDPLiquidationsAllResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.cdpLiquidationsAll) {
+      CDPLiquidations.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryCDPLiquidationsAllResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryCDPLiquidationsAllResponse,
+    } as QueryCDPLiquidationsAllResponse;
+    message.cdpLiquidationsAll = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.cdpLiquidationsAll.push(
+            CDPLiquidations.decode(reader, reader.uint32())
+          );
+          break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryCDPLiquidationsAllResponse {
+    const message = {
+      ...baseQueryCDPLiquidationsAllResponse,
+    } as QueryCDPLiquidationsAllResponse;
+    message.cdpLiquidationsAll = (object.cdpLiquidationsAll ?? []).map(
+      (e: any) => CDPLiquidations.fromJSON(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryCDPLiquidationsAllResponse): unknown {
+    const obj: any = {};
+    if (message.cdpLiquidationsAll) {
+      obj.cdpLiquidationsAll = message.cdpLiquidationsAll.map((e) =>
+        e ? CDPLiquidations.toJSON(e) : undefined
+      );
+    } else {
+      obj.cdpLiquidationsAll = [];
+    }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryCDPLiquidationsAllResponse>
+  ): QueryCDPLiquidationsAllResponse {
+    const message = {
+      ...baseQueryCDPLiquidationsAllResponse,
+    } as QueryCDPLiquidationsAllResponse;
+    message.cdpLiquidationsAll = (object.cdpLiquidationsAll ?? []).map((e) =>
+      CDPLiquidations.fromPartial(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Parameters queries the parameters of the module. */
@@ -3884,6 +4059,10 @@ export interface Query {
   StablecoinInterest(
     request: QueryStablecoinInterestRequest
   ): Promise<QueryStablecoinInterestResponse>;
+  /** Queries a list of CDPLiquidations items. */
+  CDPLiquidationsAll(
+    request: QueryCDPLiquidationsAllRequest
+  ): Promise<QueryCDPLiquidationsAllResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -3912,6 +4091,7 @@ export class QueryClientImpl implements Query {
     this.EModeAll = this.EModeAll.bind(this);
     this.AccountEMode = this.AccountEMode.bind(this);
     this.StablecoinInterest = this.StablecoinInterest.bind(this);
+    this.CDPLiquidationsAll = this.CDPLiquidationsAll.bind(this);
   }
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
@@ -4206,6 +4386,20 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryStablecoinInterestResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  CDPLiquidationsAll(
+    request: QueryCDPLiquidationsAllRequest
+  ): Promise<QueryCDPLiquidationsAllResponse> {
+    const data = QueryCDPLiquidationsAllRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Query",
+      "CDPLiquidationsAll",
+      data
+    );
+    return promise.then((data) =>
+      QueryCDPLiquidationsAllResponse.decode(new _m0.Reader(data))
     );
   }
 }
