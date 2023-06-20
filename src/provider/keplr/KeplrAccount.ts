@@ -1,5 +1,5 @@
 import { MinGasPrice } from "@carbon-sdk/codec";
-import { CARBON_GAS_PRICE, Network, decTypeDecimals } from "@carbon-sdk/constant";
+import { CARBON_GAS_PRICE, Network, NetworkConfigs, decTypeDecimals } from "@carbon-sdk/constant";
 import { CarbonSDK, Models } from "@carbon-sdk/index";
 import { AddressUtils, CarbonTx, FetchUtils, NumberUtils } from "@carbon-sdk/util";
 import { CarbonSigner, CarbonSignerTypes } from "@carbon-sdk/wallet";
@@ -44,7 +44,7 @@ class KeplrAccount {
       },
     ];
 
-    const sendEvmTransaction = async (api: CarbonSDK, req: ethers.providers.TransactionRequest): Promise<ethers.providers.TransactionResponse> => {
+    const sendEvmTransaction = async (api: CarbonSDK, req: ethers.providers.TransactionRequest): Promise<string> => {
       const request = await populateEvmTransactionDetails(api, req)
       const signedTx = await keplr!.signEthereum(
         // carbon chain id
@@ -55,7 +55,8 @@ class KeplrAccount {
         EthSignType.TRANSACTION,
       )
       const rlpEncodedHex = `0x${Buffer.from(signedTx).toString('hex')}`;
-      return api.evmJsonRpc.sendTransaction(rlpEncodedHex)
+      const provider = new ethers.providers.JsonRpcProvider(NetworkConfigs[api.network].evmJsonRpcUrl)
+      return (await provider.sendTransaction(rlpEncodedHex)).hash
     }
 
     return {
@@ -81,7 +82,7 @@ class KeplrAccount {
       },
     ];
 
-    const sendEvmTransaction = async (api: CarbonSDK, req: ethers.providers.TransactionRequest): Promise<ethers.providers.TransactionResponse> => {
+    const sendEvmTransaction = async (api: CarbonSDK, req: ethers.providers.TransactionRequest): Promise<string> => {
       const request = await populateEvmTransactionDetails(api, req)
       const signedTx = await keplr!.signEthereum(
         // carbon chain id
@@ -92,7 +93,8 @@ class KeplrAccount {
         EthSignType.TRANSACTION,
       )
       const rlpEncodedHex = `0x${Buffer.from(signedTx).toString('hex')}`;
-      return api.evmJsonRpc.sendTransaction(rlpEncodedHex)
+      const provider = new ethers.providers.JsonRpcProvider(NetworkConfigs[api.network].evmJsonRpcUrl)
+      return (await provider.sendTransaction(rlpEncodedHex)).hash
     }
 
     return {

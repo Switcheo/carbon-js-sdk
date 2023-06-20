@@ -29,6 +29,7 @@ import { MsgGrant, MsgExecResponse, MsgExec, MsgGrantResponse, MsgRevoke, MsgRev
 import { MsgUnjail, MsgUnjailResponse } from "./cosmos/slashing/v1beta1/tx";
 import { MsgSubmitProposal as MsgGovSubmitProposal, MsgSubmitProposalResponse as MsgGovSubmitProposalResponse, MsgExecLegacyContent as MsgGovExecLegacyContent, MsgExecLegacyContentResponse as MsgGovExecLegacyContentResponse, MsgVote as MsgGovVote, MsgVoteResponse as MsgGovVoteResponse, MsgVoteWeighted as MsgGovVoteWeighted, MsgVoteWeightedResponse as MsgGovVoteWeightedResponse, MsgDeposit as MsgGovDeposit, MsgDepositResponse as MsgGovDepositResponse } from "./cosmos/gov/v1/tx";
 import { MsgSubmitProposal, MsgSubmitProposalResponse, MsgVote, MsgVoteResponse, MsgVoteWeighted, MsgVoteWeightedResponse, MsgDeposit, MsgDepositResponse } from "./cosmos/gov/v1beta1/tx";
+import { MsgCreatePlPool, MsgCreatePlPoolResponse, MsgUpdatePlPool, MsgUpdatePlPoolResponse, MsgRegisterToPlPool, MsgRegisterToPlPoolResponse, MsgDeregisterFromPlPool, MsgDeregisterFromPlPoolResponse, MsgDepositToPlPool, MsgDepositToPlPoolResponse, MsgWithdrawFromPlPool, MsgWithdrawFromPlPoolResponse, MsgUpdateMarketConfig, MsgUpdateMarketConfigResponse } from "./perpsliquidity/tx";
 import { MsgConnectionOpenInit, MsgConnectionOpenInitResponse, MsgConnectionOpenTry, MsgConnectionOpenTryResponse, MsgConnectionOpenAck, MsgConnectionOpenAckResponse, MsgConnectionOpenConfirm, MsgConnectionOpenConfirmResponse } from "./ibc/core/connection/v1/tx";
 import { MsgChannelOpenInit, MsgChannelOpenInitResponse, MsgChannelOpenTry, MsgChannelOpenTryResponse, MsgChannelOpenAck, MsgChannelOpenAckResponse, MsgChannelOpenConfirm, MsgChannelOpenConfirmResponse, MsgChannelCloseInit, MsgChannelCloseInitResponse, MsgChannelCloseConfirm, MsgChannelCloseConfirmResponse, MsgRecvPacket, MsgRecvPacketResponse, MsgTimeout, MsgTimeoutResponse, MsgTimeoutOnClose, MsgTimeoutOnCloseResponse, MsgAcknowledgement, MsgAcknowledgementResponse } from "./ibc/core/channel/v1/tx";
 import { MsgCreateClient, MsgCreateClientResponse, MsgUpdateClient, MsgUpdateClientResponse, MsgUpgradeClient, MsgUpgradeClientResponse, MsgSubmitMisbehaviour, MsgSubmitMisbehaviourResponse } from "./ibc/core/client/v1/tx";
@@ -352,6 +353,21 @@ registry.register("/Switcheo.carbon.ccm.MsgProcessCrossChainTxResponse", PolyNet
 registry.register("/Switcheo.carbon.ccm.MsgProcessZionCrossChainTxResponse", PolyNetwork.Ccm.MsgProcessZionCrossChainTxResponse);
 registry.register("/Switcheo.carbon.ccm.MsgCreateEmitEvent", PolyNetwork.Ccm.MsgCreateEmitEvent);
 registry.register("/Switcheo.carbon.ccm.MsgToggleEmitZionEvents", PolyNetwork.Ccm.MsgToggleEmitZionEvents);
+
+registry.register("/Switcheo.carbon.perpsliquidity.MsgCreatePlPool", MsgCreatePlPool);
+registry.register("/Switcheo.carbon.perpsliquidity.MsgCreatePlPoolResponse", MsgCreatePlPoolResponse);
+registry.register("/Switcheo.carbon.perpsliquidity.MsgUpdatePlPool", MsgUpdatePlPool);
+registry.register("/Switcheo.carbon.perpsliquidity.MsgUpdatePlPoolResponse", MsgUpdatePlPoolResponse);
+registry.register("/Switcheo.carbon.perpsliquidity.MsgRegisterToPlPool", MsgRegisterToPlPool);
+registry.register("/Switcheo.carbon.perpsliquidity.MsgRegisterToPlPoolResponse", MsgRegisterToPlPoolResponse);
+registry.register("/Switcheo.carbon.perpsliquidity.MsgDeregisterFromPlPool", MsgDeregisterFromPlPool);
+registry.register("/Switcheo.carbon.perpsliquidity.MsgDeregisterFromPlPoolResponse", MsgDeregisterFromPlPoolResponse);
+registry.register("/Switcheo.carbon.perpsliquidity.MsgDepositToPlPool", MsgDepositToPlPool);
+registry.register("/Switcheo.carbon.perpsliquidity.MsgDepositToPlPoolResponse", MsgDepositToPlPoolResponse);
+registry.register("/Switcheo.carbon.perpsliquidity.MsgWithdrawFromPlPool", MsgWithdrawFromPlPool);
+registry.register("/Switcheo.carbon.perpsliquidity.MsgWithdrawFromPlPoolResponse", MsgWithdrawFromPlPoolResponse);
+registry.register("/Switcheo.carbon.perpsliquidity.MsgUpdateMarketConfig", MsgUpdateMarketConfig);
+registry.register("/Switcheo.carbon.perpsliquidity.MsgUpdateMarketConfigResponse", MsgUpdateMarketConfigResponse);
 
 registry.register("/ibc.core.connection.v1.MsgConnectionOpenInit", MsgConnectionOpenInit);
 registry.register("/ibc.core.connection.v1.MsgConnectionOpenInitResponse", MsgConnectionOpenInitResponse);
@@ -832,6 +848,20 @@ export const TxTypes = {
   "MsgProcessZionCrossChainTxResponse": "/Switcheo.carbon.ccm.MsgProcessZionCrossChainTxResponse",
   "MsgCreateEmitEvent": "/Switcheo.carbon.ccm.MsgCreateEmitEvent",
   "MsgToggleEmitZionEvents": "/Switcheo.carbon.ccm.MsgToggleEmitZionEvents",
+  "MsgCreatePlPool": "/Switcheo.carbon.perpsliquidity.MsgCreatePlPool",
+  "MsgCreatePlPoolResponse": "/Switcheo.carbon.perpsliquidity.MsgCreatePlPoolResponse",
+  "MsgUpdatePlPool": "/Switcheo.carbon.perpsliquidity.MsgUpdatePlPool",
+  "MsgUpdatePlPoolResponse": "/Switcheo.carbon.perpsliquidity.MsgUpdatePlPoolResponse",
+  "MsgRegisterToPlPool": "/Switcheo.carbon.perpsliquidity.MsgRegisterToPlPool",
+  "MsgRegisterToPlPoolResponse": "/Switcheo.carbon.perpsliquidity.MsgRegisterToPlPoolResponse",
+  "MsgDeregisterFromPlPool": "/Switcheo.carbon.perpsliquidity.MsgDeregisterFromPlPool",
+  "MsgDeregisterFromPlPoolResponse": "/Switcheo.carbon.perpsliquidity.MsgDeregisterFromPlPoolResponse",
+  "MsgDepositToPlPool": "/Switcheo.carbon.perpsliquidity.MsgDepositToPlPool",
+  "MsgDepositToPlPoolResponse": "/Switcheo.carbon.perpsliquidity.MsgDepositToPlPoolResponse",
+  "MsgWithdrawFromPlPool": "/Switcheo.carbon.perpsliquidity.MsgWithdrawFromPlPool",
+  "MsgWithdrawFromPlPoolResponse": "/Switcheo.carbon.perpsliquidity.MsgWithdrawFromPlPoolResponse",
+  "MsgUpdateMarketConfig": "/Switcheo.carbon.perpsliquidity.MsgUpdateMarketConfig",
+  "MsgUpdateMarketConfigResponse": "/Switcheo.carbon.perpsliquidity.MsgUpdateMarketConfigResponse",
   "MsgConnectionOpenInit": "/ibc.core.connection.v1.MsgConnectionOpenInit",
   "MsgConnectionOpenInitResponse": "/ibc.core.connection.v1.MsgConnectionOpenInitResponse",
   "MsgConnectionOpenTry": "/ibc.core.connection.v1.MsgConnectionOpenTry",
@@ -1050,7 +1080,7 @@ export { LiquidatorPosition, MsgInitiateLiquidation, MsgInitiateLiquidationRespo
 export { IncomingLiquidations } from "./broker/incoming_liquidations";
 export { MinMaxBoundary } from "./broker/pagination";
 export { Candlestick } from "./broker/candlestick";
-export { Amm } from "./broker/amm";
+export { SpotAmm, PerpsPoolAmm, PerpsMarketAmm } from "./broker/amm";
 export { QueryCandlesticksRequest, QueryCandlesticksResponse, QueryTradesRequest, QueryTradesResponse, QueryTradesForPositionRequest, QueryTradesForPositionResponse } from "./broker/query";
 export { TradeEvent } from "./broker/event";
 export { MsgSetGasCost, MsgSetGasCostResponse, MsgSetMinGasPrice, MsgSetMinGasPriceResponse, MsgRemoveGasCost, MsgRemoveGasCostResponse, MsgRemoveMinGasPrice, MsgRemoveMinGasPriceResponse } from "./fee/tx";
@@ -1064,8 +1094,9 @@ export { EventRegisterPair, EventToggleTokenConversion, EventConvertCoin, EventC
 export { QueryTokenPairsRequest, QueryTokenPairsResponse, QueryTokenPairRequest, QueryTokenPairResponse, QueryParamsRequest as QueryErc20ParamsRequest, QueryParamsResponse as QueryErc20ParamsResponse } from "./erc20/query";
 export { MsgSignData } from "./evmmerge/offchain";
 export { MsgMergeAccount, MsgMergeAccountResponse } from "./evmmerge/tx";
-export { QueryMappedAddressRequest, QueryMappedAddressResponse } from "./evmmerge/query";
+export { QueryMappedAddressRequest, QueryMappedAddressResponse, QueryAllMappedAddressRequest, QueryAllMappedAddressResponse } from "./evmmerge/query";
 export { MergeAccountEvent } from "./evmmerge/event";
+export { EthCosmosAddressWrapper } from "./evmmerge/address";
 export { InternalTransfer, Coin, QueryInternalTransfersRequest, QueryInternalTransfersResponse } from "./bank/query";
 export { CoinSpent, CoinReceived, CoinSent } from "./bank/event";
 export { Params as LiquidationParams } from "./liquidation/liquidation";
@@ -1096,6 +1127,11 @@ export { Params as AllianceParams, RewardHistory as AllianceRewardHistory } from
 export { QueryParamsRequest as QueryMarketstatsParamsRequest, QueryParamsResponse as QueryMarketstatsParamsResponse, QueryMarketStatsRequest, QueryMarketStatsResponse } from "./marketstats/query";
 export { Params as MarketstatsParams } from "./marketstats/params";
 export { MarketStats } from "./marketstats/marketstats";
+export { MsgCreatePlPool, MsgCreatePlPoolResponse, MsgUpdatePlPool, MsgUpdatePlPoolResponse, MsgRegisterToPlPool, MsgRegisterToPlPoolResponse, MsgDeregisterFromPlPool, MsgDeregisterFromPlPoolResponse, MsgDepositToPlPool, MsgDepositToPlPoolResponse, MsgWithdrawFromPlPool, MsgWithdrawFromPlPoolResponse, MsgUpdateMarketConfig, MsgUpdateMarketConfigResponse } from "./perpsliquidity/tx";
+export { PlPool, UpdatePlPoolParams, PoolDetails, Quote, MarketConfig, UpdateMarketConfigParams, DepositToPoolParams, WithdrawFromPoolParams, DepositToBonusContractParams } from "./perpsliquidity/pool";
+export { QueryParamsRequest as QueryPerpsliquidityParamsRequest, QueryParamsResponse as QueryPerpsliquidityParamsResponse, QueryGetPlPoolRequest, QueryGetPlPoolResponse, QueryAllPlPoolsRequest, QueryAllPlPoolsResponse, QueryPlPoolMappingsRequest, QueryPlPoolMappingsResponse, QueryPlPoolMappingsResponse_PoolMappingsEntry, QueryAllPlPoolAddressRequest, QueryAllPlPoolAddressResponse, QueryAllPlPoolAddressResponse_AddressesEntry, QueryPLPoolInfoRequest, QueryPLPoolInfoResponse } from "./perpsliquidity/query";
+export { SetPoolEvent, NewPoolEvent, UpdatePoolEvent, RegisterToPoolEvent, DeregisterFromPoolEvent, SetMarketConfigEvent, DepositToPoolEvent, WithdrawFromPoolEvent } from "./perpsliquidity/event";
+export { Params as PerpsliquidityParams } from "./perpsliquidity/params";
 export { QueryAccountBalanceRequest, QueryAccountBalanceResponse } from "./evmbank/query";
 export { MsgCreateToken, CreateTokenParams, MsgCreateTokenResponse, MsgSyncToken, MsgSyncTokenResponse, MsgMintToken, MsgMintTokenResponse, MsgBindToken, MsgBindTokenResponse, MsgUnbindToken, MsgUnbindTokenResponse, MsgLinkToken, MsgLinkTokenResponse, MsgWithdraw, MsgWithdrawResponse, MsgAuthorizeBridge, MsgAuthorizeBridgeResponse, MsgDeauthorizeBridge, MsgDeauthorizeBridgeResponse, MsgEditBridgeName, MsgEditBridgeNameResponse, MsgRemoveBridge, MsgRemoveBridgeResponse, MsgUpdateToken, UpdateTokenParams, MsgUpdateTokenResponse, MsgAddBridgeAddress, MsgAddBridgeAddressResponse, MsgRemoveBridgeAddress, MsgRemoveBridgeAddressResponse, MsgCreateGroup, MsgCreateGroupResponse, MsgUpdateGroup, UpdateGroupParams, MsgUpdateGroupResponse, MsgRegisterToGroup, MsgRegisterToGroupResponse, MsgDeregisterFromGroup, MsgDeregisterFromGroupResponse, MsgDepositToGroup, MsgDepositToGroupResponse, MsgWithdrawFromGroup, MsgWithdrawFromGroupResponse, MsgUpdateGroupedTokenConfig, UpdateGroupedTokenConfigParams, MsgUpdateGroupedTokenConfigResponse } from "./coin/tx";
 export { TokenGroup, TokenGroupDetails, GroupedTokenConfig } from "./coin/group";
@@ -2936,7 +2972,7 @@ export const EIP712Types: { [index: string]: any } = {
     ]
   },
   "/Switcheo.carbon.broker": {
-    "Amm": [
+    "SpotAmm": [
       {
         "name": "pool_id",
         "type": "uint64"
@@ -2956,6 +2992,38 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "pool_route",
         "type": "uint8[]"
+      }
+    ],
+    "PerpsPoolAmm": [
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "quoting_hash",
+        "type": "uint8[]"
+      },
+      {
+        "name": "last_quoted_at",
+        "type": "uint64"
+      }
+    ],
+    "PerpsMarketAmm": [
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "market",
+        "type": "string"
+      },
+      {
+        "name": "orders",
+        "type": "string[]"
+      },
+      {
+        "name": "last_index_price",
+        "type": "string"
       }
     ],
     "Candlestick": [
@@ -3096,8 +3164,8 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "GenesisState": [
       {
-        "name": "amms",
-        "type": "Amm[]",
+        "name": "spot_amms",
+        "type": "SpotAmm[]",
         "packageName": "/Switcheo.carbon.broker"
       }
     ],
@@ -5874,10 +5942,6 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "metadata",
         "type": "Metadata",
         "packageName": "/Switcheo.carbon.coin"
-      },
-      {
-        "name": "id",
-        "type": "uint64"
       }
     ],
     "Metadata": [
@@ -15895,6 +15959,16 @@ export const EIP712Types: { [index: string]: any } = {
     ]
   },
   "/Switcheo.carbon.evmmerge": {
+    "EthCosmosAddressWrapper": [
+      {
+        "name": "eth_address",
+        "type": "string"
+      },
+      {
+        "name": "cosmos_address",
+        "type": "string"
+      }
+    ],
     "MergeAccountEvent": [
       {
         "name": "eth_address",
@@ -15941,6 +16015,25 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "mapped_address",
         "type": "string"
+      }
+    ],
+    "QueryAllMappedAddressRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllMappedAddressResponse": [
+      {
+        "name": "merged_account_addresses",
+        "type": "EthCosmosAddressWrapper[]",
+        "packageName": "/Switcheo.carbon.evmmerge"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
     "MsgMergeAccount": [
@@ -23620,6 +23713,588 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "params",
         "type": "Params",
         "packageName": "/Switcheo.carbon.oracle"
+      }
+    ]
+  },
+  "/Switcheo.carbon.perpsliquidity": {
+    "PlPool": [
+      {
+        "name": "id",
+        "type": "uint64"
+      },
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "deposit_denom",
+        "type": "string"
+      },
+      {
+        "name": "share_denom",
+        "type": "string"
+      },
+      {
+        "name": "vault_address",
+        "type": "string"
+      },
+      {
+        "name": "supply_cap",
+        "type": "string"
+      },
+      {
+        "name": "deposit_fee_bps",
+        "type": "string"
+      },
+      {
+        "name": "withdrawal_fee_bps",
+        "type": "string"
+      },
+      {
+        "name": "borrow_fee_bps",
+        "type": "string"
+      }
+    ],
+    "UpdatePlPoolParams": [
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "supply_cap",
+        "type": "string"
+      },
+      {
+        "name": "deposit_fee_bps",
+        "type": "uint64"
+      },
+      {
+        "name": "withdrawal_fee_bps",
+        "type": "uint64"
+      },
+      {
+        "name": "borrow_fee_bps",
+        "type": "uint64"
+      }
+    ],
+    "PoolDetails": [
+      {
+        "name": "pool",
+        "type": "PlPool",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      },
+      {
+        "name": "registered_markets",
+        "type": "MarketConfig[]",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      }
+    ],
+    "Quote": [
+      {
+        "name": "quote_price_type",
+        "type": "string"
+      },
+      {
+        "name": "quote_price_value",
+        "type": "string"
+      },
+      {
+        "name": "quote_amount_ratio",
+        "type": "string"
+      }
+    ],
+    "MarketConfig": [
+      {
+        "name": "market_id",
+        "type": "string"
+      },
+      {
+        "name": "max_liquidity_ratio",
+        "type": "string"
+      },
+      {
+        "name": "borrow_fee_multiplier",
+        "type": "string"
+      },
+      {
+        "name": "mode",
+        "type": "string"
+      },
+      {
+        "name": "quote_shape",
+        "type": "Quote[]",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      }
+    ],
+    "UpdateMarketConfigParams": [
+      {
+        "name": "max_liquidity_ratio",
+        "type": "string"
+      },
+      {
+        "name": "borrow_fee_multiplier",
+        "type": "string"
+      },
+      {
+        "name": "mode",
+        "type": "string"
+      },
+      {
+        "name": "quote_shape",
+        "type": "Quote[]",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      }
+    ],
+    "DepositToPoolParams": [
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "from_account",
+        "type": "string"
+      },
+      {
+        "name": "deposit_amount",
+        "type": "string"
+      },
+      {
+        "name": "min_shares_to_receive",
+        "type": "string"
+      }
+    ],
+    "WithdrawFromPoolParams": [
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "to_account",
+        "type": "string"
+      },
+      {
+        "name": "share_amount",
+        "type": "string"
+      },
+      {
+        "name": "min_withdraw_amount",
+        "type": "string"
+      }
+    ],
+    "DepositToBonusContractParams": [
+      {
+        "name": "bonus_vault_id",
+        "type": "uint64"
+      },
+      {
+        "name": "is_long_unbond",
+        "type": "bool"
+      }
+    ],
+    "SetPoolEvent": [
+      {
+        "name": "pool",
+        "type": "PlPool",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      },
+      {
+        "name": "type",
+        "type": "string"
+      }
+    ],
+    "NewPoolEvent": [
+      {
+        "name": "pool",
+        "type": "PlPool",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      }
+    ],
+    "UpdatePoolEvent": [
+      {
+        "name": "pool",
+        "type": "PlPool",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      }
+    ],
+    "RegisterToPoolEvent": [
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "market_id",
+        "type": "string"
+      }
+    ],
+    "DeregisterFromPoolEvent": [
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "market_id",
+        "type": "string"
+      }
+    ],
+    "SetMarketConfigEvent": [
+      {
+        "name": "market_config",
+        "type": "MarketConfig",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      }
+    ],
+    "DepositToPoolEvent": [
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "string"
+      },
+      {
+        "name": "share_denom",
+        "type": "string"
+      },
+      {
+        "name": "share_amount",
+        "type": "string"
+      },
+      {
+        "name": "initial_share_amount_burnt",
+        "type": "string"
+      },
+      {
+        "name": "depositor",
+        "type": "string"
+      }
+    ],
+    "WithdrawFromPoolEvent": [
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "string"
+      },
+      {
+        "name": "share_denom",
+        "type": "string"
+      },
+      {
+        "name": "share_amount",
+        "type": "string"
+      },
+      {
+        "name": "withdrawer",
+        "type": "string"
+      }
+    ],
+    "Params": [
+      {
+        "name": "quote_index_price_fluctuation_tolerance_ratio",
+        "type": "string"
+      },
+      {
+        "name": "quote_expiry_seconds",
+        "type": "uint64"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      },
+      {
+        "name": "pools",
+        "type": "PlPool[]",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      },
+      {
+        "name": "market_config_with_pool_ids",
+        "type": "MarketConfigWithPoolId[]",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      }
+    ],
+    "MarketConfigWithPoolId": [
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "market_config",
+        "type": "MarketConfig",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      }
+    ],
+    "QueryParamsRequest": [],
+    "QueryParamsResponse": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      }
+    ],
+    "QueryGetPlPoolRequest": [
+      {
+        "name": "pool_id",
+        "type": "string"
+      }
+    ],
+    "QueryGetPlPoolResponse": [
+      {
+        "name": "pool",
+        "type": "PoolDetails",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      }
+    ],
+    "QueryAllPlPoolsRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllPlPoolsResponse": [
+      {
+        "name": "pools",
+        "type": "PoolDetails[]",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryPlPoolMappingsRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryPlPoolMappingsResponse": [
+      {
+        "name": "pool_mappings",
+        "type": "PoolMappingsEntry[]",
+        "packageName": "/Switcheo.carbon.perpsliquidity.QueryPlPoolMappingsResponse"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllPlPoolAddressRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllPlPoolAddressResponse": [
+      {
+        "name": "addresses",
+        "type": "AddressesEntry[]",
+        "packageName": "/Switcheo.carbon.perpsliquidity.QueryAllPlPoolAddressResponse"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryPLPoolInfoRequest": [
+      {
+        "name": "pool_id",
+        "type": "string"
+      }
+    ],
+    "QueryPLPoolInfoResponse": [
+      {
+        "name": "total_share_amount",
+        "type": "string"
+      },
+      {
+        "name": "total_underlying_amount",
+        "type": "string"
+      },
+      {
+        "name": "available_amount",
+        "type": "string"
+      },
+      {
+        "name": "total_in_position_amount",
+        "type": "string"
+      },
+      {
+        "name": "total_upnl_amount",
+        "type": "string"
+      }
+    ],
+    "MsgCreatePlPool": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "deposit_denom",
+        "type": "string"
+      },
+      {
+        "name": "share_token_symbol",
+        "type": "string"
+      },
+      {
+        "name": "supply_cap",
+        "type": "string"
+      },
+      {
+        "name": "deposit_fee_bps",
+        "type": "string"
+      },
+      {
+        "name": "withdrawal_fee_bps",
+        "type": "string"
+      },
+      {
+        "name": "borrow_fee_bps",
+        "type": "string"
+      }
+    ],
+    "MsgCreatePlPoolResponse": [
+      {
+        "name": "pool",
+        "type": "PlPool",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      }
+    ],
+    "MsgUpdatePlPool": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "update_pool_params",
+        "type": "UpdatePlPoolParams",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      }
+    ],
+    "MsgUpdatePlPoolResponse": [
+      {
+        "name": "pool",
+        "type": "PlPool",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      }
+    ],
+    "MsgRegisterToPlPool": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "market_id",
+        "type": "string"
+      },
+      {
+        "name": "quote_shape",
+        "type": "Quote[]",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      }
+    ],
+    "MsgRegisterToPlPoolResponse": [],
+    "MsgDeregisterFromPlPool": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "market_id",
+        "type": "string"
+      }
+    ],
+    "MsgDeregisterFromPlPoolResponse": [],
+    "MsgDepositToPlPool": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "deposit_amount",
+        "type": "string"
+      },
+      {
+        "name": "min_share_amount",
+        "type": "string"
+      }
+    ],
+    "MsgDepositToPlPoolResponse": [],
+    "MsgWithdrawFromPlPool": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "share_amount",
+        "type": "string"
+      },
+      {
+        "name": "min_receive_amount",
+        "type": "string"
+      }
+    ],
+    "MsgWithdrawFromPlPoolResponse": [],
+    "MsgUpdateMarketConfig": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "market_id",
+        "type": "string"
+      },
+      {
+        "name": "update_market_config_params",
+        "type": "UpdateMarketConfigParams",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      }
+    ],
+    "MsgUpdateMarketConfigResponse": [
+      {
+        "name": "market_config",
+        "type": "MarketConfig",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
       }
     ]
   },

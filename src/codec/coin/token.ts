@@ -28,7 +28,6 @@ export interface BalanceChange {
   type: string;
   location: string;
   metadata?: Metadata;
-  id: Long;
 }
 
 export interface Metadata {
@@ -260,7 +259,6 @@ const baseBalanceChange: object = {
   amount: "",
   type: "",
   location: "",
-  id: Long.UZERO,
 };
 
 export const BalanceChange = {
@@ -288,9 +286,6 @@ export const BalanceChange = {
     }
     if (message.metadata !== undefined) {
       Metadata.encode(message.metadata, writer.uint32(58).fork()).ldelim();
-    }
-    if (!message.id.isZero()) {
-      writer.uint32(64).uint64(message.id);
     }
     return writer;
   },
@@ -322,9 +317,6 @@ export const BalanceChange = {
           break;
         case 7:
           message.metadata = Metadata.decode(reader, reader.uint32());
-          break;
-        case 8:
-          message.id = reader.uint64() as Long;
           break;
         default:
           reader.skipType(tag & 7);
@@ -364,10 +356,6 @@ export const BalanceChange = {
       object.metadata !== undefined && object.metadata !== null
         ? Metadata.fromJSON(object.metadata)
         : undefined;
-    message.id =
-      object.id !== undefined && object.id !== null
-        ? Long.fromString(object.id)
-        : Long.UZERO;
     return message;
   },
 
@@ -384,8 +372,6 @@ export const BalanceChange = {
       (obj.metadata = message.metadata
         ? Metadata.toJSON(message.metadata)
         : undefined);
-    message.id !== undefined &&
-      (obj.id = (message.id || Long.UZERO).toString());
     return obj;
   },
 
@@ -404,10 +390,6 @@ export const BalanceChange = {
       object.metadata !== undefined && object.metadata !== null
         ? Metadata.fromPartial(object.metadata)
         : undefined;
-    message.id =
-      object.id !== undefined && object.id !== null
-        ? Long.fromValue(object.id)
-        : Long.UZERO;
     return message;
   },
 };

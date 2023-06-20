@@ -11,9 +11,6 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
   StakePoolToken: "liquiditypool/StakePoolToken",
   UnstakePoolToken: "liquiditypool/UnstakePoolToken",
   ClaimPoolRewards: "liquiditypool/ClaimPoolRewards",
-  CreatePerpPool: "liquiditypool/CreatePerpPool",
-  DepositToPerpPool: "liquiditypool/DepositToPerpPool",
-  WithdrawFromPerpPool: "liquiditypool/WithdrawFromPerpPool",
 };
 
 const MsgCreatePool: AminoInit = {
@@ -76,17 +73,8 @@ const commitTokensProcess: AminoProcess = {
       delete newInput.duration;
     }
     return { amino, input: newInput };
-  },
-  fromAminoProcess: (amino: AminoValueMap, input: any) => {
-    const newInput = input;
-    if (!input.duration) {
-      newInput.duration = "0";
-    }
-    return { amino, input: newInput };
-  },
+  }
 };
-
-
 
 const LiquidityPoolAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgCreatePool]: generateAminoType(MsgCreatePool),
