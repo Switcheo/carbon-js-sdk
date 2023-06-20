@@ -78,10 +78,8 @@ class TokenClient {
 
     // non-blocking reload
     try {
-      await Promise.allSettled([
-        this.reloadDenomTraces(),
-        this.reloadDenomGeckoMap().finally(() => this.reloadUSDValues())
-      ]);
+      this.reloadDenomTraces();
+      this.reloadDenomGeckoMap().finally(() => this.reloadUSDValues());
     } catch (error) {
       console.error("failed to reload usd values");
       console.error(error);
