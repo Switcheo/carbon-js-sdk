@@ -1,22 +1,12 @@
-import { PoolDetails, QueryAllPlPoolsResponse, QueryPLPoolInfoResponse, UpdatePlPoolParams } from "@carbon-sdk/codec";
-import { CarbonTx, Models } from "..";
+import { MsgCreatePlPool, MsgDepositToPlPool, MsgDeregisterFromPlPool, MsgRegisterToPlPool, MsgUpdatePlPool, MsgWithdrawFromPlPool, UpdatePlPoolParams } from "@carbon-sdk/codec";
+import { CarbonTx } from "@carbon-sdk/util";
 import BaseModule from "./base";
 
 export class PerpsLiquidityModule extends BaseModule {
-  public async getPerpPools(): Promise<PoolDetails[]> {
-    const fetchDataResponse: QueryAllPlPoolsResponse = await this.sdkProvider.query.perpsliquidity.PoolAll({});
-    return fetchDataResponse?.pools ?? []
-  }
-
-  public async getPerpPoolInfo(poolId: string): Promise<QueryPLPoolInfoResponse> {
-    const fetchDataResponse: QueryPLPoolInfoResponse = await this.sdkProvider.query.perpsliquidity.PoolInfo({ poolId });
-    return fetchDataResponse ?? []
-  }
-
   public async createPerpertualsPool(params: PerpsLiquidityModule.CreatePerpetualPoolParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Models.MsgCreatePlPool.fromPartial({
+    const value = MsgCreatePlPool.fromPartial({
       creator: wallet.bech32Address,
       name: params.name,
       depositDenom: params.depositDenom,
@@ -47,7 +37,7 @@ export class PerpsLiquidityModule extends BaseModule {
       withdrawalFeeBps: params.withdrawalFeeBps,
     }
 
-    const value = Models.MsgUpdatePlPool.fromPartial({
+    const value = MsgUpdatePlPool.fromPartial({
       creator: wallet.bech32Address,
       poolId: params.poolId,
       updatePoolParams: updatePoolParam,
@@ -65,7 +55,7 @@ export class PerpsLiquidityModule extends BaseModule {
   public async depositToPerpetualsPool(params: PerpsLiquidityModule.DepositToPerpetualsPoolParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Models.MsgDepositToPlPool.fromPartial({
+    const value = MsgDepositToPlPool.fromPartial({
       creator: wallet.bech32Address,
       poolId: params.poolId,
       depositAmount: params.depositAmount,
@@ -84,7 +74,7 @@ export class PerpsLiquidityModule extends BaseModule {
   public async withdrawFromPerpetualsPool(params: PerpsLiquidityModule.WithdrawFromPerpetualsPoolParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Models.MsgWithdrawFromPlPool.fromPartial({
+    const value = MsgWithdrawFromPlPool.fromPartial({
       creator: wallet.bech32Address,
       poolId: params.poolId,
       shareAmount: params.shareAmount,
@@ -103,7 +93,7 @@ export class PerpsLiquidityModule extends BaseModule {
   public async registerToPlPool(params: PerpsLiquidityModule.RegisterToPlPoolParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Models.MsgRegisterToPlPool.fromPartial({
+    const value = MsgRegisterToPlPool.fromPartial({
       creator: wallet.bech32Address,
       poolId: params.poolId,
       marketId: params.marketId,
@@ -121,7 +111,7 @@ export class PerpsLiquidityModule extends BaseModule {
   public async deregisterFromPlPool(params: PerpsLiquidityModule.DeregisterFromPlPoolParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Models.MsgDeregisterFromPlPool.fromPartial({
+    const value = MsgDeregisterFromPlPool.fromPartial({
       creator: wallet.bech32Address,
       marketId: params.marketId,
     })
