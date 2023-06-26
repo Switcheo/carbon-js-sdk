@@ -6,11 +6,10 @@
 
 import { default as CosmosLedgerApp } from "ledger-cosmos-js";
 
+import * as bech32 from "bech32";
+import { ethers } from "ethers";
 import { signatureImport } from "secp256k1";
 const semver = require("semver");
-import * as crypto from "crypto";
-import Ripemd160 from "ripemd160";
-import * as bech32 from "bech32";
 
 const INTERACTION_TIMEOUT = 120; // seconds to wait for user action on Ledger, currently is always limited to 60
 const REQUIRED_COSMOS_APP_VERSION = "1.5.3";
@@ -304,9 +303,9 @@ function getBech32FromPK(hrp: any, pk: any) {
   if (pk.length !== 33) {
     throw new Error("expected compressed public key [31 bytes]");
   }
-  const hashSha256 = crypto.createHash("sha256").update(pk).digest();
-  const hashRip = new Ripemd160().update(hashSha256).digest();
-  return bech32.encode(hrp, bech32.toWords(hashRip));
+  const hashSha256 = ethers.utils.sha256(pk);
+  const hashRip = ethers.utils.ripemd160(hashSha256);
+  return bech32.encode(hrp, bech32.toWords(Buffer.from(hashRip.replace(/^0x/, ""), "hex")));
 }
 
 function isWindows(platform: string) {

@@ -18,11 +18,13 @@ import { GovUtils, TypeUtils } from "@carbon-sdk/util";
 import * as CarbonTx from "@carbon-sdk/util/tx";
 import { AminoConverter } from "@cosmjs/stargate";
 import { AminoInit, ConvertEncType, AminoProcess, AminoValueMap, generateAminoType, mapEachIndiv } from "../utils";
+import { TextProposal } from "@carbon-sdk/codec/cosmos/gov/v1beta1/gov";
 
 const TxTypes: TypeUtils.SimpleMap<string> = {
   SubmitProposal: "cosmos-sdk/MsgSubmitProposal",
   Deposit: "cosmos-sdk/MsgDeposit",
   Vote: "cosmos-sdk/MsgVote",
+  TextProposal: "cosmos-sdk/TextProposal"
 };
 
 const ContentTypes: TypeUtils.SimpleMap<string> = {
@@ -44,10 +46,15 @@ const ContentTypes: TypeUtils.SimpleMap<string> = {
   [GovUtils.ProposalTypes.DeregisterFromGroup]: "coin.DeregisterFromGroupProposal",
   [GovUtils.ProposalTypes.WithdrawFromGroup]: "coin/WithdrawFromGroupProposal",
   [GovUtils.ProposalTypes.UpdateGroupTokenConfig]: "coin.UpdateGroupTokenConfigProposal",
+  [GovUtils.ProposalTypes.Text]: "cosmos-sdk/TextProposal",
 };
 
 const SubmitProposalMsg: AminoInit = {
   aminoType: TxTypes.SubmitProposal,
+  valueMap: {},
+};
+const MsgTextProposal: AminoInit = {
+  aminoType: TxTypes.TextProposal,
   valueMap: {},
 };
 
@@ -268,16 +275,16 @@ const checkDecodeProposal = (content: any, amino: AminoValueMap): AminoProposalR
     case GovUtils.ProposalTypes.CreateToken:
       newAmino.content = { ...CreateToken };
       break;
-    case GovUtils.ProposalTypes.CreateGroup: 
+    case GovUtils.ProposalTypes.CreateGroup:
       newAmino.content = { ...CreateGroup };
       break;
     case GovUtils.ProposalTypes.UpdateGroup:
       newAmino.content = { ...UpdateGroup };
       break;
-    case GovUtils.ProposalTypes.RegisterToGroup: 
+    case GovUtils.ProposalTypes.RegisterToGroup:
       newAmino.content = { ...RegisterToGroup };
       break;
-    case GovUtils.ProposalTypes.DeregisterFromGroup: 
+    case GovUtils.ProposalTypes.DeregisterFromGroup:
       newAmino.content = { ...DeregisterFromGroup };
       break;
     case GovUtils.ProposalTypes.UpdateGroupTokenConfig:
@@ -312,6 +319,9 @@ const checkDecodeProposal = (content: any, amino: AminoValueMap): AminoProposalR
       break;
     case GovUtils.ProposalTypes.UpdateMarket:
       newAmino.content = { ...UpdateMarket };
+      break;
+    case GovUtils.ProposalTypes.Text:
+      newAmino.content = {};
       break;
     default:
       break;
@@ -504,6 +514,19 @@ const checkEncodeProposal = (content: any, amino: AminoValueMap): DirectProposal
           ...amino,
         },
       };
+      case ContentTypes[GovUtils.ProposalTypes.Text]:
+        const textProposal = TextProposal.fromPartial({
+          ...content.value,
+        });
+        return {
+          newContent: {
+            typeUrl: GovUtils.ProposalTypes.Text,
+            value: TextProposal.encode(textProposal).finish(),
+          },
+          newAmino: {
+            ...amino,
+          },
+        };
     default:
       return {
         newContent: {
@@ -546,6 +569,7 @@ const GovAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgSubmitProposal]: generateAminoType(SubmitProposalMsg, proposalAminoProcess),
   [CarbonTx.Types.MsgDeposit]: generateAminoType(MsgDeposit),
   [CarbonTx.Types.MsgVote]: generateAminoType(MsgVote),
+  [CarbonTx.Types.TextProposal]: generateAminoType(MsgTextProposal)
 };
 
 export default GovAmino;
