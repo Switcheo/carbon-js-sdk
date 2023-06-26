@@ -29,6 +29,7 @@ import {
   WsSubscriptionParams,
   WsSubscribeCDPTokenSupply,
   WsSubscribeCDPTokenSupplyByDenom,
+  WsSubscribeTokenSupplyByDenom,
 } from "./types";
 
 export const generateChannelId = (params: WsSubscriptionParams): string => {
@@ -143,6 +144,10 @@ export const generateChannelId = (params: WsSubscriptionParams): string => {
     }
     case WSChannel.cdp_token_supply_by_denom: {
       const { channel, denom } = params as WsSubscribeCDPTokenSupplyByDenom;
+      return [channel, denom].join(":");
+    }
+    case WSChannel.token_supply_by_denom: {
+      const { channel, denom } = params as WsSubscribeTokenSupplyByDenom;
       return [channel, denom].join(":");
     }
     default:
@@ -291,6 +296,12 @@ export const parseChannelId = (rawChannelId: string): WsSubscriptionParams => {
         channel,
         denom: param0,
       } as WsSubscribeCDPTokenSupplyByDenom;
+
+    case WSChannel.token_supply_by_denom:
+      return {
+        channel,
+        denom: param0,
+      } as WsSubscribeTokenSupplyByDenom;
     default:
       throw new Error("Error parsing channelId");
   }
