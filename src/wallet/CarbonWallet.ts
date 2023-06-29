@@ -538,13 +538,14 @@ export class CarbonWallet {
   }
 
   async sendTxs(msgs: EncodeObject[], opts?: CarbonTx.SignTxOpts): Promise<CarbonWallet.SendTxResponse> {
-    await this.reloadMergeAccountStatus()
     if (this.triggerMerge || opts?.triggerMerge) {
       await this.sendInitialMergeAccountTx(msgs, opts)
     }
     try {
-      const result = await this.signAndBroadcast(msgs, opts, { mode: BroadcastTxMode.BroadcastTxBlock });
-      await this.reloadMergeAccountStatus()
+      const result = await this.signAndBroadcast(msgs, opts, { mode: BroadcastTxMode.BroadcastTxBlock })
+      if (msgs[0].typeUrl === CarbonTx.Types.MsgMergeAccount) {
+        this.updateMergeAccountStatus()
+      }
       await GenericUtils.callIgnoreError(() => this.onBroadcastTxSuccess?.(msgs));
       return result as DeliverTxResponse;
     }
@@ -557,6 +558,7 @@ export class CarbonWallet {
   async sendInitialMergeAccountTx(msgs: EncodeObject[], opts?: CarbonTx.SignTxOpts) {
     let msg: EncodeObject
     try {
+      await this.reloadMergeAccountStatus()
       if (!this.accountMerged && msgs[0].typeUrl !== CarbonTx.Types.MsgMergeAccount) {
         const account = await this.getQueryClient().auth.Account({ address: this.bech32Address }).then(res => res.account).catch(async (err: Error) => {
           return (await this.getQueryClient().auth.Account({ address: this.evmBech32Address })).account
@@ -575,9 +577,7 @@ export class CarbonWallet {
           accountNumber: accountNumber.toNumber()
         }
         await this.signAndBroadcast([msg], modifiedOpts, { mode: BroadcastTxMode.BroadcastTxBlock })
-        await this.reloadMergeAccountStatus()
-        // invalidate sequence after merging
-        this.sequenceInvalidated = true
+        this.updateMergeAccountStatus()
         await GenericUtils.callIgnoreError(() => this.onBroadcastTxSuccess?.([msg]));
       }
     }
@@ -755,9 +755,16 @@ export class CarbonWallet {
       } else {
         this.accountMerged = false
       }
+      this.sequenceInvalidated = true
     } catch (error: any) {
       throw error;
     }
+  }
+
+  public updateMergeAccountStatus() {
+    this.accountMerged = true
+    // invalidate sequence after merging
+    this.sequenceInvalidated = true
   }
 
   public isEvmWallet() {

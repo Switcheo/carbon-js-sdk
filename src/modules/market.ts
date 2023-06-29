@@ -1,9 +1,9 @@
-import { MsgUpdateMarket, MsgCreateMarket, MsgDisableSpotMarket, MsgAddFeeTier, MsgUpdateFeeTier, MsgSetStakeEquivalence, MsgRemoveFeeTier } from "@carbon-sdk/codec/market/tx";
-import { CarbonTx } from "@carbon-sdk/util";
-import BaseModule from "./base";
-import { BigNumber } from "bignumber.js";
-import { Duration } from "@carbon-sdk/codec/google/protobuf/duration";
 import { FeeCategory, FeeTier, QueryGetFeeTiersResponse, QueryGetTradingFeesResponse, TradingFees } from "@carbon-sdk/codec";
+import { Duration } from "@carbon-sdk/codec/google/protobuf/duration";
+import { MsgAddFeeTier, MsgCreateMarket, MsgDisableSpotMarket, MsgRemoveFeeTier, MsgSetStakeEquivalence, MsgUpdateFeeTier, MsgUpdateMarket } from "@carbon-sdk/codec/market/tx";
+import { CarbonTx } from "@carbon-sdk/util";
+import { BigNumber } from "bignumber.js";
+import BaseModule from "./base";
 
 export class MarketModule extends BaseModule {
 
@@ -169,6 +169,7 @@ export namespace MarketModule {
     markPriceBand?: number;
     lastPriceProtectedBand?: number;
     isActive?: boolean;
+    tradingBandwidth?: number;
   }
 
   export interface CreateMarketParams {
@@ -247,6 +248,7 @@ export function transfromUpdateMarketParams(msg: MarketModule.UpdateMarketParams
     markPriceBand: msg.markPriceBand,
     lastPriceProtectedBand: msg.lastPriceProtectedBand,
     isActive: msg.isActive,
+    tradingBandwidth: msg.tradingBandwidth,
   };
 }
 

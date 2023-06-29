@@ -21,6 +21,16 @@ export interface CoinSent {
   amount: Coin[];
 }
 
+export interface CoinMint {
+  minter: string;
+  amount: Coin[];
+}
+
+export interface CoinBurn {
+  burner: string;
+  amount: Coin[];
+}
+
 const baseCoinSpent: object = { spender: "" };
 
 export const CoinSpent = {
@@ -229,6 +239,140 @@ export const CoinSent = {
     const message = { ...baseCoinSent } as CoinSent;
     message.sender = object.sender ?? "";
     message.receiver = object.receiver ?? "";
+    message.amount = (object.amount ?? []).map((e) => Coin.fromPartial(e));
+    return message;
+  },
+};
+
+const baseCoinMint: object = { minter: "" };
+
+export const CoinMint = {
+  encode(
+    message: CoinMint,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.minter !== "") {
+      writer.uint32(10).string(message.minter);
+    }
+    for (const v of message.amount) {
+      Coin.encode(v!, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): CoinMint {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseCoinMint } as CoinMint;
+    message.amount = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.minter = reader.string();
+          break;
+        case 2:
+          message.amount.push(Coin.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CoinMint {
+    const message = { ...baseCoinMint } as CoinMint;
+    message.minter =
+      object.minter !== undefined && object.minter !== null
+        ? String(object.minter)
+        : "";
+    message.amount = (object.amount ?? []).map((e: any) => Coin.fromJSON(e));
+    return message;
+  },
+
+  toJSON(message: CoinMint): unknown {
+    const obj: any = {};
+    message.minter !== undefined && (obj.minter = message.minter);
+    if (message.amount) {
+      obj.amount = message.amount.map((e) => (e ? Coin.toJSON(e) : undefined));
+    } else {
+      obj.amount = [];
+    }
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<CoinMint>): CoinMint {
+    const message = { ...baseCoinMint } as CoinMint;
+    message.minter = object.minter ?? "";
+    message.amount = (object.amount ?? []).map((e) => Coin.fromPartial(e));
+    return message;
+  },
+};
+
+const baseCoinBurn: object = { burner: "" };
+
+export const CoinBurn = {
+  encode(
+    message: CoinBurn,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.burner !== "") {
+      writer.uint32(10).string(message.burner);
+    }
+    for (const v of message.amount) {
+      Coin.encode(v!, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): CoinBurn {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseCoinBurn } as CoinBurn;
+    message.amount = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.burner = reader.string();
+          break;
+        case 2:
+          message.amount.push(Coin.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CoinBurn {
+    const message = { ...baseCoinBurn } as CoinBurn;
+    message.burner =
+      object.burner !== undefined && object.burner !== null
+        ? String(object.burner)
+        : "";
+    message.amount = (object.amount ?? []).map((e: any) => Coin.fromJSON(e));
+    return message;
+  },
+
+  toJSON(message: CoinBurn): unknown {
+    const obj: any = {};
+    message.burner !== undefined && (obj.burner = message.burner);
+    if (message.amount) {
+      obj.amount = message.amount.map((e) => (e ? Coin.toJSON(e) : undefined));
+    } else {
+      obj.amount = [];
+    }
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<CoinBurn>): CoinBurn {
+    const message = { ...baseCoinBurn } as CoinBurn;
+    message.burner = object.burner ?? "";
     message.amount = (object.amount ?? []).map((e) => Coin.fromPartial(e));
     return message;
   },

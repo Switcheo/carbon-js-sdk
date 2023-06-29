@@ -79,10 +79,10 @@ export class IBCModule extends BaseModule {
     );
   }
 
-  async getChainInfoMap(): Promise<TypeUtils.SimpleMap<ExtendedChainInfo>> {
+  async getChainInfoMap(denomTraces?: TypeUtils.SimpleMap<DenomTraceExtended>): Promise<TypeUtils.SimpleMap<ExtendedChainInfo>> {
     const tokenClient = this.sdkProvider.getTokenClient();
     const ibcBridges = tokenClient.bridges.ibc;
-    const denomTracesArr = Object.values(tokenClient.denomTraces);
+    const denomTracesArr = Object.values(denomTraces ?? tokenClient.denomTraces);
     const chainsResponse = await fetch(`https://chains.cosmos.directory/`);
     const chainsData = (await chainsResponse.json() as CosmosChainsObj);
     const chainInfoMap: TypeUtils.SimpleMap<ExtendedChainInfo> = {};

@@ -1099,7 +1099,7 @@ export { QueryMappedAddressRequest, QueryMappedAddressResponse, QueryAllMappedAd
 export { MergeAccountEvent } from "./evmmerge/event";
 export { EthCosmosAddressWrapper } from "./evmmerge/address";
 export { InternalTransfer, Coin, QueryInternalTransfersRequest, QueryInternalTransfersResponse } from "./bank/query";
-export { CoinSpent, CoinReceived, CoinSent } from "./bank/event";
+export { CoinSpent, CoinReceived, CoinSent, CoinMint, CoinBurn } from "./bank/event";
 export { Params as LiquidationParams } from "./liquidation/liquidation";
 export { QuoteChanges } from "./liquidation/quote_changes";
 export { OutstandingPosition, OutstandingPositions } from "./liquidation/outstanding_position";
@@ -2750,6 +2750,28 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "receiver",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "CoinMint": [
+      {
+        "name": "minter",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "CoinBurn": [
+      {
+        "name": "burner",
         "type": "string"
       },
       {
