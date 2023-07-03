@@ -492,7 +492,7 @@ class TokenClient {
     })
     const ibcBridges = await this.matchChainsWithDifferentChainIds(unmatchedIbcBridgeList)
     const polynetworkBridges = allBridges.bridges.reduce((prev: PolyNetworkBridge[], bridge: Bridge) => {
-      if (!bridge.enabled || bridge.bridgeId.toNumber() !== BRIDGE_IDS.polynetwork) return prev;
+      if (bridge.bridgeId.toNumber() !== BRIDGE_IDS.polynetwork) return prev;
       prev.push({
         ...bridge,
         isEvmChain: BlockchainUtils.isEvmChain(bridge.chainName),
