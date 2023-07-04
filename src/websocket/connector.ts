@@ -265,7 +265,9 @@ export class WSConnector {
       }
     }
 
-    this.send("subscribe", { channels });
+    if (channels.length > 0) {
+      this.send("subscribe", { channels });
+    }
   }
 
   /**
@@ -291,9 +293,11 @@ export class WSConnector {
       }
     }
 
-    this.send("unsubscribe", {
-      channels: channelIds,
-    });
+    if (channelIds.length > 0) {
+      this.send("unsubscribe", {
+        channels: channelIds,
+      });
+    }
   }
 
   /**
