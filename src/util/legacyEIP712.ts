@@ -95,11 +95,12 @@ function isNonZeroField(fieldValue: any): boolean {
     if (fieldValue == "0") {
         return false;
     }
-    // empty arrays are considered truthy
+
     if (Array.isArray(fieldValue)) {
         return fieldValue.length !== 0
     }
-    // empty objects are considered truthy
+
+    // empty objects are considered falsey
     if (fieldValue && typeof fieldValue === 'object' && Object.keys(fieldValue).length === 0) {
         return false
     }
