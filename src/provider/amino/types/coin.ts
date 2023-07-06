@@ -8,7 +8,6 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
   Withdraw: "carbon/MsgWithdraw",
   DepositToGroup: "coin/DepositToGroup",
   WithdrawFromGroup: "coin/WithdrawFromGroup",
-  CreateTokenProposal: "coin/CreateTokenProposal",
 };
 
 const MsgWithdraw: AminoInit = {

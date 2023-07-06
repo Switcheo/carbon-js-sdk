@@ -9,8 +9,20 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
   AddFeeTier: "market/AddFeeTier",
   RemoveFeeTier: "market/RemoveFeeTier",
   UpdateFeeTier: "market/UpdateFeeTier",
-  SetStakeEquivalence: "market/SetStakeEquivalence"
+  SetStakeEquivalence: "market/SetStakeEquivalence",
+  UpdateMarketProposal: "market/UpdateMarketProposal",
 };
+
+const UpdateMarketProposal: AminoInit = {
+  aminoType: TxTypes.UpdateMarketProposal,
+  valueMap: {
+    lotSize: ConvertEncType.Dec,
+    minQuantity: ConvertEncType.Dec,
+    tickSize: ConvertEncType.Dec,
+    takerFee: ConvertEncType.Dec,
+    makerFee: ConvertEncType.Dec,
+  }
+}
 
 const MsgUpdateMarket: AminoInit = {
   aminoType: TxTypes.UpdateMarket,
@@ -72,7 +84,8 @@ const MarketAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgAddFeeTier]: generateAminoType(MsgAddFeeTier),
   [CarbonTx.Types.MsgRemoveFeeTier]: generateAminoType(MsgRemoveFeeTier),
   [CarbonTx.Types.MsgUpdateFeeTier]: generateAminoType(MsgUpdateFeeTier),
-  [CarbonTx.Types.MsgSetStakeEquivalence]: generateAminoType(MsgSetStakeEquivalence)
+  [CarbonTx.Types.MsgSetStakeEquivalence]: generateAminoType(MsgSetStakeEquivalence),
+  [CarbonTx.Types.UpdateMarketProposal]: generateAminoType(UpdateMarketProposal),
 };
 
 export default MarketAmino;

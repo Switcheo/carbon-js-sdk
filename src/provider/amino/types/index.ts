@@ -17,3 +17,4 @@ export { default as SubAccountAmino } from "./subaccount";
 export { default as EvmMergeAmino } from "./evmmerge";
 export { default as EvmAmino } from "./evm";
 export { default as FeeMarketAmino } from "./feemarket";
+export { default as FeeAmino } from "./fee";
