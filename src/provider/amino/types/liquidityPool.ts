@@ -15,15 +15,11 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
   DepositToPerpPool: "liquiditypool/DepositToPerpPool",
   WithdrawFromPerpPool: "liquiditypool/WithdrawFromPerpPool",
   UpdatePoolProposal: "liquiditypool/UpdatePoolProposal",
-};
+  SetRewardsWeightsProposal: "liquiditypool/SetRewardsWeightsProposal",
+  SetRewardCurveProposal: "liquiditypool/SetRewardCurveProposal",
+  SetCommitmentCurveProposal: "liquiditypool/SetCommitmentCurveProposal",
 
-const UpdatePoolProposal: AminoInit = {
-  aminoType: TxTypes.UpdatePoolProposal,
-  valueMap: {
-    swapFee: ConvertEncType.Dec,
-    
-  },
-}
+};
 
 const MsgCreatePool: AminoInit = {
   aminoType: TxTypes.CreatePool,
@@ -88,7 +84,32 @@ const commitTokensProcess: AminoProcess = {
   }
 };
 
+const UpdatePoolProposal: AminoInit = {
+  aminoType: TxTypes.UpdatePoolProposal,
+  valueMap: {
+    swapFee: ConvertEncType.Dec,
+  },
+}
 
+const SetRewardsWeightsProposal: AminoInit = {
+  aminoType: TxTypes.SetRewardsWeightsProposal,
+  valueMap: {}
+}
+
+const SetRewardCurveProposal: AminoInit = {
+  aminoType: TxTypes.SetRewardCurveProposal,
+  valueMap: {
+    startTime: ConvertEncType.Date,
+    reductionIntervalSeconds: ConvertEncType.Long,
+  }
+}
+
+const SetCommitmentCurveProposal: AminoInit = {
+  aminoType: TxTypes.SetCommitmentCurveProposal,
+  valueMap: {
+    maxDuration: ConvertEncType.Long,
+  }
+}
 
 const LiquidityPoolAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgCreatePool]: generateAminoType(MsgCreatePool),
@@ -98,7 +119,10 @@ const LiquidityPoolAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgStakePoolToken]: generateAminoType(MsgStakePoolToken, commitTokensProcess),
   [CarbonTx.Types.MsgUnstakePoolToken]: generateAminoType(MsgUnstakePoolToken),
   [CarbonTx.Types.MsgClaimPoolRewards]: generateAminoType(MsgClaimPoolRewards),
-  [CarbonTx.Types.UpdatePoolProposal]: generateAminoType(UpdatePoolProposal)
+  [CarbonTx.Types.UpdatePoolProposal]: generateAminoType(UpdatePoolProposal),
+  [CarbonTx.Types.SetRewardsWeightsProposal]: generateAminoType(SetRewardsWeightsProposal),
+  [CarbonTx.Types.SetRewardCurveProposal]: generateAminoType(SetRewardCurveProposal),
+  [CarbonTx.Types.SetCommitmentCurveProposal]: generateAminoType(SetCommitmentCurveProposal),
 };
 
 export default LiquidityPoolAmino;
