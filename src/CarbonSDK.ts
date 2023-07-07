@@ -441,9 +441,14 @@ class CarbonSDK {
       network: this.networkConfig.network,
       bech32Prefix: this.networkConfig.Bech32Prefix
     };
+    let publicKeyBase64: string
     const address = await metamask.defaultAccount()
-    const publicKeyHex = await metamask.getPublicKey(address, metamaskWalletOpts?.publicKeyMessage)
-    const publicKeyBase64 = Buffer.from(publicKeyHex, 'hex').toString('base64')
+    if (metamaskWalletOpts?.publicKeyBase64) {
+      publicKeyBase64 = metamaskWalletOpts?.publicKeyBase64
+    } else {
+      const publicKeyHex = await metamask.getPublicKey(address, metamaskWalletOpts?.publicKeyMessage)
+      publicKeyBase64 = Buffer.from(publicKeyHex, 'hex').toString('base64')
+    }
     const wallet = CarbonWallet.withMetamask(metamask, evmChainId, publicKeyBase64, addressOptions, {
       ...opts,
       network: this.network,
