@@ -199,22 +199,22 @@ export const Params = {
         : "";
     message.baseProposerReward =
       object.baseProposerReward !== undefined &&
-      object.baseProposerReward !== null
+        object.baseProposerReward !== null
         ? String(object.baseProposerReward)
         : "";
     message.bonusProposerReward =
       object.bonusProposerReward !== undefined &&
-      object.bonusProposerReward !== null
+        object.bonusProposerReward !== null
         ? String(object.bonusProposerReward)
         : "";
     message.liquidityProviderReward =
       object.liquidityProviderReward !== undefined &&
-      object.liquidityProviderReward !== null
+        object.liquidityProviderReward !== null
         ? String(object.liquidityProviderReward)
         : "";
     message.withdrawAddrEnabled =
       object.withdrawAddrEnabled !== undefined &&
-      object.withdrawAddrEnabled !== null
+        object.withdrawAddrEnabled !== null
         ? Boolean(object.withdrawAddrEnabled)
         : false;
     return message;

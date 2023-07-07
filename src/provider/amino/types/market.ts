@@ -16,11 +16,20 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
 const UpdateMarketProposal: AminoInit = {
   aminoType: TxTypes.UpdateMarketProposal,
   valueMap: {
-    lotSize: ConvertEncType.Dec,
-    minQuantity: ConvertEncType.Dec,
-    tickSize: ConvertEncType.Dec,
-    takerFee: ConvertEncType.Dec,
-    makerFee: ConvertEncType.Dec,
+    msg: {
+      lotSize: ConvertEncType.Dec,
+      tickSize: ConvertEncType.Dec,
+      minQuantity: ConvertEncType.Dec,
+      takerFee: ConvertEncType.Dec,
+      makerFee: ConvertEncType.Dec,
+      riskStepSize: ConvertEncType.Dec,
+      initialMarginBase: ConvertEncType.Dec,
+      initialMarginStep: ConvertEncType.Dec,
+      maintenanceMarginRatio: ConvertEncType.Dec,
+      maxLiquidationOrderTicket: ConvertEncType.Dec,
+      maxLiquidationOrderDuration: ConvertEncType.Duration,
+      impactSize: ConvertEncType.Dec,
+    }
   }
 }
 

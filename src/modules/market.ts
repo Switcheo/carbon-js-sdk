@@ -23,7 +23,7 @@ export class MarketModule extends BaseModule {
     })
     return fetchDataResponse?.fees ?? { takerFee: '', makerFee: '' }
   }
-  
+
   public async update(params: MarketModule.UpdateMarketParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 

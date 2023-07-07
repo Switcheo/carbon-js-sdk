@@ -265,7 +265,7 @@ export const UpdatePerpetualsFundingIntervalProposal = {
         : "";
     message.perpetualsFundingInterval =
       object.perpetualsFundingInterval !== undefined &&
-      object.perpetualsFundingInterval !== null
+        object.perpetualsFundingInterval !== null
         ? Duration.fromJSON(object.perpetualsFundingInterval)
         : undefined;
     return message;
@@ -293,7 +293,7 @@ export const UpdatePerpetualsFundingIntervalProposal = {
     message.description = object.description ?? "";
     message.perpetualsFundingInterval =
       object.perpetualsFundingInterval !== undefined &&
-      object.perpetualsFundingInterval !== null
+        object.perpetualsFundingInterval !== null
         ? Duration.fromPartial(object.perpetualsFundingInterval)
         : undefined;
     return message;

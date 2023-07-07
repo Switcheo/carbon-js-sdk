@@ -19,12 +19,20 @@ import * as CarbonTx from "@carbon-sdk/util/tx";
 import { AminoConverter } from "@cosmjs/stargate";
 import { AminoInit, ConvertEncType, AminoProcess, AminoValueMap, generateAminoType, mapEachIndiv } from "../utils";
 import { TextProposal } from "@carbon-sdk/codec/cosmos/gov/v1beta1/gov";
+import { ParameterChangeProposal } from "@carbon-sdk/codec/cosmos/params/v1beta1/params";
+import { CancelSoftwareUpgradeProposal, SoftwareUpgradeProposal } from "@carbon-sdk/codec/cosmos/upgrade/v1beta1/upgrade";
+import { CommunityPoolSpendProposal, CommunityPoolSpendProposalWithDeposit } from "@carbon-sdk/codec/cosmos/distribution/v1beta1/distribution";
 
 const TxTypes: TypeUtils.SimpleMap<string> = {
   SubmitProposal: "cosmos-sdk/MsgSubmitProposal",
   Deposit: "cosmos-sdk/MsgDeposit",
   Vote: "cosmos-sdk/MsgVote",
-  TextProposal: "cosmos-sdk/TextProposal"
+  TextProposal: "cosmos-sdk/TextProposal",
+
+  ParameterChangeProposal: "cosmos-sdk/ParameterChangeProposal",
+  SoftwareUpgradeProposal: "cosmos-sdk/SoftwareUpgradeProposal",
+  CancelSoftwareUpgradeProposal: "cosmos-sdk/CancelSoftwareUpgradeProposal",
+  CommunityPoolSpendProposal: "cosmos-sdk/CommunityPoolSpendProposal",
 };
 
 const ContentTypes: TypeUtils.SimpleMap<string> = {
@@ -46,6 +54,10 @@ const ContentTypes: TypeUtils.SimpleMap<string> = {
   [GovUtils.ProposalTypes.DeregisterFromGroup]: "coin.DeregisterFromGroupProposal",
   [GovUtils.ProposalTypes.WithdrawFromGroup]: "coin/WithdrawFromGroupProposal",
   [GovUtils.ProposalTypes.UpdateGroupTokenConfig]: "coin.UpdateGroupTokenConfigProposal",
+  [GovUtils.ProposalTypes.ParameterChange]: "cosmos-sdk/ParameterChangeProposal",
+  [GovUtils.ProposalTypes.SoftwareUpgrade]: "cosmos-sdk/SoftwareUpgradeProposal",
+  [GovUtils.ProposalTypes.CancelSoftwareUpgrade]: "cosmos-sdk/CancelSoftwareUpgradeProposal",
+  [GovUtils.ProposalTypes.CommunityPoolSpend]: "cosmos-sdk/CommunityPoolSpendProposal",
   [GovUtils.ProposalTypes.Text]: "cosmos-sdk/TextProposal",
 };
 
@@ -71,6 +83,30 @@ const MsgVote: AminoInit = {
     proposalId: ConvertEncType.Long,
   },
 };
+
+const MsgParameterChangeProposal: AminoInit = {
+  aminoType: TxTypes.ParameterChangeProposal,
+  valueMap: {}
+}
+
+const MsgSoftwareUpgradeProposal: AminoInit = {
+  aminoType: TxTypes.SoftwareUpgradeProposal,
+  valueMap: {
+    plan: {
+      height: ConvertEncType.Long,
+    }
+  }
+}
+
+const MsgCancelSoftwareUpgradeProposal: AminoInit = {
+  aminoType: TxTypes.CancelSoftwareUpgradeProposal,
+  valueMap: {}
+}
+
+const MsgCommunityPoolSpendProposal: AminoInit = {
+  aminoType: TxTypes.CommnunityPoolSpendProposal,
+  valueMap: {}
+}
 
 const CreateMarket: AminoValueMap = {
   value: {
@@ -221,13 +257,18 @@ const UnlinkPool: AminoValueMap = {
 const UpdateMarket: AminoValueMap = {
   value: {
     msg: {
+      lotSize: ConvertEncType.Dec,
       tickSize: ConvertEncType.Dec,
-      makerFee: ConvertEncType.Dec,
+      minQuantity: ConvertEncType.Dec,
       takerFee: ConvertEncType.Dec,
+      makerFee: ConvertEncType.Dec,
+      riskStepSize: ConvertEncType.Dec,
       initialMarginBase: ConvertEncType.Dec,
       initialMarginStep: ConvertEncType.Dec,
       maintenanceMarginRatio: ConvertEncType.Dec,
+      maxLiquidationOrderTicket: ConvertEncType.Dec,
       maxLiquidationOrderDuration: ConvertEncType.Duration,
+      impactSize: ConvertEncType.Dec,
     },
   },
 };
@@ -261,6 +302,7 @@ const preProcessAmino = (value: TypeUtils.SimpleMap<any>, valueMap: AminoValueMa
 };
 
 const checkDecodeProposal = (content: any, amino: AminoValueMap): AminoProposalRes => {
+  console.log('[sdk] decode', { content, amino })
   const decodedValue = GovUtils.decodeContent(content);
   const newContent = {
     type: ContentTypes[content.typeUrl],
@@ -269,9 +311,36 @@ const checkDecodeProposal = (content: any, amino: AminoValueMap): AminoProposalR
   const newAmino = { ...amino };
 
   switch (content.typeUrl) {
-    case GovUtils.ProposalTypes.UpdatePool:
-      newAmino.content = { ...UpdatePool };
+    // cosmos
+    case GovUtils.ProposalTypes.ParameterChange:
+      newAmino.content = {};
       break;
+    case GovUtils.ProposalTypes.SoftwareUpgrade:
+      newAmino.content = {};
+      break;
+    case GovUtils.ProposalTypes.CancelSoftwareUpgrade:
+      newAmino.content = {}
+      break;
+    case GovUtils.ProposalTypes.CommunityPoolSpend:
+      newAmino.content = {}
+      break;
+    case GovUtils.ProposalTypes.Text:
+      newAmino.content = {};
+      break;
+    // fee
+    case GovUtils.ProposalTypes.SetMsgGasCost:
+      newAmino.content = {};
+      break;
+    case GovUtils.ProposalTypes.SetMinGasPrice:
+      newAmino.content = {};
+      break;
+    case GovUtils.ProposalTypes.RemoveMsgGasCost:
+      newAmino.content = {};
+      break;
+    case GovUtils.ProposalTypes.RemoveMinGasPrice:
+      newAmino.content = {};
+      break;
+    // coin
     case GovUtils.ProposalTypes.CreateToken:
       newAmino.content = { ...CreateToken };
       break;
@@ -290,8 +359,9 @@ const checkDecodeProposal = (content: any, amino: AminoValueMap): AminoProposalR
     case GovUtils.ProposalTypes.UpdateGroupTokenConfig:
       newAmino.content = { ...UpdateGroupConfig };
       break;
-    case GovUtils.ProposalTypes.SetCommitmentCurve:
-      newAmino.content = { ...SetCommitmentCurve };
+    // liquidity pool
+    case GovUtils.ProposalTypes.UpdatePool:
+      newAmino.content = { ...UpdatePool };
       break;
     case GovUtils.ProposalTypes.SetRewardCurve:
       newAmino.content = { ...SetRewardCurve };
@@ -299,29 +369,20 @@ const checkDecodeProposal = (content: any, amino: AminoValueMap): AminoProposalR
     case GovUtils.ProposalTypes.SetRewardsWeights:
       newAmino.content = { ...SetRewardWeights };
       break;
-    case GovUtils.ProposalTypes.SetMsgGasCost:
-      newAmino.content = {};
+    case GovUtils.ProposalTypes.SetCommitmentCurve:
+      newAmino.content = { ...SetCommitmentCurve };
       break;
-    case GovUtils.ProposalTypes.SetMinGasPrice:
-      newAmino.content = {};
-      break;
-    case GovUtils.ProposalTypes.RemoveMsgGasCost:
-      newAmino.content = {};
-      break;
-    case GovUtils.ProposalTypes.RemoveMinGasPrice:
-      newAmino.content = {};
-      break;
-    case GovUtils.ProposalTypes.SettlementPrice:
-      newAmino.content = { ...SettlementPrice };
-      break;
+    // oracle
     case GovUtils.ProposalTypes.CreateOracle:
       newAmino.content = { ...CreateOracle };
       break;
+    // market
     case GovUtils.ProposalTypes.UpdateMarket:
       newAmino.content = { ...UpdateMarket };
       break;
-    case GovUtils.ProposalTypes.Text:
-      newAmino.content = {};
+    // pricing
+    case GovUtils.ProposalTypes.SettlementPrice:
+      newAmino.content = { ...SettlementPrice };
       break;
     default:
       break;
@@ -333,7 +394,66 @@ const checkDecodeProposal = (content: any, amino: AminoValueMap): AminoProposalR
 };
 
 const checkEncodeProposal = (content: any, amino: AminoValueMap): DirectProposalRes => {
+  console.log('[sdk] content amino', { content, amino })
   switch (content.type) {
+    case ContentTypes[GovUtils.ProposalTypes.ParameterChange]:
+      const parameterChangeMsg = preProcessAmino(content.value.changes, {});
+      const parameterChangeProp = ParameterChangeProposal.fromPartial({
+        ...content.value,
+        msg: parameterChangeMsg,
+      })
+      return {
+        newContent: {
+          typeUrl: GovUtils.ProposalTypes.ParameterChange,
+          value: ParameterChangeProposal.encode(parameterChangeProp).finish(),
+        },
+        newAmino: {
+          ...amino,
+        }
+      }
+    case ContentTypes[GovUtils.ProposalTypes.SoftwareUpgrade]:
+      const softwareUpgradeMsg = preProcessAmino(content.value.plan, {});
+      const softwareUpgradeProp = SoftwareUpgradeProposal.fromPartial({
+        ...content.value,
+        msg: softwareUpgradeMsg,
+      })
+      return {
+        newContent: {
+          typeUrl: GovUtils.ProposalTypes.SoftwareUpgrade,
+          value: SoftwareUpgradeProposal.encode(softwareUpgradeProp).finish(),
+        },
+        newAmino: {
+          ...amino
+        }
+      }
+    case ContentTypes[GovUtils.ProposalTypes.CancelSoftwareUpgrade]:
+      const cancelSoftwareUpgradeProp = CancelSoftwareUpgradeProposal.fromPartial({
+        ...content.value,
+      })
+      return {
+        newContent: {
+          typeUrl: GovUtils.ProposalTypes.CancelSoftwareUpgrade,
+          value: CancelSoftwareUpgradeProposal.encode(cancelSoftwareUpgradeProp).finish(),
+        },
+        newAmino: {
+          ...amino
+        }
+      }
+    case ContentTypes[GovUtils.ProposalTypes.CommunityPoolSpend]:
+      const communityPoolSpendMsg = preProcessAmino(content.value.amount, {});
+      const communityPoolSpendProp = CommunityPoolSpendProposal.fromPartial({
+        ...content.value,
+        msg: communityPoolSpendMsg,
+      })
+      return {
+        newContent: {
+          typeUrl: GovUtils.ProposalTypes.CommunityPoolSpend,
+          value: CommunityPoolSpendProposal.encode(communityPoolSpendProp).finish()
+        },
+        newAmino: {
+          ...amino
+        }
+      }
     case ContentTypes[GovUtils.ProposalTypes.UpdatePool]:
       const updatePoolMsg = preProcessAmino(content.value.msg, UpdatePool.value.msg);
       const updatePoolProp = UpdatePoolProposal.fromPartial({
@@ -514,19 +634,19 @@ const checkEncodeProposal = (content: any, amino: AminoValueMap): DirectProposal
           ...amino,
         },
       };
-      case ContentTypes[GovUtils.ProposalTypes.Text]:
-        const textProposal = TextProposal.fromPartial({
-          ...content.value,
-        });
-        return {
-          newContent: {
-            typeUrl: GovUtils.ProposalTypes.Text,
-            value: TextProposal.encode(textProposal).finish(),
-          },
-          newAmino: {
-            ...amino,
-          },
-        };
+    case ContentTypes[GovUtils.ProposalTypes.Text]:
+      const textProposal = TextProposal.fromPartial({
+        ...content.value,
+      });
+      return {
+        newContent: {
+          typeUrl: GovUtils.ProposalTypes.Text,
+          value: TextProposal.encode(textProposal).finish(),
+        },
+        newAmino: {
+          ...amino,
+        },
+      };
     default:
       return {
         newContent: {
@@ -569,7 +689,11 @@ const GovAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgSubmitProposal]: generateAminoType(SubmitProposalMsg, proposalAminoProcess),
   [CarbonTx.Types.MsgDeposit]: generateAminoType(MsgDeposit),
   [CarbonTx.Types.MsgVote]: generateAminoType(MsgVote),
-  [CarbonTx.Types.TextProposal]: generateAminoType(MsgTextProposal)
+  [CarbonTx.Types.TextProposal]: generateAminoType(MsgTextProposal),
+  [CarbonTx.Types.ParameterChangeProposal]: generateAminoType(MsgParameterChangeProposal),
+  [CarbonTx.Types.SoftwareUpgradeProposal]: generateAminoType(MsgSoftwareUpgradeProposal),
+  [CarbonTx.Types.CancelSoftwareUpgradeProposal]: generateAminoType(MsgCancelSoftwareUpgradeProposal),
+  [CarbonTx.Types.CommunityPoolSpendProposal]: generateAminoType(MsgCommunityPoolSpendProposal),
 };
 
 export default GovAmino;

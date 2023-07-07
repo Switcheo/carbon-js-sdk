@@ -33,15 +33,8 @@ export enum ProposalTypes {
   SetMinGasPrice = "/Switcheo.carbon.fee.SetMinGasPriceProposal",
   RemoveMsgGasCost = "/Switcheo.carbon.fee.RemoveMsgGasCostProposal",
   RemoveMinGasPrice = "/Switcheo.carbon.fee.RemoveMinGasPriceProposal",
+
   CreateToken = "/Switcheo.carbon.coin.CreateTokenProposal",
-  CreateOracle = "/Switcheo.carbon.oracle.CreateOracleProposal",
-  UpdatePool = "/Switcheo.carbon.liquiditypool.UpdatePoolProposal",
-  SetRewardCurve = "/Switcheo.carbon.liquiditypool.SetRewardCurveProposal",
-  SetRewardsWeights = "/Switcheo.carbon.liquiditypool.SetRewardsWeightsProposal",
-  SetCommitmentCurve = "/Switcheo.carbon.liquiditypool.SetCommitmentCurveProposal",
-  UpdateMarket = "/Switcheo.carbon.market.UpdateMarketProposal",
-  SettlementPrice = "/Switcheo.carbon.pricing.SettlementPriceProposal",
-  ClientUpdateProposal = "/ibc.core.client.v1.ClientUpdateProposal",
   CreateGroup = "/Switcheo.carbon.coin.CreateGroupProposal",
   UpdateGroup = "/Switcheo.carbon.coin.UpdateGroupProposal",
   RegisterToGroup = "/Switcheo.carbon.coin.RegisterToGroupProposal",
@@ -49,6 +42,16 @@ export enum ProposalTypes {
   DepositToGroup = "/Switcheo.carbon.coin.DepositToGroupProposal",
   WithdrawFromGroup = "/Switcheo.carbon.coin.WithdrawFromGroupProposal",
   UpdateGroupTokenConfig = "/Switcheo.carbon.coin.UpdateGroupTokenConfigProposal",
+
+  UpdatePool = "/Switcheo.carbon.liquiditypool.UpdatePoolProposal",
+  SetRewardCurve = "/Switcheo.carbon.liquiditypool.SetRewardCurveProposal",
+  SetRewardsWeights = "/Switcheo.carbon.liquiditypool.SetRewardsWeightsProposal",
+  SetCommitmentCurve = "/Switcheo.carbon.liquiditypool.SetCommitmentCurveProposal",
+
+  CreateOracle = "/Switcheo.carbon.oracle.CreateOracleProposal",
+  UpdateMarket = "/Switcheo.carbon.market.UpdateMarketProposal",
+  SettlementPrice = "/Switcheo.carbon.pricing.SettlementPriceProposal",
+  ClientUpdateProposal = "/ibc.core.client.v1.ClientUpdateProposal",
 
   CreateAlliance = "/alliance.alliance.MsgCreateAllianceProposal",
   UpdateAlliance = "/alliance.alliance.MsgUpdateAllianceProposal",

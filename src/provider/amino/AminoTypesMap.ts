@@ -7,6 +7,7 @@ import {
   CoinAmino,
   EvmAmino,
   EvmMergeAmino,
+  FeeAmino,
   FeeMarketAmino,
   GovAmino,
   IbcAmino,
@@ -16,6 +17,7 @@ import {
   OracleAmino,
   OrderAmino,
   PositionAmino,
+  PricingAmino,
   ProfileAmino,
   StakingAmino,
   SubAccountAmino,
@@ -41,6 +43,8 @@ const AminoTypesMap = new AminoTypes({
   ...EvmAmino,
   ...EvmMergeAmino,
   ...FeeMarketAmino,
+  ...FeeAmino,
+  ...PricingAmino,
 });
 
 export default AminoTypesMap;

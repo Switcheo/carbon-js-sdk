@@ -307,82 +307,82 @@ export const Params = {
     const message = { ...baseParams } as Params;
     message.defaultLotSizeUsd =
       object.defaultLotSizeUsd !== undefined &&
-      object.defaultLotSizeUsd !== null
+        object.defaultLotSizeUsd !== null
         ? String(object.defaultLotSizeUsd)
         : "";
     message.defaultTickSizeUsd =
       object.defaultTickSizeUsd !== undefined &&
-      object.defaultTickSizeUsd !== null
+        object.defaultTickSizeUsd !== null
         ? String(object.defaultTickSizeUsd)
         : "";
     message.defaultMinQuantityUsd =
       object.defaultMinQuantityUsd !== undefined &&
-      object.defaultMinQuantityUsd !== null
+        object.defaultMinQuantityUsd !== null
         ? String(object.defaultMinQuantityUsd)
         : "";
     message.defaultSpotMakerFee =
       object.defaultSpotMakerFee !== undefined &&
-      object.defaultSpotMakerFee !== null
+        object.defaultSpotMakerFee !== null
         ? String(object.defaultSpotMakerFee)
         : "";
     message.defaultSpotTakerFee =
       object.defaultSpotTakerFee !== undefined &&
-      object.defaultSpotTakerFee !== null
+        object.defaultSpotTakerFee !== null
         ? String(object.defaultSpotTakerFee)
         : "";
     message.defaultFuturesMakerFee =
       object.defaultFuturesMakerFee !== undefined &&
-      object.defaultFuturesMakerFee !== null
+        object.defaultFuturesMakerFee !== null
         ? String(object.defaultFuturesMakerFee)
         : "";
     message.defaultFuturesTakerFee =
       object.defaultFuturesTakerFee !== undefined &&
-      object.defaultFuturesTakerFee !== null
+        object.defaultFuturesTakerFee !== null
         ? String(object.defaultFuturesTakerFee)
         : "";
     message.defaultRiskStepSizeUsd =
       object.defaultRiskStepSizeUsd !== undefined &&
-      object.defaultRiskStepSizeUsd !== null
+        object.defaultRiskStepSizeUsd !== null
         ? String(object.defaultRiskStepSizeUsd)
         : "";
     message.defaultInitialMarginBase =
       object.defaultInitialMarginBase !== undefined &&
-      object.defaultInitialMarginBase !== null
+        object.defaultInitialMarginBase !== null
         ? String(object.defaultInitialMarginBase)
         : "";
     message.defaultInitialMarginStep =
       object.defaultInitialMarginStep !== undefined &&
-      object.defaultInitialMarginStep !== null
+        object.defaultInitialMarginStep !== null
         ? String(object.defaultInitialMarginStep)
         : "";
     message.defaultMaintenanceMarginRatio =
       object.defaultMaintenanceMarginRatio !== undefined &&
-      object.defaultMaintenanceMarginRatio !== null
+        object.defaultMaintenanceMarginRatio !== null
         ? String(object.defaultMaintenanceMarginRatio)
         : "";
     message.defaultMaxLiquidationOrderTicketUsd =
       object.defaultMaxLiquidationOrderTicketUsd !== undefined &&
-      object.defaultMaxLiquidationOrderTicketUsd !== null
+        object.defaultMaxLiquidationOrderTicketUsd !== null
         ? String(object.defaultMaxLiquidationOrderTicketUsd)
         : "";
     message.defaultMaxLiquidationOrderDuration =
       object.defaultMaxLiquidationOrderDuration !== undefined &&
-      object.defaultMaxLiquidationOrderDuration !== null
+        object.defaultMaxLiquidationOrderDuration !== null
         ? Duration.fromJSON(object.defaultMaxLiquidationOrderDuration)
         : undefined;
     message.defaultImpactSizeUsd =
       object.defaultImpactSizeUsd !== undefined &&
-      object.defaultImpactSizeUsd !== null
+        object.defaultImpactSizeUsd !== null
         ? String(object.defaultImpactSizeUsd)
         : "";
     message.defaultMarkPriceBand =
       object.defaultMarkPriceBand !== undefined &&
-      object.defaultMarkPriceBand !== null
+        object.defaultMarkPriceBand !== null
         ? Number(object.defaultMarkPriceBand)
         : 0;
     message.defaultLastPriceProtectedBand =
       object.defaultLastPriceProtectedBand !== undefined &&
-      object.defaultLastPriceProtectedBand !== null
+        object.defaultLastPriceProtectedBand !== null
         ? Number(object.defaultLastPriceProtectedBand)
         : 0;
     message.maxActiveMarkets =
@@ -391,7 +391,7 @@ export const Params = {
         : 0;
     message.defaultTradingBandwidth =
       object.defaultTradingBandwidth !== undefined &&
-      object.defaultTradingBandwidth !== null
+        object.defaultTradingBandwidth !== null
         ? Number(object.defaultTradingBandwidth)
         : 0;
     message.fundingRateBand =
@@ -400,22 +400,22 @@ export const Params = {
         : "";
     message.defaultLpSpotTakerFee =
       object.defaultLpSpotTakerFee !== undefined &&
-      object.defaultLpSpotTakerFee !== null
+        object.defaultLpSpotTakerFee !== null
         ? String(object.defaultLpSpotTakerFee)
         : "";
     message.defaultLpSpotMakerFee =
       object.defaultLpSpotMakerFee !== undefined &&
-      object.defaultLpSpotMakerFee !== null
+        object.defaultLpSpotMakerFee !== null
         ? String(object.defaultLpSpotMakerFee)
         : "";
     message.defaultLpFuturesTakerFee =
       object.defaultLpFuturesTakerFee !== undefined &&
-      object.defaultLpFuturesTakerFee !== null
+        object.defaultLpFuturesTakerFee !== null
         ? String(object.defaultLpFuturesTakerFee)
         : "";
     message.defaultLpFuturesMakerFee =
       object.defaultLpFuturesMakerFee !== undefined &&
-      object.defaultLpFuturesMakerFee !== null
+        object.defaultLpFuturesMakerFee !== null
         ? String(object.defaultLpFuturesMakerFee)
         : "";
     return message;
@@ -496,7 +496,7 @@ export const Params = {
       object.defaultMaxLiquidationOrderTicketUsd ?? "";
     message.defaultMaxLiquidationOrderDuration =
       object.defaultMaxLiquidationOrderDuration !== undefined &&
-      object.defaultMaxLiquidationOrderDuration !== null
+        object.defaultMaxLiquidationOrderDuration !== null
         ? Duration.fromPartial(object.defaultMaxLiquidationOrderDuration)
         : undefined;
     message.defaultImpactSizeUsd = object.defaultImpactSizeUsd ?? "";
@@ -555,7 +555,7 @@ export const ControlledParams = {
     const message = { ...baseControlledParams } as ControlledParams;
     message.perpetualsFundingInterval =
       object.perpetualsFundingInterval !== undefined &&
-      object.perpetualsFundingInterval !== null
+        object.perpetualsFundingInterval !== null
         ? Duration.fromJSON(object.perpetualsFundingInterval)
         : undefined;
     return message;
@@ -574,7 +574,7 @@ export const ControlledParams = {
     const message = { ...baseControlledParams } as ControlledParams;
     message.perpetualsFundingInterval =
       object.perpetualsFundingInterval !== undefined &&
-      object.perpetualsFundingInterval !== null
+        object.perpetualsFundingInterval !== null
         ? Duration.fromPartial(object.perpetualsFundingInterval)
         : undefined;
     return message;
@@ -875,7 +875,7 @@ export const Market = {
         : "";
     message.createdBlockHeight =
       object.createdBlockHeight !== undefined &&
-      object.createdBlockHeight !== null
+        object.createdBlockHeight !== null
         ? Long.fromString(object.createdBlockHeight)
         : Long.UZERO;
     message.riskStepSize =
@@ -884,27 +884,27 @@ export const Market = {
         : "";
     message.initialMarginBase =
       object.initialMarginBase !== undefined &&
-      object.initialMarginBase !== null
+        object.initialMarginBase !== null
         ? String(object.initialMarginBase)
         : "";
     message.initialMarginStep =
       object.initialMarginStep !== undefined &&
-      object.initialMarginStep !== null
+        object.initialMarginStep !== null
         ? String(object.initialMarginStep)
         : "";
     message.maintenanceMarginRatio =
       object.maintenanceMarginRatio !== undefined &&
-      object.maintenanceMarginRatio !== null
+        object.maintenanceMarginRatio !== null
         ? String(object.maintenanceMarginRatio)
         : "";
     message.maxLiquidationOrderTicket =
       object.maxLiquidationOrderTicket !== undefined &&
-      object.maxLiquidationOrderTicket !== null
+        object.maxLiquidationOrderTicket !== null
         ? String(object.maxLiquidationOrderTicket)
         : "";
     message.maxLiquidationOrderDuration =
       object.maxLiquidationOrderDuration !== undefined &&
-      object.maxLiquidationOrderDuration !== null
+        object.maxLiquidationOrderDuration !== null
         ? Duration.fromJSON(object.maxLiquidationOrderDuration)
         : undefined;
     message.impactSize =
@@ -917,7 +917,7 @@ export const Market = {
         : 0;
     message.lastPriceProtectedBand =
       object.lastPriceProtectedBand !== undefined &&
-      object.lastPriceProtectedBand !== null
+        object.lastPriceProtectedBand !== null
         ? Number(object.lastPriceProtectedBand)
         : 0;
     message.indexOracleId =
@@ -938,7 +938,7 @@ export const Market = {
         : false;
     message.closedBlockHeight =
       object.closedBlockHeight !== undefined &&
-      object.closedBlockHeight !== null
+        object.closedBlockHeight !== null
         ? Long.fromString(object.closedBlockHeight)
         : Long.UZERO;
     message.tradingBandwidth =
@@ -1029,7 +1029,7 @@ export const Market = {
     message.takerFee = object.takerFee ?? "";
     message.createdBlockHeight =
       object.createdBlockHeight !== undefined &&
-      object.createdBlockHeight !== null
+        object.createdBlockHeight !== null
         ? Long.fromValue(object.createdBlockHeight)
         : Long.UZERO;
     message.riskStepSize = object.riskStepSize ?? "";
@@ -1039,7 +1039,7 @@ export const Market = {
     message.maxLiquidationOrderTicket = object.maxLiquidationOrderTicket ?? "";
     message.maxLiquidationOrderDuration =
       object.maxLiquidationOrderDuration !== undefined &&
-      object.maxLiquidationOrderDuration !== null
+        object.maxLiquidationOrderDuration !== null
         ? Duration.fromPartial(object.maxLiquidationOrderDuration)
         : undefined;
     message.impactSize = object.impactSize ?? "";
@@ -1051,7 +1051,7 @@ export const Market = {
     message.isSettled = object.isSettled ?? false;
     message.closedBlockHeight =
       object.closedBlockHeight !== undefined &&
-      object.closedBlockHeight !== null
+        object.closedBlockHeight !== null
         ? Long.fromValue(object.closedBlockHeight)
         : Long.UZERO;
     message.tradingBandwidth = object.tradingBandwidth ?? 0;
@@ -1301,27 +1301,27 @@ export const MarketParams = {
         : "";
     message.initialMarginBase =
       object.initialMarginBase !== undefined &&
-      object.initialMarginBase !== null
+        object.initialMarginBase !== null
         ? String(object.initialMarginBase)
         : "";
     message.initialMarginStep =
       object.initialMarginStep !== undefined &&
-      object.initialMarginStep !== null
+        object.initialMarginStep !== null
         ? String(object.initialMarginStep)
         : "";
     message.maintenanceMarginRatio =
       object.maintenanceMarginRatio !== undefined &&
-      object.maintenanceMarginRatio !== null
+        object.maintenanceMarginRatio !== null
         ? String(object.maintenanceMarginRatio)
         : "";
     message.maxLiquidationOrderTicket =
       object.maxLiquidationOrderTicket !== undefined &&
-      object.maxLiquidationOrderTicket !== null
+        object.maxLiquidationOrderTicket !== null
         ? String(object.maxLiquidationOrderTicket)
         : "";
     message.maxLiquidationOrderDuration =
       object.maxLiquidationOrderDuration !== undefined &&
-      object.maxLiquidationOrderDuration !== null
+        object.maxLiquidationOrderDuration !== null
         ? Duration.fromJSON(object.maxLiquidationOrderDuration)
         : undefined;
     message.impactSize =
@@ -1334,7 +1334,7 @@ export const MarketParams = {
         : undefined;
     message.lastPriceProtectedBand =
       object.lastPriceProtectedBand !== undefined &&
-      object.lastPriceProtectedBand !== null
+        object.lastPriceProtectedBand !== null
         ? Number(object.lastPriceProtectedBand)
         : undefined;
     message.isActive =
@@ -1409,7 +1409,7 @@ export const MarketParams = {
     message.maxLiquidationOrderTicket = object.maxLiquidationOrderTicket ?? "";
     message.maxLiquidationOrderDuration =
       object.maxLiquidationOrderDuration !== undefined &&
-      object.maxLiquidationOrderDuration !== null
+        object.maxLiquidationOrderDuration !== null
         ? Duration.fromPartial(object.maxLiquidationOrderDuration)
         : undefined;
     message.impactSize = object.impactSize ?? "";
