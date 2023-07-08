@@ -58,6 +58,7 @@ export interface CarbonWalletGenericOpts {
 
 export interface MetaMaskWalletOpts {
   publicKeyMessage?: string
+  publicKeyBase64?: string;
 }
 
 export type CarbonWalletInitOpts = CarbonWalletGenericOpts &
