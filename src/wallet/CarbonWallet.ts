@@ -557,13 +557,14 @@ export class CarbonWallet {
 
   async sendInitialMergeAccountTx(msgs: EncodeObject[], opts?: CarbonTx.SignTxOpts) {
     let msg: EncodeObject
-    try {
-      await this.reloadMergeAccountStatus()
-      if (!this.accountMerged && msgs[0].typeUrl !== CarbonTx.Types.MsgMergeAccount) {
-        const account = await this.getQueryClient().auth.Account({ address: this.bech32Address }).then(res => res.account).catch(async (err: Error) => {
-          return (await this.getQueryClient().auth.Account({ address: this.evmBech32Address })).account
-        });
-        const { address, sequence, accountNumber } = BaseAccount.decode(account!.value)
+    await this.reloadMergeAccountStatus()
+    if (!this.accountMerged && msgs[0].typeUrl !== CarbonTx.Types.MsgMergeAccount) {
+      const accountInfo = await this.reloadAccountInfo()
+      if (!accountInfo) {
+        throw new Error('Account not found!')
+      }
+      const { address, sequence, accountNumber } = accountInfo
+      try {
         msg = {
           typeUrl: CarbonTx.Types.MsgMergeAccount,
           value: MsgMergeAccount.fromPartial({
@@ -573,17 +574,17 @@ export class CarbonWallet {
         }
         const modifiedOpts = {
           ...opts,
-          sequence: sequence.toNumber(),
-          accountNumber: accountNumber.toNumber()
+          sequence: sequence,
+          accountNumber: accountNumber
         }
         await this.signAndBroadcast([msg], modifiedOpts, { mode: BroadcastTxMode.BroadcastTxBlock })
         this.updateMergeAccountStatus()
         await GenericUtils.callIgnoreError(() => this.onBroadcastTxSuccess?.([msg]));
       }
-    }
-    catch (error) {
-      await GenericUtils.callIgnoreError(() => this.onBroadcastTxFail?.([msg]));
-      throw error
+      catch (error) {
+        await GenericUtils.callIgnoreError(() => this.onBroadcastTxFail?.([msg]));
+        throw error
+      }
     }
   }
 
