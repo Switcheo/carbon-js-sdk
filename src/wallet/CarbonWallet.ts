@@ -574,8 +574,8 @@ export class CarbonWallet {
         }
         const modifiedOpts = {
           ...opts,
-          sequence: sequence,
-          accountNumber: accountNumber
+          sequence,
+          accountNumber,
         }
         await this.signAndBroadcast([msg], modifiedOpts, { mode: BroadcastTxMode.BroadcastTxBlock })
         this.updateMergeAccountStatus()
