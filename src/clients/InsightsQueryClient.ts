@@ -397,6 +397,12 @@ class InsightsQueryClient {
     const response = await request.get();
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetOraclesPriceResponse>;
   }
+
+  async AlliancesStake(req: Insights.QueryGetAlliancesStakeRequest = {}): Promise<Insights.InsightsQueryResponse<Insights.QueryGetAlliancesStakeResponse>> {
+    const request = this.apiManager.path("alliances/stake", {}, req);
+    const response = await request.get();
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetAlliancesStakeResponse>;
+  }
 }
 
 export default InsightsQueryClient;

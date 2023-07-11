@@ -58,6 +58,9 @@ export const InsightsEndpoints = {
 
   // Oracles api
   "info/oracles_price": "/info/oracles_price",
+
+  // Alliances api
+  "alliances/stake": "/alliances/stake"
 };
 
 export type Interval = "millisecond" | "second" | "minute" | "hour" | "day" | "week" | "month" | "quarter";
