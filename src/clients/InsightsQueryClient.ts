@@ -403,6 +403,12 @@ class InsightsQueryClient {
     const response = await request.get();
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetAlliancesStakeResponse>;
   }
+
+  async AlliancesRewards(req: Insights.QueryGetAlliancesRewardsRequest = {}): Promise<Insights.InsightsQueryResponse<Insights.QueryGetAlliancesRewardsResponse>> {
+    const request = this.apiManager.path("alliances/rewards", {}, req);
+    const response = await request.get();
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetAlliancesRewardsResponse>;
+  }
 }
 
 export default InsightsQueryClient;
