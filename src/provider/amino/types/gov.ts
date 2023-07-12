@@ -91,11 +91,7 @@ const MsgParameterChangeProposal: AminoInit = {
 
 const MsgSoftwareUpgradeProposal: AminoInit = {
   aminoType: TxTypes.SoftwareUpgradeProposal,
-  valueMap: {
-    plan: {
-      height: ConvertEncType.Long,
-    }
-  }
+  valueMap: {}
 }
 
 const MsgCancelSoftwareUpgradeProposal: AminoInit = {
@@ -397,10 +393,8 @@ const checkEncodeProposal = (content: any, amino: AminoValueMap): DirectProposal
   console.log('[sdk] content amino', { content, amino })
   switch (content.type) {
     case ContentTypes[GovUtils.ProposalTypes.ParameterChange]:
-      const parameterChangeMsg = preProcessAmino(content.value.changes, {});
       const parameterChangeProp = ParameterChangeProposal.fromPartial({
         ...content.value,
-        msg: parameterChangeMsg,
       })
       return {
         newContent: {
@@ -412,10 +406,8 @@ const checkEncodeProposal = (content: any, amino: AminoValueMap): DirectProposal
         }
       }
     case ContentTypes[GovUtils.ProposalTypes.SoftwareUpgrade]:
-      const softwareUpgradeMsg = preProcessAmino(content.value.plan, {});
       const softwareUpgradeProp = SoftwareUpgradeProposal.fromPartial({
         ...content.value,
-        msg: softwareUpgradeMsg,
       })
       return {
         newContent: {
@@ -440,10 +432,8 @@ const checkEncodeProposal = (content: any, amino: AminoValueMap): DirectProposal
         }
       }
     case ContentTypes[GovUtils.ProposalTypes.CommunityPoolSpend]:
-      const communityPoolSpendMsg = preProcessAmino(content.value.amount, {});
       const communityPoolSpendProp = CommunityPoolSpendProposal.fromPartial({
         ...content.value,
-        msg: communityPoolSpendMsg,
       })
       return {
         newContent: {
