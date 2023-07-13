@@ -9,7 +9,7 @@ export interface AlliancesStake {
     staked: number;
     totalStaked: number;
     stakedValue: number;
-    totalstakedValue: number;
+    totalStakedValue: number;
     height: number;
   }[],
 }
@@ -27,11 +27,12 @@ export interface AlliancesRewards {
   totalRewardsValue: string;
   tokens: {
     denom: string;
-    rewards: string;
-    totalRewards: string;
-    rewardsValue: string;
-    totalRewardsValue: string;
-  }
+    rewards: number;
+    totalRewards: number;
+    rewardsValue: number;
+    totalRewardsValue: number;
+    height: number;
+  }[]
 }
 
 export interface QueryGetAlliancesRewardsRequest extends QueryByTimeRequest { }
