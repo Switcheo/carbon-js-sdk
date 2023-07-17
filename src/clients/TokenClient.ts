@@ -76,22 +76,24 @@ class TokenClient {
   public async initialize(): Promise<void> {
     this.setCommonAssetConfig();
 
-    // non-blocking reload
     try {
-      this.reloadDenomGeckoMap().finally(() => {
-        this.reloadUSDValues();
-        this.reloadDenomTraces();
-      });
-    } catch (error) {
-      console.error("failed to reload usd values");
-      console.error(error);
+      await Promise.all([
+        this.reloadTokens(),
+        this.reloadWrapperMap(),
+        this.getBridges(),
+      ]);
+    } finally {
+      // non-blocking reload
+      try {
+        this.reloadDenomGeckoMap().finally(() => {
+          this.reloadUSDValues();
+          this.reloadDenomTraces();
+        });
+      } catch (error) {
+        console.error("failed to reload usd values");
+        console.error(error);
+      }
     }
-
-    await Promise.all([
-      this.reloadWrapperMap(),
-      this.reloadTokens(),
-      this.getBridges(),
-    ]);
   }
 
   public registerGeckoIdMap(map: TypeUtils.SimpleMap<string>) {
