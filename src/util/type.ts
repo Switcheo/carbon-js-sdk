@@ -1,4 +1,4 @@
-import { Network } from "@carbon-sdk/constant";
+import { Network } from "@carbon-sdk/constant/network";
 import Long from "long";
 
 export interface SimpleMap<T = unknown> {

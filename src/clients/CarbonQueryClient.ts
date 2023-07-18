@@ -43,9 +43,10 @@ import { QueryClientImpl as ProfileQueryClient } from "@carbon-sdk/codec/profile
 import { QueryClientImpl as SubaccountQueryClient } from "@carbon-sdk/codec/subaccount/query";
 import { QueryClientImpl as AllianceClient } from "@carbon-sdk/codec/alliance/query";
 
-import { createProtobufRpcClient, QueryClient } from "@cosmjs/stargate";
+import { createProtobufRpcClient, ProtobufRpcClient, QueryClient } from "@cosmjs/stargate";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import BlockchainClient from "./BlockchainClient";
+import GrpcQueryClient from "./GrpcQueryClient";
 
 export interface IBCClientGroup {
   controller: IBCInterchainControlQueryClient;
@@ -60,6 +61,18 @@ export interface IBCClientGroup {
 export interface EthermintClientGroup {
   evm: EthermintEVMQueryClient;
   feeMarket: EthermintFeeMarketQueryClient;
+}
+
+export interface CarbonQueryClientOpts {
+  /**
+   * Used to create an RPC client through Tendermint ABCI.
+   */
+  tmClient: Tendermint34Client;
+
+  /**
+   * Used for querying through GRPC instead of Tendermint ABCI. 
+   */
+  grpcClient?: GrpcQueryClient;
 }
 
 class CarbonQueryClient {
@@ -106,13 +119,14 @@ class CarbonQueryClient {
   evmmerge: EvmMergeQueryClient;
   evmbank: EvmBankQueryClient;
 
-  private baseClient: QueryClient;
+  private rpcClient: ProtobufRpcClient;
 
-  constructor(private readonly tmClient: Tendermint34Client) {
-    this.baseClient = new QueryClient(this.tmClient);
-    const rpcClient = createProtobufRpcClient(this.baseClient);
+  constructor(opts: CarbonQueryClientOpts) {
 
-    this.chain = BlockchainClient.connectWithTm(this.tmClient);
+    const rpcClient = this.parseRpcClient(opts);
+    this.rpcClient = rpcClient;
+
+    this.chain = BlockchainClient.connectWithTm(opts.tmClient);
 
     this.adl = new ADLQueryClient(rpcClient);
     this.alliance = new AllianceClient(rpcClient);
@@ -169,8 +183,19 @@ class CarbonQueryClient {
     }
   }
 
+  private parseRpcClient = (opts: CarbonQueryClientOpts) => {
+    if (opts.grpcClient) {
+      return opts.grpcClient;
+    } else if (opts.tmClient) {
+      const tmQueryClient = new QueryClient(opts.tmClient);
+      return createProtobufRpcClient(tmQueryClient);
+    }
+
+    throw new Error("invalid initialization, no valid query client found")
+  }
+
   getProtobufRpcClient() {
-    return createProtobufRpcClient(this.baseClient);
+    return this.rpcClient
   }
 }
 
