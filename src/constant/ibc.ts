@@ -1,4 +1,4 @@
-import { SimpleMap } from "@carbon-sdk/util/type";
+import { SimpleMap } from "../util/type";
 import { AppCurrency, Bech32Config, ChainInfo } from "@keplr-wallet/types";
 import * as bech32 from "bech32";
 import { CARBON_GAS_PRICE, GasPriceStep } from "./generic";

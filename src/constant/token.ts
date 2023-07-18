@@ -1,5 +1,5 @@
-import { OptionalNetworkMap, SimpleMap } from "@carbon-sdk/util/type";
 import BigNumber from "bignumber.js";
+import { OptionalNetworkMap, SimpleMap } from "../util/type";
 import { Network } from "./network";
 
 export const decTypeDecimals = 18;
