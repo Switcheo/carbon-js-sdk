@@ -60,6 +60,7 @@
     "eth-sig-util": "^3.0.0",
     "ethers": "^5.5.1",
     "eventemitter3": "^5.0.0",
+    "grpc-web": "^1.4.2",
     "ledger-cosmos-js": "^2.1.8",
     "lodash": "^4.17.21",
     "neo-dapi": "^2.0.4",

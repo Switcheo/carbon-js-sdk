@@ -10,7 +10,6 @@ import {
 } from "@carbon-sdk/constant";
 import { GenericUtils, NetworkUtils } from "@carbon-sdk/util";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
-import { credentials } from "@grpc/grpc-js";
 import * as clients from "./clients";
 import { BatchQueryClient, CarbonQueryClient, ETHClient, GrpcQueryClient, HydrogenClient, InsightsQueryClient, N3Client, NEOClient, TokenClient, ZILClient } from "./clients";
 import {
@@ -137,8 +136,7 @@ class CarbonSDK {
 
     let grpcClient: GrpcQueryClient | undefined;
     if (opts.useTmAbciQuery !== true && this.networkConfig.grpcUrl) {
-      const c = this.networkConfig.grpcInsecure ? credentials.createInsecure() : credentials.createSsl();
-      grpcClient = opts.grpcQueryClient ?? new GrpcQueryClient(this.networkConfig.grpcUrl, c);
+      grpcClient = opts.grpcQueryClient ?? new GrpcQueryClient(this.networkConfig.grpcUrl, this.networkConfig.grpcInsecure);
     }
 
     this.query = new CarbonQueryClient({
