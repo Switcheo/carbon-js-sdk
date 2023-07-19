@@ -41,6 +41,44 @@ export interface SwapEvent {
   output: string;
 }
 
+export interface DepositToPoolEvent {
+  poolId: Long;
+  denomA: string;
+  amountA: string;
+  denomB: string;
+  amountB: string;
+  shareDenom: string;
+  shareAmount: string;
+  initialShareAmountBurned: Long;
+  depositor: string;
+}
+
+export interface WithdrawFromPoolEvent {
+  poolId: Long;
+  denomA: string;
+  amountA: string;
+  denomB: string;
+  amountB: string;
+  shareDenom: string;
+  shareAmount: string;
+  withdrawer: string;
+}
+
+export interface StakePoolTokenEvent {
+  poolId: Long;
+  denom: string;
+  amount: string;
+  creator: string;
+  commitmentDuration: Long;
+}
+
+export interface UnstakePoolTokenEvent {
+  poolId: Long;
+  denom: string;
+  amount: string;
+  creator: string;
+}
+
 const basePoolEvent: object = {
   creator: "",
   type: "",
@@ -572,6 +610,556 @@ export const SwapEvent = {
         : Long.UZERO;
     message.input = object.input ?? "";
     message.output = object.output ?? "";
+    return message;
+  },
+};
+
+const baseDepositToPoolEvent: object = {
+  poolId: Long.UZERO,
+  denomA: "",
+  amountA: "",
+  denomB: "",
+  amountB: "",
+  shareDenom: "",
+  shareAmount: "",
+  initialShareAmountBurned: Long.UZERO,
+  depositor: "",
+};
+
+export const DepositToPoolEvent = {
+  encode(
+    message: DepositToPoolEvent,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (!message.poolId.isZero()) {
+      writer.uint32(8).uint64(message.poolId);
+    }
+    if (message.denomA !== "") {
+      writer.uint32(18).string(message.denomA);
+    }
+    if (message.amountA !== "") {
+      writer.uint32(26).string(message.amountA);
+    }
+    if (message.denomB !== "") {
+      writer.uint32(34).string(message.denomB);
+    }
+    if (message.amountB !== "") {
+      writer.uint32(42).string(message.amountB);
+    }
+    if (message.shareDenom !== "") {
+      writer.uint32(50).string(message.shareDenom);
+    }
+    if (message.shareAmount !== "") {
+      writer.uint32(58).string(message.shareAmount);
+    }
+    if (!message.initialShareAmountBurned.isZero()) {
+      writer.uint32(64).uint64(message.initialShareAmountBurned);
+    }
+    if (message.depositor !== "") {
+      writer.uint32(74).string(message.depositor);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DepositToPoolEvent {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseDepositToPoolEvent } as DepositToPoolEvent;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.poolId = reader.uint64() as Long;
+          break;
+        case 2:
+          message.denomA = reader.string();
+          break;
+        case 3:
+          message.amountA = reader.string();
+          break;
+        case 4:
+          message.denomB = reader.string();
+          break;
+        case 5:
+          message.amountB = reader.string();
+          break;
+        case 6:
+          message.shareDenom = reader.string();
+          break;
+        case 7:
+          message.shareAmount = reader.string();
+          break;
+        case 8:
+          message.initialShareAmountBurned = reader.uint64() as Long;
+          break;
+        case 9:
+          message.depositor = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): DepositToPoolEvent {
+    const message = { ...baseDepositToPoolEvent } as DepositToPoolEvent;
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromString(object.poolId)
+        : Long.UZERO;
+    message.denomA =
+      object.denomA !== undefined && object.denomA !== null
+        ? String(object.denomA)
+        : "";
+    message.amountA =
+      object.amountA !== undefined && object.amountA !== null
+        ? String(object.amountA)
+        : "";
+    message.denomB =
+      object.denomB !== undefined && object.denomB !== null
+        ? String(object.denomB)
+        : "";
+    message.amountB =
+      object.amountB !== undefined && object.amountB !== null
+        ? String(object.amountB)
+        : "";
+    message.shareDenom =
+      object.shareDenom !== undefined && object.shareDenom !== null
+        ? String(object.shareDenom)
+        : "";
+    message.shareAmount =
+      object.shareAmount !== undefined && object.shareAmount !== null
+        ? String(object.shareAmount)
+        : "";
+    message.initialShareAmountBurned =
+      object.initialShareAmountBurned !== undefined &&
+      object.initialShareAmountBurned !== null
+        ? Long.fromString(object.initialShareAmountBurned)
+        : Long.UZERO;
+    message.depositor =
+      object.depositor !== undefined && object.depositor !== null
+        ? String(object.depositor)
+        : "";
+    return message;
+  },
+
+  toJSON(message: DepositToPoolEvent): unknown {
+    const obj: any = {};
+    message.poolId !== undefined &&
+      (obj.poolId = (message.poolId || Long.UZERO).toString());
+    message.denomA !== undefined && (obj.denomA = message.denomA);
+    message.amountA !== undefined && (obj.amountA = message.amountA);
+    message.denomB !== undefined && (obj.denomB = message.denomB);
+    message.amountB !== undefined && (obj.amountB = message.amountB);
+    message.shareDenom !== undefined && (obj.shareDenom = message.shareDenom);
+    message.shareAmount !== undefined &&
+      (obj.shareAmount = message.shareAmount);
+    message.initialShareAmountBurned !== undefined &&
+      (obj.initialShareAmountBurned = (
+        message.initialShareAmountBurned || Long.UZERO
+      ).toString());
+    message.depositor !== undefined && (obj.depositor = message.depositor);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<DepositToPoolEvent>): DepositToPoolEvent {
+    const message = { ...baseDepositToPoolEvent } as DepositToPoolEvent;
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromValue(object.poolId)
+        : Long.UZERO;
+    message.denomA = object.denomA ?? "";
+    message.amountA = object.amountA ?? "";
+    message.denomB = object.denomB ?? "";
+    message.amountB = object.amountB ?? "";
+    message.shareDenom = object.shareDenom ?? "";
+    message.shareAmount = object.shareAmount ?? "";
+    message.initialShareAmountBurned =
+      object.initialShareAmountBurned !== undefined &&
+      object.initialShareAmountBurned !== null
+        ? Long.fromValue(object.initialShareAmountBurned)
+        : Long.UZERO;
+    message.depositor = object.depositor ?? "";
+    return message;
+  },
+};
+
+const baseWithdrawFromPoolEvent: object = {
+  poolId: Long.UZERO,
+  denomA: "",
+  amountA: "",
+  denomB: "",
+  amountB: "",
+  shareDenom: "",
+  shareAmount: "",
+  withdrawer: "",
+};
+
+export const WithdrawFromPoolEvent = {
+  encode(
+    message: WithdrawFromPoolEvent,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (!message.poolId.isZero()) {
+      writer.uint32(8).uint64(message.poolId);
+    }
+    if (message.denomA !== "") {
+      writer.uint32(18).string(message.denomA);
+    }
+    if (message.amountA !== "") {
+      writer.uint32(26).string(message.amountA);
+    }
+    if (message.denomB !== "") {
+      writer.uint32(34).string(message.denomB);
+    }
+    if (message.amountB !== "") {
+      writer.uint32(42).string(message.amountB);
+    }
+    if (message.shareDenom !== "") {
+      writer.uint32(50).string(message.shareDenom);
+    }
+    if (message.shareAmount !== "") {
+      writer.uint32(58).string(message.shareAmount);
+    }
+    if (message.withdrawer !== "") {
+      writer.uint32(66).string(message.withdrawer);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): WithdrawFromPoolEvent {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseWithdrawFromPoolEvent } as WithdrawFromPoolEvent;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.poolId = reader.uint64() as Long;
+          break;
+        case 2:
+          message.denomA = reader.string();
+          break;
+        case 3:
+          message.amountA = reader.string();
+          break;
+        case 4:
+          message.denomB = reader.string();
+          break;
+        case 5:
+          message.amountB = reader.string();
+          break;
+        case 6:
+          message.shareDenom = reader.string();
+          break;
+        case 7:
+          message.shareAmount = reader.string();
+          break;
+        case 8:
+          message.withdrawer = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): WithdrawFromPoolEvent {
+    const message = { ...baseWithdrawFromPoolEvent } as WithdrawFromPoolEvent;
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromString(object.poolId)
+        : Long.UZERO;
+    message.denomA =
+      object.denomA !== undefined && object.denomA !== null
+        ? String(object.denomA)
+        : "";
+    message.amountA =
+      object.amountA !== undefined && object.amountA !== null
+        ? String(object.amountA)
+        : "";
+    message.denomB =
+      object.denomB !== undefined && object.denomB !== null
+        ? String(object.denomB)
+        : "";
+    message.amountB =
+      object.amountB !== undefined && object.amountB !== null
+        ? String(object.amountB)
+        : "";
+    message.shareDenom =
+      object.shareDenom !== undefined && object.shareDenom !== null
+        ? String(object.shareDenom)
+        : "";
+    message.shareAmount =
+      object.shareAmount !== undefined && object.shareAmount !== null
+        ? String(object.shareAmount)
+        : "";
+    message.withdrawer =
+      object.withdrawer !== undefined && object.withdrawer !== null
+        ? String(object.withdrawer)
+        : "";
+    return message;
+  },
+
+  toJSON(message: WithdrawFromPoolEvent): unknown {
+    const obj: any = {};
+    message.poolId !== undefined &&
+      (obj.poolId = (message.poolId || Long.UZERO).toString());
+    message.denomA !== undefined && (obj.denomA = message.denomA);
+    message.amountA !== undefined && (obj.amountA = message.amountA);
+    message.denomB !== undefined && (obj.denomB = message.denomB);
+    message.amountB !== undefined && (obj.amountB = message.amountB);
+    message.shareDenom !== undefined && (obj.shareDenom = message.shareDenom);
+    message.shareAmount !== undefined &&
+      (obj.shareAmount = message.shareAmount);
+    message.withdrawer !== undefined && (obj.withdrawer = message.withdrawer);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<WithdrawFromPoolEvent>
+  ): WithdrawFromPoolEvent {
+    const message = { ...baseWithdrawFromPoolEvent } as WithdrawFromPoolEvent;
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromValue(object.poolId)
+        : Long.UZERO;
+    message.denomA = object.denomA ?? "";
+    message.amountA = object.amountA ?? "";
+    message.denomB = object.denomB ?? "";
+    message.amountB = object.amountB ?? "";
+    message.shareDenom = object.shareDenom ?? "";
+    message.shareAmount = object.shareAmount ?? "";
+    message.withdrawer = object.withdrawer ?? "";
+    return message;
+  },
+};
+
+const baseStakePoolTokenEvent: object = {
+  poolId: Long.UZERO,
+  denom: "",
+  amount: "",
+  creator: "",
+  commitmentDuration: Long.UZERO,
+};
+
+export const StakePoolTokenEvent = {
+  encode(
+    message: StakePoolTokenEvent,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (!message.poolId.isZero()) {
+      writer.uint32(8).uint64(message.poolId);
+    }
+    if (message.denom !== "") {
+      writer.uint32(18).string(message.denom);
+    }
+    if (message.amount !== "") {
+      writer.uint32(26).string(message.amount);
+    }
+    if (message.creator !== "") {
+      writer.uint32(34).string(message.creator);
+    }
+    if (!message.commitmentDuration.isZero()) {
+      writer.uint32(40).uint64(message.commitmentDuration);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): StakePoolTokenEvent {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseStakePoolTokenEvent } as StakePoolTokenEvent;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.poolId = reader.uint64() as Long;
+          break;
+        case 2:
+          message.denom = reader.string();
+          break;
+        case 3:
+          message.amount = reader.string();
+          break;
+        case 4:
+          message.creator = reader.string();
+          break;
+        case 5:
+          message.commitmentDuration = reader.uint64() as Long;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): StakePoolTokenEvent {
+    const message = { ...baseStakePoolTokenEvent } as StakePoolTokenEvent;
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromString(object.poolId)
+        : Long.UZERO;
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
+    message.amount =
+      object.amount !== undefined && object.amount !== null
+        ? String(object.amount)
+        : "";
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.commitmentDuration =
+      object.commitmentDuration !== undefined &&
+      object.commitmentDuration !== null
+        ? Long.fromString(object.commitmentDuration)
+        : Long.UZERO;
+    return message;
+  },
+
+  toJSON(message: StakePoolTokenEvent): unknown {
+    const obj: any = {};
+    message.poolId !== undefined &&
+      (obj.poolId = (message.poolId || Long.UZERO).toString());
+    message.denom !== undefined && (obj.denom = message.denom);
+    message.amount !== undefined && (obj.amount = message.amount);
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.commitmentDuration !== undefined &&
+      (obj.commitmentDuration = (
+        message.commitmentDuration || Long.UZERO
+      ).toString());
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<StakePoolTokenEvent>): StakePoolTokenEvent {
+    const message = { ...baseStakePoolTokenEvent } as StakePoolTokenEvent;
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromValue(object.poolId)
+        : Long.UZERO;
+    message.denom = object.denom ?? "";
+    message.amount = object.amount ?? "";
+    message.creator = object.creator ?? "";
+    message.commitmentDuration =
+      object.commitmentDuration !== undefined &&
+      object.commitmentDuration !== null
+        ? Long.fromValue(object.commitmentDuration)
+        : Long.UZERO;
+    return message;
+  },
+};
+
+const baseUnstakePoolTokenEvent: object = {
+  poolId: Long.UZERO,
+  denom: "",
+  amount: "",
+  creator: "",
+};
+
+export const UnstakePoolTokenEvent = {
+  encode(
+    message: UnstakePoolTokenEvent,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (!message.poolId.isZero()) {
+      writer.uint32(8).uint64(message.poolId);
+    }
+    if (message.denom !== "") {
+      writer.uint32(18).string(message.denom);
+    }
+    if (message.amount !== "") {
+      writer.uint32(26).string(message.amount);
+    }
+    if (message.creator !== "") {
+      writer.uint32(34).string(message.creator);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): UnstakePoolTokenEvent {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseUnstakePoolTokenEvent } as UnstakePoolTokenEvent;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.poolId = reader.uint64() as Long;
+          break;
+        case 2:
+          message.denom = reader.string();
+          break;
+        case 3:
+          message.amount = reader.string();
+          break;
+        case 4:
+          message.creator = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UnstakePoolTokenEvent {
+    const message = { ...baseUnstakePoolTokenEvent } as UnstakePoolTokenEvent;
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromString(object.poolId)
+        : Long.UZERO;
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
+    message.amount =
+      object.amount !== undefined && object.amount !== null
+        ? String(object.amount)
+        : "";
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    return message;
+  },
+
+  toJSON(message: UnstakePoolTokenEvent): unknown {
+    const obj: any = {};
+    message.poolId !== undefined &&
+      (obj.poolId = (message.poolId || Long.UZERO).toString());
+    message.denom !== undefined && (obj.denom = message.denom);
+    message.amount !== undefined && (obj.amount = message.amount);
+    message.creator !== undefined && (obj.creator = message.creator);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<UnstakePoolTokenEvent>
+  ): UnstakePoolTokenEvent {
+    const message = { ...baseUnstakePoolTokenEvent } as UnstakePoolTokenEvent;
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromValue(object.poolId)
+        : Long.UZERO;
+    message.denom = object.denom ?? "";
+    message.amount = object.amount ?? "";
+    message.creator = object.creator ?? "";
     return message;
   },
 };

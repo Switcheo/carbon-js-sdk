@@ -39,6 +39,7 @@ export interface HistoryOrder {
   referral_address?: string;
   referral_commission?: number;
   referral_kickback?: number;
+  cancel_reason?: number;
 }
 
 // This is added to account for the updated data model
