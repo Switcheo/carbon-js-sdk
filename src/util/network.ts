@@ -1,4 +1,4 @@
-import { DEFAULT_NETWORK, Network } from "@carbon-sdk/constant/network";
+import { DEFAULT_NETWORK, Network } from "@carbon-sdk/constant";
 
 /**
  *

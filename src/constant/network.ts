@@ -1,4 +1,5 @@
 import { CONST } from "@cityofzion/neon-core-next";
+import { SimpleMap } from "../util/type";
 
 export enum Network {
   MainNet = "mainnet",
@@ -54,8 +55,6 @@ export interface NetworkConfig {
   tmRpcUrl: string;
   tmWsUrl: string;
   restUrl: string;
-  grpcUrl: string;
-  grpcInsecure: boolean;
   evmJsonRpcUrl: string;
   evmWsUrl: string;
   insightsUrl: string;
@@ -96,8 +95,6 @@ export const NetworkConfigs: {
     tmRpcUrl: "https://tm-api.carbon.network/",
     tmWsUrl: "wss://tm-api.carbon.network/",
     restUrl: "https://api.carbon.network",
-    grpcUrl: "grpc.carbon.network",
-    grpcInsecure: false,
     evmJsonRpcUrl: "https://evm-api.carbon.network/",
     evmWsUrl: "wss://evm-ws.carbon.network/",
     insightsUrl: "https://api-insights.carbon.network",
@@ -187,8 +184,6 @@ export const NetworkConfigs: {
     tmRpcUrl: "https://test-tm-api.carbon.network",
     tmWsUrl: "wss://test-tm-api.carbon.network",
     restUrl: "https://test-api.carbon.network",
-    grpcUrl: "test-grpc.carbon.network",
-    grpcInsecure: false,
     evmJsonRpcUrl: "https://test-evm-api.carbon.network/",
     evmWsUrl: "wss://test-evm-ws.carbon.network/",
     insightsUrl: "https://test-api-insights.carbon.network",
@@ -278,8 +273,6 @@ export const NetworkConfigs: {
     tmRpcUrl: "https://dev-tm-api.carbon.network",
     tmWsUrl: "wss://dev-tm-api.carbon.network",
     restUrl: "https://dev-api.carbon.network",
-    grpcUrl: "dev-grpc.carbon.network",
-    grpcInsecure: false,
     evmJsonRpcUrl: "https://dev-evm-api.carbon.network/",
     evmWsUrl: "wss://dev-evm-ws.carbon.network/",
     insightsUrl: "https://dev-api-insights.carbon.network",
@@ -370,8 +363,6 @@ export const NetworkConfigs: {
     tmRpcUrl: "http://localhost:26657",
     tmWsUrl: "ws://localhost:26657",
     restUrl: "http://localhost:1317",
-    grpcUrl: "localhost:9090",
-    grpcInsecure: true,
     evmJsonRpcUrl: "http://localhost:8545/",
     evmWsUrl: "ws://localhost:8546/",
     insightsUrl: "http://localhost:8181",
@@ -457,9 +448,7 @@ export const NetworkConfigs: {
   },
 } as const;
 
-export const publicRpcNodes: {
-  [index: string]: string
-} = {
+export const publicRpcNodes: SimpleMap<string> = {
   Osmosis: "https://rpc.osmosis.zone/",
   Terra: "https://terra-rpc.lavenderfive.com:443/",
 };

@@ -42,7 +42,6 @@
     "@cityofzion/neon-js": "^4.9.0",
     "@cosmjs/stargate": "~0.29.5",
     "@cosmos-kit/leap": "^0.13.14",
-    "@grpc/grpc-js": "^1.8.18",
     "@keplr-wallet/stores": "^0.11.64",
     "@keplr-wallet/types": "^0.11.64",
     "@ledgerhq/cryptoassets": "^6.31.0",
