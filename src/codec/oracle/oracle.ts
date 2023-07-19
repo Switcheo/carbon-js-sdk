@@ -49,6 +49,11 @@ export interface Mark {
   timestamp: Long;
 }
 
+export interface Contract {
+  oracleId: string;
+  contractAddress: string;
+}
+
 const baseParams: object = {
   oracleSlashEnabled: false,
   oracleSlashWindowBlock: 0,
@@ -664,6 +669,72 @@ export const Mark = {
       object.timestamp !== undefined && object.timestamp !== null
         ? Long.fromValue(object.timestamp)
         : Long.ZERO;
+    return message;
+  },
+};
+
+const baseContract: object = { oracleId: "", contractAddress: "" };
+
+export const Contract = {
+  encode(
+    message: Contract,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.oracleId !== "") {
+      writer.uint32(10).string(message.oracleId);
+    }
+    if (message.contractAddress !== "") {
+      writer.uint32(18).string(message.contractAddress);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): Contract {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseContract } as Contract;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.oracleId = reader.string();
+          break;
+        case 2:
+          message.contractAddress = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Contract {
+    const message = { ...baseContract } as Contract;
+    message.oracleId =
+      object.oracleId !== undefined && object.oracleId !== null
+        ? String(object.oracleId)
+        : "";
+    message.contractAddress =
+      object.contractAddress !== undefined && object.contractAddress !== null
+        ? String(object.contractAddress)
+        : "";
+    return message;
+  },
+
+  toJSON(message: Contract): unknown {
+    const obj: any = {};
+    message.oracleId !== undefined && (obj.oracleId = message.oracleId);
+    message.contractAddress !== undefined &&
+      (obj.contractAddress = message.contractAddress);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<Contract>): Contract {
+    const message = { ...baseContract } as Contract;
+    message.oracleId = object.oracleId ?? "";
+    message.contractAddress = object.contractAddress ?? "";
     return message;
   },
 };

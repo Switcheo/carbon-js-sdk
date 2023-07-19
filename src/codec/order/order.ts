@@ -3,6 +3,7 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Coin } from "../cosmos/base/v1beta1/coin";
 import { Timestamp } from "../google/protobuf/timestamp";
+import { UInt32Value } from "../google/protobuf/wrappers";
 
 export const protobufPackage = "Switcheo.carbon.order";
 
@@ -11,7 +12,6 @@ export interface Params {
   maxReferralCommission: number;
 }
 
-/** IMPORTANT: remember to update Order.Copy() in x/order/types/order.go when adding new fields */
 export interface Order {
   id: string;
   blockHeight: Long;
@@ -40,6 +40,7 @@ export interface Order {
   referralCommission: number;
   referralKickback: number;
   poolRoute: Uint8Array;
+  cancelReason?: number;
 }
 
 export interface DBOrder {
@@ -236,6 +237,12 @@ export const Order = {
     if (message.poolRoute.length !== 0) {
       writer.uint32(218).bytes(message.poolRoute);
     }
+    if (message.cancelReason !== undefined) {
+      UInt32Value.encode(
+        { value: message.cancelReason! },
+        writer.uint32(226).fork()
+      ).ldelim();
+    }
     return writer;
   },
 
@@ -329,6 +336,12 @@ export const Order = {
           break;
         case 27:
           message.poolRoute = reader.bytes();
+          break;
+        case 28:
+          message.cancelReason = UInt32Value.decode(
+            reader,
+            reader.uint32()
+          ).value;
           break;
         default:
           reader.skipType(tag & 7);
@@ -448,6 +461,10 @@ export const Order = {
       object.poolRoute !== undefined && object.poolRoute !== null
         ? bytesFromBase64(object.poolRoute)
         : new Uint8Array();
+    message.cancelReason =
+      object.cancelReason !== undefined && object.cancelReason !== null
+        ? Number(object.cancelReason)
+        : undefined;
     return message;
   },
 
@@ -500,6 +517,8 @@ export const Order = {
       (obj.poolRoute = base64FromBytes(
         message.poolRoute !== undefined ? message.poolRoute : new Uint8Array()
       ));
+    message.cancelReason !== undefined &&
+      (obj.cancelReason = message.cancelReason);
     return obj;
   },
 
@@ -545,6 +564,7 @@ export const Order = {
     message.referralCommission = object.referralCommission ?? 0;
     message.referralKickback = object.referralKickback ?? 0;
     message.poolRoute = object.poolRoute ?? new Uint8Array();
+    message.cancelReason = object.cancelReason ?? undefined;
     return message;
   },
 };
