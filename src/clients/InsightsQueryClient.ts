@@ -345,6 +345,15 @@ class InsightsQueryClient {
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetLeaderboardResponse>;
   }
 
+  async PositionStats(
+    req: Insights.GetPositionStatsPathParams,
+    query: Insights.GetPositionStatsQueryParams
+  ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetPositionStatsResponse>> {
+    const request = this.apiManager.path("position/stats", req, query)
+    const response = await request.get();
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetPositionStatsResponse>;
+  }
+
   //Coin Gecko Tokens
   async DenomToGeckoIdMap(): Promise<Insights.InsightsQueryResponse<Insights.QueryDenomToGeckoIdMap>> {
     const request = this.apiManager.path("info/denom_gecko_map");

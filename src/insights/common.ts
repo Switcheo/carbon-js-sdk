@@ -36,6 +36,7 @@ export const InsightsEndpoints = {
   "position/view": "/position/view/:view",
   "position/liquidation": "/position/liquidation",
   "position/liquidation/engine": "/position/liquidation/engine",
+  "position/stats": "/position/stats",
 
   // Competition api
   "competition/list": "/competition/list",
