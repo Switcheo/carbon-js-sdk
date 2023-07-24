@@ -345,6 +345,15 @@ class InsightsQueryClient {
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetLeaderboardResponse>;
   }
 
+  async PositionStats(
+    req: Insights.GetPositionStatsPathParams,
+    query: Insights.GetPositionStatsQueryParams
+  ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetPositionStatsResponse>> {
+    const request = this.apiManager.path("position/stats", req, query)
+    const response = await request.get();
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetPositionStatsResponse>;
+  }
+
   //Coin Gecko Tokens
   async DenomToGeckoIdMap(): Promise<Insights.InsightsQueryResponse<Insights.QueryDenomToGeckoIdMap>> {
     const request = this.apiManager.path("info/denom_gecko_map");
@@ -396,6 +405,18 @@ class InsightsQueryClient {
     const request = this.apiManager.path("info/oracles_price", {}, req);
     const response = await request.get();
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetOraclesPriceResponse>;
+  }
+
+  async AlliancesStake(req: Insights.QueryGetAlliancesStakeRequest = {}): Promise<Insights.InsightsQueryResponse<Insights.QueryGetAlliancesStakeResponse>> {
+    const request = this.apiManager.path("alliances/stake", {}, req);
+    const response = await request.get();
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetAlliancesStakeResponse>;
+  }
+
+  async AlliancesRewards(req: Insights.QueryGetAlliancesRewardsRequest = {}): Promise<Insights.InsightsQueryResponse<Insights.QueryGetAlliancesRewardsResponse>> {
+    const request = this.apiManager.path("alliances/rewards", {}, req);
+    const response = await request.get();
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetAlliancesRewardsResponse>;
   }
 }
 

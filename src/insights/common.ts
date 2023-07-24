@@ -36,6 +36,7 @@ export const InsightsEndpoints = {
   "position/view": "/position/view/:view",
   "position/liquidation": "/position/liquidation",
   "position/liquidation/engine": "/position/liquidation/engine",
+  "position/stats": "/position/stats/:address",
 
   // Competition api
   "competition/list": "/competition/list",
@@ -58,6 +59,10 @@ export const InsightsEndpoints = {
 
   // Oracles api
   "info/oracles_price": "/info/oracles_price",
+
+  // Alliances api
+  "alliances/stake": "/alliances/stake",
+  "alliances/rewards": "/alliances/rewards",
 };
 
 export type Interval = "millisecond" | "second" | "minute" | "hour" | "day" | "week" | "month" | "quarter";
