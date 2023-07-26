@@ -1,16 +1,16 @@
-import { EIP712Types } from "@carbon-sdk/codec";
 import { DEFAULT_CARBON_DOMAIN_FIELDS, LEGACY_DEFAULT_EIP712_TYPES } from "@carbon-sdk/constant/eip712";
-import AminoTypesMap from "@carbon-sdk/provider/amino/AminoTypesMap";
-import { parseChainId } from "@carbon-sdk/util/ethermint";
 import { StdSignDoc } from "@cosmjs/amino/build";
-import { Coin } from "@cosmjs/proto-signing";
 import { TypedDataDomain, TypedDataField } from "@ethersproject/abstract-signer";
+import { TypeUtils } from ".";
+import { parseChainId } from "@carbon-sdk/util/ethermint";
+import { EIP712Types, registry } from "@carbon-sdk/codec";
+import AminoTypesMap from "@carbon-sdk/provider/amino/AminoTypesMap";
+import { Coin } from "@cosmjs/proto-signing";
 import { capitalize } from "lodash";
-import { SimpleMap } from "./type";
 
 
 export interface LegacyEIP712Tx {
-    readonly types: SimpleMap<TypedDataField[]>;
+    readonly types: TypeUtils.SimpleMap<TypedDataField[]>;
     readonly primaryType: string;
     readonly domain: TypedDataDomain;
     readonly message: LegacyEIP712StdSignDoc;
@@ -22,14 +22,14 @@ export type EIP712Fee = {
 }
 
 type LegacyEIP712StdSignDoc = StdSignDoc & { fee: EIP712Fee }
-function getTypes(msgTypeUrl: string, aminoMsgValue: any): SimpleMap<TypedDataField[]> {
+function getTypes(msgTypeUrl: string, aminoMsgValue: any): TypeUtils.SimpleMap<TypedDataField[]> {
     return {
         ...LEGACY_DEFAULT_EIP712_TYPES,
         ...getMsgValueType(msgTypeUrl, aminoMsgValue, "MsgValue")
     }
 }
 
-function getMsgValueType(msgTypeUrl: string, msgValue: any, msgTypeName: string, objectName?: string, nestedType: boolean = false, msgTypeDefinitions: SimpleMap<TypedDataField[]> = {}): SimpleMap<TypedDataField[]> {
+function getMsgValueType(msgTypeUrl: string, msgValue: any, msgTypeName: string, objectName?: string, nestedType: boolean = false, msgTypeDefinitions: TypeUtils.SimpleMap<TypedDataField[]> = {}): TypeUtils.SimpleMap<TypedDataField[]> {
     const packageName = msgTypeUrl.split(".").slice(0, -1).join(".")
     const msgFieldType = msgTypeUrl.split(".").pop()!
     const typeName = getTypeName(msgTypeName, objectName, nestedType, false)

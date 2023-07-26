@@ -4,14 +4,15 @@ import {
   DEFAULT_NETWORK,
   DenomPrefix,
   Network,
+  Network as _Network,
   NetworkConfig,
   NetworkConfigs,
-  Network as _Network,
 } from "@carbon-sdk/constant";
 import { GenericUtils, NetworkUtils } from "@carbon-sdk/util";
-import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
+import { Tendermint34Client, HttpBatchClient } from "@cosmjs/tendermint-rpc";
+import { CarbonQueryClient, ETHClient, HydrogenClient, InsightsQueryClient, NEOClient, TokenClient, ZILClient } from "./clients";
 import * as clients from "./clients";
-import { BatchQueryClient, CarbonQueryClient, ETHClient, GrpcQueryClient, HydrogenClient, InsightsQueryClient, N3Client, NEOClient, TokenClient, ZILClient } from "./clients";
+import N3Client from "./clients/N3Client";
 import {
   AdminModule,
   AllianceModule,
@@ -19,10 +20,7 @@ import {
   BrokerModule,
   CDPModule,
   CoinModule,
-  EvmMergeModule,
-  EvmModule,
   FeeModule,
-  FeemarketModule,
   GovModule,
   IBCModule,
   LeverageModule,
@@ -34,13 +32,18 @@ import {
   ProfileModule,
   SubAccountModule,
   XChainModule,
+  EvmModule,
+  FeemarketModule,
+  EvmMergeModule,
 } from "./modules";
 import { StakingModule } from "./modules/staking";
 import { CosmosLedger, Keplr, KeplrAccount, LeapAccount, LeapExtended } from "./provider";
-import { MetaMask } from "./provider/metamask/MetaMask";
-import { SWTHAddressOptions } from "./util/address";
 import { Blockchain } from "./util/blockchain";
 import { CarbonLedgerSigner, CarbonSigner, CarbonWallet, CarbonWalletGenericOpts, MetaMaskWalletOpts } from "./wallet";
+import { MetaMask } from "./provider/metamask/MetaMask";
+import { SWTHAddressOptions } from "./util/address";
+import { ethers } from "ethers";
+import GrpcQueryClient from "./clients/GrpcQueryClient";
 export { CarbonTx } from "@carbon-sdk/util";
 export { CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletGenericOpts, CarbonWalletInitOpts } from "@carbon-sdk/wallet";
 export { DenomPrefix } from "./constant";
@@ -48,11 +51,11 @@ export { DenomPrefix } from "./constant";
 export interface CarbonSDKOpts {
   network: Network;
   tmClient: Tendermint34Client;
-  grpcQueryClient?: GrpcQueryClient
   chainId?: string;
   evmChainId?: string;
   token?: TokenClient;
   config?: Partial<NetworkConfig>;
+  grpcQueryClient?: GrpcQueryClient;
   useTmAbciQuery?: boolean;
   defaultTimeoutBlocks?: number; // tx mempool ttl (timeoutHeight)
 }
@@ -125,7 +128,6 @@ class CarbonSDK {
   chainId: string;
   evmChainId: string;
   constructor(opts: CarbonSDKOpts) {
-
     this.network = opts.network ?? DEFAULT_NETWORK;
     this.configOverride = opts.config ?? {};
     this.networkConfig = GenericUtils.overrideConfig(NetworkConfigs[this.network], this.configOverride);
@@ -222,7 +224,7 @@ class CarbonSDK {
     const configOverride = opts.config ?? {};
 
     const networkConfig = GenericUtils.overrideConfig(NetworkConfigs[network], configOverride);
-    const batchQueryClient = new BatchQueryClient(networkConfig.tmRpcUrl);
+    const batchQueryClient = new clients.BatchQueryClient(networkConfig.tmRpcUrl);
     const tmClient = opts.tmClient ?? GenericUtils.modifyTmClient(await Tendermint34Client.create(batchQueryClient));
     const defaultTimeoutBlocks = opts.defaultTimeoutBlocks;
     const chainId = (await tmClient.status())?.nodeInfo.network;

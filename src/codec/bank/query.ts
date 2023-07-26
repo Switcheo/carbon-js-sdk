@@ -17,6 +17,9 @@ export interface InternalTransfer {
   transactionMemo: string;
   transactionBlockHeight: Long;
   transactionBlockTime?: Date;
+  senderUsername: string;
+  receiverUsername: string;
+  transactionCode: number;
 }
 
 export interface Coin {
@@ -43,6 +46,9 @@ const baseInternalTransfer: object = {
   transactionHash: "",
   transactionMemo: "",
   transactionBlockHeight: Long.UZERO,
+  senderUsername: "",
+  receiverUsername: "",
+  transactionCode: 0,
 };
 
 export const InternalTransfer = {
@@ -57,22 +63,31 @@ export const InternalTransfer = {
       writer.uint32(18).string(message.receiver);
     }
     if (message.transactionHash !== "") {
-      writer.uint32(42).string(message.transactionHash);
+      writer.uint32(26).string(message.transactionHash);
     }
     for (const v of message.coins) {
-      Coin.encode(v!, writer.uint32(50).fork()).ldelim();
+      Coin.encode(v!, writer.uint32(34).fork()).ldelim();
     }
     if (message.transactionMemo !== "") {
-      writer.uint32(58).string(message.transactionMemo);
+      writer.uint32(42).string(message.transactionMemo);
     }
     if (!message.transactionBlockHeight.isZero()) {
-      writer.uint32(64).uint64(message.transactionBlockHeight);
+      writer.uint32(48).uint64(message.transactionBlockHeight);
     }
     if (message.transactionBlockTime !== undefined) {
       Timestamp.encode(
         toTimestamp(message.transactionBlockTime),
-        writer.uint32(74).fork()
+        writer.uint32(58).fork()
       ).ldelim();
+    }
+    if (message.senderUsername !== "") {
+      writer.uint32(66).string(message.senderUsername);
+    }
+    if (message.receiverUsername !== "") {
+      writer.uint32(74).string(message.receiverUsername);
+    }
+    if (message.transactionCode !== 0) {
+      writer.uint32(80).uint32(message.transactionCode);
     }
     return writer;
   },
@@ -91,22 +106,31 @@ export const InternalTransfer = {
         case 2:
           message.receiver = reader.string();
           break;
-        case 5:
+        case 3:
           message.transactionHash = reader.string();
           break;
-        case 6:
+        case 4:
           message.coins.push(Coin.decode(reader, reader.uint32()));
           break;
-        case 7:
+        case 5:
           message.transactionMemo = reader.string();
           break;
-        case 8:
+        case 6:
           message.transactionBlockHeight = reader.uint64() as Long;
           break;
-        case 9:
+        case 7:
           message.transactionBlockTime = fromTimestamp(
             Timestamp.decode(reader, reader.uint32())
           );
+          break;
+        case 8:
+          message.senderUsername = reader.string();
+          break;
+        case 9:
+          message.receiverUsername = reader.string();
+          break;
+        case 10:
+          message.transactionCode = reader.uint32();
           break;
         default:
           reader.skipType(tag & 7);
@@ -145,6 +169,18 @@ export const InternalTransfer = {
       object.transactionBlockTime !== null
         ? fromJsonTimestamp(object.transactionBlockTime)
         : undefined;
+    message.senderUsername =
+      object.senderUsername !== undefined && object.senderUsername !== null
+        ? String(object.senderUsername)
+        : "";
+    message.receiverUsername =
+      object.receiverUsername !== undefined && object.receiverUsername !== null
+        ? String(object.receiverUsername)
+        : "";
+    message.transactionCode =
+      object.transactionCode !== undefined && object.transactionCode !== null
+        ? Number(object.transactionCode)
+        : 0;
     return message;
   },
 
@@ -167,6 +203,12 @@ export const InternalTransfer = {
       ).toString());
     message.transactionBlockTime !== undefined &&
       (obj.transactionBlockTime = message.transactionBlockTime.toISOString());
+    message.senderUsername !== undefined &&
+      (obj.senderUsername = message.senderUsername);
+    message.receiverUsername !== undefined &&
+      (obj.receiverUsername = message.receiverUsername);
+    message.transactionCode !== undefined &&
+      (obj.transactionCode = message.transactionCode);
     return obj;
   },
 
@@ -183,6 +225,9 @@ export const InternalTransfer = {
         ? Long.fromValue(object.transactionBlockHeight)
         : Long.UZERO;
     message.transactionBlockTime = object.transactionBlockTime ?? undefined;
+    message.senderUsername = object.senderUsername ?? "";
+    message.receiverUsername = object.receiverUsername ?? "";
+    message.transactionCode = object.transactionCode ?? 0;
     return message;
   },
 };

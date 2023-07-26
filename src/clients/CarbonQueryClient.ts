@@ -64,14 +64,7 @@ export interface EthermintClientGroup {
 }
 
 export interface CarbonQueryClientOpts {
-  /**
-   * Used to create an RPC client through Tendermint ABCI.
-   */
   tmClient: Tendermint34Client;
-
-  /**
-   * Used for querying through GRPC instead of Tendermint ABCI. 
-   */
   grpcClient?: GrpcQueryClient;
 }
 
@@ -119,12 +112,14 @@ class CarbonQueryClient {
   evmmerge: EvmMergeQueryClient;
   evmbank: EvmBankQueryClient;
 
-  private rpcClient: ProtobufRpcClient;
+  private readonly baseClient: ProtobufRpcClient;
+  private readonly tmClient: Tendermint34Client;
 
   constructor(opts: CarbonQueryClientOpts) {
+    const rpcClient = opts.grpcClient ?? createProtobufRpcClient(new QueryClient(opts.tmClient));
 
-    const rpcClient = this.parseRpcClient(opts);
-    this.rpcClient = rpcClient;
+    this.tmClient = opts.tmClient;
+    this.baseClient = rpcClient;
 
     this.chain = BlockchainClient.connectWithTm(opts.tmClient);
 
@@ -181,21 +176,6 @@ class CarbonQueryClient {
       evm: new EthermintEVMQueryClient(rpcClient),
       feeMarket: new EthermintFeeMarketQueryClient(rpcClient),
     }
-  }
-
-  private parseRpcClient = (opts: CarbonQueryClientOpts) => {
-    if (opts.grpcClient) {
-      return opts.grpcClient;
-    } else if (opts.tmClient) {
-      const tmQueryClient = new QueryClient(opts.tmClient);
-      return createProtobufRpcClient(tmQueryClient);
-    }
-
-    throw new Error("invalid initialization, no valid query client found")
-  }
-
-  getProtobufRpcClient() {
-    return this.rpcClient
   }
 }
 

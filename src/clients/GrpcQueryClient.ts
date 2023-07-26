@@ -24,13 +24,14 @@ class GrpcQueryClient {
         url,
       }
     } else {
+      throw new Error("GrpcQueryClient is not available on node environment yet.");
       // nodejs grpc client
       // lazy import to avoid loading http2 module on web
-      const { Client, credentials } = require("@grpc/grpc-js");
-      this.config = {
-        isXhr: false,
-        client: new Client(url, isInsecure ? credentials.createInsecure() : credentials.createSecure()),
-      }
+      // const { Client, credentials } = require("@grpc/grpc-js");
+      // this.config = {
+      //   isXhr: false,
+      //   client: new Client(url, isInsecure ? credentials.createInsecure() : credentials.createSsl()),
+      // }
     }
   }
 

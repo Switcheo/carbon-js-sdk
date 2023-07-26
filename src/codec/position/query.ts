@@ -202,10 +202,10 @@ export const QueryAllPositionRequest = {
       writer.uint32(18).string(message.market);
     }
     if (message.status !== "") {
-      writer.uint32(34).string(message.status);
+      writer.uint32(26).string(message.status);
     }
     if (message.pagination !== undefined) {
-      PageRequest.encode(message.pagination, writer.uint32(42).fork()).ldelim();
+      PageRequest.encode(message.pagination, writer.uint32(34).fork()).ldelim();
     }
     return writer;
   },
@@ -228,10 +228,10 @@ export const QueryAllPositionRequest = {
         case 2:
           message.market = reader.string();
           break;
-        case 4:
+        case 3:
           message.status = reader.string();
           break;
-        case 5:
+        case 4:
           message.pagination = PageRequest.decode(reader, reader.uint32());
           break;
         default:

@@ -1,8 +1,8 @@
-import { NodeItem } from "../insights/node";
-import { SimpleMap } from "../util/type";
+import { Insights } from "@carbon-sdk/index";
+import { TypeUtils } from "@carbon-sdk/util";
 import { Network } from "./network";
 
-type NodeNet = SimpleMap<NodeItem[]>;
+type NodeNet = TypeUtils.SimpleMap<Insights.NodeItem[]>;
 
 // Add hard-coded nodes here
 export const nodesByNet: NodeNet = {

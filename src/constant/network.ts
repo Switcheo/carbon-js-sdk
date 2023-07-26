@@ -1,4 +1,5 @@
 import { CONST } from "@cityofzion/neon-core-next";
+import { SimpleMap } from "../util/type";
 
 export enum Network {
   MainNet = "mainnet",
@@ -457,9 +458,7 @@ export const NetworkConfigs: {
   },
 } as const;
 
-export const publicRpcNodes: {
-  [index: string]: string
-} = {
+export const publicRpcNodes: SimpleMap<string> = {
   Osmosis: "https://rpc.osmosis.zone/",
   Terra: "https://terra-rpc.lavenderfive.com:443/",
 };
