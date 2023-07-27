@@ -4,14 +4,17 @@ import {
   DEFAULT_NETWORK,
   DenomPrefix,
   Network,
-  Network as _Network,
   NetworkConfig,
   NetworkConfigs,
+  Network as _Network,
 } from "@carbon-sdk/constant";
 import { GenericUtils, NetworkUtils } from "@carbon-sdk/util";
-import { Tendermint34Client, HttpBatchClient } from "@cosmjs/tendermint-rpc";
-import { CarbonQueryClient, ETHClient, HydrogenClient, InsightsQueryClient, NEOClient, TokenClient, ZILClient } from "./clients";
+import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
+import { NodeHttpTransport } from "@improbable-eng/grpc-web-node-http-transport";
 import * as clients from "./clients";
+import { BrowserHeaders } from "browser-headers";
+import { CarbonQueryClient, ETHClient, HydrogenClient, InsightsQueryClient, NEOClient, TokenClient, ZILClient } from "./clients";
+import GrpcQueryClient from "./clients/GrpcQueryClient";
 import N3Client from "./clients/N3Client";
 import {
   AdminModule,
@@ -20,7 +23,10 @@ import {
   BrokerModule,
   CDPModule,
   CoinModule,
+  EvmMergeModule,
+  EvmModule,
   FeeModule,
+  FeemarketModule,
   GovModule,
   IBCModule,
   LeverageModule,
@@ -32,18 +38,13 @@ import {
   ProfileModule,
   SubAccountModule,
   XChainModule,
-  EvmModule,
-  FeemarketModule,
-  EvmMergeModule,
 } from "./modules";
 import { StakingModule } from "./modules/staking";
 import { CosmosLedger, Keplr, KeplrAccount, LeapAccount, LeapExtended } from "./provider";
-import { Blockchain } from "./util/blockchain";
-import { CarbonLedgerSigner, CarbonSigner, CarbonWallet, CarbonWalletGenericOpts, MetaMaskWalletOpts } from "./wallet";
 import { MetaMask } from "./provider/metamask/MetaMask";
 import { SWTHAddressOptions } from "./util/address";
-import { ethers } from "ethers";
-import GrpcQueryClient from "./clients/GrpcQueryClient";
+import { Blockchain } from "./util/blockchain";
+import { CarbonLedgerSigner, CarbonSigner, CarbonWallet, CarbonWalletGenericOpts, MetaMaskWalletOpts } from "./wallet";
 export { CarbonTx } from "@carbon-sdk/util";
 export { CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletGenericOpts, CarbonWalletInitOpts } from "@carbon-sdk/wallet";
 export { DenomPrefix } from "./constant";
@@ -138,7 +139,11 @@ class CarbonSDK {
 
     let grpcClient: GrpcQueryClient | undefined;
     if (opts.useTmAbciQuery !== true && this.networkConfig.grpcUrl) {
-      grpcClient = opts.grpcQueryClient ?? new GrpcQueryClient(this.networkConfig.grpcUrl, this.networkConfig.grpcInsecure);
+      const transport = typeof window === "undefined" ? NodeHttpTransport() : undefined;
+
+      grpcClient = opts.grpcQueryClient ?? new GrpcQueryClient(this.networkConfig.grpcUrl, {
+        transport,
+      });
     }
 
     this.query = new CarbonQueryClient({

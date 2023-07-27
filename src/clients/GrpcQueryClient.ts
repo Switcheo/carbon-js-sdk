@@ -1,70 +1,77 @@
-import { GrpcWebClientBase, MethodDescriptor, MethodType } from "grpc-web";
+import { ProtobufRpcClient } from "@cosmjs/stargate";
+import { grpc } from "@improbable-eng/grpc-web";
+import { BrowserHeaders } from "browser-headers";
 
-const GENERIC_METHOD_DESCRIPTOR = new MethodDescriptor("", MethodType.UNARY, Uint8Array, Uint8Array, (req: Uint8Array) => req, (rsp: Uint8Array) => rsp);
-type GrpcClient = any;
+interface UnaryMethodDefinitionishR extends grpc.UnaryMethodDefinition<any, any> {
+  requestStream: any;
+  responseStream: any;
+}
 
-class GrpcQueryClient {
-  private config: {
-    isXhr: true;
-    client: GrpcWebClientBase;
-    url: string;
-  } | {
-    isXhr: false;
-    client: GrpcClient;
+type UnaryMethodDefinitionish = UnaryMethodDefinitionishR;
+
+export class GrpcWebError extends Error {
+  constructor(message: string, public code: grpc.Code, public metadata: grpc.Metadata) {
+    super(message);
+  }
+}
+
+export class GrpcQueryClient implements ProtobufRpcClient {
+  private host: string;
+  private options: {
+    transport?: grpc.TransportFactory;
+
+    debug?: boolean;
+    metadata?: grpc.Metadata;
   };
 
-  constructor(url: string, isInsecure: boolean = false) {
-    if (typeof XMLHttpRequest === "function") {
-      // web grpc client
-      this.config = {
-        isXhr: true,
-        client: new GrpcWebClientBase({
-          withCredentials: !isInsecure,
-        }),
-        url,
-      }
-    } else {
-      throw new Error("GrpcQueryClient is not available on node environment yet.");
-      // nodejs grpc client
-      // lazy import to avoid loading http2 module on web
-      // const { Client, credentials } = require("@grpc/grpc-js");
-      // this.config = {
-      //   isXhr: false,
-      //   client: new Client(url, isInsecure ? credentials.createInsecure() : credentials.createSsl()),
-      // }
-    }
+  constructor(
+    host: string,
+    options: {
+      transport?: grpc.TransportFactory;
+
+      debug?: boolean;
+      metadata?: grpc.Metadata;
+    } = {}
+  ) {
+    this.host = host;
+    this.options = options;
   }
 
-  serializeRequest = (value: Uint8Array) => {
-    return value as Buffer
-  }
-  deserializeResponse = (buffer: Buffer) => {
-    return buffer
-  }
-
-  async request(service: string, method: string, data: Uint8Array): Promise<Uint8Array> {
+  request(serviceName: string, methodName: string, data: Uint8Array): Promise<Uint8Array> {
     return new Promise((resolve, reject) => {
-      if (this.config.isXhr) {
-        this.config.client.thenableCall<Uint8Array, Uint8Array>(
-          `${this.config.url}/${service}/${method}`,
-          data,
-          {},
-          GENERIC_METHOD_DESCRIPTOR,
-        ).then(resolve).catch(reject);
-      } else {
-        this.config.client.makeUnaryRequest(
-          `/${service}/${method}`,
-          this.serializeRequest,
-          this.deserializeResponse,
-          data,
-          (err: Error, value: Uint8Array) => {
-            if (err)
-              reject(err)
-            else
-              resolve(value ?? new Uint8Array())
-          })
-      }
-    })
+      grpc.unary({
+        methodName,
+        service: { serviceName },
+        requestStream: false,
+        responseStream: false,
+        requestType: {} as any,
+        responseType: {} as any,
+      }, {
+        request: {
+          ...data,
+          toObject: () => data,
+          serializeBinary: () => data,
+        },
+        host: this.host,
+        metadata: this.options.metadata,
+        transport: this.options.transport,
+        debug: this.options.debug,
+        onEnd: function (response) {
+          console.log("xx onEnd response", response)
+          if (response.status === grpc.Code.Unknown && response.statusMessage === "Response closed without grpc-status (Headers only)") {
+            resolve(new Uint8Array())
+          } else if (response.status === grpc.Code.OK) {
+            resolve(response.message as unknown as Uint8Array);
+          } else {
+            console.error(response)
+            const err = new Error(response.statusMessage) as any;
+            err.code = response.status;
+            err.metadata = response.trailers;
+            reject(err);
+          }
+        },
+      });
+    });
   }
 }
 

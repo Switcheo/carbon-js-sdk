@@ -56,7 +56,6 @@ export interface NetworkConfig {
   tmWsUrl: string;
   restUrl: string;
   grpcUrl: string;
-  grpcInsecure: boolean;
   evmJsonRpcUrl: string;
   evmWsUrl: string;
   insightsUrl: string;
@@ -97,8 +96,7 @@ export const NetworkConfigs: {
     tmRpcUrl: "https://tm-api.carbon.network/",
     tmWsUrl: "wss://tm-api.carbon.network/",
     restUrl: "https://api.carbon.network",
-    grpcUrl: "grpc.carbon.network",
-    grpcInsecure: false,
+    grpcUrl: "https://grpc-cache.carbon.network",
     evmJsonRpcUrl: "https://evm-api.carbon.network/",
     evmWsUrl: "wss://evm-ws.carbon.network/",
     insightsUrl: "https://api-insights.carbon.network",
@@ -188,8 +186,7 @@ export const NetworkConfigs: {
     tmRpcUrl: "https://test-tm-api.carbon.network",
     tmWsUrl: "wss://test-tm-api.carbon.network",
     restUrl: "https://test-api.carbon.network",
-    grpcUrl: "test-grpc.carbon.network",
-    grpcInsecure: false,
+    grpcUrl: "https://test-grpc.carbon.network",
     evmJsonRpcUrl: "https://test-evm-api.carbon.network/",
     evmWsUrl: "wss://test-evm-ws.carbon.network/",
     insightsUrl: "https://test-api-insights.carbon.network",
@@ -279,8 +276,7 @@ export const NetworkConfigs: {
     tmRpcUrl: "https://dev-tm-api.carbon.network",
     tmWsUrl: "wss://dev-tm-api.carbon.network",
     restUrl: "https://dev-api.carbon.network",
-    grpcUrl: "dev-grpc.carbon.network",
-    grpcInsecure: false,
+    grpcUrl: "https://dev-grpc.carbon.network",
     evmJsonRpcUrl: "https://dev-evm-api.carbon.network/",
     evmWsUrl: "wss://dev-evm-ws.carbon.network/",
     insightsUrl: "https://dev-api-insights.carbon.network",
@@ -371,13 +367,12 @@ export const NetworkConfigs: {
     tmRpcUrl: "http://localhost:26657",
     tmWsUrl: "ws://localhost:26657",
     restUrl: "http://localhost:1317",
-    grpcUrl: "localhost:9090",
-    grpcInsecure: true,
+    grpcUrl: "http://localhost:9091",
     evmJsonRpcUrl: "http://localhost:8545/",
     evmWsUrl: "ws://localhost:8546/",
     insightsUrl: "http://localhost:8181",
     hydrogenUrl: "",
-    wsUrl: "ws://localhost:5001/ws",
+    wsUrl: "ws://localhost:5000/ws",
     faucetUrl: "http://localhost:4500",
 
     Bech32Prefix: "tswth",
