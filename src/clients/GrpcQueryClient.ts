@@ -1,13 +1,5 @@
 import { ProtobufRpcClient } from "@cosmjs/stargate";
 import { grpc } from "@improbable-eng/grpc-web";
-import { BrowserHeaders } from "browser-headers";
-
-interface UnaryMethodDefinitionishR extends grpc.UnaryMethodDefinition<any, any> {
-  requestStream: any;
-  responseStream: any;
-}
-
-type UnaryMethodDefinitionish = UnaryMethodDefinitionishR;
 
 export class GrpcWebError extends Error {
   constructor(message: string, public code: grpc.Code, public metadata: grpc.Metadata) {
@@ -15,12 +7,16 @@ export class GrpcWebError extends Error {
   }
 }
 
+/**
+ * Uses grpc-web module on cosmos-sdk to simulate gRPC queries
+ * throught HTTP/1.1.
+ * see https://github.com/cosmos/cosmos-sdk/issues/7345
+ */
 export class GrpcQueryClient implements ProtobufRpcClient {
   private host: string;
   private options: {
     transport?: grpc.TransportFactory;
 
-    debug?: boolean;
     metadata?: grpc.Metadata;
   };
 
@@ -29,7 +25,6 @@ export class GrpcQueryClient implements ProtobufRpcClient {
     options: {
       transport?: grpc.TransportFactory;
 
-      debug?: boolean;
       metadata?: grpc.Metadata;
     } = {}
   ) {
@@ -45,7 +40,9 @@ export class GrpcQueryClient implements ProtobufRpcClient {
         requestStream: false,
         responseStream: false,
         requestType: {} as any,
-        responseType: {} as any,
+        responseType: {
+          deserializeBinary: (data: Uint8Array) => data,
+        } as any,
       }, {
         request: {
           ...data,
@@ -55,15 +52,11 @@ export class GrpcQueryClient implements ProtobufRpcClient {
         host: this.host,
         metadata: this.options.metadata,
         transport: this.options.transport,
-        debug: this.options.debug,
+        debug: false,
         onEnd: function (response) {
-          console.log("xx onEnd response", response)
-          if (response.status === grpc.Code.Unknown && response.statusMessage === "Response closed without grpc-status (Headers only)") {
-            resolve(new Uint8Array())
-          } else if (response.status === grpc.Code.OK) {
+          if (response.status === grpc.Code.OK) {
             resolve(response.message as unknown as Uint8Array);
           } else {
-            console.error(response)
             const err = new Error(response.statusMessage) as any;
             err.code = response.status;
             err.metadata = response.trailers;

@@ -12,7 +12,6 @@ import { GenericUtils, NetworkUtils } from "@carbon-sdk/util";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import { NodeHttpTransport } from "@improbable-eng/grpc-web-node-http-transport";
 import * as clients from "./clients";
-import { BrowserHeaders } from "browser-headers";
 import { CarbonQueryClient, ETHClient, HydrogenClient, InsightsQueryClient, NEOClient, TokenClient, ZILClient } from "./clients";
 import GrpcQueryClient from "./clients/GrpcQueryClient";
 import N3Client from "./clients/N3Client";
@@ -141,7 +140,7 @@ class CarbonSDK {
     if (opts.useTmAbciQuery !== true && this.networkConfig.grpcUrl) {
       const transport = typeof window === "undefined" ? NodeHttpTransport() : undefined;
 
-      grpcClient = opts.grpcQueryClient ?? new GrpcQueryClient(this.networkConfig.grpcUrl, {
+      grpcClient = opts.grpcQueryClient ?? new GrpcQueryClient(this.networkConfig.grpcWebUrl, {
         transport,
       });
     }
