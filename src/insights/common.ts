@@ -9,6 +9,7 @@ export const InsightsEndpoints = {
   "user/profile": "/user/profile",
   "user/total": "/user/total",
   "user/growth": "/user/growth",
+  "user/volume": "/user/:address/volume",
 
   // Pool api
   "pool/list": "/pool/list",

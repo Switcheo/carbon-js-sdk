@@ -79,6 +79,15 @@ class InsightsQueryClient {
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetUserGrowthResponse>;
   }
 
+  async UserVolume(
+    req: Insights.QueryGetUserVolumePathParams,
+    query: Insights.QueryGetUserVolumeQueryParams
+  ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetUserVolumeResponse>> {
+    const request = this.apiManager.path("user/volume", req, query);
+    const response = await request.get()
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetUserVolumeResponse>;
+  }
+
   async TotalUsers(
     req: Insights.QueryGetTotalUsersRequest = {}
   ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetTotalUsersResponse>> {

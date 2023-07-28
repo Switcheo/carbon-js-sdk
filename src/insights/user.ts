@@ -34,6 +34,12 @@ export interface TotalUser {
   date: string;
 }
 
+export interface UserVolume {
+  time: string;
+  lastHeight: number;
+  volumeValue: string;
+}
+
 export interface QueryGetUserProfileRequest {
   username?: string;
   address?: string;
@@ -43,23 +49,34 @@ export interface QueryGetUserProfileResponse {
   entries: Profile;
 }
 
-export interface QueryGetActiveAccountsRequest extends QueryByTimeRequest {}
+export interface QueryGetActiveAccountsRequest extends QueryByTimeRequest { }
 
 export interface QueryGetActiveAccountsResponse {
   entries: ActiveAccounts[];
   meta: TimeMeta;
 }
 
-export interface QueryGetUserGrowthRequest extends QueryByTimeRequest {}
+export interface QueryGetUserGrowthRequest extends QueryByTimeRequest { }
 
 export interface QueryGetUserGrowthResponse {
   entries: UserGrowth[];
   meta: TimeMeta;
 }
 
-export interface QueryGetTotalUsersRequest extends QueryByTimeRequest {}
+export interface QueryGetTotalUsersRequest extends QueryByTimeRequest { }
 
 export interface QueryGetTotalUsersResponse {
   entries: TotalUser[];
   meta: TimeMeta;
+}
+
+export interface QueryGetUserVolumePathParams {
+  address: string;
+}
+
+export interface QueryGetUserVolumeQueryParams extends QueryByTimeRequest { }
+
+export interface QueryGetUserVolumeResponse {
+  entries: UserVolume[]
+  meta: TimeMeta
 }
