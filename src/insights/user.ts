@@ -1,4 +1,6 @@
-import { QueryByTimeRequest, TimeMeta } from "./common";
+import { Dayjs } from "dayjs";
+import { ParsedTimeMeta, QueryByTimeRequest, TimeMeta } from "./common";
+import BigNumber from "bignumber.js";
 
 export interface ActiveAccounts {
   date: string;
@@ -34,10 +36,16 @@ export interface TotalUser {
   date: string;
 }
 
-export interface UserVolume {
+export interface RawUserVolume {
   time: string;
   lastHeight: number;
   volumeValue: string;
+}
+
+export interface UserVolume {
+  time: Dayjs;
+  lastHeight: number;
+  volumeValue: BigNumber;
 }
 
 export interface QueryGetUserProfileRequest {
@@ -78,5 +86,5 @@ export interface QueryGetUserVolumeQueryParams extends QueryByTimeRequest { }
 
 export interface QueryGetUserVolumeResponse {
   entries: UserVolume[]
-  meta: TimeMeta
+  meta: ParsedTimeMeta
 }

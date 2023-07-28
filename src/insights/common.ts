@@ -1,3 +1,5 @@
+import { Dayjs } from "dayjs";
+
 export const InsightsEndpoints = {
   // Chain api
   "chain/stake": "/chain/stake",
@@ -91,6 +93,12 @@ export interface Entries<T> {
 export interface TimeMeta {
   from: string;
   until: string;
+  interval: Interval;
+}
+
+export interface ParsedTimeMeta {
+  from: Dayjs;
+  until: Dayjs;
   interval: Interval;
 }
 
