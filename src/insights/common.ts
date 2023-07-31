@@ -1,3 +1,5 @@
+import { Dayjs } from "dayjs";
+
 export const InsightsEndpoints = {
   // Chain api
   "chain/stake": "/chain/stake",
@@ -9,6 +11,7 @@ export const InsightsEndpoints = {
   "user/profile": "/user/profile",
   "user/total": "/user/total",
   "user/growth": "/user/growth",
+  "user/volume": "/user/:address/volume",
 
   // Pool api
   "pool/list": "/pool/list",
@@ -90,6 +93,12 @@ export interface Entries<T> {
 export interface TimeMeta {
   from: string;
   until: string;
+  interval: Interval;
+}
+
+export interface ParsedTimeMeta {
+  from: Dayjs;
+  until: Dayjs;
   interval: Interval;
 }
 

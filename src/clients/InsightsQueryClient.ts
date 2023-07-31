@@ -1,6 +1,8 @@
 import { NetworkConfig } from "@carbon-sdk/constant";
 import { Insights } from "@carbon-sdk/index";
 import { APIUtils } from "@carbon-sdk/util";
+import BigNumber from "bignumber.js";
+import dayjs from "dayjs";
 
 class InsightsQueryClient {
   public readonly apiManager: APIUtils.APIManager<typeof Insights.InsightsEndpoints>;
@@ -77,6 +79,27 @@ class InsightsQueryClient {
     const request = this.apiManager.path("user/growth", {}, req);
     const response = await request.get();
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetUserGrowthResponse>;
+  }
+
+  async UserVolume(
+    req: Insights.QueryGetUserVolumePathParams,
+    query: Insights.QueryGetUserVolumeQueryParams
+  ): Promise<Insights.QueryGetUserVolumeResponse> {
+    const request = this.apiManager.path("user/volume", req, query);
+    const response = await request.get()
+    const rawEntries = response.data.result.entries as Insights.RawUserVolume[]
+    const meta = response.data.result.meta as Insights.TimeMeta
+    const parsedEntries = rawEntries.map(entry => ({
+      lastHeight: entry.lastHeight,
+      time: dayjs(entry.time),
+      volumeValue: new BigNumber(entry.volumeValue)
+    }))
+    const parsedMeta = {
+      from: dayjs(meta.from),
+      until: dayjs(meta.until),
+      interval: meta.interval,
+    }
+    return { entries: parsedEntries, meta: parsedMeta }
   }
 
   async TotalUsers(
