@@ -361,7 +361,7 @@ export const NetworkConfigs: {
     evmWsUrl: "ws://localhost:8546/",
     insightsUrl: "http://localhost:8181",
     hydrogenUrl: "",
-    wsUrl: "ws://localhost:5000/ws",
+    wsUrl: "ws://localhost:5001/ws",
     faucetUrl: "http://localhost:4500",
 
     Bech32Prefix: "tswth",
