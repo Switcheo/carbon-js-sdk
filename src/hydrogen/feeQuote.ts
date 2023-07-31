@@ -4,6 +4,10 @@ export interface GetFeeQuoteRequest {
   token_denom: string;
 }
 
+export interface GetFeeQuoteRequestBody {
+  fee_denoms?: string[];
+}
+
 export interface GetFeeQuoteResponse {
   id: number;
   token_denom: string;
