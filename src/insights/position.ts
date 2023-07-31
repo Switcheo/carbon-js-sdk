@@ -108,9 +108,9 @@ export interface GetPositionStatsQueryParams extends QueryByTimeRequest { }
 export interface GetPositionStatsEntry {
   time: string;
   realizedPnl: string;
-  makerRebate: string;
+  makerFee: string;
   takerFee: number;
-  fundingRate: string;
+  fundingFee: string;
   cumulative: string;
 }
 export interface QueryGetPositionStatsResponse {
