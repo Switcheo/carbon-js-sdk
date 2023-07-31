@@ -84,7 +84,7 @@ class InsightsQueryClient {
   async UserVolume(
     req: Insights.QueryGetUserVolumePathParams,
     query: Insights.QueryGetUserVolumeQueryParams
-  ): Promise<Insights.QueryGetUserVolumeResponse> {
+  ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetUserVolumeResponse>> {
     const request = this.apiManager.path("user/volume", req, query);
     const response = await request.get()
     const rawEntries = response.data.result.entries as Insights.RawUserVolume[]
@@ -99,7 +99,7 @@ class InsightsQueryClient {
       until: dayjs(meta.until),
       interval: meta.interval,
     }
-    return { entries: parsedEntries, meta: parsedMeta }
+    return { result: { entries: parsedEntries, meta: parsedMeta } }
   }
 
   async TotalUsers(
