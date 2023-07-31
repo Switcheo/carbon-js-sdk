@@ -43,9 +43,10 @@ import { QueryClientImpl as ProfileQueryClient } from "@carbon-sdk/codec/profile
 import { QueryClientImpl as SubaccountQueryClient } from "@carbon-sdk/codec/subaccount/query";
 import { QueryClientImpl as AllianceClient } from "@carbon-sdk/codec/alliance/query";
 import { QueryClientImpl as PerpsLiquidityQueryClient } from "@carbon-sdk/codec/perpsliquidity/query";
-import { createProtobufRpcClient, QueryClient } from "@cosmjs/stargate";
+import { createProtobufRpcClient, ProtobufRpcClient, QueryClient } from "@cosmjs/stargate";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import BlockchainClient from "./BlockchainClient";
+import GrpcQueryClient from "./GrpcQueryClient";
 
 export interface IBCClientGroup {
   controller: IBCInterchainControlQueryClient;
@@ -60,6 +61,11 @@ export interface IBCClientGroup {
 export interface EthermintClientGroup {
   evm: EthermintEVMQueryClient;
   feeMarket: EthermintFeeMarketQueryClient;
+}
+
+export interface CarbonQueryClientOpts {
+  tmClient: Tendermint34Client;
+  grpcClient?: GrpcQueryClient;
 }
 
 class CarbonQueryClient {
@@ -107,13 +113,16 @@ class CarbonQueryClient {
   evmmerge: EvmMergeQueryClient;
   evmbank: EvmBankQueryClient;
 
-  private baseClient: QueryClient;
+  private readonly baseClient: ProtobufRpcClient;
+  private readonly tmClient: Tendermint34Client;
 
-  constructor(private readonly tmClient: Tendermint34Client) {
-    this.baseClient = new QueryClient(this.tmClient);
-    const rpcClient = createProtobufRpcClient(this.baseClient);
+  constructor(opts: CarbonQueryClientOpts) {
+    const rpcClient = opts.grpcClient ?? createProtobufRpcClient(new QueryClient(opts.tmClient));
 
-    this.chain = BlockchainClient.connectWithTm(this.tmClient);
+    this.tmClient = opts.tmClient;
+    this.baseClient = rpcClient;
+
+    this.chain = BlockchainClient.connectWithTm(opts.tmClient);
 
     this.adl = new ADLQueryClient(rpcClient);
     this.alliance = new AllianceClient(rpcClient);
@@ -169,10 +178,6 @@ class CarbonQueryClient {
       evm: new EthermintEVMQueryClient(rpcClient),
       feeMarket: new EthermintFeeMarketQueryClient(rpcClient),
     }
-  }
-
-  getProtobufRpcClient() {
-    return createProtobufRpcClient(this.baseClient);
   }
 }
 
