@@ -67,6 +67,12 @@ export interface CarbonSDKInitOpts {
 
   skipInit?: boolean;
   defaultTimeoutBlocks?: number;
+
+  /**
+   * temporary flag to disable GRPC Query client service when required
+   * TODO: Deprecate when grpc query client is implemented across all networks
+   */
+  useTmAbciQuery?: boolean;
 }
 
 const DEFAULT_SDK_INIT_OPTS: CarbonSDKInitOpts = {
@@ -233,7 +239,7 @@ class CarbonSDK {
     const defaultTimeoutBlocks = opts.defaultTimeoutBlocks;
     const chainId = (await tmClient.status())?.nodeInfo.network;
 
-    const sdk = new CarbonSDK({ network, config: configOverride, tmClient, defaultTimeoutBlocks, chainId });
+    const sdk = new CarbonSDK({ network, config: configOverride, tmClient, defaultTimeoutBlocks, chainId, useTmAbciQuery: opts.useTmAbciQuery });
 
     if (opts.wallet) {
       await sdk.connect(opts.wallet);
