@@ -1,12 +1,13 @@
-import { AminoSignResponse, encodeSecp256k1Signature, StdSignDoc } from "@cosmjs/amino";
 import { NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
-import { AminoCarbonSigner, CarbonSDK, CarbonSignerTypes, Models } from "@carbon-sdk/index";
+import { AminoCarbonSigner, CarbonSDK, Models } from "@carbon-sdk/index";
+import { AddressUtils, ExternalUtils, TypeUtils } from "@carbon-sdk/util";
 import { sortObject } from "@carbon-sdk/util/generic";
 import * as Neon from "@cityofzion/neon-core-next";
+import { AminoSignResponse, encodeSecp256k1Signature, StdSignDoc } from "@cosmjs/amino";
 import neoDapi from "neo-dapi";
 import neo3Dapi from "neo3-dapi";
-import { AddressUtils, ExternalUtils, TypeUtils } from "@carbon-sdk/util";
 
+import { CarbonSignerTypes } from "@carbon-sdk/wallet";
 import * as O3Types from "./O3Types";
 
 export class O3Wallet {

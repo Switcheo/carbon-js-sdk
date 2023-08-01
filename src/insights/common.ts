@@ -1,3 +1,5 @@
+import { Dayjs } from "dayjs";
+
 export const InsightsEndpoints = {
   // Chain api
   "chain/stake": "/chain/stake",
@@ -9,6 +11,7 @@ export const InsightsEndpoints = {
   "user/profile": "/user/profile",
   "user/total": "/user/total",
   "user/growth": "/user/growth",
+  "user/volume": "/user/:address/volume",
 
   // Pool api
   "pool/list": "/pool/list",
@@ -36,6 +39,7 @@ export const InsightsEndpoints = {
   "position/view": "/position/view/:view",
   "position/liquidation": "/position/liquidation",
   "position/liquidation/engine": "/position/liquidation/engine",
+  "position/stats": "/position/stats/:address",
 
   // Competition api
   "competition/list": "/competition/list",
@@ -58,6 +62,10 @@ export const InsightsEndpoints = {
 
   // Oracles api
   "info/oracles_price": "/info/oracles_price",
+
+  // Alliances api
+  "alliances/stake": "/alliances/stake",
+  "alliances/rewards": "/alliances/rewards",
 };
 
 export type Interval = "millisecond" | "second" | "minute" | "hour" | "day" | "week" | "month" | "quarter";
@@ -85,6 +93,12 @@ export interface Entries<T> {
 export interface TimeMeta {
   from: string;
   until: string;
+  interval: Interval;
+}
+
+export interface ParsedTimeMeta {
+  from: Dayjs;
+  until: Dayjs;
   interval: Interval;
 }
 

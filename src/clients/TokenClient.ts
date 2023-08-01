@@ -76,22 +76,24 @@ class TokenClient {
   public async initialize(): Promise<void> {
     this.setCommonAssetConfig();
 
-    // non-blocking reload
     try {
-      this.reloadDenomGeckoMap().finally(() => {
-        this.reloadUSDValues();
-        this.reloadDenomTraces();
-      });
-    } catch (error) {
-      console.error("failed to reload usd values");
-      console.error(error);
+      await Promise.all([
+        this.reloadTokens(),
+        this.reloadWrapperMap(),
+        this.getBridges(),
+      ]);
+    } finally {
+      // non-blocking reload
+      try {
+        this.reloadDenomGeckoMap().finally(() => {
+          this.reloadUSDValues();
+          this.reloadDenomTraces();
+        });
+      } catch (error) {
+        console.error("failed to reload usd values");
+        console.error(error);
+      }
     }
-
-    await Promise.all([
-      this.reloadWrapperMap(),
-      this.reloadTokens(),
-      this.getBridges(),
-    ]);
   }
 
   public registerGeckoIdMap(map: TypeUtils.SimpleMap<string>) {
@@ -492,7 +494,7 @@ class TokenClient {
     })
     const ibcBridges = await this.matchChainsWithDifferentChainIds(unmatchedIbcBridgeList)
     const polynetworkBridges = allBridges.bridges.reduce((prev: PolyNetworkBridge[], bridge: Bridge) => {
-      if (!bridge.enabled || bridge.bridgeId.toNumber() !== BRIDGE_IDS.polynetwork) return prev;
+      if (bridge.bridgeId.toNumber() !== BRIDGE_IDS.polynetwork) return prev;
       prev.push({
         ...bridge,
         isEvmChain: BlockchainUtils.isEvmChain(bridge.chainName),
