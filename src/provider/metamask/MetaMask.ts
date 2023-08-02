@@ -10,7 +10,7 @@ import { CarbonSigner, CarbonSignerTypes } from "@carbon-sdk/wallet";
 import { Algo, EncodeObject } from "@cosmjs/proto-signing";
 import { AuthInfo } from "@carbon-sdk/codec/cosmos/tx/v1beta1/tx";
 import { legacyConstructEIP712Tx } from "@carbon-sdk/util/legacyEIP712";
-import { AminoTypesMap, CarbonSDK, Models } from "@carbon-sdk/index";
+import { AminoTypesMap, CarbonSDK, Models, ProviderAgent } from "@carbon-sdk/index";
 import { StdFee } from "@cosmjs/stargate";
 import { AminoMsg } from "@cosmjs/amino";
 import { ETH_SECP256K1_TYPE, PUBLIC_KEY_SIGNING_TEXT, parseChainId, populateEvmTransactionDetails } from "@carbon-sdk/util/ethermint";
@@ -21,7 +21,7 @@ import { constructEIP712Tx } from "@carbon-sdk/util/eip712";
 import { SWTHAddress } from '@carbon-sdk/util/address'
 import { LEGACY_ACCOUNTS_MAINNET, LEGACY_ACCOUNTS_TESTNET } from "./legacy-accounts";
 import detectEthereumProvider from "@metamask/detect-provider";
-import { MetamaskError, parseError } from "./error";
+import { parseEvmError } from "./error";
 
 
 
@@ -413,9 +413,15 @@ export class MetaMask {
     };
 
     const sendEvmTransaction = async (api: CarbonSDK, req: ethers.providers.TransactionRequest): Promise<string> => {
-      const request = await populateEvmTransactionDetails(api, req)
-      const response = await metamask!.sendEvmTransaction(request)
-      return response
+      try {
+        const request = await populateEvmTransactionDetails(api, req)
+        const response = await metamask!.sendEvmTransaction(request)
+        return response
+      }
+      catch (error) {
+        console.error(error)
+        throw (parseEvmError(error as Error, ProviderAgent.MetamaskExtension))
+      }
     }
 
     return {
@@ -711,29 +717,23 @@ export class MetaMask {
   }
 
   async sendEvmTransaction(req: ethers.providers.TransactionRequest, metamaskAPI?: MetaMaskAPI) {
-    try {
-      const api = metamaskAPI ?? await this.getConnectedAPI();
-      const tx = {
-        from: req.from,
-        to: req.to,
-        value: req.value,
-        gasPrice: req.gasPrice,
-        gas: req.gasLimit,
-        data: req.data,
-        // type can only be 0 or 1 or 2
-        type: `0x${req.type}`,
-        chainId: req.chainId
-      }
-      const txHash = (await api.request({
-        method: "eth_sendTransaction",
-        params: [tx],
-      })) as string
-      return txHash
+    const api = metamaskAPI ?? await this.getConnectedAPI();
+    const tx = {
+      from: req.from,
+      to: req.to,
+      value: req.value,
+      gasPrice: req.gasPrice,
+      gas: req.gasLimit,
+      data: req.data,
+      // type can only be 0 or 1 or 2
+      type: `0x${req.type}`,
+      chainId: req.chainId
     }
-    catch (error) {
-      console.error(error)
-      throw (parseError(error as MetamaskError))
-    }
+    const txHash = (await api.request({
+      method: "eth_sendTransaction",
+      params: [tx],
+    })) as string
+    return txHash
   }
 
   async storeMnemonic(encryptedMnemonic: string, blockchain?: EVMChain) {
