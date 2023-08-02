@@ -182,7 +182,7 @@ const CARBON_EVM_TESTNET: MetaMaskChangeNetworkParam = {
 const CARBON_EVM_MAINNET: MetaMaskChangeNetworkParam = {
   chainId: `0x${Number(parseChainId(CarbonEvmChainIDs[Network.MainNet])).toString(16)}`,
   blockExplorerUrls: ["https://evm-scan.carbon.network"],
-  chainName: "Carbon EVM Mainnet",
+  chainName: "Carbon EVM",
   rpcUrls: [`${NetworkConfigs[Network.MainNet].evmJsonRpcUrl}`],
   nativeCurrency: CarbonEvmNativeCurrency,
 }
