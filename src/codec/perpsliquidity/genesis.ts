@@ -2,7 +2,8 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Params } from "./params";
-import { MarketConfig, PlPool } from "./pool";
+import { MarketConfig } from "./market";
+import { PlPool } from "./pool";
 
 export const protobufPackage = "Switcheo.carbon.perpsliquidity";
 

@@ -1,7 +1,8 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { PlPool, MarketConfig } from "./pool";
+import { PlPool } from "./pool";
+import { MarketConfig } from "./market";
 
 export const protobufPackage = "Switcheo.carbon.perpsliquidity";
 
@@ -32,7 +33,7 @@ export interface SetMarketConfigEvent {
   marketConfig?: MarketConfig;
 }
 
-export interface DepositToPoolEvent {
+export interface PerpsliquidityDepositToPoolEvent {
   poolId: Long;
   denom: string;
   amount: string;
@@ -42,7 +43,7 @@ export interface DepositToPoolEvent {
   depositor: string;
 }
 
-export interface WithdrawFromPoolEvent {
+export interface PerpsliquidityWithdrawFromPoolEvent {
   poolId: Long;
   denom: string;
   amount: string;
@@ -451,7 +452,7 @@ export const SetMarketConfigEvent = {
   },
 };
 
-const baseDepositToPoolEvent: object = {
+const basePerpsliquidityDepositToPoolEvent: object = {
   poolId: Long.UZERO,
   denom: "",
   amount: "",
@@ -461,9 +462,9 @@ const baseDepositToPoolEvent: object = {
   depositor: "",
 };
 
-export const DepositToPoolEvent = {
+export const PerpsliquidityDepositToPoolEvent = {
   encode(
-    message: DepositToPoolEvent,
+    message: PerpsliquidityDepositToPoolEvent,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (!message.poolId.isZero()) {
@@ -490,10 +491,10 @@ export const DepositToPoolEvent = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): DepositToPoolEvent {
+  decode(input: _m0.Reader | Uint8Array, length?: number): PerpsliquidityDepositToPoolEvent {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseDepositToPoolEvent } as DepositToPoolEvent;
+    const message = { ...basePerpsliquidityDepositToPoolEvent } as PerpsliquidityDepositToPoolEvent;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -526,8 +527,8 @@ export const DepositToPoolEvent = {
     return message;
   },
 
-  fromJSON(object: any): DepositToPoolEvent {
-    const message = { ...baseDepositToPoolEvent } as DepositToPoolEvent;
+  fromJSON(object: any): PerpsliquidityDepositToPoolEvent {
+    const message = { ...basePerpsliquidityDepositToPoolEvent } as PerpsliquidityDepositToPoolEvent;
     message.poolId =
       object.poolId !== undefined && object.poolId !== null
         ? Long.fromString(object.poolId)
@@ -560,7 +561,7 @@ export const DepositToPoolEvent = {
     return message;
   },
 
-  toJSON(message: DepositToPoolEvent): unknown {
+  toJSON(message: PerpsliquidityDepositToPoolEvent): unknown {
     const obj: any = {};
     message.poolId !== undefined &&
       (obj.poolId = (message.poolId || Long.UZERO).toString());
@@ -575,8 +576,8 @@ export const DepositToPoolEvent = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<DepositToPoolEvent>): DepositToPoolEvent {
-    const message = { ...baseDepositToPoolEvent } as DepositToPoolEvent;
+  fromPartial(object: DeepPartial<PerpsliquidityDepositToPoolEvent>): PerpsliquidityDepositToPoolEvent {
+    const message = { ...basePerpsliquidityDepositToPoolEvent } as PerpsliquidityDepositToPoolEvent;
     message.poolId =
       object.poolId !== undefined && object.poolId !== null
         ? Long.fromValue(object.poolId)
@@ -591,7 +592,7 @@ export const DepositToPoolEvent = {
   },
 };
 
-const baseWithdrawFromPoolEvent: object = {
+const basePerpsliquidityWithdrawFromPoolEvent: object = {
   poolId: Long.UZERO,
   denom: "",
   amount: "",
@@ -600,9 +601,9 @@ const baseWithdrawFromPoolEvent: object = {
   withdrawer: "",
 };
 
-export const WithdrawFromPoolEvent = {
+export const PerpsliquidityWithdrawFromPoolEvent = {
   encode(
-    message: WithdrawFromPoolEvent,
+    message: PerpsliquidityWithdrawFromPoolEvent,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (!message.poolId.isZero()) {
@@ -629,10 +630,10 @@ export const WithdrawFromPoolEvent = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): WithdrawFromPoolEvent {
+  ): PerpsliquidityWithdrawFromPoolEvent {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseWithdrawFromPoolEvent } as WithdrawFromPoolEvent;
+    const message = { ...basePerpsliquidityWithdrawFromPoolEvent } as PerpsliquidityWithdrawFromPoolEvent;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -662,8 +663,8 @@ export const WithdrawFromPoolEvent = {
     return message;
   },
 
-  fromJSON(object: any): WithdrawFromPoolEvent {
-    const message = { ...baseWithdrawFromPoolEvent } as WithdrawFromPoolEvent;
+  fromJSON(object: any): PerpsliquidityWithdrawFromPoolEvent {
+    const message = { ...basePerpsliquidityWithdrawFromPoolEvent } as PerpsliquidityWithdrawFromPoolEvent;
     message.poolId =
       object.poolId !== undefined && object.poolId !== null
         ? Long.fromString(object.poolId)
@@ -691,7 +692,7 @@ export const WithdrawFromPoolEvent = {
     return message;
   },
 
-  toJSON(message: WithdrawFromPoolEvent): unknown {
+  toJSON(message: PerpsliquidityWithdrawFromPoolEvent): unknown {
     const obj: any = {};
     message.poolId !== undefined &&
       (obj.poolId = (message.poolId || Long.UZERO).toString());
@@ -705,9 +706,9 @@ export const WithdrawFromPoolEvent = {
   },
 
   fromPartial(
-    object: DeepPartial<WithdrawFromPoolEvent>
-  ): WithdrawFromPoolEvent {
-    const message = { ...baseWithdrawFromPoolEvent } as WithdrawFromPoolEvent;
+    object: DeepPartial<PerpsliquidityWithdrawFromPoolEvent>
+  ): PerpsliquidityWithdrawFromPoolEvent {
+    const message = { ...basePerpsliquidityWithdrawFromPoolEvent } as PerpsliquidityWithdrawFromPoolEvent;
     message.poolId =
       object.poolId !== undefined && object.poolId !== null
         ? Long.fromValue(object.poolId)

@@ -12,9 +12,9 @@ export class PerpsLiquidityModule extends BaseModule {
       depositDenom: params.depositDenom,
       shareTokenSymbol: params.shareTokenSymbol,
       supplyCap: params.supplyCap,
-      depositFeeBps: params.depositFeeBps,
-      withdrawalFeeBps: params.withdrawalFeeBps,
-      borrowFeeBps: params.borrowFeeBps,
+      depositFee: params.depositFee,
+      withdrawalFee: params.withdrawalFee,
+      borrowFee: params.borrowFee,
     })
 
     return await wallet.sendTx(
@@ -33,8 +33,9 @@ export class PerpsLiquidityModule extends BaseModule {
     const updatePoolParam: UpdatePlPoolParams = {
       name: params.name,
       supplyCap: params.supplyCap,
-      depositFeeBps: params.depositFeeBps,
-      withdrawalFeeBps: params.withdrawalFeeBps,
+      depositFee: params.depositFee,
+      withdrawalFee: params.withdrawalFee,
+      borrowFee: params.borrowFee,
     }
 
     const value = MsgUpdatePlPool.fromPartial({
@@ -132,9 +133,9 @@ export namespace PerpsLiquidityModule {
     depositDenom: string;
     shareTokenSymbol: string;
     supplyCap: string;
-    depositFeeBps: string;
-    withdrawalFeeBps: string;
-    borrowFeeBps: string;
+    depositFee: string;
+    withdrawalFee: string;
+    borrowFee: string;
   }
 
   export interface UpdatePerpetualPoolParams {
@@ -143,8 +144,9 @@ export namespace PerpsLiquidityModule {
     depositDenom: string;
     shareTokenSymbol: string;
     supplyCap: string;
-    depositFeeBps: Long;
-    withdrawalFeeBps: Long;
+    depositFee: string;
+    withdrawalFee: string;
+    borrowFee: string;
   }
 
   export interface DepositToPerpetualsPoolParams {
