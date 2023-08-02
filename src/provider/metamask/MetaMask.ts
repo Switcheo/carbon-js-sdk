@@ -21,6 +21,7 @@ import { constructEIP712Tx } from "@carbon-sdk/util/eip712";
 import { SWTHAddress } from '@carbon-sdk/util/address'
 import { LEGACY_ACCOUNTS_MAINNET, LEGACY_ACCOUNTS_TESTNET } from "./legacy-accounts";
 import detectEthereumProvider from "@metamask/detect-provider";
+import { MetamaskError, parseError } from "./error";
 
 
 
@@ -710,23 +711,29 @@ export class MetaMask {
   }
 
   async sendEvmTransaction(req: ethers.providers.TransactionRequest, metamaskAPI?: MetaMaskAPI) {
-    const api = metamaskAPI ?? await this.getConnectedAPI();
-    const tx = {
-      from: req.from,
-      to: req.to,
-      value: req.value,
-      gasPrice: req.gasPrice,
-      gas: req.gasLimit,
-      data: req.data,
-      // type can only be 0 or 1 or 2
-      type: `0x${req.type}`,
-      chainId: req.chainId
+    try {
+      const api = metamaskAPI ?? await this.getConnectedAPI();
+      const tx = {
+        from: req.from,
+        to: req.to,
+        value: req.value,
+        gasPrice: req.gasPrice,
+        gas: req.gasLimit,
+        data: req.data,
+        // type can only be 0 or 1 or 2
+        type: `0x${req.type}`,
+        chainId: req.chainId
+      }
+      const txHash = (await api.request({
+        method: "eth_sendTransaction",
+        params: [tx],
+      })) as string
+      return txHash
     }
-    const txHash = (await api.request({
-      method: "eth_sendTransaction",
-      params: [tx],
-    })) as string
-    return txHash
+    catch (error) {
+      console.error(error)
+      throw (parseError(error as MetamaskError))
+    }
   }
 
   async storeMnemonic(encryptedMnemonic: string, blockchain?: EVMChain) {
