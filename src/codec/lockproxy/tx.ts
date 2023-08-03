@@ -4,6 +4,22 @@ import _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "Switcheo.carbon.lockproxy";
 
+export interface MsgSimulateUnlock {
+  creator: string;
+  denom: string;
+  fromAssetAddress: string;
+  fromContractAddress: string;
+  toContractAddress: string;
+  fromPubKey: string;
+  fromPubKeySig: string;
+  fluoDistributorAddress: string;
+  bonusFluoDistributorAddress: string;
+  depositPoolId: Long;
+  bonusVaultId: Long;
+}
+
+export interface MsgSimulateUnlockResponse {}
+
 /** this line is used by starport scaffolding # proto/tx/message */
 export interface MsgCreate {
   creator: string;
@@ -56,6 +72,262 @@ export interface MsgDeleteWrapperMapping {
 }
 
 export interface MsgDeleteWrapperMappingResponse {}
+
+const baseMsgSimulateUnlock: object = {
+  creator: "",
+  denom: "",
+  fromAssetAddress: "",
+  fromContractAddress: "",
+  toContractAddress: "",
+  fromPubKey: "",
+  fromPubKeySig: "",
+  fluoDistributorAddress: "",
+  bonusFluoDistributorAddress: "",
+  depositPoolId: Long.UZERO,
+  bonusVaultId: Long.UZERO,
+};
+
+export const MsgSimulateUnlock = {
+  encode(
+    message: MsgSimulateUnlock,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.denom !== "") {
+      writer.uint32(18).string(message.denom);
+    }
+    if (message.fromAssetAddress !== "") {
+      writer.uint32(26).string(message.fromAssetAddress);
+    }
+    if (message.fromContractAddress !== "") {
+      writer.uint32(34).string(message.fromContractAddress);
+    }
+    if (message.toContractAddress !== "") {
+      writer.uint32(42).string(message.toContractAddress);
+    }
+    if (message.fromPubKey !== "") {
+      writer.uint32(50).string(message.fromPubKey);
+    }
+    if (message.fromPubKeySig !== "") {
+      writer.uint32(58).string(message.fromPubKeySig);
+    }
+    if (message.fluoDistributorAddress !== "") {
+      writer.uint32(66).string(message.fluoDistributorAddress);
+    }
+    if (message.bonusFluoDistributorAddress !== "") {
+      writer.uint32(74).string(message.bonusFluoDistributorAddress);
+    }
+    if (!message.depositPoolId.isZero()) {
+      writer.uint32(80).uint64(message.depositPoolId);
+    }
+    if (!message.bonusVaultId.isZero()) {
+      writer.uint32(88).uint64(message.bonusVaultId);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgSimulateUnlock {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgSimulateUnlock } as MsgSimulateUnlock;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.denom = reader.string();
+          break;
+        case 3:
+          message.fromAssetAddress = reader.string();
+          break;
+        case 4:
+          message.fromContractAddress = reader.string();
+          break;
+        case 5:
+          message.toContractAddress = reader.string();
+          break;
+        case 6:
+          message.fromPubKey = reader.string();
+          break;
+        case 7:
+          message.fromPubKeySig = reader.string();
+          break;
+        case 8:
+          message.fluoDistributorAddress = reader.string();
+          break;
+        case 9:
+          message.bonusFluoDistributorAddress = reader.string();
+          break;
+        case 10:
+          message.depositPoolId = reader.uint64() as Long;
+          break;
+        case 11:
+          message.bonusVaultId = reader.uint64() as Long;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgSimulateUnlock {
+    const message = { ...baseMsgSimulateUnlock } as MsgSimulateUnlock;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.denom =
+      object.denom !== undefined && object.denom !== null
+        ? String(object.denom)
+        : "";
+    message.fromAssetAddress =
+      object.fromAssetAddress !== undefined && object.fromAssetAddress !== null
+        ? String(object.fromAssetAddress)
+        : "";
+    message.fromContractAddress =
+      object.fromContractAddress !== undefined &&
+      object.fromContractAddress !== null
+        ? String(object.fromContractAddress)
+        : "";
+    message.toContractAddress =
+      object.toContractAddress !== undefined &&
+      object.toContractAddress !== null
+        ? String(object.toContractAddress)
+        : "";
+    message.fromPubKey =
+      object.fromPubKey !== undefined && object.fromPubKey !== null
+        ? String(object.fromPubKey)
+        : "";
+    message.fromPubKeySig =
+      object.fromPubKeySig !== undefined && object.fromPubKeySig !== null
+        ? String(object.fromPubKeySig)
+        : "";
+    message.fluoDistributorAddress =
+      object.fluoDistributorAddress !== undefined &&
+      object.fluoDistributorAddress !== null
+        ? String(object.fluoDistributorAddress)
+        : "";
+    message.bonusFluoDistributorAddress =
+      object.bonusFluoDistributorAddress !== undefined &&
+      object.bonusFluoDistributorAddress !== null
+        ? String(object.bonusFluoDistributorAddress)
+        : "";
+    message.depositPoolId =
+      object.depositPoolId !== undefined && object.depositPoolId !== null
+        ? Long.fromString(object.depositPoolId)
+        : Long.UZERO;
+    message.bonusVaultId =
+      object.bonusVaultId !== undefined && object.bonusVaultId !== null
+        ? Long.fromString(object.bonusVaultId)
+        : Long.UZERO;
+    return message;
+  },
+
+  toJSON(message: MsgSimulateUnlock): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.denom !== undefined && (obj.denom = message.denom);
+    message.fromAssetAddress !== undefined &&
+      (obj.fromAssetAddress = message.fromAssetAddress);
+    message.fromContractAddress !== undefined &&
+      (obj.fromContractAddress = message.fromContractAddress);
+    message.toContractAddress !== undefined &&
+      (obj.toContractAddress = message.toContractAddress);
+    message.fromPubKey !== undefined && (obj.fromPubKey = message.fromPubKey);
+    message.fromPubKeySig !== undefined &&
+      (obj.fromPubKeySig = message.fromPubKeySig);
+    message.fluoDistributorAddress !== undefined &&
+      (obj.fluoDistributorAddress = message.fluoDistributorAddress);
+    message.bonusFluoDistributorAddress !== undefined &&
+      (obj.bonusFluoDistributorAddress = message.bonusFluoDistributorAddress);
+    message.depositPoolId !== undefined &&
+      (obj.depositPoolId = (message.depositPoolId || Long.UZERO).toString());
+    message.bonusVaultId !== undefined &&
+      (obj.bonusVaultId = (message.bonusVaultId || Long.UZERO).toString());
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgSimulateUnlock>): MsgSimulateUnlock {
+    const message = { ...baseMsgSimulateUnlock } as MsgSimulateUnlock;
+    message.creator = object.creator ?? "";
+    message.denom = object.denom ?? "";
+    message.fromAssetAddress = object.fromAssetAddress ?? "";
+    message.fromContractAddress = object.fromContractAddress ?? "";
+    message.toContractAddress = object.toContractAddress ?? "";
+    message.fromPubKey = object.fromPubKey ?? "";
+    message.fromPubKeySig = object.fromPubKeySig ?? "";
+    message.fluoDistributorAddress = object.fluoDistributorAddress ?? "";
+    message.bonusFluoDistributorAddress =
+      object.bonusFluoDistributorAddress ?? "";
+    message.depositPoolId =
+      object.depositPoolId !== undefined && object.depositPoolId !== null
+        ? Long.fromValue(object.depositPoolId)
+        : Long.UZERO;
+    message.bonusVaultId =
+      object.bonusVaultId !== undefined && object.bonusVaultId !== null
+        ? Long.fromValue(object.bonusVaultId)
+        : Long.UZERO;
+    return message;
+  },
+};
+
+const baseMsgSimulateUnlockResponse: object = {};
+
+export const MsgSimulateUnlockResponse = {
+  encode(
+    _: MsgSimulateUnlockResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgSimulateUnlockResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgSimulateUnlockResponse,
+    } as MsgSimulateUnlockResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgSimulateUnlockResponse {
+    const message = {
+      ...baseMsgSimulateUnlockResponse,
+    } as MsgSimulateUnlockResponse;
+    return message;
+  },
+
+  toJSON(_: MsgSimulateUnlockResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgSimulateUnlockResponse>
+  ): MsgSimulateUnlockResponse {
+    const message = {
+      ...baseMsgSimulateUnlockResponse,
+    } as MsgSimulateUnlockResponse;
+    return message;
+  },
+};
 
 const baseMsgCreate: object = { creator: "" };
 
@@ -924,6 +1196,9 @@ export const MsgDeleteWrapperMappingResponse = {
 
 /** Msg defines the Msg service. */
 export interface Msg {
+  SimulateUnlock(
+    request: MsgSimulateUnlock
+  ): Promise<MsgSimulateUnlockResponse>;
   /** this line is used by starport scaffolding # proto/tx/rpc */
   Create(request: MsgCreate): Promise<MsgCreateResponse>;
   Bind(request: MsgBind): Promise<MsgBindResponse>;
@@ -940,12 +1215,27 @@ export class MsgClientImpl implements Msg {
   private readonly rpc: Rpc;
   constructor(rpc: Rpc) {
     this.rpc = rpc;
+    this.SimulateUnlock = this.SimulateUnlock.bind(this);
     this.Create = this.Create.bind(this);
     this.Bind = this.Bind.bind(this);
     this.Lock = this.Lock.bind(this);
     this.SetWrapperMapping = this.SetWrapperMapping.bind(this);
     this.DeleteWrapperMapping = this.DeleteWrapperMapping.bind(this);
   }
+  SimulateUnlock(
+    request: MsgSimulateUnlock
+  ): Promise<MsgSimulateUnlockResponse> {
+    const data = MsgSimulateUnlock.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.lockproxy.Msg",
+      "SimulateUnlock",
+      data
+    );
+    return promise.then((data) =>
+      MsgSimulateUnlockResponse.decode(new _m0.Reader(data))
+    );
+  }
+
   Create(request: MsgCreate): Promise<MsgCreateResponse> {
     const data = MsgCreate.encode(request).finish();
     const promise = this.rpc.request(

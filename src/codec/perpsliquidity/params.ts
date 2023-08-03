@@ -1,6 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
+import { Duration } from "../google/protobuf/duration";
 
 export const protobufPackage = "Switcheo.carbon.perpsliquidity";
 
@@ -10,6 +11,10 @@ export interface Params {
   quoteIndexPriceFluctuationToleranceRatio: string;
   /** requotes after orders are x seconds old */
   quoteExpirySeconds: Long;
+  /** interval to take market utilization snapshot, e.g. every 60 seconds */
+  marketUtilizationSnapshotInterval?: Duration;
+  /** time duration window used to calculate the TWA market utilization e.g. last 24 hours */
+  maxMarketUtilizationSnapshotWindow?: Duration;
 }
 
 const baseParams: object = {
@@ -30,6 +35,18 @@ export const Params = {
     if (!message.quoteExpirySeconds.isZero()) {
       writer.uint32(16).uint64(message.quoteExpirySeconds);
     }
+    if (message.marketUtilizationSnapshotInterval !== undefined) {
+      Duration.encode(
+        message.marketUtilizationSnapshotInterval,
+        writer.uint32(26).fork()
+      ).ldelim();
+    }
+    if (message.maxMarketUtilizationSnapshotWindow !== undefined) {
+      Duration.encode(
+        message.maxMarketUtilizationSnapshotWindow,
+        writer.uint32(34).fork()
+      ).ldelim();
+    }
     return writer;
   },
 
@@ -45,6 +62,18 @@ export const Params = {
           break;
         case 2:
           message.quoteExpirySeconds = reader.uint64() as Long;
+          break;
+        case 3:
+          message.marketUtilizationSnapshotInterval = Duration.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 4:
+          message.maxMarketUtilizationSnapshotWindow = Duration.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         default:
           reader.skipType(tag & 7);
@@ -66,6 +95,16 @@ export const Params = {
       object.quoteExpirySeconds !== null
         ? Long.fromString(object.quoteExpirySeconds)
         : Long.UZERO;
+    message.marketUtilizationSnapshotInterval =
+      object.marketUtilizationSnapshotInterval !== undefined &&
+      object.marketUtilizationSnapshotInterval !== null
+        ? Duration.fromJSON(object.marketUtilizationSnapshotInterval)
+        : undefined;
+    message.maxMarketUtilizationSnapshotWindow =
+      object.maxMarketUtilizationSnapshotWindow !== undefined &&
+      object.maxMarketUtilizationSnapshotWindow !== null
+        ? Duration.fromJSON(object.maxMarketUtilizationSnapshotWindow)
+        : undefined;
     return message;
   },
 
@@ -78,6 +117,16 @@ export const Params = {
       (obj.quoteExpirySeconds = (
         message.quoteExpirySeconds || Long.UZERO
       ).toString());
+    message.marketUtilizationSnapshotInterval !== undefined &&
+      (obj.marketUtilizationSnapshotInterval =
+        message.marketUtilizationSnapshotInterval
+          ? Duration.toJSON(message.marketUtilizationSnapshotInterval)
+          : undefined);
+    message.maxMarketUtilizationSnapshotWindow !== undefined &&
+      (obj.maxMarketUtilizationSnapshotWindow =
+        message.maxMarketUtilizationSnapshotWindow
+          ? Duration.toJSON(message.maxMarketUtilizationSnapshotWindow)
+          : undefined);
     return obj;
   },
 
@@ -90,6 +139,16 @@ export const Params = {
       object.quoteExpirySeconds !== null
         ? Long.fromValue(object.quoteExpirySeconds)
         : Long.UZERO;
+    message.marketUtilizationSnapshotInterval =
+      object.marketUtilizationSnapshotInterval !== undefined &&
+      object.marketUtilizationSnapshotInterval !== null
+        ? Duration.fromPartial(object.marketUtilizationSnapshotInterval)
+        : undefined;
+    message.maxMarketUtilizationSnapshotWindow =
+      object.maxMarketUtilizationSnapshotWindow !== undefined &&
+      object.maxMarketUtilizationSnapshotWindow !== null
+        ? Duration.fromPartial(object.maxMarketUtilizationSnapshotWindow)
+        : undefined;
     return message;
   },
 };
