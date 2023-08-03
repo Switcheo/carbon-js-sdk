@@ -205,6 +205,8 @@ export namespace OrderModule {
     Market = "market",
     StopLimit = "stop-limit",
     StopMarket = "stop-market",
+    TakeProfitLimit = "take-profit-limit",
+    TakeProfitMarket = "take-profit-market",
     Liquidation = "liquidation",
   }
 
