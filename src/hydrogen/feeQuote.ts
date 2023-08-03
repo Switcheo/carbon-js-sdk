@@ -2,10 +2,7 @@ import dayjs from "dayjs";
 
 export interface GetFeeQuoteRequest {
   token_denom: string;
-}
-
-export interface GetFeeQuoteRequestBody {
-  fee_denoms?: string[];
+  fee_denoms?: string[]
 }
 
 export interface GetFeeQuoteResponse {
@@ -17,7 +14,7 @@ export interface GetFeeQuoteResponse {
   withdrawal_fee: string;
   created_at: dayjs.Dayjs;
   expires_at: dayjs.Dayjs;
-  other_token_fees?: FeeDenomResponse[] | undefined
+  other_token_fees?: FeeDenomResponse[]
 }
 
 interface FeeDenomResponse {
