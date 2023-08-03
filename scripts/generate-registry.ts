@@ -1,22 +1,22 @@
 import { capitalize } from "lodash";
 import path from "path";
 import { whitelistCosmosExports, whitelistIbcExports } from "./config";
+import { generateEIP712types } from "./generate-eip712-types";
 
 const files = process.argv;
 
-const [pwd, registryFile, polynetworkModelsFile, cosmosModelsFile, ibcModelsFile] = files.slice(-5);
-const codecFiles = files.slice(2, files.length - 5);
+const [pwd, registryFile, polynetworkModelsFile, cosmosModelsFile, ibcModelsFile] = files.slice(-6);
+const codecFiles = files.slice(2, files.length - 6);
 
 console.log(`import { Registry } from "@cosmjs/proto-signing";`);
 // TODO: Remove hardcoded statement when upgrading cosmwasm codecs
 console.log(`import { MsgExecuteContract } from "cosmjs-types/cosmwasm/wasm/v1/tx";`);
 
 const modules: { [name: string]: string[] } = {};
-// TODO: To remove hardcode conditional once a better way to fix MsgSend import is found
-const currentMsgDefinitions: string[] = ['MsgSend', 'MsgSendResponse']
 for (const moduleFile of codecFiles) {
 
   if (
+    !moduleFile.includes("ethermint") &&
     !["/tx.ts",
       "/tendermint.ts",
       "/proposal.ts",
@@ -29,7 +29,9 @@ for (const moduleFile of codecFiles) {
   }
 
   const codecModule = require(`${pwd}/${moduleFile}`);
-  let messages = Object.keys(codecModule).filter((key) => (key.startsWith("Msg") && key !== "MsgClientImpl") || key.startsWith("Header") || key.endsWith("Proposal"));
+  let messages = Object.keys(codecModule).filter((key) => {
+    return (key.startsWith("Msg") && key !== "MsgClientImpl") || key.startsWith("Header") || key.endsWith("Proposal")
+  });
   if (messages.length) {
     if (modules[codecModule.protobufPackage]) {
       modules[codecModule.protobufPackage] = [...modules[codecModule.protobufPackage], ...messages];
@@ -74,6 +76,7 @@ const cosmosModelsImportPath = path.relative(registryFile, cosmosModelsFile);
 console.log(`export * from '${cosmosModelsImportPath.replace(/^\.\./i, '.').replace(/\.ts$/i, '')}';`);
 
 console.log("");
+console.log("");
 const ibcModelsImportPath = path.relative(registryFile, ibcModelsFile);
 console.log(`export * as IBC from '${ibcModelsImportPath.replace(/^\.\./i, '.').replace(/\.ts$/i, '')}';`);
 
@@ -90,15 +93,18 @@ const typeMap: { [msg: string]: string } = {};
 for (const packageName in modules) {
   console.log("");
   for (const key of modules[packageName]) {
-    let messageAlias = key.split(" ")[2] // "XXX as XXXXX"
+    const messageAlias = key.split(" ")[2] // "XXX as XXXXX"
     const typeUrl = messageAlias ? `/${packageName}.${key.split(" ")[0].trim()}` : `/${packageName}.${key}`;
     const messageType = messageAlias ? messageAlias.trim() : key
-    typeMap[messageType] = typeUrl;
     const match = typeUrl.match(/^\/Switcheo.carbon.([a-z]+).([A-Za-z]+)$/i);
-    if (match?.[1] && polynetworkFolders.includes(match?.[1])) {
-      console.log(`registry.register("${typeUrl}", PolyNetwork.${capitalize(match[1])}.${messageType});`);
-    } else {
-      console.log(`registry.register("${typeUrl}", ${messageType});`);
+
+    if ((key.startsWith("Msg") && key !== "MsgClientImpl") || key.startsWith("Header") || key.endsWith("Proposal")) {
+      typeMap[messageType] = typeUrl;
+      if (match?.[1] && polynetworkFolders.includes(match?.[1])) {
+        console.log(`registry.register("${typeUrl}", PolyNetwork.${capitalize(match[1])}.${messageType});`);
+      } else {
+        console.log(`registry.register("${typeUrl}", ${messageType});`);
+      }
     }
   }
 }
@@ -107,6 +113,10 @@ console.log("registry.register(\"/cosmwasm.wasm.v1.MsgExecuteContract\", MsgExec
 typeMap.MsgExecuteContract = "/cosmwasm.wasm.v1.MsgExecuteContract";
 
 console.log("");
+console.log(
+  `/* 
+Key in TxTypes may not match the actual type definition due to duplicates in Msg names.
+*/`);
 console.log(`export const TxTypes = ${JSON.stringify(typeMap, null, 2)};\n`);
 
 console.log("");
@@ -172,6 +182,12 @@ for (const moduleFile of codecFiles) {
 // TODO: Remove hardcoded statement when upgrading cosmwasm codecs
 console.log("export { MsgExecuteContract } from \"cosmjs-types/cosmwasm/wasm/v1/tx\";");
 
+console.log("");
+console.log(
+  `/* 
+EIP712Types mapping generated here should only be used for sending EIP-712 msgs.
+*/`);
+console.log(`export const EIP712Types: { [index: string]: any } = ${JSON.stringify(generateEIP712types(), null, 2)};\n`);
 
 function updateImportsAlias(messages: string[], protobufPackage: string) {
   const modulePath = getModulePathFromProtobufPackage(protobufPackage)
@@ -205,4 +221,3 @@ function getModulePathFromProtobufPackage(protobufPackage: string): string[] {
 
   return protobufPackage.split(".")
 }
-

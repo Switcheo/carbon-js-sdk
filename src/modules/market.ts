@@ -1,11 +1,29 @@
-import { MsgUpdateMarket, MsgCreateMarket, MsgDisableSpotMarket } from "@carbon-sdk/codec/market/tx";
-import { CarbonTx } from "@carbon-sdk/util";
-import BaseModule from "./base";
-import { BigNumber } from "bignumber.js";
+import { FeeCategory, FeeTier, QueryGetFeeTiersResponse, QueryGetTradingFeesResponse, TradingFees } from "@carbon-sdk/codec";
 import { Duration } from "@carbon-sdk/codec/google/protobuf/duration";
-import Long from "long";
+import { MsgAddFeeTier, MsgCreateMarket, MsgDisableSpotMarket, MsgRemoveFeeTier, MsgSetStakeEquivalence, MsgUpdateFeeTier, MsgUpdateMarket } from "@carbon-sdk/codec/market/tx";
+import { CarbonTx } from "@carbon-sdk/util";
+import { BigNumber } from "bignumber.js";
+import BaseModule from "./base";
 
 export class MarketModule extends BaseModule {
+
+  public async getFeeTiers(marketType: string): Promise<FeeTier[]> {
+    const fetchDataResponse: QueryGetFeeTiersResponse = await this.sdkProvider.query.market.FeeTiers({
+      marketType: marketType,
+      marketName: '',
+      userAddress: '',
+    })
+    return fetchDataResponse?.feeTiers ?? []
+  }
+
+  public async getTradingFees(marketName: string, userAddress: string): Promise<TradingFees> {
+    const fetchDataResponse: QueryGetTradingFeesResponse = await this.sdkProvider.query.market.TradingFees({
+      marketName: marketName,
+      userAddress: userAddress,
+    })
+    return fetchDataResponse?.fees ?? { takerFee: '', makerFee: '' }
+  }
+  
   public async update(params: MarketModule.UpdateMarketParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
@@ -36,11 +54,11 @@ export class MarketModule extends BaseModule {
       expiryTime: params.expiryTime,
     })
     return await wallet.sendTx(
-        {
-          typeUrl: CarbonTx.Types.MsgCreateMarket,
-          value,
-        },
-        opts
+      {
+        typeUrl: CarbonTx.Types.MsgCreateMarket,
+        value,
+      },
+      opts
     );
   }
 
@@ -51,11 +69,81 @@ export class MarketModule extends BaseModule {
       marketName: params.marketName,
     })
     return await wallet.sendTx(
-        {
-          typeUrl: CarbonTx.Types.MsgDisableSpotMarket,
-          value,
-        },
-        opts
+      {
+        typeUrl: CarbonTx.Types.MsgDisableSpotMarket,
+        value,
+      },
+      opts
+    );
+  }
+
+
+  public async addFeeTier(params: MarketModule.AddFeeTierParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+    const value = MsgAddFeeTier.fromPartial({
+      creator: params.creator,
+      feeCategory: params.feeCategory,
+      feeTier: transformFeeTierParams(params.feeTier),
+    })
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgAddFeeTier,
+        value,
+      },
+      opts
+    );
+  }
+
+  public async updateFeeTier(params: MarketModule.UpdateFeeTierParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+    const feeTier = transformFeeTierParams(params.feeTier)
+    const value = MsgUpdateFeeTier.fromPartial({
+      updater: params.updater,
+      feeCategory: params.feeCategory,
+      requiredStake: feeTier.requiredStake,
+      takerFee: feeTier.tradingFees?.takerFee,
+      makerFee: feeTier.tradingFees?.makerFee,
+    })
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgUpdateFeeTier,
+        value,
+      },
+      opts
+    );
+  }
+
+  public async removeFeeTier(params: MarketModule.RemoveFeeTierParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+    const value = MsgRemoveFeeTier.fromPartial({
+      remover: params.remover,
+      feeCategory: params.feeCategory,
+      requiredStake: params.requiredStake,
+    })
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgRemoveFeeTier,
+        value,
+      },
+      opts
+    );
+  }
+
+  public async setStakeEquivalence(params: MarketModule.SetStakeEquivalenceParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet();
+    const value = MsgSetStakeEquivalence.fromPartial({
+      setter: params.setter,
+      stakeEquivalence: {
+        ratio: params.stakeEquivalence.ratio.shiftedBy(18).toString(10),
+        denom: params.stakeEquivalence.denom
+      }
+    })
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgSetStakeEquivalence,
+        value,
+      },
+      opts
     );
   }
 }
@@ -81,6 +169,7 @@ export namespace MarketModule {
     markPriceBand?: number;
     lastPriceProtectedBand?: number;
     isActive?: boolean;
+    tradingBandwidth?: number;
   }
 
   export interface CreateMarketParams {
@@ -93,10 +182,49 @@ export namespace MarketModule {
     indexOracleId: string;
     expiryTime?: Date;
   }
-
   export interface DisableSpotMarketParams {
     creator: string;
     marketName: string;
+  }
+
+  export interface AddFeeTierParams {
+    creator: string;
+    feeCategory: FeeCategory;
+    feeTier: FeeTierParams;
+  }
+  export interface UpdateFeeTierParams {
+    updater: string;
+    feeCategory: FeeCategory;
+    feeTier: FeeTierParams,
+  }
+
+  export interface RemoveFeeTierParams {
+    remover: string;
+    feeCategory: FeeCategory;
+    requiredStake: string;
+  }
+  export interface FeeTierParams {
+    requiredStake: string,
+    makerFee: BigNumber,
+    takerFee: BigNumber,
+  }
+  export interface SetStakeEquivalenceParams {
+    setter: string;
+    stakeEquivalence: StakeEquivalenceParams;
+  }
+  export interface StakeEquivalenceParams {
+    denom: string,
+    ratio: BigNumber
+  }
+}
+
+export function transformFeeTierParams(msg: MarketModule.FeeTierParams): FeeTier {
+  return {
+    requiredStake: msg.requiredStake,
+    tradingFees: {
+      makerFee: msg.makerFee.shiftedBy(18).toString(10),
+      takerFee: msg.takerFee.shiftedBy(18).toString(10),
+    }
   }
 }
 
@@ -120,6 +248,7 @@ export function transfromUpdateMarketParams(msg: MarketModule.UpdateMarketParams
     markPriceBand: msg.markPriceBand,
     lastPriceProtectedBand: msg.lastPriceProtectedBand,
     isActive: msg.isActive,
+    tradingBandwidth: msg.tradingBandwidth,
   };
 }
 

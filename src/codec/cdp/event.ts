@@ -183,6 +183,7 @@ export interface LiquidateCollateralEvent {
   discount: string;
   debtDenom: string;
   debtAmount: string;
+  id: Long;
 }
 
 export interface LiquidateCollateralWithStablecoinEvent {
@@ -201,6 +202,7 @@ export interface LiquidateCollateralWithStablecoinEvent {
   principalAmount: string;
   interestDenom: string;
   interestAmount: string;
+  id: Long;
 }
 
 export interface ClaimRewardEvent {
@@ -2667,6 +2669,7 @@ const baseLiquidateCollateralEvent: object = {
   discount: "",
   debtDenom: "",
   debtAmount: "",
+  id: Long.UZERO,
 };
 
 export const LiquidateCollateralEvent = {
@@ -2706,6 +2709,9 @@ export const LiquidateCollateralEvent = {
     }
     if (message.debtAmount !== "") {
       writer.uint32(90).string(message.debtAmount);
+    }
+    if (!message.id.isZero()) {
+      writer.uint32(96).uint64(message.id);
     }
     return writer;
   },
@@ -2754,6 +2760,9 @@ export const LiquidateCollateralEvent = {
           break;
         case 11:
           message.debtAmount = reader.string();
+          break;
+        case 12:
+          message.id = reader.uint64() as Long;
           break;
         default:
           reader.skipType(tag & 7);
@@ -2814,6 +2823,10 @@ export const LiquidateCollateralEvent = {
       object.debtAmount !== undefined && object.debtAmount !== null
         ? String(object.debtAmount)
         : "";
+    message.id =
+      object.id !== undefined && object.id !== null
+        ? Long.fromString(object.id)
+        : Long.UZERO;
     return message;
   },
 
@@ -2836,6 +2849,8 @@ export const LiquidateCollateralEvent = {
     message.discount !== undefined && (obj.discount = message.discount);
     message.debtDenom !== undefined && (obj.debtDenom = message.debtDenom);
     message.debtAmount !== undefined && (obj.debtAmount = message.debtAmount);
+    message.id !== undefined &&
+      (obj.id = (message.id || Long.UZERO).toString());
     return obj;
   },
 
@@ -2858,6 +2873,10 @@ export const LiquidateCollateralEvent = {
     message.discount = object.discount ?? "";
     message.debtDenom = object.debtDenom ?? "";
     message.debtAmount = object.debtAmount ?? "";
+    message.id =
+      object.id !== undefined && object.id !== null
+        ? Long.fromValue(object.id)
+        : Long.UZERO;
     return message;
   },
 };
@@ -2878,6 +2897,7 @@ const baseLiquidateCollateralWithStablecoinEvent: object = {
   principalAmount: "",
   interestDenom: "",
   interestAmount: "",
+  id: Long.UZERO,
 };
 
 export const LiquidateCollateralWithStablecoinEvent = {
@@ -2929,6 +2949,9 @@ export const LiquidateCollateralWithStablecoinEvent = {
     }
     if (message.interestAmount !== "") {
       writer.uint32(122).string(message.interestAmount);
+    }
+    if (!message.id.isZero()) {
+      writer.uint32(128).uint64(message.id);
     }
     return writer;
   },
@@ -2989,6 +3012,9 @@ export const LiquidateCollateralWithStablecoinEvent = {
           break;
         case 15:
           message.interestAmount = reader.string();
+          break;
+        case 16:
+          message.id = reader.uint64() as Long;
           break;
         default:
           reader.skipType(tag & 7);
@@ -3065,6 +3091,10 @@ export const LiquidateCollateralWithStablecoinEvent = {
       object.interestAmount !== undefined && object.interestAmount !== null
         ? String(object.interestAmount)
         : "";
+    message.id =
+      object.id !== undefined && object.id !== null
+        ? Long.fromString(object.id)
+        : Long.UZERO;
     return message;
   },
 
@@ -3094,6 +3124,8 @@ export const LiquidateCollateralWithStablecoinEvent = {
       (obj.interestDenom = message.interestDenom);
     message.interestAmount !== undefined &&
       (obj.interestAmount = message.interestAmount);
+    message.id !== undefined &&
+      (obj.id = (message.id || Long.UZERO).toString());
     return obj;
   },
 
@@ -3120,6 +3152,10 @@ export const LiquidateCollateralWithStablecoinEvent = {
     message.principalAmount = object.principalAmount ?? "";
     message.interestDenom = object.interestDenom ?? "";
     message.interestAmount = object.interestAmount ?? "";
+    message.id =
+      object.id !== undefined && object.id !== null
+        ? Long.fromValue(object.id)
+        : Long.UZERO;
     return message;
   },
 };

@@ -39,6 +39,7 @@ import { Duration } from "../lib/codec/google/protobuf/duration";
     markPriceBand: 1000,
     lastPriceProtectedBand: 1000,
     isActive: true,
+    tradingBandwidth: 10000,
   })
   console.log(result)
 })().catch(console.error).finally(() => process.exit(0));

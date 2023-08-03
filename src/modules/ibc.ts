@@ -1,3 +1,4 @@
+import { Token } from "@carbon-sdk/codec/coin/token";
 import { MsgTransfer } from "@carbon-sdk/codec/ibc/applications/transfer/v1/tx";
 import { DenomTraceExtended } from "@carbon-sdk/clients/TokenClient";
 import { ChainRegistryItem, CosmosChainsObj, ExtendedChainInfo, IBCAddress, cw20TokenRegex, factoryIbcMinimalDenomRegex, ibcNetworkRegex, ibcTransferChannelRegex, publicRpcNodes } from "@carbon-sdk/constant";
@@ -78,10 +79,10 @@ export class IBCModule extends BaseModule {
     );
   }
 
-  async getChainInfoMap(): Promise<TypeUtils.SimpleMap<ExtendedChainInfo>> {
+  async getChainInfoMap(denomTraces?: TypeUtils.SimpleMap<DenomTraceExtended>): Promise<TypeUtils.SimpleMap<ExtendedChainInfo>> {
     const tokenClient = this.sdkProvider.getTokenClient();
     const ibcBridges = tokenClient.bridges.ibc;
-    const denomTracesArr = Object.values(tokenClient.denomTraces);
+    const denomTracesArr = Object.values(denomTraces ?? tokenClient.denomTraces);
     const chainsResponse = await fetch(`https://chains.cosmos.directory/`);
     const chainsData = (await chainsResponse.json() as CosmosChainsObj);
     const chainInfoMap: TypeUtils.SimpleMap<ExtendedChainInfo> = {};
@@ -114,35 +115,26 @@ export class IBCModule extends BaseModule {
           const coinMinimalDenom = IBCUtils.makeIBCMinimalDenom(denomTrace.path, denomTrace.baseDenom);
           const tokenInfo = denomTrace.token;
           const isNativeDenom = tokenClient.isCarbonToken(tokenInfo);
+          const coinGeckoId = tokenClient?.geckoTokenNames?.[coinMinimalDenom] ?? tokenClient?.geckoTokenNames?.[denomTrace.baseDenom] ?? "";
           if (!(
             ((rootPath.length > 0 || cw20RegexArr?.length) && firstTransferChannel === ibcBridge.channels.src_channel)
               || (firstTransferChannel === ibcBridge.channels.dst_channel && isNativeDenom)
           )) {
             if (rootPath.length === 0 && firstTransferChannel === ibcBridge.channels.src_channel) {
+              const hasCurrency = extendedChainInfo.currencies.find((currency: AppCurrency) => currency.coinMinimalDenom === checkedBaseDenom);
+              if (!hasCurrency) {
+                prev.push(this.getAppCurrency(checkedBaseDenom, coinGeckoId, tokenInfo, cw20RegexArr));
+              }
               extendedChainInfo.minimalDenomMap[coinMinimalDenom] = checkedBaseDenom;
             }
             return prev;
           }
 
           let initCoinMinimalDenom = denomTrace.baseDenom;
-          if (cw20RegexArr?.length) {
-            prev.push({
-              coinDenom: tokenInfo?.symbol ?? "",
-              coinMinimalDenom: initCoinMinimalDenom,
-              coinDecimals: tokenInfo?.decimals.toNumber() ?? 0,
-              coinGeckoId: tokenClient?.geckoTokenNames?.[coinMinimalDenom] ?? tokenClient?.geckoTokenNames?.[denomTrace.baseDenom] ?? "",
-              type: "cw20",
-              contractAddress: cw20RegexArr[1] ?? "",
-            } as AppCurrency);
-          } else {
+          if (!cw20RegexArr?.length) {
             initCoinMinimalDenom = isNativeDenom ? coinMinimalDenom : IBCUtils.makeIBCMinimalDenom(rootPath, denomTrace.baseDenom);
-            prev.push({
-              coinDenom: tokenInfo?.symbol ?? "",
-              coinMinimalDenom: initCoinMinimalDenom,
-              coinDecimals: tokenInfo?.decimals.toNumber() ?? 0,
-              coinGeckoId: tokenClient?.geckoTokenNames?.[coinMinimalDenom] ?? tokenClient?.geckoTokenNames?.[denomTrace.baseDenom] ?? "",
-            } as AppCurrency);
           }
+          prev.push(this.getAppCurrency(initCoinMinimalDenom, coinGeckoId, tokenInfo, cw20RegexArr));
           extendedChainInfo.minimalDenomMap[isNativeDenom ? denomTrace.baseDenom : coinMinimalDenom] = initCoinMinimalDenom;
           return prev;
         }, []);
@@ -163,6 +155,21 @@ export class IBCModule extends BaseModule {
     }
     return chainInfoMap;
   }
+
+  getAppCurrency(coinMinimalDenom: string, coinGeckoId: string, tokenInfo?: Token, cw20RegexArr?: RegExpMatchArray | null): AppCurrency {
+    const appCurrency = {
+      coinDenom: tokenInfo?.symbol ?? "",
+      coinMinimalDenom: coinMinimalDenom,
+      coinDecimals: tokenInfo?.decimals.toNumber() ?? 0,
+      coinGeckoId: coinGeckoId,
+      ...cw20RegexArr?.length && ({
+        type: "cw20",
+        contractAddress: cw20RegexArr[1] ?? "",
+      }),
+    };
+    return appCurrency as AppCurrency;
+  }
+
 
   async getChainInfo(chainName: string): Promise<ChainInfo | undefined> {
     if (!chainName) return undefined

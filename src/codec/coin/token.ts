@@ -18,7 +18,6 @@ export interface Token {
   tokenAddress: string;
   bridgeAddress: string;
   isActive: boolean;
-  isCollateral: boolean;
 }
 
 export interface BalanceChange {
@@ -39,7 +38,6 @@ export interface LockedCoins {
   denom: string;
   orderMargin: string;
   positionMargin: string;
-  collateral: string;
 }
 
 export interface LockedCoinsRecord {
@@ -72,7 +70,6 @@ const baseToken: object = {
   tokenAddress: "",
   bridgeAddress: "",
   isActive: false,
-  isCollateral: false,
 };
 
 export const Token = {
@@ -109,9 +106,6 @@ export const Token = {
     }
     if (message.isActive === true) {
       writer.uint32(88).bool(message.isActive);
-    }
-    if (message.isCollateral === true) {
-      writer.uint32(96).bool(message.isCollateral);
     }
     return writer;
   },
@@ -155,9 +149,6 @@ export const Token = {
           break;
         case 11:
           message.isActive = reader.bool();
-          break;
-        case 12:
-          message.isCollateral = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -211,10 +202,6 @@ export const Token = {
       object.isActive !== undefined && object.isActive !== null
         ? Boolean(object.isActive)
         : false;
-    message.isCollateral =
-      object.isCollateral !== undefined && object.isCollateral !== null
-        ? Boolean(object.isCollateral)
-        : false;
     return message;
   },
 
@@ -236,8 +223,6 @@ export const Token = {
     message.bridgeAddress !== undefined &&
       (obj.bridgeAddress = message.bridgeAddress);
     message.isActive !== undefined && (obj.isActive = message.isActive);
-    message.isCollateral !== undefined &&
-      (obj.isCollateral = message.isCollateral);
     return obj;
   },
 
@@ -263,7 +248,6 @@ export const Token = {
     message.tokenAddress = object.tokenAddress ?? "";
     message.bridgeAddress = object.bridgeAddress ?? "";
     message.isActive = object.isActive ?? false;
-    message.isCollateral = object.isCollateral ?? false;
     return message;
   },
 };
@@ -470,7 +454,6 @@ const baseLockedCoins: object = {
   denom: "",
   orderMargin: "",
   positionMargin: "",
-  collateral: "",
 };
 
 export const LockedCoins = {
@@ -486,9 +469,6 @@ export const LockedCoins = {
     }
     if (message.positionMargin !== "") {
       writer.uint32(26).string(message.positionMargin);
-    }
-    if (message.collateral !== "") {
-      writer.uint32(34).string(message.collateral);
     }
     return writer;
   },
@@ -508,9 +488,6 @@ export const LockedCoins = {
           break;
         case 3:
           message.positionMargin = reader.string();
-          break;
-        case 4:
-          message.collateral = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -534,10 +511,6 @@ export const LockedCoins = {
       object.positionMargin !== undefined && object.positionMargin !== null
         ? String(object.positionMargin)
         : "";
-    message.collateral =
-      object.collateral !== undefined && object.collateral !== null
-        ? String(object.collateral)
-        : "";
     return message;
   },
 
@@ -548,7 +521,6 @@ export const LockedCoins = {
       (obj.orderMargin = message.orderMargin);
     message.positionMargin !== undefined &&
       (obj.positionMargin = message.positionMargin);
-    message.collateral !== undefined && (obj.collateral = message.collateral);
     return obj;
   },
 
@@ -557,7 +529,6 @@ export const LockedCoins = {
     message.denom = object.denom ?? "";
     message.orderMargin = object.orderMargin ?? "";
     message.positionMargin = object.positionMargin ?? "";
-    message.collateral = object.collateral ?? "";
     return message;
   },
 };

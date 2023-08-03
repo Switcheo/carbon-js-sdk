@@ -5,6 +5,7 @@ import { QueryClientImpl as CDPQueryClient } from "@carbon-sdk/codec/cdp/query";
 import { QueryClientImpl as CoinQueryClient } from "@carbon-sdk/codec/coin/query";
 import { QueryClientImpl as AuthQueryClient } from "@carbon-sdk/codec/cosmos/auth/v1beta1/query";
 import { QueryClientImpl as BankQueryClient } from "@carbon-sdk/codec/cosmos/bank/v1beta1/query";
+import { QueryClientImpl as NativeBankQueryClient } from "@carbon-sdk/codec/bank/query";
 import { ServiceClientImpl as CosmosTmClient } from "@carbon-sdk/codec/cosmos/base/tendermint/v1beta1/query";
 import { QueryClientImpl as DistributionQueryClient } from "@carbon-sdk/codec/cosmos/distribution/v1beta1/query";
 import { QueryClientImpl as EvidenceQueryClient } from "@carbon-sdk/codec/cosmos/evidence/v1beta1/query";
@@ -14,6 +15,10 @@ import { QueryClientImpl as ParamsQueryClient } from "@carbon-sdk/codec/cosmos/p
 import { QueryClientImpl as SlashingQueryClient } from "@carbon-sdk/codec/cosmos/slashing/v1beta1/query";
 import { QueryClientImpl as StakingQueryClient } from "@carbon-sdk/codec/cosmos/staking/v1beta1/query";
 import { QueryClientImpl as UpgradeQueryClient } from "@carbon-sdk/codec/cosmos/upgrade/v1beta1/query";
+import { QueryClientImpl as EthermintEVMQueryClient } from "@carbon-sdk/codec/ethermint/evm/v1/query";
+import { QueryClientImpl as EvmMergeQueryClient } from "@carbon-sdk/codec/evmmerge/query";
+import { QueryClientImpl as EvmBankQueryClient } from "@carbon-sdk/codec/evmbank/query";
+import { QueryClientImpl as EthermintFeeMarketQueryClient } from "@carbon-sdk/codec/ethermint/feemarket/v1/query";
 import { QueryClientImpl as FeeQueryClient } from "@carbon-sdk/codec/fee/query";
 import { QueryClientImpl as HeadersyncQueryClient } from "@carbon-sdk/codec/headersync/query";
 import { QueryClientImpl as IBCInterchainControlQueryClient } from "@carbon-sdk/codec/ibc/applications/interchain_accounts/controller/v1/query";
@@ -52,6 +57,11 @@ export interface IBCClientGroup {
   channel: IBCChannelQueryClient;
 }
 
+export interface EthermintClientGroup {
+  evm: EthermintEVMQueryClient;
+  feeMarket: EthermintFeeMarketQueryClient;
+}
+
 class CarbonQueryClient {
   adl: ADLQueryClient;
   book: BookQueryClient;
@@ -77,6 +87,7 @@ class CarbonQueryClient {
 
   auth: AuthQueryClient;
   bank: BankQueryClient;
+  nativeBank: NativeBankQueryClient;
   distribution: DistributionQueryClient;
   evidence: EvidenceQueryClient;
   gov: GovQueryClient;
@@ -91,6 +102,9 @@ class CarbonQueryClient {
 
   chain: BlockchainClient;
   ibc: IBCClientGroup;
+  ethermint: EthermintClientGroup;
+  evmmerge: EvmMergeQueryClient;
+  evmbank: EvmBankQueryClient;
 
   private baseClient: QueryClient;
 
@@ -122,9 +136,12 @@ class CarbonQueryClient {
     this.profile = new ProfileQueryClient(rpcClient);
     this.subaccount = new SubaccountQueryClient(rpcClient);
     this.headersync = new HeadersyncQueryClient(rpcClient);
+    this.evmmerge = new EvmMergeQueryClient(rpcClient);
+    this.evmbank = new EvmBankQueryClient(rpcClient);
 
     this.auth = new AuthQueryClient(rpcClient);
     this.bank = new BankQueryClient(rpcClient);
+    this.nativeBank = new NativeBankQueryClient(rpcClient);
     this.distribution = new DistributionQueryClient(rpcClient);
     this.evidence = new EvidenceQueryClient(rpcClient);
     this.gov = new GovQueryClient(rpcClient);
@@ -135,6 +152,8 @@ class CarbonQueryClient {
     this.upgrade = new UpgradeQueryClient(rpcClient);
     this.cosmosTm = new CosmosTmClient(rpcClient);
 
+    this.alliance = new AllianceClient(rpcClient);
+
     this.ibc = {
       controller: new IBCInterchainControlQueryClient(rpcClient),
       host: new IBCInterchainHostQueryClient(rpcClient),
@@ -143,6 +162,11 @@ class CarbonQueryClient {
       connection: new IBCConnectionQueryClient(rpcClient),
       channel: new IBCChannelQueryClient(rpcClient),
     };
+
+    this.ethermint = {
+      evm: new EthermintEVMQueryClient(rpcClient),
+      feeMarket: new EthermintFeeMarketQueryClient(rpcClient),
+    }
   }
 
   getProtobufRpcClient() {

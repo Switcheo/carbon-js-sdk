@@ -14,3 +14,6 @@ export { default as PositionAmino } from "./position";
 export { default as ProfileAmino } from "./profile";
 export { default as StakingAmino } from "./staking";
 export { default as SubAccountAmino } from "./subaccount";
+export { default as EvmMergeAmino } from "./evmmerge";
+export { default as EvmAmino } from "./evm";
+export { default as FeeMarketAmino } from "./feemarket";

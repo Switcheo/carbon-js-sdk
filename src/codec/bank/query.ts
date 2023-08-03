@@ -5,15 +5,26 @@ import {
   PageRequest,
   PageResponse,
 } from "../cosmos/base/query/v1beta1/pagination";
+import { Timestamp } from "../google/protobuf/timestamp";
 
 export const protobufPackage = "Switcheo.carbon.bank";
 
 export interface InternalTransfer {
   sender: string;
   receiver: string;
+  transactionHash: string;
+  coins: Coin[];
+  transactionMemo: string;
+  transactionBlockHeight: Long;
+  transactionBlockTime?: Date;
+  senderUsername: string;
+  receiverUsername: string;
+  transactionCode: number;
+}
+
+export interface Coin {
   denom: string;
   amount: string;
-  transactionHash: string;
 }
 
 export interface QueryInternalTransfersRequest {
@@ -32,9 +43,12 @@ export interface QueryInternalTransfersResponse {
 const baseInternalTransfer: object = {
   sender: "",
   receiver: "",
-  denom: "",
-  amount: "",
   transactionHash: "",
+  transactionMemo: "",
+  transactionBlockHeight: Long.UZERO,
+  senderUsername: "",
+  receiverUsername: "",
+  transactionCode: 0,
 };
 
 export const InternalTransfer = {
@@ -48,14 +62,32 @@ export const InternalTransfer = {
     if (message.receiver !== "") {
       writer.uint32(18).string(message.receiver);
     }
-    if (message.denom !== "") {
-      writer.uint32(26).string(message.denom);
-    }
-    if (message.amount !== "") {
-      writer.uint32(34).string(message.amount);
-    }
     if (message.transactionHash !== "") {
-      writer.uint32(42).string(message.transactionHash);
+      writer.uint32(26).string(message.transactionHash);
+    }
+    for (const v of message.coins) {
+      Coin.encode(v!, writer.uint32(34).fork()).ldelim();
+    }
+    if (message.transactionMemo !== "") {
+      writer.uint32(42).string(message.transactionMemo);
+    }
+    if (!message.transactionBlockHeight.isZero()) {
+      writer.uint32(48).uint64(message.transactionBlockHeight);
+    }
+    if (message.transactionBlockTime !== undefined) {
+      Timestamp.encode(
+        toTimestamp(message.transactionBlockTime),
+        writer.uint32(58).fork()
+      ).ldelim();
+    }
+    if (message.senderUsername !== "") {
+      writer.uint32(66).string(message.senderUsername);
+    }
+    if (message.receiverUsername !== "") {
+      writer.uint32(74).string(message.receiverUsername);
+    }
+    if (message.transactionCode !== 0) {
+      writer.uint32(80).uint32(message.transactionCode);
     }
     return writer;
   },
@@ -64,6 +96,7 @@ export const InternalTransfer = {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseInternalTransfer } as InternalTransfer;
+    message.coins = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -74,13 +107,30 @@ export const InternalTransfer = {
           message.receiver = reader.string();
           break;
         case 3:
-          message.denom = reader.string();
+          message.transactionHash = reader.string();
           break;
         case 4:
-          message.amount = reader.string();
+          message.coins.push(Coin.decode(reader, reader.uint32()));
           break;
         case 5:
-          message.transactionHash = reader.string();
+          message.transactionMemo = reader.string();
+          break;
+        case 6:
+          message.transactionBlockHeight = reader.uint64() as Long;
+          break;
+        case 7:
+          message.transactionBlockTime = fromTimestamp(
+            Timestamp.decode(reader, reader.uint32())
+          );
+          break;
+        case 8:
+          message.senderUsername = reader.string();
+          break;
+        case 9:
+          message.receiverUsername = reader.string();
+          break;
+        case 10:
+          message.transactionCode = reader.uint32();
           break;
         default:
           reader.skipType(tag & 7);
@@ -100,6 +150,124 @@ export const InternalTransfer = {
       object.receiver !== undefined && object.receiver !== null
         ? String(object.receiver)
         : "";
+    message.transactionHash =
+      object.transactionHash !== undefined && object.transactionHash !== null
+        ? String(object.transactionHash)
+        : "";
+    message.coins = (object.coins ?? []).map((e: any) => Coin.fromJSON(e));
+    message.transactionMemo =
+      object.transactionMemo !== undefined && object.transactionMemo !== null
+        ? String(object.transactionMemo)
+        : "";
+    message.transactionBlockHeight =
+      object.transactionBlockHeight !== undefined &&
+      object.transactionBlockHeight !== null
+        ? Long.fromString(object.transactionBlockHeight)
+        : Long.UZERO;
+    message.transactionBlockTime =
+      object.transactionBlockTime !== undefined &&
+      object.transactionBlockTime !== null
+        ? fromJsonTimestamp(object.transactionBlockTime)
+        : undefined;
+    message.senderUsername =
+      object.senderUsername !== undefined && object.senderUsername !== null
+        ? String(object.senderUsername)
+        : "";
+    message.receiverUsername =
+      object.receiverUsername !== undefined && object.receiverUsername !== null
+        ? String(object.receiverUsername)
+        : "";
+    message.transactionCode =
+      object.transactionCode !== undefined && object.transactionCode !== null
+        ? Number(object.transactionCode)
+        : 0;
+    return message;
+  },
+
+  toJSON(message: InternalTransfer): unknown {
+    const obj: any = {};
+    message.sender !== undefined && (obj.sender = message.sender);
+    message.receiver !== undefined && (obj.receiver = message.receiver);
+    message.transactionHash !== undefined &&
+      (obj.transactionHash = message.transactionHash);
+    if (message.coins) {
+      obj.coins = message.coins.map((e) => (e ? Coin.toJSON(e) : undefined));
+    } else {
+      obj.coins = [];
+    }
+    message.transactionMemo !== undefined &&
+      (obj.transactionMemo = message.transactionMemo);
+    message.transactionBlockHeight !== undefined &&
+      (obj.transactionBlockHeight = (
+        message.transactionBlockHeight || Long.UZERO
+      ).toString());
+    message.transactionBlockTime !== undefined &&
+      (obj.transactionBlockTime = message.transactionBlockTime.toISOString());
+    message.senderUsername !== undefined &&
+      (obj.senderUsername = message.senderUsername);
+    message.receiverUsername !== undefined &&
+      (obj.receiverUsername = message.receiverUsername);
+    message.transactionCode !== undefined &&
+      (obj.transactionCode = message.transactionCode);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<InternalTransfer>): InternalTransfer {
+    const message = { ...baseInternalTransfer } as InternalTransfer;
+    message.sender = object.sender ?? "";
+    message.receiver = object.receiver ?? "";
+    message.transactionHash = object.transactionHash ?? "";
+    message.coins = (object.coins ?? []).map((e) => Coin.fromPartial(e));
+    message.transactionMemo = object.transactionMemo ?? "";
+    message.transactionBlockHeight =
+      object.transactionBlockHeight !== undefined &&
+      object.transactionBlockHeight !== null
+        ? Long.fromValue(object.transactionBlockHeight)
+        : Long.UZERO;
+    message.transactionBlockTime = object.transactionBlockTime ?? undefined;
+    message.senderUsername = object.senderUsername ?? "";
+    message.receiverUsername = object.receiverUsername ?? "";
+    message.transactionCode = object.transactionCode ?? 0;
+    return message;
+  },
+};
+
+const baseCoin: object = { denom: "", amount: "" };
+
+export const Coin = {
+  encode(message: Coin, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.denom !== "") {
+      writer.uint32(10).string(message.denom);
+    }
+    if (message.amount !== "") {
+      writer.uint32(18).string(message.amount);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): Coin {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseCoin } as Coin;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.denom = reader.string();
+          break;
+        case 2:
+          message.amount = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Coin {
+    const message = { ...baseCoin } as Coin;
     message.denom =
       object.denom !== undefined && object.denom !== null
         ? String(object.denom)
@@ -108,31 +276,20 @@ export const InternalTransfer = {
       object.amount !== undefined && object.amount !== null
         ? String(object.amount)
         : "";
-    message.transactionHash =
-      object.transactionHash !== undefined && object.transactionHash !== null
-        ? String(object.transactionHash)
-        : "";
     return message;
   },
 
-  toJSON(message: InternalTransfer): unknown {
+  toJSON(message: Coin): unknown {
     const obj: any = {};
-    message.sender !== undefined && (obj.sender = message.sender);
-    message.receiver !== undefined && (obj.receiver = message.receiver);
     message.denom !== undefined && (obj.denom = message.denom);
     message.amount !== undefined && (obj.amount = message.amount);
-    message.transactionHash !== undefined &&
-      (obj.transactionHash = message.transactionHash);
     return obj;
   },
 
-  fromPartial(object: DeepPartial<InternalTransfer>): InternalTransfer {
-    const message = { ...baseInternalTransfer } as InternalTransfer;
-    message.sender = object.sender ?? "";
-    message.receiver = object.receiver ?? "";
+  fromPartial(object: DeepPartial<Coin>): Coin {
+    const message = { ...baseCoin } as Coin;
     message.denom = object.denom ?? "";
     message.amount = object.amount ?? "";
-    message.transactionHash = object.transactionHash ?? "";
     return message;
   },
 };
@@ -411,6 +568,32 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+function toTimestamp(date: Date): Timestamp {
+  const seconds = numberToLong(date.getTime() / 1_000);
+  const nanos = (date.getTime() % 1_000) * 1_000_000;
+  return { seconds, nanos };
+}
+
+function fromTimestamp(t: Timestamp): Date {
+  let millis = t.seconds.toNumber() * 1_000;
+  millis += t.nanos / 1_000_000;
+  return new Date(millis);
+}
+
+function fromJsonTimestamp(o: any): Date {
+  if (o instanceof Date) {
+    return o;
+  } else if (typeof o === "string") {
+    return new Date(o);
+  } else {
+    return fromTimestamp(Timestamp.fromJSON(o));
+  }
+}
+
+function numberToLong(number: number) {
+  return Long.fromNumber(number);
+}
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
