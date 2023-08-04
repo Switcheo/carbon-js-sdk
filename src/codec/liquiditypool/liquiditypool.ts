@@ -22,10 +22,7 @@ export interface Pool {
   amountB: string;
   weightB: string;
   swapFee: string;
-  numQuotes: Long;
   sharesAmount: string;
-  /** deprecated to use pool routes */
-  market: string;
   ampBps: Long;
   vAmountA: string;
   vAmountB: string;
@@ -169,9 +166,7 @@ const basePool: object = {
   amountB: "",
   weightB: "",
   swapFee: "",
-  numQuotes: Long.ZERO,
   sharesAmount: "",
-  market: "",
   ampBps: Long.UZERO,
   vAmountA: "",
   vAmountB: "",
@@ -212,14 +207,8 @@ export const Pool = {
     if (message.swapFee !== "") {
       writer.uint32(90).string(message.swapFee);
     }
-    if (!message.numQuotes.isZero()) {
-      writer.uint32(96).int64(message.numQuotes);
-    }
     if (message.sharesAmount !== "") {
       writer.uint32(106).string(message.sharesAmount);
-    }
-    if (message.market !== "") {
-      writer.uint32(114).string(message.market);
     }
     if (!message.ampBps.isZero()) {
       writer.uint32(120).uint64(message.ampBps);
@@ -273,14 +262,8 @@ export const Pool = {
         case 11:
           message.swapFee = reader.string();
           break;
-        case 12:
-          message.numQuotes = reader.int64() as Long;
-          break;
         case 13:
           message.sharesAmount = reader.string();
-          break;
-        case 14:
-          message.market = reader.string();
           break;
         case 15:
           message.ampBps = reader.uint64() as Long;
@@ -345,17 +328,9 @@ export const Pool = {
       object.swapFee !== undefined && object.swapFee !== null
         ? String(object.swapFee)
         : "";
-    message.numQuotes =
-      object.numQuotes !== undefined && object.numQuotes !== null
-        ? Long.fromString(object.numQuotes)
-        : Long.ZERO;
     message.sharesAmount =
       object.sharesAmount !== undefined && object.sharesAmount !== null
         ? String(object.sharesAmount)
-        : "";
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? String(object.market)
         : "";
     message.ampBps =
       object.ampBps !== undefined && object.ampBps !== null
@@ -386,11 +361,8 @@ export const Pool = {
     message.amountB !== undefined && (obj.amountB = message.amountB);
     message.weightB !== undefined && (obj.weightB = message.weightB);
     message.swapFee !== undefined && (obj.swapFee = message.swapFee);
-    message.numQuotes !== undefined &&
-      (obj.numQuotes = (message.numQuotes || Long.ZERO).toString());
     message.sharesAmount !== undefined &&
       (obj.sharesAmount = message.sharesAmount);
-    message.market !== undefined && (obj.market = message.market);
     message.ampBps !== undefined &&
       (obj.ampBps = (message.ampBps || Long.UZERO).toString());
     message.vAmountA !== undefined && (obj.vAmountA = message.vAmountA);
@@ -414,12 +386,7 @@ export const Pool = {
     message.amountB = object.amountB ?? "";
     message.weightB = object.weightB ?? "";
     message.swapFee = object.swapFee ?? "";
-    message.numQuotes =
-      object.numQuotes !== undefined && object.numQuotes !== null
-        ? Long.fromValue(object.numQuotes)
-        : Long.ZERO;
     message.sharesAmount = object.sharesAmount ?? "";
-    message.market = object.market ?? "";
     message.ampBps =
       object.ampBps !== undefined && object.ampBps !== null
         ? Long.fromValue(object.ampBps)

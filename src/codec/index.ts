@@ -29,6 +29,7 @@ import { MsgGrant, MsgExecResponse, MsgExec, MsgGrantResponse, MsgRevoke, MsgRev
 import { MsgUnjail, MsgUnjailResponse } from "./cosmos/slashing/v1beta1/tx";
 import { MsgSubmitProposal as MsgGovSubmitProposal, MsgSubmitProposalResponse as MsgGovSubmitProposalResponse, MsgExecLegacyContent as MsgGovExecLegacyContent, MsgExecLegacyContentResponse as MsgGovExecLegacyContentResponse, MsgVote as MsgGovVote, MsgVoteResponse as MsgGovVoteResponse, MsgVoteWeighted as MsgGovVoteWeighted, MsgVoteWeightedResponse as MsgGovVoteWeightedResponse, MsgDeposit as MsgGovDeposit, MsgDepositResponse as MsgGovDepositResponse } from "./cosmos/gov/v1/tx";
 import { MsgSubmitProposal, MsgSubmitProposalResponse, MsgVote, MsgVoteResponse, MsgVoteWeighted, MsgVoteWeightedResponse, MsgDeposit, MsgDepositResponse } from "./cosmos/gov/v1beta1/tx";
+import { MsgInitiateAdminTransfer, MsgInitiateAdminTransferResponse, MsgAcceptAdminTransfer, MsgAcceptAdminTransferResponse } from "./admin/tx";
 import { MsgCreatePlPool, MsgCreatePlPoolResponse, MsgUpdatePlPool, MsgUpdatePlPoolResponse, MsgRegisterToPlPool, MsgRegisterToPlPoolResponse, MsgDeregisterFromPlPool, MsgDeregisterFromPlPoolResponse, MsgDepositToPlPool, MsgDepositToPlPoolResponse, MsgWithdrawFromPlPool, MsgWithdrawFromPlPoolResponse, MsgUpdateMarketConfig, MsgUpdateMarketConfigResponse } from "./perpsliquidity/tx";
 import { MsgConnectionOpenInit, MsgConnectionOpenInitResponse, MsgConnectionOpenTry, MsgConnectionOpenTryResponse, MsgConnectionOpenAck, MsgConnectionOpenAckResponse, MsgConnectionOpenConfirm, MsgConnectionOpenConfirmResponse } from "./ibc/core/connection/v1/tx";
 import { MsgChannelOpenInit, MsgChannelOpenInitResponse, MsgChannelOpenTry, MsgChannelOpenTryResponse, MsgChannelOpenAck, MsgChannelOpenAckResponse, MsgChannelOpenConfirm, MsgChannelOpenConfirmResponse, MsgChannelCloseInit, MsgChannelCloseInitResponse, MsgChannelCloseConfirm, MsgChannelCloseConfirmResponse, MsgRecvPacket, MsgRecvPacketResponse, MsgTimeout, MsgTimeoutResponse, MsgTimeoutOnClose, MsgTimeoutOnCloseResponse, MsgAcknowledgement, MsgAcknowledgementResponse } from "./ibc/core/channel/v1/tx";
@@ -347,6 +348,11 @@ registry.register("/cosmos.gov.v1beta1.MsgDeposit", MsgDeposit);
 registry.register("/cosmos.gov.v1beta1.MsgDepositResponse", MsgDepositResponse);
 registry.register("/cosmos.gov.v1beta1.TextProposal", TextProposal);
 registry.register("/cosmos.gov.v1beta1.Proposal", Proposal);
+
+registry.register("/switcheo.carbon.admin.MsgInitiateAdminTransfer", MsgInitiateAdminTransfer);
+registry.register("/switcheo.carbon.admin.MsgInitiateAdminTransferResponse", MsgInitiateAdminTransferResponse);
+registry.register("/switcheo.carbon.admin.MsgAcceptAdminTransfer", MsgAcceptAdminTransfer);
+registry.register("/switcheo.carbon.admin.MsgAcceptAdminTransferResponse", MsgAcceptAdminTransferResponse);
 
 registry.register("/Switcheo.carbon.ccm.MsgProcessCrossChainTx", PolyNetwork.Ccm.MsgProcessCrossChainTx);
 registry.register("/Switcheo.carbon.ccm.MsgProcessZionCrossChainTx", PolyNetwork.Ccm.MsgProcessZionCrossChainTx);
@@ -848,6 +854,10 @@ export const TxTypes = {
   "MsgDepositResponse": "/cosmos.gov.v1beta1.MsgDepositResponse",
   "TextProposal": "/cosmos.gov.v1beta1.TextProposal",
   "Proposal": "/cosmos.gov.v1beta1.Proposal",
+  "MsgInitiateAdminTransfer": "/switcheo.carbon.admin.MsgInitiateAdminTransfer",
+  "MsgInitiateAdminTransferResponse": "/switcheo.carbon.admin.MsgInitiateAdminTransferResponse",
+  "MsgAcceptAdminTransfer": "/switcheo.carbon.admin.MsgAcceptAdminTransfer",
+  "MsgAcceptAdminTransferResponse": "/switcheo.carbon.admin.MsgAcceptAdminTransferResponse",
   "MsgProcessCrossChainTx": "/Switcheo.carbon.ccm.MsgProcessCrossChainTx",
   "MsgProcessZionCrossChainTx": "/Switcheo.carbon.ccm.MsgProcessZionCrossChainTx",
   "MsgProcessCrossChainTxResponse": "/Switcheo.carbon.ccm.MsgProcessCrossChainTxResponse",
@@ -1135,6 +1145,8 @@ export { Delegation, Redelegation, QueuedRedelegation, Undelegation, QueuedUndel
 export { DelegateAllianceEvent, UndelegateAllianceEvent, RedelegateAllianceEvent, ClaimAllianceRewardsEvent } from "./alliance/events";
 export { QueryParamsRequest as QueryAllianceParamsRequest, QueryParamsResponse as QueryAllianceParamsResponse, QueryAlliancesRequest, QueryAlliancesResponse, QueryAllianceRequest, QueryAllianceResponse, QueryIBCAllianceRequest, QueryAllianceValidatorRequest, QueryAllAllianceValidatorsRequest, QueryAllAlliancesDelegationsRequest, QueryAlliancesDelegationsRequest, QueryAlliancesDelegationByValidatorRequest, DelegationResponse, QueryAlliancesDelegationsResponse, QueryAllianceDelegationRequest, QueryIBCAllianceDelegationRequest, QueryAllianceDelegationResponse, QueryAllianceDelegationRewardsRequest, QueryIBCAllianceDelegationRewardsRequest, QueryAllianceDelegationRewardsResponse, QueryAllianceValidatorResponse, QueryAllianceValidatorsResponse } from "./alliance/query";
 export { Params as AllianceParams, RewardHistory as AllianceRewardHistory } from "./alliance/params";
+export { MsgInitiateAdminTransfer, MsgInitiateAdminTransferResponse, MsgAcceptAdminTransfer, MsgAcceptAdminTransferResponse } from "./admin/tx";
+export { QueryAdminRequest, QueryAdminResponse, QueryAdminRecipientRequest, QueryAdminRecipientResponse } from "./admin/query";
 export { QueryParamsRequest as QueryMarketstatsParamsRequest, QueryParamsResponse as QueryMarketstatsParamsResponse, QueryMarketStatsRequest, QueryMarketStatsResponse } from "./marketstats/query";
 export { Params as MarketstatsParams } from "./marketstats/params";
 export { MarketStats } from "./marketstats/marketstats";
@@ -1142,7 +1154,7 @@ export { MsgCreatePlPool, MsgCreatePlPoolResponse, MsgUpdatePlPool, MsgUpdatePlP
 export { PlPool, UpdatePlPoolParams, PoolDetails, DepositToPoolParams, WithdrawFromPoolParams, DepositToBonusContractParams, MarketUtilizationRateSnapshot } from "./perpsliquidity/pool";
 export { Quote, MarketConfig, UpdateMarketConfigParams, TWAMarketUtilizationRate } from "./perpsliquidity/market";
 export { QueryParamsRequest as QueryPerpsliquidityParamsRequest, QueryParamsResponse as QueryPerpsliquidityParamsResponse, QueryGetPlPoolRequest, QueryGetPlPoolResponse, QueryAllPlPoolsRequest, QueryAllPlPoolsResponse, QueryPlPoolMappingsRequest, QueryPlPoolMappingsResponse, QueryPlPoolMappingsResponse_PoolMappingsEntry, QueryAllPlPoolAddressRequest, QueryAllPlPoolAddressResponse, QueryAllPlPoolAddressResponse_AddressesEntry, QueryPLPoolInfoRequest, QueryPLPoolInfoResponse, QueryAllPLPoolInfoRequest, QueryAllPLPoolInfoResponse } from "./perpsliquidity/query";
-export { SetPoolEvent, NewPoolEvent, UpdatePoolEvent, RegisterToPoolEvent, DeregisterFromPoolEvent, SetMarketConfigEvent, PerpsliquidityDepositToPoolEvent, PerpsliquidityWithdrawFromPoolEvent } from "./perpsliquidity/event";
+export { SetPoolEvent, NewPoolEvent, UpdatePoolEvent, RegisterToPoolEvent, DeregisterFromPoolEvent, SetMarketConfigEvent, DepositToPoolEvent as PerpsliquidityDepositToPoolEvent, WithdrawFromPoolEvent as PerpsliquidityWithdrawFromPoolEvent } from "./perpsliquidity/event";
 export { Params as PerpsliquidityParams } from "./perpsliquidity/params";
 export { QueryAccountBalanceRequest, QueryAccountBalanceResponse } from "./evmbank/query";
 export { MsgCreateToken, CreateTokenParams, MsgCreateTokenResponse, MsgSyncToken, MsgSyncTokenResponse, MsgMintToken, MsgMintTokenResponse, MsgBindToken, MsgBindTokenResponse, MsgUnbindToken, MsgUnbindTokenResponse, MsgLinkToken, MsgLinkTokenResponse, MsgWithdraw, MsgWithdrawResponse, MsgAuthorizeBridge, MsgAuthorizeBridgeResponse, MsgDeauthorizeBridge, MsgDeauthorizeBridgeResponse, MsgEditBridgeName, MsgEditBridgeNameResponse, MsgRemoveBridge, MsgRemoveBridgeResponse, MsgUpdateToken, UpdateTokenParams, MsgUpdateTokenResponse, MsgAddBridgeAddress, MsgAddBridgeAddressResponse, MsgRemoveBridgeAddress, MsgRemoveBridgeAddressResponse, MsgCreateGroup, MsgCreateGroupResponse, MsgUpdateGroup, UpdateGroupParams, MsgUpdateGroupResponse, MsgRegisterToGroup, MsgRegisterToGroupResponse, MsgDeregisterFromGroup, MsgDeregisterFromGroupResponse, MsgDepositToGroup, MsgDepositToGroupResponse, MsgWithdrawFromGroup, MsgWithdrawFromGroupResponse, MsgUpdateGroupedTokenConfig, UpdateGroupedTokenConfigParams, MsgUpdateGroupedTokenConfigResponse } from "./coin/tx";
@@ -1158,7 +1170,7 @@ export { QueryGetLeverageRequest, QueryGetLeverageResponse, QueryAllLeverageRequ
 export { LeverageEvent } from "./leverage/event";
 export { MsgUpdateProfile, MsgUpdateProfileResponse } from "./profile/tx";
 export { Profile } from "./profile/profile";
-export { QueryGetProfileRequest, QueryGetProfileResponse, QueryAllProfileRequest, QueryAllProfileResponse } from "./profile/query";
+export { QueryGetProfileRequest, QueryGetProfileResponse, QueryAllProfileRequest, QueryAllProfileResponse, QueryProfileByUsernameRequest, QueryProfileByUsernameResponse } from "./profile/query";
 export { UpdateProfileEvent } from "./profile/event";
 export { MsgCreateSubAccount, MsgCreateSubAccountResponse, MsgActivateSubAccount, MsgActivateSubAccountResponse, MsgRemoveSubAccount, MsgRemoveSubAccountResponse } from "./subaccount/tx";
 export { QueryGetSubAccountRequest, QueryGetSubAccountResponse, QueryAllSubAccountRequest, QueryAllSubAccountResponse, QuerySubAccountStatusRequest, QuerySubAccountStatusResponse, QuerySubAccountPowerRequest, QuerySubAccountPowerResponse } from "./subaccount/query";
@@ -1828,6 +1840,142 @@ export const EIP712Types: { [index: string]: any } = {
   },
   "/Switcheo.carbon.adl": {
     "GenesisState": []
+  },
+  "/switcheo.carbon.admin": {
+    "GenesisState": [],
+    "QueryAdminRequest": [],
+    "QueryAdminResponse": [
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "QueryAdminRecipientRequest": [],
+    "QueryAdminRecipientResponse": [
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "MsgInitiateAdminTransfer": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "recipient",
+        "type": "string"
+      }
+    ],
+    "MsgInitiateAdminTransferResponse": [],
+    "MsgAcceptAdminTransfer": [
+      {
+        "name": "creator",
+        "type": "string"
+      }
+    ],
+    "MsgAcceptAdminTransferResponse": []
+  },
+  "/google.api": {
+    "Http": [
+      {
+        "name": "rules",
+        "type": "HttpRule[]",
+        "packageName": "/google.api"
+      },
+      {
+        "name": "fully_decode_reserved_expansion",
+        "type": "bool"
+      }
+    ],
+    "HttpRule": [
+      {
+        "name": "selector",
+        "type": "string"
+      },
+      {
+        "name": "get",
+        "type": "string"
+      },
+      {
+        "name": "put",
+        "type": "string"
+      },
+      {
+        "name": "post",
+        "type": "string"
+      },
+      {
+        "name": "delete",
+        "type": "string"
+      },
+      {
+        "name": "patch",
+        "type": "string"
+      },
+      {
+        "name": "custom",
+        "type": "CustomHttpPattern",
+        "packageName": "/google.api"
+      },
+      {
+        "name": "body",
+        "type": "string"
+      },
+      {
+        "name": "response_body",
+        "type": "string"
+      },
+      {
+        "name": "additional_bindings",
+        "type": "HttpRule[]",
+        "packageName": "/google.api"
+      }
+    ],
+    "CustomHttpPattern": [
+      {
+        "name": "kind",
+        "type": "string"
+      },
+      {
+        "name": "path",
+        "type": "string"
+      }
+    ]
+  },
+  "/cosmos.base.query.v1beta1": {
+    "PageRequest": [
+      {
+        "name": "key",
+        "type": "uint8[]"
+      },
+      {
+        "name": "offset",
+        "type": "uint64"
+      },
+      {
+        "name": "limit",
+        "type": "uint64"
+      },
+      {
+        "name": "count_total",
+        "type": "bool"
+      },
+      {
+        "name": "reverse",
+        "type": "bool"
+      }
+    ],
+    "PageResponse": [
+      {
+        "name": "next_key",
+        "type": "uint8[]"
+      },
+      {
+        "name": "total",
+        "type": "uint64"
+      }
+    ]
   },
   "/cosmos_proto": {
     "InterfaceDescriptor": [
@@ -2628,107 +2776,6 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "dec",
         "type": "string"
-      }
-    ]
-  },
-  "/google.api": {
-    "Http": [
-      {
-        "name": "rules",
-        "type": "HttpRule[]",
-        "packageName": "/google.api"
-      },
-      {
-        "name": "fully_decode_reserved_expansion",
-        "type": "bool"
-      }
-    ],
-    "HttpRule": [
-      {
-        "name": "selector",
-        "type": "string"
-      },
-      {
-        "name": "get",
-        "type": "string"
-      },
-      {
-        "name": "put",
-        "type": "string"
-      },
-      {
-        "name": "post",
-        "type": "string"
-      },
-      {
-        "name": "delete",
-        "type": "string"
-      },
-      {
-        "name": "patch",
-        "type": "string"
-      },
-      {
-        "name": "custom",
-        "type": "CustomHttpPattern",
-        "packageName": "/google.api"
-      },
-      {
-        "name": "body",
-        "type": "string"
-      },
-      {
-        "name": "response_body",
-        "type": "string"
-      },
-      {
-        "name": "additional_bindings",
-        "type": "HttpRule[]",
-        "packageName": "/google.api"
-      }
-    ],
-    "CustomHttpPattern": [
-      {
-        "name": "kind",
-        "type": "string"
-      },
-      {
-        "name": "path",
-        "type": "string"
-      }
-    ]
-  },
-  "/cosmos.base.query.v1beta1": {
-    "PageRequest": [
-      {
-        "name": "key",
-        "type": "uint8[]"
-      },
-      {
-        "name": "offset",
-        "type": "uint64"
-      },
-      {
-        "name": "limit",
-        "type": "uint64"
-      },
-      {
-        "name": "count_total",
-        "type": "bool"
-      },
-      {
-        "name": "reverse",
-        "type": "bool"
-      }
-    ],
-    "PageResponse": [
-      {
-        "name": "next_key",
-        "type": "uint8[]"
-      },
-      {
-        "name": "total",
-        "type": "uint64"
       }
     ]
   },
@@ -6443,6 +6490,10 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "fee_address",
+        "type": "string"
+      },
+      {
+        "name": "fee_denom",
         "type": "string"
       }
     ],
@@ -19836,6 +19887,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "current_supply",
         "type": "string"
+      },
+      {
+        "name": "inflation_rate",
+        "type": "string"
       }
     ],
     "GenesisState": [
@@ -20974,15 +21029,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "num_quotes",
-        "type": "int64"
-      },
-      {
         "name": "shares_amount",
-        "type": "string"
-      },
-      {
-        "name": "market",
         "type": "string"
       },
       {
@@ -22807,14 +22854,6 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "maker_fee",
-        "type": "string"
-      },
-      {
-        "name": "taker_fee",
-        "type": "string"
-      },
-      {
         "name": "created_block_height",
         "type": "uint64"
       },
@@ -22903,14 +22942,6 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "min_quantity",
-        "type": "string"
-      },
-      {
-        "name": "maker_fee",
-        "type": "string"
-      },
-      {
-        "name": "taker_fee",
         "type": "string"
       },
       {
@@ -24287,6 +24318,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "min_shares_to_receive",
         "type": "string"
+      },
+      {
+        "name": "processing_id",
+        "type": "uint64"
       }
     ],
     "WithdrawFromPoolParams": [
@@ -24305,6 +24340,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "min_withdraw_amount",
         "type": "string"
+      },
+      {
+        "name": "processing_id",
+        "type": "uint64"
       }
     ],
     "DepositToBonusContractParams": [
@@ -25453,6 +25492,19 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "pagination",
         "type": "PageResponse",
         "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryProfileByUsernameRequest": [
+      {
+        "name": "username",
+        "type": "string"
+      }
+    ],
+    "QueryProfileByUsernameResponse": [
+      {
+        "name": "profile",
+        "type": "Profile",
+        "packageName": "/Switcheo.carbon.profile"
       }
     ],
     "MsgUpdateProfile": [

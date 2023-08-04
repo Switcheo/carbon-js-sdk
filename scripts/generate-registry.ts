@@ -163,11 +163,10 @@ for (const moduleFile of codecFiles) {
     } else if (key === "RewardHistory" && firstDirName === "Alliance") {
       newKey = `RewardHistory as ${labelOverride[`${firstDirName}RewardHistory`] ?? firstDirName}RewardHistory`;
     } else if (key === "DepositToPoolEvent" && firstDirName === "Perpsliquidity") {
-      newKey = `${firstDirName}DepositToPoolEvent`
+      newKey =  `DepositToPoolEvent as ${labelOverride[`${firstDirName}DepositToPoolEvent`] ?? firstDirName}DepositToPoolEvent`;
     } else if (key === "WithdrawFromPoolEvent" && firstDirName === "Perpsliquidity")  {
-      newKey = `${firstDirName}WithdrawFromPoolEvent`
+      newKey =  `WithdrawFromPoolEvent as ${labelOverride[`${firstDirName}WithdrawFromPoolEvent`] ?? firstDirName}WithdrawFromPoolEvent`;
     }
-
 
     messagePrev.push(newKey);
     return messagePrev;

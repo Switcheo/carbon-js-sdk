@@ -49,6 +49,7 @@ export interface DepositToPoolParams {
   fromAccount: string;
   depositAmount: string;
   minSharesToReceive: string;
+  processingId: Long;
 }
 
 /** WithdrawParams params required for enqueuing into withdraw transient store */
@@ -57,6 +58,7 @@ export interface WithdrawFromPoolParams {
   toAccount: string;
   shareAmount: string;
   minWithdrawAmount: string;
+  processingId: Long;
 }
 
 /** DepositToBonusContractParams params required for enqueuing into deposit transient store */
@@ -433,6 +435,7 @@ const baseDepositToPoolParams: object = {
   fromAccount: "",
   depositAmount: "",
   minSharesToReceive: "",
+  processingId: Long.UZERO,
 };
 
 export const DepositToPoolParams = {
@@ -451,6 +454,9 @@ export const DepositToPoolParams = {
     }
     if (message.minSharesToReceive !== "") {
       writer.uint32(34).string(message.minSharesToReceive);
+    }
+    if (!message.processingId.isZero()) {
+      writer.uint32(40).uint64(message.processingId);
     }
     return writer;
   },
@@ -473,6 +479,9 @@ export const DepositToPoolParams = {
           break;
         case 4:
           message.minSharesToReceive = reader.string();
+          break;
+        case 5:
+          message.processingId = reader.uint64() as Long;
           break;
         default:
           reader.skipType(tag & 7);
@@ -501,6 +510,10 @@ export const DepositToPoolParams = {
       object.minSharesToReceive !== null
         ? String(object.minSharesToReceive)
         : "";
+    message.processingId =
+      object.processingId !== undefined && object.processingId !== null
+        ? Long.fromString(object.processingId)
+        : Long.UZERO;
     return message;
   },
 
@@ -514,6 +527,8 @@ export const DepositToPoolParams = {
       (obj.depositAmount = message.depositAmount);
     message.minSharesToReceive !== undefined &&
       (obj.minSharesToReceive = message.minSharesToReceive);
+    message.processingId !== undefined &&
+      (obj.processingId = (message.processingId || Long.UZERO).toString());
     return obj;
   },
 
@@ -526,6 +541,10 @@ export const DepositToPoolParams = {
     message.fromAccount = object.fromAccount ?? "";
     message.depositAmount = object.depositAmount ?? "";
     message.minSharesToReceive = object.minSharesToReceive ?? "";
+    message.processingId =
+      object.processingId !== undefined && object.processingId !== null
+        ? Long.fromValue(object.processingId)
+        : Long.UZERO;
     return message;
   },
 };
@@ -535,6 +554,7 @@ const baseWithdrawFromPoolParams: object = {
   toAccount: "",
   shareAmount: "",
   minWithdrawAmount: "",
+  processingId: Long.UZERO,
 };
 
 export const WithdrawFromPoolParams = {
@@ -553,6 +573,9 @@ export const WithdrawFromPoolParams = {
     }
     if (message.minWithdrawAmount !== "") {
       writer.uint32(34).string(message.minWithdrawAmount);
+    }
+    if (!message.processingId.isZero()) {
+      writer.uint32(40).uint64(message.processingId);
     }
     return writer;
   },
@@ -578,6 +601,9 @@ export const WithdrawFromPoolParams = {
           break;
         case 4:
           message.minWithdrawAmount = reader.string();
+          break;
+        case 5:
+          message.processingId = reader.uint64() as Long;
           break;
         default:
           reader.skipType(tag & 7);
@@ -606,6 +632,10 @@ export const WithdrawFromPoolParams = {
       object.minWithdrawAmount !== null
         ? String(object.minWithdrawAmount)
         : "";
+    message.processingId =
+      object.processingId !== undefined && object.processingId !== null
+        ? Long.fromString(object.processingId)
+        : Long.UZERO;
     return message;
   },
 
@@ -618,6 +648,8 @@ export const WithdrawFromPoolParams = {
       (obj.shareAmount = message.shareAmount);
     message.minWithdrawAmount !== undefined &&
       (obj.minWithdrawAmount = message.minWithdrawAmount);
+    message.processingId !== undefined &&
+      (obj.processingId = (message.processingId || Long.UZERO).toString());
     return obj;
   },
 
@@ -632,6 +664,10 @@ export const WithdrawFromPoolParams = {
     message.toAccount = object.toAccount ?? "";
     message.shareAmount = object.shareAmount ?? "";
     message.minWithdrawAmount = object.minWithdrawAmount ?? "";
+    message.processingId =
+      object.processingId !== undefined && object.processingId !== null
+        ? Long.fromValue(object.processingId)
+        : Long.UZERO;
     return message;
   },
 };
