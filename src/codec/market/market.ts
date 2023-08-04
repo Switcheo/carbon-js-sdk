@@ -58,10 +58,6 @@ export interface Market {
   lotSize: string;
   tickSize: string;
   minQuantity: string;
-  /** @deprecated */
-  makerFee: string;
-  /** @deprecated */
-  takerFee: string;
   createdBlockHeight: Long;
   /** futures only */
   riskStepSize: string;
@@ -88,10 +84,6 @@ export interface MarketParams {
   lotSize: string;
   tickSize: string;
   minQuantity: string;
-  /** @deprecated */
-  makerFee: string;
-  /** @deprecated */
-  takerFee: string;
   /** futures only */
   riskStepSize: string;
   initialMarginBase: string;
@@ -593,8 +585,6 @@ const baseMarket: object = {
   lotSize: "",
   tickSize: "",
   minQuantity: "",
-  makerFee: "",
-  takerFee: "",
   createdBlockHeight: Long.UZERO,
   riskStepSize: "",
   initialMarginBase: "",
@@ -648,12 +638,6 @@ export const Market = {
     }
     if (message.minQuantity !== "") {
       writer.uint32(90).string(message.minQuantity);
-    }
-    if (message.makerFee !== "") {
-      writer.uint32(98).string(message.makerFee);
-    }
-    if (message.takerFee !== "") {
-      writer.uint32(106).string(message.takerFee);
     }
     if (!message.createdBlockHeight.isZero()) {
       writer.uint32(112).uint64(message.createdBlockHeight);
@@ -751,12 +735,6 @@ export const Market = {
           break;
         case 11:
           message.minQuantity = reader.string();
-          break;
-        case 12:
-          message.makerFee = reader.string();
-          break;
-        case 13:
-          message.takerFee = reader.string();
           break;
         case 14:
           message.createdBlockHeight = reader.uint64() as Long;
@@ -865,14 +843,6 @@ export const Market = {
       object.minQuantity !== undefined && object.minQuantity !== null
         ? String(object.minQuantity)
         : "";
-    message.makerFee =
-      object.makerFee !== undefined && object.makerFee !== null
-        ? String(object.makerFee)
-        : "";
-    message.takerFee =
-      object.takerFee !== undefined && object.takerFee !== null
-        ? String(object.takerFee)
-        : "";
     message.createdBlockHeight =
       object.createdBlockHeight !== undefined &&
       object.createdBlockHeight !== null
@@ -966,8 +936,6 @@ export const Market = {
     message.tickSize !== undefined && (obj.tickSize = message.tickSize);
     message.minQuantity !== undefined &&
       (obj.minQuantity = message.minQuantity);
-    message.makerFee !== undefined && (obj.makerFee = message.makerFee);
-    message.takerFee !== undefined && (obj.takerFee = message.takerFee);
     message.createdBlockHeight !== undefined &&
       (obj.createdBlockHeight = (
         message.createdBlockHeight || Long.UZERO
@@ -1025,8 +993,6 @@ export const Market = {
     message.lotSize = object.lotSize ?? "";
     message.tickSize = object.tickSize ?? "";
     message.minQuantity = object.minQuantity ?? "";
-    message.makerFee = object.makerFee ?? "";
-    message.takerFee = object.takerFee ?? "";
     message.createdBlockHeight =
       object.createdBlockHeight !== undefined &&
       object.createdBlockHeight !== null
@@ -1064,8 +1030,6 @@ const baseMarketParams: object = {
   lotSize: "",
   tickSize: "",
   minQuantity: "",
-  makerFee: "",
-  takerFee: "",
   riskStepSize: "",
   initialMarginBase: "",
   initialMarginStep: "",
@@ -1102,12 +1066,6 @@ export const MarketParams = {
     }
     if (message.minQuantity !== "") {
       writer.uint32(98).string(message.minQuantity);
-    }
-    if (message.makerFee !== "") {
-      writer.uint32(106).string(message.makerFee);
-    }
-    if (message.takerFee !== "") {
-      writer.uint32(114).string(message.takerFee);
     }
     if (message.riskStepSize !== "") {
       writer.uint32(802).string(message.riskStepSize);
@@ -1197,12 +1155,6 @@ export const MarketParams = {
         case 12:
           message.minQuantity = reader.string();
           break;
-        case 13:
-          message.makerFee = reader.string();
-          break;
-        case 14:
-          message.takerFee = reader.string();
-          break;
         case 100:
           message.riskStepSize = reader.string();
           break;
@@ -1287,14 +1239,6 @@ export const MarketParams = {
       object.minQuantity !== undefined && object.minQuantity !== null
         ? String(object.minQuantity)
         : "";
-    message.makerFee =
-      object.makerFee !== undefined && object.makerFee !== null
-        ? String(object.makerFee)
-        : "";
-    message.takerFee =
-      object.takerFee !== undefined && object.takerFee !== null
-        ? String(object.takerFee)
-        : "";
     message.riskStepSize =
       object.riskStepSize !== undefined && object.riskStepSize !== null
         ? String(object.riskStepSize)
@@ -1363,8 +1307,6 @@ export const MarketParams = {
     message.tickSize !== undefined && (obj.tickSize = message.tickSize);
     message.minQuantity !== undefined &&
       (obj.minQuantity = message.minQuantity);
-    message.makerFee !== undefined && (obj.makerFee = message.makerFee);
-    message.takerFee !== undefined && (obj.takerFee = message.takerFee);
     message.riskStepSize !== undefined &&
       (obj.riskStepSize = message.riskStepSize);
     message.initialMarginBase !== undefined &&
@@ -1400,8 +1342,6 @@ export const MarketParams = {
     message.lotSize = object.lotSize ?? "";
     message.tickSize = object.tickSize ?? "";
     message.minQuantity = object.minQuantity ?? "";
-    message.makerFee = object.makerFee ?? "";
-    message.takerFee = object.takerFee ?? "";
     message.riskStepSize = object.riskStepSize ?? "";
     message.initialMarginBase = object.initialMarginBase ?? "";
     message.initialMarginStep = object.initialMarginStep ?? "";

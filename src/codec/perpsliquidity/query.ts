@@ -76,6 +76,15 @@ export interface QueryPLPoolInfoResponse {
   totalUpnlAmount: string;
 }
 
+export interface QueryAllPLPoolInfoRequest {
+  pagination?: PageRequest;
+}
+
+export interface QueryAllPLPoolInfoResponse {
+  pools: QueryPLPoolInfoResponse[];
+  pagination?: PageResponse;
+}
+
 const baseQueryParamsRequest: object = {};
 
 export const QueryParamsRequest = {
@@ -1148,14 +1157,186 @@ export const QueryPLPoolInfoResponse = {
   },
 };
 
+const baseQueryAllPLPoolInfoRequest: object = {};
+
+export const QueryAllPLPoolInfoRequest = {
+  encode(
+    message: QueryAllPLPoolInfoRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAllPLPoolInfoRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAllPLPoolInfoRequest,
+    } as QueryAllPLPoolInfoRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllPLPoolInfoRequest {
+    const message = {
+      ...baseQueryAllPLPoolInfoRequest,
+    } as QueryAllPLPoolInfoRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryAllPLPoolInfoRequest): unknown {
+    const obj: any = {};
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAllPLPoolInfoRequest>
+  ): QueryAllPLPoolInfoRequest {
+    const message = {
+      ...baseQueryAllPLPoolInfoRequest,
+    } as QueryAllPLPoolInfoRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryAllPLPoolInfoResponse: object = {};
+
+export const QueryAllPLPoolInfoResponse = {
+  encode(
+    message: QueryAllPLPoolInfoResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.pools) {
+      QueryPLPoolInfoResponse.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAllPLPoolInfoResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAllPLPoolInfoResponse,
+    } as QueryAllPLPoolInfoResponse;
+    message.pools = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.pools.push(
+            QueryPLPoolInfoResponse.decode(reader, reader.uint32())
+          );
+          break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllPLPoolInfoResponse {
+    const message = {
+      ...baseQueryAllPLPoolInfoResponse,
+    } as QueryAllPLPoolInfoResponse;
+    message.pools = (object.pools ?? []).map((e: any) =>
+      QueryPLPoolInfoResponse.fromJSON(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryAllPLPoolInfoResponse): unknown {
+    const obj: any = {};
+    if (message.pools) {
+      obj.pools = message.pools.map((e) =>
+        e ? QueryPLPoolInfoResponse.toJSON(e) : undefined
+      );
+    } else {
+      obj.pools = [];
+    }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAllPLPoolInfoResponse>
+  ): QueryAllPLPoolInfoResponse {
+    const message = {
+      ...baseQueryAllPLPoolInfoResponse,
+    } as QueryAllPLPoolInfoResponse;
+    message.pools = (object.pools ?? []).map((e) =>
+      QueryPLPoolInfoResponse.fromPartial(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Params queries the parameters of the module. */
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse>;
-  /** Get Pool details for a particular id */
-  Pool(request: QueryGetPlPoolRequest): Promise<QueryGetPlPoolResponse>;
   /** Get statistical amounts for a particular pool id */
   PoolInfo(request: QueryPLPoolInfoRequest): Promise<QueryPLPoolInfoResponse>;
+  /**
+   * This route needs to be before Pool to get matched first
+   * Get statistical amounts for a particular pool id
+   */
+  PoolInfoAll(
+    request: QueryAllPLPoolInfoRequest
+  ): Promise<QueryAllPLPoolInfoResponse>;
+  /** Get Pool details for a particular id */
+  Pool(request: QueryGetPlPoolRequest): Promise<QueryGetPlPoolResponse>;
   /** Get all Pool details */
   PoolAll(request: QueryAllPlPoolsRequest): Promise<QueryAllPlPoolsResponse>;
   /** Get denom => pool_id mappings */
@@ -1173,8 +1354,9 @@ export class QueryClientImpl implements Query {
   constructor(rpc: Rpc) {
     this.rpc = rpc;
     this.Params = this.Params.bind(this);
-    this.Pool = this.Pool.bind(this);
     this.PoolInfo = this.PoolInfo.bind(this);
+    this.PoolInfoAll = this.PoolInfoAll.bind(this);
+    this.Pool = this.Pool.bind(this);
     this.PoolAll = this.PoolAll.bind(this);
     this.PoolMappings = this.PoolMappings.bind(this);
     this.PoolAddressAll = this.PoolAddressAll.bind(this);
@@ -1191,18 +1373,6 @@ export class QueryClientImpl implements Query {
     );
   }
 
-  Pool(request: QueryGetPlPoolRequest): Promise<QueryGetPlPoolResponse> {
-    const data = QueryGetPlPoolRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.perpsliquidity.Query",
-      "Pool",
-      data
-    );
-    return promise.then((data) =>
-      QueryGetPlPoolResponse.decode(new _m0.Reader(data))
-    );
-  }
-
   PoolInfo(request: QueryPLPoolInfoRequest): Promise<QueryPLPoolInfoResponse> {
     const data = QueryPLPoolInfoRequest.encode(request).finish();
     const promise = this.rpc.request(
@@ -1212,6 +1382,32 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryPLPoolInfoResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  PoolInfoAll(
+    request: QueryAllPLPoolInfoRequest
+  ): Promise<QueryAllPLPoolInfoResponse> {
+    const data = QueryAllPLPoolInfoRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.perpsliquidity.Query",
+      "PoolInfoAll",
+      data
+    );
+    return promise.then((data) =>
+      QueryAllPLPoolInfoResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  Pool(request: QueryGetPlPoolRequest): Promise<QueryGetPlPoolResponse> {
+    const data = QueryGetPlPoolRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.perpsliquidity.Query",
+      "Pool",
+      data
+    );
+    return promise.then((data) =>
+      QueryGetPlPoolResponse.decode(new _m0.Reader(data))
     );
   }
 

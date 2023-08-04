@@ -1,7 +1,8 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { PlPool, MarketConfig } from "./pool";
+import { PlPool } from "./pool";
+import { MarketConfig } from "./market";
 
 export const protobufPackage = "Switcheo.carbon.perpsliquidity";
 
