@@ -79,6 +79,7 @@ export interface MsgWithdraw {
   amount: string;
   feeAmount: string;
   feeAddress: string;
+  feeDenom: string;
 }
 
 export interface MsgWithdrawResponse {}
@@ -1150,6 +1151,7 @@ const baseMsgWithdraw: object = {
   amount: "",
   feeAmount: "",
   feeAddress: "",
+  feeDenom: "",
 };
 
 export const MsgWithdraw = {
@@ -1174,6 +1176,9 @@ export const MsgWithdraw = {
     }
     if (message.feeAddress !== "") {
       writer.uint32(50).string(message.feeAddress);
+    }
+    if (message.feeDenom !== "") {
+      writer.uint32(58).string(message.feeDenom);
     }
     return writer;
   },
@@ -1202,6 +1207,9 @@ export const MsgWithdraw = {
           break;
         case 6:
           message.feeAddress = reader.string();
+          break;
+        case 7:
+          message.feeDenom = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -1237,6 +1245,10 @@ export const MsgWithdraw = {
       object.feeAddress !== undefined && object.feeAddress !== null
         ? String(object.feeAddress)
         : "";
+    message.feeDenom =
+      object.feeDenom !== undefined && object.feeDenom !== null
+        ? String(object.feeDenom)
+        : "";
     return message;
   },
 
@@ -1248,6 +1260,7 @@ export const MsgWithdraw = {
     message.amount !== undefined && (obj.amount = message.amount);
     message.feeAmount !== undefined && (obj.feeAmount = message.feeAmount);
     message.feeAddress !== undefined && (obj.feeAddress = message.feeAddress);
+    message.feeDenom !== undefined && (obj.feeDenom = message.feeDenom);
     return obj;
   },
 
@@ -1259,6 +1272,7 @@ export const MsgWithdraw = {
     message.amount = object.amount ?? "";
     message.feeAmount = object.feeAmount ?? "";
     message.feeAddress = object.feeAddress ?? "";
+    message.feeDenom = object.feeDenom ?? "";
     return message;
   },
 };
