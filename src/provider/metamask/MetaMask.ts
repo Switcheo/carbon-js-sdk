@@ -609,7 +609,34 @@ export class MetaMask {
     return undefined
   }
 
+  async changeNetworkIfRequired(blockchain: EVMChain, network: CarbonSDK.Network) {
+    const required = this.isChangeNetworkRequired(blockchain, network);
+    if (!required) return;
 
+    const metamaskApi = await this.getConnectedAPI();
+    const requiredChainId = MetaMask.getRequiredChainId(network, blockchain);
+    try {
+      await metamaskApi.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: requiredChainId }] });
+      await this.syncBlockchain();
+    } catch (err) {
+      // This error code indicates that the chain has not been added to MetaMask.
+      try {
+        await metamaskApi.request({
+          method: 'wallet_addEthereumChain',
+          params: MetaMask.getNetworkParams(network, blockchain),
+        });
+        await this.syncBlockchain();
+      } catch (err) {
+        throw new Error(`Please switch to ${blockchain} network on Metamask.`);
+      }
+    }
+  }
+
+  async isChangeNetworkRequired(blockchain: EVMChain, network: CarbonSDK.Network): Promise<boolean> {
+    const metamaskNetwork = await this.syncBlockchain()
+    const requiredChainId = MetaMask.getRequiredChainId(network, blockchain)
+    return metamaskNetwork.chainId !== requiredChainId
+  }
 
   async getMnemonicInfo(connectedBlockchain: EVMChainV2): Promise<StoredMnemonicInfo | undefined> {
     const defaultAccount = await this.defaultAccount();
