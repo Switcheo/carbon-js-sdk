@@ -1,5 +1,6 @@
 import { CarbonEvmChainIDs, DEFAULT_NETWORK, Network } from "@carbon-sdk/constant";
 import { CarbonSDK } from "..";
+import { parseChainId } from "./ethermint";
 
 /**
  *
@@ -26,11 +27,12 @@ export const parseNetwork = (network: string, defaultNetwork: Network | null = D
   return defaultNetwork;
 };
 
-export const carbonNetworkFromChainId = (chainId: string) => {
-  switch (chainId) {
-    case CarbonEvmChainIDs[CarbonSDK.Network.LocalHost]: return CarbonSDK.Network.LocalHost;
-    case CarbonEvmChainIDs[CarbonSDK.Network.DevNet]: return CarbonSDK.Network.DevNet;
-    case CarbonEvmChainIDs[CarbonSDK.Network.TestNet]: return CarbonSDK.Network.TestNet;
+
+export const carbonNetworkFromChainId = (parsedEvmChainId: string) => {
+  switch (parsedEvmChainId) {
+    case parseChainId(CarbonEvmChainIDs[CarbonSDK.Network.LocalHost]): return CarbonSDK.Network.LocalHost;
+    case parseChainId(CarbonEvmChainIDs[CarbonSDK.Network.DevNet]): return CarbonSDK.Network.DevNet;
+    case parseChainId(CarbonEvmChainIDs[CarbonSDK.Network.TestNet]): return CarbonSDK.Network.TestNet;
     default: return CarbonSDK.Network.MainNet;
   }
 }
