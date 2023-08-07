@@ -167,14 +167,6 @@ export interface Pool {
     amp_bps: string;
     v_amount_a: string;
     v_amount_b: string;
-
-    /**
-     * @deprecated num_quotes and market fields have been removed in websocket data
-     * Use Pool Routes API to retrieve numQuotes value for market, as well as the attached pool ids
-     * i.e. sdk.query.liquiditypool.PoolRoutesAll({})
-     **/
-    num_quotes?: number;
-    market?: string;
   };
   rewards_weight: string; // string representation of number
   total_commitment: string; // string representation of number
