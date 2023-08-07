@@ -9,12 +9,14 @@ export interface MintData {
   firstBlockTime: Long;
   prevBlockTime: Long;
   currentSupply: string;
+  inflationRate: string;
 }
 
 const baseMintData: object = {
   firstBlockTime: Long.ZERO,
   prevBlockTime: Long.ZERO,
   currentSupply: "",
+  inflationRate: "",
 };
 
 export const MintData = {
@@ -30,6 +32,9 @@ export const MintData = {
     }
     if (message.currentSupply !== "") {
       writer.uint32(26).string(message.currentSupply);
+    }
+    if (message.inflationRate !== "") {
+      writer.uint32(34).string(message.inflationRate);
     }
     return writer;
   },
@@ -49,6 +54,9 @@ export const MintData = {
           break;
         case 3:
           message.currentSupply = reader.string();
+          break;
+        case 4:
+          message.inflationRate = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -72,6 +80,10 @@ export const MintData = {
       object.currentSupply !== undefined && object.currentSupply !== null
         ? String(object.currentSupply)
         : "";
+    message.inflationRate =
+      object.inflationRate !== undefined && object.inflationRate !== null
+        ? String(object.inflationRate)
+        : "";
     return message;
   },
 
@@ -83,6 +95,8 @@ export const MintData = {
       (obj.prevBlockTime = (message.prevBlockTime || Long.ZERO).toString());
     message.currentSupply !== undefined &&
       (obj.currentSupply = message.currentSupply);
+    message.inflationRate !== undefined &&
+      (obj.inflationRate = message.inflationRate);
     return obj;
   },
 
@@ -97,6 +111,7 @@ export const MintData = {
         ? Long.fromValue(object.prevBlockTime)
         : Long.ZERO;
     message.currentSupply = object.currentSupply ?? "";
+    message.inflationRate = object.inflationRate ?? "";
     return message;
   },
 };
