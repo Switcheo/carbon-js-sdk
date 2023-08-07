@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Market, Params } from "./market";
+import { Market, Params, ControlledParams } from "./market";
 import {
   PageRequest,
   PageResponse,
@@ -74,6 +74,15 @@ export interface QueryParamsRequest {}
 export interface QueryParamsResponse {
   /** params holds all the parameters of this module. */
   params?: Params;
+}
+
+/** QueryControlledParamsRequest is request type for the Query/ControlledParams RPC method. */
+export interface QueryControlledParamsRequest {}
+
+/** QueryControlledParamsResponse is response type for the Query/ControlledParams RPC method. */
+export interface QueryControlledParamsResponse {
+  /** params holds all the parameters of this module. */
+  controlledParams?: ControlledParams;
 }
 
 const baseQueryGetMarketRequest: object = { name: "" };
@@ -1147,6 +1156,134 @@ export const QueryParamsResponse = {
   },
 };
 
+const baseQueryControlledParamsRequest: object = {};
+
+export const QueryControlledParamsRequest = {
+  encode(
+    _: QueryControlledParamsRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryControlledParamsRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryControlledParamsRequest,
+    } as QueryControlledParamsRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryControlledParamsRequest {
+    const message = {
+      ...baseQueryControlledParamsRequest,
+    } as QueryControlledParamsRequest;
+    return message;
+  },
+
+  toJSON(_: QueryControlledParamsRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<QueryControlledParamsRequest>
+  ): QueryControlledParamsRequest {
+    const message = {
+      ...baseQueryControlledParamsRequest,
+    } as QueryControlledParamsRequest;
+    return message;
+  },
+};
+
+const baseQueryControlledParamsResponse: object = {};
+
+export const QueryControlledParamsResponse = {
+  encode(
+    message: QueryControlledParamsResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.controlledParams !== undefined) {
+      ControlledParams.encode(
+        message.controlledParams,
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryControlledParamsResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryControlledParamsResponse,
+    } as QueryControlledParamsResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.controlledParams = ControlledParams.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryControlledParamsResponse {
+    const message = {
+      ...baseQueryControlledParamsResponse,
+    } as QueryControlledParamsResponse;
+    message.controlledParams =
+      object.controlledParams !== undefined && object.controlledParams !== null
+        ? ControlledParams.fromJSON(object.controlledParams)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryControlledParamsResponse): unknown {
+    const obj: any = {};
+    message.controlledParams !== undefined &&
+      (obj.controlledParams = message.controlledParams
+        ? ControlledParams.toJSON(message.controlledParams)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryControlledParamsResponse>
+  ): QueryControlledParamsResponse {
+    const message = {
+      ...baseQueryControlledParamsResponse,
+    } as QueryControlledParamsResponse;
+    message.controlledParams =
+      object.controlledParams !== undefined && object.controlledParams !== null
+        ? ControlledParams.fromPartial(object.controlledParams)
+        : undefined;
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Get details for a market */
@@ -1171,6 +1308,10 @@ export interface Query {
   ): Promise<QueryUserFeeStructuresResponse>;
   /** Parameters queries the staking parameters. */
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse>;
+  /** Get the controlled parameters for all markets */
+  ControlledParams(
+    request: QueryControlledParamsRequest
+  ): Promise<QueryControlledParamsResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -1185,6 +1326,7 @@ export class QueryClientImpl implements Query {
     this.FeeStructuresAll = this.FeeStructuresAll.bind(this);
     this.UserFeeStructures = this.UserFeeStructures.bind(this);
     this.Params = this.Params.bind(this);
+    this.ControlledParams = this.ControlledParams.bind(this);
   }
   Market(request: QueryGetMarketRequest): Promise<QueryGetMarketResponse> {
     const data = QueryGetMarketRequest.encode(request).finish();
@@ -1289,6 +1431,20 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryParamsResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  ControlledParams(
+    request: QueryControlledParamsRequest
+  ): Promise<QueryControlledParamsResponse> {
+    const data = QueryControlledParamsRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.market.Query",
+      "ControlledParams",
+      data
+    );
+    return promise.then((data) =>
+      QueryControlledParamsResponse.decode(new _m0.Reader(data))
     );
   }
 }
