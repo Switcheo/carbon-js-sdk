@@ -331,6 +331,7 @@ export class MetaMask {
       }
       const aminoMsgs = msgs.map(msg => AminoTypesMap.toAmino(msg))
       const sig = await metamask.signEip712(
+        metamask,
         signerAddress,
         doc.accountNumber.toString(),
         evmChainId,
@@ -354,6 +355,7 @@ export class MetaMask {
     const signAmino = async (signerAddress: string, doc: CarbonTx.StdSignDoc) => {
       const { account_number, msgs, fee, memo, sequence } = doc
       const sig = await metamask.signEip712(
+        metamask,
         signerAddress,
         account_number,
         evmChainId,
@@ -393,10 +395,9 @@ export class MetaMask {
       // Only MsgMergeAccount will have an Eth address signer, other generic transaction will be cosmos address signer
       // FeePayer here is only used for legacy EIP-712
       const feePayer = AminoTypesMap.fromAmino(msgs[0]).typeUrl === TxTypes.MsgMergeAccount ? AddressUtils.ETHAddress.publicKeyToBech32Address(Buffer.from(pubKeyBase64, "base64"), addressOptions) : signerAddress
-      const network = carbonNetworkFromChainId(chain_id);
-      await metamask.changeNetworkIfRequired("Carbon", network);
-      await metamask.verifyConnectedAccount(signerAddress);
+
       const sig = await metamask.signEip712(
+        metamask,
         signerAddress,
         account_number,
         chain_id,
@@ -610,7 +611,7 @@ export class MetaMask {
   }
 
   async changeNetworkIfRequired(blockchain: EVMChain, network: CarbonSDK.Network) {
-    const required = this.isChangeNetworkRequired(blockchain, network);
+    const required = this.isChangeNetworkRequired(network);
     if (!required) return;
 
     const metamaskApi = await this.getConnectedAPI();
@@ -639,10 +640,10 @@ export class MetaMask {
       throw new Error(`${address} not connected on Metamask`);
   }
 
-  async isChangeNetworkRequired(blockchain: EVMChain, network: CarbonSDK.Network): Promise<boolean> {
+  async isChangeNetworkRequired(network: CarbonSDK.Network): Promise<boolean> {
     const metamaskNetwork = await this.syncBlockchain()
-    const requiredChainId = MetaMask.getRequiredChainId(network, blockchain)
-    return metamaskNetwork.chainId !== requiredChainId
+    const requiredChainId = CarbonEvmChainIDs[network]
+    return metamaskNetwork.chainId?.toString() !== requiredChainId
   }
 
   async getMnemonicInfo(connectedBlockchain: EVMChainV2): Promise<StoredMnemonicInfo | undefined> {
@@ -735,8 +736,11 @@ export class MetaMask {
     return ethers.utils.computePublicKey(uncompressedPublicKey, true).split('0x')[1]
   }
 
-  async signEip712(signerAddress: string, accountNumber: string, evmChainId: string, msgs: readonly AminoMsg[], fee: StdFee, memo: string, sequence: string, feePayer: string = ''): Promise<string> {
+  async signEip712(metamask: MetaMask, signerAddress: string, accountNumber: string, evmChainId: string, msgs: readonly AminoMsg[], fee: StdFee, memo: string, sequence: string, feePayer: string = ''): Promise<string> {
     const metamaskAPI = await this.getConnectedAPI();
+    const network = carbonNetworkFromChainId(evmChainId);
+    await metamask.changeNetworkIfRequired("Carbon", network);
+    await metamask.verifyConnectedAccount(signerAddress);
     const stdSignDoc = makeSignDoc(msgs, fee, evmChainId, memo, accountNumber, sequence)
     const eip712Tx = this.legacyEip712SignMode ? legacyConstructEIP712Tx({ ...stdSignDoc, fee: { ...fee, feePayer } }) : constructEIP712Tx(stdSignDoc)
     const signature = (await metamaskAPI.request({
