@@ -1,4 +1,5 @@
-import { DEFAULT_NETWORK, Network } from "@carbon-sdk/constant";
+import { CarbonChainIDs, DEFAULT_NETWORK, Network, NetworkConfigs } from "@carbon-sdk/constant";
+import { CarbonSDK } from "..";
 
 /**
  *
@@ -24,3 +25,12 @@ export const parseNetwork = (network: string, defaultNetwork: Network | null = D
 
   return defaultNetwork;
 };
+
+export const carbonNetworkFromChainId = (chainId: string) => {
+  switch (chainId) {
+    case CarbonChainIDs[CarbonSDK.Network.LocalHost]: return CarbonSDK.Network.LocalHost;
+    case CarbonChainIDs[CarbonSDK.Network.DevNet]: return CarbonSDK.Network.DevNet;
+    case CarbonChainIDs[CarbonSDK.Network.TestNet]: return CarbonSDK.Network.TestNet;
+    default: return CarbonSDK.Network.MainNet;
+  }
+}
