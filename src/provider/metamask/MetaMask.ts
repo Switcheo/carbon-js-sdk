@@ -315,7 +315,7 @@ export class MetaMask {
   private connectedAccount: string = ''
 
   static createMetamaskSigner(metamask: MetaMask, evmChainId: string, pubKeyBase64: string, addressOptions: SWTHAddressOptions): CarbonSigner {
-    const evmHexAddress = AddressUtils.ETHAddress.publicKeyToAddress(Buffer.from(pubKeyBase64, "base64"), addressOptions) 
+    const evmHexAddress = AddressUtils.ETHAddress.publicKeyToAddress(Buffer.from(pubKeyBase64, "base64"), addressOptions)
     const signDirect = async (_: string, doc: Models.Tx.SignDoc) => {
       const txBody = TxBody.decode(doc.bodyBytes)
       const authInfo = AuthInfo.decode(doc.authInfoBytes)
@@ -439,7 +439,6 @@ export class MetaMask {
       return MetaMask.getCarbonEvmNetworkParams(network)
     }
 
-
     if (network === Network.MainNet) {
       switch (blockchain) {
         case 'Binance Smart Chain':
@@ -484,6 +483,10 @@ export class MetaMask {
   }
 
   static getRequiredChainId(network: Network, blockchain: BlockchainV2 = 'Ethereum') {
+    if (blockchain === "Carbon") {
+      return Number(parseChainId(CarbonEvmChainIDs[network]))
+    }
+
     if (network === Network.MainNet) {
       switch (blockchain) {
         case 'Binance Smart Chain':
@@ -609,11 +612,11 @@ export class MetaMask {
   }
 
   async changeNetworkIfRequired(blockchain: EVMChain, network: CarbonSDK.Network) {
-    const required = await this.isChangeNetworkRequired(network);
+    const required = await this.isChangeNetworkRequired(blockchain, network);
     if (!required) return;
 
     const metamaskApi = await this.getConnectedAPI();
-    const requiredChainId = `0x${Number(parseChainId(CarbonEvmChainIDs[network])).toString(16)}`
+    const requiredChainId = `0x${MetaMask.getRequiredChainId(network, blockchain).toString(16)}`
     try {
       await metamaskApi.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: requiredChainId }] });
       await this.syncBlockchain();
@@ -630,10 +633,10 @@ export class MetaMask {
       }
     }
   }
-  async isChangeNetworkRequired(network: CarbonSDK.Network): Promise<boolean> {
+  async isChangeNetworkRequired(blockchain: Blockchain, network: CarbonSDK.Network): Promise<boolean> {
     const metamaskNetwork = await this.syncBlockchain()
-    const requiredChainId = parseChainId(CarbonEvmChainIDs[network])
-    return metamaskNetwork.chainId?.toString() !== requiredChainId
+    const requiredChainId = MetaMask.getRequiredChainId(network, blockchain)
+    return metamaskNetwork.chainId !== requiredChainId
   }
 
   async verifyNetworkAndConnectedAccount(evmHexAddress: string, evmChainId: string) {
