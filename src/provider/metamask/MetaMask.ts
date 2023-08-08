@@ -640,7 +640,7 @@ export class MetaMask {
       }
     }
   }
-  async isChangeNetworkRequired(blockchain: Blockchain, network: CarbonSDK.Network): Promise<boolean> {
+  async isChangeNetworkRequired(blockchain: EVMChain, network: CarbonSDK.Network): Promise<boolean> {
     const metamaskNetwork = await this.syncBlockchain()
     const requiredChainId = MetaMask.getRequiredChainId(network, blockchain)
     return metamaskNetwork.chainId !== requiredChainId
