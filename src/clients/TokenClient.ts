@@ -26,6 +26,7 @@ import InsightsQueryClient from "./InsightsQueryClient";
 import { QueryChannelsResponse } from "@carbon-sdk/codec/ibc/core/channel/v1/query";
 import { QueryConnectionsResponse } from "@carbon-sdk/codec/ibc/core/connection/v1/query";
 import { QueryClientStatesResponse } from "@carbon-sdk/codec/ibc/core/client/v1/query";
+import { json } from "stream/consumers";
 
 export interface DenomTraceExtended extends DenomTrace {
   token?: Token;
@@ -182,7 +183,14 @@ class TokenClient {
   public async getFeeInfo(denom: string): Promise<GetFeeQuoteResponse> {
     const config = this.configProvider.getConfig();
     const url = `${config.hydrogenUrl}/fee_quote?token_denom=${denom}`;
-    const result = await fetch(url).then((res) => res.json());
+    const requestOptions = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({})
+    }
+    const result = await FetchUtils.fetch(url, requestOptions).then((res) => res.json());
 
     return result as GetFeeQuoteResponse;
   }
