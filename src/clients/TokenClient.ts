@@ -26,7 +26,6 @@ import InsightsQueryClient from "./InsightsQueryClient";
 import { QueryChannelsResponse } from "@carbon-sdk/codec/ibc/core/channel/v1/query";
 import { QueryConnectionsResponse } from "@carbon-sdk/codec/ibc/core/connection/v1/query";
 import { QueryClientStatesResponse } from "@carbon-sdk/codec/ibc/core/client/v1/query";
-import { json } from "stream/consumers";
 
 export interface DenomTraceExtended extends DenomTrace {
   token?: Token;
