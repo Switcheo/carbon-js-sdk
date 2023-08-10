@@ -18,6 +18,7 @@ export class CoinModule extends BaseModule {
       amount: params.amount.toString(10),
       feeAmount: params.feeAmount.toString(10),
       feeAddress: params.feeAddress,
+      feeDenom: params.feeDenom,
     });
 
     return await wallet.sendTx(
@@ -148,6 +149,7 @@ export namespace CoinModule {
     amount: BigNumber;
     feeAmount: BigNumber;
     feeAddress: string;
+    feeDenom: string;
   }
 
   export interface MintTokenParams {

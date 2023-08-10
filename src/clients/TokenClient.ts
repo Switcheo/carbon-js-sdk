@@ -10,7 +10,7 @@ import {
 } from "@carbon-sdk/constant";
 import { cibtIbcTokenRegex, ibcTokenRegex, ibcWhitelist, swthChannels, cosmBridgeRegex } from "@carbon-sdk/constant/ibc";
 import { publicRpcNodes } from "@carbon-sdk/constant/network";
-import { FeeQuote } from "@carbon-sdk/hydrogen/feeQuote";
+import { GetFeeQuoteResponse } from "@carbon-sdk/hydrogen/feeQuote";
 import { BlockchainUtils, FetchUtils, IBCUtils, NumberUtils, TypeUtils } from "@carbon-sdk/util";
 import { BlockchainV2, BridgeMap, BRIDGE_IDS, IbcBridge, PolyNetworkBridge, isIbcBridge } from '@carbon-sdk/util/blockchain';
 import { bnOrZero, BN_ONE, BN_ZERO } from "@carbon-sdk/util/number";
@@ -179,12 +179,19 @@ class TokenClient {
     return this.poolTokens[denom] ?? this.cdpTokens[denom] ?? this.tokens[denom];
   }
 
-  public async getFeeInfo(denom: string): Promise<FeeQuote> {
+  public async getFeeInfo(denom: string): Promise<GetFeeQuoteResponse> {
     const config = this.configProvider.getConfig();
     const url = `${config.hydrogenUrl}/fee_quote?token_denom=${denom}`;
-    const result = await fetch(url).then((res) => res.json());
+    const requestOptions = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({})
+    }
+    const result = await FetchUtils.fetch(url, requestOptions).then((res) => res.json());
 
-    return result as FeeQuote;
+    return result as GetFeeQuoteResponse;
   }
 
   public getTokenName(denom: string, overrideMap?: TypeUtils.SimpleMap<string>): string {
