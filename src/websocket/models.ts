@@ -33,7 +33,8 @@ export interface HistoryOrder {
   side: string;
   status: string;
   stop_price: string;
-  time_in_force: string;
+  // old orders may not have time_in_force field
+  time_in_force?: string;
   trigger_type: string;
   triggered_block_height: number;
   referral_address?: string;
