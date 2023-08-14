@@ -1,13 +1,8 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import {
-  PlPool,
-  UpdatePlPoolParams,
-  UpdateMarketConfigParams,
-  MarketConfig,
-  Quote,
-} from "./pool";
+import { PlPool, UpdatePlPoolParams } from "./pool";
+import { UpdateMarketConfigParams, MarketConfig } from "./market";
 
 export const protobufPackage = "Switcheo.carbon.perpsliquidity";
 
@@ -21,12 +16,12 @@ export interface MsgCreatePlPool {
   shareTokenSymbol: string;
   /** the maximum amount that can be supplied into the pool */
   supplyCap: string;
-  /** deposit fee to charge on a successful deposit to PLP in bps */
-  depositFeeBps: string;
-  /** withdrawal fee to charge on a successful withdrawal from PLP in bps */
-  withdrawalFeeBps: string;
-  /** borrow fee in bps per time period to charge on use of liquidity in pool */
-  borrowFeeBps: string;
+  /** deposit fee to charge on a successful deposit to PLP in decimal */
+  depositFee: string;
+  /** withdrawal fee to charge on a successful withdrawal from PLP in decimal */
+  withdrawalFee: string;
+  /** borrow fee in decimal per time period to charge on use of liquidity in pool */
+  borrowFee: string;
 }
 
 export interface MsgCreatePlPoolResponse {
@@ -47,7 +42,7 @@ export interface MsgRegisterToPlPool {
   creator: string;
   poolId: Long;
   marketId: string;
-  quoteShape: Quote[];
+  marketConfigParams?: UpdateMarketConfigParams;
 }
 
 export interface MsgRegisterToPlPoolResponse {}
@@ -97,9 +92,9 @@ const baseMsgCreatePlPool: object = {
   depositDenom: "",
   shareTokenSymbol: "",
   supplyCap: "",
-  depositFeeBps: "",
-  withdrawalFeeBps: "",
-  borrowFeeBps: "",
+  depositFee: "",
+  withdrawalFee: "",
+  borrowFee: "",
 };
 
 export const MsgCreatePlPool = {
@@ -122,14 +117,14 @@ export const MsgCreatePlPool = {
     if (message.supplyCap !== "") {
       writer.uint32(42).string(message.supplyCap);
     }
-    if (message.depositFeeBps !== "") {
-      writer.uint32(58).string(message.depositFeeBps);
+    if (message.depositFee !== "") {
+      writer.uint32(58).string(message.depositFee);
     }
-    if (message.withdrawalFeeBps !== "") {
-      writer.uint32(66).string(message.withdrawalFeeBps);
+    if (message.withdrawalFee !== "") {
+      writer.uint32(66).string(message.withdrawalFee);
     }
-    if (message.borrowFeeBps !== "") {
-      writer.uint32(74).string(message.borrowFeeBps);
+    if (message.borrowFee !== "") {
+      writer.uint32(74).string(message.borrowFee);
     }
     return writer;
   },
@@ -157,13 +152,13 @@ export const MsgCreatePlPool = {
           message.supplyCap = reader.string();
           break;
         case 7:
-          message.depositFeeBps = reader.string();
+          message.depositFee = reader.string();
           break;
         case 8:
-          message.withdrawalFeeBps = reader.string();
+          message.withdrawalFee = reader.string();
           break;
         case 9:
-          message.borrowFeeBps = reader.string();
+          message.borrowFee = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -195,17 +190,17 @@ export const MsgCreatePlPool = {
       object.supplyCap !== undefined && object.supplyCap !== null
         ? String(object.supplyCap)
         : "";
-    message.depositFeeBps =
-      object.depositFeeBps !== undefined && object.depositFeeBps !== null
-        ? String(object.depositFeeBps)
+    message.depositFee =
+      object.depositFee !== undefined && object.depositFee !== null
+        ? String(object.depositFee)
         : "";
-    message.withdrawalFeeBps =
-      object.withdrawalFeeBps !== undefined && object.withdrawalFeeBps !== null
-        ? String(object.withdrawalFeeBps)
+    message.withdrawalFee =
+      object.withdrawalFee !== undefined && object.withdrawalFee !== null
+        ? String(object.withdrawalFee)
         : "";
-    message.borrowFeeBps =
-      object.borrowFeeBps !== undefined && object.borrowFeeBps !== null
-        ? String(object.borrowFeeBps)
+    message.borrowFee =
+      object.borrowFee !== undefined && object.borrowFee !== null
+        ? String(object.borrowFee)
         : "";
     return message;
   },
@@ -219,12 +214,10 @@ export const MsgCreatePlPool = {
     message.shareTokenSymbol !== undefined &&
       (obj.shareTokenSymbol = message.shareTokenSymbol);
     message.supplyCap !== undefined && (obj.supplyCap = message.supplyCap);
-    message.depositFeeBps !== undefined &&
-      (obj.depositFeeBps = message.depositFeeBps);
-    message.withdrawalFeeBps !== undefined &&
-      (obj.withdrawalFeeBps = message.withdrawalFeeBps);
-    message.borrowFeeBps !== undefined &&
-      (obj.borrowFeeBps = message.borrowFeeBps);
+    message.depositFee !== undefined && (obj.depositFee = message.depositFee);
+    message.withdrawalFee !== undefined &&
+      (obj.withdrawalFee = message.withdrawalFee);
+    message.borrowFee !== undefined && (obj.borrowFee = message.borrowFee);
     return obj;
   },
 
@@ -235,9 +228,9 @@ export const MsgCreatePlPool = {
     message.depositDenom = object.depositDenom ?? "";
     message.shareTokenSymbol = object.shareTokenSymbol ?? "";
     message.supplyCap = object.supplyCap ?? "";
-    message.depositFeeBps = object.depositFeeBps ?? "";
-    message.withdrawalFeeBps = object.withdrawalFeeBps ?? "";
-    message.borrowFeeBps = object.borrowFeeBps ?? "";
+    message.depositFee = object.depositFee ?? "";
+    message.withdrawalFee = object.withdrawalFee ?? "";
+    message.borrowFee = object.borrowFee ?? "";
     return message;
   },
 };
@@ -491,8 +484,11 @@ export const MsgRegisterToPlPool = {
     if (message.marketId !== "") {
       writer.uint32(26).string(message.marketId);
     }
-    for (const v of message.quoteShape) {
-      Quote.encode(v!, writer.uint32(34).fork()).ldelim();
+    if (message.marketConfigParams !== undefined) {
+      UpdateMarketConfigParams.encode(
+        message.marketConfigParams,
+        writer.uint32(34).fork()
+      ).ldelim();
     }
     return writer;
   },
@@ -501,7 +497,6 @@ export const MsgRegisterToPlPool = {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseMsgRegisterToPlPool } as MsgRegisterToPlPool;
-    message.quoteShape = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -515,7 +510,10 @@ export const MsgRegisterToPlPool = {
           message.marketId = reader.string();
           break;
         case 4:
-          message.quoteShape.push(Quote.decode(reader, reader.uint32()));
+          message.marketConfigParams = UpdateMarketConfigParams.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         default:
           reader.skipType(tag & 7);
@@ -539,9 +537,11 @@ export const MsgRegisterToPlPool = {
       object.marketId !== undefined && object.marketId !== null
         ? String(object.marketId)
         : "";
-    message.quoteShape = (object.quoteShape ?? []).map((e: any) =>
-      Quote.fromJSON(e)
-    );
+    message.marketConfigParams =
+      object.marketConfigParams !== undefined &&
+      object.marketConfigParams !== null
+        ? UpdateMarketConfigParams.fromJSON(object.marketConfigParams)
+        : undefined;
     return message;
   },
 
@@ -551,13 +551,10 @@ export const MsgRegisterToPlPool = {
     message.poolId !== undefined &&
       (obj.poolId = (message.poolId || Long.UZERO).toString());
     message.marketId !== undefined && (obj.marketId = message.marketId);
-    if (message.quoteShape) {
-      obj.quoteShape = message.quoteShape.map((e) =>
-        e ? Quote.toJSON(e) : undefined
-      );
-    } else {
-      obj.quoteShape = [];
-    }
+    message.marketConfigParams !== undefined &&
+      (obj.marketConfigParams = message.marketConfigParams
+        ? UpdateMarketConfigParams.toJSON(message.marketConfigParams)
+        : undefined);
     return obj;
   },
 
@@ -569,9 +566,11 @@ export const MsgRegisterToPlPool = {
         ? Long.fromValue(object.poolId)
         : Long.UZERO;
     message.marketId = object.marketId ?? "";
-    message.quoteShape = (object.quoteShape ?? []).map((e) =>
-      Quote.fromPartial(e)
-    );
+    message.marketConfigParams =
+      object.marketConfigParams !== undefined &&
+      object.marketConfigParams !== null
+        ? UpdateMarketConfigParams.fromPartial(object.marketConfigParams)
+        : undefined;
     return message;
   },
 };

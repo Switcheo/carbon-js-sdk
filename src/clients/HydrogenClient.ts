@@ -13,7 +13,7 @@ import {
   GetTransfersResponse,
   RelaysResponse,
 } from "../hydrogen";
-import { FeeQuote, GetFeeQuoteRequest, GetFeeQuoteResponse } from "@carbon-sdk/hydrogen/feeQuote";
+import { GetFeeQuoteRequest, GetFeeQuoteResponse } from "@carbon-sdk/hydrogen/feeQuote";
 import TokenClient from './TokenClient'
 
 export const HydrogenEndpoints = {
@@ -88,7 +88,7 @@ const formatChainEvent = (value: any): ChainTransaction | null => {
   } as ChainTransaction;
 };
 
-const formatFeeQuote = (value: any): FeeQuote => {
+const formatFeeQuote = (value: any): GetFeeQuoteResponse => {
   if (typeof value !== "object") return value;
   return {
     ...value,
@@ -178,7 +178,7 @@ class HydrogenClient {
     } as ChainTransaction;
   };
   
-  public formatFeeQuoteV2 = (value: any, blockchain: BlockchainUtils.BlockchainV2): FeeQuote => {
+  public formatFeeQuoteV2 = (value: any, blockchain: BlockchainUtils.BlockchainV2): GetFeeQuoteResponse => {
     if (typeof value !== "object") return value;
     return {
       ...value,
@@ -262,7 +262,7 @@ class HydrogenClient {
         ...req,
       }
     );
-    const response = await request.get();
+    const response = await request.post({ body: { fee_denoms: req.fee_denoms }});
     const result = response.data;
 
     return version === "V1" ? formatFeeQuote(result) : this.formatFeeQuoteV2(result, blockchain!);
