@@ -1,4 +1,4 @@
-import { ProtobufRpcClient } from "@cosmjs/stargate";
+import { GrpcQueryClient } from "@carbon-sdk/util/type";
 import { grpc } from "@improbable-eng/grpc-web";
 
 export class GrpcWebError extends Error {
@@ -9,10 +9,10 @@ export class GrpcWebError extends Error {
 
 /**
  * Uses grpc-web module on cosmos-sdk to simulate gRPC queries
- * throught HTTP/1.1.
+ * through HTTP/1.1.
  * see https://github.com/cosmos/cosmos-sdk/issues/7345
  */
-export class GrpcQueryClient implements ProtobufRpcClient {
+export class GrpcWebQueryClient implements GrpcQueryClient {
   private host: string;
   private options: {
     transport?: grpc.TransportFactory;
@@ -68,4 +68,4 @@ export class GrpcQueryClient implements ProtobufRpcClient {
   }
 }
 
-export default GrpcQueryClient;
+export default GrpcWebQueryClient;

@@ -1,49 +1,19 @@
-import {
-  CarbonChainIDs,
-  CarbonEvmChainIDs,
-  DEFAULT_NETWORK,
-  DenomPrefix,
-  Network,
-  NetworkConfig,
-  NetworkConfigs,
-  Network as _Network,
-} from "@carbon-sdk/constant";
+import { CarbonChainIDs, CarbonEvmChainIDs, DEFAULT_NETWORK, DenomPrefix, Network, NetworkConfig, NetworkConfigs, Network as _Network } from "@carbon-sdk/constant";
 import { GenericUtils, NetworkUtils } from "@carbon-sdk/util";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
-import { NodeHttpTransport } from "@improbable-eng/grpc-web-node-http-transport";
 import * as clients from "./clients";
 import { CarbonQueryClient, ETHClient, HydrogenClient, InsightsQueryClient, NEOClient, TokenClient, ZILClient } from "./clients";
-import GrpcQueryClient from "./clients/GrpcQueryClient";
+import GrpcNodeQueryClient from "./clients/GrpcNodeQueryClient";
+import GrpcWebQueryClient from "./clients/GrpcWebQueryClient";
 import N3Client from "./clients/N3Client";
-import {
-  AdminModule,
-  AllianceModule,
-  BankModule,
-  BrokerModule,
-  CDPModule,
-  CoinModule,
-  EvmMergeModule,
-  EvmModule,
-  FeeModule,
-  FeemarketModule,
-  GovModule,
-  IBCModule,
-  LeverageModule,
-  LiquidityPoolModule,
-  MarketModule,
-  OracleModule,
-  OrderModule,
-  PositionModule,
-  ProfileModule,
-  SubAccountModule,
-  XChainModule,
-} from "./modules";
+import { AdminModule, AllianceModule, BankModule, BrokerModule, CDPModule, CoinModule, EvmMergeModule, EvmModule, FeeModule, FeemarketModule, GovModule, IBCModule, LeverageModule, LiquidityPoolModule, MarketModule, OracleModule, OrderModule, PositionModule, ProfileModule, SubAccountModule, XChainModule } from "./modules";
 import { StakingModule } from "./modules/staking";
 import { CosmosLedger, Keplr, KeplrAccount, LeapAccount, LeapExtended } from "./provider";
 import { MetaMask } from "./provider/metamask/MetaMask";
 import { SWTHAddressOptions } from "./util/address";
 import { Blockchain } from "./util/blockchain";
 import { CarbonLedgerSigner, CarbonSigner, CarbonWallet, CarbonWalletGenericOpts, MetaMaskWalletOpts } from "./wallet";
+import { GrpcQueryClient } from "./util/type";
 export { CarbonTx } from "@carbon-sdk/util";
 export { CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletGenericOpts, CarbonWalletInitOpts } from "@carbon-sdk/wallet";
 export { DenomPrefix } from "./constant";
@@ -59,20 +29,10 @@ export interface CarbonSDKOpts {
   useTmAbciQuery?: boolean;
   defaultTimeoutBlocks?: number; // tx mempool ttl (timeoutHeight)
 }
-export interface CarbonSDKInitOpts {
-  network: Network;
-  tmClient?: Tendermint34Client;
-  config?: Partial<NetworkConfig>;
+export interface CarbonSDKInitOpts extends Partial<CarbonSDKOpts> {
   wallet?: CarbonWallet;
 
   skipInit?: boolean;
-  defaultTimeoutBlocks?: number;
-
-  /**
-   * temporary flag to disable GRPC Query client service when required
-   * TODO: Deprecate when grpc query client is implemented across all networks
-   */
-  useTmAbciQuery?: boolean;
 }
 
 const DEFAULT_SDK_INIT_OPTS: CarbonSDKInitOpts = {
@@ -144,11 +104,9 @@ class CarbonSDK {
 
     let grpcClient: GrpcQueryClient | undefined;
     if (opts.useTmAbciQuery !== true && this.networkConfig.grpcUrl) {
-      const transport = typeof window === "undefined" ? NodeHttpTransport() : undefined;
+      const client = typeof window === "undefined" ? new GrpcNodeQueryClient(this.networkConfig.grpcUrl) : new GrpcWebQueryClient(this.networkConfig.grpcWebUrl);
 
-      grpcClient = opts.grpcQueryClient ?? new GrpcQueryClient(this.networkConfig.grpcWebUrl, {
-        transport,
-      });
+      grpcClient = client
     }
 
     this.query = new CarbonQueryClient({
@@ -229,7 +187,8 @@ class CarbonSDK {
     });
   }
 
-  public static async instance(opts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS) {
+  public static async instance(initOpts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS) {
+    const { wallet, skipInit, ...opts } = initOpts;
     const network = opts.network ?? DEFAULT_NETWORK;
     const configOverride = opts.config ?? {};
 
@@ -241,94 +200,97 @@ class CarbonSDK {
 
     const sdk = new CarbonSDK({ network, config: configOverride, tmClient, defaultTimeoutBlocks, chainId, useTmAbciQuery: opts.useTmAbciQuery });
 
-    if (opts.wallet) {
-      await sdk.connect(opts.wallet);
+    if (wallet) {
+      await sdk.connect(wallet);
     }
 
-    if (opts.skipInit !== true) {
+    if (skipInit !== true) {
       await sdk.initialize();
     }
 
     return sdk;
   }
 
-  public static async instanceWithWallet(wallet: CarbonWallet, sdkOpts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS) {
-    const sdk = await CarbonSDK.instance(sdkOpts);
+  public static async instanceWithWallet(
+    wallet: CarbonWallet,
+    sdkInitOpts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS,
+  ) {
+    const sdk = await CarbonSDK.instance(sdkInitOpts);
     return sdk.connect(wallet);
   }
 
   public static async instanceWithPrivateKey(
     privateKey: string | Buffer,
-    sdkOpts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS,
+    sdkInitOpts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS,
     walletOpts?: CarbonWalletGenericOpts
   ) {
-    const sdk = await CarbonSDK.instance(sdkOpts);
+    const sdk = await CarbonSDK.instance(sdkInitOpts);
     return sdk.connectWithPrivateKey(privateKey, walletOpts);
   }
 
   public static async instanceWithMnemonic(
     mnemonic: string,
-    sdkOpts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS,
+    sdkInitOpts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS,
     walletOpts?: CarbonWalletGenericOpts
   ) {
-    const sdk = await CarbonSDK.instance(sdkOpts);
+    const sdk = await CarbonSDK.instance(sdkInitOpts);
     return sdk.connectWithMnemonic(mnemonic, walletOpts);
   }
 
   public static async instanceWithSigner(
     signer: CarbonSigner,
     publicKeyBase64: string,
-    sdkOpts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS,
+    sdkInitOpts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS,
     walletOpts?: CarbonWalletGenericOpts
   ) {
-    const sdk = await CarbonSDK.instance(sdkOpts);
+    const sdk = await CarbonSDK.instance(sdkInitOpts);
     return sdk.connectWithSigner(signer, publicKeyBase64, walletOpts);
   }
 
   public static async instanceWithLedger(
     ledger: CosmosLedger,
-    sdkOpts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS,
+    sdkInitOpts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS,
     walletOpts?: CarbonWalletGenericOpts
   ) {
-    const sdk = await CarbonSDK.instance(sdkOpts);
+    const sdk = await CarbonSDK.instance(sdkInitOpts);
     return sdk.connectWithLedger(ledger, walletOpts);
   }
 
   public static async instanceWithKeplr(
     keplr: Keplr,
-    sdkOpts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS,
+    sdkInitOpts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS,
     walletOpts?: CarbonWalletGenericOpts
   ) {
-    const sdk = await CarbonSDK.instance(sdkOpts);
+    const sdk = await CarbonSDK.instance(sdkInitOpts);
     return sdk.connectWithKeplr(keplr, walletOpts);
   }
 
   public static async instanceWithLeap(
     leap: LeapExtended,
-    sdkOpts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS,
+    sdkInitOpts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS,
     walletOpts?: CarbonWalletGenericOpts
   ) {
-    const sdk = await CarbonSDK.instance(sdkOpts);
+    const sdk = await CarbonSDK.instance(sdkInitOpts);
     return sdk.connectWithLeap(leap, walletOpts);
   }
 
   public static async instanceWithMetamask(
     metamask: MetaMask,
-    sdkOpts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS,
+    sdkInitOpts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS,
     walletOpts?: CarbonWalletGenericOpts,
     metamaskWalletOpts?: MetaMaskWalletOpts
   ) {
-    const sdk = await CarbonSDK.instance(sdkOpts);
+    const sdk = await CarbonSDK.instance(sdkInitOpts);
     return sdk.connectWithMetamask(metamask, walletOpts, metamaskWalletOpts);
   }
 
 
   public static async instanceViewOnly(
     bech32Address: string,
-    sdkOpts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS,
+    sdkInitOpts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS,
     walletOpts?: CarbonWalletGenericOpts
   ) {
-    const sdk = await CarbonSDK.instance(sdkOpts);
+    const sdk = await CarbonSDK.instance(sdkInitOpts);
     return sdk.connectViewOnly(bech32Address, walletOpts);
   }
 

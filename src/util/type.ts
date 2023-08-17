@@ -1,4 +1,5 @@
 import { Network } from "@carbon-sdk/constant";
+import { ProtobufRpcClient } from "@cosmjs/stargate";
 import Long from "long";
 
 export interface SimpleMap<T = unknown> {
@@ -50,3 +51,5 @@ export const camelToSnake = (camelStr: string): string => {
 export const isDurationType = (value: any): boolean => {
   return Long.isLong(value?.seconds) && typeof value?.nanos === "number";
 };
+
+export interface GrpcQueryClient extends ProtobufRpcClient {}
