@@ -398,8 +398,7 @@ class TokenClient {
     }
     
     const isSourceToken = targetChain === chain && token.denom !== "swth";
-    
-    console.log("xx token", tokenDenom, chain, isSourceToken, version)
+
     // if not source token find wrapped token for chain
     const depositToken = isSourceToken ? token : this.getWrappedToken(token.denom, chain, version);
     if (!depositToken) {
