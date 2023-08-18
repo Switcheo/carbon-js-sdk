@@ -1,15 +1,14 @@
 import { Token } from "@carbon-sdk/codec/coin/token";
+import { DenomTrace } from "@carbon-sdk/codec/ibc/applications/transfer/v1/transfer";
 import { MsgTransfer } from "@carbon-sdk/codec/ibc/applications/transfer/v1/tx";
-import { ChainRegistryItem, CosmosChainsObj, ExtendedChainInfo, IBCAddress, cw20TokenRegex, factoryIbcMinimalDenomRegex, ibcNetworkRegex, ibcTransferChannelRegex, publicRpcNodes } from "@carbon-sdk/constant";
+import { Asset, ChainRegistryItem, CosmosChainsObj, DenomUnit, ExtendedChainInfo, FeeToken, IBCAddress, cw20TokenRegex, ibcNetworkRegex, ibcTransferChannelRegex } from "@carbon-sdk/constant";
 import { ChainInfo, KeplrAccount } from "@carbon-sdk/provider";
 import { CarbonTx, IBCUtils, TypeUtils } from "@carbon-sdk/util";
 import { AppCurrency, Currency } from "@keplr-wallet/types";
 import BigNumber from "bignumber.js";
 import Long from "long";
 import BaseModule from "./base";
-import { FeeToken, Asset, DenomUnit } from "@carbon-sdk/constant";
-import { PageRequest } from "@carbon-sdk/codec/cosmos/base/query/v1beta1/pagination";
-import { DenomTrace } from "@carbon-sdk/codec/ibc/applications/transfer/v1/transfer";
+
 export class IBCModule extends BaseModule {
   /** @deprecated please use sendIbcTransferUpdated instead */
   public async sendIBCTransfer(params: IBCModule.SendIBCTransferParams, msgOpts?: CarbonTx.SignTxOpts) {
