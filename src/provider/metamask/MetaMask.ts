@@ -625,7 +625,7 @@ export class MetaMask {
       try {
         await metamaskApi.request({
           method: 'wallet_addEthereumChain',
-          params: MetaMask.getNetworkParams(network, blockchain),
+          params: [MetaMask.getNetworkParams(network, blockchain)],
         });
         await this.syncBlockchain();
       } catch (err) {
