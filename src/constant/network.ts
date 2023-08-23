@@ -447,8 +447,3 @@ export const NetworkConfigs: {
     },
   },
 } as const;
-
-export const publicRpcNodes: SimpleMap<string> = {
-  Osmosis: "https://osmosis-rpc.polkachu.com/",
-  Terra: "https://terra-rpc.lavenderfive.com:443/",
-};
