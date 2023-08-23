@@ -90,10 +90,13 @@ export class IBCModule extends BaseModule {
 
     for (let ibc = 0; ibc < ibcBridges.length; ibc++) {
       const ibcBridge = ibcBridges[ibc];
+      const chainId = ibcBridge.chain_id_name;
       const chainName = ibcBridge.chain_id_name.match(ibcNetworkRegex)?.[1] ?? "";
+      const chainData = chainsData.chains.find((d) => d.chain_id === chainId);
       let chainInfo: ChainInfo | undefined = await this.getChainInfo(chainName);
+      
       if (chainInfo === undefined) {
-        const fallbackChainInfo = await this.getAssembledChainInfo(chainsData.chains, ibcBridge.chain_id_name, ibcBridge.chainName);
+        const fallbackChainInfo = await this.getAssembledChainInfo(chainId, chainData);
         chainInfo = fallbackChainInfo;
       }
 
@@ -101,15 +104,17 @@ export class IBCModule extends BaseModule {
         chainInfoMap[ibcBridge.chain_id_name] = {
           ...chainInfo,
           minimalDenomMap: {},
-        } as ExtendedChainInfo;
+          bestRpcs: chainData?.best_apis.rpc ?? [],
+        };
       }
     }
 
-    const swthChainInfo = await KeplrAccount.getChainInfo(this.sdkProvider);
-    if (swthChainInfo) {
-      chainInfoMap[swthChainInfo.chainId] = {
-        ...swthChainInfo,
+    const carbonChainInfo = await KeplrAccount.getChainInfo(this.sdkProvider);
+    if (carbonChainInfo) {
+      chainInfoMap[carbonChainInfo.chainId] = {
+        ...carbonChainInfo,
         minimalDenomMap: {},
+        bestRpcs: [],
       };
     }
 
@@ -125,7 +130,7 @@ export class IBCModule extends BaseModule {
       if (chainId && chainInfoMap[chainId]) {
         const cw20RegexArr = denomTrace.baseDenom.match(cw20TokenRegex);
         const coinGeckoId = tokenClient.geckoTokenNames?.[denom] ?? tokenClient.geckoTokenNames?.[denomTrace.baseDenom] ?? "";
-        const dstDenom = isChainNativeToken ? denomTrace.baseDenom.replace(/:/g, '/') : IBCUtils.makeIBCMinimalDenom(denomTrace.path.replace(ibcTransferChannelRegex, "").replace(/^\//, ''), denomTrace.baseDenom);
+        const dstDenom = isChainNativeToken ? denomTrace.baseDenom : IBCUtils.makeIBCMinimalDenom(denomTrace.path.replace(ibcTransferChannelRegex, "").replace(/^\//, ''), denomTrace.baseDenom);
         const currency = this.getAppCurrency(dstDenom, coinGeckoId, token, cw20RegexArr);
         const chainInfo = chainInfoMap[chainId];
         chainInfo.currencies.push(currency);
@@ -163,20 +168,16 @@ export class IBCModule extends BaseModule {
     return chainInfoJson as ChainInfo;
   }
 
-  async getAssembledChainInfo(chainsData: ChainRegistryItem[], chainId: string, bridgeChainName: string): Promise<ChainInfo | undefined> {
-    const selectedChainData = chainsData.find((chainData: ChainRegistryItem) => {
-      return chainData.chain_name.includes(bridgeChainName.toLowerCase()) || chainData.chain_id.includes(bridgeChainName.toLowerCase());
-    });
-
+  async getAssembledChainInfo(chainId: string, chainData?: ChainRegistryItem): Promise<ChainInfo | undefined> {
     const defaultChainInfo = IBCUtils.EmbedChainInfos[chainId];
-    if (selectedChainData) {
+    if (chainData) {
       try {
-        const chainInfoResponse = await fetch(`https://raw.githubusercontent.com/cosmos/chain-registry/master/${selectedChainData.chain_name}/chain.json`);
+        const chainInfoResponse = await fetch(`https://raw.githubusercontent.com/cosmos/chain-registry/master/${chainData.chain_name}/chain.json`);
         const chainInfoJson = await chainInfoResponse.json();
-        const chainAssetListResponse = await fetch(`https://raw.githubusercontent.com/cosmos/chain-registry/master/${selectedChainData.chain_name}/assetlist.json`);
+        const chainAssetListResponse = await fetch(`https://raw.githubusercontent.com/cosmos/chain-registry/master/${chainData.chain_name}/assetlist.json`);
         const assetListJson = await chainAssetListResponse.json();
         const features: string[] = [];
-        if (selectedChainData.cosmwasm_enabled) {
+        if (chainData.cosmwasm_enabled) {
           features.push("cosmwasm");
         }
 

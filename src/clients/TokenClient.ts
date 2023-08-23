@@ -1,6 +1,5 @@
 import { Bridge, QueryTokenPriceAllResponse, Token, TokenPrice } from "@carbon-sdk/codec";
 import { PageRequest } from '@carbon-sdk/codec/cosmos/base/query/v1beta1/pagination';
-import { DenomTrace } from "@carbon-sdk/codec/ibc/applications/transfer/v1/transfer";
 import { QueryChannelsResponse } from "@carbon-sdk/codec/ibc/core/channel/v1/query";
 import { QueryClientStatesResponse } from "@carbon-sdk/codec/ibc/core/client/v1/query";
 import { QueryConnectionsResponse } from "@carbon-sdk/codec/ibc/core/connection/v1/query";
@@ -18,9 +17,6 @@ import Long from "long";
 import CarbonQueryClient from "./CarbonQueryClient";
 import InsightsQueryClient from "./InsightsQueryClient";
 
-export interface DenomTraceExtended extends DenomTrace {
-  token?: Token;
-}
 
 const SYMBOL_OVERRIDE: {
   [symbol: string]: string;
@@ -382,7 +378,7 @@ class TokenClient {
     const networkConfig = this.configProvider.getConfig();
     const token = this.tokenForDenom(tokenDenom);
     if (!token) {
-      console.error("getDepositTokenFor token not found for", tokenDenom);
+      console.debug("getDepositTokenFor token not found for", tokenDenom);
       return;
     }
     
@@ -402,7 +398,7 @@ class TokenClient {
     // if not source token find wrapped token for chain
     const depositToken = isSourceToken ? token : this.getWrappedToken(token.denom, chain, version);
     if (!depositToken) {
-      console.error(`getDepositTokenFor wrapped token not found for "${token.denom}"`);
+      console.debug(`getDepositTokenFor wrapped token not found for "${token.denom}"`);
       return;
     }
 
