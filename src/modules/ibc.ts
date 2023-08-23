@@ -130,7 +130,7 @@ export class IBCModule extends BaseModule {
       if (chainId && chainInfoMap[chainId]) {
         const cw20RegexArr = denomTrace.baseDenom.match(cw20TokenRegex);
         const coinGeckoId = tokenClient.geckoTokenNames?.[denom] ?? tokenClient.geckoTokenNames?.[denomTrace.baseDenom] ?? "";
-        const dstDenom = isChainNativeToken ? denomTrace.baseDenom : IBCUtils.makeIBCMinimalDenom(denomTrace.path.replace(ibcTransferChannelRegex, "").replace(/^\//, ''), denomTrace.baseDenom);
+        const dstDenom = isChainNativeToken ? denomTrace.baseDenom.replace(/:/g, '/') : IBCUtils.makeIBCMinimalDenom(denomTrace.path.replace(ibcTransferChannelRegex, "").replace(/^\//, ''), denomTrace.baseDenom);
         const currency = this.getAppCurrency(dstDenom, coinGeckoId, token, cw20RegexArr);
         const chainInfo = chainInfoMap[chainId];
         chainInfo.currencies.push(currency);
