@@ -233,7 +233,10 @@ class HydrogenClient {
     const request = this.apiManager.path(
       "relays",
       {},
-      {...req}
+      {
+        ...req,
+        include_tx: true,
+      }
     );
     const response = await request.get();
     const result = response.data;
