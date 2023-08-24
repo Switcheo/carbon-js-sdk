@@ -141,7 +141,7 @@ class HydrogenClient {
       destination_blockchain: this.tokenClient.getBlockchainV2FromIDs(value.to_chain_id, value.bridge_id),
     };
   };
-  
+
   public formatCrossChainTransferDetailedV2 = (value: any): CrossChainTransferDetailed => {
     if (!value || typeof value !== "object") return value;
     const source_blockchain = this.tokenClient.getBlockchainV2FromIDs(value.from_chain_id, value.bridge_id)
@@ -154,7 +154,7 @@ class HydrogenClient {
       destination_event: this.formatChainEventV2(value.destination_event, destination_blockchain ?? ''),
     };
   };
-  
+
   public formatRelaysTransfersV2 = (value: any): RelaysResponse => {
     if (!value || typeof value !== "object") return value;
     return {
@@ -166,7 +166,7 @@ class HydrogenClient {
       destination_blockchain: this.tokenClient.getBlockchainV2FromIDs(value.to_chain_id, value.bridge_id),
     };
   };
-  
+
   public formatChainEventV2 = (value: any, blockchain: BlockchainUtils.BlockchainV2): ChainTransaction | null => {
     if (!value || typeof value !== "object") return value;
     return {
@@ -177,7 +177,7 @@ class HydrogenClient {
       blockchain,
     } as ChainTransaction;
   };
-  
+
   public formatFeeQuoteV2 = (value: any, blockchain: BlockchainUtils.BlockchainV2): GetFeeQuoteResponse => {
     if (typeof value !== "object") return value;
     return {
@@ -201,10 +201,7 @@ class HydrogenClient {
     const request = this.apiManager.path(
       "transfer_payloads",
       {},
-      {
-        ...req,
-        include_tx: false,
-      }
+      {...req}
     );
     const response = await request.get();
     const result = response.data;
@@ -220,10 +217,7 @@ class HydrogenClient {
     const request = this.apiManager.path(
       "transfer_payloads",
       {},
-      {
-        ...req,
-        include_tx: true,
-      }
+      {...req}
     );
     const response = await request.get();
     const result = response.data;
@@ -239,10 +233,7 @@ class HydrogenClient {
     const request = this.apiManager.path(
       "relays",
       {},
-      {
-        ...req,
-        include_tx: true,
-      }
+      {...req}
     );
     const response = await request.get();
     const result = response.data;
