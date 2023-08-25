@@ -1,9 +1,11 @@
 import { SimpleMap } from "./type";
+import { USD_SYMBOL } from "@carbon-sdk/constant";
 
 export const FuturesDenomOverride: SimpleMap<string> = {
   WBTC: "BTC",
-  USDC: "USD",
-  iusd: "USD",
+  USDC: USD_SYMBOL,
+  iusd: USD_SYMBOL,
+  USD: USD_SYMBOL
 };
 
 export enum MainNetDefaultTokens {

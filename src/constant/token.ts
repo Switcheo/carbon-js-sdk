@@ -4,6 +4,8 @@ import { Network } from "./network";
 
 export const decTypeDecimals = 18;
 
+export const USD_SYMBOL = "USDⒼ";
+
 export const DenomPrefix = {
   LPToken: "clpt",
   CDPToken: "cibt",

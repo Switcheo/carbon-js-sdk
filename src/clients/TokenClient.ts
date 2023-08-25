@@ -31,6 +31,7 @@ const SYMBOL_OVERRIDE: {
   DBC2: "DBC",
   AVA1: "AVA",
   TSWTH: "tSWTH",
+  USD: "USDⒼ",
   "cibStride Liquid Staked LUNA": "cibstLUNA",
 };
 
