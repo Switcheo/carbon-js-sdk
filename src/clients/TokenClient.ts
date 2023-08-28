@@ -131,7 +131,6 @@ class TokenClient {
       return this.symbols[denom] ?? denom;
     }
     const commonDenom = this.getCommonDenom(denom);
-
     return this.symbols[commonDenom] ?? commonDenom.toUpperCase();
   }
 
