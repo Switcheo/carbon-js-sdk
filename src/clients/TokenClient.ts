@@ -381,7 +381,7 @@ class TokenClient {
       console.debug("getDepositTokenFor token not found for", tokenDenom);
       return;
     }
-    
+
     let targetChain: string | undefined = ""
     // check if selected token is a source token
     if (version === "V1") {
@@ -392,7 +392,7 @@ class TokenClient {
     } else {
       targetChain = this.getBlockchainV2(token.denom);
     }
-    
+
     const isSourceToken = targetChain === chain && token.denom !== "swth";
 
     // if not source token find wrapped token for chain
@@ -584,12 +584,10 @@ class TokenClient {
     return polynetworkTokens
   }
 
-  public getBlockchainV2FromIDs(chainId: string, bridgeId: string): BlockchainV2 | undefined {
-    const chainIdNum = Number(chainId)
-    const bridgeIdNum = Number(bridgeId)
-    if ((chainIdNum === 5 && bridgeIdNum === 1) || (chainIdNum === 0 && bridgeIdNum === 2)) return "Carbon"
-    const bridgeList = this.getBridgesFromBridgeId(bridgeIdNum)
-    return bridgeList.find(bridge => bridge.chainId.toNumber() === chainIdNum)?.chainName ?? undefined
+  public getBlockchainV2FromIDs(chainId: number, bridgeId: number): BlockchainV2 | undefined {
+    if ((chainId === 5 && bridgeId === 1) || (chainId === 0 && bridgeId === 2)) return "Carbon"
+    const bridgeList = this.getBridgesFromBridgeId(bridgeId)
+    return bridgeList.find(bridge => bridge.chainId.toNumber() === chainId)?.chainName ?? undefined
   }
 
   public getBridgeFromToken(token: Token | null): Bridge | IbcBridge | undefined {
