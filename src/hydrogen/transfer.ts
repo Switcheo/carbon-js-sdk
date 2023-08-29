@@ -1,4 +1,5 @@
 import { Blockchain, BlockchainV2 } from "../util/blockchain";
+import { RelaysResponse } from "./relays";
 
 export interface GetTransfersRequest {
   bridging_blockchain?: string;
@@ -41,6 +42,7 @@ export enum CrossChainFlowStatus {
 
 export interface CrossChainTransfer {
   id: string;
+  relay: RelaysResponse | null;
   relay_id: string;
   from_address: string;
   from_address_hash: string;
