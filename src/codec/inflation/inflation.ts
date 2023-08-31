@@ -62,7 +62,6 @@ export const MintData = {
           message.firstBlockTime = fromTimestamp(
             Timestamp.decode(reader, reader.uint32())
           );
-          console.log(message.firstBlockTime)
           break;
         case 6:
           message.prevBlockTime = fromTimestamp(
@@ -73,8 +72,7 @@ export const MintData = {
           reader.skipType(tag & 7);
           break;
       }
-    }
-    console.log("i returned")
+                                                                                                                                                                                                                                                                                                                                                                                                            }
     return message;
   },
 
