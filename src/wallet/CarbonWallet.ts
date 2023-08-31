@@ -800,7 +800,7 @@ export class CarbonWallet {
   }
 
   private isAccountNotFoundError = (error?: Error, address?: string) => {
-    return error?.message?.includes(`account ${address} not found: key not found`);
+    return error?.message?.includes(`account ${address} not found`);
   };
 
 
