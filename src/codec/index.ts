@@ -19784,11 +19784,11 @@ export const EIP712Types: { [index: string]: any } = {
     "MintData": [
       {
         "name": "first_block_time",
-        "type": "int64"
+        "type": "string"
       },
       {
         "name": "prev_block_time",
-        "type": "int64"
+        "type": "string"
       },
       {
         "name": "current_supply",

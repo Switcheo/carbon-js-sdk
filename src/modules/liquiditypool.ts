@@ -156,13 +156,12 @@ export class LiquidityPoolModule extends BaseModule {
     const MIN_RATE = new BigNumber(0.0003);
     const INITIAL_SUPPLY = new BigNumber(1000000000);
     const SECONDS_IN_A_WEEK = new BigNumber(604800);
-
     const mintDataResponse: Models.QueryMintDataResponse = await this.sdkProvider.query.inflation.MintData({});
     const mintData = mintDataResponse.mintData;
 
     const nowTime = new BigNumber(dayjs().unix());
-    const firstBlockTime = mintData?.firstBlockTime.toNumber() ?? 0;
-    const difference = nowTime.minus(firstBlockTime);
+    const firstBlockTime = mintData?.firstBlockTime?.getTime() ?? 0;
+    const difference = nowTime.minus(firstBlockTime / 1000);
     const currentWeek = difference.div(SECONDS_IN_A_WEEK).dp(0, BigNumber.ROUND_DOWN);
 
     let inflationRate = WEEKLY_DECAY.pow(currentWeek);
@@ -182,8 +181,8 @@ export class LiquidityPoolModule extends BaseModule {
     const { result }: InsightsQueryResponse<QueryGetInflation> = await this.sdkProvider.insights.Inflation()
     const MIN_RATE = new BigNumber(0.0003);
     const INITIAL_SUPPLY = new BigNumber(1000000000);
-    let inflationRate = new BigNumber(result.inflationRate)
-    console.log(inflationRate)
+    let inflationRate = new BigNumber(result.inflationRate);
+
     if (inflationRate.lt(MIN_RATE)) {
       inflationRate = MIN_RATE;
     }
@@ -193,7 +192,6 @@ export class LiquidityPoolModule extends BaseModule {
     // Weekly LP Rewards = liquidityRewardRatio * weeklyRewards
     const distributionParams = await this.sdkProvider.query.distribution.Params({});
     const liquidityRewardRatio = NumberUtils.bnOrZero(distributionParams.params?.liquidityProviderReward).shiftedBy(-18);
-    console.log(liquidityRewardRatio.times(weeklyRewards))
     return liquidityRewardRatio.times(weeklyRewards);
   }
 
