@@ -3,6 +3,7 @@ export const InsightsEndpoints = {
   "chain/stake": "/chain/stake",
   "chain/transaction": "/chain/transaction",
   "chain/blocktime": "/chain/blocktime",
+  "chain/inflation": "/chain/inflation",
 
   // User api
   "user/active": "/user/active",
