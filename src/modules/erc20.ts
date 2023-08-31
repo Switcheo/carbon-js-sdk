@@ -13,8 +13,8 @@ export class ERC20Module extends BaseModule {
 
     const value = Models.MsgConvertCoin.fromPartial({
       coin,
-      receiver: wallet.evmHexAddress.toLowerCase(),
-      sender: wallet.bech32Address.toLowerCase(),
+      receiver: params.receiverAddress?.toLowerCase() ?? wallet.evmHexAddress.toLowerCase(),
+      sender: params.senderAddress?.toLowerCase() ?? wallet.bech32Address.toLowerCase(),
     })
 
     return await wallet.sendTx(
@@ -32,8 +32,8 @@ export class ERC20Module extends BaseModule {
     const value = Models.MsgConvertERC20.fromPartial({
       contractAddress: params.contractAddress,
       amount: params.amount,
-      receiver: wallet.bech32Address.toLowerCase(),
-      sender: wallet.bech32Address.toLowerCase(),
+      receiver: params.receiverAddress?.toLowerCase() ?? wallet.bech32Address.toLowerCase(),
+      sender: params.senderAddress?.toLowerCase() ?? wallet.bech32Address.toLowerCase(),
     })
 
     return await wallet.sendTx(
@@ -84,11 +84,15 @@ export namespace ERC20Module {
   export interface ConvertCoinParams {
     denom: string;
     amount: string;
+    receiverAddress?: string;
+    senderAddress?: string;
   }
 
   export interface ConvertERC20Params {
     contractAddress: string;
     amount: string;
+    receiverAddress?: string;
+    senderAddress?: string;
   }
 
   export interface RegisterTokenParams {
