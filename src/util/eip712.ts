@@ -123,14 +123,13 @@ function getMsgValueType(msgTypeUrl: string, msgValue: any, msgTypeName: string,
             msgTypeDefinitions[typeName] = [];
         }
         fieldsDefinition.forEach(({ packageName, name, type }: any) => {
-            if (Array.isArray(msgValue) && msgValue.length === 0) {
-                msgTypeDefinitions[typeName] = [...msgTypeDefinitions[typeName], { name, type: 'string[]' }]
-                return
-            }
-
-            //Assumption: Take first value in array to determine which fields are populated
             const fieldValue = Array.isArray(msgValue) && msgValue.length > 0 ? msgValue[0][name] : msgValue[name]
+            //Assumption: Take first value in array to determine which fields are populated
             if (isNonZeroField(fieldValue)) {
+                if (Array.isArray(fieldValue) && fieldValue.length === 0) {
+                    msgTypeDefinitions[typeName] = [...msgTypeDefinitions[typeName], { name, type: 'string[]' }]
+                    return
+                }
                 //For nested structs
                 if (packageName) {
                     const isArray = type.includes('[]') ? true : false
@@ -190,15 +189,15 @@ function isGoogleProtobufAnyPackage(packageName: string, type: string): boolean 
 function isNonZeroField(fieldValue: any): boolean {
     // zero fields are considered falsey,except if it is string "0"
     if (fieldValue == "0" && typeof fieldValue !== "string") {
-        return false;
+        return false
     }
     // empty arrays are considered truthy
     if (Array.isArray(fieldValue)) {
-        return fieldValue.length !== 0
+        return true
     }
     // empty objects are considered truthy
     if (fieldValue && typeof fieldValue === 'object' && Object.keys(fieldValue).length === 0) {
-        return false
+        return true
     }
     return fieldValue
 }

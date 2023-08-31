@@ -76,7 +76,7 @@ export class ETHClient {
     [Blockchain.Ethereum]: "Ethereum",
     [Blockchain.Arbitrum]: "Arbitrum",
     [Blockchain.Polygon]: "Polygon",
-    [Blockchain.Okc]: "Okc",
+    [Blockchain.Okc]: "OKC",
   };
 
   private constructor(
