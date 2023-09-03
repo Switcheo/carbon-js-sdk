@@ -144,7 +144,6 @@ class HydrogenClient {
     };
   };
 
-  /** @deprecated formatCrossChainTransferDetailedV2 is deprecated, please use formatCrossChainTransferV2 instead */
   public formatCrossChainTransferDetailedV2 = (value: any): CrossChainTransferDetailed => {
     if (!value || typeof value !== "object") return value;
     const source_blockchain = this.tokenClient.getBlockchainV2FromIDs(value.from_chain_id, value.bridge_id)

@@ -76,7 +76,6 @@ export interface CrossChainTransfer {
   destination_event: ChainTransaction | null;
 }
 
-/** @deprecated CrossChainTransferDetailed is deprecated, please use CrossChainTransfer instead */
 export interface CrossChainTransferDetailed extends CrossChainTransfer {
   source_event: ChainTransaction | null;
   bridging_event: ChainTransaction | null;
