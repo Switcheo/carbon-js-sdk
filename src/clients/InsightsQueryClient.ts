@@ -56,6 +56,12 @@ class InsightsQueryClient {
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetAvgBlockTimeResponse>;
   }
 
+  async Inflation(): Promise<Insights.InsightsQueryResponse<Insights.QueryGetInflation>> {
+    const request = this.apiManager.path("chain/inflation");
+    const response = await request.get();
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetInflation>
+  }
+
   // User api
   async ActiveAccounts(
     req: Insights.QueryGetActiveAccountsRequest = {}
