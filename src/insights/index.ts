@@ -11,3 +11,5 @@ export * from "./funding";
 export * from "./proposal";
 export * from "./delegation";
 export * from "./oracles";
+export * from "./alliances";
+export * from "./inflation";
