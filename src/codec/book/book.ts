@@ -20,6 +20,7 @@ export interface StopBook {
   market: string;
   asks: string[];
   bids: string[];
+  trigger: string;
 }
 
 const baseOrderBookLevel: object = { price: "", totalQuantity: "", orders: "" };
@@ -195,7 +196,7 @@ export const OrderBook = {
   },
 };
 
-const baseStopBook: object = { market: "", asks: "", bids: "" };
+const baseStopBook: object = { market: "", asks: "", bids: "", trigger: "" };
 
 export const StopBook = {
   encode(
@@ -210,6 +211,9 @@ export const StopBook = {
     }
     for (const v of message.bids) {
       writer.uint32(26).string(v!);
+    }
+    if (message.trigger !== "") {
+      writer.uint32(34).string(message.trigger);
     }
     return writer;
   },
@@ -232,6 +236,9 @@ export const StopBook = {
         case 3:
           message.bids.push(reader.string());
           break;
+        case 4:
+          message.trigger = reader.string();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -248,6 +255,10 @@ export const StopBook = {
         : "";
     message.asks = (object.asks ?? []).map((e: any) => String(e));
     message.bids = (object.bids ?? []).map((e: any) => String(e));
+    message.trigger =
+      object.trigger !== undefined && object.trigger !== null
+        ? String(object.trigger)
+        : "";
     return message;
   },
 
@@ -264,6 +275,7 @@ export const StopBook = {
     } else {
       obj.bids = [];
     }
+    message.trigger !== undefined && (obj.trigger = message.trigger);
     return obj;
   },
 
@@ -272,6 +284,7 @@ export const StopBook = {
     message.market = object.market ?? "";
     message.asks = (object.asks ?? []).map((e) => e);
     message.bids = (object.bids ?? []).map((e) => e);
+    message.trigger = object.trigger ?? "";
     return message;
   },
 };

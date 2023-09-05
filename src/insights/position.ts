@@ -1,4 +1,4 @@
-import { Entries, PageMeta, QueryByPageRequest } from "./common";
+import { Entries, PageMeta, QueryByPageRequest, QueryByTimeRequest, TimeMeta } from "./common";
 
 export interface IndivPnl {
   address: string;
@@ -52,7 +52,7 @@ export interface LiquidationEntry {
   last_updated_block_height: string;
 }
 
-export interface GetLiquidationAndADLQueryParams extends QueryByPageRequest {}
+export interface GetLiquidationAndADLQueryParams extends QueryByPageRequest { }
 
 export interface QueryGetLiquidationAndADLResponse {
   entries: LiquidationEntry[];
@@ -60,7 +60,7 @@ export interface QueryGetLiquidationAndADLResponse {
 }
 
 //Liquidation Engine
-export interface GetLiquidationEngineParams extends QueryByPageRequest {}
+export interface GetLiquidationEngineParams extends QueryByPageRequest { }
 
 export interface QueryGetLiquidationEngineResponse {
   entries: LiquidationEntry[];
@@ -97,4 +97,23 @@ export interface GetPositionsViewEntry {
 export interface QueryGetPositionsViewResponse {
   entries: GetPositionsViewEntry[];
   meta: PageMeta;
+}
+
+export interface GetPositionStatsPathParams {
+  address: string;
+}
+
+export interface GetPositionStatsQueryParams extends QueryByTimeRequest { }
+
+export interface GetPositionStatsEntry {
+  time: string;
+  realizedPnl: string;
+  makerFee: string;
+  takerFee: number;
+  fundingFee: string;
+  cumulative: string;
+}
+export interface QueryGetPositionStatsResponse {
+  entries: GetPositionStatsEntry[];
+  meta: TimeMeta
 }

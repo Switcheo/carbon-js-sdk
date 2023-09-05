@@ -2158,6 +2158,8 @@ export type MinimalDenomMap = SimpleMap<string>;
 
 export interface ExtendedChainInfo extends ChainInfo {
   minimalDenomMap: MinimalDenomMap;
+  bestRpcs: URLProviderObj[];
+  activeRpc?: string;
 }
 
 export interface URLProviderObj {

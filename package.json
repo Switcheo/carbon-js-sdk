@@ -1,6 +1,6 @@
 {
   "name": "carbon-js-sdk",
-  "version": "0.5.11",
+  "version": "0.6.1",
   "description": "TypeScript SDK for Carbon blockchain",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -42,6 +42,8 @@
     "@cityofzion/neon-js": "^4.9.0",
     "@cosmjs/stargate": "~0.29.5",
     "@cosmos-kit/leap": "^0.13.14",
+    "@improbable-eng/grpc-web": "^0.15.0",
+    "@improbable-eng/grpc-web-node-http-transport": "^0.15.0",
     "@keplr-wallet/stores": "^0.11.64",
     "@keplr-wallet/types": "^0.11.64",
     "@ledgerhq/cryptoassets": "^6.31.0",
