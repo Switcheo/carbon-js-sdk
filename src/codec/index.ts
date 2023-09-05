@@ -1195,7 +1195,7 @@ export { LinkPoolProposal, UnlinkPoolProposal, SetRewardCurveProposal, SetCommit
 export { QueryGetPoolRequest, QueryGetPoolResponse, QueryAllPoolRequest, QueryAllPoolResponse, QueryAllPoolAddressRequest, QueryAllPoolAddressResponse, QueryAllPoolAddressResponse_AddressesEntry, QueryRewardHistoryRequest, ExtendedPool, QueryRewardHistoryResponse, QueryCommitmentRequest, QueryCommitmentResponse, QueryAllCommitmentRequest, QueryAllCommitmentResponse, QueryLastClaimRequest, QueryLastClaimResponse, QueryCommitmentCurveRequest, QueryCommitmentCurveResponse, QueryRewardCurveRequest, QueryRewardCurveResponse, QueryTotalCommitmentRequest, QueryTotalCommitmentResponse, QueryAllTotalCommitmentRequest, QueryAllTotalCommitmentResponse, QueryClaimableRewardsRequest, QueryClaimableRewardsResponse, QueryParamsRequest as QueryLiquiditypoolParamsRequest, QueryParamsResponse as QueryLiquiditypoolParamsResponse, QueryAllPoolRouteRequest, QueryAllPoolRouteResponse, QueryAllPoolRouteAddressRequest, QueryAllPoolRouteAddressResponse, QueryAllPoolRouteAddressResponse_AddressesEntry } from "./liquiditypool/query";
 export { PoolEvent, TotalCommitmentChangeEvent, RewardsWeightChangeEvent, CommitmentCurveEvent, CommitmentEvent, SwapEvent, DepositToPoolEvent, WithdrawFromPoolEvent, StakePoolTokenEvent, UnstakePoolTokenEvent } from "./liquiditypool/event";
 export { MsgTopUpInsurance, MsgTopUpInsuranceResponse } from "./insurance/tx";
-export { QueryCoinBalancesRequest, QueryCoinBalancesResponse, QueryFundsInByMarketRequest, QueryFundsInByMarketResponse, QueryFundsOutByMarketRequest, QueryFundsOutByMarketResponse } from "./insurance/query";
+export { QueryCoinBalancesRequest, QueryCoinBalancesResponse } from "./insurance/query";
 export { EventDataInsuranceFundTransfer } from "./insurance/event";
 export { FundByMarket, Fund } from "./insurance/fund";
 export { MsgSetBackfillTimeInterval, MsgSetBackfillTimeIntervalResponse, MsgSetSmoothenBand, MsgSetSmoothenBandResponse, MsgSetImpactBand, MsgSetImpactBandResponse, MsgSetStaleIndexAllowance, MsgSetStaleIndexAllowanceResponse, MsgUpdateTokenPriceOracle, MsgUpdateTokenPriceOracleResponse } from "./pricing/tx";
@@ -2972,6 +2972,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "bids",
         "type": "string[]"
+      },
+      {
+        "name": "trigger",
+        "type": "string"
       }
     ],
     "OrderBookEvent": [
@@ -19931,56 +19935,13 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
-    "GenesisState": [
-      {
-        "name": "fund_in_by_markets",
-        "type": "FundByMarket[]",
-        "packageName": "/Switcheo.carbon.insurance"
-      },
-      {
-        "name": "fund_out_by_markets",
-        "type": "FundByMarket[]",
-        "packageName": "/Switcheo.carbon.insurance"
-      }
-    ],
+    "GenesisState": [],
     "QueryCoinBalancesRequest": [],
     "QueryCoinBalancesResponse": [
       {
         "name": "coins",
         "type": "Coin[]",
         "packageName": "/cosmos.base.v1beta1"
-      }
-    ],
-    "QueryFundsInByMarketRequest": [
-      {
-        "name": "denom",
-        "type": "string"
-      },
-      {
-        "name": "market",
-        "type": "string"
-      }
-    ],
-    "QueryFundsInByMarketResponse": [
-      {
-        "name": "funds",
-        "type": "string"
-      }
-    ],
-    "QueryFundsOutByMarketRequest": [
-      {
-        "name": "denom",
-        "type": "string"
-      },
-      {
-        "name": "market",
-        "type": "string"
-      }
-    ],
-    "QueryFundsOutByMarketResponse": [
-      {
-        "name": "funds",
-        "type": "string"
       }
     ],
     "MsgTopUpInsurance": [

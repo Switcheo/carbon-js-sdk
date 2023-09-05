@@ -1,4 +1,5 @@
 import { Blockchain, BlockchainV2 } from "../util/blockchain";
+import { RelaysResponse } from "./relays";
 
 export interface GetTransfersRequest {
   bridging_blockchain?: string;
@@ -41,8 +42,8 @@ export enum CrossChainFlowStatus {
 
 export interface CrossChainTransfer {
   id: string;
-  cross_chain_flow_id: string;
-  asset_name: string;
+  relay: RelaysResponse | null;
+  relay_id: string;
   from_address: string;
   from_address_hash: string;
   from_asset: string;
@@ -58,13 +59,21 @@ export interface CrossChainTransfer {
   nonce: string;
   created_at: Date;
   updated_at: Date;
-  source_blockchain: Blockchain | BlockchainV2 | null;
-  bridging_blockchain: Blockchain | BlockchainV2 | null;
-  destination_blockchain: Blockchain | BlockchainV2 | null;
-  status: CrossChainFlowStatus;
-  carbon_token_id: string;
   recovery_address_hash: string;
   recovery_address: string;
+  carbon_token_id: string;
+  transfer_payload_type: string;
+  cross_chain_flow_id: string;
+  source_blockchain: Blockchain | BlockchainV2 | null;
+  from_chain_id: number;
+  bridging_blockchain: Blockchain | BlockchainV2 | null;
+  bridge_id: number;
+  destination_blockchain: Blockchain | BlockchainV2 | null;
+  to_chain_id: number;
+  status: CrossChainFlowStatus;
+  source_event: ChainTransaction | null;
+  bridging_event: ChainTransaction | null;
+  destination_event: ChainTransaction | null;
 }
 
 export interface CrossChainTransferDetailed extends CrossChainTransfer {
