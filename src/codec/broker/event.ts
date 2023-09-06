@@ -31,6 +31,13 @@ export interface TradeEvent {
   makerFeeCommissionAddress: string;
 }
 
+export interface FundingEvent {
+  marketName: string;
+  fundingRate: string;
+  premiumRate: string;
+  borrowRate: string;
+}
+
 const baseTradeEvent: object = {
   id: Long.UZERO,
   blockHeight: Long.ZERO,
@@ -398,6 +405,102 @@ export const TradeEvent = {
     message.makerFeeKickback = object.makerFeeKickback ?? "";
     message.makerFeeCommission = object.makerFeeCommission ?? "";
     message.makerFeeCommissionAddress = object.makerFeeCommissionAddress ?? "";
+    return message;
+  },
+};
+
+const baseFundingEvent: object = {
+  marketName: "",
+  fundingRate: "",
+  premiumRate: "",
+  borrowRate: "",
+};
+
+export const FundingEvent = {
+  encode(
+    message: FundingEvent,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.marketName !== "") {
+      writer.uint32(10).string(message.marketName);
+    }
+    if (message.fundingRate !== "") {
+      writer.uint32(18).string(message.fundingRate);
+    }
+    if (message.premiumRate !== "") {
+      writer.uint32(26).string(message.premiumRate);
+    }
+    if (message.borrowRate !== "") {
+      writer.uint32(34).string(message.borrowRate);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): FundingEvent {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseFundingEvent } as FundingEvent;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.marketName = reader.string();
+          break;
+        case 2:
+          message.fundingRate = reader.string();
+          break;
+        case 3:
+          message.premiumRate = reader.string();
+          break;
+        case 4:
+          message.borrowRate = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): FundingEvent {
+    const message = { ...baseFundingEvent } as FundingEvent;
+    message.marketName =
+      object.marketName !== undefined && object.marketName !== null
+        ? String(object.marketName)
+        : "";
+    message.fundingRate =
+      object.fundingRate !== undefined && object.fundingRate !== null
+        ? String(object.fundingRate)
+        : "";
+    message.premiumRate =
+      object.premiumRate !== undefined && object.premiumRate !== null
+        ? String(object.premiumRate)
+        : "";
+    message.borrowRate =
+      object.borrowRate !== undefined && object.borrowRate !== null
+        ? String(object.borrowRate)
+        : "";
+    return message;
+  },
+
+  toJSON(message: FundingEvent): unknown {
+    const obj: any = {};
+    message.marketName !== undefined && (obj.marketName = message.marketName);
+    message.fundingRate !== undefined &&
+      (obj.fundingRate = message.fundingRate);
+    message.premiumRate !== undefined &&
+      (obj.premiumRate = message.premiumRate);
+    message.borrowRate !== undefined && (obj.borrowRate = message.borrowRate);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<FundingEvent>): FundingEvent {
+    const message = { ...baseFundingEvent } as FundingEvent;
+    message.marketName = object.marketName ?? "";
+    message.fundingRate = object.fundingRate ?? "";
+    message.premiumRate = object.premiumRate ?? "";
+    message.borrowRate = object.borrowRate ?? "";
     return message;
   },
 };

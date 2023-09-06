@@ -1,7 +1,12 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { GenesisSubAccount } from "./subaccount";
+import {
+  Params,
+  GenesisSubAccount,
+  SubAccount,
+  MainAccount,
+} from "./subaccount";
 
 export const protobufPackage = "Switcheo.carbon.subaccount";
 
@@ -12,6 +17,10 @@ export interface GenesisState {
    * this line is used by starport scaffolding # ibc/genesis/proto
    */
   subAccounts: GenesisSubAccount[];
+  /** params defines all the paramaters of the module. */
+  params?: Params;
+  pendingSubAccounts: SubAccount[];
+  mainAccounts: MainAccount[];
 }
 
 const baseGenesisState: object = {};
@@ -24,6 +33,15 @@ export const GenesisState = {
     for (const v of message.subAccounts) {
       GenesisSubAccount.encode(v!, writer.uint32(10).fork()).ldelim();
     }
+    if (message.params !== undefined) {
+      Params.encode(message.params, writer.uint32(18).fork()).ldelim();
+    }
+    for (const v of message.pendingSubAccounts) {
+      SubAccount.encode(v!, writer.uint32(26).fork()).ldelim();
+    }
+    for (const v of message.mainAccounts) {
+      MainAccount.encode(v!, writer.uint32(34).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -32,12 +50,27 @@ export const GenesisState = {
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseGenesisState } as GenesisState;
     message.subAccounts = [];
+    message.pendingSubAccounts = [];
+    message.mainAccounts = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
           message.subAccounts.push(
             GenesisSubAccount.decode(reader, reader.uint32())
+          );
+          break;
+        case 2:
+          message.params = Params.decode(reader, reader.uint32());
+          break;
+        case 3:
+          message.pendingSubAccounts.push(
+            SubAccount.decode(reader, reader.uint32())
+          );
+          break;
+        case 4:
+          message.mainAccounts.push(
+            MainAccount.decode(reader, reader.uint32())
           );
           break;
         default:
@@ -53,6 +86,16 @@ export const GenesisState = {
     message.subAccounts = (object.subAccounts ?? []).map((e: any) =>
       GenesisSubAccount.fromJSON(e)
     );
+    message.params =
+      object.params !== undefined && object.params !== null
+        ? Params.fromJSON(object.params)
+        : undefined;
+    message.pendingSubAccounts = (object.pendingSubAccounts ?? []).map(
+      (e: any) => SubAccount.fromJSON(e)
+    );
+    message.mainAccounts = (object.mainAccounts ?? []).map((e: any) =>
+      MainAccount.fromJSON(e)
+    );
     return message;
   },
 
@@ -65,6 +108,22 @@ export const GenesisState = {
     } else {
       obj.subAccounts = [];
     }
+    message.params !== undefined &&
+      (obj.params = message.params ? Params.toJSON(message.params) : undefined);
+    if (message.pendingSubAccounts) {
+      obj.pendingSubAccounts = message.pendingSubAccounts.map((e) =>
+        e ? SubAccount.toJSON(e) : undefined
+      );
+    } else {
+      obj.pendingSubAccounts = [];
+    }
+    if (message.mainAccounts) {
+      obj.mainAccounts = message.mainAccounts.map((e) =>
+        e ? MainAccount.toJSON(e) : undefined
+      );
+    } else {
+      obj.mainAccounts = [];
+    }
     return obj;
   },
 
@@ -72,6 +131,16 @@ export const GenesisState = {
     const message = { ...baseGenesisState } as GenesisState;
     message.subAccounts = (object.subAccounts ?? []).map((e) =>
       GenesisSubAccount.fromPartial(e)
+    );
+    message.params =
+      object.params !== undefined && object.params !== null
+        ? Params.fromPartial(object.params)
+        : undefined;
+    message.pendingSubAccounts = (object.pendingSubAccounts ?? []).map((e) =>
+      SubAccount.fromPartial(e)
+    );
+    message.mainAccounts = (object.mainAccounts ?? []).map((e) =>
+      MainAccount.fromPartial(e)
     );
     return message;
   },

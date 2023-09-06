@@ -1,6 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
+import { Params, Pool, PoolRoute } from "./liquiditypool";
 import {
   RewardCurve,
   CommitmentCurve,
@@ -9,15 +10,15 @@ import {
   CommitmentRecord,
   TotalCommitmentRecord,
   CommitmentExpiriesRecord,
-  RewardHistoryRecord,
-  LastClaimRecord,
+  AccumulatedRewardsRecord,
 } from "./reward";
-import { Params, Pool, PoolRoute } from "./liquiditypool";
 
 export const protobufPackage = "Switcheo.carbon.liquiditypool";
 
 /** GenesisState defines the liquiditypool module's genesis state. */
 export interface GenesisState {
+  /** params defines all the paramaters of the module. */
+  params?: Params;
   pools: Pool[];
   rewardCurve?: RewardCurve;
   commitmentCurve?: CommitmentCurve;
@@ -25,11 +26,8 @@ export interface GenesisState {
   commitments: CommitmentRecord[];
   totalCommitments: TotalCommitmentRecord[];
   commitmentExpiries: CommitmentExpiriesRecord[];
-  rewardHistories: RewardHistoryRecord[];
-  lastClaims: LastClaimRecord[];
   allocatedRewards?: AllocatedRewards;
-  /** params defines all the paramaters of the module. */
-  params?: Params;
+  accumulatedRewards: AccumulatedRewardsRecord[];
   poolRoutes: PoolRoute[];
 }
 
@@ -40,6 +38,9 @@ export const GenesisState = {
     message: GenesisState,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
+    if (message.params !== undefined) {
+      Params.encode(message.params, writer.uint32(90).fork()).ldelim();
+    }
     for (const v of message.pools) {
       Pool.encode(v!, writer.uint32(10).fork()).ldelim();
     }
@@ -70,20 +71,14 @@ export const GenesisState = {
     for (const v of message.commitmentExpiries) {
       CommitmentExpiriesRecord.encode(v!, writer.uint32(58).fork()).ldelim();
     }
-    for (const v of message.rewardHistories) {
-      RewardHistoryRecord.encode(v!, writer.uint32(66).fork()).ldelim();
-    }
-    for (const v of message.lastClaims) {
-      LastClaimRecord.encode(v!, writer.uint32(74).fork()).ldelim();
-    }
     if (message.allocatedRewards !== undefined) {
       AllocatedRewards.encode(
         message.allocatedRewards,
         writer.uint32(82).fork()
       ).ldelim();
     }
-    if (message.params !== undefined) {
-      Params.encode(message.params, writer.uint32(90).fork()).ldelim();
+    for (const v of message.accumulatedRewards) {
+      AccumulatedRewardsRecord.encode(v!, writer.uint32(106).fork()).ldelim();
     }
     for (const v of message.poolRoutes) {
       PoolRoute.encode(v!, writer.uint32(98).fork()).ldelim();
@@ -99,12 +94,14 @@ export const GenesisState = {
     message.commitments = [];
     message.totalCommitments = [];
     message.commitmentExpiries = [];
-    message.rewardHistories = [];
-    message.lastClaims = [];
+    message.accumulatedRewards = [];
     message.poolRoutes = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 11:
+          message.params = Params.decode(reader, reader.uint32());
+          break;
         case 1:
           message.pools.push(Pool.decode(reader, reader.uint32()));
           break;
@@ -135,24 +132,16 @@ export const GenesisState = {
             CommitmentExpiriesRecord.decode(reader, reader.uint32())
           );
           break;
-        case 8:
-          message.rewardHistories.push(
-            RewardHistoryRecord.decode(reader, reader.uint32())
-          );
-          break;
-        case 9:
-          message.lastClaims.push(
-            LastClaimRecord.decode(reader, reader.uint32())
-          );
-          break;
         case 10:
           message.allocatedRewards = AllocatedRewards.decode(
             reader,
             reader.uint32()
           );
           break;
-        case 11:
-          message.params = Params.decode(reader, reader.uint32());
+        case 13:
+          message.accumulatedRewards.push(
+            AccumulatedRewardsRecord.decode(reader, reader.uint32())
+          );
           break;
         case 12:
           message.poolRoutes.push(PoolRoute.decode(reader, reader.uint32()));
@@ -167,6 +156,10 @@ export const GenesisState = {
 
   fromJSON(object: any): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
+    message.params =
+      object.params !== undefined && object.params !== null
+        ? Params.fromJSON(object.params)
+        : undefined;
     message.pools = (object.pools ?? []).map((e: any) => Pool.fromJSON(e));
     message.rewardCurve =
       object.rewardCurve !== undefined && object.rewardCurve !== null
@@ -189,20 +182,13 @@ export const GenesisState = {
     message.commitmentExpiries = (object.commitmentExpiries ?? []).map(
       (e: any) => CommitmentExpiriesRecord.fromJSON(e)
     );
-    message.rewardHistories = (object.rewardHistories ?? []).map((e: any) =>
-      RewardHistoryRecord.fromJSON(e)
-    );
-    message.lastClaims = (object.lastClaims ?? []).map((e: any) =>
-      LastClaimRecord.fromJSON(e)
-    );
     message.allocatedRewards =
       object.allocatedRewards !== undefined && object.allocatedRewards !== null
         ? AllocatedRewards.fromJSON(object.allocatedRewards)
         : undefined;
-    message.params =
-      object.params !== undefined && object.params !== null
-        ? Params.fromJSON(object.params)
-        : undefined;
+    message.accumulatedRewards = (object.accumulatedRewards ?? []).map(
+      (e: any) => AccumulatedRewardsRecord.fromJSON(e)
+    );
     message.poolRoutes = (object.poolRoutes ?? []).map((e: any) =>
       PoolRoute.fromJSON(e)
     );
@@ -211,6 +197,8 @@ export const GenesisState = {
 
   toJSON(message: GenesisState): unknown {
     const obj: any = {};
+    message.params !== undefined &&
+      (obj.params = message.params ? Params.toJSON(message.params) : undefined);
     if (message.pools) {
       obj.pools = message.pools.map((e) => (e ? Pool.toJSON(e) : undefined));
     } else {
@@ -249,26 +237,17 @@ export const GenesisState = {
     } else {
       obj.commitmentExpiries = [];
     }
-    if (message.rewardHistories) {
-      obj.rewardHistories = message.rewardHistories.map((e) =>
-        e ? RewardHistoryRecord.toJSON(e) : undefined
-      );
-    } else {
-      obj.rewardHistories = [];
-    }
-    if (message.lastClaims) {
-      obj.lastClaims = message.lastClaims.map((e) =>
-        e ? LastClaimRecord.toJSON(e) : undefined
-      );
-    } else {
-      obj.lastClaims = [];
-    }
     message.allocatedRewards !== undefined &&
       (obj.allocatedRewards = message.allocatedRewards
         ? AllocatedRewards.toJSON(message.allocatedRewards)
         : undefined);
-    message.params !== undefined &&
-      (obj.params = message.params ? Params.toJSON(message.params) : undefined);
+    if (message.accumulatedRewards) {
+      obj.accumulatedRewards = message.accumulatedRewards.map((e) =>
+        e ? AccumulatedRewardsRecord.toJSON(e) : undefined
+      );
+    } else {
+      obj.accumulatedRewards = [];
+    }
     if (message.poolRoutes) {
       obj.poolRoutes = message.poolRoutes.map((e) =>
         e ? PoolRoute.toJSON(e) : undefined
@@ -281,6 +260,10 @@ export const GenesisState = {
 
   fromPartial(object: DeepPartial<GenesisState>): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
+    message.params =
+      object.params !== undefined && object.params !== null
+        ? Params.fromPartial(object.params)
+        : undefined;
     message.pools = (object.pools ?? []).map((e) => Pool.fromPartial(e));
     message.rewardCurve =
       object.rewardCurve !== undefined && object.rewardCurve !== null
@@ -303,20 +286,13 @@ export const GenesisState = {
     message.commitmentExpiries = (object.commitmentExpiries ?? []).map((e) =>
       CommitmentExpiriesRecord.fromPartial(e)
     );
-    message.rewardHistories = (object.rewardHistories ?? []).map((e) =>
-      RewardHistoryRecord.fromPartial(e)
-    );
-    message.lastClaims = (object.lastClaims ?? []).map((e) =>
-      LastClaimRecord.fromPartial(e)
-    );
     message.allocatedRewards =
       object.allocatedRewards !== undefined && object.allocatedRewards !== null
         ? AllocatedRewards.fromPartial(object.allocatedRewards)
         : undefined;
-    message.params =
-      object.params !== undefined && object.params !== null
-        ? Params.fromPartial(object.params)
-        : undefined;
+    message.accumulatedRewards = (object.accumulatedRewards ?? []).map((e) =>
+      AccumulatedRewardsRecord.fromPartial(e)
+    );
     message.poolRoutes = (object.poolRoutes ?? []).map((e) =>
       PoolRoute.fromPartial(e)
     );

@@ -175,6 +175,14 @@ export interface CdpPosition {
   mint: Coin[];
 }
 
+export interface QueryCdpPositionRequest {
+  address: string;
+}
+
+export interface QueryCdpPositionResponse {
+  position?: CdpPosition;
+}
+
 export interface QueryCdpPositionsRequest {
   pagination?: PageRequest;
   maxHealthFactor: string;
@@ -2745,6 +2753,140 @@ export const CdpPosition = {
   },
 };
 
+const baseQueryCdpPositionRequest: object = { address: "" };
+
+export const QueryCdpPositionRequest = {
+  encode(
+    message: QueryCdpPositionRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.address !== "") {
+      writer.uint32(10).string(message.address);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryCdpPositionRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryCdpPositionRequest,
+    } as QueryCdpPositionRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.address = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryCdpPositionRequest {
+    const message = {
+      ...baseQueryCdpPositionRequest,
+    } as QueryCdpPositionRequest;
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryCdpPositionRequest): unknown {
+    const obj: any = {};
+    message.address !== undefined && (obj.address = message.address);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryCdpPositionRequest>
+  ): QueryCdpPositionRequest {
+    const message = {
+      ...baseQueryCdpPositionRequest,
+    } as QueryCdpPositionRequest;
+    message.address = object.address ?? "";
+    return message;
+  },
+};
+
+const baseQueryCdpPositionResponse: object = {};
+
+export const QueryCdpPositionResponse = {
+  encode(
+    message: QueryCdpPositionResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.position !== undefined) {
+      CdpPosition.encode(message.position, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryCdpPositionResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryCdpPositionResponse,
+    } as QueryCdpPositionResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.position = CdpPosition.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryCdpPositionResponse {
+    const message = {
+      ...baseQueryCdpPositionResponse,
+    } as QueryCdpPositionResponse;
+    message.position =
+      object.position !== undefined && object.position !== null
+        ? CdpPosition.fromJSON(object.position)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryCdpPositionResponse): unknown {
+    const obj: any = {};
+    message.position !== undefined &&
+      (obj.position = message.position
+        ? CdpPosition.toJSON(message.position)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryCdpPositionResponse>
+  ): QueryCdpPositionResponse {
+    const message = {
+      ...baseQueryCdpPositionResponse,
+    } as QueryCdpPositionResponse;
+    message.position =
+      object.position !== undefined && object.position !== null
+        ? CdpPosition.fromPartial(object.position)
+        : undefined;
+    return message;
+  },
+};
+
 const baseQueryCdpPositionsRequest: object = {
   maxHealthFactor: "",
   minHealthFactor: "",
@@ -4047,6 +4189,7 @@ export interface Query {
   PositionsAll(
     request: QueryCdpPositionsRequest
   ): Promise<QueryCdpPositionsResponse>;
+  Position(request: QueryCdpPositionRequest): Promise<QueryCdpPositionResponse>;
   /** Queries a list of EMode items. */
   EMode(request: QueryEModeRequest): Promise<QueryEModeResponse>;
   /** Queries a list of EModeAll items. */
@@ -4087,6 +4230,7 @@ export class QueryClientImpl implements Query {
     this.RewardDebts = this.RewardDebts.bind(this);
     this.RewardDebtsAll = this.RewardDebtsAll.bind(this);
     this.PositionsAll = this.PositionsAll.bind(this);
+    this.Position = this.Position.bind(this);
     this.EMode = this.EMode.bind(this);
     this.EModeAll = this.EModeAll.bind(this);
     this.AccountEMode = this.AccountEMode.bind(this);
@@ -4334,6 +4478,20 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryCdpPositionsResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  Position(
+    request: QueryCdpPositionRequest
+  ): Promise<QueryCdpPositionResponse> {
+    const data = QueryCdpPositionRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Query",
+      "Position",
+      data
+    );
+    return promise.then((data) =>
+      QueryCdpPositionResponse.decode(new _m0.Reader(data))
     );
   }
 

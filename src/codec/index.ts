@@ -1093,7 +1093,7 @@ export { RateStrategyParams } from "./cdp/rate_strategy_params";
 export { StablecoinDebtInfo } from "./cdp/stablecoin_debt_info";
 export { RewardScheme, CreateRewardSchemeParams, UpdateRewardSchemeParams, RewardDebt } from "./cdp/reward_scheme";
 export { EModeCategory } from "./cdp/e_mode_category";
-export { QueryParamsRequest as QueryCdpParamsRequest, QueryParamsResponse as QueryCdpParamsResponse, QueryRateStrategyRequest, QueryRateStrategyResponse, QueryRateStrategyAllRequest, QueryRateStrategyAllResponse, QueryAccountDataRequest, QueryAccountDataResponse, QueryAccountCollateralRequest, QueryAccountCollateralResponse, QueryAccountCollateralAllRequest, QueryAccountCollateralAllResponse, Collateral, QueryAccountDebtRequest, QueryAccountDebtResponse, QueryAccountDebtAllRequest, QueryAccountDebtAllResponse, Debt, QueryAccountStablecoinRequest, QueryAccountStablecoinResponse, QueryAssetRequest, QueryAssetResponse, QueryAssetAllRequest, QueryAssetAllResponse, QueryTokenDebtRequest, QueryTokenDebtResponse, QueryTokenDebtAllRequest, QueryTokenDebtAllResponse, QueryStablecoinDebtRequest, QueryStablecoinDebtResponse, CdpPositionItem, CdpPosition, QueryCdpPositionsRequest, QueryCdpPositionsResponse, QueryRewardSchemesAllRequest, QueryRewardSchemesAllResponse, QueryRewardDebtsRequest, QueryRewardDebtsResponse, QueryRewardDebtsAllRequest, QueryEModeAllRequest, QueryEModeAllResponse, QueryStablecoinInterestRequest, QueryStablecoinInterestResponse, QueryEModeRequest, QueryEModeResponse, QueryAccountEModeRequest, QueryAccountEModeResponse, QueryCDPLiquidationsAllRequest, QueryCDPLiquidationsAllResponse } from "./cdp/query";
+export { QueryParamsRequest as QueryCdpParamsRequest, QueryParamsResponse as QueryCdpParamsResponse, QueryRateStrategyRequest, QueryRateStrategyResponse, QueryRateStrategyAllRequest, QueryRateStrategyAllResponse, QueryAccountDataRequest, QueryAccountDataResponse, QueryAccountCollateralRequest, QueryAccountCollateralResponse, QueryAccountCollateralAllRequest, QueryAccountCollateralAllResponse, Collateral, QueryAccountDebtRequest, QueryAccountDebtResponse, QueryAccountDebtAllRequest, QueryAccountDebtAllResponse, Debt, QueryAccountStablecoinRequest, QueryAccountStablecoinResponse, QueryAssetRequest, QueryAssetResponse, QueryAssetAllRequest, QueryAssetAllResponse, QueryTokenDebtRequest, QueryTokenDebtResponse, QueryTokenDebtAllRequest, QueryTokenDebtAllResponse, QueryStablecoinDebtRequest, QueryStablecoinDebtResponse, CdpPositionItem, CdpPosition, QueryCdpPositionRequest, QueryCdpPositionResponse, QueryCdpPositionsRequest, QueryCdpPositionsResponse, QueryRewardSchemesAllRequest, QueryRewardSchemesAllResponse, QueryRewardDebtsRequest, QueryRewardDebtsResponse, QueryRewardDebtsAllRequest, QueryEModeAllRequest, QueryEModeAllResponse, QueryStablecoinInterestRequest, QueryStablecoinInterestResponse, QueryEModeRequest, QueryEModeResponse, QueryAccountEModeRequest, QueryAccountEModeResponse, QueryCDPLiquidationsAllRequest, QueryCDPLiquidationsAllResponse } from "./cdp/query";
 export { NewRateStrategyParamsEvent, UpdateRateStrategyParamsEvent, RemoveRateStrategyParamsEvent, NewAssetParamsEvent, UpdateAssetParamsEvent, NewEModeCategoryEvent, UpdateEModeCategoryEvent, UpdateAccountEModeCategoryNameEvent, SetInterestFeeEvent, SetLiquidationFeeEvent, SetStablecoinInterestRateEvent, SetStablecoinMintCapEvent, SetCompleteLiquidationThresholdEvent, SetMinimumCloseFactorEvent, SetSmallLiquidationSizeEvent, SetStalePriceGracePeriodEvent, SetCdpPausedEvent, SupplyAssetEvent, WithdrawAssetEvent, BorrowAssetEvent, RepayAssetEvent, LockCollateralEvent, UnlockCollateralEvent, UpdateDebtInfoEvent, UpdateStablecoinDebtInfoEvent, MintStablecoinEvent, ReturnStablecoinEvent, LiquidateCollateralEvent, LiquidateCollateralWithStablecoinEvent, ClaimRewardEvent, RewardDebtEvent, RewardSchemeEvent, AddReserveEvent, RefundReserveEvent } from "./cdp/event";
 export { Params as CdpParams } from "./cdp/params";
 export { HashOp, hashOpFromJSON, hashOpToJSON, LengthOp, lengthOpFromJSON, lengthOpToJSON, ExistenceProof, NonExistenceProof, CommitmentProof, LeafOp, InnerOp, ProofSpec, InnerSpec, BatchProof, BatchEntry, CompressedBatchProof, CompressedBatchEntry, CompressedExistenceProof, CompressedNonExistenceProof } from "./proofs";
@@ -1103,7 +1103,7 @@ export { MinMaxBoundary } from "./broker/pagination";
 export { Candlestick } from "./broker/candlestick";
 export { SpotAmm, PerpsPoolAmm, PerpsMarketAmm } from "./broker/amm";
 export { QueryCandlesticksRequest, QueryCandlesticksResponse, QueryTradesRequest, QueryTradesResponse, QueryTradesForPositionRequest, QueryTradesForPositionResponse } from "./broker/query";
-export { TradeEvent } from "./broker/event";
+export { TradeEvent, FundingEvent } from "./broker/event";
 export { MsgSetGasCost, MsgSetGasCostResponse, MsgSetMinGasPrice, MsgSetMinGasPriceResponse, MsgRemoveGasCost, MsgRemoveGasCostResponse, MsgRemoveMinGasPrice, MsgRemoveMinGasPriceResponse } from "./fee/tx";
 export { MsgFee, MsgGasCost, MinGasPrice } from "./fee/fee";
 export { SetMsgGasCostProposal, SetMinGasPriceProposal, RemoveMsgGasCostProposal, RemoveMinGasPriceProposal } from "./fee/proposal";
@@ -1136,7 +1136,7 @@ export { MsgCreateOracle, CreateOracleParams, MsgCreateOracleResponse, MsgCreate
 export { Params as OracleParams, Oracle, Vote, Result, Mark, Contract } from "./oracle/oracle";
 export { OracleVotesWindow, SlashCounter } from "./oracle/slashing";
 export { CreateOracleProposal } from "./oracle/proposal";
-export { QueryOracleRequest, QueryOracleResponse, QueryAllOracleRequest, QueryAllOracleResponse, QueryAllResultRequest, QueryAllResultResponse, QueryAllVoteRequest, QueryAllVoteResponse, QueryVoterPowerRequest, QueryVoterPowerResponse, QueryAllSlashCounterRequest, QueryAllSlashCounterResponse, QuerySlashCounterRequest, QuerySlashCounterResponse, QueryAllOracleVotesWindowRequest, QueryAllOracleVotesWindowResponse, QueryOracleVotesWindowRequest, QueryOracleVotesWindowResponse, QueryParamsRequest as QueryOracleParamsRequest, QueryParamsResponse as QueryOracleParamsResponse, QueryContractAddressRequest, QueryContractAddressResponse, QueryContractAllRequest, QueryContractAllResponse, QueryContractParamsRequest, QueryContractParamsResponse } from "./oracle/query";
+export { QueryOracleRequest, QueryOracleResponse, QueryAllOracleRequest, QueryAllOracleResponse, QueryResultsRequest, QueryResultsResponse, QueryVotesRequest, QueryVotesResponse, QueryVoterPowerRequest, QueryVoterPowerResponse, QueryAllSlashCounterRequest, QueryAllSlashCounterResponse, QuerySlashCounterRequest, QuerySlashCounterResponse, QueryAllOracleVotesWindowRequest, QueryAllOracleVotesWindowResponse, QueryOracleVotesWindowRequest, QueryOracleVotesWindowResponse, QueryParamsRequest as QueryOracleParamsRequest, QueryParamsResponse as QueryOracleParamsResponse, QueryContractAddressRequest, QueryContractAddressResponse, QueryContractAllRequest, QueryContractAllResponse, QueryContractParamsRequest, QueryContractParamsResponse } from "./oracle/query";
 export { ResultEvent, OracleSlashEvent } from "./oracle/event";
 export { RewardWeightRange, AllianceAsset, RewardWeightChangeSnapshot } from "./alliance/alliance";
 export { MsgCreateAllianceProposal, MsgUpdateAllianceProposal, MsgDeleteAllianceProposal } from "./alliance/gov";
@@ -1152,9 +1152,9 @@ export { Params as MarketstatsParams } from "./marketstats/params";
 export { MarketStats } from "./marketstats/marketstats";
 export { MsgCreatePlPool, MsgCreatePlPoolResponse, MsgUpdatePlPool, MsgUpdatePlPoolResponse, MsgRegisterToPlPool, MsgRegisterToPlPoolResponse, MsgDeregisterFromPlPool, MsgDeregisterFromPlPoolResponse, MsgDepositToPlPool, MsgDepositToPlPoolResponse, MsgWithdrawFromPlPool, MsgWithdrawFromPlPoolResponse, MsgUpdateMarketConfig, MsgUpdateMarketConfigResponse } from "./perpsliquidity/tx";
 export { PlPool, UpdatePlPoolParams, PoolDetails, DepositToPoolParams, WithdrawFromPoolParams, DepositToBonusContractParams, MarketUtilizationRateSnapshot } from "./perpsliquidity/pool";
-export { Quote, MarketConfig, UpdateMarketConfigParams, TWAMarketUtilizationRate } from "./perpsliquidity/market";
-export { QueryParamsRequest as QueryPerpsliquidityParamsRequest, QueryParamsResponse as QueryPerpsliquidityParamsResponse, QueryGetPlPoolRequest, QueryGetPlPoolResponse, QueryAllPlPoolsRequest, QueryAllPlPoolsResponse, QueryPlPoolMappingsRequest, QueryPlPoolMappingsResponse, QueryPlPoolMappingsResponse_PoolMappingsEntry, QueryAllPlPoolAddressRequest, QueryAllPlPoolAddressResponse, QueryAllPlPoolAddressResponse_AddressesEntry, QueryPLPoolInfoRequest, QueryPLPoolInfoResponse, QueryAllPLPoolInfoRequest, QueryAllPLPoolInfoResponse } from "./perpsliquidity/query";
-export { SetPoolEvent, NewPoolEvent, UpdatePoolEvent, RegisterToPoolEvent, DeregisterFromPoolEvent, SetMarketConfigEvent, DepositToPoolEvent as PerpsliquidityDepositToPoolEvent, WithdrawFromPoolEvent as PerpsliquidityWithdrawFromPoolEvent } from "./perpsliquidity/event";
+export { Quote, MarketConfig, UpdateMarketConfigParams, TWAMarketUtilizationRate, MarketUtilizationMultiplier } from "./perpsliquidity/market";
+export { QueryAllPlPoolMarketUtilizationMultiplierRequest, QueryAllPlPoolMarketUtilizationMultiplierResponse, QueryParamsRequest as QueryPerpsliquidityParamsRequest, QueryParamsResponse as QueryPerpsliquidityParamsResponse, QueryGetPlPoolRequest, QueryGetPlPoolResponse, QueryAllPlPoolsRequest, QueryAllPlPoolsResponse, QueryPlPoolMappingsRequest, QueryPlPoolMappingsResponse, QueryPlPoolMappingsResponse_PoolMappingsEntry, QueryAllPlPoolAddressRequest, QueryAllPlPoolAddressResponse, QueryAllPlPoolAddressResponse_AddressesEntry, QueryPLPoolInfoRequest, QueryPLPoolInfoResponse, QueryAllPLPoolInfoRequest, QueryAllPLPoolInfoResponse } from "./perpsliquidity/query";
+export { SetPoolEvent, NewPoolEvent, UpdatePoolEvent, RegisterToPoolEvent, DeregisterFromPoolEvent, SetMarketConfigEvent, DepositToPoolEvent as PerpsliquidityDepositToPoolEvent, WithdrawFromPoolEvent as PerpsliquidityWithdrawFromPoolEvent, UpdateMarketUtilizationMultiplierEvent } from "./perpsliquidity/event";
 export { Params as PerpsliquidityParams } from "./perpsliquidity/params";
 export { QueryAccountBalanceRequest, QueryAccountBalanceResponse } from "./evmbank/query";
 export { MsgCreateToken, CreateTokenParams, MsgCreateTokenResponse, MsgSyncToken, MsgSyncTokenResponse, MsgMintToken, MsgMintTokenResponse, MsgBindToken, MsgBindTokenResponse, MsgUnbindToken, MsgUnbindTokenResponse, MsgLinkToken, MsgLinkTokenResponse, MsgWithdraw, MsgWithdrawResponse, MsgAuthorizeBridge, MsgAuthorizeBridgeResponse, MsgDeauthorizeBridge, MsgDeauthorizeBridgeResponse, MsgEditBridgeName, MsgEditBridgeNameResponse, MsgRemoveBridge, MsgRemoveBridgeResponse, MsgUpdateToken, UpdateTokenParams, MsgUpdateTokenResponse, MsgAddBridgeAddress, MsgAddBridgeAddressResponse, MsgRemoveBridgeAddress, MsgRemoveBridgeAddressResponse, MsgCreateGroup, MsgCreateGroupResponse, MsgUpdateGroup, UpdateGroupParams, MsgUpdateGroupResponse, MsgRegisterToGroup, MsgRegisterToGroupResponse, MsgDeregisterFromGroup, MsgDeregisterFromGroupResponse, MsgDepositToGroup, MsgDepositToGroupResponse, MsgWithdrawFromGroup, MsgWithdrawFromGroupResponse, MsgUpdateGroupedTokenConfig, UpdateGroupedTokenConfigParams, MsgUpdateGroupedTokenConfigResponse } from "./coin/tx";
@@ -1173,8 +1173,9 @@ export { Profile } from "./profile/profile";
 export { QueryGetProfileRequest, QueryGetProfileResponse, QueryAllProfileRequest, QueryAllProfileResponse, QueryProfileByUsernameRequest, QueryProfileByUsernameResponse } from "./profile/query";
 export { UpdateProfileEvent } from "./profile/event";
 export { MsgCreateSubAccount, MsgCreateSubAccountResponse, MsgActivateSubAccount, MsgActivateSubAccountResponse, MsgRemoveSubAccount, MsgRemoveSubAccountResponse } from "./subaccount/tx";
-export { QueryGetSubAccountRequest, QueryGetSubAccountResponse, QueryAllSubAccountRequest, QueryAllSubAccountResponse, QuerySubAccountStatusRequest, QuerySubAccountStatusResponse, QuerySubAccountPowerRequest, QuerySubAccountPowerResponse } from "./subaccount/query";
-export { SubAccount, GenesisSubAccount } from "./subaccount/subaccount";
+export { QueryGetSubAccountRequest, QueryGetPendingSubAccountRequest, QueryGetSubAccountResponse, QueryAllSubAccountRequest, QueryAllSubAccountResponse, QueryAllPendingSubAccountRequest, QueryAllPendingSubAccountResponse, QuerySubAccountPowerRequest, QuerySubAccountPowerResponse, QueryMainAccountAllRequest, QueryMainAccountAllResponse, QueryMainAccountRequest, QueryMainAccountResponse, QueryParamsRequest as QuerySubaccountParamsRequest, QueryParamsResponse as QuerySubaccountParamsResponse } from "./subaccount/query";
+export { SubaccountV2260 } from "./subaccount/legacy";
+export { SubAccount, GenesisSubAccount, MainAccount, Params as SubaccountParams } from "./subaccount/subaccount";
 export { OrderBookLevel, OrderBook, StopBook } from "./book/book";
 export { QueryImpactPriceRequest, QueryImpactPriceResponse, QueryGetBookRequest, QueryGetBookResponse, QueryAllBookRequest, QueryAllBookResponse } from "./book/query";
 export { OrderBookEvent } from "./book/event";
@@ -1189,11 +1190,11 @@ export { QueryMintDataRequest, QueryMintDataResponse } from "./inflation/query";
 export { MsgSetSequence, MsgSetSequenceResponse } from "./sequence/tx";
 export { QuerySequenceRequest, QuerySequenceResponse, QuerySequenceAllRequest, QuerySequenceAllResponse } from "./sequence/query";
 export { MsgCreatePool, MsgCreatePoolResponse, MsgCreatePoolWithLiquidity, MsgCreatePoolWithLiquidityResponse, MsgAddLiquidity, MsgAddLiquidityResponse, MsgRemoveLiquidity, MsgRemoveLiquidityResponse, LinkPoolParams, UnlinkPoolParams, MsgSetRewardsWeights, SetRewardsWeightsParams, MsgSetRewardsWeightsResponse, MsgStakePoolToken, MsgStakePoolTokenResponse, MsgUnstakePoolToken, MsgUnstakePoolTokenResponse, MsgClaimPoolRewards, MsgClaimPoolRewardsResponse, MsgSetRewardCurve, SetRewardCurveParams, MsgSetRewardCurveResponse, MsgSetCommitmentCurve, SetCommitmentCurveParams, MsgSetCommitmentCurveResponse, MsgUpdatePool, UpdatePoolParams, MsgUpdatePoolResponse, MsgCreatePoolRoute, MsgCreatePoolRouteResponse, CreatePoolRouteParams, MsgRemovePoolRoute, MsgRemovePoolRouteResponse, RemovePoolRouteParams, MsgUpdatePoolRoute, MsgUpdatePoolRouteResponse, UpdatePoolRouteParams } from "./liquiditypool/tx";
-export { RewardCurve, CommitmentCurve, RewardWeight, RewardWeights, Commitment, CommitmentRecord, TotalCommitment, TotalCommitmentRecord, CommitmentResponse, RewardHistory, RewardHistoryRecord, CommitmentExpiry, CommitmentExpiries, CommitmentExpiriesRecord, LastClaimRecord, AllocatedRewards } from "./liquiditypool/reward";
+export { RewardCurve, CommitmentCurve, RewardWeight, RewardWeights, Commitment, CommitmentRecord, TotalCommitment, TotalCommitmentRecord, CommitmentResponse, RewardHistory, AccumulatedRewards, AccumulatedRewardsRecord, CommitmentExpiry, CommitmentExpiries, CommitmentExpiriesRecord, AllocatedRewards } from "./liquiditypool/reward";
 export { Params as LiquiditypoolParams, Pool, Pools, PoolRoute, AddLiquidity, AddLiquidities, RemoveLiquidity, RemoveLiquidities, RemovePoolRoutes, PoolReserve } from "./liquiditypool/liquiditypool";
 export { LinkPoolProposal, UnlinkPoolProposal, SetRewardCurveProposal, SetCommitmentCurveProposal, SetRewardsWeightsProposal, UpdatePoolProposal, CreatePoolRouteProposal, RemovePoolRouteProposal, UpdatePoolRouteProposal } from "./liquiditypool/proposal";
-export { QueryGetPoolRequest, QueryGetPoolResponse, QueryAllPoolRequest, QueryAllPoolResponse, QueryAllPoolAddressRequest, QueryAllPoolAddressResponse, QueryAllPoolAddressResponse_AddressesEntry, QueryRewardHistoryRequest, ExtendedPool, QueryRewardHistoryResponse, QueryCommitmentRequest, QueryCommitmentResponse, QueryAllCommitmentRequest, QueryAllCommitmentResponse, QueryLastClaimRequest, QueryLastClaimResponse, QueryCommitmentCurveRequest, QueryCommitmentCurveResponse, QueryRewardCurveRequest, QueryRewardCurveResponse, QueryTotalCommitmentRequest, QueryTotalCommitmentResponse, QueryAllTotalCommitmentRequest, QueryAllTotalCommitmentResponse, QueryClaimableRewardsRequest, QueryClaimableRewardsResponse, QueryParamsRequest as QueryLiquiditypoolParamsRequest, QueryParamsResponse as QueryLiquiditypoolParamsResponse, QueryAllPoolRouteRequest, QueryAllPoolRouteResponse, QueryAllPoolRouteAddressRequest, QueryAllPoolRouteAddressResponse, QueryAllPoolRouteAddressResponse_AddressesEntry } from "./liquiditypool/query";
-export { PoolEvent, TotalCommitmentChangeEvent, RewardsWeightChangeEvent, CommitmentCurveEvent, CommitmentEvent, SwapEvent, DepositToPoolEvent, WithdrawFromPoolEvent, StakePoolTokenEvent, UnstakePoolTokenEvent } from "./liquiditypool/event";
+export { QueryGetPoolRequest, QueryGetPoolResponse, QueryAllPoolRequest, QueryAllPoolResponse, QueryAllPoolAddressRequest, QueryAllPoolAddressResponse, QueryAllPoolAddressResponse_AddressesEntry, ExtendedPool, QueryCommitmentRequest, QueryCommitmentResponse, QueryAllCommitmentRequest, QueryAllCommitmentResponse, QueryCommitmentCurveRequest, QueryCommitmentCurveResponse, QueryRewardCurveRequest, QueryRewardCurveResponse, QueryTotalCommitmentRequest, QueryTotalCommitmentResponse, QueryAllTotalCommitmentRequest, QueryAllTotalCommitmentResponse, QueryClaimableRewardsRequest, QueryClaimableRewardsResponse, QueryParamsRequest as QueryLiquiditypoolParamsRequest, QueryParamsResponse as QueryLiquiditypoolParamsResponse, QueryAllPoolRouteRequest, QueryAllPoolRouteResponse, QueryAllPoolRouteAddressRequest, QueryAllPoolRouteAddressResponse, QueryAllPoolRouteAddressResponse_AddressesEntry } from "./liquiditypool/query";
+export { PoolEvent, TotalCommitmentChangeEvent, RewardsWeightChangeEvent, CommitmentCurveEvent, CommitmentEvent, SwapEvent, DepositToPoolEvent, WithdrawFromPoolEvent, StakePoolTokenEvent, UnstakePoolTokenEvent, RewardsAccumulatedEvent, ClaimEvent } from "./liquiditypool/event";
 export { MsgTopUpInsurance, MsgTopUpInsuranceResponse } from "./insurance/tx";
 export { QueryCoinBalancesRequest, QueryCoinBalancesResponse } from "./insurance/query";
 export { EventDataInsuranceFundTransfer } from "./insurance/event";
@@ -3260,6 +3261,24 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
+    "FundingEvent": [
+      {
+        "name": "market_name",
+        "type": "string"
+      },
+      {
+        "name": "funding_rate",
+        "type": "string"
+      },
+      {
+        "name": "premium_rate",
+        "type": "string"
+      },
+      {
+        "name": "borrow_rate",
+        "type": "string"
+      }
+    ],
     "GenesisState": [
       {
         "name": "spot_amms",
@@ -5091,6 +5110,19 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "mint",
         "type": "Coin[]",
         "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "QueryCdpPositionRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "QueryCdpPositionResponse": [
+      {
+        "name": "position",
+        "type": "CdpPosition",
+        "packageName": "/Switcheo.carbon.cdp"
       }
     ],
     "QueryCdpPositionsRequest": [
@@ -19881,11 +19913,11 @@ export const EIP712Types: { [index: string]: any } = {
   "/Switcheo.carbon.inflation": {
     "MintData": [
       {
-        "name": "first_block_time",
+        "name": "legacy_first_block_time",
         "type": "int64"
       },
       {
-        "name": "prev_block_time",
+        "name": "legacy_prev_block_time",
         "type": "int64"
       },
       {
@@ -19894,6 +19926,14 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "inflation_rate",
+        "type": "string"
+      },
+      {
+        "name": "first_block_time",
+        "type": "string"
+      },
+      {
+        "name": "prev_block_time",
         "type": "string"
       }
     ],
@@ -21187,6 +21227,11 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "duration",
         "type": "uint64"
+      },
+      {
+        "name": "reward_debt",
+        "type": "DecCoin[]",
+        "packageName": "/cosmos.base.v1beta1"
       }
     ],
     "CommitmentRecord": [
@@ -21266,14 +21311,21 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
-    "RewardHistoryRecord": [
+    "AccumulatedRewards": [
       {
-        "name": "height",
+        "name": "reward_per_commitment_share",
+        "type": "DecCoin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "AccumulatedRewardsRecord": [
+      {
+        "name": "pool_id",
         "type": "uint64"
       },
       {
-        "name": "reward_history",
-        "type": "RewardHistory",
+        "name": "accumulated_rewards",
+        "type": "AccumulatedRewards",
         "packageName": "/Switcheo.carbon.liquiditypool"
       }
     ],
@@ -21303,20 +21355,6 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "commitment_expiries",
         "type": "CommitmentExpiries",
         "packageName": "/Switcheo.carbon.liquiditypool"
-      }
-    ],
-    "LastClaimRecord": [
-      {
-        "name": "address",
-        "type": "string"
-      },
-      {
-        "name": "pool_id",
-        "type": "uint64"
-      },
-      {
-        "name": "height",
-        "type": "uint64"
       }
     ],
     "AllocatedRewards": [
@@ -21521,7 +21559,38 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
+    "RewardsAccumulatedEvent": [
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "accumulated_rewards",
+        "type": "AccumulatedRewards",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      }
+    ],
+    "ClaimEvent": [
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "rewards",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
     "GenesisState": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      },
       {
         "name": "pools",
         "type": "Pool[]",
@@ -21558,23 +21627,13 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/Switcheo.carbon.liquiditypool"
       },
       {
-        "name": "reward_histories",
-        "type": "RewardHistoryRecord[]",
-        "packageName": "/Switcheo.carbon.liquiditypool"
-      },
-      {
-        "name": "last_claims",
-        "type": "LastClaimRecord[]",
-        "packageName": "/Switcheo.carbon.liquiditypool"
-      },
-      {
         "name": "allocated_rewards",
         "type": "AllocatedRewards",
         "packageName": "/Switcheo.carbon.liquiditypool"
       },
       {
-        "name": "params",
-        "type": "Params",
+        "name": "accumulated_rewards",
+        "type": "AccumulatedRewardsRecord[]",
         "packageName": "/Switcheo.carbon.liquiditypool"
       },
       {
@@ -22122,21 +22181,6 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
-    "QueryRewardHistoryRequest": [
-      {
-        "name": "pool_id",
-        "type": "string"
-      },
-      {
-        "name": "start_block_height",
-        "type": "string"
-      },
-      {
-        "name": "pagination",
-        "type": "PageRequest",
-        "packageName": "/cosmos.base.query.v1beta1"
-      }
-    ],
     "ExtendedPool": [
       {
         "name": "pool",
@@ -22150,18 +22194,11 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "total_commitment",
         "type": "string"
-      }
-    ],
-    "QueryRewardHistoryResponse": [
-      {
-        "name": "reward_histories",
-        "type": "RewardHistoryRecord[]",
-        "packageName": "/Switcheo.carbon.liquiditypool"
       },
       {
-        "name": "pagination",
-        "type": "PageResponse",
-        "packageName": "/cosmos.base.query.v1beta1"
+        "name": "reward_per_commitment_share",
+        "type": "DecCoin[]",
+        "packageName": "/cosmos.base.v1beta1"
       }
     ],
     "QueryCommitmentRequest": [
@@ -22206,22 +22243,6 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "block_time",
         "type": "string"
-      }
-    ],
-    "QueryLastClaimRequest": [
-      {
-        "name": "pool_id",
-        "type": "string"
-      },
-      {
-        "name": "address",
-        "type": "string"
-      }
-    ],
-    "QueryLastClaimResponse": [
-      {
-        "name": "last_claim",
-        "type": "int64"
       }
     ],
     "QueryCommitmentCurveRequest": [],
@@ -23935,7 +23956,7 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
-    "QueryAllResultRequest": [
+    "QueryResultsRequest": [
       {
         "name": "oracle_id",
         "type": "string"
@@ -23946,7 +23967,7 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
-    "QueryAllResultResponse": [
+    "QueryResultsResponse": [
       {
         "name": "results",
         "type": "Result[]",
@@ -23958,7 +23979,7 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
-    "QueryAllVoteRequest": [
+    "QueryVotesRequest": [
       {
         "name": "oracle_id",
         "type": "string"
@@ -23977,7 +23998,7 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
-    "QueryAllVoteResponse": [
+    "QueryVotesResponse": [
       {
         "name": "votes",
         "type": "Vote[]",
@@ -24196,6 +24217,16 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "twa_utilization_rate",
+        "type": "string"
+      }
+    ],
+    "MarketUtilizationMultiplier": [
+      {
+        "name": "market",
+        "type": "string"
+      },
+      {
+        "name": "multiplier",
         "type": "string"
       }
     ],
@@ -24451,6 +24482,16 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
+    "UpdateMarketUtilizationMultiplierEvent": [
+      {
+        "name": "market",
+        "type": "string"
+      },
+      {
+        "name": "multiplier",
+        "type": "string"
+      }
+    ],
     "Params": [
       {
         "name": "quote_index_price_fluctuation_tolerance_ratio",
@@ -24497,6 +24538,25 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "market_config",
         "type": "MarketConfig",
         "packageName": "/Switcheo.carbon.perpsliquidity"
+      }
+    ],
+    "QueryAllPlPoolMarketUtilizationMultiplierRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllPlPoolMarketUtilizationMultiplierResponse": [
+      {
+        "name": "markets_utilization_multiplier",
+        "type": "MarketUtilizationMultiplier[]",
+        "packageName": "/Switcheo.carbon.perpsliquidity"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
     "QueryParamsRequest": [],
@@ -25554,12 +25614,20 @@ export const EIP712Types: { [index: string]: any } = {
   "/Switcheo.carbon.subaccount": {
     "SubAccount": [
       {
-        "name": "main_account",
+        "name": "main_address",
         "type": "string"
       },
       {
-        "name": "active",
-        "type": "bool"
+        "name": "role",
+        "type": "string"
+      },
+      {
+        "name": "expected_authorizer",
+        "type": "string"
+      },
+      {
+        "name": "sub_address",
+        "type": "string"
       }
     ],
     "GenesisSubAccount": [
@@ -25572,8 +25640,33 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "active",
-        "type": "bool"
+        "name": "role",
+        "type": "string"
+      }
+    ],
+    "MainAccount": [
+      {
+        "name": "sub_addresses",
+        "type": "string[]"
+      },
+      {
+        "name": "trading_fee_delegate_last_update",
+        "type": "string"
+      },
+      {
+        "name": "main_address",
+        "type": "string"
+      },
+      {
+        "name": "sub_role",
+        "type": "string"
+      }
+    ],
+    "Params": [
+      {
+        "name": "trading_fee_delegate_cooldown",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
       }
     ],
     "GenesisState": [
@@ -25581,11 +25674,54 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "sub_accounts",
         "type": "GenesisSubAccount[]",
         "packageName": "/Switcheo.carbon.subaccount"
+      },
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.subaccount"
+      },
+      {
+        "name": "pending_sub_accounts",
+        "type": "SubAccount[]",
+        "packageName": "/Switcheo.carbon.subaccount"
+      },
+      {
+        "name": "main_accounts",
+        "type": "MainAccount[]",
+        "packageName": "/Switcheo.carbon.subaccount"
+      }
+    ],
+    "SubAccount_V2_26_0": [
+      {
+        "name": "main_account",
+        "type": "string"
+      },
+      {
+        "name": "active",
+        "type": "bool"
       }
     ],
     "QueryGetSubAccountRequest": [
       {
         "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "role",
+        "type": "string"
+      }
+    ],
+    "QueryGetPendingSubAccountRequest": [
+      {
+        "name": "main_address",
+        "type": "string"
+      },
+      {
+        "name": "sub_address",
+        "type": "string"
+      },
+      {
+        "name": "role",
         "type": "string"
       }
     ],
@@ -25601,12 +25737,16 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "pagination",
         "type": "PageRequest",
         "packageName": "/cosmos.base.query.v1beta1"
+      },
+      {
+        "name": "main_address",
+        "type": "string"
       }
     ],
     "QueryAllSubAccountResponse": [
       {
         "name": "subaccounts",
-        "type": "GenesisSubAccount[]",
+        "type": "SubAccount[]",
         "packageName": "/Switcheo.carbon.subaccount"
       },
       {
@@ -25615,20 +25755,35 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
-    "QuerySubAccountStatusRequest": [
+    "QueryAllPendingSubAccountRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      },
       {
         "name": "main_address",
         "type": "string"
       },
       {
-        "name": "subaccount_address",
+        "name": "role",
+        "type": "string"
+      },
+      {
+        "name": "sub_address",
         "type": "string"
       }
     ],
-    "QuerySubAccountStatusResponse": [
+    "QueryAllPendingSubAccountResponse": [
       {
-        "name": "status",
-        "type": "string"
+        "name": "subaccounts",
+        "type": "SubAccount[]",
+        "packageName": "/Switcheo.carbon.subaccount"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
     "QuerySubAccountPowerRequest": [
@@ -25643,6 +25798,44 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
+    "QueryMainAccountAllRequest": [
+      {
+        "name": "sub_address",
+        "type": "string"
+      }
+    ],
+    "QueryMainAccountAllResponse": [
+      {
+        "name": "main_accounts",
+        "type": "MainAccount[]",
+        "packageName": "/Switcheo.carbon.subaccount"
+      }
+    ],
+    "QueryMainAccountRequest": [
+      {
+        "name": "sub_address",
+        "type": "string"
+      },
+      {
+        "name": "role",
+        "type": "string"
+      }
+    ],
+    "QueryMainAccountResponse": [
+      {
+        "name": "main_account",
+        "type": "MainAccount",
+        "packageName": "/Switcheo.carbon.subaccount"
+      }
+    ],
+    "QueryParamsRequest": [],
+    "QueryParamsResponse": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.subaccount"
+      }
+    ],
     "MsgCreateSubAccount": [
       {
         "name": "creator",
@@ -25650,6 +25843,14 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "sub_address",
+        "type": "string"
+      },
+      {
+        "name": "main_address",
+        "type": "string"
+      },
+      {
+        "name": "role",
         "type": "string"
       }
     ],
@@ -25660,7 +25861,15 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "expected_main_account",
+        "name": "main_address",
+        "type": "string"
+      },
+      {
+        "name": "sub_address",
+        "type": "string"
+      },
+      {
+        "name": "role",
         "type": "string"
       }
     ],
@@ -25672,6 +25881,14 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "sub_address",
+        "type": "string"
+      },
+      {
+        "name": "main_address",
+        "type": "string"
+      },
+      {
+        "name": "role",
         "type": "string"
       }
     ],
