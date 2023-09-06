@@ -1,14 +1,24 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Params } from "./params";
-import { PoolDetails } from "./pool";
 import {
   PageRequest,
   PageResponse,
 } from "../cosmos/base/query/v1beta1/pagination";
+import { Params } from "./params";
+import { PoolDetails } from "./pool";
+import { MarketUtilizationMultiplier } from "./market";
 
 export const protobufPackage = "Switcheo.carbon.perpsliquidity";
+
+export interface QueryAllPlPoolMarketUtilizationMultiplierRequest {
+  pagination?: PageRequest;
+}
+
+export interface QueryAllPlPoolMarketUtilizationMultiplierResponse {
+  marketsUtilizationMultiplier: MarketUtilizationMultiplier[];
+  pagination?: PageResponse;
+}
 
 /** QueryParamsRequest is request type for the Query/Params RPC method. */
 export interface QueryParamsRequest {}
@@ -84,6 +94,172 @@ export interface QueryAllPLPoolInfoResponse {
   pools: QueryPLPoolInfoResponse[];
   pagination?: PageResponse;
 }
+
+const baseQueryAllPlPoolMarketUtilizationMultiplierRequest: object = {};
+
+export const QueryAllPlPoolMarketUtilizationMultiplierRequest = {
+  encode(
+    message: QueryAllPlPoolMarketUtilizationMultiplierRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAllPlPoolMarketUtilizationMultiplierRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAllPlPoolMarketUtilizationMultiplierRequest,
+    } as QueryAllPlPoolMarketUtilizationMultiplierRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllPlPoolMarketUtilizationMultiplierRequest {
+    const message = {
+      ...baseQueryAllPlPoolMarketUtilizationMultiplierRequest,
+    } as QueryAllPlPoolMarketUtilizationMultiplierRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryAllPlPoolMarketUtilizationMultiplierRequest): unknown {
+    const obj: any = {};
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAllPlPoolMarketUtilizationMultiplierRequest>
+  ): QueryAllPlPoolMarketUtilizationMultiplierRequest {
+    const message = {
+      ...baseQueryAllPlPoolMarketUtilizationMultiplierRequest,
+    } as QueryAllPlPoolMarketUtilizationMultiplierRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryAllPlPoolMarketUtilizationMultiplierResponse: object = {};
+
+export const QueryAllPlPoolMarketUtilizationMultiplierResponse = {
+  encode(
+    message: QueryAllPlPoolMarketUtilizationMultiplierResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.marketsUtilizationMultiplier) {
+      MarketUtilizationMultiplier.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAllPlPoolMarketUtilizationMultiplierResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAllPlPoolMarketUtilizationMultiplierResponse,
+    } as QueryAllPlPoolMarketUtilizationMultiplierResponse;
+    message.marketsUtilizationMultiplier = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.marketsUtilizationMultiplier.push(
+            MarketUtilizationMultiplier.decode(reader, reader.uint32())
+          );
+          break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllPlPoolMarketUtilizationMultiplierResponse {
+    const message = {
+      ...baseQueryAllPlPoolMarketUtilizationMultiplierResponse,
+    } as QueryAllPlPoolMarketUtilizationMultiplierResponse;
+    message.marketsUtilizationMultiplier = (
+      object.marketsUtilizationMultiplier ?? []
+    ).map((e: any) => MarketUtilizationMultiplier.fromJSON(e));
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryAllPlPoolMarketUtilizationMultiplierResponse): unknown {
+    const obj: any = {};
+    if (message.marketsUtilizationMultiplier) {
+      obj.marketsUtilizationMultiplier =
+        message.marketsUtilizationMultiplier.map((e) =>
+          e ? MarketUtilizationMultiplier.toJSON(e) : undefined
+        );
+    } else {
+      obj.marketsUtilizationMultiplier = [];
+    }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAllPlPoolMarketUtilizationMultiplierResponse>
+  ): QueryAllPlPoolMarketUtilizationMultiplierResponse {
+    const message = {
+      ...baseQueryAllPlPoolMarketUtilizationMultiplierResponse,
+    } as QueryAllPlPoolMarketUtilizationMultiplierResponse;
+    message.marketsUtilizationMultiplier = (
+      object.marketsUtilizationMultiplier ?? []
+    ).map((e) => MarketUtilizationMultiplier.fromPartial(e));
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
 
 const baseQueryParamsRequest: object = {};
 
@@ -1335,6 +1511,14 @@ export interface Query {
   PoolInfoAll(
     request: QueryAllPLPoolInfoRequest
   ): Promise<QueryAllPLPoolInfoResponse>;
+  /** Get addresses for all plp pools */
+  PoolAddressAll(
+    request: QueryAllPlPoolAddressRequest
+  ): Promise<QueryAllPlPoolAddressResponse>;
+  /** Get markets utilization multiplier for all plp pools-linked markets */
+  PoolMarketUtilizationMultiplierAll(
+    request: QueryAllPlPoolMarketUtilizationMultiplierRequest
+  ): Promise<QueryAllPlPoolMarketUtilizationMultiplierResponse>;
   /** Get Pool details for a particular id */
   Pool(request: QueryGetPlPoolRequest): Promise<QueryGetPlPoolResponse>;
   /** Get all Pool details */
@@ -1343,10 +1527,6 @@ export interface Query {
   PoolMappings(
     request: QueryPlPoolMappingsRequest
   ): Promise<QueryPlPoolMappingsResponse>;
-  /** Get addresses for all plp pools */
-  PoolAddressAll(
-    request: QueryAllPlPoolAddressRequest
-  ): Promise<QueryAllPlPoolAddressResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -1356,10 +1536,12 @@ export class QueryClientImpl implements Query {
     this.Params = this.Params.bind(this);
     this.PoolInfo = this.PoolInfo.bind(this);
     this.PoolInfoAll = this.PoolInfoAll.bind(this);
+    this.PoolAddressAll = this.PoolAddressAll.bind(this);
+    this.PoolMarketUtilizationMultiplierAll =
+      this.PoolMarketUtilizationMultiplierAll.bind(this);
     this.Pool = this.Pool.bind(this);
     this.PoolAll = this.PoolAll.bind(this);
     this.PoolMappings = this.PoolMappings.bind(this);
-    this.PoolAddressAll = this.PoolAddressAll.bind(this);
   }
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
@@ -1399,6 +1581,37 @@ export class QueryClientImpl implements Query {
     );
   }
 
+  PoolAddressAll(
+    request: QueryAllPlPoolAddressRequest
+  ): Promise<QueryAllPlPoolAddressResponse> {
+    const data = QueryAllPlPoolAddressRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.perpsliquidity.Query",
+      "PoolAddressAll",
+      data
+    );
+    return promise.then((data) =>
+      QueryAllPlPoolAddressResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  PoolMarketUtilizationMultiplierAll(
+    request: QueryAllPlPoolMarketUtilizationMultiplierRequest
+  ): Promise<QueryAllPlPoolMarketUtilizationMultiplierResponse> {
+    const data =
+      QueryAllPlPoolMarketUtilizationMultiplierRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.perpsliquidity.Query",
+      "PoolMarketUtilizationMultiplierAll",
+      data
+    );
+    return promise.then((data) =>
+      QueryAllPlPoolMarketUtilizationMultiplierResponse.decode(
+        new _m0.Reader(data)
+      )
+    );
+  }
+
   Pool(request: QueryGetPlPoolRequest): Promise<QueryGetPlPoolResponse> {
     const data = QueryGetPlPoolRequest.encode(request).finish();
     const promise = this.rpc.request(
@@ -1434,20 +1647,6 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryPlPoolMappingsResponse.decode(new _m0.Reader(data))
-    );
-  }
-
-  PoolAddressAll(
-    request: QueryAllPlPoolAddressRequest
-  ): Promise<QueryAllPlPoolAddressResponse> {
-    const data = QueryAllPlPoolAddressRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.perpsliquidity.Query",
-      "PoolAddressAll",
-      data
-    );
-    return promise.then((data) =>
-      QueryAllPlPoolAddressResponse.decode(new _m0.Reader(data))
     );
   }
 }

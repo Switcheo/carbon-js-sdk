@@ -47,6 +47,11 @@ export interface TWAMarketUtilizationRate {
   twaUtilizationRate: string;
 }
 
+export interface MarketUtilizationMultiplier {
+  market: string;
+  multiplier: string;
+}
+
 const baseQuote: object = {
   quotePriceType: "",
   quotePriceValue: "",
@@ -444,6 +449,82 @@ export const TWAMarketUtilizationRate = {
     } as TWAMarketUtilizationRate;
     message.lastUpdatedAt = object.lastUpdatedAt ?? undefined;
     message.twaUtilizationRate = object.twaUtilizationRate ?? "";
+    return message;
+  },
+};
+
+const baseMarketUtilizationMultiplier: object = { market: "", multiplier: "" };
+
+export const MarketUtilizationMultiplier = {
+  encode(
+    message: MarketUtilizationMultiplier,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.market !== "") {
+      writer.uint32(10).string(message.market);
+    }
+    if (message.multiplier !== "") {
+      writer.uint32(18).string(message.multiplier);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MarketUtilizationMultiplier {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMarketUtilizationMultiplier,
+    } as MarketUtilizationMultiplier;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.market = reader.string();
+          break;
+        case 2:
+          message.multiplier = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MarketUtilizationMultiplier {
+    const message = {
+      ...baseMarketUtilizationMultiplier,
+    } as MarketUtilizationMultiplier;
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? String(object.market)
+        : "";
+    message.multiplier =
+      object.multiplier !== undefined && object.multiplier !== null
+        ? String(object.multiplier)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MarketUtilizationMultiplier): unknown {
+    const obj: any = {};
+    message.market !== undefined && (obj.market = message.market);
+    message.multiplier !== undefined && (obj.multiplier = message.multiplier);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MarketUtilizationMultiplier>
+  ): MarketUtilizationMultiplier {
+    const message = {
+      ...baseMarketUtilizationMultiplier,
+    } as MarketUtilizationMultiplier;
+    message.market = object.market ?? "";
+    message.multiplier = object.multiplier ?? "";
     return message;
   },
 };

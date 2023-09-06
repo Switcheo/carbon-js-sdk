@@ -52,6 +52,11 @@ export interface WithdrawFromPoolEvent {
   withdrawer: string;
 }
 
+export interface UpdateMarketUtilizationMultiplierEvent {
+  market: string;
+  multiplier: string;
+}
+
 const baseSetPoolEvent: object = { type: "" };
 
 export const SetPoolEvent = {
@@ -718,6 +723,85 @@ export const WithdrawFromPoolEvent = {
     message.shareDenom = object.shareDenom ?? "";
     message.shareAmount = object.shareAmount ?? "";
     message.withdrawer = object.withdrawer ?? "";
+    return message;
+  },
+};
+
+const baseUpdateMarketUtilizationMultiplierEvent: object = {
+  market: "",
+  multiplier: "",
+};
+
+export const UpdateMarketUtilizationMultiplierEvent = {
+  encode(
+    message: UpdateMarketUtilizationMultiplierEvent,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.market !== "") {
+      writer.uint32(10).string(message.market);
+    }
+    if (message.multiplier !== "") {
+      writer.uint32(18).string(message.multiplier);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): UpdateMarketUtilizationMultiplierEvent {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseUpdateMarketUtilizationMultiplierEvent,
+    } as UpdateMarketUtilizationMultiplierEvent;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.market = reader.string();
+          break;
+        case 2:
+          message.multiplier = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): UpdateMarketUtilizationMultiplierEvent {
+    const message = {
+      ...baseUpdateMarketUtilizationMultiplierEvent,
+    } as UpdateMarketUtilizationMultiplierEvent;
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? String(object.market)
+        : "";
+    message.multiplier =
+      object.multiplier !== undefined && object.multiplier !== null
+        ? String(object.multiplier)
+        : "";
+    return message;
+  },
+
+  toJSON(message: UpdateMarketUtilizationMultiplierEvent): unknown {
+    const obj: any = {};
+    message.market !== undefined && (obj.market = message.market);
+    message.multiplier !== undefined && (obj.multiplier = message.multiplier);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<UpdateMarketUtilizationMultiplierEvent>
+  ): UpdateMarketUtilizationMultiplierEvent {
+    const message = {
+      ...baseUpdateMarketUtilizationMultiplierEvent,
+    } as UpdateMarketUtilizationMultiplierEvent;
+    message.market = object.market ?? "";
+    message.multiplier = object.multiplier ?? "";
     return message;
   },
 };
