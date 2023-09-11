@@ -1,5 +1,6 @@
 import { ProtobufRpcClient } from "@cosmjs/stargate";
 import { grpc } from "@improbable-eng/grpc-web";
+import { log } from "console";
 
 export class GrpcWebError extends Error {
   constructor(message: string, public code: grpc.Code, public metadata: grpc.Metadata) {
@@ -56,10 +57,13 @@ export class GrpcQueryClient implements ProtobufRpcClient {
         onEnd: function (response) {
           if (response.status === grpc.Code.OK) {
             resolve(response.message as unknown as Uint8Array);
+            // const responseData = new TextDecoder().decode(data)
+            // log(serviceName + " : " + methodName + responseData);
           } else {
-            const err = new Error(response.statusMessage) as any;
+            const err = new Error(response.statusMessage + " | " + serviceName + " : " + methodName ) as any;
             err.code = response.status;
-            err.metadata = response.trailers;
+            err.requestdata = new TextDecoder().decode(data)
+            err.metadata = response;
             reject(err);
           }
         },
