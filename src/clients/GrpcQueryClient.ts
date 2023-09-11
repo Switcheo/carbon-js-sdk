@@ -1,6 +1,6 @@
 import { ProtobufRpcClient } from "@cosmjs/stargate";
-import { credentials, makeGenericClientConstructor } from "@grpc/grpc-js";
 import { grpc } from "@improbable-eng/grpc-web";
+import { NodeHttpTransport } from "@improbable-eng/grpc-web-node-http-transport";
 
 export class GrpcWebError extends Error {
   constructor(message: string, public code: grpc.Code, public metadata: grpc.Metadata) {
@@ -18,6 +18,7 @@ export class GrpcQueryClient implements ProtobufRpcClient {
 
     metadata?: grpc.Metadata;
   };
+  private useGrpcJs: boolean;
 
   constructor(
     host: string,
@@ -29,34 +30,50 @@ export class GrpcQueryClient implements ProtobufRpcClient {
   ) {
     this.host = host;
     this.options = options;
+    this.useGrpcJs = GrpcQueryClient.hasNodeGrpc() && typeof window === "undefined";
+  }
+
+  static hasNodeGrpc(): boolean {
+    try {
+      return require("@grpc/grpc-js").version; // eslint-disable-line 
+    } catch (error) {
+      return false;
+    }
   }
 
   request(service: string, method: string, data: Uint8Array): Promise<Uint8Array> {
-    const isNode = typeof window === "undefined";
-    return isNode ? this._requestGrpc(service, method, data) : this._requestGrpcWeb(service, method, data);
+    return this.useGrpcJs ? this._requestGrpc(service, method, data) : this._requestGrpcWeb(service, method, data);
   }
 
   _requestGrpc(service: string, method: string, data: Uint8Array): Promise<Uint8Array> {
     const path = ["", service, method].join("/");
+    try {
+      const { credentials, makeGenericClientConstructor } = require("@grpc/grpc-js"); // eslint-disable-line 
 
-    const client = new (makeGenericClientConstructor({
-      runQuery: {
-        path,
-        requestStream: false,
-        responseStream: false,
-        requestSerialize: passThroughBuffer,
-        requestDeserialize: passThrough,
-        responseSerialize: passThroughBuffer,
-        responseDeserialize: passThrough,
-      }
-    }, service))(this.host, credentials.createSsl());
+      const client = new (makeGenericClientConstructor({
+        runQuery: {
+          path,
+          requestStream: false,
+          responseStream: false,
+          requestSerialize: passThroughBuffer,
+          requestDeserialize: passThrough,
+          responseSerialize: passThroughBuffer,
+          responseDeserialize: passThrough,
+        }
+      }, service))(this.host, credentials.createSsl());
 
-    return new Promise((resolve, reject) => {
-      client.runQuery(data, (error: Error, value: Uint8Array) => {
-        if (error) reject(error)
-        else resolve(value);
+      return new Promise((resolve, reject) => {
+        client.runQuery(data, (error: Error, value: Uint8Array) => {
+          if (error) reject(error)
+          else resolve(value);
+        })
       })
-    })
+    } catch (error) {
+      if (error?.message?.startsWith?.("Cannot find module '@grpc/grpc-js'")) {
+        throw new Error("Please install @grpc/grpc-js, refer to README.md for more information.");
+      }
+      throw error;
+    }
   }
 
   /**
@@ -83,7 +100,7 @@ export class GrpcQueryClient implements ProtobufRpcClient {
         },
         host: this.host,
         metadata: this.options.metadata,
-        transport: this.options.transport,
+        transport: NodeHttpTransport(),
         debug: false,
         onEnd: function (response) {
           if (response.status === grpc.Code.OK) {

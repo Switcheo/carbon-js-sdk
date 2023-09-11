@@ -144,8 +144,10 @@ class CarbonSDK {
 
     let grpcClient: GrpcQueryClient | undefined;
     if (opts.useTmAbciQuery !== true && this.networkConfig.grpcUrl) {
-      const grpcUrl = typeof window === "undefined" ? this.networkConfig.grpcUrl : this.networkConfig.grpcWebUrl;
-      grpcClient = opts.grpcQueryClient ?? new GrpcQueryClient(grpcUrl);
+      const hasNodeGrpc = GrpcQueryClient.hasNodeGrpc();
+      const grpcUrl = hasNodeGrpc ? this.networkConfig.grpcUrl : this.networkConfig.grpcWebUrl;
+      const transport = typeof window === "undefined" ? NodeHttpTransport() : undefined;
+      grpcClient = opts.grpcQueryClient ?? new GrpcQueryClient(grpcUrl, { transport });
     }
 
     this.query = new CarbonQueryClient({
