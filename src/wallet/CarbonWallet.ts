@@ -11,7 +11,8 @@ import { BroadcastTxMode, CarbonSignerData, CarbonTxError } from "@carbon-sdk/ut
 import { SimpleMap } from "@carbon-sdk/util/type";
 import { encodeSecp256k1Signature, StdSignature } from "@cosmjs/amino";
 import { EncodeObject, OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
-import { Account, DeliverTxResponse, isDeliverTxFailure, SequenceResponse, StargateClient } from "@cosmjs/stargate";
+import { Account, DeliverTxResponse, IndexedTx, isDeliverTxFailure, TimeoutError } from "@cosmjs/stargate";
+import { sleep } from "@cosmjs/utils";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import { BroadcastTxSyncResponse } from "@cosmjs/tendermint-rpc/build/tendermint34/responses";
 import { Leap } from "@cosmos-kit/leap";
@@ -600,6 +601,42 @@ export class CarbonWallet {
 
   async sendTx(msg: EncodeObject, opts?: CarbonTx.SignTxOpts): Promise<CarbonWallet.SendTxResponse> {
     return this.sendTxs([msg], opts);
+  }
+
+  async waitForTx(txHash: string, timeoutMs = 60000, pollIntervalMs = 100) {
+
+    let timedOut = false
+    const txPollTimeout = setTimeout(() => {
+      timedOut = true
+    }, timeoutMs)
+
+    const pollForTx = async (txHash: string) => {
+      if (timedOut) {
+        throw new TimeoutError(`Transaction with ID ${txHash} was submitted but was not yet found on the chain. You might want to check later. There was a wait of ${timeoutMs / 1000} seconds.`, txHash)
+      }
+      const result: IndexedTx | null = await this.getSigningClient().getTx(txHash)
+      if (result) {
+        return {
+          code: result.code,
+          height: result.height,
+          events: result.events,
+          rawLog: result.rawLog,
+          transactionHash: txHash,
+          gasUsed: result.gasUsed,
+          gasWanted: result.gasWanted,
+        }
+      }
+      await sleep(pollIntervalMs)
+      pollForTx(txHash)
+    }
+
+    return new Promise((resolve, reject) => pollForTx(txHash).then((value) => {
+      clearTimeout(txPollTimeout)
+      resolve(value)
+    }, (error) => {
+      clearTimeout(txPollTimeout)
+      reject(error)
+    }))
   }
 
   getSigningClient(): CarbonSigningClient {
