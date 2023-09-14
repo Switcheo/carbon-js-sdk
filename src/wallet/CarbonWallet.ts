@@ -29,6 +29,7 @@ import { MsgMergeAccount, registry } from "@carbon-sdk/codec";
 
 export interface CarbonWalletGenericOpts {
   tmClient?: Tendermint34Client;
+  txDefaultBroadcastMode?: BroadcastTxMode;
   network?: Network;
   config?: Partial<NetworkConfig>;
   providerAgent?: ProviderAgent | string;
@@ -157,6 +158,7 @@ export class CarbonWallet {
   txFees?: SimpleMap<BigNumber>;
   txGasCosts?: SimpleMap<BigNumber>;
   txGasPrices?: SimpleMap<BigNumber>;
+  txDefaultBroadCastMode?: BroadcastTxMode;
 
   defaultFeeDenom: string = DEFAULT_FEE_DENOM;
 
@@ -181,6 +183,7 @@ export class CarbonWallet {
   constructor(opts: CarbonWalletInitOpts) {
     const network = opts.network ?? DEFAULT_NETWORK;
     this.network = network;
+    this.txDefaultBroadCastMode = this.txDefaultBroadCastMode;
     this.networkConfig = NetworkConfigs[network];
     this.configOverride = opts.config ?? {};
     this.providerAgent = opts.providerAgent;
@@ -512,8 +515,9 @@ export class CarbonWallet {
       signedTx,
       handler: { resolve, reject },
     } = txRequest;
+    const broadcastMode = broadcastOpts?.mode ?? this.txDefaultBroadCastMode
     const broadcastFunc =
-      broadcastOpts?.mode === BroadcastTxMode.BroadcastTxSync ? this.broadcastTxWithoutConfirm.bind(this) : this.broadcastTx.bind(this);
+      broadcastMode === BroadcastTxMode.BroadcastTxSync ? this.broadcastTxWithoutConfirm.bind(this) : this.broadcastTx.bind(this);
     try {
       const result = await broadcastFunc(signedTx, broadcastOpts);
       resolve(result);

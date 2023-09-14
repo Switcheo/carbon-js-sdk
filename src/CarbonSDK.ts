@@ -44,6 +44,7 @@ import { MetaMask } from "./provider/metamask/MetaMask";
 import { SWTHAddressOptions } from "./util/address";
 import { Blockchain } from "./util/blockchain";
 import { CarbonLedgerSigner, CarbonSigner, CarbonWallet, CarbonWalletGenericOpts, MetaMaskWalletOpts } from "./wallet";
+import { BroadcastMode } from "./codec/cosmos/tx/v1beta1/service";
 export { CarbonTx } from "@carbon-sdk/util";
 export { CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletGenericOpts, CarbonWalletInitOpts } from "@carbon-sdk/wallet";
 export { DenomPrefix } from "./constant";
@@ -58,9 +59,11 @@ export interface CarbonSDKOpts {
   grpcQueryClient?: GrpcQueryClient;
   useTmAbciQuery?: boolean;
   defaultTimeoutBlocks?: number; // tx mempool ttl (timeoutHeight)
+  txDefaultBroadcastMode?: BroadcastMode,
 }
 export interface CarbonSDKInitOpts {
   network: Network;
+  txDefaultBroadcastMode?: BroadcastMode,
   tmClient?: Tendermint34Client;
   config?: Partial<NetworkConfig>;
   wallet?: CarbonWallet;
@@ -76,7 +79,7 @@ export interface CarbonSDKInitOpts {
 }
 
 const DEFAULT_SDK_INIT_OPTS: CarbonSDKInitOpts = {
-  network: DEFAULT_NETWORK,
+  network: DEFAULT_NETWORK
 };
 
 /**
@@ -240,8 +243,9 @@ class CarbonSDK {
     const tmClient = opts.tmClient ?? GenericUtils.modifyTmClient(await Tendermint34Client.create(batchQueryClient));
     const defaultTimeoutBlocks = opts.defaultTimeoutBlocks;
     const chainId = (await tmClient.status())?.nodeInfo.network;
+    const txDefaultBroadcastMode = opts?.txDefaultBroadcastMode
 
-    const sdk = new CarbonSDK({ network, config: configOverride, tmClient, defaultTimeoutBlocks, chainId, useTmAbciQuery: opts.useTmAbciQuery });
+    const sdk = new CarbonSDK({ network, config: configOverride, tmClient, defaultTimeoutBlocks, chainId, useTmAbciQuery: opts.useTmAbciQuery, txDefaultBroadcastMode: txDefaultBroadcastMode });
 
     if (opts.wallet) {
       await sdk.connect(opts.wallet);
