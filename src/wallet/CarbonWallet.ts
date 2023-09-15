@@ -883,7 +883,7 @@ export class CarbonWallet {
 }
 
 export namespace CarbonWallet {
-  export type SendTxResponse = DeliverTxResponse | SendTxToMempoolWithoutConfirmResponse | SendTxWithoutConfirmResponse;
+  export type SendTxResponse = DeliverTxResponse;
   export type SendTxToMempoolWithoutConfirmResponse = BroadcastTxSyncResponse;
   export type SendTxWithoutConfirmResponse = BroadcastTxAsyncResponse;
   export type OnRequestSignCallback = (msgs: readonly EncodeObject[]) => void | Promise<void>;
