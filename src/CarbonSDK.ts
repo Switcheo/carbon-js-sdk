@@ -59,11 +59,11 @@ export interface CarbonSDKOpts {
   grpcQueryClient?: GrpcQueryClient;
   useTmAbciQuery?: boolean;
   defaultTimeoutBlocks?: number; // tx mempool ttl (timeoutHeight)
-  txDefaultBroadcastMode?: BroadcastMode,
+  txDefaultBroadcastMode?: BroadcastMode;
 }
 export interface CarbonSDKInitOpts {
   network: Network;
-  txDefaultBroadcastMode?: BroadcastMode,
+  txDefaultBroadcastMode?: BroadcastMode;
   tmClient?: Tendermint34Client;
   config?: Partial<NetworkConfig>;
   wallet?: CarbonWallet;
@@ -243,7 +243,7 @@ class CarbonSDK {
     const tmClient = opts.tmClient ?? GenericUtils.modifyTmClient(await Tendermint34Client.create(batchQueryClient));
     const defaultTimeoutBlocks = opts.defaultTimeoutBlocks;
     const chainId = (await tmClient.status())?.nodeInfo.network;
-    const txDefaultBroadcastMode = opts?.txDefaultBroadcastMode
+    const txDefaultBroadcastMode = opts?.txDefaultBroadcastMode;
 
     const sdk = new CarbonSDK({ network, config: configOverride, tmClient, defaultTimeoutBlocks, chainId, useTmAbciQuery: opts.useTmAbciQuery, txDefaultBroadcastMode: txDefaultBroadcastMode });
 

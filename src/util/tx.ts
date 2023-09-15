@@ -93,6 +93,7 @@ export const getSender = (decodedTx: Tx, opts?: SWTHAddressOptions): string => {
 
 export enum BroadcastTxMode {
   BroadcastTxSync = "sync",
+  BroadcastTxAsync = "async",
   BroadcastTxBlock = "block",
 }
 
