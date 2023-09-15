@@ -183,7 +183,7 @@ export class CarbonWallet {
   constructor(opts: CarbonWalletInitOpts) {
     const network = opts.network ?? DEFAULT_NETWORK;
     this.network = network;
-    this.txDefaultBroadCastMode = this.txDefaultBroadCastMode;
+    this.txDefaultBroadCastMode = opts.txDefaultBroadcastMode;
     this.networkConfig = NetworkConfigs[network];
     this.configOverride = opts.config ?? {};
     this.providerAgent = opts.providerAgent;
@@ -565,7 +565,7 @@ export class CarbonWallet {
       await this.sendInitialMergeAccountTx(msgs, opts)
     }
     try {
-      const result = await this.signAndBroadcast(msgs, opts, { mode: BroadcastTxMode.BroadcastTxBlock })
+      const result = await this.signAndBroadcast(msgs, opts)
       if (msgs[0].typeUrl === CarbonTx.Types.MsgMergeAccount) {
         this.updateMergeAccountStatus()
       }
@@ -600,7 +600,7 @@ export class CarbonWallet {
           sequence,
           accountNumber,
         }
-        await this.signAndBroadcast([msg], modifiedOpts, { mode: BroadcastTxMode.BroadcastTxBlock })
+        await this.signAndBroadcast([msg], modifiedOpts)
         this.updateMergeAccountStatus()
         await GenericUtils.callIgnoreError(() => this.onBroadcastTxSuccess?.([msg]));
       }

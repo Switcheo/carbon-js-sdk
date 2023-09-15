@@ -44,7 +44,7 @@ import { MetaMask } from "./provider/metamask/MetaMask";
 import { SWTHAddressOptions } from "./util/address";
 import { Blockchain } from "./util/blockchain";
 import { CarbonLedgerSigner, CarbonSigner, CarbonWallet, CarbonWalletGenericOpts, MetaMaskWalletOpts } from "./wallet";
-import { BroadcastMode } from "./codec/cosmos/tx/v1beta1/service";
+import { BroadcastTxMode } from "./util/tx";
 export { CarbonTx } from "@carbon-sdk/util";
 export { CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletGenericOpts, CarbonWalletInitOpts } from "@carbon-sdk/wallet";
 export { DenomPrefix } from "./constant";
@@ -59,11 +59,11 @@ export interface CarbonSDKOpts {
   grpcQueryClient?: GrpcQueryClient;
   useTmAbciQuery?: boolean;
   defaultTimeoutBlocks?: number; // tx mempool ttl (timeoutHeight)
-  txDefaultBroadcastMode?: BroadcastMode;
+  txDefaultBroadcastMode?: BroadcastTxMode;
 }
 export interface CarbonSDKInitOpts {
   network: Network;
-  txDefaultBroadcastMode?: BroadcastMode;
+  txDefaultBroadcastMode?: BroadcastTxMode;
   tmClient?: Tendermint34Client;
   config?: Partial<NetworkConfig>;
   wallet?: CarbonWallet;
