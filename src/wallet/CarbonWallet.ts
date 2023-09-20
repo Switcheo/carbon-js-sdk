@@ -14,7 +14,7 @@ import { EncodeObject, OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-
 import { Account, DeliverTxResponse, IndexedTx, isDeliverTxFailure, TimeoutError } from "@cosmjs/stargate";
 import { sleep } from "@cosmjs/utils";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
-import { BroadcastTxSyncResponse, BroadcastTxAsyncResponse } from "@cosmjs/tendermint-rpc/build/tendermint34/responses";
+import { BroadcastTxSyncResponse, BroadcastTxAsyncResponse, broadcastTxSyncSuccess } from "@cosmjs/tendermint-rpc/build/tendermint34/responses";
 import { Leap } from "@cosmos-kit/leap";
 import { Key } from "@keplr-wallet/types";
 import { Key as LeapKey } from "@cosmos-kit/core";
@@ -430,7 +430,12 @@ export class CarbonWallet {
   async broadcastTxToMempoolWithoutConfirm(txRaw: CarbonWallet.TxRaw): Promise<CarbonWallet.SendTxToMempoolWithoutConfirmResponse> {
     const tx = CarbonWallet.TxRaw.encode(txRaw).finish();
     const tmClient = this.getTmClient();
-    return tmClient.broadcastTxSync({ tx });
+    const response = await tmClient.broadcastTxSync({ tx });
+    if (!broadcastTxSyncSuccess(response)) {
+      // tx failed
+      throw new Error(`[${response.code}] ${response.log}`);
+    }
+    return response
   }
 
   /**
