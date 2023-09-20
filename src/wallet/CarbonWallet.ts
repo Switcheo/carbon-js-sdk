@@ -624,34 +624,34 @@ export class CarbonWallet {
     return this.sendTxs([msg], opts);
   }
 
-  async waitForTx(txHash: string, timeoutMs = 60000, pollIntervalMs = 100) {
-
+  async waitForTx(txHash: string, timeoutMs = 60000, pollIntervalMs = 100): Promise<CarbonWallet.SendTxResponse> {
+    const txId = txHash.toUpperCase()
     let timedOut = false
     const txPollTimeout = setTimeout(() => {
       timedOut = true
     }, timeoutMs)
 
-    const pollForTx = async (txHash: string) => {
+    const pollForTx = async (txId: string): Promise<CarbonWallet.SendTxResponse>  => {
       if (timedOut) {
-        throw new TimeoutError(`Transaction with ID ${txHash} was submitted but was not yet found on the chain. You might want to check later. There was a wait of ${timeoutMs / 1000} seconds.`, txHash)
+        throw new TimeoutError(`Transaction with ID ${txId} was submitted but was not yet found on the chain. You might want to check later. There was a wait of ${timeoutMs / 1000} seconds.`, txId)
       }
-      const result: IndexedTx | null = await this.getSigningClient().getTx(txHash)
+      const result: IndexedTx | null = await this.getSigningClient().getTx(txId)
       if (result) {
         return {
           code: result.code,
           height: result.height,
           events: result.events,
           rawLog: result.rawLog,
-          transactionHash: txHash,
+          transactionHash: txId,
           gasUsed: result.gasUsed,
           gasWanted: result.gasWanted,
-        }
+        } as CarbonWallet.SendTxResponse
       }
       await sleep(pollIntervalMs)
-      pollForTx(txHash)
+      return pollForTx(txId)
     }
 
-    return new Promise((resolve, reject) => pollForTx(txHash).then((value) => {
+    return new Promise((resolve, reject) => pollForTx(txId).then((value) => {
       clearTimeout(txPollTimeout)
       resolve(value)
     }, (error) => {
