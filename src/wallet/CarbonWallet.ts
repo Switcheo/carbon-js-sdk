@@ -863,17 +863,15 @@ export class CarbonWallet {
 
 
   private isNonceMismatchError = (error?: Error) => {
-    const regex =
-      /^Broadcasting transaction failed with code 32 \(codespace: sdk\)\. Log: account sequence mismatch, expected (\d+), got (\d+): incorrect account sequence/;
-    const match = error?.message.match(regex);
-    if (match) {
+    const errorMessage = 'account sequence mismatch'
+    const includes = error?.message.includes(errorMessage);
+    if (includes) {
       return {
-        expected: match[1],
-        provided: match[2],
+        message: error?.message,
       };
     }
 
-    return false;
+    return false
   };
 
   private getQueryClient(): CarbonQueryClient {
