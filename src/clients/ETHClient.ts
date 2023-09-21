@@ -50,7 +50,7 @@ export interface LockParams extends ETHTxParams {
 export interface ApproveERC20Params extends ETHTxParams {
   token: Models.Token;
   spenderAddress?: string;
-  amount: BigNumber;
+  amount?: BigNumber;
   signCompleteCallback?: () => void;
 }
 
