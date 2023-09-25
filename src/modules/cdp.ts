@@ -6,7 +6,8 @@ import {
   QueryCdpParamsRequest,
   QueryTokenPriceRequest,
   RateStrategyParams,
-  StablecoinDebtInfo
+  StablecoinDebtInfo,
+  StablecoinInterestInfo
 } from "@carbon-sdk/codec";
 import { Params } from "@carbon-sdk/codec/cdp/params";
 import {
@@ -1017,9 +1018,10 @@ export class CDPModule extends BaseModule {
       }
     }
 
-    const paramsResponse = await sdk.query.cdp.Params(QueryCdpParamsRequest.fromPartial({}));
+    // stablecoinInterestRate is deprecated, use StablecoinInterestInfo
+    const stablecoinResponse = StablecoinInterestInfo.fromPartial({});
     const cim = bnOrZero(debtInfo.cumulativeInterestMultiplier);
-    const apy = bnOrZero(paramsResponse.params?.stablecoinInterestRate);
+    const apy = bnOrZero(stablecoinResponse.stablecoinInterestRate);
     if (!apy) {
       return BN_ZERO;
     }
