@@ -1018,10 +1018,10 @@ export class CDPModule extends BaseModule {
       }
     }
 
-    // stablecoinInterestRate is deprecated, use StablecoinInterestInfo
-    const stablecoinResponse = StablecoinInterestInfo.fromPartial({});
+
+    const stablecoinInterestResponse = await sdk.query.cdp.StablecoinInterest({});
     const cim = bnOrZero(debtInfo.cumulativeInterestMultiplier);
-    const apy = bnOrZero(stablecoinResponse.stablecoinInterestRate);
+    const apy = bnOrZero(stablecoinInterestResponse.stablecoinInterestInfo?.stablecoinInterestRate);
     if (!apy) {
       return BN_ZERO;
     }
