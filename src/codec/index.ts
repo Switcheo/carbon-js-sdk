@@ -1136,8 +1136,9 @@ export { MsgCreateSubAccount, MsgCreateSubAccountResponse, MsgActivateSubAccount
 export { QueryGetSubAccountRequest, QueryGetPendingSubAccountRequest, QueryGetSubAccountResponse, QueryAllSubAccountRequest, QueryAllSubAccountResponse, QueryAllPendingSubAccountRequest, QueryAllPendingSubAccountResponse, QuerySubAccountPowerRequest, QuerySubAccountPowerResponse, QueryMainAccountAllRequest, QueryMainAccountAllResponse, QueryMainAccountRequest, QueryMainAccountResponse, QueryParamsRequest as QuerySubaccountParamsRequest, QueryParamsResponse as QuerySubaccountParamsResponse } from "./subaccount/query";
 export { SubaccountV2260 } from "./subaccount/legacy";
 export { SubAccount, GenesisSubAccount, MainAccount, Params as SubaccountParams } from "./subaccount/subaccount";
-export { OrderBookLevel, OrderBook, StopBook } from "./book/book";
-export { QueryImpactPriceRequest, QueryImpactPriceResponse, QueryGetBookRequest, QueryGetBookResponse, QueryAllBookRequest, QueryAllBookResponse } from "./book/query";
+export { OrderBookLevel, OrderBook, StopBook, StopOrder } from "./book/book";
+export { QueryImpactPriceRequest, QueryImpactPriceResponse, QueryGetBookRequest, QueryGetBookResponse, QueryAllBookRequest, QueryAllBookResponse, QueryGetStopBookRequest, QueryGetStopBookResponse, QueryAllStopBookRequest, QueryAllStopBookResponse } from "./book/query";
+export { StopbookV2320 } from "./book/legacy";
 export { OrderBookEvent } from "./book/event";
 export { MsgDisableSpotMarket, MsgDisableSpotMarketResponse, MsgCreateMarket, MsgCreateMarketResponse, MsgUpdateMarket, MsgUpdateMarketResponse, MsgUpdatePerpetualsFundingInterval, MsgUpdatePerpetualsFundingIntervalResponse, MsgAddFeeTier, MsgAddFeeTierResponse, MsgUpdateFeeTier, MsgUpdateFeeTierResponse, MsgRemoveFeeTier, MsgRemoveFeeTierResponse, MsgSetStakeEquivalence, MsgSetStakeEquivalenceResponse, MsgUpdateAllPoolTradingFees, MsgUpdateAllPoolTradingFeesResponse, UpdateAllPoolTradingFeesParams } from "./market/tx";
 export { FeeStructure, FeeCategory, FeeTier, TradingFees, StakeEquivalence } from "./market/fee";
@@ -2902,14 +2903,30 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "asks",
-        "type": "string[]"
+        "type": "StopOrder[]",
+        "packageName": "/Switcheo.carbon.book"
       },
       {
         "name": "bids",
-        "type": "string[]"
+        "type": "StopOrder[]",
+        "packageName": "/Switcheo.carbon.book"
       },
       {
         "name": "trigger",
+        "type": "string"
+      },
+      {
+        "name": "stop_type",
+        "type": "string"
+      }
+    ],
+    "StopOrder": [
+      {
+        "name": "id",
+        "type": "string"
+      },
+      {
+        "name": "stop_price",
         "type": "string"
       }
     ],
@@ -2945,6 +2962,28 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "stop_books",
         "type": "StopBook[]",
         "packageName": "/Switcheo.carbon.book"
+      }
+    ],
+    "StopBook_V2_32_0": [
+      {
+        "name": "market",
+        "type": "string"
+      },
+      {
+        "name": "asks",
+        "type": "string[]"
+      },
+      {
+        "name": "bids",
+        "type": "string[]"
+      },
+      {
+        "name": "trigger",
+        "type": "string"
+      },
+      {
+        "name": "stop_type",
+        "type": "string"
       }
     ],
     "QueryImpactPriceRequest": [
@@ -2995,6 +3034,38 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "books",
         "type": "OrderBook[]",
+        "packageName": "/Switcheo.carbon.book"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryGetStopBookRequest": [
+      {
+        "name": "market",
+        "type": "string"
+      }
+    ],
+    "QueryGetStopBookResponse": [
+      {
+        "name": "books",
+        "type": "StopBook[]",
+        "packageName": "/Switcheo.carbon.book"
+      }
+    ],
+    "QueryAllStopBookRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllStopBookResponse": [
+      {
+        "name": "books",
+        "type": "StopBook[]",
         "packageName": "/Switcheo.carbon.book"
       },
       {
@@ -4217,7 +4288,11 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "health_factor",
+        "name": "debt_value",
+        "type": "string"
+      },
+      {
+        "name": "collateral_value",
         "type": "string"
       },
       {
@@ -4247,7 +4322,11 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "health_factor",
+        "name": "debt_value",
+        "type": "string"
+      },
+      {
+        "name": "collateral_value",
         "type": "string"
       }
     ],
@@ -4265,7 +4344,11 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "health_factor",
+        "name": "debt_value",
+        "type": "string"
+      },
+      {
+        "name": "collateral_value",
         "type": "string"
       }
     ],
@@ -4283,7 +4366,11 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "health_factor",
+        "name": "debt_value",
+        "type": "string"
+      },
+      {
+        "name": "collateral_value",
         "type": "string"
       }
     ],
@@ -4323,7 +4410,11 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "health_factor",
+        "name": "debt_value",
+        "type": "string"
+      },
+      {
+        "name": "collateral_value",
         "type": "string"
       },
       {
@@ -4353,7 +4444,11 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "health_factor",
+        "name": "debt_value",
+        "type": "string"
+      },
+      {
+        "name": "collateral_value",
         "type": "string"
       }
     ],
@@ -4538,10 +4633,6 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "liquidation_fee",
-        "type": "string"
-      },
-      {
-        "name": "stablecoin_interest_rate",
         "type": "string"
       },
       {
@@ -4730,10 +4821,6 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "curr_liquidation_threshold",
-        "type": "string"
-      },
-      {
-        "name": "health_factor",
         "type": "string"
       }
     ],
@@ -24097,6 +24184,14 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "closed_at",
         "type": "string"
+      },
+      {
+        "name": "update_count",
+        "type": "uint64"
+      },
+      {
+        "name": "exit_count",
+        "type": "uint64"
       }
     ],
     "PositionAllocatedMargin": [

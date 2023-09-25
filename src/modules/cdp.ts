@@ -1017,9 +1017,9 @@ export class CDPModule extends BaseModule {
       }
     }
 
-    const paramsResponse = await sdk.query.cdp.Params(QueryCdpParamsRequest.fromPartial({}));
+    const stablecoinInterestResponse = await sdk.query.cdp.StablecoinInterest({});
     const cim = bnOrZero(debtInfo.cumulativeInterestMultiplier);
-    const apy = bnOrZero(paramsResponse.params?.stablecoinInterestRate);
+    const apy = bnOrZero(stablecoinInterestResponse.stablecoinInterestInfo?.stablecoinInterestRate);
     if (!apy) {
       return BN_ZERO;
     }
