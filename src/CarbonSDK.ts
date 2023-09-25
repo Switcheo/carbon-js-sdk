@@ -89,6 +89,7 @@ class CarbonSDK {
   public static DenomPrefix = DenomPrefix;
 
   public readonly query: CarbonQueryClient;
+  public readonly useTmAbciQuery: boolean;
   insights: InsightsQueryClient;
   hydrogen: HydrogenClient;
 
@@ -137,6 +138,7 @@ class CarbonSDK {
     this.network = opts.network ?? DEFAULT_NETWORK;
     this.configOverride = opts.config ?? {};
     this.networkConfig = GenericUtils.overrideConfig(NetworkConfigs[this.network], this.configOverride);
+    this.useTmAbciQuery = opts.useTmAbciQuery ?? false;
 
     this.tmClient = opts.tmClient;
     this.chainId = opts.chainId ?? CarbonChainIDs[this.network] ?? CarbonChainIDs[Network.MainNet];
@@ -353,6 +355,7 @@ class CarbonSDK {
       config: this.configOverride,
       tmClient: this.tmClient,
       chainId: this.chainId,
+      useTmAbciQuery: this.useTmAbciQuery,
     };
   }
 
