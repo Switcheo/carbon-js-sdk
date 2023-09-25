@@ -11,11 +11,11 @@ import { MarketUtilizationMultiplier } from "./market";
 
 export const protobufPackage = "Switcheo.carbon.perpsliquidity";
 
-export interface QueryAllPlPoolMarketUtilizationMultiplierRequest {
+export interface QueryAllPoolMarketUtilizationMultiplierRequest {
   pagination?: PageRequest;
 }
 
-export interface QueryAllPlPoolMarketUtilizationMultiplierResponse {
+export interface QueryAllPoolMarketUtilizationMultiplierResponse {
   marketsUtilizationMultiplier: MarketUtilizationMultiplier[];
   pagination?: PageResponse;
 }
@@ -29,56 +29,56 @@ export interface QueryParamsResponse {
   params?: Params;
 }
 
-export interface QueryGetPlPoolRequest {
+export interface QueryGetPoolRequest {
   poolId: string;
 }
 
-export interface QueryGetPlPoolResponse {
+export interface QueryGetPoolResponse {
   pool?: PoolDetails;
 }
 
-export interface QueryAllPlPoolsRequest {
+export interface QueryAllPoolsRequest {
   pagination?: PageRequest;
 }
 
-export interface QueryAllPlPoolsResponse {
+export interface QueryAllPoolsResponse {
   pools: PoolDetails[];
   pagination?: PageResponse;
 }
 
-export interface QueryPlPoolMappingsRequest {
+export interface QueryPoolMappingsRequest {
   pagination?: PageRequest;
 }
 
-export interface QueryPlPoolMappingsResponse {
+export interface QueryPoolMappingsResponse {
   poolMappings: { [key: string]: Long };
   pagination?: PageResponse;
 }
 
-export interface QueryPlPoolMappingsResponse_PoolMappingsEntry {
+export interface QueryPoolMappingsResponse_PoolMappingsEntry {
   key: string;
   value: Long;
 }
 
-export interface QueryAllPlPoolAddressRequest {
+export interface QueryAllPoolAddressRequest {
   pagination?: PageRequest;
 }
 
-export interface QueryAllPlPoolAddressResponse {
+export interface QueryAllPoolAddressResponse {
   addresses: { [key: string]: string };
   pagination?: PageResponse;
 }
 
-export interface QueryAllPlPoolAddressResponse_AddressesEntry {
+export interface QueryAllPoolAddressResponse_AddressesEntry {
   key: string;
   value: string;
 }
 
-export interface QueryPLPoolInfoRequest {
+export interface QueryPoolInfoRequest {
   poolId: string;
 }
 
-export interface QueryPLPoolInfoResponse {
+export interface QueryPoolInfoResponse {
   totalShareAmount: string;
   totalUnderlyingAmount: string;
   availableAmount: string;
@@ -86,20 +86,20 @@ export interface QueryPLPoolInfoResponse {
   totalUpnlAmount: string;
 }
 
-export interface QueryAllPLPoolInfoRequest {
+export interface QueryAllPoolInfoRequest {
   pagination?: PageRequest;
 }
 
-export interface QueryAllPLPoolInfoResponse {
-  pools: QueryPLPoolInfoResponse[];
+export interface QueryAllPoolInfoResponse {
+  pools: QueryPoolInfoResponse[];
   pagination?: PageResponse;
 }
 
-const baseQueryAllPlPoolMarketUtilizationMultiplierRequest: object = {};
+const baseQueryAllPoolMarketUtilizationMultiplierRequest: object = {};
 
-export const QueryAllPlPoolMarketUtilizationMultiplierRequest = {
+export const QueryAllPoolMarketUtilizationMultiplierRequest = {
   encode(
-    message: QueryAllPlPoolMarketUtilizationMultiplierRequest,
+    message: QueryAllPoolMarketUtilizationMultiplierRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.pagination !== undefined) {
@@ -111,12 +111,12 @@ export const QueryAllPlPoolMarketUtilizationMultiplierRequest = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): QueryAllPlPoolMarketUtilizationMultiplierRequest {
+  ): QueryAllPoolMarketUtilizationMultiplierRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseQueryAllPlPoolMarketUtilizationMultiplierRequest,
-    } as QueryAllPlPoolMarketUtilizationMultiplierRequest;
+      ...baseQueryAllPoolMarketUtilizationMultiplierRequest,
+    } as QueryAllPoolMarketUtilizationMultiplierRequest;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -131,10 +131,10 @@ export const QueryAllPlPoolMarketUtilizationMultiplierRequest = {
     return message;
   },
 
-  fromJSON(object: any): QueryAllPlPoolMarketUtilizationMultiplierRequest {
+  fromJSON(object: any): QueryAllPoolMarketUtilizationMultiplierRequest {
     const message = {
-      ...baseQueryAllPlPoolMarketUtilizationMultiplierRequest,
-    } as QueryAllPlPoolMarketUtilizationMultiplierRequest;
+      ...baseQueryAllPoolMarketUtilizationMultiplierRequest,
+    } as QueryAllPoolMarketUtilizationMultiplierRequest;
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
         ? PageRequest.fromJSON(object.pagination)
@@ -142,7 +142,7 @@ export const QueryAllPlPoolMarketUtilizationMultiplierRequest = {
     return message;
   },
 
-  toJSON(message: QueryAllPlPoolMarketUtilizationMultiplierRequest): unknown {
+  toJSON(message: QueryAllPoolMarketUtilizationMultiplierRequest): unknown {
     const obj: any = {};
     message.pagination !== undefined &&
       (obj.pagination = message.pagination
@@ -152,11 +152,11 @@ export const QueryAllPlPoolMarketUtilizationMultiplierRequest = {
   },
 
   fromPartial(
-    object: DeepPartial<QueryAllPlPoolMarketUtilizationMultiplierRequest>
-  ): QueryAllPlPoolMarketUtilizationMultiplierRequest {
+    object: DeepPartial<QueryAllPoolMarketUtilizationMultiplierRequest>
+  ): QueryAllPoolMarketUtilizationMultiplierRequest {
     const message = {
-      ...baseQueryAllPlPoolMarketUtilizationMultiplierRequest,
-    } as QueryAllPlPoolMarketUtilizationMultiplierRequest;
+      ...baseQueryAllPoolMarketUtilizationMultiplierRequest,
+    } as QueryAllPoolMarketUtilizationMultiplierRequest;
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
         ? PageRequest.fromPartial(object.pagination)
@@ -165,11 +165,11 @@ export const QueryAllPlPoolMarketUtilizationMultiplierRequest = {
   },
 };
 
-const baseQueryAllPlPoolMarketUtilizationMultiplierResponse: object = {};
+const baseQueryAllPoolMarketUtilizationMultiplierResponse: object = {};
 
-export const QueryAllPlPoolMarketUtilizationMultiplierResponse = {
+export const QueryAllPoolMarketUtilizationMultiplierResponse = {
   encode(
-    message: QueryAllPlPoolMarketUtilizationMultiplierResponse,
+    message: QueryAllPoolMarketUtilizationMultiplierResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     for (const v of message.marketsUtilizationMultiplier) {
@@ -187,12 +187,12 @@ export const QueryAllPlPoolMarketUtilizationMultiplierResponse = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): QueryAllPlPoolMarketUtilizationMultiplierResponse {
+  ): QueryAllPoolMarketUtilizationMultiplierResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseQueryAllPlPoolMarketUtilizationMultiplierResponse,
-    } as QueryAllPlPoolMarketUtilizationMultiplierResponse;
+      ...baseQueryAllPoolMarketUtilizationMultiplierResponse,
+    } as QueryAllPoolMarketUtilizationMultiplierResponse;
     message.marketsUtilizationMultiplier = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
@@ -213,10 +213,10 @@ export const QueryAllPlPoolMarketUtilizationMultiplierResponse = {
     return message;
   },
 
-  fromJSON(object: any): QueryAllPlPoolMarketUtilizationMultiplierResponse {
+  fromJSON(object: any): QueryAllPoolMarketUtilizationMultiplierResponse {
     const message = {
-      ...baseQueryAllPlPoolMarketUtilizationMultiplierResponse,
-    } as QueryAllPlPoolMarketUtilizationMultiplierResponse;
+      ...baseQueryAllPoolMarketUtilizationMultiplierResponse,
+    } as QueryAllPoolMarketUtilizationMultiplierResponse;
     message.marketsUtilizationMultiplier = (
       object.marketsUtilizationMultiplier ?? []
     ).map((e: any) => MarketUtilizationMultiplier.fromJSON(e));
@@ -227,7 +227,7 @@ export const QueryAllPlPoolMarketUtilizationMultiplierResponse = {
     return message;
   },
 
-  toJSON(message: QueryAllPlPoolMarketUtilizationMultiplierResponse): unknown {
+  toJSON(message: QueryAllPoolMarketUtilizationMultiplierResponse): unknown {
     const obj: any = {};
     if (message.marketsUtilizationMultiplier) {
       obj.marketsUtilizationMultiplier =
@@ -245,11 +245,11 @@ export const QueryAllPlPoolMarketUtilizationMultiplierResponse = {
   },
 
   fromPartial(
-    object: DeepPartial<QueryAllPlPoolMarketUtilizationMultiplierResponse>
-  ): QueryAllPlPoolMarketUtilizationMultiplierResponse {
+    object: DeepPartial<QueryAllPoolMarketUtilizationMultiplierResponse>
+  ): QueryAllPoolMarketUtilizationMultiplierResponse {
     const message = {
-      ...baseQueryAllPlPoolMarketUtilizationMultiplierResponse,
-    } as QueryAllPlPoolMarketUtilizationMultiplierResponse;
+      ...baseQueryAllPoolMarketUtilizationMultiplierResponse,
+    } as QueryAllPoolMarketUtilizationMultiplierResponse;
     message.marketsUtilizationMultiplier = (
       object.marketsUtilizationMultiplier ?? []
     ).map((e) => MarketUtilizationMultiplier.fromPartial(e));
@@ -359,11 +359,11 @@ export const QueryParamsResponse = {
   },
 };
 
-const baseQueryGetPlPoolRequest: object = { poolId: "" };
+const baseQueryGetPoolRequest: object = { poolId: "" };
 
-export const QueryGetPlPoolRequest = {
+export const QueryGetPoolRequest = {
   encode(
-    message: QueryGetPlPoolRequest,
+    message: QueryGetPoolRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.poolId !== "") {
@@ -372,13 +372,10 @@ export const QueryGetPlPoolRequest = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryGetPlPoolRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryGetPoolRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryGetPlPoolRequest } as QueryGetPlPoolRequest;
+    const message = { ...baseQueryGetPoolRequest } as QueryGetPoolRequest;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -393,8 +390,8 @@ export const QueryGetPlPoolRequest = {
     return message;
   },
 
-  fromJSON(object: any): QueryGetPlPoolRequest {
-    const message = { ...baseQueryGetPlPoolRequest } as QueryGetPlPoolRequest;
+  fromJSON(object: any): QueryGetPoolRequest {
+    const message = { ...baseQueryGetPoolRequest } as QueryGetPoolRequest;
     message.poolId =
       object.poolId !== undefined && object.poolId !== null
         ? String(object.poolId)
@@ -402,26 +399,24 @@ export const QueryGetPlPoolRequest = {
     return message;
   },
 
-  toJSON(message: QueryGetPlPoolRequest): unknown {
+  toJSON(message: QueryGetPoolRequest): unknown {
     const obj: any = {};
     message.poolId !== undefined && (obj.poolId = message.poolId);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryGetPlPoolRequest>
-  ): QueryGetPlPoolRequest {
-    const message = { ...baseQueryGetPlPoolRequest } as QueryGetPlPoolRequest;
+  fromPartial(object: DeepPartial<QueryGetPoolRequest>): QueryGetPoolRequest {
+    const message = { ...baseQueryGetPoolRequest } as QueryGetPoolRequest;
     message.poolId = object.poolId ?? "";
     return message;
   },
 };
 
-const baseQueryGetPlPoolResponse: object = {};
+const baseQueryGetPoolResponse: object = {};
 
-export const QueryGetPlPoolResponse = {
+export const QueryGetPoolResponse = {
   encode(
-    message: QueryGetPlPoolResponse,
+    message: QueryGetPoolResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.pool !== undefined) {
@@ -433,10 +428,10 @@ export const QueryGetPlPoolResponse = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): QueryGetPlPoolResponse {
+  ): QueryGetPoolResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryGetPlPoolResponse } as QueryGetPlPoolResponse;
+    const message = { ...baseQueryGetPoolResponse } as QueryGetPoolResponse;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -451,8 +446,8 @@ export const QueryGetPlPoolResponse = {
     return message;
   },
 
-  fromJSON(object: any): QueryGetPlPoolResponse {
-    const message = { ...baseQueryGetPlPoolResponse } as QueryGetPlPoolResponse;
+  fromJSON(object: any): QueryGetPoolResponse {
+    const message = { ...baseQueryGetPoolResponse } as QueryGetPoolResponse;
     message.pool =
       object.pool !== undefined && object.pool !== null
         ? PoolDetails.fromJSON(object.pool)
@@ -460,17 +455,15 @@ export const QueryGetPlPoolResponse = {
     return message;
   },
 
-  toJSON(message: QueryGetPlPoolResponse): unknown {
+  toJSON(message: QueryGetPoolResponse): unknown {
     const obj: any = {};
     message.pool !== undefined &&
       (obj.pool = message.pool ? PoolDetails.toJSON(message.pool) : undefined);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryGetPlPoolResponse>
-  ): QueryGetPlPoolResponse {
-    const message = { ...baseQueryGetPlPoolResponse } as QueryGetPlPoolResponse;
+  fromPartial(object: DeepPartial<QueryGetPoolResponse>): QueryGetPoolResponse {
+    const message = { ...baseQueryGetPoolResponse } as QueryGetPoolResponse;
     message.pool =
       object.pool !== undefined && object.pool !== null
         ? PoolDetails.fromPartial(object.pool)
@@ -479,11 +472,11 @@ export const QueryGetPlPoolResponse = {
   },
 };
 
-const baseQueryAllPlPoolsRequest: object = {};
+const baseQueryAllPoolsRequest: object = {};
 
-export const QueryAllPlPoolsRequest = {
+export const QueryAllPoolsRequest = {
   encode(
-    message: QueryAllPlPoolsRequest,
+    message: QueryAllPoolsRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.pagination !== undefined) {
@@ -495,10 +488,10 @@ export const QueryAllPlPoolsRequest = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): QueryAllPlPoolsRequest {
+  ): QueryAllPoolsRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryAllPlPoolsRequest } as QueryAllPlPoolsRequest;
+    const message = { ...baseQueryAllPoolsRequest } as QueryAllPoolsRequest;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -513,8 +506,8 @@ export const QueryAllPlPoolsRequest = {
     return message;
   },
 
-  fromJSON(object: any): QueryAllPlPoolsRequest {
-    const message = { ...baseQueryAllPlPoolsRequest } as QueryAllPlPoolsRequest;
+  fromJSON(object: any): QueryAllPoolsRequest {
+    const message = { ...baseQueryAllPoolsRequest } as QueryAllPoolsRequest;
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
         ? PageRequest.fromJSON(object.pagination)
@@ -522,7 +515,7 @@ export const QueryAllPlPoolsRequest = {
     return message;
   },
 
-  toJSON(message: QueryAllPlPoolsRequest): unknown {
+  toJSON(message: QueryAllPoolsRequest): unknown {
     const obj: any = {};
     message.pagination !== undefined &&
       (obj.pagination = message.pagination
@@ -531,10 +524,8 @@ export const QueryAllPlPoolsRequest = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryAllPlPoolsRequest>
-  ): QueryAllPlPoolsRequest {
-    const message = { ...baseQueryAllPlPoolsRequest } as QueryAllPlPoolsRequest;
+  fromPartial(object: DeepPartial<QueryAllPoolsRequest>): QueryAllPoolsRequest {
+    const message = { ...baseQueryAllPoolsRequest } as QueryAllPoolsRequest;
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
         ? PageRequest.fromPartial(object.pagination)
@@ -543,11 +534,11 @@ export const QueryAllPlPoolsRequest = {
   },
 };
 
-const baseQueryAllPlPoolsResponse: object = {};
+const baseQueryAllPoolsResponse: object = {};
 
-export const QueryAllPlPoolsResponse = {
+export const QueryAllPoolsResponse = {
   encode(
-    message: QueryAllPlPoolsResponse,
+    message: QueryAllPoolsResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     for (const v of message.pools) {
@@ -565,12 +556,10 @@ export const QueryAllPlPoolsResponse = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): QueryAllPlPoolsResponse {
+  ): QueryAllPoolsResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryAllPlPoolsResponse,
-    } as QueryAllPlPoolsResponse;
+    const message = { ...baseQueryAllPoolsResponse } as QueryAllPoolsResponse;
     message.pools = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
@@ -589,10 +578,8 @@ export const QueryAllPlPoolsResponse = {
     return message;
   },
 
-  fromJSON(object: any): QueryAllPlPoolsResponse {
-    const message = {
-      ...baseQueryAllPlPoolsResponse,
-    } as QueryAllPlPoolsResponse;
+  fromJSON(object: any): QueryAllPoolsResponse {
+    const message = { ...baseQueryAllPoolsResponse } as QueryAllPoolsResponse;
     message.pools = (object.pools ?? []).map((e: any) =>
       PoolDetails.fromJSON(e)
     );
@@ -603,7 +590,7 @@ export const QueryAllPlPoolsResponse = {
     return message;
   },
 
-  toJSON(message: QueryAllPlPoolsResponse): unknown {
+  toJSON(message: QueryAllPoolsResponse): unknown {
     const obj: any = {};
     if (message.pools) {
       obj.pools = message.pools.map((e) =>
@@ -620,11 +607,9 @@ export const QueryAllPlPoolsResponse = {
   },
 
   fromPartial(
-    object: DeepPartial<QueryAllPlPoolsResponse>
-  ): QueryAllPlPoolsResponse {
-    const message = {
-      ...baseQueryAllPlPoolsResponse,
-    } as QueryAllPlPoolsResponse;
+    object: DeepPartial<QueryAllPoolsResponse>
+  ): QueryAllPoolsResponse {
+    const message = { ...baseQueryAllPoolsResponse } as QueryAllPoolsResponse;
     message.pools = (object.pools ?? []).map((e) => PoolDetails.fromPartial(e));
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
@@ -634,11 +619,11 @@ export const QueryAllPlPoolsResponse = {
   },
 };
 
-const baseQueryPlPoolMappingsRequest: object = {};
+const baseQueryPoolMappingsRequest: object = {};
 
-export const QueryPlPoolMappingsRequest = {
+export const QueryPoolMappingsRequest = {
   encode(
-    message: QueryPlPoolMappingsRequest,
+    message: QueryPoolMappingsRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.pagination !== undefined) {
@@ -650,12 +635,12 @@ export const QueryPlPoolMappingsRequest = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): QueryPlPoolMappingsRequest {
+  ): QueryPoolMappingsRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseQueryPlPoolMappingsRequest,
-    } as QueryPlPoolMappingsRequest;
+      ...baseQueryPoolMappingsRequest,
+    } as QueryPoolMappingsRequest;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -670,10 +655,10 @@ export const QueryPlPoolMappingsRequest = {
     return message;
   },
 
-  fromJSON(object: any): QueryPlPoolMappingsRequest {
+  fromJSON(object: any): QueryPoolMappingsRequest {
     const message = {
-      ...baseQueryPlPoolMappingsRequest,
-    } as QueryPlPoolMappingsRequest;
+      ...baseQueryPoolMappingsRequest,
+    } as QueryPoolMappingsRequest;
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
         ? PageRequest.fromJSON(object.pagination)
@@ -681,7 +666,7 @@ export const QueryPlPoolMappingsRequest = {
     return message;
   },
 
-  toJSON(message: QueryPlPoolMappingsRequest): unknown {
+  toJSON(message: QueryPoolMappingsRequest): unknown {
     const obj: any = {};
     message.pagination !== undefined &&
       (obj.pagination = message.pagination
@@ -691,11 +676,11 @@ export const QueryPlPoolMappingsRequest = {
   },
 
   fromPartial(
-    object: DeepPartial<QueryPlPoolMappingsRequest>
-  ): QueryPlPoolMappingsRequest {
+    object: DeepPartial<QueryPoolMappingsRequest>
+  ): QueryPoolMappingsRequest {
     const message = {
-      ...baseQueryPlPoolMappingsRequest,
-    } as QueryPlPoolMappingsRequest;
+      ...baseQueryPoolMappingsRequest,
+    } as QueryPoolMappingsRequest;
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
         ? PageRequest.fromPartial(object.pagination)
@@ -704,15 +689,15 @@ export const QueryPlPoolMappingsRequest = {
   },
 };
 
-const baseQueryPlPoolMappingsResponse: object = {};
+const baseQueryPoolMappingsResponse: object = {};
 
-export const QueryPlPoolMappingsResponse = {
+export const QueryPoolMappingsResponse = {
   encode(
-    message: QueryPlPoolMappingsResponse,
+    message: QueryPoolMappingsResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     Object.entries(message.poolMappings).forEach(([key, value]) => {
-      QueryPlPoolMappingsResponse_PoolMappingsEntry.encode(
+      QueryPoolMappingsResponse_PoolMappingsEntry.encode(
         { key: key as any, value },
         writer.uint32(10).fork()
       ).ldelim();
@@ -729,18 +714,18 @@ export const QueryPlPoolMappingsResponse = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): QueryPlPoolMappingsResponse {
+  ): QueryPoolMappingsResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseQueryPlPoolMappingsResponse,
-    } as QueryPlPoolMappingsResponse;
+      ...baseQueryPoolMappingsResponse,
+    } as QueryPoolMappingsResponse;
     message.poolMappings = {};
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          const entry1 = QueryPlPoolMappingsResponse_PoolMappingsEntry.decode(
+          const entry1 = QueryPoolMappingsResponse_PoolMappingsEntry.decode(
             reader,
             reader.uint32()
           );
@@ -759,10 +744,10 @@ export const QueryPlPoolMappingsResponse = {
     return message;
   },
 
-  fromJSON(object: any): QueryPlPoolMappingsResponse {
+  fromJSON(object: any): QueryPoolMappingsResponse {
     const message = {
-      ...baseQueryPlPoolMappingsResponse,
-    } as QueryPlPoolMappingsResponse;
+      ...baseQueryPoolMappingsResponse,
+    } as QueryPoolMappingsResponse;
     message.poolMappings = Object.entries(object.poolMappings ?? {}).reduce<{
       [key: string]: Long;
     }>((acc, [key, value]) => {
@@ -776,7 +761,7 @@ export const QueryPlPoolMappingsResponse = {
     return message;
   },
 
-  toJSON(message: QueryPlPoolMappingsResponse): unknown {
+  toJSON(message: QueryPoolMappingsResponse): unknown {
     const obj: any = {};
     obj.poolMappings = {};
     if (message.poolMappings) {
@@ -792,11 +777,11 @@ export const QueryPlPoolMappingsResponse = {
   },
 
   fromPartial(
-    object: DeepPartial<QueryPlPoolMappingsResponse>
-  ): QueryPlPoolMappingsResponse {
+    object: DeepPartial<QueryPoolMappingsResponse>
+  ): QueryPoolMappingsResponse {
     const message = {
-      ...baseQueryPlPoolMappingsResponse,
-    } as QueryPlPoolMappingsResponse;
+      ...baseQueryPoolMappingsResponse,
+    } as QueryPoolMappingsResponse;
     message.poolMappings = Object.entries(object.poolMappings ?? {}).reduce<{
       [key: string]: Long;
     }>((acc, [key, value]) => {
@@ -813,14 +798,14 @@ export const QueryPlPoolMappingsResponse = {
   },
 };
 
-const baseQueryPlPoolMappingsResponse_PoolMappingsEntry: object = {
+const baseQueryPoolMappingsResponse_PoolMappingsEntry: object = {
   key: "",
   value: Long.UZERO,
 };
 
-export const QueryPlPoolMappingsResponse_PoolMappingsEntry = {
+export const QueryPoolMappingsResponse_PoolMappingsEntry = {
   encode(
-    message: QueryPlPoolMappingsResponse_PoolMappingsEntry,
+    message: QueryPoolMappingsResponse_PoolMappingsEntry,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.key !== "") {
@@ -835,12 +820,12 @@ export const QueryPlPoolMappingsResponse_PoolMappingsEntry = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): QueryPlPoolMappingsResponse_PoolMappingsEntry {
+  ): QueryPoolMappingsResponse_PoolMappingsEntry {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseQueryPlPoolMappingsResponse_PoolMappingsEntry,
-    } as QueryPlPoolMappingsResponse_PoolMappingsEntry;
+      ...baseQueryPoolMappingsResponse_PoolMappingsEntry,
+    } as QueryPoolMappingsResponse_PoolMappingsEntry;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -858,10 +843,10 @@ export const QueryPlPoolMappingsResponse_PoolMappingsEntry = {
     return message;
   },
 
-  fromJSON(object: any): QueryPlPoolMappingsResponse_PoolMappingsEntry {
+  fromJSON(object: any): QueryPoolMappingsResponse_PoolMappingsEntry {
     const message = {
-      ...baseQueryPlPoolMappingsResponse_PoolMappingsEntry,
-    } as QueryPlPoolMappingsResponse_PoolMappingsEntry;
+      ...baseQueryPoolMappingsResponse_PoolMappingsEntry,
+    } as QueryPoolMappingsResponse_PoolMappingsEntry;
     message.key =
       object.key !== undefined && object.key !== null ? String(object.key) : "";
     message.value =
@@ -871,7 +856,7 @@ export const QueryPlPoolMappingsResponse_PoolMappingsEntry = {
     return message;
   },
 
-  toJSON(message: QueryPlPoolMappingsResponse_PoolMappingsEntry): unknown {
+  toJSON(message: QueryPoolMappingsResponse_PoolMappingsEntry): unknown {
     const obj: any = {};
     message.key !== undefined && (obj.key = message.key);
     message.value !== undefined &&
@@ -880,11 +865,11 @@ export const QueryPlPoolMappingsResponse_PoolMappingsEntry = {
   },
 
   fromPartial(
-    object: DeepPartial<QueryPlPoolMappingsResponse_PoolMappingsEntry>
-  ): QueryPlPoolMappingsResponse_PoolMappingsEntry {
+    object: DeepPartial<QueryPoolMappingsResponse_PoolMappingsEntry>
+  ): QueryPoolMappingsResponse_PoolMappingsEntry {
     const message = {
-      ...baseQueryPlPoolMappingsResponse_PoolMappingsEntry,
-    } as QueryPlPoolMappingsResponse_PoolMappingsEntry;
+      ...baseQueryPoolMappingsResponse_PoolMappingsEntry,
+    } as QueryPoolMappingsResponse_PoolMappingsEntry;
     message.key = object.key ?? "";
     message.value =
       object.value !== undefined && object.value !== null
@@ -894,11 +879,11 @@ export const QueryPlPoolMappingsResponse_PoolMappingsEntry = {
   },
 };
 
-const baseQueryAllPlPoolAddressRequest: object = {};
+const baseQueryAllPoolAddressRequest: object = {};
 
-export const QueryAllPlPoolAddressRequest = {
+export const QueryAllPoolAddressRequest = {
   encode(
-    message: QueryAllPlPoolAddressRequest,
+    message: QueryAllPoolAddressRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.pagination !== undefined) {
@@ -910,12 +895,12 @@ export const QueryAllPlPoolAddressRequest = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): QueryAllPlPoolAddressRequest {
+  ): QueryAllPoolAddressRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseQueryAllPlPoolAddressRequest,
-    } as QueryAllPlPoolAddressRequest;
+      ...baseQueryAllPoolAddressRequest,
+    } as QueryAllPoolAddressRequest;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -930,10 +915,10 @@ export const QueryAllPlPoolAddressRequest = {
     return message;
   },
 
-  fromJSON(object: any): QueryAllPlPoolAddressRequest {
+  fromJSON(object: any): QueryAllPoolAddressRequest {
     const message = {
-      ...baseQueryAllPlPoolAddressRequest,
-    } as QueryAllPlPoolAddressRequest;
+      ...baseQueryAllPoolAddressRequest,
+    } as QueryAllPoolAddressRequest;
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
         ? PageRequest.fromJSON(object.pagination)
@@ -941,7 +926,7 @@ export const QueryAllPlPoolAddressRequest = {
     return message;
   },
 
-  toJSON(message: QueryAllPlPoolAddressRequest): unknown {
+  toJSON(message: QueryAllPoolAddressRequest): unknown {
     const obj: any = {};
     message.pagination !== undefined &&
       (obj.pagination = message.pagination
@@ -951,11 +936,11 @@ export const QueryAllPlPoolAddressRequest = {
   },
 
   fromPartial(
-    object: DeepPartial<QueryAllPlPoolAddressRequest>
-  ): QueryAllPlPoolAddressRequest {
+    object: DeepPartial<QueryAllPoolAddressRequest>
+  ): QueryAllPoolAddressRequest {
     const message = {
-      ...baseQueryAllPlPoolAddressRequest,
-    } as QueryAllPlPoolAddressRequest;
+      ...baseQueryAllPoolAddressRequest,
+    } as QueryAllPoolAddressRequest;
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
         ? PageRequest.fromPartial(object.pagination)
@@ -964,15 +949,15 @@ export const QueryAllPlPoolAddressRequest = {
   },
 };
 
-const baseQueryAllPlPoolAddressResponse: object = {};
+const baseQueryAllPoolAddressResponse: object = {};
 
-export const QueryAllPlPoolAddressResponse = {
+export const QueryAllPoolAddressResponse = {
   encode(
-    message: QueryAllPlPoolAddressResponse,
+    message: QueryAllPoolAddressResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     Object.entries(message.addresses).forEach(([key, value]) => {
-      QueryAllPlPoolAddressResponse_AddressesEntry.encode(
+      QueryAllPoolAddressResponse_AddressesEntry.encode(
         { key: key as any, value },
         writer.uint32(10).fork()
       ).ldelim();
@@ -989,18 +974,18 @@ export const QueryAllPlPoolAddressResponse = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): QueryAllPlPoolAddressResponse {
+  ): QueryAllPoolAddressResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseQueryAllPlPoolAddressResponse,
-    } as QueryAllPlPoolAddressResponse;
+      ...baseQueryAllPoolAddressResponse,
+    } as QueryAllPoolAddressResponse;
     message.addresses = {};
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          const entry1 = QueryAllPlPoolAddressResponse_AddressesEntry.decode(
+          const entry1 = QueryAllPoolAddressResponse_AddressesEntry.decode(
             reader,
             reader.uint32()
           );
@@ -1019,10 +1004,10 @@ export const QueryAllPlPoolAddressResponse = {
     return message;
   },
 
-  fromJSON(object: any): QueryAllPlPoolAddressResponse {
+  fromJSON(object: any): QueryAllPoolAddressResponse {
     const message = {
-      ...baseQueryAllPlPoolAddressResponse,
-    } as QueryAllPlPoolAddressResponse;
+      ...baseQueryAllPoolAddressResponse,
+    } as QueryAllPoolAddressResponse;
     message.addresses = Object.entries(object.addresses ?? {}).reduce<{
       [key: string]: string;
     }>((acc, [key, value]) => {
@@ -1036,7 +1021,7 @@ export const QueryAllPlPoolAddressResponse = {
     return message;
   },
 
-  toJSON(message: QueryAllPlPoolAddressResponse): unknown {
+  toJSON(message: QueryAllPoolAddressResponse): unknown {
     const obj: any = {};
     obj.addresses = {};
     if (message.addresses) {
@@ -1052,11 +1037,11 @@ export const QueryAllPlPoolAddressResponse = {
   },
 
   fromPartial(
-    object: DeepPartial<QueryAllPlPoolAddressResponse>
-  ): QueryAllPlPoolAddressResponse {
+    object: DeepPartial<QueryAllPoolAddressResponse>
+  ): QueryAllPoolAddressResponse {
     const message = {
-      ...baseQueryAllPlPoolAddressResponse,
-    } as QueryAllPlPoolAddressResponse;
+      ...baseQueryAllPoolAddressResponse,
+    } as QueryAllPoolAddressResponse;
     message.addresses = Object.entries(object.addresses ?? {}).reduce<{
       [key: string]: string;
     }>((acc, [key, value]) => {
@@ -1073,14 +1058,14 @@ export const QueryAllPlPoolAddressResponse = {
   },
 };
 
-const baseQueryAllPlPoolAddressResponse_AddressesEntry: object = {
+const baseQueryAllPoolAddressResponse_AddressesEntry: object = {
   key: "",
   value: "",
 };
 
-export const QueryAllPlPoolAddressResponse_AddressesEntry = {
+export const QueryAllPoolAddressResponse_AddressesEntry = {
   encode(
-    message: QueryAllPlPoolAddressResponse_AddressesEntry,
+    message: QueryAllPoolAddressResponse_AddressesEntry,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.key !== "") {
@@ -1095,12 +1080,12 @@ export const QueryAllPlPoolAddressResponse_AddressesEntry = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): QueryAllPlPoolAddressResponse_AddressesEntry {
+  ): QueryAllPoolAddressResponse_AddressesEntry {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseQueryAllPlPoolAddressResponse_AddressesEntry,
-    } as QueryAllPlPoolAddressResponse_AddressesEntry;
+      ...baseQueryAllPoolAddressResponse_AddressesEntry,
+    } as QueryAllPoolAddressResponse_AddressesEntry;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1118,10 +1103,10 @@ export const QueryAllPlPoolAddressResponse_AddressesEntry = {
     return message;
   },
 
-  fromJSON(object: any): QueryAllPlPoolAddressResponse_AddressesEntry {
+  fromJSON(object: any): QueryAllPoolAddressResponse_AddressesEntry {
     const message = {
-      ...baseQueryAllPlPoolAddressResponse_AddressesEntry,
-    } as QueryAllPlPoolAddressResponse_AddressesEntry;
+      ...baseQueryAllPoolAddressResponse_AddressesEntry,
+    } as QueryAllPoolAddressResponse_AddressesEntry;
     message.key =
       object.key !== undefined && object.key !== null ? String(object.key) : "";
     message.value =
@@ -1131,7 +1116,7 @@ export const QueryAllPlPoolAddressResponse_AddressesEntry = {
     return message;
   },
 
-  toJSON(message: QueryAllPlPoolAddressResponse_AddressesEntry): unknown {
+  toJSON(message: QueryAllPoolAddressResponse_AddressesEntry): unknown {
     const obj: any = {};
     message.key !== undefined && (obj.key = message.key);
     message.value !== undefined && (obj.value = message.value);
@@ -1139,22 +1124,22 @@ export const QueryAllPlPoolAddressResponse_AddressesEntry = {
   },
 
   fromPartial(
-    object: DeepPartial<QueryAllPlPoolAddressResponse_AddressesEntry>
-  ): QueryAllPlPoolAddressResponse_AddressesEntry {
+    object: DeepPartial<QueryAllPoolAddressResponse_AddressesEntry>
+  ): QueryAllPoolAddressResponse_AddressesEntry {
     const message = {
-      ...baseQueryAllPlPoolAddressResponse_AddressesEntry,
-    } as QueryAllPlPoolAddressResponse_AddressesEntry;
+      ...baseQueryAllPoolAddressResponse_AddressesEntry,
+    } as QueryAllPoolAddressResponse_AddressesEntry;
     message.key = object.key ?? "";
     message.value = object.value ?? "";
     return message;
   },
 };
 
-const baseQueryPLPoolInfoRequest: object = { poolId: "" };
+const baseQueryPoolInfoRequest: object = { poolId: "" };
 
-export const QueryPLPoolInfoRequest = {
+export const QueryPoolInfoRequest = {
   encode(
-    message: QueryPLPoolInfoRequest,
+    message: QueryPoolInfoRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.poolId !== "") {
@@ -1166,10 +1151,10 @@ export const QueryPLPoolInfoRequest = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): QueryPLPoolInfoRequest {
+  ): QueryPoolInfoRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryPLPoolInfoRequest } as QueryPLPoolInfoRequest;
+    const message = { ...baseQueryPoolInfoRequest } as QueryPoolInfoRequest;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1184,8 +1169,8 @@ export const QueryPLPoolInfoRequest = {
     return message;
   },
 
-  fromJSON(object: any): QueryPLPoolInfoRequest {
-    const message = { ...baseQueryPLPoolInfoRequest } as QueryPLPoolInfoRequest;
+  fromJSON(object: any): QueryPoolInfoRequest {
+    const message = { ...baseQueryPoolInfoRequest } as QueryPoolInfoRequest;
     message.poolId =
       object.poolId !== undefined && object.poolId !== null
         ? String(object.poolId)
@@ -1193,22 +1178,20 @@ export const QueryPLPoolInfoRequest = {
     return message;
   },
 
-  toJSON(message: QueryPLPoolInfoRequest): unknown {
+  toJSON(message: QueryPoolInfoRequest): unknown {
     const obj: any = {};
     message.poolId !== undefined && (obj.poolId = message.poolId);
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryPLPoolInfoRequest>
-  ): QueryPLPoolInfoRequest {
-    const message = { ...baseQueryPLPoolInfoRequest } as QueryPLPoolInfoRequest;
+  fromPartial(object: DeepPartial<QueryPoolInfoRequest>): QueryPoolInfoRequest {
+    const message = { ...baseQueryPoolInfoRequest } as QueryPoolInfoRequest;
     message.poolId = object.poolId ?? "";
     return message;
   },
 };
 
-const baseQueryPLPoolInfoResponse: object = {
+const baseQueryPoolInfoResponse: object = {
   totalShareAmount: "",
   totalUnderlyingAmount: "",
   availableAmount: "",
@@ -1216,9 +1199,9 @@ const baseQueryPLPoolInfoResponse: object = {
   totalUpnlAmount: "",
 };
 
-export const QueryPLPoolInfoResponse = {
+export const QueryPoolInfoResponse = {
   encode(
-    message: QueryPLPoolInfoResponse,
+    message: QueryPoolInfoResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.totalShareAmount !== "") {
@@ -1242,12 +1225,10 @@ export const QueryPLPoolInfoResponse = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): QueryPLPoolInfoResponse {
+  ): QueryPoolInfoResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryPLPoolInfoResponse,
-    } as QueryPLPoolInfoResponse;
+    const message = { ...baseQueryPoolInfoResponse } as QueryPoolInfoResponse;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1274,10 +1255,8 @@ export const QueryPLPoolInfoResponse = {
     return message;
   },
 
-  fromJSON(object: any): QueryPLPoolInfoResponse {
-    const message = {
-      ...baseQueryPLPoolInfoResponse,
-    } as QueryPLPoolInfoResponse;
+  fromJSON(object: any): QueryPoolInfoResponse {
+    const message = { ...baseQueryPoolInfoResponse } as QueryPoolInfoResponse;
     message.totalShareAmount =
       object.totalShareAmount !== undefined && object.totalShareAmount !== null
         ? String(object.totalShareAmount)
@@ -1303,7 +1282,7 @@ export const QueryPLPoolInfoResponse = {
     return message;
   },
 
-  toJSON(message: QueryPLPoolInfoResponse): unknown {
+  toJSON(message: QueryPoolInfoResponse): unknown {
     const obj: any = {};
     message.totalShareAmount !== undefined &&
       (obj.totalShareAmount = message.totalShareAmount);
@@ -1319,11 +1298,9 @@ export const QueryPLPoolInfoResponse = {
   },
 
   fromPartial(
-    object: DeepPartial<QueryPLPoolInfoResponse>
-  ): QueryPLPoolInfoResponse {
-    const message = {
-      ...baseQueryPLPoolInfoResponse,
-    } as QueryPLPoolInfoResponse;
+    object: DeepPartial<QueryPoolInfoResponse>
+  ): QueryPoolInfoResponse {
+    const message = { ...baseQueryPoolInfoResponse } as QueryPoolInfoResponse;
     message.totalShareAmount = object.totalShareAmount ?? "";
     message.totalUnderlyingAmount = object.totalUnderlyingAmount ?? "";
     message.availableAmount = object.availableAmount ?? "";
@@ -1333,11 +1310,11 @@ export const QueryPLPoolInfoResponse = {
   },
 };
 
-const baseQueryAllPLPoolInfoRequest: object = {};
+const baseQueryAllPoolInfoRequest: object = {};
 
-export const QueryAllPLPoolInfoRequest = {
+export const QueryAllPoolInfoRequest = {
   encode(
-    message: QueryAllPLPoolInfoRequest,
+    message: QueryAllPoolInfoRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.pagination !== undefined) {
@@ -1349,12 +1326,12 @@ export const QueryAllPLPoolInfoRequest = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): QueryAllPLPoolInfoRequest {
+  ): QueryAllPoolInfoRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseQueryAllPLPoolInfoRequest,
-    } as QueryAllPLPoolInfoRequest;
+      ...baseQueryAllPoolInfoRequest,
+    } as QueryAllPoolInfoRequest;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1369,10 +1346,10 @@ export const QueryAllPLPoolInfoRequest = {
     return message;
   },
 
-  fromJSON(object: any): QueryAllPLPoolInfoRequest {
+  fromJSON(object: any): QueryAllPoolInfoRequest {
     const message = {
-      ...baseQueryAllPLPoolInfoRequest,
-    } as QueryAllPLPoolInfoRequest;
+      ...baseQueryAllPoolInfoRequest,
+    } as QueryAllPoolInfoRequest;
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
         ? PageRequest.fromJSON(object.pagination)
@@ -1380,7 +1357,7 @@ export const QueryAllPLPoolInfoRequest = {
     return message;
   },
 
-  toJSON(message: QueryAllPLPoolInfoRequest): unknown {
+  toJSON(message: QueryAllPoolInfoRequest): unknown {
     const obj: any = {};
     message.pagination !== undefined &&
       (obj.pagination = message.pagination
@@ -1390,11 +1367,11 @@ export const QueryAllPLPoolInfoRequest = {
   },
 
   fromPartial(
-    object: DeepPartial<QueryAllPLPoolInfoRequest>
-  ): QueryAllPLPoolInfoRequest {
+    object: DeepPartial<QueryAllPoolInfoRequest>
+  ): QueryAllPoolInfoRequest {
     const message = {
-      ...baseQueryAllPLPoolInfoRequest,
-    } as QueryAllPLPoolInfoRequest;
+      ...baseQueryAllPoolInfoRequest,
+    } as QueryAllPoolInfoRequest;
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
         ? PageRequest.fromPartial(object.pagination)
@@ -1403,15 +1380,15 @@ export const QueryAllPLPoolInfoRequest = {
   },
 };
 
-const baseQueryAllPLPoolInfoResponse: object = {};
+const baseQueryAllPoolInfoResponse: object = {};
 
-export const QueryAllPLPoolInfoResponse = {
+export const QueryAllPoolInfoResponse = {
   encode(
-    message: QueryAllPLPoolInfoResponse,
+    message: QueryAllPoolInfoResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     for (const v of message.pools) {
-      QueryPLPoolInfoResponse.encode(v!, writer.uint32(10).fork()).ldelim();
+      QueryPoolInfoResponse.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     if (message.pagination !== undefined) {
       PageResponse.encode(
@@ -1425,19 +1402,19 @@ export const QueryAllPLPoolInfoResponse = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): QueryAllPLPoolInfoResponse {
+  ): QueryAllPoolInfoResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseQueryAllPLPoolInfoResponse,
-    } as QueryAllPLPoolInfoResponse;
+      ...baseQueryAllPoolInfoResponse,
+    } as QueryAllPoolInfoResponse;
     message.pools = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
           message.pools.push(
-            QueryPLPoolInfoResponse.decode(reader, reader.uint32())
+            QueryPoolInfoResponse.decode(reader, reader.uint32())
           );
           break;
         case 2:
@@ -1451,12 +1428,12 @@ export const QueryAllPLPoolInfoResponse = {
     return message;
   },
 
-  fromJSON(object: any): QueryAllPLPoolInfoResponse {
+  fromJSON(object: any): QueryAllPoolInfoResponse {
     const message = {
-      ...baseQueryAllPLPoolInfoResponse,
-    } as QueryAllPLPoolInfoResponse;
+      ...baseQueryAllPoolInfoResponse,
+    } as QueryAllPoolInfoResponse;
     message.pools = (object.pools ?? []).map((e: any) =>
-      QueryPLPoolInfoResponse.fromJSON(e)
+      QueryPoolInfoResponse.fromJSON(e)
     );
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
@@ -1465,11 +1442,11 @@ export const QueryAllPLPoolInfoResponse = {
     return message;
   },
 
-  toJSON(message: QueryAllPLPoolInfoResponse): unknown {
+  toJSON(message: QueryAllPoolInfoResponse): unknown {
     const obj: any = {};
     if (message.pools) {
       obj.pools = message.pools.map((e) =>
-        e ? QueryPLPoolInfoResponse.toJSON(e) : undefined
+        e ? QueryPoolInfoResponse.toJSON(e) : undefined
       );
     } else {
       obj.pools = [];
@@ -1482,13 +1459,13 @@ export const QueryAllPLPoolInfoResponse = {
   },
 
   fromPartial(
-    object: DeepPartial<QueryAllPLPoolInfoResponse>
-  ): QueryAllPLPoolInfoResponse {
+    object: DeepPartial<QueryAllPoolInfoResponse>
+  ): QueryAllPoolInfoResponse {
     const message = {
-      ...baseQueryAllPLPoolInfoResponse,
-    } as QueryAllPLPoolInfoResponse;
+      ...baseQueryAllPoolInfoResponse,
+    } as QueryAllPoolInfoResponse;
     message.pools = (object.pools ?? []).map((e) =>
-      QueryPLPoolInfoResponse.fromPartial(e)
+      QueryPoolInfoResponse.fromPartial(e)
     );
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
@@ -1503,30 +1480,30 @@ export interface Query {
   /** Params queries the parameters of the module. */
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse>;
   /** Get statistical amounts for a particular pool id */
-  PoolInfo(request: QueryPLPoolInfoRequest): Promise<QueryPLPoolInfoResponse>;
+  PoolInfo(request: QueryPoolInfoRequest): Promise<QueryPoolInfoResponse>;
   /**
    * This route needs to be before Pool to get matched first
    * Get statistical amounts for a particular pool id
    */
   PoolInfoAll(
-    request: QueryAllPLPoolInfoRequest
-  ): Promise<QueryAllPLPoolInfoResponse>;
-  /** Get addresses for all plp pools */
+    request: QueryAllPoolInfoRequest
+  ): Promise<QueryAllPoolInfoResponse>;
+  /** Get addresses for all pools */
   PoolAddressAll(
-    request: QueryAllPlPoolAddressRequest
-  ): Promise<QueryAllPlPoolAddressResponse>;
-  /** Get markets utilization multiplier for all plp pools-linked markets */
+    request: QueryAllPoolAddressRequest
+  ): Promise<QueryAllPoolAddressResponse>;
+  /** Get markets utilization multiplier for all pools-linked markets */
   PoolMarketUtilizationMultiplierAll(
-    request: QueryAllPlPoolMarketUtilizationMultiplierRequest
-  ): Promise<QueryAllPlPoolMarketUtilizationMultiplierResponse>;
+    request: QueryAllPoolMarketUtilizationMultiplierRequest
+  ): Promise<QueryAllPoolMarketUtilizationMultiplierResponse>;
   /** Get Pool details for a particular id */
-  Pool(request: QueryGetPlPoolRequest): Promise<QueryGetPlPoolResponse>;
+  Pool(request: QueryGetPoolRequest): Promise<QueryGetPoolResponse>;
   /** Get all Pool details */
-  PoolAll(request: QueryAllPlPoolsRequest): Promise<QueryAllPlPoolsResponse>;
+  PoolAll(request: QueryAllPoolsRequest): Promise<QueryAllPoolsResponse>;
   /** Get denom => pool_id mappings */
   PoolMappings(
-    request: QueryPlPoolMappingsRequest
-  ): Promise<QueryPlPoolMappingsResponse>;
+    request: QueryPoolMappingsRequest
+  ): Promise<QueryPoolMappingsResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -1555,98 +1532,98 @@ export class QueryClientImpl implements Query {
     );
   }
 
-  PoolInfo(request: QueryPLPoolInfoRequest): Promise<QueryPLPoolInfoResponse> {
-    const data = QueryPLPoolInfoRequest.encode(request).finish();
+  PoolInfo(request: QueryPoolInfoRequest): Promise<QueryPoolInfoResponse> {
+    const data = QueryPoolInfoRequest.encode(request).finish();
     const promise = this.rpc.request(
       "Switcheo.carbon.perpsliquidity.Query",
       "PoolInfo",
       data
     );
     return promise.then((data) =>
-      QueryPLPoolInfoResponse.decode(new _m0.Reader(data))
+      QueryPoolInfoResponse.decode(new _m0.Reader(data))
     );
   }
 
   PoolInfoAll(
-    request: QueryAllPLPoolInfoRequest
-  ): Promise<QueryAllPLPoolInfoResponse> {
-    const data = QueryAllPLPoolInfoRequest.encode(request).finish();
+    request: QueryAllPoolInfoRequest
+  ): Promise<QueryAllPoolInfoResponse> {
+    const data = QueryAllPoolInfoRequest.encode(request).finish();
     const promise = this.rpc.request(
       "Switcheo.carbon.perpsliquidity.Query",
       "PoolInfoAll",
       data
     );
     return promise.then((data) =>
-      QueryAllPLPoolInfoResponse.decode(new _m0.Reader(data))
+      QueryAllPoolInfoResponse.decode(new _m0.Reader(data))
     );
   }
 
   PoolAddressAll(
-    request: QueryAllPlPoolAddressRequest
-  ): Promise<QueryAllPlPoolAddressResponse> {
-    const data = QueryAllPlPoolAddressRequest.encode(request).finish();
+    request: QueryAllPoolAddressRequest
+  ): Promise<QueryAllPoolAddressResponse> {
+    const data = QueryAllPoolAddressRequest.encode(request).finish();
     const promise = this.rpc.request(
       "Switcheo.carbon.perpsliquidity.Query",
       "PoolAddressAll",
       data
     );
     return promise.then((data) =>
-      QueryAllPlPoolAddressResponse.decode(new _m0.Reader(data))
+      QueryAllPoolAddressResponse.decode(new _m0.Reader(data))
     );
   }
 
   PoolMarketUtilizationMultiplierAll(
-    request: QueryAllPlPoolMarketUtilizationMultiplierRequest
-  ): Promise<QueryAllPlPoolMarketUtilizationMultiplierResponse> {
+    request: QueryAllPoolMarketUtilizationMultiplierRequest
+  ): Promise<QueryAllPoolMarketUtilizationMultiplierResponse> {
     const data =
-      QueryAllPlPoolMarketUtilizationMultiplierRequest.encode(request).finish();
+      QueryAllPoolMarketUtilizationMultiplierRequest.encode(request).finish();
     const promise = this.rpc.request(
       "Switcheo.carbon.perpsliquidity.Query",
       "PoolMarketUtilizationMultiplierAll",
       data
     );
     return promise.then((data) =>
-      QueryAllPlPoolMarketUtilizationMultiplierResponse.decode(
+      QueryAllPoolMarketUtilizationMultiplierResponse.decode(
         new _m0.Reader(data)
       )
     );
   }
 
-  Pool(request: QueryGetPlPoolRequest): Promise<QueryGetPlPoolResponse> {
-    const data = QueryGetPlPoolRequest.encode(request).finish();
+  Pool(request: QueryGetPoolRequest): Promise<QueryGetPoolResponse> {
+    const data = QueryGetPoolRequest.encode(request).finish();
     const promise = this.rpc.request(
       "Switcheo.carbon.perpsliquidity.Query",
       "Pool",
       data
     );
     return promise.then((data) =>
-      QueryGetPlPoolResponse.decode(new _m0.Reader(data))
+      QueryGetPoolResponse.decode(new _m0.Reader(data))
     );
   }
 
-  PoolAll(request: QueryAllPlPoolsRequest): Promise<QueryAllPlPoolsResponse> {
-    const data = QueryAllPlPoolsRequest.encode(request).finish();
+  PoolAll(request: QueryAllPoolsRequest): Promise<QueryAllPoolsResponse> {
+    const data = QueryAllPoolsRequest.encode(request).finish();
     const promise = this.rpc.request(
       "Switcheo.carbon.perpsliquidity.Query",
       "PoolAll",
       data
     );
     return promise.then((data) =>
-      QueryAllPlPoolsResponse.decode(new _m0.Reader(data))
+      QueryAllPoolsResponse.decode(new _m0.Reader(data))
     );
   }
 
   PoolMappings(
-    request: QueryPlPoolMappingsRequest
-  ): Promise<QueryPlPoolMappingsResponse> {
-    const data = QueryPlPoolMappingsRequest.encode(request).finish();
+    request: QueryPoolMappingsRequest
+  ): Promise<QueryPoolMappingsResponse> {
+    const data = QueryPoolMappingsRequest.encode(request).finish();
     const promise = this.rpc.request(
       "Switcheo.carbon.perpsliquidity.Query",
       "PoolMappings",
       data
     );
     return promise.then((data) =>
-      QueryPlPoolMappingsResponse.decode(new _m0.Reader(data))
+      QueryPoolMappingsResponse.decode(new _m0.Reader(data))
     );
   }
 }

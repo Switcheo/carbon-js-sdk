@@ -8,7 +8,7 @@ import { StringValue } from "../google/protobuf/wrappers";
 export const protobufPackage = "Switcheo.carbon.perpsliquidity";
 
 /** main store holding each Pool */
-export interface PlPool {
+export interface Pool {
   /** auto-incrementing id */
   id: Long;
   /** admin/govt determined name */
@@ -21,25 +21,25 @@ export interface PlPool {
   vaultAddress: string;
   /** supply cap to limit amount of tokens that can go into the pool */
   supplyCap: string;
-  /** deposit fee to charge on a successful deposit to PLP in decimal */
+  /** deposit fee to charge on a successful deposit to pool in decimal */
   depositFee: string;
-  /** withdrawal fee to charge on a successful withdrawal from PLP in decimal */
+  /** withdrawal fee to charge on a successful withdrawal from pool in decimal */
   withdrawalFee: string;
   /** borrow fee in decimal per time period to charge on use of liquidity in pool */
-  borrowFee: string;
+  baseBorrowFeePerFundingInterval: string;
 }
 
-export interface UpdatePlPoolParams {
+export interface UpdatePoolParams {
   name?: string;
   supplyCap: string;
   depositFee: string;
   withdrawalFee: string;
-  borrowFee: string;
+  baseBorrowFeePerFundingInterval: string;
 }
 
 /** PoolDetails used for for querying. same as Pool but appended with registered_markets */
 export interface PoolDetails {
-  pool?: PlPool;
+  pool?: Pool;
   registeredMarkets: MarketConfig[];
 }
 
@@ -69,13 +69,11 @@ export interface DepositToBonusContractParams {
   bonusFluoDistributorAddress: Uint8Array;
 }
 
-/** MarketUtilizationRateSnapshot represents the utilization rate of a market at a given timestamp */
-export interface MarketUtilizationRateSnapshot {
-  timestamp?: Date;
-  utilizationRate: string;
+export interface NavPerShareLastRecorded {
+  lastRecordedAt?: Date;
 }
 
-const basePlPool: object = {
+const basePool: object = {
   id: Long.UZERO,
   name: "",
   depositDenom: "",
@@ -84,14 +82,11 @@ const basePlPool: object = {
   supplyCap: "",
   depositFee: "",
   withdrawalFee: "",
-  borrowFee: "",
+  baseBorrowFeePerFundingInterval: "",
 };
 
-export const PlPool = {
-  encode(
-    message: PlPool,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
+export const Pool = {
+  encode(message: Pool, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (!message.id.isZero()) {
       writer.uint32(8).uint64(message.id);
     }
@@ -116,16 +111,16 @@ export const PlPool = {
     if (message.withdrawalFee !== "") {
       writer.uint32(66).string(message.withdrawalFee);
     }
-    if (message.borrowFee !== "") {
-      writer.uint32(74).string(message.borrowFee);
+    if (message.baseBorrowFeePerFundingInterval !== "") {
+      writer.uint32(74).string(message.baseBorrowFeePerFundingInterval);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): PlPool {
+  decode(input: _m0.Reader | Uint8Array, length?: number): Pool {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...basePlPool } as PlPool;
+    const message = { ...basePool } as Pool;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -154,7 +149,7 @@ export const PlPool = {
           message.withdrawalFee = reader.string();
           break;
         case 9:
-          message.borrowFee = reader.string();
+          message.baseBorrowFeePerFundingInterval = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -164,8 +159,8 @@ export const PlPool = {
     return message;
   },
 
-  fromJSON(object: any): PlPool {
-    const message = { ...basePlPool } as PlPool;
+  fromJSON(object: any): Pool {
+    const message = { ...basePool } as Pool;
     message.id =
       object.id !== undefined && object.id !== null
         ? Long.fromString(object.id)
@@ -198,14 +193,15 @@ export const PlPool = {
       object.withdrawalFee !== undefined && object.withdrawalFee !== null
         ? String(object.withdrawalFee)
         : "";
-    message.borrowFee =
-      object.borrowFee !== undefined && object.borrowFee !== null
-        ? String(object.borrowFee)
+    message.baseBorrowFeePerFundingInterval =
+      object.baseBorrowFeePerFundingInterval !== undefined &&
+      object.baseBorrowFeePerFundingInterval !== null
+        ? String(object.baseBorrowFeePerFundingInterval)
         : "";
     return message;
   },
 
-  toJSON(message: PlPool): unknown {
+  toJSON(message: Pool): unknown {
     const obj: any = {};
     message.id !== undefined &&
       (obj.id = (message.id || Long.UZERO).toString());
@@ -219,12 +215,14 @@ export const PlPool = {
     message.depositFee !== undefined && (obj.depositFee = message.depositFee);
     message.withdrawalFee !== undefined &&
       (obj.withdrawalFee = message.withdrawalFee);
-    message.borrowFee !== undefined && (obj.borrowFee = message.borrowFee);
+    message.baseBorrowFeePerFundingInterval !== undefined &&
+      (obj.baseBorrowFeePerFundingInterval =
+        message.baseBorrowFeePerFundingInterval);
     return obj;
   },
 
-  fromPartial(object: DeepPartial<PlPool>): PlPool {
-    const message = { ...basePlPool } as PlPool;
+  fromPartial(object: DeepPartial<Pool>): Pool {
+    const message = { ...basePool } as Pool;
     message.id =
       object.id !== undefined && object.id !== null
         ? Long.fromValue(object.id)
@@ -236,21 +234,22 @@ export const PlPool = {
     message.supplyCap = object.supplyCap ?? "";
     message.depositFee = object.depositFee ?? "";
     message.withdrawalFee = object.withdrawalFee ?? "";
-    message.borrowFee = object.borrowFee ?? "";
+    message.baseBorrowFeePerFundingInterval =
+      object.baseBorrowFeePerFundingInterval ?? "";
     return message;
   },
 };
 
-const baseUpdatePlPoolParams: object = {
+const baseUpdatePoolParams: object = {
   supplyCap: "",
   depositFee: "",
   withdrawalFee: "",
-  borrowFee: "",
+  baseBorrowFeePerFundingInterval: "",
 };
 
-export const UpdatePlPoolParams = {
+export const UpdatePoolParams = {
   encode(
-    message: UpdatePlPoolParams,
+    message: UpdatePoolParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.name !== undefined) {
@@ -268,16 +267,16 @@ export const UpdatePlPoolParams = {
     if (message.withdrawalFee !== "") {
       writer.uint32(34).string(message.withdrawalFee);
     }
-    if (message.borrowFee !== "") {
-      writer.uint32(42).string(message.borrowFee);
+    if (message.baseBorrowFeePerFundingInterval !== "") {
+      writer.uint32(42).string(message.baseBorrowFeePerFundingInterval);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): UpdatePlPoolParams {
+  decode(input: _m0.Reader | Uint8Array, length?: number): UpdatePoolParams {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseUpdatePlPoolParams } as UpdatePlPoolParams;
+    const message = { ...baseUpdatePoolParams } as UpdatePoolParams;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -294,7 +293,7 @@ export const UpdatePlPoolParams = {
           message.withdrawalFee = reader.string();
           break;
         case 5:
-          message.borrowFee = reader.string();
+          message.baseBorrowFeePerFundingInterval = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -304,8 +303,8 @@ export const UpdatePlPoolParams = {
     return message;
   },
 
-  fromJSON(object: any): UpdatePlPoolParams {
-    const message = { ...baseUpdatePlPoolParams } as UpdatePlPoolParams;
+  fromJSON(object: any): UpdatePoolParams {
+    const message = { ...baseUpdatePoolParams } as UpdatePoolParams;
     message.name =
       object.name !== undefined && object.name !== null
         ? String(object.name)
@@ -322,31 +321,35 @@ export const UpdatePlPoolParams = {
       object.withdrawalFee !== undefined && object.withdrawalFee !== null
         ? String(object.withdrawalFee)
         : "";
-    message.borrowFee =
-      object.borrowFee !== undefined && object.borrowFee !== null
-        ? String(object.borrowFee)
+    message.baseBorrowFeePerFundingInterval =
+      object.baseBorrowFeePerFundingInterval !== undefined &&
+      object.baseBorrowFeePerFundingInterval !== null
+        ? String(object.baseBorrowFeePerFundingInterval)
         : "";
     return message;
   },
 
-  toJSON(message: UpdatePlPoolParams): unknown {
+  toJSON(message: UpdatePoolParams): unknown {
     const obj: any = {};
     message.name !== undefined && (obj.name = message.name);
     message.supplyCap !== undefined && (obj.supplyCap = message.supplyCap);
     message.depositFee !== undefined && (obj.depositFee = message.depositFee);
     message.withdrawalFee !== undefined &&
       (obj.withdrawalFee = message.withdrawalFee);
-    message.borrowFee !== undefined && (obj.borrowFee = message.borrowFee);
+    message.baseBorrowFeePerFundingInterval !== undefined &&
+      (obj.baseBorrowFeePerFundingInterval =
+        message.baseBorrowFeePerFundingInterval);
     return obj;
   },
 
-  fromPartial(object: DeepPartial<UpdatePlPoolParams>): UpdatePlPoolParams {
-    const message = { ...baseUpdatePlPoolParams } as UpdatePlPoolParams;
+  fromPartial(object: DeepPartial<UpdatePoolParams>): UpdatePoolParams {
+    const message = { ...baseUpdatePoolParams } as UpdatePoolParams;
     message.name = object.name ?? undefined;
     message.supplyCap = object.supplyCap ?? "";
     message.depositFee = object.depositFee ?? "";
     message.withdrawalFee = object.withdrawalFee ?? "";
-    message.borrowFee = object.borrowFee ?? "";
+    message.baseBorrowFeePerFundingInterval =
+      object.baseBorrowFeePerFundingInterval ?? "";
     return message;
   },
 };
@@ -359,7 +362,7 @@ export const PoolDetails = {
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.pool !== undefined) {
-      PlPool.encode(message.pool, writer.uint32(10).fork()).ldelim();
+      Pool.encode(message.pool, writer.uint32(10).fork()).ldelim();
     }
     for (const v of message.registeredMarkets) {
       MarketConfig.encode(v!, writer.uint32(18).fork()).ldelim();
@@ -376,7 +379,7 @@ export const PoolDetails = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.pool = PlPool.decode(reader, reader.uint32());
+          message.pool = Pool.decode(reader, reader.uint32());
           break;
         case 2:
           message.registeredMarkets.push(
@@ -395,7 +398,7 @@ export const PoolDetails = {
     const message = { ...basePoolDetails } as PoolDetails;
     message.pool =
       object.pool !== undefined && object.pool !== null
-        ? PlPool.fromJSON(object.pool)
+        ? Pool.fromJSON(object.pool)
         : undefined;
     message.registeredMarkets = (object.registeredMarkets ?? []).map((e: any) =>
       MarketConfig.fromJSON(e)
@@ -406,7 +409,7 @@ export const PoolDetails = {
   toJSON(message: PoolDetails): unknown {
     const obj: any = {};
     message.pool !== undefined &&
-      (obj.pool = message.pool ? PlPool.toJSON(message.pool) : undefined);
+      (obj.pool = message.pool ? Pool.toJSON(message.pool) : undefined);
     if (message.registeredMarkets) {
       obj.registeredMarkets = message.registeredMarkets.map((e) =>
         e ? MarketConfig.toJSON(e) : undefined
@@ -421,7 +424,7 @@ export const PoolDetails = {
     const message = { ...basePoolDetails } as PoolDetails;
     message.pool =
       object.pool !== undefined && object.pool !== null
-        ? PlPool.fromPartial(object.pool)
+        ? Pool.fromPartial(object.pool)
         : undefined;
     message.registeredMarkets = (object.registeredMarkets ?? []).map((e) =>
       MarketConfig.fromPartial(e)
@@ -796,21 +799,18 @@ export const DepositToBonusContractParams = {
   },
 };
 
-const baseMarketUtilizationRateSnapshot: object = { utilizationRate: "" };
+const baseNavPerShareLastRecorded: object = {};
 
-export const MarketUtilizationRateSnapshot = {
+export const NavPerShareLastRecorded = {
   encode(
-    message: MarketUtilizationRateSnapshot,
+    message: NavPerShareLastRecorded,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.timestamp !== undefined) {
+    if (message.lastRecordedAt !== undefined) {
       Timestamp.encode(
-        toTimestamp(message.timestamp),
+        toTimestamp(message.lastRecordedAt),
         writer.uint32(10).fork()
       ).ldelim();
-    }
-    if (message.utilizationRate !== "") {
-      writer.uint32(18).string(message.utilizationRate);
     }
     return writer;
   },
@@ -818,22 +818,19 @@ export const MarketUtilizationRateSnapshot = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): MarketUtilizationRateSnapshot {
+  ): NavPerShareLastRecorded {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseMarketUtilizationRateSnapshot,
-    } as MarketUtilizationRateSnapshot;
+      ...baseNavPerShareLastRecorded,
+    } as NavPerShareLastRecorded;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.timestamp = fromTimestamp(
+          message.lastRecordedAt = fromTimestamp(
             Timestamp.decode(reader, reader.uint32())
           );
-          break;
-        case 2:
-          message.utilizationRate = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -843,38 +840,31 @@ export const MarketUtilizationRateSnapshot = {
     return message;
   },
 
-  fromJSON(object: any): MarketUtilizationRateSnapshot {
+  fromJSON(object: any): NavPerShareLastRecorded {
     const message = {
-      ...baseMarketUtilizationRateSnapshot,
-    } as MarketUtilizationRateSnapshot;
-    message.timestamp =
-      object.timestamp !== undefined && object.timestamp !== null
-        ? fromJsonTimestamp(object.timestamp)
+      ...baseNavPerShareLastRecorded,
+    } as NavPerShareLastRecorded;
+    message.lastRecordedAt =
+      object.lastRecordedAt !== undefined && object.lastRecordedAt !== null
+        ? fromJsonTimestamp(object.lastRecordedAt)
         : undefined;
-    message.utilizationRate =
-      object.utilizationRate !== undefined && object.utilizationRate !== null
-        ? String(object.utilizationRate)
-        : "";
     return message;
   },
 
-  toJSON(message: MarketUtilizationRateSnapshot): unknown {
+  toJSON(message: NavPerShareLastRecorded): unknown {
     const obj: any = {};
-    message.timestamp !== undefined &&
-      (obj.timestamp = message.timestamp.toISOString());
-    message.utilizationRate !== undefined &&
-      (obj.utilizationRate = message.utilizationRate);
+    message.lastRecordedAt !== undefined &&
+      (obj.lastRecordedAt = message.lastRecordedAt.toISOString());
     return obj;
   },
 
   fromPartial(
-    object: DeepPartial<MarketUtilizationRateSnapshot>
-  ): MarketUtilizationRateSnapshot {
+    object: DeepPartial<NavPerShareLastRecorded>
+  ): NavPerShareLastRecorded {
     const message = {
-      ...baseMarketUtilizationRateSnapshot,
-    } as MarketUtilizationRateSnapshot;
-    message.timestamp = object.timestamp ?? undefined;
-    message.utilizationRate = object.utilizationRate ?? "";
+      ...baseNavPerShareLastRecorded,
+    } as NavPerShareLastRecorded;
+    message.lastRecordedAt = object.lastRecordedAt ?? undefined;
     return message;
   },
 };

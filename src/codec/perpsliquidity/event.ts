@@ -1,22 +1,14 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { PlPool } from "./pool";
+import { Pool } from "./pool";
 import { MarketConfig } from "./market";
 
 export const protobufPackage = "Switcheo.carbon.perpsliquidity";
 
-export interface SetPoolEvent {
-  pool?: PlPool;
+export interface PoolEvent {
+  pool?: Pool;
   type: string;
-}
-
-export interface NewPoolEvent {
-  pool?: PlPool;
-}
-
-export interface UpdatePoolEvent {
-  pool?: PlPool;
 }
 
 export interface RegisterToPoolEvent {
@@ -57,15 +49,15 @@ export interface UpdateMarketUtilizationMultiplierEvent {
   multiplier: string;
 }
 
-const baseSetPoolEvent: object = { type: "" };
+const basePoolEvent: object = { type: "" };
 
-export const SetPoolEvent = {
+export const PoolEvent = {
   encode(
-    message: SetPoolEvent,
+    message: PoolEvent,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.pool !== undefined) {
-      PlPool.encode(message.pool, writer.uint32(10).fork()).ldelim();
+      Pool.encode(message.pool, writer.uint32(10).fork()).ldelim();
     }
     if (message.type !== "") {
       writer.uint32(18).string(message.type);
@@ -73,15 +65,15 @@ export const SetPoolEvent = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): SetPoolEvent {
+  decode(input: _m0.Reader | Uint8Array, length?: number): PoolEvent {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseSetPoolEvent } as SetPoolEvent;
+    const message = { ...basePoolEvent } as PoolEvent;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.pool = PlPool.decode(reader, reader.uint32());
+          message.pool = Pool.decode(reader, reader.uint32());
           break;
         case 2:
           message.type = reader.string();
@@ -94,11 +86,11 @@ export const SetPoolEvent = {
     return message;
   },
 
-  fromJSON(object: any): SetPoolEvent {
-    const message = { ...baseSetPoolEvent } as SetPoolEvent;
+  fromJSON(object: any): PoolEvent {
+    const message = { ...basePoolEvent } as PoolEvent;
     message.pool =
       object.pool !== undefined && object.pool !== null
-        ? PlPool.fromJSON(object.pool)
+        ? Pool.fromJSON(object.pool)
         : undefined;
     message.type =
       object.type !== undefined && object.type !== null
@@ -107,135 +99,21 @@ export const SetPoolEvent = {
     return message;
   },
 
-  toJSON(message: SetPoolEvent): unknown {
+  toJSON(message: PoolEvent): unknown {
     const obj: any = {};
     message.pool !== undefined &&
-      (obj.pool = message.pool ? PlPool.toJSON(message.pool) : undefined);
+      (obj.pool = message.pool ? Pool.toJSON(message.pool) : undefined);
     message.type !== undefined && (obj.type = message.type);
     return obj;
   },
 
-  fromPartial(object: DeepPartial<SetPoolEvent>): SetPoolEvent {
-    const message = { ...baseSetPoolEvent } as SetPoolEvent;
+  fromPartial(object: DeepPartial<PoolEvent>): PoolEvent {
+    const message = { ...basePoolEvent } as PoolEvent;
     message.pool =
       object.pool !== undefined && object.pool !== null
-        ? PlPool.fromPartial(object.pool)
+        ? Pool.fromPartial(object.pool)
         : undefined;
     message.type = object.type ?? "";
-    return message;
-  },
-};
-
-const baseNewPoolEvent: object = {};
-
-export const NewPoolEvent = {
-  encode(
-    message: NewPoolEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.pool !== undefined) {
-      PlPool.encode(message.pool, writer.uint32(10).fork()).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): NewPoolEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseNewPoolEvent } as NewPoolEvent;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.pool = PlPool.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): NewPoolEvent {
-    const message = { ...baseNewPoolEvent } as NewPoolEvent;
-    message.pool =
-      object.pool !== undefined && object.pool !== null
-        ? PlPool.fromJSON(object.pool)
-        : undefined;
-    return message;
-  },
-
-  toJSON(message: NewPoolEvent): unknown {
-    const obj: any = {};
-    message.pool !== undefined &&
-      (obj.pool = message.pool ? PlPool.toJSON(message.pool) : undefined);
-    return obj;
-  },
-
-  fromPartial(object: DeepPartial<NewPoolEvent>): NewPoolEvent {
-    const message = { ...baseNewPoolEvent } as NewPoolEvent;
-    message.pool =
-      object.pool !== undefined && object.pool !== null
-        ? PlPool.fromPartial(object.pool)
-        : undefined;
-    return message;
-  },
-};
-
-const baseUpdatePoolEvent: object = {};
-
-export const UpdatePoolEvent = {
-  encode(
-    message: UpdatePoolEvent,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.pool !== undefined) {
-      PlPool.encode(message.pool, writer.uint32(10).fork()).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): UpdatePoolEvent {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseUpdatePoolEvent } as UpdatePoolEvent;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.pool = PlPool.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): UpdatePoolEvent {
-    const message = { ...baseUpdatePoolEvent } as UpdatePoolEvent;
-    message.pool =
-      object.pool !== undefined && object.pool !== null
-        ? PlPool.fromJSON(object.pool)
-        : undefined;
-    return message;
-  },
-
-  toJSON(message: UpdatePoolEvent): unknown {
-    const obj: any = {};
-    message.pool !== undefined &&
-      (obj.pool = message.pool ? PlPool.toJSON(message.pool) : undefined);
-    return obj;
-  },
-
-  fromPartial(object: DeepPartial<UpdatePoolEvent>): UpdatePoolEvent {
-    const message = { ...baseUpdatePoolEvent } as UpdatePoolEvent;
-    message.pool =
-      object.pool !== undefined && object.pool !== null
-        ? PlPool.fromPartial(object.pool)
-        : undefined;
     return message;
   },
 };

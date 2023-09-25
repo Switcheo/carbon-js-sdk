@@ -1,4 +1,4 @@
-import { capitalize } from "lodash";
+import { capitalize, first } from "lodash";
 import path from "path";
 import { whitelistCosmosExports, whitelistIbcExports } from "./config";
 import { generateEIP712types } from "./generate-eip712-types";
@@ -166,6 +166,10 @@ for (const moduleFile of codecFiles) {
       newKey =  `DepositToPoolEvent as ${labelOverride[`${firstDirName}DepositToPoolEvent`] ?? firstDirName}DepositToPoolEvent`;
     } else if (key === "WithdrawFromPoolEvent" && firstDirName === "Perpsliquidity")  {
       newKey =  `WithdrawFromPoolEvent as ${labelOverride[`${firstDirName}WithdrawFromPoolEvent`] ?? firstDirName}WithdrawFromPoolEvent`;
+    } else if (firstDirName === "Perpsliquidity" && key.startsWith("Msg")) {
+      newKey = `${key} as ${labelOverride[`Perpsliquidity${key}`]?? "MsgPerpsliquidity"}${key.replace(/^Msg/, '')}`;
+    } else if (firstDirName === "Perpsliquidity") {
+      newKey = `${key} as ${labelOverride[`Perpsliquidity${key}`]?? "Perpsliquidity"}${key}`;
     }
 
     messagePrev.push(newKey);
@@ -202,7 +206,8 @@ function updateImportsAlias(messages: string[], protobufPackage: string) {
       || pkg === 'group'
       || (pkg === 'gov' && innerPkg === 'v1')
       || (pkg === 'evm' || pkg === 'feemarket')
-      || pkg === 'alliance') {
+      || pkg === 'alliance'
+      || pkg === 'perpsliquidity') {
       msgAlias = `Msg${capitalize(pkg)}${msg.split('Msg')[1]}`
     }
     if (msgAlias) {

@@ -1,12 +1,13 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { PlPool, UpdatePlPoolParams } from "./pool";
+import { Pool, UpdatePoolParams } from "./pool";
 import { UpdateMarketConfigParams, MarketConfig } from "./market";
+import { Duration } from "../google/protobuf/duration";
 
 export const protobufPackage = "Switcheo.carbon.perpsliquidity";
 
-export interface MsgCreatePlPool {
+export interface MsgCreatePool {
   creator: string;
   /** name of pool */
   name: string;
@@ -16,45 +17,45 @@ export interface MsgCreatePlPool {
   shareTokenSymbol: string;
   /** the maximum amount that can be supplied into the pool */
   supplyCap: string;
-  /** deposit fee to charge on a successful deposit to PLP in decimal */
+  /** deposit fee to charge on a successful deposit to pool in decimal */
   depositFee: string;
-  /** withdrawal fee to charge on a successful withdrawal from PLP in decimal */
+  /** withdrawal fee to charge on a successful withdrawal from pool in decimal */
   withdrawalFee: string;
   /** borrow fee in decimal per time period to charge on use of liquidity in pool */
-  borrowFee: string;
+  baseBorrowFeePerFundingInterval: string;
 }
 
-export interface MsgCreatePlPoolResponse {
-  pool?: PlPool;
+export interface MsgCreatePoolResponse {
+  pool?: Pool;
 }
 
-export interface MsgUpdatePlPool {
+export interface MsgUpdatePool {
   creator: string;
   poolId: Long;
-  updatePoolParams?: UpdatePlPoolParams;
+  updatePoolParams?: UpdatePoolParams;
 }
 
-export interface MsgUpdatePlPoolResponse {
-  pool?: PlPool;
+export interface MsgUpdatePoolResponse {
+  pool?: Pool;
 }
 
-export interface MsgRegisterToPlPool {
+export interface MsgRegisterToPool {
   creator: string;
   poolId: Long;
   marketId: string;
   marketConfigParams?: UpdateMarketConfigParams;
 }
 
-export interface MsgRegisterToPlPoolResponse {}
+export interface MsgRegisterToPoolResponse {}
 
-export interface MsgDeregisterFromPlPool {
+export interface MsgDeregisterFromPool {
   creator: string;
   marketId: string;
 }
 
-export interface MsgDeregisterFromPlPoolResponse {}
+export interface MsgDeregisterFromPoolResponse {}
 
-export interface MsgDepositToPlPool {
+export interface MsgDepositToPool {
   creator: string;
   poolId: Long;
   /** the amount to deposit */
@@ -63,9 +64,9 @@ export interface MsgDepositToPlPool {
   minShareAmount: string;
 }
 
-export interface MsgDepositToPlPoolResponse {}
+export interface MsgDepositToPoolResponse {}
 
-export interface MsgWithdrawFromPlPool {
+export interface MsgWithdrawFromPool {
   creator: string;
   poolId: Long;
   /** the amount of share to use for withdrawal */
@@ -74,7 +75,7 @@ export interface MsgWithdrawFromPlPool {
   minReceiveAmount: string;
 }
 
-export interface MsgWithdrawFromPlPoolResponse {}
+export interface MsgWithdrawFromPoolResponse {}
 
 export interface MsgUpdateMarketConfig {
   creator: string;
@@ -86,7 +87,17 @@ export interface MsgUpdateMarketConfigResponse {
   marketConfig?: MarketConfig;
 }
 
-const baseMsgCreatePlPool: object = {
+export interface MsgSetParams {
+  creator: string;
+  quoteIndexPriceFluctuationToleranceRatio: string;
+  quoteExpiryDuration?: Duration;
+  marketUtilizationSnapshotInterval?: Duration;
+  maxMarketUtilizationSnapshotWindow?: Duration;
+}
+
+export interface MsgSetParamsResponse {}
+
+const baseMsgCreatePool: object = {
   creator: "",
   name: "",
   depositDenom: "",
@@ -94,12 +105,12 @@ const baseMsgCreatePlPool: object = {
   supplyCap: "",
   depositFee: "",
   withdrawalFee: "",
-  borrowFee: "",
+  baseBorrowFeePerFundingInterval: "",
 };
 
-export const MsgCreatePlPool = {
+export const MsgCreatePool = {
   encode(
-    message: MsgCreatePlPool,
+    message: MsgCreatePool,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.creator !== "") {
@@ -123,16 +134,16 @@ export const MsgCreatePlPool = {
     if (message.withdrawalFee !== "") {
       writer.uint32(66).string(message.withdrawalFee);
     }
-    if (message.borrowFee !== "") {
-      writer.uint32(74).string(message.borrowFee);
+    if (message.baseBorrowFeePerFundingInterval !== "") {
+      writer.uint32(74).string(message.baseBorrowFeePerFundingInterval);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreatePlPool {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgCreatePool {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgCreatePlPool } as MsgCreatePlPool;
+    const message = { ...baseMsgCreatePool } as MsgCreatePool;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -158,7 +169,7 @@ export const MsgCreatePlPool = {
           message.withdrawalFee = reader.string();
           break;
         case 9:
-          message.borrowFee = reader.string();
+          message.baseBorrowFeePerFundingInterval = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -168,8 +179,8 @@ export const MsgCreatePlPool = {
     return message;
   },
 
-  fromJSON(object: any): MsgCreatePlPool {
-    const message = { ...baseMsgCreatePlPool } as MsgCreatePlPool;
+  fromJSON(object: any): MsgCreatePool {
+    const message = { ...baseMsgCreatePool } as MsgCreatePool;
     message.creator =
       object.creator !== undefined && object.creator !== null
         ? String(object.creator)
@@ -198,14 +209,15 @@ export const MsgCreatePlPool = {
       object.withdrawalFee !== undefined && object.withdrawalFee !== null
         ? String(object.withdrawalFee)
         : "";
-    message.borrowFee =
-      object.borrowFee !== undefined && object.borrowFee !== null
-        ? String(object.borrowFee)
+    message.baseBorrowFeePerFundingInterval =
+      object.baseBorrowFeePerFundingInterval !== undefined &&
+      object.baseBorrowFeePerFundingInterval !== null
+        ? String(object.baseBorrowFeePerFundingInterval)
         : "";
     return message;
   },
 
-  toJSON(message: MsgCreatePlPool): unknown {
+  toJSON(message: MsgCreatePool): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
     message.name !== undefined && (obj.name = message.name);
@@ -217,12 +229,14 @@ export const MsgCreatePlPool = {
     message.depositFee !== undefined && (obj.depositFee = message.depositFee);
     message.withdrawalFee !== undefined &&
       (obj.withdrawalFee = message.withdrawalFee);
-    message.borrowFee !== undefined && (obj.borrowFee = message.borrowFee);
+    message.baseBorrowFeePerFundingInterval !== undefined &&
+      (obj.baseBorrowFeePerFundingInterval =
+        message.baseBorrowFeePerFundingInterval);
     return obj;
   },
 
-  fromPartial(object: DeepPartial<MsgCreatePlPool>): MsgCreatePlPool {
-    const message = { ...baseMsgCreatePlPool } as MsgCreatePlPool;
+  fromPartial(object: DeepPartial<MsgCreatePool>): MsgCreatePool {
+    const message = { ...baseMsgCreatePool } as MsgCreatePool;
     message.creator = object.creator ?? "";
     message.name = object.name ?? "";
     message.depositDenom = object.depositDenom ?? "";
@@ -230,20 +244,21 @@ export const MsgCreatePlPool = {
     message.supplyCap = object.supplyCap ?? "";
     message.depositFee = object.depositFee ?? "";
     message.withdrawalFee = object.withdrawalFee ?? "";
-    message.borrowFee = object.borrowFee ?? "";
+    message.baseBorrowFeePerFundingInterval =
+      object.baseBorrowFeePerFundingInterval ?? "";
     return message;
   },
 };
 
-const baseMsgCreatePlPoolResponse: object = {};
+const baseMsgCreatePoolResponse: object = {};
 
-export const MsgCreatePlPoolResponse = {
+export const MsgCreatePoolResponse = {
   encode(
-    message: MsgCreatePlPoolResponse,
+    message: MsgCreatePoolResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.pool !== undefined) {
-      PlPool.encode(message.pool, writer.uint32(10).fork()).ldelim();
+      Pool.encode(message.pool, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -251,17 +266,15 @@ export const MsgCreatePlPoolResponse = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): MsgCreatePlPoolResponse {
+  ): MsgCreatePoolResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgCreatePlPoolResponse,
-    } as MsgCreatePlPoolResponse;
+    const message = { ...baseMsgCreatePoolResponse } as MsgCreatePoolResponse;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.pool = PlPool.decode(reader, reader.uint32());
+          message.pool = Pool.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -271,43 +284,39 @@ export const MsgCreatePlPoolResponse = {
     return message;
   },
 
-  fromJSON(object: any): MsgCreatePlPoolResponse {
-    const message = {
-      ...baseMsgCreatePlPoolResponse,
-    } as MsgCreatePlPoolResponse;
+  fromJSON(object: any): MsgCreatePoolResponse {
+    const message = { ...baseMsgCreatePoolResponse } as MsgCreatePoolResponse;
     message.pool =
       object.pool !== undefined && object.pool !== null
-        ? PlPool.fromJSON(object.pool)
+        ? Pool.fromJSON(object.pool)
         : undefined;
     return message;
   },
 
-  toJSON(message: MsgCreatePlPoolResponse): unknown {
+  toJSON(message: MsgCreatePoolResponse): unknown {
     const obj: any = {};
     message.pool !== undefined &&
-      (obj.pool = message.pool ? PlPool.toJSON(message.pool) : undefined);
+      (obj.pool = message.pool ? Pool.toJSON(message.pool) : undefined);
     return obj;
   },
 
   fromPartial(
-    object: DeepPartial<MsgCreatePlPoolResponse>
-  ): MsgCreatePlPoolResponse {
-    const message = {
-      ...baseMsgCreatePlPoolResponse,
-    } as MsgCreatePlPoolResponse;
+    object: DeepPartial<MsgCreatePoolResponse>
+  ): MsgCreatePoolResponse {
+    const message = { ...baseMsgCreatePoolResponse } as MsgCreatePoolResponse;
     message.pool =
       object.pool !== undefined && object.pool !== null
-        ? PlPool.fromPartial(object.pool)
+        ? Pool.fromPartial(object.pool)
         : undefined;
     return message;
   },
 };
 
-const baseMsgUpdatePlPool: object = { creator: "", poolId: Long.UZERO };
+const baseMsgUpdatePool: object = { creator: "", poolId: Long.UZERO };
 
-export const MsgUpdatePlPool = {
+export const MsgUpdatePool = {
   encode(
-    message: MsgUpdatePlPool,
+    message: MsgUpdatePool,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.creator !== "") {
@@ -317,7 +326,7 @@ export const MsgUpdatePlPool = {
       writer.uint32(16).uint64(message.poolId);
     }
     if (message.updatePoolParams !== undefined) {
-      UpdatePlPoolParams.encode(
+      UpdatePoolParams.encode(
         message.updatePoolParams,
         writer.uint32(26).fork()
       ).ldelim();
@@ -325,10 +334,10 @@ export const MsgUpdatePlPool = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdatePlPool {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdatePool {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgUpdatePlPool } as MsgUpdatePlPool;
+    const message = { ...baseMsgUpdatePool } as MsgUpdatePool;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -339,7 +348,7 @@ export const MsgUpdatePlPool = {
           message.poolId = reader.uint64() as Long;
           break;
         case 3:
-          message.updatePoolParams = UpdatePlPoolParams.decode(
+          message.updatePoolParams = UpdatePoolParams.decode(
             reader,
             reader.uint32()
           );
@@ -352,8 +361,8 @@ export const MsgUpdatePlPool = {
     return message;
   },
 
-  fromJSON(object: any): MsgUpdatePlPool {
-    const message = { ...baseMsgUpdatePlPool } as MsgUpdatePlPool;
+  fromJSON(object: any): MsgUpdatePool {
+    const message = { ...baseMsgUpdatePool } as MsgUpdatePool;
     message.creator =
       object.creator !== undefined && object.creator !== null
         ? String(object.creator)
@@ -364,25 +373,25 @@ export const MsgUpdatePlPool = {
         : Long.UZERO;
     message.updatePoolParams =
       object.updatePoolParams !== undefined && object.updatePoolParams !== null
-        ? UpdatePlPoolParams.fromJSON(object.updatePoolParams)
+        ? UpdatePoolParams.fromJSON(object.updatePoolParams)
         : undefined;
     return message;
   },
 
-  toJSON(message: MsgUpdatePlPool): unknown {
+  toJSON(message: MsgUpdatePool): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
     message.poolId !== undefined &&
       (obj.poolId = (message.poolId || Long.UZERO).toString());
     message.updatePoolParams !== undefined &&
       (obj.updatePoolParams = message.updatePoolParams
-        ? UpdatePlPoolParams.toJSON(message.updatePoolParams)
+        ? UpdatePoolParams.toJSON(message.updatePoolParams)
         : undefined);
     return obj;
   },
 
-  fromPartial(object: DeepPartial<MsgUpdatePlPool>): MsgUpdatePlPool {
-    const message = { ...baseMsgUpdatePlPool } as MsgUpdatePlPool;
+  fromPartial(object: DeepPartial<MsgUpdatePool>): MsgUpdatePool {
+    const message = { ...baseMsgUpdatePool } as MsgUpdatePool;
     message.creator = object.creator ?? "";
     message.poolId =
       object.poolId !== undefined && object.poolId !== null
@@ -390,21 +399,21 @@ export const MsgUpdatePlPool = {
         : Long.UZERO;
     message.updatePoolParams =
       object.updatePoolParams !== undefined && object.updatePoolParams !== null
-        ? UpdatePlPoolParams.fromPartial(object.updatePoolParams)
+        ? UpdatePoolParams.fromPartial(object.updatePoolParams)
         : undefined;
     return message;
   },
 };
 
-const baseMsgUpdatePlPoolResponse: object = {};
+const baseMsgUpdatePoolResponse: object = {};
 
-export const MsgUpdatePlPoolResponse = {
+export const MsgUpdatePoolResponse = {
   encode(
-    message: MsgUpdatePlPoolResponse,
+    message: MsgUpdatePoolResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.pool !== undefined) {
-      PlPool.encode(message.pool, writer.uint32(10).fork()).ldelim();
+      Pool.encode(message.pool, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -412,17 +421,15 @@ export const MsgUpdatePlPoolResponse = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): MsgUpdatePlPoolResponse {
+  ): MsgUpdatePoolResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgUpdatePlPoolResponse,
-    } as MsgUpdatePlPoolResponse;
+    const message = { ...baseMsgUpdatePoolResponse } as MsgUpdatePoolResponse;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.pool = PlPool.decode(reader, reader.uint32());
+          message.pool = Pool.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -432,47 +439,43 @@ export const MsgUpdatePlPoolResponse = {
     return message;
   },
 
-  fromJSON(object: any): MsgUpdatePlPoolResponse {
-    const message = {
-      ...baseMsgUpdatePlPoolResponse,
-    } as MsgUpdatePlPoolResponse;
+  fromJSON(object: any): MsgUpdatePoolResponse {
+    const message = { ...baseMsgUpdatePoolResponse } as MsgUpdatePoolResponse;
     message.pool =
       object.pool !== undefined && object.pool !== null
-        ? PlPool.fromJSON(object.pool)
+        ? Pool.fromJSON(object.pool)
         : undefined;
     return message;
   },
 
-  toJSON(message: MsgUpdatePlPoolResponse): unknown {
+  toJSON(message: MsgUpdatePoolResponse): unknown {
     const obj: any = {};
     message.pool !== undefined &&
-      (obj.pool = message.pool ? PlPool.toJSON(message.pool) : undefined);
+      (obj.pool = message.pool ? Pool.toJSON(message.pool) : undefined);
     return obj;
   },
 
   fromPartial(
-    object: DeepPartial<MsgUpdatePlPoolResponse>
-  ): MsgUpdatePlPoolResponse {
-    const message = {
-      ...baseMsgUpdatePlPoolResponse,
-    } as MsgUpdatePlPoolResponse;
+    object: DeepPartial<MsgUpdatePoolResponse>
+  ): MsgUpdatePoolResponse {
+    const message = { ...baseMsgUpdatePoolResponse } as MsgUpdatePoolResponse;
     message.pool =
       object.pool !== undefined && object.pool !== null
-        ? PlPool.fromPartial(object.pool)
+        ? Pool.fromPartial(object.pool)
         : undefined;
     return message;
   },
 };
 
-const baseMsgRegisterToPlPool: object = {
+const baseMsgRegisterToPool: object = {
   creator: "",
   poolId: Long.UZERO,
   marketId: "",
 };
 
-export const MsgRegisterToPlPool = {
+export const MsgRegisterToPool = {
   encode(
-    message: MsgRegisterToPlPool,
+    message: MsgRegisterToPool,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.creator !== "") {
@@ -493,10 +496,10 @@ export const MsgRegisterToPlPool = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgRegisterToPlPool {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgRegisterToPool {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgRegisterToPlPool } as MsgRegisterToPlPool;
+    const message = { ...baseMsgRegisterToPool } as MsgRegisterToPool;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -523,8 +526,8 @@ export const MsgRegisterToPlPool = {
     return message;
   },
 
-  fromJSON(object: any): MsgRegisterToPlPool {
-    const message = { ...baseMsgRegisterToPlPool } as MsgRegisterToPlPool;
+  fromJSON(object: any): MsgRegisterToPool {
+    const message = { ...baseMsgRegisterToPool } as MsgRegisterToPool;
     message.creator =
       object.creator !== undefined && object.creator !== null
         ? String(object.creator)
@@ -545,7 +548,7 @@ export const MsgRegisterToPlPool = {
     return message;
   },
 
-  toJSON(message: MsgRegisterToPlPool): unknown {
+  toJSON(message: MsgRegisterToPool): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
     message.poolId !== undefined &&
@@ -558,8 +561,8 @@ export const MsgRegisterToPlPool = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<MsgRegisterToPlPool>): MsgRegisterToPlPool {
-    const message = { ...baseMsgRegisterToPlPool } as MsgRegisterToPlPool;
+  fromPartial(object: DeepPartial<MsgRegisterToPool>): MsgRegisterToPool {
+    const message = { ...baseMsgRegisterToPool } as MsgRegisterToPool;
     message.creator = object.creator ?? "";
     message.poolId =
       object.poolId !== undefined && object.poolId !== null
@@ -575,11 +578,11 @@ export const MsgRegisterToPlPool = {
   },
 };
 
-const baseMsgRegisterToPlPoolResponse: object = {};
+const baseMsgRegisterToPoolResponse: object = {};
 
-export const MsgRegisterToPlPoolResponse = {
+export const MsgRegisterToPoolResponse = {
   encode(
-    _: MsgRegisterToPlPoolResponse,
+    _: MsgRegisterToPoolResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     return writer;
@@ -588,12 +591,12 @@ export const MsgRegisterToPlPoolResponse = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): MsgRegisterToPlPoolResponse {
+  ): MsgRegisterToPoolResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseMsgRegisterToPlPoolResponse,
-    } as MsgRegisterToPlPoolResponse;
+      ...baseMsgRegisterToPoolResponse,
+    } as MsgRegisterToPoolResponse;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -605,33 +608,33 @@ export const MsgRegisterToPlPoolResponse = {
     return message;
   },
 
-  fromJSON(_: any): MsgRegisterToPlPoolResponse {
+  fromJSON(_: any): MsgRegisterToPoolResponse {
     const message = {
-      ...baseMsgRegisterToPlPoolResponse,
-    } as MsgRegisterToPlPoolResponse;
+      ...baseMsgRegisterToPoolResponse,
+    } as MsgRegisterToPoolResponse;
     return message;
   },
 
-  toJSON(_: MsgRegisterToPlPoolResponse): unknown {
+  toJSON(_: MsgRegisterToPoolResponse): unknown {
     const obj: any = {};
     return obj;
   },
 
   fromPartial(
-    _: DeepPartial<MsgRegisterToPlPoolResponse>
-  ): MsgRegisterToPlPoolResponse {
+    _: DeepPartial<MsgRegisterToPoolResponse>
+  ): MsgRegisterToPoolResponse {
     const message = {
-      ...baseMsgRegisterToPlPoolResponse,
-    } as MsgRegisterToPlPoolResponse;
+      ...baseMsgRegisterToPoolResponse,
+    } as MsgRegisterToPoolResponse;
     return message;
   },
 };
 
-const baseMsgDeregisterFromPlPool: object = { creator: "", marketId: "" };
+const baseMsgDeregisterFromPool: object = { creator: "", marketId: "" };
 
-export const MsgDeregisterFromPlPool = {
+export const MsgDeregisterFromPool = {
   encode(
-    message: MsgDeregisterFromPlPool,
+    message: MsgDeregisterFromPool,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.creator !== "") {
@@ -646,12 +649,10 @@ export const MsgDeregisterFromPlPool = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): MsgDeregisterFromPlPool {
+  ): MsgDeregisterFromPool {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseMsgDeregisterFromPlPool,
-    } as MsgDeregisterFromPlPool;
+    const message = { ...baseMsgDeregisterFromPool } as MsgDeregisterFromPool;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -669,10 +670,8 @@ export const MsgDeregisterFromPlPool = {
     return message;
   },
 
-  fromJSON(object: any): MsgDeregisterFromPlPool {
-    const message = {
-      ...baseMsgDeregisterFromPlPool,
-    } as MsgDeregisterFromPlPool;
+  fromJSON(object: any): MsgDeregisterFromPool {
+    const message = { ...baseMsgDeregisterFromPool } as MsgDeregisterFromPool;
     message.creator =
       object.creator !== undefined && object.creator !== null
         ? String(object.creator)
@@ -684,7 +683,7 @@ export const MsgDeregisterFromPlPool = {
     return message;
   },
 
-  toJSON(message: MsgDeregisterFromPlPool): unknown {
+  toJSON(message: MsgDeregisterFromPool): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
     message.marketId !== undefined && (obj.marketId = message.marketId);
@@ -692,22 +691,20 @@ export const MsgDeregisterFromPlPool = {
   },
 
   fromPartial(
-    object: DeepPartial<MsgDeregisterFromPlPool>
-  ): MsgDeregisterFromPlPool {
-    const message = {
-      ...baseMsgDeregisterFromPlPool,
-    } as MsgDeregisterFromPlPool;
+    object: DeepPartial<MsgDeregisterFromPool>
+  ): MsgDeregisterFromPool {
+    const message = { ...baseMsgDeregisterFromPool } as MsgDeregisterFromPool;
     message.creator = object.creator ?? "";
     message.marketId = object.marketId ?? "";
     return message;
   },
 };
 
-const baseMsgDeregisterFromPlPoolResponse: object = {};
+const baseMsgDeregisterFromPoolResponse: object = {};
 
-export const MsgDeregisterFromPlPoolResponse = {
+export const MsgDeregisterFromPoolResponse = {
   encode(
-    _: MsgDeregisterFromPlPoolResponse,
+    _: MsgDeregisterFromPoolResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     return writer;
@@ -716,12 +713,12 @@ export const MsgDeregisterFromPlPoolResponse = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): MsgDeregisterFromPlPoolResponse {
+  ): MsgDeregisterFromPoolResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseMsgDeregisterFromPlPoolResponse,
-    } as MsgDeregisterFromPlPoolResponse;
+      ...baseMsgDeregisterFromPoolResponse,
+    } as MsgDeregisterFromPoolResponse;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -733,38 +730,38 @@ export const MsgDeregisterFromPlPoolResponse = {
     return message;
   },
 
-  fromJSON(_: any): MsgDeregisterFromPlPoolResponse {
+  fromJSON(_: any): MsgDeregisterFromPoolResponse {
     const message = {
-      ...baseMsgDeregisterFromPlPoolResponse,
-    } as MsgDeregisterFromPlPoolResponse;
+      ...baseMsgDeregisterFromPoolResponse,
+    } as MsgDeregisterFromPoolResponse;
     return message;
   },
 
-  toJSON(_: MsgDeregisterFromPlPoolResponse): unknown {
+  toJSON(_: MsgDeregisterFromPoolResponse): unknown {
     const obj: any = {};
     return obj;
   },
 
   fromPartial(
-    _: DeepPartial<MsgDeregisterFromPlPoolResponse>
-  ): MsgDeregisterFromPlPoolResponse {
+    _: DeepPartial<MsgDeregisterFromPoolResponse>
+  ): MsgDeregisterFromPoolResponse {
     const message = {
-      ...baseMsgDeregisterFromPlPoolResponse,
-    } as MsgDeregisterFromPlPoolResponse;
+      ...baseMsgDeregisterFromPoolResponse,
+    } as MsgDeregisterFromPoolResponse;
     return message;
   },
 };
 
-const baseMsgDepositToPlPool: object = {
+const baseMsgDepositToPool: object = {
   creator: "",
   poolId: Long.UZERO,
   depositAmount: "",
   minShareAmount: "",
 };
 
-export const MsgDepositToPlPool = {
+export const MsgDepositToPool = {
   encode(
-    message: MsgDepositToPlPool,
+    message: MsgDepositToPool,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.creator !== "") {
@@ -782,10 +779,10 @@ export const MsgDepositToPlPool = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgDepositToPlPool {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgDepositToPool {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgDepositToPlPool } as MsgDepositToPlPool;
+    const message = { ...baseMsgDepositToPool } as MsgDepositToPool;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -809,8 +806,8 @@ export const MsgDepositToPlPool = {
     return message;
   },
 
-  fromJSON(object: any): MsgDepositToPlPool {
-    const message = { ...baseMsgDepositToPlPool } as MsgDepositToPlPool;
+  fromJSON(object: any): MsgDepositToPool {
+    const message = { ...baseMsgDepositToPool } as MsgDepositToPool;
     message.creator =
       object.creator !== undefined && object.creator !== null
         ? String(object.creator)
@@ -830,7 +827,7 @@ export const MsgDepositToPlPool = {
     return message;
   },
 
-  toJSON(message: MsgDepositToPlPool): unknown {
+  toJSON(message: MsgDepositToPool): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
     message.poolId !== undefined &&
@@ -842,8 +839,8 @@ export const MsgDepositToPlPool = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<MsgDepositToPlPool>): MsgDepositToPlPool {
-    const message = { ...baseMsgDepositToPlPool } as MsgDepositToPlPool;
+  fromPartial(object: DeepPartial<MsgDepositToPool>): MsgDepositToPool {
+    const message = { ...baseMsgDepositToPool } as MsgDepositToPool;
     message.creator = object.creator ?? "";
     message.poolId =
       object.poolId !== undefined && object.poolId !== null
@@ -855,11 +852,11 @@ export const MsgDepositToPlPool = {
   },
 };
 
-const baseMsgDepositToPlPoolResponse: object = {};
+const baseMsgDepositToPoolResponse: object = {};
 
-export const MsgDepositToPlPoolResponse = {
+export const MsgDepositToPoolResponse = {
   encode(
-    _: MsgDepositToPlPoolResponse,
+    _: MsgDepositToPoolResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     return writer;
@@ -868,12 +865,12 @@ export const MsgDepositToPlPoolResponse = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): MsgDepositToPlPoolResponse {
+  ): MsgDepositToPoolResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseMsgDepositToPlPoolResponse,
-    } as MsgDepositToPlPoolResponse;
+      ...baseMsgDepositToPoolResponse,
+    } as MsgDepositToPoolResponse;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -885,38 +882,38 @@ export const MsgDepositToPlPoolResponse = {
     return message;
   },
 
-  fromJSON(_: any): MsgDepositToPlPoolResponse {
+  fromJSON(_: any): MsgDepositToPoolResponse {
     const message = {
-      ...baseMsgDepositToPlPoolResponse,
-    } as MsgDepositToPlPoolResponse;
+      ...baseMsgDepositToPoolResponse,
+    } as MsgDepositToPoolResponse;
     return message;
   },
 
-  toJSON(_: MsgDepositToPlPoolResponse): unknown {
+  toJSON(_: MsgDepositToPoolResponse): unknown {
     const obj: any = {};
     return obj;
   },
 
   fromPartial(
-    _: DeepPartial<MsgDepositToPlPoolResponse>
-  ): MsgDepositToPlPoolResponse {
+    _: DeepPartial<MsgDepositToPoolResponse>
+  ): MsgDepositToPoolResponse {
     const message = {
-      ...baseMsgDepositToPlPoolResponse,
-    } as MsgDepositToPlPoolResponse;
+      ...baseMsgDepositToPoolResponse,
+    } as MsgDepositToPoolResponse;
     return message;
   },
 };
 
-const baseMsgWithdrawFromPlPool: object = {
+const baseMsgWithdrawFromPool: object = {
   creator: "",
   poolId: Long.UZERO,
   shareAmount: "",
   minReceiveAmount: "",
 };
 
-export const MsgWithdrawFromPlPool = {
+export const MsgWithdrawFromPool = {
   encode(
-    message: MsgWithdrawFromPlPool,
+    message: MsgWithdrawFromPool,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.creator !== "") {
@@ -934,13 +931,10 @@ export const MsgWithdrawFromPlPool = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgWithdrawFromPlPool {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgWithdrawFromPool {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgWithdrawFromPlPool } as MsgWithdrawFromPlPool;
+    const message = { ...baseMsgWithdrawFromPool } as MsgWithdrawFromPool;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -964,8 +958,8 @@ export const MsgWithdrawFromPlPool = {
     return message;
   },
 
-  fromJSON(object: any): MsgWithdrawFromPlPool {
-    const message = { ...baseMsgWithdrawFromPlPool } as MsgWithdrawFromPlPool;
+  fromJSON(object: any): MsgWithdrawFromPool {
+    const message = { ...baseMsgWithdrawFromPool } as MsgWithdrawFromPool;
     message.creator =
       object.creator !== undefined && object.creator !== null
         ? String(object.creator)
@@ -985,7 +979,7 @@ export const MsgWithdrawFromPlPool = {
     return message;
   },
 
-  toJSON(message: MsgWithdrawFromPlPool): unknown {
+  toJSON(message: MsgWithdrawFromPool): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
     message.poolId !== undefined &&
@@ -997,10 +991,8 @@ export const MsgWithdrawFromPlPool = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<MsgWithdrawFromPlPool>
-  ): MsgWithdrawFromPlPool {
-    const message = { ...baseMsgWithdrawFromPlPool } as MsgWithdrawFromPlPool;
+  fromPartial(object: DeepPartial<MsgWithdrawFromPool>): MsgWithdrawFromPool {
+    const message = { ...baseMsgWithdrawFromPool } as MsgWithdrawFromPool;
     message.creator = object.creator ?? "";
     message.poolId =
       object.poolId !== undefined && object.poolId !== null
@@ -1012,11 +1004,11 @@ export const MsgWithdrawFromPlPool = {
   },
 };
 
-const baseMsgWithdrawFromPlPoolResponse: object = {};
+const baseMsgWithdrawFromPoolResponse: object = {};
 
-export const MsgWithdrawFromPlPoolResponse = {
+export const MsgWithdrawFromPoolResponse = {
   encode(
-    _: MsgWithdrawFromPlPoolResponse,
+    _: MsgWithdrawFromPoolResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     return writer;
@@ -1025,12 +1017,12 @@ export const MsgWithdrawFromPlPoolResponse = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): MsgWithdrawFromPlPoolResponse {
+  ): MsgWithdrawFromPoolResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseMsgWithdrawFromPlPoolResponse,
-    } as MsgWithdrawFromPlPoolResponse;
+      ...baseMsgWithdrawFromPoolResponse,
+    } as MsgWithdrawFromPoolResponse;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -1042,24 +1034,24 @@ export const MsgWithdrawFromPlPoolResponse = {
     return message;
   },
 
-  fromJSON(_: any): MsgWithdrawFromPlPoolResponse {
+  fromJSON(_: any): MsgWithdrawFromPoolResponse {
     const message = {
-      ...baseMsgWithdrawFromPlPoolResponse,
-    } as MsgWithdrawFromPlPoolResponse;
+      ...baseMsgWithdrawFromPoolResponse,
+    } as MsgWithdrawFromPoolResponse;
     return message;
   },
 
-  toJSON(_: MsgWithdrawFromPlPoolResponse): unknown {
+  toJSON(_: MsgWithdrawFromPoolResponse): unknown {
     const obj: any = {};
     return obj;
   },
 
   fromPartial(
-    _: DeepPartial<MsgWithdrawFromPlPoolResponse>
-  ): MsgWithdrawFromPlPoolResponse {
+    _: DeepPartial<MsgWithdrawFromPoolResponse>
+  ): MsgWithdrawFromPoolResponse {
     const message = {
-      ...baseMsgWithdrawFromPlPoolResponse,
-    } as MsgWithdrawFromPlPoolResponse;
+      ...baseMsgWithdrawFromPoolResponse,
+    } as MsgWithdrawFromPoolResponse;
     return message;
   },
 };
@@ -1233,117 +1225,313 @@ export const MsgUpdateMarketConfigResponse = {
   },
 };
 
+const baseMsgSetParams: object = {
+  creator: "",
+  quoteIndexPriceFluctuationToleranceRatio: "",
+};
+
+export const MsgSetParams = {
+  encode(
+    message: MsgSetParams,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.quoteIndexPriceFluctuationToleranceRatio !== "") {
+      writer
+        .uint32(18)
+        .string(message.quoteIndexPriceFluctuationToleranceRatio);
+    }
+    if (message.quoteExpiryDuration !== undefined) {
+      Duration.encode(
+        message.quoteExpiryDuration,
+        writer.uint32(26).fork()
+      ).ldelim();
+    }
+    if (message.marketUtilizationSnapshotInterval !== undefined) {
+      Duration.encode(
+        message.marketUtilizationSnapshotInterval,
+        writer.uint32(34).fork()
+      ).ldelim();
+    }
+    if (message.maxMarketUtilizationSnapshotWindow !== undefined) {
+      Duration.encode(
+        message.maxMarketUtilizationSnapshotWindow,
+        writer.uint32(42).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgSetParams {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgSetParams } as MsgSetParams;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.quoteIndexPriceFluctuationToleranceRatio = reader.string();
+          break;
+        case 3:
+          message.quoteExpiryDuration = Duration.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 4:
+          message.marketUtilizationSnapshotInterval = Duration.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 5:
+          message.maxMarketUtilizationSnapshotWindow = Duration.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgSetParams {
+    const message = { ...baseMsgSetParams } as MsgSetParams;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.quoteIndexPriceFluctuationToleranceRatio =
+      object.quoteIndexPriceFluctuationToleranceRatio !== undefined &&
+      object.quoteIndexPriceFluctuationToleranceRatio !== null
+        ? String(object.quoteIndexPriceFluctuationToleranceRatio)
+        : "";
+    message.quoteExpiryDuration =
+      object.quoteExpiryDuration !== undefined &&
+      object.quoteExpiryDuration !== null
+        ? Duration.fromJSON(object.quoteExpiryDuration)
+        : undefined;
+    message.marketUtilizationSnapshotInterval =
+      object.marketUtilizationSnapshotInterval !== undefined &&
+      object.marketUtilizationSnapshotInterval !== null
+        ? Duration.fromJSON(object.marketUtilizationSnapshotInterval)
+        : undefined;
+    message.maxMarketUtilizationSnapshotWindow =
+      object.maxMarketUtilizationSnapshotWindow !== undefined &&
+      object.maxMarketUtilizationSnapshotWindow !== null
+        ? Duration.fromJSON(object.maxMarketUtilizationSnapshotWindow)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: MsgSetParams): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.quoteIndexPriceFluctuationToleranceRatio !== undefined &&
+      (obj.quoteIndexPriceFluctuationToleranceRatio =
+        message.quoteIndexPriceFluctuationToleranceRatio);
+    message.quoteExpiryDuration !== undefined &&
+      (obj.quoteExpiryDuration = message.quoteExpiryDuration
+        ? Duration.toJSON(message.quoteExpiryDuration)
+        : undefined);
+    message.marketUtilizationSnapshotInterval !== undefined &&
+      (obj.marketUtilizationSnapshotInterval =
+        message.marketUtilizationSnapshotInterval
+          ? Duration.toJSON(message.marketUtilizationSnapshotInterval)
+          : undefined);
+    message.maxMarketUtilizationSnapshotWindow !== undefined &&
+      (obj.maxMarketUtilizationSnapshotWindow =
+        message.maxMarketUtilizationSnapshotWindow
+          ? Duration.toJSON(message.maxMarketUtilizationSnapshotWindow)
+          : undefined);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgSetParams>): MsgSetParams {
+    const message = { ...baseMsgSetParams } as MsgSetParams;
+    message.creator = object.creator ?? "";
+    message.quoteIndexPriceFluctuationToleranceRatio =
+      object.quoteIndexPriceFluctuationToleranceRatio ?? "";
+    message.quoteExpiryDuration =
+      object.quoteExpiryDuration !== undefined &&
+      object.quoteExpiryDuration !== null
+        ? Duration.fromPartial(object.quoteExpiryDuration)
+        : undefined;
+    message.marketUtilizationSnapshotInterval =
+      object.marketUtilizationSnapshotInterval !== undefined &&
+      object.marketUtilizationSnapshotInterval !== null
+        ? Duration.fromPartial(object.marketUtilizationSnapshotInterval)
+        : undefined;
+    message.maxMarketUtilizationSnapshotWindow =
+      object.maxMarketUtilizationSnapshotWindow !== undefined &&
+      object.maxMarketUtilizationSnapshotWindow !== null
+        ? Duration.fromPartial(object.maxMarketUtilizationSnapshotWindow)
+        : undefined;
+    return message;
+  },
+};
+
+const baseMsgSetParamsResponse: object = {};
+
+export const MsgSetParamsResponse = {
+  encode(
+    _: MsgSetParamsResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgSetParamsResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgSetParamsResponse } as MsgSetParamsResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgSetParamsResponse {
+    const message = { ...baseMsgSetParamsResponse } as MsgSetParamsResponse;
+    return message;
+  },
+
+  toJSON(_: MsgSetParamsResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(_: DeepPartial<MsgSetParamsResponse>): MsgSetParamsResponse {
+    const message = { ...baseMsgSetParamsResponse } as MsgSetParamsResponse;
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
-  CreatePlPool(request: MsgCreatePlPool): Promise<MsgCreatePlPoolResponse>;
-  UpdatePlPool(request: MsgUpdatePlPool): Promise<MsgUpdatePlPoolResponse>;
-  RegisterToPlPool(
-    request: MsgRegisterToPlPool
-  ): Promise<MsgRegisterToPlPoolResponse>;
-  DeregisterFromPlPool(
-    request: MsgDeregisterFromPlPool
-  ): Promise<MsgDeregisterFromPlPoolResponse>;
-  DepositToPlPool(
-    request: MsgDepositToPlPool
-  ): Promise<MsgDepositToPlPoolResponse>;
-  WithdrawFromPlPool(
-    request: MsgWithdrawFromPlPool
-  ): Promise<MsgWithdrawFromPlPoolResponse>;
-  /** this line is used by starport scaffolding # proto/tx/rpc */
+  CreatePool(request: MsgCreatePool): Promise<MsgCreatePoolResponse>;
+  UpdatePool(request: MsgUpdatePool): Promise<MsgUpdatePoolResponse>;
+  RegisterToPool(
+    request: MsgRegisterToPool
+  ): Promise<MsgRegisterToPoolResponse>;
+  DeregisterFromPool(
+    request: MsgDeregisterFromPool
+  ): Promise<MsgDeregisterFromPoolResponse>;
+  DepositToPool(request: MsgDepositToPool): Promise<MsgDepositToPoolResponse>;
+  WithdrawFromPool(
+    request: MsgWithdrawFromPool
+  ): Promise<MsgWithdrawFromPoolResponse>;
   UpdateMarketConfig(
     request: MsgUpdateMarketConfig
   ): Promise<MsgUpdateMarketConfigResponse>;
+  /** this line is used by starport scaffolding # proto/tx/rpc */
+  SetParams(request: MsgSetParams): Promise<MsgSetParamsResponse>;
 }
 
 export class MsgClientImpl implements Msg {
   private readonly rpc: Rpc;
   constructor(rpc: Rpc) {
     this.rpc = rpc;
-    this.CreatePlPool = this.CreatePlPool.bind(this);
-    this.UpdatePlPool = this.UpdatePlPool.bind(this);
-    this.RegisterToPlPool = this.RegisterToPlPool.bind(this);
-    this.DeregisterFromPlPool = this.DeregisterFromPlPool.bind(this);
-    this.DepositToPlPool = this.DepositToPlPool.bind(this);
-    this.WithdrawFromPlPool = this.WithdrawFromPlPool.bind(this);
+    this.CreatePool = this.CreatePool.bind(this);
+    this.UpdatePool = this.UpdatePool.bind(this);
+    this.RegisterToPool = this.RegisterToPool.bind(this);
+    this.DeregisterFromPool = this.DeregisterFromPool.bind(this);
+    this.DepositToPool = this.DepositToPool.bind(this);
+    this.WithdrawFromPool = this.WithdrawFromPool.bind(this);
     this.UpdateMarketConfig = this.UpdateMarketConfig.bind(this);
+    this.SetParams = this.SetParams.bind(this);
   }
-  CreatePlPool(request: MsgCreatePlPool): Promise<MsgCreatePlPoolResponse> {
-    const data = MsgCreatePlPool.encode(request).finish();
+  CreatePool(request: MsgCreatePool): Promise<MsgCreatePoolResponse> {
+    const data = MsgCreatePool.encode(request).finish();
     const promise = this.rpc.request(
       "Switcheo.carbon.perpsliquidity.Msg",
-      "CreatePlPool",
+      "CreatePool",
       data
     );
     return promise.then((data) =>
-      MsgCreatePlPoolResponse.decode(new _m0.Reader(data))
-    );
-  }
-
-  UpdatePlPool(request: MsgUpdatePlPool): Promise<MsgUpdatePlPoolResponse> {
-    const data = MsgUpdatePlPool.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.perpsliquidity.Msg",
-      "UpdatePlPool",
-      data
-    );
-    return promise.then((data) =>
-      MsgUpdatePlPoolResponse.decode(new _m0.Reader(data))
+      MsgCreatePoolResponse.decode(new _m0.Reader(data))
     );
   }
 
-  RegisterToPlPool(
-    request: MsgRegisterToPlPool
-  ): Promise<MsgRegisterToPlPoolResponse> {
-    const data = MsgRegisterToPlPool.encode(request).finish();
+  UpdatePool(request: MsgUpdatePool): Promise<MsgUpdatePoolResponse> {
+    const data = MsgUpdatePool.encode(request).finish();
     const promise = this.rpc.request(
       "Switcheo.carbon.perpsliquidity.Msg",
-      "RegisterToPlPool",
+      "UpdatePool",
       data
     );
     return promise.then((data) =>
-      MsgRegisterToPlPoolResponse.decode(new _m0.Reader(data))
+      MsgUpdatePoolResponse.decode(new _m0.Reader(data))
     );
   }
 
-  DeregisterFromPlPool(
-    request: MsgDeregisterFromPlPool
-  ): Promise<MsgDeregisterFromPlPoolResponse> {
-    const data = MsgDeregisterFromPlPool.encode(request).finish();
+  RegisterToPool(
+    request: MsgRegisterToPool
+  ): Promise<MsgRegisterToPoolResponse> {
+    const data = MsgRegisterToPool.encode(request).finish();
     const promise = this.rpc.request(
       "Switcheo.carbon.perpsliquidity.Msg",
-      "DeregisterFromPlPool",
+      "RegisterToPool",
       data
     );
     return promise.then((data) =>
-      MsgDeregisterFromPlPoolResponse.decode(new _m0.Reader(data))
+      MsgRegisterToPoolResponse.decode(new _m0.Reader(data))
     );
   }
 
-  DepositToPlPool(
-    request: MsgDepositToPlPool
-  ): Promise<MsgDepositToPlPoolResponse> {
-    const data = MsgDepositToPlPool.encode(request).finish();
+  DeregisterFromPool(
+    request: MsgDeregisterFromPool
+  ): Promise<MsgDeregisterFromPoolResponse> {
+    const data = MsgDeregisterFromPool.encode(request).finish();
     const promise = this.rpc.request(
       "Switcheo.carbon.perpsliquidity.Msg",
-      "DepositToPlPool",
+      "DeregisterFromPool",
       data
     );
     return promise.then((data) =>
-      MsgDepositToPlPoolResponse.decode(new _m0.Reader(data))
+      MsgDeregisterFromPoolResponse.decode(new _m0.Reader(data))
     );
   }
 
-  WithdrawFromPlPool(
-    request: MsgWithdrawFromPlPool
-  ): Promise<MsgWithdrawFromPlPoolResponse> {
-    const data = MsgWithdrawFromPlPool.encode(request).finish();
+  DepositToPool(request: MsgDepositToPool): Promise<MsgDepositToPoolResponse> {
+    const data = MsgDepositToPool.encode(request).finish();
     const promise = this.rpc.request(
       "Switcheo.carbon.perpsliquidity.Msg",
-      "WithdrawFromPlPool",
+      "DepositToPool",
       data
     );
     return promise.then((data) =>
-      MsgWithdrawFromPlPoolResponse.decode(new _m0.Reader(data))
+      MsgDepositToPoolResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  WithdrawFromPool(
+    request: MsgWithdrawFromPool
+  ): Promise<MsgWithdrawFromPoolResponse> {
+    const data = MsgWithdrawFromPool.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.perpsliquidity.Msg",
+      "WithdrawFromPool",
+      data
+    );
+    return promise.then((data) =>
+      MsgWithdrawFromPoolResponse.decode(new _m0.Reader(data))
     );
   }
 
@@ -1358,6 +1546,18 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgUpdateMarketConfigResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  SetParams(request: MsgSetParams): Promise<MsgSetParamsResponse> {
+    const data = MsgSetParams.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.perpsliquidity.Msg",
+      "SetParams",
+      data
+    );
+    return promise.then((data) =>
+      MsgSetParamsResponse.decode(new _m0.Reader(data))
     );
   }
 }
