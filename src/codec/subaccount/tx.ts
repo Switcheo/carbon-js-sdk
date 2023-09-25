@@ -8,13 +8,17 @@ export const protobufPackage = "Switcheo.carbon.subaccount";
 export interface MsgCreateSubAccount {
   creator: string;
   subAddress: string;
+  mainAddress: string;
+  role: string;
 }
 
 export interface MsgCreateSubAccountResponse {}
 
 export interface MsgActivateSubAccount {
   creator: string;
-  expectedMainAccount: string;
+  mainAddress: string;
+  subAddress: string;
+  role: string;
 }
 
 export interface MsgActivateSubAccountResponse {}
@@ -22,11 +26,18 @@ export interface MsgActivateSubAccountResponse {}
 export interface MsgRemoveSubAccount {
   creator: string;
   subAddress: string;
+  mainAddress: string;
+  role: string;
 }
 
 export interface MsgRemoveSubAccountResponse {}
 
-const baseMsgCreateSubAccount: object = { creator: "", subAddress: "" };
+const baseMsgCreateSubAccount: object = {
+  creator: "",
+  subAddress: "",
+  mainAddress: "",
+  role: "",
+};
 
 export const MsgCreateSubAccount = {
   encode(
@@ -38,6 +49,12 @@ export const MsgCreateSubAccount = {
     }
     if (message.subAddress !== "") {
       writer.uint32(18).string(message.subAddress);
+    }
+    if (message.mainAddress !== "") {
+      writer.uint32(26).string(message.mainAddress);
+    }
+    if (message.role !== "") {
+      writer.uint32(34).string(message.role);
     }
     return writer;
   },
@@ -54,6 +71,12 @@ export const MsgCreateSubAccount = {
           break;
         case 2:
           message.subAddress = reader.string();
+          break;
+        case 3:
+          message.mainAddress = reader.string();
+          break;
+        case 4:
+          message.role = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -73,6 +96,14 @@ export const MsgCreateSubAccount = {
       object.subAddress !== undefined && object.subAddress !== null
         ? String(object.subAddress)
         : "";
+    message.mainAddress =
+      object.mainAddress !== undefined && object.mainAddress !== null
+        ? String(object.mainAddress)
+        : "";
+    message.role =
+      object.role !== undefined && object.role !== null
+        ? String(object.role)
+        : "";
     return message;
   },
 
@@ -80,6 +111,9 @@ export const MsgCreateSubAccount = {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
     message.subAddress !== undefined && (obj.subAddress = message.subAddress);
+    message.mainAddress !== undefined &&
+      (obj.mainAddress = message.mainAddress);
+    message.role !== undefined && (obj.role = message.role);
     return obj;
   },
 
@@ -87,6 +121,8 @@ export const MsgCreateSubAccount = {
     const message = { ...baseMsgCreateSubAccount } as MsgCreateSubAccount;
     message.creator = object.creator ?? "";
     message.subAddress = object.subAddress ?? "";
+    message.mainAddress = object.mainAddress ?? "";
+    message.role = object.role ?? "";
     return message;
   },
 };
@@ -145,7 +181,9 @@ export const MsgCreateSubAccountResponse = {
 
 const baseMsgActivateSubAccount: object = {
   creator: "",
-  expectedMainAccount: "",
+  mainAddress: "",
+  subAddress: "",
+  role: "",
 };
 
 export const MsgActivateSubAccount = {
@@ -156,8 +194,14 @@ export const MsgActivateSubAccount = {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
-    if (message.expectedMainAccount !== "") {
-      writer.uint32(18).string(message.expectedMainAccount);
+    if (message.mainAddress !== "") {
+      writer.uint32(18).string(message.mainAddress);
+    }
+    if (message.subAddress !== "") {
+      writer.uint32(26).string(message.subAddress);
+    }
+    if (message.role !== "") {
+      writer.uint32(34).string(message.role);
     }
     return writer;
   },
@@ -176,7 +220,13 @@ export const MsgActivateSubAccount = {
           message.creator = reader.string();
           break;
         case 2:
-          message.expectedMainAccount = reader.string();
+          message.mainAddress = reader.string();
+          break;
+        case 3:
+          message.subAddress = reader.string();
+          break;
+        case 4:
+          message.role = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -192,10 +242,17 @@ export const MsgActivateSubAccount = {
       object.creator !== undefined && object.creator !== null
         ? String(object.creator)
         : "";
-    message.expectedMainAccount =
-      object.expectedMainAccount !== undefined &&
-      object.expectedMainAccount !== null
-        ? String(object.expectedMainAccount)
+    message.mainAddress =
+      object.mainAddress !== undefined && object.mainAddress !== null
+        ? String(object.mainAddress)
+        : "";
+    message.subAddress =
+      object.subAddress !== undefined && object.subAddress !== null
+        ? String(object.subAddress)
+        : "";
+    message.role =
+      object.role !== undefined && object.role !== null
+        ? String(object.role)
         : "";
     return message;
   },
@@ -203,8 +260,10 @@ export const MsgActivateSubAccount = {
   toJSON(message: MsgActivateSubAccount): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.expectedMainAccount !== undefined &&
-      (obj.expectedMainAccount = message.expectedMainAccount);
+    message.mainAddress !== undefined &&
+      (obj.mainAddress = message.mainAddress);
+    message.subAddress !== undefined && (obj.subAddress = message.subAddress);
+    message.role !== undefined && (obj.role = message.role);
     return obj;
   },
 
@@ -213,7 +272,9 @@ export const MsgActivateSubAccount = {
   ): MsgActivateSubAccount {
     const message = { ...baseMsgActivateSubAccount } as MsgActivateSubAccount;
     message.creator = object.creator ?? "";
-    message.expectedMainAccount = object.expectedMainAccount ?? "";
+    message.mainAddress = object.mainAddress ?? "";
+    message.subAddress = object.subAddress ?? "";
+    message.role = object.role ?? "";
     return message;
   },
 };
@@ -270,7 +331,12 @@ export const MsgActivateSubAccountResponse = {
   },
 };
 
-const baseMsgRemoveSubAccount: object = { creator: "", subAddress: "" };
+const baseMsgRemoveSubAccount: object = {
+  creator: "",
+  subAddress: "",
+  mainAddress: "",
+  role: "",
+};
 
 export const MsgRemoveSubAccount = {
   encode(
@@ -282,6 +348,12 @@ export const MsgRemoveSubAccount = {
     }
     if (message.subAddress !== "") {
       writer.uint32(18).string(message.subAddress);
+    }
+    if (message.mainAddress !== "") {
+      writer.uint32(26).string(message.mainAddress);
+    }
+    if (message.role !== "") {
+      writer.uint32(34).string(message.role);
     }
     return writer;
   },
@@ -298,6 +370,12 @@ export const MsgRemoveSubAccount = {
           break;
         case 2:
           message.subAddress = reader.string();
+          break;
+        case 3:
+          message.mainAddress = reader.string();
+          break;
+        case 4:
+          message.role = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -317,6 +395,14 @@ export const MsgRemoveSubAccount = {
       object.subAddress !== undefined && object.subAddress !== null
         ? String(object.subAddress)
         : "";
+    message.mainAddress =
+      object.mainAddress !== undefined && object.mainAddress !== null
+        ? String(object.mainAddress)
+        : "";
+    message.role =
+      object.role !== undefined && object.role !== null
+        ? String(object.role)
+        : "";
     return message;
   },
 
@@ -324,6 +410,9 @@ export const MsgRemoveSubAccount = {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
     message.subAddress !== undefined && (obj.subAddress = message.subAddress);
+    message.mainAddress !== undefined &&
+      (obj.mainAddress = message.mainAddress);
+    message.role !== undefined && (obj.role = message.role);
     return obj;
   },
 
@@ -331,6 +420,8 @@ export const MsgRemoveSubAccount = {
     const message = { ...baseMsgRemoveSubAccount } as MsgRemoveSubAccount;
     message.creator = object.creator ?? "";
     message.subAddress = object.subAddress ?? "";
+    message.mainAddress = object.mainAddress ?? "";
+    message.role = object.role ?? "";
     return message;
   },
 };

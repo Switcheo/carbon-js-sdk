@@ -10,7 +10,6 @@ import {
   CommitmentResponse,
   CommitmentCurve,
   RewardCurve,
-  RewardHistoryRecord,
   Commitment,
   TotalCommitmentRecord,
 } from "./reward";
@@ -51,21 +50,11 @@ export interface QueryAllPoolAddressResponse_AddressesEntry {
   value: string;
 }
 
-export interface QueryRewardHistoryRequest {
-  poolId: string;
-  startBlockHeight: string;
-  pagination?: PageRequest;
-}
-
 export interface ExtendedPool {
   pool?: Pool;
   rewardsWeight: string;
   totalCommitment: string;
-}
-
-export interface QueryRewardHistoryResponse {
-  rewardHistories: RewardHistoryRecord[];
-  pagination?: PageResponse;
+  rewardPerCommitmentShare: DecCoin[];
 }
 
 export interface QueryCommitmentRequest {
@@ -86,15 +75,6 @@ export interface QueryAllCommitmentResponse {
   commitments: Commitment[];
   pagination?: PageResponse;
   blockTime?: Date;
-}
-
-export interface QueryLastClaimRequest {
-  poolId: string;
-  address: string;
-}
-
-export interface QueryLastClaimResponse {
-  lastClaim: Long;
 }
 
 export interface QueryCommitmentCurveRequest {}
@@ -684,104 +664,6 @@ export const QueryAllPoolAddressResponse_AddressesEntry = {
   },
 };
 
-const baseQueryRewardHistoryRequest: object = {
-  poolId: "",
-  startBlockHeight: "",
-};
-
-export const QueryRewardHistoryRequest = {
-  encode(
-    message: QueryRewardHistoryRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.poolId !== "") {
-      writer.uint32(10).string(message.poolId);
-    }
-    if (message.startBlockHeight !== "") {
-      writer.uint32(18).string(message.startBlockHeight);
-    }
-    if (message.pagination !== undefined) {
-      PageRequest.encode(message.pagination, writer.uint32(26).fork()).ldelim();
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryRewardHistoryRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryRewardHistoryRequest,
-    } as QueryRewardHistoryRequest;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.poolId = reader.string();
-          break;
-        case 2:
-          message.startBlockHeight = reader.string();
-          break;
-        case 3:
-          message.pagination = PageRequest.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): QueryRewardHistoryRequest {
-    const message = {
-      ...baseQueryRewardHistoryRequest,
-    } as QueryRewardHistoryRequest;
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? String(object.poolId)
-        : "";
-    message.startBlockHeight =
-      object.startBlockHeight !== undefined && object.startBlockHeight !== null
-        ? String(object.startBlockHeight)
-        : "";
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromJSON(object.pagination)
-        : undefined;
-    return message;
-  },
-
-  toJSON(message: QueryRewardHistoryRequest): unknown {
-    const obj: any = {};
-    message.poolId !== undefined && (obj.poolId = message.poolId);
-    message.startBlockHeight !== undefined &&
-      (obj.startBlockHeight = message.startBlockHeight);
-    message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageRequest.toJSON(message.pagination)
-        : undefined);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<QueryRewardHistoryRequest>
-  ): QueryRewardHistoryRequest {
-    const message = {
-      ...baseQueryRewardHistoryRequest,
-    } as QueryRewardHistoryRequest;
-    message.poolId = object.poolId ?? "";
-    message.startBlockHeight = object.startBlockHeight ?? "";
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromPartial(object.pagination)
-        : undefined;
-    return message;
-  },
-};
-
 const baseExtendedPool: object = { rewardsWeight: "", totalCommitment: "" };
 
 export const ExtendedPool = {
@@ -798,6 +680,9 @@ export const ExtendedPool = {
     if (message.totalCommitment !== "") {
       writer.uint32(26).string(message.totalCommitment);
     }
+    for (const v of message.rewardPerCommitmentShare) {
+      DecCoin.encode(v!, writer.uint32(34).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -805,6 +690,7 @@ export const ExtendedPool = {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseExtendedPool } as ExtendedPool;
+    message.rewardPerCommitmentShare = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -816,6 +702,11 @@ export const ExtendedPool = {
           break;
         case 3:
           message.totalCommitment = reader.string();
+          break;
+        case 4:
+          message.rewardPerCommitmentShare.push(
+            DecCoin.decode(reader, reader.uint32())
+          );
           break;
         default:
           reader.skipType(tag & 7);
@@ -839,6 +730,9 @@ export const ExtendedPool = {
       object.totalCommitment !== undefined && object.totalCommitment !== null
         ? String(object.totalCommitment)
         : "";
+    message.rewardPerCommitmentShare = (
+      object.rewardPerCommitmentShare ?? []
+    ).map((e: any) => DecCoin.fromJSON(e));
     return message;
   },
 
@@ -850,6 +744,13 @@ export const ExtendedPool = {
       (obj.rewardsWeight = message.rewardsWeight);
     message.totalCommitment !== undefined &&
       (obj.totalCommitment = message.totalCommitment);
+    if (message.rewardPerCommitmentShare) {
+      obj.rewardPerCommitmentShare = message.rewardPerCommitmentShare.map((e) =>
+        e ? DecCoin.toJSON(e) : undefined
+      );
+    } else {
+      obj.rewardPerCommitmentShare = [];
+    }
     return obj;
   },
 
@@ -861,101 +762,9 @@ export const ExtendedPool = {
         : undefined;
     message.rewardsWeight = object.rewardsWeight ?? "";
     message.totalCommitment = object.totalCommitment ?? "";
-    return message;
-  },
-};
-
-const baseQueryRewardHistoryResponse: object = {};
-
-export const QueryRewardHistoryResponse = {
-  encode(
-    message: QueryRewardHistoryResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    for (const v of message.rewardHistories) {
-      RewardHistoryRecord.encode(v!, writer.uint32(10).fork()).ldelim();
-    }
-    if (message.pagination !== undefined) {
-      PageResponse.encode(
-        message.pagination,
-        writer.uint32(18).fork()
-      ).ldelim();
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryRewardHistoryResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryRewardHistoryResponse,
-    } as QueryRewardHistoryResponse;
-    message.rewardHistories = [];
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.rewardHistories.push(
-            RewardHistoryRecord.decode(reader, reader.uint32())
-          );
-          break;
-        case 2:
-          message.pagination = PageResponse.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): QueryRewardHistoryResponse {
-    const message = {
-      ...baseQueryRewardHistoryResponse,
-    } as QueryRewardHistoryResponse;
-    message.rewardHistories = (object.rewardHistories ?? []).map((e: any) =>
-      RewardHistoryRecord.fromJSON(e)
-    );
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageResponse.fromJSON(object.pagination)
-        : undefined;
-    return message;
-  },
-
-  toJSON(message: QueryRewardHistoryResponse): unknown {
-    const obj: any = {};
-    if (message.rewardHistories) {
-      obj.rewardHistories = message.rewardHistories.map((e) =>
-        e ? RewardHistoryRecord.toJSON(e) : undefined
-      );
-    } else {
-      obj.rewardHistories = [];
-    }
-    message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageResponse.toJSON(message.pagination)
-        : undefined);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<QueryRewardHistoryResponse>
-  ): QueryRewardHistoryResponse {
-    const message = {
-      ...baseQueryRewardHistoryResponse,
-    } as QueryRewardHistoryResponse;
-    message.rewardHistories = (object.rewardHistories ?? []).map((e) =>
-      RewardHistoryRecord.fromPartial(e)
-    );
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageResponse.fromPartial(object.pagination)
-        : undefined;
+    message.rewardPerCommitmentShare = (
+      object.rewardPerCommitmentShare ?? []
+    ).map((e) => DecCoin.fromPartial(e));
     return message;
   },
 };
@@ -1295,138 +1104,6 @@ export const QueryAllCommitmentResponse = {
         ? PageResponse.fromPartial(object.pagination)
         : undefined;
     message.blockTime = object.blockTime ?? undefined;
-    return message;
-  },
-};
-
-const baseQueryLastClaimRequest: object = { poolId: "", address: "" };
-
-export const QueryLastClaimRequest = {
-  encode(
-    message: QueryLastClaimRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.poolId !== "") {
-      writer.uint32(10).string(message.poolId);
-    }
-    if (message.address !== "") {
-      writer.uint32(18).string(message.address);
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryLastClaimRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryLastClaimRequest } as QueryLastClaimRequest;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.poolId = reader.string();
-          break;
-        case 2:
-          message.address = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): QueryLastClaimRequest {
-    const message = { ...baseQueryLastClaimRequest } as QueryLastClaimRequest;
-    message.poolId =
-      object.poolId !== undefined && object.poolId !== null
-        ? String(object.poolId)
-        : "";
-    message.address =
-      object.address !== undefined && object.address !== null
-        ? String(object.address)
-        : "";
-    return message;
-  },
-
-  toJSON(message: QueryLastClaimRequest): unknown {
-    const obj: any = {};
-    message.poolId !== undefined && (obj.poolId = message.poolId);
-    message.address !== undefined && (obj.address = message.address);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<QueryLastClaimRequest>
-  ): QueryLastClaimRequest {
-    const message = { ...baseQueryLastClaimRequest } as QueryLastClaimRequest;
-    message.poolId = object.poolId ?? "";
-    message.address = object.address ?? "";
-    return message;
-  },
-};
-
-const baseQueryLastClaimResponse: object = { lastClaim: Long.ZERO };
-
-export const QueryLastClaimResponse = {
-  encode(
-    message: QueryLastClaimResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (!message.lastClaim.isZero()) {
-      writer.uint32(8).int64(message.lastClaim);
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryLastClaimResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryLastClaimResponse } as QueryLastClaimResponse;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.lastClaim = reader.int64() as Long;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): QueryLastClaimResponse {
-    const message = { ...baseQueryLastClaimResponse } as QueryLastClaimResponse;
-    message.lastClaim =
-      object.lastClaim !== undefined && object.lastClaim !== null
-        ? Long.fromString(object.lastClaim)
-        : Long.ZERO;
-    return message;
-  },
-
-  toJSON(message: QueryLastClaimResponse): unknown {
-    const obj: any = {};
-    message.lastClaim !== undefined &&
-      (obj.lastClaim = (message.lastClaim || Long.ZERO).toString());
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<QueryLastClaimResponse>
-  ): QueryLastClaimResponse {
-    const message = { ...baseQueryLastClaimResponse } as QueryLastClaimResponse;
-    message.lastClaim =
-      object.lastClaim !== undefined && object.lastClaim !== null
-        ? Long.fromValue(object.lastClaim)
-        : Long.ZERO;
     return message;
   },
 };
@@ -2662,18 +2339,12 @@ export interface Query {
   Pool(request: QueryGetPoolRequest): Promise<QueryGetPoolResponse>;
   /** Get details for all pools */
   PoolAll(request: QueryAllPoolRequest): Promise<QueryAllPoolResponse>;
-  /** Get reward history for a pool from the given height */
-  RewardHistory(
-    request: QueryRewardHistoryRequest
-  ): Promise<QueryRewardHistoryResponse>;
   /** Get LP commitment for a pool and address */
   Commitment(request: QueryCommitmentRequest): Promise<QueryCommitmentResponse>;
   /** Get all LP commitments for an address */
   CommitmentAll(
     request: QueryAllCommitmentRequest
   ): Promise<QueryAllCommitmentResponse>;
-  /** Get block where an address last claimed from a pool */
-  LastClaim(request: QueryLastClaimRequest): Promise<QueryLastClaimResponse>;
   /** Get the current commitment reward boost curve */
   CommitmentCurve(
     request: QueryCommitmentCurveRequest
@@ -2712,10 +2383,8 @@ export class QueryClientImpl implements Query {
     this.PoolAddressAll = this.PoolAddressAll.bind(this);
     this.Pool = this.Pool.bind(this);
     this.PoolAll = this.PoolAll.bind(this);
-    this.RewardHistory = this.RewardHistory.bind(this);
     this.Commitment = this.Commitment.bind(this);
     this.CommitmentAll = this.CommitmentAll.bind(this);
-    this.LastClaim = this.LastClaim.bind(this);
     this.CommitmentCurve = this.CommitmentCurve.bind(this);
     this.RewardCurve = this.RewardCurve.bind(this);
     this.TotalCommitment = this.TotalCommitment.bind(this);
@@ -2763,20 +2432,6 @@ export class QueryClientImpl implements Query {
     );
   }
 
-  RewardHistory(
-    request: QueryRewardHistoryRequest
-  ): Promise<QueryRewardHistoryResponse> {
-    const data = QueryRewardHistoryRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.liquiditypool.Query",
-      "RewardHistory",
-      data
-    );
-    return promise.then((data) =>
-      QueryRewardHistoryResponse.decode(new _m0.Reader(data))
-    );
-  }
-
   Commitment(
     request: QueryCommitmentRequest
   ): Promise<QueryCommitmentResponse> {
@@ -2802,18 +2457,6 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryAllCommitmentResponse.decode(new _m0.Reader(data))
-    );
-  }
-
-  LastClaim(request: QueryLastClaimRequest): Promise<QueryLastClaimResponse> {
-    const data = QueryLastClaimRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.liquiditypool.Query",
-      "LastClaim",
-      data
-    );
-    return promise.then((data) =>
-      QueryLastClaimResponse.decode(new _m0.Reader(data))
     );
   }
 
