@@ -1,12 +1,12 @@
-import { MsgCreatePlPool, MsgDepositToPlPool, MsgDeregisterFromPlPool, MsgRegisterToPlPool, MsgUpdatePlPool, MsgWithdrawFromPlPool, UpdatePlPoolParams } from "@carbon-sdk/codec";
+import { MsgPerpsliquidityCreatePool, MsgPerpsliquidityDepositToPool, MsgPerpsliquidityDeregisterFromPool, MsgPerpsliquidityRegisterToPool, MsgPerpsliquidityUpdatePool, MsgPerpsliquidityWithdrawFromPool, PerpsliquidityUpdatePoolParams } from "@carbon-sdk/codec";
 import { CarbonTx } from "@carbon-sdk/util";
 import BaseModule from "./base";
 
 export class PerpsLiquidityModule extends BaseModule {
-  public async createPerpertualsPool(params: PerpsLiquidityModule.CreatePerpetualPoolParams, opts?: CarbonTx.SignTxOpts) {
+  public async createPerpertualsPool(params: PerpsLiquidityModule.CreatePoolParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = MsgCreatePlPool.fromPartial({
+    const value = MsgPerpsliquidityCreatePool.fromPartial({
       creator: wallet.bech32Address,
       name: params.name,
       depositDenom: params.depositDenom,
@@ -14,12 +14,12 @@ export class PerpsLiquidityModule extends BaseModule {
       supplyCap: params.supplyCap,
       depositFee: params.depositFee,
       withdrawalFee: params.withdrawalFee,
-      borrowFee: params.borrowFee,
+      baseBorrowFeePerFundingInterval: params.borrowFee,
     })
 
     return await wallet.sendTx(
       {
-        typeUrl: CarbonTx.Types.MsgCreatePlPool,
+        typeUrl: CarbonTx.Types.MsgPerpsliquidityCreatePool,
         value,
       },
       opts
@@ -27,18 +27,18 @@ export class PerpsLiquidityModule extends BaseModule {
   }
 
 
-  public async updatePerpetualsPool(params: PerpsLiquidityModule.UpdatePerpetualPoolParams, opts?: CarbonTx.SignTxOpts) {
+  public async updatePerpetualsPool(params: PerpsLiquidityModule.UpdatePoolParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const updatePoolParam: UpdatePlPoolParams = {
+    const updatePoolParam: PerpsliquidityUpdatePoolParams = {
       name: params.name,
       supplyCap: params.supplyCap,
       depositFee: params.depositFee,
       withdrawalFee: params.withdrawalFee,
-      borrowFee: params.borrowFee
+      baseBorrowFeePerFundingInterval: params.borrowFee,
     }
 
-    const value = MsgUpdatePlPool.fromPartial({
+    const value = MsgPerpsliquidityUpdatePool.fromPartial({
       creator: wallet.bech32Address,
       poolId: params.poolId,
       updatePoolParams: updatePoolParam,
@@ -46,17 +46,17 @@ export class PerpsLiquidityModule extends BaseModule {
 
     return await wallet.sendTx(
       {
-        typeUrl: CarbonTx.Types.MsgUpdatePlPool,
+        typeUrl: CarbonTx.Types.MsgUpdatePool,
         value,
       },
       opts
     );
   }
 
-  public async depositToPerpetualsPool(params: PerpsLiquidityModule.DepositToPerpetualsPoolParams, opts?: CarbonTx.SignTxOpts) {
+  public async depositToPool(params: PerpsLiquidityModule.DepositToPoolParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = MsgDepositToPlPool.fromPartial({
+    const value = MsgPerpsliquidityDepositToPool.fromPartial({
       creator: wallet.bech32Address,
       poolId: params.poolId,
       depositAmount: params.depositAmount,
@@ -65,17 +65,17 @@ export class PerpsLiquidityModule extends BaseModule {
 
     return await wallet.sendTx(
       {
-        typeUrl: CarbonTx.Types.MsgDepositToPlPool,
+        typeUrl: CarbonTx.Types.MsgPerpsliquidityDepositToPool,
         value,
       },
       opts
     );
   }
 
-  public async withdrawFromPerpetualsPool(params: PerpsLiquidityModule.WithdrawFromPerpetualsPoolParams, opts?: CarbonTx.SignTxOpts) {
+  public async withdrawFromPool(params: PerpsLiquidityModule.WithdrawFromPoolParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = MsgWithdrawFromPlPool.fromPartial({
+    const value = MsgPerpsliquidityWithdrawFromPool.fromPartial({
       creator: wallet.bech32Address,
       poolId: params.poolId,
       shareAmount: params.shareAmount,
@@ -84,17 +84,17 @@ export class PerpsLiquidityModule extends BaseModule {
 
     return await wallet.sendTx(
       {
-        typeUrl: CarbonTx.Types.MsgWithdrawFromPlPool,
+        typeUrl: CarbonTx.Types.MsgPerpsliquidityWithdrawFromPool,
         value,
       },
       opts
     );
   }
 
-  public async registerToPlPool(params: PerpsLiquidityModule.RegisterToPlPoolParams, opts?: CarbonTx.SignTxOpts) {
+  public async registerToPool(params: PerpsLiquidityModule.RegisterToPoolParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = MsgRegisterToPlPool.fromPartial({
+    const value = MsgPerpsliquidityRegisterToPool.fromPartial({
       creator: wallet.bech32Address,
       poolId: params.poolId,
       marketId: params.marketId,
@@ -102,24 +102,24 @@ export class PerpsLiquidityModule extends BaseModule {
 
     return await wallet.sendTx(
       {
-        typeUrl: CarbonTx.Types.MsgRegisterToPlPool,
+        typeUrl: CarbonTx.Types.MsgPerpsliquidityRegisterToPool,
         value,
       },
       opts
     );
   }
 
-  public async deregisterFromPlPool(params: PerpsLiquidityModule.DeregisterFromPlPoolParams, opts?: CarbonTx.SignTxOpts) {
+  public async deregisterFromPool(params: PerpsLiquidityModule.DeregisterFromPoolParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = MsgDeregisterFromPlPool.fromPartial({
+    const value = MsgPerpsliquidityDeregisterFromPool.fromPartial({
       creator: wallet.bech32Address,
       marketId: params.marketId,
     })
 
     return await wallet.sendTx(
       {
-        typeUrl: CarbonTx.Types.MsgDeregisterFromPlPool,
+        typeUrl: CarbonTx.Types.MsgPerpsliquidityDeregisterFromPool,
         value,
       },
       opts
@@ -128,7 +128,7 @@ export class PerpsLiquidityModule extends BaseModule {
 }
 
 export namespace PerpsLiquidityModule {
-  export interface CreatePerpetualPoolParams {
+  export interface CreatePoolParams {
     name: string;
     depositDenom: string;
     shareTokenSymbol: string;
@@ -138,7 +138,7 @@ export namespace PerpsLiquidityModule {
     borrowFee: string;
   }
 
-  export interface UpdatePerpetualPoolParams {
+  export interface UpdatePoolParams {
     name: string;
     poolId: Long;
     depositDenom: string;
@@ -149,24 +149,24 @@ export namespace PerpsLiquidityModule {
     borrowFee: string;
   }
 
-  export interface DepositToPerpetualsPoolParams {
+  export interface DepositToPoolParams {
     poolId: Long;
     depositAmount: string;
     minShareAmount: string;
   }
 
-  export interface WithdrawFromPerpetualsPoolParams {
+  export interface WithdrawFromPoolParams {
     poolId: Long;
     shareAmount: string;
     minReceiveAmount: string;
   }
 
-  export interface RegisterToPlPoolParams {
+  export interface RegisterToPoolParams {
     poolId: Long;
     marketId: string;
   }
 
-  export interface DeregisterFromPlPoolParams {
+  export interface DeregisterFromPoolParams {
     marketId: string;
   }
 }

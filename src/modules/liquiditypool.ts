@@ -1,5 +1,6 @@
 import { CarbonSDK, Models } from "@carbon-sdk/index";
 import { CarbonTx, NumberUtils } from "@carbon-sdk/util";
+import { MsgCreatePool } from "@carbon-sdk/codec/liquiditypool/tx";
 import { BigNumber } from "bignumber.js";
 import dayjs from "dayjs";
 import Long from "long";
@@ -10,7 +11,7 @@ export class LiquidityPoolModule extends BaseModule {
   public async create(params: LiquidityPoolModule.CreatePoolParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Models.MsgCreatePool.fromPartial({
+    const value = MsgCreatePool.fromPartial({
       creator: wallet.bech32Address,
       tokenADenom: params.tokenADenom,
       tokenBDenom: params.tokenBDenom,

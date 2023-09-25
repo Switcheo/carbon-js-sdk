@@ -4,59 +4,59 @@ import { AminoConverter } from "@cosmjs/stargate";
 import { AminoInit, ConvertEncType, generateAminoType } from "../utils";
 
 const TxTypes: TypeUtils.SimpleMap<string> = {
-  CreatePlPool: "perpsliquidity/CreatePlPool",
-  UpdatePlPool: "perpsliquidity/UpdatePlPool",
-  DepositToPlPool: "perpsliquidity/DepositToPlPool",
-  RegisterToPlPool: "perpsliquidity/RegisterToPlPool",
-  DeregisterToPlPool: "perpsliquidity/DeregisterToPlPool",
-  WithdrawFromPlPool: "perpsliquidity/WithdrawToPlPool",
+  CreatePool: "perpsliquidity/CreatePool",
+  UpdatePool: "perpsliquidity/UpdatePool",
+  DepositToPool: "perpsliquidity/DepositToPool",
+  RegisterToPool: "perpsliquidity/RegisterToPool",
+  DeregisterToPool: "perpsliquidity/DeregisterToPool",
+  WithdrawFromPool: "perpsliquidity/WithdrawToPool",
   UpdateMarketConfig: "perpsliquidity/UpdateMarketConfig",
 };
 
-const MsgCreatePlPool: AminoInit = {
-  aminoType: TxTypes.CreatePlPool,
+const MsgCreatePool: AminoInit = {
+  aminoType: TxTypes.CreatePool,
   valueMap: {},
 };
-const MsgUpdatePlPool: AminoInit = {
-  aminoType: TxTypes.UpdatePlPool,
+const MsgUpdatePool: AminoInit = {
+  aminoType: TxTypes.UpdatePool,
   valueMap: {
     poolId: ConvertEncType.Long,
   },
 };
 
-const MsgRegisterToPlPool: AminoInit = {
-  aminoType: TxTypes.RegisterToPlPool,
+const MsgRegisterToPool: AminoInit = {
+  aminoType: TxTypes.RegisterToPool,
   valueMap: {
     poolId: ConvertEncType.Long,
   },
 };
 
-const MsgDeregisterFromPlPool: AminoInit = {
-  aminoType: TxTypes.DeregisterFromPlPool,
+const MsgDeregisterFromPool: AminoInit = {
+  aminoType: TxTypes.DeregisterFromPool,
   valueMap: {},
 };
 
-const MsgDepositToPlPool: AminoInit = {
-  aminoType: TxTypes.DepositToPlPool,
+const MsgDepositToPool: AminoInit = {
+  aminoType: TxTypes.DepositToPool,
   valueMap: {
     poolId: ConvertEncType.Long,
   },
 };
 
-const MsgWithdrawFromPlPool: AminoInit = {
-  aminoType: TxTypes.WithdrawFromPlPool,
+const MsgWithdrawFromPool: AminoInit = {
+  aminoType: TxTypes.WithdrawFromPool,
   valueMap: {
     poolId: ConvertEncType.Long,
   },
 };
 
 const PerpsliquidityAmino: TypeUtils.SimpleMap<AminoConverter> = {
-  [CarbonTx.Types.MsgCreatePlPool]: generateAminoType(MsgCreatePlPool),
-  [CarbonTx.Types.MsgUpdatePlPool]: generateAminoType(MsgUpdatePlPool),
-  [CarbonTx.Types.MsgRegisterToPlPool]: generateAminoType(MsgRegisterToPlPool),
-  [CarbonTx.Types.MsgDeregisterFromPlPool]: generateAminoType(MsgDeregisterFromPlPool),
-  [CarbonTx.Types.MsgDepositToPlPool]: generateAminoType(MsgDepositToPlPool),
-  [CarbonTx.Types.MsgWithdrawFromPlPool]: generateAminoType(MsgWithdrawFromPlPool),
+  [CarbonTx.Types.MsgCreatePool]: generateAminoType(MsgCreatePool),
+  [CarbonTx.Types.MsgUpdatePool]: generateAminoType(MsgUpdatePool),
+  [CarbonTx.Types.MsgPerpsliquidityRegisterToPool]: generateAminoType(MsgRegisterToPool),
+  [CarbonTx.Types.MsgPerpsliquidityDeregisterFromPool]: generateAminoType(MsgDeregisterFromPool),
+  [CarbonTx.Types.MsgPerpsliquidityDepositToPool]: generateAminoType(MsgDepositToPool),
+  [CarbonTx.Types.MsgPerpsliquidityWithdrawFromPool]: generateAminoType(MsgWithdrawFromPool),
 };
 
 export default PerpsliquidityAmino;
