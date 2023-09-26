@@ -143,7 +143,7 @@ export class ETHClient {
     const rpcProvider = this.getProvider();
     const contract = new ethers.Contract(contractAddress, ABIs.erc20, rpcProvider);
 
-    const approvalAmount = ethers.BigNumber.from(amount?.toString() ?? ethers.constants.MaxUint256)
+    const approvalAmount = ethers.BigNumber.from(amount?.toString(10) ?? ethers.constants.MaxUint256)
 
     const nonce = await this.getTxNonce(ethAddress, params.nonce, rpcProvider);
     const approveResultTx = await contract.connect(signer).approve(spenderAddress ?? token.bridgeAddress, approvalAmount, {
