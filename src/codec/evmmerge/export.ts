@@ -1,5 +1,6 @@
-export { MsgSignData } from "./offchain";
-export { MsgMergeAccount, MsgMergeAccountResponse } from "./tx";
-export { QueryMappedAddressRequest, QueryMappedAddressResponse, QueryAllMappedAddressRequest, QueryAllMappedAddressResponse } from "./query";
-export { MergeAccountEvent } from "./event";
-export { EthCosmosAddressWrapper } from "./address";
+export { EthCosmosAddressWrapper } from "./address"
+export { MergeAccountEvent } from "./event"
+export { GenesisState_EthToCosmosAddressMapEntry, GenesisState_CosmosToEthAddressMapEntry } from "./genesis"
+export { MsgSignData } from "./offchain"
+export { QueryMappedAddressRequest, QueryMappedAddressResponse, QueryAllMappedAddressRequest, QueryAllMappedAddressResponse } from "./query"
+export { MsgMergeAccount, MsgMergeAccountResponse } from "./tx"

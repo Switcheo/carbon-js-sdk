@@ -1,6 +1,6 @@
-export { MsgCreateOracle, CreateOracleParams, MsgCreateOracleResponse, MsgCreateVote, MsgCreateVoteResponse, MsgUpdateOracle, UpdateOracleParams, MsgUpdateOracleResponse, MsgRemoveOracle, MsgRemoveOracleResponse, MsgSetOracleSlashEnabled, MsgSetOracleSlashEnabledResponse } from "./tx";
-export { Params, Oracle, Vote, Result, Mark, Contract } from "./oracle";
-export { OracleVotesWindow, SlashCounter } from "./slashing";
-export { CreateOracleProposal } from "./proposal";
-export { QueryOracleRequest, QueryOracleResponse, QueryAllOracleRequest, QueryAllOracleResponse, QueryResultsRequest, QueryResultsResponse, QueryVotesRequest, QueryVotesResponse, QueryVoterPowerRequest, QueryVoterPowerResponse, QueryAllSlashCounterRequest, QueryAllSlashCounterResponse, QuerySlashCounterRequest, QuerySlashCounterResponse, QueryAllOracleVotesWindowRequest, QueryAllOracleVotesWindowResponse, QueryOracleVotesWindowRequest, QueryOracleVotesWindowResponse, QueryParamsRequest, QueryParamsResponse, QueryContractAddressRequest, QueryContractAddressResponse, QueryContractAllRequest, QueryContractAllResponse, QueryContractParamsRequest, QueryContractParamsResponse } from "./query";
-export { ResultEvent, OracleSlashEvent } from "./event";
+export { ResultEvent, OracleSlashEvent } from "./event"
+export { Params, Oracle, Vote, Result, Mark, Contract } from "./oracle"
+export { CreateOracleProposal } from "./proposal"
+export { QueryOracleRequest, QueryOracleResponse, QueryAllOracleRequest, QueryAllOracleResponse, QueryResultsRequest, QueryResultsResponse, QueryVotesRequest, QueryVotesResponse, QueryVoterPowerRequest, QueryVoterPowerResponse, QueryAllSlashCounterRequest, QueryAllSlashCounterResponse, QuerySlashCounterRequest, QuerySlashCounterResponse, QueryAllOracleVotesWindowRequest, QueryAllOracleVotesWindowResponse, QueryOracleVotesWindowRequest, QueryOracleVotesWindowResponse, QueryParamsRequest, QueryParamsResponse, QueryContractAddressRequest, QueryContractAddressResponse, QueryContractAllRequest, QueryContractAllResponse, QueryContractParamsRequest, QueryContractParamsResponse } from "./query"
+export { OracleVotesWindow, SlashCounter } from "./slashing"
+export { MsgCreateOracle, CreateOracleParams, MsgCreateOracleResponse, MsgCreateVote, MsgCreateVoteResponse, MsgUpdateOracle, UpdateOracleParams, MsgUpdateOracleResponse, MsgRemoveOracle, MsgRemoveOracleResponse, MsgSetOracleSlashEnabled, MsgSetOracleSlashEnabledResponse } from "./tx"

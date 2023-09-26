@@ -1,4 +1,4 @@
-export { MarketLeverage, MarketLeverageRecord } from "./leverage";
-export { MsgSetLeverage, MsgSetLeverageResponse } from "./tx";
-export { QueryGetLeverageRequest, QueryGetLeverageResponse, QueryAllLeverageRequest, QueryAllLeverageResponse } from "./query";
-export { LeverageEvent } from "./event";
+export { LeverageEvent } from "./event"
+export { MarketLeverage, MarketLeverageRecord } from "./leverage"
+export { QueryGetLeverageRequest, QueryGetLeverageResponse, QueryAllLeverageRequest, QueryAllLeverageResponse } from "./query"
+export { MsgSetLeverage, MsgSetLeverageResponse } from "./tx"
