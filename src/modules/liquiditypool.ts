@@ -181,9 +181,10 @@ export class LiquidityPoolModule extends BaseModule {
   public async getWeeklyRewardsRealInflation(): Promise<BigNumber> {
     const mintDataResponse: Models.QueryMintDataResponse = await this.sdkProvider.query.inflation.MintData({})
     let weeklyRewards = BN_ZERO
-    if (mintDataResponse) {
-      const currentSupply = new BigNumber(mintDataResponse.mintData!.currentSupply)
-      const swthInflationRate = new BigNumber(mintDataResponse.mintData!.inflationRate).shiftedBy(-18)
+    if (mintDataResponse.mintData) {
+      const mintData = mintDataResponse.mintData
+      const currentSupply = new BigNumber(mintData.currentSupply)
+      const swthInflationRate = new BigNumber(mintData.inflationRate).shiftedBy(-18)
       weeklyRewards = currentSupply.times(swthInflationRate).div(52)
     }
 
