@@ -339,23 +339,6 @@ registry.register("/Switcheo.carbon.ccm.MsgProcessZionCrossChainTxResponse", Pol
 registry.register("/Switcheo.carbon.ccm.MsgCreateEmitEvent", PolyNetwork.Ccm.MsgCreateEmitEvent);
 registry.register("/Switcheo.carbon.ccm.MsgToggleEmitZionEvents", PolyNetwork.Ccm.MsgToggleEmitZionEvents);
 
-registry.register("/Switcheo.carbon.perpsliquidity.MsgCreatePool", Carbon.Perpsliquidity.MsgCreatePool);
-registry.register("/Switcheo.carbon.perpsliquidity.MsgCreatePoolResponse", Carbon.Perpsliquidity.MsgCreatePoolResponse);
-registry.register("/Switcheo.carbon.perpsliquidity.MsgUpdatePool", Carbon.Perpsliquidity.MsgUpdatePool);
-registry.register("/Switcheo.carbon.perpsliquidity.MsgUpdatePoolResponse", Carbon.Perpsliquidity.MsgUpdatePoolResponse);
-registry.register("/Switcheo.carbon.perpsliquidity.MsgRegisterToPool", Carbon.Perpsliquidity.MsgRegisterToPool);
-registry.register("/Switcheo.carbon.perpsliquidity.MsgRegisterToPoolResponse", Carbon.Perpsliquidity.MsgRegisterToPoolResponse);
-registry.register("/Switcheo.carbon.perpsliquidity.MsgDeregisterFromPool", Carbon.Perpsliquidity.MsgDeregisterFromPool);
-registry.register("/Switcheo.carbon.perpsliquidity.MsgDeregisterFromPoolResponse", Carbon.Perpsliquidity.MsgDeregisterFromPoolResponse);
-registry.register("/Switcheo.carbon.perpsliquidity.MsgDepositToPool", Carbon.Perpsliquidity.MsgDepositToPool);
-registry.register("/Switcheo.carbon.perpsliquidity.MsgDepositToPoolResponse", Carbon.Perpsliquidity.MsgDepositToPoolResponse);
-registry.register("/Switcheo.carbon.perpsliquidity.MsgWithdrawFromPool", Carbon.Perpsliquidity.MsgWithdrawFromPool);
-registry.register("/Switcheo.carbon.perpsliquidity.MsgWithdrawFromPoolResponse", Carbon.Perpsliquidity.MsgWithdrawFromPoolResponse);
-registry.register("/Switcheo.carbon.perpsliquidity.MsgUpdateMarketConfig", Carbon.Perpsliquidity.MsgUpdateMarketConfig);
-registry.register("/Switcheo.carbon.perpsliquidity.MsgUpdateMarketConfigResponse", Carbon.Perpsliquidity.MsgUpdateMarketConfigResponse);
-registry.register("/Switcheo.carbon.perpsliquidity.MsgSetParams", Carbon.Perpsliquidity.MsgSetParams);
-registry.register("/Switcheo.carbon.perpsliquidity.MsgSetParamsResponse", Carbon.Perpsliquidity.MsgSetParamsResponse);
-
 registry.register("/ibc.core.connection.v1.MsgConnectionOpenInit", MsgConnectionOpenInit);
 registry.register("/ibc.core.connection.v1.MsgConnectionOpenInitResponse", MsgConnectionOpenInitResponse);
 registry.register("/ibc.core.connection.v1.MsgConnectionOpenTry", MsgConnectionOpenTry);
@@ -503,6 +486,23 @@ registry.register("/Switcheo.carbon.market.CreateMarketProposal", Carbon.Market.
 registry.register("/Switcheo.carbon.market.UpdateMarketProposal", Carbon.Market.UpdateMarketProposal);
 registry.register("/Switcheo.carbon.market.UpdatePerpetualsFundingIntervalProposal", Carbon.Market.UpdatePerpetualsFundingIntervalProposal);
 
+registry.register("/Switcheo.carbon.perpspool.MsgCreatePool", Carbon.Perpspool.MsgCreatePool);
+registry.register("/Switcheo.carbon.perpspool.MsgCreatePoolResponse", Carbon.Perpspool.MsgCreatePoolResponse);
+registry.register("/Switcheo.carbon.perpspool.MsgUpdatePool", Carbon.Perpspool.MsgUpdatePool);
+registry.register("/Switcheo.carbon.perpspool.MsgUpdatePoolResponse", Carbon.Perpspool.MsgUpdatePoolResponse);
+registry.register("/Switcheo.carbon.perpspool.MsgRegisterToPool", Carbon.Perpspool.MsgRegisterToPool);
+registry.register("/Switcheo.carbon.perpspool.MsgRegisterToPoolResponse", Carbon.Perpspool.MsgRegisterToPoolResponse);
+registry.register("/Switcheo.carbon.perpspool.MsgDeregisterFromPool", Carbon.Perpspool.MsgDeregisterFromPool);
+registry.register("/Switcheo.carbon.perpspool.MsgDeregisterFromPoolResponse", Carbon.Perpspool.MsgDeregisterFromPoolResponse);
+registry.register("/Switcheo.carbon.perpspool.MsgDepositToPool", Carbon.Perpspool.MsgDepositToPool);
+registry.register("/Switcheo.carbon.perpspool.MsgDepositToPoolResponse", Carbon.Perpspool.MsgDepositToPoolResponse);
+registry.register("/Switcheo.carbon.perpspool.MsgWithdrawFromPool", Carbon.Perpspool.MsgWithdrawFromPool);
+registry.register("/Switcheo.carbon.perpspool.MsgWithdrawFromPoolResponse", Carbon.Perpspool.MsgWithdrawFromPoolResponse);
+registry.register("/Switcheo.carbon.perpspool.MsgUpdateMarketConfig", Carbon.Perpspool.MsgUpdateMarketConfig);
+registry.register("/Switcheo.carbon.perpspool.MsgUpdateMarketConfigResponse", Carbon.Perpspool.MsgUpdateMarketConfigResponse);
+registry.register("/Switcheo.carbon.perpspool.MsgSetParams", Carbon.Perpspool.MsgSetParams);
+registry.register("/Switcheo.carbon.perpspool.MsgSetParamsResponse", Carbon.Perpspool.MsgSetParamsResponse);
+
 registry.register("/Switcheo.carbon.sequence.MsgSetSequence", Carbon.Sequence.MsgSetSequence);
 registry.register("/Switcheo.carbon.sequence.MsgSetSequenceResponse", Carbon.Sequence.MsgSetSequenceResponse);
 
@@ -559,8 +559,6 @@ registry.register("/Switcheo.carbon.pricing.MsgUpdateTokenPriceOracle", Carbon.P
 registry.register("/Switcheo.carbon.pricing.MsgUpdateTokenPriceOracleResponse", Carbon.Pricing.MsgUpdateTokenPriceOracleResponse);
 registry.register("/Switcheo.carbon.pricing.SettlementPriceProposal", Carbon.Pricing.SettlementPriceProposal);
 
-registry.register("/Switcheo.carbon.lockproxy.MsgSimulateUnlock", PolyNetwork.Lockproxy.MsgSimulateUnlock);
-registry.register("/Switcheo.carbon.lockproxy.MsgSimulateUnlockResponse", PolyNetwork.Lockproxy.MsgSimulateUnlockResponse);
 registry.register("/Switcheo.carbon.lockproxy.MsgCreate", PolyNetwork.Lockproxy.MsgCreate);
 registry.register("/Switcheo.carbon.lockproxy.MsgCreateResponse", PolyNetwork.Lockproxy.MsgCreateResponse);
 registry.register("/Switcheo.carbon.lockproxy.MsgBind", PolyNetwork.Lockproxy.MsgBind);
@@ -840,22 +838,6 @@ export const TxTypes = {
   "MsgProcessZionCrossChainTxResponse": "/Switcheo.carbon.ccm.MsgProcessZionCrossChainTxResponse",
   "MsgCreateEmitEvent": "/Switcheo.carbon.ccm.MsgCreateEmitEvent",
   "MsgToggleEmitZionEvents": "/Switcheo.carbon.ccm.MsgToggleEmitZionEvents",
-  "MsgCreatePool": "/Switcheo.carbon.liquiditypool.MsgCreatePool",
-  "MsgCreatePoolResponse": "/Switcheo.carbon.liquiditypool.MsgCreatePoolResponse",
-  "MsgUpdatePool": "/Switcheo.carbon.liquiditypool.MsgUpdatePool",
-  "MsgUpdatePoolResponse": "/Switcheo.carbon.liquiditypool.MsgUpdatePoolResponse",
-  "MsgRegisterToPool": "/Switcheo.carbon.perpsliquidity.MsgRegisterToPool",
-  "MsgRegisterToPoolResponse": "/Switcheo.carbon.perpsliquidity.MsgRegisterToPoolResponse",
-  "MsgDeregisterFromPool": "/Switcheo.carbon.perpsliquidity.MsgDeregisterFromPool",
-  "MsgDeregisterFromPoolResponse": "/Switcheo.carbon.perpsliquidity.MsgDeregisterFromPoolResponse",
-  "MsgDepositToPool": "/Switcheo.carbon.perpsliquidity.MsgDepositToPool",
-  "MsgDepositToPoolResponse": "/Switcheo.carbon.perpsliquidity.MsgDepositToPoolResponse",
-  "MsgWithdrawFromPool": "/Switcheo.carbon.perpsliquidity.MsgWithdrawFromPool",
-  "MsgWithdrawFromPoolResponse": "/Switcheo.carbon.perpsliquidity.MsgWithdrawFromPoolResponse",
-  "MsgUpdateMarketConfig": "/Switcheo.carbon.perpsliquidity.MsgUpdateMarketConfig",
-  "MsgUpdateMarketConfigResponse": "/Switcheo.carbon.perpsliquidity.MsgUpdateMarketConfigResponse",
-  "MsgSetParams": "/Switcheo.carbon.perpsliquidity.MsgSetParams",
-  "MsgSetParamsResponse": "/Switcheo.carbon.perpsliquidity.MsgSetParamsResponse",
   "MsgConnectionOpenInit": "/ibc.core.connection.v1.MsgConnectionOpenInit",
   "MsgConnectionOpenInitResponse": "/ibc.core.connection.v1.MsgConnectionOpenInitResponse",
   "MsgConnectionOpenTry": "/ibc.core.connection.v1.MsgConnectionOpenTry",
@@ -989,6 +971,22 @@ export const TxTypes = {
   "CreateMarketProposal": "/Switcheo.carbon.market.CreateMarketProposal",
   "UpdateMarketProposal": "/Switcheo.carbon.market.UpdateMarketProposal",
   "UpdatePerpetualsFundingIntervalProposal": "/Switcheo.carbon.market.UpdatePerpetualsFundingIntervalProposal",
+  "MsgCreatePool": "/Switcheo.carbon.liquiditypool.MsgCreatePool",
+  "MsgCreatePoolResponse": "/Switcheo.carbon.liquiditypool.MsgCreatePoolResponse",
+  "MsgUpdatePool": "/Switcheo.carbon.liquiditypool.MsgUpdatePool",
+  "MsgUpdatePoolResponse": "/Switcheo.carbon.liquiditypool.MsgUpdatePoolResponse",
+  "MsgRegisterToPool": "/Switcheo.carbon.perpspool.MsgRegisterToPool",
+  "MsgRegisterToPoolResponse": "/Switcheo.carbon.perpspool.MsgRegisterToPoolResponse",
+  "MsgDeregisterFromPool": "/Switcheo.carbon.perpspool.MsgDeregisterFromPool",
+  "MsgDeregisterFromPoolResponse": "/Switcheo.carbon.perpspool.MsgDeregisterFromPoolResponse",
+  "MsgDepositToPool": "/Switcheo.carbon.perpspool.MsgDepositToPool",
+  "MsgDepositToPoolResponse": "/Switcheo.carbon.perpspool.MsgDepositToPoolResponse",
+  "MsgWithdrawFromPool": "/Switcheo.carbon.perpspool.MsgWithdrawFromPool",
+  "MsgWithdrawFromPoolResponse": "/Switcheo.carbon.perpspool.MsgWithdrawFromPoolResponse",
+  "MsgUpdateMarketConfig": "/Switcheo.carbon.perpspool.MsgUpdateMarketConfig",
+  "MsgUpdateMarketConfigResponse": "/Switcheo.carbon.perpspool.MsgUpdateMarketConfigResponse",
+  "MsgSetParams": "/Switcheo.carbon.perpspool.MsgSetParams",
+  "MsgSetParamsResponse": "/Switcheo.carbon.perpspool.MsgSetParamsResponse",
   "MsgSetSequence": "/Switcheo.carbon.sequence.MsgSetSequence",
   "MsgSetSequenceResponse": "/Switcheo.carbon.sequence.MsgSetSequenceResponse",
   "MsgCreatePoolWithLiquidity": "/Switcheo.carbon.liquiditypool.MsgCreatePoolWithLiquidity",
@@ -1037,8 +1035,6 @@ export const TxTypes = {
   "MsgUpdateTokenPriceOracle": "/Switcheo.carbon.pricing.MsgUpdateTokenPriceOracle",
   "MsgUpdateTokenPriceOracleResponse": "/Switcheo.carbon.pricing.MsgUpdateTokenPriceOracleResponse",
   "SettlementPriceProposal": "/Switcheo.carbon.pricing.SettlementPriceProposal",
-  "MsgSimulateUnlock": "/Switcheo.carbon.lockproxy.MsgSimulateUnlock",
-  "MsgSimulateUnlockResponse": "/Switcheo.carbon.lockproxy.MsgSimulateUnlockResponse",
   "MsgSetWrapperMapping": "/Switcheo.carbon.lockproxy.MsgSetWrapperMapping",
   "MsgSetWrapperMappingResponse": "/Switcheo.carbon.lockproxy.MsgSetWrapperMappingResponse",
   "MsgDeleteWrapperMapping": "/Switcheo.carbon.lockproxy.MsgDeleteWrapperMapping",
@@ -6067,6 +6063,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "is_active",
         "type": "bool"
+      },
+      {
+        "name": "created_block_height",
+        "type": "uint64"
       }
     ],
     "BalanceChange": [
@@ -22461,53 +22461,6 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
-    "MsgSimulateUnlock": [
-      {
-        "name": "creator",
-        "type": "string"
-      },
-      {
-        "name": "denom",
-        "type": "string"
-      },
-      {
-        "name": "from_asset_address",
-        "type": "string"
-      },
-      {
-        "name": "from_contract_address",
-        "type": "string"
-      },
-      {
-        "name": "to_contract_address",
-        "type": "string"
-      },
-      {
-        "name": "from_pub_key",
-        "type": "string"
-      },
-      {
-        "name": "from_pub_key_sig",
-        "type": "string"
-      },
-      {
-        "name": "fluo_distributor_address",
-        "type": "string"
-      },
-      {
-        "name": "bonus_fluo_distributor_address",
-        "type": "string"
-      },
-      {
-        "name": "deposit_pool_id",
-        "type": "uint64"
-      },
-      {
-        "name": "bonus_vault_id",
-        "type": "uint64"
-      }
-    ],
-    "MsgSimulateUnlockResponse": [],
     "MsgCreate": [
       {
         "name": "creator",
@@ -24098,7 +24051,7 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ]
   },
-  "/Switcheo.carbon.perpsliquidity": {
+  "/Switcheo.carbon.perpspool": {
     "Quote": [
       {
         "name": "quote_price_type",
@@ -24133,7 +24086,7 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "quote_shape",
         "type": "Quote[]",
-        "packageName": "/Switcheo.carbon.perpsliquidity"
+        "packageName": "/Switcheo.carbon.perpspool"
       }
     ],
     "UpdateMarketConfigParams": [
@@ -24152,7 +24105,7 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "quote_shape",
         "type": "Quote[]",
-        "packageName": "/Switcheo.carbon.perpsliquidity"
+        "packageName": "/Switcheo.carbon.perpspool"
       }
     ],
     "MarketUtilizationRateSnapshot": [
@@ -24249,12 +24202,12 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "pool",
         "type": "Pool",
-        "packageName": "/Switcheo.carbon.perpsliquidity"
+        "packageName": "/Switcheo.carbon.perpspool"
       },
       {
         "name": "registered_markets",
         "type": "MarketConfig[]",
-        "packageName": "/Switcheo.carbon.perpsliquidity"
+        "packageName": "/Switcheo.carbon.perpspool"
       }
     ],
     "DepositToPoolParams": [
@@ -24301,24 +24254,6 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "uint64"
       }
     ],
-    "DepositToBonusContractParams": [
-      {
-        "name": "bonus_vault_id",
-        "type": "uint64"
-      },
-      {
-        "name": "is_long_unbond",
-        "type": "bool"
-      },
-      {
-        "name": "fluo_distributor_address",
-        "type": "uint8[]"
-      },
-      {
-        "name": "bonus_fluo_distributor_address",
-        "type": "uint8[]"
-      }
-    ],
     "NavPerShareLastRecorded": [
       {
         "name": "last_recorded_at",
@@ -24329,7 +24264,7 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "pool",
         "type": "Pool",
-        "packageName": "/Switcheo.carbon.perpsliquidity"
+        "packageName": "/Switcheo.carbon.perpspool"
       },
       {
         "name": "type",
@@ -24360,7 +24295,7 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "market_config",
         "type": "MarketConfig",
-        "packageName": "/Switcheo.carbon.perpsliquidity"
+        "packageName": "/Switcheo.carbon.perpspool"
       }
     ],
     "DepositToPoolEvent": [
@@ -24457,33 +24392,38 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "nav_per_share_snapshot_interval",
         "type": "Duration",
         "packageName": "/google.protobuf"
+      },
+      {
+        "name": "index_last_updated_at_threshold",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
       }
     ],
     "GenesisState": [
       {
         "name": "params",
         "type": "Params",
-        "packageName": "/Switcheo.carbon.perpsliquidity"
+        "packageName": "/Switcheo.carbon.perpspool"
       },
       {
         "name": "pools",
         "type": "Pool[]",
-        "packageName": "/Switcheo.carbon.perpsliquidity"
+        "packageName": "/Switcheo.carbon.perpspool"
       },
       {
         "name": "market_config_records",
         "type": "MarketConfigRecord[]",
-        "packageName": "/Switcheo.carbon.perpsliquidity"
+        "packageName": "/Switcheo.carbon.perpspool"
       },
       {
         "name": "nav_per_shares",
         "type": "NavPerShareRecord[]",
-        "packageName": "/Switcheo.carbon.perpsliquidity"
+        "packageName": "/Switcheo.carbon.perpspool"
       },
       {
         "name": "all_nav_per_share_last_recorded",
         "type": "NavPerShareLastRecordedWithPoolId[]",
-        "packageName": "/Switcheo.carbon.perpsliquidity"
+        "packageName": "/Switcheo.carbon.perpspool"
       }
     ],
     "MarketConfigRecord": [
@@ -24494,7 +24434,7 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "market_config",
         "type": "MarketConfig",
-        "packageName": "/Switcheo.carbon.perpsliquidity"
+        "packageName": "/Switcheo.carbon.perpspool"
       }
     ],
     "NavPerShareRecord": [
@@ -24519,7 +24459,7 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "nav_per_share_last_recorded",
         "type": "NavPerShareLastRecorded",
-        "packageName": "/Switcheo.carbon.perpsliquidity"
+        "packageName": "/Switcheo.carbon.perpspool"
       }
     ],
     "QueryAllPoolMarketUtilizationMultiplierRequest": [
@@ -24533,7 +24473,7 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "markets_utilization_multiplier",
         "type": "MarketUtilizationMultiplier[]",
-        "packageName": "/Switcheo.carbon.perpsliquidity"
+        "packageName": "/Switcheo.carbon.perpspool"
       },
       {
         "name": "pagination",
@@ -24546,7 +24486,7 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "params",
         "type": "Params",
-        "packageName": "/Switcheo.carbon.perpsliquidity"
+        "packageName": "/Switcheo.carbon.perpspool"
       }
     ],
     "QueryGetPoolRequest": [
@@ -24559,7 +24499,7 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "pool",
         "type": "PoolDetails",
-        "packageName": "/Switcheo.carbon.perpsliquidity"
+        "packageName": "/Switcheo.carbon.perpspool"
       }
     ],
     "QueryAllPoolsRequest": [
@@ -24573,7 +24513,7 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "pools",
         "type": "PoolDetails[]",
-        "packageName": "/Switcheo.carbon.perpsliquidity"
+        "packageName": "/Switcheo.carbon.perpspool"
       },
       {
         "name": "pagination",
@@ -24592,7 +24532,7 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "pool_mappings",
         "type": "PoolMappingsEntry[]",
-        "packageName": "/Switcheo.carbon.perpsliquidity.QueryPoolMappingsResponse"
+        "packageName": "/Switcheo.carbon.perpspool.QueryPoolMappingsResponse"
       },
       {
         "name": "pagination",
@@ -24611,7 +24551,7 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "addresses",
         "type": "AddressesEntry[]",
-        "packageName": "/Switcheo.carbon.perpsliquidity.QueryAllPoolAddressResponse"
+        "packageName": "/Switcheo.carbon.perpspool.QueryAllPoolAddressResponse"
       },
       {
         "name": "pagination",
@@ -24658,7 +24598,7 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "pools",
         "type": "QueryPoolInfoResponse[]",
-        "packageName": "/Switcheo.carbon.perpsliquidity"
+        "packageName": "/Switcheo.carbon.perpspool"
       },
       {
         "name": "pagination",
@@ -24704,7 +24644,7 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "pool",
         "type": "Pool",
-        "packageName": "/Switcheo.carbon.perpsliquidity"
+        "packageName": "/Switcheo.carbon.perpspool"
       }
     ],
     "MsgUpdatePool": [
@@ -24719,14 +24659,14 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "update_pool_params",
         "type": "UpdatePoolParams",
-        "packageName": "/Switcheo.carbon.perpsliquidity"
+        "packageName": "/Switcheo.carbon.perpspool"
       }
     ],
     "MsgUpdatePoolResponse": [
       {
         "name": "pool",
         "type": "Pool",
-        "packageName": "/Switcheo.carbon.perpsliquidity"
+        "packageName": "/Switcheo.carbon.perpspool"
       }
     ],
     "MsgRegisterToPool": [
@@ -24745,7 +24685,7 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "market_config_params",
         "type": "UpdateMarketConfigParams",
-        "packageName": "/Switcheo.carbon.perpsliquidity"
+        "packageName": "/Switcheo.carbon.perpspool"
       }
     ],
     "MsgRegisterToPoolResponse": [],
@@ -24810,14 +24750,14 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "update_market_config_params",
         "type": "UpdateMarketConfigParams",
-        "packageName": "/Switcheo.carbon.perpsliquidity"
+        "packageName": "/Switcheo.carbon.perpspool"
       }
     ],
     "MsgUpdateMarketConfigResponse": [
       {
         "name": "market_config",
         "type": "MarketConfig",
-        "packageName": "/Switcheo.carbon.perpsliquidity"
+        "packageName": "/Switcheo.carbon.perpspool"
       }
     ],
     "MsgSetParams": [

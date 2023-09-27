@@ -3,7 +3,7 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Duration } from "../google/protobuf/duration";
 
-export const protobufPackage = "Switcheo.carbon.perpsliquidity";
+export const protobufPackage = "Switcheo.carbon.perpspool";
 
 /** Params defines the parameters for the module. */
 export interface Params {
@@ -17,6 +17,7 @@ export interface Params {
   maxMarketUtilizationSnapshotWindow?: Duration;
   navPerShareSnapshots: Long;
   navPerShareSnapshotInterval?: Duration;
+  indexLastUpdatedAtThreshold?: Duration;
 }
 
 const baseParams: object = {
@@ -61,6 +62,12 @@ export const Params = {
         writer.uint32(50).fork()
       ).ldelim();
     }
+    if (message.indexLastUpdatedAtThreshold !== undefined) {
+      Duration.encode(
+        message.indexLastUpdatedAtThreshold,
+        writer.uint32(58).fork()
+      ).ldelim();
+    }
     return writer;
   },
 
@@ -97,6 +104,12 @@ export const Params = {
           break;
         case 6:
           message.navPerShareSnapshotInterval = Duration.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 7:
+          message.indexLastUpdatedAtThreshold = Duration.decode(
             reader,
             reader.uint32()
           );
@@ -141,6 +154,11 @@ export const Params = {
       object.navPerShareSnapshotInterval !== null
         ? Duration.fromJSON(object.navPerShareSnapshotInterval)
         : undefined;
+    message.indexLastUpdatedAtThreshold =
+      object.indexLastUpdatedAtThreshold !== undefined &&
+      object.indexLastUpdatedAtThreshold !== null
+        ? Duration.fromJSON(object.indexLastUpdatedAtThreshold)
+        : undefined;
     return message;
   },
 
@@ -170,6 +188,10 @@ export const Params = {
     message.navPerShareSnapshotInterval !== undefined &&
       (obj.navPerShareSnapshotInterval = message.navPerShareSnapshotInterval
         ? Duration.toJSON(message.navPerShareSnapshotInterval)
+        : undefined);
+    message.indexLastUpdatedAtThreshold !== undefined &&
+      (obj.indexLastUpdatedAtThreshold = message.indexLastUpdatedAtThreshold
+        ? Duration.toJSON(message.indexLastUpdatedAtThreshold)
         : undefined);
     return obj;
   },
@@ -202,6 +224,11 @@ export const Params = {
       object.navPerShareSnapshotInterval !== undefined &&
       object.navPerShareSnapshotInterval !== null
         ? Duration.fromPartial(object.navPerShareSnapshotInterval)
+        : undefined;
+    message.indexLastUpdatedAtThreshold =
+      object.indexLastUpdatedAtThreshold !== undefined &&
+      object.indexLastUpdatedAtThreshold !== null
+        ? Duration.fromPartial(object.indexLastUpdatedAtThreshold)
         : undefined;
     return message;
   },

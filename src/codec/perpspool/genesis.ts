@@ -5,9 +5,9 @@ import { Params } from "./params";
 import { MarketConfig } from "./market";
 import { NavPerShareLastRecorded, Pool } from "./pool";
 
-export const protobufPackage = "Switcheo.carbon.perpsliquidity";
+export const protobufPackage = "Switcheo.carbon.perpspool";
 
-/** GenesisState defines the perpsliquidity module's genesis state. */
+/** GenesisState defines the perpspool module's genesis state. */
 export interface GenesisState {
   params?: Params;
   pools: Pool[];

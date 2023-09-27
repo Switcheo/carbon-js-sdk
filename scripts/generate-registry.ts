@@ -12,7 +12,7 @@ const polynetworkFolders = ['btcx', 'ccm', 'headersync', 'lockproxy'];
 
 const carbonFolders = ['alliance', 'admin', 'bank', 'book', 'broker','cdp','coin', 
   'erc20','evmbank',' evmmerge', 'fee', 'inflation', 'insurance','leverage', 'liquidation',
-  'liquiditypool', 'market', 'marketstats', 'misc', 'oracle', 'order', 'perpsliquidity',
+  'liquiditypool', 'market', 'marketstats', 'misc', 'oracle', 'order', 'perpspool',
   'position', 'pricing', 'profile', 'sequence', 'subaccount'];
 
 console.log(`import { Registry } from "@cosmjs/proto-signing";`);

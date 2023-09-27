@@ -29,7 +29,7 @@ const whitelistCarbonExports: { [name: string]: string } = {
     'Misc': 'misc',
     'Oracle': 'oracle',
     'Order': 'order',
-    'Perpsliquidity': 'perpsliquidity',
+    'Perpspool': 'perpspool',
     'Position': 'position',
     'Pricing': 'pricing',
     'Profile': 'profile',

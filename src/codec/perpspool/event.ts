@@ -4,7 +4,7 @@ import _m0 from "protobufjs/minimal";
 import { Pool } from "./pool";
 import { MarketConfig } from "./market";
 
-export const protobufPackage = "Switcheo.carbon.perpsliquidity";
+export const protobufPackage = "Switcheo.carbon.perpspool";
 
 export interface PoolEvent {
   pool?: Pool;

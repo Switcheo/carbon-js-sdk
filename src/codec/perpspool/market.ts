@@ -4,7 +4,7 @@ import _m0 from "protobufjs/minimal";
 import { Timestamp } from "../google/protobuf/timestamp";
 import { StringValue } from "../google/protobuf/wrappers";
 
-export const protobufPackage = "Switcheo.carbon.perpsliquidity";
+export const protobufPackage = "Switcheo.carbon.perpspool";
 
 export interface Quote {
   quotePriceType: string;

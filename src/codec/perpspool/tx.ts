@@ -5,7 +5,7 @@ import { Pool, UpdatePoolParams } from "./pool";
 import { UpdateMarketConfigParams, MarketConfig } from "./market";
 import { Duration } from "../google/protobuf/duration";
 
-export const protobufPackage = "Switcheo.carbon.perpsliquidity";
+export const protobufPackage = "Switcheo.carbon.perpspool";
 
 export interface MsgCreatePool {
   creator: string;
@@ -1460,7 +1460,7 @@ export class MsgClientImpl implements Msg {
   CreatePool(request: MsgCreatePool): Promise<MsgCreatePoolResponse> {
     const data = MsgCreatePool.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.carbon.perpsliquidity.Msg",
+      "Switcheo.carbon.perpspool.Msg",
       "CreatePool",
       data
     );
@@ -1472,7 +1472,7 @@ export class MsgClientImpl implements Msg {
   UpdatePool(request: MsgUpdatePool): Promise<MsgUpdatePoolResponse> {
     const data = MsgUpdatePool.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.carbon.perpsliquidity.Msg",
+      "Switcheo.carbon.perpspool.Msg",
       "UpdatePool",
       data
     );
@@ -1486,7 +1486,7 @@ export class MsgClientImpl implements Msg {
   ): Promise<MsgRegisterToPoolResponse> {
     const data = MsgRegisterToPool.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.carbon.perpsliquidity.Msg",
+      "Switcheo.carbon.perpspool.Msg",
       "RegisterToPool",
       data
     );
@@ -1500,7 +1500,7 @@ export class MsgClientImpl implements Msg {
   ): Promise<MsgDeregisterFromPoolResponse> {
     const data = MsgDeregisterFromPool.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.carbon.perpsliquidity.Msg",
+      "Switcheo.carbon.perpspool.Msg",
       "DeregisterFromPool",
       data
     );
@@ -1512,7 +1512,7 @@ export class MsgClientImpl implements Msg {
   DepositToPool(request: MsgDepositToPool): Promise<MsgDepositToPoolResponse> {
     const data = MsgDepositToPool.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.carbon.perpsliquidity.Msg",
+      "Switcheo.carbon.perpspool.Msg",
       "DepositToPool",
       data
     );
@@ -1526,7 +1526,7 @@ export class MsgClientImpl implements Msg {
   ): Promise<MsgWithdrawFromPoolResponse> {
     const data = MsgWithdrawFromPool.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.carbon.perpsliquidity.Msg",
+      "Switcheo.carbon.perpspool.Msg",
       "WithdrawFromPool",
       data
     );
@@ -1540,7 +1540,7 @@ export class MsgClientImpl implements Msg {
   ): Promise<MsgUpdateMarketConfigResponse> {
     const data = MsgUpdateMarketConfig.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.carbon.perpsliquidity.Msg",
+      "Switcheo.carbon.perpspool.Msg",
       "UpdateMarketConfig",
       data
     );
@@ -1552,7 +1552,7 @@ export class MsgClientImpl implements Msg {
   SetParams(request: MsgSetParams): Promise<MsgSetParamsResponse> {
     const data = MsgSetParams.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.carbon.perpsliquidity.Msg",
+      "Switcheo.carbon.perpspool.Msg",
       "SetParams",
       data
     );

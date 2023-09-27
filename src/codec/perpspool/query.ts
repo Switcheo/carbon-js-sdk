@@ -9,7 +9,7 @@ import { Params } from "./params";
 import { PoolDetails } from "./pool";
 import { MarketUtilizationMultiplier } from "./market";
 
-export const protobufPackage = "Switcheo.carbon.perpsliquidity";
+export const protobufPackage = "Switcheo.carbon.perpspool";
 
 export interface QueryAllPoolMarketUtilizationMultiplierRequest {
   pagination?: PageRequest;
@@ -1523,7 +1523,7 @@ export class QueryClientImpl implements Query {
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.carbon.perpsliquidity.Query",
+      "Switcheo.carbon.perpspool.Query",
       "Params",
       data
     );
@@ -1535,7 +1535,7 @@ export class QueryClientImpl implements Query {
   PoolInfo(request: QueryPoolInfoRequest): Promise<QueryPoolInfoResponse> {
     const data = QueryPoolInfoRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.carbon.perpsliquidity.Query",
+      "Switcheo.carbon.perpspool.Query",
       "PoolInfo",
       data
     );
@@ -1549,7 +1549,7 @@ export class QueryClientImpl implements Query {
   ): Promise<QueryAllPoolInfoResponse> {
     const data = QueryAllPoolInfoRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.carbon.perpsliquidity.Query",
+      "Switcheo.carbon.perpspool.Query",
       "PoolInfoAll",
       data
     );
@@ -1563,7 +1563,7 @@ export class QueryClientImpl implements Query {
   ): Promise<QueryAllPoolAddressResponse> {
     const data = QueryAllPoolAddressRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.carbon.perpsliquidity.Query",
+      "Switcheo.carbon.perpspool.Query",
       "PoolAddressAll",
       data
     );
@@ -1578,7 +1578,7 @@ export class QueryClientImpl implements Query {
     const data =
       QueryAllPoolMarketUtilizationMultiplierRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.carbon.perpsliquidity.Query",
+      "Switcheo.carbon.perpspool.Query",
       "PoolMarketUtilizationMultiplierAll",
       data
     );
@@ -1592,7 +1592,7 @@ export class QueryClientImpl implements Query {
   Pool(request: QueryGetPoolRequest): Promise<QueryGetPoolResponse> {
     const data = QueryGetPoolRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.carbon.perpsliquidity.Query",
+      "Switcheo.carbon.perpspool.Query",
       "Pool",
       data
     );
@@ -1604,7 +1604,7 @@ export class QueryClientImpl implements Query {
   PoolAll(request: QueryAllPoolsRequest): Promise<QueryAllPoolsResponse> {
     const data = QueryAllPoolsRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.carbon.perpsliquidity.Query",
+      "Switcheo.carbon.perpspool.Query",
       "PoolAll",
       data
     );
@@ -1618,7 +1618,7 @@ export class QueryClientImpl implements Query {
   ): Promise<QueryPoolMappingsResponse> {
     const data = QueryPoolMappingsRequest.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.carbon.perpsliquidity.Query",
+      "Switcheo.carbon.perpspool.Query",
       "PoolMappings",
       data
     );

@@ -5,7 +5,7 @@ import { Timestamp } from "../google/protobuf/timestamp";
 import { MarketConfig } from "./market";
 import { StringValue } from "../google/protobuf/wrappers";
 
-export const protobufPackage = "Switcheo.carbon.perpsliquidity";
+export const protobufPackage = "Switcheo.carbon.perpspool";
 
 /** main store holding each Pool */
 export interface Pool {
@@ -59,14 +59,6 @@ export interface WithdrawFromPoolParams {
   shareAmount: string;
   minWithdrawAmount: string;
   processingId: Long;
-}
-
-/** DepositToBonusContractParams params required for enqueuing into deposit transient store */
-export interface DepositToBonusContractParams {
-  bonusVaultId: Long;
-  isLongUnbond: boolean;
-  fluoDistributorAddress: Uint8Array;
-  bonusFluoDistributorAddress: Uint8Array;
 }
 
 export interface NavPerShareLastRecorded {
@@ -675,130 +667,6 @@ export const WithdrawFromPoolParams = {
   },
 };
 
-const baseDepositToBonusContractParams: object = {
-  bonusVaultId: Long.UZERO,
-  isLongUnbond: false,
-};
-
-export const DepositToBonusContractParams = {
-  encode(
-    message: DepositToBonusContractParams,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (!message.bonusVaultId.isZero()) {
-      writer.uint32(8).uint64(message.bonusVaultId);
-    }
-    if (message.isLongUnbond === true) {
-      writer.uint32(16).bool(message.isLongUnbond);
-    }
-    if (message.fluoDistributorAddress.length !== 0) {
-      writer.uint32(26).bytes(message.fluoDistributorAddress);
-    }
-    if (message.bonusFluoDistributorAddress.length !== 0) {
-      writer.uint32(34).bytes(message.bonusFluoDistributorAddress);
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): DepositToBonusContractParams {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseDepositToBonusContractParams,
-    } as DepositToBonusContractParams;
-    message.fluoDistributorAddress = new Uint8Array();
-    message.bonusFluoDistributorAddress = new Uint8Array();
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.bonusVaultId = reader.uint64() as Long;
-          break;
-        case 2:
-          message.isLongUnbond = reader.bool();
-          break;
-        case 3:
-          message.fluoDistributorAddress = reader.bytes();
-          break;
-        case 4:
-          message.bonusFluoDistributorAddress = reader.bytes();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): DepositToBonusContractParams {
-    const message = {
-      ...baseDepositToBonusContractParams,
-    } as DepositToBonusContractParams;
-    message.bonusVaultId =
-      object.bonusVaultId !== undefined && object.bonusVaultId !== null
-        ? Long.fromString(object.bonusVaultId)
-        : Long.UZERO;
-    message.isLongUnbond =
-      object.isLongUnbond !== undefined && object.isLongUnbond !== null
-        ? Boolean(object.isLongUnbond)
-        : false;
-    message.fluoDistributorAddress =
-      object.fluoDistributorAddress !== undefined &&
-      object.fluoDistributorAddress !== null
-        ? bytesFromBase64(object.fluoDistributorAddress)
-        : new Uint8Array();
-    message.bonusFluoDistributorAddress =
-      object.bonusFluoDistributorAddress !== undefined &&
-      object.bonusFluoDistributorAddress !== null
-        ? bytesFromBase64(object.bonusFluoDistributorAddress)
-        : new Uint8Array();
-    return message;
-  },
-
-  toJSON(message: DepositToBonusContractParams): unknown {
-    const obj: any = {};
-    message.bonusVaultId !== undefined &&
-      (obj.bonusVaultId = (message.bonusVaultId || Long.UZERO).toString());
-    message.isLongUnbond !== undefined &&
-      (obj.isLongUnbond = message.isLongUnbond);
-    message.fluoDistributorAddress !== undefined &&
-      (obj.fluoDistributorAddress = base64FromBytes(
-        message.fluoDistributorAddress !== undefined
-          ? message.fluoDistributorAddress
-          : new Uint8Array()
-      ));
-    message.bonusFluoDistributorAddress !== undefined &&
-      (obj.bonusFluoDistributorAddress = base64FromBytes(
-        message.bonusFluoDistributorAddress !== undefined
-          ? message.bonusFluoDistributorAddress
-          : new Uint8Array()
-      ));
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<DepositToBonusContractParams>
-  ): DepositToBonusContractParams {
-    const message = {
-      ...baseDepositToBonusContractParams,
-    } as DepositToBonusContractParams;
-    message.bonusVaultId =
-      object.bonusVaultId !== undefined && object.bonusVaultId !== null
-        ? Long.fromValue(object.bonusVaultId)
-        : Long.UZERO;
-    message.isLongUnbond = object.isLongUnbond ?? false;
-    message.fluoDistributorAddress =
-      object.fluoDistributorAddress ?? new Uint8Array();
-    message.bonusFluoDistributorAddress =
-      object.bonusFluoDistributorAddress ?? new Uint8Array();
-    return message;
-  },
-};
-
 const baseNavPerShareLastRecorded: object = {};
 
 export const NavPerShareLastRecorded = {
@@ -868,40 +736,6 @@ export const NavPerShareLastRecorded = {
     return message;
   },
 };
-
-declare var self: any | undefined;
-declare var window: any | undefined;
-declare var global: any | undefined;
-var globalThis: any = (() => {
-  if (typeof globalThis !== "undefined") return globalThis;
-  if (typeof self !== "undefined") return self;
-  if (typeof window !== "undefined") return window;
-  if (typeof global !== "undefined") return global;
-  throw "Unable to locate global object";
-})();
-
-const atob: (b64: string) => string =
-  globalThis.atob ||
-  ((b64) => globalThis.Buffer.from(b64, "base64").toString("binary"));
-function bytesFromBase64(b64: string): Uint8Array {
-  const bin = atob(b64);
-  const arr = new Uint8Array(bin.length);
-  for (let i = 0; i < bin.length; ++i) {
-    arr[i] = bin.charCodeAt(i);
-  }
-  return arr;
-}
-
-const btoa: (bin: string) => string =
-  globalThis.btoa ||
-  ((bin) => globalThis.Buffer.from(bin, "binary").toString("base64"));
-function base64FromBytes(arr: Uint8Array): string {
-  const bin: string[] = [];
-  for (const byte of arr) {
-    bin.push(String.fromCharCode(byte));
-  }
-  return btoa(bin.join(""));
-}
 
 type Builtin =
   | Date

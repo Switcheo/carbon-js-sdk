@@ -18,6 +18,7 @@ export interface Token {
   tokenAddress: string;
   bridgeAddress: string;
   isActive: boolean;
+  createdBlockHeight: Long;
 }
 
 export interface BalanceChange {
@@ -70,6 +71,7 @@ const baseToken: object = {
   tokenAddress: "",
   bridgeAddress: "",
   isActive: false,
+  createdBlockHeight: Long.UZERO,
 };
 
 export const Token = {
@@ -106,6 +108,9 @@ export const Token = {
     }
     if (message.isActive === true) {
       writer.uint32(88).bool(message.isActive);
+    }
+    if (!message.createdBlockHeight.isZero()) {
+      writer.uint32(104).uint64(message.createdBlockHeight);
     }
     return writer;
   },
@@ -149,6 +154,9 @@ export const Token = {
           break;
         case 11:
           message.isActive = reader.bool();
+          break;
+        case 13:
+          message.createdBlockHeight = reader.uint64() as Long;
           break;
         default:
           reader.skipType(tag & 7);
@@ -202,6 +210,11 @@ export const Token = {
       object.isActive !== undefined && object.isActive !== null
         ? Boolean(object.isActive)
         : false;
+    message.createdBlockHeight =
+      object.createdBlockHeight !== undefined &&
+      object.createdBlockHeight !== null
+        ? Long.fromString(object.createdBlockHeight)
+        : Long.UZERO;
     return message;
   },
 
@@ -223,6 +236,10 @@ export const Token = {
     message.bridgeAddress !== undefined &&
       (obj.bridgeAddress = message.bridgeAddress);
     message.isActive !== undefined && (obj.isActive = message.isActive);
+    message.createdBlockHeight !== undefined &&
+      (obj.createdBlockHeight = (
+        message.createdBlockHeight || Long.UZERO
+      ).toString());
     return obj;
   },
 
@@ -248,6 +265,11 @@ export const Token = {
     message.tokenAddress = object.tokenAddress ?? "";
     message.bridgeAddress = object.bridgeAddress ?? "";
     message.isActive = object.isActive ?? false;
+    message.createdBlockHeight =
+      object.createdBlockHeight !== undefined &&
+      object.createdBlockHeight !== null
+        ? Long.fromValue(object.createdBlockHeight)
+        : Long.UZERO;
     return message;
   },
 };
