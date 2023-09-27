@@ -7,7 +7,7 @@ import { SWTHAddress, SWTHAddressOptions } from "@carbon-sdk/util/address";
 import { fetch } from "@carbon-sdk/util/fetch";
 import { QueueManager } from "@carbon-sdk/util/generic";
 import { bnOrZero, BN_ZERO } from "@carbon-sdk/util/number";
-import { BroadcastTxMode, CarbonSignerData, CarbonTxError } from "@carbon-sdk/util/tx";
+import { BroadcastTxMode, CarbonSignerData, CarbonCustomError, ErrorType } from "@carbon-sdk/util/tx";
 import { SimpleMap } from "@carbon-sdk/util/type";
 import { encodeSecp256k1Signature, StdSignature } from "@cosmjs/amino";
 import { EncodeObject, OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
@@ -394,7 +394,7 @@ export class CarbonWallet {
     const isEvmWallet = this.isEvmWallet()
     if (hasEvmAddressBalances && !hasCarbonBalances && !isEvmWallet) {
       this.sequenceInvalidated = true
-      throw new Error('Transaction is not allowed from a non-evm wallet for an account with only funds in evm address')
+      throw new CarbonCustomError('Transaction is not allowed from a non-evm wallet for an account with only funds in evm address')
     }
   }
 
@@ -410,7 +410,7 @@ export class CarbonWallet {
     const response = await carbonClient.broadcastTx(tx, timeoutMs, pollIntervalMs);
     if (isDeliverTxFailure(response)) {
       // tx failed
-      throw new CarbonTxError(`[${response.code}] ${response.rawLog}`, response);
+      throw new Error(`[${response.code}] ${response.rawLog}`);
     }
     const txBody = TxBody.decode(txRaw.bodyBytes)
     const msgs: EncodeObject[] = txBody.messages.map(message => {
@@ -433,15 +433,15 @@ export class CarbonWallet {
     const response = await tmClient.broadcastTxSync({ tx });
     if (!broadcastTxSyncSuccess(response)) {
       // tx failed
-      throw new Error(`[${response.code}] ${response.log}`);
+      throw new CarbonCustomError(`[${response.code}] ${response.log}`, ErrorType.BROADCAST_FAIL);
     }
     return response
   }
 
   /**
- * broadcast TX to but doesnt wait for block confirmation nor submission to mempool
- *
- */
+   * broadcast TX but doesnt wait for block confirmation nor submission to mempool
+   *
+   */
   async broadcastTxWithoutConfirm(txRaw: CarbonWallet.TxRaw): Promise<CarbonWallet.SendTxWithoutConfirmResponse> {
     const tx = CarbonWallet.TxRaw.encode(txRaw).finish();
     const tmClient = this.getTmClient();
@@ -636,7 +636,7 @@ export class CarbonWallet {
       timedOut = true
     }, timeoutMs)
 
-    const pollForTx = async (txId: string): Promise<CarbonWallet.SendTxResponse>  => {
+    const pollForTx = async (txId: string): Promise<CarbonWallet.SendTxResponse> => {
       if (timedOut) {
         throw new TimeoutError(`Transaction with ID ${txId} was submitted but was not yet found on the chain. You might want to check later. There was a wait of ${timeoutMs / 1000} seconds.`, txId)
       }

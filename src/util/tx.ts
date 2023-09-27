@@ -2,7 +2,7 @@ import { registry, TxTypes } from "@carbon-sdk/codec";
 import * as CosmosModels from "@carbon-sdk/codec/cosmos-models";
 import { DEFAULT_FEE } from "@carbon-sdk/constant";
 import { StdFee } from "@cosmjs/amino";
-import { DeliverTxResponse, SignerData } from "@cosmjs/stargate";
+import { SignerData } from "@cosmjs/stargate";
 import { SWTHAddress, SWTHAddressOptions } from "./address";
 export { StdSignDoc } from "@cosmjs/amino";
 
@@ -142,9 +142,16 @@ export interface TxResponse {
   codespace?: string;
 }
 
-export class CarbonTxError extends Error {
-  constructor(msg: string, readonly response: DeliverTxResponse) {
+export enum ErrorType {
+  SIGNATURE_REJECTION = "signature_rejection",
+  BROADCAST_FAIL = "broadcast_fail",
+}
+
+export class CarbonCustomError extends Error {
+  readonly type?: ErrorType
+  constructor(msg: string, type?: ErrorType) {
     super(msg);
+    this.type = type
   }
 }
 

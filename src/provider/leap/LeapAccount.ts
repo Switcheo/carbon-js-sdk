@@ -8,6 +8,7 @@ import { Leap } from "@cosmos-kit/leap";
 import { AppCurrency, ChainInfo, FeeCurrency } from "@keplr-wallet/types";
 import SDKProvider from "../sdk";
 import { ethers } from "ethers";
+import { signTransactionWrapper } from "@carbon-sdk/util/provider";
 
 const SWTH: FeeCurrency = {
   coinDenom: "SWTH",
@@ -27,13 +28,18 @@ class LeapAccount {
 
   static createLeapSigner(leap: Leap, chainId: string): CarbonSigner {
     const signDirect = async (signerAddress: string, doc: Models.Tx.SignDoc) => {
-      const signOpts = { preferNoSetFee: true };
-      return await leap!.signDirect(chainId, signerAddress, doc, signOpts);
+      return await signTransactionWrapper(async () => {
+        const signOpts = { preferNoSetFee: true };
+        return await leap!.signDirect(chainId, signerAddress, doc, signOpts);
+      })
     };
 
     const signAmino = async (signerAddress: string, doc: CarbonTx.StdSignDoc) => {
-      const signOpts = { preferNoSetFee: true };
-      return await leap!.signAmino(chainId, signerAddress, doc, signOpts);
+      return await signTransactionWrapper(async () => {
+        const signOpts = { preferNoSetFee: true };
+        return await leap!.signAmino(chainId, signerAddress, doc, signOpts);
+      })
+
     };
 
     const getAccounts = async () => {
