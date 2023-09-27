@@ -53,10 +53,10 @@ const MsgWithdrawFromPool: AminoInit = {
 const PerpsliquidityAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgCreatePool]: generateAminoType(MsgCreatePool),
   [CarbonTx.Types.MsgUpdatePool]: generateAminoType(MsgUpdatePool),
-  [CarbonTx.Types.MsgPerpsliquidityRegisterToPool]: generateAminoType(MsgRegisterToPool),
-  [CarbonTx.Types.MsgPerpsliquidityDeregisterFromPool]: generateAminoType(MsgDeregisterFromPool),
-  [CarbonTx.Types.MsgPerpsliquidityDepositToPool]: generateAminoType(MsgDepositToPool),
-  [CarbonTx.Types.MsgPerpsliquidityWithdrawFromPool]: generateAminoType(MsgWithdrawFromPool),
+  [CarbonTx.Types.MsgRegisterToPool]: generateAminoType(MsgRegisterToPool),
+  [CarbonTx.Types.MsgDeregisterFromPool]: generateAminoType(MsgDeregisterFromPool),
+  [CarbonTx.Types.MsgDepositToPool]: generateAminoType(MsgDepositToPool),
+  [CarbonTx.Types.MsgWithdrawFromPool]: generateAminoType(MsgWithdrawFromPool),
 };
 
 export default PerpsliquidityAmino;
