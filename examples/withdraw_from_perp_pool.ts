@@ -16,7 +16,7 @@ import "./_setup";
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
 
-  const result = await connectedSDK.perpspool.withdrawFromPool({
+  const result = await connectedSDK.p.withdrawFromPool({
       poolId: new Long(2),
       shareAmount: '10',
       minReceiveAmount: '1',

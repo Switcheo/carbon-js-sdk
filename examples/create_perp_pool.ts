@@ -15,7 +15,7 @@ import "./_setup";
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
 
-  const result = await connectedSDK.perpspool.createPerpertualsPool({
+  const result = await connectedSDK.p.createPerpertualsPool({
       name: 'USD Perp Pool 5',
       depositDenom: 'usdc',
       shareTokenSymbol: 'testUSD',
