@@ -160,7 +160,7 @@ class KeplrAccount {
     try {
       keplrChainInfo = await (await FetchUtils.fetch(url)).json();
     } catch (error) {
-      console.error(error)
+      console.warn(error)
     }
 
     if (config.network === Network.MainNet && keplrChainInfo) {
