@@ -1,4 +1,4 @@
-import { Cdp, Coin as CarbonCoin, Fee, Liquiditypool, Market, Oracle, Order, Pricing } from "@carbon-sdk/codec/carbon-models";
+import { Carbon } from "@carbon-sdk/CarbonSDK";
 import { Coin } from "@carbon-sdk/codec/cosmos/base/v1beta1/coin";
 import { Description } from "@carbon-sdk/codec/cosmos/staking/v1beta1/staking";
 import { MsgCreateValidator, MsgEditValidator } from "@carbon-sdk/codec/cosmos/staking/v1beta1/tx";
@@ -13,7 +13,7 @@ export class AdminModule extends BaseModule {
   public async createOracle(params: AdminModule.CreateOracleParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Oracle.MsgCreateOracle.fromPartial({
+    const value = Carbon.Oracle.MsgCreateOracle.fromPartial({
       creator: wallet.bech32Address,
       createOracleParams: transfromCreateOracleParams(params, wallet.bech32Address),
     });
@@ -30,7 +30,7 @@ export class AdminModule extends BaseModule {
   public async createToken(params: AdminModule.CreateTokenParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = CarbonCoin.MsgCreateToken.fromPartial({
+    const value = Carbon.Coin.MsgCreateToken.fromPartial({
       creator: wallet.bech32Address,
       createTokenParams: transfromCreateTokenParams(params, wallet.bech32Address),
     });
@@ -48,7 +48,7 @@ export class AdminModule extends BaseModule {
     const wallet = this.getWallet();
 
     const msgs = params.map((param) => {
-      const value = CarbonCoin.MsgCreateToken.fromPartial({
+      const value = Carbon.Coin.MsgCreateToken.fromPartial({
         creator: wallet.bech32Address,
         createTokenParams: transfromCreateTokenParams(param, wallet.bech32Address),
       });
@@ -65,7 +65,7 @@ export class AdminModule extends BaseModule {
   public async syncToken(params: AdminModule.SyncTokenParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = CarbonCoin.MsgSyncToken.fromPartial(transfromSyncTokenParams(params, wallet.bech32Address));
+    const value = Carbon.Coin.MsgSyncToken.fromPartial(transfromSyncTokenParams(params, wallet.bech32Address));
 
     return await wallet.sendTx(
       {
@@ -79,7 +79,7 @@ export class AdminModule extends BaseModule {
   public async bindToken(params: AdminModule.BindTokenParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = CarbonCoin.MsgBindToken.fromPartial({
+    const value = Carbon.Coin.MsgBindToken.fromPartial({
       creator: wallet.bech32Address,
       sourceDenom: params.sourceDenom,
       wrappedDenom: params.wrappedDenom,
@@ -97,7 +97,7 @@ export class AdminModule extends BaseModule {
   public async unbindToken(params: AdminModule.UnbindTokenParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = CarbonCoin.MsgUnbindToken.fromPartial({
+    const value = Carbon.Coin.MsgUnbindToken.fromPartial({
       creator: wallet.bech32Address,
       wrappedDenom: params.wrappedDenom,
     });
@@ -114,7 +114,7 @@ export class AdminModule extends BaseModule {
   public async updateToken(params: AdminModule.UpdateTokenParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = CarbonCoin.MsgUpdateToken.fromPartial({
+    const value = Carbon.Coin.MsgUpdateToken.fromPartial({
       updater: wallet.bech32Address,
       denom: params.denom,
       updateTokenParams: {
@@ -137,7 +137,7 @@ export class AdminModule extends BaseModule {
   public async linkToken(params: AdminModule.LinkTokenParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = CarbonCoin.MsgLinkToken.fromPartial({
+    const value = Carbon.Coin.MsgLinkToken.fromPartial({
       creator: wallet.bech32Address,
       denom: params.denom,
       bridgeAddress: params.bridgeAddress,
@@ -155,7 +155,7 @@ export class AdminModule extends BaseModule {
   public async createMarket(params: AdminModule.CreateMarketParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Market.MsgCreateMarket.fromPartial({
+    const value = Carbon.Market.MsgCreateMarket.fromPartial({
       creator: wallet.bech32Address,
       marketType: params.marketType,
       base: params.base,
@@ -179,7 +179,7 @@ export class AdminModule extends BaseModule {
     const wallet = this.getWallet();
 
     const msgs = params.map((param: AdminModule.CreateMarketParams) => {
-      const value = Market.MsgCreateMarket.fromPartial({
+      const value = Carbon.Market.MsgCreateMarket.fromPartial({
         creator: wallet.bech32Address,
         marketType: param.marketType,
         base: param.base,
@@ -202,7 +202,7 @@ export class AdminModule extends BaseModule {
   public async setRewardsWeights(params: AdminModule.SetRewardsWeightsParams[], opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Liquiditypool.MsgSetRewardsWeights.fromPartial({
+    const value = Carbon.Liquiditypool.MsgSetRewardsWeights.fromPartial({
       creator: wallet.bech32Address,
       setRewardsWeightsParams: transfromSetRewardsWeightsParams(params),
     });
@@ -219,7 +219,7 @@ export class AdminModule extends BaseModule {
   public async setRewardCurve(params: AdminModule.SetRewardCurveParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Liquiditypool.MsgSetRewardCurve.fromPartial({
+    const value = Carbon.Liquiditypool.MsgSetRewardCurve.fromPartial({
       creator: wallet.bech32Address,
       setRewardCurveParams: transfromSetRewardCurveParams(params),
     });
@@ -236,7 +236,7 @@ export class AdminModule extends BaseModule {
   public async setCommitmentCurve(params: AdminModule.SetCommitmentCurveParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Liquiditypool.MsgSetCommitmentCurve.fromPartial({
+    const value = Carbon.Liquiditypool.MsgSetCommitmentCurve.fromPartial({
       creator: wallet.bech32Address,
       setCommitmentCurveParams: transfromSetCommitmentCurveParams(params),
     });
@@ -253,7 +253,7 @@ export class AdminModule extends BaseModule {
   public async updatePool(params: AdminModule.UpdatePoolParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Liquiditypool.MsgUpdatePool.fromPartial({
+    const value = Carbon.Liquiditypool.MsgUpdatePool.fromPartial({
       creator: wallet.bech32Address,
       updatePoolParams: transfromUpdatePoolParams(params),
     });
@@ -270,7 +270,7 @@ export class AdminModule extends BaseModule {
   public async setTradingFlag(params: AdminModule.SetTradingFlagParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Order.MsgSetTradingFlag.fromPartial(transfromSetTradingFlagParams(params, wallet.bech32Address));
+    const value = Carbon.Order.MsgSetTradingFlag.fromPartial(transfromSetTradingFlagParams(params, wallet.bech32Address));
 
     return await wallet.sendTx(
       {
@@ -288,7 +288,7 @@ export class AdminModule extends BaseModule {
   public async setMsgGasCost(params: AdminModule.SetMsgGasCostParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Fee.MsgSetGasCost.fromPartial({
+    const value = Carbon.Fee.MsgSetGasCost.fromPartial({
       creator: wallet.bech32Address,
       setGasCostParams: transfromSetMsgGasCostParams(params),
     });
@@ -305,7 +305,7 @@ export class AdminModule extends BaseModule {
   public async setMinGasPrice(params: AdminModule.SetMinGasPriceParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Fee.MsgSetMinGasPrice.fromPartial({
+    const value = Carbon.Fee.MsgSetMinGasPrice.fromPartial({
       creator: wallet.bech32Address,
       setMinGasPriceParams: transfromSetMinGasPriceParams(params),
     });
@@ -322,7 +322,7 @@ export class AdminModule extends BaseModule {
   public async removeMsgGasCost(params: AdminModule.RemoveMsgGasCostParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Fee.MsgRemoveGasCost.fromPartial({
+    const value = Carbon.Fee.MsgRemoveGasCost.fromPartial({
       creator: wallet.bech32Address,
       msgType: params.msgType,
     });
@@ -339,7 +339,7 @@ export class AdminModule extends BaseModule {
   public async removeMinGasPrice(params: AdminModule.RemoveMinGasPriceParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Fee.MsgRemoveMinGasPrice.fromPartial({
+    const value = Carbon.Fee.MsgRemoveMinGasPrice.fromPartial({
       creator: wallet.bech32Address,
       denom: params.denom,
     });
@@ -408,7 +408,7 @@ export class AdminModule extends BaseModule {
   public async authorizeBridge(params: AdminModule.AuthorizeBridgeParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = CarbonCoin.MsgAuthorizeBridge.fromPartial({
+    const value = Carbon.Coin.MsgAuthorizeBridge.fromPartial({
       creator: wallet.bech32Address,
       bridgeId: new Long(params.bridgeId),
       chainId: new Long(params.chainId),
@@ -427,7 +427,7 @@ export class AdminModule extends BaseModule {
   public async deauthorizeBridge(params: AdminModule.DeauthorizeBridgeParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = CarbonCoin.MsgDeauthorizeBridge.fromPartial({
+    const value = Carbon.Coin.MsgDeauthorizeBridge.fromPartial({
       initiator: wallet.bech32Address,
       bridgeId: new Long(params.bridgeId),
       chainId: new Long(params.chainId),
@@ -445,7 +445,7 @@ export class AdminModule extends BaseModule {
   public async addRateStrategy(params: AdminModule.AddRateStrategyParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Cdp.MsgAddRateStrategy.fromPartial({
+    const value = Carbon.Cdp.MsgAddRateStrategy.fromPartial({
       creator: wallet.bech32Address,
       rateStrategyParams: {
         name: params.rateStrategy.name,
@@ -472,7 +472,7 @@ export class AdminModule extends BaseModule {
   public async updateRateStrategy(params: AdminModule.UpdateRateStrategyParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Cdp.MsgUpdateRateStrategy.fromPartial({
+    const value = Carbon.Cdp.MsgUpdateRateStrategy.fromPartial({
       creator: wallet.bech32Address,
       rateStrategyParams: {
         name: params.rateStrategy.name,
@@ -499,7 +499,7 @@ export class AdminModule extends BaseModule {
   public async removeRateStrategy(params: AdminModule.RemoveRateStrategyParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Cdp.MsgRemoveRateStrategy.fromPartial({
+    const value = Carbon.Cdp.MsgRemoveRateStrategy.fromPartial({
       creator: wallet.bech32Address,
       name: params.name,
     });
@@ -516,7 +516,7 @@ export class AdminModule extends BaseModule {
   public async addAsset(params: AdminModule.AddAssetParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Cdp.MsgAddAsset.fromPartial({
+    const value = Carbon.Cdp.MsgAddAsset.fromPartial({
       creator: wallet.bech32Address,
       assetParams: {
         denom: params.asset.denom,
@@ -542,7 +542,7 @@ export class AdminModule extends BaseModule {
   public async updateAsset(params: AdminModule.UpdateAssetParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Cdp.MsgUpdateAsset.fromPartial({
+    const value = Carbon.Cdp.MsgUpdateAsset.fromPartial({
       creator: wallet.bech32Address,
       assetParams: {
         denom: params.denom,
@@ -568,7 +568,7 @@ export class AdminModule extends BaseModule {
   public async setLiquidationFee(params: AdminModule.SetLiquidationFeeParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Cdp.MsgSetLiquidationFee.fromPartial({
+    const value = Carbon.Cdp.MsgSetLiquidationFee.fromPartial({
       creator: wallet.bech32Address,
       liquidationFee: params.liquidationFee.toString(10),
     });
@@ -585,7 +585,7 @@ export class AdminModule extends BaseModule {
   public async setInterestFee(params: AdminModule.SetInterestFeeParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Cdp.MsgSetInterestFee.fromPartial({
+    const value = Carbon.Cdp.MsgSetInterestFee.fromPartial({
       creator: wallet.bech32Address,
       interestFee: params.interestFee.toString(10),
     });
@@ -601,7 +601,7 @@ export class AdminModule extends BaseModule {
 
   public async setCompleteLiquidationThreshold(params: AdminModule.SetCompleteLiquidationThresholdParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
-    const value = Cdp.MsgSetCompleteLiquidationThreshold.fromPartial({
+    const value = Carbon.Cdp.MsgSetCompleteLiquidationThreshold.fromPartial({
       creator: wallet.bech32Address,
       completeLiquidationThreshold: params.completeLiquidationThreshold.shiftedBy(18).toString(10),
     });
@@ -617,7 +617,7 @@ export class AdminModule extends BaseModule {
 
   public async setMinimumCloseFactor(params: AdminModule.SetMinimumCloseFactorParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
-    const value = Cdp.MsgSetMinimumCloseFactor.fromPartial({
+    const value = Carbon.Cdp.MsgSetMinimumCloseFactor.fromPartial({
       creator: wallet.bech32Address,
       minimumCloseFactor: params.minimumCloseFactor.shiftedBy(18).toString(10),
     });
@@ -633,7 +633,7 @@ export class AdminModule extends BaseModule {
 
   public async setSmallLiquidationSize(params: AdminModule.SetSmallLiquidationSizeParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
-    const value = Cdp.MsgSetSmallLiquidationSize.fromPartial({
+    const value = Carbon.Cdp.MsgSetSmallLiquidationSize.fromPartial({
       creator: wallet.bech32Address,
       smallLiquidationSize: params.smallLiquidationSize.shiftedBy(18).toString(10),
     });
@@ -649,7 +649,7 @@ export class AdminModule extends BaseModule {
 
   public async createNewGroup(params: AdminModule.CreateNewGroupParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
-    const value = CarbonCoin.MsgCreateGroup.fromPartial({
+    const value = Carbon.Coin.MsgCreateGroup.fromPartial({
       creator: params.creator ?? wallet.bech32Address,
       name: params.name,
       chequeTokenSymbol: params.chequeTokenSymbol,
@@ -667,7 +667,7 @@ export class AdminModule extends BaseModule {
 
   public async updateGroup(params: AdminModule.UpdateGroupParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
-    const value = CarbonCoin.MsgUpdateGroup.fromPartial({
+    const value = Carbon.Coin.MsgUpdateGroup.fromPartial({
       creator: params.creator ?? wallet.bech32Address,
       groupId: params.groupId,
       updateGroupParams: params.updateGroupParams
@@ -684,7 +684,7 @@ export class AdminModule extends BaseModule {
 
   public async registerToGroup(params: AdminModule.RegisterDeregisterToGroupParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
-    const value = CarbonCoin.MsgRegisterToGroup.fromPartial({
+    const value = Carbon.Coin.MsgRegisterToGroup.fromPartial({
       creator: params.creator ?? wallet.bech32Address,
       groupId: params.groupId,
       denom: params.denom,
@@ -701,7 +701,7 @@ export class AdminModule extends BaseModule {
 
   public async deregisterFromGroup(params: AdminModule.RegisterDeregisterToGroupParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
-    const value = CarbonCoin.MsgDeregisterFromGroup.fromPartial({
+    const value = Carbon.Coin.MsgDeregisterFromGroup.fromPartial({
       creator: params.creator ?? wallet.bech32Address,
       groupId: params.groupId,
       denom: params.denom,
@@ -718,7 +718,7 @@ export class AdminModule extends BaseModule {
 
   public async updateGroupConfig(params: AdminModule.UpdateGroupConfigParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
-    const value = CarbonCoin.MsgUpdateGroupedTokenConfig.fromPartial({
+    const value = Carbon.Coin.MsgUpdateGroupedTokenConfig.fromPartial({
       creator: params.creator ?? wallet.bech32Address,
       denom: params.denom,
       updateGroupedTokenConfigParams: params.updateGroupedTokenConfigParams,
@@ -1142,7 +1142,7 @@ export function transfromSetMinGasPriceParams(msg: AdminModule.SetMinGasPricePar
   };
 }
 
-export function transformSetSettlementPriceParams(msg: Pricing.SettlementPriceParams) {
+export function transformSetSettlementPriceParams(msg: Carbon.Pricing.SettlementPriceParams) {
   return {
     market: msg.market,
     settlementPrice: new BigNumber(msg.settlementPrice).shiftedBy(18).toString(10),

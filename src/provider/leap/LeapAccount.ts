@@ -1,4 +1,4 @@
-import { Fee } from "@carbon-sdk/codec/carbon-models";
+import { Carbon } from "@carbon-sdk/CarbonSDK";
 import { CARBON_GAS_PRICE, Network, decTypeDecimals } from "@carbon-sdk/constant";
 import { CarbonSDK, Models } from "@carbon-sdk/index";
 import { AddressUtils, CarbonTx, NumberUtils } from "@carbon-sdk/util";
@@ -73,7 +73,7 @@ class LeapAccount {
     const gasPricesResult = await configProvider.query.fee.MinGasPriceAll({});
     const tokenClient = configProvider.getTokenClient();
     const coingeckoIdMap = tokenClient.geckoTokenNames;
-    const feeCurrencies: FeeCurrency[] = gasPricesResult.minGasPrices.reduce((result: FeeCurrency[], price: Fee.MinGasPrice) => {
+    const feeCurrencies: FeeCurrency[] = gasPricesResult.minGasPrices.reduce((result: FeeCurrency[], price: Carbon.Fee.MinGasPrice) => {
       const token = tokenClient.tokenForDenom(price.denom);
       if (!token || token.denom === "swth") return result;
       // Check if gas price is valid, else add default
