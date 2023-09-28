@@ -155,10 +155,15 @@ class KeplrAccount {
     const bech32Prefix = config.Bech32Prefix;
 
     const chainId = await configProvider.query.chain.getChainId();
+    const url = "https://raw.githubusercontent.com/chainapsis/keplr-chain-registry/master/cosmos/carbon.json"
+    let keplrChainInfo
+    try {
+      keplrChainInfo = await (await FetchUtils.fetch(url)).json();
+    } catch (error) {
+      console.error(error)
+    }
 
-    // Query fee currencies from keplr-chain-registry
-    const keplrChainInfo = await (await FetchUtils.fetch("https://raw.githubusercontent.com/chainapsis/keplr-chain-registry/master/cosmos/carbon.json")).json();
-    if (config.network === Network.MainNet) {
+    if (config.network === Network.MainNet && keplrChainInfo) {
       if (keplrChainInfo.nodeProvider) {
         delete keplrChainInfo.nodeProvider;
       }
@@ -189,6 +194,9 @@ class KeplrAccount {
       },
       features: ["ibc-transfer", "ibc-go"],
     };
+
+
+
   }
 
   static async signPublicKeyMergeAccount(publicKey: string, address: string, chainId: string, keplr: Keplr) {
@@ -206,6 +214,6 @@ class KeplrAccount {
   }
 }
 
-namespace KeplrAccount {}
+namespace KeplrAccount { }
 
 export default KeplrAccount;
