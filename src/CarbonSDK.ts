@@ -49,6 +49,7 @@ import { CarbonWallet, CarbonWalletGenericOpts, CarbonSigner, MetaMaskWalletOpts
 export { CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletGenericOpts, CarbonWalletInitOpts } from "@carbon-sdk/wallet";
 export { CarbonTx } from "@carbon-sdk/util";
 export { DenomPrefix } from "./constant";
+export * as Carbon from "./codec/carbon-models";
 
 export interface CarbonSDKOpts {
   network: Network;
