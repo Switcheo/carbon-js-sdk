@@ -1,7 +1,6 @@
 import { Coin } from "@cosmjs/stargate";
 import { CarbonTx, Models } from "..";
 import BaseModule from "./base";
-import { Erc20 } from "@carbon-sdk/codec/carbon-models"
 
 export class ERC20Module extends BaseModule {
   public async convertCoin(params: ERC20Module.ConvertCoinParams, opts?: CarbonTx.SignTxOpts) {
@@ -12,7 +11,7 @@ export class ERC20Module extends BaseModule {
       amount: params.amount,
     };
 
-    const value = Erc20.MsgConvertCoin.fromPartial({
+    const value = Models.MsgConvertCoin.fromPartial({
       coin,
       receiver: params.receiverAddress?.toLowerCase() ?? wallet.evmHexAddress.toLowerCase(),
       sender: params.senderAddress?.toLowerCase() ?? wallet.bech32Address.toLowerCase(),
@@ -30,7 +29,7 @@ export class ERC20Module extends BaseModule {
   public async convertERC20(params: ERC20Module.ConvertERC20Params, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Erc20.MsgConvertERC20.fromPartial({
+    const value = Models.MsgConvertERC20.fromPartial({
       contractAddress: params.contractAddress,
       amount: params.amount,
       receiver: params.receiverAddress?.toLowerCase() ?? wallet.bech32Address.toLowerCase(),
@@ -49,7 +48,7 @@ export class ERC20Module extends BaseModule {
   public async registerToken(params: ERC20Module.RegisterTokenParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Erc20.MsgRegisterToken.fromPartial({
+    const value = Models.MsgRegisterToken.fromPartial({
       creator: params.creator,
       denom: params.denom,
     });
@@ -66,7 +65,7 @@ export class ERC20Module extends BaseModule {
   public async registerERC20(params: ERC20Module.RegisterERC20Params, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Erc20.MsgRegisterERC20.fromPartial({
+    const value = Models.MsgRegisterERC20.fromPartial({
       creator: params.creator,
       contractAddress: params.contractAddress,
     });

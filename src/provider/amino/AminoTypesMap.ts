@@ -19,7 +19,7 @@ import {
   ProfileAmino,
   StakingAmino,
   SubAccountAmino,
-  PerpspoolAmino,
+  PerpsliquidityAmino,
   ERC20Amino,
 } from "./types";
 
@@ -43,7 +43,7 @@ const AminoTypesMap = new AminoTypes({
   ...EvmAmino,
   ...EvmMergeAmino,
   ...FeeMarketAmino,
-  ...PerpspoolAmino,
+  ...PerpsliquidityAmino,
   ...ERC20Amino
 });
 

@@ -16,7 +16,7 @@ import "./_setup";
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
 
-  const result = await connectedSDK.p.depositToPool({
+  const result = await connectedSDK.plp.depositToPerpetualsPool({
       poolId: new Long(2),
       depositAmount: '10000',
       minShareAmount: '1',

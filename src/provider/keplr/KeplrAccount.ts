@@ -1,4 +1,4 @@
-import { Fee } from "@carbon-sdk/codec/carbon-models";
+import { MinGasPrice } from "@carbon-sdk/codec";
 import { CARBON_GAS_PRICE, Network, NetworkConfigs, decTypeDecimals } from "@carbon-sdk/constant";
 import { CarbonSDK, Models } from "@carbon-sdk/index";
 import { AddressUtils, CarbonTx, FetchUtils, NumberUtils } from "@carbon-sdk/util";
@@ -124,7 +124,7 @@ class KeplrAccount {
 
     // Query minGasPrices from on-chain (for testnet/devnet/localhost)
     const gasPricesResult = await configProvider.query.fee.MinGasPriceAll({});
-    const feeCurrencies: FeeCurrency[] = gasPricesResult.minGasPrices.reduce((result: FeeCurrency[], price: Fee.MinGasPrice) => {
+    const feeCurrencies: FeeCurrency[] = gasPricesResult.minGasPrices.reduce((result: FeeCurrency[], price: MinGasPrice) => {
       const token = tokenClient.tokenForDenom(price.denom);
       if (!token || token.denom === "swth") return result;
       // Check if gas price is valid, else add default

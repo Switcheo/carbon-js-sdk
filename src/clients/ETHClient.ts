@@ -2,7 +2,6 @@ import CarbonSDK from "@carbon-sdk/CarbonSDK";
 import { EthNetworkConfig, NativeTokenHash, NetworkConfig, NetworkConfigProvider } from "@carbon-sdk/constant";
 import { ABIs } from "@carbon-sdk/eth";
 import { Models } from "@carbon-sdk/index";
-import { Coin } from "@carbon-sdk/codec/carbon-models";
 import { AddressUtils } from "@carbon-sdk/util";
 import { SWTHAddress } from "@carbon-sdk/util/address";
 import { Blockchain, blockchainForChainId } from "@carbon-sdk/util/blockchain";
@@ -28,8 +27,8 @@ interface ETHTxParams {
 }
 
 export interface BridgeParams {
-  fromToken: Coin.Token;
-  toToken: Coin.Token;
+  fromToken: Models.Token;
+  toToken: Models.Token;
   amount: BigNumber;
   fromAddress: string;
   recoveryAddress: string;
@@ -45,11 +44,11 @@ export interface BridgeParams {
 export interface LockParams extends ETHTxParams {
   address: Uint8Array;
   amount: BigNumber;
-  token: Coin.Token;
+  token: Models.Token;
   signCompleteCallback?: () => void;
 }
 export interface ApproveERC20Params extends ETHTxParams {
-  token: Coin.Token;
+  token: Models.Token;
   spenderAddress?: string;
   amount?: BigNumber;
   signCompleteCallback?: () => void;
@@ -154,7 +153,7 @@ export class ETHClient {
     return approveResultTx;
   }
 
-  public async checkAllowanceERC20(token: Coin.Token, owner: string, spender: string) {
+  public async checkAllowanceERC20(token: Models.Token, owner: string, spender: string) {
     const contractAddress = token.tokenAddress;
     const rpcProvider = this.getProvider();
     const contract = new ethers.Contract(contractAddress, ABIs.erc20, rpcProvider);
@@ -381,7 +380,7 @@ export class ETHClient {
     return result;
   }
 
-  public async getDepositFeeAmount(token: Coin.Token, depositAddress: string) {
+  public async getDepositFeeAmount(token: Models.Token, depositAddress: string) {
     const feeInfo = await this.tokenClient.getFeeInfo(token.denom);
     if (!feeInfo.deposit_fee) {
       throw new Error("unsupported token");
@@ -449,7 +448,7 @@ export class ETHClient {
    *
    * @param token
    */
-  public getTargetProxyHash(token: Coin.Token) {
+  public getTargetProxyHash(token: Models.Token) {
     const networkConfig = this.getNetworkConfig();
     const addressBytes = SWTHAddress.getAddressBytes(token.creator, networkConfig.network);
     const addressHex = stripHexPrefix(ethers.utils.hexlify(addressBytes));

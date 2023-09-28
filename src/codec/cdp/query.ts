@@ -53,6 +53,7 @@ export interface QueryAccountDataResponse {
   totalDebtsUsd: string;
   availableBorrowsUsd: string;
   currLiquidationThreshold: string;
+  healthFactor: string;
 }
 
 export interface QueryAccountCollateralRequest {
@@ -726,6 +727,7 @@ const baseQueryAccountDataResponse: object = {
   totalDebtsUsd: "",
   availableBorrowsUsd: "",
   currLiquidationThreshold: "",
+  healthFactor: "",
 };
 
 export const QueryAccountDataResponse = {
@@ -744,6 +746,9 @@ export const QueryAccountDataResponse = {
     }
     if (message.currLiquidationThreshold !== "") {
       writer.uint32(34).string(message.currLiquidationThreshold);
+    }
+    if (message.healthFactor !== "") {
+      writer.uint32(42).string(message.healthFactor);
     }
     return writer;
   },
@@ -771,6 +776,9 @@ export const QueryAccountDataResponse = {
           break;
         case 4:
           message.currLiquidationThreshold = reader.string();
+          break;
+        case 5:
+          message.healthFactor = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -803,6 +811,10 @@ export const QueryAccountDataResponse = {
       object.currLiquidationThreshold !== null
         ? String(object.currLiquidationThreshold)
         : "";
+    message.healthFactor =
+      object.healthFactor !== undefined && object.healthFactor !== null
+        ? String(object.healthFactor)
+        : "";
     return message;
   },
 
@@ -816,6 +828,8 @@ export const QueryAccountDataResponse = {
       (obj.availableBorrowsUsd = message.availableBorrowsUsd);
     message.currLiquidationThreshold !== undefined &&
       (obj.currLiquidationThreshold = message.currLiquidationThreshold);
+    message.healthFactor !== undefined &&
+      (obj.healthFactor = message.healthFactor);
     return obj;
   },
 
@@ -829,6 +843,7 @@ export const QueryAccountDataResponse = {
     message.totalDebtsUsd = object.totalDebtsUsd ?? "";
     message.availableBorrowsUsd = object.availableBorrowsUsd ?? "";
     message.currLiquidationThreshold = object.currLiquidationThreshold ?? "";
+    message.healthFactor = object.healthFactor ?? "";
     return message;
   },
 };

@@ -2,7 +2,6 @@ import { NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
 import { AminoCarbonSigner, CarbonSDK, Models } from "@carbon-sdk/index";
 import { AddressUtils, ExternalUtils, TypeUtils } from "@carbon-sdk/util";
 import { sortObject } from "@carbon-sdk/util/generic";
-import { Coin } from "@carbon-sdk/codec/carbon-models";
 import * as Neon from "@cityofzion/neon-core-next";
 import { AminoSignResponse, encodeSecp256k1Signature, StdSignDoc } from "@cosmjs/amino";
 import neoDapi from "neo-dapi";
@@ -148,13 +147,13 @@ export class O3Wallet {
     }
   }
 
-  async getWalletBalances(tokens: Coin.Token[]) {
+  async getWalletBalances(tokens: Models.Token[]) {
     try {
       if (!this.isConnected()) {
         throw new Error("O3 wallet is not connected. Please reconnect and perform this transaction again.");
       }
 
-      const tokenMap = tokens.reduce((tokens: TypeUtils.SimpleMap<Coin.Token>, indivToken: Coin.Token) => {
+      const tokenMap = tokens.reduce((tokens: TypeUtils.SimpleMap<Models.Token>, indivToken: Models.Token) => {
         const newTokens = tokens;
         const tokenAddress = indivToken.tokenAddress;
         newTokens[tokenAddress] = indivToken;

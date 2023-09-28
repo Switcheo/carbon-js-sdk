@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { SpotAmm, PerpsAmm } from "./amm";
+import { SpotAmm } from "./amm";
 
 export const protobufPackage = "Switcheo.carbon.broker";
 
@@ -12,7 +12,6 @@ export interface GenesisState {
    * this line is used by starport scaffolding # ibc/genesis/proto
    */
   spotAmms: SpotAmm[];
-  perpsAmms: PerpsAmm[];
 }
 
 const baseGenesisState: object = {};
@@ -25,9 +24,6 @@ export const GenesisState = {
     for (const v of message.spotAmms) {
       SpotAmm.encode(v!, writer.uint32(10).fork()).ldelim();
     }
-    for (const v of message.perpsAmms) {
-      PerpsAmm.encode(v!, writer.uint32(18).fork()).ldelim();
-    }
     return writer;
   },
 
@@ -36,15 +32,11 @@ export const GenesisState = {
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseGenesisState } as GenesisState;
     message.spotAmms = [];
-    message.perpsAmms = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
           message.spotAmms.push(SpotAmm.decode(reader, reader.uint32()));
-          break;
-        case 2:
-          message.perpsAmms.push(PerpsAmm.decode(reader, reader.uint32()));
           break;
         default:
           reader.skipType(tag & 7);
@@ -59,9 +51,6 @@ export const GenesisState = {
     message.spotAmms = (object.spotAmms ?? []).map((e: any) =>
       SpotAmm.fromJSON(e)
     );
-    message.perpsAmms = (object.perpsAmms ?? []).map((e: any) =>
-      PerpsAmm.fromJSON(e)
-    );
     return message;
   },
 
@@ -74,13 +63,6 @@ export const GenesisState = {
     } else {
       obj.spotAmms = [];
     }
-    if (message.perpsAmms) {
-      obj.perpsAmms = message.perpsAmms.map((e) =>
-        e ? PerpsAmm.toJSON(e) : undefined
-      );
-    } else {
-      obj.perpsAmms = [];
-    }
     return obj;
   },
 
@@ -88,9 +70,6 @@ export const GenesisState = {
     const message = { ...baseGenesisState } as GenesisState;
     message.spotAmms = (object.spotAmms ?? []).map((e) =>
       SpotAmm.fromPartial(e)
-    );
-    message.perpsAmms = (object.perpsAmms ?? []).map((e) =>
-      PerpsAmm.fromPartial(e)
     );
     return message;
   },

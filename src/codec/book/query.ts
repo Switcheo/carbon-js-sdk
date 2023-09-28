@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { OrderBook, StopBook } from "./book";
+import { OrderBook } from "./book";
 import {
   PageRequest,
   PageResponse,
@@ -35,23 +35,6 @@ export interface QueryAllBookRequest {
 
 export interface QueryAllBookResponse {
   books: OrderBook[];
-  pagination?: PageResponse;
-}
-
-export interface QueryGetStopBookRequest {
-  market: string;
-}
-
-export interface QueryGetStopBookResponse {
-  books: StopBook[];
-}
-
-export interface QueryAllStopBookRequest {
-  pagination?: PageRequest;
-}
-
-export interface QueryAllStopBookResponse {
-  books: StopBook[];
   pagination?: PageResponse;
 }
 
@@ -479,297 +462,6 @@ export const QueryAllBookResponse = {
   },
 };
 
-const baseQueryGetStopBookRequest: object = { market: "" };
-
-export const QueryGetStopBookRequest = {
-  encode(
-    message: QueryGetStopBookRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.market !== "") {
-      writer.uint32(10).string(message.market);
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryGetStopBookRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryGetStopBookRequest,
-    } as QueryGetStopBookRequest;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.market = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): QueryGetStopBookRequest {
-    const message = {
-      ...baseQueryGetStopBookRequest,
-    } as QueryGetStopBookRequest;
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? String(object.market)
-        : "";
-    return message;
-  },
-
-  toJSON(message: QueryGetStopBookRequest): unknown {
-    const obj: any = {};
-    message.market !== undefined && (obj.market = message.market);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<QueryGetStopBookRequest>
-  ): QueryGetStopBookRequest {
-    const message = {
-      ...baseQueryGetStopBookRequest,
-    } as QueryGetStopBookRequest;
-    message.market = object.market ?? "";
-    return message;
-  },
-};
-
-const baseQueryGetStopBookResponse: object = {};
-
-export const QueryGetStopBookResponse = {
-  encode(
-    message: QueryGetStopBookResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    for (const v of message.books) {
-      StopBook.encode(v!, writer.uint32(10).fork()).ldelim();
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryGetStopBookResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryGetStopBookResponse,
-    } as QueryGetStopBookResponse;
-    message.books = [];
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.books.push(StopBook.decode(reader, reader.uint32()));
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): QueryGetStopBookResponse {
-    const message = {
-      ...baseQueryGetStopBookResponse,
-    } as QueryGetStopBookResponse;
-    message.books = (object.books ?? []).map((e: any) => StopBook.fromJSON(e));
-    return message;
-  },
-
-  toJSON(message: QueryGetStopBookResponse): unknown {
-    const obj: any = {};
-    if (message.books) {
-      obj.books = message.books.map((e) =>
-        e ? StopBook.toJSON(e) : undefined
-      );
-    } else {
-      obj.books = [];
-    }
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<QueryGetStopBookResponse>
-  ): QueryGetStopBookResponse {
-    const message = {
-      ...baseQueryGetStopBookResponse,
-    } as QueryGetStopBookResponse;
-    message.books = (object.books ?? []).map((e) => StopBook.fromPartial(e));
-    return message;
-  },
-};
-
-const baseQueryAllStopBookRequest: object = {};
-
-export const QueryAllStopBookRequest = {
-  encode(
-    message: QueryAllStopBookRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.pagination !== undefined) {
-      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryAllStopBookRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryAllStopBookRequest,
-    } as QueryAllStopBookRequest;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.pagination = PageRequest.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): QueryAllStopBookRequest {
-    const message = {
-      ...baseQueryAllStopBookRequest,
-    } as QueryAllStopBookRequest;
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromJSON(object.pagination)
-        : undefined;
-    return message;
-  },
-
-  toJSON(message: QueryAllStopBookRequest): unknown {
-    const obj: any = {};
-    message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageRequest.toJSON(message.pagination)
-        : undefined);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<QueryAllStopBookRequest>
-  ): QueryAllStopBookRequest {
-    const message = {
-      ...baseQueryAllStopBookRequest,
-    } as QueryAllStopBookRequest;
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageRequest.fromPartial(object.pagination)
-        : undefined;
-    return message;
-  },
-};
-
-const baseQueryAllStopBookResponse: object = {};
-
-export const QueryAllStopBookResponse = {
-  encode(
-    message: QueryAllStopBookResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    for (const v of message.books) {
-      StopBook.encode(v!, writer.uint32(10).fork()).ldelim();
-    }
-    if (message.pagination !== undefined) {
-      PageResponse.encode(
-        message.pagination,
-        writer.uint32(18).fork()
-      ).ldelim();
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryAllStopBookResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryAllStopBookResponse,
-    } as QueryAllStopBookResponse;
-    message.books = [];
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.books.push(StopBook.decode(reader, reader.uint32()));
-          break;
-        case 2:
-          message.pagination = PageResponse.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): QueryAllStopBookResponse {
-    const message = {
-      ...baseQueryAllStopBookResponse,
-    } as QueryAllStopBookResponse;
-    message.books = (object.books ?? []).map((e: any) => StopBook.fromJSON(e));
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageResponse.fromJSON(object.pagination)
-        : undefined;
-    return message;
-  },
-
-  toJSON(message: QueryAllStopBookResponse): unknown {
-    const obj: any = {};
-    if (message.books) {
-      obj.books = message.books.map((e) =>
-        e ? StopBook.toJSON(e) : undefined
-      );
-    } else {
-      obj.books = [];
-    }
-    message.pagination !== undefined &&
-      (obj.pagination = message.pagination
-        ? PageResponse.toJSON(message.pagination)
-        : undefined);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<QueryAllStopBookResponse>
-  ): QueryAllStopBookResponse {
-    const message = {
-      ...baseQueryAllStopBookResponse,
-    } as QueryAllStopBookResponse;
-    message.books = (object.books ?? []).map((e) => StopBook.fromPartial(e));
-    message.pagination =
-      object.pagination !== undefined && object.pagination !== null
-        ? PageResponse.fromPartial(object.pagination)
-        : undefined;
-    return message;
-  },
-};
-
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Get impact price for a market */
@@ -778,14 +470,8 @@ export interface Query {
   ): Promise<QueryImpactPriceResponse>;
   /** Get order book for a market */
   Book(request: QueryGetBookRequest): Promise<QueryGetBookResponse>;
-  /** Get stop order book for a market */
-  StopBook(request: QueryGetStopBookRequest): Promise<QueryGetStopBookResponse>;
   /** Get order books for all markets */
   BookAll(request: QueryAllBookRequest): Promise<QueryAllBookResponse>;
-  /** Get all stop order book for a market */
-  StopBookAll(
-    request: QueryAllStopBookRequest
-  ): Promise<QueryAllStopBookResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -794,9 +480,7 @@ export class QueryClientImpl implements Query {
     this.rpc = rpc;
     this.ImpactPrice = this.ImpactPrice.bind(this);
     this.Book = this.Book.bind(this);
-    this.StopBook = this.StopBook.bind(this);
     this.BookAll = this.BookAll.bind(this);
-    this.StopBookAll = this.StopBookAll.bind(this);
   }
   ImpactPrice(
     request: QueryImpactPriceRequest
@@ -824,20 +508,6 @@ export class QueryClientImpl implements Query {
     );
   }
 
-  StopBook(
-    request: QueryGetStopBookRequest
-  ): Promise<QueryGetStopBookResponse> {
-    const data = QueryGetStopBookRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.book.Query",
-      "StopBook",
-      data
-    );
-    return promise.then((data) =>
-      QueryGetStopBookResponse.decode(new _m0.Reader(data))
-    );
-  }
-
   BookAll(request: QueryAllBookRequest): Promise<QueryAllBookResponse> {
     const data = QueryAllBookRequest.encode(request).finish();
     const promise = this.rpc.request(
@@ -847,20 +517,6 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryAllBookResponse.decode(new _m0.Reader(data))
-    );
-  }
-
-  StopBookAll(
-    request: QueryAllStopBookRequest
-  ): Promise<QueryAllStopBookResponse> {
-    const data = QueryAllStopBookRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.book.Query",
-      "StopBookAll",
-      data
-    );
-    return promise.then((data) =>
-      QueryAllStopBookResponse.decode(new _m0.Reader(data))
     );
   }
 }

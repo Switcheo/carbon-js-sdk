@@ -34,7 +34,7 @@ import {
   MarketModule,
   OracleModule,
   OrderModule,
-  PerpspoolModule,
+  PerpsLiquidityModule,
   PositionModule,
   ProfileModule,
   SubAccountModule,
@@ -108,7 +108,7 @@ class CarbonSDK {
   order: OrderModule;
   lp: LiquidityPoolModule;
   erc20: ERC20Module;
-  p: PerpspoolModule;
+  plp: PerpsLiquidityModule;
   subaccount: SubAccountModule;
   profile: ProfileModule;
   cdp: CDPModule;
@@ -171,7 +171,7 @@ class CarbonSDK {
     this.order = new OrderModule(this);
     this.lp = new LiquidityPoolModule(this);
     this.erc20 = new ERC20Module(this);
-    this.p = new PerpspoolModule(this);
+    this.plp = new PerpsLiquidityModule(this);
     this.subaccount = new SubAccountModule(this);
     this.profile = new ProfileModule(this);
     this.cdp = new CDPModule(this);

@@ -1,5 +1,5 @@
 import { TxTypes } from "@carbon-sdk/codec";
-import { Alliance } from "@carbon-sdk/codec/carbon-models";
+import { MsgClaimDelegationRewards, MsgDelegate, MsgRedelegate, MsgUndelegate } from "@carbon-sdk/codec/alliance/tx";
 import BigNumber from "bignumber.js";
 import { MsgWithdrawDelegatorReward } from "cosmjs-types/cosmos/distribution/v1beta1/tx";
 import { CarbonTx } from "../util";
@@ -8,7 +8,7 @@ import BaseModule from "./base";
 export class AllianceModule extends BaseModule {
   public async delegateTokens(params: AllianceModule.DelegateTokensParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
-    const value = Alliance.MsgDelegate.fromPartial({
+    const value = MsgDelegate.fromPartial({
       delegatorAddress: params.delegatorAddress ?? wallet.bech32Address,
       validatorAddress: params.validatorAddress,
       amount: {
@@ -19,7 +19,7 @@ export class AllianceModule extends BaseModule {
 
     return wallet.sendTx(
       {
-        typeUrl: TxTypes.MsgDelegate,
+        typeUrl: TxTypes.MsgAllianceDelegate,
         value,
       },
       opts
@@ -28,7 +28,7 @@ export class AllianceModule extends BaseModule {
 
   public async undelegateTokens(params: AllianceModule.DelegateTokensParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
-    const value = Alliance.MsgUndelegate.fromPartial({
+    const value = MsgUndelegate.fromPartial({
       delegatorAddress: params.delegatorAddress ?? wallet.bech32Address,
       validatorAddress: params.validatorAddress,
       amount: {
@@ -39,7 +39,7 @@ export class AllianceModule extends BaseModule {
 
     return wallet.sendTx(
       {
-        typeUrl: TxTypes.MsgUndelegate,
+        typeUrl: TxTypes.MsgAllianceUndelegate,
         value,
       },
       opts
@@ -48,7 +48,7 @@ export class AllianceModule extends BaseModule {
 
   public async redelegateTokens(params: AllianceModule.RedelegateTokensParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
-    const value = Alliance.MsgRedelegate.fromPartial({
+    const value = MsgRedelegate.fromPartial({
       delegatorAddress: params.delegatorAddress ?? wallet.bech32Address,
       validatorSrcAddress: params.validatorSrcAddress,
       validatorDstAddress: params.validatorDstAddress,
@@ -60,7 +60,7 @@ export class AllianceModule extends BaseModule {
 
     return wallet.sendTx(
       {
-        typeUrl: TxTypes.MsgRedelegate,
+        typeUrl: TxTypes.MsgAllianceRedelegate,
         value,
       },
       opts
@@ -69,14 +69,14 @@ export class AllianceModule extends BaseModule {
 
   public async claimRewards(params: AllianceModule.ClaimRewardsParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
-    const value = Alliance.MsgClaimDelegationRewards.fromPartial({
+    const value = MsgClaimDelegationRewards.fromPartial({
       delegatorAddress: params.delegatorAddress ?? wallet.bech32Address,
       validatorAddress: params.validatorAddress,
       denom: params.denom,
     });
     return wallet.sendTx(
       {
-        typeUrl: TxTypes.MsgClaimDelegationRewards,
+        typeUrl: TxTypes.MsgAllianceClaimDelegationRewards,
         value,
       },
       opts
@@ -96,8 +96,8 @@ export class AllianceModule extends BaseModule {
         }
       } else {
         return {
-          typeUrl: TxTypes.MsgClaimDelegationRewards,
-          value: Alliance.MsgClaimDelegationRewards.fromPartial({
+          typeUrl: TxTypes.MsgAllianceClaimDelegationRewards,
+          value: MsgClaimDelegationRewards.fromPartial({
             delegatorAddress: params.delegatorAddress ?? wallet.bech32Address,
             validatorAddress: delegation.validatorAddress,
             denom: delegation.denom,

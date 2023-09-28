@@ -38,8 +38,6 @@ export interface APIPosition {
   lots: string;
   openedAt?: Date;
   closedAt?: Date;
-  updateCount: Long;
-  exitCount: Long;
 }
 
 export interface PositionAllocatedMargin {
@@ -271,8 +269,6 @@ const baseAPIPosition: object = {
   avgExitPrice: "",
   allocatedMargin: "",
   lots: "",
-  updateCount: Long.UZERO,
-  exitCount: Long.UZERO,
 };
 
 export const APIPosition = {
@@ -336,12 +332,6 @@ export const APIPosition = {
         toTimestamp(message.closedAt),
         writer.uint32(138).fork()
       ).ldelim();
-    }
-    if (!message.updateCount.isZero()) {
-      writer.uint32(144).uint64(message.updateCount);
-    }
-    if (!message.exitCount.isZero()) {
-      writer.uint32(152).uint64(message.exitCount);
     }
     return writer;
   },
@@ -407,12 +397,6 @@ export const APIPosition = {
           message.closedAt = fromTimestamp(
             Timestamp.decode(reader, reader.uint32())
           );
-          break;
-        case 18:
-          message.updateCount = reader.uint64() as Long;
-          break;
-        case 19:
-          message.exitCount = reader.uint64() as Long;
           break;
         default:
           reader.skipType(tag & 7);
@@ -496,14 +480,6 @@ export const APIPosition = {
       object.closedAt !== undefined && object.closedAt !== null
         ? fromJsonTimestamp(object.closedAt)
         : undefined;
-    message.updateCount =
-      object.updateCount !== undefined && object.updateCount !== null
-        ? Long.fromString(object.updateCount)
-        : Long.UZERO;
-    message.exitCount =
-      object.exitCount !== undefined && object.exitCount !== null
-        ? Long.fromString(object.exitCount)
-        : Long.UZERO;
     return message;
   },
 
@@ -544,10 +520,6 @@ export const APIPosition = {
       (obj.openedAt = message.openedAt.toISOString());
     message.closedAt !== undefined &&
       (obj.closedAt = message.closedAt.toISOString());
-    message.updateCount !== undefined &&
-      (obj.updateCount = (message.updateCount || Long.UZERO).toString());
-    message.exitCount !== undefined &&
-      (obj.exitCount = (message.exitCount || Long.UZERO).toString());
     return obj;
   },
 
@@ -585,14 +557,6 @@ export const APIPosition = {
     message.lots = object.lots ?? "";
     message.openedAt = object.openedAt ?? undefined;
     message.closedAt = object.closedAt ?? undefined;
-    message.updateCount =
-      object.updateCount !== undefined && object.updateCount !== null
-        ? Long.fromValue(object.updateCount)
-        : Long.UZERO;
-    message.exitCount =
-      object.exitCount !== undefined && object.exitCount !== null
-        ? Long.fromValue(object.exitCount)
-        : Long.UZERO;
     return message;
   },
 };

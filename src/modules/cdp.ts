@@ -1,12 +1,49 @@
 import tokenClient from "@carbon-sdk/clients/TokenClient";
-import { Cdp, Coin as CarbonCoin, Pricing } from "@carbon-sdk/codec/carbon-models";
+import {
+  AssetParams,
+  DebtInfo,
+  MsgWithdrawFromGroup,
+  QueryCdpParamsRequest,
+  QueryTokenPriceRequest,
+  RateStrategyParams,
+  StablecoinDebtInfo
+} from "@carbon-sdk/codec";
 import { Params } from "@carbon-sdk/codec/cdp/params";
+import {
+  QueryAccountDebtAllRequest,
+  QueryAccountStablecoinRequest,
+  QueryAssetRequest,
+  QueryParamsRequest,
+  QueryRateStrategyRequest,
+  QueryStablecoinDebtRequest,
+  QueryTokenDebtRequest
+} from "@carbon-sdk/codec/cdp/query";
+import {
+  MsgBorrowAsset, MsgClaimRewards,
+  MsgCreateRewardScheme, MsgLiquidateCollateral,
+  MsgLiquidateCollateralWithCdpTokens,
+  MsgLiquidateCollateralWithCollateral,
+  MsgLiquidateCollateralWithStablecoin, MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens,
+  MsgLiquidateCollateralWithStablecoinAndInterestInCollateral, MsgLockCollateral,
+  MsgMintStablecoin,
+  MsgRepayAsset,
+  MsgRepayAssetWithCdpTokens,
+  MsgRepayAssetWithCollateral,
+  MsgReturnStablecoin, MsgReturnStablecoinWithInterestInCdpTokens,
+  MsgReturnStablecoinWithInterestInCollateral, MsgSupplyAsset,
+  MsgSupplyAssetAndLockCollateral,
+  MsgUnlockCollateral,
+  MsgUnlockCollateralAndWithdrawAsset,
+  MsgUpdateRateStrategy, MsgUpdateRewardScheme, MsgWithdrawAsset,
+  MsgAddEModeCategory, MsgUpdateEModeCategory, MsgChangeAccountEMode,
+} from "@carbon-sdk/codec/cdp/tx";
 import { QueryBalanceRequest, QuerySupplyOfRequest } from "@carbon-sdk/codec/cosmos/bank/v1beta1/query";
 import { Network } from "@carbon-sdk/constant";
 import { CarbonTx } from "@carbon-sdk/util";
 import { SWTHAddress } from "@carbon-sdk/util/address";
 import { bnOrZero, BN_10000, BN_ONE, BN_ZERO } from "@carbon-sdk/util/number";
 import { BigNumber } from "bignumber.js";
+import { Debt, QueryAccountCollateralAllRequest, QueryAssetAllRequest, QueryTokenDebtAllRequest } from "./../codec/cdp/query";
 import BaseModule from "./base";
 import { Coin } from "@carbon-sdk/codec/cosmos/base/v1beta1/coin";
 
@@ -16,7 +53,7 @@ export class CDPModule extends BaseModule {
   public async supplyAsset(params: CDPModule.SupplyAssetParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Cdp.MsgSupplyAsset.fromPartial({
+    const value = MsgSupplyAsset.fromPartial({
       creator: wallet.bech32Address,
       denom: params.denom,
       amount: params.amount.toString(10),
@@ -34,7 +71,7 @@ export class CDPModule extends BaseModule {
   public async withdrawAsset(params: CDPModule.WithdrawAssetParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Cdp.MsgWithdrawAsset.fromPartial({
+    const value = MsgWithdrawAsset.fromPartial({
       creator: wallet.bech32Address,
       cdpDenom: params.cdpDenom,
       amount: params.amount.toString(10),
@@ -52,7 +89,7 @@ export class CDPModule extends BaseModule {
   public async lockCollateral(params: CDPModule.LockCollateralParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Cdp.MsgLockCollateral.fromPartial({
+    const value = MsgLockCollateral.fromPartial({
       creator: wallet.bech32Address,
       cdpDenom: params.cdpDenom,
       amount: params.amount.toString(10),
@@ -70,7 +107,7 @@ export class CDPModule extends BaseModule {
   public async unlockCollateral(params: CDPModule.UnlockCollateralParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Cdp.MsgUnlockCollateral.fromPartial({
+    const value = MsgUnlockCollateral.fromPartial({
       creator: wallet.bech32Address,
       cdpDenom: params.cdpDenom,
       amount: params.amount.toString(10),
@@ -88,7 +125,7 @@ export class CDPModule extends BaseModule {
   public async borrowAsset(params: CDPModule.BorrowAssetParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Cdp.MsgBorrowAsset.fromPartial({
+    const value = MsgBorrowAsset.fromPartial({
       creator: wallet.bech32Address,
       denom: params.denom,
       amount: params.amount.toString(10),
@@ -106,7 +143,7 @@ export class CDPModule extends BaseModule {
   public async supplyAssetAndLockCollateral(params: CDPModule.SupplyAssetAndLockCollateralParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Cdp.MsgSupplyAssetAndLockCollateral.fromPartial({
+    const value = MsgSupplyAssetAndLockCollateral.fromPartial({
       creator: wallet.bech32Address,
       denom: params.denom,
       supplyAmount: params.supplyAmount.toString(10),
@@ -125,7 +162,7 @@ export class CDPModule extends BaseModule {
   public async unlockCollateralAndWithdrawAsset(params: CDPModule.UnlockCollateralAndWithdrawAssetParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Cdp.MsgUnlockCollateralAndWithdrawAsset.fromPartial({
+    const value = MsgUnlockCollateralAndWithdrawAsset.fromPartial({
       creator: wallet.bech32Address,
       cdpDenom: params.cdpDenom,
       unlockAmount: params.unlockAmount.toString(10),
@@ -144,7 +181,7 @@ export class CDPModule extends BaseModule {
   public async liquidateCollateral(params: CDPModule.LiquidateCollateralParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Cdp.MsgLiquidateCollateral.fromPartial({
+    const value = MsgLiquidateCollateral.fromPartial({
       creator: wallet.bech32Address,
       debtor: params.debtor,
       collateralDenom: params.collateralDenom,
@@ -164,7 +201,7 @@ export class CDPModule extends BaseModule {
 
   public async liquidateCollateralWithCdpTokens(params: CDPModule.LiquidateCollateralWithCdpTokensParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
-    const value = Cdp.MsgLiquidateCollateralWithCdpTokens.fromPartial({
+    const value = MsgLiquidateCollateralWithCdpTokens.fromPartial({
       creator: wallet.bech32Address,
       debtor: params.debtor,
       collateralDenom: params.collateralDenom,
@@ -186,7 +223,7 @@ export class CDPModule extends BaseModule {
 
   public async liquidateCollateralWithCollateral(params: CDPModule.LiquidateCollateralWithCollateralParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
-    const value = Cdp.MsgLiquidateCollateralWithCollateral.fromPartial({
+    const value = MsgLiquidateCollateralWithCollateral.fromPartial({
       creator: wallet.bech32Address,
       debtor: params.debtor,
       collateralDenom: params.collateralDenom,
@@ -208,7 +245,7 @@ export class CDPModule extends BaseModule {
 
   public async liquidateCollateralWithStablecoin(params: CDPModule.LiquidateCollateralWithStablecoinParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
-    const value = Cdp.MsgLiquidateCollateralWithStablecoin.fromPartial({
+    const value = MsgLiquidateCollateralWithStablecoin.fromPartial({
       creator: wallet.bech32Address,
       debtor: params.debtor,
       collateralDenom: params.collateralDenom,
@@ -231,7 +268,7 @@ export class CDPModule extends BaseModule {
   public async repayAsset(params: CDPModule.RepayAssetParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Cdp.MsgRepayAsset.fromPartial({
+    const value = MsgRepayAsset.fromPartial({
       creator: wallet.bech32Address,
       denom: params.denom,
       amount: params.amount.toString(10),
@@ -258,7 +295,7 @@ export class CDPModule extends BaseModule {
 
     return await wallet.sendTxs([{
       typeUrl: CarbonTx.Types.MsgWithdrawFromGroup,
-      value: CarbonCoin.MsgWithdrawFromGroup.fromPartial({
+      value: MsgWithdrawFromGroup.fromPartial({
         creator: wallet.bech32Address,
         sourceCoin: {
           amount: params.amount.toString(10),
@@ -267,7 +304,7 @@ export class CDPModule extends BaseModule {
       }),
     }, {
       typeUrl: CarbonTx.Types.MsgRepayAsset,
-      value: Cdp.MsgRepayAsset.fromPartial({
+      value: MsgRepayAsset.fromPartial({
         creator: wallet.bech32Address,
         debtor: debtor,
         denom: params.denom,
@@ -280,7 +317,7 @@ export class CDPModule extends BaseModule {
     const wallet = this.getWallet();
     const debtor = params.debtor ? params.debtor : wallet.bech32Address;
 
-    const value = Cdp.MsgRepayAssetWithCdpTokens.fromPartial({
+    const value = MsgRepayAssetWithCdpTokens.fromPartial({
       creator: wallet.bech32Address,
       debtor: debtor,
       debtDenom: params.debtDenom,
@@ -301,7 +338,7 @@ export class CDPModule extends BaseModule {
     const wallet = this.getWallet();
     const debtor = params.debtor ? params.debtor : wallet.bech32Address;
 
-    const value = Cdp.MsgRepayAssetWithCollateral.fromPartial({
+    const value = MsgRepayAssetWithCollateral.fromPartial({
       creator: wallet.bech32Address,
       debtor: debtor,
       debtDenom: params.debtDenom,
@@ -321,7 +358,7 @@ export class CDPModule extends BaseModule {
   public async mintStablecoin(params: CDPModule.MintStablecoinParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Cdp.MsgMintStablecoin.fromPartial({
+    const value = MsgMintStablecoin.fromPartial({
       creator: wallet.bech32Address,
       amount: params.amount.toString(10),
     });
@@ -338,7 +375,7 @@ export class CDPModule extends BaseModule {
   public async returnStablecoin(params: CDPModule.ReturnStablecoinParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Cdp.MsgReturnStablecoin.fromPartial({
+    const value = MsgReturnStablecoin.fromPartial({
       creator: wallet.bech32Address,
       principalAmount: params.principalAmount.toString(10),
       interestDenom: params.interestDenom,
@@ -357,7 +394,7 @@ export class CDPModule extends BaseModule {
 
   public async updateRateStrategy(params: CDPModule.UpdateRateStrategyParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
-    const value = Cdp.MsgUpdateRateStrategy.fromPartial({
+    const value = MsgUpdateRateStrategy.fromPartial({
       creator: wallet.bech32Address,
       rateStrategyParams: params.rateStrategyParams,
     });
@@ -373,7 +410,7 @@ export class CDPModule extends BaseModule {
 
   public async claimRewards(opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
-    const value = Cdp.MsgClaimRewards.fromPartial({
+    const value = MsgClaimRewards.fromPartial({
       creator: wallet.bech32Address,
     });
 
@@ -388,7 +425,7 @@ export class CDPModule extends BaseModule {
 
   public async createRewardScheme(params: CDPModule.CreateRewardSchemeParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
-    const value = Cdp.MsgCreateRewardScheme.fromPartial({
+    const value = MsgCreateRewardScheme.fromPartial({
       creator: wallet.bech32Address,
       createRewardSchemeParams: {
         rewardDenom: params.rewardDenom,
@@ -411,7 +448,7 @@ export class CDPModule extends BaseModule {
 
   public async updateRewardScheme(params: CDPModule.UpdateRewardSchemeParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
-    const value = Cdp.MsgUpdateRewardScheme.fromPartial({
+    const value = MsgUpdateRewardScheme.fromPartial({
       updator: wallet.bech32Address,
       updateRewardSchemeParams: {
         rewardSchemeId: params.rewardSchemeId,
@@ -438,7 +475,7 @@ export class CDPModule extends BaseModule {
     opts?: CarbonTx.SignTxOpts
   ) {
     const wallet = this.getWallet();
-    const value = Cdp.MsgReturnStablecoinWithInterestInCdpTokens.fromPartial({
+    const value = MsgReturnStablecoinWithInterestInCdpTokens.fromPartial({
       creator: wallet.bech32Address,
       principalAmount: params.principalAmount.toString(10),
       interestCdpDenom: params.interestCdpDenom,
@@ -459,7 +496,7 @@ export class CDPModule extends BaseModule {
     opts?: CarbonTx.SignTxOpts
   ) {
     const wallet = this.getWallet();
-    const value = Cdp.MsgReturnStablecoinWithInterestInCollateral.fromPartial({
+    const value = MsgReturnStablecoinWithInterestInCollateral.fromPartial({
       creator: wallet.bech32Address,
       principalAmount: params.principalAmount.toString(10),
       interestCdpDenom: params.interestCdpDenom,
@@ -480,7 +517,7 @@ export class CDPModule extends BaseModule {
     opts?: CarbonTx.SignTxOpts
   ) {
     const wallet = this.getWallet();
-    const value = Cdp.MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens.fromPartial({
+    const value = MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens.fromPartial({
       creator: wallet.bech32Address,
       debtor: params.debtor,
       collateralDenom: params.collateralDenom,
@@ -504,7 +541,7 @@ export class CDPModule extends BaseModule {
     opts?: CarbonTx.SignTxOpts
   ) {
     const wallet = this.getWallet();
-    const value = Cdp.MsgLiquidateCollateralWithStablecoinAndInterestInCollateral.fromPartial({
+    const value = MsgLiquidateCollateralWithStablecoinAndInterestInCollateral.fromPartial({
       creator: wallet.bech32Address,
       debtor: params.debtor,
       collateralDenom: params.collateralDenom,
@@ -528,7 +565,7 @@ export class CDPModule extends BaseModule {
     opts?: CarbonTx.SignTxOpts
   ) {
     const wallet = this.getWallet();
-    const value = Cdp.MsgAddEModeCategory.fromPartial({
+    const value = MsgAddEModeCategory.fromPartial({
       creator: wallet.bech32Address,
       eModeCategory: {
         name: params.eModeCategory?.name,
@@ -553,7 +590,7 @@ export class CDPModule extends BaseModule {
     opts?: CarbonTx.SignTxOpts
   ) {
     const wallet = this.getWallet();
-    const value = Cdp.MsgUpdateEModeCategory.fromPartial({
+    const value = MsgUpdateEModeCategory.fromPartial({
       creator: wallet.bech32Address,
       eModeCategoryName: params.eModeCategoryName,
       updateEModeCategoryParams: {
@@ -578,7 +615,7 @@ export class CDPModule extends BaseModule {
     opts?: CarbonTx.SignTxOpts
   ) {
     const wallet = this.getWallet();
-    const value = Cdp.MsgChangeAccountEMode.fromPartial({
+    const value = MsgChangeAccountEMode.fromPartial({
       creator: wallet.bech32Address,
       eModeCategoryName: params.eModeCategoryName,
     });
@@ -595,12 +632,12 @@ export class CDPModule extends BaseModule {
 
   public async getAccountData(account: string) {
     const sdk = this.sdkProvider;
-    const debtInfoPromise = sdk.query.cdp.TokenDebtAll(Cdp.QueryTokenDebtAllRequest.fromPartial({}));
-    const collateralsPromise = sdk.query.cdp.AccountCollateralAll(Cdp.QueryAccountCollateralAllRequest.fromPartial({ address: account }));
-    const assetParamsPromise = sdk.query.cdp.AssetAll(Cdp.QueryAssetAllRequest.fromPartial({}));
-    const debtsPromise = sdk.query.cdp.AccountDebtAll(Cdp.QueryAccountDebtAllRequest.fromPartial({ address: account }));
+    const debtInfoPromise = sdk.query.cdp.TokenDebtAll(QueryTokenDebtAllRequest.fromPartial({}));
+    const collateralsPromise = sdk.query.cdp.AccountCollateralAll(QueryAccountCollateralAllRequest.fromPartial({ address: account }));
+    const assetParamsPromise = sdk.query.cdp.AssetAll(QueryAssetAllRequest.fromPartial({}));
+    const debtsPromise = sdk.query.cdp.AccountDebtAll(QueryAccountDebtAllRequest.fromPartial({ address: account }));
     // add stablecoin debt
-    const stablecoinDebtInfoPromise = sdk.query.cdp.StablecoinDebt(Cdp.QueryStablecoinDebtRequest.fromPartial({}));
+    const stablecoinDebtInfoPromise = sdk.query.cdp.StablecoinDebt(QueryStablecoinDebtRequest.fromPartial({}));
     const [debtInfoResponse, collateralsRsp, assetParamsRsp, debtsRsp, stablecoinDebtInfoRsp] = await Promise.all([debtInfoPromise, collateralsPromise, assetParamsPromise, debtsPromise, stablecoinDebtInfoPromise]);
     const debtInfos = debtInfoResponse.debtInfosAll;
     const collaterals = collateralsRsp.collaterals;
@@ -707,7 +744,7 @@ export class CDPModule extends BaseModule {
     return cdpAmount.div(actualAmount);
   }
 
-  public async getTotalAccountTokenDebtUsdVal(account: string, denom: string, debt?: Cdp.Debt, debtInfo?: Cdp.DebtInfo) {
+  public async getTotalAccountTokenDebtUsdVal(account: string, denom: string, debt?: Debt, debtInfo?: DebtInfo) {
     const amount = await this.getTotalAccountTokenDebt(account, denom, debt, debtInfo);
     return await this.getTokenUsdVal(denom, amount);
   }
@@ -782,16 +819,16 @@ export class CDPModule extends BaseModule {
     const decimals = await this.sdkProvider.getTokenClient().getDecimals(denom);
     if (decimals === undefined) throw new Error("unable to retrieve token decimals for " + denom);
 
-    const priceResult = await sdk.query.pricing.TokenPrice(Pricing.QueryTokenPriceRequest.fromPartial({ denom }));
+    const priceResult = await sdk.query.pricing.TokenPrice(QueryTokenPriceRequest.fromPartial({ denom }));
     if (!priceResult.tokenPrice) throw new Error("unable to retrieve token price for " + denom);
 
     const twap = bnOrZero(priceResult.tokenPrice.twap).shiftedBy(-18);
     return amount.multipliedBy(twap).shiftedBy(-decimals);
   }
 
-  public async getTotalTokenDebt(denom: string, debtInfo?: Cdp.DebtInfo) {
+  public async getTotalTokenDebt(denom: string, debtInfo?: DebtInfo) {
     if (!debtInfo) {
-      const debtInfoRsp = await this.sdkProvider.query.cdp.TokenDebt(Cdp.QueryTokenDebtRequest.fromPartial({ denom }));
+      const debtInfoRsp = await this.sdkProvider.query.cdp.TokenDebt(QueryTokenDebtRequest.fromPartial({ denom }));
       debtInfo = debtInfoRsp.debtInfo;
     }
     if (!debtInfo) throw new Error("unable to retrieve debt info");
@@ -803,7 +840,7 @@ export class CDPModule extends BaseModule {
 
     const newInterest = principal.times(newInterestRate).plus(accumInterest.times(BN_ONE.plus(newInterestRate)));
 
-    const cdpParamsRsp = await this.sdkProvider.query.cdp.Params(Cdp.QueryParamsRequest.fromPartial({}));
+    const cdpParamsRsp = await this.sdkProvider.query.cdp.Params(QueryParamsRequest.fromPartial({}));
     const interestFee = bnOrZero(cdpParamsRsp.params?.interestFee);
 
     const interest = newInterest.times(BN_10000.minus(interestFee)).dividedToIntegerBy(BN_10000);
@@ -811,10 +848,10 @@ export class CDPModule extends BaseModule {
     return principal.plus(interest);
   }
 
-  public async getTotalAccountTokenDebt(account: string, denom: string, debt?: Cdp.Debt, debtInfo?: Cdp.DebtInfo) {
+  public async getTotalAccountTokenDebt(account: string, denom: string, debt?: Debt, debtInfo?: DebtInfo) {
     const sdk = this.sdkProvider;
     if (!debtInfo) {
-      const debtInfoRsp = await sdk.query.cdp.TokenDebt(Cdp.QueryTokenDebtRequest.fromPartial({ denom }));
+      const debtInfoRsp = await sdk.query.cdp.TokenDebt(QueryTokenDebtRequest.fromPartial({ denom }));
       debtInfo = debtInfoRsp.debtInfo;
     }
     if (!debtInfo) return BN_ZERO;
@@ -837,18 +874,18 @@ export class CDPModule extends BaseModule {
     return totalAmountTokenDebt;
   }
 
-  public async getTotalAccountStablecoinDebt(account: string, debt?: CDPModule.StablecoinDebt, debtInfo?: Cdp.StablecoinDebtInfo) {
+  public async getTotalAccountStablecoinDebt(account: string, debt?: CDPModule.StablecoinDebt, debtInfo?: StablecoinDebtInfo) {
     const sdk = this.sdkProvider;
     let principalAmount = BN_ZERO;
 
     if (!debtInfo) {
-      const debtInfoResponse = await sdk.query.cdp.StablecoinDebt(Cdp.QueryStablecoinDebtRequest.fromPartial({}));
+      const debtInfoResponse = await sdk.query.cdp.StablecoinDebt(QueryStablecoinDebtRequest.fromPartial({}));
       debtInfo = debtInfoResponse.stablecoinDebtInfo;
     }
     if (!debtInfo) return BN_ZERO;
 
     if (!debt) {
-      const debtResp = await sdk.query.cdp.AccountStablecoin(Cdp.QueryAccountStablecoinRequest.fromPartial({ address: account }));
+      const debtResp = await sdk.query.cdp.AccountStablecoin(QueryAccountStablecoinRequest.fromPartial({ address: account }));
       debt = debtResp;
     }
 
@@ -860,7 +897,7 @@ export class CDPModule extends BaseModule {
     return principalAmount.times(cim).dividedToIntegerBy(initialCIM);
   }
 
-  public static calculateInterestAPY = (debtInfo: Cdp.DebtInfo, rateStrategy: Cdp.RateStrategyParams) => {
+  public static calculateInterestAPY = (debtInfo: DebtInfo, rateStrategy: RateStrategyParams) => {
     const utilizationRate = bnOrZero(debtInfo.utilizationRate).shiftedBy(-18);
     const optimalUsage = bnOrZero(rateStrategy.optimalUsage).shiftedBy(-4);
     const variableRate1 = bnOrZero(rateStrategy.variableRateSlope1).shiftedBy(-4);
@@ -878,21 +915,21 @@ export class CDPModule extends BaseModule {
 
   public async calculateAPY(
     denom: string,
-    debtInfo?: Cdp.DebtInfo,
-    assetParams?: Cdp.AssetParams,
-    rateStrategyParams?: Cdp.RateStrategyParams
+    debtInfo?: DebtInfo,
+    assetParams?: AssetParams,
+    rateStrategyParams?: RateStrategyParams
   ): Promise<BigNumber> {
     const sdk = this.sdkProvider;
 
     if (!debtInfo) {
-      const debtInfoResponse = await sdk.query.cdp.TokenDebt(Cdp.QueryTokenDebtRequest.fromPartial({ denom }));
+      const debtInfoResponse = await sdk.query.cdp.TokenDebt(QueryTokenDebtRequest.fromPartial({ denom }));
       debtInfo = debtInfoResponse.debtInfo;
       if (!debtInfo) throw new Error("unable to retrieve debt info for " + denom);
     }
 
     if (!rateStrategyParams) {
       if (!assetParams) {
-        const assetResponse = await sdk.query.cdp.Asset(Cdp.QueryAssetRequest.fromPartial({ denom }));
+        const assetResponse = await sdk.query.cdp.Asset(QueryAssetRequest.fromPartial({ denom }));
         assetParams = assetResponse.assetParams;
         if (!assetParams) {
           throw new Error("unable to retrieve asset param for " + denom);
@@ -900,7 +937,7 @@ export class CDPModule extends BaseModule {
       }
 
       const rateStrategyParamsResponse = await sdk.query.cdp.RateStrategy(
-        Cdp.QueryRateStrategyRequest.fromPartial({
+        QueryRateStrategyRequest.fromPartial({
           name: assetParams.rateStrategyName,
         })
       );
@@ -925,11 +962,11 @@ export class CDPModule extends BaseModule {
     return apy.div(numPeriods).dp(18); // carbon backend sdk.dec max 18 dp
   }
 
-  public async calculateLendAPY(denom: string, borrowInterest?: BigNumber, debtInfo?: Cdp.DebtInfo, params?: Params) {
+  public async calculateLendAPY(denom: string, borrowInterest?: BigNumber, debtInfo?: DebtInfo, params?: Params) {
     const sdk = this.sdkProvider;
 
     if (!debtInfo) {
-      const debtInfoResponse = await sdk.query.cdp.TokenDebt(Cdp.QueryTokenDebtRequest.fromPartial({ denom }));
+      const debtInfoResponse = await sdk.query.cdp.TokenDebt(QueryTokenDebtRequest.fromPartial({ denom }));
       debtInfo = debtInfoResponse.debtInfo;
       if (!debtInfo) {
         throw new Error("unable to retrieve debt info for " + denom);
@@ -941,7 +978,7 @@ export class CDPModule extends BaseModule {
     }
 
     if (!params) {
-      const paramsResponse = await sdk.query.cdp.Params(Cdp.QueryParamsRequest.fromPartial({}));
+      const paramsResponse = await sdk.query.cdp.Params(QueryCdpParamsRequest.fromPartial({}));
       params = paramsResponse.params;
       if (!params) {
         throw new Error("unable to retrieve cdp params for " + denom);
@@ -953,10 +990,10 @@ export class CDPModule extends BaseModule {
     return borrowInterest.times(utilizationRate).times(BN_ONE.minus(interestFeeRate));
   }
 
-  public async recalculateCIM(denom: string, debtInfo?: Cdp.DebtInfo): Promise<{ cim: BigNumber; interest: BigNumber }> {
+  public async recalculateCIM(denom: string, debtInfo?: DebtInfo): Promise<{ cim: BigNumber; interest: BigNumber }> {
     const sdk = this.sdkProvider;
     if (!debtInfo) {
-      const debtInfoResponse = await sdk.query.cdp.TokenDebt(Cdp.QueryTokenDebtRequest.fromPartial({ denom }));
+      const debtInfoResponse = await sdk.query.cdp.TokenDebt(QueryTokenDebtRequest.fromPartial({ denom }));
       debtInfo = debtInfoResponse.debtInfo;
       if (!debtInfo) {
         return { cim: BN_ZERO, interest: BN_ZERO };
@@ -970,20 +1007,19 @@ export class CDPModule extends BaseModule {
     return { cim: newCIM, interest: newInterest };
   }
 
-  public async recalculateStablecoinCIM(debtInfo?: Cdp.StablecoinDebtInfo) {
+  public async recalculateStablecoinCIM(debtInfo?: StablecoinDebtInfo) {
     const sdk = this.sdkProvider;
     if (!debtInfo) {
-      const debtInfoResponse = await sdk.query.cdp.StablecoinDebt(Cdp.QueryStablecoinDebtRequest.fromPartial({}));
+      const debtInfoResponse = await sdk.query.cdp.StablecoinDebt(QueryStablecoinDebtRequest.fromPartial({}));
       debtInfo = debtInfoResponse.stablecoinDebtInfo;
       if (!debtInfo) {
         return BN_ZERO;
       }
     }
 
-
-    const stablecoinInterestResponse = await sdk.query.cdp.StablecoinInterest({});
+    const paramsResponse = await sdk.query.cdp.Params(QueryCdpParamsRequest.fromPartial({}));
     const cim = bnOrZero(debtInfo.cumulativeInterestMultiplier);
-    const apy = bnOrZero(stablecoinInterestResponse.stablecoinInterestInfo?.stablecoinInterestRate);
+    const apy = bnOrZero(paramsResponse.params?.stablecoinInterestRate);
     if (!apy) {
       return BN_ZERO;
     }
@@ -1338,7 +1374,7 @@ export namespace CDPModule {
   }
 
   export interface UpdateRateStrategyParams {
-    rateStrategyParams: Cdp.RateStrategyParams;
+    rateStrategyParams: RateStrategyParams;
   }
   export interface StablecoinDebt {
     principalDebt: string;

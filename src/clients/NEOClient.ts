@@ -1,6 +1,6 @@
 import CarbonSDK from "@carbon-sdk/CarbonSDK";
 import { NeoNetworkConfig, NetworkConfig, NetworkConfigProvider, ZeroAddress } from "@carbon-sdk/constant";
-import { Coin } from "@carbon-sdk/codec/carbon-models";
+import { Models } from "@carbon-sdk/index";
 import { NeoLedgerAccount } from "@carbon-sdk/provider/account";
 import { O3Types, O3Wallet } from "@carbon-sdk/provider/o3";
 import { AddressUtils } from "@carbon-sdk/util";
@@ -90,7 +90,7 @@ export class NEOClient {
 
     // NOTE: fetching of tokens is chunked in sets of 15 as we may hit
     // the gas limit on the RPC node and error out otherwise
-    const promises: Promise<{}>[] = chunk(tokens, 75).map(async (partition: ReadonlyArray<Coin.Token>) => { // tslint:disable-line
+    const promises: Promise<{}>[] = chunk(tokens, 75).map(async (partition: ReadonlyArray<Models.Token>) => { // tslint:disable-line
       let acc: SimpleMap<string> = {};
       for (const token of partition) {
         if (whitelistDenoms && !whitelistDenoms.includes(token.denom)) continue;
@@ -380,7 +380,7 @@ export class NEOClient {
    *
    * @param token
    */
-  public getTargetProxyHash(token: Coin.Token) {
+  public getTargetProxyHash(token: Models.Token) {
     const networkConfig = this.getNetworkConfig();
     const addressBytes = SWTHAddress.getAddressBytes(token.creator, networkConfig.network);
     const addressHex = stripHexPrefix(ethers.utils.hexlify(addressBytes));

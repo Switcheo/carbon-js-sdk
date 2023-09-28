@@ -19,7 +19,7 @@ import Long from "long";
 
   for (const market of markets) {
     try {
-      const result = await connectedSDK.p.registerToPool({
+      const result = await connectedSDK.plp.registerToPlPool({
         poolId: poolId,
         marketId: market,
       })

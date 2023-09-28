@@ -1,6 +1,5 @@
 import { CarbonSDK, Models } from "@carbon-sdk/index";
 import { CarbonTx, NumberUtils } from "@carbon-sdk/util";
-import { Inflation, Liquiditypool } from "@carbon-sdk/codec/carbon-models"
 import { BigNumber } from "bignumber.js";
 import dayjs from "dayjs";
 import Long from "long";
@@ -11,7 +10,7 @@ export class LiquidityPoolModule extends BaseModule {
   public async create(params: LiquidityPoolModule.CreatePoolParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Liquiditypool.MsgCreatePool.fromPartial({
+    const value = Models.MsgCreatePool.fromPartial({
       creator: wallet.bech32Address,
       tokenADenom: params.tokenADenom,
       tokenBDenom: params.tokenBDenom,
@@ -33,7 +32,7 @@ export class LiquidityPoolModule extends BaseModule {
   public async createWithLiquidity(params: LiquidityPoolModule.CreatePoolWithLiquidityParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Liquiditypool.MsgCreatePoolWithLiquidity.fromPartial({
+    const value = Models.MsgCreatePoolWithLiquidity.fromPartial({
       creator: wallet.bech32Address,
       tokenADenom: params.tokenADenom,
       tokenBDenom: params.tokenBDenom,
@@ -57,7 +56,7 @@ export class LiquidityPoolModule extends BaseModule {
   public async addLiquidity(params: LiquidityPoolModule.AddLiquidityParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Liquiditypool.MsgAddLiquidity.fromPartial({
+    const value = Models.MsgAddLiquidity.fromPartial({
       creator: wallet.bech32Address,
       poolId: new Long(params.poolId),
       amountA: params.amountA.toString(10),
@@ -77,7 +76,7 @@ export class LiquidityPoolModule extends BaseModule {
   public async removeLiquidity(params: LiquidityPoolModule.RemoveLiquidityParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Liquiditypool.MsgRemoveLiquidity.fromPartial({
+    const value = Models.MsgRemoveLiquidity.fromPartial({
       creator: wallet.bech32Address,
       poolId: new Long(params.poolId),
       shares: params.shares.toString(10),
@@ -95,7 +94,7 @@ export class LiquidityPoolModule extends BaseModule {
   public async stakePoolToken(params: LiquidityPoolModule.StakePoolTokenParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Liquiditypool.MsgStakePoolToken.fromPartial({
+    const value = Models.MsgStakePoolToken.fromPartial({
       creator: wallet.bech32Address,
       denom: params.denom,
       amount: params.amount.toString(10),
@@ -114,7 +113,7 @@ export class LiquidityPoolModule extends BaseModule {
   public async unstakePoolToken(params: LiquidityPoolModule.UnstakePoolTokenParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Liquiditypool.MsgUnstakePoolToken.fromPartial({
+    const value = Models.MsgUnstakePoolToken.fromPartial({
       creator: wallet.bech32Address,
       denom: params.denom,
       amount: params.amount.toString(10),
@@ -132,7 +131,7 @@ export class LiquidityPoolModule extends BaseModule {
   public async claimPoolRewards(params: LiquidityPoolModule.ClaimPoolRewardsParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Liquiditypool.MsgClaimPoolRewards.fromPartial({
+    const value = Models.MsgClaimPoolRewards.fromPartial({
       creator: wallet.bech32Address,
       poolId: new Long(params.poolId),
     });
@@ -157,7 +156,7 @@ export class LiquidityPoolModule extends BaseModule {
     const MIN_RATE = new BigNumber(0.0003);
     const INITIAL_SUPPLY = new BigNumber(1000000000);
     const SECONDS_IN_A_WEEK = new BigNumber(604800);
-    const mintDataResponse: Inflation.QueryMintDataResponse = await this.sdkProvider.query.inflation.MintData({});
+    const mintDataResponse: Models.QueryMintDataResponse = await this.sdkProvider.query.inflation.MintData({});
     const mintData = mintDataResponse.mintData;
 
     const nowTime = new BigNumber(dayjs().unix());
