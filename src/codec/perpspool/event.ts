@@ -44,7 +44,7 @@ export interface WithdrawFromPoolEvent {
   withdrawer: string;
 }
 
-export interface UpdateMarketUtilizationMultiplierEvent {
+export interface UpdateMarketLiquidityUsageMultiplierEvent {
   market: string;
   multiplier: string;
 }
@@ -605,14 +605,14 @@ export const WithdrawFromPoolEvent = {
   },
 };
 
-const baseUpdateMarketUtilizationMultiplierEvent: object = {
+const baseUpdateMarketLiquidityUsageMultiplierEvent: object = {
   market: "",
   multiplier: "",
 };
 
-export const UpdateMarketUtilizationMultiplierEvent = {
+export const UpdateMarketLiquidityUsageMultiplierEvent = {
   encode(
-    message: UpdateMarketUtilizationMultiplierEvent,
+    message: UpdateMarketLiquidityUsageMultiplierEvent,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.market !== "") {
@@ -627,12 +627,12 @@ export const UpdateMarketUtilizationMultiplierEvent = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): UpdateMarketUtilizationMultiplierEvent {
+  ): UpdateMarketLiquidityUsageMultiplierEvent {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseUpdateMarketUtilizationMultiplierEvent,
-    } as UpdateMarketUtilizationMultiplierEvent;
+      ...baseUpdateMarketLiquidityUsageMultiplierEvent,
+    } as UpdateMarketLiquidityUsageMultiplierEvent;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -650,10 +650,10 @@ export const UpdateMarketUtilizationMultiplierEvent = {
     return message;
   },
 
-  fromJSON(object: any): UpdateMarketUtilizationMultiplierEvent {
+  fromJSON(object: any): UpdateMarketLiquidityUsageMultiplierEvent {
     const message = {
-      ...baseUpdateMarketUtilizationMultiplierEvent,
-    } as UpdateMarketUtilizationMultiplierEvent;
+      ...baseUpdateMarketLiquidityUsageMultiplierEvent,
+    } as UpdateMarketLiquidityUsageMultiplierEvent;
     message.market =
       object.market !== undefined && object.market !== null
         ? String(object.market)
@@ -665,7 +665,7 @@ export const UpdateMarketUtilizationMultiplierEvent = {
     return message;
   },
 
-  toJSON(message: UpdateMarketUtilizationMultiplierEvent): unknown {
+  toJSON(message: UpdateMarketLiquidityUsageMultiplierEvent): unknown {
     const obj: any = {};
     message.market !== undefined && (obj.market = message.market);
     message.multiplier !== undefined && (obj.multiplier = message.multiplier);
@@ -673,11 +673,11 @@ export const UpdateMarketUtilizationMultiplierEvent = {
   },
 
   fromPartial(
-    object: DeepPartial<UpdateMarketUtilizationMultiplierEvent>
-  ): UpdateMarketUtilizationMultiplierEvent {
+    object: DeepPartial<UpdateMarketLiquidityUsageMultiplierEvent>
+  ): UpdateMarketLiquidityUsageMultiplierEvent {
     const message = {
-      ...baseUpdateMarketUtilizationMultiplierEvent,
-    } as UpdateMarketUtilizationMultiplierEvent;
+      ...baseUpdateMarketLiquidityUsageMultiplierEvent,
+    } as UpdateMarketLiquidityUsageMultiplierEvent;
     message.market = object.market ?? "";
     message.multiplier = object.multiplier ?? "";
     return message;

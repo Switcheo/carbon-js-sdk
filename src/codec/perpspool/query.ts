@@ -7,16 +7,16 @@ import {
 } from "../cosmos/base/query/v1beta1/pagination";
 import { Params } from "./params";
 import { PoolDetails } from "./pool";
-import { MarketUtilizationMultiplier } from "./market";
+import { MarketLiquidityUsageMultiplier } from "./market";
 
 export const protobufPackage = "Switcheo.carbon.perpspool";
 
-export interface QueryAllPoolMarketUtilizationMultiplierRequest {
+export interface QueryAllPoolMarketLiquidityUsageMultiplierRequest {
   pagination?: PageRequest;
 }
 
-export interface QueryAllPoolMarketUtilizationMultiplierResponse {
-  marketsUtilizationMultiplier: MarketUtilizationMultiplier[];
+export interface QueryAllPoolMarketLiquidityUsageMultiplierResponse {
+  marketsLiquidityUsageMultiplier: MarketLiquidityUsageMultiplier[];
   pagination?: PageResponse;
 }
 
@@ -95,11 +95,11 @@ export interface QueryAllPoolInfoResponse {
   pagination?: PageResponse;
 }
 
-const baseQueryAllPoolMarketUtilizationMultiplierRequest: object = {};
+const baseQueryAllPoolMarketLiquidityUsageMultiplierRequest: object = {};
 
-export const QueryAllPoolMarketUtilizationMultiplierRequest = {
+export const QueryAllPoolMarketLiquidityUsageMultiplierRequest = {
   encode(
-    message: QueryAllPoolMarketUtilizationMultiplierRequest,
+    message: QueryAllPoolMarketLiquidityUsageMultiplierRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.pagination !== undefined) {
@@ -111,12 +111,12 @@ export const QueryAllPoolMarketUtilizationMultiplierRequest = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): QueryAllPoolMarketUtilizationMultiplierRequest {
+  ): QueryAllPoolMarketLiquidityUsageMultiplierRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseQueryAllPoolMarketUtilizationMultiplierRequest,
-    } as QueryAllPoolMarketUtilizationMultiplierRequest;
+      ...baseQueryAllPoolMarketLiquidityUsageMultiplierRequest,
+    } as QueryAllPoolMarketLiquidityUsageMultiplierRequest;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -131,10 +131,10 @@ export const QueryAllPoolMarketUtilizationMultiplierRequest = {
     return message;
   },
 
-  fromJSON(object: any): QueryAllPoolMarketUtilizationMultiplierRequest {
+  fromJSON(object: any): QueryAllPoolMarketLiquidityUsageMultiplierRequest {
     const message = {
-      ...baseQueryAllPoolMarketUtilizationMultiplierRequest,
-    } as QueryAllPoolMarketUtilizationMultiplierRequest;
+      ...baseQueryAllPoolMarketLiquidityUsageMultiplierRequest,
+    } as QueryAllPoolMarketLiquidityUsageMultiplierRequest;
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
         ? PageRequest.fromJSON(object.pagination)
@@ -142,7 +142,7 @@ export const QueryAllPoolMarketUtilizationMultiplierRequest = {
     return message;
   },
 
-  toJSON(message: QueryAllPoolMarketUtilizationMultiplierRequest): unknown {
+  toJSON(message: QueryAllPoolMarketLiquidityUsageMultiplierRequest): unknown {
     const obj: any = {};
     message.pagination !== undefined &&
       (obj.pagination = message.pagination
@@ -152,11 +152,11 @@ export const QueryAllPoolMarketUtilizationMultiplierRequest = {
   },
 
   fromPartial(
-    object: DeepPartial<QueryAllPoolMarketUtilizationMultiplierRequest>
-  ): QueryAllPoolMarketUtilizationMultiplierRequest {
+    object: DeepPartial<QueryAllPoolMarketLiquidityUsageMultiplierRequest>
+  ): QueryAllPoolMarketLiquidityUsageMultiplierRequest {
     const message = {
-      ...baseQueryAllPoolMarketUtilizationMultiplierRequest,
-    } as QueryAllPoolMarketUtilizationMultiplierRequest;
+      ...baseQueryAllPoolMarketLiquidityUsageMultiplierRequest,
+    } as QueryAllPoolMarketLiquidityUsageMultiplierRequest;
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
         ? PageRequest.fromPartial(object.pagination)
@@ -165,15 +165,18 @@ export const QueryAllPoolMarketUtilizationMultiplierRequest = {
   },
 };
 
-const baseQueryAllPoolMarketUtilizationMultiplierResponse: object = {};
+const baseQueryAllPoolMarketLiquidityUsageMultiplierResponse: object = {};
 
-export const QueryAllPoolMarketUtilizationMultiplierResponse = {
+export const QueryAllPoolMarketLiquidityUsageMultiplierResponse = {
   encode(
-    message: QueryAllPoolMarketUtilizationMultiplierResponse,
+    message: QueryAllPoolMarketLiquidityUsageMultiplierResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    for (const v of message.marketsUtilizationMultiplier) {
-      MarketUtilizationMultiplier.encode(v!, writer.uint32(10).fork()).ldelim();
+    for (const v of message.marketsLiquidityUsageMultiplier) {
+      MarketLiquidityUsageMultiplier.encode(
+        v!,
+        writer.uint32(10).fork()
+      ).ldelim();
     }
     if (message.pagination !== undefined) {
       PageResponse.encode(
@@ -187,19 +190,19 @@ export const QueryAllPoolMarketUtilizationMultiplierResponse = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): QueryAllPoolMarketUtilizationMultiplierResponse {
+  ): QueryAllPoolMarketLiquidityUsageMultiplierResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseQueryAllPoolMarketUtilizationMultiplierResponse,
-    } as QueryAllPoolMarketUtilizationMultiplierResponse;
-    message.marketsUtilizationMultiplier = [];
+      ...baseQueryAllPoolMarketLiquidityUsageMultiplierResponse,
+    } as QueryAllPoolMarketLiquidityUsageMultiplierResponse;
+    message.marketsLiquidityUsageMultiplier = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.marketsUtilizationMultiplier.push(
-            MarketUtilizationMultiplier.decode(reader, reader.uint32())
+          message.marketsLiquidityUsageMultiplier.push(
+            MarketLiquidityUsageMultiplier.decode(reader, reader.uint32())
           );
           break;
         case 2:
@@ -213,13 +216,13 @@ export const QueryAllPoolMarketUtilizationMultiplierResponse = {
     return message;
   },
 
-  fromJSON(object: any): QueryAllPoolMarketUtilizationMultiplierResponse {
+  fromJSON(object: any): QueryAllPoolMarketLiquidityUsageMultiplierResponse {
     const message = {
-      ...baseQueryAllPoolMarketUtilizationMultiplierResponse,
-    } as QueryAllPoolMarketUtilizationMultiplierResponse;
-    message.marketsUtilizationMultiplier = (
-      object.marketsUtilizationMultiplier ?? []
-    ).map((e: any) => MarketUtilizationMultiplier.fromJSON(e));
+      ...baseQueryAllPoolMarketLiquidityUsageMultiplierResponse,
+    } as QueryAllPoolMarketLiquidityUsageMultiplierResponse;
+    message.marketsLiquidityUsageMultiplier = (
+      object.marketsLiquidityUsageMultiplier ?? []
+    ).map((e: any) => MarketLiquidityUsageMultiplier.fromJSON(e));
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
         ? PageResponse.fromJSON(object.pagination)
@@ -227,15 +230,15 @@ export const QueryAllPoolMarketUtilizationMultiplierResponse = {
     return message;
   },
 
-  toJSON(message: QueryAllPoolMarketUtilizationMultiplierResponse): unknown {
+  toJSON(message: QueryAllPoolMarketLiquidityUsageMultiplierResponse): unknown {
     const obj: any = {};
-    if (message.marketsUtilizationMultiplier) {
-      obj.marketsUtilizationMultiplier =
-        message.marketsUtilizationMultiplier.map((e) =>
-          e ? MarketUtilizationMultiplier.toJSON(e) : undefined
+    if (message.marketsLiquidityUsageMultiplier) {
+      obj.marketsLiquidityUsageMultiplier =
+        message.marketsLiquidityUsageMultiplier.map((e) =>
+          e ? MarketLiquidityUsageMultiplier.toJSON(e) : undefined
         );
     } else {
-      obj.marketsUtilizationMultiplier = [];
+      obj.marketsLiquidityUsageMultiplier = [];
     }
     message.pagination !== undefined &&
       (obj.pagination = message.pagination
@@ -245,14 +248,14 @@ export const QueryAllPoolMarketUtilizationMultiplierResponse = {
   },
 
   fromPartial(
-    object: DeepPartial<QueryAllPoolMarketUtilizationMultiplierResponse>
-  ): QueryAllPoolMarketUtilizationMultiplierResponse {
+    object: DeepPartial<QueryAllPoolMarketLiquidityUsageMultiplierResponse>
+  ): QueryAllPoolMarketLiquidityUsageMultiplierResponse {
     const message = {
-      ...baseQueryAllPoolMarketUtilizationMultiplierResponse,
-    } as QueryAllPoolMarketUtilizationMultiplierResponse;
-    message.marketsUtilizationMultiplier = (
-      object.marketsUtilizationMultiplier ?? []
-    ).map((e) => MarketUtilizationMultiplier.fromPartial(e));
+      ...baseQueryAllPoolMarketLiquidityUsageMultiplierResponse,
+    } as QueryAllPoolMarketLiquidityUsageMultiplierResponse;
+    message.marketsLiquidityUsageMultiplier = (
+      object.marketsLiquidityUsageMultiplier ?? []
+    ).map((e) => MarketLiquidityUsageMultiplier.fromPartial(e));
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
         ? PageResponse.fromPartial(object.pagination)
@@ -1492,10 +1495,10 @@ export interface Query {
   PoolAddressAll(
     request: QueryAllPoolAddressRequest
   ): Promise<QueryAllPoolAddressResponse>;
-  /** Get markets utilization multiplier for all pools-linked markets */
-  PoolMarketUtilizationMultiplierAll(
-    request: QueryAllPoolMarketUtilizationMultiplierRequest
-  ): Promise<QueryAllPoolMarketUtilizationMultiplierResponse>;
+  /** Get markets liquidity usage multiplier for all pools-linked markets */
+  PoolMarketLiquidityUsageMultiplierAll(
+    request: QueryAllPoolMarketLiquidityUsageMultiplierRequest
+  ): Promise<QueryAllPoolMarketLiquidityUsageMultiplierResponse>;
   /** Get Pool details for a particular id */
   Pool(request: QueryGetPoolRequest): Promise<QueryGetPoolResponse>;
   /** Get all Pool details */
@@ -1514,8 +1517,8 @@ export class QueryClientImpl implements Query {
     this.PoolInfo = this.PoolInfo.bind(this);
     this.PoolInfoAll = this.PoolInfoAll.bind(this);
     this.PoolAddressAll = this.PoolAddressAll.bind(this);
-    this.PoolMarketUtilizationMultiplierAll =
-      this.PoolMarketUtilizationMultiplierAll.bind(this);
+    this.PoolMarketLiquidityUsageMultiplierAll =
+      this.PoolMarketLiquidityUsageMultiplierAll.bind(this);
     this.Pool = this.Pool.bind(this);
     this.PoolAll = this.PoolAll.bind(this);
     this.PoolMappings = this.PoolMappings.bind(this);
@@ -1572,18 +1575,20 @@ export class QueryClientImpl implements Query {
     );
   }
 
-  PoolMarketUtilizationMultiplierAll(
-    request: QueryAllPoolMarketUtilizationMultiplierRequest
-  ): Promise<QueryAllPoolMarketUtilizationMultiplierResponse> {
+  PoolMarketLiquidityUsageMultiplierAll(
+    request: QueryAllPoolMarketLiquidityUsageMultiplierRequest
+  ): Promise<QueryAllPoolMarketLiquidityUsageMultiplierResponse> {
     const data =
-      QueryAllPoolMarketUtilizationMultiplierRequest.encode(request).finish();
+      QueryAllPoolMarketLiquidityUsageMultiplierRequest.encode(
+        request
+      ).finish();
     const promise = this.rpc.request(
       "Switcheo.carbon.perpspool.Query",
-      "PoolMarketUtilizationMultiplierAll",
+      "PoolMarketLiquidityUsageMultiplierAll",
       data
     );
     return promise.then((data) =>
-      QueryAllPoolMarketUtilizationMultiplierResponse.decode(
+      QueryAllPoolMarketLiquidityUsageMultiplierResponse.decode(
         new _m0.Reader(data)
       )
     );

@@ -53,7 +53,7 @@ export interface TWAMarketUtilizationRate {
   twaUtilizationRate: string;
 }
 
-export interface MarketUtilizationMultiplier {
+export interface MarketLiquidityUsageMultiplier {
   market: string;
   multiplier: string;
 }
@@ -542,11 +542,14 @@ export const TWAMarketUtilizationRate = {
   },
 };
 
-const baseMarketUtilizationMultiplier: object = { market: "", multiplier: "" };
+const baseMarketLiquidityUsageMultiplier: object = {
+  market: "",
+  multiplier: "",
+};
 
-export const MarketUtilizationMultiplier = {
+export const MarketLiquidityUsageMultiplier = {
   encode(
-    message: MarketUtilizationMultiplier,
+    message: MarketLiquidityUsageMultiplier,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.market !== "") {
@@ -561,12 +564,12 @@ export const MarketUtilizationMultiplier = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): MarketUtilizationMultiplier {
+  ): MarketLiquidityUsageMultiplier {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseMarketUtilizationMultiplier,
-    } as MarketUtilizationMultiplier;
+      ...baseMarketLiquidityUsageMultiplier,
+    } as MarketLiquidityUsageMultiplier;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -584,10 +587,10 @@ export const MarketUtilizationMultiplier = {
     return message;
   },
 
-  fromJSON(object: any): MarketUtilizationMultiplier {
+  fromJSON(object: any): MarketLiquidityUsageMultiplier {
     const message = {
-      ...baseMarketUtilizationMultiplier,
-    } as MarketUtilizationMultiplier;
+      ...baseMarketLiquidityUsageMultiplier,
+    } as MarketLiquidityUsageMultiplier;
     message.market =
       object.market !== undefined && object.market !== null
         ? String(object.market)
@@ -599,7 +602,7 @@ export const MarketUtilizationMultiplier = {
     return message;
   },
 
-  toJSON(message: MarketUtilizationMultiplier): unknown {
+  toJSON(message: MarketLiquidityUsageMultiplier): unknown {
     const obj: any = {};
     message.market !== undefined && (obj.market = message.market);
     message.multiplier !== undefined && (obj.multiplier = message.multiplier);
@@ -607,11 +610,11 @@ export const MarketUtilizationMultiplier = {
   },
 
   fromPartial(
-    object: DeepPartial<MarketUtilizationMultiplier>
-  ): MarketUtilizationMultiplier {
+    object: DeepPartial<MarketLiquidityUsageMultiplier>
+  ): MarketLiquidityUsageMultiplier {
     const message = {
-      ...baseMarketUtilizationMultiplier,
-    } as MarketUtilizationMultiplier;
+      ...baseMarketLiquidityUsageMultiplier,
+    } as MarketLiquidityUsageMultiplier;
     message.market = object.market ?? "";
     message.multiplier = object.multiplier ?? "";
     return message;
