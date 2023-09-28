@@ -30,7 +30,7 @@ import {
   WsSubscribeCDPTokenSupply,
   WsSubscribeCDPTokenSupplyByDenom,
   WsSubscribeTokenSupplyByDenom,
-  WsSubscribeMarketUtilizationMultiplier,
+  WsSubscribeMarketLiquidityUsageMultiplier as WsSubscribeMarketLiquidityUsageMultiplier,
 } from "./types";
 
 export const generateChannelId = (params: WsSubscriptionParams): string => {
@@ -151,8 +151,8 @@ export const generateChannelId = (params: WsSubscriptionParams): string => {
       const { channel, denom } = params as WsSubscribeTokenSupplyByDenom;
       return [channel, denom].join(":");
     }
-    case WSChannel.market_utilization_multiplier: {
-      const { channel } = params as WsSubscribeMarketUtilizationMultiplier;
+    case WSChannel.market_liquidity_usage_multiplier: {
+      const { channel } = params as WsSubscribeMarketLiquidityUsageMultiplier;
       return [channel].join(":");
     }
     default:
@@ -306,10 +306,10 @@ export const parseChannelId = (rawChannelId: string): WsSubscriptionParams => {
         channel,
         denom: param0,
       } as WsSubscribeTokenSupplyByDenom;
-    case WSChannel.market_utilization_multiplier:
+    case WSChannel.market_liquidity_usage_multiplier:
       return {
         channel,
-      } as WsSubscribeMarketUtilizationMultiplier;
+      } as WsSubscribeMarketLiquidityUsageMultiplier;
     default:
       throw new Error("Error parsing channelId");
   }

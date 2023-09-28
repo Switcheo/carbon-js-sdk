@@ -28,7 +28,7 @@ export enum WSChannel {
   cdp_token_supply = "cdp_token_supply",
   cdp_token_supply_by_denom = "cdp_token_supply_by_denom",
   token_supply_by_denom = "token_supply_by_denom",
-  market_utilization_multiplier = "market_utilization_multiplier",
+  market_liquidity_usage_multiplier = "market_liquidity_usage_multiplier",
 }
 
 export enum WSRequest {
@@ -267,7 +267,7 @@ export interface WsSubscribeTokenSupplyByDenom extends WsSubscribeParams {
   denom: string;
 }
 
-export interface WsSubscribeMarketUtilizationMultiplier extends WsSubscribeParams {}
+export interface WsSubscribeMarketLiquidityUsageMultiplier extends WsSubscribeParams { }
 
 export type WsSubscriptionParams =
   | WsSubscribeCandlesticksParams
@@ -300,4 +300,4 @@ export type WsSubscriptionParams =
   | WsSubscribeCDPTokenSupply
   | WsSubscribeCDPTokenSupplyByDenom
   | WsSubscribeTokenSupplyByDenom
-  | WsSubscribeMarketUtilizationMultiplier;
+  | WsSubscribeMarketLiquidityUsageMultiplier;
