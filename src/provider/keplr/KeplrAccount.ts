@@ -194,9 +194,6 @@ class KeplrAccount {
       },
       features: ["ibc-transfer", "ibc-go"],
     };
-
-
-
   }
 
   static async signPublicKeyMergeAccount(publicKey: string, address: string, chainId: string, keplr: Keplr) {
