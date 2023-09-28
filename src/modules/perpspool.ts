@@ -1,4 +1,4 @@
-import { Perpspool } from "@carbon-sdk/codec/carbon-models";
+import { Carbon } from "@carbon-sdk/CarbonSDK";
 import { CarbonTx } from "@carbon-sdk/util";
 import BaseModule from "./base";
 
@@ -6,7 +6,7 @@ export class PerpspoolModule extends BaseModule {
   public async createPerpertualsPool(params: PerpspoolModule.CreatePoolParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Perpspool.MsgCreatePool.fromPartial({
+    const value = Carbon.Perpspool.MsgCreatePool.fromPartial({
       creator: wallet.bech32Address,
       name: params.name,
       depositDenom: params.depositDenom,
@@ -30,7 +30,7 @@ export class PerpspoolModule extends BaseModule {
   public async updatePerpetualsPool(params: PerpspoolModule.UpdatePoolParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const updatePoolParam: Perpspool.UpdatePoolParams = {
+    const updatePoolParam: Carbon.Perpspool.UpdatePoolParams = {
       name: params.name,
       supplyCap: params.supplyCap,
       depositFee: params.depositFee,
@@ -38,7 +38,7 @@ export class PerpspoolModule extends BaseModule {
       baseBorrowFeePerFundingInterval: params.borrowFee,
     }
 
-    const value = Perpspool.MsgUpdatePool.fromPartial({
+    const value = Carbon.Perpspool.MsgUpdatePool.fromPartial({
       creator: wallet.bech32Address,
       poolId: params.poolId,
       updatePoolParams: updatePoolParam,
@@ -56,7 +56,7 @@ export class PerpspoolModule extends BaseModule {
   public async depositToPool(params: PerpspoolModule.DepositToPoolParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Perpspool.MsgDepositToPool.fromPartial({
+    const value = Carbon.Perpspool.MsgDepositToPool.fromPartial({
       creator: wallet.bech32Address,
       poolId: params.poolId,
       depositAmount: params.depositAmount,
@@ -75,7 +75,7 @@ export class PerpspoolModule extends BaseModule {
   public async withdrawFromPool(params: PerpspoolModule.WithdrawFromPoolParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Perpspool.MsgWithdrawFromPool.fromPartial({
+    const value = Carbon.Perpspool.MsgWithdrawFromPool.fromPartial({
       creator: wallet.bech32Address,
       poolId: params.poolId,
       shareAmount: params.shareAmount,
@@ -94,7 +94,7 @@ export class PerpspoolModule extends BaseModule {
   public async registerToPool(params: PerpspoolModule.RegisterToPoolParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Perpspool.MsgRegisterToPool.fromPartial({
+    const value = Carbon.Perpspool.MsgRegisterToPool.fromPartial({
       creator: wallet.bech32Address,
       poolId: params.poolId,
       marketId: params.marketId,
@@ -112,7 +112,7 @@ export class PerpspoolModule extends BaseModule {
   public async deregisterFromPool(params: PerpspoolModule.DeregisterFromPoolParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Perpspool.MsgDeregisterFromPool.fromPartial({
+    const value = Carbon.Perpspool.MsgDeregisterFromPool.fromPartial({
       creator: wallet.bech32Address,
       marketId: params.marketId,
     })
