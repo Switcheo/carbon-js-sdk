@@ -1,4 +1,4 @@
-import { Token } from '@carbon-sdk/codec'
+
 import {
   ChainInfoExplorerTmRpc,
   ChainIds,

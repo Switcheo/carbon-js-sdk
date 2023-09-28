@@ -1,6 +1,7 @@
 import CarbonSDK from "@carbon-sdk/CarbonSDK";
 import { NetworkConfig, NetworkConfigProvider, ZilNetworkConfig } from "@carbon-sdk/constant";
 import { Models, AddressUtils } from "@carbon-sdk/index";
+import { Coin } from "@carbon-sdk/codec/carbon-models"
 import { SWTHAddress } from "@carbon-sdk/util/address";
 import { Blockchain, blockchainForChainId, BLOCKCHAIN_V2_TO_V1_MAPPING } from "@carbon-sdk/util/blockchain";
 import { TokensWithExternalBalance } from "@carbon-sdk/util/external";
@@ -43,13 +44,13 @@ interface ZILTxParams {
 export interface ZILLockParams extends ZILTxParams {
   address: Uint8Array;
   amount: BigNumber;
-  token: Models.Token;
+  token: Coin.Token;
   signCompleteCallback?: () => void;
 }
 
 export interface ZilBridgeParams {
-  fromToken: Models.Token;
-  toToken: Models.Token;
+  fromToken: Coin.Token;
+  toToken: Coin.Token;
   amount: BigNumber;
   fromAddress: string;
   recoveryAddress: string;
@@ -62,7 +63,7 @@ export interface ZilBridgeParams {
 }
 
 export interface ApproveZRC2Params extends ZILTxParams {
-  token: Models.Token;
+  token: Coin.Token;
   spenderAddress?: string;
   signCompleteCallback?: () => void;
 }
@@ -274,7 +275,7 @@ export class ZILClient {
     return callTx;
   }
 
-  public async checkAllowanceZRC2(token: Models.Token, owner: string, spender: string) {
+  public async checkAllowanceZRC2(token: Coin.Token, owner: string, spender: string) {
     const contractAddress = appendHexPrefix(token.tokenAddress);
     const zilliqa = new Zilliqa(this.getProviderUrl());
     const resp = await zilliqa.blockchain.getSmartContractSubState(contractAddress, "allowances", [owner, spender]);
@@ -531,7 +532,7 @@ export class ZILClient {
    *
    * @param token
    */
-  public getTargetProxyHash(token: Models.Token) {
+  public getTargetProxyHash(token: Coin.Token) {
     const networkConfig = this.getNetworkConfig();
     const addressBytes = SWTHAddress.getAddressBytes(token.creator, networkConfig.network);
     const addressHex = stripHexPrefix(ethers.utils.hexlify(addressBytes));
