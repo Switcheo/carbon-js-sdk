@@ -24571,7 +24571,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "total_underlying_amount",
+        "name": "total_nav_amount",
         "type": "string"
       },
       {

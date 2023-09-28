@@ -80,7 +80,7 @@ export interface QueryPoolInfoRequest {
 
 export interface QueryPoolInfoResponse {
   totalShareAmount: string;
-  totalUnderlyingAmount: string;
+  totalNavAmount: string;
   availableAmount: string;
   totalInPositionAmount: string;
   totalUpnlAmount: string;
@@ -1196,7 +1196,7 @@ export const QueryPoolInfoRequest = {
 
 const baseQueryPoolInfoResponse: object = {
   totalShareAmount: "",
-  totalUnderlyingAmount: "",
+  totalNavAmount: "",
   availableAmount: "",
   totalInPositionAmount: "",
   totalUpnlAmount: "",
@@ -1210,8 +1210,8 @@ export const QueryPoolInfoResponse = {
     if (message.totalShareAmount !== "") {
       writer.uint32(10).string(message.totalShareAmount);
     }
-    if (message.totalUnderlyingAmount !== "") {
-      writer.uint32(18).string(message.totalUnderlyingAmount);
+    if (message.totalNavAmount !== "") {
+      writer.uint32(18).string(message.totalNavAmount);
     }
     if (message.availableAmount !== "") {
       writer.uint32(26).string(message.availableAmount);
@@ -1239,7 +1239,7 @@ export const QueryPoolInfoResponse = {
           message.totalShareAmount = reader.string();
           break;
         case 2:
-          message.totalUnderlyingAmount = reader.string();
+          message.totalNavAmount = reader.string();
           break;
         case 3:
           message.availableAmount = reader.string();
@@ -1264,10 +1264,9 @@ export const QueryPoolInfoResponse = {
       object.totalShareAmount !== undefined && object.totalShareAmount !== null
         ? String(object.totalShareAmount)
         : "";
-    message.totalUnderlyingAmount =
-      object.totalUnderlyingAmount !== undefined &&
-      object.totalUnderlyingAmount !== null
-        ? String(object.totalUnderlyingAmount)
+    message.totalNavAmount =
+      object.totalNavAmount !== undefined && object.totalNavAmount !== null
+        ? String(object.totalNavAmount)
         : "";
     message.availableAmount =
       object.availableAmount !== undefined && object.availableAmount !== null
@@ -1289,8 +1288,8 @@ export const QueryPoolInfoResponse = {
     const obj: any = {};
     message.totalShareAmount !== undefined &&
       (obj.totalShareAmount = message.totalShareAmount);
-    message.totalUnderlyingAmount !== undefined &&
-      (obj.totalUnderlyingAmount = message.totalUnderlyingAmount);
+    message.totalNavAmount !== undefined &&
+      (obj.totalNavAmount = message.totalNavAmount);
     message.availableAmount !== undefined &&
       (obj.availableAmount = message.availableAmount);
     message.totalInPositionAmount !== undefined &&
@@ -1305,7 +1304,7 @@ export const QueryPoolInfoResponse = {
   ): QueryPoolInfoResponse {
     const message = { ...baseQueryPoolInfoResponse } as QueryPoolInfoResponse;
     message.totalShareAmount = object.totalShareAmount ?? "";
-    message.totalUnderlyingAmount = object.totalUnderlyingAmount ?? "";
+    message.totalNavAmount = object.totalNavAmount ?? "";
     message.availableAmount = object.availableAmount ?? "";
     message.totalInPositionAmount = object.totalInPositionAmount ?? "";
     message.totalUpnlAmount = object.totalUpnlAmount ?? "";
