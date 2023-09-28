@@ -18,9 +18,15 @@ export interface OrderBook {
 
 export interface StopBook {
   market: string;
-  asks: string[];
-  bids: string[];
+  asks: StopOrder[];
+  bids: StopOrder[];
   trigger: string;
+  stopType: string;
+}
+
+export interface StopOrder {
+  id: string;
+  stopPrice: string;
 }
 
 const baseOrderBookLevel: object = { price: "", totalQuantity: "", orders: "" };
@@ -196,7 +202,7 @@ export const OrderBook = {
   },
 };
 
-const baseStopBook: object = { market: "", asks: "", bids: "", trigger: "" };
+const baseStopBook: object = { market: "", trigger: "", stopType: "" };
 
 export const StopBook = {
   encode(
@@ -207,13 +213,16 @@ export const StopBook = {
       writer.uint32(10).string(message.market);
     }
     for (const v of message.asks) {
-      writer.uint32(18).string(v!);
+      StopOrder.encode(v!, writer.uint32(18).fork()).ldelim();
     }
     for (const v of message.bids) {
-      writer.uint32(26).string(v!);
+      StopOrder.encode(v!, writer.uint32(26).fork()).ldelim();
     }
     if (message.trigger !== "") {
       writer.uint32(34).string(message.trigger);
+    }
+    if (message.stopType !== "") {
+      writer.uint32(42).string(message.stopType);
     }
     return writer;
   },
@@ -231,13 +240,16 @@ export const StopBook = {
           message.market = reader.string();
           break;
         case 2:
-          message.asks.push(reader.string());
+          message.asks.push(StopOrder.decode(reader, reader.uint32()));
           break;
         case 3:
-          message.bids.push(reader.string());
+          message.bids.push(StopOrder.decode(reader, reader.uint32()));
           break;
         case 4:
           message.trigger = reader.string();
+          break;
+        case 5:
+          message.stopType = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -253,11 +265,15 @@ export const StopBook = {
       object.market !== undefined && object.market !== null
         ? String(object.market)
         : "";
-    message.asks = (object.asks ?? []).map((e: any) => String(e));
-    message.bids = (object.bids ?? []).map((e: any) => String(e));
+    message.asks = (object.asks ?? []).map((e: any) => StopOrder.fromJSON(e));
+    message.bids = (object.bids ?? []).map((e: any) => StopOrder.fromJSON(e));
     message.trigger =
       object.trigger !== undefined && object.trigger !== null
         ? String(object.trigger)
+        : "";
+    message.stopType =
+      object.stopType !== undefined && object.stopType !== null
+        ? String(object.stopType)
         : "";
     return message;
   },
@@ -266,25 +282,90 @@ export const StopBook = {
     const obj: any = {};
     message.market !== undefined && (obj.market = message.market);
     if (message.asks) {
-      obj.asks = message.asks.map((e) => e);
+      obj.asks = message.asks.map((e) => (e ? StopOrder.toJSON(e) : undefined));
     } else {
       obj.asks = [];
     }
     if (message.bids) {
-      obj.bids = message.bids.map((e) => e);
+      obj.bids = message.bids.map((e) => (e ? StopOrder.toJSON(e) : undefined));
     } else {
       obj.bids = [];
     }
     message.trigger !== undefined && (obj.trigger = message.trigger);
+    message.stopType !== undefined && (obj.stopType = message.stopType);
     return obj;
   },
 
   fromPartial(object: DeepPartial<StopBook>): StopBook {
     const message = { ...baseStopBook } as StopBook;
     message.market = object.market ?? "";
-    message.asks = (object.asks ?? []).map((e) => e);
-    message.bids = (object.bids ?? []).map((e) => e);
+    message.asks = (object.asks ?? []).map((e) => StopOrder.fromPartial(e));
+    message.bids = (object.bids ?? []).map((e) => StopOrder.fromPartial(e));
     message.trigger = object.trigger ?? "";
+    message.stopType = object.stopType ?? "";
+    return message;
+  },
+};
+
+const baseStopOrder: object = { id: "", stopPrice: "" };
+
+export const StopOrder = {
+  encode(
+    message: StopOrder,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.stopPrice !== "") {
+      writer.uint32(18).string(message.stopPrice);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): StopOrder {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseStopOrder } as StopOrder;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        case 2:
+          message.stopPrice = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): StopOrder {
+    const message = { ...baseStopOrder } as StopOrder;
+    message.id =
+      object.id !== undefined && object.id !== null ? String(object.id) : "";
+    message.stopPrice =
+      object.stopPrice !== undefined && object.stopPrice !== null
+        ? String(object.stopPrice)
+        : "";
+    return message;
+  },
+
+  toJSON(message: StopOrder): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    message.stopPrice !== undefined && (obj.stopPrice = message.stopPrice);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<StopOrder>): StopOrder {
+    const message = { ...baseStopOrder } as StopOrder;
+    message.id = object.id ?? "";
+    message.stopPrice = object.stopPrice ?? "";
     return message;
   },
 };

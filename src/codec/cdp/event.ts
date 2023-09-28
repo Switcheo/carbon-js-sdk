@@ -117,7 +117,8 @@ export interface BorrowAssetEvent {
   borrower: string;
   denom: string;
   amountBorrowed: string;
-  healthFactor: string;
+  debtValue: string;
+  collateralValue: string;
   initialCumulativeInterestMultiplier: string;
 }
 
@@ -127,21 +128,24 @@ export interface RepayAssetEvent {
   denom: string;
   principalRepaid: string;
   interestRepaid: string;
-  healthFactor: string;
+  debtValue: string;
+  collateralValue: string;
 }
 
 export interface LockCollateralEvent {
   locker: string;
   cdpDenom: string;
   amountLocked: string;
-  healthFactor: string;
+  debtValue: string;
+  collateralValue: string;
 }
 
 export interface UnlockCollateralEvent {
   unlocker: string;
   cdpDenom: string;
   amountUnlocked: string;
-  healthFactor: string;
+  debtValue: string;
+  collateralValue: string;
 }
 
 export interface UpdateDebtInfoEvent {
@@ -158,7 +162,8 @@ export interface MintStablecoinEvent {
   minter: string;
   denom: string;
   amountMinted: string;
-  healthFactor: string;
+  debtValue: string;
+  collateralValue: string;
   initialCumulativeInterestMultiplier: string;
 }
 
@@ -168,7 +173,8 @@ export interface ReturnStablecoinEvent {
   interestDenom: string;
   interestRepaid: string;
   principalRepaid: string;
-  healthFactor: string;
+  debtValue: string;
+  collateralValue: string;
 }
 
 export interface LiquidateCollateralEvent {
@@ -1825,7 +1831,8 @@ const baseBorrowAssetEvent: object = {
   borrower: "",
   denom: "",
   amountBorrowed: "",
-  healthFactor: "",
+  debtValue: "",
+  collateralValue: "",
   initialCumulativeInterestMultiplier: "",
 };
 
@@ -1843,8 +1850,11 @@ export const BorrowAssetEvent = {
     if (message.amountBorrowed !== "") {
       writer.uint32(26).string(message.amountBorrowed);
     }
-    if (message.healthFactor !== "") {
-      writer.uint32(34).string(message.healthFactor);
+    if (message.debtValue !== "") {
+      writer.uint32(34).string(message.debtValue);
+    }
+    if (message.collateralValue !== "") {
+      writer.uint32(50).string(message.collateralValue);
     }
     if (message.initialCumulativeInterestMultiplier !== "") {
       writer.uint32(42).string(message.initialCumulativeInterestMultiplier);
@@ -1869,7 +1879,10 @@ export const BorrowAssetEvent = {
           message.amountBorrowed = reader.string();
           break;
         case 4:
-          message.healthFactor = reader.string();
+          message.debtValue = reader.string();
+          break;
+        case 6:
+          message.collateralValue = reader.string();
           break;
         case 5:
           message.initialCumulativeInterestMultiplier = reader.string();
@@ -1896,9 +1909,13 @@ export const BorrowAssetEvent = {
       object.amountBorrowed !== undefined && object.amountBorrowed !== null
         ? String(object.amountBorrowed)
         : "";
-    message.healthFactor =
-      object.healthFactor !== undefined && object.healthFactor !== null
-        ? String(object.healthFactor)
+    message.debtValue =
+      object.debtValue !== undefined && object.debtValue !== null
+        ? String(object.debtValue)
+        : "";
+    message.collateralValue =
+      object.collateralValue !== undefined && object.collateralValue !== null
+        ? String(object.collateralValue)
         : "";
     message.initialCumulativeInterestMultiplier =
       object.initialCumulativeInterestMultiplier !== undefined &&
@@ -1914,8 +1931,9 @@ export const BorrowAssetEvent = {
     message.denom !== undefined && (obj.denom = message.denom);
     message.amountBorrowed !== undefined &&
       (obj.amountBorrowed = message.amountBorrowed);
-    message.healthFactor !== undefined &&
-      (obj.healthFactor = message.healthFactor);
+    message.debtValue !== undefined && (obj.debtValue = message.debtValue);
+    message.collateralValue !== undefined &&
+      (obj.collateralValue = message.collateralValue);
     message.initialCumulativeInterestMultiplier !== undefined &&
       (obj.initialCumulativeInterestMultiplier =
         message.initialCumulativeInterestMultiplier);
@@ -1927,7 +1945,8 @@ export const BorrowAssetEvent = {
     message.borrower = object.borrower ?? "";
     message.denom = object.denom ?? "";
     message.amountBorrowed = object.amountBorrowed ?? "";
-    message.healthFactor = object.healthFactor ?? "";
+    message.debtValue = object.debtValue ?? "";
+    message.collateralValue = object.collateralValue ?? "";
     message.initialCumulativeInterestMultiplier =
       object.initialCumulativeInterestMultiplier ?? "";
     return message;
@@ -1940,7 +1959,8 @@ const baseRepayAssetEvent: object = {
   denom: "",
   principalRepaid: "",
   interestRepaid: "",
-  healthFactor: "",
+  debtValue: "",
+  collateralValue: "",
 };
 
 export const RepayAssetEvent = {
@@ -1963,8 +1983,11 @@ export const RepayAssetEvent = {
     if (message.interestRepaid !== "") {
       writer.uint32(42).string(message.interestRepaid);
     }
-    if (message.healthFactor !== "") {
-      writer.uint32(50).string(message.healthFactor);
+    if (message.debtValue !== "") {
+      writer.uint32(50).string(message.debtValue);
+    }
+    if (message.collateralValue !== "") {
+      writer.uint32(58).string(message.collateralValue);
     }
     return writer;
   },
@@ -1992,7 +2015,10 @@ export const RepayAssetEvent = {
           message.interestRepaid = reader.string();
           break;
         case 6:
-          message.healthFactor = reader.string();
+          message.debtValue = reader.string();
+          break;
+        case 7:
+          message.collateralValue = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -2024,9 +2050,13 @@ export const RepayAssetEvent = {
       object.interestRepaid !== undefined && object.interestRepaid !== null
         ? String(object.interestRepaid)
         : "";
-    message.healthFactor =
-      object.healthFactor !== undefined && object.healthFactor !== null
-        ? String(object.healthFactor)
+    message.debtValue =
+      object.debtValue !== undefined && object.debtValue !== null
+        ? String(object.debtValue)
+        : "";
+    message.collateralValue =
+      object.collateralValue !== undefined && object.collateralValue !== null
+        ? String(object.collateralValue)
         : "";
     return message;
   },
@@ -2040,8 +2070,9 @@ export const RepayAssetEvent = {
       (obj.principalRepaid = message.principalRepaid);
     message.interestRepaid !== undefined &&
       (obj.interestRepaid = message.interestRepaid);
-    message.healthFactor !== undefined &&
-      (obj.healthFactor = message.healthFactor);
+    message.debtValue !== undefined && (obj.debtValue = message.debtValue);
+    message.collateralValue !== undefined &&
+      (obj.collateralValue = message.collateralValue);
     return obj;
   },
 
@@ -2052,7 +2083,8 @@ export const RepayAssetEvent = {
     message.denom = object.denom ?? "";
     message.principalRepaid = object.principalRepaid ?? "";
     message.interestRepaid = object.interestRepaid ?? "";
-    message.healthFactor = object.healthFactor ?? "";
+    message.debtValue = object.debtValue ?? "";
+    message.collateralValue = object.collateralValue ?? "";
     return message;
   },
 };
@@ -2061,7 +2093,8 @@ const baseLockCollateralEvent: object = {
   locker: "",
   cdpDenom: "",
   amountLocked: "",
-  healthFactor: "",
+  debtValue: "",
+  collateralValue: "",
 };
 
 export const LockCollateralEvent = {
@@ -2078,8 +2111,11 @@ export const LockCollateralEvent = {
     if (message.amountLocked !== "") {
       writer.uint32(26).string(message.amountLocked);
     }
-    if (message.healthFactor !== "") {
-      writer.uint32(34).string(message.healthFactor);
+    if (message.debtValue !== "") {
+      writer.uint32(34).string(message.debtValue);
+    }
+    if (message.collateralValue !== "") {
+      writer.uint32(42).string(message.collateralValue);
     }
     return writer;
   },
@@ -2101,7 +2137,10 @@ export const LockCollateralEvent = {
           message.amountLocked = reader.string();
           break;
         case 4:
-          message.healthFactor = reader.string();
+          message.debtValue = reader.string();
+          break;
+        case 5:
+          message.collateralValue = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -2125,9 +2164,13 @@ export const LockCollateralEvent = {
       object.amountLocked !== undefined && object.amountLocked !== null
         ? String(object.amountLocked)
         : "";
-    message.healthFactor =
-      object.healthFactor !== undefined && object.healthFactor !== null
-        ? String(object.healthFactor)
+    message.debtValue =
+      object.debtValue !== undefined && object.debtValue !== null
+        ? String(object.debtValue)
+        : "";
+    message.collateralValue =
+      object.collateralValue !== undefined && object.collateralValue !== null
+        ? String(object.collateralValue)
         : "";
     return message;
   },
@@ -2138,8 +2181,9 @@ export const LockCollateralEvent = {
     message.cdpDenom !== undefined && (obj.cdpDenom = message.cdpDenom);
     message.amountLocked !== undefined &&
       (obj.amountLocked = message.amountLocked);
-    message.healthFactor !== undefined &&
-      (obj.healthFactor = message.healthFactor);
+    message.debtValue !== undefined && (obj.debtValue = message.debtValue);
+    message.collateralValue !== undefined &&
+      (obj.collateralValue = message.collateralValue);
     return obj;
   },
 
@@ -2148,7 +2192,8 @@ export const LockCollateralEvent = {
     message.locker = object.locker ?? "";
     message.cdpDenom = object.cdpDenom ?? "";
     message.amountLocked = object.amountLocked ?? "";
-    message.healthFactor = object.healthFactor ?? "";
+    message.debtValue = object.debtValue ?? "";
+    message.collateralValue = object.collateralValue ?? "";
     return message;
   },
 };
@@ -2157,7 +2202,8 @@ const baseUnlockCollateralEvent: object = {
   unlocker: "",
   cdpDenom: "",
   amountUnlocked: "",
-  healthFactor: "",
+  debtValue: "",
+  collateralValue: "",
 };
 
 export const UnlockCollateralEvent = {
@@ -2174,8 +2220,11 @@ export const UnlockCollateralEvent = {
     if (message.amountUnlocked !== "") {
       writer.uint32(26).string(message.amountUnlocked);
     }
-    if (message.healthFactor !== "") {
-      writer.uint32(34).string(message.healthFactor);
+    if (message.debtValue !== "") {
+      writer.uint32(34).string(message.debtValue);
+    }
+    if (message.collateralValue !== "") {
+      writer.uint32(42).string(message.collateralValue);
     }
     return writer;
   },
@@ -2200,7 +2249,10 @@ export const UnlockCollateralEvent = {
           message.amountUnlocked = reader.string();
           break;
         case 4:
-          message.healthFactor = reader.string();
+          message.debtValue = reader.string();
+          break;
+        case 5:
+          message.collateralValue = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -2224,9 +2276,13 @@ export const UnlockCollateralEvent = {
       object.amountUnlocked !== undefined && object.amountUnlocked !== null
         ? String(object.amountUnlocked)
         : "";
-    message.healthFactor =
-      object.healthFactor !== undefined && object.healthFactor !== null
-        ? String(object.healthFactor)
+    message.debtValue =
+      object.debtValue !== undefined && object.debtValue !== null
+        ? String(object.debtValue)
+        : "";
+    message.collateralValue =
+      object.collateralValue !== undefined && object.collateralValue !== null
+        ? String(object.collateralValue)
         : "";
     return message;
   },
@@ -2237,8 +2293,9 @@ export const UnlockCollateralEvent = {
     message.cdpDenom !== undefined && (obj.cdpDenom = message.cdpDenom);
     message.amountUnlocked !== undefined &&
       (obj.amountUnlocked = message.amountUnlocked);
-    message.healthFactor !== undefined &&
-      (obj.healthFactor = message.healthFactor);
+    message.debtValue !== undefined && (obj.debtValue = message.debtValue);
+    message.collateralValue !== undefined &&
+      (obj.collateralValue = message.collateralValue);
     return obj;
   },
 
@@ -2249,7 +2306,8 @@ export const UnlockCollateralEvent = {
     message.unlocker = object.unlocker ?? "";
     message.cdpDenom = object.cdpDenom ?? "";
     message.amountUnlocked = object.amountUnlocked ?? "";
-    message.healthFactor = object.healthFactor ?? "";
+    message.debtValue = object.debtValue ?? "";
+    message.collateralValue = object.collateralValue ?? "";
     return message;
   },
 };
@@ -2419,7 +2477,8 @@ const baseMintStablecoinEvent: object = {
   minter: "",
   denom: "",
   amountMinted: "",
-  healthFactor: "",
+  debtValue: "",
+  collateralValue: "",
   initialCumulativeInterestMultiplier: "",
 };
 
@@ -2437,8 +2496,11 @@ export const MintStablecoinEvent = {
     if (message.amountMinted !== "") {
       writer.uint32(26).string(message.amountMinted);
     }
-    if (message.healthFactor !== "") {
-      writer.uint32(34).string(message.healthFactor);
+    if (message.debtValue !== "") {
+      writer.uint32(34).string(message.debtValue);
+    }
+    if (message.collateralValue !== "") {
+      writer.uint32(50).string(message.collateralValue);
     }
     if (message.initialCumulativeInterestMultiplier !== "") {
       writer.uint32(42).string(message.initialCumulativeInterestMultiplier);
@@ -2463,7 +2525,10 @@ export const MintStablecoinEvent = {
           message.amountMinted = reader.string();
           break;
         case 4:
-          message.healthFactor = reader.string();
+          message.debtValue = reader.string();
+          break;
+        case 6:
+          message.collateralValue = reader.string();
           break;
         case 5:
           message.initialCumulativeInterestMultiplier = reader.string();
@@ -2490,9 +2555,13 @@ export const MintStablecoinEvent = {
       object.amountMinted !== undefined && object.amountMinted !== null
         ? String(object.amountMinted)
         : "";
-    message.healthFactor =
-      object.healthFactor !== undefined && object.healthFactor !== null
-        ? String(object.healthFactor)
+    message.debtValue =
+      object.debtValue !== undefined && object.debtValue !== null
+        ? String(object.debtValue)
+        : "";
+    message.collateralValue =
+      object.collateralValue !== undefined && object.collateralValue !== null
+        ? String(object.collateralValue)
         : "";
     message.initialCumulativeInterestMultiplier =
       object.initialCumulativeInterestMultiplier !== undefined &&
@@ -2508,8 +2577,9 @@ export const MintStablecoinEvent = {
     message.denom !== undefined && (obj.denom = message.denom);
     message.amountMinted !== undefined &&
       (obj.amountMinted = message.amountMinted);
-    message.healthFactor !== undefined &&
-      (obj.healthFactor = message.healthFactor);
+    message.debtValue !== undefined && (obj.debtValue = message.debtValue);
+    message.collateralValue !== undefined &&
+      (obj.collateralValue = message.collateralValue);
     message.initialCumulativeInterestMultiplier !== undefined &&
       (obj.initialCumulativeInterestMultiplier =
         message.initialCumulativeInterestMultiplier);
@@ -2521,7 +2591,8 @@ export const MintStablecoinEvent = {
     message.minter = object.minter ?? "";
     message.denom = object.denom ?? "";
     message.amountMinted = object.amountMinted ?? "";
-    message.healthFactor = object.healthFactor ?? "";
+    message.debtValue = object.debtValue ?? "";
+    message.collateralValue = object.collateralValue ?? "";
     message.initialCumulativeInterestMultiplier =
       object.initialCumulativeInterestMultiplier ?? "";
     return message;
@@ -2534,7 +2605,8 @@ const baseReturnStablecoinEvent: object = {
   interestDenom: "",
   interestRepaid: "",
   principalRepaid: "",
-  healthFactor: "",
+  debtValue: "",
+  collateralValue: "",
 };
 
 export const ReturnStablecoinEvent = {
@@ -2557,8 +2629,11 @@ export const ReturnStablecoinEvent = {
     if (message.principalRepaid !== "") {
       writer.uint32(42).string(message.principalRepaid);
     }
-    if (message.healthFactor !== "") {
-      writer.uint32(50).string(message.healthFactor);
+    if (message.debtValue !== "") {
+      writer.uint32(50).string(message.debtValue);
+    }
+    if (message.collateralValue !== "") {
+      writer.uint32(58).string(message.collateralValue);
     }
     return writer;
   },
@@ -2589,7 +2664,10 @@ export const ReturnStablecoinEvent = {
           message.principalRepaid = reader.string();
           break;
         case 6:
-          message.healthFactor = reader.string();
+          message.debtValue = reader.string();
+          break;
+        case 7:
+          message.collateralValue = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -2621,9 +2699,13 @@ export const ReturnStablecoinEvent = {
       object.principalRepaid !== undefined && object.principalRepaid !== null
         ? String(object.principalRepaid)
         : "";
-    message.healthFactor =
-      object.healthFactor !== undefined && object.healthFactor !== null
-        ? String(object.healthFactor)
+    message.debtValue =
+      object.debtValue !== undefined && object.debtValue !== null
+        ? String(object.debtValue)
+        : "";
+    message.collateralValue =
+      object.collateralValue !== undefined && object.collateralValue !== null
+        ? String(object.collateralValue)
         : "";
     return message;
   },
@@ -2638,8 +2720,9 @@ export const ReturnStablecoinEvent = {
       (obj.interestRepaid = message.interestRepaid);
     message.principalRepaid !== undefined &&
       (obj.principalRepaid = message.principalRepaid);
-    message.healthFactor !== undefined &&
-      (obj.healthFactor = message.healthFactor);
+    message.debtValue !== undefined && (obj.debtValue = message.debtValue);
+    message.collateralValue !== undefined &&
+      (obj.collateralValue = message.collateralValue);
     return obj;
   },
 
@@ -2652,7 +2735,8 @@ export const ReturnStablecoinEvent = {
     message.interestDenom = object.interestDenom ?? "";
     message.interestRepaid = object.interestRepaid ?? "";
     message.principalRepaid = object.principalRepaid ?? "";
-    message.healthFactor = object.healthFactor ?? "";
+    message.debtValue = object.debtValue ?? "";
+    message.collateralValue = object.collateralValue ?? "";
     return message;
   },
 };

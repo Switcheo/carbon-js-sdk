@@ -3,23 +3,26 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Duration } from "../google/protobuf/duration";
 
-export const protobufPackage = "Switcheo.carbon.perpsliquidity";
+export const protobufPackage = "Switcheo.carbon.perpspool";
 
 /** Params defines the parameters for the module. */
 export interface Params {
   /** requotes when index price fluctuation threshold exceeded (in ratio) */
   quoteIndexPriceFluctuationToleranceRatio: string;
   /** requotes after orders are x seconds old */
-  quoteExpirySeconds: Long;
+  quoteExpiryDuration?: Duration;
   /** interval to take market utilization snapshot, e.g. every 60 seconds */
   marketUtilizationSnapshotInterval?: Duration;
   /** time duration window used to calculate the TWA market utilization e.g. last 24 hours */
   maxMarketUtilizationSnapshotWindow?: Duration;
+  navPerShareSnapshots: Long;
+  navPerShareSnapshotInterval?: Duration;
+  indexLastUpdatedAtThreshold?: Duration;
 }
 
 const baseParams: object = {
   quoteIndexPriceFluctuationToleranceRatio: "",
-  quoteExpirySeconds: Long.UZERO,
+  navPerShareSnapshots: Long.UZERO,
 };
 
 export const Params = {
@@ -32,8 +35,11 @@ export const Params = {
         .uint32(10)
         .string(message.quoteIndexPriceFluctuationToleranceRatio);
     }
-    if (!message.quoteExpirySeconds.isZero()) {
-      writer.uint32(16).uint64(message.quoteExpirySeconds);
+    if (message.quoteExpiryDuration !== undefined) {
+      Duration.encode(
+        message.quoteExpiryDuration,
+        writer.uint32(18).fork()
+      ).ldelim();
     }
     if (message.marketUtilizationSnapshotInterval !== undefined) {
       Duration.encode(
@@ -45,6 +51,21 @@ export const Params = {
       Duration.encode(
         message.maxMarketUtilizationSnapshotWindow,
         writer.uint32(34).fork()
+      ).ldelim();
+    }
+    if (!message.navPerShareSnapshots.isZero()) {
+      writer.uint32(40).uint64(message.navPerShareSnapshots);
+    }
+    if (message.navPerShareSnapshotInterval !== undefined) {
+      Duration.encode(
+        message.navPerShareSnapshotInterval,
+        writer.uint32(50).fork()
+      ).ldelim();
+    }
+    if (message.indexLastUpdatedAtThreshold !== undefined) {
+      Duration.encode(
+        message.indexLastUpdatedAtThreshold,
+        writer.uint32(58).fork()
       ).ldelim();
     }
     return writer;
@@ -61,7 +82,10 @@ export const Params = {
           message.quoteIndexPriceFluctuationToleranceRatio = reader.string();
           break;
         case 2:
-          message.quoteExpirySeconds = reader.uint64() as Long;
+          message.quoteExpiryDuration = Duration.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         case 3:
           message.marketUtilizationSnapshotInterval = Duration.decode(
@@ -71,6 +95,21 @@ export const Params = {
           break;
         case 4:
           message.maxMarketUtilizationSnapshotWindow = Duration.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 5:
+          message.navPerShareSnapshots = reader.uint64() as Long;
+          break;
+        case 6:
+          message.navPerShareSnapshotInterval = Duration.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        case 7:
+          message.indexLastUpdatedAtThreshold = Duration.decode(
             reader,
             reader.uint32()
           );
@@ -90,11 +129,11 @@ export const Params = {
       object.quoteIndexPriceFluctuationToleranceRatio !== null
         ? String(object.quoteIndexPriceFluctuationToleranceRatio)
         : "";
-    message.quoteExpirySeconds =
-      object.quoteExpirySeconds !== undefined &&
-      object.quoteExpirySeconds !== null
-        ? Long.fromString(object.quoteExpirySeconds)
-        : Long.UZERO;
+    message.quoteExpiryDuration =
+      object.quoteExpiryDuration !== undefined &&
+      object.quoteExpiryDuration !== null
+        ? Duration.fromJSON(object.quoteExpiryDuration)
+        : undefined;
     message.marketUtilizationSnapshotInterval =
       object.marketUtilizationSnapshotInterval !== undefined &&
       object.marketUtilizationSnapshotInterval !== null
@@ -105,6 +144,21 @@ export const Params = {
       object.maxMarketUtilizationSnapshotWindow !== null
         ? Duration.fromJSON(object.maxMarketUtilizationSnapshotWindow)
         : undefined;
+    message.navPerShareSnapshots =
+      object.navPerShareSnapshots !== undefined &&
+      object.navPerShareSnapshots !== null
+        ? Long.fromString(object.navPerShareSnapshots)
+        : Long.UZERO;
+    message.navPerShareSnapshotInterval =
+      object.navPerShareSnapshotInterval !== undefined &&
+      object.navPerShareSnapshotInterval !== null
+        ? Duration.fromJSON(object.navPerShareSnapshotInterval)
+        : undefined;
+    message.indexLastUpdatedAtThreshold =
+      object.indexLastUpdatedAtThreshold !== undefined &&
+      object.indexLastUpdatedAtThreshold !== null
+        ? Duration.fromJSON(object.indexLastUpdatedAtThreshold)
+        : undefined;
     return message;
   },
 
@@ -113,10 +167,10 @@ export const Params = {
     message.quoteIndexPriceFluctuationToleranceRatio !== undefined &&
       (obj.quoteIndexPriceFluctuationToleranceRatio =
         message.quoteIndexPriceFluctuationToleranceRatio);
-    message.quoteExpirySeconds !== undefined &&
-      (obj.quoteExpirySeconds = (
-        message.quoteExpirySeconds || Long.UZERO
-      ).toString());
+    message.quoteExpiryDuration !== undefined &&
+      (obj.quoteExpiryDuration = message.quoteExpiryDuration
+        ? Duration.toJSON(message.quoteExpiryDuration)
+        : undefined);
     message.marketUtilizationSnapshotInterval !== undefined &&
       (obj.marketUtilizationSnapshotInterval =
         message.marketUtilizationSnapshotInterval
@@ -127,6 +181,18 @@ export const Params = {
         message.maxMarketUtilizationSnapshotWindow
           ? Duration.toJSON(message.maxMarketUtilizationSnapshotWindow)
           : undefined);
+    message.navPerShareSnapshots !== undefined &&
+      (obj.navPerShareSnapshots = (
+        message.navPerShareSnapshots || Long.UZERO
+      ).toString());
+    message.navPerShareSnapshotInterval !== undefined &&
+      (obj.navPerShareSnapshotInterval = message.navPerShareSnapshotInterval
+        ? Duration.toJSON(message.navPerShareSnapshotInterval)
+        : undefined);
+    message.indexLastUpdatedAtThreshold !== undefined &&
+      (obj.indexLastUpdatedAtThreshold = message.indexLastUpdatedAtThreshold
+        ? Duration.toJSON(message.indexLastUpdatedAtThreshold)
+        : undefined);
     return obj;
   },
 
@@ -134,11 +200,11 @@ export const Params = {
     const message = { ...baseParams } as Params;
     message.quoteIndexPriceFluctuationToleranceRatio =
       object.quoteIndexPriceFluctuationToleranceRatio ?? "";
-    message.quoteExpirySeconds =
-      object.quoteExpirySeconds !== undefined &&
-      object.quoteExpirySeconds !== null
-        ? Long.fromValue(object.quoteExpirySeconds)
-        : Long.UZERO;
+    message.quoteExpiryDuration =
+      object.quoteExpiryDuration !== undefined &&
+      object.quoteExpiryDuration !== null
+        ? Duration.fromPartial(object.quoteExpiryDuration)
+        : undefined;
     message.marketUtilizationSnapshotInterval =
       object.marketUtilizationSnapshotInterval !== undefined &&
       object.marketUtilizationSnapshotInterval !== null
@@ -148,6 +214,21 @@ export const Params = {
       object.maxMarketUtilizationSnapshotWindow !== undefined &&
       object.maxMarketUtilizationSnapshotWindow !== null
         ? Duration.fromPartial(object.maxMarketUtilizationSnapshotWindow)
+        : undefined;
+    message.navPerShareSnapshots =
+      object.navPerShareSnapshots !== undefined &&
+      object.navPerShareSnapshots !== null
+        ? Long.fromValue(object.navPerShareSnapshots)
+        : Long.UZERO;
+    message.navPerShareSnapshotInterval =
+      object.navPerShareSnapshotInterval !== undefined &&
+      object.navPerShareSnapshotInterval !== null
+        ? Duration.fromPartial(object.navPerShareSnapshotInterval)
+        : undefined;
+    message.indexLastUpdatedAtThreshold =
+      object.indexLastUpdatedAtThreshold !== undefined &&
+      object.indexLastUpdatedAtThreshold !== null
+        ? Duration.fromPartial(object.indexLastUpdatedAtThreshold)
         : undefined;
     return message;
   },

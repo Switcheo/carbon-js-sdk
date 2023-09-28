@@ -4,7 +4,7 @@ import _m0 from "protobufjs/minimal";
 import { Timestamp } from "../google/protobuf/timestamp";
 import { StringValue } from "../google/protobuf/wrappers";
 
-export const protobufPackage = "Switcheo.carbon.perpsliquidity";
+export const protobufPackage = "Switcheo.carbon.perpspool";
 
 export interface Quote {
   quotePriceType: string;
@@ -39,6 +39,12 @@ export interface UpdateMarketConfigParams {
   borrowFeeMultiplier: string;
   mode?: string;
   quoteShape: Quote[];
+}
+
+/** MarketUtilizationRateSnapshot represents the utilization rate of a market at a given timestamp */
+export interface MarketUtilizationRateSnapshot {
+  timestamp?: Date;
+  utilizationRate: string;
 }
 
 /** TWAMarketUtilizationRate represents the calculated TWA utilization rate of a market */
@@ -365,6 +371,89 @@ export const UpdateMarketConfigParams = {
     message.quoteShape = (object.quoteShape ?? []).map((e) =>
       Quote.fromPartial(e)
     );
+    return message;
+  },
+};
+
+const baseMarketUtilizationRateSnapshot: object = { utilizationRate: "" };
+
+export const MarketUtilizationRateSnapshot = {
+  encode(
+    message: MarketUtilizationRateSnapshot,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.timestamp !== undefined) {
+      Timestamp.encode(
+        toTimestamp(message.timestamp),
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    if (message.utilizationRate !== "") {
+      writer.uint32(18).string(message.utilizationRate);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MarketUtilizationRateSnapshot {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMarketUtilizationRateSnapshot,
+    } as MarketUtilizationRateSnapshot;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.timestamp = fromTimestamp(
+            Timestamp.decode(reader, reader.uint32())
+          );
+          break;
+        case 2:
+          message.utilizationRate = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MarketUtilizationRateSnapshot {
+    const message = {
+      ...baseMarketUtilizationRateSnapshot,
+    } as MarketUtilizationRateSnapshot;
+    message.timestamp =
+      object.timestamp !== undefined && object.timestamp !== null
+        ? fromJsonTimestamp(object.timestamp)
+        : undefined;
+    message.utilizationRate =
+      object.utilizationRate !== undefined && object.utilizationRate !== null
+        ? String(object.utilizationRate)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MarketUtilizationRateSnapshot): unknown {
+    const obj: any = {};
+    message.timestamp !== undefined &&
+      (obj.timestamp = message.timestamp.toISOString());
+    message.utilizationRate !== undefined &&
+      (obj.utilizationRate = message.utilizationRate);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MarketUtilizationRateSnapshot>
+  ): MarketUtilizationRateSnapshot {
+    const message = {
+      ...baseMarketUtilizationRateSnapshot,
+    } as MarketUtilizationRateSnapshot;
+    message.timestamp = object.timestamp ?? undefined;
+    message.utilizationRate = object.utilizationRate ?? "";
     return message;
   },
 };

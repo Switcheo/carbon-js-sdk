@@ -1,6 +1,6 @@
-import { Token } from "@carbon-sdk/codec";
+import { Coin } from "@carbon-sdk/codec/carbon-models";
 
-export interface TokensWithExternalBalance extends Token {
+export interface TokensWithExternalBalance extends Coin.Token {
   externalBalance: string;
 }
 
