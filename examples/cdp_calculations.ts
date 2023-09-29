@@ -6,6 +6,7 @@ import { CarbonSDK } from "./_sdk";
 import "./_setup";
 import {QueryCdpPositionsRequest} from "../lib/codec";
 import Long from "long";
+import { bnOrZero } from "../lib/util/number";
 
 (async () => {
   const mnemonics = process.env.MNEMONICS ?? BIP39.generateMnemonic();
@@ -57,13 +58,27 @@ import Long from "long";
 
   const accountStablecoin = await sdk.query.cdp.AccountStablecoin({address: address})
   console.log("\nAccountStablecoin", JSON.stringify(accountStablecoin))
+  
+  const params = await sdk.query.cdp.Params({})
+  console.log(`\nParams ${JSON.stringify(params)}`)
 
-  const ratio = await sdk.cdp.getCdpToActualRatio(cdpDenom)
+  /**
+   * Fee claimed by carbon protocol
+   * Only charged on interest, not principal. 
+   * Required in Token TOTAL DEBT calculations
+   * Total debt calculations are always done in calculating cdpRatio, cdpUsdValue
+   */
+  const interestFee = bnOrZero(params.params?.interestFee)
+
+  const ratio = await sdk.cdp.getCdpToActualRatio(cdpDenom, interestFee)
   console.log("\ngetCdpToActualRatio", JSON.stringify(ratio))
 
   const amt = new BigNumber("1000000")
-  const cdpTokenValue = await sdk.cdp.getCdpTokenUsdVal(cdpDenom, amt)
+  const cdpTokenValue = await sdk.cdp.getCdpTokenUsdVal(cdpDenom, amt, ratio)
   console.log("\ngetCdpTokenUsdVal", cdpTokenValue?.toNumber())
+
+  const cdpTokenPrice = await sdk.cdp.getCdpTokenPrice(cdpDenom)
+  console.log("\ngetCdpTokenPrice", cdpTokenPrice?.toNumber())
 
   const totalCollateral = await sdk.cdp.getModuleTotalCollateralUsdVal()
   console.log("\ngetModuleTotalCollateralUsdVal", totalCollateral?.toNumber())
@@ -73,9 +88,6 @@ import Long from "long";
 
   const maxCollateralsForUnlock = await sdk.cdp.getMaxCollateralForUnlock(address, cdpDenom)
   console.log("\ngetMaxCollateralForUnlock", maxCollateralsForUnlock?.toNumber())
-
-  const cdpTokenPrice = await sdk.cdp.getCdpTokenPrice(cdpDenom)
-  console.log("\ngetCdpTokenPrice", cdpTokenPrice?.toNumber())
 
   const positionsAll = await sdk.query.cdp.PositionsAll({
     maxHealthFactor: "999999999999999999999",
@@ -92,8 +104,5 @@ import Long from "long";
 
   const asset = await sdk.query.cdp.Asset({denom: denom})
   console.log(`\nAsset ${JSON.stringify(asset)}`)
-
-  const params = await sdk.query.cdp.Params({})
-  console.log(`\nParams ${JSON.stringify(params)}`)
 
 })().catch(console.error).finally(() => process.exit(0));
