@@ -70,8 +70,8 @@ import { bnOrZero } from "../lib/util/number";
    */
   const interestFee = bnOrZero(params.params?.interestFee)
 
-  const totalTokenDebt = await sdk.cdp.getTotalTokenDebt(denom, interestFee)
-  console.log("\ngetTotalTokenDebt", JSON.stringify(totalTokenDebt))
+  const totalTokenDebt = await sdk.cdp.getTokenTotalDebt(denom, interestFee)
+  console.log("\getTokenTotalDebt", JSON.stringify(totalTokenDebt))
 
   const ratio = await sdk.cdp.getCdpToActualRatio(cdpDenom, totalTokenDebt)
   console.log("\ngetCdpToActualRatio", JSON.stringify(ratio))

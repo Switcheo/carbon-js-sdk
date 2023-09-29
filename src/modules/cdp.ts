@@ -804,7 +804,7 @@ export class CDPModule extends BaseModule {
     const interestFee: BigNumber = bnOrZero(cdpParamsResponse.params?.interestFee);
 
     const cdpTokenBalancePromises: Promise<BigNumber>[] = cdpTokenBalances.map(balance => (
-      this.getTotalTokenDebt(balance.denom, interestFee)
+      this.getTokenTotalDebt(balance.denom, interestFee)
         .then(totalOwed => this.getCdpToActualRatio(balance.denom, totalOwed))
         .then(ratio => this.getCdpTokenUsdVal(balance.denom, bnOrZero(balance.amount), ratio))
         .then((val) => bnOrZero(val))
@@ -838,7 +838,7 @@ export class CDPModule extends BaseModule {
     return amount.multipliedBy(twap).shiftedBy(-decimals);
   }
 
-  public async getTotalTokenDebt(denom: string, interestFee: BigNumber) {
+  public async getTokenTotalDebt(denom: string, interestFee: BigNumber) {
     const debtInfoRsp = await this.sdkProvider.query.cdp.TokenDebt(QueryTokenDebtRequest.fromPartial({ denom }));
     const debtInfo = debtInfoRsp.debtInfo;
     if (!debtInfo) throw new Error("unable to retrieve debt info");
