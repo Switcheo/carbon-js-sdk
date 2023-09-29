@@ -70,7 +70,10 @@ import { bnOrZero } from "../lib/util/number";
    */
   const interestFee = bnOrZero(params.params?.interestFee)
 
-  const ratio = await sdk.cdp.getCdpToActualRatio(cdpDenom, interestFee)
+  const totalTokenDebt = await sdk.cdp.getTotalTokenDebt(denom, interestFee)
+  console.log("\ngetTotalTokenDebt", JSON.stringify(totalTokenDebt))
+
+  const ratio = await sdk.cdp.getCdpToActualRatio(cdpDenom, totalTokenDebt)
   console.log("\ngetCdpToActualRatio", JSON.stringify(ratio))
 
   const amt = new BigNumber("1000000")
