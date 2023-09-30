@@ -980,7 +980,6 @@ export class CDPModule extends BaseModule {
       }
     }
 
-
     const stablecoinInterestResponse = await sdk.query.cdp.StablecoinInterest({});
     const cim = bnOrZero(debtInfo.cumulativeInterestMultiplier);
     const apy = bnOrZero(stablecoinInterestResponse.stablecoinInterestInfo?.stablecoinInterestRate);

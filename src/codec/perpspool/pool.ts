@@ -13,9 +13,9 @@ export interface Pool {
   id: Long;
   /** admin/govt determined name */
   name: string;
-  /** deposit_denom for underlying token that will be used to provide liquidity */
+  /** deposit_denom for nav token that will be used to provide liquidity */
   depositDenom: string;
-  /** auto-generated denom for the share token that can be used to redeem underlying deposited token */
+  /** auto-generated denom for the share token that can be used to redeem deposited token */
   shareDenom: string;
   /** auto-created address of the vault that stores the tokens */
   vaultAddress: string;

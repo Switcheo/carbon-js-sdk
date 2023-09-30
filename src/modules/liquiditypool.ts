@@ -6,6 +6,7 @@ import dayjs from "dayjs";
 import Long from "long";
 import BaseModule from "./base";
 import { InsightsQueryResponse, QueryGetInflation } from "@carbon-sdk/insights";
+import { BN_ZERO } from "@carbon-sdk/util/number";
 
 export class LiquidityPoolModule extends BaseModule {
   public async create(params: LiquidityPoolModule.CreatePoolParams, opts?: CarbonTx.SignTxOpts) {
@@ -179,15 +180,14 @@ export class LiquidityPoolModule extends BaseModule {
   }
 
   public async getWeeklyRewardsRealInflation(): Promise<BigNumber> {
-    const { result }: InsightsQueryResponse<QueryGetInflation> = await this.sdkProvider.insights.Inflation()
-    const MIN_RATE = new BigNumber(0.0003);
-    const INITIAL_SUPPLY = new BigNumber(1000000000);
-    let inflationRate = new BigNumber(result.inflationRate);
-
-    if (inflationRate.lt(MIN_RATE)) {
-      inflationRate = MIN_RATE;
+    const mintDataResponse = await this.sdkProvider.query.inflation.MintData({})
+    let weeklyRewards = BN_ZERO
+    if (mintDataResponse.mintData) {
+      const mintData = mintDataResponse.mintData
+      const currentSupply = new BigNumber(mintData.currentSupply)
+      const swthInflationRate = new BigNumber(mintData.inflationRate).shiftedBy(-18)
+      weeklyRewards = currentSupply.times(swthInflationRate).div(52)
     }
-    const weeklyRewards = INITIAL_SUPPLY.div(52).times(inflationRate);
 
     // Calculate weekly rewards earned by liquidity providers
     // Weekly LP Rewards = liquidityRewardRatio * weeklyRewards

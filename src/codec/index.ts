@@ -24128,7 +24128,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
-    "MarketUtilizationMultiplier": [
+    "MarketLiquidityUsageMultiplier": [
       {
         "name": "market",
         "type": "string"
@@ -24354,7 +24354,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
-    "UpdateMarketUtilizationMultiplierEvent": [
+    "UpdateMarketLiquidityUsageMultiplierEvent": [
       {
         "name": "market",
         "type": "string"
@@ -24462,17 +24462,17 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/Switcheo.carbon.perpspool"
       }
     ],
-    "QueryAllPoolMarketUtilizationMultiplierRequest": [
+    "QueryAllPoolMarketLiquidityUsageMultiplierRequest": [
       {
         "name": "pagination",
         "type": "PageRequest",
         "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
-    "QueryAllPoolMarketUtilizationMultiplierResponse": [
+    "QueryAllPoolMarketLiquidityUsageMultiplierResponse": [
       {
-        "name": "markets_utilization_multiplier",
-        "type": "MarketUtilizationMultiplier[]",
+        "name": "markets_liquidity_usage_multiplier",
+        "type": "MarketLiquidityUsageMultiplier[]",
         "packageName": "/Switcheo.carbon.perpspool"
       },
       {
@@ -24571,7 +24571,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "total_underlying_amount",
+        "name": "total_nav_amount",
         "type": "string"
       },
       {

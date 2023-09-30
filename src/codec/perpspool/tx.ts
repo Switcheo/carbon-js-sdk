@@ -11,7 +11,7 @@ export interface MsgCreatePool {
   creator: string;
   /** name of pool */
   name: string;
-  /** denom of the underlying token in the pool that is used to provide liquidity */
+  /** denom of the nav token in the pool that is used to provide liquidity */
   depositDenom: string;
   /** symbol of the share token that represents any tokens in the pool 1-to-1 */
   shareTokenSymbol: string;
