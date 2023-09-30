@@ -48,7 +48,7 @@ export class NEOClient {
     [Blockchain.Neo]: "Neo",
   };
 
-  private constructor(public readonly configProvider: NetworkConfigProvider, public readonly blockchain: Blockchain) {}
+  private constructor(public readonly configProvider: NetworkConfigProvider, public readonly blockchain: Blockchain) { }
 
   public static instance(opts: NEOClientOpts) {
     const { configProvider, blockchain = Blockchain.Neo } = opts;
@@ -74,16 +74,15 @@ export class NEOClient {
     const tokenQueryResults = await sdk.token.getAllTokens();
     const account = new Neon.wallet.Account(address);
     const tokens = tokenQueryResults.filter(
-      (token) =>
-        {
-          const isCorrectBlockchain = 
-          version === "V2" 
-            ? 
-            !!sdk.token.getBlockchainV2(token.denom) && (BLOCKCHAIN_V2_TO_V1_MAPPING[sdk.token.getBlockchainV2(token.denom)!] == this.blockchain) 
-            : 
+      (token) => {
+        const isCorrectBlockchain =
+          version === "V2"
+            ?
+            !!sdk.token.getBlockchainV2(token.denom) && (BLOCKCHAIN_V2_TO_V1_MAPPING[sdk.token.getBlockchainV2(token.denom)!] == this.blockchain)
+            :
             blockchainForChainId(token.chainId.toNumber(), sdk.network) == this.blockchain
-          return (isCorrectBlockchain || token.denom === "swth") && token.tokenAddress.length == 40 && token.bridgeAddress.length == 40
-        }
+        return (isCorrectBlockchain || token.denom === "swth") && token.tokenAddress.length == 40 && token.bridgeAddress.length == 40
+      }
     );
 
     const client: Neon.rpc.RPCClient = new Neon.rpc.RPCClient(url, "2.5.2"); // TODO: should we change the RPC version??
@@ -164,10 +163,7 @@ export class NEOClient {
     ]);
 
     const rpcUrl = await this.getProviderUrl();
-    const apiProvider =
-      networkConfig.network === CarbonSDK.Network.MainNet
-        ? new api.neonDB.instance("https://api.switcheo.network")
-        : new api.neoCli.instance(rpcUrl);
+    const apiProvider = new api.neoCli.instance(rpcUrl)
     return api.doInvoke({
       api: apiProvider,
       url: rpcUrl,
@@ -258,10 +254,7 @@ export class NEOClient {
     sb.emitAppCall(scriptHash, "lock", data);
 
     const rpcUrl = await this.getProviderUrl();
-    const apiProvider =
-      networkConfig.network === CarbonSDK.Network.MainNet
-        ? new api.neonDB.instance("https://api.switcheo.network")
-        : new api.neoCli.instance(rpcUrl);
+    const apiProvider = new api.neoCli.instance(rpcUrl)
 
     let invokeTxConfig: any = {
       account: {
@@ -344,11 +337,7 @@ export class NEOClient {
     };
 
     const script = Neon.sc.createScript(props);
-    const networkConfig = this.getNetworkConfig();
-    const apiProvider =
-      networkConfig.network === CarbonSDK.Network.MainNet
-        ? new api.neonDB.instance("https://api.switcheo.network")
-        : new api.neoCli.instance(rpcUrl);
+    const apiProvider = new api.neoCli.instance(rpcUrl)
 
     const config = {
       api: apiProvider, // Network
