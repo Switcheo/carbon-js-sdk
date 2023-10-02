@@ -1044,6 +1044,28 @@ export const TxTypes = {
 
 
 // Exported for convenience
+export { Block } from "./misc/block";
+export { Message } from "./misc/message";
+export { MessageType } from "./misc/message_type";
+export { Transaction, APITransaction } from "./misc/transaction";
+export { AccountTrade } from "./misc/trade";
+export { QuerySearchRequest, QuerySearchResponse, QueryAllMessageTypeRequest, QueryAllMessageTypeResponse, QueryAllTransactionRequest, QueryAllTransactionResponse, QueryAllBlockRequest, QueryAllBlockResponse, QueryAllModuleAddressRequest, QueryAllModuleAddressResponse, QueryAllModuleAddressResponse_AddressesEntry, QueryModuleAddressRequest, QueryModuleAddressResponse, Address } from "./misc/query";
+export { MsgSetTradingFlag, MsgSetTradingFlagResponse, MsgCreateOrder, MsgCreateOrderResponse, MsgEditOrder, MsgEditOrderResponse, MsgCancelOrder, MsgCancelOrderResponse, MsgCancelAll, MsgCancelAllResponse } from "./order/tx";
+export { Params as OrderParams, Order, DBOrder, OrdersForMarket, OrderIDsForMarket, OrderIDs, Orders } from "./order/order";
+export { QueryGetOrderRequest, QueryGetOrderResponse, QueryAllOrderRequest, QueryAllOrderResponse, QueryAccountOpenOrdersRequest, QueryAccountOpenOrdersResponse, QueryParamsRequest as QueryOrderParamsRequest, QueryParamsResponse as QueryOrderParamsResponse, QueryOrderAllocatedMarginRequest, QueryOrderAllocatedMarginResponse } from "./order/query";
+export { OrderEvent } from "./order/event";
+export { StablecoinInterestInfo } from "./cdp/stablecoin_interest_info";
+export { DebtInfo } from "./cdp/debt_info";
+export { MsgAddRateStrategy, MsgAddRateStrategyResponse, MsgUpdateRateStrategy, MsgUpdateRateStrategyResponse, MsgRemoveRateStrategy, MsgRemoveRateStrategyResponse, MsgAddAsset, MsgAddAssetResponse, MsgUpdateAsset, MsgUpdateAssetResponse, MsgSupplyAsset, MsgSupplyAssetResponse, MsgWithdrawAsset, MsgWithdrawAssetResponse, MsgLockCollateral, MsgLockCollateralResponse, MsgUnlockCollateral, MsgUnlockCollateralResponse, MsgBorrowAsset, MsgBorrowAssetResponse, MsgRepayAsset, MsgRepayAssetResponse, MsgSupplyAssetAndLockCollateral, MsgSupplyAssetAndLockCollateralResponse, MsgUnlockCollateralAndWithdrawAsset, MsgUnlockCollateralAndWithdrawAssetResponse, MsgLiquidateCollateral, MsgLiquidateCollateralResponse, MsgSetLiquidationFee, MsgSetLiquidationFeeResponse, MsgSetInterestFee, MsgSetInterestFeeResponse, MsgRepayAssetWithCdpTokens, MsgRepayAssetWithCdpTokensResponse, MsgRepayAssetWithCollateral, MsgRepayAssetWithCollateralResponse, MsgSetStablecoinMintCap, MsgSetStablecoinMintCapResponse, MsgSetStablecoinInterestRate, MsgSetStablecoinInterestRateResponse, MsgMintStablecoin, MsgMintStablecoinResponse, MsgReturnStablecoin, MsgReturnStablecoinResponse, MsgSetCompleteLiquidationThreshold, MsgSetCompleteLiquidationThresholdResponse, MsgSetMinimumCloseFactor, MsgSetMinimumCloseFactorResponse, MsgSetSmallLiquidationSize, MsgSetSmallLiquidationSizeResponse, MsgLiquidateCollateralWithCdpTokens, MsgLiquidateCollateralWithCdpTokensResponse, MsgLiquidateCollateralWithCollateral, MsgLiquidateCollateralWithCollateralResponse, MsgLiquidateCollateralWithStablecoin, MsgLiquidateCollateralWithStablecoinResponse, MsgCreateRewardScheme, MsgCreateRewardSchemeResponse, MsgUpdateRewardScheme, MsgUpdateRewardSchemeResponse, MsgClaimRewards, MsgClaimRewardsResponse, MsgSetStalePriceGracePeriod, MsgSetStalePriceGracePeriodResponse, MsgSetCdpPaused, MsgSetCdpPausedResponse, MsgReturnStablecoinWithInterestInCollateral, MsgReturnStablecoinWithInterestInCollateralResponse, MsgReturnStablecoinWithInterestInCdpTokens, MsgReturnStablecoinWithInterestInCdpTokensResponse, MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens, MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse, MsgLiquidateCollateralWithStablecoinAndInterestInCollateral, MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse, MsgConvertTokenInCdpToGroupTokens, MsgConvertTokenInCdpToGroupTokensResponse, MsgAddEModeCategory, MsgAddEModeCategoryResponse, MsgUpdateEModeCategory, UpdateEModeCategoryParams, MsgUpdateEModeCategoryResponse, MsgChangeAccountEMode, MsgChangeAccountEModeResponse } from "./cdp/tx";
+export { CDPLiquidations } from "./cdp/cdp_liquidations";
+export { AssetParams, AssetUtilization, UpdateAssetParams } from "./cdp/asset_params";
+export { RateStrategyParams } from "./cdp/rate_strategy_params";
+export { StablecoinDebtInfo } from "./cdp/stablecoin_debt_info";
+export { RewardScheme, CreateRewardSchemeParams, UpdateRewardSchemeParams, RewardDebt } from "./cdp/reward_scheme";
+export { EModeCategory } from "./cdp/e_mode_category";
+export { QueryParamsRequest as QueryCdpParamsRequest, QueryParamsResponse as QueryCdpParamsResponse, QueryRateStrategyRequest, QueryRateStrategyResponse, QueryRateStrategyAllRequest, QueryRateStrategyAllResponse, QueryAccountDataRequest, QueryAccountDataResponse, QueryAccountCollateralRequest, QueryAccountCollateralResponse, QueryAccountCollateralAllRequest, QueryAccountCollateralAllResponse, Collateral, QueryAccountDebtRequest, QueryAccountDebtResponse, QueryAccountDebtAllRequest, QueryAccountDebtAllResponse, Debt, QueryAccountStablecoinRequest, QueryAccountStablecoinResponse, QueryAssetRequest, QueryAssetResponse, QueryAssetAllRequest, QueryAssetAllResponse, QueryTokenDebtRequest, QueryTokenDebtResponse, QueryTokenDebtAllRequest, QueryTokenDebtAllResponse, QueryStablecoinDebtRequest, QueryStablecoinDebtResponse, CdpPositionItem, CdpPosition, QueryCdpPositionRequest, QueryCdpPositionResponse, QueryCdpPositionsRequest, QueryCdpPositionsResponse, QueryRewardSchemesAllRequest, QueryRewardSchemesAllResponse, QueryRewardDebtsRequest, QueryRewardDebtsResponse, QueryRewardDebtsAllRequest, QueryEModeAllRequest, QueryEModeAllResponse, QueryStablecoinInterestRequest, QueryStablecoinInterestResponse, QueryEModeRequest, QueryEModeResponse, QueryAccountEModeRequest, QueryAccountEModeResponse, QueryCDPLiquidationsAllRequest, QueryCDPLiquidationsAllResponse } from "./cdp/query";
+export { NewRateStrategyParamsEvent, UpdateRateStrategyParamsEvent, RemoveRateStrategyParamsEvent, NewAssetParamsEvent, UpdateAssetParamsEvent, NewEModeCategoryEvent, UpdateEModeCategoryEvent, UpdateAccountEModeCategoryNameEvent, SetInterestFeeEvent, SetLiquidationFeeEvent, SetStablecoinInterestRateEvent, SetStablecoinMintCapEvent, SetCompleteLiquidationThresholdEvent, SetMinimumCloseFactorEvent, SetSmallLiquidationSizeEvent, SetStalePriceGracePeriodEvent, SetCdpPausedEvent, SupplyAssetEvent, WithdrawAssetEvent, BorrowAssetEvent, RepayAssetEvent, LockCollateralEvent, UnlockCollateralEvent, UpdateDebtInfoEvent, UpdateStablecoinDebtInfoEvent, MintStablecoinEvent, ReturnStablecoinEvent, LiquidateCollateralEvent, LiquidateCollateralWithStablecoinEvent, ClaimRewardEvent, RewardDebtEvent, RewardSchemeEvent, AddReserveEvent, RefundReserveEvent } from "./cdp/event";
+export { Params as CdpParams } from "./cdp/params";
 export { HashOp, hashOpFromJSON, hashOpToJSON, LengthOp, lengthOpFromJSON, lengthOpToJSON, ExistenceProof, NonExistenceProof, CommitmentProof, LeafOp, InnerOp, ProofSpec, InnerSpec, BatchProof, BatchEntry, CompressedBatchProof, CompressedBatchEntry, CompressedExistenceProof, CompressedNonExistenceProof } from "./proofs";
 export { MsgSignData } from "./evmmerge/offchain";
 export { MsgMergeAccount, MsgMergeAccountResponse } from "./evmmerge/tx";
@@ -1054,6 +1076,78 @@ export { Any } from "./google/protobuf/any";
 export { Timestamp } from "./google/protobuf/timestamp";
 export { DoubleValue, FloatValue, Int64Value, UInt64Value, Int32Value, UInt32Value, BoolValue, StringValue, BytesValue } from "./google/protobuf/wrappers";
 export { Duration } from "./google/protobuf/duration";
+export { MsgSetMargin, MsgSetMarginResponse } from "./position/tx";
+export { Position, Positions, APIPosition, PositionAllocatedMargin } from "./position/position";
+export { QueryGetPositionRequest, QueryGetPositionResponse, QueryAllPositionRequest, QueryAllPositionResponse, QueryPositionAllocatedMarginRequest, QueryPositionAllocatedMarginResponse } from "./position/query";
+export { PositionEvent } from "./position/event";
+export { MsgCreateOracle, CreateOracleParams, MsgCreateOracleResponse, MsgCreateVote, MsgCreateVoteResponse, MsgUpdateOracle, UpdateOracleParams, MsgUpdateOracleResponse, MsgRemoveOracle, MsgRemoveOracleResponse, MsgSetOracleSlashEnabled, MsgSetOracleSlashEnabledResponse } from "./oracle/tx";
+export { Params as OracleParams, Oracle, Vote, Result, Mark, Contract } from "./oracle/oracle";
+export { OracleVotesWindow, SlashCounter } from "./oracle/slashing";
+export { CreateOracleProposal } from "./oracle/proposal";
+export { QueryOracleRequest, QueryOracleResponse, QueryAllOracleRequest, QueryAllOracleResponse, QueryResultsRequest, QueryResultsResponse, QueryVotesRequest, QueryVotesResponse, QueryVoterPowerRequest, QueryVoterPowerResponse, QueryAllSlashCounterRequest, QueryAllSlashCounterResponse, QuerySlashCounterRequest, QuerySlashCounterResponse, QueryAllOracleVotesWindowRequest, QueryAllOracleVotesWindowResponse, QueryOracleVotesWindowRequest, QueryOracleVotesWindowResponse, QueryParamsRequest as QueryOracleParamsRequest, QueryParamsResponse as QueryOracleParamsResponse, QueryContractAddressRequest, QueryContractAddressResponse, QueryContractAllRequest, QueryContractAllResponse, QueryContractParamsRequest, QueryContractParamsResponse } from "./oracle/query";
+export { ResultEvent, OracleSlashEvent } from "./oracle/event";
+export { RewardWeightRange, AllianceAsset, RewardWeightChangeSnapshot } from "./alliance/alliance";
+export { MsgCreateAllianceProposal, MsgUpdateAllianceProposal, MsgDeleteAllianceProposal } from "./alliance/gov";
+export { MsgDelegate, MsgDelegateResponse, MsgUndelegate, MsgUndelegateResponse, MsgRedelegate, MsgRedelegateResponse, MsgClaimDelegationRewards, MsgClaimDelegationRewardsResponse } from "./alliance/tx";
+export { Delegation, Redelegation, QueuedRedelegation, Undelegation, QueuedUndelegation, AllianceValidatorInfo } from "./alliance/delegations";
+export { DelegateAllianceEvent, UndelegateAllianceEvent, RedelegateAllianceEvent, ClaimAllianceRewardsEvent } from "./alliance/events";
+export { QueryParamsRequest as QueryAllianceParamsRequest, QueryParamsResponse as QueryAllianceParamsResponse, QueryAlliancesRequest, QueryAlliancesResponse, QueryAllianceRequest, QueryAllianceResponse, QueryIBCAllianceRequest, QueryAllianceValidatorRequest, QueryAllAllianceValidatorsRequest, QueryAllAlliancesDelegationsRequest, QueryAlliancesDelegationsRequest, QueryAlliancesDelegationByValidatorRequest, DelegationResponse, QueryAlliancesDelegationsResponse, QueryAllianceDelegationRequest, QueryIBCAllianceDelegationRequest, QueryAllianceDelegationResponse, QueryAllianceDelegationRewardsRequest, QueryIBCAllianceDelegationRewardsRequest, QueryAllianceDelegationRewardsResponse, QueryAllianceValidatorResponse, QueryAllianceValidatorsResponse } from "./alliance/query";
+export { Params as AllianceParams, RewardHistory as AllianceRewardHistory } from "./alliance/params";
+export { MsgInitiateAdminTransfer, MsgInitiateAdminTransferResponse, MsgAcceptAdminTransfer, MsgAcceptAdminTransferResponse } from "./admin/tx";
+export { QueryAdminRequest, QueryAdminResponse, QueryAdminRecipientRequest, QueryAdminRecipientResponse } from "./admin/query";
+export { QueryParamsRequest as QueryMarketstatsParamsRequest, QueryParamsResponse as QueryMarketstatsParamsResponse, QueryMarketStatsRequest, QueryMarketStatsResponse } from "./marketstats/query";
+export { Params as MarketstatsParams } from "./marketstats/params";
+export { MarketStats } from "./marketstats/marketstats";
+export { QueryAccountBalanceRequest, QueryAccountBalanceResponse } from "./evmbank/query";
+export { MsgCreateToken, CreateTokenParams, MsgCreateTokenResponse, MsgSyncToken, MsgSyncTokenResponse, MsgMintToken, MsgMintTokenResponse, MsgBindToken, MsgBindTokenResponse, MsgUnbindToken, MsgUnbindTokenResponse, MsgLinkToken, MsgLinkTokenResponse, MsgWithdraw, MsgWithdrawResponse, MsgAuthorizeBridge, MsgAuthorizeBridgeResponse, MsgDeauthorizeBridge, MsgDeauthorizeBridgeResponse, MsgEditBridgeName, MsgEditBridgeNameResponse, MsgRemoveBridge, MsgRemoveBridgeResponse, MsgUpdateToken, UpdateTokenParams, MsgUpdateTokenResponse, MsgAddBridgeAddress, MsgAddBridgeAddressResponse, MsgRemoveBridgeAddress, MsgRemoveBridgeAddressResponse, MsgCreateGroup, MsgCreateGroupResponse, MsgUpdateGroup, UpdateGroupParams, MsgUpdateGroupResponse, MsgRegisterToGroup, MsgRegisterToGroupResponse, MsgDeregisterFromGroup, MsgDeregisterFromGroupResponse, MsgDepositToGroup, MsgDepositToGroupResponse, MsgWithdrawFromGroup, MsgWithdrawFromGroupResponse, MsgUpdateGroupedTokenConfig, UpdateGroupedTokenConfigParams, MsgUpdateGroupedTokenConfigResponse } from "./coin/tx";
+export { TokenGroup, TokenGroupDetails, GroupedTokenConfig } from "./coin/group";
+export { CreateTokenProposal } from "./coin/proposal";
+export { Bridge } from "./coin/bridge";
+export { QueryGetTokenRequest, QueryGetTokenResponse, QueryAllTokenRequest, QueryAllTokenResponse, QueryGetLockedCoinsRequest, QueryGetLockedCoinsResponse, QueryAllWrapperMappingsRequest, QueryAllWrapperMappingsResponse, QueryAllWrapperMappingsResponse_WrapperMappingsEntry, QueryGetBalancesRequest, QueryGetBalancesResponse, QueryTotalBalancesRequest, QueryTotalBalancesResponse, QueryGetBridgeRequest, QueryGetBridgeResponse, QueryAllBridgeRequest, QueryAllBridgeResponse, QueryGetTokenGroupRequest, QueryGetTokenGroupResponse, QueryAllTokenGroupsRequest, QueryAllTokenGroupsResponse, QueryTokenGroupMappingsRequest, QueryTokenGroupMappingsResponse, QueryTokenGroupMappingsResponse_TokenGroupMappingsEntry } from "./coin/query";
+export { Token, BalanceChange, Metadata, LockedCoins, LockedCoinsRecord, PositionPool, TokenBalance } from "./coin/token";
+export { NewTokenEvent, SyncTokenEvent, BindTokenEvent, UnbindTokenEvent, LinkTokenEvent, NewGroupEvent, UpdateGroupEvent, RegisterToGroupEvent, DeregisterFromGroupEvent, SetGroupedTokenConfigEvent, DepositToGroupEvent, WithdrawFromGroupEvent } from "./coin/event";
+export { MarketLeverage, MarketLeverageRecord } from "./leverage/leverage";
+export { MsgSetLeverage, MsgSetLeverageResponse } from "./leverage/tx";
+export { QueryGetLeverageRequest, QueryGetLeverageResponse, QueryAllLeverageRequest, QueryAllLeverageResponse } from "./leverage/query";
+export { LeverageEvent } from "./leverage/event";
+export { MsgUpdateProfile, MsgUpdateProfileResponse } from "./profile/tx";
+export { Profile } from "./profile/profile";
+export { QueryGetProfileRequest, QueryGetProfileResponse, QueryAllProfileRequest, QueryAllProfileResponse, QueryProfileByUsernameRequest, QueryProfileByUsernameResponse } from "./profile/query";
+export { UpdateProfileEvent } from "./profile/event";
+export { MsgCreateSubAccount, MsgCreateSubAccountResponse, MsgActivateSubAccount, MsgActivateSubAccountResponse, MsgRemoveSubAccount, MsgRemoveSubAccountResponse } from "./subaccount/tx";
+export { QueryGetSubAccountRequest, QueryGetPendingSubAccountRequest, QueryGetSubAccountResponse, QueryAllSubAccountRequest, QueryAllSubAccountResponse, QueryAllPendingSubAccountRequest, QueryAllPendingSubAccountResponse, QuerySubAccountPowerRequest, QuerySubAccountPowerResponse, QueryMainAccountAllRequest, QueryMainAccountAllResponse, QueryMainAccountRequest, QueryMainAccountResponse, QueryParamsRequest as QuerySubaccountParamsRequest, QueryParamsResponse as QuerySubaccountParamsResponse } from "./subaccount/query";
+export { SubaccountV2260 } from "./subaccount/legacy";
+export { SubAccount, GenesisSubAccount, MainAccount, Params as SubaccountParams } from "./subaccount/subaccount";
+export { OrderBookLevel, OrderBook, StopBook, StopOrder } from "./book/book";
+export { QueryImpactPriceRequest, QueryImpactPriceResponse, QueryGetBookRequest, QueryGetBookResponse, QueryAllBookRequest, QueryAllBookResponse, QueryGetStopBookRequest, QueryGetStopBookResponse, QueryAllStopBookRequest, QueryAllStopBookResponse } from "./book/query";
+export { StopbookV2320 } from "./book/legacy";
+export { OrderBookEvent } from "./book/event";
+export { MsgDisableSpotMarket, MsgDisableSpotMarketResponse, MsgCreateMarket, MsgCreateMarketResponse, MsgUpdateMarket, MsgUpdateMarketResponse, MsgUpdatePerpetualsFundingInterval, MsgUpdatePerpetualsFundingIntervalResponse, MsgAddFeeTier, MsgAddFeeTierResponse, MsgUpdateFeeTier, MsgUpdateFeeTierResponse, MsgRemoveFeeTier, MsgRemoveFeeTierResponse, MsgSetStakeEquivalence, MsgSetStakeEquivalenceResponse, MsgUpdateAllPoolTradingFees, MsgUpdateAllPoolTradingFeesResponse, UpdateAllPoolTradingFeesParams } from "./market/tx";
+export { FeeStructure, FeeCategory, FeeTier, TradingFees, StakeEquivalence } from "./market/fee";
+export { CreateMarketProposal, UpdateMarketProposal, UpdatePerpetualsFundingIntervalProposal } from "./market/proposal";
+export { Params as MarketDefaultsParams, ControlledParams, Market, MarketParams, IncomingDisableSpotMarketNames } from "./market/market";
+export { QueryGetMarketRequest, QueryGetMarketResponse, QueryAllMarketRequest, QueryAllMarketResponse, QueryGetTradingFeesRequest, QueryGetTradingFeesResponse, QueryGetFeeTiersRequest, QueryGetFeeTiersResponse, QueryAllStakeEquivalenceRequest, QueryAllStakeEquivalenceResponse, QueryAllFeeStructuresRequest, QueryAllFeeStructuresResponse, QueryUserFeeStructuresRequest, QueryUserFeeStructuresResponse, QueryParamsRequest as QueryMarketParamsRequest, QueryParamsResponse as QueryMarketParamsResponse, QueryControlledParamsRequest, QueryControlledParamsResponse } from "./market/query";
+export { MarketEvent } from "./market/event";
+export { MintData } from "./inflation/inflation";
+export { QueryMintDataRequest, QueryMintDataResponse } from "./inflation/query";
+export { MsgSetSequence, MsgSetSequenceResponse } from "./sequence/tx";
+export { QuerySequenceRequest, QuerySequenceResponse, QuerySequenceAllRequest, QuerySequenceAllResponse } from "./sequence/query";
+export { MsgCreatePool, MsgCreatePoolResponse, MsgCreatePoolWithLiquidity, MsgCreatePoolWithLiquidityResponse, MsgAddLiquidity, MsgAddLiquidityResponse, MsgRemoveLiquidity, MsgRemoveLiquidityResponse, LinkPoolParams, UnlinkPoolParams, MsgSetRewardsWeights, SetRewardsWeightsParams, MsgSetRewardsWeightsResponse, MsgStakePoolToken, MsgStakePoolTokenResponse, MsgUnstakePoolToken, MsgUnstakePoolTokenResponse, MsgClaimPoolRewards, MsgClaimPoolRewardsResponse, MsgSetRewardCurve, SetRewardCurveParams, MsgSetRewardCurveResponse, MsgSetCommitmentCurve, SetCommitmentCurveParams, MsgSetCommitmentCurveResponse, MsgUpdatePool, UpdatePoolParams, MsgUpdatePoolResponse, MsgCreatePoolRoute, MsgCreatePoolRouteResponse, CreatePoolRouteParams, MsgRemovePoolRoute, MsgRemovePoolRouteResponse, RemovePoolRouteParams, MsgUpdatePoolRoute, MsgUpdatePoolRouteResponse, UpdatePoolRouteParams } from "./liquiditypool/tx";
+export { RewardCurve, CommitmentCurve, RewardWeight, RewardWeights, Commitment, CommitmentRecord, TotalCommitment, TotalCommitmentRecord, CommitmentResponse, RewardHistory, AccumulatedRewards, AccumulatedRewardsRecord, CommitmentExpiry, CommitmentExpiries, CommitmentExpiriesRecord, AllocatedRewards } from "./liquiditypool/reward";
+export { Params as LiquiditypoolParams, Pool, Pools, PoolRoute, AddLiquidity, AddLiquidities, RemoveLiquidity, RemoveLiquidities, RemovePoolRoutes, PoolReserve } from "./liquiditypool/liquiditypool";
+export { LinkPoolProposal, UnlinkPoolProposal, SetRewardCurveProposal, SetCommitmentCurveProposal, SetRewardsWeightsProposal, UpdatePoolProposal, CreatePoolRouteProposal, RemovePoolRouteProposal, UpdatePoolRouteProposal } from "./liquiditypool/proposal";
+export { QueryGetPoolRequest, QueryGetPoolResponse, QueryAllPoolRequest, QueryAllPoolResponse, QueryAllPoolAddressRequest, QueryAllPoolAddressResponse, QueryAllPoolAddressResponse_AddressesEntry, ExtendedPool, QueryCommitmentRequest, QueryCommitmentResponse, QueryAllCommitmentRequest, QueryAllCommitmentResponse, QueryCommitmentCurveRequest, QueryCommitmentCurveResponse, QueryRewardCurveRequest, QueryRewardCurveResponse, QueryTotalCommitmentRequest, QueryTotalCommitmentResponse, QueryAllTotalCommitmentRequest, QueryAllTotalCommitmentResponse, QueryClaimableRewardsRequest, QueryClaimableRewardsResponse, QueryParamsRequest as QueryLiquiditypoolParamsRequest, QueryParamsResponse as QueryLiquiditypoolParamsResponse, QueryAllPoolRouteRequest, QueryAllPoolRouteResponse, QueryAllPoolRouteAddressRequest, QueryAllPoolRouteAddressResponse, QueryAllPoolRouteAddressResponse_AddressesEntry } from "./liquiditypool/query";
+export { PoolEvent, TotalCommitmentChangeEvent, RewardsWeightChangeEvent, CommitmentCurveEvent, CommitmentEvent, SwapEvent, DepositToPoolEvent, WithdrawFromPoolEvent, StakePoolTokenEvent, UnstakePoolTokenEvent, RewardsAccumulatedEvent, ClaimEvent } from "./liquiditypool/event";
+export { MsgTopUpInsurance, MsgTopUpInsuranceResponse } from "./insurance/tx";
+export { QueryCoinBalancesRequest, QueryCoinBalancesResponse } from "./insurance/query";
+export { EventDataInsuranceFundTransfer } from "./insurance/event";
+export { FundByMarket, Fund } from "./insurance/fund";
+export { MsgSetBackfillTimeInterval, MsgSetBackfillTimeIntervalResponse, MsgSetSmoothenBand, MsgSetSmoothenBandResponse, MsgSetImpactBand, MsgSetImpactBandResponse, MsgSetStaleIndexAllowance, MsgSetStaleIndexAllowanceResponse, MsgUpdateTokenPriceOracle, MsgUpdateTokenPriceOracleResponse } from "./pricing/tx";
+export { Params as PricingParams, PriceSet, TokenPrice } from "./pricing/pricing";
+export { SettlementPriceProposal, SettlementPriceParams } from "./pricing/proposal";
+export { QueryPriceTokenRequest, QueryPriceTokenResponse, QueryPriceSetRequest, QueryPriceSetResponse, QueryAllPriceSetRequest, QueryAllPriceSetResponse, QueryRateRequest, QueryRateResponse, QueryParamsRequest as QueryPricingParamsRequest, QueryParamsResponse as QueryPricingParamsResponse, QueryTokenPriceRequest, QueryTokenPriceResponse, QueryTokenPriceAllRequest, QueryTokenPriceAllResponse } from "./pricing/query";
+export { ParamsV2130 } from "./pricing/legacy";
+export { PriceUpdateEvent, TokenPriceUpdateEvent, SetImpactBandEvent, SetSmoothenBandEvent, SetStaleIndexAllowanceEvent, SetBackfillTimeIntervalEvent } from "./pricing/event";
 export { MsgExecuteContract } from "cosmjs-types/cosmwasm/wasm/v1/tx";
 
 /* 
@@ -24189,6 +24283,16 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "deposit_fee",
         "type": "string"
       },
+      {
+        "name": "update_count",
+        "type": "uint64"
+      },
+      {
+        "name": "exit_count",
+        "type": "uint64"
+      }
+    ],
+    "PositionAllocatedMargin": [
       {
         "name": "withdrawal_fee",
         "type": "string"
