@@ -803,17 +803,16 @@ export class CDPModule extends BaseModule {
     const cdpTokenBalances: Coin[] = (collateralPoolBalancesResponse?.balances ?? []).filter(balance => tokenClient.isCdpToken(balance.denom))
     const interestFee: BigNumber = bnOrZero(cdpParamsResponse.params?.interestFee);
 
-    const cdpTokenBalancePromises: Promise<BigNumber>[] = cdpTokenBalances.map(async balance => {
-      try {
-        const totalOwed: BigNumber = await this.getTokenTotalDebt(this.getUnderlyingDenom(balance.denom), interestFee);
-        const ratio: BigNumber = await this.getCdpToActualRatio(balance.denom, totalOwed);
-        const val: BigNumber = await this.getCdpTokenUsdVal(balance.denom, bnOrZero(balance.amount), ratio);
-        return bnOrZero(val);
-      } catch (err) {
+    const cdpTokenBalancePromises: Promise<BigNumber>[] = cdpTokenBalances.map(balance => (
+      this.getTokenTotalDebt(balance.denom, interestFee)
+        .then(totalOwed => this.getCdpToActualRatio(this.getUnderlyingDenom(balance.denom), totalOwed))
+        .then(ratio => this.getCdpTokenUsdVal(balance.denom, bnOrZero(balance.amount), ratio))
+        .then((val) => bnOrZero(val))
+        .catch((err) => {
         console.error(err);
-        return BN_ZERO;
-      }
-    });
+          return BN_ZERO
+        })
+    ))
 
     const cdpBalances = await Promise.all(cdpTokenBalancePromises);
     const totalCollateralsUsdValue = cdpBalances.reduce((prev: BigNumber, curr: BigNumber) => (prev.plus(curr)), BN_ZERO);
