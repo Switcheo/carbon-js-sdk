@@ -805,9 +805,9 @@ export class CDPModule extends BaseModule {
 
     const cdpTokenBalancePromises: Promise<BigNumber>[] = cdpTokenBalances.map(async balance => {
       try {
-        const totalOwed = await this.getTokenTotalDebt(this.getUnderlyingDenom(balance.denom), interestFee);
-        const ratio = await this.getCdpToActualRatio(balance.denom, totalOwed);
-        const val = await this.getCdpTokenUsdVal(balance.denom, bnOrZero(balance.amount), ratio);
+        const totalOwed: BigNumber = await this.getTokenTotalDebt(this.getUnderlyingDenom(balance.denom), interestFee);
+        const ratio: BigNumber = await this.getCdpToActualRatio(balance.denom, totalOwed);
+        const val: BigNumber = await this.getCdpTokenUsdVal(balance.denom, bnOrZero(balance.amount), ratio);
         return bnOrZero(val);
       } catch (err) {
         console.error(err);
