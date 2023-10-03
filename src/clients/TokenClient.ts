@@ -185,7 +185,7 @@ class TokenClient {
 
     const symbol = this.getSymbol(denom);
     if (TokenClient.isPoolTokenLegacy(denom)) {
-      const match = symbol.match(/^([a-z\d.-\/]+)-(\d+)-([a-z\d.-\/]+)-(\d+)-lp\d+$/i); // eslint-disable-line
+      const match = symbol.match(/^([a-z\d.-/]+)-(\d+)-([a-z\d.-/]+)-(\d+)-lp\d+$/i);
       // inconsistent implementation of isPoolToken, exit
       if (match === null) return symbol;
 

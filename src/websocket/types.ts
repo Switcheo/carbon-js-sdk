@@ -189,7 +189,7 @@ export interface WsSubscribeAccountTradesByMarketParams extends WsSubscribeParam
   address: string;
 }
 
-export type WsSubscribeMarketStatsAllParams = WsSubscribeParams
+export interface WsSubscribeMarketStatsAllParams extends WsSubscribeParams { }
 
 export interface WsSubscribeMarketStatsByMarketParams extends WsSubscribeParams {
   market: string;
@@ -213,7 +213,7 @@ export interface WsSubscribePositionsByMarketParams extends WsSubscribeParams {
   address: string;
 }
 
-export type WsSubscribePoolsAllParams = WsSubscribeParams
+export interface WsSubscribePoolsAllParams extends WsSubscribeParams { }
 
 export interface WsSubscribePoolsByIdParams extends WsSubscribeParams {
   id: string;
@@ -236,9 +236,9 @@ export interface WsSubscribeCDPCollaterals extends WsSubscribeParams {
   address: string;
 }
 
-export type WsSubscribeCDPLiquidateCollaterals = WsSubscribeParams
+export interface WsSubscribeCDPLiquidateCollaterals extends WsSubscribeParams { }
 
-export type WsSubscribeTokenDebts = WsSubscribeParams
+export interface WsSubscribeTokenDebts extends WsSubscribeParams { }
 
 export interface WsSubscribeTokenDebtByDenom extends WsSubscribeParams {
   denom: string;
@@ -254,7 +254,7 @@ export interface WsSubscribeTokenPrices extends WsSubscribeParams {
   denom: string;
 }
 
-export type WsSubscribeAllTokenPrices = WsSubscribeParams
+export interface WsSubscribeAllTokenPrices extends WsSubscribeParams { }
 export interface WsSubscribeCDPTokenSupplyByDenom extends WsSubscribeParams {
   denom: string;
 }
