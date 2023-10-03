@@ -42,7 +42,7 @@ export interface PoolsLiquidity {
   tokens: PoolTokens[];
 }
 
-export type QueryGetPoolsRequest = QueryByPageRequest
+export interface QueryGetPoolsRequest extends QueryByPageRequest {}
 
 export interface QueryGetPoolsResponse {
   models: Pool[];

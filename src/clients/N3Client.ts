@@ -332,9 +332,9 @@ export class N3Client {
       }),
     ]);
     const [decimalRaw, symbolRaw, nameRaw] = result;
-    let decimals = 0;
-    let symbol = "";
-    let name = "";
+    let decimals: number = 0;
+    let symbol: string = "";
+    let name: string = "";
     if (typeof decimalRaw.stack[0].value === "string") {
       decimals = Number(decimalRaw.stack[0].value);
     }

@@ -802,6 +802,6 @@ export namespace CarbonWallet {
   export type OnBroadcastTxSuccessCallback = (msgs: readonly EncodeObject[]) => void | Promise<void>;
 
   // workaround to re-export interface mixed const type
-  export type TxRaw = StargateTxRaw
+  export interface TxRaw extends StargateTxRaw { }
   export const TxRaw: typeof StargateTxRaw = { ...StargateTxRaw };
 }

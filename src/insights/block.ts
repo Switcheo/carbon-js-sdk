@@ -7,7 +7,7 @@ export interface Block {
   proposerAddress: string;
 }
 
-export type QueryGetBlocksRequest = QueryByPageRequest
+export interface QueryGetBlocksRequest extends QueryByPageRequest {}
 
 export interface QueryGetBlocksResponse {
   models: Block[];

@@ -259,7 +259,7 @@ export interface WsSubscribeCDPTokenSupplyByDenom extends WsSubscribeParams {
   denom: string;
 }
 
-export type WsSubscribeCDPTokenSupply = WsSubscribeParams
+export interface WsSubscribeCDPTokenSupply extends WsSubscribeParams {}
 
 export type WsSubscriptionParams =
   | WsSubscribeCandlesticksParams

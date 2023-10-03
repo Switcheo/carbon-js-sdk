@@ -20,14 +20,14 @@ export interface Transaction {
   txEvent: TxEvent[];
 }
 
-export type QueryGetStakeRequest = QueryByTimeRequest
+export interface QueryGetStakeRequest extends QueryByTimeRequest {}
 
 export interface QueryGetStakeResponse {
   entries: Stake[];
   meta: TimeMeta;
 }
 
-export type QueryGetTransactionRequest = QueryByTimeRequest
+export interface QueryGetTransactionRequest extends QueryByTimeRequest {}
 
 export interface QueryGetTransactionResponse {
   entries: Transaction[];
