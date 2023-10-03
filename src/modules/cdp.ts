@@ -648,9 +648,6 @@ export class CDPModule extends BaseModule {
     let totalCollateralsUsd = BN_ZERO;
     let availableBorrowsUsd = BN_ZERO;
     let currLiquidationThreshold = BN_ZERO;
-
-    const interestFee = bnOrZero(cdpParamsResponse.params?.interestFee);
-
     for (let i = 0; i < collaterals.length; i++) {
       const amount = bnOrZero(collaterals[i].collateralAmount);
       if (amount.isZero()) {
@@ -1078,8 +1075,7 @@ export class CDPModule extends BaseModule {
     const unlockableUsd = availableBorrowsUsd.multipliedBy(BN_10000).div(unlockRatio);
 
     const tokenAmt = unlockableUsd.div(tokenTwap.shiftedBy(-18)).shiftedBy(tokenDecimals);
-    const interestFee = bnOrZero(cdpParamsResponse.params?.interestFee);
-    const cdpToActualRatio = (await this.getCdpToActualRatio(cdpDenom, interestFee)) ?? BN_ZERO;
+    const cdpToActualRatio = (await this.getCdpToActualRatio(cdpDenom)) ?? BN_ZERO;
     const cdpTokenAmt = tokenAmt.multipliedBy(cdpToActualRatio);
 
     const lockedAmount = bnOrZero(accountCollateral.collateral?.collateralAmount ?? "0");
