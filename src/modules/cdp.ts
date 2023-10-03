@@ -1061,8 +1061,10 @@ export class CDPModule extends BaseModule {
       cdpDenom: cdpDenom,
     });
     const [accountData, tokenPrice, accountCollateral] = await Promise.all([accountDataRequest, tokenPriceRequest, accountCollateralRequest]);
+    
     const tokenTwap = bnOrZero(tokenPrice.tokenPrice?.twap);
     if (tokenTwap.isZero()) throw new Error("unable to retrieve token price for " + denom);
+
     const tokenDecimals = (await sdk.getTokenClient().getDecimals(denom)) ?? 0;
     const availableBorrowsUsd = accountData.AvailableBorrowsUsd.minus(accountData.TotalDebtsUsd);
     const unlockableUsd = availableBorrowsUsd.multipliedBy(BN_10000).div(unlockRatio);
@@ -1107,7 +1109,7 @@ export class CDPModule extends BaseModule {
     const assetPromise = sdk.query.cdp.Asset({
       denom: cdpActualDenom,
     });
-    const paramsPromise = sdk.query.cdp.Params(QueryParamsRequest.fromPartial({}));
+    const paramsPromise = sdk.query.cdp.Params({});
     const debtorAccountCollateralPromise = sdk.query.cdp.AccountCollateral({
       address: debtor,
       cdpDenom: cdpDenom,
