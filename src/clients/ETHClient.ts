@@ -50,6 +50,7 @@ export interface LockParams extends ETHTxParams {
 export interface ApproveERC20Params extends ETHTxParams {
   token: Models.Token;
   spenderAddress?: string;
+  amount?: BigNumber
   signCompleteCallback?: () => void;
 }
 
@@ -76,7 +77,7 @@ export class ETHClient {
     [Blockchain.Ethereum]: "Ethereum",
     [Blockchain.Arbitrum]: "Arbitrum",
     [Blockchain.Polygon]: "Polygon",
-    [Blockchain.Okc]: "Okc",
+    [Blockchain.Okc]: "OKC",
   };
 
   private constructor(
@@ -136,14 +137,16 @@ export class ETHClient {
   }
 
   public async approveERC20(params: ApproveERC20Params): Promise<EthersTransactionResponse> {
-    const { token, gasPriceGwei, gasLimit, ethAddress, spenderAddress, signer } = params;
+    const { token, gasPriceGwei, gasLimit, ethAddress, spenderAddress, signer, amount } = params;
     const contractAddress = token.tokenAddress;
 
     const rpcProvider = this.getProvider();
     const contract = new ethers.Contract(contractAddress, ABIs.erc20, rpcProvider);
 
+    const approvalAmount = ethers.BigNumber.from(amount?.toString(10) ?? ethers.constants.MaxUint256)
+
     const nonce = await this.getTxNonce(ethAddress, params.nonce, rpcProvider);
-    const approveResultTx = await contract.connect(signer).approve(spenderAddress ?? token.bridgeAddress, ethers.constants.MaxUint256, {
+    const approveResultTx = await contract.connect(signer).approve(spenderAddress ?? token.bridgeAddress, approvalAmount, {
       nonce,
       ...gasPriceGwei && ({ gasPrice: gasPriceGwei.shiftedBy(9).toString(10) }),
       ...gasLimit && ({ gasLimit: gasLimit.toString(10) })

@@ -1,9 +1,11 @@
-import { Models } from "@carbon-sdk/index";
+import { CarbonSDK, Models } from "@carbon-sdk/index";
 import { CarbonTx, NumberUtils } from "@carbon-sdk/util";
 import { BigNumber } from "bignumber.js";
 import dayjs from "dayjs";
 import Long from "long";
 import BaseModule from "./base";
+import { InsightsQueryResponse, QueryGetInflation } from "@carbon-sdk/insights";
+import { BN_ZERO } from "@carbon-sdk/util/number";
 
 export class LiquidityPoolModule extends BaseModule {
   public async create(params: LiquidityPoolModule.CreatePoolParams, opts?: CarbonTx.SignTxOpts) {
@@ -155,13 +157,12 @@ export class LiquidityPoolModule extends BaseModule {
     const MIN_RATE = new BigNumber(0.0003);
     const INITIAL_SUPPLY = new BigNumber(1000000000);
     const SECONDS_IN_A_WEEK = new BigNumber(604800);
-
     const mintDataResponse: Models.QueryMintDataResponse = await this.sdkProvider.query.inflation.MintData({});
     const mintData = mintDataResponse.mintData;
 
     const nowTime = new BigNumber(dayjs().unix());
-    const firstBlockTime = mintData?.firstBlockTime.toNumber() ?? 0;
-    const difference = nowTime.minus(firstBlockTime);
+    const firstBlockTime = mintData?.firstBlockTime?.getTime() ?? 0;
+    const difference = nowTime.minus(firstBlockTime / 1000);
     const currentWeek = difference.div(SECONDS_IN_A_WEEK).dp(0, BigNumber.ROUND_DOWN);
 
     let inflationRate = WEEKLY_DECAY.pow(currentWeek);
@@ -169,6 +170,23 @@ export class LiquidityPoolModule extends BaseModule {
       inflationRate = MIN_RATE;
     }
     const weeklyRewards = INITIAL_SUPPLY.div(52).times(inflationRate);
+
+    // Calculate weekly rewards earned by liquidity providers
+    // Weekly LP Rewards = liquidityRewardRatio * weeklyRewards
+    const distributionParams = await this.sdkProvider.query.distribution.Params({});
+    const liquidityRewardRatio = NumberUtils.bnOrZero(distributionParams.params?.liquidityProviderReward).shiftedBy(-18);
+    return liquidityRewardRatio.times(weeklyRewards);
+  }
+
+  public async getWeeklyRewardsRealInflation(): Promise<BigNumber> {
+    const mintDataResponse: Models.QueryMintDataResponse = await this.sdkProvider.query.inflation.MintData({})
+    let weeklyRewards = BN_ZERO
+    if (mintDataResponse.mintData) {
+      const mintData = mintDataResponse.mintData
+      const currentSupply = new BigNumber(mintData.currentSupply)
+      const swthInflationRate = new BigNumber(mintData.inflationRate).shiftedBy(-18)
+      weeklyRewards = currentSupply.times(swthInflationRate).div(52)
+    }
 
     // Calculate weekly rewards earned by liquidity providers
     // Weekly LP Rewards = liquidityRewardRatio * weeklyRewards

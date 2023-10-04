@@ -14,6 +14,7 @@ import { StablecoinInterestInfo } from "./stablecoin_interest_info";
 import { EModeCategory } from "./e_mode_category";
 import { Coin } from "../cosmos/base/v1beta1/coin";
 import { RewardScheme, RewardDebt } from "./reward_scheme";
+import { CDPLiquidations } from "./cdp_liquidations";
 
 export const protobufPackage = "Switcheo.carbon.cdp";
 
@@ -52,7 +53,6 @@ export interface QueryAccountDataResponse {
   totalDebtsUsd: string;
   availableBorrowsUsd: string;
   currLiquidationThreshold: string;
-  healthFactor: string;
 }
 
 export interface QueryAccountCollateralRequest {
@@ -174,6 +174,14 @@ export interface CdpPosition {
   mint: Coin[];
 }
 
+export interface QueryCdpPositionRequest {
+  address: string;
+}
+
+export interface QueryCdpPositionResponse {
+  position?: CdpPosition;
+}
+
 export interface QueryCdpPositionsRequest {
   pagination?: PageRequest;
   maxHealthFactor: string;
@@ -233,6 +241,15 @@ export interface QueryAccountEModeRequest {
 
 export interface QueryAccountEModeResponse {
   eModeCategoryName: string;
+}
+
+export interface QueryCDPLiquidationsAllRequest {
+  pagination?: PageRequest;
+}
+
+export interface QueryCDPLiquidationsAllResponse {
+  cdpLiquidationsAll: CDPLiquidations[];
+  pagination?: PageResponse;
 }
 
 const baseQueryParamsRequest: object = {};
@@ -709,7 +726,6 @@ const baseQueryAccountDataResponse: object = {
   totalDebtsUsd: "",
   availableBorrowsUsd: "",
   currLiquidationThreshold: "",
-  healthFactor: "",
 };
 
 export const QueryAccountDataResponse = {
@@ -728,9 +744,6 @@ export const QueryAccountDataResponse = {
     }
     if (message.currLiquidationThreshold !== "") {
       writer.uint32(34).string(message.currLiquidationThreshold);
-    }
-    if (message.healthFactor !== "") {
-      writer.uint32(42).string(message.healthFactor);
     }
     return writer;
   },
@@ -758,9 +771,6 @@ export const QueryAccountDataResponse = {
           break;
         case 4:
           message.currLiquidationThreshold = reader.string();
-          break;
-        case 5:
-          message.healthFactor = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -793,10 +803,6 @@ export const QueryAccountDataResponse = {
       object.currLiquidationThreshold !== null
         ? String(object.currLiquidationThreshold)
         : "";
-    message.healthFactor =
-      object.healthFactor !== undefined && object.healthFactor !== null
-        ? String(object.healthFactor)
-        : "";
     return message;
   },
 
@@ -810,8 +816,6 @@ export const QueryAccountDataResponse = {
       (obj.availableBorrowsUsd = message.availableBorrowsUsd);
     message.currLiquidationThreshold !== undefined &&
       (obj.currLiquidationThreshold = message.currLiquidationThreshold);
-    message.healthFactor !== undefined &&
-      (obj.healthFactor = message.healthFactor);
     return obj;
   },
 
@@ -825,7 +829,6 @@ export const QueryAccountDataResponse = {
     message.totalDebtsUsd = object.totalDebtsUsd ?? "";
     message.availableBorrowsUsd = object.availableBorrowsUsd ?? "";
     message.currLiquidationThreshold = object.currLiquidationThreshold ?? "";
-    message.healthFactor = object.healthFactor ?? "";
     return message;
   },
 };
@@ -2735,6 +2738,140 @@ export const CdpPosition = {
   },
 };
 
+const baseQueryCdpPositionRequest: object = { address: "" };
+
+export const QueryCdpPositionRequest = {
+  encode(
+    message: QueryCdpPositionRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.address !== "") {
+      writer.uint32(10).string(message.address);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryCdpPositionRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryCdpPositionRequest,
+    } as QueryCdpPositionRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.address = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryCdpPositionRequest {
+    const message = {
+      ...baseQueryCdpPositionRequest,
+    } as QueryCdpPositionRequest;
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryCdpPositionRequest): unknown {
+    const obj: any = {};
+    message.address !== undefined && (obj.address = message.address);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryCdpPositionRequest>
+  ): QueryCdpPositionRequest {
+    const message = {
+      ...baseQueryCdpPositionRequest,
+    } as QueryCdpPositionRequest;
+    message.address = object.address ?? "";
+    return message;
+  },
+};
+
+const baseQueryCdpPositionResponse: object = {};
+
+export const QueryCdpPositionResponse = {
+  encode(
+    message: QueryCdpPositionResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.position !== undefined) {
+      CdpPosition.encode(message.position, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryCdpPositionResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryCdpPositionResponse,
+    } as QueryCdpPositionResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.position = CdpPosition.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryCdpPositionResponse {
+    const message = {
+      ...baseQueryCdpPositionResponse,
+    } as QueryCdpPositionResponse;
+    message.position =
+      object.position !== undefined && object.position !== null
+        ? CdpPosition.fromJSON(object.position)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryCdpPositionResponse): unknown {
+    const obj: any = {};
+    message.position !== undefined &&
+      (obj.position = message.position
+        ? CdpPosition.toJSON(message.position)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryCdpPositionResponse>
+  ): QueryCdpPositionResponse {
+    const message = {
+      ...baseQueryCdpPositionResponse,
+    } as QueryCdpPositionResponse;
+    message.position =
+      object.position !== undefined && object.position !== null
+        ? CdpPosition.fromPartial(object.position)
+        : undefined;
+    return message;
+  },
+};
+
 const baseQueryCdpPositionsRequest: object = {
   maxHealthFactor: "",
   minHealthFactor: "",
@@ -3806,6 +3943,171 @@ export const QueryAccountEModeResponse = {
   },
 };
 
+const baseQueryCDPLiquidationsAllRequest: object = {};
+
+export const QueryCDPLiquidationsAllRequest = {
+  encode(
+    message: QueryCDPLiquidationsAllRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryCDPLiquidationsAllRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryCDPLiquidationsAllRequest,
+    } as QueryCDPLiquidationsAllRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryCDPLiquidationsAllRequest {
+    const message = {
+      ...baseQueryCDPLiquidationsAllRequest,
+    } as QueryCDPLiquidationsAllRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryCDPLiquidationsAllRequest): unknown {
+    const obj: any = {};
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryCDPLiquidationsAllRequest>
+  ): QueryCDPLiquidationsAllRequest {
+    const message = {
+      ...baseQueryCDPLiquidationsAllRequest,
+    } as QueryCDPLiquidationsAllRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryCDPLiquidationsAllResponse: object = {};
+
+export const QueryCDPLiquidationsAllResponse = {
+  encode(
+    message: QueryCDPLiquidationsAllResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.cdpLiquidationsAll) {
+      CDPLiquidations.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryCDPLiquidationsAllResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryCDPLiquidationsAllResponse,
+    } as QueryCDPLiquidationsAllResponse;
+    message.cdpLiquidationsAll = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.cdpLiquidationsAll.push(
+            CDPLiquidations.decode(reader, reader.uint32())
+          );
+          break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryCDPLiquidationsAllResponse {
+    const message = {
+      ...baseQueryCDPLiquidationsAllResponse,
+    } as QueryCDPLiquidationsAllResponse;
+    message.cdpLiquidationsAll = (object.cdpLiquidationsAll ?? []).map(
+      (e: any) => CDPLiquidations.fromJSON(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryCDPLiquidationsAllResponse): unknown {
+    const obj: any = {};
+    if (message.cdpLiquidationsAll) {
+      obj.cdpLiquidationsAll = message.cdpLiquidationsAll.map((e) =>
+        e ? CDPLiquidations.toJSON(e) : undefined
+      );
+    } else {
+      obj.cdpLiquidationsAll = [];
+    }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryCDPLiquidationsAllResponse>
+  ): QueryCDPLiquidationsAllResponse {
+    const message = {
+      ...baseQueryCDPLiquidationsAllResponse,
+    } as QueryCDPLiquidationsAllResponse;
+    message.cdpLiquidationsAll = (object.cdpLiquidationsAll ?? []).map((e) =>
+      CDPLiquidations.fromPartial(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Parameters queries the parameters of the module. */
@@ -3872,6 +4174,7 @@ export interface Query {
   PositionsAll(
     request: QueryCdpPositionsRequest
   ): Promise<QueryCdpPositionsResponse>;
+  Position(request: QueryCdpPositionRequest): Promise<QueryCdpPositionResponse>;
   /** Queries a list of EMode items. */
   EMode(request: QueryEModeRequest): Promise<QueryEModeResponse>;
   /** Queries a list of EModeAll items. */
@@ -3884,6 +4187,10 @@ export interface Query {
   StablecoinInterest(
     request: QueryStablecoinInterestRequest
   ): Promise<QueryStablecoinInterestResponse>;
+  /** Queries a list of CDPLiquidations items. */
+  CDPLiquidationsAll(
+    request: QueryCDPLiquidationsAllRequest
+  ): Promise<QueryCDPLiquidationsAllResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -3908,10 +4215,12 @@ export class QueryClientImpl implements Query {
     this.RewardDebts = this.RewardDebts.bind(this);
     this.RewardDebtsAll = this.RewardDebtsAll.bind(this);
     this.PositionsAll = this.PositionsAll.bind(this);
+    this.Position = this.Position.bind(this);
     this.EMode = this.EMode.bind(this);
     this.EModeAll = this.EModeAll.bind(this);
     this.AccountEMode = this.AccountEMode.bind(this);
     this.StablecoinInterest = this.StablecoinInterest.bind(this);
+    this.CDPLiquidationsAll = this.CDPLiquidationsAll.bind(this);
   }
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
@@ -4157,6 +4466,20 @@ export class QueryClientImpl implements Query {
     );
   }
 
+  Position(
+    request: QueryCdpPositionRequest
+  ): Promise<QueryCdpPositionResponse> {
+    const data = QueryCdpPositionRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Query",
+      "Position",
+      data
+    );
+    return promise.then((data) =>
+      QueryCdpPositionResponse.decode(new _m0.Reader(data))
+    );
+  }
+
   EMode(request: QueryEModeRequest): Promise<QueryEModeResponse> {
     const data = QueryEModeRequest.encode(request).finish();
     const promise = this.rpc.request(
@@ -4206,6 +4529,20 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryStablecoinInterestResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  CDPLiquidationsAll(
+    request: QueryCDPLiquidationsAllRequest
+  ): Promise<QueryCDPLiquidationsAllResponse> {
+    const data = QueryCDPLiquidationsAllRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Query",
+      "CDPLiquidationsAll",
+      data
+    );
+    return promise.then((data) =>
+      QueryCDPLiquidationsAllResponse.decode(new _m0.Reader(data))
     );
   }
 }

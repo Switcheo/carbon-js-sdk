@@ -4,14 +4,16 @@ import {
   DEFAULT_NETWORK,
   DenomPrefix,
   Network,
-  Network as _Network,
   NetworkConfig,
   NetworkConfigs,
+  Network as _Network,
 } from "@carbon-sdk/constant";
 import { GenericUtils, NetworkUtils } from "@carbon-sdk/util";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
-import { CarbonQueryClient, ETHClient, HydrogenClient, InsightsQueryClient, NEOClient, TokenClient, ZILClient } from "./clients";
+import { NodeHttpTransport } from "@improbable-eng/grpc-web-node-http-transport";
 import * as clients from "./clients";
+import { CarbonQueryClient, ETHClient, HydrogenClient, InsightsQueryClient, NEOClient, TokenClient, ZILClient } from "./clients";
+import GrpcQueryClient from "./clients/GrpcQueryClient";
 import N3Client from "./clients/N3Client";
 import {
   AdminModule,
@@ -20,7 +22,10 @@ import {
   BrokerModule,
   CDPModule,
   CoinModule,
+  EvmMergeModule,
+  EvmModule,
   FeeModule,
+  FeemarketModule,
   GovModule,
   IBCModule,
   LeverageModule,
@@ -32,17 +37,13 @@ import {
   ProfileModule,
   SubAccountModule,
   XChainModule,
-  EvmModule,
-  FeemarketModule,
-  EvmMergeModule,
 } from "./modules";
 import { StakingModule } from "./modules/staking";
 import { CosmosLedger, Keplr, KeplrAccount, LeapAccount, LeapExtended } from "./provider";
-import { Blockchain } from "./util/blockchain";
-import { CarbonLedgerSigner, CarbonSigner, CarbonWallet, CarbonWalletGenericOpts, MetaMaskWalletOpts } from "./wallet";
 import { MetaMask } from "./provider/metamask/MetaMask";
 import { SWTHAddressOptions } from "./util/address";
-import { ethers } from "ethers";
+import { Blockchain } from "./util/blockchain";
+import { CarbonLedgerSigner, CarbonSigner, CarbonWallet, CarbonWalletGenericOpts, MetaMaskWalletOpts } from "./wallet";
 export { CarbonTx } from "@carbon-sdk/util";
 export { CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletGenericOpts, CarbonWalletInitOpts } from "@carbon-sdk/wallet";
 export { DenomPrefix } from "./constant";
@@ -54,6 +55,8 @@ export interface CarbonSDKOpts {
   evmChainId?: string;
   token?: TokenClient;
   config?: Partial<NetworkConfig>;
+  grpcQueryClient?: GrpcQueryClient;
+  useTmAbciQuery?: boolean;
   defaultTimeoutBlocks?: number; // tx mempool ttl (timeoutHeight)
 }
 export interface CarbonSDKInitOpts {
@@ -64,6 +67,12 @@ export interface CarbonSDKInitOpts {
 
   skipInit?: boolean;
   defaultTimeoutBlocks?: number;
+
+  /**
+   * temporary flag to disable GRPC Query client service when required
+   * TODO: Deprecate when grpc query client is implemented across all networks
+   */
+  useTmAbciQuery?: boolean;
 }
 
 const DEFAULT_SDK_INIT_OPTS: CarbonSDKInitOpts = {
@@ -80,9 +89,9 @@ class CarbonSDK {
   public static DenomPrefix = DenomPrefix;
 
   public readonly query: CarbonQueryClient;
+  public readonly useTmAbciQuery: boolean;
   insights: InsightsQueryClient;
   hydrogen: HydrogenClient;
-  evmJsonRpc: ethers.providers.JsonRpcProvider;
 
   wallet?: CarbonWallet;
 
@@ -129,15 +138,28 @@ class CarbonSDK {
     this.network = opts.network ?? DEFAULT_NETWORK;
     this.configOverride = opts.config ?? {};
     this.networkConfig = GenericUtils.overrideConfig(NetworkConfigs[this.network], this.configOverride);
+    this.useTmAbciQuery = opts.useTmAbciQuery ?? false;
 
     this.tmClient = opts.tmClient;
     this.chainId = opts.chainId ?? CarbonChainIDs[this.network] ?? CarbonChainIDs[Network.MainNet];
     this.evmChainId = opts.evmChainId ?? CarbonEvmChainIDs[this.network] ?? CarbonEvmChainIDs[Network.MainNet];
-    this.query = new CarbonQueryClient(opts.tmClient);
+
+    let grpcClient: GrpcQueryClient | undefined;
+    if (opts.useTmAbciQuery !== true && this.networkConfig.grpcUrl) {
+      const transport = typeof window === "undefined" ? NodeHttpTransport() : undefined;
+
+      grpcClient = opts.grpcQueryClient ?? new GrpcQueryClient(this.networkConfig.grpcWebUrl, {
+        transport,
+      });
+    }
+
+    this.query = new CarbonQueryClient({
+      tmClient: this.tmClient,
+      grpcClient,
+    });
     this.insights = new InsightsQueryClient(this.networkConfig);
     this.token = opts.token ?? TokenClient.instance(this.query, this);
     this.hydrogen = new HydrogenClient(this.networkConfig, this.token);
-    this.evmJsonRpc = new ethers.providers.JsonRpcProvider(NetworkConfigs[this.network].evmJsonRpcUrl)
     this.hydrogen = HydrogenClient.instance(this.networkConfig, this.token);
 
     this.admin = new AdminModule(this);
@@ -219,7 +241,7 @@ class CarbonSDK {
     const defaultTimeoutBlocks = opts.defaultTimeoutBlocks;
     const chainId = (await tmClient.status())?.nodeInfo.network;
 
-    const sdk = new CarbonSDK({ network, config: configOverride, tmClient, defaultTimeoutBlocks, chainId });
+    const sdk = new CarbonSDK({ network, config: configOverride, tmClient, defaultTimeoutBlocks, chainId, useTmAbciQuery: opts.useTmAbciQuery });
 
     if (opts.wallet) {
       await sdk.connect(opts.wallet);
@@ -333,6 +355,7 @@ class CarbonSDK {
       config: this.configOverride,
       tmClient: this.tmClient,
       chainId: this.chainId,
+      useTmAbciQuery: this.useTmAbciQuery,
     };
   }
 
@@ -443,9 +466,14 @@ class CarbonSDK {
       network: this.networkConfig.network,
       bech32Prefix: this.networkConfig.Bech32Prefix
     };
+    let publicKeyBase64: string
     const address = await metamask.defaultAccount()
-    const publicKeyHex = await metamask.getPublicKey(address, metamaskWalletOpts?.publicKeyMessage)
-    const publicKeyBase64 = Buffer.from(publicKeyHex, 'hex').toString('base64')
+    if (metamaskWalletOpts?.publicKeyBase64) {
+      publicKeyBase64 = metamaskWalletOpts?.publicKeyBase64
+    } else {
+      const publicKeyHex = await metamask.getPublicKey(address, metamaskWalletOpts?.publicKeyMessage)
+      publicKeyBase64 = Buffer.from(publicKeyHex, 'hex').toString('base64')
+    }
     const wallet = CarbonWallet.withMetamask(metamask, evmChainId, publicKeyBase64, addressOptions, {
       ...opts,
       network: this.network,

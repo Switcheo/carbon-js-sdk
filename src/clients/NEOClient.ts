@@ -163,10 +163,7 @@ export class NEOClient {
     ]);
 
     const rpcUrl = await this.getProviderUrl();
-    const apiProvider =
-      networkConfig.network === CarbonSDK.Network.MainNet
-        ? new api.neonDB.instance("https://api.switcheo.network")
-        : new api.neoCli.instance(rpcUrl);
+    const apiProvider = new api.neoCli.instance(rpcUrl)
     return api.doInvoke({
       api: apiProvider,
       url: rpcUrl,
@@ -257,10 +254,7 @@ export class NEOClient {
     sb.emitAppCall(scriptHash, "lock", data);
 
     const rpcUrl = await this.getProviderUrl();
-    const apiProvider =
-      networkConfig.network === CarbonSDK.Network.MainNet
-        ? new api.neonDB.instance("https://api.switcheo.network")
-        : new api.neoCli.instance(rpcUrl);
+    const apiProvider = new api.neoCli.instance(rpcUrl)
 
     let invokeTxConfig: any = {
       account: {
@@ -343,11 +337,7 @@ export class NEOClient {
     };
 
     const script = Neon.sc.createScript(props);
-    const networkConfig = this.getNetworkConfig();
-    const apiProvider =
-      networkConfig.network === CarbonSDK.Network.MainNet
-        ? new api.neonDB.instance("https://api.switcheo.network")
-        : new api.neoCli.instance(rpcUrl);
+    const apiProvider = new api.neoCli.instance(rpcUrl)
 
     const config = {
       api: apiProvider, // Network

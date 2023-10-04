@@ -55,6 +55,8 @@ export interface NetworkConfig {
   tmRpcUrl: string;
   tmWsUrl: string;
   restUrl: string;
+  grpcUrl: string;
+  grpcWebUrl: string;
   evmJsonRpcUrl: string;
   evmWsUrl: string;
   insightsUrl: string;
@@ -65,10 +67,6 @@ export interface NetworkConfig {
 
   network: Network;
 
-  /**
-   * @deprecated on-chain fee service has been removed, please use the hydrogen fee_quote endpoint to query deposit/withdraw fees (please see HydrogenClient for the required query)
-   */
-  feeURL: string;
   feeAddress: string;
 
   eth: EthNetworkConfig;
@@ -95,6 +93,8 @@ export const NetworkConfigs: {
     tmRpcUrl: "https://tm-api.carbon.network/",
     tmWsUrl: "wss://tm-api.carbon.network/",
     restUrl: "https://api.carbon.network",
+    grpcUrl: "grpc.carbon.network",
+    grpcWebUrl: "https://grpc-web.carbon.network",
     evmJsonRpcUrl: "https://evm-api.carbon.network/",
     evmWsUrl: "wss://evm-ws.carbon.network/",
     insightsUrl: "https://api-insights.carbon.network",
@@ -104,10 +104,6 @@ export const NetworkConfigs: {
 
     Bech32Prefix: "swth",
 
-    /**
-     * @deprecated on-chain fee service has been removed, please use the hydrogen fee_quote endpoint to query deposit/withdraw fees (please see HydrogenClient for the required query)
-     */
-    feeURL: "https://fees.carbon.network",
     feeAddress: "08d8f59e475830d9a1bb97d74285c4d34c6dac08", // swth1prv0t8j8tqcdngdmjlt59pwy6dxxmtqgycy2h7
 
     eth: {
@@ -184,6 +180,8 @@ export const NetworkConfigs: {
     tmRpcUrl: "https://test-tm-api.carbon.network",
     tmWsUrl: "wss://test-tm-api.carbon.network",
     restUrl: "https://test-api.carbon.network",
+    grpcUrl: "test-grpc.carbon.network",
+    grpcWebUrl: "https://test-grpc-web.carbon.network",
     evmJsonRpcUrl: "https://test-evm-api.carbon.network/",
     evmWsUrl: "wss://test-evm-ws.carbon.network/",
     insightsUrl: "https://test-api-insights.carbon.network",
@@ -193,10 +191,6 @@ export const NetworkConfigs: {
 
     Bech32Prefix: "tswth",
 
-    /**
-     * @deprecated on-chain fee service has been removed, please use the hydrogen fee_quote endpoint to query deposit/withdraw fees (please see HydrogenClient for the required query)
-     */
-    feeURL: `http://54.255.42.175:9001`,
     feeAddress: "989761fb0c0eb0c05605e849cae77d239f98ac7f", // swth1nztkr7cvp6cvq4s9apyu4emayw0e3trl9ezyzs
 
     eth: {
@@ -273,6 +267,8 @@ export const NetworkConfigs: {
     tmRpcUrl: "https://dev-tm-api.carbon.network",
     tmWsUrl: "wss://dev-tm-api.carbon.network",
     restUrl: "https://dev-api.carbon.network",
+    grpcUrl: "dev-grpc.carbon.network",
+    grpcWebUrl: "https://dev-grpc-web.carbon.network",
     evmJsonRpcUrl: "https://dev-evm-api.carbon.network/",
     evmWsUrl: "wss://dev-evm-ws.carbon.network/",
     insightsUrl: "https://dev-api-insights.carbon.network",
@@ -282,10 +278,6 @@ export const NetworkConfigs: {
 
     Bech32Prefix: "swth",
 
-    /**
-     * @deprecated on-chain fee service has been removed, please use the hydrogen fee_quote endpoint to query deposit/withdraw fees (please see HydrogenClient for the required query)
-     */
-    feeURL: `https://dev-fees.carbon.network`,
     feeAddress: "989761fb0c0eb0c05605e849cae77d239f98ac7f", // swth1nztkr7cvp6cvq4s9apyu4emayw0e3trl9ezyzs
 
     eth: {
@@ -363,19 +355,17 @@ export const NetworkConfigs: {
     tmRpcUrl: "http://localhost:26657",
     tmWsUrl: "ws://localhost:26657",
     restUrl: "http://localhost:1317",
+    grpcUrl: "localhost:9090",
+    grpcWebUrl: "http://localhost:9091",
     evmJsonRpcUrl: "http://localhost:8545/",
     evmWsUrl: "ws://localhost:8546/",
     insightsUrl: "http://localhost:8181",
     hydrogenUrl: "",
-    wsUrl: "ws://localhost:5000/ws",
+    wsUrl: "ws://localhost:5001/ws",
     faucetUrl: "http://localhost:4500",
 
     Bech32Prefix: "tswth",
 
-    /**
-     * @deprecated on-chain fee service has been removed, please use the hydrogen fee_quote endpoint to query deposit/withdraw fees (please see HydrogenClient for the required query)
-     */
-    feeURL: `http://localhost:9001`,
     feeAddress: "989761fb0c0eb0c05605e849cae77d239f98ac7f",
 
     eth: {
@@ -447,8 +437,3 @@ export const NetworkConfigs: {
     },
   },
 } as const;
-
-export const publicRpcNodes: SimpleMap<string> = {
-  Osmosis: "https://rpc.osmosis.zone/",
-  Terra: "https://terra-rpc.lavenderfive.com:443/",
-};

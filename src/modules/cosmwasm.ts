@@ -1,12 +1,12 @@
 import { SDKProvider } from "@carbon-sdk/provider";
 import { GenericUtils, NumberUtils, TypeUtils } from "@carbon-sdk/util";
-import BigNumber from "bignumber.js";
-import {
-  QueryClientImpl as CosmWasmQueryClient,
-} from "cosmjs-types/cosmwasm/wasm/v1/query";
-import { createProtobufRpcClient, QueryClient } from "@cosmjs/stargate";
+import { QueryClient, createProtobufRpcClient } from "@cosmjs/stargate";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
+import BigNumber from "bignumber.js";
+import { QueryClientImpl as CosmWasmQueryClient } from "cosmjs-types/cosmwasm/wasm/v1/query";
 import BaseModule from "./base";
+import { getBestRpcTmClient } from "@carbon-sdk/util/generic";
+import { ExtendedChainInfo } from "@carbon-sdk/constant";
 
 export interface BalanceResponse {
   contractAddress: string
@@ -16,17 +16,34 @@ export interface BalanceResponse {
 export class CosmWasmModule extends BaseModule {
   private cosmWasmClient: CosmWasmQueryClient
 
-  constructor(cosmClient: CosmWasmQueryClient, sdkProvider: SDKProvider) {
+  constructor(sdkProvider: SDKProvider, cosmClient: CosmWasmQueryClient) {
     super(sdkProvider);
     this.cosmWasmClient = cosmClient;
   }
 
-  public static async instance(tmRpcUrl: string, sdkProvider: SDKProvider) {
-    const tmClient = GenericUtils.modifyTmClient(await Tendermint34Client.connect(tmRpcUrl));
+  public static async instanceWithChainInfo(sdkProvider: SDKProvider, chainInfo: ExtendedChainInfo) {
+    if (chainInfo.activeRpc) {
+      try {
+        const tmClient = await Tendermint34Client.connect(chainInfo.activeRpc);
+        return CosmWasmModule.instanceWithTmClient(sdkProvider, tmClient)
+      } catch (error) { }
+    }
+
+    const { client, rpcUrl } = await getBestRpcTmClient(chainInfo.bestRpcs.map(r => r.address));
+    chainInfo.activeRpc = rpcUrl;
+    return CosmWasmModule.instanceWithTmClient(sdkProvider, client);
+  }
+
+  public static async instanceWithTmClient(sdkProvider: SDKProvider, tmClient: Tendermint34Client) {
     const baseClient = new QueryClient(tmClient);
     const rpcClient = createProtobufRpcClient(baseClient);
     const cosmWasmClient = new CosmWasmQueryClient(rpcClient);
-    return new CosmWasmModule(cosmWasmClient, sdkProvider);
+    return new CosmWasmModule(sdkProvider, cosmWasmClient);
+  }
+
+  public static async instance(sdkProvider: SDKProvider, tmRpcUrl: string) {
+    const tmClient = await Tendermint34Client.connect(tmRpcUrl);
+    return CosmWasmModule.instanceWithTmClient(sdkProvider, tmClient);
   }
 
   public async queryCosmwasmBalance(walletAddress: string, contractAddr: string): Promise<BalanceResponse> {

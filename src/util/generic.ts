@@ -155,3 +155,20 @@ export namespace QueueManager {
     maxDelayThreshold?: number;
   }
 }
+
+export const getBestRpcTmClient = async (rpcUrls: string[]): Promise<{ client: Tendermint34Client, rpcUrl: string }> => {
+  for (const rpcUrl of rpcUrls) {
+    try {
+      return {
+        client: await Tendermint34Client.connect(rpcUrl),
+        rpcUrl,
+      };
+    } catch (error) {
+      console.debug("failed to connect RPC:" + rpcUrl)
+      console.debug(error)
+      continue
+    }
+  }
+
+  throw new Error("Could not get available RPC service");
+}

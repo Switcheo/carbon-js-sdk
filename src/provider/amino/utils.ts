@@ -167,6 +167,11 @@ export const generateAminoType = (amino: AminoInit, aminoProcess: AminoProcess =
         if (typeof newInput[key] !== "object" && typeof newAminoMap[key] !== "object") {
           aminoObj[snakeKey] = paramConverter(newInput[key], newAminoMap[key] as ConvertEncType, true);
         } else {
+          // empty array should be mapped over too
+          if (newInput[key]?.length === 0) {
+            aminoObj[snakeKey] = []
+            return
+          }
           if (newInput[key]?.length && typeof newInput[key] === "object") {
             aminoObj[snakeKey] = newInput[key].map((newItem: any) =>
               mapEachIndiv(newItem, newAminoMap[key] as TypeUtils.SimpleMap<ConvertEncType>, true)

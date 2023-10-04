@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Market, Params } from "./market";
+import { Market, Params, ControlledParams } from "./market";
 import {
   PageRequest,
   PageResponse,
@@ -59,6 +59,14 @@ export interface QueryAllFeeStructuresResponse {
   feeStructures: FeeStructure[];
 }
 
+export interface QueryUserFeeStructuresRequest {
+  userAddress: string;
+}
+
+export interface QueryUserFeeStructuresResponse {
+  feeStructures: FeeStructure[];
+}
+
 /** QueryParamsRequest is request type for the Query/Params RPC method. */
 export interface QueryParamsRequest {}
 
@@ -66,6 +74,15 @@ export interface QueryParamsRequest {}
 export interface QueryParamsResponse {
   /** params holds all the parameters of this module. */
   params?: Params;
+}
+
+/** QueryControlledParamsRequest is request type for the Query/ControlledParams RPC method. */
+export interface QueryControlledParamsRequest {}
+
+/** QueryControlledParamsResponse is response type for the Query/ControlledParams RPC method. */
+export interface QueryControlledParamsResponse {
+  /** params holds all the parameters of this module. */
+  controlledParams?: ControlledParams;
 }
 
 const baseQueryGetMarketRequest: object = { name: "" };
@@ -902,6 +919,145 @@ export const QueryAllFeeStructuresResponse = {
   },
 };
 
+const baseQueryUserFeeStructuresRequest: object = { userAddress: "" };
+
+export const QueryUserFeeStructuresRequest = {
+  encode(
+    message: QueryUserFeeStructuresRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.userAddress !== "") {
+      writer.uint32(10).string(message.userAddress);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryUserFeeStructuresRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryUserFeeStructuresRequest,
+    } as QueryUserFeeStructuresRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.userAddress = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryUserFeeStructuresRequest {
+    const message = {
+      ...baseQueryUserFeeStructuresRequest,
+    } as QueryUserFeeStructuresRequest;
+    message.userAddress =
+      object.userAddress !== undefined && object.userAddress !== null
+        ? String(object.userAddress)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryUserFeeStructuresRequest): unknown {
+    const obj: any = {};
+    message.userAddress !== undefined &&
+      (obj.userAddress = message.userAddress);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryUserFeeStructuresRequest>
+  ): QueryUserFeeStructuresRequest {
+    const message = {
+      ...baseQueryUserFeeStructuresRequest,
+    } as QueryUserFeeStructuresRequest;
+    message.userAddress = object.userAddress ?? "";
+    return message;
+  },
+};
+
+const baseQueryUserFeeStructuresResponse: object = {};
+
+export const QueryUserFeeStructuresResponse = {
+  encode(
+    message: QueryUserFeeStructuresResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.feeStructures) {
+      FeeStructure.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryUserFeeStructuresResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryUserFeeStructuresResponse,
+    } as QueryUserFeeStructuresResponse;
+    message.feeStructures = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.feeStructures.push(
+            FeeStructure.decode(reader, reader.uint32())
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryUserFeeStructuresResponse {
+    const message = {
+      ...baseQueryUserFeeStructuresResponse,
+    } as QueryUserFeeStructuresResponse;
+    message.feeStructures = (object.feeStructures ?? []).map((e: any) =>
+      FeeStructure.fromJSON(e)
+    );
+    return message;
+  },
+
+  toJSON(message: QueryUserFeeStructuresResponse): unknown {
+    const obj: any = {};
+    if (message.feeStructures) {
+      obj.feeStructures = message.feeStructures.map((e) =>
+        e ? FeeStructure.toJSON(e) : undefined
+      );
+    } else {
+      obj.feeStructures = [];
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryUserFeeStructuresResponse>
+  ): QueryUserFeeStructuresResponse {
+    const message = {
+      ...baseQueryUserFeeStructuresResponse,
+    } as QueryUserFeeStructuresResponse;
+    message.feeStructures = (object.feeStructures ?? []).map((e) =>
+      FeeStructure.fromPartial(e)
+    );
+    return message;
+  },
+};
+
 const baseQueryParamsRequest: object = {};
 
 export const QueryParamsRequest = {
@@ -1000,6 +1156,134 @@ export const QueryParamsResponse = {
   },
 };
 
+const baseQueryControlledParamsRequest: object = {};
+
+export const QueryControlledParamsRequest = {
+  encode(
+    _: QueryControlledParamsRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryControlledParamsRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryControlledParamsRequest,
+    } as QueryControlledParamsRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryControlledParamsRequest {
+    const message = {
+      ...baseQueryControlledParamsRequest,
+    } as QueryControlledParamsRequest;
+    return message;
+  },
+
+  toJSON(_: QueryControlledParamsRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<QueryControlledParamsRequest>
+  ): QueryControlledParamsRequest {
+    const message = {
+      ...baseQueryControlledParamsRequest,
+    } as QueryControlledParamsRequest;
+    return message;
+  },
+};
+
+const baseQueryControlledParamsResponse: object = {};
+
+export const QueryControlledParamsResponse = {
+  encode(
+    message: QueryControlledParamsResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.controlledParams !== undefined) {
+      ControlledParams.encode(
+        message.controlledParams,
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryControlledParamsResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryControlledParamsResponse,
+    } as QueryControlledParamsResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.controlledParams = ControlledParams.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryControlledParamsResponse {
+    const message = {
+      ...baseQueryControlledParamsResponse,
+    } as QueryControlledParamsResponse;
+    message.controlledParams =
+      object.controlledParams !== undefined && object.controlledParams !== null
+        ? ControlledParams.fromJSON(object.controlledParams)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryControlledParamsResponse): unknown {
+    const obj: any = {};
+    message.controlledParams !== undefined &&
+      (obj.controlledParams = message.controlledParams
+        ? ControlledParams.toJSON(message.controlledParams)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryControlledParamsResponse>
+  ): QueryControlledParamsResponse {
+    const message = {
+      ...baseQueryControlledParamsResponse,
+    } as QueryControlledParamsResponse;
+    message.controlledParams =
+      object.controlledParams !== undefined && object.controlledParams !== null
+        ? ControlledParams.fromPartial(object.controlledParams)
+        : undefined;
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Get details for a market */
@@ -1019,8 +1303,15 @@ export interface Query {
   FeeStructuresAll(
     request: QueryAllFeeStructuresRequest
   ): Promise<QueryAllFeeStructuresResponse>;
+  UserFeeStructures(
+    request: QueryUserFeeStructuresRequest
+  ): Promise<QueryUserFeeStructuresResponse>;
   /** Parameters queries the staking parameters. */
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse>;
+  /** Get the controlled parameters for all markets */
+  ControlledParams(
+    request: QueryControlledParamsRequest
+  ): Promise<QueryControlledParamsResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -1033,7 +1324,9 @@ export class QueryClientImpl implements Query {
     this.FeeTiers = this.FeeTiers.bind(this);
     this.StakeEquivalenceAll = this.StakeEquivalenceAll.bind(this);
     this.FeeStructuresAll = this.FeeStructuresAll.bind(this);
+    this.UserFeeStructures = this.UserFeeStructures.bind(this);
     this.Params = this.Params.bind(this);
+    this.ControlledParams = this.ControlledParams.bind(this);
   }
   Market(request: QueryGetMarketRequest): Promise<QueryGetMarketResponse> {
     const data = QueryGetMarketRequest.encode(request).finish();
@@ -1115,6 +1408,20 @@ export class QueryClientImpl implements Query {
     );
   }
 
+  UserFeeStructures(
+    request: QueryUserFeeStructuresRequest
+  ): Promise<QueryUserFeeStructuresResponse> {
+    const data = QueryUserFeeStructuresRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.market.Query",
+      "UserFeeStructures",
+      data
+    );
+    return promise.then((data) =>
+      QueryUserFeeStructuresResponse.decode(new _m0.Reader(data))
+    );
+  }
+
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
     const promise = this.rpc.request(
@@ -1124,6 +1431,20 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryParamsResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  ControlledParams(
+    request: QueryControlledParamsRequest
+  ): Promise<QueryControlledParamsResponse> {
+    const data = QueryControlledParamsRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.market.Query",
+      "ControlledParams",
+      data
+    );
+    return promise.then((data) =>
+      QueryControlledParamsResponse.decode(new _m0.Reader(data))
     );
   }
 }

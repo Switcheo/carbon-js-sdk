@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Oracle, Params, Result, Vote } from "./oracle";
+import { Oracle, Params, Result, Vote, Contract } from "./oracle";
 import {
   PageRequest,
   PageResponse,
@@ -28,24 +28,24 @@ export interface QueryAllOracleResponse {
   pagination?: PageResponse;
 }
 
-export interface QueryAllResultRequest {
+export interface QueryResultsRequest {
   oracleId: string;
   pagination?: PageRequest;
 }
 
-export interface QueryAllResultResponse {
+export interface QueryResultsResponse {
   results: Result[];
   pagination?: PageResponse;
 }
 
-export interface QueryAllVoteRequest {
+export interface QueryVotesRequest {
   oracleId: string;
   timestamp: Long;
   voter: string;
   pagination?: PageRequest;
 }
 
-export interface QueryAllVoteResponse {
+export interface QueryVotesResponse {
   votes: Vote[];
   pagination?: PageResponse;
 }
@@ -101,6 +101,32 @@ export interface QueryParamsRequest {}
 export interface QueryParamsResponse {
   /** params holds all the parameters of this module. */
   params?: Params;
+}
+
+export interface QueryContractAddressRequest {
+  id: string;
+}
+
+export interface QueryContractAddressResponse {
+  address: string;
+}
+
+export interface QueryContractAllRequest {}
+
+export interface QueryContractAllResponse {
+  contracts: Contract[];
+}
+
+export interface QueryContractParamsRequest {
+  id: string;
+}
+
+export interface QueryContractParamsResponse {
+  id: string;
+  creator: string;
+  decimals: Long;
+  timestamp: string;
+  data: string;
 }
 
 const baseQueryOracleRequest: object = { id: "" };
@@ -360,11 +386,11 @@ export const QueryAllOracleResponse = {
   },
 };
 
-const baseQueryAllResultRequest: object = { oracleId: "" };
+const baseQueryResultsRequest: object = { oracleId: "" };
 
-export const QueryAllResultRequest = {
+export const QueryResultsRequest = {
   encode(
-    message: QueryAllResultRequest,
+    message: QueryResultsRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.oracleId !== "") {
@@ -376,13 +402,10 @@ export const QueryAllResultRequest = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryAllResultRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryResultsRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryAllResultRequest } as QueryAllResultRequest;
+    const message = { ...baseQueryResultsRequest } as QueryResultsRequest;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -400,8 +423,8 @@ export const QueryAllResultRequest = {
     return message;
   },
 
-  fromJSON(object: any): QueryAllResultRequest {
-    const message = { ...baseQueryAllResultRequest } as QueryAllResultRequest;
+  fromJSON(object: any): QueryResultsRequest {
+    const message = { ...baseQueryResultsRequest } as QueryResultsRequest;
     message.oracleId =
       object.oracleId !== undefined && object.oracleId !== null
         ? String(object.oracleId)
@@ -413,7 +436,7 @@ export const QueryAllResultRequest = {
     return message;
   },
 
-  toJSON(message: QueryAllResultRequest): unknown {
+  toJSON(message: QueryResultsRequest): unknown {
     const obj: any = {};
     message.oracleId !== undefined && (obj.oracleId = message.oracleId);
     message.pagination !== undefined &&
@@ -423,10 +446,8 @@ export const QueryAllResultRequest = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryAllResultRequest>
-  ): QueryAllResultRequest {
-    const message = { ...baseQueryAllResultRequest } as QueryAllResultRequest;
+  fromPartial(object: DeepPartial<QueryResultsRequest>): QueryResultsRequest {
+    const message = { ...baseQueryResultsRequest } as QueryResultsRequest;
     message.oracleId = object.oracleId ?? "";
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
@@ -436,11 +457,11 @@ export const QueryAllResultRequest = {
   },
 };
 
-const baseQueryAllResultResponse: object = {};
+const baseQueryResultsResponse: object = {};
 
-export const QueryAllResultResponse = {
+export const QueryResultsResponse = {
   encode(
-    message: QueryAllResultResponse,
+    message: QueryResultsResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     for (const v of message.results) {
@@ -458,10 +479,10 @@ export const QueryAllResultResponse = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): QueryAllResultResponse {
+  ): QueryResultsResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryAllResultResponse } as QueryAllResultResponse;
+    const message = { ...baseQueryResultsResponse } as QueryResultsResponse;
     message.results = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
@@ -480,8 +501,8 @@ export const QueryAllResultResponse = {
     return message;
   },
 
-  fromJSON(object: any): QueryAllResultResponse {
-    const message = { ...baseQueryAllResultResponse } as QueryAllResultResponse;
+  fromJSON(object: any): QueryResultsResponse {
+    const message = { ...baseQueryResultsResponse } as QueryResultsResponse;
     message.results = (object.results ?? []).map((e: any) =>
       Result.fromJSON(e)
     );
@@ -492,7 +513,7 @@ export const QueryAllResultResponse = {
     return message;
   },
 
-  toJSON(message: QueryAllResultResponse): unknown {
+  toJSON(message: QueryResultsResponse): unknown {
     const obj: any = {};
     if (message.results) {
       obj.results = message.results.map((e) =>
@@ -508,10 +529,8 @@ export const QueryAllResultResponse = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryAllResultResponse>
-  ): QueryAllResultResponse {
-    const message = { ...baseQueryAllResultResponse } as QueryAllResultResponse;
+  fromPartial(object: DeepPartial<QueryResultsResponse>): QueryResultsResponse {
+    const message = { ...baseQueryResultsResponse } as QueryResultsResponse;
     message.results = (object.results ?? []).map((e) => Result.fromPartial(e));
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
@@ -521,15 +540,15 @@ export const QueryAllResultResponse = {
   },
 };
 
-const baseQueryAllVoteRequest: object = {
+const baseQueryVotesRequest: object = {
   oracleId: "",
   timestamp: Long.ZERO,
   voter: "",
 };
 
-export const QueryAllVoteRequest = {
+export const QueryVotesRequest = {
   encode(
-    message: QueryAllVoteRequest,
+    message: QueryVotesRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.oracleId !== "") {
@@ -547,10 +566,10 @@ export const QueryAllVoteRequest = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): QueryAllVoteRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryVotesRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryAllVoteRequest } as QueryAllVoteRequest;
+    const message = { ...baseQueryVotesRequest } as QueryVotesRequest;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -574,8 +593,8 @@ export const QueryAllVoteRequest = {
     return message;
   },
 
-  fromJSON(object: any): QueryAllVoteRequest {
-    const message = { ...baseQueryAllVoteRequest } as QueryAllVoteRequest;
+  fromJSON(object: any): QueryVotesRequest {
+    const message = { ...baseQueryVotesRequest } as QueryVotesRequest;
     message.oracleId =
       object.oracleId !== undefined && object.oracleId !== null
         ? String(object.oracleId)
@@ -595,7 +614,7 @@ export const QueryAllVoteRequest = {
     return message;
   },
 
-  toJSON(message: QueryAllVoteRequest): unknown {
+  toJSON(message: QueryVotesRequest): unknown {
     const obj: any = {};
     message.oracleId !== undefined && (obj.oracleId = message.oracleId);
     message.timestamp !== undefined &&
@@ -608,8 +627,8 @@ export const QueryAllVoteRequest = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<QueryAllVoteRequest>): QueryAllVoteRequest {
-    const message = { ...baseQueryAllVoteRequest } as QueryAllVoteRequest;
+  fromPartial(object: DeepPartial<QueryVotesRequest>): QueryVotesRequest {
+    const message = { ...baseQueryVotesRequest } as QueryVotesRequest;
     message.oracleId = object.oracleId ?? "";
     message.timestamp =
       object.timestamp !== undefined && object.timestamp !== null
@@ -624,11 +643,11 @@ export const QueryAllVoteRequest = {
   },
 };
 
-const baseQueryAllVoteResponse: object = {};
+const baseQueryVotesResponse: object = {};
 
-export const QueryAllVoteResponse = {
+export const QueryVotesResponse = {
   encode(
-    message: QueryAllVoteResponse,
+    message: QueryVotesResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     for (const v of message.votes) {
@@ -643,13 +662,10 @@ export const QueryAllVoteResponse = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryAllVoteResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryVotesResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryAllVoteResponse } as QueryAllVoteResponse;
+    const message = { ...baseQueryVotesResponse } as QueryVotesResponse;
     message.votes = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
@@ -668,8 +684,8 @@ export const QueryAllVoteResponse = {
     return message;
   },
 
-  fromJSON(object: any): QueryAllVoteResponse {
-    const message = { ...baseQueryAllVoteResponse } as QueryAllVoteResponse;
+  fromJSON(object: any): QueryVotesResponse {
+    const message = { ...baseQueryVotesResponse } as QueryVotesResponse;
     message.votes = (object.votes ?? []).map((e: any) => Vote.fromJSON(e));
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
@@ -678,7 +694,7 @@ export const QueryAllVoteResponse = {
     return message;
   },
 
-  toJSON(message: QueryAllVoteResponse): unknown {
+  toJSON(message: QueryVotesResponse): unknown {
     const obj: any = {};
     if (message.votes) {
       obj.votes = message.votes.map((e) => (e ? Vote.toJSON(e) : undefined));
@@ -692,8 +708,8 @@ export const QueryAllVoteResponse = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<QueryAllVoteResponse>): QueryAllVoteResponse {
-    const message = { ...baseQueryAllVoteResponse } as QueryAllVoteResponse;
+  fromPartial(object: DeepPartial<QueryVotesResponse>): QueryVotesResponse {
+    const message = { ...baseQueryVotesResponse } as QueryVotesResponse;
     message.votes = (object.votes ?? []).map((e) => Vote.fromPartial(e));
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
@@ -1569,16 +1585,450 @@ export const QueryParamsResponse = {
   },
 };
 
+const baseQueryContractAddressRequest: object = { id: "" };
+
+export const QueryContractAddressRequest = {
+  encode(
+    message: QueryContractAddressRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryContractAddressRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryContractAddressRequest,
+    } as QueryContractAddressRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryContractAddressRequest {
+    const message = {
+      ...baseQueryContractAddressRequest,
+    } as QueryContractAddressRequest;
+    message.id =
+      object.id !== undefined && object.id !== null ? String(object.id) : "";
+    return message;
+  },
+
+  toJSON(message: QueryContractAddressRequest): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryContractAddressRequest>
+  ): QueryContractAddressRequest {
+    const message = {
+      ...baseQueryContractAddressRequest,
+    } as QueryContractAddressRequest;
+    message.id = object.id ?? "";
+    return message;
+  },
+};
+
+const baseQueryContractAddressResponse: object = { address: "" };
+
+export const QueryContractAddressResponse = {
+  encode(
+    message: QueryContractAddressResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.address !== "") {
+      writer.uint32(10).string(message.address);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryContractAddressResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryContractAddressResponse,
+    } as QueryContractAddressResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.address = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryContractAddressResponse {
+    const message = {
+      ...baseQueryContractAddressResponse,
+    } as QueryContractAddressResponse;
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryContractAddressResponse): unknown {
+    const obj: any = {};
+    message.address !== undefined && (obj.address = message.address);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryContractAddressResponse>
+  ): QueryContractAddressResponse {
+    const message = {
+      ...baseQueryContractAddressResponse,
+    } as QueryContractAddressResponse;
+    message.address = object.address ?? "";
+    return message;
+  },
+};
+
+const baseQueryContractAllRequest: object = {};
+
+export const QueryContractAllRequest = {
+  encode(
+    _: QueryContractAllRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryContractAllRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryContractAllRequest,
+    } as QueryContractAllRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryContractAllRequest {
+    const message = {
+      ...baseQueryContractAllRequest,
+    } as QueryContractAllRequest;
+    return message;
+  },
+
+  toJSON(_: QueryContractAllRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<QueryContractAllRequest>
+  ): QueryContractAllRequest {
+    const message = {
+      ...baseQueryContractAllRequest,
+    } as QueryContractAllRequest;
+    return message;
+  },
+};
+
+const baseQueryContractAllResponse: object = {};
+
+export const QueryContractAllResponse = {
+  encode(
+    message: QueryContractAllResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.contracts) {
+      Contract.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryContractAllResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryContractAllResponse,
+    } as QueryContractAllResponse;
+    message.contracts = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.contracts.push(Contract.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryContractAllResponse {
+    const message = {
+      ...baseQueryContractAllResponse,
+    } as QueryContractAllResponse;
+    message.contracts = (object.contracts ?? []).map((e: any) =>
+      Contract.fromJSON(e)
+    );
+    return message;
+  },
+
+  toJSON(message: QueryContractAllResponse): unknown {
+    const obj: any = {};
+    if (message.contracts) {
+      obj.contracts = message.contracts.map((e) =>
+        e ? Contract.toJSON(e) : undefined
+      );
+    } else {
+      obj.contracts = [];
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryContractAllResponse>
+  ): QueryContractAllResponse {
+    const message = {
+      ...baseQueryContractAllResponse,
+    } as QueryContractAllResponse;
+    message.contracts = (object.contracts ?? []).map((e) =>
+      Contract.fromPartial(e)
+    );
+    return message;
+  },
+};
+
+const baseQueryContractParamsRequest: object = { id: "" };
+
+export const QueryContractParamsRequest = {
+  encode(
+    message: QueryContractParamsRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryContractParamsRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryContractParamsRequest,
+    } as QueryContractParamsRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryContractParamsRequest {
+    const message = {
+      ...baseQueryContractParamsRequest,
+    } as QueryContractParamsRequest;
+    message.id =
+      object.id !== undefined && object.id !== null ? String(object.id) : "";
+    return message;
+  },
+
+  toJSON(message: QueryContractParamsRequest): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryContractParamsRequest>
+  ): QueryContractParamsRequest {
+    const message = {
+      ...baseQueryContractParamsRequest,
+    } as QueryContractParamsRequest;
+    message.id = object.id ?? "";
+    return message;
+  },
+};
+
+const baseQueryContractParamsResponse: object = {
+  id: "",
+  creator: "",
+  decimals: Long.UZERO,
+  timestamp: "",
+  data: "",
+};
+
+export const QueryContractParamsResponse = {
+  encode(
+    message: QueryContractParamsResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.id !== "") {
+      writer.uint32(10).string(message.id);
+    }
+    if (message.creator !== "") {
+      writer.uint32(18).string(message.creator);
+    }
+    if (!message.decimals.isZero()) {
+      writer.uint32(24).uint64(message.decimals);
+    }
+    if (message.timestamp !== "") {
+      writer.uint32(34).string(message.timestamp);
+    }
+    if (message.data !== "") {
+      writer.uint32(42).string(message.data);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryContractParamsResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryContractParamsResponse,
+    } as QueryContractParamsResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.id = reader.string();
+          break;
+        case 2:
+          message.creator = reader.string();
+          break;
+        case 3:
+          message.decimals = reader.uint64() as Long;
+          break;
+        case 4:
+          message.timestamp = reader.string();
+          break;
+        case 5:
+          message.data = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryContractParamsResponse {
+    const message = {
+      ...baseQueryContractParamsResponse,
+    } as QueryContractParamsResponse;
+    message.id =
+      object.id !== undefined && object.id !== null ? String(object.id) : "";
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.decimals =
+      object.decimals !== undefined && object.decimals !== null
+        ? Long.fromString(object.decimals)
+        : Long.UZERO;
+    message.timestamp =
+      object.timestamp !== undefined && object.timestamp !== null
+        ? String(object.timestamp)
+        : "";
+    message.data =
+      object.data !== undefined && object.data !== null
+        ? String(object.data)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryContractParamsResponse): unknown {
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.decimals !== undefined &&
+      (obj.decimals = (message.decimals || Long.UZERO).toString());
+    message.timestamp !== undefined && (obj.timestamp = message.timestamp);
+    message.data !== undefined && (obj.data = message.data);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryContractParamsResponse>
+  ): QueryContractParamsResponse {
+    const message = {
+      ...baseQueryContractParamsResponse,
+    } as QueryContractParamsResponse;
+    message.id = object.id ?? "";
+    message.creator = object.creator ?? "";
+    message.decimals =
+      object.decimals !== undefined && object.decimals !== null
+        ? Long.fromValue(object.decimals)
+        : Long.UZERO;
+    message.timestamp = object.timestamp ?? "";
+    message.data = object.data ?? "";
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Get details for an oracle */
   Oracle(request: QueryOracleRequest): Promise<QueryOracleResponse>;
   /** Get details for all oracles */
   OracleAll(request: QueryAllOracleRequest): Promise<QueryAllOracleResponse>;
-  /** Get all oracle results */
-  ResultAll(request: QueryAllResultRequest): Promise<QueryAllResultResponse>;
-  /** Get all oracle votes */
-  VoteAll(request: QueryAllVoteRequest): Promise<QueryAllVoteResponse>;
+  /** Get results for all oracles, or a specific oracle */
+  Results(request: QueryResultsRequest): Promise<QueryResultsResponse>;
+  /** Get latest result for all oracles */
+  ResultsLatest(request: QueryResultsRequest): Promise<QueryResultsResponse>;
+  /** Get votes for all oracles, or a specific oracle */
+  Votes(request: QueryVotesRequest): Promise<QueryVotesResponse>;
   /** Get voting power for an address */
   VoterPower(request: QueryVoterPowerRequest): Promise<QueryVoterPowerResponse>;
   /** Get all slash counters */
@@ -1597,6 +2047,15 @@ export interface Query {
   OracleVotesWindow(
     request: QueryOracleVotesWindowRequest
   ): Promise<QueryOracleVotesWindowResponse>;
+  OracleContractAddress(
+    request: QueryContractAddressRequest
+  ): Promise<QueryContractAddressResponse>;
+  OracleContractAll(
+    request: QueryContractAllRequest
+  ): Promise<QueryContractAllResponse>;
+  OracleContractParams(
+    request: QueryContractParamsRequest
+  ): Promise<QueryContractParamsResponse>;
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse>;
 }
 
@@ -1606,13 +2065,17 @@ export class QueryClientImpl implements Query {
     this.rpc = rpc;
     this.Oracle = this.Oracle.bind(this);
     this.OracleAll = this.OracleAll.bind(this);
-    this.ResultAll = this.ResultAll.bind(this);
-    this.VoteAll = this.VoteAll.bind(this);
+    this.Results = this.Results.bind(this);
+    this.ResultsLatest = this.ResultsLatest.bind(this);
+    this.Votes = this.Votes.bind(this);
     this.VoterPower = this.VoterPower.bind(this);
     this.SlashCounterAll = this.SlashCounterAll.bind(this);
     this.SlashCounter = this.SlashCounter.bind(this);
     this.OracleVotesWindowAll = this.OracleVotesWindowAll.bind(this);
     this.OracleVotesWindow = this.OracleVotesWindow.bind(this);
+    this.OracleContractAddress = this.OracleContractAddress.bind(this);
+    this.OracleContractAll = this.OracleContractAll.bind(this);
+    this.OracleContractParams = this.OracleContractParams.bind(this);
     this.Params = this.Params.bind(this);
   }
   Oracle(request: QueryOracleRequest): Promise<QueryOracleResponse> {
@@ -1639,27 +2102,39 @@ export class QueryClientImpl implements Query {
     );
   }
 
-  ResultAll(request: QueryAllResultRequest): Promise<QueryAllResultResponse> {
-    const data = QueryAllResultRequest.encode(request).finish();
+  Results(request: QueryResultsRequest): Promise<QueryResultsResponse> {
+    const data = QueryResultsRequest.encode(request).finish();
     const promise = this.rpc.request(
       "Switcheo.carbon.oracle.Query",
-      "ResultAll",
+      "Results",
       data
     );
     return promise.then((data) =>
-      QueryAllResultResponse.decode(new _m0.Reader(data))
+      QueryResultsResponse.decode(new _m0.Reader(data))
     );
   }
 
-  VoteAll(request: QueryAllVoteRequest): Promise<QueryAllVoteResponse> {
-    const data = QueryAllVoteRequest.encode(request).finish();
+  ResultsLatest(request: QueryResultsRequest): Promise<QueryResultsResponse> {
+    const data = QueryResultsRequest.encode(request).finish();
     const promise = this.rpc.request(
       "Switcheo.carbon.oracle.Query",
-      "VoteAll",
+      "ResultsLatest",
       data
     );
     return promise.then((data) =>
-      QueryAllVoteResponse.decode(new _m0.Reader(data))
+      QueryResultsResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  Votes(request: QueryVotesRequest): Promise<QueryVotesResponse> {
+    const data = QueryVotesRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.oracle.Query",
+      "Votes",
+      data
+    );
+    return promise.then((data) =>
+      QueryVotesResponse.decode(new _m0.Reader(data))
     );
   }
 
@@ -1730,6 +2205,48 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryOracleVotesWindowResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  OracleContractAddress(
+    request: QueryContractAddressRequest
+  ): Promise<QueryContractAddressResponse> {
+    const data = QueryContractAddressRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.oracle.Query",
+      "OracleContractAddress",
+      data
+    );
+    return promise.then((data) =>
+      QueryContractAddressResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  OracleContractAll(
+    request: QueryContractAllRequest
+  ): Promise<QueryContractAllResponse> {
+    const data = QueryContractAllRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.oracle.Query",
+      "OracleContractAll",
+      data
+    );
+    return promise.then((data) =>
+      QueryContractAllResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  OracleContractParams(
+    request: QueryContractParamsRequest
+  ): Promise<QueryContractParamsResponse> {
+    const data = QueryContractParamsRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.oracle.Query",
+      "OracleContractParams",
+      data
+    );
+    return promise.then((data) =>
+      QueryContractParamsResponse.decode(new _m0.Reader(data))
     );
   }
 

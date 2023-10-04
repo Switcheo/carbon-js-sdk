@@ -25,7 +25,7 @@ export class SubAccountModule extends BaseModule {
 
     const value = MsgActivateSubAccount.fromPartial({
       creator: wallet.bech32Address,
-      expectedMainAccount: params.expectedMainAccount,
+      mainAddress: params.expectedMainAccount,
     });
 
     return await wallet.sendTx(

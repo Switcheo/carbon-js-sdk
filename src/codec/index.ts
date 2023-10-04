@@ -29,6 +29,7 @@ import { MsgGrant, MsgExecResponse, MsgExec, MsgGrantResponse, MsgRevoke, MsgRev
 import { MsgUnjail, MsgUnjailResponse } from "./cosmos/slashing/v1beta1/tx";
 import { MsgSubmitProposal as MsgGovSubmitProposal, MsgSubmitProposalResponse as MsgGovSubmitProposalResponse, MsgExecLegacyContent as MsgGovExecLegacyContent, MsgExecLegacyContentResponse as MsgGovExecLegacyContentResponse, MsgVote as MsgGovVote, MsgVoteResponse as MsgGovVoteResponse, MsgVoteWeighted as MsgGovVoteWeighted, MsgVoteWeightedResponse as MsgGovVoteWeightedResponse, MsgDeposit as MsgGovDeposit, MsgDepositResponse as MsgGovDepositResponse } from "./cosmos/gov/v1/tx";
 import { MsgSubmitProposal, MsgSubmitProposalResponse, MsgVote, MsgVoteResponse, MsgVoteWeighted, MsgVoteWeightedResponse, MsgDeposit, MsgDepositResponse } from "./cosmos/gov/v1beta1/tx";
+import { MsgInitiateAdminTransfer, MsgInitiateAdminTransferResponse, MsgAcceptAdminTransfer, MsgAcceptAdminTransferResponse } from "./admin/tx";
 import { MsgConnectionOpenInit, MsgConnectionOpenInitResponse, MsgConnectionOpenTry, MsgConnectionOpenTryResponse, MsgConnectionOpenAck, MsgConnectionOpenAckResponse, MsgConnectionOpenConfirm, MsgConnectionOpenConfirmResponse } from "./ibc/core/connection/v1/tx";
 import { MsgChannelOpenInit, MsgChannelOpenInitResponse, MsgChannelOpenTry, MsgChannelOpenTryResponse, MsgChannelOpenAck, MsgChannelOpenAckResponse, MsgChannelOpenConfirm, MsgChannelOpenConfirmResponse, MsgChannelCloseInit, MsgChannelCloseInitResponse, MsgChannelCloseConfirm, MsgChannelCloseConfirmResponse, MsgRecvPacket, MsgRecvPacketResponse, MsgTimeout, MsgTimeoutResponse, MsgTimeoutOnClose, MsgTimeoutOnCloseResponse, MsgAcknowledgement, MsgAcknowledgementResponse } from "./ibc/core/channel/v1/tx";
 import { MsgCreateClient, MsgCreateClientResponse, MsgUpdateClient, MsgUpdateClientResponse, MsgUpgradeClient, MsgUpgradeClientResponse, MsgSubmitMisbehaviour, MsgSubmitMisbehaviourResponse } from "./ibc/core/client/v1/tx";
@@ -48,6 +49,7 @@ import { CreateMarketProposal, UpdateMarketProposal, UpdatePerpetualsFundingInte
 import { MsgSetSequence, MsgSetSequenceResponse } from "./sequence/tx";
 import { MsgCreatePool, MsgCreatePoolResponse, MsgCreatePoolWithLiquidity, MsgCreatePoolWithLiquidityResponse, MsgAddLiquidity, MsgAddLiquidityResponse, MsgRemoveLiquidity, MsgRemoveLiquidityResponse, MsgSetRewardsWeights, MsgSetRewardsWeightsResponse, MsgStakePoolToken, MsgStakePoolTokenResponse, MsgUnstakePoolToken, MsgUnstakePoolTokenResponse, MsgClaimPoolRewards, MsgClaimPoolRewardsResponse, MsgSetRewardCurve, MsgSetRewardCurveResponse, MsgSetCommitmentCurve, MsgSetCommitmentCurveResponse, MsgUpdatePool, MsgUpdatePoolResponse, MsgCreatePoolRoute, MsgCreatePoolRouteResponse, MsgRemovePoolRoute, MsgRemovePoolRouteResponse, MsgUpdatePoolRoute, MsgUpdatePoolRouteResponse } from "./liquiditypool/tx";
 import { LinkPoolProposal, UnlinkPoolProposal, SetRewardCurveProposal, SetCommitmentCurveProposal, SetRewardsWeightsProposal, UpdatePoolProposal, CreatePoolRouteProposal, RemovePoolRouteProposal, UpdatePoolRouteProposal } from "./liquiditypool/proposal";
+import { MsgTopUpInsurance, MsgTopUpInsuranceResponse } from "./insurance/tx";
 import { MsgSetBackfillTimeInterval, MsgSetBackfillTimeIntervalResponse, MsgSetSmoothenBand, MsgSetSmoothenBandResponse, MsgSetImpactBand, MsgSetImpactBandResponse, MsgSetStaleIndexAllowance, MsgSetStaleIndexAllowanceResponse, MsgUpdateTokenPriceOracle, MsgUpdateTokenPriceOracleResponse } from "./pricing/tx";
 import { SettlementPriceProposal } from "./pricing/proposal";
 import { TextProposal, Proposal } from "./cosmos/gov/v1beta1/gov";
@@ -346,6 +348,11 @@ registry.register("/cosmos.gov.v1beta1.MsgDepositResponse", MsgDepositResponse);
 registry.register("/cosmos.gov.v1beta1.TextProposal", TextProposal);
 registry.register("/cosmos.gov.v1beta1.Proposal", Proposal);
 
+registry.register("/switcheo.carbon.admin.MsgInitiateAdminTransfer", MsgInitiateAdminTransfer);
+registry.register("/switcheo.carbon.admin.MsgInitiateAdminTransferResponse", MsgInitiateAdminTransferResponse);
+registry.register("/switcheo.carbon.admin.MsgAcceptAdminTransfer", MsgAcceptAdminTransfer);
+registry.register("/switcheo.carbon.admin.MsgAcceptAdminTransferResponse", MsgAcceptAdminTransferResponse);
+
 registry.register("/Switcheo.carbon.ccm.MsgProcessCrossChainTx", PolyNetwork.Ccm.MsgProcessCrossChainTx);
 registry.register("/Switcheo.carbon.ccm.MsgProcessZionCrossChainTx", PolyNetwork.Ccm.MsgProcessZionCrossChainTx);
 registry.register("/Switcheo.carbon.ccm.MsgProcessCrossChainTxResponse", PolyNetwork.Ccm.MsgProcessCrossChainTxResponse);
@@ -540,6 +547,9 @@ registry.register("/Switcheo.carbon.liquiditypool.UpdatePoolProposal", UpdatePoo
 registry.register("/Switcheo.carbon.liquiditypool.CreatePoolRouteProposal", CreatePoolRouteProposal);
 registry.register("/Switcheo.carbon.liquiditypool.RemovePoolRouteProposal", RemovePoolRouteProposal);
 registry.register("/Switcheo.carbon.liquiditypool.UpdatePoolRouteProposal", UpdatePoolRouteProposal);
+
+registry.register("/Switcheo.carbon.insurance.MsgTopUpInsurance", MsgTopUpInsurance);
+registry.register("/Switcheo.carbon.insurance.MsgTopUpInsuranceResponse", MsgTopUpInsuranceResponse);
 
 registry.register("/Switcheo.carbon.pricing.MsgSetBackfillTimeInterval", MsgSetBackfillTimeInterval);
 registry.register("/Switcheo.carbon.pricing.MsgSetBackfillTimeIntervalResponse", MsgSetBackfillTimeIntervalResponse);
@@ -826,6 +836,10 @@ export const TxTypes = {
   "MsgDepositResponse": "/cosmos.gov.v1beta1.MsgDepositResponse",
   "TextProposal": "/cosmos.gov.v1beta1.TextProposal",
   "Proposal": "/cosmos.gov.v1beta1.Proposal",
+  "MsgInitiateAdminTransfer": "/switcheo.carbon.admin.MsgInitiateAdminTransfer",
+  "MsgInitiateAdminTransferResponse": "/switcheo.carbon.admin.MsgInitiateAdminTransferResponse",
+  "MsgAcceptAdminTransfer": "/switcheo.carbon.admin.MsgAcceptAdminTransfer",
+  "MsgAcceptAdminTransferResponse": "/switcheo.carbon.admin.MsgAcceptAdminTransferResponse",
   "MsgProcessCrossChainTx": "/Switcheo.carbon.ccm.MsgProcessCrossChainTx",
   "MsgProcessZionCrossChainTx": "/Switcheo.carbon.ccm.MsgProcessZionCrossChainTx",
   "MsgProcessCrossChainTxResponse": "/Switcheo.carbon.ccm.MsgProcessCrossChainTxResponse",
@@ -1004,6 +1018,8 @@ export const TxTypes = {
   "CreatePoolRouteProposal": "/Switcheo.carbon.liquiditypool.CreatePoolRouteProposal",
   "RemovePoolRouteProposal": "/Switcheo.carbon.liquiditypool.RemovePoolRouteProposal",
   "UpdatePoolRouteProposal": "/Switcheo.carbon.liquiditypool.UpdatePoolRouteProposal",
+  "MsgTopUpInsurance": "/Switcheo.carbon.insurance.MsgTopUpInsurance",
+  "MsgTopUpInsuranceResponse": "/Switcheo.carbon.insurance.MsgTopUpInsuranceResponse",
   "MsgSetBackfillTimeInterval": "/Switcheo.carbon.pricing.MsgSetBackfillTimeInterval",
   "MsgSetBackfillTimeIntervalResponse": "/Switcheo.carbon.pricing.MsgSetBackfillTimeIntervalResponse",
   "MsgSetSmoothenBand": "/Switcheo.carbon.pricing.MsgSetSmoothenBand",
@@ -1037,12 +1053,13 @@ export { OrderEvent } from "./order/event";
 export { StablecoinInterestInfo } from "./cdp/stablecoin_interest_info";
 export { DebtInfo } from "./cdp/debt_info";
 export { MsgAddRateStrategy, MsgAddRateStrategyResponse, MsgUpdateRateStrategy, MsgUpdateRateStrategyResponse, MsgRemoveRateStrategy, MsgRemoveRateStrategyResponse, MsgAddAsset, MsgAddAssetResponse, MsgUpdateAsset, MsgUpdateAssetResponse, MsgSupplyAsset, MsgSupplyAssetResponse, MsgWithdrawAsset, MsgWithdrawAssetResponse, MsgLockCollateral, MsgLockCollateralResponse, MsgUnlockCollateral, MsgUnlockCollateralResponse, MsgBorrowAsset, MsgBorrowAssetResponse, MsgRepayAsset, MsgRepayAssetResponse, MsgSupplyAssetAndLockCollateral, MsgSupplyAssetAndLockCollateralResponse, MsgUnlockCollateralAndWithdrawAsset, MsgUnlockCollateralAndWithdrawAssetResponse, MsgLiquidateCollateral, MsgLiquidateCollateralResponse, MsgSetLiquidationFee, MsgSetLiquidationFeeResponse, MsgSetInterestFee, MsgSetInterestFeeResponse, MsgRepayAssetWithCdpTokens, MsgRepayAssetWithCdpTokensResponse, MsgRepayAssetWithCollateral, MsgRepayAssetWithCollateralResponse, MsgSetStablecoinMintCap, MsgSetStablecoinMintCapResponse, MsgSetStablecoinInterestRate, MsgSetStablecoinInterestRateResponse, MsgMintStablecoin, MsgMintStablecoinResponse, MsgReturnStablecoin, MsgReturnStablecoinResponse, MsgSetCompleteLiquidationThreshold, MsgSetCompleteLiquidationThresholdResponse, MsgSetMinimumCloseFactor, MsgSetMinimumCloseFactorResponse, MsgSetSmallLiquidationSize, MsgSetSmallLiquidationSizeResponse, MsgLiquidateCollateralWithCdpTokens, MsgLiquidateCollateralWithCdpTokensResponse, MsgLiquidateCollateralWithCollateral, MsgLiquidateCollateralWithCollateralResponse, MsgLiquidateCollateralWithStablecoin, MsgLiquidateCollateralWithStablecoinResponse, MsgCreateRewardScheme, MsgCreateRewardSchemeResponse, MsgUpdateRewardScheme, MsgUpdateRewardSchemeResponse, MsgClaimRewards, MsgClaimRewardsResponse, MsgSetStalePriceGracePeriod, MsgSetStalePriceGracePeriodResponse, MsgSetCdpPaused, MsgSetCdpPausedResponse, MsgReturnStablecoinWithInterestInCollateral, MsgReturnStablecoinWithInterestInCollateralResponse, MsgReturnStablecoinWithInterestInCdpTokens, MsgReturnStablecoinWithInterestInCdpTokensResponse, MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokens, MsgLiquidateCollateralWithStablecoinAndInterestInCdpTokensResponse, MsgLiquidateCollateralWithStablecoinAndInterestInCollateral, MsgLiquidateCollateralWithStablecoinAndInterestInCollateralResponse, MsgConvertTokenInCdpToGroupTokens, MsgConvertTokenInCdpToGroupTokensResponse, MsgAddEModeCategory, MsgAddEModeCategoryResponse, MsgUpdateEModeCategory, UpdateEModeCategoryParams, MsgUpdateEModeCategoryResponse, MsgChangeAccountEMode, MsgChangeAccountEModeResponse } from "./cdp/tx";
+export { CDPLiquidations } from "./cdp/cdp_liquidations";
 export { AssetParams, AssetUtilization, UpdateAssetParams } from "./cdp/asset_params";
 export { RateStrategyParams } from "./cdp/rate_strategy_params";
 export { StablecoinDebtInfo } from "./cdp/stablecoin_debt_info";
 export { RewardScheme, CreateRewardSchemeParams, UpdateRewardSchemeParams, RewardDebt } from "./cdp/reward_scheme";
 export { EModeCategory } from "./cdp/e_mode_category";
-export { QueryParamsRequest as QueryCdpParamsRequest, QueryParamsResponse as QueryCdpParamsResponse, QueryRateStrategyRequest, QueryRateStrategyResponse, QueryRateStrategyAllRequest, QueryRateStrategyAllResponse, QueryAccountDataRequest, QueryAccountDataResponse, QueryAccountCollateralRequest, QueryAccountCollateralResponse, QueryAccountCollateralAllRequest, QueryAccountCollateralAllResponse, Collateral, QueryAccountDebtRequest, QueryAccountDebtResponse, QueryAccountDebtAllRequest, QueryAccountDebtAllResponse, Debt, QueryAccountStablecoinRequest, QueryAccountStablecoinResponse, QueryAssetRequest, QueryAssetResponse, QueryAssetAllRequest, QueryAssetAllResponse, QueryTokenDebtRequest, QueryTokenDebtResponse, QueryTokenDebtAllRequest, QueryTokenDebtAllResponse, QueryStablecoinDebtRequest, QueryStablecoinDebtResponse, CdpPositionItem, CdpPosition, QueryCdpPositionsRequest, QueryCdpPositionsResponse, QueryRewardSchemesAllRequest, QueryRewardSchemesAllResponse, QueryRewardDebtsRequest, QueryRewardDebtsResponse, QueryRewardDebtsAllRequest, QueryEModeAllRequest, QueryEModeAllResponse, QueryStablecoinInterestRequest, QueryStablecoinInterestResponse, QueryEModeRequest, QueryEModeResponse, QueryAccountEModeRequest, QueryAccountEModeResponse } from "./cdp/query";
+export { QueryParamsRequest as QueryCdpParamsRequest, QueryParamsResponse as QueryCdpParamsResponse, QueryRateStrategyRequest, QueryRateStrategyResponse, QueryRateStrategyAllRequest, QueryRateStrategyAllResponse, QueryAccountDataRequest, QueryAccountDataResponse, QueryAccountCollateralRequest, QueryAccountCollateralResponse, QueryAccountCollateralAllRequest, QueryAccountCollateralAllResponse, Collateral, QueryAccountDebtRequest, QueryAccountDebtResponse, QueryAccountDebtAllRequest, QueryAccountDebtAllResponse, Debt, QueryAccountStablecoinRequest, QueryAccountStablecoinResponse, QueryAssetRequest, QueryAssetResponse, QueryAssetAllRequest, QueryAssetAllResponse, QueryTokenDebtRequest, QueryTokenDebtResponse, QueryTokenDebtAllRequest, QueryTokenDebtAllResponse, QueryStablecoinDebtRequest, QueryStablecoinDebtResponse, CdpPositionItem, CdpPosition, QueryCdpPositionRequest, QueryCdpPositionResponse, QueryCdpPositionsRequest, QueryCdpPositionsResponse, QueryRewardSchemesAllRequest, QueryRewardSchemesAllResponse, QueryRewardDebtsRequest, QueryRewardDebtsResponse, QueryRewardDebtsAllRequest, QueryEModeAllRequest, QueryEModeAllResponse, QueryStablecoinInterestRequest, QueryStablecoinInterestResponse, QueryEModeRequest, QueryEModeResponse, QueryAccountEModeRequest, QueryAccountEModeResponse, QueryCDPLiquidationsAllRequest, QueryCDPLiquidationsAllResponse } from "./cdp/query";
 export { NewRateStrategyParamsEvent, UpdateRateStrategyParamsEvent, RemoveRateStrategyParamsEvent, NewAssetParamsEvent, UpdateAssetParamsEvent, NewEModeCategoryEvent, UpdateEModeCategoryEvent, UpdateAccountEModeCategoryNameEvent, SetInterestFeeEvent, SetLiquidationFeeEvent, SetStablecoinInterestRateEvent, SetStablecoinMintCapEvent, SetCompleteLiquidationThresholdEvent, SetMinimumCloseFactorEvent, SetSmallLiquidationSizeEvent, SetStalePriceGracePeriodEvent, SetCdpPausedEvent, SupplyAssetEvent, WithdrawAssetEvent, BorrowAssetEvent, RepayAssetEvent, LockCollateralEvent, UnlockCollateralEvent, UpdateDebtInfoEvent, UpdateStablecoinDebtInfoEvent, MintStablecoinEvent, ReturnStablecoinEvent, LiquidateCollateralEvent, LiquidateCollateralWithStablecoinEvent, ClaimRewardEvent, RewardDebtEvent, RewardSchemeEvent, AddReserveEvent, RefundReserveEvent } from "./cdp/event";
 export { Params as CdpParams } from "./cdp/params";
 export { HashOp, hashOpFromJSON, hashOpToJSON, LengthOp, lengthOpFromJSON, lengthOpToJSON, ExistenceProof, NonExistenceProof, CommitmentProof, LeafOp, InnerOp, ProofSpec, InnerSpec, BatchProof, BatchEntry, CompressedBatchProof, CompressedBatchEntry, CompressedExistenceProof, CompressedNonExistenceProof } from "./proofs";
@@ -1064,10 +1081,11 @@ export { EventRegisterPair, EventToggleTokenConversion, EventConvertCoin, EventC
 export { QueryTokenPairsRequest, QueryTokenPairsResponse, QueryTokenPairRequest, QueryTokenPairResponse, QueryParamsRequest as QueryErc20ParamsRequest, QueryParamsResponse as QueryErc20ParamsResponse } from "./erc20/query";
 export { MsgSignData } from "./evmmerge/offchain";
 export { MsgMergeAccount, MsgMergeAccountResponse } from "./evmmerge/tx";
-export { QueryMappedAddressRequest, QueryMappedAddressResponse } from "./evmmerge/query";
+export { QueryMappedAddressRequest, QueryMappedAddressResponse, QueryAllMappedAddressRequest, QueryAllMappedAddressResponse } from "./evmmerge/query";
 export { MergeAccountEvent } from "./evmmerge/event";
+export { EthCosmosAddressWrapper } from "./evmmerge/address";
 export { InternalTransfer, Coin, QueryInternalTransfersRequest, QueryInternalTransfersResponse } from "./bank/query";
-export { CoinSpent, CoinReceived, CoinSent } from "./bank/event";
+export { CoinSpent, CoinReceived, CoinSent, CoinMint, CoinBurn } from "./bank/event";
 export { Params as LiquidationParams } from "./liquidation/liquidation";
 export { QuoteChanges } from "./liquidation/quote_changes";
 export { OutstandingPosition, OutstandingPositions } from "./liquidation/outstanding_position";
@@ -1081,10 +1099,10 @@ export { Position, Positions, APIPosition, PositionAllocatedMargin } from "./pos
 export { QueryGetPositionRequest, QueryGetPositionResponse, QueryAllPositionRequest, QueryAllPositionResponse, QueryPositionAllocatedMarginRequest, QueryPositionAllocatedMarginResponse } from "./position/query";
 export { PositionEvent } from "./position/event";
 export { MsgCreateOracle, CreateOracleParams, MsgCreateOracleResponse, MsgCreateVote, MsgCreateVoteResponse, MsgUpdateOracle, UpdateOracleParams, MsgUpdateOracleResponse, MsgRemoveOracle, MsgRemoveOracleResponse, MsgSetOracleSlashEnabled, MsgSetOracleSlashEnabledResponse } from "./oracle/tx";
-export { Params as OracleParams, Oracle, Vote, Result, Mark } from "./oracle/oracle";
+export { Params as OracleParams, Oracle, Vote, Result, Mark, Contract } from "./oracle/oracle";
 export { OracleVotesWindow, SlashCounter } from "./oracle/slashing";
 export { CreateOracleProposal } from "./oracle/proposal";
-export { QueryOracleRequest, QueryOracleResponse, QueryAllOracleRequest, QueryAllOracleResponse, QueryAllResultRequest, QueryAllResultResponse, QueryAllVoteRequest, QueryAllVoteResponse, QueryVoterPowerRequest, QueryVoterPowerResponse, QueryAllSlashCounterRequest, QueryAllSlashCounterResponse, QuerySlashCounterRequest, QuerySlashCounterResponse, QueryAllOracleVotesWindowRequest, QueryAllOracleVotesWindowResponse, QueryOracleVotesWindowRequest, QueryOracleVotesWindowResponse, QueryParamsRequest as QueryOracleParamsRequest, QueryParamsResponse as QueryOracleParamsResponse } from "./oracle/query";
+export { QueryOracleRequest, QueryOracleResponse, QueryAllOracleRequest, QueryAllOracleResponse, QueryResultsRequest, QueryResultsResponse, QueryVotesRequest, QueryVotesResponse, QueryVoterPowerRequest, QueryVoterPowerResponse, QueryAllSlashCounterRequest, QueryAllSlashCounterResponse, QuerySlashCounterRequest, QuerySlashCounterResponse, QueryAllOracleVotesWindowRequest, QueryAllOracleVotesWindowResponse, QueryOracleVotesWindowRequest, QueryOracleVotesWindowResponse, QueryParamsRequest as QueryOracleParamsRequest, QueryParamsResponse as QueryOracleParamsResponse, QueryContractAddressRequest, QueryContractAddressResponse, QueryContractAllRequest, QueryContractAllResponse, QueryContractParamsRequest, QueryContractParamsResponse } from "./oracle/query";
 export { ResultEvent, OracleSlashEvent } from "./oracle/event";
 export { RewardWeightRange, AllianceAsset, RewardWeightChangeSnapshot } from "./alliance/alliance";
 export { MsgCreateAllianceProposal, MsgUpdateAllianceProposal, MsgDeleteAllianceProposal } from "./alliance/gov";
@@ -1093,6 +1111,8 @@ export { Delegation, Redelegation, QueuedRedelegation, Undelegation, QueuedUndel
 export { DelegateAllianceEvent, UndelegateAllianceEvent, RedelegateAllianceEvent, ClaimAllianceRewardsEvent } from "./alliance/events";
 export { QueryParamsRequest as QueryAllianceParamsRequest, QueryParamsResponse as QueryAllianceParamsResponse, QueryAlliancesRequest, QueryAlliancesResponse, QueryAllianceRequest, QueryAllianceResponse, QueryIBCAllianceRequest, QueryAllianceValidatorRequest, QueryAllAllianceValidatorsRequest, QueryAllAlliancesDelegationsRequest, QueryAlliancesDelegationsRequest, QueryAlliancesDelegationByValidatorRequest, DelegationResponse, QueryAlliancesDelegationsResponse, QueryAllianceDelegationRequest, QueryIBCAllianceDelegationRequest, QueryAllianceDelegationResponse, QueryAllianceDelegationRewardsRequest, QueryIBCAllianceDelegationRewardsRequest, QueryAllianceDelegationRewardsResponse, QueryAllianceValidatorResponse, QueryAllianceValidatorsResponse } from "./alliance/query";
 export { Params as AllianceParams, RewardHistory as AllianceRewardHistory } from "./alliance/params";
+export { MsgInitiateAdminTransfer, MsgInitiateAdminTransferResponse, MsgAcceptAdminTransfer, MsgAcceptAdminTransferResponse } from "./admin/tx";
+export { QueryAdminRequest, QueryAdminResponse, QueryAdminRecipientRequest, QueryAdminRecipientResponse } from "./admin/query";
 export { QueryParamsRequest as QueryMarketstatsParamsRequest, QueryParamsResponse as QueryMarketstatsParamsResponse, QueryMarketStatsRequest, QueryMarketStatsResponse } from "./marketstats/query";
 export { Params as MarketstatsParams } from "./marketstats/params";
 export { MarketStats } from "./marketstats/marketstats";
@@ -1110,30 +1130,33 @@ export { QueryGetLeverageRequest, QueryGetLeverageResponse, QueryAllLeverageRequ
 export { LeverageEvent } from "./leverage/event";
 export { MsgUpdateProfile, MsgUpdateProfileResponse } from "./profile/tx";
 export { Profile } from "./profile/profile";
-export { QueryGetProfileRequest, QueryGetProfileResponse, QueryAllProfileRequest, QueryAllProfileResponse } from "./profile/query";
+export { QueryGetProfileRequest, QueryGetProfileResponse, QueryAllProfileRequest, QueryAllProfileResponse, QueryProfileByUsernameRequest, QueryProfileByUsernameResponse } from "./profile/query";
 export { UpdateProfileEvent } from "./profile/event";
 export { MsgCreateSubAccount, MsgCreateSubAccountResponse, MsgActivateSubAccount, MsgActivateSubAccountResponse, MsgRemoveSubAccount, MsgRemoveSubAccountResponse } from "./subaccount/tx";
-export { QueryGetSubAccountRequest, QueryGetSubAccountResponse, QueryAllSubAccountRequest, QueryAllSubAccountResponse, QuerySubAccountStatusRequest, QuerySubAccountStatusResponse, QuerySubAccountPowerRequest, QuerySubAccountPowerResponse } from "./subaccount/query";
-export { SubAccount, GenesisSubAccount } from "./subaccount/subaccount";
-export { OrderBookLevel, OrderBook, StopBook } from "./book/book";
-export { QueryImpactPriceRequest, QueryImpactPriceResponse, QueryGetBookRequest, QueryGetBookResponse, QueryAllBookRequest, QueryAllBookResponse } from "./book/query";
+export { QueryGetSubAccountRequest, QueryGetPendingSubAccountRequest, QueryGetSubAccountResponse, QueryAllSubAccountRequest, QueryAllSubAccountResponse, QueryAllPendingSubAccountRequest, QueryAllPendingSubAccountResponse, QuerySubAccountPowerRequest, QuerySubAccountPowerResponse, QueryMainAccountAllRequest, QueryMainAccountAllResponse, QueryMainAccountRequest, QueryMainAccountResponse, QueryParamsRequest as QuerySubaccountParamsRequest, QueryParamsResponse as QuerySubaccountParamsResponse } from "./subaccount/query";
+export { SubaccountV2260 } from "./subaccount/legacy";
+export { SubAccount, GenesisSubAccount, MainAccount, Params as SubaccountParams } from "./subaccount/subaccount";
+export { OrderBookLevel, OrderBook, StopBook, StopOrder } from "./book/book";
+export { QueryImpactPriceRequest, QueryImpactPriceResponse, QueryGetBookRequest, QueryGetBookResponse, QueryAllBookRequest, QueryAllBookResponse, QueryGetStopBookRequest, QueryGetStopBookResponse, QueryAllStopBookRequest, QueryAllStopBookResponse } from "./book/query";
+export { StopbookV2320 } from "./book/legacy";
 export { OrderBookEvent } from "./book/event";
 export { MsgDisableSpotMarket, MsgDisableSpotMarketResponse, MsgCreateMarket, MsgCreateMarketResponse, MsgUpdateMarket, MsgUpdateMarketResponse, MsgUpdatePerpetualsFundingInterval, MsgUpdatePerpetualsFundingIntervalResponse, MsgAddFeeTier, MsgAddFeeTierResponse, MsgUpdateFeeTier, MsgUpdateFeeTierResponse, MsgRemoveFeeTier, MsgRemoveFeeTierResponse, MsgSetStakeEquivalence, MsgSetStakeEquivalenceResponse, MsgUpdateAllPoolTradingFees, MsgUpdateAllPoolTradingFeesResponse, UpdateAllPoolTradingFeesParams } from "./market/tx";
 export { FeeStructure, FeeCategory, FeeTier, TradingFees, StakeEquivalence } from "./market/fee";
 export { CreateMarketProposal, UpdateMarketProposal, UpdatePerpetualsFundingIntervalProposal } from "./market/proposal";
 export { Params as MarketDefaultsParams, ControlledParams, Market, MarketParams, IncomingDisableSpotMarketNames } from "./market/market";
-export { QueryGetMarketRequest, QueryGetMarketResponse, QueryAllMarketRequest, QueryAllMarketResponse, QueryGetTradingFeesRequest, QueryGetTradingFeesResponse, QueryGetFeeTiersRequest, QueryGetFeeTiersResponse, QueryAllStakeEquivalenceRequest, QueryAllStakeEquivalenceResponse, QueryAllFeeStructuresRequest, QueryAllFeeStructuresResponse, QueryParamsRequest as QueryMarketParamsRequest, QueryParamsResponse as QueryMarketParamsResponse } from "./market/query";
+export { QueryGetMarketRequest, QueryGetMarketResponse, QueryAllMarketRequest, QueryAllMarketResponse, QueryGetTradingFeesRequest, QueryGetTradingFeesResponse, QueryGetFeeTiersRequest, QueryGetFeeTiersResponse, QueryAllStakeEquivalenceRequest, QueryAllStakeEquivalenceResponse, QueryAllFeeStructuresRequest, QueryAllFeeStructuresResponse, QueryUserFeeStructuresRequest, QueryUserFeeStructuresResponse, QueryParamsRequest as QueryMarketParamsRequest, QueryParamsResponse as QueryMarketParamsResponse, QueryControlledParamsRequest, QueryControlledParamsResponse } from "./market/query";
 export { MarketEvent } from "./market/event";
 export { MintData } from "./inflation/inflation";
 export { QueryMintDataRequest, QueryMintDataResponse } from "./inflation/query";
 export { MsgSetSequence, MsgSetSequenceResponse } from "./sequence/tx";
 export { QuerySequenceRequest, QuerySequenceResponse, QuerySequenceAllRequest, QuerySequenceAllResponse } from "./sequence/query";
 export { MsgCreatePool, MsgCreatePoolResponse, MsgCreatePoolWithLiquidity, MsgCreatePoolWithLiquidityResponse, MsgAddLiquidity, MsgAddLiquidityResponse, MsgRemoveLiquidity, MsgRemoveLiquidityResponse, LinkPoolParams, UnlinkPoolParams, MsgSetRewardsWeights, SetRewardsWeightsParams, MsgSetRewardsWeightsResponse, MsgStakePoolToken, MsgStakePoolTokenResponse, MsgUnstakePoolToken, MsgUnstakePoolTokenResponse, MsgClaimPoolRewards, MsgClaimPoolRewardsResponse, MsgSetRewardCurve, SetRewardCurveParams, MsgSetRewardCurveResponse, MsgSetCommitmentCurve, SetCommitmentCurveParams, MsgSetCommitmentCurveResponse, MsgUpdatePool, UpdatePoolParams, MsgUpdatePoolResponse, MsgCreatePoolRoute, MsgCreatePoolRouteResponse, CreatePoolRouteParams, MsgRemovePoolRoute, MsgRemovePoolRouteResponse, RemovePoolRouteParams, MsgUpdatePoolRoute, MsgUpdatePoolRouteResponse, UpdatePoolRouteParams } from "./liquiditypool/tx";
-export { RewardCurve, CommitmentCurve, RewardWeight, RewardWeights, Commitment, CommitmentRecord, TotalCommitment, TotalCommitmentRecord, CommitmentResponse, RewardHistory, RewardHistoryRecord, CommitmentExpiry, CommitmentExpiries, CommitmentExpiriesRecord, LastClaimRecord, AllocatedRewards } from "./liquiditypool/reward";
+export { RewardCurve, CommitmentCurve, RewardWeight, RewardWeights, Commitment, CommitmentRecord, TotalCommitment, TotalCommitmentRecord, CommitmentResponse, RewardHistory, AccumulatedRewards, AccumulatedRewardsRecord, CommitmentExpiry, CommitmentExpiries, CommitmentExpiriesRecord, AllocatedRewards } from "./liquiditypool/reward";
 export { Params as LiquiditypoolParams, Pool, Pools, PoolRoute, AddLiquidity, AddLiquidities, RemoveLiquidity, RemoveLiquidities, RemovePoolRoutes, PoolReserve } from "./liquiditypool/liquiditypool";
 export { LinkPoolProposal, UnlinkPoolProposal, SetRewardCurveProposal, SetCommitmentCurveProposal, SetRewardsWeightsProposal, UpdatePoolProposal, CreatePoolRouteProposal, RemovePoolRouteProposal, UpdatePoolRouteProposal } from "./liquiditypool/proposal";
-export { QueryGetPoolRequest, QueryGetPoolResponse, QueryAllPoolRequest, QueryAllPoolResponse, QueryAllPoolAddressRequest, QueryAllPoolAddressResponse, QueryAllPoolAddressResponse_AddressesEntry, QueryRewardHistoryRequest, ExtendedPool, QueryRewardHistoryResponse, QueryCommitmentRequest, QueryCommitmentResponse, QueryAllCommitmentRequest, QueryAllCommitmentResponse, QueryLastClaimRequest, QueryLastClaimResponse, QueryCommitmentCurveRequest, QueryCommitmentCurveResponse, QueryRewardCurveRequest, QueryRewardCurveResponse, QueryTotalCommitmentRequest, QueryTotalCommitmentResponse, QueryAllTotalCommitmentRequest, QueryAllTotalCommitmentResponse, QueryClaimableRewardsRequest, QueryClaimableRewardsResponse, QueryParamsRequest as QueryLiquiditypoolParamsRequest, QueryParamsResponse as QueryLiquiditypoolParamsResponse, QueryAllPoolRouteRequest, QueryAllPoolRouteResponse, QueryAllPoolRouteAddressRequest, QueryAllPoolRouteAddressResponse, QueryAllPoolRouteAddressResponse_AddressesEntry } from "./liquiditypool/query";
-export { PoolEvent, TotalCommitmentChangeEvent, RewardsWeightChangeEvent, CommitmentCurveEvent, CommitmentEvent, SwapEvent } from "./liquiditypool/event";
+export { QueryGetPoolRequest, QueryGetPoolResponse, QueryAllPoolRequest, QueryAllPoolResponse, QueryAllPoolAddressRequest, QueryAllPoolAddressResponse, QueryAllPoolAddressResponse_AddressesEntry, ExtendedPool, QueryCommitmentRequest, QueryCommitmentResponse, QueryAllCommitmentRequest, QueryAllCommitmentResponse, QueryCommitmentCurveRequest, QueryCommitmentCurveResponse, QueryRewardCurveRequest, QueryRewardCurveResponse, QueryTotalCommitmentRequest, QueryTotalCommitmentResponse, QueryAllTotalCommitmentRequest, QueryAllTotalCommitmentResponse, QueryClaimableRewardsRequest, QueryClaimableRewardsResponse, QueryParamsRequest as QueryLiquiditypoolParamsRequest, QueryParamsResponse as QueryLiquiditypoolParamsResponse, QueryAllPoolRouteRequest, QueryAllPoolRouteResponse, QueryAllPoolRouteAddressRequest, QueryAllPoolRouteAddressResponse, QueryAllPoolRouteAddressResponse_AddressesEntry } from "./liquiditypool/query";
+export { PoolEvent, TotalCommitmentChangeEvent, RewardsWeightChangeEvent, CommitmentCurveEvent, CommitmentEvent, SwapEvent, DepositToPoolEvent, WithdrawFromPoolEvent, StakePoolTokenEvent, UnstakePoolTokenEvent, RewardsAccumulatedEvent, ClaimEvent } from "./liquiditypool/event";
+export { MsgTopUpInsurance, MsgTopUpInsuranceResponse } from "./insurance/tx";
 export { QueryCoinBalancesRequest, QueryCoinBalancesResponse } from "./insurance/query";
 export { EventDataInsuranceFundTransfer } from "./insurance/event";
 export { FundByMarket, Fund } from "./insurance/fund";
@@ -1210,10 +1233,6 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "syntax",
-        "type": "string"
-      },
-      {
-        "name": "edition",
         "type": "string"
       }
     ],
@@ -1523,10 +1542,6 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "bool"
       },
       {
-        "name": "deprecated_legacy_json_field_conflicts",
-        "type": "bool"
-      },
-      {
         "name": "uninterpreted_option",
         "type": "UninterpretedOption[]",
         "packageName": "/google.protobuf"
@@ -1564,20 +1579,6 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "bool"
       },
       {
-        "name": "debug_redact",
-        "type": "bool"
-      },
-      {
-        "name": "retention",
-        "type": "",
-        "packageName": "/google.protobuf.FieldOptions"
-      },
-      {
-        "name": "target",
-        "type": "",
-        "packageName": "/google.protobuf.FieldOptions"
-      },
-      {
         "name": "uninterpreted_option",
         "type": "UninterpretedOption[]",
         "packageName": "/google.protobuf"
@@ -1597,10 +1598,6 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "deprecated",
-        "type": "bool"
-      },
-      {
-        "name": "deprecated_legacy_json_field_conflicts",
         "type": "bool"
       },
       {
@@ -1779,6 +1776,41 @@ export const EIP712Types: { [index: string]: any } = {
   },
   "/Switcheo.carbon.adl": {
     "GenesisState": []
+  },
+  "/switcheo.carbon.admin": {
+    "GenesisState": [],
+    "QueryAdminRequest": [],
+    "QueryAdminResponse": [
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "QueryAdminRecipientRequest": [],
+    "QueryAdminRecipientResponse": [
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "MsgInitiateAdminTransfer": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "recipient",
+        "type": "string"
+      }
+    ],
+    "MsgInitiateAdminTransferResponse": [],
+    "MsgAcceptAdminTransfer": [
+      {
+        "name": "creator",
+        "type": "string"
+      }
+    ],
+    "MsgAcceptAdminTransferResponse": []
   },
   "/google.api": {
     "Http": [
@@ -2721,6 +2753,28 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/cosmos.base.v1beta1"
       }
     ],
+    "CoinMint": [
+      {
+        "name": "minter",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "CoinBurn": [
+      {
+        "name": "burner",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
     "GenesisState": [],
     "InternalTransfer": [
       {
@@ -2751,6 +2805,18 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "transaction_block_time",
         "type": "string"
+      },
+      {
+        "name": "sender_username",
+        "type": "string"
+      },
+      {
+        "name": "receiver_username",
+        "type": "string"
+      },
+      {
+        "name": "transaction_code",
+        "type": "uint32"
       }
     ],
     "Coin": [
@@ -2837,11 +2903,31 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "asks",
-        "type": "string[]"
+        "type": "StopOrder[]",
+        "packageName": "/Switcheo.carbon.book"
       },
       {
         "name": "bids",
-        "type": "string[]"
+        "type": "StopOrder[]",
+        "packageName": "/Switcheo.carbon.book"
+      },
+      {
+        "name": "trigger",
+        "type": "string"
+      },
+      {
+        "name": "stop_type",
+        "type": "string"
+      }
+    ],
+    "StopOrder": [
+      {
+        "name": "id",
+        "type": "string"
+      },
+      {
+        "name": "stop_price",
+        "type": "string"
       }
     ],
     "OrderBookEvent": [
@@ -2876,6 +2962,28 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "stop_books",
         "type": "StopBook[]",
         "packageName": "/Switcheo.carbon.book"
+      }
+    ],
+    "StopBook_V2_32_0": [
+      {
+        "name": "market",
+        "type": "string"
+      },
+      {
+        "name": "asks",
+        "type": "string[]"
+      },
+      {
+        "name": "bids",
+        "type": "string[]"
+      },
+      {
+        "name": "trigger",
+        "type": "string"
+      },
+      {
+        "name": "stop_type",
+        "type": "string"
       }
     ],
     "QueryImpactPriceRequest": [
@@ -2926,6 +3034,38 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "books",
         "type": "OrderBook[]",
+        "packageName": "/Switcheo.carbon.book"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryGetStopBookRequest": [
+      {
+        "name": "market",
+        "type": "string"
+      }
+    ],
+    "QueryGetStopBookResponse": [
+      {
+        "name": "books",
+        "type": "StopBook[]",
+        "packageName": "/Switcheo.carbon.book"
+      }
+    ],
+    "QueryAllStopBookRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllStopBookResponse": [
+      {
+        "name": "books",
+        "type": "StopBook[]",
         "packageName": "/Switcheo.carbon.book"
       },
       {
@@ -3619,6 +3759,68 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
+    "CDPLiquidations": [
+      {
+        "name": "id",
+        "type": "uint64"
+      },
+      {
+        "name": "liquidator",
+        "type": "string"
+      },
+      {
+        "name": "debtor",
+        "type": "string"
+      },
+      {
+        "name": "collateral_denom",
+        "type": "string"
+      },
+      {
+        "name": "collateral_amount_liquidated",
+        "type": "string"
+      },
+      {
+        "name": "collateral_amount_liquidator",
+        "type": "string"
+      },
+      {
+        "name": "collateral_amount_fee",
+        "type": "string"
+      },
+      {
+        "name": "liquidation_price",
+        "type": "string"
+      },
+      {
+        "name": "market_price",
+        "type": "string"
+      },
+      {
+        "name": "discount",
+        "type": "string"
+      },
+      {
+        "name": "debt_denom",
+        "type": "string"
+      },
+      {
+        "name": "debt_amount",
+        "type": "string"
+      },
+      {
+        "name": "block_height",
+        "type": "int64"
+      },
+      {
+        "name": "block_time",
+        "type": "string"
+      },
+      {
+        "name": "transaction_hash",
+        "type": "string"
+      }
+    ],
     "DebtInfo": [
       {
         "name": "denom",
@@ -4086,7 +4288,11 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "health_factor",
+        "name": "debt_value",
+        "type": "string"
+      },
+      {
+        "name": "collateral_value",
         "type": "string"
       },
       {
@@ -4116,7 +4322,11 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "health_factor",
+        "name": "debt_value",
+        "type": "string"
+      },
+      {
+        "name": "collateral_value",
         "type": "string"
       }
     ],
@@ -4134,7 +4344,11 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "health_factor",
+        "name": "debt_value",
+        "type": "string"
+      },
+      {
+        "name": "collateral_value",
         "type": "string"
       }
     ],
@@ -4152,7 +4366,11 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "health_factor",
+        "name": "debt_value",
+        "type": "string"
+      },
+      {
+        "name": "collateral_value",
         "type": "string"
       }
     ],
@@ -4192,7 +4410,11 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "health_factor",
+        "name": "debt_value",
+        "type": "string"
+      },
+      {
+        "name": "collateral_value",
         "type": "string"
       },
       {
@@ -4222,7 +4444,11 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "health_factor",
+        "name": "debt_value",
+        "type": "string"
+      },
+      {
+        "name": "collateral_value",
         "type": "string"
       }
     ],
@@ -4407,10 +4633,6 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "liquidation_fee",
-        "type": "string"
-      },
-      {
-        "name": "stablecoin_interest_rate",
         "type": "string"
       },
       {
@@ -4599,10 +4821,6 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "curr_liquidation_threshold",
-        "type": "string"
-      },
-      {
-        "name": "health_factor",
         "type": "string"
       }
     ],
@@ -4865,6 +5083,19 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/cosmos.base.v1beta1"
       }
     ],
+    "QueryCdpPositionRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "QueryCdpPositionResponse": [
+      {
+        "name": "position",
+        "type": "CdpPosition",
+        "packageName": "/Switcheo.carbon.cdp"
+      }
+    ],
     "QueryCdpPositionsRequest": [
       {
         "name": "pagination",
@@ -4975,6 +5206,25 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "e_mode_category_name",
         "type": "string"
+      }
+    ],
+    "QueryCDPLiquidationsAllRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryCDPLiquidationsAllResponse": [
+      {
+        "name": "cdp_liquidations_all",
+        "type": "CDPLiquidations[]",
+        "packageName": "/Switcheo.carbon.cdp"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
     "MsgAddRateStrategy": [
@@ -5874,10 +6124,6 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "metadata",
         "type": "Metadata",
         "packageName": "/Switcheo.carbon.coin"
-      },
-      {
-        "name": "id",
-        "type": "uint64"
       }
     ],
     "Metadata": [
@@ -6251,6 +6497,10 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "fee_address",
+        "type": "string"
+      },
+      {
+        "name": "fee_denom",
         "type": "string"
       }
     ],
@@ -15894,7 +16144,20 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ]
   },
+  "/switcheo.carbon.evm": {
+    "GenesisState": []
+  },
   "/Switcheo.carbon.evmmerge": {
+    "EthCosmosAddressWrapper": [
+      {
+        "name": "eth_address",
+        "type": "string"
+      },
+      {
+        "name": "cosmos_address",
+        "type": "string"
+      }
+    ],
     "MergeAccountEvent": [
       {
         "name": "eth_address",
@@ -15941,6 +16204,25 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "mapped_address",
         "type": "string"
+      }
+    ],
+    "QueryAllMappedAddressRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryAllMappedAddressResponse": [
+      {
+        "name": "merged_account_addresses",
+        "type": "EthCosmosAddressWrapper[]",
+        "packageName": "/Switcheo.carbon.evmmerge"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
     "MsgMergeAccount": [
@@ -19602,15 +19884,27 @@ export const EIP712Types: { [index: string]: any } = {
   "/Switcheo.carbon.inflation": {
     "MintData": [
       {
-        "name": "first_block_time",
+        "name": "legacy_first_block_time",
         "type": "int64"
       },
       {
-        "name": "prev_block_time",
+        "name": "legacy_prev_block_time",
         "type": "int64"
       },
       {
         "name": "current_supply",
+        "type": "string"
+      },
+      {
+        "name": "inflation_rate",
+        "type": "string"
+      },
+      {
+        "name": "first_block_time",
+        "type": "string"
+      },
+      {
+        "name": "prev_block_time",
         "type": "string"
       }
     ],
@@ -19652,18 +19946,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
-    "GenesisState": [
-      {
-        "name": "fund_in_by_markets",
-        "type": "FundByMarket[]",
-        "packageName": "/Switcheo.carbon.insurance"
-      },
-      {
-        "name": "fund_out_by_markets",
-        "type": "FundByMarket[]",
-        "packageName": "/Switcheo.carbon.insurance"
-      }
-    ],
+    "GenesisState": [],
     "QueryCoinBalancesRequest": [],
     "QueryCoinBalancesResponse": [
       {
@@ -19671,7 +19954,26 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "Coin[]",
         "packageName": "/cosmos.base.v1beta1"
       }
-    ]
+    ],
+    "MsgTopUpInsurance": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "market",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      }
+    ],
+    "MsgTopUpInsuranceResponse": []
   },
   "/Switcheo.carbon.leverage": {
     "LeverageEvent": [
@@ -20288,6 +20590,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "pool_route",
         "type": "uint8[]"
+      },
+      {
+        "name": "cancel_reason",
+        "type": "uint32"
       }
     ],
     "DBOrder": [
@@ -20695,15 +21001,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "num_quotes",
-        "type": "int64"
-      },
-      {
         "name": "shares_amount",
-        "type": "string"
-      },
-      {
-        "name": "market",
         "type": "string"
       },
       {
@@ -20900,6 +21198,11 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "duration",
         "type": "uint64"
+      },
+      {
+        "name": "reward_debt",
+        "type": "DecCoin[]",
+        "packageName": "/cosmos.base.v1beta1"
       }
     ],
     "CommitmentRecord": [
@@ -20979,14 +21282,21 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
-    "RewardHistoryRecord": [
+    "AccumulatedRewards": [
       {
-        "name": "height",
+        "name": "reward_per_commitment_share",
+        "type": "DecCoin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "AccumulatedRewardsRecord": [
+      {
+        "name": "pool_id",
         "type": "uint64"
       },
       {
-        "name": "reward_history",
-        "type": "RewardHistory",
+        "name": "accumulated_rewards",
+        "type": "AccumulatedRewards",
         "packageName": "/Switcheo.carbon.liquiditypool"
       }
     ],
@@ -21016,20 +21326,6 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "commitment_expiries",
         "type": "CommitmentExpiries",
         "packageName": "/Switcheo.carbon.liquiditypool"
-      }
-    ],
-    "LastClaimRecord": [
-      {
-        "name": "address",
-        "type": "string"
-      },
-      {
-        "name": "pool_id",
-        "type": "uint64"
-      },
-      {
-        "name": "height",
-        "type": "uint64"
       }
     ],
     "AllocatedRewards": [
@@ -21122,7 +21418,150 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
+    "DepositToPoolEvent": [
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "denom_a",
+        "type": "string"
+      },
+      {
+        "name": "amount_a",
+        "type": "string"
+      },
+      {
+        "name": "denom_b",
+        "type": "string"
+      },
+      {
+        "name": "amount_b",
+        "type": "string"
+      },
+      {
+        "name": "share_denom",
+        "type": "string"
+      },
+      {
+        "name": "share_amount",
+        "type": "string"
+      },
+      {
+        "name": "initial_share_amount_burned",
+        "type": "uint64"
+      },
+      {
+        "name": "depositor",
+        "type": "string"
+      }
+    ],
+    "WithdrawFromPoolEvent": [
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "denom_a",
+        "type": "string"
+      },
+      {
+        "name": "amount_a",
+        "type": "string"
+      },
+      {
+        "name": "denom_b",
+        "type": "string"
+      },
+      {
+        "name": "amount_b",
+        "type": "string"
+      },
+      {
+        "name": "share_denom",
+        "type": "string"
+      },
+      {
+        "name": "share_amount",
+        "type": "string"
+      },
+      {
+        "name": "withdrawer",
+        "type": "string"
+      }
+    ],
+    "StakePoolTokenEvent": [
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "string"
+      },
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "commitment_duration",
+        "type": "uint64"
+      }
+    ],
+    "UnstakePoolTokenEvent": [
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "string"
+      },
+      {
+        "name": "creator",
+        "type": "string"
+      }
+    ],
+    "RewardsAccumulatedEvent": [
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "accumulated_rewards",
+        "type": "AccumulatedRewards",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      }
+    ],
+    "ClaimEvent": [
+      {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "rewards",
+        "type": "Coin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
     "GenesisState": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      },
       {
         "name": "pools",
         "type": "Pool[]",
@@ -21159,23 +21598,13 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/Switcheo.carbon.liquiditypool"
       },
       {
-        "name": "reward_histories",
-        "type": "RewardHistoryRecord[]",
-        "packageName": "/Switcheo.carbon.liquiditypool"
-      },
-      {
-        "name": "last_claims",
-        "type": "LastClaimRecord[]",
-        "packageName": "/Switcheo.carbon.liquiditypool"
-      },
-      {
         "name": "allocated_rewards",
         "type": "AllocatedRewards",
         "packageName": "/Switcheo.carbon.liquiditypool"
       },
       {
-        "name": "params",
-        "type": "Params",
+        "name": "accumulated_rewards",
+        "type": "AccumulatedRewardsRecord[]",
         "packageName": "/Switcheo.carbon.liquiditypool"
       },
       {
@@ -21723,21 +22152,6 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
-    "QueryRewardHistoryRequest": [
-      {
-        "name": "pool_id",
-        "type": "string"
-      },
-      {
-        "name": "start_block_height",
-        "type": "string"
-      },
-      {
-        "name": "pagination",
-        "type": "PageRequest",
-        "packageName": "/cosmos.base.query.v1beta1"
-      }
-    ],
     "ExtendedPool": [
       {
         "name": "pool",
@@ -21751,18 +22165,11 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "total_commitment",
         "type": "string"
-      }
-    ],
-    "QueryRewardHistoryResponse": [
-      {
-        "name": "reward_histories",
-        "type": "RewardHistoryRecord[]",
-        "packageName": "/Switcheo.carbon.liquiditypool"
       },
       {
-        "name": "pagination",
-        "type": "PageResponse",
-        "packageName": "/cosmos.base.query.v1beta1"
+        "name": "reward_per_commitment_share",
+        "type": "DecCoin[]",
+        "packageName": "/cosmos.base.v1beta1"
       }
     ],
     "QueryCommitmentRequest": [
@@ -21807,22 +22214,6 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "block_time",
         "type": "string"
-      }
-    ],
-    "QueryLastClaimRequest": [
-      {
-        "name": "pool_id",
-        "type": "string"
-      },
-      {
-        "name": "address",
-        "type": "string"
-      }
-    ],
-    "QueryLastClaimResponse": [
-      {
-        "name": "last_claim",
-        "type": "int64"
       }
     ],
     "QueryCommitmentCurveRequest": [],
@@ -22369,14 +22760,6 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "maker_fee",
-        "type": "string"
-      },
-      {
-        "name": "taker_fee",
-        "type": "string"
-      },
-      {
         "name": "created_block_height",
         "type": "uint64"
       },
@@ -22465,14 +22848,6 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "min_quantity",
-        "type": "string"
-      },
-      {
-        "name": "maker_fee",
-        "type": "string"
-      },
-      {
-        "name": "taker_fee",
         "type": "string"
       },
       {
@@ -22761,11 +23136,32 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/Switcheo.carbon.market"
       }
     ],
+    "QueryUserFeeStructuresRequest": [
+      {
+        "name": "user_address",
+        "type": "string"
+      }
+    ],
+    "QueryUserFeeStructuresResponse": [
+      {
+        "name": "fee_structures",
+        "type": "FeeStructure[]",
+        "packageName": "/Switcheo.carbon.market"
+      }
+    ],
     "QueryParamsRequest": [],
     "QueryParamsResponse": [
       {
         "name": "params",
         "type": "Params",
+        "packageName": "/Switcheo.carbon.market"
+      }
+    ],
+    "QueryControlledParamsRequest": [],
+    "QueryControlledParamsResponse": [
+      {
+        "name": "controlled_params",
+        "type": "ControlledParams",
         "packageName": "/Switcheo.carbon.market"
       }
     ],
@@ -23172,6 +23568,16 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "int64"
       }
     ],
+    "Contract": [
+      {
+        "name": "oracle_id",
+        "type": "string"
+      },
+      {
+        "name": "contract_address",
+        "type": "string"
+      }
+    ],
     "ResultEvent": [
       {
         "name": "result",
@@ -23474,7 +23880,7 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
-    "QueryAllResultRequest": [
+    "QueryResultsRequest": [
       {
         "name": "oracle_id",
         "type": "string"
@@ -23485,7 +23891,7 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
-    "QueryAllResultResponse": [
+    "QueryResultsResponse": [
       {
         "name": "results",
         "type": "Result[]",
@@ -23497,7 +23903,7 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
-    "QueryAllVoteRequest": [
+    "QueryVotesRequest": [
       {
         "name": "oracle_id",
         "type": "string"
@@ -23516,7 +23922,7 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
-    "QueryAllVoteResponse": [
+    "QueryVotesResponse": [
       {
         "name": "votes",
         "type": "Vote[]",
@@ -23620,6 +24026,54 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "params",
         "type": "Params",
         "packageName": "/Switcheo.carbon.oracle"
+      }
+    ],
+    "QueryContractAddressRequest": [
+      {
+        "name": "id",
+        "type": "string"
+      }
+    ],
+    "QueryContractAddressResponse": [
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "QueryContractAllRequest": [],
+    "QueryContractAllResponse": [
+      {
+        "name": "contracts",
+        "type": "Contract[]",
+        "packageName": "/Switcheo.carbon.oracle"
+      }
+    ],
+    "QueryContractParamsRequest": [
+      {
+        "name": "id",
+        "type": "string"
+      }
+    ],
+    "QueryContractParamsResponse": [
+      {
+        "name": "id",
+        "type": "string"
+      },
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "decimals",
+        "type": "uint64"
+      },
+      {
+        "name": "timestamp",
+        "type": "string"
+      },
+      {
+        "name": "data",
+        "type": "string"
       }
     ]
   },
@@ -23730,6 +24184,14 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "closed_at",
         "type": "string"
+      },
+      {
+        "name": "update_count",
+        "type": "uint64"
+      },
+      {
+        "name": "exit_count",
+        "type": "uint64"
       }
     ],
     "PositionAllocatedMargin": [
@@ -24307,6 +24769,19 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
+    "QueryProfileByUsernameRequest": [
+      {
+        "name": "username",
+        "type": "string"
+      }
+    ],
+    "QueryProfileByUsernameResponse": [
+      {
+        "name": "profile",
+        "type": "Profile",
+        "packageName": "/Switcheo.carbon.profile"
+      }
+    ],
     "MsgUpdateProfile": [
       {
         "name": "creator",
@@ -24385,12 +24860,20 @@ export const EIP712Types: { [index: string]: any } = {
   "/Switcheo.carbon.subaccount": {
     "SubAccount": [
       {
-        "name": "main_account",
+        "name": "main_address",
         "type": "string"
       },
       {
-        "name": "active",
-        "type": "bool"
+        "name": "role",
+        "type": "string"
+      },
+      {
+        "name": "expected_authorizer",
+        "type": "string"
+      },
+      {
+        "name": "sub_address",
+        "type": "string"
       }
     ],
     "GenesisSubAccount": [
@@ -24403,8 +24886,33 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "active",
-        "type": "bool"
+        "name": "role",
+        "type": "string"
+      }
+    ],
+    "MainAccount": [
+      {
+        "name": "sub_addresses",
+        "type": "string[]"
+      },
+      {
+        "name": "trading_fee_delegate_last_update",
+        "type": "string"
+      },
+      {
+        "name": "main_address",
+        "type": "string"
+      },
+      {
+        "name": "sub_role",
+        "type": "string"
+      }
+    ],
+    "Params": [
+      {
+        "name": "trading_fee_delegate_cooldown",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
       }
     ],
     "GenesisState": [
@@ -24412,11 +24920,54 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "sub_accounts",
         "type": "GenesisSubAccount[]",
         "packageName": "/Switcheo.carbon.subaccount"
+      },
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.subaccount"
+      },
+      {
+        "name": "pending_sub_accounts",
+        "type": "SubAccount[]",
+        "packageName": "/Switcheo.carbon.subaccount"
+      },
+      {
+        "name": "main_accounts",
+        "type": "MainAccount[]",
+        "packageName": "/Switcheo.carbon.subaccount"
+      }
+    ],
+    "SubAccount_V2_26_0": [
+      {
+        "name": "main_account",
+        "type": "string"
+      },
+      {
+        "name": "active",
+        "type": "bool"
       }
     ],
     "QueryGetSubAccountRequest": [
       {
         "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "role",
+        "type": "string"
+      }
+    ],
+    "QueryGetPendingSubAccountRequest": [
+      {
+        "name": "main_address",
+        "type": "string"
+      },
+      {
+        "name": "sub_address",
+        "type": "string"
+      },
+      {
+        "name": "role",
         "type": "string"
       }
     ],
@@ -24432,12 +24983,16 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "pagination",
         "type": "PageRequest",
         "packageName": "/cosmos.base.query.v1beta1"
+      },
+      {
+        "name": "main_address",
+        "type": "string"
       }
     ],
     "QueryAllSubAccountResponse": [
       {
         "name": "subaccounts",
-        "type": "GenesisSubAccount[]",
+        "type": "SubAccount[]",
         "packageName": "/Switcheo.carbon.subaccount"
       },
       {
@@ -24446,20 +25001,35 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
-    "QuerySubAccountStatusRequest": [
+    "QueryAllPendingSubAccountRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      },
       {
         "name": "main_address",
         "type": "string"
       },
       {
-        "name": "subaccount_address",
+        "name": "role",
+        "type": "string"
+      },
+      {
+        "name": "sub_address",
         "type": "string"
       }
     ],
-    "QuerySubAccountStatusResponse": [
+    "QueryAllPendingSubAccountResponse": [
       {
-        "name": "status",
-        "type": "string"
+        "name": "subaccounts",
+        "type": "SubAccount[]",
+        "packageName": "/Switcheo.carbon.subaccount"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
     "QuerySubAccountPowerRequest": [
@@ -24474,6 +25044,44 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
+    "QueryMainAccountAllRequest": [
+      {
+        "name": "sub_address",
+        "type": "string"
+      }
+    ],
+    "QueryMainAccountAllResponse": [
+      {
+        "name": "main_accounts",
+        "type": "MainAccount[]",
+        "packageName": "/Switcheo.carbon.subaccount"
+      }
+    ],
+    "QueryMainAccountRequest": [
+      {
+        "name": "sub_address",
+        "type": "string"
+      },
+      {
+        "name": "role",
+        "type": "string"
+      }
+    ],
+    "QueryMainAccountResponse": [
+      {
+        "name": "main_account",
+        "type": "MainAccount",
+        "packageName": "/Switcheo.carbon.subaccount"
+      }
+    ],
+    "QueryParamsRequest": [],
+    "QueryParamsResponse": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.subaccount"
+      }
+    ],
     "MsgCreateSubAccount": [
       {
         "name": "creator",
@@ -24481,6 +25089,14 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "sub_address",
+        "type": "string"
+      },
+      {
+        "name": "main_address",
+        "type": "string"
+      },
+      {
+        "name": "role",
         "type": "string"
       }
     ],
@@ -24491,7 +25107,15 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "expected_main_account",
+        "name": "main_address",
+        "type": "string"
+      },
+      {
+        "name": "sub_address",
+        "type": "string"
+      },
+      {
+        "name": "role",
         "type": "string"
       }
     ],
@@ -24503,6 +25127,14 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "sub_address",
+        "type": "string"
+      },
+      {
+        "name": "main_address",
+        "type": "string"
+      },
+      {
+        "name": "role",
         "type": "string"
       }
     ],

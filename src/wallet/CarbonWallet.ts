@@ -58,6 +58,7 @@ export interface CarbonWalletGenericOpts {
 
 export interface MetaMaskWalletOpts {
   publicKeyMessage?: string
+  publicKeyBase64?: string;
 }
 
 export type CarbonWalletInitOpts = CarbonWalletGenericOpts &
@@ -530,13 +531,14 @@ export class CarbonWallet {
   }
 
   async sendTxs(msgs: EncodeObject[], opts?: CarbonTx.SignTxOpts): Promise<CarbonWallet.SendTxResponse> {
-    await this.reloadMergeAccountStatus()
     if (this.triggerMerge || opts?.triggerMerge) {
       await this.sendInitialMergeAccountTx(msgs, opts)
     }
     try {
-      const result = await this.signAndBroadcast(msgs, opts, { mode: BroadcastTxMode.BroadcastTxBlock });
-      await this.reloadMergeAccountStatus()
+      const result = await this.signAndBroadcast(msgs, opts, { mode: BroadcastTxMode.BroadcastTxBlock })
+      if (msgs[0].typeUrl === CarbonTx.Types.MsgMergeAccount) {
+        this.updateMergeAccountStatus()
+      }
       await GenericUtils.callIgnoreError(() => this.onBroadcastTxSuccess?.(msgs));
       return result as DeliverTxResponse;
     }
@@ -548,12 +550,14 @@ export class CarbonWallet {
 
   async sendInitialMergeAccountTx(msgs: EncodeObject[], opts?: CarbonTx.SignTxOpts) {
     let msg: EncodeObject
-    try {
-      if (!this.accountMerged && msgs[0].typeUrl !== CarbonTx.Types.MsgMergeAccount) {
-        const account = await this.getQueryClient().auth.Account({ address: this.bech32Address }).then(res => res.account).catch(async (err: Error) => { // eslint-disable-line
-          return (await this.getQueryClient().auth.Account({ address: this.evmBech32Address })).account
-        });
-        const { address, sequence, accountNumber } = BaseAccount.decode(account!.value)
+    await this.reloadMergeAccountStatus()
+    if (!this.accountMerged && msgs[0].typeUrl !== CarbonTx.Types.MsgMergeAccount) {
+      const accountInfo = await this.reloadAccountInfo()
+      if (!accountInfo) {
+        throw new Error('Account not found!')
+      }
+      const { address, sequence, accountNumber } = accountInfo
+      try {
         msg = {
           typeUrl: CarbonTx.Types.MsgMergeAccount,
           value: MsgMergeAccount.fromPartial({
@@ -563,19 +567,17 @@ export class CarbonWallet {
         }
         const modifiedOpts = {
           ...opts,
-          sequence: sequence.toNumber(),
-          accountNumber: accountNumber.toNumber()
+          sequence,
+          accountNumber,
         }
         await this.signAndBroadcast([msg], modifiedOpts, { mode: BroadcastTxMode.BroadcastTxBlock })
-        await this.reloadMergeAccountStatus()
-        // invalidate sequence after merging
-        this.sequenceInvalidated = true
+        this.updateMergeAccountStatus()
         await GenericUtils.callIgnoreError(() => this.onBroadcastTxSuccess?.([msg]));
       }
-    }
-    catch (error) {
-      await GenericUtils.callIgnoreError(() => this.onBroadcastTxFail?.([msg]));
-      throw error
+      catch (error) {
+        await GenericUtils.callIgnoreError(() => this.onBroadcastTxFail?.([msg]));
+        throw error
+      }
     }
   }
 
@@ -728,14 +730,25 @@ export class CarbonWallet {
     }
   }
   public async reloadMergeAccountStatus() {
-    if (this.accountMerged) return
-    const queryClient = this.getQueryClient()
-    const response = await queryClient.evmmerge.MappedAddress({ address: this.bech32Address })
-    if (response && response.mappedAddress) {
-      this.accountMerged = true
-    } else {
-      this.accountMerged = false
+    try {
+      if (this.accountMerged) return
+      const queryClient = this.getQueryClient()
+      const response = await queryClient.evmmerge.MappedAddress({ address: this.bech32Address })
+      if (response && response.mappedAddress) {
+        this.accountMerged = true
+      } else {
+        this.accountMerged = false
+      }
+      this.sequenceInvalidated = true
+    } catch (error: any) {
+      throw error;
     }
+  }
+
+  public updateMergeAccountStatus() {
+    this.accountMerged = true
+    // invalidate sequence after merging
+    this.sequenceInvalidated = true
   }
 
   public isEvmWallet() {
@@ -769,7 +782,7 @@ export class CarbonWallet {
   }
 
   private isAccountNotFoundError = (error?: Error, address?: string) => {
-    return error?.message?.includes(`account ${address} not found: key not found`);
+    return error?.message?.includes(`account ${address} not found`);
   };
 
 

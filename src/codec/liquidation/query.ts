@@ -58,22 +58,22 @@ export const QueryAllLiquidationRequest = {
       writer.uint32(18).string(message.market);
     }
     if (!message.beforeId.isZero()) {
-      writer.uint32(32).uint64(message.beforeId);
+      writer.uint32(24).uint64(message.beforeId);
     }
     if (!message.afterId.isZero()) {
-      writer.uint32(40).uint64(message.afterId);
+      writer.uint32(32).uint64(message.afterId);
     }
     if (message.orderId !== "") {
-      writer.uint32(58).string(message.orderId);
+      writer.uint32(42).string(message.orderId);
     }
     if (!message.afterBlock.isZero()) {
-      writer.uint32(64).uint64(message.afterBlock);
+      writer.uint32(48).uint64(message.afterBlock);
     }
     if (!message.beforeBlock.isZero()) {
-      writer.uint32(72).uint64(message.beforeBlock);
+      writer.uint32(56).uint64(message.beforeBlock);
     }
     if (message.pagination !== undefined) {
-      PageRequest.encode(message.pagination, writer.uint32(82).fork()).ldelim();
+      PageRequest.encode(message.pagination, writer.uint32(66).fork()).ldelim();
     }
     return writer;
   },
@@ -96,22 +96,22 @@ export const QueryAllLiquidationRequest = {
         case 2:
           message.market = reader.string();
           break;
-        case 4:
+        case 3:
           message.beforeId = reader.uint64() as Long;
           break;
-        case 5:
+        case 4:
           message.afterId = reader.uint64() as Long;
           break;
-        case 7:
+        case 5:
           message.orderId = reader.string();
           break;
-        case 8:
+        case 6:
           message.afterBlock = reader.uint64() as Long;
           break;
-        case 9:
+        case 7:
           message.beforeBlock = reader.uint64() as Long;
           break;
-        case 10:
+        case 8:
           message.pagination = PageRequest.decode(reader, reader.uint32());
           break;
         default:
