@@ -1,10 +1,9 @@
-import { CarbonSDK, Models } from "@carbon-sdk/index";
+import { Models } from "@carbon-sdk/index";
 import { CarbonTx, NumberUtils } from "@carbon-sdk/util";
 import { BigNumber } from "bignumber.js";
 import dayjs from "dayjs";
 import Long from "long";
 import BaseModule from "./base";
-import { InsightsQueryResponse, QueryGetInflation } from "@carbon-sdk/insights";
 import { BN_ZERO } from "@carbon-sdk/util/number";
 
 export class LiquidityPoolModule extends BaseModule {

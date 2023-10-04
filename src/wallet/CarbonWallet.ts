@@ -730,19 +730,15 @@ export class CarbonWallet {
     }
   }
   public async reloadMergeAccountStatus() {
-    try {
-      if (this.accountMerged) return
-      const queryClient = this.getQueryClient()
-      const response = await queryClient.evmmerge.MappedAddress({ address: this.bech32Address })
-      if (response && response.mappedAddress) {
-        this.accountMerged = true
-      } else {
-        this.accountMerged = false
-      }
-      this.sequenceInvalidated = true
-    } catch (error: any) {
-      throw error;
+    if (this.accountMerged) return
+    const queryClient = this.getQueryClient()
+    const response = await queryClient.evmmerge.MappedAddress({ address: this.bech32Address })
+    if (response && response.mappedAddress) {
+      this.accountMerged = true
+    } else {
+      this.accountMerged = false
     }
+    this.sequenceInvalidated = true
   }
 
   public updateMergeAccountStatus() {

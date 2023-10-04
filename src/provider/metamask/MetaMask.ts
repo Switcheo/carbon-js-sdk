@@ -1,6 +1,6 @@
 import { CarbonEvmChainIDs, EthNetworkConfig, Network, NetworkConfigs } from "@carbon-sdk/constant";
 import { ABIs } from "@carbon-sdk/eth";
-import { Blockchain, ChainNames, BlockchainV2, EVMChain as EVMChainV2, getBlockchainFromChainV2, BLOCKCHAIN_V2_TO_V1_MAPPING, EvmChains } from "@carbon-sdk/util/blockchain";
+import { Blockchain, ChainNames, BlockchainV2, EVMChain as EVMChainV2, getBlockchainFromChainV2, BLOCKCHAIN_V2_TO_V1_MAPPING } from "@carbon-sdk/util/blockchain";
 import { appendHexPrefix } from "@carbon-sdk/util/generic";
 import { ethers } from "ethers";
 import { makeSignDoc } from "@cosmjs/amino/build";

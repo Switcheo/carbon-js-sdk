@@ -1,5 +1,4 @@
 import { CONST } from "@cityofzion/neon-core-next";
-import { SimpleMap } from "../util/type";
 
 export enum Network {
   MainNet = "mainnet",
