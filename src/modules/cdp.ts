@@ -5,8 +5,10 @@ import {
   MsgWithdrawFromGroup,
   QueryCdpParamsRequest,
   QueryTokenPriceRequest,
+  QueryTokenPriceAllRequest,
   RateStrategyParams,
-  StablecoinDebtInfo
+  StablecoinDebtInfo,
+  TokenPrice
 } from "@carbon-sdk/codec";
 import { Params } from "@carbon-sdk/codec/cdp/params";
 import {
@@ -799,15 +801,23 @@ export class CDPModule extends BaseModule {
 
   public async getCdpTokensUsdVal(cdpTokens: Coin[]) {
     const sdk = this.sdkProvider;
+    const tokenClient = sdk.getTokenClient();
     const cdpParamsPromise = sdk.query.cdp.Params(QueryParamsRequest.fromPartial({}));
-    const [cdpParams] = await Promise.all([cdpParamsPromise]);
+    const tokenPriceAllPromise = sdk.query.pricing.TokenPriceAll(QueryTokenPriceAllRequest.fromPartial({}));
+    const [cdpParams, tokenPriceAll] = await Promise.all([cdpParamsPromise, tokenPriceAllPromise]);
     const interestFee = bnOrZero(cdpParams.params?.interestFee);
     if (!interestFee) throw new Error("unable to retrieve interest fee");
+    const tokenPrices = tokenPriceAll.tokenPrices;
+    if (!tokenPrices) throw new Error("unable to retrieve token prices");
 
     const cdpTokensBalancePromises: Promise<BigNumber>[] = cdpTokens.map(token => (
       this.getCdpToActualRatio(token.denom, interestFee)
         .then((ratio) => bnOrZero(token.amount).div(ratio))
-        .then(actualAmount => this.getTokenUsdVal(this.getUnderlyingDenom(token.denom), actualAmount))
+        .then(actualAmount => {
+          const denom = this.getUnderlyingDenom(token.denom);
+          const tokenPrice = tokenPrices.find((price) => price.denom === denom);
+          return this.getTokenUsdVal(denom, actualAmount, tokenPrice)
+        })
         .catch((err) => {
           console.error(err);
           return BN_ZERO
@@ -825,22 +835,24 @@ export class CDPModule extends BaseModule {
     return await this.getTokenUsdVal(denom, actualTokenAmount);
   }
 
-  public async getTokenUsdVal(denom: string, amount: BigNumber) {
+  public async getTokenUsdVal(denom: string, amount: BigNumber, price?: TokenPrice) {
     const sdk = this.sdkProvider;
     const decimals = await this.sdkProvider.getTokenClient().getDecimals(denom);
     if (decimals === undefined) throw new Error("unable to retrieve token decimals for " + denom);
 
-    const priceResult = await sdk.query.pricing.TokenPrice(QueryTokenPriceRequest.fromPartial({ denom }));
-    if (!priceResult.tokenPrice) throw new Error("unable to retrieve token price for " + denom);
-
-    const twap = bnOrZero(priceResult.tokenPrice.twap).shiftedBy(-18);
+    if (!price) {
+      const priceResult = await sdk.query.pricing.TokenPrice(QueryTokenPriceRequest.fromPartial({ denom }));
+      if (!priceResult.tokenPrice) throw new Error("unable to retrieve token price for " + denom);
+      price = priceResult.tokenPrice;
+    }
+    const twap = bnOrZero(price.twap).shiftedBy(-18);
     return amount.multipliedBy(twap).shiftedBy(-decimals);
   }
 
   public async getTotalTokenDebt(denom: string, interestFee?: BigNumber) {
     if (!interestFee) {
-       const cdpParamsRsp = await this.sdkProvider.query.cdp.Params(QueryParamsRequest.fromPartial({}));
-       interestFee = bnOrZero(cdpParamsRsp.params?.interestFee);
+      const cdpParamsRsp = await this.sdkProvider.query.cdp.Params(QueryParamsRequest.fromPartial({}));
+      interestFee = bnOrZero(cdpParamsRsp.params?.interestFee);
     }
     if (!interestFee) throw new Error("unable to retrieve interest fee");
 
@@ -850,7 +862,7 @@ export class CDPModule extends BaseModule {
 
     const cimRsp = await this.recalculateCIM(denom);
     const newInterestRate = cimRsp.interest;
-    
+
     const principal = bnOrZero(debtInfo.totalPrincipal);
     const accumInterest = bnOrZero(debtInfo.totalAccumulatedInterest);
 
@@ -1061,7 +1073,7 @@ export class CDPModule extends BaseModule {
       cdpDenom: cdpDenom,
     });
     const [accountData, tokenPrice, accountCollateral] = await Promise.all([accountDataRequest, tokenPriceRequest, accountCollateralRequest]);
-    
+
     const tokenTwap = bnOrZero(tokenPrice.tokenPrice?.twap);
     if (tokenTwap.isZero()) throw new Error("unable to retrieve token price for " + denom);
 
