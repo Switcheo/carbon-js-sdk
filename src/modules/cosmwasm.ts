@@ -27,7 +27,7 @@ export class CosmWasmModule extends BaseModule {
         const tmClient = await Tendermint34Client.connect(chainInfo.activeRpc);
         return CosmWasmModule.instanceWithTmClient(sdkProvider, tmClient)
       } catch (error) { 
-        // Handle error
+        // empty catch
       }
     }
 
