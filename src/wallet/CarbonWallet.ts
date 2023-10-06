@@ -13,7 +13,7 @@ import { encodeSecp256k1Signature, StdSignature } from "@cosmjs/amino";
 import { EncodeObject, OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
 import { Account, DeliverTxResponse, IndexedTx, isDeliverTxFailure, TimeoutError } from "@cosmjs/stargate";
 import { sleep } from "@cosmjs/utils";
-import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
+import { Tendermint34Client, TxResponse } from "@cosmjs/tendermint-rpc";
 import { BroadcastTxSyncResponse, BroadcastTxAsyncResponse, broadcastTxSyncSuccess } from "@cosmjs/tendermint-rpc/build/tendermint34/responses";
 import { Leap } from "@cosmos-kit/leap";
 import { Key } from "@keplr-wallet/types";
@@ -410,7 +410,7 @@ export class CarbonWallet {
     const response = await carbonClient.broadcastTx(tx, timeoutMs, pollIntervalMs);
     if (isDeliverTxFailure(response)) {
       // tx failed
-      throw new Error(`[${response.code}] ${response.rawLog}`);
+      throw new CarbonCustomError(`[${response.code}] ${response.rawLog}`, ErrorType.BLOCK_FAIL, response)
     }
     const txBody = TxBody.decode(txRaw.bodyBytes)
     const msgs: EncodeObject[] = txBody.messages.map(message => {
@@ -433,7 +433,7 @@ export class CarbonWallet {
     const response = await tmClient.broadcastTxSync({ tx });
     if (!broadcastTxSyncSuccess(response)) {
       // tx failed
-      throw new CarbonCustomError(`[${response.code}] ${response.log}`, ErrorType.BROADCAST_FAIL);
+      throw new CarbonCustomError(`[${response.code}] ${response.log}`, ErrorType.BROADCAST_FAIL, response);
     }
     return response
   }
@@ -629,31 +629,34 @@ export class CarbonWallet {
     return this.sendTxs([msg], opts);
   }
 
-  async waitForTx(txHash: string, timeoutMs = 60000, pollIntervalMs = 100): Promise<CarbonWallet.SendTxResponse> {
+  async waitForTx(txHash: string, throwIfNotIncludedInBlock: boolean = false, timeoutMs: number = 60000, pollIntervalMs: number = 100): Promise<TxResponse> {
     const txId = txHash.toUpperCase()
     let timedOut = false
     const txPollTimeout = setTimeout(() => {
       timedOut = true
     }, timeoutMs)
 
-    const pollForTx = async (txId: string): Promise<CarbonWallet.SendTxResponse> => {
-      if (timedOut) {
-        throw new TimeoutError(`Transaction with ID ${txId} was submitted but was not yet found on the chain. You might want to check later. There was a wait of ${timeoutMs / 1000} seconds.`, txId)
-      }
-      const result: IndexedTx | null = await this.getSigningClient().getTx(txId)
+    const pollForTx = async (txId: string): Promise<TxResponse> => {
+      try {
+        if (timedOut) {
+          throw new TimeoutError(`Transaction with ID ${txId} was submitted but was not yet found on the chain. You might want to check later. There was a wait of ${timeoutMs / 1000} seconds.`, txId)
+        }
       if (result) {
-        return {
-          code: result.code,
-          height: result.height,
-          events: result.events,
-          rawLog: result.rawLog,
-          transactionHash: txId,
-          gasUsed: result.gasUsed,
-          gasWanted: result.gasWanted,
-        } as CarbonWallet.SendTxResponse
+        const hash = Uint8Array.from(Buffer.from(txId, 'hex'));
+        const response = await this.getTmClient().tx({ hash })
+        const { result } = response
+        const isDeliverTxFailure = result.code !== 0
+        if (isDeliverTxFailure && throwIfNotIncludedInBlock) throw new CarbonCustomError(`[${result.code}] ${result.log}`, ErrorType.BLOCK_FAIL, response)
+        return response
+      } catch (err) {
+        console.error(err)
+        const error = err as Error
+        if (this.isTxHashNotFound(error, txId)) {
+          await sleep(pollIntervalMs)
+          return pollForTx(txId)
+        }
+        throw err
       }
-      await sleep(pollIntervalMs)
-      return pollForTx(txId)
     }
 
     return new Promise((resolve, reject) => pollForTx(txId).then((value) => {
@@ -864,6 +867,10 @@ export class CarbonWallet {
 
   private isAccountNotFoundError = (error?: Error, address?: string) => {
     return error?.message?.includes(`account ${address} not found`);
+  };
+
+  private isTxHashNotFound = (error?: Error, hash?: string) => {
+    return error?.message?.includes(`tx (${hash}) not found`);
   };
 
 

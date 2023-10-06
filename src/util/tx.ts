@@ -145,13 +145,16 @@ export interface TxResponse {
 export enum ErrorType {
   SIGNATURE_REJECTION = "signature_rejection",
   BROADCAST_FAIL = "broadcast_fail",
+  BLOCK_FAIL = "block_fail",
 }
 
 export class CarbonCustomError extends Error {
   readonly type?: ErrorType
-  constructor(msg: string, type?: ErrorType) {
+  readonly data?: any
+  constructor(msg: string, type?: ErrorType, data?: any) {
     super(msg);
     this.type = type
+    this.data = data
   }
 }
 
