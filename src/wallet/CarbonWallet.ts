@@ -641,7 +641,6 @@ export class CarbonWallet {
         if (timedOut) {
           throw new TimeoutError(`Transaction with ID ${txId} was submitted but was not yet found on the chain. You might want to check later. There was a wait of ${timeoutMs / 1000} seconds.`, txId)
         }
-      if (result) {
         const hash = Uint8Array.from(Buffer.from(txId, 'hex'));
         const response = await this.getTmClient().tx({ hash })
         const { result } = response
