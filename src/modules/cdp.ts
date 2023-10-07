@@ -822,21 +822,19 @@ export class CDPModule extends BaseModule {
       const assetParam = assetParamsAll.assetParamsAll.find((assetParam) => assetParam.denom === underlyingDenom);
       const rateStrategy = rateStrategies.rateStrategyParamsAll.find((rateStrategy) => rateStrategy.name === assetParam?.rateStrategyName);
 
-      if (!debtInfo || !supply || !tokenPrice || !rateStrategy) throw new Error("unable to retrieve token info");
+      if (!debtInfo || !supply || !tokenPrice || !rateStrategy) throw new Error("unable to retrieve token debt info");
 
       const apy = CDPModule.calculateInterestAPY(debtInfo, rateStrategy);
       const newInterestRate = CDPModule.calculateInterestForTimePeriod(apy, debtInfo.lastUpdatedTime ?? new Date(0), new Date());
-      return this.getTotalTokenDebt(underlyingDenom, debtInfo, interestFee, newInterestRate)
-        .then((owedAmount) => {
-          const totalOwed = bnOrZero(owedAmount).plus(bnOrZero(balance));
-          const ratio = bnOrZero(supply).div(bnOrZero(totalOwed));
-          const actualAmount = bnOrZero(balance).div(ratio);
-          return this.getTokenUsdVal(underlyingDenom, actualAmount, tokenPrice);
-        })
-        .catch((err) => {
-          console.error(err);
-          return BN_ZERO
-        })
+      const principal = bnOrZero(debtInfo.totalPrincipal);
+      const accumInterest = bnOrZero(debtInfo.totalAccumulatedInterest);
+      const newInterest = principal.times(newInterestRate).plus(accumInterest.times(BN_ONE.plus(newInterestRate)));
+      const interest = newInterest.times(BN_10000.minus(interestFee)).dividedToIntegerBy(BN_10000);
+      const owedAmount = principal.plus(interest);
+      const totalOwed = bnOrZero(owedAmount).plus(bnOrZero(balance));
+      const ratio = bnOrZero(supply).div(bnOrZero(totalOwed));
+      const actualAmount = bnOrZero(balance).div(ratio);
+      return this.getTokenUsdVal(underlyingDenom, actualAmount, tokenPrice);
     })
     const cdpBalances = (await Promise.all(cdpTokensBalancePromises)) ?? []
     const totalCdpTokensUsdVal = cdpBalances.reduce((prev: BigNumber, curr: BigNumber) => (prev.plus(curr)), BN_ZERO)
