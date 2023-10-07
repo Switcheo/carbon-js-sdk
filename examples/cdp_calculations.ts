@@ -5,7 +5,6 @@ import { CarbonSDK } from "./_sdk";
 // @ts-ignore
 import "./_setup";
 import Long from "long";
-import { bnOrZero } from "../lib/util/number";
 
 (async () => {
   const mnemonics = process.env.MNEMONICS ?? BIP39.generateMnemonic();
@@ -61,15 +60,7 @@ import { bnOrZero } from "../lib/util/number";
   const params = await sdk.query.cdp.Params({})
   console.log(`\nParams ${JSON.stringify(params)}`)
 
-  /**
-   * Fee claimed by carbon protocol
-   * Only charged on interest, not principal. 
-   * Required in Token TOTAL DEBT calculations
-   * Total debt calculations are always done in calculating cdpRatio, cdpUsdValue
-   */
-  const interestFee = bnOrZero(params.params?.interestFee)
-
-  const totalTokenDebt = await sdk.cdp.getTotalTokenDebt(denom, interestFee)
+  const totalTokenDebt = await sdk.cdp.getTotalTokenDebt(denom)
   console.log("\getTotalTokenDebt", JSON.stringify(totalTokenDebt))
 
   const ratio = await sdk.cdp.getCdpToActualRatio(cdpDenom, totalTokenDebt)
