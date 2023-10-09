@@ -826,15 +826,12 @@ export class CDPModule extends BaseModule {
 
       const apy = CDPModule.calculateInterestAPY(debtInfo, rateStrategy);
       const newInterestRate = CDPModule.calculateInterestForTimePeriod(apy, debtInfo.lastUpdatedTime ?? new Date(0), new Date());
-      const principal = bnOrZero(debtInfo.totalPrincipal);
-      const accumInterest = bnOrZero(debtInfo.totalAccumulatedInterest);
-      const newInterest = principal.times(newInterestRate).plus(accumInterest.times(BN_ONE.plus(newInterestRate)));
-      const interest = newInterest.times(BN_10000.minus(interestFee)).dividedToIntegerBy(BN_10000);
-      const owedAmount = principal.plus(interest);
-      const totalOwed = bnOrZero(owedAmount).plus(bnOrZero(balance));
-      const ratio = bnOrZero(supply).div(bnOrZero(totalOwed));
-      const actualAmount = bnOrZero(balance).div(ratio);
-      return this.getTokenUsdVal(underlyingDenom, actualAmount, tokenPrice);
+      return this.getTotalTokenDebt(underlyingDenom, debtInfo, interestFee, newInterestRate)
+        .then((totalDebt) => {
+          const ratio = bnOrZero(supply).div(bnOrZero(totalDebt));
+          const actualAmount = bnOrZero(balance).div(ratio);
+          return this.getTokenUsdVal(underlyingDenom, actualAmount, tokenPrice);
+        })
     })
     const cdpBalances = (await Promise.all(cdpTokensBalancePromises)) ?? []
     const totalCdpTokensUsdVal = cdpBalances.reduce((prev: BigNumber, curr: BigNumber) => (prev.plus(curr)), BN_ZERO)
@@ -863,7 +860,7 @@ export class CDPModule extends BaseModule {
     return amount.multipliedBy(twap).shiftedBy(-decimals);
   }
 
-  public async getTotalTokenDebt(denom: string, debtInfo?: DebtInfo, interestFee?: BigNumber) {
+  public async getTotalTokenDebt(denom: string, debtInfo?: DebtInfo, interestFee?: BigNumber, newInterestRate?: BigNumber) {
     if (!interestFee) {
       const cdpParamsRsp = await this.sdkProvider.query.cdp.Params(QueryParamsRequest.fromPartial({}));
       interestFee = bnOrZero(cdpParamsRsp.params?.interestFee);
@@ -876,8 +873,10 @@ export class CDPModule extends BaseModule {
     }
     if (!debtInfo) throw new Error("unable to retrieve debt info");
 
-    const cimRsp = await this.recalculateCIM(denom, debtInfo);
-    const newInterestRate = cimRsp.interest;
+    if (!newInterestRate) {
+      const cimRsp = await this.recalculateCIM(denom, debtInfo);
+      newInterestRate = cimRsp.interest;
+    }
 
     const principal = bnOrZero(debtInfo.totalPrincipal);
     const accumInterest = bnOrZero(debtInfo.totalAccumulatedInterest);
