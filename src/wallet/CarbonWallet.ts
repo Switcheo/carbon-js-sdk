@@ -648,12 +648,12 @@ export class CarbonWallet {
         if (isDeliverTxFailure && throwIfNotIncludedInBlock) throw new CarbonCustomError(`[${result.code}] ${result.log}`, ErrorType.BLOCK_FAIL, response)
         return response
       } catch (err) {
-        console.error(err)
         const error = err as Error
         if (this.isTxHashNotFound(error, txId)) {
           await sleep(pollIntervalMs)
           return pollForTx(txId)
         }
+        console.error(err)
         throw err
       }
     }
