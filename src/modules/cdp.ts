@@ -8,7 +8,8 @@ import {
   QueryTokenPriceAllRequest,
   RateStrategyParams,
   StablecoinDebtInfo,
-  TokenPrice
+  TokenPrice,
+  QueryRateStrategyAllRequest
 } from "@carbon-sdk/codec";
 import { Params } from "@carbon-sdk/codec/cdp/params";
 import {
@@ -39,7 +40,7 @@ import {
   MsgUpdateRateStrategy, MsgUpdateRewardScheme, MsgWithdrawAsset,
   MsgAddEModeCategory, MsgUpdateEModeCategory, MsgChangeAccountEMode,
 } from "@carbon-sdk/codec/cdp/tx";
-import { QueryBalanceRequest, QuerySupplyOfRequest } from "@carbon-sdk/codec/cosmos/bank/v1beta1/query";
+import { QueryBalanceRequest, QuerySupplyOfRequest, QueryTotalSupplyRequest } from "@carbon-sdk/codec/cosmos/bank/v1beta1/query";
 import { Network } from "@carbon-sdk/constant";
 import { CarbonTx } from "@carbon-sdk/util";
 import { SWTHAddress } from "@carbon-sdk/util/address";
@@ -734,12 +735,15 @@ export class CDPModule extends BaseModule {
     const cdpAddress = this.getCdpModuleAddress();
     const supplyPromise = sdk.query.bank.SupplyOf(QuerySupplyOfRequest.fromPartial({ denom: cdpDenom }));
     const balancePromise = sdk.query.bank.Balance(QueryBalanceRequest.fromPartial({ address: cdpAddress, denom }));
-    const [supplyRsp, balanceRsp] = await Promise.all([supplyPromise, balancePromise]);
+    const debtInfoPromise = sdk.query.cdp.TokenDebt(QueryTokenDebtRequest.fromPartial({ denom }));
+    const [supplyRsp, balanceRsp, debtInfoRsp] = await Promise.all([supplyPromise, balancePromise, debtInfoPromise]);
     const cdpAmountRsp = supplyRsp.amount;
     if (!cdpAmountRsp) throw new Error("unable to retrieve cdp token supply");
     const cdpAmount = bnOrZero(cdpAmountRsp.amount);
     if (!balanceRsp.balance) throw new Error("unable to retrieve cdp module balance");
-    const owedAmount = await this.getTotalTokenDebt(denom, interestFee);
+    const debtInfo = debtInfoRsp.debtInfo;
+    if (!debtInfo) throw new Error("unable to retrieve debt info");
+    const owedAmount = await this.getTotalTokenDebt(denom, debtInfo, interestFee);
     const actualAmount = bnOrZero(balanceRsp.balance.amount).plus(owedAmount);
     if (!owedAmount) throw new Error("unable to retrieve total token debt");
     return cdpAmount.div(actualAmount);
@@ -791,43 +795,50 @@ export class CDPModule extends BaseModule {
     const sdk = this.sdkProvider;
     const network = sdk.getConfig().network;
     const collateralPoolAddress = SWTHAddress.getModuleAddress("collateral_pool", network);
-    const collateralPoolBalances = await sdk.query.bank.AllBalances({ address: collateralPoolAddress });
 
-    const cdpTokenBalances: Coin[] = (collateralPoolBalances?.balances ?? []).filter(balance => tokenClient.isCdpToken(balance.denom))
-    const totalCollateralsUsdValue = (await this.getCdpTokensUsdVal(cdpTokenBalances)) ?? []
-
-    return totalCollateralsUsdValue;
-  }
-
-  public async getCdpTokensUsdVal(cdpTokens: Coin[]) {
-    const sdk = this.sdkProvider;
-    const tokenClient = sdk.getTokenClient();
+    const collateralPoolBalancePromise = sdk.query.bank.AllBalances({ address: collateralPoolAddress });
+    const totalSupplyPromise = sdk.query.bank.TotalSupply(QueryTotalSupplyRequest.fromPartial({}));
     const cdpParamsPromise = sdk.query.cdp.Params(QueryParamsRequest.fromPartial({}));
     const tokenPriceAllPromise = sdk.query.pricing.TokenPriceAll(QueryTokenPriceAllRequest.fromPartial({}));
-    const [cdpParams, tokenPriceAll] = await Promise.all([cdpParamsPromise, tokenPriceAllPromise]);
+    const debtInfosPromise = sdk.query.cdp.TokenDebtAll(QueryTokenDebtAllRequest.fromPartial({}));
+    const assetParamsPromise = sdk.query.cdp.AssetAll(QueryAssetAllRequest.fromPartial({}));
+    const rateStrategyPromise = sdk.query.cdp.RateStrategyAll(QueryRateStrategyAllRequest.fromPartial({}));
+
+    const [collateralPoolBalances, totalSupply, cdpParams, tokenPriceAll, debtInfosAll, assetParamsAll, rateStrategies] = await Promise.all([collateralPoolBalancePromise, totalSupplyPromise, cdpParamsPromise, tokenPriceAllPromise, debtInfosPromise, assetParamsPromise, rateStrategyPromise]);
     const interestFee = bnOrZero(cdpParams.params?.interestFee);
     if (!interestFee) throw new Error("unable to retrieve interest fee");
     const tokenPrices = tokenPriceAll.tokenPrices;
     if (!tokenPrices) throw new Error("unable to retrieve token prices");
 
-    const cdpTokensBalancePromises: Promise<BigNumber>[] = cdpTokens.map(token => (
-      this.getCdpToActualRatio(token.denom, interestFee)
-        .then((ratio) => bnOrZero(token.amount).div(ratio))
-        .then(actualAmount => {
-          const denom = this.getUnderlyingDenom(token.denom);
-          const tokenPrice = tokenPrices.find((price) => price.denom === denom);
-          return this.getTokenUsdVal(denom, actualAmount, tokenPrice)
+    const cdpTokenBalances: Coin[] = (collateralPoolBalances?.balances ?? []).filter(balance => tokenClient.isCdpToken(balance.denom))
+
+    const cdpTokensBalancePromises = cdpTokenBalances.map(token => {
+      const underlyingDenom = this.getUnderlyingDenom(token.denom);
+      const tokenPrice = tokenPrices.find((price) => price.denom === underlyingDenom);
+      const supply = totalSupply.supply.find((supply) => supply.denom === token.denom)?.amount;
+      const balance = token.amount;
+      const debtInfo = debtInfosAll.debtInfosAll.find((debtInfo) => debtInfo.denom === underlyingDenom);
+
+      const assetParam = assetParamsAll.assetParamsAll.find((assetParam) => assetParam.denom === underlyingDenom);
+      const rateStrategy = rateStrategies.rateStrategyParamsAll.find((rateStrategy) => rateStrategy.name === assetParam?.rateStrategyName);
+
+      if (!debtInfo || !supply || !tokenPrice || !rateStrategy) throw new Error("unable to retrieve token info");
+
+      const apy = CDPModule.calculateInterestAPY(debtInfo, rateStrategy);
+      const newInterestRate = CDPModule.calculateInterestForTimePeriod(apy, debtInfo.lastUpdatedTime ?? new Date(0), new Date());
+      return this.getTotalTokenDebt(underlyingDenom, debtInfo, interestFee, newInterestRate)
+        .then((totalDebt) => {
+          const ratio = bnOrZero(supply).div(bnOrZero(totalDebt));
+          const actualAmount = bnOrZero(balance).div(ratio);
+          return this.getTokenUsdVal(underlyingDenom, actualAmount, tokenPrice);
         })
-        .catch((err) => {
-          console.error(err);
-          return BN_ZERO
-        })
-    ))
+    })
     const cdpBalances = (await Promise.all(cdpTokensBalancePromises)) ?? []
     const totalCdpTokensUsdVal = cdpBalances.reduce((prev: BigNumber, curr: BigNumber) => (prev.plus(curr)), BN_ZERO)
 
     return totalCdpTokensUsdVal;
   }
+
   public async getCdpTokenUsdVal(cdpDenom: string, amount: BigNumber) {
     const denom = this.getUnderlyingDenom(cdpDenom);
     const cdpRatio = await this.getCdpToActualRatio(cdpDenom);
@@ -849,19 +860,23 @@ export class CDPModule extends BaseModule {
     return amount.multipliedBy(twap).shiftedBy(-decimals);
   }
 
-  public async getTotalTokenDebt(denom: string, interestFee?: BigNumber) {
+  public async getTotalTokenDebt(denom: string, debtInfo?: DebtInfo, interestFee?: BigNumber, newInterestRate?: BigNumber) {
     if (!interestFee) {
       const cdpParamsRsp = await this.sdkProvider.query.cdp.Params(QueryParamsRequest.fromPartial({}));
       interestFee = bnOrZero(cdpParamsRsp.params?.interestFee);
     }
     if (!interestFee) throw new Error("unable to retrieve interest fee");
 
-    const debtInfoRsp = await this.sdkProvider.query.cdp.TokenDebt(QueryTokenDebtRequest.fromPartial({ denom }));
-    const debtInfo = debtInfoRsp.debtInfo;
+    if (!debtInfo) {
+      const debtInfoRsp = await this.sdkProvider.query.cdp.TokenDebt(QueryTokenDebtRequest.fromPartial({ denom }));
+      debtInfo = debtInfoRsp.debtInfo;
+    }
     if (!debtInfo) throw new Error("unable to retrieve debt info");
 
-    const cimRsp = await this.recalculateCIM(denom);
-    const newInterestRate = cimRsp.interest;
+    if (!newInterestRate) {
+      const cimRsp = await this.recalculateCIM(denom, debtInfo);
+      newInterestRate = cimRsp.interest;
+    }
 
     const principal = bnOrZero(debtInfo.totalPrincipal);
     const accumInterest = bnOrZero(debtInfo.totalAccumulatedInterest);
