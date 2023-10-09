@@ -863,7 +863,7 @@ export class CDPModule extends BaseModule {
     return amount.multipliedBy(twap).shiftedBy(-decimals);
   }
 
-  public async getTotalTokenDebt(denom: string, debtInfo?: DebtInfo, interestFee?: BigNumber, newInterestRate?: BigNumber) {
+  public async getTotalTokenDebt(denom: string, debtInfo?: DebtInfo, interestFee?: BigNumber) {
     if (!interestFee) {
       const cdpParamsRsp = await this.sdkProvider.query.cdp.Params(QueryParamsRequest.fromPartial({}));
       interestFee = bnOrZero(cdpParamsRsp.params?.interestFee);
@@ -876,10 +876,9 @@ export class CDPModule extends BaseModule {
     }
     if (!debtInfo) throw new Error("unable to retrieve debt info");
 
-    if (!newInterestRate) {
-      const cimRsp = await this.recalculateCIM(denom, debtInfo);
-      newInterestRate = cimRsp.interest;
-    }
+    const cimRsp = await this.recalculateCIM(denom, debtInfo);
+    const newInterestRate = cimRsp.interest;
+
     const principal = bnOrZero(debtInfo.totalPrincipal);
     const accumInterest = bnOrZero(debtInfo.totalAccumulatedInterest);
 
