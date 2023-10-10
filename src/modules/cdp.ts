@@ -44,6 +44,7 @@ import { QueryBalanceRequest, QuerySupplyOfRequest, QueryTotalSupplyRequest } fr
 import { PageRequest } from "@carbon-sdk/codec/cosmos/base/query/v1beta1/pagination";
 import { Network } from "@carbon-sdk/constant";
 import { CarbonTx } from "@carbon-sdk/util";
+import { SimpleMap } from "@carbon-sdk/util/type";
 import { SWTHAddress } from "@carbon-sdk/util/address";
 import { bnOrZero, BN_10000, BN_ONE, BN_ZERO } from "@carbon-sdk/util/number";
 import { BigNumber } from "bignumber.js";
@@ -797,9 +798,11 @@ export class CDPModule extends BaseModule {
     const sdk = this.sdkProvider;
     const network = sdk.getConfig().network;
     const collateralPoolAddress = SWTHAddress.getModuleAddress("collateral_pool", network);
+    const cdpModuleBalancesAddress = this.getCdpModuleAddress();
 
     const maxPageLimit = { pagination: PageRequest.fromPartial({ limit: new Long(10000) }) };
     const collateralPoolBalancePromise = sdk.query.bank.AllBalances({ ...maxPageLimit, address: collateralPoolAddress });
+    const cdpModuleBalancesPromise = sdk.query.bank.AllBalances({ ...maxPageLimit, address: cdpModuleBalancesAddress });
     const totalSupplyPromise = sdk.query.bank.TotalSupply(QueryTotalSupplyRequest.fromPartial({ ...maxPageLimit }));
     const cdpParamsPromise = sdk.query.cdp.Params(QueryParamsRequest.fromPartial({}));
     const tokenPriceAllPromise = sdk.query.pricing.TokenPriceAll(QueryTokenPriceAllRequest.fromPartial({ ...maxPageLimit }));
@@ -807,25 +810,31 @@ export class CDPModule extends BaseModule {
     const assetParamsPromise = sdk.query.cdp.AssetAll(QueryAssetAllRequest.fromPartial({ ...maxPageLimit }));
     const rateStrategyPromise = sdk.query.cdp.RateStrategyAll(QueryRateStrategyAllRequest.fromPartial({ ...maxPageLimit }));
 
-    const [collateralPoolBalances, totalSupply, cdpParams, tokenPriceAll, debtInfosAll, assetParamsAll, rateStrategies] = await Promise.all([collateralPoolBalancePromise, totalSupplyPromise, cdpParamsPromise, tokenPriceAllPromise, debtInfosPromise, assetParamsPromise, rateStrategyPromise]);
+    const [collateralPoolBalances, totalSupply, cdpParams, tokenPriceAll, debtInfosAll, assetParamsAll, rateStrategies, cdpModuleBalances] = await Promise.all([collateralPoolBalancePromise, totalSupplyPromise, cdpParamsPromise, tokenPriceAllPromise, debtInfosPromise, assetParamsPromise, rateStrategyPromise, cdpModuleBalancesPromise]);
     const interestFee = bnOrZero(cdpParams.params?.interestFee);
     if (!interestFee) throw new Error("unable to retrieve interest fee");
     const tokenPrices = tokenPriceAll.tokenPrices;
     if (!tokenPrices) throw new Error("unable to retrieve token prices");
 
+    const moduleBalancesMap = cdpModuleBalances.balances.reduce((prev: SimpleMap<Coin>, moduleBalance: Coin) => {
+      if (!prev[moduleBalance.denom]) {
+        prev[moduleBalance.denom] = moduleBalance;
+      }
+      return prev;
+    }, {});
     const cdpTokenBalances: Coin[] = (collateralPoolBalances?.balances ?? []).filter(balance => tokenClient.isCdpToken(balance.denom))
 
     const cdpTokensBalancePromises = cdpTokenBalances.map(token => {
       const underlyingDenom = this.getUnderlyingDenom(token.denom);
       const tokenPrice = tokenPrices.find((price) => price.denom === underlyingDenom);
       const supply = totalSupply.supply.find((supply) => supply.denom === token.denom)?.amount;
-      const balance = token.amount;
+      const balance = moduleBalancesMap[underlyingDenom].amount;
       const debtInfo = debtInfosAll.debtInfosAll.find((debtInfo) => debtInfo.denom === underlyingDenom);
 
       const assetParam = assetParamsAll.assetParamsAll.find((assetParam) => assetParam.denom === underlyingDenom);
       const rateStrategy = rateStrategies.rateStrategyParamsAll.find((rateStrategy) => rateStrategy.name === assetParam?.rateStrategyName);
 
-      if (!debtInfo || !supply || !tokenPrice || !rateStrategy) throw new Error("unable to retrieve token info");
+      if (!debtInfo || !supply || !tokenPrice || !rateStrategy || !balance) throw new Error("unable to retrieve token info");
 
       const apy = CDPModule.calculateInterestAPY(debtInfo, rateStrategy);
       const newInterestRate = CDPModule.calculateInterestForTimePeriod(apy, debtInfo.lastUpdatedTime ?? new Date(0), new Date());
