@@ -841,12 +841,12 @@ export class CDPModule extends BaseModule {
       return this.getTotalTokenDebt(underlyingDenom, debtInfo, interestFee, newInterestRate)
         .then((totalDebt) => {
           const ratio = bnOrZero(supply).div(bnOrZero(balance).plus(bnOrZero(totalDebt)));
-          const actualAmount = bnOrZero(balance).div(ratio);
+          const actualAmount = bnOrZero(token.amount).div(ratio);
           return this.getTokenUsdVal(underlyingDenom, actualAmount, tokenPrice);
         })
     })
-    const cdpBalances = (await Promise.all(cdpTokensBalancePromises)) ?? []
-    const totalCdpTokensUsdVal = cdpBalances.reduce((prev: BigNumber, curr: BigNumber) => (prev.plus(curr)), BN_ZERO)
+    const cdpBalances = (await Promise.all(cdpTokensBalancePromises)) ?? [];
+    const totalCdpTokensUsdVal = cdpBalances.reduce((prev: BigNumber, curr: BigNumber) => (prev.plus(curr)), BN_ZERO);
 
     return totalCdpTokensUsdVal;
   }
