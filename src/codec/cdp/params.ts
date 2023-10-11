@@ -46,10 +46,10 @@ export interface Params {
    */
   smallLiquidationSize: string;
   /**
-   * stale_price_grace_period determines the grace period in seconds before an oracle price is regarded as stale.
+   * stale_price_grace_period determines the grace period before an oracle price is regarded as stale.
    * This would cause certain actions like borrowing to be paused
    */
-  stalePriceGracePeriod: string;
+  stalePriceGracePeriod?: Duration;
   /** cdp_paused if true, causes all supply, locking, lending, borrowing and liquidations to be paused */
   cdpPaused: boolean;
   /** time interval in between each adjustment of stablecoin interest rate to help stablecoin price stability */
@@ -65,7 +65,6 @@ const baseParams: object = {
   completeLiquidationThreshold: "",
   minimumCloseFactor: "",
   smallLiquidationSize: "",
-  stalePriceGracePeriod: "",
   cdpPaused: false,
   stablecoinInterestRateAdjusterCoefficient: "",
 };
@@ -93,8 +92,11 @@ export const Params = {
     if (message.smallLiquidationSize !== "") {
       writer.uint32(58).string(message.smallLiquidationSize);
     }
-    if (message.stalePriceGracePeriod !== "") {
-      writer.uint32(66).string(message.stalePriceGracePeriod);
+    if (message.stalePriceGracePeriod !== undefined) {
+      Duration.encode(
+        message.stalePriceGracePeriod,
+        writer.uint32(66).fork()
+      ).ldelim();
     }
     if (message.cdpPaused === true) {
       writer.uint32(72).bool(message.cdpPaused);
@@ -139,7 +141,10 @@ export const Params = {
           message.smallLiquidationSize = reader.string();
           break;
         case 8:
-          message.stalePriceGracePeriod = reader.string();
+          message.stalePriceGracePeriod = Duration.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         case 9:
           message.cdpPaused = reader.bool();
@@ -194,8 +199,8 @@ export const Params = {
     message.stalePriceGracePeriod =
       object.stalePriceGracePeriod !== undefined &&
       object.stalePriceGracePeriod !== null
-        ? String(object.stalePriceGracePeriod)
-        : "";
+        ? Duration.fromJSON(object.stalePriceGracePeriod)
+        : undefined;
     message.cdpPaused =
       object.cdpPaused !== undefined && object.cdpPaused !== null
         ? Boolean(object.cdpPaused)
@@ -228,7 +233,9 @@ export const Params = {
     message.smallLiquidationSize !== undefined &&
       (obj.smallLiquidationSize = message.smallLiquidationSize);
     message.stalePriceGracePeriod !== undefined &&
-      (obj.stalePriceGracePeriod = message.stalePriceGracePeriod);
+      (obj.stalePriceGracePeriod = message.stalePriceGracePeriod
+        ? Duration.toJSON(message.stalePriceGracePeriod)
+        : undefined);
     message.cdpPaused !== undefined && (obj.cdpPaused = message.cdpPaused);
     message.stablecoinInterestRateEpoch !== undefined &&
       (obj.stablecoinInterestRateEpoch = message.stablecoinInterestRateEpoch
@@ -249,7 +256,11 @@ export const Params = {
       object.completeLiquidationThreshold ?? "";
     message.minimumCloseFactor = object.minimumCloseFactor ?? "";
     message.smallLiquidationSize = object.smallLiquidationSize ?? "";
-    message.stalePriceGracePeriod = object.stalePriceGracePeriod ?? "";
+    message.stalePriceGracePeriod =
+      object.stalePriceGracePeriod !== undefined &&
+      object.stalePriceGracePeriod !== null
+        ? Duration.fromPartial(object.stalePriceGracePeriod)
+        : undefined;
     message.cdpPaused = object.cdpPaused ?? false;
     message.stablecoinInterestRateEpoch =
       object.stablecoinInterestRateEpoch !== undefined &&
