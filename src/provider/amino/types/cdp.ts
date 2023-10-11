@@ -145,7 +145,9 @@ const MsgSetStablecoinMintCap: AminoInit = {
 
 const MsgSetStalePriceGracePeriod: AminoInit = {
   aminoType: TxTypes.SetStalePriceGracePeriod,
-  valueMap: {},
+  valueMap: {
+    stalePriceGracePeriod: ConvertEncType.Duration,
+  },
 };
 
 const MsgSetCdpPaused: AminoInit = {
