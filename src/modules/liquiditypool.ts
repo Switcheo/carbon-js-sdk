@@ -7,6 +7,7 @@ import Long from "long";
 import BaseModule from "./base";
 import { InsightsQueryResponse, QueryGetInflation } from "@carbon-sdk/insights";
 import { BN_ZERO } from "@carbon-sdk/util/number";
+import { QueryMintDataResponse } from "@carbon-sdk/codec/inflation/query";
 
 export class LiquidityPoolModule extends BaseModule {
   public async create(params: LiquidityPoolModule.CreatePoolParams, opts?: CarbonTx.SignTxOpts) {
@@ -180,7 +181,7 @@ export class LiquidityPoolModule extends BaseModule {
   }
 
   public async getWeeklyRewardsRealInflation(): Promise<BigNumber> {
-    const mintDataResponse: Models.QueryMintDataResponse = await this.sdkProvider.query.inflation.MintData({})
+    const mintDataResponse: QueryMintDataResponse = await this.sdkProvider.query.inflation.MintData({})
     let weeklyRewards = BN_ZERO
     if (mintDataResponse.mintData) {
       const mintData = mintDataResponse.mintData

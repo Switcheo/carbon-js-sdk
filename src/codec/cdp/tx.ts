@@ -7,6 +7,7 @@ import {
   CreateRewardSchemeParams,
   UpdateRewardSchemeParams,
 } from "./reward_scheme";
+import { Duration } from "../google/protobuf/duration";
 import { EModeCategory } from "./e_mode_category";
 import {
   StringValue,
@@ -286,7 +287,7 @@ export interface MsgClaimRewardsResponse {}
 
 export interface MsgSetStalePriceGracePeriod {
   creator: string;
-  stalePriceGracePeriod: string;
+  stalePriceGracePeriod?: Duration;
 }
 
 export interface MsgSetStalePriceGracePeriodResponse {}
@@ -374,12 +375,18 @@ export interface UpdateEModeCategoryParams {
 
 export interface MsgUpdateEModeCategoryResponse {}
 
-export interface MsgChangeAccountEMode {
+export interface MsgSetAccountEMode {
   creator: string;
   eModeCategoryName: string;
 }
 
-export interface MsgChangeAccountEModeResponse {}
+export interface MsgSetAccountEModeResponse {}
+
+export interface MsgRemoveAccountEMode {
+  creator: string;
+}
+
+export interface MsgRemoveAccountEModeResponse {}
 
 const baseMsgAddRateStrategy: object = { creator: "" };
 
@@ -4929,10 +4936,7 @@ export const MsgClaimRewardsResponse = {
   },
 };
 
-const baseMsgSetStalePriceGracePeriod: object = {
-  creator: "",
-  stalePriceGracePeriod: "",
-};
+const baseMsgSetStalePriceGracePeriod: object = { creator: "" };
 
 export const MsgSetStalePriceGracePeriod = {
   encode(
@@ -4942,8 +4946,11 @@ export const MsgSetStalePriceGracePeriod = {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
-    if (message.stalePriceGracePeriod !== "") {
-      writer.uint32(18).string(message.stalePriceGracePeriod);
+    if (message.stalePriceGracePeriod !== undefined) {
+      Duration.encode(
+        message.stalePriceGracePeriod,
+        writer.uint32(18).fork()
+      ).ldelim();
     }
     return writer;
   },
@@ -4964,7 +4971,10 @@ export const MsgSetStalePriceGracePeriod = {
           message.creator = reader.string();
           break;
         case 2:
-          message.stalePriceGracePeriod = reader.string();
+          message.stalePriceGracePeriod = Duration.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         default:
           reader.skipType(tag & 7);
@@ -4985,8 +4995,8 @@ export const MsgSetStalePriceGracePeriod = {
     message.stalePriceGracePeriod =
       object.stalePriceGracePeriod !== undefined &&
       object.stalePriceGracePeriod !== null
-        ? String(object.stalePriceGracePeriod)
-        : "";
+        ? Duration.fromJSON(object.stalePriceGracePeriod)
+        : undefined;
     return message;
   },
 
@@ -4994,7 +5004,9 @@ export const MsgSetStalePriceGracePeriod = {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
     message.stalePriceGracePeriod !== undefined &&
-      (obj.stalePriceGracePeriod = message.stalePriceGracePeriod);
+      (obj.stalePriceGracePeriod = message.stalePriceGracePeriod
+        ? Duration.toJSON(message.stalePriceGracePeriod)
+        : undefined);
     return obj;
   },
 
@@ -5005,7 +5017,11 @@ export const MsgSetStalePriceGracePeriod = {
       ...baseMsgSetStalePriceGracePeriod,
     } as MsgSetStalePriceGracePeriod;
     message.creator = object.creator ?? "";
-    message.stalePriceGracePeriod = object.stalePriceGracePeriod ?? "";
+    message.stalePriceGracePeriod =
+      object.stalePriceGracePeriod !== undefined &&
+      object.stalePriceGracePeriod !== null
+        ? Duration.fromPartial(object.stalePriceGracePeriod)
+        : undefined;
     return message;
   },
 };
@@ -6545,14 +6561,11 @@ export const MsgUpdateEModeCategoryResponse = {
   },
 };
 
-const baseMsgChangeAccountEMode: object = {
-  creator: "",
-  eModeCategoryName: "",
-};
+const baseMsgSetAccountEMode: object = { creator: "", eModeCategoryName: "" };
 
-export const MsgChangeAccountEMode = {
+export const MsgSetAccountEMode = {
   encode(
-    message: MsgChangeAccountEMode,
+    message: MsgSetAccountEMode,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.creator !== "") {
@@ -6564,13 +6577,10 @@ export const MsgChangeAccountEMode = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgChangeAccountEMode {
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgSetAccountEMode {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgChangeAccountEMode } as MsgChangeAccountEMode;
+    const message = { ...baseMsgSetAccountEMode } as MsgSetAccountEMode;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -6588,8 +6598,8 @@ export const MsgChangeAccountEMode = {
     return message;
   },
 
-  fromJSON(object: any): MsgChangeAccountEMode {
-    const message = { ...baseMsgChangeAccountEMode } as MsgChangeAccountEMode;
+  fromJSON(object: any): MsgSetAccountEMode {
+    const message = { ...baseMsgSetAccountEMode } as MsgSetAccountEMode;
     message.creator =
       object.creator !== undefined && object.creator !== null
         ? String(object.creator)
@@ -6602,7 +6612,7 @@ export const MsgChangeAccountEMode = {
     return message;
   },
 
-  toJSON(message: MsgChangeAccountEMode): unknown {
+  toJSON(message: MsgSetAccountEMode): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
     message.eModeCategoryName !== undefined &&
@@ -6610,21 +6620,19 @@ export const MsgChangeAccountEMode = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<MsgChangeAccountEMode>
-  ): MsgChangeAccountEMode {
-    const message = { ...baseMsgChangeAccountEMode } as MsgChangeAccountEMode;
+  fromPartial(object: DeepPartial<MsgSetAccountEMode>): MsgSetAccountEMode {
+    const message = { ...baseMsgSetAccountEMode } as MsgSetAccountEMode;
     message.creator = object.creator ?? "";
     message.eModeCategoryName = object.eModeCategoryName ?? "";
     return message;
   },
 };
 
-const baseMsgChangeAccountEModeResponse: object = {};
+const baseMsgSetAccountEModeResponse: object = {};
 
-export const MsgChangeAccountEModeResponse = {
+export const MsgSetAccountEModeResponse = {
   encode(
-    _: MsgChangeAccountEModeResponse,
+    _: MsgSetAccountEModeResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     return writer;
@@ -6633,12 +6641,12 @@ export const MsgChangeAccountEModeResponse = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): MsgChangeAccountEModeResponse {
+  ): MsgSetAccountEModeResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = {
-      ...baseMsgChangeAccountEModeResponse,
-    } as MsgChangeAccountEModeResponse;
+      ...baseMsgSetAccountEModeResponse,
+    } as MsgSetAccountEModeResponse;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -6650,24 +6658,134 @@ export const MsgChangeAccountEModeResponse = {
     return message;
   },
 
-  fromJSON(_: any): MsgChangeAccountEModeResponse {
+  fromJSON(_: any): MsgSetAccountEModeResponse {
     const message = {
-      ...baseMsgChangeAccountEModeResponse,
-    } as MsgChangeAccountEModeResponse;
+      ...baseMsgSetAccountEModeResponse,
+    } as MsgSetAccountEModeResponse;
     return message;
   },
 
-  toJSON(_: MsgChangeAccountEModeResponse): unknown {
+  toJSON(_: MsgSetAccountEModeResponse): unknown {
     const obj: any = {};
     return obj;
   },
 
   fromPartial(
-    _: DeepPartial<MsgChangeAccountEModeResponse>
-  ): MsgChangeAccountEModeResponse {
+    _: DeepPartial<MsgSetAccountEModeResponse>
+  ): MsgSetAccountEModeResponse {
     const message = {
-      ...baseMsgChangeAccountEModeResponse,
-    } as MsgChangeAccountEModeResponse;
+      ...baseMsgSetAccountEModeResponse,
+    } as MsgSetAccountEModeResponse;
+    return message;
+  },
+};
+
+const baseMsgRemoveAccountEMode: object = { creator: "" };
+
+export const MsgRemoveAccountEMode = {
+  encode(
+    message: MsgRemoveAccountEMode,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgRemoveAccountEMode {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgRemoveAccountEMode } as MsgRemoveAccountEMode;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgRemoveAccountEMode {
+    const message = { ...baseMsgRemoveAccountEMode } as MsgRemoveAccountEMode;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgRemoveAccountEMode): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgRemoveAccountEMode>
+  ): MsgRemoveAccountEMode {
+    const message = { ...baseMsgRemoveAccountEMode } as MsgRemoveAccountEMode;
+    message.creator = object.creator ?? "";
+    return message;
+  },
+};
+
+const baseMsgRemoveAccountEModeResponse: object = {};
+
+export const MsgRemoveAccountEModeResponse = {
+  encode(
+    _: MsgRemoveAccountEModeResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgRemoveAccountEModeResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgRemoveAccountEModeResponse,
+    } as MsgRemoveAccountEModeResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgRemoveAccountEModeResponse {
+    const message = {
+      ...baseMsgRemoveAccountEModeResponse,
+    } as MsgRemoveAccountEModeResponse;
+    return message;
+  },
+
+  toJSON(_: MsgRemoveAccountEModeResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgRemoveAccountEModeResponse>
+  ): MsgRemoveAccountEModeResponse {
+    const message = {
+      ...baseMsgRemoveAccountEModeResponse,
+    } as MsgRemoveAccountEModeResponse;
     return message;
   },
 };
@@ -6778,10 +6896,13 @@ export interface Msg {
   UpdateEModeCategory(
     request: MsgUpdateEModeCategory
   ): Promise<MsgUpdateEModeCategoryResponse>;
+  SetAccountEMode(
+    request: MsgSetAccountEMode
+  ): Promise<MsgSetAccountEModeResponse>;
   /** this line is used by starport scaffolding # proto/tx/rpc */
-  ChangeAccountEMode(
-    request: MsgChangeAccountEMode
-  ): Promise<MsgChangeAccountEModeResponse>;
+  RemoveAccountEMode(
+    request: MsgRemoveAccountEMode
+  ): Promise<MsgRemoveAccountEModeResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -6839,7 +6960,8 @@ export class MsgClientImpl implements Msg {
       this.ConvertTokenInCdpToGroupTokens.bind(this);
     this.AddEModeCategory = this.AddEModeCategory.bind(this);
     this.UpdateEModeCategory = this.UpdateEModeCategory.bind(this);
-    this.ChangeAccountEMode = this.ChangeAccountEMode.bind(this);
+    this.SetAccountEMode = this.SetAccountEMode.bind(this);
+    this.RemoveAccountEMode = this.RemoveAccountEMode.bind(this);
   }
   AddRateStrategy(
     request: MsgAddRateStrategy
@@ -7401,17 +7523,31 @@ export class MsgClientImpl implements Msg {
     );
   }
 
-  ChangeAccountEMode(
-    request: MsgChangeAccountEMode
-  ): Promise<MsgChangeAccountEModeResponse> {
-    const data = MsgChangeAccountEMode.encode(request).finish();
+  SetAccountEMode(
+    request: MsgSetAccountEMode
+  ): Promise<MsgSetAccountEModeResponse> {
+    const data = MsgSetAccountEMode.encode(request).finish();
     const promise = this.rpc.request(
       "Switcheo.carbon.cdp.Msg",
-      "ChangeAccountEMode",
+      "SetAccountEMode",
       data
     );
     return promise.then((data) =>
-      MsgChangeAccountEModeResponse.decode(new _m0.Reader(data))
+      MsgSetAccountEModeResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  RemoveAccountEMode(
+    request: MsgRemoveAccountEMode
+  ): Promise<MsgRemoveAccountEModeResponse> {
+    const data = MsgRemoveAccountEMode.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.cdp.Msg",
+      "RemoveAccountEMode",
+      data
+    );
+    return promise.then((data) =>
+      MsgRemoveAccountEModeResponse.decode(new _m0.Reader(data))
     );
   }
 }

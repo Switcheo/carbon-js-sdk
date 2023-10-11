@@ -573,18 +573,34 @@ export class CDPModule extends BaseModule {
     );
   }
 
-  public async changeAccountEMode(
-    params: CDPModule.ChangeAccountEModeParams,
+  public async setAccountEMode(
+    params: CDPModule.SetAccountEModeParams,
     opts?: CarbonTx.SignTxOpts
   ) {
     const wallet = this.getWallet();
-    const value = Carbon.Cdp.MsgChangeAccountEMode.fromPartial({
+    const value = Carbon.Cdp.MsgSetAccountEMode.fromPartial({
       creator: wallet.bech32Address,
       eModeCategoryName: params.eModeCategoryName,
     });
     return await wallet.sendTx(
       {
-        typeUrl: CarbonTx.Types.MsgChangeAccountEMode,
+        typeUrl: CarbonTx.Types.MsgSetAccountEMode,
+        value,
+      },
+      opts
+    );
+  }
+
+  public async removeAccountEMode(
+    opts?: CarbonTx.SignTxOpts
+  ) {
+    const wallet = this.getWallet();
+    const value = Carbon.Cdp.MsgRemoveAccountEMode.fromPartial({
+      creator: wallet.bech32Address,
+    });
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgRemoveAccountEMode,
         value,
       },
       opts
@@ -1403,7 +1419,7 @@ export namespace CDPModule {
     updateEModeCategoryParams?: UpdateEModeCategoryStruct;
   }
 
-  export interface ChangeAccountEModeParams {
+  export interface SetAccountEModeParams {
     creator: string;
     eModeCategoryName: string;
   }

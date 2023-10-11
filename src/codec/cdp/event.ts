@@ -4,6 +4,7 @@ import _m0 from "protobufjs/minimal";
 import { RateStrategyParams } from "./rate_strategy_params";
 import { AssetParams } from "./asset_params";
 import { EModeCategory } from "./e_mode_category";
+import { Duration } from "../google/protobuf/duration";
 import { DebtInfo } from "./debt_info";
 import { StablecoinDebtInfo } from "./stablecoin_debt_info";
 import { RewardDebt, RewardScheme } from "./reward_scheme";
@@ -88,7 +89,7 @@ export interface SetSmallLiquidationSizeEvent {
 }
 
 export interface SetStalePriceGracePeriodEvent {
-  stalePriceGracePeriod: string;
+  stalePriceGracePeriod?: Duration;
   type: string;
 }
 
@@ -1463,18 +1464,18 @@ export const SetSmallLiquidationSizeEvent = {
   },
 };
 
-const baseSetStalePriceGracePeriodEvent: object = {
-  stalePriceGracePeriod: "",
-  type: "",
-};
+const baseSetStalePriceGracePeriodEvent: object = { type: "" };
 
 export const SetStalePriceGracePeriodEvent = {
   encode(
     message: SetStalePriceGracePeriodEvent,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.stalePriceGracePeriod !== "") {
-      writer.uint32(10).string(message.stalePriceGracePeriod);
+    if (message.stalePriceGracePeriod !== undefined) {
+      Duration.encode(
+        message.stalePriceGracePeriod,
+        writer.uint32(10).fork()
+      ).ldelim();
     }
     if (message.type !== "") {
       writer.uint32(18).string(message.type);
@@ -1495,7 +1496,10 @@ export const SetStalePriceGracePeriodEvent = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.stalePriceGracePeriod = reader.string();
+          message.stalePriceGracePeriod = Duration.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         case 2:
           message.type = reader.string();
@@ -1515,8 +1519,8 @@ export const SetStalePriceGracePeriodEvent = {
     message.stalePriceGracePeriod =
       object.stalePriceGracePeriod !== undefined &&
       object.stalePriceGracePeriod !== null
-        ? String(object.stalePriceGracePeriod)
-        : "";
+        ? Duration.fromJSON(object.stalePriceGracePeriod)
+        : undefined;
     message.type =
       object.type !== undefined && object.type !== null
         ? String(object.type)
@@ -1527,7 +1531,9 @@ export const SetStalePriceGracePeriodEvent = {
   toJSON(message: SetStalePriceGracePeriodEvent): unknown {
     const obj: any = {};
     message.stalePriceGracePeriod !== undefined &&
-      (obj.stalePriceGracePeriod = message.stalePriceGracePeriod);
+      (obj.stalePriceGracePeriod = message.stalePriceGracePeriod
+        ? Duration.toJSON(message.stalePriceGracePeriod)
+        : undefined);
     message.type !== undefined && (obj.type = message.type);
     return obj;
   },
@@ -1538,7 +1544,11 @@ export const SetStalePriceGracePeriodEvent = {
     const message = {
       ...baseSetStalePriceGracePeriodEvent,
     } as SetStalePriceGracePeriodEvent;
-    message.stalePriceGracePeriod = object.stalePriceGracePeriod ?? "";
+    message.stalePriceGracePeriod =
+      object.stalePriceGracePeriod !== undefined &&
+      object.stalePriceGracePeriod !== null
+        ? Duration.fromPartial(object.stalePriceGracePeriod)
+        : undefined;
     message.type = object.type ?? "";
     return message;
   },
