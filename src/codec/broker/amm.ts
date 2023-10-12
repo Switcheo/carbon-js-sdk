@@ -4,7 +4,8 @@ import _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "Switcheo.carbon.broker";
 
-export interface Amm {
+/** SpotAmm exists when there is a quote on the orderbook */
+export interface SpotAmm {
   poolId: Long;
   market: string;
   reservesHash: Uint8Array;
@@ -12,10 +13,28 @@ export interface Amm {
   poolRoute: Uint8Array;
 }
 
-const baseAmm: object = { poolId: Long.UZERO, market: "", orders: "" };
+/** PerpsAmm exists when there is at least 1 PerpsMarketAmm */
+export interface PerpsAmm {
+  poolId: Long;
+  quotingHash: Uint8Array;
+  lastQuotedAt: Long;
+  markets: PerpsMarketAmm[];
+}
 
-export const Amm = {
-  encode(message: Amm, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+/** PerpsMarketAmm exists when it is active or when there's orders or open position */
+export interface PerpsMarketAmm {
+  market: string;
+  orders: string[];
+  lastIndexPrice: string;
+}
+
+const baseSpotAmm: object = { poolId: Long.UZERO, market: "", orders: "" };
+
+export const SpotAmm = {
+  encode(
+    message: SpotAmm,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (!message.poolId.isZero()) {
       writer.uint32(8).uint64(message.poolId);
     }
@@ -34,10 +53,10 @@ export const Amm = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): Amm {
+  decode(input: _m0.Reader | Uint8Array, length?: number): SpotAmm {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseAmm } as Amm;
+    const message = { ...baseSpotAmm } as SpotAmm;
     message.orders = [];
     message.reservesHash = new Uint8Array();
     message.poolRoute = new Uint8Array();
@@ -67,8 +86,8 @@ export const Amm = {
     return message;
   },
 
-  fromJSON(object: any): Amm {
-    const message = { ...baseAmm } as Amm;
+  fromJSON(object: any): SpotAmm {
+    const message = { ...baseSpotAmm } as SpotAmm;
     message.poolId =
       object.poolId !== undefined && object.poolId !== null
         ? Long.fromString(object.poolId)
@@ -89,7 +108,7 @@ export const Amm = {
     return message;
   },
 
-  toJSON(message: Amm): unknown {
+  toJSON(message: SpotAmm): unknown {
     const obj: any = {};
     message.poolId !== undefined &&
       (obj.poolId = (message.poolId || Long.UZERO).toString());
@@ -112,8 +131,8 @@ export const Amm = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<Amm>): Amm {
-    const message = { ...baseAmm } as Amm;
+  fromPartial(object: DeepPartial<SpotAmm>): SpotAmm {
+    const message = { ...baseSpotAmm } as SpotAmm;
     message.poolId =
       object.poolId !== undefined && object.poolId !== null
         ? Long.fromValue(object.poolId)
@@ -122,6 +141,201 @@ export const Amm = {
     message.reservesHash = object.reservesHash ?? new Uint8Array();
     message.orders = (object.orders ?? []).map((e) => e);
     message.poolRoute = object.poolRoute ?? new Uint8Array();
+    return message;
+  },
+};
+
+const basePerpsAmm: object = { poolId: Long.UZERO, lastQuotedAt: Long.UZERO };
+
+export const PerpsAmm = {
+  encode(
+    message: PerpsAmm,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (!message.poolId.isZero()) {
+      writer.uint32(8).uint64(message.poolId);
+    }
+    if (message.quotingHash.length !== 0) {
+      writer.uint32(18).bytes(message.quotingHash);
+    }
+    if (!message.lastQuotedAt.isZero()) {
+      writer.uint32(24).uint64(message.lastQuotedAt);
+    }
+    for (const v of message.markets) {
+      PerpsMarketAmm.encode(v!, writer.uint32(34).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): PerpsAmm {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...basePerpsAmm } as PerpsAmm;
+    message.markets = [];
+    message.quotingHash = new Uint8Array();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.poolId = reader.uint64() as Long;
+          break;
+        case 2:
+          message.quotingHash = reader.bytes();
+          break;
+        case 3:
+          message.lastQuotedAt = reader.uint64() as Long;
+          break;
+        case 4:
+          message.markets.push(PerpsMarketAmm.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): PerpsAmm {
+    const message = { ...basePerpsAmm } as PerpsAmm;
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromString(object.poolId)
+        : Long.UZERO;
+    message.quotingHash =
+      object.quotingHash !== undefined && object.quotingHash !== null
+        ? bytesFromBase64(object.quotingHash)
+        : new Uint8Array();
+    message.lastQuotedAt =
+      object.lastQuotedAt !== undefined && object.lastQuotedAt !== null
+        ? Long.fromString(object.lastQuotedAt)
+        : Long.UZERO;
+    message.markets = (object.markets ?? []).map((e: any) =>
+      PerpsMarketAmm.fromJSON(e)
+    );
+    return message;
+  },
+
+  toJSON(message: PerpsAmm): unknown {
+    const obj: any = {};
+    message.poolId !== undefined &&
+      (obj.poolId = (message.poolId || Long.UZERO).toString());
+    message.quotingHash !== undefined &&
+      (obj.quotingHash = base64FromBytes(
+        message.quotingHash !== undefined
+          ? message.quotingHash
+          : new Uint8Array()
+      ));
+    message.lastQuotedAt !== undefined &&
+      (obj.lastQuotedAt = (message.lastQuotedAt || Long.UZERO).toString());
+    if (message.markets) {
+      obj.markets = message.markets.map((e) =>
+        e ? PerpsMarketAmm.toJSON(e) : undefined
+      );
+    } else {
+      obj.markets = [];
+    }
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<PerpsAmm>): PerpsAmm {
+    const message = { ...basePerpsAmm } as PerpsAmm;
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromValue(object.poolId)
+        : Long.UZERO;
+    message.quotingHash = object.quotingHash ?? new Uint8Array();
+    message.lastQuotedAt =
+      object.lastQuotedAt !== undefined && object.lastQuotedAt !== null
+        ? Long.fromValue(object.lastQuotedAt)
+        : Long.UZERO;
+    message.markets = (object.markets ?? []).map((e) =>
+      PerpsMarketAmm.fromPartial(e)
+    );
+    return message;
+  },
+};
+
+const basePerpsMarketAmm: object = {
+  market: "",
+  orders: "",
+  lastIndexPrice: "",
+};
+
+export const PerpsMarketAmm = {
+  encode(
+    message: PerpsMarketAmm,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.market !== "") {
+      writer.uint32(10).string(message.market);
+    }
+    for (const v of message.orders) {
+      writer.uint32(18).string(v!);
+    }
+    if (message.lastIndexPrice !== "") {
+      writer.uint32(26).string(message.lastIndexPrice);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): PerpsMarketAmm {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...basePerpsMarketAmm } as PerpsMarketAmm;
+    message.orders = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.market = reader.string();
+          break;
+        case 2:
+          message.orders.push(reader.string());
+          break;
+        case 3:
+          message.lastIndexPrice = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): PerpsMarketAmm {
+    const message = { ...basePerpsMarketAmm } as PerpsMarketAmm;
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? String(object.market)
+        : "";
+    message.orders = (object.orders ?? []).map((e: any) => String(e));
+    message.lastIndexPrice =
+      object.lastIndexPrice !== undefined && object.lastIndexPrice !== null
+        ? String(object.lastIndexPrice)
+        : "";
+    return message;
+  },
+
+  toJSON(message: PerpsMarketAmm): unknown {
+    const obj: any = {};
+    message.market !== undefined && (obj.market = message.market);
+    if (message.orders) {
+      obj.orders = message.orders.map((e) => e);
+    } else {
+      obj.orders = [];
+    }
+    message.lastIndexPrice !== undefined &&
+      (obj.lastIndexPrice = message.lastIndexPrice);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<PerpsMarketAmm>): PerpsMarketAmm {
+    const message = { ...basePerpsMarketAmm } as PerpsMarketAmm;
+    message.market = object.market ?? "";
+    message.orders = (object.orders ?? []).map((e) => e);
+    message.lastIndexPrice = object.lastIndexPrice ?? "";
     return message;
   },
 };

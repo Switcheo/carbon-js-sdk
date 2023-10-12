@@ -42,7 +42,8 @@ import { QueryClientImpl as PricingQueryClient } from "@carbon-sdk/codec/pricing
 import { QueryClientImpl as ProfileQueryClient } from "@carbon-sdk/codec/profile/query";
 import { QueryClientImpl as SubaccountQueryClient } from "@carbon-sdk/codec/subaccount/query";
 import { QueryClientImpl as AllianceClient } from "@carbon-sdk/codec/alliance/query";
-
+import { QueryClientImpl as PerpspoolQueryClient } from "@carbon-sdk/codec/perpspool/query";
+import { QueryClientImpl as ERC20QueryClient } from "@carbon-sdk/codec/erc20/query";
 import { createProtobufRpcClient, ProtobufRpcClient, QueryClient } from "@cosmjs/stargate";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import BlockchainClient from "./BlockchainClient";
@@ -90,6 +91,7 @@ class CarbonQueryClient {
   profile: ProfileQueryClient;
   subaccount: SubaccountQueryClient;
   headersync: HeadersyncQueryClient;
+  perpspool: PerpspoolQueryClient;
 
   auth: AuthQueryClient;
   bank: BankQueryClient;
@@ -111,6 +113,8 @@ class CarbonQueryClient {
   ethermint: EthermintClientGroup;
   evmmerge: EvmMergeQueryClient;
   evmbank: EvmBankQueryClient;
+
+  erc20: ERC20QueryClient;
 
   private readonly baseClient: ProtobufRpcClient;
   private readonly tmClient: Tendermint34Client;
@@ -147,6 +151,7 @@ class CarbonQueryClient {
     this.headersync = new HeadersyncQueryClient(rpcClient);
     this.evmmerge = new EvmMergeQueryClient(rpcClient);
     this.evmbank = new EvmBankQueryClient(rpcClient);
+    this.perpspool = new PerpspoolQueryClient(rpcClient);
 
     this.auth = new AuthQueryClient(rpcClient);
     this.bank = new BankQueryClient(rpcClient);
@@ -162,6 +167,7 @@ class CarbonQueryClient {
     this.cosmosTm = new CosmosTmClient(rpcClient);
 
     this.alliance = new AllianceClient(rpcClient);
+    this.erc20 = new ERC20QueryClient(rpcClient)
 
     this.ibc = {
       controller: new IBCInterchainControlQueryClient(rpcClient),

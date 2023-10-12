@@ -22,6 +22,7 @@ import {
   BrokerModule,
   CDPModule,
   CoinModule,
+  ERC20Module,
   EvmMergeModule,
   EvmModule,
   FeeModule,
@@ -33,6 +34,7 @@ import {
   MarketModule,
   OracleModule,
   OrderModule,
+  PerpspoolModule,
   PositionModule,
   ProfileModule,
   SubAccountModule,
@@ -43,10 +45,11 @@ import { CosmosLedger, Keplr, KeplrAccount, LeapAccount, LeapExtended } from "./
 import { MetaMask } from "./provider/metamask/MetaMask";
 import { SWTHAddressOptions } from "./util/address";
 import { Blockchain } from "./util/blockchain";
-import { CarbonLedgerSigner, CarbonSigner, CarbonWallet, CarbonWalletGenericOpts, MetaMaskWalletOpts } from "./wallet";
-export { CarbonTx } from "@carbon-sdk/util";
+import { CarbonWallet, CarbonWalletGenericOpts, CarbonSigner, MetaMaskWalletOpts, CarbonLedgerSigner } from "./wallet";
 export { CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletGenericOpts, CarbonWalletInitOpts } from "@carbon-sdk/wallet";
+export { CarbonTx } from "@carbon-sdk/util";
 export { DenomPrefix } from "./constant";
+export * as Carbon from "./codec/carbon-models";
 
 export interface CarbonSDKOpts {
   network: Network;
@@ -105,6 +108,8 @@ class CarbonSDK {
   alliance: AllianceModule;
   order: OrderModule;
   lp: LiquidityPoolModule;
+  erc20: ERC20Module;
+  perpspool: PerpspoolModule;
   subaccount: SubAccountModule;
   profile: ProfileModule;
   cdp: CDPModule;
@@ -166,6 +171,8 @@ class CarbonSDK {
     this.alliance = new AllianceModule(this);
     this.order = new OrderModule(this);
     this.lp = new LiquidityPoolModule(this);
+    this.erc20 = new ERC20Module(this);
+    this.perpspool = new PerpspoolModule(this);
     this.subaccount = new SubAccountModule(this);
     this.profile = new ProfileModule(this);
     this.cdp = new CDPModule(this);
@@ -324,7 +331,6 @@ class CarbonSDK {
     return sdk.connectWithMetamask(metamask, walletOpts, metamaskWalletOpts);
   }
 
-
   public static async instanceViewOnly(
     bech32Address: string,
     sdkOpts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS,
@@ -379,7 +385,7 @@ class CarbonSDK {
 
   public disconnect(): CarbonSDK {
     if (this.wallet?.isLedgerSigner()) {
-      (this.wallet.signer as CarbonLedgerSigner).ledger.disconnect()
+      (this.wallet.signer as CarbonLedgerSigner).ledger.disconnect();
     }
     return new CarbonSDK({
       ...this,
@@ -459,12 +465,11 @@ class CarbonSDK {
     return this.connect(wallet);
   }
 
-
   public async connectWithMetamask(metamask: MetaMask, opts?: CarbonWalletGenericOpts, metamaskWalletOpts?: MetaMaskWalletOpts) {
     const evmChainId = this.evmChainId;
     const addressOptions: SWTHAddressOptions = {
       network: this.networkConfig.network,
-      bech32Prefix: this.networkConfig.Bech32Prefix
+      bech32Prefix: this.networkConfig.Bech32Prefix,
     };
     let publicKeyBase64: string
     const address = await metamask.defaultAccount()

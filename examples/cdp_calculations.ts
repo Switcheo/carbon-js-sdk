@@ -4,7 +4,6 @@ import * as BIP39 from "bip39";
 import { CarbonSDK } from "./_sdk";
 // @ts-ignore
 import "./_setup";
-import {QueryCdpPositionsRequest} from "../lib/codec";
 import Long from "long";
 
 (async () => {
@@ -28,10 +27,10 @@ import Long from "long";
   const accData = await sdk.cdp.getAccountData(address)
   console.log("\ngetAccountData", JSON.stringify(accData));
 
-  const accCollateral = await sdk.query.cdp.AccountCollateral({address: address, cdpDenom: cdpDenom});
+  const accCollateral = await sdk.query.cdp.AccountCollateral({ address: address, cdpDenom: cdpDenom });
   console.log("\nAccountCollateral", JSON.stringify(accCollateral));
 
-  const debt = await sdk.query.cdp.AccountDebt({ address: address, denom: denom})
+  const debt = await sdk.query.cdp.AccountDebt({ address: address, denom: denom })
   console.log("\nAccountDebt", JSON.stringify(debt))
 
   const assetParamsAll = await sdk.query.cdp.AssetAll({})
@@ -40,7 +39,7 @@ import Long from "long";
   const tokenDebts = await sdk.query.cdp.TokenDebtAll({})
   console.log("\nTokenDebtsAll", JSON.stringify(tokenDebts))
 
-  const tokenDebt = await sdk.query.cdp.TokenDebt({denom})
+  const tokenDebt = await sdk.query.cdp.TokenDebt({ denom })
   console.log("\nTokenDebt", JSON.stringify(tokenDebt))
 
   const accountTokenDebt = await sdk.cdp.getTotalAccountTokenDebt(address, denom)
@@ -55,15 +54,24 @@ import Long from "long";
   const stablecoinDebt = await sdk.query.cdp.StablecoinDebt({})
   console.log("\nStablecoinDebt", JSON.stringify(stablecoinDebt))
 
-  const accountStablecoin = await sdk.query.cdp.AccountStablecoin({address: address})
+  const accountStablecoin = await sdk.query.cdp.AccountStablecoin({ address: address })
   console.log("\nAccountStablecoin", JSON.stringify(accountStablecoin))
 
-  const ratio = await sdk.cdp.getCdpToActualRatio(cdpDenom)
+  const params = await sdk.query.cdp.Params({})
+  console.log(`\nParams ${JSON.stringify(params)}`)
+
+  const totalTokenDebt = await sdk.cdp.getTotalTokenDebt(denom)
+  console.log("\getTotalTokenDebt", JSON.stringify(totalTokenDebt))
+
+  const ratio = await sdk.cdp.getCdpToActualRatio(cdpDenom, totalTokenDebt)
   console.log("\ngetCdpToActualRatio", JSON.stringify(ratio))
 
   const amt = new BigNumber("1000000")
   const cdpTokenValue = await sdk.cdp.getCdpTokenUsdVal(cdpDenom, amt)
   console.log("\ngetCdpTokenUsdVal", cdpTokenValue?.toNumber())
+
+  const cdpTokenPrice = await sdk.cdp.getCdpTokenPrice(cdpDenom)
+  console.log("\ngetCdpTokenPrice", cdpTokenPrice?.toNumber())
 
   const totalCollateral = await sdk.cdp.getModuleTotalCollateralUsdVal()
   console.log("\ngetModuleTotalCollateralUsdVal", totalCollateral?.toNumber())
@@ -73,9 +81,6 @@ import Long from "long";
 
   const maxCollateralsForUnlock = await sdk.cdp.getMaxCollateralForUnlock(address, cdpDenom)
   console.log("\ngetMaxCollateralForUnlock", maxCollateralsForUnlock?.toNumber())
-
-  const cdpTokenPrice = await sdk.cdp.getCdpTokenPrice(cdpDenom)
-  console.log("\ngetCdpTokenPrice", cdpTokenPrice?.toNumber())
 
   const positionsAll = await sdk.query.cdp.PositionsAll({
     maxHealthFactor: "999999999999999999999",
@@ -90,10 +95,7 @@ import Long from "long";
   })
   console.log("\nPositionsAll", JSON.stringify(positionsAll))
 
-  const asset = await sdk.query.cdp.Asset({denom: denom})
+  const asset = await sdk.query.cdp.Asset({ denom: denom })
   console.log(`\nAsset ${JSON.stringify(asset)}`)
-
-  const params = await sdk.query.cdp.Params({})
-  console.log(`\nParams ${JSON.stringify(params)}`)
 
 })().catch(console.error).finally(() => process.exit(0));
