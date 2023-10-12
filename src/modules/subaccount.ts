@@ -9,6 +9,8 @@ export class SubAccountModule extends BaseModule {
     const value = MsgCreateSubAccount.fromPartial({
       creator: wallet.bech32Address,
       subAddress: params.subAddress,
+      mainAddress: wallet.bech32Address,
+      role: "trading-fee-delegate",
     });
 
     return await wallet.sendTx(
@@ -58,6 +60,8 @@ export class SubAccountModule extends BaseModule {
 export namespace SubAccountModule {
   export interface CreateSubAccountParams {
     subAddress: string;
+    mainAddress: string,
+    role: "trading-fee-delegate" | "oracle-delegate",
   }
 
   export interface ActivateSubAccountParams {
