@@ -335,15 +335,6 @@ export class ETHClient {
     );
     // logger("sendDeposit message", message)
 
-    // const signatureResult:
-    //   | {
-    //       owner: string;
-    //       r: string;
-    //       s: string;
-    //       v: string;
-    //     }
-    //   | undefined;
-
     const { address, signature } = await getSignatureCallback(message);
     const signatureBytes = ethers.utils.arrayify(appendHexPrefix(signature));
     const rsv = ethers.utils.splitSignature(signatureBytes);
