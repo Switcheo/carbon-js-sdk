@@ -27,7 +27,7 @@ const SWTH_COIN_TYPE = 118;
 export const stringOrBufferToBuffer = (
   stringOrBuffer?: string | Buffer,
   encoding: BufferEncoding = "hex",
-  force = false
+  force: boolean = false
 ): Buffer | null => {
   if (typeof stringOrBuffer === "string") {
     return Buffer.from(stringOrBuffer, encoding);
@@ -56,7 +56,7 @@ export class BIP44Path {
     public index: number = 0
   ) {}
 
-  static generateBIP44String(index = 0, change = 0, account = 0, coinType = 0, purpose = 0) {
+  static generateBIP44String(index: number = 0, change: number = 0, account: number = 0, coinType: number = 0, purpose: number = 0) {
     return `m/${purpose}'/${coinType}'/${account}'/${change}/${index}`;
   }
 
@@ -88,7 +88,7 @@ export class BIP44Path {
 export const randomMnemonic = () => {
   return BIP39.generateMnemonic();
 };
-export const wifEncodePrivateKey = (privateKey: string | Buffer, iter = 128) => {
+export const wifEncodePrivateKey = (privateKey: string | Buffer, iter: number = 128) => {
   const privateKeyBuf = stringOrBufferToBuffer(privateKey)!;
   return wif.encode(iter, privateKeyBuf, true);
 };
@@ -149,7 +149,7 @@ export const SWTHAddress: SWTHAddressType = {
     return SWTH_COIN_TYPE;
   },
 
-  keyDerivationPath: (index = 0, change = 0, account = 0): number[] => {
+  keyDerivationPath: (index: number = 0, change: number = 0, account: number = 0): number[] => {
     const coinType = SWTHAddress.coinType();
     return new BIP44Path(BIP44_PURPOSE, coinType).update(index, change, account).toArray();
   },
@@ -172,7 +172,7 @@ export const SWTHAddress: SWTHAddressType = {
     throw new Error("SWTH public keys do not compress");
   },
 
-  mnemonicToPrivateKey: (mnemonic: string, account = 0): Buffer => {
+  mnemonicToPrivateKey: (mnemonic: string, account: number = 0): Buffer => {
     const coinType = SWTHAddress.coinType();
     const path = new BIP44Path(BIP44_PURPOSE, coinType).update(account).generate();
     const seed = BIP39.mnemonicToSeedSync(mnemonic);
@@ -300,7 +300,7 @@ export const NEOAddress: NEOAddressType = {
     return Base58Check.encode(addressScript, version);
   },
 
-  mnemonicToPrivateKey: (mnemonic: string, account = 0): Buffer => {
+  mnemonicToPrivateKey: (mnemonic: string, account: number = 0): Buffer => {
     const coinType = NEOAddress.coinType();
     const path = new BIP44Path(BIP44_PURPOSE, coinType).update(account).generate();
     const seed = BIP39.mnemonicToSeedSync(mnemonic);
@@ -326,7 +326,7 @@ export const NEOAddress: NEOAddressType = {
     return address;
   },
 
-  generateAddress: (mnemonic: string, account = 0) => {
+  generateAddress: (mnemonic: string, account: number = 0) => {
     const privateKey = NEOAddress.mnemonicToPrivateKey(mnemonic, account);
     return NEOAddress.privateKeyToAddress(privateKey);
   },
@@ -358,7 +358,7 @@ export const N3Address: N3AddressType = {
     return address;
   },
 
-  generateAddress: (mnemonic: string, account = 0) => {
+  generateAddress: (mnemonic: string, account: number = 0) => {
     const privateKey = N3Address.mnemonicToPrivateKey(mnemonic, account);
     return N3Address.privateKeyToAddress(privateKey);
   },
@@ -403,7 +403,7 @@ export const ETHAddress: ETHAddressType = {
     return Buffer.from(publicKey, "hex");
   },
 
-  mnemonicToPrivateKey: (mnemonic: string, account = 0): Buffer => {
+  mnemonicToPrivateKey: (mnemonic: string, account: number = 0): Buffer => {
     const coinType = ETHAddress.coinType();
     const path = new BIP44Path(BIP44_PURPOSE, coinType).update(account).generate();
     const wallet = ethers.Wallet.fromMnemonic(mnemonic, path);
@@ -421,7 +421,7 @@ export const ETHAddress: ETHAddressType = {
     return address;
   },
 
-  generateAddress: (mnemonic: string, account = 0) => {
+  generateAddress: (mnemonic: string, account: number = 0) => {
     const privateKey = ETHAddress.mnemonicToPrivateKey(mnemonic, account);
     return ETHAddress.privateKeyToAddress(privateKey);
   },

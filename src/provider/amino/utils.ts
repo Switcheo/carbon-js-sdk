@@ -56,7 +56,7 @@ const typeCheck = (value: any): boolean => {
 export const mapEachIndiv = (
   mapItem: TypeUtils.SimpleMap<any> | null | undefined,
   valueKey: AminoValueMap,
-  toAmino = false
+  toAmino: boolean = false
 ): TypeUtils.SimpleMap<any> | null | undefined => {
   if (!mapItem) {
     return mapItem;
@@ -98,7 +98,7 @@ export const mapEachIndiv = (
  * @param type param type (check ConvertEncType for list of types)
  * @param toAmino indicates whether to convert to amino or direct
  */
-export const paramConverter = (value: any, type?: ConvertEncType, toAmino = false): unknown => {
+export const paramConverter = (value: any, type?: ConvertEncType, toAmino: boolean = false): unknown => {
   if (!value) {
     return value;
   }

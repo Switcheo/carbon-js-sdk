@@ -175,7 +175,7 @@ function getGjsonPrimitiveType(value: any) {
     return 'string'
 }
 
-function getTypeName(name: string, index: number, objectName?: string, nestedType = false, isArray = false) {
+function getTypeName(name: string, index: number, objectName?: string, nestedType: boolean = false, isArray: boolean = false) {
     if (nestedType) {
         return `Type${objectName ? objectName : ''}${name.split('_').map(subName => capitalize(subName)).join('')}${index}${isArray ? '[]' : ''}`
     }

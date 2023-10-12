@@ -22,10 +22,10 @@ export const IBCAddress = {
 
   defaultBech32Config(
     mainPrefix: string,
-    validatorPrefix = "val",
-    consensusPrefix = "cons",
-    publicPrefix = "pub",
-    operatorPrefix = "oper"
+    validatorPrefix: string = "val",
+    consensusPrefix: string = "cons",
+    publicPrefix: string = "pub",
+    operatorPrefix: string = "oper"
   ): Bech32Config {
     return {
       bech32PrefixAccAddr: mainPrefix,
@@ -2146,7 +2146,7 @@ export const ibcNetworkRegex = /^([a-z\d_-]+)-([\d]+)$/i;
 
 export const ibcTransferChannelRegex = /^transfer\/channel-(\d+)/i;
 
-export const ibcDefaultGas = 300000;
+export const ibcDefaultGas: number = 300000;
 
 export const DefaultGasPriceStep: GasPriceStep = {
   low: 0.01,

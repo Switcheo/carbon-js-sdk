@@ -95,10 +95,10 @@ export class QueueManager<T = void, V = void> {
   triggerDelay: number;
   maxDelayThreshold: number;
 
-  currTriggerThreshold = 0;
+  currTriggerThreshold: number = 0;
   currQueueTrigger: NodeJS.Timeout | null = null;
 
-  isProcessingQueue = false;
+  isProcessingQueue: boolean = false;
 
   private queue: T[] = [];
 

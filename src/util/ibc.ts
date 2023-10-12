@@ -164,11 +164,11 @@ export const parseChainId = (chainId: string): ChainIdOutput => {
   };
 };
 
-export const calculateMaxFee = (gasStep: GasPriceStep = DefaultGasPriceStep, gas = 0): number => {
+export const calculateMaxFee = (gasStep: GasPriceStep = DefaultGasPriceStep, gas: number = 0): number => {
   return gasStep.high * gas;
 };
 
-export const estimateFeeStep = (gasStep: GasPriceStep = DefaultGasPriceStep, gas = 0, stepId: keyof GasPriceStep = 'average') => {
+export const estimateFeeStep = (gasStep: GasPriceStep = DefaultGasPriceStep, gas: number = 0, stepId: keyof GasPriceStep = 'average') => {
   const currentGasStep = gasStep[stepId] ?? 0;
   return currentGasStep * gas;
 }

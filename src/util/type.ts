@@ -39,7 +39,7 @@ export const camelToSnake = (camelStr: string): string => {
   if (camelStr.length <= 1) {
     return camelStr;
   }
-  let newSnake = "";
+  let newSnake: string = "";
   for (const letter of camelStr) {
     const newLetter = letter !== letter.toLowerCase() ? `_${letter.toLowerCase()}` : letter;
     newSnake = `${newSnake}${newLetter}`;

@@ -159,7 +159,7 @@ export class CarbonWallet {
 
   defaultFeeDenom: string = DEFAULT_FEE_DENOM;
 
-  initialized = false;
+  initialized: boolean = false;
 
   accountInfo?: AccountInfo;
 
@@ -173,7 +173,7 @@ export class CarbonWallet {
   private chainId?: string;
   private evmChainId?: string;
 
-  private sequenceInvalidated = false;
+  private sequenceInvalidated: boolean = false;
   private txSignManager: QueueManager<SignTxRequest>;
   private txDispatchManager: QueueManager<BroadcastTxRequest>;
 

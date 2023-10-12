@@ -29,7 +29,7 @@ function getTypes(msgTypeUrl: string, aminoMsgValue: any): TypeUtils.SimpleMap<T
     }
 }
 
-function getMsgValueType(msgTypeUrl: string, msgValue: any, msgTypeName: string, objectName?: string, nestedType = false, msgTypeDefinitions: TypeUtils.SimpleMap<TypedDataField[]> = {}): TypeUtils.SimpleMap<TypedDataField[]> {
+function getMsgValueType(msgTypeUrl: string, msgValue: any, msgTypeName: string, objectName?: string, nestedType: boolean = false, msgTypeDefinitions: TypeUtils.SimpleMap<TypedDataField[]> = {}): TypeUtils.SimpleMap<TypedDataField[]> {
     const packageName = msgTypeUrl.split(".").slice(0, -1).join(".")
     const msgFieldType = msgTypeUrl.split(".").pop()!
     const typeName = getTypeName(msgTypeName, objectName, nestedType, false)
@@ -79,7 +79,7 @@ function getMsgValueType(msgTypeUrl: string, msgValue: any, msgTypeName: string,
     return msgTypeDefinitions
 }
 
-function getTypeName(name: string, objectName?: string, nestedType = false, isArray = false) {
+function getTypeName(name: string, objectName?: string, nestedType: boolean = false, isArray: boolean = false) {
     if (nestedType) {
         return `Type${objectName === 'MsgValue' ? '' : objectName}${name.split('_').map(subName => capitalize(subName)).join('')}${isArray ? '[]' : ''}`
     }

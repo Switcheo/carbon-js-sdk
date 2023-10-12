@@ -17,8 +17,8 @@ export class O3Wallet {
   public neoNetwork: O3Types.AcceptedNets | undefined;
 
   public networkConfig: NetworkConfig;
-  public address = "";
-  private publicKey = "";
+  public address:string = "";
+  private publicKey:string = "";
 
   private constructor(public readonly network: CarbonSDK.Network) {
     const networkConfig = NetworkConfigs[network];
@@ -128,7 +128,7 @@ export class O3Wallet {
     operation: string,
     scriptHash: string,
     args: O3Types.Argument[],
-    broadcastOverride = false,
+    broadcastOverride: boolean = false,
     signers: O3Types.Signers[]
   ) {
     try {
