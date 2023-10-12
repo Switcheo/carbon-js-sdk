@@ -207,7 +207,7 @@ export const SWTHAddress: SWTHAddressType = {
     return address;
   },
 
-  generateAddress: (mnemonic: string, account = 0, opts?: SWTHAddressOptions) => {
+  generateAddress: (mnemonic: string, account: number = 0, opts?: SWTHAddressOptions) => {
     const privateKey = SWTHAddress.mnemonicToPrivateKey(mnemonic, account);
     const address = SWTHAddress.privateKeyToAddress(privateKey, opts);
     return address;

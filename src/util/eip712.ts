@@ -113,8 +113,7 @@ function compareValues(msg: any, key: string, eipTypes: TypeUtils.SimpleMap<Type
     return match
 }
 
-function getMsgValueType(msgTypeUrl: string, msgValue: any, msgTypeName: string, msgTypeIndex: number, types: TypeUtils.SimpleMap<TypedDataField[]>, objectName?: string, nestedType = false, msgTypeDefinitions: TypeUtils.SimpleMap<TypedDataField[]> = {}): TypeUtils.SimpleMap<TypedDataField[]> {
-    const packageName = msgTypeUrl.split(".").slice(0, -1).join(".")
+function getMsgValueType(msgTypeUrl: string, msgValue: any, msgTypeName: string, msgTypeIndex: number, types: TypeUtils.SimpleMap<TypedDataField[]>, objectName?: string, nestedType: boolean = false, msgTypeDefinitions: TypeUtils.SimpleMap<TypedDataField[]> = {}): TypeUtils.SimpleMap<TypedDataField[]> {    const packageName = msgTypeUrl.split(".").slice(0, -1).join(".")
     const msgFieldType = msgTypeUrl.split(".").pop()!
     const typeName = getTypeName(msgTypeName, msgTypeIndex, objectName, nestedType, false)
     const fieldsDefinition = EIP712Types[packageName][msgFieldType]

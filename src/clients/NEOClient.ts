@@ -58,7 +58,7 @@ export class NEOClient {
     return new NEOClient(configProvider, blockchain);
   }
 
-  public static parseHexNum(hex: string, exp = 0): string {
+  public static parseHexNum(hex: string, exp: number = 0): string {
     if (!hex || typeof hex !== "string") return "0";
     const res: string = hex.length % 2 !== 0 ? `0${hex}` : hex;
     return new BigNumber(res ? Neon.u.reverseHex(res) : "00", 16).shiftedBy(-exp).toString();

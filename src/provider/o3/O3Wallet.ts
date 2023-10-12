@@ -17,8 +17,8 @@ export class O3Wallet {
   public neoNetwork: O3Types.AcceptedNets | undefined;
 
   public networkConfig: NetworkConfig;
-  public address:string = "";
-  private publicKey:string = "";
+  public address: string = "";
+  private publicKey: string = "";
 
   private constructor(public readonly network: CarbonSDK.Network) {
     const networkConfig = NetworkConfigs[network];
