@@ -2,7 +2,6 @@ import { Carbon } from "@carbon-sdk/CarbonSDK";
 import { Coin } from "@carbon-sdk/codec/cosmos/base/v1beta1/coin";
 import { Description } from "@carbon-sdk/codec/cosmos/staking/v1beta1/staking";
 import { MsgCreateValidator, MsgEditValidator } from "@carbon-sdk/codec/cosmos/staking/v1beta1/tx";
-import { CarbonWallet } from "@carbon-sdk/wallet";
 import { CarbonTx } from "@carbon-sdk/util";
 import BigNumber from "bignumber.js";
 import Long from "long";

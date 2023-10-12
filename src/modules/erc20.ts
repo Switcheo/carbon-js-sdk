@@ -1,5 +1,5 @@
 import { Coin } from "@cosmjs/stargate";
-import { CarbonTx, Models } from "..";
+import { CarbonTx } from "..";
 import BaseModule from "./base";
 import { Carbon } from "@carbon-sdk/CarbonSDK";
 

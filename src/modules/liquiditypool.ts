@@ -1,4 +1,3 @@
-import { Models } from "@carbon-sdk/index";
 import { CarbonTx, NumberUtils } from "@carbon-sdk/util";
 import { Carbon } from "@carbon-sdk/CarbonSDK";
 import { BigNumber } from "bignumber.js";

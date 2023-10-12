@@ -1,5 +1,5 @@
 import { NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
-import { AminoCarbonSigner, CarbonSDK, Models } from "@carbon-sdk/index";
+import { AminoCarbonSigner, CarbonSDK } from "@carbon-sdk/index";
 import { AddressUtils, ExternalUtils, TypeUtils } from "@carbon-sdk/util";
 import { sortObject } from "@carbon-sdk/util/generic";
 import { Carbon } from "@carbon-sdk/CarbonSDK";
