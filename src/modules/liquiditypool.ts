@@ -1,16 +1,19 @@
 import { CarbonSDK, Models } from "@carbon-sdk/index";
 import { CarbonTx, NumberUtils } from "@carbon-sdk/util";
+import { Carbon } from "@carbon-sdk/CarbonSDK";
 import { BigNumber } from "bignumber.js";
 import dayjs from "dayjs";
 import Long from "long";
 import BaseModule from "./base";
 import { InsightsQueryResponse, QueryGetInflation } from "@carbon-sdk/insights";
+import { BN_ZERO } from "@carbon-sdk/util/number";
+import { QueryMintDataResponse } from "@carbon-sdk/codec/inflation/query";
 
 export class LiquidityPoolModule extends BaseModule {
   public async create(params: LiquidityPoolModule.CreatePoolParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Models.MsgCreatePool.fromPartial({
+    const value = Carbon.Liquiditypool.MsgCreatePool.fromPartial({
       creator: wallet.bech32Address,
       tokenADenom: params.tokenADenom,
       tokenBDenom: params.tokenBDenom,
@@ -32,7 +35,7 @@ export class LiquidityPoolModule extends BaseModule {
   public async createWithLiquidity(params: LiquidityPoolModule.CreatePoolWithLiquidityParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Models.MsgCreatePoolWithLiquidity.fromPartial({
+    const value = Carbon.Liquiditypool.MsgCreatePoolWithLiquidity.fromPartial({
       creator: wallet.bech32Address,
       tokenADenom: params.tokenADenom,
       tokenBDenom: params.tokenBDenom,
@@ -56,7 +59,7 @@ export class LiquidityPoolModule extends BaseModule {
   public async addLiquidity(params: LiquidityPoolModule.AddLiquidityParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Models.MsgAddLiquidity.fromPartial({
+    const value = Carbon.Liquiditypool.MsgAddLiquidity.fromPartial({
       creator: wallet.bech32Address,
       poolId: new Long(params.poolId),
       amountA: params.amountA.toString(10),
@@ -76,7 +79,7 @@ export class LiquidityPoolModule extends BaseModule {
   public async removeLiquidity(params: LiquidityPoolModule.RemoveLiquidityParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Models.MsgRemoveLiquidity.fromPartial({
+    const value = Carbon.Liquiditypool.MsgRemoveLiquidity.fromPartial({
       creator: wallet.bech32Address,
       poolId: new Long(params.poolId),
       shares: params.shares.toString(10),
@@ -94,7 +97,7 @@ export class LiquidityPoolModule extends BaseModule {
   public async stakePoolToken(params: LiquidityPoolModule.StakePoolTokenParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Models.MsgStakePoolToken.fromPartial({
+    const value = Carbon.Liquiditypool.MsgStakePoolToken.fromPartial({
       creator: wallet.bech32Address,
       denom: params.denom,
       amount: params.amount.toString(10),
@@ -113,7 +116,7 @@ export class LiquidityPoolModule extends BaseModule {
   public async unstakePoolToken(params: LiquidityPoolModule.UnstakePoolTokenParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Models.MsgUnstakePoolToken.fromPartial({
+    const value = Carbon.Liquiditypool.MsgUnstakePoolToken.fromPartial({
       creator: wallet.bech32Address,
       denom: params.denom,
       amount: params.amount.toString(10),
@@ -131,7 +134,7 @@ export class LiquidityPoolModule extends BaseModule {
   public async claimPoolRewards(params: LiquidityPoolModule.ClaimPoolRewardsParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const value = Models.MsgClaimPoolRewards.fromPartial({
+    const value = Carbon.Liquiditypool.MsgClaimPoolRewards.fromPartial({
       creator: wallet.bech32Address,
       poolId: new Long(params.poolId),
     });
@@ -156,7 +159,7 @@ export class LiquidityPoolModule extends BaseModule {
     const MIN_RATE = new BigNumber(0.0003);
     const INITIAL_SUPPLY = new BigNumber(1000000000);
     const SECONDS_IN_A_WEEK = new BigNumber(604800);
-    const mintDataResponse: Models.QueryMintDataResponse = await this.sdkProvider.query.inflation.MintData({});
+    const mintDataResponse: Carbon.Inflation.QueryMintDataResponse = await this.sdkProvider.query.inflation.MintData({});
     const mintData = mintDataResponse.mintData;
 
     const nowTime = new BigNumber(dayjs().unix());
@@ -178,15 +181,14 @@ export class LiquidityPoolModule extends BaseModule {
   }
 
   public async getWeeklyRewardsRealInflation(): Promise<BigNumber> {
-    const { result }: InsightsQueryResponse<QueryGetInflation> = await this.sdkProvider.insights.Inflation()
-    const MIN_RATE = new BigNumber(0.0003);
-    const INITIAL_SUPPLY = new BigNumber(1000000000);
-    let inflationRate = new BigNumber(result.inflationRate);
-
-    if (inflationRate.lt(MIN_RATE)) {
-      inflationRate = MIN_RATE;
+    const mintDataResponse: QueryMintDataResponse = await this.sdkProvider.query.inflation.MintData({})
+    let weeklyRewards = BN_ZERO
+    if (mintDataResponse.mintData) {
+      const mintData = mintDataResponse.mintData
+      const currentSupply = new BigNumber(mintData.currentSupply)
+      const swthInflationRate = new BigNumber(mintData.inflationRate).shiftedBy(-18)
+      weeklyRewards = currentSupply.times(swthInflationRate).div(52)
     }
-    const weeklyRewards = INITIAL_SUPPLY.div(52).times(inflationRate);
 
     // Calculate weekly rewards earned by liquidity providers
     // Weekly LP Rewards = liquidityRewardRatio * weeklyRewards

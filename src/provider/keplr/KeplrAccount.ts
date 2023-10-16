@@ -1,4 +1,4 @@
-import { MinGasPrice } from "@carbon-sdk/codec";
+import { Carbon } from "@carbon-sdk/CarbonSDK";
 import { CARBON_GAS_PRICE, Network, NetworkConfigs, decTypeDecimals } from "@carbon-sdk/constant";
 import { CarbonSDK, Models } from "@carbon-sdk/index";
 import { AddressUtils, CarbonTx, FetchUtils, NumberUtils } from "@carbon-sdk/util";
@@ -9,6 +9,7 @@ import SDKProvider from "../sdk";
 import { ethers } from "ethers";
 import { PUBLIC_KEY_SIGNING_TEXT, populateEvmTransactionDetails } from "@carbon-sdk/util/ethermint";
 import { signTransactionWrapper } from "@carbon-sdk/util/provider";
+import { parseEvmError } from "../metamask/error";
 
 const SWTH: FeeCurrency = {
   coinDenom: "SWTH",
@@ -51,18 +52,24 @@ class KeplrAccount {
     ];
 
     const sendEvmTransaction = async (api: CarbonSDK, req: ethers.providers.TransactionRequest): Promise<string> => {
-      const request = await populateEvmTransactionDetails(api, req)
-      const signedTx = await keplr!.signEthereum(
-        // carbon chain id
-        api.wallet?.getChainId()!,
-        // cosmos address
-        api.wallet?.bech32Address!,
-        JSON.stringify(request),
-        EthSignType.TRANSACTION,
-      )
-      const rlpEncodedHex = `0x${Buffer.from(signedTx).toString('hex')}`;
-      const provider = new ethers.providers.JsonRpcProvider(NetworkConfigs[api.network].evmJsonRpcUrl)
-      return (await provider.sendTransaction(rlpEncodedHex)).hash
+      try {
+        const request = await populateEvmTransactionDetails(api, req)
+        const signedTx = await keplr!.signEthereum(
+          // carbon chain id
+          api.wallet?.getChainId()!,
+          // cosmos address
+          api.wallet?.bech32Address!,
+          JSON.stringify(request),
+          EthSignType.TRANSACTION,
+        )
+        const rlpEncodedHex = `0x${Buffer.from(signedTx).toString('hex')}`;
+        const provider = new ethers.providers.JsonRpcProvider(NetworkConfigs[api.network].evmJsonRpcUrl)
+        return (await provider.sendTransaction(rlpEncodedHex)).hash
+      }
+      catch (error) {
+        console.error(error)
+        throw (parseEvmError(error as Error))
+      }
     }
 
     return {
@@ -89,18 +96,24 @@ class KeplrAccount {
     ];
 
     const sendEvmTransaction = async (api: CarbonSDK, req: ethers.providers.TransactionRequest): Promise<string> => {
-      const request = await populateEvmTransactionDetails(api, req)
-      const signedTx = await keplr!.signEthereum(
-        // carbon chain id
-        api.wallet?.getChainId()!,
-        // cosmos address
-        api.wallet?.bech32Address!,
-        JSON.stringify(request),
-        EthSignType.TRANSACTION,
-      )
-      const rlpEncodedHex = `0x${Buffer.from(signedTx).toString('hex')}`;
-      const provider = new ethers.providers.JsonRpcProvider(NetworkConfigs[api.network].evmJsonRpcUrl)
-      return (await provider.sendTransaction(rlpEncodedHex)).hash
+      try {
+        const request = await populateEvmTransactionDetails(api, req)
+        const signedTx = await keplr!.signEthereum(
+          // carbon chain id
+          api.wallet?.getChainId()!,
+          // cosmos address
+          api.wallet?.bech32Address!,
+          JSON.stringify(request),
+          EthSignType.TRANSACTION,
+        )
+        const rlpEncodedHex = `0x${Buffer.from(signedTx).toString('hex')}`;
+        const provider = new ethers.providers.JsonRpcProvider(NetworkConfigs[api.network].evmJsonRpcUrl)
+        return (await provider.sendTransaction(rlpEncodedHex)).hash
+      }
+      catch (error) {
+        console.error(error)
+        throw (parseEvmError(error as Error))
+      }
     }
 
     return {
@@ -117,7 +130,7 @@ class KeplrAccount {
 
     // Query minGasPrices from on-chain (for testnet/devnet/localhost)
     const gasPricesResult = await configProvider.query.fee.MinGasPriceAll({});
-    const feeCurrencies: FeeCurrency[] = gasPricesResult.minGasPrices.reduce((result: FeeCurrency[], price: MinGasPrice) => {
+    const feeCurrencies: FeeCurrency[] = gasPricesResult.minGasPrices.reduce((result: FeeCurrency[], price: Carbon.Fee.MinGasPrice) => {
       const token = tokenClient.tokenForDenom(price.denom);
       if (!token || token.denom === "swth") return result;
       // Check if gas price is valid, else add default
@@ -161,10 +174,15 @@ class KeplrAccount {
     const bech32Prefix = config.Bech32Prefix;
 
     const chainId = await configProvider.query.chain.getChainId();
+    const url = "https://raw.githubusercontent.com/chainapsis/keplr-chain-registry/master/cosmos/carbon.json"
+    let keplrChainInfo
+    try {
+      keplrChainInfo = await (await FetchUtils.fetch(url)).json();
+    } catch (error) {
+      console.warn(error)
+    }
 
-    // Query fee currencies from keplr-chain-registry
-    const keplrChainInfo = await (await FetchUtils.fetch("https://raw.githubusercontent.com/chainapsis/keplr-chain-registry/master/cosmos/carbon.json")).json();
-    if (config.network === Network.MainNet) {
+    if (config.network === Network.MainNet && keplrChainInfo) {
       if (keplrChainInfo.nodeProvider) {
         delete keplrChainInfo.nodeProvider;
       }
@@ -212,6 +230,6 @@ class KeplrAccount {
   }
 }
 
-namespace KeplrAccount {}
+namespace KeplrAccount { }
 
 export default KeplrAccount;

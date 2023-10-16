@@ -1,20 +1,4 @@
-import {
-  CreateOracleProposal,
-  CreateTokenProposal,
-  SetCommitmentCurveProposal,
-  SetMsgGasCostProposal,
-  SetMinGasPriceProposal,
-  RemoveMsgGasCostProposal,
-  RemoveMinGasPriceProposal,
-  SetRewardCurveProposal,
-  SetRewardsWeightsProposal,
-  SettlementPriceProposal,
-  UpdateMarketProposal,
-  UpdatePoolProposal,
-  MsgCreateAllianceProposal,
-  MsgUpdateAllianceProposal,
-  MsgDeleteAllianceProposal,
-} from "@carbon-sdk/codec";
+import { Carbon } from "@carbon-sdk/CarbonSDK";
 import { CommunityPoolSpendProposal } from "@carbon-sdk/codec/cosmos/distribution/v1beta1/distribution";
 import { TextProposal } from "@carbon-sdk/codec/cosmos/gov/v1beta1/gov";
 import { ParameterChangeProposal } from "@carbon-sdk/codec/cosmos/params/v1beta1/params";
@@ -98,62 +82,62 @@ export const decodeContent = (content?: Any): PropDecoded => {
     case ProposalTypes.UpdatePool:
       return {
         ...content,
-        value: UpdatePoolProposal.decode(content.value),
+        value: Carbon.Liquiditypool.UpdatePoolProposal.decode(content.value),
       };
     case ProposalTypes.CreateOracle:
       return {
         ...content,
-        value: CreateOracleProposal.decode(content.value),
+        value: Carbon.Oracle.CreateOracleProposal.decode(content.value),
       };
     case ProposalTypes.CreateToken:
       return {
         ...content,
-        value: CreateTokenProposal.decode(content.value),
+        value: Carbon.Coin.CreateTokenProposal.decode(content.value),
       };
     case ProposalTypes.SetCommitmentCurve:
       return {
         ...content,
-        value: SetCommitmentCurveProposal.decode(content.value),
+        value: Carbon.Liquiditypool.SetCommitmentCurveProposal.decode(content.value),
       };
     case ProposalTypes.SetMsgGasCost:
       return {
         ...content,
-        value: SetMsgGasCostProposal.decode(content.value),
+        value: Carbon.Fee.SetMsgGasCostProposal.decode(content.value),
       };
     case ProposalTypes.SetMinGasPrice:
       return {
         ...content,
-        value: SetMinGasPriceProposal.decode(content.value),
+        value: Carbon.Fee.SetMinGasPriceProposal.decode(content.value),
       };
     case ProposalTypes.RemoveMsgGasCost:
       return {
         ...content,
-        value: RemoveMsgGasCostProposal.decode(content.value),
+        value: Carbon.Fee.RemoveMsgGasCostProposal.decode(content.value),
       };
     case ProposalTypes.RemoveMinGasPrice:
       return {
         ...content,
-        value: RemoveMinGasPriceProposal.decode(content.value),
+        value: Carbon.Fee.RemoveMinGasPriceProposal.decode(content.value),
       };
     case ProposalTypes.SetRewardCurve:
       return {
         ...content,
-        value: SetRewardCurveProposal.decode(content.value),
+        value: Carbon.Liquiditypool.SetRewardCurveProposal.decode(content.value),
       };
     case ProposalTypes.SetRewardsWeights:
       return {
         ...content,
-        value: SetRewardsWeightsProposal.decode(content.value),
+        value: Carbon.Liquiditypool.SetRewardsWeightsProposal.decode(content.value),
       };
     case ProposalTypes.SettlementPrice:
       return {
         ...content,
-        value: SettlementPriceProposal.decode(content.value),
+        value: Carbon.Pricing.SettlementPriceProposal.decode(content.value),
       };
     case ProposalTypes.UpdateMarket:
       return {
         ...content,
-        value: UpdateMarketProposal.decode(content.value),
+        value: Carbon.Market.UpdateMarketProposal.decode(content.value),
       };
     case ProposalTypes.ClientUpdateProposal:
       return {
@@ -163,17 +147,17 @@ export const decodeContent = (content?: Any): PropDecoded => {
     case ProposalTypes.CreateAlliance:
       return {
         ...content,
-        value: MsgCreateAllianceProposal.decode(content.value)
+        value: Carbon.Alliance.MsgCreateAllianceProposal.decode(content.value)
       };
     case ProposalTypes.UpdateAlliance:
       return {
         ...content,
-        value: MsgUpdateAllianceProposal.decode(content.value)
+        value: Carbon.Alliance.MsgUpdateAllianceProposal.decode(content.value)
       }
     case ProposalTypes.DeleteAlliance:
       return {
         ...content,
-        value: MsgDeleteAllianceProposal.decode(content.value)
+        value: Carbon.Alliance.MsgDeleteAllianceProposal.decode(content.value)
       }
     default:
       return emptyProposal;

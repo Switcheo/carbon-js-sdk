@@ -1,7 +1,7 @@
-import { TokenBalance } from "@carbon-sdk/codec";
 import { Coin } from "@carbon-sdk/codec/cosmos/base/v1beta1/coin";
 import { SimpleMap } from "@carbon-sdk/util/type";
 import { Interval, PageMeta, QueryByPageRequest, QueryByTimeRequest, TimeMeta } from "./common";
+import { Carbon } from "@carbon-sdk/CarbonSDK"
 
 export interface Balance {
   denom: string;
@@ -69,7 +69,7 @@ export interface QueryGetBalanceHistoryResponse {
 }
 
 export interface QueryGetBalanceSupplyResponse {
-  entries: TokenBalance[];
+  entries: Carbon.Coin.TokenBalance[];
 }
 
 export interface QueryGetBalanceDistributionRequest extends QueryByTimeRequest {}

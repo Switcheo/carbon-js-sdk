@@ -40,7 +40,7 @@ export async function populateEvmTransactionDetails(api: CarbonSDK, req: ethers.
         from: req.from ?? api.wallet?.evmHexAddress,
         nonce: req.nonce ?? (await provider.getTransactionCount(evmHexAddress)),
         data: req.data,
-        value: `0x${Number(req.value).toString(16)}`,
+        value: req.value ? `0x${Number(req.value).toString(16)}` : undefined,
         chainId: req.chainId ?? Number(parseChainId(await api.wallet?.getEvmChainId()!)),
         // type = 0, 1 or 2 where 0 = legacyTx, 1 = AccessListTx, 2 = DynamicTx. Defaults to DynamicTx 
         type: req.type ?? 2,
