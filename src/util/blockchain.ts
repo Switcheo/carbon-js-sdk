@@ -1,5 +1,5 @@
 import { TokenClient } from '@carbon-sdk/clients'
-import { Bridge } from '@carbon-sdk/codec'
+import { Coin } from '@carbon-sdk/codec/carbon-models'
 import { CarbonEvmChainIDs, Network } from "@carbon-sdk/constant/network"
 import { SimpleMap } from "./type"
 import { parseChainId } from './ethermint'
@@ -58,11 +58,11 @@ export const BRIDGE_IDS = {
   ibc: 2,
 }
 
-export interface PolyNetworkBridge extends Bridge {
+export interface PolyNetworkBridge extends Coin.Bridge {
   isEvmChain: boolean;
 }
 
-export interface IbcBridge extends Bridge {
+export interface IbcBridge extends Coin.Bridge {
   chain_id_name: string;
   channels: {
     src_channel: string;
@@ -71,7 +71,7 @@ export interface IbcBridge extends Bridge {
   }
 }
 
-export function isIbcBridge(object: Bridge): object is IbcBridge {
+export function isIbcBridge(object: Coin.Bridge): object is IbcBridge {
   return Object.prototype.hasOwnProperty.call(object, "chain_id_name")
 }
 

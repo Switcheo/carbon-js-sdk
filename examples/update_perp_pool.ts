@@ -16,7 +16,7 @@ import "./_setup";
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
 
-  const result = await connectedSDK.plp.updatePerpetualsPool({
+  const result = await connectedSDK.p.updatePerpetualsPool({
       name: 'USD Perp Pool 3',
       poolId: new Long(3),
       depositDenom: 'cgusd',

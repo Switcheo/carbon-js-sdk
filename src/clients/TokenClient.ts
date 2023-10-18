@@ -1,4 +1,4 @@
-import { Bridge, QueryTokenPriceAllResponse, Token, TokenPrice } from "@carbon-sdk/codec";
+import { Carbon } from "@carbon-sdk/CarbonSDK";
 import { PageRequest } from '@carbon-sdk/codec/cosmos/base/query/v1beta1/pagination';
 import { QueryChannelsResponse } from "@carbon-sdk/codec/ibc/core/channel/v1/query";
 import { QueryClientStatesResponse } from "@carbon-sdk/codec/ibc/core/client/v1/query";
@@ -39,10 +39,10 @@ const regexLPDenom = RegExp(`^${DenomPrefix.LPToken}/(\\d+)$`, "i");
 
 class TokenClient {
   public static Blacklist = TokenBlacklist;
-  public readonly tokens: TypeUtils.SimpleMap<Token> = {};
+  public readonly tokens: TypeUtils.SimpleMap<Carbon.Coin.Token> = {};
   public readonly wrapperMap: TypeUtils.SimpleMap<string> = {};
-  public readonly poolTokens: TypeUtils.SimpleMap<Token> = {};
-  public readonly cdpTokens: TypeUtils.SimpleMap<Token> = {};
+  public readonly poolTokens: TypeUtils.SimpleMap<Carbon.Coin.Token> = {};
+  public readonly cdpTokens: TypeUtils.SimpleMap<Carbon.Coin.Token> = {};
   public readonly bridges: BridgeMap = { polynetwork: [], ibc: [] };
   public readonly symbols: TypeUtils.SimpleMap<string> = {};
   public readonly usdValues: TypeUtils.SimpleMap<BigNumber> = {};
@@ -148,7 +148,7 @@ class TokenClient {
     return NumberUtils.toUnitless(humanAmt, decimals) ?? BN_ZERO;
   }
 
-  public tokenForId(id: string): Token | undefined {
+  public tokenForId(id: string): Carbon.Coin.Token | undefined {
     let tokensList = Object.values(this.tokens);
     if (TokenClient.isPoolToken(id)) {
       tokensList = Object.values(this.poolTokens);
@@ -158,7 +158,7 @@ class TokenClient {
     return tokensList.find((token) => token.id === id);
   }
 
-  public tokenForDenom(denom: string): Token | undefined {
+  public tokenForDenom(denom: string): Carbon.Coin.Token | undefined {
     return this.poolTokens[denom] ?? this.cdpTokens[denom] ?? this.tokens[denom];
   }
 
@@ -272,8 +272,8 @@ class TokenClient {
     return Object.values(this.wrapperMap).includes(denom ?? "");
   }
 
-  public getWrappedTokens(denom: string): Token[] {
-    const result: Token[] = [];
+  public getWrappedTokens(denom: string): Carbon.Coin.Token[] {
+    const result: Carbon.Coin.Token[] = [];
 
     if (!this.tokens) return result;
 
@@ -297,7 +297,7 @@ class TokenClient {
     return result;
   }
 
-  public getWrappedToken(denom: string, blockchain?: BlockchainUtils.Blockchain | BlockchainUtils.BlockchainV2, version = 'V1'): Token | null {
+  public getWrappedToken(denom: string, blockchain?: BlockchainUtils.Blockchain | BlockchainUtils.BlockchainV2, version = 'V1'): Carbon.Coin.Token | null {
     // if denom is already a wrapped denom or no blockchain was specified,
     // just return the input denom.
     if (this.wrapperMap[denom] || !blockchain) {
@@ -334,7 +334,7 @@ class TokenClient {
     return null;
   }
 
-  public getSourceToken(denom: string): Token | null {
+  public getSourceToken(denom: string): Carbon.Coin.Token | null {
     // check if denom is source token
     if (Object.values(this.wrapperMap).includes(denom)) {
       return this.tokens[denom];
@@ -349,11 +349,11 @@ class TokenClient {
     return null;
   }
 
-  public getNativeToken(): Token | undefined {
+  public getNativeToken(): Carbon.Coin.Token | undefined {
     return this.tokenForId("swth");
   }
 
-  public getNativeStablecoin(): Token | undefined {
+  public getNativeStablecoin(): Carbon.Coin.Token | undefined {
     return this.tokenForId("usc");
   }
 
@@ -370,11 +370,11 @@ class TokenClient {
     return groupedTokenRegex.test(denom)
   }
 
-  public isCarbonToken(token?: Token | null): boolean {
+  public isCarbonToken(token?: Carbon.Coin.Token | null): boolean {
     return Boolean(token && (this.isNativeToken(token.denom) || token.bridgeId.eq(0)));
   }
 
-  public getDepositTokenFor(tokenDenom: string, chain: BlockchainUtils.Blockchain | BlockchainUtils.BlockchainV2, version = "V1"): Token | undefined {
+  public getDepositTokenFor(tokenDenom: string, chain: BlockchainUtils.Blockchain | BlockchainUtils.BlockchainV2, version = "V1"): Carbon.Coin.Token | undefined {
     const networkConfig = this.configProvider.getConfig();
     const token = this.tokenForDenom(tokenDenom);
     if (!token) {
@@ -405,7 +405,7 @@ class TokenClient {
     return depositToken;
   }
 
-  public async getAllTokens(): Promise<Token[]> {
+  public async getAllTokens(): Promise<Carbon.Coin.Token[]> {
     const result = await this.query.coin.TokenAll({
       pagination: {
         limit: new Long(10000),
@@ -421,7 +421,7 @@ class TokenClient {
     return result.tokens.filter((token) => !tokenBlacklist.includes(token.denom));
   }
 
-  public async reloadTokens(): Promise<TypeUtils.SimpleMap<Token>> {
+  public async reloadTokens(): Promise<TypeUtils.SimpleMap<Carbon.Coin.Token>> {
     const tokenResponse = await this.getAllTokens();
 
     for (const token of tokenResponse) {
@@ -457,7 +457,7 @@ class TokenClient {
       return bridge.bridgeId.toNumber() === BRIDGE_IDS.ibc
     })
     const ibcBridges = await this.matchChainsWithDifferentChainIds(unmatchedIbcBridgeList)
-    const polynetworkBridges = allBridges.bridges.reduce((prev: PolyNetworkBridge[], bridge: Bridge) => {
+    const polynetworkBridges = allBridges.bridges.reduce((prev: PolyNetworkBridge[], bridge: Carbon.Coin.Bridge) => {
       if (bridge.bridgeId.toNumber() !== BRIDGE_IDS.polynetwork) return prev;
       prev.push({
         ...bridge,
@@ -472,7 +472,7 @@ class TokenClient {
     return this.bridges
   }
 
-  async matchChainsWithDifferentChainIds(bridges: Bridge[]): Promise<IbcBridge[]> {
+  async matchChainsWithDifferentChainIds(bridges: Carbon.Coin.Bridge[]): Promise<IbcBridge[]> {
     let newBridges: IbcBridge[] = []
     try {
       const pagination = PageRequest.fromPartial({ limit: new Long(1e6) });
@@ -551,7 +551,7 @@ class TokenClient {
     return this.getIbcBlockchainNames().concat(this.getPolynetworkBlockchainNames())
   }
 
-  public getBridgesFromBridgeId(bridgeId: number): Bridge[] | IbcBridge[] {
+  public getBridgesFromBridgeId(bridgeId: number): Carbon.Coin.Bridge[] | IbcBridge[] {
     switch (bridgeId) {
       case BRIDGE_IDS.polynetwork:
         return this.bridges.polynetwork
@@ -562,8 +562,8 @@ class TokenClient {
     }
   }
 
-  public getIbcTokens(): TypeUtils.SimpleMap<Token> {
-    const ibcTokens = Object.values(this.tokens).reduce((prev: TypeUtils.SimpleMap<Token>, token: Token) => {
+  public getIbcTokens(): TypeUtils.SimpleMap<Carbon.Coin.Token> {
+    const ibcTokens = Object.values(this.tokens).reduce((prev: TypeUtils.SimpleMap<Carbon.Coin.Token>, token: Carbon.Coin.Token) => {
       const newPrev = prev
       if (token.bridgeId.toNumber() === BRIDGE_IDS.ibc) {
         newPrev[token.denom] = token
@@ -573,8 +573,8 @@ class TokenClient {
     return ibcTokens
   }
 
-  public getPolyNetworkTokens(): TypeUtils.SimpleMap<Token> {
-    const polynetworkTokens = Object.values(this.tokens).reduce((prev: TypeUtils.SimpleMap<Token>, token: Token) => {
+  public getPolyNetworkTokens(): TypeUtils.SimpleMap<Carbon.Coin.Token> {
+    const polynetworkTokens = Object.values(this.tokens).reduce((prev: TypeUtils.SimpleMap<Carbon.Coin.Token>, token: Carbon.Coin.Token) => {
       const newPrev = prev
       if (token.bridgeId.toNumber() === BRIDGE_IDS.polynetwork) {
         newPrev[token.denom] = token
@@ -590,13 +590,13 @@ class TokenClient {
     return bridgeList.find(bridge => bridge.chainId.toNumber() === chainId)?.chainName ?? undefined
   }
 
-  public getBridgeFromToken(token: Token | null): Bridge | IbcBridge | undefined {
+  public getBridgeFromToken(token: Carbon.Coin.Token | null): Carbon.Coin.Bridge | IbcBridge | undefined {
     if (!token || !token.bridgeId) return undefined
     const bridgeList = this.getBridgesFromBridgeId(token.bridgeId.toNumber())
     return bridgeList.find(bridge => token.chainId.equals(bridge.chainId))
   }
 
-  public getIbcChainIdFromToken(token: Token | null): string | undefined {
+  public getIbcChainIdFromToken(token: Carbon.Coin.Token | null): string | undefined {
     if (!token) return undefined
     const bridge = this.getBridgeFromToken(token)
     if (!bridge || !isIbcBridge(bridge)) return undefined
@@ -674,8 +674,8 @@ class TokenClient {
     return await response.json();
   }
 
-  processTokenPrices(tokenPrices: TokenPrice[]) {
-    return tokenPrices.reduce((prevPrices: TypeUtils.SimpleMap<BigNumber>, price: TokenPrice) => {
+  processTokenPrices(tokenPrices: Carbon.Pricing.TokenPrice[]) {
+    return tokenPrices.reduce((prevPrices: TypeUtils.SimpleMap<BigNumber>, price: Carbon.Pricing.TokenPrice) => {
       const newPrev = prevPrices;
       newPrev[price.denom] = bnOrZero(price.twap).shiftedBy(-decTypeDecimals);
       return newPrev;
@@ -691,7 +691,7 @@ class TokenClient {
         countTotal: true,
         reverse: false,
       },
-    }) as QueryTokenPriceAllResponse;
+    }) as Carbon.Pricing.QueryTokenPriceAllResponse;
     if (initTokenPrices.pagination?.total && initTokenPrices.pagination?.total.lt(10000)) {
       const tokenPricesMap = this.processTokenPrices(initTokenPrices.tokenPrices);
       return tokenPricesMap;
@@ -705,7 +705,7 @@ class TokenClient {
         countTotal: true,
         reverse: false,
       },
-    }) as QueryTokenPriceAllResponse;
+    }) as Carbon.Pricing.QueryTokenPriceAllResponse;
     return this.processTokenPrices(fullTokenPrices.tokenPrices);
   }
 
