@@ -52,10 +52,12 @@ export class RootStore {
     async function suggestChainFromWindow(keplr: Keplr, chainInfo: ChainInfo) {
       const info = {
         ...chainInfo,
-        stakeCurrency: {
-          ...chainInfo.stakeCurrency,
-          coinImageUrl: chainInfo.stakeCurrency.coinImageUrl ? window.origin + chainInfo.stakeCurrency.coinImageUrl : undefined,
-        },
+        ...chainInfo.stakeCurrency && ({
+          stakeCurrency: {
+            ...chainInfo.stakeCurrency,
+            coinImageUrl: chainInfo.stakeCurrency.coinImageUrl ? window.origin + chainInfo.stakeCurrency.coinImageUrl : undefined,
+          },
+        }),
         currencies: chainInfo.currencies.map((currency) => ({
           ...currency,
           coinImageUrl: currency.coinImageUrl ? window.origin + currency.coinImageUrl : undefined,
