@@ -13,6 +13,7 @@ export interface GetTransfersRequest {
   to_asset?: string;
   offset?: number;
   limit?: number;
+  include_tx?: boolean;
 }
 
 export interface GetTransfersResponse {
