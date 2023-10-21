@@ -605,7 +605,7 @@ export class CarbonWallet {
           sequence,
           accountNumber,
         }
-        await this.signAndBroadcast([msg], modifiedOpts)
+        await this.signAndBroadcast([msg], modifiedOpts, { mode: BroadcastTxMode.BroadcastTxBlock })
         this.updateMergeAccountStatus()
         await GenericUtils.callIgnoreError(() => this.onBroadcastTxSuccess?.([msg]));
       }
