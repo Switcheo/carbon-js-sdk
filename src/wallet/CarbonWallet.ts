@@ -653,7 +653,6 @@ export class CarbonWallet {
           await sleep(pollIntervalMs)
           return pollForTx(txId)
         }
-        console.error(err)
         throw err
       }
     }
