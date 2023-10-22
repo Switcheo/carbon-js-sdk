@@ -11,7 +11,7 @@ import { BroadcastTxMode, CarbonSignerData, CarbonCustomError, ErrorType } from 
 import { SimpleMap } from "@carbon-sdk/util/type";
 import { encodeSecp256k1Signature, StdSignature } from "@cosmjs/amino";
 import { EncodeObject, OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
-import { Account, DeliverTxResponse, IndexedTx, isDeliverTxFailure, TimeoutError } from "@cosmjs/stargate";
+import { Account, DeliverTxResponse, isDeliverTxFailure, TimeoutError } from "@cosmjs/stargate";
 import { sleep } from "@cosmjs/utils";
 import { Tendermint34Client, TxResponse } from "@cosmjs/tendermint-rpc";
 import { BroadcastTxSyncResponse, BroadcastTxAsyncResponse, broadcastTxSyncSuccess } from "@cosmjs/tendermint-rpc/build/tendermint34/responses";
@@ -892,7 +892,7 @@ export class CarbonWallet {
 }
 
 export namespace CarbonWallet {
-  export type SendTxResponse = DeliverTxResponse;
+  export type SendTxResponse = DeliverTxResponse | BroadcastTxSyncResponse | BroadcastTxAsyncResponse;
   export type SendTxToMempoolWithoutConfirmResponse = BroadcastTxSyncResponse;
   export type SendTxWithoutConfirmResponse = BroadcastTxAsyncResponse;
   export type OnRequestSignCallback = (msgs: readonly EncodeObject[]) => void | Promise<void>;
