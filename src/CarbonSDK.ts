@@ -62,11 +62,9 @@ export interface CarbonSDKOpts {
   grpcQueryClient?: GrpcQueryClient;
   useTmAbciQuery?: boolean;
   defaultTimeoutBlocks?: number; // tx mempool ttl (timeoutHeight)
-  txDefaultBroadcastMode?: BroadcastTxMode;
 }
 export interface CarbonSDKInitOpts {
   network: Network;
-  txDefaultBroadcastMode?: BroadcastTxMode;
   tmClient?: Tendermint34Client;
   config?: Partial<NetworkConfig>;
   wallet?: CarbonWallet;
