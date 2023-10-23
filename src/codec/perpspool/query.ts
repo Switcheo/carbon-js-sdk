@@ -79,6 +79,7 @@ export interface QueryPoolInfoRequest {
 }
 
 export interface QueryPoolInfoResponse {
+  poolId: Long;
   totalShareAmount: string;
   totalNavAmount: string;
   availableAmount: string;
@@ -1195,6 +1196,7 @@ export const QueryPoolInfoRequest = {
 };
 
 const baseQueryPoolInfoResponse: object = {
+  poolId: Long.UZERO,
   totalShareAmount: "",
   totalNavAmount: "",
   availableAmount: "",
@@ -1207,20 +1209,23 @@ export const QueryPoolInfoResponse = {
     message: QueryPoolInfoResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
+    if (!message.poolId.isZero()) {
+      writer.uint32(8).uint64(message.poolId);
+    }
     if (message.totalShareAmount !== "") {
-      writer.uint32(10).string(message.totalShareAmount);
+      writer.uint32(18).string(message.totalShareAmount);
     }
     if (message.totalNavAmount !== "") {
-      writer.uint32(18).string(message.totalNavAmount);
+      writer.uint32(26).string(message.totalNavAmount);
     }
     if (message.availableAmount !== "") {
-      writer.uint32(26).string(message.availableAmount);
+      writer.uint32(34).string(message.availableAmount);
     }
     if (message.totalInPositionAmount !== "") {
-      writer.uint32(34).string(message.totalInPositionAmount);
+      writer.uint32(42).string(message.totalInPositionAmount);
     }
     if (message.totalUpnlAmount !== "") {
-      writer.uint32(42).string(message.totalUpnlAmount);
+      writer.uint32(50).string(message.totalUpnlAmount);
     }
     return writer;
   },
@@ -1236,18 +1241,21 @@ export const QueryPoolInfoResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.totalShareAmount = reader.string();
+          message.poolId = reader.uint64() as Long;
           break;
         case 2:
-          message.totalNavAmount = reader.string();
+          message.totalShareAmount = reader.string();
           break;
         case 3:
-          message.availableAmount = reader.string();
+          message.totalNavAmount = reader.string();
           break;
         case 4:
-          message.totalInPositionAmount = reader.string();
+          message.availableAmount = reader.string();
           break;
         case 5:
+          message.totalInPositionAmount = reader.string();
+          break;
+        case 6:
           message.totalUpnlAmount = reader.string();
           break;
         default:
@@ -1260,6 +1268,10 @@ export const QueryPoolInfoResponse = {
 
   fromJSON(object: any): QueryPoolInfoResponse {
     const message = { ...baseQueryPoolInfoResponse } as QueryPoolInfoResponse;
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromString(object.poolId)
+        : Long.UZERO;
     message.totalShareAmount =
       object.totalShareAmount !== undefined && object.totalShareAmount !== null
         ? String(object.totalShareAmount)
@@ -1286,6 +1298,8 @@ export const QueryPoolInfoResponse = {
 
   toJSON(message: QueryPoolInfoResponse): unknown {
     const obj: any = {};
+    message.poolId !== undefined &&
+      (obj.poolId = (message.poolId || Long.UZERO).toString());
     message.totalShareAmount !== undefined &&
       (obj.totalShareAmount = message.totalShareAmount);
     message.totalNavAmount !== undefined &&
@@ -1303,6 +1317,10 @@ export const QueryPoolInfoResponse = {
     object: DeepPartial<QueryPoolInfoResponse>
   ): QueryPoolInfoResponse {
     const message = { ...baseQueryPoolInfoResponse } as QueryPoolInfoResponse;
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromValue(object.poolId)
+        : Long.UZERO;
     message.totalShareAmount = object.totalShareAmount ?? "";
     message.totalNavAmount = object.totalNavAmount ?? "";
     message.availableAmount = object.availableAmount ?? "";
