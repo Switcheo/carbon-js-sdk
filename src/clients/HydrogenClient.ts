@@ -211,7 +211,6 @@ class HydrogenClient {
     };
   }
 
-  /** @deprecated getDetailedTransfers function is deprecated, please use getTransfers instead */
   async getDetailedTransfers(req: GetTransfersRequest, version = "V1"): Promise<GetDetailedTransfersResponse> {
     this.checkState();
     const request = this.apiManager.path(
