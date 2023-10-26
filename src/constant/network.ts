@@ -65,6 +65,7 @@ export interface NetworkConfig {
   Bech32Prefix: string;
 
   network: Network;
+  chainId: string;
 
   feeAddress: string;
 
@@ -88,6 +89,7 @@ export const NetworkConfigs: {
 } = {
   [Network.MainNet]: {
     network: Network.MainNet,
+    chainId: "carbon-1",
 
     tmRpcUrl: "https://tm-api.carbon.network/",
     tmWsUrl: "wss://tm-api.carbon.network/",
@@ -175,6 +177,7 @@ export const NetworkConfigs: {
 
   [Network.TestNet]: {
     network: Network.TestNet,
+    chainId: "carbon-testnet-42069",
 
     tmRpcUrl: "https://test-tm-api.carbon.network",
     tmWsUrl: "wss://test-tm-api.carbon.network",
@@ -262,6 +265,7 @@ export const NetworkConfigs: {
 
   [Network.DevNet]: {
     network: Network.DevNet,
+    chainId: "carbon-devnet-39911",
 
     tmRpcUrl: "https://dev-tm-api.carbon.network",
     tmWsUrl: "wss://dev-tm-api.carbon.network",
@@ -350,6 +354,7 @@ export const NetworkConfigs: {
 
   [Network.LocalHost]: {
     network: Network.LocalHost,
+    chainId: "carbon-localhost",
 
     tmRpcUrl: "http://localhost:26657",
     tmWsUrl: "ws://localhost:26657",

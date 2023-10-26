@@ -9,7 +9,7 @@ import {
   Network as _Network,
 } from "@carbon-sdk/constant";
 import { GenericUtils, NetworkUtils } from "@carbon-sdk/util";
-import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
+import { Tendermint34Client, HttpClient } from "@cosmjs/tendermint-rpc";
 import { NodeHttpTransport } from "@improbable-eng/grpc-web-node-http-transport";
 import * as clients from "./clients";
 import { CarbonQueryClient, ETHClient, HydrogenClient, InsightsQueryClient, NEOClient, TokenClient, ZILClient } from "./clients";
@@ -241,14 +241,25 @@ class CarbonSDK {
   public static async instance(opts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS) {
     const network = opts.network ?? DEFAULT_NETWORK;
     const configOverride = opts.config ?? {};
-
-    const networkConfig = GenericUtils.overrideConfig(NetworkConfigs[network], configOverride);
-    const batchQueryClient = new clients.BatchQueryClient(networkConfig.tmRpcUrl);
-    const tmClient = opts.tmClient ?? GenericUtils.modifyTmClient(await Tendermint34Client.create(batchQueryClient));
     const defaultTimeoutBlocks = opts.defaultTimeoutBlocks;
-    const chainId = (await tmClient.status())?.nodeInfo.network;
+    const networkConfig = GenericUtils.overrideConfig(NetworkConfigs[network], configOverride);
+    const tmClient: Tendermint34Client = opts.tmClient ?? new (Tendermint34Client as any)(new clients.BatchQueryClient(networkConfig.tmRpcUrl)); // fallback tmClient
 
+    let chainId = networkConfig.chainId; // fallback chain ID
+    let normalInit = true;
+
+    try {
+      chainId = (await tmClient.status())?.nodeInfo.network;
+    } catch (error) {
+      console.warn("tm client init failed");
+      console.error(error);
+      normalInit = false;
+    }
+
+    console.log("normal init", normalInit)
     const sdk = new CarbonSDK({ network, config: configOverride, tmClient, defaultTimeoutBlocks, chainId, useTmAbciQuery: opts.useTmAbciQuery });
+
+    if (!normalInit) return sdk;
 
     if (opts.wallet) {
       await sdk.connect(opts.wallet);

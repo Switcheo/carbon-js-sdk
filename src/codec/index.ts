@@ -24581,6 +24581,10 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "QueryPoolInfoResponse": [
       {
+        "name": "pool_id",
+        "type": "uint64"
+      },
+      {
         "name": "total_share_amount",
         "type": "string"
       },

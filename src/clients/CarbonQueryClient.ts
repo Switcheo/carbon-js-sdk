@@ -116,14 +116,8 @@ class CarbonQueryClient {
 
   erc20: ERC20QueryClient;
 
-  private readonly baseClient: ProtobufRpcClient;
-  private readonly tmClient: Tendermint34Client;
-
   constructor(opts: CarbonQueryClientOpts) {
     const rpcClient = opts.grpcClient ?? createProtobufRpcClient(new QueryClient(opts.tmClient));
-
-    this.tmClient = opts.tmClient;
-    this.baseClient = rpcClient;
 
     this.chain = BlockchainClient.connectWithTm(opts.tmClient);
 
