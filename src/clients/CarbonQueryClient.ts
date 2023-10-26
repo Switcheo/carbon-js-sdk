@@ -44,7 +44,7 @@ import { QueryClientImpl as SubaccountQueryClient } from "@carbon-sdk/codec/suba
 import { QueryClientImpl as AllianceClient } from "@carbon-sdk/codec/alliance/query";
 import { QueryClientImpl as PerpspoolQueryClient } from "@carbon-sdk/codec/perpspool/query";
 import { QueryClientImpl as ERC20QueryClient } from "@carbon-sdk/codec/erc20/query";
-import { createProtobufRpcClient, ProtobufRpcClient, QueryClient } from "@cosmjs/stargate";
+import { createProtobufRpcClient, QueryClient } from "@cosmjs/stargate";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import BlockchainClient from "./BlockchainClient";
 import GrpcQueryClient from "./GrpcQueryClient";
