@@ -246,7 +246,6 @@ class TokenClient {
   }
 
   public static isPoolTokenLegacy(denom: string): boolean {
-      // eslint potential fix /^([a-z\d.-/]+)-(\d+)-([a-z\d.-/]+)-(\d+)-lp\d+$/i
     return denom.match(/^([a-z\d.-]+)-(\d+)-([a-z\d.-]+)-(\d+)-lp\d+$/i) !== null;
   }
 

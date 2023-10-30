@@ -256,7 +256,6 @@ class CarbonSDK {
       normalInit = false;
     }
 
-    console.log("normal init", normalInit)
     const sdk = new CarbonSDK({ network, config: configOverride, tmClient, defaultTimeoutBlocks, chainId, useTmAbciQuery: opts.useTmAbciQuery });
 
     if (!normalInit) return sdk;
@@ -546,7 +545,7 @@ export class ConnectedCarbonSDK extends CarbonSDK {
     return new ConnectedCarbonSDK(this.wallet, this.generateOpts());
   }
 }
-/*eslint-disable @typescript-eslint/no-unused-vars */
+
 namespace CarbonSDK {
   export import Network = _Network;
   export import CarbonQueryClient = clients.CarbonQueryClient;
@@ -557,6 +556,5 @@ namespace CarbonSDK {
   export import TokenClient = clients.TokenClient;
   export import ZILClient = clients.ZILClient;
 }
-/* esline-enable @typescript-eslint/no-unused-vars */
 
 export default CarbonSDK;

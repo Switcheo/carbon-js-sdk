@@ -86,8 +86,8 @@
     "@types/websocket": "^1.0.4",
     "@types/wif": "^2.0.2",
     "@types/ws": "^7.4.7",
-    "@typescript-eslint/eslint-plugin": "^5.59.9",
-    "@typescript-eslint/parser": "^5.59.9",
+    "@typescript-eslint/eslint-plugin": "^6.9.0",
+    "@typescript-eslint/parser": "^6.9.0",
     "dotenv": "^10.0.0",
     "eslint": "^8.42.0",
     "prettier": "2.5.1"

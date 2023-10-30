@@ -89,7 +89,7 @@ export class NEOClient {
 
     // NOTE: fetching of tokens is chunked in sets of 15 as we may hit
     // the gas limit on the RPC node and error out otherwise
-    const promises: Promise<any>[] = chunk(tokens, 75).map(async (partition: ReadonlyArray<Carbon.Coin.Token>) => { // tslint:disable-line
+    const promises: Promise<SimpleMap<string>>[] = chunk(tokens, 75).map(async (partition: ReadonlyArray<Carbon.Coin.Token>) => {
       const acc: SimpleMap<string> = {};
       for (const token of partition) {
         if (whitelistDenoms && !whitelistDenoms.includes(token.denom)) continue;

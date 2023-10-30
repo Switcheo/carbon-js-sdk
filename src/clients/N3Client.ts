@@ -84,7 +84,7 @@ export class N3Client {
   public static signerFromLedger(ledger: NeoLedgerAccount): N3Signer {
     return {
       scriptHash: ledger.scriptHash,
-      sign: async (txn: tx.Transaction, networkMagic: number = CONST.MAGIC_NUMBER.MainNet, k?: string | number) => { // eslint-disable-line
+      sign: async (txn: tx.Transaction, networkMagic: number = CONST.MAGIC_NUMBER.MainNet) => {
         const signature = await ledger.sign(txn.serialize(false), networkMagic);
         const encodedPublicKey = wallet.getPublicKeyEncoded(ledger.publicKey);
         txn.addWitness(tx.Witness.fromSignature(signature, encodedPublicKey));

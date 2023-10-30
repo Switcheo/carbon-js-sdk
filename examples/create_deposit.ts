@@ -96,7 +96,7 @@ const walletWithProvider = wallet.connect(provider);
 //   return lockResultTx
 // }
 
-(async () => {
+;(async () => {
   console.log("caller address", wallet.address);
   // const tokenContract = new ethers.Contract(tokenContractAddress, ERC20_ABI, provider);
 
@@ -165,4 +165,4 @@ const walletWithProvider = wallet.connect(provider);
 
 function stripHexPrefix(input: any) {
   return input.slice(0, 2) === "0x" ? input.slice(2) : input
-}
+};

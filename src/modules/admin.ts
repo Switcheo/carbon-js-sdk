@@ -280,7 +280,7 @@ export class AdminModule extends BaseModule {
     );
   }
 
-  public async setMsgFee(params: AdminModule.SetMsgFeeParams) { // eslint-disable-line
+  public async setMsgFee() {
     throw new Error("deprecated");
   }
 

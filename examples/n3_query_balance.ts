@@ -11,7 +11,7 @@ import "./_setup";
 
 const neoRpcUrl = "http://seed1t4.neo.org:20332";
 
-
+;
 (async () => {
   const mnemonics = process.env.MNEMONICS ?? BIP39.generateMnemonic();
   console.log("mnemonics", mnemonics);
