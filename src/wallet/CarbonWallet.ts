@@ -258,7 +258,10 @@ export class CarbonWallet {
 
   public static withLedger(cosmosLedger: CosmosLedger, publicKeyBase64: string, opts: Omit<CarbonWalletInitOpts, "signer"> = {}) {
     const signer = new CarbonLedgerSigner(cosmosLedger);
-    const wallet = CarbonWallet.withSigner(signer, publicKeyBase64, opts);
+    const wallet = CarbonWallet.withSigner(signer, publicKeyBase64, {
+      ...opts,
+      providerAgent: ProviderAgent.Ledger
+    });
     return wallet;
   }
 
