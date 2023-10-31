@@ -259,8 +259,8 @@ export class CarbonWallet {
   public static withLedger(cosmosLedger: CosmosLedger, publicKeyBase64: string, opts: Omit<CarbonWalletInitOpts, "signer"> = {}) {
     const signer = new CarbonLedgerSigner(cosmosLedger);
     const wallet = CarbonWallet.withSigner(signer, publicKeyBase64, {
+      providerAgent: ProviderAgent.Ledger,
       ...opts,
-      providerAgent: ProviderAgent.Ledger
     });
     return wallet;
   }
@@ -278,8 +278,8 @@ export class CarbonWallet {
     const publicKeyBase64 = Buffer.from(keplrKey.pubKey).toString("base64");
 
     const wallet = CarbonWallet.withSigner(signer, publicKeyBase64, {
-      ...opts,
       providerAgent: ProviderAgent.KeplrExtension,
+      ...opts,
     });
     return wallet;
   }
@@ -289,8 +289,8 @@ export class CarbonWallet {
     const publicKeyBase64 = Buffer.from(leapKey.pubKey).toString("base64");
 
     const wallet = CarbonWallet.withSigner(signer, publicKeyBase64, {
-      ...opts,
       providerAgent: ProviderAgent.LeapExtension,
+      ...opts,
     });
     return wallet;
   }
@@ -298,8 +298,8 @@ export class CarbonWallet {
   public static withMetamask(metamask: MetaMask, evmChainId: string, compressedPubKeyBase64: string, addressOptions: SWTHAddressOptions, opts: Omit<CarbonWalletInitOpts, "signer"> = {}) {
     const signer = MetaMask.createMetamaskSigner(metamask, evmChainId, compressedPubKeyBase64, addressOptions);
     const wallet = CarbonWallet.withSigner(signer, compressedPubKeyBase64, {
-      ...opts,
       providerAgent: ProviderAgent.MetamaskExtension,
+      ...opts,
     });
     return wallet;
   }
