@@ -135,8 +135,8 @@ export class MarketModule extends BaseModule {
       setter: params.setter,
       stakeEquivalence: {
         ratio: params.stakeEquivalence.ratio.shiftedBy(18).toString(10),
-        denom: params.stakeEquivalence.denom
-      }
+        denom: params.stakeEquivalence.denom,
+      },
     })
     return await wallet.sendTx(
       {
@@ -224,7 +224,7 @@ export function transformFeeTierParams(msg: MarketModule.FeeTierParams): Carbon.
     tradingFees: {
       makerFee: msg.makerFee.shiftedBy(18).toString(10),
       takerFee: msg.takerFee.shiftedBy(18).toString(10),
-    }
+    },
   }
 }
 

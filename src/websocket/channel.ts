@@ -255,7 +255,7 @@ export const parseChannelId = (rawChannelId: string): WsSubscriptionParams => {
       return {
         channel,
       } as WsSubscribeAllTokenPrices;
-    case WSChannel.token_prices:
+    case WSChannel.token_prices_by_denom:
       return {
         channel,
         denom: param0,

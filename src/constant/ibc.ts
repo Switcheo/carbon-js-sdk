@@ -1668,7 +1668,7 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
       {
         "coinDenom": "stEVMOS",
         "coinMinimalDenom": "staevmos",
-        "coinDecimals": 18
+        "coinDecimals": 18,
       },
     ],
     feeCurrencies: [
@@ -1920,17 +1920,17 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
       coinDenom: "FLIX",
       coinMinimalDenom: "uflix",
       coinDecimals: 6,
-      coinGeckoId: "omniflix-network"
+      coinGeckoId: "omniflix-network",
     },
     bip44: {
-      coinType: 118
+      coinType: 118,
     },
     bech32Config: IBCAddress.defaultBech32Config("omniflix"),
     currencies: [{
       coinDenom: "FLIX",
       coinMinimalDenom: "uflix",
       coinDecimals: 6,
-      coinGeckoId: "omniflix-network"
+      coinGeckoId: "omniflix-network",
     }],
     feeCurrencies: [{
       coinDenom: "FLIX",
@@ -1941,7 +1941,7 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         low: 0.001,
         average: 0.0025,
         high: 0.025,
-      }
+      },
     }],
     features: ["ibc-transfer", "ibc-go"],
     explorerUrlToTx: "https://www.mintscan.io/omniflix/txs/{txHash}",
@@ -1955,10 +1955,10 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
       coinDenom: "BLD",
       coinMinimalDenom: "ubld",
       coinDecimals: 6,
-      coinGeckoId: "agoric"
+      coinGeckoId: "agoric",
     },
     bip44: {
-      coinType: 564
+      coinType: 564,
     },
     bech32Config: IBCAddress.defaultBech32Config("agoric"),
     currencies: [
@@ -1966,13 +1966,13 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         coinDenom: "BLD",
         coinMinimalDenom: "ubld",
         coinDecimals: 6,
-        coinGeckoId: "agoric"
+        coinGeckoId: "agoric",
       },
       {
         coinDenom: "IST",
         coinMinimalDenom: "uist",
-        coinDecimals: 6
-      }
+        coinDecimals: 6,
+      },
     ],
     feeCurrencies: [
       {
@@ -1983,8 +1983,8 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         gasPriceStep: {
           low: 0.03,
           average: 0.05,
-          high: 0.07
-        }
+          high: 0.07,
+        },
       },
       {
         coinDenom: "IST",
@@ -1994,9 +1994,9 @@ export const EmbedChainInfosInit: SimpleMap<ChainInfoExplorerTmRpc> = {
         gasPriceStep: {
           low: 0.0034,
           average: 0.007,
-          high: 0.02
-        }
-      }
+          high: 0.02,
+        },
+      },
     ],
     features: ["ibc-transfer", "ibc-go"],
     explorerUrlToTx: "https://www.atomscan.com/agoric/transactions/{txHash}",

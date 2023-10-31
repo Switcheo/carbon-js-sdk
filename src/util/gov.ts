@@ -147,17 +147,17 @@ export const decodeContent = (content?: Any): PropDecoded => {
     case ProposalTypes.CreateAlliance:
       return {
         ...content,
-        value: Carbon.Alliance.MsgCreateAllianceProposal.decode(content.value)
+        value: Carbon.Alliance.MsgCreateAllianceProposal.decode(content.value),
       };
     case ProposalTypes.UpdateAlliance:
       return {
         ...content,
-        value: Carbon.Alliance.MsgUpdateAllianceProposal.decode(content.value)
+        value: Carbon.Alliance.MsgUpdateAllianceProposal.decode(content.value),
       }
     case ProposalTypes.DeleteAlliance:
       return {
         ...content,
-        value: Carbon.Alliance.MsgDeleteAllianceProposal.decode(content.value)
+        value: Carbon.Alliance.MsgDeleteAllianceProposal.decode(content.value),
       }
     default:
       return emptyProposal;

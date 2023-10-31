@@ -1,6 +1,6 @@
 import { AddressOptions, N3Address, NEOAddress } from "@carbon-sdk/util/address";
 import { getLedgerTransport } from "@carbon-sdk/util/ledger";
-import { CONST, wallet } from "@cityofzion/neon-core-next";
+import { CONST } from "@cityofzion/neon-core-next";
 import * as NeonN3Ledger from "./N3Ledger";
 import Transport from "@ledgerhq/hw-transport";
 import NeonLedger, { getNEOBIP44String } from "./NeonLedger";
@@ -66,7 +66,7 @@ export class NeoLedgerAccount {
 
         // start timeout to kill connection when interval duration
         // is reached. Kills connection by resolving
-        let timeoutId = setTimeout(() => {
+        const timeoutId = setTimeout(() => {
           // set timeout to true so that if connection is successful
           // after timeout, it can be ignored.
           timedOut = true;
@@ -131,9 +131,6 @@ export class NeoLedgerAccount {
     const bipString = getNEOBIP44String();
     const ledger = this.useLedger();
     const ledgerAdapter = adapterForVersion(this.version);
-    const publicKey = this.publicKey;
-    const scriptHash = wallet.getScriptHashFromPublicKey(publicKey);
-    const address = wallet.getAddressFromScriptHash(scriptHash);
     return await ledgerAdapter.getSignature(ledger, msg, bipString, magic);
   }
 

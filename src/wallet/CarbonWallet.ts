@@ -11,7 +11,7 @@ import { BroadcastTxMode, CarbonSignerData, CarbonTxError } from "@carbon-sdk/ut
 import { SimpleMap } from "@carbon-sdk/util/type";
 import { encodeSecp256k1Signature, StdSignature } from "@cosmjs/amino";
 import { EncodeObject, OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
-import { Account, DeliverTxResponse, isDeliverTxFailure, SequenceResponse, StargateClient } from "@cosmjs/stargate";
+import { Account, DeliverTxResponse, isDeliverTxFailure } from "@cosmjs/stargate";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import { BroadcastTxSyncResponse } from "@cosmjs/tendermint-rpc/build/tendermint34/responses";
 import { Leap } from "@cosmos-kit/leap";
@@ -24,7 +24,7 @@ import { CarbonSigningClient } from "./CarbonSigningClient";
 import { ETH_SECP256K1_TYPE } from "@carbon-sdk/util/ethermint";
 import { ExtensionOptionsWeb3Tx } from "@carbon-sdk/codec/ethermint/types/v1/web3";
 import { BaseAccount } from "@carbon-sdk/codec/cosmos/auth/v1beta1/auth";
-import { MsgMergeAccount, registry } from "@carbon-sdk/codec";
+import { MsgMergeAccount } from "@carbon-sdk/codec";
 
 export interface CarbonWalletGenericOpts {
   tmClient?: Tendermint34Client;
@@ -349,7 +349,7 @@ export class CarbonWallet {
         chainId: this.getChainId(),
         sequence,
         ...explicitSignerData,
-        evmChainId
+        evmChainId,
       };
 
       const fee = opts?.fee ?? this.estimateTxFee(messages, feeDenom);
@@ -366,7 +366,7 @@ export class CarbonWallet {
         signature = encodeSecp256k1Signature(account.pubkey, sig);
         signature = {
           ...signature,
-          pub_key: { ...signature.pub_key, type: ETH_SECP256K1_TYPE }
+          pub_key: { ...signature.pub_key, type: ETH_SECP256K1_TYPE },
         }
         return txRaw;
       }
@@ -411,14 +411,6 @@ export class CarbonWallet {
       // tx failed
       throw new CarbonTxError(`[${response.code}] ${response.rawLog}`, response);
     }
-    const txBody = TxBody.decode(txRaw.bodyBytes)
-    const msgs: EncodeObject[] = txBody.messages.map(message => {
-      const msg = registry.decode({ ...message })
-      return {
-        typeUrl: message.typeUrl,
-        value: msg
-      }
-    })
     return response;
   }
 
@@ -573,8 +565,8 @@ export class CarbonWallet {
           typeUrl: CarbonTx.Types.MsgMergeAccount,
           value: MsgMergeAccount.fromPartial({
             creator: address,
-            pubKey: this.publicKey.toString('hex')
-          })
+            pubKey: this.publicKey.toString('hex'),
+          }),
         }
         const modifiedOpts = {
           ...opts,
@@ -701,21 +693,15 @@ export class CarbonWallet {
   }
 
   private async reloadAccountInfo() {
-    try {
-      // carbon account always takes priority
-      const accountAny = await this.getAccount(this.bech32Address) ?? await this.getAccount(this.evmBech32Address)
-      if (!accountAny) return undefined
-      const { accountNumber, sequence, address } = BaseAccount.decode(accountAny.value)
-      return {
-        address,
-        accountNumber: accountNumber.toNumber(),
-        sequence: sequence.toNumber()
-      }
+    // carbon account always takes priority
+    const accountAny = await this.getAccount(this.bech32Address) ?? await this.getAccount(this.evmBech32Address)
+    if (!accountAny) return undefined
+    const { accountNumber, sequence, address } = BaseAccount.decode(accountAny.value)
+    return {
+      address,
+      accountNumber: accountNumber.toNumber(),
+      sequence: sequence.toNumber(),
     }
-    catch (error: any) {
-      throw error
-    }
-
   }
 
   private async getAccount(address: string) {
@@ -732,38 +718,30 @@ export class CarbonWallet {
   public async reloadAccountSequence() {
     if (this.sequenceInvalidated) this.sequenceInvalidated = false;
 
-    try {
-      const info = await this.reloadAccountInfo()
-      const pubkey = this.accountInfo?.pubkey ?? {
-        type: "tendermint/PubKeySecp256k1",
-        value: this.publicKey.toString("base64"),
+    const info = await this.reloadAccountInfo()
+    const pubkey = this.accountInfo?.pubkey ?? {
+      type: "tendermint/PubKeySecp256k1",
+      value: this.publicKey.toString("base64"),
+    };
+    const chainId = this.accountInfo?.chainId ?? this.chainId ?? (await this.getQueryClient().chain.getChainId());
+    if (info) {
+      this.accountInfo = {
+        ...info,
+        pubkey,
+        chainId,
       };
-      const chainId = this.accountInfo?.chainId ?? this.chainId ?? (await this.getQueryClient().chain.getChainId());
-      if (info) {
-        this.accountInfo = {
-          ...info,
-          pubkey,
-          chainId,
-        };
-      }
-    } catch (error: any) {
-      throw error;
     }
   }
   public async reloadMergeAccountStatus() {
-    try {
-      if (this.accountMerged) return
-      const queryClient = this.getQueryClient()
-      const response = await queryClient.evmmerge.MappedAddress({ address: this.bech32Address })
-      if (response && response.mappedAddress) {
-        this.accountMerged = true
-      } else {
-        this.accountMerged = false
-      }
-      this.sequenceInvalidated = true
-    } catch (error: any) {
-      throw error;
+    if (this.accountMerged) return
+    const queryClient = this.getQueryClient()
+    const response = await queryClient.evmmerge.MappedAddress({ address: this.bech32Address })
+    if (response && response.mappedAddress) {
+      this.accountMerged = true
+    } else {
+      this.accountMerged = false
     }
+    this.sequenceInvalidated = true
   }
 
   public updateMergeAccountStatus() {

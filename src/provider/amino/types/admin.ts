@@ -82,24 +82,6 @@ const MsgCreateMarket: AminoInit = {
   },
 };
 
-const MsgLinkPool: AminoInit = {
-  aminoType: TxTypes.LinkPool,
-  valueMap: {
-    linkPoolParams: {
-      poolId: ConvertEncType.Long,
-    },
-  },
-};
-
-const MsgUnlinkPool: AminoInit = {
-  aminoType: TxTypes.UnlinkPool,
-  valueMap: {
-    unlinkPoolParams: {
-      poolId: ConvertEncType.Long,
-    },
-  },
-};
-
 const MsgUpdatePool: AminoInit = {
   aminoType: TxTypes.ChangeSwapFee,
   valueMap: {
@@ -214,11 +196,6 @@ const MsgSetLiquidationFee: AminoInit = {
 
 const MsgSetInterestFee: AminoInit = {
   aminoType: TxTypes.SetInterestFee,
-  valueMap: {},
-};
-
-const MsgSetStablecoinInterestRate: AminoInit = {
-  aminoType: TxTypes.SetStablecoinInterestRate,
   valueMap: {},
 };
 

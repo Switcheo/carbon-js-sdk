@@ -5,7 +5,7 @@ import { AminoInit, generateAminoType } from "../utils";
 
 const TxTypes: TypeUtils.SimpleMap<string> = {
   UpdateParams: "ethermint/MsgUpdateParams",
-  EthereumTx: "evm/v1/MsgEthereumTx"
+  EthereumTx: "evm/v1/MsgEthereumTx",
 };
 
 const MsgEthereumTx: AminoInit = {

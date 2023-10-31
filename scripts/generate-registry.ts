@@ -36,7 +36,7 @@ for (const moduleFile of codecFiles) {
   }
 
   const codecModule = require(`${pwd}/${moduleFile}`);
-  let messages = Object.keys(codecModule).filter((key) => {
+  const messages = Object.keys(codecModule).filter((key) => {
     return (key.startsWith("Msg") && key !== "MsgClientImpl") || key.startsWith("Header") || key.endsWith("Proposal")
   });
   if (messages.length) {

@@ -54,7 +54,7 @@ export class CoinModule extends BaseModule {
 
     const value = MsgDepositToGroup.fromPartial({
       creator: params.creator ?? wallet.bech32Address,
-      depositCoin: params.depositCoin
+      depositCoin: params.depositCoin,
     })
 
     return await wallet.sendTx(
@@ -87,7 +87,7 @@ export class CoinModule extends BaseModule {
 
     const value = MsgWithdrawFromGroup.fromPartial({
       creator: params.creator ?? wallet.bech32Address,
-      sourceCoin: params.sourceCoin
+      sourceCoin: params.sourceCoin,
     })
 
     return await wallet.sendTx(
@@ -129,7 +129,7 @@ export class CoinModule extends BaseModule {
         bridgeId: params.bridgeId,
         bridgeAddress: params.bridgeAddress,
         tokenAddress: params.tokenAddress,
-      }
+      },
     })
     return await wallet.sendTx(
         {

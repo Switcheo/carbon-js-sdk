@@ -28,13 +28,11 @@ import {
   transformSetSettlementPriceParams,
   transfromCreateOracleParams,
   transfromCreateTokenParams,
-  transfromLinkPoolParams,
   transfromSetCommitmentCurveParams,
   transfromSetMsgGasCostParams,
   transfromSetMinGasPriceParams,
   transfromSetRewardCurveParams,
   transfromSetRewardsWeightsParams,
-  transfromUnlinkPoolParams,
   transfromUpdatePoolParams,
 } from "./admin";
 import BaseModule from "./base";
@@ -97,105 +95,119 @@ export class GovModule extends BaseModule {
     const { title, description, msg } = proposalMsg;
 
     switch (proposalUrl.split(".").pop()) {
-      case "CreateTokenProposal":
+      case "CreateTokenProposal": {
         const createTokenMsg = {
           title: title,
           description: description,
           msg: transfromCreateTokenParams(msg, wallet.bech32Address),
         };
         return CreateTokenProposal.encode(createTokenMsg).finish();
-      case "SetMsgGasCostProposal":
+      }
+      case "SetMsgGasCostProposal": {
         const setMsgGasCostMsg = {
           title: title,
           description: description,
           msg: transfromSetMsgGasCostParams(msg),
         };
         return SetMsgGasCostProposal.encode(setMsgGasCostMsg).finish();
-      case "SetMinGasPriceProposal":
+      }
+      case "SetMinGasPriceProposal": {
         const setMinGasPriceMsg = {
           title: title,
           description: description,
           msg: transfromSetMinGasPriceParams(msg),
         };
         return SetMinGasPriceProposal.encode(setMinGasPriceMsg).finish();
-      case "RemoveMsgGasCostProposal":
+      }
+      case "RemoveMsgGasCostProposal": {
         const removeMsgGasCostMsg = {
           title: title,
           description: description,
           msgType: proposalMsg.msgType,
         };
         return RemoveMsgGasCostProposal.encode(removeMsgGasCostMsg).finish();
-      case "RemoveMinGasPriceProposal":
+      }
+      case "RemoveMinGasPriceProposal": {
         const removeMinGasPriceMsg = {
           title: title,
           description: description,
           denom: proposalMsg.denom,
         };
         return RemoveMinGasPriceProposal.encode(removeMinGasPriceMsg).finish();
-      case "SetRewardCurveProposal":
+      }
+      case "SetRewardCurveProposal": {
         const setRewardCurveMsg = {
           title: title,
           description: description,
           msg: transfromSetRewardCurveParams(msg),
         };
         return SetRewardCurveProposal.encode(setRewardCurveMsg).finish();
-      case "SetCommitmentCurveProposal":
+      }
+      case "SetCommitmentCurveProposal": {
         const setCommitmentCurveMsg = {
           title: title,
           description: description,
           msg: transfromSetCommitmentCurveParams(msg),
         };
         return SetCommitmentCurveProposal.encode(setCommitmentCurveMsg).finish();
-      case "SetRewardsWeightsProposal":
+      }
+      case "SetRewardsWeightsProposal": {
         const setRewardsWeightsMsg = {
           title: title,
           description: description,
           msg: transfromSetRewardsWeightsParams(msg),
         };
         return SetRewardsWeightsProposal.encode(setRewardsWeightsMsg).finish();
-      case "UpdatePoolProposal":
+      }
+      case "UpdatePoolProposal": {
         const updatePoolProposalMsg = {
           title: title,
           description: description,
           msg: transfromUpdatePoolParams(msg),
         };
         return UpdatePoolProposal.encode(updatePoolProposalMsg).finish();
-      case "UpdateMarketProposal":
+      }
+      case "UpdateMarketProposal": {
         const updateMarketProposalMsg = {
           title: title,
           description: description,
           msg: transfromUpdateMarketParams(msg),
         };
         return UpdateMarketProposal.encode(updateMarketProposalMsg).finish();
-      case "CreateOracleProposal":
+      }
+      case "CreateOracleProposal": {
         const createOracleProposalMsg = {
           title: title,
           description: description,
           msg: transfromCreateOracleParams(msg, wallet.bech32Address),
         };
         return CreateOracleProposal.encode(createOracleProposalMsg).finish();
-      case "SettlementPriceProposal":
+      }
+      case "SettlementPriceProposal": {
         const settlementPriceProposalMsg = {
           title: title,
           description: description,
           msg: transformSetSettlementPriceParams(msg),
         };
         return SettlementPriceProposal.encode(settlementPriceProposalMsg).finish();
-      case "ParameterChangeProposal":
+      }
+      case "ParameterChangeProposal": {
         const parameterChangeProposalMsg = {
           title: title,
           description: description,
           changes: proposalMsg.changes,
         };
         return ParameterChangeProposal.encode(parameterChangeProposalMsg).finish();
-      case "SoftwareUpgradeProposal":
+      }
+      case "SoftwareUpgradeProposal": {
         const softwareUpgradeProposalMsg = {
           title: title,
           description: description,
           plan: proposalMsg.plan,
         };
         return SoftwareUpgradeProposal.encode(softwareUpgradeProposalMsg).finish();
-      case "CommunityPoolSpendProposal":
+      }
+      case "CommunityPoolSpendProposal": {
         const communityPoolSpendProposalMsg = {
           title: title,
           description: description,
@@ -203,18 +215,21 @@ export class GovModule extends BaseModule {
           amount: transformCommunityPoolSpendAmount(proposalMsg.amount),
         };
         return CommunityPoolSpendProposal.encode(communityPoolSpendProposalMsg).finish();
-      case "CancelSoftwareUpgradeProposal":
+      }
+      case "CancelSoftwareUpgradeProposal": {
         const cancelSoftwareUpgradeProposaMsg = {
           title: title,
           description: description,
         };
         return CancelSoftwareUpgradeProposal.encode(cancelSoftwareUpgradeProposaMsg).finish();
-      case "TextProposal":
+      }
+      case "TextProposal": {
         const textProposalMsg = {
           title: title,
           description: description,
         };
         return TextProposal.encode(textProposalMsg).finish();
+      }
       default:
         return new Uint8Array();
     }

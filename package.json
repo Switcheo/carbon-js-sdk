@@ -16,7 +16,7 @@
     "sync-reset": "find . -type f -name 'export.ts' -delete && rm -f src/codec/*-models.ts",
     "test": "tsc && node lib/test.js",
     "format": "prettier --write \"src/**/*.ts\"",
-    "lint": "tslint -p tsconfig.json",
+    "lint": "eslint . --ext .ts",
     "prepare": "yarn run build",
     "prepublishOnly": "yarn run lint",
     "preversion": "yarn run lint",
@@ -86,7 +86,10 @@
     "@types/websocket": "^1.0.4",
     "@types/wif": "^2.0.2",
     "@types/ws": "^7.4.7",
+    "@typescript-eslint/eslint-plugin": "^6.9.0",
+    "@typescript-eslint/parser": "^6.9.0",
     "dotenv": "^10.0.0",
+    "eslint": "^8.42.0",
     "prettier": "2.5.1"
   }
 }
