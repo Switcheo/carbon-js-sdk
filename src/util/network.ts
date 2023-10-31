@@ -1,5 +1,5 @@
 import { CarbonEvmChainIDs, DEFAULT_NETWORK, Network } from "@carbon-sdk/constant";
-import { CarbonSDK } from "..";
+import { CarbonSDK } from "@carbon-sdk/index";
 import { parseChainId } from "./ethermint";
 
 /**

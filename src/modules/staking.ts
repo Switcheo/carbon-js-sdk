@@ -1,8 +1,8 @@
+import { CarbonTx } from "@carbon-sdk/CarbonSDK";
 import { TxTypes } from "@carbon-sdk/codec";
 import { MsgWithdrawDelegatorReward } from "@carbon-sdk/codec/cosmos/distribution/v1beta1/tx";
 import { MsgBeginRedelegate, MsgDelegate, MsgUndelegate } from "@carbon-sdk/codec/cosmos/staking/v1beta1/tx";
 import BigNumber from "bignumber.js";
-import { CarbonTx } from "..";
 import BaseModule from "./base";
 
 export class StakingModule extends BaseModule {

@@ -95,7 +95,7 @@ export class GovModule extends BaseModule {
     const { title, description, msg } = proposalMsg;
 
     switch (proposalUrl.split(".").pop()) {
-      case "CreateTokenProposal":{
+      case "CreateTokenProposal": {
         const createTokenMsg = {
           title: title,
           description: description,
@@ -103,7 +103,7 @@ export class GovModule extends BaseModule {
         };
         return CreateTokenProposal.encode(createTokenMsg).finish();
       }
-      case "SetMsgGasCostProposal":{
+      case "SetMsgGasCostProposal": {
         const setMsgGasCostMsg = {
           title: title,
           description: description,
@@ -111,7 +111,7 @@ export class GovModule extends BaseModule {
         };
         return SetMsgGasCostProposal.encode(setMsgGasCostMsg).finish();
       }
-      case "SetMinGasPriceProposal":{
+      case "SetMinGasPriceProposal": {
         const setMinGasPriceMsg = {
           title: title,
           description: description,
@@ -119,7 +119,7 @@ export class GovModule extends BaseModule {
         };
         return SetMinGasPriceProposal.encode(setMinGasPriceMsg).finish();
       }
-      case "RemoveMsgGasCostProposal":{
+      case "RemoveMsgGasCostProposal": {
         const removeMsgGasCostMsg = {
           title: title,
           description: description,
@@ -127,7 +127,7 @@ export class GovModule extends BaseModule {
         };
         return RemoveMsgGasCostProposal.encode(removeMsgGasCostMsg).finish();
       }
-      case "RemoveMinGasPriceProposal":{
+      case "RemoveMinGasPriceProposal": {
         const removeMinGasPriceMsg = {
           title: title,
           description: description,
@@ -135,7 +135,7 @@ export class GovModule extends BaseModule {
         };
         return RemoveMinGasPriceProposal.encode(removeMinGasPriceMsg).finish();
       }
-      case "SetRewardCurveProposal":{
+      case "SetRewardCurveProposal": {
         const setRewardCurveMsg = {
           title: title,
           description: description,
@@ -143,7 +143,7 @@ export class GovModule extends BaseModule {
         };
         return SetRewardCurveProposal.encode(setRewardCurveMsg).finish();
       }
-      case "SetCommitmentCurveProposal":{
+      case "SetCommitmentCurveProposal": {
         const setCommitmentCurveMsg = {
           title: title,
           description: description,
@@ -151,7 +151,7 @@ export class GovModule extends BaseModule {
         };
         return SetCommitmentCurveProposal.encode(setCommitmentCurveMsg).finish();
       }
-      case "SetRewardsWeightsProposal":{
+      case "SetRewardsWeightsProposal": {
         const setRewardsWeightsMsg = {
           title: title,
           description: description,
@@ -159,7 +159,7 @@ export class GovModule extends BaseModule {
         };
         return SetRewardsWeightsProposal.encode(setRewardsWeightsMsg).finish();
       }
-      case "UpdatePoolProposal":{
+      case "UpdatePoolProposal": {
         const updatePoolProposalMsg = {
           title: title,
           description: description,
@@ -167,7 +167,7 @@ export class GovModule extends BaseModule {
         };
         return UpdatePoolProposal.encode(updatePoolProposalMsg).finish();
       }
-      case "UpdateMarketProposal":{
+      case "UpdateMarketProposal": {
         const updateMarketProposalMsg = {
           title: title,
           description: description,
@@ -175,7 +175,7 @@ export class GovModule extends BaseModule {
         };
         return UpdateMarketProposal.encode(updateMarketProposalMsg).finish();
       }
-      case "CreateOracleProposal":{
+      case "CreateOracleProposal": {
         const createOracleProposalMsg = {
           title: title,
           description: description,
@@ -183,7 +183,7 @@ export class GovModule extends BaseModule {
         };
         return CreateOracleProposal.encode(createOracleProposalMsg).finish();
       }
-      case "SettlementPriceProposal":{
+      case "SettlementPriceProposal": {
         const settlementPriceProposalMsg = {
           title: title,
           description: description,
@@ -191,7 +191,7 @@ export class GovModule extends BaseModule {
         };
         return SettlementPriceProposal.encode(settlementPriceProposalMsg).finish();
       }
-      case "ParameterChangeProposal":{
+      case "ParameterChangeProposal": {
         const parameterChangeProposalMsg = {
           title: title,
           description: description,
@@ -199,7 +199,7 @@ export class GovModule extends BaseModule {
         };
         return ParameterChangeProposal.encode(parameterChangeProposalMsg).finish();
       }
-      case "SoftwareUpgradeProposal":{
+      case "SoftwareUpgradeProposal": {
         const softwareUpgradeProposalMsg = {
           title: title,
           description: description,
@@ -207,7 +207,7 @@ export class GovModule extends BaseModule {
         };
         return SoftwareUpgradeProposal.encode(softwareUpgradeProposalMsg).finish();
       }
-      case "CommunityPoolSpendProposal":{
+      case "CommunityPoolSpendProposal": {
         const communityPoolSpendProposalMsg = {
           title: title,
           description: description,
@@ -216,14 +216,14 @@ export class GovModule extends BaseModule {
         };
         return CommunityPoolSpendProposal.encode(communityPoolSpendProposalMsg).finish();
       }
-      case "CancelSoftwareUpgradeProposal":{
+      case "CancelSoftwareUpgradeProposal": {
         const cancelSoftwareUpgradeProposaMsg = {
           title: title,
           description: description,
         };
         return CancelSoftwareUpgradeProposal.encode(cancelSoftwareUpgradeProposaMsg).finish();
       }
-      case "TextProposal":{
+      case "TextProposal": {
         const textProposalMsg = {
           title: title,
           description: description,

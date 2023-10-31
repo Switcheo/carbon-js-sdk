@@ -1,7 +1,6 @@
+import { Carbon, CarbonTx } from "@carbon-sdk/CarbonSDK";
 import { Coin } from "@cosmjs/stargate";
-import { CarbonTx } from "..";
 import BaseModule from "./base";
-import { Carbon } from "@carbon-sdk/CarbonSDK";
 
 export class ERC20Module extends BaseModule {
   public async convertCoin(params: ERC20Module.ConvertCoinParams, opts?: CarbonTx.SignTxOpts) {
