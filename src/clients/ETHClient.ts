@@ -149,7 +149,7 @@ export class ETHClient {
     const approveResultTx = await contract.connect(signer).approve(spenderAddress ?? token.bridgeAddress, approvalAmount, {
       nonce,
       ...gasPriceGwei && ({ gasPrice: gasPriceGwei.shiftedBy(9).toString(10) }),
-      ...gasLimit && ({ gasLimit: gasLimit.toString(10) })
+      ...gasLimit && ({ gasLimit: gasLimit.toString(10) }),
     });
 
     return approveResultTx;

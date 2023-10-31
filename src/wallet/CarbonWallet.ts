@@ -349,7 +349,7 @@ export class CarbonWallet {
         chainId: this.getChainId(),
         sequence,
         ...explicitSignerData,
-        evmChainId
+        evmChainId,
       };
 
       const fee = opts?.fee ?? this.estimateTxFee(messages, feeDenom);
@@ -366,7 +366,7 @@ export class CarbonWallet {
         signature = encodeSecp256k1Signature(account.pubkey, sig);
         signature = {
           ...signature,
-          pub_key: { ...signature.pub_key, type: ETH_SECP256K1_TYPE }
+          pub_key: { ...signature.pub_key, type: ETH_SECP256K1_TYPE },
         }
         return txRaw;
       }
@@ -565,8 +565,8 @@ export class CarbonWallet {
           typeUrl: CarbonTx.Types.MsgMergeAccount,
           value: MsgMergeAccount.fromPartial({
             creator: address,
-            pubKey: this.publicKey.toString('hex')
-          })
+            pubKey: this.publicKey.toString('hex'),
+          }),
         }
         const modifiedOpts = {
           ...opts,
@@ -700,7 +700,7 @@ export class CarbonWallet {
     return {
       address,
       accountNumber: accountNumber.toNumber(),
-      sequence: sequence.toNumber()
+      sequence: sequence.toNumber(),
     }
   }
 

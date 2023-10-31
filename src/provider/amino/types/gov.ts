@@ -10,7 +10,7 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
   SubmitProposal: "cosmos-sdk/MsgSubmitProposal",
   Deposit: "cosmos-sdk/MsgDeposit",
   Vote: "cosmos-sdk/MsgVote",
-  TextProposal: "cosmos-sdk/TextProposal"
+  TextProposal: "cosmos-sdk/TextProposal",
 };
 
 const ContentTypes: TypeUtils.SimpleMap<string> = {
@@ -75,8 +75,8 @@ const CreateGroup: AminoValueMap = {
       name: ConvertEncType.Long,
       chequeTokenSymbol: ConvertEncType.Long,
       oraclieId: ConvertEncType.Long,
-    }
-  }
+    },
+  },
 }
 
 const UpdateGroup: AminoValueMap = {
@@ -87,8 +87,8 @@ const UpdateGroup: AminoValueMap = {
       updateGroupParams: {
         name: ConvertEncType.Long,
       },
-    }
-  }
+    },
+  },
 }
 
 const RegisterToGroup: AminoValueMap = {
@@ -97,8 +97,8 @@ const RegisterToGroup: AminoValueMap = {
       creator: ConvertEncType.Long,
       groupId: ConvertEncType.Long,
       denom: ConvertEncType.Long,
-    }
-  }
+    },
+  },
 }
 
 const DeregisterFromGroup: AminoValueMap = {
@@ -107,8 +107,8 @@ const DeregisterFromGroup: AminoValueMap = {
       creator: ConvertEncType.Long,
       groupId: ConvertEncType.Long,
       denom: ConvertEncType.Long,
-    }
-  }
+    },
+  },
 }
 
 const UpdateGroupConfig: AminoValueMap = {
@@ -118,9 +118,9 @@ const UpdateGroupConfig: AminoValueMap = {
       denom: ConvertEncType.Long,
       updatedGroupedTokenConfigParams: {
         isActive: ConvertEncType.Long,
-      }
-    }
-  }
+      },
+    },
+  },
 }
 
 const UpdatePool: AminoValueMap = {
@@ -533,7 +533,7 @@ const GovAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgSubmitProposal]: generateAminoType(SubmitProposalMsg, proposalAminoProcess),
   [CarbonTx.Types.MsgDeposit]: generateAminoType(MsgDeposit),
   [CarbonTx.Types.MsgVote]: generateAminoType(MsgVote),
-  [CarbonTx.Types.TextProposal]: generateAminoType(MsgTextProposal)
+  [CarbonTx.Types.TextProposal]: generateAminoType(MsgTextProposal),
 };
 
 export default GovAmino;

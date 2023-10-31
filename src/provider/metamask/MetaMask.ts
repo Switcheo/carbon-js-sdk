@@ -81,7 +81,7 @@ const CONTRACT_HASH: {
     [Network.LocalHost]: "",
 
     [Network.MainNet]: "",
-  } as const
+  } as const,
 } as const;
 
 const DEFAULT_PUBLIC_KEY_MESSAGE = `By signing, I confirm that I have read and agreed to the terms and conditions outlined here (https://guide.dem.exchange/technical/terms-and-conditions).\nAdditionally, I verify that I am not a citizen of any of the following countries: Afghanistan, Angola, Central African Republic, China (Mainland), Côte d'Ivoire, Crimea, Cuba, Democratic Republic of Congo, Ethiopia, Guinea-Bissau, Haiti, Iran, Kuwait, Lebanon, Liberia, Libya, Mali, North Korea, Rwanda, Sevastopol, Sierra Leone, Singapore, Somalia, South Africa, Sudan, South Sudan, Syria, Quebec (Canada), U.S, Yemen, Zimbabwe.`
@@ -160,7 +160,7 @@ const CARBON_EVM_LOCALHOST: MetaMaskChangeNetworkParam = {
   blockExplorerUrls: ["https://evm-scan.carbon.network"],
   chainName: "Carbon EVM Localhost",
   rpcUrls: [`${NetworkConfigs[Network.LocalHost].evmJsonRpcUrl}`],
-  nativeCurrency: CarbonEvmNativeCurrency
+  nativeCurrency: CarbonEvmNativeCurrency,
 }
 const CARBON_EVM_DEVNET: MetaMaskChangeNetworkParam = {
   chainId: `0x${Number(parseChainId(CarbonEvmChainIDs[Network.DevNet])).toString(16)}`,
@@ -320,7 +320,7 @@ export class MetaMask {
         const msg = registry.decode({ ...message })
         return {
           typeUrl: message.typeUrl,
-          value: msg
+          value: msg,
         }
       })
       const fee: StdFee = {
@@ -342,11 +342,11 @@ export class MetaMask {
         signature: {
           pub_key: {
             type: ETH_SECP256K1_TYPE,
-            value: pubKeyBase64
+            value: pubKeyBase64,
           },
           // Remove recovery `v` from signature
-          signature: Buffer.from(sigBz.slice(0, -1)).toString('base64')
-        }
+          signature: Buffer.from(sigBz.slice(0, -1)).toString('base64'),
+        },
       }
     };
     const signAmino = async (_: string, doc: CarbonTx.StdSignDoc) => {
@@ -365,11 +365,11 @@ export class MetaMask {
         signature: {
           pub_key: {
             type: ETH_SECP256K1_TYPE,
-            value: pubKeyBase64
+            value: pubKeyBase64,
           },
           // Remove recovery `v` from signature
-          signature: Buffer.from(sigBz.slice(0, -1)).toString('base64')
-        }
+          signature: Buffer.from(sigBz.slice(0, -1)).toString('base64'),
+        },
       }
     }
     const getAccounts = async () => {
@@ -379,7 +379,7 @@ export class MetaMask {
           // Possible to change to "ethsecp256k1" ?
           algo: "secp256k1" as Algo,
           address,
-          pubkey: Uint8Array.from(Buffer.from(pubKeyBase64, 'base64'))
+          pubkey: Uint8Array.from(Buffer.from(pubKeyBase64, 'base64')),
         },
       ]
     }
@@ -406,11 +406,11 @@ export class MetaMask {
         signature: {
           pub_key: {
             type: ETH_SECP256K1_TYPE,
-            value: pubKeyBase64
+            value: pubKeyBase64,
           },
-          signature: Buffer.from(sig, 'hex').toString('base64')
+          signature: Buffer.from(sig, 'hex').toString('base64'),
         },
-        feePayer
+        feePayer,
       }
     };
 
@@ -433,7 +433,7 @@ export class MetaMask {
       signAmino,
       getAccounts,
       signLegacyEip712,
-      sendEvmTransaction
+      sendEvmTransaction,
     };
   }
 
@@ -776,7 +776,7 @@ export class MetaMask {
       data: req.data,
       // type can only be 0 or 1 or 2
       type: `0x${req.type}`,
-      chainId: req.chainId
+      chainId: req.chainId,
     }
     const txHash = (await api.request({
       method: "eth_sendTransaction",

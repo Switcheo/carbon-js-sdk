@@ -59,7 +59,7 @@ export async function populateEvmTransactionDetails(api: CarbonSDK, req: ethers.
             maxPriorityFeePerGas: req.maxPriorityFeePerGas ?? gasFee.maxPriorityFeePerGas?.toHexString(),
             maxFeePerGas: req.maxFeePerGas ?? gasFee.maxFeePerGas?.toHexString(),
             gasLimit,
-            type: 2
+            type: 2,
         }
     }
     if (req.accessList) {
@@ -67,14 +67,14 @@ export async function populateEvmTransactionDetails(api: CarbonSDK, req: ethers.
         return {
             ...request,
             gasLimit,
-            type: 1
+            type: 1,
         }
     }
     // LegacyTx
     return {
         ...request,
         gasLimit,
-        type: 0
+        type: 0,
     }
 
 }

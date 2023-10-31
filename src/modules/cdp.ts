@@ -3,7 +3,7 @@ import { Carbon } from "@carbon-sdk/CarbonSDK";
 import { Params } from "@carbon-sdk/codec/cdp/params";
 import {
   QueryParamsRequest,
-  QueryTokenDebtRequest
+  QueryTokenDebtRequest,
 } from "@carbon-sdk/codec/cdp/query";
 import { QueryBalanceRequest, QuerySupplyOfRequest, QueryTotalSupplyRequest } from "@carbon-sdk/codec/cosmos/bank/v1beta1/query";
 import { PageRequest } from "@carbon-sdk/codec/cosmos/base/query/v1beta1/pagination";
@@ -570,7 +570,7 @@ export class CDPModule extends BaseModule {
         liquidationThreshold: params.updateEModeCategoryParams?.liquidationThreshold?.toNumber(),
         liquidationDiscount: params.updateEModeCategoryParams?.liquidationDiscount?.toNumber(),
         isActive: params.updateEModeCategoryParams?.isActive,
-      }
+      },
     });
     return await wallet.sendTx(
       {

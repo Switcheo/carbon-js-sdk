@@ -25,7 +25,7 @@ type LegacyEIP712StdSignDoc = StdSignDoc & { fee: EIP712Fee }
 function getTypes(msgTypeUrl: string, aminoMsgValue: any): TypeUtils.SimpleMap<TypedDataField[]> {
     return {
         ...LEGACY_DEFAULT_EIP712_TYPES,
-        ...getMsgValueType(msgTypeUrl, aminoMsgValue, "MsgValue")
+        ...getMsgValueType(msgTypeUrl, aminoMsgValue, "MsgValue"),
     }
 }
 
@@ -114,7 +114,7 @@ export function legacyConstructEIP712Tx(doc: LegacyEIP712StdSignDoc): LegacyEIP7
         types: getTypes(AminoTypesMap.fromAmino(msg).typeUrl, msg.value),
         primaryType: "Tx",
         domain: { ...DEFAULT_CARBON_DOMAIN_FIELDS, chainId: parseChainId(doc.chain_id) },
-        message: doc
+        message: doc,
     }
     return eip712Tx
 }

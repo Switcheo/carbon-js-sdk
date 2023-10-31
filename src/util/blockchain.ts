@@ -50,7 +50,7 @@ export const BLOCKCHAIN_V2_TO_V1_MAPPING: SimpleMap<Blockchain> = {
   "OKC": Blockchain.Okc,
   "Zilliqa": Blockchain.Zilliqa,
   "Neo": Blockchain.Neo,
-  "Neo3": Blockchain.Neo3
+  "Neo3": Blockchain.Neo3,
 };
 
 export const BRIDGE_IDS = {

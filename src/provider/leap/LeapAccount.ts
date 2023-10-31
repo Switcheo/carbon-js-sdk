@@ -56,7 +56,7 @@ class LeapAccount {
       signDirect,
       signAmino,
       getAccounts,
-      sendEvmTransaction
+      sendEvmTransaction,
     };
   }
 

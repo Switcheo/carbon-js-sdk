@@ -168,9 +168,9 @@ class TokenClient {
     const requestOptions = {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({})
+      body: JSON.stringify({}),
     }
     const result = await FetchUtils.fetch(url, requestOptions).then((res) => res.json());
 
@@ -467,7 +467,7 @@ class TokenClient {
     }, [])
     Object.assign(this.bridges, {
       polynetwork: polynetworkBridges,
-      ibc: ibcBridges
+      ibc: ibcBridges,
     })
     return this.bridges
   }

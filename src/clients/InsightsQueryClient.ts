@@ -98,7 +98,7 @@ class InsightsQueryClient {
     const parsedEntries = rawEntries.map(entry => ({
       lastHeight: entry.lastHeight,
       time: dayjs(entry.time),
-      volumeValue: new BigNumber(entry.volumeValue)
+      volumeValue: new BigNumber(entry.volumeValue),
     }))
     const parsedMeta = {
       from: dayjs(meta.from),

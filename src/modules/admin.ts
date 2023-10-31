@@ -669,7 +669,7 @@ export class AdminModule extends BaseModule {
     const value = Carbon.Coin.MsgUpdateGroup.fromPartial({
       creator: params.creator ?? wallet.bech32Address,
       groupId: params.groupId,
-      updateGroupParams: params.updateGroupParams
+      updateGroupParams: params.updateGroupParams,
     });
 
     return await wallet.sendTx(

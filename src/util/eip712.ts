@@ -207,7 +207,7 @@ export function constructEIP712Tx(doc: CarbonTx.StdSignDoc): EIP712Tx {
         types: getTypes(doc.msgs),
         primaryType: "Tx",
         domain: { ...DEFAULT_CARBON_DOMAIN_FIELDS, chainId: parseChainId(doc.chain_id) },
-        message: { account_number, chain_id, fee, memo, sequence, ...convertMsgs(doc.msgs) }
+        message: { account_number, chain_id, fee, memo, sequence, ...convertMsgs(doc.msgs) },
     }
     return eip712Tx
 }
