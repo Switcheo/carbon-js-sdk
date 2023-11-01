@@ -89,8 +89,8 @@ export class NEOClient {
 
     // NOTE: fetching of tokens is chunked in sets of 15 as we may hit
     // the gas limit on the RPC node and error out otherwise
-    const promises: Promise<{}>[] = chunk(tokens, 75).map(async (partition: ReadonlyArray<Carbon.Coin.Token>) => { // tslint:disable-line
-      let acc: SimpleMap<string> = {};
+    const promises: Promise<SimpleMap<string>>[] = chunk(tokens, 75).map(async (partition: ReadonlyArray<Carbon.Coin.Token>) => {
+      const acc: SimpleMap<string> = {};
       for (const token of partition) {
         if (whitelistDenoms && !whitelistDenoms.includes(token.denom)) continue;
         const sb: Neon.sc.ScriptBuilder = new Neon.sc.ScriptBuilder();
@@ -111,8 +111,8 @@ export class NEOClient {
       return acc;
     });
 
-    const result = await Promise.all(promises).then((results: any[]) => {
-      return results.reduce((acc: {}, res: {}) => ({ ...acc, ...res }), {});
+    const result = await Promise.all(promises).then((results: SimpleMap<string>[]) => {
+      return results.reduce((acc: object, res: object) => ({ ...acc, ...res }), {});
     });
 
     const TokensWithExternalBalance: TokensWithExternalBalance[] = [];
@@ -175,7 +175,7 @@ export class NEOClient {
   }
 
   public async lockO3Deposit(params: LockO3DepositParams) {
-    const { feeAmount, address, amount, token, o3Wallet, signCompleteCallback } = params;
+    const { feeAmount, address, amount, token, o3Wallet } = params;
     if (!o3Wallet.isConnected()) {
       throw new Error("O3 wallet not connected. Please reconnect and try again.");
     }

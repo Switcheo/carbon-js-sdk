@@ -73,7 +73,7 @@ const commitTokensProcess: AminoProcess = {
       delete newInput.duration;
     }
     return { amino, input: newInput };
-  }
+  },
 };
 
 const LiquidityPoolAmino: TypeUtils.SimpleMap<AminoConverter> = {

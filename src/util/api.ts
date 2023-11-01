@@ -169,7 +169,9 @@ const defaultResponseParser: ResponseParser = async (response: Response) => {
   try {
     const responseJson = await response.json();
     result.data = responseJson;
-  } catch (e) {}
+  } catch (e) {
+    // empty catch
+  }
 
   if (response.status >= 400 && response.status < 600) {
     throw new RequestError(result, result.data?.error || "unknown error");

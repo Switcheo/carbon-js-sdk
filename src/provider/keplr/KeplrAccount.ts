@@ -56,9 +56,9 @@ class KeplrAccount {
         const request = await populateEvmTransactionDetails(api, req)
         const signedTx = await keplr!.signEthereum(
           // carbon chain id
-          api.wallet?.getChainId()!,
+          api.wallet?.getChainId() ?? '',
           // cosmos address
-          api.wallet?.bech32Address!,
+          api.wallet?.bech32Address ?? '',
           JSON.stringify(request),
           EthSignType.TRANSACTION,
         )
@@ -100,9 +100,9 @@ class KeplrAccount {
         const request = await populateEvmTransactionDetails(api, req)
         const signedTx = await keplr!.signEthereum(
           // carbon chain id
-          api.wallet?.getChainId()!,
+          api.wallet?.getChainId() ?? '',
           // cosmos address
-          api.wallet?.bech32Address!,
+          api.wallet?.bech32Address ?? '',
           JSON.stringify(request),
           EthSignType.TRANSACTION,
         )

@@ -53,7 +53,7 @@ class LeapAccount {
       ];
     };
 
-    const sendEvmTransaction = async (api: CarbonSDK, req: ethers.providers.TransactionRequest) => {
+    const sendEvmTransaction = async (api: CarbonSDK, req: ethers.providers.TransactionRequest) => { // eslint-disable-line
       throw new Error("signing not available");
     }
 
@@ -62,7 +62,7 @@ class LeapAccount {
       signDirect,
       signAmino,
       getAccounts,
-      sendEvmTransaction
+      sendEvmTransaction,
     };
   }
 

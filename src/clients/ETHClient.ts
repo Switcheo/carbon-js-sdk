@@ -149,7 +149,7 @@ export class ETHClient {
     const approveResultTx = await contract.connect(signer).approve(spenderAddress ?? token.bridgeAddress, approvalAmount, {
       nonce,
       ...gasPriceGwei && ({ gasPrice: gasPriceGwei.shiftedBy(9).toString(10) }),
-      ...gasLimit && ({ gasLimit: gasLimit.toString(10) })
+      ...gasLimit && ({ gasLimit: gasLimit.toString(10) }),
     });
 
     return approveResultTx;
@@ -335,22 +335,13 @@ export class ETHClient {
     );
     // logger("sendDeposit message", message)
 
-    let signatureResult:
-      | {
-          owner: string;
-          r: string;
-          s: string;
-          v: string;
-        }
-      | undefined;
-
     const { address, signature } = await getSignatureCallback(message);
     const signatureBytes = ethers.utils.arrayify(appendHexPrefix(signature));
     const rsv = ethers.utils.splitSignature(signatureBytes);
 
     // logger("sign result", address, signature)
 
-    signatureResult = {
+    const signatureResult = {
       owner: address,
       v: rsv.v.toString(),
       r: rsv.r,
@@ -502,7 +493,9 @@ export class ETHClient {
   public verifyChecksum(input: string): string | undefined {
     try {
       return ethers.utils.getAddress(input);
-    } catch {}
+    } catch {
+      // empty catch
+    }
   }
 
   public async getTxNonce(ethAddress: string, customNonce?: number, provider?: ethers.providers.JsonRpcProvider): Promise<number> {

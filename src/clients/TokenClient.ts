@@ -115,7 +115,7 @@ class TokenClient {
 
   public getBlockchainV2(denom: string | undefined): BlockchainUtils.BlockchainV2 | undefined {
     if (!denom) return undefined
-    let token = this.tokens[denom]
+    const token = this.tokens[denom]
     if (this.isNativeToken(denom) || this.isNativeStablecoin(denom) || TokenClient.isPoolToken(denom) || TokenClient.isCdpToken(denom) || this.isGroupedToken(denom)) {
       // native denoms "swth" and "usc" should be native.
       // pool and cdp tokens are on the Native blockchain, hence 0
@@ -168,9 +168,9 @@ class TokenClient {
     const requestOptions = {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({})
+      body: JSON.stringify({}),
     }
     const result = await FetchUtils.fetch(url, requestOptions).then((res) => res.json());
 
@@ -185,7 +185,7 @@ class TokenClient {
 
     const symbol = this.getSymbol(denom);
     if (TokenClient.isPoolTokenLegacy(denom)) {
-      const match = symbol.match(/^([a-z\d.-\/]+)-(\d+)-([a-z\d.-\/]+)-(\d+)-lp\d+$/i);
+      const match = symbol.match(/^([a-z\d.-/]+)-(\d+)-([a-z\d.-/]+)-(\d+)-lp\d+$/i);
       // inconsistent implementation of isPoolToken, exit
       if (match === null) return symbol;
 
@@ -219,7 +219,7 @@ class TokenClient {
     if (typeof denom !== "string") return "";
     denom = denom.toLowerCase();
     if (TokenClient.isPoolTokenLegacy(denom)) {
-      const match = denom.match(/^([a-z\d.-\/]+)-(\d+)-([a-z\d.-\/]+)-(\d+)-lp\d+$/i);
+      const match = denom.match(/^([a-z\d.-/]+)-(\d+)-([a-z\d.-/]+)-(\d+)-lp\d+$/i); 
       // inconsistent implementation of isPoolToken, exit
       if (match === null) return this.getSymbol(denom);
 
@@ -467,7 +467,7 @@ class TokenClient {
     }, [])
     Object.assign(this.bridges, {
       polynetwork: polynetworkBridges,
-      ibc: ibcBridges
+      ibc: ibcBridges,
     })
     return this.bridges
   }
@@ -530,8 +530,8 @@ class TokenClient {
           chainMap[chainId] = bridge.chainName
         }
       }
-      return newBridges
     }
+    return newBridges
   }
 
   public getIbcBlockchainNames(): string[] {
@@ -716,10 +716,9 @@ class TokenClient {
     try {
       const response = await insights.DenomToGeckoIdMap();
       tokens = response.result.gecko;
+      return tokens;
     } catch (err) {
       throw new Error((err as Error).message ?? "Unknown gecko query error");
-    } finally {
-      return tokens;
     }
   }
 

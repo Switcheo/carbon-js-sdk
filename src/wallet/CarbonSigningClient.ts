@@ -238,7 +238,7 @@ export class CarbonSigningClient extends StargateClient {
     const signedTxBody = {
       messages: signed.msgs.map((msg) => this.aminoTypes.fromAmino(msg)),
       memo: signed.memo,
-      extensionOptions: [eip712ExtensionOptions]
+      extensionOptions: [eip712ExtensionOptions],
     };
     const signedTxBodyEncodeObject: TxBodyEncodeObject = {
       typeUrl: "/cosmos.tx.v1beta1.TxBody",

@@ -1,11 +1,9 @@
-import { CarbonSDK, Models } from "@carbon-sdk/index";
 import { CarbonTx, NumberUtils } from "@carbon-sdk/util";
 import { Carbon } from "@carbon-sdk/CarbonSDK";
 import { BigNumber } from "bignumber.js";
 import dayjs from "dayjs";
 import Long from "long";
 import BaseModule from "./base";
-import { InsightsQueryResponse, QueryGetInflation } from "@carbon-sdk/insights";
 import { BN_ZERO } from "@carbon-sdk/util/number";
 import { QueryMintDataResponse } from "@carbon-sdk/codec/inflation/query";
 

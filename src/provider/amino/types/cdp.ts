@@ -167,7 +167,7 @@ const MsgUpdateEModeCategory: AminoInit = {
       loanToValue: ConvertEncType.Long,
       liquidationThreshold: ConvertEncType.Long,
       liquidationDiscount: ConvertEncType.Long,
-    }
+    },
   },
 };
 

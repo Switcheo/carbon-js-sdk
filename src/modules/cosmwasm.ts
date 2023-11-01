@@ -1,5 +1,5 @@
 import { SDKProvider } from "@carbon-sdk/provider";
-import { GenericUtils, NumberUtils, TypeUtils } from "@carbon-sdk/util";
+import { NumberUtils, TypeUtils } from "@carbon-sdk/util";
 import { QueryClient, createProtobufRpcClient } from "@cosmjs/stargate";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import BigNumber from "bignumber.js";
@@ -26,7 +26,9 @@ export class CosmWasmModule extends BaseModule {
       try {
         const tmClient = await Tendermint34Client.connect(chainInfo.activeRpc);
         return CosmWasmModule.instanceWithTmClient(sdkProvider, tmClient)
-      } catch (error) { }
+      } catch (error) { 
+        // empty catch
+      }
     }
 
     const { client, rpcUrl } = await getBestRpcTmClient(chainInfo.bestRpcs.map(r => r.address));
@@ -71,5 +73,5 @@ export class CosmWasmModule extends BaseModule {
       prev[balance.contractAddress] = balance.balance;
       return prev;
     }, {});
-  };
+  }
 }

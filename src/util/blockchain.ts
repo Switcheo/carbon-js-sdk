@@ -50,7 +50,7 @@ export const BLOCKCHAIN_V2_TO_V1_MAPPING: SimpleMap<Blockchain> = {
   "OKC": Blockchain.Okc,
   "Zilliqa": Blockchain.Zilliqa,
   "Neo": Blockchain.Neo,
-  "Neo3": Blockchain.Neo3
+  "Neo3": Blockchain.Neo3,
 };
 
 export const BRIDGE_IDS = {
@@ -236,7 +236,8 @@ export const blockchainForChainId = (chainId?: number, network = Network.MainNet
           return Blockchain.Terra2
         case 316:
           return Blockchain.Quicksilver
-        case 12: /* FALLTHROUGH */
+        // eslint duplicate case
+        // case 12: /* FALLTHROUGH */
         case 317:
           return Blockchain.Comdex
         case 318:
@@ -383,7 +384,8 @@ export const blockchainForChainIdV2 = (chainId?: number, network = Network.MainN
           return "Terra"
         case 316:
           return "Quicksilver"
-        case 12: /* FALLTHROUGH */
+        // eslint duplicate case 
+        // case 12: /* FALLTHROUGH */
         case 317:
           return "Comdex"
         case 318:

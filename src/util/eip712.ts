@@ -4,7 +4,7 @@ import { TypeUtils } from ".";
 import { parseChainId } from "@carbon-sdk/util/ethermint";
 import { EIP712Types } from "@carbon-sdk/codec";
 import AminoTypesMap from "@carbon-sdk/provider/amino/AminoTypesMap";
-import { capitalize, create } from "lodash";
+import { capitalize } from "lodash";
 import { CarbonTx } from "@carbon-sdk/util";
 import { AminoMsg } from "@cosmjs/amino/build";
 
@@ -53,7 +53,7 @@ function getTypes(msgs: readonly AminoMsg[]): TypeUtils.SimpleMap<TypedDataField
 
 function getLatestMsgTypeIndex(typeName: string, types: TypeUtils.SimpleMap<TypedDataField[]>): number {
     let index = 0;
-    Object.entries(types).forEach(([key, _]) => {
+    Object.entries(types).forEach(([key, _]) => { // eslint-disable-line
 
         if (key.includes(typeName)) {
             index++
@@ -64,7 +64,7 @@ function getLatestMsgTypeIndex(typeName: string, types: TypeUtils.SimpleMap<Type
     return index
 }
 function sortByNameDescending(types: TypeUtils.SimpleMap<TypedDataField[]>): TypeUtils.SimpleMap<TypedDataField[]> {
-    Object.entries(types).forEach(([key, _]) => {
+    Object.entries(types).forEach(([key, _]) => { // eslint-disable-line
         types[key].sort((a, b) => b.name.localeCompare(a.name));
     });
     return types
@@ -92,7 +92,7 @@ function matchingType(msg: AminoMsg, eipTypes: TypeUtils.SimpleMap<TypedDataFiel
 
 function compareValues(msg: any, key: string, eipTypes: TypeUtils.SimpleMap<TypedDataField[]>): boolean {
     let match = true
-    for (let { name, type } of eipTypes[key]) {
+    for (let { name, type } of eipTypes[key]) { // eslint-disable-line
         if (Object.keys(msg).length > eipTypes[key].length) {
             return false
         }
@@ -113,8 +113,7 @@ function compareValues(msg: any, key: string, eipTypes: TypeUtils.SimpleMap<Type
     return match
 }
 
-function getMsgValueType(msgTypeUrl: string, msgValue: any, msgTypeName: string, msgTypeIndex: number, types: TypeUtils.SimpleMap<TypedDataField[]>, objectName?: string, nestedType: boolean = false, msgTypeDefinitions: TypeUtils.SimpleMap<TypedDataField[]> = {}): TypeUtils.SimpleMap<TypedDataField[]> {
-    const packageName = msgTypeUrl.split(".").slice(0, -1).join(".")
+function getMsgValueType(msgTypeUrl: string, msgValue: any, msgTypeName: string, msgTypeIndex: number, types: TypeUtils.SimpleMap<TypedDataField[]>, objectName?: string, nestedType: boolean = false, msgTypeDefinitions: TypeUtils.SimpleMap<TypedDataField[]> = {}): TypeUtils.SimpleMap<TypedDataField[]> {    const packageName = msgTypeUrl.split(".").slice(0, -1).join(".")
     const msgFieldType = msgTypeUrl.split(".").pop()!
     const typeName = getTypeName(msgTypeName, msgTypeIndex, objectName, nestedType, false)
     const fieldsDefinition = EIP712Types[packageName][msgFieldType]
@@ -208,7 +207,7 @@ export function constructEIP712Tx(doc: CarbonTx.StdSignDoc): EIP712Tx {
         types: getTypes(doc.msgs),
         primaryType: "Tx",
         domain: { ...DEFAULT_CARBON_DOMAIN_FIELDS, chainId: parseChainId(doc.chain_id) },
-        message: { account_number, chain_id, fee, memo, sequence, ...convertMsgs(doc.msgs) }
+        message: { account_number, chain_id, fee, memo, sequence, ...convertMsgs(doc.msgs) },
     }
     return eip712Tx
 }
