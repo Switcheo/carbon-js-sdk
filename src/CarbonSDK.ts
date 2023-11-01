@@ -45,7 +45,6 @@ import { CosmosLedger, Keplr, KeplrAccount, LeapAccount, LeapExtended } from "./
 import { MetaMask } from "./provider/metamask/MetaMask";
 import { SWTHAddressOptions } from "./util/address";
 import { Blockchain } from "./util/blockchain";
-import { BroadcastTxMode } from "./util/tx";
 import { CarbonWallet, CarbonWalletGenericOpts, CarbonSigner, MetaMaskWalletOpts, CarbonLedgerSigner } from "./wallet";
 export { CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletGenericOpts, CarbonWalletInitOpts } from "@carbon-sdk/wallet";
 export { CarbonTx } from "@carbon-sdk/util";
@@ -80,7 +79,7 @@ export interface CarbonSDKInitOpts {
 }
 
 const DEFAULT_SDK_INIT_OPTS: CarbonSDKInitOpts = {
-  network: DEFAULT_NETWORK
+  network: DEFAULT_NETWORK,
 };
 
 /**
