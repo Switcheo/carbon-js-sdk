@@ -45,6 +45,7 @@ export class SubAccountModule extends BaseModule {
     const wallet = this.getWallet();
 
     const value = MsgRemoveSubAccount.fromPartial({
+      creator: wallet.bech32Address,
       mainAddress: params.mainAddress,
       subAddress: params.subAddress,
       role: params.role,
