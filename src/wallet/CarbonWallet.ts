@@ -3,7 +3,7 @@ import { CarbonEvmChainIDs, DEFAULT_FEE_DENOM, DEFAULT_GAS, DEFAULT_NETWORK, Net
 import { ProviderAgent } from "@carbon-sdk/constant/walletProvider";
 import { ChainInfo, CosmosLedger, Keplr, KeplrAccount, LeapAccount, MetaMask } from "@carbon-sdk/provider";
 import { AddressUtils, CarbonTx, GenericUtils } from "@carbon-sdk/util";
-import { SWTHAddress, SWTHAddressOptions } from "@carbon-sdk/util/address";
+import { ETHAddress, SWTHAddress, SWTHAddressOptions } from "@carbon-sdk/util/address";
 import { fetch } from "@carbon-sdk/util/fetch";
 import { QueueManager } from "@carbon-sdk/util/generic";
 import { bnOrZero, BN_ZERO } from "@carbon-sdk/util/number";
@@ -636,6 +636,16 @@ export class CarbonWallet {
     return this.isSigner(CarbonSignerTypes.BrowserInjected);
   }
 
+  isSmartWalletEnabled() {
+    return !!(this.mnemonic || this.privateKey)
+  }
+
+  public getSmartWalletPrivateKey() {
+    if (this.mnemonic) return ETHAddress.mnemonicToPrivateKey(this.mnemonic);
+    if (this.privateKey) return this.privateKey;
+    return null;
+  }
+
   public getGasCost(msgTypeUrl: string) {
     if (!this.txGasCosts) {
       console.warn("tx gas costs not initialized");
@@ -732,6 +742,7 @@ export class CarbonWallet {
       };
     }
   }
+
   public async reloadMergeAccountStatus() {
     if (this.accountMerged) return
     const queryClient = this.getQueryClient()
