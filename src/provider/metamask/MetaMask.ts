@@ -23,6 +23,7 @@ import { LEGACY_ACCOUNTS_MAINNET, LEGACY_ACCOUNTS_TESTNET } from "./legacy-accou
 import detectEthereumProvider from "@metamask/detect-provider";
 import { parseEvmError } from "./error";
 import { carbonNetworkFromChainId } from "@carbon-sdk/util/network";
+import { signTransactionWrapper } from "@carbon-sdk/util/provider";
 
 
 
@@ -754,14 +755,16 @@ export class MetaMask {
     const metamaskAPI = await this.getConnectedAPI();
     const stdSignDoc = makeSignDoc(msgs, fee, evmChainId, memo, accountNumber, sequence)
     const eip712Tx = this.legacyEip712SignMode ? legacyConstructEIP712Tx({ ...stdSignDoc, fee: { ...fee, feePayer } }) : constructEIP712Tx(stdSignDoc)
-    const signature = (await metamaskAPI.request({
-      method: 'eth_signTypedData_v4',
-      params: [
-        evmHexAddress,
-        JSON.stringify(eip712Tx),
-      ],
-    })) as string
-    return signature.split('0x')[1]
+    return await signTransactionWrapper(async () => {
+      const signature = (await metamaskAPI.request({
+        method: 'eth_signTypedData_v4',
+        params: [
+          evmHexAddress,
+          JSON.stringify(eip712Tx),
+        ],
+      })) as string
+      return signature.split('0x')[1]
+    })
   }
 
   async sendEvmTransaction(req: ethers.providers.TransactionRequest, metamaskAPI?: MetaMaskAPI) {

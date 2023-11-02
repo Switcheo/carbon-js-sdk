@@ -12,13 +12,14 @@ import { ETH_SECP256K1_TYPE } from "@carbon-sdk/util/ethermint";
 import { fetch } from "@carbon-sdk/util/fetch";
 import { QueueManager } from "@carbon-sdk/util/generic";
 import { BN_ZERO, bnOrZero } from "@carbon-sdk/util/number";
-import { BroadcastTxMode, CarbonSignerData, CarbonTxError } from "@carbon-sdk/util/tx";
+import { BroadcastTxMode, CarbonCustomError, CarbonSignerData, ErrorType } from "@carbon-sdk/util/tx";
 import { SimpleMap } from "@carbon-sdk/util/type";
 import { StdSignature, encodeSecp256k1Signature } from "@cosmjs/amino";
 import { EncodeObject, OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
-import { Account, DeliverTxResponse, isDeliverTxFailure } from "@cosmjs/stargate";
-import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
-import { BroadcastTxSyncResponse } from "@cosmjs/tendermint-rpc/build/tendermint34/responses";
+import { Account, DeliverTxResponse, TimeoutError, isDeliverTxFailure } from "@cosmjs/stargate";
+import { Tendermint34Client, TxResponse } from "@cosmjs/tendermint-rpc";
+import { BroadcastTxAsyncResponse, BroadcastTxSyncResponse, broadcastTxSyncSuccess } from "@cosmjs/tendermint-rpc/build/tendermint34/responses";
+import { sleep } from "@cosmjs/utils";
 import { Key as LeapKey } from "@cosmos-kit/core";
 import { Leap } from "@cosmos-kit/leap";
 import { Key } from "@keplr-wallet/types";
@@ -29,6 +30,7 @@ import { CarbonSigningClient } from "./CarbonSigningClient";
 
 export interface CarbonWalletGenericOpts {
   tmClient?: Tendermint34Client;
+  txDefaultBroadcastMode?: BroadcastTxMode;
   network?: Network;
   config?: Partial<NetworkConfig>;
   providerAgent?: ProviderAgent | string;
@@ -118,7 +120,7 @@ interface SignTxRequest {
   messages: readonly EncodeObject[];
   broadcastOpts?: CarbonTx.BroadcastTxOpts;
   signOpts?: CarbonTx.SignTxOpts;
-  handler: PromiseHandler<DeliverTxResponse | BroadcastTxSyncResponse>;
+  handler: PromiseHandler<DeliverTxResponse | BroadcastTxSyncResponse | BroadcastTxAsyncResponse>;
 }
 
 interface BroadcastTxRequest extends SignTxRequest {
@@ -157,6 +159,7 @@ export class CarbonWallet {
   txFees?: SimpleMap<BigNumber>;
   txGasCosts?: SimpleMap<BigNumber>;
   txGasPrices?: SimpleMap<BigNumber>;
+  txDefaultBroadCastMode?: BroadcastTxMode;
 
   defaultFeeDenom: string = DEFAULT_FEE_DENOM;
 
@@ -181,6 +184,7 @@ export class CarbonWallet {
   constructor(opts: CarbonWalletInitOpts) {
     const network = opts.network ?? DEFAULT_NETWORK;
     this.network = network;
+    this.txDefaultBroadCastMode = opts.txDefaultBroadcastMode;
     this.networkConfig = NetworkConfigs[network];
     this.configOverride = opts.config ?? {};
     this.providerAgent = opts.providerAgent;
@@ -394,7 +398,7 @@ export class CarbonWallet {
     const isEvmWallet = this.isEvmWallet()
     if (hasEvmAddressBalances && !hasCarbonBalances && !isEvmWallet) {
       this.sequenceInvalidated = true
-      throw new Error('Request rejected.')
+      throw new Error('Transaction is not allowed from a non-evm wallet for an account with only funds in evm address')
     }
   }
 
@@ -410,7 +414,7 @@ export class CarbonWallet {
     const response = await carbonClient.broadcastTx(tx, timeoutMs, pollIntervalMs);
     if (isDeliverTxFailure(response)) {
       // tx failed
-      throw new CarbonTxError(`[${response.code}] ${response.rawLog}`, response);
+      throw new CarbonCustomError(`[${response.code}] ${response.rawLog}`, ErrorType.BLOCK_FAIL, response)
     }
     return response;
   }
@@ -419,18 +423,33 @@ export class CarbonWallet {
    * broadcast TX to mempool but doesnt wait for block confirmation
    *
    */
+  async broadcastTxToMempoolWithoutConfirm(txRaw: CarbonWallet.TxRaw): Promise<CarbonWallet.SendTxToMempoolWithoutConfirmResponse> {
+    const tx = CarbonWallet.TxRaw.encode(txRaw).finish();
+    const tmClient = this.getTmClient();
+    const response = await tmClient.broadcastTxSync({ tx });
+    if (!broadcastTxSyncSuccess(response)) {
+      // tx failed
+      throw new CarbonCustomError(`[${response.code}] ${response.log}`, ErrorType.BROADCAST_FAIL, response);
+    }
+    return response
+  }
+
+  /**
+   * broadcast TX but doesnt wait for block confirmation nor submission to mempool
+   *
+   */
   async broadcastTxWithoutConfirm(txRaw: CarbonWallet.TxRaw): Promise<CarbonWallet.SendTxWithoutConfirmResponse> {
     const tx = CarbonWallet.TxRaw.encode(txRaw).finish();
     const tmClient = this.getTmClient();
-    return tmClient.broadcastTxSync({ tx });
+    return tmClient.broadcastTxAsync({ tx });
   }
 
   async signAndBroadcast(
     messages: EncodeObject[],
     signOpts?: CarbonTx.SignTxOpts,
     broadcastOpts?: CarbonTx.BroadcastTxOpts
-  ): Promise<DeliverTxResponse | BroadcastTxSyncResponse> {
-    const promise = new Promise<DeliverTxResponse | BroadcastTxSyncResponse>((resolve, reject) => {
+  ): Promise<DeliverTxResponse | BroadcastTxSyncResponse | BroadcastTxAsyncResponse> {
+    const promise = new Promise<DeliverTxResponse | BroadcastTxSyncResponse | BroadcastTxAsyncResponse>((resolve, reject) => {
       this.txSignManager.enqueue({
         signerAddress: this.bech32Address,
         messages,
@@ -501,14 +520,22 @@ export class CarbonWallet {
     }
   }
 
+  private getBroadcastFunc(broadcastMode?: BroadcastTxMode) {
+    switch (broadcastMode) {
+      case BroadcastTxMode.BroadcastTxSync: return this.broadcastTxToMempoolWithoutConfirm.bind(this);
+      case BroadcastTxMode.BroadcastTxAsync: return this.broadcastTxWithoutConfirm.bind(this);
+    }
+    return this.broadcastTx.bind(this)
+  }
+
   private async dispatchTx(txRequest: BroadcastTxRequest) {
     const {
       broadcastOpts,
       signedTx,
       handler: { resolve, reject },
     } = txRequest;
-    const broadcastFunc =
-      broadcastOpts?.mode === BroadcastTxMode.BroadcastTxSync ? this.broadcastTxWithoutConfirm.bind(this) : this.broadcastTx.bind(this);
+    const broadcastMode = broadcastOpts?.mode ?? this.txDefaultBroadCastMode;
+    const broadcastFunc = this.getBroadcastFunc(broadcastMode);
     try {
       const result = await broadcastFunc(signedTx, broadcastOpts);
       resolve(result);
@@ -539,7 +566,7 @@ export class CarbonWallet {
       await this.sendInitialMergeAccountTx(msgs, opts)
     }
     try {
-      const result = await this.signAndBroadcast(msgs, opts, { mode: BroadcastTxMode.BroadcastTxBlock })
+      const result = await this.signAndBroadcast(msgs, opts)
       if (msgs[0].typeUrl === CarbonTx.Types.MsgMergeAccount) {
         this.updateMergeAccountStatus()
       }
@@ -585,7 +612,7 @@ export class CarbonWallet {
     }
   }
 
-  async sendTxsWithoutConfirm(msgs: EncodeObject[], opts?: CarbonTx.SignTxOpts): Promise<CarbonWallet.SendTxWithoutConfirmResponse> {
+  async sendTxsWithoutConfirm(msgs: EncodeObject[], opts?: CarbonTx.SignTxOpts): Promise<CarbonWallet.SendTxToMempoolWithoutConfirmResponse> {
     await this.reloadMergeAccountStatus()
     if (this.triggerMerge || opts?.triggerMerge) {
       await this.sendInitialMergeAccountTx(msgs, opts)
@@ -596,6 +623,43 @@ export class CarbonWallet {
 
   async sendTx(msg: EncodeObject, opts?: CarbonTx.SignTxOpts): Promise<CarbonWallet.SendTxResponse> {
     return this.sendTxs([msg], opts);
+  }
+
+  async waitForTx(txHash: string, throwIfNotIncludedInBlock: boolean = false, timeoutMs: number = 60000, pollIntervalMs: number = 100): Promise<TxResponse> {
+    const txId = txHash.toUpperCase()
+    let timedOut = false
+    const txPollTimeout = setTimeout(() => {
+      timedOut = true
+    }, timeoutMs)
+
+    const pollForTx = async (txId: string): Promise<TxResponse> => {
+      try {
+        if (timedOut) {
+          throw new TimeoutError(`Transaction with ID ${txId} was submitted but was not yet found on the chain. You might want to check later. There was a wait of ${timeoutMs / 1000} seconds.`, txId)
+        }
+        const hash = Uint8Array.from(Buffer.from(txId, 'hex'));
+        const response = await this.getTmClient().tx({ hash })
+        const { result } = response
+        const isDeliverTxFailure = result.code !== 0
+        if (isDeliverTxFailure && throwIfNotIncludedInBlock) throw new CarbonCustomError(`[${result.code}] ${result.log}`, ErrorType.BLOCK_FAIL, response)
+        return response
+      } catch (err) {
+        const error = err as Error
+        if (this.isTxHashNotFound(error, txId)) {
+          await sleep(pollIntervalMs)
+          return pollForTx(txId)
+        }
+        throw err
+      }
+    }
+
+    return new Promise((resolve, reject) => pollForTx(txId).then((value) => {
+      clearTimeout(txPollTimeout)
+      resolve(value)
+    }, (error) => {
+      clearTimeout(txPollTimeout)
+      reject(error)
+    }))
   }
 
   getSigningClient(): CarbonSigningClient {
@@ -809,19 +873,21 @@ export class CarbonWallet {
     return error?.message?.includes(`account ${address} not found`);
   };
 
+  private isTxHashNotFound = (error?: Error, hash?: string) => {
+    return error?.message?.includes(`tx (${hash}) not found`);
+  };
+
 
   private isNonceMismatchError = (error?: Error) => {
-    const regex =
-      /^Broadcasting transaction failed with code 32 \(codespace: sdk\)\. Log: account sequence mismatch, expected (\d+), got (\d+): incorrect account sequence/;
-    const match = error?.message.match(regex);
-    if (match) {
+    const errorMessage = 'account sequence mismatch'
+    const includes = error?.message.includes(errorMessage);
+    if (includes) {
       return {
-        expected: match[1],
-        provided: match[2],
+        message: error?.message,
       };
     }
 
-    return false;
+    return false
   };
 
   private getQueryClient(): CarbonQueryClient {
@@ -831,8 +897,9 @@ export class CarbonWallet {
 }
 
 export namespace CarbonWallet {
-  export type SendTxResponse = DeliverTxResponse;
-  export type SendTxWithoutConfirmResponse = BroadcastTxSyncResponse;
+  export type SendTxResponse = DeliverTxResponse | BroadcastTxSyncResponse | BroadcastTxAsyncResponse;
+  export type SendTxToMempoolWithoutConfirmResponse = BroadcastTxSyncResponse;
+  export type SendTxWithoutConfirmResponse = BroadcastTxAsyncResponse;
   export type OnRequestSignCallback = (msgs: readonly EncodeObject[]) => void | Promise<void>;
   export type OnSignCompleteCallback = (signature: StdSignature | null) => void | Promise<void>;
   export type OnBroadcastTxFailCallback = (msgs: readonly EncodeObject[]) => void | Promise<void>;

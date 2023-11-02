@@ -524,6 +524,7 @@ export class AdminModule extends BaseModule {
         loanToValue: params.asset.loanToValue.toString(10),
         liquidationThreshold: params.asset.liquidationThreshold.toString(10),
         liquidationDiscount: params.asset.liquidationDiscount.toString(10),
+        allowRepayStablecoinInterestDebt: params.asset.allowRepayStablecoinInterestDebt,
         supplyCap: params.asset.supplyCap.toString(10),
         borrowCap: params.asset.borrowCap.toString(10),
       },
@@ -926,6 +927,7 @@ export namespace AdminModule {
     liquidationDiscount: BigNumber;
     supplyCap: BigNumber;
     borrowCap: BigNumber;
+    allowRepayStablecoinInterestDebt: boolean;
   }
   export interface AddRateStrategyParams {
     rateStrategy: RateStrategy;
