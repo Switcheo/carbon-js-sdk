@@ -4,6 +4,14 @@ import { CarbonEvmChainIDs, Network } from "@carbon-sdk/constant/network"
 import { SimpleMap } from "./type"
 import { parseChainId } from './ethermint'
 
+export enum SmartWalletBlockchain {
+  Neo = "neo",
+  Ethereum = "eth",
+  BinanceSmartChain = "bsc",
+  Arbitrum = "arbitrum",
+  Polygon = "polygon",
+}
+
 export enum Blockchain {
   Neo = "neo",
   Ethereum = "eth",
