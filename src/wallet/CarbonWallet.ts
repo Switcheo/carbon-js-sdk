@@ -1,31 +1,32 @@
 import { CarbonQueryClient } from "@carbon-sdk/clients";
+import { MsgMergeAccount } from "@carbon-sdk/codec";
+import { BaseAccount } from "@carbon-sdk/codec/cosmos/auth/v1beta1/auth";
+import { ExtensionOptionsWeb3Tx } from "@carbon-sdk/codec/ethermint/types/v1/web3";
 import { CarbonEvmChainIDs, DEFAULT_FEE_DENOM, DEFAULT_GAS, DEFAULT_NETWORK, Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
 import { ProviderAgent } from "@carbon-sdk/constant/walletProvider";
 import { ChainInfo, CosmosLedger, Keplr, KeplrAccount, LeapAccount, MetaMask } from "@carbon-sdk/provider";
 import { AddressUtils, CarbonTx, GenericUtils } from "@carbon-sdk/util";
-import { SWTHAddress, SWTHAddressOptions } from "@carbon-sdk/util/address";
+import { ETHAddress, NEOAddress, SWTHAddress, SWTHAddressOptions } from "@carbon-sdk/util/address";
+import { SmartWalletBlockchain } from "@carbon-sdk/util/blockchain";
+import { ETH_SECP256K1_TYPE } from "@carbon-sdk/util/ethermint";
 import { fetch } from "@carbon-sdk/util/fetch";
 import { QueueManager } from "@carbon-sdk/util/generic";
-import { bnOrZero, BN_ZERO } from "@carbon-sdk/util/number";
-import { BroadcastTxMode, CarbonSignerData, CarbonCustomError, ErrorType } from "@carbon-sdk/util/tx";
+import { BN_ZERO, bnOrZero } from "@carbon-sdk/util/number";
+import { BroadcastTxMode, CarbonCustomError, CarbonSignerData, ErrorType } from "@carbon-sdk/util/tx";
 import { SimpleMap } from "@carbon-sdk/util/type";
-import { encodeSecp256k1Signature, StdSignature } from "@cosmjs/amino";
+import { StdSignature, encodeSecp256k1Signature } from "@cosmjs/amino";
 import { EncodeObject, OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
-import { Account, DeliverTxResponse, isDeliverTxFailure, TimeoutError } from "@cosmjs/stargate";
-import { sleep } from "@cosmjs/utils";
+import { Account, DeliverTxResponse, TimeoutError, isDeliverTxFailure } from "@cosmjs/stargate";
 import { Tendermint34Client, TxResponse } from "@cosmjs/tendermint-rpc";
-import { BroadcastTxSyncResponse, BroadcastTxAsyncResponse, broadcastTxSyncSuccess } from "@cosmjs/tendermint-rpc/build/tendermint34/responses";
+import { BroadcastTxAsyncResponse, BroadcastTxSyncResponse, broadcastTxSyncSuccess } from "@cosmjs/tendermint-rpc/build/tendermint34/responses";
+import { sleep } from "@cosmjs/utils";
+import { Key as LeapKey } from "@cosmos-kit/core";
 import { Leap } from "@cosmos-kit/leap";
 import { Key } from "@keplr-wallet/types";
-import { Key as LeapKey } from "@cosmos-kit/core";
 import BigNumber from "bignumber.js";
 import { TxRaw as StargateTxRaw, TxBody } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import { CarbonEIP712Signer, CarbonLedgerSigner, CarbonNonSigner, CarbonPrivateKeySigner, CarbonSigner, CarbonSignerTypes, isCarbonEIP712Signer } from "./CarbonSigner";
 import { CarbonSigningClient } from "./CarbonSigningClient";
-import { ETH_SECP256K1_TYPE } from "@carbon-sdk/util/ethermint";
-import { ExtensionOptionsWeb3Tx } from "@carbon-sdk/codec/ethermint/types/v1/web3";
-import { BaseAccount } from "@carbon-sdk/codec/cosmos/auth/v1beta1/auth";
-import { MsgMergeAccount } from "@carbon-sdk/codec";
 
 export interface CarbonWalletGenericOpts {
   tmClient?: Tendermint34Client;
@@ -700,6 +701,29 @@ export class CarbonWallet {
     return this.isSigner(CarbonSignerTypes.BrowserInjected);
   }
 
+  isSmartWalletEnabled() {
+    return !!(this.mnemonic || this.privateKey)
+  }
+
+  public getSmartWalletPrivateKey(blockchain: SmartWalletBlockchain = SmartWalletBlockchain.Ethereum) {
+    if (this.mnemonic) {
+      switch (blockchain) {
+        case SmartWalletBlockchain.Ethereum:
+        case SmartWalletBlockchain.Arbitrum:
+        case SmartWalletBlockchain.BinanceSmartChain:
+        case SmartWalletBlockchain.Polygon:
+          return ETHAddress.mnemonicToPrivateKey(this.mnemonic);
+        case SmartWalletBlockchain.Neo:
+          return NEOAddress.mnemonicToPrivateKey(this.mnemonic);
+        default:
+          return null
+      }
+    }
+
+    if (this.privateKey) return this.privateKey;
+    return null;
+  }
+
   public getGasCost(msgTypeUrl: string) {
     if (!this.txGasCosts) {
       console.warn("tx gas costs not initialized");
@@ -796,6 +820,7 @@ export class CarbonWallet {
       };
     }
   }
+
   public async reloadMergeAccountStatus() {
     if (this.accountMerged) return
     const queryClient = this.getQueryClient()
