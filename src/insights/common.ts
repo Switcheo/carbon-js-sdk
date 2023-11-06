@@ -13,12 +13,14 @@ export const InsightsEndpoints = {
   "user/growth": "/user/growth",
   "user/volume": "/user/:address/volume",
 
+
   // Pool api
   "pool/list": "/pool/list",
   "pool/volume": "/pool/:poolId/volume",
   "pools/volume": "/pool/volume",
   "pools/liquidity": "/pool/liquidity",
   "pool/history": "/pool/history",
+  "user/pool/rewards": "/user/:address/pool/rewards",
 
   //market
   "market/volume": "/market/volume",

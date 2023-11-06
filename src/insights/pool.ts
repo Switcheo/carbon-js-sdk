@@ -108,3 +108,28 @@ export interface QueryGetPoolHistoryResponse {
   entries: PositionHistoryEntry[];
   meta: PageMeta;
 }
+
+export interface QueryGetUserRewardsClaimHistoryRequest extends QueryByPageRequest {
+  address: string;
+}
+
+export interface tokenAmounts{
+  denom: string;
+  amount: number;
+  amountValue: number;
+}
+
+export interface ClaimTransactionEntry{
+  address: string;
+  poolId: number;
+  height: number;
+  timestamp: string;
+  hash?: string;
+  tokens: tokenAmounts[];
+
+}
+
+export interface QueryGetUserRewardsClaimHistoryResponse {
+  entries: ClaimTransactionEntry[];
+  meta: PageMeta;
+}
