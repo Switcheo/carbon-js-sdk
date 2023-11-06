@@ -14,7 +14,7 @@ export const protobufPackage = "ibc.applications.transfer.v1";
  * method
  */
 export interface QueryDenomTraceRequest {
-  /** hash (in hex format) or denom (full denom with ibc prefix) of the denomination trace information. */
+  /** hash (in hex format) of the denomination trace information. */
   hash: string;
 }
 
@@ -72,20 +72,6 @@ export interface QueryDenomHashRequest {
 export interface QueryDenomHashResponse {
   /** hash (in hex format) of the denomination trace information. */
   hash: string;
-}
-
-/** QueryEscrowAddressRequest is the request type for the EscrowAddress RPC method. */
-export interface QueryEscrowAddressRequest {
-  /** unique port identifier */
-  portId: string;
-  /** unique channel identifier */
-  channelId: string;
-}
-
-/** QueryEscrowAddressResponse is the response type of the EscrowAddress RPC method. */
-export interface QueryEscrowAddressResponse {
-  /** the escrow account address */
-  escrowAddress: string;
 }
 
 const baseQueryDenomTraceRequest: object = { hash: "" };
@@ -593,147 +579,6 @@ export const QueryDenomHashResponse = {
   },
 };
 
-const baseQueryEscrowAddressRequest: object = { portId: "", channelId: "" };
-
-export const QueryEscrowAddressRequest = {
-  encode(
-    message: QueryEscrowAddressRequest,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.portId !== "") {
-      writer.uint32(10).string(message.portId);
-    }
-    if (message.channelId !== "") {
-      writer.uint32(18).string(message.channelId);
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryEscrowAddressRequest {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryEscrowAddressRequest,
-    } as QueryEscrowAddressRequest;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.portId = reader.string();
-          break;
-        case 2:
-          message.channelId = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): QueryEscrowAddressRequest {
-    const message = {
-      ...baseQueryEscrowAddressRequest,
-    } as QueryEscrowAddressRequest;
-    message.portId =
-      object.portId !== undefined && object.portId !== null
-        ? String(object.portId)
-        : "";
-    message.channelId =
-      object.channelId !== undefined && object.channelId !== null
-        ? String(object.channelId)
-        : "";
-    return message;
-  },
-
-  toJSON(message: QueryEscrowAddressRequest): unknown {
-    const obj: any = {};
-    message.portId !== undefined && (obj.portId = message.portId);
-    message.channelId !== undefined && (obj.channelId = message.channelId);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<QueryEscrowAddressRequest>
-  ): QueryEscrowAddressRequest {
-    const message = {
-      ...baseQueryEscrowAddressRequest,
-    } as QueryEscrowAddressRequest;
-    message.portId = object.portId ?? "";
-    message.channelId = object.channelId ?? "";
-    return message;
-  },
-};
-
-const baseQueryEscrowAddressResponse: object = { escrowAddress: "" };
-
-export const QueryEscrowAddressResponse = {
-  encode(
-    message: QueryEscrowAddressResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.escrowAddress !== "") {
-      writer.uint32(10).string(message.escrowAddress);
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryEscrowAddressResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = {
-      ...baseQueryEscrowAddressResponse,
-    } as QueryEscrowAddressResponse;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.escrowAddress = reader.string();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): QueryEscrowAddressResponse {
-    const message = {
-      ...baseQueryEscrowAddressResponse,
-    } as QueryEscrowAddressResponse;
-    message.escrowAddress =
-      object.escrowAddress !== undefined && object.escrowAddress !== null
-        ? String(object.escrowAddress)
-        : "";
-    return message;
-  },
-
-  toJSON(message: QueryEscrowAddressResponse): unknown {
-    const obj: any = {};
-    message.escrowAddress !== undefined &&
-      (obj.escrowAddress = message.escrowAddress);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<QueryEscrowAddressResponse>
-  ): QueryEscrowAddressResponse {
-    const message = {
-      ...baseQueryEscrowAddressResponse,
-    } as QueryEscrowAddressResponse;
-    message.escrowAddress = object.escrowAddress ?? "";
-    return message;
-  },
-};
-
 /** Query provides defines the gRPC querier service. */
 export interface Query {
   /** DenomTrace queries a denomination trace information. */
@@ -746,10 +591,6 @@ export interface Query {
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse>;
   /** DenomHash queries a denomination hash information. */
   DenomHash(request: QueryDenomHashRequest): Promise<QueryDenomHashResponse>;
-  /** EscrowAddress returns the escrow address for a particular port and channel id. */
-  EscrowAddress(
-    request: QueryEscrowAddressRequest
-  ): Promise<QueryEscrowAddressResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -760,7 +601,6 @@ export class QueryClientImpl implements Query {
     this.DenomTraces = this.DenomTraces.bind(this);
     this.Params = this.Params.bind(this);
     this.DenomHash = this.DenomHash.bind(this);
-    this.EscrowAddress = this.EscrowAddress.bind(this);
   }
   DenomTrace(
     request: QueryDenomTraceRequest
@@ -811,20 +651,6 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryDenomHashResponse.decode(new _m0.Reader(data))
-    );
-  }
-
-  EscrowAddress(
-    request: QueryEscrowAddressRequest
-  ): Promise<QueryEscrowAddressResponse> {
-    const data = QueryEscrowAddressRequest.encode(request).finish();
-    const promise = this.rpc.request(
-      "ibc.applications.transfer.v1.Query",
-      "EscrowAddress",
-      data
-    );
-    return promise.then((data) =>
-      QueryEscrowAddressResponse.decode(new _m0.Reader(data))
     );
   }
 }

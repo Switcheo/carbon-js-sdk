@@ -32,9 +32,8 @@ export interface MsgConnectionOpenInitResponse {}
 export interface MsgConnectionOpenTry {
   clientId: string;
   /**
-   * Deprecated: this field is unused. Crossing hellos are no longer supported in core IBC.
-   *
-   * @deprecated
+   * in the case of crossing hello's, when both chains call OpenInit, we need
+   * the connection identifier of the previous connection in state INIT
    */
   previousConnectionId: string;
   clientState?: Any;

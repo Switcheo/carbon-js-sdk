@@ -1,11 +1,10 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Params } from "../../controller/v1/controller";
-import { Params as Params1 } from "../../host/v1/host";
+import { Params } from "../controller/v1/controller";
+import { Params as Params1 } from "../host/v1/host";
 
-export const protobufPackage =
-  "ibc.applications.interchain_accounts.genesis.v1";
+export const protobufPackage = "ibc.applications.interchain_accounts.v1";
 
 /** GenesisState defines the interchain accounts genesis state */
 export interface GenesisState {
@@ -29,15 +28,11 @@ export interface HostGenesisState {
   params?: Params1;
 }
 
-/**
- * ActiveChannel contains a connection ID, port ID and associated active channel ID, as well as a boolean flag to
- * indicate if the channel is middleware enabled
- */
+/** ActiveChannel contains a connection ID, port ID and associated active channel ID */
 export interface ActiveChannel {
   connectionId: string;
   portId: string;
   channelId: string;
-  isMiddlewareEnabled: boolean;
 }
 
 /** RegisteredInterchainAccount contains a connection ID, port ID and associated interchain account address */
@@ -377,7 +372,6 @@ const baseActiveChannel: object = {
   connectionId: "",
   portId: "",
   channelId: "",
-  isMiddlewareEnabled: false,
 };
 
 export const ActiveChannel = {
@@ -393,9 +387,6 @@ export const ActiveChannel = {
     }
     if (message.channelId !== "") {
       writer.uint32(26).string(message.channelId);
-    }
-    if (message.isMiddlewareEnabled === true) {
-      writer.uint32(32).bool(message.isMiddlewareEnabled);
     }
     return writer;
   },
@@ -415,9 +406,6 @@ export const ActiveChannel = {
           break;
         case 3:
           message.channelId = reader.string();
-          break;
-        case 4:
-          message.isMiddlewareEnabled = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -441,11 +429,6 @@ export const ActiveChannel = {
       object.channelId !== undefined && object.channelId !== null
         ? String(object.channelId)
         : "";
-    message.isMiddlewareEnabled =
-      object.isMiddlewareEnabled !== undefined &&
-      object.isMiddlewareEnabled !== null
-        ? Boolean(object.isMiddlewareEnabled)
-        : false;
     return message;
   },
 
@@ -455,8 +438,6 @@ export const ActiveChannel = {
       (obj.connectionId = message.connectionId);
     message.portId !== undefined && (obj.portId = message.portId);
     message.channelId !== undefined && (obj.channelId = message.channelId);
-    message.isMiddlewareEnabled !== undefined &&
-      (obj.isMiddlewareEnabled = message.isMiddlewareEnabled);
     return obj;
   },
 
@@ -465,7 +446,6 @@ export const ActiveChannel = {
     message.connectionId = object.connectionId ?? "";
     message.portId = object.portId ?? "";
     message.channelId = object.channelId ?? "";
-    message.isMiddlewareEnabled = object.isMiddlewareEnabled ?? false;
     return message;
   },
 };

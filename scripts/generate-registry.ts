@@ -107,12 +107,14 @@ for (const packageName in modules) {
   for (const key of modules[packageName]) {
     const messageAlias = key.split(" ")[2] // "XXX as XXXXX"
     const typeUrl = messageAlias ? `/${packageName}.${key.split(" ")[0].trim()}` : `/${packageName}.${key}`;
-    const messageType = messageAlias ? messageAlias.trim() : key
     const match = typeUrl.match(/^\/Switcheo.carbon.([a-z0-9]+).([A-Za-z0-9]+)$/i);
     const matchAlliance = typeUrl.match(/^\/alliance.alliance.([A-Za-z]+)$/i); // for /alliance.alliance module
+    const messageType = messageAlias ? messageAlias.trim() : key
 
     if ((key.startsWith("Msg") && key !== "MsgClientImpl") || key.startsWith("Header") || key.endsWith("Proposal")) {
-      typeMap[messageType] = typeUrl;
+      const typeKey = (messageType.startsWith("Msg") && matchAlliance) ? messageType.replace(/^Msg/, "MsgAlliance") : messageType;
+
+      typeMap[typeKey] = typeUrl;
       if (match?.[1] && polynetworkFolders.includes(match?.[1])) {
         console.log(`registry.register("${typeUrl}", PolyNetwork.${capitalize(match[1])}.${messageType});`);
       } else if (match?.[1] && carbonFolders.includes(match?.[1])) {

@@ -19,7 +19,7 @@ export class AllianceModule extends BaseModule {
 
     return wallet.sendTx(
       {
-        typeUrl: TxTypes.MsgDelegate,
+        typeUrl: TxTypes.MsgAllianceDelegate,
         value,
       },
       opts
@@ -39,7 +39,7 @@ export class AllianceModule extends BaseModule {
 
     return wallet.sendTx(
       {
-        typeUrl: TxTypes.MsgUndelegate,
+        typeUrl: TxTypes.MsgAllianceUndelegate,
         value,
       },
       opts
@@ -60,7 +60,7 @@ export class AllianceModule extends BaseModule {
 
     return wallet.sendTx(
       {
-        typeUrl: TxTypes.MsgRedelegate,
+        typeUrl: TxTypes.MsgAllianceRedelegate,
         value,
       },
       opts
@@ -76,7 +76,7 @@ export class AllianceModule extends BaseModule {
     });
     return wallet.sendTx(
       {
-        typeUrl: TxTypes.MsgClaimDelegationRewards,
+        typeUrl: TxTypes.MsgAllianceClaimDelegationRewards,
         value,
       },
       opts
@@ -96,7 +96,7 @@ export class AllianceModule extends BaseModule {
         }
       } else {
         return {
-          typeUrl: TxTypes.MsgClaimDelegationRewards,
+          typeUrl: TxTypes.MsgAllianceClaimDelegationRewards,
           value: Carbon.Alliance.MsgClaimDelegationRewards.fromPartial({
             delegatorAddress: params.delegatorAddress ?? wallet.bech32Address,
             validatorAddress: delegation.validatorAddress,

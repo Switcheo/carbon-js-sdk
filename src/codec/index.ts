@@ -23,11 +23,8 @@ import { MsgConnectionOpenInit, MsgConnectionOpenInitResponse, MsgConnectionOpen
 import { MsgChannelOpenInit, MsgChannelOpenInitResponse, MsgChannelOpenTry, MsgChannelOpenTryResponse, MsgChannelOpenAck, MsgChannelOpenAckResponse, MsgChannelOpenConfirm, MsgChannelOpenConfirmResponse, MsgChannelCloseInit, MsgChannelCloseInitResponse, MsgChannelCloseConfirm, MsgChannelCloseConfirmResponse, MsgRecvPacket, MsgRecvPacketResponse, MsgTimeout, MsgTimeoutResponse, MsgTimeoutOnClose, MsgTimeoutOnCloseResponse, MsgAcknowledgement, MsgAcknowledgementResponse } from "./ibc/core/channel/v1/tx";
 import { MsgCreateClient, MsgCreateClientResponse, MsgUpdateClient, MsgUpdateClientResponse, MsgUpgradeClient, MsgUpgradeClientResponse, MsgSubmitMisbehaviour, MsgSubmitMisbehaviourResponse } from "./ibc/core/client/v1/tx";
 import { Header } from "./ibc/lightclients/tendermint/v1/tendermint";
-import { MsgRegisterPayee, MsgRegisterPayeeResponse, MsgRegisterCounterpartyPayee, MsgRegisterCounterpartyPayeeResponse, MsgPayPacketFee, MsgPayPacketFeeResponse, MsgPayPacketFeeAsync, MsgPayPacketFeeAsyncResponse } from "./ibc/applications/fee/v1/tx";
 import { MsgTransfer, MsgTransferResponse } from "./ibc/applications/transfer/v1/tx";
-import { MsgRegisterInterchainAccount, MsgRegisterInterchainAccountResponse, MsgSendTx, MsgSendTxResponse } from "./ibc/applications/interchain_accounts/controller/v1/tx";
-import { MsgUpdateParams as MsgFeemarketUpdateParams, MsgUpdateParamsResponse as MsgFeemarketUpdateParamsResponse } from "./ethermint/feemarket/v1/tx";
-import { MsgEthereumTx as MsgEvmEthereumTx, MsgEthereumTxResponse as MsgEvmEthereumTxResponse, MsgUpdateParams as MsgEvmUpdateParams, MsgUpdateParamsResponse as MsgEvmUpdateParamsResponse } from "./ethermint/evm/v1/tx";
+import { MsgEthereumTx as MsgEvmEthereumTx, MsgEthereumTxResponse as MsgEvmEthereumTxResponse } from "./ethermint/evm/v1/tx";
 import { TextProposal, Proposal } from "./cosmos/gov/v1beta1/gov";
 import { ClientUpdateProposal, UpgradeProposal } from "./ibc/core/client/v1/client";
 
@@ -384,22 +381,8 @@ registry.register("/ibc.core.client.v1.UpgradeProposal", UpgradeProposal);
 
 registry.register("/ibc.lightclients.tendermint.v1.Header", Header);
 
-registry.register("/ibc.applications.fee.v1.MsgRegisterPayee", MsgRegisterPayee);
-registry.register("/ibc.applications.fee.v1.MsgRegisterPayeeResponse", MsgRegisterPayeeResponse);
-registry.register("/ibc.applications.fee.v1.MsgRegisterCounterpartyPayee", MsgRegisterCounterpartyPayee);
-registry.register("/ibc.applications.fee.v1.MsgRegisterCounterpartyPayeeResponse", MsgRegisterCounterpartyPayeeResponse);
-registry.register("/ibc.applications.fee.v1.MsgPayPacketFee", MsgPayPacketFee);
-registry.register("/ibc.applications.fee.v1.MsgPayPacketFeeResponse", MsgPayPacketFeeResponse);
-registry.register("/ibc.applications.fee.v1.MsgPayPacketFeeAsync", MsgPayPacketFeeAsync);
-registry.register("/ibc.applications.fee.v1.MsgPayPacketFeeAsyncResponse", MsgPayPacketFeeAsyncResponse);
-
 registry.register("/ibc.applications.transfer.v1.MsgTransfer", MsgTransfer);
 registry.register("/ibc.applications.transfer.v1.MsgTransferResponse", MsgTransferResponse);
-
-registry.register("/ibc.applications.interchain_accounts.controller.v1.MsgRegisterInterchainAccount", MsgRegisterInterchainAccount);
-registry.register("/ibc.applications.interchain_accounts.controller.v1.MsgRegisterInterchainAccountResponse", MsgRegisterInterchainAccountResponse);
-registry.register("/ibc.applications.interchain_accounts.controller.v1.MsgSendTx", MsgSendTx);
-registry.register("/ibc.applications.interchain_accounts.controller.v1.MsgSendTxResponse", MsgSendTxResponse);
 
 registry.register("/Switcheo.carbon.coin.MsgCreateToken", Carbon.Coin.MsgCreateToken);
 registry.register("/Switcheo.carbon.coin.MsgCreateTokenResponse", Carbon.Coin.MsgCreateTokenResponse);
@@ -451,13 +434,8 @@ registry.register("/Switcheo.carbon.leverage.MsgSetLeverageResponse", Carbon.Lev
 registry.register("/Switcheo.carbon.profile.MsgUpdateProfile", Carbon.Profile.MsgUpdateProfile);
 registry.register("/Switcheo.carbon.profile.MsgUpdateProfileResponse", Carbon.Profile.MsgUpdateProfileResponse);
 
-registry.register("/ethermint.feemarket.v1.MsgUpdateParams", MsgFeemarketUpdateParams);
-registry.register("/ethermint.feemarket.v1.MsgUpdateParamsResponse", MsgFeemarketUpdateParamsResponse);
-
 registry.register("/ethermint.evm.v1.MsgEthereumTx", MsgEvmEthereumTx);
 registry.register("/ethermint.evm.v1.MsgEthereumTxResponse", MsgEvmEthereumTxResponse);
-registry.register("/ethermint.evm.v1.MsgUpdateParams", MsgEvmUpdateParams);
-registry.register("/ethermint.evm.v1.MsgUpdateParamsResponse", MsgEvmUpdateParamsResponse);
 
 registry.register("/Switcheo.carbon.subaccount.MsgCreateSubAccount", Carbon.Subaccount.MsgCreateSubAccount);
 registry.register("/Switcheo.carbon.subaccount.MsgCreateSubAccountResponse", Carbon.Subaccount.MsgCreateSubAccountResponse);
@@ -724,14 +702,14 @@ export const TxTypes = {
   "MsgSetOracleSlashEnabled": "/Switcheo.carbon.oracle.MsgSetOracleSlashEnabled",
   "MsgSetOracleSlashEnabledResponse": "/Switcheo.carbon.oracle.MsgSetOracleSlashEnabledResponse",
   "CreateOracleProposal": "/Switcheo.carbon.oracle.CreateOracleProposal",
-  "MsgDelegate": "/cosmos.staking.v1beta1.MsgDelegate",
-  "MsgDelegateResponse": "/cosmos.staking.v1beta1.MsgDelegateResponse",
-  "MsgUndelegate": "/cosmos.staking.v1beta1.MsgUndelegate",
-  "MsgUndelegateResponse": "/cosmos.staking.v1beta1.MsgUndelegateResponse",
-  "MsgRedelegate": "/alliance.alliance.MsgRedelegate",
-  "MsgRedelegateResponse": "/alliance.alliance.MsgRedelegateResponse",
-  "MsgClaimDelegationRewards": "/alliance.alliance.MsgClaimDelegationRewards",
-  "MsgClaimDelegationRewardsResponse": "/alliance.alliance.MsgClaimDelegationRewardsResponse",
+  "MsgAllianceDelegate": "/alliance.alliance.MsgDelegate",
+  "MsgAllianceDelegateResponse": "/alliance.alliance.MsgDelegateResponse",
+  "MsgAllianceUndelegate": "/alliance.alliance.MsgUndelegate",
+  "MsgAllianceUndelegateResponse": "/alliance.alliance.MsgUndelegateResponse",
+  "MsgAllianceRedelegate": "/alliance.alliance.MsgRedelegate",
+  "MsgAllianceRedelegateResponse": "/alliance.alliance.MsgRedelegateResponse",
+  "MsgAllianceClaimDelegationRewards": "/alliance.alliance.MsgClaimDelegationRewards",
+  "MsgAllianceClaimDelegationRewardsResponse": "/alliance.alliance.MsgClaimDelegationRewardsResponse",
   "MsgSoftwareUpgrade": "/cosmos.upgrade.v1beta1.MsgSoftwareUpgrade",
   "MsgSoftwareUpgradeResponse": "/cosmos.upgrade.v1beta1.MsgSoftwareUpgradeResponse",
   "MsgCancelUpgrade": "/cosmos.upgrade.v1beta1.MsgCancelUpgrade",
@@ -799,8 +777,12 @@ export const TxTypes = {
   "MsgCreateValidatorResponse": "/cosmos.staking.v1beta1.MsgCreateValidatorResponse",
   "MsgEditValidator": "/cosmos.staking.v1beta1.MsgEditValidator",
   "MsgEditValidatorResponse": "/cosmos.staking.v1beta1.MsgEditValidatorResponse",
+  "MsgDelegate": "/cosmos.staking.v1beta1.MsgDelegate",
+  "MsgDelegateResponse": "/cosmos.staking.v1beta1.MsgDelegateResponse",
   "MsgBeginRedelegate": "/cosmos.staking.v1beta1.MsgBeginRedelegate",
   "MsgBeginRedelegateResponse": "/cosmos.staking.v1beta1.MsgBeginRedelegateResponse",
+  "MsgUndelegate": "/cosmos.staking.v1beta1.MsgUndelegate",
+  "MsgUndelegateResponse": "/cosmos.staking.v1beta1.MsgUndelegateResponse",
   "MsgCancelUnbondingDelegation": "/cosmos.staking.v1beta1.MsgCancelUnbondingDelegation",
   "MsgCancelUnbondingDelegationResponse": "/cosmos.staking.v1beta1.MsgCancelUnbondingDelegationResponse",
   "ParameterChangeProposal": "/cosmos.params.v1beta1.ParameterChangeProposal",
@@ -881,20 +863,8 @@ export const TxTypes = {
   "ClientUpdateProposal": "/ibc.core.client.v1.ClientUpdateProposal",
   "UpgradeProposal": "/ibc.core.client.v1.UpgradeProposal",
   "Header": "/ibc.lightclients.tendermint.v1.Header",
-  "MsgRegisterPayee": "/ibc.applications.fee.v1.MsgRegisterPayee",
-  "MsgRegisterPayeeResponse": "/ibc.applications.fee.v1.MsgRegisterPayeeResponse",
-  "MsgRegisterCounterpartyPayee": "/ibc.applications.fee.v1.MsgRegisterCounterpartyPayee",
-  "MsgRegisterCounterpartyPayeeResponse": "/ibc.applications.fee.v1.MsgRegisterCounterpartyPayeeResponse",
-  "MsgPayPacketFee": "/ibc.applications.fee.v1.MsgPayPacketFee",
-  "MsgPayPacketFeeResponse": "/ibc.applications.fee.v1.MsgPayPacketFeeResponse",
-  "MsgPayPacketFeeAsync": "/ibc.applications.fee.v1.MsgPayPacketFeeAsync",
-  "MsgPayPacketFeeAsyncResponse": "/ibc.applications.fee.v1.MsgPayPacketFeeAsyncResponse",
   "MsgTransfer": "/ibc.applications.transfer.v1.MsgTransfer",
   "MsgTransferResponse": "/ibc.applications.transfer.v1.MsgTransferResponse",
-  "MsgRegisterInterchainAccount": "/ibc.applications.interchain_accounts.controller.v1.MsgRegisterInterchainAccount",
-  "MsgRegisterInterchainAccountResponse": "/ibc.applications.interchain_accounts.controller.v1.MsgRegisterInterchainAccountResponse",
-  "MsgSendTx": "/ibc.applications.interchain_accounts.controller.v1.MsgSendTx",
-  "MsgSendTxResponse": "/ibc.applications.interchain_accounts.controller.v1.MsgSendTxResponse",
   "MsgCreateToken": "/Switcheo.carbon.coin.MsgCreateToken",
   "MsgCreateTokenResponse": "/Switcheo.carbon.coin.MsgCreateTokenResponse",
   "MsgSyncToken": "/Switcheo.carbon.coin.MsgSyncToken",
@@ -942,12 +912,8 @@ export const TxTypes = {
   "MsgSetLeverageResponse": "/Switcheo.carbon.leverage.MsgSetLeverageResponse",
   "MsgUpdateProfile": "/Switcheo.carbon.profile.MsgUpdateProfile",
   "MsgUpdateProfileResponse": "/Switcheo.carbon.profile.MsgUpdateProfileResponse",
-  "MsgFeemarketUpdateParams": "/ethermint.feemarket.v1.MsgUpdateParams",
-  "MsgFeemarketUpdateParamsResponse": "/ethermint.feemarket.v1.MsgUpdateParamsResponse",
   "MsgEvmEthereumTx": "/ethermint.evm.v1.MsgEthereumTx",
   "MsgEvmEthereumTxResponse": "/ethermint.evm.v1.MsgEthereumTxResponse",
-  "MsgEvmUpdateParams": "/ethermint.evm.v1.MsgUpdateParams",
-  "MsgEvmUpdateParamsResponse": "/ethermint.evm.v1.MsgUpdateParamsResponse",
   "MsgCreateSubAccount": "/Switcheo.carbon.subaccount.MsgCreateSubAccount",
   "MsgCreateSubAccountResponse": "/Switcheo.carbon.subaccount.MsgCreateSubAccountResponse",
   "MsgActivateSubAccount": "/Switcheo.carbon.subaccount.MsgActivateSubAccount",
@@ -1797,6 +1763,40 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ]
   },
+  "/cosmos.base.query.v1beta1": {
+    "PageRequest": [
+      {
+        "name": "key",
+        "type": "uint8[]"
+      },
+      {
+        "name": "offset",
+        "type": "uint64"
+      },
+      {
+        "name": "limit",
+        "type": "uint64"
+      },
+      {
+        "name": "count_total",
+        "type": "bool"
+      },
+      {
+        "name": "reverse",
+        "type": "bool"
+      }
+    ],
+    "PageResponse": [
+      {
+        "name": "next_key",
+        "type": "uint8[]"
+      },
+      {
+        "name": "total",
+        "type": "uint64"
+      }
+    ]
+  },
   "/cosmos_proto": {
     "InterfaceDescriptor": [
       {
@@ -2596,40 +2596,6 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "dec",
         "type": "string"
-      }
-    ]
-  },
-  "/cosmos.base.query.v1beta1": {
-    "PageRequest": [
-      {
-        "name": "key",
-        "type": "uint8[]"
-      },
-      {
-        "name": "offset",
-        "type": "uint64"
-      },
-      {
-        "name": "limit",
-        "type": "uint64"
-      },
-      {
-        "name": "count_total",
-        "type": "bool"
-      },
-      {
-        "name": "reverse",
-        "type": "bool"
-      }
-    ],
-    "PageResponse": [
-      {
-        "name": "next_key",
-        "type": "uint8[]"
-      },
-      {
-        "name": "total",
-        "type": "uint64"
       }
     ]
   },
@@ -15171,62 +15137,6 @@ export const EIP712Types: { [index: string]: any } = {
     ]
   },
   "/ethermint.evm.v1": {
-    "EventEthereumTx": [
-      {
-        "name": "amount",
-        "type": "string"
-      },
-      {
-        "name": "eth_hash",
-        "type": "string"
-      },
-      {
-        "name": "index",
-        "type": "string"
-      },
-      {
-        "name": "gas_used",
-        "type": "string"
-      },
-      {
-        "name": "hash",
-        "type": "string"
-      },
-      {
-        "name": "recipient",
-        "type": "string"
-      },
-      {
-        "name": "eth_tx_failed",
-        "type": "string"
-      }
-    ],
-    "EventTxLog": [
-      {
-        "name": "tx_logs",
-        "type": "string[]"
-      }
-    ],
-    "EventMessage": [
-      {
-        "name": "module",
-        "type": "string"
-      },
-      {
-        "name": "sender",
-        "type": "string"
-      },
-      {
-        "name": "tx_type",
-        "type": "string"
-      }
-    ],
-    "EventBlockBloom": [
-      {
-        "name": "bloom",
-        "type": "string"
-      }
-    ],
     "Params": [
       {
         "name": "evm_denom",
@@ -15681,18 +15591,6 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "uint64"
       }
     ],
-    "MsgUpdateParams": [
-      {
-        "name": "authority",
-        "type": "string"
-      },
-      {
-        "name": "params",
-        "type": "Params",
-        "packageName": "/ethermint.evm.v1"
-      }
-    ],
-    "MsgUpdateParamsResponse": [],
     "QueryAccountRequest": [
       {
         "name": "address",
@@ -15938,22 +15836,6 @@ export const EIP712Types: { [index: string]: any } = {
     ]
   },
   "/ethermint.feemarket.v1": {
-    "EventFeeMarket": [
-      {
-        "name": "base_fee",
-        "type": "string"
-      }
-    ],
-    "EventBlockGas": [
-      {
-        "name": "height",
-        "type": "string"
-      },
-      {
-        "name": "amount",
-        "type": "string"
-      }
-    ],
     "Params": [
       {
         "name": "no_base_fee",
@@ -15981,14 +15863,6 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "min_gas_multiplier",
-        "type": "string"
-      },
-      {
-        "name": "gas_limit_per_block",
-        "type": "string"
-      },
-      {
-        "name": "max_base_fee",
         "type": "string"
       }
     ],
@@ -16024,19 +15898,7 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "gas",
         "type": "int64"
       }
-    ],
-    "MsgUpdateParams": [
-      {
-        "name": "authority",
-        "type": "string"
-      },
-      {
-        "name": "params",
-        "type": "Params",
-        "packageName": "/ethermint.feemarket.v1"
-      }
-    ],
-    "MsgUpdateParamsResponse": []
+    ]
   },
   "/ethermint.types.v1": {
     "EthAccount": [
@@ -16571,100 +16433,113 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "MsgSyncHeadersResponse": []
   },
-  "/ibc.applications.fee.v1": {
-    "IncentivizedAcknowledgement": [
+  "/ibc.applications.interchain_accounts.controller.v1": {
+    "Params": [
       {
-        "name": "app_acknowledgement",
-        "type": "uint8[]"
-      },
-      {
-        "name": "forward_relayer_address",
-        "type": "string"
-      },
-      {
-        "name": "underlying_app_success",
+        "name": "controller_enabled",
         "type": "bool"
       }
     ],
-    "Fee": [
+    "QueryParamsRequest": [],
+    "QueryParamsResponse": [
       {
-        "name": "recv_fee",
-        "type": "Coin[]",
-        "packageName": "/cosmos.base.v1beta1"
-      },
-      {
-        "name": "ack_fee",
-        "type": "Coin[]",
-        "packageName": "/cosmos.base.v1beta1"
-      },
-      {
-        "name": "timeout_fee",
-        "type": "Coin[]",
-        "packageName": "/cosmos.base.v1beta1"
+        "name": "params",
+        "type": "Params",
+        "packageName": "/ibc.applications.interchain_accounts.controller.v1"
       }
-    ],
-    "PacketFee": [
+    ]
+  },
+  "/ibc.applications.interchain_accounts.host.v1": {
+    "Params": [
       {
-        "name": "fee",
-        "type": "Fee",
-        "packageName": "/ibc.applications.fee.v1"
+        "name": "host_enabled",
+        "type": "bool"
       },
       {
-        "name": "refund_address",
-        "type": "string"
-      },
-      {
-        "name": "relayers",
+        "name": "allow_messages",
         "type": "string[]"
       }
     ],
-    "PacketFees": [
+    "QueryParamsRequest": [],
+    "QueryParamsResponse": [
       {
-        "name": "packet_fees",
-        "type": "PacketFee[]",
-        "packageName": "/ibc.applications.fee.v1"
+        "name": "params",
+        "type": "Params",
+        "packageName": "/ibc.applications.interchain_accounts.host.v1"
       }
-    ],
-    "IdentifiedPacketFees": [
+    ]
+  },
+  "/ibc.applications.interchain_accounts.v1": {
+    "InterchainAccount": [
       {
-        "name": "packet_id",
-        "type": "PacketId",
-        "packageName": "/ibc.core.channel.v1"
+        "name": "base_account",
+        "type": "BaseAccount",
+        "packageName": "/cosmos.auth.v1beta1"
       },
       {
-        "name": "packet_fees",
-        "type": "PacketFee[]",
-        "packageName": "/ibc.applications.fee.v1"
+        "name": "account_owner",
+        "type": "string"
       }
     ],
     "GenesisState": [
       {
-        "name": "identified_fees",
-        "type": "IdentifiedPacketFees[]",
-        "packageName": "/ibc.applications.fee.v1"
+        "name": "controller_genesis_state",
+        "type": "ControllerGenesisState",
+        "packageName": "/ibc.applications.interchain_accounts.v1"
       },
       {
-        "name": "fee_enabled_channels",
-        "type": "FeeEnabledChannel[]",
-        "packageName": "/ibc.applications.fee.v1"
-      },
-      {
-        "name": "registered_payees",
-        "type": "RegisteredPayee[]",
-        "packageName": "/ibc.applications.fee.v1"
-      },
-      {
-        "name": "registered_counterparty_payees",
-        "type": "RegisteredCounterpartyPayee[]",
-        "packageName": "/ibc.applications.fee.v1"
-      },
-      {
-        "name": "forward_relayers",
-        "type": "ForwardRelayerAddress[]",
-        "packageName": "/ibc.applications.fee.v1"
+        "name": "host_genesis_state",
+        "type": "HostGenesisState",
+        "packageName": "/ibc.applications.interchain_accounts.v1"
       }
     ],
-    "FeeEnabledChannel": [
+    "ControllerGenesisState": [
+      {
+        "name": "active_channels",
+        "type": "ActiveChannel[]",
+        "packageName": "/ibc.applications.interchain_accounts.v1"
+      },
+      {
+        "name": "interchain_accounts",
+        "type": "RegisteredInterchainAccount[]",
+        "packageName": "/ibc.applications.interchain_accounts.v1"
+      },
+      {
+        "name": "ports",
+        "type": "string[]"
+      },
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/ibc.applications.interchain_accounts.controller.v1"
+      }
+    ],
+    "HostGenesisState": [
+      {
+        "name": "active_channels",
+        "type": "ActiveChannel[]",
+        "packageName": "/ibc.applications.interchain_accounts.v1"
+      },
+      {
+        "name": "interchain_accounts",
+        "type": "RegisteredInterchainAccount[]",
+        "packageName": "/ibc.applications.interchain_accounts.v1"
+      },
+      {
+        "name": "port",
+        "type": "string"
+      },
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/ibc.applications.interchain_accounts.host.v1"
+      }
+    ],
+    "ActiveChannel": [
+      {
+        "name": "connection_id",
+        "type": "string"
+      },
       {
         "name": "port_id",
         "type": "string"
@@ -16674,300 +16549,191 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
-    "RegisteredPayee": [
+    "RegisteredInterchainAccount": [
       {
-        "name": "channel_id",
+        "name": "connection_id",
         "type": "string"
       },
       {
-        "name": "relayer",
+        "name": "port_id",
         "type": "string"
       },
       {
-        "name": "payee",
+        "name": "account_address",
         "type": "string"
       }
     ],
-    "RegisteredCounterpartyPayee": [
+    "Metadata": [
       {
-        "name": "channel_id",
+        "name": "version",
         "type": "string"
       },
       {
-        "name": "relayer",
+        "name": "controller_connection_id",
         "type": "string"
       },
       {
-        "name": "counterparty_payee",
+        "name": "host_connection_id",
         "type": "string"
-      }
-    ],
-    "ForwardRelayerAddress": [
+      },
       {
         "name": "address",
         "type": "string"
       },
       {
-        "name": "packet_id",
-        "type": "PacketId",
-        "packageName": "/ibc.core.channel.v1"
-      }
-    ],
-    "Metadata": [
-      {
-        "name": "fee_version",
+        "name": "encoding",
         "type": "string"
       },
       {
-        "name": "app_version",
+        "name": "tx_type",
         "type": "string"
       }
     ],
-    "QueryIncentivizedPacketsRequest": [
+    "InterchainAccountPacketData": [
       {
-        "name": "pagination",
-        "type": "PageRequest",
-        "packageName": "/cosmos.base.query.v1beta1"
+        "name": "type",
+        "type": "",
+        "packageName": "/ibc.applications.interchain_accounts.v1"
       },
       {
-        "name": "query_height",
-        "type": "uint64"
-      }
-    ],
-    "QueryIncentivizedPacketsResponse": [
-      {
-        "name": "incentivized_packets",
-        "type": "IdentifiedPacketFees[]",
-        "packageName": "/ibc.applications.fee.v1"
-      }
-    ],
-    "QueryIncentivizedPacketRequest": [
-      {
-        "name": "packet_id",
-        "type": "PacketId",
-        "packageName": "/ibc.core.channel.v1"
+        "name": "data",
+        "type": "uint8[]"
       },
       {
-        "name": "query_height",
-        "type": "uint64"
+        "name": "memo",
+        "type": "string"
       }
     ],
-    "QueryIncentivizedPacketResponse": [
+    "CosmosTx": [
       {
-        "name": "incentivized_packet",
-        "type": "IdentifiedPacketFees",
-        "packageName": "/ibc.applications.fee.v1"
+        "name": "messages",
+        "type": "Any[]",
+        "packageName": "/google.protobuf"
       }
-    ],
-    "QueryIncentivizedPacketsForChannelRequest": [
+    ]
+  },
+  "/ibc.applications.transfer.v1": {
+    "DenomTrace": [
       {
-        "name": "pagination",
-        "type": "PageRequest",
-        "packageName": "/cosmos.base.query.v1beta1"
-      },
-      {
-        "name": "port_id",
+        "name": "path",
         "type": "string"
       },
       {
-        "name": "channel_id",
+        "name": "base_denom",
         "type": "string"
+      }
+    ],
+    "Params": [
+      {
+        "name": "send_enabled",
+        "type": "bool"
       },
       {
-        "name": "query_height",
-        "type": "uint64"
-      }
-    ],
-    "QueryIncentivizedPacketsForChannelResponse": [
-      {
-        "name": "incentivized_packets",
-        "type": "IdentifiedPacketFees[]",
-        "packageName": "/ibc.applications.fee.v1"
-      }
-    ],
-    "QueryTotalRecvFeesRequest": [
-      {
-        "name": "packet_id",
-        "type": "PacketId",
-        "packageName": "/ibc.core.channel.v1"
-      }
-    ],
-    "QueryTotalRecvFeesResponse": [
-      {
-        "name": "recv_fees",
-        "type": "Coin[]",
-        "packageName": "/cosmos.base.v1beta1"
-      }
-    ],
-    "QueryTotalAckFeesRequest": [
-      {
-        "name": "packet_id",
-        "type": "PacketId",
-        "packageName": "/ibc.core.channel.v1"
-      }
-    ],
-    "QueryTotalAckFeesResponse": [
-      {
-        "name": "ack_fees",
-        "type": "Coin[]",
-        "packageName": "/cosmos.base.v1beta1"
-      }
-    ],
-    "QueryTotalTimeoutFeesRequest": [
-      {
-        "name": "packet_id",
-        "type": "PacketId",
-        "packageName": "/ibc.core.channel.v1"
-      }
-    ],
-    "QueryTotalTimeoutFeesResponse": [
-      {
-        "name": "timeout_fees",
-        "type": "Coin[]",
-        "packageName": "/cosmos.base.v1beta1"
-      }
-    ],
-    "QueryPayeeRequest": [
-      {
-        "name": "channel_id",
-        "type": "string"
-      },
-      {
-        "name": "relayer",
-        "type": "string"
-      }
-    ],
-    "QueryPayeeResponse": [
-      {
-        "name": "payee_address",
-        "type": "string"
-      }
-    ],
-    "QueryCounterpartyPayeeRequest": [
-      {
-        "name": "channel_id",
-        "type": "string"
-      },
-      {
-        "name": "relayer",
-        "type": "string"
-      }
-    ],
-    "QueryCounterpartyPayeeResponse": [
-      {
-        "name": "counterparty_payee",
-        "type": "string"
-      }
-    ],
-    "QueryFeeEnabledChannelsRequest": [
-      {
-        "name": "pagination",
-        "type": "PageRequest",
-        "packageName": "/cosmos.base.query.v1beta1"
-      },
-      {
-        "name": "query_height",
-        "type": "uint64"
-      }
-    ],
-    "QueryFeeEnabledChannelsResponse": [
-      {
-        "name": "fee_enabled_channels",
-        "type": "FeeEnabledChannel[]",
-        "packageName": "/ibc.applications.fee.v1"
-      }
-    ],
-    "QueryFeeEnabledChannelRequest": [
-      {
-        "name": "port_id",
-        "type": "string"
-      },
-      {
-        "name": "channel_id",
-        "type": "string"
-      }
-    ],
-    "QueryFeeEnabledChannelResponse": [
-      {
-        "name": "fee_enabled",
+        "name": "receive_enabled",
         "type": "bool"
       }
     ],
-    "MsgRegisterPayee": [
+    "GenesisState": [
       {
         "name": "port_id",
         "type": "string"
       },
       {
-        "name": "channel_id",
-        "type": "string"
+        "name": "denom_traces",
+        "type": "DenomTrace[]",
+        "packageName": "/ibc.applications.transfer.v1"
       },
       {
-        "name": "relayer",
-        "type": "string"
-      },
+        "name": "params",
+        "type": "Params",
+        "packageName": "/ibc.applications.transfer.v1"
+      }
+    ],
+    "QueryDenomTraceRequest": [
       {
-        "name": "payee",
+        "name": "hash",
         "type": "string"
       }
     ],
-    "MsgRegisterPayeeResponse": [],
-    "MsgRegisterCounterpartyPayee": [
+    "QueryDenomTraceResponse": [
       {
-        "name": "port_id",
-        "type": "string"
+        "name": "denom_trace",
+        "type": "DenomTrace",
+        "packageName": "/ibc.applications.transfer.v1"
+      }
+    ],
+    "QueryDenomTracesRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryDenomTracesResponse": [
+      {
+        "name": "denom_traces",
+        "type": "DenomTrace[]",
+        "packageName": "/ibc.applications.transfer.v1"
       },
       {
-        "name": "channel_id",
-        "type": "string"
-      },
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryParamsRequest": [],
+    "QueryParamsResponse": [
       {
-        "name": "relayer",
-        "type": "string"
-      },
+        "name": "params",
+        "type": "Params",
+        "packageName": "/ibc.applications.transfer.v1"
+      }
+    ],
+    "QueryDenomHashRequest": [
       {
-        "name": "counterparty_payee",
+        "name": "trace",
         "type": "string"
       }
     ],
-    "MsgRegisterCounterpartyPayeeResponse": [],
-    "MsgPayPacketFee": [
+    "QueryDenomHashResponse": [
       {
-        "name": "fee",
-        "type": "Fee",
-        "packageName": "/ibc.applications.fee.v1"
-      },
-      {
-        "name": "source_port_id",
+        "name": "hash",
         "type": "string"
-      },
-      {
-        "name": "source_channel_id",
-        "type": "string"
-      },
-      {
-        "name": "signer",
-        "type": "string"
-      },
-      {
-        "name": "relayers",
-        "type": "string[]"
       }
     ],
-    "MsgPayPacketFeeResponse": [],
-    "MsgPayPacketFeeAsync": [
+    "MsgTransfer": [
       {
-        "name": "packet_id",
-        "type": "PacketId",
-        "packageName": "/ibc.core.channel.v1"
+        "name": "source_port",
+        "type": "string"
       },
       {
-        "name": "packet_fee",
-        "type": "PacketFee",
-        "packageName": "/ibc.applications.fee.v1"
+        "name": "source_channel",
+        "type": "string"
+      },
+      {
+        "name": "token",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "sender",
+        "type": "string"
+      },
+      {
+        "name": "receiver",
+        "type": "string"
+      },
+      {
+        "name": "timeout_height",
+        "type": "Height",
+        "packageName": "/ibc.core.client.v1"
+      },
+      {
+        "name": "timeout_timestamp",
+        "type": "uint64"
       }
     ],
-    "MsgPayPacketFeeAsyncResponse": []
+    "MsgTransferResponse": []
   },
   "/ibc.core.client.v1": {
     "IdentifiedClientState": [
@@ -17207,29 +16973,6 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/cosmos.base.query.v1beta1"
       }
     ],
-    "QueryConsensusStateHeightsRequest": [
-      {
-        "name": "client_id",
-        "type": "string"
-      },
-      {
-        "name": "pagination",
-        "type": "PageRequest",
-        "packageName": "/cosmos.base.query.v1beta1"
-      }
-    ],
-    "QueryConsensusStateHeightsResponse": [
-      {
-        "name": "consensus_state_heights",
-        "type": "Height[]",
-        "packageName": "/ibc.core.client.v1"
-      },
-      {
-        "name": "pagination",
-        "type": "PageResponse",
-        "packageName": "/cosmos.base.query.v1beta1"
-      }
-    ],
     "QueryClientStatusRequest": [
       {
         "name": "client_id",
@@ -17344,6 +17087,26 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ],
     "MsgSubmitMisbehaviourResponse": []
+  },
+  "/ibc.applications.transfer.v2": {
+    "FungibleTokenPacketData": [
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "amount",
+        "type": "string"
+      },
+      {
+        "name": "sender",
+        "type": "string"
+      },
+      {
+        "name": "receiver",
+        "type": "string"
+      }
+    ]
   },
   "/ibc.core.channel.v1": {
     "Channel": [
@@ -17465,20 +17228,6 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "data",
         "type": "uint8[]"
-      }
-    ],
-    "PacketId": [
-      {
-        "name": "port_id",
-        "type": "string"
-      },
-      {
-        "name": "channel_id",
-        "type": "string"
-      },
-      {
-        "name": "sequence",
-        "type": "uint64"
       }
     ],
     "Acknowledgement": [
@@ -17937,10 +17686,6 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "channel_id",
         "type": "string"
-      },
-      {
-        "name": "version",
-        "type": "string"
       }
     ],
     "MsgChannelOpenTry": [
@@ -17975,12 +17720,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
-    "MsgChannelOpenTryResponse": [
-      {
-        "name": "version",
-        "type": "string"
-      }
-    ],
+    "MsgChannelOpenTryResponse": [],
     "MsgChannelOpenAck": [
       {
         "name": "port_id",
@@ -18198,424 +17938,6 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "result",
         "type": "",
         "packageName": "/ibc.core.channel.v1"
-      }
-    ]
-  },
-  "/ibc.applications.interchain_accounts.controller.v1": {
-    "Params": [
-      {
-        "name": "controller_enabled",
-        "type": "bool"
-      }
-    ],
-    "QueryInterchainAccountRequest": [
-      {
-        "name": "owner",
-        "type": "string"
-      },
-      {
-        "name": "connection_id",
-        "type": "string"
-      }
-    ],
-    "QueryInterchainAccountResponse": [
-      {
-        "name": "address",
-        "type": "string"
-      }
-    ],
-    "QueryParamsRequest": [],
-    "QueryParamsResponse": [
-      {
-        "name": "params",
-        "type": "Params",
-        "packageName": "/ibc.applications.interchain_accounts.controller.v1"
-      }
-    ],
-    "MsgRegisterInterchainAccount": [
-      {
-        "name": "owner",
-        "type": "string"
-      },
-      {
-        "name": "connection_id",
-        "type": "string"
-      },
-      {
-        "name": "version",
-        "type": "string"
-      }
-    ],
-    "MsgRegisterInterchainAccountResponse": [
-      {
-        "name": "channel_id",
-        "type": "string"
-      }
-    ],
-    "MsgSendTx": [
-      {
-        "name": "owner",
-        "type": "string"
-      },
-      {
-        "name": "connection_id",
-        "type": "string"
-      },
-      {
-        "name": "packet_data",
-        "type": "InterchainAccountPacketData",
-        "packageName": "/ibc.applications.interchain_accounts.v1"
-      },
-      {
-        "name": "relative_timeout",
-        "type": "uint64"
-      }
-    ],
-    "MsgSendTxResponse": [
-      {
-        "name": "sequence",
-        "type": "uint64"
-      }
-    ]
-  },
-  "/ibc.applications.interchain_accounts.v1": {
-    "InterchainAccountPacketData": [
-      {
-        "name": "type",
-        "type": "",
-        "packageName": "/ibc.applications.interchain_accounts.v1"
-      },
-      {
-        "name": "data",
-        "type": "uint8[]"
-      },
-      {
-        "name": "memo",
-        "type": "string"
-      }
-    ],
-    "CosmosTx": [
-      {
-        "name": "messages",
-        "type": "Any[]",
-        "packageName": "/google.protobuf"
-      }
-    ],
-    "InterchainAccount": [
-      {
-        "name": "base_account",
-        "type": "BaseAccount",
-        "packageName": "/cosmos.auth.v1beta1"
-      },
-      {
-        "name": "account_owner",
-        "type": "string"
-      }
-    ],
-    "Metadata": [
-      {
-        "name": "version",
-        "type": "string"
-      },
-      {
-        "name": "controller_connection_id",
-        "type": "string"
-      },
-      {
-        "name": "host_connection_id",
-        "type": "string"
-      },
-      {
-        "name": "address",
-        "type": "string"
-      },
-      {
-        "name": "encoding",
-        "type": "string"
-      },
-      {
-        "name": "tx_type",
-        "type": "string"
-      }
-    ]
-  },
-  "/ibc.applications.interchain_accounts.host.v1": {
-    "Params": [
-      {
-        "name": "host_enabled",
-        "type": "bool"
-      },
-      {
-        "name": "allow_messages",
-        "type": "string[]"
-      }
-    ],
-    "QueryParamsRequest": [],
-    "QueryParamsResponse": [
-      {
-        "name": "params",
-        "type": "Params",
-        "packageName": "/ibc.applications.interchain_accounts.host.v1"
-      }
-    ]
-  },
-  "/ibc.applications.interchain_accounts.genesis.v1": {
-    "GenesisState": [
-      {
-        "name": "controller_genesis_state",
-        "type": "ControllerGenesisState",
-        "packageName": "/ibc.applications.interchain_accounts.genesis.v1"
-      },
-      {
-        "name": "host_genesis_state",
-        "type": "HostGenesisState",
-        "packageName": "/ibc.applications.interchain_accounts.genesis.v1"
-      }
-    ],
-    "ControllerGenesisState": [
-      {
-        "name": "active_channels",
-        "type": "ActiveChannel[]",
-        "packageName": "/ibc.applications.interchain_accounts.genesis.v1"
-      },
-      {
-        "name": "interchain_accounts",
-        "type": "RegisteredInterchainAccount[]",
-        "packageName": "/ibc.applications.interchain_accounts.genesis.v1"
-      },
-      {
-        "name": "ports",
-        "type": "string[]"
-      },
-      {
-        "name": "params",
-        "type": "Params",
-        "packageName": "/ibc.applications.interchain_accounts.controller.v1"
-      }
-    ],
-    "HostGenesisState": [
-      {
-        "name": "active_channels",
-        "type": "ActiveChannel[]",
-        "packageName": "/ibc.applications.interchain_accounts.genesis.v1"
-      },
-      {
-        "name": "interchain_accounts",
-        "type": "RegisteredInterchainAccount[]",
-        "packageName": "/ibc.applications.interchain_accounts.genesis.v1"
-      },
-      {
-        "name": "port",
-        "type": "string"
-      },
-      {
-        "name": "params",
-        "type": "Params",
-        "packageName": "/ibc.applications.interchain_accounts.host.v1"
-      }
-    ],
-    "ActiveChannel": [
-      {
-        "name": "connection_id",
-        "type": "string"
-      },
-      {
-        "name": "port_id",
-        "type": "string"
-      },
-      {
-        "name": "channel_id",
-        "type": "string"
-      },
-      {
-        "name": "is_middleware_enabled",
-        "type": "bool"
-      }
-    ],
-    "RegisteredInterchainAccount": [
-      {
-        "name": "connection_id",
-        "type": "string"
-      },
-      {
-        "name": "port_id",
-        "type": "string"
-      },
-      {
-        "name": "account_address",
-        "type": "string"
-      }
-    ]
-  },
-  "/ibc.applications.transfer.v1": {
-    "DenomTrace": [
-      {
-        "name": "path",
-        "type": "string"
-      },
-      {
-        "name": "base_denom",
-        "type": "string"
-      }
-    ],
-    "Params": [
-      {
-        "name": "send_enabled",
-        "type": "bool"
-      },
-      {
-        "name": "receive_enabled",
-        "type": "bool"
-      }
-    ],
-    "GenesisState": [
-      {
-        "name": "port_id",
-        "type": "string"
-      },
-      {
-        "name": "denom_traces",
-        "type": "DenomTrace[]",
-        "packageName": "/ibc.applications.transfer.v1"
-      },
-      {
-        "name": "params",
-        "type": "Params",
-        "packageName": "/ibc.applications.transfer.v1"
-      }
-    ],
-    "QueryDenomTraceRequest": [
-      {
-        "name": "hash",
-        "type": "string"
-      }
-    ],
-    "QueryDenomTraceResponse": [
-      {
-        "name": "denom_trace",
-        "type": "DenomTrace",
-        "packageName": "/ibc.applications.transfer.v1"
-      }
-    ],
-    "QueryDenomTracesRequest": [
-      {
-        "name": "pagination",
-        "type": "PageRequest",
-        "packageName": "/cosmos.base.query.v1beta1"
-      }
-    ],
-    "QueryDenomTracesResponse": [
-      {
-        "name": "denom_traces",
-        "type": "DenomTrace[]",
-        "packageName": "/ibc.applications.transfer.v1"
-      },
-      {
-        "name": "pagination",
-        "type": "PageResponse",
-        "packageName": "/cosmos.base.query.v1beta1"
-      }
-    ],
-    "QueryParamsRequest": [],
-    "QueryParamsResponse": [
-      {
-        "name": "params",
-        "type": "Params",
-        "packageName": "/ibc.applications.transfer.v1"
-      }
-    ],
-    "QueryDenomHashRequest": [
-      {
-        "name": "trace",
-        "type": "string"
-      }
-    ],
-    "QueryDenomHashResponse": [
-      {
-        "name": "hash",
-        "type": "string"
-      }
-    ],
-    "QueryEscrowAddressRequest": [
-      {
-        "name": "port_id",
-        "type": "string"
-      },
-      {
-        "name": "channel_id",
-        "type": "string"
-      }
-    ],
-    "QueryEscrowAddressResponse": [
-      {
-        "name": "escrow_address",
-        "type": "string"
-      }
-    ],
-    "MsgTransfer": [
-      {
-        "name": "source_port",
-        "type": "string"
-      },
-      {
-        "name": "source_channel",
-        "type": "string"
-      },
-      {
-        "name": "token",
-        "type": "Coin",
-        "packageName": "/cosmos.base.v1beta1"
-      },
-      {
-        "name": "sender",
-        "type": "string"
-      },
-      {
-        "name": "receiver",
-        "type": "string"
-      },
-      {
-        "name": "timeout_height",
-        "type": "Height",
-        "packageName": "/ibc.core.client.v1"
-      },
-      {
-        "name": "timeout_timestamp",
-        "type": "uint64"
-      },
-      {
-        "name": "memo",
-        "type": "string"
-      }
-    ],
-    "MsgTransferResponse": [
-      {
-        "name": "sequence",
-        "type": "uint64"
-      }
-    ]
-  },
-  "/ibc.applications.transfer.v2": {
-    "FungibleTokenPacketData": [
-      {
-        "name": "denom",
-        "type": "string"
-      },
-      {
-        "name": "amount",
-        "type": "string"
-      },
-      {
-        "name": "sender",
-        "type": "string"
-      },
-      {
-        "name": "receiver",
-        "type": "string"
-      },
-      {
-        "name": "memo",
-        "type": "string"
       }
     ]
   },
@@ -19116,14 +18438,6 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "proof_height",
         "type": "Height",
         "packageName": "/ibc.core.client.v1"
-      }
-    ],
-    "QueryConnectionParamsRequest": [],
-    "QueryConnectionParamsResponse": [
-      {
-        "name": "params",
-        "type": "Params",
-        "packageName": "/ibc.core.connection.v1"
       }
     ],
     "MsgConnectionOpenInit": [
@@ -21364,32 +20678,6 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "rewards_weight",
         "type": "string"
-      }
-    ],
-    "RewardCurveChangeEvent": [
-      {
-        "name": "start_time",
-        "type": "string"
-      },
-      {
-        "name": "initial_reward_bps",
-        "type": "uint32"
-      },
-      {
-        "name": "reduction_multiplier_bps",
-        "type": "uint32"
-      },
-      {
-        "name": "reduction_interval_seconds",
-        "type": "uint64"
-      },
-      {
-        "name": "reductions",
-        "type": "uint32"
-      },
-      {
-        "name": "final_reward_bps",
-        "type": "uint32"
       }
     ],
     "CommitmentCurveEvent": [
