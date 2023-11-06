@@ -1801,40 +1801,6 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ]
   },
-  "/cosmos.base.query.v1beta1": {
-    "PageRequest": [
-      {
-        "name": "key",
-        "type": "uint8[]"
-      },
-      {
-        "name": "offset",
-        "type": "uint64"
-      },
-      {
-        "name": "limit",
-        "type": "uint64"
-      },
-      {
-        "name": "count_total",
-        "type": "bool"
-      },
-      {
-        "name": "reverse",
-        "type": "bool"
-      }
-    ],
-    "PageResponse": [
-      {
-        "name": "next_key",
-        "type": "uint8[]"
-      },
-      {
-        "name": "total",
-        "type": "uint64"
-      }
-    ]
-  },
   "/cosmos_proto": {
     "InterfaceDescriptor": [
       {
@@ -2634,6 +2600,40 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "dec",
         "type": "string"
+      }
+    ]
+  },
+  "/cosmos.base.query.v1beta1": {
+    "PageRequest": [
+      {
+        "name": "key",
+        "type": "uint8[]"
+      },
+      {
+        "name": "offset",
+        "type": "uint64"
+      },
+      {
+        "name": "limit",
+        "type": "uint64"
+      },
+      {
+        "name": "count_total",
+        "type": "bool"
+      },
+      {
+        "name": "reverse",
+        "type": "bool"
+      }
+    ],
+    "PageResponse": [
+      {
+        "name": "next_key",
+        "type": "uint8[]"
+      },
+      {
+        "name": "total",
+        "type": "uint64"
       }
     ]
   },
@@ -21368,6 +21368,32 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "rewards_weight",
         "type": "string"
+      }
+    ],
+    "RewardCurveChangeEvent": [
+      {
+        "name": "start_time",
+        "type": "string"
+      },
+      {
+        "name": "initial_reward_bps",
+        "type": "uint32"
+      },
+      {
+        "name": "reduction_multiplier_bps",
+        "type": "uint32"
+      },
+      {
+        "name": "reduction_interval_seconds",
+        "type": "uint64"
+      },
+      {
+        "name": "reductions",
+        "type": "uint32"
+      },
+      {
+        "name": "final_reward_bps",
+        "type": "uint32"
       }
     ],
     "CommitmentCurveEvent": [
