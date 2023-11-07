@@ -179,11 +179,9 @@ class InsightsQueryClient {
   ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetVolumeCompetitionLeaderboardResponse>> {
     const queryParams = {
       competitionId: req.competitionId,
-      ...(req.from && { from: req.from }),
-      ...(req.until && { until: req.until }),
-      ...(req.market && { market: req.market }),
+      ...(req.address && { address: req.address }),
     };
-    const request = this.apiManager.path("competition/leaderboard", {}, queryParams);
+    const request = this.apiManager.path("competition/leaderboardvolume", {}, queryParams);
     const response = await request.get();
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetVolumeCompetitionLeaderboardResponse>;
   }

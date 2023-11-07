@@ -24,25 +24,20 @@ export interface QueryGetCompetitionListRequest {
 
 // Volume Rankings
 export interface VolumeLeaderboardEntry {
-  competitionId: string;
   address: string;
-  market: string;
-  totalVolume: string;
+  volume: string;
   rank: string;
+  tier: string;
   username: string | null;
   twitter: string | null;
 }
-
 export interface QueryGetVolumeCompetitionLeaderboardResponse {
   entries: VolumeLeaderboardEntry[];
-  meta: TimeMeta;
 }
 
 export interface QueryGetVolumeCompetitionLeaderboardRequest {
   competitionId: string;
-  market?: string;
-  from?: string;
-  until?: string;
+  address?: string;
 }
 
 // PNL Rankings
