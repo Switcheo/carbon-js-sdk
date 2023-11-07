@@ -1,8 +1,16 @@
 import { TokenClient } from '@carbon-sdk/clients'
-import { Bridge } from '@carbon-sdk/codec'
+import { Coin } from '@carbon-sdk/codec/carbon-models'
 import { CarbonEvmChainIDs, Network } from "@carbon-sdk/constant/network"
 import { SimpleMap } from "./type"
 import { parseChainId } from './ethermint'
+
+export enum SmartWalletBlockchain {
+  Neo = "neo",
+  Ethereum = "eth",
+  BinanceSmartChain = "bsc",
+  Arbitrum = "arbitrum",
+  Polygon = "polygon",
+}
 
 export enum Blockchain {
   Neo = "neo",
@@ -50,7 +58,7 @@ export const BLOCKCHAIN_V2_TO_V1_MAPPING: SimpleMap<Blockchain> = {
   "OKC": Blockchain.Okc,
   "Zilliqa": Blockchain.Zilliqa,
   "Neo": Blockchain.Neo,
-  "Neo3": Blockchain.Neo3
+  "Neo3": Blockchain.Neo3,
 };
 
 export const BRIDGE_IDS = {
@@ -58,11 +66,11 @@ export const BRIDGE_IDS = {
   ibc: 2,
 }
 
-export interface PolyNetworkBridge extends Bridge {
+export interface PolyNetworkBridge extends Coin.Bridge {
   isEvmChain: boolean;
 }
 
-export interface IbcBridge extends Bridge {
+export interface IbcBridge extends Coin.Bridge {
   chain_id_name: string;
   channels: {
     src_channel: string;
@@ -71,7 +79,7 @@ export interface IbcBridge extends Bridge {
   }
 }
 
-export function isIbcBridge(object: Bridge): object is IbcBridge {
+export function isIbcBridge(object: Coin.Bridge): object is IbcBridge {
   return Object.prototype.hasOwnProperty.call(object, "chain_id_name")
 }
 
@@ -236,7 +244,8 @@ export const blockchainForChainId = (chainId?: number, network = Network.MainNet
           return Blockchain.Terra2
         case 316:
           return Blockchain.Quicksilver
-        case 12: /* FALLTHROUGH */
+        // eslint duplicate case
+        // case 12: /* FALLTHROUGH */
         case 317:
           return Blockchain.Comdex
         case 318:
@@ -383,7 +392,8 @@ export const blockchainForChainIdV2 = (chainId?: number, network = Network.MainN
           return "Terra"
         case 316:
           return "Quicksilver"
-        case 12: /* FALLTHROUGH */
+        // eslint duplicate case 
+        // case 12: /* FALLTHROUGH */
         case 317:
           return "Comdex"
         case 318:

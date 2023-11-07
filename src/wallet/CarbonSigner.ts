@@ -67,7 +67,8 @@ export class CarbonPrivateKeySigner implements DirectCarbonSigner, AminoCarbonSi
     return await wallet.signDirect(signerAddress, signDoc);
   }
 
-  async sendEvmTransaction(api: CarbonSDK, req: ethers.providers.TransactionRequest): Promise<string> {
+
+  async sendEvmTransaction(api: CarbonSDK, req: ethers.providers.TransactionRequest): Promise<string> { // eslint-disable-line
     throw new Error("signing not available");
   }
 }
@@ -82,7 +83,8 @@ export class CarbonNonSigner implements DirectCarbonSigner {
   async signDirect(): Promise<DirectSignResponse> {
     throw new Error("signing not available");
   }
-  async sendEvmTransaction(api: CarbonSDK, req: ethers.providers.TransactionRequest): Promise<string> {
+
+  async sendEvmTransaction(api: CarbonSDK, req: ethers.providers.TransactionRequest): Promise<string> { // eslint-disable-line
     throw new Error("signing not available");
   }
 }
@@ -124,9 +126,10 @@ export class CarbonLedgerSigner implements AminoCarbonSigner {
       signature,
     };
   }
-  async sendEvmTransaction(api: CarbonSDK, req: ethers.providers.TransactionRequest): Promise<string> {
+
+  async sendEvmTransaction(api: CarbonSDK, req: ethers.providers.TransactionRequest): Promise<string> { // eslint-disable-line
     throw new Error("signing not available");
   }
 
-  constructor(readonly ledger: CosmosLedger) {}
+  constructor(readonly ledger: CosmosLedger) { }
 }

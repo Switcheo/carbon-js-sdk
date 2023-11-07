@@ -29,9 +29,6 @@ const pruneTransferProcess: AminoProcess = {
   },
   fromAminoProcess: (amino: AminoValueMap, input: any) => {
     const newInput = input;
-    if (!input.timeoutTimestamp) {
-      newInput.timeoutTimestamp = new Long(0);
-    }
     return { amino, input: newInput };
   },
 };

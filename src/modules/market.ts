@@ -1,4 +1,4 @@
-import { FeeCategory, FeeTier, QueryGetFeeTiersResponse, QueryGetTradingFeesResponse, TradingFees } from "@carbon-sdk/codec";
+import { Carbon } from "@carbon-sdk/CarbonSDK";
 import { Duration } from "@carbon-sdk/codec/google/protobuf/duration";
 import { MsgAddFeeTier, MsgCreateMarket, MsgDisableSpotMarket, MsgRemoveFeeTier, MsgSetStakeEquivalence, MsgUpdateFeeTier, MsgUpdateMarket } from "@carbon-sdk/codec/market/tx";
 import { CarbonTx } from "@carbon-sdk/util";
@@ -7,8 +7,8 @@ import BaseModule from "./base";
 
 export class MarketModule extends BaseModule {
 
-  public async getFeeTiers(marketType: string): Promise<FeeTier[]> {
-    const fetchDataResponse: QueryGetFeeTiersResponse = await this.sdkProvider.query.market.FeeTiers({
+  public async getFeeTiers(marketType: string): Promise<Carbon.Market.FeeTier[]> {
+    const fetchDataResponse: Carbon.Market.QueryGetFeeTiersResponse = await this.sdkProvider.query.market.FeeTiers({
       marketType: marketType,
       marketName: '',
       userAddress: '',
@@ -16,8 +16,8 @@ export class MarketModule extends BaseModule {
     return fetchDataResponse?.feeTiers ?? []
   }
 
-  public async getTradingFees(marketName: string, userAddress: string): Promise<TradingFees> {
-    const fetchDataResponse: QueryGetTradingFeesResponse = await this.sdkProvider.query.market.TradingFees({
+  public async getTradingFees(marketName: string, userAddress: string): Promise<Carbon.Market.TradingFees> {
+    const fetchDataResponse: Carbon.Market.QueryGetTradingFeesResponse = await this.sdkProvider.query.market.TradingFees({
       marketName: marketName,
       userAddress: userAddress,
     })
@@ -135,8 +135,8 @@ export class MarketModule extends BaseModule {
       setter: params.setter,
       stakeEquivalence: {
         ratio: params.stakeEquivalence.ratio.shiftedBy(18).toString(10),
-        denom: params.stakeEquivalence.denom
-      }
+        denom: params.stakeEquivalence.denom,
+      },
     })
     return await wallet.sendTx(
       {
@@ -189,18 +189,18 @@ export namespace MarketModule {
 
   export interface AddFeeTierParams {
     creator: string;
-    feeCategory: FeeCategory;
+    feeCategory: Carbon.Market.FeeCategory;
     feeTier: FeeTierParams;
   }
   export interface UpdateFeeTierParams {
     updater: string;
-    feeCategory: FeeCategory;
+    feeCategory: Carbon.Market.FeeCategory;
     feeTier: FeeTierParams,
   }
 
   export interface RemoveFeeTierParams {
     remover: string;
-    feeCategory: FeeCategory;
+    feeCategory: Carbon.Market.FeeCategory;
     requiredStake: string;
   }
   export interface FeeTierParams {
@@ -218,13 +218,13 @@ export namespace MarketModule {
   }
 }
 
-export function transformFeeTierParams(msg: MarketModule.FeeTierParams): FeeTier {
+export function transformFeeTierParams(msg: MarketModule.FeeTierParams): Carbon.Market.FeeTier {
   return {
     requiredStake: msg.requiredStake,
     tradingFees: {
       makerFee: msg.makerFee.shiftedBy(18).toString(10),
       takerFee: msg.takerFee.shiftedBy(18).toString(10),
-    }
+    },
   }
 }
 

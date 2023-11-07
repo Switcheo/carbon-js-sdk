@@ -15,7 +15,7 @@ export class EvmModule extends BaseModule {
     const wallet = this.getWallet();
 
     const value = MsgEthereumTx.fromPartial({
-      data: constructTxDataAny(req)
+      data: constructTxDataAny(req),
     })
 
     return await wallet.sendTx({
@@ -54,8 +54,8 @@ export class EvmModule extends BaseModule {
           mergeNetsplitBlock: p.chainConfig.mergeNetsplitBlock.toString(10),
           shanghaiBlock: p.chainConfig.shanghaiBlock.toString(10),
           cancunBlock: p.chainConfig.cancunBlock.toString(10),
-        })
-      })
+        }),
+      }),
     });
 
     return await wallet.sendTx({

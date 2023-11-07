@@ -1,6 +1,6 @@
 import CarbonSDK from "@carbon-sdk/CarbonSDK";
 import { NeoNetworkConfig, NetworkConfig, NetworkConfigProvider, ZeroAddress } from "@carbon-sdk/constant";
-import { Models } from "@carbon-sdk/index";
+import { Carbon } from "@carbon-sdk/CarbonSDK";
 import { NeoLedgerAccount } from "@carbon-sdk/provider/account";
 import { O3Types, O3Wallet } from "@carbon-sdk/provider/o3";
 import { AddressUtils } from "@carbon-sdk/util";
@@ -48,7 +48,7 @@ export class NEOClient {
     [Blockchain.Neo]: "Neo",
   };
 
-  private constructor(public readonly configProvider: NetworkConfigProvider, public readonly blockchain: Blockchain) {}
+  private constructor(public readonly configProvider: NetworkConfigProvider, public readonly blockchain: Blockchain) { }
 
   public static instance(opts: NEOClientOpts) {
     const { configProvider, blockchain = Blockchain.Neo } = opts;
@@ -74,24 +74,23 @@ export class NEOClient {
     const tokenQueryResults = await sdk.token.getAllTokens();
     const account = new Neon.wallet.Account(address);
     const tokens = tokenQueryResults.filter(
-      (token) =>
-        {
-          const isCorrectBlockchain = 
-          version === "V2" 
-            ? 
-            !!sdk.token.getBlockchainV2(token.denom) && (BLOCKCHAIN_V2_TO_V1_MAPPING[sdk.token.getBlockchainV2(token.denom)!] == this.blockchain) 
-            : 
+      (token) => {
+        const isCorrectBlockchain =
+          version === "V2"
+            ?
+            !!sdk.token.getBlockchainV2(token.denom) && (BLOCKCHAIN_V2_TO_V1_MAPPING[sdk.token.getBlockchainV2(token.denom)!] == this.blockchain)
+            :
             blockchainForChainId(token.chainId.toNumber(), sdk.network) == this.blockchain
-          return (isCorrectBlockchain || token.denom === "swth") && token.tokenAddress.length == 40 && token.bridgeAddress.length == 40
-        }
+        return (isCorrectBlockchain || token.denom === "swth") && token.tokenAddress.length == 40 && token.bridgeAddress.length == 40
+      }
     );
 
     const client: Neon.rpc.RPCClient = new Neon.rpc.RPCClient(url, "2.5.2"); // TODO: should we change the RPC version??
 
     // NOTE: fetching of tokens is chunked in sets of 15 as we may hit
     // the gas limit on the RPC node and error out otherwise
-    const promises: Promise<{}>[] = chunk(tokens, 75).map(async (partition: ReadonlyArray<Models.Token>) => { // tslint:disable-line
-      let acc: SimpleMap<string> = {};
+    const promises: Promise<SimpleMap<string>>[] = chunk(tokens, 75).map(async (partition: ReadonlyArray<Carbon.Coin.Token>) => {
+      const acc: SimpleMap<string> = {};
       for (const token of partition) {
         if (whitelistDenoms && !whitelistDenoms.includes(token.denom)) continue;
         const sb: Neon.sc.ScriptBuilder = new Neon.sc.ScriptBuilder();
@@ -112,8 +111,8 @@ export class NEOClient {
       return acc;
     });
 
-    const result = await Promise.all(promises).then((results: any[]) => {
-      return results.reduce((acc: {}, res: {}) => ({ ...acc, ...res }), {});
+    const result = await Promise.all(promises).then((results: SimpleMap<string>[]) => {
+      return results.reduce((acc: object, res: object) => ({ ...acc, ...res }), {});
     });
 
     const TokensWithExternalBalance: TokensWithExternalBalance[] = [];
@@ -164,10 +163,7 @@ export class NEOClient {
     ]);
 
     const rpcUrl = await this.getProviderUrl();
-    const apiProvider =
-      networkConfig.network === CarbonSDK.Network.MainNet
-        ? new api.neonDB.instance("https://api.switcheo.network")
-        : new api.neoCli.instance(rpcUrl);
+    const apiProvider = new api.neoCli.instance(rpcUrl)
     return api.doInvoke({
       api: apiProvider,
       url: rpcUrl,
@@ -179,7 +175,7 @@ export class NEOClient {
   }
 
   public async lockO3Deposit(params: LockO3DepositParams) {
-    const { feeAmount, address, amount, token, o3Wallet, signCompleteCallback } = params;
+    const { feeAmount, address, amount, token, o3Wallet } = params;
     if (!o3Wallet.isConnected()) {
       throw new Error("O3 wallet not connected. Please reconnect and try again.");
     }
@@ -258,10 +254,7 @@ export class NEOClient {
     sb.emitAppCall(scriptHash, "lock", data);
 
     const rpcUrl = await this.getProviderUrl();
-    const apiProvider =
-      networkConfig.network === CarbonSDK.Network.MainNet
-        ? new api.neonDB.instance("https://api.switcheo.network")
-        : new api.neoCli.instance(rpcUrl);
+    const apiProvider = new api.neoCli.instance(rpcUrl)
 
     let invokeTxConfig: any = {
       account: {
@@ -344,11 +337,7 @@ export class NEOClient {
     };
 
     const script = Neon.sc.createScript(props);
-    const networkConfig = this.getNetworkConfig();
-    const apiProvider =
-      networkConfig.network === CarbonSDK.Network.MainNet
-        ? new api.neonDB.instance("https://api.switcheo.network")
-        : new api.neoCli.instance(rpcUrl);
+    const apiProvider = new api.neoCli.instance(rpcUrl)
 
     const config = {
       api: apiProvider, // Network
@@ -380,7 +369,7 @@ export class NEOClient {
    *
    * @param token
    */
-  public getTargetProxyHash(token: Models.Token) {
+  public getTargetProxyHash(token: Carbon.Coin.Token) {
     const networkConfig = this.getNetworkConfig();
     const addressBytes = SWTHAddress.getAddressBytes(token.creator, networkConfig.network);
     const addressHex = stripHexPrefix(ethers.utils.hexlify(addressBytes));

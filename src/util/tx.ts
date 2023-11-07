@@ -2,7 +2,7 @@ import { registry, TxTypes } from "@carbon-sdk/codec";
 import * as CosmosModels from "@carbon-sdk/codec/cosmos-models";
 import { DEFAULT_FEE } from "@carbon-sdk/constant";
 import { StdFee } from "@cosmjs/amino";
-import { DeliverTxResponse, SignerData } from "@cosmjs/stargate";
+import { SignerData } from "@cosmjs/stargate";
 import { SWTHAddress, SWTHAddressOptions } from "./address";
 export { StdSignDoc } from "@cosmjs/amino";
 
@@ -37,7 +37,7 @@ const decodeHexList = [...msgUpdateClientInnerFields, ...msgRecvPacketInnerField
 
 const decodeNestedMsg = (obj: any) => {
   for (const key in obj) {
-    let value = obj[key];
+    const value = obj[key];
     if (decodeHexList.includes(key) && value instanceof Uint8Array) {
       obj[key] = Buffer.from(value).toString("hex");
     } else if (
@@ -93,6 +93,7 @@ export const getSender = (decodedTx: Tx, opts?: SWTHAddressOptions): string => {
 
 export enum BroadcastTxMode {
   BroadcastTxSync = "sync",
+  BroadcastTxAsync = "async",
   BroadcastTxBlock = "block",
 }
 
@@ -141,9 +142,19 @@ export interface TxResponse {
   codespace?: string;
 }
 
-export class CarbonTxError extends Error {
-  constructor(msg: string, readonly response: DeliverTxResponse) {
+export enum ErrorType {
+  SIGNATURE_REJECTION = "signature_rejection",
+  BROADCAST_FAIL = "broadcast_fail",
+  BLOCK_FAIL = "block_fail",
+}
+
+export class CarbonCustomError extends Error {
+  readonly type?: ErrorType
+  readonly data?: any
+  constructor(msg: string, type?: ErrorType, data?: any) {
     super(msg);
+    this.type = type
+    this.data = data
   }
 }
 

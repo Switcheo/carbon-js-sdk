@@ -5,7 +5,7 @@ import { AminoInit, ConvertEncType, generateAminoType } from "../utils";
 
 const TxTypes: TypeUtils.SimpleMap<string> = {
   CreateVote: "oracle/CreateVote",
-  CreateOracleProposal: "oracle/CreateOracleProposal"
+  CreateOracleProposal: "oracle/CreateOracleProposal",
 };
 
 const MsgCreateVote: AminoInit = {

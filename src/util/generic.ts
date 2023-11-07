@@ -7,16 +7,13 @@ export const overrideConfig = <T = unknown>(defaults: T, override?: Partial<T>) 
   if (!override) return result;
 
   for (const key of Object.keys(override)) {
-    // @ts-ignore
-    const member = override[key];
+    const member = override[key as keyof Partial<T>];
     if (typeof member === "undefined") continue;
 
     if (typeof member === "object") {
-      // @ts-ignore
-      result[key] = overrideConfig(result[key], member);
+      result[key as keyof Partial<T>] = overrideConfig(result[key as keyof Partial<T>] as any, member as any);
     } else {
-      // @ts-ignore
-      result[key] = member;
+      result[key as keyof Partial<T>] = member as any;
     }
   }
 
@@ -24,14 +21,12 @@ export const overrideConfig = <T = unknown>(defaults: T, override?: Partial<T>) 
 };
 
 export const sortObject = (input: any): unknown => {
-  if (typeof input !== "object") return input;
+  if (typeof input !== "object" || input === null) return input;
   if (Array.isArray(input)) return input.map(sortObject);
 
-  const output = {};
+  const output: Record<string, any> = {};
   Object.keys(input)
     .sort()
-
-    // @ts-ignore noImplicitAny
     .forEach((key) => (output[key] = sortObject(input[key])));
 
   return output;
@@ -159,4 +154,21 @@ export namespace QueueManager {
     triggerDelay?: number;
     maxDelayThreshold?: number;
   }
+}
+
+export const getBestRpcTmClient = async (rpcUrls: string[]): Promise<{ client: Tendermint34Client, rpcUrl: string }> => {
+  for (const rpcUrl of rpcUrls) {
+    try {
+      return {
+        client: await Tendermint34Client.connect(rpcUrl),
+        rpcUrl,
+      };
+    } catch (error) {
+      console.debug("failed to connect RPC:" + rpcUrl)
+      console.debug(error)
+      continue
+    }
+  }
+
+  throw new Error("Could not get available RPC service");
 }

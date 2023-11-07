@@ -28,24 +28,24 @@ export interface QueryAllOracleResponse {
   pagination?: PageResponse;
 }
 
-export interface QueryAllResultRequest {
+export interface QueryResultsRequest {
   oracleId: string;
   pagination?: PageRequest;
 }
 
-export interface QueryAllResultResponse {
+export interface QueryResultsResponse {
   results: Result[];
   pagination?: PageResponse;
 }
 
-export interface QueryAllVoteRequest {
+export interface QueryVotesRequest {
   oracleId: string;
   timestamp: Long;
   voter: string;
   pagination?: PageRequest;
 }
 
-export interface QueryAllVoteResponse {
+export interface QueryVotesResponse {
   votes: Vote[];
   pagination?: PageResponse;
 }
@@ -386,11 +386,11 @@ export const QueryAllOracleResponse = {
   },
 };
 
-const baseQueryAllResultRequest: object = { oracleId: "" };
+const baseQueryResultsRequest: object = { oracleId: "" };
 
-export const QueryAllResultRequest = {
+export const QueryResultsRequest = {
   encode(
-    message: QueryAllResultRequest,
+    message: QueryResultsRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.oracleId !== "") {
@@ -402,13 +402,10 @@ export const QueryAllResultRequest = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryAllResultRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryResultsRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryAllResultRequest } as QueryAllResultRequest;
+    const message = { ...baseQueryResultsRequest } as QueryResultsRequest;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -426,8 +423,8 @@ export const QueryAllResultRequest = {
     return message;
   },
 
-  fromJSON(object: any): QueryAllResultRequest {
-    const message = { ...baseQueryAllResultRequest } as QueryAllResultRequest;
+  fromJSON(object: any): QueryResultsRequest {
+    const message = { ...baseQueryResultsRequest } as QueryResultsRequest;
     message.oracleId =
       object.oracleId !== undefined && object.oracleId !== null
         ? String(object.oracleId)
@@ -439,7 +436,7 @@ export const QueryAllResultRequest = {
     return message;
   },
 
-  toJSON(message: QueryAllResultRequest): unknown {
+  toJSON(message: QueryResultsRequest): unknown {
     const obj: any = {};
     message.oracleId !== undefined && (obj.oracleId = message.oracleId);
     message.pagination !== undefined &&
@@ -449,10 +446,8 @@ export const QueryAllResultRequest = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryAllResultRequest>
-  ): QueryAllResultRequest {
-    const message = { ...baseQueryAllResultRequest } as QueryAllResultRequest;
+  fromPartial(object: DeepPartial<QueryResultsRequest>): QueryResultsRequest {
+    const message = { ...baseQueryResultsRequest } as QueryResultsRequest;
     message.oracleId = object.oracleId ?? "";
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
@@ -462,11 +457,11 @@ export const QueryAllResultRequest = {
   },
 };
 
-const baseQueryAllResultResponse: object = {};
+const baseQueryResultsResponse: object = {};
 
-export const QueryAllResultResponse = {
+export const QueryResultsResponse = {
   encode(
-    message: QueryAllResultResponse,
+    message: QueryResultsResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     for (const v of message.results) {
@@ -484,10 +479,10 @@ export const QueryAllResultResponse = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): QueryAllResultResponse {
+  ): QueryResultsResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryAllResultResponse } as QueryAllResultResponse;
+    const message = { ...baseQueryResultsResponse } as QueryResultsResponse;
     message.results = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
@@ -506,8 +501,8 @@ export const QueryAllResultResponse = {
     return message;
   },
 
-  fromJSON(object: any): QueryAllResultResponse {
-    const message = { ...baseQueryAllResultResponse } as QueryAllResultResponse;
+  fromJSON(object: any): QueryResultsResponse {
+    const message = { ...baseQueryResultsResponse } as QueryResultsResponse;
     message.results = (object.results ?? []).map((e: any) =>
       Result.fromJSON(e)
     );
@@ -518,7 +513,7 @@ export const QueryAllResultResponse = {
     return message;
   },
 
-  toJSON(message: QueryAllResultResponse): unknown {
+  toJSON(message: QueryResultsResponse): unknown {
     const obj: any = {};
     if (message.results) {
       obj.results = message.results.map((e) =>
@@ -534,10 +529,8 @@ export const QueryAllResultResponse = {
     return obj;
   },
 
-  fromPartial(
-    object: DeepPartial<QueryAllResultResponse>
-  ): QueryAllResultResponse {
-    const message = { ...baseQueryAllResultResponse } as QueryAllResultResponse;
+  fromPartial(object: DeepPartial<QueryResultsResponse>): QueryResultsResponse {
+    const message = { ...baseQueryResultsResponse } as QueryResultsResponse;
     message.results = (object.results ?? []).map((e) => Result.fromPartial(e));
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
@@ -547,15 +540,15 @@ export const QueryAllResultResponse = {
   },
 };
 
-const baseQueryAllVoteRequest: object = {
+const baseQueryVotesRequest: object = {
   oracleId: "",
   timestamp: Long.ZERO,
   voter: "",
 };
 
-export const QueryAllVoteRequest = {
+export const QueryVotesRequest = {
   encode(
-    message: QueryAllVoteRequest,
+    message: QueryVotesRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.oracleId !== "") {
@@ -573,10 +566,10 @@ export const QueryAllVoteRequest = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): QueryAllVoteRequest {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryVotesRequest {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryAllVoteRequest } as QueryAllVoteRequest;
+    const message = { ...baseQueryVotesRequest } as QueryVotesRequest;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -600,8 +593,8 @@ export const QueryAllVoteRequest = {
     return message;
   },
 
-  fromJSON(object: any): QueryAllVoteRequest {
-    const message = { ...baseQueryAllVoteRequest } as QueryAllVoteRequest;
+  fromJSON(object: any): QueryVotesRequest {
+    const message = { ...baseQueryVotesRequest } as QueryVotesRequest;
     message.oracleId =
       object.oracleId !== undefined && object.oracleId !== null
         ? String(object.oracleId)
@@ -621,7 +614,7 @@ export const QueryAllVoteRequest = {
     return message;
   },
 
-  toJSON(message: QueryAllVoteRequest): unknown {
+  toJSON(message: QueryVotesRequest): unknown {
     const obj: any = {};
     message.oracleId !== undefined && (obj.oracleId = message.oracleId);
     message.timestamp !== undefined &&
@@ -634,8 +627,8 @@ export const QueryAllVoteRequest = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<QueryAllVoteRequest>): QueryAllVoteRequest {
-    const message = { ...baseQueryAllVoteRequest } as QueryAllVoteRequest;
+  fromPartial(object: DeepPartial<QueryVotesRequest>): QueryVotesRequest {
+    const message = { ...baseQueryVotesRequest } as QueryVotesRequest;
     message.oracleId = object.oracleId ?? "";
     message.timestamp =
       object.timestamp !== undefined && object.timestamp !== null
@@ -650,11 +643,11 @@ export const QueryAllVoteRequest = {
   },
 };
 
-const baseQueryAllVoteResponse: object = {};
+const baseQueryVotesResponse: object = {};
 
-export const QueryAllVoteResponse = {
+export const QueryVotesResponse = {
   encode(
-    message: QueryAllVoteResponse,
+    message: QueryVotesResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     for (const v of message.votes) {
@@ -669,13 +662,10 @@ export const QueryAllVoteResponse = {
     return writer;
   },
 
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): QueryAllVoteResponse {
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueryVotesResponse {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseQueryAllVoteResponse } as QueryAllVoteResponse;
+    const message = { ...baseQueryVotesResponse } as QueryVotesResponse;
     message.votes = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
@@ -694,8 +684,8 @@ export const QueryAllVoteResponse = {
     return message;
   },
 
-  fromJSON(object: any): QueryAllVoteResponse {
-    const message = { ...baseQueryAllVoteResponse } as QueryAllVoteResponse;
+  fromJSON(object: any): QueryVotesResponse {
+    const message = { ...baseQueryVotesResponse } as QueryVotesResponse;
     message.votes = (object.votes ?? []).map((e: any) => Vote.fromJSON(e));
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
@@ -704,7 +694,7 @@ export const QueryAllVoteResponse = {
     return message;
   },
 
-  toJSON(message: QueryAllVoteResponse): unknown {
+  toJSON(message: QueryVotesResponse): unknown {
     const obj: any = {};
     if (message.votes) {
       obj.votes = message.votes.map((e) => (e ? Vote.toJSON(e) : undefined));
@@ -718,8 +708,8 @@ export const QueryAllVoteResponse = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<QueryAllVoteResponse>): QueryAllVoteResponse {
-    const message = { ...baseQueryAllVoteResponse } as QueryAllVoteResponse;
+  fromPartial(object: DeepPartial<QueryVotesResponse>): QueryVotesResponse {
+    const message = { ...baseQueryVotesResponse } as QueryVotesResponse;
     message.votes = (object.votes ?? []).map((e) => Vote.fromPartial(e));
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
@@ -2033,10 +2023,12 @@ export interface Query {
   Oracle(request: QueryOracleRequest): Promise<QueryOracleResponse>;
   /** Get details for all oracles */
   OracleAll(request: QueryAllOracleRequest): Promise<QueryAllOracleResponse>;
-  /** Get all oracle results */
-  ResultAll(request: QueryAllResultRequest): Promise<QueryAllResultResponse>;
-  /** Get all oracle votes */
-  VoteAll(request: QueryAllVoteRequest): Promise<QueryAllVoteResponse>;
+  /** Get results for all oracles, or a specific oracle */
+  Results(request: QueryResultsRequest): Promise<QueryResultsResponse>;
+  /** Get latest result for all oracles */
+  ResultsLatest(request: QueryResultsRequest): Promise<QueryResultsResponse>;
+  /** Get votes for all oracles, or a specific oracle */
+  Votes(request: QueryVotesRequest): Promise<QueryVotesResponse>;
   /** Get voting power for an address */
   VoterPower(request: QueryVoterPowerRequest): Promise<QueryVoterPowerResponse>;
   /** Get all slash counters */
@@ -2073,8 +2065,9 @@ export class QueryClientImpl implements Query {
     this.rpc = rpc;
     this.Oracle = this.Oracle.bind(this);
     this.OracleAll = this.OracleAll.bind(this);
-    this.ResultAll = this.ResultAll.bind(this);
-    this.VoteAll = this.VoteAll.bind(this);
+    this.Results = this.Results.bind(this);
+    this.ResultsLatest = this.ResultsLatest.bind(this);
+    this.Votes = this.Votes.bind(this);
     this.VoterPower = this.VoterPower.bind(this);
     this.SlashCounterAll = this.SlashCounterAll.bind(this);
     this.SlashCounter = this.SlashCounter.bind(this);
@@ -2109,27 +2102,39 @@ export class QueryClientImpl implements Query {
     );
   }
 
-  ResultAll(request: QueryAllResultRequest): Promise<QueryAllResultResponse> {
-    const data = QueryAllResultRequest.encode(request).finish();
+  Results(request: QueryResultsRequest): Promise<QueryResultsResponse> {
+    const data = QueryResultsRequest.encode(request).finish();
     const promise = this.rpc.request(
       "Switcheo.carbon.oracle.Query",
-      "ResultAll",
+      "Results",
       data
     );
     return promise.then((data) =>
-      QueryAllResultResponse.decode(new _m0.Reader(data))
+      QueryResultsResponse.decode(new _m0.Reader(data))
     );
   }
 
-  VoteAll(request: QueryAllVoteRequest): Promise<QueryAllVoteResponse> {
-    const data = QueryAllVoteRequest.encode(request).finish();
+  ResultsLatest(request: QueryResultsRequest): Promise<QueryResultsResponse> {
+    const data = QueryResultsRequest.encode(request).finish();
     const promise = this.rpc.request(
       "Switcheo.carbon.oracle.Query",
-      "VoteAll",
+      "ResultsLatest",
       data
     );
     return promise.then((data) =>
-      QueryAllVoteResponse.decode(new _m0.Reader(data))
+      QueryResultsResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  Votes(request: QueryVotesRequest): Promise<QueryVotesResponse> {
+    const data = QueryVotesRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.oracle.Query",
+      "Votes",
+      data
+    );
+    return promise.then((data) =>
+      QueryVotesResponse.decode(new _m0.Reader(data))
     );
   }
 

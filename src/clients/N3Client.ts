@@ -1,5 +1,5 @@
 import CarbonSDK from "@carbon-sdk/CarbonSDK";
-import { NetworkConfigProvider, ZeroAddress } from "@carbon-sdk/constant";
+import { NetworkConfigProvider } from "@carbon-sdk/constant";
 import { NeoLedgerAccount } from "@carbon-sdk/provider/account";
 import { O3Types, O3Wallet } from "@carbon-sdk/provider/o3";
 import { N3Address, SWTHAddress } from "@carbon-sdk/util/address";
@@ -84,7 +84,7 @@ export class N3Client {
   public static signerFromLedger(ledger: NeoLedgerAccount): N3Signer {
     return {
       scriptHash: ledger.scriptHash,
-      sign: async (txn: tx.Transaction, networkMagic: number = CONST.MAGIC_NUMBER.MainNet, k?: string | number) => {
+      sign: async (txn: tx.Transaction, networkMagic: number = CONST.MAGIC_NUMBER.MainNet) => {
         const signature = await ledger.sign(txn.serialize(false), networkMagic);
         const encodedPublicKey = wallet.getPublicKeyEncoded(ledger.publicKey);
         txn.addWitness(tx.Witness.fromSignature(signature, encodedPublicKey));
@@ -215,7 +215,7 @@ export class N3Client {
   }
 
   public async lockO3Deposit(params: LockO3DepositParams): Promise<string> {
-    const { feeAmount, toAddressHex, amount, token, o3Wallet, signCompleteCallback } = params;
+    const { feeAmount, toAddressHex, amount, token, o3Wallet } = params;
     if (!o3Wallet.isConnected()) {
       throw new Error("O3 wallet not connected. Please reconnect and try again.");
     }
@@ -258,7 +258,7 @@ export class N3Client {
   }
 
   public async lockLedgerDeposit(params: LockLedgerDepositParams) {
-    const { feeAmount, toAddressHex, amount, token, ledger, signCompleteCallback } = params;
+    const { feeAmount, toAddressHex, amount, token, ledger } = params;
 
     const scriptHash = u.reverseHex(token.bridgeAddress);
     const tokenScriptHash = u.reverseHex(token.tokenAddress);

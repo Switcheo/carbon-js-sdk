@@ -1,5 +1,4 @@
 import { CONST } from "@cityofzion/neon-core-next";
-import { SimpleMap } from "../util/type";
 
 export enum Network {
   MainNet = "mainnet",
@@ -66,6 +65,7 @@ export interface NetworkConfig {
   Bech32Prefix: string;
 
   network: Network;
+  chainId: string;
 
   feeAddress: string;
 
@@ -89,6 +89,7 @@ export const NetworkConfigs: {
 } = {
   [Network.MainNet]: {
     network: Network.MainNet,
+    chainId: "carbon-1",
 
     tmRpcUrl: "https://tm-api.carbon.network/",
     tmWsUrl: "wss://tm-api.carbon.network/",
@@ -176,6 +177,7 @@ export const NetworkConfigs: {
 
   [Network.TestNet]: {
     network: Network.TestNet,
+    chainId: "carbon-testnet-42069",
 
     tmRpcUrl: "https://test-tm-api.carbon.network",
     tmWsUrl: "wss://test-tm-api.carbon.network",
@@ -263,6 +265,7 @@ export const NetworkConfigs: {
 
   [Network.DevNet]: {
     network: Network.DevNet,
+    chainId: "carbon-devnet-39911",
 
     tmRpcUrl: "https://dev-tm-api.carbon.network",
     tmWsUrl: "wss://dev-tm-api.carbon.network",
@@ -351,6 +354,7 @@ export const NetworkConfigs: {
 
   [Network.LocalHost]: {
     network: Network.LocalHost,
+    chainId: "carbon-localhost",
 
     tmRpcUrl: "http://localhost:26657",
     tmWsUrl: "ws://localhost:26657",
@@ -361,7 +365,7 @@ export const NetworkConfigs: {
     evmWsUrl: "ws://localhost:8546/",
     insightsUrl: "http://localhost:8181",
     hydrogenUrl: "",
-    wsUrl: "ws://localhost:5000/ws",
+    wsUrl: "ws://localhost:5001/ws",
     faucetUrl: "http://localhost:4500",
 
     Bech32Prefix: "tswth",
@@ -437,8 +441,3 @@ export const NetworkConfigs: {
     },
   },
 } as const;
-
-export const publicRpcNodes: SimpleMap<string> = {
-  Osmosis: "https://rpc.osmosis.zone/",
-  Terra: "https://terra-rpc.lavenderfive.com:443/",
-};

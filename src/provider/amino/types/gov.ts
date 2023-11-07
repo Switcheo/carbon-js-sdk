@@ -1,19 +1,5 @@
 import { MsgSubmitProposal } from "@carbon-sdk/codec/cosmos/gov/v1beta1/tx";
-import {
-  CreateOracleProposal,
-  CreateTokenProposal,
-  SetCommitmentCurveProposal,
-  SetMsgGasCostProposal,
-  SetMinGasPriceProposal,
-  RemoveMsgGasCostProposal,
-  RemoveMinGasPriceProposal,
-  SetRewardCurveProposal,
-  SetRewardsWeightsProposal,
-  SettlementPriceProposal,
-  UpdateMarketProposal,
-  UpdatePoolProposal,
-  UpdateGroupedTokenConfigParams,
-} from "@carbon-sdk/codec";
+import { Carbon } from "@carbon-sdk/CarbonSDK";
 import { GovUtils, TypeUtils } from "@carbon-sdk/util";
 import * as CarbonTx from "@carbon-sdk/util/tx";
 import { AminoConverter } from "@cosmjs/stargate";
@@ -24,7 +10,7 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
   SubmitProposal: "cosmos-sdk/MsgSubmitProposal",
   Deposit: "cosmos-sdk/MsgDeposit",
   Vote: "cosmos-sdk/MsgVote",
-  TextProposal: "cosmos-sdk/TextProposal"
+  TextProposal: "cosmos-sdk/TextProposal",
 };
 
 const ContentTypes: TypeUtils.SimpleMap<string> = {
@@ -72,26 +58,6 @@ const MsgVote: AminoInit = {
   },
 };
 
-const CreateMarket: AminoValueMap = {
-  value: {
-    msg: {
-      basePrecision: ConvertEncType.Long,
-      quotePrecision: ConvertEncType.Long,
-      tickSize: ConvertEncType.Dec,
-      makerFee: ConvertEncType.Dec,
-      takerFee: ConvertEncType.Dec,
-      createdBlockHeight: ConvertEncType.Long,
-      initialMarginBase: ConvertEncType.Dec,
-      initialMarginStep: ConvertEncType.Dec,
-      maintenanceMarginRatio: ConvertEncType.Dec,
-      maxLiquidationOrderDuration: ConvertEncType.Duration,
-      expiryTime: ConvertEncType.Date,
-      closedBlockHeight: ConvertEncType.Long,
-      tradingBandwidth: ConvertEncType.NumToStr,
-    },
-  },
-};
-
 const CreateToken: AminoValueMap = {
   value: {
     msg: {
@@ -109,8 +75,8 @@ const CreateGroup: AminoValueMap = {
       name: ConvertEncType.Long,
       chequeTokenSymbol: ConvertEncType.Long,
       oraclieId: ConvertEncType.Long,
-    }
-  }
+    },
+  },
 }
 
 const UpdateGroup: AminoValueMap = {
@@ -121,8 +87,8 @@ const UpdateGroup: AminoValueMap = {
       updateGroupParams: {
         name: ConvertEncType.Long,
       },
-    }
-  }
+    },
+  },
 }
 
 const RegisterToGroup: AminoValueMap = {
@@ -131,8 +97,8 @@ const RegisterToGroup: AminoValueMap = {
       creator: ConvertEncType.Long,
       groupId: ConvertEncType.Long,
       denom: ConvertEncType.Long,
-    }
-  }
+    },
+  },
 }
 
 const DeregisterFromGroup: AminoValueMap = {
@@ -141,8 +107,8 @@ const DeregisterFromGroup: AminoValueMap = {
       creator: ConvertEncType.Long,
       groupId: ConvertEncType.Long,
       denom: ConvertEncType.Long,
-    }
-  }
+    },
+  },
 }
 
 const UpdateGroupConfig: AminoValueMap = {
@@ -152,9 +118,9 @@ const UpdateGroupConfig: AminoValueMap = {
       denom: ConvertEncType.Long,
       updatedGroupedTokenConfigParams: {
         isActive: ConvertEncType.Long,
-      }
-    }
-  }
+      },
+    },
+  },
 }
 
 const UpdatePool: AminoValueMap = {
@@ -173,14 +139,6 @@ const CreateOracle: AminoValueMap = {
       minTurnoutPercentage: ConvertEncType.Long,
       maxResultAge: ConvertEncType.Long,
       resolution: ConvertEncType.Long,
-    },
-  },
-};
-
-const LinkPool: AminoValueMap = {
-  value: {
-    msg: {
-      poolId: ConvertEncType.Long,
     },
   },
 };
@@ -210,13 +168,6 @@ const SetRewardWeights: AminoValueMap = {
   },
 };
 
-const UnlinkPool: AminoValueMap = {
-  value: {
-    msg: {
-      poolId: ConvertEncType.Long,
-    },
-  },
-};
 
 const UpdateMarket: AminoValueMap = {
   value: {
@@ -334,199 +285,212 @@ const checkDecodeProposal = (content: any, amino: AminoValueMap): AminoProposalR
 
 const checkEncodeProposal = (content: any, amino: AminoValueMap): DirectProposalRes => {
   switch (content.type) {
-    case ContentTypes[GovUtils.ProposalTypes.UpdatePool]:
+    case ContentTypes[GovUtils.ProposalTypes.UpdatePool]: {
       const updatePoolMsg = preProcessAmino(content.value.msg, UpdatePool.value.msg);
-      const updatePoolProp = UpdatePoolProposal.fromPartial({
+      const updatePoolProp = Carbon.Liquiditypool.UpdatePoolProposal.fromPartial({
         ...content.value,
         msg: updatePoolMsg,
       });
       return {
         newContent: {
           typeUrl: GovUtils.ProposalTypes.UpdatePool,
-          value: UpdatePoolProposal.encode(updatePoolProp).finish(),
+          value: Carbon.Liquiditypool.UpdatePoolProposal.encode(updatePoolProp).finish(),
         },
         newAmino: {
           ...amino,
         },
       };
-    case ContentTypes[GovUtils.ProposalTypes.CreateToken]:
+    }
+    case ContentTypes[GovUtils.ProposalTypes.CreateToken]: {
       const createTokenMsg = preProcessAmino(content.value.msg, CreateToken.value.msg);
-      const createTokenProp = CreateTokenProposal.fromPartial({
+      const createTokenProp = Carbon.Coin.CreateTokenProposal.fromPartial({
         ...content.value,
         msg: createTokenMsg,
       });
       return {
         newContent: {
           typeUrl: GovUtils.ProposalTypes.CreateToken,
-          value: CreateTokenProposal.encode(createTokenProp).finish(),
+          value: Carbon.Coin.CreateTokenProposal.encode(createTokenProp).finish(),
         },
         newAmino: {
           ...amino,
         },
       };
-    case ContentTypes[GovUtils.ProposalTypes.SetMsgGasCost]:
+    }
+    case ContentTypes[GovUtils.ProposalTypes.SetMsgGasCost]: {
       const setMsgGasCostMsg = preProcessAmino(content.value.msg, {});
-      const setMsgGasCostProp = SetMsgGasCostProposal.fromPartial({
+      const setMsgGasCostProp = Carbon.Fee.SetMsgGasCostProposal.fromPartial({
         ...content.value,
         msg: setMsgGasCostMsg,
       });
       return {
         newContent: {
           typeUrl: GovUtils.ProposalTypes.SetMsgGasCost,
-          value: SetMsgGasCostProposal.encode(setMsgGasCostProp).finish(),
+          value: Carbon.Fee.SetMsgGasCostProposal.encode(setMsgGasCostProp).finish(),
         },
         newAmino: {
           ...amino,
         },
       };
-    case ContentTypes[GovUtils.ProposalTypes.SetMinGasPrice]:
+    }
+    case ContentTypes[GovUtils.ProposalTypes.SetMinGasPrice]: {
       const setMinGasPriceMsg = preProcessAmino(content.value.msg, {});
-      const setMinGasPriceProp = SetMinGasPriceProposal.fromPartial({
+      const setMinGasPriceProp = Carbon.Fee.SetMinGasPriceProposal.fromPartial({
         ...content.value,
         msg: setMinGasPriceMsg,
       });
       return {
         newContent: {
           typeUrl: GovUtils.ProposalTypes.SetMinGasPrice,
-          value: SetMinGasPriceProposal.encode(setMinGasPriceProp).finish(),
+          value: Carbon.Fee.SetMinGasPriceProposal.encode(setMinGasPriceProp).finish(),
         },
         newAmino: {
           ...amino,
         },
       };
-    case ContentTypes[GovUtils.ProposalTypes.RemoveMsgGasCost]:
+    }
+    case ContentTypes[GovUtils.ProposalTypes.RemoveMsgGasCost]: {
       const removeMsgGasCostMsg = preProcessAmino(content.value.msg, {});
-      const removeMsgGasCostProp = RemoveMsgGasCostProposal.fromPartial({
+      const removeMsgGasCostProp = Carbon.Fee.RemoveMsgGasCostProposal.fromPartial({
         ...content.value,
         msg: removeMsgGasCostMsg,
       });
       return {
         newContent: {
           typeUrl: GovUtils.ProposalTypes.RemoveMsgGasCost,
-          value: RemoveMsgGasCostProposal.encode(removeMsgGasCostProp).finish(),
+          value: Carbon.Fee.RemoveMsgGasCostProposal.encode(removeMsgGasCostProp).finish(),
         },
         newAmino: {
           ...amino,
         },
       };
-    case ContentTypes[GovUtils.ProposalTypes.RemoveMinGasPrice]:
+    }
+    case ContentTypes[GovUtils.ProposalTypes.RemoveMinGasPrice]: {
       const removeMinGasPriceMsg = preProcessAmino(content.value.msg, {});
-      const removeMinGasPriceProp = RemoveMinGasPriceProposal.fromPartial({
+      const removeMinGasPriceProp = Carbon.Fee.RemoveMinGasPriceProposal.fromPartial({
         ...content.value,
         msg: removeMinGasPriceMsg,
       });
       return {
         newContent: {
           typeUrl: GovUtils.ProposalTypes.RemoveMinGasPrice,
-          value: RemoveMinGasPriceProposal.encode(removeMinGasPriceProp).finish(),
+          value: Carbon.Fee.RemoveMinGasPriceProposal.encode(removeMinGasPriceProp).finish(),
         },
         newAmino: {
           ...amino,
         },
       };
-    case ContentTypes[GovUtils.ProposalTypes.SetCommitmentCurve]:
+    }
+    case ContentTypes[GovUtils.ProposalTypes.SetCommitmentCurve]: {
       const setCommitCurveMsg = preProcessAmino(content.value.msg, SetCommitmentCurve.value.msg);
-      const commitCurveProp = SetCommitmentCurveProposal.fromPartial({
+      const commitCurveProp = Carbon.Liquiditypool.SetCommitmentCurveProposal.fromPartial({
         ...content.value,
         msg: setCommitCurveMsg,
       });
       return {
         newContent: {
           typeUrl: GovUtils.ProposalTypes.SetCommitmentCurve,
-          value: SetCommitmentCurveProposal.encode(commitCurveProp).finish(),
+          value: Carbon.Liquiditypool.SetCommitmentCurveProposal.encode(commitCurveProp).finish(),
         },
         newAmino: {
           ...amino,
         },
       };
-    case ContentTypes[GovUtils.ProposalTypes.SetRewardCurve]:
+    }
+    case ContentTypes[GovUtils.ProposalTypes.SetRewardCurve]: {
       const setRewardCurveMsg = preProcessAmino(content.value.msg, SetRewardCurve.value.msg);
-      const rewardCurveProp = SetRewardCurveProposal.fromPartial({
+      const rewardCurveProp = Carbon.Liquiditypool.SetRewardCurveProposal.fromPartial({
         ...content.value,
         msg: setRewardCurveMsg,
       });
       return {
         newContent: {
           typeUrl: GovUtils.ProposalTypes.SetRewardCurve,
-          value: SetRewardCurveProposal.encode(rewardCurveProp).finish(),
+          value: Carbon.Liquiditypool.SetRewardCurveProposal.encode(rewardCurveProp).finish(),
         },
         newAmino: {
           ...amino,
         },
       };
-    case ContentTypes[GovUtils.ProposalTypes.SetRewardsWeights]:
+    }
+    case ContentTypes[GovUtils.ProposalTypes.SetRewardsWeights]: {
       const setRewardWeightsMsg = preProcessAmino(content.value.msg, SetRewardWeights.value.msg);
-      const rewardWeightsProp = SetRewardsWeightsProposal.fromPartial({
+      const rewardWeightsProp = Carbon.Liquiditypool.SetRewardsWeightsProposal.fromPartial({
         ...content.value,
         msg: setRewardWeightsMsg,
       });
       return {
         newContent: {
           typeUrl: GovUtils.ProposalTypes.SetRewardsWeights,
-          value: SetRewardsWeightsProposal.encode(rewardWeightsProp).finish(),
+          value: Carbon.Liquiditypool.SetRewardsWeightsProposal.encode(rewardWeightsProp).finish(),
         },
         newAmino: {
           ...amino,
         },
       };
-    case ContentTypes[GovUtils.ProposalTypes.SettlementPrice]:
+    }
+    case ContentTypes[GovUtils.ProposalTypes.SettlementPrice]: {
       const settlementMsg = preProcessAmino(content.value.msg, SettlementPrice.value.msg);
-      const settlementProp = SettlementPriceProposal.fromPartial({
+      const settlementProp = Carbon.Pricing.SettlementPriceProposal.fromPartial({
         ...content.value,
         msg: settlementMsg,
       });
       return {
         newContent: {
           typeUrl: GovUtils.ProposalTypes.SettlementPrice,
-          value: SettlementPriceProposal.encode(settlementProp).finish(),
+          value: Carbon.Pricing.SettlementPriceProposal.encode(settlementProp).finish(),
         },
         newAmino: {
           ...amino,
         },
       };
-    case ContentTypes[GovUtils.ProposalTypes.CreateOracle]:
+    }
+    case ContentTypes[GovUtils.ProposalTypes.CreateOracle]: {
       const createOracleMsg = preProcessAmino(content.value.msg, CreateOracle.value.msg);
-      const createOracleProp = CreateOracleProposal.fromPartial({
+      const createOracleProp = Carbon.Oracle.CreateOracleProposal.fromPartial({
         ...content.value,
         msg: createOracleMsg,
       });
       return {
         newContent: {
           typeUrl: GovUtils.ProposalTypes.CreateOracle,
-          value: CreateOracleProposal.encode(createOracleProp).finish(),
+          value: Carbon.Oracle.CreateOracleProposal.encode(createOracleProp).finish(),
         },
         newAmino: {
           ...amino,
         },
       };
-    case ContentTypes[GovUtils.ProposalTypes.UpdateMarket]:
+    }
+    case ContentTypes[GovUtils.ProposalTypes.UpdateMarket]: {
       const updateMarketMsg = preProcessAmino(content.value.msg, UpdateMarket.value.msg);
-      const updateMarketProp = UpdateMarketProposal.fromPartial({
+      const updateMarketProp = Carbon.Market.UpdateMarketProposal.fromPartial({
         ...content.value,
         msg: updateMarketMsg,
       });
       return {
         newContent: {
           typeUrl: GovUtils.ProposalTypes.UpdateMarket,
-          value: UpdateMarketProposal.encode(updateMarketProp).finish(),
+          value: Carbon.Market.UpdateMarketProposal.encode(updateMarketProp).finish(),
         },
         newAmino: {
           ...amino,
         },
       };
-      case ContentTypes[GovUtils.ProposalTypes.Text]:
-        const textProposal = TextProposal.fromPartial({
-          ...content.value,
-        });
-        return {
-          newContent: {
-            typeUrl: GovUtils.ProposalTypes.Text,
-            value: TextProposal.encode(textProposal).finish(),
-          },
-          newAmino: {
-            ...amino,
-          },
-        };
+    }
+    case ContentTypes[GovUtils.ProposalTypes.Text]: {
+      const textProposal = TextProposal.fromPartial({
+        ...content.value,
+      });
+      return {
+        newContent: {
+          typeUrl: GovUtils.ProposalTypes.Text,
+          value: TextProposal.encode(textProposal).finish(),
+        },
+        newAmino: {
+          ...amino,
+        },
+      };
+    }
     default:
       return {
         newContent: {
@@ -569,7 +533,7 @@ const GovAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgSubmitProposal]: generateAminoType(SubmitProposalMsg, proposalAminoProcess),
   [CarbonTx.Types.MsgDeposit]: generateAminoType(MsgDeposit),
   [CarbonTx.Types.MsgVote]: generateAminoType(MsgVote),
-  [CarbonTx.Types.TextProposal]: generateAminoType(MsgTextProposal)
+  [CarbonTx.Types.TextProposal]: generateAminoType(MsgTextProposal),
 };
 
 export default GovAmino;

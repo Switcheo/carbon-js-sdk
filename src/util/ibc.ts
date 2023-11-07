@@ -1,4 +1,3 @@
-import { Token } from '@carbon-sdk/codec'
 import {
   ChainInfoExplorerTmRpc,
   ChainIds,
@@ -11,10 +10,8 @@ import {
   swthChannels,
   swthIbcWhitelist,
   ibcNetworkRegex,
-  ChannelConfig,
 } from "@carbon-sdk/constant";
 import { KeplrAccount } from "@carbon-sdk/provider";
-import { BRIDGE_IDS } from "@carbon-sdk/util/blockchain";
 import { Hash } from "@keplr-wallet/crypto";
 import { AppCurrency, CW20Currency, Secret20Currency } from "@keplr-wallet/types";
 import { Blockchain, BlockchainV2 } from "./blockchain";
@@ -55,7 +52,7 @@ export const totalAssetObj: AssetListObj = Object.values(EmbedChainInfos).reduce
     const assetsObj: SimpleMap<AppCurrency> = {};
     const channelsObj = swthChannels[chainInfo.chainId];
     chainInfo.currencies.forEach((currency: AppCurrency) => {
-      const channelSet: ChannelSet | undefined = currency.hasOwnProperty('type') && channelsObj.cw20
+      const channelSet: ChannelSet | undefined = ("type" in currency) && channelsObj.cw20
         ? channelsObj.cw20 as ChannelSet
         : channelsObj.ibc;
       let ibcAddr = currency.coinDenom.toLowerCase() === "swth"
@@ -142,7 +139,7 @@ export const BlockchainMap = Object.values(EmbedChainInfos).reduce(
       if (currency.coinDenom.toLowerCase() === "swth") {
         newPrev[currency.coinMinimalDenom] = ChainIdBlockchainMap[chainInfo.chainId];
       } else {
-        const channelSet: ChannelSet | undefined = currency.hasOwnProperty('type') && channelsObj.cw20
+        const channelSet: ChannelSet | undefined = ("type" in currency) && channelsObj.cw20
           ? channelsObj.cw20 as ChannelSet
           : channelsObj.ibc;
         const ibcAddr = makeIBCMinimalDenom(channelSet?.sourceChannel ?? "channel-0", currency.coinMinimalDenom);
@@ -177,7 +174,7 @@ export const estimateFeeStep = (gasStep: GasPriceStep = DefaultGasPriceStep, gas
 }
 
 export const isCw20Token = (currency: AppCurrency): boolean => {
-  if (!currency.hasOwnProperty("type")) return false;
+  if (!("type" in currency)) return false;
 
   const depositCurrency = currency as CW20Currency | Secret20Currency;
   return depositCurrency.type === "cw20";

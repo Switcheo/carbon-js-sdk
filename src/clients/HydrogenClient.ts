@@ -71,7 +71,6 @@ const formatRelaysTransfers = (value: any): RelaysResponse => {
     created_at: formatDateField(value.created_at?.toString()),
     updated_at: formatDateField(value.updated_at?.toString()),
     source_blockchain: parseHydrogenBlockchain(value.source_blockchain),
-    bridging_blockchain: parseHydrogenBlockchain(value.bridging_blockchain),
     destination_blockchain: parseHydrogenBlockchain(value.destination_blockchain),
   };
 };
@@ -83,7 +82,6 @@ const formatChainEvent = (value: any): ChainTransaction | null => {
     confirmed_at: formatDateField(value.confirmed_at?.toString()),
     created_at: formatDateField(value.created_at?.toString()),
     updated_at: formatDateField(value.updated_at?.toString()),
-    destination_blockchain: parseHydrogenBlockchain(value.destination_blockchain),
     blockchain: parseHydrogenBlockchain(value.blockchain),
   } as ChainTransaction;
 };
@@ -139,9 +137,13 @@ class HydrogenClient {
       source_blockchain: this.tokenClient.getBlockchainV2FromIDs(value.from_chain_id, value.bridge_id),
       bridging_blockchain: getBridgeBlockchainFromId(value.bridge_id),
       destination_blockchain: this.tokenClient.getBlockchainV2FromIDs(value.to_chain_id, value.bridge_id),
+      source_event: this.formatChainEventV2(value.source_event, value.source_blockchain ?? ''),
+      bridging_event: this.formatChainEventV2(value.bridging_event, getBridgeBlockchainFromId(value.bridge_id)),
+      destination_event: this.formatChainEventV2(value.destination_event, value.destination_blockchain ?? ''),
+      relay: this.formatRelaysTransfersV2(value.relay),
     };
   };
-  
+
   public formatCrossChainTransferDetailedV2 = (value: any): CrossChainTransferDetailed => {
     if (!value || typeof value !== "object") return value;
     const source_blockchain = this.tokenClient.getBlockchainV2FromIDs(value.from_chain_id, value.bridge_id)
@@ -154,19 +156,16 @@ class HydrogenClient {
       destination_event: this.formatChainEventV2(value.destination_event, destination_blockchain ?? ''),
     };
   };
-  
+
   public formatRelaysTransfersV2 = (value: any): RelaysResponse => {
     if (!value || typeof value !== "object") return value;
     return {
       ...value,
       created_at: formatDateField(value.created_at?.toString()),
       updated_at: formatDateField(value.updated_at?.toString()),
-      source_blockchain: this.tokenClient.getBlockchainV2FromIDs(value.from_chain_id, value.bridge_id),
-      bridging_blockchain: getBridgeBlockchainFromId(value.bridge_id),
-      destination_blockchain: this.tokenClient.getBlockchainV2FromIDs(value.to_chain_id, value.bridge_id),
     };
   };
-  
+
   public formatChainEventV2 = (value: any, blockchain: BlockchainUtils.BlockchainV2): ChainTransaction | null => {
     if (!value || typeof value !== "object") return value;
     return {
@@ -177,7 +176,7 @@ class HydrogenClient {
       blockchain,
     } as ChainTransaction;
   };
-  
+
   public formatFeeQuoteV2 = (value: any, blockchain: BlockchainUtils.BlockchainV2): GetFeeQuoteResponse => {
     if (typeof value !== "object") return value;
     return {
@@ -201,10 +200,7 @@ class HydrogenClient {
     const request = this.apiManager.path(
       "transfer_payloads",
       {},
-      {
-        ...req,
-        include_tx: false,
-      }
+      {...req}
     );
     const response = await request.get();
     const result = response.data;

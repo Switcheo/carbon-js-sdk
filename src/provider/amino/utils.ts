@@ -1,4 +1,4 @@
-import { GovUtils, NumberUtils, TypeUtils } from "@carbon-sdk/util";
+import { NumberUtils, TypeUtils } from "@carbon-sdk/util";
 import { SimpleMap } from "@carbon-sdk/util/type";
 import { AminoConverter } from "@cosmjs/stargate";
 import BigNumber from "bignumber.js";
@@ -103,13 +103,15 @@ export const paramConverter = (value: any, type?: ConvertEncType, toAmino: boole
     return value;
   }
   switch (type) {
-    case ConvertEncType.Dec:
+    case ConvertEncType.Dec: {
       const bnVal = NumberUtils.bnOrZero(value);
       return toAmino ? bnVal.shiftedBy(-18).toFixed(18) : bnVal.shiftedBy(18).toString(10);
-    case ConvertEncType.DecOrZero:
+    }
+    case ConvertEncType.DecOrZero: {
       const decBnVal = NumberUtils.bnOrZero(value);
       if (decBnVal.isZero()) return "0";
       return toAmino ? decBnVal.shiftedBy(-18).toFixed(18) : decBnVal.shiftedBy(18).toString(10);
+    }
     case ConvertEncType.Long:
       return toAmino ? value.toString() : new Long(Number(value));
     case ConvertEncType.LongToNum:
@@ -165,6 +167,11 @@ export const generateAminoType = (amino: AminoInit, aminoProcess: AminoProcess =
         if (typeof newInput[key] !== "object" && typeof newAminoMap[key] !== "object") {
           aminoObj[snakeKey] = paramConverter(newInput[key], newAminoMap[key] as ConvertEncType, true);
         } else {
+          // empty array should be mapped over too
+          if (newInput[key]?.length === 0) {
+            aminoObj[snakeKey] = []
+            return
+          }
           if (newInput[key]?.length && typeof newInput[key] === "object") {
             aminoObj[snakeKey] = newInput[key].map((newItem: any) =>
               mapEachIndiv(newItem, newAminoMap[key] as TypeUtils.SimpleMap<ConvertEncType>, true)
@@ -213,6 +220,7 @@ export const pruneAmino = (value: any, pruneMap: TypeUtils.SimpleMap<ConvertEncT
         if (Long.isLong(value) && value.isZero()) {
           delete newMsg[key];
         }
+        break
       default:
         if (typeof value === "boolean" && !value) {
           delete newMsg[key];

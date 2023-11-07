@@ -18,7 +18,7 @@ import Long from "long";
 
   for (const market of markets) {
     try {
-      const result = await connectedSDK.plp.deregisterFromPlPool({
+      const result = await connectedSDK.p.deregisterFromPool({
         marketId: market,
       })
       console.log(result)

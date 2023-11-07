@@ -53,7 +53,7 @@ export class EthLedgerAccount {
 
         // start timeout to kill connection when interval duration
         // is reached. Kills connection by resolving
-        let timeoutId = setTimeout(() => {
+        const timeoutId = setTimeout(() => {
           // set timeout to true so that if connection is successful
           // after timeout, it can be ignored.
           timedOut = true;

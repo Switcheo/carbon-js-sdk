@@ -2,7 +2,9 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Pool } from "./liquiditypool";
-import { CommitmentCurve, Commitment } from "./reward";
+import { CommitmentCurve, Commitment, AccumulatedRewards } from "./reward";
+import { Timestamp } from "../google/protobuf/timestamp";
+import { Coin } from "../cosmos/base/v1beta1/coin";
 
 export const protobufPackage = "Switcheo.carbon.liquiditypool";
 
@@ -22,6 +24,15 @@ export interface TotalCommitmentChangeEvent {
 export interface RewardsWeightChangeEvent {
   poolId: Long;
   rewardsWeight: string;
+}
+
+export interface RewardCurveChangeEvent {
+  startTime?: Date;
+  initialRewardBps: number;
+  reductionMultiplierBps: number;
+  reductionIntervalSeconds: Long;
+  reductions: number;
+  finalRewardBps: number;
 }
 
 export interface CommitmentCurveEvent {
@@ -77,6 +88,17 @@ export interface UnstakePoolTokenEvent {
   denom: string;
   amount: string;
   creator: string;
+}
+
+export interface RewardsAccumulatedEvent {
+  poolId: Long;
+  accumulatedRewards?: AccumulatedRewards;
+}
+
+export interface ClaimEvent {
+  poolId: Long;
+  address: string;
+  rewards: Coin[];
 }
 
 const basePoolEvent: object = {
@@ -358,6 +380,148 @@ export const RewardsWeightChangeEvent = {
         ? Long.fromValue(object.poolId)
         : Long.UZERO;
     message.rewardsWeight = object.rewardsWeight ?? "";
+    return message;
+  },
+};
+
+const baseRewardCurveChangeEvent: object = {
+  initialRewardBps: 0,
+  reductionMultiplierBps: 0,
+  reductionIntervalSeconds: Long.UZERO,
+  reductions: 0,
+  finalRewardBps: 0,
+};
+
+export const RewardCurveChangeEvent = {
+  encode(
+    message: RewardCurveChangeEvent,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.startTime !== undefined) {
+      Timestamp.encode(
+        toTimestamp(message.startTime),
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    if (message.initialRewardBps !== 0) {
+      writer.uint32(16).uint32(message.initialRewardBps);
+    }
+    if (message.reductionMultiplierBps !== 0) {
+      writer.uint32(24).uint32(message.reductionMultiplierBps);
+    }
+    if (!message.reductionIntervalSeconds.isZero()) {
+      writer.uint32(32).uint64(message.reductionIntervalSeconds);
+    }
+    if (message.reductions !== 0) {
+      writer.uint32(40).uint32(message.reductions);
+    }
+    if (message.finalRewardBps !== 0) {
+      writer.uint32(48).uint32(message.finalRewardBps);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): RewardCurveChangeEvent {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseRewardCurveChangeEvent } as RewardCurveChangeEvent;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.startTime = fromTimestamp(
+            Timestamp.decode(reader, reader.uint32())
+          );
+          break;
+        case 2:
+          message.initialRewardBps = reader.uint32();
+          break;
+        case 3:
+          message.reductionMultiplierBps = reader.uint32();
+          break;
+        case 4:
+          message.reductionIntervalSeconds = reader.uint64() as Long;
+          break;
+        case 5:
+          message.reductions = reader.uint32();
+          break;
+        case 6:
+          message.finalRewardBps = reader.uint32();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): RewardCurveChangeEvent {
+    const message = { ...baseRewardCurveChangeEvent } as RewardCurveChangeEvent;
+    message.startTime =
+      object.startTime !== undefined && object.startTime !== null
+        ? fromJsonTimestamp(object.startTime)
+        : undefined;
+    message.initialRewardBps =
+      object.initialRewardBps !== undefined && object.initialRewardBps !== null
+        ? Number(object.initialRewardBps)
+        : 0;
+    message.reductionMultiplierBps =
+      object.reductionMultiplierBps !== undefined &&
+      object.reductionMultiplierBps !== null
+        ? Number(object.reductionMultiplierBps)
+        : 0;
+    message.reductionIntervalSeconds =
+      object.reductionIntervalSeconds !== undefined &&
+      object.reductionIntervalSeconds !== null
+        ? Long.fromString(object.reductionIntervalSeconds)
+        : Long.UZERO;
+    message.reductions =
+      object.reductions !== undefined && object.reductions !== null
+        ? Number(object.reductions)
+        : 0;
+    message.finalRewardBps =
+      object.finalRewardBps !== undefined && object.finalRewardBps !== null
+        ? Number(object.finalRewardBps)
+        : 0;
+    return message;
+  },
+
+  toJSON(message: RewardCurveChangeEvent): unknown {
+    const obj: any = {};
+    message.startTime !== undefined &&
+      (obj.startTime = message.startTime.toISOString());
+    message.initialRewardBps !== undefined &&
+      (obj.initialRewardBps = message.initialRewardBps);
+    message.reductionMultiplierBps !== undefined &&
+      (obj.reductionMultiplierBps = message.reductionMultiplierBps);
+    message.reductionIntervalSeconds !== undefined &&
+      (obj.reductionIntervalSeconds = (
+        message.reductionIntervalSeconds || Long.UZERO
+      ).toString());
+    message.reductions !== undefined && (obj.reductions = message.reductions);
+    message.finalRewardBps !== undefined &&
+      (obj.finalRewardBps = message.finalRewardBps);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<RewardCurveChangeEvent>
+  ): RewardCurveChangeEvent {
+    const message = { ...baseRewardCurveChangeEvent } as RewardCurveChangeEvent;
+    message.startTime = object.startTime ?? undefined;
+    message.initialRewardBps = object.initialRewardBps ?? 0;
+    message.reductionMultiplierBps = object.reductionMultiplierBps ?? 0;
+    message.reductionIntervalSeconds =
+      object.reductionIntervalSeconds !== undefined &&
+      object.reductionIntervalSeconds !== null
+        ? Long.fromValue(object.reductionIntervalSeconds)
+        : Long.UZERO;
+    message.reductions = object.reductions ?? 0;
+    message.finalRewardBps = object.finalRewardBps ?? 0;
     return message;
   },
 };
@@ -1164,6 +1328,185 @@ export const UnstakePoolTokenEvent = {
   },
 };
 
+const baseRewardsAccumulatedEvent: object = { poolId: Long.UZERO };
+
+export const RewardsAccumulatedEvent = {
+  encode(
+    message: RewardsAccumulatedEvent,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (!message.poolId.isZero()) {
+      writer.uint32(8).uint64(message.poolId);
+    }
+    if (message.accumulatedRewards !== undefined) {
+      AccumulatedRewards.encode(
+        message.accumulatedRewards,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): RewardsAccumulatedEvent {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseRewardsAccumulatedEvent,
+    } as RewardsAccumulatedEvent;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.poolId = reader.uint64() as Long;
+          break;
+        case 2:
+          message.accumulatedRewards = AccumulatedRewards.decode(
+            reader,
+            reader.uint32()
+          );
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): RewardsAccumulatedEvent {
+    const message = {
+      ...baseRewardsAccumulatedEvent,
+    } as RewardsAccumulatedEvent;
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromString(object.poolId)
+        : Long.UZERO;
+    message.accumulatedRewards =
+      object.accumulatedRewards !== undefined &&
+      object.accumulatedRewards !== null
+        ? AccumulatedRewards.fromJSON(object.accumulatedRewards)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: RewardsAccumulatedEvent): unknown {
+    const obj: any = {};
+    message.poolId !== undefined &&
+      (obj.poolId = (message.poolId || Long.UZERO).toString());
+    message.accumulatedRewards !== undefined &&
+      (obj.accumulatedRewards = message.accumulatedRewards
+        ? AccumulatedRewards.toJSON(message.accumulatedRewards)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<RewardsAccumulatedEvent>
+  ): RewardsAccumulatedEvent {
+    const message = {
+      ...baseRewardsAccumulatedEvent,
+    } as RewardsAccumulatedEvent;
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromValue(object.poolId)
+        : Long.UZERO;
+    message.accumulatedRewards =
+      object.accumulatedRewards !== undefined &&
+      object.accumulatedRewards !== null
+        ? AccumulatedRewards.fromPartial(object.accumulatedRewards)
+        : undefined;
+    return message;
+  },
+};
+
+const baseClaimEvent: object = { poolId: Long.UZERO, address: "" };
+
+export const ClaimEvent = {
+  encode(
+    message: ClaimEvent,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (!message.poolId.isZero()) {
+      writer.uint32(8).uint64(message.poolId);
+    }
+    if (message.address !== "") {
+      writer.uint32(18).string(message.address);
+    }
+    for (const v of message.rewards) {
+      Coin.encode(v!, writer.uint32(26).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ClaimEvent {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseClaimEvent } as ClaimEvent;
+    message.rewards = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.poolId = reader.uint64() as Long;
+          break;
+        case 2:
+          message.address = reader.string();
+          break;
+        case 3:
+          message.rewards.push(Coin.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ClaimEvent {
+    const message = { ...baseClaimEvent } as ClaimEvent;
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromString(object.poolId)
+        : Long.UZERO;
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    message.rewards = (object.rewards ?? []).map((e: any) => Coin.fromJSON(e));
+    return message;
+  },
+
+  toJSON(message: ClaimEvent): unknown {
+    const obj: any = {};
+    message.poolId !== undefined &&
+      (obj.poolId = (message.poolId || Long.UZERO).toString());
+    message.address !== undefined && (obj.address = message.address);
+    if (message.rewards) {
+      obj.rewards = message.rewards.map((e) =>
+        e ? Coin.toJSON(e) : undefined
+      );
+    } else {
+      obj.rewards = [];
+    }
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<ClaimEvent>): ClaimEvent {
+    const message = { ...baseClaimEvent } as ClaimEvent;
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromValue(object.poolId)
+        : Long.UZERO;
+    message.address = object.address ?? "";
+    message.rewards = (object.rewards ?? []).map((e) => Coin.fromPartial(e));
+    return message;
+  },
+};
+
 type Builtin =
   | Date
   | Function
@@ -1183,6 +1526,32 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+function toTimestamp(date: Date): Timestamp {
+  const seconds = numberToLong(date.getTime() / 1_000);
+  const nanos = (date.getTime() % 1_000) * 1_000_000;
+  return { seconds, nanos };
+}
+
+function fromTimestamp(t: Timestamp): Date {
+  let millis = t.seconds.toNumber() * 1_000;
+  millis += t.nanos / 1_000_000;
+  return new Date(millis);
+}
+
+function fromJsonTimestamp(o: any): Date {
+  if (o instanceof Date) {
+    return o;
+  } else if (typeof o === "string") {
+    return new Date(o);
+  } else {
+    return fromTimestamp(Timestamp.fromJSON(o));
+  }
+}
+
+function numberToLong(number: number) {
+  return Long.fromNumber(number);
+}
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

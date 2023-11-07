@@ -29,6 +29,8 @@ import {
   WsSubscriptionParams,
   WsSubscribeCDPTokenSupply,
   WsSubscribeCDPTokenSupplyByDenom,
+  WsSubscribeTokenSupplyByDenom,
+  WsSubscribeMarketLiquidityUsageMultiplier as WsSubscribeMarketLiquidityUsageMultiplier,
 } from "./types";
 
 export const generateChannelId = (params: WsSubscriptionParams): string => {
@@ -145,6 +147,14 @@ export const generateChannelId = (params: WsSubscriptionParams): string => {
       const { channel, denom } = params as WsSubscribeCDPTokenSupplyByDenom;
       return [channel, denom].join(":");
     }
+    case WSChannel.token_supply_by_denom: {
+      const { channel, denom } = params as WsSubscribeTokenSupplyByDenom;
+      return [channel, denom].join(":");
+    }
+    case WSChannel.market_liquidity_usage_multiplier: {
+      const { channel } = params as WsSubscribeMarketLiquidityUsageMultiplier;
+      return [channel].join(":");
+    }
     default:
       throw new Error(`invalid subscription channel: ${params.channel}`);
   }
@@ -245,7 +255,7 @@ export const parseChannelId = (rawChannelId: string): WsSubscriptionParams => {
       return {
         channel,
       } as WsSubscribeAllTokenPrices;
-    case WSChannel.token_prices:
+    case WSChannel.token_prices_by_denom:
       return {
         channel,
         denom: param0,
@@ -291,6 +301,15 @@ export const parseChannelId = (rawChannelId: string): WsSubscriptionParams => {
         channel,
         denom: param0,
       } as WsSubscribeCDPTokenSupplyByDenom;
+    case WSChannel.token_supply_by_denom:
+      return {
+        channel,
+        denom: param0,
+      } as WsSubscribeTokenSupplyByDenom;
+    case WSChannel.market_liquidity_usage_multiplier:
+      return {
+        channel,
+      } as WsSubscribeMarketLiquidityUsageMultiplier;
     default:
       throw new Error("Error parsing channelId");
   }

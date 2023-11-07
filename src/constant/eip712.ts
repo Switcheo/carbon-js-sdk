@@ -33,67 +33,67 @@ export const DEFAULT_EIP712_TYPES = {
     Coin: [
         {
             name: 'denom',
-            type: 'string'
+            type: 'string',
         },
         {
             name: 'amount',
-            type: 'string'
-        }
+            type: 'string',
+        },
     ],
     EIP712Domain: [
         {
             name: 'name',
-            type: 'string'
+            type: 'string',
         },
         {
             name: 'version',
-            type: 'string'
+            type: 'string',
         },
         {
             name: 'chainId',
-            type: 'uint256'
+            type: 'uint256',
         },
         {
             name: 'verifyingContract',
-            type: 'string'
+            type: 'string',
         },
         {
             name: 'salt',
-            type: 'string'
-        }
+            type: 'string',
+        },
     ],
     Fee: [
         {
             name: 'amount',
-            type: 'Coin[]'
+            type: 'Coin[]',
         },
         {
             name: 'gas',
-            type: 'string'
-        }
+            type: 'string',
+        },
     ],
     Tx: [
         {
             name: 'account_number',
-            type: 'string'
+            type: 'string',
         },
         {
             name: 'chain_id',
-            type: 'string'
+            type: 'string',
         },
         {
             name: 'fee',
-            type: 'Fee'
+            type: 'Fee',
         },
         {
             name: 'memo',
-            type: 'string'
+            type: 'string',
         },
         {
             name: 'sequence',
-            type: 'string'
+            type: 'string',
         },
-    ]
+    ],
 
 }
 

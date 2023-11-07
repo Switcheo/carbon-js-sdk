@@ -1,12 +1,19 @@
-import { capitalize } from "lodash";
+import { capitalize, first } from "lodash";
 import path from "path";
 import { whitelistCosmosExports, whitelistIbcExports } from "./config";
 import { generateEIP712types } from "./generate-eip712-types";
 
 const files = process.argv;
 
-const [pwd, registryFile, polynetworkModelsFile, cosmosModelsFile, ibcModelsFile] = files.slice(-6);
-const codecFiles = files.slice(2, files.length - 6);
+const [pwd, registryFile, polynetworkModelsFile, carbonModelsFile, cosmosModelsFile, ibcModelsFile] = files.slice(-7);
+const codecFiles = files.slice(2, files.length - 7);
+
+const polynetworkFolders = ['btcx', 'ccm', 'headersync', 'lockproxy'];
+
+const carbonFolders = ['alliance', 'admin', 'bank', 'book', 'broker','cdp','coin', 
+  'erc20','evmbank',' evmmerge', 'fee', 'inflation', 'insurance','leverage', 'liquidation',
+  'liquiditypool', 'market', 'marketstats', 'misc', 'oracle', 'order', 'perpspool',
+  'position', 'pricing', 'profile', 'sequence', 'subaccount'];
 
 console.log(`import { Registry } from "@cosmjs/proto-signing";`);
 // TODO: Remove hardcoded statement when upgrading cosmwasm codecs
@@ -29,7 +36,7 @@ for (const moduleFile of codecFiles) {
   }
 
   const codecModule = require(`${pwd}/${moduleFile}`);
-  let messages = Object.keys(codecModule).filter((key) => {
+  const messages = Object.keys(codecModule).filter((key) => {
     return (key.startsWith("Msg") && key !== "MsgClientImpl") || key.startsWith("Header") || key.endsWith("Proposal")
   });
   if (messages.length) {
@@ -46,6 +53,7 @@ for (const moduleFile of codecFiles) {
       || moduleFile.includes('src/codec/ccm/')
       || moduleFile.includes('src/codec/headersync/')
       || moduleFile.includes('src/codec/lockproxy/')
+      || carbonFolders.some(carbonModule => moduleFile.includes("src/codec/" + carbonModule))
     )) {
       updateImportsAlias(messages, codecModule.protobufPackage)
 
@@ -86,22 +94,33 @@ console.log(`import * as PolyNetwork from '${polynetworkModelsImportPath.replace
 console.log(`export * as PolyNetwork from '${polynetworkModelsImportPath.replace(/^\.\./i, '.').replace(/\.ts$/i, '')}';`);
 
 console.log("");
+const carbonModelsImportPath = path.relative(registryFile, carbonModelsFile);
+console.log(`import * as Carbon from '${carbonModelsImportPath.replace(/^\.\./i, '.').replace(/\.ts$/i, '')}';`);
+console.log(`export * as Carbon from '${carbonModelsImportPath.replace(/^\.\./i, '.').replace(/\.ts$/i, '')}';`);
+
+console.log("");
 console.log("export const registry = new Registry();");
 
-const polynetworkFolders = ['btcx', 'ccm', 'headersync', 'lockproxy']
 const typeMap: { [msg: string]: string } = {};
 for (const packageName in modules) {
   console.log("");
   for (const key of modules[packageName]) {
     const messageAlias = key.split(" ")[2] // "XXX as XXXXX"
     const typeUrl = messageAlias ? `/${packageName}.${key.split(" ")[0].trim()}` : `/${packageName}.${key}`;
+    const match = typeUrl.match(/^\/Switcheo.carbon.([a-z0-9]+).([A-Za-z0-9]+)$/i);
+    const matchAlliance = typeUrl.match(/^\/alliance.alliance.([A-Za-z]+)$/i); // for /alliance.alliance module
     const messageType = messageAlias ? messageAlias.trim() : key
-    const match = typeUrl.match(/^\/Switcheo.carbon.([a-z]+).([A-Za-z]+)$/i);
 
     if ((key.startsWith("Msg") && key !== "MsgClientImpl") || key.startsWith("Header") || key.endsWith("Proposal")) {
-      typeMap[messageType] = typeUrl;
+      const typeKey = (messageType.startsWith("Msg") && matchAlliance) ? messageType.replace(/^Msg/, "MsgAlliance") : messageType;
+
+      typeMap[typeKey] = typeUrl;
       if (match?.[1] && polynetworkFolders.includes(match?.[1])) {
         console.log(`registry.register("${typeUrl}", PolyNetwork.${capitalize(match[1])}.${messageType});`);
+      } else if (match?.[1] && carbonFolders.includes(match?.[1])) {
+        console.log(`registry.register("${typeUrl}", Carbon.${capitalize(match[1])}.${messageType});`);
+      } else if (matchAlliance?.[1]) {
+        console.log(`registry.register("${typeUrl}", Carbon.Alliance.${messageType});`);
       } else {
         console.log(`registry.register("${typeUrl}", ${messageType});`);
       }
@@ -142,7 +161,8 @@ for (const moduleFile of codecFiles) {
   const fileName = file[file.length - 1]
   const firstDirectory = file[2]
 
-  if (directoryBlacklist.includes(firstDirectory) || fileNameBlacklist.includes(fileName)) continue
+  // skip next steps if module has been namespaced
+  if (directoryBlacklist.includes(firstDirectory) || carbonFolders.includes(firstDirectory) || fileNameBlacklist.includes(fileName)) continue
 
   const codecModule = require(`${pwd}/${moduleFile.replace(/\.ts$/i, '')}`);
 
@@ -150,22 +170,8 @@ for (const moduleFile of codecFiles) {
     !modelBlacklist.includes(key)
   )).reduce((prev: string[], key: string) => {
     const messagePrev = prev;
-    let newKey = key;
-    const firstDirName = capitalize(firstDirectory);
-    const fileNameNoSuffix = fileName.replace('.ts', '');
-    const newLabel = fileNameNoSuffix === 'query' ? firstDirName : `${firstDirName}${capitalize(fileNameNoSuffix)}`;
-    if (key === "Params") {
-      newKey = `Params as ${labelOverride[`${firstDirName}Params`] ?? firstDirName}Params`;
-    } else if (key === "QueryParamsRequest") {
-      newKey = `QueryParamsRequest as Query${labelOverride[newLabel] ?? newLabel}ParamsRequest`;
-    } else if (key === "QueryParamsResponse") {
-      newKey = `QueryParamsResponse as Query${labelOverride[newLabel] ?? newLabel}ParamsResponse`;
-    } else if (key === "RewardHistory" && firstDirName === "Alliance") {
-      newKey = `RewardHistory as ${labelOverride[`${firstDirName}RewardHistory`] ?? firstDirName}RewardHistory`;
-    }
-
-
-    messagePrev.push(newKey);
+    
+    messagePrev.push(key);
     return messagePrev;
   }, []);
 
@@ -198,8 +204,7 @@ function updateImportsAlias(messages: string[], protobufPackage: string) {
     if (pkg === 'nft'
       || pkg === 'group'
       || (pkg === 'gov' && innerPkg === 'v1')
-      || (pkg === 'evm' || pkg === 'feemarket')
-      || pkg === 'alliance') {
+      || (pkg === 'evm' || pkg === 'feemarket')) {
       msgAlias = `Msg${capitalize(pkg)}${msg.split('Msg')[1]}`
     }
     if (msgAlias) {

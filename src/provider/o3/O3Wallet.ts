@@ -1,12 +1,14 @@
-import { AminoSignResponse, encodeSecp256k1Signature, StdSignDoc } from "@cosmjs/amino";
 import { NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
-import { AminoCarbonSigner, CarbonSDK, CarbonSignerTypes, Models } from "@carbon-sdk/index";
+import { AminoCarbonSigner, CarbonSDK } from "@carbon-sdk/index";
+import { AddressUtils, ExternalUtils, TypeUtils } from "@carbon-sdk/util";
 import { sortObject } from "@carbon-sdk/util/generic";
+import { Carbon } from "@carbon-sdk/CarbonSDK";
 import * as Neon from "@cityofzion/neon-core-next";
+import { AminoSignResponse, encodeSecp256k1Signature, StdSignDoc } from "@cosmjs/amino";
 import neoDapi from "neo-dapi";
 import neo3Dapi from "neo3-dapi";
-import { AddressUtils, ExternalUtils, TypeUtils } from "@carbon-sdk/util";
 
+import { CarbonSignerTypes } from "@carbon-sdk/wallet";
 import * as O3Types from "./O3Types";
 
 export class O3Wallet {
@@ -56,7 +58,7 @@ export class O3Wallet {
       },
       sendEvmTransaction: async () => {
         throw new Error("signing not available");
-      }
+      },
     };
   }
 
@@ -146,13 +148,13 @@ export class O3Wallet {
     }
   }
 
-  async getWalletBalances(tokens: Models.Token[]) {
+  async getWalletBalances(tokens: Carbon.Coin.Token[]) {
     try {
       if (!this.isConnected()) {
         throw new Error("O3 wallet is not connected. Please reconnect and perform this transaction again.");
       }
 
-      const tokenMap = tokens.reduce((tokens: TypeUtils.SimpleMap<Models.Token>, indivToken: Models.Token) => {
+      const tokenMap = tokens.reduce((tokens: TypeUtils.SimpleMap<Carbon.Coin.Token>, indivToken: Carbon.Coin.Token) => {
         const newTokens = tokens;
         const tokenAddress = indivToken.tokenAddress;
         newTokens[tokenAddress] = indivToken;

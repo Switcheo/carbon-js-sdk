@@ -1,6 +1,6 @@
 import { CarbonEvmChainIDs, EthNetworkConfig, Network, NetworkConfigs } from "@carbon-sdk/constant";
 import { ABIs } from "@carbon-sdk/eth";
-import { Blockchain, ChainNames, BlockchainV2, EVMChain as EVMChainV2, getBlockchainFromChainV2, BLOCKCHAIN_V2_TO_V1_MAPPING, EvmChains } from "@carbon-sdk/util/blockchain";
+import { Blockchain, ChainNames, BlockchainV2, EVMChain as EVMChainV2, getBlockchainFromChainV2, BLOCKCHAIN_V2_TO_V1_MAPPING } from "@carbon-sdk/util/blockchain";
 import { appendHexPrefix } from "@carbon-sdk/util/generic";
 import { ethers } from "ethers";
 import { makeSignDoc } from "@cosmjs/amino/build";
@@ -10,7 +10,7 @@ import { CarbonSigner, CarbonSignerTypes } from "@carbon-sdk/wallet";
 import { Algo, EncodeObject } from "@cosmjs/proto-signing";
 import { AuthInfo } from "@carbon-sdk/codec/cosmos/tx/v1beta1/tx";
 import { legacyConstructEIP712Tx } from "@carbon-sdk/util/legacyEIP712";
-import { AminoTypesMap, CarbonSDK, Models } from "@carbon-sdk/index";
+import { AminoTypesMap, CarbonSDK, Models, ProviderAgent } from "@carbon-sdk/index";
 import { StdFee } from "@cosmjs/stargate";
 import { AminoMsg } from "@cosmjs/amino";
 import { ETH_SECP256K1_TYPE, PUBLIC_KEY_SIGNING_TEXT, parseChainId, populateEvmTransactionDetails } from "@carbon-sdk/util/ethermint";
@@ -21,7 +21,9 @@ import { constructEIP712Tx } from "@carbon-sdk/util/eip712";
 import { SWTHAddress } from '@carbon-sdk/util/address'
 import { LEGACY_ACCOUNTS_MAINNET, LEGACY_ACCOUNTS_TESTNET } from "./legacy-accounts";
 import detectEthereumProvider from "@metamask/detect-provider";
+import { parseEvmError } from "./error";
 import { carbonNetworkFromChainId } from "@carbon-sdk/util/network";
+import { signTransactionWrapper } from "@carbon-sdk/util/provider";
 
 
 
@@ -80,7 +82,7 @@ const CONTRACT_HASH: {
     [Network.LocalHost]: "",
 
     [Network.MainNet]: "",
-  } as const
+  } as const,
 } as const;
 
 const DEFAULT_PUBLIC_KEY_MESSAGE = `By signing, I confirm that I have read and agreed to the terms and conditions outlined here (https://guide.dem.exchange/technical/terms-and-conditions).\nAdditionally, I verify that I am not a citizen of any of the following countries: Afghanistan, Angola, Central African Republic, China (Mainland), Côte d'Ivoire, Crimea, Cuba, Democratic Republic of Congo, Ethiopia, Guinea-Bissau, Haiti, Iran, Kuwait, Lebanon, Liberia, Libya, Mali, North Korea, Rwanda, Sevastopol, Sierra Leone, Singapore, Somalia, South Africa, Sudan, South Sudan, Syria, Quebec (Canada), U.S, Yemen, Zimbabwe.`
@@ -148,10 +150,6 @@ export interface StoredMnemonicInfo {
   evmHexAddress: string
 }
 
-type LegacyAccounts = {
-  [key in EVMChain]: string;
-};
-
 const CarbonEvmNativeCurrency = {
   decimals: 18,
   name: "SWTH",
@@ -163,7 +161,7 @@ const CARBON_EVM_LOCALHOST: MetaMaskChangeNetworkParam = {
   blockExplorerUrls: ["https://evm-scan.carbon.network"],
   chainName: "Carbon EVM Localhost",
   rpcUrls: [`${NetworkConfigs[Network.LocalHost].evmJsonRpcUrl}`],
-  nativeCurrency: CarbonEvmNativeCurrency
+  nativeCurrency: CarbonEvmNativeCurrency,
 }
 const CARBON_EVM_DEVNET: MetaMaskChangeNetworkParam = {
   chainId: `0x${Number(parseChainId(CarbonEvmChainIDs[Network.DevNet])).toString(16)}`,
@@ -323,7 +321,7 @@ export class MetaMask {
         const msg = registry.decode({ ...message })
         return {
           typeUrl: message.typeUrl,
-          value: msg
+          value: msg,
         }
       })
       const fee: StdFee = {
@@ -345,11 +343,11 @@ export class MetaMask {
         signature: {
           pub_key: {
             type: ETH_SECP256K1_TYPE,
-            value: pubKeyBase64
+            value: pubKeyBase64,
           },
           // Remove recovery `v` from signature
-          signature: Buffer.from(sigBz.slice(0, -1)).toString('base64')
-        }
+          signature: Buffer.from(sigBz.slice(0, -1)).toString('base64'),
+        },
       }
     };
     const signAmino = async (_: string, doc: CarbonTx.StdSignDoc) => {
@@ -368,11 +366,11 @@ export class MetaMask {
         signature: {
           pub_key: {
             type: ETH_SECP256K1_TYPE,
-            value: pubKeyBase64
+            value: pubKeyBase64,
           },
           // Remove recovery `v` from signature
-          signature: Buffer.from(sigBz.slice(0, -1)).toString('base64')
-        }
+          signature: Buffer.from(sigBz.slice(0, -1)).toString('base64'),
+        },
       }
     }
     const getAccounts = async () => {
@@ -382,7 +380,7 @@ export class MetaMask {
           // Possible to change to "ethsecp256k1" ?
           algo: "secp256k1" as Algo,
           address,
-          pubkey: Uint8Array.from(Buffer.from(pubKeyBase64, 'base64'))
+          pubkey: Uint8Array.from(Buffer.from(pubKeyBase64, 'base64')),
         },
       ]
     }
@@ -390,7 +388,7 @@ export class MetaMask {
 
     const signLegacyEip712 = async (signerAddress: string, doc: CarbonTx.StdSignDoc) => {
       const { account_number, chain_id, msgs, fee, memo, sequence } = doc
-      // Legacy EIP-712 can only accept batch msgs of the same type
+
       // Only MsgMergeAccount will have an Eth address signer, other generic transaction will be cosmos address signer
       // FeePayer here is only used for legacy EIP-712
       const feePayer = AminoTypesMap.fromAmino(msgs[0]).typeUrl === TxTypes.MsgMergeAccount ? AddressUtils.ETHAddress.publicKeyToBech32Address(Buffer.from(pubKeyBase64, "base64"), addressOptions) : signerAddress
@@ -409,18 +407,24 @@ export class MetaMask {
         signature: {
           pub_key: {
             type: ETH_SECP256K1_TYPE,
-            value: pubKeyBase64
+            value: pubKeyBase64,
           },
-          signature: Buffer.from(sig, 'hex').toString('base64')
+          signature: Buffer.from(sig, 'hex').toString('base64'),
         },
-        feePayer
+        feePayer,
       }
     };
 
     const sendEvmTransaction = async (api: CarbonSDK, req: ethers.providers.TransactionRequest): Promise<string> => {
-      const request = await populateEvmTransactionDetails(api, req)
-      const response = await metamask!.sendEvmTransaction(request)
-      return response
+      try {
+        const request = await populateEvmTransactionDetails(api, req)
+        const response = await metamask!.sendEvmTransaction(request)
+        return response
+      }
+      catch (error) {
+        console.error(error)
+        throw (parseEvmError(error as Error, ProviderAgent.MetamaskExtension))
+      }
     }
 
     return {
@@ -430,7 +434,7 @@ export class MetaMask {
       signAmino,
       getAccounts,
       signLegacyEip712,
-      sendEvmTransaction
+      sendEvmTransaction,
     };
   }
 
@@ -545,7 +549,7 @@ export class MetaMask {
   async syncBlockchain(): Promise<MetaMaskSyncResult> {
     const metamaskAPI = await this.getAPI()
     const chainIdHex = (await metamaskAPI?.request({ method: "eth_chainId" })) as string;
-    const chainId = !!chainIdHex ? parseInt(chainIdHex, 16) : undefined;
+    const chainId = chainIdHex ? parseInt(chainIdHex, 16) : undefined;
     const blockchain = getBlockchainFromChainV2(chainId) as EVMChain;
     this.blockchain = blockchain!;
 
@@ -751,14 +755,16 @@ export class MetaMask {
     const metamaskAPI = await this.getConnectedAPI();
     const stdSignDoc = makeSignDoc(msgs, fee, evmChainId, memo, accountNumber, sequence)
     const eip712Tx = this.legacyEip712SignMode ? legacyConstructEIP712Tx({ ...stdSignDoc, fee: { ...fee, feePayer } }) : constructEIP712Tx(stdSignDoc)
-    const signature = (await metamaskAPI.request({
-      method: 'eth_signTypedData_v4',
-      params: [
-        evmHexAddress,
-        JSON.stringify(eip712Tx),
-      ],
-    })) as string
-    return signature.split('0x')[1]
+    return await signTransactionWrapper(async () => {
+      const signature = (await metamaskAPI.request({
+        method: 'eth_signTypedData_v4',
+        params: [
+          evmHexAddress,
+          JSON.stringify(eip712Tx),
+        ],
+      })) as string
+      return signature.split('0x')[1]
+    })
   }
 
   async sendEvmTransaction(req: ethers.providers.TransactionRequest, metamaskAPI?: MetaMaskAPI) {
@@ -773,7 +779,7 @@ export class MetaMask {
       data: req.data,
       // type can only be 0 or 1 or 2
       type: `0x${req.type}`,
-      chainId: req.chainId
+      chainId: req.chainId,
     }
     const txHash = (await api.request({
       method: "eth_sendTransaction",

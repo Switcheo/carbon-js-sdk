@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Amm } from "./amm";
+import { SpotAmm, PerpsAmm } from "./amm";
 
 export const protobufPackage = "Switcheo.carbon.broker";
 
@@ -11,7 +11,8 @@ export interface GenesisState {
    * this line is used by starport scaffolding # genesis/proto/state
    * this line is used by starport scaffolding # ibc/genesis/proto
    */
-  amms: Amm[];
+  spotAmms: SpotAmm[];
+  perpsAmms: PerpsAmm[];
 }
 
 const baseGenesisState: object = {};
@@ -21,8 +22,11 @@ export const GenesisState = {
     message: GenesisState,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    for (const v of message.amms) {
-      Amm.encode(v!, writer.uint32(10).fork()).ldelim();
+    for (const v of message.spotAmms) {
+      SpotAmm.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    for (const v of message.perpsAmms) {
+      PerpsAmm.encode(v!, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
@@ -31,12 +35,16 @@ export const GenesisState = {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseGenesisState } as GenesisState;
-    message.amms = [];
+    message.spotAmms = [];
+    message.perpsAmms = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.amms.push(Amm.decode(reader, reader.uint32()));
+          message.spotAmms.push(SpotAmm.decode(reader, reader.uint32()));
+          break;
+        case 2:
+          message.perpsAmms.push(PerpsAmm.decode(reader, reader.uint32()));
           break;
         default:
           reader.skipType(tag & 7);
@@ -48,23 +56,42 @@ export const GenesisState = {
 
   fromJSON(object: any): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
-    message.amms = (object.amms ?? []).map((e: any) => Amm.fromJSON(e));
+    message.spotAmms = (object.spotAmms ?? []).map((e: any) =>
+      SpotAmm.fromJSON(e)
+    );
+    message.perpsAmms = (object.perpsAmms ?? []).map((e: any) =>
+      PerpsAmm.fromJSON(e)
+    );
     return message;
   },
 
   toJSON(message: GenesisState): unknown {
     const obj: any = {};
-    if (message.amms) {
-      obj.amms = message.amms.map((e) => (e ? Amm.toJSON(e) : undefined));
+    if (message.spotAmms) {
+      obj.spotAmms = message.spotAmms.map((e) =>
+        e ? SpotAmm.toJSON(e) : undefined
+      );
     } else {
-      obj.amms = [];
+      obj.spotAmms = [];
+    }
+    if (message.perpsAmms) {
+      obj.perpsAmms = message.perpsAmms.map((e) =>
+        e ? PerpsAmm.toJSON(e) : undefined
+      );
+    } else {
+      obj.perpsAmms = [];
     }
     return obj;
   },
 
   fromPartial(object: DeepPartial<GenesisState>): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
-    message.amms = (object.amms ?? []).map((e) => Amm.fromPartial(e));
+    message.spotAmms = (object.spotAmms ?? []).map((e) =>
+      SpotAmm.fromPartial(e)
+    );
+    message.perpsAmms = (object.perpsAmms ?? []).map((e) =>
+      PerpsAmm.fromPartial(e)
+    );
     return message;
   },
 };

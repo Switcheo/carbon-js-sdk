@@ -22,6 +22,7 @@ import {
   BrokerModule,
   CDPModule,
   CoinModule,
+  ERC20Module,
   EvmMergeModule,
   EvmModule,
   FeeModule,
@@ -33,6 +34,7 @@ import {
   MarketModule,
   OracleModule,
   OrderModule,
+  PerpspoolModule,
   PositionModule,
   ProfileModule,
   SubAccountModule,
@@ -43,17 +45,22 @@ import { CosmosLedger, Keplr, KeplrAccount, LeapAccount, LeapExtended } from "./
 import { MetaMask } from "./provider/metamask/MetaMask";
 import { SWTHAddressOptions } from "./util/address";
 import { Blockchain } from "./util/blockchain";
-import { CarbonLedgerSigner, CarbonSigner, CarbonWallet, CarbonWalletGenericOpts, MetaMaskWalletOpts } from "./wallet";
-export { CarbonTx } from "@carbon-sdk/util";
+import { CarbonWallet, CarbonWalletGenericOpts, CarbonSigner, MetaMaskWalletOpts, CarbonLedgerSigner } from "./wallet";
 export { CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletGenericOpts, CarbonWalletInitOpts } from "@carbon-sdk/wallet";
+export { CarbonTx } from "@carbon-sdk/util";
 export { DenomPrefix } from "./constant";
+export * as Carbon from "./codec/carbon-models";
 
 export interface CarbonSDKOpts {
   network: Network;
   tmClient: Tendermint34Client;
+  wallet?: CarbonWallet;
   chainId?: string;
   evmChainId?: string;
   token?: TokenClient;
+  query?: CarbonQueryClient;
+  hydrogen?: HydrogenClient;
+  insights?: InsightsQueryClient;
   config?: Partial<NetworkConfig>;
   grpcQueryClient?: GrpcQueryClient;
   useTmAbciQuery?: boolean;
@@ -89,6 +96,7 @@ class CarbonSDK {
   public static DenomPrefix = DenomPrefix;
 
   public readonly query: CarbonQueryClient;
+  public readonly useTmAbciQuery: boolean;
   insights: InsightsQueryClient;
   hydrogen: HydrogenClient;
 
@@ -104,6 +112,8 @@ class CarbonSDK {
   alliance: AllianceModule;
   order: OrderModule;
   lp: LiquidityPoolModule;
+  erc20: ERC20Module;
+  perpspool: PerpspoolModule;
   subaccount: SubAccountModule;
   profile: ProfileModule;
   cdp: CDPModule;
@@ -137,33 +147,40 @@ class CarbonSDK {
     this.network = opts.network ?? DEFAULT_NETWORK;
     this.configOverride = opts.config ?? {};
     this.networkConfig = GenericUtils.overrideConfig(NetworkConfigs[this.network], this.configOverride);
+    this.useTmAbciQuery = opts.useTmAbciQuery ?? false;
 
     this.tmClient = opts.tmClient;
+    this.wallet = opts.wallet;
     this.chainId = opts.chainId ?? CarbonChainIDs[this.network] ?? CarbonChainIDs[Network.MainNet];
     this.evmChainId = opts.evmChainId ?? CarbonEvmChainIDs[this.network] ?? CarbonEvmChainIDs[Network.MainNet];
 
-    let grpcClient: GrpcQueryClient | undefined;
-    if (opts.useTmAbciQuery !== true && this.networkConfig.grpcUrl) {
-      const transport = typeof window === "undefined" ? NodeHttpTransport() : undefined;
+    let carbonQueryClient: CarbonQueryClient | undefined;
+    if (!opts.query) {
+      let grpcClient: GrpcQueryClient | undefined;
+      if (opts.useTmAbciQuery !== true && this.networkConfig.grpcUrl) {
+        const transport = typeof window === "undefined" ? NodeHttpTransport() : undefined;
 
-      grpcClient = opts.grpcQueryClient ?? new GrpcQueryClient(this.networkConfig.grpcWebUrl, {
-        transport,
+        grpcClient = opts.grpcQueryClient ?? new GrpcQueryClient(this.networkConfig.grpcWebUrl, {
+          transport,
+        });
+      }
+      carbonQueryClient = new CarbonQueryClient({
+        tmClient: this.tmClient,
+        grpcClient,
       });
     }
 
-    this.query = new CarbonQueryClient({
-      tmClient: this.tmClient,
-      grpcClient,
-    });
-    this.insights = new InsightsQueryClient(this.networkConfig);
+    this.query = (opts.query ?? carbonQueryClient)!
+    this.insights = opts.insights ?? new InsightsQueryClient(this.networkConfig);
     this.token = opts.token ?? TokenClient.instance(this.query, this);
-    this.hydrogen = new HydrogenClient(this.networkConfig, this.token);
-    this.hydrogen = HydrogenClient.instance(this.networkConfig, this.token);
+    this.hydrogen = opts.hydrogen ?? new HydrogenClient(this.networkConfig, this.token);
 
     this.admin = new AdminModule(this);
     this.alliance = new AllianceModule(this);
     this.order = new OrderModule(this);
     this.lp = new LiquidityPoolModule(this);
+    this.erc20 = new ERC20Module(this);
+    this.perpspool = new PerpspoolModule(this);
     this.subaccount = new SubAccountModule(this);
     this.profile = new ProfileModule(this);
     this.cdp = new CDPModule(this);
@@ -232,14 +249,24 @@ class CarbonSDK {
   public static async instance(opts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS) {
     const network = opts.network ?? DEFAULT_NETWORK;
     const configOverride = opts.config ?? {};
-
-    const networkConfig = GenericUtils.overrideConfig(NetworkConfigs[network], configOverride);
-    const batchQueryClient = new clients.BatchQueryClient(networkConfig.tmRpcUrl);
-    const tmClient = opts.tmClient ?? GenericUtils.modifyTmClient(await Tendermint34Client.create(batchQueryClient));
     const defaultTimeoutBlocks = opts.defaultTimeoutBlocks;
-    const chainId = (await tmClient.status())?.nodeInfo.network;
+    const networkConfig = GenericUtils.overrideConfig(NetworkConfigs[network], configOverride);
+    const tmClient: Tendermint34Client = opts.tmClient ?? new (Tendermint34Client as any)(new clients.BatchQueryClient(networkConfig.tmRpcUrl)); // fallback tmClient
+
+    let chainId = networkConfig.chainId; // fallback chain ID
+    let normalInit = true;
+
+    try {
+      chainId = (await tmClient.status())?.nodeInfo.network;
+    } catch (error) {
+      console.warn("tm client init failed");
+      console.error(error);
+      normalInit = false;
+    }
 
     const sdk = new CarbonSDK({ network, config: configOverride, tmClient, defaultTimeoutBlocks, chainId, useTmAbciQuery: opts.useTmAbciQuery });
+
+    if (!normalInit) return sdk;
 
     if (opts.wallet) {
       await sdk.connect(opts.wallet);
@@ -322,7 +349,6 @@ class CarbonSDK {
     return sdk.connectWithMetamask(metamask, walletOpts, metamaskWalletOpts);
   }
 
-
   public static async instanceViewOnly(
     bech32Address: string,
     sdkOpts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS,
@@ -351,8 +377,16 @@ class CarbonSDK {
     return {
       network: this.network,
       config: this.configOverride,
-      tmClient: this.tmClient,
       chainId: this.chainId,
+      evmChainId: this.evmChainId,
+      useTmAbciQuery: this.useTmAbciQuery,
+
+      wallet: this.wallet,
+      tmClient: this.tmClient,
+      token: this.token,
+      query: this.query,
+      hydrogen: this.hydrogen,
+      insights: this.insights,
     };
   }
 
@@ -376,13 +410,11 @@ class CarbonSDK {
 
   public disconnect(): CarbonSDK {
     if (this.wallet?.isLedgerSigner()) {
-      (this.wallet.signer as CarbonLedgerSigner).ledger.disconnect()
+      (this.wallet.signer as CarbonLedgerSigner).ledger.disconnect();
     }
-    return new CarbonSDK({
-      ...this,
-      wallet: null,
-      skipInit: true,
-    });
+    const opts = this.generateOpts();
+    delete opts.wallet;
+    return new CarbonSDK(opts);
   }
 
   public async connectWithPrivateKey(privateKey: string | Buffer, opts?: CarbonWalletGenericOpts) {
@@ -456,12 +488,11 @@ class CarbonSDK {
     return this.connect(wallet);
   }
 
-
   public async connectWithMetamask(metamask: MetaMask, opts?: CarbonWalletGenericOpts, metamaskWalletOpts?: MetaMaskWalletOpts) {
     const evmChainId = this.evmChainId;
     const addressOptions: SWTHAddressOptions = {
       network: this.networkConfig.network,
-      bech32Prefix: this.networkConfig.Bech32Prefix
+      bech32Prefix: this.networkConfig.Bech32Prefix,
     };
     let publicKeyBase64: string
     const address = await metamask.defaultAccount()

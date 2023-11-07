@@ -23,8 +23,8 @@ export class FeemarketModule extends BaseModule {
                 minGasPrice: params.minGasPrice.toString(10),
                 minGasMultiplier: params.minGasMulitplier.toString(10),
                 gasLimitPerBlock: params.gasLimitPerBlock.toString(10),
-                maxBaseFee: params.maxBaseFee.toString(10)
-            })
+                maxBaseFee: params.maxBaseFee.toString(10),
+            }),
         })
 
         return await wallet.sendTx(

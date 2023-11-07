@@ -1,7 +1,7 @@
 import CarbonSDK from "@carbon-sdk/CarbonSDK";
 import { EthNetworkConfig, NativeTokenHash, NetworkConfig, NetworkConfigProvider } from "@carbon-sdk/constant";
 import { ABIs } from "@carbon-sdk/eth";
-import { Models } from "@carbon-sdk/index";
+import { Carbon } from "@carbon-sdk/CarbonSDK";
 import { AddressUtils } from "@carbon-sdk/util";
 import { SWTHAddress } from "@carbon-sdk/util/address";
 import { Blockchain, blockchainForChainId } from "@carbon-sdk/util/blockchain";
@@ -27,8 +27,8 @@ interface ETHTxParams {
 }
 
 export interface BridgeParams {
-  fromToken: Models.Token;
-  toToken: Models.Token;
+  fromToken: Carbon.Coin.Token;
+  toToken: Carbon.Coin.Token;
   amount: BigNumber;
   fromAddress: string;
   recoveryAddress: string;
@@ -44,12 +44,13 @@ export interface BridgeParams {
 export interface LockParams extends ETHTxParams {
   address: Uint8Array;
   amount: BigNumber;
-  token: Models.Token;
+  token: Carbon.Coin.Token;
   signCompleteCallback?: () => void;
 }
 export interface ApproveERC20Params extends ETHTxParams {
-  token: Models.Token;
+  token: Carbon.Coin.Token;
   spenderAddress?: string;
+  amount?: BigNumber;
   signCompleteCallback?: () => void;
 }
 
@@ -76,7 +77,7 @@ export class ETHClient {
     [Blockchain.Ethereum]: "Ethereum",
     [Blockchain.Arbitrum]: "Arbitrum",
     [Blockchain.Polygon]: "Polygon",
-    [Blockchain.Okc]: "Okc",
+    [Blockchain.Okc]: "OKC",
   };
 
   private constructor(
@@ -136,23 +137,25 @@ export class ETHClient {
   }
 
   public async approveERC20(params: ApproveERC20Params): Promise<EthersTransactionResponse> {
-    const { token, gasPriceGwei, gasLimit, ethAddress, spenderAddress, signer } = params;
+    const { token, gasPriceGwei, gasLimit, ethAddress, spenderAddress, signer, amount } = params;
     const contractAddress = token.tokenAddress;
 
     const rpcProvider = this.getProvider();
     const contract = new ethers.Contract(contractAddress, ABIs.erc20, rpcProvider);
 
+    const approvalAmount = ethers.BigNumber.from(amount?.toString(10) ?? ethers.constants.MaxUint256)
+
     const nonce = await this.getTxNonce(ethAddress, params.nonce, rpcProvider);
-    const approveResultTx = await contract.connect(signer).approve(spenderAddress ?? token.bridgeAddress, ethers.constants.MaxUint256, {
+    const approveResultTx = await contract.connect(signer).approve(spenderAddress ?? token.bridgeAddress, approvalAmount, {
       nonce,
       ...gasPriceGwei && ({ gasPrice: gasPriceGwei.shiftedBy(9).toString(10) }),
-      ...gasLimit && ({ gasLimit: gasLimit.toString(10) })
+      ...gasLimit && ({ gasLimit: gasLimit.toString(10) }),
     });
 
     return approveResultTx;
   }
 
-  public async checkAllowanceERC20(token: Models.Token, owner: string, spender: string) {
+  public async checkAllowanceERC20(token: Carbon.Coin.Token, owner: string, spender: string) {
     const contractAddress = token.tokenAddress;
     const rpcProvider = this.getProvider();
     const contract = new ethers.Contract(contractAddress, ABIs.erc20, rpcProvider);
@@ -332,22 +335,13 @@ export class ETHClient {
     );
     // logger("sendDeposit message", message)
 
-    let signatureResult:
-      | {
-          owner: string;
-          r: string;
-          s: string;
-          v: string;
-        }
-      | undefined;
-
     const { address, signature } = await getSignatureCallback(message);
     const signatureBytes = ethers.utils.arrayify(appendHexPrefix(signature));
     const rsv = ethers.utils.splitSignature(signatureBytes);
 
     // logger("sign result", address, signature)
 
-    signatureResult = {
+    const signatureResult = {
       owner: address,
       v: rsv.v.toString(),
       r: rsv.r,
@@ -379,7 +373,7 @@ export class ETHClient {
     return result;
   }
 
-  public async getDepositFeeAmount(token: Models.Token, depositAddress: string) {
+  public async getDepositFeeAmount(token: Carbon.Coin.Token, depositAddress: string) {
     const feeInfo = await this.tokenClient.getFeeInfo(token.denom);
     if (!feeInfo.deposit_fee) {
       throw new Error("unsupported token");
@@ -447,7 +441,7 @@ export class ETHClient {
    *
    * @param token
    */
-  public getTargetProxyHash(token: Models.Token) {
+  public getTargetProxyHash(token: Carbon.Coin.Token) {
     const networkConfig = this.getNetworkConfig();
     const addressBytes = SWTHAddress.getAddressBytes(token.creator, networkConfig.network);
     const addressHex = stripHexPrefix(ethers.utils.hexlify(addressBytes));
@@ -499,7 +493,9 @@ export class ETHClient {
   public verifyChecksum(input: string): string | undefined {
     try {
       return ethers.utils.getAddress(input);
-    } catch {}
+    } catch {
+      // empty catch
+    }
   }
 
   public async getTxNonce(ethAddress: string, customNonce?: number, provider?: ethers.providers.JsonRpcProvider): Promise<number> {

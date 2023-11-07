@@ -7,7 +7,7 @@ import "./_setup";
   console.log("mnemonics:", mnemonics);
 
   const sdk = await CarbonSDK.instance({
-    network: CarbonSDK.Network.DevNet,
+    network: CarbonSDK.Network.LocalHost,
     config: {
       tmRpcUrl: process.env.TRPC_ENDPOINT,
     },
@@ -15,13 +15,14 @@ import "./_setup";
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
 
-  const result = await connectedSDK.plp.createPerpertualsPool({
+  const result = await connectedSDK.p.createPerpertualsPool({
       name: 'USD Perp Pool 5',
       depositDenom: 'usdc',
       shareTokenSymbol: 'testUSD',
       supplyCap: '1000000000000000000000000',
-      depositFeeBps: '1000',
-      withdrawalFeeBps: '1000',
+      depositFee: '0.1',
+      withdrawalFee: '0.1',
+      borrowFee: '0.1',
     });
   console.log(result)
 })().catch(console.error).finally(() => process.exit(0));

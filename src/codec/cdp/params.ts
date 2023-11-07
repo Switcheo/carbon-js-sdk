@@ -9,8 +9,6 @@ export const protobufPackage = "Switcheo.carbon.cdp";
 export interface Params {
   interestFee: string;
   liquidationFee: string;
-  /** Stablecoin interest rate deprecated. Moved to stablecoin_interest_info.proto */
-  stablecoinInterestRate: string;
   stablecoinMintCap: string;
   /**
    * Complete Liquidation Threshold determines how far between
@@ -48,10 +46,10 @@ export interface Params {
    */
   smallLiquidationSize: string;
   /**
-   * stale_price_grace_period determines the grace period in seconds before an oracle price is regarded as stale.
+   * stale_price_grace_period determines the grace period before an oracle price is regarded as stale.
    * This would cause certain actions like borrowing to be paused
    */
-  stalePriceGracePeriod: string;
+  stalePriceGracePeriod?: Duration;
   /** cdp_paused if true, causes all supply, locking, lending, borrowing and liquidations to be paused */
   cdpPaused: boolean;
   /** time interval in between each adjustment of stablecoin interest rate to help stablecoin price stability */
@@ -63,12 +61,10 @@ export interface Params {
 const baseParams: object = {
   interestFee: "",
   liquidationFee: "",
-  stablecoinInterestRate: "",
   stablecoinMintCap: "",
   completeLiquidationThreshold: "",
   minimumCloseFactor: "",
   smallLiquidationSize: "",
-  stalePriceGracePeriod: "",
   cdpPaused: false,
   stablecoinInterestRateAdjusterCoefficient: "",
 };
@@ -84,9 +80,6 @@ export const Params = {
     if (message.liquidationFee !== "") {
       writer.uint32(18).string(message.liquidationFee);
     }
-    if (message.stablecoinInterestRate !== "") {
-      writer.uint32(26).string(message.stablecoinInterestRate);
-    }
     if (message.stablecoinMintCap !== "") {
       writer.uint32(34).string(message.stablecoinMintCap);
     }
@@ -99,8 +92,11 @@ export const Params = {
     if (message.smallLiquidationSize !== "") {
       writer.uint32(58).string(message.smallLiquidationSize);
     }
-    if (message.stalePriceGracePeriod !== "") {
-      writer.uint32(66).string(message.stalePriceGracePeriod);
+    if (message.stalePriceGracePeriod !== undefined) {
+      Duration.encode(
+        message.stalePriceGracePeriod,
+        writer.uint32(66).fork()
+      ).ldelim();
     }
     if (message.cdpPaused === true) {
       writer.uint32(72).bool(message.cdpPaused);
@@ -132,9 +128,6 @@ export const Params = {
         case 2:
           message.liquidationFee = reader.string();
           break;
-        case 3:
-          message.stablecoinInterestRate = reader.string();
-          break;
         case 4:
           message.stablecoinMintCap = reader.string();
           break;
@@ -148,7 +141,10 @@ export const Params = {
           message.smallLiquidationSize = reader.string();
           break;
         case 8:
-          message.stalePriceGracePeriod = reader.string();
+          message.stalePriceGracePeriod = Duration.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         case 9:
           message.cdpPaused = reader.bool();
@@ -180,11 +176,6 @@ export const Params = {
       object.liquidationFee !== undefined && object.liquidationFee !== null
         ? String(object.liquidationFee)
         : "";
-    message.stablecoinInterestRate =
-      object.stablecoinInterestRate !== undefined &&
-      object.stablecoinInterestRate !== null
-        ? String(object.stablecoinInterestRate)
-        : "";
     message.stablecoinMintCap =
       object.stablecoinMintCap !== undefined &&
       object.stablecoinMintCap !== null
@@ -208,8 +199,8 @@ export const Params = {
     message.stalePriceGracePeriod =
       object.stalePriceGracePeriod !== undefined &&
       object.stalePriceGracePeriod !== null
-        ? String(object.stalePriceGracePeriod)
-        : "";
+        ? Duration.fromJSON(object.stalePriceGracePeriod)
+        : undefined;
     message.cdpPaused =
       object.cdpPaused !== undefined && object.cdpPaused !== null
         ? Boolean(object.cdpPaused)
@@ -233,8 +224,6 @@ export const Params = {
       (obj.interestFee = message.interestFee);
     message.liquidationFee !== undefined &&
       (obj.liquidationFee = message.liquidationFee);
-    message.stablecoinInterestRate !== undefined &&
-      (obj.stablecoinInterestRate = message.stablecoinInterestRate);
     message.stablecoinMintCap !== undefined &&
       (obj.stablecoinMintCap = message.stablecoinMintCap);
     message.completeLiquidationThreshold !== undefined &&
@@ -244,7 +233,9 @@ export const Params = {
     message.smallLiquidationSize !== undefined &&
       (obj.smallLiquidationSize = message.smallLiquidationSize);
     message.stalePriceGracePeriod !== undefined &&
-      (obj.stalePriceGracePeriod = message.stalePriceGracePeriod);
+      (obj.stalePriceGracePeriod = message.stalePriceGracePeriod
+        ? Duration.toJSON(message.stalePriceGracePeriod)
+        : undefined);
     message.cdpPaused !== undefined && (obj.cdpPaused = message.cdpPaused);
     message.stablecoinInterestRateEpoch !== undefined &&
       (obj.stablecoinInterestRateEpoch = message.stablecoinInterestRateEpoch
@@ -260,13 +251,16 @@ export const Params = {
     const message = { ...baseParams } as Params;
     message.interestFee = object.interestFee ?? "";
     message.liquidationFee = object.liquidationFee ?? "";
-    message.stablecoinInterestRate = object.stablecoinInterestRate ?? "";
     message.stablecoinMintCap = object.stablecoinMintCap ?? "";
     message.completeLiquidationThreshold =
       object.completeLiquidationThreshold ?? "";
     message.minimumCloseFactor = object.minimumCloseFactor ?? "";
     message.smallLiquidationSize = object.smallLiquidationSize ?? "";
-    message.stalePriceGracePeriod = object.stalePriceGracePeriod ?? "";
+    message.stalePriceGracePeriod =
+      object.stalePriceGracePeriod !== undefined &&
+      object.stalePriceGracePeriod !== null
+        ? Duration.fromPartial(object.stalePriceGracePeriod)
+        : undefined;
     message.cdpPaused = object.cdpPaused ?? false;
     message.stablecoinInterestRateEpoch =
       object.stablecoinInterestRateEpoch !== undefined &&

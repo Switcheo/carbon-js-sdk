@@ -28,7 +28,8 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
   ClaimRewards: "cdp/ClaimRewards",
   AddEModeCategory: "cdp/AddEModeCategory",
   UpdateEModeCategory: "cdp/UpdateEModeCategory",
-  ChangeAccountEMode: "cdp/ChangeAccountEMode",
+  SetAccountEMode: "cdp/SetAccountEMode",
+  RemoveAccountEMode: "cdp/RemoveAccountEMode",
 };
 
 const MsgSupplyAsset: AminoInit = {
@@ -144,7 +145,9 @@ const MsgSetStablecoinMintCap: AminoInit = {
 
 const MsgSetStalePriceGracePeriod: AminoInit = {
   aminoType: TxTypes.SetStalePriceGracePeriod,
-  valueMap: {},
+  valueMap: {
+    stalePriceGracePeriod: ConvertEncType.Duration,
+  },
 };
 
 const MsgSetCdpPaused: AminoInit = {
@@ -164,12 +167,17 @@ const MsgUpdateEModeCategory: AminoInit = {
       loanToValue: ConvertEncType.Long,
       liquidationThreshold: ConvertEncType.Long,
       liquidationDiscount: ConvertEncType.Long,
-    }
+    },
   },
 };
 
-const MsgChangeAccountEMode: AminoInit = {
-  aminoType: TxTypes.ChangeAccountEMode,
+const MsgSetAccountEMode: AminoInit = {
+  aminoType: TxTypes.SetAccountEMode,
+  valueMap: {},
+};
+
+const MsgRemoveAccountEMode: AminoInit = {
+  aminoType: TxTypes.RemoveAccountEMode,
   valueMap: {},
 };
 
@@ -198,7 +206,8 @@ const CdpAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgSetCdpPaused]: generateAminoType(MsgSetCdpPaused),
   [CarbonTx.Types.MsgAddEModeCategory]: generateAminoType(MsgAddEModeCategory),
   [CarbonTx.Types.MsgUpdateEModeCategory]: generateAminoType(MsgUpdateEModeCategory),
-  [CarbonTx.Types.MsgChangeAccountEMode]: generateAminoType(MsgChangeAccountEMode),
+  [CarbonTx.Types.MsgSetAccountEMode]: generateAminoType(MsgSetAccountEMode),
+  [CarbonTx.Types.MsgRemoveAccountEMode]: generateAminoType(MsgRemoveAccountEMode),
 };
 
 export default CdpAmino;
