@@ -44,10 +44,10 @@ export const InsightsEndpoints = {
 
   // Competition api
   "competition/list": "/competition/list",
-  "competition/leaderboard": "/competition/leaderboard",
   "competition/leaderboardpnl": "/competition/leaderboardpnl",
   "competition/leaderboardlottery": "/competition/leaderboardlottery",
   "competition/leaderboardleague": "/competition/leaderboardleague",
+  "competition/leaderboardvolume": "/competition/leaderboardvolume",
 
   //Coin Gecko Tokens api
   "info/denom_gecko_map": "/info/denom_gecko_map",
