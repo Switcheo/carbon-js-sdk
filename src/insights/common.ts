@@ -44,6 +44,7 @@ export const InsightsEndpoints = {
 
   // Competition api
   "competition/list": "/competition/list",
+  "competition/leaderboard": "/competition/leaderboard",
   "competition/leaderboardpnl": "/competition/leaderboardpnl",
   "competition/leaderboardlottery": "/competition/leaderboardlottery",
   "competition/leaderboardleague": "/competition/leaderboardleague",

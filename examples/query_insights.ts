@@ -52,17 +52,23 @@ import { CarbonSDK } from "./_sdk";
   const competitionList = await sdk.insights.CompetitionList({});
   console.log("competitionList", competitionList);
 
-  // volume leaderboard (competition)
+  // trading volume leaderboard for legacy Demex Trading volume Competition (circa. 2021-2022)
   const volumeLeaderboard = await sdk.insights.VolumeCompetitionLeaderboard({
-    competitionId: "tradingcomp17",
+    competitionId: "comp1",
   });
   console.log("volumeLeaderboard", volumeLeaderboard);
 
-  // volume leaderboard (competition)
+  // pnl leaderboard (competition)
   const pnlLeaderboard = await sdk.insights.PNLCompetitionLeaderboard({
     competitionId: "comp1",
   });
   console.log("pnlLeaderboard", pnlLeaderboard);
+
+  // trading volume ranking for Perps Trading Competition on Demex (14 Nov 2023 - 28 Nov 2023)
+  const perpTradingVolume = await sdk.insights.PerpsTradingCompetitionVolume({
+    competitionId: "tradingcomp17",
+  });
+  console.log("perpTradingVolume", perpTradingVolume);
 
   // lottery leaderboard (competition)
   const lotteryLeaderboard = await sdk.insights.LotteryCompetitionLeaderboard({
