@@ -54,7 +54,7 @@ export interface PerpsCompTradingVolumeEntry {
   twitter: string | null;
 }
 export interface QueryGetPerpsCompTradingVolumeResponse {
-  entries: VolumeLeaderboardEntry[];
+  entries: PerpsCompTradingVolumeEntry[];
 }
 
 export interface QueryGetPerpsCompTradingVolumeRequest {
