@@ -39,7 +39,7 @@ import { CarbonSDK } from "./_sdk";
     const userRewardsClaimHistoryResponse = await sdk.insights.UserRewardsClaimHistory({
       address:'swth1l0r3xfktp446qg9u5zft62v7lwuej09hu3hrm8'
     });
-    console.log("userRewardsClaimHistory",userRewardsClaimHistoryResponse )
+    console.log("userRewardsClaimHistory", userRewardsClaimHistoryResponse)
 
     // market api
     const marketsVolumeResponse = await sdk.insights.MarketsVolume();
