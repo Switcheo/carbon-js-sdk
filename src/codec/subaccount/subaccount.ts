@@ -118,7 +118,7 @@ export const SubAccount = {
   },
 
   fromPartial(object: DeepPartial<SubAccount>): SubAccount {
-    const message = { ...baseSubAccount } as SubAccount; 
+    const message = { ...baseSubAccount } as SubAccount;
     message.mainAddress = object.mainAddress ?? "";
     message.role = object.role ?? "";
     message.expectedAuthorizer = object.expectedAuthorizer ?? "";
