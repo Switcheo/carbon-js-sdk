@@ -182,6 +182,9 @@ class InsightsQueryClient {
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetCompetitionListResponse>;
   }
 
+  /**
+   * endpoint for legacy Demex Trading volume Competition (circa. 2021-2022). Keeping this here as endpoint has not been removed.
+   */
   async VolumeCompetitionLeaderboard(
     req: Insights.QueryGetVolumeCompetitionLeaderboardRequest
   ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetVolumeCompetitionLeaderboardResponse>> {
@@ -194,6 +197,20 @@ class InsightsQueryClient {
     const request = this.apiManager.path("competition/leaderboard", {}, queryParams);
     const response = await request.get();
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetVolumeCompetitionLeaderboardResponse>;
+  }
+  /**
+   * endpoint for Perps Trading Competition on Demex (14 Nov 2023 - 28 Nov 2023).
+  */
+  async PerpsTradingCompetitionVolume(
+    req: Insights.QueryGetPerpsCompTradingVolumeRequest
+  ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetPerpsCompTradingVolumeResponse>> {
+    const queryParams = {
+      competitionId: req.competitionId,
+      ...(req.address && { address: req.address }),
+    };
+    const request = this.apiManager.path("competition/leaderboardvolume", {}, queryParams);
+    const response = await request.get();
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetPerpsCompTradingVolumeResponse>;
   }
 
   async PNLCompetitionLeaderboard(
