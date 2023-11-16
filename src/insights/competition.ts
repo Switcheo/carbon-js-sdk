@@ -22,7 +22,7 @@ export interface QueryGetCompetitionListRequest {
   offset?: number;
 }
 
-// Volume Rankings
+// Volume Rankings (for legacy Demex Trading Competition circa 2021-2022)
 export interface VolumeLeaderboardEntry {
   competitionId: string;
   address: string;
@@ -32,7 +32,6 @@ export interface VolumeLeaderboardEntry {
   username: string | null;
   twitter: string | null;
 }
-
 export interface QueryGetVolumeCompetitionLeaderboardResponse {
   entries: VolumeLeaderboardEntry[];
   meta: TimeMeta;
@@ -43,6 +42,24 @@ export interface QueryGetVolumeCompetitionLeaderboardRequest {
   market?: string;
   from?: string;
   until?: string;
+}
+
+// Volume Rankings (for Perps Trading Competition on Demex from 14 Nov 2023 - 28 Nov 2023)
+export interface PerpsCompTradingVolumeEntry {
+  address: string;
+  volume: string;
+  rank: string;
+  tier: string;
+  username: string | null;
+  twitter: string | null;
+}
+export interface QueryGetPerpsCompTradingVolumeResponse {
+  entries: PerpsCompTradingVolumeEntry[];
+}
+
+export interface QueryGetPerpsCompTradingVolumeRequest {
+  competitionId: string;
+  address?: string;
 }
 
 // PNL Rankings

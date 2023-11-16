@@ -140,7 +140,7 @@ class HydrogenClient {
       source_event: this.formatChainEventV2(value.source_event, value.source_blockchain ?? ''),
       bridging_event: this.formatChainEventV2(value.bridging_event, getBridgeBlockchainFromId(value.bridge_id)),
       destination_event: this.formatChainEventV2(value.destination_event, value.destination_blockchain ?? ''),
-      relay: this.formatRelaysTransfersV2(value.relay)
+      relay: this.formatRelaysTransfersV2(value.relay),
     };
   };
 
@@ -211,7 +211,6 @@ class HydrogenClient {
     };
   }
 
-  /** @deprecated getDetailedTransfers function is deprecated, please use getTransfers instead */
   async getDetailedTransfers(req: GetTransfersRequest, version = "V1"): Promise<GetDetailedTransfersResponse> {
     this.checkState();
     const request = this.apiManager.path(

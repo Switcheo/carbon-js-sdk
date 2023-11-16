@@ -2,7 +2,6 @@ import { Carbon } from "@carbon-sdk/CarbonSDK";
 import { Coin } from "@carbon-sdk/codec/cosmos/base/v1beta1/coin";
 import { Description } from "@carbon-sdk/codec/cosmos/staking/v1beta1/staking";
 import { MsgCreateValidator, MsgEditValidator } from "@carbon-sdk/codec/cosmos/staking/v1beta1/tx";
-import { CarbonWallet } from "@carbon-sdk/wallet";
 import { CarbonTx } from "@carbon-sdk/util";
 import BigNumber from "bignumber.js";
 import Long from "long";
@@ -281,7 +280,7 @@ export class AdminModule extends BaseModule {
     );
   }
 
-  public async setMsgFee(params: AdminModule.SetMsgFeeParams) {
+  public async setMsgFee() {
     throw new Error("deprecated");
   }
 
@@ -525,6 +524,7 @@ export class AdminModule extends BaseModule {
         loanToValue: params.asset.loanToValue.toString(10),
         liquidationThreshold: params.asset.liquidationThreshold.toString(10),
         liquidationDiscount: params.asset.liquidationDiscount.toString(10),
+        allowRepayStablecoinInterestDebt: params.asset.allowRepayStablecoinInterestDebt,
         supplyCap: params.asset.supplyCap.toString(10),
         borrowCap: params.asset.borrowCap.toString(10),
       },
@@ -670,7 +670,7 @@ export class AdminModule extends BaseModule {
     const value = Carbon.Coin.MsgUpdateGroup.fromPartial({
       creator: params.creator ?? wallet.bech32Address,
       groupId: params.groupId,
-      updateGroupParams: params.updateGroupParams
+      updateGroupParams: params.updateGroupParams,
     });
 
     return await wallet.sendTx(
@@ -927,6 +927,7 @@ export namespace AdminModule {
     liquidationDiscount: BigNumber;
     supplyCap: BigNumber;
     borrowCap: BigNumber;
+    allowRepayStablecoinInterestDebt: boolean;
   }
   export interface AddRateStrategyParams {
     rateStrategy: RateStrategy;

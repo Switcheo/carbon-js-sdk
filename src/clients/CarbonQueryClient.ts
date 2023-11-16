@@ -10,6 +10,7 @@ import { ServiceClientImpl as CosmosTmClient } from "@carbon-sdk/codec/cosmos/ba
 import { QueryClientImpl as DistributionQueryClient } from "@carbon-sdk/codec/cosmos/distribution/v1beta1/query";
 import { QueryClientImpl as EvidenceQueryClient } from "@carbon-sdk/codec/cosmos/evidence/v1beta1/query";
 import { QueryClientImpl as GovQueryClient } from "@carbon-sdk/codec/cosmos/gov/v1beta1/query";
+import { QueryClientImpl as GroupQueryClient } from "@carbon-sdk/codec/cosmos/group/v1/query";
 import { QueryClientImpl as MintQueryClient } from "@carbon-sdk/codec/cosmos/mint/v1beta1/query";
 import { QueryClientImpl as ParamsQueryClient } from "@carbon-sdk/codec/cosmos/params/v1beta1/query";
 import { QueryClientImpl as SlashingQueryClient } from "@carbon-sdk/codec/cosmos/slashing/v1beta1/query";
@@ -44,7 +45,7 @@ import { QueryClientImpl as SubaccountQueryClient } from "@carbon-sdk/codec/suba
 import { QueryClientImpl as AllianceClient } from "@carbon-sdk/codec/alliance/query";
 import { QueryClientImpl as PerpspoolQueryClient } from "@carbon-sdk/codec/perpspool/query";
 import { QueryClientImpl as ERC20QueryClient } from "@carbon-sdk/codec/erc20/query";
-import { createProtobufRpcClient, ProtobufRpcClient, QueryClient } from "@cosmjs/stargate";
+import { createProtobufRpcClient, QueryClient } from "@cosmjs/stargate";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import BlockchainClient from "./BlockchainClient";
 import GrpcQueryClient from "./GrpcQueryClient";
@@ -99,6 +100,7 @@ class CarbonQueryClient {
   distribution: DistributionQueryClient;
   evidence: EvidenceQueryClient;
   gov: GovQueryClient;
+  group: GroupQueryClient;
   mint: MintQueryClient;
   params: ParamsQueryClient;
   slashing: SlashingQueryClient;
@@ -152,6 +154,7 @@ class CarbonQueryClient {
     this.nativeBank = new NativeBankQueryClient(rpcClient);
     this.distribution = new DistributionQueryClient(rpcClient);
     this.evidence = new EvidenceQueryClient(rpcClient);
+    this.group = new GroupQueryClient(rpcClient);
     this.gov = new GovQueryClient(rpcClient);
     this.mint = new MintQueryClient(rpcClient);
     this.params = new ParamsQueryClient(rpcClient);

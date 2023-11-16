@@ -44,7 +44,7 @@ const AminoTypesMap = new AminoTypes({
   ...EvmMergeAmino,
   ...FeeMarketAmino,
   ...PerpspoolAmino,
-  ...ERC20Amino
+  ...ERC20Amino,
 });
 
 export default AminoTypesMap;

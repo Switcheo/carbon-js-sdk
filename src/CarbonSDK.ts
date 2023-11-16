@@ -9,7 +9,7 @@ import {
   Network as _Network,
 } from "@carbon-sdk/constant";
 import { GenericUtils, NetworkUtils } from "@carbon-sdk/util";
-import { Tendermint34Client, HttpClient } from "@cosmjs/tendermint-rpc";
+import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
 import { NodeHttpTransport } from "@improbable-eng/grpc-web-node-http-transport";
 import * as clients from "./clients";
 import { CarbonQueryClient, ETHClient, HydrogenClient, InsightsQueryClient, NEOClient, TokenClient, ZILClient } from "./clients";
@@ -54,9 +54,13 @@ export * as Carbon from "./codec/carbon-models";
 export interface CarbonSDKOpts {
   network: Network;
   tmClient: Tendermint34Client;
+  wallet?: CarbonWallet;
   chainId?: string;
   evmChainId?: string;
   token?: TokenClient;
+  query?: CarbonQueryClient;
+  hydrogen?: HydrogenClient;
+  insights?: InsightsQueryClient;
   config?: Partial<NetworkConfig>;
   grpcQueryClient?: GrpcQueryClient;
   useTmAbciQuery?: boolean;
@@ -146,26 +150,30 @@ class CarbonSDK {
     this.useTmAbciQuery = opts.useTmAbciQuery ?? false;
 
     this.tmClient = opts.tmClient;
+    this.wallet = opts.wallet;
     this.chainId = opts.chainId ?? CarbonChainIDs[this.network] ?? CarbonChainIDs[Network.MainNet];
     this.evmChainId = opts.evmChainId ?? CarbonEvmChainIDs[this.network] ?? CarbonEvmChainIDs[Network.MainNet];
 
-    let grpcClient: GrpcQueryClient | undefined;
-    if (opts.useTmAbciQuery !== true && this.networkConfig.grpcUrl) {
-      const transport = typeof window === "undefined" ? NodeHttpTransport() : undefined;
+    let carbonQueryClient: CarbonQueryClient | undefined;
+    if (!opts.query) {
+      let grpcClient: GrpcQueryClient | undefined;
+      if (opts.useTmAbciQuery !== true && this.networkConfig.grpcUrl) {
+        const transport = typeof window === "undefined" ? NodeHttpTransport() : undefined;
 
-      grpcClient = opts.grpcQueryClient ?? new GrpcQueryClient(this.networkConfig.grpcWebUrl, {
-        transport,
+        grpcClient = opts.grpcQueryClient ?? new GrpcQueryClient(this.networkConfig.grpcWebUrl, {
+          transport,
+        });
+      }
+      carbonQueryClient = new CarbonQueryClient({
+        tmClient: this.tmClient,
+        grpcClient,
       });
     }
 
-    this.query = new CarbonQueryClient({
-      tmClient: this.tmClient,
-      grpcClient,
-    });
-    this.insights = new InsightsQueryClient(this.networkConfig);
+    this.query = (opts.query ?? carbonQueryClient)!
+    this.insights = opts.insights ?? new InsightsQueryClient(this.networkConfig);
     this.token = opts.token ?? TokenClient.instance(this.query, this);
-    this.hydrogen = new HydrogenClient(this.networkConfig, this.token);
-    this.hydrogen = HydrogenClient.instance(this.networkConfig, this.token);
+    this.hydrogen = opts.hydrogen ?? new HydrogenClient(this.networkConfig, this.token);
 
     this.admin = new AdminModule(this);
     this.alliance = new AllianceModule(this);
@@ -256,7 +264,6 @@ class CarbonSDK {
       normalInit = false;
     }
 
-    console.log("normal init", normalInit)
     const sdk = new CarbonSDK({ network, config: configOverride, tmClient, defaultTimeoutBlocks, chainId, useTmAbciQuery: opts.useTmAbciQuery });
 
     if (!normalInit) return sdk;
@@ -370,9 +377,16 @@ class CarbonSDK {
     return {
       network: this.network,
       config: this.configOverride,
-      tmClient: this.tmClient,
       chainId: this.chainId,
+      evmChainId: this.evmChainId,
       useTmAbciQuery: this.useTmAbciQuery,
+
+      wallet: this.wallet,
+      tmClient: this.tmClient,
+      token: this.token,
+      query: this.query,
+      hydrogen: this.hydrogen,
+      insights: this.insights,
     };
   }
 
@@ -398,11 +412,9 @@ class CarbonSDK {
     if (this.wallet?.isLedgerSigner()) {
       (this.wallet.signer as CarbonLedgerSigner).ledger.disconnect();
     }
-    return new CarbonSDK({
-      ...this,
-      wallet: null,
-      skipInit: true,
-    });
+    const opts = this.generateOpts();
+    delete opts.wallet;
+    return new CarbonSDK(opts);
   }
 
   public async connectWithPrivateKey(privateKey: string | Buffer, opts?: CarbonWalletGenericOpts) {

@@ -195,7 +195,7 @@ export class IBCModule extends BaseModule {
           return (prev.exponent > current.exponent) ? prev : current;
         });
 
-        let stakeCurrency: Currency = {
+        const stakeCurrency: Currency = {
           coinDenom: maxExponentDenomUnit.denom.toUpperCase(),
           coinMinimalDenom: stakingCurrencyDenom,
           coinDecimals: maxExponentDenomUnit.exponent,
@@ -237,7 +237,7 @@ export class IBCModule extends BaseModule {
               low: feeToken.low_gas_price,
               average: feeToken.average_gas_price,
               high: feeToken.high_gas_price,
-            }
+            },
           };
         });
 
@@ -248,7 +248,7 @@ export class IBCModule extends BaseModule {
           chainName: chainInfoJson.chain_name,
           bip44:
           {
-            coinType: chainInfoJson.slip44
+            coinType: chainInfoJson.slip44,
           },
           bech32Config: IBCAddress.defaultBech32Config(chainInfoJson.bech32_prefix),
           stakeCurrency: stakeCurrency,
@@ -256,8 +256,8 @@ export class IBCModule extends BaseModule {
           feeCurrencies: feeCurrencies,
           features: [
             "ibc-transfer",
-            "ibc-go"
-          ]
+            "ibc-go",
+          ],
         };
       } catch (error) {
         return defaultChainInfo;

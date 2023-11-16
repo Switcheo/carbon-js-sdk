@@ -1,4 +1,4 @@
-import { PageMeta, TimeMeta } from "./common";
+import { PageMeta } from "./common";
 
 export interface FundingHistory {
   lastFundingAt: string;
