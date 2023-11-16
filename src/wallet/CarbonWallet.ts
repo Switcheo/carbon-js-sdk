@@ -869,12 +869,12 @@ export class CarbonWallet {
     };
   }
 
-  private isAccountNotFoundError = (error?: Error, address?: string) => {
-    return error?.message?.includes(`account ${address} not found`);
+  private isAccountNotFoundError = (error: Error, address: string) => {
+    return error.message?.includes(`account ${address} not found`);
   };
 
-  private isTxHashNotFound = (error?: Error, hash?: string) => {
-    return error?.message?.includes(`tx (${hash}) not found`);
+  private isTxHashNotFound = (error: Error, hash: string) => {
+    return error.message?.includes(`tx (${hash}) not found`);
   };
 
 
