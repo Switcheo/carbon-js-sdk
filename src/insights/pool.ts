@@ -113,7 +113,7 @@ export interface QueryGetUserRewardsClaimHistoryRequest extends QueryByPageReque
   address: string;
 }
 
-export interface tokenAmounts{
+export interface TokenAmounts{
   denom: string;
   amount: number;
   amountValue: number;
@@ -125,7 +125,7 @@ export interface ClaimTransactionEntry{
   height: number;
   timestamp: string;
   hash?: string;
-  tokens: tokenAmounts[];
+  tokens: TokenAmounts[];
 
 }
 
