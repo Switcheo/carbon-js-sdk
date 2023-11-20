@@ -1,13 +1,16 @@
 import { PositionViewOptions } from "../lib/insights";
+import * as BIP39 from "bip39";
 import { CarbonSDK } from "./_sdk";
 
 (async () => {
+  const mnemonics = process.env.MNEMONICS ?? BIP39.generateMnemonic();
   const sdk = await CarbonSDK.instance({
     network: CarbonSDK.Network.DevNet,
     config: {
       tmRpcUrl: process.env.TRPC_ENDPOINT,
     },
   });
+  const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
 
   // chain api
   const stakeResponse = await sdk.insights.Stake();
@@ -33,13 +36,13 @@ import { CarbonSDK } from "./_sdk";
   const poolsVolumeResponse = await sdk.insights.PoolsVolume();
   console.log("poolsVolume", poolsVolumeResponse);
 
-    const poolsLiquidityResponse = await sdk.insights.PoolsLiquidity();
-    console.log("poolsLiquidity", poolsLiquidityResponse);
+  const poolsLiquidityResponse = await sdk.insights.PoolsLiquidity();
+  console.log("poolsLiquidity", poolsLiquidityResponse);
 
-    const userRewardsClaimHistoryResponse = await sdk.insights.UserRewardsClaimHistory({
-      address:'swth1l0r3xfktp446qg9u5zft62v7lwuej09hu3hrm8'
-    });
-    console.log("userRewardsClaimHistory", userRewardsClaimHistoryResponse)
+  const userRewardsClaimHistoryResponse = await sdk.insights.UserRewardsClaimHistory({
+    address: connectedSDK.wallet.bech32Address
+  });
+  console.log("userRewardsClaimHistory", userRewardsClaimHistoryResponse)
 
   // market api
   const marketsVolumeResponse = await sdk.insights.MarketsVolume();
