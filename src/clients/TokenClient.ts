@@ -49,6 +49,7 @@ class TokenClient {
   public readonly commonAssetNames: TypeUtils.SimpleMap<string> = CommonAssetName;
   public readonly geckoTokenNames: TypeUtils.SimpleMap<string> = CoinGeckoTokenNames;
 
+  public initialUsdValuesLoaded: boolean = false;
   private additionalGeckoDenoms: TypeUtils.SimpleMap<string> = {};
 
   private constructor(public readonly query: CarbonQueryClient, public readonly configProvider: NetworkConfigProvider) { }
@@ -666,6 +667,8 @@ class TokenClient {
         this.usdValues[denom] = denom === uscStablecoin?.denom ? uscUsdValue : price;
       }
     }
+
+    if (!this.initialUsdValuesLoaded) this.initialUsdValuesLoaded = true
     return this.usdValues;
   }
 
