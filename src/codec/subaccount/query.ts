@@ -6,6 +6,7 @@ import {
   PageRequest,
   PageResponse,
 } from "../cosmos/base/query/v1beta1/pagination";
+import { Duration } from "../google/protobuf/duration";
 
 export const protobufPackage = "Switcheo.carbon.subaccount";
 
@@ -76,6 +77,15 @@ export interface QueryParamsRequest {}
 
 export interface QueryParamsResponse {
   params?: Params;
+}
+
+export interface QueryCreationCooldownRequest {
+  address: string;
+  role: string;
+}
+
+export interface QueryCreationCooldownResponse {
+  cooldownDuration?: Duration;
 }
 
 const baseQueryGetSubAccountRequest: object = { address: "", role: "" };
@@ -1210,6 +1220,155 @@ export const QueryParamsResponse = {
   },
 };
 
+const baseQueryCreationCooldownRequest: object = { address: "", role: "" };
+
+export const QueryCreationCooldownRequest = {
+  encode(
+    message: QueryCreationCooldownRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.address !== "") {
+      writer.uint32(10).string(message.address);
+    }
+    if (message.role !== "") {
+      writer.uint32(18).string(message.role);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryCreationCooldownRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryCreationCooldownRequest,
+    } as QueryCreationCooldownRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.address = reader.string();
+          break;
+        case 2:
+          message.role = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryCreationCooldownRequest {
+    const message = {
+      ...baseQueryCreationCooldownRequest,
+    } as QueryCreationCooldownRequest;
+    message.address =
+      object.address !== undefined && object.address !== null
+        ? String(object.address)
+        : "";
+    message.role =
+      object.role !== undefined && object.role !== null
+        ? String(object.role)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryCreationCooldownRequest): unknown {
+    const obj: any = {};
+    message.address !== undefined && (obj.address = message.address);
+    message.role !== undefined && (obj.role = message.role);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryCreationCooldownRequest>
+  ): QueryCreationCooldownRequest {
+    const message = {
+      ...baseQueryCreationCooldownRequest,
+    } as QueryCreationCooldownRequest;
+    message.address = object.address ?? "";
+    message.role = object.role ?? "";
+    return message;
+  },
+};
+
+const baseQueryCreationCooldownResponse: object = {};
+
+export const QueryCreationCooldownResponse = {
+  encode(
+    message: QueryCreationCooldownResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.cooldownDuration !== undefined) {
+      Duration.encode(
+        message.cooldownDuration,
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryCreationCooldownResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryCreationCooldownResponse,
+    } as QueryCreationCooldownResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.cooldownDuration = Duration.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryCreationCooldownResponse {
+    const message = {
+      ...baseQueryCreationCooldownResponse,
+    } as QueryCreationCooldownResponse;
+    message.cooldownDuration =
+      object.cooldownDuration !== undefined && object.cooldownDuration !== null
+        ? Duration.fromJSON(object.cooldownDuration)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryCreationCooldownResponse): unknown {
+    const obj: any = {};
+    message.cooldownDuration !== undefined &&
+      (obj.cooldownDuration = message.cooldownDuration
+        ? Duration.toJSON(message.cooldownDuration)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryCreationCooldownResponse>
+  ): QueryCreationCooldownResponse {
+    const message = {
+      ...baseQueryCreationCooldownResponse,
+    } as QueryCreationCooldownResponse;
+    message.cooldownDuration =
+      object.cooldownDuration !== undefined && object.cooldownDuration !== null
+        ? Duration.fromPartial(object.cooldownDuration)
+        : undefined;
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Get subaccount details */
@@ -1242,6 +1401,10 @@ export interface Query {
   ): Promise<QueryMainAccountResponse>;
   /** Parameters queries the subaccount parameters. */
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse>;
+  /** Cooldown queries the subaccount cooldown duration. */
+  Cooldown(
+    request: QueryCreationCooldownRequest
+  ): Promise<QueryCreationCooldownResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -1256,6 +1419,7 @@ export class QueryClientImpl implements Query {
     this.MainAccountAll = this.MainAccountAll.bind(this);
     this.MainAccount = this.MainAccount.bind(this);
     this.Params = this.Params.bind(this);
+    this.Cooldown = this.Cooldown.bind(this);
   }
   SubAccount(
     request: QueryGetSubAccountRequest
@@ -1364,6 +1528,20 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryParamsResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  Cooldown(
+    request: QueryCreationCooldownRequest
+  ): Promise<QueryCreationCooldownResponse> {
+    const data = QueryCreationCooldownRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.subaccount.Query",
+      "Cooldown",
+      data
+    );
+    return promise.then((data) =>
+      QueryCreationCooldownResponse.decode(new _m0.Reader(data))
     );
   }
 }

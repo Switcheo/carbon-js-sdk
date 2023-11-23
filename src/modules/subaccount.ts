@@ -9,6 +9,8 @@ export class SubAccountModule extends BaseModule {
     const value = MsgCreateSubAccount.fromPartial({
       creator: wallet.bech32Address,
       subAddress: params.subAddress,
+      mainAddress: wallet.bech32Address,
+      role: params.role,
     });
 
     return await wallet.sendTx(
@@ -25,7 +27,9 @@ export class SubAccountModule extends BaseModule {
 
     const value = MsgActivateSubAccount.fromPartial({
       creator: wallet.bech32Address,
-      mainAddress: params.expectedMainAccount,
+      mainAddress: params.mainAddress,
+      subAddress: params.subAddress,
+      role: params.role,
     });
 
     return await wallet.sendTx(
@@ -42,7 +46,9 @@ export class SubAccountModule extends BaseModule {
 
     const value = MsgRemoveSubAccount.fromPartial({
       creator: wallet.bech32Address,
+      mainAddress: params.mainAddress,
       subAddress: params.subAddress,
+      role: params.role,
     });
 
     return await wallet.sendTx(
@@ -58,13 +64,19 @@ export class SubAccountModule extends BaseModule {
 export namespace SubAccountModule {
   export interface CreateSubAccountParams {
     subAddress: string;
+    mainAddress: string,
+    role: "trading-fee-delegate" | "oracle-delegate",
   }
 
   export interface ActivateSubAccountParams {
-    expectedMainAccount: string;
+    mainAddress: string;
+    subAddress: string;
+    role: "trading-fee-delegate" | "oracle-delegate",
   }
 
   export interface RemoveSubAccountParams {
+    mainAddress: string;
     subAddress: string;
+    role: "trading-fee-delegate" | "oracle-delegate",
   }
 }

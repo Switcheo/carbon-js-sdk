@@ -25840,6 +25840,23 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/Switcheo.carbon.subaccount"
       }
     ],
+    "QueryCreationCooldownRequest": [
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "role",
+        "type": "string"
+      }
+    ],
+    "QueryCreationCooldownResponse": [
+      {
+        "name": "cooldown_duration",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      }
+    ],
     "MsgCreateSubAccount": [
       {
         "name": "creator",
