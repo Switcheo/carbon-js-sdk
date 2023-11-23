@@ -1,13 +1,16 @@
 import { PositionViewOptions } from "../lib/insights";
+import * as BIP39 from "bip39";
 import { CarbonSDK } from "./_sdk";
 
 (async () => {
+  const mnemonics = process.env.MNEMONICS ?? BIP39.generateMnemonic();
   const sdk = await CarbonSDK.instance({
     network: CarbonSDK.Network.DevNet,
     config: {
       tmRpcUrl: process.env.TRPC_ENDPOINT,
     },
   });
+  const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
 
   // chain api
   const stakeResponse = await sdk.insights.Stake();
@@ -35,6 +38,11 @@ import { CarbonSDK } from "./_sdk";
 
   const poolsLiquidityResponse = await sdk.insights.PoolsLiquidity();
   console.log("poolsLiquidity", poolsLiquidityResponse);
+
+  const userRewardsClaimHistoryResponse = await sdk.insights.UserRewardsClaimHistory({
+    address: connectedSDK.wallet.bech32Address
+  });
+  console.log("userRewardsClaimHistory", userRewardsClaimHistoryResponse)
 
   // market api
   const marketsVolumeResponse = await sdk.insights.MarketsVolume();

@@ -1,5 +1,6 @@
 import { NetworkConfig } from "@carbon-sdk/constant";
 import { Insights } from "@carbon-sdk/index";
+import { InsightsQueryResponse } from "@carbon-sdk/insights";
 import { APIUtils } from "@carbon-sdk/util";
 import BigNumber from "bignumber.js";
 import dayjs from "dayjs";
@@ -165,7 +166,14 @@ class InsightsQueryClient {
     const response = await request.get();
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetPoolsVolumeResponse>;
   }
-
+  async UserRewardsClaimHistory(
+    req: Insights.QueryGetUserRewardsClaimHistoryRequest
+  ): Promise<InsightsQueryResponse<Insights.QueryGetUserRewardsClaimHistoryResponse>> {
+    const routeParams = {address: req.address}
+    const request = this.apiManager.path("user/pool/rewards", routeParams, req);
+    const response = await request.get();
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetUserRewardsClaimHistoryResponse>;
+  }
   async CompetitionList(
     req: Insights.QueryGetCompetitionListRequest = {}
   ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetCompetitionListResponse>> {
