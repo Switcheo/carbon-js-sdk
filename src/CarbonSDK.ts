@@ -26,7 +26,6 @@ import {
   EvmMergeModule,
   EvmModule,
   FeeModule,
-  FeemarketModule,
   GovModule,
   IBCModule,
   LeverageModule,
@@ -131,7 +130,6 @@ class CarbonSDK {
   xchain: XChainModule;
   evm: EvmModule;
   evmmerge: EvmMergeModule;
-  feemarket: FeemarketModule;
 
   neo: NEOClient;
   eth: ETHClient;
@@ -198,7 +196,6 @@ class CarbonSDK {
     this.xchain = new XChainModule(this);
     this.evm = new EvmModule(this);
     this.evmmerge = new EvmMergeModule(this);
-    this.feemarket = new FeemarketModule(this);
 
     this.neo = NEOClient.instance({
       configProvider: this,

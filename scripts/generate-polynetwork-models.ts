@@ -16,7 +16,7 @@ const whitelistExports: { [name: string]: string } = {
 }
 
 for (const exportName in whitelistExports) {
-  const directoryPath = whitelistExports[exportName];
+  const directoryPath = `Switcheo/carbon/${whitelistExports[exportName]}`;
   const directory = path.join(pwd, 'src/codec', directoryPath);
   const files = fs.readdirSync(directory);
 

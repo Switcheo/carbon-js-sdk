@@ -4,7 +4,6 @@ import { AminoConverter } from "@cosmjs/stargate";
 import { AminoInit, generateAminoType } from "../utils";
 
 const TxTypes: TypeUtils.SimpleMap<string> = {
-  UpdateParams: "ethermint/MsgUpdateParams",
   EthereumTx: "evm/v1/MsgEthereumTx",
 };
 
@@ -13,15 +12,8 @@ const MsgEthereumTx: AminoInit = {
   valueMap: {},
 };
 
-const MsgUpdateParams: AminoInit = {
-  aminoType: TxTypes.UpdateParams,
-  valueMap: {},
-};
-
-
 const EvmAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgEvmEthereumTx]: generateAminoType(MsgEthereumTx),
-  [CarbonTx.Types.MsgEvmUpdateParams]: generateAminoType(MsgUpdateParams),
 };
 
 export default EvmAmino;

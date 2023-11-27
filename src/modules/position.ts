@@ -1,4 +1,4 @@
-import { MsgSetMargin } from "@carbon-sdk/codec/position/tx";
+import { MsgSetMargin } from "@carbon-sdk/codec/Switcheo/carbon/position/tx";
 import { CarbonTx } from "@carbon-sdk/util";
 import { BigNumber } from "bignumber.js";
 import BaseModule from "./base";

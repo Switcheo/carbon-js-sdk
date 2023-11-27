@@ -8,38 +8,38 @@ const [pwd, modelsFile] = files.splice(files.length - 2, 2);
 const MODEL_BLACKLIST = ['MsgClientImpl', 'protobufPackage', 'GenesisState', 'QueryClientImpl']
 
 const whitelistCarbonExports: { [name: string]: string } = {
-    'Admin': 'admin',
+    'Admin': 'Switcheo/carbon/admin',
     'Alliance': 'alliance',
-    'Bank': 'bank',
-    'Book': 'book',
-    'Broker': 'broker',
-    'Cdp': 'cdp',
-    'Coin': 'coin',
-    'Erc20': 'erc20',
-    'Evmbank': 'evmbank',
-    'Evmmerge': 'evmmerge',
-    'Fee': 'fee',
-    'Inflation': 'inflation',
-    'Insurance': 'insurance',
-    'Leverage': 'leverage',
-    'Liquidation': 'liquidation',
-    'Liquiditypool': 'liquiditypool',
-    'Market': 'market',
-    'Marketstats': 'marketstats',
-    'Misc': 'misc',
-    'Oracle': 'oracle',
-    'Order': 'order',
-    'Perpspool': 'perpspool',
-    'Position': 'position',
-    'Pricing': 'pricing',
-    'Profile': 'profile',
-    'Sequence': 'sequence',
-    'Subaccount': 'subaccount'
+    'Bank': 'Switcheo/carbon/bank',
+    'Book': 'Switcheo/carbon/book',
+    'Broker': 'Switcheo/carbon/broker',
+    'Cdp': 'Switcheo/carbon/cdp',
+    'Coin': 'Switcheo/carbon/coin',
+    'Erc20': 'Switcheo/carbon/erc20',
+    'Evmbank': 'Switcheo/carbon/evmbank',
+    'Evmmerge': 'Switcheo/carbon/evmmerge',
+    'Fee': 'Switcheo/carbon/fee',
+    'Inflation': 'Switcheo/carbon/inflation',
+    'Insurance': 'Switcheo/carbon/insurance',
+    'Leverage': 'Switcheo/carbon/leverage',
+    'Liquidation': 'Switcheo/carbon/liquidation',
+    'Liquiditypool': 'Switcheo/carbon/liquiditypool',
+    'Market': 'Switcheo/carbon/market',
+    'Marketstats': 'Switcheo/carbon/marketstats',
+    'Misc': 'Switcheo/carbon/misc',
+    'Oracle': 'Switcheo/carbon/oracle',
+    'Order': 'Switcheo/carbon/order',
+    'Perpspool': 'Switcheo/carbon/perpspool',
+    'Position': 'Switcheo/carbon/position',
+    'Pricing': 'Switcheo/carbon/pricing',
+    'Profile': 'Switcheo/carbon/profile',
+    'Sequence': 'Switcheo/carbon/sequence',
+    'Subaccount': 'Switcheo/carbon/subaccount'
   };
 
 for (const exportName in whitelistCarbonExports) {
   const directoryPath = whitelistCarbonExports[exportName];
-  const directory = path.join(pwd, 'src/codec', directoryPath);
+  const directory = path.join(pwd, 'src/codec/', directoryPath);
   const files = fs.readdirSync(directory);
 
   for (const file of files) {
