@@ -46,7 +46,7 @@ import { QueryClientImpl as AllianceClient } from "@carbon-sdk/codec/alliance/qu
 import { QueryClientImpl as PerpspoolQueryClient } from "@carbon-sdk/codec/perpspool/query";
 import { QueryClientImpl as ERC20QueryClient } from "@carbon-sdk/codec/erc20/query";
 import { createProtobufRpcClient, QueryClient } from "@cosmjs/stargate";
-import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
+import { Tendermint37Client } from "@cosmjs/tendermint-rpc";
 import BlockchainClient from "./BlockchainClient";
 import GrpcQueryClient from "./GrpcQueryClient";
 
@@ -66,7 +66,7 @@ export interface EthermintClientGroup {
 }
 
 export interface CarbonQueryClientOpts {
-  tmClient: Tendermint34Client;
+  tmClient: Tendermint37Client;
   grpcClient?: GrpcQueryClient;
 }
 
