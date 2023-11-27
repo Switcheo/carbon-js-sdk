@@ -719,10 +719,9 @@ class TokenClient {
     try {
       const response = await insights.DenomToGeckoIdMap();
       tokens = response.result.gecko;
-      return tokens;
     } catch (err) {
-      throw new Error((err as Error).message ?? "Unknown gecko query error");
     }
+    return tokens;
   }
 
   public setCommonAssetConfig() {
