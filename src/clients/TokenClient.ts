@@ -175,7 +175,7 @@ class TokenClient {
       },
       body: JSON.stringify({}),
     }
-    const result = await FetchUtils.fetch(url, requestOptions).then((res) => res.json()).catch(console.error);
+    const result = await FetchUtils.fetch(url, requestOptions).then((res) => res.json());
 
     return result as GetFeeQuoteResponse;
   }
