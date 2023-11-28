@@ -70,9 +70,11 @@ class TokenClient {
     } finally {
       // non-blocking reload
       try {
-        this.reloadDenomGeckoMap().finally(() => {
-          this.reloadUSDValues();
-        });
+        this.reloadDenomGeckoMap()
+          .catch(console.error)
+          .finally(() => {
+            this.reloadUSDValues();
+          });
       } catch (error) {
         console.error("failed to reload usd values");
         console.error(error);
@@ -220,7 +222,7 @@ class TokenClient {
     if (typeof denom !== "string") return "";
     denom = denom.toLowerCase();
     if (TokenClient.isPoolTokenLegacy(denom)) {
-      const match = denom.match(/^([a-z\d.-/]+)-(\d+)-([a-z\d.-/]+)-(\d+)-lp\d+$/i); 
+      const match = denom.match(/^([a-z\d.-/]+)-(\d+)-([a-z\d.-/]+)-(\d+)-lp\d+$/i);
       // inconsistent implementation of isPoolToken, exit
       if (match === null) return this.getSymbol(denom);
 
