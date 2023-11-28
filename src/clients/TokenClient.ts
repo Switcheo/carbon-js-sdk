@@ -73,7 +73,7 @@ class TokenClient {
         this.reloadDenomGeckoMap()
           .catch(console.error)
           .finally(() => {
-            this.reloadUSDValues();
+            this.reloadUSDValues().catch(console.error);
           });
       } catch (error) {
         console.error("failed to reload usd values");
