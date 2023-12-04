@@ -37,6 +37,11 @@ const SYMBOL_OVERRIDE: {
 const regexCdpDenom = RegExp(`^${DenomPrefix.CDPToken}/`, "i");
 const regexLPDenom = RegExp(`^${DenomPrefix.LPToken}/(\\d+)$`, "i");
 
+const onError = (error: unknown) => {
+  console.error("failed to reload usd values");
+  console.error(error);
+}
+
 class TokenClient {
   public static Blacklist = TokenBlacklist;
   public readonly tokens: TypeUtils.SimpleMap<Carbon.Coin.Token> = {};
@@ -69,14 +74,9 @@ class TokenClient {
       ]);
     } finally {
       // non-blocking reload
-      try {
-        this.reloadDenomGeckoMap().finally(() => {
-          this.reloadUSDValues();
-        });
-      } catch (error) {
-        console.error("failed to reload usd values");
-        console.error(error);
-      }
+      this.reloadDenomGeckoMap().catch(onError).finally(() => {
+        this.reloadUSDValues().catch(onError);
+      });
     }
   }
 
