@@ -69,16 +69,14 @@ class TokenClient {
       ]);
     } finally {
       // non-blocking reload
-      try {
-        this.reloadDenomGeckoMap()
-          .catch(console.error)
-          .finally(() => {
-            this.reloadUSDValues().catch(console.error);
+      this.reloadDenomGeckoMap()
+        .catch(console.error)
+        .finally(() => {
+          this.reloadUSDValues().catch((error) => {
+            console.error("failed to reload usd values");
+            console.error(error);
           });
-      } catch (error) {
-        console.error("failed to reload usd values");
-        console.error(error);
-      }
+        });
     }
   }
 
