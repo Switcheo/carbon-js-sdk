@@ -715,14 +715,10 @@ class TokenClient {
   async getDenomToGeckoIdMap(): Promise<TypeUtils.SimpleMap<string>> {
     const networkConfig = this.configProvider.getConfig();
     const insights = new InsightsQueryClient(networkConfig);
-    let tokens: SimpleMap<string> = {};
-    try {
-      const response = await insights.DenomToGeckoIdMap();
-      tokens = response.result.gecko;
-      return tokens;
-    } catch (err) {
-      throw new Error((err as Error).message ?? "Unknown gecko query error");
-    }
+    const response = await insights.DenomToGeckoIdMap();
+    const tokens = response.result.gecko;
+
+    return tokens;
   }
 
   public setCommonAssetConfig() {
