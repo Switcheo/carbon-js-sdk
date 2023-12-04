@@ -37,6 +37,11 @@ const SYMBOL_OVERRIDE: {
 const regexCdpDenom = RegExp(`^${DenomPrefix.CDPToken}/`, "i");
 const regexLPDenom = RegExp(`^${DenomPrefix.LPToken}/(\\d+)$`, "i");
 
+const onError = (error: unknown) => {
+  console.error("failed to reload usd values");
+  console.error(error);
+}
+
 class TokenClient {
   public static Blacklist = TokenBlacklist;
   public readonly tokens: TypeUtils.SimpleMap<Carbon.Coin.Token> = {};
@@ -69,14 +74,9 @@ class TokenClient {
       ]);
     } finally {
       // non-blocking reload
-      this.reloadDenomGeckoMap()
-        .catch(console.error)
-        .finally(() => {
-          this.reloadUSDValues().catch((error) => {
-            console.error("failed to reload usd values");
-            console.error(error);
-          });
-        });
+      this.reloadDenomGeckoMap().catch(onError).finally(() => {
+        this.reloadUSDValues().catch(onError);
+      });
     }
   }
 
@@ -715,10 +715,14 @@ class TokenClient {
   async getDenomToGeckoIdMap(): Promise<TypeUtils.SimpleMap<string>> {
     const networkConfig = this.configProvider.getConfig();
     const insights = new InsightsQueryClient(networkConfig);
-    const response = await insights.DenomToGeckoIdMap();
-    const tokens = response.result.gecko;
-
-    return tokens;
+    let tokens: SimpleMap<string> = {};
+    try {
+      const response = await insights.DenomToGeckoIdMap();
+      tokens = response.result.gecko;
+      return tokens;
+    } catch (err) {
+      throw new Error((err as Error).message ?? "Unknown gecko query error");
+    }
   }
 
   public setCommonAssetConfig() {
