@@ -1,10 +1,10 @@
 import tokenClient from "@carbon-sdk/clients/TokenClient";
 import { Carbon } from "@carbon-sdk/CarbonSDK";
-import { Params } from "@carbon-sdk/codec/cdp/params";
+import { Params } from "@carbon-sdk/codec/Switcheo/carbon/cdp/params";
 import {
   QueryParamsRequest,
   QueryTokenDebtRequest,
-} from "@carbon-sdk/codec/cdp/query";
+} from "@carbon-sdk/codec/Switcheo/carbon/cdp/query";
 import { QueryBalanceRequest, QuerySupplyOfRequest, QueryTotalSupplyRequest } from "@carbon-sdk/codec/cosmos/bank/v1beta1/query";
 import { PageRequest } from "@carbon-sdk/codec/cosmos/base/query/v1beta1/pagination";
 import { Network } from "@carbon-sdk/constant";
@@ -14,7 +14,6 @@ import { SWTHAddress } from "@carbon-sdk/util/address";
 import { bnOrZero, BN_10000, BN_ONE, BN_ZERO } from "@carbon-sdk/util/number";
 import { BigNumber } from "bignumber.js";
 import Long from "long";
-import { QueryAssetAllRequest, QueryTokenDebtAllRequest } from "./../codec/cdp/query";
 import BaseModule from "./base";
 import { Coin } from "@carbon-sdk/codec/cosmos/base/v1beta1/coin";
 
@@ -785,10 +784,10 @@ export class CDPModule extends BaseModule {
     const collateralPoolBalancePromise = sdk.query.bank.AllBalances({ ...maxPageLimit, address: collateralPoolAddress });
     const cdpModuleBalancesPromise = sdk.query.bank.AllBalances({ ...maxPageLimit, address: cdpModuleBalancesAddress });
     const totalSupplyPromise = sdk.query.bank.TotalSupply(QueryTotalSupplyRequest.fromPartial({ ...maxPageLimit }));
-    const cdpParamsPromise = sdk.query.cdp.Params(QueryParamsRequest.fromPartial({}));
+    const cdpParamsPromise = sdk.query.cdp.Params(Carbon.Cdp.QueryParamsRequest.fromPartial({}));
     const tokenPriceAllPromise = sdk.query.pricing.TokenPriceAll(Carbon.Pricing.QueryTokenPriceAllRequest.fromPartial({ ...maxPageLimit }));
-    const debtInfosPromise = sdk.query.cdp.TokenDebtAll(QueryTokenDebtAllRequest.fromPartial({ ...maxPageLimit }));
-    const assetParamsPromise = sdk.query.cdp.AssetAll(QueryAssetAllRequest.fromPartial({ ...maxPageLimit }));
+    const debtInfosPromise = sdk.query.cdp.TokenDebtAll(Carbon.Cdp.QueryTokenDebtAllRequest.fromPartial({ ...maxPageLimit }));
+    const assetParamsPromise = sdk.query.cdp.AssetAll(Carbon.Cdp.QueryAssetAllRequest.fromPartial({ ...maxPageLimit }));
     const rateStrategyPromise = sdk.query.cdp.RateStrategyAll(Carbon.Cdp.QueryRateStrategyAllRequest.fromPartial({ ...maxPageLimit }));
 
     const [collateralPoolBalances, totalSupply, cdpParams, tokenPriceAll, debtInfosAll, assetParamsAll, rateStrategies, cdpModuleBalances] = await Promise.all([collateralPoolBalancePromise, totalSupplyPromise, cdpParamsPromise, tokenPriceAllPromise, debtInfosPromise, assetParamsPromise, rateStrategyPromise, cdpModuleBalancesPromise]);

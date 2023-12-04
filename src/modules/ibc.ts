@@ -1,4 +1,4 @@
-import { Token } from "@carbon-sdk/codec/coin/token";
+import { Token } from "@carbon-sdk/codec/Switcheo/carbon/coin/token";
 import { DenomTrace } from "@carbon-sdk/codec/ibc/applications/transfer/v1/transfer";
 import { MsgTransfer } from "@carbon-sdk/codec/ibc/applications/transfer/v1/tx";
 import { Asset, ChainRegistryItem, CosmosChainsObj, DenomUnit, ExtendedChainInfo, FeeToken, IBCAddress, cw20TokenRegex, ibcNetworkRegex, ibcTransferChannelRegex } from "@carbon-sdk/constant";

@@ -1,6 +1,6 @@
 {
   "name": "carbon-js-sdk",
-  "version": "0.7.4-beta.2",
+  "version": "0.7.4",
   "description": "TypeScript SDK for Carbon blockchain",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -9,7 +9,7 @@
   "license": "MIT",
   "scripts": {
     "watch": "nodemon yarn build",
-    "build": "tsc && tsc-alias",
+    "build": "yarn run lint && tsc && tsc-alias",
     "cp-proto": "cp ~/go/src/github.com/Switcheo/carbon/gen/proto-ts.tar.gz .",
     "sync-proto": "sh scripts/update-proto.sh",
     "sync-register": "yarn sync-reset && sh scripts/generate-registry.sh",
@@ -40,7 +40,7 @@
     "@cityofzion/neon-core": "^4.9.0",
     "@cityofzion/neon-core-next": "npm:@cityofzion/neon-core@^5.0.0",
     "@cityofzion/neon-js": "^4.9.0",
-    "@cosmjs/stargate": "~0.29.5",
+    "@cosmjs/stargate": "~0.31.3",
     "@cosmos-kit/leap": "^0.13.14",
     "@improbable-eng/grpc-web": "^0.15.0",
     "@improbable-eng/grpc-web-node-http-transport": "^0.15.0",

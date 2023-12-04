@@ -1,4 +1,4 @@
-import { MsgCreateVote } from "@carbon-sdk/codec/oracle/tx";
+import { MsgCreateVote } from "@carbon-sdk/codec/Switcheo/carbon/oracle/tx";
 import { CarbonTx } from "@carbon-sdk/util";
 import BaseModule from "./base";
 import Long from "long";

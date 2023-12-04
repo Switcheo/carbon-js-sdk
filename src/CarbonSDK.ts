@@ -9,7 +9,7 @@ import {
   Network as _Network,
 } from "@carbon-sdk/constant";
 import { GenericUtils, NetworkUtils } from "@carbon-sdk/util";
-import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
+import { Tendermint37Client } from "@cosmjs/tendermint-rpc";
 import { NodeHttpTransport } from "@improbable-eng/grpc-web-node-http-transport";
 import * as clients from "./clients";
 import { CarbonQueryClient, ETHClient, HydrogenClient, InsightsQueryClient, NEOClient, TokenClient, ZILClient } from "./clients";
@@ -26,7 +26,6 @@ import {
   EvmMergeModule,
   EvmModule,
   FeeModule,
-  FeemarketModule,
   GovModule,
   IBCModule,
   LeverageModule,
@@ -53,7 +52,7 @@ export * as Carbon from "./codec/carbon-models";
 
 export interface CarbonSDKOpts {
   network: Network;
-  tmClient: Tendermint34Client;
+  tmClient: Tendermint37Client;
   wallet?: CarbonWallet;
   chainId?: string;
   evmChainId?: string;
@@ -68,7 +67,7 @@ export interface CarbonSDKOpts {
 }
 export interface CarbonSDKInitOpts {
   network: Network;
-  tmClient?: Tendermint34Client;
+  tmClient?: Tendermint37Client;
   config?: Partial<NetworkConfig>;
   wallet?: CarbonWallet;
 
@@ -105,7 +104,7 @@ class CarbonSDK {
   network: Network;
   configOverride: Partial<NetworkConfig>;
   networkConfig: NetworkConfig;
-  tmClient: Tendermint34Client;
+  tmClient: Tendermint37Client;
   token: TokenClient;
 
   admin: AdminModule;
@@ -131,7 +130,6 @@ class CarbonSDK {
   xchain: XChainModule;
   evm: EvmModule;
   evmmerge: EvmMergeModule;
-  feemarket: FeemarketModule;
 
   neo: NEOClient;
   eth: ETHClient;
@@ -198,7 +196,6 @@ class CarbonSDK {
     this.xchain = new XChainModule(this);
     this.evm = new EvmModule(this);
     this.evmmerge = new EvmMergeModule(this);
-    this.feemarket = new FeemarketModule(this);
 
     this.neo = NEOClient.instance({
       configProvider: this,
@@ -251,7 +248,7 @@ class CarbonSDK {
     const configOverride = opts.config ?? {};
     const defaultTimeoutBlocks = opts.defaultTimeoutBlocks;
     const networkConfig = GenericUtils.overrideConfig(NetworkConfigs[network], configOverride);
-    const tmClient: Tendermint34Client = opts.tmClient ?? new (Tendermint34Client as any)(new clients.BatchQueryClient(networkConfig.tmRpcUrl)); // fallback tmClient
+    const tmClient: Tendermint37Client = opts.tmClient ?? new (Tendermint37Client as any)(new clients.BatchQueryClient(networkConfig.tmRpcUrl)); // fallback tmClient
 
     let chainId = networkConfig.chainId; // fallback chain ID
     let normalInit = true;

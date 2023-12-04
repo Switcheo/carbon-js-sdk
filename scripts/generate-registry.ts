@@ -8,10 +8,12 @@ const files = process.argv;
 const [pwd, registryFile, polynetworkModelsFile, carbonModelsFile, cosmosModelsFile, ibcModelsFile] = files.slice(-7);
 const codecFiles = files.slice(2, files.length - 7);
 
+const prefixCarbonDir = (m: string) => `Switcheo/carbon/${m}`;
+
 const polynetworkFolders = ['btcx', 'ccm', 'headersync', 'lockproxy'];
 
-const carbonFolders = ['alliance', 'admin', 'bank', 'book', 'broker','cdp','coin', 
-  'erc20','evmbank',' evmmerge', 'fee', 'inflation', 'insurance','leverage', 'liquidation',
+const carbonFolders = ['admin', 'bank', 'book', 'broker', 'cdp', 'coin',
+  'erc20', 'evmbank', ' evmmerge', 'fee', 'inflation', 'insurance', 'leverage', 'liquidation',
   'liquiditypool', 'market', 'marketstats', 'misc', 'oracle', 'order', 'perpspool',
   'position', 'pricing', 'profile', 'sequence', 'subaccount'];
 
@@ -39,6 +41,7 @@ for (const moduleFile of codecFiles) {
   const messages = Object.keys(codecModule).filter((key) => {
     return (key.startsWith("Msg") && key !== "MsgClientImpl") || key.startsWith("Header") || key.endsWith("Proposal")
   });
+
   if (messages.length) {
     if (modules[codecModule.protobufPackage]) {
       modules[codecModule.protobufPackage] = [...modules[codecModule.protobufPackage], ...messages];
@@ -49,11 +52,12 @@ for (const moduleFile of codecFiles) {
       .replace(/^\.\.\//, "./")
       .replace(/\.ts$/, "");
     if (!(
-      moduleFile.includes('src/codec/btcx/')
-      || moduleFile.includes('src/codec/ccm/')
-      || moduleFile.includes('src/codec/headersync/')
-      || moduleFile.includes('src/codec/lockproxy/')
-      || carbonFolders.some(carbonModule => moduleFile.includes("src/codec/" + carbonModule))
+      moduleFile.includes('src/codec/Switcheo/carbon/btcx/')
+      || moduleFile.includes('src/codec/Switcheo/carbon/ccm/')
+      || moduleFile.includes('src/codec/Switcheo/carbon/headersync/')
+      || moduleFile.includes('src/codec/Switcheo/carbon/lockproxy/')
+      || moduleFile.includes('src/codec/alliance/')
+      || carbonFolders.some(carbonModule => moduleFile.includes("src/codec/Switcheo/carbon/" + carbonModule))
     )) {
       updateImportsAlias(messages, codecModule.protobufPackage)
 
@@ -145,9 +149,6 @@ const fileNameBlacklist = ['genesis.ts', 'keys.ts']
 
 
 const modelBlacklist: string[] = ['MsgClientImpl', 'protobufPackage', 'GenesisState', 'QueryClientImpl'];
-const labelOverride: { [key: string]: string } = {
-  "MarketParams": "MarketDefaults",
-}
 
 for (const moduleFile of codecFiles) {
   if (!moduleFile.endsWith(".ts")) {
@@ -157,7 +158,7 @@ for (const moduleFile of codecFiles) {
     .replace(/^\.\.\//, "./")
     .replace(/\.ts$/, "");
 
-  const file = moduleFile.split("/")
+  const file = moduleFile.replace("Switcheo/carbon/", "").split("/")
   const fileName = file[file.length - 1]
   const firstDirectory = file[2]
 
@@ -170,7 +171,7 @@ for (const moduleFile of codecFiles) {
     !modelBlacklist.includes(key)
   )).reduce((prev: string[], key: string) => {
     const messagePrev = prev;
-    
+
     messagePrev.push(key);
     return messagePrev;
   }, []);
@@ -205,7 +206,7 @@ function updateImportsAlias(messages: string[], protobufPackage: string) {
       || pkg === 'group'
       || (pkg === 'gov' && innerPkg === 'v1')
       || (pkg === 'evm' || pkg === 'feemarket')) {
-      msgAlias = `Msg${capitalize(pkg)}${msg.split('Msg')[1]}`
+      msgAlias = `Msg${capitalize(pkg)}${msg.substring(3)}`
     }
     if (msgAlias) {
       messages[i] = `${msg} as ${msgAlias}`

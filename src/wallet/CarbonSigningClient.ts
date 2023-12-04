@@ -18,7 +18,7 @@ import {
   TxBodyEncodeObject,
 } from "@cosmjs/proto-signing";
 import { AminoTypes, GasPrice, SigningStargateClientOptions, StargateClient, StdFee } from "@cosmjs/stargate";
-import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
+import { Tendermint37Client } from "@cosmjs/tendermint-rpc";
 import Long from "long";
 import { AminoTypesMap } from "../provider";
 import { CarbonEIP712Signer, isCarbonEIP712Signer } from "./CarbonSigner";
@@ -88,7 +88,7 @@ export class CarbonSigningClient extends StargateClient {
   public readonly gasPrice?: GasPrice;
 
   constructor(
-    tmClient: Tendermint34Client,
+    tmClient: Tendermint37Client,
     public readonly signer: OfflineSigner,
     public readonly options: SigningStargateClientOptions = {}
   ) {

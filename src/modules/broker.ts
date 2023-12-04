@@ -1,4 +1,4 @@
-import { MsgInitiateLiquidation } from "@carbon-sdk/codec/broker/tx";
+import { MsgInitiateLiquidation } from "@carbon-sdk/codec/Switcheo/carbon/broker/tx";
 import { CarbonTx } from "@carbon-sdk/util";
 import BaseModule from "./base";
 

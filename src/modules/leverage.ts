@@ -1,4 +1,4 @@
-import { MsgSetLeverage } from "@carbon-sdk/codec/leverage/tx";
+import { MsgSetLeverage } from "@carbon-sdk/codec/Switcheo/carbon/leverage/tx";
 import { CarbonTx } from "@carbon-sdk/util";
 import BaseModule from "./base";
 import { BigNumber } from "bignumber.js";
