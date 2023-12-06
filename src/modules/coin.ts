@@ -1,4 +1,4 @@
-import { MsgMintToken, MsgWithdraw, MsgDepositToGroup, MsgWithdrawFromGroup, MsgAddBridgeAddress, MsgCreateToken } from "@carbon-sdk/codec/coin/tx";
+import { MsgMintToken, MsgWithdraw, MsgDepositToGroup, MsgWithdrawFromGroup, MsgAddBridgeAddress, MsgCreateToken } from "@carbon-sdk/codec/Switcheo/carbon/coin/tx";
 import { Coin } from "@carbon-sdk/codec/cosmos/base/v1beta1/coin";
 import { CarbonTx } from "@carbon-sdk/util";
 import { EncodeObject } from "@cosmjs/proto-signing";

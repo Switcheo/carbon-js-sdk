@@ -1,6 +1,6 @@
 import { Carbon } from "@carbon-sdk/CarbonSDK";
 import { Duration } from "@carbon-sdk/codec/google/protobuf/duration";
-import { MsgAddFeeTier, MsgCreateMarket, MsgDisableSpotMarket, MsgRemoveFeeTier, MsgSetStakeEquivalence, MsgUpdateFeeTier, MsgUpdateMarket } from "@carbon-sdk/codec/market/tx";
+import { MsgAddFeeTier, MsgCreateMarket, MsgDisableSpotMarket, MsgRemoveFeeTier, MsgSetStakeEquivalence, MsgUpdateFeeTier, MsgUpdateMarket } from "@carbon-sdk/codec/Switcheo/carbon/market/tx";
 import { CarbonTx } from "@carbon-sdk/util";
 import { BigNumber } from "bignumber.js";
 import BaseModule from "./base";

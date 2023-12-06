@@ -1,7 +1,7 @@
 import { SDKProvider } from "@carbon-sdk/provider";
 import { NumberUtils, TypeUtils } from "@carbon-sdk/util";
 import { QueryClient, createProtobufRpcClient } from "@cosmjs/stargate";
-import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
+import { Tendermint37Client } from "@cosmjs/tendermint-rpc";
 import BigNumber from "bignumber.js";
 import { QueryClientImpl as CosmWasmQueryClient } from "cosmjs-types/cosmwasm/wasm/v1/query";
 import BaseModule from "./base";
@@ -24,7 +24,7 @@ export class CosmWasmModule extends BaseModule {
   public static async instanceWithChainInfo(sdkProvider: SDKProvider, chainInfo: ExtendedChainInfo) {
     if (chainInfo.activeRpc) {
       try {
-        const tmClient = await Tendermint34Client.connect(chainInfo.activeRpc);
+        const tmClient = await Tendermint37Client.connect(chainInfo.activeRpc);
         return CosmWasmModule.instanceWithTmClient(sdkProvider, tmClient)
       } catch (error) { 
         // empty catch
@@ -36,7 +36,7 @@ export class CosmWasmModule extends BaseModule {
     return CosmWasmModule.instanceWithTmClient(sdkProvider, client);
   }
 
-  public static async instanceWithTmClient(sdkProvider: SDKProvider, tmClient: Tendermint34Client) {
+  public static async instanceWithTmClient(sdkProvider: SDKProvider, tmClient: Tendermint37Client) {
     const baseClient = new QueryClient(tmClient);
     const rpcClient = createProtobufRpcClient(baseClient);
     const cosmWasmClient = new CosmWasmQueryClient(rpcClient);
@@ -44,7 +44,7 @@ export class CosmWasmModule extends BaseModule {
   }
 
   public static async instance(sdkProvider: SDKProvider, tmRpcUrl: string) {
-    const tmClient = await Tendermint34Client.connect(tmRpcUrl);
+    const tmClient = await Tendermint37Client.connect(tmRpcUrl);
     return CosmWasmModule.instanceWithTmClient(sdkProvider, tmClient);
   }
 

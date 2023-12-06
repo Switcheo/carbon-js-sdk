@@ -1,14 +1,11 @@
 import { Any, registry } from "@carbon-sdk/codec";
-import { ChainConfig, Params } from "@carbon-sdk/codec/ethermint/evm/v1/evm";
-import { AccessListTx, DynamicFeeTx, LegacyTx, MsgEthereumTx, MsgUpdateParams } from "@carbon-sdk/codec/ethermint/evm/v1/tx";
+import { AccessListTx, DynamicFeeTx, LegacyTx, MsgEthereumTx, protobufPackage as evmTxProtobufPackage } from "@carbon-sdk/codec/ethermint/evm/v1/tx";
 import { CarbonTx } from "@carbon-sdk/util";
 import { ethers } from "ethers";
 import { accessListify, arrayify } from "ethers/lib/utils";
 import BaseModule from "./base";
-import { protobufPackage as evmTxProtobufPackage } from "@carbon-sdk/codec/ethermint/evm/v1/tx";
 
 export type TxData = LegacyTx | AccessListTx | DynamicFeeTx
-
 
 export class EvmModule extends BaseModule {
   public async sendEvmTx(req: ethers.providers.TransactionRequest, opts?: CarbonTx.SignTxOpts) {
@@ -23,51 +20,11 @@ export class EvmModule extends BaseModule {
       value,
     }, opts);
   }
-
-  public async updateParams(p: EvmModule.UpdateParams, opts?: CarbonTx.SignTxOpts) {
-    const wallet = this.getWallet();
-    const value = MsgUpdateParams.fromPartial({
-      authority: p.creator,
-      params: Params.fromPartial({
-        evmDenom: p.params.evmDenom,
-        enableCreate: p.params.enableCreate,
-        enableCall: p.params.enableCall,
-        extraEips: p.params.extraEIPs,
-        allowUnprotectedTxs: p.params.allowUnprotectedTxs,
-        chainConfig: ChainConfig.fromPartial({
-          homesteadBlock: p.chainConfig.homesteadBlock.toString(10),
-          daoForkBlock: p.chainConfig.daoForkBlock.toString(10),
-          daoForkSupport: p.chainConfig.daoForkSupport,
-          eip150Block: p.chainConfig.eip150Block.toString(10),
-          eip150Hash: p.chainConfig.eip150Hash,
-          eip155Block: p.chainConfig.eip155Block.toString(10),
-          eip158Block: p.chainConfig.eip158Block.toString(10),
-          byzantiumBlock: p.chainConfig.byzantiumBlock.toString(10),
-          constantinopleBlock: p.chainConfig.constantinopleBlock.toString(10),
-          petersburgBlock: p.chainConfig.petersburgBlock.toString(10),
-          istanbulBlock: p.chainConfig.istanbulBlock.toString(10),
-          muirGlacierBlock: p.chainConfig.muirGlacierBlock.toString(10),
-          berlinBlock: p.chainConfig.berlinBlock.toString(10),
-          londonBlock: p.chainConfig.londonBlock.toString(10),
-          arrowGlacierBlock: p.chainConfig.arrowGlacierBlock.toString(10),
-          grayGlacierBlock: p.chainConfig.grayGlacierBlock.toString(10),
-          mergeNetsplitBlock: p.chainConfig.mergeNetsplitBlock.toString(10),
-          shanghaiBlock: p.chainConfig.shanghaiBlock.toString(10),
-          cancunBlock: p.chainConfig.cancunBlock.toString(10),
-        }),
-      }),
-    });
-
-    return await wallet.sendTx({
-      typeUrl: CarbonTx.Types.MsgEvmUpdateParams,
-      value,
-    }, opts);
-  }
 }
 
 // Referenced from ethermint v0.21.0 Switcheo/ethermint/x/evm/types/msg.go 
 export function constructTxDataAny(req: ethers.providers.TransactionRequest): Any {
-  const accessList = req?.accessList && req.accessList.length > 0
+  const accessList = req?.accessList ? accessListify(req.accessList).length > 0 : false
   let txData: TxData = LegacyTx.fromPartial({})
   let txType = ""
   if (!accessList) {

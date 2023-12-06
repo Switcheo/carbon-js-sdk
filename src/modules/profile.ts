@@ -1,4 +1,4 @@
-import { MsgUpdateProfile } from "@carbon-sdk/codec/profile/tx";
+import { MsgUpdateProfile } from "@carbon-sdk/codec/Switcheo/carbon/profile/tx";
 import { CarbonTx } from "@carbon-sdk/util";
 import BaseModule from "./base";
 

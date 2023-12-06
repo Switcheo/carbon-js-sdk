@@ -1,4 +1,4 @@
-import { CreateTokenProposal } from "@carbon-sdk/codec/coin/proposal";
+import { CreateTokenProposal } from "@carbon-sdk/codec/Switcheo/carbon/coin/proposal";
 import { CommunityPoolSpendProposal } from "@carbon-sdk/codec/cosmos/distribution/v1beta1/distribution";
 import { TextProposal, VoteOption } from "@carbon-sdk/codec/cosmos/gov/v1beta1/gov";
 import { MsgDeposit, MsgVote } from "@carbon-sdk/codec/cosmos/gov/v1beta1/tx";
@@ -9,16 +9,16 @@ import {
   SetMinGasPriceProposal,
   RemoveMsgGasCostProposal,
   RemoveMinGasPriceProposal,
-} from "@carbon-sdk/codec/fee/proposal";
+} from "@carbon-sdk/codec/Switcheo/carbon/fee/proposal";
 import {
   SetCommitmentCurveProposal,
   SetRewardCurveProposal,
   SetRewardsWeightsProposal,
   UpdatePoolProposal,
-} from "@carbon-sdk/codec/liquiditypool/proposal";
-import { UpdateMarketProposal } from "@carbon-sdk/codec/market/proposal";
-import { CreateOracleProposal } from "@carbon-sdk/codec/oracle/proposal";
-import { SettlementPriceParams, SettlementPriceProposal } from "@carbon-sdk/codec/pricing/proposal";
+} from "@carbon-sdk/codec/Switcheo/carbon/liquiditypool/proposal";
+import { UpdateMarketProposal } from "@carbon-sdk/codec/Switcheo/carbon/market/proposal";
+import { CreateOracleProposal } from "@carbon-sdk/codec/Switcheo/carbon/oracle/proposal";
+import { SettlementPriceParams, SettlementPriceProposal } from "@carbon-sdk/codec/Switcheo/carbon/pricing/proposal";
 import { CarbonTx } from "@carbon-sdk/util";
 import { Coin, coins } from "@cosmjs/amino";
 import Long from "long";

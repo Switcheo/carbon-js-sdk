@@ -1,4 +1,4 @@
-import { MsgCancelAll, MsgCancelOrder, MsgCreateOrder, MsgEditOrder } from "@carbon-sdk/codec/order/tx";
+import { MsgCancelAll, MsgCancelOrder, MsgCreateOrder, MsgEditOrder } from "@carbon-sdk/codec/Switcheo/carbon/order/tx";
 import { CarbonTx } from "@carbon-sdk/util";
 import { BN_ZERO } from "@carbon-sdk/util/number";
 import { BigNumber } from "bignumber.js";
