@@ -9,7 +9,7 @@ export class SubAccountModule extends BaseModule {
     const value = MsgCreateSubAccount.fromPartial({
       creator: wallet.bech32Address,
       subAddress: params.subAddress,
-      mainAddress: wallet.bech32Address,
+      mainAddress: params.mainAddress,
       role: params.role,
     });
 
