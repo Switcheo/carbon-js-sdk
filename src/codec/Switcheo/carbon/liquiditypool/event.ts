@@ -3,6 +3,7 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Pool } from "./liquiditypool";
 import { CommitmentCurve, Commitment, AccumulatedRewards } from "./reward";
+import { MultiSwap } from "./swap_router";
 import { Timestamp } from "../../../google/protobuf/timestamp";
 import { Coin } from "../../../cosmos/base/v1beta1/coin";
 
@@ -99,6 +100,16 @@ export interface ClaimEvent {
   poolId: Long;
   address: string;
   rewards: Coin[];
+}
+
+export interface MultiSwapStepEvent {
+  multiSwap?: MultiSwap;
+  poolId: Long;
+  stepNumber: Long;
+}
+
+export interface FinalSwapRouterEvent {
+  multiSwap?: MultiSwap;
 }
 
 const basePoolEvent: object = {
@@ -1503,6 +1514,162 @@ export const ClaimEvent = {
         : Long.UZERO;
     message.address = object.address ?? "";
     message.rewards = (object.rewards ?? []).map((e) => Coin.fromPartial(e));
+    return message;
+  },
+};
+
+const baseMultiSwapStepEvent: object = {
+  poolId: Long.UZERO,
+  stepNumber: Long.UZERO,
+};
+
+export const MultiSwapStepEvent = {
+  encode(
+    message: MultiSwapStepEvent,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.multiSwap !== undefined) {
+      MultiSwap.encode(message.multiSwap, writer.uint32(10).fork()).ldelim();
+    }
+    if (!message.poolId.isZero()) {
+      writer.uint32(16).uint64(message.poolId);
+    }
+    if (!message.stepNumber.isZero()) {
+      writer.uint32(24).uint64(message.stepNumber);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MultiSwapStepEvent {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMultiSwapStepEvent } as MultiSwapStepEvent;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.multiSwap = MultiSwap.decode(reader, reader.uint32());
+          break;
+        case 2:
+          message.poolId = reader.uint64() as Long;
+          break;
+        case 3:
+          message.stepNumber = reader.uint64() as Long;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MultiSwapStepEvent {
+    const message = { ...baseMultiSwapStepEvent } as MultiSwapStepEvent;
+    message.multiSwap =
+      object.multiSwap !== undefined && object.multiSwap !== null
+        ? MultiSwap.fromJSON(object.multiSwap)
+        : undefined;
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromString(object.poolId)
+        : Long.UZERO;
+    message.stepNumber =
+      object.stepNumber !== undefined && object.stepNumber !== null
+        ? Long.fromString(object.stepNumber)
+        : Long.UZERO;
+    return message;
+  },
+
+  toJSON(message: MultiSwapStepEvent): unknown {
+    const obj: any = {};
+    message.multiSwap !== undefined &&
+      (obj.multiSwap = message.multiSwap
+        ? MultiSwap.toJSON(message.multiSwap)
+        : undefined);
+    message.poolId !== undefined &&
+      (obj.poolId = (message.poolId || Long.UZERO).toString());
+    message.stepNumber !== undefined &&
+      (obj.stepNumber = (message.stepNumber || Long.UZERO).toString());
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MultiSwapStepEvent>): MultiSwapStepEvent {
+    const message = { ...baseMultiSwapStepEvent } as MultiSwapStepEvent;
+    message.multiSwap =
+      object.multiSwap !== undefined && object.multiSwap !== null
+        ? MultiSwap.fromPartial(object.multiSwap)
+        : undefined;
+    message.poolId =
+      object.poolId !== undefined && object.poolId !== null
+        ? Long.fromValue(object.poolId)
+        : Long.UZERO;
+    message.stepNumber =
+      object.stepNumber !== undefined && object.stepNumber !== null
+        ? Long.fromValue(object.stepNumber)
+        : Long.UZERO;
+    return message;
+  },
+};
+
+const baseFinalSwapRouterEvent: object = {};
+
+export const FinalSwapRouterEvent = {
+  encode(
+    message: FinalSwapRouterEvent,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.multiSwap !== undefined) {
+      MultiSwap.encode(message.multiSwap, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): FinalSwapRouterEvent {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseFinalSwapRouterEvent } as FinalSwapRouterEvent;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.multiSwap = MultiSwap.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): FinalSwapRouterEvent {
+    const message = { ...baseFinalSwapRouterEvent } as FinalSwapRouterEvent;
+    message.multiSwap =
+      object.multiSwap !== undefined && object.multiSwap !== null
+        ? MultiSwap.fromJSON(object.multiSwap)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: FinalSwapRouterEvent): unknown {
+    const obj: any = {};
+    message.multiSwap !== undefined &&
+      (obj.multiSwap = message.multiSwap
+        ? MultiSwap.toJSON(message.multiSwap)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<FinalSwapRouterEvent>): FinalSwapRouterEvent {
+    const message = { ...baseFinalSwapRouterEvent } as FinalSwapRouterEvent;
+    message.multiSwap =
+      object.multiSwap !== undefined && object.multiSwap !== null
+        ? MultiSwap.fromPartial(object.multiSwap)
+        : undefined;
     return message;
   },
 };
