@@ -4,10 +4,10 @@ import { QueryChannelsResponse } from "@carbon-sdk/codec/ibc/core/channel/v1/que
 import { QueryClientStatesResponse } from "@carbon-sdk/codec/ibc/core/client/v1/query";
 import { QueryConnectionsResponse } from "@carbon-sdk/codec/ibc/core/connection/v1/query";
 import { ClientState } from '@carbon-sdk/codec/ibc/lightclients/tendermint/v1/tendermint';
-import { CoinGeckoTokenNames, CommonAssetName, DenomPrefix, NetworkConfigProvider, TokenBlacklist, decTypeDecimals, uscUsdValue } from "@carbon-sdk/constant";
+import { CoinGeckoTokenNames, CommonAssetName, DEFAULT_FEE_DENOM, DenomPrefix, NetworkConfigProvider, TokenBlacklist, decTypeDecimals, uscUsdValue } from "@carbon-sdk/constant";
 import { cibtIbcTokenRegex, cosmBridgeRegex, ibcTokenRegex, ibcWhitelist, swthChannels } from "@carbon-sdk/constant/ibc";
 import { GetFeeQuoteResponse } from "@carbon-sdk/hydrogen/feeQuote";
-import { BlockchainUtils, FetchUtils, IBCUtils, NumberUtils, TypeUtils } from "@carbon-sdk/util";
+import { BlockchainUtils, CarbonTx, FetchUtils, IBCUtils, NumberUtils, TypeUtils } from "@carbon-sdk/util";
 import { BRIDGE_IDS, BlockchainV2, BridgeMap, IbcBridge, PolyNetworkBridge, isIbcBridge } from '@carbon-sdk/util/blockchain';
 import { BN_ONE, BN_ZERO, bnOrZero } from "@carbon-sdk/util/number";
 import { SimpleMap } from "@carbon-sdk/util/type";
@@ -53,6 +53,11 @@ class TokenClient {
   public readonly usdValues: TypeUtils.SimpleMap<BigNumber> = {};
   public readonly commonAssetNames: TypeUtils.SimpleMap<string> = CommonAssetName;
   public readonly geckoTokenNames: TypeUtils.SimpleMap<string> = CoinGeckoTokenNames;
+  private readonly defaultFeeDenom: string = DEFAULT_FEE_DENOM;
+
+  public readonly txFees?: SimpleMap<BigNumber>;
+  public readonly txGasCosts?: SimpleMap<BigNumber>;
+  public readonly txGasPrices?: SimpleMap<BigNumber>;
 
   public initialUsdValuesLoaded: boolean = false;
   private additionalGeckoDenoms: TypeUtils.SimpleMap<string> = {};
@@ -738,6 +743,33 @@ class TokenClient {
       });
     });
   }
+
+  public getFee(msgTypeUrl: string, denom: string = this.defaultFeeDenom): BigNumber {
+    const minGasPrice = this.getGasPrice(denom);
+    const msgGasCost = this.getGasCost(msgTypeUrl);
+
+    return msgGasCost.times(minGasPrice);
+  }
+
+  public getGasPrice(denom: string) {
+    if (!this.txGasPrices) {
+      console.warn("tx gas prices not initialized");
+    }
+
+    const gasPrice = this.txGasPrices?.[denom];
+    if (!gasPrice) {
+      console.warn("denom not supported for paying gas");
+    }
+    return gasPrice ?? BN_ZERO;
+  }
+
+  public getGasCost(msgTypeUrl: string) {
+    if (!this.txGasCosts) {
+      console.warn("tx gas costs not initialized");
+    }
+    return this.txGasCosts?.[msgTypeUrl] ?? this.txGasCosts?.[CarbonTx.TxGasCostTypeDefaultKey] ?? BN_ZERO;
+  }
+
 }
 
 export default TokenClient;
