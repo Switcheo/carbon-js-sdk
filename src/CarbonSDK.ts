@@ -3,10 +3,8 @@ import {
   CarbonEvmChainIDs,
   DEFAULT_NETWORK,
   DenomPrefix,
-  Network,
-  NetworkConfig,
+  Network, Network as _Network, NetworkConfig,
   NetworkConfigs,
-  Network as _Network,
 } from "@carbon-sdk/constant";
 import { GenericUtils, NetworkUtils } from "@carbon-sdk/util";
 import { Tendermint37Client } from "@cosmjs/tendermint-rpc";
@@ -39,16 +37,17 @@ import {
   SubAccountModule,
   XChainModule,
 } from "./modules";
+import { SignlessModule } from "./modules/signless";
 import { StakingModule } from "./modules/staking";
 import { CosmosLedger, Keplr, KeplrAccount, LeapAccount, LeapExtended } from "./provider";
 import { MetaMask } from "./provider/metamask/MetaMask";
 import { SWTHAddressOptions } from "./util/address";
 import { Blockchain } from "./util/blockchain";
-import { CarbonWallet, CarbonWalletGenericOpts, CarbonSigner, MetaMaskWalletOpts, CarbonLedgerSigner } from "./wallet";
-export { CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletGenericOpts, CarbonWalletInitOpts } from "@carbon-sdk/wallet";
+import { CarbonLedgerSigner, CarbonSigner, CarbonWallet, CarbonWalletGenericOpts, MetaMaskWalletOpts } from "./wallet";
 export { CarbonTx } from "@carbon-sdk/util";
-export { DenomPrefix } from "./constant";
+export { CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletGenericOpts, CarbonWalletInitOpts } from "@carbon-sdk/wallet";
 export * as Carbon from "./codec/carbon-models";
+export { DenomPrefix } from "./constant";
 
 export interface CarbonSDKOpts {
   network: Network;
@@ -113,6 +112,7 @@ class CarbonSDK {
   lp: LiquidityPoolModule;
   erc20: ERC20Module;
   perpspool: PerpspoolModule;
+  signless: SignlessModule;
   subaccount: SubAccountModule;
   profile: ProfileModule;
   cdp: CDPModule;
@@ -179,6 +179,7 @@ class CarbonSDK {
     this.lp = new LiquidityPoolModule(this);
     this.erc20 = new ERC20Module(this);
     this.perpspool = new PerpspoolModule(this);
+    this.signless = new SignlessModule(this);
     this.subaccount = new SubAccountModule(this);
     this.profile = new ProfileModule(this);
     this.cdp = new CDPModule(this);

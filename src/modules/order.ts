@@ -4,6 +4,7 @@ import { BN_ZERO } from "@carbon-sdk/util/number";
 import { BigNumber } from "bignumber.js";
 import BaseModule from "./base";
 import { getDefaultTimeInForce, isMarket } from "@carbon-sdk/util/order";
+import { CarbonSDK } from "..";
 
 export class OrderModule extends BaseModule {
 
@@ -26,6 +27,19 @@ export class OrderModule extends BaseModule {
       referralCommission: params.referralCommission,
       referralKickback: params.referralKickback,
     });
+
+    if (params.granteeMnemonics) {
+      const granteeWallet = await CarbonSDK.instanceWithMnemonic(params.granteeMnemonics)
+      if (granteeWallet?.wallet) {
+        return await granteeWallet.wallet.sendTx(
+          {
+            typeUrl: CarbonTx.Types.MsgCreateOrder,
+            value,
+          },
+          opts
+        );
+      }
+    }
 
     return await wallet.sendTx(
       {
@@ -181,6 +195,7 @@ export namespace OrderModule {
     /** commission percents, input 10 for 10% */
     referralCommission?: number;
     referralKickback?: number;
+    granteeMnemonics?: string;
   }
 
   export interface EditOrderParams {
