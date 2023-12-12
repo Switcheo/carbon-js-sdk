@@ -45,6 +45,10 @@ import { MetaMask } from "./provider/metamask/MetaMask";
 import { SWTHAddressOptions } from "./util/address";
 import { Blockchain } from "./util/blockchain";
 import { CarbonWallet, CarbonWalletGenericOpts, CarbonSigner, MetaMaskWalletOpts, CarbonLedgerSigner } from "./wallet";
+import GasFee from "./clients/GasFee";
+import { bnOrZero } from "./util/number";
+import { SimpleMap } from "./util/type";
+import BigNumber from "bignumber.js";
 export { CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletGenericOpts, CarbonWalletInitOpts } from "@carbon-sdk/wallet";
 export { CarbonTx } from "@carbon-sdk/util";
 export { DenomPrefix } from "./constant";
@@ -106,7 +110,7 @@ class CarbonSDK {
   networkConfig: NetworkConfig;
   tmClient: Tendermint37Client;
   token: TokenClient;
-
+  
   admin: AdminModule;
   alliance: AllianceModule;
   order: OrderModule;
@@ -356,14 +360,34 @@ class CarbonSDK {
   }
 
   public async initialize(): Promise<CarbonSDK> {
+    const fees = await this.getGasFeeObject()
     const chainId = await this.query.chain.getChainId();
     this.chainId = chainId;
     await this.token.initialize();
     if (this.wallet) {
-      await this.wallet.initialize(this.query);
+      await this.wallet.initialize(this.query, fees);
     }
 
     return this;
+  }
+
+  private async getGasFeeObject(){
+    const queryClient = this.query
+    const { msgGasCosts } = await queryClient.fee.MsgGasCostAll({});
+
+    const txGasCosts = msgGasCosts.reduce((result, item) => {
+      result[item.msgType] = bnOrZero(item.gasCost);
+      return result;
+    }, {} as SimpleMap<BigNumber>);
+
+    const { minGasPrices } = await queryClient.fee.MinGasPriceAll({});
+    const txGasPrices = minGasPrices.reduce((result, item) => {
+      result[item.denom] = bnOrZero(item.gasPrice).shiftedBy(-18); // sdk.Dec shifting
+      return result;
+    }, {} as SimpleMap<BigNumber>);
+
+    const fees = new GasFee(txGasCosts, txGasPrices)
+    return fees
   }
 
   public clone(): CarbonSDK {
@@ -391,7 +415,8 @@ class CarbonSDK {
     if (!wallet.initialized) {
       try {
         // Perform initialize function as per normal, but add try-catch statement to check err message
-        await wallet.initialize(this.query);
+        const fees = await this.getGasFeeObject()
+        await wallet.initialize(this.query, fees);
       } catch (err) {
         const errorTyped = err as Error;
         // In the case where account does not exist on chain, still allow wallet connection.

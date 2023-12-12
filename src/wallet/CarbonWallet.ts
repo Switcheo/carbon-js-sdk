@@ -13,7 +13,6 @@ import { fetch } from "@carbon-sdk/util/fetch";
 import { QueueManager } from "@carbon-sdk/util/generic";
 import { BN_ZERO, bnOrZero } from "@carbon-sdk/util/number";
 import { BroadcastTxMode, CarbonCustomError, CarbonSignerData, ErrorType } from "@carbon-sdk/util/tx";
-import { SimpleMap } from "@carbon-sdk/util/type";
 import { StdSignature, encodeSecp256k1Signature } from "@cosmjs/amino";
 import { EncodeObject, OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
 import { Account, DeliverTxResponse, TimeoutError, isDeliverTxFailure } from "@cosmjs/stargate";
@@ -23,10 +22,10 @@ import { sleep } from "@cosmjs/utils";
 import { Key as LeapKey } from "@cosmos-kit/core";
 import { Leap } from "@cosmos-kit/leap";
 import { Key } from "@keplr-wallet/types";
-import BigNumber from "bignumber.js";
 import { TxRaw as StargateTxRaw, TxBody } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import { CarbonEIP712Signer, CarbonLedgerSigner, CarbonNonSigner, CarbonPrivateKeySigner, CarbonSigner, CarbonSignerTypes, isCarbonEIP712Signer } from "./CarbonSigner";
 import { CarbonSigningClient } from "./CarbonSigningClient";
+import GasFee from "@carbon-sdk/clients/GasFee";
 
 export interface CarbonWalletGenericOpts {
   tmClient?: Tendermint37Client;
@@ -151,14 +150,12 @@ export class CarbonWallet {
   triggerMerge?: boolean;
   publicKey: Buffer;
   query?: CarbonQueryClient;
+  gasFee?: GasFee;
 
   /**
    * @deprecated Carbon v2.9.0
    * use gasCosts and gasPrices instead.
    */
-  txFees?: SimpleMap<BigNumber>;
-  txGasCosts?: SimpleMap<BigNumber>;
-  txGasPrices?: SimpleMap<BigNumber>;
   txDefaultBroadCastMode?: BroadcastTxMode;
 
   defaultFeeDenom: string = DEFAULT_FEE_DENOM;
@@ -316,8 +313,9 @@ export class CarbonWallet {
     });
   }
 
-  public async initialize(queryClient: CarbonQueryClient): Promise<CarbonWallet> {
+  public async initialize(queryClient: CarbonQueryClient, GasFee: GasFee): Promise<CarbonWallet> {
     this.query = queryClient;
+    this.gasFee = GasFee
 
     await Promise.all([this.reconnectTmClient(), this.reloadTxFees(), this.reloadAccountSequence(), this.reloadMergeAccountStatus()]);
 
@@ -724,32 +722,6 @@ export class CarbonWallet {
     return null;
   }
 
-  public getGasCost(msgTypeUrl: string) {
-    if (!this.txGasCosts) {
-      console.warn("tx gas costs not initialized");
-    }
-    return this.txGasCosts?.[msgTypeUrl] ?? this.txGasCosts?.[CarbonTx.TxGasCostTypeDefaultKey] ?? BN_ZERO;
-  }
-
-  public getGasPrice(denom: string) {
-    if (!this.txGasPrices) {
-      console.warn("tx gas prices not initialized");
-    }
-
-    const gasPrice = this.txGasPrices?.[denom];
-    if (!gasPrice) {
-      console.warn("denom not supported for paying gas");
-    }
-    return gasPrice ?? BN_ZERO;
-  }
-
-  public getFee(msgTypeUrl: string, denom: string = this.defaultFeeDenom): BigNumber {
-    const minGasPrice = this.getGasPrice(denom);
-    const msgGasCost = this.getGasCost(msgTypeUrl);
-
-    return msgGasCost.times(minGasPrice);
-  }
-
   public async reconnectTmClient() {
     this.tmClient = await Tendermint37Client.connect(this.networkConfig.tmRpcUrl);
     const status = await this.tmClient.status();
@@ -758,20 +730,11 @@ export class CarbonWallet {
   }
 
   public async reloadTxFees() {
-    const queryClient = this.getQueryClient();
-    const { msgGasCosts } = await queryClient.fee.MsgGasCostAll({});
-    this.txGasCosts = msgGasCosts.reduce((result, item) => {
-      result[item.msgType] = bnOrZero(item.gasCost);
-      return result;
-    }, {} as SimpleMap<BigNumber>);
-
+    const txGasPrices = this.gasFee?.txGasPrices ?? {}
+    const queryClient = this.getQueryClient()
     const { minGasPrices } = await queryClient.fee.MinGasPriceAll({});
-    this.txGasPrices = minGasPrices.reduce((result, item) => {
-      result[item.denom] = bnOrZero(item.gasPrice).shiftedBy(-18); // sdk.Dec shifting
-      return result;
-    }, {} as SimpleMap<BigNumber>);
-
-    if (!this.txGasPrices[this.defaultFeeDenom]) {
+    
+    if (!txGasPrices[this.defaultFeeDenom]) {
       const newDefaultFeeDenom = minGasPrices[0]?.denom;
       if (newDefaultFeeDenom) {
         console.warn(`default fee denom ${this.defaultFeeDenom} not supported, using ${newDefaultFeeDenom} instead.`);
@@ -844,12 +807,12 @@ export class CarbonWallet {
   }
 
   private estimateTxFee(messages: readonly EncodeObject[], feeDenom: string = this.defaultFeeDenom) {
-    const denomGasPrice = this.getGasPrice(feeDenom);
+    const denomGasPrice = this.gasFee?.getGasPrice(feeDenom);
     let totalGasCost = messages.reduce((result, message) => {
-      const gasCost = this.getGasCost(message.typeUrl);
-      return result.plus(gasCost);
+      const gasCost = this.gasFee?.getGasCost(message.typeUrl);
+      return result.plus(gasCost ?? BN_ZERO);
     }, BN_ZERO);
-    let totalFees = totalGasCost.times(denomGasPrice);
+    let totalFees = totalGasCost.times(denomGasPrice ?? BN_ZERO);
 
     // override zero gas cost tx with some gas for tx execution
     // set overall fee to zero, implying 0 gas price.
