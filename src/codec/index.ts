@@ -54,6 +54,8 @@ registry.register("/Switcheo.carbon.order.MsgCancelOrder", Carbon.Order.MsgCance
 registry.register("/Switcheo.carbon.order.MsgCancelOrderResponse", Carbon.Order.MsgCancelOrderResponse);
 registry.register("/Switcheo.carbon.order.MsgCancelAll", Carbon.Order.MsgCancelAll);
 registry.register("/Switcheo.carbon.order.MsgCancelAllResponse", Carbon.Order.MsgCancelAllResponse);
+registry.register("/Switcheo.carbon.order.MsgUpdateParams", Carbon.Order.MsgUpdateParams);
+registry.register("/Switcheo.carbon.order.MsgUpdateParamsResponse", Carbon.Order.MsgUpdateParamsResponse);
 
 registry.register("/Switcheo.carbon.cdp.MsgAddRateStrategy", Carbon.Cdp.MsgAddRateStrategy);
 registry.register("/Switcheo.carbon.cdp.MsgAddRateStrategyResponse", Carbon.Cdp.MsgAddRateStrategyResponse);
@@ -139,6 +141,8 @@ registry.register("/Switcheo.carbon.cdp.MsgSetAccountEMode", Carbon.Cdp.MsgSetAc
 registry.register("/Switcheo.carbon.cdp.MsgSetAccountEModeResponse", Carbon.Cdp.MsgSetAccountEModeResponse);
 registry.register("/Switcheo.carbon.cdp.MsgRemoveAccountEMode", Carbon.Cdp.MsgRemoveAccountEMode);
 registry.register("/Switcheo.carbon.cdp.MsgRemoveAccountEModeResponse", Carbon.Cdp.MsgRemoveAccountEModeResponse);
+registry.register("/Switcheo.carbon.cdp.MsgUpdateParams", Carbon.Cdp.MsgUpdateParams);
+registry.register("/Switcheo.carbon.cdp.MsgUpdateParamsResponse", Carbon.Cdp.MsgUpdateParamsResponse);
 
 registry.register("/Switcheo.carbon.headersync.MsgSyncGenesis", PolyNetwork.Headersync.MsgSyncGenesis);
 registry.register("/Switcheo.carbon.headersync.MsgSyncGenesisResponse", PolyNetwork.Headersync.MsgSyncGenesisResponse);
@@ -199,6 +203,8 @@ registry.register("/Switcheo.carbon.oracle.MsgRemoveOracle", Carbon.Oracle.MsgRe
 registry.register("/Switcheo.carbon.oracle.MsgRemoveOracleResponse", Carbon.Oracle.MsgRemoveOracleResponse);
 registry.register("/Switcheo.carbon.oracle.MsgSetOracleSlashEnabled", Carbon.Oracle.MsgSetOracleSlashEnabled);
 registry.register("/Switcheo.carbon.oracle.MsgSetOracleSlashEnabledResponse", Carbon.Oracle.MsgSetOracleSlashEnabledResponse);
+registry.register("/Switcheo.carbon.oracle.MsgUpdateParams", Carbon.Oracle.MsgUpdateParams);
+registry.register("/Switcheo.carbon.oracle.MsgUpdateParamsResponse", Carbon.Oracle.MsgUpdateParamsResponse);
 registry.register("/Switcheo.carbon.oracle.CreateOracleProposal", Carbon.Oracle.CreateOracleProposal);
 
 registry.register("/Switcheo.carbon.admin.MsgInitiateAdminTransfer", Carbon.Admin.MsgInitiateAdminTransfer);
@@ -212,6 +218,8 @@ registry.register("/Switcheo.carbon.ccm.MsgProcessCrossChainTxResponse", PolyNet
 registry.register("/Switcheo.carbon.ccm.MsgProcessZionCrossChainTxResponse", PolyNetwork.Ccm.MsgProcessZionCrossChainTxResponse);
 registry.register("/Switcheo.carbon.ccm.MsgCreateEmitEvent", PolyNetwork.Ccm.MsgCreateEmitEvent);
 registry.register("/Switcheo.carbon.ccm.MsgToggleEmitZionEvents", PolyNetwork.Ccm.MsgToggleEmitZionEvents);
+registry.register("/Switcheo.carbon.ccm.MsgUpdateParams", PolyNetwork.Ccm.MsgUpdateParams);
+registry.register("/Switcheo.carbon.ccm.MsgUpdateParamsResponse", PolyNetwork.Ccm.MsgUpdateParamsResponse);
 
 registry.register("/Switcheo.carbon.coin.MsgCreateToken", Carbon.Coin.MsgCreateToken);
 registry.register("/Switcheo.carbon.coin.MsgCreateTokenResponse", Carbon.Coin.MsgCreateTokenResponse);
@@ -269,6 +277,8 @@ registry.register("/Switcheo.carbon.subaccount.MsgActivateSubAccount", Carbon.Su
 registry.register("/Switcheo.carbon.subaccount.MsgActivateSubAccountResponse", Carbon.Subaccount.MsgActivateSubAccountResponse);
 registry.register("/Switcheo.carbon.subaccount.MsgRemoveSubAccount", Carbon.Subaccount.MsgRemoveSubAccount);
 registry.register("/Switcheo.carbon.subaccount.MsgRemoveSubAccountResponse", Carbon.Subaccount.MsgRemoveSubAccountResponse);
+registry.register("/Switcheo.carbon.subaccount.MsgUpdateParams", Carbon.Subaccount.MsgUpdateParams);
+registry.register("/Switcheo.carbon.subaccount.MsgUpdateParamsResponse", Carbon.Subaccount.MsgUpdateParamsResponse);
 
 registry.register("/Switcheo.carbon.market.MsgDisableSpotMarket", Carbon.Market.MsgDisableSpotMarket);
 registry.register("/Switcheo.carbon.market.MsgDisableSpotMarketResponse", Carbon.Market.MsgDisableSpotMarketResponse);
@@ -288,6 +298,8 @@ registry.register("/Switcheo.carbon.market.MsgSetStakeEquivalence", Carbon.Marke
 registry.register("/Switcheo.carbon.market.MsgSetStakeEquivalenceResponse", Carbon.Market.MsgSetStakeEquivalenceResponse);
 registry.register("/Switcheo.carbon.market.MsgUpdateAllPoolTradingFees", Carbon.Market.MsgUpdateAllPoolTradingFees);
 registry.register("/Switcheo.carbon.market.MsgUpdateAllPoolTradingFeesResponse", Carbon.Market.MsgUpdateAllPoolTradingFeesResponse);
+registry.register("/Switcheo.carbon.market.MsgUpdateParams", Carbon.Market.MsgUpdateParams);
+registry.register("/Switcheo.carbon.market.MsgUpdateParamsResponse", Carbon.Market.MsgUpdateParamsResponse);
 registry.register("/Switcheo.carbon.market.CreateMarketProposal", Carbon.Market.CreateMarketProposal);
 registry.register("/Switcheo.carbon.market.UpdateMarketProposal", Carbon.Market.UpdateMarketProposal);
 registry.register("/Switcheo.carbon.market.UpdatePerpetualsFundingIntervalProposal", Carbon.Market.UpdatePerpetualsFundingIntervalProposal);
@@ -308,6 +320,8 @@ registry.register("/Switcheo.carbon.perpspool.MsgUpdateMarketConfig", Carbon.Per
 registry.register("/Switcheo.carbon.perpspool.MsgUpdateMarketConfigResponse", Carbon.Perpspool.MsgUpdateMarketConfigResponse);
 registry.register("/Switcheo.carbon.perpspool.MsgSetParams", Carbon.Perpspool.MsgSetParams);
 registry.register("/Switcheo.carbon.perpspool.MsgSetParamsResponse", Carbon.Perpspool.MsgSetParamsResponse);
+registry.register("/Switcheo.carbon.perpspool.MsgUpdateParams", Carbon.Perpspool.MsgUpdateParams);
+registry.register("/Switcheo.carbon.perpspool.MsgUpdateParamsResponse", Carbon.Perpspool.MsgUpdateParamsResponse);
 
 registry.register("/Switcheo.carbon.sequence.MsgSetSequence", Carbon.Sequence.MsgSetSequence);
 registry.register("/Switcheo.carbon.sequence.MsgSetSequenceResponse", Carbon.Sequence.MsgSetSequenceResponse);
@@ -340,6 +354,8 @@ registry.register("/Switcheo.carbon.liquiditypool.MsgRemovePoolRoute", Carbon.Li
 registry.register("/Switcheo.carbon.liquiditypool.MsgRemovePoolRouteResponse", Carbon.Liquiditypool.MsgRemovePoolRouteResponse);
 registry.register("/Switcheo.carbon.liquiditypool.MsgUpdatePoolRoute", Carbon.Liquiditypool.MsgUpdatePoolRoute);
 registry.register("/Switcheo.carbon.liquiditypool.MsgUpdatePoolRouteResponse", Carbon.Liquiditypool.MsgUpdatePoolRouteResponse);
+registry.register("/Switcheo.carbon.liquiditypool.MsgUpdateParams", Carbon.Liquiditypool.MsgUpdateParams);
+registry.register("/Switcheo.carbon.liquiditypool.MsgUpdateParamsResponse", Carbon.Liquiditypool.MsgUpdateParamsResponse);
 registry.register("/Switcheo.carbon.liquiditypool.LinkPoolProposal", Carbon.Liquiditypool.LinkPoolProposal);
 registry.register("/Switcheo.carbon.liquiditypool.UnlinkPoolProposal", Carbon.Liquiditypool.UnlinkPoolProposal);
 registry.register("/Switcheo.carbon.liquiditypool.SetRewardCurveProposal", Carbon.Liquiditypool.SetRewardCurveProposal);
@@ -363,6 +379,8 @@ registry.register("/Switcheo.carbon.pricing.MsgSetStaleIndexAllowance", Carbon.P
 registry.register("/Switcheo.carbon.pricing.MsgSetStaleIndexAllowanceResponse", Carbon.Pricing.MsgSetStaleIndexAllowanceResponse);
 registry.register("/Switcheo.carbon.pricing.MsgUpdateTokenPriceOracle", Carbon.Pricing.MsgUpdateTokenPriceOracle);
 registry.register("/Switcheo.carbon.pricing.MsgUpdateTokenPriceOracleResponse", Carbon.Pricing.MsgUpdateTokenPriceOracleResponse);
+registry.register("/Switcheo.carbon.pricing.MsgUpdateParams", Carbon.Pricing.MsgUpdateParams);
+registry.register("/Switcheo.carbon.pricing.MsgUpdateParamsResponse", Carbon.Pricing.MsgUpdateParamsResponse);
 registry.register("/Switcheo.carbon.pricing.SettlementPriceProposal", Carbon.Pricing.SettlementPriceProposal);
 
 registry.register("/Switcheo.carbon.lockproxy.MsgCreate", PolyNetwork.Lockproxy.MsgCreate);
@@ -587,6 +605,8 @@ export const TxTypes = {
   "MsgCancelOrderResponse": "/Switcheo.carbon.order.MsgCancelOrderResponse",
   "MsgCancelAll": "/Switcheo.carbon.order.MsgCancelAll",
   "MsgCancelAllResponse": "/Switcheo.carbon.order.MsgCancelAllResponse",
+  "MsgUpdateParams": "/Switcheo.carbon.pricing.MsgUpdateParams",
+  "MsgUpdateParamsResponse": "/Switcheo.carbon.pricing.MsgUpdateParamsResponse",
   "MsgAddRateStrategy": "/Switcheo.carbon.cdp.MsgAddRateStrategy",
   "MsgAddRateStrategyResponse": "/Switcheo.carbon.cdp.MsgAddRateStrategyResponse",
   "MsgUpdateRateStrategy": "/Switcheo.carbon.cdp.MsgUpdateRateStrategy",
@@ -693,8 +713,6 @@ export const TxTypes = {
   "MsgConvertCoinResponse": "/Switcheo.carbon.erc20.MsgConvertCoinResponse",
   "MsgConvertERC20": "/Switcheo.carbon.erc20.MsgConvertERC20",
   "MsgConvertERC20Response": "/Switcheo.carbon.erc20.MsgConvertERC20Response",
-  "MsgUpdateParams": "/Switcheo.carbon.erc20.MsgUpdateParams",
-  "MsgUpdateParamsResponse": "/Switcheo.carbon.erc20.MsgUpdateParamsResponse",
   "MsgRegisterToken": "/Switcheo.carbon.erc20.MsgRegisterToken",
   "MsgRegisterTokenResponse": "/Switcheo.carbon.erc20.MsgRegisterTokenResponse",
   "MsgRegisterERC20": "/Switcheo.carbon.erc20.MsgRegisterERC20",
@@ -2291,6 +2309,10 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "uint8[]"
       },
       {
+        "name": "orders",
+        "type": "string[]"
+      },
+      {
         "name": "pool_route",
         "type": "uint8[]"
       }
@@ -2318,6 +2340,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "market",
         "type": "string"
+      },
+      {
+        "name": "orders",
+        "type": "string[]"
       },
       {
         "name": "last_index_price",
@@ -2915,7 +2941,19 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "toggle_to",
         "type": "bool"
       }
-    ]
+    ],
+    "MsgUpdateParams": [
+      {
+        "name": "authority",
+        "type": "string"
+      },
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.ccm"
+      }
+    ],
+    "MsgUpdateParamsResponse": []
   },
   "/Switcheo.carbon.cdp": {
     "AssetParams": [
@@ -5235,7 +5273,19 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
-    "MsgRemoveAccountEModeResponse": []
+    "MsgRemoveAccountEModeResponse": [],
+    "MsgUpdateParams": [
+      {
+        "name": "authority",
+        "type": "string"
+      },
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.cdp"
+      }
+    ],
+    "MsgUpdateParamsResponse": []
   },
   "/Switcheo.carbon.coin": {
     "Bridge": [
@@ -7272,7 +7322,6 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/Switcheo.carbon.liquidation.GenesisState"
       }
     ],
-    "Params": [],
     "QueryAllLiquidationRequest": [
       {
         "name": "address",
@@ -7318,14 +7367,6 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "pagination",
         "type": "PageResponse",
         "packageName": "/cosmos.base.query.v1beta1"
-      }
-    ],
-    "QueryParamsRequest": [],
-    "QueryParamsResponse": [
-      {
-        "name": "params",
-        "type": "Params",
-        "packageName": "/Switcheo.carbon.liquidation"
       }
     ],
     "QuoteChanges": [
@@ -8105,7 +8146,19 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
-    "MsgCancelAllResponse": []
+    "MsgCancelAllResponse": [],
+    "MsgUpdateParams": [
+      {
+        "name": "authority",
+        "type": "string"
+      },
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.order"
+      }
+    ],
+    "MsgUpdateParamsResponse": []
   },
   "/Switcheo.carbon.liquiditypool": {
     "Params": [
@@ -9155,6 +9208,18 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "int64"
       }
     ],
+    "MsgUpdateParams": [
+      {
+        "name": "authority",
+        "type": "string"
+      },
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.liquiditypool"
+      }
+    ],
+    "MsgUpdateParamsResponse": [],
     "LinkPoolProposal": [
       {
         "name": "title",
@@ -10547,17 +10612,22 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "taker_fee",
         "type": "string"
       }
-    ]
-  },
-  "/Switcheo.carbon.marketstats": {
-    "Params": [],
-    "GenesisState": [
+    ],
+    "MsgUpdateParams": [
+      {
+        "name": "authority",
+        "type": "string"
+      },
       {
         "name": "params",
         "type": "Params",
-        "packageName": "/Switcheo.carbon.marketstats"
+        "packageName": "/Switcheo.carbon.market"
       }
     ],
+    "MsgUpdateParamsResponse": []
+  },
+  "/Switcheo.carbon.marketstats": {
+    "GenesisState": [],
     "MarketStats": [
       {
         "name": "market",
@@ -10614,14 +10684,6 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "open_interest",
         "type": "string"
-      }
-    ],
-    "QueryParamsRequest": [],
-    "QueryParamsResponse": [
-      {
-        "name": "params",
-        "type": "Params",
-        "packageName": "/Switcheo.carbon.marketstats"
       }
     ],
     "QueryMarketStatsRequest": [],
@@ -11022,6 +11084,18 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ],
     "MsgSetOracleSlashEnabledResponse": [],
+    "MsgUpdateParams": [
+      {
+        "name": "authority",
+        "type": "string"
+      },
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.oracle"
+      }
+    ],
+    "MsgUpdateParamsResponse": [],
     "CreateOracleProposal": [
       {
         "name": "title",
@@ -12004,7 +12078,19 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/google.protobuf"
       }
     ],
-    "MsgSetParamsResponse": []
+    "MsgSetParamsResponse": [],
+    "MsgUpdateParams": [
+      {
+        "name": "authority",
+        "type": "string"
+      },
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.perpspool"
+      }
+    ],
+    "MsgUpdateParamsResponse": []
   },
   "/Switcheo.carbon.position": {
     "Position": [
@@ -12627,7 +12713,19 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
-    "MsgUpdateTokenPriceOracleResponse": []
+    "MsgUpdateTokenPriceOracleResponse": [],
+    "MsgUpdateParams": [
+      {
+        "name": "authority",
+        "type": "string"
+      },
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.pricing"
+      }
+    ],
+    "MsgUpdateParamsResponse": []
   },
   "/Switcheo.carbon.profile": {
     "Profile": [
@@ -13084,7 +13182,19 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
-    "MsgRemoveSubAccountResponse": []
+    "MsgRemoveSubAccountResponse": [],
+    "MsgUpdateParams": [
+      {
+        "name": "authority",
+        "type": "string"
+      },
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.subaccount"
+      }
+    ],
+    "MsgUpdateParamsResponse": []
   },
   "/alliance.alliance": {
     "Params": [
