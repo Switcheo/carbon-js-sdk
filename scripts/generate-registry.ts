@@ -144,7 +144,7 @@ console.log(`export const TxTypes = ${JSON.stringify(typeMap, null, 2)};\n`);
 
 console.log("");
 console.log('// Exported for convenience');
-const directoryBlacklist = ['cosmos', 'ibc', 'tendermint', 'btcx', 'ccm', 'headersync', 'lockproxy', 'ethermint']
+const directoryBlacklist = ['alliance', 'cosmos', 'ibc', 'tendermint', 'btcx', 'ccm', 'headersync', 'lockproxy', 'ethermint']
 const fileNameBlacklist = ['genesis.ts', 'keys.ts']
 
 

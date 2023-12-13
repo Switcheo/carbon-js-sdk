@@ -1094,13 +1094,6 @@ export { Any } from "./google/protobuf/any";
 export { Timestamp } from "./google/protobuf/timestamp";
 export { DoubleValue, FloatValue, Int64Value, UInt64Value, Int32Value, UInt32Value, BoolValue, StringValue, BytesValue } from "./google/protobuf/wrappers";
 export { Duration } from "./google/protobuf/duration";
-export { RewardWeightRange, AllianceAsset, RewardWeightChangeSnapshot } from "./alliance/alliance";
-export { MsgCreateAllianceProposal, MsgUpdateAllianceProposal, MsgDeleteAllianceProposal } from "./alliance/gov";
-export { MsgDelegate, MsgDelegateResponse, MsgUndelegate, MsgUndelegateResponse, MsgRedelegate, MsgRedelegateResponse, MsgClaimDelegationRewards, MsgClaimDelegationRewardsResponse } from "./alliance/tx";
-export { Delegation, Redelegation, QueuedRedelegation, Undelegation, QueuedUndelegation, AllianceValidatorInfo } from "./alliance/delegations";
-export { DelegateAllianceEvent, UndelegateAllianceEvent, RedelegateAllianceEvent, ClaimAllianceRewardsEvent } from "./alliance/events";
-export { QueryParamsRequest, QueryParamsResponse, QueryAlliancesRequest, QueryAlliancesResponse, QueryAllianceRequest, QueryAllianceResponse, QueryIBCAllianceRequest, QueryAllianceValidatorRequest, QueryAllAllianceValidatorsRequest, QueryAllAlliancesDelegationsRequest, QueryAlliancesDelegationsRequest, QueryAlliancesDelegationByValidatorRequest, DelegationResponse, QueryAlliancesDelegationsResponse, QueryAllianceDelegationRequest, QueryIBCAllianceDelegationRequest, QueryAllianceDelegationResponse, QueryAllianceDelegationRewardsRequest, QueryIBCAllianceDelegationRewardsRequest, QueryAllianceDelegationRewardsResponse, QueryAllianceValidatorResponse, QueryAllianceValidatorsResponse } from "./alliance/query";
-export { Params, RewardHistory } from "./alliance/params";
 export { MsgExecuteContract } from "cosmjs-types/cosmwasm/wasm/v1/tx";
 
 /* 
