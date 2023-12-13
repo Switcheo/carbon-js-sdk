@@ -152,10 +152,6 @@ export class CarbonWallet {
   query?: CarbonQueryClient;
   gasFee?: GasFee;
 
-  /**
-   * @deprecated Carbon v2.9.0
-   * use gasCosts and gasPrices instead.
-   */
   txDefaultBroadCastMode?: BroadcastTxMode;
 
   defaultFeeDenom: string = DEFAULT_FEE_DENOM;
@@ -313,9 +309,9 @@ export class CarbonWallet {
     });
   }
 
-  public async initialize(queryClient: CarbonQueryClient, GasFee: GasFee): Promise<CarbonWallet> {
+  public async initialize(queryClient: CarbonQueryClient, gasFee: GasFee): Promise<CarbonWallet> {
     this.query = queryClient;
-    this.gasFee = GasFee
+    this.gasFee = gasFee
 
     await Promise.all([this.reconnectTmClient(), this.reloadTxFees(), this.reloadAccountSequence(), this.reloadMergeAccountStatus()]);
 
@@ -731,10 +727,10 @@ export class CarbonWallet {
 
   public async reloadTxFees() {
     const txGasPrices = this.gasFee?.txGasPrices ?? {}
-    const queryClient = this.getQueryClient()
-    const { minGasPrices } = await queryClient.fee.MinGasPriceAll({});
     
     if (!txGasPrices[this.defaultFeeDenom]) {
+      const queryClient = this.getQueryClient()
+      const { minGasPrices } = await queryClient.fee.MinGasPriceAll({});
       const newDefaultFeeDenom = minGasPrices[0]?.denom;
       if (newDefaultFeeDenom) {
         console.warn(`default fee denom ${this.defaultFeeDenom} not supported, using ${newDefaultFeeDenom} instead.`);

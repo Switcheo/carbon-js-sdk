@@ -49,10 +49,12 @@ import { bnOrZero } from "./util/number";
 import { SimpleMap } from "./util/type";
 import BigNumber from "bignumber.js";
 import GasFee from "./clients/GasFee";
+import { PageRequest } from "cosmjs-types/cosmos/base/query/v1beta1/pagination";
 export { CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletGenericOpts, CarbonWalletInitOpts } from "@carbon-sdk/wallet";
 export { CarbonTx } from "@carbon-sdk/util";
 export { DenomPrefix } from "./constant";
 export * as Carbon from "./codec/carbon-models";
+import Long from "long";
 
 export interface CarbonSDKOpts {
   network: Network;
@@ -363,7 +365,7 @@ class CarbonSDK {
   }
 
   public async initialize(): Promise<CarbonSDK> {
-    const fees = await this.getGasFee()
+    const fees = this.gasFee ?? await this.getGasFee();
     const chainId = await this.query.chain.getChainId();
     this.chainId = chainId;
     this.gasFee = fees
@@ -377,14 +379,23 @@ class CarbonSDK {
 
   private async getGasFee(){
     const queryClient = this.query
-    const { msgGasCosts } = await queryClient.fee.MsgGasCostAll({});
+    const { msgGasCosts } = await queryClient.fee.MsgGasCostAll({
+      pagination: PageRequest.fromPartial({
+        limit: new Long(10000),
+      }),
+    });
 
     const txGasCosts = msgGasCosts.reduce((result, item) => {
       result[item.msgType] = bnOrZero(item.gasCost);
       return result;
     }, {} as SimpleMap<BigNumber>);
 
-    const { minGasPrices } = await queryClient.fee.MinGasPriceAll({});
+    const { minGasPrices } = await queryClient.fee.MinGasPriceAll({
+      pagination: PageRequest.fromPartial({
+        limit: new Long(10000),
+      }),
+    });
+
     const txGasPrices = minGasPrices.reduce((result, item) => {
       result[item.denom] = bnOrZero(item.gasPrice).shiftedBy(-18); // sdk.Dec shifting
       return result;
@@ -405,8 +416,8 @@ class CarbonSDK {
       chainId: this.chainId,
       evmChainId: this.evmChainId,
       useTmAbciQuery: this.useTmAbciQuery,
-      gasFee: this.gasFee,
 
+      gasFee: this.gasFee,
       wallet: this.wallet,
       tmClient: this.tmClient,
       token: this.token,
@@ -420,7 +431,7 @@ class CarbonSDK {
     if (!wallet.initialized) {
       try {
         // Perform initialize function as per normal, but add try-catch statement to check err message
-        const fees = await this.getGasFee()
+        const fees = this.gasFee ?? await this.getGasFee();
         await wallet.initialize(this.query, fees);
       } catch (err) {
         const errorTyped = err as Error;

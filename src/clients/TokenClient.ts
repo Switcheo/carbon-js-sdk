@@ -4,7 +4,7 @@ import { QueryChannelsResponse } from "@carbon-sdk/codec/ibc/core/channel/v1/que
 import { QueryClientStatesResponse } from "@carbon-sdk/codec/ibc/core/client/v1/query";
 import { QueryConnectionsResponse } from "@carbon-sdk/codec/ibc/core/connection/v1/query";
 import { ClientState } from '@carbon-sdk/codec/ibc/lightclients/tendermint/v1/tendermint';
-import { CoinGeckoTokenNames, CommonAssetName, DEFAULT_FEE_DENOM, DenomPrefix, NetworkConfigProvider, TokenBlacklist, decTypeDecimals, uscUsdValue } from "@carbon-sdk/constant";
+import { CoinGeckoTokenNames, CommonAssetName, DenomPrefix, NetworkConfigProvider, TokenBlacklist, decTypeDecimals, uscUsdValue } from "@carbon-sdk/constant";
 import { cibtIbcTokenRegex, cosmBridgeRegex, ibcTokenRegex, ibcWhitelist, swthChannels } from "@carbon-sdk/constant/ibc";
 import { GetFeeQuoteResponse } from "@carbon-sdk/hydrogen/feeQuote";
 import { BlockchainUtils, FetchUtils, IBCUtils, NumberUtils, TypeUtils } from "@carbon-sdk/util";
@@ -53,7 +53,6 @@ class TokenClient {
   public readonly usdValues: TypeUtils.SimpleMap<BigNumber> = {};
   public readonly commonAssetNames: TypeUtils.SimpleMap<string> = CommonAssetName;
   public readonly geckoTokenNames: TypeUtils.SimpleMap<string> = CoinGeckoTokenNames;
-  private readonly defaultFeeDenom: string = DEFAULT_FEE_DENOM;
 
   public initialUsdValuesLoaded: boolean = false;
   private additionalGeckoDenoms: TypeUtils.SimpleMap<string> = {};
