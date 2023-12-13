@@ -1,4 +1,5 @@
 export { OrderEvent } from "./event"
+export { IncomingEVMOrder, QueryEVMOrderQueue, QueryEVMOrderRequest, EVMContract } from "./evm_hooks"
 export { GenesisAccountOrderIDs, GenesisAccountSequence, GenesisFlag } from "./genesis"
 export { Params, Order, DBOrder, OrdersForMarket, OrderIDsForMarket, OrderIDs, Orders } from "./order"
 export { QueryGetOrderRequest, QueryGetOrderResponse, QueryAllOrderRequest, QueryAllOrderResponse, QueryAccountOpenOrdersRequest, QueryAccountOpenOrdersResponse, QueryParamsRequest, QueryParamsResponse, QueryOrderAllocatedMarginRequest, QueryOrderAllocatedMarginResponse } from "./query"

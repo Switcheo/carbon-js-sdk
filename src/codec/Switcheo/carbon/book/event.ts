@@ -5,7 +5,6 @@ import _m0 from "protobufjs/minimal";
 export const protobufPackage = "Switcheo.carbon.book";
 
 export interface OrderBookEvent {
-  type: string;
   market: string;
   side: string;
   price: string;
@@ -21,7 +20,6 @@ export interface ClearVirtualOrderBookEvent {
 }
 
 const baseOrderBookEvent: object = {
-  type: "",
   market: "",
   side: "",
   price: "",
@@ -33,9 +31,6 @@ export const OrderBookEvent = {
     message: OrderBookEvent,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.type !== "") {
-      writer.uint32(10).string(message.type);
-    }
     if (message.market !== "") {
       writer.uint32(18).string(message.market);
     }
@@ -58,9 +53,6 @@ export const OrderBookEvent = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        case 1:
-          message.type = reader.string();
-          break;
         case 2:
           message.market = reader.string();
           break;
@@ -83,10 +75,6 @@ export const OrderBookEvent = {
 
   fromJSON(object: any): OrderBookEvent {
     const message = { ...baseOrderBookEvent } as OrderBookEvent;
-    message.type =
-      object.type !== undefined && object.type !== null
-        ? String(object.type)
-        : "";
     message.market =
       object.market !== undefined && object.market !== null
         ? String(object.market)
@@ -108,7 +96,6 @@ export const OrderBookEvent = {
 
   toJSON(message: OrderBookEvent): unknown {
     const obj: any = {};
-    message.type !== undefined && (obj.type = message.type);
     message.market !== undefined && (obj.market = message.market);
     message.side !== undefined && (obj.side = message.side);
     message.price !== undefined && (obj.price = message.price);
@@ -118,7 +105,6 @@ export const OrderBookEvent = {
 
   fromPartial(object: DeepPartial<OrderBookEvent>): OrderBookEvent {
     const message = { ...baseOrderBookEvent } as OrderBookEvent;
-    message.type = object.type ?? "";
     message.market = object.market ?? "";
     message.side = object.side ?? "";
     message.price = object.price ?? "";

@@ -2,6 +2,7 @@
 import { Registry } from "@cosmjs/proto-signing";
 import { MsgExecuteContract } from "cosmjs-types/cosmwasm/wasm/v1/tx";
 import { MsgMergeAccount, MsgMergeAccountResponse } from "./Switcheo/carbon/evmmerge/tx";
+import { MsgDeactivateContract, MsgDeactivateContractResponse, MsgActivateContract, MsgActivateContractResponse } from "./Switcheo/carbon/evmcontract/tx";
 import { MsgSoftwareUpgrade, MsgSoftwareUpgradeResponse, MsgCancelUpgrade, MsgCancelUpgradeResponse } from "./cosmos/upgrade/v1beta1/tx";
 import { SoftwareUpgradeProposal, CancelSoftwareUpgradeProposal } from "./cosmos/upgrade/v1beta1/upgrade";
 import { MsgGrantAllowance, MsgGrantAllowanceResponse, MsgRevokeAllowance, MsgRevokeAllowanceResponse } from "./cosmos/feegrant/v1beta1/tx";
@@ -206,6 +207,11 @@ registry.register("/Switcheo.carbon.oracle.MsgSetOracleSlashEnabledResponse", Ca
 registry.register("/Switcheo.carbon.oracle.MsgUpdateParams", Carbon.Oracle.MsgUpdateParams);
 registry.register("/Switcheo.carbon.oracle.MsgUpdateParamsResponse", Carbon.Oracle.MsgUpdateParamsResponse);
 registry.register("/Switcheo.carbon.oracle.CreateOracleProposal", Carbon.Oracle.CreateOracleProposal);
+
+registry.register("/Switcheo.carbon.evmcontract.MsgDeactivateContract", MsgDeactivateContract);
+registry.register("/Switcheo.carbon.evmcontract.MsgDeactivateContractResponse", MsgDeactivateContractResponse);
+registry.register("/Switcheo.carbon.evmcontract.MsgActivateContract", MsgActivateContract);
+registry.register("/Switcheo.carbon.evmcontract.MsgActivateContractResponse", MsgActivateContractResponse);
 
 registry.register("/Switcheo.carbon.admin.MsgInitiateAdminTransfer", Carbon.Admin.MsgInitiateAdminTransfer);
 registry.register("/Switcheo.carbon.admin.MsgInitiateAdminTransferResponse", Carbon.Admin.MsgInitiateAdminTransferResponse);
@@ -742,6 +748,10 @@ export const TxTypes = {
   "MsgSetOracleSlashEnabled": "/Switcheo.carbon.oracle.MsgSetOracleSlashEnabled",
   "MsgSetOracleSlashEnabledResponse": "/Switcheo.carbon.oracle.MsgSetOracleSlashEnabledResponse",
   "CreateOracleProposal": "/Switcheo.carbon.oracle.CreateOracleProposal",
+  "MsgDeactivateContract": "/Switcheo.carbon.evmcontract.MsgDeactivateContract",
+  "MsgDeactivateContractResponse": "/Switcheo.carbon.evmcontract.MsgDeactivateContractResponse",
+  "MsgActivateContract": "/Switcheo.carbon.evmcontract.MsgActivateContract",
+  "MsgActivateContractResponse": "/Switcheo.carbon.evmcontract.MsgActivateContractResponse",
   "MsgInitiateAdminTransfer": "/Switcheo.carbon.admin.MsgInitiateAdminTransfer",
   "MsgInitiateAdminTransferResponse": "/Switcheo.carbon.admin.MsgInitiateAdminTransferResponse",
   "MsgAcceptAdminTransfer": "/Switcheo.carbon.admin.MsgAcceptAdminTransfer",
@@ -1076,6 +1086,10 @@ export { MsgMergeAccount, MsgMergeAccountResponse } from "./Switcheo/carbon/evmm
 export { QueryMappedAddressRequest, QueryMappedAddressResponse, QueryAllMappedAddressRequest, QueryAllMappedAddressResponse } from "./Switcheo/carbon/evmmerge/query";
 export { MergeAccountEvent } from "./Switcheo/carbon/evmmerge/event";
 export { EthCosmosAddressWrapper } from "./Switcheo/carbon/evmmerge/address";
+export { MsgDeactivateContract, MsgDeactivateContractResponse, MsgActivateContract, MsgActivateContractResponse } from "./Switcheo/carbon/evmcontract/tx";
+export { QueryContractRequest, QueryContractResponse, QueryContractAllRequest, QueryContractAllResponse, QueryAllAddressEVMRequest, QueryAllAddressEVMResponse, QueryAddressEVMRequest, QueryAddressEVMResponse } from "./Switcheo/carbon/evmcontract/query";
+export { Params } from "./Switcheo/carbon/evmcontract/params";
+export { QueryBalanceRequest, QueryBalanceQueue, EVMContract, ModuleEVMAddress, ModuleContracts } from "./Switcheo/carbon/evmcontract/evm_hooks";
 export { Any } from "./google/protobuf/any";
 export { Timestamp } from "./google/protobuf/timestamp";
 export { DoubleValue, FloatValue, Int64Value, UInt64Value, Int32Value, UInt32Value, BoolValue, StringValue, BytesValue } from "./google/protobuf/wrappers";
@@ -2137,10 +2151,6 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ],
     "OrderBookEvent": [
-      {
-        "name": "type",
-        "type": "string"
-      },
       {
         "name": "market",
         "type": "string"
@@ -6656,7 +6666,168 @@ export const EIP712Types: { [index: string]: any } = {
     ]
   },
   "/Switcheo.carbon.evmcontract": {
-    "GenesisState": []
+    "QueryBalanceRequest": [
+      {
+        "name": "carbon_address",
+        "type": "uint8[]"
+      },
+      {
+        "name": "evm_address",
+        "type": "uint8[]"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      },
+      {
+        "name": "caller",
+        "type": "uint8[]"
+      }
+    ],
+    "QueryBalanceQueue": [
+      {
+        "name": "contract_address",
+        "type": "uint8[]"
+      },
+      {
+        "name": "requests",
+        "type": "QueryBalanceRequest[]",
+        "packageName": "/Switcheo.carbon.evmcontract"
+      }
+    ],
+    "EVMContract": [
+      {
+        "name": "version",
+        "type": "uint64"
+      },
+      {
+        "name": "contract_type",
+        "type": "string"
+      },
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "active",
+        "type": "bool"
+      }
+    ],
+    "ModuleEVMAddress": [
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "ModuleContracts": [
+      {
+        "name": "module_name",
+        "type": "string"
+      },
+      {
+        "name": "contracts",
+        "type": "EVMContract[]",
+        "packageName": "/Switcheo.carbon.evmcontract"
+      }
+    ],
+    "Params": [
+      {
+        "name": "response_gas_cap",
+        "type": "uint64"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.evmcontract"
+      },
+      {
+        "name": "module_address_map",
+        "type": "ModuleEVMAddress[]",
+        "packageName": "/Switcheo.carbon.evmcontract"
+      },
+      {
+        "name": "module_contracts",
+        "type": "ModuleContracts[]",
+        "packageName": "/Switcheo.carbon.evmcontract"
+      }
+    ],
+    "QueryContractRequest": [
+      {
+        "name": "contract_address",
+        "type": "string"
+      }
+    ],
+    "QueryContractResponse": [
+      {
+        "name": "contract",
+        "type": "EVMContract",
+        "packageName": "/Switcheo.carbon.evmcontract"
+      }
+    ],
+    "QueryContractAllRequest": [],
+    "QueryContractAllResponse": [
+      {
+        "name": "contracts",
+        "type": "EVMContract[]",
+        "packageName": "/Switcheo.carbon.evmcontract"
+      }
+    ],
+    "QueryAllAddressEVMRequest": [],
+    "QueryAllAddressEVMResponse": [
+      {
+        "name": "modules",
+        "type": "ModuleEVMAddress[]",
+        "packageName": "/Switcheo.carbon.evmcontract"
+      }
+    ],
+    "QueryAddressEVMRequest": [
+      {
+        "name": "name",
+        "type": "string"
+      }
+    ],
+    "QueryAddressEVMResponse": [
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "MsgDeactivateContract": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "module_name",
+        "type": "string"
+      },
+      {
+        "name": "contract_address",
+        "type": "string"
+      }
+    ],
+    "MsgDeactivateContractResponse": [],
+    "MsgActivateContract": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "module_name",
+        "type": "string"
+      },
+      {
+        "name": "contract_address",
+        "type": "string"
+      }
+    ],
+    "MsgActivateContractResponse": []
   },
   "/Switcheo.carbon.evmmerge": {
     "EthCosmosAddressWrapper": [
@@ -7878,6 +8049,67 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "block_created_at",
         "type": "string"
+      }
+    ],
+    "IncomingEVMOrder": [
+      {
+        "name": "order_key",
+        "type": "string"
+      },
+      {
+        "name": "order_id",
+        "type": "string"
+      },
+      {
+        "name": "contract",
+        "type": "uint8[]"
+      },
+      {
+        "name": "evm_creator",
+        "type": "uint8[]"
+      }
+    ],
+    "QueryEVMOrderQueue": [
+      {
+        "name": "contract_address",
+        "type": "uint8[]"
+      },
+      {
+        "name": "requests",
+        "type": "QueryEVMOrderRequest[]",
+        "packageName": "/Switcheo.carbon.order"
+      }
+    ],
+    "QueryEVMOrderRequest": [
+      {
+        "name": "order_id",
+        "type": "string"
+      },
+      {
+        "name": "order_key",
+        "type": "string"
+      },
+      {
+        "name": "caller",
+        "type": "uint8[]"
+      }
+    ],
+    "EVMContract": [
+      {
+        "name": "version",
+        "type": "uint64"
+      },
+      {
+        "name": "contract_type",
+        "type": "string"
+      },
+      {
+        "name": "address",
+        "type": "string"
+      },
+      {
+        "name": "active",
+        "type": "bool"
       }
     ],
     "GenesisState": [
@@ -10419,6 +10651,54 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/Switcheo.carbon.market"
       }
     ],
+    "QueryEVMMarketRequest": [
+      {
+        "name": "contract_address",
+        "type": "string"
+      },
+      {
+        "name": "name",
+        "type": "string"
+      }
+    ],
+    "QueryEVMMarketResponse": [
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "display_name",
+        "type": "string"
+      },
+      {
+        "name": "market_type",
+        "type": "string"
+      },
+      {
+        "name": "base",
+        "type": "string"
+      },
+      {
+        "name": "quote",
+        "type": "string"
+      },
+      {
+        "name": "base_precision",
+        "type": "int64"
+      },
+      {
+        "name": "quote_precision",
+        "type": "int64"
+      },
+      {
+        "name": "min_quantity",
+        "type": "string"
+      },
+      {
+        "name": "is_active",
+        "type": "bool"
+      }
+    ],
     "MsgDisableSpotMarket": [
       {
         "name": "creator",
@@ -12252,6 +12532,35 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "update_reason",
         "type": "uint64"
+      }
+    ],
+    "QueryEVMPositionRequest": [
+      {
+        "name": "evm_address",
+        "type": "uint8[]"
+      },
+      {
+        "name": "carbon_address",
+        "type": "string"
+      },
+      {
+        "name": "market",
+        "type": "string"
+      },
+      {
+        "name": "caller",
+        "type": "uint8[]"
+      }
+    ],
+    "QueryEVMPositionQueue": [
+      {
+        "name": "contract_address",
+        "type": "uint8[]"
+      },
+      {
+        "name": "requests",
+        "type": "QueryEVMPositionRequest[]",
+        "packageName": "/Switcheo.carbon.position"
       }
     ],
     "GenesisState": [
