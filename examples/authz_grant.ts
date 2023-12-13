@@ -21,7 +21,7 @@ import "./_setup";
 
   const randomMnemonics = randomMnemonic()
 
-  const sdkInstance = await CarbonSDK.instanceWithMnemonic(randomMnemonics)
+  const sdkInstance = await CarbonSDK.instanceWithMnemonic(randomMnemonics, { network: CarbonSDK.Network.TestNet })
   const grantee = sdkInstance?.wallet?.bech32Address ?? ''
   const expiry: Date = dayjs().add(300, "seconds").toDate()
   const params = {
