@@ -50,7 +50,7 @@ export class SignlessModule extends BaseModule {
   public async queryGranteeDetails(params: SignlessModule.QueryGrantParams) {
     const wallet = this.getWallet()
     const queryParams: QueryGrantsRequest = {
-      grantee: params.grantee,
+      grantee: params.grantee ?? '',
       granter: params.granter ?? wallet.bech32Address,
       msgTypeUrl: params.msgTypeUrl ?? '',
     }
@@ -66,7 +66,7 @@ export namespace SignlessModule {
     expiry: Date,
   }
   export interface QueryGrantParams {
-    grantee: string,
+    grantee?: string,
     granter?: string,
     msgTypeUrl?: string,
   }
