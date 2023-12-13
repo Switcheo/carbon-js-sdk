@@ -360,7 +360,7 @@ class CarbonSDK {
   }
 
   public async initialize(): Promise<CarbonSDK> {
-    const fees = await this.getGasFeeObject()
+    const fees = await this.getGasFee()
     const chainId = await this.query.chain.getChainId();
     this.chainId = chainId;
     await this.token.initialize();
@@ -371,7 +371,7 @@ class CarbonSDK {
     return this;
   }
 
-  private async getGasFeeObject(){
+  private async getGasFee(){
     const queryClient = this.query
     const { msgGasCosts } = await queryClient.fee.MsgGasCostAll({});
 
@@ -415,7 +415,7 @@ class CarbonSDK {
     if (!wallet.initialized) {
       try {
         // Perform initialize function as per normal, but add try-catch statement to check err message
-        const fees = await this.getGasFeeObject()
+        const fees = await this.getGasFee()
         await wallet.initialize(this.query, fees);
       } catch (err) {
         const errorTyped = err as Error;
