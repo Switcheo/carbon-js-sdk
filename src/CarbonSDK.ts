@@ -45,10 +45,10 @@ import { MetaMask } from "./provider/metamask/MetaMask";
 import { SWTHAddressOptions } from "./util/address";
 import { Blockchain } from "./util/blockchain";
 import { CarbonWallet, CarbonWalletGenericOpts, CarbonSigner, MetaMaskWalletOpts, CarbonLedgerSigner } from "./wallet";
-import GasFee from "./clients/GasFee";
 import { bnOrZero } from "./util/number";
 import { SimpleMap } from "./util/type";
 import BigNumber from "bignumber.js";
+import GasFee from "./clients/GasFee";
 export { CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletGenericOpts, CarbonWalletInitOpts } from "@carbon-sdk/wallet";
 export { CarbonTx } from "@carbon-sdk/util";
 export { DenomPrefix } from "./constant";
@@ -68,6 +68,7 @@ export interface CarbonSDKOpts {
   grpcQueryClient?: GrpcQueryClient;
   useTmAbciQuery?: boolean;
   defaultTimeoutBlocks?: number; // tx mempool ttl (timeoutHeight)
+  gasFee?: GasFee;
 }
 export interface CarbonSDKInitOpts {
   network: Network;
@@ -145,11 +146,13 @@ class CarbonSDK {
   n3: N3Client;
   chainId: string;
   evmChainId: string;
+  gasFee: GasFee;
   constructor(opts: CarbonSDKOpts) {
     this.network = opts.network ?? DEFAULT_NETWORK;
     this.configOverride = opts.config ?? {};
     this.networkConfig = GenericUtils.overrideConfig(NetworkConfigs[this.network], this.configOverride);
     this.useTmAbciQuery = opts.useTmAbciQuery ?? false;
+    this.gasFee = opts.gasFee
 
     this.tmClient = opts.tmClient;
     this.wallet = opts.wallet;
@@ -363,6 +366,7 @@ class CarbonSDK {
     const fees = await this.getGasFee()
     const chainId = await this.query.chain.getChainId();
     this.chainId = chainId;
+    this.gasFee = fees
     await this.token.initialize();
     if (this.wallet) {
       await this.wallet.initialize(this.query, fees);
@@ -401,6 +405,7 @@ class CarbonSDK {
       chainId: this.chainId,
       evmChainId: this.evmChainId,
       useTmAbciQuery: this.useTmAbciQuery,
+      
 
       wallet: this.wallet,
       tmClient: this.tmClient,
