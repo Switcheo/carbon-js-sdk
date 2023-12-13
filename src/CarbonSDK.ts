@@ -152,7 +152,7 @@ class CarbonSDK {
     this.configOverride = opts.config ?? {};
     this.networkConfig = GenericUtils.overrideConfig(NetworkConfigs[this.network], this.configOverride);
     this.useTmAbciQuery = opts.useTmAbciQuery ?? false;
-    this.gasFee = opts.gasFee
+    this.gasFee = opts.gasFee ?? GasFee.instance()
 
     this.tmClient = opts.tmClient;
     this.wallet = opts.wallet;
@@ -405,7 +405,7 @@ class CarbonSDK {
       chainId: this.chainId,
       evmChainId: this.evmChainId,
       useTmAbciQuery: this.useTmAbciQuery,
-      
+      gasFee: this.gasFee,
 
       wallet: this.wallet,
       tmClient: this.tmClient,

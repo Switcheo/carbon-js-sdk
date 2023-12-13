@@ -12,7 +12,11 @@ class GasFee {
         this.txGasPrices = txGasPrices
     }
 
-    public static instance(txGasCosts: SimpleMap<BigNumber>, txGasPrices: SimpleMap<BigNumber>) {
+    public static instance(txGasCosts?: SimpleMap<BigNumber>, txGasPrices?: SimpleMap<BigNumber>) {
+        if (!txGasCosts || !txGasPrices){
+            return new GasFee({},{})
+        }
+
         return new GasFee(txGasCosts, txGasPrices);
     }
 
