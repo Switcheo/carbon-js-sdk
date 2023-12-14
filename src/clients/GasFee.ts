@@ -14,12 +14,8 @@ class GasFee {
     }
 
     public static instance(txGasCosts: SimpleMap<BigNumber> = {}, txGasPrices: SimpleMap<BigNumber> = {}) {
-        if (!txGasCosts || !txGasPrices){
-            return new GasFee(txGasCosts, txGasPrices)
-        }
-
         return new GasFee(txGasCosts, txGasPrices);
-    }
+      }
 
     public getFee(msgTypeUrl: string, denom: string = DEFAULT_FEE_DENOM): BigNumber {
         const minGasPrice = this.getGasPrice(denom);
