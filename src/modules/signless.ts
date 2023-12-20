@@ -8,9 +8,9 @@ import { MsgGrantAllowance } from "@carbon-sdk/codec/cosmos/feegrant/v1beta1/tx"
 import BaseModule from "./base";
 
 export const authorizedSignlessMsgs = [
-  CarbonTx.Types.MsgCreateOrder,
-  CarbonTx.Types.MsgEditOrder,
-  CarbonTx.Types.MsgCancelOrder,
+  "/Switcheo.carbon.order.MsgCreateOrder",
+  "/Switcheo.carbon.order.MsgEditOrder",
+  "/Switcheo.carbon.order.MsgCancelOrder",
 ]
 
 export class SignlessModule extends BaseModule {
@@ -35,23 +35,24 @@ export class SignlessModule extends BaseModule {
         typeUrl: CarbonTx.Types.MsgGrant, value: grantMsg,
       }
     })
-
-    const encodedAllowanceMsg = [{
-      typeUrl: CarbonTx.Types.MsgGrantAllowance,
-      value: MsgGrantAllowance.fromPartial({
-        granter: params.granter ?? wallet.bech32Address,
-        grantee: params.grantee,
-        allowance: {
-          typeUrl: '/cosmos.feegrant.v1beta1.BasicAllowance',
-          value: BasicAllowance.encode(BasicAllowance.fromPartial({
-            spendLimit: [],
-            expiration: params.expiry,
-          })).finish(),
-        },
-      }),
-    }]
-
-    const messages = encodedGrantMsgs.concat(encodedAllowanceMsg)
+    let messages = encodedGrantMsgs
+    if (!params.existingGrantee) {
+      const encodedAllowanceMsg = [{
+        typeUrl: CarbonTx.Types.MsgGrantAllowance,
+        value: MsgGrantAllowance.fromPartial({
+          granter: params.granter ?? wallet.bech32Address,
+          grantee: params.grantee,
+          allowance: {
+            typeUrl: '/cosmos.feegrant.v1beta1.BasicAllowance',
+            value: BasicAllowance.encode(BasicAllowance.fromPartial({
+              spendLimit: [],
+              expiration: params.expiry,
+            })).finish(),
+          },
+        }),
+      }]
+      messages = encodedGrantMsgs.concat(encodedAllowanceMsg)
+    }
 
     const result = await wallet.sendTxs(messages, opts)
 
@@ -61,7 +62,7 @@ export class SignlessModule extends BaseModule {
   public async queryGranteeDetails(params: SignlessModule.QueryGrantParams) {
     const wallet = this.getWallet()
     const queryParams: QueryGrantsRequest = {
-      grantee: params.grantee,
+      grantee: params.grantee ?? '',
       granter: params.granter ?? wallet.bech32Address,
       msgTypeUrl: params.msgTypeUrl ?? '',
     }
@@ -74,10 +75,11 @@ export namespace SignlessModule {
   export interface GrantSignlessPermissionParams {
     grantee: string,
     granter?: string,
+    existingGrantee: boolean,
     expiry: Date,
   }
   export interface QueryGrantParams {
-    grantee: string,
+    grantee?: string,
     granter?: string,
     msgTypeUrl?: string,
   }
