@@ -554,7 +554,6 @@ export class CarbonWallet {
           ...signOpts?.explicitSignerData,
         },
       };
-      console.log('xx', overrideSignerAddress, signerAddress)
       const signedTx = (overrideSignerAddress !== signerAddress && overrideSDK)
         ? await overrideSDK.wallet.getSignedTx(overrideSignerAddress, overrideMessages, sequence, _signOpts)
         : await this.getSignedTx(signerAddress, messages, sequence, _signOpts)
