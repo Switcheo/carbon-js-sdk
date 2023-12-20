@@ -183,8 +183,6 @@ export namespace OrderModule {
     /** commission percents, input 10 for 10% */
     referralCommission?: number;
     referralKickback?: number;
-
-    network?: CarbonSDK.Network;
   }
 
   export interface EditOrderParams {
