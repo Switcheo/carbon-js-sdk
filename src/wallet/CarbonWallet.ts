@@ -116,7 +116,6 @@ export interface GranteeDetails {
   enabled: boolean;
   expiry: Date;
   mnemonics: string;
-  granteeAddress: string;
 }
 
 interface PromiseHandler<T> {
@@ -342,9 +341,10 @@ export class CarbonWallet {
 
   private isGranteeValid(): boolean {
     if (!this.granteeDetails) return false
-    const { expiry } = this.granteeDetails
+    const { expiry, enabled } = this.granteeDetails
     const bufferPeriod = 60
-    return dayjs().subtract(bufferPeriod, 'seconds').isBefore(expiry)
+    const hasNotExpired = dayjs().subtract(bufferPeriod, 'seconds').isBefore(expiry)
+    return hasNotExpired && enabled
   }
 
   public updateNetwork(network: Network): CarbonWallet {
@@ -522,9 +522,11 @@ export class CarbonWallet {
       let overrideMessages = messages
       let overrideSDK
       if (this.granteeDetails) {
-        const { granteeAddress, mnemonics, enabled } = this.granteeDetails
+        const { mnemonics } = this.granteeDetails
         const isAuthorized = messages.every((message) => authorizedSignlessMsgs.includes(message.typeUrl))
-        if (this.isGranteeValid() && enabled && isAuthorized) {
+        if (this.isGranteeValid() && isAuthorized) {
+          overrideSDK = await CarbonSDK.instanceWithMnemonic(mnemonics, { network: this.network })
+          const granteeAddress = overrideSDK.wallet.bech32Address
           const msgs = messages.map((message) => {
             return {
               typeUrl: message.typeUrl,
@@ -539,7 +541,6 @@ export class CarbonWallet {
             }),
           }]
           overrideSignerAddress = granteeAddress
-          overrideSDK = await CarbonSDK.instanceWithMnemonic(mnemonics, { network: this.network })
           timeoutHeight = height.isZero() ? undefined : height.toNumber() + overrideSDK.wallet.defaultTimeoutBlocks;
           if (!overrideSDK.wallet.accountInfo) {
             sequence = signOpts?.sequence ?? 0
