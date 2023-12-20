@@ -18,6 +18,7 @@ import { QueryClientImpl as StakingQueryClient } from "@carbon-sdk/codec/cosmos/
 import { QueryClientImpl as UpgradeQueryClient } from "@carbon-sdk/codec/cosmos/upgrade/v1beta1/query";
 import { QueryClientImpl as EthermintEVMQueryClient } from "@carbon-sdk/codec/ethermint/evm/v1/query";
 import { QueryClientImpl as GrantQueryClient } from "@carbon-sdk/codec/cosmos/authz/v1beta1/query";
+import { QueryClientImpl as FeeGrantQueryClient } from "@carbon-sdk/codec/cosmos/feegrant/v1beta1/query";
 import { QueryClientImpl as EvmMergeQueryClient } from "@carbon-sdk/codec/Switcheo/carbon/evmmerge/query";
 import { QueryClientImpl as EvmBankQueryClient } from "@carbon-sdk/codec/Switcheo/carbon/evmbank/query";
 import { QueryClientImpl as EthermintFeeMarketQueryClient } from "@carbon-sdk/codec/ethermint/feemarket/v1/query";
@@ -109,6 +110,7 @@ class CarbonQueryClient {
   upgrade: UpgradeQueryClient;
   cosmosTm: CosmosTmClient;
   grant: GrantQueryClient;
+  feegrant: FeeGrantQueryClient;
 
   alliance: AllianceClient;
 
@@ -157,6 +159,7 @@ class CarbonQueryClient {
     this.distribution = new DistributionQueryClient(rpcClient);
     this.evidence = new EvidenceQueryClient(rpcClient);
     this.grant = new GrantQueryClient(rpcClient);
+    this.feegrant = new FeeGrantQueryClient(rpcClient);
     this.group = new GroupQueryClient(rpcClient);
     this.gov = new GovQueryClient(rpcClient);
     this.mint = new MintQueryClient(rpcClient);

@@ -6,6 +6,7 @@ import { GenericAuthorization } from "@carbon-sdk/codec/cosmos/authz/v1beta1/aut
 import { BasicAllowance } from "@carbon-sdk/codec/cosmos/feegrant/v1beta1/feegrant";
 import { MsgGrantAllowance } from "@carbon-sdk/codec/cosmos/feegrant/v1beta1/tx";
 import BaseModule from "./base";
+import { Coin } from "@carbon-sdk/codec/cosmos/base/v1beta1/coin";
 
 export const authorizedSignlessMsgs = [
   "/Switcheo.carbon.order.MsgCreateOrder",
@@ -37,6 +38,13 @@ export class SignlessModule extends BaseModule {
     })
     let messages = encodedGrantMsgs
     if (!params.existingGrantee) {
+      const tokenAllResult = await this.sdkProvider.query.coin.TokenAll({})
+      const coinArray: Coin[] = tokenAllResult.tokens.map((token) => {
+        return {
+          denom: token.denom,
+          amount: '1000000000000000000000000000',
+        }
+      })
       const encodedAllowanceMsg = [{
         typeUrl: CarbonTx.Types.MsgGrantAllowance,
         value: MsgGrantAllowance.fromPartial({
@@ -45,7 +53,7 @@ export class SignlessModule extends BaseModule {
           allowance: {
             typeUrl: '/cosmos.feegrant.v1beta1.BasicAllowance',
             value: BasicAllowance.encode(BasicAllowance.fromPartial({
-              spendLimit: [],
+              spendLimit: coinArray,
               expiration: params.expiry,
             })).finish(),
           },

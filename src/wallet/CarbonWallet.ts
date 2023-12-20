@@ -527,10 +527,10 @@ export class CarbonWallet {
           })
           overrideMessages = [{
             typeUrl: "/cosmos.authz.v1beta1.MsgExec",
-            value: MsgExec.encode(MsgExec.fromPartial({
+            value: MsgExec.fromPartial({
               grantee: granteeAddress,
               msgs,
-            })),
+            }),
           }]
           overrideSignerAddress = granteeAddress
           overrideSDK = await CarbonSDK.instanceWithMnemonic(mnemonics, { network: this.network })
