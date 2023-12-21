@@ -43,11 +43,16 @@ import { CosmosLedger, Keplr, KeplrAccount, LeapAccount, LeapExtended } from "./
 import { MetaMask } from "./provider/metamask/MetaMask";
 import { SWTHAddressOptions } from "./util/address";
 import { Blockchain } from "./util/blockchain";
-import { CarbonLedgerSigner, CarbonSigner, CarbonWallet, CarbonWalletGenericOpts, MetaMaskWalletOpts } from "./wallet";
-export { CarbonTx } from "@carbon-sdk/util";
+import { CarbonWallet, CarbonWalletGenericOpts, CarbonSigner, MetaMaskWalletOpts, CarbonLedgerSigner } from "./wallet";
+import { bnOrZero } from "./util/number";
+import { SimpleMap } from "./util/type";
+import BigNumber from "bignumber.js";
+import GasFee from "./clients/GasFee";
+import { PageRequest } from "cosmjs-types/cosmos/base/query/v1beta1/pagination";
 export { CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletGenericOpts, CarbonWalletInitOpts } from "@carbon-sdk/wallet";
+export { CarbonTx } from "@carbon-sdk/util";
 export * as Carbon from "./codec/carbon-models";
-export { DenomPrefix } from "./constant";
+import Long from "long";
 
 export interface CarbonSDKOpts {
   network: Network;
@@ -63,6 +68,7 @@ export interface CarbonSDKOpts {
   grpcQueryClient?: GrpcQueryClient;
   useTmAbciQuery?: boolean;
   defaultTimeoutBlocks?: number; // tx mempool ttl (timeoutHeight)
+  gasFee?: GasFee;
 }
 export interface CarbonSDKInitOpts {
   network: Network;
@@ -141,11 +147,13 @@ class CarbonSDK {
   n3: N3Client;
   chainId: string;
   evmChainId: string;
+  gasFee: GasFee;
   constructor(opts: CarbonSDKOpts) {
     this.network = opts.network ?? DEFAULT_NETWORK;
     this.configOverride = opts.config ?? {};
     this.networkConfig = GenericUtils.overrideConfig(NetworkConfigs[this.network], this.configOverride);
     this.useTmAbciQuery = opts.useTmAbciQuery ?? false;
+    this.gasFee = opts.gasFee ?? GasFee.instance()
 
     this.tmClient = opts.tmClient;
     this.wallet = opts.wallet;
@@ -357,14 +365,44 @@ class CarbonSDK {
   }
 
   public async initialize(): Promise<CarbonSDK> {
+    const fees = await this.getGasFee();
     const chainId = await this.query.chain.getChainId();
     this.chainId = chainId;
+    this.gasFee = fees
     await this.token.initialize();
     if (this.wallet) {
-      await this.wallet.initialize(this.query);
+      await this.wallet.initialize(this.query, fees);
     }
 
     return this;
+  }
+
+  private async getGasFee() {
+    const queryClient = this.query
+    const { msgGasCosts } = await queryClient.fee.MsgGasCostAll({
+      pagination: PageRequest.fromPartial({
+        limit: new Long(10000),
+      }),
+    });
+
+    const txGasCosts = msgGasCosts.reduce((result, item) => {
+      result[item.msgType] = bnOrZero(item.gasCost);
+      return result;
+    }, {} as SimpleMap<BigNumber>);
+
+    const { minGasPrices } = await queryClient.fee.MinGasPriceAll({
+      pagination: PageRequest.fromPartial({
+        limit: new Long(10000),
+      }),
+    });
+
+    const txGasPrices = minGasPrices.reduce((result, item) => {
+      result[item.denom] = bnOrZero(item.gasPrice).shiftedBy(-18); // sdk.Dec shifting
+      return result;
+    }, {} as SimpleMap<BigNumber>);
+
+    const fees = new GasFee(txGasCosts, txGasPrices)
+    return fees
   }
 
   public clone(): CarbonSDK {
@@ -379,6 +417,7 @@ class CarbonSDK {
       evmChainId: this.evmChainId,
       useTmAbciQuery: this.useTmAbciQuery,
 
+      gasFee: this.gasFee,
       wallet: this.wallet,
       tmClient: this.tmClient,
       token: this.token,
@@ -392,7 +431,8 @@ class CarbonSDK {
     if (!wallet.initialized) {
       try {
         // Perform initialize function as per normal, but add try-catch statement to check err message
-        await wallet.initialize(this.query);
+        const fees = await this.getGasFee();
+        await wallet.initialize(this.query, fees);
       } catch (err) {
         const errorTyped = err as Error;
         // In the case where account does not exist on chain, still allow wallet connection.

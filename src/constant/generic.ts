@@ -2,7 +2,8 @@ import { StdFee } from "@cosmjs/amino";
 import { coins } from "@cosmjs/proto-signing";
 import BigNumber from "bignumber.js";
 
-export const DEFAULT_FEE_DENOM = "swth";
+export const 
+DEFAULT_FEE_DENOM = "swth";
 
 // 0.0000001 SWTH
 // 10 SWTH sats

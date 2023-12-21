@@ -738,6 +738,7 @@ class TokenClient {
       });
     });
   }
+
 }
 
 export default TokenClient;
