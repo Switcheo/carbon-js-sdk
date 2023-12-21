@@ -36,30 +36,6 @@ import "./_setup";
   }
   const [market] = marketsResult.markets
 
-  // create an order using generic
-  // CarbonWallet.sendTx, no type checking
-  // on inputs
-  const genericTxValue: MsgCreateOrder = {
-    creator: connectedSDK.wallet.bech32Address,
-    isPostOnly: false,
-    isReduceOnly: false,
-    market: market.name,
-    orderType: "limit",
-    price: "1",
-    quantity: "100",
-    side: "buy",
-    stopPrice: "",
-    timeInForce: "gtc",
-    triggerType: "",
-    referralKickback: 0,
-    referralAddress: "",
-    referralCommission: 0,
-  }
-  const genericTxCallResult = await connectedSDK.wallet.sendTx({
-    typeUrl: CarbonTx.Types.MsgCreateOrder,
-    value: genericTxValue,
-  })
-  console.log("call generic tx", genericTxCallResult)
 
   // create an order using Order Module
   // for better input type checking

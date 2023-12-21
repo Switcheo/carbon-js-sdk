@@ -1,5 +1,5 @@
 import { CarbonQueryClient } from "@carbon-sdk/clients";
-import { MsgMergeAccount } from "@carbon-sdk/codec";
+import { MsgMergeAccount, registry } from "@carbon-sdk/codec";
 import { BaseAccount } from "@carbon-sdk/codec/cosmos/auth/v1beta1/auth";
 import { MsgExec } from "@carbon-sdk/codec/cosmos/authz/v1beta1/tx";
 import { ExtensionOptionsWeb3Tx } from "@carbon-sdk/codec/ethermint/types/v1/web3";
@@ -521,15 +521,14 @@ export class CarbonWallet {
           const { mnemonics } = this.granteeDetails
           overrideSDK = await CarbonSDK.instanceWithMnemonic(mnemonics, { network: this.network })
           const granteeAddress = overrideSDK.wallet.bech32Address
-          const msgs: EncodeObject[] = messages.map((message) => {
-            return message
-          })
+          const msgs: EncodeObject[] = messages.map((message) => (registry.encodeAsAny({ ...message })))
+
           overrideMessages = [{
             typeUrl: "/cosmos.authz.v1beta1.MsgExec",
-            value: MsgExec.encode(MsgExec.fromPartial({
+            value: MsgExec.fromPartial({
               grantee: granteeAddress,
               msgs: msgs,
-            })).finish(),
+            }),
           }]
           overrideSignerAddress = granteeAddress
           timeoutHeight = height.isZero() ? undefined : height.toNumber() + overrideSDK.wallet.defaultTimeoutBlocks;
@@ -598,10 +597,8 @@ export class CarbonWallet {
     } = txRequest;
     const broadcastMode = broadcastOpts?.mode ?? this.txDefaultBroadCastMode;
     const broadcastFunc = this.getBroadcastFunc(broadcastMode);
-    console.log('xx', broadcastOpts)
     try {
       const result = await broadcastFunc(signedTx, broadcastOpts);
-      console.log('xx result', result)
       resolve(result);
     } catch (error: any) {
       const reattempts = txRequest.reattempts ?? 0;
