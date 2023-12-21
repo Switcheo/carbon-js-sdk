@@ -116,7 +116,6 @@ export interface GranteeDetails {
   enabled: boolean;
   expiry: Date;
   mnemonics: string;
-  granteeAddress: string;
 }
 
 interface PromiseHandler<T> {
@@ -340,6 +339,14 @@ export class CarbonWallet {
     this.granteeDetails = details;
   }
 
+  private isGranteeValid(): boolean {
+    if (!this.granteeDetails) return false
+    const { expiry, enabled } = this.granteeDetails
+    const bufferPeriod = 60
+    const hasNotExpired = dayjs().subtract(bufferPeriod, 'seconds').isBefore(expiry)
+    return hasNotExpired && enabled
+  }
+
   public updateNetwork(network: Network): CarbonWallet {
     this.network = network;
     this.networkConfig = GenericUtils.overrideConfig(NetworkConfigs[network], this.configOverride);
@@ -515,10 +522,11 @@ export class CarbonWallet {
       let overrideMessages = messages
       let overrideSDK
       if (this.granteeDetails) {
-        const { expiry, granteeAddress, mnemonics, enabled } = this.granteeDetails
-        const isExpired = dayjs().subtract(1, 'minute').isAfter(expiry)
+        const { mnemonics } = this.granteeDetails
         const isAuthorized = messages.every((message) => authorizedSignlessMsgs.includes(message.typeUrl))
-        if (!isExpired && enabled && isAuthorized) {
+        if (this.isGranteeValid() && isAuthorized) {
+          overrideSDK = await CarbonSDK.instanceWithMnemonic(mnemonics, { network: this.network })
+          const granteeAddress = overrideSDK.wallet.bech32Address
           const msgs = messages.map((message) => {
             return {
               typeUrl: message.typeUrl,
@@ -533,7 +541,6 @@ export class CarbonWallet {
             }),
           }]
           overrideSignerAddress = granteeAddress
-          overrideSDK = await CarbonSDK.instanceWithMnemonic(mnemonics, { network: this.network })
           timeoutHeight = height.isZero() ? undefined : height.toNumber() + overrideSDK.wallet.defaultTimeoutBlocks;
           if (!overrideSDK.wallet.accountInfo) {
             sequence = signOpts?.sequence ?? 0
