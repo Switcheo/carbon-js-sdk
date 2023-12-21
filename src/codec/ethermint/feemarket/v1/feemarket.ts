@@ -29,6 +29,16 @@ export interface Params {
    * to senders based on gas limit
    */
   minGasMultiplier: string;
+  /**
+   * Sets the max amount of gas per block for EVM tx.
+   * This param is created to separate from cosmos consensus block max gas.
+   */
+  gasLimitPerBlock: string;
+  /**
+   * Sets the maximum base fee for evm.
+   * Base Fee will not increase pass this value regardless how congested the network is.
+   */
+  maxBaseFee: string;
 }
 
 const baseParams: object = {
@@ -39,6 +49,8 @@ const baseParams: object = {
   baseFee: "",
   minGasPrice: "",
   minGasMultiplier: "",
+  gasLimitPerBlock: "",
+  maxBaseFee: "",
 };
 
 export const Params = {
@@ -66,6 +78,12 @@ export const Params = {
     }
     if (message.minGasMultiplier !== "") {
       writer.uint32(66).string(message.minGasMultiplier);
+    }
+    if (message.gasLimitPerBlock !== "") {
+      writer.uint32(74).string(message.gasLimitPerBlock);
+    }
+    if (message.maxBaseFee !== "") {
+      writer.uint32(82).string(message.maxBaseFee);
     }
     return writer;
   },
@@ -97,6 +115,12 @@ export const Params = {
           break;
         case 8:
           message.minGasMultiplier = reader.string();
+          break;
+        case 9:
+          message.gasLimitPerBlock = reader.string();
+          break;
+        case 10:
+          message.maxBaseFee = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -138,6 +162,14 @@ export const Params = {
       object.minGasMultiplier !== undefined && object.minGasMultiplier !== null
         ? String(object.minGasMultiplier)
         : "";
+    message.gasLimitPerBlock =
+      object.gasLimitPerBlock !== undefined && object.gasLimitPerBlock !== null
+        ? String(object.gasLimitPerBlock)
+        : "";
+    message.maxBaseFee =
+      object.maxBaseFee !== undefined && object.maxBaseFee !== null
+        ? String(object.maxBaseFee)
+        : "";
     return message;
   },
 
@@ -155,6 +187,9 @@ export const Params = {
       (obj.minGasPrice = message.minGasPrice);
     message.minGasMultiplier !== undefined &&
       (obj.minGasMultiplier = message.minGasMultiplier);
+    message.gasLimitPerBlock !== undefined &&
+      (obj.gasLimitPerBlock = message.gasLimitPerBlock);
+    message.maxBaseFee !== undefined && (obj.maxBaseFee = message.maxBaseFee);
     return obj;
   },
 
@@ -170,6 +205,8 @@ export const Params = {
     message.baseFee = object.baseFee ?? "";
     message.minGasPrice = object.minGasPrice ?? "";
     message.minGasMultiplier = object.minGasMultiplier ?? "";
+    message.gasLimitPerBlock = object.gasLimitPerBlock ?? "";
+    message.maxBaseFee = object.maxBaseFee ?? "";
     return message;
   },
 };
