@@ -22,7 +22,6 @@ import "./_setup";
 
   // need to update this if expired and run authz_grant.ts to generate new grantee acc
   const granteeDetails = {
-    granteeAddress: "tswth165k0dflhwd8x2xnqkp3ny99nazmvatsny300rw",
     mnemonics: "taste expire day chair flower royal pelican keep dismiss flush fragile subway",
     expiry: dayjs("2023-12-23T15:36:02.986Z").toDate(),
     enabled: true,
@@ -73,3 +72,4 @@ import "./_setup";
   });
   console.log("call from module", moduleCallResult);
 })().catch(console.error).finally(() => process.exit(0));
+
