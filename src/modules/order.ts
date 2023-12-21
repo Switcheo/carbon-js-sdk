@@ -3,7 +3,6 @@ import { CarbonTx } from "@carbon-sdk/util";
 import { BN_ZERO } from "@carbon-sdk/util/number";
 import { getDefaultTimeInForce, isMarket } from "@carbon-sdk/util/order";
 import { BigNumber } from "bignumber.js";
-import { CarbonSDK } from "..";
 import BaseModule from "./base";
 
 export class OrderModule extends BaseModule {

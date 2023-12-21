@@ -23,13 +23,15 @@ import "./_setup";
 
   const sdkInstance = await CarbonSDK.instanceWithMnemonic(randomMnemonics, { network: CarbonSDK.Network.TestNet })
   const grantee = sdkInstance?.wallet?.bech32Address ?? ''
-  const expiry: Date = dayjs().add(300, "seconds").toDate()
+  const expiry: Date = dayjs().add(60, "hours").toDate()
   const params = {
     grantee,
     expiry,
+    existingGrantee: false,
   }
 
   const result = await connectedSDK.signless.grantSignlessPermission(params);
+  console.log('xx', randomMnemonics, grantee, expiry)
   console.log(result)
 
   const queryParams = {

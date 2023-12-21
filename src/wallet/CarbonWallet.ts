@@ -522,23 +522,20 @@ export class CarbonWallet {
       let overrideMessages = messages
       let overrideSDK
       if (this.granteeDetails) {
-        const { mnemonics } = this.granteeDetails
         const isAuthorized = messages.every((message) => authorizedSignlessMsgs.includes(message.typeUrl))
         if (this.isGranteeValid() && isAuthorized) {
+          const { mnemonics } = this.granteeDetails
           overrideSDK = await CarbonSDK.instanceWithMnemonic(mnemonics, { network: this.network })
           const granteeAddress = overrideSDK.wallet.bech32Address
-          const msgs = messages.map((message) => {
-            return {
-              typeUrl: message.typeUrl,
-              value: message.value,
-            }
+          const msgs: EncodeObject[] = messages.map((message) => {
+            return message
           })
           overrideMessages = [{
             typeUrl: "/cosmos.authz.v1beta1.MsgExec",
-            value: MsgExec.fromPartial({
+            value: MsgExec.encode(MsgExec.fromPartial({
               grantee: granteeAddress,
-              msgs,
-            }),
+              msgs: msgs,
+            })).finish(),
           }]
           overrideSignerAddress = granteeAddress
           timeoutHeight = height.isZero() ? undefined : height.toNumber() + overrideSDK.wallet.defaultTimeoutBlocks;
@@ -607,8 +604,10 @@ export class CarbonWallet {
     } = txRequest;
     const broadcastMode = broadcastOpts?.mode ?? this.txDefaultBroadCastMode;
     const broadcastFunc = this.getBroadcastFunc(broadcastMode);
+    console.log('xx', broadcastOpts)
     try {
       const result = await broadcastFunc(signedTx, broadcastOpts);
+      console.log('xx result', result)
       resolve(result);
     } catch (error: any) {
       const reattempts = txRequest.reattempts ?? 0;
