@@ -2,7 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 
-export const protobufPackage = "Switcheo.carbon.admin";
+export const protobufPackage = "switcheo.carbon.admin";
 
 /** GenesisState defines the admin module's genesis state. */
 export interface GenesisState {}

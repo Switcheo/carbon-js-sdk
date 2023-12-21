@@ -2,7 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 
-export const protobufPackage = "Switcheo.carbon.evmcontract";
+export const protobufPackage = "switcheo.carbon.evm";
 
 /** Msg defines the Msg service. */
 export interface Msg {}

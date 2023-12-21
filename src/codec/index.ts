@@ -201,10 +201,10 @@ registry.register("/Switcheo.carbon.oracle.MsgSetOracleSlashEnabled", Carbon.Ora
 registry.register("/Switcheo.carbon.oracle.MsgSetOracleSlashEnabledResponse", Carbon.Oracle.MsgSetOracleSlashEnabledResponse);
 registry.register("/Switcheo.carbon.oracle.CreateOracleProposal", Carbon.Oracle.CreateOracleProposal);
 
-registry.register("/Switcheo.carbon.admin.MsgInitiateAdminTransfer", Carbon.Admin.MsgInitiateAdminTransfer);
-registry.register("/Switcheo.carbon.admin.MsgInitiateAdminTransferResponse", Carbon.Admin.MsgInitiateAdminTransferResponse);
-registry.register("/Switcheo.carbon.admin.MsgAcceptAdminTransfer", Carbon.Admin.MsgAcceptAdminTransfer);
-registry.register("/Switcheo.carbon.admin.MsgAcceptAdminTransferResponse", Carbon.Admin.MsgAcceptAdminTransferResponse);
+registry.register("/switcheo.carbon.admin.MsgInitiateAdminTransfer", Carbon.Admin.MsgInitiateAdminTransfer);
+registry.register("/switcheo.carbon.admin.MsgInitiateAdminTransferResponse", Carbon.Admin.MsgInitiateAdminTransferResponse);
+registry.register("/switcheo.carbon.admin.MsgAcceptAdminTransfer", Carbon.Admin.MsgAcceptAdminTransfer);
+registry.register("/switcheo.carbon.admin.MsgAcceptAdminTransferResponse", Carbon.Admin.MsgAcceptAdminTransferResponse);
 
 registry.register("/Switcheo.carbon.ccm.MsgProcessCrossChainTx", PolyNetwork.Ccm.MsgProcessCrossChainTx);
 registry.register("/Switcheo.carbon.ccm.MsgProcessZionCrossChainTx", PolyNetwork.Ccm.MsgProcessZionCrossChainTx);
@@ -724,10 +724,10 @@ export const TxTypes = {
   "MsgSetOracleSlashEnabled": "/Switcheo.carbon.oracle.MsgSetOracleSlashEnabled",
   "MsgSetOracleSlashEnabledResponse": "/Switcheo.carbon.oracle.MsgSetOracleSlashEnabledResponse",
   "CreateOracleProposal": "/Switcheo.carbon.oracle.CreateOracleProposal",
-  "MsgInitiateAdminTransfer": "/Switcheo.carbon.admin.MsgInitiateAdminTransfer",
-  "MsgInitiateAdminTransferResponse": "/Switcheo.carbon.admin.MsgInitiateAdminTransferResponse",
-  "MsgAcceptAdminTransfer": "/Switcheo.carbon.admin.MsgAcceptAdminTransfer",
-  "MsgAcceptAdminTransferResponse": "/Switcheo.carbon.admin.MsgAcceptAdminTransferResponse",
+  "MsgInitiateAdminTransfer": "/switcheo.carbon.admin.MsgInitiateAdminTransfer",
+  "MsgInitiateAdminTransferResponse": "/switcheo.carbon.admin.MsgInitiateAdminTransferResponse",
+  "MsgAcceptAdminTransfer": "/switcheo.carbon.admin.MsgAcceptAdminTransfer",
+  "MsgAcceptAdminTransferResponse": "/switcheo.carbon.admin.MsgAcceptAdminTransferResponse",
   "MsgProcessCrossChainTx": "/Switcheo.carbon.ccm.MsgProcessCrossChainTx",
   "MsgProcessZionCrossChainTx": "/Switcheo.carbon.ccm.MsgProcessZionCrossChainTx",
   "MsgProcessCrossChainTxResponse": "/Switcheo.carbon.ccm.MsgProcessCrossChainTxResponse",

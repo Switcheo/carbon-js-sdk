@@ -2,7 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 
-export const protobufPackage = "Switcheo.carbon.admin";
+export const protobufPackage = "switcheo.carbon.admin";
 
 export interface MsgInitiateAdminTransfer {
   creator: string;
@@ -278,7 +278,7 @@ export class MsgClientImpl implements Msg {
   ): Promise<MsgInitiateAdminTransferResponse> {
     const data = MsgInitiateAdminTransfer.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.carbon.admin.Msg",
+      "switcheo.carbon.admin.Msg",
       "InitiateAdminTransfer",
       data
     );
@@ -292,7 +292,7 @@ export class MsgClientImpl implements Msg {
   ): Promise<MsgAcceptAdminTransferResponse> {
     const data = MsgAcceptAdminTransfer.encode(request).finish();
     const promise = this.rpc.request(
-      "Switcheo.carbon.admin.Msg",
+      "switcheo.carbon.admin.Msg",
       "AcceptAdminTransfer",
       data
     );
