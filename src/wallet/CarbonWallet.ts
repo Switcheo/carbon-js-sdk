@@ -337,7 +337,7 @@ export class CarbonWallet {
     if (!this.granteeDetails) return false
     const { expiry, enabled } = this.granteeDetails
     const bufferPeriod = 60
-    const hasNotExpired = dayjs().subtract(bufferPeriod, 'seconds').isBefore(expiry)
+    const hasNotExpired = dayjs().subtract(bufferPeriod, 'seconds').unix() < dayjs(expiry).unix()
     return hasNotExpired && enabled
   }
 
@@ -486,86 +486,46 @@ export class CarbonWallet {
       broadcastOpts,
       handler: { resolve, reject },
     } = txRequest;
-    try {
-      if (!this.accountInfo
-        || this.accountInfo?.address === this.evmBech32Address // refresh to check if carbon acc is present
-        || this.sequenceInvalidated)
-        await this.reloadAccountSequence();
-
-      const heightResponse = await fetch(`${this.networkConfig.tmRpcUrl}/blockchain?cache=${new Date().getTime()}`);
-      const heightRes = await heightResponse.json();
-      const height = bnOrZero(heightRes.result?.last_height);
-      let timeoutHeight;
-      // timeoutHeight is not supported for EIP-712
-      if (!isCarbonEIP712Signer(this.signer)) {
-        timeoutHeight = height.isZero() ? undefined : height.toNumber() + this.defaultTimeoutBlocks;
+    if (this.granteeDetails) {
+      const isAuthorized = messages.every((message) => authorizedSignlessMsgs.includes(message.typeUrl))
+      if (this.isGranteeValid() && isAuthorized) {
+        this.signWithGrantee(this.granteeDetails, txRequest)
       }
-      let sequence: number
-      if (!this.accountInfo) {
-        sequence = signOpts?.sequence ?? 0
-      } else {
-        sequence = this.accountInfo!.sequence;
-        this.accountInfo = {
-          ...this.accountInfo!,
-          sequence: sequence + 1,
-        };
-      }
+    } else {
+      try {
+        if (!this.accountInfo
+          || this.accountInfo?.address === this.evmBech32Address // refresh to check if carbon acc is present
+          || this.sequenceInvalidated)
+          await this.reloadAccountSequence();
 
-
-      let overrideSignerAddress = signerAddress
-      let overrideMessages = messages
-      let overrideSDK
-      if (this.granteeDetails) {
-        const isAuthorized = messages.every((message) => authorizedSignlessMsgs.includes(message.typeUrl))
-        if (this.isGranteeValid() && isAuthorized) {
-          const { mnemonics } = this.granteeDetails
-          overrideSDK = await CarbonSDK.instanceWithMnemonic(mnemonics, { network: this.network })
-          const granteeAddress = overrideSDK.wallet.bech32Address
-          const msgs: EncodeObject[] = messages.map((message) => (registry.encodeAsAny({ ...message })))
-
-          overrideMessages = [{
-            typeUrl: "/cosmos.authz.v1beta1.MsgExec",
-            value: MsgExec.fromPartial({
-              grantee: granteeAddress,
-              msgs: msgs,
-            }),
-          }]
-          overrideSignerAddress = granteeAddress
-          timeoutHeight = height.isZero() ? undefined : height.toNumber() + overrideSDK.wallet.defaultTimeoutBlocks;
-          if (!overrideSDK.wallet.accountInfo) {
-            sequence = signOpts?.sequence ?? 0
-          } else {
-            sequence = overrideSDK.wallet.accountInfo!.sequence;
-            overrideSDK.wallet.accountInfo = {
-              ...overrideSDK.wallet.accountInfo!,
-              sequence: sequence + 1,
-            };
-          }
+        const heightResponse = await fetch(`${this.networkConfig.tmRpcUrl}/blockchain?cache=${new Date().getTime()}`);
+        const heightRes = await heightResponse.json();
+        const height = bnOrZero(heightRes.result?.last_height);
+        let timeoutHeight;
+        // timeoutHeight is not supported for EIP-712
+        if (!isCarbonEIP712Signer(this.signer)) {
+          timeoutHeight = height.isZero() ? undefined : height.toNumber() + this.defaultTimeoutBlocks;
         }
-      }
+        let sequence: number
+        if (!this.accountInfo) {
+          sequence = signOpts?.sequence ?? 0
+        } else {
+          sequence = this.accountInfo!.sequence;
+          this.accountInfo = {
+            ...this.accountInfo!,
+            sequence: sequence + 1,
+          };
+        }
 
-      const _signOpts: CarbonTx.SignTxOpts = {
-        ...signOpts,
-        explicitSignerData: {
-          timeoutHeight,
-          ...signOpts?.explicitSignerData,
-        },
-      };
-      const signedTx = (overrideSignerAddress !== signerAddress && overrideSDK)
-        ? await overrideSDK.wallet.getSignedTx(overrideSignerAddress, overrideMessages, sequence, _signOpts)
-        : await this.getSignedTx(signerAddress, messages, sequence, _signOpts)
+        const _signOpts: CarbonTx.SignTxOpts = {
+          ...signOpts,
+          explicitSignerData: {
+            timeoutHeight,
+            ...signOpts?.explicitSignerData,
+          },
+        };
+        const signedTx = await this.getSignedTx(signerAddress, messages, sequence, _signOpts)
 
-      if (overrideSignerAddress !== signerAddress && overrideSDK) {
-        overrideSDK.wallet.txDispatchManager.enqueue({
-          reattempts,
-          signerAddress: overrideSignerAddress,
-          messages: overrideMessages,
-          signedTx,
-          broadcastOpts,
-          signOpts: _signOpts,
-          handler: { resolve, reject, requestId: `${sequence}` },
-        })
-      } else {
         this.txDispatchManager.enqueue({
           reattempts,
           signerAddress,
@@ -575,9 +535,80 @@ export class CarbonWallet {
           signOpts: _signOpts,
           handler: { resolve, reject, requestId: `${sequence}` },
         });
+      } catch (error) {
+        reject(error);
       }
+    }
+  }
+
+  private async signWithGrantee(granteeDetails: GranteeDetails, txRequest: SignTxRequest) {
+    const {
+      reattempts,
+      signOpts,
+      messages,
+      broadcastOpts,
+      handler: { resolve, reject },
+    } = txRequest;
+    const { mnemonics } = granteeDetails
+    try {
+      const instanceWithGrantee = await CarbonSDK.instanceWithMnemonic(mnemonics, { network: this.network })
+      const granteeAddress = instanceWithGrantee.wallet.bech32Address
+      const msgs: EncodeObject[] = messages.map((message) => (registry.encodeAsAny({ ...message })))
+
+      const msgExecMessage = [{
+        typeUrl: "/cosmos.authz.v1beta1.MsgExec",
+        value: MsgExec.fromPartial({
+          grantee: granteeAddress,
+          msgs: msgs,
+        }),
+      }]
+      if (!instanceWithGrantee.wallet.accountInfo
+        || instanceWithGrantee.wallet.accountInfo?.address === instanceWithGrantee.wallet.evmBech32Address // refresh to check if carbon acc is present
+        || instanceWithGrantee.wallet.sequenceInvalidated)
+        await instanceWithGrantee.wallet.reloadAccountSequence();
+
+      const heightResponse = await fetch(`${instanceWithGrantee.wallet.networkConfig.tmRpcUrl}/blockchain?cache=${new Date().getTime()}`);
+      const heightRes = await heightResponse.json();
+      const height = bnOrZero(heightRes.result?.last_height);
+      let timeoutHeight;
+      // timeoutHeight is not supported for EIP-712
+      if (!isCarbonEIP712Signer(instanceWithGrantee.wallet.signer)) {
+        timeoutHeight = height.isZero() ? undefined : height.toNumber() + instanceWithGrantee.wallet.defaultTimeoutBlocks;
+      }
+      let sequence: number
+      if (!instanceWithGrantee.wallet.accountInfo) {
+        sequence = signOpts?.sequence ?? 0
+      } else {
+        sequence = instanceWithGrantee.wallet.accountInfo!.sequence;
+        instanceWithGrantee.wallet.accountInfo = {
+          ...instanceWithGrantee.wallet.accountInfo!,
+          sequence: sequence + 1,
+        };
+      }
+      const overrideBroadcastOpts = {
+        ...broadcastOpts,
+        mode: this.txDefaultBroadCastMode,
+      }
+      const _signOpts: CarbonTx.SignTxOpts = {
+        ...signOpts,
+        explicitSignerData: {
+          timeoutHeight,
+          ...signOpts?.explicitSignerData,
+        },
+      }
+      const signedTx = await instanceWithGrantee.wallet.getSignedTx(granteeAddress, msgExecMessage, sequence, _signOpts)
+
+      instanceWithGrantee.wallet.txDispatchManager.enqueue({
+        reattempts,
+        signerAddress: granteeAddress,
+        messages: msgExecMessage,
+        signedTx,
+        broadcastOpts: overrideBroadcastOpts,
+        signOpts: _signOpts,
+        handler: { resolve, reject, requestId: `${sequence}` },
+      })
     } catch (error) {
-      reject(error);
+      reject(error)
     }
   }
 

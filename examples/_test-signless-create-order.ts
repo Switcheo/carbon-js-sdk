@@ -22,8 +22,8 @@ import "./_setup";
 
   // need to update this if expired and run authz_grant.ts to generate new grantee acc
   const granteeDetails = {
-    mnemonics: "taste expire day chair flower royal pelican keep dismiss flush fragile subway",
-    expiry: dayjs("2023-12-23T15:36:02.986Z").toDate(),
+    mnemonics: "work find deny moment uniform endless solve cigar position shy joke famous",
+    expiry: dayjs("2023-12-24T19:40:23.447Z").toDate(),
     enabled: true,
   }
 
