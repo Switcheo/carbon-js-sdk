@@ -486,11 +486,9 @@ export class CarbonWallet {
       broadcastOpts,
       handler: { resolve, reject },
     } = txRequest;
-    if (this.granteeDetails) {
-      const isAuthorized = messages.every((message) => authorizedSignlessMsgs.includes(message.typeUrl))
-      if (this.isGranteeValid() && isAuthorized) {
-        this.signWithGrantee(this.granteeDetails, txRequest)
-      }
+    const isAuthorized = messages.every((message) => authorizedSignlessMsgs.includes(message.typeUrl))
+    if (this.granteeDetails && this.isGranteeValid() && isAuthorized) {
+      this.signWithGrantee(this.granteeDetails, txRequest)
     } else {
       try {
         if (!this.accountInfo
