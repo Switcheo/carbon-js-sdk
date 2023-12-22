@@ -24,6 +24,21 @@ export interface ModuleAccount {
   permissions: string[];
 }
 
+/**
+ * ModuleCredential represents a unclaimable pubkey for base accounts controlled by modules.
+ *
+ * Since: cosmos-sdk 0.47
+ */
+export interface ModuleCredential {
+  /** module_name is the name of the module used for address derivation (passed into address.Module). */
+  moduleName: string;
+  /**
+   * derivation_keys is for deriving a module account address (passed into address.Module)
+   * adding more keys creates sub-account addresses (passed into address.Derive)
+   */
+  derivationKeys: Uint8Array[];
+}
+
 /** Params defines the parameters for the auth module. */
 export interface Params {
   maxMemoCharacters: Long;
@@ -226,6 +241,77 @@ export const ModuleAccount = {
   },
 };
 
+const baseModuleCredential: object = { moduleName: "" };
+
+export const ModuleCredential = {
+  encode(
+    message: ModuleCredential,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.moduleName !== "") {
+      writer.uint32(10).string(message.moduleName);
+    }
+    for (const v of message.derivationKeys) {
+      writer.uint32(18).bytes(v!);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ModuleCredential {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseModuleCredential } as ModuleCredential;
+    message.derivationKeys = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.moduleName = reader.string();
+          break;
+        case 2:
+          message.derivationKeys.push(reader.bytes());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ModuleCredential {
+    const message = { ...baseModuleCredential } as ModuleCredential;
+    message.moduleName =
+      object.moduleName !== undefined && object.moduleName !== null
+        ? String(object.moduleName)
+        : "";
+    message.derivationKeys = (object.derivationKeys ?? []).map((e: any) =>
+      bytesFromBase64(e)
+    );
+    return message;
+  },
+
+  toJSON(message: ModuleCredential): unknown {
+    const obj: any = {};
+    message.moduleName !== undefined && (obj.moduleName = message.moduleName);
+    if (message.derivationKeys) {
+      obj.derivationKeys = message.derivationKeys.map((e) =>
+        base64FromBytes(e !== undefined ? e : new Uint8Array())
+      );
+    } else {
+      obj.derivationKeys = [];
+    }
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<ModuleCredential>): ModuleCredential {
+    const message = { ...baseModuleCredential } as ModuleCredential;
+    message.moduleName = object.moduleName ?? "";
+    message.derivationKeys = (object.derivationKeys ?? []).map((e) => e);
+    return message;
+  },
+};
+
 const baseParams: object = {
   maxMemoCharacters: Long.UZERO,
   txSigLimit: Long.UZERO,
@@ -368,6 +454,40 @@ export const Params = {
     return message;
   },
 };
+
+declare var self: any | undefined;
+declare var window: any | undefined;
+declare var global: any | undefined;
+var globalThis: any = (() => {
+  if (typeof globalThis !== "undefined") return globalThis;
+  if (typeof self !== "undefined") return self;
+  if (typeof window !== "undefined") return window;
+  if (typeof global !== "undefined") return global;
+  throw "Unable to locate global object";
+})();
+
+const atob: (b64: string) => string =
+  globalThis.atob ||
+  ((b64) => globalThis.Buffer.from(b64, "base64").toString("binary"));
+function bytesFromBase64(b64: string): Uint8Array {
+  const bin = atob(b64);
+  const arr = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; ++i) {
+    arr[i] = bin.charCodeAt(i);
+  }
+  return arr;
+}
+
+const btoa: (bin: string) => string =
+  globalThis.btoa ||
+  ((bin) => globalThis.Buffer.from(bin, "binary").toString("base64"));
+function base64FromBytes(arr: Uint8Array): string {
+  const bin: string[] = [];
+  for (const byte of arr) {
+    bin.push(String.fromCharCode(byte));
+  }
+  return btoa(bin.join(""));
+}
 
 type Builtin =
   | Date

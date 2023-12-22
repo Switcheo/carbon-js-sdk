@@ -56,8 +56,10 @@ export enum BroadcastMode {
   /** BROADCAST_MODE_UNSPECIFIED - zero-value for mode ordering */
   BROADCAST_MODE_UNSPECIFIED = 0,
   /**
-   * BROADCAST_MODE_BLOCK - BROADCAST_MODE_BLOCK defines a tx broadcasting mode where the client waits for
-   * the tx to be committed in a block.
+   * BROADCAST_MODE_BLOCK - DEPRECATED: use BROADCAST_MODE_SYNC instead,
+   * BROADCAST_MODE_BLOCK is not supported by the SDK from v0.47.x onwards.
+   *
+   * @deprecated
    */
   BROADCAST_MODE_BLOCK = 1,
   /**
@@ -245,6 +247,90 @@ export interface GetBlockWithTxsResponse {
   block?: Block;
   /** pagination defines a pagination for the response. */
   pagination?: PageResponse;
+}
+
+/**
+ * TxDecodeRequest is the request type for the Service.TxDecode
+ * RPC method.
+ *
+ * Since: cosmos-sdk 0.47
+ */
+export interface TxDecodeRequest {
+  /** tx_bytes is the raw transaction. */
+  txBytes: Uint8Array;
+}
+
+/**
+ * TxDecodeResponse is the response type for the
+ * Service.TxDecode method.
+ *
+ * Since: cosmos-sdk 0.47
+ */
+export interface TxDecodeResponse {
+  /** tx is the decoded transaction. */
+  tx?: Tx;
+}
+
+/**
+ * TxEncodeRequest is the request type for the Service.TxEncode
+ * RPC method.
+ *
+ * Since: cosmos-sdk 0.47
+ */
+export interface TxEncodeRequest {
+  /** tx is the transaction to encode. */
+  tx?: Tx;
+}
+
+/**
+ * TxEncodeResponse is the response type for the
+ * Service.TxEncode method.
+ *
+ * Since: cosmos-sdk 0.47
+ */
+export interface TxEncodeResponse {
+  /** tx_bytes is the encoded transaction bytes. */
+  txBytes: Uint8Array;
+}
+
+/**
+ * TxEncodeAminoRequest is the request type for the Service.TxEncodeAmino
+ * RPC method.
+ *
+ * Since: cosmos-sdk 0.47
+ */
+export interface TxEncodeAminoRequest {
+  aminoJson: string;
+}
+
+/**
+ * TxEncodeAminoResponse is the response type for the Service.TxEncodeAmino
+ * RPC method.
+ *
+ * Since: cosmos-sdk 0.47
+ */
+export interface TxEncodeAminoResponse {
+  aminoBinary: Uint8Array;
+}
+
+/**
+ * TxDecodeAminoRequest is the request type for the Service.TxDecodeAmino
+ * RPC method.
+ *
+ * Since: cosmos-sdk 0.47
+ */
+export interface TxDecodeAminoRequest {
+  aminoBinary: Uint8Array;
+}
+
+/**
+ * TxDecodeAminoResponse is the response type for the Service.TxDecodeAmino
+ * RPC method.
+ *
+ * Since: cosmos-sdk 0.47
+ */
+export interface TxDecodeAminoResponse {
+  aminoJson: string;
 }
 
 const baseGetTxsEventRequest: object = {
@@ -1088,6 +1174,474 @@ export const GetBlockWithTxsResponse = {
   },
 };
 
+const baseTxDecodeRequest: object = {};
+
+export const TxDecodeRequest = {
+  encode(
+    message: TxDecodeRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.txBytes.length !== 0) {
+      writer.uint32(10).bytes(message.txBytes);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): TxDecodeRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseTxDecodeRequest } as TxDecodeRequest;
+    message.txBytes = new Uint8Array();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.txBytes = reader.bytes();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): TxDecodeRequest {
+    const message = { ...baseTxDecodeRequest } as TxDecodeRequest;
+    message.txBytes =
+      object.txBytes !== undefined && object.txBytes !== null
+        ? bytesFromBase64(object.txBytes)
+        : new Uint8Array();
+    return message;
+  },
+
+  toJSON(message: TxDecodeRequest): unknown {
+    const obj: any = {};
+    message.txBytes !== undefined &&
+      (obj.txBytes = base64FromBytes(
+        message.txBytes !== undefined ? message.txBytes : new Uint8Array()
+      ));
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<TxDecodeRequest>): TxDecodeRequest {
+    const message = { ...baseTxDecodeRequest } as TxDecodeRequest;
+    message.txBytes = object.txBytes ?? new Uint8Array();
+    return message;
+  },
+};
+
+const baseTxDecodeResponse: object = {};
+
+export const TxDecodeResponse = {
+  encode(
+    message: TxDecodeResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.tx !== undefined) {
+      Tx.encode(message.tx, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): TxDecodeResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseTxDecodeResponse } as TxDecodeResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.tx = Tx.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): TxDecodeResponse {
+    const message = { ...baseTxDecodeResponse } as TxDecodeResponse;
+    message.tx =
+      object.tx !== undefined && object.tx !== null
+        ? Tx.fromJSON(object.tx)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: TxDecodeResponse): unknown {
+    const obj: any = {};
+    message.tx !== undefined &&
+      (obj.tx = message.tx ? Tx.toJSON(message.tx) : undefined);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<TxDecodeResponse>): TxDecodeResponse {
+    const message = { ...baseTxDecodeResponse } as TxDecodeResponse;
+    message.tx =
+      object.tx !== undefined && object.tx !== null
+        ? Tx.fromPartial(object.tx)
+        : undefined;
+    return message;
+  },
+};
+
+const baseTxEncodeRequest: object = {};
+
+export const TxEncodeRequest = {
+  encode(
+    message: TxEncodeRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.tx !== undefined) {
+      Tx.encode(message.tx, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): TxEncodeRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseTxEncodeRequest } as TxEncodeRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.tx = Tx.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): TxEncodeRequest {
+    const message = { ...baseTxEncodeRequest } as TxEncodeRequest;
+    message.tx =
+      object.tx !== undefined && object.tx !== null
+        ? Tx.fromJSON(object.tx)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: TxEncodeRequest): unknown {
+    const obj: any = {};
+    message.tx !== undefined &&
+      (obj.tx = message.tx ? Tx.toJSON(message.tx) : undefined);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<TxEncodeRequest>): TxEncodeRequest {
+    const message = { ...baseTxEncodeRequest } as TxEncodeRequest;
+    message.tx =
+      object.tx !== undefined && object.tx !== null
+        ? Tx.fromPartial(object.tx)
+        : undefined;
+    return message;
+  },
+};
+
+const baseTxEncodeResponse: object = {};
+
+export const TxEncodeResponse = {
+  encode(
+    message: TxEncodeResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.txBytes.length !== 0) {
+      writer.uint32(10).bytes(message.txBytes);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): TxEncodeResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseTxEncodeResponse } as TxEncodeResponse;
+    message.txBytes = new Uint8Array();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.txBytes = reader.bytes();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): TxEncodeResponse {
+    const message = { ...baseTxEncodeResponse } as TxEncodeResponse;
+    message.txBytes =
+      object.txBytes !== undefined && object.txBytes !== null
+        ? bytesFromBase64(object.txBytes)
+        : new Uint8Array();
+    return message;
+  },
+
+  toJSON(message: TxEncodeResponse): unknown {
+    const obj: any = {};
+    message.txBytes !== undefined &&
+      (obj.txBytes = base64FromBytes(
+        message.txBytes !== undefined ? message.txBytes : new Uint8Array()
+      ));
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<TxEncodeResponse>): TxEncodeResponse {
+    const message = { ...baseTxEncodeResponse } as TxEncodeResponse;
+    message.txBytes = object.txBytes ?? new Uint8Array();
+    return message;
+  },
+};
+
+const baseTxEncodeAminoRequest: object = { aminoJson: "" };
+
+export const TxEncodeAminoRequest = {
+  encode(
+    message: TxEncodeAminoRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.aminoJson !== "") {
+      writer.uint32(10).string(message.aminoJson);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): TxEncodeAminoRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseTxEncodeAminoRequest } as TxEncodeAminoRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.aminoJson = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): TxEncodeAminoRequest {
+    const message = { ...baseTxEncodeAminoRequest } as TxEncodeAminoRequest;
+    message.aminoJson =
+      object.aminoJson !== undefined && object.aminoJson !== null
+        ? String(object.aminoJson)
+        : "";
+    return message;
+  },
+
+  toJSON(message: TxEncodeAminoRequest): unknown {
+    const obj: any = {};
+    message.aminoJson !== undefined && (obj.aminoJson = message.aminoJson);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<TxEncodeAminoRequest>): TxEncodeAminoRequest {
+    const message = { ...baseTxEncodeAminoRequest } as TxEncodeAminoRequest;
+    message.aminoJson = object.aminoJson ?? "";
+    return message;
+  },
+};
+
+const baseTxEncodeAminoResponse: object = {};
+
+export const TxEncodeAminoResponse = {
+  encode(
+    message: TxEncodeAminoResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.aminoBinary.length !== 0) {
+      writer.uint32(10).bytes(message.aminoBinary);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): TxEncodeAminoResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseTxEncodeAminoResponse } as TxEncodeAminoResponse;
+    message.aminoBinary = new Uint8Array();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.aminoBinary = reader.bytes();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): TxEncodeAminoResponse {
+    const message = { ...baseTxEncodeAminoResponse } as TxEncodeAminoResponse;
+    message.aminoBinary =
+      object.aminoBinary !== undefined && object.aminoBinary !== null
+        ? bytesFromBase64(object.aminoBinary)
+        : new Uint8Array();
+    return message;
+  },
+
+  toJSON(message: TxEncodeAminoResponse): unknown {
+    const obj: any = {};
+    message.aminoBinary !== undefined &&
+      (obj.aminoBinary = base64FromBytes(
+        message.aminoBinary !== undefined
+          ? message.aminoBinary
+          : new Uint8Array()
+      ));
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<TxEncodeAminoResponse>
+  ): TxEncodeAminoResponse {
+    const message = { ...baseTxEncodeAminoResponse } as TxEncodeAminoResponse;
+    message.aminoBinary = object.aminoBinary ?? new Uint8Array();
+    return message;
+  },
+};
+
+const baseTxDecodeAminoRequest: object = {};
+
+export const TxDecodeAminoRequest = {
+  encode(
+    message: TxDecodeAminoRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.aminoBinary.length !== 0) {
+      writer.uint32(10).bytes(message.aminoBinary);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): TxDecodeAminoRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseTxDecodeAminoRequest } as TxDecodeAminoRequest;
+    message.aminoBinary = new Uint8Array();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.aminoBinary = reader.bytes();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): TxDecodeAminoRequest {
+    const message = { ...baseTxDecodeAminoRequest } as TxDecodeAminoRequest;
+    message.aminoBinary =
+      object.aminoBinary !== undefined && object.aminoBinary !== null
+        ? bytesFromBase64(object.aminoBinary)
+        : new Uint8Array();
+    return message;
+  },
+
+  toJSON(message: TxDecodeAminoRequest): unknown {
+    const obj: any = {};
+    message.aminoBinary !== undefined &&
+      (obj.aminoBinary = base64FromBytes(
+        message.aminoBinary !== undefined
+          ? message.aminoBinary
+          : new Uint8Array()
+      ));
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<TxDecodeAminoRequest>): TxDecodeAminoRequest {
+    const message = { ...baseTxDecodeAminoRequest } as TxDecodeAminoRequest;
+    message.aminoBinary = object.aminoBinary ?? new Uint8Array();
+    return message;
+  },
+};
+
+const baseTxDecodeAminoResponse: object = { aminoJson: "" };
+
+export const TxDecodeAminoResponse = {
+  encode(
+    message: TxDecodeAminoResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.aminoJson !== "") {
+      writer.uint32(10).string(message.aminoJson);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): TxDecodeAminoResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseTxDecodeAminoResponse } as TxDecodeAminoResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.aminoJson = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): TxDecodeAminoResponse {
+    const message = { ...baseTxDecodeAminoResponse } as TxDecodeAminoResponse;
+    message.aminoJson =
+      object.aminoJson !== undefined && object.aminoJson !== null
+        ? String(object.aminoJson)
+        : "";
+    return message;
+  },
+
+  toJSON(message: TxDecodeAminoResponse): unknown {
+    const obj: any = {};
+    message.aminoJson !== undefined && (obj.aminoJson = message.aminoJson);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<TxDecodeAminoResponse>
+  ): TxDecodeAminoResponse {
+    const message = { ...baseTxDecodeAminoResponse } as TxDecodeAminoResponse;
+    message.aminoJson = object.aminoJson ?? "";
+    return message;
+  },
+};
+
 /** Service defines a gRPC service for interacting with transactions. */
 export interface Service {
   /** Simulate simulates executing a transaction for estimating gas usage. */
@@ -1106,6 +1660,30 @@ export interface Service {
   GetBlockWithTxs(
     request: GetBlockWithTxsRequest
   ): Promise<GetBlockWithTxsResponse>;
+  /**
+   * TxDecode decodes the transaction.
+   *
+   * Since: cosmos-sdk 0.47
+   */
+  TxDecode(request: TxDecodeRequest): Promise<TxDecodeResponse>;
+  /**
+   * TxEncode encodes the transaction.
+   *
+   * Since: cosmos-sdk 0.47
+   */
+  TxEncode(request: TxEncodeRequest): Promise<TxEncodeResponse>;
+  /**
+   * TxEncodeAmino encodes an Amino transaction from JSON to encoded bytes.
+   *
+   * Since: cosmos-sdk 0.47
+   */
+  TxEncodeAmino(request: TxEncodeAminoRequest): Promise<TxEncodeAminoResponse>;
+  /**
+   * TxDecodeAmino decodes an Amino transaction from encoded bytes to JSON.
+   *
+   * Since: cosmos-sdk 0.47
+   */
+  TxDecodeAmino(request: TxDecodeAminoRequest): Promise<TxDecodeAminoResponse>;
 }
 
 export class ServiceClientImpl implements Service {
@@ -1117,6 +1695,10 @@ export class ServiceClientImpl implements Service {
     this.BroadcastTx = this.BroadcastTx.bind(this);
     this.GetTxsEvent = this.GetTxsEvent.bind(this);
     this.GetBlockWithTxs = this.GetBlockWithTxs.bind(this);
+    this.TxDecode = this.TxDecode.bind(this);
+    this.TxEncode = this.TxEncode.bind(this);
+    this.TxEncodeAmino = this.TxEncodeAmino.bind(this);
+    this.TxDecodeAmino = this.TxDecodeAmino.bind(this);
   }
   Simulate(request: SimulateRequest): Promise<SimulateResponse> {
     const data = SimulateRequest.encode(request).finish();
@@ -1175,6 +1757,54 @@ export class ServiceClientImpl implements Service {
     );
     return promise.then((data) =>
       GetBlockWithTxsResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  TxDecode(request: TxDecodeRequest): Promise<TxDecodeResponse> {
+    const data = TxDecodeRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "cosmos.tx.v1beta1.Service",
+      "TxDecode",
+      data
+    );
+    return promise.then((data) =>
+      TxDecodeResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  TxEncode(request: TxEncodeRequest): Promise<TxEncodeResponse> {
+    const data = TxEncodeRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "cosmos.tx.v1beta1.Service",
+      "TxEncode",
+      data
+    );
+    return promise.then((data) =>
+      TxEncodeResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  TxEncodeAmino(request: TxEncodeAminoRequest): Promise<TxEncodeAminoResponse> {
+    const data = TxEncodeAminoRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "cosmos.tx.v1beta1.Service",
+      "TxEncodeAmino",
+      data
+    );
+    return promise.then((data) =>
+      TxEncodeAminoResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  TxDecodeAmino(request: TxDecodeAminoRequest): Promise<TxDecodeAminoResponse> {
+    const data = TxDecodeAminoRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "cosmos.tx.v1beta1.Service",
+      "TxDecodeAmino",
+      data
+    );
+    return promise.then((data) =>
+      TxDecodeAminoResponse.decode(new _m0.Reader(data))
     );
   }
 }

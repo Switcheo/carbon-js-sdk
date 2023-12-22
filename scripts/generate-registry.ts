@@ -13,7 +13,7 @@ const prefixCarbonDir = (m: string) => `Switcheo/carbon/${m}`;
 const polynetworkFolders = ['btcx', 'ccm', 'headersync', 'lockproxy'];
 
 const carbonFolders = ['admin', 'bank', 'book', 'broker', 'cdp', 'coin',
-  'erc20', 'evmbank', ' evmmerge', 'fee', 'inflation', 'insurance', 'leverage', 'liquidation',
+  'erc20', 'evmbank', 'evmcontract', 'evmmerge', 'fee', 'inflation', 'insurance', 'leverage', 'liquidation',
   'liquiditypool', 'market', 'marketstats', 'misc', 'oracle', 'order', 'perpspool',
   'position', 'pricing', 'profile', 'sequence', 'subaccount'];
 
@@ -39,7 +39,7 @@ for (const moduleFile of codecFiles) {
 
   const codecModule = require(`${pwd}/${moduleFile}`);
   const messages = Object.keys(codecModule).filter((key) => {
-    return (key.startsWith("Msg") && key !== "MsgClientImpl") || key.startsWith("Header") || key.endsWith("Proposal")
+    return (key.startsWith("Msg") && key !== "MsgClientImpl" && !key.startsWith("MsgUpdateParams")) || key.startsWith("Header") || key.endsWith("Proposal")
   });
 
   if (messages.length) {
@@ -56,7 +56,7 @@ for (const moduleFile of codecFiles) {
       || moduleFile.includes('src/codec/Switcheo/carbon/ccm/')
       || moduleFile.includes('src/codec/Switcheo/carbon/headersync/')
       || moduleFile.includes('src/codec/Switcheo/carbon/lockproxy/')
-      || moduleFile.includes('src/codec/alliance/')
+      || moduleFile.includes('src/codec/alliance/alliance/')
       || carbonFolders.some(carbonModule => moduleFile.includes("src/codec/Switcheo/carbon/" + carbonModule))
     )) {
       updateImportsAlias(messages, codecModule.protobufPackage)
@@ -148,7 +148,7 @@ const directoryBlacklist = ['cosmos', 'ibc', 'tendermint', 'btcx', 'ccm', 'heade
 const fileNameBlacklist = ['genesis.ts', 'keys.ts']
 
 
-const modelBlacklist: string[] = ['MsgClientImpl', 'protobufPackage', 'GenesisState', 'QueryClientImpl'];
+const modelBlacklist: string[] = ['MsgClientImpl', 'protobufPackage', 'GenesisState', 'QueryClientImpl', 'Params', 'MsgUpdateParams', 'MsgUpdateParamsResponse'];
 
 for (const moduleFile of codecFiles) {
   if (!moduleFile.endsWith(".ts")) {
