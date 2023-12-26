@@ -3,22 +3,17 @@ import { MsgGrant } from "@carbon-sdk/codec/cosmos/authz/v1beta1/tx";
 import { CarbonTx } from "@carbon-sdk/util";
 
 import { GenericAuthorization } from "@carbon-sdk/codec/cosmos/authz/v1beta1/authz";
+import { AuthorizedSignlessMSgs } from "@carbon-sdk/constant/signless";
 import { BasicAllowance } from "@carbon-sdk/codec/cosmos/feegrant/v1beta1/feegrant";
 import { MsgGrantAllowance } from "@carbon-sdk/codec/cosmos/feegrant/v1beta1/tx";
 import BaseModule from "./base";
 import { Coin } from "@carbon-sdk/codec/cosmos/base/v1beta1/coin";
 
-export const authorizedSignlessMsgs = [
-  "/Switcheo.carbon.order.MsgCreateOrder",
-  "/Switcheo.carbon.order.MsgEditOrder",
-  "/Switcheo.carbon.order.MsgCancelOrder",
-]
-
 export class SignlessModule extends BaseModule {
   public async grantSignlessPermission(params: SignlessModule.GrantSignlessPermissionParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet()
 
-    const encodedGrantMsgs = authorizedSignlessMsgs.map((msg) => {
+    const encodedGrantMsgs = AuthorizedSignlessMSgs.map((msg) => {
       const grantMsg = MsgGrant.fromPartial({
         granter: params.granter ?? wallet.bech32Address,
         grantee: params.grantee,

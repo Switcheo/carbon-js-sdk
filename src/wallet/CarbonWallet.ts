@@ -1,11 +1,12 @@
 import { CarbonQueryClient } from "@carbon-sdk/clients";
+import GasFee from "@carbon-sdk/clients/GasFee";
 import { MsgMergeAccount, registry } from "@carbon-sdk/codec";
 import { BaseAccount } from "@carbon-sdk/codec/cosmos/auth/v1beta1/auth";
 import { MsgExec } from "@carbon-sdk/codec/cosmos/authz/v1beta1/tx";
 import { ExtensionOptionsWeb3Tx } from "@carbon-sdk/codec/ethermint/types/v1/web3";
 import { CarbonEvmChainIDs, DEFAULT_FEE_DENOM, DEFAULT_GAS, DEFAULT_NETWORK, Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
+import { AuthorizedSignlessMSgs } from "@carbon-sdk/constant/signless";
 import { ProviderAgent } from "@carbon-sdk/constant/walletProvider";
-import { authorizedSignlessMsgs } from "@carbon-sdk/modules/signless";
 import { ChainInfo, CosmosLedger, Keplr, KeplrAccount, LeapAccount, MetaMask } from "@carbon-sdk/provider";
 import { AddressUtils, CarbonTx, GenericUtils } from "@carbon-sdk/util";
 import { ETHAddress, NEOAddress, SWTHAddress, SWTHAddressOptions } from "@carbon-sdk/util/address";
@@ -15,7 +16,7 @@ import { fetch } from "@carbon-sdk/util/fetch";
 import { QueueManager } from "@carbon-sdk/util/generic";
 import { bnOrZero, BN_ZERO } from "@carbon-sdk/util/number";
 import { BroadcastTxMode, CarbonCustomError, CarbonSignerData, ErrorType } from "@carbon-sdk/util/tx";
-import { StdSignature, encodeSecp256k1Signature } from "@cosmjs/amino";
+import { encodeSecp256k1Signature, StdSignature } from "@cosmjs/amino";
 import { EncodeObject, OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
 import { Account, DeliverTxResponse, isDeliverTxFailure, TimeoutError } from "@cosmjs/stargate";
 import { Tendermint37Client } from "@cosmjs/tendermint-rpc";
@@ -24,12 +25,11 @@ import { sleep } from "@cosmjs/utils";
 import { Key as LeapKey } from "@cosmos-kit/core";
 import { Leap } from "@cosmos-kit/leap";
 import { Key } from "@keplr-wallet/types";
-import { TxRaw as StargateTxRaw, TxBody } from "cosmjs-types/cosmos/tx/v1beta1/tx";
+import { TxBody, TxRaw as StargateTxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import dayjs from "dayjs";
 import { CarbonSDK } from "..";
 import { CarbonEIP712Signer, CarbonLedgerSigner, CarbonNonSigner, CarbonPrivateKeySigner, CarbonSigner, CarbonSignerTypes, isCarbonEIP712Signer } from "./CarbonSigner";
 import { CarbonSigningClient } from "./CarbonSigningClient";
-import GasFee from "@carbon-sdk/clients/GasFee";
 
 export interface CarbonWalletGenericOpts {
   tmClient?: Tendermint37Client;
@@ -486,7 +486,7 @@ export class CarbonWallet {
       broadcastOpts,
       handler: { resolve, reject },
     } = txRequest;
-    const isAuthorized = messages.every((message) => authorizedSignlessMsgs.includes(message.typeUrl))
+    const isAuthorized = messages.every((message) => AuthorizedSignlessMSgs.includes(message.typeUrl))
     if (this.granteeDetails && this.isGranteeValid() && isAuthorized) {
       this.signWithGrantee(this.granteeDetails, txRequest)
     } else {
