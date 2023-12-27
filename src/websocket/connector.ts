@@ -258,9 +258,9 @@ export class WSConnector {
     for (const param of params as WSConnectorTypes.WsSubscriptionParams[]) {
       const channelId = generateChannelId(param);
       const shouldSubscribe = this.channelHandlers[channelId] === undefined;
-      this.channelHandlers[channelId] = handler;
 
       if (shouldSubscribe && channelId.length > 0) {
+        this.channelHandlers[channelId] = handler;
         channels.push(channelId);
       }
     }
