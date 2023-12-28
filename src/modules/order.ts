@@ -181,6 +181,8 @@ export namespace OrderModule {
     /** commission percents, input 10 for 10% */
     referralCommission?: number;
     referralKickback?: number;
+    /** default leverage to 3x for new trades */
+    leverage?: BigNumber;
   }
 
   export interface EditOrderParams {
