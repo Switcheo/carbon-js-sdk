@@ -3,11 +3,10 @@ import { MsgGrant } from "@carbon-sdk/codec/cosmos/authz/v1beta1/tx";
 import { CarbonTx } from "@carbon-sdk/util";
 
 import { GenericAuthorization } from "@carbon-sdk/codec/cosmos/authz/v1beta1/authz";
-import { AuthorizedSignlessMSgs } from "@carbon-sdk/constant/signless";
 import { BasicAllowance } from "@carbon-sdk/codec/cosmos/feegrant/v1beta1/feegrant";
 import { MsgGrantAllowance } from "@carbon-sdk/codec/cosmos/feegrant/v1beta1/tx";
+import { AuthorizedSignlessMSgs } from "@carbon-sdk/constant/signless";
 import BaseModule from "./base";
-import { Coin } from "@carbon-sdk/codec/cosmos/base/v1beta1/coin";
 
 export class SignlessModule extends BaseModule {
   public async grantSignlessPermission(params: SignlessModule.GrantSignlessPermissionParams, opts?: CarbonTx.SignTxOpts) {
@@ -33,13 +32,6 @@ export class SignlessModule extends BaseModule {
     })
     let messages = encodedGrantMsgs
     if (!params.existingGrantee) {
-      const tokenAllResult = await this.sdkProvider.query.coin.TokenAll({})
-      const coinArray: Coin[] = tokenAllResult.tokens.map((token) => {
-        return {
-          denom: token.denom,
-          amount: '1000000000000000000000000000',
-        }
-      })
       const encodedAllowanceMsg = [{
         typeUrl: CarbonTx.Types.MsgGrantAllowance,
         value: MsgGrantAllowance.fromPartial({
@@ -48,7 +40,6 @@ export class SignlessModule extends BaseModule {
           allowance: {
             typeUrl: '/cosmos.feegrant.v1beta1.BasicAllowance',
             value: BasicAllowance.encode(BasicAllowance.fromPartial({
-              spendLimit: coinArray,
               expiration: params.expiry,
             })).finish(),
           },
