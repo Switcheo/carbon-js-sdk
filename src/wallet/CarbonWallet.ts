@@ -353,7 +353,8 @@ export class CarbonWallet {
     signerAddress: string,
     messages: readonly EncodeObject[],
     sequence: number,
-    opts: Omit<CarbonTx.SignTxOpts, "sequence">
+    opts: Omit<CarbonTx.SignTxOpts, "sequence">,
+    granterAddress?: string
   ): Promise<CarbonWallet.TxRaw> {
     const { memo = "", accountNumber, explicitSignerData, feeDenom } = opts;
     const signingClient = this.getSigningClient();
@@ -371,7 +372,6 @@ export class CarbonWallet {
         ...explicitSignerData,
         evmChainId,
       };
-      const granterAddress = this.bech32Address !== signerAddress ? this.bech32Address : undefined
       const fee = opts?.fee ?? this.estimateTxFee(messages, feeDenom);
       const txRaw = await signingClient.sign(signerAddress, messages, fee, memo, signerData, granterAddress);
       let sig;
@@ -594,7 +594,7 @@ export class CarbonWallet {
           ...signOpts?.explicitSignerData,
         },
       }
-      const signedTx = await instanceWithGrantee.wallet.getSignedTx(granteeAddress, msgExecMessage, sequence, _signOpts)
+      const signedTx = await instanceWithGrantee.wallet.getSignedTx(granteeAddress, msgExecMessage, sequence, _signOpts, this.bech32Address)
 
       instanceWithGrantee.wallet.txDispatchManager.enqueue({
         reattempts,
