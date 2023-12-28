@@ -27,13 +27,32 @@ export class OrderModule extends BaseModule {
       referralKickback: params.referralKickback,
     });
 
-    return await wallet.sendTx(
-      {
-        typeUrl: CarbonTx.Types.MsgCreateOrder,
-        value,
-      },
-      opts
-    );
+    if (params.setLeverage) {
+      return await wallet.sendTxs([
+        {
+          typeUrl: CarbonTx.Types.MsgCreateOrder,
+          value,
+        },
+        {
+          typeUrl: CarbonTx.Types.MsgSetLeverage,
+          value: {
+            creator: wallet.bech32Address,
+            market: params.market,
+            leverage: params.setLeverage.shiftedBy(18).toString(10),
+          },
+        },
+      ], opts
+      )
+    } else {
+
+      return await wallet.sendTx(
+        {
+          typeUrl: CarbonTx.Types.MsgCreateOrder,
+          value,
+        },
+        opts
+      );
+    }
   }
 
   public async createOrders(params: OrderModule.CreateOrderParams[], opts?: CarbonTx.SignTxOpts) {
@@ -182,7 +201,7 @@ export namespace OrderModule {
     referralCommission?: number;
     referralKickback?: number;
     /** default leverage to 3x for new trades */
-    leverage?: BigNumber;
+    setLeverage?: BigNumber;
   }
 
   export interface EditOrderParams {
