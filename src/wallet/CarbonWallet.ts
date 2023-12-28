@@ -371,9 +371,9 @@ export class CarbonWallet {
         ...explicitSignerData,
         evmChainId,
       };
-
+      const granterAddress = this.bech32Address !== signerAddress ? this.bech32Address : undefined
       const fee = opts?.fee ?? this.estimateTxFee(messages, feeDenom);
-      const txRaw = await signingClient.sign(signerAddress, messages, fee, memo, signerData);
+      const txRaw = await signingClient.sign(signerAddress, messages, fee, memo, signerData, granterAddress);
       let sig;
       if (isCarbonEIP712Signer(this.signer)) {
         if ((this.signer as CarbonEIP712Signer).legacyEip712SignMode) {

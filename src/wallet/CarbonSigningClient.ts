@@ -119,13 +119,14 @@ export class CarbonSigningClient extends StargateClient {
     fee: StdFee,
     memo: string,
     signerData: CarbonSignerData,
+    granterAddress?: string
   ): Promise<TxRaw> {
     if (isCarbonEIP712Signer(this.signer) && (this.signer as CarbonEIP712Signer).legacyEip712SignMode) {
       return this.signLegacyEip712(signerAddress, messages, fee, memo, signerData)
     }
     return isOfflineDirectSigner(this.signer)
-      ? this.signDirect(signerAddress, messages, fee, memo, signerData)
-      : this.signAmino(signerAddress, messages, fee, memo, signerData);
+      ? this.signDirect(signerAddress, messages, fee, memo, signerData, granterAddress)
+      : this.signAmino(signerAddress, messages, fee, memo, signerData, granterAddress);
   }
 
   private async signDirect(
@@ -134,6 +135,7 @@ export class CarbonSigningClient extends StargateClient {
     fee: StdFee,
     memo: string,
     { accountNumber, sequence, chainId, timeoutHeight }: CarbonSignerData,
+    granterAddress?: string,
   ): Promise<TxRaw> {
     const signer = this.signer as OfflineDirectSigner;
     const accountFromSigner = (await this.signer.getAccounts()).find((account) => account.address === signerAddress);
@@ -154,7 +156,7 @@ export class CarbonSigningClient extends StargateClient {
     };
     const txBodyBytes = this.registry.encode(txBodyEncodeObject);
     const gasLimit = Int53.fromString(fee.gas).toNumber();
-    const authInfoBytes = makeAuthInfoBytes([{ pubkey, sequence }], fee.amount, gasLimit, undefined, undefined);
+    const authInfoBytes = makeAuthInfoBytes([{ pubkey, sequence }], fee.amount, gasLimit, granterAddress, (granterAddress ? signerAddress : undefined));
     const signDoc = makeSignDoc(txBodyBytes, authInfoBytes, chainId, accountNumber);
     const { signature, signed } = await signer.signDirect(signerAddress, signDoc);
     return TxRaw.fromPartial({
@@ -169,7 +171,8 @@ export class CarbonSigningClient extends StargateClient {
     messages: readonly EncodeObject[],
     fee: StdFee,
     memo: string,
-    { accountNumber, sequence, chainId, timeoutHeight }: CarbonSignerData
+    { accountNumber, sequence, chainId, timeoutHeight }: CarbonSignerData,
+    granterAddress?: string
   ): Promise<TxRaw> {
     const signer = this.signer as OfflineAminoSigner;
 
@@ -197,7 +200,7 @@ export class CarbonSigningClient extends StargateClient {
     const signedTxBodyBytes = this.registry.encode(signedTxBodyEncodeObject);
     const signedGasLimit = Int53.fromString(signed.fee.gas).toNumber();
     const signedSequence = Int53.fromString(signed.sequence).toNumber();
-    const signedAuthInfoBytes = makeAuthInfoBytes([{ pubkey, sequence: signedSequence }], signed.fee.amount, signedGasLimit, undefined, undefined, signMode);
+    const signedAuthInfoBytes = makeAuthInfoBytes([{ pubkey, sequence: signedSequence }], signed.fee.amount, signedGasLimit, granterAddress, (granterAddress ? signerAddress : undefined), signMode);
     return TxRaw.fromPartial({
       bodyBytes: signedTxBodyBytes,
       authInfoBytes: signedAuthInfoBytes,
@@ -211,6 +214,7 @@ export class CarbonSigningClient extends StargateClient {
     fee: StdFee,
     memo: string,
     { accountNumber, sequence, evmChainId }: CarbonSignerData,
+    granterAddress?: string,
   ): Promise<TxRaw> {
     if (!evmChainId) {
       throw new Error("evmChainId required for legacyEip712 tx");
@@ -233,7 +237,7 @@ export class CarbonSigningClient extends StargateClient {
     }
     const signedGasLimit = Int53.fromString(signed.fee.gas).toNumber();
     const signedSequence = Int53.fromString(signed.sequence).toNumber();
-    const signedAuthInfoBytes = makeAuthInfoBytes([{ pubkey, sequence: signedSequence }], signed.fee.amount, signedGasLimit, undefined, undefined, signMode);
+    const signedAuthInfoBytes = makeAuthInfoBytes([{ pubkey, sequence: signedSequence }], signed.fee.amount, signedGasLimit, granterAddress, (granterAddress ? signerAddress : undefined), signMode);
 
     const signedTxBody = {
       messages: signed.msgs.map((msg) => this.aminoTypes.fromAmino(msg)),
