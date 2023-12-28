@@ -30,16 +30,16 @@ export class OrderModule extends BaseModule {
     if (params.setLeverage) {
       return await wallet.sendTxs([
         {
-          typeUrl: CarbonTx.Types.MsgCreateOrder,
-          value,
-        },
-        {
           typeUrl: CarbonTx.Types.MsgSetLeverage,
           value: {
             creator: wallet.bech32Address,
             market: params.market,
             leverage: params.setLeverage.shiftedBy(18).toString(10),
           },
+        },
+        {
+          typeUrl: CarbonTx.Types.MsgCreateOrder,
+          value,
         },
       ], opts
       )
