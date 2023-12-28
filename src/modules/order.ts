@@ -44,7 +44,6 @@ export class OrderModule extends BaseModule {
       ], opts
       )
     } else {
-
       return await wallet.sendTx(
         {
           typeUrl: CarbonTx.Types.MsgCreateOrder,
