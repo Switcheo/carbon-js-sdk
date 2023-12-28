@@ -43,15 +43,14 @@ export class OrderModule extends BaseModule {
         },
       ], opts
       )
-    } else {
-      return await wallet.sendTx(
-        {
-          typeUrl: CarbonTx.Types.MsgCreateOrder,
-          value,
-        },
-        opts
-      );
     }
+    return await wallet.sendTx(
+      {
+        typeUrl: CarbonTx.Types.MsgCreateOrder,
+        value,
+      },
+      opts
+    );
   }
 
   public async createOrders(params: OrderModule.CreateOrderParams[], opts?: CarbonTx.SignTxOpts) {
@@ -199,7 +198,10 @@ export namespace OrderModule {
     /** commission percents, input 10 for 10% */
     referralCommission?: number;
     referralKickback?: number;
-    /** default leverage to 3x for new trades */
+    /** leverage for new trades is defaulted to 3x.
+     * this helps order creator to set leverage for the current market
+     * if unset, previously-set leverage will be used
+    */
     setLeverage?: BigNumber;
   }
 
