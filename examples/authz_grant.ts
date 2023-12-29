@@ -11,7 +11,7 @@ import "./_setup";
   console.log("mnemonics:", mnemonics);
 
   const sdk = await CarbonSDK.instance({
-    network: CarbonSDK.Network.TestNet,
+    network: CarbonSDK.Network.LocalHost,
     config: {
       tmRpcUrl: process.env.TRPC_ENDPOINT,
     },
@@ -21,7 +21,7 @@ import "./_setup";
 
   const randomMnemonics = randomMnemonic()
 
-  const sdkInstance = await CarbonSDK.instanceWithMnemonic(randomMnemonics, { network: CarbonSDK.Network.TestNet })
+  const sdkInstance = await CarbonSDK.instanceWithMnemonic(randomMnemonics, { network: CarbonSDK.Network.LocalHost })
   const grantee = sdkInstance?.wallet?.bech32Address ?? ''
   const expiry: Date = dayjs().add(60, "hours").toDate()
   const params = {
@@ -31,7 +31,7 @@ import "./_setup";
   }
 
   const result = await connectedSDK.signless.grantSignlessPermission(params);
-  console.log('xx', randomMnemonics, grantee, expiry)
+  console.log('xx', randomMnemonics, connectedSDK?.wallet.bech32Address, grantee, expiry)
   console.log(result)
 
   const queryParams = {

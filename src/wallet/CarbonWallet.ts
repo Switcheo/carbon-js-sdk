@@ -5,7 +5,7 @@ import { BaseAccount } from "@carbon-sdk/codec/cosmos/auth/v1beta1/auth";
 import { MsgExec } from "@carbon-sdk/codec/cosmos/authz/v1beta1/tx";
 import { ExtensionOptionsWeb3Tx } from "@carbon-sdk/codec/ethermint/types/v1/web3";
 import { CarbonEvmChainIDs, DEFAULT_FEE_DENOM, DEFAULT_GAS, DEFAULT_NETWORK, Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
-import { AuthorizedSignlessMSgs } from "@carbon-sdk/constant/signless";
+import { AuthorizedSignlessMsgs, AUTHORIZED_SINGNLESS_MSGS_VERSION } from "@carbon-sdk/constant/signless";
 import { ProviderAgent } from "@carbon-sdk/constant/walletProvider";
 import { ChainInfo, CosmosLedger, Keplr, KeplrAccount, LeapAccount, MetaMask } from "@carbon-sdk/provider";
 import { AddressUtils, CarbonTx, GenericUtils } from "@carbon-sdk/util";
@@ -115,6 +115,7 @@ export interface GranteeDetails {
   enabled: boolean;
   expiry: Date;
   mnemonics: string;
+  authMsgsVersion: number;
 }
 
 interface PromiseHandler<T> {
@@ -335,10 +336,11 @@ export class CarbonWallet {
 
   private isGranteeValid(): boolean {
     if (!this.granteeDetails) return false
-    const { expiry, enabled } = this.granteeDetails
+    const { expiry, enabled, authMsgsVersion } = this.granteeDetails
     const bufferPeriod = 60
     const hasNotExpired = dayjs().subtract(bufferPeriod, 'seconds').unix() < dayjs(expiry).unix()
-    return hasNotExpired && enabled
+    const versionUpToDate = authMsgsVersion === AUTHORIZED_SINGNLESS_MSGS_VERSION
+    return hasNotExpired && enabled && versionUpToDate
   }
 
   public updateNetwork(network: Network): CarbonWallet {
@@ -486,7 +488,7 @@ export class CarbonWallet {
       broadcastOpts,
       handler: { resolve, reject },
     } = txRequest;
-    const isAuthorized = messages.every((message) => AuthorizedSignlessMSgs.includes(message.typeUrl))
+    const isAuthorized = messages.every((message) => AuthorizedSignlessMsgs.includes(message.typeUrl))
     if (this.granteeDetails && this.isGranteeValid() && isAuthorized) {
       this.signWithGrantee(this.granteeDetails, txRequest)
     } else {

@@ -2,8 +2,6 @@ import { BigNumber } from "bignumber.js";
 import * as BIP39 from "bip39";
 import dayjs from "dayjs";
 import { OrderModule } from "../lib";
-import { MsgCreateOrder } from "../lib/codec/order/tx";
-import { CarbonTx } from "../lib/util";
 import { CarbonSDK } from "./_sdk";
 import "./_setup";
 
@@ -12,7 +10,7 @@ import "./_setup";
   console.log("mnemonics", mnemonics);
 
   const sdk = await CarbonSDK.instance({
-    network: CarbonSDK.Network.TestNet,
+    network: CarbonSDK.Network.LocalHost,
     config: {
       tmRpcUrl: process.env.TRPC_ENDPOINT,
     },
@@ -22,8 +20,8 @@ import "./_setup";
 
   // need to update this if expired and run authz_grant.ts to generate new grantee acc
   const granteeDetails = {
-    mnemonics: "work find deny moment uniform endless solve cigar position shy joke famous",
-    expiry: dayjs("2023-12-24T19:40:23.447Z").toDate(),
+    mnemonics: "pluck brief steel siren dash snack sheriff panic auto potato poet job",
+    expiry: dayjs("2023-12-31T15:52:38.920Z").toDate(),
     enabled: true,
   }
 
