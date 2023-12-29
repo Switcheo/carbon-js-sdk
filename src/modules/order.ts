@@ -4,6 +4,8 @@ import { BN_ZERO } from "@carbon-sdk/util/number";
 import { BigNumber } from "bignumber.js";
 import BaseModule from "./base";
 import { getDefaultTimeInForce, isMarket } from "@carbon-sdk/util/order";
+import { EncodeObject } from "@cosmjs/proto-signing";
+
 
 export class OrderModule extends BaseModule {
 
@@ -55,8 +57,9 @@ export class OrderModule extends BaseModule {
 
   public async createOrders(params: OrderModule.CreateOrderParams[], opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
+    let leverage: BigNumber = new BigNumber(NaN)
 
-    const msgs = params.map((params) => {
+    const msgs: EncodeObject[] = params.map((params) => {
       const value = MsgCreateOrder.fromPartial({
         creator: wallet.bech32Address,
         isPostOnly: params.isPostOnly,
@@ -74,11 +77,25 @@ export class OrderModule extends BaseModule {
         referralKickback: params.referralKickback,
       });
 
+      if (params.setLeverage) {
+        leverage = params.setLeverage
+      }
       return {
         typeUrl: CarbonTx.Types.MsgCreateOrder,
         value,
       };
     });
+
+    if (!leverage.isNaN()) {
+      msgs.unshift({
+        typeUrl: CarbonTx.Types.MsgSetLeverage,
+        value: {
+          creator: wallet.bech32Address,
+          market: params[0].market,
+          leverage: leverage.shiftedBy(18).toString(10),
+        },
+      })
+    }
 
     return await wallet.sendTxs(msgs, opts);
   }
