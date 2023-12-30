@@ -57,7 +57,6 @@ export class OrderModule extends BaseModule {
 
   public async createOrders(params: OrderModule.CreateOrderParams[], opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
-    let leverage: BigNumber = new BigNumber(NaN)
 
     const msgs: EncodeObject[] = params.map((params) => {
       const value = MsgCreateOrder.fromPartial({
@@ -77,16 +76,14 @@ export class OrderModule extends BaseModule {
         referralKickback: params.referralKickback,
       });
 
-      if (params.setLeverage) {
-        leverage = params.setLeverage
-      }
       return {
         typeUrl: CarbonTx.Types.MsgCreateOrder,
         value,
       };
     });
 
-    if (!leverage.isNaN()) {
+    if (params[0].setLeverage) {
+      const leverage = params[0].setLeverage
       msgs.unshift({
         typeUrl: CarbonTx.Types.MsgSetLeverage,
         value: {
