@@ -34,7 +34,6 @@ import "./_setup";
 
   const result = await connectedSDK.signless.grantSignlessPermission(params);
   // Copy the following to populate the params in _test-signless-create-order.ts
-  console.log(randomMnemonics, connectedSDK?.wallet.bech32Address, grantee, expiry)
   console.log(result)
 
   const queryParams = {

@@ -1,7 +1,9 @@
 import { BigNumber } from "bignumber.js";
 import * as BIP39 from "bip39";
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
 import { OrderModule } from "../lib";
+import { randomMnemonic } from "../lib/util/address";
 import { CarbonSDK } from "./_sdk";
 import "./_setup";
 
@@ -18,11 +20,28 @@ import "./_setup";
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
 
-  // need to update this if expired and run authz_grant.ts to generate new grantee acc
+
+  const randomMnemonics = randomMnemonic()
+
+  const sdkInstance = await CarbonSDK.instanceWithMnemonic(randomMnemonics, { network: CarbonSDK.Network.LocalHost })
+  const grantee = sdkInstance?.wallet?.bech32Address ?? ''
+  dayjs.extend(utc)
+  const expiry: Date = dayjs.utc().add(60, "hours").toDate()
+  const params = {
+    grantee,
+    expiry,
+    existingGrantee: false,
+  }
+
+  const result = await connectedSDK.signless.grantSignlessPermission(params);
+  // Copy the following to populate the params in _test-signless-create-order.ts
+  console.log('grant signless permission result', result)
+
   const granteeDetails = {
-    mnemonics: "pluck brief steel siren dash snack sheriff panic auto potato poet job",
-    expiry: dayjs("2023-12-31T15:52:38.920Z").toDate(),
+    mnemonics: randomMnemonics,
+    expiry,
     enabled: true,
+    authMsgsVersion: 1,
   }
 
   await connectedSDK.wallet.setGranteeDetails(granteeDetails)
