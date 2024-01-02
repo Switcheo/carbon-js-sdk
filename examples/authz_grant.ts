@@ -1,6 +1,7 @@
 
 import * as BIP39 from "bip39";
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
 import { randomMnemonic } from "../lib/util/address";
 import { CarbonSDK } from "./_sdk";
 import "./_setup";
@@ -23,7 +24,8 @@ import "./_setup";
 
   const sdkInstance = await CarbonSDK.instanceWithMnemonic(randomMnemonics, { network: CarbonSDK.Network.LocalHost })
   const grantee = sdkInstance?.wallet?.bech32Address ?? ''
-  const expiry: Date = dayjs().add(60, "hours").toDate()
+  dayjs.extend(utc)
+  const expiry: Date = dayjs.utc().add(60, "hours").toDate()
   const params = {
     grantee,
     expiry,
@@ -31,7 +33,8 @@ import "./_setup";
   }
 
   const result = await connectedSDK.signless.grantSignlessPermission(params);
-  console.log('xx', randomMnemonics, connectedSDK?.wallet.bech32Address, grantee, expiry)
+  // Copy the following to populate the params in _test-signless-create-order.ts
+  console.log(randomMnemonics, connectedSDK?.wallet.bech32Address, grantee, expiry)
   console.log(result)
 
   const queryParams = {

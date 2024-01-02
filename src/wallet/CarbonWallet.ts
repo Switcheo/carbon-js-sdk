@@ -5,7 +5,7 @@ import { BaseAccount } from "@carbon-sdk/codec/cosmos/auth/v1beta1/auth";
 import { MsgExec } from "@carbon-sdk/codec/cosmos/authz/v1beta1/tx";
 import { ExtensionOptionsWeb3Tx } from "@carbon-sdk/codec/ethermint/types/v1/web3";
 import { CarbonEvmChainIDs, DEFAULT_FEE_DENOM, DEFAULT_GAS, DEFAULT_NETWORK, Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
-import { AuthorizedSignlessMsgs, AUTHORIZED_SINGNLESS_MSGS_VERSION } from "@carbon-sdk/constant/signless";
+import { AUTHORIZED_SIGNLESS_MSGS_VERSION, BUFFER_PERIOD } from "@carbon-sdk/constant/signless";
 import { ProviderAgent } from "@carbon-sdk/constant/walletProvider";
 import { ChainInfo, CosmosLedger, Keplr, KeplrAccount, LeapAccount, MetaMask } from "@carbon-sdk/provider";
 import { AddressUtils, CarbonTx, GenericUtils } from "@carbon-sdk/util";
@@ -15,6 +15,7 @@ import { ETH_SECP256K1_TYPE } from "@carbon-sdk/util/ethermint";
 import { fetch } from "@carbon-sdk/util/fetch";
 import { QueueManager } from "@carbon-sdk/util/generic";
 import { bnOrZero, BN_ZERO } from "@carbon-sdk/util/number";
+import { AuthorizedSignlessMsgs } from "@carbon-sdk/util/signless";
 import { BroadcastTxMode, CarbonCustomError, CarbonSignerData, ErrorType } from "@carbon-sdk/util/tx";
 import { encodeSecp256k1Signature, StdSignature } from "@cosmjs/amino";
 import { EncodeObject, OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
@@ -27,7 +28,8 @@ import { Leap } from "@cosmos-kit/leap";
 import { Key } from "@keplr-wallet/types";
 import { TxBody, TxRaw as StargateTxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import dayjs from "dayjs";
-import { CarbonSDK } from "..";
+import utc from "dayjs/plugin/utc";
+import { default as CarbonSDK, default as ConnectedCarbonSDK } from "../CarbonSDK";
 import { CarbonEIP712Signer, CarbonLedgerSigner, CarbonNonSigner, CarbonPrivateKeySigner, CarbonSigner, CarbonSignerTypes, isCarbonEIP712Signer } from "./CarbonSigner";
 import { CarbonSigningClient } from "./CarbonSigningClient";
 
@@ -178,6 +180,7 @@ export class CarbonWallet {
 
   private tmClient?: Tendermint37Client;
   private granteeDetails?: GranteeDetails;
+  private granteeSDKInstance?: ConnectedCarbonSDK;
   private signingClient?: CarbonSigningClient;
   private chainId?: string;
   private evmChainId?: string;
@@ -330,17 +333,22 @@ export class CarbonWallet {
     return this;
   }
 
-  public setGranteeDetails(details: GranteeDetails) {
+  public async setGranteeDetails(details: GranteeDetails) {
     this.granteeDetails = details;
+    const granteeInstance = await CarbonSDK.instanceWithMnemonic(details.mnemonics, { network: this.network })
+    if (granteeInstance) {
+      this.granteeSDKInstance = granteeInstance;
+    }
   }
 
   private isGranteeValid(): boolean {
     if (!this.granteeDetails) return false
     const { expiry, enabled, authMsgsVersion } = this.granteeDetails
-    const bufferPeriod = 60
-    const hasNotExpired = dayjs().subtract(bufferPeriod, 'seconds').unix() < dayjs(expiry).unix()
-    const versionUpToDate = authMsgsVersion === AUTHORIZED_SINGNLESS_MSGS_VERSION
-    return hasNotExpired && enabled && versionUpToDate
+    const bufferPeriod = BUFFER_PERIOD
+    dayjs.extend(utc)
+    const hasNotExpired = dayjs.utc().subtract(bufferPeriod, 'seconds').unix() < dayjs.utc(expiry).unix()
+    const versionUpToDate = authMsgsVersion === AUTHORIZED_SIGNLESS_MSGS_VERSION
+    return hasNotExpired && enabled && versionUpToDate && Boolean(this.granteeSDKInstance)
   }
 
   public updateNetwork(network: Network): CarbonWallet {
@@ -488,9 +496,10 @@ export class CarbonWallet {
       broadcastOpts,
       handler: { resolve, reject },
     } = txRequest;
+
     const isAuthorized = messages.every((message) => AuthorizedSignlessMsgs.includes(message.typeUrl))
     if (this.granteeDetails && this.isGranteeValid() && isAuthorized) {
-      this.signWithGrantee(this.granteeDetails, txRequest)
+      this.signWithGrantee(txRequest)
     } else {
       try {
         if (!this.accountInfo
@@ -541,7 +550,7 @@ export class CarbonWallet {
     }
   }
 
-  private async signWithGrantee(granteeDetails: GranteeDetails, txRequest: SignTxRequest) {
+  private async signWithGrantee(txRequest: SignTxRequest) {
     const {
       reattempts,
       signOpts,
@@ -549,64 +558,68 @@ export class CarbonWallet {
       broadcastOpts,
       handler: { resolve, reject },
     } = txRequest;
-    const { mnemonics } = granteeDetails
     try {
-      const instanceWithGrantee = await CarbonSDK.instanceWithMnemonic(mnemonics, { network: this.network })
-      const granteeAddress = instanceWithGrantee.wallet.bech32Address
-      const msgs: EncodeObject[] = messages.map((message) => (registry.encodeAsAny({ ...message })))
+      const instanceWithGrantee = this.granteeSDKInstance
+      if (!instanceWithGrantee) {
+        throw Error('grantee instance not found')
+      }
+      if (instanceWithGrantee && instanceWithGrantee.wallet) {
+        const granteeAddress = instanceWithGrantee.wallet.bech32Address
+        const msgs: EncodeObject[] = messages.map((message) => (registry.encodeAsAny({ ...message })))
 
-      const msgExecMessage = [{
-        typeUrl: CarbonTx.Types.MsgExec,
-        value: MsgExec.fromPartial({
-          grantee: granteeAddress,
-          msgs: msgs,
-        }),
-      }]
-      if (!instanceWithGrantee.wallet.accountInfo
-        || instanceWithGrantee.wallet.accountInfo?.address === instanceWithGrantee.wallet.evmBech32Address // refresh to check if carbon acc is present
-        || instanceWithGrantee.wallet.sequenceInvalidated)
-        await instanceWithGrantee.wallet.reloadAccountSequence();
+        const msgExecMessage = [{
+          typeUrl: CarbonTx.Types.MsgExec,
+          value: MsgExec.fromPartial({
+            grantee: granteeAddress,
+            msgs: msgs,
+          }),
+        }]
+        if (!instanceWithGrantee.wallet.accountInfo
+          || instanceWithGrantee.wallet.accountInfo?.address === instanceWithGrantee.wallet.evmBech32Address // refresh to check if carbon acc is present
+          || instanceWithGrantee.wallet.sequenceInvalidated)
+          await instanceWithGrantee.wallet.reloadAccountSequence();
 
-      const heightResponse = await fetch(`${instanceWithGrantee.wallet.networkConfig.tmRpcUrl}/blockchain?cache=${new Date().getTime()}`);
-      const heightRes = await heightResponse.json();
-      const height = bnOrZero(heightRes.result?.last_height);
-      let timeoutHeight;
-      // timeoutHeight is not supported for EIP-712
-      if (!isCarbonEIP712Signer(instanceWithGrantee.wallet.signer)) {
-        timeoutHeight = height.isZero() ? undefined : height.toNumber() + instanceWithGrantee.wallet.defaultTimeoutBlocks;
-      }
-      let sequence: number
-      if (!instanceWithGrantee.wallet.accountInfo) {
-        sequence = signOpts?.sequence ?? 0
-      } else {
-        sequence = instanceWithGrantee.wallet.accountInfo!.sequence;
-        instanceWithGrantee.wallet.accountInfo = {
-          ...instanceWithGrantee.wallet.accountInfo!,
-          sequence: sequence + 1,
-        };
-      }
-      const overrideBroadcastOpts = {
-        ...broadcastOpts,
-        mode: this.txDefaultBroadCastMode,
-      }
-      const _signOpts: CarbonTx.SignTxOpts = {
-        ...signOpts,
-        explicitSignerData: {
-          timeoutHeight,
-          ...signOpts?.explicitSignerData,
-        },
-      }
-      const signedTx = await instanceWithGrantee.wallet.getSignedTx(granteeAddress, msgExecMessage, sequence, _signOpts, this.bech32Address)
+        const heightResponse = await fetch(`${instanceWithGrantee.wallet.networkConfig.tmRpcUrl}/blockchain?cache=${new Date().getTime()}`);
+        const heightRes = await heightResponse.json();
+        const height = bnOrZero(heightRes.result?.last_height);
+        let timeoutHeight;
+        // timeoutHeight is not supported for EIP-712
+        if (!isCarbonEIP712Signer(instanceWithGrantee.wallet.signer)) {
+          timeoutHeight = height.isZero() ? undefined : height.toNumber() + instanceWithGrantee.wallet.defaultTimeoutBlocks;
+        }
+        let sequence: number
+        if (!instanceWithGrantee.wallet.accountInfo) {
+          sequence = signOpts?.sequence ?? 0
+        } else {
+          sequence = instanceWithGrantee.wallet.accountInfo!.sequence;
+          instanceWithGrantee.wallet.accountInfo = {
+            ...instanceWithGrantee.wallet.accountInfo!,
+            sequence: sequence + 1,
+          };
+        }
+        const overrideBroadcastOpts = {
+          ...broadcastOpts,
+          mode: this.txDefaultBroadCastMode,
+        }
+        const _signOpts: CarbonTx.SignTxOpts = {
+          ...signOpts,
+          explicitSignerData: {
+            timeoutHeight,
+            ...signOpts?.explicitSignerData,
+          },
+        }
+        const signedTx = await instanceWithGrantee.wallet.getSignedTx(granteeAddress, msgExecMessage, sequence, _signOpts, this.bech32Address)
 
-      instanceWithGrantee.wallet.txDispatchManager.enqueue({
-        reattempts,
-        signerAddress: granteeAddress,
-        messages: msgExecMessage,
-        signedTx,
-        broadcastOpts: overrideBroadcastOpts,
-        signOpts: _signOpts,
-        handler: { resolve, reject, requestId: `${sequence}` },
-      })
+        instanceWithGrantee.wallet.txDispatchManager.enqueue({
+          reattempts,
+          signerAddress: granteeAddress,
+          messages: msgExecMessage,
+          signedTx,
+          broadcastOpts: overrideBroadcastOpts,
+          signOpts: _signOpts,
+          handler: { resolve, reject, requestId: `${sequence}` },
+        })
+      }
     } catch (error) {
       reject(error)
     }

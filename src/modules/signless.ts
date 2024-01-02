@@ -5,9 +5,10 @@ import { CarbonTx } from "@carbon-sdk/util";
 import { GenericAuthorization } from "@carbon-sdk/codec/cosmos/authz/v1beta1/authz";
 import { AllowedMsgAllowance, BasicAllowance } from "@carbon-sdk/codec/cosmos/feegrant/v1beta1/feegrant";
 import { MsgGrantAllowance } from "@carbon-sdk/codec/cosmos/feegrant/v1beta1/tx";
-import { AuthorizedSignlessMsgs } from "@carbon-sdk/constant/signless";
-import BaseModule from "./base";
+import { AuthorizedSignlessMsgs } from "@carbon-sdk/util/signless";
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import BaseModule from "./base";
 
 export class SignlessModule extends BaseModule {
   public async grantSignlessPermission(params: SignlessModule.GrantSignlessPermissionParams, opts?: CarbonTx.SignTxOpts) {
@@ -32,7 +33,8 @@ export class SignlessModule extends BaseModule {
       }
     })
     let messages = encodedGrantMsgs
-    const expired = dayjs(params.expiry).unix() < dayjs().unix()
+    dayjs.extend(utc)
+    const expired = dayjs.utc(params.expiry).unix() < dayjs.utc().unix()
     if (expired) {
       const encodedAllowanceMsg = [{
         typeUrl: CarbonTx.Types.MsgGrantAllowance,

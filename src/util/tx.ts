@@ -176,3 +176,12 @@ export const TxGasCostTypeMap = {
   [TxTypes.MsgStakePoolToken]: "stake_pool_token",
   [TxTypes.MsgUnstakePoolToken]: "unstake_pool_token",
 };
+
+// Increment AUTHORIZED_SIGNLESS_MSGS_VERSION whenever this list is updated
+export const UNAUTHORIZED_MSGS = [
+  TxTypes.MsgSend,
+  TxTypes.MsgWithdraw,
+  TxTypes.MsgWithdrawFromGroup,
+  TxTypes.MsgGrant,
+  TxTypes.MsgGrantAllowance,
+]
