@@ -32,8 +32,8 @@ export class SignlessModule extends BaseModule {
       }
     })
     let messages = encodedGrantMsgs
-    const expired = dayjs().unix() < dayjs(params.expiry).unix()
-    if (!params.existingGrantee && !expired) {
+    const expired = dayjs(params.expiry).unix() < dayjs().unix()
+    if (expired) {
       const encodedAllowanceMsg = [{
         typeUrl: CarbonTx.Types.MsgGrantAllowance,
         value: MsgGrantAllowance.fromPartial({
@@ -78,7 +78,6 @@ export namespace SignlessModule {
   export interface GrantSignlessPermissionParams {
     grantee: string,
     granter?: string,
-    existingGrantee: boolean,
     expiry: Date,
   }
   export interface QueryGrantParams {
