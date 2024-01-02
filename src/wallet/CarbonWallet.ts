@@ -556,7 +556,7 @@ export class CarbonWallet {
       const msgs: EncodeObject[] = messages.map((message) => (registry.encodeAsAny({ ...message })))
 
       const msgExecMessage = [{
-        typeUrl: "/cosmos.authz.v1beta1.MsgExec",
+        typeUrl: CarbonTx.Types.MsgExec,
         value: MsgExec.fromPartial({
           grantee: granteeAddress,
           msgs: msgs,
