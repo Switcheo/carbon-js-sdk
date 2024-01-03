@@ -32,7 +32,8 @@ export class SignlessModule extends BaseModule {
         typeUrl: CarbonTx.Types.MsgGrant, value: grantMsg,
       }
     })
-    let messages = encodedGrantMsgs
+    // let messages = encodedGrantMsgs
+    const messages = encodedGrantMsgs
     dayjs.extend(utc)
     const expired = dayjs.utc(params.expiry).unix() < dayjs.utc().unix()
     if (expired) {
@@ -55,8 +56,8 @@ export class SignlessModule extends BaseModule {
           },
         }),
       }]
-
-      messages = encodedGrantMsgs.concat(encodedAllowanceMsg)
+      console.log('xx', encodedAllowanceMsg)
+      // messages = encodedGrantMsgs.concat(encodedAllowanceMsg)
     }
 
     const result = await wallet.sendTxs(messages, opts)
