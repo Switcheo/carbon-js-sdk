@@ -77,7 +77,6 @@ export enum SignlessTypes {
   GrantAuthz = "/cosmos.authz.v1beta1.MsgGrant",
   GrantFeegrant = "/cosmos.feegrant.v1beta1.MsgGrantAllowance",
   MsgExec = "/cosmos.authz.v1beta1.MsgExec",
-
   GenericAuthorization = "/cosmos.authz.v1beta1.GenericAuthorization",
 }
 

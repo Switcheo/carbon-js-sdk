@@ -11,9 +11,37 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
   MsgExec: "cosmos-sdk/MsgExec",
 };
 
+const SignlessTypes: TypeUtils.SimpleMap<string> = {
+  GenericAuthorization: "/cosmos.authz.v1beta1.GenericAuthorization",
+  AllowedMsgAllowance: "/cosmos.feegrant.v1beta1.AllowedMsgAllowance",
+  BasicAllowance: "/cosmos.feegrant.v1beta1.BasicAllowance",
+};
+
+
+const AminoTypes: TypeUtils.SimpleMap<string> = {
+  GenericAuthorization: "cosmos-sdk/GenericAuthorization",
+  AllowedMsgAllowance: "cosmos-sdk/AllowedMsgAllowance",
+  BasicAllowance: "cosmos-sdk/BasicAllowance",
+};
+
 const ContentTypes: TypeUtils.SimpleMap<string> = {
   '/cosmos.authz.v1beta1.GenericAuthorization': "cosmos-sdk/GenericAuthorization",
 };
+
+const GenericAuthorizationAminoType: AminoInit = {
+  aminoType: AminoTypes.GenericAuthorization,
+  valueMap: {},
+}
+
+const AllowedMsgAllowanceAminoType: AminoInit = {
+  aminoType: AminoTypes.AllowedMsgAllowance,
+  valueMap: {},
+}
+
+const BasicAllowanceAminoType: AminoInit = {
+  aminoType: AminoTypes.BasicAllowance,
+  valueMap: {},
+}
 
 
 const MsgGrantAuthz: AminoInit = {
@@ -34,6 +62,8 @@ const MsgExec: AminoInit = {
   aminoType: TxTypes.MsgExec,
   valueMap: {},
 }
+
+
 
 
 const GenericAuthorizationAmino: AminoValueMap = {
@@ -132,6 +162,9 @@ const SignlessAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgGrant]: generateAminoType(MsgGrantAuthz, grantAuthzAminoProcess),
   [CarbonTx.Types.MsgGrantAllowance]: generateAminoType(MsgGrantFeegrant),
   [CarbonTx.Types.MsgExec]: generateAminoType(MsgExec),
+  [SignlessTypes.GenericAuthorization]: generateAminoType(GenericAuthorizationAminoType),
+  [SignlessTypes.AllowedMsgAllowance]: generateAminoType(AllowedMsgAllowanceAminoType),
+  [SignlessTypes.BasicAllowance]: generateAminoType(BasicAllowanceAminoType),
 };
 
 export default SignlessAmino;
