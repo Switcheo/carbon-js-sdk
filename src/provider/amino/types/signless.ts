@@ -64,7 +64,6 @@ const preProcessAmino = (value: TypeUtils.SimpleMap<any>, valueMap: AminoValueMa
 
 const checkDecodeGrantAuthz = (content: any, amino: AminoValueMap): AminoGenericAuthorizationRes => {
   const decodedValue = SignlessUtils.decodeContent(content);
-  console.log('xx', content.typeUrl)
   const newContent = {
     type: ContentTypes[content.typeUrl],
     value: decodedValue.value,

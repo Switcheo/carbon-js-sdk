@@ -33,7 +33,7 @@ export class SignlessModule extends BaseModule {
     })
     let messages = encodedGrantMsgs
     dayjs.extend(utc)
-    const expired = dayjs.utc(params.expiry).unix() < dayjs.utc().unix()
+    const expired = dayjs.utc(params.expiry).isBefore(dayjs.utc())
     if (expired) {
       const encodedAllowanceMsg = [{
         typeUrl: CarbonTx.Types.MsgGrantAllowance,
