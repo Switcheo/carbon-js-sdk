@@ -4,6 +4,28 @@ import { Any } from "@carbon-sdk/codec/google/protobuf/any";
 
 // Increment AUTHORIZED_SIGNLESS_MSGS_VERSION whenever this list is updated
 export const AuthorizedSignlessMsgs = [
+  //cdp
+  TxTypes.MsgSupplyAsset,
+  TxTypes.MsgWithdrawAsset,
+  TxTypes.MsgLockCollateral,
+  TxTypes.MsgUnlockCollateral,
+  TxTypes.MsgBorrowAsset,
+  TxTypes.MsgSupplyAssetAndLockCollateral,
+  TxTypes.MsgUnlockCollateral,
+  TxTypes.MsgUnlockCollateralAndWithdrawAsset,
+  TxTypes.MsgLiquidateCollateral,
+  TxTypes.MsgLiquidateCollateralWithCdpTokens,
+  TxTypes.MsgLiquidateCollateralWithCollateral,
+  TxTypes.MsgLiquidateCollateralWithStablecoin,
+  TxTypes.MsgRepayAsset,
+  TxTypes.MsgRepayAssetWithCdpTokens,
+  TxTypes.MsgRepayAssetWithCollateral,
+  TxTypes.MsgMintStablecoin,
+  TxTypes.MsgReturnStablecoin,
+  TxTypes.MsgClaimRewards,
+  TxTypes.MsgSetAccountEMode,
+  TxTypes.MsgRemoveAccountEMode,
+  // exchange
   TxTypes.MsgCreateOrder,
   TxTypes.MsgCancelAll,
   TxTypes.MsgCancelOrder,
