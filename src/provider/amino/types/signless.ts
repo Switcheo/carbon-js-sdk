@@ -12,7 +12,7 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
 };
 
 const ContentTypes: TypeUtils.SimpleMap<string> = {
-  '/cosmos.authz.v1beta1.Authorization': "cosmos-sdk/GenericAuthorization",
+  '/cosmos.authz.v1beta1.GenericAuthorization': "cosmos-sdk/GenericAuthorization",
 };
 
 
@@ -64,7 +64,7 @@ const preProcessAmino = (value: TypeUtils.SimpleMap<any>, valueMap: AminoValueMa
 
 const checkDecodeGrantAuthz = (content: any, amino: AminoValueMap): AminoGenericAuthorizationRes => {
   const decodedValue = SignlessUtils.decodeContent(content);
-
+  console.log('xx', content.typeUrl)
   const newContent = {
     type: ContentTypes[content.typeUrl],
     value: decodedValue.value,
@@ -107,6 +107,7 @@ const grantAuthzAminoProcess: AminoProcess = {
       input: {
         ...input,
         grant: {
+          ...grant,
           authorization: propResponse.newContent,
         },
       },
@@ -115,17 +116,12 @@ const grantAuthzAminoProcess: AminoProcess = {
   fromAminoProcess: (amino: AminoValueMap, input: any) => {
     const { grant } = input;
     const propResponse = checkEncodeGrantAuthz(grant?.authorization, amino)
-    const logInput = {
-      ...input,
-      grant: {
-        authorization: propResponse.newContent,
-      },
-    }
-    console.log('xx', logInput)
+
     return {
       amino: propResponse.newAmino,
       ...input,
       grant: {
+        ...grant,
         authorization: propResponse.newContent,
       },
     }

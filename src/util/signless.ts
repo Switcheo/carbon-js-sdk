@@ -1,10 +1,15 @@
 import { TxTypes } from "@carbon-sdk/codec";
 import { GenericAuthorization } from "@carbon-sdk/codec/cosmos/authz/v1beta1/authz";
 import { Any } from "@carbon-sdk/codec/google/protobuf/any";
-import { UNAUTHORIZED_MSGS } from "./tx";
 
-export const AuthorizedSignlessMsgs = Object.values(TxTypes)
-  .filter((msg: string) => !UNAUTHORIZED_MSGS.includes(msg) && !msg.endsWith("Response")) ?? []
+// Increment AUTHORIZED_SIGNLESS_MSGS_VERSION whenever this list is updated
+export const AuthorizedSignlessMsgs = [
+  TxTypes.MsgCreateOrder,
+  TxTypes.MsgCancelAll,
+  TxTypes.MsgCancelOrder,
+  TxTypes.MsgEditOrder,
+  TxTypes.MsgSetLeverage,
+]
 
 export enum SignlessTypes {
   GrantAuthz = "/cosmos.authz.v1beta1.MsgGrant",
@@ -28,7 +33,6 @@ export const decodeContent = (content?: Any): ValueDecoded => {
   if (!content) {
     return emptyValue;
   }
-  console.log('xx', content)
 
   switch (content.typeUrl) {
     case SignlessTypes.GenericAuthorization: {

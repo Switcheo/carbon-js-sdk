@@ -56,6 +56,7 @@ export class SignlessModule extends BaseModule {
           },
         }),
       }]
+      // TODO revert this after adding msgGrant amino successfully
       console.log('xx', encodedAllowanceMsg)
       // messages = encodedGrantMsgs.concat(encodedAllowanceMsg)
     }
