@@ -1,18 +1,20 @@
 import { PageMeta } from "./common";
 
 export interface FundingHistory {
-  lastFundingAt: string;
   market: string;
-  fundingRate: string;
+  "1h": string;
+  "4h": string;
+  "8h": string;
+  "12h": string;
+  "16h": string;
+  "20h": string;
+  "24h": string;
 }
 
 export interface QueryGetFundingRateResponse {
   entries: FundingHistory[];
-  meta: PageMeta;
 }
 
 export interface QueryGetFundingRateRequest {
   market?: string;
-  limit?: number;
-  offset?: number;
 }
