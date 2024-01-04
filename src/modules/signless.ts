@@ -13,7 +13,6 @@ import BaseModule from "./base";
 export class SignlessModule extends BaseModule {
   public async grantSignlessPermission(params: SignlessModule.GrantSignlessPermissionParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet()
-
     const encodedGrantMsgs = AuthorizedSignlessMsgs.map((msg) => {
       const grantMsg = MsgGrant.fromPartial({
         granter: params.granter ?? wallet.bech32Address,
@@ -32,10 +31,9 @@ export class SignlessModule extends BaseModule {
         typeUrl: CarbonTx.Types.MsgGrant, value: grantMsg,
       }
     })
-    // let messages = encodedGrantMsgs
-    const messages = encodedGrantMsgs
+    let messages = encodedGrantMsgs
     dayjs.extend(utc)
-    const expired = dayjs.utc(params.expiry).unix() < dayjs.utc().unix()
+    const expired = dayjs.utc(params.expiry).isBefore(dayjs.utc())
     if (expired) {
       const encodedAllowanceMsg = [{
         typeUrl: CarbonTx.Types.MsgGrantAllowance,
@@ -56,9 +54,7 @@ export class SignlessModule extends BaseModule {
           },
         }),
       }]
-      // TODO revert this after adding msgGrant amino successfully
-      console.log('xx', encodedAllowanceMsg)
-      // messages = encodedGrantMsgs.concat(encodedAllowanceMsg)
+      messages = encodedGrantMsgs.concat(encodedAllowanceMsg)
     }
 
     const result = await wallet.sendTxs(messages, opts)

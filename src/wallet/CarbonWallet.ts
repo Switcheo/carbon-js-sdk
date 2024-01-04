@@ -346,7 +346,7 @@ export class CarbonWallet {
     const { expiry, enabled, authMsgsVersion } = this.granteeDetails
     const bufferPeriod = BUFFER_PERIOD
     dayjs.extend(utc)
-    const hasNotExpired = dayjs.utc().subtract(bufferPeriod, 'seconds').unix() < dayjs.utc(expiry).unix()
+    const hasNotExpired = dayjs.utc(expiry).isAfter(dayjs.utc().add(bufferPeriod, 'seconds'))
     const versionUpToDate = authMsgsVersion === AUTHORIZED_SIGNLESS_MSGS_VERSION
     return hasNotExpired && enabled && versionUpToDate && Boolean(this.granteeSDKInstance)
   }
