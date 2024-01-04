@@ -169,7 +169,7 @@ class InsightsQueryClient {
   async UserRewardsClaimHistory(
     req: Insights.QueryGetUserRewardsClaimHistoryRequest
   ): Promise<InsightsQueryResponse<Insights.QueryGetUserRewardsClaimHistoryResponse>> {
-    const routeParams = {address: req.address}
+    const routeParams = { address: req.address }
     const request = this.apiManager.path("user/pool/rewards", routeParams, req);
     const response = await request.get();
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetUserRewardsClaimHistoryResponse>;
@@ -423,8 +423,6 @@ class InsightsQueryClient {
       {},
       {
         market: query.market ?? "",
-        limit: query.limit ?? 100,
-        offset: query.offset ?? 0,
       }
     );
     const response = await request.get();
