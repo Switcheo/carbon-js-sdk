@@ -4,7 +4,15 @@ import { Any } from "@carbon-sdk/codec/google/protobuf/any";
 
 // Increment AUTHORIZED_SIGNLESS_MSGS_VERSION whenever this list is updated
 export const AuthorizedSignlessMsgs = [
-  //cdp
+  // alliance
+  TxTypes.MsgAllianceDelegate,
+  TxTypes.MsgAllianceUndelegate,
+  TxTypes.MsgAllianceRedelegate,
+  TxTypes.MsgAllianceClaimDelegationRewards,
+  TxTypes.MsgWithdrawDelegatorReward,
+  TxTypes.MsgAllianceClaimDelegationRewards,
+
+  // cdp
   TxTypes.MsgSupplyAsset,
   TxTypes.MsgWithdrawAsset,
   TxTypes.MsgLockCollateral,
@@ -25,12 +33,44 @@ export const AuthorizedSignlessMsgs = [
   TxTypes.MsgClaimRewards,
   TxTypes.MsgSetAccountEMode,
   TxTypes.MsgRemoveAccountEMode,
-  // exchange
+
+  // coin
+  TxTypes.MsgMintToken,
+  TxTypes.MsgDepositToGroup,
+  TxTypes.MsgDepositToGroup,
+  TxTypes.MsgCreateToken,
+
+  // leverages
+  TxTypes.MsgSetLeverage,
+
+  // liquiditypool
+  TxTypes.MsgCreatePoolWithLiquidity,
+  TxTypes.MsgAddLiquidity,
+  TxTypes.MsgRemoveLiquidity,
+  TxTypes.MsgStakePoolToken,
+  TxTypes.MsgUnstakePoolToken,
+  TxTypes.MsgClaimPoolRewards,
+
+  // order
   TxTypes.MsgCreateOrder,
-  TxTypes.MsgCancelAll,
   TxTypes.MsgCancelOrder,
   TxTypes.MsgEditOrder,
-  TxTypes.MsgSetLeverage,
+  TxTypes.MsgCancelAll,
+
+  // perpspool
+  TxTypes.MsgDepositToPool,
+  TxTypes.MsgWithdrawFromPool,
+
+  // position
+  TxTypes.MsgSetMargin,
+
+  // profile
+  TxTypes.MsgUpdateProfile,
+
+  // staking
+  TxTypes.MsgDelegate,
+  TxTypes.MsgUndelegate,
+  TxTypes.MsgBeginRedelegate,
 ]
 
 export enum SignlessTypes {
