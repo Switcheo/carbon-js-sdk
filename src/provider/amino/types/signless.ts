@@ -8,6 +8,7 @@ import { AminoInit, AminoProcess, AminoValueMap, ConvertEncType, generateAminoTy
 const TxTypes: TypeUtils.SimpleMap<string> = {
   GrantAuthz: "cosmos-sdk/MsgGrant",
   GrantFeegrant: "cosmos-sdk/MsgGrantAllowance",
+  RevokeFeegrant: "cosmos-sdk/MsgRevokeAllowance",
   MsgExec: "cosmos-sdk/MsgExec",
 };
 
@@ -55,6 +56,11 @@ const MsgGrantAuthz: AminoInit = {
 
 const MsgGrantFeegrant: AminoInit = {
   aminoType: TxTypes.GrantFeegrant,
+  valueMap: {},
+}
+
+const MsgRevokeAllowance: AminoInit = {
+  aminoType: TxTypes.RevokeFeegrant,
   valueMap: {},
 }
 
@@ -160,6 +166,7 @@ const grantAuthzAminoProcess: AminoProcess = {
 const SignlessAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgGrant]: generateAminoType(MsgGrantAuthz, grantAuthzAminoProcess),
   [CarbonTx.Types.MsgGrantAllowance]: generateAminoType(MsgGrantFeegrant),
+  [CarbonTx.Types.MsgRevokeAllowance]: generateAminoType(MsgRevokeAllowance),
   [CarbonTx.Types.MsgExec]: generateAminoType(MsgExec),
   [SignlessTypes.GenericAuthorization]: generateAminoType(GenericAuthorizationAminoType),
   [SignlessTypes.AllowedMsgAllowance]: generateAminoType(AllowedMsgAllowanceAminoType),
