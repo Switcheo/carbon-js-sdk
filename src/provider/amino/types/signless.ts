@@ -201,8 +201,6 @@ const checkDecodeFeegrant = (content: any, amino: AminoValueMap): AminoRes => {
 
   newAmino.content = { ...MsgFeeGrantAllowanceAmino.value }
 
-  console.log('xx toamino: ', { newContent, newAmino })
-
   return {
     newContent,
     newAmino,
