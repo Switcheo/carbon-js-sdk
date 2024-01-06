@@ -1,6 +1,6 @@
 {
   "name": "carbon-js-sdk",
-  "version": "0.7.4-beta.2",
+  "version": "0.7.9",
   "description": "TypeScript SDK for Carbon blockchain",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -9,7 +9,7 @@
   "license": "MIT",
   "scripts": {
     "watch": "nodemon yarn build",
-    "build": "tsc && tsc-alias",
+    "build": "yarn run lint && tsc && tsc-alias",
     "cp-proto": "cp ~/go/src/github.com/Switcheo/carbon/gen/proto-ts.tar.gz .",
     "sync-proto": "sh scripts/update-proto.sh",
     "sync-register": "yarn sync-reset && sh scripts/generate-registry.sh",

@@ -37,6 +37,11 @@ const SYMBOL_OVERRIDE: {
 const regexCdpDenom = RegExp(`^${DenomPrefix.CDPToken}/`, "i");
 const regexLPDenom = RegExp(`^${DenomPrefix.LPToken}/(\\d+)$`, "i");
 
+const onError = (error: unknown) => {
+  console.error("failed to reload usd values");
+  console.error(error);
+}
+
 class TokenClient {
   public static Blacklist = TokenBlacklist;
   public readonly tokens: TypeUtils.SimpleMap<Carbon.Coin.Token> = {};
@@ -69,14 +74,9 @@ class TokenClient {
       ]);
     } finally {
       // non-blocking reload
-      try {
-        this.reloadDenomGeckoMap().finally(() => {
-          this.reloadUSDValues();
-        });
-      } catch (error) {
-        console.error("failed to reload usd values");
-        console.error(error);
-      }
+      this.reloadDenomGeckoMap().catch(onError).finally(() => {
+        this.reloadUSDValues().catch(onError);
+      });
     }
   }
 
@@ -220,7 +220,7 @@ class TokenClient {
     if (typeof denom !== "string") return "";
     denom = denom.toLowerCase();
     if (TokenClient.isPoolTokenLegacy(denom)) {
-      const match = denom.match(/^([a-z\d.-/]+)-(\d+)-([a-z\d.-/]+)-(\d+)-lp\d+$/i); 
+      const match = denom.match(/^([a-z\d.-/]+)-(\d+)-([a-z\d.-/]+)-(\d+)-lp\d+$/i);
       // inconsistent implementation of isPoolToken, exit
       if (match === null) return this.getSymbol(denom);
 
@@ -715,12 +715,9 @@ class TokenClient {
   async getDenomToGeckoIdMap(): Promise<TypeUtils.SimpleMap<string>> {
     const networkConfig = this.configProvider.getConfig();
     const insights = new InsightsQueryClient(networkConfig);
-    let tokens: SimpleMap<string> = {};
-    try {
-      const response = await insights.DenomToGeckoIdMap();
-      tokens = response.result.gecko;
-    } catch (err) {
-    }
+    const response = await insights.DenomToGeckoIdMap();
+    const tokens = response.result.gecko;
+
     return tokens;
   }
 
@@ -741,6 +738,7 @@ class TokenClient {
       });
     });
   }
+
 }
 
 export default TokenClient;

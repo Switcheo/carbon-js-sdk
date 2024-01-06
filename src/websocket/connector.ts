@@ -258,14 +258,16 @@ export class WSConnector {
     for (const param of params as WSConnectorTypes.WsSubscriptionParams[]) {
       const channelId = generateChannelId(param);
       const shouldSubscribe = this.channelHandlers[channelId] === undefined;
-      this.channelHandlers[channelId] = handler;
 
-      if (shouldSubscribe) {
+      if (shouldSubscribe && channelId.length > 0) {
+        this.channelHandlers[channelId] = handler;
         channels.push(channelId);
       }
     }
 
-    this.send("subscribe", { channels });
+    if (channels.length > 0) {
+      this.send("subscribe", { channels });
+    }
   }
 
   /**
@@ -286,14 +288,16 @@ export class WSConnector {
       const shouldUnsubscribe = this.channelHandlers[channelId] !== undefined;
       delete this.channelHandlers[channelId];
 
-      if (shouldUnsubscribe) {
+      if (shouldUnsubscribe && channelId.length > 0) {
         channelIds.push(channelId);
       }
     }
 
-    this.send("unsubscribe", {
-      channels: channelIds,
-    });
+    if (channelIds.length > 0) {
+      this.send("unsubscribe", {
+        channels: channelIds,
+      });
+    }
   }
 
   /**
