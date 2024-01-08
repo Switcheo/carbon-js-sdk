@@ -1,5 +1,6 @@
 import { GenericAuthorization } from "@carbon-sdk/codec/cosmos/authz/v1beta1/authz";
 import { MsgGrant } from "@carbon-sdk/codec/cosmos/authz/v1beta1/tx";
+import { MsgGrantAllowance } from "@carbon-sdk/codec/cosmos/feegrant/v1beta1/tx";
 import { SignlessUtils, TypeUtils } from "@carbon-sdk/util";
 import * as CarbonTx from "@carbon-sdk/util/tx";
 import { AminoConverter } from "@cosmjs/stargate";
@@ -7,43 +8,42 @@ import { AminoInit, AminoProcess, AminoValueMap, ConvertEncType, generateAminoTy
 
 const TxTypes: TypeUtils.SimpleMap<string> = {
   GrantAuthz: "cosmos-sdk/MsgGrant",
-  GrantFeegrant: "cosmos-sdk/MsgGrantAllowance",
+  GrantAllowance: "cosmos-sdk/MsgGrantAllowance",
   RevokeFeegrant: "cosmos-sdk/MsgRevokeAllowance",
   MsgExec: "cosmos-sdk/MsgExec",
 };
 
-const SignlessTypes: TypeUtils.SimpleMap<string> = {
-  GenericAuthorization: "/cosmos.authz.v1beta1.GenericAuthorization",
-  AllowedMsgAllowance: "/cosmos.feegrant.v1beta1.AllowedMsgAllowance",
-  BasicAllowance: "/cosmos.feegrant.v1beta1.BasicAllowance",
-};
-
-
-const AminoTypes: TypeUtils.SimpleMap<string> = {
-  GenericAuthorization: "cosmos-sdk/GenericAuthorization",
-  AllowedMsgAllowance: "cosmos-sdk/AllowedMsgAllowance",
-  BasicAllowance: "cosmos-sdk/BasicAllowance",
-};
+export enum SignlessTypes {
+  GrantAuthz = "/cosmos.authz.v1beta1.MsgGrant",
+  FeeGrant = "/cosmos.feegrant.v1beta1.MsgGrantAllowance",
+  MsgExec = "/cosmos.authz.v1beta1.MsgExec",
+  GenericAuthorization = "/cosmos.authz.v1beta1.GenericAuthorization",
+  AllowedMsgAllowance = "/cosmos.feegrant.v1beta1.AllowedMsgAllowance",
+  BasicAllowance = "/cosmos.feegrant.v1beta1.BasicAllowance",
+}
 
 const ContentTypes: TypeUtils.SimpleMap<string> = {
-  '/cosmos.authz.v1beta1.GenericAuthorization': "cosmos-sdk/GenericAuthorization",
+  [SignlessTypes.GenericAuthorization]: "cosmos-sdk/GenericAuthorization",
+  [SignlessTypes.AllowedMsgAllowance]: "cosmos-sdk/AllowedMsgAllowance",
+  [SignlessTypes.BasicAllowance]: "cosmos-sdk/BasicAllowance",
 };
 
 const GenericAuthorizationAminoType: AminoInit = {
-  aminoType: AminoTypes.GenericAuthorization,
+  aminoType: ContentTypes[SignlessTypes.GenericAuthorization],
   valueMap: {},
 }
 
 const AllowedMsgAllowanceAminoType: AminoInit = {
-  aminoType: AminoTypes.AllowedMsgAllowance,
+  aminoType: ContentTypes[SignlessTypes.AllowedMsgAllowance],
   valueMap: {},
 }
 
 const BasicAllowanceAminoType: AminoInit = {
-  aminoType: AminoTypes.BasicAllowance,
-  valueMap: {},
+  aminoType: ContentTypes[SignlessTypes.BasicAllowance],
+  valueMap: {
+    expiration: ConvertEncType.Date,
+  },
 }
-
 
 const MsgGrantAuthz: AminoInit = {
   aminoType: TxTypes.GrantAuthz,
@@ -54,8 +54,8 @@ const MsgGrantAuthz: AminoInit = {
   },
 };
 
-const MsgGrantFeegrant: AminoInit = {
-  aminoType: TxTypes.GrantFeegrant,
+const MsgFeeGrantAllowance: AminoInit = {
+  aminoType: TxTypes.GrantAllowance,
   valueMap: {},
 }
 
@@ -69,16 +69,19 @@ const MsgExec: AminoInit = {
   valueMap: {},
 }
 
-
-
-
 const GenericAuthorizationAmino: AminoValueMap = {
   value: {
     msg: ConvertEncType,
   },
 }
 
-interface AminoGenericAuthorizationRes {
+const MsgFeeGrantAllowanceAmino: AminoValueMap = {
+  value: {
+    msg: ConvertEncType,
+  },
+}
+
+interface AminoRes {
   newContent: {
     type: string;
     value: any;
@@ -86,7 +89,7 @@ interface AminoGenericAuthorizationRes {
   newAmino: AminoValueMap;
 }
 
-interface DirectGenericAuthorizationRes {
+interface DirectRes {
   newContent: {
     typeUrl: string;
     value: Uint8Array;
@@ -98,7 +101,7 @@ const preProcessAmino = (value: TypeUtils.SimpleMap<any>, valueMap: AminoValueMa
   return mapEachIndiv(value, valueMap, false);
 };
 
-const checkDecodeGrantAuthz = (content: any, amino: AminoValueMap): AminoGenericAuthorizationRes => {
+const checkDecodeGrantAuthz = (content: any, amino: AminoValueMap): AminoRes => {
   const decodedValue = SignlessUtils.decodeContent(content);
   const newContent = {
     type: ContentTypes[content.typeUrl],
@@ -115,7 +118,7 @@ const checkDecodeGrantAuthz = (content: any, amino: AminoValueMap): AminoGeneric
   }
 }
 
-const checkEncodeGrantAuthz = (content: any, amino: AminoValueMap): DirectGenericAuthorizationRes => {
+const checkEncodeGrantAuthz = (content: any, amino: AminoValueMap): DirectRes => {
   const grantAuthzMsg = preProcessAmino(content.value, GenericAuthorizationAmino.value.msg)
   const grantAuthzProp = GenericAuthorization.fromPartial({
     ...content.value,
@@ -123,7 +126,7 @@ const checkEncodeGrantAuthz = (content: any, amino: AminoValueMap): DirectGeneri
   })
   return {
     newContent: {
-      typeUrl: SignlessUtils.SignlessTypes.GenericAuthorization,
+      typeUrl: SignlessTypes.GenericAuthorization,
       value: GenericAuthorization.encode(grantAuthzProp).finish(),
     },
     newAmino: {
@@ -163,9 +166,75 @@ const grantAuthzAminoProcess: AminoProcess = {
   },
 }
 
+
+
+const checkEncodeFeegrant = (content: any, amino: AminoValueMap): DirectRes => {
+  const msg = preProcessAmino(content.value, MsgFeeGrantAllowanceAmino.value.msg)
+  const grantAllowance = MsgGrantAllowance.fromPartial({
+    ...content.value,
+    msg,
+  })
+  return {
+    newContent: {
+      typeUrl: SignlessTypes.FeeGrant,
+      value: MsgGrantAllowance.encode(grantAllowance).finish(),
+    },
+    newAmino: {
+      ...amino,
+    },
+  }
+}
+
+const checkDecodeFeegrant = (content: any, amino: AminoValueMap): AminoRes => {
+  const decodedValue = SignlessUtils.decodeContent(content);
+  decodedValue.value.allowance = {
+    type: ContentTypes[decodedValue.value.allowance.typeUrl],
+    value: decodedValue.value.allowance.value,
+  }
+
+  const newContent = {
+    type: ContentTypes[content.typeUrl],
+    value: decodedValue.value,
+  }
+
+  const newAmino = { ...amino };
+
+  newAmino.content = { ...MsgFeeGrantAllowanceAmino.value }
+
+  return {
+    newContent,
+    newAmino,
+  }
+}
+
+const feegrantAminoProcess: AminoProcess = {
+  toAminoProcess: (amino: AminoValueMap, input: any) => {
+    const { allowance } = input as MsgGrantAllowance;
+    const propResponse = checkDecodeFeegrant(allowance, amino);
+    return {
+      amino: propResponse.newAmino,
+      input: {
+        ...input,
+        allowance: propResponse.newContent,
+      },
+    }
+  },
+  fromAminoProcess: (amino: AminoValueMap, input: any) => {
+    const { allowance } = input as MsgGrantAllowance;
+    const propResponse = checkEncodeFeegrant(allowance, amino)
+    return {
+      amino: propResponse.newAmino,
+      input: {
+        ...input,
+        allowance: propResponse.newContent,
+      },
+    };
+  },
+}
+
 const SignlessAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgGrant]: generateAminoType(MsgGrantAuthz, grantAuthzAminoProcess),
-  [CarbonTx.Types.MsgGrantAllowance]: generateAminoType(MsgGrantFeegrant),
+  [CarbonTx.Types.MsgGrantAllowance]: generateAminoType(MsgFeeGrantAllowance, feegrantAminoProcess),
   [CarbonTx.Types.MsgRevokeAllowance]: generateAminoType(MsgRevokeAllowance),
   [CarbonTx.Types.MsgExec]: generateAminoType(MsgExec),
   [SignlessTypes.GenericAuthorization]: generateAminoType(GenericAuthorizationAminoType),

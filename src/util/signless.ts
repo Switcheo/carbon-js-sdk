@@ -1,6 +1,8 @@
 import { TxTypes } from "@carbon-sdk/codec";
 import { GenericAuthorization } from "@carbon-sdk/codec/cosmos/authz/v1beta1/authz";
+import { AllowedMsgAllowance, BasicAllowance } from "@carbon-sdk/codec/cosmos/feegrant/v1beta1/feegrant";
 import { Any } from "@carbon-sdk/codec/google/protobuf/any";
+import { SignlessTypes } from "@carbon-sdk/provider/amino/types/signless";
 
 // Increment AUTHORIZED_SIGNLESS_MSGS_VERSION whenever this list is updated
 export const AuthorizedSignlessMsgs = [
@@ -73,12 +75,7 @@ export const AuthorizedSignlessMsgs = [
   TxTypes.MsgBeginRedelegate,
 ]
 
-export enum SignlessTypes {
-  GrantAuthz = "/cosmos.authz.v1beta1.MsgGrant",
-  GrantFeegrant = "/cosmos.feegrant.v1beta1.MsgGrantAllowance",
-  MsgExec = "/cosmos.authz.v1beta1.MsgExec",
-  GenericAuthorization = "/cosmos.authz.v1beta1.GenericAuthorization",
-}
+
 
 export interface ValueDecoded {
   typeUrl: string;
@@ -100,6 +97,19 @@ export const decodeContent = (content?: Any): ValueDecoded => {
       return {
         ...content,
         value: GenericAuthorization.decode(content.value),
+      }
+    }
+    case SignlessTypes.AllowedMsgAllowance: {
+      const value = AllowedMsgAllowance.decode(content.value)
+      return {
+        ...content,
+        value: { ...value, allowance: { ...decodeContent(value.allowance) } },
+      }
+    }
+    case SignlessTypes.BasicAllowance: {
+      return {
+        ...content,
+        value: BasicAllowance.decode(content.value),
       }
     }
     default:

@@ -32,7 +32,7 @@ const MsgRegisterToPool: AminoInit = {
 };
 
 const MsgDeregisterFromPool: AminoInit = {
-  aminoType: TxTypes.DeregisterFromPool,
+  aminoType: TxTypes.DeregisterToPool,
   valueMap: {},
 };
 
