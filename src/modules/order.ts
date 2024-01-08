@@ -212,10 +212,6 @@ export namespace OrderModule {
     /** commission percents, input 10 for 10% */
     referralCommission?: number;
     referralKickback?: number;
-    /** leverage for new trades is defaulted to 3x.
-     * this helps order creator to set leverage for the current market
-     * if unset, previously-set leverage will be used
-    */
     setLeverage?: BigNumber;
   }
 
