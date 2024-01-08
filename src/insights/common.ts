@@ -57,6 +57,7 @@ export const InsightsEndpoints = {
 
   //funding
   "market/funding": "/market/funding",
+  "market/funding/history": "/market/funding/history",
 
   // Proposal api
   "proposal/votes": "/gov/proposal/:proposalId/votes",

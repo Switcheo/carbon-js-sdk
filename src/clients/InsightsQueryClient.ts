@@ -429,6 +429,20 @@ class InsightsQueryClient {
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetFundingRateResponse>;
   }
 
+  async HistoricalFundingHistory(
+    query: Insights.QueryGetFundingRateRequest
+  ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetFundingRateResponse>> {
+    const request = this.apiManager.path(
+      "market/funding/history",
+      {},
+      {
+        market: query.market?.replace('%2F', '/') ?? "",
+      }
+    );
+    const response = await request.get();
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetFundingRateResponse>;
+  }
+
   async ProposalVotes(
     req: Insights.GetProposalVotesPathParams,
     query: Insights.GetProposalVotesQueryParams
