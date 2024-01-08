@@ -187,7 +187,7 @@ export namespace OrderModule {
 
   export interface SetLeverageAndCreateOrderParams extends CreateOrderParams {
     setLeverage?: BigNumber;
-  };
+  }
 
   export interface EditOrderParams {
     id: string;
