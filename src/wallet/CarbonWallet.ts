@@ -5,7 +5,7 @@ import { BaseAccount } from "@carbon-sdk/codec/cosmos/auth/v1beta1/auth";
 import { MsgExec } from "@carbon-sdk/codec/cosmos/authz/v1beta1/tx";
 import { ExtensionOptionsWeb3Tx } from "@carbon-sdk/codec/ethermint/types/v1/web3";
 import { CarbonEvmChainIDs, DEFAULT_FEE_DENOM, DEFAULT_GAS, DEFAULT_NETWORK, Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
-import { AUTHORIZED_SIGNLESS_MSGS_VERSION, BUFFER_PERIOD } from "@carbon-sdk/constant/signless";
+import { BUFFER_PERIOD } from "@carbon-sdk/constant/signless";
 import { ProviderAgent } from "@carbon-sdk/constant/walletProvider";
 import { ChainInfo, CosmosLedger, Keplr, KeplrAccount, LeapAccount, MetaMask } from "@carbon-sdk/provider";
 import { AddressUtils, CarbonTx, GenericUtils } from "@carbon-sdk/util";
@@ -15,7 +15,7 @@ import { ETH_SECP256K1_TYPE } from "@carbon-sdk/util/ethermint";
 import { fetch } from "@carbon-sdk/util/fetch";
 import { QueueManager } from "@carbon-sdk/util/generic";
 import { bnOrZero, BN_ZERO } from "@carbon-sdk/util/number";
-import { AuthorizedSignlessMsgs } from "@carbon-sdk/util/signless";
+import { AuthorizedSignlessMsgs, AUTHORIZED_SIGNLESS_MSGS_VERSION } from "@carbon-sdk/util/signless";
 import { BroadcastTxMode, CarbonCustomError, CarbonSignerData, ErrorType } from "@carbon-sdk/util/tx";
 import { encodeSecp256k1Signature, StdSignature } from "@cosmjs/amino";
 import { EncodeObject, OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
@@ -29,9 +29,11 @@ import { Key } from "@keplr-wallet/types";
 import { TxBody, TxRaw as StargateTxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
-import { default as CarbonSDK, default as ConnectedCarbonSDK } from "../CarbonSDK";
+import { default as CarbonSDK, ConnectedCarbonSDK } from "../CarbonSDK";
 import { CarbonEIP712Signer, CarbonLedgerSigner, CarbonNonSigner, CarbonPrivateKeySigner, CarbonSigner, CarbonSignerTypes, isCarbonEIP712Signer } from "./CarbonSigner";
 import { CarbonSigningClient } from "./CarbonSigningClient";
+
+dayjs.extend(utc)
 
 export interface CarbonWalletGenericOpts {
   tmClient?: Tendermint37Client;
@@ -335,7 +337,7 @@ export class CarbonWallet {
 
   public async setGranteeDetails(details: GranteeDetails) {
     this.granteeDetails = details;
-    const granteeInstance = await CarbonSDK.instanceWithMnemonic(details.mnemonics, { network: this.network })
+    const granteeInstance = await CarbonSDK.instanceWithMnemonic(details.mnemonics, { network: this.network, config: this.configOverride })
     if (granteeInstance) {
       this.granteeSDKInstance = granteeInstance;
     }
@@ -345,7 +347,6 @@ export class CarbonWallet {
     if (!this.granteeDetails) return false
     const { expiry, enabled, authMsgsVersion } = this.granteeDetails
     const bufferPeriod = BUFFER_PERIOD
-    dayjs.extend(utc)
     const hasNotExpired = dayjs.utc(expiry).isAfter(dayjs.utc().add(bufferPeriod, 'seconds'))
     const versionUpToDate = authMsgsVersion === AUTHORIZED_SIGNLESS_MSGS_VERSION
     return hasNotExpired && enabled && versionUpToDate && Boolean(this.granteeSDKInstance)

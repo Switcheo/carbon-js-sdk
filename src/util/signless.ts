@@ -4,15 +4,20 @@ import { AllowedMsgAllowance, BasicAllowance } from "@carbon-sdk/codec/cosmos/fe
 import { Any } from "@carbon-sdk/codec/google/protobuf/any";
 import { SignlessTypes } from "@carbon-sdk/provider/amino/types/signless";
 
+
+export const AUTHORIZED_SIGNLESS_MSGS_VERSION = 1
+
 // Increment AUTHORIZED_SIGNLESS_MSGS_VERSION whenever this list is updated
 export const AuthorizedSignlessMsgs = [
+  //admin
+  TxTypes.MsgCreateMarket,
+
   // alliance
   TxTypes.MsgAllianceDelegate,
   TxTypes.MsgAllianceUndelegate,
   TxTypes.MsgAllianceRedelegate,
   TxTypes.MsgAllianceClaimDelegationRewards,
   TxTypes.MsgWithdrawDelegatorReward,
-  TxTypes.MsgAllianceClaimDelegationRewards,
 
   // cdp
   TxTypes.MsgSupplyAsset,
@@ -39,13 +44,14 @@ export const AuthorizedSignlessMsgs = [
   // coin
   TxTypes.MsgMintToken,
   TxTypes.MsgDepositToGroup,
-  TxTypes.MsgDepositToGroup,
+  TxTypes.MsgWithdrawFromGroup,
   TxTypes.MsgCreateToken,
 
   // leverages
   TxTypes.MsgSetLeverage,
 
   // liquiditypool
+  TxTypes.MsgCreatePool,
   TxTypes.MsgCreatePoolWithLiquidity,
   TxTypes.MsgAddLiquidity,
   TxTypes.MsgRemoveLiquidity,

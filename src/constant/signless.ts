@@ -1,4 +1,2 @@
 
-export const AUTHORIZED_SIGNLESS_MSGS_VERSION = 1
-
 export const BUFFER_PERIOD = 60

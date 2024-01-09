@@ -1,7 +1,8 @@
 import * as BIP39 from "bip39";
 import { MsgGrantAllowance } from "../lib/codec/cosmos/feegrant/v1beta1/tx";
 import { AllowedMsgAllowance, BasicAllowance } from "../lib/codec/cosmos/feegrant/v1beta1/feegrant";
-import { CarbonSDK } from "./_sdk";
+import { CarbonSDK, CarbonTx } from "./_sdk";
+import { SignlessTypes } from "../src/provider/amino/types/signless"
 import "./_setup";
 
 (async () => {
@@ -14,20 +15,20 @@ import "./_setup";
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
   const encodedAllowanceMsg = [{
-    typeUrl: "/cosmos.feegrant.v1beta1.MsgGrantAllowance",
+    typeUrl: CarbonTx.Types.MsgGrantAllowance,
     value: MsgGrantAllowance.fromPartial({
       granter: connectedSDK.wallet.bech32Address,
       grantee: "swth1lp5tsyq623gxd0q496v5u8jrvpfgu2lcks6zun",
       allowance: {
-        typeUrl: '/cosmos.feegrant.v1beta1.AllowedMsgAllowance',
+        typeUrl: SignlessTypes.AllowedMsgAllowance,
         value: AllowedMsgAllowance.encode(AllowedMsgAllowance.fromPartial({
           allowance: {
-            typeUrl: '/cosmos.feegrant.v1beta1.BasicAllowance',
+            typeUrl: SignlessTypes.BasicAllowance,
             value: BasicAllowance.encode(BasicAllowance.fromPartial({
               expiration: new Date(17071278100000),
             })).finish(),
           },
-          allowedMessages: ["/cosmos.authz.v1beta1.MsgExec"],
+          allowedMessages: [CarbonTx.Types.MsgExec],
         })).finish(),
       },
     }),

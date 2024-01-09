@@ -8,6 +8,7 @@ import { MsgGrantAllowance, MsgRevokeAllowance } from "@carbon-sdk/codec/cosmos/
 import { AuthorizedSignlessMsgs } from "@carbon-sdk/util/signless";
 import BaseModule from "./base";
 import { QueryAllowanceRequest } from "@carbon-sdk/codec/cosmos/feegrant/v1beta1/query";
+import { SignlessTypes } from "@carbon-sdk/provider/amino/types/signless";
 
 export class SignlessModule extends BaseModule {
   public async grantSignlessPermission(params: SignlessModule.GrantSignlessPermissionParams, opts?: CarbonTx.SignTxOpts) {
@@ -47,15 +48,15 @@ export class SignlessModule extends BaseModule {
         granter: params.granter ?? wallet.bech32Address,
         grantee: params.grantee,
         allowance: {
-          typeUrl: '/cosmos.feegrant.v1beta1.AllowedMsgAllowance',
+          typeUrl: SignlessTypes.AllowedMsgAllowance,
           value: AllowedMsgAllowance.encode(AllowedMsgAllowance.fromPartial({
             allowance: {
-              typeUrl: '/cosmos.feegrant.v1beta1.BasicAllowance',
+              typeUrl: SignlessTypes.BasicAllowance,
               value: BasicAllowance.encode(BasicAllowance.fromPartial({
                 expiration: params.expiry,
               })).finish(),
             },
-            allowedMessages: ["/cosmos.authz.v1beta1.MsgExec"],
+            allowedMessages: [CarbonTx.Types.MsgExec],
           })).finish(),
         },
       }),

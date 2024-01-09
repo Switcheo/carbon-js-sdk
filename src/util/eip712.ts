@@ -141,7 +141,7 @@ function getMsgValueType(msgTypeUrl: string, msgValue: any, msgTypeName: string,
                     msgTypeDefinitions[typeName] = [...msgTypeDefinitions[typeName], { name, type: nestedType }]
                     //Special logic if nested struct is google protobuf's Any type
                     if (isGoogleProtobufAnyPackage(packageName, type)) {
-                        const nestedAnyTypeName = isArray ? nestedType.split('[]')[0].split(/\d+/)[0]: nestedType.split(/\d+/)[0]
+                        const nestedAnyTypeName = isArray ? nestedType.split('[]')[0].split(/\d+/)[0] : nestedType.split(/\d+/)[0]
                         const nestedMsgTypeIndex = getLatestMsgTypeIndex(`${nestedAnyTypeName}Value`, types)
                         const nestedAnyValueType = `${nestedAnyTypeName}Value${nestedMsgTypeIndex}`
                         msgTypeDefinitions[`${nestedAnyTypeName}${nestedMsgTypeIndex}`] = [{ name: "type", type: "string" }, { name: "value", type: nestedAnyValueType }]
@@ -172,7 +172,7 @@ function getGjsonPrimitiveType(value: any) {
     if (typeof value === 'boolean') {
         return 'bool'
     }
-    if (Array.isArray(value) && value.length && typeof value[0] === 'string') {
+    if (Array.isArray(value) && value.length && value.every(item => typeof item === 'string')) {
         return 'string[]'
     }
     return 'string'
