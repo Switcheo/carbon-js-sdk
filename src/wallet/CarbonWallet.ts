@@ -339,7 +339,7 @@ export class CarbonWallet {
 
   public async setGranteeDetails(details: GranteeDetails) {
     this.granteeDetails = details;
-    const granteeInstance = await CarbonSDK.instanceWithMnemonic(details.mnemonics, { network: this.network })
+    const granteeInstance = await CarbonSDK.instanceWithMnemonic(details.mnemonics, { network: this.network, config: this.configOverride })
     if (granteeInstance) {
       this.granteeSDKInstance = granteeInstance;
     }

@@ -8,6 +8,7 @@ import { QueryAllowanceRequest } from "@carbon-sdk/codec/cosmos/feegrant/v1beta1
 import { MsgGrantAllowance, MsgRevokeAllowance } from "@carbon-sdk/codec/cosmos/feegrant/v1beta1/tx";
 import { EncodeObject } from "@cosmjs/proto-signing";
 import BaseModule from "./base";
+import { SignlessTypes } from "@carbon-sdk/provider/amino/types/signless";
 
 export class SignlessModule extends BaseModule {
   public async grantSignlessPermission(params: SignlessModule.GrantSignlessPermissionParams, opts?: CarbonTx.SignTxOpts) {
@@ -30,15 +31,15 @@ export class SignlessModule extends BaseModule {
         granter: params.granter ?? wallet.bech32Address,
         grantee: params.grantee,
         allowance: {
-          typeUrl: '/cosmos.feegrant.v1beta1.AllowedMsgAllowance',
+          typeUrl: SignlessTypes.AllowedMsgAllowance,
           value: AllowedMsgAllowance.encode(AllowedMsgAllowance.fromPartial({
             allowance: {
-              typeUrl: '/cosmos.feegrant.v1beta1.BasicAllowance',
+              typeUrl: SignlessTypes.BasicAllowance,
               value: BasicAllowance.encode(BasicAllowance.fromPartial({
                 expiration: params.expiry,
               })).finish(),
             },
-            allowedMessages: ["/cosmos.authz.v1beta1.MsgExec"],
+            allowedMessages: [CarbonTx.Types.MsgExec],
           })).finish(),
         },
       }),
@@ -51,7 +52,7 @@ export class SignlessModule extends BaseModule {
         grantee: params.grantee,
         grant: {
           authorization: {
-            typeUrl: '/cosmos.authz.v1beta1.GenericAuthorization',
+            typeUrl: SignlessTypes.GenericAuthorization,
             value: GenericAuthorization.encode(GenericAuthorization.fromPartial({
               msg,
             })).finish(),
@@ -92,12 +93,12 @@ export class SignlessModule extends BaseModule {
           typeUrl: '/cosmos.feegrant.v1beta1.AllowedMsgAllowance',
           value: AllowedMsgAllowance.encode(AllowedMsgAllowance.fromPartial({
             allowance: {
-              typeUrl: '/cosmos.feegrant.v1beta1.BasicAllowance',
+              typeUrl: SignlessTypes.BasicAllowance,
               value: BasicAllowance.encode(BasicAllowance.fromPartial({
                 expiration: params.expiry,
               })).finish(),
             },
-            allowedMessages: ["/cosmos.authz.v1beta1.MsgExec"],
+            allowedMessages: [CarbonTx.Types.MsgExec],
           })).finish(),
         },
       }),
@@ -117,7 +118,7 @@ export class SignlessModule extends BaseModule {
         grantee: params.grantee,
         grant: {
           authorization: {
-            typeUrl: '/cosmos.authz.v1beta1.GenericAuthorization',
+            typeUrl: SignlessTypes.GenericAuthorization,
             value: GenericAuthorization.encode(GenericAuthorization.fromPartial({
               msg,
             })).finish(),
