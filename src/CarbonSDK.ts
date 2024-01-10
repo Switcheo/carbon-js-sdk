@@ -148,6 +148,7 @@ class CarbonSDK {
   chainId: string;
   evmChainId: string;
   gasFee: GasFee;
+
   constructor(opts: CarbonSDKOpts) {
     this.network = opts.network ?? DEFAULT_NETWORK;
     this.configOverride = opts.config ?? {};
@@ -582,6 +583,7 @@ class CarbonSDK {
   }
 
   public static parseNetwork = NetworkUtils.parseNetwork;
+
 }
 
 export class ConnectedCarbonSDK extends CarbonSDK {

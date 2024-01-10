@@ -48,7 +48,7 @@ const typeCheck = (value: any): boolean => {
 };
 
 const isArrayOfStrings = (value: unknown): value is string[] => {
-  return Array.isArray(value) && value.length !== 0 && value.every(item => typeof item === "string");
+  return Array.isArray(value) && value.every(item => typeof item === "string");
 }
 
 /**

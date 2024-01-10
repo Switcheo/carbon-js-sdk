@@ -172,7 +172,7 @@ function getGjsonPrimitiveType(value: any) {
     if (typeof value === 'boolean') {
         return 'bool'
     }
-    if (Array.isArray(value) && value.length && value.every(item => typeof item === 'string')) {
+    if (Array.isArray(value) && value.length && typeof value[0] === 'string') {
         return 'string[]'
     }
     return 'string'

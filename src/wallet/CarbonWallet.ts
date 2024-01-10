@@ -15,7 +15,6 @@ import { ETH_SECP256K1_TYPE } from "@carbon-sdk/util/ethermint";
 import { fetch } from "@carbon-sdk/util/fetch";
 import { QueueManager } from "@carbon-sdk/util/generic";
 import { bnOrZero, BN_ZERO } from "@carbon-sdk/util/number";
-import { AuthorizedSignlessMsgs, AUTHORIZED_SIGNLESS_MSGS_VERSION } from "@carbon-sdk/util/signless";
 import { BroadcastTxMode, CarbonCustomError, CarbonSignerData, ErrorType } from "@carbon-sdk/util/tx";
 import { encodeSecp256k1Signature, StdSignature } from "@cosmjs/amino";
 import { EncodeObject, OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
@@ -180,6 +179,9 @@ export class CarbonWallet {
   // for analytics
   providerAgent?: ProviderAgent | string;
 
+  authorizedMsgs?: string[];
+  authorizedMsgsVersion?: number;
+
   private tmClient?: Tendermint37Client;
   private granteeDetails?: GranteeDetails;
   private granteeSDKInstance?: ConnectedCarbonSDK;
@@ -337,7 +339,7 @@ export class CarbonWallet {
 
   public async setGranteeDetails(details: GranteeDetails) {
     this.granteeDetails = details;
-    const granteeInstance = await CarbonSDK.instanceWithMnemonic(details.mnemonics, { network: this.network, config: this.configOverride })
+    const granteeInstance = await CarbonSDK.instanceWithMnemonic(details.mnemonics, { network: this.network })
     if (granteeInstance) {
       this.granteeSDKInstance = granteeInstance;
     }
@@ -348,7 +350,7 @@ export class CarbonWallet {
     const { expiry, enabled, authMsgsVersion } = this.granteeDetails
     const bufferPeriod = BUFFER_PERIOD
     const hasNotExpired = dayjs.utc(expiry).isAfter(dayjs.utc().add(bufferPeriod, 'seconds'))
-    const versionUpToDate = authMsgsVersion === AUTHORIZED_SIGNLESS_MSGS_VERSION
+    const versionUpToDate = authMsgsVersion === this.authorizedMsgsVersion
     return hasNotExpired && enabled && versionUpToDate && Boolean(this.granteeSDKInstance)
   }
 
@@ -358,6 +360,11 @@ export class CarbonWallet {
     delete this.signingClient;
 
     return this;
+  }
+
+  public setAuthorizedMsgs(msgs: string[], version: number) {
+    this.authorizedMsgs = msgs;
+    this.authorizedMsgsVersion = version;
   }
 
   async getSignedTx(
@@ -384,6 +391,7 @@ export class CarbonWallet {
         evmChainId,
       };
       const fee = opts?.fee ?? this.estimateTxFee(messages, feeDenom);
+      console.log('xx', messages)
       const txRaw = await signingClient.sign(signerAddress, messages, fee, memo, signerData, granterAddress);
       let sig;
       if (isCarbonEIP712Signer(this.signer)) {
@@ -498,7 +506,7 @@ export class CarbonWallet {
       handler: { resolve, reject },
     } = txRequest;
 
-    const isAuthorized = messages.every((message) => AuthorizedSignlessMsgs.includes(message.typeUrl))
+    const isAuthorized = messages.every((message) => this.authorizedMsgs?.includes(message.typeUrl))
     if (this.granteeDetails && this.isGranteeValid() && isAuthorized) {
       this.signWithGrantee(txRequest)
     } else {
