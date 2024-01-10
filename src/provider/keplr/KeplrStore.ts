@@ -105,7 +105,6 @@ export class RootStore {
       },
       CosmosAccount.use({
         queriesStore: this.queriesStore,
-        msgOptsCreator: () => ({ ibcTransfer: { gas: undefined } }),
       }),
       CosmwasmAccount.use({
         queriesStore: this.queriesStore,
