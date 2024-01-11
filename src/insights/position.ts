@@ -1,9 +1,11 @@
 import { Entries, PageMeta, QueryByPageRequest, QueryByTimeRequest, TimeMeta } from "./common";
 
 export interface IndivPnl {
+  rank: string;
   address: string;
   realizedPnl: string;
-  rank: string;
+  unrealizedPnl: string;
+  totalPnl: string;
 }
 
 export interface GetLeaderboardPathParams {
