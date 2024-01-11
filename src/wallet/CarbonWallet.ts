@@ -391,7 +391,6 @@ export class CarbonWallet {
         evmChainId,
       };
       const fee = opts?.fee ?? this.estimateTxFee(messages, feeDenom);
-      console.log('xx', messages)
       const txRaw = await signingClient.sign(signerAddress, messages, fee, memo, signerData, granterAddress);
       let sig;
       if (isCarbonEIP712Signer(this.signer)) {

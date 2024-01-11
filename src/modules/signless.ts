@@ -6,15 +6,34 @@ import { GenericAuthorization } from "@carbon-sdk/codec/cosmos/authz/v1beta1/aut
 import { AllowedMsgAllowance, BasicAllowance } from "@carbon-sdk/codec/cosmos/feegrant/v1beta1/feegrant";
 import { QueryAllowanceRequest } from "@carbon-sdk/codec/cosmos/feegrant/v1beta1/query";
 import { MsgGrantAllowance, MsgRevokeAllowance } from "@carbon-sdk/codec/cosmos/feegrant/v1beta1/tx";
-import { EncodeObject } from "@cosmjs/proto-signing";
-import BaseModule from "./base";
 import { SignlessTypes } from "@carbon-sdk/provider/amino/types/signless";
+import BaseModule from "./base";
 
 export class SignlessModule extends BaseModule {
   public async grantSignlessPermission(params: SignlessModule.GrantSignlessPermissionParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet()
     const authorizedSignlessMsgs = wallet.authorizedMsgs ?? []
-    let messages: EncodeObject[] = []
+
+    const encodedGrantMsgs = authorizedSignlessMsgs?.map((msg) => {
+      const grantMsg = MsgGrant.fromPartial({
+        granter: params.granter ?? wallet.bech32Address,
+        grantee: params.grantee,
+        grant: {
+          authorization: {
+            typeUrl: SignlessTypes.GenericAuthorization,
+            value: GenericAuthorization.encode(GenericAuthorization.fromPartial({
+              msg,
+            })).finish(),
+          },
+          expiration: params.expiry,
+        },
+      })
+      return {
+        typeUrl: CarbonTx.Types.MsgGrant, value: grantMsg,
+      }
+    })
+    let messages = encodedGrantMsgs
+
     if (params.existingGrantee) {
       const encodedRevokeAllowanceMsg = [{
         typeUrl: CarbonTx.Types.MsgRevokeAllowance,
@@ -23,7 +42,7 @@ export class SignlessModule extends BaseModule {
           grantee: params.grantee,
         }),
       }]
-      messages = encodedRevokeAllowanceMsg
+      messages = messages.concat(encodedRevokeAllowanceMsg)
     }
     const encodedAllowanceMsg = [{
       typeUrl: CarbonTx.Types.MsgGrantAllowance,
@@ -46,26 +65,6 @@ export class SignlessModule extends BaseModule {
     }]
     messages = messages.concat(encodedAllowanceMsg)
 
-    const encodedGrantMsgs = authorizedSignlessMsgs?.map((msg) => {
-      const grantMsg = MsgGrant.fromPartial({
-        granter: params.granter ?? wallet.bech32Address,
-        grantee: params.grantee,
-        grant: {
-          authorization: {
-            typeUrl: SignlessTypes.GenericAuthorization,
-            value: GenericAuthorization.encode(GenericAuthorization.fromPartial({
-              msg,
-            })).finish(),
-          },
-          expiration: params.expiry,
-        },
-      })
-      return {
-        typeUrl: CarbonTx.Types.MsgGrant, value: grantMsg,
-      }
-    })
-    messages = messages.concat(encodedGrantMsgs)
-
     const result = await wallet.sendTxs(messages, opts)
 
     return result
@@ -73,24 +72,13 @@ export class SignlessModule extends BaseModule {
 
   public async grantAllowance(params: SignlessModule.GrantSignlessPermissionParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet()
-    const messages: EncodeObject[] = []
-    if (params.existingGrantee) {
-      const encodedRevokeAllowanceMsg = {
-        typeUrl: CarbonTx.Types.MsgRevokeAllowance,
-        value: MsgRevokeAllowance.fromPartial({
-          granter: params.granter ?? wallet.bech32Address,
-          grantee: params.grantee,
-        }),
-      }
-      messages.push(encodedRevokeAllowanceMsg)
-    }
-    const encodedAllowanceMsg = {
+    const encodedAllowanceMsg = [{
       typeUrl: CarbonTx.Types.MsgGrantAllowance,
       value: MsgGrantAllowance.fromPartial({
         granter: params.granter ?? wallet.bech32Address,
         grantee: params.grantee,
         allowance: {
-          typeUrl: '/cosmos.feegrant.v1beta1.AllowedMsgAllowance',
+          typeUrl: SignlessTypes.AllowedMsgAllowance,
           value: AllowedMsgAllowance.encode(AllowedMsgAllowance.fromPartial({
             allowance: {
               typeUrl: SignlessTypes.BasicAllowance,
@@ -102,8 +90,18 @@ export class SignlessModule extends BaseModule {
           })).finish(),
         },
       }),
+    }]
+    let messages = encodedAllowanceMsg
+    if (params.existingGrantee) {
+      const encodedRevokeAllowanceMsg = [{
+        typeUrl: CarbonTx.Types.MsgRevokeAllowance,
+        value: MsgRevokeAllowance.fromPartial({
+          granter: params.granter ?? wallet.bech32Address,
+          grantee: params.grantee,
+        }),
+      }]
+      messages = encodedRevokeAllowanceMsg.concat(messages)
     }
-    messages.push(encodedAllowanceMsg)
     const result = await wallet.sendTxs(messages, opts)
     return result
   }

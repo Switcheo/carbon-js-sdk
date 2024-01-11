@@ -167,21 +167,20 @@ const grantAuthzAminoProcess: AminoProcess = {
 }
 
 
-
 const checkEncodeFeegrant = (content: any, amino: AminoValueMap): DirectRes => {
   const msg = preProcessAmino(content.value, MsgFeeGrantAllowanceAmino.value.msg)
   const grantAllowance = MsgGrantAllowance.fromPartial({
     ...content.value,
     msg,
   })
+  const newContent = {
+    typeUrl: SignlessTypes.FeeGrant,
+    value: MsgGrantAllowance.encode(grantAllowance).finish(),
+  }
+  const newAmino = { ...amino }
   return {
-    newContent: {
-      typeUrl: SignlessTypes.FeeGrant,
-      value: MsgGrantAllowance.encode(grantAllowance).finish(),
-    },
-    newAmino: {
-      ...amino,
-    },
+    newContent,
+    newAmino,
   }
 }
 
@@ -200,7 +199,6 @@ const checkDecodeFeegrant = (content: any, amino: AminoValueMap): AminoRes => {
   const newAmino = { ...amino };
 
   newAmino.content = { ...MsgFeeGrantAllowanceAmino.value }
-
   return {
     newContent,
     newAmino,
