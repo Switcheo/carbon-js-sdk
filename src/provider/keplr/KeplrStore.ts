@@ -1,4 +1,4 @@
-import { ChainInfoExplorerTmRpc, ibcDefaultGas } from "@carbon-sdk/constant/ibc";
+import { ChainIds, ChainInfoExplorerTmRpc, ibcDefaultGas, ibcGasOverride } from "@carbon-sdk/constant/ibc";
 // import { iOS } from "@carbon-sdk/util/external";
 import { EmbedChainInfos } from "@carbon-sdk/util/ibc";
 import { IndexedDBKVStore } from "@keplr-wallet/common";
@@ -105,6 +105,7 @@ export class RootStore {
       },
       CosmosAccount.use({
         queriesStore: this.queriesStore,
+        msgOptsCreator: (chainId) => ({ ibcTransfer: { gas: ibcGasOverride[chainId as ChainIds] ?? ibcDefaultGas } }),
       }),
       CosmwasmAccount.use({
         queriesStore: this.queriesStore,
