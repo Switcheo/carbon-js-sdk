@@ -28,7 +28,8 @@ export const whitelistIbcExports: { [name: string]: string[] } = {
   'Client': ['ibc/core/client/v1'],
   'Commitment': ['ibc/core/commitment/v1'],
   'Connection': ['ibc/core/connection/v1'],
-  'LocalHost': ['ibc/lightclients/localhost/v1'],
-  'Solomachine': ['ibc/lightclients/solomachine/v1'],
+  'LocalHost': ['ibc/lightclients/localhost/v2'],
+  'SolomachineV2': ['ibc/lightclients/solomachine/v2'],
+  'SolomachineV3': ['ibc/lightclients/solomachine/v3'],
   'Tendermint': ['ibc/lightclients/tendermint/v1'],
 };

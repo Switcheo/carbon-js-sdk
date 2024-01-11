@@ -9,7 +9,7 @@ const MODEL_BLACKLIST = ['MsgClientImpl', 'protobufPackage', 'GenesisState', 'Qu
 
 const whitelistCarbonExports: { [name: string]: string } = {
     'Admin': 'Switcheo/carbon/admin',
-    'Alliance': 'alliance',
+    'Alliance': 'alliance/alliance',
     'Bank': 'Switcheo/carbon/bank',
     'Book': 'Switcheo/carbon/book',
     'Broker': 'Switcheo/carbon/broker',
@@ -17,6 +17,7 @@ const whitelistCarbonExports: { [name: string]: string } = {
     'Coin': 'Switcheo/carbon/coin',
     'Erc20': 'Switcheo/carbon/erc20',
     'Evmbank': 'Switcheo/carbon/evmbank',
+    'Evmcontract': 'Switcheo/carbon/evmcontract',
     'Evmmerge': 'Switcheo/carbon/evmmerge',
     'Fee': 'Switcheo/carbon/fee',
     'Inflation': 'Switcheo/carbon/inflation',

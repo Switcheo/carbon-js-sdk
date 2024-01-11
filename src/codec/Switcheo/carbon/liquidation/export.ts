@@ -1,5 +1,4 @@
 export { GenesisState_OutstandingPositionsEntry } from "./genesis"
-export { Params } from "./liquidation"
 export { OutstandingPosition, OutstandingPositions } from "./outstanding_position"
-export { QueryAllLiquidationRequest, QueryAllLiquidationResponse, QueryParamsRequest, QueryParamsResponse } from "./query"
+export { QueryAllLiquidationRequest, QueryAllLiquidationResponse } from "./query"
 export { QuoteChanges } from "./quote_changes"

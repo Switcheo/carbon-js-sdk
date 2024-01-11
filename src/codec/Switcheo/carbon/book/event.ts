@@ -5,15 +5,21 @@ import _m0 from "protobufjs/minimal";
 export const protobufPackage = "Switcheo.carbon.book";
 
 export interface OrderBookEvent {
-  type: string;
   market: string;
   side: string;
   price: string;
   quantity: string;
 }
 
+export interface VirtualOrderBookEvent {
+  book?: OrderBookEvent;
+}
+
+export interface ClearVirtualOrderBookEvent {
+  market: string;
+}
+
 const baseOrderBookEvent: object = {
-  type: "",
   market: "",
   side: "",
   price: "",
@@ -25,9 +31,6 @@ export const OrderBookEvent = {
     message: OrderBookEvent,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.type !== "") {
-      writer.uint32(10).string(message.type);
-    }
     if (message.market !== "") {
       writer.uint32(18).string(message.market);
     }
@@ -50,9 +53,6 @@ export const OrderBookEvent = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
-        case 1:
-          message.type = reader.string();
-          break;
         case 2:
           message.market = reader.string();
           break;
@@ -75,10 +75,6 @@ export const OrderBookEvent = {
 
   fromJSON(object: any): OrderBookEvent {
     const message = { ...baseOrderBookEvent } as OrderBookEvent;
-    message.type =
-      object.type !== undefined && object.type !== null
-        ? String(object.type)
-        : "";
     message.market =
       object.market !== undefined && object.market !== null
         ? String(object.market)
@@ -100,7 +96,6 @@ export const OrderBookEvent = {
 
   toJSON(message: OrderBookEvent): unknown {
     const obj: any = {};
-    message.type !== undefined && (obj.type = message.type);
     message.market !== undefined && (obj.market = message.market);
     message.side !== undefined && (obj.side = message.side);
     message.price !== undefined && (obj.price = message.price);
@@ -110,11 +105,138 @@ export const OrderBookEvent = {
 
   fromPartial(object: DeepPartial<OrderBookEvent>): OrderBookEvent {
     const message = { ...baseOrderBookEvent } as OrderBookEvent;
-    message.type = object.type ?? "";
     message.market = object.market ?? "";
     message.side = object.side ?? "";
     message.price = object.price ?? "";
     message.quantity = object.quantity ?? "";
+    return message;
+  },
+};
+
+const baseVirtualOrderBookEvent: object = {};
+
+export const VirtualOrderBookEvent = {
+  encode(
+    message: VirtualOrderBookEvent,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.book !== undefined) {
+      OrderBookEvent.encode(message.book, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): VirtualOrderBookEvent {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseVirtualOrderBookEvent } as VirtualOrderBookEvent;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.book = OrderBookEvent.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): VirtualOrderBookEvent {
+    const message = { ...baseVirtualOrderBookEvent } as VirtualOrderBookEvent;
+    message.book =
+      object.book !== undefined && object.book !== null
+        ? OrderBookEvent.fromJSON(object.book)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: VirtualOrderBookEvent): unknown {
+    const obj: any = {};
+    message.book !== undefined &&
+      (obj.book = message.book
+        ? OrderBookEvent.toJSON(message.book)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<VirtualOrderBookEvent>
+  ): VirtualOrderBookEvent {
+    const message = { ...baseVirtualOrderBookEvent } as VirtualOrderBookEvent;
+    message.book =
+      object.book !== undefined && object.book !== null
+        ? OrderBookEvent.fromPartial(object.book)
+        : undefined;
+    return message;
+  },
+};
+
+const baseClearVirtualOrderBookEvent: object = { market: "" };
+
+export const ClearVirtualOrderBookEvent = {
+  encode(
+    message: ClearVirtualOrderBookEvent,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.market !== "") {
+      writer.uint32(10).string(message.market);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): ClearVirtualOrderBookEvent {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseClearVirtualOrderBookEvent,
+    } as ClearVirtualOrderBookEvent;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.market = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ClearVirtualOrderBookEvent {
+    const message = {
+      ...baseClearVirtualOrderBookEvent,
+    } as ClearVirtualOrderBookEvent;
+    message.market =
+      object.market !== undefined && object.market !== null
+        ? String(object.market)
+        : "";
+    return message;
+  },
+
+  toJSON(message: ClearVirtualOrderBookEvent): unknown {
+    const obj: any = {};
+    message.market !== undefined && (obj.market = message.market);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<ClearVirtualOrderBookEvent>
+  ): ClearVirtualOrderBookEvent {
+    const message = {
+      ...baseClearVirtualOrderBookEvent,
+    } as ClearVirtualOrderBookEvent;
+    message.market = object.market ?? "";
     return message;
   },
 };

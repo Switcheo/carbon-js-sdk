@@ -14,8 +14,7 @@ rm -rf \
   src/codec/autodeleverage/ \
   src/codec/cosmos_proto/ \
   src/codec/gogoproto/ \
-  src/codec/google/api/ \
-  src/codec/google/protobuf/descriptor.ts
+  src/codec/google/api/ 
 
 yarn sync-reset
 sh $(dirname "${BASH_SOURCE[0]}")/generate-registry.sh
