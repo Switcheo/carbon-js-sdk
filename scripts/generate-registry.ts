@@ -1,4 +1,4 @@
-import { capitalize, first } from "lodash";
+import { capitalize } from "lodash";
 import path from "path";
 import { whitelistCosmosExports, whitelistIbcExports } from "./config";
 import { generateEIP712types } from "./generate-eip712-types";
@@ -116,7 +116,18 @@ for (const packageName in modules) {
     const messageType = messageAlias ? messageAlias.trim() : key
 
     if ((key.startsWith("Msg") && key !== "MsgClientImpl") || key.startsWith("Header") || key.endsWith("Proposal")) {
-      const typeKey = (messageType.startsWith("Msg") && matchAlliance) ? messageType.replace(/^Msg/, "MsgAlliance") : messageType;
+      let typeKey = ''
+      if ((messageType.startsWith("Msg") && matchAlliance)) {
+        typeKey = messageType.replace(/^Msg/, "MsgAlliance")
+      }
+      else if (match && typeMap[messageType]) {
+        // Switcheo.carbon.xxx ==> xxx
+        const carbonModule = packageName.split('.')[2]
+        typeKey = `Msg${capitalize(carbonModule)}${messageType.split('Msg')[1]}`
+      }
+      else {
+        typeKey = messageType
+      }
 
       typeMap[typeKey] = typeUrl;
       if (match?.[1] && polynetworkFolders.includes(match?.[1])) {
@@ -208,7 +219,7 @@ function updateImportsAlias(messages: string[], protobufPackage: string) {
     if (pkg === 'nft'
       || pkg === 'group'
       || (pkg === 'gov' && innerPkg === 'v1')
-      || ( pkg === 'feemarket')) {
+      || (pkg === 'feemarket')) {
       msgAlias = `Msg${capitalize(pkg)}${msg.substring(3)}`
     }
 
@@ -219,7 +230,7 @@ function updateImportsAlias(messages: string[], protobufPackage: string) {
       || pkg === 'slashing'
       || pkg === 'distribution'
       || pkg === 'staking'
-      || pkg === 'bank' 
+      || pkg === 'bank'
       || pkg === 'evm')
       && msg.includes('MsgUpdateParams')) {
       msgAlias = `Msg${capitalize(pkg)}${msg.substring(3)}`
