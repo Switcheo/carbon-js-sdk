@@ -1,4 +1,4 @@
-import { capitalize, first } from "lodash";
+import { capitalize } from "lodash";
 import path from "path";
 import { whitelistCosmosExports, whitelistIbcExports } from "./config";
 import { generateEIP712types } from "./generate-eip712-types";
@@ -13,7 +13,7 @@ const prefixCarbonDir = (m: string) => `Switcheo/carbon/${m}`;
 const polynetworkFolders = ['btcx', 'ccm', 'headersync', 'lockproxy'];
 
 const carbonFolders = ['admin', 'bank', 'book', 'broker', 'cdp', 'coin',
-  'erc20', 'evmbank', ' evmmerge', 'fee', 'inflation', 'insurance', 'leverage', 'liquidation',
+  'erc20', 'evmbank', 'evmcontract', 'evmmerge', 'fee', 'inflation', 'insurance', 'leverage', 'liquidation',
   'liquiditypool', 'market', 'marketstats', 'misc', 'oracle', 'order', 'perpspool',
   'position', 'pricing', 'profile', 'sequence', 'subaccount'];
 
@@ -56,7 +56,7 @@ for (const moduleFile of codecFiles) {
       || moduleFile.includes('src/codec/Switcheo/carbon/ccm/')
       || moduleFile.includes('src/codec/Switcheo/carbon/headersync/')
       || moduleFile.includes('src/codec/Switcheo/carbon/lockproxy/')
-      || moduleFile.includes('src/codec/alliance/')
+      || moduleFile.includes('src/codec/alliance/alliance')
       || carbonFolders.some(carbonModule => moduleFile.includes("src/codec/Switcheo/carbon/" + carbonModule))
     )) {
       updateImportsAlias(messages, codecModule.protobufPackage)
@@ -116,7 +116,18 @@ for (const packageName in modules) {
     const messageType = messageAlias ? messageAlias.trim() : key
 
     if ((key.startsWith("Msg") && key !== "MsgClientImpl") || key.startsWith("Header") || key.endsWith("Proposal")) {
-      const typeKey = (messageType.startsWith("Msg") && matchAlliance) ? messageType.replace(/^Msg/, "MsgAlliance") : messageType;
+      let typeKey = ''
+      if ((messageType.startsWith("Msg") && matchAlliance)) {
+        typeKey = messageType.replace(/^Msg/, "MsgAlliance")
+      }
+      else if (match && typeMap[messageType]) {
+        // Switcheo.carbon.xxx ==> xxx
+        const carbonModule = packageName.split('.')[2]
+        typeKey = `Msg${capitalize(carbonModule)}${messageType.split('Msg')[1]}`
+      }
+      else {
+        typeKey = messageType
+      }
 
       typeMap[typeKey] = typeUrl;
       if (match?.[1] && polynetworkFolders.includes(match?.[1])) {
@@ -182,8 +193,11 @@ for (const moduleFile of codecFiles) {
     if (relativePath === "") {
       continue
     }
+    const msgs = messages.filter(msg => msg !== 'Params' && !msg.startsWith('MsgUpdateParams')).map(msg => msg)
+    if (msgs.length > 0) {
+      console.log(`export { ${msgs.join(", ")} } from "${relativePath}";`)
 
-    console.log(`export { ${messages.join(", ")} } from "${relativePath}";`)
+    }
   }
 }
 // TODO: Remove hardcoded statement when upgrading cosmwasm codecs
@@ -205,7 +219,20 @@ function updateImportsAlias(messages: string[], protobufPackage: string) {
     if (pkg === 'nft'
       || pkg === 'group'
       || (pkg === 'gov' && innerPkg === 'v1')
-      || (pkg === 'evm' || pkg === 'feemarket')) {
+      || (pkg === 'feemarket')) {
+      msgAlias = `Msg${capitalize(pkg)}${msg.substring(3)}`
+    }
+
+    if ((pkg === 'mint'
+      || pkg === 'auth'
+      || pkg === 'consensus'
+      || pkg === 'crisis'
+      || pkg === 'slashing'
+      || pkg === 'distribution'
+      || pkg === 'staking'
+      || pkg === 'bank'
+      || pkg === 'evm')
+      && msg.includes('MsgUpdateParams')) {
       msgAlias = `Msg${capitalize(pkg)}${msg.substring(3)}`
     }
     if (msgAlias) {

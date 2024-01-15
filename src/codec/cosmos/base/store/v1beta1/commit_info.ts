@@ -1,6 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
+import { Timestamp } from "../../../../google/protobuf/timestamp";
 
 export const protobufPackage = "cosmos.base.store.v1beta1";
 
@@ -11,6 +12,7 @@ export const protobufPackage = "cosmos.base.store.v1beta1";
 export interface CommitInfo {
   version: Long;
   storeInfos: StoreInfo[];
+  timestamp?: Date;
 }
 
 /**
@@ -23,7 +25,7 @@ export interface StoreInfo {
 }
 
 /**
- * CommitID defines the committment information when a specific store is
+ * CommitID defines the commitment information when a specific store is
  * committed.
  */
 export interface CommitID {
@@ -44,6 +46,12 @@ export const CommitInfo = {
     for (const v of message.storeInfos) {
       StoreInfo.encode(v!, writer.uint32(18).fork()).ldelim();
     }
+    if (message.timestamp !== undefined) {
+      Timestamp.encode(
+        toTimestamp(message.timestamp),
+        writer.uint32(26).fork()
+      ).ldelim();
+    }
     return writer;
   },
 
@@ -60,6 +68,11 @@ export const CommitInfo = {
           break;
         case 2:
           message.storeInfos.push(StoreInfo.decode(reader, reader.uint32()));
+          break;
+        case 3:
+          message.timestamp = fromTimestamp(
+            Timestamp.decode(reader, reader.uint32())
+          );
           break;
         default:
           reader.skipType(tag & 7);
@@ -78,6 +91,10 @@ export const CommitInfo = {
     message.storeInfos = (object.storeInfos ?? []).map((e: any) =>
       StoreInfo.fromJSON(e)
     );
+    message.timestamp =
+      object.timestamp !== undefined && object.timestamp !== null
+        ? fromJsonTimestamp(object.timestamp)
+        : undefined;
     return message;
   },
 
@@ -92,6 +109,8 @@ export const CommitInfo = {
     } else {
       obj.storeInfos = [];
     }
+    message.timestamp !== undefined &&
+      (obj.timestamp = message.timestamp.toISOString());
     return obj;
   },
 
@@ -104,6 +123,7 @@ export const CommitInfo = {
     message.storeInfos = (object.storeInfos ?? []).map((e) =>
       StoreInfo.fromPartial(e)
     );
+    message.timestamp = object.timestamp ?? undefined;
     return message;
   },
 };
@@ -305,6 +325,32 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+function toTimestamp(date: Date): Timestamp {
+  const seconds = numberToLong(date.getTime() / 1_000);
+  const nanos = (date.getTime() % 1_000) * 1_000_000;
+  return { seconds, nanos };
+}
+
+function fromTimestamp(t: Timestamp): Date {
+  let millis = t.seconds.toNumber() * 1_000;
+  millis += t.nanos / 1_000_000;
+  return new Date(millis);
+}
+
+function fromJsonTimestamp(o: any): Date {
+  if (o instanceof Date) {
+    return o;
+  } else if (typeof o === "string") {
+    return new Date(o);
+  } else {
+    return fromTimestamp(Timestamp.fromJSON(o));
+  }
+}
+
+function numberToLong(number: number) {
+  return Long.fromNumber(number);
+}
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

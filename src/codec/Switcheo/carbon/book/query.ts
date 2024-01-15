@@ -776,12 +776,16 @@ export interface Query {
   ImpactPrice(
     request: QueryImpactPriceRequest
   ): Promise<QueryImpactPriceResponse>;
-  /** Get order book for a market */
-  Book(request: QueryGetBookRequest): Promise<QueryGetBookResponse>;
+  /** Get combined order book for a market */
+  CombinedBook(request: QueryGetBookRequest): Promise<QueryGetBookResponse>;
+  /** Get concrete book for a market */
+  ConcreteBook(request: QueryGetBookRequest): Promise<QueryGetBookResponse>;
+  /** Get virtual order book for a market */
+  VirtualBook(request: QueryGetBookRequest): Promise<QueryGetBookResponse>;
   /** Get stop order book for a market */
   StopBook(request: QueryGetStopBookRequest): Promise<QueryGetStopBookResponse>;
-  /** Get order books for all markets */
-  BookAll(request: QueryAllBookRequest): Promise<QueryAllBookResponse>;
+  /** Get combined order books for all markets */
+  CombinedBookAll(request: QueryAllBookRequest): Promise<QueryAllBookResponse>;
   /** Get all stop order book for a market */
   StopBookAll(
     request: QueryAllStopBookRequest
@@ -793,9 +797,11 @@ export class QueryClientImpl implements Query {
   constructor(rpc: Rpc) {
     this.rpc = rpc;
     this.ImpactPrice = this.ImpactPrice.bind(this);
-    this.Book = this.Book.bind(this);
+    this.CombinedBook = this.CombinedBook.bind(this);
+    this.ConcreteBook = this.ConcreteBook.bind(this);
+    this.VirtualBook = this.VirtualBook.bind(this);
     this.StopBook = this.StopBook.bind(this);
-    this.BookAll = this.BookAll.bind(this);
+    this.CombinedBookAll = this.CombinedBookAll.bind(this);
     this.StopBookAll = this.StopBookAll.bind(this);
   }
   ImpactPrice(
@@ -812,11 +818,35 @@ export class QueryClientImpl implements Query {
     );
   }
 
-  Book(request: QueryGetBookRequest): Promise<QueryGetBookResponse> {
+  CombinedBook(request: QueryGetBookRequest): Promise<QueryGetBookResponse> {
     const data = QueryGetBookRequest.encode(request).finish();
     const promise = this.rpc.request(
       "Switcheo.carbon.book.Query",
-      "Book",
+      "CombinedBook",
+      data
+    );
+    return promise.then((data) =>
+      QueryGetBookResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  ConcreteBook(request: QueryGetBookRequest): Promise<QueryGetBookResponse> {
+    const data = QueryGetBookRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.book.Query",
+      "ConcreteBook",
+      data
+    );
+    return promise.then((data) =>
+      QueryGetBookResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  VirtualBook(request: QueryGetBookRequest): Promise<QueryGetBookResponse> {
+    const data = QueryGetBookRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.book.Query",
+      "VirtualBook",
       data
     );
     return promise.then((data) =>
@@ -838,11 +868,11 @@ export class QueryClientImpl implements Query {
     );
   }
 
-  BookAll(request: QueryAllBookRequest): Promise<QueryAllBookResponse> {
+  CombinedBookAll(request: QueryAllBookRequest): Promise<QueryAllBookResponse> {
     const data = QueryAllBookRequest.encode(request).finish();
     const promise = this.rpc.request(
       "Switcheo.carbon.book.Query",
-      "BookAll",
+      "CombinedBookAll",
       data
     );
     return promise.then((data) =>

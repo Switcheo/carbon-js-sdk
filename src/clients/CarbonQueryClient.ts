@@ -44,7 +44,7 @@ import { QueryClientImpl as PositionQueryClient } from "@carbon-sdk/codec/Switch
 import { QueryClientImpl as PricingQueryClient } from "@carbon-sdk/codec/Switcheo/carbon/pricing/query";
 import { QueryClientImpl as ProfileQueryClient } from "@carbon-sdk/codec/Switcheo/carbon/profile/query";
 import { QueryClientImpl as SubaccountQueryClient } from "@carbon-sdk/codec/Switcheo/carbon/subaccount/query";
-import { QueryClientImpl as AllianceClient } from "@carbon-sdk/codec/alliance/query";
+import { QueryClientImpl as AllianceClient } from "@carbon-sdk/codec/alliance/alliance/query";
 import { QueryClientImpl as PerpspoolQueryClient } from "@carbon-sdk/codec/Switcheo/carbon/perpspool/query";
 import { QueryClientImpl as ERC20QueryClient } from "@carbon-sdk/codec/Switcheo/carbon/erc20/query";
 import { createProtobufRpcClient, QueryClient } from "@cosmjs/stargate";

@@ -1,6 +1,7 @@
+import { Carbon } from "@carbon-sdk/CarbonSDK";
 import { CarbonQueryClient } from "@carbon-sdk/clients";
 import GasFee from "@carbon-sdk/clients/GasFee";
-import { MsgMergeAccount, registry } from "@carbon-sdk/codec";
+import { registry } from "@carbon-sdk/codec";
 import { BaseAccount } from "@carbon-sdk/codec/cosmos/auth/v1beta1/auth";
 import { MsgExec } from "@carbon-sdk/codec/cosmos/authz/v1beta1/tx";
 import { ExtensionOptionsWeb3Tx } from "@carbon-sdk/codec/ethermint/types/v1/web3";
@@ -28,7 +29,7 @@ import { Key } from "@keplr-wallet/types";
 import { TxBody, TxRaw as StargateTxRaw } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
-import { default as CarbonSDK, ConnectedCarbonSDK } from "../CarbonSDK";
+import { ConnectedCarbonSDK, default as CarbonSDK } from "../CarbonSDK";
 import { CarbonEIP712Signer, CarbonLedgerSigner, CarbonNonSigner, CarbonPrivateKeySigner, CarbonSigner, CarbonSignerTypes, isCarbonEIP712Signer } from "./CarbonSigner";
 import { CarbonSigningClient } from "./CarbonSigningClient";
 
@@ -704,7 +705,7 @@ export class CarbonWallet {
       try {
         msg = {
           typeUrl: CarbonTx.Types.MsgMergeAccount,
-          value: MsgMergeAccount.fromPartial({
+          value: Carbon.Evmmerge.MsgMergeAccount.fromPartial({
             creator: address,
             pubKey: this.publicKey.toString('hex'),
           }),
