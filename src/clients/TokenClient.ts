@@ -131,7 +131,6 @@ class TokenClient {
       return this.symbols[denom] ?? denom;
     }
     const commonDenom = this.getCommonDenom(denom);
-
     return this.symbols[commonDenom] ?? commonDenom.toUpperCase();
   }
 
@@ -633,6 +632,7 @@ class TokenClient {
 
   public async reloadUSDValues(denoms: string[] = Object.keys(this.tokens)): Promise<TypeUtils.SimpleMap<BigNumber>> {
     this.usdValues.iusd = BN_ONE;
+    this.usdValues.cgusd = BN_ONE;
 
     //Get corresponding geckoId for denoms and removes any duplicated geckoIds (espeically for different wrapped tokens as they correspond to the same geckoId(same price))
     const geckoIds = denoms.reduce((coinIds, denom) => {
