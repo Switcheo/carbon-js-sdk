@@ -36,7 +36,6 @@ export interface CarbonWalletGenericOpts {
   defaultTimeoutBlocks?: number; // tx mempool ttl (timeoutHeight)
   disableRetryOnSequenceError?: boolean; // disable auto retry on nonce error
   triggerMerge?: boolean
-  viewOnly?: boolean;
 
   /**
    * Optional callback that will be called before signing is requested/executed.
@@ -152,7 +151,6 @@ export class CarbonWallet {
   publicKey: Buffer;
   query?: CarbonQueryClient;
   gasFee?: GasFee;
-  viewOnly?: boolean;
 
   txDefaultBroadCastMode?: BroadcastTxMode;
 
@@ -179,7 +177,6 @@ export class CarbonWallet {
   constructor(opts: CarbonWalletInitOpts) {
     const network = opts.network ?? DEFAULT_NETWORK;
     this.network = network;
-    this.viewOnly = opts.viewOnly ?? false;
     this.txDefaultBroadCastMode = opts.txDefaultBroadcastMode;
     this.networkConfig = NetworkConfigs[network];
     this.configOverride = opts.config ?? {};
@@ -316,11 +313,7 @@ export class CarbonWallet {
     this.query = queryClient;
     this.gasFee = gasFee
 
-    const promises = [this.reconnectTmClient(), this.reloadTxFees(), this.reloadMergeAccountStatus()];
-    if (!this.viewOnly) {
-      promises.push(this.reloadAccountSequence());
-    }
-    await Promise.all(promises);  
+    await Promise.all([this.reconnectTmClient(), this.reloadTxFees(), this.reloadAccountSequence(), this.reloadMergeAccountStatus()]);
 
     this.initialized = true;
     return this;
@@ -759,6 +752,7 @@ export class CarbonWallet {
   }
 
   private async getAccount(address: string) {
+    if (!address) return undefined;
     let account;
     try {
       account = (await this.getQueryClient().auth.Account({ address })).account
