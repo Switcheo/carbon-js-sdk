@@ -553,6 +553,7 @@ class CarbonSDK {
       ...opts,
       network: this.network,
       config: this.configOverride,
+      viewOnly: true,
     });
     return this.connect(wallet);
   }
