@@ -821,7 +821,7 @@ export class CDPModule extends BaseModule {
       return this.getTotalTokenDebt(underlyingDenom, debtInfo, interestFee, newInterestRate)
         .then((totalDebt) => {
           const denominator = bnOrZero(balance).plus(bnOrZero(totalDebt));
-          const ratio = denominator.isZero() ? BN_ZERO : bnOrZero(supply).div(bnOrZero(balance).plus(bnOrZero(totalDebt)));
+          const ratio = denominator.isZero() ? BN_ZERO : bnOrZero(supply).div(denominator);
           const actualAmount = ratio.isZero() ? BN_ZERO :bnOrZero(token.amount).div(ratio);
           return this.getTokenUsdVal(underlyingDenom, actualAmount, tokenPrice);
         })
