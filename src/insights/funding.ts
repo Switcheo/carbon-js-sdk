@@ -1,4 +1,4 @@
-export interface AvgFundingHistory {
+export interface HistoricalFundingHistory {
   market: string;
   "1h": string;
   "4h": string;
@@ -9,11 +9,11 @@ export interface AvgFundingHistory {
   "24h": string;
 }
 
-export interface QueryGetAvgFundingHistoryResponse {
-  entries: AvgFundingHistory[];
+export interface QueryGetHistoricalFundingHistoryResponse {
+  entries: HistoricalFundingHistory[];
 }
 
-export interface QueryGetAvgFundingHistoryRequest {
+export interface QueryGetHistoricalFundingHistoryRequest {
   market: string;
 }
 
