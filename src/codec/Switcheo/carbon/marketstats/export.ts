@@ -1,2 +1,3 @@
 export { MarketStats } from "./marketstats"
-export { QueryMarketStatsRequest, QueryMarketStatsResponse } from "./query"
+export { Params } from "./params"
+export { QueryParamsRequest, QueryParamsResponse, QueryMarketStatsRequest, QueryMarketStatsResponse } from "./query"

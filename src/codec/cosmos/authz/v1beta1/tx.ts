@@ -31,7 +31,7 @@ export interface MsgExecResponse {
 export interface MsgExec {
   grantee: string;
   /**
-   * Execute Msg.
+   * Authorization Msg requests to execute. Each msg must implement Authorization interface
    * The x/authz will try to find a grant matching (msg.signers[0], grantee, MsgTypeURL(msg))
    * triple and validate it.
    */
