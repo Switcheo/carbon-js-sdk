@@ -415,9 +415,9 @@ class InsightsQueryClient {
     return response.data as Insights.InsightsQueryResponse<Insights.QueryDenomToGeckoIdMap>;
   }
 
-  async FundingHistory(
-    query: Insights.QueryGetFundingRateRequest
-  ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetFundingRateResponse>> {
+  async FundingHistoryAll(
+    query: Insights.QueryGetFundingHistoryAllRequest
+  ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetFundingHistoryAllResponse>> {
     const request = this.apiManager.path(
       "market/funding/history/all",
       {},
@@ -428,23 +428,21 @@ class InsightsQueryClient {
       }
     );
     const response = await request.get();
-    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetFundingRateResponse>;
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetFundingHistoryAllResponse>;
   }
 
-  async HistoricalFundingHistory(
-    query: Insights.QueryGetFundingRateRequest
-  ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetFundingRateResponse>> {
+  async FundingHistoryAvg(
+    query: Insights.QueryGetFundingHistoryAvgRequest
+  ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetFundingHistoryAvgResponse>> {
     const request = this.apiManager.path(
       "market/funding/history",
       {},
       {
         market: query.market?.replace('%2F', '/') ?? "",
-        limit: query.limit ?? 100,
-        offset: query.offset ?? 0,
       }
     );
     const response = await request.get();
-    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetFundingRateResponse>;
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetFundingHistoryAvgResponse>;
   }
 
   async ProposalVotes(

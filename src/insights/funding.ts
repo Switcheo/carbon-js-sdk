@@ -1,4 +1,4 @@
-export interface FundingHistory {
+export interface FundingHistoryAvg {
   market: string;
   "1h": string;
   "4h": string;
@@ -9,12 +9,26 @@ export interface FundingHistory {
   "24h": string;
 }
 
-export interface QueryGetFundingRateResponse {
-  entries: FundingHistory[];
+export interface QueryGetFundingHistoryAvgResponse {
+  entries: FundingHistoryAvg[];
 }
 
-export interface QueryGetFundingRateRequest {
+export interface QueryGetFundingHistoryAvgRequest {
+  market: string;
+}
+
+export interface FundingHistoryAll {
+  market: string;
+  fundingRate: number;
+  lastFundingAt: string;
+}
+
+export interface QueryGetFundingHistoryAllResponse {
+  entries: FundingHistoryAll[];
+}
+
+export interface QueryGetFundingHistoryAllRequest {
   market?: string;
-  limit?: number;
-  offset?: number;
+  limit?: string;
+  offset?: string;
 }
