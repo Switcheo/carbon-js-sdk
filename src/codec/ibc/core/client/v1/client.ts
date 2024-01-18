@@ -99,11 +99,7 @@ export interface Height {
 
 /** Params defines the set of IBC light client parameters. */
 export interface Params {
-  /**
-   * allowed_clients defines the list of allowed client state types which can be created
-   * and interacted with. If a client type is removed from the allowed clients list, usage
-   * of this client will be disabled until it is added again to the list.
-   */
+  /** allowed_clients defines the list of allowed client state types. */
   allowedClients: string[];
 }
 
