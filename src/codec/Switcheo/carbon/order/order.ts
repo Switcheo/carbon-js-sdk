@@ -56,12 +56,12 @@ export interface OrdersForMarket {
   orders: Order[];
 }
 
-export interface OrderIDsForMarket {
+export interface OrderIdsForMarket {
   marketId: string;
   orderIds: string[];
 }
 
-export interface OrderIDs {
+export interface OrderIds {
   ids: string[];
 }
 
@@ -758,11 +758,11 @@ export const OrdersForMarket = {
   },
 };
 
-const baseOrderIDsForMarket: object = { marketId: "", orderIds: "" };
+const baseOrderIdsForMarket: object = { marketId: "", orderIds: "" };
 
-export const OrderIDsForMarket = {
+export const OrderIdsForMarket = {
   encode(
-    message: OrderIDsForMarket,
+    message: OrderIdsForMarket,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.marketId !== "") {
@@ -774,10 +774,10 @@ export const OrderIDsForMarket = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): OrderIDsForMarket {
+  decode(input: _m0.Reader | Uint8Array, length?: number): OrderIdsForMarket {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseOrderIDsForMarket } as OrderIDsForMarket;
+    const message = { ...baseOrderIdsForMarket } as OrderIdsForMarket;
     message.orderIds = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
@@ -796,8 +796,8 @@ export const OrderIDsForMarket = {
     return message;
   },
 
-  fromJSON(object: any): OrderIDsForMarket {
-    const message = { ...baseOrderIDsForMarket } as OrderIDsForMarket;
+  fromJSON(object: any): OrderIdsForMarket {
+    const message = { ...baseOrderIdsForMarket } as OrderIdsForMarket;
     message.marketId =
       object.marketId !== undefined && object.marketId !== null
         ? String(object.marketId)
@@ -806,7 +806,7 @@ export const OrderIDsForMarket = {
     return message;
   },
 
-  toJSON(message: OrderIDsForMarket): unknown {
+  toJSON(message: OrderIdsForMarket): unknown {
     const obj: any = {};
     message.marketId !== undefined && (obj.marketId = message.marketId);
     if (message.orderIds) {
@@ -817,19 +817,19 @@ export const OrderIDsForMarket = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<OrderIDsForMarket>): OrderIDsForMarket {
-    const message = { ...baseOrderIDsForMarket } as OrderIDsForMarket;
+  fromPartial(object: DeepPartial<OrderIdsForMarket>): OrderIdsForMarket {
+    const message = { ...baseOrderIdsForMarket } as OrderIdsForMarket;
     message.marketId = object.marketId ?? "";
     message.orderIds = (object.orderIds ?? []).map((e) => e);
     return message;
   },
 };
 
-const baseOrderIDs: object = { ids: "" };
+const baseOrderIds: object = { ids: "" };
 
-export const OrderIDs = {
+export const OrderIds = {
   encode(
-    message: OrderIDs,
+    message: OrderIds,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     for (const v of message.ids) {
@@ -838,10 +838,10 @@ export const OrderIDs = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): OrderIDs {
+  decode(input: _m0.Reader | Uint8Array, length?: number): OrderIds {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseOrderIDs } as OrderIDs;
+    const message = { ...baseOrderIds } as OrderIds;
     message.ids = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
@@ -857,13 +857,13 @@ export const OrderIDs = {
     return message;
   },
 
-  fromJSON(object: any): OrderIDs {
-    const message = { ...baseOrderIDs } as OrderIDs;
+  fromJSON(object: any): OrderIds {
+    const message = { ...baseOrderIds } as OrderIds;
     message.ids = (object.ids ?? []).map((e: any) => String(e));
     return message;
   },
 
-  toJSON(message: OrderIDs): unknown {
+  toJSON(message: OrderIds): unknown {
     const obj: any = {};
     if (message.ids) {
       obj.ids = message.ids.map((e) => e);
@@ -873,8 +873,8 @@ export const OrderIDs = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<OrderIDs>): OrderIDs {
-    const message = { ...baseOrderIDs } as OrderIDs;
+  fromPartial(object: DeepPartial<OrderIds>): OrderIds {
+    const message = { ...baseOrderIds } as OrderIds;
     message.ids = (object.ids ?? []).map((e) => e);
     return message;
   },

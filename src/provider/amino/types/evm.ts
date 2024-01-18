@@ -13,7 +13,7 @@ const MsgEthereumTx: AminoInit = {
 };
 
 const EvmAmino: TypeUtils.SimpleMap<AminoConverter> = {
-  [CarbonTx.Types.MsgEvmEthereumTx]: generateAminoType(MsgEthereumTx),
+  [CarbonTx.Types.MsgEthereumTx]: generateAminoType(MsgEthereumTx),
 };
 
 export default EvmAmino;
