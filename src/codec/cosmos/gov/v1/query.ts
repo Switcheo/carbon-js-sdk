@@ -8,6 +8,7 @@ import {
   VotingParams,
   DepositParams,
   TallyParams,
+  Params,
   Deposit,
   TallyResult,
   proposalStatusFromJSON,
@@ -27,6 +28,7 @@ export interface QueryProposalRequest {
 
 /** QueryProposalResponse is the response type for the Query/Proposal RPC method. */
 export interface QueryProposalResponse {
+  /** proposal is the requested governance proposal. */
   proposal?: Proposal;
 }
 
@@ -47,6 +49,7 @@ export interface QueryProposalsRequest {
  * method.
  */
 export interface QueryProposalsResponse {
+  /** proposals defines all the requested governance proposals. */
   proposals: Proposal[];
   /** pagination defines the pagination in the response. */
   pagination?: PageResponse;
@@ -62,7 +65,7 @@ export interface QueryVoteRequest {
 
 /** QueryVoteResponse is the response type for the Query/Vote RPC method. */
 export interface QueryVoteResponse {
-  /** vote defined the queried vote. */
+  /** vote defines the queried vote. */
   vote?: Vote;
 }
 
@@ -76,7 +79,7 @@ export interface QueryVotesRequest {
 
 /** QueryVotesResponse is the response type for the Query/Votes RPC method. */
 export interface QueryVotesResponse {
-  /** votes defined the queried votes. */
+  /** votes defines the queried votes. */
   votes: Vote[];
   /** pagination defines the pagination in the response. */
   pagination?: PageResponse;
@@ -93,12 +96,33 @@ export interface QueryParamsRequest {
 
 /** QueryParamsResponse is the response type for the Query/Params RPC method. */
 export interface QueryParamsResponse {
-  /** voting_params defines the parameters related to voting. */
+  /**
+   * Deprecated: Prefer to use `params` instead.
+   * voting_params defines the parameters related to voting.
+   *
+   * @deprecated
+   */
   votingParams?: VotingParams;
-  /** deposit_params defines the parameters related to deposit. */
+  /**
+   * Deprecated: Prefer to use `params` instead.
+   * deposit_params defines the parameters related to deposit.
+   *
+   * @deprecated
+   */
   depositParams?: DepositParams;
-  /** tally_params defines the parameters related to tally. */
+  /**
+   * Deprecated: Prefer to use `params` instead.
+   * tally_params defines the parameters related to tally.
+   *
+   * @deprecated
+   */
   tallyParams?: TallyParams;
+  /**
+   * params defines all the paramaters of x/gov module.
+   *
+   * Since: cosmos-sdk 0.47
+   */
+  params?: Params;
 }
 
 /** QueryDepositRequest is the request type for the Query/Deposit RPC method. */
@@ -125,6 +149,7 @@ export interface QueryDepositsRequest {
 
 /** QueryDepositsResponse is the response type for the Query/Deposits RPC method. */
 export interface QueryDepositsResponse {
+  /** deposits defines the requested deposits. */
   deposits: Deposit[];
   /** pagination defines the pagination in the response. */
   pagination?: PageResponse;
@@ -813,6 +838,9 @@ export const QueryParamsResponse = {
         writer.uint32(26).fork()
       ).ldelim();
     }
+    if (message.params !== undefined) {
+      Params.encode(message.params, writer.uint32(34).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -831,6 +859,9 @@ export const QueryParamsResponse = {
           break;
         case 3:
           message.tallyParams = TallyParams.decode(reader, reader.uint32());
+          break;
+        case 4:
+          message.params = Params.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -854,6 +885,10 @@ export const QueryParamsResponse = {
       object.tallyParams !== undefined && object.tallyParams !== null
         ? TallyParams.fromJSON(object.tallyParams)
         : undefined;
+    message.params =
+      object.params !== undefined && object.params !== null
+        ? Params.fromJSON(object.params)
+        : undefined;
     return message;
   },
 
@@ -871,6 +906,8 @@ export const QueryParamsResponse = {
       (obj.tallyParams = message.tallyParams
         ? TallyParams.toJSON(message.tallyParams)
         : undefined);
+    message.params !== undefined &&
+      (obj.params = message.params ? Params.toJSON(message.params) : undefined);
     return obj;
   },
 
@@ -887,6 +924,10 @@ export const QueryParamsResponse = {
     message.tallyParams =
       object.tallyParams !== undefined && object.tallyParams !== null
         ? TallyParams.fromPartial(object.tallyParams)
+        : undefined;
+    message.params =
+      object.params !== undefined && object.params !== null
+        ? Params.fromPartial(object.params)
         : undefined;
     return message;
   },

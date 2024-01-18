@@ -9,6 +9,10 @@ export interface SpotAmm {
   poolId: Long;
   market: string;
   reservesHash: Uint8Array;
+  /**
+   * TODO: change to reserved after being used for migration
+   * reserved 4; // used to be orders, but deprecated
+   */
   orders: string[];
   poolRoute: Uint8Array;
 }
@@ -24,6 +28,10 @@ export interface PerpsAmm {
 /** PerpsMarketAmm exists when it is active or when there's orders or open position */
 export interface PerpsMarketAmm {
   market: string;
+  /**
+   * TODO: change to reserved after being used for migration
+   * reserved 2; // used to be orders, but deprecated
+   */
   orders: string[];
   lastIndexPrice: string;
 }

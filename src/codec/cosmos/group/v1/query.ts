@@ -23,7 +23,7 @@ export interface QueryGroupInfoRequest {
 
 /** QueryGroupInfoResponse is the Query/GroupInfo response type. */
 export interface QueryGroupInfoResponse {
-  /** info is the GroupInfo for the group. */
+  /** info is the GroupInfo of the group. */
   info?: GroupInfo;
 }
 
@@ -35,7 +35,7 @@ export interface QueryGroupPolicyInfoRequest {
 
 /** QueryGroupPolicyInfoResponse is the Query/GroupPolicyInfo response type. */
 export interface QueryGroupPolicyInfoResponse {
-  /** info is the GroupPolicyInfo for the group policy. */
+  /** info is the GroupPolicyInfo of the group policy. */
   info?: GroupPolicyInfo;
 }
 
@@ -2445,7 +2445,7 @@ export interface Query {
   GroupPolicyInfo(
     request: QueryGroupPolicyInfoRequest
   ): Promise<QueryGroupPolicyInfoResponse>;
-  /** GroupMembers queries members of a group */
+  /** GroupMembers queries members of a group by group id. */
   GroupMembers(
     request: QueryGroupMembersRequest
   ): Promise<QueryGroupMembersResponse>;
@@ -2457,7 +2457,7 @@ export interface Query {
   GroupPoliciesByGroup(
     request: QueryGroupPoliciesByGroupRequest
   ): Promise<QueryGroupPoliciesByGroupResponse>;
-  /** GroupsByAdmin queries group policies by admin address. */
+  /** GroupPoliciesByAdmin queries group policies by admin address. */
   GroupPoliciesByAdmin(
     request: QueryGroupPoliciesByAdminRequest
   ): Promise<QueryGroupPoliciesByAdminResponse>;
@@ -2471,7 +2471,7 @@ export interface Query {
   VoteByProposalVoter(
     request: QueryVoteByProposalVoterRequest
   ): Promise<QueryVoteByProposalVoterResponse>;
-  /** VotesByProposal queries a vote by proposal. */
+  /** VotesByProposal queries a vote by proposal id. */
   VotesByProposal(
     request: QueryVotesByProposalRequest
   ): Promise<QueryVotesByProposalResponse>;

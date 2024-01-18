@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Params, OrderIDs, Order } from "./order";
+import { Params, OrderIds, Order } from "./order";
 
 export const protobufPackage = "Switcheo.carbon.order";
 
@@ -12,16 +12,16 @@ export interface GenesisState {
    * this line is used by starport scaffolding # ibc/genesis/proto
    */
   orders: Order[];
-  accountOrderIds: GenesisAccountOrderIDs[];
+  accountOrderIds: GenesisAccountOrderIds[];
   accountSequences: GenesisAccountSequence[];
   flags: GenesisFlag[];
   params?: Params;
 }
 
-export interface GenesisAccountOrderIDs {
+export interface GenesisAccountOrderIds {
   address: string;
   market: string;
-  openOrderIds?: OrderIDs;
+  openOrderIds?: OrderIds;
 }
 
 export interface GenesisAccountSequence {
@@ -45,7 +45,7 @@ export const GenesisState = {
       Order.encode(v!, writer.uint32(10).fork()).ldelim();
     }
     for (const v of message.accountOrderIds) {
-      GenesisAccountOrderIDs.encode(v!, writer.uint32(18).fork()).ldelim();
+      GenesisAccountOrderIds.encode(v!, writer.uint32(18).fork()).ldelim();
     }
     for (const v of message.accountSequences) {
       GenesisAccountSequence.encode(v!, writer.uint32(26).fork()).ldelim();
@@ -75,7 +75,7 @@ export const GenesisState = {
           break;
         case 2:
           message.accountOrderIds.push(
-            GenesisAccountOrderIDs.decode(reader, reader.uint32())
+            GenesisAccountOrderIds.decode(reader, reader.uint32())
           );
           break;
         case 3:
@@ -101,7 +101,7 @@ export const GenesisState = {
     const message = { ...baseGenesisState } as GenesisState;
     message.orders = (object.orders ?? []).map((e: any) => Order.fromJSON(e));
     message.accountOrderIds = (object.accountOrderIds ?? []).map((e: any) =>
-      GenesisAccountOrderIDs.fromJSON(e)
+      GenesisAccountOrderIds.fromJSON(e)
     );
     message.accountSequences = (object.accountSequences ?? []).map((e: any) =>
       GenesisAccountSequence.fromJSON(e)
@@ -125,7 +125,7 @@ export const GenesisState = {
     }
     if (message.accountOrderIds) {
       obj.accountOrderIds = message.accountOrderIds.map((e) =>
-        e ? GenesisAccountOrderIDs.toJSON(e) : undefined
+        e ? GenesisAccountOrderIds.toJSON(e) : undefined
       );
     } else {
       obj.accountOrderIds = [];
@@ -153,7 +153,7 @@ export const GenesisState = {
     const message = { ...baseGenesisState } as GenesisState;
     message.orders = (object.orders ?? []).map((e) => Order.fromPartial(e));
     message.accountOrderIds = (object.accountOrderIds ?? []).map((e) =>
-      GenesisAccountOrderIDs.fromPartial(e)
+      GenesisAccountOrderIds.fromPartial(e)
     );
     message.accountSequences = (object.accountSequences ?? []).map((e) =>
       GenesisAccountSequence.fromPartial(e)
@@ -167,11 +167,11 @@ export const GenesisState = {
   },
 };
 
-const baseGenesisAccountOrderIDs: object = { address: "", market: "" };
+const baseGenesisAccountOrderIds: object = { address: "", market: "" };
 
-export const GenesisAccountOrderIDs = {
+export const GenesisAccountOrderIds = {
   encode(
-    message: GenesisAccountOrderIDs,
+    message: GenesisAccountOrderIds,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.address !== "") {
@@ -181,7 +181,7 @@ export const GenesisAccountOrderIDs = {
       writer.uint32(18).string(message.market);
     }
     if (message.openOrderIds !== undefined) {
-      OrderIDs.encode(message.openOrderIds, writer.uint32(26).fork()).ldelim();
+      OrderIds.encode(message.openOrderIds, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
@@ -189,10 +189,10 @@ export const GenesisAccountOrderIDs = {
   decode(
     input: _m0.Reader | Uint8Array,
     length?: number
-  ): GenesisAccountOrderIDs {
+  ): GenesisAccountOrderIds {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseGenesisAccountOrderIDs } as GenesisAccountOrderIDs;
+    const message = { ...baseGenesisAccountOrderIds } as GenesisAccountOrderIds;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -203,7 +203,7 @@ export const GenesisAccountOrderIDs = {
           message.market = reader.string();
           break;
         case 3:
-          message.openOrderIds = OrderIDs.decode(reader, reader.uint32());
+          message.openOrderIds = OrderIds.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -213,8 +213,8 @@ export const GenesisAccountOrderIDs = {
     return message;
   },
 
-  fromJSON(object: any): GenesisAccountOrderIDs {
-    const message = { ...baseGenesisAccountOrderIDs } as GenesisAccountOrderIDs;
+  fromJSON(object: any): GenesisAccountOrderIds {
+    const message = { ...baseGenesisAccountOrderIds } as GenesisAccountOrderIds;
     message.address =
       object.address !== undefined && object.address !== null
         ? String(object.address)
@@ -225,31 +225,31 @@ export const GenesisAccountOrderIDs = {
         : "";
     message.openOrderIds =
       object.openOrderIds !== undefined && object.openOrderIds !== null
-        ? OrderIDs.fromJSON(object.openOrderIds)
+        ? OrderIds.fromJSON(object.openOrderIds)
         : undefined;
     return message;
   },
 
-  toJSON(message: GenesisAccountOrderIDs): unknown {
+  toJSON(message: GenesisAccountOrderIds): unknown {
     const obj: any = {};
     message.address !== undefined && (obj.address = message.address);
     message.market !== undefined && (obj.market = message.market);
     message.openOrderIds !== undefined &&
       (obj.openOrderIds = message.openOrderIds
-        ? OrderIDs.toJSON(message.openOrderIds)
+        ? OrderIds.toJSON(message.openOrderIds)
         : undefined);
     return obj;
   },
 
   fromPartial(
-    object: DeepPartial<GenesisAccountOrderIDs>
-  ): GenesisAccountOrderIDs {
-    const message = { ...baseGenesisAccountOrderIDs } as GenesisAccountOrderIDs;
+    object: DeepPartial<GenesisAccountOrderIds>
+  ): GenesisAccountOrderIds {
+    const message = { ...baseGenesisAccountOrderIds } as GenesisAccountOrderIds;
     message.address = object.address ?? "";
     message.market = object.market ?? "";
     message.openOrderIds =
       object.openOrderIds !== undefined && object.openOrderIds !== null
-        ? OrderIDs.fromPartial(object.openOrderIds)
+        ? OrderIds.fromPartial(object.openOrderIds)
         : undefined;
     return message;
   },
