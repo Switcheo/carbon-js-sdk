@@ -56,7 +56,7 @@ export const InsightsEndpoints = {
   "info/denom_gecko_map": "/info/denom_gecko_map",
 
   //funding
-  "market/funding": "/market/funding",
+  "market/funding/history/all": "/market/funding/history/all",
   "market/funding/history": "/market/funding/history",
 
   // Proposal api
