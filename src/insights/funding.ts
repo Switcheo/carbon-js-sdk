@@ -1,5 +1,3 @@
-import { PageMeta } from "./common";
-
 export interface FundingHistory {
   market: string;
   "1h": string;
