@@ -808,20 +808,21 @@ export class CDPModule extends BaseModule {
       const underlyingDenom = this.getUnderlyingDenom(token.denom);
       const tokenPrice = tokenPrices.find((price) => price.denom === underlyingDenom);
       const supply = totalSupply.supply.find((supply) => supply.denom === token.denom)?.amount;
-      const balance = moduleBalancesMap[underlyingDenom].amount;
+      const balance = moduleBalancesMap[underlyingDenom]?.amount;
       const debtInfo = debtInfosAll.debtInfosAll.find((debtInfo) => debtInfo.denom === underlyingDenom);
 
       const assetParam = assetParamsAll.assetParamsAll.find((assetParam) => assetParam.denom === underlyingDenom);
       const rateStrategy = rateStrategies.rateStrategyParamsAll.find((rateStrategy) => rateStrategy.name === assetParam?.rateStrategyName);
 
-      if (!debtInfo || !supply || !tokenPrice || !rateStrategy || !balance) throw new Error("unable to retrieve token info");
+      if (!debtInfo || !supply || !tokenPrice || !rateStrategy) throw new Error("unable to retrieve token info");
 
       const apy = CDPModule.calculateInterestAPY(debtInfo, rateStrategy);
       const newInterestRate = CDPModule.calculateInterestForTimePeriod(apy, debtInfo.lastUpdatedTime ?? new Date(0), new Date());
       return this.getTotalTokenDebt(underlyingDenom, debtInfo, interestFee, newInterestRate)
         .then((totalDebt) => {
-          const ratio = bnOrZero(supply).div(bnOrZero(balance).plus(bnOrZero(totalDebt)));
-          const actualAmount = bnOrZero(token.amount).div(ratio);
+          const denominator = bnOrZero(balance).plus(bnOrZero(totalDebt));
+          const ratio = denominator.isZero() ? BN_ZERO : bnOrZero(supply).div(denominator);
+          const actualAmount = ratio.isZero() ? BN_ZERO :bnOrZero(token.amount).div(ratio);
           return this.getTokenUsdVal(underlyingDenom, actualAmount, tokenPrice);
         })
     })
