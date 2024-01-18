@@ -1,3 +1,5 @@
+import { PageMeta } from "./common";
+
 export interface FundingHistory {
   market: string;
   "1h": string;
@@ -11,8 +13,11 @@ export interface FundingHistory {
 
 export interface QueryGetFundingRateResponse {
   entries: FundingHistory[];
+  meta: PageMeta;
 }
 
 export interface QueryGetFundingRateRequest {
   market?: string;
+  limit?: number;
+  offset?: number;
 }

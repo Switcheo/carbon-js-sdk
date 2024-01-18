@@ -2450,15 +2450,30 @@ export const QueryParamsResponse = {
 
 /** Query defines the gRPC querier service. */
 export interface Query {
-  /** Validators queries all validators that match the given status. */
+  /**
+   * Validators queries all validators that match the given status.
+   *
+   * When called from another module, this query might consume a high amount of
+   * gas if the pagination field is incorrectly set.
+   */
   Validators(request: QueryValidatorsRequest): Promise<QueryValidatorsResponse>;
   /** Validator queries validator info for given validator address. */
   Validator(request: QueryValidatorRequest): Promise<QueryValidatorResponse>;
-  /** ValidatorDelegations queries delegate info for given validator. */
+  /**
+   * ValidatorDelegations queries delegate info for given validator.
+   *
+   * When called from another module, this query might consume a high amount of
+   * gas if the pagination field is incorrectly set.
+   */
   ValidatorDelegations(
     request: QueryValidatorDelegationsRequest
   ): Promise<QueryValidatorDelegationsResponse>;
-  /** ValidatorUnbondingDelegations queries unbonding delegations of a validator. */
+  /**
+   * ValidatorUnbondingDelegations queries unbonding delegations of a validator.
+   *
+   * When called from another module, this query might consume a high amount of
+   * gas if the pagination field is incorrectly set.
+   */
   ValidatorUnbondingDelegations(
     request: QueryValidatorUnbondingDelegationsRequest
   ): Promise<QueryValidatorUnbondingDelegationsResponse>;
@@ -2471,24 +2486,40 @@ export interface Query {
   UnbondingDelegation(
     request: QueryUnbondingDelegationRequest
   ): Promise<QueryUnbondingDelegationResponse>;
-  /** DelegatorDelegations queries all delegations of a given delegator address. */
+  /**
+   * DelegatorDelegations queries all delegations of a given delegator address.
+   *
+   * When called from another module, this query might consume a high amount of
+   * gas if the pagination field is incorrectly set.
+   */
   DelegatorDelegations(
     request: QueryDelegatorDelegationsRequest
   ): Promise<QueryDelegatorDelegationsResponse>;
   /**
    * DelegatorUnbondingDelegations queries all unbonding delegations of a given
    * delegator address.
+   *
+   * When called from another module, this query might consume a high amount of
+   * gas if the pagination field is incorrectly set.
    */
   DelegatorUnbondingDelegations(
     request: QueryDelegatorUnbondingDelegationsRequest
   ): Promise<QueryDelegatorUnbondingDelegationsResponse>;
-  /** Redelegations queries redelegations of given address. */
+  /**
+   * Redelegations queries redelegations of given address.
+   *
+   * When called from another module, this query might consume a high amount of
+   * gas if the pagination field is incorrectly set.
+   */
   Redelegations(
     request: QueryRedelegationsRequest
   ): Promise<QueryRedelegationsResponse>;
   /**
    * DelegatorValidators queries all validators info for given delegator
    * address.
+   *
+   * When called from another module, this query might consume a high amount of
+   * gas if the pagination field is incorrectly set.
    */
   DelegatorValidators(
     request: QueryDelegatorValidatorsRequest

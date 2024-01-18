@@ -2148,6 +2148,12 @@ export const ibcTransferChannelRegex = /^transfer\/channel-(\d+)/i;
 
 export const ibcDefaultGas: number = 300000;
 
+export const ibcGasOverride: {
+  [index in ChainIds]?: number;
+} = {
+  [ChainIds.Osmosis]: 500000,
+}
+
 export const DefaultGasPriceStep: GasPriceStep = {
   low: 0.01,
   average: 0.025,

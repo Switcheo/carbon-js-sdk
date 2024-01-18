@@ -1,5 +1,5 @@
 import { CarbonQueryClient } from "@carbon-sdk/clients";
-import { MsgMergeAccount } from "@carbon-sdk/codec";
+import { Carbon } from "@carbon-sdk/CarbonSDK";
 import { BaseAccount } from "@carbon-sdk/codec/cosmos/auth/v1beta1/auth";
 import { ExtensionOptionsWeb3Tx } from "@carbon-sdk/codec/ethermint/types/v1/web3";
 import { CarbonEvmChainIDs, DEFAULT_FEE_DENOM, DEFAULT_GAS, DEFAULT_NETWORK, Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
@@ -585,7 +585,7 @@ export class CarbonWallet {
       try {
         msg = {
           typeUrl: CarbonTx.Types.MsgMergeAccount,
-          value: MsgMergeAccount.fromPartial({
+          value: Carbon.Evmmerge.MsgMergeAccount.fromPartial({
             creator: address,
             pubKey: this.publicKey.toString('hex'),
           }),
