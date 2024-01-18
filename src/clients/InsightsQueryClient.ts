@@ -415,9 +415,9 @@ class InsightsQueryClient {
     return response.data as Insights.InsightsQueryResponse<Insights.QueryDenomToGeckoIdMap>;
   }
 
-  async FundingHistoryAll(
-    query: Insights.QueryGetFundingHistoryAllRequest
-  ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetFundingHistoryAllResponse>> {
+  async FundingHistory(
+    query: Insights.QueryGetFundingHistoryRequest
+  ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetFundingHistoryResponse>> {
     const request = this.apiManager.path(
       "market/funding/history/all",
       {},
@@ -428,12 +428,12 @@ class InsightsQueryClient {
       }
     );
     const response = await request.get();
-    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetFundingHistoryAllResponse>;
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetFundingHistoryResponse>;
   }
 
-  async FundingHistoryAvg(
-    query: Insights.QueryGetFundingHistoryAvgRequest
-  ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetFundingHistoryAvgResponse>> {
+  async AvgFundingHistory(
+    query: Insights.QueryGetAvgFundingHistoryRequest
+  ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetAvgFundingHistoryResponse>> {
     const request = this.apiManager.path(
       "market/funding/history",
       {},
@@ -442,7 +442,7 @@ class InsightsQueryClient {
       }
     );
     const response = await request.get();
-    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetFundingHistoryAvgResponse>;
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetAvgFundingHistoryResponse>;
   }
 
   async ProposalVotes(

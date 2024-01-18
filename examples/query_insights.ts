@@ -111,7 +111,7 @@ import { CarbonSDK } from "./_sdk";
   console.log("PoolHistory", PoolHistory)
 
   //Funding History
-  const fundingHistory = await sdk.insights.FundingHistoryAll({})
+  const fundingHistory = await sdk.insights.FundingHistory({})
   console.log("fundingHistory", fundingHistory)
 
 })().catch(console.error).finally(() => process.exit(0));
