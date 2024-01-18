@@ -9,11 +9,11 @@ export interface HistoricalFundingHistory {
   "24h": string;
 }
 
-export interface QueryGetHistoricalFundingHistoryResponse {
+export interface QueryGetFundingRateResponse {
   entries: HistoricalFundingHistory[];
 }
 
-export interface QueryGetHistoricalFundingHistoryRequest {
+export interface QueryGetFundingRateRequest {
   market: string;
 }
 
