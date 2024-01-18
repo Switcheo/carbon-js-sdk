@@ -8,22 +8,10 @@ export const protobufPackage = "cosmos.distribution.v1beta1";
 /** Params defines the set of params for the distribution module. */
 export interface Params {
   communityTax: string;
-  /**
-   * Deprecated: The base_proposer_reward field is deprecated and is no longer used
-   * in the x/distribution module's reward mechanism.
-   *
-   * @deprecated
-   */
   baseProposerReward: string;
-  /**
-   * Deprecated: The bonus_proposer_reward field is deprecated and is no longer used
-   * in the x/distribution module's reward mechanism.
-   *
-   * @deprecated
-   */
   bonusProposerReward: string;
-  withdrawAddrEnabled: boolean;
   liquidityProviderReward: string;
+  withdrawAddrEnabled: boolean;
 }
 
 /**
@@ -99,13 +87,6 @@ export interface FeePool {
  * CommunityPoolSpendProposal details a proposal for use of community funds,
  * together with how many coins are proposed to be spent, and to which
  * recipient account.
- *
- * Deprecated: Do not use. As of the Cosmos SDK release v0.47.x, there is no
- * longer a need for an explicit CommunityPoolSpendProposal. To spend community
- * pool funds, a simple MsgCommunityPoolSpend can be invoked from the x/gov
- * module via a v1 governance proposal.
- *
- * @deprecated
  */
 export interface CommunityPoolSpendProposal {
   title: string;
@@ -153,8 +134,8 @@ const baseParams: object = {
   communityTax: "",
   baseProposerReward: "",
   bonusProposerReward: "",
-  withdrawAddrEnabled: false,
   liquidityProviderReward: "",
+  withdrawAddrEnabled: false,
 };
 
 export const Params = {
@@ -171,11 +152,11 @@ export const Params = {
     if (message.bonusProposerReward !== "") {
       writer.uint32(26).string(message.bonusProposerReward);
     }
-    if (message.withdrawAddrEnabled === true) {
-      writer.uint32(32).bool(message.withdrawAddrEnabled);
-    }
     if (message.liquidityProviderReward !== "") {
       writer.uint32(42).string(message.liquidityProviderReward);
+    }
+    if (message.withdrawAddrEnabled === true) {
+      writer.uint32(32).bool(message.withdrawAddrEnabled);
     }
     return writer;
   },
@@ -196,11 +177,11 @@ export const Params = {
         case 3:
           message.bonusProposerReward = reader.string();
           break;
-        case 4:
-          message.withdrawAddrEnabled = reader.bool();
-          break;
         case 5:
           message.liquidityProviderReward = reader.string();
+          break;
+        case 4:
+          message.withdrawAddrEnabled = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -226,16 +207,16 @@ export const Params = {
       object.bonusProposerReward !== null
         ? String(object.bonusProposerReward)
         : "";
-    message.withdrawAddrEnabled =
-      object.withdrawAddrEnabled !== undefined &&
-      object.withdrawAddrEnabled !== null
-        ? Boolean(object.withdrawAddrEnabled)
-        : false;
     message.liquidityProviderReward =
       object.liquidityProviderReward !== undefined &&
       object.liquidityProviderReward !== null
         ? String(object.liquidityProviderReward)
         : "";
+    message.withdrawAddrEnabled =
+      object.withdrawAddrEnabled !== undefined &&
+      object.withdrawAddrEnabled !== null
+        ? Boolean(object.withdrawAddrEnabled)
+        : false;
     return message;
   },
 
@@ -247,10 +228,10 @@ export const Params = {
       (obj.baseProposerReward = message.baseProposerReward);
     message.bonusProposerReward !== undefined &&
       (obj.bonusProposerReward = message.bonusProposerReward);
-    message.withdrawAddrEnabled !== undefined &&
-      (obj.withdrawAddrEnabled = message.withdrawAddrEnabled);
     message.liquidityProviderReward !== undefined &&
       (obj.liquidityProviderReward = message.liquidityProviderReward);
+    message.withdrawAddrEnabled !== undefined &&
+      (obj.withdrawAddrEnabled = message.withdrawAddrEnabled);
     return obj;
   },
 
@@ -259,8 +240,8 @@ export const Params = {
     message.communityTax = object.communityTax ?? "";
     message.baseProposerReward = object.baseProposerReward ?? "";
     message.bonusProposerReward = object.bonusProposerReward ?? "";
-    message.withdrawAddrEnabled = object.withdrawAddrEnabled ?? false;
     message.liquidityProviderReward = object.liquidityProviderReward ?? "";
+    message.withdrawAddrEnabled = object.withdrawAddrEnabled ?? false;
     return message;
   },
 };

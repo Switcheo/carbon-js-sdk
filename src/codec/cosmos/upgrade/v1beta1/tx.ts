@@ -13,7 +13,7 @@ export const protobufPackage = "cosmos.upgrade.v1beta1";
  * Since: cosmos-sdk 0.46
  */
 export interface MsgSoftwareUpgrade {
-  /** authority is the address that controls the module (defaults to x/gov unless overwritten). */
+  /** authority is the address of the governance account. */
   authority: string;
   /** plan is the upgrade plan. */
   plan?: Plan;
@@ -32,7 +32,7 @@ export interface MsgSoftwareUpgradeResponse {}
  * Since: cosmos-sdk 0.46
  */
 export interface MsgCancelUpgrade {
-  /** authority is the address that controls the module (defaults to x/gov unless overwritten). */
+  /** authority is the address of the governance account. */
   authority: string;
 }
 
@@ -281,7 +281,7 @@ export interface Msg {
   ): Promise<MsgSoftwareUpgradeResponse>;
   /**
    * CancelUpgrade is a governance operation for cancelling a previously
-   * approved software upgrade.
+   * approvid software upgrade.
    *
    * Since: cosmos-sdk 0.46
    */

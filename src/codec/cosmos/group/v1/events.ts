@@ -3,12 +3,8 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import {
   ProposalExecutorResult,
-  ProposalStatus,
-  TallyResult,
   proposalExecutorResultFromJSON,
   proposalExecutorResultToJSON,
-  proposalStatusFromJSON,
-  proposalStatusToJSON,
 } from "./types";
 
 export const protobufPackage = "cosmos.group.v1";
@@ -73,16 +69,6 @@ export interface EventLeaveGroup {
   groupId: Long;
   /** address is the account address of the group member. */
   address: string;
-}
-
-/** EventProposalPruned is an event emitted when a proposal is pruned. */
-export interface EventProposalPruned {
-  /** proposal_id is the unique ID of the proposal. */
-  proposalId: Long;
-  /** status is the proposal status (UNSPECIFIED, SUBMITTED, ACCEPTED, REJECTED, ABORTED, WITHDRAWN). */
-  status: ProposalStatus;
-  /** tally_result is the proposal tally result (when applicable). */
-  tallyResult?: TallyResult;
 }
 
 const baseEventCreateGroup: object = { groupId: Long.UZERO };
@@ -638,97 +624,6 @@ export const EventLeaveGroup = {
         ? Long.fromValue(object.groupId)
         : Long.UZERO;
     message.address = object.address ?? "";
-    return message;
-  },
-};
-
-const baseEventProposalPruned: object = { proposalId: Long.UZERO, status: 0 };
-
-export const EventProposalPruned = {
-  encode(
-    message: EventProposalPruned,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (!message.proposalId.isZero()) {
-      writer.uint32(8).uint64(message.proposalId);
-    }
-    if (message.status !== 0) {
-      writer.uint32(16).int32(message.status);
-    }
-    if (message.tallyResult !== undefined) {
-      TallyResult.encode(
-        message.tallyResult,
-        writer.uint32(26).fork()
-      ).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): EventProposalPruned {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseEventProposalPruned } as EventProposalPruned;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.proposalId = reader.uint64() as Long;
-          break;
-        case 2:
-          message.status = reader.int32() as any;
-          break;
-        case 3:
-          message.tallyResult = TallyResult.decode(reader, reader.uint32());
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): EventProposalPruned {
-    const message = { ...baseEventProposalPruned } as EventProposalPruned;
-    message.proposalId =
-      object.proposalId !== undefined && object.proposalId !== null
-        ? Long.fromString(object.proposalId)
-        : Long.UZERO;
-    message.status =
-      object.status !== undefined && object.status !== null
-        ? proposalStatusFromJSON(object.status)
-        : 0;
-    message.tallyResult =
-      object.tallyResult !== undefined && object.tallyResult !== null
-        ? TallyResult.fromJSON(object.tallyResult)
-        : undefined;
-    return message;
-  },
-
-  toJSON(message: EventProposalPruned): unknown {
-    const obj: any = {};
-    message.proposalId !== undefined &&
-      (obj.proposalId = (message.proposalId || Long.UZERO).toString());
-    message.status !== undefined &&
-      (obj.status = proposalStatusToJSON(message.status));
-    message.tallyResult !== undefined &&
-      (obj.tallyResult = message.tallyResult
-        ? TallyResult.toJSON(message.tallyResult)
-        : undefined);
-    return obj;
-  },
-
-  fromPartial(object: DeepPartial<EventProposalPruned>): EventProposalPruned {
-    const message = { ...baseEventProposalPruned } as EventProposalPruned;
-    message.proposalId =
-      object.proposalId !== undefined && object.proposalId !== null
-        ? Long.fromValue(object.proposalId)
-        : Long.UZERO;
-    message.status = object.status ?? 0;
-    message.tallyResult =
-      object.tallyResult !== undefined && object.tallyResult !== null
-        ? TallyResult.fromPartial(object.tallyResult)
-        : undefined;
     return message;
   },
 };
