@@ -423,6 +423,8 @@ class InsightsQueryClient {
       {},
       {
         market: query.market ?? "",
+        limit: query.limit ?? 100,
+        offset: query.offset ?? 0,
       }
     );
     const response = await request.get();
@@ -437,6 +439,8 @@ class InsightsQueryClient {
       {},
       {
         market: query.market?.replace('%2F', '/') ?? "",
+        limit: query.limit ?? 100,
+        offset: query.offset ?? 0,
       }
     );
     const response = await request.get();
