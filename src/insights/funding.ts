@@ -13,7 +13,6 @@ export interface FundingHistory {
 
 export interface QueryGetFundingRateResponse {
   entries: FundingHistory[];
-  meta: PageMeta;
 }
 
 export interface QueryGetFundingRateRequest {
