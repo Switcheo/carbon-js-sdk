@@ -419,7 +419,7 @@ class InsightsQueryClient {
     query: Insights.QueryGetFundingRateRequest
   ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetFundingRateResponse>> {
     const request = this.apiManager.path(
-      "market/funding",
+      "market/funding/history/all",
       {},
       {
         market: query.market ?? "",
