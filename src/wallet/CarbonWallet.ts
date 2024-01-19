@@ -741,7 +741,13 @@ export class CarbonWallet {
 
   private async reloadAccountInfo() {
     // carbon account always takes priority
-    const accountAny = await this.getAccount(this.bech32Address) ?? await this.getAccount(this.evmBech32Address)
+    let evmBech32Acc = null
+    const bech32Acc = this.bech32Address && await this.getAccount(this.bech32Address)
+    if (!bech32Acc && this.evmBech32Address){
+      evmBech32Acc = await this.getAccount(this.evmBech32Address) 
+    }
+    const accountAny = bech32Acc ?? evmBech32Acc
+
     if (!accountAny) return undefined
     const { accountNumber, sequence, address } = BaseAccount.decode(accountAny.value)
     return {
@@ -752,7 +758,6 @@ export class CarbonWallet {
   }
 
   private async getAccount(address: string) {
-    if (!address) return undefined;
     let account;
     try {
       account = (await this.getQueryClient().auth.Account({ address })).account
