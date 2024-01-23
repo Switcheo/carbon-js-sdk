@@ -416,17 +416,19 @@ class InsightsQueryClient {
   }
 
   async FundingHistory(
-    query: Insights.QueryGetFundingRateRequest
-  ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetFundingRateResponse>> {
+    query: Insights.QueryGetFundingHistoryRequest
+  ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetFundingHistoryResponse>> {
     const request = this.apiManager.path(
-      "market/funding",
+      "market/funding/history/all",
       {},
       {
         market: query.market ?? "",
+        limit: query.limit ?? 100,
+        offset: query.offset ?? 0,
       }
     );
     const response = await request.get();
-    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetFundingRateResponse>;
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetFundingHistoryResponse>;
   }
 
   async HistoricalFundingHistory(

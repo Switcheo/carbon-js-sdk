@@ -1,67 +1,63 @@
+import { MsgSetLeverage } from "@carbon-sdk/codec/Switcheo/carbon/leverage/tx";
 import { MsgCancelAll, MsgCancelOrder, MsgCreateOrder, MsgEditOrder } from "@carbon-sdk/codec/Switcheo/carbon/order/tx";
 import { CarbonTx } from "@carbon-sdk/util";
 import { BN_ZERO } from "@carbon-sdk/util/number";
 import { getDefaultTimeInForce, isMarket } from "@carbon-sdk/util/order";
+import { EncodeObject } from "@cosmjs/proto-signing";
 import { BigNumber } from "bignumber.js";
 import BaseModule from "./base";
 
+
 export class OrderModule extends BaseModule {
 
-  public async create(params: OrderModule.CreateOrderParams, opts?: CarbonTx.SignTxOpts) {
+  public async create(param: OrderModule.SetLeverageAndCreateOrderParams, opts?: CarbonTx.SignTxOpts) {
+    const { setLeverage, ...createOrderParam } = param;
 
-    const wallet = this.getWallet();
+    const params: (OrderModule.CreateOrderParams | OrderModule.SetLeverageParams)[] = [createOrderParam];
+    if (setLeverage) {
+      params.unshift({
+        leverage: setLeverage,
+        market: param.market,
+      });
+    }
 
-    const value = MsgCreateOrder.fromPartial({
-      creator: wallet.bech32Address,
-      isPostOnly: params.isPostOnly,
-      isReduceOnly: params.isReduceOnly,
-      market: params.market,
-      orderType: params.orderType,
-      price: params.price?.shiftedBy(18).toString(10),
-      quantity: params.quantity.toString(10),
-      side: params.side,
-      stopPrice: params.stopPrice?.shiftedBy(18).toString(10),
-      timeInForce: params.timeInForce || getDefaultTimeInForce(isMarket(params.orderType)),
-      triggerType: params.triggerType,
-      referralAddress: params.referralAddress,
-      referralCommission: params.referralCommission,
-      referralKickback: params.referralKickback,
-    });
-
-    return await wallet.sendTx(
-      {
-        typeUrl: CarbonTx.Types.MsgCreateOrder,
-        value,
-      },
-      opts
-    );
+    return this.createOrders(params, opts);
   }
 
-  public async createOrders(params: OrderModule.CreateOrderParams[], opts?: CarbonTx.SignTxOpts) {
+  public async createOrders(params: (OrderModule.CreateOrderParams | OrderModule.SetLeverageParams)[], opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
 
-    const msgs = params.map((params) => {
-      const value = MsgCreateOrder.fromPartial({
-        creator: wallet.bech32Address,
-        isPostOnly: params.isPostOnly,
-        isReduceOnly: params.isReduceOnly,
-        market: params.market,
-        orderType: params.orderType,
-        price: params.price?.shiftedBy(18).toString(10),
-        quantity: params.quantity.toString(10),
-        side: params.side,
-        stopPrice: params.stopPrice?.shiftedBy(18).toString(10),
-        timeInForce: params.timeInForce || getDefaultTimeInForce(isMarket(params.orderType)),
-        triggerType: params.triggerType,
-        referralAddress: params.referralAddress,
-        referralCommission: params.referralCommission,
-        referralKickback: params.referralKickback,
-      });
+    const msgs: EncodeObject[] = params.map((param) => {
+      if ("leverage" in param) {
+        return {
+          typeUrl: CarbonTx.Types.MsgSetLeverage,
+          value: MsgSetLeverage.fromPartial({
+            creator: wallet.bech32Address,
+            market: param.market,
+            leverage: param.leverage.shiftedBy(18).toString(10),
+          }),
+        }
+      }
 
       return {
         typeUrl: CarbonTx.Types.MsgCreateOrder,
-        value,
-      };
+        value: MsgCreateOrder.fromPartial({
+          creator: wallet.bech32Address,
+          isPostOnly: param.isPostOnly,
+          isReduceOnly: param.isReduceOnly,
+          market: param.market,
+          orderType: param.orderType,
+          price: param.price?.shiftedBy(18).toString(10),
+          quantity: param.quantity.toString(10),
+          side: param.side,
+          stopPrice: param.stopPrice?.shiftedBy(18).toString(10),
+          timeInForce: param.timeInForce || getDefaultTimeInForce(isMarket(param.orderType)),
+          triggerType: param.triggerType,
+          referralAddress: param.referralAddress,
+          referralCommission: param.referralCommission,
+          referralKickback: param.referralKickback,
+        }),
+      }
     });
 
     return await wallet.sendTxs(msgs, opts);
@@ -182,6 +178,15 @@ export namespace OrderModule {
     /** commission percents, input 10 for 10% */
     referralCommission?: number;
     referralKickback?: number;
+  }
+
+  export interface SetLeverageParams {
+    market: string;
+    leverage: BigNumber;
+  }
+
+  export interface SetLeverageAndCreateOrderParams extends CreateOrderParams {
+    setLeverage?: BigNumber;
   }
 
   export interface EditOrderParams {
