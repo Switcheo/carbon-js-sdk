@@ -23,7 +23,7 @@ export class LiquidityPoolModule extends BaseModule {
 
     return await wallet.sendTx(
       {
-        typeUrl: CarbonTx.Types.MsgLiquiditypoolCreatePool,
+        typeUrl: CarbonTx.Types.MsgCreatePool,
         value,
       },
       opts
