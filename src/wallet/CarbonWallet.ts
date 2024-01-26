@@ -116,7 +116,6 @@ export interface AccountInfo extends Account {
 }
 
 export interface GranteeDetails {
-  enabled: boolean;
   expiry: Date;
   mnemonics: string;
   authMsgsVersion: number;
@@ -338,8 +337,12 @@ export class CarbonWallet {
     return this;
   }
 
-  public async setGranteeDetails(details: GranteeDetails) {
+  public async setGranteeDetails(details: GranteeDetails | undefined) {
     this.granteeDetails = details;
+    if (!details) {
+      this.granteeSDKInstance = undefined
+      return
+    }
     const granteeInstance = await CarbonSDK.instanceWithMnemonic(details.mnemonics, { network: this.network, config: this.configOverride })
     if (granteeInstance) {
       this.granteeSDKInstance = granteeInstance;
@@ -348,11 +351,11 @@ export class CarbonWallet {
 
   private isGranteeValid(): boolean {
     if (!this.granteeDetails) return false
-    const { expiry, enabled, authMsgsVersion } = this.granteeDetails
+    const { expiry, authMsgsVersion } = this.granteeDetails
     const bufferPeriod = BUFFER_PERIOD
     const hasNotExpired = dayjs.utc(expiry).isAfter(dayjs.utc().add(bufferPeriod, 'seconds'))
     const versionUpToDate = authMsgsVersion === this.authorizedMsgsVersion
-    return hasNotExpired && enabled && versionUpToDate && Boolean(this.granteeSDKInstance)
+    return hasNotExpired && versionUpToDate && Boolean(this.granteeSDKInstance)
   }
 
   public updateNetwork(network: Network): CarbonWallet {

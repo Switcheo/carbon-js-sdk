@@ -1,5 +1,5 @@
 import { QueryGrantsRequest } from "@carbon-sdk/codec/cosmos/authz/v1beta1/query";
-import { MsgGrant } from "@carbon-sdk/codec/cosmos/authz/v1beta1/tx";
+import { MsgGrant, MsgRevoke } from "@carbon-sdk/codec/cosmos/authz/v1beta1/tx";
 import { CarbonTx } from "@carbon-sdk/util";
 
 import { GenericAuthorization } from "@carbon-sdk/codec/cosmos/authz/v1beta1/authz";
@@ -66,6 +66,27 @@ export class SignlessModule extends BaseModule {
     messages = messages.concat(encodedAllowanceMsg)
 
     const result = await wallet.sendTxs(messages, opts)
+
+    return result
+  }
+
+  public async revokeSignlessPermission(params: SignlessModule.RevokeSignlessPermissionParams, opts?: CarbonTx.SignTxOpts) {
+    const wallet = this.getWallet()
+    const authorizedSignlessMsgs = wallet.authorizedMsgs ?? []
+
+    const encodedRevokeGrantMsgs = authorizedSignlessMsgs.map((msg: string) => {
+      const revokeMsg = MsgRevoke.fromPartial({
+        granter: params.granter ?? wallet.bech32Address,
+        grantee: params.grantee,
+        msgTypeUrl: msg,
+      })
+      return {
+        typeUrl: CarbonTx.Types.MsgRevoke,
+        value: revokeMsg,
+      }
+    })
+
+    const result = await wallet.sendTxs(encodedRevokeGrantMsgs, opts)
 
     return result
   }
@@ -163,6 +184,11 @@ export namespace SignlessModule {
     expiry: Date,
     existingGrantee?: boolean,
     selectedMsgs?: string[]
+  }
+  export interface RevokeSignlessPermissionParams {
+    grantee: string,
+    granter?: string,
+    existingGrantee?: boolean,
   }
   export interface QueryGrantParams {
     grantee?: string,

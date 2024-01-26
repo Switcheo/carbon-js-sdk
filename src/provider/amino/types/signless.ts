@@ -9,12 +9,14 @@ import { AminoInit, AminoProcess, AminoValueMap, ConvertEncType, generateAminoTy
 const TxTypes: TypeUtils.SimpleMap<string> = {
   GrantAuthz: "cosmos-sdk/MsgGrant",
   GrantAllowance: "cosmos-sdk/MsgGrantAllowance",
+  RevokeAuthz: "cosmos-sdk/MsgRevoke",
   RevokeFeegrant: "cosmos-sdk/MsgRevokeAllowance",
   MsgExec: "cosmos-sdk/MsgExec",
 };
 
 export enum SignlessTypes {
   GrantAuthz = "/cosmos.authz.v1beta1.MsgGrant",
+  RevokeAuthz = "/cosmos.authz.v1beta1.MsgRevoke",
   FeeGrant = "/cosmos.feegrant.v1beta1.MsgGrantAllowance",
   MsgExec = "/cosmos.authz.v1beta1.MsgExec",
   GenericAuthorization = "/cosmos.authz.v1beta1.GenericAuthorization",
@@ -53,6 +55,11 @@ const MsgGrantAuthz: AminoInit = {
     },
   },
 };
+
+const MsgRevokeAuthz: AminoInit = {
+  aminoType: TxTypes.RevokeAuthz,
+  valueMap: {},
+}
 
 const MsgFeeGrantAllowance: AminoInit = {
   aminoType: TxTypes.GrantAllowance,
@@ -232,6 +239,7 @@ const feegrantAminoProcess: AminoProcess = {
 
 const SignlessAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgGrant]: generateAminoType(MsgGrantAuthz, grantAuthzAminoProcess),
+  [CarbonTx.Types.MsgRevoke]: generateAminoType(MsgRevokeAuthz),
   [CarbonTx.Types.MsgGrantAllowance]: generateAminoType(MsgFeeGrantAllowance, feegrantAminoProcess),
   [CarbonTx.Types.MsgRevokeAllowance]: generateAminoType(MsgRevokeAllowance),
   [CarbonTx.Types.MsgExec]: generateAminoType(MsgExec),
