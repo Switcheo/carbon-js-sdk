@@ -29,6 +29,8 @@ export {
   Leap,
   Key,
   getSigningCosmosClientOptions,
+  AssetList,
+  Chain,
   LeapExtended,
 } from "./provider";
 export { default as CarbonSDK } from "./CarbonSDK";

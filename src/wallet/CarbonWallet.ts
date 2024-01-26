@@ -4,7 +4,7 @@ import { BaseAccount } from "@carbon-sdk/codec/cosmos/auth/v1beta1/auth";
 import { ExtensionOptionsWeb3Tx } from "@carbon-sdk/codec/ethermint/types/v1/web3";
 import { CarbonEvmChainIDs, DEFAULT_FEE_DENOM, DEFAULT_GAS, DEFAULT_NETWORK, Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
 import { ProviderAgent } from "@carbon-sdk/constant/walletProvider";
-import { ChainInfo, CosmosLedger, Keplr, KeplrAccount, Key as LeapKey, Leap, LeapAccount, MetaMask } from "@carbon-sdk/provider";
+import { ChainInfo, CosmosLedger, Keplr, KeplrAccount, LeapAccount, MetaMask } from "@carbon-sdk/provider";
 import { AddressUtils, CarbonTx, GenericUtils } from "@carbon-sdk/util";
 import { ETHAddress, NEOAddress, SWTHAddress, SWTHAddressOptions } from "@carbon-sdk/util/address";
 import { SmartWalletBlockchain } from "@carbon-sdk/util/blockchain";
@@ -19,6 +19,8 @@ import { Account, DeliverTxResponse, TimeoutError, isDeliverTxFailure } from "@c
 import { Tendermint37Client } from "@cosmjs/tendermint-rpc";
 import { BroadcastTxAsyncResponse, BroadcastTxSyncResponse, TxResponse, broadcastTxSyncSuccess } from "@cosmjs/tendermint-rpc/build/tendermint37/responses";
 import { sleep } from "@cosmjs/utils";
+import { Key as LeapKey } from "@cosmos-kit/core";
+import { Leap } from "@cosmos-kit/leap";
 import { Key } from "@keplr-wallet/types";
 import { TxRaw as StargateTxRaw, TxBody } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import { CarbonEIP712Signer, CarbonLedgerSigner, CarbonNonSigner, CarbonPrivateKeySigner, CarbonSigner, CarbonSignerTypes, isCarbonEIP712Signer } from "./CarbonSigner";
