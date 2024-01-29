@@ -39,7 +39,6 @@ class LeapAccount {
         const signOpts = { preferNoSetFee: true };
         return await leap!.signAmino(chainId, signerAddress, doc, signOpts);
       })
-
     };
 
     const getAccounts = async () => {
@@ -60,6 +59,37 @@ class LeapAccount {
     return {
       type: CarbonSignerTypes.BrowserInjected,
       signDirect,
+      signAmino,
+      getAccounts,
+      sendEvmTransaction,
+    };
+  }
+
+  static createLeapSignerAmino(leap: Leap, chainId: string): CarbonSigner {
+    const signAmino = async (signerAddress: string, doc: CarbonTx.StdSignDoc) => {
+      return await signTransactionWrapper(async () => {
+        const signOpts = { preferNoSetFee: true };
+        return await leap!.signAmino(chainId, signerAddress, doc, signOpts);
+      })
+    };
+
+    const getAccounts = async () => {
+      const account = await leap.getKey(chainId);
+      return [
+        {
+          algo: "secp256k1" as Algo,
+          address: account.bech32Address,
+          pubkey: account.pubKey,
+        },
+      ];
+    };
+
+    const sendEvmTransaction = async (api: CarbonSDK, req: ethers.providers.TransactionRequest) => { // eslint-disable-line
+      throw new Error("signing not available");
+    }
+
+    return {
+      type: CarbonSignerTypes.BrowserInjected,
       signAmino,
       getAccounts,
       sendEvmTransaction,
