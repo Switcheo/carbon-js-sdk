@@ -77,7 +77,7 @@ const commitTokensProcess: AminoProcess = {
 };
 
 const LiquidityPoolAmino: TypeUtils.SimpleMap<AminoConverter> = {
-  [CarbonTx.Types.MsgCreatePool]: generateAminoType(MsgCreatePool),
+  [CarbonTx.Types.MsgLiquiditypoolCreatePool]: generateAminoType(MsgCreatePool),
   [CarbonTx.Types.MsgCreatePoolWithLiquidity]: generateAminoType(MsgCreatePoolWithLiquidity),
   [CarbonTx.Types.MsgAddLiquidity]: generateAminoType(MsgAddLiquidity),
   [CarbonTx.Types.MsgRemoveLiquidity]: generateAminoType(MsgRemoveLiquidity),

@@ -301,7 +301,7 @@ export class CarbonWallet {
   }
 
   public static withLeap(leap: Leap, chainId: string, leapKey: LeapKey, opts: Omit<CarbonWalletInitOpts, "signer"> = {}) {
-    const signer = LeapAccount.createLeapSigner(leap, chainId);
+    const signer = leapKey.isNanoLedger ? LeapAccount.createLeapSignerAmino(leap, chainId) : LeapAccount.createLeapSigner(leap, chainId);
     const publicKeyBase64 = Buffer.from(leapKey.pubKey).toString("base64");
 
     const wallet = CarbonWallet.withSigner(signer, publicKeyBase64, {
