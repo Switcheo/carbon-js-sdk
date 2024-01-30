@@ -1,7 +1,11 @@
 import { Carbon } from "@carbon-sdk/CarbonSDK";
+import { MsgRemoveMinGasPrice } from "@carbon-sdk/codec/Switcheo/carbon/fee/tx";
 import { CommunityPoolSpendProposal } from "@carbon-sdk/codec/cosmos/distribution/v1beta1/distribution";
+import { MsgCommunityPoolSpend } from "@carbon-sdk/codec/cosmos/distribution/v1beta1/tx";
+import { MsgExecLegacyContent } from "@carbon-sdk/codec/cosmos/gov/v1/tx";
 import { TextProposal } from "@carbon-sdk/codec/cosmos/gov/v1beta1/gov";
 import { ParameterChangeProposal } from "@carbon-sdk/codec/cosmos/params/v1beta1/params";
+import { MsgCancelUpgrade, MsgSoftwareUpgrade } from "@carbon-sdk/codec/cosmos/upgrade/v1beta1/tx";
 import { CancelSoftwareUpgradeProposal, SoftwareUpgradeProposal } from "@carbon-sdk/codec/cosmos/upgrade/v1beta1/upgrade";
 import { Any } from "@carbon-sdk/codec/google/protobuf/any";
 import { ClientUpdateProposal } from "@carbon-sdk/codec/ibc/core/client/v1/client";
@@ -102,119 +106,206 @@ export const decodeContent = (content?: Any): PropDecoded => {
   if (!content) {
     return emptyProposal;
   }
-  switch (content.typeUrl) {
+  let url = content.typeUrl
+  let value = content.value
+  if (url == "/cosmos.gov.v1.MsgExecLegacyContent") {
+    // wrapper msg for legacy prop, actual proposal is nested within this
+    const wrapperMsg = MsgExecLegacyContent.decode(content.value)
+    url = wrapperMsg.content!.typeUrl
+    value = wrapperMsg.content!.value
+  }
+  switch (url) {
     case ProposalTypes.ParameterChange:
       return {
         ...content,
-        value: ParameterChangeProposal.decode(content.value),
+        value: ParameterChangeProposal.decode(value),
       };
     case ProposalTypes.SoftwareUpgrade:
       return {
         ...content,
-        value: SoftwareUpgradeProposal.decode(content.value),
+        value: SoftwareUpgradeProposal.decode(value),
       };
     case ProposalTypes.CancelSoftwareUpgrade:
       return {
         ...content,
-        value: CancelSoftwareUpgradeProposal.decode(content.value),
+        value: CancelSoftwareUpgradeProposal.decode(value),
       };
     case ProposalTypes.CommunityPoolSpend:
       return {
         ...content,
-        value: CommunityPoolSpendProposal.decode(content.value),
+        value: CommunityPoolSpendProposal.decode(value),
       };
     case ProposalTypes.Text:
       return {
         ...content,
-        value: TextProposal.decode(content.value),
+        value: TextProposal.decode(value),
       };
     case ProposalTypes.UpdatePool:
       return {
         ...content,
-        value: Carbon.Liquiditypool.UpdatePoolProposal.decode(content.value),
+        value: Carbon.Liquiditypool.UpdatePoolProposal.decode(value),
       };
     case ProposalTypes.CreateOracle:
       return {
         ...content,
-        value: Carbon.Oracle.CreateOracleProposal.decode(content.value),
+        value: Carbon.Oracle.CreateOracleProposal.decode(value),
       };
     case ProposalTypes.CreateToken:
       return {
         ...content,
-        value: Carbon.Coin.CreateTokenProposal.decode(content.value),
+        value: Carbon.Coin.CreateTokenProposal.decode(value),
       };
     case ProposalTypes.SetCommitmentCurve:
       return {
         ...content,
-        value: Carbon.Liquiditypool.SetCommitmentCurveProposal.decode(content.value),
+        value: Carbon.Liquiditypool.SetCommitmentCurveProposal.decode(value),
       };
     case ProposalTypes.SetMsgGasCost:
       return {
         ...content,
-        value: Carbon.Fee.SetMsgGasCostProposal.decode(content.value),
+        value: Carbon.Fee.SetMsgGasCostProposal.decode(value),
       };
     case ProposalTypes.SetMinGasPrice:
       return {
         ...content,
-        value: Carbon.Fee.SetMinGasPriceProposal.decode(content.value),
+        value: Carbon.Fee.SetMinGasPriceProposal.decode(value),
       };
     case ProposalTypes.RemoveMsgGasCost:
       return {
         ...content,
-        value: Carbon.Fee.RemoveMsgGasCostProposal.decode(content.value),
+        value: Carbon.Fee.RemoveMsgGasCostProposal.decode(value),
       };
     case ProposalTypes.RemoveMinGasPrice:
       return {
         ...content,
-        value: Carbon.Fee.RemoveMinGasPriceProposal.decode(content.value),
+        value: Carbon.Fee.RemoveMinGasPriceProposal.decode(value),
       };
     case ProposalTypes.SetRewardCurve:
       return {
         ...content,
-        value: Carbon.Liquiditypool.SetRewardCurveProposal.decode(content.value),
+        value: Carbon.Liquiditypool.SetRewardCurveProposal.decode(value),
       };
     case ProposalTypes.SetRewardsWeights:
       return {
         ...content,
-        value: Carbon.Liquiditypool.SetRewardsWeightsProposal.decode(content.value),
+        value: Carbon.Liquiditypool.SetRewardsWeightsProposal.decode(value),
       };
     case ProposalTypes.SettlementPrice:
       return {
         ...content,
-        value: Carbon.Pricing.SettlementPriceProposal.decode(content.value),
+        value: Carbon.Pricing.SettlementPriceProposal.decode(value),
       };
     case ProposalTypes.UpdateMarket:
       return {
         ...content,
-        value: Carbon.Market.UpdateMarketProposal.decode(content.value),
+        value: Carbon.Market.UpdateMarketProposal.decode(value),
       };
     case ProposalTypes.ClientUpdateProposal:
       return {
         ...content,
-        value: ClientUpdateProposal.decode(content.value),
+        value: ClientUpdateProposal.decode(value),
       };
     case ProposalTypes.CreateAlliance:
       return {
         ...content,
-        value: Carbon.Alliance.MsgCreateAllianceProposal.decode(content.value),
+        value: Carbon.Alliance.MsgCreateAllianceProposal.decode(value),
       };
     case ProposalTypes.UpdateAlliance:
       return {
         ...content,
-        value: Carbon.Alliance.MsgUpdateAllianceProposal.decode(content.value),
+        value: Carbon.Alliance.MsgUpdateAllianceProposal.decode(value),
       }
     case ProposalTypes.DeleteAlliance:
       return {
         ...content,
-        value: Carbon.Alliance.MsgDeleteAllianceProposal.decode(content.value),
+        value: Carbon.Alliance.MsgDeleteAllianceProposal.decode(value),
       }
     // update with new proposal messages
-    // case ProposalTypes.SetMsgGasCostV2:
-    //   return {
-    //     ...content,
-    //     value: Carbon.Fee.MsgSetGasCost.decode(content.)
-    //   }
-
+    case ProposalTypes.SetMsgGasCostV2:
+      return {
+        ...content,
+        value: Carbon.Fee.MsgSetGasCost.decode(value),
+      }
+    case ProposalTypes.SetMinGasPriceV2:
+      return {
+        ...content,
+        value: Carbon.Fee.MsgSetMinGasPrice.decode(value),
+      }
+    case ProposalTypes.RemoveMsgGasCostV2:
+      return {
+        ...content,
+        value: Carbon.Fee.MsgRemoveGasCost.decode(value),
+      }
+    case ProposalTypes.RemoveMinGasPriceV2:
+        return {
+          ...content,
+          value: MsgRemoveMinGasPrice.decode(value),
+        }
+    case ProposalTypes.CommunityPoolSpendV2:
+      return {
+        ...content,
+        value: MsgCommunityPoolSpend.decode(value),
+      }
+    case ProposalTypes.SoftwareUpgradeV2:
+      return {
+        ...content,
+        value: MsgSoftwareUpgrade.decode(value),
+      }
+    case ProposalTypes.CancelSoftwareUpgradeV2:
+      return {
+        ...content,
+        value: MsgCancelUpgrade.decode(value),
+      }
+    case ProposalTypes.CreateAllianceV2:
+        return {
+          ...content,
+          value: Carbon.Alliance.MsgCreateAlliance.decode(value),
+        }
+    case ProposalTypes.UpdateAllianceV2:
+        return {
+          ...content,
+          value: Carbon.Alliance.MsgUpdateAlliance.decode(value),
+        }
+    case ProposalTypes.DeleteAllianceV2:
+        return {
+          ...content,
+          value: Carbon.Alliance.MsgDeleteAlliance.decode(value),
+        }
+    case ProposalTypes.UpdateMarketV2:
+        return {
+          ...content,
+          value: Carbon.Market.MsgUpdateMarket.decode(value),
+        }
+    case ProposalTypes.UpdatePoolV2:
+        return {
+          ...content,
+          value: Carbon.Liquiditypool.MsgUpdatePool.decode(value),
+        }
+    case ProposalTypes.SetRewardCurveV2:
+        return {
+          ...content,
+          value: Carbon.Liquiditypool.MsgSetRewardCurve.decode(value),
+        }
+    case ProposalTypes.SetRewardsWeightsV2:
+        return {
+          ...content,
+          value: Carbon.Liquiditypool.MsgSetRewardsWeights.decode(value),
+        }
+    case ProposalTypes.SetCommitmentCurveV2:
+        return {
+          ...content,
+          value: Carbon.Liquiditypool.MsgSetCommitmentCurve.decode(value),
+        }
+    // case ProposalTypes.SettlementPriceV2:
+    //     return {
+    //       ...content,
+    //       value: Carbon.Pricing.MsgUpdateSettlementPrice.decode(value),
+    //     }
+    case ProposalTypes.CreateOracleV2:
+        return {
+          ...content,
+          value: Carbon.Oracle.MsgCreateOracle.decode(value),
+        }
     default:
       return emptyProposal;
   }
