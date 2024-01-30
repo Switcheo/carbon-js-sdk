@@ -32,6 +32,7 @@ import { MsgUpdateParams as MsgFeemarketUpdateParams, MsgUpdateParamsResponse as
 import { MsgEthereumTx, MsgEthereumTxResponse, MsgUpdateParams as MsgEvmUpdateParams, MsgUpdateParamsResponse as MsgEvmUpdateParamsResponse } from "./ethermint/evm/v1/tx";
 import { Proposal } from "./cosmos/gov/v1/gov";
 import { ClientUpdateProposal, UpgradeProposal } from "./ibc/core/client/v1/client";
+import { TextProposal } from "./cosmos/gov/v1beta1/gov";
 
 export * from './cosmos-models';
 
@@ -563,7 +564,7 @@ registry.register("/cosmos.gov.v1beta1.MsgVoteWeighted", MsgVoteWeighted);
 registry.register("/cosmos.gov.v1beta1.MsgVoteWeightedResponse", MsgVoteWeightedResponse);
 registry.register("/cosmos.gov.v1beta1.MsgDeposit", MsgDeposit);
 registry.register("/cosmos.gov.v1beta1.MsgDepositResponse", MsgDepositResponse);
-// registry.register("/cosmos.gov.v1beta1.TextProposal", TextProposal);
+registry.register("/cosmos.gov.v1beta1.TextProposal", TextProposal);
 registry.register("/cosmos.gov.v1beta1.Proposal", Proposal);
 
 registry.register("/ibc.core.connection.v1.MsgConnectionOpenInit", MsgConnectionOpenInit);
