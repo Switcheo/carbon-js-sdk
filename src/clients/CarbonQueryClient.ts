@@ -9,7 +9,7 @@ import { QueryClientImpl as NativeBankQueryClient } from "@carbon-sdk/codec/Swit
 import { ServiceClientImpl as CosmosTmClient } from "@carbon-sdk/codec/cosmos/base/tendermint/v1beta1/query";
 import { QueryClientImpl as DistributionQueryClient } from "@carbon-sdk/codec/cosmos/distribution/v1beta1/query";
 import { QueryClientImpl as EvidenceQueryClient } from "@carbon-sdk/codec/cosmos/evidence/v1beta1/query";
-import { QueryClientImpl as GovQueryClient } from "@carbon-sdk/codec/cosmos/gov/v1beta1/query";
+import { QueryClientImpl as GovQueryClient } from "@carbon-sdk/codec/cosmos/gov/v1/query";
 import { QueryClientImpl as GroupQueryClient } from "@carbon-sdk/codec/cosmos/group/v1/query";
 import { QueryClientImpl as MintQueryClient } from "@carbon-sdk/codec/cosmos/mint/v1beta1/query";
 import { QueryClientImpl as ParamsQueryClient } from "@carbon-sdk/codec/cosmos/params/v1beta1/query";

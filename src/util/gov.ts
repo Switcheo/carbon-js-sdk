@@ -7,25 +7,78 @@ import { Any } from "@carbon-sdk/codec/google/protobuf/any";
 import { ClientUpdateProposal } from "@carbon-sdk/codec/ibc/core/client/v1/client";
 
 export enum ProposalTypes {
+  // cosmos v1
   ParameterChange = "/cosmos.params.v1beta1.ParameterChangeProposal",
   SoftwareUpgrade = "/cosmos.upgrade.v1beta1.SoftwareUpgradeProposal",
   CancelSoftwareUpgrade = "/cosmos.upgrade.v1beta1.CancelSoftwareUpgradeProposal",
   CommunityPoolSpend = "/cosmos.distribution.v1beta1.CommunityPoolSpendProposal",
   Text = "/cosmos.gov.v1beta1.TextProposal",
 
-  SetMsgGasCost = "/Switcheo.carbon.fee.MsgSetGasCost",
-  SetMinGasPrice = "/Switcheo.carbon.fee.MsgSetMinGasPrice",
-  RemoveMsgGasCost = "/Switcheo.carbon.fee.MsgRemoveGasCost",
-  RemoveMinGasPrice = "/Switcheo.carbon.fee.MsgRemoveMinGasPrice",
-  CreateToken = "/Switcheo.carbon.coin.CreateTokenProposal",
-  CreateOracle = "/Switcheo.carbon.oracle.MsgCreateOracle",
-  UpdatePool = "/Switcheo.carbon.liquiditypool.MsgUpdatePool",
-  SetRewardCurve = "/Switcheo.carbon.liquiditypool.MsgSetRewardCurve",
-  SetRewardsWeights = "/Switcheo.carbon.liquiditypool.MsgSetRewardsWeights",
-  SetCommitmentCurve = "/Switcheo.carbon.liquiditypool.MsgSetCommitmentCurve",
-  UpdateMarket = "/Switcheo.carbon.market.MsgUpdateMarket",
-  SettlementPrice = "/Switcheo.carbon.pricing.MsgUpdateSettlementPrice",
+  // cosmos v2
+  CommunityPoolSpendV2 = "/cosmos.distribution.v1beta1.MsgCommunityPoolSpend",
+  SoftwareUpgradeV2 = "/cosmos.upgrade.v1beta1.MsgSoftwareUpgrade",
+  CancelSoftwareUpgradeV2 = "/cosmos.upgrade.v1beta1.MsgCancelUpgrade",
+
+  // alliance v1
+  CreateAlliance = "/alliance.alliance.MsgCreateAllianceProposal",
+  UpdateAlliance = "/alliance.alliance.MsgUpdateAllianceProposal",
+  DeleteAlliance = "/alliance.alliance.MsgDeleteAllianceProposal",
+
+  // alliance v2
+  CreateAllianceV2 = "/alliance.alliance.MsgCreateAlliance",
+  UpdateAllianceV2 = "/alliance.alliance.MsgUpdateAlliance",
+  DeleteAllianceV2 = "/alliance.alliance.MsgDeleteAlliance",
+
+  // ibc v1
   ClientUpdateProposal = "/ibc.core.client.v1.ClientUpdateProposal",
+
+  // ibc v2
+  // to be added in next cosmos upgrade
+
+  // market v1
+  UpdateMarket = "/Switcheo.carbon.market.UpdateMarketProposal",
+
+  // market v2
+  UpdateMarketV2 = "/Switcheo.carbon.market.MsgUpdateMarket",
+
+  // fee v1
+  SetMsgGasCost = "/Switcheo.carbon.fee.SetMsgGasCostProposal",
+  SetMinGasPrice = "/Switcheo.carbon.fee.SetMinGasPriceProposal",
+  RemoveMsgGasCost = "/Switcheo.carbon.fee.RemoveMsgGasCostProposal",
+  RemoveMinGasPrice = "/Switcheo.carbon.fee.RemoveMinGasPriceProposal",
+
+  // fee v2
+  SetMsgGasCostV2 = "/Switcheo.carbon.fee.MsgSetGasCost",
+  SetMinGasPriceV2 = "/Switcheo.carbon.fee.MsgSetMinGasPrice",
+  RemoveMsgGasCostV2 = "/Switcheo.carbon.fee.MsgRemoveGasCost",
+  RemoveMinGasPriceV2 = "/Switcheo.carbon.fee.MsgRemoveMinGasPrice",
+
+  // lp v1
+  UpdatePool = "/Switcheo.carbon.liquiditypool.UpdatePoolProposal",
+  SetRewardCurve = "/Switcheo.carbon.liquiditypool.SetRewardCurveProposal",
+  SetRewardsWeights = "/Switcheo.carbon.liquiditypool.SetRewardsWeightsProposal",
+  SetCommitmentCurve = "/Switcheo.carbon.liquiditypool.SetCommitmentCurveProposal",
+  
+  // lp v2
+  UpdatePoolV2 = "/Switcheo.carbon.liquiditypool.MsgUpdatePool",
+  SetRewardCurveV2 = "/Switcheo.carbon.liquiditypool.MsgSetRewardCurve",
+  SetRewardsWeightsV2 = "/Switcheo.carbon.liquiditypool.MsgSetRewardsWeights",
+  SetCommitmentCurveV2 = "/Switcheo.carbon.liquiditypool.MsgSetCommitmentCurve",
+
+  // pricing v1
+  SettlementPrice = "/Switcheo.carbon.pricing.SettlementPriceProposal",
+
+  // pricing v2
+  SettlementPriceV2 = "/Switcheo.carbon.pricing.MsgUpdateSettlementPrice",
+
+  // oracle v1
+  CreateOracle = "/Switcheo.carbon.oracle.CreateOracleProposal",
+
+  // oracle v2
+  CreateOracleV2 = "/Switcheo.carbon.oracle.MsgCreateOracle",
+
+  // coin v1
+  CreateToken = "/Switcheo.carbon.coin.CreateTokenProposal",
   CreateGroup = "/Switcheo.carbon.coin.CreateGroupProposal",
   UpdateGroup = "/Switcheo.carbon.coin.UpdateGroupProposal",
   RegisterToGroup = "/Switcheo.carbon.coin.RegisterToGroupProposal",
@@ -33,10 +86,6 @@ export enum ProposalTypes {
   DepositToGroup = "/Switcheo.carbon.coin.DepositToGroupProposal",
   WithdrawFromGroup = "/Switcheo.carbon.coin.WithdrawFromGroupProposal",
   UpdateGroupTokenConfig = "/Switcheo.carbon.coin.UpdateGroupTokenConfigProposal",
-
-  CreateAlliance = "/alliance.alliance.MsgCreateAllianceProposal",
-  UpdateAlliance = "/alliance.alliance.MsgUpdateAllianceProposal",
-  DeleteAlliance = "/alliance.alliance.MsgDeleteAllianceProposal",
 }
 
 export interface PropDecoded {
@@ -159,6 +208,13 @@ export const decodeContent = (content?: Any): PropDecoded => {
         ...content,
         value: Carbon.Alliance.MsgDeleteAllianceProposal.decode(content.value),
       }
+    // update with new proposal messages
+    // case ProposalTypes.SetMsgGasCostV2:
+    //   return {
+    //     ...content,
+    //     value: Carbon.Fee.MsgSetGasCost.decode(content.)
+    //   }
+
     default:
       return emptyProposal;
   }
