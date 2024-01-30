@@ -3,10 +3,8 @@ import {
   CarbonEvmChainIDs,
   DEFAULT_NETWORK,
   DenomPrefix,
-  Network,
-  NetworkConfig,
+  Network, Network as _Network, NetworkConfig,
   NetworkConfigs,
-  Network as _Network,
 } from "@carbon-sdk/constant";
 import { GenericUtils, NetworkUtils } from "@carbon-sdk/util";
 import { Tendermint37Client } from "@cosmjs/tendermint-rpc";
@@ -39,6 +37,7 @@ import {
   SubAccountModule,
   XChainModule,
 } from "./modules";
+import { GrantModule } from "./modules/grant";
 import { StakingModule } from "./modules/staking";
 import { CosmosLedger, Keplr, KeplrAccount, LeapAccount, LeapExtended } from "./provider";
 import { MetaMask } from "./provider/metamask/MetaMask";
@@ -52,7 +51,6 @@ import GasFee from "./clients/GasFee";
 import { PageRequest } from "cosmjs-types/cosmos/base/query/v1beta1/pagination";
 export { CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletGenericOpts, CarbonWalletInitOpts } from "@carbon-sdk/wallet";
 export { CarbonTx } from "@carbon-sdk/util";
-export { DenomPrefix } from "./constant";
 export * as Carbon from "./codec/carbon-models";
 import Long from "long";
 
@@ -113,13 +111,14 @@ class CarbonSDK {
   networkConfig: NetworkConfig;
   tmClient: Tendermint37Client;
   token: TokenClient;
-  
+
   admin: AdminModule;
   alliance: AllianceModule;
   order: OrderModule;
   lp: LiquidityPoolModule;
   erc20: ERC20Module;
   perpspool: PerpspoolModule;
+  grant: GrantModule;
   subaccount: SubAccountModule;
   profile: ProfileModule;
   cdp: CDPModule;
@@ -149,6 +148,7 @@ class CarbonSDK {
   chainId: string;
   evmChainId: string;
   gasFee: GasFee;
+
   constructor(opts: CarbonSDKOpts) {
     this.network = opts.network ?? DEFAULT_NETWORK;
     this.configOverride = opts.config ?? {};
@@ -188,6 +188,7 @@ class CarbonSDK {
     this.lp = new LiquidityPoolModule(this);
     this.erc20 = new ERC20Module(this);
     this.perpspool = new PerpspoolModule(this);
+    this.grant = new GrantModule(this);
     this.subaccount = new SubAccountModule(this);
     this.profile = new ProfileModule(this);
     this.cdp = new CDPModule(this);
@@ -377,7 +378,7 @@ class CarbonSDK {
     return this;
   }
 
-  private async getGasFee(){
+  private async getGasFee() {
     const queryClient = this.query
     const { msgGasCosts } = await queryClient.fee.MsgGasCostAll({
       pagination: PageRequest.fromPartial({
@@ -582,6 +583,7 @@ class CarbonSDK {
   }
 
   public static parseNetwork = NetworkUtils.parseNetwork;
+
 }
 
 export class ConnectedCarbonSDK extends CarbonSDK {
