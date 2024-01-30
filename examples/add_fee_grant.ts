@@ -6,11 +6,11 @@ import { GrantTypes } from "../src/provider/amino/types/grant"
 import "./_setup";
 
 (async () => {
-  const mnemonics = 'evolve sentence there pet make usual shaft cruise unique fitness drastic ahead';
+  const mnemonics = process.env.MNEMONICS ?? BIP39.generateMnemonic();;
   console.log("mnemonics", mnemonics);
 
   const sdk = await CarbonSDK.instance({
-    network: CarbonSDK.Network.DevNet,
+    network: CarbonSDK.Network.LocalHost,
   });
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
@@ -18,7 +18,7 @@ import "./_setup";
     typeUrl: CarbonTx.Types.MsgGrantAllowance,
     value: MsgGrantAllowance.fromPartial({
       granter: connectedSDK.wallet.bech32Address,
-      grantee: "swth1lp5tsyq623gxd0q496v5u8jrvpfgu2lcks6zun",
+      grantee: "",
       allowance: {
         typeUrl: GrantTypes.AllowedMsgAllowance,
         value: AllowedMsgAllowance.encode(AllowedMsgAllowance.fromPartial({
