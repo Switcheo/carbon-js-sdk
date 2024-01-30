@@ -1,14 +1,32 @@
 import { CreateTokenProposal } from "@carbon-sdk/codec/Switcheo/carbon/coin/proposal";
-import { VoteOption } from "@carbon-sdk/codec/cosmos/gov/v1/gov";
+import { CommunityPoolSpendProposal } from "@carbon-sdk/codec/cosmos/distribution/v1beta1/distribution";
+import { TextProposal } from "@carbon-sdk/codec/cosmos/gov/v1beta1/gov";
+import { VoteOption } from "@carbon-sdk/codec/cosmos/gov/v1beta1/gov";
 import { MsgDeposit, MsgVote } from "@carbon-sdk/codec/cosmos/gov/v1/tx";
-import { SettlementPriceParams } from "@carbon-sdk/codec/Switcheo/carbon/pricing/proposal";
+import { ParameterChangeProposal } from "@carbon-sdk/codec/cosmos/params/v1beta1/params";
+import { CancelSoftwareUpgradeProposal, SoftwareUpgradeProposal } from "@carbon-sdk/codec/cosmos/upgrade/v1beta1/upgrade";
+import {
+  SetMsgGasCostProposal,
+  SetMinGasPriceProposal,
+  RemoveMsgGasCostProposal,
+  RemoveMinGasPriceProposal,
+} from "@carbon-sdk/codec/Switcheo/carbon/fee/proposal";
+import {
+  SetCommitmentCurveProposal,
+  SetRewardCurveProposal,
+  SetRewardsWeightsProposal,
+  UpdatePoolProposal,
+} from "@carbon-sdk/codec/Switcheo/carbon/liquiditypool/proposal";
+import { UpdateMarketProposal } from "@carbon-sdk/codec/Switcheo/carbon/market/proposal";
+import { CreateOracleProposal } from "@carbon-sdk/codec/Switcheo/carbon/oracle/proposal";
+import { SettlementPriceParams, SettlementPriceProposal } from "@carbon-sdk/codec/Switcheo/carbon/pricing/proposal";
 import { CarbonTx } from "@carbon-sdk/util";
 import { Coin, coins } from "@cosmjs/amino";
 import Long from "long";
 import {
   AdminModule,
   transformCommunityPoolSpendAmount,
-  // transformSetSettlementPriceParams,
+  transformSetSettlementPriceParams,
   transfromCreateOracleParams,
   transfromCreateTokenParams,
   transfromSetCommitmentCurveParams,
@@ -19,27 +37,19 @@ import {
   transfromUpdatePoolParams,
 } from "./admin";
 import BaseModule from "./base";
-import { MarketModule, transfromUpdateMarketParams} from "./market";
-import { CommunityPoolSpendProposal } from "@carbon-sdk/codec/cosmos/distribution/v1beta1/distribution";
-import { ParameterChangeProposal } from "@carbon-sdk/codec/cosmos/params/v1beta1/params";
-import { CancelSoftwareUpgradeProposal, SoftwareUpgradeProposal } from "@carbon-sdk/codec/cosmos/upgrade/v1beta1/upgrade";
-import { MsgCancelUpgrade, MsgSoftwareUpgrade } from "@carbon-sdk/codec/cosmos/upgrade/v1beta1/tx";
-import { MsgCommunityPoolSpend } from "@carbon-sdk/codec/cosmos/distribution/v1beta1/tx";
-import { MsgSetGasCost, MsgSetMinGasPrice, MsgRemoveGasCost, MsgRemoveMinGasPrice } from "@carbon-sdk/codec/Switcheo/carbon/fee/tx";
-import { MsgSetCommitmentCurve, MsgSetRewardCurve, MsgSetRewardsWeights, MsgUpdatePool } from "@carbon-sdk/codec/Switcheo/carbon/liquiditypool/tx";
-import { MsgUpdateMarket } from "@carbon-sdk/codec/Switcheo/carbon/market/tx";
-import { MsgCreateOracle } from "@carbon-sdk/codec/Switcheo/carbon/oracle/tx";
+import { MarketModule, transfromUpdateMarketParams } from "./market";
 
 export class GovModule extends BaseModule {
   public async submit(params: GovModule.SubmitProposalParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
+
     const { typeUrl, value } = params.content;
     params.content.value = this.encode(typeUrl, value);
 
     return await wallet.sendTx(
       {
         typeUrl: CarbonTx.Types.MsgSubmitProposal,
-        value,
+        value: params,
       },
       opts
     );
@@ -84,7 +94,7 @@ export class GovModule extends BaseModule {
 
   public encode(proposalUrl: string, proposalMsg: any): Uint8Array {
     const wallet = this.getWallet();
-    const { title, description, msg, proposer } = proposalMsg;
+    const { title, description, msg } = proposalMsg;
 
     switch (proposalUrl.split(".").pop()) {
       case "CreateTokenProposal": {
@@ -95,104 +105,132 @@ export class GovModule extends BaseModule {
         };
         return CreateTokenProposal.encode(createTokenMsg).finish();
       }
-      case "MsgSetGasCost": {
+      case "SetMsgGasCostProposal": {
         const setMsgGasCostMsg = {
-          creator: proposer,
-          setMinGasPriceParams: transfromSetMsgGasCostParams(msg),
+          title: title,
+          description: description,
+          msg: transfromSetMsgGasCostParams(msg),
         };
-        return MsgSetGasCost.encode(setMsgGasCostMsg).finish();
+        return SetMsgGasCostProposal.encode(setMsgGasCostMsg).finish();
       }
-      case "MsgSetMinGasPrice": {
+      case "SetMinGasPriceProposal": {
         const setMinGasPriceMsg = {
-          creator: proposer,
-          setMinGasPriceParams: transfromSetMinGasPriceParams(msg),
+          title: title,
+          description: description,
+          msg: transfromSetMinGasPriceParams(msg),
         };
-        return MsgSetMinGasPrice.encode(setMinGasPriceMsg).finish();
+        return SetMinGasPriceProposal.encode(setMinGasPriceMsg).finish();
       }
-      case "MsgRemoveGasCost": {
+      case "RemoveMsgGasCostProposal": {
         const removeMsgGasCostMsg = {
-          creator: proposer,
+          title: title,
+          description: description,
           msgType: proposalMsg.msgType,
         };
-        return MsgRemoveGasCost.encode(removeMsgGasCostMsg).finish();
+        return RemoveMsgGasCostProposal.encode(removeMsgGasCostMsg).finish();
       }
-      case "MsgRemoveMinGasPrice": {
+      case "RemoveMinGasPriceProposal": {
         const removeMinGasPriceMsg = {
-          creator: proposer,
+          title: title,
+          description: description,
           denom: proposalMsg.denom,
         };
-        return MsgRemoveMinGasPrice.encode(removeMinGasPriceMsg).finish();
+        return RemoveMinGasPriceProposal.encode(removeMinGasPriceMsg).finish();
       }
-      case "MsgSetRewardCurve": {
+      case "SetRewardCurveProposal": {
         const setRewardCurveMsg = {
-          creator: proposer,
-          setRewardCurveParams: transfromSetRewardCurveParams(msg),
+          title: title,
+          description: description,
+          msg: transfromSetRewardCurveParams(msg),
         };
-        return MsgSetRewardCurve.encode(setRewardCurveMsg).finish();
+        return SetRewardCurveProposal.encode(setRewardCurveMsg).finish();
       }
-      case "MsgSetCommitmentCurve": {
+      case "SetCommitmentCurveProposal": {
         const setCommitmentCurveMsg = {
-          creator: proposer,
-          setCommitmentCurveParams: transfromSetCommitmentCurveParams(msg),
+          title: title,
+          description: description,
+          msg: transfromSetCommitmentCurveParams(msg),
         };
-        return MsgSetCommitmentCurve.encode(setCommitmentCurveMsg).finish();
+        return SetCommitmentCurveProposal.encode(setCommitmentCurveMsg).finish();
       }
-      case "MsgSetRewardsWeights": {
+      case "SetRewardsWeightsProposal": {
         const setRewardsWeightsMsg = {
-          creator: proposer,
-          setRewardsWeightsParams: transfromSetRewardsWeightsParams(msg),
+          title: title,
+          description: description,
+          msg: transfromSetRewardsWeightsParams(msg),
         };
-        return MsgSetRewardsWeights.encode(setRewardsWeightsMsg).finish();
+        return SetRewardsWeightsProposal.encode(setRewardsWeightsMsg).finish();
       }
-      case "MsgUpdatePool": {
+      case "UpdatePoolProposal": {
         const updatePoolProposalMsg = {
-          creator: proposer,
-          updatePoolParams: transfromUpdatePoolParams(msg),
+          title: title,
+          description: description,
+          msg: transfromUpdatePoolParams(msg),
         };
-        return MsgUpdatePool.encode(updatePoolProposalMsg).finish();
+        return UpdatePoolProposal.encode(updatePoolProposalMsg).finish();
       }
-      case "MsgUpdateMarket": {
+      case "UpdateMarketProposal": {
         const updateMarketProposalMsg = {
-          updater: proposer,
+          title: title,
+          description: description,
           msg: transfromUpdateMarketParams(msg),
         };
-        return MsgUpdateMarket.encode(updateMarketProposalMsg).finish();
+        return UpdateMarketProposal.encode(updateMarketProposalMsg).finish();
       }
-      case "MsgCreateOracle": {
+      case "CreateOracleProposal": {
         const createOracleProposalMsg = {
-          creator: proposer,
-          createOracleParams: transfromCreateOracleParams(msg, wallet.bech32Address),
+          title: title,
+          description: description,
+          msg: transfromCreateOracleParams(msg, wallet.bech32Address),
         };
-        return MsgCreateOracle.encode(createOracleProposalMsg).finish();
+        return CreateOracleProposal.encode(createOracleProposalMsg).finish();
       }
-      // case "MsgUpdateSettlementPrice": {
-      //   const settlementPriceProposalMsg = {
-      //     title: title,
-      //     description: description,
-      //     msg: transformSetSettlementPriceParams(msg),
-      //   };
-      //   return SettlementPriceParams.encode(settlementPriceProposalMsg).finish();
-      // }
-      case "MsgSoftwareUpgrade": {
+      case "SettlementPriceProposal": {
+        const settlementPriceProposalMsg = {
+          title: title,
+          description: description,
+          msg: transformSetSettlementPriceParams(msg),
+        };
+        return SettlementPriceProposal.encode(settlementPriceProposalMsg).finish();
+      }
+      case "ParameterChangeProposal": {
+        const parameterChangeProposalMsg = {
+          title: title,
+          description: description,
+          changes: proposalMsg.changes,
+        };
+        return ParameterChangeProposal.encode(parameterChangeProposalMsg).finish();
+      }
+      case "SoftwareUpgradeProposal": {
         const softwareUpgradeProposalMsg = {
-          authority: proposer,
+          title: title,
+          description: description,
           plan: proposalMsg.plan,
         };
-        return MsgSoftwareUpgrade.encode(softwareUpgradeProposalMsg).finish();
+        return SoftwareUpgradeProposal.encode(softwareUpgradeProposalMsg).finish();
       }
-      case "MsgCommunityPoolSpend": {
+      case "CommunityPoolSpendProposal": {
         const communityPoolSpendProposalMsg = {
-          authority: proposer,
+          title: title,
+          description: description,
           recipient: proposalMsg.recipient,
           amount: transformCommunityPoolSpendAmount(proposalMsg.amount),
         };
-        return MsgCommunityPoolSpend.encode(communityPoolSpendProposalMsg).finish();
+        return CommunityPoolSpendProposal.encode(communityPoolSpendProposalMsg).finish();
       }
-      case "MsgCancelUpgrade": {
+      case "CancelSoftwareUpgradeProposal": {
         const cancelSoftwareUpgradeProposaMsg = {
-          authority: proposer,
+          title: title,
+          description: description,
         };
-        return MsgCancelUpgrade.encode(cancelSoftwareUpgradeProposaMsg).finish();
+        return CancelSoftwareUpgradeProposal.encode(cancelSoftwareUpgradeProposaMsg).finish();
+      }
+      case "TextProposal": {
+        const textProposalMsg = {
+          title: title,
+          description: description,
+        };
+        return TextProposal.encode(textProposalMsg).finish();
       }
       default:
         return new Uint8Array();
@@ -200,7 +238,7 @@ export class GovModule extends BaseModule {
   }
 }
 
-export namespace GovModule { 
+export namespace GovModule {
   export interface SubmitProposalParams {
     content: {
       typeUrl: string;
@@ -215,6 +253,7 @@ export namespace GovModule {
     description: string;
     msg: ProposalTypeParams;
   }
+
   export interface DepositParams {
     proposalId: number;
     amount: number;
@@ -231,10 +270,8 @@ export namespace GovModule {
     | ParameterChangeProposal
     | SoftwareUpgradeProposal
     | CancelSoftwareUpgradeProposal
-    | CommunityPoolSpendProposal
-    | MsgSoftwareUpgrade
-    | MsgCancelUpgrade
-    | MsgCommunityPoolSpend
+    | TextProposal
+    | CommunityPoolSpendProposal;
 
   export type ProposalTypeParams =
     | AdminModule.CreateTokenParams
