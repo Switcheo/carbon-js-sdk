@@ -2,7 +2,7 @@ import * as BIP39 from "bip39";
 import { MsgGrantAllowance } from "../lib/codec/cosmos/feegrant/v1beta1/tx";
 import { AllowedMsgAllowance, BasicAllowance } from "../lib/codec/cosmos/feegrant/v1beta1/feegrant";
 import { CarbonSDK, CarbonTx } from "./_sdk";
-import { SignlessTypes } from "../src/provider/amino/types/signless"
+import { GrantTypes } from "../src/provider/amino/types/grant"
 import "./_setup";
 
 (async () => {
@@ -20,10 +20,10 @@ import "./_setup";
       granter: connectedSDK.wallet.bech32Address,
       grantee: "swth1lp5tsyq623gxd0q496v5u8jrvpfgu2lcks6zun",
       allowance: {
-        typeUrl: SignlessTypes.AllowedMsgAllowance,
+        typeUrl: GrantTypes.AllowedMsgAllowance,
         value: AllowedMsgAllowance.encode(AllowedMsgAllowance.fromPartial({
           allowance: {
-            typeUrl: SignlessTypes.BasicAllowance,
+            typeUrl: GrantTypes.BasicAllowance,
             value: BasicAllowance.encode(BasicAllowance.fromPartial({
               expiration: new Date(17071278100000),
             })).finish(),

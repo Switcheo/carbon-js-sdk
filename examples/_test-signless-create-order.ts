@@ -33,7 +33,7 @@ import "./_setup";
     existingGrantee: false,
   }
 
-  const result = await connectedSDK.signless.grantSignlessPermission(params);
+  const result = await connectedSDK.grant.grantAuthAndAllowance(params);
   // Copy the following to populate the params in _test-signless-create-order.ts
   console.log('grant signless permission result', result)
 

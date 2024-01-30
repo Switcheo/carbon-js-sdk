@@ -1,7 +1,7 @@
 import { GenericAuthorization } from "@carbon-sdk/codec/cosmos/authz/v1beta1/authz";
 import { MsgGrant } from "@carbon-sdk/codec/cosmos/authz/v1beta1/tx";
 import { MsgGrantAllowance } from "@carbon-sdk/codec/cosmos/feegrant/v1beta1/tx";
-import { SignlessUtils, TypeUtils } from "@carbon-sdk/util";
+import { GrantUtils, TypeUtils } from "@carbon-sdk/util";
 import * as CarbonTx from "@carbon-sdk/util/tx";
 import { AminoConverter } from "@cosmjs/stargate";
 import { AminoInit, AminoProcess, AminoValueMap, ConvertEncType, generateAminoType, mapEachIndiv } from "../utils";
@@ -14,7 +14,7 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
   MsgExec: "cosmos-sdk/MsgExec",
 };
 
-export enum SignlessTypes {
+export enum GrantTypes {
   GrantAuthz = "/cosmos.authz.v1beta1.MsgGrant",
   RevokeAuthz = "/cosmos.authz.v1beta1.MsgRevoke",
   FeeGrant = "/cosmos.feegrant.v1beta1.MsgGrantAllowance",
@@ -25,23 +25,23 @@ export enum SignlessTypes {
 }
 
 const ContentTypes: TypeUtils.SimpleMap<string> = {
-  [SignlessTypes.GenericAuthorization]: "cosmos-sdk/GenericAuthorization",
-  [SignlessTypes.AllowedMsgAllowance]: "cosmos-sdk/AllowedMsgAllowance",
-  [SignlessTypes.BasicAllowance]: "cosmos-sdk/BasicAllowance",
+  [GrantTypes.GenericAuthorization]: "cosmos-sdk/GenericAuthorization",
+  [GrantTypes.AllowedMsgAllowance]: "cosmos-sdk/AllowedMsgAllowance",
+  [GrantTypes.BasicAllowance]: "cosmos-sdk/BasicAllowance",
 };
 
 const GenericAuthorizationAminoType: AminoInit = {
-  aminoType: ContentTypes[SignlessTypes.GenericAuthorization],
+  aminoType: ContentTypes[GrantTypes.GenericAuthorization],
   valueMap: {},
 }
 
 const AllowedMsgAllowanceAminoType: AminoInit = {
-  aminoType: ContentTypes[SignlessTypes.AllowedMsgAllowance],
+  aminoType: ContentTypes[GrantTypes.AllowedMsgAllowance],
   valueMap: {},
 }
 
 const BasicAllowanceAminoType: AminoInit = {
-  aminoType: ContentTypes[SignlessTypes.BasicAllowance],
+  aminoType: ContentTypes[GrantTypes.BasicAllowance],
   valueMap: {
     expiration: ConvertEncType.Date,
   },
@@ -109,7 +109,7 @@ const preProcessAmino = (value: TypeUtils.SimpleMap<any>, valueMap: AminoValueMa
 };
 
 const checkDecodeGrantAuthz = (content: any, amino: AminoValueMap): AminoRes => {
-  const decodedValue = SignlessUtils.decodeContent(content);
+  const decodedValue = GrantUtils.decodeContent(content);
   const newContent = {
     type: ContentTypes[content.typeUrl],
     value: decodedValue.value,
@@ -133,7 +133,7 @@ const checkEncodeGrantAuthz = (content: any, amino: AminoValueMap): DirectRes =>
   })
   return {
     newContent: {
-      typeUrl: SignlessTypes.GenericAuthorization,
+      typeUrl: GrantTypes.GenericAuthorization,
       value: GenericAuthorization.encode(grantAuthzProp).finish(),
     },
     newAmino: {
@@ -181,7 +181,7 @@ const checkEncodeFeegrant = (content: any, amino: AminoValueMap): DirectRes => {
     msg,
   })
   const newContent = {
-    typeUrl: SignlessTypes.FeeGrant,
+    typeUrl: GrantTypes.FeeGrant,
     value: MsgGrantAllowance.encode(grantAllowance).finish(),
   }
   const newAmino = { ...amino }
@@ -192,7 +192,7 @@ const checkEncodeFeegrant = (content: any, amino: AminoValueMap): DirectRes => {
 }
 
 const checkDecodeFeegrant = (content: any, amino: AminoValueMap): AminoRes => {
-  const decodedValue = SignlessUtils.decodeContent(content);
+  const decodedValue = GrantUtils.decodeContent(content);
   decodedValue.value.allowance = {
     type: ContentTypes[decodedValue.value.allowance.typeUrl],
     value: decodedValue.value.allowance.value,
@@ -237,15 +237,15 @@ const feegrantAminoProcess: AminoProcess = {
   },
 }
 
-const SignlessAmino: TypeUtils.SimpleMap<AminoConverter> = {
+const GrantAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgGrant]: generateAminoType(MsgGrantAuthz, grantAuthzAminoProcess),
   [CarbonTx.Types.MsgRevoke]: generateAminoType(MsgRevokeAuthz),
   [CarbonTx.Types.MsgGrantAllowance]: generateAminoType(MsgFeeGrantAllowance, feegrantAminoProcess),
   [CarbonTx.Types.MsgRevokeAllowance]: generateAminoType(MsgRevokeAllowance),
   [CarbonTx.Types.MsgExec]: generateAminoType(MsgExec),
-  [SignlessTypes.GenericAuthorization]: generateAminoType(GenericAuthorizationAminoType),
-  [SignlessTypes.AllowedMsgAllowance]: generateAminoType(AllowedMsgAllowanceAminoType),
-  [SignlessTypes.BasicAllowance]: generateAminoType(BasicAllowanceAminoType),
+  [GrantTypes.GenericAuthorization]: generateAminoType(GenericAuthorizationAminoType),
+  [GrantTypes.AllowedMsgAllowance]: generateAminoType(AllowedMsgAllowanceAminoType),
+  [GrantTypes.BasicAllowance]: generateAminoType(BasicAllowanceAminoType),
 };
 
-export default SignlessAmino;
+export default GrantAmino;

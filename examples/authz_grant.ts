@@ -32,13 +32,13 @@ import "./_setup";
     existingGrantee: false,
   }
 
-  const result = await connectedSDK.signless.grantSignlessPermission(params);
+  const result = await connectedSDK.grant.grantAuthAndAllowance(params);
   // Copy the following to populate the params in _test-signless-create-order.ts
   console.log(result)
 
   const queryParams = {
     grantee,
   }
-  const queryResult = await connectedSDK.signless.queryGranteeDetails(queryParams);
+  const queryResult = await connectedSDK.grant.queryGranteeDetails(queryParams);
   console.log(queryResult)
 })().catch(console.error).finally(() => process.exit(0));

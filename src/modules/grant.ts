@@ -6,11 +6,11 @@ import { GenericAuthorization } from "@carbon-sdk/codec/cosmos/authz/v1beta1/aut
 import { AllowedMsgAllowance, BasicAllowance } from "@carbon-sdk/codec/cosmos/feegrant/v1beta1/feegrant";
 import { QueryAllowanceRequest } from "@carbon-sdk/codec/cosmos/feegrant/v1beta1/query";
 import { MsgGrantAllowance, MsgRevokeAllowance } from "@carbon-sdk/codec/cosmos/feegrant/v1beta1/tx";
-import { SignlessTypes } from "@carbon-sdk/provider/amino/types/signless";
+import { GrantTypes } from "@carbon-sdk/provider/amino/types/grant";
 import BaseModule from "./base";
 
-export class SignlessModule extends BaseModule {
-  public async grantSignlessPermission(params: SignlessModule.GrantSignlessPermissionParams, opts?: CarbonTx.SignTxOpts) {
+export class GrantModule extends BaseModule {
+  public async grantAuthAndAllowance(params: GrantModule.GrantParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet()
     const authorizedSignlessMsgs = wallet.authorizedMsgs ?? []
 
@@ -20,7 +20,7 @@ export class SignlessModule extends BaseModule {
         grantee: params.grantee,
         grant: {
           authorization: {
-            typeUrl: SignlessTypes.GenericAuthorization,
+            typeUrl: GrantTypes.GenericAuthorization,
             value: GenericAuthorization.encode(GenericAuthorization.fromPartial({
               msg,
             })).finish(),
@@ -50,10 +50,10 @@ export class SignlessModule extends BaseModule {
         granter: params.granter ?? wallet.bech32Address,
         grantee: params.grantee,
         allowance: {
-          typeUrl: SignlessTypes.AllowedMsgAllowance,
+          typeUrl: GrantTypes.AllowedMsgAllowance,
           value: AllowedMsgAllowance.encode(AllowedMsgAllowance.fromPartial({
             allowance: {
-              typeUrl: SignlessTypes.BasicAllowance,
+              typeUrl: GrantTypes.BasicAllowance,
               value: BasicAllowance.encode(BasicAllowance.fromPartial({
                 expiration: params.expiry,
               })).finish(),
@@ -70,7 +70,7 @@ export class SignlessModule extends BaseModule {
     return result
   }
 
-  public async revokeSignlessPermission(params: SignlessModule.RevokeSignlessPermissionParams, opts?: CarbonTx.SignTxOpts) {
+  public async revokeAuthAndAllowance(params: GrantModule.RevokeGrantParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet()
     const authorizedSignlessMsgs = wallet.authorizedMsgs ?? []
 
@@ -91,7 +91,7 @@ export class SignlessModule extends BaseModule {
     return result
   }
 
-  public async grantAllowance(params: SignlessModule.GrantSignlessPermissionParams, opts?: CarbonTx.SignTxOpts) {
+  public async grantAllowance(params: GrantModule.GrantParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet()
     const encodedAllowanceMsg = [{
       typeUrl: CarbonTx.Types.MsgGrantAllowance,
@@ -99,10 +99,10 @@ export class SignlessModule extends BaseModule {
         granter: params.granter ?? wallet.bech32Address,
         grantee: params.grantee,
         allowance: {
-          typeUrl: SignlessTypes.AllowedMsgAllowance,
+          typeUrl: GrantTypes.AllowedMsgAllowance,
           value: AllowedMsgAllowance.encode(AllowedMsgAllowance.fromPartial({
             allowance: {
-              typeUrl: SignlessTypes.BasicAllowance,
+              typeUrl: GrantTypes.BasicAllowance,
               value: BasicAllowance.encode(BasicAllowance.fromPartial({
                 expiration: params.expiry,
               })).finish(),
@@ -127,7 +127,7 @@ export class SignlessModule extends BaseModule {
     return result
   }
 
-  public async grantSelectedMsgsSignless(params: SignlessModule.GrantSignlessPermissionParams, opts?: CarbonTx.SignTxOpts) {
+  public async grantAuth(params: GrantModule.GrantParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet()
     const authorizedSignlessMsgs = wallet.authorizedMsgs ?? []
 
@@ -137,7 +137,7 @@ export class SignlessModule extends BaseModule {
         grantee: params.grantee,
         grant: {
           authorization: {
-            typeUrl: SignlessTypes.GenericAuthorization,
+            typeUrl: GrantTypes.GenericAuthorization,
             value: GenericAuthorization.encode(GenericAuthorization.fromPartial({
               msg,
             })).finish(),
@@ -155,7 +155,7 @@ export class SignlessModule extends BaseModule {
     return result
   }
 
-  public async queryGranteeDetails(params: SignlessModule.QueryGrantParams) {
+  public async queryGranteeDetails(params: GrantModule.QueryGrantParams) {
     const wallet = this.getWallet()
     const queryParams: QueryGrantsRequest = {
       grantee: params.grantee ?? '',
@@ -166,7 +166,7 @@ export class SignlessModule extends BaseModule {
     return response
   }
 
-  public async queryGranteeAllowance(params: SignlessModule.QueryAllowanceParams) {
+  public async queryGranteeAllowance(params: GrantModule.QueryAllowanceParams) {
     const wallet = this.getWallet()
     const queryParams: QueryAllowanceRequest = {
       grantee: params.grantee ?? '',
@@ -177,15 +177,15 @@ export class SignlessModule extends BaseModule {
   }
 }
 
-export namespace SignlessModule {
-  export interface GrantSignlessPermissionParams {
+export namespace GrantModule {
+  export interface GrantParams {
     grantee: string,
     granter?: string,
     expiry: Date,
     existingGrantee?: boolean,
     selectedMsgs?: string[]
   }
-  export interface RevokeSignlessPermissionParams {
+  export interface RevokeGrantParams {
     grantee: string,
     granter?: string,
     existingGrantee?: boolean,

@@ -6,7 +6,7 @@ import { BaseAccount } from "@carbon-sdk/codec/cosmos/auth/v1beta1/auth";
 import { MsgExec } from "@carbon-sdk/codec/cosmos/authz/v1beta1/tx";
 import { ExtensionOptionsWeb3Tx } from "@carbon-sdk/codec/ethermint/types/v1/web3";
 import { CarbonEvmChainIDs, DEFAULT_FEE_DENOM, DEFAULT_GAS, DEFAULT_NETWORK, Network, NetworkConfig, NetworkConfigs } from "@carbon-sdk/constant";
-import { BUFFER_PERIOD } from "@carbon-sdk/constant/signless";
+import { BUFFER_PERIOD } from "@carbon-sdk/constant/grant";
 import { ProviderAgent } from "@carbon-sdk/constant/walletProvider";
 import { ChainInfo, CosmosLedger, Keplr, KeplrAccount, LeapAccount, MetaMask } from "@carbon-sdk/provider";
 import { AddressUtils, CarbonTx, GenericUtils } from "@carbon-sdk/util";
@@ -866,11 +866,11 @@ export class CarbonWallet {
     // carbon account always takes priority
     let evmBech32Acc = null
     const bech32Acc = this.bech32Address && await this.getAccount(this.bech32Address)
-    if (!bech32Acc && this.evmBech32Address){
-      evmBech32Acc = await this.getAccount(this.evmBech32Address) 
+    if (!bech32Acc && this.evmBech32Address) {
+      evmBech32Acc = await this.getAccount(this.evmBech32Address)
     }
     const accountAny = bech32Acc ?? evmBech32Acc
-    
+
     if (!accountAny) return undefined
     const { accountNumber, sequence, address } = BaseAccount.decode(accountAny.value)
     return {

@@ -37,7 +37,7 @@ import {
   SubAccountModule,
   XChainModule,
 } from "./modules";
-import { SignlessModule } from "./modules/signless";
+import { GrantModule } from "./modules/grant";
 import { StakingModule } from "./modules/staking";
 import { CosmosLedger, Keplr, KeplrAccount, LeapAccount, LeapExtended } from "./provider";
 import { MetaMask } from "./provider/metamask/MetaMask";
@@ -118,7 +118,7 @@ class CarbonSDK {
   lp: LiquidityPoolModule;
   erc20: ERC20Module;
   perpspool: PerpspoolModule;
-  signless: SignlessModule;
+  grant: GrantModule;
   subaccount: SubAccountModule;
   profile: ProfileModule;
   cdp: CDPModule;
@@ -188,7 +188,7 @@ class CarbonSDK {
     this.lp = new LiquidityPoolModule(this);
     this.erc20 = new ERC20Module(this);
     this.perpspool = new PerpspoolModule(this);
-    this.signless = new SignlessModule(this);
+    this.grant = new GrantModule(this);
     this.subaccount = new SubAccountModule(this);
     this.profile = new ProfileModule(this);
     this.cdp = new CDPModule(this);
