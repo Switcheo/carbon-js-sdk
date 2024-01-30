@@ -117,193 +117,193 @@ export const decodeContent = (content?: Any): PropDecoded => {
   switch (url) {
     case ProposalTypes.ParameterChange:
       return {
-        ...content,
+        typeUrl: url,
         value: ParameterChangeProposal.decode(value),
       };
     case ProposalTypes.SoftwareUpgrade:
       return {
-        ...content,
+        typeUrl: url,
         value: SoftwareUpgradeProposal.decode(value),
       };
     case ProposalTypes.CancelSoftwareUpgrade:
       return {
-        ...content,
+        typeUrl: url,
         value: CancelSoftwareUpgradeProposal.decode(value),
       };
     case ProposalTypes.CommunityPoolSpend:
       return {
-        ...content,
+        typeUrl: url,
         value: CommunityPoolSpendProposal.decode(value),
       };
     case ProposalTypes.Text:
       return {
-        ...content,
+        typeUrl: url,
         value: TextProposal.decode(value),
       };
     case ProposalTypes.UpdatePool:
       return {
-        ...content,
+        typeUrl: url,
         value: Carbon.Liquiditypool.UpdatePoolProposal.decode(value),
       };
     case ProposalTypes.CreateOracle:
       return {
-        ...content,
+        typeUrl: url,
         value: Carbon.Oracle.CreateOracleProposal.decode(value),
       };
     case ProposalTypes.CreateToken:
       return {
-        ...content,
+        typeUrl: url,
         value: Carbon.Coin.CreateTokenProposal.decode(value),
       };
     case ProposalTypes.SetCommitmentCurve:
       return {
-        ...content,
+        typeUrl: url,
         value: Carbon.Liquiditypool.SetCommitmentCurveProposal.decode(value),
       };
     case ProposalTypes.SetMsgGasCost:
       return {
-        ...content,
+        typeUrl: url,
         value: Carbon.Fee.SetMsgGasCostProposal.decode(value),
       };
     case ProposalTypes.SetMinGasPrice:
       return {
-        ...content,
+        typeUrl: url,
         value: Carbon.Fee.SetMinGasPriceProposal.decode(value),
       };
     case ProposalTypes.RemoveMsgGasCost:
       return {
-        ...content,
+        typeUrl: url,
         value: Carbon.Fee.RemoveMsgGasCostProposal.decode(value),
       };
     case ProposalTypes.RemoveMinGasPrice:
       return {
-        ...content,
+        typeUrl: url,
         value: Carbon.Fee.RemoveMinGasPriceProposal.decode(value),
       };
     case ProposalTypes.SetRewardCurve:
       return {
-        ...content,
+        typeUrl: url,
         value: Carbon.Liquiditypool.SetRewardCurveProposal.decode(value),
       };
     case ProposalTypes.SetRewardsWeights:
       return {
-        ...content,
+        typeUrl: url,
         value: Carbon.Liquiditypool.SetRewardsWeightsProposal.decode(value),
       };
     case ProposalTypes.SettlementPrice:
       return {
-        ...content,
+        typeUrl: url,
         value: Carbon.Pricing.SettlementPriceProposal.decode(value),
       };
     case ProposalTypes.UpdateMarket:
       return {
-        ...content,
+        typeUrl: url,
         value: Carbon.Market.UpdateMarketProposal.decode(value),
       };
     case ProposalTypes.ClientUpdateProposal:
       return {
-        ...content,
+        typeUrl: url,
         value: ClientUpdateProposal.decode(value),
       };
     case ProposalTypes.CreateAlliance:
       return {
-        ...content,
+        typeUrl: url,
         value: Carbon.Alliance.MsgCreateAllianceProposal.decode(value),
       };
     case ProposalTypes.UpdateAlliance:
       return {
-        ...content,
+        typeUrl: url,
         value: Carbon.Alliance.MsgUpdateAllianceProposal.decode(value),
       }
     case ProposalTypes.DeleteAlliance:
       return {
-        ...content,
+        typeUrl: url,
         value: Carbon.Alliance.MsgDeleteAllianceProposal.decode(value),
       }
     // update with new proposal messages
     case ProposalTypes.SetMsgGasCostV2:
       return {
-        ...content,
+        typeUrl: url,
         value: Carbon.Fee.MsgSetGasCost.decode(value),
       }
     case ProposalTypes.SetMinGasPriceV2:
       return {
-        ...content,
+        typeUrl: url,
         value: Carbon.Fee.MsgSetMinGasPrice.decode(value),
       }
     case ProposalTypes.RemoveMsgGasCostV2:
       return {
-        ...content,
+        typeUrl: url,
         value: Carbon.Fee.MsgRemoveGasCost.decode(value),
       }
     case ProposalTypes.RemoveMinGasPriceV2:
         return {
-          ...content,
+          typeUrl: url,
           value: MsgRemoveMinGasPrice.decode(value),
         }
     case ProposalTypes.CommunityPoolSpendV2:
       return {
-        ...content,
+        typeUrl: url,
         value: MsgCommunityPoolSpend.decode(value),
       }
     case ProposalTypes.SoftwareUpgradeV2:
       return {
-        ...content,
+        typeUrl: url,
         value: MsgSoftwareUpgrade.decode(value),
       }
     case ProposalTypes.CancelSoftwareUpgradeV2:
       return {
-        ...content,
+        typeUrl: url,
         value: MsgCancelUpgrade.decode(value),
       }
     case ProposalTypes.CreateAllianceV2:
         return {
-          ...content,
+          typeUrl: url,
           value: Carbon.Alliance.MsgCreateAlliance.decode(value),
         }
     case ProposalTypes.UpdateAllianceV2:
         return {
-          ...content,
+          typeUrl: url,
           value: Carbon.Alliance.MsgUpdateAlliance.decode(value),
         }
     case ProposalTypes.DeleteAllianceV2:
         return {
-          ...content,
+          typeUrl: url,
           value: Carbon.Alliance.MsgDeleteAlliance.decode(value),
         }
     case ProposalTypes.UpdateMarketV2:
         return {
-          ...content,
+          typeUrl: url,
           value: Carbon.Market.MsgUpdateMarket.decode(value),
         }
     case ProposalTypes.UpdatePoolV2:
         return {
-          ...content,
+          typeUrl: url,
           value: Carbon.Liquiditypool.MsgUpdatePool.decode(value),
         }
     case ProposalTypes.SetRewardCurveV2:
         return {
-          ...content,
+          typeUrl: url,
           value: Carbon.Liquiditypool.MsgSetRewardCurve.decode(value),
         }
     case ProposalTypes.SetRewardsWeightsV2:
         return {
-          ...content,
+          typeUrl: url,
           value: Carbon.Liquiditypool.MsgSetRewardsWeights.decode(value),
         }
     case ProposalTypes.SetCommitmentCurveV2:
         return {
-          ...content,
+          typeUrl: url,
           value: Carbon.Liquiditypool.MsgSetCommitmentCurve.decode(value),
         }
     // case ProposalTypes.SettlementPriceV2:
     //     return {
-    //       ...content,
+    //       typeUrl: url,
     //       value: Carbon.Pricing.MsgUpdateSettlementPrice.decode(value),
     //     }
     case ProposalTypes.CreateOracleV2:
         return {
-          ...content,
+          typeUrl: url,
           value: Carbon.Oracle.MsgCreateOracle.decode(value),
         }
     default:
