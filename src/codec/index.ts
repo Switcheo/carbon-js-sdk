@@ -555,6 +555,7 @@ registry.register("/cosmos.gov.v1.MsgDeposit", MsgGovDeposit);
 registry.register("/cosmos.gov.v1.MsgDepositResponse", MsgGovDepositResponse);
 registry.register("/cosmos.gov.v1.MsgUpdateParams", MsgGovUpdateParams);
 registry.register("/cosmos.gov.v1.MsgUpdateParamsResponse", MsgGovUpdateParamsResponse);
+registry.register("/cosmos.gov.v1.Proposal", Proposal);
 
 registry.register("/cosmos.gov.v1beta1.MsgSubmitProposal", MsgSubmitProposal);
 registry.register("/cosmos.gov.v1beta1.MsgSubmitProposalResponse", MsgSubmitProposalResponse);
@@ -565,7 +566,6 @@ registry.register("/cosmos.gov.v1beta1.MsgVoteWeightedResponse", MsgVoteWeighted
 registry.register("/cosmos.gov.v1beta1.MsgDeposit", MsgDeposit);
 registry.register("/cosmos.gov.v1beta1.MsgDepositResponse", MsgDepositResponse);
 registry.register("/cosmos.gov.v1beta1.TextProposal", TextProposal);
-registry.register("/cosmos.gov.v1beta1.Proposal", Proposal);
 
 registry.register("/ibc.core.connection.v1.MsgConnectionOpenInit", MsgConnectionOpenInit);
 registry.register("/ibc.core.connection.v1.MsgConnectionOpenInitResponse", MsgConnectionOpenInitResponse);
