@@ -22,7 +22,7 @@ import Long from "long";
   const authAddress = 'tswth10d07y265gmmuvt4z0w9aw880jnsr700jptgru0'
 
   const rewardCurveUrl = CarbonTx.Types.MsgSetRewardCurve
-  const msgSetRewardCurve : MsgSetRewardCurve = {
+  const msgSetRewardCurve = MsgSetRewardCurve.fromPartial({
     creator: authAddress,
     setRewardCurveParams: {
       startTime: new Date(),
@@ -32,7 +32,7 @@ import Long from "long";
       reductions: 1,
       finalRewardBps: 0,
     }
-  }
+  })
 
   const setRewardCurveProposalResult = await connectedSDK.gov.submit(
     MsgSubmitProposal.fromPartial({

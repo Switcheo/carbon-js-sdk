@@ -1,7 +1,6 @@
 import { CreateTokenProposal } from "@carbon-sdk/codec/Switcheo/carbon/coin/proposal";
 import { CommunityPoolSpendProposal } from "@carbon-sdk/codec/cosmos/distribution/v1beta1/distribution";
-import { TextProposal } from "@carbon-sdk/codec/cosmos/gov/v1beta1/gov";
-import { VoteOption } from "@carbon-sdk/codec/cosmos/gov/v1beta1/gov";
+import { TextProposal, VoteOption } from "@carbon-sdk/codec/cosmos/gov/v1beta1/gov";
 import { MsgDeposit, MsgVote } from "@carbon-sdk/codec/cosmos/gov/v1/tx";
 import { ParameterChangeProposal } from "@carbon-sdk/codec/cosmos/params/v1beta1/params";
 import { CancelSoftwareUpgradeProposal, SoftwareUpgradeProposal } from "@carbon-sdk/codec/cosmos/upgrade/v1beta1/upgrade";

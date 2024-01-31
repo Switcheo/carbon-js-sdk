@@ -1,4 +1,4 @@
-import { Carbon } from "@carbon-sdk/CarbonSDK";
+import { Carbon, CarbonTx } from "@carbon-sdk/CarbonSDK";
 import { MsgRemoveMinGasPrice } from "@carbon-sdk/codec/Switcheo/carbon/fee/tx";
 import { CommunityPoolSpendProposal } from "@carbon-sdk/codec/cosmos/distribution/v1beta1/distribution";
 import { MsgCommunityPoolSpend } from "@carbon-sdk/codec/cosmos/distribution/v1beta1/tx";
@@ -108,7 +108,7 @@ export const decodeContent = (content?: Any): PropDecoded => {
   }
   let url = content.typeUrl
   let value = content.value
-  if (url == "/cosmos.gov.v1.MsgExecLegacyContent") {
+  if (url == CarbonTx.Types.MsgGovExecLegacyContent) {
     // wrapper msg for legacy prop, actual proposal is nested within this
     const wrapperMsg = MsgExecLegacyContent.decode(content.value)
     url = wrapperMsg.content!.typeUrl
@@ -296,6 +296,7 @@ export const decodeContent = (content?: Any): PropDecoded => {
           typeUrl: url,
           value: Carbon.Liquiditypool.MsgSetCommitmentCurve.decode(value),
         }
+    // TODO: update this in next PR once codec has been regenerated
     // case ProposalTypes.SettlementPriceV2:
     //     return {
     //       typeUrl: url,

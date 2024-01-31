@@ -1116,7 +1116,7 @@ export const TxTypes = {
   "MsgDeposit": "/cosmos.gov.v1beta1.MsgDeposit",
   "MsgDepositResponse": "/cosmos.gov.v1beta1.MsgDepositResponse",
   "TextProposal": "/cosmos.gov.v1beta1.TextProposal",
-  "Proposal": "/cosmos.gov.v1beta1.Proposal",
+  "Proposal": "/cosmos.gov.v1.Proposal",
   "MsgConnectionOpenInit": "/ibc.core.connection.v1.MsgConnectionOpenInit",
   "MsgConnectionOpenInitResponse": "/ibc.core.connection.v1.MsgConnectionOpenInitResponse",
   "MsgConnectionOpenTry": "/ibc.core.connection.v1.MsgConnectionOpenTry",
