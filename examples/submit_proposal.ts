@@ -1,8 +1,10 @@
 import * as BIP39 from "bip39";
-import { CarbonSDK } from "./_sdk";
+import { CarbonSDK, CarbonTx } from "./_sdk";
 import "./_setup";
 import { coins } from "@cosmjs/amino";
-import BigNumber from "bignumber.js";
+import { MsgSubmitProposal } from "../lib/codec/cosmos/gov/v1/tx";
+import { MsgSetRewardCurve } from "../lib/codec/Switcheo/carbon/liquiditypool/tx";
+import Long from "long";
 
 (async () => {
   const mnemonics = process.env.MNEMONICS ?? BIP39.generateMnemonic();
@@ -17,46 +19,38 @@ import BigNumber from "bignumber.js";
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
 
-  const FeeProposalresult = await connectedSDK.gov.submit({
-    content: {
-      typeUrl: "/Switcheo.carbon.fee.SetMsgGasCostProposal",
-      value: {
-        title: "proposal title",
-        description: "proposal desc",
-        msg: {
-          msgType: "test1",
-          gasCost: new BigNumber(2),
-        },
-      },
-    },
-    initialDeposit: coins(100000000, "swth"),
-    proposer: connectedSDK.wallet.bech32Address,
-  });
+  const authAddress = 'tswth10d07y265gmmuvt4z0w9aw880jnsr700jptgru0'
 
-  const OracleProposalresult = await connectedSDK.gov.submit({
-    content: {
-      typeUrl: "/Switcheo.carbon.oracle.CreateOracleProposal",
-      value: {
-        title: "proposal title",
-        description: "proposal desc",
-        msg: {
-          id: "DXBT4",
-          description: "Demex XBT Index",
-          minTurnoutPercentage: 67,
-          maxResultAge: 100,
-          securityType: "SecuredByValidators",
-          resultStrategy: "median",
-          resolution: 1,
-          spec: "{}",
-        },
-      },
-    },
-    initialDeposit: coins(100000000, "swth"),
-    proposer: connectedSDK.wallet.bech32Address,
-  });
+  const rewardCurveUrl = CarbonTx.Types.MsgSetRewardCurve
+  const msgSetRewardCurve = MsgSetRewardCurve.fromPartial({
+    creator: authAddress,
+    setRewardCurveParams: {
+      startTime: new Date(),
+      initialRewardBps: 2500,
+      reductionMultiplierBps: 10000,
+      reductionIntervalSeconds: new Long(7257600),
+      reductions: 1,
+      finalRewardBps: 0,
+    }
+  })
 
-  console.log(FeeProposalresult);
-  console.log(OracleProposalresult);
+  const setRewardCurveProposalResult = await connectedSDK.gov.submit(
+    MsgSubmitProposal.fromPartial({
+      messages: [
+        {
+          typeUrl: rewardCurveUrl,
+          value: MsgSetRewardCurve.encode(msgSetRewardCurve).finish()
+        }
+      ],
+      initialDeposit: coins(1000000000, "swth"),
+      proposer: connectedSDK.wallet.bech32Address,
+      metadata: "metadata",
+      title: "title",
+      summary: "summary"
+    })
+  );
+
+  console.log(setRewardCurveProposalResult);
 })()
   .catch(console.error)
   .finally(() => process.exit(0));

@@ -1,7 +1,7 @@
 import { CreateTokenProposal } from "@carbon-sdk/codec/Switcheo/carbon/coin/proposal";
 import { CommunityPoolSpendProposal } from "@carbon-sdk/codec/cosmos/distribution/v1beta1/distribution";
 import { TextProposal, VoteOption } from "@carbon-sdk/codec/cosmos/gov/v1beta1/gov";
-import { MsgDeposit, MsgVote } from "@carbon-sdk/codec/cosmos/gov/v1beta1/tx";
+import { MsgDeposit, MsgVote } from "@carbon-sdk/codec/cosmos/gov/v1/tx";
 import { ParameterChangeProposal } from "@carbon-sdk/codec/cosmos/params/v1beta1/params";
 import { CancelSoftwareUpgradeProposal, SoftwareUpgradeProposal } from "@carbon-sdk/codec/cosmos/upgrade/v1beta1/upgrade";
 import {
@@ -79,6 +79,7 @@ export class GovModule extends BaseModule {
       proposalId: new Long(params.proposalId),
       voter: wallet.bech32Address,
       option: params.option,
+      metadata: params.metadata,
     });
 
     return await wallet.sendTx(
@@ -261,6 +262,7 @@ export namespace GovModule {
   export interface VoteParams {
     proposalId: number;
     option: VoteOption;
+    metadata?: string;
   }
 
   export type CosmosProposalMsg =
