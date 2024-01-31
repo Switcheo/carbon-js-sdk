@@ -113,7 +113,8 @@ function compareValues(msg: any, key: string, eipTypes: TypeUtils.SimpleMap<Type
     return match
 }
 
-function getMsgValueType(msgTypeUrl: string, msgValue: any, msgTypeName: string, msgTypeIndex: number, types: TypeUtils.SimpleMap<TypedDataField[]>, objectName?: string, nestedType: boolean = false, msgTypeDefinitions: TypeUtils.SimpleMap<TypedDataField[]> = {}): TypeUtils.SimpleMap<TypedDataField[]> {    const packageName = msgTypeUrl.split(".").slice(0, -1).join(".")
+function getMsgValueType(msgTypeUrl: string, msgValue: any, msgTypeName: string, msgTypeIndex: number, types: TypeUtils.SimpleMap<TypedDataField[]>, objectName?: string, nestedType: boolean = false, msgTypeDefinitions: TypeUtils.SimpleMap<TypedDataField[]> = {}): TypeUtils.SimpleMap<TypedDataField[]> {
+    const packageName = msgTypeUrl.split(".").slice(0, -1).join(".")
     const msgFieldType = msgTypeUrl.split(".").pop()!
     const typeName = getTypeName(msgTypeName, msgTypeIndex, objectName, nestedType, false)
     const fieldsDefinition = EIP712Types[packageName][msgFieldType]
@@ -133,23 +134,23 @@ function getMsgValueType(msgTypeUrl: string, msgValue: any, msgTypeName: string,
                 if (packageName) {
                     const isArray = type.includes('[]') ? true : false
                     // TypeValue0 --> Value
-                    const objectName = typeName.split('Type')[1].split(`${msgTypeIndex}`)[0]
+                    const objectName = typeName.split('Type')[1].split(/\d+/)[0]
                     const nestedTypeName = `Type${objectName ? objectName : ''}${name.split('_').map((subName: string) => capitalize(subName)).join('')}`
                     const nestedMsgTypeIndex = getLatestMsgTypeIndex(nestedTypeName, types)
                     const nestedType = getTypeName(name, nestedMsgTypeIndex, objectName, true, isArray)
                     msgTypeDefinitions[typeName] = [...msgTypeDefinitions[typeName], { name, type: nestedType }]
                     //Special logic if nested struct is google protobuf's Any type
                     if (isGoogleProtobufAnyPackage(packageName, type)) {
-                        const nestedAnyTypeName = isArray ? nestedType.split('[]')[0].split(`${msgTypeIndex}`)[0] : nestedType.split(`${msgTypeIndex}`)[0]
+                        const nestedAnyTypeName = isArray ? nestedType.split('[]')[0].split(/\d+/)[0] : nestedType.split(/\d+/)[0]
                         const nestedMsgTypeIndex = getLatestMsgTypeIndex(`${nestedAnyTypeName}Value`, types)
                         const nestedAnyValueType = `${nestedAnyTypeName}Value${nestedMsgTypeIndex}`
-                        msgTypeDefinitions[`${nestedAnyTypeName}${msgTypeIndex}`] = [{ name: "type", type: "string" }, { name: "value", type: nestedAnyValueType }]
-                        const anyObjectTypeNameSplit = nestedAnyTypeName.split('Type')[1].split(`${msgTypeIndex}`)[0]
+                        msgTypeDefinitions[`${nestedAnyTypeName}${nestedMsgTypeIndex}`] = [{ name: "type", type: "string" }, { name: "value", type: nestedAnyValueType }]
+                        const anyObjectTypeNameSplit = nestedAnyTypeName.split('Type')[1].split(/\d+/)[0]
                         const messageTypeUrl = AminoTypesMap.fromAmino(fieldValue).typeUrl
                         getMsgValueType(messageTypeUrl, fieldValue.value, "value", nestedMsgTypeIndex, types, anyObjectTypeNameSplit, true, msgTypeDefinitions)
                     }
                     else {
-                        const typeStructName = type.includes('[]') ? type.split('[]')[0].split(`${nestedMsgTypeIndex}`)[0] : type.split(`${nestedMsgTypeIndex}`)[0]
+                        const typeStructName = type.includes('[]') ? type.split('[]')[0].split(/\d+/)[0] : type.split(/\d+/)[0]
                         const messageTypeUrl = `${packageName}.${typeStructName}`
                         getMsgValueType(messageTypeUrl, fieldValue, name, nestedMsgTypeIndex, types, objectName, true, msgTypeDefinitions)
 
@@ -170,6 +171,9 @@ function getGjsonPrimitiveType(value: any) {
     }
     if (typeof value === 'boolean') {
         return 'bool'
+    }
+    if (Array.isArray(value) && value.length && value.every(item => typeof item === 'string')) {
+        return 'string[]'
     }
     return 'string'
 }
@@ -209,6 +213,7 @@ export function constructEIP712Tx(doc: CarbonTx.StdSignDoc): EIP712Tx {
         domain: { ...DEFAULT_CARBON_DOMAIN_FIELDS, chainId: parseChainId(doc.chain_id) },
         message: { account_number, chain_id, fee, memo, sequence, ...convertMsgs(doc.msgs) },
     }
+
     return eip712Tx
 }
 

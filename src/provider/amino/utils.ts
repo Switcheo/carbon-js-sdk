@@ -47,6 +47,10 @@ const typeCheck = (value: any): boolean => {
   return Long.isLong(value) || BigNumber.isBigNumber(value) || value instanceof Uint8Array || value instanceof Date;
 };
 
+const isArrayOfStrings = (value: unknown): value is string[] => {
+  return Array.isArray(value) && value.length !== 0 && value.every(item => typeof item === "string");
+}
+
 /**
  * checks maps object to amino or direct form
  * @param mapItem obj to be converted
@@ -71,11 +75,19 @@ export const mapEachIndiv = (
     if (typeof keyMap !== "object") {
       // Check if this is a Long/BigNumber/Buffer/Date/Duration obj or a non-object/array
       if (typeCheck(mapItem[key]) || typeof mapItem[key] !== "object") {
+        if (!keyMap && mapItem[key] instanceof Date) {
+          directMap[altKey] = paramConverter(mapItem[key], ConvertEncType.Date, toAmino);
+          return
+        }
         directMap[altKey] = paramConverter(mapItem[key], keyMap, toAmino);
         return;
       }
     }
     if (mapItem[key].length && typeof mapItem[key] === "object") {
+      if (isArrayOfStrings(mapItem[key])) {
+        directMap[altKey] = mapItem[key]
+        return
+      }
       // If value is an array of objects, iterate through objects and call mapToObj function
       directMap[altKey] = mapItem[key].map((newMap: any) => {
         return mapEachIndiv(newMap, valueKey, toAmino);
@@ -83,8 +95,13 @@ export const mapEachIndiv = (
       return;
     } else {
       if (TypeUtils.isDurationType(mapItem[key])) {
+
         directMap[altKey] = paramConverter(mapItem[key], keyMap as ConvertEncType, toAmino);
         return;
+      }
+      if (mapItem[key]?.length === 0) {
+        directMap[altKey] = []
+        return
       }
       directMap[altKey] = mapEachIndiv(mapItem[key], keyMap as AminoValueMap, toAmino);
     }
