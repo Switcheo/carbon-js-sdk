@@ -8,7 +8,7 @@ export const whitelistCosmosExports: { [name: string]: string } = {
   'Staking': 'cosmos/staking/v1beta1',
   'Params': 'cosmos/params/v1beta1',
   'Slashing': 'cosmos/slashing/v1beta1',
-  'Gov': 'cosmos/gov/v1beta1',
+  'Gov': 'cosmos/gov/v1',
 };
 
 export const whitelistEthermintExports: { [name: string]: string } = {

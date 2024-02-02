@@ -296,12 +296,11 @@ export const decodeContent = (content?: Any): PropDecoded => {
           typeUrl: url,
           value: Carbon.Liquiditypool.MsgSetCommitmentCurve.decode(value),
         }
-    // TODO: update this in next PR once codec has been regenerated
-    // case ProposalTypes.SettlementPriceV2:
-    //     return {
-    //       typeUrl: url,
-    //       value: Carbon.Pricing.MsgUpdateSettlementPrice.decode(value),
-    //     }
+    case ProposalTypes.SettlementPriceV2:
+        return {
+          typeUrl: url,
+          value: Carbon.Pricing.MsgUpdateSettlementPrice.decode(value),
+        }
     case ProposalTypes.CreateOracleV2:
         return {
           typeUrl: url,

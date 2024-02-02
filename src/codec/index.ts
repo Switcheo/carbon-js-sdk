@@ -32,7 +32,6 @@ import { MsgUpdateParams as MsgFeemarketUpdateParams, MsgUpdateParamsResponse as
 import { MsgEthereumTx, MsgEthereumTxResponse, MsgUpdateParams as MsgEvmUpdateParams, MsgUpdateParamsResponse as MsgEvmUpdateParamsResponse } from "./ethermint/evm/v1/tx";
 import { Proposal } from "./cosmos/gov/v1/gov";
 import { ClientUpdateProposal, UpgradeProposal } from "./ibc/core/client/v1/client";
-import { TextProposal } from "./cosmos/gov/v1beta1/gov";
 
 export * from './cosmos-models';
 
@@ -393,6 +392,8 @@ registry.register("/Switcheo.carbon.pricing.MsgUpdateTokenPriceOracle", Carbon.P
 registry.register("/Switcheo.carbon.pricing.MsgUpdateTokenPriceOracleResponse", Carbon.Pricing.MsgUpdateTokenPriceOracleResponse);
 registry.register("/Switcheo.carbon.pricing.MsgUpdateParams", Carbon.Pricing.MsgUpdateParams);
 registry.register("/Switcheo.carbon.pricing.MsgUpdateParamsResponse", Carbon.Pricing.MsgUpdateParamsResponse);
+registry.register("/Switcheo.carbon.pricing.MsgUpdateSettlementPrice", Carbon.Pricing.MsgUpdateSettlementPrice);
+registry.register("/Switcheo.carbon.pricing.MsgUpdateSettlementPriceResponse", Carbon.Pricing.MsgUpdateSettlementPriceResponse);
 registry.register("/Switcheo.carbon.pricing.SettlementPriceProposal", Carbon.Pricing.SettlementPriceProposal);
 
 registry.register("/Switcheo.carbon.lockproxy.MsgCreate", PolyNetwork.Lockproxy.MsgCreate);
@@ -565,7 +566,6 @@ registry.register("/cosmos.gov.v1beta1.MsgVoteWeighted", MsgVoteWeighted);
 registry.register("/cosmos.gov.v1beta1.MsgVoteWeightedResponse", MsgVoteWeightedResponse);
 registry.register("/cosmos.gov.v1beta1.MsgDeposit", MsgDeposit);
 registry.register("/cosmos.gov.v1beta1.MsgDepositResponse", MsgDepositResponse);
-registry.register("/cosmos.gov.v1beta1.TextProposal", TextProposal);
 
 registry.register("/ibc.core.connection.v1.MsgConnectionOpenInit", MsgConnectionOpenInit);
 registry.register("/ibc.core.connection.v1.MsgConnectionOpenInitResponse", MsgConnectionOpenInitResponse);
@@ -964,6 +964,8 @@ export const TxTypes = {
   "MsgUpdateTokenPriceOracleResponse": "/Switcheo.carbon.pricing.MsgUpdateTokenPriceOracleResponse",
   "MsgPricingUpdateParams": "/Switcheo.carbon.pricing.MsgUpdateParams",
   "MsgPricingUpdateParamsResponse": "/Switcheo.carbon.pricing.MsgUpdateParamsResponse",
+  "MsgUpdateSettlementPrice": "/Switcheo.carbon.pricing.MsgUpdateSettlementPrice",
+  "MsgUpdateSettlementPriceResponse": "/Switcheo.carbon.pricing.MsgUpdateSettlementPriceResponse",
   "SettlementPriceProposal": "/Switcheo.carbon.pricing.SettlementPriceProposal",
   "MsgLockproxyCreate": "/Switcheo.carbon.lockproxy.MsgCreate",
   "MsgLockproxyCreateResponse": "/Switcheo.carbon.lockproxy.MsgCreateResponse",
@@ -1107,6 +1109,7 @@ export const TxTypes = {
   "MsgGovDepositResponse": "/cosmos.gov.v1.MsgDepositResponse",
   "MsgGovUpdateParams": "/cosmos.gov.v1.MsgUpdateParams",
   "MsgGovUpdateParamsResponse": "/cosmos.gov.v1.MsgUpdateParamsResponse",
+  "Proposal": "/cosmos.gov.v1.Proposal",
   "MsgSubmitProposal": "/cosmos.gov.v1beta1.MsgSubmitProposal",
   "MsgSubmitProposalResponse": "/cosmos.gov.v1beta1.MsgSubmitProposalResponse",
   "MsgVote": "/cosmos.gov.v1beta1.MsgVote",
@@ -1115,8 +1118,6 @@ export const TxTypes = {
   "MsgVoteWeightedResponse": "/cosmos.gov.v1beta1.MsgVoteWeightedResponse",
   "MsgDeposit": "/cosmos.gov.v1beta1.MsgDeposit",
   "MsgDepositResponse": "/cosmos.gov.v1beta1.MsgDepositResponse",
-  "TextProposal": "/cosmos.gov.v1beta1.TextProposal",
-  "Proposal": "/cosmos.gov.v1.Proposal",
   "MsgConnectionOpenInit": "/ibc.core.connection.v1.MsgConnectionOpenInit",
   "MsgConnectionOpenInitResponse": "/ibc.core.connection.v1.MsgConnectionOpenInitResponse",
   "MsgConnectionOpenTry": "/ibc.core.connection.v1.MsgConnectionOpenTry",
@@ -13197,7 +13198,22 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/Switcheo.carbon.pricing"
       }
     ],
-    "MsgUpdateParamsResponse": []
+    "MsgUpdateParamsResponse": [],
+    "MsgUpdateSettlementPrice": [
+      {
+        "name": "authority",
+        "type": "string"
+      },
+      {
+        "name": "market",
+        "type": "string"
+      },
+      {
+        "name": "settlement_price",
+        "type": "string"
+      }
+    ],
+    "MsgUpdateSettlementPriceResponse": []
   },
   "/Switcheo.carbon.profile": {
     "Profile": [
