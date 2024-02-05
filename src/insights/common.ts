@@ -71,6 +71,8 @@ export const InsightsEndpoints = {
   // Alliances api
   "alliances/stake": "/alliances/stake",
   "alliances/rewards": "/alliances/rewards",
+
+  "reward/epoch": "/reward/epoch/:epoch/:blockheight",
 };
 
 export type Interval = "millisecond" | "second" | "minute" | "hour" | "day" | "week" | "month" | "quarter";

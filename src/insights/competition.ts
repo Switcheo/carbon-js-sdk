@@ -109,6 +109,20 @@ export interface LeaderboardLeagueEntry {
   derPoints: string;
   freqFactor: string;
 }
+export interface PersistenceTraders {
+  address: string;
+  points: string;
+  rank: string;
+  volume: string;
+}
+
+export interface PersistenceRewardsEntry {
+  totalPoints: string;
+  epochStart: string;
+  epochEnd: string;
+  traders: PersistenceTraders[];
+}
+
 
 export interface QueryGetPNLCompetitionLeaderboardResponse {
   entries: PNLLeaderboardEntry[];
@@ -134,4 +148,13 @@ export interface QueryGetLotteryCompetitionLeaderboardRequest {
 }
 export interface QueryGetLeagueCompetitionLeaderboardRequest {
   competitionId: string;
+}
+
+export interface QueryPersistenceRewardsRequest {
+  epoch: number;
+  blockheight: number;
+}
+
+export interface QueryPersistenceRewardsResponse {
+  result: PersistenceRewardsEntry;
 }

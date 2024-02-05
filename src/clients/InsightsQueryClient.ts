@@ -275,6 +275,15 @@ class InsightsQueryClient {
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetMarketVolumeResponse>;
   }
 
+  async PersistenceRewards(
+    req: Insights.QueryPersistenceRewardsRequest
+  ): Promise<Insights.InsightsQueryResponse<Insights.QueryPersistenceRewardsResponse>> {
+    const routeParams: Insights.QueryPersistenceRewardsRequest = { epoch: req.epoch, blockheight: req.blockheight }
+    const request = this.apiManager.path('reward/epoch', routeParams, {})
+    const response = await request.get()
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryPersistenceRewardsResponse>;
+  }
+
   // Node api
   async Nodes(req: Insights.QueryGetNodesRequest = {}): Promise<Insights.InsightsQueryResponse<Insights.QueryGetNodesResponse>> {
     const request = this.apiManager.path("node/list", {}, req);
