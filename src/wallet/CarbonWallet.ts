@@ -807,10 +807,11 @@ export class CarbonWallet {
   }
 
   isLedgerSigner() {
-    if ((this.providerAgent === ProviderAgent.KeplrExtension || this.providerAgent === ProviderAgent.LeapExtension) && !isOfflineDirectSigner(this.signer)) {
-      return true
-    }
-    return this.isSigner(CarbonSignerTypes.Ledger);
+    return this.isSigner(CarbonSignerTypes.Ledger) || this.isLedgerViaBrowserExtension();
+  }
+
+  isLedgerViaBrowserExtension() {
+    return (this.providerAgent === ProviderAgent.KeplrExtension || this.providerAgent === ProviderAgent.LeapExtension) && !isOfflineDirectSigner(this.signer);
   }
 
   isPrivateKeySigner() {
