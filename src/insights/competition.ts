@@ -1,4 +1,4 @@
-import { TimeMeta, PageMeta } from "./common";
+import { PageMeta, TimeMeta } from "./common";
 
 export interface CompetitionItem {
   id: string;
@@ -157,4 +157,29 @@ export interface QueryPersistenceRewardsRequest {
 
 export interface QueryPersistenceRewardsResponse {
   result: PersistenceRewardsEntry;
+}
+
+export interface QueryPersistencePnLRequest {
+  unixStart: number
+  unixEnd: number
+  limit?: number
+  market?: string
+}
+
+export interface QueryPersistencePnLResponse {
+  result: {
+    entries: {
+      rows: PersistencePnl[]
+    }
+  }
+}
+
+export interface PersistencePnl {
+  rank: string
+  address: string
+  realizedPnl: string
+  unrealizedPnl: string
+  totalPnl: string
+  profitPercent: string
+  totalMargin: string
 }

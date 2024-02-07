@@ -284,6 +284,21 @@ class InsightsQueryClient {
     return response.data as Insights.InsightsQueryResponse<Insights.QueryPersistenceRewardsResponse>;
   }
 
+  async PersistencePnL(
+    req: Insights.QueryPersistencePnLRequest
+  ): Promise<Insights.InsightsQueryResponse<Insights.QueryPersistencePnLResponse>> {
+    const routeParams: Insights.QueryPersistencePnLRequest = { unixStart: req.unixStart, unixEnd: req.unixEnd }
+    const queryParams = {
+      limit: req.limit ?? 100,
+      market: req.market ?? '',
+      offset: 0,
+      sort: 'DESC',
+    }
+    const request = this.apiManager.path('reward/leaderboard', routeParams, queryParams)
+    const response = await request.get()
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryPersistencePnLResponse>;
+  }
+
   // Node api
   async Nodes(req: Insights.QueryGetNodesRequest = {}): Promise<Insights.InsightsQueryResponse<Insights.QueryGetNodesResponse>> {
     const request = this.apiManager.path("node/list", {}, req);

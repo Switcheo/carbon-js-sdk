@@ -73,6 +73,7 @@ export const InsightsEndpoints = {
   "alliances/rewards": "/alliances/rewards",
 
   "reward/epoch": "/reward/epoch/:epoch/:blockheight",
+  "reward/leaderboard": "/reward/:unixStart/:unixEnd/leaderboard",
 };
 
 export type Interval = "millisecond" | "second" | "minute" | "hour" | "day" | "week" | "month" | "quarter";
