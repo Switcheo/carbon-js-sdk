@@ -160,26 +160,26 @@ export interface QueryPersistenceRewardsResponse {
 }
 
 export interface QueryPersistencePnLRequest {
-  unixStart: number
-  unixEnd: number
-  limit?: number
-  market?: string
+  unixStart: number;
+  unixEnd: number;
+  limit?: number;
+  market?: string;
 }
 
 export interface QueryPersistencePnLResponse {
   result: {
     entries: {
-      rows: PersistencePnl[]
+      rows: PersistencePnl[];
     }
   }
 }
 
 export interface PersistencePnl {
-  rank: string
-  address: string
-  realizedPnl: string
-  unrealizedPnl: string
-  totalPnl: string
-  profitPercent: string
-  totalMargin: string
+  rank: string;
+  address: string;
+  realizedPnl: string;
+  unrealizedPnl: string;
+  totalPnl: string;
+  profitPercent: string;
+  totalMargin: string;
 }
