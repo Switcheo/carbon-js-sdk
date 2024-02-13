@@ -1,4 +1,4 @@
-import { TimeMeta, PageMeta } from "./common";
+import { PageMeta, TimeMeta } from "./common";
 
 export interface CompetitionItem {
   id: string;
@@ -109,6 +109,20 @@ export interface LeaderboardLeagueEntry {
   derPoints: string;
   freqFactor: string;
 }
+export interface PersistenceTraders {
+  address: string;
+  points: string;
+  rank: string;
+  volume: string;
+}
+
+export interface PersistenceRewardsEntry {
+  totalPoints: string;
+  epochStart: string;
+  epochEnd: string;
+  traders: PersistenceTraders[];
+}
+
 
 export interface QueryGetPNLCompetitionLeaderboardResponse {
   entries: PNLLeaderboardEntry[];
@@ -134,4 +148,38 @@ export interface QueryGetLotteryCompetitionLeaderboardRequest {
 }
 export interface QueryGetLeagueCompetitionLeaderboardRequest {
   competitionId: string;
+}
+
+export interface QueryPersistenceRewardsRequest {
+  epoch: number;
+  blockheight: number;
+}
+
+export interface QueryPersistenceRewardsResponse {
+  result: PersistenceRewardsEntry;
+}
+
+export interface QueryPersistencePnLRequest {
+  unixStart: number;
+  unixEnd: number;
+  limit?: number;
+  market?: string;
+}
+
+export interface QueryPersistencePnLResponse {
+  result: {
+    entries: {
+      rows: PersistencePnl[];
+    }
+  }
+}
+
+export interface PersistencePnl {
+  rank: string;
+  address: string;
+  realizedPnl: string;
+  unrealizedPnl: string;
+  totalPnl: string;
+  profitPercent: string;
+  totalMargin: string;
 }
