@@ -150,23 +150,23 @@ export interface QueryGetLeagueCompetitionLeaderboardRequest {
   competitionId: string;
 }
 
-export interface QueryPersistenceRewardsRequest {
+export interface QueryCarbonCreditsRewardsRequest {
   epoch: number;
-  blockheight: number;
+  unixStart: number;
 }
 
-export interface QueryPersistenceRewardsResponse {
+export interface QueryCarbonCreditsRewardsResponse {
   result: PersistenceRewardsEntry;
 }
 
-export interface QueryPersistencePnLRequest {
+export interface QueryPnlLeaderboardRequest {
   unixStart: number;
   unixEnd: number;
   limit?: number;
   market?: string;
 }
 
-export interface QueryPersistencePnLResponse {
+export interface QueryPnlLeaderboardResponse {
   result: {
     entries: {
       rows: PersistencePnl[];

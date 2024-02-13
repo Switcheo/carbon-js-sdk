@@ -275,19 +275,19 @@ class InsightsQueryClient {
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetMarketVolumeResponse>;
   }
 
-  async PersistenceRewards(
-    req: Insights.QueryPersistenceRewardsRequest
-  ): Promise<Insights.InsightsQueryResponse<Insights.QueryPersistenceRewardsResponse>> {
-    const routeParams: Insights.QueryPersistenceRewardsRequest = { epoch: req.epoch, blockheight: req.blockheight };
+  async CarbonCreditsRewards(
+    req: Insights.QueryCarbonCreditsRewardsRequest
+  ): Promise<Insights.InsightsQueryResponse<Insights.QueryCarbonCreditsRewardsResponse>> {
+    const routeParams: Insights.QueryCarbonCreditsRewardsRequest = { epoch: req.epoch, unixStart: req.unixStart };
     const request = this.apiManager.path('reward/epoch', routeParams, {});
     const response = await request.get();
-    return response.data as Insights.InsightsQueryResponse<Insights.QueryPersistenceRewardsResponse>;
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryCarbonCreditsRewardsResponse>;
   }
 
-  async PersistencePnL(
-    req: Insights.QueryPersistencePnLRequest
-  ): Promise<Insights.InsightsQueryResponse<Insights.QueryPersistencePnLResponse>> {
-    const routeParams: Insights.QueryPersistencePnLRequest = { unixStart: req.unixStart, unixEnd: req.unixEnd }
+  async PnlLeaderboard(
+    req: Insights.QueryPnlLeaderboardRequest
+  ): Promise<Insights.InsightsQueryResponse<Insights.QueryPnlLeaderboardResponse>> {
+    const routeParams: Insights.QueryPnlLeaderboardRequest = { unixStart: req.unixStart, unixEnd: req.unixEnd }
     const queryParams = {
       limit: req.limit ?? 100,
       market: req.market ?? '',
@@ -296,7 +296,7 @@ class InsightsQueryClient {
     };
     const request = this.apiManager.path('reward/leaderboard', routeParams, queryParams);
     const response = await request.get();
-    return response.data as Insights.InsightsQueryResponse<Insights.QueryPersistencePnLResponse>;
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryPnlLeaderboardResponse>;
   }
 
   // Node api
