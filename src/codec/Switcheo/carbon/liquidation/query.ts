@@ -12,7 +12,7 @@ export const protobufPackage = "Switcheo.carbon.liquidation";
 /** this line is used by starport scaffolding # 3 */
 export interface QueryAllLiquidationRequest {
   address: string;
-  market: string;
+  marketId: string;
   beforeId: Long;
   afterId: Long;
   orderId: string;
@@ -28,7 +28,7 @@ export interface QueryAllLiquidationResponse {
 
 const baseQueryAllLiquidationRequest: object = {
   address: "",
-  market: "",
+  marketId: "",
   beforeId: Long.UZERO,
   afterId: Long.UZERO,
   orderId: "",
@@ -44,8 +44,8 @@ export const QueryAllLiquidationRequest = {
     if (message.address !== "") {
       writer.uint32(10).string(message.address);
     }
-    if (message.market !== "") {
-      writer.uint32(18).string(message.market);
+    if (message.marketId !== "") {
+      writer.uint32(18).string(message.marketId);
     }
     if (!message.beforeId.isZero()) {
       writer.uint32(24).uint64(message.beforeId);
@@ -84,7 +84,7 @@ export const QueryAllLiquidationRequest = {
           message.address = reader.string();
           break;
         case 2:
-          message.market = reader.string();
+          message.marketId = reader.string();
           break;
         case 3:
           message.beforeId = reader.uint64() as Long;
@@ -120,9 +120,9 @@ export const QueryAllLiquidationRequest = {
       object.address !== undefined && object.address !== null
         ? String(object.address)
         : "";
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? String(object.market)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     message.beforeId =
       object.beforeId !== undefined && object.beforeId !== null
@@ -154,7 +154,7 @@ export const QueryAllLiquidationRequest = {
   toJSON(message: QueryAllLiquidationRequest): unknown {
     const obj: any = {};
     message.address !== undefined && (obj.address = message.address);
-    message.market !== undefined && (obj.market = message.market);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     message.beforeId !== undefined &&
       (obj.beforeId = (message.beforeId || Long.UZERO).toString());
     message.afterId !== undefined &&
@@ -178,7 +178,7 @@ export const QueryAllLiquidationRequest = {
       ...baseQueryAllLiquidationRequest,
     } as QueryAllLiquidationRequest;
     message.address = object.address ?? "";
-    message.market = object.market ?? "";
+    message.marketId = object.marketId ?? "";
     message.beforeId =
       object.beforeId !== undefined && object.beforeId !== null
         ? Long.fromValue(object.beforeId)

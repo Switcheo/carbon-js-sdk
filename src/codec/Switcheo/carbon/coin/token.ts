@@ -43,12 +43,12 @@ export interface LockedCoins {
 
 export interface LockedCoinsRecord {
   address: string;
-  market: string;
+  marketId: string;
   lockedCoins?: LockedCoins;
 }
 
 export interface PositionPool {
-  market: string;
+  marketId: string;
   coins: Coin[];
 }
 
@@ -555,7 +555,7 @@ export const LockedCoins = {
   },
 };
 
-const baseLockedCoinsRecord: object = { address: "", market: "" };
+const baseLockedCoinsRecord: object = { address: "", marketId: "" };
 
 export const LockedCoinsRecord = {
   encode(
@@ -565,8 +565,8 @@ export const LockedCoinsRecord = {
     if (message.address !== "") {
       writer.uint32(10).string(message.address);
     }
-    if (message.market !== "") {
-      writer.uint32(18).string(message.market);
+    if (message.marketId !== "") {
+      writer.uint32(18).string(message.marketId);
     }
     if (message.lockedCoins !== undefined) {
       LockedCoins.encode(
@@ -588,7 +588,7 @@ export const LockedCoinsRecord = {
           message.address = reader.string();
           break;
         case 2:
-          message.market = reader.string();
+          message.marketId = reader.string();
           break;
         case 3:
           message.lockedCoins = LockedCoins.decode(reader, reader.uint32());
@@ -607,9 +607,9 @@ export const LockedCoinsRecord = {
       object.address !== undefined && object.address !== null
         ? String(object.address)
         : "";
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? String(object.market)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     message.lockedCoins =
       object.lockedCoins !== undefined && object.lockedCoins !== null
@@ -621,7 +621,7 @@ export const LockedCoinsRecord = {
   toJSON(message: LockedCoinsRecord): unknown {
     const obj: any = {};
     message.address !== undefined && (obj.address = message.address);
-    message.market !== undefined && (obj.market = message.market);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     message.lockedCoins !== undefined &&
       (obj.lockedCoins = message.lockedCoins
         ? LockedCoins.toJSON(message.lockedCoins)
@@ -632,7 +632,7 @@ export const LockedCoinsRecord = {
   fromPartial(object: DeepPartial<LockedCoinsRecord>): LockedCoinsRecord {
     const message = { ...baseLockedCoinsRecord } as LockedCoinsRecord;
     message.address = object.address ?? "";
-    message.market = object.market ?? "";
+    message.marketId = object.marketId ?? "";
     message.lockedCoins =
       object.lockedCoins !== undefined && object.lockedCoins !== null
         ? LockedCoins.fromPartial(object.lockedCoins)
@@ -641,15 +641,15 @@ export const LockedCoinsRecord = {
   },
 };
 
-const basePositionPool: object = { market: "" };
+const basePositionPool: object = { marketId: "" };
 
 export const PositionPool = {
   encode(
     message: PositionPool,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.market !== "") {
-      writer.uint32(10).string(message.market);
+    if (message.marketId !== "") {
+      writer.uint32(10).string(message.marketId);
     }
     for (const v of message.coins) {
       Coin.encode(v!, writer.uint32(18).fork()).ldelim();
@@ -666,7 +666,7 @@ export const PositionPool = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.market = reader.string();
+          message.marketId = reader.string();
           break;
         case 2:
           message.coins.push(Coin.decode(reader, reader.uint32()));
@@ -681,9 +681,9 @@ export const PositionPool = {
 
   fromJSON(object: any): PositionPool {
     const message = { ...basePositionPool } as PositionPool;
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? String(object.market)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     message.coins = (object.coins ?? []).map((e: any) => Coin.fromJSON(e));
     return message;
@@ -691,7 +691,7 @@ export const PositionPool = {
 
   toJSON(message: PositionPool): unknown {
     const obj: any = {};
-    message.market !== undefined && (obj.market = message.market);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     if (message.coins) {
       obj.coins = message.coins.map((e) => (e ? Coin.toJSON(e) : undefined));
     } else {
@@ -702,7 +702,7 @@ export const PositionPool = {
 
   fromPartial(object: DeepPartial<PositionPool>): PositionPool {
     const message = { ...basePositionPool } as PositionPool;
-    message.market = object.market ?? "";
+    message.marketId = object.marketId ?? "";
     message.coins = (object.coins ?? []).map((e) => Coin.fromPartial(e));
     return message;
   },

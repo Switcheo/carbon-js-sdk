@@ -4,12 +4,6 @@ import _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "Switcheo.carbon.liquiditypool";
 
-/** Params defines the parameters for the liquiditypool module. */
-export interface Params {
-  rewardReductionThreshold: Long;
-  numQuotes: Long;
-}
-
 export interface Pool {
   creator: string;
   id: Long;
@@ -33,8 +27,9 @@ export interface Pools {
 }
 
 export interface PoolRoute {
-  market: string;
+  marketId: string;
   poolIds: Long[];
+  legacyNumQuotes: Long;
   numQuotes: Long;
 }
 
@@ -87,86 +82,6 @@ export interface ReserveData {
   vBaseBalance: string;
   vQuoteBalance: string;
 }
-
-const baseParams: object = {
-  rewardReductionThreshold: Long.UZERO,
-  numQuotes: Long.UZERO,
-};
-
-export const Params = {
-  encode(
-    message: Params,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (!message.rewardReductionThreshold.isZero()) {
-      writer.uint32(8).uint64(message.rewardReductionThreshold);
-    }
-    if (!message.numQuotes.isZero()) {
-      writer.uint32(16).uint64(message.numQuotes);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): Params {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseParams } as Params;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.rewardReductionThreshold = reader.uint64() as Long;
-          break;
-        case 2:
-          message.numQuotes = reader.uint64() as Long;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): Params {
-    const message = { ...baseParams } as Params;
-    message.rewardReductionThreshold =
-      object.rewardReductionThreshold !== undefined &&
-      object.rewardReductionThreshold !== null
-        ? Long.fromString(object.rewardReductionThreshold)
-        : Long.UZERO;
-    message.numQuotes =
-      object.numQuotes !== undefined && object.numQuotes !== null
-        ? Long.fromString(object.numQuotes)
-        : Long.UZERO;
-    return message;
-  },
-
-  toJSON(message: Params): unknown {
-    const obj: any = {};
-    message.rewardReductionThreshold !== undefined &&
-      (obj.rewardReductionThreshold = (
-        message.rewardReductionThreshold || Long.UZERO
-      ).toString());
-    message.numQuotes !== undefined &&
-      (obj.numQuotes = (message.numQuotes || Long.UZERO).toString());
-    return obj;
-  },
-
-  fromPartial(object: DeepPartial<Params>): Params {
-    const message = { ...baseParams } as Params;
-    message.rewardReductionThreshold =
-      object.rewardReductionThreshold !== undefined &&
-      object.rewardReductionThreshold !== null
-        ? Long.fromValue(object.rewardReductionThreshold)
-        : Long.UZERO;
-    message.numQuotes =
-      object.numQuotes !== undefined && object.numQuotes !== null
-        ? Long.fromValue(object.numQuotes)
-        : Long.UZERO;
-    return message;
-  },
-};
 
 const basePool: object = {
   creator: "",
@@ -464,9 +379,10 @@ export const Pools = {
 };
 
 const basePoolRoute: object = {
-  market: "",
+  marketId: "",
   poolIds: Long.UZERO,
-  numQuotes: Long.ZERO,
+  legacyNumQuotes: Long.ZERO,
+  numQuotes: Long.UZERO,
 };
 
 export const PoolRoute = {
@@ -474,16 +390,19 @@ export const PoolRoute = {
     message: PoolRoute,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.market !== "") {
-      writer.uint32(10).string(message.market);
+    if (message.marketId !== "") {
+      writer.uint32(10).string(message.marketId);
     }
     writer.uint32(18).fork();
     for (const v of message.poolIds) {
       writer.uint64(v);
     }
     writer.ldelim();
+    if (!message.legacyNumQuotes.isZero()) {
+      writer.uint32(24).int64(message.legacyNumQuotes);
+    }
     if (!message.numQuotes.isZero()) {
-      writer.uint32(24).int64(message.numQuotes);
+      writer.uint32(32).uint64(message.numQuotes);
     }
     return writer;
   },
@@ -497,7 +416,7 @@ export const PoolRoute = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.market = reader.string();
+          message.marketId = reader.string();
           break;
         case 2:
           if ((tag & 7) === 2) {
@@ -510,7 +429,10 @@ export const PoolRoute = {
           }
           break;
         case 3:
-          message.numQuotes = reader.int64() as Long;
+          message.legacyNumQuotes = reader.int64() as Long;
+          break;
+        case 4:
+          message.numQuotes = reader.uint64() as Long;
           break;
         default:
           reader.skipType(tag & 7);
@@ -522,41 +444,51 @@ export const PoolRoute = {
 
   fromJSON(object: any): PoolRoute {
     const message = { ...basePoolRoute } as PoolRoute;
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? String(object.market)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     message.poolIds = (object.poolIds ?? []).map((e: any) =>
       Long.fromString(e)
     );
+    message.legacyNumQuotes =
+      object.legacyNumQuotes !== undefined && object.legacyNumQuotes !== null
+        ? Long.fromString(object.legacyNumQuotes)
+        : Long.ZERO;
     message.numQuotes =
       object.numQuotes !== undefined && object.numQuotes !== null
         ? Long.fromString(object.numQuotes)
-        : Long.ZERO;
+        : Long.UZERO;
     return message;
   },
 
   toJSON(message: PoolRoute): unknown {
     const obj: any = {};
-    message.market !== undefined && (obj.market = message.market);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     if (message.poolIds) {
       obj.poolIds = message.poolIds.map((e) => (e || Long.UZERO).toString());
     } else {
       obj.poolIds = [];
     }
+    message.legacyNumQuotes !== undefined &&
+      (obj.legacyNumQuotes = (message.legacyNumQuotes || Long.ZERO).toString());
     message.numQuotes !== undefined &&
-      (obj.numQuotes = (message.numQuotes || Long.ZERO).toString());
+      (obj.numQuotes = (message.numQuotes || Long.UZERO).toString());
     return obj;
   },
 
   fromPartial(object: DeepPartial<PoolRoute>): PoolRoute {
     const message = { ...basePoolRoute } as PoolRoute;
-    message.market = object.market ?? "";
+    message.marketId = object.marketId ?? "";
     message.poolIds = (object.poolIds ?? []).map((e) => Long.fromValue(e));
+    message.legacyNumQuotes =
+      object.legacyNumQuotes !== undefined && object.legacyNumQuotes !== null
+        ? Long.fromValue(object.legacyNumQuotes)
+        : Long.ZERO;
     message.numQuotes =
       object.numQuotes !== undefined && object.numQuotes !== null
         ? Long.fromValue(object.numQuotes)
-        : Long.ZERO;
+        : Long.UZERO;
     return message;
   },
 };

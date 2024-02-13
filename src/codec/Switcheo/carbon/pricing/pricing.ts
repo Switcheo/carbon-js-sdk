@@ -1,18 +1,9 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Duration } from "../../../google/protobuf/duration";
 import { Timestamp } from "../../../google/protobuf/timestamp";
 
 export const protobufPackage = "Switcheo.carbon.pricing";
-
-/** Params defines the parameters for the pricing module. */
-export interface Params {
-  smoothenBand: number;
-  impactBand: number;
-  staleIndexAllowance?: Duration;
-  backfillTimeInterval?: Duration;
-}
 
 export interface PriceSet {
   last: string;
@@ -22,7 +13,7 @@ export interface PriceSet {
   markAvg: string;
   settlement: string;
   fairIndexDeltaAvg: string;
-  market: string;
+  marketId: string;
   markingStrategy: string;
   indexUpdatedAt?: Date;
   settlementCounter: string;
@@ -39,124 +30,6 @@ export interface TokenPrice {
   oracleId: string;
 }
 
-const baseParams: object = { smoothenBand: 0, impactBand: 0 };
-
-export const Params = {
-  encode(
-    message: Params,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.smoothenBand !== 0) {
-      writer.uint32(8).uint32(message.smoothenBand);
-    }
-    if (message.impactBand !== 0) {
-      writer.uint32(16).uint32(message.impactBand);
-    }
-    if (message.staleIndexAllowance !== undefined) {
-      Duration.encode(
-        message.staleIndexAllowance,
-        writer.uint32(26).fork()
-      ).ldelim();
-    }
-    if (message.backfillTimeInterval !== undefined) {
-      Duration.encode(
-        message.backfillTimeInterval,
-        writer.uint32(34).fork()
-      ).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): Params {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseParams } as Params;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.smoothenBand = reader.uint32();
-          break;
-        case 2:
-          message.impactBand = reader.uint32();
-          break;
-        case 3:
-          message.staleIndexAllowance = Duration.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
-        case 4:
-          message.backfillTimeInterval = Duration.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): Params {
-    const message = { ...baseParams } as Params;
-    message.smoothenBand =
-      object.smoothenBand !== undefined && object.smoothenBand !== null
-        ? Number(object.smoothenBand)
-        : 0;
-    message.impactBand =
-      object.impactBand !== undefined && object.impactBand !== null
-        ? Number(object.impactBand)
-        : 0;
-    message.staleIndexAllowance =
-      object.staleIndexAllowance !== undefined &&
-      object.staleIndexAllowance !== null
-        ? Duration.fromJSON(object.staleIndexAllowance)
-        : undefined;
-    message.backfillTimeInterval =
-      object.backfillTimeInterval !== undefined &&
-      object.backfillTimeInterval !== null
-        ? Duration.fromJSON(object.backfillTimeInterval)
-        : undefined;
-    return message;
-  },
-
-  toJSON(message: Params): unknown {
-    const obj: any = {};
-    message.smoothenBand !== undefined &&
-      (obj.smoothenBand = message.smoothenBand);
-    message.impactBand !== undefined && (obj.impactBand = message.impactBand);
-    message.staleIndexAllowance !== undefined &&
-      (obj.staleIndexAllowance = message.staleIndexAllowance
-        ? Duration.toJSON(message.staleIndexAllowance)
-        : undefined);
-    message.backfillTimeInterval !== undefined &&
-      (obj.backfillTimeInterval = message.backfillTimeInterval
-        ? Duration.toJSON(message.backfillTimeInterval)
-        : undefined);
-    return obj;
-  },
-
-  fromPartial(object: DeepPartial<Params>): Params {
-    const message = { ...baseParams } as Params;
-    message.smoothenBand = object.smoothenBand ?? 0;
-    message.impactBand = object.impactBand ?? 0;
-    message.staleIndexAllowance =
-      object.staleIndexAllowance !== undefined &&
-      object.staleIndexAllowance !== null
-        ? Duration.fromPartial(object.staleIndexAllowance)
-        : undefined;
-    message.backfillTimeInterval =
-      object.backfillTimeInterval !== undefined &&
-      object.backfillTimeInterval !== null
-        ? Duration.fromPartial(object.backfillTimeInterval)
-        : undefined;
-    return message;
-  },
-};
-
 const basePriceSet: object = {
   last: "",
   index: "",
@@ -165,7 +38,7 @@ const basePriceSet: object = {
   markAvg: "",
   settlement: "",
   fairIndexDeltaAvg: "",
-  market: "",
+  marketId: "",
   markingStrategy: "",
   settlementCounter: "",
   premiumRate: "",
@@ -198,8 +71,8 @@ export const PriceSet = {
     if (message.fairIndexDeltaAvg !== "") {
       writer.uint32(58).string(message.fairIndexDeltaAvg);
     }
-    if (message.market !== "") {
-      writer.uint32(66).string(message.market);
+    if (message.marketId !== "") {
+      writer.uint32(66).string(message.marketId);
     }
     if (message.markingStrategy !== "") {
       writer.uint32(74).string(message.markingStrategy);
@@ -257,7 +130,7 @@ export const PriceSet = {
           message.fairIndexDeltaAvg = reader.string();
           break;
         case 8:
-          message.market = reader.string();
+          message.marketId = reader.string();
           break;
         case 9:
           message.markingStrategy = reader.string();
@@ -320,9 +193,9 @@ export const PriceSet = {
       object.fairIndexDeltaAvg !== null
         ? String(object.fairIndexDeltaAvg)
         : "";
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? String(object.market)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     message.markingStrategy =
       object.markingStrategy !== undefined && object.markingStrategy !== null
@@ -363,7 +236,7 @@ export const PriceSet = {
     message.settlement !== undefined && (obj.settlement = message.settlement);
     message.fairIndexDeltaAvg !== undefined &&
       (obj.fairIndexDeltaAvg = message.fairIndexDeltaAvg);
-    message.market !== undefined && (obj.market = message.market);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     message.markingStrategy !== undefined &&
       (obj.markingStrategy = message.markingStrategy);
     message.indexUpdatedAt !== undefined &&
@@ -388,7 +261,7 @@ export const PriceSet = {
     message.markAvg = object.markAvg ?? "";
     message.settlement = object.settlement ?? "";
     message.fairIndexDeltaAvg = object.fairIndexDeltaAvg ?? "";
-    message.market = object.market ?? "";
+    message.marketId = object.marketId ?? "";
     message.markingStrategy = object.markingStrategy ?? "";
     message.indexUpdatedAt = object.indexUpdatedAt ?? undefined;
     message.settlementCounter = object.settlementCounter ?? "";

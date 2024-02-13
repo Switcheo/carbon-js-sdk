@@ -1,9 +1,10 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { MarketParams, Params } from "./market";
+import { MarketParams } from "./market";
 import { Duration } from "../../../google/protobuf/duration";
-import { FeeCategory, FeeTier, StakeEquivalence } from "./fee";
+import { FeeCategory, FeeTier, StakeEquivalence, FeeStructure } from "./fee";
+import { ParamsToUpdate } from "./params";
 import { Timestamp } from "../../../google/protobuf/timestamp";
 
 export const protobufPackage = "Switcheo.carbon.market";
@@ -108,12 +109,8 @@ export interface UpdateAllPoolTradingFeesParams {
 export interface MsgUpdateParams {
   /** authority is the address of the governance account. */
   authority: string;
-  /**
-   * params defines the parameters to update.
-   *
-   * NOTE: All parameters must be supplied.
-   */
-  params?: Params;
+  /** params defines the optional parameters to update. */
+  params?: ParamsToUpdate;
 }
 
 /**
@@ -123,6 +120,23 @@ export interface MsgUpdateParams {
  * Since: cosmos-sdk 0.47
  */
 export interface MsgUpdateParamsResponse {}
+
+export interface MsgUpdateFeeStructure {
+  creator: string;
+  feeCategory?: FeeCategory;
+  feeTiers: FeeTier[];
+}
+
+export interface MsgUpdateFeeStructureResponse {
+  feeStructure?: FeeStructure;
+}
+
+export interface MsgDeleteFeeStructure {
+  creator: string;
+  feeCategory?: FeeCategory;
+}
+
+export interface MsgDeleteFeeStructureResponse {}
 
 const baseMsgDisableSpotMarket: object = { creator: "", marketName: "" };
 
@@ -1642,7 +1656,7 @@ export const MsgUpdateParams = {
       writer.uint32(10).string(message.authority);
     }
     if (message.params !== undefined) {
-      Params.encode(message.params, writer.uint32(18).fork()).ldelim();
+      ParamsToUpdate.encode(message.params, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
@@ -1658,7 +1672,7 @@ export const MsgUpdateParams = {
           message.authority = reader.string();
           break;
         case 2:
-          message.params = Params.decode(reader, reader.uint32());
+          message.params = ParamsToUpdate.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -1676,7 +1690,7 @@ export const MsgUpdateParams = {
         : "";
     message.params =
       object.params !== undefined && object.params !== null
-        ? Params.fromJSON(object.params)
+        ? ParamsToUpdate.fromJSON(object.params)
         : undefined;
     return message;
   },
@@ -1685,7 +1699,9 @@ export const MsgUpdateParams = {
     const obj: any = {};
     message.authority !== undefined && (obj.authority = message.authority);
     message.params !== undefined &&
-      (obj.params = message.params ? Params.toJSON(message.params) : undefined);
+      (obj.params = message.params
+        ? ParamsToUpdate.toJSON(message.params)
+        : undefined);
     return obj;
   },
 
@@ -1694,7 +1710,7 @@ export const MsgUpdateParams = {
     message.authority = object.authority ?? "";
     message.params =
       object.params !== undefined && object.params !== null
-        ? Params.fromPartial(object.params)
+        ? ParamsToUpdate.fromPartial(object.params)
         : undefined;
     return message;
   },
@@ -1752,6 +1768,309 @@ export const MsgUpdateParamsResponse = {
   },
 };
 
+const baseMsgUpdateFeeStructure: object = { creator: "" };
+
+export const MsgUpdateFeeStructure = {
+  encode(
+    message: MsgUpdateFeeStructure,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.feeCategory !== undefined) {
+      FeeCategory.encode(
+        message.feeCategory,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    for (const v of message.feeTiers) {
+      FeeTier.encode(v!, writer.uint32(26).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUpdateFeeStructure {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgUpdateFeeStructure } as MsgUpdateFeeStructure;
+    message.feeTiers = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.feeCategory = FeeCategory.decode(reader, reader.uint32());
+          break;
+        case 3:
+          message.feeTiers.push(FeeTier.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdateFeeStructure {
+    const message = { ...baseMsgUpdateFeeStructure } as MsgUpdateFeeStructure;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.feeCategory =
+      object.feeCategory !== undefined && object.feeCategory !== null
+        ? FeeCategory.fromJSON(object.feeCategory)
+        : undefined;
+    message.feeTiers = (object.feeTiers ?? []).map((e: any) =>
+      FeeTier.fromJSON(e)
+    );
+    return message;
+  },
+
+  toJSON(message: MsgUpdateFeeStructure): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.feeCategory !== undefined &&
+      (obj.feeCategory = message.feeCategory
+        ? FeeCategory.toJSON(message.feeCategory)
+        : undefined);
+    if (message.feeTiers) {
+      obj.feeTiers = message.feeTiers.map((e) =>
+        e ? FeeTier.toJSON(e) : undefined
+      );
+    } else {
+      obj.feeTiers = [];
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgUpdateFeeStructure>
+  ): MsgUpdateFeeStructure {
+    const message = { ...baseMsgUpdateFeeStructure } as MsgUpdateFeeStructure;
+    message.creator = object.creator ?? "";
+    message.feeCategory =
+      object.feeCategory !== undefined && object.feeCategory !== null
+        ? FeeCategory.fromPartial(object.feeCategory)
+        : undefined;
+    message.feeTiers = (object.feeTiers ?? []).map((e) =>
+      FeeTier.fromPartial(e)
+    );
+    return message;
+  },
+};
+
+const baseMsgUpdateFeeStructureResponse: object = {};
+
+export const MsgUpdateFeeStructureResponse = {
+  encode(
+    message: MsgUpdateFeeStructureResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.feeStructure !== undefined) {
+      FeeStructure.encode(
+        message.feeStructure,
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUpdateFeeStructureResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgUpdateFeeStructureResponse,
+    } as MsgUpdateFeeStructureResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.feeStructure = FeeStructure.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdateFeeStructureResponse {
+    const message = {
+      ...baseMsgUpdateFeeStructureResponse,
+    } as MsgUpdateFeeStructureResponse;
+    message.feeStructure =
+      object.feeStructure !== undefined && object.feeStructure !== null
+        ? FeeStructure.fromJSON(object.feeStructure)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: MsgUpdateFeeStructureResponse): unknown {
+    const obj: any = {};
+    message.feeStructure !== undefined &&
+      (obj.feeStructure = message.feeStructure
+        ? FeeStructure.toJSON(message.feeStructure)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgUpdateFeeStructureResponse>
+  ): MsgUpdateFeeStructureResponse {
+    const message = {
+      ...baseMsgUpdateFeeStructureResponse,
+    } as MsgUpdateFeeStructureResponse;
+    message.feeStructure =
+      object.feeStructure !== undefined && object.feeStructure !== null
+        ? FeeStructure.fromPartial(object.feeStructure)
+        : undefined;
+    return message;
+  },
+};
+
+const baseMsgDeleteFeeStructure: object = { creator: "" };
+
+export const MsgDeleteFeeStructure = {
+  encode(
+    message: MsgDeleteFeeStructure,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.feeCategory !== undefined) {
+      FeeCategory.encode(
+        message.feeCategory,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgDeleteFeeStructure {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgDeleteFeeStructure } as MsgDeleteFeeStructure;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.feeCategory = FeeCategory.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgDeleteFeeStructure {
+    const message = { ...baseMsgDeleteFeeStructure } as MsgDeleteFeeStructure;
+    message.creator =
+      object.creator !== undefined && object.creator !== null
+        ? String(object.creator)
+        : "";
+    message.feeCategory =
+      object.feeCategory !== undefined && object.feeCategory !== null
+        ? FeeCategory.fromJSON(object.feeCategory)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: MsgDeleteFeeStructure): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.feeCategory !== undefined &&
+      (obj.feeCategory = message.feeCategory
+        ? FeeCategory.toJSON(message.feeCategory)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgDeleteFeeStructure>
+  ): MsgDeleteFeeStructure {
+    const message = { ...baseMsgDeleteFeeStructure } as MsgDeleteFeeStructure;
+    message.creator = object.creator ?? "";
+    message.feeCategory =
+      object.feeCategory !== undefined && object.feeCategory !== null
+        ? FeeCategory.fromPartial(object.feeCategory)
+        : undefined;
+    return message;
+  },
+};
+
+const baseMsgDeleteFeeStructureResponse: object = {};
+
+export const MsgDeleteFeeStructureResponse = {
+  encode(
+    _: MsgDeleteFeeStructureResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgDeleteFeeStructureResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgDeleteFeeStructureResponse,
+    } as MsgDeleteFeeStructureResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgDeleteFeeStructureResponse {
+    const message = {
+      ...baseMsgDeleteFeeStructureResponse,
+    } as MsgDeleteFeeStructureResponse;
+    return message;
+  },
+
+  toJSON(_: MsgDeleteFeeStructureResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgDeleteFeeStructureResponse>
+  ): MsgDeleteFeeStructureResponse {
+    const message = {
+      ...baseMsgDeleteFeeStructureResponse,
+    } as MsgDeleteFeeStructureResponse;
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
   CreateMarket(request: MsgCreateMarket): Promise<MsgCreateMarketResponse>;
@@ -1771,6 +2090,12 @@ export interface Msg {
   HandleUpdateAllPoolTradingFees(
     request: MsgUpdateAllPoolTradingFees
   ): Promise<MsgUpdateAllPoolTradingFeesResponse>;
+  UpdateFeeStructure(
+    request: MsgUpdateFeeStructure
+  ): Promise<MsgUpdateFeeStructureResponse>;
+  DeleteFeeStructure(
+    request: MsgDeleteFeeStructure
+  ): Promise<MsgDeleteFeeStructureResponse>;
   /**
    * UpdateParams defines a governance operation for updating the module
    * parameters. The authority is hard-coded to the x/gov module account.
@@ -1795,6 +2120,8 @@ export class MsgClientImpl implements Msg {
     this.SetStakeEquivalence = this.SetStakeEquivalence.bind(this);
     this.HandleUpdateAllPoolTradingFees =
       this.HandleUpdateAllPoolTradingFees.bind(this);
+    this.UpdateFeeStructure = this.UpdateFeeStructure.bind(this);
+    this.DeleteFeeStructure = this.DeleteFeeStructure.bind(this);
     this.UpdateParams = this.UpdateParams.bind(this);
   }
   CreateMarket(request: MsgCreateMarket): Promise<MsgCreateMarketResponse> {
@@ -1910,6 +2237,34 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgUpdateAllPoolTradingFeesResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  UpdateFeeStructure(
+    request: MsgUpdateFeeStructure
+  ): Promise<MsgUpdateFeeStructureResponse> {
+    const data = MsgUpdateFeeStructure.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.market.Msg",
+      "UpdateFeeStructure",
+      data
+    );
+    return promise.then((data) =>
+      MsgUpdateFeeStructureResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  DeleteFeeStructure(
+    request: MsgDeleteFeeStructure
+  ): Promise<MsgDeleteFeeStructureResponse> {
+    const data = MsgDeleteFeeStructure.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.market.Msg",
+      "DeleteFeeStructure",
+      data
+    );
+    return promise.then((data) =>
+      MsgDeleteFeeStructureResponse.decode(new _m0.Reader(data))
     );
   }
 

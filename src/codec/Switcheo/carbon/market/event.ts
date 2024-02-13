@@ -6,7 +6,7 @@ import { Market } from "./market";
 export const protobufPackage = "Switcheo.carbon.market";
 
 export interface MarketEvent {
-  market?: Market;
+  marketId?: Market;
   type: string;
 }
 
@@ -17,8 +17,8 @@ export const MarketEvent = {
     message: MarketEvent,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.market !== undefined) {
-      Market.encode(message.market, writer.uint32(10).fork()).ldelim();
+    if (message.marketId !== undefined) {
+      Market.encode(message.marketId, writer.uint32(10).fork()).ldelim();
     }
     if (message.type !== "") {
       writer.uint32(18).string(message.type);
@@ -34,7 +34,7 @@ export const MarketEvent = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.market = Market.decode(reader, reader.uint32());
+          message.marketId = Market.decode(reader, reader.uint32());
           break;
         case 2:
           message.type = reader.string();
@@ -49,9 +49,9 @@ export const MarketEvent = {
 
   fromJSON(object: any): MarketEvent {
     const message = { ...baseMarketEvent } as MarketEvent;
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? Market.fromJSON(object.market)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? Market.fromJSON(object.marketId)
         : undefined;
     message.type =
       object.type !== undefined && object.type !== null
@@ -62,17 +62,19 @@ export const MarketEvent = {
 
   toJSON(message: MarketEvent): unknown {
     const obj: any = {};
-    message.market !== undefined &&
-      (obj.market = message.market ? Market.toJSON(message.market) : undefined);
+    message.marketId !== undefined &&
+      (obj.marketId = message.marketId
+        ? Market.toJSON(message.marketId)
+        : undefined);
     message.type !== undefined && (obj.type = message.type);
     return obj;
   },
 
   fromPartial(object: DeepPartial<MarketEvent>): MarketEvent {
     const message = { ...baseMarketEvent } as MarketEvent;
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? Market.fromPartial(object.market)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? Market.fromPartial(object.marketId)
         : undefined;
     message.type = object.type ?? "";
     return message;

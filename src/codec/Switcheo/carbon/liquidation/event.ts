@@ -5,30 +5,26 @@ import { Timestamp } from "../../../google/protobuf/timestamp";
 
 export const protobufPackage = "Switcheo.carbon.liquidation";
 
-export interface OutstandingPosition {
+export interface MatchedOutstandingPositionEvent {
   liquidationOrderId: string;
   marketId: string;
   bankruptcyPrice: string;
-  lots: string;
+  deltaLots: string;
   blockCreatedAt?: Date;
   tickSize: string;
 }
 
-export interface OutstandingPositions {
-  outstandingPositions: OutstandingPosition[];
-}
-
-const baseOutstandingPosition: object = {
+const baseMatchedOutstandingPositionEvent: object = {
   liquidationOrderId: "",
   marketId: "",
   bankruptcyPrice: "",
-  lots: "",
+  deltaLots: "",
   tickSize: "",
 };
 
-export const OutstandingPosition = {
+export const MatchedOutstandingPositionEvent = {
   encode(
-    message: OutstandingPosition,
+    message: MatchedOutstandingPositionEvent,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
     if (message.liquidationOrderId !== "") {
@@ -40,8 +36,8 @@ export const OutstandingPosition = {
     if (message.bankruptcyPrice !== "") {
       writer.uint32(26).string(message.bankruptcyPrice);
     }
-    if (message.lots !== "") {
-      writer.uint32(34).string(message.lots);
+    if (message.deltaLots !== "") {
+      writer.uint32(34).string(message.deltaLots);
     }
     if (message.blockCreatedAt !== undefined) {
       Timestamp.encode(
@@ -55,10 +51,15 @@ export const OutstandingPosition = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): OutstandingPosition {
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MatchedOutstandingPositionEvent {
     const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseOutstandingPosition } as OutstandingPosition;
+    const message = {
+      ...baseMatchedOutstandingPositionEvent,
+    } as MatchedOutstandingPositionEvent;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -72,7 +73,7 @@ export const OutstandingPosition = {
           message.bankruptcyPrice = reader.string();
           break;
         case 4:
-          message.lots = reader.string();
+          message.deltaLots = reader.string();
           break;
         case 5:
           message.blockCreatedAt = fromTimestamp(
@@ -90,8 +91,10 @@ export const OutstandingPosition = {
     return message;
   },
 
-  fromJSON(object: any): OutstandingPosition {
-    const message = { ...baseOutstandingPosition } as OutstandingPosition;
+  fromJSON(object: any): MatchedOutstandingPositionEvent {
+    const message = {
+      ...baseMatchedOutstandingPositionEvent,
+    } as MatchedOutstandingPositionEvent;
     message.liquidationOrderId =
       object.liquidationOrderId !== undefined &&
       object.liquidationOrderId !== null
@@ -105,9 +108,9 @@ export const OutstandingPosition = {
       object.bankruptcyPrice !== undefined && object.bankruptcyPrice !== null
         ? String(object.bankruptcyPrice)
         : "";
-    message.lots =
-      object.lots !== undefined && object.lots !== null
-        ? String(object.lots)
+    message.deltaLots =
+      object.deltaLots !== undefined && object.deltaLots !== null
+        ? String(object.deltaLots)
         : "";
     message.blockCreatedAt =
       object.blockCreatedAt !== undefined && object.blockCreatedAt !== null
@@ -120,94 +123,32 @@ export const OutstandingPosition = {
     return message;
   },
 
-  toJSON(message: OutstandingPosition): unknown {
+  toJSON(message: MatchedOutstandingPositionEvent): unknown {
     const obj: any = {};
     message.liquidationOrderId !== undefined &&
       (obj.liquidationOrderId = message.liquidationOrderId);
     message.marketId !== undefined && (obj.marketId = message.marketId);
     message.bankruptcyPrice !== undefined &&
       (obj.bankruptcyPrice = message.bankruptcyPrice);
-    message.lots !== undefined && (obj.lots = message.lots);
+    message.deltaLots !== undefined && (obj.deltaLots = message.deltaLots);
     message.blockCreatedAt !== undefined &&
       (obj.blockCreatedAt = message.blockCreatedAt.toISOString());
     message.tickSize !== undefined && (obj.tickSize = message.tickSize);
     return obj;
   },
 
-  fromPartial(object: DeepPartial<OutstandingPosition>): OutstandingPosition {
-    const message = { ...baseOutstandingPosition } as OutstandingPosition;
+  fromPartial(
+    object: DeepPartial<MatchedOutstandingPositionEvent>
+  ): MatchedOutstandingPositionEvent {
+    const message = {
+      ...baseMatchedOutstandingPositionEvent,
+    } as MatchedOutstandingPositionEvent;
     message.liquidationOrderId = object.liquidationOrderId ?? "";
     message.marketId = object.marketId ?? "";
     message.bankruptcyPrice = object.bankruptcyPrice ?? "";
-    message.lots = object.lots ?? "";
+    message.deltaLots = object.deltaLots ?? "";
     message.blockCreatedAt = object.blockCreatedAt ?? undefined;
     message.tickSize = object.tickSize ?? "";
-    return message;
-  },
-};
-
-const baseOutstandingPositions: object = {};
-
-export const OutstandingPositions = {
-  encode(
-    message: OutstandingPositions,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    for (const v of message.outstandingPositions) {
-      OutstandingPosition.encode(v!, writer.uint32(10).fork()).ldelim();
-    }
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): OutstandingPositions {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseOutstandingPositions } as OutstandingPositions;
-    message.outstandingPositions = [];
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.outstandingPositions.push(
-            OutstandingPosition.decode(reader, reader.uint32())
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): OutstandingPositions {
-    const message = { ...baseOutstandingPositions } as OutstandingPositions;
-    message.outstandingPositions = (object.outstandingPositions ?? []).map(
-      (e: any) => OutstandingPosition.fromJSON(e)
-    );
-    return message;
-  },
-
-  toJSON(message: OutstandingPositions): unknown {
-    const obj: any = {};
-    if (message.outstandingPositions) {
-      obj.outstandingPositions = message.outstandingPositions.map((e) =>
-        e ? OutstandingPosition.toJSON(e) : undefined
-      );
-    } else {
-      obj.outstandingPositions = [];
-    }
-    return obj;
-  },
-
-  fromPartial(object: DeepPartial<OutstandingPositions>): OutstandingPositions {
-    const message = { ...baseOutstandingPositions } as OutstandingPositions;
-    message.outstandingPositions = (object.outstandingPositions ?? []).map(
-      (e) => OutstandingPosition.fromPartial(e)
-    );
     return message;
   },
 };

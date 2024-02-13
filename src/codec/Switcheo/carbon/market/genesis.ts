@@ -1,7 +1,8 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Params, ControlledParams, Market } from "./market";
+import { Params } from "./params";
+import { ControlledParams, Market } from "./market";
 import { StakeEquivalence, FeeStructure } from "./fee";
 
 export const protobufPackage = "Switcheo.carbon.market";
