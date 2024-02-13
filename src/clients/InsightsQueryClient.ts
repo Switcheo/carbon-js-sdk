@@ -278,9 +278,9 @@ class InsightsQueryClient {
   async PersistenceRewards(
     req: Insights.QueryPersistenceRewardsRequest
   ): Promise<Insights.InsightsQueryResponse<Insights.QueryPersistenceRewardsResponse>> {
-    const routeParams: Insights.QueryPersistenceRewardsRequest = { epoch: req.epoch, blockheight: req.blockheight }
-    const request = this.apiManager.path('reward/epoch', routeParams, {})
-    const response = await request.get()
+    const routeParams: Insights.QueryPersistenceRewardsRequest = { epoch: req.epoch, blockheight: req.blockheight };
+    const request = this.apiManager.path('reward/epoch', routeParams, {});
+    const response = await request.get();
     return response.data as Insights.InsightsQueryResponse<Insights.QueryPersistenceRewardsResponse>;
   }
 
@@ -293,9 +293,9 @@ class InsightsQueryClient {
       market: req.market ?? '',
       offset: 0,
       sort: 'DESC',
-    }
-    const request = this.apiManager.path('reward/leaderboard', routeParams, queryParams)
-    const response = await request.get()
+    };
+    const request = this.apiManager.path('reward/leaderboard', routeParams, queryParams);
+    const response = await request.get();
     return response.data as Insights.InsightsQueryResponse<Insights.QueryPersistencePnLResponse>;
   }
 
