@@ -112,9 +112,36 @@ class InsightsQueryClient {
   async TotalUsers(
     req: Insights.QueryGetTotalUsersRequest = {}
   ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetTotalUsersResponse>> {
-    const request = this.apiManager.path("user/total", {}, req);
+    const request = this.apiManager.path("user/total", req, {});
     const response = await request.get();
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetTotalUsersResponse>;
+  }
+
+  async UserPnl(
+    req: Insights.QueryGetUserPnlPathParams,
+    query: Insights.QueryGetUserPnlGraphQueryParams
+  ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetUserPnlResponse>> {
+    const request = this.apiManager.path("user/pnl", req, query);
+    const response = await request.get();
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetUserPnlResponse>;
+  }
+
+  async UserBalanceGraph(
+    req: Insights.QueryGetUserBalanceGraphPathParams,
+    query: Insights.QueryGetUserBalanceGraphQueryParams
+  ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetUserBalanceGraphResponse>> {
+    const request = this.apiManager.path("user/balance/graph", req, query);
+    const response = await request.get();
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetUserBalanceGraphResponse>;
+  }
+
+  async UserPnlGraph(
+    req: Insights.QueryGetUserPnlGraphPathParams,
+    query: Insights.QueryGetUserPnlGraphQueryParams
+  ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetUserPnlGraphResponse>> {
+    const request = this.apiManager.path("user/pnl/graph", req, query);
+    const response = await request.get();
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetUserPnlGraphResponse>;
   }
 
   // Pool api
