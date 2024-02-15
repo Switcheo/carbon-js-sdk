@@ -2199,7 +2199,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "OrderBook": [
       {
-        "name": "marketId",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -2215,7 +2215,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "StopBook": [
       {
-        "name": "marketId",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -2249,7 +2249,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "OrderBookEvent": [
       {
-        "name": "marketId",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -2274,7 +2274,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "ClearVirtualOrderBookEvent": [
       {
-        "name": "marketId",
+        "name": "market_id",
         "type": "string"
       }
     ],
@@ -2292,7 +2292,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "StopBook_V2_32_0": [
       {
-        "name": "marketId",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -2314,7 +2314,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "QueryImpactPriceRequest": [
       {
-        "name": "marketId",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -2338,7 +2338,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "QueryGetBookRequest": [
       {
-        "name": "marketId",
+        "name": "market_id",
         "type": "string"
       }
     ],
@@ -2370,7 +2370,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "QueryGetStopBookRequest": [
       {
-        "name": "marketId",
+        "name": "market_id",
         "type": "string"
       }
     ],
@@ -2408,7 +2408,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "uint64"
       },
       {
-        "name": "marketId",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -2449,7 +2449,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "PerpsMarketAmm": [
       {
-        "name": "marketId",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -2463,7 +2463,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "Candlestick": [
       {
-        "name": "marketId",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -2517,7 +2517,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "marketId",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -2645,7 +2645,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "QueryCandlesticksRequest": [
       {
-        "name": "marketId",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -2674,7 +2674,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "marketId",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -2726,7 +2726,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "marketId",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -2753,7 +2753,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "LiquidatorPosition": [
       {
-        "name": "marketId",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -5634,7 +5634,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "marketId",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -5645,7 +5645,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "PositionPool": [
       {
-        "name": "marketId",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -7532,7 +7532,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "marketId",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -7557,7 +7557,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "marketId",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -7567,7 +7567,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "MarketLeverage": [
       {
-        "name": "marketId",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -7599,7 +7599,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "marketId",
+        "name": "market_id",
         "type": "string"
       }
     ],
@@ -7629,7 +7629,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "marketId",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -7646,7 +7646,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "marketId",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -7672,7 +7672,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "marketId",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -7712,7 +7712,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "marketId",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -7777,7 +7777,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "marketId",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -8085,7 +8085,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "marketId",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -8368,7 +8368,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "marketId",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -8416,7 +8416,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "marketId",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -8451,7 +8451,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "marketId",
+        "name": "market_id",
         "type": "string"
       }
     ],
@@ -8504,7 +8504,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "marketId",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -8597,7 +8597,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "marketId",
+        "name": "market_id",
         "type": "string"
       }
     ],
@@ -8687,7 +8687,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "PoolRoute": [
       {
-        "name": "marketId",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -9489,7 +9489,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "uint64"
       },
       {
-        "name": "marketId",
+        "name": "market_id",
         "type": "string"
       }
     ],
@@ -10829,7 +10829,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "MarketEvent": [
       {
-        "name": "marketId",
+        "name": "market_id",
         "type": "Market",
         "packageName": "/Switcheo.carbon.market"
       },
@@ -10922,7 +10922,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "QueryGetMarketResponse": [
       {
-        "name": "marketId",
+        "name": "market_id",
         "type": "Market",
         "packageName": "/Switcheo.carbon.market"
       }
@@ -11323,7 +11323,7 @@ export const EIP712Types: { [index: string]: any } = {
     "GenesisState": [],
     "MarketStats": [
       {
-        "name": "marketId",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -12151,7 +12151,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "MarketLiquidityUsageMultiplier": [
       {
-        "name": "marketId",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -12377,7 +12377,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "UpdateMarketLiquidityUsageMultiplierEvent": [
       {
-        "name": "marketId",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -12836,7 +12836,7 @@ export const EIP712Types: { [index: string]: any } = {
   "/Switcheo.carbon.position": {
     "Position": [
       {
-        "name": "marketId",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -12874,7 +12874,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "APIPosition": [
       {
-        "name": "marketId",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -13005,7 +13005,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "marketId",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -13037,7 +13037,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "marketId",
+        "name": "market_id",
         "type": "string"
       }
     ],
@@ -13054,7 +13054,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "marketId",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -13098,7 +13098,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "marketId",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -13139,7 +13139,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "marketId",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -13334,7 +13334,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "SettlementPriceParams": [
       {
-        "name": "marketId",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -13357,7 +13357,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "QueryPriceSetRequest": [
       {
-        "name": "marketId",
+        "name": "market_id",
         "type": "string"
       }
     ],
@@ -13522,7 +13522,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "marketId",
+        "name": "market_id",
         "type": "string"
       },
       {

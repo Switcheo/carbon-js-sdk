@@ -214,6 +214,8 @@ export function constructEIP712Tx(doc: CarbonTx.StdSignDoc): EIP712Tx {
         message: { account_number, chain_id, fee, memo, sequence, ...convertMsgs(doc.msgs) },
     }
 
+    console.log('xx eip712:', JSON.stringify(eip712Tx))
+
     return eip712Tx
 }
 

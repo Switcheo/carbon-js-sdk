@@ -1,6 +1,6 @@
 export interface AccountTrade {
   order_id: string;
-  market: string;
+  market_id: string;
   side: string;
   price: string; // string representation of number
   quantity: string; // string representation of number
@@ -25,7 +25,7 @@ export interface HistoryOrder {
   is_liquidation?: boolean;
   is_post_only?: boolean;
   is_reduce_only?: boolean;
-  market: string;
+  market_id: string;
   order_type: string;
   pool_id?: number;
   price: string;
@@ -60,7 +60,7 @@ export interface BaseHistoryOrderEvent extends BaseHistoryOrder {
 export interface Candlestick {
   time: string; // string representation of timestamp
   close: string;
-  market: string;
+  market_id: string;
   open: string;
   high: string;
   low: string;
@@ -72,7 +72,7 @@ export interface Candlestick {
 export interface RecentTrade {
   block_created_at: string;
   block_height: number;
-  market: string;
+  market_id: string;
   price: string;
   quantity: string;
   id?: string;
@@ -96,7 +96,7 @@ export interface RecentTrade {
 }
 
 export interface Position {
-  market: string;
+  market_id: string;
   address: string;
   trade_id: string; // string representation of number
   side: string;
@@ -127,7 +127,7 @@ export interface MarketStat {
   index_price: string;
   mark_price: string;
   last_price: string;
-  market: string;
+  market_id: string;
   market_type: string;
   premium_rate: string;
   last_funding_at: string;
