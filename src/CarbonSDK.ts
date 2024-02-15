@@ -433,7 +433,11 @@ class CarbonSDK {
       try {
         // Perform initialize function as per normal, but add try-catch statement to check err message
         const fees = await this.getGasFee();
-        await wallet.initialize(this.query, fees);
+        const overrideConfig = {
+          chainId: this.chainId,
+          evmChainId: this.evmChainId,
+        }
+        await wallet.initialize(this.query, fees, overrideConfig);
       } catch (err) {
         const errorTyped = err as Error;
         // In the case where account does not exist on chain, still allow wallet connection.

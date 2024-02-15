@@ -18,7 +18,7 @@ import { QueueManager } from "@carbon-sdk/util/generic";
 import { bnOrZero, BN_ZERO } from "@carbon-sdk/util/number";
 import { BroadcastTxMode, CarbonCustomError, CarbonSignerData, ErrorType } from "@carbon-sdk/util/tx";
 import { encodeSecp256k1Signature, StdSignature } from "@cosmjs/amino";
-import { EncodeObject, isOfflineDirectSigner, OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
+import { EncodeObject, OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
 import { Account, DeliverTxResponse, isDeliverTxFailure, TimeoutError } from "@cosmjs/stargate";
 import { Tendermint37Client } from "@cosmjs/tendermint-rpc";
 import { BroadcastTxAsyncResponse, BroadcastTxSyncResponse, broadcastTxSyncSuccess, TxResponse } from "@cosmjs/tendermint-rpc/build/tendermint37/responses";
@@ -327,11 +327,10 @@ export class CarbonWallet {
     });
   }
 
-  public async initialize(queryClient: CarbonQueryClient, gasFee: GasFee): Promise<CarbonWallet> {
+  public async initialize(queryClient: CarbonQueryClient, gasFee: GasFee, overrideConfig: { [key: string]: string } | null = null): Promise<CarbonWallet> {
     this.query = queryClient;
     this.gasFee = gasFee
-
-    await Promise.all([this.reconnectTmClient(), this.reloadTxFees(), this.reloadAccountSequence(), this.reloadMergeAccountStatus()]);
+    await Promise.all([this.reconnectTmClient(overrideConfig), this.reloadTxFees(), this.reloadAccountSequence(), this.reloadMergeAccountStatus()]);
 
     this.initialized = true;
     return this;
@@ -807,11 +806,7 @@ export class CarbonWallet {
   }
 
   isLedgerSigner() {
-    return this.isSigner(CarbonSignerTypes.Ledger) || this.isLedgerViaBrowserExtension();
-  }
-
-  isLedgerViaBrowserExtension() {
-    return (this.providerAgent === ProviderAgent.KeplrExtension || this.providerAgent === ProviderAgent.LeapExtension) && !isOfflineDirectSigner(this.signer);
+    return this.isSigner(CarbonSignerTypes.Ledger);
   }
 
   isPrivateKeySigner() {
@@ -845,11 +840,19 @@ export class CarbonWallet {
     return null;
   }
 
-  public async reconnectTmClient() {
-    this.tmClient = await Tendermint37Client.connect(this.networkConfig.tmRpcUrl);
-    const status = await this.tmClient.status();
-    this.chainId = status.nodeInfo.network;
-    this.evmChainId = CarbonEvmChainIDs[this.network]
+  public async reconnectTmClient(overrideConfig: { [key: string]: string } | null) {
+    try {
+      this.tmClient = await Tendermint37Client.connect(this.networkConfig.tmRpcUrl);
+      const status = await this.tmClient.status();
+      this.chainId = status.nodeInfo.network;
+      this.evmChainId = CarbonEvmChainIDs[this.network]
+    } catch (err) {
+      const errorTyped = err as Error;
+      if (errorTyped.message.includes("Failed to fetch") && overrideConfig) {
+        this.chainId = overrideConfig.chainId;
+        this.evmChainId = overrideConfig.evmChainId
+      }
+    }
   }
 
   public async reloadTxFees() {
