@@ -8,6 +8,16 @@ interface SimpleMap<T = unknown> {
   [index: string]: T;
 }
 
+interface UpdateOracleParams {
+  description?: string;
+  minTurnoutPercentage?: number;
+  maxResultAge?: number;
+  securityType?: string;
+  resultStrategy?: string;
+  resolution?: number;
+  spec?: string;
+}
+
 function fetch(url: string, init?: RequestInit): Promise<Response> {
   if (typeof window !== "undefined" && window.fetch) {
     return window.fetch(url, { ...init });
@@ -29,71 +39,263 @@ function fetch(url: string, init?: RequestInit): Promise<Response> {
     const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
     console.log("connected sdk");
 
-    const newResolutions: SimpleMap<number> = {
-      ".CAAVE": 14401,
-      ".CAMPLUNA": 61,
-      ".CARB": 21,
-      ".CATOM": 21,
-      ".CAXLUSDC": 61,
-      ".CBIT": 21,
-      ".CBLUR": 21,
-      ".CBNB": 14401,
-      ".CBUSDCEX": 241,
-      ".CBUSDDEX": 241,
-      ".CCGLP": 61,
-      ".CCRV": 14401,
-      ".CDOGE": 14401,
-      ".CDYM": 2,
-      ".CEVMOS": 61,
-      ".CGAS": 14401,
-      ".CGMX": 21,
-      ".CIBX": 61,
-      ".CIRIS": 61,
-      ".CJUP": 5,
-      ".CKUJI": 32,
-      ".CAMPKUJI": 32,
-      ".CLINK": 14401,
-      ".CLSI": 21,
-      ".CLUNA": 22,
-      ".CMANTA": 22,
-      ".CMEME": 21,
-      ".CMILKTIA": 59,
-      ".CNEO": 21,
-      ".COKB": 121,
-      ".COKT": 121,
-      ".COSMO": 21,
-      ".CPYTH": 5,
-      ".CRATOM": 61,
-      ".CRSWTH": 23,
-      ".CRSWTHSWTHLP": 23,
-      ".CRUNE": 14401,
-      ".CSCRT": 5,
-      ".CSEI": 21,
-      ".CSOL": 5,
-      ".CSTATOM": 31,
-      ".CSTDYDX": 31,
-      ".CSTEVMOS": 32,
-      ".CSTLUNA": 32,
-      ".CSTOSMO": 33,
-      ".CSTRD": 33,
-      ".CSTRIDE": 14400,
-      ".CSTRK": 21,
-      ".CSTSTARS": 31,
-      ".CSTTIA": 39,
-      ".CSTX": 21,
-      ".CSWTH": 15,
-      ".CTIA": 5,
-      ".CTON": 21,
-      ".CTRX": 14401,
-      ".CUSC": 20,
-      ".CUSD": 3600,
-      ".CUSDC": 30,
-      ".CUSDT": 59,
-      ".CWSTETH": 61,
-      ".CYIELDUSD": 241,
-      ".CZIL": 21,
-      "SIDXBTC": 5,
-      "SIDXETH": 5
+    const newResolutions: SimpleMap<UpdateOracleParams> = {
+      ".CAAVE": {
+        resolution: 14401,
+        maxResultAge: 28802
+      },
+      ".CAMPKUJI": {
+        resolution: 32,
+        maxResultAge: 320
+      },
+      ".CAMPLUNA": {
+        resolution: 61,
+        maxResultAge: 305
+      },
+      ".CARB": {
+        resolution: 5,
+        maxResultAge: 315
+      },
+      ".CATOM": {
+        resolution: 21,
+        maxResultAge: 315
+      },
+      ".CAXLUSDC": {
+        resolution: 61,
+        maxResultAge: 305
+      },
+      ".CBIT": {
+        resolution: 5,
+        maxResultAge: 315
+      },
+      ".CBLUR": {
+        resolution: 21,
+        maxResultAge: 315
+      },
+      ".CBNB": {
+        resolution: 5,
+        maxResultAge: 315
+      },
+      ".CBUSDCEX": {
+        resolution: 241,
+        maxResultAge: 482
+      },
+      ".CBUSDDEX": {
+        resolution: 241,
+        maxResultAge: 482
+      },
+      ".CCGLP": {
+        resolution: 61,
+        maxResultAge: 305
+      },
+      ".CCRV": {
+        resolution: 14401,
+        maxResultAge: 28802
+      },
+      ".CDOGE": {
+        resolution: 14401,
+        maxResultAge: 28802
+      },
+      ".CDYM": {
+        resolution: 2,
+        maxResultAge: 300
+      },
+      ".CEVMOS": {
+        resolution: 61,
+        maxResultAge: 305
+      },
+      ".CGAS": {
+        resolution: 14401,
+        maxResultAge: 28802
+      },
+      ".CGMX": {
+        resolution: 21,
+        maxResultAge: 315
+      },
+      ".CIBX": {
+        resolution: 61,
+        maxResultAge: 305
+      },
+      ".CIRIS": {
+        resolution: 61,
+        maxResultAge: 305
+      },
+      ".CJUP": {
+        resolution: 5,
+        maxResultAge: 300
+      },
+      ".CKUJI": {
+        resolution: 32,
+        maxResultAge: 320
+      },
+      ".CLINK": {
+        resolution: 14401,
+        maxResultAge: 28802
+      },
+      ".CLSI": {
+        resolution: 21,
+        maxResultAge: 315
+      },
+      ".CLUNA": {
+        resolution: 22,
+        maxResultAge: 308
+      },
+      ".CMANTA": {
+        resolution: 5,
+        maxResultAge: 305
+      },
+      ".CMEME": {
+        resolution: 21,
+        maxResultAge: 315
+      },
+      ".CMILKTIA": {
+        resolution: 59,
+        maxResultAge: 354
+      },
+      ".CNEO": {
+        resolution: 21,
+        maxResultAge: 315
+      },
+      ".COKB": {
+        resolution: 121,
+        maxResultAge: 363
+      },
+      ".COKT": {
+        resolution: 121,
+        maxResultAge: 363
+      },
+      ".COSMO": {
+        resolution: 21,
+        maxResultAge: 315
+      },
+      ".CPYTH": {
+        resolution: 5,
+        maxResultAge: 300
+      },
+      ".CRATOM": {
+        resolution: 61,
+        maxResultAge: 305
+      },
+      ".CRSWTH": {
+        resolution: 23,
+        maxResultAge: 322
+      },
+      ".CRSWTHSWTHLP": {
+        resolution: 23,
+        maxResultAge: 322
+      },
+      ".CRUNE": {
+        resolution: 14401,
+        maxResultAge: 28802
+      },
+      ".CSCRT": {
+        resolution: 5,
+        maxResultAge: 300
+      },
+      ".CSEI": {
+        resolution: 21,
+        maxResultAge: 315
+      },
+      ".CSOL": {
+        resolution: 5,
+        maxResultAge: 300
+      },
+      ".CSTATOM": {
+        resolution: 31,
+        maxResultAge: 310
+      },
+      ".CSTDYDX": {
+        resolution: 31,
+        maxResultAge: 310
+      },
+      ".CSTEVMOS": {
+        resolution: 32,
+        maxResultAge: 320
+      },
+      ".CSTLUNA": {
+        resolution: 32,
+        maxResultAge: 320
+      },
+      ".CSTOSMO": {
+        resolution: 33,
+        maxResultAge: 330
+      },
+      ".CSTRD": {
+        resolution: 33,
+        maxResultAge: 330
+      },
+      ".CSTRIDE": {
+        resolution: 14400,
+        maxResultAge: 28800
+      },
+      ".CSTRK": {
+        resolution: 21,
+        maxResultAge: 315
+      },
+      ".CSTSTARS": {
+        resolution: 31,
+        maxResultAge: 310
+      },
+      ".CSTTIA": {
+        resolution: 39,
+        maxResultAge: 312
+      },
+      ".CSTX": {
+        resolution: 21,
+        maxResultAge: 315
+      },
+      ".CSWTH": {
+        resolution: 15,
+        maxResultAge: 300
+      },
+      ".CTIA": {
+        resolution: 5,
+        maxResultAge: 300
+      },
+      ".CTON": {
+        resolution: 21,
+        maxResultAge: 315
+      },
+      ".CTRX": {
+        resolution: 14401,
+        maxResultAge: 28802
+      },
+      ".CUSC": {
+        resolution: 20,
+        maxResultAge: 300
+      },
+      ".CUSD": {
+        resolution: 3600,
+        maxResultAge: 7200
+      },
+      ".CUSDC": {
+        resolution: 30,
+        maxResultAge: 300
+      },
+      ".CUSDT": {
+        resolution: 59,
+        maxResultAge: 354
+      },
+      ".CWSTETH": {
+        resolution: 61,
+        maxResultAge: 305
+      },
+      ".CYIELDUSD": {
+        resolution: 241,
+        maxResultAge: 482
+      },
+      ".CZIL": {
+        resolution: 21,
+        maxResultAge: 315
+      },
+      "SIDXBTC": {
+        resolution: 5,
+        maxResultAge: 300
+      },
+      "SIDXETH": {
+        resolution: 5,
+        maxResultAge: 300
+      },
     }    
 
     const MAINNET_ORACLE_URL = "https://api.carbon.network/carbon/oracle/v1/oracles?pagination.limit=100"
@@ -103,28 +305,46 @@ function fetch(url: string, init?: RequestInit): Promise<Response> {
     for (const oracle of oracleData.oracles) {
       const id = oracle.id as string
       const resolution = oracle.resolution as string
-        if (!newResolutions[id]) {
-          console.log(`skipping update for oracle ${id} as it is not found in new resolution map`)
-          continue
-        }
+      const maxResultAge = oracle.max_result_age as string
+      if (!newResolutions[id]) {
+        console.log(`skipping update for oracle ${id} as it is not found in new resolution map`)
+        continue
+      }
 
-        if (newResolutions[id] == new Number(resolution)) {
-          console.log(`skipping update for oracle ${id} as it is already updated: ${resolution}`)
-          continue
+      if (newResolutions[id].resolution == new Number(resolution)) {
+        console.log(`skipping update resolution for oracle ${id} as it is already updated: ${resolution}`)
+      } else {
+        const txUpdateReso = {
+          typeUrl: CarbonTx.Types.MsgUpdateOracle,
+          value: MsgUpdateOracle.fromPartial({
+            updater: connectedSDK.wallet.bech32Address,
+            updateOracleParams: {
+              id,
+              resolution: newResolutions[id].resolution,
+            },
+          }),
         }
+        console.log(`updating oracle ${id} resolution from ${resolution} to ${newResolutions[id].resolution}`)
+        txs.push(txUpdateReso)
+      }
 
-        console.log(`updating oracle ${id} resolution from ${resolution} to ${newResolutions[id]} `)
-        const tx = {
-            typeUrl: CarbonTx.Types.MsgUpdateOracle,
-            value: MsgUpdateOracle.fromPartial({
-              updater: connectedSDK.wallet.bech32Address,
-              updateOracleParams: {
-                id,
-                resolution: newResolutions[id],
-              },
-            }),
-        }
-        txs.push(tx)
+      // TO RUN once chain has upgraded past v2.38
+      // if (newResolutions[id].maxResultAge == new Number(maxResultAge)) {
+      //   console.log(`skipping update maxResultAge for oracle ${id} as it is already updated: ${maxResultAge}`)
+      // } else {
+      //   const txUpdateMaxResultAge = {
+      //     typeUrl: CarbonTx.Types.MsgUpdateOracle,
+      //     value: MsgUpdateOracle.fromPartial({
+      //       updater: connectedSDK.wallet.bech32Address,
+      //       updateOracleParams: {
+      //         id,
+      //         maxResultAge: newResolutions[id].maxResultAge
+      //       },
+      //     }),
+      //   }
+      //   console.log(`updating oracle ${id} maxResultAge from ${maxResultAge} to ${newResolutions[id].maxResultAge}`)
+      //   txs.push(txUpdateMaxResultAge)
+      // }
     }
 
     const result = await connectedSDK.wallet.sendTxs(txs);
