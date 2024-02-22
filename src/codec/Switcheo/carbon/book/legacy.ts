@@ -5,7 +5,7 @@ import _m0 from "protobufjs/minimal";
 export const protobufPackage = "Switcheo.carbon.book";
 
 export interface StopbookV2320 {
-  market: string;
+  marketId: string;
   asks: string[];
   bids: string[];
   trigger: string;
@@ -13,7 +13,7 @@ export interface StopbookV2320 {
 }
 
 const baseStopbookV2320: object = {
-  market: "",
+  marketId: "",
   asks: "",
   bids: "",
   trigger: "",
@@ -25,8 +25,8 @@ export const StopbookV2320 = {
     message: StopbookV2320,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.market !== "") {
-      writer.uint32(10).string(message.market);
+    if (message.marketId !== "") {
+      writer.uint32(10).string(message.marketId);
     }
     for (const v of message.asks) {
       writer.uint32(18).string(v!);
@@ -53,7 +53,7 @@ export const StopbookV2320 = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.market = reader.string();
+          message.marketId = reader.string();
           break;
         case 2:
           message.asks.push(reader.string());
@@ -77,9 +77,9 @@ export const StopbookV2320 = {
 
   fromJSON(object: any): StopbookV2320 {
     const message = { ...baseStopbookV2320 } as StopbookV2320;
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? String(object.market)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     message.asks = (object.asks ?? []).map((e: any) => String(e));
     message.bids = (object.bids ?? []).map((e: any) => String(e));
@@ -96,7 +96,7 @@ export const StopbookV2320 = {
 
   toJSON(message: StopbookV2320): unknown {
     const obj: any = {};
-    message.market !== undefined && (obj.market = message.market);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     if (message.asks) {
       obj.asks = message.asks.map((e) => e);
     } else {
@@ -114,7 +114,7 @@ export const StopbookV2320 = {
 
   fromPartial(object: DeepPartial<StopbookV2320>): StopbookV2320 {
     const message = { ...baseStopbookV2320 } as StopbookV2320;
-    message.market = object.market ?? "";
+    message.marketId = object.marketId ?? "";
     message.asks = (object.asks ?? []).map((e) => e);
     message.bids = (object.bids ?? []).map((e) => e);
     message.trigger = object.trigger ?? "";

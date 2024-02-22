@@ -6,7 +6,7 @@ import { Timestamp } from "../../../google/protobuf/timestamp";
 export const protobufPackage = "Switcheo.carbon.broker";
 
 export interface Candlestick {
-  market: string;
+  marketId: string;
   time?: Date;
   resolution: Long;
   open: string;
@@ -19,7 +19,7 @@ export interface Candlestick {
 }
 
 const baseCandlestick: object = {
-  market: "",
+  marketId: "",
   resolution: Long.UZERO,
   open: "",
   close: "",
@@ -35,8 +35,8 @@ export const Candlestick = {
     message: Candlestick,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.market !== "") {
-      writer.uint32(10).string(message.market);
+    if (message.marketId !== "") {
+      writer.uint32(10).string(message.marketId);
     }
     if (message.time !== undefined) {
       Timestamp.encode(
@@ -79,7 +79,7 @@ export const Candlestick = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.market = reader.string();
+          message.marketId = reader.string();
           break;
         case 2:
           message.time = fromTimestamp(
@@ -120,9 +120,9 @@ export const Candlestick = {
 
   fromJSON(object: any): Candlestick {
     const message = { ...baseCandlestick } as Candlestick;
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? String(object.market)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     message.time =
       object.time !== undefined && object.time !== null
@@ -164,7 +164,7 @@ export const Candlestick = {
 
   toJSON(message: Candlestick): unknown {
     const obj: any = {};
-    message.market !== undefined && (obj.market = message.market);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     message.time !== undefined && (obj.time = message.time.toISOString());
     message.resolution !== undefined &&
       (obj.resolution = (message.resolution || Long.UZERO).toString());
@@ -184,7 +184,7 @@ export const Candlestick = {
 
   fromPartial(object: DeepPartial<Candlestick>): Candlestick {
     const message = { ...baseCandlestick } as Candlestick;
-    message.market = object.market ?? "";
+    message.marketId = object.marketId ?? "";
     message.time = object.time ?? undefined;
     message.resolution =
       object.resolution !== undefined && object.resolution !== null

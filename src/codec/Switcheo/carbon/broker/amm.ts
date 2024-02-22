@@ -1,13 +1,14 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
+import { Timestamp } from "../../../google/protobuf/timestamp";
 
 export const protobufPackage = "Switcheo.carbon.broker";
 
 /** SpotAmm exists when there is a quote on the orderbook */
 export interface SpotAmm {
   poolId: Long;
-  market: string;
+  marketId: string;
   reservesHash: Uint8Array;
   /**
    * TODO: change to reserved after being used for migration
@@ -21,13 +22,15 @@ export interface SpotAmm {
 export interface PerpsAmm {
   poolId: Long;
   quotingHash: Uint8Array;
-  lastQuotedAt: Long;
+  /** TODO: depreceate uint64 var */
+  legacyLastQuotedAt: Long;
   markets: PerpsMarketAmm[];
+  lastQuotedAt?: Date;
 }
 
 /** PerpsMarketAmm exists when it is active or when there's orders or open position */
 export interface PerpsMarketAmm {
-  market: string;
+  marketId: string;
   /**
    * TODO: change to reserved after being used for migration
    * reserved 2; // used to be orders, but deprecated
@@ -36,7 +39,7 @@ export interface PerpsMarketAmm {
   lastIndexPrice: string;
 }
 
-const baseSpotAmm: object = { poolId: Long.UZERO, market: "", orders: "" };
+const baseSpotAmm: object = { poolId: Long.UZERO, marketId: "", orders: "" };
 
 export const SpotAmm = {
   encode(
@@ -46,8 +49,8 @@ export const SpotAmm = {
     if (!message.poolId.isZero()) {
       writer.uint32(8).uint64(message.poolId);
     }
-    if (message.market !== "") {
-      writer.uint32(18).string(message.market);
+    if (message.marketId !== "") {
+      writer.uint32(18).string(message.marketId);
     }
     if (message.reservesHash.length !== 0) {
       writer.uint32(26).bytes(message.reservesHash);
@@ -75,7 +78,7 @@ export const SpotAmm = {
           message.poolId = reader.uint64() as Long;
           break;
         case 2:
-          message.market = reader.string();
+          message.marketId = reader.string();
           break;
         case 3:
           message.reservesHash = reader.bytes();
@@ -100,9 +103,9 @@ export const SpotAmm = {
       object.poolId !== undefined && object.poolId !== null
         ? Long.fromString(object.poolId)
         : Long.UZERO;
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? String(object.market)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     message.reservesHash =
       object.reservesHash !== undefined && object.reservesHash !== null
@@ -120,7 +123,7 @@ export const SpotAmm = {
     const obj: any = {};
     message.poolId !== undefined &&
       (obj.poolId = (message.poolId || Long.UZERO).toString());
-    message.market !== undefined && (obj.market = message.market);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     message.reservesHash !== undefined &&
       (obj.reservesHash = base64FromBytes(
         message.reservesHash !== undefined
@@ -145,7 +148,7 @@ export const SpotAmm = {
       object.poolId !== undefined && object.poolId !== null
         ? Long.fromValue(object.poolId)
         : Long.UZERO;
-    message.market = object.market ?? "";
+    message.marketId = object.marketId ?? "";
     message.reservesHash = object.reservesHash ?? new Uint8Array();
     message.orders = (object.orders ?? []).map((e) => e);
     message.poolRoute = object.poolRoute ?? new Uint8Array();
@@ -153,7 +156,10 @@ export const SpotAmm = {
   },
 };
 
-const basePerpsAmm: object = { poolId: Long.UZERO, lastQuotedAt: Long.UZERO };
+const basePerpsAmm: object = {
+  poolId: Long.UZERO,
+  legacyLastQuotedAt: Long.UZERO,
+};
 
 export const PerpsAmm = {
   encode(
@@ -166,11 +172,17 @@ export const PerpsAmm = {
     if (message.quotingHash.length !== 0) {
       writer.uint32(18).bytes(message.quotingHash);
     }
-    if (!message.lastQuotedAt.isZero()) {
-      writer.uint32(24).uint64(message.lastQuotedAt);
+    if (!message.legacyLastQuotedAt.isZero()) {
+      writer.uint32(24).uint64(message.legacyLastQuotedAt);
     }
     for (const v of message.markets) {
       PerpsMarketAmm.encode(v!, writer.uint32(34).fork()).ldelim();
+    }
+    if (message.lastQuotedAt !== undefined) {
+      Timestamp.encode(
+        toTimestamp(message.lastQuotedAt),
+        writer.uint32(42).fork()
+      ).ldelim();
     }
     return writer;
   },
@@ -191,10 +203,15 @@ export const PerpsAmm = {
           message.quotingHash = reader.bytes();
           break;
         case 3:
-          message.lastQuotedAt = reader.uint64() as Long;
+          message.legacyLastQuotedAt = reader.uint64() as Long;
           break;
         case 4:
           message.markets.push(PerpsMarketAmm.decode(reader, reader.uint32()));
+          break;
+        case 5:
+          message.lastQuotedAt = fromTimestamp(
+            Timestamp.decode(reader, reader.uint32())
+          );
           break;
         default:
           reader.skipType(tag & 7);
@@ -214,13 +231,18 @@ export const PerpsAmm = {
       object.quotingHash !== undefined && object.quotingHash !== null
         ? bytesFromBase64(object.quotingHash)
         : new Uint8Array();
-    message.lastQuotedAt =
-      object.lastQuotedAt !== undefined && object.lastQuotedAt !== null
-        ? Long.fromString(object.lastQuotedAt)
+    message.legacyLastQuotedAt =
+      object.legacyLastQuotedAt !== undefined &&
+      object.legacyLastQuotedAt !== null
+        ? Long.fromString(object.legacyLastQuotedAt)
         : Long.UZERO;
     message.markets = (object.markets ?? []).map((e: any) =>
       PerpsMarketAmm.fromJSON(e)
     );
+    message.lastQuotedAt =
+      object.lastQuotedAt !== undefined && object.lastQuotedAt !== null
+        ? fromJsonTimestamp(object.lastQuotedAt)
+        : undefined;
     return message;
   },
 
@@ -234,8 +256,10 @@ export const PerpsAmm = {
           ? message.quotingHash
           : new Uint8Array()
       ));
-    message.lastQuotedAt !== undefined &&
-      (obj.lastQuotedAt = (message.lastQuotedAt || Long.UZERO).toString());
+    message.legacyLastQuotedAt !== undefined &&
+      (obj.legacyLastQuotedAt = (
+        message.legacyLastQuotedAt || Long.UZERO
+      ).toString());
     if (message.markets) {
       obj.markets = message.markets.map((e) =>
         e ? PerpsMarketAmm.toJSON(e) : undefined
@@ -243,6 +267,8 @@ export const PerpsAmm = {
     } else {
       obj.markets = [];
     }
+    message.lastQuotedAt !== undefined &&
+      (obj.lastQuotedAt = message.lastQuotedAt.toISOString());
     return obj;
   },
 
@@ -253,19 +279,21 @@ export const PerpsAmm = {
         ? Long.fromValue(object.poolId)
         : Long.UZERO;
     message.quotingHash = object.quotingHash ?? new Uint8Array();
-    message.lastQuotedAt =
-      object.lastQuotedAt !== undefined && object.lastQuotedAt !== null
-        ? Long.fromValue(object.lastQuotedAt)
+    message.legacyLastQuotedAt =
+      object.legacyLastQuotedAt !== undefined &&
+      object.legacyLastQuotedAt !== null
+        ? Long.fromValue(object.legacyLastQuotedAt)
         : Long.UZERO;
     message.markets = (object.markets ?? []).map((e) =>
       PerpsMarketAmm.fromPartial(e)
     );
+    message.lastQuotedAt = object.lastQuotedAt ?? undefined;
     return message;
   },
 };
 
 const basePerpsMarketAmm: object = {
-  market: "",
+  marketId: "",
   orders: "",
   lastIndexPrice: "",
 };
@@ -275,8 +303,8 @@ export const PerpsMarketAmm = {
     message: PerpsMarketAmm,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.market !== "") {
-      writer.uint32(10).string(message.market);
+    if (message.marketId !== "") {
+      writer.uint32(10).string(message.marketId);
     }
     for (const v of message.orders) {
       writer.uint32(18).string(v!);
@@ -296,7 +324,7 @@ export const PerpsMarketAmm = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.market = reader.string();
+          message.marketId = reader.string();
           break;
         case 2:
           message.orders.push(reader.string());
@@ -314,9 +342,9 @@ export const PerpsMarketAmm = {
 
   fromJSON(object: any): PerpsMarketAmm {
     const message = { ...basePerpsMarketAmm } as PerpsMarketAmm;
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? String(object.market)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     message.orders = (object.orders ?? []).map((e: any) => String(e));
     message.lastIndexPrice =
@@ -328,7 +356,7 @@ export const PerpsMarketAmm = {
 
   toJSON(message: PerpsMarketAmm): unknown {
     const obj: any = {};
-    message.market !== undefined && (obj.market = message.market);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     if (message.orders) {
       obj.orders = message.orders.map((e) => e);
     } else {
@@ -341,7 +369,7 @@ export const PerpsMarketAmm = {
 
   fromPartial(object: DeepPartial<PerpsMarketAmm>): PerpsMarketAmm {
     const message = { ...basePerpsMarketAmm } as PerpsMarketAmm;
-    message.market = object.market ?? "";
+    message.marketId = object.marketId ?? "";
     message.orders = (object.orders ?? []).map((e) => e);
     message.lastIndexPrice = object.lastIndexPrice ?? "";
     return message;
@@ -401,6 +429,32 @@ export type DeepPartial<T> = T extends Builtin
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+function toTimestamp(date: Date): Timestamp {
+  const seconds = numberToLong(date.getTime() / 1_000);
+  const nanos = (date.getTime() % 1_000) * 1_000_000;
+  return { seconds, nanos };
+}
+
+function fromTimestamp(t: Timestamp): Date {
+  let millis = t.seconds.toNumber() * 1_000;
+  millis += t.nanos / 1_000_000;
+  return new Date(millis);
+}
+
+function fromJsonTimestamp(o: any): Date {
+  if (o instanceof Date) {
+    return o;
+  } else if (typeof o === "string") {
+    return new Date(o);
+  } else {
+    return fromTimestamp(Timestamp.fromJSON(o));
+  }
+}
+
+function numberToLong(number: number) {
+  return Long.fromNumber(number);
+}
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

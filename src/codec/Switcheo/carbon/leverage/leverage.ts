@@ -5,7 +5,7 @@ import _m0 from "protobufjs/minimal";
 export const protobufPackage = "Switcheo.carbon.leverage";
 
 export interface MarketLeverage {
-  market: string;
+  marketId: string;
   leverage: string;
 }
 
@@ -14,15 +14,15 @@ export interface MarketLeverageRecord {
   marketLeverage?: MarketLeverage;
 }
 
-const baseMarketLeverage: object = { market: "", leverage: "" };
+const baseMarketLeverage: object = { marketId: "", leverage: "" };
 
 export const MarketLeverage = {
   encode(
     message: MarketLeverage,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.market !== "") {
-      writer.uint32(10).string(message.market);
+    if (message.marketId !== "") {
+      writer.uint32(10).string(message.marketId);
     }
     if (message.leverage !== "") {
       writer.uint32(18).string(message.leverage);
@@ -38,7 +38,7 @@ export const MarketLeverage = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.market = reader.string();
+          message.marketId = reader.string();
           break;
         case 2:
           message.leverage = reader.string();
@@ -53,9 +53,9 @@ export const MarketLeverage = {
 
   fromJSON(object: any): MarketLeverage {
     const message = { ...baseMarketLeverage } as MarketLeverage;
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? String(object.market)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     message.leverage =
       object.leverage !== undefined && object.leverage !== null
@@ -66,14 +66,14 @@ export const MarketLeverage = {
 
   toJSON(message: MarketLeverage): unknown {
     const obj: any = {};
-    message.market !== undefined && (obj.market = message.market);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     message.leverage !== undefined && (obj.leverage = message.leverage);
     return obj;
   },
 
   fromPartial(object: DeepPartial<MarketLeverage>): MarketLeverage {
     const message = { ...baseMarketLeverage } as MarketLeverage;
-    message.market = object.market ?? "";
+    message.marketId = object.marketId ?? "";
     message.leverage = object.leverage ?? "";
     return message;
   },

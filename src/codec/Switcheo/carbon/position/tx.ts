@@ -6,13 +6,13 @@ export const protobufPackage = "Switcheo.carbon.position";
 
 export interface MsgSetMargin {
   creator: string;
-  market: string;
+  marketId: string;
   margin: string;
 }
 
 export interface MsgSetMarginResponse {}
 
-const baseMsgSetMargin: object = { creator: "", market: "", margin: "" };
+const baseMsgSetMargin: object = { creator: "", marketId: "", margin: "" };
 
 export const MsgSetMargin = {
   encode(
@@ -22,8 +22,8 @@ export const MsgSetMargin = {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
-    if (message.market !== "") {
-      writer.uint32(18).string(message.market);
+    if (message.marketId !== "") {
+      writer.uint32(18).string(message.marketId);
     }
     if (message.margin !== "") {
       writer.uint32(26).string(message.margin);
@@ -42,7 +42,7 @@ export const MsgSetMargin = {
           message.creator = reader.string();
           break;
         case 2:
-          message.market = reader.string();
+          message.marketId = reader.string();
           break;
         case 3:
           message.margin = reader.string();
@@ -61,9 +61,9 @@ export const MsgSetMargin = {
       object.creator !== undefined && object.creator !== null
         ? String(object.creator)
         : "";
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? String(object.market)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     message.margin =
       object.margin !== undefined && object.margin !== null
@@ -75,7 +75,7 @@ export const MsgSetMargin = {
   toJSON(message: MsgSetMargin): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.market !== undefined && (obj.market = message.market);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     message.margin !== undefined && (obj.margin = message.margin);
     return obj;
   },
@@ -83,7 +83,7 @@ export const MsgSetMargin = {
   fromPartial(object: DeepPartial<MsgSetMargin>): MsgSetMargin {
     const message = { ...baseMsgSetMargin } as MsgSetMargin;
     message.creator = object.creator ?? "";
-    message.market = object.market ?? "";
+    message.marketId = object.marketId ?? "";
     message.margin = object.margin ?? "";
     return message;
   },

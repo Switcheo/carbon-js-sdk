@@ -10,7 +10,7 @@ import {
 export const protobufPackage = "Switcheo.carbon.book";
 
 export interface QueryImpactPriceRequest {
-  market: string;
+  marketId: string;
   quoteAmount: string;
 }
 
@@ -22,7 +22,7 @@ export interface QueryImpactPriceResponse {
 
 /** this line is used by starport scaffolding # 3 */
 export interface QueryGetBookRequest {
-  market: string;
+  marketId: string;
 }
 
 export interface QueryGetBookResponse {
@@ -39,7 +39,7 @@ export interface QueryAllBookResponse {
 }
 
 export interface QueryGetStopBookRequest {
-  market: string;
+  marketId: string;
 }
 
 export interface QueryGetStopBookResponse {
@@ -55,15 +55,15 @@ export interface QueryAllStopBookResponse {
   pagination?: PageResponse;
 }
 
-const baseQueryImpactPriceRequest: object = { market: "", quoteAmount: "" };
+const baseQueryImpactPriceRequest: object = { marketId: "", quoteAmount: "" };
 
 export const QueryImpactPriceRequest = {
   encode(
     message: QueryImpactPriceRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.market !== "") {
-      writer.uint32(10).string(message.market);
+    if (message.marketId !== "") {
+      writer.uint32(10).string(message.marketId);
     }
     if (message.quoteAmount !== "") {
       writer.uint32(18).string(message.quoteAmount);
@@ -84,7 +84,7 @@ export const QueryImpactPriceRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.market = reader.string();
+          message.marketId = reader.string();
           break;
         case 2:
           message.quoteAmount = reader.string();
@@ -101,9 +101,9 @@ export const QueryImpactPriceRequest = {
     const message = {
       ...baseQueryImpactPriceRequest,
     } as QueryImpactPriceRequest;
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? String(object.market)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     message.quoteAmount =
       object.quoteAmount !== undefined && object.quoteAmount !== null
@@ -114,7 +114,7 @@ export const QueryImpactPriceRequest = {
 
   toJSON(message: QueryImpactPriceRequest): unknown {
     const obj: any = {};
-    message.market !== undefined && (obj.market = message.market);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     message.quoteAmount !== undefined &&
       (obj.quoteAmount = message.quoteAmount);
     return obj;
@@ -126,7 +126,7 @@ export const QueryImpactPriceRequest = {
     const message = {
       ...baseQueryImpactPriceRequest,
     } as QueryImpactPriceRequest;
-    message.market = object.market ?? "";
+    message.marketId = object.marketId ?? "";
     message.quoteAmount = object.quoteAmount ?? "";
     return message;
   },
@@ -226,15 +226,15 @@ export const QueryImpactPriceResponse = {
   },
 };
 
-const baseQueryGetBookRequest: object = { market: "" };
+const baseQueryGetBookRequest: object = { marketId: "" };
 
 export const QueryGetBookRequest = {
   encode(
     message: QueryGetBookRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.market !== "") {
-      writer.uint32(10).string(message.market);
+    if (message.marketId !== "") {
+      writer.uint32(10).string(message.marketId);
     }
     return writer;
   },
@@ -247,7 +247,7 @@ export const QueryGetBookRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.market = reader.string();
+          message.marketId = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -259,22 +259,22 @@ export const QueryGetBookRequest = {
 
   fromJSON(object: any): QueryGetBookRequest {
     const message = { ...baseQueryGetBookRequest } as QueryGetBookRequest;
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? String(object.market)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     return message;
   },
 
   toJSON(message: QueryGetBookRequest): unknown {
     const obj: any = {};
-    message.market !== undefined && (obj.market = message.market);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     return obj;
   },
 
   fromPartial(object: DeepPartial<QueryGetBookRequest>): QueryGetBookRequest {
     const message = { ...baseQueryGetBookRequest } as QueryGetBookRequest;
-    message.market = object.market ?? "";
+    message.marketId = object.marketId ?? "";
     return message;
   },
 };
@@ -479,15 +479,15 @@ export const QueryAllBookResponse = {
   },
 };
 
-const baseQueryGetStopBookRequest: object = { market: "" };
+const baseQueryGetStopBookRequest: object = { marketId: "" };
 
 export const QueryGetStopBookRequest = {
   encode(
     message: QueryGetStopBookRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.market !== "") {
-      writer.uint32(10).string(message.market);
+    if (message.marketId !== "") {
+      writer.uint32(10).string(message.marketId);
     }
     return writer;
   },
@@ -505,7 +505,7 @@ export const QueryGetStopBookRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.market = reader.string();
+          message.marketId = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -519,16 +519,16 @@ export const QueryGetStopBookRequest = {
     const message = {
       ...baseQueryGetStopBookRequest,
     } as QueryGetStopBookRequest;
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? String(object.market)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     return message;
   },
 
   toJSON(message: QueryGetStopBookRequest): unknown {
     const obj: any = {};
-    message.market !== undefined && (obj.market = message.market);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     return obj;
   },
 
@@ -538,7 +538,7 @@ export const QueryGetStopBookRequest = {
     const message = {
       ...baseQueryGetStopBookRequest,
     } as QueryGetStopBookRequest;
-    message.market = object.market ?? "";
+    message.marketId = object.marketId ?? "";
     return message;
   },
 };

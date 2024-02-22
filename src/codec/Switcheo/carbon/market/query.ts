@@ -1,12 +1,13 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Market, Params, ControlledParams } from "./market";
+import { Market, ControlledParams } from "./market";
 import {
   PageRequest,
   PageResponse,
 } from "../../../cosmos/base/query/v1beta1/pagination";
 import { TradingFees, FeeTier, StakeEquivalence, FeeStructure } from "./fee";
+import { Params } from "./params";
 
 export const protobufPackage = "Switcheo.carbon.market";
 
@@ -16,7 +17,7 @@ export interface QueryGetMarketRequest {
 }
 
 export interface QueryGetMarketResponse {
-  market?: Market;
+  marketId?: Market;
 }
 
 export interface QueryAllMarketRequest {
@@ -167,8 +168,8 @@ export const QueryGetMarketResponse = {
     message: QueryGetMarketResponse,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.market !== undefined) {
-      Market.encode(message.market, writer.uint32(10).fork()).ldelim();
+    if (message.marketId !== undefined) {
+      Market.encode(message.marketId, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
@@ -184,7 +185,7 @@ export const QueryGetMarketResponse = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.market = Market.decode(reader, reader.uint32());
+          message.marketId = Market.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -196,17 +197,19 @@ export const QueryGetMarketResponse = {
 
   fromJSON(object: any): QueryGetMarketResponse {
     const message = { ...baseQueryGetMarketResponse } as QueryGetMarketResponse;
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? Market.fromJSON(object.market)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? Market.fromJSON(object.marketId)
         : undefined;
     return message;
   },
 
   toJSON(message: QueryGetMarketResponse): unknown {
     const obj: any = {};
-    message.market !== undefined &&
-      (obj.market = message.market ? Market.toJSON(message.market) : undefined);
+    message.marketId !== undefined &&
+      (obj.marketId = message.marketId
+        ? Market.toJSON(message.marketId)
+        : undefined);
     return obj;
   },
 
@@ -214,9 +217,9 @@ export const QueryGetMarketResponse = {
     object: DeepPartial<QueryGetMarketResponse>
   ): QueryGetMarketResponse {
     const message = { ...baseQueryGetMarketResponse } as QueryGetMarketResponse;
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? Market.fromPartial(object.market)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? Market.fromPartial(object.marketId)
         : undefined;
     return message;
   },

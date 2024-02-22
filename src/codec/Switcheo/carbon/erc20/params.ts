@@ -1,27 +1,39 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { UInt64Value } from "../../../google/protobuf/wrappers";
+import { BoolValue } from "../../../google/protobuf/wrappers";
 
-export const protobufPackage = "Switcheo.carbon.evmcontract";
+export const protobufPackage = "Switcheo.carbon.erc20";
 
+/** Params defines the erc20 module params */
 export interface Params {
-  responseGasCap: Long;
+  /** enable_erc20 is the parameter to enable the conversion of Cosmos coins <--> ERC20 tokens. */
+  enableErc20: boolean;
+  /**
+   * enable_evm_hook is the parameter to enable the EVM hook that converts an ERC20 token to a Cosmos
+   * Coin by transferring the Tokens through a MsgEthereumTx to the ModuleAddress Ethereum address.
+   */
+  enableEvmHook: boolean;
 }
 
+/** ParamsToUpdate allows optional fields for Params. */
 export interface ParamsToUpdate {
-  responseGasCap?: Long;
+  enableErc20?: boolean;
+  enableEvmHook?: boolean;
 }
 
-const baseParams: object = { responseGasCap: Long.UZERO };
+const baseParams: object = { enableErc20: false, enableEvmHook: false };
 
 export const Params = {
   encode(
     message: Params,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (!message.responseGasCap.isZero()) {
-      writer.uint32(8).uint64(message.responseGasCap);
+    if (message.enableErc20 === true) {
+      writer.uint32(8).bool(message.enableErc20);
+    }
+    if (message.enableEvmHook === true) {
+      writer.uint32(16).bool(message.enableEvmHook);
     }
     return writer;
   },
@@ -34,7 +46,10 @@ export const Params = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.responseGasCap = reader.uint64() as Long;
+          message.enableErc20 = reader.bool();
+          break;
+        case 2:
+          message.enableEvmHook = reader.bool();
           break;
         default:
           reader.skipType(tag & 7);
@@ -46,26 +61,30 @@ export const Params = {
 
   fromJSON(object: any): Params {
     const message = { ...baseParams } as Params;
-    message.responseGasCap =
-      object.responseGasCap !== undefined && object.responseGasCap !== null
-        ? Long.fromString(object.responseGasCap)
-        : Long.UZERO;
+    message.enableErc20 =
+      object.enableErc20 !== undefined && object.enableErc20 !== null
+        ? Boolean(object.enableErc20)
+        : false;
+    message.enableEvmHook =
+      object.enableEvmHook !== undefined && object.enableEvmHook !== null
+        ? Boolean(object.enableEvmHook)
+        : false;
     return message;
   },
 
   toJSON(message: Params): unknown {
     const obj: any = {};
-    message.responseGasCap !== undefined &&
-      (obj.responseGasCap = (message.responseGasCap || Long.UZERO).toString());
+    message.enableErc20 !== undefined &&
+      (obj.enableErc20 = message.enableErc20);
+    message.enableEvmHook !== undefined &&
+      (obj.enableEvmHook = message.enableEvmHook);
     return obj;
   },
 
   fromPartial(object: DeepPartial<Params>): Params {
     const message = { ...baseParams } as Params;
-    message.responseGasCap =
-      object.responseGasCap !== undefined && object.responseGasCap !== null
-        ? Long.fromValue(object.responseGasCap)
-        : Long.UZERO;
+    message.enableErc20 = object.enableErc20 ?? false;
+    message.enableEvmHook = object.enableEvmHook ?? false;
     return message;
   },
 };
@@ -77,10 +96,16 @@ export const ParamsToUpdate = {
     message: ParamsToUpdate,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.responseGasCap !== undefined) {
-      UInt64Value.encode(
-        { value: message.responseGasCap! },
+    if (message.enableErc20 !== undefined) {
+      BoolValue.encode(
+        { value: message.enableErc20! },
         writer.uint32(10).fork()
+      ).ldelim();
+    }
+    if (message.enableEvmHook !== undefined) {
+      BoolValue.encode(
+        { value: message.enableEvmHook! },
+        writer.uint32(18).fork()
       ).ldelim();
     }
     return writer;
@@ -94,7 +119,10 @@ export const ParamsToUpdate = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.responseGasCap = UInt64Value.decode(
+          message.enableErc20 = BoolValue.decode(reader, reader.uint32()).value;
+          break;
+        case 2:
+          message.enableEvmHook = BoolValue.decode(
             reader,
             reader.uint32()
           ).value;
@@ -109,26 +137,30 @@ export const ParamsToUpdate = {
 
   fromJSON(object: any): ParamsToUpdate {
     const message = { ...baseParamsToUpdate } as ParamsToUpdate;
-    message.responseGasCap =
-      object.responseGasCap !== undefined && object.responseGasCap !== null
-        ? Long.fromValue(object.responseGasCap)
+    message.enableErc20 =
+      object.enableErc20 !== undefined && object.enableErc20 !== null
+        ? Boolean(object.enableErc20)
+        : undefined;
+    message.enableEvmHook =
+      object.enableEvmHook !== undefined && object.enableEvmHook !== null
+        ? Boolean(object.enableEvmHook)
         : undefined;
     return message;
   },
 
   toJSON(message: ParamsToUpdate): unknown {
     const obj: any = {};
-    message.responseGasCap !== undefined &&
-      (obj.responseGasCap = message.responseGasCap);
+    message.enableErc20 !== undefined &&
+      (obj.enableErc20 = message.enableErc20);
+    message.enableEvmHook !== undefined &&
+      (obj.enableEvmHook = message.enableEvmHook);
     return obj;
   },
 
   fromPartial(object: DeepPartial<ParamsToUpdate>): ParamsToUpdate {
     const message = { ...baseParamsToUpdate } as ParamsToUpdate;
-    message.responseGasCap =
-      object.responseGasCap !== undefined && object.responseGasCap !== null
-        ? Long.fromValue(object.responseGasCap)
-        : undefined;
+    message.enableErc20 = object.enableErc20 ?? undefined;
+    message.enableEvmHook = object.enableEvmHook ?? undefined;
     return message;
   },
 };

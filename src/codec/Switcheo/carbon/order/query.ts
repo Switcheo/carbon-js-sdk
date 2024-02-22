@@ -1,11 +1,12 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Order, Params, DBOrder } from "./order";
+import { Order, DBOrder } from "./order";
 import {
   PageRequest,
   PageResponse,
 } from "../../../cosmos/base/query/v1beta1/pagination";
+import { Params } from "./params";
 
 export const protobufPackage = "Switcheo.carbon.order";
 
@@ -20,7 +21,7 @@ export interface QueryGetOrderResponse {
 
 export interface QueryAllOrderRequest {
   address: string;
-  market: string;
+  marketId: string;
   orderType: string;
   orderStatus: string;
   pagination?: PageRequest;
@@ -33,7 +34,7 @@ export interface QueryAllOrderResponse {
 
 export interface QueryAccountOpenOrdersRequest {
   address: string;
-  market: string;
+  marketId: string;
 }
 
 export interface QueryAccountOpenOrdersResponse {
@@ -175,7 +176,7 @@ export const QueryGetOrderResponse = {
 
 const baseQueryAllOrderRequest: object = {
   address: "",
-  market: "",
+  marketId: "",
   orderType: "",
   orderStatus: "",
 };
@@ -188,8 +189,8 @@ export const QueryAllOrderRequest = {
     if (message.address !== "") {
       writer.uint32(10).string(message.address);
     }
-    if (message.market !== "") {
-      writer.uint32(18).string(message.market);
+    if (message.marketId !== "") {
+      writer.uint32(18).string(message.marketId);
     }
     if (message.orderType !== "") {
       writer.uint32(26).string(message.orderType);
@@ -217,7 +218,7 @@ export const QueryAllOrderRequest = {
           message.address = reader.string();
           break;
         case 2:
-          message.market = reader.string();
+          message.marketId = reader.string();
           break;
         case 3:
           message.orderType = reader.string();
@@ -242,9 +243,9 @@ export const QueryAllOrderRequest = {
       object.address !== undefined && object.address !== null
         ? String(object.address)
         : "";
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? String(object.market)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     message.orderType =
       object.orderType !== undefined && object.orderType !== null
@@ -264,7 +265,7 @@ export const QueryAllOrderRequest = {
   toJSON(message: QueryAllOrderRequest): unknown {
     const obj: any = {};
     message.address !== undefined && (obj.address = message.address);
-    message.market !== undefined && (obj.market = message.market);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     message.orderType !== undefined && (obj.orderType = message.orderType);
     message.orderStatus !== undefined &&
       (obj.orderStatus = message.orderStatus);
@@ -278,7 +279,7 @@ export const QueryAllOrderRequest = {
   fromPartial(object: DeepPartial<QueryAllOrderRequest>): QueryAllOrderRequest {
     const message = { ...baseQueryAllOrderRequest } as QueryAllOrderRequest;
     message.address = object.address ?? "";
-    message.market = object.market ?? "";
+    message.marketId = object.marketId ?? "";
     message.orderType = object.orderType ?? "";
     message.orderStatus = object.orderStatus ?? "";
     message.pagination =
@@ -370,7 +371,7 @@ export const QueryAllOrderResponse = {
   },
 };
 
-const baseQueryAccountOpenOrdersRequest: object = { address: "", market: "" };
+const baseQueryAccountOpenOrdersRequest: object = { address: "", marketId: "" };
 
 export const QueryAccountOpenOrdersRequest = {
   encode(
@@ -380,8 +381,8 @@ export const QueryAccountOpenOrdersRequest = {
     if (message.address !== "") {
       writer.uint32(10).string(message.address);
     }
-    if (message.market !== "") {
-      writer.uint32(18).string(message.market);
+    if (message.marketId !== "") {
+      writer.uint32(18).string(message.marketId);
     }
     return writer;
   },
@@ -402,7 +403,7 @@ export const QueryAccountOpenOrdersRequest = {
           message.address = reader.string();
           break;
         case 2:
-          message.market = reader.string();
+          message.marketId = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -420,9 +421,9 @@ export const QueryAccountOpenOrdersRequest = {
       object.address !== undefined && object.address !== null
         ? String(object.address)
         : "";
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? String(object.market)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     return message;
   },
@@ -430,7 +431,7 @@ export const QueryAccountOpenOrdersRequest = {
   toJSON(message: QueryAccountOpenOrdersRequest): unknown {
     const obj: any = {};
     message.address !== undefined && (obj.address = message.address);
-    message.market !== undefined && (obj.market = message.market);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     return obj;
   },
 
@@ -441,7 +442,7 @@ export const QueryAccountOpenOrdersRequest = {
       ...baseQueryAccountOpenOrdersRequest,
     } as QueryAccountOpenOrdersRequest;
     message.address = object.address ?? "";
-    message.market = object.market ?? "";
+    message.marketId = object.marketId ?? "";
     return message;
   },
 };
