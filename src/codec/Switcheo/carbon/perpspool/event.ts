@@ -45,7 +45,7 @@ export interface WithdrawFromPoolEvent {
 }
 
 export interface UpdateMarketLiquidityUsageMultiplierEvent {
-  market: string;
+  marketId: string;
   multiplier: string;
 }
 
@@ -606,7 +606,7 @@ export const WithdrawFromPoolEvent = {
 };
 
 const baseUpdateMarketLiquidityUsageMultiplierEvent: object = {
-  market: "",
+  marketId: "",
   multiplier: "",
 };
 
@@ -615,8 +615,8 @@ export const UpdateMarketLiquidityUsageMultiplierEvent = {
     message: UpdateMarketLiquidityUsageMultiplierEvent,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.market !== "") {
-      writer.uint32(10).string(message.market);
+    if (message.marketId !== "") {
+      writer.uint32(10).string(message.marketId);
     }
     if (message.multiplier !== "") {
       writer.uint32(18).string(message.multiplier);
@@ -637,7 +637,7 @@ export const UpdateMarketLiquidityUsageMultiplierEvent = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.market = reader.string();
+          message.marketId = reader.string();
           break;
         case 2:
           message.multiplier = reader.string();
@@ -654,9 +654,9 @@ export const UpdateMarketLiquidityUsageMultiplierEvent = {
     const message = {
       ...baseUpdateMarketLiquidityUsageMultiplierEvent,
     } as UpdateMarketLiquidityUsageMultiplierEvent;
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? String(object.market)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     message.multiplier =
       object.multiplier !== undefined && object.multiplier !== null
@@ -667,7 +667,7 @@ export const UpdateMarketLiquidityUsageMultiplierEvent = {
 
   toJSON(message: UpdateMarketLiquidityUsageMultiplierEvent): unknown {
     const obj: any = {};
-    message.market !== undefined && (obj.market = message.market);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     message.multiplier !== undefined && (obj.multiplier = message.multiplier);
     return obj;
   },
@@ -678,7 +678,7 @@ export const UpdateMarketLiquidityUsageMultiplierEvent = {
     const message = {
       ...baseUpdateMarketLiquidityUsageMultiplierEvent,
     } as UpdateMarketLiquidityUsageMultiplierEvent;
-    message.market = object.market ?? "";
+    message.marketId = object.marketId ?? "";
     message.multiplier = object.multiplier ?? "";
     return message;
   },

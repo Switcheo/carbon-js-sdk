@@ -5,7 +5,7 @@ import _m0 from "protobufjs/minimal";
 export const protobufPackage = "Switcheo.carbon.broker";
 
 export interface LiquidatorPosition {
-  market: string;
+  marketId: string;
   address: string;
 }
 
@@ -17,15 +17,15 @@ export interface MsgInitiateLiquidation {
 
 export interface MsgInitiateLiquidationResponse {}
 
-const baseLiquidatorPosition: object = { market: "", address: "" };
+const baseLiquidatorPosition: object = { marketId: "", address: "" };
 
 export const LiquidatorPosition = {
   encode(
     message: LiquidatorPosition,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.market !== "") {
-      writer.uint32(10).string(message.market);
+    if (message.marketId !== "") {
+      writer.uint32(10).string(message.marketId);
     }
     if (message.address !== "") {
       writer.uint32(18).string(message.address);
@@ -41,7 +41,7 @@ export const LiquidatorPosition = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.market = reader.string();
+          message.marketId = reader.string();
           break;
         case 2:
           message.address = reader.string();
@@ -56,9 +56,9 @@ export const LiquidatorPosition = {
 
   fromJSON(object: any): LiquidatorPosition {
     const message = { ...baseLiquidatorPosition } as LiquidatorPosition;
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? String(object.market)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     message.address =
       object.address !== undefined && object.address !== null
@@ -69,14 +69,14 @@ export const LiquidatorPosition = {
 
   toJSON(message: LiquidatorPosition): unknown {
     const obj: any = {};
-    message.market !== undefined && (obj.market = message.market);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     message.address !== undefined && (obj.address = message.address);
     return obj;
   },
 
   fromPartial(object: DeepPartial<LiquidatorPosition>): LiquidatorPosition {
     const message = { ...baseLiquidatorPosition } as LiquidatorPosition;
-    message.market = object.market ?? "";
+    message.marketId = object.marketId ?? "";
     message.address = object.address ?? "";
     return message;
   },

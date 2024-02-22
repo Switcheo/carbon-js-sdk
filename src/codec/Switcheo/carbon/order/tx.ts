@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Params } from "./order";
+import { ParamsToUpdate } from "./params";
 
 export const protobufPackage = "Switcheo.carbon.order";
 
@@ -16,7 +16,7 @@ export interface MsgSetTradingFlagResponse {}
 
 export interface MsgCreateOrder {
   creator: string;
-  market: string;
+  marketId: string;
   side: string;
   quantity: string;
   orderType: string;
@@ -52,7 +52,7 @@ export interface MsgCancelOrderResponse {}
 
 export interface MsgCancelAll {
   creator: string;
-  market: string;
+  marketId: string;
 }
 
 export interface MsgCancelAllResponse {}
@@ -65,12 +65,8 @@ export interface MsgCancelAllResponse {}
 export interface MsgUpdateParams {
   /** authority is the address of the governance account. */
   authority: string;
-  /**
-   * params defines the parameters to update.
-   *
-   * NOTE: All parameters must be supplied.
-   */
-  params?: Params;
+  /** params defines the optional parameters to update. */
+  params?: ParamsToUpdate;
 }
 
 /**
@@ -216,7 +212,7 @@ export const MsgSetTradingFlagResponse = {
 
 const baseMsgCreateOrder: object = {
   creator: "",
-  market: "",
+  marketId: "",
   side: "",
   quantity: "",
   orderType: "",
@@ -239,8 +235,8 @@ export const MsgCreateOrder = {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
-    if (message.market !== "") {
-      writer.uint32(18).string(message.market);
+    if (message.marketId !== "") {
+      writer.uint32(18).string(message.marketId);
     }
     if (message.side !== "") {
       writer.uint32(26).string(message.side);
@@ -292,7 +288,7 @@ export const MsgCreateOrder = {
           message.creator = reader.string();
           break;
         case 2:
-          message.market = reader.string();
+          message.marketId = reader.string();
           break;
         case 3:
           message.side = reader.string();
@@ -344,9 +340,9 @@ export const MsgCreateOrder = {
       object.creator !== undefined && object.creator !== null
         ? String(object.creator)
         : "";
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? String(object.market)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     message.side =
       object.side !== undefined && object.side !== null
@@ -403,7 +399,7 @@ export const MsgCreateOrder = {
   toJSON(message: MsgCreateOrder): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.market !== undefined && (obj.market = message.market);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     message.side !== undefined && (obj.side = message.side);
     message.quantity !== undefined && (obj.quantity = message.quantity);
     message.orderType !== undefined && (obj.orderType = message.orderType);
@@ -428,7 +424,7 @@ export const MsgCreateOrder = {
   fromPartial(object: DeepPartial<MsgCreateOrder>): MsgCreateOrder {
     const message = { ...baseMsgCreateOrder } as MsgCreateOrder;
     message.creator = object.creator ?? "";
-    message.market = object.market ?? "";
+    message.marketId = object.marketId ?? "";
     message.side = object.side ?? "";
     message.quantity = object.quantity ?? "";
     message.orderType = object.orderType ?? "";
@@ -745,7 +741,7 @@ export const MsgCancelOrderResponse = {
   },
 };
 
-const baseMsgCancelAll: object = { creator: "", market: "" };
+const baseMsgCancelAll: object = { creator: "", marketId: "" };
 
 export const MsgCancelAll = {
   encode(
@@ -755,8 +751,8 @@ export const MsgCancelAll = {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
-    if (message.market !== "") {
-      writer.uint32(18).string(message.market);
+    if (message.marketId !== "") {
+      writer.uint32(18).string(message.marketId);
     }
     return writer;
   },
@@ -772,7 +768,7 @@ export const MsgCancelAll = {
           message.creator = reader.string();
           break;
         case 2:
-          message.market = reader.string();
+          message.marketId = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -788,9 +784,9 @@ export const MsgCancelAll = {
       object.creator !== undefined && object.creator !== null
         ? String(object.creator)
         : "";
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? String(object.market)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     return message;
   },
@@ -798,14 +794,14 @@ export const MsgCancelAll = {
   toJSON(message: MsgCancelAll): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.market !== undefined && (obj.market = message.market);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     return obj;
   },
 
   fromPartial(object: DeepPartial<MsgCancelAll>): MsgCancelAll {
     const message = { ...baseMsgCancelAll } as MsgCancelAll;
     message.creator = object.creator ?? "";
-    message.market = object.market ?? "";
+    message.marketId = object.marketId ?? "";
     return message;
   },
 };
@@ -865,7 +861,7 @@ export const MsgUpdateParams = {
       writer.uint32(10).string(message.authority);
     }
     if (message.params !== undefined) {
-      Params.encode(message.params, writer.uint32(18).fork()).ldelim();
+      ParamsToUpdate.encode(message.params, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
@@ -881,7 +877,7 @@ export const MsgUpdateParams = {
           message.authority = reader.string();
           break;
         case 2:
-          message.params = Params.decode(reader, reader.uint32());
+          message.params = ParamsToUpdate.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -899,7 +895,7 @@ export const MsgUpdateParams = {
         : "";
     message.params =
       object.params !== undefined && object.params !== null
-        ? Params.fromJSON(object.params)
+        ? ParamsToUpdate.fromJSON(object.params)
         : undefined;
     return message;
   },
@@ -908,7 +904,9 @@ export const MsgUpdateParams = {
     const obj: any = {};
     message.authority !== undefined && (obj.authority = message.authority);
     message.params !== undefined &&
-      (obj.params = message.params ? Params.toJSON(message.params) : undefined);
+      (obj.params = message.params
+        ? ParamsToUpdate.toJSON(message.params)
+        : undefined);
     return obj;
   },
 
@@ -917,7 +915,7 @@ export const MsgUpdateParams = {
     message.authority = object.authority ?? "";
     message.params =
       object.params !== undefined && object.params !== null
-        ? Params.fromPartial(object.params)
+        ? ParamsToUpdate.fromPartial(object.params)
         : undefined;
     return message;
   },

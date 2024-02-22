@@ -2,7 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Duration } from "../../../google/protobuf/duration";
-import { Params } from "./pricing";
+import { ParamsToUpdate } from "./params";
 
 export const protobufPackage = "Switcheo.carbon.pricing";
 
@@ -50,12 +50,8 @@ export interface MsgUpdateTokenPriceOracleResponse {}
 export interface MsgUpdateParams {
   /** authority is the address of the governance account. */
   authority: string;
-  /**
-   * params defines the parameters to update.
-   *
-   * NOTE: All parameters must be supplied.
-   */
-  params?: Params;
+  /** params defines the optional parameters to update. */
+  params?: ParamsToUpdate;
 }
 
 /**
@@ -65,6 +61,15 @@ export interface MsgUpdateParams {
  * Since: cosmos-sdk 0.47
  */
 export interface MsgUpdateParamsResponse {}
+
+/** this line is used by starport scaffolding # proto/tx/message */
+export interface MsgUpdateSettlementPrice {
+  authority: string;
+  marketId: string;
+  settlementPrice: string;
+}
+
+export interface MsgUpdateSettlementPriceResponse {}
 
 const baseMsgSetBackfillTimeInterval: object = { creator: "" };
 
@@ -740,7 +745,7 @@ export const MsgUpdateParams = {
       writer.uint32(10).string(message.authority);
     }
     if (message.params !== undefined) {
-      Params.encode(message.params, writer.uint32(18).fork()).ldelim();
+      ParamsToUpdate.encode(message.params, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
@@ -756,7 +761,7 @@ export const MsgUpdateParams = {
           message.authority = reader.string();
           break;
         case 2:
-          message.params = Params.decode(reader, reader.uint32());
+          message.params = ParamsToUpdate.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -774,7 +779,7 @@ export const MsgUpdateParams = {
         : "";
     message.params =
       object.params !== undefined && object.params !== null
-        ? Params.fromJSON(object.params)
+        ? ParamsToUpdate.fromJSON(object.params)
         : undefined;
     return message;
   },
@@ -783,7 +788,9 @@ export const MsgUpdateParams = {
     const obj: any = {};
     message.authority !== undefined && (obj.authority = message.authority);
     message.params !== undefined &&
-      (obj.params = message.params ? Params.toJSON(message.params) : undefined);
+      (obj.params = message.params
+        ? ParamsToUpdate.toJSON(message.params)
+        : undefined);
     return obj;
   },
 
@@ -792,7 +799,7 @@ export const MsgUpdateParams = {
     message.authority = object.authority ?? "";
     message.params =
       object.params !== undefined && object.params !== null
-        ? Params.fromPartial(object.params)
+        ? ParamsToUpdate.fromPartial(object.params)
         : undefined;
     return message;
   },
@@ -850,6 +857,151 @@ export const MsgUpdateParamsResponse = {
   },
 };
 
+const baseMsgUpdateSettlementPrice: object = {
+  authority: "",
+  marketId: "",
+  settlementPrice: "",
+};
+
+export const MsgUpdateSettlementPrice = {
+  encode(
+    message: MsgUpdateSettlementPrice,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.authority !== "") {
+      writer.uint32(10).string(message.authority);
+    }
+    if (message.marketId !== "") {
+      writer.uint32(18).string(message.marketId);
+    }
+    if (message.settlementPrice !== "") {
+      writer.uint32(26).string(message.settlementPrice);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUpdateSettlementPrice {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgUpdateSettlementPrice,
+    } as MsgUpdateSettlementPrice;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.authority = reader.string();
+          break;
+        case 2:
+          message.marketId = reader.string();
+          break;
+        case 3:
+          message.settlementPrice = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdateSettlementPrice {
+    const message = {
+      ...baseMsgUpdateSettlementPrice,
+    } as MsgUpdateSettlementPrice;
+    message.authority =
+      object.authority !== undefined && object.authority !== null
+        ? String(object.authority)
+        : "";
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
+        : "";
+    message.settlementPrice =
+      object.settlementPrice !== undefined && object.settlementPrice !== null
+        ? String(object.settlementPrice)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgUpdateSettlementPrice): unknown {
+    const obj: any = {};
+    message.authority !== undefined && (obj.authority = message.authority);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
+    message.settlementPrice !== undefined &&
+      (obj.settlementPrice = message.settlementPrice);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgUpdateSettlementPrice>
+  ): MsgUpdateSettlementPrice {
+    const message = {
+      ...baseMsgUpdateSettlementPrice,
+    } as MsgUpdateSettlementPrice;
+    message.authority = object.authority ?? "";
+    message.marketId = object.marketId ?? "";
+    message.settlementPrice = object.settlementPrice ?? "";
+    return message;
+  },
+};
+
+const baseMsgUpdateSettlementPriceResponse: object = {};
+
+export const MsgUpdateSettlementPriceResponse = {
+  encode(
+    _: MsgUpdateSettlementPriceResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUpdateSettlementPriceResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgUpdateSettlementPriceResponse,
+    } as MsgUpdateSettlementPriceResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgUpdateSettlementPriceResponse {
+    const message = {
+      ...baseMsgUpdateSettlementPriceResponse,
+    } as MsgUpdateSettlementPriceResponse;
+    return message;
+  },
+
+  toJSON(_: MsgUpdateSettlementPriceResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgUpdateSettlementPriceResponse>
+  ): MsgUpdateSettlementPriceResponse {
+    const message = {
+      ...baseMsgUpdateSettlementPriceResponse,
+    } as MsgUpdateSettlementPriceResponse;
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
   /** this line is used by starport scaffolding # proto/tx/rpc */
@@ -873,6 +1025,9 @@ export interface Msg {
    * Since: cosmos-sdk 0.47
    */
   UpdateParams(request: MsgUpdateParams): Promise<MsgUpdateParamsResponse>;
+  UpdateSettlementPrice(
+    request: MsgUpdateSettlementPrice
+  ): Promise<MsgUpdateSettlementPriceResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -885,6 +1040,7 @@ export class MsgClientImpl implements Msg {
     this.SetStaleIndexAllowance = this.SetStaleIndexAllowance.bind(this);
     this.UpdateTokenPriceOracle = this.UpdateTokenPriceOracle.bind(this);
     this.UpdateParams = this.UpdateParams.bind(this);
+    this.UpdateSettlementPrice = this.UpdateSettlementPrice.bind(this);
   }
   SetBackfillTimeInterval(
     request: MsgSetBackfillTimeInterval
@@ -963,6 +1119,20 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgUpdateParamsResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  UpdateSettlementPrice(
+    request: MsgUpdateSettlementPrice
+  ): Promise<MsgUpdateSettlementPriceResponse> {
+    const data = MsgUpdateSettlementPrice.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.pricing.Msg",
+      "UpdateSettlementPrice",
+      data
+    );
+    return promise.then((data) =>
+      MsgUpdateSettlementPriceResponse.decode(new _m0.Reader(data))
     );
   }
 }
