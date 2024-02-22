@@ -147,7 +147,7 @@ export interface PriceLevelEvent extends PriceLevel {
 }
 
 export interface Leverage {
-  market?: string;
+  market_id?: string;
   leverage: string; // string representation of number
 }
 
