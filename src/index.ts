@@ -29,9 +29,11 @@ export {
   AssetList,
   Chain,
   LeapExtended,
+  RainbowKitAccount,
+  Eip6963Provider,
 } from "./provider";
 export { default as CarbonSDK } from "./CarbonSDK";
-export { ProviderAgent } from "./constant";
+export { ProviderAgent, SupportedEip6963Provider } from "./constant";
 export * as Insights from "./insights";
 export * as Hydrogen from "./hydrogen";
 export { CarbonSigner, DirectCarbonSigner, AminoCarbonSigner, CarbonLedgerSigner, CarbonPrivateKeySigner, CarbonNonSigner } from "./wallet";

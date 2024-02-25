@@ -1,4 +1,4 @@
-import { CarbonEvmChainIDs, EthNetworkConfig, Network, NetworkConfigs } from "@carbon-sdk/constant";
+import { CarbonEvmChainIDs, EthNetworkConfig, Network, NetworkConfigs, SupportedEip6963Provider } from "@carbon-sdk/constant";
 import { ABIs } from "@carbon-sdk/eth";
 import { Blockchain, ChainNames, BlockchainV2, EVMChain as EVMChainV2, getBlockchainFromChainV2, BLOCKCHAIN_V2_TO_V1_MAPPING } from "@carbon-sdk/util/blockchain";
 import { appendHexPrefix } from "@carbon-sdk/util/generic";
@@ -24,8 +24,14 @@ import detectEthereumProvider from "@metamask/detect-provider";
 import { parseEvmError } from "./error";
 import { carbonNetworkFromChainId } from "@carbon-sdk/util/network";
 import { signTransactionWrapper } from "@carbon-sdk/util/provider";
+import { Eip6963Provider } from "../eip6963Provider";
 
 
+declare global{
+  interface WindowEventMap {
+    "eip6963:announceProvider": CustomEvent
+  }
+}
 
 export type EVMChain = EVMChainV2;
 
@@ -113,7 +119,7 @@ interface RequestArguments {
 interface MetaMaskAPI {
   isMetaMask: boolean;
   chainId: string | null;
-  isConnected: () => boolean;
+  _state: {isConnected: boolean};
   request: (args: RequestArguments) => Promise<unknown>;
   on: (eventName: string, listener: (...args: unknown[]) => void) => any;
 }
@@ -308,7 +314,7 @@ const OKC_TESTNET: MetaMaskChangeNetworkParam = {
 /**
  * TODO: Add docs
  */
-export class MetaMask {
+export class MetaMask extends Eip6963Provider {
   private blockchain: EVMChain = 'Ethereum';
   private connectedAccount: string = ''
 
@@ -520,8 +526,9 @@ export class MetaMask {
     }
   }
 
-  constructor(public readonly network: Network, public readonly legacyEip712SignMode: boolean = false) { }
-
+  constructor(public readonly network: Network, public readonly legacyEip712SignMode: boolean = false) {
+    super()
+  }
 
   private checkProvider(blockchain: BlockchainV2 = this.blockchain): ethers.providers.Provider {
     const config: any = NetworkConfigs[this.network];
@@ -547,7 +554,7 @@ export class MetaMask {
   }
 
   async syncBlockchain(): Promise<MetaMaskSyncResult> {
-    const metamaskAPI = await this.getAPI()
+    const metamaskAPI = await this.getConnectedAPI()
     const chainIdHex = (await metamaskAPI?.request({ method: "eth_chainId" })) as string;
     const chainId = chainIdHex ? parseInt(chainIdHex, 16) : undefined;
     const blockchain = getBlockchainFromChainV2(chainId) as EVMChain;
@@ -562,21 +569,22 @@ export class MetaMask {
   }
 
   async getAPI(): Promise<MetaMaskAPI | null> {
-    return await detectEthereumProvider()
+    return await detectEthereumProvider({ mustBeMetaMask: true })
+  }
+
+  getMetaMaskProvider(): MetaMaskAPI | undefined {
+    const metamaskProvider = super.getProvider(SupportedEip6963Provider.MetaMask)
+    return metamaskProvider?.provider as MetaMaskAPI
   }
 
   async getConnectedAPI(): Promise<MetaMaskAPI> {
-    const metamaskAPI = await this.getAPI();
-    if (!metamaskAPI) {
+    const metamaskProvider = this.getMetaMaskProvider()
+
+    if (!metamaskProvider) {
       throw new Error("MetaMask not connected, please check that your extension is enabled");
     }
 
-    if (metamaskAPI?.isConnected()) {
-      return metamaskAPI;
-    }
-
-    await metamaskAPI.request({ method: "eth_requestAccounts" });
-    return metamaskAPI;
+    return metamaskProvider;
   }
 
   async connect() {

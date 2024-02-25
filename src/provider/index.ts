@@ -7,4 +7,6 @@ export { CallContractArgs, EVMChain, MetaMask, MetaMaskChangeNetworkParam, MetaM
 export { O3Types, O3Wallet } from "./o3";
 export { default as SDKProvider } from "./sdk";
 export { Zilpay, ZilPayChangeNetworkParam } from "./zilpay";
+export { RainbowKitAccount } from './rainbowKit'
+export { Eip6963Provider } from './eip6963Provider'
 export { getSigningCosmosClientOptions, AssetList, Chain } from "./chainProvider";
