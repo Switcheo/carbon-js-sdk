@@ -53,6 +53,7 @@ export { CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletGenericOpts,
 export { CarbonTx } from "@carbon-sdk/util";
 export * as Carbon from "./codec/carbon-models";
 import Long from "long";
+import RainbowKitAccount, { RainbowKitWalletOpts } from "./provider/rainbowKit/RainbowKitAccount";
 
 export interface CarbonSDKOpts {
   network: Network;
@@ -356,6 +357,16 @@ class CarbonSDK {
     return sdk.connectWithMetamask(metamask, walletOpts, metamaskWalletOpts);
   }
 
+  public static async instanceWithRainbowKit(
+    rainbowKit: RainbowKitAccount,
+    sdkOpts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS,
+    rainbowKitWalletOpts: RainbowKitWalletOpts,
+    walletOpts?: CarbonWalletGenericOpts,
+  ) {
+    const sdk = await CarbonSDK.instance(sdkOpts);
+    return sdk.connectWithRainbowKit(rainbowKit, rainbowKitWalletOpts, walletOpts);
+  }
+
   public static async instanceViewOnly(
     bech32Address: string,
     sdkOpts: CarbonSDKInitOpts = DEFAULT_SDK_INIT_OPTS,
@@ -546,6 +557,22 @@ class CarbonSDK {
       network: this.network,
       config: this.configOverride,
     });
+    return this.connect(wallet);
+  }
+
+  public async connectWithRainbowKit(rainbowKit: RainbowKitAccount, rainbowKitWalletOpts: RainbowKitWalletOpts, opts?: CarbonWalletGenericOpts) {
+    const evmChainId = this.evmChainId;
+    const addressOptions: SWTHAddressOptions = {
+      network: this.networkConfig.network,
+      bech32Prefix: this.networkConfig.Bech32Prefix,
+    };
+
+    const wallet = CarbonWallet.withRainbowKit(rainbowKit, evmChainId, rainbowKitWalletOpts.publicKeyBase64, addressOptions, rainbowKitWalletOpts.walletProvider, {
+      ...opts,
+      network: this.network,
+      config: this.configOverride,
+    })
+
     return this.connect(wallet);
   }
 

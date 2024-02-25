@@ -32,6 +32,7 @@ import utc from "dayjs/plugin/utc";
 import { ConnectedCarbonSDK, default as CarbonSDK } from "../CarbonSDK";
 import { CarbonEIP712Signer, CarbonLedgerSigner, CarbonNonSigner, CarbonPrivateKeySigner, CarbonSigner, CarbonSignerTypes, isCarbonEIP712Signer } from "./CarbonSigner";
 import { CarbonSigningClient } from "./CarbonSigningClient";
+import RainbowKitAccount from "@carbon-sdk/provider/rainbowKit/RainbowKitAccount";
 
 dayjs.extend(utc)
 
@@ -44,6 +45,7 @@ export interface CarbonWalletGenericOpts {
   defaultTimeoutBlocks?: number; // tx mempool ttl (timeoutHeight)
   disableRetryOnSequenceError?: boolean; // disable auto retry on nonce error
   triggerMerge?: boolean
+  isRainbowKit?: boolean
 
   /**
    * Optional callback that will be called before signing is requested/executed.
@@ -176,6 +178,8 @@ export class CarbonWallet {
 
   disableRetryOnSequenceError: boolean;
 
+  isRainbowKit: boolean = false
+
   // for analytics
   providerAgent?: ProviderAgent | string;
 
@@ -204,6 +208,7 @@ export class CarbonWallet {
     this.disableRetryOnSequenceError = opts.disableRetryOnSequenceError ?? false;
     this.triggerMerge = opts.triggerMerge ?? false
     this.updateNetwork(network);
+    this.isRainbowKit = opts.isRainbowKit ?? false
 
     this.onRequestSign = opts.onRequestSign;
     this.onSignComplete = opts.onSignComplete;
@@ -315,6 +320,15 @@ export class CarbonWallet {
     const signer = MetaMask.createMetamaskSigner(metamask, evmChainId, compressedPubKeyBase64, addressOptions);
     const wallet = CarbonWallet.withSigner(signer, compressedPubKeyBase64, {
       providerAgent: ProviderAgent.MetamaskExtension,
+      ...opts,
+    });
+    return wallet;
+  }
+
+  public static withRainbowKit(rainbowKit: RainbowKitAccount, evmChainId: string, compressedPubKeyBase64: string, addressOptions: SWTHAddressOptions, walletProvider: string, opts: Omit<CarbonWalletInitOpts, "signer"> = {}) {
+    const signer = RainbowKitAccount.createRainbowKitSigner(rainbowKit, evmChainId, compressedPubKeyBase64, addressOptions)
+    const wallet = CarbonWallet.withSigner(signer, compressedPubKeyBase64, {
+      providerAgent: walletProvider,
       ...opts,
     });
     return wallet;
