@@ -31,7 +31,7 @@ function fetch(url: string, init?: RequestInit): Promise<Response> {
     console.log("mnemonics", mnemonics);
   
     const sdk = await CarbonSDK.instance({
-      network: CarbonSDK.Network.MainNet,
+    network: CarbonSDK.Network.MainNet,
       // config: {
       //   tmRpcUrl: process.env.TRPC_ENDPOINT,
       // },
@@ -164,6 +164,10 @@ function fetch(url: string, init?: RequestInit): Promise<Response> {
         resolution: 121,
         maxResultAge: 363
       },
+      ".COP": {
+        resolution: 5,
+        maxResultAge: 300
+      },
       ".COSMO": {
         resolution: 21,
         maxResultAge: 315
@@ -229,7 +233,7 @@ function fetch(url: string, init?: RequestInit): Promise<Response> {
         maxResultAge: 28800
       },
       ".CSTRK": {
-        resolution: 21,
+        resolution: 5,
         maxResultAge: 315
       },
       ".CSTSTARS": {
@@ -296,6 +300,14 @@ function fetch(url: string, init?: RequestInit): Promise<Response> {
         resolution: 5,
         maxResultAge: 300
       },
+      ".CWLD": {
+        resolution: 2,
+        maxResultAge: 300
+      },
+      ".CRNDR": {
+        resolution: 2,
+        maxResultAge: 300
+      },
     }    
 
     const MAINNET_ORACLE_URL = "https://api.carbon.network/carbon/oracle/v1/oracles?pagination.limit=100"
@@ -304,47 +316,28 @@ function fetch(url: string, init?: RequestInit): Promise<Response> {
     const txs: any[] = []
     for (const oracle of oracleData.oracles) {
       const id = oracle.id as string
-      const resolution = oracle.resolution as string
-      const maxResultAge = oracle.max_result_age as string
+      const currResolution = oracle.resolution as string
+      const currMaxResultAge = oracle.max_result_age as string
       if (!newResolutions[id]) {
         console.log(`skipping update for oracle ${id} as it is not found in new resolution map`)
         continue
       }
 
-      if (newResolutions[id].resolution == new Number(resolution)) {
-        console.log(`skipping update resolution for oracle ${id} as it is already updated: ${resolution}`)
-      } else {
-        const txUpdateReso = {
+      if (newResolutions[id].resolution != new Number(currResolution) || newResolutions[id].maxResultAge != new Number(currMaxResultAge)) {
+        const txUpdateOracle = {
           typeUrl: CarbonTx.Types.MsgUpdateOracle,
           value: MsgUpdateOracle.fromPartial({
             updater: connectedSDK.wallet.bech32Address,
             updateOracleParams: {
               id,
               resolution: newResolutions[id].resolution,
+              maxResultAge: newResolutions[id].maxResultAge
             },
           }),
         }
-        console.log(`updating oracle ${id} resolution from ${resolution} to ${newResolutions[id].resolution}`)
-        txs.push(txUpdateReso)
+        console.log(`updating oracle ${id}`)
+        txs.push(txUpdateOracle)
       }
-
-      // TO RUN once chain has upgraded past v2.38
-      // if (newResolutions[id].maxResultAge == new Number(maxResultAge)) {
-      //   console.log(`skipping update maxResultAge for oracle ${id} as it is already updated: ${maxResultAge}`)
-      // } else {
-      //   const txUpdateMaxResultAge = {
-      //     typeUrl: CarbonTx.Types.MsgUpdateOracle,
-      //     value: MsgUpdateOracle.fromPartial({
-      //       updater: connectedSDK.wallet.bech32Address,
-      //       updateOracleParams: {
-      //         id,
-      //         maxResultAge: newResolutions[id].maxResultAge
-      //       },
-      //     }),
-      //   }
-      //   console.log(`updating oracle ${id} maxResultAge from ${maxResultAge} to ${newResolutions[id].maxResultAge}`)
-      //   txs.push(txUpdateMaxResultAge)
-      // }
     }
 
     const result = await connectedSDK.wallet.sendTxs(txs);
