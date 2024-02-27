@@ -213,8 +213,6 @@ registry.register("/Switcheo.carbon.evmcontract.MsgDeactivateContract", Carbon.E
 registry.register("/Switcheo.carbon.evmcontract.MsgDeactivateContractResponse", Carbon.Evmcontract.MsgDeactivateContractResponse);
 registry.register("/Switcheo.carbon.evmcontract.MsgActivateContract", Carbon.Evmcontract.MsgActivateContract);
 registry.register("/Switcheo.carbon.evmcontract.MsgActivateContractResponse", Carbon.Evmcontract.MsgActivateContractResponse);
-registry.register("/Switcheo.carbon.evmcontract.MsgSetParams", Carbon.Evmcontract.MsgSetParams);
-registry.register("/Switcheo.carbon.evmcontract.MsgSetParamsResponse", Carbon.Evmcontract.MsgSetParamsResponse);
 registry.register("/Switcheo.carbon.evmcontract.MsgUpdateParams", Carbon.Evmcontract.MsgUpdateParams);
 registry.register("/Switcheo.carbon.evmcontract.MsgUpdateParamsResponse", Carbon.Evmcontract.MsgUpdateParamsResponse);
 
@@ -311,6 +309,10 @@ registry.register("/Switcheo.carbon.market.MsgUpdateAllPoolTradingFees", Carbon.
 registry.register("/Switcheo.carbon.market.MsgUpdateAllPoolTradingFeesResponse", Carbon.Market.MsgUpdateAllPoolTradingFeesResponse);
 registry.register("/Switcheo.carbon.market.MsgUpdateParams", Carbon.Market.MsgUpdateParams);
 registry.register("/Switcheo.carbon.market.MsgUpdateParamsResponse", Carbon.Market.MsgUpdateParamsResponse);
+registry.register("/Switcheo.carbon.market.MsgUpdateFeeStructure", Carbon.Market.MsgUpdateFeeStructure);
+registry.register("/Switcheo.carbon.market.MsgUpdateFeeStructureResponse", Carbon.Market.MsgUpdateFeeStructureResponse);
+registry.register("/Switcheo.carbon.market.MsgDeleteFeeStructure", Carbon.Market.MsgDeleteFeeStructure);
+registry.register("/Switcheo.carbon.market.MsgDeleteFeeStructureResponse", Carbon.Market.MsgDeleteFeeStructureResponse);
 registry.register("/Switcheo.carbon.market.CreateMarketProposal", Carbon.Market.CreateMarketProposal);
 registry.register("/Switcheo.carbon.market.UpdateMarketProposal", Carbon.Market.UpdateMarketProposal);
 registry.register("/Switcheo.carbon.market.UpdatePerpetualsFundingIntervalProposal", Carbon.Market.UpdatePerpetualsFundingIntervalProposal);
@@ -329,8 +331,6 @@ registry.register("/Switcheo.carbon.perpspool.MsgWithdrawFromPool", Carbon.Perps
 registry.register("/Switcheo.carbon.perpspool.MsgWithdrawFromPoolResponse", Carbon.Perpspool.MsgWithdrawFromPoolResponse);
 registry.register("/Switcheo.carbon.perpspool.MsgUpdateMarketConfig", Carbon.Perpspool.MsgUpdateMarketConfig);
 registry.register("/Switcheo.carbon.perpspool.MsgUpdateMarketConfigResponse", Carbon.Perpspool.MsgUpdateMarketConfigResponse);
-registry.register("/Switcheo.carbon.perpspool.MsgSetParams", Carbon.Perpspool.MsgSetParams);
-registry.register("/Switcheo.carbon.perpspool.MsgSetParamsResponse", Carbon.Perpspool.MsgSetParamsResponse);
 registry.register("/Switcheo.carbon.perpspool.MsgUpdateParams", Carbon.Perpspool.MsgUpdateParams);
 registry.register("/Switcheo.carbon.perpspool.MsgUpdateParamsResponse", Carbon.Perpspool.MsgUpdateParamsResponse);
 
@@ -797,8 +797,6 @@ export const TxTypes = {
   "MsgDeactivateContractResponse": "/Switcheo.carbon.evmcontract.MsgDeactivateContractResponse",
   "MsgActivateContract": "/Switcheo.carbon.evmcontract.MsgActivateContract",
   "MsgActivateContractResponse": "/Switcheo.carbon.evmcontract.MsgActivateContractResponse",
-  "MsgSetParams": "/Switcheo.carbon.evmcontract.MsgSetParams",
-  "MsgSetParamsResponse": "/Switcheo.carbon.evmcontract.MsgSetParamsResponse",
   "MsgEvmcontractUpdateParams": "/Switcheo.carbon.evmcontract.MsgUpdateParams",
   "MsgEvmcontractUpdateParamsResponse": "/Switcheo.carbon.evmcontract.MsgUpdateParamsResponse",
   "MsgInitiateAdminTransfer": "/Switcheo.carbon.admin.MsgInitiateAdminTransfer",
@@ -888,6 +886,10 @@ export const TxTypes = {
   "MsgUpdateAllPoolTradingFeesResponse": "/Switcheo.carbon.market.MsgUpdateAllPoolTradingFeesResponse",
   "MsgMarketUpdateParams": "/Switcheo.carbon.market.MsgUpdateParams",
   "MsgMarketUpdateParamsResponse": "/Switcheo.carbon.market.MsgUpdateParamsResponse",
+  "MsgUpdateFeeStructure": "/Switcheo.carbon.market.MsgUpdateFeeStructure",
+  "MsgUpdateFeeStructureResponse": "/Switcheo.carbon.market.MsgUpdateFeeStructureResponse",
+  "MsgDeleteFeeStructure": "/Switcheo.carbon.market.MsgDeleteFeeStructure",
+  "MsgDeleteFeeStructureResponse": "/Switcheo.carbon.market.MsgDeleteFeeStructureResponse",
   "CreateMarketProposal": "/Switcheo.carbon.market.CreateMarketProposal",
   "UpdateMarketProposal": "/Switcheo.carbon.market.UpdateMarketProposal",
   "UpdatePerpetualsFundingIntervalProposal": "/Switcheo.carbon.market.UpdatePerpetualsFundingIntervalProposal",
@@ -905,8 +907,6 @@ export const TxTypes = {
   "MsgWithdrawFromPoolResponse": "/Switcheo.carbon.perpspool.MsgWithdrawFromPoolResponse",
   "MsgUpdateMarketConfig": "/Switcheo.carbon.perpspool.MsgUpdateMarketConfig",
   "MsgUpdateMarketConfigResponse": "/Switcheo.carbon.perpspool.MsgUpdateMarketConfigResponse",
-  "MsgPerpspoolSetParams": "/Switcheo.carbon.perpspool.MsgSetParams",
-  "MsgPerpspoolSetParamsResponse": "/Switcheo.carbon.perpspool.MsgSetParamsResponse",
   "MsgPerpspoolUpdateParams": "/Switcheo.carbon.perpspool.MsgUpdateParams",
   "MsgPerpspoolUpdateParamsResponse": "/Switcheo.carbon.perpspool.MsgUpdateParamsResponse",
   "MsgSetSequence": "/Switcheo.carbon.sequence.MsgSetSequence",
@@ -2197,7 +2197,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "OrderBook": [
       {
-        "name": "market",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -2213,7 +2213,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "StopBook": [
       {
-        "name": "market",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -2247,7 +2247,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "OrderBookEvent": [
       {
-        "name": "market",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -2272,7 +2272,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "ClearVirtualOrderBookEvent": [
       {
-        "name": "market",
+        "name": "market_id",
         "type": "string"
       }
     ],
@@ -2290,7 +2290,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "StopBook_V2_32_0": [
       {
-        "name": "market",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -2312,7 +2312,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "QueryImpactPriceRequest": [
       {
-        "name": "market",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -2336,7 +2336,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "QueryGetBookRequest": [
       {
-        "name": "market",
+        "name": "market_id",
         "type": "string"
       }
     ],
@@ -2368,7 +2368,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "QueryGetStopBookRequest": [
       {
-        "name": "market",
+        "name": "market_id",
         "type": "string"
       }
     ],
@@ -2406,7 +2406,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "uint64"
       },
       {
-        "name": "market",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -2432,18 +2432,22 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "uint8[]"
       },
       {
-        "name": "last_quoted_at",
+        "name": "legacy_last_quoted_at",
         "type": "uint64"
       },
       {
         "name": "markets",
         "type": "PerpsMarketAmm[]",
         "packageName": "/Switcheo.carbon.broker"
+      },
+      {
+        "name": "last_quoted_at",
+        "type": "string"
       }
     ],
     "PerpsMarketAmm": [
       {
-        "name": "market",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -2457,7 +2461,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "Candlestick": [
       {
-        "name": "market",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -2511,7 +2515,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -2639,7 +2643,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "QueryCandlesticksRequest": [
       {
-        "name": "market",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -2668,7 +2672,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -2720,7 +2724,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -2747,7 +2751,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "LiquidatorPosition": [
       {
-        "name": "market",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -2918,6 +2922,12 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "bool"
       }
     ],
+    "ParamsToUpdate": [
+      {
+        "name": "emit_zion_events",
+        "type": "bool"
+      }
+    ],
     "GenesisState": [
       {
         "name": "created_tx_count",
@@ -2947,6 +2957,14 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "zion_created_tx_details",
         "type": "ZionCreatedTxDetailsEntry[]",
         "packageName": "/Switcheo.carbon.ccm.GenesisState"
+      }
+    ],
+    "QueryParamsRequest": [],
+    "QueryParamsResponse": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.ccm"
       }
     ],
     "QueryCheckModuleContractRequest": [
@@ -3054,7 +3072,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "params",
-        "type": "Params",
+        "type": "ParamsToUpdate",
         "packageName": "/Switcheo.carbon.ccm"
       }
     ],
@@ -4020,6 +4038,50 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ],
     "Params": [
+      {
+        "name": "interest_fee",
+        "type": "string"
+      },
+      {
+        "name": "liquidation_fee",
+        "type": "string"
+      },
+      {
+        "name": "stablecoin_mint_cap",
+        "type": "string"
+      },
+      {
+        "name": "complete_liquidation_threshold",
+        "type": "string"
+      },
+      {
+        "name": "minimum_close_factor",
+        "type": "string"
+      },
+      {
+        "name": "small_liquidation_size",
+        "type": "string"
+      },
+      {
+        "name": "stale_price_grace_period",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "cdp_paused",
+        "type": "bool"
+      },
+      {
+        "name": "stablecoin_interest_rate_epoch",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "stablecoin_interest_rate_adjuster_coefficient",
+        "type": "string"
+      }
+    ],
+    "ParamsToUpdate": [
       {
         "name": "interest_fee",
         "type": "string"
@@ -5386,7 +5448,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "params",
-        "type": "Params",
+        "type": "ParamsToUpdate",
         "packageName": "/Switcheo.carbon.cdp"
       }
     ],
@@ -5570,7 +5632,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -5581,7 +5643,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "PositionPool": [
       {
-        "name": "market",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -6565,6 +6627,26 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
+    "Params": [
+      {
+        "name": "enable_erc20",
+        "type": "bool"
+      },
+      {
+        "name": "enable_evm_hook",
+        "type": "bool"
+      }
+    ],
+    "ParamsToUpdate": [
+      {
+        "name": "enable_erc20",
+        "type": "bool"
+      },
+      {
+        "name": "enable_evm_hook",
+        "type": "bool"
+      }
+    ],
     "GenesisState": [
       {
         "name": "params",
@@ -6575,16 +6657,6 @@ export const EIP712Types: { [index: string]: any } = {
         "name": "token_pairs",
         "type": "TokenPair[]",
         "packageName": "/Switcheo.carbon.erc20"
-      }
-    ],
-    "Params": [
-      {
-        "name": "enable_erc20",
-        "type": "bool"
-      },
-      {
-        "name": "enable_evm_hook",
-        "type": "bool"
       }
     ],
     "QueryTokenPairsRequest": [
@@ -6669,7 +6741,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "params",
-        "type": "Params",
+        "type": "ParamsToUpdate",
         "packageName": "/Switcheo.carbon.erc20"
       }
     ],
@@ -6835,6 +6907,12 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "uint64"
       }
     ],
+    "ParamsToUpdate": [
+      {
+        "name": "response_gas_cap",
+        "type": "uint64"
+      }
+    ],
     "GenesisState": [
       {
         "name": "params",
@@ -6923,17 +7001,6 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ],
     "MsgActivateContractResponse": [],
-    "MsgSetParams": [
-      {
-        "name": "creator",
-        "type": "string"
-      },
-      {
-        "name": "response_gas_cap",
-        "type": "uint64"
-      }
-    ],
-    "MsgSetParamsResponse": [],
     "MsgUpdateParams": [
       {
         "name": "authority",
@@ -6941,7 +7008,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "params",
-        "type": "Params",
+        "type": "ParamsToUpdate",
         "packageName": "/Switcheo.carbon.evmcontract"
       }
     ],
@@ -7463,7 +7530,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -7488,7 +7555,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -7498,7 +7565,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "MarketLeverage": [
       {
-        "name": "market",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -7530,7 +7597,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market",
+        "name": "market_id",
         "type": "string"
       }
     ],
@@ -7560,7 +7627,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -7571,13 +7638,39 @@ export const EIP712Types: { [index: string]: any } = {
     "MsgSetLeverageResponse": []
   },
   "/Switcheo.carbon.liquidation": {
+    "MatchedOutstandingPositionEvent": [
+      {
+        "name": "liquidation_order_id",
+        "type": "string"
+      },
+      {
+        "name": "market_id",
+        "type": "string"
+      },
+      {
+        "name": "bankruptcy_price",
+        "type": "string"
+      },
+      {
+        "name": "delta_lots",
+        "type": "string"
+      },
+      {
+        "name": "block_created_at",
+        "type": "string"
+      },
+      {
+        "name": "tick_size",
+        "type": "string"
+      }
+    ],
     "OutstandingPosition": [
       {
         "name": "liquidation_order_id",
         "type": "string"
       },
       {
-        "name": "market",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -7617,7 +7710,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -7682,7 +7775,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -7968,12 +8061,6 @@ export const EIP712Types: { [index: string]: any } = {
     ]
   },
   "/Switcheo.carbon.order": {
-    "Params": [
-      {
-        "name": "max_referral_commission",
-        "type": "uint32"
-      }
-    ],
     "Order": [
       {
         "name": "id",
@@ -7996,7 +8083,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -8087,6 +8174,10 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "cancel_reason",
         "type": "uint32"
+      },
+      {
+        "name": "inserted_block_height",
+        "type": "int64"
       }
     ],
     "DBOrder": [
@@ -8230,6 +8321,18 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "bool"
       }
     ],
+    "Params": [
+      {
+        "name": "max_referral_commission",
+        "type": "uint32"
+      }
+    ],
+    "ParamsToUpdate": [
+      {
+        "name": "max_referral_commission",
+        "type": "uint32"
+      }
+    ],
     "GenesisState": [
       {
         "name": "orders",
@@ -8263,7 +8366,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -8311,7 +8414,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -8346,7 +8449,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market",
+        "name": "market_id",
         "type": "string"
       }
     ],
@@ -8399,7 +8502,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -8492,7 +8595,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market",
+        "name": "market_id",
         "type": "string"
       }
     ],
@@ -8504,23 +8607,13 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "params",
-        "type": "Params",
+        "type": "ParamsToUpdate",
         "packageName": "/Switcheo.carbon.order"
       }
     ],
     "MsgUpdateParamsResponse": []
   },
   "/Switcheo.carbon.liquiditypool": {
-    "Params": [
-      {
-        "name": "reward_reduction_threshold",
-        "type": "uint64"
-      },
-      {
-        "name": "num_quotes",
-        "type": "uint64"
-      }
-    ],
     "Pool": [
       {
         "name": "creator",
@@ -8592,7 +8685,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "PoolRoute": [
       {
-        "name": "market",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -8600,8 +8693,12 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "uint64[]"
       },
       {
-        "name": "num_quotes",
+        "name": "legacy_num_quotes",
         "type": "int64"
+      },
+      {
+        "name": "num_quotes",
+        "type": "uint64"
       }
     ],
     "AddLiquidity": [
@@ -9194,6 +9291,26 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/cosmos.base.v1beta1"
       }
     ],
+    "Params": [
+      {
+        "name": "reward_reduction_threshold",
+        "type": "uint64"
+      },
+      {
+        "name": "num_quotes",
+        "type": "uint64"
+      }
+    ],
+    "ParamsToUpdate": [
+      {
+        "name": "reward_reduction_threshold",
+        "type": "uint64"
+      },
+      {
+        "name": "num_quotes",
+        "type": "uint64"
+      }
+    ],
     "GenesisState": [
       {
         "name": "params",
@@ -9370,7 +9487,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "uint64"
       },
       {
-        "name": "market",
+        "name": "market_id",
         "type": "string"
       }
     ],
@@ -9526,7 +9643,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "num_quotes",
-        "type": "int64"
+        "type": "uint64"
       }
     ],
     "MsgUpdatePoolResponse": [],
@@ -9553,7 +9670,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "num_quotes",
-        "type": "int64"
+        "type": "uint64"
       }
     ],
     "MsgRemovePoolRoute": [
@@ -9601,7 +9718,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "num_quotes",
-        "type": "int64"
+        "type": "uint64"
       }
     ],
     "MsgUpdateParams": [
@@ -9611,7 +9728,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "params",
-        "type": "Params",
+        "type": "ParamsToUpdate",
         "packageName": "/Switcheo.carbon.liquiditypool"
       }
     ],
@@ -9924,6 +10041,14 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ],
     "QueryClaimableRewardsResponse": [
+      {
+        "name": "rewards",
+        "type": "DecCoin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "QueryAllocatedRewardsRequest": [],
+    "QueryAllocatedRewardsResponse": [
       {
         "name": "rewards",
         "type": "DecCoin[]",
@@ -10357,6 +10482,101 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
+    "ParamsToUpdate": [
+      {
+        "name": "default_lot_size_usd",
+        "type": "string"
+      },
+      {
+        "name": "default_tick_size_usd",
+        "type": "string"
+      },
+      {
+        "name": "default_min_quantity_usd",
+        "type": "string"
+      },
+      {
+        "name": "default_spot_maker_fee",
+        "type": "string"
+      },
+      {
+        "name": "default_spot_taker_fee",
+        "type": "string"
+      },
+      {
+        "name": "default_futures_maker_fee",
+        "type": "string"
+      },
+      {
+        "name": "default_futures_taker_fee",
+        "type": "string"
+      },
+      {
+        "name": "default_risk_step_size_usd",
+        "type": "string"
+      },
+      {
+        "name": "default_initial_margin_base",
+        "type": "string"
+      },
+      {
+        "name": "default_initial_margin_step",
+        "type": "string"
+      },
+      {
+        "name": "default_maintenance_margin_ratio",
+        "type": "string"
+      },
+      {
+        "name": "default_max_liquidation_order_ticket_usd",
+        "type": "string"
+      },
+      {
+        "name": "default_max_liquidation_order_duration",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "default_impact_size_usd",
+        "type": "string"
+      },
+      {
+        "name": "default_mark_price_band",
+        "type": "uint32"
+      },
+      {
+        "name": "default_last_price_protected_band",
+        "type": "uint32"
+      },
+      {
+        "name": "max_active_markets",
+        "type": "uint32"
+      },
+      {
+        "name": "default_trading_bandwidth",
+        "type": "uint32"
+      },
+      {
+        "name": "funding_rate_band",
+        "type": "string"
+      },
+      {
+        "name": "default_lp_spot_taker_fee",
+        "type": "string"
+      },
+      {
+        "name": "default_lp_spot_maker_fee",
+        "type": "string"
+      },
+      {
+        "name": "default_lp_futures_taker_fee",
+        "type": "string"
+      },
+      {
+        "name": "default_lp_futures_maker_fee",
+        "type": "string"
+      }
+    ],
     "ControlledParams": [
       {
         "name": "perpetuals_funding_interval",
@@ -10366,7 +10586,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "Market": [
       {
-        "name": "name",
+        "name": "id",
         "type": "string"
       },
       {
@@ -10615,7 +10835,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "MarketEvent": [
       {
-        "name": "market",
+        "name": "market_id",
         "type": "Market",
         "packageName": "/Switcheo.carbon.market"
       },
@@ -10708,7 +10928,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "QueryGetMarketResponse": [
       {
-        "name": "market",
+        "name": "market_id",
         "type": "Market",
         "packageName": "/Switcheo.carbon.market"
       }
@@ -11064,17 +11284,52 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "params",
-        "type": "Params",
+        "type": "ParamsToUpdate",
         "packageName": "/Switcheo.carbon.market"
       }
     ],
-    "MsgUpdateParamsResponse": []
+    "MsgUpdateParamsResponse": [],
+    "MsgUpdateFeeStructure": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "fee_category",
+        "type": "FeeCategory",
+        "packageName": "/Switcheo.carbon.market"
+      },
+      {
+        "name": "fee_tiers",
+        "type": "FeeTier[]",
+        "packageName": "/Switcheo.carbon.market"
+      }
+    ],
+    "MsgUpdateFeeStructureResponse": [
+      {
+        "name": "fee_structure",
+        "type": "FeeStructure",
+        "packageName": "/Switcheo.carbon.market"
+      }
+    ],
+    "MsgDeleteFeeStructure": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "fee_category",
+        "type": "FeeCategory",
+        "packageName": "/Switcheo.carbon.market"
+      }
+    ],
+    "MsgDeleteFeeStructureResponse": []
   },
   "/Switcheo.carbon.marketstats": {
     "GenesisState": [],
     "MarketStats": [
       {
-        "name": "market",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -11140,45 +11395,6 @@ export const EIP712Types: { [index: string]: any } = {
     ]
   },
   "/Switcheo.carbon.oracle": {
-    "Params": [
-      {
-        "name": "oracle_slash_enabled",
-        "type": "bool"
-      },
-      {
-        "name": "oracle_slash_window_block",
-        "type": "uint32"
-      },
-      {
-        "name": "oracle_slash_initial",
-        "type": "string"
-      },
-      {
-        "name": "oracle_slash_increment",
-        "type": "string"
-      },
-      {
-        "name": "oracle_continuous_slash_max",
-        "type": "uint32"
-      },
-      {
-        "name": "newly_bonded_window_allowance",
-        "type": "uint32"
-      },
-      {
-        "name": "vote_timestamp_future_allowance",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
-      },
-      {
-        "name": "oracle_min_vote_factor",
-        "type": "string"
-      },
-      {
-        "name": "max_power_to_slash_factor",
-        "type": "string"
-      }
-    ],
     "Oracle": [
       {
         "name": "creator",
@@ -11348,6 +11564,84 @@ export const EIP712Types: { [index: string]: any } = {
       {
         "name": "newly_bonded_window_allowance",
         "type": "uint64"
+      }
+    ],
+    "Params": [
+      {
+        "name": "oracle_slash_enabled",
+        "type": "bool"
+      },
+      {
+        "name": "oracle_slash_window_block",
+        "type": "uint32"
+      },
+      {
+        "name": "oracle_slash_initial",
+        "type": "string"
+      },
+      {
+        "name": "oracle_slash_increment",
+        "type": "string"
+      },
+      {
+        "name": "oracle_continuous_slash_max",
+        "type": "uint32"
+      },
+      {
+        "name": "newly_bonded_window_allowance",
+        "type": "uint32"
+      },
+      {
+        "name": "vote_timestamp_future_allowance",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "oracle_min_vote_factor",
+        "type": "string"
+      },
+      {
+        "name": "max_power_to_slash_factor",
+        "type": "string"
+      }
+    ],
+    "ParamsToUpdate": [
+      {
+        "name": "oracle_slash_enabled",
+        "type": "bool"
+      },
+      {
+        "name": "oracle_slash_window_block",
+        "type": "uint32"
+      },
+      {
+        "name": "oracle_slash_initial",
+        "type": "string"
+      },
+      {
+        "name": "oracle_slash_increment",
+        "type": "string"
+      },
+      {
+        "name": "oracle_continuous_slash_max",
+        "type": "uint32"
+      },
+      {
+        "name": "newly_bonded_window_allowance",
+        "type": "uint32"
+      },
+      {
+        "name": "vote_timestamp_future_allowance",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "oracle_min_vote_factor",
+        "type": "string"
+      },
+      {
+        "name": "max_power_to_slash_factor",
+        "type": "string"
       }
     ],
     "GenesisState": [
@@ -11535,7 +11829,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "params",
-        "type": "Params",
+        "type": "ParamsToUpdate",
         "packageName": "/Switcheo.carbon.oracle"
       }
     ],
@@ -11601,6 +11895,25 @@ export const EIP712Types: { [index: string]: any } = {
     "QueryResultsResponse": [
       {
         "name": "results",
+        "type": "Result[]",
+        "packageName": "/Switcheo.carbon.oracle"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryResultsLatestRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryResultsLatestResponse": [
+      {
+        "name": "latest_results",
         "type": "Result[]",
         "packageName": "/Switcheo.carbon.oracle"
       },
@@ -11863,7 +12176,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "MarketLiquidityUsageMultiplier": [
       {
-        "name": "market",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -12089,7 +12402,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "UpdateMarketLiquidityUsageMultiplierEvent": [
       {
-        "name": "market",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -12098,6 +12411,41 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ],
     "Params": [
+      {
+        "name": "quote_index_price_fluctuation_tolerance_ratio",
+        "type": "string"
+      },
+      {
+        "name": "quote_expiry_duration",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "market_utilization_snapshot_interval",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "max_market_utilization_snapshot_window",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "nav_per_share_snapshots",
+        "type": "uint64"
+      },
+      {
+        "name": "nav_per_share_snapshot_interval",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "index_last_updated_at_threshold",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "ParamsToUpdate": [
       {
         "name": "quote_index_price_fluctuation_tolerance_ratio",
         "type": "string"
@@ -12497,32 +12845,6 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/Switcheo.carbon.perpspool"
       }
     ],
-    "MsgSetParams": [
-      {
-        "name": "creator",
-        "type": "string"
-      },
-      {
-        "name": "quote_index_price_fluctuation_tolerance_ratio",
-        "type": "string"
-      },
-      {
-        "name": "quote_expiry_duration",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
-      },
-      {
-        "name": "market_utilization_snapshot_interval",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
-      },
-      {
-        "name": "max_market_utilization_snapshot_window",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
-      }
-    ],
-    "MsgSetParamsResponse": [],
     "MsgUpdateParams": [
       {
         "name": "authority",
@@ -12530,7 +12852,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "params",
-        "type": "Params",
+        "type": "ParamsToUpdate",
         "packageName": "/Switcheo.carbon.perpspool"
       }
     ],
@@ -12539,7 +12861,7 @@ export const EIP712Types: { [index: string]: any } = {
   "/Switcheo.carbon.position": {
     "Position": [
       {
-        "name": "market",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -12577,7 +12899,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "APIPosition": [
       {
-        "name": "market",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -12708,7 +13030,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -12740,7 +13062,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market",
+        "name": "market_id",
         "type": "string"
       }
     ],
@@ -12757,7 +13079,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -12801,7 +13123,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -12812,26 +13134,6 @@ export const EIP712Types: { [index: string]: any } = {
     "MsgSetMarginResponse": []
   },
   "/Switcheo.carbon.pricing": {
-    "Params": [
-      {
-        "name": "smoothen_band",
-        "type": "uint32"
-      },
-      {
-        "name": "impact_band",
-        "type": "uint32"
-      },
-      {
-        "name": "stale_index_allowance",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
-      },
-      {
-        "name": "backfill_time_interval",
-        "type": "Duration",
-        "packageName": "/google.protobuf"
-      }
-    ],
     "PriceSet": [
       {
         "name": "last",
@@ -12862,7 +13164,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -12968,6 +13270,46 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       }
     ],
+    "Params": [
+      {
+        "name": "smoothen_band",
+        "type": "uint32"
+      },
+      {
+        "name": "impact_band",
+        "type": "uint32"
+      },
+      {
+        "name": "stale_index_allowance",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "backfill_time_interval",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "ParamsToUpdate": [
+      {
+        "name": "smoothen_band",
+        "type": "uint32"
+      },
+      {
+        "name": "impact_band",
+        "type": "uint32"
+      },
+      {
+        "name": "stale_index_allowance",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      },
+      {
+        "name": "backfill_time_interval",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      }
+    ],
     "GenesisState": [
       {
         "name": "prices",
@@ -13017,7 +13359,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "SettlementPriceParams": [
       {
-        "name": "market",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -13040,7 +13382,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "QueryPriceSetRequest": [
       {
-        "name": "market",
+        "name": "market_id",
         "type": "string"
       }
     ],
@@ -13194,7 +13536,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "params",
-        "type": "Params",
+        "type": "ParamsToUpdate",
         "packageName": "/Switcheo.carbon.pricing"
       }
     ],
@@ -13205,7 +13547,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market",
+        "name": "market_id",
         "type": "string"
       },
       {
@@ -13424,6 +13766,13 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ],
     "Params": [
+      {
+        "name": "trading_fee_delegate_cooldown",
+        "type": "Duration",
+        "packageName": "/google.protobuf"
+      }
+    ],
+    "ParamsToUpdate": [
       {
         "name": "trading_fee_delegate_cooldown",
         "type": "Duration",
@@ -13678,7 +14027,7 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "params",
-        "type": "Params",
+        "type": "ParamsToUpdate",
         "packageName": "/Switcheo.carbon.subaccount"
       }
     ],

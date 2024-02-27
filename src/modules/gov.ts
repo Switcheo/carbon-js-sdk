@@ -22,7 +22,7 @@ export class GovModule extends BaseModule {
     return await wallet.sendTx(
       {
         typeUrl: CarbonTx.Types.MsgGovSubmitProposal,
-        value: MsgSubmitProposal.encode(finalProposalMsg).finish(),
+        value: finalProposalMsg,
       },
       opts
     );

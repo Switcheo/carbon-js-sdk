@@ -2,7 +2,7 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Duration } from "../../../google/protobuf/duration";
-import { Params } from "./pricing";
+import { ParamsToUpdate } from "./params";
 
 export const protobufPackage = "Switcheo.carbon.pricing";
 
@@ -50,12 +50,8 @@ export interface MsgUpdateTokenPriceOracleResponse {}
 export interface MsgUpdateParams {
   /** authority is the address of the governance account. */
   authority: string;
-  /**
-   * params defines the parameters to update.
-   *
-   * NOTE: All parameters must be supplied.
-   */
-  params?: Params;
+  /** params defines the optional parameters to update. */
+  params?: ParamsToUpdate;
 }
 
 /**
@@ -69,7 +65,7 @@ export interface MsgUpdateParamsResponse {}
 /** this line is used by starport scaffolding # proto/tx/message */
 export interface MsgUpdateSettlementPrice {
   authority: string;
-  market: string;
+  marketId: string;
   settlementPrice: string;
 }
 
@@ -749,7 +745,7 @@ export const MsgUpdateParams = {
       writer.uint32(10).string(message.authority);
     }
     if (message.params !== undefined) {
-      Params.encode(message.params, writer.uint32(18).fork()).ldelim();
+      ParamsToUpdate.encode(message.params, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
@@ -765,7 +761,7 @@ export const MsgUpdateParams = {
           message.authority = reader.string();
           break;
         case 2:
-          message.params = Params.decode(reader, reader.uint32());
+          message.params = ParamsToUpdate.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -783,7 +779,7 @@ export const MsgUpdateParams = {
         : "";
     message.params =
       object.params !== undefined && object.params !== null
-        ? Params.fromJSON(object.params)
+        ? ParamsToUpdate.fromJSON(object.params)
         : undefined;
     return message;
   },
@@ -792,7 +788,9 @@ export const MsgUpdateParams = {
     const obj: any = {};
     message.authority !== undefined && (obj.authority = message.authority);
     message.params !== undefined &&
-      (obj.params = message.params ? Params.toJSON(message.params) : undefined);
+      (obj.params = message.params
+        ? ParamsToUpdate.toJSON(message.params)
+        : undefined);
     return obj;
   },
 
@@ -801,7 +799,7 @@ export const MsgUpdateParams = {
     message.authority = object.authority ?? "";
     message.params =
       object.params !== undefined && object.params !== null
-        ? Params.fromPartial(object.params)
+        ? ParamsToUpdate.fromPartial(object.params)
         : undefined;
     return message;
   },
@@ -861,7 +859,7 @@ export const MsgUpdateParamsResponse = {
 
 const baseMsgUpdateSettlementPrice: object = {
   authority: "",
-  market: "",
+  marketId: "",
   settlementPrice: "",
 };
 
@@ -873,8 +871,8 @@ export const MsgUpdateSettlementPrice = {
     if (message.authority !== "") {
       writer.uint32(10).string(message.authority);
     }
-    if (message.market !== "") {
-      writer.uint32(18).string(message.market);
+    if (message.marketId !== "") {
+      writer.uint32(18).string(message.marketId);
     }
     if (message.settlementPrice !== "") {
       writer.uint32(26).string(message.settlementPrice);
@@ -898,7 +896,7 @@ export const MsgUpdateSettlementPrice = {
           message.authority = reader.string();
           break;
         case 2:
-          message.market = reader.string();
+          message.marketId = reader.string();
           break;
         case 3:
           message.settlementPrice = reader.string();
@@ -919,9 +917,9 @@ export const MsgUpdateSettlementPrice = {
       object.authority !== undefined && object.authority !== null
         ? String(object.authority)
         : "";
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? String(object.market)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     message.settlementPrice =
       object.settlementPrice !== undefined && object.settlementPrice !== null
@@ -933,7 +931,7 @@ export const MsgUpdateSettlementPrice = {
   toJSON(message: MsgUpdateSettlementPrice): unknown {
     const obj: any = {};
     message.authority !== undefined && (obj.authority = message.authority);
-    message.market !== undefined && (obj.market = message.market);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     message.settlementPrice !== undefined &&
       (obj.settlementPrice = message.settlementPrice);
     return obj;
@@ -946,7 +944,7 @@ export const MsgUpdateSettlementPrice = {
       ...baseMsgUpdateSettlementPrice,
     } as MsgUpdateSettlementPrice;
     message.authority = object.authority ?? "";
-    message.market = object.market ?? "";
+    message.marketId = object.marketId ?? "";
     message.settlementPrice = object.settlementPrice ?? "";
     return message;
   },

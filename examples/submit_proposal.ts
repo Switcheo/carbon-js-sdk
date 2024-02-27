@@ -5,6 +5,10 @@ import { coins } from "@cosmjs/amino";
 import { MsgSubmitProposal } from "../lib/codec/cosmos/gov/v1/tx";
 import { MsgSetRewardCurve } from "../lib/codec/Switcheo/carbon/liquiditypool/tx";
 import Long from "long";
+import { MsgUpdateParams } from "../lib/codec/cosmos/bank/v1beta1/tx";
+import { Params } from "../lib/codec/cosmos/bank/v1beta1/bank";
+import { MsgUpdateParams as MsgOrderUpdateParams } from "../lib/codec/Switcheo/carbon/order/tx";
+import { ParamsToUpdate } from "../lib/codec/Switcheo/carbon/order/params";
 
 (async () => {
   const mnemonics = process.env.MNEMONICS ?? BIP39.generateMnemonic();
@@ -34,12 +38,36 @@ import Long from "long";
     }
   })
 
+  const bankUrl = CarbonTx.Types.MsgBankUpdateParams
+  const msgUpdateParams = MsgUpdateParams.fromPartial({
+    authority: authAddress,
+    params: Params.fromPartial({
+      defaultSendEnabled: true
+    })
+  })
+
+  const orderUrl = CarbonTx.Types.MsgUpdateParams
+  const msgUpdateOrderParams = MsgOrderUpdateParams.fromPartial({
+    authority: authAddress,
+    params: ParamsToUpdate.fromPartial({
+      maxReferralCommission: 50
+    })
+  })
+
   const setRewardCurveProposalResult = await connectedSDK.gov.submit(
     MsgSubmitProposal.fromPartial({
       messages: [
         {
           typeUrl: rewardCurveUrl,
           value: MsgSetRewardCurve.encode(msgSetRewardCurve).finish()
+        },
+        {
+          typeUrl: bankUrl,
+          value: MsgUpdateParams.encode(msgUpdateParams).finish()
+        },
+        {
+          typeUrl: orderUrl,
+          value: MsgOrderUpdateParams.encode(msgUpdateOrderParams).finish()
         }
       ],
       initialDeposit: coins(1000000000, "swth"),

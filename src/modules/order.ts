@@ -33,7 +33,7 @@ export class OrderModule extends BaseModule {
           typeUrl: CarbonTx.Types.MsgSetLeverage,
           value: MsgSetLeverage.fromPartial({
             creator: wallet.bech32Address,
-            market: param.market,
+            marketId: param.market,
             leverage: param.leverage.shiftedBy(18).toString(10),
           }),
         }
@@ -45,7 +45,7 @@ export class OrderModule extends BaseModule {
           creator: wallet.bech32Address,
           isPostOnly: param.isPostOnly,
           isReduceOnly: param.isReduceOnly,
-          market: param.market,
+          marketId: param.market,
           orderType: param.orderType,
           price: param.price?.shiftedBy(18).toString(10),
           quantity: param.quantity.toString(10),
@@ -144,7 +144,7 @@ export class OrderModule extends BaseModule {
 
     const value = MsgCancelAll.fromPartial({
       creator: wallet.bech32Address,
-      market: params.market,
+      marketId: params.market,
     });
 
     return await wallet.sendTx(

@@ -6,7 +6,7 @@ import { Timestamp } from "../../../google/protobuf/timestamp";
 export const protobufPackage = "Switcheo.carbon.marketstats";
 
 export interface MarketStats {
-  market: string;
+  marketId: string;
   marketType: string;
   dayOpen: string;
   dayHigh: string;
@@ -23,7 +23,7 @@ export interface MarketStats {
 }
 
 const baseMarketStats: object = {
-  market: "",
+  marketId: "",
   marketType: "",
   dayOpen: "",
   dayHigh: "",
@@ -43,8 +43,8 @@ export const MarketStats = {
     message: MarketStats,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.market !== "") {
-      writer.uint32(10).string(message.market);
+    if (message.marketId !== "") {
+      writer.uint32(10).string(message.marketId);
     }
     if (message.marketType !== "") {
       writer.uint32(18).string(message.marketType);
@@ -99,7 +99,7 @@ export const MarketStats = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.market = reader.string();
+          message.marketId = reader.string();
           break;
         case 2:
           message.marketType = reader.string();
@@ -152,9 +152,9 @@ export const MarketStats = {
 
   fromJSON(object: any): MarketStats {
     const message = { ...baseMarketStats } as MarketStats;
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? String(object.market)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     message.marketType =
       object.marketType !== undefined && object.marketType !== null
@@ -213,7 +213,7 @@ export const MarketStats = {
 
   toJSON(message: MarketStats): unknown {
     const obj: any = {};
-    message.market !== undefined && (obj.market = message.market);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     message.marketType !== undefined && (obj.marketType = message.marketType);
     message.dayOpen !== undefined && (obj.dayOpen = message.dayOpen);
     message.dayHigh !== undefined && (obj.dayHigh = message.dayHigh);
@@ -236,7 +236,7 @@ export const MarketStats = {
 
   fromPartial(object: DeepPartial<MarketStats>): MarketStats {
     const message = { ...baseMarketStats } as MarketStats;
-    message.market = object.market ?? "";
+    message.marketId = object.marketId ?? "";
     message.marketType = object.marketType ?? "";
     message.dayOpen = object.dayOpen ?? "";
     message.dayHigh = object.dayHigh ?? "";

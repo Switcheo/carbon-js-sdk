@@ -1,27 +1,30 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { UInt64Value } from "../../../google/protobuf/wrappers";
+import { Duration } from "../../../google/protobuf/duration";
 
-export const protobufPackage = "Switcheo.carbon.evmcontract";
+export const protobufPackage = "Switcheo.carbon.subaccount";
 
 export interface Params {
-  responseGasCap: Long;
+  tradingFeeDelegateCooldown?: Duration;
 }
 
 export interface ParamsToUpdate {
-  responseGasCap?: Long;
+  tradingFeeDelegateCooldown?: Duration;
 }
 
-const baseParams: object = { responseGasCap: Long.UZERO };
+const baseParams: object = {};
 
 export const Params = {
   encode(
     message: Params,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (!message.responseGasCap.isZero()) {
-      writer.uint32(8).uint64(message.responseGasCap);
+    if (message.tradingFeeDelegateCooldown !== undefined) {
+      Duration.encode(
+        message.tradingFeeDelegateCooldown,
+        writer.uint32(10).fork()
+      ).ldelim();
     }
     return writer;
   },
@@ -34,7 +37,10 @@ export const Params = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.responseGasCap = reader.uint64() as Long;
+          message.tradingFeeDelegateCooldown = Duration.decode(
+            reader,
+            reader.uint32()
+          );
           break;
         default:
           reader.skipType(tag & 7);
@@ -46,26 +52,30 @@ export const Params = {
 
   fromJSON(object: any): Params {
     const message = { ...baseParams } as Params;
-    message.responseGasCap =
-      object.responseGasCap !== undefined && object.responseGasCap !== null
-        ? Long.fromString(object.responseGasCap)
-        : Long.UZERO;
+    message.tradingFeeDelegateCooldown =
+      object.tradingFeeDelegateCooldown !== undefined &&
+      object.tradingFeeDelegateCooldown !== null
+        ? Duration.fromJSON(object.tradingFeeDelegateCooldown)
+        : undefined;
     return message;
   },
 
   toJSON(message: Params): unknown {
     const obj: any = {};
-    message.responseGasCap !== undefined &&
-      (obj.responseGasCap = (message.responseGasCap || Long.UZERO).toString());
+    message.tradingFeeDelegateCooldown !== undefined &&
+      (obj.tradingFeeDelegateCooldown = message.tradingFeeDelegateCooldown
+        ? Duration.toJSON(message.tradingFeeDelegateCooldown)
+        : undefined);
     return obj;
   },
 
   fromPartial(object: DeepPartial<Params>): Params {
     const message = { ...baseParams } as Params;
-    message.responseGasCap =
-      object.responseGasCap !== undefined && object.responseGasCap !== null
-        ? Long.fromValue(object.responseGasCap)
-        : Long.UZERO;
+    message.tradingFeeDelegateCooldown =
+      object.tradingFeeDelegateCooldown !== undefined &&
+      object.tradingFeeDelegateCooldown !== null
+        ? Duration.fromPartial(object.tradingFeeDelegateCooldown)
+        : undefined;
     return message;
   },
 };
@@ -77,9 +87,9 @@ export const ParamsToUpdate = {
     message: ParamsToUpdate,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.responseGasCap !== undefined) {
-      UInt64Value.encode(
-        { value: message.responseGasCap! },
+    if (message.tradingFeeDelegateCooldown !== undefined) {
+      Duration.encode(
+        message.tradingFeeDelegateCooldown,
         writer.uint32(10).fork()
       ).ldelim();
     }
@@ -94,10 +104,10 @@ export const ParamsToUpdate = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.responseGasCap = UInt64Value.decode(
+          message.tradingFeeDelegateCooldown = Duration.decode(
             reader,
             reader.uint32()
-          ).value;
+          );
           break;
         default:
           reader.skipType(tag & 7);
@@ -109,25 +119,29 @@ export const ParamsToUpdate = {
 
   fromJSON(object: any): ParamsToUpdate {
     const message = { ...baseParamsToUpdate } as ParamsToUpdate;
-    message.responseGasCap =
-      object.responseGasCap !== undefined && object.responseGasCap !== null
-        ? Long.fromValue(object.responseGasCap)
+    message.tradingFeeDelegateCooldown =
+      object.tradingFeeDelegateCooldown !== undefined &&
+      object.tradingFeeDelegateCooldown !== null
+        ? Duration.fromJSON(object.tradingFeeDelegateCooldown)
         : undefined;
     return message;
   },
 
   toJSON(message: ParamsToUpdate): unknown {
     const obj: any = {};
-    message.responseGasCap !== undefined &&
-      (obj.responseGasCap = message.responseGasCap);
+    message.tradingFeeDelegateCooldown !== undefined &&
+      (obj.tradingFeeDelegateCooldown = message.tradingFeeDelegateCooldown
+        ? Duration.toJSON(message.tradingFeeDelegateCooldown)
+        : undefined);
     return obj;
   },
 
   fromPartial(object: DeepPartial<ParamsToUpdate>): ParamsToUpdate {
     const message = { ...baseParamsToUpdate } as ParamsToUpdate;
-    message.responseGasCap =
-      object.responseGasCap !== undefined && object.responseGasCap !== null
-        ? Long.fromValue(object.responseGasCap)
+    message.tradingFeeDelegateCooldown =
+      object.tradingFeeDelegateCooldown !== undefined &&
+      object.tradingFeeDelegateCooldown !== null
+        ? Duration.fromPartial(object.tradingFeeDelegateCooldown)
         : undefined;
     return message;
   },

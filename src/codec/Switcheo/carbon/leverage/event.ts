@@ -7,14 +7,14 @@ export const protobufPackage = "Switcheo.carbon.leverage";
 export interface LeverageEvent {
   leverage: string;
   type: string;
-  market: string;
+  marketId: string;
   address: string;
 }
 
 const baseLeverageEvent: object = {
   leverage: "",
   type: "",
-  market: "",
+  marketId: "",
   address: "",
 };
 
@@ -29,8 +29,8 @@ export const LeverageEvent = {
     if (message.type !== "") {
       writer.uint32(18).string(message.type);
     }
-    if (message.market !== "") {
-      writer.uint32(26).string(message.market);
+    if (message.marketId !== "") {
+      writer.uint32(26).string(message.marketId);
     }
     if (message.address !== "") {
       writer.uint32(34).string(message.address);
@@ -52,7 +52,7 @@ export const LeverageEvent = {
           message.type = reader.string();
           break;
         case 3:
-          message.market = reader.string();
+          message.marketId = reader.string();
           break;
         case 4:
           message.address = reader.string();
@@ -75,9 +75,9 @@ export const LeverageEvent = {
       object.type !== undefined && object.type !== null
         ? String(object.type)
         : "";
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? String(object.market)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     message.address =
       object.address !== undefined && object.address !== null
@@ -90,7 +90,7 @@ export const LeverageEvent = {
     const obj: any = {};
     message.leverage !== undefined && (obj.leverage = message.leverage);
     message.type !== undefined && (obj.type = message.type);
-    message.market !== undefined && (obj.market = message.market);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     message.address !== undefined && (obj.address = message.address);
     return obj;
   },
@@ -99,7 +99,7 @@ export const LeverageEvent = {
     const message = { ...baseLeverageEvent } as LeverageEvent;
     message.leverage = object.leverage ?? "";
     message.type = object.type ?? "";
-    message.market = object.market ?? "";
+    message.marketId = object.marketId ?? "";
     message.address = object.address ?? "";
     return message;
   },

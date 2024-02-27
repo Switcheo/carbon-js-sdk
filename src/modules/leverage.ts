@@ -9,7 +9,7 @@ export class LeverageModule extends BaseModule {
 
     const value = MsgSetLeverage.fromPartial({
       creator: wallet.bech32Address,
-      market: params.market,
+      marketId: params.market,
       leverage: params.leverage.shiftedBy(18).toString(10),
     });
 
@@ -28,7 +28,7 @@ export class LeverageModule extends BaseModule {
     const msgs = params.map((param) => {
       const value = MsgSetLeverage.fromPartial({
         creator: wallet.bech32Address,
-        market: param.market,
+        marketId: param.market,
         leverage: param.leverage.shiftedBy(18).toString(10),
       });
 

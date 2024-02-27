@@ -7,7 +7,7 @@ export const protobufPackage = "Switcheo.carbon.insurance";
 /** this line is used by starport scaffolding # proto/tx/message */
 export interface MsgTopUpInsurance {
   creator: string;
-  market: string;
+  marketId: string;
   amount: string;
   denom: string;
 }
@@ -16,7 +16,7 @@ export interface MsgTopUpInsuranceResponse {}
 
 const baseMsgTopUpInsurance: object = {
   creator: "",
-  market: "",
+  marketId: "",
   amount: "",
   denom: "",
 };
@@ -29,8 +29,8 @@ export const MsgTopUpInsurance = {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
-    if (message.market !== "") {
-      writer.uint32(18).string(message.market);
+    if (message.marketId !== "") {
+      writer.uint32(18).string(message.marketId);
     }
     if (message.amount !== "") {
       writer.uint32(26).string(message.amount);
@@ -52,7 +52,7 @@ export const MsgTopUpInsurance = {
           message.creator = reader.string();
           break;
         case 2:
-          message.market = reader.string();
+          message.marketId = reader.string();
           break;
         case 3:
           message.amount = reader.string();
@@ -74,9 +74,9 @@ export const MsgTopUpInsurance = {
       object.creator !== undefined && object.creator !== null
         ? String(object.creator)
         : "";
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? String(object.market)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     message.amount =
       object.amount !== undefined && object.amount !== null
@@ -92,7 +92,7 @@ export const MsgTopUpInsurance = {
   toJSON(message: MsgTopUpInsurance): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.market !== undefined && (obj.market = message.market);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     message.amount !== undefined && (obj.amount = message.amount);
     message.denom !== undefined && (obj.denom = message.denom);
     return obj;
@@ -101,7 +101,7 @@ export const MsgTopUpInsurance = {
   fromPartial(object: DeepPartial<MsgTopUpInsurance>): MsgTopUpInsurance {
     const message = { ...baseMsgTopUpInsurance } as MsgTopUpInsurance;
     message.creator = object.creator ?? "";
-    message.market = object.market ?? "";
+    message.marketId = object.marketId ?? "";
     message.amount = object.amount ?? "";
     message.denom = object.denom ?? "";
     return message;
