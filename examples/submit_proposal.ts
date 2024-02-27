@@ -9,6 +9,8 @@ import { MsgUpdateParams } from "../lib/codec/cosmos/bank/v1beta1/tx";
 import { Params } from "../lib/codec/cosmos/bank/v1beta1/bank";
 import { MsgUpdateParams as MsgOrderUpdateParams } from "../lib/codec/Switcheo/carbon/order/tx";
 import { ParamsToUpdate } from "../lib/codec/Switcheo/carbon/order/params";
+import { Params as AuthParams } from "../lib/codec/cosmos/auth/v1beta1/auth";
+import { MsgUpdateParams as MsgAuthUpdateParams } from "../lib/codec/cosmos/auth/v1beta1/tx";
 
 (async () => {
   const mnemonics = process.env.MNEMONICS ?? BIP39.generateMnemonic();
@@ -54,6 +56,18 @@ import { ParamsToUpdate } from "../lib/codec/Switcheo/carbon/order/params";
     })
   })
 
+  const authUrl = CarbonTx.Types.MsgAuthUpdateParams
+  const msgUpdateAuthParams = MsgAuthUpdateParams.fromPartial({
+    authority: authAddress,
+    params: AuthParams.fromPartial({
+      maxMemoCharacters: "300",
+      txSigLimit: "8",
+      txSizeCostPerByte: "15",
+      sigVerifyCostEd25519: "600",
+      sigVerifyCostSecp256k1: "1200"
+    })
+  })
+
   const setRewardCurveProposalResult = await connectedSDK.gov.submit(
     MsgSubmitProposal.fromPartial({
       messages: [
@@ -68,6 +82,10 @@ import { ParamsToUpdate } from "../lib/codec/Switcheo/carbon/order/params";
         {
           typeUrl: orderUrl,
           value: MsgOrderUpdateParams.encode(msgUpdateOrderParams).finish()
+        },
+        {
+          typeUrl: authUrl,
+          value: MsgAuthUpdateParams.encode(msgUpdateAuthParams).finish()
         }
       ],
       initialDeposit: coins(1000000000, "swth"),
