@@ -1,1 +1,1 @@
-export { EVMChain, MetaMaskChangeNetworkParam, CallContractArgs, MetaMaskSyncResult, MetaMask } from "./MetaMask";
+export { EVMChain, CallContractArgs, MetaMaskSyncResult, MetaMask } from "./MetaMask";

@@ -15,10 +15,10 @@ export interface ChangeNetworkParam {
 }
 
 const CarbonEvmNativeCurrency = {
-    decimals: 18,
-    name: "SWTH",
-    symbol: "SWTH",
-  }
+  decimals: 18,
+  name: "SWTH",
+  symbol: "SWTH",
+}
   
 export const CARBON_EVM_LOCALHOST: ChangeNetworkParam  = {
   chainId: `0x${Number(parseChainId(CarbonEvmChainIDs[Network.LocalHost])).toString(16)}`,
