@@ -25,6 +25,7 @@ import { parseEvmError } from "./error";
 import { carbonNetworkFromChainId } from "@carbon-sdk/util/network";
 import { signTransactionWrapper } from "@carbon-sdk/util/provider";
 import { Eip6963Provider } from "../eip6963Provider";
+import { ARBITRUM_MAINNET, ARBITRUM_TESTNET, BSC_MAINNET, BSC_TESTNET, CARBON_EVM_DEVNET, CARBON_EVM_LOCALHOST, CARBON_EVM_MAINNET, CARBON_EVM_TESTNET, ETH_MAINNET, ETH_TESTNET, ChangeNetworkParam as MetaMaskChangeNetworkParam, OKC_MAINNET, OKC_TESTNET, POLYGON_MAINNET, POLYGON_TESTNET } from "../../constant";
 
 
 declare global{
@@ -124,19 +125,6 @@ interface MetaMaskAPI {
   on: (eventName: string, listener: (...args: unknown[]) => void) => any;
 }
 
-export interface MetaMaskChangeNetworkParam {
-  chainId: string;
-  blockExplorerUrls?: string[];
-  chainName?: string;
-  iconUrls?: string[];
-  nativeCurrency?: {
-    name: string;
-    symbol: string;
-    decimals: number;
-  };
-  rpcUrls?: string[];
-}
-
 export interface CallContractArgs {
   from?: string;
   value?: string;
@@ -155,161 +143,6 @@ export interface StoredMnemonicInfo {
   bech32Address: string
   evmHexAddress: string
 }
-
-const CarbonEvmNativeCurrency = {
-  decimals: 18,
-  name: "SWTH",
-  symbol: "SWTH",
-}
-
-const CARBON_EVM_LOCALHOST: MetaMaskChangeNetworkParam = {
-  chainId: `0x${Number(parseChainId(CarbonEvmChainIDs[Network.LocalHost])).toString(16)}`,
-  blockExplorerUrls: ["https://evm-scan.carbon.network"],
-  chainName: "Carbon EVM Localhost",
-  rpcUrls: [`${NetworkConfigs[Network.LocalHost].evmJsonRpcUrl}`],
-  nativeCurrency: CarbonEvmNativeCurrency,
-}
-const CARBON_EVM_DEVNET: MetaMaskChangeNetworkParam = {
-  chainId: `0x${Number(parseChainId(CarbonEvmChainIDs[Network.DevNet])).toString(16)}`,
-  blockExplorerUrls: ["https://evm-scan.carbon.network"],
-  chainName: "Carbon EVM Devnet",
-  rpcUrls: [`${NetworkConfigs[Network.DevNet].evmJsonRpcUrl}`],
-  nativeCurrency: CarbonEvmNativeCurrency,
-}
-const CARBON_EVM_TESTNET: MetaMaskChangeNetworkParam = {
-  chainId: `0x${Number(parseChainId(CarbonEvmChainIDs[Network.TestNet])).toString(16)}`,
-  blockExplorerUrls: ["https://evm-scan.carbon.network"],
-  chainName: "Carbon EVM Testnet",
-  rpcUrls: [`${NetworkConfigs[Network.TestNet].evmJsonRpcUrl}`],
-  nativeCurrency: CarbonEvmNativeCurrency,
-}
-
-const CARBON_EVM_MAINNET: MetaMaskChangeNetworkParam = {
-  chainId: `0x${Number(parseChainId(CarbonEvmChainIDs[Network.MainNet])).toString(16)}`,
-  blockExplorerUrls: ["https://evm-scan.carbon.network"],
-  chainName: "Carbon EVM",
-  rpcUrls: [`${NetworkConfigs[Network.MainNet].evmJsonRpcUrl}`],
-  nativeCurrency: CarbonEvmNativeCurrency,
-}
-
-const BSC_MAINNET: MetaMaskChangeNetworkParam = {
-  chainId: "0x38",
-  blockExplorerUrls: ["https://bscscan.com"],
-  chainName: "BSC Mainnet",
-  rpcUrls: [
-    "https://bsc-dataseed2.binance.org/",
-    "https://bsc-dataseed3.binance.org/",
-    "https://bsc-dataseed4.binance.org/",
-    "https://bsc-dataseed1.defibit.io/",
-    "https://bsc-dataseed2.defibit.io/",
-    "https://bsc-dataseed3.defibit.io/",
-    "https://bsc-dataseed4.defibit.io/",
-    "https://bsc-dataseed1.ninicoin.io/",
-    "https://bsc-dataseed2.ninicoin.io/",
-    "https://bsc-dataseed3.ninicoin.io/",
-    "https://bsc-dataseed4.ninicoin.io/",
-    "https://bsc-dataseed1.binance.org/",
-  ],
-  nativeCurrency: {
-    decimals: 18,
-    name: "Binance Coin",
-    symbol: "BNB",
-  },
-};
-const BSC_TESTNET: MetaMaskChangeNetworkParam = {
-  chainId: "0x61",
-  blockExplorerUrls: ["https://testnet.bscscan.com"],
-  chainName: "BSC Testnet",
-  rpcUrls: [
-    "https://data-seed-prebsc-2-s1.binance.org:8545/",
-    "http://data-seed-prebsc-1-s2.binance.org:8545/",
-    "http://data-seed-prebsc-2-s2.binance.org:8545/",
-    "https://data-seed-prebsc-1-s3.binance.org:8545/",
-    "https://data-seed-prebsc-2-s3.binance.org:8545/",
-    "https://data-seed-prebsc-1-s1.binance.org:8545/",
-  ],
-  nativeCurrency: {
-    decimals: 18,
-    name: "Binance Coin",
-    symbol: "BNB",
-  },
-};
-
-const ETH_MAINNET: MetaMaskChangeNetworkParam = {
-  chainId: "0x1",
-  rpcUrls: ["https://mainnet.infura.io/v3/"],
-};
-const ETH_TESTNET: MetaMaskChangeNetworkParam = {
-  chainId: "0x5",
-  rpcUrls: ["https://goerli.infura.io/v3/"],
-};
-
-const ARBITRUM_MAINNET: MetaMaskChangeNetworkParam = {
-  chainId: "0xA4B1",
-  blockExplorerUrls: ["https://explorer.arbitrum.io"],
-  chainName: "Arbitrum One",
-  rpcUrls: ["https://arb1.arbitrum.io/rpc"],
-  nativeCurrency: {
-    decimals: 18,
-    name: "Ethereum",
-    symbol: "ETH",
-  },
-};
-const ARBITRUM_TESTNET: MetaMaskChangeNetworkParam = {
-  chainId: "0x66EEB",
-  blockExplorerUrls: [""],
-  chainName: "Arbitrum Testnet",
-  rpcUrls: ["https://rinkeby.arbitrum.io/rpc"],
-  nativeCurrency: {
-    decimals: 18,
-    name: "Ethereum",
-    symbol: "ETH",
-  },
-};
-const POLYGON_MAINNET: MetaMaskChangeNetworkParam = {
-  chainId: "0x89",
-  blockExplorerUrls: ["https://polygonscan.com/"],
-  chainName: "Polygon Mainnet",
-  rpcUrls: ["https://polygon-rpc.com"],
-  nativeCurrency: {
-    decimals: 18,
-    name: "Matic",
-    symbol: "MATIC",
-  },
-};
-const POLYGON_TESTNET: MetaMaskChangeNetworkParam = {
-  chainId: "0x13881",
-  blockExplorerUrls: ["https://mumbai.polygonscan.com"],
-  chainName: "Polygon Mumbai",
-  rpcUrls: ["https://polygon-mumbai.infura.io/v3/4458cf4d1689497b9a38b1d6bbf05e78"],
-  nativeCurrency: {
-    decimals: 18,
-    name: "Matic",
-    symbol: "MATIC",
-  },
-};
-const OKC_MAINNET: MetaMaskChangeNetworkParam = {
-  chainId: "0x42",
-  blockExplorerUrls: ["https://www.oklink.com/okc"],
-  chainName: "OKC Mainnet",
-  rpcUrls: ["https://exchainrpc.okex.org"],
-  nativeCurrency: {
-    decimals: 18,
-    name: "OKT",
-    symbol: "OKT",
-  },
-};
-const OKC_TESTNET: MetaMaskChangeNetworkParam = {
-  chainId: "0x41",
-  blockExplorerUrls: ["https://www.oklink.com/okc-test"],
-  chainName: "OKC Testnet",
-  rpcUrls: ["https://exchaintestrpc.okex.org"],
-  nativeCurrency: {
-    decimals: 18,
-    name: "OKT",
-    symbol: "OKT",
-  },
-};
 
 /**
  * TODO: Add docs

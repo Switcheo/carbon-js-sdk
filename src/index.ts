@@ -13,7 +13,6 @@ export {
   Keplr,
   ChainInfo,
   EVMChain,
-  MetaMaskChangeNetworkParam,
   CallContractArgs,
   MetaMaskSyncResult,
   MetaMask,
@@ -33,7 +32,7 @@ export {
   Eip6963Provider,
 } from "./provider";
 export { default as CarbonSDK } from "./CarbonSDK";
-export { ProviderAgent, SupportedEip6963Provider } from "./constant";
+export { ProviderAgent, SupportedEip6963Provider, ChangeNetworkParam as MetaMaskChangeNetworkParam } from "./constant";
 export * as Insights from "./insights";
 export * as Hydrogen from "./hydrogen";
 export { CarbonSigner, DirectCarbonSigner, AminoCarbonSigner, CarbonLedgerSigner, CarbonPrivateKeySigner, CarbonNonSigner } from "./wallet";
