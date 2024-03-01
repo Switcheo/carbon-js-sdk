@@ -16,6 +16,7 @@ export const InsightsEndpoints = {
   "user/pnl": "/user/:address/pnl",
   "user/balance/graph": "/user/:address/balance/graph",
   "user/pnl/graph": "/user/:address/pnl/graph",
+  "user/connected/wallet": "/user/connected/wallet",
 
 
   // Pool api

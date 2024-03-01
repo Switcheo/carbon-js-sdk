@@ -7,7 +7,7 @@ export const protobufPackage = "Switcheo.carbon.misc";
 
 export interface AccountTrade {
   orderId: string;
-  market: string;
+  marketId: string;
   side: string;
   quantity: string;
   price: string;
@@ -21,7 +21,7 @@ export interface AccountTrade {
 
 const baseAccountTrade: object = {
   orderId: "",
-  market: "",
+  marketId: "",
   side: "",
   quantity: "",
   price: "",
@@ -40,8 +40,8 @@ export const AccountTrade = {
     if (message.orderId !== "") {
       writer.uint32(10).string(message.orderId);
     }
-    if (message.market !== "") {
-      writer.uint32(18).string(message.market);
+    if (message.marketId !== "") {
+      writer.uint32(18).string(message.marketId);
     }
     if (message.side !== "") {
       writer.uint32(26).string(message.side);
@@ -87,7 +87,7 @@ export const AccountTrade = {
           message.orderId = reader.string();
           break;
         case 2:
-          message.market = reader.string();
+          message.marketId = reader.string();
           break;
         case 3:
           message.side = reader.string();
@@ -132,9 +132,9 @@ export const AccountTrade = {
       object.orderId !== undefined && object.orderId !== null
         ? String(object.orderId)
         : "";
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? String(object.market)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     message.side =
       object.side !== undefined && object.side !== null
@@ -178,7 +178,7 @@ export const AccountTrade = {
   toJSON(message: AccountTrade): unknown {
     const obj: any = {};
     message.orderId !== undefined && (obj.orderId = message.orderId);
-    message.market !== undefined && (obj.market = message.market);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     message.side !== undefined && (obj.side = message.side);
     message.quantity !== undefined && (obj.quantity = message.quantity);
     message.price !== undefined && (obj.price = message.price);
@@ -197,7 +197,7 @@ export const AccountTrade = {
   fromPartial(object: DeepPartial<AccountTrade>): AccountTrade {
     const message = { ...baseAccountTrade } as AccountTrade;
     message.orderId = object.orderId ?? "";
-    message.market = object.market ?? "";
+    message.marketId = object.marketId ?? "";
     message.side = object.side ?? "";
     message.quantity = object.quantity ?? "";
     message.price = object.price ?? "";

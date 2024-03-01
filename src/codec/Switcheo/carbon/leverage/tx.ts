@@ -7,13 +7,13 @@ export const protobufPackage = "Switcheo.carbon.leverage";
 /** this line is used by starport scaffolding # proto/tx/message */
 export interface MsgSetLeverage {
   creator: string;
-  market: string;
+  marketId: string;
   leverage: string;
 }
 
 export interface MsgSetLeverageResponse {}
 
-const baseMsgSetLeverage: object = { creator: "", market: "", leverage: "" };
+const baseMsgSetLeverage: object = { creator: "", marketId: "", leverage: "" };
 
 export const MsgSetLeverage = {
   encode(
@@ -23,8 +23,8 @@ export const MsgSetLeverage = {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
-    if (message.market !== "") {
-      writer.uint32(18).string(message.market);
+    if (message.marketId !== "") {
+      writer.uint32(18).string(message.marketId);
     }
     if (message.leverage !== "") {
       writer.uint32(26).string(message.leverage);
@@ -43,7 +43,7 @@ export const MsgSetLeverage = {
           message.creator = reader.string();
           break;
         case 2:
-          message.market = reader.string();
+          message.marketId = reader.string();
           break;
         case 3:
           message.leverage = reader.string();
@@ -62,9 +62,9 @@ export const MsgSetLeverage = {
       object.creator !== undefined && object.creator !== null
         ? String(object.creator)
         : "";
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? String(object.market)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     message.leverage =
       object.leverage !== undefined && object.leverage !== null
@@ -76,7 +76,7 @@ export const MsgSetLeverage = {
   toJSON(message: MsgSetLeverage): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
-    message.market !== undefined && (obj.market = message.market);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     message.leverage !== undefined && (obj.leverage = message.leverage);
     return obj;
   },
@@ -84,7 +84,7 @@ export const MsgSetLeverage = {
   fromPartial(object: DeepPartial<MsgSetLeverage>): MsgSetLeverage {
     const message = { ...baseMsgSetLeverage } as MsgSetLeverage;
     message.creator = object.creator ?? "";
-    message.market = object.market ?? "";
+    message.marketId = object.marketId ?? "";
     message.leverage = object.leverage ?? "";
     return message;
   },

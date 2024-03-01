@@ -6,7 +6,7 @@ import {
   PageResponse,
 } from "../../../cosmos/base/query/v1beta1/pagination";
 import { TokenPair } from "./erc20";
-import { Params } from "./genesis";
+import { Params } from "./params";
 
 export const protobufPackage = "Switcheo.carbon.erc20";
 

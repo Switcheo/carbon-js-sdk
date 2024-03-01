@@ -9,7 +9,7 @@ import {
 } from "./reward_scheme";
 import { Duration } from "../../../google/protobuf/duration";
 import { EModeCategory } from "./e_mode_category";
-import { Params } from "./params";
+import { ParamsToUpdate } from "./params";
 import {
   StringValue,
   Int64Value,
@@ -397,12 +397,8 @@ export interface MsgRemoveAccountEModeResponse {}
 export interface MsgUpdateParams {
   /** authority is the address of the governance account. */
   authority: string;
-  /**
-   * params defines the parameters to update.
-   *
-   * NOTE: All parameters must be supplied.
-   */
-  params?: Params;
+  /** params defines the optional parameters to update. */
+  params?: ParamsToUpdate;
 }
 
 /**
@@ -6826,7 +6822,7 @@ export const MsgUpdateParams = {
       writer.uint32(10).string(message.authority);
     }
     if (message.params !== undefined) {
-      Params.encode(message.params, writer.uint32(18).fork()).ldelim();
+      ParamsToUpdate.encode(message.params, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
@@ -6842,7 +6838,7 @@ export const MsgUpdateParams = {
           message.authority = reader.string();
           break;
         case 2:
-          message.params = Params.decode(reader, reader.uint32());
+          message.params = ParamsToUpdate.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -6860,7 +6856,7 @@ export const MsgUpdateParams = {
         : "";
     message.params =
       object.params !== undefined && object.params !== null
-        ? Params.fromJSON(object.params)
+        ? ParamsToUpdate.fromJSON(object.params)
         : undefined;
     return message;
   },
@@ -6869,7 +6865,9 @@ export const MsgUpdateParams = {
     const obj: any = {};
     message.authority !== undefined && (obj.authority = message.authority);
     message.params !== undefined &&
-      (obj.params = message.params ? Params.toJSON(message.params) : undefined);
+      (obj.params = message.params
+        ? ParamsToUpdate.toJSON(message.params)
+        : undefined);
     return obj;
   },
 
@@ -6878,7 +6876,7 @@ export const MsgUpdateParams = {
     message.authority = object.authority ?? "";
     message.params =
       object.params !== undefined && object.params !== null
-        ? Params.fromPartial(object.params)
+        ? ParamsToUpdate.fromPartial(object.params)
         : undefined;
     return message;
   },

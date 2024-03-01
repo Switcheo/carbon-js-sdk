@@ -1,6 +1,6 @@
 import { NetworkConfig } from "@carbon-sdk/constant";
 import { Insights } from "@carbon-sdk/index";
-import { InsightsQueryResponse } from "@carbon-sdk/insights";
+import { ConnectedWalletParams, ConnectedWalletResponse, InsightsQueryResponse } from "@carbon-sdk/insights";
 import { APIUtils } from "@carbon-sdk/util";
 import BigNumber from "bignumber.js";
 import dayjs from "dayjs";
@@ -200,6 +200,12 @@ class InsightsQueryClient {
     const request = this.apiManager.path("user/pool/rewards", routeParams, req);
     const response = await request.get();
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetUserRewardsClaimHistoryResponse>;
+  }
+
+  async UserWalletConnected(body: ConnectedWalletParams): Promise<ConnectedWalletResponse> {
+    const request = this.apiManager.path('user/connected/wallet')
+    const response = await request.post({ body })
+    return response.data
   }
   async CompetitionList(
     req: Insights.QueryGetCompetitionListRequest = {}

@@ -11,13 +11,13 @@ export interface OrderBookLevel {
 }
 
 export interface OrderBook {
-  market: string;
+  marketId: string;
   asks: OrderBookLevel[];
   bids: OrderBookLevel[];
 }
 
 export interface StopBook {
-  market: string;
+  marketId: string;
   asks: StopOrder[];
   bids: StopOrder[];
   trigger: string;
@@ -109,15 +109,15 @@ export const OrderBookLevel = {
   },
 };
 
-const baseOrderBook: object = { market: "" };
+const baseOrderBook: object = { marketId: "" };
 
 export const OrderBook = {
   encode(
     message: OrderBook,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.market !== "") {
-      writer.uint32(10).string(message.market);
+    if (message.marketId !== "") {
+      writer.uint32(10).string(message.marketId);
     }
     for (const v of message.asks) {
       OrderBookLevel.encode(v!, writer.uint32(18).fork()).ldelim();
@@ -138,7 +138,7 @@ export const OrderBook = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.market = reader.string();
+          message.marketId = reader.string();
           break;
         case 2:
           message.asks.push(OrderBookLevel.decode(reader, reader.uint32()));
@@ -156,9 +156,9 @@ export const OrderBook = {
 
   fromJSON(object: any): OrderBook {
     const message = { ...baseOrderBook } as OrderBook;
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? String(object.market)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     message.asks = (object.asks ?? []).map((e: any) =>
       OrderBookLevel.fromJSON(e)
@@ -171,7 +171,7 @@ export const OrderBook = {
 
   toJSON(message: OrderBook): unknown {
     const obj: any = {};
-    message.market !== undefined && (obj.market = message.market);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     if (message.asks) {
       obj.asks = message.asks.map((e) =>
         e ? OrderBookLevel.toJSON(e) : undefined
@@ -191,7 +191,7 @@ export const OrderBook = {
 
   fromPartial(object: DeepPartial<OrderBook>): OrderBook {
     const message = { ...baseOrderBook } as OrderBook;
-    message.market = object.market ?? "";
+    message.marketId = object.marketId ?? "";
     message.asks = (object.asks ?? []).map((e) =>
       OrderBookLevel.fromPartial(e)
     );
@@ -202,15 +202,15 @@ export const OrderBook = {
   },
 };
 
-const baseStopBook: object = { market: "", trigger: "", stopType: "" };
+const baseStopBook: object = { marketId: "", trigger: "", stopType: "" };
 
 export const StopBook = {
   encode(
     message: StopBook,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.market !== "") {
-      writer.uint32(10).string(message.market);
+    if (message.marketId !== "") {
+      writer.uint32(10).string(message.marketId);
     }
     for (const v of message.asks) {
       StopOrder.encode(v!, writer.uint32(18).fork()).ldelim();
@@ -237,7 +237,7 @@ export const StopBook = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.market = reader.string();
+          message.marketId = reader.string();
           break;
         case 2:
           message.asks.push(StopOrder.decode(reader, reader.uint32()));
@@ -261,9 +261,9 @@ export const StopBook = {
 
   fromJSON(object: any): StopBook {
     const message = { ...baseStopBook } as StopBook;
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? String(object.market)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     message.asks = (object.asks ?? []).map((e: any) => StopOrder.fromJSON(e));
     message.bids = (object.bids ?? []).map((e: any) => StopOrder.fromJSON(e));
@@ -280,7 +280,7 @@ export const StopBook = {
 
   toJSON(message: StopBook): unknown {
     const obj: any = {};
-    message.market !== undefined && (obj.market = message.market);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     if (message.asks) {
       obj.asks = message.asks.map((e) => (e ? StopOrder.toJSON(e) : undefined));
     } else {
@@ -298,7 +298,7 @@ export const StopBook = {
 
   fromPartial(object: DeepPartial<StopBook>): StopBook {
     const message = { ...baseStopBook } as StopBook;
-    message.market = object.market ?? "";
+    message.marketId = object.marketId ?? "";
     message.asks = (object.asks ?? []).map((e) => StopOrder.fromPartial(e));
     message.bids = (object.bids ?? []).map((e) => StopOrder.fromPartial(e));
     message.trigger = object.trigger ?? "";

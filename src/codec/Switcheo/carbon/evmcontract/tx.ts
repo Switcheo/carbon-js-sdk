@@ -1,8 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Params } from "./params";
-import { UInt64Value } from "../../../google/protobuf/wrappers";
+import { ParamsToUpdate } from "./params";
 
 export const protobufPackage = "Switcheo.carbon.evmcontract";
 
@@ -22,22 +21,11 @@ export interface MsgActivateContract {
 
 export interface MsgActivateContractResponse {}
 
-export interface MsgSetParams {
-  creator: string;
-  responseGasCap?: Long;
-}
-
-export interface MsgSetParamsResponse {}
-
 export interface MsgUpdateParams {
   /** authority is the address of the governance account. */
   authority: string;
-  /**
-   * params defines the parameters to update.
-   *
-   * NOTE: All parameters must be supplied.
-   */
-  params?: Params;
+  /** params defines the optional parameters to update. */
+  params?: ParamsToUpdate;
 }
 
 export interface MsgUpdateParamsResponse {}
@@ -315,125 +303,6 @@ export const MsgActivateContractResponse = {
   },
 };
 
-const baseMsgSetParams: object = { creator: "" };
-
-export const MsgSetParams = {
-  encode(
-    message: MsgSetParams,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.creator !== "") {
-      writer.uint32(10).string(message.creator);
-    }
-    if (message.responseGasCap !== undefined) {
-      UInt64Value.encode(
-        { value: message.responseGasCap! },
-        writer.uint32(18).fork()
-      ).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgSetParams {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgSetParams } as MsgSetParams;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.creator = reader.string();
-          break;
-        case 2:
-          message.responseGasCap = UInt64Value.decode(
-            reader,
-            reader.uint32()
-          ).value;
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): MsgSetParams {
-    const message = { ...baseMsgSetParams } as MsgSetParams;
-    message.creator =
-      object.creator !== undefined && object.creator !== null
-        ? String(object.creator)
-        : "";
-    message.responseGasCap =
-      object.responseGasCap !== undefined && object.responseGasCap !== null
-        ? Long.fromValue(object.responseGasCap)
-        : undefined;
-    return message;
-  },
-
-  toJSON(message: MsgSetParams): unknown {
-    const obj: any = {};
-    message.creator !== undefined && (obj.creator = message.creator);
-    message.responseGasCap !== undefined &&
-      (obj.responseGasCap = message.responseGasCap);
-    return obj;
-  },
-
-  fromPartial(object: DeepPartial<MsgSetParams>): MsgSetParams {
-    const message = { ...baseMsgSetParams } as MsgSetParams;
-    message.creator = object.creator ?? "";
-    message.responseGasCap =
-      object.responseGasCap !== undefined && object.responseGasCap !== null
-        ? Long.fromValue(object.responseGasCap)
-        : undefined;
-    return message;
-  },
-};
-
-const baseMsgSetParamsResponse: object = {};
-
-export const MsgSetParamsResponse = {
-  encode(
-    _: MsgSetParamsResponse,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    return writer;
-  },
-
-  decode(
-    input: _m0.Reader | Uint8Array,
-    length?: number
-  ): MsgSetParamsResponse {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgSetParamsResponse } as MsgSetParamsResponse;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(_: any): MsgSetParamsResponse {
-    const message = { ...baseMsgSetParamsResponse } as MsgSetParamsResponse;
-    return message;
-  },
-
-  toJSON(_: MsgSetParamsResponse): unknown {
-    const obj: any = {};
-    return obj;
-  },
-
-  fromPartial(_: DeepPartial<MsgSetParamsResponse>): MsgSetParamsResponse {
-    const message = { ...baseMsgSetParamsResponse } as MsgSetParamsResponse;
-    return message;
-  },
-};
-
 const baseMsgUpdateParams: object = { authority: "" };
 
 export const MsgUpdateParams = {
@@ -445,7 +314,7 @@ export const MsgUpdateParams = {
       writer.uint32(10).string(message.authority);
     }
     if (message.params !== undefined) {
-      Params.encode(message.params, writer.uint32(18).fork()).ldelim();
+      ParamsToUpdate.encode(message.params, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
@@ -461,7 +330,7 @@ export const MsgUpdateParams = {
           message.authority = reader.string();
           break;
         case 2:
-          message.params = Params.decode(reader, reader.uint32());
+          message.params = ParamsToUpdate.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -479,7 +348,7 @@ export const MsgUpdateParams = {
         : "";
     message.params =
       object.params !== undefined && object.params !== null
-        ? Params.fromJSON(object.params)
+        ? ParamsToUpdate.fromJSON(object.params)
         : undefined;
     return message;
   },
@@ -488,7 +357,9 @@ export const MsgUpdateParams = {
     const obj: any = {};
     message.authority !== undefined && (obj.authority = message.authority);
     message.params !== undefined &&
-      (obj.params = message.params ? Params.toJSON(message.params) : undefined);
+      (obj.params = message.params
+        ? ParamsToUpdate.toJSON(message.params)
+        : undefined);
     return obj;
   },
 
@@ -497,7 +368,7 @@ export const MsgUpdateParams = {
     message.authority = object.authority ?? "";
     message.params =
       object.params !== undefined && object.params !== null
-        ? Params.fromPartial(object.params)
+        ? ParamsToUpdate.fromPartial(object.params)
         : undefined;
     return message;
   },
@@ -563,7 +434,6 @@ export interface Msg {
   ActivateContract(
     request: MsgActivateContract
   ): Promise<MsgActivateContractResponse>;
-  SetParams(request: MsgSetParams): Promise<MsgSetParamsResponse>;
   UpdateParams(request: MsgUpdateParams): Promise<MsgUpdateParamsResponse>;
 }
 
@@ -573,7 +443,6 @@ export class MsgClientImpl implements Msg {
     this.rpc = rpc;
     this.DeactivateContract = this.DeactivateContract.bind(this);
     this.ActivateContract = this.ActivateContract.bind(this);
-    this.SetParams = this.SetParams.bind(this);
     this.UpdateParams = this.UpdateParams.bind(this);
   }
   DeactivateContract(
@@ -601,18 +470,6 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgActivateContractResponse.decode(new _m0.Reader(data))
-    );
-  }
-
-  SetParams(request: MsgSetParams): Promise<MsgSetParamsResponse> {
-    const data = MsgSetParams.encode(request).finish();
-    const promise = this.rpc.request(
-      "Switcheo.carbon.evmcontract.Msg",
-      "SetParams",
-      data
-    );
-    return promise.then((data) =>
-      MsgSetParamsResponse.decode(new _m0.Reader(data))
     );
   }
 

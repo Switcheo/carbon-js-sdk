@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Params } from "./liquiditypool";
+import { ParamsToUpdate } from "./params";
 import { Timestamp } from "../../../google/protobuf/timestamp";
 import { RewardWeight } from "./reward";
 
@@ -56,7 +56,7 @@ export interface MsgRemoveLiquidityResponse {}
 
 export interface LinkPoolParams {
   poolId: Long;
-  market: string;
+  marketId: string;
 }
 
 export interface UnlinkPoolParams {
@@ -185,12 +185,8 @@ export interface UpdatePoolRouteParams {
 export interface MsgUpdateParams {
   /** authority is the address of the governance account. */
   authority: string;
-  /**
-   * params defines the parameters to update.
-   *
-   * NOTE: All parameters must be supplied.
-   */
-  params?: Params;
+  /** params defines the optional parameters to update. */
+  params?: ParamsToUpdate;
 }
 
 /**
@@ -934,7 +930,7 @@ export const MsgRemoveLiquidityResponse = {
   },
 };
 
-const baseLinkPoolParams: object = { poolId: Long.UZERO, market: "" };
+const baseLinkPoolParams: object = { poolId: Long.UZERO, marketId: "" };
 
 export const LinkPoolParams = {
   encode(
@@ -944,8 +940,8 @@ export const LinkPoolParams = {
     if (!message.poolId.isZero()) {
       writer.uint32(8).uint64(message.poolId);
     }
-    if (message.market !== "") {
-      writer.uint32(18).string(message.market);
+    if (message.marketId !== "") {
+      writer.uint32(18).string(message.marketId);
     }
     return writer;
   },
@@ -961,7 +957,7 @@ export const LinkPoolParams = {
           message.poolId = reader.uint64() as Long;
           break;
         case 2:
-          message.market = reader.string();
+          message.marketId = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -977,9 +973,9 @@ export const LinkPoolParams = {
       object.poolId !== undefined && object.poolId !== null
         ? Long.fromString(object.poolId)
         : Long.UZERO;
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? String(object.market)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     return message;
   },
@@ -988,7 +984,7 @@ export const LinkPoolParams = {
     const obj: any = {};
     message.poolId !== undefined &&
       (obj.poolId = (message.poolId || Long.UZERO).toString());
-    message.market !== undefined && (obj.market = message.market);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     return obj;
   },
 
@@ -998,7 +994,7 @@ export const LinkPoolParams = {
       object.poolId !== undefined && object.poolId !== null
         ? Long.fromValue(object.poolId)
         : Long.UZERO;
-    message.market = object.market ?? "";
+    message.marketId = object.marketId ?? "";
     return message;
   },
 };
@@ -2238,7 +2234,7 @@ export const MsgUpdatePool = {
 const baseUpdatePoolParams: object = {
   poolId: Long.UZERO,
   swapFee: "",
-  numQuotes: Long.ZERO,
+  numQuotes: Long.UZERO,
 };
 
 export const UpdatePoolParams = {
@@ -2253,7 +2249,7 @@ export const UpdatePoolParams = {
       writer.uint32(18).string(message.swapFee);
     }
     if (!message.numQuotes.isZero()) {
-      writer.uint32(24).int64(message.numQuotes);
+      writer.uint32(24).uint64(message.numQuotes);
     }
     return writer;
   },
@@ -2272,7 +2268,7 @@ export const UpdatePoolParams = {
           message.swapFee = reader.string();
           break;
         case 3:
-          message.numQuotes = reader.int64() as Long;
+          message.numQuotes = reader.uint64() as Long;
           break;
         default:
           reader.skipType(tag & 7);
@@ -2295,7 +2291,7 @@ export const UpdatePoolParams = {
     message.numQuotes =
       object.numQuotes !== undefined && object.numQuotes !== null
         ? Long.fromString(object.numQuotes)
-        : Long.ZERO;
+        : Long.UZERO;
     return message;
   },
 
@@ -2305,7 +2301,7 @@ export const UpdatePoolParams = {
       (obj.poolId = (message.poolId || Long.UZERO).toString());
     message.swapFee !== undefined && (obj.swapFee = message.swapFee);
     message.numQuotes !== undefined &&
-      (obj.numQuotes = (message.numQuotes || Long.ZERO).toString());
+      (obj.numQuotes = (message.numQuotes || Long.UZERO).toString());
     return obj;
   },
 
@@ -2319,7 +2315,7 @@ export const UpdatePoolParams = {
     message.numQuotes =
       object.numQuotes !== undefined && object.numQuotes !== null
         ? Long.fromValue(object.numQuotes)
-        : Long.ZERO;
+        : Long.UZERO;
     return message;
   },
 };
@@ -2502,7 +2498,7 @@ export const MsgCreatePoolRouteResponse = {
 const baseCreatePoolRouteParams: object = {
   marketName: "",
   poolIds: Long.UZERO,
-  numQuotes: Long.ZERO,
+  numQuotes: Long.UZERO,
 };
 
 export const CreatePoolRouteParams = {
@@ -2519,7 +2515,7 @@ export const CreatePoolRouteParams = {
     }
     writer.ldelim();
     if (!message.numQuotes.isZero()) {
-      writer.uint32(24).int64(message.numQuotes);
+      writer.uint32(24).uint64(message.numQuotes);
     }
     return writer;
   },
@@ -2549,7 +2545,7 @@ export const CreatePoolRouteParams = {
           }
           break;
         case 3:
-          message.numQuotes = reader.int64() as Long;
+          message.numQuotes = reader.uint64() as Long;
           break;
         default:
           reader.skipType(tag & 7);
@@ -2571,7 +2567,7 @@ export const CreatePoolRouteParams = {
     message.numQuotes =
       object.numQuotes !== undefined && object.numQuotes !== null
         ? Long.fromString(object.numQuotes)
-        : Long.ZERO;
+        : Long.UZERO;
     return message;
   },
 
@@ -2584,7 +2580,7 @@ export const CreatePoolRouteParams = {
       obj.poolIds = [];
     }
     message.numQuotes !== undefined &&
-      (obj.numQuotes = (message.numQuotes || Long.ZERO).toString());
+      (obj.numQuotes = (message.numQuotes || Long.UZERO).toString());
     return obj;
   },
 
@@ -2597,7 +2593,7 @@ export const CreatePoolRouteParams = {
     message.numQuotes =
       object.numQuotes !== undefined && object.numQuotes !== null
         ? Long.fromValue(object.numQuotes)
-        : Long.ZERO;
+        : Long.UZERO;
     return message;
   },
 };
@@ -2953,7 +2949,7 @@ export const MsgUpdatePoolRouteResponse = {
 const baseUpdatePoolRouteParams: object = {
   marketName: "",
   poolIds: Long.UZERO,
-  numQuotes: Long.ZERO,
+  numQuotes: Long.UZERO,
 };
 
 export const UpdatePoolRouteParams = {
@@ -2970,7 +2966,7 @@ export const UpdatePoolRouteParams = {
     }
     writer.ldelim();
     if (!message.numQuotes.isZero()) {
-      writer.uint32(24).int64(message.numQuotes);
+      writer.uint32(24).uint64(message.numQuotes);
     }
     return writer;
   },
@@ -3000,7 +2996,7 @@ export const UpdatePoolRouteParams = {
           }
           break;
         case 3:
-          message.numQuotes = reader.int64() as Long;
+          message.numQuotes = reader.uint64() as Long;
           break;
         default:
           reader.skipType(tag & 7);
@@ -3022,7 +3018,7 @@ export const UpdatePoolRouteParams = {
     message.numQuotes =
       object.numQuotes !== undefined && object.numQuotes !== null
         ? Long.fromString(object.numQuotes)
-        : Long.ZERO;
+        : Long.UZERO;
     return message;
   },
 
@@ -3035,7 +3031,7 @@ export const UpdatePoolRouteParams = {
       obj.poolIds = [];
     }
     message.numQuotes !== undefined &&
-      (obj.numQuotes = (message.numQuotes || Long.ZERO).toString());
+      (obj.numQuotes = (message.numQuotes || Long.UZERO).toString());
     return obj;
   },
 
@@ -3048,7 +3044,7 @@ export const UpdatePoolRouteParams = {
     message.numQuotes =
       object.numQuotes !== undefined && object.numQuotes !== null
         ? Long.fromValue(object.numQuotes)
-        : Long.ZERO;
+        : Long.UZERO;
     return message;
   },
 };
@@ -3064,7 +3060,7 @@ export const MsgUpdateParams = {
       writer.uint32(10).string(message.authority);
     }
     if (message.params !== undefined) {
-      Params.encode(message.params, writer.uint32(18).fork()).ldelim();
+      ParamsToUpdate.encode(message.params, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
@@ -3080,7 +3076,7 @@ export const MsgUpdateParams = {
           message.authority = reader.string();
           break;
         case 2:
-          message.params = Params.decode(reader, reader.uint32());
+          message.params = ParamsToUpdate.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -3098,7 +3094,7 @@ export const MsgUpdateParams = {
         : "";
     message.params =
       object.params !== undefined && object.params !== null
-        ? Params.fromJSON(object.params)
+        ? ParamsToUpdate.fromJSON(object.params)
         : undefined;
     return message;
   },
@@ -3107,7 +3103,9 @@ export const MsgUpdateParams = {
     const obj: any = {};
     message.authority !== undefined && (obj.authority = message.authority);
     message.params !== undefined &&
-      (obj.params = message.params ? Params.toJSON(message.params) : undefined);
+      (obj.params = message.params
+        ? ParamsToUpdate.toJSON(message.params)
+        : undefined);
     return obj;
   },
 
@@ -3116,7 +3114,7 @@ export const MsgUpdateParams = {
     message.authority = object.authority ?? "";
     message.params =
       object.params !== undefined && object.params !== null
-        ? Params.fromPartial(object.params)
+        ? ParamsToUpdate.fromPartial(object.params)
         : undefined;
     return message;
   },

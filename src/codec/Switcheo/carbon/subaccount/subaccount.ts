@@ -1,7 +1,6 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Duration } from "../../../google/protobuf/duration";
 import { Timestamp } from "../../../google/protobuf/timestamp";
 
 export const protobufPackage = "Switcheo.carbon.subaccount";
@@ -24,10 +23,6 @@ export interface MainAccount {
   tradingFeeDelegateLastUpdate?: Date;
   mainAddress: string;
   subRole: string;
-}
-
-export interface Params {
-  tradingFeeDelegateCooldown?: Duration;
 }
 
 const baseSubAccount: object = {
@@ -312,73 +307,6 @@ export const MainAccount = {
       object.tradingFeeDelegateLastUpdate ?? undefined;
     message.mainAddress = object.mainAddress ?? "";
     message.subRole = object.subRole ?? "";
-    return message;
-  },
-};
-
-const baseParams: object = {};
-
-export const Params = {
-  encode(
-    message: Params,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.tradingFeeDelegateCooldown !== undefined) {
-      Duration.encode(
-        message.tradingFeeDelegateCooldown,
-        writer.uint32(10).fork()
-      ).ldelim();
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): Params {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseParams } as Params;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.tradingFeeDelegateCooldown = Duration.decode(
-            reader,
-            reader.uint32()
-          );
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): Params {
-    const message = { ...baseParams } as Params;
-    message.tradingFeeDelegateCooldown =
-      object.tradingFeeDelegateCooldown !== undefined &&
-      object.tradingFeeDelegateCooldown !== null
-        ? Duration.fromJSON(object.tradingFeeDelegateCooldown)
-        : undefined;
-    return message;
-  },
-
-  toJSON(message: Params): unknown {
-    const obj: any = {};
-    message.tradingFeeDelegateCooldown !== undefined &&
-      (obj.tradingFeeDelegateCooldown = message.tradingFeeDelegateCooldown
-        ? Duration.toJSON(message.tradingFeeDelegateCooldown)
-        : undefined);
-    return obj;
-  },
-
-  fromPartial(object: DeepPartial<Params>): Params {
-    const message = { ...baseParams } as Params;
-    message.tradingFeeDelegateCooldown =
-      object.tradingFeeDelegateCooldown !== undefined &&
-      object.tradingFeeDelegateCooldown !== null
-        ? Duration.fromPartial(object.tradingFeeDelegateCooldown)
-        : undefined;
     return message;
   },
 };

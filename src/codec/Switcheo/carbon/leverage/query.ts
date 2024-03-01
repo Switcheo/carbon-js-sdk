@@ -8,7 +8,7 @@ export const protobufPackage = "Switcheo.carbon.leverage";
 /** this line is used by starport scaffolding # 3 */
 export interface QueryGetLeverageRequest {
   address: string;
-  market: string;
+  marketId: string;
 }
 
 export interface QueryGetLeverageResponse {
@@ -23,7 +23,7 @@ export interface QueryAllLeverageResponse {
   marketLeverages: MarketLeverage[];
 }
 
-const baseQueryGetLeverageRequest: object = { address: "", market: "" };
+const baseQueryGetLeverageRequest: object = { address: "", marketId: "" };
 
 export const QueryGetLeverageRequest = {
   encode(
@@ -33,8 +33,8 @@ export const QueryGetLeverageRequest = {
     if (message.address !== "") {
       writer.uint32(10).string(message.address);
     }
-    if (message.market !== "") {
-      writer.uint32(18).string(message.market);
+    if (message.marketId !== "") {
+      writer.uint32(18).string(message.marketId);
     }
     return writer;
   },
@@ -55,7 +55,7 @@ export const QueryGetLeverageRequest = {
           message.address = reader.string();
           break;
         case 2:
-          message.market = reader.string();
+          message.marketId = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -73,9 +73,9 @@ export const QueryGetLeverageRequest = {
       object.address !== undefined && object.address !== null
         ? String(object.address)
         : "";
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? String(object.market)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     return message;
   },
@@ -83,7 +83,7 @@ export const QueryGetLeverageRequest = {
   toJSON(message: QueryGetLeverageRequest): unknown {
     const obj: any = {};
     message.address !== undefined && (obj.address = message.address);
-    message.market !== undefined && (obj.market = message.market);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     return obj;
   },
 
@@ -94,7 +94,7 @@ export const QueryGetLeverageRequest = {
       ...baseQueryGetLeverageRequest,
     } as QueryGetLeverageRequest;
     message.address = object.address ?? "";
-    message.market = object.market ?? "";
+    message.marketId = object.marketId ?? "";
     return message;
   },
 };

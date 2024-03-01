@@ -132,3 +132,12 @@ export interface QueryGetUserPnlGraphResponse {
   entries: RawUserPnlGraphCoordinate[];
   meta: TimeMeta;
 }
+
+export interface ConnectedWalletParams {
+  address: string,
+  walletType: string,
+}
+
+export interface ConnectedWalletResponse {
+  status: string
+}

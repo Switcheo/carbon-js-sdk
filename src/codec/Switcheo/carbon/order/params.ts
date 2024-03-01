@@ -1,27 +1,27 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { UInt64Value } from "../../../google/protobuf/wrappers";
+import { UInt32Value } from "../../../google/protobuf/wrappers";
 
-export const protobufPackage = "Switcheo.carbon.evmcontract";
+export const protobufPackage = "Switcheo.carbon.order";
 
 export interface Params {
-  responseGasCap: Long;
+  maxReferralCommission: number;
 }
 
 export interface ParamsToUpdate {
-  responseGasCap?: Long;
+  maxReferralCommission?: number;
 }
 
-const baseParams: object = { responseGasCap: Long.UZERO };
+const baseParams: object = { maxReferralCommission: 0 };
 
 export const Params = {
   encode(
     message: Params,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (!message.responseGasCap.isZero()) {
-      writer.uint32(8).uint64(message.responseGasCap);
+    if (message.maxReferralCommission !== 0) {
+      writer.uint32(8).uint32(message.maxReferralCommission);
     }
     return writer;
   },
@@ -34,7 +34,7 @@ export const Params = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.responseGasCap = reader.uint64() as Long;
+          message.maxReferralCommission = reader.uint32();
           break;
         default:
           reader.skipType(tag & 7);
@@ -46,26 +46,24 @@ export const Params = {
 
   fromJSON(object: any): Params {
     const message = { ...baseParams } as Params;
-    message.responseGasCap =
-      object.responseGasCap !== undefined && object.responseGasCap !== null
-        ? Long.fromString(object.responseGasCap)
-        : Long.UZERO;
+    message.maxReferralCommission =
+      object.maxReferralCommission !== undefined &&
+      object.maxReferralCommission !== null
+        ? Number(object.maxReferralCommission)
+        : 0;
     return message;
   },
 
   toJSON(message: Params): unknown {
     const obj: any = {};
-    message.responseGasCap !== undefined &&
-      (obj.responseGasCap = (message.responseGasCap || Long.UZERO).toString());
+    message.maxReferralCommission !== undefined &&
+      (obj.maxReferralCommission = message.maxReferralCommission);
     return obj;
   },
 
   fromPartial(object: DeepPartial<Params>): Params {
     const message = { ...baseParams } as Params;
-    message.responseGasCap =
-      object.responseGasCap !== undefined && object.responseGasCap !== null
-        ? Long.fromValue(object.responseGasCap)
-        : Long.UZERO;
+    message.maxReferralCommission = object.maxReferralCommission ?? 0;
     return message;
   },
 };
@@ -77,9 +75,9 @@ export const ParamsToUpdate = {
     message: ParamsToUpdate,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.responseGasCap !== undefined) {
-      UInt64Value.encode(
-        { value: message.responseGasCap! },
+    if (message.maxReferralCommission !== undefined) {
+      UInt32Value.encode(
+        { value: message.maxReferralCommission! },
         writer.uint32(10).fork()
       ).ldelim();
     }
@@ -94,7 +92,7 @@ export const ParamsToUpdate = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.responseGasCap = UInt64Value.decode(
+          message.maxReferralCommission = UInt32Value.decode(
             reader,
             reader.uint32()
           ).value;
@@ -109,26 +107,24 @@ export const ParamsToUpdate = {
 
   fromJSON(object: any): ParamsToUpdate {
     const message = { ...baseParamsToUpdate } as ParamsToUpdate;
-    message.responseGasCap =
-      object.responseGasCap !== undefined && object.responseGasCap !== null
-        ? Long.fromValue(object.responseGasCap)
+    message.maxReferralCommission =
+      object.maxReferralCommission !== undefined &&
+      object.maxReferralCommission !== null
+        ? Number(object.maxReferralCommission)
         : undefined;
     return message;
   },
 
   toJSON(message: ParamsToUpdate): unknown {
     const obj: any = {};
-    message.responseGasCap !== undefined &&
-      (obj.responseGasCap = message.responseGasCap);
+    message.maxReferralCommission !== undefined &&
+      (obj.maxReferralCommission = message.maxReferralCommission);
     return obj;
   },
 
   fromPartial(object: DeepPartial<ParamsToUpdate>): ParamsToUpdate {
     const message = { ...baseParamsToUpdate } as ParamsToUpdate;
-    message.responseGasCap =
-      object.responseGasCap !== undefined && object.responseGasCap !== null
-        ? Long.fromValue(object.responseGasCap)
-        : undefined;
+    message.maxReferralCommission = object.maxReferralCommission ?? undefined;
     return message;
   },
 };

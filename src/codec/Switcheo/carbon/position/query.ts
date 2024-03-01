@@ -11,7 +11,7 @@ export const protobufPackage = "Switcheo.carbon.position";
 
 export interface QueryGetPositionRequest {
   address: string;
-  market: string;
+  marketId: string;
 }
 
 export interface QueryGetPositionResponse {
@@ -20,7 +20,7 @@ export interface QueryGetPositionResponse {
 
 export interface QueryAllPositionRequest {
   address: string;
-  market: string;
+  marketId: string;
   status: string;
   pagination?: PageRequest;
 }
@@ -38,7 +38,7 @@ export interface QueryPositionAllocatedMarginResponse {
   positions: PositionAllocatedMargin[];
 }
 
-const baseQueryGetPositionRequest: object = { address: "", market: "" };
+const baseQueryGetPositionRequest: object = { address: "", marketId: "" };
 
 export const QueryGetPositionRequest = {
   encode(
@@ -48,8 +48,8 @@ export const QueryGetPositionRequest = {
     if (message.address !== "") {
       writer.uint32(10).string(message.address);
     }
-    if (message.market !== "") {
-      writer.uint32(18).string(message.market);
+    if (message.marketId !== "") {
+      writer.uint32(18).string(message.marketId);
     }
     return writer;
   },
@@ -70,7 +70,7 @@ export const QueryGetPositionRequest = {
           message.address = reader.string();
           break;
         case 2:
-          message.market = reader.string();
+          message.marketId = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -88,9 +88,9 @@ export const QueryGetPositionRequest = {
       object.address !== undefined && object.address !== null
         ? String(object.address)
         : "";
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? String(object.market)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     return message;
   },
@@ -98,7 +98,7 @@ export const QueryGetPositionRequest = {
   toJSON(message: QueryGetPositionRequest): unknown {
     const obj: any = {};
     message.address !== undefined && (obj.address = message.address);
-    message.market !== undefined && (obj.market = message.market);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     return obj;
   },
 
@@ -109,7 +109,7 @@ export const QueryGetPositionRequest = {
       ...baseQueryGetPositionRequest,
     } as QueryGetPositionRequest;
     message.address = object.address ?? "";
-    message.market = object.market ?? "";
+    message.marketId = object.marketId ?? "";
     return message;
   },
 };
@@ -186,7 +186,7 @@ export const QueryGetPositionResponse = {
 
 const baseQueryAllPositionRequest: object = {
   address: "",
-  market: "",
+  marketId: "",
   status: "",
 };
 
@@ -198,8 +198,8 @@ export const QueryAllPositionRequest = {
     if (message.address !== "") {
       writer.uint32(10).string(message.address);
     }
-    if (message.market !== "") {
-      writer.uint32(18).string(message.market);
+    if (message.marketId !== "") {
+      writer.uint32(18).string(message.marketId);
     }
     if (message.status !== "") {
       writer.uint32(26).string(message.status);
@@ -226,7 +226,7 @@ export const QueryAllPositionRequest = {
           message.address = reader.string();
           break;
         case 2:
-          message.market = reader.string();
+          message.marketId = reader.string();
           break;
         case 3:
           message.status = reader.string();
@@ -250,9 +250,9 @@ export const QueryAllPositionRequest = {
       object.address !== undefined && object.address !== null
         ? String(object.address)
         : "";
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? String(object.market)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     message.status =
       object.status !== undefined && object.status !== null
@@ -268,7 +268,7 @@ export const QueryAllPositionRequest = {
   toJSON(message: QueryAllPositionRequest): unknown {
     const obj: any = {};
     message.address !== undefined && (obj.address = message.address);
-    message.market !== undefined && (obj.market = message.market);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     message.status !== undefined && (obj.status = message.status);
     message.pagination !== undefined &&
       (obj.pagination = message.pagination
@@ -284,7 +284,7 @@ export const QueryAllPositionRequest = {
       ...baseQueryAllPositionRequest,
     } as QueryAllPositionRequest;
     message.address = object.address ?? "";
-    message.market = object.market ?? "";
+    message.marketId = object.marketId ?? "";
     message.status = object.status ?? "";
     message.pagination =
       object.pagination !== undefined && object.pagination !== null

@@ -7,7 +7,7 @@ import { Timestamp } from "../../../google/protobuf/timestamp";
 export const protobufPackage = "Switcheo.carbon.position";
 
 export interface Position {
-  market: string;
+  marketId: string;
   address: string;
   lots: string;
   entryPrice: string;
@@ -21,7 +21,7 @@ export interface Positions {
 }
 
 export interface APIPosition {
-  market: string;
+  marketId: string;
   address: string;
   tradeId: Long;
   side: string;
@@ -48,7 +48,7 @@ export interface PositionAllocatedMargin {
 }
 
 const basePosition: object = {
-  market: "",
+  marketId: "",
   address: "",
   lots: "",
   entryPrice: "",
@@ -61,8 +61,8 @@ export const Position = {
     message: Position,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.market !== "") {
-      writer.uint32(10).string(message.market);
+    if (message.marketId !== "") {
+      writer.uint32(10).string(message.marketId);
     }
     if (message.address !== "") {
       writer.uint32(18).string(message.address);
@@ -93,7 +93,7 @@ export const Position = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.market = reader.string();
+          message.marketId = reader.string();
           break;
         case 2:
           message.address = reader.string();
@@ -123,9 +123,9 @@ export const Position = {
 
   fromJSON(object: any): Position {
     const message = { ...basePosition } as Position;
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? String(object.market)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     message.address =
       object.address !== undefined && object.address !== null
@@ -157,7 +157,7 @@ export const Position = {
 
   toJSON(message: Position): unknown {
     const obj: any = {};
-    message.market !== undefined && (obj.market = message.market);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     message.address !== undefined && (obj.address = message.address);
     message.lots !== undefined && (obj.lots = message.lots);
     message.entryPrice !== undefined && (obj.entryPrice = message.entryPrice);
@@ -176,7 +176,7 @@ export const Position = {
 
   fromPartial(object: DeepPartial<Position>): Position {
     const message = { ...basePosition } as Position;
-    message.market = object.market ?? "";
+    message.marketId = object.marketId ?? "";
     message.address = object.address ?? "";
     message.lots = object.lots ?? "";
     message.entryPrice = object.entryPrice ?? "";
@@ -256,7 +256,7 @@ export const Positions = {
 };
 
 const baseAPIPosition: object = {
-  market: "",
+  marketId: "",
   address: "",
   tradeId: Long.UZERO,
   side: "",
@@ -280,8 +280,8 @@ export const APIPosition = {
     message: APIPosition,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.market !== "") {
-      writer.uint32(10).string(message.market);
+    if (message.marketId !== "") {
+      writer.uint32(10).string(message.marketId);
     }
     if (message.address !== "") {
       writer.uint32(18).string(message.address);
@@ -354,7 +354,7 @@ export const APIPosition = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.market = reader.string();
+          message.marketId = reader.string();
           break;
         case 2:
           message.address = reader.string();
@@ -424,9 +424,9 @@ export const APIPosition = {
 
   fromJSON(object: any): APIPosition {
     const message = { ...baseAPIPosition } as APIPosition;
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? String(object.market)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     message.address =
       object.address !== undefined && object.address !== null
@@ -509,7 +509,7 @@ export const APIPosition = {
 
   toJSON(message: APIPosition): unknown {
     const obj: any = {};
-    message.market !== undefined && (obj.market = message.market);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     message.address !== undefined && (obj.address = message.address);
     message.tradeId !== undefined &&
       (obj.tradeId = (message.tradeId || Long.UZERO).toString());
@@ -553,7 +553,7 @@ export const APIPosition = {
 
   fromPartial(object: DeepPartial<APIPosition>): APIPosition {
     const message = { ...baseAPIPosition } as APIPosition;
-    message.market = object.market ?? "";
+    message.marketId = object.marketId ?? "";
     message.address = object.address ?? "";
     message.tradeId =
       object.tradeId !== undefined && object.tradeId !== null
