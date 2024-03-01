@@ -13,6 +13,9 @@ export const InsightsEndpoints = {
   "user/total": "/user/total",
   "user/growth": "/user/growth",
   "user/volume": "/user/:address/volume",
+  "user/pnl": "/user/:address/pnl",
+  "user/balance/graph": "/user/:address/balance/graph",
+  "user/pnl/graph": "/user/:address/pnl/graph",
   "user/connected/wallet": "/user/connected/wallet",
 
 
