@@ -104,6 +104,24 @@ export interface PositionHistoryEntry {
   actions: Action[];
 }
 
+export interface QueryGetPerpPoolHistoryRequest extends QueryByPageRequest {
+  poolId: number | string;
+  address: string
+}
+
+export interface PerpPositionHistoryEntry {
+  poolId: number;
+  address: string;
+  netDeposit: number;
+  deposit: number;
+  withdrawal: number;
+}
+
+export interface QueryGetPerpPoolHistoryResponse {
+  entries: PerpPositionHistoryEntry[];
+  meta: PageMeta;
+}
+
 export interface QueryGetPoolHistoryResponse {
   entries: PositionHistoryEntry[];
   meta: PageMeta;
