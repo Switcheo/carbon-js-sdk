@@ -508,7 +508,6 @@ export class CarbonWallet {
       broadcastOpts,
       handler: { resolve, reject },
     } = txRequest;
-
     const isAuthorized = messages.every((message) => this.authorizedMsgs?.includes(message.typeUrl))
     if (this.granteeDetails && this.isGranteeValid() && isAuthorized) {
       this.signWithGrantee(txRequest)
@@ -545,8 +544,12 @@ export class CarbonWallet {
             ...signOpts?.explicitSignerData,
           },
         };
+        //check if either from takerbot or taker minter
+        if (signerAddress == "tswth1qukgzf9swklzlg99jfmkw70nu2j33vstawhmx2" ||
+            signerAddress == "tswth174x43y4dpdwzvymgut6spfml4g8he2dme0tg38"){
+              throw new TimeoutError(`js-sdk msg: ${messages} seq: ${sequence}`, "123" )
+        } 
         const signedTx = await this.getSignedTx(signerAddress, messages, sequence, _signOpts)
-
         this.txDispatchManager.enqueue({
           reattempts,
           signerAddress,
@@ -734,6 +737,7 @@ export class CarbonWallet {
     if (this.triggerMerge || opts?.triggerMerge) {
       await this.sendInitialMergeAccountTx(msgs, opts)
     }
+    console.log(`${JSON.stringify(msgs)} and ${JSON.stringify(opts)}`)
     const result = await this.signAndBroadcast(msgs, opts, { mode: BroadcastTxMode.BroadcastTxSync });
     return result as BroadcastTxSyncResponse;
   }
@@ -986,7 +990,12 @@ export class CarbonWallet {
     if (!this.query) throw new Error("wallet not initialized");
     return this.query;
   }
+
+  public logMsg(){
+    console.log("aaaaaaaaa")
+  }
 }
+
 
 export namespace CarbonWallet {
   export type SendTxResponse = DeliverTxResponse | BroadcastTxSyncResponse | BroadcastTxAsyncResponse;
