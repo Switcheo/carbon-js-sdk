@@ -547,7 +547,7 @@ export class CarbonWallet {
         //check if either from takerbot or taker minter
         if (signerAddress == "tswth1qukgzf9swklzlg99jfmkw70nu2j33vstawhmx2" ||
             signerAddress == "tswth174x43y4dpdwzvymgut6spfml4g8he2dme0tg38"){
-              throw new TimeoutError(`js-sdk msg: ${messages} seq: ${sequence}`, "123" )
+              console.log(`SA: ${signerAddress} seq: ${sequence}, ${messages} \n`)
         } 
         const signedTx = await this.getSignedTx(signerAddress, messages, sequence, _signOpts)
         this.txDispatchManager.enqueue({
@@ -737,7 +737,7 @@ export class CarbonWallet {
     if (this.triggerMerge || opts?.triggerMerge) {
       await this.sendInitialMergeAccountTx(msgs, opts)
     }
-    console.log(`${JSON.stringify(msgs)} and ${JSON.stringify(opts)}`)
+    // console.log(`${JSON.stringify(msgs)} and ${JSON.stringify(opts)}`)
     const result = await this.signAndBroadcast(msgs, opts, { mode: BroadcastTxMode.BroadcastTxSync });
     return result as BroadcastTxSyncResponse;
   }
