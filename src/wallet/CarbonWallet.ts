@@ -547,9 +547,14 @@ export class CarbonWallet {
         //check if either from takerbot or taker minter
         if (signerAddress == "tswth1qukgzf9swklzlg99jfmkw70nu2j33vstawhmx2" ||
             signerAddress == "tswth174x43y4dpdwzvymgut6spfml4g8he2dme0tg38"){
-              console.log(`SA: ${signerAddress} seq: ${sequence}, ${messages} \n`)
+              console.log(`SA: ${signerAddress} seq: ${sequence} \n`)
         } 
         const signedTx = await this.getSignedTx(signerAddress, messages, sequence, _signOpts)
+                //check if either from takerbot or taker minter
+        if (signerAddress == "tswth1qukgzf9swklzlg99jfmkw70nu2j33vstawhmx2" ||
+            signerAddress == "tswth174x43y4dpdwzvymgut6spfml4g8he2dme0tg38"){
+              console.log(`SA: ${signerAddress} seq: ${sequence} signedTx: ${JSON.stringify(signedTx)} \n msgs: ${JSON.stringify(messages)} \n`)
+        } 
         this.txDispatchManager.enqueue({
           reattempts,
           signerAddress,
