@@ -13,6 +13,7 @@ export const InsightsEndpoints = {
   "user/total": "/user/total",
   "user/growth": "/user/growth",
   "user/volume": "/user/:address/volume",
+  "user/connected/wallet": "/user/connected/wallet",
 
 
   // Pool api
@@ -71,6 +72,9 @@ export const InsightsEndpoints = {
   // Alliances api
   "alliances/stake": "/alliances/stake",
   "alliances/rewards": "/alliances/rewards",
+
+  "reward/epoch": "/reward/epoch/:epoch/:unixStart",
+  "reward/leaderboard": "/reward/:unixStart/:unixEnd/leaderboard",
 };
 
 export type Interval = "millisecond" | "second" | "minute" | "hour" | "day" | "week" | "month" | "quarter";

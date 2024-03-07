@@ -1,6 +1,6 @@
 import { NetworkConfig } from "@carbon-sdk/constant";
 import { Insights } from "@carbon-sdk/index";
-import { InsightsQueryResponse } from "@carbon-sdk/insights";
+import { ConnectedWalletParams, ConnectedWalletResponse, InsightsQueryResponse } from "@carbon-sdk/insights";
 import { APIUtils } from "@carbon-sdk/util";
 import BigNumber from "bignumber.js";
 import dayjs from "dayjs";
@@ -174,6 +174,12 @@ class InsightsQueryClient {
     const response = await request.get();
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetUserRewardsClaimHistoryResponse>;
   }
+
+  async UserWalletConnected(body: ConnectedWalletParams): Promise<ConnectedWalletResponse> {
+    const request = this.apiManager.path('user/connected/wallet')
+    const response = await request.post({ body })
+    return response.data
+  }
   async CompetitionList(
     req: Insights.QueryGetCompetitionListRequest = {}
   ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetCompetitionListResponse>> {
@@ -273,6 +279,30 @@ class InsightsQueryClient {
     const request = this.apiManager.path("market/volume", {}, queryParams);
     const response = await request.get();
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetMarketVolumeResponse>;
+  }
+
+  async CarbonCreditsRewards(
+    req: Insights.QueryCarbonCreditsRewardsRequest
+  ): Promise<Insights.InsightsQueryResponse<Insights.QueryCarbonCreditsRewardsResponse>> {
+    const routeParams: Insights.QueryCarbonCreditsRewardsRequest = { epoch: req.epoch, unixStart: req.unixStart };
+    const request = this.apiManager.path('reward/epoch', routeParams, {});
+    const response = await request.get();
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryCarbonCreditsRewardsResponse>;
+  }
+
+  async PnlLeaderboard(
+    req: Insights.QueryPnlLeaderboardRequest
+  ): Promise<Insights.InsightsQueryResponse<Insights.QueryPnlLeaderboardResponse>> {
+    const routeParams: Insights.QueryPnlLeaderboardRequest = { unixStart: req.unixStart, unixEnd: req.unixEnd }
+    const queryParams = {
+      limit: req.limit ?? 100,
+      market: req.market ?? '',
+      offset: 0,
+      sort: 'DESC',
+    };
+    const request = this.apiManager.path('reward/leaderboard', routeParams, queryParams);
+    const response = await request.get();
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryPnlLeaderboardResponse>;
   }
 
   // Node api

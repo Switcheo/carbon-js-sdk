@@ -9,7 +9,7 @@ export class PositionModule extends BaseModule {
 
     const value = MsgSetMargin.fromPartial({
       creator: wallet.bech32Address,
-      marketId: params.market,
+      marketId: params.marketId,
       margin: params.margin.toString(10),
     });
 
@@ -28,7 +28,7 @@ export class PositionModule extends BaseModule {
     const msgs = params.map((param) => {
       const value = MsgSetMargin.fromPartial({
         creator: wallet.bech32Address,
-        marketId: param.market,
+        marketId: param.marketId,
         margin: param.margin.toString(10),
       });
 
@@ -44,7 +44,7 @@ export class PositionModule extends BaseModule {
 
 export namespace PositionModule {
   export interface SetMarginParams {
-    market: string;
+    marketId: string;
     margin: BigNumber;
   }
 }

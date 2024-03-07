@@ -1145,7 +1145,7 @@ export function transfromSetMinGasPriceParams(msg: AdminModule.SetMinGasPricePar
 
 export function transformSetSettlementPriceParams(msg: Carbon.Pricing.SettlementPriceParams) {
   return {
-    market: msg.marketId,
+    marketId: msg.marketId,
     settlementPrice: new BigNumber(msg.settlementPrice).shiftedBy(18).toString(10),
   };
 }

@@ -30,7 +30,7 @@ import { MsgTransfer, MsgTransferResponse } from "./ibc/applications/transfer/v1
 import { MsgRegisterInterchainAccount, MsgRegisterInterchainAccountResponse, MsgSendTx, MsgSendTxResponse } from "./ibc/applications/interchain_accounts/controller/v1/tx";
 import { MsgUpdateParams as MsgFeemarketUpdateParams, MsgUpdateParamsResponse as MsgFeemarketUpdateParamsResponse } from "./ethermint/feemarket/v1/tx";
 import { MsgEthereumTx, MsgEthereumTxResponse, MsgUpdateParams as MsgEvmUpdateParams, MsgUpdateParamsResponse as MsgEvmUpdateParamsResponse } from "./ethermint/evm/v1/tx";
-import { Proposal } from "./cosmos/gov/v1/gov";
+import { TextProposal, Proposal } from "./cosmos/gov/v1beta1/gov";
 import { ClientUpdateProposal, UpgradeProposal } from "./ibc/core/client/v1/client";
 
 export * from './cosmos-models';
@@ -556,7 +556,6 @@ registry.register("/cosmos.gov.v1.MsgDeposit", MsgGovDeposit);
 registry.register("/cosmos.gov.v1.MsgDepositResponse", MsgGovDepositResponse);
 registry.register("/cosmos.gov.v1.MsgUpdateParams", MsgGovUpdateParams);
 registry.register("/cosmos.gov.v1.MsgUpdateParamsResponse", MsgGovUpdateParamsResponse);
-registry.register("/cosmos.gov.v1.Proposal", Proposal);
 
 registry.register("/cosmos.gov.v1beta1.MsgSubmitProposal", MsgSubmitProposal);
 registry.register("/cosmos.gov.v1beta1.MsgSubmitProposalResponse", MsgSubmitProposalResponse);
@@ -566,6 +565,8 @@ registry.register("/cosmos.gov.v1beta1.MsgVoteWeighted", MsgVoteWeighted);
 registry.register("/cosmos.gov.v1beta1.MsgVoteWeightedResponse", MsgVoteWeightedResponse);
 registry.register("/cosmos.gov.v1beta1.MsgDeposit", MsgDeposit);
 registry.register("/cosmos.gov.v1beta1.MsgDepositResponse", MsgDepositResponse);
+registry.register("/cosmos.gov.v1beta1.TextProposal", TextProposal);
+registry.register("/cosmos.gov.v1beta1.Proposal", Proposal);
 
 registry.register("/ibc.core.connection.v1.MsgConnectionOpenInit", MsgConnectionOpenInit);
 registry.register("/ibc.core.connection.v1.MsgConnectionOpenInitResponse", MsgConnectionOpenInitResponse);
@@ -1109,7 +1110,6 @@ export const TxTypes = {
   "MsgGovDepositResponse": "/cosmos.gov.v1.MsgDepositResponse",
   "MsgGovUpdateParams": "/cosmos.gov.v1.MsgUpdateParams",
   "MsgGovUpdateParamsResponse": "/cosmos.gov.v1.MsgUpdateParamsResponse",
-  "Proposal": "/cosmos.gov.v1.Proposal",
   "MsgSubmitProposal": "/cosmos.gov.v1beta1.MsgSubmitProposal",
   "MsgSubmitProposalResponse": "/cosmos.gov.v1beta1.MsgSubmitProposalResponse",
   "MsgVote": "/cosmos.gov.v1beta1.MsgVote",
@@ -1118,6 +1118,8 @@ export const TxTypes = {
   "MsgVoteWeightedResponse": "/cosmos.gov.v1beta1.MsgVoteWeightedResponse",
   "MsgDeposit": "/cosmos.gov.v1beta1.MsgDeposit",
   "MsgDepositResponse": "/cosmos.gov.v1beta1.MsgDepositResponse",
+  "TextProposal": "/cosmos.gov.v1beta1.TextProposal",
+  "Proposal": "/cosmos.gov.v1beta1.Proposal",
   "MsgConnectionOpenInit": "/ibc.core.connection.v1.MsgConnectionOpenInit",
   "MsgConnectionOpenInitResponse": "/ibc.core.connection.v1.MsgConnectionOpenInitResponse",
   "MsgConnectionOpenTry": "/ibc.core.connection.v1.MsgConnectionOpenTry",
