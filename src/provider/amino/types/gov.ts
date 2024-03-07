@@ -39,10 +39,6 @@ const SubmitProposalMsg: AminoInit = {
   aminoType: TxTypes.SubmitProposal,
   valueMap: {},
 };
-// const MsgTextProposal: AminoInit = {
-//   aminoType: TxTypes.TextProposal,
-//   valueMap: {},
-// };
 
 const MsgDeposit: AminoInit = {
   aminoType: TxTypes.Deposit,
@@ -533,7 +529,6 @@ const GovAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgSubmitProposal]: generateAminoType(SubmitProposalMsg, proposalAminoProcess),
   [CarbonTx.Types.MsgDeposit]: generateAminoType(MsgDeposit),
   [CarbonTx.Types.MsgVote]: generateAminoType(MsgVote),
-  // [CarbonTx.Types.TextProposal]: generateAminoType(MsgTextProposal),
 };
 
 export default GovAmino;
