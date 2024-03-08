@@ -10,7 +10,6 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
   SubmitProposal: "cosmos-sdk/MsgSubmitProposal",
   Deposit: "cosmos-sdk/MsgDeposit",
   Vote: "cosmos-sdk/MsgVote",
-  // TextProposal: "cosmos-sdk/TextProposal",
 };
 
 const ContentTypes: TypeUtils.SimpleMap<string> = {
@@ -32,7 +31,6 @@ const ContentTypes: TypeUtils.SimpleMap<string> = {
   [GovUtils.ProposalTypes.DeregisterFromGroup]: "coin.DeregisterFromGroupProposal",
   [GovUtils.ProposalTypes.WithdrawFromGroup]: "coin/WithdrawFromGroupProposal",
   [GovUtils.ProposalTypes.UpdateGroupTokenConfig]: "coin.UpdateGroupTokenConfigProposal",
-  // [GovUtils.ProposalTypes.Text]: "cosmos-sdk/TextProposal",
 };
 
 const SubmitProposalMsg: AminoInit = {

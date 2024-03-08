@@ -10,7 +10,7 @@
   "scripts": {
     "watch": "nodemon yarn build",
     "build": "yarn run lint && tsc && tsc-alias",
-    "cp-proto": "cp ~/Desktop/Switcheo/carbon/gen/proto-ts.tar.gz .",
+    "cp-proto": "cp ~/go/src/github/Switcheo/carbon/gen/proto-ts.tar.gz .",
     "sync-proto": "sh scripts/update-proto.sh",
     "sync-register": "yarn sync-reset && sh scripts/generate-registry.sh",
     "sync-reset": "find . -type f -name 'export.ts' -delete && rm -f src/codec/*-models.ts",
