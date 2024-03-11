@@ -27,7 +27,6 @@ import { MsgUpdateParams as MsgAuthUpdateParams } from "../lib/codec/cosmos/auth
 
   const authAddress = 'tswth10d07y265gmmuvt4z0w9aw880jnsr700jptgru0'
 
-  const rewardCurveUrl = CarbonTx.Types.MsgSetRewardCurve
   const msgSetRewardCurve = MsgSetRewardCurve.fromPartial({
     creator: authAddress,
     setRewardCurveParams: {
@@ -40,7 +39,6 @@ import { MsgUpdateParams as MsgAuthUpdateParams } from "../lib/codec/cosmos/auth
     }
   })
 
-  const bankUrl = CarbonTx.Types.MsgBankUpdateParams
   const msgUpdateParams = MsgUpdateParams.fromPartial({
     authority: authAddress,
     params: Params.fromPartial({
@@ -48,7 +46,6 @@ import { MsgUpdateParams as MsgAuthUpdateParams } from "../lib/codec/cosmos/auth
     })
   })
 
-  const orderUrl = CarbonTx.Types.MsgUpdateParams
   const msgUpdateOrderParams = MsgOrderUpdateParams.fromPartial({
     authority: authAddress,
     params: ParamsToUpdate.fromPartial({
@@ -56,7 +53,6 @@ import { MsgUpdateParams as MsgAuthUpdateParams } from "../lib/codec/cosmos/auth
     })
   })
 
-  const authUrl = CarbonTx.Types.MsgAuthUpdateParams
   const msgUpdateAuthParams = MsgAuthUpdateParams.fromPartial({
     authority: authAddress,
     params: AuthParams.fromPartial({
@@ -72,19 +68,19 @@ import { MsgUpdateParams as MsgAuthUpdateParams } from "../lib/codec/cosmos/auth
     MsgSubmitProposal.fromPartial({
       messages: [
         {
-          typeUrl: rewardCurveUrl,
+          typeUrl: CarbonTx.Types.MsgSetRewardCurve,
           value: MsgSetRewardCurve.encode(msgSetRewardCurve).finish()
         },
         {
-          typeUrl: bankUrl,
+          typeUrl: CarbonTx.Types.MsgBankUpdateParams,
           value: MsgUpdateParams.encode(msgUpdateParams).finish()
         },
         {
-          typeUrl: orderUrl,
+          typeUrl: CarbonTx.Types.MsgUpdateParams,
           value: MsgOrderUpdateParams.encode(msgUpdateOrderParams).finish()
         },
         {
-          typeUrl: authUrl,
+          typeUrl: CarbonTx.Types.MsgAuthUpdateParams,
           value: MsgAuthUpdateParams.encode(msgUpdateAuthParams).finish()
         }
       ],
