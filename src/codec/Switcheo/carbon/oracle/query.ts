@@ -1,12 +1,13 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Oracle, Params, Result, Vote, Contract } from "./oracle";
+import { Oracle, Result, Vote, Contract } from "./oracle";
 import {
   PageRequest,
   PageResponse,
 } from "../../../cosmos/base/query/v1beta1/pagination";
 import { SlashCounter, OracleVotesWindow } from "./slashing";
+import { Params } from "./params";
 
 export const protobufPackage = "Switcheo.carbon.oracle";
 

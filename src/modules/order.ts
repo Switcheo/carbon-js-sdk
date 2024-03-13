@@ -17,7 +17,7 @@ export class OrderModule extends BaseModule {
     if (setLeverage) {
       params.unshift({
         leverage: setLeverage,
-        market: param.market,
+        marketId: param.marketId,
       });
     }
 
@@ -33,7 +33,7 @@ export class OrderModule extends BaseModule {
           typeUrl: CarbonTx.Types.MsgSetLeverage,
           value: MsgSetLeverage.fromPartial({
             creator: wallet.bech32Address,
-            market: param.market,
+            marketId: param.marketId,
             leverage: param.leverage.shiftedBy(18).toString(10),
           }),
         }
@@ -45,7 +45,7 @@ export class OrderModule extends BaseModule {
           creator: wallet.bech32Address,
           isPostOnly: param.isPostOnly,
           isReduceOnly: param.isReduceOnly,
-          market: param.market,
+          marketId: param.marketId,
           orderType: param.orderType,
           price: param.price?.shiftedBy(18).toString(10),
           quantity: param.quantity.toString(10),
@@ -144,7 +144,7 @@ export class OrderModule extends BaseModule {
 
     const value = MsgCancelAll.fromPartial({
       creator: wallet.bech32Address,
-      market: params.market,
+      marketId: params.marketId,
     });
 
     return await wallet.sendTx(
@@ -159,7 +159,7 @@ export class OrderModule extends BaseModule {
 
 export namespace OrderModule {
   export interface CreateOrderParams {
-    market: string;
+    marketId: string;
 
     side: OrderSide;
     orderType: OrderType;
@@ -181,7 +181,7 @@ export namespace OrderModule {
   }
 
   export interface SetLeverageParams {
-    market: string;
+    marketId: string;
     leverage: BigNumber;
   }
 
@@ -198,7 +198,7 @@ export namespace OrderModule {
   }
 
   export interface CancelAllParams {
-    market: string;
+    marketId: string;
   }
 
   export enum OrderType {

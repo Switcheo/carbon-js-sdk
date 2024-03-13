@@ -12,7 +12,7 @@ import { TradeEvent } from "./event";
 export const protobufPackage = "Switcheo.carbon.broker";
 
 export interface QueryCandlesticksRequest {
-  market: string;
+  marketId: string;
   resolution: Long;
   from: Long;
   to: Long;
@@ -24,7 +24,7 @@ export interface QueryCandlesticksResponse {
 
 export interface QueryTradesRequest {
   address: string;
-  market: string;
+  marketId: string;
   beforeId: Long;
   afterId: Long;
   orderId: string;
@@ -41,7 +41,7 @@ export interface QueryTradesResponse {
 
 export interface QueryTradesForPositionRequest {
   address: string;
-  market: string;
+  marketId: string;
   openedBlockHeight: Long;
   pagination?: PageRequest;
 }
@@ -52,7 +52,7 @@ export interface QueryTradesForPositionResponse {
 }
 
 const baseQueryCandlesticksRequest: object = {
-  market: "",
+  marketId: "",
   resolution: Long.UZERO,
   from: Long.UZERO,
   to: Long.UZERO,
@@ -63,8 +63,8 @@ export const QueryCandlesticksRequest = {
     message: QueryCandlesticksRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.market !== "") {
-      writer.uint32(10).string(message.market);
+    if (message.marketId !== "") {
+      writer.uint32(10).string(message.marketId);
     }
     if (!message.resolution.isZero()) {
       writer.uint32(16).uint64(message.resolution);
@@ -91,7 +91,7 @@ export const QueryCandlesticksRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.market = reader.string();
+          message.marketId = reader.string();
           break;
         case 2:
           message.resolution = reader.uint64() as Long;
@@ -114,9 +114,9 @@ export const QueryCandlesticksRequest = {
     const message = {
       ...baseQueryCandlesticksRequest,
     } as QueryCandlesticksRequest;
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? String(object.market)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     message.resolution =
       object.resolution !== undefined && object.resolution !== null
@@ -135,7 +135,7 @@ export const QueryCandlesticksRequest = {
 
   toJSON(message: QueryCandlesticksRequest): unknown {
     const obj: any = {};
-    message.market !== undefined && (obj.market = message.market);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     message.resolution !== undefined &&
       (obj.resolution = (message.resolution || Long.UZERO).toString());
     message.from !== undefined &&
@@ -151,7 +151,7 @@ export const QueryCandlesticksRequest = {
     const message = {
       ...baseQueryCandlesticksRequest,
     } as QueryCandlesticksRequest;
-    message.market = object.market ?? "";
+    message.marketId = object.marketId ?? "";
     message.resolution =
       object.resolution !== undefined && object.resolution !== null
         ? Long.fromValue(object.resolution)
@@ -244,7 +244,7 @@ export const QueryCandlesticksResponse = {
 
 const baseQueryTradesRequest: object = {
   address: "",
-  market: "",
+  marketId: "",
   beforeId: Long.UZERO,
   afterId: Long.UZERO,
   orderId: "",
@@ -260,8 +260,8 @@ export const QueryTradesRequest = {
     if (message.address !== "") {
       writer.uint32(10).string(message.address);
     }
-    if (message.market !== "") {
-      writer.uint32(18).string(message.market);
+    if (message.marketId !== "") {
+      writer.uint32(18).string(message.marketId);
     }
     if (!message.beforeId.isZero()) {
       writer.uint32(24).uint64(message.beforeId);
@@ -295,7 +295,7 @@ export const QueryTradesRequest = {
           message.address = reader.string();
           break;
         case 2:
-          message.market = reader.string();
+          message.marketId = reader.string();
           break;
         case 3:
           message.beforeId = reader.uint64() as Long;
@@ -329,9 +329,9 @@ export const QueryTradesRequest = {
       object.address !== undefined && object.address !== null
         ? String(object.address)
         : "";
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? String(object.market)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     message.beforeId =
       object.beforeId !== undefined && object.beforeId !== null
@@ -363,7 +363,7 @@ export const QueryTradesRequest = {
   toJSON(message: QueryTradesRequest): unknown {
     const obj: any = {};
     message.address !== undefined && (obj.address = message.address);
-    message.market !== undefined && (obj.market = message.market);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     message.beforeId !== undefined &&
       (obj.beforeId = (message.beforeId || Long.UZERO).toString());
     message.afterId !== undefined &&
@@ -383,7 +383,7 @@ export const QueryTradesRequest = {
   fromPartial(object: DeepPartial<QueryTradesRequest>): QueryTradesRequest {
     const message = { ...baseQueryTradesRequest } as QueryTradesRequest;
     message.address = object.address ?? "";
-    message.market = object.market ?? "";
+    message.marketId = object.marketId ?? "";
     message.beforeId =
       object.beforeId !== undefined && object.beforeId !== null
         ? Long.fromValue(object.beforeId)
@@ -517,7 +517,7 @@ export const QueryTradesResponse = {
 
 const baseQueryTradesForPositionRequest: object = {
   address: "",
-  market: "",
+  marketId: "",
   openedBlockHeight: Long.UZERO,
 };
 
@@ -529,8 +529,8 @@ export const QueryTradesForPositionRequest = {
     if (message.address !== "") {
       writer.uint32(10).string(message.address);
     }
-    if (message.market !== "") {
-      writer.uint32(18).string(message.market);
+    if (message.marketId !== "") {
+      writer.uint32(18).string(message.marketId);
     }
     if (!message.openedBlockHeight.isZero()) {
       writer.uint32(24).uint64(message.openedBlockHeight);
@@ -557,7 +557,7 @@ export const QueryTradesForPositionRequest = {
           message.address = reader.string();
           break;
         case 2:
-          message.market = reader.string();
+          message.marketId = reader.string();
           break;
         case 3:
           message.openedBlockHeight = reader.uint64() as Long;
@@ -581,9 +581,9 @@ export const QueryTradesForPositionRequest = {
       object.address !== undefined && object.address !== null
         ? String(object.address)
         : "";
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? String(object.market)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     message.openedBlockHeight =
       object.openedBlockHeight !== undefined &&
@@ -600,7 +600,7 @@ export const QueryTradesForPositionRequest = {
   toJSON(message: QueryTradesForPositionRequest): unknown {
     const obj: any = {};
     message.address !== undefined && (obj.address = message.address);
-    message.market !== undefined && (obj.market = message.market);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     message.openedBlockHeight !== undefined &&
       (obj.openedBlockHeight = (
         message.openedBlockHeight || Long.UZERO
@@ -619,7 +619,7 @@ export const QueryTradesForPositionRequest = {
       ...baseQueryTradesForPositionRequest,
     } as QueryTradesForPositionRequest;
     message.address = object.address ?? "";
-    message.market = object.market ?? "";
+    message.marketId = object.marketId ?? "";
     message.openedBlockHeight =
       object.openedBlockHeight !== undefined &&
       object.openedBlockHeight !== null

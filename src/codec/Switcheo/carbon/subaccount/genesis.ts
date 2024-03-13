@@ -1,12 +1,8 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import {
-  Params,
-  GenesisSubAccount,
-  SubAccount,
-  MainAccount,
-} from "./subaccount";
+import { Params } from "./params";
+import { GenesisSubAccount, SubAccount, MainAccount } from "./subaccount";
 
 export const protobufPackage = "Switcheo.carbon.subaccount";
 

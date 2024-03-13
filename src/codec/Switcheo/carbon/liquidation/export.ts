@@ -1,3 +1,4 @@
+export { MatchedOutstandingPositionEvent } from "./event"
 export { GenesisState_OutstandingPositionsEntry } from "./genesis"
 export { OutstandingPosition, OutstandingPositions } from "./outstanding_position"
 export { QueryAllLiquidationRequest, QueryAllLiquidationResponse } from "./query"

@@ -36,24 +36,24 @@ import {
 export const generateChannelId = (params: WsSubscriptionParams): string => {
   switch (params.channel) {
     case WSChannel.candlesticks: {
-      const { channel, market, resolution } = params as WsSubscribeCandlesticksParams;
-      return [channel, market, resolution].join(":");
+      const { channel, market_id, resolution } = params as WsSubscribeCandlesticksParams;
+      return [channel, market_id, resolution].join(":");
     }
     case WSChannel.books: {
-      const { channel, market } = params as WsSubscribeBooksParams;
-      return [channel, market].join(":");
+      const { channel, market_id } = params as WsSubscribeBooksParams;
+      return [channel, market_id].join(":");
     }
     case WSChannel.recent_trades: {
-      const { channel, market } = params as WsSubscribeRecentTradesParams;
-      return [channel, market].join(":");
+      const { channel, market_id } = params as WsSubscribeRecentTradesParams;
+      return [channel, market_id].join(":");
     }
     case WSChannel.orders: {
       const { channel, address } = params as WsSubscribeOrdersAllParams;
       return [channel, address].join(":");
     }
     case WSChannel.orders_by_market: {
-      const { channel, market, address } = params as WsSubscribeOrdersByMarketParams;
-      return [channel, market, address].join(":");
+      const { channel, market_id, address } = params as WsSubscribeOrdersByMarketParams;
+      return [channel, market_id, address].join(":");
     }
     case WSChannel.balances: {
       const { channel, address } = params as WsSubscribeWalletBalanceParams;
@@ -64,32 +64,32 @@ export const generateChannelId = (params: WsSubscriptionParams): string => {
       return [channel, address].join(":");
     }
     case WSChannel.account_trades_by_market: {
-      const { channel, market, address } = params as WsSubscribeAccountTradesByMarketParams;
-      return [channel, market, address].join(":");
+      const { channel, market_id, address } = params as WsSubscribeAccountTradesByMarketParams;
+      return [channel, market_id, address].join(":");
     }
     case WSChannel.market_stats: {
       const { channel } = params as WsSubscribeMarketStatsAllParams;
       return [channel].join(":");
     }
     case WSChannel.market_stats_by_market: {
-      const { channel, market } = params as WsSubscribeMarketStatsByMarketParams;
-      return [channel, market].join(":");
+      const { channel, market_id } = params as WsSubscribeMarketStatsByMarketParams;
+      return [channel, market_id].join(":");
     }
     case WSChannel.leverages: {
       const { channel, address } = params as WsSubscribeLeveragesAllParams;
       return [channel, address].join(":");
     }
     case WSChannel.leverages_by_market: {
-      const { channel, market, address } = params as WsSubscribeLeveragesByMarketParams;
-      return [channel, market, address].join(":");
+      const { channel, market_id, address } = params as WsSubscribeLeveragesByMarketParams;
+      return [channel, market_id, address].join(":");
     }
     case WSChannel.positions: {
       const { channel, address } = params as WsSubscribePositionsAllParams;
       return [channel, address].join(":");
     }
     case WSChannel.positions_by_market: {
-      const { channel, market, address } = params as WsSubscribePositionsByMarketParams;
-      return [channel, market, address].join(":");
+      const { channel, market_id, address } = params as WsSubscribePositionsByMarketParams;
+      return [channel, market_id, address].join(":");
     }
     case WSChannel.pools: {
       const { channel } = params as WsSubscribePoolsAllParams;
@@ -166,18 +166,18 @@ export const parseChannelId = (rawChannelId: string): WsSubscriptionParams => {
     case WSChannel.candlesticks:
       return {
         channel,
-        market: param0,
+        market_id: param0,
         resolution: param1,
       } as WsSubscribeCandlesticksParams;
     case WSChannel.books:
       return {
         channel,
-        market: param0,
+        market_id: param0,
       } as WsSubscribeBooksParams;
     case WSChannel.recent_trades:
       return {
         channel,
-        market: param0,
+        market_id: param0,
       } as WsSubscribeRecentTradesParams;
     case WSChannel.orders:
       return {
@@ -187,7 +187,7 @@ export const parseChannelId = (rawChannelId: string): WsSubscriptionParams => {
     case WSChannel.orders_by_market:
       return {
         channel,
-        market: param0,
+        market_id: param0,
         address: param1,
       } as WsSubscribeOrdersByMarketParams;
     case WSChannel.balances:
@@ -203,7 +203,7 @@ export const parseChannelId = (rawChannelId: string): WsSubscriptionParams => {
     case WSChannel.account_trades_by_market:
       return {
         channel,
-        market: param0,
+        market_id: param0,
         address: param1,
       } as WsSubscribeAccountTradesByMarketParams;
     case WSChannel.market_stats:
@@ -213,7 +213,7 @@ export const parseChannelId = (rawChannelId: string): WsSubscriptionParams => {
     case WSChannel.market_stats_by_market:
       return {
         channel,
-        market: param0,
+        market_id: param0,
       } as WsSubscribeMarketStatsByMarketParams;
     case WSChannel.leverages:
       return {
@@ -223,7 +223,7 @@ export const parseChannelId = (rawChannelId: string): WsSubscriptionParams => {
     case WSChannel.leverages_by_market:
       return {
         channel,
-        market: param0,
+        market_id: param0,
         address: param1,
       } as WsSubscribeLeveragesByMarketParams;
     case WSChannel.positions:
@@ -234,7 +234,7 @@ export const parseChannelId = (rawChannelId: string): WsSubscriptionParams => {
     case WSChannel.positions_by_market:
       return {
         channel,
-        market: param0,
+        market_id: param0,
         address: param1,
       } as WsSubscribePositionsByMarketParams;
     case WSChannel.pools:

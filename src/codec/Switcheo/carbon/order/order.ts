@@ -7,18 +7,13 @@ import { UInt32Value } from "../../../google/protobuf/wrappers";
 
 export const protobufPackage = "Switcheo.carbon.order";
 
-/** Params defines the parameters for the market module. */
-export interface Params {
-  maxReferralCommission: number;
-}
-
 export interface Order {
   id: string;
   blockHeight: Long;
   blockCreatedAt?: Date;
   triggeredBlockHeight: Long;
   address: string;
-  market: string;
+  marketId: string;
   side: string;
   price: string;
   quantity: string;
@@ -41,6 +36,7 @@ export interface Order {
   referralKickback: number;
   poolRoute: Uint8Array;
   cancelReason?: number;
+  insertedBlockHeight: Long;
 }
 
 export interface DBOrder {
@@ -69,67 +65,12 @@ export interface Orders {
   orders: Order[];
 }
 
-const baseParams: object = { maxReferralCommission: 0 };
-
-export const Params = {
-  encode(
-    message: Params,
-    writer: _m0.Writer = _m0.Writer.create()
-  ): _m0.Writer {
-    if (message.maxReferralCommission !== 0) {
-      writer.uint32(8).uint32(message.maxReferralCommission);
-    }
-    return writer;
-  },
-
-  decode(input: _m0.Reader | Uint8Array, length?: number): Params {
-    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseParams } as Params;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.maxReferralCommission = reader.uint32();
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): Params {
-    const message = { ...baseParams } as Params;
-    message.maxReferralCommission =
-      object.maxReferralCommission !== undefined &&
-      object.maxReferralCommission !== null
-        ? Number(object.maxReferralCommission)
-        : 0;
-    return message;
-  },
-
-  toJSON(message: Params): unknown {
-    const obj: any = {};
-    message.maxReferralCommission !== undefined &&
-      (obj.maxReferralCommission = message.maxReferralCommission);
-    return obj;
-  },
-
-  fromPartial(object: DeepPartial<Params>): Params {
-    const message = { ...baseParams } as Params;
-    message.maxReferralCommission = object.maxReferralCommission ?? 0;
-    return message;
-  },
-};
-
 const baseOrder: object = {
   id: "",
   blockHeight: Long.ZERO,
   triggeredBlockHeight: Long.ZERO,
   address: "",
-  market: "",
+  marketId: "",
   side: "",
   price: "",
   quantity: "",
@@ -149,6 +90,7 @@ const baseOrder: object = {
   referralAddress: "",
   referralCommission: 0,
   referralKickback: 0,
+  insertedBlockHeight: Long.ZERO,
 };
 
 export const Order = {
@@ -171,8 +113,8 @@ export const Order = {
     if (message.address !== "") {
       writer.uint32(42).string(message.address);
     }
-    if (message.market !== "") {
-      writer.uint32(50).string(message.market);
+    if (message.marketId !== "") {
+      writer.uint32(50).string(message.marketId);
     }
     if (message.side !== "") {
       writer.uint32(58).string(message.side);
@@ -243,6 +185,9 @@ export const Order = {
         writer.uint32(226).fork()
       ).ldelim();
     }
+    if (!message.insertedBlockHeight.isZero()) {
+      writer.uint32(232).int64(message.insertedBlockHeight);
+    }
     return writer;
   },
 
@@ -272,7 +217,7 @@ export const Order = {
           message.address = reader.string();
           break;
         case 6:
-          message.market = reader.string();
+          message.marketId = reader.string();
           break;
         case 7:
           message.side = reader.string();
@@ -343,6 +288,9 @@ export const Order = {
             reader.uint32()
           ).value;
           break;
+        case 29:
+          message.insertedBlockHeight = reader.int64() as Long;
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -372,9 +320,9 @@ export const Order = {
       object.address !== undefined && object.address !== null
         ? String(object.address)
         : "";
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? String(object.market)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     message.side =
       object.side !== undefined && object.side !== null
@@ -465,6 +413,11 @@ export const Order = {
       object.cancelReason !== undefined && object.cancelReason !== null
         ? Number(object.cancelReason)
         : undefined;
+    message.insertedBlockHeight =
+      object.insertedBlockHeight !== undefined &&
+      object.insertedBlockHeight !== null
+        ? Long.fromString(object.insertedBlockHeight)
+        : Long.ZERO;
     return message;
   },
 
@@ -480,7 +433,7 @@ export const Order = {
         message.triggeredBlockHeight || Long.ZERO
       ).toString());
     message.address !== undefined && (obj.address = message.address);
-    message.market !== undefined && (obj.market = message.market);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     message.side !== undefined && (obj.side = message.side);
     message.price !== undefined && (obj.price = message.price);
     message.quantity !== undefined && (obj.quantity = message.quantity);
@@ -519,6 +472,10 @@ export const Order = {
       ));
     message.cancelReason !== undefined &&
       (obj.cancelReason = message.cancelReason);
+    message.insertedBlockHeight !== undefined &&
+      (obj.insertedBlockHeight = (
+        message.insertedBlockHeight || Long.ZERO
+      ).toString());
     return obj;
   },
 
@@ -536,7 +493,7 @@ export const Order = {
         ? Long.fromValue(object.triggeredBlockHeight)
         : Long.ZERO;
     message.address = object.address ?? "";
-    message.market = object.market ?? "";
+    message.marketId = object.marketId ?? "";
     message.side = object.side ?? "";
     message.price = object.price ?? "";
     message.quantity = object.quantity ?? "";
@@ -565,6 +522,11 @@ export const Order = {
     message.referralKickback = object.referralKickback ?? 0;
     message.poolRoute = object.poolRoute ?? new Uint8Array();
     message.cancelReason = object.cancelReason ?? undefined;
+    message.insertedBlockHeight =
+      object.insertedBlockHeight !== undefined &&
+      object.insertedBlockHeight !== null
+        ? Long.fromValue(object.insertedBlockHeight)
+        : Long.ZERO;
     return message;
   },
 };

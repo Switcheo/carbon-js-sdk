@@ -1,7 +1,8 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Params, OrderIds, Order } from "./order";
+import { Params } from "./params";
+import { OrderIds, Order } from "./order";
 
 export const protobufPackage = "Switcheo.carbon.order";
 
@@ -20,7 +21,7 @@ export interface GenesisState {
 
 export interface GenesisAccountOrderIds {
   address: string;
-  market: string;
+  marketId: string;
   openOrderIds?: OrderIds;
 }
 
@@ -167,7 +168,7 @@ export const GenesisState = {
   },
 };
 
-const baseGenesisAccountOrderIds: object = { address: "", market: "" };
+const baseGenesisAccountOrderIds: object = { address: "", marketId: "" };
 
 export const GenesisAccountOrderIds = {
   encode(
@@ -177,8 +178,8 @@ export const GenesisAccountOrderIds = {
     if (message.address !== "") {
       writer.uint32(10).string(message.address);
     }
-    if (message.market !== "") {
-      writer.uint32(18).string(message.market);
+    if (message.marketId !== "") {
+      writer.uint32(18).string(message.marketId);
     }
     if (message.openOrderIds !== undefined) {
       OrderIds.encode(message.openOrderIds, writer.uint32(26).fork()).ldelim();
@@ -200,7 +201,7 @@ export const GenesisAccountOrderIds = {
           message.address = reader.string();
           break;
         case 2:
-          message.market = reader.string();
+          message.marketId = reader.string();
           break;
         case 3:
           message.openOrderIds = OrderIds.decode(reader, reader.uint32());
@@ -219,9 +220,9 @@ export const GenesisAccountOrderIds = {
       object.address !== undefined && object.address !== null
         ? String(object.address)
         : "";
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? String(object.market)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     message.openOrderIds =
       object.openOrderIds !== undefined && object.openOrderIds !== null
@@ -233,7 +234,7 @@ export const GenesisAccountOrderIds = {
   toJSON(message: GenesisAccountOrderIds): unknown {
     const obj: any = {};
     message.address !== undefined && (obj.address = message.address);
-    message.market !== undefined && (obj.market = message.market);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     message.openOrderIds !== undefined &&
       (obj.openOrderIds = message.openOrderIds
         ? OrderIds.toJSON(message.openOrderIds)
@@ -246,7 +247,7 @@ export const GenesisAccountOrderIds = {
   ): GenesisAccountOrderIds {
     const message = { ...baseGenesisAccountOrderIds } as GenesisAccountOrderIds;
     message.address = object.address ?? "";
-    message.market = object.market ?? "";
+    message.marketId = object.marketId ?? "";
     message.openOrderIds =
       object.openOrderIds !== undefined && object.openOrderIds !== null
         ? OrderIds.fromPartial(object.openOrderIds)
