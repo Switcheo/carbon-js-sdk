@@ -1,4 +1,4 @@
-import { Carbon } from "@carbon-sdk/CarbonSDK";
+import { Carbon, OverrideConfig } from "@carbon-sdk/CarbonSDK";
 import { CarbonQueryClient } from "@carbon-sdk/clients";
 import GasFee from "@carbon-sdk/clients/GasFee";
 import { registry } from "@carbon-sdk/codec";
@@ -327,7 +327,7 @@ export class CarbonWallet {
     });
   }
 
-  public async initialize(queryClient: CarbonQueryClient, gasFee: GasFee, overrideConfig: { [key: string]: string } | null = null): Promise<CarbonWallet> {
+  public async initialize(queryClient: CarbonQueryClient, gasFee: GasFee, overrideConfig: OverrideConfig | null = null): Promise<CarbonWallet> {
     this.query = queryClient;
     this.gasFee = gasFee
     await Promise.all([this.reconnectTmClient(overrideConfig), this.reloadTxFees(), this.reloadAccountSequence(), this.reloadMergeAccountStatus()]);
@@ -840,7 +840,7 @@ export class CarbonWallet {
     return null;
   }
 
-  public async reconnectTmClient(overrideConfig: { [key: string]: string } | null) {
+  public async reconnectTmClient(overrideConfig: OverrideConfig | null) {
     try {
       this.tmClient = await Tendermint37Client.connect(this.networkConfig.tmRpcUrl);
       const status = await this.tmClient.status();

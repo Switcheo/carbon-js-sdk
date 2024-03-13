@@ -86,6 +86,11 @@ export interface CarbonSDKInitOpts {
   useTmAbciQuery?: boolean;
 }
 
+export interface OverrideConfig {
+  chainId: string,
+  evmChainId: string,
+}
+
 const DEFAULT_SDK_INIT_OPTS: CarbonSDKInitOpts = {
   network: DEFAULT_NETWORK,
 };
@@ -433,7 +438,7 @@ class CarbonSDK {
       try {
         // Perform initialize function as per normal, but add try-catch statement to check err message
         const fees = await this.getGasFee();
-        const overrideConfig = {
+        const overrideConfig: OverrideConfig = {
           chainId: this.chainId,
           evmChainId: this.evmChainId,
         }
