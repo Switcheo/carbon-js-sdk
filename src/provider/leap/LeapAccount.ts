@@ -105,7 +105,7 @@ class LeapAccount {
     const config = configProvider.getConfig();
     const bech32Prefix = config.Bech32Prefix;
 
-    const chainId = await configProvider.query.chain.getChainId();
+    const chainId = config.chainId;
     const gasPricesResult = await configProvider.query.fee.MinGasPriceAll({});
     const tokenClient = configProvider.getTokenClient();
     const coingeckoIdMap = tokenClient.geckoTokenNames;
