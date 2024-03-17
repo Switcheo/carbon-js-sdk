@@ -51,7 +51,7 @@
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "stosmo_osmosis_redemption_rate",
+            "custom_node_url_key": "stosmo_osmosis_redemption_rate_1",
             "default_node_host": "https://api-osmosis.carbon.network",
             "default_node_path": "/osmosis/gamm/v1beta1/pools/833/prices?base_asset_denom=uosmo&quote_asset_denom=ibc%2FD176154B0C63D1F9C6DCFB4F70349EBF2E2B5A87A05902F57A6AE92B863E9AEC",
             "paths": "[\"spot_price\"]",

@@ -33,7 +33,7 @@
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "osmosis_604",
+            "custom_node_url_key": "osmosis_604_1",
             "default_node_host": "https://api-osmosis.carbon.network",
             "default_node_path": "/osmosis/gamm/v1beta1/pools/604",
             "paths": "[\"pool.pool_assets.1.token.amount\", \"pool.pool_assets.0.token.amount\"]",
@@ -85,7 +85,7 @@
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "ststars_stars_swap_rate",
+            "custom_node_url_key": "ststars_stars_swap_rate_1",
             "default_node_host": "https://api-osmosis.carbon.network",
             "default_node_path": "/osmosis/gamm/v1beta1/pools/810/prices?base_asset_denom=ibc/987C17B11ABC2B20019178ACE62929FE9840202CE79498E29FE8E5CB02B7C0A4&quote_asset_denom=ibc/5DD1F95ED336014D00CE2520977EC71566D282F9749170ADC83A392E0EA7426A",
             "paths": "[\"spot_price\"]",

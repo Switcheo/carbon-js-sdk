@@ -33,7 +33,7 @@
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "osmosis_1335_2",
+            "custom_node_url_key": "osmosis_1335_3",
             "default_node_host": "https://api-osmosis.carbon.network",
             "default_node_path": "/cosmwasm/wasm/v1/contract/osmo1f5vfcph2dvfeqcqkhetwv75fda69z7e5c2dldm3kvgj23crkv6wqcn47a0/smart/eyJzdGF0ZSI6e319",
             "paths": "[\"data.total_native_token\", \"data.total_liquid_stake_token\"]",

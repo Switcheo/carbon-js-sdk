@@ -170,7 +170,7 @@
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "osmosis_stdydx_dydx_swap_rate",
+            "custom_node_url_key": "osmosis_stdydx_dydx_swap_rate_1",
             "default_node_host": "https://api-osmosis.carbon.network",
             "default_node_path": "/osmosis/poolmanager/pools/1423/prices?base_asset_denom=ibc/831F0B1BBB1D08A2B75311892876D71565478C532967545476DF4C2D7492E48C&quote_asset_denom=ibc/980E82A9F8E7CA8CD480F4577E73682A6D3855A267D1831485D7EBEF0E7A6C2C",
             "paths": "[\"spot_price\"]",

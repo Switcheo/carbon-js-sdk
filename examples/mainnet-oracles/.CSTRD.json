@@ -40,7 +40,7 @@
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "osmosis_806_2",
+            "custom_node_url_key": "osmosis_806_3",
             "default_node_host": "https://api-osmosis.carbon.network",
             "default_node_path": "/osmosis/gamm/v1beta1/pools/806",
             "paths": "[\"pool.pool_assets.1.token.amount\", \"pool.pool_assets.0.token.amount\"]",
