@@ -88,7 +88,6 @@ function readJsonFilesFromFolder(folderPath: string): Promise<{ [fileName: strin
           updateOracleParams: {
             id,
             spec,
-            maxResultAge: 300
           },
         }),
       }
