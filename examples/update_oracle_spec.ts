@@ -61,37 +61,83 @@ function readJsonFilesFromFolder(folderPath: string): Promise<{ [fileName: strin
     const mainnetOracles = await readJsonFilesFromFolder("./examples/mainnet-oracles")
 
     const oraclesToUpdate = [
-      ".CAXLUSDC",
-      ".CEVMOS",
-      ".CIBX",
-      ".CIRIS",
-      ".CKUJI",
-      ".CMILKTIA",
-      ".COSMO",
-      ".CSCRT",
-      ".CSTATOM",
-      ".CSTDYDX",
-      ".CSTEVMOS",
-      ".CSTOSMO",
-      ".CSTRD",
-      ".CSTSTARS",
-      ".CSTTIA",
-    ]  
+      {
+        id: ".CAXLUSDC",
+        maxResultAge: 305
+      },
+      {
+        id: ".CEVMOS",
+        maxResultAge: 305
+      },
+      {
+        id: ".CIBX",
+        maxResultAge: 305
+      },
+      {
+        id: ".CIRIS",
+        maxResultAge: 305
+      },
+      {
+        id: ".CKUJI",
+        maxResultAge: 320
+      },
+      {
+        id: ".CMILKTIA",
+        maxResultAge: 354
+      },
+      {
+        id: ".COSMO",
+        maxResultAge: 300
+      },
+      {
+        id: ".CSCRT",
+        maxResultAge: 300
+      },
+      {
+        id: ".CSTATOM",
+        maxResultAge: 310
+      },
+      {
+        id: ".CSTDYDX",
+        maxResultAge: 310
+      },
+      {
+        id: ".CSTEVMOS",
+        maxResultAge: 320
+      },
+      {
+        id: ".CSTOSMO",
+        maxResultAge: 330
+      },
+      {
+        id: ".CSTRD",
+        maxResultAge: 330
+      },
+      {
+        id: ".CSTSTARS",
+        maxResultAge: 310
+      },
+      {
+        id: ".CSTTIA",
+        maxResultAge: 312
+      },
+    ]
       
     const txs: any[] = []
-    for (const id of oraclesToUpdate) {
-      const spec = mainnetOracles[id] as string
+    for (const oracle of oraclesToUpdate) {
+      const spec = mainnetOracles[oracle.id] as string
       const txUpdateSpec = {
         typeUrl: CarbonTx.Types.MsgUpdateOracle,
         value: MsgUpdateOracle.fromPartial({
           updater: connectedSDK.wallet.bech32Address,
           updateOracleParams: {
-            id,
+            id: oracle.id,
             spec,
+            maxResultAge: oracle.maxResultAge
           },
         }),
       }
-      console.log(`updating oracle ${id} spec`)
+      console.log(`updating oracle ${oracle.id}`)
       txs.push(txUpdateSpec)
     }
 
