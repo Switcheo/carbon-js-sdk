@@ -1,0 +1,102 @@
+{
+  "output_id": "ampkuji_usd",
+  "templates": [
+    {
+      "template_id": "response_handler",
+      "adapters": [
+        {
+          "adapter": "unresponsive_handler",
+          "config": {
+            "strategy": "use_last",
+            "grace_duration": "10"
+          }
+        }
+      ]
+    }
+  ],
+  "jobs": [
+    {
+      "output_id": "kuji_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": ".CKUJI",
+            "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
+      "output_id": "ampkuji_eris_redemption_rate",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "eris_ampkuji_redemption_rate",
+            "default_node_host": "https://rest-kujira.ecostake.com",
+            "default_node_path": "/cosmwasm/wasm/v1/contract/kujira1n3fr5f56r2ce0s37wdvwrk98yhhq3unnxgcqus8nzsfxvllk0yxquurqty/smart/eyJzdGF0ZSI6e319",
+            "paths": "[\"data.exchange_rate\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "ampkuji_fin_swap_rate",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "fin_ampkuji_swap_rate",
+            "default_node_host": "https://rest-kujira.ecostake.com",
+            "default_node_path": "/cosmwasm/wasm/v1/contract/kujira1lse59wt7a5yksdd08mennt299katjkfzdhmh8hvck8ln08jktcmsxrnh8s/smart/ewogICJzaW11bGF0aW9uIjp7CiAgICAib2ZmZXJfYXNzZXQiOnsKICAgICAgImFtb3VudCI6IjEwMDAwMDAiLAogICAgICAiaW5mbyI6ewogICAgICAgICJuYXRpdmVfdG9rZW4iOnsKICAgICAgICAgICJkZW5vbSI6ImZhY3Rvcnkva3VqaXJhMW4zZnI1ZjU2cjJjZTBzMzd3ZHZ3cms5OHloaHEzdW5ueGdjcXVzOG56c2Z4dmxsazB5eHF1dXJxdHkvYW1wS1VKSSIKICAgICAgICB9CiAgICAgIH0KICAgIH0KICB9Cn0=",
+            "paths": "[\"data.return_amount\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "ampkuji_fin_swap_rate",
+      "input_id": "ampkuji_fin_swap_rate",
+      "adapter": "decimal_handler",
+      "config": {
+        "operation": "decrease",
+        "exponent": "6"
+      }
+    },
+    {
+      "output_id": "ampkuji_redemption_rate",
+      "adapter": "math_filter",
+      "input_id": "",
+      "config": {
+        "operation": "min",
+        "input_ids": "[\"ampkuji_eris_redemption_rate\",\"ampkuji_fin_swap_rate\"]"
+      }
+    },
+    {
+      "output_id": "ampkuji_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"ampkuji_redemption_rate\",\"kuji_usd\"]"
+      }
+    },
+    {
+      "output_id": "ampkuji_usd",
+      "input_id": "ampkuji_usd",
+      "adapter": "float_handler",
+      "config": {
+        "operation": "round",
+        "precision": "6"
+      }
+    }
+  ]
+}

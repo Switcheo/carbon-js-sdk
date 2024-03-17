@@ -1,0 +1,171 @@
+{
+  "output_id": "rswthswthlp_usd",
+  "templates": [
+    {
+      "template_id": "response_handler",
+      "adapters": [
+        {
+          "adapter": "unresponsive_handler",
+          "config": {
+            "strategy": "use_last",
+            "grace_duration": "10"
+          }
+        }
+      ]
+    }
+  ],
+  "jobs": [
+    {
+      "output_id": "swth_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": ".CSWTH",
+            "stale_allowance": "14400"
+          }
+        }
+      ]
+    },
+    {
+      "output_id": "rswth_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": ".CRSWTH",
+            "stale_allowance": "14400"
+          }
+        }
+      ]
+    },
+    {
+      "output_id": "rswth_amount",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "carbon_clpt_104",
+            "default_node_host": "https://api.carbon.network",
+            "default_node_path": "/carbon/liquiditypool/v1/pools/104",
+            "paths": "[\"pool.pool.amount_a\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "swth_amount",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "carbon_clpt_104",
+            "default_node_host": "https://api.carbon.network",
+            "default_node_path": "/carbon/liquiditypool/v1/pools/104",
+            "paths": "[\"pool.pool.amount_b\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "clpt_104_supply_raw",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "carbon_clpt_104_supply",
+            "default_node_host": "https://api.carbon.network",
+            "default_node_path": "/cosmos/bank/v1beta1/supply/by_denom?denom=clpt/104",
+            "paths": "[\"amount.amount\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "clpt_104_supply",
+      "input_id": "clpt_104_supply_raw",
+      "adapter": "decimal_handler",
+      "config": {
+        "operation": "decrease",
+        "exponent": "10"
+      }
+    },
+    {
+      "output_id": "swth_usd_val",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"swth_amount\",\"swth_usd\"]"
+      }
+    },
+    {
+      "output_id": "rswth_usd_val",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"rswth_amount\",\"rswth_usd\"]"
+      }
+    },
+    {
+      "output_id": "weighted_average_pool_value",
+      "adapter": "weighted_average",
+      "config": {
+        "value_ids": "[\"swth_usd_val\", \"rswth_usd_val\"]",
+        "weights": "[1, 1]"
+      }
+    },
+    {
+      "adapter": "static_handler",
+      "output_id": "static_two",
+      "config": {
+        "value": "2"
+      }
+    },
+    {
+      "output_id": "pool_value",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"weighted_average_pool_value\", \"static_two\"]"
+      }
+    },
+    {
+      "output_id": "rswthswthlp_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "divide",
+        "input_ids": "[\"pool_value\",\"clpt_104_supply\"]"
+      }
+    },
+    {
+      "output_id": "rswthswthlp_usd",
+      "input_id": "rswthswthlp_usd",
+      "adapter": "unchanged_handler",
+      "config": {
+        "strategy": "nullify",
+        "threshold_duration": "14400"
+      }
+    },
+    {
+      "output_id": "rswthswthlp_usd",
+      "input_id": "rswthswthlp_usd",
+      "adapter": "float_handler",
+      "config": {
+        "operation": "round",
+        "precision": "8"
+      }
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "output_id": "bnb_usd",
+  "templates": [
+    {
+      "template_id": "binance_response_handler",
+      "adapters": [
+        {
+          "adapter": "unresponsive_handler",
+          "config": {
+            "strategy": "use_last",
+            "grace_duration": "120"
+          }
+        },
+        {
+          "adapter": "unchanged_handler",
+          "config": {
+            "strategy": "nullify",
+            "threshold_duration": "900"
+          }
+        }
+      ]
+    },
+    {
+      "template_id": "response_handler",
+      "adapters": [
+        {
+          "adapter": "unresponsive_handler",
+          "config": {
+            "strategy": "use_last",
+            "grace_duration": "10"
+          }
+        }
+      ]
+    }
+  ],
+  "jobs": [
+    {
+      "output_id": "binance_bnb_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "binance_bnb_usdt",
+            "default_node_host": "https://api-binance-proxy.carbon.network",
+            "default_node_path": "/api/v3/ticker/price?symbol=BNBUSDT",
+            "paths": "[\"price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "binance_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "usdt_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": ".CUSDT",
+            "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
+      "output_id": "bnb_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"binance_bnb_usdt\",\"usdt_usd\"]"
+      }
+    },
+    {
+      "output_id": "bnb_usd",
+      "input_id": "bnb_usd",
+      "adapter": "float_handler",
+      "config": {
+        "operation": "round",
+        "precision": "6"
+      }
+    }
+  ]
+}

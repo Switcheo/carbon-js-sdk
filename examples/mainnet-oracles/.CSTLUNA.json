@@ -1,0 +1,102 @@
+{
+  "output_id": "stluna_usd",
+  "templates": [
+    {
+      "template_id": "response_handler",
+      "adapters": [
+        {
+          "adapter": "unresponsive_handler",
+          "config": {
+            "strategy": "use_last",
+            "grace_duration": "10"
+          }
+        }
+      ]
+    }
+  ],
+  "jobs": [
+    {
+      "output_id": "luna_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": ".CLUNA",
+            "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
+      "output_id": "stluna_stride_redemption_rate",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "stride_stluna_redemption_rate_1",
+            "default_node_host": "https://stride-rest.publicnode.com",
+            "default_node_path": "/Stride-Labs/stride/stakeibc/host_zone/phoenix-1",
+            "paths": "[\"host_zone.redemption_rate\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "stluna_astroport_redemption_rate_6",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "astroport_stluna_redemption_rate",
+            "default_node_host": "https://phoenix-lcd.terra.dev",
+            "default_node_path": "/cosmwasm/wasm/v1/contract/terra1re0yj0j6e9v2szg7kp02ut6u8jjea586t6pnpq6628wl36fphtpqwt6l7p/smart/ewogICJzaW11bGF0aW9uIjogeyJvZmZlcl9hc3NldCI6IHsKICAgICAgImFtb3VudCI6ICIxMDAwMDAwIiwKICAgICAgImluZm8iOiB7CiAgICAgICAgIm5hdGl2ZV90b2tlbiI6IHsKICAgICAgICAgICJkZW5vbSI6ICJpYmMvMDgwOTVDRURFQTI5OTc3QzlERDBDRTlBNDgzMjlGREE2MjJDMTgzMzU5RDVGOTBDRjA0Q0M0RkY4MENCRTQzMSIKICAgICAgICB9CiAgICAgIH0KICAgIH19Cn0=",
+            "paths": "[\"data.return_amount\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "stluna_astroport_redemption_rate",
+      "input_id": "stluna_astroport_redemption_rate_6",
+      "adapter": "decimal_handler",
+      "config": {
+        "operation": "decrease",
+        "exponent": "6"
+      }
+    },
+    {
+      "output_id": "stluna_redemption_rate",
+      "adapter": "math_filter",
+      "input_id": "",
+      "config": {
+        "operation": "min",
+        "input_ids": "[\"stluna_stride_redemption_rate\",\"stluna_astroport_redemption_rate\"]"
+      }
+    },
+    {
+      "output_id": "stluna_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"stluna_redemption_rate\",\"luna_usd\"]"
+      }
+    },
+    {
+      "output_id": "stluna_usd",
+      "input_id": "stluna_usd",
+      "adapter": "float_handler",
+      "config": {
+        "operation": "round",
+        "precision": "6"
+      }
+    }
+  ]
+}

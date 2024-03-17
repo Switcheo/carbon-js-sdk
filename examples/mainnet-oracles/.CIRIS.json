@@ -1,0 +1,168 @@
+{
+  "output_id": "iris_usd",
+  "templates": [
+    {
+      "template_id": "rpc_response_handler",
+      "adapters": [
+        {
+          "adapter": "unresponsive_handler",
+          "config": {
+            "strategy": "use_last",
+            "grace_duration": "120"
+          }
+        }
+      ]
+    },
+    {
+      "template_id": "response_handler",
+      "adapters": [
+        {
+          "adapter": "unresponsive_handler",
+          "config": {
+            "strategy": "use_last",
+            "grace_duration": "120"
+          }
+        },
+        {
+          "adapter": "unchanged_handler",
+          "config": {
+            "strategy": "nullify",
+            "threshold_duration": "900"
+          }
+        }
+      ]
+    }
+  ],
+  "jobs": [
+    {
+      "output_id": "osmo_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": ".COSMO",
+            "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
+      "output_id": "osmosis_iris_osmo_pool",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "osmosis_7",
+            "default_node_host": "https://api-osmosis.carbon.network",
+            "default_node_path": "/osmosis/gamm/v1beta1/pools/7",
+            "paths": "[\"pool.pool_assets.1.token.amount\", \"pool.pool_assets.0.token.amount\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "rpc_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "osmosis_iris_osmo",
+      "adapter": "math_filter",
+      "input_id": "osmosis_iris_osmo_pool",
+      "config": {
+        "operation": "divide"
+      }
+    },
+    {
+      "output_id": "osmosis_iris_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"osmosis_iris_osmo\",\"osmo_usd\"]"
+      }
+    },
+    {
+      "output_id": "binance_iris_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "binance_iris_usdt",
+            "default_node_host": "https://api-binance-proxy.carbon.network",
+            "default_node_path": "/api/v3/ticker/price?symbol=IRISUSDT",
+            "paths": "[\"price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "usdt_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": ".CUSDT",
+            "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
+      "output_id": "binance_iris_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"binance_iris_usdt\",\"usdt_usd\"]"
+      }
+    },
+    {
+      "input_id": "binance_iris_usd",
+      "output_id": "binance_iris_usd",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"binance_iris_usd\", \"osmosis_iris_usd\"]",
+        "tolerance_percentage": "10"
+      }
+    },
+    {
+      "input_id": "osmosis_iris_usd",
+      "output_id": "osmosis_iris_usd",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"binance_iris_usd\", \"osmosis_iris_usd\"]",
+        "tolerance_percentage": "10"
+      }
+    },
+    {
+      "output_id": "iris_usd",
+      "adapter": "weighted_average",
+      "config": {
+        "value_ids": "[\"binance_iris_usd\", \"osmosis_iris_usd\"]",
+        "weights": "[0.5, 0.5]"
+      }
+    },
+    {
+      "output_id": "iris_usd",
+      "input_id": "iris_usd",
+      "adapter": "float_handler",
+      "config": {
+        "operation": "round",
+        "precision": "6"
+      }
+    },
+    {
+      "output_id": "iris_usd",
+      "input_id": "iris_usd",
+      "adapter": "unchanged_handler",
+      "config": {
+        "strategy": "nullify",
+        "threshold_duration": "3600"
+      }
+    }
+  ]
+}

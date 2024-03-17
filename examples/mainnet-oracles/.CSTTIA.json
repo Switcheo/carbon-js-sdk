@@ -1,0 +1,75 @@
+{
+  "output_id": "sttia_usd",
+  "templates": [
+    {
+      "template_id": "rpc_response_handler",
+      "adapters": [
+        {
+          "adapter": "unresponsive_handler",
+          "config": {
+            "strategy": "use_last",
+            "grace_duration": "120"
+          }
+        }
+      ]
+    }
+  ],
+  "jobs": [
+    {
+      "output_id": "tia_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": ".CTIA",
+            "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
+      "output_id": "osmosis_sttia_tia_swap_rate",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "osmosis_sttia_tia_swap_rate",
+            "default_node_host": "https://api-osmosis.carbon.network",
+            "default_node_path": "/osmosis/poolmanager/pools/1428/prices?base_asset_denom=ibc/D79E7D83AB399BFFF93433E54FAA480C191248FC556924A2A8351AE2638B3877&quote_asset_denom=ibc/698350B8A61D575025F3ED13E9AC9C0F45C89DEFE92F76D5838F1D3C1A7FF7C9",
+            "paths": "[\"spot_price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "rpc_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "sttia_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"osmosis_sttia_tia_swap_rate\",\"tia_usd\"]"
+      }
+    },
+    {
+      "output_id": "sttia_usd",
+      "input_id": "sttia_usd",
+      "adapter": "float_handler",
+      "config": {
+        "operation": "round",
+        "precision": "6"
+      }
+    },
+    {
+      "output_id": "sttia_usd",
+      "input_id": "sttia_usd",
+      "adapter": "unchanged_handler",
+      "config": {
+        "strategy": "nullify",
+        "threshold_duration": "900"
+      }
+    }
+  ]
+}

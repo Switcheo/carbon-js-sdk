@@ -1,0 +1,176 @@
+{
+  "output_id": "osmo_usd",
+  "templates": [
+    {
+      "template_id": "response_handler",
+      "adapters": [
+        {
+          "adapter": "unresponsive_handler",
+          "config": {
+            "strategy": "use_last",
+            "grace_duration": "120"
+          }
+        },
+        {
+          "adapter": "unchanged_handler",
+          "config": {
+            "strategy": "nullify",
+            "threshold_duration": "900"
+          }
+        }
+      ]
+    },
+    {
+      "template_id": "rpc_response_handler",
+      "adapters": [
+        {
+          "adapter": "unresponsive_handler",
+          "config": {
+            "strategy": "use_last",
+            "grace_duration": "120"
+          }
+        }
+      ]
+    }
+  ],
+  "jobs": [
+    {
+      "output_id": "osmosis_osmo_usdc_pool",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "osmosis_678",
+            "default_node_host": "https://api-osmosis.carbon.network",
+            "default_node_path": "/osmosis/gamm/v1beta1/pools/678",
+            "paths": "[\"pool.pool_assets.0.token.amount\", \"pool.pool_assets.1.token.amount\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "rpc_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "osmosis_osmo_usdc",
+      "adapter": "math_filter",
+      "input_id": "osmosis_osmo_usdc_pool",
+      "config": {
+        "operation": "divide"
+      }
+    },
+    {
+      "output_id": "coinbase_osmo_usd",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "coinbase_osmo_usd",
+            "default_node_host": "https://api.exchange.coinbase.com",
+            "default_node_path": "/products/OSMO-USD/ticker",
+            "paths": "[\"price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "binance_osmo_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "binance_osmo_usdt",
+            "default_node_host": "https://api-binance-proxy.carbon.network",
+            "default_node_path": "/api/v3/ticker/price?symbol=OSMOUSDT",
+            "paths": "[\"price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "usdt_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": ".CUSDT",
+            "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
+      "output_id": "binance_osmo_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"binance_osmo_usdt\",\"usdt_usd\"]"
+      }
+    },
+    {
+      "input_id": "osmosis_osmo_usdc",
+      "output_id": "osmosis_osmo_usdc",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"osmosis_osmo_usdc\", \"coinbase_osmo_usd\", \"binance_osmo_usd\"]",
+        "tolerance_percentage": "10"
+      }
+    },
+    {
+      "input_id": "coinbase_osmo_usd",
+      "output_id": "coinbase_osmo_usd",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"osmosis_osmo_usdc\", \"coinbase_osmo_usd\", \"binance_osmo_usd\"]",
+        "tolerance_percentage": "10"
+      }
+    },
+    {
+      "input_id": "binance_osmo_usd",
+      "output_id": "binance_osmo_usd",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"osmosis_osmo_usdc\", \"coinbase_osmo_usd\", \"binance_osmo_usd\"]",
+        "tolerance_percentage": "10"
+      }
+    },
+    {
+      "output_id": "osmo_usd",
+      "adapter": "weighted_average",
+      "config": {
+        "value_ids": "[\"osmosis_osmo_usdc\", \"coinbase_osmo_usd\", \"binance_osmo_usd\"]",
+        "weights": "[0.3, 0.3, 0.4]"
+      }
+    },
+    {
+      "output_id": "osmo_usd",
+      "input_id": "osmo_usd",
+      "adapter": "float_handler",
+      "config": {
+        "operation": "round",
+        "precision": "6"
+      }
+    },
+    {
+      "output_id": "osmo_usd",
+      "input_id": "osmo_usd",
+      "adapter": "unchanged_handler",
+      "config": {
+        "strategy": "nullify",
+        "threshold_duration": "900"
+      }
+    }
+  ]
+}

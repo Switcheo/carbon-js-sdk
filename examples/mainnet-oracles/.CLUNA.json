@@ -1,0 +1,159 @@
+{
+  "output_id": "luna_usd",
+  "templates": [
+    {
+      "template_id": "full_response_handler",
+      "adapters": [
+        {
+          "adapter": "unresponsive_handler",
+          "config": {
+            "strategy": "use_last",
+            "grace_duration": "120"
+          }
+        },
+        {
+          "adapter": "unchanged_handler",
+          "config": {
+            "strategy": "nullify",
+            "threshold_duration": "900"
+          }
+        }
+      ]
+    },
+    {
+      "template_id": "response_handler",
+      "adapters": [
+        {
+          "adapter": "unresponsive_handler",
+          "config": {
+            "strategy": "use_last",
+            "grace_duration": "10"
+          }
+        }
+      ]
+    }
+  ],
+  "jobs": [
+    {
+      "output_id": "binance_luna_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "binance_luna_usdt",
+            "default_node_host": "https://api-binance-proxy.carbon.network",
+            "default_node_path": "/api/v3/ticker/price?symbol=LUNAUSDT",
+            "paths": "[\"price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "full_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "okx_luna_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "okx_luna_usdt",
+            "default_node_host": "https://www.okx.com",
+            "default_node_path": "/api/v5/market/index-tickers?instId=LUNA-USDT",
+            "paths": "[\"data.0.idxPx\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "full_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "kucoin_luna_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "kucoin_luna_usdt",
+            "default_node_host": "https://api.kucoin.com",
+            "default_node_path": "/api/v1/market/orderbook/level1?symbol=LUNA-USDT",
+            "paths": "[\"data.price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "full_response_handler"
+        }
+      ]
+    },
+    {
+      "input_id": "binance_luna_usdt",
+      "output_id": "binance_luna_usdt",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"binance_luna_usdt\", \"okx_luna_usdt\", \"kucoin_luna_usdt\"]",
+        "tolerance_percentage": "10"
+      }
+    },
+    {
+      "input_id": "okx_luna_usdt",
+      "output_id": "okx_luna_usdt",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"binance_luna_usdt\", \"okx_luna_usdt\", \"kucoin_luna_usdt\"]",
+        "tolerance_percentage": "10"
+      }
+    },
+    {
+      "input_id": "kucoin_luna_usdt",
+      "output_id": "kucoin_luna_usdt",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"binance_luna_usdt\", \"okx_luna_usdt\", \"kucoin_luna_usdt\"]",
+        "tolerance_percentage": "10"
+      }
+    },
+    {
+      "output_id": "luna_usdt",
+      "adapter": "weighted_average",
+      "config": {
+        "value_ids": "[\"binance_luna_usdt\", \"okx_luna_usdt\", \"kucoin_luna_usdt\"]",
+        "weights": "[0.6, 0.3, 0.1]"
+      }
+    },
+    {
+      "output_id": "usdt_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": ".CUSDT",
+            "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
+      "output_id": "luna_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"luna_usdt\",\"usdt_usd\"]"
+      }
+    },
+    {
+      "output_id": "luna_usd",
+      "input_id": "luna_usd",
+      "adapter": "float_handler",
+      "config": {
+        "operation": "round",
+        "precision": "6"
+      }
+    }
+  ]
+}

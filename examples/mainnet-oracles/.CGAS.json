@@ -1,0 +1,147 @@
+{
+  "output_id": "gas_usd",
+  "templates": [
+    {
+      "template_id": "full_response_handler",
+      "adapters": [
+        {
+          "adapter": "unresponsive_handler",
+          "config": {
+            "strategy": "use_last",
+            "grace_duration": "120"
+          }
+        },
+        {
+          "adapter": "unchanged_handler",
+          "config": {
+            "strategy": "nullify",
+            "threshold_duration": "900"
+          }
+        }
+      ]
+    }
+  ],
+  "jobs": [
+    {
+      "output_id": "binance_gas_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "binance_gas_usdt",
+            "default_node_host": "https://api-binance-proxy.carbon.network",
+            "default_node_path": "/api/v3/ticker/price?symbol=GASUSDT",
+            "paths": "[\"price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "full_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "okx_gas_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "okx_gas_usdt",
+            "default_node_host": "https://www.okx.com",
+            "default_node_path": "/api/v5/market/index-tickers?instId=GAS-USDT",
+            "paths": "[\"data.0.idxPx\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "full_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "kucoin_gas_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "kucoin_gas_usdt",
+            "default_node_host": "https://api.kucoin.com",
+            "default_node_path": "/api/v1/market/orderbook/level1?symbol=GAS-USDT",
+            "paths": "[\"data.price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "full_response_handler"
+        }
+      ]
+    },
+    {
+      "input_id": "binance_gas_usdt",
+      "output_id": "binance_gas_usdt",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"binance_gas_usdt\", \"okx_gas_usdt\", \"kucoin_gas_usdt\"]",
+        "tolerance_percentage": "10"
+      }
+    },
+    {
+      "input_id": "okx_gas_usdt",
+      "output_id": "okx_gas_usdt",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"binance_gas_usdt\", \"okx_gas_usdt\", \"kucoin_gas_usdt\"]",
+        "tolerance_percentage": "10"
+      }
+    },
+    {
+      "input_id": "kucoin_gas_usdt",
+      "output_id": "kucoin_gas_usdt",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"binance_gas_usdt\", \"okx_gas_usdt\", \"kucoin_gas_usdt\"]",
+        "tolerance_percentage": "10"
+      }
+    },
+    {
+      "output_id": "gas_usdt",
+      "adapter": "weighted_average",
+      "config": {
+        "value_ids": "[\"binance_gas_usdt\", \"okx_gas_usdt\", \"kucoin_gas_usdt\"]",
+        "weights": "[0.4, 0.3, 0.3]"
+      }
+    },
+    {
+      "output_id": "usdt_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": ".CUSDT",
+            "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
+      "output_id": "gas_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"gas_usdt\",\"usdt_usd\"]"
+      }
+    },
+    {
+      "output_id": "gas_usd",
+      "input_id": "gas_usd",
+      "adapter": "float_handler",
+      "config": {
+        "operation": "round",
+        "precision": "6"
+      }
+    }
+  ]
+}

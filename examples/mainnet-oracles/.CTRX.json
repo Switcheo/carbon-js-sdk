@@ -1,0 +1,119 @@
+{
+  "output_id": "trx_usd",
+  "templates": [
+    {
+      "template_id": "response_handler",
+      "adapters": [
+        {
+          "adapter": "unresponsive_handler",
+          "config": {
+            "strategy": "use_last",
+            "grace_duration": "120"
+          }
+        },
+        {
+          "adapter": "unchanged_handler",
+          "config": {
+            "strategy": "nullify",
+            "threshold_duration": "900"
+          }
+        }
+      ]
+    }
+  ],
+  "jobs": [
+    {
+      "output_id": "binance_trx_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "binance_trx_usdt",
+            "default_node_host": "https://api-binance-proxy.carbon.network",
+            "default_node_path": "/api/v3/ticker/price?symbol=TRXUSDT",
+            "paths": "[\"price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "usdt_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": ".CUSDT",
+            "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
+      "output_id": "binance_trx_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"binance_trx_usdt\",\"usdt_usd\"]"
+      }
+    },
+    {
+      "output_id": "kraken_trx_usd",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "kraken_trx_usd",
+            "default_node_host": "https://api.kraken.com",
+            "default_node_path": "/0/public/Ticker?pair=TRXUSD",
+            "paths": "[\"result.TRXUSD.c.0\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "binance_trx_usd",
+      "input_id": "binance_trx_usd",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"binance_trx_usd\", \"kraken_trx_usd\"]",
+        "tolerance_percentage": "10"
+      }
+    },
+    {
+      "output_id": "kraken_trx_usd",
+      "input_id": "kraken_trx_usd",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"binance_trx_usd\", \"kraken_trx_usd\"]",
+        "tolerance_percentage": "10"
+      }
+    },
+    {
+      "output_id": "trx_usd",
+      "adapter": "weighted_average",
+      "config": {
+        "value_ids": "[\"binance_trx_usd\",\"kraken_trx_usd\"]",
+        "weights": "[0.5, 0.5]"
+      }
+    },
+    {
+      "output_id": "trx_usd",
+      "input_id": "trx_usd",
+      "adapter": "float_handler",
+      "config": {
+        "operation": "round",
+        "precision": "6"
+      }
+    }
+  ]
+}

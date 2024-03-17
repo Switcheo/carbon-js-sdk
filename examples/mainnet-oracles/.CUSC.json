@@ -1,0 +1,71 @@
+{
+  "output_id": "usc_usd",
+  "templates": [
+    {
+      "template_id": "rpc_response_handler",
+      "adapters": [
+        {
+          "adapter": "unresponsive_handler",
+          "config": {
+            "strategy": "use_last",
+            "grace_duration": "120"
+          }
+        }
+      ]
+    }
+  ],
+  "jobs": [
+    {
+      "adapter": "static_handler",
+      "output_id": "static_usc_usd",
+      "config": {
+        "value": "1.1"
+      }
+    },
+    {
+      "output_id": "demex_usc_usdc_raw",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "carbon_usc_usd_1k",
+            "default_node_host": "https://api.carbon.network",
+            "default_node_path": "/carbon/book/v1/impact_price/cmkt%252F115/quote_amount/1000000000",
+            "paths": "[\"impact_price\"]",
+            "timeout": "13"
+          }
+        },
+        {
+          "template": "rpc_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "demex_usc_usdc",
+      "input_id": "demex_usc_usdc_raw",
+      "adapter": "decimal_handler",
+      "config": {
+        "operation": "decrease",
+        "exponent": "12"
+      }
+    },
+    {
+      "output_id": "usc_usd",
+      "adapter": "math_filter",
+      "input_id": "",
+      "config": {
+        "operation": "min",
+        "input_ids": "[\"demex_usc_usdc\",\"static_usc_usd\"]"
+      }
+    },
+    {
+      "output_id": "usc_usd",
+      "input_id": "usc_usd",
+      "adapter": "float_handler",
+      "config": {
+        "operation": "round",
+        "precision": "6"
+      }
+    }
+  ]
+}

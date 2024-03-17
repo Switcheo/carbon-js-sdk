@@ -1,0 +1,136 @@
+{
+  "output_id": "blur_usd",
+  "templates": [
+    {
+      "template_id": "blur_response_handler",
+      "adapters": [
+        {
+          "adapter": "unresponsive_handler",
+          "config": {
+            "strategy": "use_last",
+            "grace_duration": "120"
+          }
+        },
+        {
+          "adapter": "unchanged_handler",
+          "config": {
+            "strategy": "nullify",
+            "threshold_duration": "1800"
+          }
+        }
+      ]
+    },
+    {
+      "template_id": "response_handler",
+      "adapters": [
+        {
+          "adapter": "unresponsive_handler",
+          "config": {
+            "strategy": "use_last",
+            "grace_duration": "120"
+          }
+        }
+      ]
+    }
+  ],
+  "jobs": [
+    {
+      "output_id": "eth_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": "SIDXETH",
+            "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
+      "output_id": "uniswap_blur_eth_rsp",
+      "adapters": [
+        {
+          "adapter": "evm_fetcher",
+          "config": {
+            "custom_node_url_key": "eth_rpc",
+            "default_node_rpc": "https://eth-mainnet.g.alchemy.com/v2/3VcvTusKysArUXoYipb79xUL1l6Yl5LG",
+            "address": "0xb27308f9f90d607463bb33ea1bebb41c27ce5ab6",
+            "calldata": "0xf7729d430000000000000000000000005283d291dbcf85356a21ba090e6db59121208b44000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc200000000000000000000000000000000000000000000000000000000000027100000000000000000000000000000000000000000000000000de0b6b3a76400000000000000000000000000000000000000000000000000000000000000000000"
+          }
+        },
+        {
+          "template": "response_handler"
+        }
+      ]
+    },
+    {
+      "input_id": "uniswap_blur_eth_rsp",
+      "output_id": "uniswap_blur_eth_18",
+      "adapter": "evm_value_parser",
+      "config": {
+        "output_type": "uint256"
+      }
+    },
+    {
+      "input_id": "uniswap_blur_eth_18",
+      "output_id": "uniswap_blur_eth_18",
+      "adapter": "unchanged_handler",
+      "config": {
+        "strategy": "nullify",
+        "threshold_duration": "1800"
+      }
+    },
+    {
+      "output_id": "uniswap_blur_eth",
+      "input_id": "uniswap_blur_eth_18",
+      "adapter": "decimal_handler",
+      "config": {
+        "operation": "decrease",
+        "exponent": "18"
+      }
+    },
+    {
+      "output_id": "uniswap_blur_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"eth_usd\",\"uniswap_blur_eth\"]"
+      }
+    },
+    {
+      "output_id": "coinbase_blur_usd",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "coinbase_blur_usd",
+            "default_node_host": "https://api.exchange.coinbase.com",
+            "default_node_path": "/products/BLUR-USD/ticker",
+            "paths": "[\"price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "blur_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "blur_usd",
+      "adapter": "weighted_average",
+      "config": {
+        "value_ids": "[\"coinbase_blur_usd\", \"uniswap_blur_usd\"]",
+        "weights": "[0.6, 0.4]"
+      }
+    },
+    {
+      "output_id": "blur_usd",
+      "input_id": "blur_usd",
+      "adapter": "float_handler",
+      "config": {
+        "operation": "round",
+        "precision": "6"
+      }
+    }
+  ]
+}

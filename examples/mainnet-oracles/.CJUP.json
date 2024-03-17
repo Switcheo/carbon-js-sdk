@@ -1,0 +1,147 @@
+{
+  "output_id": "jup_usd",
+  "templates": [
+    {
+      "template_id": "full_response_handler",
+      "adapters": [
+        {
+          "adapter": "unresponsive_handler",
+          "config": {
+            "strategy": "use_last",
+            "grace_duration": "120"
+          }
+        },
+        {
+          "adapter": "unchanged_handler",
+          "config": {
+            "strategy": "nullify",
+            "threshold_duration": "900"
+          }
+        }
+      ]
+    }
+  ],
+  "jobs": [
+    {
+      "output_id": "bybit_jup_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "bybit_jup_usdt",
+            "default_node_host": "https://api.bybit.com",
+            "default_node_path": "/spot/v3/public/quote/ticker/price?symbol=JUPUSDT",
+            "paths": "[\"result.price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "full_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "binance_jup_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "binance_jup_usdt",
+            "default_node_host": "https://api-binance-proxy.carbon.network",
+            "default_node_path": "/api/v3/ticker/price?symbol=JUPUSDT",
+            "paths": "[\"price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "full_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "okx_jup_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "okx_jup_usdt",
+            "default_node_host": "https://www.okx.com",
+            "default_node_path": "/api/v5/market/index-tickers?instId=JUP-USDT",
+            "paths": "[\"data.0.idxPx\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "full_response_handler"
+        }
+      ]
+    },
+    {
+      "input_id": "bybit_jup_usdt",
+      "output_id": "bybit_jup_usdt",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"bybit_jup_usdt\", \"binance_jup_usdt\", \"okx_jup_usdt\"]",
+        "tolerance_percentage": "10"
+      }
+    },
+    {
+      "input_id": "binance_jup_usdt",
+      "output_id": "binance_jup_usdt",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"bybit_jup_usdt\", \"binance_jup_usdt\", \"okx_jup_usdt\"]",
+        "tolerance_percentage": "10"
+      }
+    },
+    {
+      "input_id": "okx_jup_usdt",
+      "output_id": "okx_jup_usdt",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"bybit_jup_usdt\", \"binance_jup_usdt\", \"okx_jup_usdt\"]",
+        "tolerance_percentage": "10"
+      }
+    },
+    {
+      "output_id": "jup_usdt",
+      "adapter": "weighted_average",
+      "config": {
+        "value_ids": "[\"bybit_jup_usdt\", \"binance_jup_usdt\", \"okx_jup_usdt\"]",
+        "weights": "[0.3, 0.4, 0.3]"
+      }
+    },
+    {
+      "output_id": "usdt_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": ".CUSDT",
+            "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
+      "output_id": "jup_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"jup_usdt\",\"usdt_usd\"]"
+      }
+    },
+    {
+      "output_id": "jup_usd",
+      "input_id": "jup_usd",
+      "adapter": "float_handler",
+      "config": {
+        "operation": "round",
+        "precision": "6"
+      }
+    }
+  ]
+}

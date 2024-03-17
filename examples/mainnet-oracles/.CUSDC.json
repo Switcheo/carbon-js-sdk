@@ -1,0 +1,147 @@
+{
+  "output_id": "usdc_usd",
+  "templates": [
+    {
+      "template_id": "response_handler",
+      "adapters": [
+        {
+          "adapter": "unresponsive_handler",
+          "config": {
+            "strategy": "use_last",
+            "grace_duration": "120"
+          }
+        },
+        {
+          "adapter": "unchanged_handler",
+          "config": {
+            "strategy": "nullify",
+            "threshold_duration": "900"
+          }
+        }
+      ]
+    }
+  ],
+  "jobs": [
+    {
+      "output_id": "bitstamp_usdc_usd",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "bitstamp_usdc_usd",
+            "default_node_host": "https://www.bitstamp.net",
+            "default_node_path": "/api/v2/ticker/usdcusd",
+            "paths": "[\"last\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "kraken_usdc_usd",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "kraken_usdc_usd",
+            "default_node_host": "https://api.kraken.com",
+            "default_node_path": "/0/public/Ticker?pair=USDCUSD",
+            "paths": "[\"result.USDCUSD.c.0\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "binance_usdc_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "binance_usdc_usdt",
+            "default_node_host": "https://api-binance-proxy.carbon.network",
+            "default_node_path": "/api/v3/ticker/price?symbol=USDCUSDT",
+            "paths": "[\"price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "usdt_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": ".CUSDT",
+            "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
+      "output_id": "binance_usdc_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"binance_usdc_usdt\",\"usdt_usd\"]"
+      }
+    },
+    {
+      "input_id": "bitstamp_usdc_usd",
+      "output_id": "bitstamp_usdc_usd",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"bitstamp_usdc_usd\", \"kraken_usdc_usd\", \"binance_usdc_usd\"]",
+        "tolerance_percentage": "1"
+      }
+    },
+    {
+      "input_id": "kraken_usdc_usd",
+      "output_id": "kraken_usdc_usd",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"bitstamp_usdc_usd\", \"kraken_usdc_usd\", \"binance_usdc_usd\"]",
+        "tolerance_percentage": "1"
+      }
+    },
+    {
+      "input_id": "binance_usdc_usd",
+      "output_id": "binance_usdc_usd",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"bitstamp_usdc_usd\", \"kraken_usdc_usd\", \"binance_usdc_usd\"]",
+        "tolerance_percentage": "1"
+      }
+    },
+    {
+      "output_id": "usdc_usd",
+      "adapter": "weighted_average",
+      "config": {
+        "value_ids": "[\"bitstamp_usdc_usd\", \"kraken_usdc_usd\", \"binance_usdc_usd\"]",
+        "weights": "[0.25, 0.25, 0.5]"
+      }
+    },
+    {
+      "output_id": "usdc_usd",
+      "input_id": "usdc_usd",
+      "adapter": "float_handler",
+      "config": {
+        "operation": "round",
+        "precision": "6"
+      }
+    }
+  ]
+}

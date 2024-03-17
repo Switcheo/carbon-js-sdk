@@ -1,0 +1,73 @@
+{
+  "output_id": "bsc_busd_usd",
+  "templates": [
+    {
+      "template_id": "response_handler",
+      "adapters": [
+        {
+          "adapter": "unresponsive_handler",
+          "config": {
+            "strategy": "use_last",
+            "grace_duration": "120"
+          }
+        }
+      ]
+    }
+  ],
+  "jobs": [
+    {
+      "output_id": "usdt_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": ".CUSDT",
+            "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
+      "output_id": "binance_busd_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "binance_busd_usdt",
+            "default_node_host": "https://api-binance-proxy.carbon.network",
+            "default_node_path": "/api/v3/ticker/price?symbol=BUSDUSDT",
+            "paths": "[\"price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "bsc_busd_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"binance_busd_usdt\",\"usdt_usd\"]"
+      }
+    },
+    {
+      "adapter": "static_handler",
+      "output_id": "static_usd",
+      "config": {
+        "value": "1"
+      }
+    },
+    {
+      "output_id": "bsc_busd_usd",
+      "adapter": "math_filter",
+      "input_id": "",
+      "config": {
+        "operation": "min",
+        "input_ids": "[\"bsc_busd_usd\",\"static_usd\"]"
+      }
+    }
+  ]
+}

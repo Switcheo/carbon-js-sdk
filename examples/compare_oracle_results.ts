@@ -13,7 +13,7 @@ interface SimpleMap<T = unknown> {
 }
 
 (async () => {
-    const TESTNET_ORACLE_URL = "https://test-api.carbon.network/carbon/oracle/v1/results_latest"
+    const TESTNET_ORACLE_URL = "http://localhost:1317/carbon/oracle/v1/results_latest"
     const MAINNET_ORACLE_URL = "https://api.carbon.network/carbon/oracle/v1/results_latest"
 
     // make get request to testnet oracle api and mainnet and compare
@@ -23,7 +23,7 @@ interface SimpleMap<T = unknown> {
     // convert testnet oracles to map and compare
     const testnetMap : SimpleMap<string> = {}
     
-    for (const oracle of testnetOracles.results) {
+    for (const oracle of testnetOracles.latest_results) {
         const oracleId : string = oracle.oracle_id
         const price : string = oracle.data
         testnetMap[oracleId] = price

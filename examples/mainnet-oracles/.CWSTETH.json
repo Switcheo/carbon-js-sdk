@@ -1,0 +1,82 @@
+{
+  "output_id": "wsteth_usd",
+  "templates": [
+    {
+      "template_id": "response_handler",
+      "adapters": [
+        {
+          "adapter": "unresponsive_handler",
+          "config": {
+            "strategy": "use_last",
+            "grace_duration": "120"
+          }
+        }
+      ]
+    }
+  ],
+  "jobs": [
+    {
+      "output_id": "eth_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+              "oracle_id": "SIDXETH",
+              "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
+      "output_id": "lido_wsteth_steth_redemption_rate_rsp",
+      "adapters": [
+        {
+          "adapter": "evm_fetcher",
+          "config": {
+            "custom_node_url_key": "eth_rpc",
+            "default_node_rpc": "https://eth-mainnet.g.alchemy.com/v2/arkLb1R9vMhFHrhhX7hB5vCcrX5csBol",
+            "address": "0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0",
+            "calldata": "0x035faf82"
+          }
+        },
+        {
+          "template": "response_handler"
+        }
+      ]
+    },
+    {
+      "input_id": "lido_wsteth_steth_redemption_rate_rsp",
+      "output_id": "lido_wsteth_steth_redemption_rate_18",
+      "adapter": "evm_value_parser",
+      "config": {
+        "output_type": "uint256"
+      }
+    },
+    {
+      "output_id": "lido_wsteth_steth_redemption_rate",
+      "input_id": "lido_wsteth_steth_redemption_rate_18",
+      "adapter": "decimal_handler",
+      "config": {
+        "operation": "decrease",
+        "exponent": "18"
+      }
+    },
+    {
+      "output_id": "wsteth_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"eth_usd\",\"lido_wsteth_steth_redemption_rate\"]"
+      }
+    },
+    {
+      "output_id": "wsteth_usd",
+      "input_id": "wsteth_usd",
+      "adapter": "float_handler",
+      "config": {
+        "operation": "round",
+        "precision": "6"
+      }
+    }
+  ]
+}

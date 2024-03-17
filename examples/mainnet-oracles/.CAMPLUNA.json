@@ -1,0 +1,102 @@
+{
+  "output_id": "ampluna_usd",
+  "templates": [
+    {
+      "template_id": "response_handler",
+      "adapters": [
+        {
+          "adapter": "unresponsive_handler",
+          "config": {
+            "strategy": "use_last",
+            "grace_duration": "10"
+          }
+        }
+      ]
+    }
+  ],
+  "jobs": [
+    {
+      "output_id": "luna_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+              "oracle_id": ".CLUNA",
+              "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
+      "output_id": "ampluna_eris_redemption_rate",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "eris_ampluna_redemption_rate",
+            "default_node_host": "https://phoenix-lcd.terra.dev",
+            "default_node_path": "/cosmwasm/wasm/v1/contract/terra10788fkzah89xrdm27zkj5yvhj9x3494lxawzm5qq3vvxcqz2yzaqyd3enk/smart/eyJzdGF0ZSI6e319",
+            "paths": "[\"data.exchange_rate\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "ampluna_astroport_redemption_rate",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "astroport_ampluna_redemption_rate",
+            "default_node_host": "https://phoenix-lcd.terra.dev",
+            "default_node_path": "/cosmwasm/wasm/v1/contract/terra1cr8dg06sh343hh4xzn3gxd3ayetsjtet7q5gp4kfrewul2kql8sqvhaey4/smart/eyJzaW11bGF0aW9uIjp7Im9mZmVyX2Fzc2V0Ijp7ImFtb3VudCI6IjEwMDAwMDAiLCJpbmZvIjp7InRva2VuIjp7ImNvbnRyYWN0X2FkZHIiOiJ0ZXJyYTFlY2dhenlkMHdhYWozZzdsOWNteTVndWxoeGtwczJnbXh1OWdoZHVjdnV5cGpxNjhtcTJzNWx2c2N0In19fX19",
+            "paths": "[\"data.return_amount\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "ampluna_astroport_redemption_rate",
+      "input_id": "ampluna_astroport_redemption_rate",
+      "adapter": "decimal_handler",
+      "config": {
+        "operation": "decrease",
+        "exponent": "6"
+      }
+    },
+    {
+      "output_id": "ampluna_redemption_rate",
+      "adapter": "math_filter",
+      "input_id": "",
+      "config": {
+        "operation": "min",
+        "input_ids": "[\"ampluna_eris_redemption_rate\",\"ampluna_astroport_redemption_rate\"]"
+      }
+    },
+    {
+      "output_id": "ampluna_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"ampluna_redemption_rate\",\"luna_usd\"]"
+      }
+    },
+    {
+      "output_id": "ampluna_usd",
+      "input_id": "ampluna_usd",
+      "adapter": "float_handler",
+      "config": {
+        "operation": "round",
+        "precision": "6"
+      }
+    }
+  ]
+}

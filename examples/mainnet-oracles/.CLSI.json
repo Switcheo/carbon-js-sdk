@@ -1,0 +1,53 @@
+{
+  "output_id": "lsi_usd",
+  "templates": [
+    {
+      "template_id": "response_handler",
+      "adapters": [
+        {
+          "adapter": "unresponsive_handler",
+          "config": {
+            "strategy": "use_last",
+            "grace_duration": "120"
+          }
+        },
+        {
+          "adapter": "unchanged_handler",
+          "config": {
+            "strategy": "nullify",
+            "threshold_duration": "900"
+          }
+        }
+      ]
+    }
+  ],
+  "jobs": [
+    {
+      "output_id": "lsi_usd",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "lsi_usd",
+						"default_node_host": "http://lsi-index.carbon.network",
+						"default_node_path": "",
+						"paths": "[\"price\"]",
+						"timeout": "10"
+          }
+        },
+        {
+          "template": "response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "lsi_usd",
+      "input_id": "lsi_usd",
+      "adapter": "float_handler",
+      "config": {
+        "operation": "round",
+        "precision": "4"
+      }
+    }
+  ]
+}

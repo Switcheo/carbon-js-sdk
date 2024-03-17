@@ -1,0 +1,167 @@
+{
+  "output_id": "link_usd",
+  "templates": [
+    {
+      "template_id": "full_response_handler",
+      "adapters": [
+        {
+          "adapter": "unresponsive_handler",
+          "config": {
+            "strategy": "use_last",
+            "grace_duration": "120"
+          }
+        },
+        {
+          "adapter": "unchanged_handler",
+          "config": {
+            "strategy": "nullify",
+            "threshold_duration": "900"
+          }
+        }
+      ]
+    },
+    {
+      "template_id": "response_handler",
+      "adapters": [
+        {
+          "adapter": "unresponsive_handler",
+          "config": {
+            "strategy": "use_last",
+            "grace_duration": "10"
+          }
+        }
+      ]
+    }
+  ],
+  "jobs": [
+    {
+      "output_id": "usdt_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": ".CUSDT",
+            "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
+      "output_id": "binance_link_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "binance_link_usdt",
+            "default_node_host": "https://api-binance-proxy.carbon.network",
+            "default_node_path": "/api/v3/ticker/price?symbol=LINKUSDT",
+            "paths": "[\"price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "full_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "binance_link_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"binance_link_usdt\",\"usdt_usd\"]"
+      }
+    },
+    {
+      "output_id": "okx_link_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "okx_link_usdt",
+            "default_node_host": "https://www.okx.com",
+            "default_node_path": "/api/v5/market/index-tickers?instId=LINK-USDT",
+            "paths": "[\"data.0.idxPx\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "full_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "okx_link_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"okx_link_usdt\",\"usdt_usd\"]"
+      }
+    },
+    {
+      "output_id": "coinbase_link_usd",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "coinbase_link_usd",
+            "default_node_host": "https://api.exchange.coinbase.com",
+            "default_node_path": "/products/LINK-USD/ticker",
+            "paths": "[\"price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "full_response_handler"
+        }
+      ]
+    },
+    {
+      "input_id": "binance_link_usd",
+      "output_id": "binance_link_usd",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"binance_link_usd\", \"okx_link_usd\",\"coinbase_link_usd\"]",
+        "tolerance_percentage": "10"
+      }
+    },
+    {
+      "input_id": "okx_link_usd",
+      "output_id": "okx_link_usd",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"binance_link_usd\", \"okx_link_usd\",\"coinbase_link_usd\"]",
+        "tolerance_percentage": "10"
+      }
+    },
+    {
+      "input_id": "coinbase_link_usd",
+      "output_id": "coinbase_link_usd",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"binance_link_usd\", \"okx_link_usd\",\"coinbase_link_usd\"]",
+        "tolerance_percentage": "10"
+      }
+    },
+    {
+      "output_id": "link_usd",
+      "adapter": "weighted_average",
+      "config": {
+        "value_ids": "[\"binance_link_usd\",\"okx_link_usd\",\"coinbase_link_usd\"]",
+        "weights": "[0.4, 0.3, 0.3]"
+      }
+    },
+    {
+      "output_id": "link_usd",
+      "input_id": "link_usd",
+      "adapter": "float_handler",
+      "config": {
+        "operation": "round",
+        "precision": "6"
+      }
+    }
+  ]
+}

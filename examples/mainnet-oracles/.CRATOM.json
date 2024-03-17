@@ -1,0 +1,110 @@
+{
+  "output_id": "ratom_usd",
+  "templates": [
+    {
+      "template_id": "rpc_response_handler",
+      "adapters": [
+        {
+          "adapter": "unresponsive_handler",
+          "config": {
+            "strategy": "use_last",
+            "grace_duration": "10"
+          }
+        }
+      ]
+    }
+  ],
+  "jobs": [
+    {
+      "output_id": "atom_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+              "oracle_id": ".CATOM",
+              "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
+      "output_id": "stafihub_ratom_redemption_rate",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "stafihub_ratom_redemption_rate",
+            "default_node_host": "https://public-rest-rpc1.stafihub.io",
+            "default_node_path": "/stafihub/stafihub/ledger/exchange_rate/uratom",
+            "paths": "[\"exchangeRate.value\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "rpc_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "rdex_ratom_atom_pool",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "rdex_ratom_atom_pool",
+            "default_node_host": "https://public-rest-rpc1.stafihub.io",
+            "default_node_path": "/stafihub/stafihub/rdex/swap_pool_list",
+            "paths": "[\"swapPoolList.0.baseToken.amount\", \"swapPoolList.0.token.amount\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "rpc_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "rdex_ratom_redemption_rate",
+      "adapter": "math_filter",
+      "input_id": "rdex_ratom_atom_pool",
+      "config": {
+        "operation": "divide"
+      }
+    },
+    {
+      "output_id": "ratom_redemption_rate",
+      "adapter": "math_filter",
+      "input_id": "",
+      "config": {
+        "operation": "min",
+        "input_ids": "[\"stafihub_ratom_redemption_rate\",\"rdex_ratom_redemption_rate\"]"
+      }
+    },
+    {
+      "output_id": "ratom_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"ratom_redemption_rate\",\"atom_usd\"]"
+      }
+    },
+    {
+      "output_id": "ratom_usd",
+      "input_id": "ratom_usd",
+      "adapter": "float_handler",
+      "config": {
+        "operation": "round",
+        "precision": "6"
+      }
+    },
+    {
+      "output_id": "ratom_usd",
+      "input_id": "ratom_usd",
+      "adapter": "unchanged_handler",
+      "config": {
+        "strategy": "nullify",
+        "threshold_duration": "900"
+      }
+    }
+  ]
+}

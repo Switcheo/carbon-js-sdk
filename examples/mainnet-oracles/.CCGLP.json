@@ -1,0 +1,138 @@
+{
+  "output_id": "cglp_usd",
+  "templates": [
+    {
+      "template_id": "response_handler",
+      "adapters": [
+        {
+          "adapter": "unresponsive_handler",
+          "config": {
+            "strategy": "use_last",
+            "grace_duration": "120"
+          }
+        }
+      ]
+    }
+  ],
+  "jobs": [
+    {
+      "output_id": "aum_glp_sell_rsp",
+      "adapters": [
+        {
+          "adapter": "evm_fetcher",
+          "config": {
+            "custom_node_url_key": "arbitrum_rpc",
+            "default_node_rpc": "https://arb-mainnet.g.alchemy.com/v2/tPFNTYTrTHcim828p0_tUxfsSfMJDyxP",
+            "address": "0x321F653eED006AD1C29D174e17d96351BDe22649",
+            "calldata": "0x033914760000000000000000000000000000000000000000000000000000000000000000"
+          }
+        },
+        {
+          "template": "response_handler"
+        }
+      ]
+    },
+    {
+      "input_id": "aum_glp_sell_rsp",
+      "output_id": "aum_glp_sell",
+      "adapter": "evm_value_parser",
+      "config": {
+        "output_type": "uint256"
+      }
+    },
+    {
+      "output_id": "glp_supply_rsp",
+      "adapters": [
+        {
+          "adapter": "evm_fetcher",
+          "config": {
+            "custom_node_url_key": "arbitrum_rpc",
+            "default_node_rpc": "https://arb-mainnet.g.alchemy.com/v2/tPFNTYTrTHcim828p0_tUxfsSfMJDyxP",
+            "address": "0x4277f8F2c384827B5273592FF7CeBd9f2C1ac258",
+            "calldata": "0x18160ddd"
+          }
+        },
+        {
+          "template": "response_handler"
+        }
+      ]
+    },
+    {
+      "input_id": "glp_supply_rsp",
+      "output_id": "glp_supply",
+      "adapter": "evm_value_parser",
+      "config": {
+        "output_type": "uint256"
+      }
+    },
+    {
+      "output_id": "glp_usd_12",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "divide",
+        "input_ids": "[\"aum_glp_sell\",\"glp_supply\"]"
+      }
+    },
+    {
+      "output_id": "glp_usd",
+      "input_id": "glp_usd_12",
+      "adapter": "decimal_handler",
+      "config": {
+        "operation": "decrease",
+        "exponent": "12"
+      }
+    },
+    {
+      "output_id": "cglp_redemption_rate_rsp",
+      "adapters": [
+        {
+          "adapter": "evm_fetcher",
+          "config": {
+            "custom_node_url_key": "arbitrum_rpc",
+            "default_node_rpc": "https://arb-mainnet.g.alchemy.com/v2/tPFNTYTrTHcim828p0_tUxfsSfMJDyxP",
+            "address": "0xab19bdaeb37242fa0f30486195f45b9cf5361b78",
+            "calldata": "0x4cdad5060000000000000000000000000000000000000000000000000de0b6b3a7640000",
+            "output_type": "uint256"
+          }
+        },
+        {
+          "template": "response_handler"
+        }
+      ]
+    },
+    {
+      "input_id": "cglp_redemption_rate_rsp",
+      "output_id": "cglp_redemption_rate_18",
+      "adapter": "evm_value_parser",
+      "config": {
+        "output_type": "uint256"
+      }
+    },
+    {
+      "output_id": "cglp_redemption_rate",
+      "input_id": "cglp_redemption_rate_18",
+      "adapter": "decimal_handler",
+      "config": {
+        "operation": "decrease",
+        "exponent": "18"
+      }
+    },
+    {
+      "output_id": "cglp_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"glp_usd\",\"cglp_redemption_rate\"]"
+      }
+    },
+    {
+      "output_id": "cglp_usd",
+      "input_id": "cglp_usd",
+      "adapter": "float_handler",
+      "config": {
+        "operation": "round",
+        "precision": "6"
+      }
+    }
+  ]
+}

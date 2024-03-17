@@ -1,0 +1,221 @@
+{
+  "output_id": "stdydx_usd",
+  "templates": [
+    {
+      "template_id": "full_response_handler",
+      "adapters": [
+        {
+          "adapter": "unresponsive_handler",
+          "config": {
+            "strategy": "use_last",
+            "grace_duration": "120"
+          }
+        },
+        {
+          "adapter": "unchanged_handler",
+          "config": {
+            "strategy": "nullify",
+            "threshold_duration": "900"
+          }
+        }
+      ]
+    },
+    {
+      "template_id": "rpc_response_handler",
+      "adapters": [
+        {
+          "adapter": "unresponsive_handler",
+          "config": {
+            "strategy": "use_last",
+            "grace_duration": "120"
+          }
+        }
+      ]
+    }
+  ],
+  "jobs": [
+    {
+      "output_id": "bybit_dydx_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "bybit_dydx_usdt",
+            "default_node_host": "https://api.bybit.com",
+            "default_node_path": "/spot/v3/public/quote/ticker/price?symbol=DYDXUSDT",
+            "paths": "[\"result.price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "full_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "binance_dydx_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "binance_dydx_usdt",
+            "default_node_host": "https://api-binance-proxy.carbon.network",
+            "default_node_path": "/api/v3/ticker/price?symbol=DYDXUSDT",
+            "paths": "[\"price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "full_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "okx_dydx_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "okx_dydx_usdt",
+            "default_node_host": "https://www.okx.com",
+            "default_node_path": "/api/v5/market/index-tickers?instId=DYDX-USDT",
+            "paths": "[\"data.0.idxPx\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "full_response_handler"
+        }
+      ]
+    },
+    {
+      "input_id": "bybit_dydx_usdt",
+      "output_id": "bybit_dydx_usdt",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"bybit_dydx_usdt\", \"binance_dydx_usdt\", \"okx_dydx_usdt\"]",
+        "tolerance_percentage": "10"
+      }
+    },
+    {
+      "input_id": "binance_dydx_usdt",
+      "output_id": "binance_dydx_usdt",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"bybit_dydx_usdt\", \"binance_dydx_usdt\", \"okx_dydx_usdt\"]",
+        "tolerance_percentage": "10"
+      }
+    },
+    {
+      "input_id": "okx_dydx_usdt",
+      "output_id": "okx_dydx_usdt",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"bybit_dydx_usdt\", \"binance_dydx_usdt\", \"okx_dydx_usdt\"]",
+        "tolerance_percentage": "10"
+      }
+    },
+    {
+      "output_id": "dydx_usdt",
+      "adapter": "weighted_average",
+      "config": {
+        "value_ids": "[\"bybit_dydx_usdt\", \"binance_dydx_usdt\", \"okx_dydx_usdt\"]",
+        "weights": "[0.3, 0.4, 0.3]"
+      }
+    },
+    {
+      "output_id": "usdt_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": ".CUSDT",
+            "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
+      "output_id": "dydx_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"dydx_usdt\",\"usdt_usd\"]"
+      }
+    },
+    {
+      "output_id": "stdydx_stride_redemption_rate",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "stride_stdydx_redemption_rate",
+            "default_node_host": "https://stride-rest.publicnode.com",
+            "default_node_path": "/Stride-Labs/stride/stakeibc/host_zone/dydx-mainnet-1",
+            "paths": "[\"host_zone.redemption_rate\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "rpc_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "osmosis_stdydx_dydx_swap_rate",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "osmosis_stdydx_dydx_swap_rate",
+            "default_node_host": "https://api-osmosis.carbon.network",
+            "default_node_path": "/osmosis/poolmanager/pools/1423/prices?base_asset_denom=ibc/831F0B1BBB1D08A2B75311892876D71565478C532967545476DF4C2D7492E48C&quote_asset_denom=ibc/980E82A9F8E7CA8CD480F4577E73682A6D3855A267D1831485D7EBEF0E7A6C2C",
+            "paths": "[\"spot_price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "rpc_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "stdydx_redemption_rate",
+      "adapter": "math_filter",
+      "input_id": "",
+      "config": {
+        "operation": "min",
+        "input_ids": "[\"osmosis_stdydx_dydx_swap_rate\",\"stdydx_stride_redemption_rate\"]"
+      }
+    },
+    {
+      "output_id": "stdydx_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"stdydx_redemption_rate\",\"dydx_usd\"]"
+      }
+    },
+    {
+      "output_id": "stdydx_usd",
+      "input_id": "stdydx_usd",
+      "adapter": "float_handler",
+      "config": {
+        "operation": "round",
+        "precision": "6"
+      }
+    },
+    {
+      "output_id": "stdydx_usd",
+      "input_id": "stdydx_usd",
+      "adapter": "unchanged_handler",
+      "config": {
+        "strategy": "nullify",
+        "threshold_duration": "900"
+      }
+    }
+  ]
+}

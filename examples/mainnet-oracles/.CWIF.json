@@ -1,0 +1,155 @@
+{
+  "output_id": "wif_usd",
+  "templates": [
+    {
+      "template_id": "response_handler",
+      "adapters": [
+        {
+          "adapter": "unresponsive_handler",
+          "config": {
+            "strategy": "use_last",
+            "grace_duration": "120"
+          }
+        },
+        {
+          "adapter": "unchanged_handler",
+          "config": {
+            "strategy": "nullify",
+            "threshold_duration": "900"
+          }
+        }
+      ]
+    }
+  ],
+  "jobs": [
+    {
+      "output_id": "kucoin_wif_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "kucoin_wif_usdt",
+            "default_node_host": "https://api.kucoin.com",
+            "default_node_path": "/api/v1/market/orderbook/level1?symbol=WIF-USDT",
+            "paths": "[\"data.price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "usdt_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": ".CUSDT",
+            "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
+      "output_id": "kucoin_wif_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"kucoin_wif_usdt\",\"usdt_usd\"]"
+      }
+    },
+    {
+      "output_id": "kraken_wif_usd",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "kraken_wif_usd",
+            "default_node_host": "https://api.kraken.com",
+            "default_node_path": "/0/public/Ticker?pair=WIFUSD",
+            "paths": "[\"result.WIFUSD.c.0\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "binance_wif_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "binance_wif_usdt",
+            "default_node_host": "https://api-binance-proxy.carbon.network",
+            "default_node_path": "/api/v3/ticker/price?symbol=WIFUSDT",
+            "paths": "[\"price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "binance_wif_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"binance_wif_usdt\",\"usdt_usd\"]"
+      }
+    },
+    {
+      "input_id": "kucoin_wif_usd",
+      "output_id": "kucoin_wif_usd",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"kucoin_wif_usd\", \"kraken_wif_usd\",\"binance_wif_usd\"]",
+        "tolerance_percentage": "10"
+      }
+    },
+    {
+      "input_id": "kraken_wif_usd",
+      "output_id": "kraken_wif_usd",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"kucoin_wif_usd\", \"kraken_wif_usd\",\"binance_wif_usd\"]",
+        "tolerance_percentage": "10"
+      }
+    },
+    {
+      "input_id": "binance_wif_usd",
+      "output_id": "binance_wif_usd",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"kucoin_wif_usd\", \"kraken_wif_usd\",\"binance_wif_usd\"]",
+        "tolerance_percentage": "10"
+      }
+    },
+    {
+      "output_id": "wif_usd",
+      "adapter": "weighted_average",
+      "config": {
+        "value_ids": "[\"kucoin_wif_usd\",\"kraken_wif_usd\",\"binance_wif_usd\"]",
+        "weights": "[0.3, 0.3, 0.4]"
+      }
+    },
+    {
+      "output_id": "wif_usd",
+      "input_id": "wif_usd",
+      "adapter": "float_handler",
+      "config": {
+        "operation": "round",
+        "precision": "6"
+      }
+    }
+  ]
+}

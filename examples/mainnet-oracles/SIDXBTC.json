@@ -1,0 +1,127 @@
+{
+  "output_id": "btc_usd",
+  "templates": [
+    {
+      "template_id": "response_handler",
+      "adapters": [
+        {
+          "adapter": "unresponsive_handler",
+          "config": {
+            "strategy": "use_last",
+            "grace_duration": "120"
+          }
+        },
+        {
+          "adapter": "unchanged_handler",
+          "config": {
+            "strategy": "nullify",
+            "threshold_duration": "900"
+          }
+        }
+      ]
+    }
+  ],
+  "jobs": [
+    {
+      "output_id": "bitstamp_btc_usd",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "bitstamp_btc_usd",
+            "default_node_host": "https://www.bitstamp.net",
+            "default_node_path": "/api/v2/ticker/btcusd",
+            "paths": "[\"last\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "kraken_btc_usd",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "kraken_btc_usd",
+            "default_node_host": "https://api.kraken.com",
+            "default_node_path": "/0/public/Ticker?pair=XXBTZUSD",
+            "paths": "[\"result.XXBTZUSD.c.0\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "coinbase_btc_usd",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "coinbase_btc_usd",
+            "default_node_host": "https://api.exchange.coinbase.com",
+            "default_node_path": "/products/BTC-USD/ticker",
+            "paths": "[\"price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "bitstamp_btc_usd",
+      "input_id": "bitstamp_btc_usd",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids":"[\"bitstamp_btc_usd\",\"kraken_btc_usd\", \"coinbase_btc_usd\"]",
+        "tolerance_percentage": "10"
+      }
+    },
+    {
+      "output_id": "kraken_btc_usd",
+      "input_id": "kraken_btc_usd",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids":"[\"bitstamp_btc_usd\",\"kraken_btc_usd\", \"coinbase_btc_usd\"]",
+        "tolerance_percentage": "10"
+      }
+    },
+    {
+      "output_id": "coinbase_btc_usd",
+      "input_id": "coinbase_btc_usd",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids":"[\"bitstamp_btc_usd\",\"kraken_btc_usd\", \"coinbase_btc_usd\"]",
+        "tolerance_percentage": "10"
+      }
+    },
+    {
+      "output_id": "btc_usd",
+      "adapter": "weighted_average",
+      "config": {
+        "value_ids":"[\"bitstamp_btc_usd\",\"kraken_btc_usd\", \"coinbase_btc_usd\"]",
+        "weights": "[0.25, 0.25, 0.5]"
+      }
+    },
+    {
+      "output_id": "btc_usd",
+      "input_id": "btc_usd",
+      "adapter": "float_handler",
+      "config": {
+        "operation": "round",
+        "precision": "2"
+      }
+    }
+  ]
+}

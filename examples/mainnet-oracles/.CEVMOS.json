@@ -1,0 +1,83 @@
+{
+	"output_id": "evmos_usd",
+	"templates": [
+		{
+			"template_id": "rpc_response_handler",
+			"adapters": [
+				{
+					"adapter": "unresponsive_handler",
+					"config": {
+						"strategy": "use_last",
+						"grace_duration": "120"
+					}
+				}
+			]
+		}
+	],
+	"jobs": [
+		{
+			"output_id": "osmo_usd",
+			"adapters": [
+			  {
+				"adapter": "oracle_result_fetcher",
+				"config": {
+					"oracle_id": ".COSMO",
+					"stale_allowance": "900"
+				}
+			  }
+			]
+		  },
+		{
+			"output_id": "osmosis_evmos_osmo_pool",
+			"adapters": [
+				{
+					"adapter": "fetcher_multiple",
+					"config": {
+						"custom_node_url_key": "osmosis_722",
+						"default_node_host": "https://api-osmosis.carbon.network",
+						"default_node_path": "/osmosis/gamm/v1beta1/pools/722",
+						"paths": "[\"pool.pool_assets.1.token.amount\", \"pool.pool_assets.0.token.amount\"]",
+						"timeout": "10"
+					}
+				},
+				{
+					"template": "rpc_response_handler"
+				}
+			]
+		},
+		{
+			"output_id": "osmosis_evmos_osmo",
+			"adapter": "math_filter",
+			"input_id": "osmosis_evmos_osmo_pool",
+			"config": {
+				"operation": "divide"
+			}
+		},
+		{
+			"output_id": "evmos_usd_12",
+			"adapter": "math_filter",
+			"config": {
+				"operation": "multiply",
+				"input_ids": "[\"osmosis_evmos_osmo\", \"osmo_usd\"]"
+			}
+		},
+		{
+			"output_id": "evmos_usd",
+			"input_id": "evmos_usd_12",
+			"adapter": "decimal_handler",
+			"config": {
+				"operation": "increase",
+				"exponent": "12"
+			}
+		},
+		{
+			"output_id": "evmos_usd",
+			"input_id": "evmos_usd",
+			"adapter": "float_handler",
+			"config": {
+				"operation": "round",
+				"precision": "6"
+			}
+		}
+	]
+}
