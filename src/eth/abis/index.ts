@@ -4,5 +4,6 @@ import keyStorage from "./keyStorage.json";
 import lockProxy from "./lockProxy.json";
 import vault from "./vault.json";
 import bridgeEntrance from "./bridgeEntrance.json";
+import axelarBridge from "./axelarBridge.json";
 
-export { balanceReader, erc20, keyStorage, lockProxy, vault, bridgeEntrance };
+export { axelarBridge, balanceReader, erc20, keyStorage, lockProxy, vault, bridgeEntrance };
