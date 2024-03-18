@@ -105,7 +105,6 @@ export interface PositionHistoryEntry {
 }
 
 export interface QueryGetPerpPoolHistoryRequest extends QueryByPageRequest {
-  poolId: number | string;
   address: string
 }
 

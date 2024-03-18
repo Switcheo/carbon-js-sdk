@@ -150,7 +150,6 @@ class InsightsQueryClient {
       {
         limit: query.limit ?? 10,
         offset: query.offset ?? 0,
-        poolId: query.poolId,
         address: query.address,
       }
     );
