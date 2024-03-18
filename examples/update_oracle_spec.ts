@@ -53,73 +53,88 @@ function readJsonFilesFromFolder(folderPath: string): Promise<{ [fileName: strin
     console.log("mnemonics", mnemonics);
   
     const sdk = await CarbonSDK.instance({
-      network: CarbonSDK.Network.LocalHost,
+      network: CarbonSDK.Network.TestNet,
     });
     const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
     console.log("connected sdk");
 
     const mainnetOracles = await readJsonFilesFromFolder("./examples/mainnet-oracles")
 
+    // const oraclesToUpdate = [
+    //   {
+    //     id: ".CAXLUSDC",
+    //     maxResultAge: 305
+    //   },
+    //   {
+    //     id: ".CEVMOS",
+    //     maxResultAge: 305
+    //   },
+    //   {
+    //     id: ".CIBX",
+    //     maxResultAge: 305
+    //   },
+    //   {
+    //     id: ".CIRIS",
+    //     maxResultAge: 305
+    //   },
+    //   {
+    //     id: ".CKUJI",
+    //     maxResultAge: 320
+    //   },
+    //   {
+    //     id: ".CMILKTIA",
+    //     maxResultAge: 354
+    //   },
+    //   {
+    //     id: ".COSMO",
+    //     maxResultAge: 300
+    //   },
+    //   {
+    //     id: ".CSCRT",
+    //     maxResultAge: 300
+    //   },
+    //   {
+    //     id: ".CSTATOM",
+    //     maxResultAge: 310
+    //   },
+    //   {
+    //     id: ".CSTDYDX",
+    //     maxResultAge: 310
+    //   },
+    //   {
+    //     id: ".CSTEVMOS",
+    //     maxResultAge: 320
+    //   },
+    //   {
+    //     id: ".CSTOSMO",
+    //     maxResultAge: 330
+    //   },
+    //   {
+    //     id: ".CSTRD",
+    //     maxResultAge: 330
+    //   },
+    //   {
+    //     id: ".CSTSTARS",
+    //     maxResultAge: 310
+    //   },
+    //   {
+    //     id: ".CSTTIA",
+    //     maxResultAge: 312
+    //   },
+    // ]
+
     const oraclesToUpdate = [
       {
-        id: ".CAXLUSDC",
-        maxResultAge: 305
+        id: ".CYIELDUSD",
+        maxResultAge: 482,
       },
       {
-        id: ".CEVMOS",
-        maxResultAge: 305
+        id: "SIDXBTC",
+        maxResultAge: 300,
       },
       {
-        id: ".CIBX",
-        maxResultAge: 305
-      },
-      {
-        id: ".CIRIS",
-        maxResultAge: 305
-      },
-      {
-        id: ".CKUJI",
-        maxResultAge: 320
-      },
-      {
-        id: ".CMILKTIA",
-        maxResultAge: 354
-      },
-      {
-        id: ".COSMO",
-        maxResultAge: 300
-      },
-      {
-        id: ".CSCRT",
-        maxResultAge: 300
-      },
-      {
-        id: ".CSTATOM",
-        maxResultAge: 310
-      },
-      {
-        id: ".CSTDYDX",
-        maxResultAge: 310
-      },
-      {
-        id: ".CSTEVMOS",
-        maxResultAge: 320
-      },
-      {
-        id: ".CSTOSMO",
-        maxResultAge: 330
-      },
-      {
-        id: ".CSTRD",
-        maxResultAge: 330
-      },
-      {
-        id: ".CSTSTARS",
-        maxResultAge: 310
-      },
-      {
-        id: ".CSTTIA",
-        maxResultAge: 312
+        id: "SIDXETH",
+        maxResultAge: 300,
       },
     ]
       

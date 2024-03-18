@@ -23,15 +23,15 @@
   ],
   "jobs": [
     {
-      "output_id": "bitstamp_eth_usd",
+      "output_id": "binance_eth_usdt",
       "adapters": [
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "bitstamp_eth_usd",
-            "default_node_host": "https://www.bitstamp.net",
-            "default_node_path": "/api/v2/ticker/ethusd",
-            "paths": "[\"last\"]",
+            "custom_node_url_key": "binance_eth_usdt",
+            "default_node_host": "https://api-binance-proxy.carbon.network",
+            "default_node_path": "/api/v3/ticker/price?symbol=ETHUSDT",
+            "paths": "[\"price\"]",
             "timeout": "10"
           }
         },
@@ -41,15 +41,35 @@
       ]
     },
     {
-      "output_id": "kraken_eth_usd",
+      "output_id": "usdt_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": ".CUSDT",
+            "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
+      "output_id": "binance_eth_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"binance_eth_usdt\",\"usdt_usd\"]"
+      }
+    },
+    {
+      "output_id": "okx_eth_usdt",
       "adapters": [
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "kraken_eth_usd",
-            "default_node_host": "https://api.kraken.com",
-            "default_node_path": "/0/public/Ticker?pair=XETHZUSD",
-            "paths": "[\"result.XETHZUSD.c.0\"]",
+            "custom_node_url_key": "okx_eth_usdt",
+            "default_node_host": "https://www.okx.com",
+            "default_node_path": "/api/v5/market/index-tickers?instId=ETH-USDT",
+            "paths": "[\"data.0.idxPx\"]",
             "timeout": "10"
           }
         },
@@ -57,6 +77,14 @@
           "template": "response_handler"
         }
       ]
+    },
+    {
+      "output_id": "okx_eth_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"okx_eth_usdt\",\"usdt_usd\"]"
+      }
     },
     {
       "output_id": "coinbase_eth_usd",
@@ -77,32 +105,32 @@
       ]
     },
     {
-      "output_id": "bitstamp_eth_usd",
-      "input_id": "bitstamp_eth_usd",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids":"[\"bitstamp_eth_usd\",\"kraken_eth_usd\", \"coinbase_eth_usd\"]",
-        "tolerance_percentage": "10"
-      }
-    },
-    {
-      "output_id": "kraken_eth_usd",
-      "input_id": "kraken_eth_usd",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids":"[\"bitstamp_eth_usd\",\"kraken_eth_usd\", \"coinbase_eth_usd\"]",
-        "tolerance_percentage": "10"
-      }
-    },
-    {
-      "output_id": "coinbase_eth_usd",
       "input_id": "coinbase_eth_usd",
+      "output_id": "coinbase_eth_usd",
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",
-        "value_ids":"[\"bitstamp_eth_usd\",\"kraken_eth_usd\", \"coinbase_eth_usd\"]",
+        "value_ids": "[\"binance_eth_usd\", \"okx_eth_usd\",\"coinbase_eth_usd\"]",
+        "tolerance_percentage": "10"
+      }
+    },
+    {
+      "input_id": "binance_eth_usd",
+      "output_id": "binance_eth_usd",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"binance_eth_usd\", \"okx_eth_usd\",\"coinbase_eth_usd\"]",
+        "tolerance_percentage": "10"
+      }
+    },
+    {
+      "input_id": "okx_eth_usd",
+      "output_id": "okx_eth_usd",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"binance_eth_usd\", \"okx_eth_usd\",\"coinbase_eth_usd\"]",
         "tolerance_percentage": "10"
       }
     },
@@ -110,8 +138,8 @@
       "output_id": "eth_usd",
       "adapter": "weighted_average",
       "config": {
-        "value_ids":"[\"bitstamp_eth_usd\",\"kraken_eth_usd\", \"coinbase_eth_usd\"]",
-        "weights": "[0.25, 0.25, 0.5]"
+        "value_ids": "[\"binance_eth_usd\",\"okx_eth_usd\",\"coinbase_eth_usd\"]",
+        "weights": "[0.4, 0.3, 0.3]"
       }
     },
     {
