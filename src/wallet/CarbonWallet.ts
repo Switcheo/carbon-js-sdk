@@ -430,8 +430,8 @@ export class CarbonWallet {
   */
   async checkWalletSignatureCompatibility() {
     const query = this.getQueryClient()
-    const hasCarbonBalances = (await query.bank.AllBalances({ address: this.bech32Address })).balances.length > 0
-    const hasEvmAddressBalances = (await query.bank.AllBalances({ address: this.evmBech32Address })).balances.length > 0
+    const hasCarbonBalances = (await query.bank.AllBalances({ address: this.bech32Address, resolveDenom: false })).balances.length > 0
+    const hasEvmAddressBalances = (await query.bank.AllBalances({ address: this.evmBech32Address, resolveDenom: false })).balances.length > 0
     const isEvmWallet = this.isEvmWallet()
     if (hasEvmAddressBalances && !hasCarbonBalances && !isEvmWallet) {
       this.sequenceInvalidated = true

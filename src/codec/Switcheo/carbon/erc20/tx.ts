@@ -9,13 +9,16 @@ export const protobufPackage = "Switcheo.carbon.erc20";
 /** MsgConvertCoin defines a Msg to convert a native Cosmos coin to a ERC20 token */
 export interface MsgConvertCoin {
   /**
-   * coin is a Cosmos coin whose denomination is registered in a token pair. The coin
-   * amount defines the amount of coins to convert.
+   * coin is a Cosmos coin whose denomination is registered in a token pair. The
+   * coin amount defines the amount of coins to convert.
    */
   coin?: Coin;
   /** receiver is the hex address to receive ERC20 token */
   receiver: string;
-  /** sender is the cosmos bech32 address from the owner of the given Cosmos coins */
+  /**
+   * sender is the cosmos bech32 address from the owner of the given Cosmos
+   * coins
+   */
   sender: string;
 }
 
@@ -27,13 +30,19 @@ export interface MsgConvertCoinResponse {}
  * coin.
  */
 export interface MsgConvertERC20 {
-  /** contract_address of an ERC20 token contract, that is registered in a token pair */
+  /**
+   * contract_address of an ERC20 token contract, that is registered in a token
+   * pair
+   */
   contractAddress: string;
   /** amount of ERC20 tokens to convert */
   amount: string;
   /** receiver is the bech32 address to receive native Cosmos coins */
   receiver: string;
-  /** sender is the merged address (in bech32) of the erc20 account that contains the tokens to convert */
+  /**
+   * sender is the merged address (in bech32) of the erc20 account that contains
+   * the tokens to convert
+   */
   sender: string;
 }
 
@@ -58,7 +67,10 @@ export interface MsgUpdateParams {
  */
 export interface MsgUpdateParamsResponse {}
 
-/** MsgRegisterToken defines a Msg to register an existing token on the token mapping and deploys a new ERC20 contract for it */
+/**
+ * MsgRegisterToken defines a Msg to register an existing token on the token
+ * mapping and deploys a new ERC20 contract for it
+ */
 export interface MsgRegisterToken {
   creator: string;
   denom: string;
@@ -69,7 +81,10 @@ export interface MsgRegisterTokenResponse {
   contractAddress: string;
 }
 
-/** MsgRegisterERC20 defines a Msg to register an existing erc20 contract on the token mapping and creates a new cosmos token for it */
+/**
+ * MsgRegisterERC20 defines a Msg to register an existing erc20 contract on the
+ * token mapping and creates a new cosmos token for it
+ */
 export interface MsgRegisterERC20 {
   creator: string;
   contractAddress: string;
@@ -1003,9 +1018,15 @@ export const MsgUpdateEVMHookEnabledResponse = {
 
 /** Msg defines the erc20 Msg service. */
 export interface Msg {
-  /** RegisterToken registers an existing token on the token mapping and deploys a new ERC20 contract for it */
+  /**
+   * RegisterToken registers an existing token on the token mapping and deploys
+   * a new ERC20 contract for it
+   */
   RegisterToken(request: MsgRegisterToken): Promise<MsgRegisterTokenResponse>;
-  /** RegisterERC20 registers an existing erc20 contract on the token mapping and creates a new cosmos token for it */
+  /**
+   * RegisterERC20 registers an existing erc20 contract on the token mapping and
+   * creates a new cosmos token for it
+   */
   RegisterERC20(request: MsgRegisterERC20): Promise<MsgRegisterERC20Response>;
   /**
    * ConvertCoin mints a ERC20 representation of the native Cosmos coin denom
@@ -1026,8 +1047,9 @@ export interface Msg {
     request: MsgUpdateEVMHookEnabled
   ): Promise<MsgUpdateEVMHookEnabledResponse>;
   /**
-   * UpdateParams defined a governance operation for updating the x/erc20 module parameters.
-   * The authority is hard-coded to the Cosmos SDK x/gov module account
+   * UpdateParams defined a governance operation for updating the x/erc20 module
+   * parameters. The authority is hard-coded to the Cosmos SDK x/gov module
+   * account
    */
   UpdateParams(request: MsgUpdateParams): Promise<MsgUpdateParamsResponse>;
 }

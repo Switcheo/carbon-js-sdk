@@ -13,6 +13,13 @@ export interface MsgCreateValidator {
   description?: Description;
   commission?: CommissionRates;
   minSelfDelegation: string;
+  /**
+   * Deprecated: Use of Delegator Address in MsgCreateValidator is deprecated.
+   * The validator address bytes and delegator address bytes refer to the same account while creating validator (defer
+   * only in bech32 notation).
+   *
+   * @deprecated
+   */
   delegatorAddress: string;
   validatorAddress: string;
   pubkey?: Any;
@@ -81,6 +88,12 @@ export interface MsgUndelegate {
 /** MsgUndelegateResponse defines the Msg/Undelegate response type. */
 export interface MsgUndelegateResponse {
   completionTime?: Date;
+  /**
+   * amount returns the amount of undelegated coins
+   *
+   * Since: cosmos-sdk 0.50
+   */
+  amount?: Coin;
 }
 
 /**
@@ -892,6 +905,9 @@ export const MsgUndelegateResponse = {
         writer.uint32(10).fork()
       ).ldelim();
     }
+    if (message.amount !== undefined) {
+      Coin.encode(message.amount, writer.uint32(18).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -910,6 +926,9 @@ export const MsgUndelegateResponse = {
             Timestamp.decode(reader, reader.uint32())
           );
           break;
+        case 2:
+          message.amount = Coin.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -924,6 +943,10 @@ export const MsgUndelegateResponse = {
       object.completionTime !== undefined && object.completionTime !== null
         ? fromJsonTimestamp(object.completionTime)
         : undefined;
+    message.amount =
+      object.amount !== undefined && object.amount !== null
+        ? Coin.fromJSON(object.amount)
+        : undefined;
     return message;
   },
 
@@ -931,6 +954,8 @@ export const MsgUndelegateResponse = {
     const obj: any = {};
     message.completionTime !== undefined &&
       (obj.completionTime = message.completionTime.toISOString());
+    message.amount !== undefined &&
+      (obj.amount = message.amount ? Coin.toJSON(message.amount) : undefined);
     return obj;
   },
 
@@ -939,6 +964,10 @@ export const MsgUndelegateResponse = {
   ): MsgUndelegateResponse {
     const message = { ...baseMsgUndelegateResponse } as MsgUndelegateResponse;
     message.completionTime = object.completionTime ?? undefined;
+    message.amount =
+      object.amount !== undefined && object.amount !== null
+        ? Coin.fromPartial(object.amount)
+        : undefined;
     return message;
   },
 };
