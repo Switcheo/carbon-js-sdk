@@ -1,10 +1,9 @@
 import CarbonSDK from "@carbon-sdk/CarbonSDK";
 import { Carbon } from "@carbon-sdk/codec";
-import { EthNetworkConfig, NetworkConfig, NetworkConfigProvider, NetworkConfigs } from "@carbon-sdk/constant";
+import { NetworkConfigProvider, NetworkConfigs } from "@carbon-sdk/constant";
 import { ABIs } from "@carbon-sdk/eth";
 import BigNumber from "bignumber.js";
 import { ethers } from "ethers";
-import { Blockchain } from "..";
 export interface AxelarBridgeClientOpts {
   configProvider: NetworkConfigProvider;
 }
@@ -29,29 +28,16 @@ export interface EthersTransactionResponse extends ethers.Transaction {
   wait: () => Promise<ethers.Transaction>;
 }
 
-type SupportedBlockchains = Blockchain.BinanceSmartChain | Blockchain.Ethereum | Blockchain.Arbitrum | Blockchain.Polygon | Blockchain.Okc;
-
 export class AxelarBridgeClient {
-  static SUPPORTED_BLOCKCHAINS = [Blockchain.BinanceSmartChain, Blockchain.Ethereum, Blockchain.Arbitrum, Blockchain.Polygon, Blockchain.Okc] as const;
-  static BLOCKCHAIN_KEY = {
-    [Blockchain.BinanceSmartChain]: "bsc",
-    [Blockchain.Ethereum]: "eth",
-    [Blockchain.Arbitrum]: "arbitrum",
-    [Blockchain.Polygon]: "polygon",
-    [Blockchain.Okc]: "okc",
-  };
-  static BLOCKCHAINV2_MAPPING = {
-    [Blockchain.BinanceSmartChain]: "Binance Smart Chain",
-    [Blockchain.Ethereum]: "Ethereum",
-    [Blockchain.Arbitrum]: "Arbitrum",
-    [Blockchain.Polygon]: "Polygon",
-    [Blockchain.Okc]: "OKC",
-  };
 
   private constructor(
     public readonly configProvider: NetworkConfigProvider,
-    public readonly blockchain: typeof AxelarBridgeClient.SUPPORTED_BLOCKCHAINS[number],
   ) { }
+
+  public static instance(opts: AxelarBridgeClientOpts) {
+    const { configProvider } = opts
+    return new AxelarBridgeClient(configProvider)
+  }
 
   // lock deposit 
   public async deposit(params: DepositParams): Promise<EthersTransactionResponse> {
@@ -83,24 +69,6 @@ export class AxelarBridgeClient {
     signCompleteCallback?.()
 
     return depositResultTx
-  }
-
-  public getProvider() {
-    new ethers.providers.JsonRpcProvider(this.getProviderUrl())
-  }
-
-  public getNetworkConfig(): NetworkConfig {
-    return this.configProvider.getConfig();
-  }
-
-  public getConfig(): EthNetworkConfig {
-    const networkConfig = this.getNetworkConfig();
-    const blockchain = this.blockchain as SupportedBlockchains;
-    return networkConfig[AxelarBridgeClient.BLOCKCHAIN_KEY[blockchain] as SupportedBlockchains];
-  }
-
-  public getProviderUrl() {
-    return this.getConfig().rpcURL;
   }
 }
 
