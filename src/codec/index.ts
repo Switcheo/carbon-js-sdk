@@ -192,6 +192,47 @@ registry.register("/Switcheo.carbon.btcx.MsgBindResponse", PolyNetwork.Btcx.MsgB
 registry.register("/Switcheo.carbon.btcx.MsgLock", PolyNetwork.Btcx.MsgLock);
 registry.register("/Switcheo.carbon.btcx.MsgLockResponse", PolyNetwork.Btcx.MsgLockResponse);
 
+registry.register("/Switcheo.carbon.bridge.MsgSetBridgeEnabled", Carbon.Bridge.MsgSetBridgeEnabled);
+registry.register("/Switcheo.carbon.bridge.MsgSetBridgeEnabledResponse", Carbon.Bridge.MsgSetBridgeEnabledResponse);
+registry.register("/Switcheo.carbon.bridge.MsgUpdateAxelarIbcChannel", Carbon.Bridge.MsgUpdateAxelarIbcChannel);
+registry.register("/Switcheo.carbon.bridge.MsgUpdateAxelarIbcChannelResponse", Carbon.Bridge.MsgUpdateAxelarIbcChannelResponse);
+registry.register("/Switcheo.carbon.bridge.MsgUpdateIbcTimeoutHeightOffset", Carbon.Bridge.MsgUpdateIbcTimeoutHeightOffset);
+registry.register("/Switcheo.carbon.bridge.MsgUpdateIbcTimeoutHeightOffsetResponse", Carbon.Bridge.MsgUpdateIbcTimeoutHeightOffsetResponse);
+registry.register("/Switcheo.carbon.bridge.MsgUpdateParams", Carbon.Bridge.MsgUpdateParams);
+registry.register("/Switcheo.carbon.bridge.MsgUpdateParamsResponse", Carbon.Bridge.MsgUpdateParamsResponse);
+registry.register("/Switcheo.carbon.bridge.MsgAxelarSendToken", Carbon.Bridge.MsgAxelarSendToken);
+registry.register("/Switcheo.carbon.bridge.MsgAxelarSendTokenResponse", Carbon.Bridge.MsgAxelarSendTokenResponse);
+registry.register("/Switcheo.carbon.bridge.MsgAxelarCallContract", Carbon.Bridge.MsgAxelarCallContract);
+registry.register("/Switcheo.carbon.bridge.MsgAxelarCallContractResponse", Carbon.Bridge.MsgAxelarCallContractResponse);
+registry.register("/Switcheo.carbon.bridge.MsgAxelarCallContractWithToken", Carbon.Bridge.MsgAxelarCallContractWithToken);
+registry.register("/Switcheo.carbon.bridge.MsgAxelarCallContractWithTokenResponse", Carbon.Bridge.MsgAxelarCallContractWithTokenResponse);
+registry.register("/Switcheo.carbon.bridge.MsgCreateConnection", Carbon.Bridge.MsgCreateConnection);
+registry.register("/Switcheo.carbon.bridge.MsgCreateConnectionResponse", Carbon.Bridge.MsgCreateConnectionResponse);
+registry.register("/Switcheo.carbon.bridge.MsgUpdateConnection", Carbon.Bridge.MsgUpdateConnection);
+registry.register("/Switcheo.carbon.bridge.MsgUpdateConnectionResponse", Carbon.Bridge.MsgUpdateConnectionResponse);
+registry.register("/Switcheo.carbon.bridge.MsgRemoveConnection", Carbon.Bridge.MsgRemoveConnection);
+registry.register("/Switcheo.carbon.bridge.MsgRemoveConnectionResponse", Carbon.Bridge.MsgRemoveConnectionResponse);
+registry.register("/Switcheo.carbon.bridge.MsgRegisterExternalToken", Carbon.Bridge.MsgRegisterExternalToken);
+registry.register("/Switcheo.carbon.bridge.MsgRegisterExternalTokenResponse", Carbon.Bridge.MsgRegisterExternalTokenResponse);
+registry.register("/Switcheo.carbon.bridge.MsgDeregisterExternalToken", Carbon.Bridge.MsgDeregisterExternalToken);
+registry.register("/Switcheo.carbon.bridge.MsgDeregisterExternalTokenResponse", Carbon.Bridge.MsgDeregisterExternalTokenResponse);
+registry.register("/Switcheo.carbon.bridge.MsgDeployNativeToken", Carbon.Bridge.MsgDeployNativeToken);
+registry.register("/Switcheo.carbon.bridge.MsgDeployNativeTokenResponse", Carbon.Bridge.MsgDeployNativeTokenResponse);
+registry.register("/Switcheo.carbon.bridge.MsgRegisterDeployedToken", Carbon.Bridge.MsgRegisterDeployedToken);
+registry.register("/Switcheo.carbon.bridge.MsgRegisterDeployedTokenResponse", Carbon.Bridge.MsgRegisterDeployedTokenResponse);
+registry.register("/Switcheo.carbon.bridge.MsgWithdrawToken", Carbon.Bridge.MsgWithdrawToken);
+registry.register("/Switcheo.carbon.bridge.MsgWithdrawTokenResponse", Carbon.Bridge.MsgWithdrawTokenResponse);
+registry.register("/Switcheo.carbon.bridge.MsgRegisterExecutable", Carbon.Bridge.MsgRegisterExecutable);
+registry.register("/Switcheo.carbon.bridge.MsgRegisterExecutableResponse", Carbon.Bridge.MsgRegisterExecutableResponse);
+registry.register("/Switcheo.carbon.bridge.MsgDeregisterExecutable", Carbon.Bridge.MsgDeregisterExecutable);
+registry.register("/Switcheo.carbon.bridge.MsgDeregisterExecutableResponse", Carbon.Bridge.MsgDeregisterExecutableResponse);
+registry.register("/Switcheo.carbon.bridge.MsgExecuteOnExecutableContract", Carbon.Bridge.MsgExecuteOnExecutableContract);
+registry.register("/Switcheo.carbon.bridge.MsgExecuteOnExecutableContractResponse", Carbon.Bridge.MsgExecuteOnExecutableContractResponse);
+registry.register("/Switcheo.carbon.bridge.MsgAllowExternalExecutor", Carbon.Bridge.MsgAllowExternalExecutor);
+registry.register("/Switcheo.carbon.bridge.MsgAllowExternalExecutorResponse", Carbon.Bridge.MsgAllowExternalExecutorResponse);
+registry.register("/Switcheo.carbon.bridge.MsgRemoveExternalExecutor", Carbon.Bridge.MsgRemoveExternalExecutor);
+registry.register("/Switcheo.carbon.bridge.MsgRemoveExternalExecutorResponse", Carbon.Bridge.MsgRemoveExternalExecutorResponse);
+
 registry.register("/Switcheo.carbon.position.MsgSetMargin", Carbon.Position.MsgSetMargin);
 registry.register("/Switcheo.carbon.position.MsgSetMarginResponse", Carbon.Position.MsgSetMarginResponse);
 
@@ -779,6 +820,46 @@ export const TxTypes = {
   "MsgBindResponse": "/Switcheo.carbon.btcx.MsgBindResponse",
   "MsgLock": "/Switcheo.carbon.btcx.MsgLock",
   "MsgLockResponse": "/Switcheo.carbon.btcx.MsgLockResponse",
+  "MsgSetBridgeEnabled": "/Switcheo.carbon.bridge.MsgSetBridgeEnabled",
+  "MsgSetBridgeEnabledResponse": "/Switcheo.carbon.bridge.MsgSetBridgeEnabledResponse",
+  "MsgUpdateAxelarIbcChannel": "/Switcheo.carbon.bridge.MsgUpdateAxelarIbcChannel",
+  "MsgUpdateAxelarIbcChannelResponse": "/Switcheo.carbon.bridge.MsgUpdateAxelarIbcChannelResponse",
+  "MsgUpdateIbcTimeoutHeightOffset": "/Switcheo.carbon.bridge.MsgUpdateIbcTimeoutHeightOffset",
+  "MsgUpdateIbcTimeoutHeightOffsetResponse": "/Switcheo.carbon.bridge.MsgUpdateIbcTimeoutHeightOffsetResponse",
+  "MsgBridgeUpdateParams": "/Switcheo.carbon.bridge.MsgUpdateParams",
+  "MsgBridgeUpdateParamsResponse": "/Switcheo.carbon.bridge.MsgUpdateParamsResponse",
+  "MsgAxelarSendToken": "/Switcheo.carbon.bridge.MsgAxelarSendToken",
+  "MsgAxelarSendTokenResponse": "/Switcheo.carbon.bridge.MsgAxelarSendTokenResponse",
+  "MsgAxelarCallContract": "/Switcheo.carbon.bridge.MsgAxelarCallContract",
+  "MsgAxelarCallContractResponse": "/Switcheo.carbon.bridge.MsgAxelarCallContractResponse",
+  "MsgAxelarCallContractWithToken": "/Switcheo.carbon.bridge.MsgAxelarCallContractWithToken",
+  "MsgAxelarCallContractWithTokenResponse": "/Switcheo.carbon.bridge.MsgAxelarCallContractWithTokenResponse",
+  "MsgCreateConnection": "/Switcheo.carbon.bridge.MsgCreateConnection",
+  "MsgCreateConnectionResponse": "/Switcheo.carbon.bridge.MsgCreateConnectionResponse",
+  "MsgUpdateConnection": "/Switcheo.carbon.bridge.MsgUpdateConnection",
+  "MsgUpdateConnectionResponse": "/Switcheo.carbon.bridge.MsgUpdateConnectionResponse",
+  "MsgRemoveConnection": "/Switcheo.carbon.bridge.MsgRemoveConnection",
+  "MsgRemoveConnectionResponse": "/Switcheo.carbon.bridge.MsgRemoveConnectionResponse",
+  "MsgRegisterExternalToken": "/Switcheo.carbon.bridge.MsgRegisterExternalToken",
+  "MsgRegisterExternalTokenResponse": "/Switcheo.carbon.bridge.MsgRegisterExternalTokenResponse",
+  "MsgDeregisterExternalToken": "/Switcheo.carbon.bridge.MsgDeregisterExternalToken",
+  "MsgDeregisterExternalTokenResponse": "/Switcheo.carbon.bridge.MsgDeregisterExternalTokenResponse",
+  "MsgDeployNativeToken": "/Switcheo.carbon.bridge.MsgDeployNativeToken",
+  "MsgDeployNativeTokenResponse": "/Switcheo.carbon.bridge.MsgDeployNativeTokenResponse",
+  "MsgRegisterDeployedToken": "/Switcheo.carbon.bridge.MsgRegisterDeployedToken",
+  "MsgRegisterDeployedTokenResponse": "/Switcheo.carbon.bridge.MsgRegisterDeployedTokenResponse",
+  "MsgWithdrawToken": "/Switcheo.carbon.bridge.MsgWithdrawToken",
+  "MsgWithdrawTokenResponse": "/Switcheo.carbon.bridge.MsgWithdrawTokenResponse",
+  "MsgRegisterExecutable": "/Switcheo.carbon.bridge.MsgRegisterExecutable",
+  "MsgRegisterExecutableResponse": "/Switcheo.carbon.bridge.MsgRegisterExecutableResponse",
+  "MsgDeregisterExecutable": "/Switcheo.carbon.bridge.MsgDeregisterExecutable",
+  "MsgDeregisterExecutableResponse": "/Switcheo.carbon.bridge.MsgDeregisterExecutableResponse",
+  "MsgExecuteOnExecutableContract": "/Switcheo.carbon.bridge.MsgExecuteOnExecutableContract",
+  "MsgExecuteOnExecutableContractResponse": "/Switcheo.carbon.bridge.MsgExecuteOnExecutableContractResponse",
+  "MsgAllowExternalExecutor": "/Switcheo.carbon.bridge.MsgAllowExternalExecutor",
+  "MsgAllowExternalExecutorResponse": "/Switcheo.carbon.bridge.MsgAllowExternalExecutorResponse",
+  "MsgRemoveExternalExecutor": "/Switcheo.carbon.bridge.MsgRemoveExternalExecutor",
+  "MsgRemoveExternalExecutorResponse": "/Switcheo.carbon.bridge.MsgRemoveExternalExecutorResponse",
   "MsgSetMargin": "/Switcheo.carbon.position.MsgSetMargin",
   "MsgSetMarginResponse": "/Switcheo.carbon.position.MsgSetMarginResponse",
   "MsgCreateOracle": "/Switcheo.carbon.oracle.MsgCreateOracle",
@@ -1188,7 +1269,7 @@ export { Any } from "./google/protobuf/any";
 export { Timestamp } from "./google/protobuf/timestamp";
 export { DoubleValue, FloatValue, Int64Value, UInt64Value, Int32Value, UInt32Value, BoolValue, StringValue, BytesValue } from "./google/protobuf/wrappers";
 export { Duration } from "./google/protobuf/duration";
-export { FieldDescriptorProto_Type, fieldDescriptorProto_TypeFromJSON, fieldDescriptorProto_TypeToJSON, FieldDescriptorProto_Label, fieldDescriptorProto_LabelFromJSON, fieldDescriptorProto_LabelToJSON, FileOptions_OptimizeMode, fileOptions_OptimizeModeFromJSON, fileOptions_OptimizeModeToJSON, FieldOptions_CType, fieldOptions_CTypeFromJSON, fieldOptions_CTypeToJSON, FieldOptions_JSType, fieldOptions_JSTypeFromJSON, fieldOptions_JSTypeToJSON, FieldOptions_OptionRetention, fieldOptions_OptionRetentionFromJSON, fieldOptions_OptionRetentionToJSON, FieldOptions_OptionTargetType, fieldOptions_OptionTargetTypeFromJSON, fieldOptions_OptionTargetTypeToJSON, MethodOptions_IdempotencyLevel, methodOptions_IdempotencyLevelFromJSON, methodOptions_IdempotencyLevelToJSON, GeneratedCodeInfo_Annotation_Semantic, generatedCodeInfo_Annotation_SemanticFromJSON, generatedCodeInfo_Annotation_SemanticToJSON, FileDescriptorSet, FileDescriptorProto, DescriptorProto, DescriptorProto_ExtensionRange, DescriptorProto_ReservedRange, ExtensionRangeOptions, FieldDescriptorProto, OneofDescriptorProto, EnumDescriptorProto, EnumDescriptorProto_EnumReservedRange, EnumValueDescriptorProto, ServiceDescriptorProto, MethodDescriptorProto, FileOptions, MessageOptions, FieldOptions, OneofOptions, EnumOptions, EnumValueOptions, ServiceOptions, MethodOptions, UninterpretedOption, UninterpretedOption_NamePart, SourceCodeInfo, SourceCodeInfo_Location, GeneratedCodeInfo, GeneratedCodeInfo_Annotation } from "./google/protobuf/descriptor";
+export { FieldDescriptorProto_Type, fieldDescriptorProto_TypeFromJSON, fieldDescriptorProto_TypeToJSON, FieldDescriptorProto_Label, fieldDescriptorProto_LabelFromJSON, fieldDescriptorProto_LabelToJSON, FileOptions_OptimizeMode, fileOptions_OptimizeModeFromJSON, fileOptions_OptimizeModeToJSON, FieldOptions_CType, fieldOptions_CTypeFromJSON, fieldOptions_CTypeToJSON, FieldOptions_JSType, fieldOptions_JSTypeFromJSON, fieldOptions_JSTypeToJSON, MethodOptions_IdempotencyLevel, methodOptions_IdempotencyLevelFromJSON, methodOptions_IdempotencyLevelToJSON, FileDescriptorSet, FileDescriptorProto, DescriptorProto, DescriptorProto_ExtensionRange, DescriptorProto_ReservedRange, ExtensionRangeOptions, FieldDescriptorProto, OneofDescriptorProto, EnumDescriptorProto, EnumDescriptorProto_EnumReservedRange, EnumValueDescriptorProto, ServiceDescriptorProto, MethodDescriptorProto, FileOptions, MessageOptions, FieldOptions, OneofOptions, EnumOptions, EnumValueOptions, ServiceOptions, MethodOptions, UninterpretedOption, UninterpretedOption_NamePart, SourceCodeInfo, SourceCodeInfo_Location, GeneratedCodeInfo, GeneratedCodeInfo_Annotation } from "./google/protobuf/descriptor";
 export { RewardWeightRange, AllianceAsset, RewardWeightChangeSnapshot } from "./alliance/alliance/alliance";
 export { MsgCreateAllianceProposal, MsgUpdateAllianceProposal, MsgDeleteAllianceProposal } from "./alliance/alliance/gov";
 export { MsgDelegate, MsgDelegateResponse, MsgUndelegate, MsgUndelegateResponse, MsgRedelegate, MsgRedelegateResponse, MsgClaimDelegationRewards, MsgClaimDelegationRewardsResponse, MsgCreateAlliance, MsgCreateAllianceResponse, MsgUpdateAlliance, MsgUpdateAllianceResponse, MsgDeleteAlliance, MsgDeleteAllianceResponse } from "./alliance/alliance/tx";
@@ -1265,10 +1346,6 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "syntax",
-        "type": "string"
-      },
-      {
-        "name": "edition",
         "type": "string"
       }
     ],
@@ -1578,10 +1655,6 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "bool"
       },
       {
-        "name": "deprecated_legacy_json_field_conflicts",
-        "type": "bool"
-      },
-      {
         "name": "uninterpreted_option",
         "type": "UninterpretedOption[]",
         "packageName": "/google.protobuf"
@@ -1619,20 +1692,6 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "bool"
       },
       {
-        "name": "debug_redact",
-        "type": "bool"
-      },
-      {
-        "name": "retention",
-        "type": "",
-        "packageName": "/google.protobuf.FieldOptions"
-      },
-      {
-        "name": "target",
-        "type": "",
-        "packageName": "/google.protobuf.FieldOptions"
-      },
-      {
         "name": "uninterpreted_option",
         "type": "UninterpretedOption[]",
         "packageName": "/google.protobuf"
@@ -1652,10 +1711,6 @@ export const EIP712Types: { [index: string]: any } = {
       },
       {
         "name": "deprecated",
-        "type": "bool"
-      },
-      {
-        "name": "deprecated_legacy_json_field_conflicts",
         "type": "bool"
       },
       {
@@ -2199,7 +2254,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "OrderBook": [
       {
-        "name": "market_id",
+        "name": "marketId",
         "type": "string"
       },
       {
@@ -2215,7 +2270,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "StopBook": [
       {
-        "name": "market_id",
+        "name": "marketId",
         "type": "string"
       },
       {
@@ -2249,7 +2304,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "OrderBookEvent": [
       {
-        "name": "market_id",
+        "name": "marketId",
         "type": "string"
       },
       {
@@ -2274,7 +2329,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "ClearVirtualOrderBookEvent": [
       {
-        "name": "market_id",
+        "name": "marketId",
         "type": "string"
       }
     ],
@@ -2292,7 +2347,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "StopBook_V2_32_0": [
       {
-        "name": "market_id",
+        "name": "marketId",
         "type": "string"
       },
       {
@@ -2314,7 +2369,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "QueryImpactPriceRequest": [
       {
-        "name": "market_id",
+        "name": "marketId",
         "type": "string"
       },
       {
@@ -2338,7 +2393,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "QueryGetBookRequest": [
       {
-        "name": "market_id",
+        "name": "marketId",
         "type": "string"
       }
     ],
@@ -2370,7 +2425,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "QueryGetStopBookRequest": [
       {
-        "name": "market_id",
+        "name": "marketId",
         "type": "string"
       }
     ],
@@ -2401,6 +2456,810 @@ export const EIP712Types: { [index: string]: any } = {
       }
     ]
   },
+  "/Switcheo.carbon.bridge": {
+    "BridgeState": [
+      {
+        "name": "id",
+        "type": "string"
+      },
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "is_enabled",
+        "type": "bool"
+      }
+    ],
+    "Connection": [
+      {
+        "name": "connection_id",
+        "type": "string"
+      },
+      {
+        "name": "bridge_id",
+        "type": "string"
+      },
+      {
+        "name": "chain_id",
+        "type": "string"
+      },
+      {
+        "name": "chain_display_name",
+        "type": "string"
+      },
+      {
+        "name": "token_gateway_address",
+        "type": "string"
+      },
+      {
+        "name": "encoding",
+        "type": "string"
+      },
+      {
+        "name": "escrow_address",
+        "type": "string"
+      },
+      {
+        "name": "is_enabled",
+        "type": "bool"
+      }
+    ],
+    "ExternalTokenMapping": [
+      {
+        "name": "connection_id",
+        "type": "string"
+      },
+      {
+        "name": "is_enabled",
+        "type": "bool"
+      },
+      {
+        "name": "is_carbon_owned",
+        "type": "bool"
+      },
+      {
+        "name": "external_address",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      }
+    ],
+    "ExternalExecutor": [
+      {
+        "name": "connection_id",
+        "type": "string"
+      },
+      {
+        "name": "external_address",
+        "type": "string"
+      },
+      {
+        "name": "carbon_address",
+        "type": "string"
+      }
+    ],
+    "ExecutableContract": [
+      {
+        "name": "connection_id",
+        "type": "string"
+      },
+      {
+        "name": "address",
+        "type": "string"
+      }
+    ],
+    "RelayFee": [
+      {
+        "name": "relayer_deposit_address",
+        "type": "string"
+      },
+      {
+        "name": "fee",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "WithdrawalDetails": [
+      {
+        "name": "connection_id",
+        "type": "string"
+      },
+      {
+        "name": "sender",
+        "type": "string"
+      },
+      {
+        "name": "receiver",
+        "type": "string"
+      },
+      {
+        "name": "coin",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "relay_fee",
+        "type": "RelayFee",
+        "packageName": "/Switcheo.carbon.bridge"
+      }
+    ],
+    "NewConnectionEvent": [
+      {
+        "name": "connection",
+        "type": "Connection",
+        "packageName": "/Switcheo.carbon.bridge"
+      }
+    ],
+    "UpdateConnectionEvent": [
+      {
+        "name": "connection_id",
+        "type": "string"
+      },
+      {
+        "name": "chain_display_name",
+        "type": "string"
+      },
+      {
+        "name": "is_enabled",
+        "type": "bool"
+      }
+    ],
+    "RemoveConnectionEvent": [
+      {
+        "name": "connection_id",
+        "type": "string"
+      }
+    ],
+    "NewExternalTokenMappingEvent": [
+      {
+        "name": "external_token_mapping",
+        "type": "ExternalTokenMapping",
+        "packageName": "/Switcheo.carbon.bridge"
+      }
+    ],
+    "RegisterExternalTokenEvent": [
+      {
+        "name": "external_token_mapping",
+        "type": "ExternalTokenMapping",
+        "packageName": "/Switcheo.carbon.bridge"
+      },
+      {
+        "name": "carbon_token_name",
+        "type": "string"
+      }
+    ],
+    "RegisterNativeTokenEvent": [
+      {
+        "name": "external_token_mapping",
+        "type": "ExternalTokenMapping",
+        "packageName": "/Switcheo.carbon.bridge"
+      }
+    ],
+    "WithdrawTokenEvent": [
+      {
+        "name": "sender",
+        "type": "string"
+      },
+      {
+        "name": "receiver",
+        "type": "string"
+      },
+      {
+        "name": "external_token_mapping",
+        "type": "ExternalTokenMapping",
+        "packageName": "/Switcheo.carbon.bridge"
+      },
+      {
+        "name": "token",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "relay_fee",
+        "type": "RelayFee",
+        "packageName": "/Switcheo.carbon.bridge"
+      }
+    ],
+    "WithdrawTokenAcknowledgedEvent": [
+      {
+        "name": "connection_id",
+        "type": "string"
+      },
+      {
+        "name": "sender",
+        "type": "string"
+      },
+      {
+        "name": "receiver",
+        "type": "string"
+      },
+      {
+        "name": "coin",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "relayer_deposit_address",
+        "type": "string"
+      },
+      {
+        "name": "relay_fee",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "payload",
+        "type": "string"
+      }
+    ],
+    "PayloadAcknowledgedEvent": [
+      {
+        "name": "payload_type",
+        "type": "uint32"
+      },
+      {
+        "name": "nonce",
+        "type": "uint64"
+      },
+      {
+        "name": "payload",
+        "type": "string"
+      },
+      {
+        "name": "payload_encoding",
+        "type": "string"
+      }
+    ],
+    "RegisterExecutableEvent": [
+      {
+        "name": "connection_id",
+        "type": "string"
+      },
+      {
+        "name": "executable_address",
+        "type": "string"
+      }
+    ],
+    "ExecuteOnExecutableEvent": [
+      {
+        "name": "connection_id",
+        "type": "string"
+      },
+      {
+        "name": "sender",
+        "type": "string"
+      },
+      {
+        "name": "executable_address",
+        "type": "string"
+      },
+      {
+        "name": "execution_data",
+        "type": "uint8[]"
+      },
+      {
+        "name": "token",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "AllowExternalExecutorEvent": [
+      {
+        "name": "external_executor",
+        "type": "ExternalExecutor",
+        "packageName": "/Switcheo.carbon.bridge"
+      }
+    ],
+    "PauseGatewayEvent": [
+      {
+        "name": "connection_id",
+        "type": "string"
+      },
+      {
+        "name": "gateway_address",
+        "type": "string"
+      }
+    ],
+    "UnpauseGatewayEvent": [
+      {
+        "name": "connection_id",
+        "type": "string"
+      },
+      {
+        "name": "gateway_address",
+        "type": "string"
+      }
+    ],
+    "DepositTokenEvent": [
+      {
+        "name": "connection_id",
+        "type": "string"
+      },
+      {
+        "name": "sender",
+        "type": "string"
+      },
+      {
+        "name": "receiver",
+        "type": "string"
+      },
+      {
+        "name": "asset_address",
+        "type": "string"
+      },
+      {
+        "name": "token",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "Params": [
+      {
+        "name": "axelar_ibc_channel",
+        "type": "string"
+      },
+      {
+        "name": "ibc_timeout_height_offset",
+        "type": "uint64"
+      }
+    ],
+    "GenesisState": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.bridge"
+      }
+    ],
+    "QueryParamsRequest": [],
+    "QueryParamsResponse": [
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.bridge"
+      }
+    ],
+    "QueryAllBridgeStatesRequest": [],
+    "QueryAllBridgeStatesResponse": [
+      {
+        "name": "bridge_states",
+        "type": "BridgeState[]",
+        "packageName": "/Switcheo.carbon.bridge"
+      }
+    ],
+    "QueryAllConnectionsRequest": [
+      {
+        "name": "bridge_id",
+        "type": "string"
+      }
+    ],
+    "QueryAllConnectionsResponse": [
+      {
+        "name": "connections",
+        "type": "Connection[]",
+        "packageName": "/Switcheo.carbon.bridge"
+      }
+    ],
+    "QueryAllExternalTokensRequest": [
+      {
+        "name": "bridge_id",
+        "type": "string"
+      },
+      {
+        "name": "chain_id",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      }
+    ],
+    "QueryAllExternalTokensResponse": [
+      {
+        "name": "external_tokens",
+        "type": "ExternalTokenMapping[]",
+        "packageName": "/Switcheo.carbon.bridge"
+      }
+    ],
+    "QueryAllExecutableContractsRequest": [
+      {
+        "name": "bridge_id",
+        "type": "string"
+      },
+      {
+        "name": "chain_id",
+        "type": "string"
+      }
+    ],
+    "QueryAllExecutableContractsResponse": [
+      {
+        "name": "executable_contracts",
+        "type": "ExecutableContract[]",
+        "packageName": "/Switcheo.carbon.bridge"
+      }
+    ],
+    "QueryAllExternalExecutorsRequest": [
+      {
+        "name": "carbon_address",
+        "type": "string"
+      }
+    ],
+    "QueryAllExternalExecutorsResponse": [
+      {
+        "name": "external_executors",
+        "type": "ExternalExecutor[]",
+        "packageName": "/Switcheo.carbon.bridge"
+      }
+    ],
+    "MsgSetBridgeEnabled": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "bridge_id",
+        "type": "string"
+      },
+      {
+        "name": "is_enabled",
+        "type": "bool"
+      }
+    ],
+    "MsgSetBridgeEnabledResponse": [],
+    "MsgUpdateAxelarIbcChannel": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "channel_id",
+        "type": "string"
+      }
+    ],
+    "MsgUpdateAxelarIbcChannelResponse": [],
+    "MsgUpdateIbcTimeoutHeightOffset": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "offset",
+        "type": "uint64"
+      }
+    ],
+    "MsgUpdateIbcTimeoutHeightOffsetResponse": [],
+    "MsgUpdateParams": [
+      {
+        "name": "authority",
+        "type": "string"
+      },
+      {
+        "name": "params",
+        "type": "Params",
+        "packageName": "/Switcheo.carbon.bridge"
+      }
+    ],
+    "MsgUpdateParamsResponse": [],
+    "MsgAxelarSendToken": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "destination_chain",
+        "type": "string"
+      },
+      {
+        "name": "destination_address",
+        "type": "string"
+      },
+      {
+        "name": "tokens",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
+    "MsgAxelarSendTokenResponse": [],
+    "MsgAxelarCallContract": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "destination_chain",
+        "type": "string"
+      },
+      {
+        "name": "destination_address",
+        "type": "string"
+      },
+      {
+        "name": "payload",
+        "type": "uint8[]"
+      }
+    ],
+    "MsgAxelarCallContractResponse": [],
+    "MsgAxelarCallContractWithToken": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "destination_chain",
+        "type": "string"
+      },
+      {
+        "name": "destination_address",
+        "type": "string"
+      },
+      {
+        "name": "tokens",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "payload",
+        "type": "uint8[]"
+      }
+    ],
+    "MsgAxelarCallContractWithTokenResponse": [],
+    "MsgCreateConnection": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "bridge_id",
+        "type": "string"
+      },
+      {
+        "name": "chain_id",
+        "type": "string"
+      },
+      {
+        "name": "chain_display_name",
+        "type": "string"
+      },
+      {
+        "name": "token_gateway_address",
+        "type": "string"
+      },
+      {
+        "name": "encoding",
+        "type": "string"
+      },
+      {
+        "name": "is_enabled",
+        "type": "bool"
+      }
+    ],
+    "MsgCreateConnectionResponse": [],
+    "MsgUpdateConnection": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "connection_id",
+        "type": "string"
+      },
+      {
+        "name": "update_connection_params",
+        "type": "UpdateConnectionParams",
+        "packageName": "/Switcheo.carbon.bridge"
+      }
+    ],
+    "UpdateConnectionParams": [
+      {
+        "name": "chain_display_name",
+        "type": "string"
+      },
+      {
+        "name": "is_enabled",
+        "type": "bool"
+      }
+    ],
+    "MsgUpdateConnectionResponse": [],
+    "MsgRemoveConnection": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "connection_id",
+        "type": "string"
+      }
+    ],
+    "MsgRemoveConnectionResponse": [],
+    "MsgRegisterExternalToken": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "connection_id",
+        "type": "string"
+      },
+      {
+        "name": "asset_address",
+        "type": "string"
+      },
+      {
+        "name": "decimals",
+        "type": "int64"
+      },
+      {
+        "name": "carbon_token_name",
+        "type": "string"
+      }
+    ],
+    "MsgRegisterExternalTokenResponse": [],
+    "MsgDeregisterExternalToken": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "connection_id",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      }
+    ],
+    "MsgDeregisterExternalTokenResponse": [],
+    "MsgDeployNativeToken": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "connection_id",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      }
+    ],
+    "MsgDeployNativeTokenResponse": [],
+    "MsgRegisterDeployedToken": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "connection_id",
+        "type": "string"
+      },
+      {
+        "name": "token_address",
+        "type": "string"
+      },
+      {
+        "name": "denom",
+        "type": "string"
+      }
+    ],
+    "MsgRegisterDeployedTokenResponse": [],
+    "MsgWithdrawToken": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "connection_id",
+        "type": "string"
+      },
+      {
+        "name": "receiver",
+        "type": "string"
+      },
+      {
+        "name": "tokens",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "relay_fee",
+        "type": "RelayFee",
+        "packageName": "/Switcheo.carbon.bridge"
+      }
+    ],
+    "MsgWithdrawTokenResponse": [],
+    "MsgRegisterExecutable": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "connection_id",
+        "type": "string"
+      },
+      {
+        "name": "executable_address",
+        "type": "string"
+      }
+    ],
+    "MsgRegisterExecutableResponse": [],
+    "MsgDeregisterExecutable": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "connection_id",
+        "type": "string"
+      },
+      {
+        "name": "executable_address",
+        "type": "string"
+      }
+    ],
+    "MsgDeregisterExecutableResponse": [],
+    "MsgExecuteOnExecutableContract": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "connection_id",
+        "type": "string"
+      },
+      {
+        "name": "executable_address",
+        "type": "string"
+      },
+      {
+        "name": "execution_bytes",
+        "type": "uint8[]"
+      },
+      {
+        "name": "tokens",
+        "type": "Coin",
+        "packageName": "/cosmos.base.v1beta1"
+      },
+      {
+        "name": "relay_fee",
+        "type": "RelayFee",
+        "packageName": "/Switcheo.carbon.bridge"
+      }
+    ],
+    "MsgExecuteOnExecutableContractResponse": [],
+    "MsgAllowExternalExecutor": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "connection_id",
+        "type": "string"
+      },
+      {
+        "name": "executor_address",
+        "type": "string"
+      }
+    ],
+    "MsgAllowExternalExecutorResponse": [],
+    "MsgRemoveExternalExecutor": [
+      {
+        "name": "creator",
+        "type": "string"
+      },
+      {
+        "name": "connection_id",
+        "type": "string"
+      },
+      {
+        "name": "executor_address",
+        "type": "string"
+      }
+    ],
+    "MsgRemoveExternalExecutorResponse": []
+  },
   "/Switcheo.carbon.broker": {
     "SpotAmm": [
       {
@@ -2408,7 +3267,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "uint64"
       },
       {
-        "name": "market_id",
+        "name": "marketId",
         "type": "string"
       },
       {
@@ -2449,7 +3308,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "PerpsMarketAmm": [
       {
-        "name": "market_id",
+        "name": "marketId",
         "type": "string"
       },
       {
@@ -2463,7 +3322,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "Candlestick": [
       {
-        "name": "market_id",
+        "name": "marketId",
         "type": "string"
       },
       {
@@ -2517,7 +3376,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market_id",
+        "name": "marketId",
         "type": "string"
       },
       {
@@ -2645,7 +3504,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "QueryCandlesticksRequest": [
       {
-        "name": "market_id",
+        "name": "marketId",
         "type": "string"
       },
       {
@@ -2674,7 +3533,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market_id",
+        "name": "marketId",
         "type": "string"
       },
       {
@@ -2726,7 +3585,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market_id",
+        "name": "marketId",
         "type": "string"
       },
       {
@@ -2753,7 +3612,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "LiquidatorPosition": [
       {
-        "name": "market_id",
+        "name": "marketId",
         "type": "string"
       },
       {
@@ -5634,7 +6493,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market_id",
+        "name": "marketId",
         "type": "string"
       },
       {
@@ -5645,7 +6504,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "PositionPool": [
       {
-        "name": "market_id",
+        "name": "marketId",
         "type": "string"
       },
       {
@@ -7532,7 +8391,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market_id",
+        "name": "marketId",
         "type": "string"
       },
       {
@@ -7557,7 +8416,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market_id",
+        "name": "marketId",
         "type": "string"
       },
       {
@@ -7567,7 +8426,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "MarketLeverage": [
       {
-        "name": "market_id",
+        "name": "marketId",
         "type": "string"
       },
       {
@@ -7599,7 +8458,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market_id",
+        "name": "marketId",
         "type": "string"
       }
     ],
@@ -7629,7 +8488,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market_id",
+        "name": "marketId",
         "type": "string"
       },
       {
@@ -7646,7 +8505,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market_id",
+        "name": "marketId",
         "type": "string"
       },
       {
@@ -7672,7 +8531,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market_id",
+        "name": "marketId",
         "type": "string"
       },
       {
@@ -7712,7 +8571,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market_id",
+        "name": "marketId",
         "type": "string"
       },
       {
@@ -7777,7 +8636,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market_id",
+        "name": "marketId",
         "type": "string"
       },
       {
@@ -8085,7 +8944,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market_id",
+        "name": "marketId",
         "type": "string"
       },
       {
@@ -8368,7 +9227,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market_id",
+        "name": "marketId",
         "type": "string"
       },
       {
@@ -8416,7 +9275,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market_id",
+        "name": "marketId",
         "type": "string"
       },
       {
@@ -8451,7 +9310,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market_id",
+        "name": "marketId",
         "type": "string"
       }
     ],
@@ -8504,7 +9363,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market_id",
+        "name": "marketId",
         "type": "string"
       },
       {
@@ -8597,7 +9456,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market_id",
+        "name": "marketId",
         "type": "string"
       }
     ],
@@ -8687,7 +9546,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "PoolRoute": [
       {
-        "name": "market_id",
+        "name": "marketId",
         "type": "string"
       },
       {
@@ -9489,7 +10348,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "uint64"
       },
       {
-        "name": "market_id",
+        "name": "marketId",
         "type": "string"
       }
     ],
@@ -10829,7 +11688,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "MarketEvent": [
       {
-        "name": "market_id",
+        "name": "marketId",
         "type": "Market",
         "packageName": "/Switcheo.carbon.market"
       },
@@ -10922,7 +11781,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "QueryGetMarketResponse": [
       {
-        "name": "market_id",
+        "name": "marketId",
         "type": "Market",
         "packageName": "/Switcheo.carbon.market"
       }
@@ -11323,7 +12182,7 @@ export const EIP712Types: { [index: string]: any } = {
     "GenesisState": [],
     "MarketStats": [
       {
-        "name": "market_id",
+        "name": "marketId",
         "type": "string"
       },
       {
@@ -12151,7 +13010,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "MarketLiquidityUsageMultiplier": [
       {
-        "name": "market_id",
+        "name": "marketId",
         "type": "string"
       },
       {
@@ -12377,7 +13236,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "UpdateMarketLiquidityUsageMultiplierEvent": [
       {
-        "name": "market_id",
+        "name": "marketId",
         "type": "string"
       },
       {
@@ -12836,7 +13695,7 @@ export const EIP712Types: { [index: string]: any } = {
   "/Switcheo.carbon.position": {
     "Position": [
       {
-        "name": "market_id",
+        "name": "marketId",
         "type": "string"
       },
       {
@@ -12874,7 +13733,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "APIPosition": [
       {
-        "name": "market_id",
+        "name": "marketId",
         "type": "string"
       },
       {
@@ -13005,7 +13864,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market_id",
+        "name": "marketId",
         "type": "string"
       },
       {
@@ -13037,7 +13896,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market_id",
+        "name": "marketId",
         "type": "string"
       }
     ],
@@ -13054,7 +13913,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market_id",
+        "name": "marketId",
         "type": "string"
       },
       {
@@ -13098,7 +13957,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market_id",
+        "name": "marketId",
         "type": "string"
       },
       {
@@ -13139,7 +13998,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market_id",
+        "name": "marketId",
         "type": "string"
       },
       {
@@ -13334,7 +14193,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "SettlementPriceParams": [
       {
-        "name": "market_id",
+        "name": "marketId",
         "type": "string"
       },
       {
@@ -13357,7 +14216,7 @@ export const EIP712Types: { [index: string]: any } = {
     ],
     "QueryPriceSetRequest": [
       {
-        "name": "market_id",
+        "name": "marketId",
         "type": "string"
       }
     ],
@@ -13522,7 +14381,7 @@ export const EIP712Types: { [index: string]: any } = {
         "type": "string"
       },
       {
-        "name": "market_id",
+        "name": "marketId",
         "type": "string"
       },
       {
