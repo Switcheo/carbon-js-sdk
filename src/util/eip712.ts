@@ -1,7 +1,7 @@
 import { DEFAULT_CARBON_DOMAIN_FIELDS, DEFAULT_EIP712_TYPES } from "@carbon-sdk/constant/eip712";
 import { TypedDataDomain, TypedDataField } from "@ethersproject/abstract-signer";
 import { TypeUtils } from ".";
-import { parseChainId } from "@carbon-sdk/util/ethermint";
+// import { parseChainId } from "@carbon-sdk/util/ethermint";
 import { EIP712Types } from "@carbon-sdk/codec";
 import AminoTypesMap from "@carbon-sdk/provider/amino/AminoTypesMap";
 import { capitalize } from "lodash";
@@ -206,13 +206,14 @@ function isNonZeroField(fieldValue: any): boolean {
 }
 
 export function constructEIP712Tx(doc: CarbonTx.StdSignDoc): EIP712Tx {
-    const { account_number, chain_id, fee, memo, sequence } = doc
+    const { account_number, fee, memo, sequence } = doc
     const eip712Tx = {
         types: getTypes(doc.msgs),
         primaryType: "Tx",
-        domain: { ...DEFAULT_CARBON_DOMAIN_FIELDS, chainId: parseChainId(doc.chain_id) },
-        message: { account_number, chain_id, fee, memo, sequence, ...convertMsgs(doc.msgs) },
+        domain: { ...DEFAULT_CARBON_DOMAIN_FIELDS, chainId: 9001 },
+        message: { account_number, chain_id: 'evmos_9001-1', fee, memo, sequence, ...convertMsgs(doc.msgs) },
     }
+    console.log('xx eip712Tx: ',JSON.stringify(eip712Tx))
 
     return eip712Tx
 }

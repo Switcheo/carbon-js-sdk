@@ -134,7 +134,7 @@ export class CarbonSigningClient extends StargateClient {
     messages: readonly EncodeObject[],
     fee: StdFee,
     memo: string,
-    { accountNumber, sequence, chainId, timeoutHeight }: CarbonSignerData,
+    { accountNumber, sequence, timeoutHeight }: CarbonSignerData,
     granterAddress?: string,
   ): Promise<TxRaw> {
     const signer = this.signer as OfflineDirectSigner;
@@ -157,7 +157,7 @@ export class CarbonSigningClient extends StargateClient {
     const txBodyBytes = this.registry.encode(txBodyEncodeObject);
     const gasLimit = Int53.fromString(fee.gas).toNumber();
     const authInfoBytes = makeAuthInfoBytes([{ pubkey, sequence }], fee.amount, gasLimit, granterAddress, (granterAddress ? signerAddress : undefined));
-    const signDoc = makeSignDoc(txBodyBytes, authInfoBytes, chainId, accountNumber);
+    const signDoc = makeSignDoc(txBodyBytes, authInfoBytes, 'evmos-9001-1', accountNumber);
     const { signature, signed } = await signer.signDirect(signerAddress, signDoc);
     return TxRaw.fromPartial({
       bodyBytes: signed.bodyBytes,

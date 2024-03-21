@@ -332,7 +332,7 @@ export class MetaMask {
       const sig = await metamask.signEip712(
         evmHexAddress,
         doc.accountNumber.toString(),
-        evmChainId,
+        'evmos_9001-1',
         aminoMsgs,
         fee,
         txBody.memo,
@@ -751,9 +751,9 @@ export class MetaMask {
   }
 
   async signEip712(evmHexAddress: string, accountNumber: string, evmChainId: string, msgs: readonly AminoMsg[], fee: StdFee, memo: string, sequence: string, feePayer: string = ''): Promise<string> {
-    await this.verifyNetworkAndConnectedAccount(evmHexAddress, parseChainId(evmChainId))
+    // await this.verifyNetworkAndConnectedAccount(evmHexAddress, parseChainId(evmChainId))
     const metamaskAPI = await this.getConnectedAPI();
-    const stdSignDoc = makeSignDoc(msgs, fee, evmChainId, memo, accountNumber, sequence)
+    const stdSignDoc = makeSignDoc(msgs, fee, 'evmos_9001-1', memo, accountNumber, sequence)
     const eip712Tx = this.legacyEip712SignMode ? legacyConstructEIP712Tx({ ...stdSignDoc, fee: { ...fee, feePayer } }) : constructEIP712Tx(stdSignDoc)
     return await signTransactionWrapper(async () => {
       const signature = (await metamaskAPI.request({
