@@ -137,7 +137,7 @@ export interface QuerySupplyOfResponse {
 }
 
 /** QueryParamsRequest defines the request type for querying x/bank parameters. */
-export interface QueryParamsRequest { }
+export interface QueryParamsRequest {}
 
 /** QueryParamsResponse defines the response type for querying x/bank parameters. */
 export interface QueryParamsResponse {
