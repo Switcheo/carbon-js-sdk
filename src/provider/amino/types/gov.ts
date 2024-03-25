@@ -10,7 +10,6 @@ const TxTypes: TypeUtils.SimpleMap<string> = {
   SubmitProposal: "cosmos-sdk/MsgSubmitProposal",
   Deposit: "cosmos-sdk/MsgDeposit",
   Vote: "cosmos-sdk/MsgVote",
-  TextProposal: "cosmos-sdk/TextProposal",
 };
 
 const ContentTypes: TypeUtils.SimpleMap<string> = {
@@ -32,15 +31,10 @@ const ContentTypes: TypeUtils.SimpleMap<string> = {
   [GovUtils.ProposalTypes.DeregisterFromGroup]: "coin.DeregisterFromGroupProposal",
   [GovUtils.ProposalTypes.WithdrawFromGroup]: "coin/WithdrawFromGroupProposal",
   [GovUtils.ProposalTypes.UpdateGroupTokenConfig]: "coin.UpdateGroupTokenConfigProposal",
-  [GovUtils.ProposalTypes.Text]: "cosmos-sdk/TextProposal",
 };
 
 const SubmitProposalMsg: AminoInit = {
   aminoType: TxTypes.SubmitProposal,
-  valueMap: {},
-};
-const MsgTextProposal: AminoInit = {
-  aminoType: TxTypes.TextProposal,
   valueMap: {},
 };
 
@@ -533,7 +527,6 @@ const GovAmino: TypeUtils.SimpleMap<AminoConverter> = {
   [CarbonTx.Types.MsgSubmitProposal]: generateAminoType(SubmitProposalMsg, proposalAminoProcess),
   [CarbonTx.Types.MsgDeposit]: generateAminoType(MsgDeposit),
   [CarbonTx.Types.MsgVote]: generateAminoType(MsgVote),
-  [CarbonTx.Types.TextProposal]: generateAminoType(MsgTextProposal),
 };
 
 export default GovAmino;

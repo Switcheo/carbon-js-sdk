@@ -1,4 +1,5 @@
 import { Carbon, CarbonTx } from "@carbon-sdk/CarbonSDK";
+import { TxTypes } from "@carbon-sdk/codec";
 import { MsgRemoveMinGasPrice } from "@carbon-sdk/codec/Switcheo/carbon/fee/tx";
 import { CommunityPoolSpendProposal } from "@carbon-sdk/codec/cosmos/distribution/v1beta1/distribution";
 import { MsgCommunityPoolSpend } from "@carbon-sdk/codec/cosmos/distribution/v1beta1/tx";
@@ -9,6 +10,14 @@ import { MsgCancelUpgrade, MsgSoftwareUpgrade } from "@carbon-sdk/codec/cosmos/u
 import { CancelSoftwareUpgradeProposal, SoftwareUpgradeProposal } from "@carbon-sdk/codec/cosmos/upgrade/v1beta1/upgrade";
 import { Any } from "@carbon-sdk/codec/google/protobuf/any";
 import { ClientUpdateProposal } from "@carbon-sdk/codec/ibc/core/client/v1/client";
+import { MsgUpdateParams as MsgAuthUpdateParams } from "@carbon-sdk/codec/cosmos/auth/v1beta1/tx"
+import { MsgUpdateParams as MsgBankUpdateParams } from "@carbon-sdk/codec/cosmos/bank/v1beta1/tx"
+import { MsgUpdateParams as MsgDistributionUpdateParams } from "@carbon-sdk/codec/cosmos/distribution/v1beta1/tx"
+import { MsgUpdateParams as MsgStakingUpdateParams } from "@carbon-sdk/codec/cosmos/staking/v1beta1/tx"
+import { MsgUpdateParams as MsgSlashingUpdateParams } from "@carbon-sdk/codec/cosmos/slashing/v1beta1/tx"
+import { MsgUpdateParams as MsgGovUpdateParams } from "@carbon-sdk/codec/cosmos/gov/v1/tx"
+import { MsgUpdateParams as MsgOracleUpdateParams } from "@carbon-sdk/codec/Switcheo/carbon/oracle/tx"
+
 
 export enum ProposalTypes {
   // cosmos v1
@@ -296,17 +305,51 @@ export const decodeContent = (content?: Any): PropDecoded => {
           typeUrl: url,
           value: Carbon.Liquiditypool.MsgSetCommitmentCurve.decode(value),
         }
-    // TODO: update this in next PR once codec has been regenerated
-    // case ProposalTypes.SettlementPriceV2:
-    //     return {
-    //       typeUrl: url,
-    //       value: Carbon.Pricing.MsgUpdateSettlementPrice.decode(value),
-    //     }
+    case ProposalTypes.SettlementPriceV2:
+        return {
+          typeUrl: url,
+          value: Carbon.Pricing.MsgUpdateSettlementPrice.decode(value),
+        }
     case ProposalTypes.CreateOracleV2:
         return {
           typeUrl: url,
           value: Carbon.Oracle.MsgCreateOracle.decode(value),
         }
+    case TxTypes.MsgAuthUpdateParams:
+      return {
+        typeUrl: url,
+        value: MsgAuthUpdateParams.decode(value),
+      }
+    case TxTypes.MsgBankUpdateParams:
+      return {
+        typeUrl: url,
+        value: MsgBankUpdateParams.decode(value),
+      }
+    case TxTypes.MsgDistributionUpdateParams:
+      return {
+        typeUrl: url,
+        value: MsgDistributionUpdateParams.decode(value),
+      }
+    case TxTypes.MsgStakingUpdateParams:
+      return {
+        typeUrl: url,
+        value: MsgStakingUpdateParams.decode(value),
+      }
+    case TxTypes.MsgSlashingUpdateParams:
+      return {
+        typeUrl: url,
+        value: MsgSlashingUpdateParams.decode(value),
+      }
+    case TxTypes.MsgGovUpdateParams:
+      return {
+        typeUrl: url,
+        value: MsgGovUpdateParams.decode(value),
+      }
+    case TxTypes.MsgOracleUpdateParams:
+      return {
+        typeUrl: url,
+        value: MsgOracleUpdateParams.decode(value),
+      }
     default:
       return emptyProposal;
   }
