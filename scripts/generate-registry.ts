@@ -231,10 +231,19 @@ function updateImportsAlias(messages: string[], protobufPackage: string) {
       || pkg === 'distribution'
       || pkg === 'staking'
       || pkg === 'bank'
-      || pkg === 'evm')
+      || pkg === 'evm'
+      || pkg === 'client'
+      || pkg === 'connection'
+      || pkg === 'transfer')
       && msg.includes('MsgUpdateParams')) {
       msgAlias = `Msg${capitalize(pkg)}${msg.substring(3)}`
     }
+
+    if ((pkg === 'interchain_accounts')
+      && msg.includes('MsgUpdateParams')) {
+      msgAlias = `MsgInterchainAcc${capitalize(innerPkg)}${msg.substring(3)}`
+    }
+
     if (msgAlias) {
       messages[i] = `${msg} as ${msgAlias}`
     }

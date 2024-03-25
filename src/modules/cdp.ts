@@ -419,7 +419,7 @@ export class CDPModule extends BaseModule {
   public async updateRewardScheme(params: CDPModule.UpdateRewardSchemeParams, opts?: CarbonTx.SignTxOpts) {
     const wallet = this.getWallet();
     const value = Carbon.Cdp.MsgUpdateRewardScheme.fromPartial({
-      updator: wallet.bech32Address,
+      updater: wallet.bech32Address,
       updateRewardSchemeParams: {
         rewardSchemeId: params.rewardSchemeId,
         rewardDenom: params.rewardDenom,
@@ -781,8 +781,8 @@ export class CDPModule extends BaseModule {
     const cdpModuleBalancesAddress = this.getCdpModuleAddress();
 
     const maxPageLimit = { pagination: PageRequest.fromPartial({ limit: new Long(10000) }) };
-    const collateralPoolBalancePromise = sdk.query.bank.AllBalances({ ...maxPageLimit, address: collateralPoolAddress });
-    const cdpModuleBalancesPromise = sdk.query.bank.AllBalances({ ...maxPageLimit, address: cdpModuleBalancesAddress });
+    const collateralPoolBalancePromise = sdk.query.bank.AllBalances({ ...maxPageLimit, address: collateralPoolAddress, resolveDenom: false });
+    const cdpModuleBalancesPromise = sdk.query.bank.AllBalances({ ...maxPageLimit, address: cdpModuleBalancesAddress, resolveDenom: false });
     const totalSupplyPromise = sdk.query.bank.TotalSupply(QueryTotalSupplyRequest.fromPartial({ ...maxPageLimit }));
     const cdpParamsPromise = sdk.query.cdp.Params(Carbon.Cdp.QueryParamsRequest.fromPartial({}));
     const tokenPriceAllPromise = sdk.query.pricing.TokenPriceAll(Carbon.Pricing.QueryTokenPriceAllRequest.fromPartial({ ...maxPageLimit }));
@@ -822,7 +822,7 @@ export class CDPModule extends BaseModule {
         .then((totalDebt) => {
           const denominator = bnOrZero(balance).plus(bnOrZero(totalDebt));
           const ratio = denominator.isZero() ? BN_ZERO : bnOrZero(supply).div(denominator);
-          const actualAmount = ratio.isZero() ? BN_ZERO :bnOrZero(token.amount).div(ratio);
+          const actualAmount = ratio.isZero() ? BN_ZERO : bnOrZero(token.amount).div(ratio);
           return this.getTokenUsdVal(underlyingDenom, actualAmount, tokenPrice);
         })
     })

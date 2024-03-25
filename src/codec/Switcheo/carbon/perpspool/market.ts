@@ -21,16 +21,23 @@ export interface MarketConfig {
    * ratio where 0 < max_liquidity_ratio <= 1
    */
   maxLiquidityRatio: string;
-  /** borrow_fee_multiplier controls the multiplier for the base borrow fee charged on the pool. riskier markets should have a higher multiplier */
+  /**
+   * borrow_fee_multiplier controls the multiplier for the base borrow fee
+   * charged on the pool. riskier markets should have a higher multiplier
+   */
   borrowFeeMultiplier: string;
   /**
    * Available modes:
    * active - market is active for quoting
-   * paused - open quotes are cancelled, current positions are held, no new quotes
-   * close_only - quotes will be open only on the closing side. borrow fees are increased?
+   * paused - open quotes are cancelled, current positions are held, no new
+   * quotes close_only - quotes will be open only on the closing side. borrow
+   * fees are increased?
    */
   mode: string;
-  /** represents the shape of quoting for each side against [0] index price, [1+] prev quotes */
+  /**
+   * represents the shape of quoting for each side against [0] index price, [1+]
+   * prev quotes
+   */
   quoteShape: Quote[];
 }
 
@@ -41,13 +48,19 @@ export interface UpdateMarketConfigParams {
   quoteShape: Quote[];
 }
 
-/** MarketUtilizationRateSnapshot represents the utilization rate of a market at a given timestamp */
+/**
+ * MarketUtilizationRateSnapshot represents the utilization rate of a market at
+ * a given timestamp
+ */
 export interface MarketUtilizationRateSnapshot {
   timestamp?: Date;
   utilizationRate: string;
 }
 
-/** TWAMarketUtilizationRate represents the calculated TWA utilization rate of a market */
+/**
+ * TWAMarketUtilizationRate represents the calculated TWA utilization rate of a
+ * market
+ */
 export interface TWAMarketUtilizationRate {
   lastUpdatedAt?: Date;
   twaUtilizationRate: string;

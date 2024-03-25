@@ -21,7 +21,6 @@ export const nodesByNet: NodeNet = {
       wsUptime: "0",
       insightUptime: "100",
       tmWsUrl: "wss://shadow-tm-api.carbon.network/",
-      grpcWebUrl: "",
       appCommit: "",
       appVersion: "",
       creator: {
@@ -45,7 +44,6 @@ export const nodesByNet: NodeNet = {
       wsUptime: "0",
       insightUptime: "100",
       tmWsUrl: "wss://shadow-tm-api.carbon.network/",
-      grpcWebUrl: "",
       appCommit: "",
       appVersion: "",
       creator: {
@@ -71,7 +69,6 @@ export const nodesByNet: NodeNet = {
       wsUptime: "0",
       insightUptime: "100",
       tmWsUrl: "wss://dev39911-tm-api.carbon.network/",
-      grpcWebUrl: "",
       appCommit: "",
       appVersion: "",
       creator: {

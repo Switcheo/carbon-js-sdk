@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Counterparty, Version } from "./connection";
+import { Counterparty, Version, Params } from "./connection";
 import { Any } from "../../../../google/protobuf/any";
 import { Height } from "../../client/v1/client";
 
@@ -105,6 +105,21 @@ export interface MsgConnectionOpenConfirm {
  * response type.
  */
 export interface MsgConnectionOpenConfirmResponse {}
+
+/** MsgUpdateParams defines the sdk.Msg type to update the connection parameters. */
+export interface MsgUpdateParams {
+  /** signer address */
+  signer: string;
+  /**
+   * params defines the connection parameters to update.
+   *
+   * NOTE: All parameters must be supplied.
+   */
+  params?: Params;
+}
+
+/** MsgUpdateParamsResponse defines the MsgUpdateParams response type. */
+export interface MsgUpdateParamsResponse {}
 
 const baseMsgConnectionOpenInit: object = {
   clientId: "",
@@ -1057,6 +1072,127 @@ export const MsgConnectionOpenConfirmResponse = {
   },
 };
 
+const baseMsgUpdateParams: object = { signer: "" };
+
+export const MsgUpdateParams = {
+  encode(
+    message: MsgUpdateParams,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.signer !== "") {
+      writer.uint32(10).string(message.signer);
+    }
+    if (message.params !== undefined) {
+      Params.encode(message.params, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateParams {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgUpdateParams } as MsgUpdateParams;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.signer = reader.string();
+          break;
+        case 2:
+          message.params = Params.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdateParams {
+    const message = { ...baseMsgUpdateParams } as MsgUpdateParams;
+    message.signer =
+      object.signer !== undefined && object.signer !== null
+        ? String(object.signer)
+        : "";
+    message.params =
+      object.params !== undefined && object.params !== null
+        ? Params.fromJSON(object.params)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: MsgUpdateParams): unknown {
+    const obj: any = {};
+    message.signer !== undefined && (obj.signer = message.signer);
+    message.params !== undefined &&
+      (obj.params = message.params ? Params.toJSON(message.params) : undefined);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgUpdateParams>): MsgUpdateParams {
+    const message = { ...baseMsgUpdateParams } as MsgUpdateParams;
+    message.signer = object.signer ?? "";
+    message.params =
+      object.params !== undefined && object.params !== null
+        ? Params.fromPartial(object.params)
+        : undefined;
+    return message;
+  },
+};
+
+const baseMsgUpdateParamsResponse: object = {};
+
+export const MsgUpdateParamsResponse = {
+  encode(
+    _: MsgUpdateParamsResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUpdateParamsResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgUpdateParamsResponse,
+    } as MsgUpdateParamsResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgUpdateParamsResponse {
+    const message = {
+      ...baseMsgUpdateParamsResponse,
+    } as MsgUpdateParamsResponse;
+    return message;
+  },
+
+  toJSON(_: MsgUpdateParamsResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgUpdateParamsResponse>
+  ): MsgUpdateParamsResponse {
+    const message = {
+      ...baseMsgUpdateParamsResponse,
+    } as MsgUpdateParamsResponse;
+    return message;
+  },
+};
+
 /** Msg defines the ibc/connection Msg service. */
 export interface Msg {
   /** ConnectionOpenInit defines a rpc handler method for MsgConnectionOpenInit. */
@@ -1078,6 +1214,13 @@ export interface Msg {
   ConnectionOpenConfirm(
     request: MsgConnectionOpenConfirm
   ): Promise<MsgConnectionOpenConfirmResponse>;
+  /**
+   * UpdateConnectionParams defines a rpc handler method for
+   * MsgUpdateParams.
+   */
+  UpdateConnectionParams(
+    request: MsgUpdateParams
+  ): Promise<MsgUpdateParamsResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -1088,6 +1231,7 @@ export class MsgClientImpl implements Msg {
     this.ConnectionOpenTry = this.ConnectionOpenTry.bind(this);
     this.ConnectionOpenAck = this.ConnectionOpenAck.bind(this);
     this.ConnectionOpenConfirm = this.ConnectionOpenConfirm.bind(this);
+    this.UpdateConnectionParams = this.UpdateConnectionParams.bind(this);
   }
   ConnectionOpenInit(
     request: MsgConnectionOpenInit
@@ -1142,6 +1286,20 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgConnectionOpenConfirmResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  UpdateConnectionParams(
+    request: MsgUpdateParams
+  ): Promise<MsgUpdateParamsResponse> {
+    const data = MsgUpdateParams.encode(request).finish();
+    const promise = this.rpc.request(
+      "ibc.core.connection.v1.Msg",
+      "UpdateConnectionParams",
+      data
+    );
+    return promise.then((data) =>
+      MsgUpdateParamsResponse.decode(new _m0.Reader(data))
     );
   }
 }

@@ -114,6 +114,26 @@ export interface MsgCommunityPoolSpend {
  */
 export interface MsgCommunityPoolSpendResponse {}
 
+/**
+ * DepositValidatorRewardsPool defines the request structure to provide
+ * additional rewards to delegators from a specific validator.
+ *
+ * Since: cosmos-sdk 0.50
+ */
+export interface MsgDepositValidatorRewardsPool {
+  depositor: string;
+  validatorAddress: string;
+  amount: Coin[];
+}
+
+/**
+ * MsgDepositValidatorRewardsPoolResponse defines the response to executing a
+ * MsgDepositValidatorRewardsPool message.
+ *
+ * Since: cosmos-sdk 0.50
+ */
+export interface MsgDepositValidatorRewardsPoolResponse {}
+
 const baseMsgSetWithdrawAddress: object = {
   delegatorAddress: "",
   withdrawAddress: "",
@@ -898,6 +918,152 @@ export const MsgCommunityPoolSpendResponse = {
   },
 };
 
+const baseMsgDepositValidatorRewardsPool: object = {
+  depositor: "",
+  validatorAddress: "",
+};
+
+export const MsgDepositValidatorRewardsPool = {
+  encode(
+    message: MsgDepositValidatorRewardsPool,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.depositor !== "") {
+      writer.uint32(10).string(message.depositor);
+    }
+    if (message.validatorAddress !== "") {
+      writer.uint32(18).string(message.validatorAddress);
+    }
+    for (const v of message.amount) {
+      Coin.encode(v!, writer.uint32(26).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgDepositValidatorRewardsPool {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgDepositValidatorRewardsPool,
+    } as MsgDepositValidatorRewardsPool;
+    message.amount = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.depositor = reader.string();
+          break;
+        case 2:
+          message.validatorAddress = reader.string();
+          break;
+        case 3:
+          message.amount.push(Coin.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgDepositValidatorRewardsPool {
+    const message = {
+      ...baseMsgDepositValidatorRewardsPool,
+    } as MsgDepositValidatorRewardsPool;
+    message.depositor =
+      object.depositor !== undefined && object.depositor !== null
+        ? String(object.depositor)
+        : "";
+    message.validatorAddress =
+      object.validatorAddress !== undefined && object.validatorAddress !== null
+        ? String(object.validatorAddress)
+        : "";
+    message.amount = (object.amount ?? []).map((e: any) => Coin.fromJSON(e));
+    return message;
+  },
+
+  toJSON(message: MsgDepositValidatorRewardsPool): unknown {
+    const obj: any = {};
+    message.depositor !== undefined && (obj.depositor = message.depositor);
+    message.validatorAddress !== undefined &&
+      (obj.validatorAddress = message.validatorAddress);
+    if (message.amount) {
+      obj.amount = message.amount.map((e) => (e ? Coin.toJSON(e) : undefined));
+    } else {
+      obj.amount = [];
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<MsgDepositValidatorRewardsPool>
+  ): MsgDepositValidatorRewardsPool {
+    const message = {
+      ...baseMsgDepositValidatorRewardsPool,
+    } as MsgDepositValidatorRewardsPool;
+    message.depositor = object.depositor ?? "";
+    message.validatorAddress = object.validatorAddress ?? "";
+    message.amount = (object.amount ?? []).map((e) => Coin.fromPartial(e));
+    return message;
+  },
+};
+
+const baseMsgDepositValidatorRewardsPoolResponse: object = {};
+
+export const MsgDepositValidatorRewardsPoolResponse = {
+  encode(
+    _: MsgDepositValidatorRewardsPoolResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgDepositValidatorRewardsPoolResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgDepositValidatorRewardsPoolResponse,
+    } as MsgDepositValidatorRewardsPoolResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgDepositValidatorRewardsPoolResponse {
+    const message = {
+      ...baseMsgDepositValidatorRewardsPoolResponse,
+    } as MsgDepositValidatorRewardsPoolResponse;
+    return message;
+  },
+
+  toJSON(_: MsgDepositValidatorRewardsPoolResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgDepositValidatorRewardsPoolResponse>
+  ): MsgDepositValidatorRewardsPoolResponse {
+    const message = {
+      ...baseMsgDepositValidatorRewardsPoolResponse,
+    } as MsgDepositValidatorRewardsPoolResponse;
+    return message;
+  },
+};
+
 /** Msg defines the distribution Msg service. */
 export interface Msg {
   /**
@@ -946,6 +1112,15 @@ export interface Msg {
   CommunityPoolSpend(
     request: MsgCommunityPoolSpend
   ): Promise<MsgCommunityPoolSpendResponse>;
+  /**
+   * DepositValidatorRewardsPool defines a method to provide additional rewards
+   * to delegators to a specific validator.
+   *
+   * Since: cosmos-sdk 0.50
+   */
+  DepositValidatorRewardsPool(
+    request: MsgDepositValidatorRewardsPool
+  ): Promise<MsgDepositValidatorRewardsPoolResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -959,6 +1134,8 @@ export class MsgClientImpl implements Msg {
     this.FundCommunityPool = this.FundCommunityPool.bind(this);
     this.UpdateParams = this.UpdateParams.bind(this);
     this.CommunityPoolSpend = this.CommunityPoolSpend.bind(this);
+    this.DepositValidatorRewardsPool =
+      this.DepositValidatorRewardsPool.bind(this);
   }
   SetWithdrawAddress(
     request: MsgSetWithdrawAddress
@@ -1039,6 +1216,20 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgCommunityPoolSpendResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  DepositValidatorRewardsPool(
+    request: MsgDepositValidatorRewardsPool
+  ): Promise<MsgDepositValidatorRewardsPoolResponse> {
+    const data = MsgDepositValidatorRewardsPool.encode(request).finish();
+    const promise = this.rpc.request(
+      "cosmos.distribution.v1beta1.Msg",
+      "DepositValidatorRewardsPool",
+      data
+    );
+    return promise.then((data) =>
+      MsgDepositValidatorRewardsPoolResponse.decode(new _m0.Reader(data))
     );
   }
 }

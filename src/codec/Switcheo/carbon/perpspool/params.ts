@@ -14,7 +14,10 @@ export interface Params {
   quoteExpiryDuration?: Duration;
   /** interval to take market utilization snapshot, e.g. every 60 seconds */
   marketUtilizationSnapshotInterval?: Duration;
-  /** time duration window used to calculate the TWA market utilization e.g. last 24 hours */
+  /**
+   * time duration window used to calculate the TWA market utilization e.g. last
+   * 24 hours
+   */
   maxMarketUtilizationSnapshotWindow?: Duration;
   navPerShareSnapshots: Long;
   navPerShareSnapshotInterval?: Duration;

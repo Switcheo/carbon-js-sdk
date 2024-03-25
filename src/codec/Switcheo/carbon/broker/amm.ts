@@ -28,7 +28,10 @@ export interface PerpsAmm {
   lastQuotedAt?: Date;
 }
 
-/** PerpsMarketAmm exists when it is active or when there's orders or open position */
+/**
+ * PerpsMarketAmm exists when it is active or when there's orders or open
+ * position
+ */
 export interface PerpsMarketAmm {
   marketId: string;
   /**

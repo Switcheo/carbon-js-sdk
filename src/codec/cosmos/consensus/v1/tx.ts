@@ -5,6 +5,7 @@ import {
   BlockParams,
   EvidenceParams,
   ValidatorParams,
+  ABCIParams,
 } from "../../../tendermint/types/params";
 
 export const protobufPackage = "cosmos.consensus.v1";
@@ -25,6 +26,8 @@ export interface MsgUpdateParams {
   block?: BlockParams;
   evidence?: EvidenceParams;
   validator?: ValidatorParams;
+  /** Since: cosmos-sdk 0.50 */
+  abci?: ABCIParams;
 }
 
 /**
@@ -58,6 +61,9 @@ export const MsgUpdateParams = {
         writer.uint32(34).fork()
       ).ldelim();
     }
+    if (message.abci !== undefined) {
+      ABCIParams.encode(message.abci, writer.uint32(42).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -79,6 +85,9 @@ export const MsgUpdateParams = {
           break;
         case 4:
           message.validator = ValidatorParams.decode(reader, reader.uint32());
+          break;
+        case 5:
+          message.abci = ABCIParams.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -106,6 +115,10 @@ export const MsgUpdateParams = {
       object.validator !== undefined && object.validator !== null
         ? ValidatorParams.fromJSON(object.validator)
         : undefined;
+    message.abci =
+      object.abci !== undefined && object.abci !== null
+        ? ABCIParams.fromJSON(object.abci)
+        : undefined;
     return message;
   },
 
@@ -124,6 +137,8 @@ export const MsgUpdateParams = {
       (obj.validator = message.validator
         ? ValidatorParams.toJSON(message.validator)
         : undefined);
+    message.abci !== undefined &&
+      (obj.abci = message.abci ? ABCIParams.toJSON(message.abci) : undefined);
     return obj;
   },
 
@@ -141,6 +156,10 @@ export const MsgUpdateParams = {
     message.validator =
       object.validator !== undefined && object.validator !== null
         ? ValidatorParams.fromPartial(object.validator)
+        : undefined;
+    message.abci =
+      object.abci !== undefined && object.abci !== null
+        ? ABCIParams.fromPartial(object.abci)
         : undefined;
     return message;
   },
@@ -198,10 +217,10 @@ export const MsgUpdateParamsResponse = {
   },
 };
 
-/** Msg defines the bank Msg service. */
+/** Msg defines the consensus Msg service. */
 export interface Msg {
   /**
-   * UpdateParams defines a governance operation for updating the x/consensus_param module parameters.
+   * UpdateParams defines a governance operation for updating the x/consensus module parameters.
    * The authority is defined in the keeper.
    *
    * Since: cosmos-sdk 0.47

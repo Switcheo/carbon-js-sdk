@@ -274,7 +274,7 @@ export interface MsgCreateRewardScheme {
 export interface MsgCreateRewardSchemeResponse {}
 
 export interface MsgUpdateRewardScheme {
-  updator: string;
+  updater: string;
   updateRewardSchemeParams?: UpdateRewardSchemeParams;
 }
 
@@ -4716,15 +4716,15 @@ export const MsgCreateRewardSchemeResponse = {
   },
 };
 
-const baseMsgUpdateRewardScheme: object = { updator: "" };
+const baseMsgUpdateRewardScheme: object = { updater: "" };
 
 export const MsgUpdateRewardScheme = {
   encode(
     message: MsgUpdateRewardScheme,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.updator !== "") {
-      writer.uint32(10).string(message.updator);
+    if (message.updater !== "") {
+      writer.uint32(10).string(message.updater);
     }
     if (message.updateRewardSchemeParams !== undefined) {
       UpdateRewardSchemeParams.encode(
@@ -4746,7 +4746,7 @@ export const MsgUpdateRewardScheme = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.updator = reader.string();
+          message.updater = reader.string();
           break;
         case 2:
           message.updateRewardSchemeParams = UpdateRewardSchemeParams.decode(
@@ -4764,9 +4764,9 @@ export const MsgUpdateRewardScheme = {
 
   fromJSON(object: any): MsgUpdateRewardScheme {
     const message = { ...baseMsgUpdateRewardScheme } as MsgUpdateRewardScheme;
-    message.updator =
-      object.updator !== undefined && object.updator !== null
-        ? String(object.updator)
+    message.updater =
+      object.updater !== undefined && object.updater !== null
+        ? String(object.updater)
         : "";
     message.updateRewardSchemeParams =
       object.updateRewardSchemeParams !== undefined &&
@@ -4778,7 +4778,7 @@ export const MsgUpdateRewardScheme = {
 
   toJSON(message: MsgUpdateRewardScheme): unknown {
     const obj: any = {};
-    message.updator !== undefined && (obj.updator = message.updator);
+    message.updater !== undefined && (obj.updater = message.updater);
     message.updateRewardSchemeParams !== undefined &&
       (obj.updateRewardSchemeParams = message.updateRewardSchemeParams
         ? UpdateRewardSchemeParams.toJSON(message.updateRewardSchemeParams)
@@ -4790,7 +4790,7 @@ export const MsgUpdateRewardScheme = {
     object: DeepPartial<MsgUpdateRewardScheme>
   ): MsgUpdateRewardScheme {
     const message = { ...baseMsgUpdateRewardScheme } as MsgUpdateRewardScheme;
-    message.updator = object.updator ?? "";
+    message.updater = object.updater ?? "";
     message.updateRewardSchemeParams =
       object.updateRewardSchemeParams !== undefined &&
       object.updateRewardSchemeParams !== null

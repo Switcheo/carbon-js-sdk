@@ -1,7 +1,10 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { PageRequest } from "../../../../cosmos/base/query/v1beta1/pagination";
+import {
+  PageRequest,
+  PageResponse,
+} from "../../../../cosmos/base/query/v1beta1/pagination";
 import { PacketId } from "../../../core/channel/v1/channel";
 import { IdentifiedPacketFees } from "./fee";
 import { Coin } from "../../../../cosmos/base/v1beta1/coin";
@@ -21,6 +24,8 @@ export interface QueryIncentivizedPacketsRequest {
 export interface QueryIncentivizedPacketsResponse {
   /** list of identified fees for incentivized packets */
   incentivizedPackets: IdentifiedPacketFees[];
+  /** pagination defines the pagination in the response. */
+  pagination?: PageResponse;
 }
 
 /** QueryIncentivizedPacketRequest defines the request type for the IncentivizedPacket rpc */
@@ -54,6 +59,8 @@ export interface QueryIncentivizedPacketsForChannelRequest {
 export interface QueryIncentivizedPacketsForChannelResponse {
   /** Map of all incentivized_packets */
   incentivizedPackets: IdentifiedPacketFees[];
+  /** pagination defines the pagination in the response. */
+  pagination?: PageResponse;
 }
 
 /** QueryTotalRecvFeesRequest defines the request type for the TotalRecvFees rpc */
@@ -132,6 +139,8 @@ export interface QueryFeeEnabledChannelsRequest {
 export interface QueryFeeEnabledChannelsResponse {
   /** list of fee enabled channels */
   feeEnabledChannels: FeeEnabledChannel[];
+  /** pagination defines the pagination in the response. */
+  pagination?: PageResponse;
 }
 
 /** QueryFeeEnabledChannelRequest defines the request type for the FeeEnabledChannel rpc */
@@ -244,6 +253,12 @@ export const QueryIncentivizedPacketsResponse = {
     for (const v of message.incentivizedPackets) {
       IdentifiedPacketFees.encode(v!, writer.uint32(10).fork()).ldelim();
     }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
     return writer;
   },
 
@@ -265,6 +280,9 @@ export const QueryIncentivizedPacketsResponse = {
             IdentifiedPacketFees.decode(reader, reader.uint32())
           );
           break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -280,6 +298,10 @@ export const QueryIncentivizedPacketsResponse = {
     message.incentivizedPackets = (object.incentivizedPackets ?? []).map(
       (e: any) => IdentifiedPacketFees.fromJSON(e)
     );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -292,6 +314,10 @@ export const QueryIncentivizedPacketsResponse = {
     } else {
       obj.incentivizedPackets = [];
     }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
     return obj;
   },
 
@@ -304,6 +330,10 @@ export const QueryIncentivizedPacketsResponse = {
     message.incentivizedPackets = (object.incentivizedPackets ?? []).map((e) =>
       IdentifiedPacketFees.fromPartial(e)
     );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -596,6 +626,12 @@ export const QueryIncentivizedPacketsForChannelResponse = {
     for (const v of message.incentivizedPackets) {
       IdentifiedPacketFees.encode(v!, writer.uint32(10).fork()).ldelim();
     }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
     return writer;
   },
 
@@ -617,6 +653,9 @@ export const QueryIncentivizedPacketsForChannelResponse = {
             IdentifiedPacketFees.decode(reader, reader.uint32())
           );
           break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -632,6 +671,10 @@ export const QueryIncentivizedPacketsForChannelResponse = {
     message.incentivizedPackets = (object.incentivizedPackets ?? []).map(
       (e: any) => IdentifiedPacketFees.fromJSON(e)
     );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -644,6 +687,10 @@ export const QueryIncentivizedPacketsForChannelResponse = {
     } else {
       obj.incentivizedPackets = [];
     }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
     return obj;
   },
 
@@ -656,6 +703,10 @@ export const QueryIncentivizedPacketsForChannelResponse = {
     message.incentivizedPackets = (object.incentivizedPackets ?? []).map((e) =>
       IdentifiedPacketFees.fromPartial(e)
     );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };
@@ -1440,6 +1491,12 @@ export const QueryFeeEnabledChannelsResponse = {
     for (const v of message.feeEnabledChannels) {
       FeeEnabledChannel.encode(v!, writer.uint32(10).fork()).ldelim();
     }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
     return writer;
   },
 
@@ -1461,6 +1518,9 @@ export const QueryFeeEnabledChannelsResponse = {
             FeeEnabledChannel.decode(reader, reader.uint32())
           );
           break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -1476,6 +1536,10 @@ export const QueryFeeEnabledChannelsResponse = {
     message.feeEnabledChannels = (object.feeEnabledChannels ?? []).map(
       (e: any) => FeeEnabledChannel.fromJSON(e)
     );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
     return message;
   },
 
@@ -1488,6 +1552,10 @@ export const QueryFeeEnabledChannelsResponse = {
     } else {
       obj.feeEnabledChannels = [];
     }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
     return obj;
   },
 
@@ -1500,6 +1568,10 @@ export const QueryFeeEnabledChannelsResponse = {
     message.feeEnabledChannels = (object.feeEnabledChannels ?? []).map((e) =>
       FeeEnabledChannel.fromPartial(e)
     );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
     return message;
   },
 };

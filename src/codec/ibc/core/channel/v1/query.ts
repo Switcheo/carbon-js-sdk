@@ -332,6 +332,30 @@ export interface QueryNextSequenceReceiveResponse {
   proofHeight?: Height;
 }
 
+/**
+ * QueryNextSequenceSendRequest is the request type for the
+ * Query/QueryNextSequenceSend RPC method
+ */
+export interface QueryNextSequenceSendRequest {
+  /** port unique identifier */
+  portId: string;
+  /** channel unique identifier */
+  channelId: string;
+}
+
+/**
+ * QueryNextSequenceSendResponse is the request type for the
+ * Query/QueryNextSequenceSend RPC method
+ */
+export interface QueryNextSequenceSendResponse {
+  /** next sequence send number */
+  nextSequenceSend: Long;
+  /** merkle proof of existence */
+  proof: Uint8Array;
+  /** height at which the proof was retrieved */
+  proofHeight?: Height;
+}
+
 const baseQueryChannelRequest: object = { portId: "", channelId: "" };
 
 export const QueryChannelRequest = {
@@ -2901,6 +2925,188 @@ export const QueryNextSequenceReceiveResponse = {
   },
 };
 
+const baseQueryNextSequenceSendRequest: object = { portId: "", channelId: "" };
+
+export const QueryNextSequenceSendRequest = {
+  encode(
+    message: QueryNextSequenceSendRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.portId !== "") {
+      writer.uint32(10).string(message.portId);
+    }
+    if (message.channelId !== "") {
+      writer.uint32(18).string(message.channelId);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryNextSequenceSendRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryNextSequenceSendRequest,
+    } as QueryNextSequenceSendRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.portId = reader.string();
+          break;
+        case 2:
+          message.channelId = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryNextSequenceSendRequest {
+    const message = {
+      ...baseQueryNextSequenceSendRequest,
+    } as QueryNextSequenceSendRequest;
+    message.portId =
+      object.portId !== undefined && object.portId !== null
+        ? String(object.portId)
+        : "";
+    message.channelId =
+      object.channelId !== undefined && object.channelId !== null
+        ? String(object.channelId)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryNextSequenceSendRequest): unknown {
+    const obj: any = {};
+    message.portId !== undefined && (obj.portId = message.portId);
+    message.channelId !== undefined && (obj.channelId = message.channelId);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryNextSequenceSendRequest>
+  ): QueryNextSequenceSendRequest {
+    const message = {
+      ...baseQueryNextSequenceSendRequest,
+    } as QueryNextSequenceSendRequest;
+    message.portId = object.portId ?? "";
+    message.channelId = object.channelId ?? "";
+    return message;
+  },
+};
+
+const baseQueryNextSequenceSendResponse: object = {
+  nextSequenceSend: Long.UZERO,
+};
+
+export const QueryNextSequenceSendResponse = {
+  encode(
+    message: QueryNextSequenceSendResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (!message.nextSequenceSend.isZero()) {
+      writer.uint32(8).uint64(message.nextSequenceSend);
+    }
+    if (message.proof.length !== 0) {
+      writer.uint32(18).bytes(message.proof);
+    }
+    if (message.proofHeight !== undefined) {
+      Height.encode(message.proofHeight, writer.uint32(26).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryNextSequenceSendResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryNextSequenceSendResponse,
+    } as QueryNextSequenceSendResponse;
+    message.proof = new Uint8Array();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.nextSequenceSend = reader.uint64() as Long;
+          break;
+        case 2:
+          message.proof = reader.bytes();
+          break;
+        case 3:
+          message.proofHeight = Height.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryNextSequenceSendResponse {
+    const message = {
+      ...baseQueryNextSequenceSendResponse,
+    } as QueryNextSequenceSendResponse;
+    message.nextSequenceSend =
+      object.nextSequenceSend !== undefined && object.nextSequenceSend !== null
+        ? Long.fromString(object.nextSequenceSend)
+        : Long.UZERO;
+    message.proof =
+      object.proof !== undefined && object.proof !== null
+        ? bytesFromBase64(object.proof)
+        : new Uint8Array();
+    message.proofHeight =
+      object.proofHeight !== undefined && object.proofHeight !== null
+        ? Height.fromJSON(object.proofHeight)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryNextSequenceSendResponse): unknown {
+    const obj: any = {};
+    message.nextSequenceSend !== undefined &&
+      (obj.nextSequenceSend = (
+        message.nextSequenceSend || Long.UZERO
+      ).toString());
+    message.proof !== undefined &&
+      (obj.proof = base64FromBytes(
+        message.proof !== undefined ? message.proof : new Uint8Array()
+      ));
+    message.proofHeight !== undefined &&
+      (obj.proofHeight = message.proofHeight
+        ? Height.toJSON(message.proofHeight)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryNextSequenceSendResponse>
+  ): QueryNextSequenceSendResponse {
+    const message = {
+      ...baseQueryNextSequenceSendResponse,
+    } as QueryNextSequenceSendResponse;
+    message.nextSequenceSend =
+      object.nextSequenceSend !== undefined && object.nextSequenceSend !== null
+        ? Long.fromValue(object.nextSequenceSend)
+        : Long.UZERO;
+    message.proof = object.proof ?? new Uint8Array();
+    message.proofHeight =
+      object.proofHeight !== undefined && object.proofHeight !== null
+        ? Height.fromPartial(object.proofHeight)
+        : undefined;
+    return message;
+  },
+};
+
 /** Query provides defines the gRPC querier service */
 export interface Query {
   /** Channel queries an IBC Channel. */
@@ -2975,6 +3181,10 @@ export interface Query {
   NextSequenceReceive(
     request: QueryNextSequenceReceiveRequest
   ): Promise<QueryNextSequenceReceiveResponse>;
+  /** NextSequenceSend returns the next send sequence for a given channel. */
+  NextSequenceSend(
+    request: QueryNextSequenceSendRequest
+  ): Promise<QueryNextSequenceSendResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -2994,6 +3204,7 @@ export class QueryClientImpl implements Query {
     this.UnreceivedPackets = this.UnreceivedPackets.bind(this);
     this.UnreceivedAcks = this.UnreceivedAcks.bind(this);
     this.NextSequenceReceive = this.NextSequenceReceive.bind(this);
+    this.NextSequenceSend = this.NextSequenceSend.bind(this);
   }
   Channel(request: QueryChannelRequest): Promise<QueryChannelResponse> {
     const data = QueryChannelRequest.encode(request).finish();
@@ -3170,6 +3381,20 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryNextSequenceReceiveResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  NextSequenceSend(
+    request: QueryNextSequenceSendRequest
+  ): Promise<QueryNextSequenceSendResponse> {
+    const data = QueryNextSequenceSendRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "ibc.core.channel.v1.Query",
+      "NextSequenceSend",
+      data
+    );
+    return promise.then((data) =>
+      QueryNextSequenceSendResponse.decode(new _m0.Reader(data))
     );
   }
 }

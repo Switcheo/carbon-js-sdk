@@ -77,10 +77,16 @@ export interface QueryParamsResponse {
   params?: Params;
 }
 
-/** QueryControlledParamsRequest is request type for the Query/ControlledParams RPC method. */
+/**
+ * QueryControlledParamsRequest is request type for the Query/ControlledParams
+ * RPC method.
+ */
 export interface QueryControlledParamsRequest {}
 
-/** QueryControlledParamsResponse is response type for the Query/ControlledParams RPC method. */
+/**
+ * QueryControlledParamsResponse is response type for the Query/ControlledParams
+ * RPC method.
+ */
 export interface QueryControlledParamsResponse {
   /** params holds all the parameters of this module. */
   controlledParams?: ControlledParams;

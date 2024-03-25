@@ -20,6 +20,14 @@ export const protobufPackage = "cosmos.gov.v1";
 
 /** Since: cosmos-sdk 0.46 */
 
+/** QueryConstitutionRequest is the request type for the Query/Constitution RPC method */
+export interface QueryConstitutionRequest {}
+
+/** QueryConstitutionResponse is the response type for the Query/Constitution RPC method */
+export interface QueryConstitutionResponse {
+  constitution: string;
+}
+
 /** QueryProposalRequest is the request type for the Query/Proposal RPC method. */
 export interface QueryProposalRequest {
   /** proposal_id defines the unique id of the proposal. */
@@ -166,6 +174,123 @@ export interface QueryTallyResultResponse {
   /** tally defines the requested tally. */
   tally?: TallyResult;
 }
+
+const baseQueryConstitutionRequest: object = {};
+
+export const QueryConstitutionRequest = {
+  encode(
+    _: QueryConstitutionRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryConstitutionRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryConstitutionRequest,
+    } as QueryConstitutionRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryConstitutionRequest {
+    const message = {
+      ...baseQueryConstitutionRequest,
+    } as QueryConstitutionRequest;
+    return message;
+  },
+
+  toJSON(_: QueryConstitutionRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<QueryConstitutionRequest>
+  ): QueryConstitutionRequest {
+    const message = {
+      ...baseQueryConstitutionRequest,
+    } as QueryConstitutionRequest;
+    return message;
+  },
+};
+
+const baseQueryConstitutionResponse: object = { constitution: "" };
+
+export const QueryConstitutionResponse = {
+  encode(
+    message: QueryConstitutionResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.constitution !== "") {
+      writer.uint32(10).string(message.constitution);
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryConstitutionResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryConstitutionResponse,
+    } as QueryConstitutionResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.constitution = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryConstitutionResponse {
+    const message = {
+      ...baseQueryConstitutionResponse,
+    } as QueryConstitutionResponse;
+    message.constitution =
+      object.constitution !== undefined && object.constitution !== null
+        ? String(object.constitution)
+        : "";
+    return message;
+  },
+
+  toJSON(message: QueryConstitutionResponse): unknown {
+    const obj: any = {};
+    message.constitution !== undefined &&
+      (obj.constitution = message.constitution);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryConstitutionResponse>
+  ): QueryConstitutionResponse {
+    const message = {
+      ...baseQueryConstitutionResponse,
+    } as QueryConstitutionResponse;
+    message.constitution = object.constitution ?? "";
+    return message;
+  },
+};
 
 const baseQueryProposalRequest: object = { proposalId: Long.UZERO };
 
@@ -1372,6 +1497,10 @@ export const QueryTallyResultResponse = {
 
 /** Query defines the gRPC querier service for gov module */
 export interface Query {
+  /** Constitution queries the chain's constitution. */
+  Constitution(
+    request: QueryConstitutionRequest
+  ): Promise<QueryConstitutionResponse>;
   /** Proposal queries proposal details based on ProposalID. */
   Proposal(request: QueryProposalRequest): Promise<QueryProposalResponse>;
   /** Proposals queries all proposals based on given status. */
@@ -1382,7 +1511,7 @@ export interface Query {
   Votes(request: QueryVotesRequest): Promise<QueryVotesResponse>;
   /** Params queries all parameters of the gov module. */
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse>;
-  /** Deposit queries single deposit information based proposalID, depositAddr. */
+  /** Deposit queries single deposit information based on proposalID, depositAddr. */
   Deposit(request: QueryDepositRequest): Promise<QueryDepositResponse>;
   /** Deposits queries all deposits of a single proposal. */
   Deposits(request: QueryDepositsRequest): Promise<QueryDepositsResponse>;
@@ -1396,6 +1525,7 @@ export class QueryClientImpl implements Query {
   private readonly rpc: Rpc;
   constructor(rpc: Rpc) {
     this.rpc = rpc;
+    this.Constitution = this.Constitution.bind(this);
     this.Proposal = this.Proposal.bind(this);
     this.Proposals = this.Proposals.bind(this);
     this.Vote = this.Vote.bind(this);
@@ -1405,6 +1535,20 @@ export class QueryClientImpl implements Query {
     this.Deposits = this.Deposits.bind(this);
     this.TallyResult = this.TallyResult.bind(this);
   }
+  Constitution(
+    request: QueryConstitutionRequest
+  ): Promise<QueryConstitutionResponse> {
+    const data = QueryConstitutionRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "cosmos.gov.v1.Query",
+      "Constitution",
+      data
+    );
+    return promise.then((data) =>
+      QueryConstitutionResponse.decode(new _m0.Reader(data))
+    );
+  }
+
   Proposal(request: QueryProposalRequest): Promise<QueryProposalResponse> {
     const data = QueryProposalRequest.encode(request).finish();
     const promise = this.rpc.request("cosmos.gov.v1.Query", "Proposal", data);

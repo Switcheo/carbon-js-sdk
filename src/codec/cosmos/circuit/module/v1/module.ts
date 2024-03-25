@@ -2,26 +2,23 @@
 import Long from "long";
 import _m0 from "protobufjs/minimal";
 
-export const protobufPackage = "cosmos.capability.module.v1";
+export const protobufPackage = "cosmos.circuit.module.v1";
 
-/** Module is the config object of the capability module. */
+/** Module is the config object of the circuit module. */
 export interface Module {
-  /**
-   * seal_keeper defines if keeper.Seal() will run on BeginBlock() to prevent further modules from creating a scoped
-   * keeper. For more details check x/capability/keeper.go.
-   */
-  sealKeeper: boolean;
+  /** authority defines the custom module authority. If not set, defaults to the governance module. */
+  authority: string;
 }
 
-const baseModule: object = { sealKeeper: false };
+const baseModule: object = { authority: "" };
 
 export const Module = {
   encode(
     message: Module,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.sealKeeper === true) {
-      writer.uint32(8).bool(message.sealKeeper);
+    if (message.authority !== "") {
+      writer.uint32(10).string(message.authority);
     }
     return writer;
   },
@@ -34,7 +31,7 @@ export const Module = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.sealKeeper = reader.bool();
+          message.authority = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -46,22 +43,22 @@ export const Module = {
 
   fromJSON(object: any): Module {
     const message = { ...baseModule } as Module;
-    message.sealKeeper =
-      object.sealKeeper !== undefined && object.sealKeeper !== null
-        ? Boolean(object.sealKeeper)
-        : false;
+    message.authority =
+      object.authority !== undefined && object.authority !== null
+        ? String(object.authority)
+        : "";
     return message;
   },
 
   toJSON(message: Module): unknown {
     const obj: any = {};
-    message.sealKeeper !== undefined && (obj.sealKeeper = message.sealKeeper);
+    message.authority !== undefined && (obj.authority = message.authority);
     return obj;
   },
 
   fromPartial(object: DeepPartial<Module>): Module {
     const message = { ...baseModule } as Module;
-    message.sealKeeper = object.sealKeeper ?? false;
+    message.authority = object.authority ?? "";
     return message;
   },
 };

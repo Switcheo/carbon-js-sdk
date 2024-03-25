@@ -55,7 +55,6 @@ export interface NetworkConfig {
   tmWsUrl: string;
   restUrl: string;
   grpcUrl: string;
-  grpcWebUrl: string;
   evmJsonRpcUrl: string;
   evmWsUrl: string;
   insightsUrl: string;
@@ -95,7 +94,6 @@ export const NetworkConfigs: {
     tmWsUrl: "wss://tm-api.carbon.network/",
     restUrl: "https://api.carbon.network",
     grpcUrl: "grpc.carbon.network",
-    grpcWebUrl: "https://grpc-web.carbon.network",
     evmJsonRpcUrl: "https://evm-api.carbon.network/",
     evmWsUrl: "wss://evm-ws.carbon.network/",
     insightsUrl: "https://api-insights.carbon.network",
@@ -183,7 +181,6 @@ export const NetworkConfigs: {
     tmWsUrl: "wss://test-tm-api.carbon.network",
     restUrl: "https://test-api.carbon.network",
     grpcUrl: "test-grpc.carbon.network",
-    grpcWebUrl: "https://test-grpc-web.carbon.network",
     evmJsonRpcUrl: "https://test-evm-api.carbon.network/",
     evmWsUrl: "wss://test-evm-ws.carbon.network/",
     insightsUrl: "https://test-api-insights.carbon.network",
@@ -271,7 +268,6 @@ export const NetworkConfigs: {
     tmWsUrl: "wss://dev-tm-api.carbon.network",
     restUrl: "https://dev-api.carbon.network",
     grpcUrl: "dev-grpc.carbon.network",
-    grpcWebUrl: "https://dev-grpc-web.carbon.network",
     evmJsonRpcUrl: "https://dev-evm-api.carbon.network/",
     evmWsUrl: "wss://dev-evm-ws.carbon.network/",
     insightsUrl: "https://dev-api-insights.carbon.network",
@@ -360,7 +356,6 @@ export const NetworkConfigs: {
     tmWsUrl: "ws://localhost:26657",
     restUrl: "http://localhost:1317",
     grpcUrl: "localhost:9090",
-    grpcWebUrl: "http://localhost:9091",
     evmJsonRpcUrl: "http://localhost:8545/",
     evmWsUrl: "ws://localhost:8546/",
     insightsUrl: "http://localhost:8181",

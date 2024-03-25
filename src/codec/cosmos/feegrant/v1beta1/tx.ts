@@ -34,6 +34,23 @@ export interface MsgRevokeAllowance {
 /** MsgRevokeAllowanceResponse defines the Msg/RevokeAllowanceResponse response type. */
 export interface MsgRevokeAllowanceResponse {}
 
+/**
+ * MsgPruneAllowances prunes expired fee allowances.
+ *
+ * Since cosmos-sdk 0.50
+ */
+export interface MsgPruneAllowances {
+  /** pruner is the address of the user pruning expired allowances. */
+  pruner: string;
+}
+
+/**
+ * MsgPruneAllowancesResponse defines the Msg/PruneAllowancesResponse response type.
+ *
+ * Since cosmos-sdk 0.50
+ */
+export interface MsgPruneAllowancesResponse {}
+
 const baseMsgGrantAllowance: object = { granter: "", grantee: "" };
 
 export const MsgGrantAllowance = {
@@ -286,6 +303,111 @@ export const MsgRevokeAllowanceResponse = {
   },
 };
 
+const baseMsgPruneAllowances: object = { pruner: "" };
+
+export const MsgPruneAllowances = {
+  encode(
+    message: MsgPruneAllowances,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.pruner !== "") {
+      writer.uint32(10).string(message.pruner);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgPruneAllowances {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgPruneAllowances } as MsgPruneAllowances;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.pruner = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgPruneAllowances {
+    const message = { ...baseMsgPruneAllowances } as MsgPruneAllowances;
+    message.pruner =
+      object.pruner !== undefined && object.pruner !== null
+        ? String(object.pruner)
+        : "";
+    return message;
+  },
+
+  toJSON(message: MsgPruneAllowances): unknown {
+    const obj: any = {};
+    message.pruner !== undefined && (obj.pruner = message.pruner);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgPruneAllowances>): MsgPruneAllowances {
+    const message = { ...baseMsgPruneAllowances } as MsgPruneAllowances;
+    message.pruner = object.pruner ?? "";
+    return message;
+  },
+};
+
+const baseMsgPruneAllowancesResponse: object = {};
+
+export const MsgPruneAllowancesResponse = {
+  encode(
+    _: MsgPruneAllowancesResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgPruneAllowancesResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseMsgPruneAllowancesResponse,
+    } as MsgPruneAllowancesResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgPruneAllowancesResponse {
+    const message = {
+      ...baseMsgPruneAllowancesResponse,
+    } as MsgPruneAllowancesResponse;
+    return message;
+  },
+
+  toJSON(_: MsgPruneAllowancesResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<MsgPruneAllowancesResponse>
+  ): MsgPruneAllowancesResponse {
+    const message = {
+      ...baseMsgPruneAllowancesResponse,
+    } as MsgPruneAllowancesResponse;
+    return message;
+  },
+};
+
 /** Msg defines the feegrant msg service. */
 export interface Msg {
   /**
@@ -302,6 +424,14 @@ export interface Msg {
   RevokeAllowance(
     request: MsgRevokeAllowance
   ): Promise<MsgRevokeAllowanceResponse>;
+  /**
+   * PruneAllowances prunes expired fee allowances, currently up to 75 at a time.
+   *
+   * Since cosmos-sdk 0.50
+   */
+  PruneAllowances(
+    request: MsgPruneAllowances
+  ): Promise<MsgPruneAllowancesResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -310,6 +440,7 @@ export class MsgClientImpl implements Msg {
     this.rpc = rpc;
     this.GrantAllowance = this.GrantAllowance.bind(this);
     this.RevokeAllowance = this.RevokeAllowance.bind(this);
+    this.PruneAllowances = this.PruneAllowances.bind(this);
   }
   GrantAllowance(
     request: MsgGrantAllowance
@@ -336,6 +467,20 @@ export class MsgClientImpl implements Msg {
     );
     return promise.then((data) =>
       MsgRevokeAllowanceResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  PruneAllowances(
+    request: MsgPruneAllowances
+  ): Promise<MsgPruneAllowancesResponse> {
+    const data = MsgPruneAllowances.encode(request).finish();
+    const promise = this.rpc.request(
+      "cosmos.feegrant.v1beta1.Msg",
+      "PruneAllowances",
+      data
+    );
+    return promise.then((data) =>
+      MsgPruneAllowancesResponse.decode(new _m0.Reader(data))
     );
   }
 }

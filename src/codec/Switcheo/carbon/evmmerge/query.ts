@@ -9,12 +9,18 @@ import { EthCosmosAddressWrapper } from "./address";
 
 export const protobufPackage = "Switcheo.carbon.evmmerge";
 
-/** QueryMappedAddressRequest is the request type for the Query/MappedAddress RPC method. */
+/**
+ * QueryMappedAddressRequest is the request type for the Query/MappedAddress RPC
+ * method.
+ */
 export interface QueryMappedAddressRequest {
   address: string;
 }
 
-/** QueryMappedAddressResponse is the response type for the Query/MappedAddress RPC method. */
+/**
+ * QueryMappedAddressResponse is the response type for the Query/MappedAddress
+ * RPC method.
+ */
 export interface QueryMappedAddressResponse {
   mappedAddress: string;
 }
@@ -332,11 +338,17 @@ export interface Query {
   MappedAddressAll(
     request: QueryAllMappedAddressRequest
   ): Promise<QueryAllMappedAddressResponse>;
-  /** MappedEvmAddress queries mapped evm address mappings for a given cosmos address. */
+  /**
+   * MappedEvmAddress queries mapped evm address mappings for a given cosmos
+   * address.
+   */
   MappedEvmAddress(
     request: QueryMappedAddressRequest
   ): Promise<QueryMappedAddressResponse>;
-  /** MappedCosmosAddress queries mapped cosmos address mappings for a given eth address. */
+  /**
+   * MappedCosmosAddress queries mapped cosmos address mappings for a given eth
+   * address.
+   */
   MappedCosmosAddress(
     request: QueryMappedAddressRequest
   ): Promise<QueryMappedAddressResponse>;

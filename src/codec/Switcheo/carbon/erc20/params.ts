@@ -7,11 +7,15 @@ export const protobufPackage = "Switcheo.carbon.erc20";
 
 /** Params defines the erc20 module params */
 export interface Params {
-  /** enable_erc20 is the parameter to enable the conversion of Cosmos coins <--> ERC20 tokens. */
+  /**
+   * enable_erc20 is the parameter to enable the conversion of Cosmos coins <-->
+   * ERC20 tokens.
+   */
   enableErc20: boolean;
   /**
-   * enable_evm_hook is the parameter to enable the EVM hook that converts an ERC20 token to a Cosmos
-   * Coin by transferring the Tokens through a MsgEthereumTx to the ModuleAddress Ethereum address.
+   * enable_evm_hook is the parameter to enable the EVM hook that converts an
+   * ERC20 token to a Cosmos Coin by transferring the Tokens through a
+   * MsgEthereumTx to the ModuleAddress Ethereum address.
    */
   enableEvmHook: boolean;
 }

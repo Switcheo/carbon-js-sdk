@@ -10,13 +10,16 @@ export interface TokenGroup {
   id: Long;
   /** admin/govt determined name */
   name: string;
-  /** denom for the cheque token that represents a token that can be swap 1-to-1 with any underlying tokens in the vault */
+  /** denom for the cheque token that represents a token that can be swap */
   chequeDenom: string;
-  /** address of the vault that stores the tokens */
+  /** 1-to-1 with any underlying tokens in the vault */
   vaultAddress: string;
 }
 
-/** TokenGroupDetails used for for querying. same as TokenGroup but appended with registered_denoms */
+/**
+ * TokenGroupDetails used for for querying. same as TokenGroup but appended with
+ * registered_denoms
+ */
 export interface TokenGroupDetails {
   tokenGroup?: TokenGroup;
   registeredTokens: GroupedTokenConfig[];

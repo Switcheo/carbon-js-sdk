@@ -15,7 +15,10 @@ export interface Pool {
   name: string;
   /** deposit_denom for nav token that will be used to provide liquidity */
   depositDenom: string;
-  /** auto-generated denom for the share token that can be used to redeem deposited token */
+  /**
+   * auto-generated denom for the share token that can be used to redeem
+   * deposited token
+   */
   shareDenom: string;
   /** auto-created address of the vault that stores the tokens */
   vaultAddress: string;
@@ -37,7 +40,10 @@ export interface UpdatePoolParams {
   baseBorrowFeePerFundingInterval: string;
 }
 
-/** PoolDetails used for for querying. same as Pool but appended with registered_markets */
+/**
+ * PoolDetails used for for querying. same as Pool but appended with
+ * registered_markets
+ */
 export interface PoolDetails {
   pool?: Pool;
   registeredMarkets: MarketConfig[];
