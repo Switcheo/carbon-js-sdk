@@ -12,21 +12,20 @@ import {
   ibcNetworkRegex,
 } from "@carbon-sdk/constant";
 import { KeplrAccount } from "@carbon-sdk/provider";
-import { Hash } from "@keplr-wallet/crypto";
 import { AppCurrency, CW20Currency, Secret20Currency } from "@keplr-wallet/types";
 import { Blockchain, BlockchainV2 } from "./blockchain";
 import { SimpleMap } from "./type";
+import { ethers } from "ethers";
 
 // Create IBC minimal denom
 export function makeIBCMinimalDenom(sourceChannelId: string, coinMinimalDenom: string): string {
   const sourceChannelIdProcess =
     sourceChannelId.indexOf("transfer/") === 0 ? sourceChannelId.split("/").splice(1).join("/") : sourceChannelId;
-  return (
-    "ibc/" +
-    Buffer.from(Hash.sha256(Buffer.from(`transfer/${sourceChannelIdProcess}/${coinMinimalDenom}`)))
-      .toString("hex")
-      .toUpperCase()
-  );
+  const bytes = Buffer.from(`transfer/${sourceChannelIdProcess}/${coinMinimalDenom}`);
+  const hash = ethers.utils.sha256(bytes)
+    .replace(/0x/i, "")
+    .toUpperCase();
+  return `ibc/${hash}`
 }
 
 export const EmbedChainInfos = Object.values(EmbedChainInfosInit).reduce(

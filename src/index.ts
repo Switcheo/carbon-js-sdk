@@ -6,7 +6,6 @@ export { Blockchain } from "./util/blockchain";
 export * from "./websocket";
 export {
   AminoTypesMap,
-  CoinPretty,
   SDKProvider,
   KeplrAccount,
   KeplrWindow,
