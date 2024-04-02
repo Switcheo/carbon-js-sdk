@@ -18,8 +18,6 @@ export {
   CallContractArgs,
   MetaMaskSyncResult,
   MetaMask,
-  EthLedgerAccount,
-  EthLedgerSigner,
   NeoLedgerAccount,
   Zilpay,
   ZilPayChangeNetworkParam,
