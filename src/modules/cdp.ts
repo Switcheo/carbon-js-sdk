@@ -599,6 +599,7 @@ export class CDPModule extends BaseModule {
   }
 
   public async removeAccountEMode(
+    params: CDPModule.RemoveAccountEModeParams,
     opts?: CarbonTx.SignTxOpts
   ) {
     const wallet = this.getWallet();
@@ -1475,5 +1476,9 @@ export namespace CDPModule {
   export interface SetAccountEModeParams {
     creator: string;
     eModeCategoryName: string;
+  }
+
+  export interface RemoveAccountEModeParams {
+    creator: string;
   }
 }
