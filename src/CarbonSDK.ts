@@ -3,14 +3,19 @@ import {
   CarbonEvmChainIDs,
   DEFAULT_NETWORK,
   DenomPrefix,
-  Network, Network as _Network, NetworkConfig,
+  Network,
+  NetworkConfig,
   NetworkConfigs,
+  PAGINATE_10K,
+  Network as _Network,
 } from "@carbon-sdk/constant";
 import { GenericUtils, NetworkUtils } from "@carbon-sdk/util";
 import { Tendermint37Client } from "@cosmjs/tendermint-rpc";
 import { NodeHttpTransport } from "@improbable-eng/grpc-web-node-http-transport";
+import BigNumber from "bignumber.js";
 import * as clients from "./clients";
 import { CarbonQueryClient, ETHClient, HydrogenClient, InsightsQueryClient, NEOClient, TokenClient, ZILClient } from "./clients";
+import GasFee from "./clients/GasFee";
 import GrpcQueryClient from "./clients/GrpcQueryClient";
 import N3Client from "./clients/N3Client";
 import {
@@ -43,16 +48,12 @@ import { CosmosLedger, Keplr, KeplrAccount, LeapAccount, LeapExtended } from "./
 import { MetaMask } from "./provider/metamask/MetaMask";
 import { SWTHAddressOptions } from "./util/address";
 import { Blockchain } from "./util/blockchain";
-import { CarbonWallet, CarbonWalletGenericOpts, CarbonSigner, MetaMaskWalletOpts, CarbonLedgerSigner } from "./wallet";
 import { bnOrZero } from "./util/number";
 import { SimpleMap } from "./util/type";
-import BigNumber from "bignumber.js";
-import GasFee from "./clients/GasFee";
-import { PageRequest } from "cosmjs-types/cosmos/base/query/v1beta1/pagination";
-export { CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletGenericOpts, CarbonWalletInitOpts } from "@carbon-sdk/wallet";
+import { CarbonLedgerSigner, CarbonSigner, CarbonWallet, CarbonWalletGenericOpts, MetaMaskWalletOpts } from "./wallet";
 export { CarbonTx } from "@carbon-sdk/util";
+export { CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletGenericOpts, CarbonWalletInitOpts } from "@carbon-sdk/wallet";
 export * as Carbon from "./codec/carbon-models";
-import Long from "long";
 
 export interface CarbonSDKOpts {
   network: Network;
@@ -152,14 +153,14 @@ class CarbonSDK {
   n3: N3Client;
   chainId: string;
   evmChainId: string;
-  gasFee: GasFee;
+  private gasFee?: GasFee;
 
   constructor(opts: CarbonSDKOpts) {
     this.network = opts.network ?? DEFAULT_NETWORK;
     this.configOverride = opts.config ?? {};
     this.networkConfig = GenericUtils.overrideConfig(NetworkConfigs[this.network], this.configOverride);
     this.useTmAbciQuery = opts.useTmAbciQuery ?? false;
-    this.gasFee = opts.gasFee ?? GasFee.instance()
+    this.gasFee = opts.gasFee
 
     this.tmClient = opts.tmClient;
     this.wallet = opts.wallet;
@@ -384,11 +385,11 @@ class CarbonSDK {
   }
 
   private async getGasFee() {
+    if (this.gasFee) return this.gasFee;
+
     const queryClient = this.query
     const { msgGasCosts } = await queryClient.fee.MsgGasCostAll({
-      pagination: PageRequest.fromPartial({
-        limit: new Long(10000),
-      }),
+      pagination: PAGINATE_10K,
     });
 
     const txGasCosts = msgGasCosts.reduce((result, item) => {
@@ -397,9 +398,7 @@ class CarbonSDK {
     }, {} as SimpleMap<BigNumber>);
 
     const { minGasPrices } = await queryClient.fee.MinGasPriceAll({
-      pagination: PageRequest.fromPartial({
-        limit: new Long(10000),
-      }),
+      pagination: PAGINATE_10K,
     });
 
     const txGasPrices = minGasPrices.reduce((result, item) => {
@@ -407,8 +406,7 @@ class CarbonSDK {
       return result;
     }, {} as SimpleMap<BigNumber>);
 
-    const fees = new GasFee(txGasCosts, txGasPrices)
-    return fees
+    return new GasFee(txGasCosts, txGasPrices)
   }
 
   public clone(): CarbonSDK {
@@ -441,7 +439,8 @@ class CarbonSDK {
           chainId: this.chainId,
           evmChainId: this.evmChainId,
         }
-        await wallet.initialize(this.query, this.gasFee, overrideConfig);
+        const gasFee = await this.getGasFee();
+        await wallet.initialize(this.query, gasFee, overrideConfig);
       } catch (err) {
         const errorTyped = err as Error;
         // In the case where account does not exist on chain, still allow wallet connection.

@@ -1,16 +1,11 @@
 import Long from "long";
-import { QueryAllTransactionRequest } from "../lib/codec";
+import { QueryAllTransactionRequest } from "../lib/codec/Switcheo/carbon/misc/query";
 import { PageRequest } from "../lib/codec/cosmos/base/query/v1beta1/pagination";
 import { CarbonSDK, CarbonTx, GenericUtils } from "./_sdk";
 import "./_setup";
 
 (async () => {
-  const sdk = await CarbonSDK.instance({
-    network: CarbonSDK.Network.LocalHost,
-    config: {
-      tmRpcUrl: process.env.TRPC_ENDPOINT,
-    },
-  });
+  const sdk = await CarbonSDK.instance();
 
   // GRPC Queries
 
@@ -65,7 +60,7 @@ import "./_setup";
   // query all orders;
   const orders = await sdk.query.order.OrderAll({
     address: "",
-    market: "",
+    marketId: "",
     orderType: "",
     orderStatus: "",
     pagination: PageRequest.fromPartial({
@@ -135,14 +130,10 @@ import "./_setup";
   const txHash = GenericUtils.computeTxHash(block.txs[0])!;
 
   // get tx
-  const txs = await sdk.query.chain.searchTx({
-    tags: [
-      {
-        key: "tx.hash",
-        value: txHash,
-      },
-    ],
-  });
+  const txs = await sdk.query.chain.searchTx([{
+    key: "tx.hash",
+    value: txHash,
+  }]);
   const [tx] = txs;
   console.log("tx", tx);
   console.log("tx hash", tx.hash);
