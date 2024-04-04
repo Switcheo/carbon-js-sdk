@@ -71,30 +71,22 @@
       ]
     },
     {
-      "output_id": "osmosis_scrt_osmo_pool",
+      "output_id": "bybit_scrt_usdt",
       "adapters": [
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "osmosis_584_1",
-            "default_node_host": "https://api-osmosis.carbon.network",
-            "default_node_path": "/osmosis/gamm/v1beta1/pools/584",
-            "paths": "[\"pool.pool_assets.1.token.amount\", \"pool.pool_assets.0.token.amount\"]",
+            "custom_node_url_key": "bybit_scrt_usdt",
+            "default_node_host": "https://api.bybit.com",
+            "default_node_path": "/spot/v3/public/quote/ticker/price?symbol=SCRTUSDT",
+            "paths": "[\"result.price\"]",
             "timeout": "10"
           }
         },
         {
-          "template": "rpc_response_handler"
+          "template": "full_response_handler"
         }
       ]
-    },
-    {
-      "output_id": "osmosis_scrt_osmo",
-      "adapter": "math_filter",
-      "input_id": "osmosis_scrt_osmo_pool",
-      "config": {
-        "operation": "divide"
-      }
     },
     {
       "output_id": "usdt_usd",
@@ -121,18 +113,6 @@
       ]
     },
     {
-      "output_id": "osmo_usd",
-      "adapters": [
-        {
-          "adapter": "oracle_result_fetcher",
-          "config": {
-            "oracle_id": ".COSMO",
-            "stale_allowance": "900"
-          }
-        }
-      ]
-    },
-    {
       "output_id": "binance_scrt_usd",
       "adapter": "math_filter",
       "config": {
@@ -149,11 +129,11 @@
       }
     },
     {
-      "output_id": "osmosis_scrt_usd",
+      "output_id": "bybit_scrt_usd",
       "adapter": "math_filter",
       "config": {
         "operation": "multiply",
-        "input_ids": "[\"osmosis_scrt_osmo\",\"osmo_usd\"]"
+        "input_ids": "[\"bybit_scrt_usdt\",\"usdt_usd\"]"
       }
     },
     {
@@ -162,8 +142,8 @@
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",
-        "value_ids": "[\"binance_scrt_usd\", \"binance_btc_scrt_usd\", \"osmosis_scrt_usd\"]",
-        "tolerance_percentage": "10"
+        "value_ids": "[\"binance_scrt_usd\", \"binance_btc_scrt_usd\", \"bybit_scrt_usd\"]",
+        "tolerance_percentage": "3"
       }
     },
     {
@@ -172,25 +152,25 @@
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",
-        "value_ids": "[\"binance_scrt_usd\", \"binance_btc_scrt_usd\", \"osmosis_scrt_usd\"]",
-        "tolerance_percentage": "10"
+        "value_ids": "[\"binance_scrt_usd\", \"binance_btc_scrt_usd\", \"bybit_scrt_usd\"]",
+        "tolerance_percentage": "3"
       }
     },
     {
-      "input_id": "osmosis_scrt_usd",
-      "output_id": "osmosis_scrt_usd",
+      "input_id": "bybit_scrt_usd",
+      "output_id": "bybit_scrt_usd",
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",
-        "value_ids": "[\"binance_scrt_usd\", \"binance_btc_scrt_usd\", \"osmosis_scrt_usd\"]",
-        "tolerance_percentage": "10"
+        "value_ids": "[\"binance_scrt_usd\", \"binance_btc_scrt_usd\", \"bybit_scrt_usd\"]",
+        "tolerance_percentage": "3"
       }
     },
     {
       "output_id": "scrt_usd",
       "adapter": "weighted_average",
       "config": {
-        "value_ids": "[\"binance_scrt_usd\", \"binance_btc_scrt_usd\", \"osmosis_scrt_usd\"]",
+        "value_ids": "[\"binance_scrt_usd\", \"binance_btc_scrt_usd\", \"bybit_scrt_usd\"]",
         "weights": "[0.4, 0.3, 0.3]"
       }
     },

@@ -2,7 +2,7 @@
   "output_id": "bnb_usd",
   "templates": [
     {
-      "template_id": "binance_response_handler",
+      "template_id": "full_response_handler",
       "adapters": [
         {
           "adapter": "unresponsive_handler",
@@ -19,21 +19,27 @@
           }
         }
       ]
-    },
-    {
-      "template_id": "response_handler",
-      "adapters": [
-        {
-          "adapter": "unresponsive_handler",
-          "config": {
-            "strategy": "use_last",
-            "grace_duration": "10"
-          }
-        }
-      ]
     }
   ],
   "jobs": [
+    {
+      "output_id": "bybit_bnb_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "bybit_bnb_usdt",
+            "default_node_host": "https://api.bybit.com",
+            "default_node_path": "/spot/v3/public/quote/ticker/price?symbol=BNBUSDT",
+            "paths": "[\"result.price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "full_response_handler"
+        }
+      ]
+    },
     {
       "output_id": "binance_bnb_usdt",
       "adapters": [
@@ -48,9 +54,65 @@
           }
         },
         {
-          "template": "binance_response_handler"
+          "template": "full_response_handler"
         }
       ]
+    },
+    {
+      "output_id": "okx_bnb_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "okx_bnb_usdt",
+            "default_node_host": "https://www.okx.com",
+            "default_node_path": "/api/v5/market/index-tickers?instId=BNB-USDT",
+            "paths": "[\"data.0.idxPx\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "full_response_handler"
+        }
+      ]
+    },
+    {
+      "input_id": "bybit_bnb_usdt",
+      "output_id": "bybit_bnb_usdt",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"bybit_bnb_usdt\", \"binance_bnb_usdt\", \"okx_bnb_usdt\"]",
+        "tolerance_percentage": "3"
+      }
+    },
+    {
+      "input_id": "binance_bnb_usdt",
+      "output_id": "binance_bnb_usdt",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"bybit_bnb_usdt\", \"binance_bnb_usdt\", \"okx_bnb_usdt\"]",
+        "tolerance_percentage": "3"
+      }
+    },
+    {
+      "input_id": "okx_bnb_usdt",
+      "output_id": "okx_bnb_usdt",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"bybit_bnb_usdt\", \"binance_bnb_usdt\", \"okx_bnb_usdt\"]",
+        "tolerance_percentage": "3"
+      }
+    },
+    {
+      "output_id": "bnb_usdt",
+      "adapter": "weighted_average",
+      "config": {
+        "value_ids": "[\"bybit_bnb_usdt\", \"binance_bnb_usdt\", \"okx_bnb_usdt\"]",
+        "weights": "[0.3, 0.4, 0.3]"
+      }
     },
     {
       "output_id": "usdt_usd",
@@ -69,7 +131,7 @@
       "adapter": "math_filter",
       "config": {
         "operation": "multiply",
-        "input_ids": "[\"binance_bnb_usdt\",\"usdt_usd\"]"
+        "input_ids": "[\"bnb_usdt\",\"usdt_usd\"]"
       }
     },
     {

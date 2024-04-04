@@ -1,5 +1,5 @@
 {
-  "output_id": "meme_usd",
+  "output_id": "ftm_usd",
   "templates": [
     {
       "template_id": "full_response_handler",
@@ -23,14 +23,14 @@
   ],
   "jobs": [
     {
-      "output_id": "bybit_meme_usdt",
+      "output_id": "bybit_ftm_usdt",
       "adapters": [
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "bybit_meme_usdt",
+            "custom_node_url_key": "bybit_ftm_usdt",
             "default_node_host": "https://api.bybit.com",
-            "default_node_path": "/spot/v3/public/quote/ticker/price?symbol=MEMEUSDT",
+            "default_node_path": "/spot/v3/public/quote/ticker/price?symbol=FTMUSDT",
             "paths": "[\"result.price\"]",
             "timeout": "10"
           }
@@ -41,14 +41,14 @@
       ]
     },
     {
-      "output_id": "binance_meme_usdt",
+      "output_id": "binance_ftm_usdt",
       "adapters": [
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "binance_meme_usdt",
+            "custom_node_url_key": "binance_ftm_usdt",
             "default_node_host": "https://api-binance-proxy.carbon.network",
-            "default_node_path": "/api/v3/ticker/price?symbol=MEMEUSDT",
+            "default_node_path": "/api/v3/ticker/price?symbol=FTMUSDT",
             "paths": "[\"price\"]",
             "timeout": "10"
           }
@@ -59,14 +59,14 @@
       ]
     },
     {
-      "output_id": "okx_meme_usdt",
+      "output_id": "okx_ftm_usdt",
       "adapters": [
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "okx_meme_usdt",
+            "custom_node_url_key": "okx_ftm_usdt",
             "default_node_host": "https://www.okx.com",
-            "default_node_path": "/api/v5/market/index-tickers?instId=MEME-USDT",
+            "default_node_path": "/api/v5/market/index-tickers?instId=FTM-USDT",
             "paths": "[\"data.0.idxPx\"]",
             "timeout": "10"
           }
@@ -77,40 +77,40 @@
       ]
     },
     {
-      "input_id": "bybit_meme_usdt",
-      "output_id": "bybit_meme_usdt",
+      "input_id": "bybit_ftm_usdt",
+      "output_id": "bybit_ftm_usdt",
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",
-        "value_ids": "[\"bybit_meme_usdt\", \"binance_meme_usdt\", \"okx_meme_usdt\"]",
-        "tolerance_percentage": "3"
+        "value_ids": "[\"bybit_ftm_usdt\", \"binance_ftm_usdt\", \"okx_ftm_usdt\"]",
+        "tolerance_percentage": "10"
       }
     },
     {
-      "input_id": "binance_meme_usdt",
-      "output_id": "binance_meme_usdt",
+      "input_id": "binance_ftm_usdt",
+      "output_id": "binance_ftm_usdt",
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",
-        "value_ids": "[\"bybit_meme_usdt\", \"binance_meme_usdt\", \"okx_meme_usdt\"]",
-        "tolerance_percentage": "3"
+        "value_ids": "[\"bybit_ftm_usdt\", \"binance_ftm_usdt\", \"okx_ftm_usdt\"]",
+        "tolerance_percentage": "10"
       }
     },
     {
-      "input_id": "okx_meme_usdt",
-      "output_id": "okx_meme_usdt",
+      "input_id": "okx_ftm_usdt",
+      "output_id": "okx_ftm_usdt",
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",
-        "value_ids": "[\"bybit_meme_usdt\", \"binance_meme_usdt\", \"okx_meme_usdt\"]",
-        "tolerance_percentage": "3"
+        "value_ids": "[\"bybit_ftm_usdt\", \"binance_ftm_usdt\", \"okx_ftm_usdt\"]",
+        "tolerance_percentage": "10"
       }
     },
     {
-      "output_id": "meme_usdt",
+      "output_id": "ftm_usdt",
       "adapter": "weighted_average",
       "config": {
-        "value_ids": "[\"bybit_meme_usdt\", \"binance_meme_usdt\", \"okx_meme_usdt\"]",
+        "value_ids": "[\"bybit_ftm_usdt\", \"binance_ftm_usdt\", \"okx_ftm_usdt\"]",
         "weights": "[0.3, 0.4, 0.3]"
       }
     },
@@ -127,16 +127,16 @@
       ]
     },
     {
-      "output_id": "meme_usd",
+      "output_id": "ftm_usd",
       "adapter": "math_filter",
       "config": {
         "operation": "multiply",
-        "input_ids": "[\"meme_usdt\",\"usdt_usd\"]"
+        "input_ids": "[\"ftm_usdt\",\"usdt_usd\"]"
       }
     },
     {
-      "output_id": "meme_usd",
-      "input_id": "meme_usd",
+      "output_id": "ftm_usd",
+      "input_id": "ftm_usd",
       "adapter": "float_handler",
       "config": {
         "operation": "round",

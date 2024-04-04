@@ -19,45 +19,34 @@
           }
         }
       ]
-    },
-    {
-      "template_id": "rpc_response_handler",
-      "adapters": [
-        {
-          "adapter": "unresponsive_handler",
-          "config": {
-            "strategy": "use_last",
-            "grace_duration": "120"
-          }
-        }
-      ]
     }
   ],
   "jobs": [
     {
-      "output_id": "osmosis_osmo_usdc_pool",
+      "output_id": "pyth_osmo_usd_8",
       "adapters": [
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "osmosis_678_1",
-            "default_node_host": "https://api-osmosis.carbon.network",
-            "default_node_path": "/osmosis/gamm/v1beta1/pools/678",
-            "paths": "[\"pool.pool_assets.0.token.amount\", \"pool.pool_assets.1.token.amount\"]",
+            "custom_node_url_key": "pyth_osmo_usd",
+            "default_node_host": "https://hermes.pyth.network",
+            "default_node_path": "/api/latest_price_feeds?ids[]=0x5867f5683c757393a0670ef0f701490950fe93fdb006d181c8265a831ac0c5c6",
+            "paths": "[\"0.price.price\"]",
             "timeout": "10"
           }
         },
         {
-          "template": "rpc_response_handler"
+          "template": "response_handler"
         }
       ]
     },
     {
-      "output_id": "osmosis_osmo_usdc",
-      "adapter": "math_filter",
-      "input_id": "osmosis_osmo_usdc_pool",
+      "output_id": "pyth_osmo_usd",
+      "input_id": "pyth_osmo_usd_8",
+      "adapter": "decimal_handler",
       "config": {
-        "operation": "divide"
+        "operation": "decrease",
+        "exponent": "8"
       }
     },
     {
@@ -117,13 +106,13 @@
       }
     },
     {
-      "input_id": "osmosis_osmo_usdc",
-      "output_id": "osmosis_osmo_usdc",
+      "input_id": "pyth_osmo_usd",
+      "output_id": "pyth_osmo_usd",
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",
-        "value_ids": "[\"osmosis_osmo_usdc\", \"coinbase_osmo_usd\", \"binance_osmo_usd\"]",
-        "tolerance_percentage": "10"
+        "value_ids": "[\"pyth_osmo_usd\", \"coinbase_osmo_usd\", \"binance_osmo_usd\"]",
+        "tolerance_percentage": "3"
       }
     },
     {
@@ -132,8 +121,8 @@
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",
-        "value_ids": "[\"osmosis_osmo_usdc\", \"coinbase_osmo_usd\", \"binance_osmo_usd\"]",
-        "tolerance_percentage": "10"
+        "value_ids": "[\"pyth_osmo_usd\", \"coinbase_osmo_usd\", \"binance_osmo_usd\"]",
+        "tolerance_percentage": "3"
       }
     },
     {
@@ -142,15 +131,15 @@
       "adapter": "median_filter",
       "config": {
         "strategy": "nullify",
-        "value_ids": "[\"osmosis_osmo_usdc\", \"coinbase_osmo_usd\", \"binance_osmo_usd\"]",
-        "tolerance_percentage": "10"
+        "value_ids": "[\"pyth_osmo_usd\", \"coinbase_osmo_usd\", \"binance_osmo_usd\"]",
+        "tolerance_percentage": "3"
       }
     },
     {
       "output_id": "osmo_usd",
       "adapter": "weighted_average",
       "config": {
-        "value_ids": "[\"osmosis_osmo_usdc\", \"coinbase_osmo_usd\", \"binance_osmo_usd\"]",
+        "value_ids": "[\"pyth_osmo_usd\", \"coinbase_osmo_usd\", \"binance_osmo_usd\"]",
         "weights": "[0.3, 0.3, 0.4]"
       }
     },
@@ -161,15 +150,6 @@
       "config": {
         "operation": "round",
         "precision": "6"
-      }
-    },
-    {
-      "output_id": "osmo_usd",
-      "input_id": "osmo_usd",
-      "adapter": "unchanged_handler",
-      "config": {
-        "strategy": "nullify",
-        "threshold_duration": "900"
       }
     }
   ]

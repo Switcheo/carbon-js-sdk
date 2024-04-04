@@ -1,0 +1,245 @@
+{
+  "output_id": "stkdydx_usd",
+  "templates": [
+    {
+      "template_id": "full_response_handler",
+      "adapters": [
+        {
+          "adapter": "unresponsive_handler",
+          "config": {
+            "strategy": "use_last",
+            "grace_duration": "120"
+          }
+        },
+        {
+          "adapter": "unchanged_handler",
+          "config": {
+            "strategy": "nullify",
+            "threshold_duration": "900"
+          }
+        }
+      ]
+    },
+    {
+      "template_id": "rpc_response_handler",
+      "adapters": [
+        {
+          "adapter": "unresponsive_handler",
+          "config": {
+            "strategy": "use_last",
+            "grace_duration": "120"
+          }
+        }
+      ]
+    }
+  ],
+  "jobs": [
+    {
+      "output_id": "bybit_dydx_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "bybit_dydx_usdt",
+            "default_node_host": "https://api.bybit.com",
+            "default_node_path": "/spot/v3/public/quote/ticker/price?symbol=DYDXUSDT",
+            "paths": "[\"result.price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "full_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "binance_dydx_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "binance_dydx_usdt",
+            "default_node_host": "https://api-binance-proxy.carbon.network",
+            "default_node_path": "/api/v3/ticker/price?symbol=DYDXUSDT",
+            "paths": "[\"price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "full_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "okx_dydx_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "okx_dydx_usdt",
+            "default_node_host": "https://www.okx.com",
+            "default_node_path": "/api/v5/market/index-tickers?instId=DYDX-USDT",
+            "paths": "[\"data.0.idxPx\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "full_response_handler"
+        }
+      ]
+    },
+    {
+      "input_id": "bybit_dydx_usdt",
+      "output_id": "bybit_dydx_usdt",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"bybit_dydx_usdt\", \"binance_dydx_usdt\", \"okx_dydx_usdt\"]",
+        "tolerance_percentage": "5"
+      }
+    },
+    {
+      "input_id": "binance_dydx_usdt",
+      "output_id": "binance_dydx_usdt",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"bybit_dydx_usdt\", \"binance_dydx_usdt\", \"okx_dydx_usdt\"]",
+        "tolerance_percentage": "5"
+      }
+    },
+    {
+      "input_id": "okx_dydx_usdt",
+      "output_id": "okx_dydx_usdt",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"bybit_dydx_usdt\", \"binance_dydx_usdt\", \"okx_dydx_usdt\"]",
+        "tolerance_percentage": "5"
+      }
+    },
+    {
+      "output_id": "dydx_usdt",
+      "adapter": "weighted_average",
+      "config": {
+        "value_ids": "[\"bybit_dydx_usdt\", \"binance_dydx_usdt\", \"okx_dydx_usdt\"]",
+        "weights": "[0.3, 0.4, 0.3]"
+      }
+    },
+    {
+      "output_id": "usdt_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": ".CUSDT",
+            "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
+      "output_id": "dydx_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"dydx_usdt\",\"usdt_usd\"]"
+      }
+    },
+    {
+      "output_id": "persistence_stkdydx_redemption_rate_inverse",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "persistence_stkdydx_dydx_redemption_rate",
+            "default_node_host": "https://oracle-utils.carbon.network",
+            "default_node_path": "/stkdydx-redemption-rate",
+            "paths": "[\"price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "rpc_response_handler"
+        }
+      ]
+    },
+    {
+      "adapter": "static_handler",
+      "output_id": "static_one",
+      "config": {
+        "value": "1"
+      }
+    },
+    {
+      "output_id": "persistence_stkdydx_redemption_rate",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "divide",
+        "input_ids": "[\"static_one\",\"persistence_stkdydx_redemption_rate_inverse\"]"
+      }
+    },
+    {
+      "output_id": "dexter_stkdydx_dydx_swap_rate_18",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "dexter_stkdydx_dydx_swap_rate",
+            "default_node_host": "https://rest-persistence.architectnodes.com",
+            "default_node_path": "/cosmwasm/wasm/v1/contract/persistence1tq22yqsgl8y4ds930m0gha2yjkgju8rh8f2a0suv60vpwx8hqy2q82u47m/smart/ewogICJvbl9zd2FwIjogewogICAgImFtb3VudCI6ICIxMDAwMDAwMDAwMDAwMDAwMDAwIiwKICAgICJzd2FwX3R5cGUiOiB7CiAgICAgICJnaXZlX2luIjoge30KICAgIH0sCiAgICAib2ZmZXJfYXNzZXQiOiB7CiAgICAgICJuYXRpdmVfdG9rZW4iOiB7CiAgICAgICAgImRlbm9tIjogInN0ay9hZHlkeCIKICAgICAgfQogICAgfSwKICAgICJhc2tfYXNzZXQiOiB7CiAgICAgICJuYXRpdmVfdG9rZW4iOiB7CiAgICAgICAgImRlbm9tIjogImliYy8yM0RDM0ZGMEU0Q0JCNTNBMTkxNUU0QzYyNTA3Q0I3Nzk2OTU2RTg0QzY4Q0E0OTcwNzc4N0NCOEJERTkwQTFFIgogICAgICB9CiAgICB9CiAgfQp9",
+            "paths": "[\"data.trade_params.amount_out\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "rpc_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "dexter_stkdydx_dydx_swap_rate",
+      "input_id": "dexter_stkdydx_dydx_swap_rate_18",
+      "adapter": "decimal_handler",
+      "config": {
+        "operation": "decrease",
+        "exponent": "18"
+      }
+    },
+    {
+      "output_id": "stkdydx_redemption_rate",
+      "adapter": "math_filter",
+      "input_id": "",
+      "config": {
+        "operation": "min",
+        "input_ids": "[\"dexter_stkdydx_dydx_swap_rate\",\"persistence_stkdydx_redemption_rate\"]"
+      }
+    },
+    {
+      "output_id": "stkdydx_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"stkdydx_redemption_rate\",\"dydx_usd\"]"
+      }
+    },
+    {
+      "output_id": "stkdydx_usd",
+      "input_id": "stkdydx_usd",
+      "adapter": "float_handler",
+      "config": {
+        "operation": "round",
+        "precision": "6"
+      }
+    },
+    {
+      "output_id": "stkdydx_usd",
+      "input_id": "stkdydx_usd",
+      "adapter": "unchanged_handler",
+      "config": {
+        "strategy": "nullify",
+        "threshold_duration": "900"
+      }
+    }
+  ]
+}

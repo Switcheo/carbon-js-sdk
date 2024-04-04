@@ -111,7 +111,7 @@
       "config": {
         "strategy": "nullify",
         "value_ids": "[\"binance_stx_usd\", \"okx_stx_usd\", \"coinbase_stx_usd\"]",
-        "tolerance_percentage": "10"
+        "tolerance_percentage": "3"
       }
     },
     {
@@ -121,7 +121,7 @@
       "config": {
         "strategy": "nullify",
         "value_ids": "[\"binance_stx_usd\", \"okx_stx_usd\", \"coinbase_stx_usd\"]",
-        "tolerance_percentage": "10"
+        "tolerance_percentage": "3"
       }
     },
     {
@@ -131,7 +131,7 @@
       "config": {
         "strategy": "nullify",
         "value_ids": "[\"binance_stx_usd\", \"okx_stx_usd\", \"coinbase_stx_usd\"]",
-        "tolerance_percentage": "10"
+        "tolerance_percentage": "3"
       }
     },
     {

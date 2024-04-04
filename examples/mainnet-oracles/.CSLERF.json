@@ -1,0 +1,184 @@
+{
+  "output_id": "slerf_usd",
+  "templates": [
+    {
+      "template_id": "response_handler",
+      "adapters": [
+        {
+          "adapter": "unresponsive_handler",
+          "config": {
+            "strategy": "use_last",
+            "grace_duration": "120"
+          }
+        },
+        {
+          "adapter": "unchanged_handler",
+          "config": {
+            "strategy": "nullify",
+            "threshold_duration": "900"
+          }
+        }
+      ]
+    }
+  ],
+  "jobs": [
+    {
+      "output_id": "jup_slerf_sol_9",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "jup_slerf_sol",
+            "default_node_host": "https://quote-api.jup.ag",
+            "default_node_path": "/v6/quote?inputMint=7BgBvyjrZX1YKz4oh9mjb8ZScatkkwb8DzFx7LoiVkM3&outputMint=So11111111111111111111111111111111111111112&amount=1000000000&slippageBps=50",
+            "paths": "[\"outAmount\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "jup_slerf_sol",
+      "input_id": "jup_slerf_sol_9",
+      "adapter": "decimal_handler",
+      "config": {
+        "operation": "decrease",
+        "exponent": "9"
+      }
+    },
+    {
+      "output_id": "sol_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": ".CSOL",
+            "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
+      "output_id": "jup_slerf_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"jup_slerf_sol\",\"sol_usd\"]"
+      }
+    },
+    {
+      "output_id": "mexc_slerf_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "mexc_slerf_usdt",
+            "default_node_host": "https://www.mexc.com",
+            "default_node_path": "/open/api/v2/market/ticker?symbol=SLERF_USDT",
+            "paths": "[\"data.0.last\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "usdt_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": ".CUSDT",
+            "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
+      "output_id": "mexc_slerf_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"mexc_slerf_usdt\",\"usdt_usd\"]"
+      }
+    },
+    {
+      "output_id": "gateio_slerf_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "gateio_slerf_usdt",
+            "default_node_host": "https://api.gateio.ws",
+            "default_node_path": "/api/v4/spot/tickers?currency_pair=SLERF_USDT",
+            "paths": "[\"0.last\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "gateio_slerf_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"gateio_slerf_usdt\",\"usdt_usd\"]"
+      }
+    },
+    {
+      "input_id": "jup_slerf_usd",
+      "output_id": "jup_slerf_usd",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"jup_slerf_usd\", \"mexc_slerf_usd\",\"gateio_slerf_usd\"]",
+        "tolerance_percentage": "10"
+      }
+    },
+    {
+      "input_id": "mexc_slerf_usd",
+      "output_id": "mexc_slerf_usd",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"jup_slerf_usd\", \"mexc_slerf_usd\",\"gateio_slerf_usd\"]",
+        "tolerance_percentage": "10"
+      }
+    },
+    {
+      "input_id": "gateio_slerf_usd",
+      "output_id": "gateio_slerf_usd",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"jup_slerf_usd\", \"mexc_slerf_usd\",\"gateio_slerf_usd\"]",
+        "tolerance_percentage": "10"
+      }
+    },
+    {
+      "output_id": "slerf_usd",
+      "adapter": "weighted_average",
+      "config": {
+        "value_ids": "[\"jup_slerf_usd\",\"mexc_slerf_usd\",\"gateio_slerf_usd\"]",
+        "weights": "[0.6, 0.2, 0.2]"
+      }
+    },
+    {
+      "output_id": "slerf_usd",
+      "input_id": "slerf_usd",
+      "adapter": "float_handler",
+      "config": {
+        "operation": "round",
+        "precision": "6"
+      }
+    }
+  ]
+}

@@ -2,25 +2,6 @@
   "output_id": "stride_usd",
   "templates": [
     {
-      "template_id": "unchanged_response_handler",
-      "adapters": [
-        {
-          "adapter": "unresponsive_handler",
-          "config": {
-            "strategy": "use_last",
-            "grace_duration": "120"
-          }
-        },
-        {
-          "adapter": "unchanged_handler",
-          "config": {
-            "strategy": "nullify",
-            "threshold_duration": "1800"
-          }
-        }
-      ]
-    },
-    {
       "template_id": "rpc_response_handler",
       "adapters": [
         {
@@ -48,7 +29,7 @@
           }
         },
         {
-          "template": "unchanged_response_handler"
+          "template": "rpc_response_handler"
         }
       ]
     },
@@ -60,18 +41,18 @@
         "operation": "divide"
       }
     },
-		{
-			"output_id": "osmo_usd",
-			"adapters": [
-			  {
-				"adapter": "oracle_result_fetcher",
-				"config": {
-					"oracle_id": ".COSMO",
-					"stale_allowance": "900"
-				}
-			  }
-			]
-		},
+    {
+      "output_id": "osmo_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": ".COSMO",
+            "stale_allowance": "900"
+          }
+        }
+      ]
+    },
     {
       "output_id": "stride_usd",
       "adapter": "math_filter",
@@ -87,6 +68,15 @@
       "config": {
         "operation": "round",
         "precision": "6"
+      }
+    },
+    {
+      "output_id": "stride_usd",
+      "input_id": "stride_usd",
+      "adapter": "unchanged_handler",
+      "config": {
+        "strategy": "nullify",
+        "threshold_duration": "900"
       }
     }
   ]
