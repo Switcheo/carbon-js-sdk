@@ -111,6 +111,7 @@ class CarbonSDK {
   hydrogen: HydrogenClient;
 
   wallet?: CarbonWallet;
+  gasFee?: GasFee;
 
   network: Network;
   configOverride: Partial<NetworkConfig>;
@@ -153,7 +154,6 @@ class CarbonSDK {
   n3: N3Client;
   chainId: string;
   evmChainId: string;
-  private gasFee?: GasFee;
 
   constructor(opts: CarbonSDKOpts) {
     this.network = opts.network ?? DEFAULT_NETWORK;
@@ -384,7 +384,7 @@ class CarbonSDK {
     return this;
   }
 
-  private async getGasFee() {
+  async getGasFee() {
     if (this.gasFee) return this.gasFee;
 
     const queryClient = this.query
