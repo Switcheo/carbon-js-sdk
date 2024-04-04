@@ -1,6 +1,6 @@
-export { EthLedgerAccount, EthLedgerSigner, NeoLedgerAccount } from "./account";
+export { NeoLedgerAccount } from "./account";
 export { AminoTypesMap } from "./amino";
-export { ChainInfo, CoinPretty, default as KeplrAccount, Keplr, KeplrWindow } from "./keplr";
+export { ChainInfo, default as KeplrAccount, Keplr, KeplrWindow } from "./keplr";
 export { default as LeapAccount, Leap, Key, LeapExtended } from "./leap";
 export { default as CosmosLedger } from "./ledger";
 export { CallContractArgs, EVMChain, MetaMask, MetaMaskChangeNetworkParam, MetaMaskSyncResult } from "./metamask";
