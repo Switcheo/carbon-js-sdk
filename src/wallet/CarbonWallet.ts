@@ -859,9 +859,7 @@ export class CarbonWallet {
     const txGasPrices = this.gasFee?.txGasPrices ?? {}
 
     if (!txGasPrices[this.defaultFeeDenom]) {
-      const queryClient = this.getQueryClient()
-      const { minGasPrices } = await queryClient.fee.MinGasPriceAll({});
-      const newDefaultFeeDenom = minGasPrices[0]?.denom;
+      const newDefaultFeeDenom = Object.keys(txGasPrices)[0]
       if (newDefaultFeeDenom) {
         console.warn(`default fee denom ${this.defaultFeeDenom} not supported, using ${newDefaultFeeDenom} instead.`);
         this.defaultFeeDenom = newDefaultFeeDenom;
