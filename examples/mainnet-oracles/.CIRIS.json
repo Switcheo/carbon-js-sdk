@@ -125,7 +125,7 @@
       "config": {
         "strategy": "nullify",
         "value_ids": "[\"binance_iris_usd\", \"osmosis_iris_usd\"]",
-        "tolerance_percentage": "10"
+        "tolerance_percentage": "1.5"
       }
     },
     {
@@ -135,7 +135,7 @@
       "config": {
         "strategy": "nullify",
         "value_ids": "[\"binance_iris_usd\", \"osmosis_iris_usd\"]",
-        "tolerance_percentage": "10"
+        "tolerance_percentage": "1.5"
       }
     },
     {

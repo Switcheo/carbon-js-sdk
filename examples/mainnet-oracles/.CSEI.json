@@ -111,7 +111,7 @@
       "config": {
         "strategy": "nullify",
         "value_ids": "[\"bybit_sei_usd\", \"binance_sei_usd\", \"coinbase_sei_usd\"]",
-        "tolerance_percentage": "10"
+        "tolerance_percentage": "3"
       }
     },
     {
@@ -121,7 +121,7 @@
       "config": {
         "strategy": "nullify",
         "value_ids": "[\"bybit_sei_usd\", \"binance_sei_usd\", \"coinbase_sei_usd\"]",
-        "tolerance_percentage": "10"
+        "tolerance_percentage": "3"
       }
     },
     {
@@ -131,7 +131,7 @@
       "config": {
         "strategy": "nullify",
         "value_ids": "[\"bybit_sei_usd\", \"binance_sei_usd\", \"coinbase_sei_usd\"]",
-        "tolerance_percentage": "10"
+        "tolerance_percentage": "3"
       }
     },
     {

@@ -140,7 +140,7 @@
       "config": {
         "strategy": "nullify",
         "value_ids": "[\"jup_slerf_usd\", \"mexc_slerf_usd\",\"gateio_slerf_usd\"]",
-        "tolerance_percentage": "10"
+        "tolerance_percentage": "3"
       }
     },
     {
@@ -150,7 +150,7 @@
       "config": {
         "strategy": "nullify",
         "value_ids": "[\"jup_slerf_usd\", \"mexc_slerf_usd\",\"gateio_slerf_usd\"]",
-        "tolerance_percentage": "10"
+        "tolerance_percentage": "3"
       }
     },
     {
@@ -160,7 +160,7 @@
       "config": {
         "strategy": "nullify",
         "value_ids": "[\"jup_slerf_usd\", \"mexc_slerf_usd\",\"gateio_slerf_usd\"]",
-        "tolerance_percentage": "10"
+        "tolerance_percentage": "3"
       }
     },
     {

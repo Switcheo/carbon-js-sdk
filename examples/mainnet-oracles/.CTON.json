@@ -95,7 +95,7 @@
       "config": {
         "strategy": "nullify",
         "value_ids": "[\"bybit_ton_usdt\", \"okx_ton_usdt\", \"kucoin_ton_usdt\"]",
-        "tolerance_percentage": "10"
+        "tolerance_percentage": "3"
       }
     },
     {
@@ -105,7 +105,7 @@
       "config": {
         "strategy": "nullify",
         "value_ids": "[\"bybit_ton_usdt\", \"okx_ton_usdt\", \"kucoin_ton_usdt\"]",
-        "tolerance_percentage": "10"
+        "tolerance_percentage": "3"
       }
     },
     {
@@ -115,7 +115,7 @@
       "config": {
         "strategy": "nullify",
         "value_ids": "[\"bybit_ton_usdt\", \"okx_ton_usdt\", \"kucoin_ton_usdt\"]",
-        "tolerance_percentage": "10"
+        "tolerance_percentage": "3"
       }
     },
     {

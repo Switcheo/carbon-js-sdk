@@ -111,7 +111,7 @@
       "config": {
         "strategy": "nullify",
         "value_ids": "[\"binance_avax_usd\", \"okx_avax_usd\",\"coinbase_avax_usd\"]",
-        "tolerance_percentage": "5"
+        "tolerance_percentage": "3"
       }
     },
     {
@@ -121,7 +121,7 @@
       "config": {
         "strategy": "nullify",
         "value_ids": "[\"binance_avax_usd\", \"okx_avax_usd\",\"coinbase_avax_usd\"]",
-        "tolerance_percentage": "5"
+        "tolerance_percentage": "3"
       }
     },
     {
@@ -131,7 +131,7 @@
       "config": {
         "strategy": "nullify",
         "value_ids": "[\"binance_avax_usd\", \"okx_avax_usd\",\"coinbase_avax_usd\"]",
-        "tolerance_percentage": "5"
+        "tolerance_percentage": "3"
       }
     },
     {

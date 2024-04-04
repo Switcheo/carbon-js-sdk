@@ -83,7 +83,7 @@
       "config": {
         "strategy": "nullify",
         "value_ids": "[\"bybit_tia_usdt\", \"binance_tia_usdt\", \"kucoin_tia_usdt\"]",
-        "tolerance_percentage": "10"
+        "tolerance_percentage": "3"
       }
     },
     {
@@ -93,7 +93,7 @@
       "config": {
         "strategy": "nullify",
         "value_ids": "[\"bybit_tia_usdt\", \"binance_tia_usdt\", \"kucoin_tia_usdt\"]",
-        "tolerance_percentage": "10"
+        "tolerance_percentage": "3"
       }
     },
     {
@@ -103,7 +103,7 @@
       "config": {
         "strategy": "nullify",
         "value_ids": "[\"bybit_tia_usdt\", \"binance_tia_usdt\", \"kucoin_tia_usdt\"]",
-        "tolerance_percentage": "10"
+        "tolerance_percentage": "3"
       }
     },
     {

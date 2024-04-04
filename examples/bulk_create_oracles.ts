@@ -1,9 +1,13 @@
 import * as BIP39 from "bip39";
 import { CarbonSDK, CarbonTx } from "./_sdk";
 import "./_setup";
-import { MsgUpdateOracle } from "../lib/codec/Switcheo/carbon/oracle/tx";
+import { MsgCreateOracle } from "../lib/codec/Switcheo/carbon/oracle/tx";
 import fs from 'fs';
 import path from 'path';
+
+interface SimpleMap<OracleParams> {
+  [index: string]: OracleParams;
+}
 
 // Function to read JSON files from a folder
 function readJsonFilesFromFolder(folderPath: string): Promise<{ [fileName: string]: any }> {
@@ -53,31 +57,49 @@ function readJsonFilesFromFolder(folderPath: string): Promise<{ [fileName: strin
   console.log("mnemonics", mnemonics);
 
   const sdk = await CarbonSDK.instance({
-    network: CarbonSDK.Network.MainNet,
+    network: CarbonSDK.Network.TestNet,
   });
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
 
-  const specMap = await readJsonFilesFromFolder("./examples/mainnet-oracles")
+  const mainnetOraclesMap = await readJsonFilesFromFolder("./examples/mainnet-oracles")
+  const mainnetOracles = Object.entries(mainnetOraclesMap)
 
-  const MAINNET_ORACLE_URL = "https://api.carbon.network/carbon/oracle/v1/oracles"
-  const mainnetOracles = await fetch(MAINNET_ORACLE_URL).then((res) => res.json());
+  const TESTNET_ORACLE_URL = "https://test-api.carbon.network/carbon/oracle/v1/oracles"
+  const testnetOracles = await fetch(TESTNET_ORACLE_URL).then((res) => res.json());
+
+  const testnetMap: SimpleMap<Boolean> = {}
+
+  for (const oracle of testnetOracles.oracles) {
+    const id: string = oracle.id
+    testnetMap[id] = true
+  }
 
   const txs: any[] = []
-  for (const oracle of mainnetOracles.oracles) {
-    const spec = specMap[oracle.id] as string
-    const txUpdateSpec = {
-      typeUrl: CarbonTx.Types.MsgUpdateOracle,
-      value: MsgUpdateOracle.fromPartial({
-        updater: connectedSDK.wallet.bech32Address,
-        updateOracleParams: {
-          id: oracle.id,
+  for (const oracle of mainnetOracles) {
+    const oracleId = oracle[0]
+    if (testnetMap[oracleId]) {
+      continue
+    }
+    const spec = oracle[1] as string
+    const txCreateOracle = {
+      typeUrl: CarbonTx.Types.MsgCreateOracle,
+      value: MsgCreateOracle.fromPartial({
+        creator: connectedSDK.wallet.bech32Address,
+        createOracleParams: {
+          id: oracleId,
+          description: `Carbon ${oracleId} Index`,
+          minTurnoutPercentage: 67,
+          maxResultAge: 300,
+          securityType: "SecuredByValidators",
+          resultStrategy: "median",
+          resolution: 10,
           spec,
         },
       }),
     }
-    console.log(`updating oracle ${oracle.id}`)
-    txs.push(txUpdateSpec)
+    console.log(`creating oracle ${oracleId}`)
+    txs.push(txCreateOracle)
   }
 
   const result = await connectedSDK.wallet.sendTxs(txs);

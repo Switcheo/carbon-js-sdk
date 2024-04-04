@@ -95,7 +95,7 @@
       "config": {
         "strategy": "nullify",
         "value_ids": "[\"bybit_dydx_usdt\", \"binance_dydx_usdt\", \"okx_dydx_usdt\"]",
-        "tolerance_percentage": "10"
+        "tolerance_percentage": "3"
       }
     },
     {
@@ -105,7 +105,7 @@
       "config": {
         "strategy": "nullify",
         "value_ids": "[\"bybit_dydx_usdt\", \"binance_dydx_usdt\", \"okx_dydx_usdt\"]",
-        "tolerance_percentage": "10"
+        "tolerance_percentage": "3"
       }
     },
     {
@@ -115,7 +115,7 @@
       "config": {
         "strategy": "nullify",
         "value_ids": "[\"bybit_dydx_usdt\", \"binance_dydx_usdt\", \"okx_dydx_usdt\"]",
-        "tolerance_percentage": "10"
+        "tolerance_percentage": "3"
       }
     },
     {

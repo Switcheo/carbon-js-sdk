@@ -2,7 +2,7 @@
   "output_id": "trx_usd",
   "templates": [
     {
-      "template_id": "response_handler",
+      "template_id": "full_response_handler",
       "adapters": [
         {
           "adapter": "unresponsive_handler",
@@ -23,6 +23,24 @@
   ],
   "jobs": [
     {
+      "output_id": "bybit_trx_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "bybit_trx_usdt",
+            "default_node_host": "https://api.bybit.com",
+            "default_node_path": "/spot/v3/public/quote/ticker/price?symbol=TRXUSDT",
+            "paths": "[\"result.price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "full_response_handler"
+        }
+      ]
+    },
+    {
       "output_id": "binance_trx_usdt",
       "adapters": [
         {
@@ -36,9 +54,65 @@
           }
         },
         {
-          "template": "response_handler"
+          "template": "full_response_handler"
         }
       ]
+    },
+    {
+      "output_id": "okx_trx_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "okx_trx_usdt",
+            "default_node_host": "https://www.okx.com",
+            "default_node_path": "/api/v5/market/index-tickers?instId=TRX-USDT",
+            "paths": "[\"data.0.idxPx\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "full_response_handler"
+        }
+      ]
+    },
+    {
+      "input_id": "bybit_trx_usdt",
+      "output_id": "bybit_trx_usdt",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"bybit_trx_usdt\", \"binance_trx_usdt\", \"okx_trx_usdt\"]",
+        "tolerance_percentage": "3"
+      }
+    },
+    {
+      "input_id": "binance_trx_usdt",
+      "output_id": "binance_trx_usdt",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"bybit_trx_usdt\", \"binance_trx_usdt\", \"okx_trx_usdt\"]",
+        "tolerance_percentage": "3"
+      }
+    },
+    {
+      "input_id": "okx_trx_usdt",
+      "output_id": "okx_trx_usdt",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"bybit_trx_usdt\", \"binance_trx_usdt\", \"okx_trx_usdt\"]",
+        "tolerance_percentage": "3"
+      }
+    },
+    {
+      "output_id": "trx_usdt",
+      "adapter": "weighted_average",
+      "config": {
+        "value_ids": "[\"bybit_trx_usdt\", \"binance_trx_usdt\", \"okx_trx_usdt\"]",
+        "weights": "[0.3, 0.4, 0.3]"
+      }
     },
     {
       "output_id": "usdt_usd",
@@ -53,57 +127,11 @@
       ]
     },
     {
-      "output_id": "binance_trx_usd",
+      "output_id": "trx_usd",
       "adapter": "math_filter",
       "config": {
         "operation": "multiply",
-        "input_ids": "[\"binance_trx_usdt\",\"usdt_usd\"]"
-      }
-    },
-    {
-      "output_id": "kraken_trx_usd",
-      "adapters": [
-        {
-          "adapter": "fetcher_multiple",
-          "config": {
-            "custom_node_url_key": "kraken_trx_usd",
-            "default_node_host": "https://api.kraken.com",
-            "default_node_path": "/0/public/Ticker?pair=TRXUSD",
-            "paths": "[\"result.TRXUSD.c.0\"]",
-            "timeout": "10"
-          }
-        },
-        {
-          "template": "response_handler"
-        }
-      ]
-    },
-    {
-      "output_id": "binance_trx_usd",
-      "input_id": "binance_trx_usd",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"binance_trx_usd\", \"kraken_trx_usd\"]",
-        "tolerance_percentage": "10"
-      }
-    },
-    {
-      "output_id": "kraken_trx_usd",
-      "input_id": "kraken_trx_usd",
-      "adapter": "median_filter",
-      "config": {
-        "strategy": "nullify",
-        "value_ids": "[\"binance_trx_usd\", \"kraken_trx_usd\"]",
-        "tolerance_percentage": "10"
-      }
-    },
-    {
-      "output_id": "trx_usd",
-      "adapter": "weighted_average",
-      "config": {
-        "value_ids": "[\"binance_trx_usd\",\"kraken_trx_usd\"]",
-        "weights": "[0.5, 0.5]"
+        "input_ids": "[\"trx_usdt\",\"usdt_usd\"]"
       }
     },
     {

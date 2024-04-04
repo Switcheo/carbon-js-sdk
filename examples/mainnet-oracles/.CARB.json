@@ -61,6 +61,32 @@
       }
     },
     {
+      "output_id": "okx_arb_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "okx_arb_usdt",
+            "default_node_host": "https://www.okx.com",
+            "default_node_path": "/api/v5/market/index-tickers?instId=ARB-USDT",
+            "paths": "[\"data.0.idxPx\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "okx_arb_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"okx_arb_usdt\",\"usdt_usd\"]"
+      }
+    },
+    {
       "output_id": "coinbase_arb_usd",
       "adapters": [
         {
@@ -79,29 +105,41 @@
       ]
     },
     {
-      "output_id": "bitfinex_arb_usd",
-      "adapters": [
-        {
-          "adapter": "fetcher_multiple",
-          "config": {
-            "custom_node_url_key": "bitfinex_arb_usd",
-            "default_node_host": "https://api.bitfinex.com",
-            "default_node_path": "/v1/pubticker/arbusd",
-            "paths": "[\"mid\"]",
-            "timeout": "10"
-          }
-        },
-        {
-          "template": "response_handler"
-        }
-      ]
+      "input_id": "coinbase_arb_usd",
+      "output_id": "coinbase_arb_usd",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"binance_arb_usd\", \"okx_arb_usd\",\"coinbase_arb_usd\"]",
+        "tolerance_percentage": "3"
+      }
+    },
+    {
+      "input_id": "binance_arb_usd",
+      "output_id": "binance_arb_usd",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"binance_arb_usd\", \"okx_arb_usd\",\"coinbase_arb_usd\"]",
+        "tolerance_percentage": "3"
+      }
+    },
+    {
+      "input_id": "okx_arb_usd",
+      "output_id": "okx_arb_usd",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"binance_arb_usd\", \"okx_arb_usd\",\"coinbase_arb_usd\"]",
+        "tolerance_percentage": "3"
+      }
     },
     {
       "output_id": "arb_usd",
       "adapter": "weighted_average",
       "config": {
-        "value_ids": "[\"binance_arb_usd\",\"coinbase_arb_usd\",\"bitfinex_arb_usd\"]",
-        "weights": "[0.4, 0.4, 0.2]"
+        "value_ids": "[\"binance_arb_usd\",\"okx_arb_usd\",\"coinbase_arb_usd\"]",
+        "weights": "[0.4, 0.3, 0.3]"
       }
     },
     {
