@@ -88,5 +88,8 @@
     "dotenv": "^10.0.0",
     "eslint": "^8.42.0",
     "prettier": "2.5.1"
+  },
+  "resolutions": {
+    "@ledgerhq/hw-transport": "^6.28.8"
   }
 }
