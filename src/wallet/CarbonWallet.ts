@@ -521,11 +521,10 @@ export class CarbonWallet {
           || this.sequenceInvalidated)
           await this.reloadAccountSequence();
 
-        const height = await this.getLatestHeight();
         let timeoutHeight;
         // timeoutHeight is not supported for EIP-712
         if (!isCarbonEIP712Signer(this.signer)) {
-          timeoutHeight = height.isZero() ? undefined : height.toNumber() + this.defaultTimeoutBlocks;
+          timeoutHeight = await this.getTimeoutHeight();
         }
         let sequence: number
         if (!this.accountInfo) {
@@ -571,68 +570,67 @@ export class CarbonWallet {
       handler: { resolve, reject },
     } = txRequest;
     try {
-      const accounts = await this.grantee?.signer.getAccounts();
-      if (!accounts) {
+      if (!this.grantee) {
+        throw new Error("grantee not set");
+      }
+
+      const signer = this.grantee.signer;
+
+      const accounts = await signer.getAccounts();
+      if (!accounts.length) {
         throw Error("cannot retrieve grantee accounts");
       }
-      if (accounts.length > 0) {
-        const granteeAddress = accounts[0].address;
-        const accountInfo = await this.getAccount(granteeAddress);
+      const granteeAddress = accounts[0].address;
+      const accountInfo = await this.getAccount(granteeAddress);
 
-        if (!accountInfo) {
-          throw new Error("grantee account not initialized");
-        }
-
-        const msgs: EncodeObject[] = messages.map((message) => (registry.encodeAsAny({ ...message })))
-
-        const msgExecMessage = [{
-          typeUrl: CarbonTx.Types.MsgExec,
-          value: MsgExec.fromPartial({
-            grantee: granteeAddress,
-            msgs: msgs,
-          }),
-        }]
-
-        const height = await this.getLatestHeight();
-        const fee = signOpts?.fee ?? this.estimateTxFee(messages, signOpts?.feeDenom);
-        const memo = signOpts?.memo ?? "";
-        const timeoutHeight = height.isZero() ? undefined : height.toNumber() + this.defaultTimeoutBlocks;
-        const sequence = signOpts?.sequence ?? (accountInfo.sequence + 1);
-        const accountNumber = signOpts?.accountNumber ?? accountInfo.accountNumber;
-
-        const overrideBroadcastOpts = {
-          ...broadcastOpts,
-          mode: this.txDefaultBroadCastMode,
-        }
-        const _signOpts: CarbonTx.SignTxOpts = {
-          ...signOpts,
-          explicitSignerData: {
-            timeoutHeight,
-            ...signOpts?.explicitSignerData,
-          },
-        }
-
-        const signerData: CarbonSignerData = {
-          accountNumber,
-          chainId: this.getChainId(),
-          sequence,
-          ...signOpts?.explicitSignerData,
-        };
-
-        const tmClient = await this.getTmClient();
-        const signingClient = new CarbonSigningClient(tmClient, this.signer);
-        const signedTx = await signingClient.sign(granteeAddress, messages, fee, memo, signerData, this.bech32Address);
-
-        this.txDispatchManager.enqueue({
-          reattempts,
-          signerAddress: granteeAddress,
-          messages: msgExecMessage,
-          signedTx,
-          broadcastOpts: overrideBroadcastOpts,
-          signOpts: _signOpts,
-          handler: { resolve, reject, requestId: `${sequence}` },
-        })
+      if (!accountInfo) {
+        throw new Error("grantee account not initialized");
       }
+
+      const msgs = messages.map((message) => registry.encodeAsAny({ ...message }))
+
+      const msgExecMessages: EncodeObject[] = [{
+        typeUrl: CarbonTx.Types.MsgExec,
+        value: MsgExec.fromPartial({
+          grantee: granteeAddress,
+          msgs,
+        }),
+      }]
+
+      const timeoutHeight = await this.getTimeoutHeight();
+      const fee = signOpts?.fee ?? this.estimateTxFee(messages, signOpts?.feeDenom);
+      const memo = signOpts?.memo ?? "";
+      const sequence = signOpts?.sequence ?? (accountInfo.sequence + 1);
+      const accountNumber = signOpts?.accountNumber ?? accountInfo.accountNumber;
+
+      const _signOpts: CarbonTx.SignTxOpts = {
+        ...signOpts,
+        explicitSignerData: {
+          timeoutHeight,
+          ...signOpts?.explicitSignerData,
+        },
+      }
+
+      const signerData: CarbonSignerData = {
+        accountNumber,
+        chainId: this.getChainId(),
+        sequence,
+        ...signOpts?.explicitSignerData,
+      };
+
+      const tmClient = await this.getTmClient();
+      const signingClient = new CarbonSigningClient(tmClient, signer);
+      const signedTx = await signingClient.sign(granteeAddress, msgExecMessages, fee, memo, signerData, this.bech32Address);
+
+      this.txDispatchManager.enqueue({
+        reattempts,
+        signerAddress: granteeAddress,
+        messages: msgExecMessages,
+        signedTx,
+        broadcastOpts,
+        signOpts: _signOpts,
+        handler: { resolve, reject, requestId: `${sequence}` },
+      })
     } catch (error) {
       reject(error)
     }
@@ -789,11 +787,16 @@ export class CarbonWallet {
     return this.signingClient;
   }
 
-  async getLatestHeight() {
-    const cacheBuster = ~~(new Date().getTime() / 1000);
-    const response = await fetch(`${this.networkConfig.tmRpcUrl}/blockchain?cache=${cacheBuster}`);
-    const body = await response.json();
-    return bnOrZero(body.result?.last_height);
+  async getTimeoutHeight() {
+    try {
+      const cacheBuster = ~~(new Date().getTime() / 1000);
+      const response = await fetch(`${this.networkConfig.tmRpcUrl}/blockchain?cache=${cacheBuster}`);
+      const body = await response.json();
+      if (!body.result?.last_height) return undefined;
+      return bnOrZero(body.result?.last_height).plus(this.defaultTimeoutBlocks).toNumber();
+    } catch (error) {
+      return undefined;
+    }
   }
 
   async getTmClient(reconnect: boolean = false): Promise<Tendermint37Client> {
