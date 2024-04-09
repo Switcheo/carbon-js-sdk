@@ -50,7 +50,7 @@ import { SWTHAddressOptions } from "./util/address";
 import { Blockchain } from "./util/blockchain";
 import { bnOrZero } from "./util/number";
 import { SimpleMap } from "./util/type";
-import { CarbonLedgerSigner, CarbonSigner, CarbonWallet, CarbonWalletGenericOpts, MetaMaskWalletOpts } from "./wallet";
+import { CarbonLedgerSigner, CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletGenericOpts, MetaMaskWalletOpts } from "./wallet";
 export { CarbonTx } from "@carbon-sdk/util";
 export { CarbonSigner, CarbonSignerTypes, CarbonWallet, CarbonWalletGenericOpts, CarbonWalletInitOpts } from "@carbon-sdk/wallet";
 export * as Carbon from "./codec/carbon-models";
@@ -455,7 +455,7 @@ class CarbonSDK {
   }
 
   public disconnect(): CarbonSDK {
-    if (this.wallet?.isLedgerSigner()) {
+    if (this.wallet?.isSigner(CarbonSignerTypes.Ledger)) {
       (this.wallet.signer as CarbonLedgerSigner).ledger.disconnect();
     }
     const opts = this.generateOpts();
