@@ -18,7 +18,7 @@ import { QueueManager } from "@carbon-sdk/util/generic";
 import { BN_ZERO, bnOrZero } from "@carbon-sdk/util/number";
 import { BroadcastTxMode, CarbonCustomError, CarbonSignerData, ErrorType } from "@carbon-sdk/util/tx";
 import { StdSignature, encodeSecp256k1Signature } from "@cosmjs/amino";
-import { DirectSecp256k1HdWallet, EncodeObject, OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
+import { EncodeObject, OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
 import { Account, DeliverTxResponse, TimeoutError, isDeliverTxFailure } from "@cosmjs/stargate";
 import { Tendermint37Client } from "@cosmjs/tendermint-rpc";
 import { BroadcastTxAsyncResponse, BroadcastTxSyncResponse, TxResponse, broadcastTxSyncSuccess } from "@cosmjs/tendermint-rpc/build/tendermint37/responses";
@@ -348,21 +348,8 @@ export class CarbonWallet {
     return this;
   }
 
-  public async setGrantee(grantee: Omit<Grantee, 'signer'> | undefined, mnemonic: string) {
-    if (!grantee) {
-      this.grantee = undefined;
-      return;
-    }
-
-    const signer = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, {
-      prefix: this.networkConfig.Bech32Prefix,
-    });
-
-    this.grantee = {
-      authMsgsVersion: grantee.authMsgsVersion,
-      expiry: grantee.expiry,
-      signer,
-    };
+  public async setGrantee(grantee?: Grantee) {
+    this.grantee = grantee
   }
 
   private isGranteeValid(): boolean {
