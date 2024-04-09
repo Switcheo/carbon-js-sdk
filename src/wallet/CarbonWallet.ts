@@ -119,6 +119,7 @@ export interface AccountInfo extends Account {
 export interface Grantee {
   expiry: Date;
   signer: OfflineDirectSigner;
+  address: string;
   authMsgsVersion: number;
 }
 
@@ -348,8 +349,8 @@ export class CarbonWallet {
     return this;
   }
 
-  public async setGrantee(grantee?: Grantee) {
-    this.grantee = grantee
+  public setGrantee(grantee?: Grantee) {
+    this.grantee = grantee;
   }
 
   private isGranteeValid(): boolean {
@@ -566,7 +567,6 @@ export class CarbonWallet {
       reattempts,
       signOpts,
       messages,
-      broadcastOpts,
       handler: { resolve, reject },
     } = txRequest;
     try {
@@ -598,9 +598,9 @@ export class CarbonWallet {
       }]
 
       const timeoutHeight = await this.getTimeoutHeight();
-      const fee = signOpts?.fee ?? this.estimateTxFee(messages, signOpts?.feeDenom);
+      const fee = signOpts?.fee ?? this.estimateTxFee(msgExecMessages, signOpts?.feeDenom);
       const memo = signOpts?.memo ?? "";
-      const sequence = signOpts?.sequence ?? (accountInfo.sequence + 1);
+      const sequence = signOpts?.sequence ?? accountInfo.sequence;
       const accountNumber = signOpts?.accountNumber ?? accountInfo.accountNumber;
 
       const _signOpts: CarbonTx.SignTxOpts = {
@@ -623,11 +623,9 @@ export class CarbonWallet {
       const signedTx = await signingClient.sign(granteeAddress, msgExecMessages, fee, memo, signerData, this.bech32Address);
 
       this.txDispatchManager.enqueue({
+        ...txRequest,
         reattempts,
-        signerAddress: granteeAddress,
-        messages: msgExecMessages,
         signedTx,
-        broadcastOpts,
         signOpts: _signOpts,
         handler: { resolve, reject, requestId: `${sequence}` },
       })
