@@ -513,7 +513,7 @@ export class CarbonWallet {
 
     const isAuthorized = messages.every((message) => this.authorizedMsgs?.includes(message.typeUrl))
     if (this.isGranteeValid() && isAuthorized) {
-      this.signWithGrantee(txRequest)
+      await this.signWithGrantee(txRequest)
     } else {
       try {
         if (!this.accountInfo
@@ -573,11 +573,15 @@ export class CarbonWallet {
     try {
       const accounts = await this.grantee?.signer.getAccounts();
       if (!accounts) {
-        throw Error('cannot retrieve grantee accounts')
+        throw Error("cannot retrieve grantee accounts");
       }
       if (accounts.length > 0) {
         const granteeAddress = accounts[0].address;
         const accountInfo = await this.getAccount(granteeAddress);
+
+        if (!accountInfo) {
+          throw new Error("grantee account not initialized");
+        }
 
         const msgs: EncodeObject[] = messages.map((message) => (registry.encodeAsAny({ ...message })))
 
@@ -590,8 +594,11 @@ export class CarbonWallet {
         }]
 
         const height = await this.getLatestHeight();
+        const fee = signOpts?.fee ?? this.estimateTxFee(messages, signOpts?.feeDenom);
+        const memo = signOpts?.memo ?? "";
         const timeoutHeight = height.isZero() ? undefined : height.toNumber() + this.defaultTimeoutBlocks;
-        const sequence = signOpts?.sequence ?? (accountInfo?.sequence ?? 0) + 1;
+        const sequence = signOpts?.sequence ?? (accountInfo.sequence + 1);
+        const accountNumber = signOpts?.accountNumber ?? accountInfo.accountNumber;
 
         const overrideBroadcastOpts = {
           ...broadcastOpts,
@@ -604,7 +611,17 @@ export class CarbonWallet {
             ...signOpts?.explicitSignerData,
           },
         }
-        const signedTx = await this.getSignedTx(granteeAddress, msgExecMessage, sequence, _signOpts, this.bech32Address)
+
+        const signerData: CarbonSignerData = {
+          accountNumber,
+          chainId: this.getChainId(),
+          sequence,
+          ...signOpts?.explicitSignerData,
+        };
+
+        const tmClient = await this.getTmClient();
+        const signingClient = new CarbonSigningClient(tmClient, this.signer);
+        const signedTx = await signingClient.sign(granteeAddress, messages, fee, memo, signerData, this.bech32Address);
 
         this.txDispatchManager.enqueue({
           reattempts,
