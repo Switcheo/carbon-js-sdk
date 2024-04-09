@@ -39,6 +39,15 @@ export interface QueryResultsResponse {
   pagination?: PageResponse;
 }
 
+export interface QueryResultsLatestRequest {
+  pagination?: PageRequest;
+}
+
+export interface QueryResultsLatestResponse {
+  latestResults: Result[];
+  pagination?: PageResponse;
+}
+
 export interface QueryVotesRequest {
   oracleId: string;
   timestamp: Long;
@@ -533,6 +542,169 @@ export const QueryResultsResponse = {
   fromPartial(object: DeepPartial<QueryResultsResponse>): QueryResultsResponse {
     const message = { ...baseQueryResultsResponse } as QueryResultsResponse;
     message.results = (object.results ?? []).map((e) => Result.fromPartial(e));
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryResultsLatestRequest: object = {};
+
+export const QueryResultsLatestRequest = {
+  encode(
+    message: QueryResultsLatestRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryResultsLatestRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryResultsLatestRequest,
+    } as QueryResultsLatestRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryResultsLatestRequest {
+    const message = {
+      ...baseQueryResultsLatestRequest,
+    } as QueryResultsLatestRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryResultsLatestRequest): unknown {
+    const obj: any = {};
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryResultsLatestRequest>
+  ): QueryResultsLatestRequest {
+    const message = {
+      ...baseQueryResultsLatestRequest,
+    } as QueryResultsLatestRequest;
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageRequest.fromPartial(object.pagination)
+        : undefined;
+    return message;
+  },
+};
+
+const baseQueryResultsLatestResponse: object = {};
+
+export const QueryResultsLatestResponse = {
+  encode(
+    message: QueryResultsLatestResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.latestResults) {
+      Result.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(18).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryResultsLatestResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryResultsLatestResponse,
+    } as QueryResultsLatestResponse;
+    message.latestResults = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.latestResults.push(Result.decode(reader, reader.uint32()));
+          break;
+        case 2:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryResultsLatestResponse {
+    const message = {
+      ...baseQueryResultsLatestResponse,
+    } as QueryResultsLatestResponse;
+    message.latestResults = (object.latestResults ?? []).map((e: any) =>
+      Result.fromJSON(e)
+    );
+    message.pagination =
+      object.pagination !== undefined && object.pagination !== null
+        ? PageResponse.fromJSON(object.pagination)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: QueryResultsLatestResponse): unknown {
+    const obj: any = {};
+    if (message.latestResults) {
+      obj.latestResults = message.latestResults.map((e) =>
+        e ? Result.toJSON(e) : undefined
+      );
+    } else {
+      obj.latestResults = [];
+    }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryResultsLatestResponse>
+  ): QueryResultsLatestResponse {
+    const message = {
+      ...baseQueryResultsLatestResponse,
+    } as QueryResultsLatestResponse;
+    message.latestResults = (object.latestResults ?? []).map((e) =>
+      Result.fromPartial(e)
+    );
     message.pagination =
       object.pagination !== undefined && object.pagination !== null
         ? PageResponse.fromPartial(object.pagination)
@@ -2027,7 +2199,9 @@ export interface Query {
   /** Get results for all oracles, or a specific oracle */
   Results(request: QueryResultsRequest): Promise<QueryResultsResponse>;
   /** Get latest result for all oracles */
-  ResultsLatest(request: QueryResultsRequest): Promise<QueryResultsResponse>;
+  ResultsLatest(
+    request: QueryResultsLatestRequest
+  ): Promise<QueryResultsLatestResponse>;
   /** Get votes for all oracles, or a specific oracle */
   Votes(request: QueryVotesRequest): Promise<QueryVotesResponse>;
   /** Get voting power for an address */
@@ -2115,15 +2289,17 @@ export class QueryClientImpl implements Query {
     );
   }
 
-  ResultsLatest(request: QueryResultsRequest): Promise<QueryResultsResponse> {
-    const data = QueryResultsRequest.encode(request).finish();
+  ResultsLatest(
+    request: QueryResultsLatestRequest
+  ): Promise<QueryResultsLatestResponse> {
+    const data = QueryResultsLatestRequest.encode(request).finish();
     const promise = this.rpc.request(
       "Switcheo.carbon.oracle.Query",
       "ResultsLatest",
       data
     );
     return promise.then((data) =>
-      QueryResultsResponse.decode(new _m0.Reader(data))
+      QueryResultsLatestResponse.decode(new _m0.Reader(data))
     );
   }
 

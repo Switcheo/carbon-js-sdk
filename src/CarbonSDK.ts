@@ -43,7 +43,7 @@ import { CosmosLedger, Keplr, KeplrAccount, LeapAccount, LeapExtended } from "./
 import { MetaMask } from "./provider/metamask/MetaMask";
 import { SWTHAddressOptions } from "./util/address";
 import { Blockchain } from "./util/blockchain";
-import { CarbonWallet, CarbonWalletGenericOpts, CarbonSigner, MetaMaskWalletOpts, CarbonLedgerSigner } from "./wallet";
+import { CarbonWallet, CarbonWalletGenericOpts, CarbonSigner, MetaMaskWalletOpts, CarbonLedgerSigner, CarbonSignerTypes } from "./wallet";
 import { bnOrZero } from "./util/number";
 import { SimpleMap } from "./util/type";
 import BigNumber from "bignumber.js";
@@ -448,7 +448,7 @@ class CarbonSDK {
   }
 
   public disconnect(): CarbonSDK {
-    if (this.wallet?.isLedgerSigner()) {
+    if (this.wallet?.isSigner(CarbonSignerTypes.Ledger)) {
       (this.wallet.signer as CarbonLedgerSigner).ledger.disconnect();
     }
     const opts = this.generateOpts();

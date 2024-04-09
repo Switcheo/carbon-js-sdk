@@ -10049,6 +10049,14 @@ export const EIP712Types: { [index: string]: any } = {
         "packageName": "/cosmos.base.v1beta1"
       }
     ],
+    "QueryAllocatedRewardsRequest": [],
+    "QueryAllocatedRewardsResponse": [
+      {
+        "name": "rewards",
+        "type": "DecCoin[]",
+        "packageName": "/cosmos.base.v1beta1"
+      }
+    ],
     "QueryParamsRequest": [],
     "QueryParamsResponse": [
       {
@@ -11889,6 +11897,25 @@ export const EIP712Types: { [index: string]: any } = {
     "QueryResultsResponse": [
       {
         "name": "results",
+        "type": "Result[]",
+        "packageName": "/Switcheo.carbon.oracle"
+      },
+      {
+        "name": "pagination",
+        "type": "PageResponse",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryResultsLatestRequest": [
+      {
+        "name": "pagination",
+        "type": "PageRequest",
+        "packageName": "/cosmos.base.query.v1beta1"
+      }
+    ],
+    "QueryResultsLatestResponse": [
+      {
+        "name": "latest_results",
         "type": "Result[]",
         "packageName": "/Switcheo.carbon.oracle"
       },

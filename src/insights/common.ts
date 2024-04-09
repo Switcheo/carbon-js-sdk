@@ -25,6 +25,7 @@ export const InsightsEndpoints = {
   "pools/volume": "/pool/volume",
   "pools/liquidity": "/pool/liquidity",
   "pool/history": "/pool/history",
+  "pool/perp/history": "/pool/perp/history",
   "user/pool/rewards": "/user/:address/pool/rewards",
 
   //market
