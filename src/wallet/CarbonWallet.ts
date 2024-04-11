@@ -18,7 +18,7 @@ import { QueueManager } from "@carbon-sdk/util/generic";
 import { BN_ZERO, bnOrZero } from "@carbon-sdk/util/number";
 import { BroadcastTxMode, CarbonCustomError, CarbonSignerData, ErrorType } from "@carbon-sdk/util/tx";
 import { StdSignature, encodeSecp256k1Signature } from "@cosmjs/amino";
-import { EncodeObject, OfflineDirectSigner, OfflineSigner } from "@cosmjs/proto-signing";
+import { EncodeObject, OfflineDirectSigner, OfflineSigner, isOfflineDirectSigner } from "@cosmjs/proto-signing";
 import { Account, DeliverTxResponse, TimeoutError, isDeliverTxFailure } from "@cosmjs/stargate";
 import { Tendermint37Client } from "@cosmjs/tendermint-rpc";
 import { BroadcastTxAsyncResponse, BroadcastTxSyncResponse, TxResponse, broadcastTxSyncSuccess } from "@cosmjs/tendermint-rpc/build/tendermint37/responses";
@@ -822,7 +822,11 @@ export class CarbonWallet {
   }
 
   isLedgerSigner() {
-    return this.isSigner(CarbonSignerTypes.Ledger);
+    return this.isSigner(CarbonSignerTypes.Ledger) || this.isLedgerViaBrowserExtension();
+  }
+
+  isLedgerViaBrowserExtension() {
+    return (this.providerAgent === ProviderAgent.KeplrExtension || this.providerAgent === ProviderAgent.LeapExtension) && !isOfflineDirectSigner(this.signer);
   }
 
   isPrivateKeySigner() {
