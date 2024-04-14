@@ -2,6 +2,25 @@
   "output_id": "stride_usd",
   "templates": [
     {
+      "template_id": "unchanged_response_handler",
+      "adapters": [
+        {
+          "adapter": "unresponsive_handler",
+          "config": {
+            "strategy": "use_last",
+            "grace_duration": "120"
+          }
+        },
+        {
+          "adapter": "unchanged_handler",
+          "config": {
+            "strategy": "nullify",
+            "threshold_duration": "1800"
+          }
+        }
+      ]
+    },
+    {
       "template_id": "rpc_response_handler",
       "adapters": [
         {
@@ -29,7 +48,7 @@
           }
         },
         {
-          "template": "rpc_response_handler"
+          "template": "unchanged_response_handler"
         }
       ]
     },
@@ -68,15 +87,6 @@
       "config": {
         "operation": "round",
         "precision": "6"
-      }
-    },
-    {
-      "output_id": "stride_usd",
-      "input_id": "stride_usd",
-      "adapter": "unchanged_handler",
-      "config": {
-        "strategy": "nullify",
-        "threshold_duration": "900"
       }
     }
   ]
