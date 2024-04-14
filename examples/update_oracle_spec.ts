@@ -60,23 +60,36 @@ function readJsonFilesFromFolder(folderPath: string): Promise<{ [fileName: strin
 
   const specMap = await readJsonFilesFromFolder("./examples/mainnet-oracles")
 
-  const MAINNET_ORACLE_URL = "https://api.carbon.network/carbon/oracle/v1/oracles"
-  const mainnetOracles = await fetch(MAINNET_ORACLE_URL).then((res) => res.json());
+  const oraclesToUpdate = [
+    ".CAXLUSDC",
+    ".CEVMOS",
+    ".CIBX",
+    ".CIRIS",
+    ".CKUJI",
+    ".CMILKTIA",
+    ".CSTATOM",
+    ".CSTDYDX",
+    ".CSTEVMOS",
+    ".CSTOSMO",
+    ".CSTRD",
+    ".CSTSTARS",
+    ".CSTTIA"
+  ]
 
   const txs: any[] = []
-  for (const oracle of mainnetOracles.oracles) {
-    const spec = specMap[oracle.id] as string
+  for (const oracleId of oraclesToUpdate) {
+    const spec = specMap[oracleId] as string
     const txUpdateSpec = {
       typeUrl: CarbonTx.Types.MsgUpdateOracle,
       value: MsgUpdateOracle.fromPartial({
         updater: connectedSDK.wallet.bech32Address,
         updateOracleParams: {
-          id: oracle.id,
+          id: oracleId,
           spec,
         },
       }),
     }
-    console.log(`updating oracle ${oracle.id}`)
+    console.log(`updating oracle ${oracleId}`)
     txs.push(txUpdateSpec)
   }
 

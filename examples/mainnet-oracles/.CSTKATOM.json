@@ -1,0 +1,161 @@
+{
+  "output_id": "stkatom_usd",
+  "templates": [
+    {
+      "template_id": "rpc_response_handler",
+      "adapters": [
+        {
+          "adapter": "unresponsive_handler",
+          "config": {
+            "strategy": "use_last",
+            "grace_duration": "120"
+          }
+        }
+      ]
+    }
+  ],
+  "jobs": [
+    {
+      "output_id": "atom_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": ".CATOM",
+            "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
+      "output_id": "persistence_stkatom_redemption_rate_inverse",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "persistence_stkatom_atom_redemption_rate",
+            "default_node_host": "https://oracle-utils.carbon.network",
+            "default_node_path": "/stkatom-redemption-rate",
+            "paths": "[\"price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "rpc_response_handler"
+        }
+      ]
+    },
+    {
+      "adapter": "static_handler",
+      "output_id": "static_one",
+      "config": {
+        "value": "1"
+      }
+    },
+    {
+      "output_id": "persistence_stkatom_redemption_rate",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "divide",
+        "input_ids": "[\"static_one\",\"persistence_stkatom_redemption_rate_inverse\"]"
+      }
+    },
+    {
+      "output_id": "dexter_stkatom_atom_swap_rate_inverse_6",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "dexter_stkatom_atom_swap_rate",
+            "default_node_host": "https://rest-persistence.architectnodes.com",
+            "default_node_path": "/cosmwasm/wasm/v1/contract/persistence1335rlmhujm0gj5e9gh7at9jpqvqckz0mpe4v284ar4lw5mlkryzszkpfrs/smart/ewogICJvbl9zd2FwIjogewogICAgImFtb3VudCI6ICIxMDAwMDAwIiwKICAgICJzd2FwX3R5cGUiOiB7CiAgICAgICJnaXZlX2luIjoge30KICAgIH0sCiAgICAib2ZmZXJfYXNzZXQiOiB7CiAgICAgICJuYXRpdmVfdG9rZW4iOiB7CiAgICAgICAgImRlbm9tIjogImliYy9DOEE3NEFCQkUyQUY4OTJFMTU2ODBEOTE2QTdDMjIxMzA1ODVDRTU3MDRGOUIxN0ExMEYxODRBOTBENTNCRUNBIgogICAgICB9CiAgICB9LAogICAgImFza19hc3NldCI6IHsKICAgICAgIm5hdGl2ZV90b2tlbiI6IHsKICAgICAgICAiZGVub20iOiAic3RrL3VhdG9tIgogICAgICB9CiAgICB9CiAgfQp9",
+            "paths": "[\"data.trade_params.amount_out\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "rpc_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "dexter_stkatom_atom_swap_rate_inverse",
+      "input_id": "dexter_stkatom_atom_swap_rate_inverse_6",
+      "adapter": "decimal_handler",
+      "config": {
+        "operation": "decrease",
+        "exponent": "6"
+      }
+    },
+    {
+      "output_id": "dexter_stkatom_atom_swap_rate",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "divide",
+        "input_ids": "[\"static_one\",\"dexter_stkatom_atom_swap_rate_inverse\"]"
+      }
+    },
+    {
+      "output_id": "astroport_stkatom_atom_redemption_rate_6",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "astroport_stkatom_atom_redemption_rate",
+            "default_node_host": "https://lcd-neutron.whispernode.com",
+            "default_node_path": "/cosmwasm/wasm/v1/contract/neutron1d73vc84e36d4mmm9dwqql4sty3fx4usjmupxewx36e4qudm5auqs0yryma/smart/ewogICJzaW11bGF0aW9uIjogeyJvZmZlcl9hc3NldCI6IHsKICAgICAgImFtb3VudCI6ICIxMDAwMDAwIiwKICAgICAgImluZm8iOiB7CiAgICAgICAgIm5hdGl2ZV90b2tlbiI6IHsKICAgICAgICAgICJkZW5vbSI6ICJpYmMvMzY0OUNFMEM4QTJDNzkwNDhEOEM2RjMxRkYxOEZBNjlDOUJDN0VCMTkzNTEyRTBCRDAzQjczMzAxMTI5MDQ0NSIKICAgICAgICB9CiAgICAgIH0KICAgIH19Cn0=",
+            "paths": "[\"data.return_amount\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "rpc_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "astroport_stkatom_atom_redemption_rate",
+      "input_id": "astroport_stkatom_atom_redemption_rate_6",
+      "adapter": "decimal_handler",
+      "config": {
+        "operation": "decrease",
+        "exponent": "6"
+      }
+    },
+    {
+      "output_id": "stkatom_redemption_rate",
+      "adapter": "math_filter",
+      "input_id": "",
+      "config": {
+        "operation": "[\"min\",\"min\"]",
+        "input_ids": "[\"dexter_stkatom_atom_swap_rate\", \"persistence_stkatom_redemption_rate\", \"astroport_stkatom_atom_redemption_rate\"]"
+      }
+    },
+    {
+      "output_id": "stkatom_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"stkatom_redemption_rate\",\"atom_usd\"]"
+      }
+    },
+    {
+      "output_id": "stkatom_usd",
+      "input_id": "stkatom_usd",
+      "adapter": "float_handler",
+      "config": {
+        "operation": "round",
+        "precision": "6"
+      }
+    },
+    {
+      "output_id": "stkatom_usd",
+      "input_id": "stkatom_usd",
+      "adapter": "unchanged_handler",
+      "config": {
+        "strategy": "nullify",
+        "threshold_duration": "900"
+      }
+    }
+  ]
+}

@@ -1,0 +1,147 @@
+{
+  "output_id": "saga_usd",
+  "templates": [
+    {
+      "template_id": "full_response_handler",
+      "adapters": [
+        {
+          "adapter": "unresponsive_handler",
+          "config": {
+            "strategy": "use_last",
+            "grace_duration": "120"
+          }
+        },
+        {
+          "adapter": "unchanged_handler",
+          "config": {
+            "strategy": "nullify",
+            "threshold_duration": "900"
+          }
+        }
+      ]
+    }
+  ],
+  "jobs": [
+    {
+      "output_id": "bybit_saga_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "bybit_perps_saga_usdt",
+            "default_node_host": "https://api.bybit.com",
+            "default_node_path": "/derivatives/v3/public/tickers?category=linear&symbol=SAGAUSDT",
+            "paths": "[\"result.list.0.indexPrice\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "full_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "binance_saga_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "binance_saga_usdt",
+            "default_node_host": "https://api-binance-proxy.carbon.network",
+            "default_node_path": "/api/v3/ticker/price?symbol=SAGAUSDT",
+            "paths": "[\"price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "full_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "htx_saga_usdt",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "htx_saga_usdt",
+            "default_node_host": "https://api.huobi.pro",
+            "default_node_path": "/market/trade?symbol=sagausdt",
+            "paths": "[\"tick.data.0.price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "full_response_handler"
+        }
+      ]
+    },
+    {
+      "input_id": "bybit_saga_usdt",
+      "output_id": "bybit_saga_usdt",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"bybit_saga_usdt\", \"binance_saga_usdt\", \"htx_saga_usdt\"]",
+        "tolerance_percentage": "3"
+      }
+    },
+    {
+      "input_id": "binance_saga_usdt",
+      "output_id": "binance_saga_usdt",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"bybit_saga_usdt\", \"binance_saga_usdt\", \"htx_saga_usdt\"]",
+        "tolerance_percentage": "3"
+      }
+    },
+    {
+      "input_id": "htx_saga_usdt",
+      "output_id": "htx_saga_usdt",
+      "adapter": "median_filter",
+      "config": {
+        "strategy": "nullify",
+        "value_ids": "[\"bybit_saga_usdt\", \"binance_saga_usdt\", \"htx_saga_usdt\"]",
+        "tolerance_percentage": "3"
+      }
+    },
+    {
+      "output_id": "saga_usdt",
+      "adapter": "weighted_average",
+      "config": {
+        "value_ids": "[\"bybit_saga_usdt\", \"binance_saga_usdt\", \"htx_saga_usdt\"]",
+        "weights": "[0.3, 0.5, 0.2]"
+      }
+    },
+    {
+      "output_id": "usdt_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": ".CUSDT",
+            "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
+      "output_id": "saga_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"saga_usdt\",\"usdt_usd\"]"
+      }
+    },
+    {
+      "output_id": "saga_usd",
+      "input_id": "saga_usd",
+      "adapter": "float_handler",
+      "config": {
+        "operation": "round",
+        "precision": "6"
+      }
+    }
+  ]
+}
