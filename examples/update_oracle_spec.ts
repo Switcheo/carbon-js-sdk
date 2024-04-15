@@ -53,7 +53,7 @@ function readJsonFilesFromFolder(folderPath: string): Promise<{ [fileName: strin
   console.log("mnemonics", mnemonics);
 
   const sdk = await CarbonSDK.instance({
-    network: CarbonSDK.Network.MainNet,
+    network: CarbonSDK.Network.DevNet,
   });
   const connectedSDK = await sdk.connectWithMnemonic(mnemonics);
   console.log("connected sdk");
@@ -76,24 +76,55 @@ function readJsonFilesFromFolder(folderPath: string): Promise<{ [fileName: strin
     ".CSTTIA",
     ".CSTDYM",
     ".CSTSAGA",
-    ".CRATOM"
+    ".CRATOM",
+    ".CMANTA",
+    ".CUSDC"
   ]
 
   const txs: any[] = []
   for (const oracleId of oraclesToUpdate) {
     const spec = specMap[oracleId] as string
-    const txUpdateSpec = {
-      typeUrl: CarbonTx.Types.MsgUpdateOracle,
-      value: MsgUpdateOracle.fromPartial({
-        updater: connectedSDK.wallet.bech32Address,
-        updateOracleParams: {
-          id: oracleId,
-          spec,
-        },
-      }),
+    if (oracleId == ".CRATOM") {
+      const txUpdateSpec = {
+        typeUrl: CarbonTx.Types.MsgUpdateOracle,
+        value: MsgUpdateOracle.fromPartial({
+          updater: connectedSDK.wallet.bech32Address,
+          updateOracleParams: {
+            id: oracleId,
+            spec,
+            maxResultAge: 305
+          },
+        }),
+      }
+      console.log(`updating oracle ${oracleId}`)
+      txs.push(txUpdateSpec)
+    } else if (oracleId == ".CMANTA" || oracleId == ".CUSDC") {
+      const txUpdateSpec = {
+        typeUrl: CarbonTx.Types.MsgUpdateOracle,
+        value: MsgUpdateOracle.fromPartial({
+          updater: connectedSDK.wallet.bech32Address,
+          updateOracleParams: {
+            id: oracleId,
+            maxResultAge: 300
+          },
+        }),
+      }
+      console.log(`updating oracle ${oracleId}`)
+      txs.push(txUpdateSpec)
+    } else {
+      const txUpdateSpec = {
+        typeUrl: CarbonTx.Types.MsgUpdateOracle,
+        value: MsgUpdateOracle.fromPartial({
+          updater: connectedSDK.wallet.bech32Address,
+          updateOracleParams: {
+            id: oracleId,
+            spec,
+          },
+        }),
+      }
+      console.log(`updating oracle ${oracleId}`)
+      txs.push(txUpdateSpec)
     }
-    console.log(`updating oracle ${oracleId}`)
-    txs.push(txUpdateSpec)
   }
 
   const result = await connectedSDK.wallet.sendTxs(txs);
