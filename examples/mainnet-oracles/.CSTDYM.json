@@ -1,76 +1,75 @@
 {
-    "output_id": "stdym_usd",
-    "templates": [
-      {
-        "template_id": "rpc_response_handler",
-        "adapters": [
-          {
-            "adapter": "unresponsive_handler",
-            "config": {
-              "strategy": "use_last",
-              "grace_duration": "120"
-            }
+  "output_id": "stdym_usd",
+  "templates": [
+    {
+      "template_id": "rpc_response_handler",
+      "adapters": [
+        {
+          "adapter": "unresponsive_handler",
+          "config": {
+            "strategy": "use_last",
+            "grace_duration": "120"
           }
-        ]
+        }
+      ]
+    }
+  ],
+  "jobs": [
+    {
+      "output_id": "dym_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": ".CDYM",
+            "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
+      "output_id": "dymension_dym_stdym_redemption_rate",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "dymension_dym_stdym_redemption_rate_1",
+            "default_node_host": "https://dymension.api.kjnodes.com",
+            "default_node_path": "/dymensionxyz/dymension/gamm/v2/pools/11/prices?base_asset_denom=ibc%2FAB30D2F9C131AE1EFA8449C74490326BD5ACC40EF69A2D8563994AA05CE0B258&quote_asset_denom=adym",
+            "paths": "[\"spot_price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "rpc_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "stdym_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"dymension_dym_stdym_redemption_rate\",\"dym_usd\"]"
       }
-    ],
-    "jobs": [
-      {
-        "output_id": "dym_usd",
-        "adapters": [
-          {
-            "adapter": "oracle_result_fetcher",
-            "config": {
-              "oracle_id": ".CDYM",
-              "stale_allowance": "900"
-            }
-          }
-        ]
-      },
-      {
-        "output_id": "dymension_dym_stdym_redemption_rate",
-        "adapters": [
-          {
-            "adapter": "fetcher_multiple",
-            "config": {
-              "custom_node_url_key": "dymension_dym_stdym_redemption_rate",
-              "default_node_host": "https://dymension.api.kjnodes.com",
-              "default_node_path": "/dymensionxyz/dymension/gamm/v2/pools/11/prices?base_asset_denom=adym&quote_asset_denom=ibc%2FAB30D2F9C131AE1EFA8449C74490326BD5ACC40EF69A2D8563994AA05CE0B258",
-              "paths": "[\"spot_price\"]",
-              "timeout": "10"
-            }
-          },
-          {
-            "template": "rpc_response_handler"
-          }
-        ]
-      },
-      {
-        "output_id": "stdym_usd",
-        "adapter": "math_filter",
-        "config": {
-          "operation": "multiply",
-          "input_ids": "[\"dymension_dym_stdym_redemption_rate\",\"dym_usd\"]"
-        }
-      },
-      {
-        "output_id": "stdym_usd",
-        "input_id": "stdym_usd",
-        "adapter": "float_handler",
-        "config": {
-          "operation": "round",
-          "precision": "6"
-        }
-      },
-      {
-        "output_id": "stdym_usd",
-        "input_id": "stdym_usd",
-        "adapter": "unchanged_handler",
-        "config": {
-          "strategy": "nullify",
-          "threshold_duration": "900"
-        }
+    },
+    {
+      "output_id": "stdym_usd",
+      "input_id": "stdym_usd",
+      "adapter": "float_handler",
+      "config": {
+        "operation": "round",
+        "precision": "6"
       }
-    ]
-  }
-  
+    },
+    {
+      "output_id": "stdym_usd",
+      "input_id": "stdym_usd",
+      "adapter": "unchanged_handler",
+      "config": {
+        "strategy": "nullify",
+        "threshold_duration": "900"
+      }
+    }
+  ]
+}

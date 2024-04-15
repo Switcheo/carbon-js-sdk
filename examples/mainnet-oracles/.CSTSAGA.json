@@ -1,0 +1,102 @@
+{
+  "output_id": "stsaga_usd",
+  "templates": [
+    {
+      "template_id": "rpc_response_handler",
+      "adapters": [
+        {
+          "adapter": "unresponsive_handler",
+          "config": {
+            "strategy": "use_last",
+            "grace_duration": "120"
+          }
+        }
+      ]
+    }
+  ],
+  "jobs": [
+    {
+      "output_id": "saga_usd",
+      "adapters": [
+        {
+          "adapter": "oracle_result_fetcher",
+          "config": {
+            "oracle_id": ".CSAGA",
+            "stale_allowance": "900"
+          }
+        }
+      ]
+    },
+    {
+      "output_id": "stsaga_stride_redemption_rate",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "stride_stsaga_redemption_rate",
+            "default_node_host": "https://stride-rest.publicnode.com",
+            "default_node_path": "/Stride-Labs/stride/stakeibc/host_zone/ssc-1",
+            "paths": "[\"host_zone.redemption_rate\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "rpc_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "osmosis_stsaga_saga_swap_rate",
+      "adapters": [
+        {
+          "adapter": "fetcher_multiple",
+          "config": {
+            "custom_node_url_key": "osmosis_stsaga_saga_swap_rate",
+            "default_node_host": "https://api-osmosis.carbon.network",
+            "default_node_path": "/osmosis/poolmanager/pools/1674/prices?base_asset_denom=ibc/2CD9F8161C3FC332E78EF0C25F6E684D09379FB2F56EF9267E7EC139642EC57B&quote_asset_denom=ibc/094FB70C3006906F67F5D674073D2DAFAFB41537E7033098F5C752F211E7B6C2",
+            "paths": "[\"spot_price\"]",
+            "timeout": "10"
+          }
+        },
+        {
+          "template": "rpc_response_handler"
+        }
+      ]
+    },
+    {
+      "output_id": "stsaga_redemption_rate",
+      "adapter": "math_filter",
+      "input_id": "",
+      "config": {
+        "operation": "min",
+        "input_ids": "[\"osmosis_stsaga_saga_swap_rate\",\"stsaga_stride_redemption_rate\"]"
+      }
+    },
+    {
+      "output_id": "stsaga_usd",
+      "adapter": "math_filter",
+      "config": {
+        "operation": "multiply",
+        "input_ids": "[\"stsaga_redemption_rate\",\"saga_usd\"]"
+      }
+    },
+    {
+      "output_id": "stsaga_usd",
+      "input_id": "stsaga_usd",
+      "adapter": "float_handler",
+      "config": {
+        "operation": "round",
+        "precision": "6"
+      }
+    },
+    {
+      "output_id": "stsaga_usd",
+      "input_id": "stsaga_usd",
+      "adapter": "unchanged_handler",
+      "config": {
+        "strategy": "nullify",
+        "threshold_duration": "900"
+      }
+    }
+  ]
+}
