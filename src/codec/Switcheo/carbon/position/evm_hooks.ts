@@ -7,7 +7,7 @@ export const protobufPackage = "Switcheo.carbon.position";
 export interface QueryEVMPositionRequest {
   evmAddress: Uint8Array;
   carbonAddress: string;
-  market: string;
+  marketId: string;
   caller: Uint8Array;
 }
 
@@ -16,7 +16,7 @@ export interface QueryEVMPositionQueue {
   requests: QueryEVMPositionRequest[];
 }
 
-const baseQueryEVMPositionRequest: object = { carbonAddress: "", market: "" };
+const baseQueryEVMPositionRequest: object = { carbonAddress: "", marketId: "" };
 
 export const QueryEVMPositionRequest = {
   encode(
@@ -29,8 +29,8 @@ export const QueryEVMPositionRequest = {
     if (message.carbonAddress !== "") {
       writer.uint32(18).string(message.carbonAddress);
     }
-    if (message.market !== "") {
-      writer.uint32(26).string(message.market);
+    if (message.marketId !== "") {
+      writer.uint32(26).string(message.marketId);
     }
     if (message.caller.length !== 0) {
       writer.uint32(34).bytes(message.caller);
@@ -59,7 +59,7 @@ export const QueryEVMPositionRequest = {
           message.carbonAddress = reader.string();
           break;
         case 3:
-          message.market = reader.string();
+          message.marketId = reader.string();
           break;
         case 4:
           message.caller = reader.bytes();
@@ -84,9 +84,9 @@ export const QueryEVMPositionRequest = {
       object.carbonAddress !== undefined && object.carbonAddress !== null
         ? String(object.carbonAddress)
         : "";
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? String(object.market)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     message.caller =
       object.caller !== undefined && object.caller !== null
@@ -103,7 +103,7 @@ export const QueryEVMPositionRequest = {
       ));
     message.carbonAddress !== undefined &&
       (obj.carbonAddress = message.carbonAddress);
-    message.market !== undefined && (obj.market = message.market);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     message.caller !== undefined &&
       (obj.caller = base64FromBytes(
         message.caller !== undefined ? message.caller : new Uint8Array()
@@ -119,7 +119,7 @@ export const QueryEVMPositionRequest = {
     } as QueryEVMPositionRequest;
     message.evmAddress = object.evmAddress ?? new Uint8Array();
     message.carbonAddress = object.carbonAddress ?? "";
-    message.market = object.market ?? "";
+    message.marketId = object.marketId ?? "";
     message.caller = object.caller ?? new Uint8Array();
     return message;
   },

@@ -13,6 +13,7 @@ export const InsightsEndpoints = {
   "user/total": "/user/total",
   "user/growth": "/user/growth",
   "user/volume": "/user/:address/volume",
+  "user/connected/wallet": "/user/connected/wallet",
 
 
   // Pool api
@@ -21,6 +22,7 @@ export const InsightsEndpoints = {
   "pools/volume": "/pool/volume",
   "pools/liquidity": "/pool/liquidity",
   "pool/history": "/pool/history",
+  "pool/perp/history": "/pool/perp/history",
   "user/pool/rewards": "/user/:address/pool/rewards",
 
   //market

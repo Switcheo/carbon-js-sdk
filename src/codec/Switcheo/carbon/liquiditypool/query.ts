@@ -5,7 +5,7 @@ import {
   PageRequest,
   PageResponse,
 } from "../../../cosmos/base/query/v1beta1/pagination";
-import { Pool, Params, PoolRoute } from "./liquiditypool";
+import { Pool, PoolRoute } from "./liquiditypool";
 import {
   CommitmentResponse,
   CommitmentCurve,
@@ -13,6 +13,7 @@ import {
   Commitment,
   TotalCommitmentRecord,
 } from "./reward";
+import { Params } from "./params";
 import { Timestamp } from "../../../google/protobuf/timestamp";
 import { DecCoin } from "../../../cosmos/base/v1beta1/coin";
 
@@ -112,6 +113,12 @@ export interface QueryClaimableRewardsRequest {
 }
 
 export interface QueryClaimableRewardsResponse {
+  rewards: DecCoin[];
+}
+
+export interface QueryAllocatedRewardsRequest {}
+
+export interface QueryAllocatedRewardsResponse {
   rewards: DecCoin[];
 }
 
@@ -1812,6 +1819,128 @@ export const QueryClaimableRewardsResponse = {
   },
 };
 
+const baseQueryAllocatedRewardsRequest: object = {};
+
+export const QueryAllocatedRewardsRequest = {
+  encode(
+    _: QueryAllocatedRewardsRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAllocatedRewardsRequest {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAllocatedRewardsRequest,
+    } as QueryAllocatedRewardsRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryAllocatedRewardsRequest {
+    const message = {
+      ...baseQueryAllocatedRewardsRequest,
+    } as QueryAllocatedRewardsRequest;
+    return message;
+  },
+
+  toJSON(_: QueryAllocatedRewardsRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<QueryAllocatedRewardsRequest>
+  ): QueryAllocatedRewardsRequest {
+    const message = {
+      ...baseQueryAllocatedRewardsRequest,
+    } as QueryAllocatedRewardsRequest;
+    return message;
+  },
+};
+
+const baseQueryAllocatedRewardsResponse: object = {};
+
+export const QueryAllocatedRewardsResponse = {
+  encode(
+    message: QueryAllocatedRewardsResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    for (const v of message.rewards) {
+      DecCoin.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): QueryAllocatedRewardsResponse {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryAllocatedRewardsResponse,
+    } as QueryAllocatedRewardsResponse;
+    message.rewards = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.rewards.push(DecCoin.decode(reader, reader.uint32()));
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAllocatedRewardsResponse {
+    const message = {
+      ...baseQueryAllocatedRewardsResponse,
+    } as QueryAllocatedRewardsResponse;
+    message.rewards = (object.rewards ?? []).map((e: any) =>
+      DecCoin.fromJSON(e)
+    );
+    return message;
+  },
+
+  toJSON(message: QueryAllocatedRewardsResponse): unknown {
+    const obj: any = {};
+    if (message.rewards) {
+      obj.rewards = message.rewards.map((e) =>
+        e ? DecCoin.toJSON(e) : undefined
+      );
+    } else {
+      obj.rewards = [];
+    }
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryAllocatedRewardsResponse>
+  ): QueryAllocatedRewardsResponse {
+    const message = {
+      ...baseQueryAllocatedRewardsResponse,
+    } as QueryAllocatedRewardsResponse;
+    message.rewards = (object.rewards ?? []).map((e) => DecCoin.fromPartial(e));
+    return message;
+  },
+};
+
 const baseQueryParamsRequest: object = {};
 
 export const QueryParamsRequest = {
@@ -2365,6 +2494,10 @@ export interface Query {
   ClaimableRewards(
     request: QueryClaimableRewardsRequest
   ): Promise<QueryClaimableRewardsResponse>;
+  /** Get allocated rewards */
+  AllocatedRewards(
+    request: QueryAllocatedRewardsRequest
+  ): Promise<QueryAllocatedRewardsResponse>;
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse>;
   /** Get liquidity pool addresses for all pools */
   PoolRouteAll(
@@ -2390,6 +2523,7 @@ export class QueryClientImpl implements Query {
     this.TotalCommitment = this.TotalCommitment.bind(this);
     this.TotalCommitmentAll = this.TotalCommitmentAll.bind(this);
     this.ClaimableRewards = this.ClaimableRewards.bind(this);
+    this.AllocatedRewards = this.AllocatedRewards.bind(this);
     this.Params = this.Params.bind(this);
     this.PoolRouteAll = this.PoolRouteAll.bind(this);
     this.PoolRouteAddressAll = this.PoolRouteAddressAll.bind(this);
@@ -2527,6 +2661,20 @@ export class QueryClientImpl implements Query {
     );
     return promise.then((data) =>
       QueryClaimableRewardsResponse.decode(new _m0.Reader(data))
+    );
+  }
+
+  AllocatedRewards(
+    request: QueryAllocatedRewardsRequest
+  ): Promise<QueryAllocatedRewardsResponse> {
+    const data = QueryAllocatedRewardsRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "Switcheo.carbon.liquiditypool.Query",
+      "AllocatedRewards",
+      data
+    );
+    return promise.then((data) =>
+      QueryAllocatedRewardsResponse.decode(new _m0.Reader(data))
     );
   }
 

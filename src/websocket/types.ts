@@ -69,43 +69,43 @@ export enum WSRequest {
 }
 
 export interface WsGetRecentTradesParams {
-  market: string;
+  market_id: string;
 }
 
 export interface WsGetCandlesticksParams {
-  market: string;
+  market_id: string;
   resolution: string;
   from?: string;
   to?: string;
 }
 
 export interface WsGetOrderHistoryParams {
-  market: string;
+  market_id: string;
   address: string;
 }
 
 export interface WsGetOpenOrdersParams {
-  market: string;
+  market_id: string;
   address: string;
 }
 
 export interface WsGetAccountTradesParams {
-  market: string;
+  market_id: string;
   address: string;
   page?: number;
 }
 
 export interface WsGetMarketStatsParams {
-  market: string;
+  market_id: string;
 }
 
 export interface WsGetLeveragesParams {
-  market: string;
+  market_id: string;
   address: string;
 }
 
 export interface WsGetPositionsParams {
-  market: string;
+  market_id: string;
   address: string;
   status?: string;
   order_by?: string;
@@ -156,17 +156,17 @@ export interface WsSubscribeParams {
 }
 
 export interface WsSubscribeCandlesticksParams extends WsSubscribeParams {
-  market: string;
+  market_id: string;
   resolution: string;
   subscribeUID: string;
 }
 
 export interface WsSubscribeBooksParams extends WsSubscribeParams {
-  market: string;
+  market_id: string;
 }
 
 export interface WsSubscribeRecentTradesParams extends WsSubscribeParams {
-  market: string;
+  market_id: string;
 }
 
 export interface WsSubscribeOrdersAllParams extends WsSubscribeParams {
@@ -174,7 +174,7 @@ export interface WsSubscribeOrdersAllParams extends WsSubscribeParams {
 }
 
 export interface WsSubscribeOrdersByMarketParams extends WsSubscribeParams {
-  market: string;
+  market_id: string;
   address: string;
 }
 
@@ -187,14 +187,14 @@ export interface WsSubscribeAccountTradesAllParams extends WsSubscribeParams {
 }
 
 export interface WsSubscribeAccountTradesByMarketParams extends WsSubscribeParams {
-  market: string;
+  market_id: string;
   address: string;
 }
 
 export interface WsSubscribeMarketStatsAllParams extends WsSubscribeParams {}
 
 export interface WsSubscribeMarketStatsByMarketParams extends WsSubscribeParams {
-  market: string;
+  market_id: string;
 }
 
 export interface WsSubscribeLeveragesAllParams extends WsSubscribeParams {
@@ -202,7 +202,7 @@ export interface WsSubscribeLeveragesAllParams extends WsSubscribeParams {
 }
 
 export interface WsSubscribeLeveragesByMarketParams extends WsSubscribeParams {
-  market: string;
+  market_id: string;
   address: string;
 }
 
@@ -211,7 +211,7 @@ export interface WsSubscribePositionsAllParams extends WsSubscribeParams {
 }
 
 export interface WsSubscribePositionsByMarketParams extends WsSubscribeParams {
-  market: string;
+  market_id: string;
   address: string;
 }
 
@@ -226,7 +226,7 @@ export interface WsSubscribeCommitmentParams extends WsSubscribeParams {
 }
 
 export interface WsUnsubscribeCandlesticksParams extends WsSubscribeParams {
-  market: string;
+  market_id: string;
   resolution: string;
 }
 

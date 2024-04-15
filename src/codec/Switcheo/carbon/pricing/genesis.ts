@@ -1,7 +1,8 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Params, PriceSet, TokenPrice } from "./pricing";
+import { Params } from "./params";
+import { PriceSet, TokenPrice } from "./pricing";
 
 export const protobufPackage = "Switcheo.carbon.pricing";
 

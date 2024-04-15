@@ -1,11 +1,12 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { TokenPrice, PriceSet, Params } from "./pricing";
+import { TokenPrice, PriceSet } from "./pricing";
 import {
   PageRequest,
   PageResponse,
 } from "../../../cosmos/base/query/v1beta1/pagination";
+import { Params } from "./params";
 
 export const protobufPackage = "Switcheo.carbon.pricing";
 
@@ -18,7 +19,7 @@ export interface QueryPriceTokenResponse {
 }
 
 export interface QueryPriceSetRequest {
-  market: string;
+  marketId: string;
 }
 
 export interface QueryPriceSetResponse {
@@ -197,15 +198,15 @@ export const QueryPriceTokenResponse = {
   },
 };
 
-const baseQueryPriceSetRequest: object = { market: "" };
+const baseQueryPriceSetRequest: object = { marketId: "" };
 
 export const QueryPriceSetRequest = {
   encode(
     message: QueryPriceSetRequest,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.market !== "") {
-      writer.uint32(10).string(message.market);
+    if (message.marketId !== "") {
+      writer.uint32(10).string(message.marketId);
     }
     return writer;
   },
@@ -221,7 +222,7 @@ export const QueryPriceSetRequest = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.market = reader.string();
+          message.marketId = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -233,22 +234,22 @@ export const QueryPriceSetRequest = {
 
   fromJSON(object: any): QueryPriceSetRequest {
     const message = { ...baseQueryPriceSetRequest } as QueryPriceSetRequest;
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? String(object.market)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     return message;
   },
 
   toJSON(message: QueryPriceSetRequest): unknown {
     const obj: any = {};
-    message.market !== undefined && (obj.market = message.market);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     return obj;
   },
 
   fromPartial(object: DeepPartial<QueryPriceSetRequest>): QueryPriceSetRequest {
     const message = { ...baseQueryPriceSetRequest } as QueryPriceSetRequest;
-    message.market = object.market ?? "";
+    message.marketId = object.marketId ?? "";
     return message;
   },
 };

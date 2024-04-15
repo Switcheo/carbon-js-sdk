@@ -5,7 +5,7 @@ import _m0 from "protobufjs/minimal";
 export const protobufPackage = "Switcheo.carbon.book";
 
 export interface OrderBookEvent {
-  market: string;
+  marketId: string;
   side: string;
   price: string;
   quantity: string;
@@ -16,11 +16,11 @@ export interface VirtualOrderBookEvent {
 }
 
 export interface ClearVirtualOrderBookEvent {
-  market: string;
+  marketId: string;
 }
 
 const baseOrderBookEvent: object = {
-  market: "",
+  marketId: "",
   side: "",
   price: "",
   quantity: "",
@@ -31,8 +31,8 @@ export const OrderBookEvent = {
     message: OrderBookEvent,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.market !== "") {
-      writer.uint32(18).string(message.market);
+    if (message.marketId !== "") {
+      writer.uint32(18).string(message.marketId);
     }
     if (message.side !== "") {
       writer.uint32(26).string(message.side);
@@ -54,7 +54,7 @@ export const OrderBookEvent = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 2:
-          message.market = reader.string();
+          message.marketId = reader.string();
           break;
         case 3:
           message.side = reader.string();
@@ -75,9 +75,9 @@ export const OrderBookEvent = {
 
   fromJSON(object: any): OrderBookEvent {
     const message = { ...baseOrderBookEvent } as OrderBookEvent;
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? String(object.market)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     message.side =
       object.side !== undefined && object.side !== null
@@ -96,7 +96,7 @@ export const OrderBookEvent = {
 
   toJSON(message: OrderBookEvent): unknown {
     const obj: any = {};
-    message.market !== undefined && (obj.market = message.market);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     message.side !== undefined && (obj.side = message.side);
     message.price !== undefined && (obj.price = message.price);
     message.quantity !== undefined && (obj.quantity = message.quantity);
@@ -105,7 +105,7 @@ export const OrderBookEvent = {
 
   fromPartial(object: DeepPartial<OrderBookEvent>): OrderBookEvent {
     const message = { ...baseOrderBookEvent } as OrderBookEvent;
-    message.market = object.market ?? "";
+    message.marketId = object.marketId ?? "";
     message.side = object.side ?? "";
     message.price = object.price ?? "";
     message.quantity = object.quantity ?? "";
@@ -177,15 +177,15 @@ export const VirtualOrderBookEvent = {
   },
 };
 
-const baseClearVirtualOrderBookEvent: object = { market: "" };
+const baseClearVirtualOrderBookEvent: object = { marketId: "" };
 
 export const ClearVirtualOrderBookEvent = {
   encode(
     message: ClearVirtualOrderBookEvent,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.market !== "") {
-      writer.uint32(10).string(message.market);
+    if (message.marketId !== "") {
+      writer.uint32(10).string(message.marketId);
     }
     return writer;
   },
@@ -203,7 +203,7 @@ export const ClearVirtualOrderBookEvent = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          message.market = reader.string();
+          message.marketId = reader.string();
           break;
         default:
           reader.skipType(tag & 7);
@@ -217,16 +217,16 @@ export const ClearVirtualOrderBookEvent = {
     const message = {
       ...baseClearVirtualOrderBookEvent,
     } as ClearVirtualOrderBookEvent;
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? String(object.market)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     return message;
   },
 
   toJSON(message: ClearVirtualOrderBookEvent): unknown {
     const obj: any = {};
-    message.market !== undefined && (obj.market = message.market);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     return obj;
   },
 
@@ -236,7 +236,7 @@ export const ClearVirtualOrderBookEvent = {
     const message = {
       ...baseClearVirtualOrderBookEvent,
     } as ClearVirtualOrderBookEvent;
-    message.market = object.market ?? "";
+    message.marketId = object.marketId ?? "";
     return message;
   },
 };

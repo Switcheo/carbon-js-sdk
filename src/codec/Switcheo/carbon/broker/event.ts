@@ -9,7 +9,7 @@ export interface TradeEvent {
   id: Long;
   blockHeight: Long;
   blockCreatedAt?: Date;
-  market: string;
+  marketId: string;
   price: string;
   quantity: string;
   liquidation: string;
@@ -41,7 +41,7 @@ export interface FundingEvent {
 const baseTradeEvent: object = {
   id: Long.UZERO,
   blockHeight: Long.ZERO,
-  market: "",
+  marketId: "",
   price: "",
   quantity: "",
   liquidation: "",
@@ -80,8 +80,8 @@ export const TradeEvent = {
         writer.uint32(18).fork()
       ).ldelim();
     }
-    if (message.market !== "") {
-      writer.uint32(106).string(message.market);
+    if (message.marketId !== "") {
+      writer.uint32(106).string(message.marketId);
     }
     if (message.price !== "") {
       writer.uint32(114).string(message.price);
@@ -162,7 +162,7 @@ export const TradeEvent = {
           );
           break;
         case 13:
-          message.market = reader.string();
+          message.marketId = reader.string();
           break;
         case 14:
           message.price = reader.string();
@@ -243,9 +243,9 @@ export const TradeEvent = {
       object.blockCreatedAt !== undefined && object.blockCreatedAt !== null
         ? fromJsonTimestamp(object.blockCreatedAt)
         : undefined;
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? String(object.market)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     message.price =
       object.price !== undefined && object.price !== null
@@ -338,7 +338,7 @@ export const TradeEvent = {
       (obj.blockHeight = (message.blockHeight || Long.ZERO).toString());
     message.blockCreatedAt !== undefined &&
       (obj.blockCreatedAt = message.blockCreatedAt.toISOString());
-    message.market !== undefined && (obj.market = message.market);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     message.price !== undefined && (obj.price = message.price);
     message.quantity !== undefined && (obj.quantity = message.quantity);
     message.liquidation !== undefined &&
@@ -385,7 +385,7 @@ export const TradeEvent = {
         ? Long.fromValue(object.blockHeight)
         : Long.ZERO;
     message.blockCreatedAt = object.blockCreatedAt ?? undefined;
-    message.market = object.market ?? "";
+    message.marketId = object.marketId ?? "";
     message.price = object.price ?? "";
     message.quantity = object.quantity ?? "";
     message.liquidation = object.liquidation ?? "";

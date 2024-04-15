@@ -1,7 +1,7 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { Params, Pool, PoolRoute } from "./liquiditypool";
+import { Params } from "./params";
 import {
   RewardCurve,
   CommitmentCurve,
@@ -12,6 +12,7 @@ import {
   CommitmentExpiriesRecord,
   AccumulatedRewardsRecord,
 } from "./reward";
+import { Pool, PoolRoute } from "./liquiditypool";
 
 export const protobufPackage = "Switcheo.carbon.liquiditypool";
 

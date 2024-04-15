@@ -11,7 +11,7 @@ export interface SettlementPriceProposal {
 }
 
 export interface SettlementPriceParams {
-  market: string;
+  marketId: string;
   settlementPrice: string;
 }
 
@@ -113,15 +113,15 @@ export const SettlementPriceProposal = {
   },
 };
 
-const baseSettlementPriceParams: object = { market: "", settlementPrice: "" };
+const baseSettlementPriceParams: object = { marketId: "", settlementPrice: "" };
 
 export const SettlementPriceParams = {
   encode(
     message: SettlementPriceParams,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.market !== "") {
-      writer.uint32(26).string(message.market);
+    if (message.marketId !== "") {
+      writer.uint32(26).string(message.marketId);
     }
     if (message.settlementPrice !== "") {
       writer.uint32(34).string(message.settlementPrice);
@@ -140,7 +140,7 @@ export const SettlementPriceParams = {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 3:
-          message.market = reader.string();
+          message.marketId = reader.string();
           break;
         case 4:
           message.settlementPrice = reader.string();
@@ -155,9 +155,9 @@ export const SettlementPriceParams = {
 
   fromJSON(object: any): SettlementPriceParams {
     const message = { ...baseSettlementPriceParams } as SettlementPriceParams;
-    message.market =
-      object.market !== undefined && object.market !== null
-        ? String(object.market)
+    message.marketId =
+      object.marketId !== undefined && object.marketId !== null
+        ? String(object.marketId)
         : "";
     message.settlementPrice =
       object.settlementPrice !== undefined && object.settlementPrice !== null
@@ -168,7 +168,7 @@ export const SettlementPriceParams = {
 
   toJSON(message: SettlementPriceParams): unknown {
     const obj: any = {};
-    message.market !== undefined && (obj.market = message.market);
+    message.marketId !== undefined && (obj.marketId = message.marketId);
     message.settlementPrice !== undefined &&
       (obj.settlementPrice = message.settlementPrice);
     return obj;
@@ -178,7 +178,7 @@ export const SettlementPriceParams = {
     object: DeepPartial<SettlementPriceParams>
   ): SettlementPriceParams {
     const message = { ...baseSettlementPriceParams } as SettlementPriceParams;
-    message.market = object.market ?? "";
+    message.marketId = object.marketId ?? "";
     message.settlementPrice = object.settlementPrice ?? "";
     return message;
   },

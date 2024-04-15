@@ -88,3 +88,12 @@ export interface QueryGetUserVolumeResponse {
   entries: UserVolume[]
   meta: ParsedTimeMeta
 }
+
+export interface ConnectedWalletParams {
+  address: string,
+  walletType: string,
+}
+
+export interface ConnectedWalletResponse {
+  status: string
+}

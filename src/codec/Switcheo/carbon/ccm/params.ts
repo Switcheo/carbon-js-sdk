@@ -1,12 +1,18 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
+import { BoolValue } from "../../../google/protobuf/wrappers";
 
 export const protobufPackage = "Switcheo.carbon.ccm";
 
 /** Params defines the parameters for the ccm module. */
 export interface Params {
   emitZionEvents: boolean;
+}
+
+/** ParamsToUpdate allows optional fields for Params. */
+export interface ParamsToUpdate {
+  emitZionEvents?: boolean;
 }
 
 const baseParams: object = { emitZionEvents: false };
@@ -59,6 +65,66 @@ export const Params = {
   fromPartial(object: DeepPartial<Params>): Params {
     const message = { ...baseParams } as Params;
     message.emitZionEvents = object.emitZionEvents ?? false;
+    return message;
+  },
+};
+
+const baseParamsToUpdate: object = {};
+
+export const ParamsToUpdate = {
+  encode(
+    message: ParamsToUpdate,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
+    if (message.emitZionEvents !== undefined) {
+      BoolValue.encode(
+        { value: message.emitZionEvents! },
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ParamsToUpdate {
+    const reader = input instanceof _m0.Reader ? input : new _m0.Reader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseParamsToUpdate } as ParamsToUpdate;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.emitZionEvents = BoolValue.decode(
+            reader,
+            reader.uint32()
+          ).value;
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ParamsToUpdate {
+    const message = { ...baseParamsToUpdate } as ParamsToUpdate;
+    message.emitZionEvents =
+      object.emitZionEvents !== undefined && object.emitZionEvents !== null
+        ? Boolean(object.emitZionEvents)
+        : undefined;
+    return message;
+  },
+
+  toJSON(message: ParamsToUpdate): unknown {
+    const obj: any = {};
+    message.emitZionEvents !== undefined &&
+      (obj.emitZionEvents = message.emitZionEvents);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<ParamsToUpdate>): ParamsToUpdate {
+    const message = { ...baseParamsToUpdate } as ParamsToUpdate;
+    message.emitZionEvents = object.emitZionEvents ?? undefined;
     return message;
   },
 };

@@ -1,6 +1,6 @@
 import { NetworkConfig } from "@carbon-sdk/constant";
 import { Insights } from "@carbon-sdk/index";
-import { InsightsQueryResponse } from "@carbon-sdk/insights";
+import { ConnectedWalletParams, ConnectedWalletResponse, InsightsQueryResponse } from "@carbon-sdk/insights";
 import { APIUtils } from "@carbon-sdk/util";
 import BigNumber from "bignumber.js";
 import dayjs from "dayjs";
@@ -141,6 +141,22 @@ class InsightsQueryClient {
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetPoolHistoryResponse>;
   }
 
+  async PerpPoolHistory(
+    query: Insights.QueryGetPerpPoolHistoryRequest
+  ): Promise<Insights.InsightsQueryResponse<Insights.QueryGetPerpPoolHistoryResponse>> {
+    const request = this.apiManager.path(
+      "pool/perp/history",
+      {},
+      {
+        limit: query.limit ?? 10,
+        offset: query.offset ?? 0,
+        address: query.address,
+      }
+    );
+    const response = await request.get();
+    return response.data as Insights.InsightsQueryResponse<Insights.QueryGetPerpPoolHistoryResponse>;
+  }
+
   async PoolVolume(req: Insights.QueryGetPoolVolumeRequest): Promise<Insights.InsightsQueryResponse<Insights.QueryGetPoolVolumeResponse>> {
     const routeParams = { poolId: req.poolId };
     const queryParams = {
@@ -173,6 +189,12 @@ class InsightsQueryClient {
     const request = this.apiManager.path("user/pool/rewards", routeParams, req);
     const response = await request.get();
     return response.data as Insights.InsightsQueryResponse<Insights.QueryGetUserRewardsClaimHistoryResponse>;
+  }
+
+  async UserWalletConnected(body: ConnectedWalletParams): Promise<ConnectedWalletResponse> {
+    const request = this.apiManager.path('user/connected/wallet')
+    const response = await request.post({ body })
+    return response.data
   }
   async CompetitionList(
     req: Insights.QueryGetCompetitionListRequest = {}
