@@ -75,6 +75,8 @@ function readJsonFilesFromFolder(folderPath: string): Promise<{ [fileName: strin
     ".CSTSTARS",
     ".CSTTIA",
     ".CSTDYM",
+    ".CSTSAGA",
+    ".CRATOM"
   ]
 
   const txs: any[] = []

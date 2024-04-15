@@ -33,7 +33,7 @@
         {
           "adapter": "fetcher_multiple",
           "config": {
-            "custom_node_url_key": "osmosis_sttia_tia_swap_rate_1",
+            "custom_node_url_key": "osmosis_sttia_tia_swap_rate_2",
             "default_node_host": "https://api-osmosis.carbon.network",
             "default_node_path": "/osmosis/poolmanager/pools/1428/prices?base_asset_denom=ibc/698350B8A61D575025F3ED13E9AC9C0F45C89DEFE92F76D5838F1D3C1A7FF7C9&quote_asset_denom=ibc/D79E7D83AB399BFFF93433E54FAA480C191248FC556924A2A8351AE2638B3877",
             "paths": "[\"spot_price\"]",
